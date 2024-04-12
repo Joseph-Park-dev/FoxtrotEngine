@@ -1,0 +1,57 @@
+#pragma once
+#include "Component.h"
+#include "TemplateFunctions.h"
+
+class Vector2;
+class Rigidbody2DComponent;
+
+class MoveComponent :
+    public Component
+{
+protected:
+    enum State
+    {
+        IDLE,
+        MOVING_LEFT,
+        MOVING_RIGHT,
+        MOVING_UP,
+        MOVING_DOWN
+    };
+public:
+    void Accelerate(float& currentSpeed, float accel, float maxSpeed, int forwardDir);
+    void Accelerate(Vector2 velocity);
+    void Deccelerate(float& currentSpeed, int& currentDir, float breakSpeed);
+    //void Accelerate(Vector2 velocity);
+    // Temporarily commented for testing Rigidbody2D-AddForce
+    // void Deccelerate(float& currentSpeed, int& currentDir, float breakSpeed);
+
+public:
+    float GetAngularSpeed() const { return mAngularSpeed; }
+    float GetForwardSpeed() const { return mForwardSpeed; }
+    std::wstring GetName() const override
+    {
+        return L"MoveComponent";
+    }
+    State GetMovingState() const { return mMovingState; }
+    State GetPrevMovingState() const { return mPrevMovingState; }
+    //Rigidbody2DComponent* GetRigidbody() const { return mRigidbody; }
+    void  SetAngularSpeed(float speed) { mAngularSpeed = speed; }
+    void  SetForwardSpeed(float speed) { mForwardSpeed = speed; }
+    void  SetMovingState(State state) { mMovingState = state; }
+    void  SetPrevMovingState(State state) { mPrevMovingState = state; }
+
+public:
+    virtual void Update(float deltaTime) override;
+
+public:
+    MoveComponent(class Actor* owner, int drawOrder, int updateorder);
+
+private:
+    //Rigidbody2DComponent* mRigidbody;
+    Vector2 mVelocity;
+    float mAngularSpeed;
+    float mForwardSpeed;
+    State mMovingState;
+    State mPrevMovingState;
+};
+

@@ -1,0 +1,447 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="01_Header">
+      <UniqueIdentifier>{f74b0c26-8bb6-4eeb-8acf-b25515eea899}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02_Core">
+      <UniqueIdentifier>{4e0a5a5c-7686-4596-8460-04f2dbbc580f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02_Core\Managers">
+      <UniqueIdentifier>{6ecdbaa1-9fbf-4de1-bb3a-be94f2e5afbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03_Actors">
+      <UniqueIdentifier>{87c50203-9334-40d9-b551-8099309e16d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04_Components">
+      <UniqueIdentifier>{cb43d6f1-57d0-41e6-9287-95e12bfd566f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05_Scenes">
+      <UniqueIdentifier>{741d60bf-7e09-45f6-b51b-418400cae2db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06_Resources">
+      <UniqueIdentifier>{82a3f1e1-0e36-4c4a-9e69-edc28cb233f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02_Core\Core">
+      <UniqueIdentifier>{d3e8d8a2-02e5-457a-80ad-cd1cf109fecd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03_Actors\ActorList">
+      <UniqueIdentifier>{787eee82-91d0-4301-ae27-eae5deb3826b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03_Actors\UIActors">
+      <UniqueIdentifier>{8cef9c3e-4116-45ba-bd5e-242397300bf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03_Actors\BackgroundActors">
+      <UniqueIdentifier>{dc50f673-b7ee-4dff-8d82-d35a46383be5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07_Factory">
+      <UniqueIdentifier>{98b48d6d-40b8-4371-81d4-7ee8f2f3f380}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03_Actors\ObjectActors">
+      <UniqueIdentifier>{50b2b103-ab97-466f-8f9e-01bc353b446b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03_Actors\EssentialProperties">
+      <UniqueIdentifier>{08a33794-0e7e-45da-89ea-5341c630079b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02_Core\CoreModules">
+      <UniqueIdentifier>{f30301ba-3c9a-475c-b481-04e4123be12b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02_Core\CoreModules\Physics">
+      <UniqueIdentifier>{a9337218-4d7f-430e-899c-e6c73ebaff6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04_Components\ActorSpecific">
+      <UniqueIdentifier>{3655cb5a-4654-43e7-baa0-124e2c1cabc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Externals">
+      <UniqueIdentifier>{bf29d92f-5542-4fb4-bba8-634786f9550d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02_Core\CoreModules\FoxtrotEditor">
+      <UniqueIdentifier>{45985af3-d383-4da0-ae4e-cb551ebb11e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02_Core\CoreModules\FoxtrotEditor\Save&amp;LoadSystem">
+      <UniqueIdentifier>{26a58d41-85e4-47b0-9371-cc3e524cfa5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02_Core\CoreModules\FoxtrotEditor\EditorCamera">
+      <UniqueIdentifier>{3d7369ad-692d-47ea-ad0c-deb0a30dc24d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02_Core\CoreModules\FoxtrotEditor\EditorLayer">
+      <UniqueIdentifier>{bef610be-85db-410b-8779-a9baa1e511f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02_Core\CoreModules\FoxtrotEditor\EditorElement">
+      <UniqueIdentifier>{ef557ea2-ab36-467f-af6d-6bdd1289bd24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02_Core\CoreModules\FoxtrotEditor\EditorCommand">
+      <UniqueIdentifier>{bd525cb3-8621-4932-a858-628387f4e616}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02_Core\CoreModules\Camera">
+      <UniqueIdentifier>{2b5fc46a-4565-4542-8f6f-fe285eaacaf6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteComponent.cpp">
+      <Filter>04_Components</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimSpriteComponent.cpp">
+      <Filter>04_Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Math.cpp">
+      <Filter>01_Header</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>02_Core\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene_Start.cpp">
+      <Filter>05_Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyInputManager.cpp">
+      <Filter>02_Core\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="BGSpriteComponent.cpp">
+      <Filter>04_Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>05_Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="TileMapComponent.cpp">
+      <Filter>04_Components</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveComponent.cpp">
+      <Filter>04_Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Random.cpp">
+      <Filter>01_Header</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>02_Core\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="InputMoveComponent.cpp">
+      <Filter>04_Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ColliderComponent.cpp">
+      <Filter>04_Components</Filter>
+    </ClCompile>
+    <ClCompile Include="CCore.cpp">
+      <Filter>02_Core\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionManager.cpp">
+      <Filter>02_Core\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="EventManager.cpp">
+      <Filter>02_Core\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="EventFunctions.cpp">
+      <Filter>02_Core\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene_Tool.cpp">
+      <Filter>05_Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>06_Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimatorComponent.cpp">
+      <Filter>04_Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>04_Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera2D.cpp">
+      <Filter>02_Core\CoreModules\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="AIComponent.cpp">
+      <Filter>04_Components</Filter>
+    </ClCompile>
+    <ClCompile Include="AIState.cpp">
+      <Filter>04_Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>06_Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>02_Core\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelUI.cpp">
+      <Filter>03_Actors\UIActors</Filter>
+    </ClCompile>
+    <ClCompile Include="UIActor.cpp">
+      <Filter>03_Actors\UIActors</Filter>
+    </ClCompile>
+    <ClCompile Include="Actor.cpp">
+      <Filter>03_Actors\ActorList</Filter>
+    </ClCompile>
+    <ClCompile Include="Asteroid.cpp">
+      <Filter>03_Actors\ActorList</Filter>
+    </ClCompile>
+    <ClCompile Include="Ship.cpp">
+      <Filter>03_Actors\ActorList</Filter>
+    </ClCompile>
+    <ClCompile Include="ButtonUI.cpp">
+      <Filter>03_Actors\UIActors</Filter>
+    </ClCompile>
+    <ClCompile Include="MonFactory.cpp">
+      <Filter>07_Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="GroundObject.cpp">
+      <Filter>03_Actors\ObjectActors</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>04_Components</Filter>
+    </ClCompile>
+    <ClCompile Include="FTResource.cpp">
+      <Filter>06_Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>03_Actors\EssentialProperties</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics2D.cpp">
+      <Filter>02_Core\CoreModules\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="MouseCursor.cpp">
+      <Filter>03_Actors\UIActors</Filter>
+    </ClCompile>
+    <ClCompile Include="GunFiringComponent.cpp">
+      <Filter>04_Components\ActorSpecific</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>02_Core\CoreModules\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="ChunkLoader.cpp">
+      <Filter>02_Core\CoreModules\FoxtrotEditor\Save&amp;LoadSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorCamera2D.cpp">
+      <Filter>02_Core\CoreModules\FoxtrotEditor\EditorCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorLayer.cpp">
+      <Filter>02_Core\CoreModules\FoxtrotEditor\EditorLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="Rigidbody2DComponent.cpp">
+      <Filter>04_Components</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorElement.cpp">
+      <Filter>02_Core\CoreModules\FoxtrotEditor\EditorElement</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\FileDialog\ImGuiFileDialog.cpp">
+      <Filter>Externals</Filter>
+    </ClCompile>
+    <ClCompile Include="Command.cpp">
+      <Filter>02_Core\CoreModules\FoxtrotEditor\EditorCommand</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHistory.cpp">
+      <Filter>02_Core\CoreModules\FoxtrotEditor\EditorCommand</Filter>
+    </ClCompile>
+    <ClCompile Include="BackgroundActor.cpp">
+      <Filter>03_Actors\BackgroundActors</Filter>
+    </ClCompile>
+    <ClCompile Include="Bounds.cpp">
+      <Filter>02_Core\CoreModules\Physics</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SpriteComponent.h">
+      <Filter>04_Components</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimSpriteComponent.h">
+      <Filter>04_Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.h">
+      <Filter>01_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>02_Core\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="SingletonMacro.h">
+      <Filter>01_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneType.h">
+      <Filter>01_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="ActorGroup.h">
+      <Filter>01_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene_Start.h">
+      <Filter>05_Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyInputManager.h">
+      <Filter>02_Core\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="BGSpriteComponent.h">
+      <Filter>04_Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>05_Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="TileMapComponent.h">
+      <Filter>04_Components</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveComponent.h">
+      <Filter>04_Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>01_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>02_Core\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="InputMoveComponent.h">
+      <Filter>04_Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ColliderComponent.h">
+      <Filter>04_Components</Filter>
+    </ClInclude>
+    <ClInclude Include="CCore.h">
+      <Filter>02_Core\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>02_Core\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="ActorTag.h">
+      <Filter>01_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="EventManager.h">
+      <Filter>02_Core\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="EventType.h">
+      <Filter>01_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeDefinitions.h">
+      <Filter>01_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene_Tool.h">
+      <Filter>05_Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="TemplateFunctions.h">
+      <Filter>01_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="EventFunctions.h">
+      <Filter>02_Core\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>06_Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatorComponent.h">
+      <Filter>04_Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>04_Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera2D.h">
+      <Filter>02_Core\CoreModules\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="AIState.h">
+      <Filter>04_Components</Filter>
+    </ClInclude>
+    <ClInclude Include="AIComponent.h">
+      <Filter>04_Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>06_Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager.h">
+      <Filter>02_Core\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelUI.h">
+      <Filter>03_Actors\UIActors</Filter>
+    </ClInclude>
+    <ClInclude Include="UIActor.h">
+      <Filter>03_Actors\UIActors</Filter>
+    </ClInclude>
+    <ClInclude Include="Actor.h">
+      <Filter>03_Actors\ActorList</Filter>
+    </ClInclude>
+    <ClInclude Include="Asteroid.h">
+      <Filter>03_Actors\ActorList</Filter>
+    </ClInclude>
+    <ClInclude Include="Ship.h">
+      <Filter>03_Actors\ActorList</Filter>
+    </ClInclude>
+    <ClInclude Include="ButtonUI.h">
+      <Filter>03_Actors\UIActors</Filter>
+    </ClInclude>
+    <ClInclude Include="MonFactory.h">
+      <Filter>07_Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="GroundObject.h">
+      <Filter>03_Actors\ObjectActors</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>04_Components</Filter>
+    </ClInclude>
+    <ClInclude Include="FTResource.h">
+      <Filter>06_Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>03_Actors\EssentialProperties</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics2D.h">
+      <Filter>02_Core\CoreModules\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseCursor.h">
+      <Filter>03_Actors\UIActors</Filter>
+    </ClInclude>
+    <ClInclude Include="GunFiringComponent.h">
+      <Filter>04_Components\ActorSpecific</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>02_Core\CoreModules\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="ChunkLoader.h">
+      <Filter>02_Core\CoreModules\FoxtrotEditor\Save&amp;LoadSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorCamera2D.h">
+      <Filter>02_Core\CoreModules\FoxtrotEditor\EditorCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorLayer.h">
+      <Filter>02_Core\CoreModules\FoxtrotEditor\EditorLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="Rigidbody2DComponent.h">
+      <Filter>04_Components</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitDefinitions.h">
+      <Filter>01_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorElement.h">
+      <Filter>02_Core\CoreModules\FoxtrotEditor\EditorElement</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\FileDialog\ImGuiFileDialog.h">
+      <Filter>Externals</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\FileDialog\ImGuiFileDialogConfig.h">
+      <Filter>Externals</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\FileDialog\dirent\dirent.h">
+      <Filter>Externals</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\FileDialog\stb\stb_image.h">
+      <Filter>Externals</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\FileDialog\stb\stb_image_resize.h">
+      <Filter>Externals</Filter>
+    </ClInclude>
+    <ClInclude Include="Command.h">
+      <Filter>02_Core\CoreModules\FoxtrotEditor\EditorCommand</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandHistory.h">
+      <Filter>02_Core\CoreModules\FoxtrotEditor\EditorCommand</Filter>
+    </ClInclude>
+    <ClInclude Include="BackgroundActor.h">
+      <Filter>03_Actors\BackgroundActors</Filter>
+    </ClInclude>
+    <ClInclude Include="Bounds.h">
+      <Filter>02_Core\CoreModules\Physics</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vcpkg.json" />
+    <None Include="cpp.hint" />
+    <None Include="SaveTest\TestActorsList.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Chapter03.rc" />
+  </ItemGroup>
+</Project>

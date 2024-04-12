@@ -1,0 +1,203 @@
+{
+    "ActorList": {
+        "Ship": {
+            "Count": 1,
+            "4": {
+                "FrameActorName": "Ship",
+                "ActorGroup": "PLAYER",
+                "Name": "Player0",
+                "ID": 4,
+                "ActorProperties": {
+                    "state": "active",
+                    "Transform": {
+                        "WorldPosition": {
+                            "x": -104.0,
+                            "y": -231.0
+                        },
+                        "LocalPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "Scale": {
+                            "x": 100.0,
+                            "y": 100.0
+                        },
+                        "Rotation": 0.0
+                    }
+                },
+                "ActorComponents": {
+                    "ComponentCount": 5,
+                    "0": {
+                        "AnimatorComponent": {
+                            "DrawOrder": 100,
+                            "UpdateOrder": 100,
+                            "TextureKey": "Ship",
+                            "TexturePath": "Assets/ShipTileMap.png",
+                            "TextureWidth": 256,
+                            "TextureHeight": 29,
+                            "MapAnimation": "WalkingLeft"
+                        }
+                    },
+                    "1": {
+                        "Rigidbody2DComponent": {
+                            "DrawOrder": 100,
+                            "UpdateOrder": 51,
+                            "Mass": 1.0,
+                            "FrictionCoeff": 0.10000000149011612,
+                            "MaxVelocity": {
+                                "x": 200.0,
+                                "y": 600.0
+                            }
+                        }
+                    },
+                    "2": {
+                        "InputMoveComponent": {
+                            "DrawOrder": 100,
+                            "UpdateOrder": 52
+                        }
+                    },
+                    "3": {
+                        "ColliderComponent": {
+                            "DrawOrder": 100,
+                            "UpdateOrder": 53,
+                            "OffsetPos": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "Scale": {
+                                "x": 84.0,
+                                "y": 211.0
+                            }
+                        }
+                    },
+                    "4": {
+                        "GunFiringComponent": {
+                            "DrawOrder": 100,
+                            "UpdateOrder": 53,
+                            "Delay": 0.10000000149011612,
+                            "TriggerKey": 0
+                        }
+                    }
+                }
+            }
+        },
+        "BackgroundActor": {
+            "Count": 1,
+            "6": {
+                "FrameActorName": "BackgroundActor",
+                "ActorGroup": "DEFAULT",
+                "Name": "Background",
+                "ID": 6,
+                "ActorProperties": {
+                    "state": "active",
+                    "Transform": {
+                        "WorldPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "LocalPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "Scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Rotation": 0.0
+                    }
+                },
+                "ActorComponents": {
+                    "ComponentCount": 3,
+                    "0": {
+                        "TileMapComponent": {
+                            "DrawOrder": 52,
+                            "UpdateOrder": 100,
+                            "TextureKey": "tex01",
+                            "TexturePath": "Assets/Tiles.png",
+                            "TextureWidth": 256,
+                            "TextureHeight": 768
+                        }
+                    },
+                    "1": {
+                        "TileMapComponent": {
+                            "DrawOrder": 51,
+                            "UpdateOrder": 100,
+                            "TextureKey": "tex01",
+                            "TexturePath": "Assets/Tiles.png",
+                            "TextureWidth": 256,
+                            "TextureHeight": 768
+                        }
+                    },
+                    "2": {
+                        "TileMapComponent": {
+                            "DrawOrder": 50,
+                            "UpdateOrder": 100,
+                            "TextureKey": "tex01",
+                            "TexturePath": "Assets/Tiles.png",
+                            "TextureWidth": 256,
+                            "TextureHeight": 768
+                        }
+                    }
+                }
+            }
+        },
+        "GroundObject": {
+            "Count": 1,
+            "8": {
+                "FrameActorName": "GroundObject",
+                "ActorGroup": "GROUND",
+                "Name": "GroundObj0",
+                "ID": 8,
+                "ActorProperties": {
+                    "state": "active",
+                    "Transform": {
+                        "WorldPosition": {
+                            "x": -160.0,
+                            "y": 105.0
+                        },
+                        "LocalPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "Scale": {
+                            "x": 400.0,
+                            "y": 400.0
+                        },
+                        "Rotation": 0.0
+                    }
+                },
+                "ActorComponents": {
+                    "ComponentCount": 1,
+                    "0": {
+                        "ColliderComponent": {
+                            "DrawOrder": 100,
+                            "UpdateOrder": 55,
+                            "OffsetPos": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "Scale": {
+                                "x": 400.0,
+                                "y": 130.0
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "ChunkData": {
+        "ActorCount": 3,
+        "Camera": {
+            "TargetActor": -1,
+            "RenderResolution": {
+                "x": 1024.0,
+                "y": 786.0
+            },
+            "ScreenCenter": {
+                "x": 512.0,
+                "y": 393.0
+            }
+        }
+    }
+}

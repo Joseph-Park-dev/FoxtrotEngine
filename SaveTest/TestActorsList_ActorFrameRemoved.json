@@ -1,0 +1,58 @@
+{
+    "ActorList": {
+        "0": {
+            "ActorProperties": {
+                "Name": "Game Object0",
+                "ID": 1,
+                "ActorGroup": "DEFAULT",
+                "state": "active",
+                "Transform": {
+                    "WorldPosition": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "LocalPosition": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "Scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "Rotation": 0.0
+                }
+            },
+            "ActorComponents": {
+                "ComponentCount": 1,
+                "0": {
+                    "Name": "ColliderComponent",
+                    "DrawOrder": 100,
+                    "UpdateOrder": 100,
+                    "OffsetPos": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "Scale": {
+                        "x": 128.0,
+                        "y": 139.0
+                    }
+                }
+            }
+        },
+        "Count": 1
+    },
+    "ChunkData": {
+        "ActorCount": 1,
+        "Camera": {
+            "TargetActor": -1,
+            "RenderResolution": {
+                "x": 1024.0,
+                "y": 786.0
+            },
+            "ScreenCenter": {
+                "x": 512.0,
+                "y": 393.0
+            }
+        }
+    }
+}

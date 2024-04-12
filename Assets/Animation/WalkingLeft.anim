@@ -1,0 +1,49 @@
+[Animation Name]
+WalkingLeft
+[Frame Count]
+4
+[Frame Data]
+[Frame Index]
+0
+[Tile Width]
+64
+[Tile Height]
+29
+[Tile Index]
+0
+[Frame Duration]
+1.000000
+[Frame Index]
+1
+[Tile Width]
+64
+[Tile Height]
+29
+[Tile Index]
+1
+[Frame Duration]
+1.000000
+[Frame Index]
+2
+[Tile Width]
+64
+[Tile Height]
+29
+[Tile Index]
+2
+[Frame Duration]
+1.000000
+[Frame Index]
+3
+[Tile Width]
+64
+[Tile Height]
+29
+[Tile Index]
+3
+[Frame Duration]
+1.000000
+[Texture Name]
+Ship
+[Texture Path]
+Assets/ShipTileMap.png

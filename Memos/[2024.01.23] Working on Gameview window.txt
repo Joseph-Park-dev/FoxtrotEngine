@@ -1,0 +1,9 @@
+Implementing game view window
+
+1) if an Actor is in the camera area (render area)
+
+1) Get relative position from mLookAtPos
+2) Blit each actors into game view at relative position
+
+Make use of mRenderArea for rendering game view 
+NOT rendering editor view

@@ -1,0 +1,13 @@
+#pragma once
+
+enum class EVENT_TYPE
+{
+	CREATE_ACTOR,
+	CREATE_CHILD,
+	DESTROY_ACTOR,
+	SWITCH_SCENE,
+
+	CHANGE_AISTATE,
+	
+	END
+};

@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{ae176f6a-e816-4e2d-9445-d50c5e67e3da}</ProjectGuid>
+    <RootNamespace>Chapter01</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Engine</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <EnableUnitySupport>true</EnableUnitySupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <EnableUnitySupport>true</EnableUnitySupport>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(VcpkgManifestRoot)\vcpkg_installed\x86-windows\debug\lib\manual-link;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>C:\dev\vcpkg\installed;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>
+    </IncludePath>
+    <LibraryPath>D:\[2023_02]\FoxtrotEngine_OpenGL\vcpkg_installed\x64-windows\debug\lib\manual-link;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>
+    </IncludePath>
+    <LibraryPath>C:\dev\vcpkg\installed\x64-windows\lib\manual-link;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <VcpkgTriplet>
+    </VcpkgTriplet>
+    <VcpkgInstalledDir>.\vcpkg_installed</VcpkgInstalledDir>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <VcpkgTriplet>
+    </VcpkgTriplet>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <VcpkgTriplet>
+    </VcpkgTriplet>
+    <VcpkgInstalledDir>C:\dev\vcpkg</VcpkgInstalledDir>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <VcpkgTriplet>
+    </VcpkgTriplet>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2maind.lib;SDL2d.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h;TypeDefinitions.h</PrecompiledHeaderFile>
+      <MinFilesInUnityFile>8</MinFilesInUnityFile>
+      <UnityFilesDirectory>$(IntDir)Unity</UnityFilesDirectory>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2maind.lib;Shell32.lib;Comdlg32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\[2023_02]\FoxtrotEngine_DirectX\vcpkg_installed\x64-windows\debug\lib\manual-link;D:\[2023_02]\FoxtrotEngine_DirectX\vcpkg_installed\x64-windows\debug\lib;D:\[2023_02]\FoxtrotEngine_DirectX\vcpkg_installed\x64-windows\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h;TypeDefinitions.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;shell32.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="AIComponent.cpp" />
+    <ClCompile Include="AIState.cpp" />
+    <ClCompile Include="Animation.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="AnimatorComponent.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="AnimSpriteComponent.cpp" />
+    <ClCompile Include="Asteroid.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BackgroundActor.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="BGSpriteComponent.cpp" />
+    <ClCompile Include="Bounds.cpp" />
+    <ClCompile Include="ButtonUI.cpp" />
+    <ClCompile Include="Camera2D.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="CCore.cpp" />
+    <ClCompile Include="Command.cpp" Condition=" '$(Configuration)' == 'Debug' " />
+    <ClCompile Include="CommandHistory.cpp" Condition=" '$(Configuration)' == 'Debug' " />
+    <ClCompile Include="EditorCamera2D.cpp" Condition=" '$(Configuration)' == 'Debug' " />
+    <ClCompile Include="EditorElement.cpp" Condition=" '$(Configuration)' == 'Debug' " />
+    <ClCompile Include="EditorLayer.cpp" Condition=" '$(Configuration)' == 'Debug' " />
+    <ClCompile Include="EventManager.cpp" />
+    <ClCompile Include="ColliderComponent.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="GunFiringComponent.cpp" />
+    <ClCompile Include="ChunkLoader.cpp" />
+    <ClCompile Include="imgui\FileDialog\ImGuiFileDialog.cpp" Condition=" '$(Configuration)' == 'Debug' " />
+    <ClCompile Include="MouseCursor.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
+    <ClCompile Include="Physics2D.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="Rigidbody2DComponent.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="EventFunctions.cpp" />
+    <ClCompile Include="GroundObject.cpp" />
+    <ClCompile Include="InputMoveComponent.cpp" />
+    <ClCompile Include="KeyInputManager.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Math.cpp" />
+    <ClCompile Include="MonFactory.cpp" />
+    <ClCompile Include="MoveComponent.cpp" />
+    <ClCompile Include="PanelUI.cpp" />
+    <ClCompile Include="Random.cpp" />
+    <ClCompile Include="FTResource.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Scene_Start.cpp" />
+    <ClCompile Include="Scene_Tool.cpp" />
+    <ClCompile Include="Ship.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="SpriteComponent.cpp" />
+    <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="TileMapComponent.cpp" />
+    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="UIActor.cpp" />
+    <ClCompile Include="UIManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Actor.h" />
+    <ClInclude Include="ActorTag.h" />
+    <ClInclude Include="AIComponent.h" />
+    <ClInclude Include="AIState.h" />
+    <ClInclude Include="Animation.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="AnimatorComponent.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="AnimSpriteComponent.h" />
+    <ClInclude Include="Asteroid.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BackgroundActor.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="BGSpriteComponent.h" />
+    <ClInclude Include="Bounds.h" />
+    <ClInclude Include="ButtonUI.h" />
+    <ClInclude Include="Camera2D.h" />
+    <ClInclude Include="CollisionManager.h" />
+    <ClInclude Include="CCore.h" />
+    <ClInclude Include="Command.h" Condition=" '$(Configuration)' == 'Debug' " />
+    <ClInclude Include="CommandHistory.h" Condition=" '$(Configuration)' == 'Debug' " />
+    <ClInclude Include="EditorCamera2D.h" Condition=" '$(Configuration)' == 'Debug' " />
+    <ClInclude Include="EditorElement.h" Condition=" '$(Configuration)' == 'Debug' " />
+    <ClInclude Include="EditorLayer.h" Condition=" '$(Configuration)' == 'Debug' " />
+    <ClInclude Include="EventManager.h" />
+    <ClInclude Include="ColliderComponent.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="GunFiringComponent.h" />
+    <ClInclude Include="ChunkLoader.h" />
+    <ClInclude Include="imgui\FileDialog\dirent\dirent.h" Condition=" '$(Configuration)' == 'Debug' " />
+    <ClInclude Include="imgui\FileDialog\ImGuiFileDialog.h" Condition=" '$(Configuration)' == 'Debug' " />
+    <ClInclude Include="imgui\FileDialog\ImGuiFileDialogConfig.h" Condition=" '$(Configuration)' == 'Debug' " />
+    <ClInclude Include="imgui\FileDialog\stb\stb_image.h" Condition=" '$(Configuration)' == 'Debug' " />
+    <ClInclude Include="imgui\FileDialog\stb\stb_image_resize.h" Condition=" '$(Configuration)' == 'Debug' " />
+    <ClInclude Include="MouseCursor.h" />
+    <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="Physics2D.h" />
+    <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="Rigidbody2DComponent.h" />
+    <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="EventFunctions.h" />
+    <ClInclude Include="GroundObject.h" />
+    <ClInclude Include="MonFactory.h" />
+    <ClInclude Include="PanelUI.h" />
+    <ClInclude Include="FTResource.h" />
+    <ClInclude Include="Scene_Tool.h" />
+    <ClInclude Include="TemplateFunctions.h" />
+    <ClInclude Include="Tile.h" />
+    <ClInclude Include="Transform.h" />
+    <ClInclude Include="TypeDefinitions.h" />
+    <ClInclude Include="EventType.h" />
+    <ClInclude Include="InputMoveComponent.h" />
+    <ClInclude Include="KeyInputManager.h" />
+    <ClInclude Include="Math.h" />
+    <ClInclude Include="ActorGroup.h" />
+    <ClInclude Include="MoveComponent.h" />
+    <ClInclude Include="Random.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneType.h" />
+    <ClInclude Include="Scene_Start.h" />
+    <ClInclude Include="Ship.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="SingletonMacro.h" />
+    <ClInclude Include="SpriteComponent.h" />
+    <ClInclude Include="TileMapComponent.h" />
+    <ClInclude Include="UIActor.h" />
+    <ClInclude Include="UIManager.h" />
+    <ClInclude Include="UnitDefinitions.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+    <None Include="SaveTest\TestActorsList.json" />
+    <None Include="vcpkg.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Chapter03.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

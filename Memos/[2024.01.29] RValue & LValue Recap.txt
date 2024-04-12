@@ -1,0 +1,25 @@
+Move Semantics
+Handing over the memory possession across the variables
+
+Syntax vs. semantics
+
+
+1) value semantics (copy semantics)
+2) reference semantics (pointer)
+3) move semantics (move)
+
+
+int x = 5;
+x is a l-value
+while 5 is a r-value
+
+l-value possess a memory space
+r-value is destroyed after the sentence is finished
+
+int y = GetResult();
+
+GetResult()'s return value is copied into l value y
+int& x = GetResult(); throws an error for the reutrn value of the function
+is R value and thus cannot have reference
+
+std::move() -> returns RValue from LValue input

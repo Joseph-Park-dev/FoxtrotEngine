@@ -1,0 +1,157 @@
+{
+    "ActorList": {
+        "Ship": {
+            "Count": 3,
+            "4": {
+                "FrameActorName": "Ship",
+                "ActorGroup": "PLAYER",
+                "Name": "Game Object0",
+                "ID": 4,
+                "ActorProperties": {
+                    "state": "active",
+                    "Transform": {
+                        "WorldPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "LocalPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "Scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Rotation": 0.0
+                    }
+                },
+                "ActorComponents": {
+                    "ComponentCount": 3,
+                    "0": {
+                        "Name": "ColliderComponent",
+                        "DrawOrder": 100,
+                        "UpdateOrder": 100,
+                        "OffsetPos": {
+                            "x": 0.0,
+                            "y": -224.0
+                        },
+                        "Scale": {
+                            "x": 93.0,
+                            "y": 132.0
+                        }
+                    },
+                    "1": {
+                        "Name": "Rigidbody2DComponent",
+                        "DrawOrder": 100,
+                        "UpdateOrder": 100,
+                        "Mass": 1.0,
+                        "FrictionCoeff": 0.10000000149011612,
+                        "MaxVelocity": {
+                            "x": 200.0,
+                            "y": 600.0
+                        }
+                    },
+                    "2": {
+                        "Name": "InputMoveComponent",
+                        "DrawOrder": 100,
+                        "UpdateOrder": 100
+                    }
+                }
+            },
+            "6": {
+                "FrameActorName": "Ship",
+                "ActorGroup": "GROUND",
+                "Name": "Game Object1",
+                "ID": 6,
+                "ActorProperties": {
+                    "state": "active",
+                    "Transform": {
+                        "WorldPosition": {
+                            "x": 0.0,
+                            "y": 189.0
+                        },
+                        "LocalPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "Scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Rotation": 0.0
+                    }
+                },
+                "ActorComponents": {
+                    "ComponentCount": 1,
+                    "0": {
+                        "Name": "ColliderComponent",
+                        "DrawOrder": 100,
+                        "UpdateOrder": 100,
+                        "OffsetPos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "Scale": {
+                            "x": 150.0,
+                            "y": 42.0
+                        }
+                    }
+                }
+            },
+            "8": {
+                "FrameActorName": "Ship",
+                "ActorGroup": "GROUND",
+                "Name": "Game Object2",
+                "ID": 8,
+                "ActorProperties": {
+                    "state": "active",
+                    "Transform": {
+                        "WorldPosition": {
+                            "x": 220.0,
+                            "y": -206.0
+                        },
+                        "LocalPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "Scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Rotation": 0.0
+                    }
+                },
+                "ActorComponents": {
+                    "ComponentCount": 1,
+                    "0": {
+                        "Name": "ColliderComponent",
+                        "DrawOrder": 100,
+                        "UpdateOrder": 100,
+                        "OffsetPos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "Scale": {
+                            "x": 197.0,
+                            "y": 186.0
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "ChunkData": {
+        "ActorCount": 3,
+        "Camera": {
+            "TargetActor": -1,
+            "RenderResolution": {
+                "x": 1024.0,
+                "y": 786.0
+            },
+            "ScreenCenter": {
+                "x": 512.0,
+                "y": 393.0
+            }
+        }
+    }
+}

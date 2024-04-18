@@ -47,8 +47,8 @@ void Scene_Start::Update(float deltaTime)
 {
 	Scene::Update(deltaTime);
 
-	if (KEY_TAP(KEY::LSHIFT))
+	/*if (KEY_TAP(KEY::LSHIFT))
 	{
 		SceneManager::GetInstance()->SwitchScene(SCENE_TYPE::TOOL);
-	}
+	}*/
 }

@@ -30,7 +30,7 @@ void GunFiringComponent::ShootGun()
 		500.f,
 		ACTOR_GROUP::ENEMY
 	);
-	SDL_Log("Gun fired!");
+	LogString("Gun fired!");
 }
 
 GunFiringComponent::GunFiringComponent(Actor* owner, int drawOrder, int updateorder)

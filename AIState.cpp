@@ -1,6 +1,5 @@
 #include "AIComponent.h"
 #include "AIState.h"
-#include "SDL2/SDL.h"
 #include "Actor.h"
 #include "SceneManager.h"
 #include "Scene.h"

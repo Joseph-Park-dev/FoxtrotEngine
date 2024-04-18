@@ -2,7 +2,7 @@
 #include "Actor.h"
 #include "Camera2D.h"
 #include "Tile.h"
-#include "Texture.h"
+#include "FTTexture.h"
 #include "ResourceManager.h"
 #include "TemplateFunctions.h"
 #include "Transform.h"
@@ -43,7 +43,7 @@ void AnimatorComponent::CreateAnimationFromTile(
 		mMapAnimation.insert(std::make_pair(name, animation));
 	}
 	else
-		SDL_Log("Animation %ls has already been created", name.c_str());
+		printf("Animation %ls has already been created", name.c_str());
 }
 
 void AnimatorComponent::Play(const std::wstring& name, bool isRepeating)
@@ -51,7 +51,7 @@ void AnimatorComponent::Play(const std::wstring& name, bool isRepeating)
 	mCurrentAnim = FindAnimation(name);
 	if (mCurrentAnim == nullptr)
 	{
-		SDL_Log("Animation is null");
+		LogString("Animation is null");
 	}
 	mIsRepeating = isRepeating;
 }
@@ -61,7 +61,7 @@ Animation* AnimatorComponent::FindAnimation(const std::wstring& name)
 	std::unordered_map<std::wstring, Animation*>::iterator iter = mMapAnimation.find(name);
 	if (iter == mMapAnimation.end())
 	{
-		SDL_Log("Cannot find animation %ls", name.c_str());
+		printf("Cannot find animation %ls", name.c_str());
 		return nullptr;
 	}
 	else
@@ -70,7 +70,7 @@ Animation* AnimatorComponent::FindAnimation(const std::wstring& name)
 			return iter->second;
 		else
 		{
-			SDL_Log("Animation %ls is null", name.c_str());
+			printf("Animation %ls is null", name.c_str());
 			return nullptr;
 		}
 	}
@@ -86,7 +86,7 @@ void AnimatorComponent::SaveProperties(std::ofstream& ofs)
 void AnimatorComponent::LoadProperties(std::ifstream& ifs)
 {
 	SpriteComponent::LoadProperties(ifs);
-	SDL_Log("Animator LoadProperties() needs to be implemented");
+	LogString("Animator LoadProperties() needs to be implemented");
 }
 
 void AnimatorComponent::SaveAnimation(const std::wstring& animName, const std::wstring& path)
@@ -121,14 +121,14 @@ void AnimatorComponent::SaveAnimation(const std::wstring& animName, const std::w
 		fprintf(file, "[Frame Duration]\n");
 		fprintf(file, "%f\n", mReel[i].duration);
 	}
-	fprintf(file, "[Texture Name]\n");
+	fprintf(file, "[FTTexture Name]\n");
 	// This ensures the Animation with animName has been created.
 	std::wstring strKey = GetTexture()->GetKey();
 	strName = std::string(strKey.begin(), strKey.end());
 	fprintf(file, strName.c_str());
 	fprintf(file, "\n");
 
-	fprintf(file, "[Texture Path]\n");
+	fprintf(file, "[FTTexture Path]\n");
 	// This ensures the Animation with animName has been created.
 	std::wstring strPath = GetTexture()->GetRelativePath();
 	strName = std::string(strPath.begin(), strPath.end());
@@ -232,14 +232,14 @@ void AnimatorComponent::LateUpdate(float deltaTime)
 	}
 }
 
-void AnimatorComponent::Render(SDL_Renderer* renderer)
+void AnimatorComponent::Render(FoxtrotRenderer* renderer)
 {
 	if (mCurrentAnim != nullptr)
 	{
 		if (!mCurrentAnim->IsFinished())
 		{
 			Vector2 worldPos = GetOwner()->GetTransform()->GetWorldPosition();
-			DrawIndividualTileOnPosEX(renderer, worldPos, mCurrentAnim->GetTile());
+			// DrawIndividualTileOnPosEX(renderer, worldPos, mCurrentAnim->GetTile());
 		}
 	}
 }

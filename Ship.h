@@ -36,6 +36,6 @@ public:
 	CLONE(Ship);
 
 private:
-	void UpdateState();
+	//void UpdateState();
 	void UpdateAnimation();
 };

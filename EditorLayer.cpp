@@ -1,13 +1,4 @@
 #ifdef _DEBUG
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
-#include <imgui_impl_sdl2.h>
-#include <imgui_impl_sdlrenderer2.h>
-#include "imgui/FileDialog/ImGuiFileDialog.h"
-#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
-
 #include "EditorLayer.h"
 #include "EditorElement.h"
 #include "EditorCamera2D.h"
@@ -26,7 +17,14 @@
 #include "Command.h"
 #include "Rigidbody2DComponent.h"
 
-void EditorLayer::Init(SDL_Window* window, SDL_Renderer* renderer)
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui.h>
+#include <imgui_impl_dx11.h>
+#include <imgui_impl_win32.h>
+#include "imgui/FileDialog/ImGuiFileDialog.h"
+#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
+
+void EditorLayer::Init(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext)
 {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -35,20 +33,16 @@ void EditorLayer::Init(SDL_Window* window, SDL_Renderer* renderer)
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
 	ImGui::StyleColorsDark();
-
-	ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
-	ImGui_ImplSDLRenderer2_Init(renderer);
-}
-
-void EditorLayer::ProcessInput(SDL_Event* event)
-{
-	ImGui_ImplSDL2_ProcessEvent(event);
+	ImGui_ImplDX11_Init(device.Get(), deviceContext.Get());
+	ImGui_ImplWin32_Init(hWnd);
 }
 
 void EditorLayer::Update(float deltaTime)
 {
-	ImGui_ImplSDLRenderer2_NewFrame();
-	ImGui_ImplSDL2_NewFrame();
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	//ImGui_ImplSDLRenderer2_NewFrame();
+	//ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
 	mSaveKeyPressed    = ImGui::IsKeyChordPressed(ImGuiModFlags_::ImGuiModFlags_Ctrl | ImGuiKey::ImGuiKey_S);
@@ -77,13 +71,13 @@ void EditorLayer::Update(float deltaTime)
 	ImGui::EndFrame();
 }
 
-void EditorLayer::Render(SDL_Renderer* renderer)
+void EditorLayer::Render(FoxtrotRenderer* renderer)
 {
 	ImGui::Render();
-	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
+	//ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
 }
 
-void EditorLayer::DisplayEditorElements(SDL_Renderer* renderer)
+void EditorLayer::DisplayEditorElements(FoxtrotRenderer* renderer)
 {
 	for (int i = 0; i < mEditorElements.size(); ++i)
 		mEditorElements[i]->Render(renderer);
@@ -93,14 +87,30 @@ void EditorLayer::DisplayFileMenu()
 {
 	if (ImGui::BeginMainMenuBar())
 	{
-		if (ImGui::Button("Save") || mSaveKeyPressed)
+		std::string selection = {};
+		if (ImGui::Button("File"))
+		{
+			ImGui::OpenPopup("FilePopUp");
+		}
+
+		if (ImGui::BeginPopup("FilePopUp"))
+		{
+			const size_t maxMenuEle = 3;
+			const std::string fileMenu[maxMenuEle] = { "Save", "Save As", "Open" };
+			for (size_t i = 0; i < maxMenuEle; ++i)
+				if (ImGui::Selectable(fileMenu[i].c_str()))
+					selection = fileMenu[i];
+			ImGui::EndPopup();
+		}
+
+		if (selection == "Save" || mSaveKeyPressed)
 		{
 			if (mCurrFileSaved)
 			{
 				if (!mCurrFilePathName.empty())
 					ChunkLoader::GetInstance()->SaveChunk(mCurrFilePathName);
 				else
-					SDL_Log("Saved file path doesn't exist but trying to access it");
+					LogString("Saved file path doesn't exist but trying to access it");
 			}
 			else
 			{
@@ -111,7 +121,7 @@ void EditorLayer::DisplayFileMenu()
 				ImGuiFileDialog::Instance()->OpenDialog("SaveChunkFile", "Save", CHUNK_FORMAT, config);
 			}
 		}
-		if (ImGui::Button("Save As") || mSaveAsKeyPressed)
+		else if (selection == "Save As" || mSaveAsKeyPressed)
 		{
 			IGFD::FileDialogConfig config;
 			config.path = ".";
@@ -119,13 +129,15 @@ void EditorLayer::DisplayFileMenu()
 			config.flags = ImGuiFileDialogFlags_ConfirmOverwrite;
 			ImGuiFileDialog::Instance()->OpenDialog("SaveChunkFile", "Save As", CHUNK_FORMAT, config);
 		}
-		if (ImGui::Button("Open") || mOpenKeyPressed)
+		else if (selection == "Open" || mOpenKeyPressed)
 		{
 			IGFD::FileDialogConfig config;
 			config.path = ".";
 			config.countSelectionMax = 1;
 			ImGuiFileDialog::Instance()->OpenDialog("OpenChunkFile", "Open Chunk", CHUNK_FORMAT, config);
 		}
+
+
 		if (ImGui::Button("New Game Object"))
 		{
 			int size = EditorLayer::GetInstance()->GetEditorElements().size();
@@ -146,10 +158,10 @@ void EditorLayer::DisplayFileMenu()
 					CCore::GetInstance()->SetIsUpdatingGame(true);
 				}
 				else
-					SDL_Log("Saved file path doesn't exist but trying to access it");
+					LogString("Saved file path doesn't exist but trying to access it");
 			}
 			else
-				SDL_Log("Chunk file must be saved before playing");
+				LogString("Chunk file must be saved before playing");
 		}
 		if (ImGui::Button("Stop"))
 		{
@@ -201,12 +213,12 @@ void EditorLayer::DisplayHierarchyMenu()
 	if (ImGui::BeginListBox("Hierarchy", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
 	{
 		std::string* actorNames = new std::string[mEditorElements.size()];
-		for (Uint32 i = 0; i < mEditorElements.size(); ++i)
+		for (UINT i = 0; i < mEditorElements.size(); ++i)
 		{
 			actorNames[i] = ToString(mEditorElements[i]->GetName());
 		}
 		bool* selection = new bool[mEditorElements.size()];
-		for (Uint32 i = 0; i < mEditorElements.size(); ++i)
+		for (UINT i = 0; i < mEditorElements.size(); ++i)
 		{
 			if (ImGui::Selectable(actorNames[i].c_str(), mActorNameIdx == i))
 			{
@@ -231,8 +243,8 @@ void EditorLayer::ApplyCommandHistory()
 
 void EditorLayer::ShutDown()
 {
-	ImGui_ImplSDLRenderer2_Shutdown();
-	ImGui_ImplSDL2_Shutdown();
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 }
 

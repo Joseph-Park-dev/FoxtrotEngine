@@ -1,9 +1,9 @@
-#include <SDL2/SDL.h>
 #include <vector>
 #include "ParticleSystem.h"
 #include "Camera2D.h"
 #include "Random.h"
 #include "Math.h"
+#include "FoxtrotRenderer.h"
 
 // InitPos : WorldPosition, not ScreenPosition
 void ParticleSystem::CreateExplosion(Vector2 initPos, float initSpeed, int duration, float gravity, float angle)
@@ -40,11 +40,11 @@ void ParticleSystem::CreateExplosion(Vector2 initPos, float initSpeed, int durat
 
 void ParticleSystem::Update(float deltaTime)
 {
-	for (Uint32 i = 0; i < explosions.size(); ++i)
+	for (UINT i = 0; i < explosions.size(); ++i)
 	{
 		if (explosions[i]->isActive)
 		{
-			for (Uint32 j = 0; j < explosions[i]->activeCount; ++j)
+			for (UINT j = 0; j < explosions[i]->activeCount; ++j)
 			{
 				if (explosions[i]->particles[j].isActive)
 				{
@@ -63,7 +63,7 @@ void ParticleSystem::Update(float deltaTime)
 			}
 		}
 	}
-	for (Uint32 i = 0; i < explosions.size(); ++i)
+	for (UINT i = 0; i < explosions.size(); ++i)
 	{
 		if (!explosions[i]->isActive)
 		{
@@ -99,9 +99,9 @@ void ParticleSystem::RemoveFinishedEffect(FTParticleExplosion* effect)
 	}
 }
 
-void ParticleSystem::Render(SDL_Renderer* renderer)
+void ParticleSystem::Render(FoxtrotRenderer* renderer)
 {
-	for (Uint32 i = 0; i < explosions.size(); ++i)
+	for (UINT i = 0; i < explosions.size(); ++i)
 	{
 		if (explosions[i]->isActive)
 		{
@@ -111,22 +111,32 @@ void ParticleSystem::Render(SDL_Renderer* renderer)
 				{
 					explosions[i]->particles[j].pos =
 						Camera2D::GetInstance()->ConvertWorldPosToScreen(explosions[i]->particles[j].pos);
-					SDL_SetRenderDrawColor
-					(
-						renderer,
-						255, 0, 0, 255
-					);
+					/*
+					
+						Alternative to
+						SDL_SetRenderDrawColor
+						(
+							renderer,
+							255, 0, 0, 255
+						);
+					
+					*/
+					
+					/*
 
-					SDL_Rect rect = {};
-					rect.x = explosions[i]->particles[j].pos.x;
-					rect.y = explosions[i]->particles[j].pos.y;
-					rect.w = 10;
-					rect.h = 10;
-					SDL_RenderDrawRect
-					(
-						renderer,
-						&rect
-					);
+						Alternative to
+						SDL_Rect rect = {};
+						rect.x = explosions[i]->particles[j].pos.x;
+						rect.y = explosions[i]->particles[j].pos.y;
+						rect.w = 10;
+						rect.h = 10;
+						SDL_RenderDrawRect
+						(
+							renderer,
+							&rect
+						);
+
+					*/
 				}
 			}
 		}
@@ -141,7 +151,7 @@ ParticleSystem::~ParticleSystem()
 {
 	if (0 < explosions.size())
 	{
-		for (Uint32 i = 0; i < explosions.size(); ++i)
+		for (UINT i = 0; i < explosions.size(); ++i)
 		{
 			delete explosions[i];
 		}

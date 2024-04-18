@@ -1,19 +1,17 @@
 #pragma once
-#include <SDL2/SDL.h>
-
 #include "Component.h"
 #include "TemplateFunctions.h"
 
-class Texture;
+class FTTexture;
 
 class SpriteComponent :public Component
 {
 public:
-	virtual void SetTexture(Texture* texture);
+	virtual void SetTexture(FTTexture* texture);
 
 public:
 	int			 GetTexWidth() const { return mTextWidth; }
-	SDL_Rect*	 GetRect() const { return rect; }
+	Bounds*		 GetRect() const { return rect; }
 	int			 GetTexHeight() const { return mTexHeight; }
 	std::wstring GetName() const override
 	{
@@ -25,23 +23,21 @@ public:
 	CLONE(SpriteComponent);
 
 protected:
-	Texture* GetTexture() { return ptTexture; }
+	FTTexture* GetTexture() { return ptTexture; }
 
 public:
 	virtual void Update(float deltaTime) override;
-	virtual void Render(SDL_Renderer* renderer) override;
+	virtual void Render(FoxtrotRenderer* renderer) override;
 
 public:
 	SpriteComponent(class Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
 	~SpriteComponent();
 
 private:
-	Texture*	ptTexture;
-	SDL_Rect*	rect;
+	FTTexture*	ptTexture;
+	Bounds*		rect;
 	int			mTextWidth;
 	int			mTexHeight;
-
-	SDL_Surface* mGameviewSurf;
 
 #ifdef _DEBUG
 //This section will be omitted from Release mode!
@@ -50,7 +46,7 @@ public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
 	virtual void LoadProperties(std::ifstream& ifs) override;
 
-	void BlitToGameview(SDL_Rect* blitArea, Vector2 scale);
-	void BlitToGameviewEx(SDL_Rect* blitArea, Vector2 scale);
+	void BlitToGameview	 (Bounds* blitArea, Vector2 scale);
+	void BlitToGameviewEx(Bounds* blitArea, Vector2 scale);
 #endif // DEBUG
 };

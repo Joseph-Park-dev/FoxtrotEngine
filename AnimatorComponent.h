@@ -7,6 +7,8 @@
 #include "TileMapComponent.h"
 #include "TemplateFunctions.h"
 
+class FoxtrotRenderer;
+
 class AnimatorComponent :
     public TileMapComponent
 {
@@ -31,7 +33,7 @@ public:
 
 public:
     void LateUpdate(float deltaTime) override;
-    virtual void Render(SDL_Renderer* renderer) override;
+    virtual void Render(FoxtrotRenderer* renderer) override;
 
 public:
     AnimatorComponent(class Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);

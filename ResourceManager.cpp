@@ -1,55 +1,61 @@
 #include <unordered_map>
 
 #include "ResourceManager.h"
-#include "Texture.h"
+#include "FTTexture.h"
 #include "CCore.h"
 
 void ResourceManager::LoadTexture(const std::wstring& strKey, const std::wstring& strRelativePath)
 {
-	Texture* ptTex = FindTexture(strKey);
+	FTTexture* ptTex = FindTexture(strKey);
 	if (ptTex != nullptr)
 	{
-		SDL_Log("Warning : Texture %ls is already loaded from %ls", strKey.c_str(), strRelativePath.c_str());
+		printf("Warning : FTTexture %ls is already loaded from %ls", strKey.c_str(), strRelativePath.c_str());
 	}
 	else
 	{
-		SDL_Log("Message: Loading Texture %ls from %ls...", strKey.c_str(), strRelativePath.c_str());
-		ptTex = new Texture;
+		printf("Message: Loading FTTexture %ls from %ls...", strKey.c_str(), strRelativePath.c_str());
+		ptTex = new FTTexture;
 		ptTex->SetKey(strKey);
 		ptTex->SetRelativePath(strRelativePath);
-		SDL_Surface* surf = ptTex->LoadSurface();
-		ptTex->CreateTextureFromSurface(surf);
+		/*
+			TEXTURE
+			Load CODE HERE
+			(Alternative to 
+			SDL_Surface* surf = ptTex->LoadSurface();)
+		*/
+		
+		//ptTex->CreateTextureFromSurface(surf);
 		mapTextures.insert(std::make_pair(strKey, ptTex));
 	}
 }
 
-Texture* ResourceManager::GetLoadedTexture(const std::wstring& strKey)
+FTTexture* ResourceManager::GetLoadedTexture(const std::wstring& strKey)
 {
-	Texture* ptTex = FindTexture(strKey);
+	FTTexture* ptTex = FindTexture(strKey);
 	if (ptTex != nullptr)
 	{
 		return ptTex;
 	}
 	else
 	{
-		SDL_Log("Error: Unable to find Texture with strKey; %ls", strKey.c_str());
+		printf("Error: Unable to find FTTexture with strKey; %ls", strKey.c_str());
 		return nullptr;
 	}
 }
 
-Texture* ResourceManager::CreateTexture(const std::wstring& strKey, Uint32 width, Uint32 height)
+FTTexture* ResourceManager::CreateTexture(const std::wstring& strKey, UINT width, UINT height)
 {
-	Texture* ptTex = FindTexture(strKey);
+	FTTexture* ptTex = FindTexture(strKey);
 	if (ptTex != nullptr)
 		return ptTex;
 	else
 	{
-		SDL_Log("Failed to create texture %ls", strKey.c_str());
+		printf("Failed to create texture %ls", strKey.c_str());
 		return nullptr;
 	}
 }
 
-Texture* ResourceManager::FindTexture(const std::wstring& strKey)
+FTTexture* ResourceManager::FindTexture(const std::wstring& strKey)
 {
 	auto iter = mapTextures.find(strKey);
 	if (iter != mapTextures.end())
@@ -58,14 +64,14 @@ Texture* ResourceManager::FindTexture(const std::wstring& strKey)
 	}
 	else
 	{
-		SDL_Log("Error: Cannot find texture %ls", strKey.c_str());
+		printf("Error: Cannot find texture %ls", strKey.c_str());
 		return nullptr;
 	}
 }
 
 ResourceManager::~ResourceManager()
 {
-	std::unordered_map<std::wstring, Texture*>::iterator iter = mapTextures.begin();
+	std::unordered_map<std::wstring, FTTexture*>::iterator iter = mapTextures.begin();
 	for (; iter != mapTextures.end(); iter++)
 	{
 		delete iter->second;

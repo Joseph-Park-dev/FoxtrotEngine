@@ -12,10 +12,10 @@ class TileMapComponent :
 {
 public:
     void InitializeTileMap(const std::wstring& fileName, int tileSizeX, int tileSizeY);
-    void Render(SDL_Renderer* renderer);
-    void RenderEX(SDL_Renderer* renderer);
-    void DrawIndividualTileOnPos(SDL_Renderer* renderer, Vector2 worldPos, Tile* tile);
-    void DrawIndividualTileOnPosEX(SDL_Renderer* renderer, Vector2 worldPos, Tile* tile);
+    void Render(FoxtrotRenderer* renderer);
+    void RenderEX(FoxtrotRenderer* renderer);
+    //void DrawIndividualTileOnPos(FoxtrotRenderer* renderer, Vector2 worldPos, Tile* tile);
+    //void DrawIndividualTileOnPosEX(FoxtrotRenderer* renderer, Vector2 worldPos, Tile* tile);
 
 public:
     Tile**       GetCurrentTileMap() { return mCurrentTileMap; }
@@ -41,15 +41,15 @@ private:
     void InitializeTile(Tile* tile);
     void ReadCSV(const std::wstring& fileName, int tileSizeX, int tileSizeY);
 
-    void SetScreenRect(Vector2 worldPos, Tile* tile);
+    //void SetScreenRect(Vector2 worldPos, Tile* tile);
 
 #ifdef _DEBUG
 public:
     virtual void SaveProperties(std::ofstream& ofs) override;
     virtual void LoadProperties(std::ifstream& ifs) override;
 
-    void BlitToGameviewEx(Vector2 wPos, Tile* tile);
-    void BlitToGameview(Vector2 worldPos, Tile* tile);
+    //void BlitToGameviewEx(Vector2 wPos, Tile* tile);
+    //void BlitToGameview(Vector2 worldPos, Tile* tile);
 
 private:
     void SetScreenRectEditorView(Vector2 editorPos, Tile* tile);

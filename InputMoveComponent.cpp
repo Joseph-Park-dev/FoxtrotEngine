@@ -34,27 +34,27 @@ void InputMoveComponent::Update(float deltaTime)
 
 void InputMoveComponent::Move()
 {
-	//float forwardSpeed = GetForwardSpeed();
-	if (KEY_TAP(KEY::RIGHT))
-	{
-		if (GetPrevMovingState() != MOVING_RIGHT)
-			SetMovingState(MOVING_RIGHT);
-	}
-	if (KEY_TAP(KEY::LEFT))
-	{
-		if (GetPrevMovingState() != MOVING_LEFT)
-			SetMovingState(MOVING_LEFT);
-	}
-	if (KEY_TAP(KEY::UP))
-	{
-		if (GetPrevMovingState() != MOVING_UP)
-			SetMovingState(MOVING_UP);
-	}
-	if (KEY_TAP(KEY::DOWN))
-	{
-		if (GetPrevMovingState() != MOVING_DOWN)
-			SetMovingState(MOVING_DOWN);
-	}
+	////float forwardSpeed = GetForwardSpeed();
+	//if (KEY_TAP(KEY::RIGHT))
+	//{
+	//	if (GetPrevMovingState() != MOVING_RIGHT)
+	//		SetMovingState(MOVING_RIGHT);
+	//}
+	//if (KEY_TAP(KEY::LEFT))
+	//{
+	//	if (GetPrevMovingState() != MOVING_LEFT)
+	//		SetMovingState(MOVING_LEFT);
+	//}
+	//if (KEY_TAP(KEY::UP))
+	//{
+	//	if (GetPrevMovingState() != MOVING_UP)
+	//		SetMovingState(MOVING_UP);
+	//}
+	//if (KEY_TAP(KEY::DOWN))
+	//{
+	//	if (GetPrevMovingState() != MOVING_DOWN)
+	//		SetMovingState(MOVING_DOWN);
+	//}
 }
 
 void InputMoveComponent::LateUpdate(float deltaTime)

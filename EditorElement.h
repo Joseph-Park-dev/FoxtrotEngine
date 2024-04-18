@@ -24,8 +24,8 @@ public:
 	virtual void EditorLateUpdateActor();
 			void UIUpdate();
 
-			void Render(SDL_Renderer* renderer);
-			void UIRender(SDL_Renderer* renderer);
+			void Render(FoxtrotRenderer* renderer);
+			void UIRender(FoxtrotRenderer* renderer);
 
 public:
 	EditorElement(Scene* scene);

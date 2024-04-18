@@ -1,6 +1,7 @@
 #pragma once
-#include <SDL2/SDL.h>
 #include <fstream>
+
+class FoxtrotRenderer;
 
 #define DEFAULT_DRAWORDER 100
 #define DEFAULT_UPDATEORDER 100
@@ -31,15 +32,15 @@ public:
 
 public:
 	virtual void ProcessInput(class KeyInputManager* keyInputManager) {};
-	virtual void Update(float deltaTime) {};
-	virtual void LateUpdate(float deltaTime) {};
-	virtual void Render(SDL_Renderer* renderer) {};
+	virtual void Update		 (float deltaTime) {};
+	virtual void LateUpdate	 (float deltaTime) {};
+	virtual void Render		 (FoxtrotRenderer* renderer) {};
 
 public:
-	virtual std::wstring GetName() const = 0;
-			Actor* GetOwner() const { return mOwner; }
-	const	int	   GetUpdateOrder() const { return mUpdateOrder; }
-	const	int	   GetDrawOrder() const { return mDrawOrder; }
+	virtual std::wstring GetName()		  const = 0;
+			Actor*		 GetOwner()		  const { return mOwner; }
+	const	int			 GetUpdateOrder() const { return mUpdateOrder; }
+	const	int			 GetDrawOrder()	  const { return mDrawOrder; }
 
 	virtual Component* Clone() { return nullptr; }
 
@@ -75,6 +76,6 @@ public:
 public:
 	virtual void EditorUpdate(float deltaTime){};
 	virtual void EditorLateUpdate(float deltaTime) {};
-	virtual void EditorRender(SDL_Renderer* renderer) {};
+	virtual void EditorRender(FoxtrotRenderer* renderer) {};
 	virtual void EditorUIUpdate() {};
 };

@@ -1,6 +1,7 @@
 #include "SceneManager.h"
 #include "Scene_Start.h"
 #include "Scene_Tool.h"
+#include "FoxtrotRenderer.h"
 
 SceneManager::SceneManager()
 	: mArrScene{}
@@ -20,13 +21,13 @@ SceneManager::~SceneManager()
 
 void SceneManager::Init()
 {
-	mArrScene[(Uint32)SCENE_TYPE::START] = new Scene_Start;
-	mArrScene[(Uint32)SCENE_TYPE::START]->SetName(L"Start Scene");
+	mArrScene[(UINT)SCENE_TYPE::START] = new Scene_Start;
+	mArrScene[(UINT)SCENE_TYPE::START]->SetName(L"Start Scene");
 
-	mArrScene[(Uint32)SCENE_TYPE::TOOL] = new Scene_Tool;
-	mArrScene[(Uint32)SCENE_TYPE::TOOL]->SetName(L"Tool Scene");
+	mArrScene[(UINT)SCENE_TYPE::TOOL] = new Scene_Tool;
+	mArrScene[(UINT)SCENE_TYPE::TOOL]->SetName(L"Tool Scene");
 
-	mPCurrScene = mArrScene[(Uint32)SCENE_TYPE::START];
+	mPCurrScene = mArrScene[(UINT)SCENE_TYPE::START];
 	mPCurrScene->Enter();
 }
 
@@ -45,7 +46,7 @@ void SceneManager::Lateupdate(float deltaTime)
 	mPCurrScene->LateUpdate(deltaTime);
 }
 
-void SceneManager::Render(SDL_Renderer* renderer)
+void SceneManager::Render(FoxtrotRenderer* renderer)
 {
 	mPCurrScene->Render(renderer);
 }
@@ -58,7 +59,7 @@ void SceneManager::ProcessEvent()
 void SceneManager::SwitchScene(SCENE_TYPE sceneType)
 {
 	mPCurrScene->Exit();
-	mPCurrScene = mArrScene[(Uint32)sceneType];
+	mPCurrScene = mArrScene[(UINT)sceneType];
 	mPCurrScene->Enter();
 }
 

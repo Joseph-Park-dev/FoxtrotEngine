@@ -8,7 +8,7 @@
 #include "Actor.h"
 #include "Math.h"
 #include "Tile.h"
-#include "Texture.h"
+#include "FTTexture.h"
 #include "Camera2D.h"
 #include "Transform.h"
 #include "CCore.h"
@@ -82,7 +82,7 @@ void TileMapComponent::InitializeTile(Tile* tile)
     srcColumn = tile->GetTileNum() % columnCount;
     srcRow = tile->GetTileNum() / columnCount;
 
-    SDL_Rect srcRect = {};
+    Bounds srcRect = {};
     srcRect.x = srcColumn * tileSizeX;
     srcRect.y = srcRow * tileSizeY;
     srcRect.w = tileSizeX;
@@ -90,7 +90,7 @@ void TileMapComponent::InitializeTile(Tile* tile)
     tile->SetMapRect(srcRect);
 }
 
-void TileMapComponent::Render(SDL_Renderer* renderer)
+void TileMapComponent::Render(FoxtrotRenderer* renderer)
 {
     for (int y = 0; y < mTileCountY; y++)
     {
@@ -102,12 +102,16 @@ void TileMapComponent::Render(SDL_Renderer* renderer)
             Vector2 pivotPos = GetOwner()->GetTransform()->GetWorldPosition();
             Vector2 pos =
                 Vector2(pivotPos.x + tile->GetWidth() * tile->GetIndexX(), pivotPos.y + tile->GetHeight() * tile->GetIndexY());
+            /*
+            * 
+            * ALTERNATIVE FOR
             DrawIndividualTileOnPos(renderer, pos, tile);
+            */
         }
     }
 }
 
-void TileMapComponent::RenderEX(SDL_Renderer* renderer)
+void TileMapComponent::RenderEX(FoxtrotRenderer* renderer)
 {
     for (int y = 0; y < mTileCountY; y++)
     {
@@ -119,115 +123,118 @@ void TileMapComponent::RenderEX(SDL_Renderer* renderer)
             Vector2 pivotPos = GetOwner()->GetTransform()->GetWorldPosition();
             Vector2 pos =
                 Vector2(pivotPos.x + tile->GetWidth() * tile->GetIndexX(), pivotPos.y + tile->GetHeight() * tile->GetIndexY());
+            /*
+            * ALTERNATIVE FOR
             DrawIndividualTileOnPosEX(renderer, pos, tile);
+            */
         }
     }
 }
 
-#ifdef _DEBUG
-void TileMapComponent::DrawIndividualTileOnPos(
-    SDL_Renderer* renderer, Vector2 worldPos, Tile* tile)
-{
-    SetScreenRectEditorView(worldPos, tile);
-    if (GetTexture())
-    {
-        SDL_RenderCopy(
-            renderer,
-            GetTexture()->GetEditorTexture(),
-            tile->GetMapRect(),
-            tile->GetScreenRect()
-        );
-    }
-    // Reset ScreenPos to re-calculate if tile's in render area
-    tile->SetPosOnScreen(worldPos);
-    if (Camera2D::GetInstance()->IsInRenderedArea(tile))
-    {
-        BlitToGameview(worldPos, tile);
-    }
-}
-
-void TileMapComponent::BlitToGameview(Vector2 worldPos, Tile* tile)
-{
-    SDL_Renderer* gameviewRend = CCore::GetInstance()->GetGameRenderer();
-    // 1) Get relative position from mLookAtPos
-    SDL_Rect* renderArea = Camera2D::GetInstance()->GetRenderArea();
-    Vector2 renderTopLeft = Vector2(renderArea->x, renderArea->y);
-    Vector2 relativePos = worldPos - renderTopLeft;
-
-    SDL_Rect gameViewRect = {};
-    gameViewRect.x = static_cast<int>(relativePos.x - tile->GetWidth() * 0.5f);
-    gameViewRect.y = static_cast<int>(relativePos.y - tile->GetHeight() * 0.5f);
-    gameViewRect.w = tile->GetWidth();
-    gameViewRect.h = tile->GetHeight();
-    tile->SetScreenRect(gameViewRect);
-
-    if (GetTexture()->GetGameviewTexture())
-    {
-        SDL_RenderCopy(
-            gameviewRend,
-            GetTexture()->GetGameviewTexture(),
-            tile->GetMapRect(),
-            tile->GetScreenRect()
-        );
-    }
-}
-
-void TileMapComponent::DrawIndividualTileOnPosEX(
-    SDL_Renderer* renderer, Vector2 worldPos, Tile* tile)
-{
-    SetScreenRectEditorView(worldPos, tile);
-    if (GetTexture())
-    {
-        SDL_RenderCopyEx(
-            renderer,
-            GetTexture()->GetEditorTexture(),
-            tile->GetMapRect(),
-            tile->GetScreenRect(),
-            -Math::ToDegrees(GetOwner()->GetTransform()->GetRotation()),
-            nullptr,
-            SDL_FLIP_NONE
-        );
-    }
-    tile->SetPosOnScreen(worldPos);
-    if (Camera2D::GetInstance()->IsInRenderedArea(tile))
-    {
-        BlitToGameviewEx(worldPos, tile);
-    }
-}
-
-void TileMapComponent::BlitToGameviewEx(Vector2 wPos, Tile* tile)
-{
-    SDL_Renderer* gameviewRend = CCore::GetInstance()->GetGameRenderer();
-    // 1) Get relative position from mLookAtPos
-    SDL_Rect* renderArea = Camera2D::GetInstance()->GetRenderArea();
-    Vector2 renderCenter = Vector2(renderArea->x, renderArea->y);;
-    Vector2 relativePos = wPos - renderCenter;
-
-    SDL_Rect gameViewRect = {};
-    gameViewRect.x = relativePos.x - tile->GetWidth() * 0.5f;
-    gameViewRect.y = relativePos.y - tile->GetHeight() * 0.5f;
-    gameViewRect.w = tile->GetWidth();
-    gameViewRect.h = tile->GetHeight();
-    tile->SetScreenRect(gameViewRect);
-
-    if (GetTexture()->GetGameviewTexture())
-    {
-        SDL_RenderCopyEx(
-            gameviewRend,
-            GetTexture()->GetGameviewTexture(),
-            tile->GetMapRect(),
-            tile->GetScreenRect(),
-            -Math::ToDegrees(GetOwner()->GetTransform()->GetRotation()),
-            nullptr,
-            SDL_FLIP_NONE
-        );
-    }
-}
+//#ifdef _DEBUG
+//void TileMapComponent::DrawIndividualTileOnPos(
+//    FoxtrotRenderer* renderer, Vector2 worldPos, Tile* tile)
+//{
+//    SetScreenRectEditorView(worldPos, tile);
+//    if (GetTexture())
+//    {
+//        SDL_RenderCopy(
+//            renderer,
+//            GetTexture()->GetEditorTexture(),
+//            tile->GetMapRect(),
+//            tile->GetScreenRect()
+//        );
+//    }
+//    // Reset ScreenPos to re-calculate if tile's in render area
+//    tile->SetPosOnScreen(worldPos);
+//    if (Camera2D::GetInstance()->IsInRenderedArea(tile))
+//    {
+//        BlitToGameview(worldPos, tile);
+//    }
+//}
+//
+//void TileMapComponent::BlitToGameview(Vector2 worldPos, Tile* tile)
+//{
+//    FoxtrotRenderer* gameviewRend = CCore::GetInstance()->GetGameRenderer();
+//    // 1) Get relative position from mLookAtPos
+//    SDL_Rect* renderArea = Camera2D::GetInstance()->GetRenderArea();
+//    Vector2 renderTopLeft = Vector2(renderArea->x, renderArea->y);
+//    Vector2 relativePos = worldPos - renderTopLeft;
+//
+//    SDL_Rect gameViewRect = {};
+//    gameViewRect.x = static_cast<int>(relativePos.x - tile->GetWidth() * 0.5f);
+//    gameViewRect.y = static_cast<int>(relativePos.y - tile->GetHeight() * 0.5f);
+//    gameViewRect.w = tile->GetWidth();
+//    gameViewRect.h = tile->GetHeight();
+//    tile->SetScreenRect(gameViewRect);
+//
+//    if (GetTexture()->GetGameviewTexture())
+//    {
+//        SDL_RenderCopy(
+//            gameviewRend,
+//            GetTexture()->GetGameviewTexture(),
+//            tile->GetMapRect(),
+//            tile->GetScreenRect()
+//        );
+//    }
+//}
+//
+//void TileMapComponent::DrawIndividualTileOnPosEX(
+//    FoxtrotRenderer* renderer, Vector2 worldPos, Tile* tile)
+//{
+//    SetScreenRectEditorView(worldPos, tile);
+//    if (GetTexture())
+//    {
+//        SDL_RenderCopyEx(
+//            renderer,
+//            GetTexture()->GetEditorTexture(),
+//            tile->GetMapRect(),
+//            tile->GetScreenRect(),
+//            -Math::ToDegrees(GetOwner()->GetTransform()->GetRotation()),
+//            nullptr,
+//            SDL_FLIP_NONE
+//        );
+//    }
+//    tile->SetPosOnScreen(worldPos);
+//    if (Camera2D::GetInstance()->IsInRenderedArea(tile))
+//    {
+//        BlitToGameviewEx(worldPos, tile);
+//    }
+//}
+//
+//void TileMapComponent::BlitToGameviewEx(Vector2 wPos, Tile* tile)
+//{
+//    FoxtrotRenderer* gameviewRend = CCore::GetInstance()->GetGameRenderer();
+//    // 1) Get relative position from mLookAtPos
+//    SDL_Rect* renderArea = Camera2D::GetInstance()->GetRenderArea();
+//    Vector2 renderCenter = Vector2(renderArea->x, renderArea->y);;
+//    Vector2 relativePos = wPos - renderCenter;
+//
+//    SDL_Rect gameViewRect = {};
+//    gameViewRect.x = relativePos.x - tile->GetWidth() * 0.5f;
+//    gameViewRect.y = relativePos.y - tile->GetHeight() * 0.5f;
+//    gameViewRect.w = tile->GetWidth();
+//    gameViewRect.h = tile->GetHeight();
+//    tile->SetScreenRect(gameViewRect);
+//
+//    if (GetTexture()->GetGameviewTexture())
+//    {
+//        SDL_RenderCopyEx(
+//            gameviewRend,
+//            GetTexture()->GetGameviewTexture(),
+//            tile->GetMapRect(),
+//            tile->GetScreenRect(),
+//            -Math::ToDegrees(GetOwner()->GetTransform()->GetRotation()),
+//            nullptr,
+//            SDL_FLIP_NONE
+//        );
+//    }
+//}
 
 void TileMapComponent::SetScreenRectEditorView(Vector2 worldPos, Tile* tile)
 {
     Vector2 editorPos = EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(worldPos);
-    SDL_Rect dstRect = {};
+    Bounds dstRect = {};
     dstRect.w = tile->GetWidth() * (1 - EditorCamera2D::GetInstance()->GetZoomValue());
     dstRect.h = tile->GetHeight() * (1 - EditorCamera2D::GetInstance()->GetZoomValue());
     dstRect.x = static_cast<int>(editorPos.x - (float)dstRect.w / 2);
@@ -245,54 +252,54 @@ void TileMapComponent::LoadProperties(std::ifstream& ifs)
     SpriteComponent::LoadProperties(ifs);
 }
 
-#else
-void TileMapComponent::DrawIndividualTileOnPos(
-    SDL_Renderer* renderer, Vector2 worldPos, Tile* tile)
-{
-    SetScreenRect(worldPos, tile);
-    if (GetTexture())
-    {
-        SDL_RenderCopy(
-            renderer,
-            GetTexture()->GetGameviewTexture(),
-            tile->GetMapRect(),
-            tile->GetScreenRect()
-        );
-    }
-    // Reset ScreenPos to re-calculate if tile's in render area
-    tile->SetPosOnScreen(worldPos);
-}
-
-void TileMapComponent::DrawIndividualTileOnPosEX(
-    SDL_Renderer* renderer, Vector2 worldPos, Tile* tile)
-{
-    SetScreenRect(worldPos, tile);
-    if (GetTexture())
-    {
-        SDL_RenderCopyEx(
-            renderer,
-            GetTexture()->GetGameviewTexture(),
-            tile->GetMapRect(),
-            tile->GetScreenRect(),
-            -Math::ToDegrees(GetOwner()->GetTransform()->GetRotation()),
-            nullptr,
-            SDL_FLIP_NONE
-        );
-    }
-    tile->SetPosOnScreen(worldPos);
-}
-
-void TileMapComponent::SetScreenRect(Vector2 worldPos, Tile* tile)
-{
-    Vector2 screenPos = Camera2D::GetInstance()->ConvertWorldPosToScreen(worldPos);
-    SDL_Rect dstRect = {};
-    dstRect.w = tile->GetWidth();
-    dstRect.h = tile->GetHeight();
-    dstRect.x = static_cast<int>(screenPos.x - (float)dstRect.w / 2);
-    dstRect.y = static_cast<int>(screenPos.y - (float)dstRect.h / 2);
-    tile->SetScreenRect(dstRect);
-}
-#endif // _DEBUG
+//#else
+//void TileMapComponent::DrawIndividualTileOnPos(
+//    FoxtrotRenderer* renderer, Vector2 worldPos, Tile* tile)
+//{
+//    SetScreenRect(worldPos, tile);
+//    if (GetTexture())
+//    {
+//        SDL_RenderCopy(
+//            renderer,
+//            GetTexture()->GetGameviewTexture(),
+//            tile->GetMapRect(),
+//            tile->GetScreenRect()
+//        );
+//    }
+//    // Reset ScreenPos to re-calculate if tile's in render area
+//    tile->SetPosOnScreen(worldPos);
+//}
+//
+//void TileMapComponent::DrawIndividualTileOnPosEX(
+//    FoxtrotRenderer* renderer, Vector2 worldPos, Tile* tile)
+//{
+//    SetScreenRect(worldPos, tile);
+//    if (GetTexture())
+//    {
+//        SDL_RenderCopyEx(
+//            renderer,
+//            GetTexture()->GetGameviewTexture(),
+//            tile->GetMapRect(),
+//            tile->GetScreenRect(),
+//            -Math::ToDegrees(GetOwner()->GetTransform()->GetRotation()),
+//            nullptr,
+//            SDL_FLIP_NONE
+//        );
+//    }
+//    tile->SetPosOnScreen(worldPos);
+//}
+//
+//void TileMapComponent::SetScreenRect(Vector2 worldPos, Tile* tile)
+//{
+//    Vector2 screenPos = Camera2D::GetInstance()->ConvertWorldPosToScreen(worldPos);
+//    SDL_Rect dstRect = {};
+//    dstRect.w = tile->GetWidth();
+//    dstRect.h = tile->GetHeight();
+//    dstRect.x = static_cast<int>(screenPos.x - (float)dstRect.w / 2);
+//    dstRect.y = static_cast<int>(screenPos.y - (float)dstRect.h / 2);
+//    tile->SetScreenRect(dstRect);
+//}
+//#endif // _DEBUG
 
 TileMapComponent::TileMapComponent(Actor* owner, int drawOrder, int UpdateOrder)
     : SpriteComponent(owner, drawOrder)

@@ -1,6 +1,5 @@
 #pragma once
 #include "SingletonMacro.h"
-#include <SDL2/SDL.h>
 
 class Scene;
 enum class SCENE_TYPE;
@@ -22,7 +21,7 @@ public:
 	void	ProcessInput(class KeyInputManager* keyInputManager);
 	void	Update(float deltaTime);
 	void	Lateupdate(float deltaTime);
-	void	Render(SDL_Renderer* renderer);
+	void	Render(FoxtrotRenderer* renderer);
 	void	ProcessEvent();
 
 #ifdef _DEBUG

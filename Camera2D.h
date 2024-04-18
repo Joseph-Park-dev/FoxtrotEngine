@@ -1,9 +1,9 @@
 #pragma once
-#include <SDL2/SDL.h>
 #include <list>
 
 #include "SingletonMacro.h"
 #include "Math.h"
+#include "Bounds.h"
 
 class Actor;
 class SpriteComponent;
@@ -45,7 +45,7 @@ public:
 
 public:
 	const Vector2 GetLookAtPos() const { return mLookAtPos; }
-	SDL_Rect*	  GetRenderArea() { return &mRenderArea; }
+	Bounds*		  GetRenderArea() { return &mRenderArea; }
 	Vector2		  GetScreenCenter() { return mScreenCenter; }
 	int			  GetTargetActorID() { return mTargetActorID; }
 	Vector2		  GetRenderResolution() { return mRenderResolution; }
@@ -73,9 +73,9 @@ private:
 	Vector2		mScreenCenter;
 
 	Vector2		mRenderResolution;
-	SDL_Rect	mRenderArea;
+	Bounds		mRenderArea;
 
-	SDL_Rect	mEffectArea;
+	Bounds		mEffectArea;
 	int			mEffectAlpha;
 	std::list<CamEffect>	  mCamEffect;
 	std::list<CamShakeEffect> mCamShakeEffect;
@@ -89,7 +89,7 @@ public:
 	virtual void Update(float deltaTime);
 
 #ifdef _DEBUG
-	void Render(SDL_Renderer* renderer);
+	//void Render(FoxtrotRenderer* renderer);
 #endif // _DEBUG
 
 protected:

@@ -17,8 +17,8 @@ public:
     // Get world position (anchorpoint at the center)
     Vector2      GetFinalPosition() { return mFinalPosition; }
     Vector2      GetScale()         { return mScale; }
-    CollidedSide GetCollidedSide() { return mCollidedSide; }
-    Uint32       GetID()            { return mID; }
+    CollidedSide GetCollidedSide()  { return mCollidedSide; }
+    uint32_t     GetID()            { return mID; }
     std::wstring GetName() const override
     {
         return L"ColliderComponent";
@@ -38,7 +38,7 @@ public:
     //This can also be used as refreshing method.
     void LateUpdate(float deltaTime)    override;
 #ifdef _DEBUG
-    void Render(SDL_Renderer* renderer) override;
+    void Render(FoxtrotRenderer* renderer) override;
 #endif
 
 public:
@@ -61,9 +61,9 @@ private:
     Vector2       mScale;
     CollidedSide  mCollidedSide;
 
-    static Uint32 g_nextID;
-           Uint32 mID;
-           Uint32 mColliCount;
+    static  uint32_t g_nextID;
+            uint32_t mID;
+            uint32_t mColliCount;
 
 public:
     virtual void SaveProperties(std::ofstream& ofs) override;

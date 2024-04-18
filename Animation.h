@@ -1,14 +1,14 @@
 #pragma once
 #include <vector>
 #include <string>
-#include <SDL2/SDL.h>
 
+#include "TemplateFunctions.h"
 #include "Math.h"
 #include "Tile.h"
 
 class Tile;
 class AnimatorComponent;
-class Texture;
+class FTTexture;
 
 struct AnimationFrame
 {
@@ -26,7 +26,7 @@ public:
 	Tile* GetTile()
 	{
 		if (isFinished)
-			SDL_Log("Reel has finished playing");
+			LogString("Reel has finished playing");
 		return &mReel[mCurrFrame].tile;
 	}
 	std::vector<AnimationFrame>& GetReel(){ return mReel; }

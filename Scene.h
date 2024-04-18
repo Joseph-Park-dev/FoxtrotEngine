@@ -1,8 +1,6 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 
 class Actor;
 enum class ACTOR_GROUP;
@@ -27,9 +25,9 @@ public:
 	const std::wstring&  GetName() { return mSceneName; }
 	std::vector<Actor*>& GetActorGroup(ACTOR_GROUP group)
 	{
-		return mActors[(Uint32)group];
+		return mActors[(size_t)group];
 	};
-	std::vector<Actor*>& GetActorGroup(Uint32 group)
+	std::vector<Actor*>& GetActorGroup(size_t group)
 	{
 		return mActors[group];
 	};
@@ -39,13 +37,13 @@ public:
 	void		 ProcessInput(KeyInputManager* keyInputManager);
 	virtual void Update(float deltaTime);
 	void		 LateUpdate(float deltaTime);
-	void		 Render(SDL_Renderer* renderer);
+	void		 Render(FoxtrotRenderer* renderer);
 	void		 ProcessEvent();
 	void		 DeleteAll();
 
 private:
-	std::vector<Actor*> mActors[(Uint32)ACTOR_GROUP::END];
-	std::vector<Actor*> mPendingActors[(Uint32)ACTOR_GROUP::END];
+	std::vector<Actor*> mActors[(size_t)ACTOR_GROUP::END];
+	std::vector<Actor*> mPendingActors[(size_t)ACTOR_GROUP::END];
 	std::wstring		mSceneName;
 	bool				mIsUpdatingActors;
 

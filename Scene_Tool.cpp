@@ -50,7 +50,7 @@ void Scene_Tool::LoadData()
 	//};
 	//bg->SetBGTextures(bgTexs);
 	//bg->SetScrollSpeed(-200.0f);
-	//Texture* bgTexs = nullptr;
+	//FTTexture* bgTexs = nullptr;
 	//bgTexs = {
 	//	ResourceManager::GetInstance()->GetLoadedTexture(L"tex01")
 	//};

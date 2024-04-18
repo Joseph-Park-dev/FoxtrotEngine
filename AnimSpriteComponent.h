@@ -7,7 +7,7 @@
 class AnimSpriteComponent :public SpriteComponent
 {
 public:
-	void SetAnimTextures(const std::vector<Texture*>& textures);
+	void SetAnimTextures(const std::vector<FTTexture*>& textures);
 	
 public:
 	float		 GetAnimFPS() const { return mAnimFPS; }
@@ -26,7 +26,7 @@ public:
 	AnimSpriteComponent(class Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
 
 private:
-	std::vector<Texture*> mAnimTextures;
+	std::vector<FTTexture*> mAnimTextures;
 	float				   mCurrFrame;
 	float				   mAnimFPS;
 };

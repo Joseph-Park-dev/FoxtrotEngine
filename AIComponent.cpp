@@ -26,7 +26,7 @@ void AIComponent::ChangeState(AISTATE_TYPE stateType)
 	mCurrentState = mStateMap[stateType];
 	if(mCurrentState == nullptr)
 	{
-		SDL_Log("Could not find AIState %d in state map", stateType);
+		LogInt("Could not find AIState %d in state map", (int)stateType);
 		mCurrentState = nullptr;
 	}
 	mCurrentState->OnEnter();

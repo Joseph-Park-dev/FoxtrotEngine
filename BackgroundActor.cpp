@@ -1,7 +1,7 @@
 #include "BackgroundActor.h"
 #include "Transform.h"
 #include "TileMapComponent.h"
-#include "Texture.h"
+#include "FTTexture.h"
 #include "ResourceManager.h"
 
 void BackgroundActor::InitializeActor()
@@ -9,7 +9,7 @@ void BackgroundActor::InitializeActor()
 	SetName(L"Background");
 	GetTransform()->SetWorldPosition(Vector2(0.f, 0.f));
 	////bg->SetScreenSize(Vector2(1024.f, 768.f));
-	Texture* bgTexs = nullptr;
+	FTTexture* bgTexs = nullptr;
 	bgTexs = {
 		ResourceManager::GetInstance()->GetLoadedTexture(L"tex01")
 	};
@@ -58,8 +58,8 @@ BackgroundActor::BackgroundActor(Scene* scene)
 	InitializeActor();
 }
 
-void BackgroundActor::RenderActor(SDL_Renderer* renderer)
-{
-	for (TileMapComponent* layer : backgroundLayers)
-		layer->Render(renderer);
-}
+//void BackgroundActor::RenderActor(FoxtrotRenderer* renderer)
+//{
+//	for (TileMapComponent* layer : backgroundLayers)
+//		layer->Render(renderer);
+//}

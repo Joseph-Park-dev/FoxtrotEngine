@@ -1,27 +1,33 @@
 #ifdef _DEBUG
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
-#include <imgui_impl_sdl2.h>
-#include <imgui_impl_sdlrenderer2.h>
+#include <imgui_impl_dx11.h>
+#include <imgui_impl_win32.h>
 
 #include "EditorCamera2D.h"
 #include "EditorLayer.h"
 #include "CCore.h"
 #include "KeyInputManager.h"
 
+/*
 void EditorCamera2D::ProcessInput(SDL_Event* event)
 {
-	if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow))
-	{
-		if (event->type == SDL_MOUSEWHEEL)
+
+	
+	
+		Alternative for
+		if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow))
 		{
-			if (event->wheel.y > 0) // scroll up
-				ZoomOut();
-			else if (event->wheel.y < 0) // scroll down
-				ZoomIn();
+			if (event->type == SDL_MOUSEWHEEL)
+			{
+				if (event->wheel.y > 0) // scroll up
+					ZoomOut();
+				else if (event->wheel.y < 0) // scroll down
+					ZoomIn();
+			}
 		}
-	}
 }
+*/
 
 void EditorCamera2D::Update(float deltaTime)
 {
@@ -50,7 +56,7 @@ void EditorCamera2D::MiddleMouseNavigation()
 
 void EditorCamera2D::CalcCameraDisplay()
 {
-	SDL_Rect* camRenderArea = Camera2D::GetInstance()->GetRenderArea();
+	Bounds* camRenderArea = Camera2D::GetInstance()->GetRenderArea();
 	Vector2 camLookAtPos = Vector2(camRenderArea->x, camRenderArea->y);
 	Vector2 displayPos = EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(camLookAtPos);
 	mCameraDisplay.x = displayPos.x;
@@ -62,41 +68,43 @@ void EditorCamera2D::CalcCameraDisplay()
 void EditorCamera2D::UpdateGrid()
 {
 	if (ImGui::IsKeyPressed(ImGuiKey_G))
-	{
 		mGridIsOn = !mGridIsOn;
-	}
 }
 
-void EditorCamera2D::EditorRender(SDL_Renderer* renderer)
+void EditorCamera2D::EditorRender(FoxtrotRenderer* renderer)
 {
-	SDL_SetRenderDrawColor
-	(
-		renderer,
-		255, 255, 255, 255
-	);
-	SDL_RenderDrawRect(renderer, &mCameraDisplay);
+	/*
+	Alternative for
+		SDL_SetRenderDrawColor
+		(
+			renderer,
+			255, 255, 255, 255
+		);
+		SDL_RenderDrawRect(renderer, &mCameraDisplay);
+	
+	*/
 
-	if(mGridIsOn)
-		RenderGrid(renderer);
+	//if(mGridIsOn)
+	//	RenderGrid(renderer);
 }
-
-void EditorCamera2D::RenderGrid(SDL_Renderer* renderer)
-{
-	mEditorWindowSize = CCore::GetInstance()->GetEditorWindowSize();
-	int gridHCount = mEditorWindowSize.x / mGridCellSize;
-	int gridVCount = mEditorWindowSize.y / mGridCellSize;
-
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 50);
-	for (int x = 0; x < 1 + gridHCount * mGridCellSize;
-		x += mGridCellSize) {
-		SDL_RenderDrawLine(renderer, x, 0, x, mEditorWindowSize.y);
-	}
-
-	for (int y = 0; y < 1 + gridVCount * mGridCellSize;
-		y += mGridCellSize) {
-		SDL_RenderDrawLine(renderer, 0, y, mEditorWindowSize.x, y);
-	}
-}
+//
+//void EditorCamera2D::RenderGrid(FoxtrotRenderer* renderer)
+//{
+//	mEditorWindowSize = CCore::GetInstance()->GetEditorWindowSize();
+//	int gridHCount = mEditorWindowSize.x / mGridCellSize;
+//	int gridVCount = mEditorWindowSize.y / mGridCellSize;
+//
+//	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 50);
+//	for (int x = 0; x < 1 + gridHCount * mGridCellSize;
+//		x += mGridCellSize) {
+//		SDL_RenderDrawLine(renderer, x, 0, x, mEditorWindowSize.y);
+//	}
+//
+//	for (int y = 0; y < 1 + gridVCount * mGridCellSize;
+//		y += mGridCellSize) {
+//		SDL_RenderDrawLine(renderer, 0, y, mEditorWindowSize.x, y);
+//	}
+//}
 
 void EditorCamera2D::DisplayCameraMenu()
 {
@@ -121,7 +129,7 @@ void EditorCamera2D::DisplayCameraMenu()
 		std::vector<EditorElement*>& editorElems = EditorLayer::GetInstance()->GetEditorElements();
 		std::string* actorNames = new std::string[editorElems.size()+1];
 		actorNames[0] = "None";
-		for (Uint32 i = 0; i < editorElems.size(); ++i)
+		for (UINT i = 0; i < editorElems.size(); ++i)
 		{
 			actorNames[i+1] = ToString(editorElems[i]->GetName());
 		}
@@ -130,7 +138,7 @@ void EditorCamera2D::DisplayCameraMenu()
 			const char* comboPreview = actorNames[mCurrIdx].c_str();
 			if (ImGui::BeginCombo("Target Actor", comboPreview))
 			{
-				for (Uint32 i = 0; i < editorElems.size()+1; ++i)
+				for (UINT i = 0; i < editorElems.size()+1; ++i)
 				{
 					if (ImGui::Selectable(actorNames[i].c_str()))
 					{
@@ -161,9 +169,9 @@ EditorCamera2D::EditorCamera2D()
 	SetTargetActorID(TARGET_NONE);
 	SetScreenCenter(Camera2D::GetInstance()->GetScreenCenter());
 
-	Vector2 windowSize = CCore::GetInstance()->GetEditorWindowSize();
-	int gridHCount = windowSize.x / mGridCellSize + 2;
-	int gridVCount = windowSize.y / mGridCellSize + 2;
+	//Vector2 windowSize = CCore::GetInstance()->GetEditorWindowSize();
+	//int gridHCount = windowSize.x / mGridCellSize + 2;
+	//int gridVCount = windowSize.y / mGridCellSize + 2;
 }
 
 EditorCamera2D::~EditorCamera2D() {}

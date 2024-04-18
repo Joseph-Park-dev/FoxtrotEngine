@@ -1,10 +1,12 @@
 #pragma once
-#include <SDL2/SDL.h>
 #include <vector>
+#include <directxtk/Keyboard.h>
+#include <directxtk/Mouse.h>
 
 #include "Math.h"
 #include "Component.h"
 #include "SingletonMacro.h"
+#include "unordered_map"
 
 enum class KEY_STATE
 {
@@ -12,20 +14,6 @@ enum class KEY_STATE
 	TAP,
 	HOLD,
 	AWAY
-};
-
-enum class KEY
-{
-	LEFT,
-	RIGHT,
-	UP,
-	DOWN,
-	ENTER,
-	LSHIFT,
-	LCTRL,
-	SPACE,
-
-	LAST_FLAG
 };
 
 enum class MOUSE
@@ -54,6 +42,8 @@ struct tKeyInfo
 	bool	  isPushedPrevFrame;
 };
 
+#define MAX_KEYCOUNT 6
+
 #define KEY_HOLD(key)	  KeyInputManager::GetInstance()->GetKeyState(key) == KEY_STATE::HOLD
 #define KEY_TAP(key)	  KeyInputManager::GetInstance()->GetKeyState(key) == KEY_STATE::TAP
 #define KEY_AWAY(key)	  KeyInputManager::GetInstance()->GetKeyState(key) == KEY_STATE::AWAY
@@ -79,39 +69,39 @@ class KeyInputManager
 
 public:
 	void DetectKeyInput();
-	void DetectMouseInput();
-	void DetectGamepadInput();
+	/*void DetectMouseInput();
+	void DetectGamepadInput();*/
 
-	SDL_GameController* FindGamepad();
+	//SDL_GameController* FindGamepad();
+
 
 public:
-	KEY_STATE			GetKeyState(KEY eKey);
+	KEY_STATE			GetKeyState(DirectX::Keyboard::Keys eKey);
 	KEY_STATE			GetMouseState(MOUSE eMouse);
 	KEY_STATE			GetButtonState(GAMEPADBUTTON eButton);
 	Vector2				GetMousePosition() { return mMousePosition; }
 	Vector2				GetMouseWorldPosition();
-	SDL_GameController* GetGamepad() { return mGamepad; }
 
-	void SetGamepad(SDL_GameController* gamepad) { mGamepad = gamepad; }
-
-private:
-	std::vector<tKeyInfo>mVecKey;
-	std::vector<tKeyInfo>mVecMouse;
-	std::vector<tKeyInfo>mVecButton;
+	/*SDL_GameController* GetGamepad() { return mGamepad; }
+	void SetGamepad(SDL_GameController* gamepad) { mGamepad = gamepad; }*/
 
 private:
-	SDL_Scancode arrKeyCode[(int)KEY::LAST_FLAG] = 
-	{
-		SDL_SCANCODE_A,
-		SDL_SCANCODE_D,
-		SDL_SCANCODE_W,
-		SDL_SCANCODE_S,
-		SDL_SCANCODE_RETURN,
-		SDL_SCANCODE_LSHIFT,
-		SDL_SCANCODE_LCTRL,
-		SDL_SCANCODE_SPACE
+	std::vector<tKeyInfo>	mVecMouse;
+	std::vector<tKeyInfo>	mVecButton;
+
+private:
+	using KeyboardMap = std::unordered_map<DirectX::Keyboard::Keys, tKeyInfo>;
+	KeyboardMap mKeyboardMap =
+	{	
+		{DirectX::Keyboard::A,			tKeyInfo{ KEY_STATE::NONE, false }},
+		{DirectX::Keyboard::D,			tKeyInfo{ KEY_STATE::NONE, false }},
+		{DirectX::Keyboard::W,			tKeyInfo{ KEY_STATE::NONE, false }},
+		{DirectX::Keyboard::S,			tKeyInfo{ KEY_STATE::NONE, false }},
+		{DirectX::Keyboard::LeftShift,	tKeyInfo{ KEY_STATE::NONE, false }},
+		{DirectX::Keyboard::Space,		tKeyInfo{ KEY_STATE::NONE, false }}
 	};
-	int arrMouseCode[(int)MOUSE::LAST_FLAG] =
+
+	/*int arrMouseCode[(int)MOUSE::LAST_FLAG] =
 	{
 		SDL_BUTTON_LEFT,
 		SDL_BUTTON_RIGHT,
@@ -125,12 +115,16 @@ private:
 		SDL_CONTROLLER_BUTTON_B,
 		SDL_CONTROLLER_BUTTON_X,
 		SDL_CONTROLLER_BUTTON_Y
-	};
+	};*/
 
 private:
 	Vector2				mMousePosition;
 	int					mMouseState;
-	SDL_GameController* mGamepad;
+	// SDL_GameController* mGamepad;
+	DirectX::Keyboard*	mKeyboard;
+	DirectX::Mouse*		mMouse;
+
+	DirectX::Keyboard::KeyboardStateTracker* mKeyboardState;
 
 private:
 	void Init();

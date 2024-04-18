@@ -392,39 +392,39 @@ void FileIOHelper::LoadFileIOData(std::string filename)
     }
 }
 
-void SaveWString(const std::wstring& str, FILE* file)
-{
-    // Data serialization (데이터 직렬화)
-    const wchar_t* name = str.c_str();
-    size_t len = str.length();
-
-    fwrite(&len, sizeof(size_t), 1, file);
-    fwrite(name, sizeof(wchar_t), len, file);
-    SDL_Log("Saved : %ls", name);
-}
-
-void LoadWString(std::wstring& str, FILE* file)
-{
-    size_t len = 0;
-    fread(&len, sizeof(size_t), 1, file);
-    wchar_t szBuff[256] = {};
-    fread(szBuff, sizeof(wchar_t), len, file);
-    str = szBuff;
-    SDL_Log("Loaded : %ls", str.c_str());
-}
-
-void LoadDataFromFile(char* dst, FILE* file)
-{
-    int i = 0;
-    while (true)
-    {
-        char c = (char)getc(file);
-        if (c == '\n')
-        {
-            dst[i++] = '\0';
-            break;
-        }
-
-        dst[i++] = c;
-    }
-}
+//void SaveWString(const std::wstring& str, FILE* file)
+//{
+//    // Data serialization (데이터 직렬화)
+//    const wchar_t* name = str.c_str();
+//    size_t len = str.length();
+//
+//    fwrite(&len, sizeof(size_t), 1, file);
+//    fwrite(name, sizeof(wchar_t), len, file);
+//    SDL_Log("Saved : %ls", name);
+//}
+//
+//void LoadWString(std::wstring& str, FILE* file)
+//{
+//    size_t len = 0;
+//    fread(&len, sizeof(size_t), 1, file);
+//    wchar_t szBuff[256] = {};
+//    fread(szBuff, sizeof(wchar_t), len, file);
+//    str = szBuff;
+//    SDL_Log("Loaded : %ls", str.c_str());
+//}
+//
+//void LoadDataFromFile(char* dst, FILE* file)
+//{
+//    int i = 0;
+//    while (true)
+//    {
+//        char c = (char)getc(file);
+//        if (c == '\n')
+//        {
+//            dst[i++] = '\0';
+//            break;
+//        }
+//
+//        dst[i++] = c;
+//    }
+//}

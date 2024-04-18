@@ -1,6 +1,5 @@
 #ifdef _DEBUG
 #pragma once
-#include <SDL2/SDL.h>
 #include <list>
 
 #include "Math.h"

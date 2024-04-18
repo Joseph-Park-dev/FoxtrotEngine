@@ -3,6 +3,7 @@
 #include "Camera2D.h"
 #include "KeyInputManager.h"
 #include "Transform.h"
+#include "FoxtrotRenderer.h"
 
 void UIActor::UpdateActor(float deltaTime)
 {
@@ -13,7 +14,7 @@ void UIActor::LateUpdateActor(float deltaTime)
 	CheckMouseHover();
 }
 
-void UIActor::RenderActor(SDL_Renderer* renderer)
+void UIActor::RenderActor(FoxtrotRenderer* renderer)
 {
 	Vector2 vPos = GetTransform()->GetWorldPosition();
 	Vector2 vScale = GetTransform()->GetScale();
@@ -21,15 +22,21 @@ void UIActor::RenderActor(SDL_Renderer* renderer)
 	{
 		vPos = Camera2D::GetInstance()->ConvertWorldPosToScreen(vPos);
 	}
-	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-	SDL_Rect rect = 
-	{ 
-		static_cast<int>(vPos.x - vScale.x * 0.5f * (1 - Camera2D::GetInstance()->GetZoomValue())),
-		static_cast<int>(vPos.y - vScale.x * 0.5f * (1 - Camera2D::GetInstance()->GetZoomValue())),
-		static_cast<int>(vScale.x * (1 - Camera2D::GetInstance()->GetZoomValue())),
-		static_cast<int>(vScale.y * (1 - Camera2D::GetInstance()->GetZoomValue()))
-	};
-	SDL_RenderDrawRect(renderer, &rect);
+
+	/*
+	
+		Alternative of
+			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+			SDL_Rect rect = 
+			{ 
+				static_cast<int>(vPos.x - vScale.x * 0.5f * (1 - Camera2D::GetInstance()->GetZoomValue())),
+				static_cast<int>(vPos.y - vScale.x * 0.5f * (1 - Camera2D::GetInstance()->GetZoomValue())),
+				static_cast<int>(vScale.x * (1 - Camera2D::GetInstance()->GetZoomValue())),
+				static_cast<int>(vScale.y * (1 - Camera2D::GetInstance()->GetZoomValue()))
+			};
+			SDL_RenderDrawRect(renderer, &rect);
+	
+	*/
 }
 
 void UIActor::CheckMouseHover()
@@ -57,7 +64,7 @@ void UIActor::OnMouseHovering()
 
 void UIActor::OnMouseLButtonDown()
 {
-	SDL_Log("%ls", GetName().c_str());
+	printf("%ls", GetName().c_str());
 }
 
 void UIActor::OnMouseLButtonUp()

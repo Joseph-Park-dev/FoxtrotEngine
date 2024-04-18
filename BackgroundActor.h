@@ -16,7 +16,7 @@ public:
 	BackgroundActor(Scene* scene);
 
 public:
-	virtual void RenderActor(SDL_Renderer* renderer) override;
+	//virtual void RenderActor(FoxtrotRenderer* renderer) override;
 
 private:
 	std::vector<TileMapComponent*> backgroundLayers;

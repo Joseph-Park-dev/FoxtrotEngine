@@ -22,7 +22,7 @@ public:
     CLONE(GroundObject);
 
 private:
-    SDL_Rect           rect;
+    Bounds             rect;
     ColliderComponent* collider;
 
 private:

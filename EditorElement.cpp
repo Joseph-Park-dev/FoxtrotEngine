@@ -1,7 +1,7 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
-#include <imgui_impl_sdl2.h>
-#include <imgui_impl_sdlrenderer2.h>
+#include <imgui_impl_dx11.h>
+#include <imgui_impl_win32.h>
 
 #include "EditorElement.h"
 #include "EditorLayer.h"
@@ -137,16 +137,16 @@ void EditorElement::EditorUpdateActor()
 {
 }
 
-void EditorElement::Render(SDL_Renderer* renderer)
+void EditorElement::Render(FoxtrotRenderer* renderer)
 {
 	if (IsActive())
 		RenderComponents(renderer);
 }
 
-void EditorElement::UIRender(SDL_Renderer* renderer)
+void EditorElement::UIRender(FoxtrotRenderer* renderer)
 {
 	ImGui::Render();
-	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
 EditorElement::EditorElement(Scene* scene)
@@ -188,7 +188,7 @@ void EditorElement::UpdateActorGroup()
 	const char* comboPreview = ActorGroup[mActorGroupIdx];
 	if (ImGui::BeginCombo("Actor Group", comboPreview))
 	{
-		for (Uint32 n = 0; n < (Uint32)ACTOR_GROUP::END - 1; n++)
+		for (UINT n = 0; n < (UINT)ACTOR_GROUP::END - 1; n++)
 		{
 			if (ImGui::Selectable(ActorGroup[n]))
 			{
@@ -261,7 +261,7 @@ void EditorElement::UpdateComponents()
 {
 	if (ImGui::BeginChild(GetNameStr().c_str()))
 	{
-		Uint32 count = 0;
+		UINT count = 0;
 		for (Component* comp : GetComponents())
 		{
 			std::string name = std::to_string(count) + " " + ToString(comp->GetName());

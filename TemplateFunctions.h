@@ -8,6 +8,7 @@
 #include <string>
 
 #include "Math.h"
+#include "Bounds.h"
 
 //static std::string ToString(const wchar_t* text)
 //{
@@ -52,9 +53,9 @@ void LogVector2(std::string message, Vector2 val)
 	printf("%s, X : %f Y : %f", message.c_str(), val.x, val.y);
 }
 
-void LogRect(SDL_Rect rect)
+void LogRect(Bounds bound)
 {
-	printf("Pos X : %d, Pos Y : %d, Width : %d, Height : %d", rect.x, rect.y, rect.w, rect.h);
+	printf("Pos X : %f, Pos Y : %f, Width : %f, Height : %f", bound.x, bound.y, bound.w, bound.h);
 }
 
 void LogBool(bool val)

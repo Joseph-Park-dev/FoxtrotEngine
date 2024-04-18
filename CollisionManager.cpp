@@ -8,15 +8,16 @@
 #include "Camera2D.h"
 #include "iostream"
 #include "Transform.h"
+#include "FoxtrotRenderer.h"
 
 void CollisionManager::MarkGroup(ACTOR_GROUP left, ACTOR_GROUP right)
 {
-	Uint32 iRow = (Uint32)left;
-	Uint32 iCol = (Uint32)right;
+	UINT iRow = (UINT)left;
+	UINT iCol = (UINT)right;
 	if (iCol < iRow)
 	{
-		iRow = (Uint32)right;
-		iCol = (Uint32)left;
+		iRow = (UINT)right;
+		iCol = (UINT)left;
 	}
 	if (mArrCollisionMarks[iRow] & (1 << iCol))
 	{
@@ -35,7 +36,7 @@ void CollisionManager::RegisterRay(Ray* ray)
 
 void CollisionManager::Reset()
 {
-	memset(mArrCollisionMarks, 0, sizeof(Uint32) * (Uint32)ACTOR_GROUP::END);
+	memset(mArrCollisionMarks, 0, sizeof(UINT) * (UINT)ACTOR_GROUP::END);
 	ResetRegisteredRays();
 	Physics2D::GetInstance()->ResetRayCasts();
 	ResetIntersections();
@@ -43,9 +44,9 @@ void CollisionManager::Reset()
 
 void CollisionManager::Update()
 {
-	for (Uint32 iRow = 0; iRow < (Uint32)ACTOR_GROUP::END; ++iRow)
+	for (UINT iRow = 0; iRow < (UINT)ACTOR_GROUP::END; ++iRow)
 	{
-		for (Uint32 iCol = iRow; iCol < (Uint32)ACTOR_GROUP::END; ++iCol)
+		for (UINT iCol = iRow; iCol < (UINT)ACTOR_GROUP::END; ++iCol)
 		{
 			if (mArrCollisionMarks[iRow] & (1 << iCol))
 			{
@@ -242,25 +243,33 @@ void CollisionManager::CompareGroupWithRays(ACTOR_GROUP group)
 	}
 }
 
-void CollisionManager::RenderRay(SDL_Renderer* renderer)
+void CollisionManager::RenderRay(FoxtrotRenderer* renderer)
 {
 	for (size_t i = 0; i < mRegisteredRays.size(); ++i)
 	{
 		/*Vector2 ori = Camera2D::GetInstance()->ConvertScreenPosToWorld();
 		Vector2 end = Camera2D::GetInstance()->ConvertScreenPosToWorld();*/
-		SDL_SetRenderDrawColor
-		(renderer, 255, 255, 255, 255);
+		
+		/*
+		
+			Alternative to 
+			SDL_SetRenderDrawColor
+				(renderer, 255, 255, 255, 255);
 
+		*/
 		Vector2 ori = mRegisteredRays[i]->origin;
 		Vector2 end = mRegisteredRays[i]->endPoint;
 
-		SDL_RenderDrawLine(
-			renderer,
-			ori.x,
-			ori.y,
-			end.x,
-			end.y
-		);
+		/*
+			Alternative to
+			SDL_RenderDrawLine(
+				renderer,
+				ori.x,
+				ori.y,
+				end.x,
+				end.y
+			);
+		*/
 	}
 	Physics2D::GetInstance()->RenderRayCastHits(renderer);
 	ResetRegisteredRays();

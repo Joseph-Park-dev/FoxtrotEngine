@@ -38,7 +38,7 @@ public:
 
 public:
 	void Update(float deltaTime);
-	void Render(SDL_Renderer* renderer);
+	void Render(FoxtrotRenderer* renderer);
 
 private:
 	std::vector<FTParticleExplosion*> explosions;

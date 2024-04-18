@@ -49,7 +49,7 @@ public:
 
 public:
 	std::vector<RayCastHit2D>& GetRayCastHits(){ return mRayCastHits; }
-	void RenderRayCastHits(SDL_Renderer* renderer);
+	void RenderRayCastHits(FoxtrotRenderer* renderer);
 	/*b2World* GetPhysicsWorld() { return mPhysicsWorld; }
 	static b2Vec2 ToB2Vec2(Vector2 val) { return b2Vec2(val.x, val.y); }*/
 

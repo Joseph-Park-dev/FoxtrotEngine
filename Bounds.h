@@ -1,39 +1,30 @@
 #pragma once
-#include <SDL2/SDL.h>
 #include "Math.h"
-class Bounds
+struct Bounds
 {
-public:
-	Vector2 GetCenter()	 const { return mCenter; }
-	Vector2 GetSize()	 const { return mSize; }
+	float x, y, w, h;
+
+	Vector2 GetCenter()	 const { return Vector2(x, y); }
+	Vector2 GetSize()	 const { return Vector2(w, h); }
 	Vector2 GetExtents() const { return GetSize() * 0.5f; }
-	Vector2 GetMax()	 const { return mCenter + GetExtents(); }
-	Vector2 GetMin()	 const { return mCenter - GetExtents(); }
+	Vector2 GetMax()	 const { return GetCenter() + GetExtents(); }
+	Vector2 GetMin()	 const { return GetCenter() - GetExtents(); }
 
-	void	SetCenter(Vector2 val) { mCenter = val; }
-	void	SetSize	 (Vector2 val) { mSize = val; }
-
-public:
-
-	Bounds(int x, int y, int w, int h)
-		: mCenter(Vector2(static_cast<float>(x), static_cast<float>(y)))
-		, mSize(Vector2(static_cast<float>(w), static_cast<float>(h)))
+	Bounds()
+		: x(0.f), y(0.f), w(0.f), h(0.f)
 	{}
-	Bounds(float x, float y, float w, float h)
-		: mCenter(Vector2(x,y))
-		, mSize(Vector2(w, h))
+	Bounds(int pX, int pY, int pW, int pH)
+		: x(static_cast<float>(pX))
+		, y(static_cast<float>(pY))
+		, w(static_cast<float>(pW))
+		, h(static_cast<float>(pH))
+	{}
+	Bounds(float pX, float pY, float pW, float pH)
+		: x(pX), y(pY), w(pW), h(pH)
 	{}
 	Bounds(Vector2 center, Vector2 size)
-		: mCenter(center)
-		, mSize(size)
+		: x(center.x), y(center.y)
+		, w(size.x), h(size.y)
 	{}
-	Bounds(SDL_Rect* rect)
-		: mCenter(Vector2(rect->x, rect->y))
-		, mSize(Vector2(rect->w, rect->h))
-	{}
-
-private:
-	Vector2 mCenter;
-	Vector2 mSize;
 };
 

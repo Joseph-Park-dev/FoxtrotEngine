@@ -1,13 +1,12 @@
 #ifdef _DEBUG
 #pragma once
+#include "SingletonMacro.h"
+#include "EditorElement.h"
 #include <functional>
 #include <nlohmann/json.hpp>
 
-#include "SingletonMacro.h"
-#include "EditorElement.h"
-
 struct SDL_Window;
-struct SDL_Renderer;
+struct FoxtrotRenderer;
 union SDL_Event;
 class UIActor;
 class PanelUI;
@@ -19,16 +18,15 @@ class EditorLayer
 	SINGLETON(EditorLayer);
 
 public:
-	void Init(SDL_Window* window, SDL_Renderer* renderer);
-	void ProcessInput(SDL_Event* event);
+	void Init(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext);
 	void Update(float deltaTime);
-	void Render(SDL_Renderer* renderer);
+	void Render(FoxtrotRenderer* renderer);
 	void ShutDown();
 
 public:
 	std::vector<EditorElement*>& GetEditorElements() { return mEditorElements; }
 	void AddEditorElement(Actor* actor);
-	void DisplayEditorElements(SDL_Renderer* renderer);
+	void DisplayEditorElements(FoxtrotRenderer* renderer);
 
 	int& GetActorNameIdx() { return mActorNameIdx; }
 
@@ -53,6 +51,9 @@ private:
 
 	bool mUndoKeyPressed;
 	bool mRedoKeyPressed;
+
+private:
+	void Save();
 
 private:
 	void UnfocusEditorElements();

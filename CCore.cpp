@@ -1,9 +1,5 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <nlohmann/json.hpp>
-#include <algorithm>
-
 #include "CCore.h"
+#include "Timer.h"
 #include "Actor.h"
 #include "SpriteComponent.h"
 #include "Ship.h"
@@ -21,42 +17,35 @@
 #ifdef _DEBUG
 #include "EditorLayer.h"
 #include "EditorCamera2D.h"
+
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui.h>
+#include <imgui_impl_dx11.h>
+#include <imgui_impl_win32.h>
 #endif // _DEBUG
 
 CCore* CCore::gPInst = nullptr;
+// RegisterClassEx()에서 실제로 등록될 콜백 함수
+LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) 
+{
+	// g_appBase를 이용해서 간접적으로 멤버 함수 호출
+	return CCore::GetInstance()->MsgProc(hWnd, msg, wParam, lParam);
+}
 
 CCore::CCore()
-	: mGameTitle("Cat Blasters! ver.0.01")
-	, mGameviewWindow(nullptr)
-	, mGameRenderer(nullptr)
-	, mTicksCount(0)
+	: mGameTitle(L"Cat Blasters! ver.0.01")
+	//, mGameviewWindow(nullptr)
 	, mIsRunning(true)
 	, mResolution(Vector2(1920.f, 1080.f))
 #ifdef _DEBUG
 	, mEditorWindow(nullptr)
-	, mEditorRenderer(nullptr)
 	, mIsUpdatingGame(false)
-	, mEditorResolution()
+	, mEditorWidth(1920)
+	, mEditorHeight(1080)
 	, mEditorDataFileName("EditorData.json")
 	, mEditorResolutionKey("EditorResolution")
 #endif
-{
-#ifdef _DEBUG
-	std::ifstream inStream(mEditorDataFileName);
-	if (!inStream.fail())
-	{
-		nlohmann::ordered_json editorData = nlohmann::ordered_json::parse(inStream);
-		if (!editorData.is_null())
-		{
-			int editorW = editorData[mEditorResolutionKey]["x"];
-			int editorH = editorData[mEditorResolutionKey]["y"];
-			mEditorResolution = Vector2(editorW, editorH);
-			return;
-		}
-	}
-	mEditorResolution = mResolution;
-#endif // _DEBUG
-}
+{}
 
 CCore::~CCore()
 {}
@@ -81,102 +70,92 @@ void CCore::Release()
 
 bool CCore::Initialize()
 {
-	if (!InitSDL())
-		return false;
 	if (!InitMainWindow())
 		return false;
-	if (!InitSDLRenderer())
+	if (!InitFoxtrotRenderer_D3D11())
+		return false;
+	if (!InitGUI())
 		return false;
 	InitSingletonManagers();
-	InitTicks();
-	return true;
-}
-
-bool CCore::InitSDL()
-{
-	int sdlInitResult = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER);
-	if (sdlInitResult != 0)
-	{
-		SDL_Log("ERROR: SDL init failed : %s", SDL_GetError());
-		return false;
-	}
+	InitTimer();
 	return true;
 }
 
 bool CCore::InitMainWindow()
 {
-#ifdef _DEBUG
-	mEditorWindow = SDL_CreateWindow(
-		"Foxtrot Engine Editor"
-		, 0
-		, 0
-		, (int)mEditorResolution.x
-		, (int)mEditorResolution.y
-		, 0
-	);
-	if (!mEditorWindow)
+	WNDCLASSEX wc = 
+	{ 
+		sizeof(WNDCLASSEX),
+		CS_CLASSDC,
+		WndProc,
+		0L,
+		0L,
+		GetModuleHandle(NULL),
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		mGameTitle.c_str(), // lpszClassName, L-string
+		NULL			 
+	};
+	if (!RegisterClassEx(&wc)) 
 	{
-		SDL_Log("ERROR: SDL create Editor Window failed : %s", SDL_GetError());
+		LogString("RegisterClassEx() failed.");
 		return false;
 	}
-	SDL_SetWindowResizable(mEditorWindow, SDL_TRUE);
-#endif
+	RECT wr = { 0, 0, mEditorWidth, mEditorHeight };
 
-	mGameviewWindow = SDL_CreateWindow(
-		mGameTitle.c_str()
-		, SDL_WINDOWPOS_CENTERED_DISPLAY(1)
-		, SDL_WINDOWPOS_CENTERED_DISPLAY(1)
-		, (int)mResolution.x
-		, (int)mResolution.y
-		, 0
-	);
-	if (!mGameviewWindow)
+	// 필요한 윈도우 크기(해상도) 계산
+	// wr의 값이 바뀜
+	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, false);
+
+	// 윈도우를 만들때 위에서 계산한 wr 사용
+	mEditorWindow = CreateWindow(wc.lpszClassName, mGameTitle.c_str(), WS_OVERLAPPEDWINDOW,
+		100,                // 윈도우 좌측 상단의 x 좌표
+		100,                // 윈도우 좌측 상단의 y 좌표
+		wr.right - wr.left, // 윈도우 가로 방향 해상도
+		wr.bottom - wr.top, // 윈도우 세로 방향 해상도
+		NULL, NULL, wc.hInstance, NULL);
+	if (!mEditorWindow) 
 	{
-		SDL_Log("ERROR: SDL create Game Window failed : %s", SDL_GetError());
+		LogString("CreateWindow() failed.");
 		return false;
 	}
-	SDL_SetWindowResizable(mGameviewWindow, SDL_FALSE);
+
+	ShowWindow(mEditorWindow, SW_SHOWDEFAULT);
+	UpdateWindow(mEditorWindow);
+
 	return true;
 }
 
-bool CCore::InitSDLRenderer()
+bool CCore::InitFoxtrotRenderer_D3D11()
 {
-	// Initialize renderer for editor window
-	mEditorRenderer = SDL_CreateRenderer(
-		mEditorWindow, -1,
-		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
-	);
+	mEditorRenderer = FoxtrotRenderer::CreateRenderer(mEditorWindow, mEditorWidth, mEditorHeight);
 	if (!mEditorRenderer)
-	{
-		SDL_Log("ERROR: SDL create Editor Renderer failed : %s", SDL_GetError());
 		return false;
-	}
-	SDL_SetRenderDrawBlendMode(mEditorRenderer, SDL_BLENDMODE_BLEND);
-
-	// Initialize renderer for game window
-	mGameRenderer = SDL_CreateRenderer(
-		mGameviewWindow, -1,
-		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
-	);
-	if (!mGameRenderer)
-	{
-		SDL_Log("ERROR: SDL create Game Renderer failed : %s", SDL_GetError());
-		return false;
-	}
-	SDL_SetRenderDrawBlendMode(mGameRenderer, SDL_BLENDMODE_BLEND);
-
-	// Initialize SDL IMG
-	if (IMG_Init(IMG_INIT_PNG) == 0)
-	{
-		SDL_Log("Unable to initialize SDL_Image: %s", SDL_GetError());
-		return false;
-	}
 	return true;
 }
 
-bool CCore::InitDirect3DRenderer()
+bool CCore::InitGUI()
 {
-	return false;
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	(void)io;
+	io.DisplaySize = ImVec2(float(mEditorWidth), float(mEditorHeight));
+	ImGui::StyleColorsLight();
+
+	if (!ImGui_ImplDX11_Init(
+		mEditorRenderer->GetDevice(), 
+		mEditorRenderer->GetContext()
+	)
+	) {
+		return false;
+	}
+	if (!ImGui_ImplWin32_Init(mEditorWindow)) {
+		return false;
+	}
+	return true;
 }
 
 void CCore::InitSingletonManagers()
@@ -191,13 +170,13 @@ void CCore::InitSingletonManagers()
 
 #ifdef _DEBUG
 	EditorCamera2D::GetInstance();
-	EditorLayer::GetInstance()->Init(mEditorWindow, mEditorRenderer);
+	//EditorLayer::GetInstance()->Init(mEditorWindow, mEditorRenderer);
 #endif // _DEBUG
 }
 
-void CCore::InitTicks()
+void CCore::InitTimer()
 {
-	mTicksCount = SDL_GetTicks();
+	Timer::GetInstance();
 }
 
 void CCore::RunLoop()
@@ -214,7 +193,21 @@ void CCore::RunLoop()
 
 void CCore::ProcessInput()
 {
-	SDL_Event event;
+	MSG msg = {};
+	while (PeekMessage(&msg, mEditorWindow, 0, 0, PM_REMOVE))
+	{
+	#ifdef _DEBUG
+		//EditorCamera2D::GetInstance()->ProcessInput(&msg);
+	#endif // _DEBUG
+	}
+	KeyInputManager::GetInstance()->DetectKeyInput();
+	/*KeyInputManager::GetInstance()->DetectMouseInput();
+	KeyInputManager::GetInstance()->DetectGamepadInput();*/
+	SceneManager::GetInstance()->ProcessInput(KeyInputManager::GetInstance());
+	TranslateMessage(&msg);
+	DispatchMessage(&msg);
+}
+	/*SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
 		if (event.type == SDL_WINDOWEVENT
@@ -244,28 +237,13 @@ void CCore::ProcessInput()
 					SDL_Log("Gamepad removed!");
 				}
 				break;
-		}
-#ifdef _DEBUG
-		EditorLayer::GetInstance()->ProcessInput(&event);
-		EditorCamera2D::GetInstance()->ProcessInput(&event);
-#endif // _DEBUG
-	}
-	KeyInputManager::GetInstance()->DetectKeyInput();
-	KeyInputManager::GetInstance()->DetectMouseInput();
-	KeyInputManager::GetInstance()->DetectGamepadInput();
-	SceneManager::GetInstance()->ProcessInput(KeyInputManager::GetInstance());
-}
+		}*/
 
 void CCore::UpdateGame()
 {
-	while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 16));
+	Timer::GetInstance()->Update();
+	float deltaTime = Timer::GetInstance()->GetDeltaTime();
 
-	float deltaTime = (SDL_GetTicks() - mTicksCount) / 1000.0f;
-
-	if (deltaTime > 0.05f)
-	{
-		deltaTime = 0.05f;
-	}
 #ifdef _DEBUG
 	if (mIsUpdatingGame)
 	{
@@ -293,28 +271,20 @@ void CCore::UpdateGame()
 	UIManager::GetInstance()->Update(deltaTime);
 	Camera2D::GetInstance()->Update(deltaTime);
 #endif
-	mTicksCount = SDL_GetTicks();
 }
 
 void CCore::GenerateOutput()
 {
 #ifdef _DEBUG
-	SDL_SetRenderDrawColor(
-		mEditorRenderer,
-		92, 92, 92, 255
-	);
-	SDL_RenderClear(mEditorRenderer);
-
-	SDL_SetRenderDrawColor(
-		mGameRenderer,
-		92, 92, 92, 255
-	);
-	SDL_RenderClear(mGameRenderer);
+	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	mEditorRenderer->RenderClear(clearColor);
 
 	if (mIsUpdatingGame)
 	{
 		SceneManager::GetInstance()->Render(mEditorRenderer);
+		/* Essential - Don't delete this
 		Camera2D::GetInstance()->Render(mEditorRenderer);
+		*/
 		ParticleSystem::GetInstance()->Render(mEditorRenderer);
 	}
 	else
@@ -324,8 +294,8 @@ void CCore::GenerateOutput()
 	EditorCamera2D::GetInstance()->EditorRender(mEditorRenderer);
 	EditorLayer::GetInstance()->Render(mEditorRenderer);
 	CollisionManager::GetInstance()->RenderRay(mEditorRenderer);
-	SDL_RenderPresent(mEditorRenderer);
-	SDL_RenderPresent(mGameRenderer);
+
+	mEditorRenderer->SwapChainPresent(1, 0);
 
 #else
 	SDL_SetRenderDrawColor(
@@ -351,20 +321,21 @@ void CCore::ShutDown()
 #ifdef _DEBUG
 	//SaveEditorData();
 	EditorLayer::GetInstance()->ShutDown();
-	SDL_DestroyRenderer(mEditorRenderer);
-	SDL_DestroyWindow(mEditorWindow);
+	FoxtrotRenderer::DestroyRenderer(mEditorRenderer);
 #endif // _DEBUG
-	IMG_Quit();
-	SDL_DestroyRenderer(mGameRenderer);
-	SDL_DestroyWindow(mGameviewWindow);
-	SDL_Quit();
+	DestroyWindow(mEditorWindow);
+	PostQuitMessage(0);
 }
 
-Vector2 CCore::GetEditorWindowSize() const
-{
-	int editorW = 0; int editorH = 0;
-	SDL_GetWindowSize(mEditorWindow, &editorW, &editorH);
-	return Vector2(editorW, editorH);
+LRESULT CCore::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+	switch (msg) {
+		case WM_DESTROY:
+		{
+			mIsRunning = false;
+			return 0;
+		}
+	}
+	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
 //#ifdef _DEBUG

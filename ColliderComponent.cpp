@@ -15,11 +15,11 @@
 #ifdef _DEBUG
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
-#include <imgui_impl_sdl2.h>
-#include <imgui_impl_sdlrenderer2.h>
+#include <imgui_impl_win32.h>
+#include <imgui_impl_dx11.h>
 #endif // DEBUG
 
-Uint32 ColliderComponent::g_nextID = 0;
+UINT ColliderComponent::g_nextID = 0;
 
 void ColliderComponent::LateUpdate(float deltaTime)
 {
@@ -29,23 +29,26 @@ void ColliderComponent::LateUpdate(float deltaTime)
 }
 
 #ifdef _DEBUG
-void ColliderComponent::Render(SDL_Renderer* renderer)
+void ColliderComponent::Render(FoxtrotRenderer* renderer)
 {
-	SDL_SetRenderDrawColor
-	(
-		renderer,
-		0, 255, 0, 255
-	);
-	Vector2 renderPos =
-		EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(mFinalPosition);
-	SDL_Rect rect =
-	{
-		static_cast<int>(renderPos.x - mScale.x * 0.5f * (1 - EditorCamera2D::GetInstance()->GetZoomValue())),
-		static_cast<int>(renderPos.y - mScale.y * 0.5f * (1 - EditorCamera2D::GetInstance()->GetZoomValue())),
-		static_cast<int>(mScale.x * (1 - EditorCamera2D::GetInstance()->GetZoomValue())),
-		static_cast<int>(mScale.y * (1 - EditorCamera2D::GetInstance()->GetZoomValue()))
-	};
-	SDL_RenderDrawRect(renderer, &rect);
+	/*
+	*	Alternative for
+			SDL_SetRenderDrawColor
+			(
+				renderer,
+				0, 255, 0, 255
+			);
+			Vector2 renderPos =
+				EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(mFinalPosition);
+			SDL_Rect rect =
+			{
+				static_cast<int>(renderPos.x - mScale.x * 0.5f * (1 - EditorCamera2D::GetInstance()->GetZoomValue())),
+				static_cast<int>(renderPos.y - mScale.y * 0.5f * (1 - EditorCamera2D::GetInstance()->GetZoomValue())),
+				static_cast<int>(mScale.x * (1 - EditorCamera2D::GetInstance()->GetZoomValue())),
+				static_cast<int>(mScale.y * (1 - EditorCamera2D::GetInstance()->GetZoomValue()))
+			};
+			SDL_RenderDrawRect(renderer, &rect);
+	*/
 }
 #endif // _DEBUG
 

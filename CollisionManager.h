@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include <unordered_map>
-#include <SDL2/SDL.h>
 
 #include "SingletonMacro.h"
 #include "ActorGroup.h"
@@ -14,8 +13,8 @@ union COLLIDER_ID
 {
 	struct
 	{
-		Uint32 LeftID;
-		Uint32 RightID;
+		UINT LeftID;
+		UINT RightID;
 	};
 	uint64_t ID;
 };
@@ -41,7 +40,7 @@ private:
 public:
 	void Init() {};
 	void Update();
-	void RenderRay(SDL_Renderer* renderer);
+	void RenderRay(FoxtrotRenderer* renderer);
 
 
 private:

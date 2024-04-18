@@ -1,7 +1,7 @@
 #pragma once
 #include "UIActor.h"
 
-class Texture;
+class FTTexture;
 class TileMapComponent;
 
 class MouseCursor :
@@ -13,7 +13,7 @@ public:
 
 public:
     virtual void UpdateActor(float deltaTime) override;
-    virtual void RenderActor(SDL_Renderer* renderer) override;
+    virtual void RenderActor(FoxtrotRenderer* renderer) override;
 
 public:
     MouseCursor(Scene* scene);

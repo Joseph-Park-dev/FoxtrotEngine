@@ -1,13 +1,12 @@
 #pragma once
-#include <SDL2/SDL.h>
+#pragma comment(lib,"d3d11.lib")
+
 #define SDL_MAIN_HANDLED
 #include <vector>
 #include <string>
-#include <d3d11.h>
-#include <d3dcompiler.h>
 #include <windows.h>
-#include <wrl.h> // ComPtr
 
+#include "FoxtrotRenderer.h"
 #include "SingletonMacro.h"
 #include "Math.h"
 
@@ -22,33 +21,32 @@ public:
 	void ShutDown();
 
 public:
-	SDL_Renderer* GetGameRenderer()	  const { return mGameRenderer; }
+	virtual LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+public:
 	Vector2		  GetResolution()	  const { return mResolution; }
 
 #ifdef _DEBUG
-	SDL_Window*   GetEditorWindow()   const { return mEditorWindow; }
-	SDL_Renderer* GetEditorRenderer() const { return mEditorRenderer; }
 	bool		  GetIsUpdatingGame() const { return mIsUpdatingGame; }
-	Vector2		  GetEditorWindowSize() const;
 	void		  SetIsUpdatingGame(bool isUpdating) { mIsUpdatingGame = isUpdating; }
 
 #endif // _DEBUG
 
 private:
-	std::string		mGameTitle;
-	SDL_Window*		mGameviewWindow;
-	Vector2			mResolution;
-	SDL_Renderer*   mGameRenderer;
-	Uint32			mTicksCount;
-	bool			mIsRunning;
+	std::wstring	 mGameTitle;
+	//SDL_Window*		mGameviewWindow;
+	Vector2			 mResolution;
+	//FoxtrotRenderer*   mGameRenderer;
+	bool			 mIsRunning;
 
 #ifdef _DEBUG
-	SDL_Window*		mEditorWindow;
-	SDL_Renderer*   mEditorRenderer;
-	bool			mIsUpdatingGame;
-	Vector2			mEditorResolution;
-	std::string		mEditorDataFileName;
-	std::string		mEditorResolutionKey;
+	HWND			 mEditorWindow;
+	FoxtrotRenderer* mEditorRenderer;
+	bool			 mIsUpdatingGame;
+	int				 mEditorWidth;
+	int				 mEditorHeight;
+	std::string		 mEditorDataFileName;
+	std::string		 mEditorResolutionKey;
 #endif // _DEBUG
 
 public:
@@ -58,12 +56,11 @@ public:
 	static void	  Release();
 
 private:
-	bool InitSDL();
 	bool InitMainWindow();
-	bool InitSDLRenderer();
-	bool InitDirect3DRenderer();
+	bool InitFoxtrotRenderer_D3D11();
+	bool InitGUI();
 	void InitSingletonManagers();
-	void InitTicks();
+	void InitTimer();
 
 private:
 	void ProcessInput();

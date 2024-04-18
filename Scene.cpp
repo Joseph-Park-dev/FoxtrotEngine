@@ -10,6 +10,7 @@
 #include "PanelUI.h"
 #include "EditorLayer.h"
 #include "Transform.h"
+#include "FoxtrotRenderer.h"
 
 Scene::Scene()
 	:mIsUpdatingActors(false)
@@ -23,9 +24,9 @@ Scene::~Scene()
 void Scene::ProcessInput(KeyInputManager* keyInputManager)
 {
 	mIsUpdatingActors = true;
-	for (Uint32 i = 0; i < (Uint32)ACTOR_GROUP::END; ++i)
+	for (size_t i = 0; i < (size_t)ACTOR_GROUP::END; ++i)
 	{
-		for (Uint32 j = 0; j < mActors[i].size(); ++j)
+		for (size_t j = 0; j < mActors[i].size(); ++j)
 		{
 			Actor* actor = mActors[i][j];
 			if (actor->IsActive())
@@ -38,9 +39,9 @@ void Scene::ProcessInput(KeyInputManager* keyInputManager)
 void Scene::Update(float deltaTime)
 {
 	mIsUpdatingActors = true;
-	for (Uint32 i = 0; i < (Uint32)ACTOR_GROUP::END; ++i)
+	for (size_t i = 0; i < (size_t)ACTOR_GROUP::END; ++i)
 	{
-		for (Uint32 j = 0; j < mActors[i].size(); ++j)
+		for (size_t j = 0; j < mActors[i].size(); ++j)
 		{
 			Actor* actor = mActors[i][j];
 			if (actor->IsActive())
@@ -56,9 +57,9 @@ void Scene::Update(float deltaTime)
 
 void Scene::LateUpdate(float deltaTime)
 {
-	for (Uint32 i = 0; i < (Uint32)ACTOR_GROUP::END; ++i)
+	for (size_t i = 0; i < (size_t)ACTOR_GROUP::END; ++i)
 	{
-		for (Uint32 j = 0; j < mActors[i].size(); ++j)
+		for (size_t j = 0; j < mActors[i].size(); ++j)
 		{
 			Actor* actor = mActors[i][j];
 			if (actor->IsActive())
@@ -70,11 +71,11 @@ void Scene::LateUpdate(float deltaTime)
 	}
 }
 
-void Scene::Render(SDL_Renderer* renderer)
+void Scene::Render(FoxtrotRenderer* renderer)
 {
-	for (Uint32 i = 0; i < (Uint32)ACTOR_GROUP::END; ++i)
+	for (size_t i = 0; i < (size_t)ACTOR_GROUP::END; ++i)
 	{
-		for (Uint32 j = 0; j < mActors[i].size(); ++j)
+		for (size_t j = 0; j < mActors[i].size(); ++j)
 		{
 			Actor* actor = mActors[i][j];
 			if (actor->IsActive())
@@ -90,11 +91,11 @@ void Scene::AddActor(Actor* actor, ACTOR_GROUP group)
 {
 	if (mIsUpdatingActors)
 	{
-		mPendingActors[(Uint32)group].emplace_back(actor);
+		mPendingActors[(UINT)group].emplace_back(actor);
 	}
 	else
 	{
-		mActors[(Uint32)group].emplace_back(actor);
+		mActors[(UINT)group].emplace_back(actor);
 	}
 }
 
@@ -107,7 +108,7 @@ void Scene::ProcessEvent()
 
 void Scene::DeleteAll()
 {
-	for (Uint32 i = 0; i < (Uint32)ACTOR_GROUP::END; ++i)
+	for (size_t i = 0; i < (size_t)ACTOR_GROUP::END; ++i)
 	{
 		DeleteGroup((ACTOR_GROUP)i);
 		DeletePendingGroup((ACTOR_GROUP)i);
@@ -116,19 +117,19 @@ void Scene::DeleteAll()
 
 void Scene::DeleteGroup(ACTOR_GROUP group)
 {
-	mActors[(Uint32)group].clear();
+	mActors[(UINT)group].clear();
 }
 
 void Scene::DeletePendingGroup(ACTOR_GROUP group)
 {
-	mPendingActors[(Uint32)group].clear();
+	mPendingActors[(UINT)group].clear();
 }
 
 #ifdef _DEBUG
 void Scene::EditorUpdate(float deltaTime)
 {
 	std::vector<EditorElement*>& elements = EditorLayer::GetInstance()->GetEditorElements();
-	for (Uint32 i = 0; i < elements.size(); ++i)
+	for (size_t i = 0; i < elements.size(); ++i)
 	{
 		EditorElement* ele = elements[i];
 		if (ele->IsActive())
@@ -143,7 +144,7 @@ void Scene::EditorUpdate(float deltaTime)
 void Scene::EditorLateUpdate(float deltaTime)
 {
 	std::vector<EditorElement*>& elements = EditorLayer::GetInstance()->GetEditorElements();
-	for (Uint32 i = 0; i < elements.size(); ++i)
+	for (size_t i = 0; i < elements.size(); ++i)
 	{
 		EditorElement* ele = elements[i];
 		if (ele->IsActive())
@@ -157,9 +158,9 @@ void Scene::EditorLateUpdate(float deltaTime)
 
 void Scene::AddPendingActors()
 {
-	for (Uint32 i = 0; i < (Uint32)ACTOR_GROUP::END; ++i)
+	for (size_t i = 0; i < (size_t)ACTOR_GROUP::END; ++i)
 	{
-		for (Uint32 j = 0; j < mActors[i].size(); ++j)
+		for (size_t j = 0; j < mActors[i].size(); ++j)
 		{
 			for (auto pending : mPendingActors[i])
 			{
@@ -172,9 +173,9 @@ void Scene::AddPendingActors()
 
 void Scene::ClearDeadActors()
 {
-	for (Uint32 i = 0; i < (Uint32)ACTOR_GROUP::END; ++i)
+	for (size_t i = 0; i < (size_t)ACTOR_GROUP::END; ++i)
 	{
-		for (Uint32 j = 0; j < mActors[i].size(); ++j)
+		for (size_t j = 0; j < mActors[i].size(); ++j)
 		{
 			if (mActors[i][j]->IsDead())
 			{
@@ -186,7 +187,7 @@ void Scene::ClearDeadActors()
 
 void Scene::RemoveActor(Actor* actor)
 {
-	for (Uint32 i = 0; i < (Uint32)ACTOR_GROUP::END; ++i)
+	for (size_t i = 0; i < (size_t)ACTOR_GROUP::END; ++i)
 	{
 		auto iter = std::find(mPendingActors[i].begin(), mPendingActors[i].end(), actor);
 		if (iter != mPendingActors[i].end())

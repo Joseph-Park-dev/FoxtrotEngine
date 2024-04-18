@@ -80,6 +80,9 @@
     <Filter Include="02_Core\CoreModules\Camera">
       <UniqueIdentifier>{2b5fc46a-4565-4542-8f6f-fe285eaacaf6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02_Core\FoxtrotRenderer">
+      <UniqueIdentifier>{5b71e15d-e7b2-452c-8877-b47a0e28c0e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -142,7 +145,7 @@
     <ClCompile Include="Scene_Tool.cpp">
       <Filter>05_Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
+    <ClCompile Include="FTTexture.cpp">
       <Filter>06_Resources</Filter>
     </ClCompile>
     <ClCompile Include="AnimatorComponent.cpp">
@@ -241,6 +244,12 @@
     <ClCompile Include="Bounds.cpp">
       <Filter>02_Core\CoreModules\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>02_Core\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotRenderer.cpp">
+      <Filter>02_Core\FoxtrotRenderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SpriteComponent.h">
@@ -321,7 +330,7 @@
     <ClInclude Include="EventFunctions.h">
       <Filter>02_Core\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
+    <ClInclude Include="FTTexture.h">
       <Filter>06_Resources</Filter>
     </ClInclude>
     <ClInclude Include="AnimatorComponent.h">
@@ -435,6 +444,12 @@
     <ClInclude Include="Bounds.h">
       <Filter>02_Core\CoreModules\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>02_Core\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="FoxtrotRenderer.h">
+      <Filter>02_Core\FoxtrotRenderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />
@@ -443,5 +458,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Chapter03.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="ColorPixelShader.hlsl" />
+    <FxCompile Include="ColorVertexShader.hlsl" />
   </ItemGroup>
 </Project>

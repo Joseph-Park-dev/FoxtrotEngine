@@ -3,7 +3,7 @@
 
 class Scene;
 
-typedef void(*BTN_FUNC) (Uint32, Uint32);
+typedef void(*BTN_FUNC) (int, int);
 typedef void(Scene::*SCENE_MEMFUNC)(void);
 typedef void(Actor::*ACTOR_MEMFUNC)(void);
 
@@ -12,8 +12,8 @@ class ButtonUI
 {
 private:
 	BTN_FUNC	  mFunc;
-	Uint32		  mParam1;
-	Uint32		  mParam2;
+	int			  mParam1;
+	int			  mParam2;
 
 	SCENE_MEMFUNC mSceneFunc;
 	Scene*		  mSceneInstance;
@@ -24,7 +24,7 @@ public:
 	virtual void OnMouseLButtonUp() override;
 	virtual void OnMouseLButtonClicked() override;
 
-	void SetClickedCallBack(BTN_FUNC func, Uint32 param1, Uint32 param2)
+	void SetClickedCallBack(BTN_FUNC func, int param1, int param2)
 	{
 		mFunc = func;
 		mParam1 = param1;

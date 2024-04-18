@@ -8,14 +8,14 @@ class Vector2;
 
 struct BGTexture
 {
-	SDL_Texture* mTexture;
+	FTTexture* mTexture;
 	Vector2		 mOffset;
 };
 
 class BGSpriteComponent : public SpriteComponent
 {
 public:
-	void SetBGTextures(const std::vector<SDL_Texture*>& textures);
+	void SetBGTextures(const std::vector<FTTexture*>& textures);
 
 public:
 	float GetScrollSpeed() const { return mScrollSpeed; }
@@ -28,7 +28,7 @@ public:
 
 public:
 	void Update(float deltaTime) override;
-	virtual void Render(SDL_Renderer* renderer) override;
+	virtual void Render(FoxtrotRenderer* renderer) override;
 
 	CLONE(BGSpriteComponent);
 

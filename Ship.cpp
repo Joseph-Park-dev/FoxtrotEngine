@@ -34,23 +34,9 @@ void Ship::InitializeActor()
 
 void Ship::UpdateActor(float deltaTime)
 {
-	UpdateState();
+	//UpdateState();
 	UpdateAnimation();
 	mPreviousState = mCurrentState;
-}
-
-void Ship::UpdateState()
-{
-	if (KEY_TAP(KEY::LEFT))
-	{
-		mDirection = -1;
-		mCurrentState = PLAYER_STATE::WALKING_LEFT;
-	}
-	if (KEY_TAP(KEY::RIGHT))
-	{
-		mDirection = 1;
-		mCurrentState = PLAYER_STATE::WALKING_LEFT;
-	}
 }
 
 void Ship::UpdateAnimation()

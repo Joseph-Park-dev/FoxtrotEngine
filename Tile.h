@@ -1,9 +1,11 @@
 #pragma once
+#include "Bounds.h"
+
 class Tile
 {
 public:
-    SDL_Rect* GetMapRect()      { return &mMapRect; }
-    SDL_Rect* GetScreenRect()   { return &mScreenRect; }
+    Bounds*   GetMapRect()      { return &mMapRect; }
+    Bounds*   GetScreenRect()   { return &mScreenRect; }
     float     GetWidth()        { return mMapRect.w; }
     float     GetHeight()       { return mMapRect.h; }
     Vector2   GetPosOnMap()     { return Vector2(mMapRect.x, mMapRect.y); }
@@ -16,8 +18,8 @@ public:
     Vector2   GetPosOnScreen()  { return Vector2(mScreenRect.x, mScreenRect.y); }
     Vector2   GetScale()        { return Vector2(mScreenRect.w, mScreenRect.h); }
 
-    void    SetMapRect(SDL_Rect rect)    { mMapRect = rect; }
-    void    SetScreenRect(SDL_Rect rect) { mScreenRect = rect; }
+    void    SetMapRect(Bounds rect)      { mMapRect = rect; }
+    void    SetScreenRect(Bounds rect)   { mScreenRect = rect; }
     void    SetWidth(int width)          { mMapRect.w = width; }
     void    SetHeight(int height)        { mMapRect.h = height; }
     void    SetPosOnMap(Vector2 pos) 
@@ -47,9 +49,9 @@ public:
 
 private:
     // Tile rect value on tilemap
-    SDL_Rect mMapRect;
+    Bounds mMapRect;
     // Tile rect display on screen
-    SDL_Rect mScreenRect;
+    Bounds mScreenRect;
     // Tile value on tilemap
     int mTileNum;
     // Tile indexes on display screen

@@ -1,12 +1,11 @@
 {
   "name": "foxtrot-engine",
   "dependencies": [
-    "sdl2",
-    "sdl2-image",
-    {"name" : "imgui", "features" : ["sdl2-binding"]},
-    {"name" : "imgui", "features" : ["sdl2-renderer-binding"]},
+    {"name" : "imgui", "features" : ["win32-binding"]},
+    {"name" : "imgui", "features" : ["dx11-binding"]},
     {"name" : "imgui", "features" : ["docking-experimental"]},
     "nlohmann-json",
-    "directxtk"
+    "directxtk",
+    "stb"
   ]
 }

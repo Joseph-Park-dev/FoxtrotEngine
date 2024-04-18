@@ -1,5 +1,4 @@
 #include <vector>
-#include <SDL2/SDL.h>
 
 #include "CCore.h"
 #include "Physics2D.h"
@@ -44,20 +43,28 @@ void Physics2D::ResetRayCasts()
 	mRayCastHits.shrink_to_fit();
 }
 
-void Physics2D::RenderRayCastHits(SDL_Renderer* renderer)
+void Physics2D::RenderRayCastHits(FoxtrotRenderer* renderer)
 {
 	for (size_t i = 0; i < mRayCastHits.size(); ++i)
 	{
-		SDL_Rect rect = {};
-		rect.x = mRayCastHits[i].point.x;
-		rect.y = mRayCastHits[i].point.y;
-		rect.w = 10;
-		rect.h = 10;
-		SDL_RenderDrawRect
-		(
-			renderer,
-			&rect
-		);
+
+		/*
+		
+			Alternative of
+				SDL_Rect rect = {};
+				rect.x = mRayCastHits[i].point.x;
+				rect.y = mRayCastHits[i].point.y;
+				rect.w = 10;
+				rect.h = 10;
+				SDL_RenderDrawRect
+				(
+					renderer,
+					&rect
+				);
+		
+		*/
+
+		
 	}
 }
 

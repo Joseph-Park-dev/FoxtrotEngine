@@ -2,7 +2,6 @@
 #include <vector>
 #include <string>
 #include <typeinfo>
-#include <SDL2/SDL.h>
 
 #include "TemplateFunctions.h"
 #include "EventFunctions.h"
@@ -14,6 +13,7 @@ class KeyInputManager;
 class UIActor;
 class Scene;
 class Component;
+class FoxtrotRenderer;
 enum class ACTOR_TAG;
 enum class ACTOR_GROUP;
 
@@ -68,7 +68,7 @@ public:
 	Actor*		  GetParent()	  const	  { return mParent; }
 	std::vector<Component*>& GetComponents() { return mComponents; }
 	std::vector<Actor*>&     GetChildActors() { return mChild; }
-	Uint32		  GetID()	{ return mID; }
+	unsigned int  GetID()		{ return mID; }
 	static void   ResetNextID() { g_NextID = 0; }
 
 	void		  SetName(std::wstring name)		{ mName = name; }
@@ -98,13 +98,13 @@ public:
 	virtual void InitializeActor()					{};
 	virtual void UpdateActor	(float deltaTime)	{};
 	virtual void LateUpdateActor(float deltaTime)	{};
-	virtual void RenderActor(SDL_Renderer* renderer){};
+	virtual void RenderActor	(FoxtrotRenderer* renderer){};
 
 public:
 			void ProcessInput		 (KeyInputManager* keyInputManager);
 			void UpdateComponents	 (float deltaTime);
 			void LateUpdateComponents(float deltaTime);
-			void RenderComponents	 (SDL_Renderer* renderer);
+			void RenderComponents	 (FoxtrotRenderer* renderer);
 
 public:
 	Actor(Scene* scene);
@@ -116,7 +116,7 @@ public:
 	virtual Actor* Clone() { return nullptr; }
 
 private:
-	static Uint32					g_NextID;
+	static int						g_NextID;
 		   std::wstring				mName;
 		   int						mID;
 		   ACTOR_GROUP				mActorGroup;

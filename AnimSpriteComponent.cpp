@@ -1,5 +1,5 @@
 #include "AnimSpriteComponent.h"
-#include "Texture.h"
+#include "FTTexture.h"
 
 AnimSpriteComponent::AnimSpriteComponent(Actor* owner, int drawOrder, int updateOrder)
 	: SpriteComponent(owner, drawOrder)
@@ -22,7 +22,7 @@ void AnimSpriteComponent::Update(float deltaTime)
 	SetTexture(mAnimTextures[static_cast<int>(mCurrFrame)]);
 }
 
-void AnimSpriteComponent::SetAnimTextures(const std::vector<Texture*>& textures)
+void AnimSpriteComponent::SetAnimTextures(const std::vector<FTTexture*>& textures)
 {
 	mAnimTextures = textures;
 	if (mAnimTextures.size() > 0)

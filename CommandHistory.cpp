@@ -1,8 +1,8 @@
 #ifdef _DEBUG
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
-#include <imgui_impl_sdl2.h>
-#include <imgui_impl_sdlrenderer2.h>
+#include <imgui_impl_dx11.h>
+#include <imgui_impl_win32.h>
 #include <typeinfo>
 
 #include "CommandHistory.h"
@@ -97,12 +97,12 @@ void CommandHistory::Update()
 	if (EditorLayer::GetInstance()->GetUndoKeyPressed())
 	{
 		UndoCommand();
-		SDL_Log("pointer : %d, size : %d", mCommandPointer, mCommandDeq.size());
+		printf("pointer : %d, size : %d", mCommandPointer, mCommandDeq.size());
 	}
 	if (EditorLayer::GetInstance()->GetRedoKeyPressed())
 	{
 		RedoCommand();
-		SDL_Log("pointer : %d, size : %d", mCommandPointer, mCommandDeq.size());
+		printf("pointer : %d, size : %d", mCommandPointer, mCommandDeq.size());
 	}
 }
 

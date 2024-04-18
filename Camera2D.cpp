@@ -145,7 +145,7 @@ void Camera2D::SetTarget(int id)
 		mTargetActor = nullptr;
 		return;
 	}
-	for (Uint32 i = 0; i < (Uint32)ACTOR_GROUP::END; ++i)
+	for (size_t i = 0; i < (size_t)ACTOR_GROUP::END; ++i)
 	{
 		std::vector<Actor*>& actors = SceneManager::GetInstance()->GetCurrScene()->GetActorGroup(i);
 		std::vector<Actor*>::iterator iter = actors.begin();
@@ -187,7 +187,7 @@ bool Camera2D::IsInRenderedArea(SpriteComponent* sprite) const
 	float screenTop = screenPosLeftTop.y;
 	float screenBottom = screenPosRightBottom.y;
 
-	SDL_Rect* rect = sprite->GetRect();
+	Bounds* rect = sprite->GetRect();
 	int left = rect->x;
 	int right = rect->x + rect->w;
 	int top = rect->y;
@@ -273,16 +273,16 @@ void Camera2D::Shake(float duration, float magnitude)
 }
 
 #ifdef _DEBUG
-void Camera2D::Render(SDL_Renderer* renderer)
-{
-	SDL_SetRenderDrawColor
-	(
-		renderer,
-		0, 0, 0, mEffectAlpha
-	);
-	SDL_RenderFillRect(renderer, &mEffectArea);
-	SDL_RenderDrawRect(CCore::GetInstance()->GetEditorRenderer(), &mEffectArea);
-}
+//void Camera2D::Render(FoxtrotRenderer* renderer)
+//{
+//	SDL_SetRenderDrawColor
+//	(
+//		renderer,
+//		0, 0, 0, mEffectAlpha
+//	);
+//	SDL_RenderFillRect(renderer, &mEffectArea);
+//	//SDL_RenderDrawRect(CCore::GetInstance()->GetEditorRenderer(), &mEffectArea);
+//}
 #endif // _DEBUG
 
 Camera2D::Camera2D()

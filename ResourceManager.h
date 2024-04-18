@@ -1,11 +1,10 @@
 #pragma once
 #include <string>
 #include <unordered_map>
-#include <SDL2/SDL.h>
 
 #include "SingletonMacro.h"
 
-class Texture;
+class FTTexture;
 
 class ResourceManager
 {
@@ -13,12 +12,12 @@ class ResourceManager
 
 public:
 	void		LoadTexture(const std::wstring& strKey, const std::wstring& strRelativePath);
-	Texture*	GetLoadedTexture(const std::wstring& strKey);
-	Texture*	CreateTexture(const std::wstring& strKey, Uint32 width, Uint32 height);
+	FTTexture*	GetLoadedTexture(const std::wstring& strKey);
+	FTTexture*	CreateTexture(const std::wstring& strKey, UINT width, UINT height);
 
 private:
-	std::unordered_map<std::wstring, Texture*> mapTextures;
+	std::unordered_map<std::wstring, FTTexture*> mapTextures;
 
 private:
-	Texture* FindTexture(const std::wstring& strKey);
+	FTTexture* FindTexture(const std::wstring& strKey);
 };

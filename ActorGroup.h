@@ -12,7 +12,7 @@ enum class ACTOR_GROUP
 	END // This can be increased at one's will
 };
 
-const char* ActorGroup[(Uint32)ACTOR_GROUP::END] =
+const char* ActorGroup[(unsigned int)ACTOR_GROUP::END] =
 {
 	"DEFAULT",
 	"PLAYER",
@@ -23,7 +23,7 @@ const char* ActorGroup[(Uint32)ACTOR_GROUP::END] =
 
 const char* GetActorGroupStr(ACTOR_GROUP group)
 {
-	return ActorGroup[(Uint32)group];
+	return ActorGroup[(unsigned int)group];
 }
 
 std::unordered_map<std::string, ACTOR_GROUP> ActorGroupMap

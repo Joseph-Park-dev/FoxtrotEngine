@@ -12,7 +12,7 @@
 #include "ChunkLoader.h"
 #include "UIActor.h"
 
-Uint32 Actor::g_NextID = 0;
+int Actor::g_NextID = 0;
 
 Actor::Actor(Scene* scene)
 	: mState(EActive)
@@ -34,7 +34,7 @@ Actor::Actor(const Actor& origin)
 	, mComponents{}
 	, mChild{}
 { 
-	for (Uint32 i = 0; i < origin.mComponents.size(); ++i)
+	for (size_t i = 0; i < origin.mComponents.size(); ++i)
 		this->mComponents.emplace_back(origin.mComponents[i]->Clone());
 }
 
@@ -48,7 +48,7 @@ Actor::Actor(const Actor* origin)
 	, mComponents{}
 	, mChild{}
 {
-	for (Uint32 i = 0; i < origin->mComponents.size(); ++i)
+	for (size_t i = 0; i < origin->mComponents.size(); ++i)
 		this->mComponents.emplace_back(origin->mComponents[i]->Clone());
 }
 
@@ -89,13 +89,21 @@ void Actor::LateUpdateComponents(float deltaTime)
 	}
 }
 
-void Actor::RenderComponents(SDL_Renderer* renderer)
+void Actor::RenderComponents(FoxtrotRenderer* renderer)
 {
 	for (auto comp : mComponents)
 	{
 		comp->Render(renderer);
 	}
 }
+
+//void Actor::RenderComponents(FoxtrotRenderer* renderer)
+//{
+//	for (auto comp : mComponents)
+//	{
+//		comp->Render(renderer);
+//	}
+//}
 
 void Actor::AddComponent(Component* component)
 {

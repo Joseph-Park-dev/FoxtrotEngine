@@ -186,211 +186,60 @@ void FoxtrotRenderer::RenderClear(const float clearColor[4])
 
 bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 {
-	// 만약 그래픽스 카드 호환성 문제로 D3D11CreateDevice()가 실패하는 경우에는
-	// D3D_DRIVER_TYPE_HARDWARE 대신 D3D_DRIVER_TYPE_WARP 사용해보세요
-	// const D3D_DRIVER_TYPE driverType = D3D_DRIVER_TYPE_WARP;
-	const D3D_DRIVER_TYPE driverType = D3D_DRIVER_TYPE_HARDWARE;
+	mRenderWidth = width;
+	mRenderHeight = height;
 
-	// 여기서 생성하는 것들
-	// m_device, m_context, m_swapChain,
-	// m_renderTargetView, m_screenViewport, m_rasterizerState
-
-	// m_device와 m_context 생성
-
-	UINT createDeviceFlags = 0;
-#if defined(DEBUG) || defined(_DEBUG)
-	createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif
-
-	Microsoft::WRL::ComPtr<ID3D11Device> device;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext> context;
-
-	const D3D_FEATURE_LEVEL featureLevels[2] = {
-		D3D_FEATURE_LEVEL_11_0, // 더 높은 버전이 먼저 오도록 설정
-		D3D_FEATURE_LEVEL_9_3 };
-	D3D_FEATURE_LEVEL featureLevel;
-
-	if (FAILED(D3D11CreateDevice(
-		nullptr,                  // Specify nullptr to use the default adapter.
-		driverType,               // Create a device using the hardware graphics driver.
-		0,                        // Should be 0 unless the driver is D3D_DRIVER_TYPE_SOFTWARE.
-		createDeviceFlags,        // Set debug and Direct2D compatibility flags.
-		featureLevels,            // List of feature levels this app can support.
-		ARRAYSIZE(featureLevels), // Size of the list above.
-		D3D11_SDK_VERSION,		  // Always set this to D3D11_SDK_VERSION for Microsoft Store apps.
-		device.GetAddressOf(),	  // Returns the Direct3D device created.
-		&featureLevel,			  // Returns feature level of device created.
-		context.GetAddressOf()    // Returns the device immediate context.
-	)))
+	if (!CreateDeviceAndContext(window))
 	{
-		LogString("D3D11CreateDevice() failed.");
+		LogString("Create Device and Context failed");
+		LogString("Create SwapChain failed");
 		return false;
 	}
 
-	if (featureLevel != D3D_FEATURE_LEVEL_11_0)
+	if (!CreateRenderTarget())
 	{
-		LogString("D3D Feature Level 11 is unsupported.");
+		LogString("Create Render Target View failed.");
 		return false;
 	}
 
-	// 참고: Immediate vs deferred context
-	// A deferred context is primarily used for multithreading and is not necessary for a
-	// single-threaded application.
-	// https://learn.microsoft.com/en-us/windows/win32/direct3d11/overviews-direct3d-11-devices-intro#deferred-context
+	SetViewport();
 
-	// 4X MSAA 지원하는지 확인
-	UINT numQualityLevels;
-	device->CheckMultisampleQualityLevels(DXGI_FORMAT_R8G8B8A8_UNORM, 4, &numQualityLevels);
-	if (numQualityLevels <= 0) {
-		LogString("MSAA not supported.");
-	}
-
-	DXGI_SWAP_CHAIN_DESC sd;
-	ZeroMemory(&sd, sizeof(sd));
-	sd.BufferDesc.Width = width;               // set the back buffer width
-	sd.BufferDesc.Height = height;             // set the back buffer height
-	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // use 32-bit color
-	sd.BufferCount = 2;                                // Double-buffering
-	sd.BufferDesc.RefreshRate.Numerator = 60;
-	sd.BufferDesc.RefreshRate.Denominator = 1;
-	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;  // how swap chain is to be used
-	sd.OutputWindow = window;                    // the window to be used
-	sd.Windowed = TRUE;                                // windowed/full-screen mode
-	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // allow full-screen switching
-	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-	if (numQualityLevels > 0) {
-		sd.SampleDesc.Count = 4; // how many multisamples
-		sd.SampleDesc.Quality = numQualityLevels - 1;
-	}
-	else {
-		sd.SampleDesc.Count = 1; // how many multisamples
-		sd.SampleDesc.Quality = 0;
-	}
-
-	if (FAILED(device.As(&mDevice))) {
-		LogString("device.AS() failed.");
+	if (!CreateRasterizerState())
+	{
+		LogString("Create Rasterizer State failed.");
 		return false;
 	}
-	if (FAILED(context.As(&mContext))) {
-		LogString("context.As() failed.");
+	
+	if (!CreateDepthBuffer())
+	{
+		LogString("Create Depth Buffer failed.");
 		return false;
 	}
 
-	if (FAILED(D3D11CreateDeviceAndSwapChain(
-		0, // Default adapter
-		driverType,
-		0, // No software device
-		createDeviceFlags, featureLevels, 1, D3D11_SDK_VERSION,
-		&sd, &mSwapChain, &mDevice, &featureLevel,
-		&mContext)))
+	if (!CreateDepthStencilState())
 	{
-		LogString("D3D11CreateDeviceAndSwapChain() failed.");
+		LogString("Create Depth Stencil State failed.");
 		return false;
 	}
-
-	// CreateRenderTarget
-	ID3D11Texture2D* pBackBuffer;
-	mSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
-	if (pBackBuffer) {
-		mDevice->CreateRenderTargetView(pBackBuffer, NULL, &mRenderTargetView);
-		pBackBuffer->Release();
-	}
-	else {
-		LogString("CreateRenderTargetView() failed.");
+	
+	if (!CreateBlendState())
+	{
+		LogString("Create Blend State failed.");
 		return false;
 	}
-	// Set the viewport
-	ZeroMemory(&mScreenViewport, sizeof(D3D11_VIEWPORT));
-	mScreenViewport.TopLeftX = 0;
-	mScreenViewport.TopLeftY = 0;
-	mScreenViewport.Width = float(width);
-	mScreenViewport.Height = float(height);
-	// m_screenViewport.Width = static_cast<float>(m_screenHeight);
-	mScreenViewport.MinDepth = 0.0f;
-	mScreenViewport.MaxDepth = 1.0f; // Note: important for depth buffering
-	mContext->RSSetViewports(1, &mScreenViewport);
-
-	// Create a rasterizer state
-	D3D11_RASTERIZER_DESC rastDesc;
-	ZeroMemory(&rastDesc, sizeof(D3D11_RASTERIZER_DESC)); // Need this
-	rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-	// rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_WIREFRAME;
-	rastDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
-	rastDesc.FrontCounterClockwise = false;
-
-	mDevice->CreateRasterizerState(&rastDesc, &mRasterizerState);
-
-	// Create depth buffer
-	D3D11_TEXTURE2D_DESC depthStencilBufferDesc;
-	depthStencilBufferDesc.Width = width;
-	depthStencilBufferDesc.Height = height;
-	depthStencilBufferDesc.MipLevels = 1;
-	depthStencilBufferDesc.ArraySize = 1;
-	depthStencilBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	if (numQualityLevels > 0) {
-		depthStencilBufferDesc.SampleDesc.Count = 4; // how many multisamples
-		depthStencilBufferDesc.SampleDesc.Quality = numQualityLevels - 1;
-	}
-	else {
-		depthStencilBufferDesc.SampleDesc.Count = 1; // how many multisamples
-		depthStencilBufferDesc.SampleDesc.Quality = 0;
-	}
-	depthStencilBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	depthStencilBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	depthStencilBufferDesc.CPUAccessFlags = 0;
-	depthStencilBufferDesc.MiscFlags = 0;
-
-	if (FAILED(mDevice->CreateTexture2D(&depthStencilBufferDesc, 0,
-		mDepthStencilBuffer.GetAddressOf())))
-	{
-		LogString("CreateTexture2D() failed.");
-	}
-	if (FAILED(
-		mDevice->CreateDepthStencilView(mDepthStencilBuffer.Get(), 0, &mDepthStencilView)))
-	{
-		LogString("CreateDepthStencilView() failed.");
-	}
-
-	// Create depth stencil state
-	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
-	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-	depthStencilDesc.DepthEnable = true; // false
-	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ALL;
-	depthStencilDesc.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL;
-	if (FAILED(mDevice->CreateDepthStencilState(&depthStencilDesc,mDepthStencilState.GetAddressOf())))
-	{
-		LogString("CreateDepthStencilState() failed.");
-	}
-
-	mWallTexture.CreateTexture("./Assets/Asteroid.png", mDevice);
-
-	D3D11_BLEND_DESC omDesc;
-	ZeroMemory(&omDesc,sizeof(D3D11_BLEND_DESC));
-	omDesc.RenderTarget[0].BlendEnable =true;
-	omDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-	omDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-	omDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	omDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	omDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	omDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	omDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-
-	mDevice->CreateBlendState(&omDesc, mBlendState.GetAddressOf());
 	mContext->OMSetBlendState(mBlendState.Get(), 0, 0xffffffff);
 
-	// FTTexture sampler 만들기
-	D3D11_SAMPLER_DESC sampDesc;
-	ZeroMemory(&sampDesc, sizeof(sampDesc));
-	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	sampDesc.MinLOD = 0;
-	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	if (!ImportTextures())
+	{
+		LogString("Error : Unsuccessful FTTexture import");
+		return false;
+	}
 
-	// Create the Sample State
-	mDevice->CreateSamplerState(&sampDesc, mSamplerState.GetAddressOf());
+	if (!CreateSamplerState())
+	{
+		LogString("Create Sampler State failed.");
+		return false;
+	}
 
 	// Geometry 정의
 	auto [vertices, indices] = MakeSquare();
@@ -446,6 +295,252 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 
 	CreatePixelShader(L"ColorPixelShader.hlsl", mColorPixelShader);
 
+	return true;
+}
+
+bool FoxtrotRenderer::CreateDeviceAndContext(HWND window)
+{
+	// 만약 그래픽스 카드 호환성 문제로 D3D11CreateDevice()가 실패하는 경우에는
+	// D3D_DRIVER_TYPE_HARDWARE 대신 D3D_DRIVER_TYPE_WARP 사용해보세요
+	// const D3D_DRIVER_TYPE driverType = D3D_DRIVER_TYPE_WARP;
+	const D3D_DRIVER_TYPE driverType = D3D_DRIVER_TYPE_HARDWARE;
+
+	// 여기서 생성하는 것들
+	// m_device, m_context, m_swapChain,
+	// m_renderTargetView, m_screenViewport, m_rasterizerState
+
+	// m_device와 m_context 생성
+
+	mCreateDeviceFlags = 0;
+#if defined(DEBUG) || defined(_DEBUG)
+	mCreateDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+
+	Microsoft::WRL::ComPtr<ID3D11Device> device;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> context;
+
+	const D3D_FEATURE_LEVEL featureLevels[2] = {
+		D3D_FEATURE_LEVEL_11_0, // 더 높은 버전이 먼저 오도록 설정
+		D3D_FEATURE_LEVEL_9_3 };
+	D3D_FEATURE_LEVEL featureLevel;
+
+	if (FAILED(D3D11CreateDevice(
+		nullptr,                  // Specify nullptr to use the default adapter.
+		driverType,               // Create a device using the hardware graphics driver.
+		0,                        // Should be 0 unless the driver is D3D_DRIVER_TYPE_SOFTWARE.
+		mCreateDeviceFlags,        // Set debug and Direct2D compatibility flags.
+		featureLevels,            // List of feature levels this app can support.
+		ARRAYSIZE(featureLevels), // Size of the list above.
+		D3D11_SDK_VERSION,		  // Always set this to D3D11_SDK_VERSION for Microsoft Store apps.
+		device.GetAddressOf(),	  // Returns the Direct3D device created.
+		&featureLevel,			  // Returns feature level of device created.
+		context.GetAddressOf()    // Returns the device immediate context.
+	)))
+	{
+		LogString("D3D11CreateDevice() failed.");
+		return false;
+	}
+
+	if (featureLevel != D3D_FEATURE_LEVEL_11_0)
+	{
+		LogString("D3D Feature Level 11 is unsupported.");
+		return false;
+	}
+
+	// 참고: Immediate vs deferred context
+	// A deferred context is primarily used for multithreading and is not necessary for a
+	// single-threaded application.
+	// https://learn.microsoft.com/en-us/windows/win32/direct3d11/overviews-direct3d-11-devices-intro#deferred-context
+
+	// 4X MSAA 지원하는지 확인
+
+	device->CheckMultisampleQualityLevels(DXGI_FORMAT_R8G8B8A8_UNORM, 4, &mNumQualityLevels);
+	if (mNumQualityLevels <= 0) {
+		LogString("MSAA not supported.");
+	}
+
+	DXGI_SWAP_CHAIN_DESC sd;
+	ZeroMemory(&sd, sizeof(sd));
+	sd.BufferDesc.Width = mRenderWidth;               // set the back buffer width
+	sd.BufferDesc.Height = mRenderHeight;             // set the back buffer height
+	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // use 32-bit color
+	sd.BufferCount = 2;                                // Double-buffering
+	sd.BufferDesc.RefreshRate.Numerator = 60;
+	sd.BufferDesc.RefreshRate.Denominator = 1;
+	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;  // how swap chain is to be used
+	sd.OutputWindow = window;                    // the window to be used
+	sd.Windowed = TRUE;                                // windowed/full-screen mode
+	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // allow full-screen switching
+	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	if (mNumQualityLevels > 0) {
+		sd.SampleDesc.Count = 4; // how many multisamples
+		sd.SampleDesc.Quality = mNumQualityLevels - 1;
+	}
+	else {
+		sd.SampleDesc.Count = 1; // how many multisamples
+		sd.SampleDesc.Quality = 0;
+	}
+
+	if (FAILED(device.As(&mDevice))) {
+		LogString("device.AS() failed.");
+		return false;
+	}
+	if (FAILED(context.As(&mContext))) {
+		LogString("context.As() failed.");
+		return false;
+	}
+
+	if (FAILED(D3D11CreateDeviceAndSwapChain(
+		0, // Default adapter
+		driverType,
+		0, // No software device
+		mCreateDeviceFlags, featureLevels, 1, D3D11_SDK_VERSION,
+		&sd, &mSwapChain, &mDevice, &featureLevel,
+		&mContext)))
+	{
+		LogString("D3D11CreateDeviceAndSwapChain() failed.");
+		return false;
+	}
+	return true;
+}
+
+bool FoxtrotRenderer::CreateRenderTarget()
+{
+	// CreateRenderTarget
+	ID3D11Texture2D* pBackBuffer;
+	mSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+	if (pBackBuffer) {
+		mDevice->CreateRenderTargetView(pBackBuffer, NULL, &mRenderTargetView);
+		pBackBuffer->Release();
+		return true;
+	}
+	else
+		return false;
+}
+
+void FoxtrotRenderer::SetViewport()
+{
+	// Set the viewport
+	ZeroMemory(&mScreenViewport, sizeof(D3D11_VIEWPORT));
+	mScreenViewport.TopLeftX = 0;
+	mScreenViewport.TopLeftY = 0;
+	mScreenViewport.Width = float(mRenderWidth);
+	mScreenViewport.Height = float(mRenderHeight);
+	// m_screenViewport.Width = static_cast<float>(m_screenHeight);
+	mScreenViewport.MinDepth = 0.0f;
+	mScreenViewport.MaxDepth = 1.0f; // Note: important for depth buffering
+	mContext->RSSetViewports(1, &mScreenViewport);
+}
+
+bool FoxtrotRenderer::CreateRasterizerState()
+{
+	// Create a rasterizer state
+	D3D11_RASTERIZER_DESC rastDesc;
+	ZeroMemory(&rastDesc, sizeof(D3D11_RASTERIZER_DESC)); // Need this
+	rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+	// rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_WIREFRAME;
+	rastDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
+	rastDesc.FrontCounterClockwise = false;
+
+	if (FAILED(mDevice->CreateRasterizerState(&rastDesc, &mRasterizerState)))
+		return false;
+	return true;
+}
+
+bool FoxtrotRenderer::CreateDepthBuffer()
+{
+	// Create depth buffer
+	D3D11_TEXTURE2D_DESC depthStencilBufferDesc;
+	depthStencilBufferDesc.Width = mRenderWidth;
+	depthStencilBufferDesc.Height = mRenderHeight;
+	depthStencilBufferDesc.MipLevels = 1;
+	depthStencilBufferDesc.ArraySize = 1;
+	depthStencilBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	if (mNumQualityLevels > 0) {
+		depthStencilBufferDesc.SampleDesc.Count = 4; // how many multisamples
+		depthStencilBufferDesc.SampleDesc.Quality = mNumQualityLevels - 1;
+	}
+	else {
+		depthStencilBufferDesc.SampleDesc.Count = 1; // how many multisamples
+		depthStencilBufferDesc.SampleDesc.Quality = 0;
+	}
+	depthStencilBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthStencilBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	depthStencilBufferDesc.CPUAccessFlags = 0;
+	depthStencilBufferDesc.MiscFlags = 0;
+
+	if (FAILED(mDevice->CreateTexture2D(&depthStencilBufferDesc, 0,
+		mDepthStencilBuffer.GetAddressOf())))
+	{
+		LogString("CreateTexture2D() failed.");
+		return false;
+	}
+	if (FAILED(
+		mDevice->CreateDepthStencilView(mDepthStencilBuffer.Get(), 0, &mDepthStencilView)))
+	{
+		LogString("CreateDepthStencilView() failed.");
+		return false;
+	}
+	return true;
+}
+
+bool FoxtrotRenderer::CreateDepthStencilState()
+{
+	// Create depth stencil state
+	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	depthStencilDesc.DepthEnable = true; // false
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL;
+	if (FAILED(mDevice->CreateDepthStencilState(&depthStencilDesc, mDepthStencilState.GetAddressOf())))
+	{
+		LogString("CreateDepthStencilState() failed.");
+		return false;
+	}
+	return true;
+}
+
+bool FoxtrotRenderer::CreateBlendState()
+{
+	D3D11_BLEND_DESC omDesc;
+	ZeroMemory(&omDesc, sizeof(D3D11_BLEND_DESC));
+	omDesc.RenderTarget[0].BlendEnable = true;
+	omDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	omDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	omDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	omDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	omDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	omDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	omDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	if (FAILED(mDevice->CreateBlendState(&omDesc, mBlendState.GetAddressOf())))
+		return false;
+	return true;
+}
+
+bool FoxtrotRenderer::ImportTextures()
+{
+	if(!mWallTexture.CreateTexture("./Assets/Asteroid.png", mDevice))
+		return false;
+	return true;
+}
+
+bool FoxtrotRenderer::CreateSamplerState()
+{
+	// FTTexture sampler 만들기
+	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	// Create the Sample State
+	if (FAILED(mDevice->CreateSamplerState(&sampDesc, mSamplerState.GetAddressOf())))
+		return false;
 	return true;
 }
 

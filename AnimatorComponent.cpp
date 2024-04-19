@@ -43,7 +43,7 @@ void AnimatorComponent::CreateAnimationFromTile(
 		mMapAnimation.insert(std::make_pair(name, animation));
 	}
 	else
-		printf("Animation %ls has already been created", name.c_str());
+		LogString(L"Animation has already been created", name.c_str());
 }
 
 void AnimatorComponent::Play(const std::wstring& name, bool isRepeating)
@@ -61,7 +61,7 @@ Animation* AnimatorComponent::FindAnimation(const std::wstring& name)
 	std::unordered_map<std::wstring, Animation*>::iterator iter = mMapAnimation.find(name);
 	if (iter == mMapAnimation.end())
 	{
-		printf("Cannot find animation %ls", name.c_str());
+		LogString(L"Cannot find animation", name.c_str());
 		return nullptr;
 	}
 	else
@@ -70,7 +70,7 @@ Animation* AnimatorComponent::FindAnimation(const std::wstring& name)
 			return iter->second;
 		else
 		{
-			printf("Animation %ls is null", name.c_str());
+			LogString(L"Animation is null", name.c_str());
 			return nullptr;
 		}
 	}

@@ -97,12 +97,10 @@ void CommandHistory::Update()
 	if (EditorLayer::GetInstance()->GetUndoKeyPressed())
 	{
 		UndoCommand();
-		printf("pointer : %d, size : %d", mCommandPointer, mCommandDeq.size());
 	}
 	if (EditorLayer::GetInstance()->GetRedoKeyPressed())
 	{
 		RedoCommand();
-		printf("pointer : %d, size : %d", mCommandPointer, mCommandDeq.size());
 	}
 }
 

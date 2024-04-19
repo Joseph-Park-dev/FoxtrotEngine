@@ -23,57 +23,67 @@
 
 void LogInt(int val)
 {
-	printf("int : %d", val);
+	printf("int : %d\n", val);
 }
 
 void LogInt(std::string message, int val)
 {
-	std::string msg = message + std::to_string(val);
+	std::string msg = message + std::to_string(val) + "\n";
 	printf(msg.c_str());
 }
 
 void LogFloat(float val)
 {
-	printf("float : %f", val);
+	printf("float : %f\n", val);
 }
 
 void LogFloat(std::string message, float val)
 {
-	std::string msg = message + std::to_string(val);
+	std::string msg = message + std::to_string(val) + "\n";
 	printf(msg.c_str());
 }
 
 void LogVector2(Vector2 val)
 {
-	printf("X : %f Y : %f", val.x, val.y);
+	printf("X : %f Y : %f\n", val.x, val.y);
 }
 
 void LogVector2(std::string message, Vector2 val)
 {
-	printf("%s, X : %f Y : %f", message.c_str(), val.x, val.y);
+	printf("%s, X : %f Y : %f\n", message.c_str(), val.x, val.y);
 }
 
 void LogRect(Bounds bound)
 {
-	printf("Pos X : %f, Pos Y : %f, Width : %f, Height : %f", bound.x, bound.y, bound.w, bound.h);
+	printf("Pos X : %f, Pos Y : %f, Width : %f, Height : %f\n", bound.x, bound.y, bound.w, bound.h);
 }
 
 void LogBool(bool val)
 {
 	if (val)
-		printf("Bool Log : True");
+		printf("Bool Log : True\n");
 	else
-		printf("Bool Log : False");
+		printf("Bool Log : False\n");
 }
 
 void LogString(std::wstring val)
 {
-	printf("%ls", val.c_str());
+	printf("%ls\n", val.c_str());
 }
 
 void LogString(std::string val)
 {
-	printf("%s", val.c_str());
+	printf("%s\n", val.c_str());
+}
+
+void LogString(std::wstring message, std::wstring val)
+{
+	printf("%ls\n", (message + L" :" + val).c_str());
+}
+
+void LogString(std::string message, std::string val)
+{
+	printf("%s\n", (message + " :" + val).c_str());
 }
 
 static std::wstring ToWString(const std::string& text)

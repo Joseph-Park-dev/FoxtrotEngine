@@ -14,7 +14,7 @@ private:
     friend class ResourceManager;
 
 public:
-    void CreateTexture(const std::string filename, Microsoft::WRL::ComPtr<ID3D11Device> device);
+    bool CreateTexture(const std::string filename, Microsoft::WRL::ComPtr<ID3D11Device> device);
 
 public:
     Microsoft::WRL::ComPtr<ID3D11Texture2D> mTexture;

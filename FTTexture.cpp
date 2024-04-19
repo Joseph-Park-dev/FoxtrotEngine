@@ -8,8 +8,9 @@
 #include <wrl.h> // ComPtr
 
 #include "CCore.h"
+#include "TemplateFunctions.h"
 
-void FTTexture::CreateTexture(const std::string filename, Microsoft::WRL::ComPtr<ID3D11Device> device)
+bool FTTexture::CreateTexture(const std::string filename, Microsoft::WRL::ComPtr<ID3D11Device> device)
 {
     int width, height, channels;
 
@@ -44,7 +45,17 @@ void FTTexture::CreateTexture(const std::string filename, Microsoft::WRL::ComPtr
 
     // ShaderResourceView   specifies the subresources a shader can access during rendering.
     // Examples of shader resources include a constant buffer, a texture buffer, and a texture.
-    device->CreateTexture2D(&txtDesc, &InitData, mTexture.GetAddressOf());
-    device->CreateShaderResourceView(mTexture.Get(), nullptr,
-        mTextureResourceView.GetAddressOf());
+
+    if (FAILED(device->CreateTexture2D(&txtDesc, &InitData, mTexture.GetAddressOf())))
+    {
+        LogString("Create Texture failed : " + filename);
+        return false;
+    }
+    if (FAILED(device->CreateShaderResourceView(mTexture.Get(), nullptr,
+        mTextureResourceView.GetAddressOf())))
+    {
+        LogString("Create Shader Resource View failed : " + filename);
+        return false;
+    }
+    return true;
 }

@@ -9,11 +9,11 @@ void ResourceManager::LoadTexture(const std::wstring& strKey, const std::wstring
 	FTTexture* ptTex = FindTexture(strKey);
 	if (ptTex != nullptr)
 	{
-		printf("Warning : FTTexture %ls is already loaded from %ls", strKey.c_str(), strRelativePath.c_str());
+		printf("Warning : FTTexture %ls is already loaded from %ls\n", strKey.c_str(), strRelativePath.c_str());
 	}
 	else
 	{
-		printf("Message: Loading FTTexture %ls from %ls...", strKey.c_str(), strRelativePath.c_str());
+		printf("Message: Loading FTTexture %ls from %ls...\n", strKey.c_str(), strRelativePath.c_str());
 		ptTex = new FTTexture;
 		ptTex->SetKey(strKey);
 		ptTex->SetRelativePath(strRelativePath);
@@ -38,7 +38,7 @@ FTTexture* ResourceManager::GetLoadedTexture(const std::wstring& strKey)
 	}
 	else
 	{
-		printf("Error: Unable to find FTTexture with strKey; %ls", strKey.c_str());
+		printf("Error: Unable to find FTTexture with strKey; %ls\n", strKey.c_str());
 		return nullptr;
 	}
 }
@@ -64,7 +64,7 @@ FTTexture* ResourceManager::FindTexture(const std::wstring& strKey)
 	}
 	else
 	{
-		printf("Error: Cannot find texture %ls", strKey.c_str());
+		printf("Error: Cannot find texture %ls\n", strKey.c_str());
 		return nullptr;
 	}
 }

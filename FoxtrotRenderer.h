@@ -50,6 +50,8 @@ public:
 private:
     int mRenderWidth;
     int mRenderHeight;
+    UINT mNumQualityLevels;
+    UINT mCreateDeviceFlags;
 
 private:
     FTTexture mWallTexture;
@@ -106,9 +108,19 @@ public:
 
 private:
 	bool Initialize(HWND window, int width, int height);
-    bool CreateDeviceAndContext(HWND window, int width, int height);
-    bool CreateSwapChain(const D3D_DRIVER_TYPE driverType);
+    bool CreateDeviceAndContext(HWND window);
     bool CreateRenderTarget();
+    void SetViewport();
+
+    bool CreateRasterizerState();
+    bool CreateDepthBuffer();
+    bool CreateDepthStencilState();
+    bool CreateBlendState();
+    bool CreateSamplerState();
+
+    bool ImportTextures();
+
+
     void CreateIndexBuffer(const std::vector<uint16_t>& indices, ComPtr<ID3D11Buffer>& m_indexBuffer);
 
     template <typename T_VERTEX>

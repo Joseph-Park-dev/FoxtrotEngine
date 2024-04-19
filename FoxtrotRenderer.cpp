@@ -9,6 +9,10 @@
 #include "TemplateFunctions.h"
 
 auto MakeSquare() {
+	using DirectX::SimpleMath::Vector2;
+	using DirectX::SimpleMath::Vector3;
+	using DirectX::SimpleMath::Vector4;
+
 	std::vector<Vector3> positions;
 	std::vector<Vector3> colors;
 	std::vector<Vector3> normals;
@@ -21,9 +25,9 @@ auto MakeSquare() {
 	positions.push_back(Vector3(1.0f, 1.0f, 0.0f) * scale);
 	positions.push_back(Vector3(1.0f, -1.0f, 0.0f) * scale);
 	positions.push_back(Vector3(-1.0f, -1.0f, 0.0f) * scale);
+	colors.push_back(Vector3(0.0f, 1.0f, 1.0f));
 	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+	colors.push_back(Vector3(0.0f, 1.0f, 1.0f));
 	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
 	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
 	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
@@ -80,6 +84,96 @@ void FoxtrotRenderer::DestroyRenderer(FoxtrotRenderer* renderer)
 void FoxtrotRenderer::SwapChainPresent(UINT syncInterval, UINT flags)
 {
 	mSwapChain->Present(syncInterval, flags);
+}
+
+void FoxtrotRenderer::Update()
+{
+	using namespace DirectX;
+
+	// 모델의 변환
+	mConstantBufferData.model =
+		DirectX::SimpleMath::Matrix::CreateScale(1.5f) *
+		DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 1.0f));
+	mConstantBufferData.model = mConstantBufferData.model.Transpose();
+
+	// 시점 변환
+	// m_constantBufferData.view = XMMatrixLookAtLH(m_viewEye, m_viewFocus,
+	// m_viewUp);
+	mConstantBufferData.view =
+		XMMatrixLookToLH(mViewEyePos, mViewEyeDir, mViewUp);
+	mConstantBufferData.view = mConstantBufferData.view.Transpose();
+
+	// 프로젝션
+	// m_aspect = AppBase::GetAspectRatio(); // <- GUI에서 조절
+	if (m_usePerspectiveProjection) {
+		mConstantBufferData.projection = XMMatrixPerspectiveFovLH(
+			XMConvertToRadians(mProjFovAngleY), mAspect, mNearZ, mFarZ);
+	}
+	else {
+		mConstantBufferData.projection = XMMatrixOrthographicOffCenterLH(
+			-mAspect, mAspect, -1.0f, 1.0f, mNearZ, mFarZ);
+	}
+	mConstantBufferData.projection =
+		mConstantBufferData.projection.Transpose();
+
+	// Constant를 CPU에서 GPU로 복사
+	UpdateBuffer(mConstantBufferData, mConstantBuffer);
+
+	UpdateBuffer(mPixelShaderConstantBufferData,
+		mPixelShaderConstantBuffer);
+}
+
+void FoxtrotRenderer::Render()
+{
+	// 왜 여기로? => Pixel shader에게 텍스처와 셈플러 두가지를 넘겨주기 위함
+	// RS: Rasterizer stage
+	// OM: Output-Merger stage
+	// VS: Vertex Shader
+	// PS: Pixel Shader
+	// IA: Input-Assembler stage
+
+	mContext->RSSetViewports(1, &mScreenViewport);
+
+	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	mContext->ClearRenderTargetView(mRenderTargetView.Get(), clearColor);
+	mContext->ClearDepthStencilView(mDepthStencilView.Get(),
+		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
+		1.0f, 0);
+
+	// 비교: Depth Buffer를 사용하지 않는 경우
+	// m_context->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(),
+	// nullptr);
+	// Render target 지정 가능 -> 어떤 메모리에 렌더링을 할지를 지정 가능
+	// Render target 여러개도 가능 (여러개의 Render target, or 여러개의 Pass(단계))
+	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(),
+		mDepthStencilView.Get());
+	mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
+
+	// 어떤 쉐이더를 사용할지 설정
+	mContext->VSSetShader(mColorVertexShader.Get(), 0, 0);
+	mContext->VSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
+
+	ID3D11ShaderResourceView* pixelResources[1] = {
+		mWallTexture.mTextureResourceView.Get()
+	};
+
+	mContext->PSSetShaderResources(0, 1, pixelResources);
+	mContext->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
+
+	mContext->PSSetConstantBuffers(0, 1,
+		mPixelShaderConstantBuffer.GetAddressOf());
+	mContext->PSSetShader(mColorPixelShader.Get(), 0, 0);
+	mContext->RSSetState(mRasterizerState.Get());
+
+	// 버텍스/인덱스 버퍼 설정
+	UINT stride = sizeof(Vertex);
+	UINT offset = 0;
+	mContext->IASetInputLayout(mColorInputLayout.Get());
+	mContext->IASetVertexBuffers(0, 1, mVertexBuffer.GetAddressOf(), &stride,
+		&offset);
+	mContext->IASetIndexBuffer(mIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+	mContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	mContext->DrawIndexed(mIndexCount, 0, 0);
 }
 
 void FoxtrotRenderer::RenderClear(const float clearColor[4])
@@ -268,10 +362,21 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 		LogString("CreateDepthStencilState() failed.");
 	}
 
-	/*
-		TEXTURE INITIALIZATION CODE
-		CAN BE HERE
-	*/
+	mWallTexture.CreateTexture("./Assets/Asteroid.png", mDevice);
+
+	D3D11_BLEND_DESC omDesc;
+	ZeroMemory(&omDesc,sizeof(D3D11_BLEND_DESC));
+	omDesc.RenderTarget[0].BlendEnable =true;
+	omDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	omDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	omDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	omDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	omDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	omDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	omDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	mDevice->CreateBlendState(&omDesc, mBlendState.GetAddressOf());
+	mContext->OMSetBlendState(mBlendState.Get(), 0, 0xffffffff);
 
 	// FTTexture sampler 만들기
 	D3D11_SAMPLER_DESC sampDesc;
@@ -294,14 +399,14 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 	CreateVertexBuffer<Vertex>(vertices, mVertexBuffer);
 
 	// 인덱스 버퍼 만들기
-	m_indexCount = UINT(indices.size());
+	mIndexCount = UINT(indices.size());
 
 	CreateIndexBuffer(indices, mIndexBuffer);
 
 	// ConstantBuffer 만들기
-	mConstantBufferData.model = Matrix();
-	mConstantBufferData.view = Matrix();
-	mConstantBufferData.projection = Matrix();
+	mConstantBufferData.model = DirectX::SimpleMath::Matrix();
+	mConstantBufferData.view = DirectX::SimpleMath::Matrix();
+	mConstantBufferData.projection = DirectX::SimpleMath::Matrix();
 
 	CreateConstantBuffer(mConstantBufferData, mConstantBuffer);
 
@@ -335,11 +440,11 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 		 D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 
-	/*CreateVertexShaderAndInputLayout(
+	CreateVertexShaderAndInputLayout(
 		L"ColorVertexShader.hlsl", inputElements, mColorVertexShader,
 		mColorInputLayout);
 
-	CreatePixelShader(L"ColorPixelShader.hlsl", mColorPixelShader);*/
+	CreatePixelShader(L"ColorPixelShader.hlsl", mColorPixelShader);
 
 	return true;
 }
@@ -428,7 +533,6 @@ void FoxtrotRenderer::CreatePixelShader(const std::wstring& filename,
 		shaderBlob->GetBufferSize(), NULL,
 		&pixelShader);
 }
-
 
 FoxtrotRenderer::FoxtrotRenderer()
 {}

@@ -22,10 +22,12 @@ float4 main(PixelShaderInput input) : SV_TARGET {
     //    return color * 1.5f;
     //}
     //else
-    //    return g_texture0.Sample(g_sampler, input.texcoord);
-    return input.texcoord.x > xSplit
-               ? g_texture0.Sample(g_sampler, input.texcoord)
-                : g_texture1.Sample(g_sampler, input.texcoord);
+    return g_texture0.Sample(g_sampler, input.texcoord);
+    //return input.texcoord.x > xSplit
+    //           ? g_texture0.Sample(g_sampler, input.texcoord)
+    //            : g_texture1.Sample(g_sampler, input.texcoord);
+    
+   // return float4(input.color, 1.0);
 }
 
 

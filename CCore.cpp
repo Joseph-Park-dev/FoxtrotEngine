@@ -276,8 +276,11 @@ void CCore::UpdateGame()
 void CCore::GenerateOutput()
 {
 #ifdef _DEBUG
-	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	mEditorRenderer->RenderClear(clearColor);
+	/*float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	mEditorRenderer->RenderClear(clearColor);*/
+
+	mEditorRenderer->Update();
+	mEditorRenderer->Render();
 
 	if (mIsUpdatingGame)
 	{

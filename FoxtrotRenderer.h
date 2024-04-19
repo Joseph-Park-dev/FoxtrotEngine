@@ -9,18 +9,17 @@
 #include "FTTexture.h"
 
 using namespace Microsoft::WRL;
-using DirectX::SimpleMath::Matrix;
 
 struct Vertex {
-    Vector3 position;
-    Vector3 color;
-    Vector2 texcoord;
+    DirectX::SimpleMath::Vector3 position;
+    DirectX::SimpleMath::Vector3 color;
+    DirectX::SimpleMath::Vector2 texcoord;
 };
 
 struct ModelViewProjectionConstantBuffer {
-    Matrix model;
-    Matrix view;
-    Matrix projection;
+    DirectX::SimpleMath::Matrix model;
+    DirectX::SimpleMath::Matrix view;
+    DirectX::SimpleMath::Matrix projection;
 };
 static_assert((sizeof(ModelViewProjectionConstantBuffer) % 16) == 0,
     "Constant Buffer size must be 16-byte aligned");
@@ -40,6 +39,8 @@ public:
 
 public:
 	void SwapChainPresent(UINT syncInterval, UINT flags);
+    void Update();
+    void Render();
 	void RenderClear(const float clearColor[4]);
 
 public:
@@ -47,6 +48,14 @@ public:
 	ID3D11DeviceContext* GetContext() { return mContext.Get(); }
 
 private:
+    int mRenderWidth;
+    int mRenderHeight;
+
+private:
+    FTTexture mWallTexture;
+
+    ComPtr<ID3D11BlendState>        mBlendState;
+
 	ComPtr<ID3D11Device>			mDevice;
 	ComPtr<ID3D11DeviceContext>		mContext;
 	ComPtr<ID3D11RenderTargetView>	mRenderTargetView;
@@ -71,16 +80,35 @@ private:
     ComPtr<ID3D11Buffer> mIndexBuffer;
     ComPtr<ID3D11Buffer> mConstantBuffer;
     ComPtr<ID3D11Buffer> mPixelShaderConstantBuffer;
-    UINT m_indexCount;
+    UINT mIndexCount;
 
     ModelViewProjectionConstantBuffer mConstantBufferData;
     PixelShaderConstantBuffer mPixelShaderConstantBufferData;
+
+    bool m_usePerspectiveProjection = true;
+    DirectX::SimpleMath::Vector3 mModelTranslation = DirectX::SimpleMath::Vector3(0.0f);
+    DirectX::SimpleMath::Vector3 mModelRotation = DirectX::SimpleMath::Vector3(0.0f);
+    DirectX::SimpleMath::Vector3 mModelScaling = DirectX::SimpleMath::Vector3(0.5f);
+    DirectX::SimpleMath::Vector3 mViewEyePos = { 0.0f, 0.0f, -2.0f };
+    DirectX::SimpleMath::Vector3 mViewEyeDir = { 0.0f, 0.0f, 1.0f };
+    DirectX::SimpleMath::Vector3 mViewUp = { 0.0f, 1.0f, 0.0f };
+    float mProjFovAngleY = 70.0f;
+    float mNearZ = 0.01f;
+    float mFarZ = 100.0f;
+    float mAspect = GetAspectRatio();
+
+    float GetAspectRatio() const {
+        return float(1920) / float(1080);
+    }
 
 public:
     FoxtrotRenderer();
 
 private:
 	bool Initialize(HWND window, int width, int height);
+    bool CreateDeviceAndContext(HWND window, int width, int height);
+    bool CreateSwapChain(const D3D_DRIVER_TYPE driverType);
+    bool CreateRenderTarget();
     void CreateIndexBuffer(const std::vector<uint16_t>& indices, ComPtr<ID3D11Buffer>& m_indexBuffer);
 
     template <typename T_VERTEX>
@@ -139,6 +167,20 @@ private:
             std::cout << "CreateConstantBuffer() CreateBuffer failed()."
                 << std::endl;
         }
+    }
+
+    template <typename T_DATA>
+    void UpdateBuffer(const T_DATA& bufferData, ComPtr<ID3D11Buffer>& buffer) {
+
+        if (!buffer) {
+            std::cout << "UpdateBuffer() buffer was not initialized."
+                << std::endl;
+        }
+
+        D3D11_MAPPED_SUBRESOURCE ms;
+        mContext->Map(buffer.Get(), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms);
+        memcpy(ms.pData, &bufferData, sizeof(bufferData));
+        mContext->Unmap(buffer.Get(), NULL);
     }
 
     void CreateVertexShaderAndInputLayout(

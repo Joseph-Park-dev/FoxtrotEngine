@@ -16,7 +16,7 @@ private:
 public:
     void CreateTexture(const std::string filename, Microsoft::WRL::ComPtr<ID3D11Device> device);
 
-private:
+public:
     Microsoft::WRL::ComPtr<ID3D11Texture2D> mTexture;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mTextureResourceView;
 };

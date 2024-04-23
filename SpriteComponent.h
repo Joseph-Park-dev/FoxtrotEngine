@@ -7,7 +7,7 @@ class FTTexture;
 class SpriteComponent :public Component
 {
 public:
-	virtual void SetTexture(FTTexture* texture);
+	virtual void SetTexture();
 
 public:
 	int			 GetTexWidth() const { return mTextWidth; }
@@ -23,7 +23,7 @@ public:
 	CLONE(SpriteComponent);
 
 protected:
-	FTTexture* GetTexture() { return ptTexture; }
+	FTTexture* GetTexture() { return mTexture; }
 
 public:
 	virtual void Update(float deltaTime) override;
@@ -31,10 +31,10 @@ public:
 
 public:
 	SpriteComponent(class Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
-	~SpriteComponent();
+	virtual ~SpriteComponent() override;
 
 private:
-	FTTexture*	ptTexture;
+	FTTexture*	mTexture;
 	Bounds*		rect;
 	int			mTextWidth;
 	int			mTexHeight;

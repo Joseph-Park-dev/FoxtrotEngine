@@ -9,16 +9,19 @@
 #include "ResourceManager.h"
 
 SpriteComponent::SpriteComponent(Actor* owner, int drawOrder, int updateOrder)
-	:Component(owner, drawOrder)
-	, ptTexture(nullptr)
+	: Component(owner, drawOrder)
+	, mTexture(new FTTexture)
 	, mTextWidth(0)
 	, mTexHeight(0)
-	, rect{}
-{}
+	, rect(new Bounds)
+{
+	ResourceManager::GetInstance()->LoadTexture("Asteroid", "./Assets/Asteroid.png");
+	mTexture = ResourceManager::GetInstance()->GetLoadedTexture("Asteroid");
+	SetTexture();
+}
 
 SpriteComponent::~SpriteComponent()
 {
-	delete rect;
 }
 
 void SpriteComponent::Update(float deltaTime)
@@ -37,32 +40,18 @@ void SpriteComponent::Update(float deltaTime)
 #ifdef _DEBUG
 void SpriteComponent::Render(FoxtrotRenderer* renderer)
 {
-	if (ptTexture)
+	if (mTexture)
 	{
-		/*
-		
-		TEXTURE
-		RENDER CODE HERE
-		(Alternative to SDL_RenderCopy())
-		
-		*/
+		renderer->RegisterToPixelResources(mTexture->GetResourceView().Get());
 		BlitToGameview(rect, GetOwner()->GetTransform()->GetScale());
 	}
 }
-void SpriteComponent::SetTexture(FTTexture* texture)
+void SpriteComponent::SetTexture()
 {
-	ptTexture = texture;
-	/*
-
-		TEXTURE
-		Get CODE HERE
-		(Alternative to SDL_QueryTexture())
-
-	*/
-	rect->x = (int)GetOwner()->GetTransform()->GetWorldPosition().x;
-	rect->y = (int)GetOwner()->GetTransform()->GetWorldPosition().y;
-	rect->w = mTextWidth;
-	rect->h = mTexHeight;
+	//rect->x = (int)GetOwner()->GetTransform()->GetWorldPosition().x;
+	//rect->y = (int)GetOwner()->GetTransform()->GetWorldPosition().y;
+	//rect->w = mTextWidth;
+	//rect->h = mTexHeight;
 }
 
 void SpriteComponent::EditorUpdate(float deltaTime)
@@ -81,8 +70,8 @@ void SpriteComponent::EditorUpdate(float deltaTime)
 void SpriteComponent::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
-	FileIOHelper::AddWString(ofs, ptTexture->GetKey());
-	FileIOHelper::AddWString(ofs, ptTexture->GetRelativePath());
+	//FileIOHelper::AddWString(ofs, mTexture->GetKey());
+	//FileIOHelper::AddWString(ofs, mTexture->GetRelativePath());
 	FileIOHelper::AddInt(ofs, mTextWidth);
 	FileIOHelper::AddInt(ofs, mTexHeight);
 }
@@ -94,9 +83,9 @@ void SpriteComponent::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadInt(ifs, mTexHeight);
 
 	std::wstring textureKey = FileIOHelper::LoadWString(ifs);
-	SetTexture(ResourceManager::GetInstance()->GetLoadedTexture(textureKey));
+	//SetTexture(ResourceManager::GetInstance()->GetLoadedTexture(textureKey));
 	std::wstring texturePath = FileIOHelper::LoadWString(ifs);
-	ptTexture->SetRelativePath(texturePath);
+	//mTexture->SetRelativePath(texturePath);
 }
 
 void SpriteComponent::BlitToGameview(Bounds* blitArea, Vector2 scale)
@@ -153,7 +142,7 @@ void SpriteComponent::BlitToGameviewEx(Bounds* blitArea, Vector2 scale)
 #else
 void SpriteComponent::Render(FoxtrotRenderer* renderer)
 {
-	if (ptTexture)
+	if (mTexture)
 	{
 		SDL_RenderCopyEx(renderer,
 			GetTexture()->GetGameviewTexture(),
@@ -168,8 +157,8 @@ void SpriteComponent::Render(FoxtrotRenderer* renderer)
 
 void SpriteComponent::SetTexture(FTTexture* texture)
 {
-	ptTexture = texture;
-	SDL_QueryTexture(ptTexture->GetGameviewTexture(), nullptr, nullptr, &mTextWidth, &mTexHeight);
+	mTexture = texture;
+	SDL_QueryTexture(mTexture->GetGameviewTexture(), nullptr, nullptr, &mTextWidth, &mTexHeight);
 	rect = new SDL_Rect;
 	rect->x = (int)GetOwner()->GetTransform()->GetWorldPosition().x;
 	rect->y = (int)GetOwner()->GetTransform()->GetWorldPosition().y;

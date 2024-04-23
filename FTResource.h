@@ -4,14 +4,14 @@
 class FTResource
 {
 public:
-	std::wstring GetKey() { return mKey; }
-	std::wstring GetRelativePath(){ return mRelativePath; }
-	void		 SetKey(const std::wstring _strKey) { mKey.assign(_strKey); }
-	void		 SetRelativePath(const std::wstring _strPath) { mRelativePath.assign(_strPath); }
+	std::string GetKey() { return mKey; }
+	std::string GetRelativePath(){ return mRelativePath; }
+	void		 SetKey(const std::string _strKey) { mKey.assign(_strKey); }
+	void		 SetRelativePath(const std::string _strPath) { mRelativePath.assign(_strPath); }
 
 protected:
-	std::wstring mKey;
-	std::wstring mRelativePath;
+	std::string mKey;
+	std::string mRelativePath;
 
 public:
 	FTResource(){}

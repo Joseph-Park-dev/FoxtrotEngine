@@ -7,6 +7,7 @@
 #include <wrl.h> // ComPtr
 
 #include "TemplateFunctions.h"
+#include "Transform.h"
 
 auto MakeSquare() {
 	using DirectX::SimpleMath::Vector2;
@@ -86,14 +87,65 @@ void FoxtrotRenderer::SwapChainPresent(UINT syncInterval, UINT flags)
 	mSwapChain->Present(syncInterval, flags);
 }
 
-void FoxtrotRenderer::Update()
+void FoxtrotRenderer::BatchRenderTextures()
+{
+	// 왜 여기로? => Pixel shader에게 텍스처와 셈플러 두가지를 넘겨주기 위함
+	// RS: Rasterizer stage
+	// OM: Output-Merger stage
+	// VS: Vertex Shader
+	// PS: Pixel Shader
+	// IA: Input-Assembler stage
+
+	mContext->RSSetViewports(1, &mScreenViewport);
+
+	// 비교: Depth Buffer를 사용하지 않는 경우
+	// m_context->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(),
+	// nullptr);
+	// Render target 지정 가능 -> 어떤 메모리에 렌더링을 할지를 지정 가능
+	// Render target 여러개도 가능 (여러개의 Render target, or 여러개의 Pass(단계))
+	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(),
+		mDepthStencilView.Get());
+	mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
+
+	// 어떤 쉐이더를 사용할지 설정
+	mContext->VSSetShader(mColorVertexShader.Get(), 0, 0);
+	mContext->VSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
+
+	ComPtr<ID3D11ShaderResourceView>* pixelResources = mPixelResources.data();
+
+	mContext->PSSetShaderResources(0, mPixelResources.size(), pixelResources->GetAddressOf());
+	mContext->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
+	ClearPixelResourcesVec();
+
+	mContext->PSSetConstantBuffers(0, 1,
+		mPixelShaderConstantBuffer.GetAddressOf());
+	mContext->PSSetShader(mColorPixelShader.Get(), 0, 0);
+	mContext->RSSetState(mRasterizerState.Get());
+
+	// 버텍스/인덱스 버퍼 설정
+	UINT stride = sizeof(Vertex);
+	UINT offset = 0;
+	mContext->IASetInputLayout(mColorInputLayout.Get());
+	mContext->IASetVertexBuffers(0, 1, mVertexBuffer.GetAddressOf(), &stride,
+		&offset);
+	mContext->IASetIndexBuffer(mIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+	mContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	mContext->DrawIndexed(mIndexCount, 0, 0);
+}
+
+// Constant buffer data 업데이트 & 그 내용을 GPU 버퍼로 복사
+// 이후 Render() 에서 Vertex shader를 실행시키게 되는데,
+// 이때 Constant buffer data를 사용
+// mContext->VSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
+void FoxtrotRenderer::UpdateConstantBufferData(Transform* transform)
 {
 	using namespace DirectX;
 
-	// 모델의 변환
+	// 모델의 변환 -> 모델 행렬 결정
 	mConstantBufferData.model =
-		DirectX::SimpleMath::Matrix::CreateScale(1.5f) *
-		DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 1.0f));
+		SimpleMath::Matrix::CreateScale(transform->GetScale().x, transform->GetScale().y, 1.0f) *
+		SimpleMath::Matrix::CreateRotationZ(transform->GetRotation()) *
+		SimpleMath::Matrix::CreateTranslation(transform->GetWorldPosition().x, transform->GetWorldPosition().y, 0.0f);
 	mConstantBufferData.model = mConstantBufferData.model.Transpose();
 
 	// 시점 변환
@@ -121,59 +173,6 @@ void FoxtrotRenderer::Update()
 
 	UpdateBuffer(mPixelShaderConstantBufferData,
 		mPixelShaderConstantBuffer);
-}
-
-void FoxtrotRenderer::Render()
-{
-	// 왜 여기로? => Pixel shader에게 텍스처와 셈플러 두가지를 넘겨주기 위함
-	// RS: Rasterizer stage
-	// OM: Output-Merger stage
-	// VS: Vertex Shader
-	// PS: Pixel Shader
-	// IA: Input-Assembler stage
-
-	mContext->RSSetViewports(1, &mScreenViewport);
-
-	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	mContext->ClearRenderTargetView(mRenderTargetView.Get(), clearColor);
-	mContext->ClearDepthStencilView(mDepthStencilView.Get(),
-		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
-		1.0f, 0);
-
-	// 비교: Depth Buffer를 사용하지 않는 경우
-	// m_context->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(),
-	// nullptr);
-	// Render target 지정 가능 -> 어떤 메모리에 렌더링을 할지를 지정 가능
-	// Render target 여러개도 가능 (여러개의 Render target, or 여러개의 Pass(단계))
-	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(),
-		mDepthStencilView.Get());
-	mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
-
-	// 어떤 쉐이더를 사용할지 설정
-	mContext->VSSetShader(mColorVertexShader.Get(), 0, 0);
-	mContext->VSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
-
-	ID3D11ShaderResourceView* pixelResources[1] = {
-		mWallTexture.mTextureResourceView.Get()
-	};
-
-	mContext->PSSetShaderResources(0, 1, pixelResources);
-	mContext->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
-
-	mContext->PSSetConstantBuffers(0, 1,
-		mPixelShaderConstantBuffer.GetAddressOf());
-	mContext->PSSetShader(mColorPixelShader.Get(), 0, 0);
-	mContext->RSSetState(mRasterizerState.Get());
-
-	// 버텍스/인덱스 버퍼 설정
-	UINT stride = sizeof(Vertex);
-	UINT offset = 0;
-	mContext->IASetInputLayout(mColorInputLayout.Get());
-	mContext->IASetVertexBuffers(0, 1, mVertexBuffer.GetAddressOf(), &stride,
-		&offset);
-	mContext->IASetIndexBuffer(mIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
-	mContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	mContext->DrawIndexed(mIndexCount, 0, 0);
 }
 
 void FoxtrotRenderer::RenderClear(const float clearColor[4])
@@ -229,12 +228,6 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 	}
 	mContext->OMSetBlendState(mBlendState.Get(), 0, 0xffffffff);
 
-	if (!ImportTextures())
-	{
-		LogString("Error : Unsuccessful FTTexture import");
-		return false;
-	}
-
 	if (!CreateSamplerState())
 	{
 		LogString("Create Sampler State failed.");
@@ -256,9 +249,7 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 	mConstantBufferData.model = DirectX::SimpleMath::Matrix();
 	mConstantBufferData.view = DirectX::SimpleMath::Matrix();
 	mConstantBufferData.projection = DirectX::SimpleMath::Matrix();
-
 	CreateConstantBuffer(mConstantBufferData, mConstantBuffer);
-
 	CreateConstantBuffer(mPixelShaderConstantBufferData,
 		mPixelShaderConstantBuffer);
 
@@ -518,12 +509,12 @@ bool FoxtrotRenderer::CreateBlendState()
 	return true;
 }
 
-bool FoxtrotRenderer::ImportTextures()
-{
-	if(!mWallTexture.CreateTexture("./Assets/Asteroid.png", mDevice))
-		return false;
-	return true;
-}
+//bool FoxtrotRenderer::ImportTextures()
+//{
+//	if(!mWallTexture.CreateTexture("./Assets/Asteroid.png", mDevice))
+//		return false;
+//	return true;
+//}
 
 bool FoxtrotRenderer::CreateSamplerState()
 {

@@ -23,9 +23,9 @@ Asteroid::Asteroid(Scene* scene, tMonsterInfo info)
 	GetTransform()->SetRotation(Random::GetFloatRange(0.0f, Math::TwoPi));
 
 	SpriteComponent* sc = new SpriteComponent(this);
-	sc->SetTexture(
+	/*sc->SetTexture(
 		ResourceManager::GetInstance()->GetLoadedTexture(L"Enemy01")
-	);
+	);*/
 	MoveComponent* mc = new MoveComponent(this, 100, 53);
 	//mc->SetForwardSpeed(info.Speed);
 

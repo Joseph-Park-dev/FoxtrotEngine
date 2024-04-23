@@ -27,7 +27,7 @@ MouseCursor::MouseCursor(Scene* scene)
 {
 	//SDL_ShowCursor(SDL_DISABLE);
 	mTM->InitializeTileMap(L"Assets/TileMapCSVs/MouseCursors.csv", 80, 80);
-	FTTexture* tileMap = ResourceManager::GetInstance()->GetLoadedTexture(L"MouseCursor");
-	mTM->SetTexture(tileMap);
+	//FTTexture* tileMap = ResourceManager::GetInstance()->GetLoadedTexture(L"MouseCursor");
+	//mTM->SetTexture(tileMap);
 	//mOffsetAim = Vector2(mTM->GetTexWidth() / 2, mTM->GetTexHeight() / 2);
 }

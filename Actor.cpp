@@ -126,7 +126,9 @@ void Actor::RemoveComponent(Component* component)
 	auto iter = std::find(mComponents.begin(), mComponents.end(), component);
 	if (iter != mComponents.end())
 	{
+		delete component;
 		mComponents.erase(iter);
+		LogInt(mComponents.size());
 	}
 }
 

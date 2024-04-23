@@ -123,15 +123,15 @@ void AnimatorComponent::SaveAnimation(const std::wstring& animName, const std::w
 	}
 	fprintf(file, "[FTTexture Name]\n");
 	// This ensures the Animation with animName has been created.
-	std::wstring strKey = GetTexture()->GetKey();
-	strName = std::string(strKey.begin(), strKey.end());
+	//std::wstring strKey = GetTexture()->GetKey();
+	//strName = std::string(strKey.begin(), strKey.end());
 	fprintf(file, strName.c_str());
 	fprintf(file, "\n");
 
 	fprintf(file, "[FTTexture Path]\n");
 	// This ensures the Animation with animName has been created.
-	std::wstring strPath = GetTexture()->GetRelativePath();
-	strName = std::string(strPath.begin(), strPath.end());
+	//std::wstring strPath = GetTexture()->GetRelativePath();
+	//strName = std::string(strPath.begin(), strPath.end());
 	fprintf(file, strName.c_str());
 	fprintf(file, "\n");
 

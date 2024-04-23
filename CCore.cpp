@@ -142,17 +142,21 @@ bool CCore::InitGUI()
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
 	(void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	io.DisplaySize = ImVec2(float(mEditorWidth), float(mEditorHeight));
-	ImGui::StyleColorsLight();
+	ImGui::StyleColorsDark();
 
+	if (!ImGui_ImplWin32_Init(mEditorWindow)) {
+		LogString("Imgui Wind32 Init failed");
+		return false;
+	}
 	if (!ImGui_ImplDX11_Init(
 		mEditorRenderer->GetDevice(), 
 		mEditorRenderer->GetContext()
 	)
 	) {
-		return false;
-	}
-	if (!ImGui_ImplWin32_Init(mEditorWindow)) {
+		LogString("Imgui DX11 Init failed");
 		return false;
 	}
 	return true;
@@ -170,7 +174,7 @@ void CCore::InitSingletonManagers()
 
 #ifdef _DEBUG
 	EditorCamera2D::GetInstance();
-	//EditorLayer::GetInstance()->Init(mEditorWindow, mEditorRenderer);
+	EditorLayer::GetInstance();
 #endif // _DEBUG
 }
 
@@ -276,11 +280,8 @@ void CCore::UpdateGame()
 void CCore::GenerateOutput()
 {
 #ifdef _DEBUG
-	/*float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	mEditorRenderer->RenderClear(clearColor);*/
-
-	mEditorRenderer->Update();
-	mEditorRenderer->Render();
+	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	mEditorRenderer->RenderClear(clearColor);
 
 	if (mIsUpdatingGame)
 	{
@@ -298,6 +299,7 @@ void CCore::GenerateOutput()
 	EditorLayer::GetInstance()->Render(mEditorRenderer);
 	CollisionManager::GetInstance()->RenderRay(mEditorRenderer);
 
+	mEditorRenderer->BatchRenderTextures();
 	mEditorRenderer->SwapChainPresent(1, 0);
 
 #else
@@ -330,7 +332,10 @@ void CCore::ShutDown()
 	PostQuitMessage(0);
 }
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 LRESULT CCore::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+	ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam);
 	switch (msg) {
 		case WM_DESTROY:
 		{

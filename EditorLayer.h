@@ -18,7 +18,6 @@ class EditorLayer
 	SINGLETON(EditorLayer);
 
 public:
-	void Init(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext);
 	void Update(float deltaTime);
 	void Render(FoxtrotRenderer* renderer);
 	void ShutDown();

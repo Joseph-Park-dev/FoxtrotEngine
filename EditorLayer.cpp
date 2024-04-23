@@ -24,19 +24,6 @@
 #include "imgui/FileDialog/ImGuiFileDialog.h"
 #include "imgui/FileDialog/ImGuiFileDialogConfig.h"
 
-void EditorLayer::Init(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext)
-{
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-
-	ImGui::StyleColorsDark();
-	ImGui_ImplDX11_Init(device.Get(), deviceContext.Get());
-	ImGui_ImplWin32_Init(hWnd);
-}
-
 void EditorLayer::Update(float deltaTime)
 {
 	ImGui_ImplDX11_NewFrame();
@@ -66,7 +53,6 @@ void EditorLayer::Update(float deltaTime)
 			mEditorElements[i]->UIUpdate();
 		}
 	}
-
 	ApplyCommandHistory();
 	ImGui::EndFrame();
 }
@@ -74,6 +60,7 @@ void EditorLayer::Update(float deltaTime)
 void EditorLayer::Render(FoxtrotRenderer* renderer)
 {
 	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	//ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
 }
 

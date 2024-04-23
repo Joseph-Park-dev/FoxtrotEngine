@@ -188,7 +188,7 @@ void EditorElement::UpdateActorGroup()
 	const char* comboPreview = ActorGroup[mActorGroupIdx];
 	if (ImGui::BeginCombo("Actor Group", comboPreview))
 	{
-		for (UINT n = 0; n < (UINT)ACTOR_GROUP::END - 1; n++)
+		for (size_t n = 0; n < (size_t)ACTOR_GROUP::END - 1; n++)
 		{
 			if (ImGui::Selectable(ActorGroup[n]))
 			{
@@ -259,9 +259,9 @@ void EditorElement::UpdateActorRotation(TransSetFloatFunc func)
 
 void EditorElement::UpdateComponents()
 {
-	if (ImGui::BeginChild(GetNameStr().c_str()))
+	if (ImGui::Begin(GetNameStr().c_str()))
 	{
-		UINT count = 0;
+		size_t count = 0;
 		for (Component* comp : GetComponents())
 		{
 			std::string name = std::to_string(count) + " " + ToString(comp->GetName());
@@ -274,7 +274,7 @@ void EditorElement::UpdateComponents()
 			}
 			++count;
 		}
-		ImGui::EndChild();
+		ImGui::End();
 	}
 
 	if (ImGui::Button("AddComponent"))

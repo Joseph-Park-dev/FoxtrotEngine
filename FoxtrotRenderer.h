@@ -9,6 +9,7 @@
 #include "FTTexture.h"
 
 using namespace Microsoft::WRL;
+class Transform;
 
 struct Vertex {
     DirectX::SimpleMath::Vector3 position;
@@ -38,14 +39,22 @@ public:
 	static void DestroyRenderer(FoxtrotRenderer* renderer);
 
 public:
+    void RegisterToPixelResources(ID3D11ShaderResourceView* shaderResView) 
+        { mPixelResources.emplace_back(shaderResView); }
+
+public:
 	void SwapChainPresent(UINT syncInterval, UINT flags);
-    void Update();
-    void Render();
+    void UpdateConstantBufferData(Transform* transform);
+    void BatchRenderTextures();
 	void RenderClear(const float clearColor[4]);
+
+public:
+    void ClearPixelResourcesVec() { mPixelResources.clear(); }
 
 public:
 	ID3D11Device*        GetDevice()  { return mDevice.Get(); }
 	ID3D11DeviceContext* GetContext() { return mContext.Get(); }
+    std::vector<ComPtr<ID3D11ShaderResourceView>>& GetPixelResourcesVec() { return mPixelResources; }
 
 private:
     int mRenderWidth;
@@ -82,15 +91,15 @@ private:
     ComPtr<ID3D11Buffer> mIndexBuffer;
     ComPtr<ID3D11Buffer> mConstantBuffer;
     ComPtr<ID3D11Buffer> mPixelShaderConstantBuffer;
-    UINT mIndexCount;
 
     ModelViewProjectionConstantBuffer mConstantBufferData;
     PixelShaderConstantBuffer mPixelShaderConstantBufferData;
+    std::vector<ComPtr<ID3D11ShaderResourceView>> mPixelResources;
+
+    UINT mIndexCount;
 
     bool m_usePerspectiveProjection = true;
-    DirectX::SimpleMath::Vector3 mModelTranslation = DirectX::SimpleMath::Vector3(0.0f);
-    DirectX::SimpleMath::Vector3 mModelRotation = DirectX::SimpleMath::Vector3(0.0f);
-    DirectX::SimpleMath::Vector3 mModelScaling = DirectX::SimpleMath::Vector3(0.5f);
+
     DirectX::SimpleMath::Vector3 mViewEyePos = { 0.0f, 0.0f, -2.0f };
     DirectX::SimpleMath::Vector3 mViewEyeDir = { 0.0f, 0.0f, 1.0f };
     DirectX::SimpleMath::Vector3 mViewUp = { 0.0f, 1.0f, 0.0f };
@@ -117,9 +126,6 @@ private:
     bool CreateDepthStencilState();
     bool CreateBlendState();
     bool CreateSamplerState();
-
-    bool ImportTextures();
-
 
     void CreateIndexBuffer(const std::vector<uint16_t>& indices, ComPtr<ID3D11Buffer>& m_indexBuffer);
 

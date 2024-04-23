@@ -11,13 +11,12 @@ class ResourceManager
 	SINGLETON(ResourceManager);
 
 public:
-	void		LoadTexture(const std::wstring& strKey, const std::wstring& strRelativePath);
-	FTTexture*	GetLoadedTexture(const std::wstring& strKey);
-	FTTexture*	CreateTexture(const std::wstring& strKey, UINT width, UINT height);
+	void		LoadTexture(const std::string& strKey, const std::string& strRelativePath);
+	FTTexture*	GetLoadedTexture(const std::string& strKey);
 
 private:
-	std::unordered_map<std::wstring, FTTexture*> mapTextures;
+	std::unordered_map<std::string, FTTexture*> mapTextures;
 
 private:
-	FTTexture* FindTexture(const std::wstring& strKey);
+	FTTexture* FindTexture(const std::string& strKey);
 };

@@ -10,10 +10,15 @@
 #include "CCore.h"
 #include "TemplateFunctions.h"
 
-bool FTTexture::CreateTexture(const std::string filename, Microsoft::WRL::ComPtr<ID3D11Device> device)
+FTTexture::~FTTexture()
+{
+    mTexture.Get()->Release();
+    mTextureResourceView.Get()->Release();
+}
+
+bool FTTexture::CreateTexture(const std::string filename)
 {
     int width, height, channels;
-
     unsigned char* img = stbi_load(filename.c_str(), &width, &height, &channels, 0);
 
     //assert(channels == 4);
@@ -45,13 +50,13 @@ bool FTTexture::CreateTexture(const std::string filename, Microsoft::WRL::ComPtr
 
     // ShaderResourceView   specifies the subresources a shader can access during rendering.
     // Examples of shader resources include a constant buffer, a texture buffer, and a texture.
-
-    if (FAILED(device->CreateTexture2D(&txtDesc, &InitData, mTexture.GetAddressOf())))
+    FoxtrotRenderer* renderer = CCore::GetInstance()->GetEditorRenderer();
+    if (FAILED(renderer->GetDevice()->CreateTexture2D(&txtDesc, &InitData, mTexture.GetAddressOf())))
     {
         LogString("Create Texture failed : " + filename);
         return false;
     }
-    if (FAILED(device->CreateShaderResourceView(mTexture.Get(), nullptr,
+    if (FAILED(renderer->GetDevice()->CreateShaderResourceView(mTexture.Get(), nullptr,
         mTextureResourceView.GetAddressOf())))
     {
         LogString("Create Shader Resource View failed : " + filename);

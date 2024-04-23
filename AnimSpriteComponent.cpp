@@ -19,7 +19,7 @@ void AnimSpriteComponent::Update(float deltaTime)
 			mCurrFrame -= mAnimTextures.size();
 		}
 	}
-	SetTexture(mAnimTextures[static_cast<int>(mCurrFrame)]);
+	//SetTexture(mAnimTextures[static_cast<int>(mCurrFrame)]);
 }
 
 void AnimSpriteComponent::SetAnimTextures(const std::vector<FTTexture*>& textures)
@@ -28,6 +28,6 @@ void AnimSpriteComponent::SetAnimTextures(const std::vector<FTTexture*>& texture
 	if (mAnimTextures.size() > 0)
 	{
 		mCurrFrame = 0.0f;
-		SetTexture(mAnimTextures[0]);
+		//SetTexture(mAnimTextures[0]);
 	}
 }

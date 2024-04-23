@@ -35,9 +35,7 @@ Component::Component(const Component& origin)
 }
 
 Component::~Component()
-{
-	mOwner->RemoveComponent(this);
-}
+{}
 
 void Component::SaveProperties(std::ofstream& ofs)
 {

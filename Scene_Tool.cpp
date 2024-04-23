@@ -29,7 +29,7 @@ void Scene_Tool::Exit()
 
 void Scene_Tool::LoadData()
 {
-	ResourceManager::GetInstance()->LoadTexture(L"MouseCursor", L"Assets/TileMapIMGs/MouseCursors_Tilemap.png");
+	//ResourceManager::GetInstance()->LoadTexture(L"MouseCursor", L"Assets/TileMapIMGs/MouseCursors_Tilemap.png");
 	MouseCursor* mouseCursor = new MouseCursor(this);
 	Instantiate(mouseCursor, ACTOR_GROUP::UI);
 

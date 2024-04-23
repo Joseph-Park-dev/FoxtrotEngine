@@ -8,15 +8,20 @@
 class FTTexture :
     public FTResource
 {
+public:
+    bool CreateTexture(const std::string filename);
+
+public:
+    Microsoft::WRL::ComPtr<ID3D11Texture2D>          GetTexture()      { return mTexture; }
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> GetResourceView() { return mTextureResourceView; }
+
+public:
+    ~FTTexture() override;
+
 private:
-    //FTTexture();
-    //~FTTexture() override;
-    friend class ResourceManager;
-
-public:
-    bool CreateTexture(const std::string filename, Microsoft::WRL::ComPtr<ID3D11Device> device);
-
-public:
     Microsoft::WRL::ComPtr<ID3D11Texture2D> mTexture;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mTextureResourceView;
+
+private:
+    friend class ResourceManager;
 };

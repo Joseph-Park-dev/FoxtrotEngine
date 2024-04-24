@@ -205,8 +205,8 @@ void CCore::ProcessInput()
 	#endif // _DEBUG
 	}
 	KeyInputManager::GetInstance()->DetectKeyInput();
-	/*KeyInputManager::GetInstance()->DetectMouseInput();
-	KeyInputManager::GetInstance()->DetectGamepadInput();*/
+	KeyInputManager::GetInstance()->DetectMouseInput(msg);
+	//KeyInputManager::GetInstance()->DetectGamepadInput();
 	SceneManager::GetInstance()->ProcessInput(KeyInputManager::GetInstance());
 	TranslateMessage(&msg);
 	DispatchMessage(&msg);

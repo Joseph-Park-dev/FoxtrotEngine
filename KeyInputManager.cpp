@@ -46,7 +46,7 @@ void KeyInputManager::Init()
 
 KEY_STATE KeyInputManager::GetKeyState(KEY eKey)
 {
-	return mVecKey[eKey].eKeyState;
+	return mVecKey[(int)eKey].eKeyState;
 }
 
 KEY_STATE KeyInputManager::GetMouseState(MOUSE eMouse)
@@ -99,40 +99,43 @@ void KeyInputManager::DetectKeyInput()
 	}
 }
 
-//void KeyInputManager::DetectMouseInput()
-//{
-//	int mouseX = 0;
-//	int mouseY = 0;
-//	mMouseState = SDL_GetMouseState(&mouseX, &mouseY);
-//	mMousePosition = Vector2(mouseX, mouseY);
-//	for (int mouseButton = 0; mouseButton < (int)MOUSE::LAST_FLAG; ++mouseButton)
-//	{
-//		if (mMouseState & (1 << arrMouseCode[mouseButton]-1))
-//		{
-//			if (mVecMouse[mouseButton].isPushedPrevFrame)
-//			{
-//				mVecMouse[mouseButton].eKeyState = KEY_STATE::HOLD;
-//			}
-//			else
-//			{
-//				mVecMouse[mouseButton].eKeyState = KEY_STATE::TAP;
-//			}
-//			mVecMouse[mouseButton].isPushedPrevFrame = true;
-//		}
-//		else
-//		{
-//			if (mVecMouse[mouseButton].isPushedPrevFrame)
-//			{
-//				mVecMouse[mouseButton].eKeyState = KEY_STATE::AWAY;
-//			}
-//			else
-//			{
-//				mVecMouse[mouseButton].eKeyState = KEY_STATE::NONE;
-//			}
-//			mVecMouse[mouseButton].isPushedPrevFrame = false;
-//		}
-//	}
-//}
+void KeyInputManager::DetectMouseInput(MSG msg)
+{
+	int mouseX = LOWORD(msg.lParam);
+	int mouseY = HIWORD(msg.lParam);
+	mMousePosition = Vector2(mouseX, mouseY);
+	for (int mouseButton = 0; mouseButton < (int)MOUSE::LAST_FLAG; ++mouseButton)
+	{
+		if (GetAsyncKeyState(mMouseCode[mouseButton]))
+		{
+			if (mVecMouse[mouseButton].isPushedPrevFrame)
+			{
+				mVecMouse[mouseButton].eKeyState = KEY_STATE::HOLD;
+				printf("Mouse Hold..\n");
+			}
+			else
+			{
+				mVecMouse[mouseButton].eKeyState = KEY_STATE::TAP;
+				printf("Mouse Tap..\n");
+
+			}
+			mVecMouse[mouseButton].isPushedPrevFrame = true;
+		}
+		else
+		{
+			if (mVecMouse[mouseButton].isPushedPrevFrame)
+			{
+				mVecMouse[mouseButton].eKeyState = KEY_STATE::AWAY;
+				printf("Mouse Away...\n");
+			}
+			else
+			{
+				mVecMouse[mouseButton].eKeyState = KEY_STATE::NONE;
+			}
+			mVecMouse[mouseButton].isPushedPrevFrame = false;
+		}
+	}
+}
 
 //void KeyInputManager::DetectGamepadInput()
 //{

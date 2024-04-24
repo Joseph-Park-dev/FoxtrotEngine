@@ -80,8 +80,8 @@ class KeyInputManager
 
 public:
 	void DetectKeyInput();
-	/*void DetectMouseInput();
-	void DetectGamepadInput();*/
+	void DetectMouseInput(MSG msg);
+	//void DetectGamepadInput();
 
 	//SDL_GameController* FindGamepad();
 
@@ -113,13 +113,13 @@ private:
 		VK_SPACE
 	};
 
-	/*int arrMouseCode[(int)MOUSE::LAST_FLAG] =
+	int mMouseCode[(int)MOUSE::LAST_FLAG] =
 	{
-		SDL_BUTTON_LEFT,
-		SDL_BUTTON_RIGHT,
-		SDL_BUTTON_MIDDLE
+		VK_LBUTTON,
+		VK_RBUTTON,
+		VK_MBUTTON
 	};
-	int arrGamepadCode[(int)GAMEPADBUTTON::LAST_FLAG] =
+	/*int arrGamepadCode[(int)GAMEPADBUTTON::LAST_FLAG] =
 	{
 		SDL_CONTROLLER_BUTTON_INVALID,
 

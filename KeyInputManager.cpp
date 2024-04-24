@@ -1,8 +1,6 @@
-#include <bitset>
-#include <iostream>
-
 #include "KeyInputManager.h"
 #include "Camera2D.h"
+#include "TemplateFunctions.h"
 
 KeyInputManager::KeyInputManager()
 	: mMousePosition(Vector2::Zero)
@@ -12,19 +10,15 @@ KeyInputManager::KeyInputManager()
 }
 
 KeyInputManager::~KeyInputManager()
-{
-	delete mKeyboard;
-	delete mKeyboardState;
-	delete mMouse;
-}
+{}
 
 void KeyInputManager::Init()
 {
-	mKeyboard		= new DirectX::Keyboard;
-	mKeyboardState	= new DirectX::Keyboard::KeyboardStateTracker;
-	mMouse			= new DirectX::Mouse;
-
 	mMousePosition = Vector2::Zero;
+	for (int i = 0; i < (int)KEY::LAST_FLAG; ++i)
+	{
+		mVecKey.push_back(tKeyInfo{ KEY_STATE::NONE, false });
+	}
 	for (int i = 0; i < (int)MOUSE::LAST_FLAG; ++i)
 	{
 		mVecMouse.push_back(tKeyInfo{ KEY_STATE::NONE, false });
@@ -50,9 +44,9 @@ void KeyInputManager::Init()
 
 */
 
-KEY_STATE KeyInputManager::GetKeyState(DirectX::Keyboard::Keys eKey)
+KEY_STATE KeyInputManager::GetKeyState(KEY eKey)
 {
-	return mKeyboardMap[eKey].eKeyState;
+	return mVecKey[eKey].eKeyState;
 }
 
 KEY_STATE KeyInputManager::GetMouseState(MOUSE eMouse)
@@ -73,36 +67,36 @@ Vector2 KeyInputManager::GetMouseWorldPosition()
 
 void KeyInputManager::DetectKeyInput()
 {
-	/*KeyboardMap::iterator iter = mKeyboardMap.begin();
-	for (; iter != mKeyboardMap.end(); ++iter)
+	for (int i = 0; i < (int)KEY::LAST_FLAG; ++i)
 	{
-		if (mKeyboardState->IsKeyPressed((*iter).first))
+		if (GetAsyncKeyState(mKeyCode[i]))
 		{
-			if ((*iter).second.isPushedPrevFrame)
+			if (mVecKey[i].isPushedPrevFrame)
 			{
-				(*iter).second.eKeyState = KEY_STATE::HOLD;
+				mVecKey[i].eKeyState = KEY_STATE::HOLD;
+				printf("Holding..%c\n", (char)mKeyCode[i]);
 			}
 			else
 			{
-				(*iter).second.eKeyState = KEY_STATE::TAP;
+				mVecKey[i].eKeyState = KEY_STATE::TAP;
+				printf("tap..%c\n", (char)mKeyCode[i]);
 			}
-			(*iter).second.isPushedPrevFrame = true;
-		}
-		else if (mKeyboardState->IsKeyReleased((*iter).first)
-		{
-			if ((*iter).second.isPushedPrevFrame)
-			{
-				(*iter).second.eKeyState = KEY_STATE::AWAY;
-			}
-			else
-			{
-				(*iter).second.eKeyState = KEY_STATE::NONE;
-			}
-			(*iter).second.isPushedPrevFrame = false;
+			mVecKey[i].isPushedPrevFrame = true;
 		}
 		else
-			return;
-	}*/
+		{
+			if (mVecKey[i].isPushedPrevFrame)
+			{
+				mVecKey[i].eKeyState = KEY_STATE::AWAY;
+				printf("away..%c\n", (char)mKeyCode[i]);
+			}
+			else
+			{
+				mVecKey[i].eKeyState = KEY_STATE::NONE;
+			}
+			mVecKey[i].isPushedPrevFrame = false;
+		}
+	}
 }
 
 //void KeyInputManager::DetectMouseInput()

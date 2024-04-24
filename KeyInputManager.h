@@ -1,12 +1,23 @@
 #pragma once
 #include <vector>
-#include <directxtk/Keyboard.h>
-#include <directxtk/Mouse.h>
+#include <queue>
+#include <Windows.h>
 
 #include "Math.h"
 #include "Component.h"
 #include "SingletonMacro.h"
 #include "unordered_map"
+
+enum class KEY
+{
+	A,
+	D,
+	W,
+	S,
+	SHIFT,
+	SPACE,
+	LAST_FLAG
+};
 
 enum class KEY_STATE
 {
@@ -76,7 +87,7 @@ public:
 
 
 public:
-	KEY_STATE			GetKeyState(DirectX::Keyboard::Keys eKey);
+	KEY_STATE			GetKeyState(KEY eKey);
 	KEY_STATE			GetMouseState(MOUSE eMouse);
 	KEY_STATE			GetButtonState(GAMEPADBUTTON eButton);
 	Vector2				GetMousePosition() { return mMousePosition; }
@@ -86,19 +97,20 @@ public:
 	void SetGamepad(SDL_GameController* gamepad) { mGamepad = gamepad; }*/
 
 private:
+	std::vector<tKeyInfo>	mVecKey;
 	std::vector<tKeyInfo>	mVecMouse;
 	std::vector<tKeyInfo>	mVecButton;
 
 private:
-	using KeyboardMap = std::unordered_map<DirectX::Keyboard::Keys, tKeyInfo>;
-	KeyboardMap mKeyboardMap =
-	{	
-		{DirectX::Keyboard::A,			tKeyInfo{ KEY_STATE::NONE, false }},
-		{DirectX::Keyboard::D,			tKeyInfo{ KEY_STATE::NONE, false }},
-		{DirectX::Keyboard::W,			tKeyInfo{ KEY_STATE::NONE, false }},
-		{DirectX::Keyboard::S,			tKeyInfo{ KEY_STATE::NONE, false }},
-		{DirectX::Keyboard::LeftShift,	tKeyInfo{ KEY_STATE::NONE, false }},
-		{DirectX::Keyboard::Space,		tKeyInfo{ KEY_STATE::NONE, false }}
+	using KeyboardMap = std::unordered_map<unsigned char, tKeyInfo>;
+	int mKeyCode[(int)KEY::LAST_FLAG] =
+	{
+		'A',
+		'D',
+		'W',
+		'S',
+		VK_SHIFT,
+		VK_SPACE
 	};
 
 	/*int arrMouseCode[(int)MOUSE::LAST_FLAG] =
@@ -120,11 +132,6 @@ private:
 private:
 	Vector2				mMousePosition;
 	int					mMouseState;
-	// SDL_GameController* mGamepad;
-	DirectX::Keyboard*	mKeyboard;
-	DirectX::Mouse*		mMouse;
-
-	DirectX::Keyboard::KeyboardStateTracker* mKeyboardState;
 
 private:
 	void Init();

@@ -87,7 +87,7 @@ void FoxtrotRenderer::SwapChainPresent(UINT syncInterval, UINT flags)
 	mSwapChain->Present(syncInterval, flags);
 }
 
-void FoxtrotRenderer::BatchRenderTextures()
+void FoxtrotRenderer::Render()
 {
 	// 왜 여기로? => Pixel shader에게 텍스처와 셈플러 두가지를 넘겨주기 위함
 	// RS: Rasterizer stage
@@ -96,7 +96,9 @@ void FoxtrotRenderer::BatchRenderTextures()
 	// PS: Pixel Shader
 	// IA: Input-Assembler stage
 
-	mContext->RSSetViewports(1, &mScreenViewport);
+	SetViewport();
+	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	RenderClear(clearColor);
 
 	// 비교: Depth Buffer를 사용하지 않는 경우
 	// m_context->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(),
@@ -111,11 +113,12 @@ void FoxtrotRenderer::BatchRenderTextures()
 	mContext->VSSetShader(mColorVertexShader.Get(), 0, 0);
 	mContext->VSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
 
-	ComPtr<ID3D11ShaderResourceView>* pixelResources = mPixelResources.data();
-
-	mContext->PSSetShaderResources(0, mPixelResources.size(), pixelResources->GetAddressOf());
+	const int textureCount = mTexturesToRender.size();
+	ComPtr<ID3D11ShaderResourceView>* pixelResources = new ComPtr<ID3D11ShaderResourceView>[textureCount];
+	for (size_t i = 0; i < textureCount; ++i)
+		pixelResources[i] = mTexturesToRender[i]->GetResourceView();
+	mContext->PSSetShaderResources(0, textureCount, pixelResources->GetAddressOf());
 	mContext->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
-	ClearPixelResourcesVec();
 
 	mContext->PSSetConstantBuffers(0, 1,
 		mPixelShaderConstantBuffer.GetAddressOf());
@@ -131,6 +134,11 @@ void FoxtrotRenderer::BatchRenderTextures()
 	mContext->IASetIndexBuffer(mIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
 	mContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	mContext->DrawIndexed(mIndexCount, 0, 0);
+
+	mTexturesToRender.clear();
+	delete[] pixelResources;
+	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+	mContext->PSSetShaderResources(0, 1, nullSRV);
 }
 
 // Constant buffer data 업데이트 & 그 내용을 GPU 버퍼로 복사
@@ -170,7 +178,6 @@ void FoxtrotRenderer::UpdateConstantBufferData(Transform* transform)
 
 	// Constant를 CPU에서 GPU로 복사
 	UpdateBuffer(mConstantBufferData, mConstantBuffer);
-
 	UpdateBuffer(mPixelShaderConstantBufferData,
 		mPixelShaderConstantBuffer);
 }

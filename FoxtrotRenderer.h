@@ -17,12 +17,12 @@ struct Vertex {
     DirectX::SimpleMath::Vector2 texcoord;
 };
 
-struct ModelViewProjectionConstantBuffer {
+struct BasicVertexConstantBuffer {
     DirectX::SimpleMath::Matrix model;
     DirectX::SimpleMath::Matrix view;
     DirectX::SimpleMath::Matrix projection;
 };
-static_assert((sizeof(ModelViewProjectionConstantBuffer) % 16) == 0,
+static_assert((sizeof(BasicVertexConstantBuffer) % 16) == 0,
     "Constant Buffer size must be 16-byte aligned");
 
 struct PixelShaderConstantBuffer {
@@ -39,22 +39,15 @@ public:
 	static void DestroyRenderer(FoxtrotRenderer* renderer);
 
 public:
-    void RegisterToPixelResources(ID3D11ShaderResourceView* shaderResView) 
-        { mPixelResources.emplace_back(shaderResView); }
-
-public:
 	void SwapChainPresent(UINT syncInterval, UINT flags);
+    void Render();
     void UpdateConstantBufferData(Transform* transform);
-    void BatchRenderTextures();
 	void RenderClear(const float clearColor[4]);
 
 public:
-    void ClearPixelResourcesVec() { mPixelResources.clear(); }
-
-public:
-	ID3D11Device*        GetDevice()  { return mDevice.Get(); }
-	ID3D11DeviceContext* GetContext() { return mContext.Get(); }
-    std::vector<ComPtr<ID3D11ShaderResourceView>>& GetPixelResourcesVec() { return mPixelResources; }
+	ID3D11Device*            GetDevice()  { return mDevice.Get(); }
+	ID3D11DeviceContext*     GetContext() { return mContext.Get(); }
+    std::vector<FTTexture*>& GetTexturesToRender() { return mTexturesToRender; }
 
 private:
     int mRenderWidth;
@@ -84,23 +77,23 @@ private:
 	D3D11_VIEWPORT mScreenViewport;
 
     ComPtr<ID3D11VertexShader> mColorVertexShader;
-    ComPtr<ID3D11PixelShader> mColorPixelShader;
-    ComPtr<ID3D11InputLayout> mColorInputLayout;
+    ComPtr<ID3D11PixelShader>  mColorPixelShader;
+    ComPtr<ID3D11InputLayout>  mColorInputLayout;
 
     ComPtr<ID3D11Buffer> mVertexBuffer;
     ComPtr<ID3D11Buffer> mIndexBuffer;
     ComPtr<ID3D11Buffer> mConstantBuffer;
     ComPtr<ID3D11Buffer> mPixelShaderConstantBuffer;
 
-    ModelViewProjectionConstantBuffer mConstantBufferData;
+    BasicVertexConstantBuffer mConstantBufferData;
     PixelShaderConstantBuffer mPixelShaderConstantBufferData;
-    std::vector<ComPtr<ID3D11ShaderResourceView>> mPixelResources;
-
     UINT mIndexCount;
+
+    std::vector<FTTexture*> mTexturesToRender;
 
     bool m_usePerspectiveProjection = true;
 
-    DirectX::SimpleMath::Vector3 mViewEyePos = { 0.0f, 0.0f, -2.0f };
+    DirectX::SimpleMath::Vector3 mViewEyePos = { 0.0f, 0.0f, -10.0f };
     DirectX::SimpleMath::Vector3 mViewEyeDir = { 0.0f, 0.0f, 1.0f };
     DirectX::SimpleMath::Vector3 mViewUp = { 0.0f, 1.0f, 0.0f };
     float mProjFovAngleY = 70.0f;

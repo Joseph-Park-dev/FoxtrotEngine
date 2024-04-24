@@ -42,7 +42,8 @@ void SpriteComponent::Render(FoxtrotRenderer* renderer)
 {
 	if (mTexture)
 	{
-		renderer->RegisterToPixelResources(mTexture->GetResourceView().Get());
+		renderer->UpdateConstantBufferData(GetOwner()->GetTransform());
+		renderer->GetTexturesToRender().emplace_back(mTexture);
 		BlitToGameview(rect, GetOwner()->GetTransform()->GetScale());
 	}
 }

@@ -282,6 +282,7 @@ void CCore::GenerateOutput()
 #ifdef _DEBUG
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	mEditorRenderer->RenderClear(clearColor);
+	mEditorRenderer->Render();
 
 	if (mIsUpdatingGame)
 	{
@@ -299,7 +300,6 @@ void CCore::GenerateOutput()
 	EditorLayer::GetInstance()->Render(mEditorRenderer);
 	CollisionManager::GetInstance()->RenderRay(mEditorRenderer);
 
-	mEditorRenderer->BatchRenderTextures();
 	mEditorRenderer->SwapChainPresent(1, 0);
 
 #else

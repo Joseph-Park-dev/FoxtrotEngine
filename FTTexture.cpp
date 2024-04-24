@@ -11,10 +11,7 @@
 #include "TemplateFunctions.h"
 
 FTTexture::~FTTexture()
-{
-    mTexture.Get()->Release();
-    mTextureResourceView.Get()->Release();
-}
+{}
 
 bool FTTexture::CreateTexture(const std::string filename)
 {

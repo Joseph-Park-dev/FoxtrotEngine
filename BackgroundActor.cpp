@@ -11,15 +11,15 @@ void BackgroundActor::InitializeActor()
 	////bg->SetScreenSize(Vector2(1024.f, 768.f));
 
 	TileMapComponent* tiled1 = new TileMapComponent(this, 52);
-	tiled1->SetTexture();
+	//tiled1->SetTexture();
 	tiled1->InitializeTileMap(L"Assets/MapLayer1.csv", 32, 32);
 
 	TileMapComponent* tiled2 = new TileMapComponent(this, 51);
-	tiled2->SetTexture();
+	//tiled2->SetTexture();
 	tiled2->InitializeTileMap(L"Assets/MapLayer2.csv", 32, 32);
 
 	TileMapComponent* tiled3 = new TileMapComponent(this, 50);
-	tiled3->SetTexture();
+	//tiled3->SetTexture();
 	tiled3->InitializeTileMap(L"Assets/MapLayer3.csv", 32, 32);
 	this->AddLayer(tiled1);
 	this->AddLayer(tiled2);

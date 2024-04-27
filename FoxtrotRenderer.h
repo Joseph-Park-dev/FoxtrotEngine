@@ -6,7 +6,7 @@
 #include <wrl.h> // ComPtr
 #include <iostream>
 
-#include "FTTexture.h"
+#include "Mesh.h"
 
 using namespace Microsoft::WRL;
 class Transform;
@@ -17,21 +17,6 @@ struct Vertex {
     DirectX::SimpleMath::Vector2 texcoord;
 };
 
-struct BasicVertexConstantBuffer {
-    DirectX::SimpleMath::Matrix model;
-    DirectX::SimpleMath::Matrix view;
-    DirectX::SimpleMath::Matrix projection;
-};
-static_assert((sizeof(BasicVertexConstantBuffer) % 16) == 0,
-    "Constant Buffer size must be 16-byte aligned");
-
-struct PixelShaderConstantBuffer {
-    float xSplit; // 4 bytes
-    float padding[3]; // 4 * 3 = 12 bytes
-};
-static_assert((sizeof(PixelShaderConstantBuffer) % 16) == 0,
-    "Constant Buffer size must be 16-byte aligned");
-
 class FoxtrotRenderer
 {
 public:
@@ -41,13 +26,13 @@ public:
 public:
 	void SwapChainPresent(UINT syncInterval, UINT flags);
     void Render();
-    void UpdateConstantBufferData(Transform* transform);
 	void RenderClear(const float clearColor[4]);
 
 public:
-	ID3D11Device*            GetDevice()  { return mDevice.Get(); }
-	ID3D11DeviceContext*     GetContext() { return mContext.Get(); }
-    std::vector<FTTexture*>& GetTexturesToRender() { return mTexturesToRender; }
+	ID3D11Device*         GetDevice()        { return mDevice.Get(); }
+	ID3D11DeviceContext*  GetContext()       { return mContext.Get(); }
+    std::vector<Mesh*>&   GetMeshes()        { return mMeshes; }
+    float GetAspectRatio() const { return float(1920) / float(1080); }
 
 private:
     int mRenderWidth;
@@ -76,34 +61,17 @@ private:
 
 	D3D11_VIEWPORT mScreenViewport;
 
-    ComPtr<ID3D11VertexShader> mColorVertexShader;
-    ComPtr<ID3D11PixelShader>  mColorPixelShader;
-    ComPtr<ID3D11InputLayout>  mColorInputLayout;
+    ComPtr<ID3D11VertexShader> mBasicVertexShader;
+    ComPtr<ID3D11PixelShader>  mBasicPixelShader;
+    ComPtr<ID3D11InputLayout>  mBasicInputLayout;
 
     ComPtr<ID3D11Buffer> mVertexBuffer;
     ComPtr<ID3D11Buffer> mIndexBuffer;
-    ComPtr<ID3D11Buffer> mConstantBuffer;
-    ComPtr<ID3D11Buffer> mPixelShaderConstantBuffer;
-
-    BasicVertexConstantBuffer mConstantBufferData;
-    PixelShaderConstantBuffer mPixelShaderConstantBufferData;
+    
     UINT mIndexCount;
-
-    std::vector<FTTexture*> mTexturesToRender;
+    std::vector<Mesh*> mMeshes;
 
     bool m_usePerspectiveProjection = true;
-
-    DirectX::SimpleMath::Vector3 mViewEyePos = { 0.0f, 0.0f, -10.0f };
-    DirectX::SimpleMath::Vector3 mViewEyeDir = { 0.0f, 0.0f, 1.0f };
-    DirectX::SimpleMath::Vector3 mViewUp = { 0.0f, 1.0f, 0.0f };
-    float mProjFovAngleY = 70.0f;
-    float mNearZ = 0.01f;
-    float mFarZ = 100.0f;
-    float mAspect = GetAspectRatio();
-
-    float GetAspectRatio() const {
-        return float(1920) / float(1080);
-    }
 
 public:
     FoxtrotRenderer();
@@ -118,10 +86,10 @@ private:
     bool CreateDepthBuffer();
     bool CreateDepthStencilState();
     bool CreateBlendState();
-    bool CreateSamplerState();
+    bool CreateTextureSampler();
 
-    void CreateIndexBuffer(const std::vector<uint16_t>& indices, ComPtr<ID3D11Buffer>& m_indexBuffer);
-
+public:
+    void CreateIndexBuffer(const std::vector<uint32_t>& indices, ComPtr<ID3D11Buffer>& m_indexBuffer);
     template <typename T_VERTEX>
     void CreateVertexBuffer(const std::vector<T_VERTEX>& vertices,
         ComPtr<ID3D11Buffer>& vertexBuffer) {
@@ -179,7 +147,6 @@ private:
                 << std::endl;
         }
     }
-
     template <typename T_DATA>
     void UpdateBuffer(const T_DATA& bufferData, ComPtr<ID3D11Buffer>& buffer) {
 
@@ -194,6 +161,7 @@ private:
         mContext->Unmap(buffer.Get(), NULL);
     }
 
+private:
     void CreateVertexShaderAndInputLayout(
         const std::wstring& filename, 
         const std::vector<D3D11_INPUT_ELEMENT_DESC>& inputElements, 

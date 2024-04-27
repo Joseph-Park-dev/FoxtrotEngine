@@ -198,10 +198,10 @@ void CCore::RunLoop()
 void CCore::ProcessInput()
 {
 	MSG msg = {};
-	while (PeekMessage(&msg, mEditorWindow, 0, 0, PM_REMOVE))
+	if (PeekMessage(&msg, mEditorWindow, 0, 0, PM_REMOVE))
 	{
 	#ifdef _DEBUG
-		//EditorCamera2D::GetInstance()->ProcessInput(&msg);
+		EditorCamera2D::GetInstance()->ProcessInput(msg);
 	#endif // _DEBUG
 	}
 	KeyInputManager::GetInstance()->DetectKeyInput();
@@ -283,7 +283,6 @@ void CCore::GenerateOutput()
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	mEditorRenderer->RenderClear(clearColor);
 	mEditorRenderer->Render();
-
 	if (mIsUpdatingGame)
 	{
 		SceneManager::GetInstance()->Render(mEditorRenderer);

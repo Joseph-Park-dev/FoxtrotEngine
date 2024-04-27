@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <fstream>
 #include <string>
+#include <directxtk/SimpleMath.h>
 
 #include "Math.h"
 #include "Bounds.h"
@@ -46,6 +47,11 @@ void LogFloat(std::string message, float val)
 void LogVector2(Vector2 val)
 {
 	printf("X : %f Y : %f\n", val.x, val.y);
+}
+
+void LogVector3(DirectX::SimpleMath::Vector3 val)
+{
+	printf("X : %f Y : %f Z : %f\n", val.x, val.y, val.z);
 }
 
 void LogVector2(std::string message, Vector2 val)

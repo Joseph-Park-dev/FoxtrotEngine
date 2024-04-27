@@ -8,54 +8,7 @@
 
 #include "TemplateFunctions.h"
 #include "Transform.h"
-
-auto MakeSquare() {
-	using DirectX::SimpleMath::Vector2;
-	using DirectX::SimpleMath::Vector3;
-	using DirectX::SimpleMath::Vector4;
-
-	std::vector<Vector3> positions;
-	std::vector<Vector3> colors;
-	std::vector<Vector3> normals;
-	std::vector<Vector2> texcoords; // 텍스춰 좌표
-
-	const float scale = 1.0f;
-
-	// 앞면
-	positions.push_back(Vector3(-1.0f, 1.0f, 0.0f) * scale);
-	positions.push_back(Vector3(1.0f, 1.0f, 0.0f) * scale);
-	positions.push_back(Vector3(1.0f, -1.0f, 0.0f) * scale);
-	positions.push_back(Vector3(-1.0f, -1.0f, 0.0f) * scale);
-	colors.push_back(Vector3(0.0f, 1.0f, 1.0f));
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-	colors.push_back(Vector3(0.0f, 1.0f, 1.0f));
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-
-	// FTTexture Coordinates (Direct3D 9)
-	// https://learn.microsoft.com/en-us/windows/win32/direct3d9/texture-coordinates
-	texcoords.push_back(Vector2(0.0f, 0.0f));
-	texcoords.push_back(Vector2(1.0f, 0.0f));
-	texcoords.push_back(Vector2(1.0f, 1.0f));
-	texcoords.push_back(Vector2(0.0f, 1.0f));
-
-	std::vector<Vertex> vertices;
-	for (size_t i = 0; i < positions.size(); i++) {
-		Vertex v;
-		v.position = positions[i];
-		v.color = colors[i];
-		v.texcoord = texcoords[i];
-		vertices.push_back(v);
-	}
-	std::vector<uint16_t> indices = {
-		0, 1, 2, 0, 2, 3, // 앞면
-	};
-
-	return std::tuple{ vertices, indices };
-}
+#include "EditorCamera2D.h"
 
 FoxtrotRenderer* FoxtrotRenderer::CreateRenderer(HWND window, int width, int height)
 {
@@ -66,6 +19,75 @@ FoxtrotRenderer* FoxtrotRenderer::CreateRenderer(HWND window, int width, int hei
 		return nullptr;
 	}
 	return ftRenderer;
+}
+
+bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
+{
+	mRenderWidth = width;
+	mRenderHeight = height;
+
+	if (!CreateDeviceAndContext(window))
+	{
+		LogString("Create Device and Context failed");
+		LogString("Create SwapChain failed");
+		return false;
+	}
+
+	if (!CreateRenderTarget())
+	{
+		LogString("Create Render Target View failed.");
+		return false;
+	}
+
+	SetViewport();
+
+	if (!CreateRasterizerState())
+	{
+		LogString("Create Rasterizer State failed.");
+		return false;
+	}
+
+	if (!CreateDepthBuffer())
+	{
+		LogString("Create Depth Buffer failed.");
+		return false;
+	}
+
+	if (!CreateDepthStencilState())
+	{
+		LogString("Create Depth Stencil State failed.");
+		return false;
+	}
+
+	if (!CreateBlendState())
+	{
+		LogString("Create Blend State failed.");
+		return false;
+	}
+	mContext->OMSetBlendState(mBlendState.Get(), 0, 0xffffffff);
+
+	if (!CreateTextureSampler())
+	{
+		LogString("Create Sampler State failed.");
+		return false;
+	}
+
+	std::vector<D3D11_INPUT_ELEMENT_DESC> inputElements = {
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
+		 D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3,
+		 D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 + 4 * 3,
+		 D3D11_INPUT_PER_VERTEX_DATA, 0},
+	};
+
+	CreateVertexShaderAndInputLayout(
+		L"ColorVertexShader.hlsl", inputElements, mBasicVertexShader,
+		mBasicInputLayout);
+
+	CreatePixelShader(L"ColorPixelShader.hlsl", mBasicPixelShader);
+
+	return true;
 }
 
 void FoxtrotRenderer::DestroyRenderer(FoxtrotRenderer* renderer)
@@ -97,90 +119,64 @@ void FoxtrotRenderer::Render()
 	// IA: Input-Assembler stage
 
 	SetViewport();
-	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	RenderClear(clearColor);
 
-	// 비교: Depth Buffer를 사용하지 않는 경우
-	// m_context->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(),
-	// nullptr);
-	// Render target 지정 가능 -> 어떤 메모리에 렌더링을 할지를 지정 가능
-	// Render target 여러개도 가능 (여러개의 Render target, or 여러개의 Pass(단계))
+	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	mContext->ClearRenderTargetView(mRenderTargetView.Get(), clearColor);
+	mContext->ClearDepthStencilView(mDepthStencilView.Get(),
+		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
+		1.0f, 0);
 	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(),
 		mDepthStencilView.Get());
 	mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
 
-	// 어떤 쉐이더를 사용할지 설정
-	mContext->VSSetShader(mColorVertexShader.Get(), 0, 0);
-	mContext->VSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
+	mContext->VSSetShader(mBasicVertexShader.Get(), 0, 0);
 
-	const int textureCount = mTexturesToRender.size();
-	ComPtr<ID3D11ShaderResourceView>* pixelResources = new ComPtr<ID3D11ShaderResourceView>[textureCount];
-	for (size_t i = 0; i < textureCount; ++i)
-		pixelResources[i] = mTexturesToRender[i]->GetResourceView();
-	mContext->PSSetShaderResources(0, textureCount, pixelResources->GetAddressOf());
 	mContext->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
 
-	mContext->PSSetConstantBuffers(0, 1,
-		mPixelShaderConstantBuffer.GetAddressOf());
-	mContext->PSSetShader(mColorPixelShader.Get(), 0, 0);
+	mContext->PSSetShader(mBasicPixelShader.Get(), 0, 0);
+
 	mContext->RSSetState(mRasterizerState.Get());
 
-	// 버텍스/인덱스 버퍼 설정
+	/*if (m_drawAsWire) {
+		mContext->RSSetState(m_wireRasterizerSate.Get());
+	}
+	else {
+		mContext->RSSetState(m_solidRasterizerSate.Get());
+	}*/
+
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
-	mContext->IASetInputLayout(mColorInputLayout.Get());
-	mContext->IASetVertexBuffers(0, 1, mVertexBuffer.GetAddressOf(), &stride,
-		&offset);
-	mContext->IASetIndexBuffer(mIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
-	mContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	mContext->DrawIndexed(mIndexCount, 0, 0);
 
-	mTexturesToRender.clear();
-	delete[] pixelResources;
-	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
-	mContext->PSSetShaderResources(0, 1, nullSRV);
+	// 버텍스/인덱스 버퍼 설정
+	for (const Mesh* mesh : mMeshes) {
+		mContext->VSSetConstantBuffers(
+			0, 1, mesh->vertexConstantBuffer.GetAddressOf());
+
+		mContext->PSSetShaderResources(
+			0, 1, mesh->texture->GetResourceView().GetAddressOf());
+
+		mContext->PSSetConstantBuffers(
+			0, 1, mesh->pixelConstantBuffer.GetAddressOf());
+
+		mContext->IASetInputLayout(mBasicInputLayout.Get());
+		mContext->IASetVertexBuffers(0, 1, mesh->vertexBuffer.GetAddressOf(),
+			&stride, &offset);
+		mContext->IASetIndexBuffer(mesh->indexBuffer.Get(),
+			DXGI_FORMAT_R32_UINT, 0);
+		mContext->IASetPrimitiveTopology(
+			D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		mContext->DrawIndexed(mesh->m_indexCount, 0, 0);
+	}
 }
 
 // Constant buffer data 업데이트 & 그 내용을 GPU 버퍼로 복사
 // 이후 Render() 에서 Vertex shader를 실행시키게 되는데,
 // 이때 Constant buffer data를 사용
 // mContext->VSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
-void FoxtrotRenderer::UpdateConstantBufferData(Transform* transform)
-{
-	using namespace DirectX;
-
-	// 모델의 변환 -> 모델 행렬 결정
-	mConstantBufferData.model =
-		SimpleMath::Matrix::CreateScale(transform->GetScale().x, transform->GetScale().y, 1.0f) *
-		SimpleMath::Matrix::CreateRotationZ(transform->GetRotation()) *
-		SimpleMath::Matrix::CreateTranslation(transform->GetWorldPosition().x, transform->GetWorldPosition().y, 0.0f);
-	mConstantBufferData.model = mConstantBufferData.model.Transpose();
-
-	// 시점 변환
-	// m_constantBufferData.view = XMMatrixLookAtLH(m_viewEye, m_viewFocus,
-	// m_viewUp);
-	mConstantBufferData.view =
-		XMMatrixLookToLH(mViewEyePos, mViewEyeDir, mViewUp);
-	mConstantBufferData.view = mConstantBufferData.view.Transpose();
-
-	// 프로젝션
-	// m_aspect = AppBase::GetAspectRatio(); // <- GUI에서 조절
-	if (m_usePerspectiveProjection) {
-		mConstantBufferData.projection = XMMatrixPerspectiveFovLH(
-			XMConvertToRadians(mProjFovAngleY), mAspect, mNearZ, mFarZ);
-	}
-	else {
-		mConstantBufferData.projection = XMMatrixOrthographicOffCenterLH(
-			-mAspect, mAspect, -1.0f, 1.0f, mNearZ, mFarZ);
-	}
-	mConstantBufferData.projection =
-		mConstantBufferData.projection.Transpose();
-
-	// Constant를 CPU에서 GPU로 복사
-	UpdateBuffer(mConstantBufferData, mConstantBuffer);
-	UpdateBuffer(mPixelShaderConstantBufferData,
-		mPixelShaderConstantBuffer);
-}
+//void FoxtrotRenderer::UpdateConstantBufferData(Transform* transform)
+//{
+//	
+//}
 
 void FoxtrotRenderer::RenderClear(const float clearColor[4])
 {
@@ -188,112 +184,6 @@ void FoxtrotRenderer::RenderClear(const float clearColor[4])
 	mContext->ClearDepthStencilView(mDepthStencilView.Get(),
 		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
 		1.0f, 0);
-}
-
-bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
-{
-	mRenderWidth = width;
-	mRenderHeight = height;
-
-	if (!CreateDeviceAndContext(window))
-	{
-		LogString("Create Device and Context failed");
-		LogString("Create SwapChain failed");
-		return false;
-	}
-
-	if (!CreateRenderTarget())
-	{
-		LogString("Create Render Target View failed.");
-		return false;
-	}
-
-	SetViewport();
-
-	if (!CreateRasterizerState())
-	{
-		LogString("Create Rasterizer State failed.");
-		return false;
-	}
-	
-	if (!CreateDepthBuffer())
-	{
-		LogString("Create Depth Buffer failed.");
-		return false;
-	}
-
-	if (!CreateDepthStencilState())
-	{
-		LogString("Create Depth Stencil State failed.");
-		return false;
-	}
-	
-	if (!CreateBlendState())
-	{
-		LogString("Create Blend State failed.");
-		return false;
-	}
-	mContext->OMSetBlendState(mBlendState.Get(), 0, 0xffffffff);
-
-	if (!CreateSamplerState())
-	{
-		LogString("Create Sampler State failed.");
-		return false;
-	}
-
-	// Geometry 정의
-	auto [vertices, indices] = MakeSquare();
-
-	// 버텍스 버퍼 만들기
-	CreateVertexBuffer<Vertex>(vertices, mVertexBuffer);
-
-	// 인덱스 버퍼 만들기
-	mIndexCount = UINT(indices.size());
-
-	CreateIndexBuffer(indices, mIndexBuffer);
-
-	// ConstantBuffer 만들기
-	mConstantBufferData.model = DirectX::SimpleMath::Matrix();
-	mConstantBufferData.view = DirectX::SimpleMath::Matrix();
-	mConstantBufferData.projection = DirectX::SimpleMath::Matrix();
-	CreateConstantBuffer(mConstantBufferData, mConstantBuffer);
-	CreateConstantBuffer(mPixelShaderConstantBufferData,
-		mPixelShaderConstantBuffer);
-
-	// 쉐이더 만들기
-
-	// Input-layout objects describe how vertex buffer data is streamed into the
-	// IA(Input-Assembler) pipeline stage.
-	// https://learn.microsoft.com/en-us/windows/win32/api/d3d11/nf-d3d11-id3d11devicecontext-iasetinputlayout
-
-	// Input-Assembler Stage
-	// The purpose of the input-assembler stage is to read primitive data
-	// (points, lines and/or triangles) from user-filled buffers and assemble
-	// the data into primitives that will be used by the other pipeline stages.
-	// https://learn.microsoft.com/en-us/windows/win32/direct3d11/d3d10-graphics-programming-guide-input-assembler-stage
-
-	// D3D11_INPUT_ELEMENT_DESC structure(d3d11.h)
-	// https://learn.microsoft.com/en-us/windows/win32/api/d3d11/ns-d3d11-d3d11_input_element_desc
-
-	// Semantics
-	// https://learn.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-semantics
-
-	std::vector<D3D11_INPUT_ELEMENT_DESC> inputElements = {
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
-		 D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3,
-		 D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 + 4 * 3,
-		 D3D11_INPUT_PER_VERTEX_DATA, 0},
-	};
-
-	CreateVertexShaderAndInputLayout(
-		L"ColorVertexShader.hlsl", inputElements, mColorVertexShader,
-		mColorInputLayout);
-
-	CreatePixelShader(L"ColorPixelShader.hlsl", mColorPixelShader);
-
-	return true;
 }
 
 bool FoxtrotRenderer::CreateDeviceAndContext(HWND window)
@@ -304,10 +194,10 @@ bool FoxtrotRenderer::CreateDeviceAndContext(HWND window)
 	const D3D_DRIVER_TYPE driverType = D3D_DRIVER_TYPE_HARDWARE;
 
 	// 여기서 생성하는 것들
-	// m_device, m_context, m_swapChain,
+	// m_device, mContext, m_swapChain,
 	// m_renderTargetView, m_screenViewport, m_rasterizerState
 
-	// m_device와 m_context 생성
+	// m_device와 mContext 생성
 
 	mCreateDeviceFlags = 0;
 #if defined(DEBUG) || defined(_DEBUG)
@@ -523,7 +413,7 @@ bool FoxtrotRenderer::CreateBlendState()
 //	return true;
 //}
 
-bool FoxtrotRenderer::CreateSamplerState()
+bool FoxtrotRenderer::CreateTextureSampler()
 {
 	// FTTexture sampler 만들기
 	D3D11_SAMPLER_DESC sampDesc;
@@ -542,7 +432,7 @@ bool FoxtrotRenderer::CreateSamplerState()
 	return true;
 }
 
-void FoxtrotRenderer::CreateIndexBuffer(const std::vector<uint16_t>& indices,
+void FoxtrotRenderer::CreateIndexBuffer(const std::vector<uint32_t>& indices,
 	ComPtr<ID3D11Buffer>& m_indexBuffer) {
 	D3D11_BUFFER_DESC bufferDesc = {};
 	bufferDesc.Usage = D3D11_USAGE_IMMUTABLE; // 초기화 후 변경X

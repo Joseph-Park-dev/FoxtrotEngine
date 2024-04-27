@@ -9,7 +9,7 @@ class EditorCamera2D : public Camera2D
 	SINGLETON(EditorCamera2D);
 
 public:
-	//void ProcessInput(SDL_Event* event);
+	void ProcessInput(MSG msg);
 	void Update(float deltaTime) override;
 	void EditorRender(FoxtrotRenderer* renderer);
 	
@@ -19,6 +19,8 @@ private:
 	Vector2		mMiddleMouseClickedPos;
 	Bounds		mCameraDisplay;
 	Vector2		mDisplayPosition;
+	// 0 ~ 1 value (This is used to reduce drastic change in lookAtPos)
+	float		mMouseNavFactor;
 
 	Vector2		mEditorWindowSize;
 	float		mGridCellSize;

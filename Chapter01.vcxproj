@@ -356,6 +356,7 @@
     <ClInclude Include="imgui\FileDialog\ImGuiFileDialogConfig.h" Condition=" '$(Configuration)' == 'Debug' " />
     <ClInclude Include="imgui\FileDialog\stb\stb_image.h" Condition=" '$(Configuration)' == 'Debug' " />
     <ClInclude Include="imgui\FileDialog\stb\stb_image_resize.h" Condition=" '$(Configuration)' == 'Debug' " />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="MouseCursor.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Physics2D.h" />

@@ -9,25 +9,20 @@
 #include "CCore.h"
 #include "KeyInputManager.h"
 
-/*
-void EditorCamera2D::ProcessInput(SDL_Event* event)
+void EditorCamera2D::ProcessInput(MSG msg)
 {
-
-	
-	
-		Alternative for
-		if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow))
+	if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow))
+	{
+		int delta = GET_WHEEL_DELTA_WPARAM(msg.wParam);
+		if (msg.message == WM_MOUSEWHEEL);
 		{
-			if (event->type == SDL_MOUSEWHEEL)
-			{
-				if (event->wheel.y > 0) // scroll up
-					ZoomOut();
-				else if (event->wheel.y < 0) // scroll down
-					ZoomIn();
-			}
+			if (delta > 0) // scroll up
+				ZoomOut();
+			else if (delta < 0) // scroll down
+				ZoomIn();
 		}
+	}
 }
-*/
 
 void EditorCamera2D::Update(float deltaTime)
 {
@@ -46,12 +41,14 @@ void EditorCamera2D::MiddleMouseNavigation()
 	}
 	else if (MOUSE_HOLD(MOUSE::MOUSE_MIDDLE))
 	{
-		diff = (MOUSE_POS - mMiddleMouseClickedPos);
-		this->SetLookAtPos(this->GetLookAtPos() - diff);
+		diff = (MOUSE_POS - mMiddleMouseClickedPos) * mMouseNavFactor;
+		Vector2 lookAtPos = Vector2(this->GetLookAtPos().x - diff.x, this->GetLookAtPos().y + diff.y);
+		this->SetLookAtPos(lookAtPos);
 		//SetScreenCenter(GetScreenCenter() + diff);
 		//Camera2D::GetInstance()->SetScreenCenter(GetScreenCenter() - diff);
 		mMiddleMouseClickedPos = MOUSE_POS;
 	}
+	//LogVector2(GetLookAtPos());
 }
 
 void EditorCamera2D::CalcCameraDisplay()
@@ -165,6 +162,7 @@ EditorCamera2D::EditorCamera2D()
 	, mCameraDisplay{}
 	, mCurrIdx(0)
 	, mGridCellSize(64.f)
+	, mMouseNavFactor(0.001f)
 {
 	SetTargetActorID(TARGET_NONE);
 	SetScreenCenter(Camera2D::GetInstance()->GetScreenCenter());

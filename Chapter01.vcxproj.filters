@@ -450,6 +450,9 @@
     <ClInclude Include="FoxtrotRenderer.h">
       <Filter>02_Core\FoxtrotRenderer</Filter>
     </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>06_Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

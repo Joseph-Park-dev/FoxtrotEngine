@@ -15,7 +15,6 @@ void ResourceManager::LoadTexture(const std::string& strKey, const std::string& 
 		ptTex = new FTTexture;
 		ptTex->SetKey(strKey);
 		ptTex->SetRelativePath(fileName);
-		ptTex->CreateTexture(fileName);
 		mapTextures.insert(std::make_pair(strKey, ptTex));
 	}
 }

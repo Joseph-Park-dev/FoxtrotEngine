@@ -296,7 +296,7 @@ Camera2D::Camera2D()
 	, mEffectArea{}
 	, mEffectAlpha(0)
 	, mIsShaking(false)
-	, mZoomValue(0.f)
+	, mZoomValue(1.f)
 	, mZoomMultiplyValue(1.5f)
 {
 	CalcRenderArea();

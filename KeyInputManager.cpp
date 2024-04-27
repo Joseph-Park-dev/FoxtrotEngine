@@ -74,12 +74,10 @@ void KeyInputManager::DetectKeyInput()
 			if (mVecKey[i].isPushedPrevFrame)
 			{
 				mVecKey[i].eKeyState = KEY_STATE::HOLD;
-				printf("Holding..%c\n", (char)mKeyCode[i]);
 			}
 			else
 			{
 				mVecKey[i].eKeyState = KEY_STATE::TAP;
-				printf("tap..%c\n", (char)mKeyCode[i]);
 			}
 			mVecKey[i].isPushedPrevFrame = true;
 		}
@@ -88,7 +86,6 @@ void KeyInputManager::DetectKeyInput()
 			if (mVecKey[i].isPushedPrevFrame)
 			{
 				mVecKey[i].eKeyState = KEY_STATE::AWAY;
-				printf("away..%c\n", (char)mKeyCode[i]);
 			}
 			else
 			{
@@ -101,9 +98,12 @@ void KeyInputManager::DetectKeyInput()
 
 void KeyInputManager::DetectMouseInput(MSG msg)
 {
-	int mouseX = LOWORD(msg.lParam);
-	int mouseY = HIWORD(msg.lParam);
-	mMousePosition = Vector2(mouseX, mouseY);
+	if (msg.lParam)
+	{
+		int mouseX = LOWORD(msg.lParam);
+		int mouseY = HIWORD(msg.lParam);
+		mMousePosition = Vector2((float)mouseX, (float)mouseY);
+	}
 	for (int mouseButton = 0; mouseButton < (int)MOUSE::LAST_FLAG; ++mouseButton)
 	{
 		if (GetAsyncKeyState(mMouseCode[mouseButton]))
@@ -111,12 +111,10 @@ void KeyInputManager::DetectMouseInput(MSG msg)
 			if (mVecMouse[mouseButton].isPushedPrevFrame)
 			{
 				mVecMouse[mouseButton].eKeyState = KEY_STATE::HOLD;
-				printf("Mouse Hold..\n");
 			}
 			else
 			{
 				mVecMouse[mouseButton].eKeyState = KEY_STATE::TAP;
-				printf("Mouse Tap..\n");
 
 			}
 			mVecMouse[mouseButton].isPushedPrevFrame = true;
@@ -126,7 +124,6 @@ void KeyInputManager::DetectMouseInput(MSG msg)
 			if (mVecMouse[mouseButton].isPushedPrevFrame)
 			{
 				mVecMouse[mouseButton].eKeyState = KEY_STATE::AWAY;
-				printf("Mouse Away...\n");
 			}
 			else
 			{

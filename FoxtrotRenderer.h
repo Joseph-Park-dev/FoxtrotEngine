@@ -33,6 +33,7 @@ public:
 	ID3D11DeviceContext*  GetContext()       { return mContext.Get(); }
     std::vector<Mesh*>&   GetMeshes()        { return mMeshes; }
     float GetAspectRatio() const { return float(1920) / float(1080); }
+    void  RemoveMesh(Mesh* mesh);
 
 private:
     int mRenderWidth;

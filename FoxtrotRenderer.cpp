@@ -186,6 +186,13 @@ void FoxtrotRenderer::RenderClear(const float clearColor[4])
 		1.0f, 0);
 }
 
+void FoxtrotRenderer::RemoveMesh(Mesh* mesh)
+{
+	std::vector<Mesh*>::iterator iter = std::find(mMeshes.begin(), mMeshes.end(), mesh);
+	mMeshes.erase(iter);
+	mMeshes.shrink_to_fit();
+}
+
 bool FoxtrotRenderer::CreateDeviceAndContext(HWND window)
 {
 	// 만약 그래픽스 카드 호환성 문제로 D3D11CreateDevice()가 실패하는 경우에는
@@ -436,7 +443,7 @@ void FoxtrotRenderer::CreateIndexBuffer(const std::vector<uint32_t>& indices,
 	ComPtr<ID3D11Buffer>& m_indexBuffer) {
 	D3D11_BUFFER_DESC bufferDesc = {};
 	bufferDesc.Usage = D3D11_USAGE_IMMUTABLE; // 초기화 후 변경X
-	bufferDesc.ByteWidth = UINT(sizeof(uint16_t) * indices.size());
+	bufferDesc.ByteWidth = UINT(sizeof(uint32_t) * indices.size());
 	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bufferDesc.CPUAccessFlags = 0; // 0 if no CPU access is necessary.
 	bufferDesc.StructureByteStride = sizeof(uint16_t);

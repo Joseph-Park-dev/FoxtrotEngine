@@ -19,6 +19,7 @@ SpriteComponent::SpriteComponent(Actor* owner, int drawOrder, int updateOrder)
 
 SpriteComponent::~SpriteComponent()
 {
+	CCore::GetInstance()->GetEditorRenderer()->RemoveMesh(mMesh);
 	delete rect;
 }
 
@@ -120,8 +121,6 @@ void SpriteComponent::Update(float deltaTime)
 	mMesh->basicVertexConstantBufferData.view *= SimpleMath::Matrix::CreateScale(EditorCamera2D::GetInstance()->GetZoomValue());
 	mMesh->basicVertexConstantBufferData.view = mMesh->basicVertexConstantBufferData.view.Transpose();
 
-	LogFloat(EditorCamera2D::GetInstance()->GetZoomValue());
-
 	// 프로젝션
 	// m_aspect = AppBase::GetAspectRatio(); // <- GUI에서 조절
 	/*if (m_usePerspectiveProjection) {
@@ -153,7 +152,7 @@ void SpriteComponent::Render(FoxtrotRenderer* renderer)
 	}
 	else
 		Initialize(renderer, "Asteroid");
-	BlitToGameview(rect, GetOwner()->GetTransform()->GetScale());
+	//BlitToGameview(rect, GetOwner()->GetTransform()->GetScale());
 }
 //void SpriteComponent::SetTexture()
 //{

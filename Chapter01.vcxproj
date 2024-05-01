@@ -243,6 +243,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="FoxtrotRenderer.cpp" />
+    <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="GunFiringComponent.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -347,6 +348,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="FoxtrotRenderer.h" />
+    <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="GunFiringComponent.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -357,6 +359,7 @@
     <ClInclude Include="imgui\FileDialog\stb\stb_image.h" Condition=" '$(Configuration)' == 'Debug' " />
     <ClInclude Include="imgui\FileDialog\stb\stb_image_resize.h" Condition=" '$(Configuration)' == 'Debug' " />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshData.h" />
     <ClInclude Include="MouseCursor.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Physics2D.h" />
@@ -404,6 +407,7 @@
     <ClInclude Include="UIActor.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="UnitDefinitions.h" />
+    <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

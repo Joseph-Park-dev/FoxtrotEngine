@@ -7,9 +7,6 @@ class FTTexture;
 class SpriteComponent :public Component
 {
 public:
-	MeshData MakeSquare();
-
-public:
 	Mesh*		 GetMesh()		const { return mMesh; }
 	int			 GetTexWidth()  const { return mTextWidth; }
 	Bounds*		 GetRect()		const { return rect; }

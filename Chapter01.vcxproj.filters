@@ -250,6 +250,9 @@
     <ClCompile Include="FoxtrotRenderer.cpp">
       <Filter>02_Core\FoxtrotRenderer</Filter>
     </ClCompile>
+    <ClCompile Include="GeometryGenerator.cpp">
+      <Filter>04_Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SpriteComponent.h">
@@ -451,6 +454,15 @@
       <Filter>02_Core\FoxtrotRenderer</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
+      <Filter>06_Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryGenerator.h">
+      <Filter>04_Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>06_Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshData.h">
       <Filter>06_Resources</Filter>
     </ClInclude>
   </ItemGroup>

@@ -37,9 +37,3 @@ struct Mesh {
 
     UINT m_indexCount = 0;
 };
-
-struct MeshData {
-    std::vector<Vertex>   vertices;
-    std::vector<uint32_t> indices; // uint32로 변경
-    std::string           textureFilename;
-};

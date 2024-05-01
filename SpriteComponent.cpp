@@ -7,6 +7,8 @@
 #include "Transform.h"
 #include "ChunkLoader.h"
 #include "ResourceManager.h"
+#include "MeshData.h"
+#include "GeometryGenerator.h"
 
 SpriteComponent::SpriteComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner, drawOrder)
@@ -24,62 +26,13 @@ SpriteComponent::~SpriteComponent()
 	delete rect;
 }
 
-MeshData SpriteComponent::MakeSquare()
-{
-	using DirectX::SimpleMath::Vector2;
-	using DirectX::SimpleMath::Vector3;
-	using DirectX::SimpleMath::Vector4;
-
-	MeshData output = {};
-	
-	std::vector<Vector3> positions;
-	std::vector<Vector3> colors;
-	std::vector<Vector3> normals;
-	std::vector<Vector2> texcoords; // ÅØ½ºÃç ÁÂÇ¥
-
-	// ¾Õ¸é
-	positions.push_back(Vector3(-1.0f, 1.0f, 0.0f)	* mScale);
-	positions.push_back(Vector3(1.0f, 1.0f, 0.0f)	* mScale);
-	positions.push_back(Vector3(1.0f, -1.0f, 0.0f)	* mScale);
-	positions.push_back(Vector3(-1.0f, -1.0f, 0.0f) * mScale);
-	colors.push_back(Vector3(0.0f, 1.0f, 1.0f));
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-	colors.push_back(Vector3(0.0f, 1.0f, 1.0f));
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-
-	// FTTexture Coordinates (Direct3D 9)
-	// https://learn.microsoft.com/en-us/windows/win32/direct3d9/texture-coordinates
-	texcoords.push_back(Vector2(0.0f, 0.0f));
-	texcoords.push_back(Vector2(1.0f, 0.0f));
-	texcoords.push_back(Vector2(1.0f, 1.0f));
-	texcoords.push_back(Vector2(0.0f, 1.0f));
-
-	std::vector<Vertex> vertices;
-	for (size_t i = 0; i < positions.size(); i++) {
-		Vertex v;
-		v.position = positions[i];
-		v.color = colors[i];
-		v.texcoord = texcoords[i];
-		output.vertices.push_back(v);
-	}
-	output.indices = {
-		0, 1, 2, 0, 2, 3, // ¾Õ¸é
-	};
-
-	return output;
-}
-
 void SpriteComponent::Initialize(FoxtrotRenderer* renderer, std::string fileName)
 {
 	mMesh = new Mesh;
 	mAspect = renderer->GetAspectRatio();
 	// Read Mesh and store it as Mesh Data
 	// Implementation needed
-	MeshData mesh = MakeSquare();
+	MeshData mesh = GeometryGenerator::MakeSquare();
 	renderer->CreateVertexBuffer(mesh.vertices, mMesh->vertexBuffer);
 	mMesh->m_indexCount = UINT(mesh.indices.size());
 	renderer->CreateIndexBuffer(mesh.indices, mMesh->indexBuffer);

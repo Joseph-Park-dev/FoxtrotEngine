@@ -9,6 +9,7 @@
 #include "TemplateFunctions.h"
 #include "Transform.h"
 #include "EditorCamera2D.h"
+#include "Vertex.h"
 
 FoxtrotRenderer* FoxtrotRenderer::CreateRenderer(HWND window, int width, int height)
 {

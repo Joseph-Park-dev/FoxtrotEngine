@@ -149,7 +149,7 @@ void ChunkLoader::LoadActorsToEditor(std::ifstream& ifs)
     for (size_t i = 0; i < actorCount; ++i)
     {
         Actor* actor = LoadIndividualActor(ifs, currScene);
-        EditorLayer::GetInstance()->AddEditorElement(actor);
+        //EditorLayer::GetInstance()->AddEditorElement(actor);
     }
 }
 

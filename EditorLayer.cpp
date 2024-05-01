@@ -38,6 +38,7 @@ void EditorLayer::Update(float deltaTime)
 	mConfirmKeyPressed = ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Enter);
 	mUndoKeyPressed	   = ImGui::IsKeyChordPressed(ImGuiModFlags_::ImGuiModFlags_Ctrl | ImGuiKey::ImGuiKey_Z);
 	mRedoKeyPressed    = ImGui::IsKeyChordPressed(ImGuiModFlags_::ImGuiModFlags_Ctrl | ImGuiModFlags_::ImGuiModFlags_Shift | ImGuiKey::ImGuiKey_Z);
+	mDeleteKeyPressed  = ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Delete);
 
 	CommandHistory::GetInstance()->Update();
 
@@ -51,6 +52,13 @@ void EditorLayer::Update(float deltaTime)
 		if (mEditorElements[i]->GetIsFocused())
 		{
 			mEditorElements[i]->UIUpdate();
+			if (mDeleteKeyPressed)
+			{
+				LogInt(mEditorElements.size());
+				delete mEditorElements[i];
+				mEditorElements.erase(mEditorElements.begin() + i);
+				LogInt(mEditorElements.size());
+			}
 		}
 	}
 	ApplyCommandHistory();
@@ -124,14 +132,10 @@ void EditorLayer::DisplayFileMenu()
 			ImGuiFileDialog::Instance()->OpenDialog("OpenChunkFile", "Open Chunk", CHUNK_FORMAT, config);
 		}
 
-
 		if (ImGui::Button("New Game Object"))
 		{
-			int size = EditorLayer::GetInstance()->GetEditorElements().size();
 			Scene* currScene = SceneManager::GetInstance()->GetCurrScene();
-			Ship* ship = new Ship(currScene);
-			ship->SetName(L"Game Object" + std::to_wstring(size));
-			AddEditorElement(ship);
+			AddEditorElement(currScene);
 		}
 		if (ImGui::Button("Play"))
 		{
@@ -235,10 +239,11 @@ void EditorLayer::ShutDown()
 	ImGui::DestroyContext();
 }
 
-void EditorLayer::AddEditorElement(Actor* actor)
+void EditorLayer::AddEditorElement(Scene* scene)
 {
 	UnfocusEditorElements();
-	EditorElement* editorElement = new EditorElement(actor);
+	EditorElement* editorElement = new EditorElement(scene);
+	editorElement->SetName(L"Game Object" + std::to_wstring(mEditorElements.size()));
 	editorElement->SetIsFocused(true);
 	mEditorElements.emplace_back(editorElement);
 }
@@ -276,6 +281,7 @@ EditorLayer::EditorLayer()
 	, mUndoKeyPressed(false)
 	, mRedoKeyPressed(false)
 	, mConfirmKeyPressed(false)
+	, mDeleteKeyPressed(false)
 {
 	// Initial command stored in front of every following commands
 	CommandHistory::GetInstance()->AddCommand(new IntEditCommand(mActorNameIdx, 0));

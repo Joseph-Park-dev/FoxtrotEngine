@@ -36,7 +36,7 @@ public:
     UIActor(Scene* scene, bool isCamAffect);
     UIActor(const UIActor& origin);
     UIActor(const Actor* origin);
-    virtual ~UIActor();
+    virtual ~UIActor() override;
     CLONE(UIActor);
 
 private:

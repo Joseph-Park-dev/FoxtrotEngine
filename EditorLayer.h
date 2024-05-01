@@ -24,7 +24,7 @@ public:
 
 public:
 	std::vector<EditorElement*>& GetEditorElements() { return mEditorElements; }
-	void AddEditorElement(Actor* actor);
+	void AddEditorElement(Scene* scene);
 	void DisplayEditorElements(FoxtrotRenderer* renderer);
 
 	int& GetActorNameIdx() { return mActorNameIdx; }
@@ -50,6 +50,7 @@ private:
 
 	bool mUndoKeyPressed;
 	bool mRedoKeyPressed;
+	bool mDeleteKeyPressed;
 
 private:
 	void Save();

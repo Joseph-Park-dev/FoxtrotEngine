@@ -30,7 +30,7 @@ public:
 public:
 	EditorElement(Scene* scene);
 	EditorElement(Actor* actor);
-	~EditorElement();
+	virtual ~EditorElement() override;
 
 private:
 	// Stores ActorGroup index -> is int for Uint -> int conversion not supported

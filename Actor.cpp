@@ -54,8 +54,10 @@ Actor::Actor(const Actor* origin)
 
 Actor::~Actor()
 {
-	delete mTransform;
-	mComponents.clear();
+	if(mTransform)
+		delete mTransform;
+	for (size_t i = 0; i < mComponents.size(); ++i)
+		delete mComponents[i];
 	mChild.clear();
 }
 

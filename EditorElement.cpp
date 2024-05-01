@@ -48,14 +48,6 @@ void EditorElement::UIUpdate()
 			}
 			ImGui::End();
 		}
-
-		if (ImGui::IsKeyPressed(ImGuiKey_Delete))
-		{
-			std::vector<EditorElement*>& editElems = EditorLayer::GetInstance()->GetEditorElements();
-			std::vector<EditorElement*>::iterator iter;
-			iter = std::find(editElems.begin(), editElems.end(), this);
-			editElems.erase(iter);
-		}
 	}
 }
 

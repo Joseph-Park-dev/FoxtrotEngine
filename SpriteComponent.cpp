@@ -13,6 +13,7 @@ SpriteComponent::SpriteComponent(Actor* owner, int drawOrder, int updateOrder)
 	, mTextWidth(0)
 	, mTexHeight(0)
 	, rect(new Bounds)
+	, mScale(.5f)
 {
 	ResourceManager::GetInstance()->LoadTexture("Asteroid", "./Assets/Asteroid.png");
 }
@@ -36,13 +37,11 @@ MeshData SpriteComponent::MakeSquare()
 	std::vector<Vector3> normals;
 	std::vector<Vector2> texcoords; // ÅØ½ºÃç ÁÂÇ¥
 
-	const float scale = 1.0f;
-
 	// ¾Õ¸é
-	positions.push_back(Vector3(-1.0f, 1.0f, 0.0f) * scale);
-	positions.push_back(Vector3(1.0f, 1.0f, 0.0f) * scale);
-	positions.push_back(Vector3(1.0f, -1.0f, 0.0f) * scale);
-	positions.push_back(Vector3(-1.0f, -1.0f, 0.0f) * scale);
+	positions.push_back(Vector3(-1.0f, 1.0f, 0.0f)	* mScale);
+	positions.push_back(Vector3(1.0f, 1.0f, 0.0f)	* mScale);
+	positions.push_back(Vector3(1.0f, -1.0f, 0.0f)	* mScale);
+	positions.push_back(Vector3(-1.0f, -1.0f, 0.0f) * mScale);
 	colors.push_back(Vector3(0.0f, 1.0f, 1.0f));
 	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
 	colors.push_back(Vector3(0.0f, 1.0f, 1.0f));
@@ -104,18 +103,20 @@ void SpriteComponent::Update(float deltaTime)
 	using namespace DirectX;
 
 	Transform* transform = GetOwner()->GetTransform();
-
+	Vector2 lookAtPos = EditorCamera2D::GetInstance()->GetLookAtPos();
+	float cameraMouseNavFactor = EditorCamera2D::GetInstance()->GetMouseNavFactor();
+	Vector2 scale = transform->GetScale();
+	Vector2 worldPos = transform->GetWorldPosition() * cameraMouseNavFactor;
 	// ¸ðµ¨ÀÇ º¯È¯ -> ¸ðµ¨ Çà·Ä °áÁ¤
 	mMesh->basicVertexConstantBufferData.model =
-		SimpleMath::Matrix::CreateScale(transform->GetScale().x, transform->GetScale().y, 1.0f) *
+		SimpleMath::Matrix::CreateScale(scale.x, scale.y, 1.0f) *
 		SimpleMath::Matrix::CreateRotationZ(transform->GetRotation()) *
-		SimpleMath::Matrix::CreateTranslation(transform->GetWorldPosition().x, transform->GetWorldPosition().y, 0.0f);
+		SimpleMath::Matrix::CreateTranslation(worldPos.x, worldPos.y, 0.0f);
 	mMesh->basicVertexConstantBufferData.model = mMesh->basicVertexConstantBufferData.model.Transpose();
 
 	// ½ÃÁ¡ º¯È¯
 	// m_constantBufferData.view = XMMatrixLookAtLH(m_viewEye, m_viewFocus,
 	// m_viewUp);
-	Vector2 lookAtPos = EditorCamera2D::GetInstance()->GetLookAtPos();
 	mMesh->basicVertexConstantBufferData.view =
 		XMMatrixLookToLH(SimpleMath::Vector3(lookAtPos.x, lookAtPos.y, 0.0f), mViewEyeDir, mViewUp);
 	mMesh->basicVertexConstantBufferData.view *= SimpleMath::Matrix::CreateScale(EditorCamera2D::GetInstance()->GetZoomValue());

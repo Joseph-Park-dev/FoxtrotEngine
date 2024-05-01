@@ -39,6 +39,7 @@ private:
 	Bounds*		rect;
 	int			mTextWidth;
 	int			mTexHeight;
+	float		mScale;
 
 	DirectX::SimpleMath::Vector3 mViewEyePos = { 0.0f, 0.0f, -10.0f };
 	DirectX::SimpleMath::Vector3 mViewEyeDir = { 0.0f, 0.0f, 1.0f };

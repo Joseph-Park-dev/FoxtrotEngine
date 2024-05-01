@@ -12,8 +12,10 @@ public:
 	void ProcessInput(MSG msg);
 	void Update(float deltaTime) override;
 	void EditorRender(FoxtrotRenderer* renderer);
-	
 	void DisplayCameraMenu();
+
+public:
+	float GetMouseNavFactor() const { return mMouseNavFactor; }
 
 private:
 	Vector2		mMiddleMouseClickedPos;

@@ -28,8 +28,6 @@ void EditorLayer::Update(float deltaTime)
 {
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
-	//ImGui_ImplSDLRenderer2_NewFrame();
-	//ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
 	mSaveKeyPressed    = ImGui::IsKeyChordPressed(ImGuiModFlags_::ImGuiModFlags_Ctrl | ImGuiKey::ImGuiKey_S);
@@ -54,10 +52,9 @@ void EditorLayer::Update(float deltaTime)
 			mEditorElements[i]->UIUpdate();
 			if (mDeleteKeyPressed)
 			{
-				LogInt(mEditorElements.size());
+				// Delete game object, and erase the pointed from std::vector
 				delete mEditorElements[i];
 				mEditorElements.erase(mEditorElements.begin() + i);
-				LogInt(mEditorElements.size());
 			}
 		}
 	}

@@ -113,23 +113,23 @@ namespace Math
 }
 
 // 2D Vector
-class Vector2
+class FTVector2
 {
 public:
 	float x;
 	float y;
 
-	Vector2()
+	FTVector2()
 		:x(0.0f)
 		,y(0.0f)
 	{}
 
-	explicit Vector2(float inX, float inY)
+	explicit FTVector2(float inX, float inY)
 		:x(inX)
 		,y(inY)
 	{}
 
-	explicit Vector2(int inX, int inY)
+	explicit FTVector2(int inX, int inY)
 		:x(static_cast<float>(inX))
 		,y(static_cast<float>(inY))
 	{}
@@ -142,50 +142,50 @@ public:
 	}
 
 	// Vector addition (a + b)
-	friend Vector2 operator+(const Vector2& a, const Vector2& b)
+	friend FTVector2 operator+(const FTVector2& a, const FTVector2& b)
 	{
-		return Vector2(a.x + b.x, a.y + b.y);
+		return FTVector2(a.x + b.x, a.y + b.y);
 	}
 
 	// Vector subtraction (a - b)
-	friend Vector2 operator-(const Vector2& a, const Vector2& b)
+	friend FTVector2 operator-(const FTVector2& a, const FTVector2& b)
 	{
-		return Vector2(a.x - b.x, a.y - b.y);
+		return FTVector2(a.x - b.x, a.y - b.y);
 	}
 
 	// Component-wise multiplication
 	// (a.x * b.x, ...)
-	friend Vector2 operator*(const Vector2& a, const Vector2& b)
+	friend FTVector2 operator*(const FTVector2& a, const FTVector2& b)
 	{
-		return Vector2(a.x * b.x, a.y * b.y);
+		return FTVector2(a.x * b.x, a.y * b.y);
 	}
 
 	// Scalar multiplication
-	friend Vector2 operator*(const Vector2& vec, float scalar)
+	friend FTVector2 operator*(const FTVector2& vec, float scalar)
 	{
-		return Vector2(vec.x * scalar, vec.y * scalar);
+		return FTVector2(vec.x * scalar, vec.y * scalar);
 	}
 
 	// Scalar multiplication
-	friend Vector2 operator*(float scalar, const Vector2& vec)
+	friend FTVector2 operator*(float scalar, const FTVector2& vec)
 	{
-		return Vector2(vec.x * scalar, vec.y * scalar);
+		return FTVector2(vec.x * scalar, vec.y * scalar);
 	}
 
-	Vector2 operator / (Vector2 vOther)
+	FTVector2 operator / (FTVector2 vOther)
 	{
 		assert(!(vOther.x == 0.f || vOther.y == 0.f));
-		return Vector2(x / vOther.x, y / vOther.y);
+		return FTVector2(x / vOther.x, y / vOther.y);
 	}
 
-	Vector2 operator / (float _f)
+	FTVector2 operator / (float _f)
 	{
 		assert(!(_f == 0.f));
-		return Vector2(x / _f, y / _f);
+		return FTVector2(x / _f, y / _f);
 	}
 
 	// Scalar *=
-	Vector2& operator*=(float scalar)
+	FTVector2& operator*=(float scalar)
 	{
 		x *= scalar;
 		y *= scalar;
@@ -193,7 +193,7 @@ public:
 	}
 
 	// Vector +=
-	Vector2& operator+=(const Vector2& right)
+	FTVector2& operator+=(const FTVector2& right)
 	{
 		x += right.x;
 		y += right.y;
@@ -201,29 +201,29 @@ public:
 	}
 
 	// Vector -=
-	Vector2& operator-=(const Vector2& right)
+	FTVector2& operator-=(const FTVector2& right)
 	{
 		x -= right.x;
 		y -= right.y;
 		return *this;
 	}
 
-	Vector2 operator-()
+	FTVector2 operator-()
 	{
-		return Vector2(-x,-y);
+		return FTVector2(-x,-y);
 	}
 
-	bool operator==(const Vector2& right)
+	bool operator==(const FTVector2& right)
 	{
 		return (this->x == right.x) && (this->y == right.y);
 	}
 
-	bool operator!=(const Vector2& right)
+	bool operator!=(const FTVector2& right)
 	{
 		return (this->x != right.x) || (this->y != right.y);
 	}
 
-	void addScaledVector(const Vector2& vector, float scale)
+	void addScaledVector(const FTVector2& vector, float scale)
 	{
 		x += vector.x * scale;
 		y += vector.y * scale;
@@ -247,7 +247,7 @@ public:
 	}
 
 	// Normalize this vector
-	Vector2 Normalize()
+	FTVector2 Normalize()
 	{
 		float length = Length();
 		x /= length;
@@ -256,56 +256,56 @@ public:
 	}
 
 	// Normalize the provided vector
-	static Vector2 Normalize(const Vector2& vec)
+	static FTVector2 Normalize(const FTVector2& vec)
 	{
-		Vector2 temp = vec;
+		FTVector2 temp = vec;
 		temp.Normalize();
 		return temp;
 	}
 
 	// Dot product between two vectors (a dot b)
-	static float Dot(const Vector2& a, const Vector2& b)
+	static float Dot(const FTVector2& a, const FTVector2& b)
 	{
 		return (a.x * b.x + a.y * b.y);
 	}
 
 	// Lerp from A to B by f
-	static Vector2 Lerp(const Vector2& a, const Vector2& b, float f)
+	static FTVector2 Lerp(const FTVector2& a, const FTVector2& b, float f)
 	{
-		return Vector2(a + f * (b - a));
+		return FTVector2(a + f * (b - a));
 	}
 	
 	// Reflect V about (normalized) N
-	static Vector2 Reflect(const Vector2& v, const Vector2& n)
+	static FTVector2 Reflect(const FTVector2& v, const FTVector2& n)
 	{
-		return v - 2.0f * Vector2::Dot(v, n) * n;
+		return v - 2.0f * FTVector2::Dot(v, n) * n;
 	}
 
 	// Transform vector by matrix
-	static Vector2 Transform(const Vector2& vec, const class Matrix3& mat, float w = 1.0f);
+	static FTVector2 Transform(const FTVector2& vec, const class Matrix3& mat, float w = 1.0f);
 
-	static const Vector2 Zero;
-	static const Vector2 UnitX;
-	static const Vector2 UnitY;
-	static const Vector2 NegUnitX;
-	static const Vector2 NegUnitY;
+	static const FTVector2 Zero;
+	static const FTVector2 UnitX;
+	static const FTVector2 UnitY;
+	static const FTVector2 NegUnitX;
+	static const FTVector2 NegUnitY;
 };
 
 // 3D Vector
-class Vector3
+class FTVector3
 {
 public:
 	float x;
 	float y;
 	float z;
 
-	Vector3()
+	FTVector3()
 		:x(0.0f)
 		,y(0.0f)
 		,z(0.0f)
 	{}
 
-	explicit Vector3(float inX, float inY, float inZ)
+	explicit FTVector3(float inX, float inY, float inZ)
 		:x(inX)
 		,y(inY)
 		,z(inZ)
@@ -326,43 +326,43 @@ public:
 	}
 
 	// Vector addition (a + b)
-	friend Vector3 operator+(const Vector3& a, const Vector3& b)
+	friend FTVector3 operator+(const FTVector3& a, const FTVector3& b)
 	{
-		return Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
+		return FTVector3(a.x + b.x, a.y + b.y, a.z + b.z);
 	}
 
 	// Vector subtraction (a - b)
-	friend Vector3 operator-(const Vector3& a, const Vector3& b)
+	friend FTVector3 operator-(const FTVector3& a, const FTVector3& b)
 	{
-		return Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
+		return FTVector3(a.x - b.x, a.y - b.y, a.z - b.z);
 	}
 
 	// Component-wise multiplication
-	friend Vector3 operator*(const Vector3& left, const Vector3& right)
+	friend FTVector3 operator*(const FTVector3& left, const FTVector3& right)
 	{
-		return Vector3(left.x * right.x, left.y * right.y, left.z * right.z);
+		return FTVector3(left.x * right.x, left.y * right.y, left.z * right.z);
 	}
 
 	// Scalar multiplication
-	friend Vector3 operator*(const Vector3& vec, float scalar)
+	friend FTVector3 operator*(const FTVector3& vec, float scalar)
 	{
-		return Vector3(vec.x * scalar, vec.y * scalar, vec.z * scalar);
+		return FTVector3(vec.x * scalar, vec.y * scalar, vec.z * scalar);
 	}
 
 	// Scalar multiplication
-	friend Vector3 operator*(float scalar, const Vector3& vec)
+	friend FTVector3 operator*(float scalar, const FTVector3& vec)
 	{
-		return Vector3(vec.x * scalar, vec.y * scalar, vec.z * scalar);
+		return FTVector3(vec.x * scalar, vec.y * scalar, vec.z * scalar);
 	}
 
-	friend Vector3 operator/(float scalar, const Vector3& vec)
+	friend FTVector3 operator/(float scalar, const FTVector3& vec)
 	{
 		assert(scalar != 0);
-		return Vector3(vec.x / scalar, vec.y / scalar, vec.z / scalar);
+		return FTVector3(vec.x / scalar, vec.y / scalar, vec.z / scalar);
 	}
 
 	// Scalar *=
-	Vector3& operator*=(float scalar)
+	FTVector3& operator*=(float scalar)
 	{
 		x *= scalar;
 		y *= scalar;
@@ -371,7 +371,7 @@ public:
 	}
 
 	// Vector +=
-	Vector3& operator+=(const Vector3& right)
+	FTVector3& operator+=(const FTVector3& right)
 	{
 		x += right.x;
 		y += right.y;
@@ -380,7 +380,7 @@ public:
 	}
 
 	// Vector -=
-	Vector3& operator-=(const Vector3& right)
+	FTVector3& operator-=(const FTVector3& right)
 	{
 		x -= right.x;
 		y -= right.y;
@@ -410,23 +410,23 @@ public:
 	}
 
 	// Normalize the provided vector
-	static Vector3 Normalize(const Vector3& vec)
+	static FTVector3 Normalize(const FTVector3& vec)
 	{
-		Vector3 temp = vec;
+		FTVector3 temp = vec;
 		temp.Normalize();
 		return temp;
 	}
 
 	// Dot product between two vectors (a dot b)
-	static float Dot(const Vector3& a, const Vector3& b)
+	static float Dot(const FTVector3& a, const FTVector3& b)
 	{
 		return (a.x * b.x + a.y * b.y + a.z * b.z);
 	}
 
 	// Cross product between two vectors (a cross b)
-	static Vector3 Cross(const Vector3& a, const Vector3& b)
+	static FTVector3 Cross(const FTVector3& a, const FTVector3& b)
 	{
-		Vector3 temp;
+		FTVector3 temp;
 		temp.x = a.y * b.z - a.z * b.y;
 		temp.y = a.z * b.x - a.x * b.z;
 		temp.z = a.x * b.y - a.y * b.x;
@@ -434,33 +434,33 @@ public:
 	}
 
 	// Lerp from A to B by f
-	static Vector3 Lerp(const Vector3& a, const Vector3& b, float f)
+	static FTVector3 Lerp(const FTVector3& a, const FTVector3& b, float f)
 	{
-		return Vector3(a + f * (b - a));
+		return FTVector3(a + f * (b - a));
 	}
 	
 	// Reflect V about (normalized) N
-	static Vector3 Reflect(const Vector3& v, const Vector3& n)
+	static FTVector3 Reflect(const FTVector3& v, const FTVector3& n)
 	{
-		return v - 2.0f * Vector3::Dot(v, n) * n;
+		return v - 2.0f * FTVector3::Dot(v, n) * n;
 	}
 
-	static Vector3 Transform(const Vector3& vec, const class Matrix4& mat, float w = 1.0f);
+	static FTVector3 Transform(const FTVector3& vec, const class Matrix4& mat, float w = 1.0f);
 	// This will transform the vector and renormalize the w component
-	static Vector3 TransformWithPerspDiv(const Vector3& vec, const class Matrix4& mat, float w = 1.0f);
+	static FTVector3 TransformWithPerspDiv(const FTVector3& vec, const class Matrix4& mat, float w = 1.0f);
 
-	// Transform a Vector3 by a quaternion
-	static Vector3 Transform(const Vector3& v, const class Quaternion& q);
+	// Transform a FTVector3 by a quaternion
+	static FTVector3 Transform(const FTVector3& v, const class FTQuaternion& q);
 
-	static const Vector3 Zero;
-	static const Vector3 UnitX;
-	static const Vector3 UnitY;
-	static const Vector3 UnitZ;
-	static const Vector3 NegUnitX;
-	static const Vector3 NegUnitY;
-	static const Vector3 NegUnitZ;
-	static const Vector3 Infinity;
-	static const Vector3 NegInfinity;
+	static const FTVector3 Zero;
+	static const FTVector3 UnitX;
+	static const FTVector3 UnitY;
+	static const FTVector3 UnitZ;
+	static const FTVector3 NegUnitX;
+	static const FTVector3 NegUnitY;
+	static const FTVector3 NegUnitZ;
+	static const FTVector3 Infinity;
+	static const FTVector3 NegInfinity;
 };
 
 // 3x3 Matrix
@@ -558,7 +558,7 @@ public:
 		return Matrix3(temp);
 	}
 
-	static Matrix3 CreateScale(const Vector2& scaleVector)
+	static Matrix3 CreateScale(const FTVector2& scaleVector)
 	{
 		return CreateScale(scaleVector.x, scaleVector.y);
 	}
@@ -583,7 +583,7 @@ public:
 	}
 
 	// Create a translation matrix (on the xy-plane)
-	static Matrix3 CreateTranslation(const Vector2& trans)
+	static Matrix3 CreateTranslation(const FTVector2& trans)
 	{
 		float temp[3][3] =
 		{
@@ -736,36 +736,36 @@ public:
 	void Invert();
 
 	// Get the translation component of the matrix
-	Vector3 GetTranslation() const
+	FTVector3 GetTranslation() const
 	{
-		return Vector3(mat[3][0], mat[3][1], mat[3][2]);
+		return FTVector3(mat[3][0], mat[3][1], mat[3][2]);
 	}
 	
 	// Get the X axis of the matrix (forward)
-	Vector3 GetXAxis() const
+	FTVector3 GetXAxis() const
 	{
-		return Vector3::Normalize(Vector3(mat[0][0], mat[0][1], mat[0][2]));
+		return FTVector3::Normalize(FTVector3(mat[0][0], mat[0][1], mat[0][2]));
 	}
 
 	// Get the Y axis of the matrix (left)
-	Vector3 GetYAxis() const
+	FTVector3 GetYAxis() const
 	{
-		return Vector3::Normalize(Vector3(mat[1][0], mat[1][1], mat[1][2]));
+		return FTVector3::Normalize(FTVector3(mat[1][0], mat[1][1], mat[1][2]));
 	}
 
 	// Get the Z axis of the matrix (up)
-	Vector3 GetZAxis() const
+	FTVector3 GetZAxis() const
 	{
-		return Vector3::Normalize(Vector3(mat[2][0], mat[2][1], mat[2][2]));
+		return FTVector3::Normalize(FTVector3(mat[2][0], mat[2][1], mat[2][2]));
 	}
 
 	// Extract the scale component from the matrix
-	Vector3 GetScale() const
+	FTVector3 GetScale() const
 	{
-		Vector3 retVal;
-		retVal.x = Vector3(mat[0][0], mat[0][1], mat[0][2]).Length();
-		retVal.y = Vector3(mat[1][0], mat[1][1], mat[1][2]).Length();
-		retVal.z = Vector3(mat[2][0], mat[2][1], mat[2][2]).Length();
+		FTVector3 retVal;
+		retVal.x = FTVector3(mat[0][0], mat[0][1], mat[0][2]).Length();
+		retVal.y = FTVector3(mat[1][0], mat[1][1], mat[1][2]).Length();
+		retVal.z = FTVector3(mat[2][0], mat[2][1], mat[2][2]).Length();
 		return retVal;
 	}
 
@@ -782,7 +782,7 @@ public:
 		return Matrix4(temp);
 	}
 
-	static Matrix4 CreateScale(const Vector3& scaleVector)
+	static Matrix4 CreateScale(const FTVector3& scaleVector)
 	{
 		return CreateScale(scaleVector.x, scaleVector.y, scaleVector.z);
 	}
@@ -833,9 +833,9 @@ public:
 	}
 
 	// Create a rotation matrix from a quaternion
-	static Matrix4 CreateFromQuaternion(const class Quaternion& q);
+	static Matrix4 CreateFromQuaternion(const class FTQuaternion& q);
 
-	static Matrix4 CreateTranslation(const Vector3& trans)
+	static Matrix4 CreateTranslation(const FTVector3& trans)
 	{
 		float temp[4][4] =
 		{
@@ -847,15 +847,15 @@ public:
 		return Matrix4(temp);
 	}
 
-	static Matrix4 CreateLookAt(const Vector3& eye, const Vector3& target, const Vector3& up)
+	static Matrix4 CreateLookAt(const FTVector3& eye, const FTVector3& target, const FTVector3& up)
 	{
-		Vector3 zaxis = Vector3::Normalize(target - eye);
-		Vector3 xaxis = Vector3::Normalize(Vector3::Cross(up, zaxis));
-		Vector3 yaxis = Vector3::Normalize(Vector3::Cross(zaxis, xaxis));
-		Vector3 trans;
-		trans.x = -Vector3::Dot(xaxis, eye);
-		trans.y = -Vector3::Dot(yaxis, eye);
-		trans.z = -Vector3::Dot(zaxis, eye);
+		FTVector3 zaxis = FTVector3::Normalize(target - eye);
+		FTVector3 xaxis = FTVector3::Normalize(FTVector3::Cross(up, zaxis));
+		FTVector3 yaxis = FTVector3::Normalize(FTVector3::Cross(zaxis, xaxis));
+		FTVector3 trans;
+		trans.x = -FTVector3::Dot(xaxis, eye);
+		trans.y = -FTVector3::Dot(yaxis, eye);
+		trans.z = -FTVector3::Dot(zaxis, eye);
 
 		float temp[4][4] =
 		{
@@ -909,8 +909,8 @@ public:
 	static const Matrix4 Identity;
 };
 
-// (Unit) Quaternion
-class Quaternion
+// (Unit) FTQuaternion
+class FTQuaternion
 {
 public:
 	float x;
@@ -918,14 +918,14 @@ public:
 	float z;
 	float w;
 
-	Quaternion()
+	FTQuaternion()
 	{
-		*this = Quaternion::Identity;
+		*this = FTQuaternion::Identity;
 	}
 
 	// This directly sets the quaternion components --
 	// don't use for axis/angle
-	explicit Quaternion(float inX, float inY, float inZ, float inW)
+	explicit FTQuaternion(float inX, float inY, float inZ, float inW)
 	{
 		Set(inX, inY, inZ, inW);
 	}
@@ -933,7 +933,7 @@ public:
 	// Construct the quaternion from an axis and angle
 	// It is assumed that axis is already normalized,
 	// and the angle is in radians
-	explicit Quaternion(const Vector3& axis, float angle)
+	explicit FTQuaternion(const FTVector3& axis, float angle)
 	{
 		float scalar = Math::Sin(angle / 2.0f);
 		x = axis.x * scalar;
@@ -978,17 +978,17 @@ public:
 	}
 
 	// Normalize the provided quaternion
-	static Quaternion Normalize(const Quaternion& q)
+	static FTQuaternion Normalize(const FTQuaternion& q)
 	{
-		Quaternion retVal = q;
+		FTQuaternion retVal = q;
 		retVal.Normalize();
 		return retVal;
 	}
 
 	// Linear interpolation
-	static Quaternion Lerp(const Quaternion& a, const Quaternion& b, float f)
+	static FTQuaternion Lerp(const FTQuaternion& a, const FTQuaternion& b, float f)
 	{
-		Quaternion retVal;
+		FTQuaternion retVal;
 		retVal.x = Math::Lerp(a.x, b.x, f);
 		retVal.y = Math::Lerp(a.y, b.y, f);
 		retVal.z = Math::Lerp(a.z, b.z, f);
@@ -997,15 +997,15 @@ public:
 		return retVal;
 	}
 
-	static float Dot(const Quaternion& a, const Quaternion& b)
+	static float Dot(const FTQuaternion& a, const FTQuaternion& b)
 	{
 		return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 	}
 
 	// Spherical Linear Interpolation
-	static Quaternion Slerp(const Quaternion& a, const Quaternion& b, float f)
+	static FTQuaternion Slerp(const FTQuaternion& a, const FTQuaternion& b, float f)
 	{
-		float rawCosm = Quaternion::Dot(a, b);
+		float rawCosm = FTQuaternion::Dot(a, b);
 
 		float cosom = -rawCosm;
 		if (rawCosm >= 0.0f)
@@ -1035,7 +1035,7 @@ public:
 			scale1 = -scale1;
 		}
 
-		Quaternion retVal;
+		FTQuaternion retVal;
 		retVal.x = scale0 * a.x + scale1 * b.x;
 		retVal.y = scale0 * a.y + scale1 * b.y;
 		retVal.z = scale0 * a.z + scale1 * b.z;
@@ -1046,39 +1046,39 @@ public:
 
 	// Concatenate
 	// Rotate by q FOLLOWED BY p
-	static Quaternion Concatenate(const Quaternion& q, const Quaternion& p)
+	static FTQuaternion Concatenate(const FTQuaternion& q, const FTQuaternion& p)
 	{
-		Quaternion retVal;
+		FTQuaternion retVal;
 
 		// Vector component is:
 		// ps * qv + qs * pv + pv x qv
-		Vector3 qv(q.x, q.y, q.z);
-		Vector3 pv(p.x, p.y, p.z);
-		Vector3 newVec = p.w * qv + q.w * pv + Vector3::Cross(pv, qv);
+		FTVector3 qv(q.x, q.y, q.z);
+		FTVector3 pv(p.x, p.y, p.z);
+		FTVector3 newVec = p.w * qv + q.w * pv + FTVector3::Cross(pv, qv);
 		retVal.x = newVec.x;
 		retVal.y = newVec.y;
 		retVal.z = newVec.z;
 
 		// Scalar component is:
 		// ps * qs - pv . qv
-		retVal.w = p.w * q.w - Vector3::Dot(pv, qv);
+		retVal.w = p.w * q.w - FTVector3::Dot(pv, qv);
 
 		return retVal;
 	}
 
-	static const Quaternion Identity;
+	static const FTQuaternion Identity;
 };
 
 namespace Color
 {
-	static const Vector3 Black(0.0f, 0.0f, 0.0f);
-	static const Vector3 White(1.0f, 1.0f, 1.0f);
-	static const Vector3 Red(1.0f, 0.0f, 0.0f);
-	static const Vector3 Green(0.0f, 1.0f, 0.0f);
-	static const Vector3 Blue(0.0f, 0.0f, 1.0f);
-	static const Vector3 Yellow(1.0f, 1.0f, 0.0f);
-	static const Vector3 LightYellow(1.0f, 1.0f, 0.88f);
-	static const Vector3 LightBlue(0.68f, 0.85f, 0.9f);
-	static const Vector3 LightPink(1.0f, 0.71f, 0.76f);
-	static const Vector3 LightGreen(0.56f, 0.93f, 0.56f);
+	static const FTVector3 Black(0.0f, 0.0f, 0.0f);
+	static const FTVector3 White(1.0f, 1.0f, 1.0f);
+	static const FTVector3 Red(1.0f, 0.0f, 0.0f);
+	static const FTVector3 Green(0.0f, 1.0f, 0.0f);
+	static const FTVector3 Blue(0.0f, 0.0f, 1.0f);
+	static const FTVector3 Yellow(1.0f, 1.0f, 0.0f);
+	static const FTVector3 LightYellow(1.0f, 1.0f, 0.88f);
+	static const FTVector3 LightBlue(0.68f, 0.85f, 0.9f);
+	static const FTVector3 LightPink(1.0f, 0.71f, 0.76f);
+	static const FTVector3 LightGreen(0.56f, 0.93f, 0.56f);
 }

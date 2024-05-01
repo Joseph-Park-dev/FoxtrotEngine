@@ -2,7 +2,7 @@
 #include "Component.h"
 #include "TemplateFunctions.h"
 
-class Vector2;
+class FTVector2;
 
 enum class CollidedSide
 {
@@ -13,10 +13,10 @@ class ColliderComponent :
     public Component
 {
 public:
-    Vector2      GetOffsetPos()     { return mOffsetPos; }
+    FTVector2      GetOffsetPos()     { return mOffsetPos; }
     // Get world position (anchorpoint at the center)
-    Vector2      GetFinalPosition() { return mFinalPosition; }
-    Vector2      GetScale()         { return mScale; }
+    FTVector2      GetFinalPosition() { return mFinalPosition; }
+    FTVector2      GetScale()         { return mScale; }
     CollidedSide GetCollidedSide()  { return mCollidedSide; }
     uint32_t     GetID()            { return mID; }
     std::wstring GetName() const override
@@ -24,11 +24,11 @@ public:
         return L"ColliderComponent";
     }
 
-    Vector2* GetOffsetPosRef()      { return &mOffsetPos; }
-    Vector2* GetScaleRef()          { return &mScale; }
+    FTVector2* GetOffsetPosRef()      { return &mOffsetPos; }
+    FTVector2* GetScaleRef()          { return &mScale; }
 
-    void SetOffsetPos(Vector2 offset) { mOffsetPos = offset; }
-    void SetScale(Vector2 scale) { mScale = scale; }
+    void SetOffsetPos(FTVector2 offset) { mOffsetPos = offset; }
+    void SetScale(FTVector2 scale) { mScale = scale; }
 
 public:
     // Shallow copying is not needed (duplicated ID)
@@ -56,10 +56,10 @@ private:
     friend class CActor;
 
 private:
-    Vector2       mOffsetPos;
-    Vector2       mFinalPosition;
-    Vector2       mScale;
-    CollidedSide  mCollidedSide;
+    FTVector2    mOffsetPos;
+    FTVector2    mFinalPosition;
+    FTVector2    mScale;
+    CollidedSide mCollidedSide;
 
     static  uint32_t g_nextID;
             uint32_t mID;

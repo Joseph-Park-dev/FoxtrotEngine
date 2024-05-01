@@ -1,11 +1,11 @@
 #pragma once
 #include "SingletonMacro.h"
 
-class Vector2;
+class FTVector2;
 
 struct FTParticle
 {
-	Vector2 pos;
+	FTVector2 pos;
 	float initialSpeed;
 	float initialAngle;
 	float duration;  // In milliseconds
@@ -22,11 +22,11 @@ struct FTParticle
 
 struct FTParticleExplosion
 {
-	FTParticle particles[MAXPARTICLES];
-	Vector2    initialPos;		// Spawning position
-	float	   initialSpeed;	// Initial Velocity or Force applied
-	bool	   isActive;
-	int		   activeCount;
+	FTParticle	particles[MAXPARTICLES];
+	FTVector2	initialPos;		// Spawning position
+	float		initialSpeed;	// Initial Velocity or Force applied
+	bool		isActive;
+	int			activeCount;
 };
 
 class ParticleSystem
@@ -34,7 +34,7 @@ class ParticleSystem
 	SINGLETON(ParticleSystem);
 
 public:
-	void CreateExplosion(Vector2 initPos, float initSpeed, int duration, float gravity, float angle);
+	void CreateExplosion(FTVector2 initPos, float initSpeed, int duration, float gravity, float angle);
 
 public:
 	void Update(float deltaTime);
@@ -44,6 +44,6 @@ private:
 	std::vector<FTParticleExplosion*> explosions;
 
 private:
-	bool UpdateParticleState(FTParticle* p, Vector2 initPos, float deltaTime);
+	bool UpdateParticleState(FTParticle* p, FTVector2 initPos, float deltaTime);
 	void RemoveFinishedEffect(FTParticleExplosion* effect);
 };

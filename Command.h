@@ -6,7 +6,7 @@
 #include "Actor.h"
 
 class Command;
-class Vector2;
+class FTVector2;
 
 class Command
 {
@@ -55,12 +55,12 @@ public:
 	void Undo() override;
 
 public:
-	Vector2EditCommand(Vector2* valRef, Vector2 nextVal);
+	Vector2EditCommand(FTVector2* valRef, FTVector2 nextVal);
 
 private:
-	Vector2* mValue;
-	Vector2 mPrevValue;
-	Vector2 mNextValue;
+	FTVector2* mValue;
+	FTVector2 mPrevValue;
+	FTVector2 mNextValue;
 };
 
 class StrEditCommand : public Command

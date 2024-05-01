@@ -119,7 +119,7 @@ void Camera2D::UpdateShakeEffect(float deltaTime)
 	{
 		float x = Random::GetFloatRange(-effect.magnitude, effect.magnitude);
 		float y = Random::GetFloatRange(-effect.magnitude, effect.magnitude);
-		mLookAtPos += Vector2(x,y);
+		mLookAtPos += FTVector2(x,y);
 	}
 }
 
@@ -177,8 +177,8 @@ void Camera2D::SetTargetActorID(int id)
 
 bool Camera2D::IsInRenderedArea(SpriteComponent* sprite) const
 {
-	Vector2 screenPosLeftTop = Vector2(mRenderArea.x, mRenderArea.y);
-	Vector2 screenPosRightBottom = Vector2(mRenderArea.x + mRenderArea.w, mRenderArea.y + mRenderArea.h);
+	FTVector2 screenPosLeftTop = FTVector2(mRenderArea.x, mRenderArea.y);
+	FTVector2 screenPosRightBottom = FTVector2(mRenderArea.x + mRenderArea.w, mRenderArea.y + mRenderArea.h);
 	/*screenPosLeftTop = ConvertWorldPosToScreen(screenPosLeftTop);
 	screenPosRightBottom = ConvertWorldPosToScreen(screenPosRightBottom);*/
 
@@ -200,8 +200,8 @@ bool Camera2D::IsInRenderedArea(SpriteComponent* sprite) const
 // Tile's screen position is inside the camera area
 bool Camera2D::IsInRenderedArea(Tile* tile) const
 {
-	Vector2 screenPosLeftTop = Vector2(mRenderArea.x, mRenderArea.y);
-	Vector2 screenPosRightBottom = Vector2(mRenderArea.x + mRenderArea.w, mRenderArea.y + mRenderArea.h);
+	FTVector2 screenPosLeftTop = FTVector2(mRenderArea.x, mRenderArea.y);
+	FTVector2 screenPosRightBottom = FTVector2(mRenderArea.x + mRenderArea.w, mRenderArea.y + mRenderArea.h);
 	/*screenPosLeftTop = ConvertWorldPosToScreen(screenPosLeftTop);
 	screenPosRightBottom = ConvertWorldPosToScreen(screenPosRightBottom);*/
 
@@ -219,14 +219,14 @@ bool Camera2D::IsInRenderedArea(Tile* tile) const
 		&& (screenTop < bottom && top < screenBottom);
 }
 
-Vector2 Camera2D::ConvertWorldPosToScreen(Vector2 worldPos) const
+FTVector2 Camera2D::ConvertWorldPosToScreen(FTVector2 worldPos) const
 {
-	Vector2 screenPos = worldPos - mDiffFromCenter;
-	Vector2 zoomScale = (worldPos - mLookAtPos) * mZoomValue;
+	FTVector2 screenPos = worldPos - mDiffFromCenter;
+	FTVector2 zoomScale = (worldPos - mLookAtPos) * mZoomValue;
 	return screenPos - zoomScale;
 }
 
-Vector2 Camera2D::ConvertScreenPosToWorld(Vector2 screenPos) const
+FTVector2 Camera2D::ConvertScreenPosToWorld(FTVector2 screenPos) const
 {
 	return screenPos + mDiffFromCenter;
 }
@@ -286,8 +286,8 @@ void Camera2D::Shake(float duration, float magnitude)
 #endif // _DEBUG
 
 Camera2D::Camera2D()
-	: mLookAtPos(Vector2::Zero)
-	, mDiffFromCenter(Vector2::Zero)
+	: mLookAtPos(FTVector2::Zero)
+	, mDiffFromCenter(FTVector2::Zero)
 	, mTargetActor(nullptr)
 	, mTargetActorID(TARGET_NONE)
 	, mScreenCenter(CCore::GetInstance()->GetResolution() / 2.f)

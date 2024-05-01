@@ -34,16 +34,16 @@ void Scene_Tool::LoadData()
 	Instantiate(mouseCursor, ACTOR_GROUP::UI);
 
 	/*Ship* mShip = new Ship(this);
-	mShip->GetTransform()->SetWorldPosition(Vector2(100.0f, 384.0f));
-	mShip->GetTransform()->SetScale(Vector2(1.5f, 1.5f));
+	mShip->GetTransform()->SetWorldPosition(FTVector2(100.0f, 384.0f));
+	mShip->GetTransform()->SetScale(FTVector2(1.5f, 1.5f));
 	Instantiate(mShip, ACTOR_GROUP::PLAYER);
 	Camera2D::GetInstance()->SetTarget(mShip);*/
-	////bg->SetScreenSize(Vector2(1024.f, 768.f));
+	////bg->SetScreenSize(FTVector2(1024.f, 768.f));
 	//bg->SetBGTextures(bgTexs);
 	//bg->SetScrollSpeed(-100.0f);
 
 	//bg = new BGSpriteComponent(temp, 50);
-	//bg->SetScreenSize(Vector2(1024.0f, 768.0f));
+	//bg->SetScreenSize(FTVector2(1024.0f, 768.0f));
 	//bgTexs = {
 	//	temp->LoadTexture("Assets/Stars.png"),
 	//	temp->LoadTexture("Assets/Stars.png")
@@ -73,16 +73,16 @@ void Scene_Tool::LoadData()
 	//}
 
 	PanelUI* panelUI = new PanelUI(this, false);
-	panelUI->GetTransform()->SetScale(Vector2(300.f, 300.f));
-	panelUI->GetTransform()->SetWorldPosition(Vector2(450, 450));
+	panelUI->GetTransform()->SetScale(FTVector2(300.f, 300.f));
+	panelUI->GetTransform()->SetWorldPosition(FTVector2(450, 450));
 	panelUI->SetName(L"PanelUI");
 
 	PanelUI* panelUI2 = panelUI->Clone();
-	panelUI2->GetTransform()->SetWorldPosition(Vector2(400, 400));
+	panelUI2->GetTransform()->SetWorldPosition(FTVector2(400, 400));
 
 	ButtonUI* childUI = new ButtonUI(this, false);
-	childUI->GetTransform()->SetScale(Vector2(100.f, 100.f));
-	childUI->GetTransform()->SetWorldPosition(Vector2(450, 450));
+	childUI->GetTransform()->SetScale(FTVector2(100.f, 100.f));
+	childUI->GetTransform()->SetWorldPosition(FTVector2(450, 450));
 	childUI->SetName(L"ChildUI");
 	//childUI->SetClickedCallBack(this, (SCENE_MEMFUNC)& Scene_Tool::SaveSceneData);
 	panelUI->AddChild(childUI);
@@ -180,8 +180,8 @@ Scene_Tool::~Scene_Tool()
 //	{
 //		for (size_t j = 0; j < GetActorGroup((ACTOR_GROUP)i).size(); ++j)
 //		{
-//			Vector2 pos = Vector2::Zero;
-//			fread(&pos, sizeof(Vector2), 1, file);
+//			FTVector2 pos = FTVector2::Zero;
+//			fread(&pos, sizeof(FTVector2), 1, file);
 //			GetActorGroup((ACTOR_GROUP)i)[j]->GetTransform()->SetWorldPosition(pos);
 //		}
 //	}

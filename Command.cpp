@@ -60,7 +60,7 @@ void Vector2EditCommand::Execute()
 
 void Vector2EditCommand::Undo()
 {
-	Vector2 nextVal = *mValue;
+	FTVector2 nextVal = *mValue;
 	*mValue = mPrevValue;
 	mNextValue = nextVal;
 	LogVector2("Previous Val", mPrevValue);
@@ -68,7 +68,7 @@ void Vector2EditCommand::Undo()
 	LogVector2("Next Val", mNextValue);
 }
 
-Vector2EditCommand::Vector2EditCommand(Vector2* valRef, Vector2 nextVal)
+Vector2EditCommand::Vector2EditCommand(FTVector2* valRef, FTVector2 nextVal)
 	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
 {
 }

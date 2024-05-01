@@ -4,11 +4,11 @@ struct Bounds
 {
 	float x, y, w, h;
 
-	Vector2 GetCenter()	 const { return Vector2(x, y); }
-	Vector2 GetSize()	 const { return Vector2(w, h); }
-	Vector2 GetExtents() const { return GetSize() * 0.5f; }
-	Vector2 GetMax()	 const { return GetCenter() + GetExtents(); }
-	Vector2 GetMin()	 const { return GetCenter() - GetExtents(); }
+	FTVector2 GetCenter()	 const { return FTVector2(x, y); }
+	FTVector2 GetSize()	 const { return FTVector2(w, h); }
+	FTVector2 GetExtents() const { return GetSize() * 0.5f; }
+	FTVector2 GetMax()	 const { return GetCenter() + GetExtents(); }
+	FTVector2 GetMin()	 const { return GetCenter() - GetExtents(); }
 
 	Bounds()
 		: x(0.f), y(0.f), w(0.f), h(0.f)
@@ -22,7 +22,7 @@ struct Bounds
 	Bounds(float pX, float pY, float pW, float pH)
 		: x(pX), y(pY), w(pW), h(pH)
 	{}
-	Bounds(Vector2 center, Vector2 size)
+	Bounds(FTVector2 center, FTVector2 size)
 		: x(center.x), y(center.y)
 		, w(size.x), h(size.y)
 	{}

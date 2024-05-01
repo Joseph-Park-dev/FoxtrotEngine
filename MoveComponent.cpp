@@ -15,7 +15,7 @@ MoveComponent::MoveComponent(class Actor* owner, int drawOrder, int updateorder)
 
 void MoveComponent::Update(float deltaTime)
 {
-	Vector2 pos = GetOwner()->GetTransform()->GetWorldPosition();
+	FTVector2 pos = GetOwner()->GetTransform()->GetWorldPosition();
 	GetOwner()->GetTransform()->SetWorldPosition(pos + mVelocity * deltaTime);
 }
 
@@ -31,7 +31,7 @@ void MoveComponent::Accelerate(float& currentSpeed, float accel, float maxSpeed,
 	}
 }
 
-void MoveComponent::Accelerate(Vector2 velocity)
+void MoveComponent::Accelerate(FTVector2 velocity)
 {
 	GetOwner()->GetComponent<class Rigidbody2DComponent>()->AddForce(velocity);
 }

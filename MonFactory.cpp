@@ -5,7 +5,7 @@
 #include "AIState.h"
 #include "Transform.h"
 
-Asteroid* MonFactory::CreateMonster(Scene* scene, Vector2 pos, MON_TYPE type)
+Asteroid* MonFactory::CreateMonster(Scene* scene, FTVector2 pos, MON_TYPE type)
 {
 	Asteroid* asteroid = nullptr;
 	switch (type)

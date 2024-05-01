@@ -16,8 +16,8 @@ void UIActor::LateUpdateActor(float deltaTime)
 
 void UIActor::RenderActor(FoxtrotRenderer* renderer)
 {
-	Vector2 vPos = GetTransform()->GetWorldPosition();
-	Vector2 vScale = GetTransform()->GetScale();
+	FTVector2 vPos = GetTransform()->GetWorldPosition();
+	FTVector2 vScale = GetTransform()->GetScale();
 	if (mIsAffectedByCamera)
 	{
 		vPos = Camera2D::GetInstance()->ConvertWorldPosToScreen(vPos);
@@ -41,7 +41,7 @@ void UIActor::RenderActor(FoxtrotRenderer* renderer)
 
 void UIActor::CheckMouseHover()
 {
-	Vector2 mousePos = KeyInputManager::GetInstance()->GetMousePosition();
+	FTVector2 mousePos = KeyInputManager::GetInstance()->GetMousePosition();
 	if (mIsAffectedByCamera)
 	{
 		mousePos = Camera2D::GetInstance()->ConvertScreenPosToWorld(mousePos);

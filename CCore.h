@@ -24,7 +24,7 @@ public:
 	virtual LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 public:
-	Vector2			 GetResolution()	  const { return mResolution; }
+	FTVector2		 GetResolution()	  const { return mResolution; }
 	FoxtrotRenderer* GetEditorRenderer()  const	{ return mEditorRenderer; }
 
 #ifdef _DEBUG
@@ -36,7 +36,7 @@ public:
 private:
 	std::wstring	 mGameTitle;
 	//SDL_Window*		mGameviewWindow;
-	Vector2			 mResolution;
+	FTVector2		 mResolution;
 	//FoxtrotRenderer*   mGameRenderer;
 	bool			 mIsRunning;
 

@@ -23,7 +23,7 @@ UINT ColliderComponent::g_nextID = 0;
 
 void ColliderComponent::LateUpdate(float deltaTime)
 {
-	Vector2 ownerPos = GetOwner()->GetTransform()->GetWorldPosition();
+	FTVector2 ownerPos = GetOwner()->GetTransform()->GetWorldPosition();
 	mFinalPosition = ownerPos + mOffsetPos;
 	assert(0 <= mColliCount);
 }
@@ -38,7 +38,7 @@ void ColliderComponent::Render(FoxtrotRenderer* renderer)
 				renderer,
 				0, 255, 0, 255
 			);
-			Vector2 renderPos =
+			FTVector2 renderPos =
 				EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(mFinalPosition);
 			SDL_Rect rect =
 			{
@@ -54,9 +54,9 @@ void ColliderComponent::Render(FoxtrotRenderer* renderer)
 
 ColliderComponent::ColliderComponent(Actor* owner, int drawOrder, int updateOrder)
 	:Component(owner, drawOrder, updateOrder)
-	, mOffsetPos(Vector2::Zero)
-	, mFinalPosition(Vector2::Zero)
-	, mScale(Vector2::Zero)
+	, mOffsetPos(FTVector2::Zero)
+	, mFinalPosition(FTVector2::Zero)
+	, mScale(FTVector2::Zero)
 	, mColliCount(0)
 	, mCollidedSide(CollidedSide::NONE)
 	, mID(g_nextID++)
@@ -122,7 +122,7 @@ void ColliderComponent::EditorUIUpdate()
 
 void ColliderComponent::UpdateOffsetPos()
 {
-	Vector2 updatedVal = GetOffsetPos();
+	FTVector2 updatedVal = GetOffsetPos();
 	float* vec2 = new float[2];
 	vec2[0] = updatedVal.x;
 	vec2[1] = updatedVal.y;
@@ -135,7 +135,7 @@ void ColliderComponent::UpdateOffsetPos()
 			CommandHistory::GetInstance()->
 				AddCommand(new Vector2EditCommand(GetOffsetPosRef(), GetOffsetPos()));
 		}
-		updatedVal = Vector2(vec2[0], vec2[1]);
+		updatedVal = FTVector2(vec2[0], vec2[1]);
 		SetOffsetPos(updatedVal);
 	}
 	else
@@ -152,7 +152,7 @@ void ColliderComponent::UpdateOffsetPos()
 
 void ColliderComponent::UpdateScale()
 {
-	Vector2 updatedVal = GetScale();
+	FTVector2 updatedVal = GetScale();
 	float* vec2 = new float[2];
 	vec2[0] = updatedVal.x;
 	vec2[1] = updatedVal.y;
@@ -165,7 +165,7 @@ void ColliderComponent::UpdateScale()
 			CommandHistory::GetInstance()->
 				AddCommand(new Vector2EditCommand(GetScaleRef(), GetScale()));
 		}
-		updatedVal = Vector2(vec2[0], vec2[1]);
+		updatedVal = FTVector2(vec2[0], vec2[1]);
 		SetScale(updatedVal);
 	}
 	else

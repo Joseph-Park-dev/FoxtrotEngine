@@ -9,13 +9,14 @@
 #include "ResourceManager.h"
 #include "MeshData.h"
 #include "GeometryGenerator.h"
+#include "Math.h"
 
 SpriteComponent::SpriteComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner, drawOrder)
 	, mTextWidth(0)
 	, mTexHeight(0)
 	, rect(new Bounds)
-	, mScale(.5f)
+	, mScale(1.f)
 {
 	ResourceManager::GetInstance()->LoadTexture("Asteroid", "./Assets/Asteroid.png");
 }
@@ -53,26 +54,24 @@ void SpriteComponent::Initialize(FoxtrotRenderer* renderer, std::string fileName
 
 void SpriteComponent::Update(float deltaTime)
 {
-	using namespace DirectX;
-
 	Transform* transform = GetOwner()->GetTransform();
-	Vector2 lookAtPos = EditorCamera2D::GetInstance()->GetLookAtPos();
+	FTVector2  lookAtPos = EditorCamera2D::GetInstance()->GetLookAtPos();
 	float cameraMouseNavFactor = EditorCamera2D::GetInstance()->GetMouseNavFactor();
-	Vector2 scale = transform->GetScale();
-	Vector2 worldPos = transform->GetWorldPosition() * cameraMouseNavFactor;
+	FTVector2 scale = transform->GetScale();
+	FTVector2 worldPos = transform->GetWorldPosition() * cameraMouseNavFactor;
 	// 모델의 변환 -> 모델 행렬 결정
 	mMesh->basicVertexConstantBufferData.model =
-		SimpleMath::Matrix::CreateScale(scale.x, scale.y, 1.0f) *
-		SimpleMath::Matrix::CreateRotationZ(transform->GetRotation()) *
-		SimpleMath::Matrix::CreateTranslation(worldPos.x, worldPos.y, 0.0f);
+		DirectX::SimpleMath::Matrix::CreateScale(scale.x, scale.y, 1.0f) *
+		DirectX::SimpleMath::Matrix::CreateRotationZ(transform->GetRotation()) *
+		DirectX::SimpleMath::Matrix::CreateTranslation(worldPos.x, worldPos.y, 0.0f);
 	mMesh->basicVertexConstantBufferData.model = mMesh->basicVertexConstantBufferData.model.Transpose();
 
 	// 시점 변환
 	// m_constantBufferData.view = XMMatrixLookAtLH(m_viewEye, m_viewFocus,
 	// m_viewUp);
 	mMesh->basicVertexConstantBufferData.view =
-		XMMatrixLookToLH(SimpleMath::Vector3(lookAtPos.x, lookAtPos.y, 0.0f), mViewEyeDir, mViewUp);
-	mMesh->basicVertexConstantBufferData.view *= SimpleMath::Matrix::CreateScale(EditorCamera2D::GetInstance()->GetZoomValue());
+		XMMatrixLookToLH(DirectX::SimpleMath::Vector3(lookAtPos.x, lookAtPos.y, 0.0f), mViewEyeDir, mViewUp);
+	mMesh->basicVertexConstantBufferData.view *= DirectX::SimpleMath::Matrix::CreateScale(EditorCamera2D::GetInstance()->GetZoomValue());
 	mMesh->basicVertexConstantBufferData.view = mMesh->basicVertexConstantBufferData.view.Transpose();
 
 	// 프로젝션
@@ -86,7 +85,7 @@ void SpriteComponent::Update(float deltaTime)
 			-mAspect, mAspect, -1.0f, 1.0f, mNearZ, mFarZ);
 	}*/
 
-	mMesh->basicVertexConstantBufferData.projection = XMMatrixOrthographicOffCenterLH(
+	mMesh->basicVertexConstantBufferData.projection = DirectX::XMMatrixOrthographicOffCenterLH(
 		-mAspect, mAspect, -1.0f, 1.0f, mNearZ, mFarZ);
 	mMesh->basicVertexConstantBufferData.projection =
 		mMesh->basicVertexConstantBufferData.projection.Transpose();
@@ -142,14 +141,14 @@ void SpriteComponent::LoadProperties(std::ifstream& ifs)
 	//mTexture->SetRelativePath(texturePath);
 }
 
-void SpriteComponent::BlitToGameview(Bounds* blitArea, Vector2 scale)
+void SpriteComponent::BlitToGameview(Bounds* blitArea, FTVector2 scale)
 {
 	//FoxtrotRenderer* gameviewRend = CCore::GetInstance()->GetGameRenderer();
 	// 1) Get relative position from mLookAtPos
 	Bounds* renderArea = Camera2D::GetInstance()->GetRenderArea();
-	Vector2 renderCenter = Vector2(renderArea->x, renderArea->y);
-	Vector2 worldPos = GetOwner()->GetTransform()->GetWorldPosition();
-	Vector2 relativePos = worldPos - renderCenter;
+	FTVector2 renderCenter = FTVector2(renderArea->x, renderArea->y);
+	FTVector2 worldPos = GetOwner()->GetTransform()->GetWorldPosition();
+	FTVector2 relativePos = worldPos - renderCenter;
 
 	Bounds gameViewRect =
 	{
@@ -168,14 +167,14 @@ void SpriteComponent::BlitToGameview(Bounds* blitArea, Vector2 scale)
 	*/
 }
 
-void SpriteComponent::BlitToGameviewEx(Bounds* blitArea, Vector2 scale)
+void SpriteComponent::BlitToGameviewEx(Bounds* blitArea, FTVector2 scale)
 {
 	//FoxtrotRenderer* gameviewRend = CCore::GetInstance()->GetGameRenderer();
 	// 1) Get relative position from mLookAtPos
 	Bounds* renderArea = Camera2D::GetInstance()->GetRenderArea();
-	Vector2 renderCenter = Vector2(renderArea->x, renderArea->y);
-	Vector2 worldPos = GetOwner()->GetTransform()->GetWorldPosition();
-	Vector2 relativePos = worldPos - renderCenter;
+	FTVector2 renderCenter = FTVector2(renderArea->x, renderArea->y);
+	FTVector2 worldPos = GetOwner()->GetTransform()->GetWorldPosition();
+	FTVector2 relativePos = worldPos - renderCenter;
 
 	Bounds gameViewRect =
 	{

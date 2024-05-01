@@ -7,14 +7,15 @@
 #include "EditorCamera2D.h"
 #include "CollisionManager.h"
 #include "Random.h"
+#include "Ray.h"
 
 /* origin : world position vector 
 direction : world position vector */
 #ifdef _DEBUG
-RayCastHit2D Physics2D::Raycast(Vector2 origin, Vector2 direction, float distance, ACTOR_GROUP actor)
+RayCastHit2D Physics2D::Raycast(FTVector2 origin, FTVector2 direction, float distance, ACTOR_GROUP actor)
 {
-	Vector2 rayDir = (direction - origin).Normalize() * distance;
-	Ray* ray = new Ray(
+	FTVector2 rayDir = (direction - origin).Normalize() * distance;
+	Physics::Ray* ray = new Physics::Ray(
 		EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(origin), 
 		EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(origin + rayDir),
 		actor
@@ -23,9 +24,9 @@ RayCastHit2D Physics2D::Raycast(Vector2 origin, Vector2 direction, float distanc
 	return RayCastHit2D();
 }
 #else
-RayCastHit2D Physics2D::Raycast(Vector2 origin, Vector2 direction, float distance, ACTOR_GROUP actor)
+RayCastHit2D Physics2D::Raycast(FTVector2 origin, FTVector2 direction, float distance, ACTOR_GROUP actor)
 {
-	Vector2 rayDir = (direction - origin).Normalize() * distance;
+	FTVector2 rayDir = (direction - origin).Normalize() * distance;
 	Ray* ray = new Ray(
 		Camera2D::GetInstance()->ConvertWorldPosToScreen(origin),
 		Camera2D::GetInstance()->ConvertWorldPosToScreen(origin + rayDir),
@@ -79,17 +80,17 @@ void Physics2D::Update()
 	//mPhysicsWorld->Step(mTimeStep, mVelocityIterations, mPositionIterations);
 }
 
-Vector3 Physics2D::CalcCenterOfGravity(int numElements)
+FTVector3 Physics2D::CalcCenterOfGravity(int numElements)
 {
 	float totalMass = 0;
 	for (size_t i = 0; i < numElements; ++i)
 		totalMass += mElements[i].mass;
 
-	Vector3 firstMoment = Vector3::Zero;
+	FTVector3 firstMoment = FTVector3::Zero;
 	for (size_t i = 0; i < numElements; ++i)
 		firstMoment += mElements[i].mass * mElements[i].origin2Point;
 
-	Vector3 centerOfGravity = totalMass / firstMoment;
+	FTVector3 centerOfGravity = totalMass / firstMoment;
 	for (size_t i = 0; i < numElements; ++i)
 		mElements[i].relativePosition = mElements[i].origin2Point - centerOfGravity;
 	return centerOfGravity;

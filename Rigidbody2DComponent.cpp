@@ -9,22 +9,22 @@
 Rigidbody2DComponent::Rigidbody2DComponent(class Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner, drawOrder, updateOrder)
 	, mMass(1.f)
-	, mForce(Vector2::Zero)
-	, mAcceleration(Vector2::Zero)
-	, mAccelerationA(Vector2::Zero)
-	, mVelocity(Vector2::Zero)
-	, mMaxVelocity(Vector2(200.f, 600.f))
+	, mForce(FTVector2::Zero)
+	, mAcceleration(FTVector2::Zero)
+	, mAccelerationA(FTVector2::Zero)
+	, mVelocity(FTVector2::Zero)
+	, mMaxVelocity(FTVector2(200.f, 600.f))
 	, mFrictionCoeff(0.1f)
 	, mIsGrounded(false)
 	, mIsBlockedUp(false)
 {}
 
-void Rigidbody2DComponent::AddForce(Vector2 force)
+void Rigidbody2DComponent::AddForce(FTVector2 force)
 {
 	mForce += force;
 }
 
-void Rigidbody2DComponent::AddVelocity(Vector2 velocity)
+void Rigidbody2DComponent::AddVelocity(FTVector2 velocity)
 {
 	mVelocity += velocity;
 }
@@ -40,7 +40,7 @@ void Rigidbody2DComponent::LateUpdate(float deltaTime)
 
 void Rigidbody2DComponent::UpdateLinearPosition(float deltaTime)
 {
-	Vector2 pos = GetOwner()->GetTransform()->GetWorldPosition();
+	FTVector2 pos = GetOwner()->GetTransform()->GetWorldPosition();
 	pos += mVelocity * deltaTime;
 	GetOwner()->GetTransform()->SetWorldPosition(pos);
 }
@@ -49,7 +49,7 @@ void Rigidbody2DComponent::UpdateAcceleration(float deltaTime)
 {
 	if (mForce.Length() != 0.f)
 	{
-		Vector2 resultingAcc = mForce / mMass;
+		FTVector2 resultingAcc = mForce / mMass;
 		mAcceleration += resultingAcc;
 	}
 	mAcceleration += mAccelerationA;
@@ -58,16 +58,16 @@ void Rigidbody2DComponent::UpdateAcceleration(float deltaTime)
 void Rigidbody2DComponent::UpdateGravity(float deltaTime)
 {
 	if (!mIsGrounded)
-		mAccelerationA = Vector2(0.f, 600.f);
+		mAccelerationA = FTVector2(0.f, 600.f);
 	else
 	{
-		mAccelerationA = Vector2::Zero;
-		mVelocity = Vector2(mVelocity.x, 0.f);
+		mAccelerationA = FTVector2::Zero;
+		mVelocity = FTVector2(mVelocity.x, 0.f);
 	}
 	if (mIsBlockedUp)
 	{
-		mAccelerationA = Vector2(0.f, 600.f);
-		mVelocity = Vector2(mVelocity.x, 0.f);
+		mAccelerationA = FTVector2(0.f, 600.f);
+		mVelocity = FTVector2(mVelocity.x, 0.f);
 	}
 }
 
@@ -99,8 +99,8 @@ void Rigidbody2DComponent::UpdateVelocity(float deltaTime)
 
 void Rigidbody2DComponent::ClearForceAndAccel()
 {
-	mForce = Vector2::Zero;
-	mAcceleration = Vector2::Zero;
+	mForce = FTVector2::Zero;
+	mAcceleration = FTVector2::Zero;
 }
 
 void Rigidbody2DComponent::SaveProperties(std::ofstream& ofs)

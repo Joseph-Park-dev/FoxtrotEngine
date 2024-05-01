@@ -5,38 +5,38 @@
 class Transform
 {
 public:
-	void Translate(Vector2 translation);
+	void Translate(FTVector2 translation);
 
 public:
-	const Vector2  GetWorldPosition()		 const { return mWorldPosition; }
-	const Vector2  GetLocalPosition()		 const { return mLocalPosition; }
-	const Vector2  GetForward()				 const { return Vector2(Math::Cos(mRotation), -Math::Sin(mRotation)); }
-	const Vector2  GetScale()				 const { return mScale; }
+	const FTVector2  GetWorldPosition()		 const { return mWorldPosition; }
+	const FTVector2  GetLocalPosition()		 const { return mLocalPosition; }
+	const FTVector2  GetForward()				 const { return FTVector2(Math::Cos(mRotation), -Math::Sin(mRotation)); }
+	const FTVector2  GetScale()				 const { return mScale; }
 	const float    GetRotation()			 const { return mRotation; }
-	const Vector2  GetScreenPosition()		 const;
+	const FTVector2  GetScreenPosition()		 const;
 #ifdef _DEBUG
-	const Vector2  GetScreenPositionEditor() const;
+	const FTVector2  GetScreenPositionEditor() const;
 #endif
 
-	Vector2* GetWorldPositionRef()  { return &mWorldPosition; }
-	Vector2* GetLocalPositionRef()  { return &mLocalPosition; }
-	Vector2* GetScaleRef()			{ return &mScale; }
+	FTVector2* GetWorldPositionRef()  { return &mWorldPosition; }
+	FTVector2* GetLocalPositionRef()  { return &mLocalPosition; }
+	FTVector2* GetScaleRef()			{ return &mScale; }
 	float*	 GetRotationRef()		{ return &mRotation; }
 
-	void	 SetWorldPosition (const Vector2 pos) { mWorldPosition = pos; }
-	//void	 SetWorldPositionBox2D (const b2Vec2 pos) { mWorldPosition = Vector2(pos.x, pos.y); }
-	void	 SetScreenPosition(const Vector2 pos) { mScreenPosition = pos; }
-	void	 SetLocalPosition (Vector2 pos)		 { mLocalPosition = pos; }
-	void	 SetScale		    (Vector2 scale)		 { mScale = scale; }
+	void	 SetWorldPosition (const FTVector2 pos) { mWorldPosition = pos; }
+	//void	 SetWorldPositionBox2D (const b2Vec2 pos) { mWorldPosition = FTVector2(pos.x, pos.y); }
+	void	 SetScreenPosition(const FTVector2 pos) { mScreenPosition = pos; }
+	void	 SetLocalPosition (FTVector2 pos)		 { mLocalPosition = pos; }
+	void	 SetScale		    (FTVector2 scale)		 { mScale = scale; }
 	void	 SetRotation	    (float rotation)	 { mRotation = Math::ToRadians(rotation); }
 
 public:
 	Transform();
 
 private:
-	Vector2		 mWorldPosition;
-	Vector2		 mScreenPosition;
-	Vector2		 mLocalPosition;
-	Vector2		 mScale;
+	FTVector2		 mWorldPosition;
+	FTVector2		 mScreenPosition;
+	FTVector2		 mLocalPosition;
+	FTVector2		 mScale;
 	float		 mRotation;
 };

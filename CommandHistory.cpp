@@ -104,9 +104,9 @@ void CommandHistory::Update()
 	}
 }
 
-void CommandHistory::UpdateVectorValue(std::string label, Vector2* ref, Vector2 val)
+void CommandHistory::UpdateVectorValue(std::string label, FTVector2* ref, FTVector2 val)
 {
-	Vector2 updatedVal = val;
+	FTVector2 updatedVal = val;
 	float* vec2 = new float[2];
 	vec2[0] = updatedVal.x;
 	vec2[1] = updatedVal.y;
@@ -119,7 +119,7 @@ void CommandHistory::UpdateVectorValue(std::string label, Vector2* ref, Vector2 
 			CommandHistory::GetInstance()->
 				AddCommand(new Vector2EditCommand(ref, val));
 		}
-		updatedVal = Vector2(vec2[0], vec2[1]);
+		updatedVal = FTVector2(vec2[0], vec2[1]);
 		*ref = updatedVal;
 	}
 	else

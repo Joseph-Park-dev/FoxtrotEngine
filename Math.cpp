@@ -8,21 +8,21 @@
 
 #include "Math.h"
 
-const Vector2 Vector2::Zero(0.0f, 0.0f);
-const Vector2 Vector2::UnitX(1.0f, 0.0f);
-const Vector2 Vector2::UnitY(0.0f, 1.0f);
-const Vector2 Vector2::NegUnitX(-1.0f, 0.0f);
-const Vector2 Vector2::NegUnitY(0.0f, -1.0f);
+const FTVector2 FTVector2::Zero(0.0f, 0.0f);
+const FTVector2 FTVector2::UnitX(1.0f, 0.0f);
+const FTVector2 FTVector2::UnitY(0.0f, 1.0f);
+const FTVector2 FTVector2::NegUnitX(-1.0f, 0.0f);
+const FTVector2 FTVector2::NegUnitY(0.0f, -1.0f);
 
-const Vector3 Vector3::Zero(0.0f, 0.0f, 0.f);
-const Vector3 Vector3::UnitX(1.0f, 0.0f, 0.0f);
-const Vector3 Vector3::UnitY(0.0f, 1.0f, 0.0f);
-const Vector3 Vector3::UnitZ(0.0f, 0.0f, 1.0f);
-const Vector3 Vector3::NegUnitX(-1.0f, 0.0f, 0.0f);
-const Vector3 Vector3::NegUnitY(0.0f, -1.0f, 0.0f);
-const Vector3 Vector3::NegUnitZ(0.0f, 0.0f, -1.0f);
-const Vector3 Vector3::Infinity(Math::Infinity, Math::Infinity, Math::Infinity);
-const Vector3 Vector3::NegInfinity(Math::NegInfinity, Math::NegInfinity, Math::NegInfinity);
+const FTVector3 FTVector3::Zero(0.0f, 0.0f, 0.f);
+const FTVector3 FTVector3::UnitX(1.0f, 0.0f, 0.0f);
+const FTVector3 FTVector3::UnitY(0.0f, 1.0f, 0.0f);
+const FTVector3 FTVector3::UnitZ(0.0f, 0.0f, 1.0f);
+const FTVector3 FTVector3::NegUnitX(-1.0f, 0.0f, 0.0f);
+const FTVector3 FTVector3::NegUnitY(0.0f, -1.0f, 0.0f);
+const FTVector3 FTVector3::NegUnitZ(0.0f, 0.0f, -1.0f);
+const FTVector3 FTVector3::Infinity(Math::Infinity, Math::Infinity, Math::Infinity);
+const FTVector3 FTVector3::NegInfinity(Math::NegInfinity, Math::NegInfinity, Math::NegInfinity);
 
 static float m3Ident[3][3] =
 {
@@ -42,20 +42,20 @@ static float m4Ident[4][4] =
 
 const Matrix4 Matrix4::Identity(m4Ident);
 
-const Quaternion Quaternion::Identity(0.0f, 0.0f, 0.0f, 1.0f);
+const FTQuaternion FTQuaternion::Identity(0.0f, 0.0f, 0.0f, 1.0f);
 
-Vector2 Vector2::Transform(const Vector2& vec, const Matrix3& mat, float w /*= 1.0f*/)
+FTVector2 FTVector2::Transform(const FTVector2& vec, const Matrix3& mat, float w /*= 1.0f*/)
 {
-	Vector2 retVal;
+	FTVector2 retVal;
 	retVal.x = vec.x * mat.mat[0][0] + vec.y * mat.mat[1][0] + w * mat.mat[2][0];
 	retVal.y = vec.x * mat.mat[0][1] + vec.y * mat.mat[1][1] + w * mat.mat[2][1];
 	//ignore w since we aren't returning a new value for it...
 	return retVal;
 }
 
-Vector3 Vector3::Transform(const Vector3& vec, const Matrix4& mat, float w /*= 1.0f*/)
+FTVector3 FTVector3::Transform(const FTVector3& vec, const Matrix4& mat, float w /*= 1.0f*/)
 {
-	Vector3 retVal;
+	FTVector3 retVal;
 	retVal.x = vec.x * mat.mat[0][0] + vec.y * mat.mat[1][0] +
 		vec.z * mat.mat[2][0] + w * mat.mat[3][0];
 	retVal.y = vec.x * mat.mat[0][1] + vec.y * mat.mat[1][1] +
@@ -67,9 +67,9 @@ Vector3 Vector3::Transform(const Vector3& vec, const Matrix4& mat, float w /*= 1
 }
 
 // This will transform the vector and renormalize the w component
-Vector3 Vector3::TransformWithPerspDiv(const Vector3& vec, const Matrix4& mat, float w /*= 1.0f*/)
+FTVector3 FTVector3::TransformWithPerspDiv(const FTVector3& vec, const Matrix4& mat, float w /*= 1.0f*/)
 {
-	Vector3 retVal;
+	FTVector3 retVal;
 	retVal.x = vec.x * mat.mat[0][0] + vec.y * mat.mat[1][0] +
 		vec.z * mat.mat[2][0] + w * mat.mat[3][0];
 	retVal.y = vec.x * mat.mat[0][1] + vec.y * mat.mat[1][1] +
@@ -86,13 +86,13 @@ Vector3 Vector3::TransformWithPerspDiv(const Vector3& vec, const Matrix4& mat, f
 	return retVal;
 }
 
-// Transform a Vector3 by a quaternion
-Vector3 Vector3::Transform(const Vector3& v, const Quaternion& q)
+// Transform a FTVector3 by a quaternion
+FTVector3 FTVector3::Transform(const FTVector3& v, const FTQuaternion& q)
 {
 	// v + 2.0*cross(q.xyz, cross(q.xyz,v) + q.w*v);
-	Vector3 qv(q.x, q.y, q.z);
-	Vector3 retVal = v;
-	retVal += 2.0f * Vector3::Cross(qv, Vector3::Cross(qv, v) + q.w * v);
+	FTVector3 qv(q.x, q.y, q.z);
+	FTVector3 retVal = v;
+	retVal += 2.0f * FTVector3::Cross(qv, FTVector3::Cross(qv, v) + q.w * v);
 	return retVal;
 }
 
@@ -211,7 +211,7 @@ void Matrix4::Invert()
 	}
 }
 
-Matrix4 Matrix4::CreateFromQuaternion(const class Quaternion& q)
+Matrix4 Matrix4::CreateFromQuaternion(const class FTQuaternion& q)
 {
 	float mat[4][4];
 	

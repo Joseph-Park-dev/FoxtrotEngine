@@ -6,7 +6,7 @@
 #include "FoxtrotRenderer.h"
 
 // InitPos : WorldPosition, not ScreenPosition
-void ParticleSystem::CreateExplosion(Vector2 initPos, float initSpeed, int duration, float gravity, float angle)
+void ParticleSystem::CreateExplosion(FTVector2 initPos, float initSpeed, int duration, float gravity, float angle)
 {
 	FTParticleExplosion* explosion = new FTParticleExplosion;
 	explosion->isActive = true;
@@ -48,7 +48,7 @@ void ParticleSystem::Update(float deltaTime)
 			{
 				if (explosions[i]->particles[j].isActive)
 				{
-					Vector2 effectPos = explosions[i]->initialPos;
+					FTVector2 effectPos = explosions[i]->initialPos;
 					explosions[i]->particles[j].isActive =
 						UpdateParticleState(&explosions[i]->particles[j], effectPos, deltaTime);
 				}
@@ -72,7 +72,7 @@ void ParticleSystem::Update(float deltaTime)
 	}
 }
 
-bool ParticleSystem::UpdateParticleState(FTParticle* p, Vector2 initPos, float deltaTime)
+bool ParticleSystem::UpdateParticleState(FTParticle* p, FTVector2 initPos, float deltaTime)
 {
 	bool updating = true;
 	p->elapsedTime += deltaTime;
@@ -80,7 +80,7 @@ bool ParticleSystem::UpdateParticleState(FTParticle* p, Vector2 initPos, float d
 	float x = initPos.x + p->initialSpeed * Math::Cos(Math::ToRadians(p->initialAngle)) * t;
 	float y = initPos.y + p->initialSpeed * Math::Sin(Math::ToRadians(p->initialAngle)) * t
 		+ (p->gravity * t * t) / 2.f;
-	p->pos = Vector2(x, y);
+	p->pos = FTVector2(x, y);
 
 	if (p->duration <= p->elapsedTime)
 		updating = false;

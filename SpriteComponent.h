@@ -53,7 +53,7 @@ public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
 	virtual void LoadProperties(std::ifstream& ifs) override;
 
-	void BlitToGameview	 (Bounds* blitArea, Vector2 scale);
-	void BlitToGameviewEx(Bounds* blitArea, Vector2 scale);
+	void BlitToGameview	 (Bounds* blitArea, FTVector2 scale);
+	void BlitToGameviewEx(Bounds* blitArea, FTVector2 scale);
 #endif // DEBUG
 };

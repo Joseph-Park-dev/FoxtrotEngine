@@ -7,7 +7,7 @@ class PanelUI :
 	public UIActor
 {
 private:
-	Vector2 mDragStartPoint;
+	FTVector2 mDragStartPoint;
 public:
 	virtual void OnMouseHovering() override;
 	virtual void OnMouseLButtonDown() override;

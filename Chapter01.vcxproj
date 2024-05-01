@@ -363,6 +363,8 @@
     <ClInclude Include="MouseCursor.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Physics2D.h" />
+    <ClInclude Include="Ray.h" />
+    <ClInclude Include="RayCastHit2D.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Rigidbody2DComponent.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

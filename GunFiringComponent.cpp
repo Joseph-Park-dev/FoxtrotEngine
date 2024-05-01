@@ -23,7 +23,7 @@ void GunFiringComponent::Update(float deltaTime)
 
 void GunFiringComponent::ShootGun()
 {
-	Vector2 playerPos = GetOwner()->GetTransform()->GetWorldPosition();
+	FTVector2 playerPos = GetOwner()->GetTransform()->GetWorldPosition();
 	Physics2D::Raycast(
 		playerPos,
 		MOUSE_WORLDPOS,

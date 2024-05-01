@@ -73,7 +73,7 @@ void EditorElement::OnMouseLButtonClicked()
 
 void EditorElement::CheckMouseHover()
 {
-	Vector2 mousePos = KeyInputManager::GetInstance()->GetMousePosition();
+	FTVector2 mousePos = KeyInputManager::GetInstance()->GetMousePosition();
 	if (GetIsAffectedByCamera())
 	{
 		mousePos = EditorCamera2D::GetInstance()->ConvertScreenPosToWorld(mousePos);

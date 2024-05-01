@@ -17,12 +17,12 @@ void AIIdle::Update(float deltaTime)
  	Actor* player =
 	SceneManager::GetInstance()->GetCurrScene()
 		->GetActorGroup(ACTOR_GROUP::PLAYER)[0];
-	Vector2 playerPos = player->GetTransform()->GetWorldPosition();
+	FTVector2 playerPos = player->GetTransform()->GetWorldPosition();
 
 	Asteroid* monster = (Asteroid*)GetOwner()->GetOwner();
-	Vector2 monsterPos = monster->GetTransform()->GetWorldPosition();
+	FTVector2 monsterPos = monster->GetTransform()->GetWorldPosition();
 	
-	Vector2 diff = playerPos - monsterPos;
+	FTVector2 diff = playerPos - monsterPos;
 	float len = diff.Length();
 	
 	if (len < monster->GetMonsterInfo().RecogRange)
@@ -55,12 +55,12 @@ void AIPursue::Update(float deltaTime)
 {
 	if (mTargetActor != nullptr)
 	{
-		Vector2 playerPos = mTargetActor->GetTransform()->GetWorldPosition();
+		FTVector2 playerPos = mTargetActor->GetTransform()->GetWorldPosition();
 
 		Asteroid* monster = (Asteroid*)GetOwner()->GetOwner();
-		Vector2 monsterPos = monster->GetTransform()->GetWorldPosition();
+		FTVector2 monsterPos = monster->GetTransform()->GetWorldPosition();
 
-		Vector2 targetDir = Vector2::Normalize(playerPos - monsterPos);
+		FTVector2 targetDir = FTVector2::Normalize(playerPos - monsterPos);
 		monster->GetTransform()->Translate(targetDir * monster->GetMonsterInfo().Speed * deltaTime);
 	}
 }

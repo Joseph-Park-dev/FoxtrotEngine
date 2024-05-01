@@ -87,11 +87,11 @@ public:
 
 
 public:
-	KEY_STATE			GetKeyState(KEY eKey);
-	KEY_STATE			GetMouseState(MOUSE eMouse);
-	KEY_STATE			GetButtonState(GAMEPADBUTTON eButton);
-	Vector2				GetMousePosition() { return mMousePosition; }
-	Vector2				GetMouseWorldPosition();
+	KEY_STATE	GetKeyState(KEY eKey);
+	KEY_STATE	GetMouseState(MOUSE eMouse);
+	KEY_STATE	GetButtonState(GAMEPADBUTTON eButton);
+	FTVector2	GetMousePosition() { return mMousePosition; }
+	FTVector2	GetMouseWorldPosition();
 
 	/*SDL_GameController* GetGamepad() { return mGamepad; }
 	void SetGamepad(SDL_GameController* gamepad) { mGamepad = gamepad; }*/
@@ -130,7 +130,7 @@ private:
 	};*/
 
 private:
-	Vector2				mMousePosition;
+	FTVector2				mMousePosition;
 	int					mMouseState;
 
 private:

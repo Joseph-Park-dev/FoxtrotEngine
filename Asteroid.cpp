@@ -30,7 +30,7 @@ Asteroid::Asteroid(Scene* scene, tMonsterInfo info)
 	//mc->SetForwardSpeed(info.Speed);
 
 	ColliderComponent* collider = new ColliderComponent(this, 100, 54);
-	collider->SetScale(Vector2(50.f, 50.f));
+	collider->SetScale(FTVector2(50.f, 50.f));
 }
 
 Asteroid::~Asteroid()

@@ -57,8 +57,8 @@ void ChunkLoader::SaveChunkData(std::ofstream& ofs)
     ChunkData save order
         1) Camera2D values
             a) TargetActorID    -> int
-            a) RenderResolution -> Vector2
-            b) ScreenCenter     -> Vector2
+            a) RenderResolution -> FTVector2
+            b) ScreenCenter     -> FTVector2
         2) Number of Actors     -> int
     */
     // Saves Camera2D Values.
@@ -121,8 +121,8 @@ void ChunkLoader::LoadChunkData(std::ifstream& ifs)
     ChunkData save order
         1) Camera2D values
             a) TargetActorID    -> int
-            a) RenderResolution -> Vector2
-            b) ScreenCenter     -> Vector2
+            a) RenderResolution -> FTVector2
+            b) ScreenCenter     -> FTVector2
         2) Number of Actors     -> int
     */
     Camera2D::GetInstance()->SetTargetActorID(FileIOHelper::LoadInt(ifs));
@@ -231,7 +231,7 @@ ChunkLoader::ChunkLoader()
 
 ChunkLoader::~ChunkLoader(){}
 
-void FileIOHelper::AddVector2(std::ofstream& ofs, Vector2 value)
+void FileIOHelper::AddVector2(std::ofstream& ofs, FTVector2 value)
 {
     AddFloat(ofs, value.x);
     AddFloat(ofs, value.y);
@@ -267,13 +267,13 @@ void FileIOHelper::AddSize(std::ofstream& ofs, size_t value)
     ++mUnmatched;
 }
 
-Vector2 FileIOHelper::LoadVector2(std::ifstream& ifs)
+FTVector2 FileIOHelper::LoadVector2(std::ifstream& ifs)
 {
     assert(mUnmatched > 0);
     float x = LoadFloat(ifs);
     float y = LoadFloat(ifs);
 
-    return Vector2(x, y);
+    return FTVector2(x, y);
 }
 
 std::string FileIOHelper::LoadBasicString(std::ifstream& ifs)
@@ -324,7 +324,7 @@ size_t FileIOHelper::LoadSize(std::ifstream& ifs)
     return val;
 }
 
-void FileIOHelper::LoadVector2(std::ifstream& ifs, Vector2& value)
+void FileIOHelper::LoadVector2(std::ifstream& ifs, FTVector2& value)
 {
     assert(mUnmatched > 0);
     LoadFloat(ifs, value.x);

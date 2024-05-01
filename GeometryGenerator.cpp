@@ -42,11 +42,9 @@ MeshData GeometryGenerator::MakeSquare() {
     for (size_t i = 0; i < positions.size(); i++) {
         Vertex v;
         v.position = positions[i];
+        v.color = colors[i];
         v.normal = normals[i];
         v.texcoord = texcoords[i];
-
-        // v.color = colors[i];
-
         meshData.vertices.push_back(v);
     }
     meshData.indices = {
@@ -397,7 +395,6 @@ MeshData GeometryGenerator::SubdivideToSphere(const float radius,
 
     using namespace DirectX;
     using DirectX::SimpleMath::Matrix;
-    using DirectX::SimpleMath::D3DVec3;
 
     // 원점이 중심이라고 가정
     for (auto &v : meshData.vertices) {

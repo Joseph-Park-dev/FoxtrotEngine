@@ -29,7 +29,7 @@ void CollisionManager::MarkGroup(ACTOR_GROUP left, ACTOR_GROUP right)
 	}
 }
 
-void CollisionManager::RegisterRay(Ray* ray)
+void CollisionManager::RegisterRay(Physics::Ray* ray)
 {
 	mRegisteredRays.emplace_back(ray);
 }
@@ -146,11 +146,11 @@ bool CollisionManager::HasCollided(ColliderComponent* leftCol, ColliderComponent
 
 bool CollisionManager::AABBIntersection(ColliderComponent* aCol, ColliderComponent* bCol)
 {
-	Vector2 aPos = aCol->GetFinalPosition();
-	Vector2 aScale = aCol->GetScale();
+	FTVector2 aPos = aCol->GetFinalPosition();
+	FTVector2 aScale = aCol->GetScale();
 
-	Vector2 bPos = bCol->GetFinalPosition();
-	Vector2 bScale = bCol->GetScale();
+	FTVector2 bPos = bCol->GetFinalPosition();
+	FTVector2 bScale = bCol->GetScale();
 
 	float aColLeft   = aPos.x - aScale.x/2;
 	float aColRight	 = aPos.x + aScale.x/2;
@@ -177,8 +177,8 @@ void CollisionManager::ConstainColliderPos(ColliderComponent* aCol, ColliderComp
 	float scaleSumY = (aCol->GetScale().y + bCol->GetScale().y) / 2;
 	float posDiffY = Math::Abs(aCol->GetFinalPosition().y - bCol->GetFinalPosition().y);
 	
-	Vector2 colliNormal = Vector2::Zero;
-	Vector2 currPos = aCol->GetOwner()->GetTransform()->GetWorldPosition();
+	FTVector2 colliNormal = FTVector2::Zero;
+	FTVector2 currPos = aCol->GetOwner()->GetTransform()->GetWorldPosition();
 	
 	float xOverLap = scaleSumX - posDiffX;
 	float yOverLap = scaleSumY - posDiffY;
@@ -187,13 +187,13 @@ void CollisionManager::ConstainColliderPos(ColliderComponent* aCol, ColliderComp
 		// aCol is above bCol
 		if (aCol->GetFinalPosition().y < bCol->GetFinalPosition().y)
 		{
-			colliNormal = Vector2(0, -1);
+			colliNormal = FTVector2(0, -1);
 			aCol->mCollidedSide = CollidedSide::DOWN;
 			bCol->mCollidedSide = CollidedSide::UP;
 		}
 		else
 		{
-			colliNormal = Vector2(0, 1);
+			colliNormal = FTVector2(0, 1);
 			aCol->mCollidedSide = CollidedSide::UP;
 			bCol->mCollidedSide = CollidedSide::DOWN;
 		}
@@ -204,13 +204,13 @@ void CollisionManager::ConstainColliderPos(ColliderComponent* aCol, ColliderComp
 	{
 		if (aCol->GetFinalPosition().x < bCol->GetFinalPosition().x)
 		{
-			colliNormal = Vector2(-1, 0);
+			colliNormal = FTVector2(-1, 0);
 			aCol->mCollidedSide = CollidedSide::RIGHT;
 			bCol->mCollidedSide = CollidedSide::LEFT;
 		}
 		else
 		{
-			colliNormal = Vector2(1, 0);
+			colliNormal = FTVector2(1, 0);
 			aCol->mCollidedSide = CollidedSide::LEFT;
 			bCol->mCollidedSide = CollidedSide::RIGHT;
 		}
@@ -247,8 +247,8 @@ void CollisionManager::RenderRay(FoxtrotRenderer* renderer)
 {
 	for (size_t i = 0; i < mRegisteredRays.size(); ++i)
 	{
-		/*Vector2 ori = Camera2D::GetInstance()->ConvertScreenPosToWorld();
-		Vector2 end = Camera2D::GetInstance()->ConvertScreenPosToWorld();*/
+		/*FTVector2 ori = Camera2D::GetInstance()->ConvertScreenPosToWorld();
+		FTVector2 end = Camera2D::GetInstance()->ConvertScreenPosToWorld();*/
 		
 		/*
 		
@@ -257,8 +257,8 @@ void CollisionManager::RenderRay(FoxtrotRenderer* renderer)
 				(renderer, 255, 255, 255, 255);
 
 		*/
-		Vector2 ori = mRegisteredRays[i]->origin;
-		Vector2 end = mRegisteredRays[i]->endPoint;
+		FTVector2 ori = mRegisteredRays[i]->origin;
+		FTVector2 end = mRegisteredRays[i]->endPoint;
 
 		/*
 			Alternative to
@@ -276,25 +276,25 @@ void CollisionManager::RenderRay(FoxtrotRenderer* renderer)
 	Physics2D::GetInstance()->ResetRayCasts();
 }
 
-bool CollisionManager::HasRayCasted(Ray* ray, ColliderComponent* collider, ACTOR_GROUP group)
+bool CollisionManager::HasRayCasted(Physics::Ray* ray, ColliderComponent* collider, ACTOR_GROUP group)
 {
 	if (ray->groupFilter == group)
 	{
 		std::wstring str = collider->GetOwner()->GetName();
-		Vector2 origin = ray->origin;
-		Vector2 endPoint = ray->endPoint;
-		Vector2 leftTop = collider->GetFinalPosition() - collider->mScale / 2;
-		Vector2 leftBottom =
-			Vector2(
+		FTVector2 origin = ray->origin;
+		FTVector2 endPoint = ray->endPoint;
+		FTVector2 leftTop = collider->GetFinalPosition() - collider->mScale / 2;
+		FTVector2 leftBottom =
+			FTVector2(
 				collider->GetFinalPosition().x - collider->mScale.x / 2,
 				collider->GetFinalPosition().y + collider->mScale.y / 2
 			);
-		Vector2 rightTop =
-			Vector2(
+		FTVector2 rightTop =
+			FTVector2(
 				collider->GetFinalPosition().x + collider->mScale.x / 2,
 				collider->GetFinalPosition().y - collider->mScale.y / 2
 			);
-		Vector2 rightBottom = collider->GetFinalPosition() + collider->mScale / 2;
+		FTVector2 rightBottom = collider->GetFinalPosition() + collider->mScale / 2;
 
 		bool left	= RayIntersectedWithLine(origin, endPoint, leftTop,    leftBottom);
 		bool right	= RayIntersectedWithLine(origin, endPoint, rightTop,   rightBottom);
@@ -317,7 +317,7 @@ bool CollisionManager::HasRayCasted(Ray* ray, ColliderComponent* collider, ACTOR
 	return false;
 }
 
-bool CollisionManager::RayIntersectedWithLine(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4)
+bool CollisionManager::RayIntersectedWithLine(FTVector2 p1, FTVector2 p2, FTVector2 p3, FTVector2 p4)
 {
 	float uA = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) /
 		((p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y));
@@ -328,16 +328,16 @@ bool CollisionManager::RayIntersectedWithLine(Vector2 p1, Vector2 p2, Vector2 p3
 	{
 		float intersectionX = p1.x + uA * (p2.x - p1.x);
 		float intersectionY = p1.y + uA * (p2.y - p1.y);
-		mIntersections.push_back(Vector2(intersectionX, intersectionY));
+		mIntersections.push_back(FTVector2(intersectionX, intersectionY));
 		return true;
 	}
 	return false;
 }
 
-Vector2 CollisionManager::FindClosestIntersection(Ray* ray)
+FTVector2 CollisionManager::FindClosestIntersection(Physics::Ray* ray)
 {
-	std::vector<Vector2>::iterator iter = mIntersections.begin();
-	Vector2 closest = (*iter);
+	std::vector<FTVector2>::iterator iter = mIntersections.begin();
+	FTVector2 closest = (*iter);
 	for (; iter != mIntersections.end(); ++iter)
 	{
 		float distancePrev = (closest - ray->origin).LengthSq();

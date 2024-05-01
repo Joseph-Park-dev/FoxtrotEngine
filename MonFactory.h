@@ -1,7 +1,7 @@
 #pragma once
 
 class Asteroid;
-class Vector2;
+class FTVector2;
 
 enum class MON_TYPE
 {
@@ -12,5 +12,5 @@ enum class MON_TYPE
 class MonFactory
 {
 public:
-	static Asteroid* CreateMonster(Scene* scene, Vector2 pos, MON_TYPE type);
+	static Asteroid* CreateMonster(Scene* scene, FTVector2 pos, MON_TYPE type);
 };

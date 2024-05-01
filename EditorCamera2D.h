@@ -18,13 +18,13 @@ public:
 	float GetMouseNavFactor() const { return mMouseNavFactor; }
 
 private:
-	Vector2		mMiddleMouseClickedPos;
+	FTVector2	mMiddleMouseClickedPos;
 	Bounds		mCameraDisplay;
-	Vector2		mDisplayPosition;
+	FTVector2	mDisplayPosition;
 	// 0 ~ 1 value (This is used to reduce drastic change in lookAtPos)
 	float		mMouseNavFactor;
 
-	Vector2		mEditorWindowSize;
+	FTVector2	mEditorWindowSize;
 	float		mGridCellSize;
 	bool		mGridIsOn;
 

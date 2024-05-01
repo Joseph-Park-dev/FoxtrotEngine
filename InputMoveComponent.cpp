@@ -65,19 +65,19 @@ void InputMoveComponent::LateUpdate(float deltaTime)
 	}
 	if (state == MoveComponent::State::MOVING_LEFT)
 	{
-		GetOwner()->GetTransform()->Translate(Vector2(-20.f, 0.f) * deltaTime);
+		GetOwner()->GetTransform()->Translate(FTVector2(-20.f, 0.f) * deltaTime);
 	}
 	if (state == MoveComponent::State::MOVING_RIGHT)
 	{
-		GetOwner()->GetTransform()->Translate(Vector2(20.f, 0.f) * deltaTime);
+		GetOwner()->GetTransform()->Translate(FTVector2(20.f, 0.f) * deltaTime);
 	}
 	if (state == MoveComponent::State::MOVING_UP)
 	{
-		GetOwner()->GetComponent<class Rigidbody2DComponent>()->AddForce(Vector2(0.f, -500.f));
+		GetOwner()->GetComponent<class Rigidbody2DComponent>()->AddForce(FTVector2(0.f, -500.f));
 	}
 	if (state == MoveComponent::State::MOVING_DOWN)
 	{
-		GetOwner()->GetTransform()->Translate(Vector2(0.f, 20.f) * deltaTime);
+		GetOwner()->GetTransform()->Translate(FTVector2(0.f, 20.f) * deltaTime);
 	}
 }
 
@@ -87,12 +87,12 @@ void InputMoveComponent::Rotate()
 	//if (KEY_HOLD(KEY::LEFT))
 	//{
 	//	currentDir = 1;
-	//	Accelerate(Vector2(0.f, -100.f));
+	//	Accelerate(FTVector2(0.f, -100.f));
 	//}
 	//if (KEY_HOLD(KEY::RIGHT))
 	//{
 	//	currentDir = -1;
-	//	Accelerate(Vector2(0.f, 100.f));
+	//	Accelerate(FTVector2(0.f, 100.f));
 
 	//}
 	//SetAngularSpeed(angularSpeed);

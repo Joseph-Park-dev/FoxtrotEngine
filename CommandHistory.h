@@ -23,7 +23,7 @@ public:
 	void MergeCMDRecord();
 	void Update();
 
-	void UpdateVectorValue(std::string label, Vector2* ref, Vector2 val);
+	void UpdateVectorValue(std::string label, FTVector2* ref, FTVector2 val);
 	void UpdateFloatValue(std::string label, float* ref, float val, Transform* transf, TransSetFloatFunc setFunc);
 
 	bool GetIsRecording() { return mRecording; }

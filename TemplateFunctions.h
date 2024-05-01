@@ -44,7 +44,7 @@ void LogFloat(std::string message, float val)
 	printf(msg.c_str());
 }
 
-void LogVector2(Vector2 val)
+void LogVector2(FTVector2 val)
 {
 	printf("X : %f Y : %f\n", val.x, val.y);
 }
@@ -54,7 +54,7 @@ void LogVector3(DirectX::SimpleMath::Vector3 val)
 	printf("X : %f Y : %f Z : %f\n", val.x, val.y, val.z);
 }
 
-void LogVector2(std::string message, Vector2 val)
+void LogVector2(std::string message, FTVector2 val)
 {
 	printf("%s, X : %f Y : %f\n", message.c_str(), val.x, val.y);
 }
@@ -119,7 +119,7 @@ static char* ToString(const wchar_t* text)
 	return nullptr;
 }
 
-//b2Vec2 ToB2Vec2(Vector2 vec)
+//b2Vec2 ToB2Vec2(FTVector2 vec)
 //{
 //	return b2Vec2(vec.x, vec.y);
 //}

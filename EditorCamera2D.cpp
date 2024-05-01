@@ -34,7 +34,7 @@ void EditorCamera2D::Update(float deltaTime)
 
 void EditorCamera2D::MiddleMouseNavigation()
 {
-	Vector2 diff = Vector2::Zero;
+	FTVector2 diff = FTVector2::Zero;
 	if (MOUSE_TAP(MOUSE::MOUSE_MIDDLE))
 	{
 		mMiddleMouseClickedPos = MOUSE_POS;
@@ -42,7 +42,7 @@ void EditorCamera2D::MiddleMouseNavigation()
 	else if (MOUSE_HOLD(MOUSE::MOUSE_MIDDLE))
 	{
 		diff = (MOUSE_POS - mMiddleMouseClickedPos) * mMouseNavFactor;
-		Vector2 lookAtPos = Vector2(this->GetLookAtPos().x - diff.x, this->GetLookAtPos().y + diff.y);
+		FTVector2 lookAtPos = FTVector2(this->GetLookAtPos().x - diff.x, this->GetLookAtPos().y + diff.y);
 		this->SetLookAtPos(lookAtPos);
 		//SetScreenCenter(GetScreenCenter() + diff);
 		//Camera2D::GetInstance()->SetScreenCenter(GetScreenCenter() - diff);
@@ -54,8 +54,8 @@ void EditorCamera2D::MiddleMouseNavigation()
 void EditorCamera2D::CalcCameraDisplay()
 {
 	Bounds* camRenderArea = Camera2D::GetInstance()->GetRenderArea();
-	Vector2 camLookAtPos = Vector2(camRenderArea->x, camRenderArea->y);
-	Vector2 displayPos = EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(camLookAtPos);
+	FTVector2 camLookAtPos = FTVector2(camRenderArea->x, camRenderArea->y);
+	FTVector2 displayPos = EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(camLookAtPos);
 	mCameraDisplay.x = displayPos.x;
 	mCameraDisplay.y = displayPos.y;
 	mCameraDisplay.w = camRenderArea->w * (1- GetZoomValue());
@@ -108,18 +108,18 @@ void EditorCamera2D::DisplayCameraMenu()
 	if (ImGui::Begin("Main Camera"))
 	{
 		// Set LookAt Pos
-		Vector2 lookAtPos = Camera2D::GetInstance()->GetLookAtPos();
+		FTVector2 lookAtPos = Camera2D::GetInstance()->GetLookAtPos();
 		float* posArr = new float[2];
 		posArr[0] = lookAtPos.x;
 		posArr[1] = lookAtPos.y;
 		ImGui::DragFloat2("Look-At Pos", posArr);
-		Vector2 updatedLookAtPos = Vector2(posArr[0], posArr[1]);
+		FTVector2 updatedLookAtPos = FTVector2(posArr[0], posArr[1]);
 		delete[] posArr;
 		Camera2D::GetInstance()->SetLookAtPos(updatedLookAtPos);
 
 		// Updating screen center since the camera position is moved
-		Vector2 diff = updatedLookAtPos - lookAtPos;
-		Vector2 screenCenter = Camera2D::GetInstance()->GetScreenCenter();
+		FTVector2 diff = updatedLookAtPos - lookAtPos;
+		FTVector2 screenCenter = Camera2D::GetInstance()->GetScreenCenter();
 		Camera2D::GetInstance()->SetScreenCenter(screenCenter + diff);
 
 		// Set Target 
@@ -158,7 +158,7 @@ void EditorCamera2D::DisplayCameraMenu()
 
 EditorCamera2D::EditorCamera2D()
 	: Camera2D()
-	, mMiddleMouseClickedPos(Vector2::Zero)
+	, mMiddleMouseClickedPos(FTVector2::Zero)
 	, mCameraDisplay{}
 	, mCurrIdx(0)
 	, mGridCellSize(64.f)
@@ -167,7 +167,7 @@ EditorCamera2D::EditorCamera2D()
 	SetTargetActorID(TARGET_NONE);
 	SetScreenCenter(Camera2D::GetInstance()->GetScreenCenter());
 
-	//Vector2 windowSize = CCore::GetInstance()->GetEditorWindowSize();
+	//FTVector2 windowSize = CCore::GetInstance()->GetEditorWindowSize();
 	//int gridHCount = windowSize.x / mGridCellSize + 2;
 	//int gridVCount = windowSize.y / mGridCellSize + 2;
 }

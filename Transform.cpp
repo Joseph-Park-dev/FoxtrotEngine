@@ -2,7 +2,7 @@
 #include "CCore.h"
 #include "Camera2D.h"
 
-void Transform::Translate(Vector2 translation)
+void Transform::Translate(FTVector2 translation)
 {
 	//if (mWorldPosition.x < 0.0f) { mWorldPosition.x = 1022.0f; }
 	//else if (mWorldPosition.x > 1024.0f) { mWorldPosition.x = 2.0f; }
@@ -15,7 +15,7 @@ void Transform::Translate(Vector2 translation)
 		mWorldPosition + mLocalPosition;*/
 }
 
-const Vector2 Transform::GetScreenPosition() const
+const FTVector2 Transform::GetScreenPosition() const
 {
 	return Camera2D::GetInstance()->ConvertWorldPosToScreen(mWorldPosition);
 }
@@ -23,16 +23,16 @@ const Vector2 Transform::GetScreenPosition() const
 #ifdef _DEBUG
 #include "EditorCamera2D.h"
 
-const Vector2 Transform::GetScreenPositionEditor() const
+const FTVector2 Transform::GetScreenPositionEditor() const
 {
 	return EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(mWorldPosition);
 }
 #endif // _DEBUG
 
 Transform::Transform()
-	: mWorldPosition(Vector2::Zero)
-	, mScreenPosition(Vector2::Zero)
-	, mLocalPosition(Vector2::Zero)
-	, mScale(Vector2(1.0f, 1.0f))
+	: mWorldPosition(FTVector2::Zero)
+	, mScreenPosition(FTVector2::Zero)
+	, mLocalPosition(FTVector2::Zero)
+	, mScale(FTVector2(1.0f, 1.0f))
 	, mRotation(0.0f)
 {}

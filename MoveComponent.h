@@ -2,7 +2,7 @@
 #include "Component.h"
 #include "TemplateFunctions.h"
 
-class Vector2;
+class FTVector2;
 class Rigidbody2DComponent;
 
 class MoveComponent :
@@ -19,9 +19,9 @@ protected:
     };
 public:
     void Accelerate(float& currentSpeed, float accel, float maxSpeed, int forwardDir);
-    void Accelerate(Vector2 velocity);
+    void Accelerate(FTVector2 velocity);
     void Deccelerate(float& currentSpeed, int& currentDir, float breakSpeed);
-    //void Accelerate(Vector2 velocity);
+    //void Accelerate(FTVector2 velocity);
     // Temporarily commented for testing Rigidbody2D-AddForce
     // void Deccelerate(float& currentSpeed, int& currentDir, float breakSpeed);
 
@@ -48,7 +48,7 @@ public:
 
 private:
     //Rigidbody2DComponent* mRigidbody;
-    Vector2 mVelocity;
+    FTVector2 mVelocity;
     float mAngularSpeed;
     float mForwardSpeed;
     State mMovingState;

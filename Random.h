@@ -29,8 +29,8 @@ public:
 	static int GetIntRange(int min, int max);
 
 	// Get a random vector given the min/max bounds
-	static Vector2 GetVector(const Vector2& min, const Vector2& max);
-	static Vector3 GetVector(const Vector3& min, const Vector3& max);
+	static FTVector2 GetVector(const FTVector2& min, const FTVector2& max);
+	static FTVector3 GetVector(const FTVector3& min, const FTVector3& max);
 private:
 	static std::mt19937 sGenerator;
 };

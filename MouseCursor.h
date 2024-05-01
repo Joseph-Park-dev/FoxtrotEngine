@@ -9,7 +9,7 @@ class MouseCursor :
 {
 public:
     TileMapComponent* GetTileMapComp() { return mTM; }
-    Vector2           GetCursorPosition() const { return mCursorPosition; }
+    FTVector2         GetCursorPosition() const { return mCursorPosition; }
 
 public:
     virtual void UpdateActor(float deltaTime) override;
@@ -20,8 +20,8 @@ public:
 
 private:
     TileMapComponent* mTM;
-    Vector2 mCursorPosition;
-    Vector2 mOffsetSelect;
-    Vector2 mOffsetAim;
+    FTVector2         mCursorPosition;
+    FTVector2         mOffsetSelect;
+    FTVector2         mOffsetAim;
 };
 

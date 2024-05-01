@@ -5,9 +5,9 @@
 #include <vector>
 
 #include "FTTexture.h"
+#include "Vertex.h"
 
 using Microsoft::WRL::ComPtr;
-class Vertex;
 
 struct BasicVertexConstantBuffer {
     DirectX::SimpleMath::Matrix model;

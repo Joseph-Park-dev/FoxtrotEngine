@@ -238,7 +238,7 @@ void AnimatorComponent::Render(FoxtrotRenderer* renderer)
 	{
 		if (!mCurrentAnim->IsFinished())
 		{
-			Vector2 worldPos = GetOwner()->GetTransform()->GetWorldPosition();
+			FTVector2 worldPos = GetOwner()->GetTransform()->GetWorldPosition();
 			// DrawIndividualTileOnPosEX(renderer, worldPos, mCurrentAnim->GetTile());
 		}
 	}

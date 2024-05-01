@@ -4,10 +4,11 @@
 
 #include "SingletonMacro.h"
 #include "ActorGroup.h"
+#include "Ray.h"
 
 struct Ray;
 class ColliderComponent;
-class Vector2;
+class FTVector2;
 
 union COLLIDER_ID
 {
@@ -25,17 +26,17 @@ class CollisionManager
 
 public:
 	void MarkGroup(ACTOR_GROUP left, ACTOR_GROUP right);
-	void RegisterRay(Ray* ray);
+	void RegisterRay(Physics::Ray* ray);
 	void Reset();
 
 public:
-	std::vector<Ray*>& GetRegisteredRays() { return mRegisteredRays; }
+	std::vector<Physics::Ray*>& GetRegisteredRays() { return mRegisteredRays; }
 
 private:
 	std::unordered_map<uint64_t, bool> mCollisionInfo;
-	uint32_t			 mArrCollisionMarks[(uint32_t)ACTOR_GROUP::END];
-	std::vector<Ray*>	 mRegisteredRays;
-	std::vector<Vector2> mIntersections;
+	uint32_t					mArrCollisionMarks[(uint32_t)ACTOR_GROUP::END];
+	std::vector<Physics::Ray*>	mRegisteredRays;
+	std::vector<FTVector2>		mIntersections;
 
 public:
 	void Init() {};
@@ -49,10 +50,9 @@ private:
 	bool AABBIntersection(ColliderComponent* aCol, ColliderComponent* bCol);
 	void ConstainColliderPos(ColliderComponent* aCol, ColliderComponent* bCol);
 	void CompareGroupWithRays(ACTOR_GROUP group);
-	bool HasRayCasted(Ray* ray, ColliderComponent* collider, ACTOR_GROUP group);
-	bool RayIntersectedWithLine(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4);
-	Vector2 FindClosestIntersection(Ray* ray);
+	bool HasRayCasted(Physics::Ray* ray, ColliderComponent* collider, ACTOR_GROUP group);
+	bool RayIntersectedWithLine(FTVector2 p1, FTVector2 p2, FTVector2 p3, FTVector2 p4);
+	FTVector2 FindClosestIntersection(Physics::Ray* ray);
 	void ResetRegisteredRays();
 	void ResetIntersections();
 };
-

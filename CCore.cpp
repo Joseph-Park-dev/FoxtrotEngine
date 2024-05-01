@@ -36,7 +36,7 @@ CCore::CCore()
 	: mGameTitle(L"Cat Blasters! ver.0.01")
 	//, mGameviewWindow(nullptr)
 	, mIsRunning(true)
-	, mResolution(Vector2(1920.f, 1080.f))
+	, mResolution(FTVector2(1920.f, 1080.f))
 #ifdef _DEBUG
 	, mEditorWindow(nullptr)
 	, mIsUpdatingGame(false)
@@ -353,6 +353,6 @@ LRESULT CCore::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 //	SDL_GetWindowSize(mEditorWindow, &editorW, &editorH);
 //	FileIOHelper::AddBasicString(ofs, mEditorResolutionKey);
 //	FileIOHelper::
-//		AddVector2(ofs, Vector2(editorW, editorH));
+//		AddVector2(ofs, FTVector2(editorW, editorH));
 //}
 //#endif // _DEBUG

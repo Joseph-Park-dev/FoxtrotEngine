@@ -44,35 +44,35 @@ public:
 	void		  Shake(float duration, float magnitude);
 
 public:
-	const Vector2 GetLookAtPos() const { return mLookAtPos; }
-	Bounds*		  GetRenderArea() { return &mRenderArea; }
-	Vector2		  GetScreenCenter() { return mScreenCenter; }
-	int			  GetTargetActorID() { return mTargetActorID; }
-	Vector2		  GetRenderResolution() { return mRenderResolution; }
-	Vector2		  GetDiffFromCenter() { return mDiffFromCenter; }
-	float		  GetZoomValue() { return mZoomValue; }
+	const FTVector2 GetLookAtPos() const { return mLookAtPos; }
+	Bounds*			GetRenderArea() { return &mRenderArea; }
+	FTVector2		GetScreenCenter() { return mScreenCenter; }
+	int				GetTargetActorID() { return mTargetActorID; }
+	FTVector2		GetRenderResolution() { return mRenderResolution; }
+	FTVector2		GetDiffFromCenter() { return mDiffFromCenter; }
+	float			GetZoomValue() { return mZoomValue; }
 
-	void		  SetLookAtPos(Vector2 pos) { mLookAtPos = pos; }
-	void		  SetRenderResolution(Vector2 res) { mRenderResolution = res; }
-	void		  SetTargetActorID(int id);
-	void		  SetScreenCenter(Vector2 center) { mScreenCenter = center; }
+	void			SetLookAtPos(FTVector2 pos) { mLookAtPos = pos; }
+	void			SetRenderResolution(FTVector2 res) { mRenderResolution = res; }
+	void			SetTargetActorID(int id);
+	void			SetScreenCenter(FTVector2 center) { mScreenCenter = center; }
 
-	bool		  IsInRenderedArea(SpriteComponent* sprite) const;
-	bool		  IsInRenderedArea(Tile* tile) const;
+	bool			IsInRenderedArea(SpriteComponent* sprite) const;
+	bool			IsInRenderedArea(Tile* tile) const;
 
-	Vector2		  ConvertWorldPosToScreen(Vector2 worldPos) const;
-	Vector2		  ConvertScreenPosToWorld(Vector2 screenPos) const;
+	FTVector2		ConvertWorldPosToScreen(FTVector2 worldPos) const;
+	FTVector2		ConvertScreenPosToWorld(FTVector2 screenPos) const;
 
-	void		  SetDiffFromCenter(Vector2 diff) { mDiffFromCenter = diff; }
+	void			SetDiffFromCenter(FTVector2 diff) { mDiffFromCenter = diff; }
 
 private:
-	Vector2		mLookAtPos;
-	Vector2		mDiffFromCenter;
+	FTVector2	mLookAtPos;
+	FTVector2	mDiffFromCenter;
 	Actor*		mTargetActor;
 	int			mTargetActorID;
-	Vector2		mScreenCenter;
+	FTVector2	mScreenCenter;
 
-	Vector2		mRenderResolution;
+	FTVector2	mRenderResolution;
 	Bounds		mRenderArea;
 
 	Bounds		mEffectArea;

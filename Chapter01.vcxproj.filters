@@ -465,6 +465,12 @@
     <ClInclude Include="MeshData.h">
       <Filter>06_Resources</Filter>
     </ClInclude>
+    <ClInclude Include="Ray.h">
+      <Filter>02_Core\CoreModules\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="RayCastHit2D.h">
+      <Filter>02_Core\CoreModules\Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

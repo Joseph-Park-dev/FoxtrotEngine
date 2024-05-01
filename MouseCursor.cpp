@@ -22,12 +22,12 @@ void MouseCursor::RenderActor(FoxtrotRenderer* renderer)
 MouseCursor::MouseCursor(Scene* scene)
 	: UIActor(scene, false)
 	, mTM(new TileMapComponent(this, DEFAULT_DRAWORDER))
-	, mCursorPosition(Vector2::Zero)
-	, mOffsetSelect(Vector2(23, 17))
+	, mCursorPosition(FTVector2::Zero)
+	, mOffsetSelect(FTVector2(23, 17))
 {
 	//SDL_ShowCursor(SDL_DISABLE);
 	mTM->InitializeTileMap(L"Assets/TileMapCSVs/MouseCursors.csv", 80, 80);
 	//FTTexture* tileMap = ResourceManager::GetInstance()->GetLoadedTexture(L"MouseCursor");
 	//mTM->SetTexture(tileMap);
-	//mOffsetAim = Vector2(mTM->GetTexWidth() / 2, mTM->GetTexHeight() / 2);
+	//mOffsetAim = FTVector2(mTM->GetTexWidth() / 2, mTM->GetTexHeight() / 2);
 }

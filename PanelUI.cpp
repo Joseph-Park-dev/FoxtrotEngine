@@ -7,13 +7,13 @@ void PanelUI::OnMouseHovering()
 {
 	if (LeftButtonIsDown())
 	{
-		Vector2 diff = MOUSE_POS - mDragStartPoint;
-		Vector2 curPos = GetTransform()->GetWorldPosition();
+		FTVector2 diff = MOUSE_POS - mDragStartPoint;
+		FTVector2 curPos = GetTransform()->GetWorldPosition();
 		curPos += diff;
 		GetTransform()->SetWorldPosition(curPos);
 		for (size_t i = 0; i < GetChildActors().size(); ++i)
 		{
-			Vector2 curChildPos = ((UIActor*)GetChildActors()[i])->GetTransform()->GetWorldPosition();
+			FTVector2 curChildPos = ((UIActor*)GetChildActors()[i])->GetTransform()->GetWorldPosition();
 			curChildPos += diff;
 			((UIActor*)GetChildActors()[i])->GetTransform()->SetWorldPosition(curChildPos);
 		}
@@ -33,13 +33,13 @@ void PanelUI::OnMouseLButtonUp()
 
 PanelUI::PanelUI(Scene* scene, bool isCamAffected)
 	: UIActor(scene, isCamAffected)
-	, mDragStartPoint(Vector2::Zero)
+	, mDragStartPoint(FTVector2::Zero)
 {
 }
 
 PanelUI::PanelUI(Actor* origin)
 	: UIActor(origin)
-	, mDragStartPoint(Vector2::Zero)
+	, mDragStartPoint(FTVector2::Zero)
 {
 }
 

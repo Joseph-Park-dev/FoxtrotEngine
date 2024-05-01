@@ -4,12 +4,12 @@
 #include "SpriteComponent.h"
 #include "TemplateFunctions.h"
 
-class Vector2;
+class FTVector2;
 
 struct BGTexture
 {
 	FTTexture* mTexture;
-	Vector2		 mOffset;
+	FTVector2  mOffset;
 };
 
 class BGSpriteComponent : public SpriteComponent
@@ -23,7 +23,7 @@ public:
 	{
 		return L"BGSpriteComponent";
 	}
-	void SetScreenSize(const Vector2& size) { mScreenSize = size; }
+	void SetScreenSize(const FTVector2& size) { mScreenSize = size; }
 	void SetScrollSpeed(float speed) { mScrollSpeed = speed; }
 
 public:
@@ -37,7 +37,7 @@ public:
 
 private:
 	std::vector<BGTexture> mBGTextures;
-	Vector2		mScreenSize;
+	FTVector2	mScreenSize;
 	float		mScrollSpeed;
 };
 

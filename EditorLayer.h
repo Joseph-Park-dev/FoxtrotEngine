@@ -5,9 +5,7 @@
 #include <functional>
 #include <nlohmann/json.hpp>
 
-struct SDL_Window;
-struct FoxtrotRenderer;
-union SDL_Event;
+class FoxtrotRenderer;
 class UIActor;
 class PanelUI;
 class Command;

@@ -5,7 +5,7 @@
 
 #include "SingletonMacro.h"
 
-class Vector2;
+class FTVector2;
 class Transform;
 class Actor;
 class Component;
@@ -64,21 +64,21 @@ private:
 class FileIOHelper
 {
 public:
-	static void			AddVector2		(std::ofstream& ofs, Vector2 value);
+	static void			AddVector2		(std::ofstream& ofs, FTVector2 value);
 	static void			AddBasicString	(std::ofstream& ofs, std::string value);
 	static void			AddWString		(std::ofstream& ofs, std::wstring value);
 	static void			AddFloat		(std::ofstream& ofs, float value);
 	static void			AddInt			(std::ofstream& ofs, int value);
 	static void			AddSize			(std::ofstream& ofs, size_t value);
 
-	static Vector2		LoadVector2		(std::ifstream& ifs);
+	static FTVector2	LoadVector2		(std::ifstream& ifs);
 	static std::string	LoadBasicString	(std::ifstream& ifs);
 	static std::wstring LoadWString		(std::ifstream& ifs);
 	static float		LoadFloat		(std::ifstream& ifs);
 	static int			LoadInt			(std::ifstream& ifs);
 	static size_t		LoadSize		(std::ifstream& ifs);
 
-	static void			LoadVector2		(std::ifstream& ifs, Vector2& value);
+	static void			LoadVector2		(std::ifstream& ifs, FTVector2& value);
 	static void			LoadBasicString	(std::ifstream& ifs, std::string& value);
 	static void			LoadWString		(std::ifstream& ifs, std::wstring& value);
 	static void			LoadFloat		(std::ifstream& ifs, float& value);

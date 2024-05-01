@@ -3,7 +3,7 @@
 #include "TemplateFunctions.h"
 
 KeyInputManager::KeyInputManager()
-	: mMousePosition(Vector2::Zero)
+	: mMousePosition(FTVector2::Zero)
 	, mMouseState(0)
 {
 	Init();
@@ -14,7 +14,7 @@ KeyInputManager::~KeyInputManager()
 
 void KeyInputManager::Init()
 {
-	mMousePosition = Vector2::Zero;
+	mMousePosition = FTVector2::Zero;
 	for (int i = 0; i < (int)KEY::LAST_FLAG; ++i)
 	{
 		mVecKey.push_back(tKeyInfo{ KEY_STATE::NONE, false });
@@ -59,9 +59,9 @@ KEY_STATE KeyInputManager::GetButtonState(GAMEPADBUTTON eButton)
 	return mVecButton[(int)eButton].eKeyState;
 }
 
-Vector2 KeyInputManager::GetMouseWorldPosition()
+FTVector2 KeyInputManager::GetMouseWorldPosition()
 {
-	Vector2 pos = Camera2D::GetInstance()->ConvertScreenPosToWorld(MOUSE_POS);
+	FTVector2 pos = Camera2D::GetInstance()->ConvertScreenPosToWorld(MOUSE_POS);
 	return pos;
 }
 
@@ -102,7 +102,7 @@ void KeyInputManager::DetectMouseInput(MSG msg)
 	{
 		int mouseX = LOWORD(msg.lParam);
 		int mouseY = HIWORD(msg.lParam);
-		mMousePosition = Vector2((float)mouseX, (float)mouseY);
+		mMousePosition = FTVector2((float)mouseX, (float)mouseY);
 	}
 	for (int mouseButton = 0; mouseButton < (int)MOUSE::LAST_FLAG; ++mouseButton)
 	{

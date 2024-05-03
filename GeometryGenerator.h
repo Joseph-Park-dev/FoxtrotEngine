@@ -1,9 +1,4 @@
 ﻿#pragma once
-#include <directxtk/SimpleMath.h>
-#include <vector>
-#include <string>
-
-#include "Vertex.h"
 #include "MeshData.h"
 
 class GeometryGenerator {

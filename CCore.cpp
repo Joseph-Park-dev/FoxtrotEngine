@@ -280,9 +280,9 @@ void CCore::UpdateGame()
 void CCore::GenerateOutput()
 {
 #ifdef _DEBUG
+	mEditorRenderer->SetViewport();
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	mEditorRenderer->RenderClear(clearColor);
-	mEditorRenderer->Render();
 	if (mIsUpdatingGame)
 	{
 		SceneManager::GetInstance()->Render(mEditorRenderer);
@@ -298,7 +298,7 @@ void CCore::GenerateOutput()
 	EditorCamera2D::GetInstance()->EditorRender(mEditorRenderer);
 	EditorLayer::GetInstance()->Render(mEditorRenderer);
 	CollisionManager::GetInstance()->RenderRay(mEditorRenderer);
-
+	mEditorRenderer->Render();
 	mEditorRenderer->SwapChainPresent(1, 0);
 
 #else

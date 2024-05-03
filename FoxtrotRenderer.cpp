@@ -34,6 +34,10 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 		return false;
 	}
 
+	/*HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
+	if (FAILED(hr))
+		return false;*/
+
 	if (!CreateRenderTarget())
 	{
 		LogString("Create Render Target View failed.");
@@ -82,12 +86,16 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 		 D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 
-	CreateVertexShaderAndInputLayout(
+	if (!CreateVertexShaderAndInputLayout(
 		L"ColorVertexShader.hlsl", inputElements, mBasicVertexShader,
-		mBasicInputLayout);
-
-	CreatePixelShader(L"ColorPixelShader.hlsl", mBasicPixelShader);
-
+		mBasicInputLayout))
+	{
+		return false;
+	}
+	if (!CreatePixelShader(L"ColorPixelShader.hlsl", mBasicPixelShader))
+	{
+		return false;
+	}
 	return true;
 }
 
@@ -118,14 +126,6 @@ void FoxtrotRenderer::Render()
 	// VS: Vertex Shader
 	// PS: Pixel Shader
 	// IA: Input-Assembler stage
-
-	SetViewport();
-
-	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	mContext->ClearRenderTargetView(mRenderTargetView.Get(), clearColor);
-	mContext->ClearDepthStencilView(mDepthStencilView.Get(),
-		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
-		1.0f, 0);
 	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(),
 		mDepthStencilView.Get());
 	mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
@@ -166,7 +166,7 @@ void FoxtrotRenderer::Render()
 			DXGI_FORMAT_R32_UINT, 0);
 		mContext->IASetPrimitiveTopology(
 			D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		mContext->DrawIndexed(mesh->m_indexCount, 0, 0);
+		mContext->DrawIndexed(mesh->indexCount, 0, 0);
 	}
 }
 
@@ -473,7 +473,7 @@ void CheckResult(HRESULT hr, ID3DBlob* errorBlob) {
 	}
 }
 
-void FoxtrotRenderer::CreateVertexShaderAndInputLayout(
+bool FoxtrotRenderer::CreateVertexShaderAndInputLayout(
 	const std::wstring& filename,
 	const std::vector<D3D11_INPUT_ELEMENT_DESC>& inputElements,
 	ComPtr<ID3D11VertexShader>& vertexShader,
@@ -488,23 +488,31 @@ void FoxtrotRenderer::CreateVertexShaderAndInputLayout(
 #endif
 
 	// 주의: 쉐이더의 시작점의 이름이 "main"인 함수로 지정
-	HRESULT hr = D3DCompileFromFile(filename.c_str(), 0, 0, "main", "vs_5_0",
+	HRESULT hr = D3DCompileFromFile(filename.c_str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0",
 		compileFlags, 0, &shaderBlob, &errorBlob);
 
 	CheckResult(hr, errorBlob.Get());
 
-	mDevice->CreateVertexShader(
-		shaderBlob->GetBufferPointer(),
-		shaderBlob->GetBufferSize(), NULL,
-		&vertexShader);
-
-	mDevice->CreateInputLayout(inputElements.data(),
+	HRESULT createVS = mDevice->CreateVertexShader(shaderBlob->GetBufferPointer(),
+							shaderBlob->GetBufferSize(), NULL,vertexShader.GetAddressOf());
+	if (FAILED(createVS))
+	{
+		LogString("Create Vertex Shader failed");
+		return false;
+	}
+	HRESULT createIptLayout = mDevice->CreateInputLayout(inputElements.data(),
 		UINT(inputElements.size()),
 		shaderBlob->GetBufferPointer(),
-		shaderBlob->GetBufferSize(), &inputLayout);
+		shaderBlob->GetBufferSize(), inputLayout.GetAddressOf());
+	if(FAILED(createIptLayout))
+	{
+		LogString("Create Input Layout failed");
+		return false;
+	}
+	return true;
 }
 
-void FoxtrotRenderer::CreatePixelShader(const std::wstring& filename,
+bool FoxtrotRenderer::CreatePixelShader(const std::wstring& filename,
 	ComPtr<ID3D11PixelShader>& pixelShader) {
 	ComPtr<ID3DBlob> shaderBlob;
 	ComPtr<ID3DBlob> errorBlob;
@@ -520,9 +528,15 @@ void FoxtrotRenderer::CreatePixelShader(const std::wstring& filename,
 
 	CheckResult(hr, errorBlob.Get());
 
-	mDevice->CreatePixelShader(shaderBlob->GetBufferPointer(),
+	HRESULT createPS = mDevice->CreatePixelShader(shaderBlob->GetBufferPointer(),
 		shaderBlob->GetBufferSize(), NULL,
-		&pixelShader);
+		pixelShader.GetAddressOf());
+	if (FAILED(createPS))
+	{
+		LogString("Create Pixel Shader failed");
+		return false;
+	}
+	return true;
 }
 
 FoxtrotRenderer::FoxtrotRenderer()

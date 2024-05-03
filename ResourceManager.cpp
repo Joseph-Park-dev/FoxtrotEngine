@@ -11,7 +11,7 @@ void ResourceManager::LoadTexture(const std::string& strKey, const std::string& 
 		printf("Warning : FTTexture %ls is already loaded from %ls\n", strKey.c_str(), fileName.c_str());
 	else
 	{
-		printf("Message: Loading FTTexture %ls from %ls...\n", strKey.c_str(), fileName.c_str());
+		printf("Message: Loading FTTexture %s from %s...\n", strKey.c_str(), fileName.c_str());
 		ptTex = new FTTexture;
 		ptTex->SetKey(strKey);
 		ptTex->SetRelativePath(fileName);

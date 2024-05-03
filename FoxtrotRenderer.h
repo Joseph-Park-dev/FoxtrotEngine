@@ -21,12 +21,13 @@ public:
 	void SwapChainPresent(UINT syncInterval, UINT flags);
     void Render();
 	void RenderClear(const float clearColor[4]);
+    void SetViewport();
 
 public:
-	ID3D11Device*         GetDevice()        { return mDevice.Get(); }
-	ID3D11DeviceContext*  GetContext()       { return mContext.Get(); }
-    std::vector<Mesh*>&   GetMeshes()        { return mMeshes; }
-    float GetAspectRatio() const { return float(1920) / float(1080); }
+	ID3D11Device*         GetDevice()  { return mDevice.Get(); }
+	ID3D11DeviceContext*  GetContext() { return mContext.Get(); }
+    std::vector<Mesh*>&   GetMeshes()  { return mMeshes; }
+    float GetAspectRatio() const { return float(mRenderWidth) / float(mRenderHeight); }
     void  RemoveMesh(Mesh* mesh);
 
 private:
@@ -75,8 +76,6 @@ private:
 	bool Initialize(HWND window, int width, int height);
     bool CreateDeviceAndContext(HWND window);
     bool CreateRenderTarget();
-    void SetViewport();
-
     bool CreateRasterizerState();
     bool CreateDepthBuffer();
     bool CreateDepthStencilState();
@@ -157,11 +156,11 @@ public:
     }
 
 private:
-    void CreateVertexShaderAndInputLayout(
+    bool CreateVertexShaderAndInputLayout(
         const std::wstring& filename, 
         const std::vector<D3D11_INPUT_ELEMENT_DESC>& inputElements, 
         ComPtr<ID3D11VertexShader>& vertexShader, 
         ComPtr<ID3D11InputLayout>& inputLayout
     );
-    void CreatePixelShader(const std::wstring& filename, ComPtr<ID3D11PixelShader>& pixelShader);
+    bool CreatePixelShader(const std::wstring& filename, ComPtr<ID3D11PixelShader>& pixelShader);
 };

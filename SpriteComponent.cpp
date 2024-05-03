@@ -35,7 +35,7 @@ void SpriteComponent::Initialize(FoxtrotRenderer* renderer, std::string fileName
 	// Implementation needed
 	MeshData mesh = GeometryGenerator::MakeSquare();
 	renderer->CreateVertexBuffer(mesh.vertices, mMesh->vertexBuffer);
-	mMesh->m_indexCount = UINT(mesh.indices.size());
+	mMesh->indexCount = UINT(mesh.indices.size());
 	renderer->CreateIndexBuffer(mesh.indices, mMesh->indexBuffer);
 
 	mMesh->texture = ResourceManager::GetInstance()->GetLoadedTexture(fileName);
@@ -100,7 +100,7 @@ void SpriteComponent::Render(FoxtrotRenderer* renderer)
 	if (mMesh) {
 		renderer->UpdateBuffer(mMesh->basicVertexConstantBufferData,
 			mMesh->vertexConstantBuffer);
-		renderer->UpdateBuffer(mMesh->basicVertexConstantBufferData,
+		renderer->UpdateBuffer(mMesh->pixelShaderConstantBufferData,
 			mMesh->pixelConstantBuffer);
 	}
 	else

@@ -10,13 +10,12 @@
 #include "CCore.h"
 #include "TemplateFunctions.h"
 
-
 bool FTTexture::CreateTexture(FoxtrotRenderer* renderer)
 {
     int width, height, channels;
     unsigned char* img = stbi_load(GetRelativePath().c_str(), &width, &height, &channels, 0);
 
-    //assert(channels == 4);
+    assert(channels == 4);
 
     std::vector<uint8_t> image;
 

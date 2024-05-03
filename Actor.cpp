@@ -130,7 +130,6 @@ void Actor::RemoveComponent(Component* component)
 	{
 		delete component;
 		mComponents.erase(iter);
-		LogInt(mComponents.size());
 	}
 }
 

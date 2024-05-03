@@ -18,8 +18,7 @@ static_assert((sizeof(BasicVertexConstantBuffer) % 16) == 0,
     "Constant Buffer size must be 16-byte aligned");
 
 struct PixelShaderConstantBuffer {
-    float xSplit; // 4 bytes
-    float padding[3]; // 4 * 3 = 12 bytes
+    float padding[4]; // 4 * 4 = 16 bytes
 };
 static_assert((sizeof(PixelShaderConstantBuffer) % 16) == 0,
     "Constant Buffer size must be 16-byte aligned");
@@ -35,5 +34,5 @@ struct Mesh {
     ComPtr<ID3D11Buffer> pixelConstantBuffer;
     FTTexture*           texture;
 
-    UINT m_indexCount = 0;
+    UINT indexCount = 0;
 };

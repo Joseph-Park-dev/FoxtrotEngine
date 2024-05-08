@@ -59,6 +59,7 @@ private:
 	// void DisplayViewport();
 	void DisplayFileMenu();
 	void DisplayHierarchyMenu();
+	void DisplayInspectorMenu();
 	void ApplyCommandHistory();
 };
 #endif // _DEBUG

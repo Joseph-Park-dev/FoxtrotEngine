@@ -23,31 +23,29 @@ void EditorElement::UIUpdate()
 {
 	if (GetIsFocused())
 	{
-		if (ImGui::Begin(GetNameStr().c_str()))
+		ImGui::BeginChild(GetNameStr().c_str());
+		if (ImGui::BeginTabBar("MyTabBar", ImGuiTabBarFlags_None))
 		{
-			if (ImGui::BeginTabBar("MyTabBar", ImGuiTabBarFlags_None))
+			if (ImGui::BeginTabItem("Basic Data"))
 			{
-				if (ImGui::BeginTabItem("Basic Data"))
-				{
-					UpdateActorName();
-					UpdateActorGroup();
-					UpdateActorState();
+				UpdateActorName();
+				UpdateActorGroup();
+				UpdateActorState();
 
-					UpdateActorWorldPosition();
-					UpdateActorLocalPosition();
-					UpdateActorScale();
-					UpdateActorRotation(&Transform::SetRotation);
-					ImGui::EndTabItem();
-				}
-				if (ImGui::BeginTabItem("Components"))
-				{
-					UpdateComponents();
-					ImGui::EndTabItem();
-				}
-				ImGui::EndTabBar();
+				UpdateActorWorldPosition();
+				UpdateActorLocalPosition();
+				UpdateActorScale();
+				UpdateActorRotation(&Transform::SetRotation);
+				ImGui::EndTabItem();
 			}
-			ImGui::End();
+			if (ImGui::BeginTabItem("Components"))
+			{
+				UpdateComponents();
+				ImGui::EndTabItem();
+			}
+			ImGui::EndTabBar();
 		}
+		ImGui::EndChild();
 	}
 }
 
@@ -251,7 +249,7 @@ void EditorElement::UpdateActorRotation(TransSetFloatFunc func)
 
 void EditorElement::UpdateComponents()
 {
-	if (ImGui::Begin(GetNameStr().c_str()))
+	if (ImGui::BeginChild(GetNameStr().c_str()))
 	{
 		size_t count = 0;
 		for (Component* comp : GetComponents())
@@ -266,14 +264,13 @@ void EditorElement::UpdateComponents()
 			}
 			++count;
 		}
-		ImGui::End();
+		if (ImGui::Button("AddComponent"))
+		{
+			ImGui::OpenPopup("CompSelectPopUp");
+		}
+		DisplayCompSelectionPopup();
+		ImGui::EndChild();
 	}
-
-	if (ImGui::Button("AddComponent"))
-	{
-		ImGui::OpenPopup("CompSelectPopUp");
-	}
-	DisplayCompSelectionPopup();
 }
 
 void EditorElement::DisplayCompSelectionPopup()

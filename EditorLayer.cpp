@@ -30,6 +30,7 @@ void EditorLayer::Update(float deltaTime)
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
+	ImGui::DockSpaceOverViewport();
 	mSaveKeyPressed    = ImGui::IsKeyChordPressed(ImGuiModFlags_::ImGuiModFlags_Ctrl | ImGuiKey::ImGuiKey_S);
 	mSaveAsKeyPressed  = ImGui::IsKeyChordPressed(ImGuiModFlags_::ImGuiModFlags_Ctrl | ImGuiModFlags_::ImGuiModFlags_Shift | ImGuiKey::ImGuiKey_S);
 	mOpenKeyPressed	   = ImGui::IsKeyChordPressed(ImGuiModFlags_::ImGuiModFlags_Ctrl | ImGuiKey::ImGuiKey_O);
@@ -42,23 +43,10 @@ void EditorLayer::Update(float deltaTime)
 
 	DisplayFileMenu();
 	DisplayHierarchyMenu();
+	DisplayInspectorMenu();
 	EditorCamera2D::GetInstance()->DisplayCameraMenu();
-
-	for (int i = 0; i < mEditorElements.size(); ++i)
-	{
-		//mEditorElements[i]->EditorUpdateComponents(deltaTime);
-		if (mEditorElements[i]->GetIsFocused())
-		{
-			mEditorElements[i]->UIUpdate();
-			if (mDeleteKeyPressed)
-			{
-				// Delete game object, and erase the pointed from std::vector
-				delete mEditorElements[i];
-				mEditorElements.erase(mEditorElements.begin() + i);
-			}
-		}
-	}
 	ApplyCommandHistory();
+
 	ImGui::EndFrame();
 }
 
@@ -197,7 +185,6 @@ void EditorLayer::DisplayFileMenu()
 void EditorLayer::DisplayHierarchyMenu()
 {
 	ImGui::Begin("Hierarchy Menu");
-
 	if (ImGui::BeginListBox("Hierarchy", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
 	{
 		std::string* actorNames = new std::string[mEditorElements.size()];
@@ -216,6 +203,26 @@ void EditorLayer::DisplayHierarchyMenu()
 		}
 		delete[] actorNames;
 		ImGui::EndListBox();
+	}
+	ImGui::End();
+}
+
+void EditorLayer::DisplayInspectorMenu()
+{
+	ImGui::Begin("Inspector");
+	for (int i = 0; i < mEditorElements.size(); ++i)
+	{
+		//mEditorElements[i]->EditorUpdateComponents(deltaTime);
+		if (mEditorElements[i]->GetIsFocused())
+		{
+			mEditorElements[i]->UIUpdate();
+			if (mDeleteKeyPressed)
+			{
+				// Delete game object, and erase the pointed from std::vector
+				delete mEditorElements[i];
+				mEditorElements.erase(mEditorElements.begin() + i);
+			}
+		}
 	}
 	ImGui::End();
 }

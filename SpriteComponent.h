@@ -3,6 +3,7 @@
 #include "TemplateFunctions.h"
 
 class FTTexture;
+class Mesh;
 
 class SpriteComponent :public Component
 {

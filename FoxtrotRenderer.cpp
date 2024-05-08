@@ -5,6 +5,7 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <wrl.h> // ComPtr
+#include <directxtk\DirectXHelpers.h>
 
 #include "TemplateFunctions.h"
 #include "Transform.h"
@@ -38,7 +39,7 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 	if (FAILED(hr))
 		return false;*/
 
-	if (!CreateRenderTarget())
+	if (!CreateRenderTargetView())
 	{
 		LogString("Create Render Target View failed.");
 		return false;
@@ -187,6 +188,28 @@ void FoxtrotRenderer::RenderClear(const float clearColor[4])
 		1.0f, 0);
 }
 
+void FoxtrotRenderer::ResizeWindow(UINT width, UINT height)
+{
+	if (mSwapChain) { // 처음 실행이 아닌지 확인
+		// Create 되는 변수들 Release 
+		mRenderTargetView.Reset();
+		mDepthStencilBuffer.Reset();
+		mDepthStencilView.Reset();
+		mContext->Flush(); //요게 없으면 메모리가 훅 올라갑니다!
+
+		mRenderWidth = width;
+		mRenderHeight = height;
+		mSwapChain->ResizeBuffers(0, // 현재 개수 유지
+			mRenderWidth,
+			mRenderHeight,
+			DXGI_FORMAT_UNKNOWN, // 현재 포맷 유지
+			0);
+		CreateRenderTargetView();
+		CreateDepthBuffer();
+		SetViewport();
+	}
+}
+
 void FoxtrotRenderer::RemoveMesh(Mesh* mesh)
 {
 	std::vector<Mesh*>::iterator iter = std::find(mMeshes.begin(), mMeshes.end(), mesh);
@@ -300,14 +323,13 @@ bool FoxtrotRenderer::CreateDeviceAndContext(HWND window)
 	return true;
 }
 
-bool FoxtrotRenderer::CreateRenderTarget()
+bool FoxtrotRenderer::CreateRenderTargetView()
 {
-	// CreateRenderTarget
-	ID3D11Texture2D* pBackBuffer;
-	mSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
-	if (pBackBuffer) {
-		mDevice->CreateRenderTargetView(pBackBuffer, NULL, &mRenderTargetView);
-		pBackBuffer->Release();
+	mRenderTargetView.Reset();
+	ComPtr<ID3D11Texture2D> backBuffer;
+	mSwapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+	if (backBuffer) {
+		mDevice->CreateRenderTargetView(backBuffer.Get(), NULL, mRenderTargetView.GetAddressOf());
 		return true;
 	}
 	else
@@ -372,7 +394,7 @@ bool FoxtrotRenderer::CreateDepthBuffer()
 		return false;
 	}
 	if (FAILED(
-		mDevice->CreateDepthStencilView(mDepthStencilBuffer.Get(), 0, &mDepthStencilView)))
+		mDevice->CreateDepthStencilView(mDepthStencilBuffer.Get(), 0, mDepthStencilView.GetAddressOf())))
 	{
 		LogString("CreateDepthStencilView() failed.");
 		return false;

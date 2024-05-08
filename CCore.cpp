@@ -13,6 +13,7 @@
 #include "ParticleSystem.h"
 #include "ChunkLoader.h"
 #include "EventManager.h"
+#include "FoxtrotRenderer.h"
 
 #ifdef _DEBUG
 #include "EditorLayer.h"
@@ -25,6 +26,7 @@
 #endif // _DEBUG
 
 CCore* CCore::gPInst = nullptr;
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 // RegisterClassEx()에서 실제로 등록될 콜백 함수
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 {
@@ -36,6 +38,7 @@ CCore::CCore()
 	: mGameTitle(L"Cat Blasters! ver.0.01")
 	//, mGameviewWindow(nullptr)
 	, mIsRunning(true)
+	, mIsResizingWindow(false)
 	, mResolution(FTVector2(1920.f, 1080.f))
 #ifdef _DEBUG
 	, mEditorWindow(nullptr)
@@ -146,7 +149,6 @@ bool CCore::InitGUI()
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	io.DisplaySize = ImVec2(float(mEditorWidth), float(mEditorHeight));
 	ImGui::StyleColorsDark();
-
 	if (!ImGui_ImplWin32_Init(mEditorWindow)) {
 		LogString("Imgui Wind32 Init failed");
 		return false;
@@ -159,6 +161,11 @@ bool CCore::InitGUI()
 		LogString("Imgui DX11 Init failed");
 		return false;
 	}
+	/*ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+	ImGui::DockSpaceOverViewport(ImGui::GetWindowViewport());
+	ImGui::EndFrame();*/
 	return true;
 }
 
@@ -331,10 +338,9 @@ void CCore::ShutDown()
 	PostQuitMessage(0);
 }
 
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
 LRESULT CCore::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-	ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam);
+	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam))
+		return true;
 	
 	switch (msg) {
 		case WM_DESTROY:
@@ -342,6 +348,24 @@ LRESULT CCore::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 			mIsRunning = false;
 			return 0;
 		}
+		case WM_SIZE:
+		{
+			// Reset and resize swapchain
+			// std::cout << (UINT)LOWORD(lParam) << " " << (UINT)HIWORD(lParam)
+			//          << std::endl;
+			mIsResizingWindow = true;
+			if (mEditorRenderer)
+			{
+				mEditorWidth = UINT(LOWORD(lParam));
+				mEditorHeight = UINT(HIWORD(lParam));
+			}
+			break;
+		}
+	}
+	if (mIsResizingWindow && MOUSE_AWAY(MOUSE::MOUSE_LEFT))
+	{
+		mEditorRenderer->ResizeWindow(mEditorWidth, mEditorHeight);
+		mIsResizingWindow = false;
 	}
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }

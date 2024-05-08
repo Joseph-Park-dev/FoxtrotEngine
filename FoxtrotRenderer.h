@@ -5,6 +5,7 @@
 #include <d3dcompiler.h>
 #include <wrl.h> // ComPtr
 #include <iostream>
+#include <exception>
 
 #include "Mesh.h"
 
@@ -21,14 +22,21 @@ public:
 	void SwapChainPresent(UINT syncInterval, UINT flags);
     void Render();
 	void RenderClear(const float clearColor[4]);
+    void ResizeWindow(UINT width, UINT height);
     void SetViewport();
 
 public:
-	ID3D11Device*         GetDevice()  { return mDevice.Get(); }
-	ID3D11DeviceContext*  GetContext() { return mContext.Get(); }
-    std::vector<Mesh*>&   GetMeshes()  { return mMeshes; }
+	ID3D11Device*          GetDevice()    { return mDevice.Get(); }
+	ID3D11DeviceContext*   GetContext()   { return mContext.Get(); }
+    std::vector<Mesh*>&    GetMeshes()    { return mMeshes; }
+    ComPtr<IDXGISwapChain> GetSwapChain() { return mSwapChain; }
+    ComPtr<ID3D11RenderTargetView> GetRenderTargetView() { return mRenderTargetView; }
+    ComPtr<ID3D11Texture2D> GetDepthStencilBuffer() { return mDepthStencilBuffer; }
+
     float GetAspectRatio() const { return float(mRenderWidth) / float(mRenderHeight); }
     void  RemoveMesh(Mesh* mesh);
+    void  SetRenderWidth(int width) { mRenderWidth = width; }
+    void  SetRenderHeight(int height) { mRenderHeight = height; }
 
 private:
     int mRenderWidth;
@@ -75,14 +83,14 @@ public:
 private:
 	bool Initialize(HWND window, int width, int height);
     bool CreateDeviceAndContext(HWND window);
-    bool CreateRenderTarget();
     bool CreateRasterizerState();
-    bool CreateDepthBuffer();
     bool CreateDepthStencilState();
     bool CreateBlendState();
     bool CreateTextureSampler();
 
 public:
+    bool CreateRenderTargetView();
+    bool CreateDepthBuffer();
     void CreateIndexBuffer(const std::vector<uint32_t>& indices, ComPtr<ID3D11Buffer>& m_indexBuffer);
     template <typename T_VERTEX>
     void CreateVertexBuffer(const std::vector<T_VERTEX>& vertices,
@@ -153,6 +161,14 @@ public:
         mContext->Map(buffer.Get(), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms);
         memcpy(ms.pData, &bufferData, sizeof(bufferData));
         mContext->Unmap(buffer.Get(), NULL);
+    }
+
+    inline void ThrowIfFailed(HRESULT hr)
+    {
+        if (FAILED(hr))
+        {
+            throw std::exception();
+        }
     }
 
 private:

@@ -7,6 +7,7 @@
 #include "Transform.h"
 #include "ChunkLoader.h"
 #include "ResourceManager.h"
+#include "Mesh.h"
 #include "MeshData.h"
 #include "GeometryGenerator.h"
 #include "Math.h"

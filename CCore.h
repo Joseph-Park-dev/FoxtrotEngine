@@ -6,9 +6,10 @@
 #include <string>
 #include <windows.h>
 
-#include "FoxtrotRenderer.h"
 #include "SingletonMacro.h"
 #include "Math.h"
+
+class FoxtrotRenderer;
 
 class CCore
 {
@@ -39,6 +40,7 @@ private:
 	FTVector2		 mResolution;
 	//FoxtrotRenderer*   mGameRenderer;
 	bool			 mIsRunning;
+	bool			 mIsResizingWindow;
 
 #ifdef _DEBUG
 	HWND			 mEditorWindow;

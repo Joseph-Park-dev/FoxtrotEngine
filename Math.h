@@ -12,6 +12,7 @@
 #include <memory.h>
 #include <limits>
 #include <assert.h>
+#include <directxmath.h>
 
 namespace Math
 {
@@ -133,6 +134,11 @@ public:
 		:x(static_cast<float>(inX))
 		,y(static_cast<float>(inY))
 	{}
+
+	DirectX::XMFLOAT2 GetD3Vec2()
+	{
+		return DirectX::XMFLOAT2(this->x, this->y);
+	}
 
 	// Set both components in one line
 	void Set(float inX, float inY)
@@ -310,6 +316,11 @@ public:
 		,y(inY)
 		,z(inZ)
 	{}
+
+	DirectX::XMFLOAT3 GetD3Vec2()
+	{
+		return DirectX::XMFLOAT3(this->x, this->y, this->z);
+	}
 
 	// Cast to a const float pointer
 	const float* GetAsFloatPtr() const

@@ -16,13 +16,17 @@
 #include "CommandHistory.h"
 #include "Command.h"
 #include "Rigidbody2DComponent.h"
+#include "FoxtrotRenderer.h"
+#include "RenderTextureClass.h"
 
+#include <unordered_map>
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
 #include "imgui/FileDialog/ImGuiFileDialog.h"
 #include "imgui/FileDialog/ImGuiFileDialogConfig.h"
+#include <d3d11.h>
 
 void EditorLayer::Update(float deltaTime)
 {
@@ -40,7 +44,8 @@ void EditorLayer::Update(float deltaTime)
 	mDeleteKeyPressed  = ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Delete);
 
 	CommandHistory::GetInstance()->Update();
-
+	
+	DisplayViewport();
 	DisplayFileMenu();
 	DisplayHierarchyMenu();
 	DisplayInspectorMenu();
@@ -61,6 +66,24 @@ void EditorLayer::DisplayEditorElements(FoxtrotRenderer* renderer)
 {
 	for (int i = 0; i < mEditorElements.size(); ++i)
 		mEditorElements[i]->Render(renderer);
+}
+
+void EditorLayer::DisplayViewport()
+{
+	ImGui::Begin("Scene");
+	ImVec2 vMin = ImGui::GetWindowContentRegionMin();
+	ImVec2 vMax = ImGui::GetWindowContentRegionMax();
+
+	vMin.x += ImGui::GetWindowPos().x;
+	vMin.y += ImGui::GetWindowPos().y;
+	vMax.x += ImGui::GetWindowPos().x;
+	vMax.y += ImGui::GetWindowPos().y;
+	mSceneViewportPos = vMin;
+	mSceneViewportSize = vMax-vMin;
+	FoxtrotRenderer* renderer = CCore::GetInstance()->GetEditorRenderer();
+	ID3D11ShaderResourceView* viewportTexture = renderer->GetRenderTexture()->GetShaderResourceView().Get();
+	ImGui::Image((void*)viewportTexture, mSceneViewportSize);
+	ImGui::End();
 }
 
 void EditorLayer::DisplayFileMenu()
@@ -184,7 +207,8 @@ void EditorLayer::DisplayFileMenu()
 
 void EditorLayer::DisplayHierarchyMenu()
 {
-	ImGui::Begin("Hierarchy Menu");
+	std::string menuID = "Hierarchy Menu";
+	ImGui::Begin(menuID.c_str());
 	if (ImGui::BeginListBox("Hierarchy", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
 	{
 		std::string* actorNames = new std::string[mEditorElements.size()];
@@ -204,12 +228,14 @@ void EditorLayer::DisplayHierarchyMenu()
 		delete[] actorNames;
 		ImGui::EndListBox();
 	}
+	//ResizeUIWindow(menuID);
 	ImGui::End();
 }
 
 void EditorLayer::DisplayInspectorMenu()
 {
-	ImGui::Begin("Inspector");
+	std::string menuID = "Inspector";
+	ImGui::Begin(menuID.c_str());
 	for (int i = 0; i < mEditorElements.size(); ++i)
 	{
 		//mEditorElements[i]->EditorUpdateComponents(deltaTime);
@@ -224,6 +250,7 @@ void EditorLayer::DisplayInspectorMenu()
 			}
 		}
 	}
+	//ResizeUIWindow(menuID);
 	ImGui::End();
 }
 
@@ -235,6 +262,21 @@ void EditorLayer::ApplyCommandHistory()
 		mEditorElements[mActorNameIdx]->SetIsFocused(true);
 	}
 }
+
+//void EditorLayer::ResizeUIWindow(std::string menuID)
+//{
+//	if (ImGui::IsWindowDocked())
+//	{
+//		if (mUIMap[menuID].first != ImGui::GetWindowPos() ||
+//			mUIMap[menuID].second != ImGui::GetWindowSize())
+//		{
+//			std::pair<ImVec2, ImVec2> windowInfo = std::make_pair(ImGui::GetWindowPos(), ImGui::GetWindowSize());
+//			mUIMap[menuID] = windowInfo;
+//
+//			LogVector2(FTVector2(windowInfo.first.x, windowInfo.first.y));
+//		}
+//	}
+//}
 
 void EditorLayer::ShutDown()
 {

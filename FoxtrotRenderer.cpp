@@ -6,11 +6,15 @@
 #include <d3dcompiler.h>
 #include <wrl.h> // ComPtr
 #include <directxtk\DirectXHelpers.h>
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui.h>
 
 #include "TemplateFunctions.h"
 #include "Transform.h"
 #include "EditorCamera2D.h"
 #include "Vertex.h"
+#include "RenderTextureClass.h"
+#include "EditorLayer.h"
 
 FoxtrotRenderer* FoxtrotRenderer::CreateRenderer(HWND window, int width, int height)
 {
@@ -27,6 +31,7 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 {
 	mRenderWidth = width;
 	mRenderHeight = height;
+	CalcAspectRatio();
 
 	if (!CreateDeviceAndContext(window))
 	{
@@ -45,7 +50,11 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 		return false;
 	}
 
+#ifdef _DEBUG
+	SetViewportEditor();
+#else
 	SetViewport();
+#endif
 
 	if (!CreateRasterizerState())
 	{
@@ -97,11 +106,33 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 	{
 		return false;
 	}
+
+	mRenderTexture = new RenderTextureClass();
+	if (!mRenderTexture)
+	{
+		return false;
+	}
+
+	// 렌더링 텍스처 객체를 초기화한다
+	bool result = mRenderTexture->Initialize(mDevice.Get(), mRenderWidth, mRenderHeight);
+	if (!result)
+	{
+		return false;
+	}
+
 	return true;
 }
 
 void FoxtrotRenderer::DestroyRenderer(FoxtrotRenderer* renderer)
 {
+	// 렌더 텍스쳐 객체를 해제한다
+	if (renderer->mRenderTexture)
+	{
+		renderer->mRenderTexture->Shutdown();
+		delete renderer->mRenderTexture;
+		renderer->mRenderTexture = 0;
+	}
+
 	if (renderer == nullptr)
 	{
 		LogString("Renderer is already null");
@@ -121,14 +152,17 @@ void FoxtrotRenderer::SwapChainPresent(UINT syncInterval, UINT flags)
 
 void FoxtrotRenderer::Render()
 {
+	// 전체 장면을 먼제 텍스쳐로 렌더링 합니다
+	// 
 	// 왜 여기로? => Pixel shader에게 텍스처와 셈플러 두가지를 넘겨주기 위함
 	// RS: Rasterizer stage
 	// OM: Output-Merger stage
 	// VS: Vertex Shader
 	// PS: Pixel Shader
 	// IA: Input-Assembler stage
-	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(),
-		mDepthStencilView.Get());
+
+	/*mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(),
+		mDepthStencilView.Get());*/
 	mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
 
 	mContext->VSSetShader(mBasicVertexShader.Get(), 0, 0);
@@ -171,6 +205,23 @@ void FoxtrotRenderer::Render()
 	}
 }
 
+void FoxtrotRenderer::RenderToTexture()
+{
+	// 렌더링 대상을 렌더링에 맞게 설정합니다
+	mContext->OMSetRenderTargets(1, mRenderTexture->GetRenderTargetView().GetAddressOf(), mDepthStencilView.Get());
+
+	// 렌더링을 텍스처에 지웁니다
+	mRenderTexture->ClearRenderTarget(mContext.Get(), mDepthStencilView.Get(), 0.0f, 1.0f, 0.0f, 1.0f);
+
+	// 이제 장면을 렌더링하면 백 버퍼 대신 텍스처로 렌더링됩니다
+	Render();
+
+	//// 렌더링 대상을 원래의 백 버퍼로 다시 설정하고 렌더링에 대한 렌더링을 더 이상 다시 설정하지 않습니다
+	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
+
+	//return true;
+}
+
 // Constant buffer data 업데이트 & 그 내용을 GPU 버퍼로 복사
 // 이후 Render() 에서 Vertex shader를 실행시키게 되는데,
 // 이때 Constant buffer data를 사용
@@ -199,6 +250,7 @@ void FoxtrotRenderer::ResizeWindow(UINT width, UINT height)
 
 		mRenderWidth = width;
 		mRenderHeight = height;
+		CalcAspectRatio();
 		mSwapChain->ResizeBuffers(0, // 현재 개수 유지
 			mRenderWidth,
 			mRenderHeight,
@@ -344,6 +396,22 @@ void FoxtrotRenderer::SetViewport()
 	mScreenViewport.TopLeftY = 0;
 	mScreenViewport.Width = float(mRenderWidth);
 	mScreenViewport.Height = float(mRenderHeight);
+	// m_screenViewport.Width = static_cast<float>(m_screenHeight);
+	mScreenViewport.MinDepth = 0.0f;
+	mScreenViewport.MaxDepth = 1.0f; // Note: important for depth buffering
+	mContext->RSSetViewports(1, &mScreenViewport);
+}
+
+void FoxtrotRenderer::SetViewportEditor()
+{
+	ImVec2 sceneViewportPos = EditorLayer::GetInstance()->GetSceneViewportPos();
+	ImVec2 sceneViewportSize = EditorLayer::GetInstance()->GetSceneViewportSize();
+	// Set the viewport
+	ZeroMemory(&mScreenViewport, sizeof(D3D11_VIEWPORT));
+	mScreenViewport.TopLeftX = sceneViewportPos.x;
+	mScreenViewport.TopLeftY = sceneViewportPos.y;
+	mScreenViewport.Width = float(sceneViewportSize.x);
+	mScreenViewport.Height = float(sceneViewportSize.y);
 	// m_screenViewport.Width = static_cast<float>(m_screenHeight);
 	mScreenViewport.MinDepth = 0.0f;
 	mScreenViewport.MaxDepth = 1.0f; // Note: important for depth buffering

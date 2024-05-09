@@ -252,6 +252,7 @@
     <ClCompile Include="MouseCursor.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Physics2D.cpp" />
+    <ClCompile Include="RenderTextureClass.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Rigidbody2DComponent.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -365,6 +366,7 @@
     <ClInclude Include="Physics2D.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="RayCastHit2D.h" />
+    <ClInclude Include="RenderTextureClass.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Rigidbody2DComponent.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

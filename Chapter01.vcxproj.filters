@@ -253,6 +253,9 @@
     <ClCompile Include="GeometryGenerator.cpp">
       <Filter>04_Components</Filter>
     </ClCompile>
+    <ClCompile Include="RenderTextureClass.cpp">
+      <Filter>02_Core\CoreModules\FoxtrotEditor\EditorLayer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SpriteComponent.h">
@@ -470,6 +473,9 @@
     </ClInclude>
     <ClInclude Include="RayCastHit2D.h">
       <Filter>02_Core\CoreModules\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTextureClass.h">
+      <Filter>02_Core\CoreModules\FoxtrotEditor\EditorLayer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

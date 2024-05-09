@@ -287,9 +287,9 @@ void CCore::UpdateGame()
 void CCore::GenerateOutput()
 {
 #ifdef _DEBUG
-	mEditorRenderer->SetViewport();
-	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	mEditorRenderer->RenderClear(clearColor);
+	mEditorRenderer->SetViewportEditor();
+	//float clearColor[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
+	//mEditorRenderer->RenderClear(clearColor);
 	if (mIsUpdatingGame)
 	{
 		SceneManager::GetInstance()->Render(mEditorRenderer);
@@ -305,10 +305,11 @@ void CCore::GenerateOutput()
 	EditorCamera2D::GetInstance()->EditorRender(mEditorRenderer);
 	EditorLayer::GetInstance()->Render(mEditorRenderer);
 	CollisionManager::GetInstance()->RenderRay(mEditorRenderer);
-	mEditorRenderer->Render();
+	mEditorRenderer->RenderToTexture();
 	mEditorRenderer->SwapChainPresent(1, 0);
 
 #else
+	mEditorRenderer->SetViewport();
 	SDL_SetRenderDrawColor(
 		mGameRenderer,
 		0, 0, 255, 255

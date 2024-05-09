@@ -11,6 +11,7 @@
 
 using namespace Microsoft::WRL;
 class Transform;
+class RenderTextureClass;
 
 class FoxtrotRenderer
 {
@@ -21,9 +22,11 @@ public:
 public:
 	void SwapChainPresent(UINT syncInterval, UINT flags);
     void Render();
+    void RenderToTexture();
 	void RenderClear(const float clearColor[4]);
     void ResizeWindow(UINT width, UINT height);
     void SetViewport();
+    void SetViewportEditor();
 
 public:
 	ID3D11Device*          GetDevice()    { return mDevice.Get(); }
@@ -32,8 +35,9 @@ public:
     ComPtr<IDXGISwapChain> GetSwapChain() { return mSwapChain; }
     ComPtr<ID3D11RenderTargetView> GetRenderTargetView() { return mRenderTargetView; }
     ComPtr<ID3D11Texture2D> GetDepthStencilBuffer() { return mDepthStencilBuffer; }
-
-    float GetAspectRatio() const { return float(mRenderWidth) / float(mRenderHeight); }
+    RenderTextureClass*    GetRenderTexture() { return mRenderTexture; }
+    float GetAspectRatio()  { return mAspect; }
+    void  CalcAspectRatio() { mAspect = float(mRenderWidth) / float(mRenderHeight); }
     void  RemoveMesh(Mesh* mesh);
     void  SetRenderWidth(int width) { mRenderWidth = width; }
     void  SetRenderHeight(int height) { mRenderHeight = height; }
@@ -43,6 +47,7 @@ private:
     int mRenderHeight;
     UINT mNumQualityLevels;
     UINT mCreateDeviceFlags;
+    float mAspect;
 
 private:
     FTTexture mWallTexture;
@@ -76,6 +81,9 @@ private:
     std::vector<Mesh*> mMeshes;
 
     bool m_usePerspectiveProjection = true;
+
+private:
+    RenderTextureClass* mRenderTexture;
 
 public:
     FoxtrotRenderer();

@@ -4,6 +4,8 @@
 #include "EditorElement.h"
 #include <functional>
 #include <nlohmann/json.hpp>
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui.h>
 
 class FoxtrotRenderer;
 class UIActor;
@@ -24,12 +26,12 @@ public:
 	std::vector<EditorElement*>& GetEditorElements() { return mEditorElements; }
 	void AddEditorElement(Scene* scene);
 	void DisplayEditorElements(FoxtrotRenderer* renderer);
-
 	int& GetActorNameIdx() { return mActorNameIdx; }
-
 	bool GetUndoKeyPressed()	const { return mUndoKeyPressed; }
 	bool GetRedoKeyPressed()	const { return mRedoKeyPressed; }
 	bool GetConfirmKeyPressed() const { return mConfirmKeyPressed; }
+	ImVec2 GetSceneViewportPos() const { return mSceneViewportPos; }
+	ImVec2 GetSceneViewportSize() const { return mSceneViewportSize; }
 
 private:
 	// After directX implementation
@@ -50,16 +52,17 @@ private:
 	bool mRedoKeyPressed;
 	bool mDeleteKeyPressed;
 
-private:
-	void Save();
+	ImVec2 mSceneViewportPos;
+	ImVec2 mSceneViewportSize;
 
 private:
 	void UnfocusEditorElements();
 	// After directX implementation
-	// void DisplayViewport();
+	void DisplayViewport();
 	void DisplayFileMenu();
 	void DisplayHierarchyMenu();
 	void DisplayInspectorMenu();
 	void ApplyCommandHistory();
+	//void ResizeUIWindow(std::string menuID);
 };
 #endif // _DEBUG

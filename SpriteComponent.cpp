@@ -86,6 +86,8 @@ void SpriteComponent::Update(float deltaTime)
 			-mAspect, mAspect, -1.0f, 1.0f, mNearZ, mFarZ);
 	}*/
 
+	LogVector2(EditorCamera2D::GetInstance()->GetLookAtPos());
+
 	mMesh->basicVertexConstantBufferData.projection = DirectX::XMMatrixOrthographicOffCenterLH(
 		-mAspect, mAspect, -1.0f, 1.0f, mNearZ, mFarZ);
 	mMesh->basicVertexConstantBufferData.projection =

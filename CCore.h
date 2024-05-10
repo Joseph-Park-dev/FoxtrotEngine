@@ -26,6 +26,7 @@ public:
 
 public:
 	FTVector2		 GetResolution()	  const { return mResolution; }
+	HWND			 GetEditorWindow()			{ return mEditorWindow; }
 	FoxtrotRenderer* GetEditorRenderer()  const	{ return mEditorRenderer; }
 
 #ifdef _DEBUG

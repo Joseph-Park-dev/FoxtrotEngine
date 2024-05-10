@@ -17,7 +17,7 @@ RenderTextureClass::~RenderTextureClass()
 }
 
 
-bool RenderTextureClass::Initialize(ID3D11Device* device, int textureWidth, int textureHeight)
+bool RenderTextureClass::Initialize(ID3D11Device* device, int textureWidth, int textureHeight, UINT numQualityLevels)
 {
 	// 렌터 타겟 텍스처 설명을 초기화합니다
 	D3D11_TEXTURE2D_DESC textureDesc;
@@ -29,7 +29,14 @@ bool RenderTextureClass::Initialize(ID3D11Device* device, int textureWidth, int 
 	textureDesc.MipLevels = 1;
 	textureDesc.ArraySize = 1;
 	textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	textureDesc.SampleDesc.Count = 1;
+	if (numQualityLevels > 0) {
+		textureDesc.SampleDesc.Count = 4; // how many multisamples
+		textureDesc.SampleDesc.Quality = numQualityLevels - 1;
+	}
+	else {
+		textureDesc.SampleDesc.Count = 1; // how many multisamples
+		textureDesc.SampleDesc.Quality = 0;
+	}
 	textureDesc.Usage = D3D11_USAGE_DEFAULT;
 	textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 	textureDesc.CPUAccessFlags = 0;
@@ -45,7 +52,7 @@ bool RenderTextureClass::Initialize(ID3D11Device* device, int textureWidth, int 
 	// 렌더 타겟 뷰의 설명을 설정합니다
 	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
 	renderTargetViewDesc.Format = textureDesc.Format;
-	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DMS;
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 
 	// 렌더 타겟 뷰를 생성한다
@@ -56,14 +63,14 @@ bool RenderTextureClass::Initialize(ID3D11Device* device, int textureWidth, int 
 	}
 
 	// 셰이더 리소스 뷰의 설명을 설정합니다
-	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
+	/*D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
 	shaderResourceViewDesc.Format = textureDesc.Format;
-	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DMS;
 	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
-	shaderResourceViewDesc.Texture2D.MipLevels = 1;
+	shaderResourceViewDesc.Texture2D.MipLevels = 1;*/
 
 	// 셰이더 리소스 뷰를 만듭니다
-	result = device->CreateShaderResourceView(m_renderTargetTexture.Get(), &shaderResourceViewDesc, &m_shaderResourceView);
+	result = device->CreateShaderResourceView(m_renderTargetTexture.Get(), NULL, &m_shaderResourceView);
 	if (FAILED(result))
 	{
 		return false;
@@ -98,13 +105,10 @@ void RenderTextureClass::SetRenderTarget(ID3D11DeviceContext* deviceContext, ID3
 }
 
 
-void RenderTextureClass::ClearRenderTarget(ID3D11DeviceContext* deviceContext, ID3D11DepthStencilView* depthStencilView, float red, float green, float blue, float alpha)
+void RenderTextureClass::ClearRenderTarget(ID3D11DeviceContext* deviceContext, ID3D11DepthStencilView* depthStencilView, float* clearColor)
 {
-	// 버퍼를 지울 색을 설정합니다
-	float color[4] = { red, green, blue, alpha };
-
 	// 백 버퍼를 지운다
-	deviceContext->ClearRenderTargetView(m_renderTargetView.Get(), color);
+	deviceContext->ClearRenderTargetView(m_renderTargetView.Get(), clearColor);
 
 	// 깊이 버퍼를 지운다
 	deviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);

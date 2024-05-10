@@ -32,6 +32,10 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 	mRenderWidth = width;
 	mRenderHeight = height;
 	CalcAspectRatio();
+	mClearColor[0] = 217.f / 255.f;
+	mClearColor[1] = 216.f / 255.f;
+	mClearColor[2] = 212.f / 255.f;
+	mClearColor[3] = 1.0f;
 
 	if (!CreateDeviceAndContext(window))
 	{
@@ -114,7 +118,7 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 	}
 
 	// 렌더링 텍스처 객체를 초기화한다
-	bool result = mRenderTexture->Initialize(mDevice.Get(), mRenderWidth, mRenderHeight);
+	bool result = mRenderTexture->Initialize(mDevice.Get(), mRenderWidth, mRenderHeight, mNumQualityLevels);
 	if (!result)
 	{
 		return false;
@@ -211,7 +215,7 @@ void FoxtrotRenderer::RenderToTexture()
 	mContext->OMSetRenderTargets(1, mRenderTexture->GetRenderTargetView().GetAddressOf(), mDepthStencilView.Get());
 
 	// 렌더링을 텍스처에 지웁니다
-	mRenderTexture->ClearRenderTarget(mContext.Get(), mDepthStencilView.Get(), 0.0f, 1.0f, 0.0f, 1.0f);
+	mRenderTexture->ClearRenderTarget(mContext.Get(), mDepthStencilView.Get(), mClearColor);
 
 	// 이제 장면을 렌더링하면 백 버퍼 대신 텍스처로 렌더링됩니다
 	Render();

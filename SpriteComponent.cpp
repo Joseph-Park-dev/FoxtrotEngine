@@ -75,7 +75,7 @@ void SpriteComponent::Update(float deltaTime)
 	mMesh->basicVertexConstantBufferData.view *= DirectX::SimpleMath::Matrix::CreateScale(EditorCamera2D::GetInstance()->GetZoomValue());
 	mMesh->basicVertexConstantBufferData.view = mMesh->basicVertexConstantBufferData.view.Transpose();
 
-	// 프로젝션
+	// 프로젝션	
 	// m_aspect = AppBase::GetAspectRatio(); // <- GUI에서 조절
 	/*if (m_usePerspectiveProjection) {
 		mBasicVertexConstantBufferData.projection = XMMatrixPerspectiveFovLH(
@@ -85,8 +85,6 @@ void SpriteComponent::Update(float deltaTime)
 		mBasicVertexConstantBufferData.projection = XMMatrixOrthographicOffCenterLH(
 			-mAspect, mAspect, -1.0f, 1.0f, mNearZ, mFarZ);
 	}*/
-
-	LogVector2(EditorCamera2D::GetInstance()->GetLookAtPos());
 
 	mMesh->basicVertexConstantBufferData.projection = DirectX::XMMatrixOrthographicOffCenterLH(
 		-mAspect, mAspect, -1.0f, 1.0f, mNearZ, mFarZ);

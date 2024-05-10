@@ -81,11 +81,11 @@ class KeyInputManager
 public:
 	void DetectKeyInput();
 	void DetectMouseInput(MSG msg);
+	void LockCursorInSceneViewport(FTVector2 mousePos);
+	void UnlockCursorOutOfSceneViewport();
 	//void DetectGamepadInput();
 
 	//SDL_GameController* FindGamepad();
-
-
 public:
 	KEY_STATE	GetKeyState(KEY eKey);
 	KEY_STATE	GetMouseState(MOUSE eMouse);

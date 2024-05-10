@@ -36,6 +36,7 @@ public:
     ComPtr<ID3D11RenderTargetView> GetRenderTargetView() { return mRenderTargetView; }
     ComPtr<ID3D11Texture2D> GetDepthStencilBuffer() { return mDepthStencilBuffer; }
     RenderTextureClass*    GetRenderTexture() { return mRenderTexture; }
+
     float GetAspectRatio()  { return mAspect; }
     void  CalcAspectRatio() { mAspect = float(mRenderWidth) / float(mRenderHeight); }
     void  RemoveMesh(Mesh* mesh);
@@ -45,6 +46,7 @@ public:
 private:
     int mRenderWidth;
     int mRenderHeight;
+    float mClearColor[4];
     UINT mNumQualityLevels;
     UINT mCreateDeviceFlags;
     float mAspect;

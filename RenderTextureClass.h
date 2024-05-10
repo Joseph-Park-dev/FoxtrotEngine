@@ -12,10 +12,10 @@ public:
 	RenderTextureClass(const RenderTextureClass&);
 	~RenderTextureClass();
 
-	bool Initialize(ID3D11Device*, int, int);
+	bool Initialize(ID3D11Device*, int, int, UINT);
 	void Shutdown();
 	void SetRenderTarget(ID3D11DeviceContext*, ID3D11DepthStencilView*);
-	void ClearRenderTarget(ID3D11DeviceContext*, ID3D11DepthStencilView*, float, float, float, float);
+	void ClearRenderTarget(ID3D11DeviceContext* deviceContext, ID3D11DepthStencilView* depthStencilView, float* clearColor);
 
 	ComPtr <ID3D11ShaderResourceView> GetShaderResourceView();
 	ComPtr <ID3D11RenderTargetView> GetRenderTargetView();

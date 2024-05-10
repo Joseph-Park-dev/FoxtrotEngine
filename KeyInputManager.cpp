@@ -1,6 +1,10 @@
 #include "KeyInputManager.h"
 #include "Camera2D.h"
 #include "TemplateFunctions.h"
+#include "CCore.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui.h>
+#include "EditorLayer.h"
 
 KeyInputManager::KeyInputManager()
 	: mMousePosition(FTVector2::Zero)
@@ -132,6 +136,35 @@ void KeyInputManager::DetectMouseInput(MSG msg)
 			mVecMouse[mouseButton].isPushedPrevFrame = false;
 		}
 	}
+}
+
+void KeyInputManager::LockCursorInSceneViewport(FTVector2 mousePos)
+{
+	RECT rect;
+	GetClientRect(CCore::GetInstance()->GetEditorWindow(), &rect);
+
+	POINT ul;
+	ul.x = rect.left;
+	ul.y = rect.top;
+
+	POINT lr;
+	lr.x = rect.right;
+	lr.y = rect.bottom;
+
+	MapWindowPoints(CCore::GetInstance()->GetEditorWindow(), nullptr, &ul, 1);
+	MapWindowPoints(CCore::GetInstance()->GetEditorWindow(), nullptr, &lr, 1);
+
+	rect.left = ul.x;
+	rect.top = ul.y;
+
+	rect.right = lr.x;
+	rect.bottom = lr.y;
+	ClipCursor(&rect);
+}
+
+void KeyInputManager::UnlockCursorOutOfSceneViewport()
+{
+	ClipCursor(nullptr);
 }
 
 //void KeyInputManager::DetectGamepadInput()

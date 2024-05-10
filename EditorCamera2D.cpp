@@ -47,8 +47,10 @@ void EditorCamera2D::MiddleMouseNavigation()
 		//SetScreenCenter(GetScreenCenter() + diff);
 		//Camera2D::GetInstance()->SetScreenCenter(GetScreenCenter() - diff);
 		mMiddleMouseClickedPos = MOUSE_POS;
+		KeyInputManager::GetInstance()->LockCursorInSceneViewport(MOUSE_POS);
 	}
-	//LogVector2(GetLookAtPos());
+	else
+		KeyInputManager::GetInstance()->UnlockCursorOutOfSceneViewport();
 }
 
 void EditorCamera2D::CalcCameraDisplay()

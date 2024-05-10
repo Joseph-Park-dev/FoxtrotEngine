@@ -35,11 +35,12 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 }
 
 CCore::CCore()
-	: mGameTitle(L"Cat Blasters! ver.0.01")
+	: mGameTitle(L"Foxtrot Engine (ver.0.01)")
 	//, mGameviewWindow(nullptr)
 	, mIsRunning(true)
 	, mIsResizingWindow(false)
 	, mResolution(FTVector2(1920.f, 1080.f))
+	, mEditorRenderer(nullptr)
 #ifdef _DEBUG
 	, mEditorWindow(nullptr)
 	, mIsUpdatingGame(false)

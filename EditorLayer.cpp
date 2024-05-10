@@ -18,6 +18,7 @@
 #include "Rigidbody2DComponent.h"
 #include "FoxtrotRenderer.h"
 #include "RenderTextureClass.h"
+#include "KeyInputManager.h"
 
 #include <unordered_map>
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -73,13 +74,14 @@ void EditorLayer::DisplayViewport()
 	ImGui::Begin("Scene");
 	ImVec2 vMin = ImGui::GetWindowContentRegionMin();
 	ImVec2 vMax = ImGui::GetWindowContentRegionMax();
-
 	vMin.x += ImGui::GetWindowPos().x;
 	vMin.y += ImGui::GetWindowPos().y;
 	vMax.x += ImGui::GetWindowPos().x;
 	vMax.y += ImGui::GetWindowPos().y;
 	mSceneViewportPos = vMin;
-	mSceneViewportSize = vMax-vMin;
+	mSceneViewportSize = vMax - vMin;
+	/*mSceneViewportPos = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
+	mSceneViewportSize = ImGui::GetWindowPos() + ImGui::GetContentRegionAvail();*/
 	FoxtrotRenderer* renderer = CCore::GetInstance()->GetEditorRenderer();
 	ID3D11ShaderResourceView* viewportTexture = renderer->GetRenderTexture()->GetShaderResourceView().Get();
 	ImGui::Image((void*)viewportTexture, mSceneViewportSize);

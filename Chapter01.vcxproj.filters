@@ -83,16 +83,16 @@
     <Filter Include="02_Core\FoxtrotRenderer">
       <UniqueIdentifier>{5b71e15d-e7b2-452c-8877-b47a0e28c0e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04_Components\2D Graphics">
+      <UniqueIdentifier>{1e8d37bb-530e-43ac-8891-3add8c28e824}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04_Components\3D Graphics">
+      <UniqueIdentifier>{876f7ce1-026a-46b1-9dbd-7218092a4749}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteComponent.cpp">
-      <Filter>04_Components</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimSpriteComponent.cpp">
-      <Filter>04_Components</Filter>
     </ClCompile>
     <ClCompile Include="Math.cpp">
       <Filter>01_Header</Filter>
@@ -106,14 +106,8 @@
     <ClCompile Include="KeyInputManager.cpp">
       <Filter>02_Core\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="BGSpriteComponent.cpp">
-      <Filter>04_Components</Filter>
-    </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>05_Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="TileMapComponent.cpp">
-      <Filter>04_Components</Filter>
     </ClCompile>
     <ClCompile Include="MoveComponent.cpp">
       <Filter>04_Components</Filter>
@@ -130,7 +124,7 @@
     <ClCompile Include="ColliderComponent.cpp">
       <Filter>04_Components</Filter>
     </ClCompile>
-    <ClCompile Include="CCore.cpp">
+    <ClCompile Include="FTCore.cpp">
       <Filter>02_Core\Core</Filter>
     </ClCompile>
     <ClCompile Include="CollisionManager.cpp">
@@ -147,12 +141,6 @@
     </ClCompile>
     <ClCompile Include="FTTexture.cpp">
       <Filter>06_Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimatorComponent.cpp">
-      <Filter>04_Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Animation.cpp">
-      <Filter>04_Components</Filter>
     </ClCompile>
     <ClCompile Include="Camera2D.cpp">
       <Filter>02_Core\CoreModules\Camera</Filter>
@@ -256,14 +244,32 @@
     <ClCompile Include="RenderTextureClass.cpp">
       <Filter>02_Core\CoreModules\FoxtrotEditor\EditorLayer</Filter>
     </ClCompile>
+    <ClCompile Include="SpriteComponent.cpp">
+      <Filter>04_Components\2D Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="TileMapComponent.cpp">
+      <Filter>04_Components\2D Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="BGSpriteComponent.cpp">
+      <Filter>04_Components\2D Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimSpriteComponent.cpp">
+      <Filter>04_Components\2D Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimatorComponent.cpp">
+      <Filter>04_Components\2D Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>04_Components\2D Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshRendererComponent.cpp">
+      <Filter>04_Components\3D Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="FTCoreEditor.cpp">
+      <Filter>02_Core\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SpriteComponent.h">
-      <Filter>04_Components</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimSpriteComponent.h">
-      <Filter>04_Components</Filter>
-    </ClInclude>
     <ClInclude Include="Math.h">
       <Filter>01_Header</Filter>
     </ClInclude>
@@ -285,14 +291,8 @@
     <ClInclude Include="KeyInputManager.h">
       <Filter>02_Core\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="BGSpriteComponent.h">
-      <Filter>04_Components</Filter>
-    </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>05_Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="TileMapComponent.h">
-      <Filter>04_Components</Filter>
     </ClInclude>
     <ClInclude Include="MoveComponent.h">
       <Filter>04_Components</Filter>
@@ -309,7 +309,7 @@
     <ClInclude Include="ColliderComponent.h">
       <Filter>04_Components</Filter>
     </ClInclude>
-    <ClInclude Include="CCore.h">
+    <ClInclude Include="FTCore.h">
       <Filter>02_Core\Core</Filter>
     </ClInclude>
     <ClInclude Include="CollisionManager.h">
@@ -338,12 +338,6 @@
     </ClInclude>
     <ClInclude Include="FTTexture.h">
       <Filter>06_Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimatorComponent.h">
-      <Filter>04_Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Animation.h">
-      <Filter>04_Components</Filter>
     </ClInclude>
     <ClInclude Include="Camera2D.h">
       <Filter>02_Core\CoreModules\Camera</Filter>
@@ -476,6 +470,33 @@
     </ClInclude>
     <ClInclude Include="RenderTextureClass.h">
       <Filter>02_Core\CoreModules\FoxtrotEditor\EditorLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteComponent.h">
+      <Filter>04_Components\2D Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="TileMapComponent.h">
+      <Filter>04_Components\2D Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="BGSpriteComponent.h">
+      <Filter>04_Components\2D Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimSpriteComponent.h">
+      <Filter>04_Components\2D Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatorComponent.h">
+      <Filter>04_Components\2D Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>04_Components\2D Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshRendererComponent.h">
+      <Filter>04_Components\3D Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="FTCoreEditor.h">
+      <Filter>02_Core\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowProcess.h">
+      <Filter>01_Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -11,7 +11,7 @@
 #include "FTTexture.h"
 #include "Camera2D.h"
 #include "Transform.h"
-#include "CCore.h"
+#include "FTCore.h"
 
 #ifdef _DEBUG
 #include "EditorCamera2D.h"
@@ -155,7 +155,7 @@ void TileMapComponent::RenderEX(FoxtrotRenderer* renderer)
 //
 //void TileMapComponent::BlitToGameview(FTVector2 worldPos, Tile* tile)
 //{
-//    FoxtrotRenderer* gameviewRend = CCore::GetInstance()->GetGameRenderer();
+//    FoxtrotRenderer* gameviewRend = FTCore::GetInstance()->GetGameRenderer();
 //    // 1) Get relative position from mLookAtPos
 //    SDL_Rect* renderArea = Camera2D::GetInstance()->GetRenderArea();
 //    FTVector2 renderTopLeft = FTVector2(renderArea->x, renderArea->y);
@@ -204,7 +204,7 @@ void TileMapComponent::RenderEX(FoxtrotRenderer* renderer)
 //
 //void TileMapComponent::BlitToGameviewEx(FTVector2 wPos, Tile* tile)
 //{
-//    FoxtrotRenderer* gameviewRend = CCore::GetInstance()->GetGameRenderer();
+//    FoxtrotRenderer* gameviewRend = FTCore::GetInstance()->GetGameRenderer();
 //    // 1) Get relative position from mLookAtPos
 //    SDL_Rect* renderArea = Camera2D::GetInstance()->GetRenderArea();
 //    FTVector2 renderCenter = FTVector2(renderArea->x, renderArea->y);;

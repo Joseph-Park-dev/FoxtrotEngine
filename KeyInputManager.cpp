@@ -1,7 +1,7 @@
 #include "KeyInputManager.h"
 #include "Camera2D.h"
 #include "TemplateFunctions.h"
-#include "CCore.h"
+#include "FTCore.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include "EditorLayer.h"
@@ -141,7 +141,7 @@ void KeyInputManager::DetectMouseInput(MSG msg)
 void KeyInputManager::LockCursorInSceneViewport(FTVector2 mousePos)
 {
 	RECT rect;
-	GetClientRect(CCore::GetInstance()->GetEditorWindow(), &rect);
+	GetClientRect(FTCore::GetInstance()->GetWindow(), &rect);
 
 	POINT ul;
 	ul.x = rect.left;
@@ -151,8 +151,8 @@ void KeyInputManager::LockCursorInSceneViewport(FTVector2 mousePos)
 	lr.x = rect.right;
 	lr.y = rect.bottom;
 
-	MapWindowPoints(CCore::GetInstance()->GetEditorWindow(), nullptr, &ul, 1);
-	MapWindowPoints(CCore::GetInstance()->GetEditorWindow(), nullptr, &lr, 1);
+	MapWindowPoints(FTCore::GetInstance()->GetWindow(), nullptr, &ul, 1);
+	MapWindowPoints(FTCore::GetInstance()->GetWindow(), nullptr, &lr, 1);
 
 	rect.left = ul.x;
 	rect.top = ul.y;

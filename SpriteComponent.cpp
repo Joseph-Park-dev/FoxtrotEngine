@@ -1,7 +1,7 @@
 #include "SpriteComponent.h"
 #include "Actor.h"
 #include "Scene.h"
-#include "CCore.h"
+#include "FTCore.h"
 #include "FTTexture.h"
 #include "EditorCamera2D.h"
 #include "Transform.h"
@@ -24,11 +24,17 @@ SpriteComponent::SpriteComponent(Actor* owner, int drawOrder, int updateOrder)
 
 SpriteComponent::~SpriteComponent()
 {
-	CCore::GetInstance()->GetEditorRenderer()->RemoveMesh(mMesh);
+	FTCore::GetInstance()->GetGameRenderer()->RemoveMesh(mMesh);
 	delete rect;
 }
 
-void SpriteComponent::Initialize(FoxtrotRenderer* renderer, std::string fileName)
+void SpriteComponent::SetTexture(FoxtrotRenderer* renderer, std::string fileName)
+{
+	mMesh->texture = ResourceManager::GetInstance()->GetLoadedTexture(fileName);
+	mMesh->texture->CreateTexture(renderer);
+}
+
+void SpriteComponent::Initialize(FoxtrotRenderer* renderer)
 {
 	mMesh = new Mesh;
 	mAspect = renderer->GetAspectRatio();
@@ -39,8 +45,7 @@ void SpriteComponent::Initialize(FoxtrotRenderer* renderer, std::string fileName
 	mMesh->indexCount = UINT(mesh.indices.size());
 	renderer->CreateIndexBuffer(mesh.indices, mMesh->indexBuffer);
 
-	mMesh->texture = ResourceManager::GetInstance()->GetLoadedTexture(fileName);
-	mMesh->texture->CreateTexture(renderer);
+	SetTexture(renderer, "Asteroid");
 
 	// Create Constant buffers
 	mMesh->basicVertexConstantBufferData.model = DirectX::SimpleMath::Matrix();
@@ -105,7 +110,7 @@ void SpriteComponent::Render(FoxtrotRenderer* renderer)
 			mMesh->pixelConstantBuffer);
 	}
 	else
-		Initialize(renderer, "Asteroid");
+		Initialize(renderer);
 	//BlitToGameview(rect, GetOwner()->GetTransform()->GetScale());
 }
 //void SpriteComponent::SetTexture()
@@ -144,7 +149,7 @@ void SpriteComponent::LoadProperties(std::ifstream& ifs)
 
 void SpriteComponent::BlitToGameview(Bounds* blitArea, FTVector2 scale)
 {
-	//FoxtrotRenderer* gameviewRend = CCore::GetInstance()->GetGameRenderer();
+	//FoxtrotRenderer* gameviewRend = FTCore::GetInstance()->GetGameRenderer();
 	// 1) Get relative position from mLookAtPos
 	Bounds* renderArea = Camera2D::GetInstance()->GetRenderArea();
 	FTVector2 renderCenter = FTVector2(renderArea->x, renderArea->y);
@@ -170,7 +175,7 @@ void SpriteComponent::BlitToGameview(Bounds* blitArea, FTVector2 scale)
 
 void SpriteComponent::BlitToGameviewEx(Bounds* blitArea, FTVector2 scale)
 {
-	//FoxtrotRenderer* gameviewRend = CCore::GetInstance()->GetGameRenderer();
+	//FoxtrotRenderer* gameviewRend = FTCore::GetInstance()->GetGameRenderer();
 	// 1) Get relative position from mLookAtPos
 	Bounds* renderArea = Camera2D::GetInstance()->GetRenderArea();
 	FTVector2 renderCenter = FTVector2(renderArea->x, renderArea->y);

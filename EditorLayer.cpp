@@ -8,7 +8,8 @@
 #include "Scene.h"
 #include "ActorGroup.h"
 #include "PanelUI.h"
-#include "CCore.h"
+#include "FTCore.h"
+#include "FTCoreEditor.h"
 #include "Ship.h"
 #include "Transform.h"
 #include "GroundObject.h"
@@ -82,7 +83,7 @@ void EditorLayer::DisplayViewport()
 	mSceneViewportSize = vMax - vMin;
 	/*mSceneViewportPos = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
 	mSceneViewportSize = ImGui::GetWindowPos() + ImGui::GetContentRegionAvail();*/
-	FoxtrotRenderer* renderer = CCore::GetInstance()->GetEditorRenderer();
+	FoxtrotRenderer* renderer = FTCore::GetInstance()->GetGameRenderer();
 	ID3D11ShaderResourceView* viewportTexture = renderer->GetRenderTexture()->GetShaderResourceView().Get();
 	ImGui::Image((void*)viewportTexture, mSceneViewportSize);
 	ImGui::End();
@@ -156,7 +157,7 @@ void EditorLayer::DisplayFileMenu()
 					ChunkLoader::GetInstance()->SaveChunk(mCurrFilePathName);
 					EditorLayer::GetInstance()->GetEditorElements().clear();
 					ChunkLoader::GetInstance()->LoadChunk(mCurrFilePathName);
-					CCore::GetInstance()->SetIsUpdatingGame(true);
+					FTCoreEditor::GetInstance()->SetIsUpdatingGame(true);
 				}
 				else
 					LogString("Saved file path doesn't exist but trying to access it");
@@ -170,7 +171,7 @@ void EditorLayer::DisplayFileMenu()
 			{
 				if (!mCurrFilePathName.empty())
 				{
-					CCore::GetInstance()->SetIsUpdatingGame(false);
+					FTCoreEditor::GetInstance()->SetIsUpdatingGame(false);
 					SceneManager::GetInstance()->GetCurrScene()->DeleteAll();
 					EditorLayer::GetInstance()->GetEditorElements().clear();
 					ChunkLoader::GetInstance()->LoadChunkToEditor(mCurrFilePathName);

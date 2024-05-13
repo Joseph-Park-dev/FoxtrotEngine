@@ -64,7 +64,7 @@ public:
 	State&		  GetStateRef()	  		  { return mState; }
 	bool		  IsActive()	  const	  { return mState == State::EActive; }
 	bool		  IsDead()		  const   { return mState == State::EDead; }
-	Transform*	  GetTransform()  const	  { return mTransform; }
+	Transform*    GetTransform()  const	  { return mTransform; }
 	Actor*		  GetParent()	  const	  { return mParent; }
 	std::vector<Component*>& GetComponents() { return mComponents; }
 	std::vector<Actor*>&     GetChildActors() { return mChild; }

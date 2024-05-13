@@ -1,21 +1,43 @@
 // ----------------------------------------------------------------
-// From Game Programming in C++ by Sanjay Madhav
-// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-// 
-// Released under the BSD License
-// See LICENSE in root directory for full details.
+// Foxtrot Engine (2D/3D)
+// Copyright (C) 2024 JungBae Park. All rights reserved.
 // ----------------------------------------------------------------
 
-#include "CCore.h"
-
-int main(int argc, char *argv[])
+#ifdef _DEBUG
+/// <FTCore_Editor>
+/// Editor fields & functions for development -> Active in Debug build; 
+/// Displays editor window, Provides functionality to create & edit .chunk files.
+/// </FTCore_Editor>
+#include "FTCoreEditor.h"
+int main(int argc, char* argv[])
 {
-	bool success = CCore::GetInstance()->Initialize();
+	bool success = FTCoreEditor::GetInstance()->Initialize();
 	if (success)
 	{
-		CCore::GetInstance()->RunLoop();
+		FTCoreEditor::GetInstance()->RunLoop();
 	}
-	CCore::GetInstance()->ShutDown();
-	CCore::GetInstance()->Release();
+	FTCoreEditor::GetInstance()->ShutDown();
+	FTCoreEditor::GetInstance()->Release();
 	return 0;
 }
+#else
+/// <FTCore_Game>
+/// Game fields & functions for development -> Active in Release build; 
+/// Loads .chunk files, runs the actual game.
+/// </FTCore_Editor>
+#include "FTCore.h"
+int main(int argc, char* argv[])
+{
+	bool success = FTCore::GetInstance()->Initialize();
+	if (success)
+	{
+		FTCore::GetInstance()->RunLoop();
+	}
+	FTCore::GetInstance()->ShutDown();
+	FTCore::GetInstance()->Release();
+	return 0;
+}
+#endif
+
+
+

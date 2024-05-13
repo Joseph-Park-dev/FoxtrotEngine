@@ -18,13 +18,15 @@ public:
 	}
 	void		 SetTexWidth (int texWidth)  { mTextWidth = texWidth; }
 	void		 SetTexHeight(int texHeight) { mTexHeight = texHeight; }
+	void		 SetTexture  (FoxtrotRenderer* renderer, std::string fileName);
+
 
 	CLONE(SpriteComponent);
 
 protected:
 
 public:
-			void Initialize	(FoxtrotRenderer* renderer, std::string fileName);
+	virtual void Initialize	(FoxtrotRenderer* renderer);
 	virtual void Update		(float deltaTime) override;
 	virtual void Render		(FoxtrotRenderer* renderer) override;
 

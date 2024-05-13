@@ -1,5 +1,5 @@
 #include "Transform.h"
-#include "CCore.h"
+#include "FTCore.h"
 #include "Camera2D.h"
 
 void Transform::Translate(FTVector2 translation)

@@ -4,7 +4,7 @@
 
 class Actor;
 enum class ACTOR_GROUP;
-class CCore;
+class FTCore;
 class SpriteComponent;
 class KeyInputManager;
 

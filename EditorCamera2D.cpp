@@ -6,7 +6,7 @@
 
 #include "EditorCamera2D.h"
 #include "EditorLayer.h"
-#include "CCore.h"
+#include "FTCore.h"
 #include "KeyInputManager.h"
 
 void EditorCamera2D::ProcessInput(MSG msg)
@@ -89,7 +89,7 @@ void EditorCamera2D::EditorRender(FoxtrotRenderer* renderer)
 //
 //void EditorCamera2D::RenderGrid(FoxtrotRenderer* renderer)
 //{
-//	mEditorWindowSize = CCore::GetInstance()->GetEditorWindowSize();
+//	mEditorWindowSize = FTCore::GetInstance()->GetEditorWindowSize();
 //	int gridHCount = mEditorWindowSize.x / mGridCellSize;
 //	int gridVCount = mEditorWindowSize.y / mGridCellSize;
 //
@@ -167,7 +167,7 @@ EditorCamera2D::EditorCamera2D()
 	SetTargetActorID(TARGET_NONE);
 	SetScreenCenter(Camera2D::GetInstance()->GetScreenCenter());
 
-	//FTVector2 windowSize = CCore::GetInstance()->GetEditorWindowSize();
+	//FTVector2 windowSize = FTCore::GetInstance()->GetEditorWindowSize();
 	//int gridHCount = windowSize.x / mGridCellSize + 2;
 	//int gridVCount = windowSize.y / mGridCellSize + 2;
 }

@@ -235,8 +235,9 @@ void FoxtrotRenderer::RenderToTexture()
 //	
 //}
 
-void FoxtrotRenderer::RenderClear(const float clearColor[4])
+void FoxtrotRenderer::RenderClear()
 {
+	float clearColor[4] = { 0.0f,0.0f,1.0f,1.0f };
 	mContext->ClearRenderTargetView(mRenderTargetView.Get(), clearColor);
 	mContext->ClearDepthStencilView(mDepthStencilView.Get(),
 		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,

@@ -7,7 +7,7 @@
 #include "TemplateFunctions.h"
 #include "Transform.h"
 #include "ChunkLoader.h"
-#include "CCore.h"
+#include "FTCore.h"
 
 AnimatorComponent::AnimatorComponent(Actor* owner, int drawOrder, int updateOrder)
 	: TileMapComponent(owner, drawOrder)

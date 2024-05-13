@@ -219,7 +219,7 @@
     <ClCompile Include="ButtonUI.cpp" />
     <ClCompile Include="Camera2D.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
-    <ClCompile Include="CCore.cpp" />
+    <ClCompile Include="FTCore.cpp" />
     <ClCompile Include="Command.cpp" Condition=" '$(Configuration)' == 'Debug' ">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -243,12 +243,14 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="FoxtrotRenderer.cpp" />
+    <ClCompile Include="FTCoreEditor.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="GunFiringComponent.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="ChunkLoader.cpp" />
     <ClCompile Include="imgui\FileDialog\ImGuiFileDialog.cpp" Condition=" '$(Configuration)' == 'Debug' " />
+    <ClCompile Include="MeshRendererComponent.cpp" />
     <ClCompile Include="MouseCursor.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Physics2D.cpp" />
@@ -325,7 +327,7 @@
     <ClInclude Include="ButtonUI.h" />
     <ClInclude Include="Camera2D.h" />
     <ClInclude Include="CollisionManager.h" />
-    <ClInclude Include="CCore.h" />
+    <ClInclude Include="FTCore.h" />
     <ClInclude Include="Command.h" Condition=" '$(Configuration)' == 'Debug' ">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -349,6 +351,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="FoxtrotRenderer.h" />
+    <ClInclude Include="FTCoreEditor.h" />
     <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="GunFiringComponent.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -361,6 +364,7 @@
     <ClInclude Include="imgui\FileDialog\stb\stb_image_resize.h" Condition=" '$(Configuration)' == 'Debug' " />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshData.h" />
+    <ClInclude Include="MeshRendererComponent.h" />
     <ClInclude Include="MouseCursor.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Physics2D.h" />
@@ -412,6 +416,7 @@
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="UnitDefinitions.h" />
     <ClInclude Include="Vertex.h" />
+    <ClInclude Include="WindowProcess.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

@@ -1,5 +1,5 @@
 #include "Ship.h"
-#include "CCore.h"
+#include "FTCore.h"
 #include "Scene.h"
 #include "ResourceManager.h"
 #include "UIActor.h"

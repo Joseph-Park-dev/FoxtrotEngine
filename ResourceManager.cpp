@@ -2,7 +2,7 @@
 
 #include "ResourceManager.h"
 #include "FTTexture.h"
-#include "CCore.h"
+#include "FTCore.h"
 
 void ResourceManager::LoadTexture(const std::string& strKey, const std::string& fileName)
 {

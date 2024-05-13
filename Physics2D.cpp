@@ -1,6 +1,6 @@
 #include <vector>
 
-#include "CCore.h"
+#include "FTCore.h"
 #include "Physics2D.h"
 #include "KeyInputManager.h"
 #include "Camera2D.h"

@@ -23,7 +23,7 @@ public:
 	void SwapChainPresent(UINT syncInterval, UINT flags);
     void Render();
     void RenderToTexture();
-	void RenderClear(const float clearColor[4]);
+    void RenderClear();
     void ResizeWindow(UINT width, UINT height);
     void SetViewport();
     void SetViewportEditor();

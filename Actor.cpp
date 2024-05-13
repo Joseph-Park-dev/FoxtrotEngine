@@ -2,7 +2,7 @@
 #include <functional>
 
 #include "Actor.h"
-#include "CCore.h"
+#include "FTCore.h"
 #include "Scene.h"
 #include "KeyInputManager.h"
 #include "Camera2D.h"

@@ -1,6 +1,6 @@
 #include "Camera2D.h"
 #include "EditorCamera2D.h"
-#include "CCore.h"
+#include "FTCore.h"
 #include "SceneManager.h"
 #include "Scene.h"
 #include "Actor.h"
@@ -281,7 +281,7 @@ void Camera2D::Shake(float duration, float magnitude)
 //		0, 0, 0, mEffectAlpha
 //	);
 //	SDL_RenderFillRect(renderer, &mEffectArea);
-//	//SDL_RenderDrawRect(CCore::GetInstance()->GetEditorRenderer(), &mEffectArea);
+//	//SDL_RenderDrawRect(FTCore::GetInstance()->GetEditorRenderer(), &mEffectArea);
 //}
 #endif // _DEBUG
 
@@ -290,8 +290,8 @@ Camera2D::Camera2D()
 	, mDiffFromCenter(FTVector2::Zero)
 	, mTargetActor(nullptr)
 	, mTargetActorID(TARGET_NONE)
-	, mScreenCenter(CCore::GetInstance()->GetResolution() / 2.f)
-	, mRenderResolution(CCore::GetInstance()->GetResolution())
+	, mRenderResolution(FTVector2(FTCore::GetInstance()->GetWindowWidth(), FTCore::GetInstance()->GetWindowHeight()))
+	, mScreenCenter(mRenderResolution/2)
 	, mRenderArea{}
 	, mEffectArea{}
 	, mEffectAlpha(0)

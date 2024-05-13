@@ -32,6 +32,7 @@ public:
 	bool GetConfirmKeyPressed() const { return mConfirmKeyPressed; }
 	ImVec2 GetSceneViewportPos() const { return mSceneViewportPos; }
 	ImVec2 GetSceneViewportSize() const { return mSceneViewportSize; }
+	void UpdateSceneViewportArea();
 
 private:
 	// After directX implementation

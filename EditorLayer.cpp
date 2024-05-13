@@ -70,9 +70,8 @@ void EditorLayer::DisplayEditorElements(FoxtrotRenderer* renderer)
 		mEditorElements[i]->Render(renderer);
 }
 
-void EditorLayer::DisplayViewport()
+void EditorLayer::UpdateSceneViewportArea()
 {
-	ImGui::Begin("Scene");
 	ImVec2 vMin = ImGui::GetWindowContentRegionMin();
 	ImVec2 vMax = ImGui::GetWindowContentRegionMax();
 	vMin.x += ImGui::GetWindowPos().x;
@@ -81,9 +80,13 @@ void EditorLayer::DisplayViewport()
 	vMax.y += ImGui::GetWindowPos().y;
 	mSceneViewportPos = vMin;
 	mSceneViewportSize = vMax - vMin;
-	/*mSceneViewportPos = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
-	mSceneViewportSize = ImGui::GetWindowPos() + ImGui::GetContentRegionAvail();*/
-	FoxtrotRenderer* renderer = FTCore::GetInstance()->GetGameRenderer();
+}
+
+void EditorLayer::DisplayViewport()
+{
+	ImGui::Begin("Scene");
+	UpdateSceneViewportArea();
+	FoxtrotRenderer* renderer = FTCoreEditor::GetInstance()->GetGameRenderer();
 	ID3D11ShaderResourceView* viewportTexture = renderer->GetRenderTexture()->GetShaderResourceView().Get();
 	ImGui::Image((void*)viewportTexture, mSceneViewportSize);
 	ImGui::End();

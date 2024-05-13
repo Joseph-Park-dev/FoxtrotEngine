@@ -83,7 +83,7 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 		LogString("Create Blend State failed.");
 		return false;
 	}
-	mContext->OMSetBlendState(mBlendState.Get(), 0, 0xffffffff);
+	mContext->OMSetBlendState(mBlendState.Get(), 0, D3D11_DEFAULT_SAMPLE_MASK);
 
 	if (!CreateTextureSampler())
 	{
@@ -112,18 +112,12 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 	}
 
 	mRenderTexture = new RenderTextureClass();
-	if (!mRenderTexture)
-	{
-		return false;
-	}
-
 	// 렌더링 텍스처 객체를 초기화한다
-	bool result = mRenderTexture->Initialize(mDevice.Get(), mRenderWidth, mRenderHeight, mNumQualityLevels);
+	bool result = mRenderTexture->Initialize(mDevice.Get(), width, height, mNumQualityLevels);
 	if (!result)
 	{
 		return false;
 	}
-
 	return true;
 }
 
@@ -348,14 +342,16 @@ bool FoxtrotRenderer::CreateDeviceAndContext(HWND window)
 	sd.Windowed = TRUE;                                // windowed/full-screen mode
 	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // allow full-screen switching
 	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-	if (mNumQualityLevels > 0) {
-		sd.SampleDesc.Count = 4; // how many multisamples
-		sd.SampleDesc.Quality = mNumQualityLevels - 1;
-	}
-	else {
-		sd.SampleDesc.Count = 1; // how many multisamples
-		sd.SampleDesc.Quality = 0;
-	}
+	//if (mNumQualityLevels > 0) {
+	//	sd.SampleDesc.Count = 4; // how many multisamples
+	//	sd.SampleDesc.Quality = mNumQualityLevels - 1;
+	//}
+	//else {
+	//	sd.SampleDesc.Count = 1; // how many multisamples
+	//	sd.SampleDesc.Quality = 0;
+	//}
+	sd.SampleDesc.Count = 1;
+	sd.SampleDesc.Quality = 0;
 
 	if (FAILED(device.As(&mDevice))) {
 		LogString("device.AS() failed.");
@@ -447,14 +443,16 @@ bool FoxtrotRenderer::CreateDepthBuffer()
 	depthStencilBufferDesc.MipLevels = 1;
 	depthStencilBufferDesc.ArraySize = 1;
 	depthStencilBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	if (mNumQualityLevels > 0) {
-		depthStencilBufferDesc.SampleDesc.Count = 4; // how many multisamples
-		depthStencilBufferDesc.SampleDesc.Quality = mNumQualityLevels - 1;
-	}
-	else {
-		depthStencilBufferDesc.SampleDesc.Count = 1; // how many multisamples
-		depthStencilBufferDesc.SampleDesc.Quality = 0;
-	}
+	//if (mNumQualityLevels > 0) {
+	//	depthStencilBufferDesc.SampleDesc.Count = 4; // how many multisamples
+	//	depthStencilBufferDesc.SampleDesc.Quality = mNumQualityLevels - 1;
+	//}
+	//else {
+	//	depthStencilBufferDesc.SampleDesc.Count = 1; // how many multisamples
+	//	depthStencilBufferDesc.SampleDesc.Quality = 0;
+	//}
+	depthStencilBufferDesc.SampleDesc.Count = 1; // how many multisamples
+	depthStencilBufferDesc.SampleDesc.Quality = 0;
 	depthStencilBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	depthStencilBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	depthStencilBufferDesc.CPUAccessFlags = 0;
@@ -502,10 +500,14 @@ bool FoxtrotRenderer::CreateBlendState()
 	omDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
 	omDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
 	omDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	omDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	omDesc.RenderTarget[0].RenderTargetWriteMask = 
+		D3D11_COLOR_WRITE_ENABLE_RED | D3D11_COLOR_WRITE_ENABLE_GREEN | D3D11_COLOR_WRITE_ENABLE_BLUE;
 
 	if (FAILED(mDevice->CreateBlendState(&omDesc, mBlendState.GetAddressOf())))
+	{
+		LogString("Error - FoxtrotRenderer::Initialize, Failed to CreateBlendState()");
 		return false;
+	}
 	return true;
 }
 

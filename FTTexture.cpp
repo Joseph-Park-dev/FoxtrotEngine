@@ -28,7 +28,8 @@ bool FTTexture::CreateTexture(FoxtrotRenderer* renderer)
     txtDesc.Height = height;
     txtDesc.MipLevels = txtDesc.ArraySize = 1;
     txtDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    txtDesc.SampleDesc.Count = 1;
+    txtDesc.SampleDesc.Count = 1; // how many multisamples
+    txtDesc.SampleDesc.Quality = 0;
     txtDesc.Usage = D3D11_USAGE_IMMUTABLE;
     txtDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
@@ -49,7 +50,12 @@ bool FTTexture::CreateTexture(FoxtrotRenderer* renderer)
         LogString("Create Texture failed : " + GetRelativePath());
         return false;
     }
-    if (FAILED(renderer->GetDevice()->CreateShaderResourceView(mTexture.Get(), nullptr,
+    D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
+    shaderResourceViewDesc.Format = txtDesc.Format;
+    shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+    shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
+    shaderResourceViewDesc.Texture2D.MipLevels = 1;
+    if (FAILED(renderer->GetDevice()->CreateShaderResourceView(mTexture.Get(), &shaderResourceViewDesc,
         mTextureResourceView.GetAddressOf())))
     {
         LogString("Create Shader Resource View failed : " + GetRelativePath());

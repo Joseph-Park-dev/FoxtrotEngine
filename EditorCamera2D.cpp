@@ -11,16 +11,13 @@
 
 void EditorCamera2D::ProcessInput(MSG msg)
 {
-	if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow))
+	int delta = GET_WHEEL_DELTA_WPARAM(msg.wParam);
+	if (msg.message == WM_MOUSEWHEEL);
 	{
-		int delta = GET_WHEEL_DELTA_WPARAM(msg.wParam);
-		if (msg.message == WM_MOUSEWHEEL);
-		{
-			if (delta > 0) // scroll up
-				ZoomOut();
-			else if (delta < 0) // scroll down
-				ZoomIn();
-		}
+		if (delta > 0) // scroll up
+			ZoomOut();
+		else if (delta < 0) // scroll down
+			ZoomIn();
 	}
 }
 

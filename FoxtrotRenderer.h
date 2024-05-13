@@ -19,6 +19,7 @@ public:
 	static FoxtrotRenderer* CreateRenderer(HWND window, int width, int height);
 	static void DestroyRenderer(FoxtrotRenderer* renderer);
 
+
 public:
 	void SwapChainPresent(UINT syncInterval, UINT flags);
     void Render();
@@ -44,11 +45,11 @@ public:
     void  SetRenderHeight(int height) { mRenderHeight = height; }
 
 private:
-    int mRenderWidth;
-    int mRenderHeight;
+    int   mRenderWidth;
+    int   mRenderHeight;
     float mClearColor[4];
-    UINT mNumQualityLevels;
-    UINT mCreateDeviceFlags;
+    UINT  mNumQualityLevels;
+    UINT  mCreateDeviceFlags;
     float mAspect;
 
 private:

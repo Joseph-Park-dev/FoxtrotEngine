@@ -1,5 +1,6 @@
 ﻿#include "RenderTextureClass.h"
 #include "FoxtrotRenderer.h"
+#include "TemplateFunctions.h"
 
 
 RenderTextureClass::RenderTextureClass()
@@ -29,14 +30,16 @@ bool RenderTextureClass::Initialize(ID3D11Device* device, int textureWidth, int 
 	textureDesc.MipLevels = 1;
 	textureDesc.ArraySize = 1;
 	textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	if (numQualityLevels > 0) {
-		textureDesc.SampleDesc.Count = 4; // how many multisamples
-		textureDesc.SampleDesc.Quality = numQualityLevels - 1;
-	}
-	else {
-		textureDesc.SampleDesc.Count = 1; // how many multisamples
-		textureDesc.SampleDesc.Quality = 0;
-	}
+	//if (numQualityLevels > 0) {
+	//	textureDesc.SampleDesc.Count = 4; // how many multisamples
+	//	textureDesc.SampleDesc.Quality = numQualityLevels - 1;
+	//}
+	//else {
+	//	textureDesc.SampleDesc.Count = 1; // how many multisamples
+	//	textureDesc.SampleDesc.Quality = 0;
+	//}
+	textureDesc.SampleDesc.Count = 1;
+	textureDesc.SampleDesc.Quality = 0;
 	textureDesc.Usage = D3D11_USAGE_DEFAULT;
 	textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 	textureDesc.CPUAccessFlags = 0;
@@ -52,23 +55,23 @@ bool RenderTextureClass::Initialize(ID3D11Device* device, int textureWidth, int 
 	// 렌더 타겟 뷰의 설명을 설정합니다
 	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
 	renderTargetViewDesc.Format = textureDesc.Format;
-	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DMS;
+	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 
 	// 렌더 타겟 뷰를 생성한다
-	result = device->CreateRenderTargetView(m_renderTargetTexture.Get(), &renderTargetViewDesc, &m_renderTargetView);
+	result = device->CreateRenderTargetView(m_renderTargetTexture.Get(), &renderTargetViewDesc, m_renderTargetView.GetAddressOf());
 	if (FAILED(result))
 	{
+		LogString("Error : RenderTextureClass - Failed to create RenderTargetView");
 		return false;
 	}
 
 	// 셰이더 리소스 뷰의 설명을 설정합니다
-	/*D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
+	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
 	shaderResourceViewDesc.Format = textureDesc.Format;
-	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DMS;
+	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
-	shaderResourceViewDesc.Texture2D.MipLevels = 1;*/
-
+	shaderResourceViewDesc.Texture2D.MipLevels = 1;
 	// 셰이더 리소스 뷰를 만듭니다
 	result = device->CreateShaderResourceView(m_renderTargetTexture.Get(), NULL, &m_shaderResourceView);
 	if (FAILED(result))

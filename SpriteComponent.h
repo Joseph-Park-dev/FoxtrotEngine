@@ -27,7 +27,7 @@ protected:
 
 public:
 	virtual void Initialize	(FoxtrotRenderer* renderer);
-	virtual void Update		(float deltaTime) override;
+	virtual void Update		(float deltaTime)		    override;
 	virtual void Render		(FoxtrotRenderer* renderer) override;
 
 public:

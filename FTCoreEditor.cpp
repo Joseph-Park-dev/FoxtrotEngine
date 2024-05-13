@@ -200,10 +200,5 @@ bool FTCoreEditor::InitGUI()
 		LogString("Imgui DX11 Init failed");
 		return false;
 	}
-	/*ImGui_ImplDX11_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
-	ImGui::DockSpaceOverViewport(ImGui::GetWindowViewport());
-	ImGui::EndFrame();*/
 	return true;
 }

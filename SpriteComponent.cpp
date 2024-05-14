@@ -104,6 +104,7 @@ void SpriteComponent::Update(float deltaTime)
 void SpriteComponent::Render(FoxtrotRenderer* renderer)
 {
 	if (mMesh) {
+		mAspect = renderer->GetAspectRatio();
 		renderer->UpdateBuffer(mMesh->basicVertexConstantBufferData,
 			mMesh->vertexConstantBuffer);
 		renderer->UpdateBuffer(mMesh->pixelShaderConstantBufferData,

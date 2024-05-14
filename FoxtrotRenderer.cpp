@@ -15,6 +15,7 @@
 #include "Vertex.h"
 #include "RenderTextureClass.h"
 #include "EditorLayer.h"
+#include "KeyInputManager.h"
 
 FoxtrotRenderer* FoxtrotRenderer::CreateRenderer(HWND window, int width, int height)
 {
@@ -31,7 +32,7 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 {
 	mRenderWidth = width;
 	mRenderHeight = height;
-	CalcAspectRatio();
+	CalcAspectRatio(mRenderWidth, mRenderHeight);
 	mClearColor[0] = 217.f / 255.f;
 	mClearColor[1] = 216.f / 255.f;
 	mClearColor[2] = 212.f / 255.f;
@@ -53,12 +54,6 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 		LogString("Create Render Target View failed.");
 		return false;
 	}
-
-#ifdef _DEBUG
-	SetViewportEditor();
-#else
-	SetViewport();
-#endif
 
 	if (!CreateRasterizerState())
 	{
@@ -91,6 +86,18 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 		return false;
 	}
 
+#ifdef _DEBUG
+	SetViewportEditor();
+#else // _DEBUG
+	SetViewport();
+#endif
+
+	if (!CreateRenderTexture(mRenderWidth, mRenderHeight))
+	{
+		LogString("Error : FoxtrotRenderer Initialize - CreateRenderTexture failed.");
+		return false;
+	}
+
 	std::vector<D3D11_INPUT_ELEMENT_DESC> inputElements = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
 		 D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -107,14 +114,6 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 		return false;
 	}
 	if (!CreatePixelShader(L"ColorPixelShader.hlsl", mBasicPixelShader))
-	{
-		return false;
-	}
-
-	mRenderTexture = new RenderTextureClass();
-	// 렌더링 텍스처 객체를 초기화한다
-	bool result = mRenderTexture->Initialize(mDevice.Get(), width, height, mNumQualityLevels);
-	if (!result)
 	{
 		return false;
 	}
@@ -249,7 +248,7 @@ void FoxtrotRenderer::ResizeWindow(UINT width, UINT height)
 
 		mRenderWidth = width;
 		mRenderHeight = height;
-		CalcAspectRatio();
+		CalcAspectRatio(width, height);
 		mSwapChain->ResizeBuffers(0, // 현재 개수 유지
 			mRenderWidth,
 			mRenderHeight,
@@ -264,6 +263,7 @@ void FoxtrotRenderer::ResizeWindow(UINT width, UINT height)
 void FoxtrotRenderer::RemoveMesh(Mesh* mesh)
 {
 	std::vector<Mesh*>::iterator iter = std::find(mMeshes.begin(), mMeshes.end(), mesh);
+	delete *iter;
 	mMeshes.erase(iter);
 	mMeshes.shrink_to_fit();
 }
@@ -376,6 +376,26 @@ bool FoxtrotRenderer::CreateDeviceAndContext(HWND window)
 	return true;
 }
 
+bool FoxtrotRenderer::CreateRenderTexture(int width, int height)
+{
+	mRenderTexture = new RenderTextureClass();
+	// 렌더링 텍스처 객체를 초기화한다
+	bool result = mRenderTexture->Initialize(mDevice.Get(), width, height, mNumQualityLevels);
+	if (!result)
+	{
+		return false;
+	}
+}
+
+bool FoxtrotRenderer::UpdateRenderTexture(int width, int height)
+{
+	bool result = mRenderTexture->Update(mDevice.Get(), width, height, mNumQualityLevels);
+	if (!result)
+	{
+		return false;
+	}
+}
+
 bool FoxtrotRenderer::CreateRenderTargetView()
 {
 	mRenderTargetView.Reset();
@@ -405,12 +425,11 @@ void FoxtrotRenderer::SetViewport()
 
 void FoxtrotRenderer::SetViewportEditor()
 {
-	ImVec2 sceneViewportPos = EditorLayer::GetInstance()->GetSceneViewportPos();
 	ImVec2 sceneViewportSize = EditorLayer::GetInstance()->GetSceneViewportSize();
 	// Set the viewport
 	ZeroMemory(&mScreenViewport, sizeof(D3D11_VIEWPORT));
-	mScreenViewport.TopLeftX = sceneViewportPos.x;
-	mScreenViewport.TopLeftY = sceneViewportPos.y;
+	mScreenViewport.TopLeftX = 0;
+	mScreenViewport.TopLeftY = 0;
 	mScreenViewport.Width = float(sceneViewportSize.x);
 	mScreenViewport.Height = float(sceneViewportSize.y);
 	// m_screenViewport.Width = static_cast<float>(m_screenHeight);

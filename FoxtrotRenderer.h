@@ -19,7 +19,6 @@ public:
 	static FoxtrotRenderer* CreateRenderer(HWND window, int width, int height);
 	static void DestroyRenderer(FoxtrotRenderer* renderer);
 
-
 public:
 	void SwapChainPresent(UINT syncInterval, UINT flags);
     void Render();
@@ -39,7 +38,7 @@ public:
     RenderTextureClass*    GetRenderTexture() { return mRenderTexture; }
 
     float GetAspectRatio()  { return mAspect; }
-    void  CalcAspectRatio() { mAspect = float(mRenderWidth) / float(mRenderHeight); }
+    void  CalcAspectRatio(float width, float height) { mAspect = width / height; }
     void  RemoveMesh(Mesh* mesh);
     void  SetRenderWidth(int width) { mRenderWidth = width; }
     void  SetRenderHeight(int height) { mRenderHeight = height; }
@@ -100,6 +99,8 @@ private:
     bool CreateTextureSampler();
 
 public:
+    bool CreateRenderTexture(int width, int height);
+    bool UpdateRenderTexture(int width, int height);
     bool CreateRenderTargetView();
     bool CreateDepthBuffer();
     void CreateIndexBuffer(const std::vector<uint32_t>& indices, ComPtr<ID3D11Buffer>& m_indexBuffer);

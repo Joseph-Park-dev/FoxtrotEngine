@@ -82,6 +82,19 @@ bool RenderTextureClass::Initialize(ID3D11Device* device, int textureWidth, int 
 	return true;
 }
 
+bool RenderTextureClass::Update(ID3D11Device* device, int width, int height, UINT numQualityLevels)
+{
+	m_renderTargetTexture.Reset();
+	m_renderTargetView.Reset();
+	m_shaderResourceView.Reset();
+	if (!Initialize(device, width, height, numQualityLevels))
+	{
+		LogString("Error : RenderTextureClass - Update() failed");
+		return false;
+	}
+	return true;
+}
+
 
 void RenderTextureClass::Shutdown()
 {
@@ -111,18 +124,20 @@ void RenderTextureClass::SetRenderTarget(ID3D11DeviceContext* deviceContext, ID3
 void RenderTextureClass::ClearRenderTarget(ID3D11DeviceContext* deviceContext, ID3D11DepthStencilView* depthStencilView, float* clearColor)
 {
 	// 백 버퍼를 지운다
-	deviceContext->ClearRenderTargetView(m_renderTargetView.Get(), clearColor);
+	if(m_renderTargetView)
+		deviceContext->ClearRenderTargetView(m_renderTargetView.Get(), clearColor);
 
 	// 깊이 버퍼를 지운다
-	deviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	if(depthStencilView)
+		deviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
-ComPtr <ID3D11ShaderResourceView> RenderTextureClass::GetShaderResourceView()
+ComPtr<ID3D11ShaderResourceView> RenderTextureClass::GetShaderResourceView()
 {
 	return m_shaderResourceView;
 }
 
-ComPtr <ID3D11RenderTargetView> RenderTextureClass::GetRenderTargetView()
+ComPtr<ID3D11RenderTargetView> RenderTextureClass::GetRenderTargetView()
 {
 	return m_renderTargetView;
 }

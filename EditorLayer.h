@@ -64,6 +64,7 @@ private:
 	void DisplayHierarchyMenu();
 	void DisplayInspectorMenu();
 	void ApplyCommandHistory();
+	bool SceneViewportChanged();
 	//void ResizeUIWindow(std::string menuID);
 };
 #endif // _DEBUG

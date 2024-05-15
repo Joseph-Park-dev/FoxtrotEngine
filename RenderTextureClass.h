@@ -20,9 +20,12 @@ public:
 
 	ComPtr <ID3D11ShaderResourceView> GetShaderResourceView();
 	ComPtr <ID3D11RenderTargetView> GetRenderTargetView();
+	ComPtr <ID3D11DepthStencilView> GetDepthStencilView();
 
 private:
 	ComPtr <ID3D11Texture2D> m_renderTargetTexture;
 	ComPtr <ID3D11RenderTargetView> m_renderTargetView;
 	ComPtr <ID3D11ShaderResourceView> m_shaderResourceView;
+	ComPtr<ID3D11Texture2D>			mDepthStencilBuffer;
+	ComPtr <ID3D11DepthStencilView> mDepthStencilView;
 };

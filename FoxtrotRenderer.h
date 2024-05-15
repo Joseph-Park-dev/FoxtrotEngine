@@ -24,9 +24,10 @@ public:
     void Render();
     void RenderToTexture();
     void RenderClear();
-    void ResizeWindow(UINT width, UINT height);
     void SetViewport();
-    void SetViewportEditor();
+
+    void ResizeWindow(UINT width, UINT height);
+    void ResizeSceneViewport(UINT width, UINT height);
 
 public:
 	ID3D11Device*          GetDevice()    { return mDevice.Get(); }
@@ -37,8 +38,9 @@ public:
     ComPtr<ID3D11Texture2D> GetDepthStencilBuffer() { return mDepthStencilBuffer; }
     RenderTextureClass*    GetRenderTexture() { return mRenderTexture; }
 
-    float GetAspectRatio()  { return mAspect; }
-    void  CalcAspectRatio(float width, float height) { mAspect = width / height; }
+    float GetAspectRatio()  { return (float)mRenderWidth / (float)mRenderHeight; }
+    int   GetRenderWidth() { return mRenderWidth; }
+    int   GetRenderHeight() { return mRenderHeight; }
     void  RemoveMesh(Mesh* mesh);
     void  SetRenderWidth(int width) { mRenderWidth = width; }
     void  SetRenderHeight(int height) { mRenderHeight = height; }
@@ -103,6 +105,7 @@ public:
     bool UpdateRenderTexture(int width, int height);
     bool CreateRenderTargetView();
     bool CreateDepthBuffer();
+    bool UpdateDepthBuffer(int width, int height);
     void CreateIndexBuffer(const std::vector<uint32_t>& indices, ComPtr<ID3D11Buffer>& m_indexBuffer);
     template <typename T_VERTEX>
     void CreateVertexBuffer(const std::vector<T_VERTEX>& vertices,

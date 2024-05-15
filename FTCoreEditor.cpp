@@ -127,7 +127,7 @@ void FTCoreEditor::UpdateGame()
 
 void FTCoreEditor::GenerateOutput()
 {
-	GetGameRenderer()->SetViewportEditor();
+	GetGameRenderer()->SetViewport();
 	//float clearColor[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
 	//mEditorRenderer->RenderClear(clearColor);
 	if (mIsUpdatingGame)

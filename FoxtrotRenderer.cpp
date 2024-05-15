@@ -32,7 +32,7 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 {
 	mRenderWidth = width;
 	mRenderHeight = height;
-	CalcAspectRatio(mRenderWidth, mRenderHeight);
+	GetAspectRatio();
 	mClearColor[0] = 217.f / 255.f;
 	mClearColor[1] = 216.f / 255.f;
 	mClearColor[2] = 212.f / 255.f;
@@ -86,11 +86,7 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 		return false;
 	}
 
-#ifdef _DEBUG
-	SetViewportEditor();
-#else // _DEBUG
 	SetViewport();
-#endif
 
 	if (!CreateRenderTexture(mRenderWidth, mRenderHeight))
 	{
@@ -205,10 +201,10 @@ void FoxtrotRenderer::Render()
 void FoxtrotRenderer::RenderToTexture()
 {
 	// 렌더링 대상을 렌더링에 맞게 설정합니다
-	mContext->OMSetRenderTargets(1, mRenderTexture->GetRenderTargetView().GetAddressOf(), mDepthStencilView.Get());
+	mContext->OMSetRenderTargets(1, mRenderTexture->GetRenderTargetView().GetAddressOf(), mRenderTexture->GetDepthStencilView().Get());
 
 	// 렌더링을 텍스처에 지웁니다
-	mRenderTexture->ClearRenderTarget(mContext.Get(), mDepthStencilView.Get(), mClearColor);
+	mRenderTexture->ClearRenderTarget(mContext.Get(), mRenderTexture->GetDepthStencilView().Get(), mClearColor);
 
 	// 이제 장면을 렌더링하면 백 버퍼 대신 텍스처로 렌더링됩니다
 	Render();
@@ -246,9 +242,30 @@ void FoxtrotRenderer::ResizeWindow(UINT width, UINT height)
 		mDepthStencilView.Reset();
 		mContext->Flush(); //요게 없으면 메모리가 훅 올라갑니다!
 
+		mRenderWidth = (float)width;
+		mRenderHeight = (float)height;
+		mSwapChain->ResizeBuffers(0, // 현재 개수 유지
+			mRenderWidth,
+			mRenderHeight,
+			DXGI_FORMAT_UNKNOWN, // 현재 포맷 유지
+			0);
+		CreateRenderTargetView();
+		CreateDepthBuffer();
+		SetViewport();
+	}
+}
+
+void FoxtrotRenderer::ResizeSceneViewport(UINT width, UINT height)
+{
+	if (mSwapChain) { // 처음 실행이 아닌지 확인
+		// Create 되는 변수들 Release 
+		mRenderTargetView.Reset();
+		mDepthStencilBuffer.Reset();
+		mDepthStencilView.Reset();
+		mContext->Flush(); //요게 없으면 메모리가 훅 올라갑니다!
+
 		mRenderWidth = width;
 		mRenderHeight = height;
-		CalcAspectRatio(width, height);
 		mSwapChain->ResizeBuffers(0, // 현재 개수 유지
 			mRenderWidth,
 			mRenderHeight,
@@ -423,21 +440,6 @@ void FoxtrotRenderer::SetViewport()
 	mContext->RSSetViewports(1, &mScreenViewport);
 }
 
-void FoxtrotRenderer::SetViewportEditor()
-{
-	ImVec2 sceneViewportSize = EditorLayer::GetInstance()->GetSceneViewportSize();
-	// Set the viewport
-	ZeroMemory(&mScreenViewport, sizeof(D3D11_VIEWPORT));
-	mScreenViewport.TopLeftX = 0;
-	mScreenViewport.TopLeftY = 0;
-	mScreenViewport.Width = float(sceneViewportSize.x);
-	mScreenViewport.Height = float(sceneViewportSize.y);
-	// m_screenViewport.Width = static_cast<float>(m_screenHeight);
-	mScreenViewport.MinDepth = 0.0f;
-	mScreenViewport.MaxDepth = 1.0f; // Note: important for depth buffering
-	mContext->RSSetViewports(1, &mScreenViewport);
-}
-
 bool FoxtrotRenderer::CreateRasterizerState()
 {
 	// Create a rasterizer state
@@ -459,6 +461,48 @@ bool FoxtrotRenderer::CreateDepthBuffer()
 	D3D11_TEXTURE2D_DESC depthStencilBufferDesc;
 	depthStencilBufferDesc.Width = mRenderWidth;
 	depthStencilBufferDesc.Height = mRenderHeight;
+	depthStencilBufferDesc.MipLevels = 1;
+	depthStencilBufferDesc.ArraySize = 1;
+	depthStencilBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	//if (mNumQualityLevels > 0) {
+	//	depthStencilBufferDesc.SampleDesc.Count = 4; // how many multisamples
+	//	depthStencilBufferDesc.SampleDesc.Quality = mNumQualityLevels - 1;
+	//}
+	//else {
+	//	depthStencilBufferDesc.SampleDesc.Count = 1; // how many multisamples
+	//	depthStencilBufferDesc.SampleDesc.Quality = 0;
+	//}
+	depthStencilBufferDesc.SampleDesc.Count = 1; // how many multisamples
+	depthStencilBufferDesc.SampleDesc.Quality = 0;
+	depthStencilBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthStencilBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	depthStencilBufferDesc.CPUAccessFlags = 0;
+	depthStencilBufferDesc.MiscFlags = 0;
+
+	if (FAILED(mDevice->CreateTexture2D(&depthStencilBufferDesc, 0,
+		mDepthStencilBuffer.GetAddressOf())))
+	{
+		LogString("CreateTexture2D() failed.");
+		return false;
+	}
+	if (FAILED(
+		mDevice->CreateDepthStencilView(mDepthStencilBuffer.Get(), 0, mDepthStencilView.GetAddressOf())))
+	{
+		LogString("CreateDepthStencilView() failed.");
+		return false;
+	}
+	return true;
+}
+
+bool FoxtrotRenderer::UpdateDepthBuffer(int width, int height)
+{
+	mDepthStencilBuffer.Reset();
+	mDepthStencilView.Reset();
+
+	// Create depth buffer
+	D3D11_TEXTURE2D_DESC depthStencilBufferDesc;
+	depthStencilBufferDesc.Width = width;
+	depthStencilBufferDesc.Height = height;
 	depthStencilBufferDesc.MipLevels = 1;
 	depthStencilBufferDesc.ArraySize = 1;
 	depthStencilBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;

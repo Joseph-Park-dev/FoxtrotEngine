@@ -79,6 +79,41 @@ bool RenderTextureClass::Initialize(ID3D11Device* device, int textureWidth, int 
 		return false;
 	}
 
+	// Create depth buffer
+	D3D11_TEXTURE2D_DESC depthStencilBufferDesc;
+	depthStencilBufferDesc.Width = textureWidth;
+	depthStencilBufferDesc.Height = textureHeight;
+	depthStencilBufferDesc.MipLevels = 1;
+	depthStencilBufferDesc.ArraySize = 1;
+	depthStencilBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	//if (mNumQualityLevels > 0) {
+	//	depthStencilBufferDesc.SampleDesc.Count = 4; // how many multisamples
+	//	depthStencilBufferDesc.SampleDesc.Quality = mNumQualityLevels - 1;
+	//}
+	//else {
+	//	depthStencilBufferDesc.SampleDesc.Count = 1; // how many multisamples
+	//	depthStencilBufferDesc.SampleDesc.Quality = 0;
+	//}
+	depthStencilBufferDesc.SampleDesc.Count = 1; // how many multisamples
+	depthStencilBufferDesc.SampleDesc.Quality = 0;
+	depthStencilBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthStencilBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	depthStencilBufferDesc.CPUAccessFlags = 0;
+	depthStencilBufferDesc.MiscFlags = 0;
+
+	if (FAILED(device->CreateTexture2D(&depthStencilBufferDesc, 0,
+		mDepthStencilBuffer.GetAddressOf())))
+	{
+		LogString("Error : RenderTextureClass - CreateDepthStencilBuffer() failed.");
+		return false;
+	}
+
+	if (FAILED(
+		device->CreateDepthStencilView(mDepthStencilBuffer.Get(), 0, mDepthStencilView.GetAddressOf())))
+	{
+		LogString("Error : RenderTextureClass - CreateDepthStencilView() failed.");
+		return false;
+	}
 	return true;
 }
 
@@ -87,6 +122,9 @@ bool RenderTextureClass::Update(ID3D11Device* device, int width, int height, UIN
 	m_renderTargetTexture.Reset();
 	m_renderTargetView.Reset();
 	m_shaderResourceView.Reset();
+	mDepthStencilBuffer.Reset();
+	mDepthStencilView.Reset();
+
 	if (!Initialize(device, width, height, numQualityLevels))
 	{
 		LogString("Error : RenderTextureClass - Update() failed");
@@ -140,4 +178,9 @@ ComPtr<ID3D11ShaderResourceView> RenderTextureClass::GetShaderResourceView()
 ComPtr<ID3D11RenderTargetView> RenderTextureClass::GetRenderTargetView()
 {
 	return m_renderTargetView;
+}
+
+ComPtr<ID3D11DepthStencilView> RenderTextureClass::GetDepthStencilView()
+{
+	return mDepthStencilView;
 }

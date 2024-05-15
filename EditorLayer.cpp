@@ -70,23 +70,26 @@ void EditorLayer::DisplayEditorElements(FoxtrotRenderer* renderer)
 		mEditorElements[i]->Render(renderer);
 }
 
-void EditorLayer::UpdateSceneViewportArea()
-{
-	mSceneViewportPos = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
-	mSceneViewportSize = ImGui::GetContentRegionAvail();
-}
-
 void EditorLayer::DisplayViewport()
 {
 	ImGui::Begin("Scene");
 	FoxtrotRenderer* renderer = FTCoreEditor::GetInstance()->GetGameRenderer();
-	if (SceneViewportChanged())
+	if (MOUSE_HOLD(MOUSE::MOUSE_LEFT) && SceneViewportSizeChanged())
 	{
-		renderer->CalcAspectRatio(mSceneViewportSize.x, mSceneViewportSize.y);
+		mIsResizingViewport = true;
+	}
+	if (mIsResizingViewport && MOUSE_AWAY(MOUSE::MOUSE_LEFT))
+	{
+		//renderer->ResizeSceneViewport(mSceneViewportSize.x, mSceneViewportSize.y);
+		renderer->SetRenderWidth(mSceneViewportSize.x);
+		renderer->SetRenderHeight(mSceneViewportSize.y);
 		renderer->UpdateRenderTexture(mSceneViewportSize.x, mSceneViewportSize.y);
+		//renderer->UpdateDepthBuffer(mSceneViewportSize.x, mSceneViewportSize.y);
+		mIsResizingViewport = false;
 	}
 	ID3D11ShaderResourceView* viewportTexture = renderer->GetRenderTexture()->GetShaderResourceView().Get();
-	ImGui::Image((void*)viewportTexture, mSceneViewportSize);
+	ImVec2 viewportSize = ImVec2(renderer->GetRenderWidth(), renderer->GetRenderHeight());
+	ImGui::Image((void*)viewportTexture, viewportSize);
 	ImGui::End();
 }
 
@@ -267,15 +270,14 @@ void EditorLayer::ApplyCommandHistory()
 	}
 }
 
-bool EditorLayer::SceneViewportChanged()
+bool EditorLayer::SceneViewportSizeChanged()
 {
-	ImVec2 prevPos = mSceneViewportPos;
 	ImVec2 prevSize = mSceneViewportSize;
-	UpdateSceneViewportArea();
-	if (prevPos != mSceneViewportPos)
+	if (prevSize != ImGui::GetContentRegionAvail())
+	{
+		mSceneViewportSize = ImGui::GetContentRegionAvail();
 		return true;
-	else if (prevSize != mSceneViewportSize)
-		return true;
+	}
 	return false;
 }
 
@@ -344,6 +346,7 @@ EditorLayer::EditorLayer()
 	, mRedoKeyPressed(false)
 	, mConfirmKeyPressed(false)
 	, mDeleteKeyPressed(false)
+	, mIsResizingViewport(false)
 {
 	// Initial command stored in front of every following commands
 	CommandHistory::GetInstance()->AddCommand(new IntEditCommand(mActorNameIdx, 0));

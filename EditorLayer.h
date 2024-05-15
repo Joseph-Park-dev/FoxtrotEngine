@@ -32,7 +32,6 @@ public:
 	bool GetConfirmKeyPressed() const { return mConfirmKeyPressed; }
 	ImVec2 GetSceneViewportPos() const { return mSceneViewportPos; }
 	ImVec2 GetSceneViewportSize() const { return mSceneViewportSize; }
-	void UpdateSceneViewportArea();
 
 private:
 	// After directX implementation
@@ -55,6 +54,7 @@ private:
 
 	ImVec2 mSceneViewportPos;
 	ImVec2 mSceneViewportSize;
+	bool mIsResizingViewport;
 
 private:
 	void UnfocusEditorElements();
@@ -64,7 +64,7 @@ private:
 	void DisplayHierarchyMenu();
 	void DisplayInspectorMenu();
 	void ApplyCommandHistory();
-	bool SceneViewportChanged();
+	bool SceneViewportSizeChanged();
 	//void ResizeUIWindow(std::string menuID);
 };
 #endif // _DEBUG

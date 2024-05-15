@@ -105,6 +105,7 @@ void SpriteComponent::Render(FoxtrotRenderer* renderer)
 {
 	if (mMesh) {
 		mAspect = renderer->GetAspectRatio();
+		LogFloat(mAspect);
 		renderer->UpdateBuffer(mMesh->basicVertexConstantBufferData,
 			mMesh->vertexConstantBuffer);
 		renderer->UpdateBuffer(mMesh->pixelShaderConstantBufferData,

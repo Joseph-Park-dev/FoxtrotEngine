@@ -73,6 +73,7 @@ void EditorLayer::DisplayEditorElements(FoxtrotRenderer* renderer)
 void EditorLayer::DisplayViewport()
 {
 	ImGui::Begin("Scene");
+	mSceneViewportPos = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
 	FoxtrotRenderer* renderer = FTCoreEditor::GetInstance()->GetGameRenderer();
 	if (MOUSE_HOLD(MOUSE::MOUSE_LEFT) && SceneViewportSizeChanged())
 	{

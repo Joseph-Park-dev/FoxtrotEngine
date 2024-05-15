@@ -7,6 +7,8 @@
 #include <fstream>
 #include <string>
 #include <directxtk/SimpleMath.h>
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui.h>
 
 #include "Math.h"
 #include "Bounds.h"
@@ -45,6 +47,11 @@ void LogFloat(std::string message, float val)
 }
 
 void LogVector2(FTVector2 val)
+{
+	printf("X : %f Y : %f\n", val.x, val.y);
+}
+
+void LogVector2(ImVec2 val)
 {
 	printf("X : %f Y : %f\n", val.x, val.y);
 }

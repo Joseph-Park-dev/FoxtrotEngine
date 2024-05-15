@@ -11,6 +11,7 @@
 #include "KeyInputManager.h"
 #include "CommandHistory.h"
 #include "ChunkLoader.h"
+#include "FoxtrotRenderer.h"
 
 #define ACTORNAME_MAX 100
 
@@ -130,7 +131,14 @@ void EditorElement::EditorUpdateActor()
 void EditorElement::Render(FoxtrotRenderer* renderer)
 {
 	if (IsActive())
+	{
 		RenderComponents(renderer);
+		FTVector2 position = GetTransform()->GetScreenPositionEditor();
+		float zoomVal = EditorCamera2D::GetInstance()->GetZoomValue();
+		FTVector2 leftTop = position - GetTransform()->GetScale();
+		FTVector2 bottomRight = position + GetTransform()->GetScale();
+		renderer->DrawRectangle(leftTop, bottomRight);
+	}
 }
 
 void EditorElement::UIRender(FoxtrotRenderer* renderer)

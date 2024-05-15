@@ -15,13 +15,13 @@ public:
 	const float		 GetRotation()		 const { return mRotation; }
 	const FTVector2  GetScreenPosition() const;
 #ifdef _DEBUG
-	const FTVector2  GetScreenPositionEditor() const;
+	const FTVector2 GetScreenPositionEditor() const;
 #endif
 
-	FTVector2* GetWorldPositionRef()  { return &mWorldPosition; }
-	FTVector2* GetLocalPositionRef()  { return &mLocalPosition; }
-	FTVector2* GetScaleRef()			{ return &mScale; }
-	float*	 GetRotationRef()		{ return &mRotation; }
+	FTVector2* GetWorldPositionRef() { return &mWorldPosition; }
+	FTVector2* GetLocalPositionRef() { return &mLocalPosition; }
+	FTVector2* GetScaleRef()		 { return &mScale; }
+	float*	   GetRotationRef()		 { return &mRotation; }
 
 	void	 SetWorldPosition	(const FTVector2 pos) { mWorldPosition = pos; }
 	//void	 SetWorldPositionBox2D (const b2Vec2 pos) { mWorldPosition = FTVector2(pos.x, pos.y); }

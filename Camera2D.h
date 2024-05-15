@@ -60,8 +60,8 @@ public:
 	bool			IsInRenderedArea(SpriteComponent* sprite) const;
 	bool			IsInRenderedArea(Tile* tile) const;
 
-	FTVector2		ConvertWorldPosToScreen(FTVector2 worldPos) const;
-	FTVector2		ConvertScreenPosToWorld(FTVector2 screenPos) const;
+	virtual FTVector2 ConvertWorldPosToScreen(FTVector2 worldPos) const;
+			FTVector2 ConvertScreenPosToWorld(FTVector2 screenPos) const;
 
 	void			SetDiffFromCenter(FTVector2 diff) { mDiffFromCenter = diff; }
 
@@ -93,7 +93,7 @@ public:
 #endif // _DEBUG
 
 protected:
-			void CalcDiff();
+	virtual	void CalcDiff();
 	virtual void CalcRenderArea();
 			void ZoomIn();
 			void ZoomOut();

@@ -40,10 +40,10 @@ void SpriteComponent::Initialize(FoxtrotRenderer* renderer)
 	mAspect = renderer->GetAspectRatio();
 	// Read Mesh and store it as Mesh Data
 	// Implementation needed
-	MeshData mesh = GeometryGenerator::MakeSquare();
-	renderer->CreateVertexBuffer(mesh.vertices, mMesh->vertexBuffer);
-	mMesh->indexCount = UINT(mesh.indices.size());
-	renderer->CreateIndexBuffer(mesh.indices, mMesh->indexBuffer);
+	MeshData meshData = GeometryGenerator::MakeSquare();
+	renderer->CreateVertexBuffer(meshData.vertices, mMesh->vertexBuffer);
+	mMesh->indexCount = UINT(meshData.indices.size());
+	renderer->CreateIndexBuffer(meshData.indices, mMesh->indexBuffer);
 
 	SetTexture(renderer, "Asteroid");
 
@@ -61,8 +61,8 @@ void SpriteComponent::Initialize(FoxtrotRenderer* renderer)
 void SpriteComponent::Update(float deltaTime)
 {
 	Transform* transform = GetOwner()->GetTransform();
-	FTVector2  lookAtPos = EditorCamera2D::GetInstance()->GetLookAtPos();
 	float cameraMouseNavFactor = EditorCamera2D::GetInstance()->GetMouseNavFactor();
+	FTVector2 lookAtPos = EditorCamera2D::GetInstance()->GetLookAtPos() * cameraMouseNavFactor;
 	FTVector2 scale = transform->GetScale();
 	FTVector2 worldPos = transform->GetWorldPosition();
 	// 모델의 변환 -> 모델 행렬 결정

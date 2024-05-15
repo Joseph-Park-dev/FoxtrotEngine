@@ -135,6 +135,11 @@ public:
 		,y(static_cast<float>(inY))
 	{}
 
+	explicit FTVector2(ImVec2 imguiVec2)
+		: x(imguiVec2.x)
+		, y(imguiVec2.y)
+	{}
+
 	DirectX::XMFLOAT2 GetD3Vec2()
 	{
 		return DirectX::XMFLOAT2(this->x, this->y);

@@ -13,6 +13,7 @@ public:
 	void Update(float deltaTime) override;
 	void EditorRender(FoxtrotRenderer* renderer);
 	void DisplayCameraMenu();
+	FTVector2 ConvertWorldPosToScreen(FTVector2 worldPos) const override;
 
 public:
 	float GetMouseNavFactor() const { return mMouseNavFactor; }
@@ -32,6 +33,7 @@ private:
 	void MiddleMouseNavigation();
 	void CalcCameraDisplay();
 	void UpdateGrid();
+	void CalcDiff() override;
 	//void RenderGrid(FoxtrotRenderer* renderer);
 	
 private:

@@ -127,6 +127,22 @@ void FTCoreEditor::UpdateGame()
 
 void FTCoreEditor::GenerateOutput()
 {
+	MSG msg = {};
+	InvalidateRect(GetWindow(), NULL, true);
+	if (PeekMessage(&msg, GetWindow(), 0, 0, PM_REMOVE))
+	{
+		if (msg.message == WM_PAINT)
+		{
+			if (GetGameRenderer())
+			{
+				GetGameRenderer()->DrawPrimitives(GetWindow());
+			}
+		}
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+	UpdateWindow(GetWindow());
+
 	GetGameRenderer()->SetViewport();
 	//float clearColor[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
 	//mEditorRenderer->RenderClear(clearColor);

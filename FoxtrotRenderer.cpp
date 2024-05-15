@@ -5,7 +5,8 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <wrl.h> // ComPtr
-#include <directxtk\DirectXHelpers.h>
+#include <directxtk/PrimitiveBatch.h>
+
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 
@@ -33,10 +34,15 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 	mRenderWidth = width;
 	mRenderHeight = height;
 	GetAspectRatio();
-	mClearColor[0] = 217.f / 255.f;
+	/*mClearColor[0] = 217.f / 255.f;
 	mClearColor[1] = 216.f / 255.f;
 	mClearColor[2] = 212.f / 255.f;
-	mClearColor[3] = 1.0f;
+	mClearColor[3] = 1.0f;*/
+
+	mClearColor[0] = 0.0f;
+	mClearColor[1] = 0.0f;
+	mClearColor[2] = 0.0f;
+	mClearColor[3] = 1.0f; 
 
 	if (!CreateDeviceAndContext(window))
 	{
@@ -283,6 +289,30 @@ void FoxtrotRenderer::RemoveMesh(Mesh* mesh)
 	delete *iter;
 	mMeshes.erase(iter);
 	mMeshes.shrink_to_fit();
+}
+
+void FoxtrotRenderer::DrawPrimitives(HWND hwnd)
+{
+	PAINTSTRUCT ps;
+	HDC hdc = BeginPaint(hwnd, &ps);
+	for (size_t i = 0; i < mRegisteredPrimitive.size(); ++i)
+	{
+		FTVector2 topLeft = mRegisteredPrimitive[i].first;
+		FTVector2 bottomRight = mRegisteredPrimitive[i].second;
+		HPEN pen = CreatePen(PS_DASH, 2, RGB(255, 0, 0));
+		SelectObject(hdc, GetStockObject(NULL_BRUSH));
+		(HPEN)SelectObject(hdc, pen);
+		Rectangle(hdc, (int)topLeft.x, (int)topLeft.y, (int)bottomRight.x, (int)bottomRight.y);
+		DeleteObject(pen);
+	}
+	EndPaint(hwnd, &ps);
+	mRegisteredPrimitive.clear();
+}
+
+void FoxtrotRenderer::DrawRectangle(FTVector2 topLeft, FTVector2 bottomRight)
+{
+	std::pair<FTVector2, FTVector2> pair = { topLeft, bottomRight };
+	mRegisteredPrimitive.push_back(pair);
 }
 
 bool FoxtrotRenderer::CreateDeviceAndContext(HWND window)

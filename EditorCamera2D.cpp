@@ -38,7 +38,7 @@ void EditorCamera2D::MiddleMouseNavigation()
 	}
 	else if (MOUSE_HOLD(MOUSE::MOUSE_MIDDLE))
 	{
-		diff = (MOUSE_POS - mMiddleMouseClickedPos) * mMouseNavFactor;
+		diff = (MOUSE_POS - mMiddleMouseClickedPos);
 		FTVector2 lookAtPos = FTVector2(this->GetLookAtPos().x - diff.x, this->GetLookAtPos().y + diff.y);
 		this->SetLookAtPos(lookAtPos);
 		//SetScreenCenter(GetScreenCenter() + diff);
@@ -65,6 +65,16 @@ void EditorCamera2D::UpdateGrid()
 {
 	if (ImGui::IsKeyPressed(ImGuiKey_G))
 		mGridIsOn = !mGridIsOn;
+}
+
+void EditorCamera2D::CalcDiff()
+{
+	ImVec2 viewportPos = EditorLayer::GetInstance()->GetSceneViewportPos();
+	ImVec2 viewportSize = EditorLayer::GetInstance()->GetSceneViewportSize();
+	ImVec2 viewportCenter = viewportPos + viewportSize / 2;
+
+	FTVector2 diff = FTVector2(this->GetLookAtPos().x - viewportCenter.x, -(this->GetLookAtPos().y + viewportCenter.y));
+	SetDiffFromCenter(diff);
 }
 
 void EditorCamera2D::EditorRender(FoxtrotRenderer* renderer)
@@ -151,6 +161,19 @@ void EditorCamera2D::DisplayCameraMenu()
 	}
 	delete[] actorNames;
 	ImGui::End();
+}
+
+FTVector2 EditorCamera2D::ConvertWorldPosToScreen(FTVector2 worldPos) const
+{
+	FTVector2 viewportPos = FTVector2(EditorLayer::GetInstance()->GetSceneViewportPos());
+	FTVector2 lookAtPos = EditorCamera2D::GetInstance()->GetLookAtPos();
+	FTVector2 diff = EditorCamera2D::GetInstance()->GetDiffFromCenter();
+	float zoomVal = EditorCamera2D::GetInstance()->GetZoomValue();
+
+	FTVector2 screenPos = worldPos - diff;
+	//FTVector2 zoomScale = (worldPos - lookAtPos) * zoomVal;
+	//LogVector2(diff);
+	return screenPos;
 }
 
 EditorCamera2D::EditorCamera2D()

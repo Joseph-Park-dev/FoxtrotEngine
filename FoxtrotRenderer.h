@@ -12,6 +12,7 @@
 using namespace Microsoft::WRL;
 class Transform;
 class RenderTextureClass;
+class FTVector2;
 
 class FoxtrotRenderer
 {
@@ -53,6 +54,13 @@ private:
     UINT  mCreateDeviceFlags;
     float mAspect;
 
+public:
+    void DrawPrimitives(HWND hwnd);
+    void DrawRectangle(FTVector2 topLeft, FTVector2 bottomRight);
+
+private:
+    std::vector<std::pair<FTVector2, FTVector2>> mRegisteredPrimitive;
+
 private:
     FTTexture mWallTexture;
 
@@ -80,7 +88,7 @@ private:
 
     ComPtr<ID3D11Buffer> mVertexBuffer;
     ComPtr<ID3D11Buffer> mIndexBuffer;
-    
+
     UINT mIndexCount;
     std::vector<Mesh*> mMeshes;
 

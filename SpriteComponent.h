@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "TemplateFunctions.h"
+#include "MeshData.h"
 
 class FTTexture;
 class Mesh;
@@ -36,6 +37,7 @@ public:
 
 private:
 	Mesh*		mMesh;
+	MeshData	mMeshData;
 	Bounds*		rect;
 	int			mTextWidth;
 	int			mTexHeight;

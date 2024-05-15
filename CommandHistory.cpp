@@ -104,14 +104,14 @@ void CommandHistory::Update()
 	}
 }
 
-void CommandHistory::UpdateVectorValue(std::string label, FTVector2* ref, FTVector2 val)
+void CommandHistory::UpdateVectorValue(std::string label, FTVector2* ref, FTVector2 val, float modSpeed)
 {
 	FTVector2 updatedVal = val;
 	float* vec2 = new float[2];
 	vec2[0] = updatedVal.x;
 	vec2[1] = updatedVal.y;
 	bool isRecording = CommandHistory::GetInstance()->GetIsRecording();
-	if (ImGui::DragFloat2(label.c_str(), vec2))
+	if (ImGui::DragFloat2(label.c_str(), vec2, modSpeed))
 	{
 		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
 		{
@@ -134,12 +134,12 @@ void CommandHistory::UpdateVectorValue(std::string label, FTVector2* ref, FTVect
 	delete[] vec2;
 }
 
-void CommandHistory::UpdateFloatValue(std::string label, float* ref, float val, Transform* transf, TransSetFloatFunc setFunc)
+void CommandHistory::UpdateFloatValue(std::string label, float* ref, float val, float modSpeed, Transform* transf, TransSetFloatFunc setFunc)
 {
 	float prevRotation = val;
 	float* rotationBuf = new float(prevRotation);
 	bool isRecording = CommandHistory::GetInstance()->GetIsRecording();
-	if (ImGui::DragFloat(label.c_str(), rotationBuf))
+	if (ImGui::DragFloat(label.c_str(), rotationBuf, modSpeed))
 	{
 		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
 		{

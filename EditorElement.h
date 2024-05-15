@@ -35,14 +35,15 @@ public:
 private:
 	// Stores ActorGroup index -> is int for Uint -> int conversion not supported
 	int mActorGroupIdx;
+	float mRotationModSpeed;
 
 private:
 	void UpdateActorName();
 	void UpdateActorGroup();
 	void UpdateActorState();
-	void UpdateActorWorldPosition();
-	void UpdateActorLocalPosition();
-	void UpdateActorScale();
+	void UpdateActorWorldPosition(float modSpeed);
+	void UpdateActorLocalPosition(float modSpeed);
+	void UpdateActorScale(float modSpeed);
 	void UpdateActorRotation(TransSetFloatFunc func);
 	void UpdateComponents();
 

@@ -64,7 +64,7 @@ void SpriteComponent::Update(float deltaTime)
 	FTVector2  lookAtPos = EditorCamera2D::GetInstance()->GetLookAtPos();
 	float cameraMouseNavFactor = EditorCamera2D::GetInstance()->GetMouseNavFactor();
 	FTVector2 scale = transform->GetScale();
-	FTVector2 worldPos = transform->GetWorldPosition() * cameraMouseNavFactor;
+	FTVector2 worldPos = transform->GetWorldPosition();
 	// 모델의 변환 -> 모델 행렬 결정
 	mMesh->basicVertexConstantBufferData.model =
 		DirectX::SimpleMath::Matrix::CreateScale(scale.x, scale.y, 1.0f) *
@@ -105,7 +105,6 @@ void SpriteComponent::Render(FoxtrotRenderer* renderer)
 {
 	if (mMesh) {
 		mAspect = renderer->GetAspectRatio();
-		LogFloat(mAspect);
 		renderer->UpdateBuffer(mMesh->basicVertexConstantBufferData,
 			mMesh->vertexConstantBuffer);
 		renderer->UpdateBuffer(mMesh->pixelShaderConstantBufferData,

@@ -32,9 +32,9 @@ void EditorElement::UIUpdate()
 				UpdateActorGroup();
 				UpdateActorState();
 
-				UpdateActorWorldPosition();
-				UpdateActorLocalPosition();
-				UpdateActorScale();
+				UpdateActorWorldPosition(VALUE_MODSPEED);
+				UpdateActorLocalPosition(VALUE_MODSPEED);
+				UpdateActorScale(VALUE_MODSPEED);
 				UpdateActorRotation(&Transform::SetRotation);
 				ImGui::EndTabItem();
 			}
@@ -141,11 +141,13 @@ void EditorElement::UIRender(FoxtrotRenderer* renderer)
 
 EditorElement::EditorElement(Scene* scene)
 	: PanelUI (scene,false)
+	, mRotationModSpeed(1.0f)
 {}
 
 EditorElement::EditorElement(Actor* actor)
 	: PanelUI(actor)
 	, mActorGroupIdx((int)actor->GetActorGroup())
+	, mRotationModSpeed(1.0f)
 {
 	SetActorGroup(actor->GetActorGroup());
 	SetName(actor->GetName());
@@ -205,33 +207,36 @@ void EditorElement::UpdateActorState()
 		CommandHistory::GetInstance()->AddCommand(new StateEditCommand(GetStateRef(), state));
 }
 
-void EditorElement::UpdateActorWorldPosition()
+void EditorElement::UpdateActorWorldPosition(float modSpeed)
 {
 	CommandHistory::GetInstance()->UpdateVectorValue
 	(
 		"World Position",
 		GetTransform()->GetWorldPositionRef(),
-		GetTransform()->GetWorldPosition()
+		GetTransform()->GetWorldPosition(),
+		modSpeed
 	);
 }
 
-void EditorElement::UpdateActorLocalPosition()
+void EditorElement::UpdateActorLocalPosition(float modSpeed)
 {
 	CommandHistory::GetInstance()->UpdateVectorValue
 	(
 		"Local Position",
 		GetTransform()->GetLocalPositionRef(),
-		GetTransform()->GetLocalPosition()
+		GetTransform()->GetLocalPosition(),
+		modSpeed
 	);
 }
 
-void EditorElement::UpdateActorScale()
+void EditorElement::UpdateActorScale(float modSpeed)
 {
 	CommandHistory::GetInstance()->UpdateVectorValue
 	(
 		"Scale",
 		GetTransform()->GetScaleRef(),
-		GetTransform()->GetScale()
+		GetTransform()->GetScale(),
+		modSpeed
 	);
 }
 
@@ -242,6 +247,7 @@ void EditorElement::UpdateActorRotation(TransSetFloatFunc func)
 		"Rotation",
 		GetTransform()->GetRotationRef(),
 		Math::ToDegrees(GetTransform()->GetRotation()),
+		mRotationModSpeed,
 		GetTransform(),
 		func
 	);

@@ -13,6 +13,8 @@ class PanelUI;
 class Command;
 class CommandHistory;
 
+#define VALUE_MODSPEED 0.01f
+
 class EditorLayer
 {
 	SINGLETON(EditorLayer);

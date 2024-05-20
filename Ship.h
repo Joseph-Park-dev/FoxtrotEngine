@@ -33,7 +33,6 @@ public:
 
 public:
 	Ship(Scene* scene);
-	CLONE(Ship);
 
 private:
 	//void UpdateState();

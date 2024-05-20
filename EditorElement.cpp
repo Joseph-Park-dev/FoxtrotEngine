@@ -13,8 +13,6 @@
 #include "ChunkLoader.h"
 #include "FoxtrotRenderer.h"
 
-#define ACTORNAME_MAX 100
-
 void EditorElement::EditorLateUpdateActor()
 {
 	CheckMouseHover();
@@ -33,9 +31,9 @@ void EditorElement::UIUpdate()
 				UpdateActorGroup();
 				UpdateActorState();
 
-				UpdateActorWorldPosition(VALUE_MODSPEED);
-				UpdateActorLocalPosition(VALUE_MODSPEED);
-				UpdateActorScale(VALUE_MODSPEED);
+				UpdateActorWorldPosition();
+				UpdateActorLocalPosition();
+				UpdateActorScale();
 				UpdateActorRotation(&Transform::SetRotation);
 				ImGui::EndTabItem();
 			}
@@ -133,11 +131,6 @@ void EditorElement::Render(FoxtrotRenderer* renderer)
 	if (IsActive())
 	{
 		RenderComponents(renderer);
-		FTVector2 position = GetTransform()->GetScreenPositionEditor();
-		float zoomVal = EditorCamera2D::GetInstance()->GetZoomValue();
-		FTVector2 leftTop = position - GetTransform()->GetScale();
-		FTVector2 bottomRight = position + GetTransform()->GetScale();
-		renderer->DrawRectangle(leftTop, bottomRight);
 	}
 }
 
@@ -160,14 +153,8 @@ EditorElement::EditorElement(Actor* actor)
 	SetActorGroup(actor->GetActorGroup());
 	SetName(actor->GetName());
 	SetState(actor->GetState());
-	SetTransform(actor->GetTransform());
-	SetComponents(actor->GetComponents());
 	SetParent(actor->GetParent());
 	SetChildActors(actor->GetChildActors());
-}
-
-EditorElement::~EditorElement()
-{
 }
 
 void EditorElement::UpdateActorName()
@@ -215,36 +202,36 @@ void EditorElement::UpdateActorState()
 		CommandHistory::GetInstance()->AddCommand(new StateEditCommand(GetStateRef(), state));
 }
 
-void EditorElement::UpdateActorWorldPosition(float modSpeed)
+void EditorElement::UpdateActorWorldPosition()
 {
 	CommandHistory::GetInstance()->UpdateVectorValue
 	(
 		"World Position",
 		GetTransform()->GetWorldPositionRef(),
 		GetTransform()->GetWorldPosition(),
-		modSpeed
+		VALUEMOD_SPEED
 	);
 }
 
-void EditorElement::UpdateActorLocalPosition(float modSpeed)
+void EditorElement::UpdateActorLocalPosition()
 {
 	CommandHistory::GetInstance()->UpdateVectorValue
 	(
 		"Local Position",
 		GetTransform()->GetLocalPositionRef(),
 		GetTransform()->GetLocalPosition(),
-		modSpeed
+		VALUEMOD_SPEED
 	);
 }
 
-void EditorElement::UpdateActorScale(float modSpeed)
+void EditorElement::UpdateActorScale()
 {
 	CommandHistory::GetInstance()->UpdateVectorValue
 	(
 		"Scale",
 		GetTransform()->GetScaleRef(),
 		GetTransform()->GetScale(),
-		modSpeed
+		VALUEMOD_SPEED
 	);
 }
 
@@ -255,7 +242,7 @@ void EditorElement::UpdateActorRotation(TransSetFloatFunc func)
 		"Rotation",
 		GetTransform()->GetRotationRef(),
 		Math::ToDegrees(GetTransform()->GetRotation()),
-		mRotationModSpeed,
+		VALUEMOD_SPEED,
 		GetTransform(),
 		func
 	);

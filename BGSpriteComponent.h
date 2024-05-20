@@ -30,8 +30,6 @@ public:
 	void Update(float deltaTime) override;
 	virtual void Render(FoxtrotRenderer* renderer) override;
 
-	CLONE(BGSpriteComponent);
-
 public:
 	BGSpriteComponent(class Actor* owner, int drawOrder = 10, int updateOrder = DEFAULT_UPDATEORDER);
 

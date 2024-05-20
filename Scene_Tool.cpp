@@ -77,8 +77,8 @@ void Scene_Tool::LoadData()
 	panelUI->GetTransform()->SetWorldPosition(FTVector2(450, 450));
 	panelUI->SetName(L"PanelUI");
 
-	PanelUI* panelUI2 = panelUI->Clone();
-	panelUI2->GetTransform()->SetWorldPosition(FTVector2(400, 400));
+	/*PanelUI* panelUI2 = panelUI->Clone();
+	panelUI2->GetTransform()->SetWorldPosition(FTVector2(400, 400));*/
 
 	ButtonUI* childUI = new ButtonUI(this, false);
 	childUI->GetTransform()->SetScale(FTVector2(100.f, 100.f));
@@ -89,7 +89,7 @@ void Scene_Tool::LoadData()
 
 	Instantiate(panelUI, ACTOR_GROUP::UI);
 	Instantiate(childUI, ACTOR_GROUP::UI);
-	Instantiate(panelUI2, ACTOR_GROUP::UI);
+	//Instantiate(panelUI2, ACTOR_GROUP::UI);
 
 	CollisionManager::GetInstance()->MarkGroup(ACTOR_GROUP::PLAYER, ACTOR_GROUP::ENEMY);
 }

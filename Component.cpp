@@ -31,8 +31,7 @@ Component::Component(const Component& origin)
 	: mOwner(origin.mOwner)
 	, mUpdateOrder(origin.mUpdateOrder)
 	, mDrawOrder(origin.mDrawOrder)
-{
-}
+{}
 
 Component::~Component()
 {}

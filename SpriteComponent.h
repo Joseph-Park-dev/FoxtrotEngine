@@ -21,9 +21,6 @@ public:
 	void		 SetTexHeight(int texHeight) { mTexHeight = texHeight; }
 	void		 SetTexture  (FoxtrotRenderer* renderer, std::string fileName);
 
-
-	CLONE(SpriteComponent);
-
 protected:
 
 public:

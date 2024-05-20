@@ -5,7 +5,6 @@ class FoxtrotRenderer;
 
 #define DEFAULT_DRAWORDER 100
 #define DEFAULT_UPDATEORDER 100
-#define CLONE(type) virtual type* Clone() override {return new type(*this);}
 
 class Actor;
 
@@ -42,23 +41,6 @@ public:
 	const	int			 GetUpdateOrder() const { return mUpdateOrder; }
 	const	int			 GetDrawOrder()	  const { return mDrawOrder; }
 
-	virtual Component* Clone() { return nullptr; }
-
-	template<class T>
-	static void Load(Actor* actor, std::ifstream& ifs)
-	{
-		// Dynamically allocate actor of type T
-		T* t = new T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
-		// Call LoadProperties on new actor
-		t->LoadProperties(ifs);
-	}
-	template<class T>
-	static void Create(Actor* actor)
-	{
-		// Dynamically allocate actor of type T
-		new T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
-	}
-
 private:
 	Actor* mOwner;
 	int	   mUpdateOrder;
@@ -68,6 +50,26 @@ public:
 	Component(class Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
 	Component(const Component& origin);
 	virtual ~Component();
+
+	template<class T>
+	static void Load(Actor* actor, std::ifstream& ifs)
+	{
+		// Dynamically allocate actor of type T
+		T* t = new T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
+		// Call LoadProperties on new actor
+		t->LoadProperties(ifs);
+	}
+
+	template<class T>
+	static void Create(Actor* actor)
+	{
+		// Dynamically allocate actor of type T
+		new T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
+	}
+	
+	// Returns new object with copied values 
+	// (Needs to be distinguished with copy constructor)
+	virtual void CloneTo(Actor* actor) {};
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs);

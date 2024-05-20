@@ -86,7 +86,7 @@ UIActor::UIActor(Scene* scene, bool isCamAffect)
 {
 }
 
-UIActor::UIActor(const UIActor& origin)
+UIActor::UIActor(UIActor& origin)
 	: Actor(origin)
 	, mIsAffectedByCamera(origin.mIsAffectedByCamera)
 	, mMouseHovering(origin.mMouseHovering)
@@ -95,7 +95,7 @@ UIActor::UIActor(const UIActor& origin)
 {
 }
 
-UIActor::UIActor(const Actor* origin)
+UIActor::UIActor(Actor* origin)
 	: Actor(origin)
 	, mIsAffectedByCamera(true)
 	, mMouseHovering(false)

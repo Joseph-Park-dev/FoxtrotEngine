@@ -6,6 +6,8 @@ class Scene;
 class Actor;
 class EditorLayer;
 
+#define ACTORNAME_MAX 100
+
 class EditorElement :
     public PanelUI
 {
@@ -30,7 +32,6 @@ public:
 public:
 	EditorElement(Scene* scene);
 	EditorElement(Actor* actor);
-	virtual ~EditorElement() override;
 
 private:
 	// Stores ActorGroup index -> is int for Uint -> int conversion not supported
@@ -41,12 +42,11 @@ private:
 	void UpdateActorName();
 	void UpdateActorGroup();
 	void UpdateActorState();
-	void UpdateActorWorldPosition(float modSpeed);
-	void UpdateActorLocalPosition(float modSpeed);
-	void UpdateActorScale(float modSpeed);
+	void UpdateActorWorldPosition();
+	void UpdateActorLocalPosition();
+	void UpdateActorScale();
 	void UpdateActorRotation(TransSetFloatFunc func);
 	void UpdateComponents();
 
 	void DisplayCompSelectionPopup();
 };
-

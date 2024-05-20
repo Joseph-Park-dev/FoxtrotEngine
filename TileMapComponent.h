@@ -26,7 +26,6 @@ public:
     {
         return L"TileMapComponent";
     }
-    CLONE(TileMapComponent);
 
 public:
     TileMapComponent(Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int UpdateOrder = DEFAULT_UPDATEORDER);

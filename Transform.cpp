@@ -36,3 +36,11 @@ Transform::Transform()
 	, mScale(FTVector2(1.0f, 1.0f))
 	, mRotation(0.0f)
 {}
+
+Transform::Transform(Transform & origin)
+	: mWorldPosition(origin.mWorldPosition)
+	, mScreenPosition(origin.mScreenPosition)
+	, mLocalPosition(origin.mLocalPosition)
+	, mScale(origin.mScale)
+	, mRotation(origin.mRotation)
+{}

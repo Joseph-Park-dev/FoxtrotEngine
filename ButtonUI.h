@@ -40,6 +40,5 @@ public:
 public:
 	ButtonUI(class Scene* scene, bool isCamAffected);
 	~ButtonUI();
-	CLONE(ButtonUI);
 };
 

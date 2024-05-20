@@ -32,6 +32,7 @@ public:
 
 public:
 	Transform();
+	Transform(Transform& origin);
 
 private:
 	FTVector2	 mWorldPosition;

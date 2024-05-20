@@ -34,6 +34,7 @@ public:
 public:
     Rigidbody2DComponent(Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
     ~Rigidbody2DComponent() {};
+    virtual void CloneTo(Actor* actor) override;
 
 private:
     FTVector2   mForce;

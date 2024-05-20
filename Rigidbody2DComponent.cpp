@@ -19,6 +19,13 @@ Rigidbody2DComponent::Rigidbody2DComponent(class Actor* owner, int drawOrder, in
 	, mIsBlockedUp(false)
 {}
 
+void Rigidbody2DComponent::CloneTo(Actor* actor)
+{
+	Rigidbody2DComponent* newComp = new Rigidbody2DComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	newComp->mMass = mMass;
+	newComp->mMaxVelocity = mMaxVelocity;
+}
+
 void Rigidbody2DComponent::AddForce(FTVector2 force)
 {
 	mForce += force;

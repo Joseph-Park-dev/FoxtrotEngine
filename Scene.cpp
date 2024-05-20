@@ -117,11 +117,15 @@ void Scene::DeleteAll()
 
 void Scene::DeleteGroup(ACTOR_GROUP group)
 {
+	for (Actor* actor : mActors[(UINT)group])
+		delete actor;
 	mActors[(UINT)group].clear();
 }
 
 void Scene::DeletePendingGroup(ACTOR_GROUP group)
 {
+	for (Actor* pending : mPendingActors[(UINT)group])
+		delete pending;
 	mPendingActors[(UINT)group].clear();
 }
 

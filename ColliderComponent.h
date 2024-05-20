@@ -44,6 +44,7 @@ public:
 public:
     ColliderComponent(class Actor* owner, int drawOrder, int updateOrder);
     ColliderComponent(const ColliderComponent& origin);
+    virtual void CloneTo(Actor* actor) override;
 
 private:
     void OnCollisionEnter(ColliderComponent* other);

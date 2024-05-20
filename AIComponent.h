@@ -26,7 +26,6 @@ public:
 public:
     AIComponent(class Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
     virtual ~AIComponent() override;
-    CLONE(AIComponent);
 
 private:
     std::unordered_map<AISTATE_TYPE, class AIState*> mStateMap;

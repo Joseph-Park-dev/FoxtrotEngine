@@ -62,25 +62,22 @@ void ChunkLoader::SaveChunkData(std::ofstream& ofs)
         2) Number of Actors     -> int
     */
     // Saves Camera2D Values.
-    FileIOHelper::AddInt(ofs, Camera2D::GetInstance()->GetTargetActorID());
-    FileIOHelper::
-        AddVector2(
-            ofs, Camera2D::GetInstance()->GetRenderResolution()
-        );
-    FileIOHelper::
-        AddVector2(
-            ofs, Camera2D::GetInstance()->GetScreenCenter()
-        );
-    // Saves number of actors in the scene. 
-    mCurrentChunk.ActorCount = EditorLayer::GetInstance()->GetEditorElements().size();
-    FileIOHelper::AddInt(ofs, mCurrentChunk.ActorCount);
+    mCurrentChunkData.TargetActorID = Camera2D::GetInstance()->GetTargetActorID();
+    mCurrentChunkData.RenderResolution = Camera2D::GetInstance()->GetRenderResolution();
+    mCurrentChunkData.ScreenCenter = Camera2D::GetInstance()->GetScreenCenter();
+    mCurrentChunkData.ActorCount = EditorLayer::GetInstance()->GetEditorElements().size();
+
+    FileIOHelper::AddInt     (ofs, mCurrentChunkData.TargetActorID);
+    FileIOHelper::AddVector2 (ofs, mCurrentChunkData.RenderResolution);
+    FileIOHelper::AddVector2 (ofs, mCurrentChunkData.ScreenCenter);
+    FileIOHelper::AddInt     (ofs, mCurrentChunkData.ActorCount);
 }
 
 void ChunkLoader::SaveActors(std::ofstream& ofs)
 {
     Actor::ResetNextID();
     const std::vector<EditorElement*>& actors = EditorLayer::GetInstance()->GetEditorElements();
-    for (size_t i = 0; i < mCurrentChunk.ActorCount; ++i)
+    for (size_t i = 0; i < mCurrentChunkData.ActorCount; ++i)
     {
         actors[i]->SaveProperties(ofs);
         actors[i]->SaveComponents(ofs);
@@ -125,17 +122,21 @@ void ChunkLoader::LoadChunkData(std::ifstream& ifs)
             b) ScreenCenter     -> FTVector2
         2) Number of Actors     -> int
     */
-    Camera2D::GetInstance()->SetTargetActorID(FileIOHelper::LoadInt(ifs));
-    Camera2D::GetInstance()->SetRenderResolution(FileIOHelper::LoadVector2(ifs));
-    Camera2D::GetInstance()->SetScreenCenter(FileIOHelper::LoadVector2(ifs));
-    mCurrentChunk.ActorCount = FileIOHelper::LoadInt(ifs);
+    mCurrentChunkData = {};
+    mCurrentChunkData.TargetActorID = FileIOHelper::LoadInt(ifs);
+    mCurrentChunkData.RenderResolution = FileIOHelper::LoadVector2(ifs);
+    mCurrentChunkData.ScreenCenter = FileIOHelper::LoadVector2(ifs);
+    mCurrentChunkData.ActorCount = FileIOHelper::LoadInt(ifs);
+
+    Camera2D::GetInstance()->SetTargetActorID(mCurrentChunkData.TargetActorID);
+    Camera2D::GetInstance()->SetRenderResolution(mCurrentChunkData.RenderResolution);
+    Camera2D::GetInstance()->SetScreenCenter(mCurrentChunkData.ScreenCenter);
 }
 
 void ChunkLoader::LoadActors(std::ifstream& ifs)
 {
     Scene* currScene = SceneManager::GetInstance()->GetCurrScene();
-    size_t actorCount = mCurrentChunk.ActorCount;
-    for (size_t i = 0; i < actorCount; ++i)
+    for (size_t i = 0; i < mCurrentChunkData.ActorCount; ++i)
     {
         Actor* actor = LoadIndividualActor(ifs, currScene);
         currScene->AddActor(actor, actor->GetActorGroup());
@@ -145,11 +146,13 @@ void ChunkLoader::LoadActors(std::ifstream& ifs)
 void ChunkLoader::LoadActorsToEditor(std::ifstream& ifs)
 {
     Scene* currScene = SceneManager::GetInstance()->GetCurrScene();
-    size_t actorCount = mCurrentChunk.ActorCount;
-    for (size_t i = 0; i < actorCount; ++i)
+    for (size_t i = 0; i < mCurrentChunkData.ActorCount; ++i)
     {
-        Actor* actor = LoadIndividualActor(ifs, currScene);
-        //EditorLayer::GetInstance()->AddEditorElement(actor);
+        Actor* tempActor = LoadIndividualActor(ifs, currScene);
+        // Copies Actor Data to EditorElement.
+        EditorLayer::GetInstance()->AddEditorElement(tempActor);
+        // This prevents duplicated game objects.
+        delete tempActor;
     }
 }
 
@@ -196,7 +199,7 @@ std::string ChunkLoader::GetConvertedFileName(std::string curr, std::string prev
 #endif // _DEBUG
 
 ChunkLoader::ChunkLoader()
-    : mCurrentChunk{}
+    : mCurrentChunkData{}
 {
     mComponentLoadMap =
     {
@@ -239,31 +242,36 @@ void FileIOHelper::AddVector2(std::ofstream& ofs, FTVector2 value)
 
 void FileIOHelper::AddBasicString(std::ofstream& ofs, std::string value)
 {
-    ofs.write((char*)&value[0], STRING_BUFFER_SIZE);
+    //ofs.write((char*)&value[0], STRING_BUFFER_SIZE);
+    ofs << value << std::endl;
     ++mUnmatched;
 }
 
 void FileIOHelper::AddWString(std::ofstream& ofs, std::wstring value)
 {
-    ofs.write((char*)&value[0], WSTRING_BUFFER_SIZE);
+    //ofs.write((char*)&value[0], WSTRING_BUFFER_SIZE);
+    ofs << ToString(value) << std::endl;
     ++mUnmatched;
 }
 
 void FileIOHelper::AddFloat(std::ofstream& ofs, float value)
 {
-    ofs.write((char*)&value, sizeof(float));
+    //ofs.write((char*)&value, sizeof(float));
+    ofs << value << std::endl;
     ++mUnmatched;
 }
 
 void FileIOHelper::AddInt(std::ofstream& ofs, int value)
 {
-    ofs.write((char*)&value, sizeof(int));
+    //ofs.write((char*)&value, sizeof(int));
+    ofs << value << std::endl;
     ++mUnmatched;
 }
 
 void FileIOHelper::AddSize(std::ofstream& ofs, size_t value)
 {
-    ofs.write((char*)&value, sizeof(size_t));
+    //ofs.write((char*)&value, sizeof(size_t));
+    ofs << value << std::endl;
     ++mUnmatched;
 }
 
@@ -272,7 +280,6 @@ FTVector2 FileIOHelper::LoadVector2(std::ifstream& ifs)
     assert(mUnmatched > 0);
     float x = LoadFloat(ifs);
     float y = LoadFloat(ifs);
-
     return FTVector2(x, y);
 }
 
@@ -280,9 +287,8 @@ std::string FileIOHelper::LoadBasicString(std::ifstream& ifs)
 {
     assert(mUnmatched > 0);
     --mUnmatched;
-    char buffer[STRING_BUFFER_SIZE];
-    ifs.read((char*)&buffer[0], STRING_BUFFER_SIZE);
-    std::string str = std::string(buffer);
+    std::string str;
+    std::getline(ifs, str);
     return str;
 }
 
@@ -290,84 +296,75 @@ std::wstring FileIOHelper::LoadWString(std::ifstream& ifs)
 {
     assert(mUnmatched > 0);
     --mUnmatched;
-    wchar_t buffer[WSTRING_BUFFER_SIZE];
-    ifs.read((char*)&buffer[0], WSTRING_BUFFER_SIZE);
-    std::wstring str = std::wstring(buffer);
-    return str;
+    std::string str;
+    std::getline(ifs, str);
+    return ToWString(str);
 }
 
 float FileIOHelper::LoadFloat(std::ifstream& ifs)
 {
     assert(mUnmatched > 0);
     --mUnmatched;
-    float val = 0.f;
-    ifs.read((char*)&val, sizeof(float));
-
-    return val;
+    std::string buf;
+    std::getline(ifs, buf);
+    return std::stof(buf);
 }
 
 int FileIOHelper::LoadInt(std::ifstream& ifs)
 {
     assert(mUnmatched > 0);
     --mUnmatched;
-    int val = 0;
-    ifs.read((char*)&val, sizeof(int));
-    return val;
+    std::string buf;
+    std::getline(ifs, buf);
+    return std::stoi(buf);
 }
 
 size_t FileIOHelper::LoadSize(std::ifstream& ifs)
 {
     assert(mUnmatched > 0);
     --mUnmatched;
-    size_t val = 0;
-    ifs.read((char*)&val, sizeof(size_t));
-    return val;
+    std::string buf;
+    std::getline(ifs, buf);
+    return static_cast<size_t>(std::stoi(buf));
 }
 
 void FileIOHelper::LoadVector2(std::ifstream& ifs, FTVector2& value)
 {
     assert(mUnmatched > 0);
-    LoadFloat(ifs, value.x);
-    LoadFloat(ifs, value.y);
+    float x = 0.f; float y = 0.f;
+    LoadFloat(ifs, x);
+    LoadFloat(ifs, y);
+    value = FTVector2(x, y);
 }
 
 void FileIOHelper::LoadBasicString(std::ifstream& ifs, std::string& value)
 {
     assert(mUnmatched > 0);
-    --mUnmatched;
-    char buffer[STRING_BUFFER_SIZE];
-    ifs.read((char*)&buffer[0], STRING_BUFFER_SIZE);
-    std::string str = std::string(buffer);
+    value = LoadBasicString(ifs);
 }
 
 void FileIOHelper::LoadWString(std::ifstream& ifs, std::wstring& value)
 {
     assert(mUnmatched > 0);
-    --mUnmatched;
-    wchar_t buffer[WSTRING_BUFFER_SIZE];
-    ifs.read((char*)&buffer[0], WSTRING_BUFFER_SIZE);
-    value = std::wstring(buffer);
+    value = LoadWString(ifs);
 }
 
 void FileIOHelper::LoadFloat(std::ifstream& ifs, float& value)
 {
     assert(mUnmatched > 0);
-    --mUnmatched;
-    ifs.read((char*)&value, sizeof(float));
+    value = LoadFloat(ifs);
 }
 
 void FileIOHelper::LoadInt(std::ifstream& ifs, int& value)
 {
     assert(mUnmatched > 0);
-    --mUnmatched;
-    ifs.read((char*)&value, sizeof(int));
+    value = LoadInt(ifs);
 }
 
 void FileIOHelper::LoadSize(std::ifstream& ifs, size_t& value)
 {
     assert(mUnmatched > 0);
-    --mUnmatched;
-    ifs.read((char*)&value, sizeof(size_t));
+    value = LoadSize(ifs);
 }
 
 void FileIOHelper::SaveFileIOData(std::string filename)

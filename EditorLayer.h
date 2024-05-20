@@ -13,7 +13,7 @@ class PanelUI;
 class Command;
 class CommandHistory;
 
-#define VALUE_MODSPEED 0.01f
+#define VALUEMOD_SPEED 0.01f
 
 class EditorLayer
 {
@@ -27,6 +27,7 @@ public:
 public:
 	std::vector<EditorElement*>& GetEditorElements() { return mEditorElements; }
 	void AddEditorElement(Scene* scene);
+	void AddEditorElement(Actor* ele);
 	void DisplayEditorElements(FoxtrotRenderer* renderer);
 	int& GetActorNameIdx() { return mActorNameIdx; }
 	bool GetUndoKeyPressed()	const { return mUndoKeyPressed; }
@@ -59,6 +60,7 @@ private:
 	bool mIsResizingViewport;
 
 private:
+	void DeleteAll();
 	void UnfocusEditorElements();
 	// After directX implementation
 	void DisplayViewport();

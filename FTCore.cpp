@@ -18,6 +18,7 @@
 #include "EventManager.h"
 #include "FoxtrotRenderer.h"
 #include "WindowProcess.h"
+#include "TemplateFunctions.h"
 
 FTCore* FTCore::gPInst = nullptr;
 

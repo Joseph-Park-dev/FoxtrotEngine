@@ -13,7 +13,6 @@ public:
 	virtual void OnMouseLButtonDown() override;
 	virtual void OnMouseLButtonUp() override;
 
-	CLONE(PanelUI);
 
 public:
 	PanelUI(class Scene* scene, bool isCamAffected);

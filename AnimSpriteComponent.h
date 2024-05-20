@@ -17,7 +17,6 @@ public:
 		return L"AnimSpriteComponent";
 	}
 
-	CLONE(AnimSpriteComponent);
 
 public:
 	void Update(float deltaTime) override;

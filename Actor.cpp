@@ -25,31 +25,31 @@ Actor::Actor(Scene* scene)
 {}
 
 // Constructor to copy Actor
-Actor::Actor(const Actor& origin)
+Actor::Actor(Actor& origin)
 	: mState(origin.mState)
-	, mTransform(new Transform)
+	, mTransform(nullptr)
 	, mActorGroup(origin.mActorGroup)
 	, mParent(nullptr)
 	, mID(g_NextID++)
 	, mComponents{}
 	, mChild{}
 { 
-	for (size_t i = 0; i < origin.mComponents.size(); ++i)
-		this->mComponents.emplace_back(origin.mComponents[i]->Clone());
+	CopyTransformFrom(origin);
+	CopyComponentsFrom(origin);
 }
 
 // Constructor to copy Actor
-Actor::Actor(const Actor* origin)
+Actor::Actor(Actor* origin)
 	: mState(origin->mState)
-	, mTransform(new Transform)
+	, mTransform(nullptr)
 	, mActorGroup(origin->mActorGroup)
 	, mParent(nullptr)
 	, mID(g_NextID++)
 	, mComponents{}
 	, mChild{}
 {
-	for (size_t i = 0; i < origin->mComponents.size(); ++i)
-		this->mComponents.emplace_back(origin->mComponents[i]->Clone());
+	CopyTransformFrom(origin);
+	CopyComponentsFrom(origin);
 }
 
 Actor::~Actor()
@@ -58,7 +58,54 @@ Actor::~Actor()
 		delete mTransform;
 	for (size_t i = 0; i < mComponents.size(); ++i)
 		delete mComponents[i];
+	mComponents.clear();
 	mChild.clear();
+}
+
+void Actor::CopyTransformFrom(Actor& origin)
+{
+	Transform* originTransf = origin.GetTransform();
+	Transform* copied = new Transform;
+	copied->SetWorldPosition	(originTransf->GetWorldPosition());
+	copied->SetLocalPosition	(originTransf->GetLocalPosition());
+	copied->SetScreenPosition	(originTransf->GetScreenPosition());
+	copied->SetScale			(originTransf->GetScale());
+	copied->SetRotation			(originTransf->GetRotation());
+	this->SetTransform(copied);
+}
+
+void Actor::CopyComponentsFrom(Actor& origin)
+{
+	std::vector<Component*>& components = origin.GetComponents();
+	for (size_t i = 0; i < components.size(); ++i)
+	{
+		components[i]->CloneTo(this);
+		delete components[i];
+	}
+	components.clear();
+}
+
+void Actor::CopyTransformFrom(Actor* origin)
+{
+	Transform* originTransf = origin->GetTransform();
+	Transform* copied = new Transform;
+	copied->SetWorldPosition(originTransf->GetWorldPosition());
+	copied->SetLocalPosition(originTransf->GetLocalPosition());
+	copied->SetScreenPosition(originTransf->GetScreenPosition());
+	copied->SetScale(originTransf->GetScale());
+	copied->SetRotation(originTransf->GetRotation());
+	this->SetTransform(copied);
+}
+
+void Actor::CopyComponentsFrom(Actor* origin)
+{
+	std::vector<Component*>& components = origin->GetComponents();
+	for (size_t i = 0; i < components.size(); ++i)
+	{
+		components[i]->CloneTo(this);
+		delete components[i];
+	}
+	components.clear();
 }
 
 void Actor::ProcessInput(KeyInputManager* keyInputManager)

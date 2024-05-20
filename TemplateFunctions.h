@@ -153,4 +153,3 @@ void Safe_Delete_Map(std::unordered_map<TKey, TVal>& map)
 	}
 	map.clear();
 }
-

@@ -19,7 +19,6 @@ public:
     ~GroundObject();
     void Initialize();
 
-    CLONE(GroundObject);
 
 private:
     Bounds             rect;

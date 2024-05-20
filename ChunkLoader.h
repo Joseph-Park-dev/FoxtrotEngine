@@ -13,7 +13,10 @@ class Scene;
 
 struct ChunkData
 {
-	int ActorCount = 0;
+	int TargetActorID;
+	FTVector2 RenderResolution;
+	FTVector2 ScreenCenter;
+	size_t ActorCount;
 };
 
 using ComponentCreateFunc = std::function<void (Actor*)>;
@@ -50,7 +53,7 @@ public:
 	ComponentLoadMap&	GetCompLoadMap()	{ return mComponentLoadMap; }
 
 private:
-	ChunkData mCurrentChunk;
+	ChunkData mCurrentChunkData;
 	ComponentCreateMap mComponentCreateMap;
 	ComponentLoadMap mComponentLoadMap;
 

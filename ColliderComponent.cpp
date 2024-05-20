@@ -11,6 +11,7 @@
 #include "ChunkLoader.h"
 #include "CommandHistory.h"
 #include "Transform.h"
+#include "FoxtrotRenderer.h"
 
 #ifdef _DEBUG
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -49,6 +50,14 @@ void ColliderComponent::Render(FoxtrotRenderer* renderer)
 			};
 			SDL_RenderDrawRect(renderer, &rect);
 	*/
+	FTVector2 topLeft = mFinalPosition - mScale / 2;
+	FTVector2 bottomRight = mFinalPosition + mScale / 2;
+
+	FTVector2 topLeftScreenPos =
+		EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(topLeft);
+	FTVector2 bottomRightScreenPos =
+		EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(bottomRight);
+	renderer->DrawRectangle(topLeftScreenPos, bottomRightScreenPos);
 }
 #endif // _DEBUG
 
@@ -56,21 +65,27 @@ ColliderComponent::ColliderComponent(Actor* owner, int drawOrder, int updateOrde
 	:Component(owner, drawOrder, updateOrder)
 	, mOffsetPos(FTVector2::Zero)
 	, mFinalPosition(FTVector2::Zero)
-	, mScale(FTVector2::Zero)
+	, mScale(FTVector2(50,50))
 	, mColliCount(0)
 	, mCollidedSide(CollidedSide::NONE)
 	, mID(g_nextID++)
 {}
 
 ColliderComponent::ColliderComponent(const ColliderComponent & origin)
-	:Component(nullptr, GetDrawOrder())
+	: Component(nullptr, origin.GetDrawOrder(), origin.GetUpdateOrder())
 	, mOffsetPos(origin.mOffsetPos)
 	, mScale(origin.mScale)
 	, mID(g_nextID++)
 	, mCollidedSide(CollidedSide::NONE)
 	, mColliCount(0)
-{
+{}
 
+void ColliderComponent::CloneTo(Actor* actor)
+{
+	ColliderComponent* newColliderComp = new ColliderComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	newColliderComp->mOffsetPos = this->mOffsetPos;
+	newColliderComp->mScale = this->mScale;
+	newColliderComp->mID = ++g_nextID;
 }
 
 void ColliderComponent::OnCollisionEnter(ColliderComponent* other)

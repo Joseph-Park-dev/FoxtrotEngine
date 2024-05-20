@@ -32,5 +32,4 @@ public:
     ~Asteroid();
 
 	virtual void OnRayEnter() override;
-    CLONE(Asteroid);
 };

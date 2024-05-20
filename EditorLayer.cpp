@@ -160,7 +160,7 @@ void EditorLayer::DisplayFileMenu()
 				if (!mCurrFilePathName.empty())
 				{
 					ChunkLoader::GetInstance()->SaveChunk(mCurrFilePathName);
-					EditorLayer::GetInstance()->GetEditorElements().clear();
+					this->DeleteAll();
 					ChunkLoader::GetInstance()->LoadChunk(mCurrFilePathName);
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(true);
 				}
@@ -178,7 +178,7 @@ void EditorLayer::DisplayFileMenu()
 				{
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(false);
 					SceneManager::GetInstance()->GetCurrScene()->DeleteAll();
-					EditorLayer::GetInstance()->GetEditorElements().clear();
+					this->DeleteAll();
 					ChunkLoader::GetInstance()->LoadChunkToEditor(mCurrFilePathName);
 				}
 			}
@@ -198,9 +198,10 @@ void EditorLayer::DisplayFileMenu()
 		{
 			if (ImGuiFileDialog::Instance()->IsOk())
 			{
-				EditorLayer::GetInstance()->GetEditorElements().clear();
+				this->DeleteAll();
 				mCurrFilePathName = ImGuiFileDialog::Instance()->GetFilePathName();
 				ChunkLoader::GetInstance()->LoadChunkToEditor(mCurrFilePathName);
+				LogInt(mEditorElements.size());
 				mCurrFileSaved = true;
 			}
 			ImGuiFileDialog::Instance()->Close();
@@ -304,6 +305,7 @@ void EditorLayer::ShutDown()
 	ImGui::DestroyContext();
 }
 
+// Adds empty EditorElements
 void EditorLayer::AddEditorElement(Scene* scene)
 {
 	UnfocusEditorElements();
@@ -311,6 +313,20 @@ void EditorLayer::AddEditorElement(Scene* scene)
 	editorElement->SetName(L"Game Object" + std::to_wstring(mEditorElements.size()));
 	editorElement->SetIsFocused(true);
 	mEditorElements.emplace_back(editorElement);
+}
+
+void EditorLayer::AddEditorElement(Actor* actor)
+{
+	UnfocusEditorElements();
+	EditorElement* editorElement = new EditorElement(actor);
+	mEditorElements.emplace_back(editorElement);
+}
+
+void EditorLayer::DeleteAll()
+{
+	for (size_t i = 0; i < mEditorElements.size(); ++i)
+		delete mEditorElements[i];
+	mEditorElements.clear();
 }
 
 void EditorLayer::UnfocusEditorElements()

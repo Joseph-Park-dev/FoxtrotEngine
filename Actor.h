@@ -94,6 +94,13 @@ public:
 		return nullptr;
 	};
 
+protected:
+	void CopyTransformFrom(Actor& origin);
+	void CopyComponentsFrom(Actor& origin);
+
+	void CopyTransformFrom(Actor* origin);
+	void CopyComponentsFrom(Actor* origin);
+
 public:
 	virtual void InitializeActor()					{};
 	virtual void UpdateActor	(float deltaTime)	{};
@@ -109,8 +116,8 @@ public:
 public:
 	Actor(Scene* scene);
 	// Copy Constructor
-	Actor(const Actor& origin);
-	Actor(const Actor* origin);
+	Actor(Actor& origin);
+	Actor(Actor* origin);
 	virtual ~Actor();
 
 	virtual Actor* Clone() { return nullptr; }

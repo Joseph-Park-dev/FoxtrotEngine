@@ -310,7 +310,7 @@ void EditorLayer::AddEditorElement(Scene* scene)
 {
 	UnfocusEditorElements();
 	EditorElement* editorElement = new EditorElement(scene);
-	editorElement->SetName(L"Game Object" + std::to_wstring(mEditorElements.size()));
+	editorElement->SetName(L"Game Object" + std::to_wstring(++mElementNumber));
 	editorElement->SetIsFocused(true);
 	mEditorElements.emplace_back(editorElement);
 }
@@ -320,6 +320,7 @@ void EditorLayer::AddEditorElement(Actor* actor)
 	UnfocusEditorElements();
 	EditorElement* editorElement = new EditorElement(actor);
 	mEditorElements.emplace_back(editorElement);
+	++mElementNumber;
 }
 
 void EditorLayer::DeleteAll()
@@ -349,9 +350,9 @@ void EditorLayer::UnfocusEditorElements()
 //}
 
 EditorLayer::EditorLayer()
-	: 
+	:
 	//mViewportSize()
-	  mEditorElements{}
+	 mEditorElements{}
 	, mCurrFileSaved(false)
 	, mCurrFilePathName{}
 	, mHierarchyIdx(0)
@@ -364,6 +365,7 @@ EditorLayer::EditorLayer()
 	, mConfirmKeyPressed(false)
 	, mDeleteKeyPressed(false)
 	, mIsResizingViewport(false)
+	, mElementNumber(0)
 {
 	// Initial command stored in front of every following commands
 	CommandHistory::GetInstance()->AddCommand(new IntEditCommand(mActorNameIdx, 0));

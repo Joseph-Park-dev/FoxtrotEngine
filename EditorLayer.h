@@ -40,6 +40,7 @@ private:
 	// After directX implementation
 	// ImVec2 mViewportSize;
 	std::vector<EditorElement*> mEditorElements;
+	UINT mElementNumber;
 	bool mCurrFileSaved;
 	std::string mCurrFilePathName;
 	

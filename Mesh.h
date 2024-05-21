@@ -32,7 +32,7 @@ struct Mesh {
     ComPtr<ID3D11Buffer> indexBuffer;
     ComPtr<ID3D11Buffer> vertexConstantBuffer;
     ComPtr<ID3D11Buffer> pixelConstantBuffer;
-    FTTexture*           texture;
+    FTTexture*           texture = nullptr;
 
     UINT indexCount = 0;
 };

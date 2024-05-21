@@ -187,8 +187,9 @@ void FoxtrotRenderer::Render()
 		mContext->VSSetConstantBuffers(
 			0, 1, mesh->vertexConstantBuffer.GetAddressOf());
 
-		mContext->PSSetShaderResources(
-			0, 1, mesh->texture->GetResourceView().GetAddressOf());
+		if(mesh->texture != nullptr)
+			mContext->PSSetShaderResources(
+				0, 1, mesh->texture->GetResourceView().GetAddressOf());
 
 		mContext->PSSetConstantBuffers(
 			0, 1, mesh->pixelConstantBuffer.GetAddressOf());
@@ -286,9 +287,12 @@ void FoxtrotRenderer::ResizeSceneViewport(UINT width, UINT height)
 void FoxtrotRenderer::RemoveMesh(Mesh* mesh)
 {
 	std::vector<Mesh*>::iterator iter = std::find(mMeshes.begin(), mMeshes.end(), mesh);
-	delete *iter;
-	mMeshes.erase(iter);
-	mMeshes.shrink_to_fit();
+	if (iter != mMeshes.end())
+	{
+		delete* iter;
+		mMeshes.erase(iter);
+		mMeshes.shrink_to_fit();
+	}
 }
 
 void FoxtrotRenderer::DrawPrimitives(HWND hwnd)

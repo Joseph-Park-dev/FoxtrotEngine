@@ -24,9 +24,6 @@ void SceneManager::Init()
 	mArrScene[(UINT)SCENE_TYPE::START] = new Scene_Start;
 	mArrScene[(UINT)SCENE_TYPE::START]->SetName(L"Start Scene");
 
-	mArrScene[(UINT)SCENE_TYPE::TOOL] = new Scene_Tool;
-	mArrScene[(UINT)SCENE_TYPE::TOOL]->SetName(L"Tool Scene");
-
 	mPCurrScene = mArrScene[(UINT)SCENE_TYPE::START];
 	mPCurrScene->Enter();
 }

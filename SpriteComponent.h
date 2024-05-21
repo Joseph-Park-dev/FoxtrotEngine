@@ -6,6 +6,8 @@
 class FTTexture;
 class Mesh;
 
+#define SPRITE_FORMAT_SUPPORTED ".png, .jpeg"
+
 class SpriteComponent :public Component
 {
 public:
@@ -33,6 +35,7 @@ public:
 	virtual ~SpriteComponent() override;
 
 private:
+	FoxtrotRenderer* mRenderer;
 	Mesh*		mMesh;
 	MeshData	mMeshData;
 	Bounds*		rect;
@@ -51,9 +54,17 @@ private:
 #ifdef _DEBUG
 //This section will be omitted from Release mode!
 public:
-	virtual void EditorUpdate(float deltaTime) override;
 	virtual void SaveProperties(std::ofstream& ofs) override;
 	virtual void LoadProperties(std::ifstream& ifs) override;
+
+	virtual void EditorUpdate(float deltaTime) override;
+	void EditorUIUpdate() override;
+
+private:
+	void UpdateSprite(FoxtrotRenderer* renderer);
+	void UpdateTexWidth();
+	void UpdateTexHeight();
+	void UpdateScale();
 
 	void BlitToGameview	 (Bounds* blitArea, FTVector2 scale);
 	void BlitToGameviewEx(Bounds* blitArea, FTVector2 scale);

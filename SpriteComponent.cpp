@@ -12,30 +12,42 @@
 #include "GeometryGenerator.h"
 #include "Math.h"
 
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui.h>
+#include "imgui/FileDialog/ImGuiFileDialog.h"
+#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
+
 SpriteComponent::SpriteComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner, drawOrder)
 	, mTextWidth(0)
 	, mTexHeight(0)
 	, rect(new Bounds)
 	, mScale(1.f)
+	, mMesh(nullptr)
 {
-	ResourceManager::GetInstance()->LoadTexture("Asteroid", "./Assets/Asteroid.png");
 }
 
 SpriteComponent::~SpriteComponent()
 {
 	FTCore::GetInstance()->GetGameRenderer()->RemoveMesh(mMesh);
 	delete rect;
+	mRenderer = nullptr;
 }
 
 void SpriteComponent::SetTexture(FoxtrotRenderer* renderer, std::string fileName)
 {
-	mMesh->texture = ResourceManager::GetInstance()->GetLoadedTexture(fileName);
-	mMesh->texture->CreateTexture(renderer);
+	std::vector<Mesh*>& meshes = renderer->GetMeshes();
+	std::vector<Mesh*>::iterator iter = std::find(meshes.begin(), meshes.end(), mMesh);
+	if (iter != meshes.end())
+	{
+		ResourceManager::GetInstance()->LoadTexture(renderer, fileName);
+		mMesh->texture = ResourceManager::GetInstance()->GetLoadedTexture(fileName);
+	}
 }
 
 void SpriteComponent::Initialize(FoxtrotRenderer* renderer)
 {
+	mRenderer = renderer;
 	mMesh = new Mesh;
 	mAspect = renderer->GetAspectRatio();
 	// Read Mesh and store it as Mesh Data
@@ -44,8 +56,6 @@ void SpriteComponent::Initialize(FoxtrotRenderer* renderer)
 	renderer->CreateVertexBuffer(meshData.vertices, mMesh->vertexBuffer);
 	mMesh->indexCount = UINT(meshData.indices.size());
 	renderer->CreateIndexBuffer(meshData.indices, mMesh->indexBuffer);
-
-	SetTexture(renderer, "Asteroid");
 
 	// Create Constant buffers
 	mMesh->basicVertexConstantBufferData.model = DirectX::SimpleMath::Matrix();
@@ -125,6 +135,51 @@ void SpriteComponent::Render(FoxtrotRenderer* renderer)
 void SpriteComponent::EditorUpdate(float deltaTime)
 {
 	Update(deltaTime);
+}
+
+void SpriteComponent::EditorUIUpdate()
+{
+	if(mRenderer)
+		UpdateSprite(mRenderer);
+}
+
+void SpriteComponent::UpdateSprite(FoxtrotRenderer* renderer)
+{
+	std::string currentSprite = "No sprite has been assigned";
+	if (mMesh->texture)
+		currentSprite = "Current sprite : \n" + mMesh->texture->GetRelativePath();
+	ImGui::Text(currentSprite.c_str());
+
+	if (ImGui::Button("Select Sprite"))
+	{
+		IGFD::FileDialogConfig config;
+		config.path = ".";
+		config.countSelectionMax = 1;
+		ImGuiFileDialog::Instance()->OpenDialog("SelectSprite", "Select Sprite", SPRITE_FORMAT_SUPPORTED, config);
+	}
+
+	if (ImGuiFileDialog::Instance()->Display("SelectSprite"))
+	{
+		if (ImGuiFileDialog::Instance()->IsOk())
+		{
+			std::string spritePath = ImGuiFileDialog::Instance()->GetCurrentPath() + "\\" +
+				ImGuiFileDialog::Instance()->GetCurrentFileName();
+			SetTexture(renderer, spritePath);
+		}
+		ImGuiFileDialog::Instance()->Close();
+	}
+}
+
+void SpriteComponent::UpdateTexWidth()
+{
+}
+
+void SpriteComponent::UpdateTexHeight()
+{
+}
+
+void SpriteComponent::UpdateScale()
+{
 }
 
 void SpriteComponent::SaveProperties(std::ofstream& ofs)

@@ -15,6 +15,11 @@ public:
     Microsoft::WRL::ComPtr<ID3D11Texture2D>          GetTexture()      { return mTexture; }
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> GetResourceView() { return mTextureResourceView; }
 
+public:
+    FTTexture()
+        : FTResource()
+    {}
+
 private:
     Microsoft::WRL::ComPtr<ID3D11Texture2D> mTexture;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mTextureResourceView;

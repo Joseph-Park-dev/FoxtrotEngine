@@ -82,9 +82,9 @@
     <LibraryPath>C:\dev\vcpkg\installed;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>
-    </IncludePath>
-    <LibraryPath>D:\[2023_02]\FoxtrotEngine_OpenGL\vcpkg_installed\x64-windows\debug\lib\manual-link;$(LibraryPath)</LibraryPath>
+    <IncludePath>.\src\core\01_Utilities;.\src\core;.\src\core\02_CoreModules\Common;.\src\core\02_CoreModules\FoxtrotEditor;.\src\core\02_CoreModules\Game;.\src\core\02_CoreModules\Game\Managers;.\src\core\02_CoreModules\Game\Physics;.\src\core\03_Actors;.\src\core\03_Actors\ActorList;.\src\core\03_Actors\Backgrounds;.\src\core\03_Actors\Properties;.\src\core\03_Actors\UIs;.\src\core\04_Components;.\src\core\04_Components\2DGraphics;.\src\core\04_Components\AI;.\src\core\05_Scenes;.\src\core\06_Resources;.\src\core\07_Factories;.\src\core\08_Shaders;D:\[2024_01]\FoxtrotEngine_DirectX\src\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>
@@ -149,7 +149,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>
@@ -164,7 +164,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>Shell32.lib;Comdlg32.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\[2023_02]\FoxtrotEngine_DirectX\vcpkg_installed\x64-windows\debug\lib\manual-link;D:\[2023_02]\FoxtrotEngine_DirectX\vcpkg_installed\x64-windows\debug\lib;D:\[2023_02]\FoxtrotEngine_DirectX\vcpkg_installed\x64-windows\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -189,235 +189,145 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Actor.cpp" />
-    <ClCompile Include="AIComponent.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="AIState.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Animation.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="AnimatorComponent.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="AnimSpriteComponent.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Asteroid.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="BackgroundActor.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="BGSpriteComponent.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Bounds.cpp" />
-    <ClCompile Include="ButtonUI.cpp" />
-    <ClCompile Include="Camera2D.cpp" />
-    <ClCompile Include="CollisionManager.cpp" />
-    <ClCompile Include="FTCore.cpp" />
-    <ClCompile Include="Command.cpp" Condition=" '$(Configuration)' == 'Debug' ">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="CommandHistory.cpp" Condition=" '$(Configuration)' == 'Debug' ">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="EditorCamera2D.cpp" Condition=" '$(Configuration)' == 'Debug' ">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="EditorElement.cpp" Condition=" '$(Configuration)' == 'Debug' ">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="EditorLayer.cpp" Condition=" '$(Configuration)' == 'Debug' ">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="EventManager.cpp" />
-    <ClCompile Include="ColliderComponent.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Component.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="FoxtrotRenderer.cpp" />
-    <ClCompile Include="FTCoreEditor.cpp" />
-    <ClCompile Include="GeometryGenerator.cpp" />
-    <ClCompile Include="GunFiringComponent.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="ChunkLoader.cpp" />
-    <ClCompile Include="imgui\FileDialog\ImGuiFileDialog.cpp" Condition=" '$(Configuration)' == 'Debug' " />
-    <ClCompile Include="MeshRendererComponent.cpp" />
-    <ClCompile Include="MouseCursor.cpp" />
-    <ClCompile Include="ParticleSystem.cpp" />
-    <ClCompile Include="Physics2D.cpp" />
-    <ClCompile Include="RenderTextureClass.cpp" />
-    <ClCompile Include="ResourceManager.cpp" />
-    <ClCompile Include="Rigidbody2DComponent.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="FTTexture.cpp" />
-    <ClCompile Include="EventFunctions.cpp" />
-    <ClCompile Include="GroundObject.cpp" />
-    <ClCompile Include="InputMoveComponent.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="KeyInputManager.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Math.cpp" />
-    <ClCompile Include="MonFactory.cpp" />
-    <ClCompile Include="MoveComponent.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="PanelUI.cpp" />
-    <ClCompile Include="Random.cpp" />
-    <ClCompile Include="FTResource.cpp" />
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="Scene_Start.cpp" />
-    <ClCompile Include="Scene_Tool.cpp" />
-    <ClCompile Include="Ship.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="SpriteComponent.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Tile.cpp" />
-    <ClCompile Include="TileMapComponent.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Timer.cpp" />
-    <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="UIActor.cpp" />
-    <ClCompile Include="UIManager.cpp" />
+    <ClCompile Include="src\core\01_Utilities\FTMath.cpp" />
+    <ClCompile Include="src\core\01_Utilities\Random.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\Common\ChunkLoader.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\Common\FoxtrotRenderer.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\Common\Timer.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\FoxtrotEditor\Command.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\FoxtrotEditor\CommandHistory.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\FoxtrotEditor\EditorCamera2D.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\FoxtrotEditor\EditorElement.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\FoxtrotEditor\EditorLayer.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\FoxtrotEditor\FTCoreEditor.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\FoxtrotEditor\RenderTextureClass.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\Game\Camera2D.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\Game\FTCore.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\Game\Managers\CollisionManager.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\Game\Managers\EventFunctions.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\Game\Managers\EventManager.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\Game\Managers\KeyInputManager.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\Game\Managers\ResourceManager.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\Game\Managers\SceneManager.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\Game\Managers\UIManager.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\Game\Physics\Bounds.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\Game\Physics\ParticleSystem.cpp" />
+    <ClCompile Include="src\core\02_CoreModules\Game\Physics\Physics2D.cpp" />
+    <ClCompile Include="src\core\03_Actors\Actor.cpp" />
+    <ClCompile Include="src\core\03_Actors\ActorList\Asteroid.cpp" />
+    <ClCompile Include="src\core\03_Actors\ActorList\GroundObject.cpp" />
+    <ClCompile Include="src\core\03_Actors\ActorList\MouseCursor.cpp" />
+    <ClCompile Include="src\core\03_Actors\ActorList\Ship.cpp" />
+    <ClCompile Include="src\core\03_Actors\Backgrounds\BackgroundActor.cpp" />
+    <ClCompile Include="src\core\03_Actors\Properties\Transform.cpp" />
+    <ClCompile Include="src\core\03_Actors\UIs\ButtonUI.cpp" />
+    <ClCompile Include="src\core\03_Actors\UIs\PanelUI.cpp" />
+    <ClCompile Include="src\core\03_Actors\UIs\UIActor.cpp" />
+    <ClCompile Include="src\core\04_Components\2DGraphics\AnimatorComponent.cpp" />
+    <ClCompile Include="src\core\04_Components\2DGraphics\AnimSpriteComponent.cpp" />
+    <ClCompile Include="src\core\04_Components\2DGraphics\BGSpriteComponent.cpp" />
+    <ClCompile Include="src\core\04_Components\2DGraphics\SpineAnimComponent.cpp" />
+    <ClCompile Include="src\core\04_Components\2DGraphics\SpriteComponent.cpp" />
+    <ClCompile Include="src\core\04_Components\2DGraphics\TileMapComponent.cpp" />
+    <ClCompile Include="src\core\04_Components\AI\AIComponent.cpp" />
+    <ClCompile Include="src\core\04_Components\AI\AIState.cpp" />
+    <ClCompile Include="src\core\04_Components\ColliderComponent.cpp" />
+    <ClCompile Include="src\core\04_Components\Component.cpp" />
+    <ClCompile Include="src\core\04_Components\GeometryGenerator.cpp" />
+    <ClCompile Include="src\core\04_Components\GunFiringComponent.cpp" />
+    <ClCompile Include="src\core\04_Components\InputMoveComponent.cpp" />
+    <ClCompile Include="src\core\04_Components\MoveComponent.cpp" />
+    <ClCompile Include="src\core\04_Components\Rigidbody2DComponent.cpp" />
+    <ClCompile Include="src\core\05_Scenes\Scene.cpp" />
+    <ClCompile Include="src\core\05_Scenes\Scene_Start.cpp" />
+    <ClCompile Include="src\core\05_Scenes\Scene_Tool.cpp" />
+    <ClCompile Include="src\core\06_Resources\FTAnimation.cpp" />
+    <ClCompile Include="src\core\06_Resources\FTResource.cpp" />
+    <ClCompile Include="src\core\06_Resources\FTTexture.cpp" />
+    <ClCompile Include="src\core\06_Resources\SpineTexture.cpp" />
+    <ClCompile Include="src\core\06_Resources\Tile.cpp" />
+    <ClCompile Include="src\core\07_Factories\MonFactory.cpp" />
+    <ClCompile Include="src\core\Main.cpp" />
+    <ClCompile Include="src\include\imgui\FileDialog\ImGuiFileDialog.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Actor.h" />
-    <ClInclude Include="ActorTag.h" />
-    <ClInclude Include="AIComponent.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="AIState.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Animation.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="AnimatorComponent.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="AnimSpriteComponent.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Asteroid.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="BackgroundActor.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="BGSpriteComponent.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Bounds.h" />
-    <ClInclude Include="ButtonUI.h" />
-    <ClInclude Include="Camera2D.h" />
-    <ClInclude Include="CollisionManager.h" />
-    <ClInclude Include="FTCore.h" />
-    <ClInclude Include="Command.h" Condition=" '$(Configuration)' == 'Debug' ">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="CommandHistory.h" Condition=" '$(Configuration)' == 'Debug' ">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="EditorCamera2D.h" Condition=" '$(Configuration)' == 'Debug' ">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="EditorElement.h" Condition=" '$(Configuration)' == 'Debug' ">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="EditorLayer.h" Condition=" '$(Configuration)' == 'Debug' ">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="EventManager.h" />
-    <ClInclude Include="ColliderComponent.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Component.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="FoxtrotRenderer.h" />
-    <ClInclude Include="FTCoreEditor.h" />
-    <ClInclude Include="GeometryGenerator.h" />
-    <ClInclude Include="GunFiringComponent.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="ChunkLoader.h" />
-    <ClInclude Include="imgui\FileDialog\dirent\dirent.h" Condition=" '$(Configuration)' == 'Debug' " />
-    <ClInclude Include="imgui\FileDialog\ImGuiFileDialog.h" Condition=" '$(Configuration)' == 'Debug' " />
-    <ClInclude Include="imgui\FileDialog\ImGuiFileDialogConfig.h" Condition=" '$(Configuration)' == 'Debug' " />
-    <ClInclude Include="imgui\FileDialog\stb\stb_image.h" Condition=" '$(Configuration)' == 'Debug' " />
-    <ClInclude Include="imgui\FileDialog\stb\stb_image_resize.h" Condition=" '$(Configuration)' == 'Debug' " />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="MeshData.h" />
-    <ClInclude Include="MeshRendererComponent.h" />
-    <ClInclude Include="MouseCursor.h" />
-    <ClInclude Include="ParticleSystem.h" />
-    <ClInclude Include="Physics2D.h" />
-    <ClInclude Include="Ray.h" />
-    <ClInclude Include="RayCastHit2D.h" />
-    <ClInclude Include="RenderTextureClass.h" />
-    <ClInclude Include="ResourceManager.h" />
-    <ClInclude Include="Rigidbody2DComponent.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="SceneManager.h" />
-    <ClInclude Include="FTTexture.h" />
-    <ClInclude Include="EventFunctions.h" />
-    <ClInclude Include="GroundObject.h" />
-    <ClInclude Include="MonFactory.h" />
-    <ClInclude Include="PanelUI.h" />
-    <ClInclude Include="FTResource.h" />
-    <ClInclude Include="Scene_Tool.h" />
-    <ClInclude Include="TemplateFunctions.h" />
-    <ClInclude Include="Tile.h" />
-    <ClInclude Include="Timer.h" />
-    <ClInclude Include="Transform.h" />
-    <ClInclude Include="TypeDefinitions.h" />
-    <ClInclude Include="EventType.h" />
-    <ClInclude Include="InputMoveComponent.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="KeyInputManager.h" />
-    <ClInclude Include="Math.h" />
-    <ClInclude Include="ActorGroup.h" />
-    <ClInclude Include="MoveComponent.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Random.h" />
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="SceneType.h" />
-    <ClInclude Include="Scene_Start.h" />
-    <ClInclude Include="Ship.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="SingletonMacro.h" />
-    <ClInclude Include="SpriteComponent.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="TileMapComponent.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="UIActor.h" />
-    <ClInclude Include="UIManager.h" />
-    <ClInclude Include="UnitDefinitions.h" />
-    <ClInclude Include="Vertex.h" />
-    <ClInclude Include="WindowProcess.h" />
+    <ClInclude Include="src\core\01_Utilities\EventType.h" />
+    <ClInclude Include="src\core\01_Utilities\FTMath.h" />
+    <ClInclude Include="src\core\01_Utilities\Random.h" />
+    <ClInclude Include="src\core\01_Utilities\SingletonMacro.h" />
+    <ClInclude Include="src\core\01_Utilities\TemplateFunctions.h" />
+    <ClInclude Include="src\core\01_Utilities\TypeDefinitions.h" />
+    <ClInclude Include="src\core\01_Utilities\UnitDefinitions.h" />
+    <ClInclude Include="src\core\02_CoreModules\Common\ChunkLoader.h" />
+    <ClInclude Include="src\core\02_CoreModules\Common\FoxtrotRenderer.h" />
+    <ClInclude Include="src\core\02_CoreModules\Common\Timer.h" />
+    <ClInclude Include="src\core\02_CoreModules\Common\WindowProcess.h" />
+    <ClInclude Include="src\core\02_CoreModules\FoxtrotEditor\Command.h" />
+    <ClInclude Include="src\core\02_CoreModules\FoxtrotEditor\CommandHistory.h" />
+    <ClInclude Include="src\core\02_CoreModules\FoxtrotEditor\EditorCamera2D.h" />
+    <ClInclude Include="src\core\02_CoreModules\FoxtrotEditor\EditorElement.h" />
+    <ClInclude Include="src\core\02_CoreModules\FoxtrotEditor\EditorLayer.h" />
+    <ClInclude Include="src\core\02_CoreModules\FoxtrotEditor\FTCoreEditor.h" />
+    <ClInclude Include="src\core\02_CoreModules\FoxtrotEditor\RenderTextureClass.h" />
+    <ClInclude Include="src\core\02_CoreModules\Game\Camera2D.h" />
+    <ClInclude Include="src\core\02_CoreModules\Game\FTCore.h" />
+    <ClInclude Include="src\core\02_CoreModules\Game\Managers\CollisionManager.h" />
+    <ClInclude Include="src\core\02_CoreModules\Game\Managers\EventFunctions.h" />
+    <ClInclude Include="src\core\02_CoreModules\Game\Managers\EventManager.h" />
+    <ClInclude Include="src\core\02_CoreModules\Game\Managers\KeyInputManager.h" />
+    <ClInclude Include="src\core\02_CoreModules\Game\Managers\ResourceManager.h" />
+    <ClInclude Include="src\core\02_CoreModules\Game\Managers\SceneManager.h" />
+    <ClInclude Include="src\core\02_CoreModules\Game\Managers\UIManager.h" />
+    <ClInclude Include="src\core\02_CoreModules\Game\Physics\Bounds.h" />
+    <ClInclude Include="src\core\02_CoreModules\Game\Physics\ParticleSystem.h" />
+    <ClInclude Include="src\core\02_CoreModules\Game\Physics\Physics2D.h" />
+    <ClInclude Include="src\core\02_CoreModules\Game\Physics\Ray.h" />
+    <ClInclude Include="src\core\02_CoreModules\Game\Physics\RayCastHit2D.h" />
+    <ClInclude Include="src\core\03_Actors\Actor.h" />
+    <ClInclude Include="src\core\03_Actors\ActorList\Asteroid.h" />
+    <ClInclude Include="src\core\03_Actors\ActorList\GroundObject.h" />
+    <ClInclude Include="src\core\03_Actors\ActorList\MouseCursor.h" />
+    <ClInclude Include="src\core\03_Actors\ActorList\Ship.h" />
+    <ClInclude Include="src\core\03_Actors\Backgrounds\BackgroundActor.h" />
+    <ClInclude Include="src\core\03_Actors\Properties\ActorGroup.h" />
+    <ClInclude Include="src\core\03_Actors\Properties\ActorTag.h" />
+    <ClInclude Include="src\core\03_Actors\Properties\Transform.h" />
+    <ClInclude Include="src\core\03_Actors\UIs\ButtonUI.h" />
+    <ClInclude Include="src\core\03_Actors\UIs\PanelUI.h" />
+    <ClInclude Include="src\core\03_Actors\UIs\UIActor.h" />
+    <ClInclude Include="src\core\04_Components\2DGraphics\AnimatorComponent.h" />
+    <ClInclude Include="src\core\04_Components\2DGraphics\AnimSpriteComponent.h" />
+    <ClInclude Include="src\core\04_Components\2DGraphics\BGSpriteComponent.h" />
+    <ClInclude Include="src\core\04_Components\2DGraphics\SpineAnimComponent.h" />
+    <ClInclude Include="src\core\04_Components\2DGraphics\SpriteComponent.h" />
+    <ClInclude Include="src\core\04_Components\2DGraphics\TileMapComponent.h" />
+    <ClInclude Include="src\core\04_Components\AI\AIComponent.h" />
+    <ClInclude Include="src\core\04_Components\AI\AIState.h" />
+    <ClInclude Include="src\core\04_Components\ColliderComponent.h" />
+    <ClInclude Include="src\core\04_Components\Component.h" />
+    <ClInclude Include="src\core\04_Components\GeometryGenerator.h" />
+    <ClInclude Include="src\core\04_Components\GunFiringComponent.h" />
+    <ClInclude Include="src\core\04_Components\InputMoveComponent.h" />
+    <ClInclude Include="src\core\04_Components\MoveComponent.h" />
+    <ClInclude Include="src\core\04_Components\Rigidbody2DComponent.h" />
+    <ClInclude Include="src\core\05_Scenes\Scene.h" />
+    <ClInclude Include="src\core\05_Scenes\SceneType.h" />
+    <ClInclude Include="src\core\05_Scenes\Scene_Start.h" />
+    <ClInclude Include="src\core\05_Scenes\Scene_Tool.h" />
+    <ClInclude Include="src\core\06_Resources\FTAnimation.h" />
+    <ClInclude Include="src\core\06_Resources\FTResource.h" />
+    <ClInclude Include="src\core\06_Resources\FTTexture.h" />
+    <ClInclude Include="src\core\06_Resources\Mesh.h" />
+    <ClInclude Include="src\core\06_Resources\MeshData.h" />
+    <ClInclude Include="src\core\06_Resources\SpineTexture.h" />
+    <ClInclude Include="src\core\06_Resources\Tile.h" />
+    <ClInclude Include="src\core\06_Resources\Vertex.h" />
+    <ClInclude Include="src\core\07_Factories\MonFactory.h" />
+    <ClInclude Include="src\include\imgui\FileDialog\dirent\dirent.h" />
+    <ClInclude Include="src\include\imgui\FileDialog\ImGuiFileDialog.h" />
+    <ClInclude Include="src\include\imgui\FileDialog\ImGuiFileDialogConfig.h" />
+    <ClInclude Include="src\include\imgui\FileDialog\stb\stb_image.h" />
+    <ClInclude Include="src\include\imgui\FileDialog\stb\stb_image_resize.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -428,15 +338,11 @@
     <ResourceCompile Include="Chapter03.rc" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="ColorPixelShader.hlsl">
+    <FxCompile Include="src\core\08_Shaders\ColorPixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0_level_9_3</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="ColorVertexShader.hlsl">
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0_level_9_3</ShaderModel>
+    <FxCompile Include="src\core\08_Shaders\ColorVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

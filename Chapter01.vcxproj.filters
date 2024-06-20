@@ -5,508 +5,572 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="03_Actors">
-      <UniqueIdentifier>{87c50203-9334-40d9-b551-8099309e16d5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04_Components">
-      <UniqueIdentifier>{cb43d6f1-57d0-41e6-9287-95e12bfd566f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05_Scenes">
-      <UniqueIdentifier>{741d60bf-7e09-45f6-b51b-418400cae2db}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06_Resources">
-      <UniqueIdentifier>{82a3f1e1-0e36-4c4a-9e69-edc28cb233f5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03_Actors\ActorList">
-      <UniqueIdentifier>{787eee82-91d0-4301-ae27-eae5deb3826b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04_Components\2D Graphics">
-      <UniqueIdentifier>{1e8d37bb-530e-43ac-8891-3add8c28e824}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01_Utilities">
-      <UniqueIdentifier>{f74b0c26-8bb6-4eeb-8acf-b25515eea899}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02_CoreModules">
-      <UniqueIdentifier>{4e0a5a5c-7686-4596-8460-04f2dbbc580f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02_CoreModules\Common">
-      <UniqueIdentifier>{2b5fc46a-4565-4542-8f6f-fe285eaacaf6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02_CoreModules\FoxtrotEditor">
-      <UniqueIdentifier>{d3e8d8a2-02e5-457a-80ad-cd1cf109fecd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02_CoreModules\Game">
-      <UniqueIdentifier>{a91522dd-ad6a-43d1-ae18-ec03f190822f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02_CoreModules\Game\Managers">
-      <UniqueIdentifier>{be0f47b9-66eb-4d19-9b90-a6a12967e6a1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02_CoreModules\Game\Physics">
-      <UniqueIdentifier>{8968691a-7c5f-4d98-83ca-62f34f4e471b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02_CoreModules\Game\Camera">
-      <UniqueIdentifier>{b99f42fe-ee0e-49e2-bb6a-44b07f1ceda4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02_CoreModules\FoxtrotEditor\Command">
-      <UniqueIdentifier>{0c5c693e-544e-447d-8171-39626d655349}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02_CoreModules\FoxtrotEditor\EditorCamera">
-      <UniqueIdentifier>{a3963085-596d-4470-ac11-74aa24291b30}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03_Actors\Backgrounds">
-      <UniqueIdentifier>{dc50f673-b7ee-4dff-8d82-d35a46383be5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03_Actors\UIs">
-      <UniqueIdentifier>{8cef9c3e-4116-45ba-bd5e-242397300bf2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03_Actors\Properties">
-      <UniqueIdentifier>{08a33794-0e7e-45da-89ea-5341c630079b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04_Components\AI">
-      <UniqueIdentifier>{51ee3d86-da45-41bb-8ee8-860578fbe749}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05_Scenes\SceneList">
-      <UniqueIdentifier>{15b049e2-273a-471d-8d26-5b151016393c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="08_Shaders">
-      <UniqueIdentifier>{6fddb358-88f8-436a-9639-4d89ad93fe72}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07_Factories">
-      <UniqueIdentifier>{98b48d6d-40b8-4371-81d4-7ee8f2f3f380}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="09_Externals">
-      <UniqueIdentifier>{bf29d92f-5542-4fb4-bba8-634786f9550d}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\core\01_Utilities\FTMath.cpp">
-      <Filter>01_Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\01_Utilities\Random.cpp">
-      <Filter>01_Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\FoxtrotEditor\EditorElement.cpp">
-      <Filter>02_CoreModules\FoxtrotEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\FoxtrotEditor\EditorLayer.cpp">
-      <Filter>02_CoreModules\FoxtrotEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\FoxtrotEditor\FTCoreEditor.cpp">
-      <Filter>02_CoreModules\FoxtrotEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\Common\ChunkLoader.cpp">
-      <Filter>02_CoreModules\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\Common\FoxtrotRenderer.cpp">
-      <Filter>02_CoreModules\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\Common\Timer.cpp">
-      <Filter>02_CoreModules\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\Game\FTCore.cpp">
-      <Filter>02_CoreModules\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\Game\Managers\CollisionManager.cpp">
-      <Filter>02_CoreModules\Game\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\Game\Managers\EventFunctions.cpp">
-      <Filter>02_CoreModules\Game\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\Game\Managers\EventManager.cpp">
-      <Filter>02_CoreModules\Game\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\Game\Managers\KeyInputManager.cpp">
-      <Filter>02_CoreModules\Game\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\Game\Managers\ResourceManager.cpp">
-      <Filter>02_CoreModules\Game\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\Game\Managers\SceneManager.cpp">
-      <Filter>02_CoreModules\Game\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\Game\Managers\UIManager.cpp">
-      <Filter>02_CoreModules\Game\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\Game\Physics\Bounds.cpp">
-      <Filter>02_CoreModules\Game\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\Game\Physics\ParticleSystem.cpp">
-      <Filter>02_CoreModules\Game\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\Game\Physics\Physics2D.cpp">
-      <Filter>02_CoreModules\Game\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\Game\Camera2D.cpp">
-      <Filter>02_CoreModules\Game\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\FoxtrotEditor\Command.cpp">
-      <Filter>02_CoreModules\FoxtrotEditor\Command</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\FoxtrotEditor\CommandHistory.cpp">
-      <Filter>02_CoreModules\FoxtrotEditor\Command</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\FoxtrotEditor\EditorCamera2D.cpp">
-      <Filter>02_CoreModules\FoxtrotEditor\EditorCamera</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\02_CoreModules\FoxtrotEditor\RenderTextureClass.cpp">
-      <Filter>02_CoreModules\FoxtrotEditor\EditorCamera</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\03_Actors\ActorList\Asteroid.cpp">
-      <Filter>03_Actors\ActorList</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\03_Actors\ActorList\GroundObject.cpp">
-      <Filter>03_Actors\ActorList</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\03_Actors\ActorList\MouseCursor.cpp">
-      <Filter>03_Actors\ActorList</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\03_Actors\ActorList\Ship.cpp">
-      <Filter>03_Actors\ActorList</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\03_Actors\Backgrounds\BackgroundActor.cpp">
-      <Filter>03_Actors\Backgrounds</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\03_Actors\UIs\ButtonUI.cpp">
-      <Filter>03_Actors\UIs</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\03_Actors\UIs\PanelUI.cpp">
-      <Filter>03_Actors\UIs</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\03_Actors\UIs\UIActor.cpp">
-      <Filter>03_Actors\UIs</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\03_Actors\Actor.cpp">
-      <Filter>03_Actors</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\04_Components\2DGraphics\AnimSpriteComponent.cpp">
-      <Filter>04_Components\2D Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\04_Components\2DGraphics\BGSpriteComponent.cpp">
-      <Filter>04_Components\2D Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\04_Components\2DGraphics\SpineAnimComponent.cpp">
-      <Filter>04_Components\2D Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\04_Components\2DGraphics\SpriteComponent.cpp">
-      <Filter>04_Components\2D Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\04_Components\2DGraphics\TileMapComponent.cpp">
-      <Filter>04_Components\2D Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\04_Components\2DGraphics\AnimatorComponent.cpp">
-      <Filter>04_Components\2D Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\04_Components\AI\AIComponent.cpp">
-      <Filter>04_Components\AI</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\04_Components\AI\AIState.cpp">
-      <Filter>04_Components\AI</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\04_Components\Component.cpp">
-      <Filter>04_Components</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\04_Components\GeometryGenerator.cpp">
-      <Filter>04_Components</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\04_Components\GunFiringComponent.cpp">
-      <Filter>04_Components</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\04_Components\InputMoveComponent.cpp">
-      <Filter>04_Components</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\04_Components\MoveComponent.cpp">
-      <Filter>04_Components</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\04_Components\Rigidbody2DComponent.cpp">
-      <Filter>04_Components</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\04_Components\ColliderComponent.cpp">
-      <Filter>04_Components</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\05_Scenes\Scene.cpp">
-      <Filter>05_Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\05_Scenes\Scene_Start.cpp">
-      <Filter>05_Scenes\SceneList</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\05_Scenes\Scene_Tool.cpp">
-      <Filter>05_Scenes\SceneList</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\06_Resources\FTTexture.cpp">
-      <Filter>06_Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\06_Resources\FTSpineTexture.cpp">
-      <Filter>06_Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\06_Resources\Tile.cpp">
-      <Filter>06_Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\06_Resources\FTAnimation.cpp">
-      <Filter>06_Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\06_Resources\FTResource.cpp">
-      <Filter>06_Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\07_Factories\MonFactory.cpp">
-      <Filter>07_Factories</Filter>
-    </ClCompile>
-    <ClCompile Include="src\include\imgui\FileDialog\ImGuiFileDialog.cpp">
-      <Filter>09_Externals</Filter>
-    </ClCompile>
     <ClCompile Include="src\core\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\03_Actors\Properties\Transform.cpp">
-      <Filter>03_Actors\Properties</Filter>
+    <ClCompile Include="Assets\Scripts\ActorList\Asteroid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Assets\Scripts\ActorList\GroundObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Assets\Scripts\ActorList\MouseCursor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Assets\Scripts\ActorList\Ship.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Assets\Scripts\Factories\MonFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\Command.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\CommandHistory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\EditorCamera2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\EditorElement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\EditorLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\FTCoreEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\RenderTextureClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Actors\Backgrounds\BackgroundActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Actors\UIs\ButtonUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Actors\UIs\PanelUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Actors\UIs\UIActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Actors\Actor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Actors\Transform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\AIComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\AIState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\AnimatorComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\AnimSpriteComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\BGSpriteComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\ColliderComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\Component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\GeometryGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\GunFiringComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\InputMoveComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\MoveComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\Rigidbody2DComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpineAnimComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpriteComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\TileMapComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Cores\FTCore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Cores\Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Cores\Timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\FileSystem\ChunkLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Managers\CollisionManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Managers\EventFunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Managers\EventManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Managers\KeyInputManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Managers\ResourceManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Managers\SceneManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Managers\UIManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Physics\Bounds.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Physics\ParticleSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Physics\Physics2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Camera2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\FoxtrotRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTAnimation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTResource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\Tile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene_Start.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene_Tool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\FTMath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\Random.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\imgui\FileDialog\ImGuiFileDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\Animation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\AnimationState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\AnimationStateData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\Atlas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\AtlasAttachmentLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\Attachment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\AttachmentLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\AttachmentTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\Bone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\BoneData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\BoundingBoxAttachment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\ClippingAttachment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\ColorTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\ConstraintData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\CurveTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\DeformTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\DrawOrderTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\Event.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\EventData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\EventTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\Extension.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\IkConstraint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\IkConstraintData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\IkConstraintTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\InheritTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\Json.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\LinkedMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\Log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\MathUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\MeshAttachment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\PathAttachment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\PathConstraint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\PathConstraintData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\PathConstraintMixTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\PathConstraintPositionTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\PathConstraintSpacingTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\PhysicsConstraint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\PhysicsConstraintData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\PhysicsConstraintTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\PointAttachment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\RegionAttachment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\RotateTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\RTTI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\ScaleTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\Sequence.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\SequenceTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\ShearTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\Skeleton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\SkeletonBinary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\SkeletonBounds.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\SkeletonClipping.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\SkeletonData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\SkeletonJson.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\Skin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\Slot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\SlotData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\SpineObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\TextureLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\Timeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\TransformConstraint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\TransformConstraintData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\TransformConstraintTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\TranslateTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\Triangulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\Updatable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\include\spine\VertexAttachment.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\core\01_Utilities\EventType.h">
-      <Filter>01_Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\01_Utilities\FTMath.h">
-      <Filter>01_Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\01_Utilities\Random.h">
-      <Filter>01_Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\01_Utilities\SingletonMacro.h">
-      <Filter>01_Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\01_Utilities\TemplateFunctions.h">
-      <Filter>01_Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\01_Utilities\TypeDefinitions.h">
-      <Filter>01_Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\01_Utilities\UnitDefinitions.h">
-      <Filter>01_Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\FoxtrotEditor\EditorElement.h">
-      <Filter>02_CoreModules\FoxtrotEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\FoxtrotEditor\EditorLayer.h">
-      <Filter>02_CoreModules\FoxtrotEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\FoxtrotEditor\FTCoreEditor.h">
-      <Filter>02_CoreModules\FoxtrotEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\Common\ChunkLoader.h">
-      <Filter>02_CoreModules\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\Common\FoxtrotRenderer.h">
-      <Filter>02_CoreModules\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\Common\Timer.h">
-      <Filter>02_CoreModules\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\Common\WindowProcess.h">
-      <Filter>02_CoreModules\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\Game\FTCore.h">
-      <Filter>02_CoreModules\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\Game\Managers\CollisionManager.h">
-      <Filter>02_CoreModules\Game\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\Game\Managers\EventFunctions.h">
-      <Filter>02_CoreModules\Game\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\Game\Managers\EventManager.h">
-      <Filter>02_CoreModules\Game\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\Game\Managers\KeyInputManager.h">
-      <Filter>02_CoreModules\Game\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\Game\Managers\ResourceManager.h">
-      <Filter>02_CoreModules\Game\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\Game\Managers\SceneManager.h">
-      <Filter>02_CoreModules\Game\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\Game\Managers\UIManager.h">
-      <Filter>02_CoreModules\Game\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\Game\Physics\Bounds.h">
-      <Filter>02_CoreModules\Game\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\Game\Physics\ParticleSystem.h">
-      <Filter>02_CoreModules\Game\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\Game\Physics\Physics2D.h">
-      <Filter>02_CoreModules\Game\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\Game\Physics\Ray.h">
-      <Filter>02_CoreModules\Game\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\Game\Physics\RayCastHit2D.h">
-      <Filter>02_CoreModules\Game\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\Game\Camera2D.h">
-      <Filter>02_CoreModules\Game\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\FoxtrotEditor\CommandHistory.h">
-      <Filter>02_CoreModules\FoxtrotEditor\Command</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\FoxtrotEditor\Command.h">
-      <Filter>02_CoreModules\FoxtrotEditor\Command</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\FoxtrotEditor\EditorCamera2D.h">
-      <Filter>02_CoreModules\FoxtrotEditor\EditorCamera</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\02_CoreModules\FoxtrotEditor\RenderTextureClass.h">
-      <Filter>02_CoreModules\FoxtrotEditor\EditorCamera</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\03_Actors\ActorList\Asteroid.h">
-      <Filter>03_Actors\ActorList</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\03_Actors\ActorList\GroundObject.h">
-      <Filter>03_Actors\ActorList</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\03_Actors\ActorList\MouseCursor.h">
-      <Filter>03_Actors\ActorList</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\03_Actors\ActorList\Ship.h">
-      <Filter>03_Actors\ActorList</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\03_Actors\Backgrounds\BackgroundActor.h">
-      <Filter>03_Actors\Backgrounds</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\03_Actors\UIs\ButtonUI.h">
-      <Filter>03_Actors\UIs</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\03_Actors\UIs\PanelUI.h">
-      <Filter>03_Actors\UIs</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\03_Actors\UIs\UIActor.h">
-      <Filter>03_Actors\UIs</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\03_Actors\Actor.h">
-      <Filter>03_Actors</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\04_Components\2DGraphics\AnimSpriteComponent.h">
-      <Filter>04_Components\2D Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\04_Components\2DGraphics\BGSpriteComponent.h">
-      <Filter>04_Components\2D Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\04_Components\2DGraphics\SpineAnimComponent.h">
-      <Filter>04_Components\2D Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\04_Components\2DGraphics\SpriteComponent.h">
-      <Filter>04_Components\2D Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\04_Components\2DGraphics\TileMapComponent.h">
-      <Filter>04_Components\2D Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\04_Components\2DGraphics\AnimatorComponent.h">
-      <Filter>04_Components\2D Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\04_Components\AI\AIComponent.h">
-      <Filter>04_Components\AI</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\04_Components\AI\AIState.h">
-      <Filter>04_Components\AI</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\04_Components\ColliderComponent.h">
-      <Filter>04_Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\04_Components\Component.h">
-      <Filter>04_Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\04_Components\GeometryGenerator.h">
-      <Filter>04_Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\04_Components\GunFiringComponent.h">
-      <Filter>04_Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\04_Components\InputMoveComponent.h">
-      <Filter>04_Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\04_Components\MoveComponent.h">
-      <Filter>04_Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\04_Components\Rigidbody2DComponent.h">
-      <Filter>04_Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\05_Scenes\SceneType.h">
-      <Filter>05_Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\05_Scenes\Scene.h">
-      <Filter>05_Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\05_Scenes\Scene_Start.h">
-      <Filter>05_Scenes\SceneList</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\05_Scenes\Scene_Tool.h">
-      <Filter>05_Scenes\SceneList</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\06_Resources\FTResource.h">
-      <Filter>06_Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\06_Resources\FTTexture.h">
-      <Filter>06_Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\06_Resources\Mesh.h">
-      <Filter>06_Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\06_Resources\MeshData.h">
-      <Filter>06_Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\06_Resources\FTSpineTexture.h">
-      <Filter>06_Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\06_Resources\Tile.h">
-      <Filter>06_Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\06_Resources\Vertex.h">
-      <Filter>06_Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\06_Resources\FTAnimation.h">
-      <Filter>06_Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\07_Factories\MonFactory.h">
-      <Filter>07_Factories</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\imgui\FileDialog\ImGuiFileDialog.h">
-      <Filter>09_Externals</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\imgui\FileDialog\ImGuiFileDialogConfig.h">
-      <Filter>09_Externals</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\imgui\FileDialog\stb\stb_image.h">
-      <Filter>09_Externals</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\imgui\FileDialog\stb\stb_image_resize.h">
-      <Filter>09_Externals</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\imgui\FileDialog\dirent\dirent.h">
-      <Filter>09_Externals</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\03_Actors\Properties\ActorTag.h">
-      <Filter>03_Actors\Properties</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\03_Actors\Properties\Transform.h">
-      <Filter>03_Actors\Properties</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\03_Actors\Properties\ActorGroup.h">
-      <Filter>03_Actors\Properties</Filter>
-    </ClInclude>
+    <ClInclude Include="Assets\Scripts\ActorList\Asteroid.h" />
+    <ClInclude Include="Assets\Scripts\ActorList\GroundObject.h" />
+    <ClInclude Include="Assets\Scripts\ActorList\MouseCursor.h" />
+    <ClInclude Include="Assets\Scripts\ActorList\Ship.h" />
+    <ClInclude Include="Assets\Scripts\Factories\MonFactory.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\Command.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\CommandHistory.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\EditorCamera2D.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\EditorElement.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\EditorLayer.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\FTCoreEditor.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\RenderTextureClass.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Actors\Backgrounds\BackgroundActor.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Actors\UIs\ButtonUI.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Actors\UIs\PanelUI.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Actors\UIs\UIActor.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Actors\Actor.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Actors\ActorGroup.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Actors\ActorTag.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Actors\Transform.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\AIComponent.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\AIState.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\AnimatorComponent.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\AnimSpriteComponent.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\BGSpriteComponent.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\ColliderComponent.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\Component.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\GeometryGenerator.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\GunFiringComponent.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\InputMoveComponent.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\MoveComponent.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\Rigidbody2DComponent.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpineAnimComponent.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpriteComponent.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\TileMapComponent.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Cores\FTCore.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Cores\Timer.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Cores\WindowProcess.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\FileSystem\ChunkLoader.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Managers\CollisionManager.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Managers\EventFunctions.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Managers\EventManager.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Managers\KeyInputManager.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Managers\ResourceManager.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Managers\SceneManager.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Managers\UIManager.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Physics\Bounds.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Physics\ParticleSystem.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Physics\Physics2D.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Physics\Ray.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Physics\RayCastHit2D.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Camera2D.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\FoxtrotRenderer.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTAnimation.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTResource.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineTexture.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTTexture.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\Mesh.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\MeshData.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\Tile.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\Vertex.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene_Start.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene_Tool.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\SceneType.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\EventType.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\FTMath.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\Random.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\SingletonMacro.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\TemplateFunctions.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\TypeDefinitions.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\UnitDefinitions.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\resource1.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\imgui\FileDialog\dirent\dirent.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\imgui\FileDialog\stb\stb_image.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\imgui\FileDialog\stb\stb_image_resize.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\imgui\FileDialog\ImGuiFileDialog.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\imgui\FileDialog\ImGuiFileDialogConfig.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Animation.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\AnimationState.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\AnimationStateData.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Atlas.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\AtlasAttachmentLoader.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Attachment.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\AttachmentLoader.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\AttachmentTimeline.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\AttachmentType.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\BlendMode.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Bone.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\BoneData.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\BoundingBoxAttachment.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\ClippingAttachment.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Color.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\ColorTimeline.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\ConstraintData.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\ContainerUtil.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\CurveTimeline.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Debug.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\DeformTimeline.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\dll.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\DrawOrderTimeline.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Event.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\EventData.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\EventTimeline.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Extension.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\HashMap.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\HasRendererObject.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\IkConstraint.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\IkConstraintData.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\IkConstraintTimeline.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Inherit.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\InheritTimeline.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Json.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\LinkedMesh.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Log.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\MathUtil.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\MeshAttachment.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\MixBlend.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\MixDirection.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\PathAttachment.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\PathConstraint.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\PathConstraintData.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\PathConstraintMixTimeline.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\PathConstraintPositionTimeline.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\PathConstraintSpacingTimeline.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Physics.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\PhysicsConstraint.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\PhysicsConstraintData.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\PhysicsConstraintTimeline.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\PointAttachment.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Pool.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\PositionMode.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Property.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\RegionAttachment.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\RotateMode.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\RotateTimeline.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\RTTI.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\ScaleTimeline.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Sequence.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\SequenceTimeline.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\ShearTimeline.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Skeleton.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\SkeletonBinary.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\SkeletonBounds.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\SkeletonClipping.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\SkeletonData.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\SkeletonJson.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Skin.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Slot.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\SlotData.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\SpacingMode.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\spine.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\SpineObject.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\SpineString.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\TextureLoader.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\TextureRegion.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Timeline.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\TransformConstraint.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\TransformConstraintData.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\TransformConstraintTimeline.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\TranslateTimeline.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Triangulator.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Updatable.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Vector.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Version.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\VertexAttachment.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\Vertices.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />
     <None Include="cpp.hint" />
     <None Include="SaveTest\TestActorsList.json" />
+    <None Include=".gitignore" />
+    <None Include="EditorData.json" />
+    <None Include="imgui.ini" />
+    <None Include="LICENSE" />
+    <None Include="RCa10356" />
+    <None Include="RCa22752" />
+    <None Include="RCa24044" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Chapter03.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="src\core\08_Shaders\ColorPixelShader.hlsl">
-      <Filter>08_Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="src\core\08_Shaders\ColorVertexShader.hlsl">
-      <Filter>08_Shaders</Filter>
-    </FxCompile>
   </ItemGroup>
 </Project>

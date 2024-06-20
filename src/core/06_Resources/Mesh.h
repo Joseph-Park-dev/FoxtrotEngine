@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "FTTexture.h"
+#include "FTSpineTexture.h"
 #include "Vertex.h"
 
 using Microsoft::WRL::ComPtr;
@@ -33,6 +34,19 @@ struct Mesh {
     ComPtr<ID3D11Buffer> vertexConstantBuffer;
     ComPtr<ID3D11Buffer> pixelConstantBuffer;
     FTTexture*           texture = nullptr;
+
+    UINT indexCount = 0;
+};
+
+struct SpineMesh {
+    BasicVertexConstantBuffer basicVertexConstantBufferData;
+    PixelShaderConstantBuffer pixelShaderConstantBufferData;
+
+    ComPtr<ID3D11Buffer> vertexBuffer;
+    ComPtr<ID3D11Buffer> indexBuffer;
+    ComPtr<ID3D11Buffer> vertexConstantBuffer;
+    ComPtr<ID3D11Buffer> pixelConstantBuffer;
+    FTSpineTexture* texture = nullptr;
 
     UINT indexCount = 0;
 };

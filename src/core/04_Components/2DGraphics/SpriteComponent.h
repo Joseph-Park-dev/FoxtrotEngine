@@ -12,6 +12,7 @@ class SpriteComponent :public Component
 {
 public:
 	Mesh*		 GetMesh()		const { return mMesh; }
+	MeshData&	 GetMeshData()		  { return mMeshData; }
 	int			 GetTexWidth()  const { return mTexWidth; }
 	Bounds*		 GetRect()		const { return rect; }
 	int			 GetTexHeight() const { return mTexHeight; }
@@ -23,8 +24,6 @@ public:
 	void		 SetTexHeight(int texHeight) { mTexHeight = texHeight; }
 	void		 SetTexture  (FoxtrotRenderer* renderer, std::string fileName);
 	void		 UpdateTexture(FoxtrotRenderer* renderer, std::string fileName);
-
-protected:
 
 public:
 	virtual void Initialize	(FoxtrotRenderer* renderer);

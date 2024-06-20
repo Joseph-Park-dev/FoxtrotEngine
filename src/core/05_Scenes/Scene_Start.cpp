@@ -21,6 +21,8 @@
 #include "MouseCursor.h"
 #include "KeyInputManager.h"
 #include "EditorElement.h"
+#include "FTCore.h"
+#include "FoxtrotRenderer.h"
 
 void Scene_Start::Enter()
 {
@@ -32,6 +34,10 @@ void Scene_Start::LoadData()
 	CollisionManager::GetInstance()->MarkGroup(ACTOR_GROUP::PLAYER, ACTOR_GROUP::ENEMY);
 	CollisionManager::GetInstance()->MarkGroup(ACTOR_GROUP::PLAYER, ACTOR_GROUP::GROUND);
 	CollisionManager::GetInstance()->MarkGroup(ACTOR_GROUP::DEFAULT, ACTOR_GROUP::DEFAULT);
+	
+	FoxtrotRenderer* renderer = FTCore::GetInstance()->GetGameRenderer();
+	spine::String atlasPath = "./assets/SpineTest/[Player] ver.01_Spine-File.atlas";
+	ResourceManager::GetInstance()->LoadSpineTexture(renderer, atlasPath);
 }
 
 void Scene_Start::Exit()

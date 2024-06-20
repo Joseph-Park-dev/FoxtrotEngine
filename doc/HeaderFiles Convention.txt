@@ -1,0 +1,20 @@
+#include "foo/server/fooserver.h"  	// dir2/foo2.h.
+				// A blank line
+#include <sys/types.h>  		// C system headers, and any other headers in angle brackets with the .h extension, e.g., <unistd.h>, <stdlib.h>, <Python.h>.
+#include <unistd.h>
+				// A blank line
+#include <string>			// C++ standard library headers (without file extension), e.g., <algorithm>, <cstddef>.
+#include <vector>
+				// A blank line
+				// Other libraries' .h files.
+				// A blank line
+#include "base/basictypes.h"		// Your project's .h files.
+#include "foo/server/bar.h"		
+#include "third_party/absl/flags/flag.h"	
+
+안녕하세요? 프로젝트 폴더 구조 관련해서 질문드립니다.
+제가 유니티 게임엔진을 사용할때, 각 폴더에 순서대로 숫자를 붙이는 습관이 있었는데요 (이미지 참조),
+CPP 프로젝트 폴더를 구성할때도 이런 넘버링이 문제가 없을지 문의드립니다
+(일반적인 Convention에 어긋나지는 않는지...)
+오픈소스 프로젝트 몇개를 보다보니 폴더 이름에 숫자를 붙이는 경우가 없는것 같아서요!ㅎ
+감사합니다.

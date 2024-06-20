@@ -244,7 +244,7 @@
     <ClCompile Include="src\core\06_Resources\FTAnimation.cpp" />
     <ClCompile Include="src\core\06_Resources\FTResource.cpp" />
     <ClCompile Include="src\core\06_Resources\FTTexture.cpp" />
-    <ClCompile Include="src\core\06_Resources\SpineTexture.cpp" />
+    <ClCompile Include="src\core\06_Resources\FTSpineTexture.cpp" />
     <ClCompile Include="src\core\06_Resources\Tile.cpp" />
     <ClCompile Include="src\core\07_Factories\MonFactory.cpp" />
     <ClCompile Include="src\core\Main.cpp" />
@@ -319,7 +319,7 @@
     <ClInclude Include="src\core\06_Resources\FTTexture.h" />
     <ClInclude Include="src\core\06_Resources\Mesh.h" />
     <ClInclude Include="src\core\06_Resources\MeshData.h" />
-    <ClInclude Include="src\core\06_Resources\SpineTexture.h" />
+    <ClInclude Include="src\core\06_Resources\FTSpineTexture.h" />
     <ClInclude Include="src\core\06_Resources\Tile.h" />
     <ClInclude Include="src\core\06_Resources\Vertex.h" />
     <ClInclude Include="src\core\07_Factories\MonFactory.h" />

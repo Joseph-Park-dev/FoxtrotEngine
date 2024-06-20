@@ -40,10 +40,7 @@ void SpriteComponent::SetTexture(FoxtrotRenderer* renderer, std::string fileName
 	std::vector<Mesh*>& meshes = renderer->GetMeshes();
 	std::vector<Mesh*>::iterator iter = std::find(meshes.begin(), meshes.end(), mMesh);
 	if (iter != meshes.end())
-	{
-		ResourceManager::GetInstance()->LoadTexture(renderer, fileName);
 		mMesh->texture = ResourceManager::GetInstance()->GetLoadedTexture(fileName);
-	}
 }
 
 void SpriteComponent::UpdateTexture(FoxtrotRenderer* renderer, std::string fileName)

@@ -235,7 +235,7 @@
     <ClCompile Include="src\core\06_Resources\FTTexture.cpp">
       <Filter>06_Resources</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\06_Resources\SpineTexture.cpp">
+    <ClCompile Include="src\core\06_Resources\FTSpineTexture.cpp">
       <Filter>06_Resources</Filter>
     </ClCompile>
     <ClCompile Include="src\core\06_Resources\Tile.cpp">
@@ -453,7 +453,7 @@
     <ClInclude Include="src\core\06_Resources\MeshData.h">
       <Filter>06_Resources</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\06_Resources\SpineTexture.h">
+    <ClInclude Include="src\core\06_Resources\FTSpineTexture.h">
       <Filter>06_Resources</Filter>
     </ClInclude>
     <ClInclude Include="src\core\06_Resources\Tile.h">

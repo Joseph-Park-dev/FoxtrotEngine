@@ -1,4 +1,4 @@
-#include "FTTexture.h"
+#include <FTTexture.h>
 
 #include <string>
 #include <stdlib.h>
@@ -7,8 +7,8 @@
 #include <d3d11.h>
 #include <wrl.h> // ComPtr
 
-#include "FTCore.h"
-#include "TemplateFunctions.h"
+#include <FTCore.h>
+#include <TemplateFunctions.h>
 
 bool FTTexture::CreateTexture(FoxtrotRenderer* renderer)
 {

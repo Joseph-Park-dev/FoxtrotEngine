@@ -198,7 +198,8 @@ void FoxtrotRenderer::Render()
 
 		if(mesh->texture != nullptr)
 			mContext->PSSetShaderResources(
-				0, 1, mesh->texture->GetResourceView().GetAddressOf());
+				0, 1, mesh->texture->GetResourceView().GetAddressOf()
+			);
 
 		mContext->PSSetConstantBuffers(
 			0, 1, mesh->pixelConstantBuffer.GetAddressOf());

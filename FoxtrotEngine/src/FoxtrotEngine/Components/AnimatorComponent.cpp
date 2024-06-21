@@ -1,13 +1,14 @@
-#include "AnimatorComponent.h"
-#include "Actor.h"
-#include "Camera2D.h"
-#include "Tile.h"
-#include "FTTexture.h"
-#include "ResourceManager.h"
-#include "TemplateFunctions.h"
-#include "Transform.h"
-#include "ChunkLoader.h"
-#include "FTCore.h"
+#include "FoxtrotEngine/Components/AnimatorComponent.h"
+
+#include "FoxtrotEngine/Actors/Actor.h"
+#include "FoxtrotEngine/Actors/Transform.h"
+#include "FoxtrotEngine/Renderer/Camera2D.h"
+#include "FoxtrotEngine/ResourceSystem/Tile.h"
+#include "FoxtrotEngine/ResourceSystem/FTTexture.h"
+#include "FoxtrotEngine/Managers/ResourceManager.h"
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
+#include "FoxtrotEngine/Core/FTCore.h"
+#include "FoxtrotEngine/FileSystem/ChunkLoader.h"
 
 AnimatorComponent::AnimatorComponent(Actor* owner, int drawOrder, int updateOrder)
 	: TileMapComponent(owner, drawOrder)

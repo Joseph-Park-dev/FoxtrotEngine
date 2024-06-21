@@ -1,6 +1,7 @@
 #pragma once
-#include "MoveComponent.h"
-#include "TemplateFunctions.h"
+#include "FoxtrotEngine/Components/MoveComponent.h"
+
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
 
 class InputMoveComponent :
     public MoveComponent

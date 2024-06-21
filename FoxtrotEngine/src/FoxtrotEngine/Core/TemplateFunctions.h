@@ -10,8 +10,8 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 
-#include "FTMath.h"
-#include "Bounds.h"
+#include "FoxtrotEngine/Math/FTMath.h"
+#include "FoxtrotEngine/Physics/Bounds.h"
 
 //static std::string ToString(const wchar_t* text)
 //{

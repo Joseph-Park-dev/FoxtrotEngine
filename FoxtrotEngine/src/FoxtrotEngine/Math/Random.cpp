@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Random.h"
+#include "FoxtrotEngine/Math/Random.h"
 
 void Random::Init()
 {

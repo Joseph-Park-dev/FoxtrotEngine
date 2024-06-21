@@ -1,8 +1,9 @@
-#include "MoveComponent.h"
-#include "FTMath.h"
-#include "Actor.h"
-#include "Rigidbody2DComponent.h"
-#include "Transform.h"
+#include "FoxtrotEngine/Components/MoveComponent.h"
+
+#include "FoxtrotEngine/Math/FTMath.h"
+#include "FoxtrotEngine/Actors/Actor.h"
+#include "FoxtrotEngine/Components/Rigidbody2DComponent.h"
+#include "FoxtrotEngine/Actors/Transform.h"
 
 MoveComponent::MoveComponent(class Actor* owner, int drawOrder, int updateorder)
 	:Component(owner, drawOrder , updateorder)

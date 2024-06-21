@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
 
-#include "Actor.h"
-#include"TemplateFunctions.h"
+#include "FoxtrotEngine/Actors/Actor.h"
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
 
 class KeyInputManager;
 class Rigidbody2DComponent;

@@ -1,25 +1,5 @@
 #ifdef _DEBUG
-#include "EditorLayer.h"
-#include "EditorElement.h"
-#include "EditorCamera2D.h"
-#include "ChunkLoader.h"
-#include "Actor.h"
-#include "SceneManager.h"
-#include "Scene.h"
-#include "ActorGroup.h"
-#include "PanelUI.h"
-#include "FTCore.h"
-#include "FTCoreEditor.h"
-#include "Ship.h"
-#include "Transform.h"
-#include "GroundObject.h"
-#include "BackgroundActor.h"
-#include "CommandHistory.h"
-#include "Command.h"
-#include "Rigidbody2DComponent.h"
-#include "FoxtrotRenderer.h"
-#include "RenderTextureClass.h"
-#include "KeyInputManager.h"
+#include "FoxtrotEditor/EditorLayer.h"
 
 #include <unordered_map>
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -29,6 +9,27 @@
 #include "imgui/FileDialog/ImGuiFileDialog.h"
 #include "imgui/FileDialog/ImGuiFileDialogConfig.h"
 #include <d3d11.h>
+
+#include "FoxtrotEditor/EditorElement.h"
+#include "FoxtrotEditor/EditorCamera2D.h"
+#include "FoxtrotEditor/FTCoreEditor.h"
+#include "FoxtrotEditor/CommandHistory.h"
+#include "FoxtrotEditor/Command.h"
+#include "FoxtrotEditor/RenderTextureClass.h"
+
+#include "FoxtrotEngine/Core/FTCore.h"
+#include "FoxtrotEngine/FileSystem/ChunkLoader.h"
+#include "FoxtrotEngine/Managers/SceneManager.h"
+#include "FoxtrotEngine/Managers/KeyInputManager.h"
+#include "FoxtrotEngine/Scenes/Scene.h"
+#include "FoxtrotEngine/Actors/Actor.h"
+#include "FoxtrotEngine/Actors/ActorGroup.h"
+#include "FoxtrotEngine/Actors/UIs/PanelUI.h"
+#include "FoxtrotEngine/Actors/Transform.h"
+#include "FoxtrotEngine/Actors/Backgrounds/BackgroundActor.h"
+#include "FoxtrotEngine/Components/Rigidbody2DComponent.h"
+#include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
+#include "Scripts/ActorList/GroundObject.h"
 
 void EditorLayer::Update(float deltaTime)
 {

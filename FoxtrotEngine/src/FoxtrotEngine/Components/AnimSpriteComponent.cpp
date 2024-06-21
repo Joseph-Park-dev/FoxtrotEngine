@@ -1,5 +1,6 @@
-#include "AnimSpriteComponent.h"
-#include "FTTexture.h"
+#include "FoxtrotEngine/Components/AnimSpriteComponent.h"
+
+#include "FoxtrotEngine/ResourceSystem/FTTexture.h"
 
 AnimSpriteComponent::AnimSpriteComponent(Actor* owner, int drawOrder, int updateOrder)
 	: SpriteComponent(owner, drawOrder)

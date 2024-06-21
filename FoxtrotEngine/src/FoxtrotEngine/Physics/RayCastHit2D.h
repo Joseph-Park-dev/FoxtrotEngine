@@ -1,7 +1,7 @@
 #pragma once
-#include "ColliderComponent.h"
-#include "Actor.h"
-#include "FTMath.h"
+#include "FoxtrotEngine/Components/ColliderComponent.h"
+#include "FoxtrotEngine/Actors/Actor.h"
+#include "FoxtrotEngine/Math/FTMath.h"
 
 struct RayCastHit2D
 {

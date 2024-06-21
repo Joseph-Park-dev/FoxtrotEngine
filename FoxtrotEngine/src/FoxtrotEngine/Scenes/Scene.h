@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-#include "ActorGroup.h"
+#include "FoxtrotEngine/Actors/ActorGroup.h"
 
 class Actor;
 class FTCore;

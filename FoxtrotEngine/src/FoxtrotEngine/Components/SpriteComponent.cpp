@@ -1,22 +1,29 @@
-#include "SpriteComponent.h"
-#include "Actor.h"
-#include "Scene.h"
-#include "FTCore.h"
-#include "FTTexture.h"
-#include "EditorCamera2D.h"
-#include "Transform.h"
-#include "ChunkLoader.h"
-#include "ResourceManager.h"
-#include "Mesh.h"
-#include "MeshData.h"
-#include "GeometryGenerator.h"
-#include "FTMath.h"
-#include "CommandHistory.h"
+#include "FoxtrotEngine/Components/SpriteComponent.h"
+
+#include "FoxtrotEngine/Actors/Transform.h"
+#include "FoxtrotEngine/Actors/Actor.h"
+#include "FoxtrotEngine/Scenes/Scene.h"
+#include "FoxtrotEngine/Core/FTCore.h"
+#include "FoxtrotEngine/FileSystem/ChunkLoader.h"
+#include "FoxtrotEngine/Managers/ResourceManager.h"
+#include "FoxtrotEngine/ResourceSystem/FTTexture.h"
+#include "FoxtrotEngine/ResourceSystem/Mesh.h"
+#include "FoxtrotEngine/ResourceSystem/MeshData.h"
+#include "FoxtrotEngine/ResourceSystem/MeshData.h"
+#include "FoxtrotEngine/Renderer/GeometryGenerator.h"
+#include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
+#include "FoxtrotEngine/Physics/Bounds.h"
+#include "FoxtrotEngine/Math/FTMath.h"
+
+#ifdef _DEBUG
+#include "FoxtrotEditor/CommandHistory.h"
+#include "FoxtrotEditor/EditorCamera2D.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include "imgui/FileDialog/ImGuiFileDialog.h"
 #include "imgui/FileDialog/ImGuiFileDialogConfig.h"
+#endif
 
 SpriteComponent::SpriteComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner, drawOrder)

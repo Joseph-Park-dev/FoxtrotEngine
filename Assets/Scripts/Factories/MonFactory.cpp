@@ -1,9 +1,10 @@
-#include "MonFactory.h"
-#include "Asteroid.h"
-#include "Scene.h"
-#include "AIComponent.h"
-#include "AIState.h"
-#include "Transform.h"
+#include "Scripts/Factories/MonFactory.h"
+
+#include "Scripts/ActorList/Asteroid.h"
+#include "FoxtrotEngine/Actors/Transform.h"
+#include "FoxtrotEngine/Scenes/Scene.h"
+#include "FoxtrotEngine/Components/AIComponent.h"
+#include "FoxtrotEngine/Components/AIState.h"
 
 Asteroid* MonFactory::CreateMonster(Scene* scene, FTVector2 pos, MON_TYPE type)
 {

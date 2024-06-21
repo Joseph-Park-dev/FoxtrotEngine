@@ -1,10 +1,10 @@
-#include "Rigidbody2DComponent.h"
-#include "Physics2D.h"
-#include "Actor.h"
-#include "FTMath.h"
-#include "Transform.h"
-#include "ChunkLoader.h"
-#include "EditorCamera2D.h"
+#include "FoxtrotEngine/Components/Rigidbody2DComponent.h"
+
+#include "FoxtrotEngine/Physics/Physics2D.h"
+#include "FoxtrotEngine/Actors/Actor.h"
+#include "FoxtrotEngine/Actors/Transform.h"
+#include "FoxtrotEngine/Math/FTMath.h"
+#include "FoxtrotEngine/FileSystem/ChunkLoader.h"
 
 Rigidbody2DComponent::Rigidbody2DComponent(class Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner, drawOrder, updateOrder)
@@ -110,14 +110,6 @@ void Rigidbody2DComponent::ClearForceAndAccel()
 	mAcceleration = FTVector2::Zero;
 }
 
-void Rigidbody2DComponent::SaveProperties(std::ofstream& ofs)
-{
-	Component::SaveProperties(ofs);
-	FileIOHelper::AddFloat(ofs, mMass);
-	FileIOHelper::AddFloat(ofs, mFrictionCoeff);
-	FileIOHelper::AddVector2(ofs, mMaxVelocity);
-}
-
 void Rigidbody2DComponent::LoadProperties(std::ifstream& ifs)
 {
 	Component::LoadProperties(ifs);
@@ -125,3 +117,13 @@ void Rigidbody2DComponent::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadFloat(ifs, mFrictionCoeff);
 	FileIOHelper::LoadVector2(ifs, mMaxVelocity);
 }
+
+#ifdef _DEBUG
+void Rigidbody2DComponent::SaveProperties(std::ofstream& ofs)
+{
+	Component::SaveProperties(ofs);
+	FileIOHelper::AddFloat(ofs, mMass);
+	FileIOHelper::AddFloat(ofs, mFrictionCoeff);
+	FileIOHelper::AddVector2(ofs, mMaxVelocity);
+}
+#endif

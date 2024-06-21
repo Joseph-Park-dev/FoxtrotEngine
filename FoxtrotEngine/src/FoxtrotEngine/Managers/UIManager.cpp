@@ -1,12 +1,15 @@
+#include "FoxtrotEngine/Managers/UIManager.h"
+
 #include <list>
 
-#include "UIManager.h"
-#include "Scene.h"
-#include "SceneManager.h"
-#include "Actor.h"
-#include "UIActor.h"
-#include "KeyInputManager.h"
-#include "EditorLayer.h"
+#include "FoxtrotEngine/Scenes/Scene.h"
+#include "FoxtrotEngine/Managers/SceneManager.h"
+#include "FoxtrotEngine/Actors/Actor.h"
+#include "FoxtrotEngine/Actors/UIs/UIActor.h"
+#include "FoxtrotEngine/Managers/KeyInputManager.h"
+#ifdef _DEBUG
+#include "FoxtrotEditor/EditorLayer.h"
+#endif // DEBUG
 
 UIManager::UIManager()
 	: mFocusedUI(nullptr)

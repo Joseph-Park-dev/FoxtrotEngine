@@ -1,20 +1,21 @@
+#include "FoxtrotEngine/Components/TileMapComponent.h"
+
 #include <queue>
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 
-#include "TileMapComponent.h"
-#include "Actor.h"
-#include "FTMath.h"
-#include "Tile.h"
-#include "FTTexture.h"
-#include "Camera2D.h"
-#include "Transform.h"
-#include "FTCore.h"
+#include "FoxtrotEngine/Actors/Actor.h"
+#include "FoxtrotEngine/Math/FTMath.h"
+#include "FoxtrotEngine/ResourceSystem/Tile.h"
+#include "FoxtrotEngine/ResourceSystem/FTTexture.h"
+#include "FoxtrotEngine/Renderer/Camera2D.h"
+#include "FoxtrotEngine/Actors/Transform.h"
+#include "FoxtrotEngine/Core/FTCore.h"
 
 #ifdef _DEBUG
-#include "EditorCamera2D.h"
+#include "FoxtrotEditor/EditorCamera2D.h"
 #endif // _DEBUG
 
 void TileMapComponent::InitializeTileMap(const std::wstring& fileName, int tileSizeX, int tileSizeY)

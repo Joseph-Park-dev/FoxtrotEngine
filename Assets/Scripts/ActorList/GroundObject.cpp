@@ -1,10 +1,12 @@
-#include "GroundObject.h"
-#include "ColliderComponent.h"
-#include "Camera2D.h"
-#include "Rigidbody2DComponent.h"
-#include "Transform.h"
-#include "Physics2D.h"
-#include "KeyInputManager.h"
+#include "Scripts/ActorList/GroundObject.h"
+
+#include "FoxtrotEngine/Components/ColliderComponent.h"
+#include "FoxtrotEngine/Components/Rigidbody2DComponent.h"
+#include "FoxtrotEngine/Renderer/Camera2D.h"
+#include "FoxtrotEngine/Actors/Transform.h"
+#include "FoxtrotEngine/Actors/ActorGroup.h"
+#include "FoxtrotEngine/Physics/Physics2D.h"
+#include "FoxtrotEngine/Managers/KeyInputManager.h"
 
 void GroundObject::OnCollisionEnter(ColliderComponent* other)
 {

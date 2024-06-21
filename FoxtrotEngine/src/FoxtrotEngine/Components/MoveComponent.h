@@ -1,6 +1,7 @@
 #pragma once
-#include "Component.h"
-#include "TemplateFunctions.h"
+#include "FoxtrotEngine/Components/Component.h"
+
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
 
 class FTVector2;
 class Rigidbody2DComponent;

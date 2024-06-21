@@ -4,9 +4,9 @@
 #include <wrl.h> // ComPtr
 #include <vector>
 
-#include "FTTexture.h"
-#include "FTSpineTexture.h"
-#include "Vertex.h"
+//#include "FoxtrotEngine/ResourceSystem/FTTexture.h"
+#include "FoxtrotEngine/ResourceSystem/FTSpineTexture.h"
+#include "FoxtrotEngine/ResourceSystem/Vertex.h"
 
 using Microsoft::WRL::ComPtr;
 

@@ -1,6 +1,9 @@
-﻿#include <directxtk/SimpleMath.h>
-#include "Vertex.h"
-#include "GeometryGenerator.h"
+﻿#include "FoxtrotEngine/Renderer/GeometryGenerator.h"
+
+#include <directxtk/SimpleMath.h>
+
+#include "FoxtrotEngine/ResourceSystem/Vertex.h"
+#include "FoxtrotEngine/ResourceSystem/MeshData.h"
 
 //#include "ModelLoader.h"
 using namespace DirectX;

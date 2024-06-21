@@ -1,9 +1,10 @@
+#include "FoxtrotEngine/Components/Component.h"
+
 #include <nlohmann/json.hpp>
 
-#include "Component.h"
-#include "Actor.h"
-#include "ChunkLoader.h"
-#include "TemplateFunctions.h"
+#include "FoxtrotEngine/Actors/Actor.h"
+#include "FoxtrotEngine/FileSystem/ChunkLoader.h"
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
 
 const char* Component::TypeNames[NUM_COMPONENT_TYPES] =
 {

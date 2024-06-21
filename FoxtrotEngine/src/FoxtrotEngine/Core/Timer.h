@@ -1,7 +1,7 @@
 #pragma once
 #include <profileapi.h>
 
-#include "SingletonMacro.h"
+#include "FoxtrotEngine/Core/SingletonMacro.h"
 
 #define FT_TICKS_PASSED(A, B)  ((__int64)((B) - (A)) <= 0)
 

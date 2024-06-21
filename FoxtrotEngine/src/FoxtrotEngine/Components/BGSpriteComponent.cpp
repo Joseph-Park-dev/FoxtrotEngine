@@ -1,7 +1,8 @@
 #include "BGSpriteComponent.h"
-#include "Actor.h"
-#include "Transform.h"
-#include "FoxtrotRenderer.h"
+
+#include "FoxtrotEngine/Actors/Actor.h"
+#include "FoxtrotEngine/Actors/Transform.h"
+#include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 
 BGSpriteComponent::BGSpriteComponent(Actor* owner, int drawOrder, int updateOrder)
 	:SpriteComponent(owner, drawOrder)

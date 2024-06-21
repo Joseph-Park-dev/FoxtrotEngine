@@ -1,9 +1,10 @@
 #pragma once
+#include "FoxtrotEngine/Components/SpriteComponent.h"
+
 #include <string>
 
-#include "SpriteComponent.h"
-#include "TemplateFunctions.h"
-#include "Tile.h"
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
+#include "FoxtrotEngine/ResourceSystem/Tile.h"
 
 class FTVector2;
 

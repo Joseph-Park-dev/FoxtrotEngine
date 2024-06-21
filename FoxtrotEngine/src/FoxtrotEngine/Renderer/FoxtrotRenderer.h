@@ -8,7 +8,7 @@
 #include <iostream>
 #include <exception>
 
-#include "Mesh.h"
+#include "FoxtrotEngine/ResourceSystem/Mesh.h"
 
 using namespace Microsoft::WRL;
 class Transform;

@@ -6,6 +6,7 @@
 #include "FoxtrotEngine/Scenes/Scene.h"
 #include "FoxtrotEngine/Components/MoveComponent.h"
 #include "FoxtrotEngine/Actors/Transform.h"
+#include "FoxtrotEngine/Core/EventFunctions.h"
 #include "Scripts/ActorList/Asteroid.h"
 
 AIPursue::AIPursue(AIComponent* owner)

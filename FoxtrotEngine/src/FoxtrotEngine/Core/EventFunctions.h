@@ -1,9 +1,9 @@
 #pragma once
 #include <string>
 
-#include "ActorGroup.h"
-#include "SceneType.h"
-#include "AIState.h"
+#include "FoxtrotEngine/Actors/ActorGroup.h"
+#include "FoxtrotEngine/Scenes/SceneType.h"
+#include "FoxtrotEngine/Components/AIState.h"
 
 class Actor;
 class AIComponent;

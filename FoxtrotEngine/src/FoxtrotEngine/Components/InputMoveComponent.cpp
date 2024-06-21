@@ -1,9 +1,10 @@
-#include "InputMoveComponent.h"
-#include "KeyInputManager.h"
-#include "FTMath.h"
-#include "Actor.h"
-#include "Rigidbody2DComponent.h"
-#include "Transform.h"
+#include "FoxtrotEngine/Components/InputMoveComponent.h"
+
+#include "FoxtrotEngine/Managers/KeyInputManager.h"
+#include "FoxtrotEngine/Math/FTMath.h"
+#include "FoxtrotEngine/Actors/Actor.h"
+#include "FoxtrotEngine/Actors/Transform.h"
+#include "FoxtrotEngine/Components/Rigidbody2DComponent.h"
 
 InputMoveComponent::InputMoveComponent(Actor* owner, int drawOrder, int updateOrder)
 	: MoveComponent(owner, drawOrder, updateOrder)

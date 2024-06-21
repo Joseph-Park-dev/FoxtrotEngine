@@ -7,9 +7,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\core\Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Assets\Scripts\ActorList\Asteroid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -85,9 +82,6 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\GeometryGenerator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\GunFiringComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -109,22 +103,10 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\TileMapComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Cores\FTCore.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Cores\Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Cores\Timer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\FileSystem\ChunkLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Managers\CollisionManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Managers\EventFunctions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Managers\EventManager.cpp">
@@ -179,12 +161,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene_Tool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\FTMath.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\Random.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\include\imgui\FileDialog\ImGuiFileDialog.cpp">
@@ -388,6 +364,27 @@
     <ClCompile Include="FoxtrotEngine\src\include\spine\VertexAttachment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\GeometryGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Core\EventFunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Core\FTCore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Core\Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Core\Timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Math\FTMath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Math\Random.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets\Scripts\ActorList\Asteroid.h" />
@@ -417,7 +414,6 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\BGSpriteComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\ColliderComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\Component.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\GeometryGenerator.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\GunFiringComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\InputMoveComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\MoveComponent.h" />
@@ -557,6 +553,20 @@
     <ClInclude Include="FoxtrotEngine\src\include\spine\Version.h" />
     <ClInclude Include="FoxtrotEngine\src\include\spine\VertexAttachment.h" />
     <ClInclude Include="FoxtrotEngine\src\include\spine\Vertices.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\GeometryGenerator.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Core\EventFunctions.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Core\EventType.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Core\FTCore.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Core\resource1.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Core\SingletonMacro.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Core\TemplateFunctions.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Core\Timer.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Core\TypeDefinitions.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Core\UnitDefinitions.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Core\WindowProcess.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\ComponentBatchHeaders.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Math\FTMath.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Math\Random.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

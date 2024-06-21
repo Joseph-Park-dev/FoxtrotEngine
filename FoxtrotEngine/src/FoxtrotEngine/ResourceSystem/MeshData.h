@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
-#include "Vertex.h";
+
+#include "FoxtrotEngine/ResourceSystem/Vertex.h"
 
 struct MeshData {
     std::vector<Vertex>   vertices;

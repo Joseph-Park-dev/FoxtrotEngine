@@ -1,8 +1,9 @@
-#include "TypeDefinitions.h"
-#include "EventFunctions.h"
-#include "EventManager.h"
-#include "SceneType.h"
-#include "AIState.h"
+#include "FoxtrotEngine/Core/TypeDefinitions.h"
+#include "FoxtrotEngine/Core/EventFunctions.h"
+#include "FoxtrotEngine/Managers/EventManager.h"
+#include "FoxtrotEngine/Scenes/SceneType.h"
+#include "FoxtrotEngine/Components/AIState.h"
+#include "FoxtrotEngine/Actors/ActorGroup.h"
 
 void Instantiate(Actor* actor, ACTOR_GROUP actorGroup)
 {

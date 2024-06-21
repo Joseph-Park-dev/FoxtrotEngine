@@ -9,6 +9,7 @@ class Transform;
 class SpriteComponent;
 class ColliderComponent;
 class KeyInputManager;
+class Actor;
 class UIActor;
 class Scene;
 class Component;

@@ -1,4 +1,4 @@
-#include "FoxtrotRenderer.h"
+#include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 
 #include <iostream>
 #define WIN32_LEAN_AND_MEAN
@@ -7,17 +7,20 @@
 #include <d3dcompiler.h>
 #include <wrl.h> // ComPtr
 #include <directxtk/PrimitiveBatch.h>
-
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 
-#include "TemplateFunctions.h"
-#include "Transform.h"
-#include "EditorCamera2D.h"
-#include "Vertex.h"
-#include "RenderTextureClass.h"
-#include "EditorLayer.h"
-#include "KeyInputManager.h"
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
+#include "FoxtrotEngine/Actors/Transform.h"
+#include "FoxtrotEngine/ResourceSystem/Vertex.h"
+#include "FoxtrotEngine/Managers/KeyInputManager.h"
+
+#ifdef _DEBUG
+#include "FoxtrotEditor/EditorLayer.h"
+#include "FoxtrotEditor/EditorCamera2D.h"
+#include "FoxtrotEditor/RenderTextureClass.h
+#endif // _DEBUG
+
 
 FoxtrotRenderer* FoxtrotRenderer::CreateRenderer(HWND window, int width, int height)
 {

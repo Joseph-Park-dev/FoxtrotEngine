@@ -1,6 +1,6 @@
 #pragma once
-#include "PanelUI.h"
-#include "CommandHistory.h"
+#include "FoxtrotEngine/Actors/UIs/PanelUI.h"
+#include "FoxtrotEditor/CommandHistory.h"
 
 class Scene;
 class Actor;

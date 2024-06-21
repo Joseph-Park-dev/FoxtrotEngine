@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
+#include "FoxtrotEngine/Components/AIState.h"
 
 class AIState;
 

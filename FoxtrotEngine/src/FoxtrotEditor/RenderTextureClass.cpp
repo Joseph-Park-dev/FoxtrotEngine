@@ -1,7 +1,7 @@
-﻿#include "RenderTextureClass.h"
-#include "FoxtrotRenderer.h"
-#include "TemplateFunctions.h"
+﻿#include "FoxtrotEditor/RenderTextureClass.h"
 
+#include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
 
 RenderTextureClass::RenderTextureClass()
 {

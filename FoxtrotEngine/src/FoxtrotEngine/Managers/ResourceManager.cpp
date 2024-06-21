@@ -2,12 +2,12 @@
 
 #include <spine/Atlas.h>
 
-#include "ResourceManager.h"
-#include "FTTexture.h"
-#include <FTSpineTexture.h>
-#include "FTCore.h"
-#include "FoxtrotRenderer.h"
-#include "TemplateFunctions.h"
+#include "FoxtrotEngine/Managers/ResourceManager.h"
+#include "FoxtrotEngine/ResourceSystem/FTTexture.h"
+#include "FoxtrotEngine/ResourceSystem/FTSpineTexture.h"
+#include "FoxtrotEngine/Core/FTCore.h"
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
+#include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 
 void ResourceManager::LoadTexture(FoxtrotRenderer* renderer, const std::string fileName)
 {

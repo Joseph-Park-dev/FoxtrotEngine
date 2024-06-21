@@ -1,9 +1,8 @@
 #pragma once
-#include <spine/TextureLoader.h>
+#include "FoxtrotEngine/ResourceSystem/FTTexture.h"
 
 #include <spine/spine.h>
-
-#include <FTTexture.h>
+#include <spine/TextureLoader.h>
 
 enum BlendMode {
     // See http://esotericsoftware.com/git/spine-runtimes/blob/spine-libgdx/spine-libgdx/src/com/esotericsoftware/spine/BlendMode.java#L37

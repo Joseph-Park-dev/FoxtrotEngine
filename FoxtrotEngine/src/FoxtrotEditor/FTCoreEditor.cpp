@@ -5,18 +5,19 @@
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
 
-#include "EditorLayer.h"
-#include "EditorCamera2D.h"
+#include "FoxtrotEditor/EditorLayer.h"
+#include "FoxtrotEditor/EditorCamera2D.h"
 
-#include "KeyInputManager.h"
-#include "SceneManager.h"
-#include "Timer.h"
-#include "Physics2D.h"
-#include "CollisionManager.h"
-#include "ParticleSystem.h"
-#include "UIManager.h"
-#include "FoxtrotRenderer.h"
-#include "WindowProcess.h"
+#include "FoxtrotEngine/Managers/KeyInputManager.h"
+#include "FoxtrotEngine/Managers/SceneManager.h"
+#include "FoxtrotEngine/Core/FTCore.h"
+#include "FoxtrotEngine/Core/Timer.h"
+#include "FoxtrotEngine/Physics/Physics2D.h"
+#include "FoxtrotEngine/Managers/CollisionManager.h"
+#include "FoxtrotEngine/Physics/ParticleSystem.h"
+#include "FoxtrotEngine/Managers/UIManager.h"
+#include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
+#include "FoxtrotEngine/Core/WindowProcess.h"
 
 FTCoreEditor* FTCoreEditor::gPInst = nullptr;
 

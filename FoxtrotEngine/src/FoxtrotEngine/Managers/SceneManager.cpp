@@ -1,7 +1,8 @@
-#include "SceneManager.h"
-#include "Scene_Start.h"
-#include "Scene_Tool.h"
-#include "FoxtrotRenderer.h"
+#include "FoxtrotEngine/Managers/SceneManager.h"
+
+#include "FoxtrotEngine/Scenes/Scene_Start.h"
+#include "FoxtrotEngine/Scenes/Scene_Tool.h"
+#include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 
 SceneManager::SceneManager()
 	: mArrScene{}

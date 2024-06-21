@@ -1,17 +1,19 @@
+#include "FoxtrotEditor/EditorElement.h"
+
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
 
-#include "EditorElement.h"
-#include "EditorLayer.h"
-#include "Transform.h"
-#include "ActorGroup.h"
-#include "EditorCamera2D.h"
-#include "KeyInputManager.h"
-#include "CommandHistory.h"
-#include "ChunkLoader.h"
-#include "FoxtrotRenderer.h"
+#include "FoxtrotEditor/EditorLayer.h"
+#include "FoxtrotEditor/EditorCamera2D.h"
+#include "FoxtrotEditor/CommandHistory.h"
+
+#include "FoxtrotEngine/Managers/KeyInputManager.h"
+#include "FoxtrotEngine/FileSystem/ChunkLoader.h"
+#include "FoxtrotEngine/Actors/Transform.h"
+#include "FoxtrotEngine/Actors/ActorGroup.h"
+#include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 
 void EditorElement::EditorLateUpdateActor()
 {

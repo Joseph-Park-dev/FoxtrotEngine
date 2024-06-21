@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "FTMath.h"
+#include "FoxtrotEngine/Math/FTMath.h"
 
 const FTVector2 FTVector2::Zero(0.0f, 0.0f);
 const FTVector2 FTVector2::UnitX(1.0f, 0.0f);

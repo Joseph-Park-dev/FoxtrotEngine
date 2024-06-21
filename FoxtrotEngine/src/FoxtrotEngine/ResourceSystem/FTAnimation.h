@@ -2,9 +2,9 @@
 #include <vector>
 #include <string>
 
-#include "TemplateFunctions.h"
-#include "FTMath.h"
-#include "Tile.h"
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
+#include "FoxtrotEngine/Math/FTMath.h"
+#include "FoxtrotEngine/ResourceSystem/Tile.h"
 
 class Tile;
 class AnimatorComponent;

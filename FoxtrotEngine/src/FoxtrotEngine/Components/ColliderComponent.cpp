@@ -1,23 +1,23 @@
- #include <assert.h>
+#include "FoxtrotEngine/Components/ColliderComponent.h"
 
-#include "ColliderComponent.h"
-#include "Actor.h"
-#include "Transform.h"
-#include "Camera2D.h"
-#include "EditorCamera2D.h"
-#include "Transform.h"
-#include "Physics2D.h"
-#include "KeyInputManager.h"
-#include "ChunkLoader.h"
-#include "CommandHistory.h"
-#include "Transform.h"
-#include "FoxtrotRenderer.h"
+#include <assert.h>
+
+#include "FoxtrotEngine/Actors/Actor.h"
+#include "FoxtrotEngine/Actors/Transform.h"
+#include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
+#include "FoxtrotEngine/Renderer/Camera2D.h"
+#include "FoxtrotEngine/Physics/Physics2D.h"
+#include "FoxtrotEngine/Managers/KeyInputManager.h"
+#include "FoxtrotEngine/FileSystem/ChunkLoader.h"
 
 #ifdef _DEBUG
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx11.h>
+
+#include "FoxtrotEditor/EditorCamera2D.h"
+#include "FoxtrotEditor/CommandHistory.h"
 #endif // DEBUG
 
 UINT ColliderComponent::g_nextID = 0;

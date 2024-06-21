@@ -1,9 +1,9 @@
 #pragma once
 #include <vector>
 
-#include "TypeDefinitions.h"
-#include "SingletonMacro.h"
-#include "EventType.h"
+#include "FoxtrotEngine/Core/TypeDefinitions.h"
+#include "FoxtrotEngine/Core/SingletonMacro.h"
+#include "FoxtrotEngine/Core/EventType.h"
 
 struct Event
 {

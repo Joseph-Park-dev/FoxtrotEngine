@@ -1,6 +1,7 @@
 #pragma once
+#include "FoxtrotEngine/Components/Component.h"
+
 #include <string>
-#include "Component.h"
 
 class Actor;
 enum class MOUSE;

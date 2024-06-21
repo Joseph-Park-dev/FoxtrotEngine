@@ -1,10 +1,15 @@
-#include "KeyInputManager.h"
-#include "Camera2D.h"
-#include "TemplateFunctions.h"
-#include "FTCore.h"
+#include "FoxtrotEngine/Managers/KeyInputManager.h"
+
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
-#include "EditorLayer.h"
+
+#include "FoxtrotEngine/Renderer/Camera2D.h"
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
+#include "FoxtrotEngine/Core/FTCore.h"
+#ifdef _DEBUG
+#include "FoxtrotEditor/EditorLayer.h"
+#endif // DEBUG
+
 
 KeyInputManager::KeyInputManager()
 	: mMousePosition(FTVector2::Zero)

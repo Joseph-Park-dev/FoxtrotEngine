@@ -1,38 +1,32 @@
+#include "FoxtrotEngine/FileSystem/ChunkLoader.h"
+
 #include <string>
 #include <fstream>
 #include <Windows.h>
 #include <commdlg.h>
 #include <iostream>
 
-#include "ChunkLoader.h"
-#include "FTMath.h"
-#include "TemplateFunctions.h"
-#include "SceneManager.h"
-#include "Scene.h"
-#include "ActorGroup.h"
-#include "Transform.h"
-#include "Actor.h"
-#include "Ship.h"
-#include "Asteroid.h"
-#include "BackgroundActor.h"
-#include "GroundObject.h"
-#include "EditorLayer.h"
-#include "PanelUI.h"
-#include "Camera2D.h"
-#include "EditorCamera2D.h"
+#include "FoxtrotEngine/Math/FTMath.h"
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
+#include "FoxtrotEngine/Managers/SceneManager.h"
+#include "FoxtrotEngine/Scenes/Scene.h"
+#include "FoxtrotEngine/Actors/ActorGroup.h"
+#include "FoxtrotEngine/Actors/Transform.h"
+#include "FoxtrotEngine/Actors/Actor.h"
+#include "FoxtrotEngine/Actors/UIs/PanelUI.h"
+#include "FoxtrotEngine/Actors/Backgrounds/BackgroundActor.h"
 
-#include "Component.h"
-#include "AIComponent.h"
-#include "AnimatorComponent.h"
-#include "AnimSpriteComponent.h"
-#include "BGSpriteComponent.h"
-#include "ColliderComponent.h"
-#include "InputMoveComponent.h"
-#include "MoveComponent.h"
-#include "Rigidbody2DComponent.h"
-#include "SpriteComponent.h"
-#include "TileMapComponent.h"
-#include "GunFiringComponent.h"
+#include "FoxtrotEngine/Renderer/Camera2D.h"
+#include "FoxtrotEngine/Components/ComponentBatchHeaders.h"
+
+#include "Scripts/ActorList/Ship.h"
+#include "Scripts/ActorList/Asteroid.h"
+#include "Scripts/ActorList/GroundObject.h"
+
+#ifdef _DEBUG
+#include "FoxtrotEditor/EditorLayer.h"
+#include "FoxtrotEditor/EditorCamera2D.h"
+#endif // _DEBUG
 
 #ifdef _DEBUG
 void ChunkLoader::SaveChunk(const std::string fileName)

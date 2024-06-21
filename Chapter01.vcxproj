@@ -214,7 +214,6 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\BGSpriteComponent.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\ColliderComponent.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\Component.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\GeometryGenerator.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\GunFiringComponent.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\InputMoveComponent.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\MoveComponent.cpp" />
@@ -222,22 +221,25 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpineAnimComponent.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpriteComponent.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\TileMapComponent.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Cores\FTCore.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Cores\Main.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Cores\Timer.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Core\EventFunctions.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Core\FTCore.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Core\Main.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Core\Timer.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\FileSystem\ChunkLoader.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Managers\CollisionManager.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Managers\EventFunctions.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Managers\EventManager.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Managers\KeyInputManager.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Managers\ResourceManager.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Managers\SceneManager.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Managers\UIManager.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Math\FTMath.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Math\Random.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Physics\Bounds.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Physics\ParticleSystem.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Physics\Physics2D.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Camera2D.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\FoxtrotRenderer.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\GeometryGenerator.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTAnimation.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTResource.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineTexture.cpp" />
@@ -245,9 +247,9 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\Tile.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene_Start.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene_Tool.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\FTMath.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\Random.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene_Tool.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\include\imgui\FileDialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="FoxtrotEngine\src\include\spine\Animation.cpp" />
     <ClCompile Include="FoxtrotEngine\src\include\spine\AnimationState.cpp" />
@@ -315,7 +317,6 @@
     <ClCompile Include="FoxtrotEngine\src\include\spine\Triangulator.cpp" />
     <ClCompile Include="FoxtrotEngine\src\include\spine\Updatable.cpp" />
     <ClCompile Include="FoxtrotEngine\src\include\spine\VertexAttachment.cpp" />
-    <ClCompile Include="src\core\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets\Scripts\ActorList\Asteroid.h" />
@@ -345,7 +346,7 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\BGSpriteComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\ColliderComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\Component.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\GeometryGenerator.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\ComponentBatchHeaders.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\GunFiringComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\InputMoveComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\MoveComponent.h" />
@@ -356,6 +357,16 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Cores\FTCore.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Cores\Timer.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Cores\WindowProcess.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Core\EventFunctions.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Core\EventType.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Core\FTCore.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Core\resource1.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Core\SingletonMacro.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Core\TemplateFunctions.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Core\Timer.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Core\TypeDefinitions.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Core\UnitDefinitions.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Core\WindowProcess.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\FileSystem\ChunkLoader.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Managers\CollisionManager.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Managers\EventFunctions.h" />
@@ -364,6 +375,8 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Managers\ResourceManager.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Managers\SceneManager.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Managers\UIManager.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Math\FTMath.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Math\Random.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Physics\Bounds.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Physics\ParticleSystem.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Physics\Physics2D.h" />
@@ -371,6 +384,7 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Physics\RayCastHit2D.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Camera2D.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\FoxtrotRenderer.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\GeometryGenerator.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\resource1.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTAnimation.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTResource.h" />
@@ -383,7 +397,9 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\SceneType.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene_Start.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene_Tool.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene_Tool.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\EventType.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\FTMath.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\Random.h" />

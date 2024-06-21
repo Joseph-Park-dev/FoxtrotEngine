@@ -8,7 +8,7 @@
 /// Editor fields & functions for development -> Active in Debug build; 
 /// Displays editor window, Provides functionality to create & edit .chunk files.
 /// </FTCore_Editor>
-#include "FTCoreEditor.h"
+#include "FoxtrotEditor/FTCoreEditor.h"
 int main(int argc, char* argv[])
 {
 	bool success = FTCoreEditor::GetInstance()->Initialize();

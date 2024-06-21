@@ -2,8 +2,8 @@
 #pragma once
 #include <list>
 
-#include "FTMath.h"
-#include "Actor.h"
+#include "FoxtrotEngine/Math/FTMath.h"
+#include "FoxtrotEngine/Actors/Actor.h"
 
 class Command;
 class FTVector2;

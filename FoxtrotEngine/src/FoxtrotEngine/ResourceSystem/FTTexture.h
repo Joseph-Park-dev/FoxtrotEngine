@@ -1,10 +1,10 @@
 #pragma once
-#include "FTResource.h"
+#include "FoxtrotEngine/ResourceSystem/FTResource.h"
 
 #include <wrl.h> // ComPtr
 #include <DirectXTex.h>
 
-#include "FoxtrotRenderer.h"
+class FoxtrotRenderer;
 
 class FTTexture :
     public FTResource

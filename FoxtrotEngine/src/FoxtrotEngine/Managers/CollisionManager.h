@@ -2,9 +2,9 @@
 #include <string>
 #include <unordered_map>
 
-#include "SingletonMacro.h"
-#include "ActorGroup.h"
-#include "Ray.h"
+#include "FoxtrotEngine/Core/SingletonMacro.h"
+#include "FoxtrotEngine/Actors/ActorGroup.h"
+#include "FoxtrotEngine/Physics/Ray.h"
 
 struct Ray;
 class ColliderComponent;

@@ -1,15 +1,16 @@
-#include "Asteroid.h"
-#include "SpriteComponent.h"
-#include "MoveComponent.h"
-#include "Random.h"
-#include "ResourceManager.h"
-#include "ColliderComponent.h"
-#include "AIComponent.h"
-#include "AIState.h"
-#include "ActorTag.h"
-#include "Transform.h"
-#include "Camera2D.h"
-#include "ParticleSystem.h"
+#include "Scripts/ActorList/Asteroid.h"
+
+#include "FoxtrotEngine/Components/SpriteComponent.h"
+#include "FoxtrotEngine/Components/MoveComponent.h"
+#include "FoxtrotEngine/Math/Random.h"
+#include "FoxtrotEngine/Managers/ResourceManager.h"
+#include "FoxtrotEngine/Components/ColliderComponent.h"
+#include "FoxtrotEngine/Components/AIComponent.h"
+#include "FoxtrotEngine/Components/AIState.h"
+#include "FoxtrotEngine/Actors/ActorTag.h"
+#include "FoxtrotEngine/Actors/Transform.h"
+#include "FoxtrotEngine/Renderer/Camera2D.h"
+#include "FoxtrotEngine/Physics/ParticleSystem.h"
 
 Asteroid::Asteroid(Scene* scene)
 	: Actor(scene)

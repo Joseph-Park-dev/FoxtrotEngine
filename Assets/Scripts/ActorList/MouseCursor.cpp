@@ -1,9 +1,10 @@
-#include "MouseCursor.h"
-#include "Tile.h"
-#include "TileMapComponent.h"
-#include "ResourceManager.h"
-#include "KeyInputManager.h"
-#include "FoxtrotRenderer.h"
+#include "Scripts/ActorList/MouseCursor.h"
+
+#include "FoxtrotEngine/ResourceSystem/Tile.h"
+#include "FoxtrotEngine/Components/TileMapComponent.h"
+#include "FoxtrotEngine/Managers/ResourceManager.h"
+#include "FoxtrotEngine/Managers/KeyInputManager.h"
+#include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 
 void MouseCursor::UpdateActor(float deltaTime)
 {

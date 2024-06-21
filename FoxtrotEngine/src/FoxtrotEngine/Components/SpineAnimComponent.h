@@ -1,10 +1,10 @@
 #pragma once
 #include "Component.h"
 
-#include <TemplateFunctions.h>
-#include <ResourceManager.h>
-#include <SpriteComponent.h>
-#include <FTSpineTexture.h>
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
+#include "FoxtrotEngine/Managers/ResourceManager.h"
+#include "FoxtrotEngine/Components/SpriteComponent.h"
+#include "FoxtrotEngine/ResourceSystem/FTSpineTexture.h"
 
 class SpineAnimComponent :
     public SpriteComponent

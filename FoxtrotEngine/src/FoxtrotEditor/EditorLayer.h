@@ -1,11 +1,12 @@
 #ifdef _DEBUG
 #pragma once
-#include "SingletonMacro.h"
-#include "EditorElement.h"
 #include <functional>
 #include <nlohmann/json.hpp>
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
+
+#include "FoxtrotEngine/Core/SingletonMacro.h"
+#include "FoxtrotEditor/EditorElement.h"
 
 class FoxtrotRenderer;
 class UIActor;

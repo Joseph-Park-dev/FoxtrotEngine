@@ -8,7 +8,8 @@
 
 #pragma  once
 #include <random>
-#include "FTMath.h"
+
+#include "FoxtrotEngine/Math/FTMath.h"
 
 class Random
 {

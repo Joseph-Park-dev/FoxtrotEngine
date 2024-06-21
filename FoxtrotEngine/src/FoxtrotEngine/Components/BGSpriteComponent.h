@@ -1,8 +1,9 @@
 #pragma once
+#include "FoxtrotEngine/Components/SpriteComponent.h"
+
 #include <vector>
 
-#include "SpriteComponent.h"
-#include "TemplateFunctions.h"
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
 
 class FTVector2;
 

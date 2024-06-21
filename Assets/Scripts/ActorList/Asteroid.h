@@ -1,6 +1,7 @@
 #pragma once
-#include "Actor.h"
-#include "TemplateFunctions.h"
+#include "FoxtrotEngine/Actors/Actor.h"
+
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
 
 class Scene;
 

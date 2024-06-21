@@ -1,7 +1,8 @@
 #pragma once
-#include "Component.h"
-#include "TemplateFunctions.h"
-#include "MeshData.h"
+#include "FoxtrotEngine/Components/Component.h"
+
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
+#include "FoxtrotEngine/ResourceSystem/MeshData.h"
 
 class FTTexture;
 class Mesh;

@@ -1,25 +1,25 @@
-#include "FTCore.h"
+#include "FoxtrotEngine/Core/FTCore.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-#include "Timer.h"
-#include "Actor.h"
-#include "SpriteComponent.h"
-#include "Ship.h"
-#include "KeyInputManager.h"
-#include "SceneManager.h"
-#include "ResourceManager.h"
-#include "CollisionManager.h"
-#include "Camera2D.h"
-#include "UIManager.h"
-#include "Physics2D.h"
-#include "ParticleSystem.h"
-#include "ChunkLoader.h"
-#include "EventManager.h"
-#include "FoxtrotRenderer.h"
-#include "WindowProcess.h"
-#include "TemplateFunctions.h"
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
+#include "FoxtrotEngine/Core/WindowProcess.h"
+#include "FoxtrotEngine/Core/Timer.h"
+#include "FoxtrotEngine/Actors/Actor.h"
+#include "FoxtrotEngine/Components/SpriteComponent.h"
+#include "FoxtrotEngine/Managers/KeyInputManager.h"
+#include "FoxtrotEngine/Managers/SceneManager.h"
+#include "FoxtrotEngine/Managers/ResourceManager.h"
+#include "FoxtrotEngine/Managers/CollisionManager.h"
+#include "FoxtrotEngine/Managers/EventManager.h"
+#include "FoxtrotEngine/Managers/UIManager.h"
+#include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
+#include "FoxtrotEngine/Renderer/Camera2D.h"
+#include "FoxtrotEngine/Physics/Physics2D.h"
+#include "FoxtrotEngine/Physics/ParticleSystem.h"
+#include "FoxtrotEngine/FileSystem/ChunkLoader.h"
+#include "Scripts/ActorList/Ship.h"
 
 FTCore* FTCore::gPInst = nullptr;
 

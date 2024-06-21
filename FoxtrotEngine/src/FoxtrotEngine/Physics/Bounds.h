@@ -1,5 +1,6 @@
 #pragma once
-#include "FTMath.h"
+#include "FoxtrotEngine/Math/FTMath.h"
+
 struct Bounds
 {
 	float x, y, w, h;

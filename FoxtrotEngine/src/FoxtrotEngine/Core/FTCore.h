@@ -11,8 +11,8 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-#include "SingletonMacro.h"
-#include "FTMath.h"
+#include "FoxtrotEngine/Core/SingletonMacro.h"
+#include "FoxtrotEngine/Math/FTMath.h"
 
 class FoxtrotRenderer;
 

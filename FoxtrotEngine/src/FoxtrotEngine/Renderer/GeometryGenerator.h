@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "MeshData.h"
+#include "FoxtrotEngine/ResourceSystem/MeshData.h"
 
 class GeometryGenerator {
   public:

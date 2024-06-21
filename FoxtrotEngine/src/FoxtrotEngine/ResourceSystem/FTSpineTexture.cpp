@@ -1,9 +1,9 @@
-#include "FTSpineTexture.h"
+#include "FoxtrotEngine/ResourceSystem/FTSpineTexture.h"
 
 #include <spine/spine.h>
 
-#include <ResourceManager.h>
-#include <MeshData.h>
+#include "FoxtrotEngine/Managers/ResourceManager.h"
+#include "FoxtrotEngine/ResourceSystem/MeshData.h"
 
 void FTSpineTexture::LoadSpineAsset(spine::String atlasFileName){
     //SetRelativePath(atlasFileName.buffer());

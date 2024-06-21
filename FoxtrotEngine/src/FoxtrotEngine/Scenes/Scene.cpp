@@ -1,16 +1,19 @@
+#include "FoxtrotEngine/Scenes/Scene.h"
+
 #include <algorithm>
 
-#include "Scene.h"
-#include "Actor.h"
-#include "ActorGroup.h"
-#include "SpriteComponent.h"
-#include "EventManager.h"
-#include "TemplateFunctions.h"
-#include "Camera2D.h"
-#include "PanelUI.h"
-#include "EditorLayer.h"
-#include "Transform.h"
-#include "FoxtrotRenderer.h"
+#include "FoxtrotEngine/Actors/Actor.h"
+#include "FoxtrotEngine/Actors/ActorGroup.h"
+#include "FoxtrotEngine/Components/SpriteComponent.h"
+#include "FoxtrotEngine/Managers/EventManager.h"
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
+#include "FoxtrotEngine/Renderer/Camera2D.h"
+#include "FoxtrotEngine/Actors/UIs/PanelUI.h"
+#include "FoxtrotEngine/Actors/Transform.h"
+#include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
+#ifdef _DEBUG
+#include "FoxtrotEditor/EditorLayer.h"
+#endif // _DEBUG
 
 Scene::Scene()
 	:mIsUpdatingActors(false)

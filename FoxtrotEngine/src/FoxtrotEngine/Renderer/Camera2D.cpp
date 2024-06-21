@@ -1,15 +1,19 @@
-#include "Camera2D.h"
-#include "EditorCamera2D.h"
-#include "FTCore.h"
-#include "SceneManager.h"
-#include "Scene.h"
-#include "Actor.h"
-#include "SpriteComponent.h"
-#include "Tile.h"
-#include "Transform.h"
-#include "Random.h"
+#include "FoxtrotEngine/Renderer/Camera2D.h"
 
 #include <math.h>
+
+#include "FoxtrotEngine/Core/FTCore.h"
+#include "FoxtrotEngine/Managers/SceneManager.h"
+#include "FoxtrotEngine/Scenes/Scene.h"
+#include "FoxtrotEngine/Actors/Actor.h"
+#include "FoxtrotEngine/Actors/Transform.h"
+#include "FoxtrotEngine/Components/SpriteComponent.h"
+#include "FoxtrotEngine/ResourceSystem/Tile.h"
+#include "FoxtrotEngine/Math/Random.h"
+
+#ifdef _DEBUG
+#include "FoxtrotEditor/EditorCamera2D.h"
+#endif
 
 void Camera2D::Update(float deltaTime)
 {

@@ -4,7 +4,7 @@
 /// Displays editor window, Provides functionality to create & edit .chunk files.
 /// </FTCore_Editor>
 
-#include "FTCore.h"
+#include "FoxtrotEngine/Core/FTCore.h"
 
 class FTCoreEditor :
     public FTCore

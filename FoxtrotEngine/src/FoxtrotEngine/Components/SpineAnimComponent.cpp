@@ -3,10 +3,10 @@
 #include <DirectXTex.h>
 #include <spine/spine.h>
 
-#include "ResourceManager.h"
-#include "FTCore.h"
-#include "FTSpineTexture.h"
-#include "Vertex.h"
+#include "FoxtrotEngine/Managers/ResourceManager.h"
+#include "FoxtrotEngine/Core/FTCore.h"
+#include "FoxtrotEngine/ResourceSystem/FTSpineTexture.h"
+#include "FoxtrotEngine/ResourceSystem/Vertex.h"
 
 void SpineAnimComponent::SetTexture(spine::AtlasPage& page, const spine::String& path)
 {

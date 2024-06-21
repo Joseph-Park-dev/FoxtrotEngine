@@ -1,11 +1,13 @@
-#include "EventManager.h"
-#include "Actor.h"
-#include "ActorGroup.h"
-#include "SceneManager.h"
-#include "Scene.h"
-#include "UIManager.h"
-#include "AIComponent.h"
-#include "AIState.h"
+#include "FoxtrotEngine/Managers/EventManager.h"
+
+#include "FoxtrotEngine/Managers/SceneManager.h"
+#include "FoxtrotEngine/Managers/UIManager.h"
+#include "FoxtrotEngine/Core/EventType.h"
+#include "FoxtrotEngine/Actors/Actor.h"
+#include "FoxtrotEngine/Actors/ActorGroup.h"
+#include "FoxtrotEngine/Components/AIComponent.h"
+#include "FoxtrotEngine/Components/AIState.h"
+#include "FoxtrotEngine/Scenes/Scene.h"
 
 void EventManager::ProcessEvent()
 {

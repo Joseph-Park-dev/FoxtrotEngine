@@ -2,7 +2,7 @@
 #include <Windows.h>
 
 #ifdef _DEBUG
-#include "FTCoreEditor.h"
+#include "FoxtrotEditor/FTCoreEditor.h"
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	// g_appBase를 이용해서 간접적으로 멤버 함수 호출

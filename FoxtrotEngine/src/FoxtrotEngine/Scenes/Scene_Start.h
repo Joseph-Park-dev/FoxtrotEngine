@@ -1,6 +1,8 @@
 #pragma once
-#include "Scene.h"
-#include "Ship.h"
+#include "FoxtrotEngine/Scenes/Scene.h"
+
+#include "FoxtrotEngine/Actors/UIs/UIActor.h"
+#include "Scripts/ActorList/Ship.h"
 
 class Scene_Start : public Scene
 {

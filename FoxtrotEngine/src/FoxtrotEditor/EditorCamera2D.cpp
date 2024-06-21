@@ -4,10 +4,10 @@
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
 
-#include "EditorCamera2D.h"
-#include "EditorLayer.h"
-#include "FTCore.h"
-#include "KeyInputManager.h"
+#include "FoxtrotEditor/EditorCamera2D.h"
+#include "FoxtrotEditor/EditorLayer.h"
+#include "FoxtrotEngine/Core/FTCore.h"
+#include "FoxtrotEngine/Managers/KeyInputManager.h"
 
 void EditorCamera2D::ProcessInput(MSG msg)
 {

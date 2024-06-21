@@ -1,5 +1,6 @@
-#include "Tile.h"
-#include "Transform.h"
+#include "FoxtrotEngine/ResourceSystem/Tile.h"
+
+#include "FoxtrotEngine/Actors/Transform.h"
 
 Tile::Tile()
     : mTileNum(0)

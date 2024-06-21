@@ -1,8 +1,9 @@
 #ifdef _DEBUG
 #pragma once
-#include "SingletonMacro.h"
-#include "FTMath.h"
-#include "Camera2D.h"
+#include "FoxtrotEngine/Core/SingletonMacro.h"
+#include "FoxtrotEngine/Math/FTMath.h"
+#include "FoxtrotEngine/Renderer/Camera2D.h"
+#include "FoxtrotEngine/Physics/Bounds.h"
 
 class EditorCamera2D : public Camera2D
 {

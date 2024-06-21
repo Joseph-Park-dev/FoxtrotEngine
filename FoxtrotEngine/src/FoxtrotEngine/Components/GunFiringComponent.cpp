@@ -1,11 +1,12 @@
-#include "GunFiringComponent.h"
-#include "KeyInputManager.h"
-#include "Transform.h"
-#include "Actor.h"
-#include "Physics2D.h"
-#include "ActorGroup.h"
-#include "Camera2D.h"
-#include "ChunkLoader.h"
+#include "FoxtrotEngine/Components/GunFiringComponent.h"
+
+#include "FoxtrotEngine/Managers/KeyInputManager.h"
+#include "FoxtrotEngine/Actors/Transform.h"
+#include "FoxtrotEngine/Actors/ActorGroup.h"
+#include "FoxtrotEngine/Actors/Actor.h"
+#include "FoxtrotEngine/Physics/Physics2D.h"
+#include "FoxtrotEngine/Renderer/Camera2D.h"
+#include "FoxtrotEngine/FileSystem/ChunkLoader.h"
 
 void GunFiringComponent::Update(float deltaTime)
 {

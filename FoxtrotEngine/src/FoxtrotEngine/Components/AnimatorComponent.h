@@ -1,11 +1,11 @@
 #pragma once
+#include "FoxtrotEngine/Components/TileMapComponent.h"
+
 #include <unordered_map>
 #include <string>
 
-#include "Component.h"
-#include "FTAnimation.h"
-#include "TileMapComponent.h"
-#include "TemplateFunctions.h"
+#include "FoxtrotEngine/ResourceSystem/FTAnimation.h"
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
 
 class FoxtrotRenderer;
 

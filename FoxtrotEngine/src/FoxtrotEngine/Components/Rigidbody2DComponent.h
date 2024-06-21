@@ -1,6 +1,7 @@
 #pragma once
-#include "Component.h"
-#include "TemplateFunctions.h"
+#include "FoxtrotEngine/Components/Component.h"
+
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
 
 class FTVector2;
 class Actor;
@@ -59,6 +60,8 @@ private:
     void ClearForceAndAccel();
 
 public:
-    virtual void SaveProperties(std::ofstream& ofs) override;
     virtual void LoadProperties(std::ifstream& ifs) override;
+#ifdef _DEBUG
+    virtual void SaveProperties(std::ofstream& ofs) override;
+#endif
 };

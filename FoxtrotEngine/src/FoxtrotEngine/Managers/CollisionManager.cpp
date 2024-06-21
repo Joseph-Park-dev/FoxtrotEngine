@@ -1,14 +1,16 @@
-#include "CollisionManager.h"
-#include "Scene.h"
-#include "SceneManager.h"
-#include "Actor.h"
-#include "ColliderComponent.h"
-#include "FTMath.h"
-#include "Physics2D.h"
-#include "Camera2D.h"
-#include "iostream"
-#include "Transform.h"
-#include "FoxtrotRenderer.h"
+#include "FoxtrotEngine/Managers/CollisionManager.h"
+
+#include <iostream>
+
+#include "FoxtrotEngine/Scenes/Scene.h"
+#include "FoxtrotEngine/Managers/SceneManager.h"
+#include "FoxtrotEngine/Actors/Actor.h"
+#include "FoxtrotEngine/Actors/Transform.h"
+#include "FoxtrotEngine/Components/ColliderComponent.h"
+#include "FoxtrotEngine/Math/FTMath.h"
+#include "FoxtrotEngine/Physics/Physics2D.h"
+#include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
+#include "FoxtrotEngine/Renderer/Camera2D.h"
 
 void CollisionManager::MarkGroup(ACTOR_GROUP left, ACTOR_GROUP right)
 {

@@ -1,13 +1,16 @@
 #include <vector>
 
-#include "FTCore.h"
-#include "Physics2D.h"
-#include "KeyInputManager.h"
-#include "Camera2D.h"
-#include "EditorCamera2D.h"
-#include "CollisionManager.h"
-#include "Random.h"
-#include "Ray.h"
+#include "FoxtrotEngine/Core/FTCore.h"
+#include "FoxtrotEngine/Managers/KeyInputManager.h"
+#include "FoxtrotEngine/Renderer/Camera2D.h"
+#include "FoxtrotEngine/Managers/CollisionManager.h"
+#include "FoxtrotEngine/Math/Random.h"
+#include "FoxtrotEngine/Physics/Physics2D.h"
+#include "FoxtrotEngine/Physics/Ray.h"
+
+#ifdef _DEBUG
+#include "FoxtrotEditor/EditorCamera2D.h"
+#endif // _DEBUG
 
 /* origin : world position vector 
 direction : world position vector */

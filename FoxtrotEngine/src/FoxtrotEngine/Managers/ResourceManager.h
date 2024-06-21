@@ -1,10 +1,12 @@
 #pragma once
-#include "SingletonMacro.h"
 #include <string>
 #include <unordered_map>
 #include <spine/TextureLoader.h>
 
+#include "FoxtrotEngine/Core/SingletonMacro.h"
+
 class FTTexture;
+class FTSpineTexture;
 class FoxtrotRenderer;
 
 class ResourceManager : public spine::TextureLoader

@@ -1,6 +1,6 @@
 #pragma once
-#include "SingletonMacro.h"
-#include "RayCastHit2D.h"
+#include "FoxtrotEngine/Core/SingletonMacro.h"
+#include "FoxtrotEngine/Physics/RayCastHit2D.h"
 
 class FTVector2;
 enum class ACTOR_GROUP;

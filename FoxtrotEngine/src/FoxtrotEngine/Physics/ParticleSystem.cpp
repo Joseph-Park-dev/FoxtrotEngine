@@ -1,9 +1,11 @@
+#include "FoxtrotEngine/Physics/ParticleSystem.h"
+
 #include <vector>
-#include "ParticleSystem.h"
-#include "Camera2D.h"
-#include "Random.h"
-#include "FTMath.h"
-#include "FoxtrotRenderer.h"
+
+#include "FoxtrotEngine/Math/Random.h"
+#include "FoxtrotEngine/Math/FTMath.h"
+#include "FoxtrotEngine/Renderer/Camera2D.h"
+#include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 
 // InitPos : WorldPosition, not ScreenPosition
 void ParticleSystem::CreateExplosion(FTVector2 initPos, float initSpeed, int duration, float gravity, float angle)

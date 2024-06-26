@@ -5,7 +5,7 @@
 
 #include "FoxtrotEngine/Managers/ResourceManager.h"
 #include "FoxtrotEngine/Core/FTCore.h"
-#include "FoxtrotEngine/ResourceSystem/FTSpineTexture.h"
+#include "FoxtrotEngine/ResourceSystem/FTSpineAnimation.h"
 #include "FoxtrotEngine/ResourceSystem/Vertex.h"
 
 void SpineAnimComponent::SetTexture(spine::AtlasPage& page, const spine::String& path)
@@ -25,12 +25,12 @@ void SpineAnimComponent::Initialize(spine::String atlasFileName)
     mTexture->LoadSpineAsset(atlasFileName);
     mTexture->CreateSkeleton();
 
-    mQuadIndices.add(0);
-    mQuadIndices.add(1);
-    mQuadIndices.add(2);
-    mQuadIndices.add(2);
-    mQuadIndices.add(3);
-    mQuadIndices.add(0);
+    //mQuadIndices.add(0);
+    //mQuadIndices.add(1);
+    //mQuadIndices.add(2);
+    //mQuadIndices.add(2);
+    //mQuadIndices.add(3);
+    //mQuadIndices.add(0);
 }
 
 void SpineAnimComponent::Update(float deltaTime)
@@ -99,11 +99,19 @@ void SpineAnimComponent::DrawSkeleton(FoxtrotRenderer* renderer){
             skeletonColor.a * slotColor.a
         );
 
-        spine::Vector<float>* vertices = &mWorldVertices;
-        spine::Vector<float>* uvs = NULL;
+        spine::Vector<float> worldVertices;
+        spine::Vector<float> uvs;
+        spine::Vector<unsigned short> indices;
+        size_t indicesCount = GetMeshData().indices.size();
+        worldVertices.setSize(8, 0.f);
+        for (size_t i = 0; i < GetMeshData().vertices.size(); ++i) {
+            worldVertices[i] = GetMeshData().vertices[i].position.x;
+            worldVertices[i] = GetMeshData().vertices[i].position.y;
+        }
+        for (size_t i = 0; i < indicesCount; ++i) {
+            indices.add(GetMeshData().indices[i]);
+        }
         // Fill the vertices array, indices, and texture depending on the type of attachment
-        unsigned short* indices = NULL;
-        int indicesCount = 0;
         spine::Color* attachmentColor;
 
         if (attachment->getRTTI().isExactly(spine::RegionAttachment::rtti)) {
@@ -115,14 +123,9 @@ void SpineAnimComponent::DrawSkeleton(FoxtrotRenderer* renderer){
                 mClipper.clipEnd(*slot);
                 continue;
             }
-
-            mWorldVertices.setSize(8, 0);
-            regionAttachment->computeWorldVertices(*slot, mWorldVertices, 0, 2);
-            uvs = &regionAttachment->getUVs();
-            indices = mQuadIndices.buffer();
-            indicesCount = 6;
-            mTexture = (FTSpineTexture*)((spine::AtlasRegion*)regionAttachment->getRegion())->page->texture;
-
+            regionAttachment->computeWorldVertices(*slot, worldVertices, 0, 2);
+            uvs = regionAttachment->getUVs();
+            mTexture = (FTSpineAnimation*)((spine::AtlasRegion*)regionAttachment->getRegion())->page->texture;
         }
         else if (attachment->getRTTI().isExactly(spine::MeshAttachment::rtti)) {
             spine::MeshAttachment* mesh = (spine::MeshAttachment*)attachment;
@@ -134,12 +137,12 @@ void SpineAnimComponent::DrawSkeleton(FoxtrotRenderer* renderer){
                 continue;
             }
 
-            mWorldVertices.setSize(mesh->getWorldVerticesLength(), 0);
-            mesh->computeWorldVertices(*slot, 0, mesh->getWorldVerticesLength(), mWorldVertices.buffer(), 0, 2);
-            uvs = &mesh->getUVs();
-            indices = mesh->getTriangles().buffer();
+            worldVertices.setSize(mesh->getWorldVerticesLength(), 0);
+            mesh->computeWorldVertices(*slot, 0, mesh->getWorldVerticesLength(), worldVertices.buffer(), 0, 2);
+            uvs = mesh->getUVs();
+            indices = mesh->getTriangles();
             indicesCount = mesh->getTriangles().size();
-            mTexture = (FTSpineTexture*)((spine::AtlasRegion*)mesh->getRegion())->page->texture;
+            mTexture = (FTSpineAnimation*)((spine::AtlasRegion*)mesh->getRegion())->page->texture;
         }
         else if (attachment->getRTTI().isExactly(spine::ClippingAttachment::rtti)) {
             spine::ClippingAttachment* clip = (spine::ClippingAttachment*)slot->getAttachment();

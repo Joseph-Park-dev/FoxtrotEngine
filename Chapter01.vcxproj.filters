@@ -145,9 +145,6 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTResource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineTexture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -441,7 +438,6 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\FoxtrotRenderer.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTAnimation.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTResource.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineTexture.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTTexture.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\Mesh.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\MeshData.h" />

@@ -10,6 +10,9 @@
 
 #include "FoxtrotEngine/ResourceSystem/Mesh.h"
 
+#define VERTEX_SHADER_PATH L"./FoxtrotEngine/src/FoxtrotEngine/Renderer/Shaders/ColorVertexShader.hlsl"
+#define PIXEL_SHADER_PATH L"./FoxtrotEngine/src/FoxtrotEngine/Renderer/Shaders/ColorPixelShader.hlsl"
+
 using namespace Microsoft::WRL;
 class Transform;
 class RenderTextureClass;

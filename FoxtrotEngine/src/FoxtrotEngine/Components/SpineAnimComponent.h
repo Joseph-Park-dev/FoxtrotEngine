@@ -4,7 +4,7 @@
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
 #include "FoxtrotEngine/Managers/ResourceManager.h"
 #include "FoxtrotEngine/Components/SpriteComponent.h"
-#include "FoxtrotEngine/ResourceSystem/FTSpineTexture.h"
+#include "FoxtrotEngine/ResourceSystem/FTSpineAnimation.h"
 
 class SpineAnimComponent :
     public SpriteComponent
@@ -22,12 +22,11 @@ public:
     SpineAnimComponent();
 
 private:
-    FoxtrotRenderer* mRenderer;
-    FTSpineTexture*  mTexture;
+    FoxtrotRenderer*    mRenderer;
+    FTSpineAnimation*   mTexture;
 
 private:
     mutable bool                          mOwnsAnimationStateData;
-    mutable spine::Vector<float>          mWorldVertices;
     mutable spine::Vector<float>          mTempUvs;
     mutable spine::Vector<spine::Color>   mTempColors;
     mutable spine::Vector<unsigned short> mQuadIndices;

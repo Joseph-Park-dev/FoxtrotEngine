@@ -18,7 +18,7 @@
 #ifdef _DEBUG
 #include "FoxtrotEditor/EditorLayer.h"
 #include "FoxtrotEditor/EditorCamera2D.h"
-#include "FoxtrotEditor/RenderTextureClass.h
+#include "FoxtrotEditor/RenderTextureClass.h"
 #endif // _DEBUG
 
 
@@ -122,12 +122,12 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 	};
 
 	if (!CreateVertexShaderAndInputLayout(
-		L"./src/core/08_Shaders/ColorVertexShader.hlsl", inputElements, mBasicVertexShader,
+		VERTEX_SHADER_PATH, inputElements, mBasicVertexShader,
 		mBasicInputLayout))
 	{
 		return false;
 	}
-	if (!CreatePixelShader(L"./src/core/08_Shaders/ColorPixelShader.hlsl", mBasicPixelShader))
+	if (!CreatePixelShader(PIXEL_SHADER_PATH, mBasicPixelShader))
 	{
 		return false;
 	}

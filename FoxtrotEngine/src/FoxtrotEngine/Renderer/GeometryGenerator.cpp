@@ -1,42 +1,44 @@
 ﻿#include "FoxtrotEngine/Renderer/GeometryGenerator.h"
 
-#include <directxtk/SimpleMath.h>
+//#include <directxtk/SimpleMath.h>
+#include <vector>
 
+#include "FoxtrotEngine/Math/FTMath.h"
 #include "FoxtrotEngine/ResourceSystem/Vertex.h"
 #include "FoxtrotEngine/ResourceSystem/MeshData.h"
 
 //#include "ModelLoader.h"
-using namespace DirectX;
-using namespace DirectX::SimpleMath;
-using D3DVec2 = DirectX::SimpleMath::Vector2;
-using D3DVec3 = DirectX::SimpleMath::Vector3;
+//using namespace DirectX;
+//using namespace DirectX::SimpleMath;
+//using D3DVec2 = DirectX::SimpleMath::Vector2;
+//using D3DVec3 = DirectX::SimpleMath::Vector3;
 
 MeshData GeometryGenerator::MakeSquare(float scale) {
-    std::vector<D3DVec3> positions;
-    std::vector<D3DVec3> colors;
-    std::vector<D3DVec3> normals;
-    std::vector<D3DVec2> texcoords; // 텍스춰 좌표
+    std::vector<FTVector3> positions;
+    std::vector<FTVector3> colors;
+    std::vector<FTVector3> normals;
+    std::vector<FTVector2> texcoords; // 텍스춰 좌표
 
     // 앞면
-    positions.push_back(D3DVec3(-1.0f, 1.0f, 0.0f) * scale);
-    positions.push_back(D3DVec3(1.0f, 1.0f, 0.0f) * scale);
-    positions.push_back(D3DVec3(1.0f, -1.0f, 0.0f) * scale);
-    positions.push_back(D3DVec3(-1.0f, -1.0f, 0.0f) * scale);
-    colors.push_back(D3DVec3(0.0f, 0.0f, 1.0f));
-    colors.push_back(D3DVec3(0.0f, 0.0f, 1.0f));
-    colors.push_back(D3DVec3(0.0f, 0.0f, 1.0f));
-    colors.push_back(D3DVec3(0.0f, 0.0f, 1.0f));
-    normals.push_back(D3DVec3(0.0f, 0.0f, -1.0f));
-    normals.push_back(D3DVec3(0.0f, 0.0f, -1.0f));
-    normals.push_back(D3DVec3(0.0f, 0.0f, -1.0f));
-    normals.push_back(D3DVec3(0.0f, 0.0f, -1.0f));
+    positions.push_back(FTVector3(-1.0f, 1.0f, 0.0f) * scale);
+    positions.push_back(FTVector3(1.0f, 1.0f, 0.0f) * scale);
+    positions.push_back(FTVector3(1.0f, -1.0f, 0.0f) * scale);
+    positions.push_back(FTVector3(-1.0f, -1.0f, 0.0f) * scale);
+    colors.push_back(FTVector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(FTVector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(FTVector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(FTVector3(0.0f, 0.0f, 1.0f));
+    normals.push_back(FTVector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(FTVector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(FTVector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(FTVector3(0.0f, 0.0f, -1.0f));
 
     // Texture Coordinates (Direct3D 9)
     // https://learn.microsoft.com/en-us/windows/win32/direct3d9/texture-coordinates
-    texcoords.push_back(D3DVec2(0.0f, 0.0f));
-    texcoords.push_back(D3DVec2(1.0f, 0.0f));
-    texcoords.push_back(D3DVec2(1.0f, 1.0f));
-    texcoords.push_back(D3DVec2(0.0f, 1.0f));
+    texcoords.push_back(FTVector2(0.0f, 0.0f));
+    texcoords.push_back(FTVector2(1.0f, 0.0f));
+    texcoords.push_back(FTVector2(1.0f, 1.0f));
+    texcoords.push_back(FTVector2(0.0f, 1.0f));
 
     MeshData meshData;
     for (size_t i = 0; i < positions.size(); i++) {

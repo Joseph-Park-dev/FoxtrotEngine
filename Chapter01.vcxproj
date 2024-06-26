@@ -218,7 +218,9 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\InputMoveComponent.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\MoveComponent.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\Rigidbody2DComponent.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpineAnimComponent.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpineAnimComponent.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpriteComponent.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\TileMapComponent.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Core\EventFunctions.cpp" />
@@ -242,7 +244,6 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\GeometryGenerator.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTAnimation.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTResource.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineTexture.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTTexture.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\Tile.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene.cpp" />
@@ -351,7 +352,9 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\InputMoveComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\MoveComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\Rigidbody2DComponent.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpineAnimComponent.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpineAnimComponent.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpriteComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\TileMapComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Cores\FTCore.h" />
@@ -388,7 +391,6 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\resource1.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTAnimation.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTResource.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineTexture.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTTexture.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\Mesh.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\MeshData.h" />

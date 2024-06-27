@@ -14,33 +14,6 @@
 
 /* origin : world position vector 
 direction : world position vector */
-#ifdef _DEBUG
-RayCastHit2D Physics2D::Raycast(FTVector2 origin, FTVector2 direction, float distance, ACTOR_GROUP actor)
-{
-	FTVector2 rayDir = (direction - origin).Normalize() * distance;
-	Physics::Ray* ray = new Physics::Ray(
-		EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(origin), 
-		EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(origin + rayDir),
-		actor
-	);
-	CollisionManager::GetInstance()->RegisterRay(ray);
-	return RayCastHit2D();
-}
-#else
-RayCastHit2D Physics2D::Raycast(FTVector2 origin, FTVector2 direction, float distance, ACTOR_GROUP actor)
-{
-	FTVector2 rayDir = (direction - origin).Normalize() * distance;
-	Ray* ray = new Ray(
-		Camera2D::GetInstance()->ConvertWorldPosToScreen(origin),
-		Camera2D::GetInstance()->ConvertWorldPosToScreen(origin + rayDir),
-		actor
-	);
-	CollisionManager::GetInstance()->RegisterRay(ray);
-	return RayCastHit2D();
-}
-#endif // _DEBUG
-
-
 void Physics2D::ResetRayCasts()
 {
 	mRayCastHits.clear();
@@ -156,3 +129,29 @@ Physics2D::Physics2D()
 {}
 
 Physics2D::~Physics2D() {}
+
+#ifdef _DEBUG
+RayCastHit2D Physics2D::Raycast(FTVector2 origin, FTVector2 direction, float distance, ACTOR_GROUP actor)
+{
+	FTVector2 rayDir = (direction - origin).Normalize() * distance;
+	Physics::Ray* ray = new Physics::Ray(
+		EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(origin),
+		EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(origin + rayDir),
+		actor
+	);
+	CollisionManager::GetInstance()->RegisterRay(ray);
+	return RayCastHit2D();
+}
+#else
+RayCastHit2D Physics2D::Raycast(FTVector2 origin, FTVector2 direction, float distance, ACTOR_GROUP actor)
+{
+	FTVector2 rayDir = (direction - origin).Normalize() * distance;
+	Physics::Ray* ray = new Physics::Ray(
+		Camera2D::GetInstance()->ConvertWorldPosToScreen(origin),
+		Camera2D::GetInstance()->ConvertWorldPosToScreen(origin + rayDir),
+		actor
+	);
+	CollisionManager::GetInstance()->RegisterRay(ray);
+	return RayCastHit2D();
+}
+#endif

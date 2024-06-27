@@ -1,4 +1,5 @@
 #pragma once
+#pragma comment(lib, "D3DCompiler.lib");
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <directxtk/SimpleMath.h>
@@ -27,7 +28,6 @@ public:
 public:
 	void SwapChainPresent(UINT syncInterval, UINT flags);
     void Render();
-    void RenderToTexture();
     void RenderClear();
     void SetViewport();
 
@@ -41,7 +41,6 @@ public:
     ComPtr<IDXGISwapChain> GetSwapChain() { return mSwapChain; }
     ComPtr<ID3D11RenderTargetView> GetRenderTargetView() { return mRenderTargetView; }
     ComPtr<ID3D11Texture2D> GetDepthStencilBuffer() { return mDepthStencilBuffer; }
-    RenderTextureClass*    GetRenderTexture() { return mRenderTexture; }
 
     float GetAspectRatio()  { return (float)mRenderWidth / (float)mRenderHeight; }
     int   GetRenderWidth() { return mRenderWidth; }
@@ -57,13 +56,6 @@ private:
     UINT  mNumQualityLevels;
     UINT  mCreateDeviceFlags;
     float mAspect;
-
-public:
-    void DrawPrimitives(HWND hwnd);
-    void DrawRectangle(FTVector2 topLeft, FTVector2 bottomRight);
-
-private:
-    std::vector<std::pair<FTVector2, FTVector2>> mRegisteredPrimitive;
 
 private:
     FTTexture mWallTexture;
@@ -113,8 +105,6 @@ private:
     bool CreateTextureSampler();
 
 public:
-    bool CreateRenderTexture(int width, int height);
-    bool UpdateRenderTexture(int width, int height);
     bool CreateRenderTargetView();
     bool CreateDepthBuffer();
     bool UpdateDepthBuffer(int width, int height);
@@ -206,4 +196,20 @@ private:
         ComPtr<ID3D11InputLayout>& inputLayout
     );
     bool CreatePixelShader(const std::wstring& filename, ComPtr<ID3D11PixelShader>& pixelShader);
+
+#ifdef _DEBUG
+public:
+    RenderTextureClass* GetRenderTexture() { return mRenderTexture; }
+public:
+    void DrawPrimitives(HWND hwnd);
+    void DrawRectangle(FTVector2 topLeft, FTVector2 bottomRight);
+
+private:
+    std::vector<std::pair<FTVector2, FTVector2>> mRegisteredPrimitive;
+
+public:
+    bool CreateRenderTexture(int width, int height);
+    bool UpdateRenderTexture(int width, int height);
+    void RenderToTexture();
+#endif // _DEBUG
 };

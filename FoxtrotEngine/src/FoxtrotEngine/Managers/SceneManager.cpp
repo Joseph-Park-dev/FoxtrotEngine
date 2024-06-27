@@ -1,7 +1,7 @@
 #include "FoxtrotEngine/Managers/SceneManager.h"
 
 #include "FoxtrotEngine/Scenes/Scene_Start.h"
-#include "FoxtrotEngine/Scenes/Scene_Tool.h"
+//#include "FoxtrotEngine/Scenes/Scene_Tool.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 
 SceneManager::SceneManager()

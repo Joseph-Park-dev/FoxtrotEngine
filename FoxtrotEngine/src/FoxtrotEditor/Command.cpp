@@ -1,3 +1,4 @@
+#ifdef _DEBUG
 #include "FoxtrotEditor/Command.h"
 
 #include <string>
@@ -152,3 +153,4 @@ StateEditCommand::StateEditCommand(Actor::State& valRef, Actor::State nextVal)
 	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
 {
 }
+#endif

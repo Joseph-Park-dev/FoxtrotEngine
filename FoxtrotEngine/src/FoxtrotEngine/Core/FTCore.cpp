@@ -114,6 +114,7 @@ bool FTCore::InitializeWindow()
 	ShowWindow(mWindow, SW_SHOWDEFAULT);
 	UpdateWindow(mWindow);
 
+	LogString("Initialization Complete");
 	return true;
 }
 
@@ -208,7 +209,7 @@ LRESULT FTCore::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	switch (msg) {
 	case WM_DESTROY:
 	{
-		mIsRunning = false;
+		SetIsRunning(false);
 		return 0;
 	}
 	return DefWindowProc(hwnd, msg, wParam, lParam);

@@ -67,6 +67,7 @@ private:
             uint32_t mID;
             uint32_t mColliCount;
 
+#ifdef _DEBUG
 public:
     virtual void SaveProperties(std::ofstream& ofs) override;
     virtual void LoadProperties(std::ifstream& ifs) override;
@@ -78,4 +79,5 @@ public:
 private:
     void UpdateOffsetPos();
     void UpdateScale();
+#endif // DEBUG
 };

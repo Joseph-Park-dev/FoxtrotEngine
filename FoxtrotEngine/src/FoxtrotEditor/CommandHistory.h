@@ -1,4 +1,5 @@
 #pragma once
+#ifdef _DEBUG
 #include <deque>
 #include <functional>
 
@@ -44,3 +45,4 @@ private:
 private:
 	Command* QueryCommand();
 };
+#endif

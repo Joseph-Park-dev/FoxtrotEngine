@@ -87,9 +87,9 @@
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>
-    </IncludePath>
-    <LibraryPath>C:\dev\vcpkg\installed\x64-windows\lib\manual-link;$(LibraryPath)</LibraryPath>
+    <IncludePath>.\FoxtrotEngine\src;.\Assets;.\FoxtrotEngine\src\include</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <VcpkgTriplet>
@@ -179,13 +179,14 @@
       </AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h;TypeDefinitions.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;shell32.lib</AdditionalDependencies>
+      <AdditionalDependencies>shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -194,13 +195,27 @@
     <ClCompile Include="Assets\Scripts\ActorList\MouseCursor.cpp" />
     <ClCompile Include="Assets\Scripts\ActorList\Ship.cpp" />
     <ClCompile Include="Assets\Scripts\Factories\MonFactory.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\Command.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\CommandHistory.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\EditorCamera2D.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\EditorElement.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\EditorLayer.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\FTCoreEditor.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\RenderTextureClass.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\Command.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\CommandHistory.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\EditorCamera2D.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\EditorElement.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\EditorLayer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\FTCoreEditor.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\RenderTextureClass.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Actors\Actor.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Actors\Backgrounds\BackgroundActor.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Actors\Transform.cpp" />
@@ -218,9 +233,6 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\InputMoveComponent.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\MoveComponent.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\Rigidbody2DComponent.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpineAnimComponent.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpriteComponent.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\TileMapComponent.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Core\EventFunctions.cpp" />
@@ -244,13 +256,13 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\GeometryGenerator.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTAnimation.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTResource.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineAnimation.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTTexture.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\Tile.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene_Start.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene_Tool.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\include\imgui\FileDialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="FoxtrotEngine\src\include\spine\Animation.cpp" />
     <ClCompile Include="FoxtrotEngine\src\include\spine\AnimationState.cpp" />
@@ -325,13 +337,27 @@
     <ClInclude Include="Assets\Scripts\ActorList\MouseCursor.h" />
     <ClInclude Include="Assets\Scripts\ActorList\Ship.h" />
     <ClInclude Include="Assets\Scripts\Factories\MonFactory.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\Command.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\CommandHistory.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\EditorCamera2D.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\EditorElement.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\EditorLayer.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\FTCoreEditor.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\RenderTextureClass.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\Command.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\CommandHistory.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\EditorCamera2D.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\EditorElement.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\EditorLayer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\FTCoreEditor.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\RenderTextureClass.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Actors\Actor.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Actors\ActorGroup.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Actors\ActorTag.h" />
@@ -352,9 +378,6 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\InputMoveComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\MoveComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\Rigidbody2DComponent.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpineAnimComponent.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpriteComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\TileMapComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Cores\FTCore.h" />
@@ -391,6 +414,9 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\resource1.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTAnimation.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTResource.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineAnimation.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTTexture.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\Mesh.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\MeshData.h" />
@@ -399,9 +425,6 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\SceneType.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene_Start.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene_Tool.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\EventType.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\FTMath.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\Random.h" />

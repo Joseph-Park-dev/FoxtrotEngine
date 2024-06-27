@@ -9,21 +9,11 @@
 #include "FoxtrotEngine/ResourceSystem/FTTexture.h"
 #include "FoxtrotEngine/ResourceSystem/Mesh.h"
 #include "FoxtrotEngine/ResourceSystem/MeshData.h"
-#include "FoxtrotEngine/ResourceSystem/MeshData.h"
 #include "FoxtrotEngine/Renderer/GeometryGenerator.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 #include "FoxtrotEngine/Physics/Bounds.h"
 #include "FoxtrotEngine/Math/FTMath.h"
-
-#ifdef _DEBUG
-#include "FoxtrotEditor/CommandHistory.h"
-#include "FoxtrotEditor/EditorCamera2D.h"
-
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
-#include "imgui/FileDialog/ImGuiFileDialog.h"
-#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
-#endif
+#include "FoxtrotEngine/Renderer/Camera2D.h"
 
 SpriteComponent::SpriteComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner, drawOrder)
@@ -33,6 +23,8 @@ SpriteComponent::SpriteComponent(Actor* owner, int drawOrder, int updateOrder)
 	, rect(new Bounds)
 	, mScale(1.f)
 	, mMesh(nullptr)
+	, mAspect(0.0f)
+	, mRenderer(nullptr)
 {}
 
 SpriteComponent::~SpriteComponent()
@@ -94,6 +86,78 @@ void SpriteComponent::Initialize(FoxtrotRenderer* renderer)
 void SpriteComponent::Update(float deltaTime)
 {
 	Transform* transform = GetOwner()->GetTransform();
+	FTVector2 lookAtPos = Camera2D::GetInstance()->GetLookAtPos();
+	FTVector2 scale = transform->GetScale();
+	FTVector2 worldPos = transform->GetWorldPosition();
+	// 모델의 변환 -> 모델 행렬 결정
+	mMesh->basicVertexConstantBufferData.model =
+		DirectX::SimpleMath::Matrix::CreateScale(scale.x, scale.y, 1.0f) *
+		DirectX::SimpleMath::Matrix::CreateRotationZ(transform->GetRotation()) *
+		DirectX::SimpleMath::Matrix::CreateTranslation(worldPos.x, worldPos.y, 0.0f);
+	mMesh->basicVertexConstantBufferData.model = mMesh->basicVertexConstantBufferData.model.Transpose();
+
+	// 시점 변환
+	// m_constantBufferData.view = XMMatrixLookAtLH(m_viewEye, m_viewFocus,
+	// m_viewUp);
+	mMesh->basicVertexConstantBufferData.view =
+		XMMatrixLookToLH(DirectX::SimpleMath::Vector3(lookAtPos.x, lookAtPos.y, 0.0f), mViewEyeDir, mViewUp);
+	mMesh->basicVertexConstantBufferData.view *= DirectX::SimpleMath::Matrix::CreateScale(Camera2D::GetInstance()->GetZoomValue());
+	mMesh->basicVertexConstantBufferData.view = mMesh->basicVertexConstantBufferData.view.Transpose();
+
+	// 프로젝션	
+	// m_aspect = AppBase::GetAspectRatio(); // <- GUI에서 조절
+	/*if (m_usePerspectiveProjection) {
+		mBasicVertexConstantBufferData.projection = XMMatrixPerspectiveFovLH(
+			XMConvertToRadians(mProjFovAngleY), mAspect, mNearZ, mFarZ);
+	}
+	else {
+		mBasicVertexConstantBufferData.projection = XMMatrixOrthographicOffCenterLH(
+			-mAspect, mAspect, -1.0f, 1.0f, mNearZ, mFarZ);
+	}*/
+
+	mMesh->basicVertexConstantBufferData.projection = DirectX::XMMatrixOrthographicOffCenterLH(
+		-mAspect, mAspect, -1.0f, 1.0f, mNearZ, mFarZ);
+	mMesh->basicVertexConstantBufferData.projection =
+		mMesh->basicVertexConstantBufferData.projection.Transpose();
+
+	// Constant를 CPU에서 GPU로 복사
+	// Render() 함수에서...
+}
+
+void SpriteComponent::Render(FoxtrotRenderer* renderer)
+{
+	if (mMesh) {
+		mAspect = renderer->GetAspectRatio();
+		renderer->UpdateBuffer(mMesh->basicVertexConstantBufferData,
+			mMesh->vertexConstantBuffer);
+		renderer->UpdateBuffer(mMesh->pixelShaderConstantBufferData,
+			mMesh->pixelConstantBuffer);
+	}
+	else
+		Initialize(renderer);
+	//BlitToGameview(rect, GetOwner()->GetTransform()->GetScale());
+}
+
+#ifdef _DEBUG
+#include "FoxtrotEditor/CommandHistory.h"
+#include "FoxtrotEditor/EditorCamera2D.h"
+
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui.h>
+#include "imgui/FileDialog/ImGuiFileDialog.h"
+#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
+
+//void SpriteComponent::SetTexture()
+//{
+//	//rect->x = (int)GetOwner()->GetTransform()->GetWorldPosition().x;
+//	//rect->y = (int)GetOwner()->GetTransform()->GetWorldPosition().y;
+//	//rect->w = mTextWidth;
+//	//rect->h = mTexHeight;
+//}
+
+void SpriteComponent::EditorUpdate(float deltaTime)
+{
+	Transform* transform = GetOwner()->GetTransform();
 	float cameraMouseNavFactor = EditorCamera2D::GetInstance()->GetMouseNavFactor();
 	FTVector2 lookAtPos = EditorCamera2D::GetInstance()->GetLookAtPos() * cameraMouseNavFactor;
 	FTVector2 scale = transform->GetScale();
@@ -131,33 +195,6 @@ void SpriteComponent::Update(float deltaTime)
 
 	// Constant를 CPU에서 GPU로 복사
 	// Render() 함수에서...
-}
-
-#ifdef _DEBUG
-void SpriteComponent::Render(FoxtrotRenderer* renderer)
-{
-	if (mMesh) {
-		mAspect = renderer->GetAspectRatio();
-		renderer->UpdateBuffer(mMesh->basicVertexConstantBufferData,
-			mMesh->vertexConstantBuffer);
-		renderer->UpdateBuffer(mMesh->pixelShaderConstantBufferData,
-			mMesh->pixelConstantBuffer);
-	}
-	else
-		Initialize(renderer);
-	//BlitToGameview(rect, GetOwner()->GetTransform()->GetScale());
-}
-//void SpriteComponent::SetTexture()
-//{
-//	//rect->x = (int)GetOwner()->GetTransform()->GetWorldPosition().x;
-//	//rect->y = (int)GetOwner()->GetTransform()->GetWorldPosition().y;
-//	//rect->w = mTextWidth;
-//	//rect->h = mTexHeight;
-//}
-
-void SpriteComponent::EditorUpdate(float deltaTime)
-{
-	Update(deltaTime);
 }
 
 void SpriteComponent::EditorUIUpdate()
@@ -240,32 +277,5 @@ void SpriteComponent::LoadProperties(std::ifstream& ifs)
 		std::string fileName = FileIOHelper::LoadBasicString(ifs);
 		SetTexture(mRenderer, fileName);
 	}
-}
-
-#else
-void SpriteComponent::Render(FoxtrotRenderer* renderer)
-{
-	if (mTexture)
-	{
-		SDL_RenderCopyEx(renderer,
-			GetTexture()->GetGameviewTexture(),
-			nullptr,
-			rect,
-			-Math::ToDegrees(GetOwner()->GetTransform()->GetRotation()),
-			nullptr,
-			SDL_FLIP_NONE
-		);
-	}
-}
-
-void SpriteComponent::SetTexture(FTTexture* texture)
-{
-	mTexture = texture;
-	SDL_QueryTexture(mTexture->GetGameviewTexture(), nullptr, nullptr, &mTextWidth, &mTexHeight);
-	rect = new SDL_Rect;
-	rect->x = (int)GetOwner()->GetTransform()->GetWorldPosition().x;
-	rect->y = (int)GetOwner()->GetTransform()->GetWorldPosition().y;
-	rect->w = mTextWidth;
-	rect->h = mTexHeight;
 }
 #endif

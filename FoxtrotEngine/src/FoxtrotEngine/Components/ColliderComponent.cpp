@@ -10,16 +10,6 @@
 #include "FoxtrotEngine/Managers/KeyInputManager.h"
 #include "FoxtrotEngine/FileSystem/ChunkLoader.h"
 
-#ifdef _DEBUG
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
-#include <imgui_impl_win32.h>
-#include <imgui_impl_dx11.h>
-
-#include "FoxtrotEditor/EditorCamera2D.h"
-#include "FoxtrotEditor/CommandHistory.h"
-#endif // DEBUG
-
 UINT ColliderComponent::g_nextID = 0;
 
 void ColliderComponent::LateUpdate(float deltaTime)
@@ -28,38 +18,6 @@ void ColliderComponent::LateUpdate(float deltaTime)
 	mFinalPosition = ownerPos + mOffsetPos;
 	assert(0 <= mColliCount);
 }
-
-#ifdef _DEBUG
-void ColliderComponent::Render(FoxtrotRenderer* renderer)
-{
-	/*
-	*	Alternative for
-			SDL_SetRenderDrawColor
-			(
-				renderer,
-				0, 255, 0, 255
-			);
-			FTVector2 renderPos =
-				EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(mFinalPosition);
-			SDL_Rect rect =
-			{
-				static_cast<int>(renderPos.x - mScale.x * 0.5f * (1 - EditorCamera2D::GetInstance()->GetZoomValue())),
-				static_cast<int>(renderPos.y - mScale.y * 0.5f * (1 - EditorCamera2D::GetInstance()->GetZoomValue())),
-				static_cast<int>(mScale.x * (1 - EditorCamera2D::GetInstance()->GetZoomValue())),
-				static_cast<int>(mScale.y * (1 - EditorCamera2D::GetInstance()->GetZoomValue()))
-			};
-			SDL_RenderDrawRect(renderer, &rect);
-	*/
-	FTVector2 topLeft = mFinalPosition - mScale / 2;
-	FTVector2 bottomRight = mFinalPosition + mScale / 2;
-
-	FTVector2 topLeftScreenPos =
-		EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(topLeft);
-	FTVector2 bottomRightScreenPos =
-		EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(bottomRight);
-	renderer->DrawRectangle(topLeftScreenPos, bottomRightScreenPos);
-}
-#endif // _DEBUG
 
 ColliderComponent::ColliderComponent(Actor* owner, int drawOrder, int updateOrder)
 	:Component(owner, drawOrder, updateOrder)
@@ -108,6 +66,27 @@ void ColliderComponent::OnCollisionExit(ColliderComponent* other)
 void ColliderComponent::OnRayEnter()
 {
 	GetOwner()->OnRayEnter();
+}
+
+#ifdef _DEBUG
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui.h>
+#include <imgui_impl_win32.h>
+#include <imgui_impl_dx11.h>
+
+#include "FoxtrotEditor/EditorCamera2D.h"
+#include "FoxtrotEditor/CommandHistory.h"
+
+void ColliderComponent::Render(FoxtrotRenderer* renderer)
+{
+	FTVector2 topLeft = mFinalPosition - mScale / 2;
+	FTVector2 bottomRight = mFinalPosition + mScale / 2;
+
+	FTVector2 topLeftScreenPos =
+		EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(topLeft);
+	FTVector2 bottomRightScreenPos =
+		EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(bottomRight);
+	renderer->DrawRectangle(topLeftScreenPos, bottomRightScreenPos);
 }
 
 void ColliderComponent::SaveProperties(std::ofstream& ofs)
@@ -194,3 +173,4 @@ void ColliderComponent::UpdateScale()
 	}
 	delete[] vec2;
 }
+#endif // DEBUG

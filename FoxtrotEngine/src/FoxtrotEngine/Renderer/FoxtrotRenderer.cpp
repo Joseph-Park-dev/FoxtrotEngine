@@ -106,12 +106,6 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 
 	SetViewport();
 
-	if (!CreateRenderTexture(mRenderWidth, mRenderHeight))
-	{
-		LogString("Error : FoxtrotRenderer Initialize - CreateRenderTexture failed.");
-		return false;
-	}
-
 	std::vector<D3D11_INPUT_ELEMENT_DESC> inputElements = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
 		 D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -131,11 +125,20 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 	{
 		return false;
 	}
+
+#ifdef _DEBUG
+	if (!CreateRenderTexture(mRenderWidth, mRenderHeight))
+	{
+		LogString("Error : FoxtrotRenderer Initialize - CreateRenderTexture failed.");
+		return false;
+	}
+#endif // _DEBUG
 	return true;
 }
 
 void FoxtrotRenderer::DestroyRenderer(FoxtrotRenderer* renderer)
 {
+#ifdef _DEBUG
 	// 렌더 텍스쳐 객체를 해제한다
 	if (renderer->mRenderTexture)
 	{
@@ -143,7 +146,7 @@ void FoxtrotRenderer::DestroyRenderer(FoxtrotRenderer* renderer)
 		delete renderer->mRenderTexture;
 		renderer->mRenderTexture = 0;
 	}
-
+#endif // _DEBUG
 	if (renderer == nullptr)
 	{
 		LogString("Renderer is already null");
@@ -218,23 +221,6 @@ void FoxtrotRenderer::Render()
 	}
 }
 
-void FoxtrotRenderer::RenderToTexture()
-{
-	// 렌더링 대상을 렌더링에 맞게 설정합니다
-	mContext->OMSetRenderTargets(1, mRenderTexture->GetRenderTargetView().GetAddressOf(), mRenderTexture->GetDepthStencilView().Get());
-
-	// 렌더링을 텍스처에 지웁니다
-	mRenderTexture->ClearRenderTarget(mContext.Get(), mRenderTexture->GetDepthStencilView().Get(), mClearColor);
-
-	// 이제 장면을 렌더링하면 백 버퍼 대신 텍스처로 렌더링됩니다
-	Render();
-
-	//// 렌더링 대상을 원래의 백 버퍼로 다시 설정하고 렌더링에 대한 렌더링을 더 이상 다시 설정하지 않습니다
-	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
-
-	//return true;
-}
-
 // Constant buffer data 업데이트 & 그 내용을 GPU 버퍼로 복사
 // 이후 Render() 에서 Vertex shader를 실행시키게 되는데,
 // 이때 Constant buffer data를 사용
@@ -246,7 +232,7 @@ void FoxtrotRenderer::RenderToTexture()
 
 void FoxtrotRenderer::RenderClear()
 {
-	float clearColor[4] = { 0.0f,0.0f,1.0f,1.0f };
+	float clearColor[4] = { 0.0f,0.0f,0.0f,1.0f };
 	mContext->ClearRenderTargetView(mRenderTargetView.Get(), clearColor);
 	mContext->ClearDepthStencilView(mDepthStencilView.Get(),
 		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
@@ -306,30 +292,6 @@ void FoxtrotRenderer::RemoveMesh(Mesh* mesh)
 		mMeshes.erase(iter);
 		mMeshes.shrink_to_fit();
 	}
-}
-
-void FoxtrotRenderer::DrawPrimitives(HWND hwnd)
-{
-	PAINTSTRUCT ps;
-	HDC hdc = BeginPaint(hwnd, &ps);
-	for (size_t i = 0; i < mRegisteredPrimitive.size(); ++i)
-	{
-		FTVector2 topLeft = mRegisteredPrimitive[i].first;
-		FTVector2 bottomRight = mRegisteredPrimitive[i].second;
-		HPEN pen = CreatePen(PS_DASH, 2, RGB(255, 0, 0));
-		SelectObject(hdc, GetStockObject(NULL_BRUSH));
-		(HPEN)SelectObject(hdc, pen);
-		Rectangle(hdc, (int)topLeft.x, (int)topLeft.y, (int)bottomRight.x, (int)bottomRight.y);
-		DeleteObject(pen);
-	}
-	EndPaint(hwnd, &ps);
-	mRegisteredPrimitive.clear();
-}
-
-void FoxtrotRenderer::DrawRectangle(FTVector2 topLeft, FTVector2 bottomRight)
-{
-	std::pair<FTVector2, FTVector2> pair = { topLeft, bottomRight };
-	mRegisteredPrimitive.push_back(pair);
 }
 
 bool FoxtrotRenderer::CreateDeviceAndContext(HWND window)
@@ -438,26 +400,6 @@ bool FoxtrotRenderer::CreateDeviceAndContext(HWND window)
 		return false;
 	}
 	return true;
-}
-
-bool FoxtrotRenderer::CreateRenderTexture(int width, int height)
-{
-	mRenderTexture = new RenderTextureClass();
-	// 렌더링 텍스처 객체를 초기화한다
-	bool result = mRenderTexture->Initialize(mDevice.Get(), width, height, mNumQualityLevels);
-	if (!result)
-	{
-		return false;
-	}
-}
-
-bool FoxtrotRenderer::UpdateRenderTexture(int width, int height)
-{
-	bool result = mRenderTexture->Update(mDevice.Get(), width, height, mNumQualityLevels);
-	if (!result)
-	{
-		return false;
-	}
 }
 
 bool FoxtrotRenderer::CreateRenderTargetView()
@@ -748,3 +690,66 @@ bool FoxtrotRenderer::CreatePixelShader(const std::wstring& filename,
 
 FoxtrotRenderer::FoxtrotRenderer()
 {}
+
+#ifdef _DEBUG
+bool FoxtrotRenderer::CreateRenderTexture(int width, int height)
+{
+	mRenderTexture = new RenderTextureClass();
+	// 렌더링 텍스처 객체를 초기화한다
+	bool result = mRenderTexture->Initialize(mDevice.Get(), width, height, mNumQualityLevels);
+	if (!result)
+	{
+		return false;
+	}
+}
+
+bool FoxtrotRenderer::UpdateRenderTexture(int width, int height)
+{
+	bool result = mRenderTexture->Update(mDevice.Get(), width, height, mNumQualityLevels);
+	if (!result)
+	{
+		return false;
+	}
+}
+
+void FoxtrotRenderer::RenderToTexture()
+{
+	// 렌더링 대상을 렌더링에 맞게 설정합니다
+	mContext->OMSetRenderTargets(1, mRenderTexture->GetRenderTargetView().GetAddressOf(), mRenderTexture->GetDepthStencilView().Get());
+
+	// 렌더링을 텍스처에 지웁니다
+	mRenderTexture->ClearRenderTarget(mContext.Get(), mRenderTexture->GetDepthStencilView().Get(), mClearColor);
+
+	// 이제 장면을 렌더링하면 백 버퍼 대신 텍스처로 렌더링됩니다
+	Render();
+
+	//// 렌더링 대상을 원래의 백 버퍼로 다시 설정하고 렌더링에 대한 렌더링을 더 이상 다시 설정하지 않습니다
+	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
+
+	//return true;
+}
+
+void FoxtrotRenderer::DrawPrimitives(HWND hwnd)
+{
+	PAINTSTRUCT ps;
+	HDC hdc = BeginPaint(hwnd, &ps);
+	for (size_t i = 0; i < mRegisteredPrimitive.size(); ++i)
+	{
+		FTVector2 topLeft = mRegisteredPrimitive[i].first;
+		FTVector2 bottomRight = mRegisteredPrimitive[i].second;
+		HPEN pen = CreatePen(PS_DASH, 2, RGB(255, 0, 0));
+		SelectObject(hdc, GetStockObject(NULL_BRUSH));
+		(HPEN)SelectObject(hdc, pen);
+		Rectangle(hdc, (int)topLeft.x, (int)topLeft.y, (int)bottomRight.x, (int)bottomRight.y);
+		DeleteObject(pen);
+	}
+	EndPaint(hwnd, &ps);
+	mRegisteredPrimitive.clear();
+}
+
+void FoxtrotRenderer::DrawRectangle(FTVector2 topLeft, FTVector2 bottomRight)
+{
+	std::pair<FTVector2, FTVector2> pair = { topLeft, bottomRight };
+	mRegisteredPrimitive.push_back(pair);
+}
+#endif // _DEBUG

@@ -132,6 +132,49 @@ void TileMapComponent::RenderEX(FoxtrotRenderer* renderer)
     }
 }
 
+TileMapComponent::TileMapComponent(Actor* owner, int drawOrder, int UpdateOrder)
+    : SpriteComponent(owner, drawOrder)
+    , mTileCountX(0)
+    , mTileCountY(0)
+    , mCurrentTileMap(nullptr)
+
+{}
+
+TileMapComponent::~TileMapComponent()
+{
+    if (mCurrentTileMap != nullptr)
+    {
+        for (int row = 0; row < mTileCountY; row++)
+        {
+            delete[] mCurrentTileMap[row];
+        }
+        delete[] mCurrentTileMap;
+    }
+}
+
+#ifdef _DEBUG
+void TileMapComponent::SetScreenRectEditorView(FTVector2 worldPos, Tile* tile)
+{
+    FTVector2 editorPos = EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(worldPos);
+    Bounds dstRect = {};
+    dstRect.w = tile->GetWidth() * (1 - EditorCamera2D::GetInstance()->GetZoomValue());
+    dstRect.h = tile->GetHeight() * (1 - EditorCamera2D::GetInstance()->GetZoomValue());
+    dstRect.x = static_cast<int>(editorPos.x - (float)dstRect.w / 2);
+    dstRect.y = static_cast<int>(editorPos.y - (float)dstRect.h / 2);
+    tile->SetScreenRect(dstRect);
+}
+
+void TileMapComponent::SaveProperties(std::ofstream& ofs)
+{
+    SpriteComponent::SaveProperties(ofs);
+}
+
+void TileMapComponent::LoadProperties(std::ifstream& ifs)
+{
+    SpriteComponent::LoadProperties(ifs);
+}
+#endif // _DEBUG
+
 //#ifdef _DEBUG
 //void TileMapComponent::DrawIndividualTileOnPos(
 //    FoxtrotRenderer* renderer, FTVector2 worldPos, Tile* tile)
@@ -232,27 +275,6 @@ void TileMapComponent::RenderEX(FoxtrotRenderer* renderer)
 //    }
 //}
 
-void TileMapComponent::SetScreenRectEditorView(FTVector2 worldPos, Tile* tile)
-{
-    FTVector2 editorPos = EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(worldPos);
-    Bounds dstRect = {};
-    dstRect.w = tile->GetWidth() * (1 - EditorCamera2D::GetInstance()->GetZoomValue());
-    dstRect.h = tile->GetHeight() * (1 - EditorCamera2D::GetInstance()->GetZoomValue());
-    dstRect.x = static_cast<int>(editorPos.x - (float)dstRect.w / 2);
-    dstRect.y = static_cast<int>(editorPos.y - (float)dstRect.h / 2);
-    tile->SetScreenRect(dstRect);
-}
-
-void TileMapComponent::SaveProperties(std::ofstream& ofs)
-{
-    SpriteComponent::SaveProperties(ofs);
-}
-
-void TileMapComponent::LoadProperties(std::ifstream& ifs)
-{
-    SpriteComponent::LoadProperties(ifs);
-}
-
 //#else
 //void TileMapComponent::DrawIndividualTileOnPos(
 //    FoxtrotRenderer* renderer, FTVector2 worldPos, Tile* tile)
@@ -301,23 +323,3 @@ void TileMapComponent::LoadProperties(std::ifstream& ifs)
 //    tile->SetScreenRect(dstRect);
 //}
 //#endif // _DEBUG
-
-TileMapComponent::TileMapComponent(Actor* owner, int drawOrder, int UpdateOrder)
-    : SpriteComponent(owner, drawOrder)
-    , mTileCountX(0)
-    , mTileCountY(0)
-    , mCurrentTileMap(nullptr)
-
-{}
-
-TileMapComponent::~TileMapComponent()
-{
-    if (mCurrentTileMap != nullptr)
-    {
-        for (int row = 0; row < mTileCountY; row++)
-        {
-            delete[] mCurrentTileMap[row];
-        }
-        delete[] mCurrentTileMap;
-    }
-}

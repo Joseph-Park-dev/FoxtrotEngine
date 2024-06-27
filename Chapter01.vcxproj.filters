@@ -94,9 +94,6 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\Rigidbody2DComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpineAnimComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpriteComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -155,9 +152,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene_Start.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene_Tool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\include\imgui\FileDialog\ImGuiFileDialog.cpp">
@@ -382,6 +376,9 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Math\Random.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineAnimation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets\Scripts\ActorList\Asteroid.h" />
@@ -415,7 +412,6 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\InputMoveComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\MoveComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\Rigidbody2DComponent.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpineAnimComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpriteComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\TileMapComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Cores\FTCore.h" />
@@ -445,7 +441,6 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\Vertex.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene_Start.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene_Tool.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\SceneType.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\EventType.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Utilities\FTMath.h" />
@@ -563,6 +558,7 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\ComponentBatchHeaders.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Math\FTMath.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Math\Random.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineAnimation.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

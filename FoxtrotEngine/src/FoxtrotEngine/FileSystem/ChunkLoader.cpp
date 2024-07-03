@@ -9,13 +9,13 @@
 #include "FoxtrotEngine/Math/FTMath.h"
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
 #include "FoxtrotEngine/Managers/SceneManager.h"
+#include "FoxtrotEngine/Managers/ResourceManager.h"
 #include "FoxtrotEngine/Scenes/Scene.h"
 #include "FoxtrotEngine/Actors/ActorGroup.h"
 #include "FoxtrotEngine/Actors/Transform.h"
 #include "FoxtrotEngine/Actors/Actor.h"
 #include "FoxtrotEngine/Actors/UIs/PanelUI.h"
 #include "FoxtrotEngine/Actors/Backgrounds/BackgroundActor.h"
-
 #include "FoxtrotEngine/Renderer/Camera2D.h"
 #include "FoxtrotEngine/Components/ComponentBatchHeaders.h"
 
@@ -65,6 +65,15 @@ void ChunkLoader::SaveChunkData(std::ofstream& ofs)
     FileIOHelper::AddVector2 (ofs, mCurrentChunkData.RenderResolution);
     FileIOHelper::AddVector2 (ofs, mCurrentChunkData.ScreenCenter);
     FileIOHelper::AddInt     (ofs, mCurrentChunkData.ActorCount);
+}
+
+void ChunkLoader::SaveResources(std::ofstream& of)
+{
+    std::unordered_map<std::string, FTTexture*>::const_iterator iter;
+    std::unordered_map<std::string, FTTexture*>& texMap = ResourceManager::GetInstance()->GetTexturesMap();
+    for (iter = texMap.begin(); iter != texMap.end(); ++iter) {
+
+    }
 }
 
 void ChunkLoader::SaveActors(std::ofstream& ofs)

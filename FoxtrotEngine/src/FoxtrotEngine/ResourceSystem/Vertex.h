@@ -4,6 +4,6 @@
 struct Vertex {
     FTVector3 position;
     FTVector3 color;
-    //DirectX::SimpleMath::Vector3 normal;
+    FTVector3 normal;
     FTVector2 texcoord;
 };

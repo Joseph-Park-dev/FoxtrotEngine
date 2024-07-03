@@ -7,7 +7,7 @@ class GeometryGenerator {
     //                                     std::string filename);
 
     static MeshData MakeSquare(float scale);
-    //static MeshData MakeBox();
+    static MeshData MakeBox();
     //static MeshData MakeCylinder(const float bottomRadius,
     //                             const float topRadius, float height,
     //                             int numSlices);

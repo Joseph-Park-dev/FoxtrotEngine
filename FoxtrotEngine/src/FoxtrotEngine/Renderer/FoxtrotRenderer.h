@@ -9,11 +9,16 @@
 #include <iostream>
 #include <exception>
 
+#include <DirectXColors.h>
+#include <directxtk/PrimitiveBatch.h>
+#include <directxtk/VertexTypes.h>
+
 #include "FoxtrotEngine/ResourceSystem/Mesh.h"
 
 #define VERTEX_SHADER_PATH L"./FoxtrotEngine/src/FoxtrotEngine/Renderer/Shaders/ColorVertexShader.hlsl"
 #define PIXEL_SHADER_PATH L"./FoxtrotEngine/src/FoxtrotEngine/Renderer/Shaders/ColorPixelShader.hlsl"
 
+using VertexType = DirectX::VertexPositionColor;
 using namespace Microsoft::WRL;
 class Transform;
 class RenderTextureClass;
@@ -41,6 +46,7 @@ public:
     ComPtr<IDXGISwapChain> GetSwapChain() { return mSwapChain; }
     ComPtr<ID3D11RenderTargetView> GetRenderTargetView() { return mRenderTargetView; }
     ComPtr<ID3D11Texture2D> GetDepthStencilBuffer() { return mDepthStencilBuffer; }
+    ComPtr<ID3D11InputLayout> GetInputLayout() { return mBasicInputLayout; }
 
     float GetAspectRatio()  { return (float)mRenderWidth / (float)mRenderHeight; }
     int   GetRenderWidth() { return mRenderWidth; }
@@ -52,10 +58,10 @@ public:
 private:
     int   mRenderWidth;
     int   mRenderHeight;
+    float mAspect;
     float mClearColor[4];
     UINT  mNumQualityLevels;
     UINT  mCreateDeviceFlags;
-    float mAspect;
 
 private:
     FTTexture mWallTexture;
@@ -98,15 +104,25 @@ public:
 
 private:
 	bool Initialize(HWND window, int width, int height);
-    bool CreateDeviceAndContext(HWND window);
-    bool CreateRasterizerState();
-    bool CreateDepthStencilState();
-    bool CreateBlendState();
-    bool CreateTextureSampler();
+
+private:
+    HRESULT CreateDeviceAndContext(HWND window);
+    HRESULT CreateRenderTargetView();
+    HRESULT CreateRasterizerState();
+    HRESULT CreateDepthBuffer();
+    HRESULT CreateDepthStencilState();
+    HRESULT CreateBlendState();
+    HRESULT CreateTextureSampler();
+
+    bool CreateVertexShaderAndInputLayout(
+        const std::wstring& filename,
+        const std::vector<D3D11_INPUT_ELEMENT_DESC>& inputElements,
+        ComPtr<ID3D11VertexShader>& vertexShader,
+        ComPtr<ID3D11InputLayout>& inputLayout
+    );
+    bool CreatePixelShader(const std::wstring& filename, ComPtr<ID3D11PixelShader>& pixelShader);
 
 public:
-    bool CreateRenderTargetView();
-    bool CreateDepthBuffer();
     bool UpdateDepthBuffer(int width, int height);
     void CreateIndexBuffer(const std::vector<uint32_t>& indices, ComPtr<ID3D11Buffer>& m_indexBuffer);
     template <typename T_VERTEX>
@@ -179,33 +195,15 @@ public:
         memcpy(ms.pData, &bufferData, sizeof(bufferData));
         mContext->Unmap(buffer.Get(), NULL);
     }
-
-    inline void ThrowIfFailed(HRESULT hr)
-    {
-        if (FAILED(hr))
-        {
-            throw std::exception();
-        }
-    }
-
-private:
-    bool CreateVertexShaderAndInputLayout(
-        const std::wstring& filename, 
-        const std::vector<D3D11_INPUT_ELEMENT_DESC>& inputElements, 
-        ComPtr<ID3D11VertexShader>& vertexShader, 
-        ComPtr<ID3D11InputLayout>& inputLayout
-    );
-    bool CreatePixelShader(const std::wstring& filename, ComPtr<ID3D11PixelShader>& pixelShader);
-
 #ifdef _DEBUG
 public:
     RenderTextureClass* GetRenderTexture() { return mRenderTexture; }
-public:
-    void DrawPrimitives(HWND hwnd);
-    void DrawRectangle(FTVector2 topLeft, FTVector2 bottomRight);
-
+//public:
+//    void DrawPrimitives();
+//    void DrawRectangle(GeometricPrimitiveMesh* rect);
+//private:
+//    std::vector<GeometricPrimitiveMesh*> mRegisteredPrimitive;
 private:
-    std::vector<std::pair<FTVector2, FTVector2>> mRegisteredPrimitive;
 
 public:
     bool CreateRenderTexture(int width, int height);

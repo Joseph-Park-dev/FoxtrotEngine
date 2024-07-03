@@ -37,3 +37,9 @@ struct Mesh {
 
     UINT indexCount = 0;
 };
+
+// Mesh used for DirectX::GeometricPrimitive
+//struct GeometricPrimitiveMesh {
+//    std::unique_ptr<DirectX::SpriteBatch> primitive;
+//    BasicVertexConstantBuffer basicVertexConstantBufferData;
+//};

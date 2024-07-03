@@ -34,9 +34,9 @@ public:
 	void SaveChunk(const std::string fileName);
 
 protected:
-	void SaveActors(std::ofstream& of);
 	void SaveChunkData(std::ofstream& of);
-
+	void SaveResources(std::ofstream& of);
+	void SaveActors(std::ofstream& of);
 
 // Member functions for engine level to use .chunk files
 public:
@@ -98,3 +98,33 @@ public:
 private:
 	inline static int mUnmatched;
 };
+
+//struct SavePack {
+//	int priority = 0;
+//};
+//
+//struct ChunkData : SavePack{
+//	int TargetActorID;
+//	FTVector2 RenderResolution;
+//	FTVector2 ScreenCenter;
+//	size_t ActorCount;
+//};
+//
+//struct ActorData : SavePack{
+//	std::wstring Name;
+//	int			 ID;
+//	std::string	 ActorGroup;
+//	std::string	 State;
+//
+//	FTVector2	 WorldPosition;
+//	FTVector2	 LocalPosition;
+//	float		 Rotation;
+//	FTVector2	 Scale;
+//
+//	
+//};
+//
+//using BasicStringDataPack = std::pair < std::wstring, std::function<void(std::ifstream&)>>;
+//using WStringDataPack = std::pair < std::wstring, std::function<void(std::ifstream&)>>;
+//using FloatDataPack = std::pair < std::wstring, std::function<void(std::ifstream&)>>;
+//using IntegerDataPack = std::pair < std::wstring, std::function<void(std::ifstream&)>>;

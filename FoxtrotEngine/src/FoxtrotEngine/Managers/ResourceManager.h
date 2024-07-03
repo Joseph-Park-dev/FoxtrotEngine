@@ -17,6 +17,11 @@ public:
 	void				UpdateTexture(FoxtrotRenderer* renderer, FTTexture* texture, int channels);
 	FTTexture*			GetLoadedTexture(const std::string fileName);
 
+	std::unordered_map<std::string, FTTexture*>& 
+		GetTexturesMap() {
+		return mMapTextures; 
+	}
+
 	//void				LoadSpineTexture(FoxtrotRenderer* renderer, spine::String fileName);
 	//FTSpineAnimation*	GetLoadedSpineTexture(spine::String fileName);
 

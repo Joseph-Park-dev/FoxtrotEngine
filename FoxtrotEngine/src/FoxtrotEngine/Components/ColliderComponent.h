@@ -2,6 +2,7 @@
 #include "Component.h"
 
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
+#include "FoxtrotEngine/ResourceSystem/Mesh.h"
 
 class FTVector2;
 
@@ -38,13 +39,11 @@ public:
 public:
     //This can also be used as refreshing method.
     void LateUpdate(float deltaTime)    override;
-#ifdef _DEBUG
-    void Render(FoxtrotRenderer* renderer) override;
-#endif
 
 public:
     ColliderComponent(class Actor* owner, int drawOrder, int updateOrder);
     ColliderComponent(const ColliderComponent& origin);
+    //~ColliderComponent() override;
     virtual void CloneTo(Actor* actor) override;
 
 private:
@@ -55,7 +54,7 @@ private:
     void OnRayEnter();
 
     friend class CollisionManager;
-    friend class CActor;
+    friend class Actor;
 
 private:
     FTVector2    mOffsetPos;
@@ -73,6 +72,7 @@ public:
     virtual void LoadProperties(std::ifstream& ifs) override;
     //virtual void LoadProperties(std::ofstream& of);
 
+    void Render(FoxtrotRenderer* renderer) override;
     void EditorLateUpdate(float deltaTime) override;
     void EditorUIUpdate() override;
     

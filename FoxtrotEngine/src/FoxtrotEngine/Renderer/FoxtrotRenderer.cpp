@@ -6,7 +6,10 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <wrl.h> // ComPtr
+#include <DirectXColors.h>
 #include <directxtk/PrimitiveBatch.h>
+#include <directxtk/VertexTypes.h>
+
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 
@@ -35,9 +38,9 @@ FoxtrotRenderer* FoxtrotRenderer::CreateRenderer(HWND window, int width, int hei
 
 bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 {
-	mRenderWidth = width;
-	mRenderHeight = height;
-	GetAspectRatio();
+	mRenderWidth	= width;
+	mRenderHeight	= height;
+	mAspect			= GetAspectRatio();
 	/*mClearColor[0] = 217.f / 255.f;
 	mClearColor[1] = 216.f / 255.f;
 	mClearColor[2] = 212.f / 255.f;
@@ -48,61 +51,26 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 	mClearColor[2] = 0.0f;
 	mClearColor[3] = 1.0f; 
 
-	if (!CreateDeviceAndContext(window))
-	{
-		LogString("Create Device and Context failed");
-		LogString("Create SwapChain failed");
-		return false;
-	}
+	DX::ThrowIfFailed(CreateDeviceAndContext(window));
 
 	/*HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
 	if (FAILED(hr))
 		return false;*/
 
-	if (!CreateRenderTargetView())
-	{
-		LogString("Create Render Target View failed.");
-		return false;
-	}
+	DX::ThrowIfFailed(CreateRenderTargetView());
 
-	if (!CreateRasterizerState())
-	{
-		LogString("Create Rasterizer State failed.");
-		return false;
-	}
+	DX::ThrowIfFailed(CreateRasterizerState());
 
-	if (!CreateDepthBuffer())
-	{
-		LogString("Create Depth Buffer failed.");
-		return false;
-	}
+	DX::ThrowIfFailed(CreateDepthBuffer());
 
-	if (!CreateDepthStencilState())
-	{
-		LogString("Create Depth Stencil State failed.");
-		return false;
-	}
+	DX::ThrowIfFailed(CreateDepthStencilState());
 
-	if (!CreateBlendState())
-	{
-		LogString("Create Blend State failed.");
-		return false;
-	}
+	DX::ThrowIfFailed(CreateBlendState());
 	mContext->OMSetBlendState(mBlendState.Get(), 0, D3D11_DEFAULT_SAMPLE_MASK);
 
-	if (!CreateTextureSampler())
-	{
-		LogString("Create Sampler State failed.");
-		return false;
-	}
+	DX::ThrowIfFailed(CreateTextureSampler());
 
-	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-	if (FAILED(hr))
-	{
-		LogString("FoxtrotRenderer::CoInitilizeEX() -> Failed.");
-		return false;
-	}
-		// error
+	DX::ThrowIfFailed(CoInitializeEx(nullptr, COINIT_MULTITHREADED));
 
 	SetViewport();
 
@@ -111,7 +79,9 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 		 D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3,
 		 D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 + 4 * 3,
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3 + 4 * 3,
+		 D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 + 4 * 3 + 4 * 3,
 		 D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 
@@ -125,6 +95,25 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 	{
 		return false;
 	}
+
+	/*mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(),
+	mDepthStencilView.Get());*/
+	mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
+
+	mContext->VSSetShader(mBasicVertexShader.Get(), 0, 0);
+
+	mContext->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
+
+	mContext->PSSetShader(mBasicPixelShader.Get(), 0, 0);
+
+	mContext->RSSetState(mRasterizerState.Get());
+
+	/*if (m_drawAsWire) {
+		mContext->RSSetState(m_wireRasterizerSate.Get());
+	}
+	else {
+		mContext->RSSetState(m_solidRasterizerSate.Get());
+	}*/
 
 #ifdef _DEBUG
 	if (!CreateRenderTexture(mRenderWidth, mRenderHeight))
@@ -174,25 +163,6 @@ void FoxtrotRenderer::Render()
 	// VS: Vertex Shader
 	// PS: Pixel Shader
 	// IA: Input-Assembler stage
-
-	/*mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(),
-		mDepthStencilView.Get());*/
-	mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
-
-	mContext->VSSetShader(mBasicVertexShader.Get(), 0, 0);
-
-	mContext->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
-
-	mContext->PSSetShader(mBasicPixelShader.Get(), 0, 0);
-
-	mContext->RSSetState(mRasterizerState.Get());
-
-	/*if (m_drawAsWire) {
-		mContext->RSSetState(m_wireRasterizerSate.Get());
-	}
-	else {
-		mContext->RSSetState(m_solidRasterizerSate.Get());
-	}*/
 
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
@@ -294,7 +264,7 @@ void FoxtrotRenderer::RemoveMesh(Mesh* mesh)
 	}
 }
 
-bool FoxtrotRenderer::CreateDeviceAndContext(HWND window)
+HRESULT FoxtrotRenderer::CreateDeviceAndContext(HWND window)
 {
 	// 만약 그래픽스 카드 호환성 문제로 D3D11CreateDevice()가 실패하는 경우에는
 	// D3D_DRIVER_TYPE_HARDWARE 대신 D3D_DRIVER_TYPE_WARP 사용해보세요
@@ -320,7 +290,9 @@ bool FoxtrotRenderer::CreateDeviceAndContext(HWND window)
 		D3D_FEATURE_LEVEL_9_3 };
 	D3D_FEATURE_LEVEL featureLevel;
 
-	if (FAILED(D3D11CreateDevice(
+	HRESULT hr = S_OK;
+
+	hr = D3D11CreateDevice(
 		nullptr,                  // Specify nullptr to use the default adapter.
 		driverType,               // Create a device using the hardware graphics driver.
 		0,                        // Should be 0 unless the driver is D3D_DRIVER_TYPE_SOFTWARE.
@@ -331,16 +303,15 @@ bool FoxtrotRenderer::CreateDeviceAndContext(HWND window)
 		device.GetAddressOf(),	  // Returns the Direct3D device created.
 		&featureLevel,			  // Returns feature level of device created.
 		context.GetAddressOf()    // Returns the device immediate context.
-	)))
-	{
+	);
+	if(FAILED(hr)){
 		LogString("D3D11CreateDevice() failed.");
-		return false;
+		return hr;
 	}
 
-	if (featureLevel != D3D_FEATURE_LEVEL_11_0)
-	{
+	if (featureLevel != D3D_FEATURE_LEVEL_11_0){
 		LogString("D3D Feature Level 11 is unsupported.");
-		return false;
+		return E_FAIL;
 	}
 
 	// 참고: Immediate vs deferred context
@@ -379,40 +350,54 @@ bool FoxtrotRenderer::CreateDeviceAndContext(HWND window)
 	sd.SampleDesc.Count = 1;
 	sd.SampleDesc.Quality = 0;
 
-	if (FAILED(device.As(&mDevice))) {
+	hr = device.As(&mDevice);
+	if(FAILED(hr)){
 		LogString("device.AS() failed.");
-		return false;
-	}
-	if (FAILED(context.As(&mContext))) {
-		LogString("context.As() failed.");
-		return false;
+		return hr;
 	}
 
-	if (FAILED(D3D11CreateDeviceAndSwapChain(
+	hr = context.As(&mContext);
+	if(FAILED(hr)){
+		LogString("context.As() failed.");
+		return hr;
+	}
+
+	hr = D3D11CreateDeviceAndSwapChain(
 		0, // Default adapter
 		driverType,
 		0, // No software device
 		mCreateDeviceFlags, featureLevels, 1, D3D11_SDK_VERSION,
 		&sd, &mSwapChain, &mDevice, &featureLevel,
-		&mContext)))
-	{
+		&mContext);
+	if(FAILED(hr)){
 		LogString("D3D11CreateDeviceAndSwapChain() failed.");
-		return false;
+		return hr;
 	}
-	return true;
+	return hr;
 }
 
-bool FoxtrotRenderer::CreateRenderTargetView()
+HRESULT FoxtrotRenderer::CreateRenderTargetView()
 {
 	mRenderTargetView.Reset();
 	ComPtr<ID3D11Texture2D> backBuffer;
 	mSwapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
-	if (backBuffer) {
-		mDevice->CreateRenderTargetView(backBuffer.Get(), NULL, mRenderTargetView.GetAddressOf());
-		return true;
-	}
-	else
-		return false;
+	if (backBuffer)
+		return mDevice->CreateRenderTargetView(
+			backBuffer.Get(), NULL, mRenderTargetView.GetAddressOf()
+		);
+}
+
+HRESULT FoxtrotRenderer::CreateRasterizerState()
+{
+	// Create a rasterizer state
+	D3D11_RASTERIZER_DESC rastDesc;
+	ZeroMemory(&rastDesc, sizeof(D3D11_RASTERIZER_DESC)); // Need this
+	rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+	//rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_WIREFRAME;
+	rastDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
+	rastDesc.FrontCounterClockwise = false;
+
+	return mDevice->CreateRasterizerState(&rastDesc, &mRasterizerState);
 }
 
 void FoxtrotRenderer::SetViewport()
@@ -429,22 +414,7 @@ void FoxtrotRenderer::SetViewport()
 	mContext->RSSetViewports(1, &mScreenViewport);
 }
 
-bool FoxtrotRenderer::CreateRasterizerState()
-{
-	// Create a rasterizer state
-	D3D11_RASTERIZER_DESC rastDesc;
-	ZeroMemory(&rastDesc, sizeof(D3D11_RASTERIZER_DESC)); // Need this
-	rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-	//rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_WIREFRAME;
-	rastDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
-	rastDesc.FrontCounterClockwise = false;
-
-	if (FAILED(mDevice->CreateRasterizerState(&rastDesc, &mRasterizerState)))
-		return false;
-	return true;
-}
-
-bool FoxtrotRenderer::CreateDepthBuffer()
+HRESULT FoxtrotRenderer::CreateDepthBuffer()
 {
 	// Create depth buffer
 	D3D11_TEXTURE2D_DESC depthStencilBufferDesc;
@@ -481,6 +451,58 @@ bool FoxtrotRenderer::CreateDepthBuffer()
 		return false;
 	}
 	return true;
+}
+
+HRESULT FoxtrotRenderer::CreateDepthStencilState()
+{
+	// Create depth stencil state
+	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	depthStencilDesc.DepthEnable = true; // false
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL;
+	return mDevice->CreateDepthStencilState(&depthStencilDesc, mDepthStencilState.GetAddressOf());
+}
+
+HRESULT FoxtrotRenderer::CreateBlendState()
+{
+	D3D11_BLEND_DESC omDesc;
+	ZeroMemory(&omDesc, sizeof(D3D11_BLEND_DESC));
+	omDesc.RenderTarget[0].BlendEnable = true;
+	omDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	omDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	omDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	omDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	omDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	omDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	omDesc.RenderTarget[0].RenderTargetWriteMask = 
+		D3D11_COLOR_WRITE_ENABLE_RED | D3D11_COLOR_WRITE_ENABLE_GREEN | D3D11_COLOR_WRITE_ENABLE_BLUE;
+
+	return mDevice->CreateBlendState(&omDesc, mBlendState.GetAddressOf());
+}
+
+//bool FoxtrotRenderer::ImportTextures()
+//{
+//	if(!mWallTexture.CreateTexture("./Assets/Asteroid.png", mDevice))
+//		return false;
+//	return true;
+//}
+
+HRESULT FoxtrotRenderer::CreateTextureSampler()
+{
+	// FTTexture sampler 만들기
+	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	// Create the Sample State
+	return mDevice->CreateSamplerState(&sampDesc, mSamplerState.GetAddressOf());
 }
 
 bool FoxtrotRenderer::UpdateDepthBuffer(int width, int height)
@@ -522,70 +544,6 @@ bool FoxtrotRenderer::UpdateDepthBuffer(int width, int height)
 		LogString("CreateDepthStencilView() failed.");
 		return false;
 	}
-	return true;
-}
-
-bool FoxtrotRenderer::CreateDepthStencilState()
-{
-	// Create depth stencil state
-	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
-	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-	depthStencilDesc.DepthEnable = true; // false
-	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ALL;
-	depthStencilDesc.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL;
-	if (FAILED(mDevice->CreateDepthStencilState(&depthStencilDesc, mDepthStencilState.GetAddressOf())))
-	{
-		LogString("CreateDepthStencilState() failed.");
-		return false;
-	}
-	return true;
-}
-
-bool FoxtrotRenderer::CreateBlendState()
-{
-	D3D11_BLEND_DESC omDesc;
-	ZeroMemory(&omDesc, sizeof(D3D11_BLEND_DESC));
-	omDesc.RenderTarget[0].BlendEnable = true;
-	omDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-	omDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-	omDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	omDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	omDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	omDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	omDesc.RenderTarget[0].RenderTargetWriteMask = 
-		D3D11_COLOR_WRITE_ENABLE_RED | D3D11_COLOR_WRITE_ENABLE_GREEN | D3D11_COLOR_WRITE_ENABLE_BLUE;
-
-	if (FAILED(mDevice->CreateBlendState(&omDesc, mBlendState.GetAddressOf())))
-	{
-		LogString("Error - FoxtrotRenderer::Initialize, Failed to CreateBlendState()");
-		return false;
-	}
-	return true;
-}
-
-//bool FoxtrotRenderer::ImportTextures()
-//{
-//	if(!mWallTexture.CreateTexture("./Assets/Asteroid.png", mDevice))
-//		return false;
-//	return true;
-//}
-
-bool FoxtrotRenderer::CreateTextureSampler()
-{
-	// FTTexture sampler 만들기
-	D3D11_SAMPLER_DESC sampDesc;
-	ZeroMemory(&sampDesc, sizeof(sampDesc));
-	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	sampDesc.MinLOD = 0;
-	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-	// Create the Sample State
-	if (FAILED(mDevice->CreateSamplerState(&sampDesc, mSamplerState.GetAddressOf())))
-		return false;
 	return true;
 }
 
@@ -729,27 +687,38 @@ void FoxtrotRenderer::RenderToTexture()
 	//return true;
 }
 
-void FoxtrotRenderer::DrawPrimitives(HWND hwnd)
-{
-	PAINTSTRUCT ps;
-	HDC hdc = BeginPaint(hwnd, &ps);
-	for (size_t i = 0; i < mRegisteredPrimitive.size(); ++i)
-	{
-		FTVector2 topLeft = mRegisteredPrimitive[i].first;
-		FTVector2 bottomRight = mRegisteredPrimitive[i].second;
-		HPEN pen = CreatePen(PS_DASH, 2, RGB(255, 0, 0));
-		SelectObject(hdc, GetStockObject(NULL_BRUSH));
-		(HPEN)SelectObject(hdc, pen);
-		Rectangle(hdc, (int)topLeft.x, (int)topLeft.y, (int)bottomRight.x, (int)bottomRight.y);
-		DeleteObject(pen);
-	}
-	EndPaint(hwnd, &ps);
-	mRegisteredPrimitive.clear();
-}
-
-void FoxtrotRenderer::DrawRectangle(FTVector2 topLeft, FTVector2 bottomRight)
-{
-	std::pair<FTVector2, FTVector2> pair = { topLeft, bottomRight };
-	mRegisteredPrimitive.push_back(pair);
-}
+//void FoxtrotRenderer::DrawPrimitives()
+//{
+//	//PAINTSTRUCT ps;
+//	//HDC hdc = BeginPaint(hwnd, &ps);
+//	//for (size_t i = 0; i < mRegisteredPrimitive.size(); ++i)
+//	//{
+//	//	FTVector2 topLeft = mRegisteredPrimitive[i].first;
+//	//	FTVector2 bottomRight = mRegisteredPrimitive[i].second;
+//	//	HPEN pen = CreatePen(PS_DASH, 2, RGB(255, 0, 0));
+//	//	SelectObject(hdc, GetStockObject(NULL_BRUSH));
+//	//	(HPEN)SelectObject(hdc, pen);
+//	//	Rectangle(hdc, (int)topLeft.x, (int)topLeft.y, (int)bottomRight.x, (int)bottomRight.y);
+//	//	DeleteObject(pen);
+//	//}
+//	//EndPaint(hwnd, &ps);
+//	//mRegisteredPrimitive.clear();
+//	for (size_t i = 0; i < mRegisteredPrimitive.size(); ++i) {
+//		DirectX::FXMMATRIX world = mRegisteredPrimitive[i]->basicVertexConstantBufferData.model;
+//		DirectX::FXMMATRIX view = mRegisteredPrimitive[i]->basicVertexConstantBufferData.view;
+//		DirectX::FXMMATRIX projection = mRegisteredPrimitive[i]->basicVertexConstantBufferData.projection;
+//		mRegisteredPrimitive[i]->primitive->Draw(world, view, projection, DirectX::Colors::Red);
+//	}
+//}
+//
+//void FoxtrotRenderer::DrawRectangle(GeometricPrimitiveMesh* rect){
+//	std::vector<GeometricPrimitiveMesh*>::iterator iter =
+//		std::find(mRegisteredPrimitive.begin(), mRegisteredPrimitive.end(), rect);
+//	if (iter == mRegisteredPrimitive.end()) {
+//		mRegisteredPrimitive.push_back(rect);
+//	}
+//	else{
+//		(*iter)->basicVertexConstantBufferData = rect->basicVertexConstantBufferData;
+//	}
+//}
 #endif // _DEBUG

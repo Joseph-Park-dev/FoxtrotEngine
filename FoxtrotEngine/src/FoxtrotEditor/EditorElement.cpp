@@ -14,6 +14,7 @@
 #include "FoxtrotEngine/Actors/Transform.h"
 #include "FoxtrotEngine/Actors/ActorGroup.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
+#include "FoxtrotEngine/Components/Component.h"
 
 void EditorElement::EditorLateUpdateActor()
 {

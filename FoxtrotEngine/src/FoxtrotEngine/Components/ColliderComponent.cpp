@@ -1,6 +1,7 @@
 #include "FoxtrotEngine/Components/ColliderComponent.h"
 
 #include <assert.h>
+#include <DirectXColors.h>
 
 #include "FoxtrotEngine/Actors/Actor.h"
 #include "FoxtrotEngine/Actors/Transform.h"
@@ -80,13 +81,69 @@ void ColliderComponent::OnRayEnter()
 void ColliderComponent::Render(FoxtrotRenderer* renderer)
 {
 	FTVector2 topLeft = mFinalPosition - mScale / 2;
+	FTVector2 topRight = FTVector2(mFinalPosition.x + mScale.x / 2, mFinalPosition.y + mScale.y / 2);
 	FTVector2 bottomRight = mFinalPosition + mScale / 2;
+	FTVector2 bottomLeft = FTVector2(mFinalPosition.x - mScale.x / 2, mFinalPosition.y + mScale.y / 2);
 
 	FTVector2 topLeftScreenPos =
 		EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(topLeft);
 	FTVector2 bottomRightScreenPos =
 		EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(bottomRight);
-	renderer->DrawRectangle(topLeftScreenPos, bottomRightScreenPos);
+	//mBatch = std::make_unique<DirectX::PrimitiveBatch<VertexType>>(renderer->GetContext());
+	////renderer->GetContext()->IASetInputLayout(renderer->GetInputLayout().Get());
+
+	//mBatch->Begin();
+	//VertexType v1(DirectX::SimpleMath::Vector3(topLeft.x, topLeft.y, 0.0f), DirectX::Colors::Red);
+	//VertexType v2(DirectX::SimpleMath::Vector3(topRight.x, topRight.y, 0.0f), DirectX::Colors::Red);
+	//VertexType v3(DirectX::SimpleMath::Vector3(bottomRight.x, bottomRight.y, 0.0f), DirectX::Colors::Red);
+	//VertexType v4(DirectX::SimpleMath::Vector3(bottomLeft.x, bottomLeft.y, 0.0f), DirectX::Colors::Red);
+	//mBatch->DrawQuad(v1, v2, v3, v4);
+	//mBatch->End();
+
+	//Transform* transform = GetOwner()->GetTransform();
+	//float cameraMouseNavFactor = EditorCamera2D::GetInstance()->GetMouseNavFactor();
+	//FTVector2 lookAtPos = EditorCamera2D::GetInstance()->GetLookAtPos() * cameraMouseNavFactor;
+	//FTVector2 scale = transform->GetScale();
+	//FTVector2 worldPos = transform->GetWorldPosition();
+
+	//DirectX::SimpleMath::Vector3 viewEyePos = { 0.0f, 0.0f, -10.0f };
+	//DirectX::SimpleMath::Vector3 viewEyeDir = { 0.0f, 0.0f, 1.0f };
+	//DirectX::SimpleMath::Vector3 viewUp = { 0.0f, 1.0f, 0.0f };
+
+	//float projFovAngleY = 70.0f;
+	//float nearZ = 0.01f;
+	//float farZ = 100.0f;
+	//float aspect = renderer->GetAspectRatio();
+
+	//DirectX::XMFLOAT3 initScale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	//if(!mBoundsMesh->primitive.get())
+	//	mBoundsMesh->primitive = DirectX::GeometricPrimitive::CreateBox(renderer->GetContext(), initScale);
+	//mBoundsMesh->basicVertexConstantBufferData.model =
+	//	DirectX::SimpleMath::Matrix::CreateScale(mScale.x, mScale.y, 1.0f) *
+	//	DirectX::SimpleMath::Matrix::CreateRotationZ(transform->GetRotation()) *
+	//	DirectX::SimpleMath::Matrix::CreateTranslation(mFinalPosition.x, mFinalPosition.y, 0.0f);
+	//mBoundsMesh->basicVertexConstantBufferData.model = mBoundsMesh->basicVertexConstantBufferData.model.Transpose();
+
+	//mBoundsMesh->basicVertexConstantBufferData.view =
+	//	DirectX::XMMatrixLookAtLH(DirectX::SimpleMath::Vector3(lookAtPos.x, lookAtPos.y, 0.0f), viewEyeDir, viewUp);
+	//mBoundsMesh->basicVertexConstantBufferData.view *= DirectX::SimpleMath::Matrix::CreateScale(EditorCamera2D::GetInstance()->GetZoomValue());
+	//mBoundsMesh->basicVertexConstantBufferData.view = mBoundsMesh->basicVertexConstantBufferData.view.Transpose();
+
+	//// 프로젝션	
+	//// m_aspect = AppBase::GetAspectRatio(); // <- GUI에서 조절
+	///*if (m_usePerspectiveProjection) {
+	//	mBasicVertexConstantBufferData.projection = XMMatrixPerspectiveFovLH(
+	//		XMConvertToRadians(mProjFovAngleY), mAspect, mNearZ, mFarZ);
+	//}
+	//else {
+	//	mBasicVertexConstantBufferData.projection = XMMatrixOrthographicOffCenterLH(
+	//		-mAspect, mAspect, -1.0f, 1.0f, mNearZ, mFarZ);
+	//}*/
+
+	//mBoundsMesh->basicVertexConstantBufferData.projection = DirectX::XMMatrixOrthographicOffCenterLH(
+	//	-aspect, aspect, -1.0f, 1.0f, nearZ, farZ);
+	//mBoundsMesh->basicVertexConstantBufferData.projection =
+	//	mBoundsMesh->basicVertexConstantBufferData.projection.Transpose();
 }
 
 void ColliderComponent::SaveProperties(std::ofstream& ofs)

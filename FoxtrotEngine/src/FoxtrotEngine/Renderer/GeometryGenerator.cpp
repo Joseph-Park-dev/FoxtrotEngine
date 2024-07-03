@@ -55,145 +55,146 @@ MeshData GeometryGenerator::MakeSquare(float scale) {
 
     return meshData;
 }
-//
-//MeshData GeometryGenerator::MakeBox() {
-//
-//    std::vector<D3DVec3> positions;
-//    std::vector<D3DVec3> colors;
-//    std::vector<D3DVec3> normals;
-//    std::vector<D3DVec2> texcoords; // 텍스춰 좌표
-//
-//    const float scale = 1.0f;
-//
-//    // 윗면
-//    positions.push_back(D3DVec3(-1.0f, 1.0f, -1.0f) * scale);
-//    positions.push_back(D3DVec3(-1.0f, 1.0f, 1.0f) * scale);
-//    positions.push_back(D3DVec3(1.0f, 1.0f, 1.0f) * scale);
-//    positions.push_back(D3DVec3(1.0f, 1.0f, -1.0f) * scale);
-//    colors.push_back(D3DVec3(1.0f, 0.0f, 0.0f));
-//    colors.push_back(D3DVec3(1.0f, 0.0f, 0.0f));
-//    colors.push_back(D3DVec3(1.0f, 0.0f, 0.0f));
-//    colors.push_back(D3DVec3(1.0f, 0.0f, 0.0f));
-//    normals.push_back(D3DVec3(0.0f, 1.0f, 0.0f));
-//    normals.push_back(D3DVec3(0.0f, 1.0f, 0.0f));
-//    normals.push_back(D3DVec3(0.0f, 1.0f, 0.0f));
-//    normals.push_back(D3DVec3(0.0f, 1.0f, 0.0f));
-//    texcoords.push_back(D3DVec2(0.0f, 0.0f));
-//    texcoords.push_back(D3DVec2(1.0f, 0.0f));
-//    texcoords.push_back(D3DVec2(1.0f, 1.0f));
-//    texcoords.push_back(D3DVec2(0.0f, 1.0f));
-//
-//    // 아랫면
-//    positions.push_back(D3DVec3(-1.0f, -1.0f, -1.0f) * scale);
-//    positions.push_back(D3DVec3(1.0f, -1.0f, -1.0f) * scale);
-//    positions.push_back(D3DVec3(1.0f, -1.0f, 1.0f) * scale);
-//    positions.push_back(D3DVec3(-1.0f, -1.0f, 1.0f) * scale);
-//    colors.push_back(D3DVec3(0.0f, 1.0f, 0.0f));
-//    colors.push_back(D3DVec3(0.0f, 1.0f, 0.0f));
-//    colors.push_back(D3DVec3(0.0f, 1.0f, 0.0f));
-//    colors.push_back(D3DVec3(0.0f, 1.0f, 0.0f));
-//    normals.push_back(D3DVec3(0.0f, -1.0f, 0.0f));
-//    normals.push_back(D3DVec3(0.0f, -1.0f, 0.0f));
-//    normals.push_back(D3DVec3(0.0f, -1.0f, 0.0f));
-//    normals.push_back(D3DVec3(0.0f, -1.0f, 0.0f));
-//    texcoords.push_back(D3DVec2(0.0f, 0.0f));
-//    texcoords.push_back(D3DVec2(1.0f, 0.0f));
-//    texcoords.push_back(D3DVec2(1.0f, 1.0f));
-//    texcoords.push_back(D3DVec2(0.0f, 1.0f));
-//
-//    // 앞면
-//    positions.push_back(D3DVec3(-1.0f, -1.0f, -1.0f) * scale);
-//    positions.push_back(D3DVec3(-1.0f, 1.0f, -1.0f) * scale);
-//    positions.push_back(D3DVec3(1.0f, 1.0f, -1.0f) * scale);
-//    positions.push_back(D3DVec3(1.0f, -1.0f, -1.0f) * scale);
-//    colors.push_back(D3DVec3(0.0f, 0.0f, 1.0f));
-//    colors.push_back(D3DVec3(0.0f, 0.0f, 1.0f));
-//    colors.push_back(D3DVec3(0.0f, 0.0f, 1.0f));
-//    colors.push_back(D3DVec3(0.0f, 0.0f, 1.0f));
-//    normals.push_back(D3DVec3(0.0f, 0.0f, -1.0f));
-//    normals.push_back(D3DVec3(0.0f, 0.0f, -1.0f));
-//    normals.push_back(D3DVec3(0.0f, 0.0f, -1.0f));
-//    normals.push_back(D3DVec3(0.0f, 0.0f, -1.0f));
-//    texcoords.push_back(D3DVec2(0.0f, 0.0f));
-//    texcoords.push_back(D3DVec2(1.0f, 0.0f));
-//    texcoords.push_back(D3DVec2(1.0f, 1.0f));
-//    texcoords.push_back(D3DVec2(0.0f, 1.0f));
-//
-//    // 뒷면
-//    positions.push_back(D3DVec3(-1.0f, -1.0f, 1.0f) * scale);
-//    positions.push_back(D3DVec3(1.0f, -1.0f, 1.0f) * scale);
-//    positions.push_back(D3DVec3(1.0f, 1.0f, 1.0f) * scale);
-//    positions.push_back(D3DVec3(-1.0f, 1.0f, 1.0f) * scale);
-//    colors.push_back(D3DVec3(0.0f, 1.0f, 1.0f));
-//    colors.push_back(D3DVec3(0.0f, 1.0f, 1.0f));
-//    colors.push_back(D3DVec3(0.0f, 1.0f, 1.0f));
-//    colors.push_back(D3DVec3(0.0f, 1.0f, 1.0f));
-//    normals.push_back(D3DVec3(0.0f, 0.0f, 1.0f));
-//    normals.push_back(D3DVec3(0.0f, 0.0f, 1.0f));
-//    normals.push_back(D3DVec3(0.0f, 0.0f, 1.0f));
-//    normals.push_back(D3DVec3(0.0f, 0.0f, 1.0f));
-//    texcoords.push_back(D3DVec2(0.0f, 0.0f));
-//    texcoords.push_back(D3DVec2(1.0f, 0.0f));
-//    texcoords.push_back(D3DVec2(1.0f, 1.0f));
-//    texcoords.push_back(D3DVec2(0.0f, 1.0f));
-//
-//    // 왼쪽
-//    positions.push_back(D3DVec3(-1.0f, -1.0f, 1.0f) * scale);
-//    positions.push_back(D3DVec3(-1.0f, 1.0f, 1.0f) * scale);
-//    positions.push_back(D3DVec3(-1.0f, 1.0f, -1.0f) * scale);
-//    positions.push_back(D3DVec3(-1.0f, -1.0f, -1.0f) * scale);
-//    colors.push_back(D3DVec3(1.0f, 1.0f, 0.0f));
-//    colors.push_back(D3DVec3(1.0f, 1.0f, 0.0f));
-//    colors.push_back(D3DVec3(1.0f, 1.0f, 0.0f));
-//    colors.push_back(D3DVec3(1.0f, 1.0f, 0.0f));
-//    normals.push_back(D3DVec3(-1.0f, 0.0f, 0.0f));
-//    normals.push_back(D3DVec3(-1.0f, 0.0f, 0.0f));
-//    normals.push_back(D3DVec3(-1.0f, 0.0f, 0.0f));
-//    normals.push_back(D3DVec3(-1.0f, 0.0f, 0.0f));
-//    texcoords.push_back(D3DVec2(0.0f, 0.0f));
-//    texcoords.push_back(D3DVec2(1.0f, 0.0f));
-//    texcoords.push_back(D3DVec2(1.0f, 1.0f));
-//    texcoords.push_back(D3DVec2(0.0f, 1.0f));
-//
-//    // 오른쪽
-//    positions.push_back(D3DVec3(1.0f, -1.0f, 1.0f) * scale);
-//    positions.push_back(D3DVec3(1.0f, -1.0f, -1.0f) * scale);
-//    positions.push_back(D3DVec3(1.0f, 1.0f, -1.0f) * scale);
-//    positions.push_back(D3DVec3(1.0f, 1.0f, 1.0f) * scale);
-//    colors.push_back(D3DVec3(1.0f, 0.0f, 1.0f));
-//    colors.push_back(D3DVec3(1.0f, 0.0f, 1.0f));
-//    colors.push_back(D3DVec3(1.0f, 0.0f, 1.0f));
-//    colors.push_back(D3DVec3(1.0f, 0.0f, 1.0f));
-//    normals.push_back(D3DVec3(1.0f, 0.0f, 0.0f));
-//    normals.push_back(D3DVec3(1.0f, 0.0f, 0.0f));
-//    normals.push_back(D3DVec3(1.0f, 0.0f, 0.0f));
-//    normals.push_back(D3DVec3(1.0f, 0.0f, 0.0f));
-//    texcoords.push_back(D3DVec2(0.0f, 0.0f));
-//    texcoords.push_back(D3DVec2(1.0f, 0.0f));
-//    texcoords.push_back(D3DVec2(1.0f, 1.0f));
-//    texcoords.push_back(D3DVec2(0.0f, 1.0f));
-//
-//    MeshData meshData;
-//    for (size_t i = 0; i < positions.size(); i++) {
-//        Vertex v;
-//        v.position = positions[i];
-//        v.normal = normals[i];
-//        v.texcoord = texcoords[i];
-//        meshData.vertices.push_back(v);
-//    }
-//
-//    meshData.indices = {
-//        0,  1,  2,  0,  2,  3,  // 윗면
-//        4,  5,  6,  4,  6,  7,  // 아랫면
-//        8,  9,  10, 8,  10, 11, // 앞면
-//        12, 13, 14, 12, 14, 15, // 뒷면
-//        16, 17, 18, 16, 18, 19, // 왼쪽
-//        20, 21, 22, 20, 22, 23  // 오른쪽
-//    };
-//
-//    return meshData;
-//}
-//
+
+MeshData GeometryGenerator::MakeBox() {
+
+    std::vector<FTVector3> positions;
+    std::vector<FTVector3> colors;
+    std::vector<FTVector3> normals;
+    std::vector<FTVector2> texcoords; // 텍스춰 좌표
+
+    const float scale = 1.0f;
+
+    // 윗면
+    positions.push_back(FTVector3(-1.0f, 1.0f, -1.0f) * scale);
+    positions.push_back(FTVector3(-1.0f, 1.0f, 1.0f) * scale);
+    positions.push_back(FTVector3(1.0f, 1.0f, 1.0f) * scale);
+    positions.push_back(FTVector3(1.0f, 1.0f, -1.0f) * scale);
+    colors.push_back(FTVector3(1.0f, 0.0f, 0.0f));
+    colors.push_back(FTVector3(1.0f, 0.0f, 0.0f));
+    colors.push_back(FTVector3(1.0f, 0.0f, 0.0f));
+    colors.push_back(FTVector3(1.0f, 0.0f, 0.0f));
+    normals.push_back(FTVector3(0.0f, 1.0f, 0.0f));
+    normals.push_back(FTVector3(0.0f, 1.0f, 0.0f));
+    normals.push_back(FTVector3(0.0f, 1.0f, 0.0f));
+    normals.push_back(FTVector3(0.0f, 1.0f, 0.0f));
+    texcoords.push_back(FTVector2(0.0f, 0.0f));
+    texcoords.push_back(FTVector2(1.0f, 0.0f));
+    texcoords.push_back(FTVector2(1.0f, 1.0f));
+    texcoords.push_back(FTVector2(0.0f, 1.0f));
+
+    // 아랫면
+    positions.push_back(FTVector3(-1.0f, -1.0f, -1.0f) * scale);
+    positions.push_back(FTVector3(1.0f, -1.0f, -1.0f) * scale);
+    positions.push_back(FTVector3(1.0f, -1.0f, 1.0f) * scale);
+    positions.push_back(FTVector3(-1.0f, -1.0f, 1.0f) * scale);
+    colors.push_back(FTVector3(0.0f, 1.0f, 0.0f));
+    colors.push_back(FTVector3(0.0f, 1.0f, 0.0f));
+    colors.push_back(FTVector3(0.0f, 1.0f, 0.0f));
+    colors.push_back(FTVector3(0.0f, 1.0f, 0.0f));
+    normals.push_back(FTVector3(0.0f, -1.0f, 0.0f));
+    normals.push_back(FTVector3(0.0f, -1.0f, 0.0f));
+    normals.push_back(FTVector3(0.0f, -1.0f, 0.0f));
+    normals.push_back(FTVector3(0.0f, -1.0f, 0.0f));
+    texcoords.push_back(FTVector2(0.0f, 0.0f));
+    texcoords.push_back(FTVector2(1.0f, 0.0f));
+    texcoords.push_back(FTVector2(1.0f, 1.0f));
+    texcoords.push_back(FTVector2(0.0f, 1.0f));
+
+    // 앞면
+    positions.push_back(FTVector3(-1.0f, -1.0f, -1.0f) * scale);
+    positions.push_back(FTVector3(-1.0f, 1.0f, -1.0f) * scale);
+    positions.push_back(FTVector3(1.0f, 1.0f, -1.0f) * scale);
+    positions.push_back(FTVector3(1.0f, -1.0f, -1.0f) * scale);
+    colors.push_back(FTVector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(FTVector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(FTVector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(FTVector3(0.0f, 0.0f, 1.0f));
+    normals.push_back(FTVector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(FTVector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(FTVector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(FTVector3(0.0f, 0.0f, -1.0f));
+    texcoords.push_back(FTVector2(0.0f, 0.0f));
+    texcoords.push_back(FTVector2(1.0f, 0.0f));
+    texcoords.push_back(FTVector2(1.0f, 1.0f));
+    texcoords.push_back(FTVector2(0.0f, 1.0f));
+
+    // 뒷면
+    positions.push_back(FTVector3(-1.0f, -1.0f, 1.0f) * scale);
+    positions.push_back(FTVector3(1.0f, -1.0f, 1.0f) * scale);
+    positions.push_back(FTVector3(1.0f, 1.0f, 1.0f) * scale);
+    positions.push_back(FTVector3(-1.0f, 1.0f, 1.0f) * scale);
+    colors.push_back(FTVector3(0.0f, 1.0f, 1.0f));
+    colors.push_back(FTVector3(0.0f, 1.0f, 1.0f));
+    colors.push_back(FTVector3(0.0f, 1.0f, 1.0f));
+    colors.push_back(FTVector3(0.0f, 1.0f, 1.0f));
+    normals.push_back(FTVector3(0.0f, 0.0f, 1.0f));
+    normals.push_back(FTVector3(0.0f, 0.0f, 1.0f));
+    normals.push_back(FTVector3(0.0f, 0.0f, 1.0f));
+    normals.push_back(FTVector3(0.0f, 0.0f, 1.0f));
+    texcoords.push_back(FTVector2(0.0f, 0.0f));
+    texcoords.push_back(FTVector2(1.0f, 0.0f));
+    texcoords.push_back(FTVector2(1.0f, 1.0f));
+    texcoords.push_back(FTVector2(0.0f, 1.0f));
+
+    // 왼쪽
+    positions.push_back(FTVector3(-1.0f, -1.0f, 1.0f) * scale);
+    positions.push_back(FTVector3(-1.0f, 1.0f, 1.0f) * scale);
+    positions.push_back(FTVector3(-1.0f, 1.0f, -1.0f) * scale);
+    positions.push_back(FTVector3(-1.0f, -1.0f, -1.0f) * scale);
+    colors.push_back(FTVector3(1.0f, 1.0f, 0.0f));
+    colors.push_back(FTVector3(1.0f, 1.0f, 0.0f));
+    colors.push_back(FTVector3(1.0f, 1.0f, 0.0f));
+    colors.push_back(FTVector3(1.0f, 1.0f, 0.0f));
+    normals.push_back(FTVector3(-1.0f, 0.0f, 0.0f));
+    normals.push_back(FTVector3(-1.0f, 0.0f, 0.0f));
+    normals.push_back(FTVector3(-1.0f, 0.0f, 0.0f));
+    normals.push_back(FTVector3(-1.0f, 0.0f, 0.0f));
+    texcoords.push_back(FTVector2(0.0f, 0.0f));
+    texcoords.push_back(FTVector2(1.0f, 0.0f));
+    texcoords.push_back(FTVector2(1.0f, 1.0f));
+    texcoords.push_back(FTVector2(0.0f, 1.0f));
+
+    // 오른쪽
+    positions.push_back(FTVector3(1.0f, -1.0f, 1.0f) * scale);
+    positions.push_back(FTVector3(1.0f, -1.0f, -1.0f) * scale);
+    positions.push_back(FTVector3(1.0f, 1.0f, -1.0f) * scale);
+    positions.push_back(FTVector3(1.0f, 1.0f, 1.0f) * scale);
+    colors.push_back(FTVector3(1.0f, 0.0f, 1.0f));
+    colors.push_back(FTVector3(1.0f, 0.0f, 1.0f));
+    colors.push_back(FTVector3(1.0f, 0.0f, 1.0f));
+    colors.push_back(FTVector3(1.0f, 0.0f, 1.0f));
+    normals.push_back(FTVector3(1.0f, 0.0f, 0.0f));
+    normals.push_back(FTVector3(1.0f, 0.0f, 0.0f));
+    normals.push_back(FTVector3(1.0f, 0.0f, 0.0f));
+    normals.push_back(FTVector3(1.0f, 0.0f, 0.0f));
+    texcoords.push_back(FTVector2(0.0f, 0.0f));
+    texcoords.push_back(FTVector2(1.0f, 0.0f));
+    texcoords.push_back(FTVector2(1.0f, 1.0f));
+    texcoords.push_back(FTVector2(0.0f, 1.0f));
+
+    MeshData meshData;
+    for (size_t i = 0; i < positions.size(); i++) {
+        Vertex v;
+        v.position  = positions[i];
+        v.color = colors[i];
+        v.normal    = normals[i];
+        v.texcoord  = texcoords[i];
+        meshData.vertices.push_back(v);
+    }
+
+    meshData.indices = {
+        0,  1,  2,  0,  2,  3,  // 윗면
+        4,  5,  6,  4,  6,  7,  // 아랫면
+        8,  9,  10, 8,  10, 11, // 앞면
+        12, 13, 14, 12, 14, 15, // 뒷면
+        16, 17, 18, 16, 18, 19, // 왼쪽
+        20, 21, 22, 20, 22, 23  // 오른쪽
+    };
+
+    return meshData;
+}
+
 //MeshData GeometryGenerator::MakeCylinder(const float bottomRadius,
 //                                         const float topRadius, float height,
 //                                         int numSlices) {
@@ -217,7 +218,7 @@ MeshData GeometryGenerator::MakeSquare(float scale) {
 //
 //        v.normal = v.position - D3DVec3(0.0f, -0.5f * height, 0.0f);
 //        v.normal.Normalize();
-//        v.texcoord = D3DVec2(float(i) / numSlices, 1.0f);
+//        v.texcoord = FTVector2(float(i) / numSlices, 1.0f);
 //
 //        vertices.push_back(v);
 //    }

@@ -132,13 +132,6 @@ void FTCoreEditor::GenerateOutput()
 	InvalidateRect(GetWindow(), NULL, true);
 	if (PeekMessage(&msg, GetWindow(), 0, 0, PM_REMOVE))
 	{
-		if (msg.message == WM_PAINT)
-		{
-			if (GetGameRenderer())
-			{
-				GetGameRenderer()->DrawPrimitives(GetWindow());
-			}
-		}
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}

@@ -302,6 +302,10 @@ Camera2D::Camera2D()
 	, mIsShaking(false)
 	, mZoomValue(1.f)
 	, mZoomMultiplyValue(1.5f)
+	, mViewEyePos(0.0f, 0.0f, -10.0f)
+	, mViewEyeDir(0.0f, 0.0f, 1.0f)
+	, mViewUp(0.0f, 1.0f, 0.0f)
+	, mAspect(GetAspectRatio())
 {
 	CalcRenderArea();
 }

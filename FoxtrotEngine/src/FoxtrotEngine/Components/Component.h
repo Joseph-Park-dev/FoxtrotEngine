@@ -1,12 +1,18 @@
 #pragma once
 #include <fstream>
 
-class FoxtrotRenderer;
+#ifdef _DEBUG
+#include "FoxtrotEditor/FTCoreEditor.h"
+#else
+#include "FoxtrotEngine/Core/FTCore.h"
+#endif // _DEBUG
+
 
 #define DEFAULT_DRAWORDER 100
 #define DEFAULT_UPDATEORDER 100
 
 class Actor;
+class FoxtrotRenderer;
 
 class Component
 {
@@ -30,10 +36,11 @@ public:
 	static const char* TypeNames[NUM_COMPONENT_TYPES];
 
 public:
-	virtual void ProcessInput(class KeyInputManager* keyInputManager) {};
-	virtual void Update		 (float deltaTime) {};
-	virtual void LateUpdate	 (float deltaTime) {};
-	virtual void Render		 (FoxtrotRenderer* renderer) {};
+	virtual void Initialize		(FTCore* coreInstance) = 0;
+	virtual void ProcessInput	(class KeyInputManager* keyInputManager) {};
+	virtual void Update			(float deltaTime) {};
+	virtual void LateUpdate		(float deltaTime) {};
+	virtual void Render			(FoxtrotRenderer* renderer) {};
 
 public:
 	virtual std::wstring GetName()		  const = 0;
@@ -64,7 +71,12 @@ public:
 	static void Create(Actor* actor)
 	{
 		// Dynamically allocate actor of type T
-		new T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
+		T* t = new T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
+#ifdef _DEBUG
+		t->Initialize(FTCoreEditor::GetInstance());
+#else
+		t->Initialize(FTCore::GetInstance());
+#endif // _DEBUG
 	}
 	
 	// Returns new object with copied values 

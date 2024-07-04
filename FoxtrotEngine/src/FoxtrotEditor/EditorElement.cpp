@@ -208,7 +208,7 @@ void EditorElement::UpdateActorState()
 
 void EditorElement::UpdateActorWorldPosition()
 {
-	CommandHistory::GetInstance()->UpdateVectorValue
+	CommandHistory::GetInstance()->UpdateVector3Value
 	(
 		"World Position",
 		GetTransform()->GetWorldPositionRef(),
@@ -219,7 +219,7 @@ void EditorElement::UpdateActorWorldPosition()
 
 void EditorElement::UpdateActorLocalPosition()
 {
-	CommandHistory::GetInstance()->UpdateVectorValue
+	CommandHistory::GetInstance()->UpdateVector3Value
 	(
 		"Local Position",
 		GetTransform()->GetLocalPositionRef(),
@@ -230,7 +230,7 @@ void EditorElement::UpdateActorLocalPosition()
 
 void EditorElement::UpdateActorScale()
 {
-	CommandHistory::GetInstance()->UpdateVectorValue
+	CommandHistory::GetInstance()->UpdateVector3Value
 	(
 		"Scale",
 		GetTransform()->GetScaleRef(),
@@ -241,14 +241,12 @@ void EditorElement::UpdateActorScale()
 
 void EditorElement::UpdateActorRotation(TransSetFloatFunc func)
 {
-	CommandHistory::GetInstance()->UpdateFloatValue
+	CommandHistory::GetInstance()->UpdateVector3Value
 	(
 		"Rotation",
 		GetTransform()->GetRotationRef(),
-		Math::ToDegrees(GetTransform()->GetRotation()),
-		FLOATMOD_SPEED,
-		GetTransform(),
-		func
+		GetTransform()->GetRotation(),
+		FLOATMOD_SPEED
 	);
 }
 
@@ -287,7 +285,6 @@ void EditorElement::DisplayCompSelectionPopup()
 		for (; iter != ChunkLoader::GetInstance()->GetCompCreateMap().end(); ++iter)
 			if (ImGui::Selectable(ToString((*iter).first).c_str()))
 				(*iter).second(this);
-
 		ImGui::EndPopup();
 	}
 }

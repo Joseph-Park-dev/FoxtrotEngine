@@ -195,6 +195,7 @@
     <ClCompile Include="Assets\Scripts\ActorList\MouseCursor.cpp" />
     <ClCompile Include="Assets\Scripts\ActorList\Ship.cpp" />
     <ClCompile Include="Assets\Scripts\Factories\MonFactory.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Camera.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\Command.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -330,6 +331,7 @@
     <ClCompile Include="FoxtrotEngine\src\include\spine\Triangulator.cpp" />
     <ClCompile Include="FoxtrotEngine\src\include\spine\Updatable.cpp" />
     <ClCompile Include="FoxtrotEngine\src\include\spine\VertexAttachment.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\MeshRendererComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets\Scripts\ActorList\Asteroid.h" />
@@ -337,6 +339,7 @@
     <ClInclude Include="Assets\Scripts\ActorList\MouseCursor.h" />
     <ClInclude Include="Assets\Scripts\ActorList\Ship.h" />
     <ClInclude Include="Assets\Scripts\Factories\MonFactory.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Camera.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\Command.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -526,6 +529,7 @@
     <ClInclude Include="FoxtrotEngine\src\include\spine\Version.h" />
     <ClInclude Include="FoxtrotEngine\src\include\spine\VertexAttachment.h" />
     <ClInclude Include="FoxtrotEngine\src\include\spine\Vertices.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\MeshRendererComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

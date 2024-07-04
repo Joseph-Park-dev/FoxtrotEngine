@@ -28,7 +28,7 @@ class FoxtrotRenderer
 {
 public:
 	static FoxtrotRenderer* CreateRenderer(HWND window, int width, int height);
-	static void DestroyRenderer(FoxtrotRenderer* renderer);
+	static void             DestroyRenderer(FoxtrotRenderer* renderer);
 
 public:
 	void SwapChainPresent(UINT syncInterval, UINT flags);
@@ -48,7 +48,6 @@ public:
     ComPtr<ID3D11Texture2D> GetDepthStencilBuffer() { return mDepthStencilBuffer; }
     ComPtr<ID3D11InputLayout> GetInputLayout() { return mBasicInputLayout; }
 
-    float GetAspectRatio()  { return (float)mRenderWidth / (float)mRenderHeight; }
     int   GetRenderWidth() { return mRenderWidth; }
     int   GetRenderHeight() { return mRenderHeight; }
     void  RemoveMesh(Mesh* mesh);
@@ -58,7 +57,7 @@ public:
 private:
     int   mRenderWidth;
     int   mRenderHeight;
-    float mAspect;
+    
     float mClearColor[4];
     UINT  mNumQualityLevels;
     UINT  mCreateDeviceFlags;

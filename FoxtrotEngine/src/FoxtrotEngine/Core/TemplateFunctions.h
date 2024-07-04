@@ -66,6 +66,11 @@ void LogVector2(std::string message, FTVector2 val)
 	printf("%s, X : %f Y : %f\n", message.c_str(), val.x, val.y);
 }
 
+void LogVector3(std::string message, FTVector3 val)
+{
+	printf("%s, X : %f Y : %f Z : %f\n", message.c_str(), val.x, val.y, val.z);
+}
+
 void LogRect(Bounds bound)
 {
 	printf("Pos X : %f, Pos Y : %f, Width : %f, Height : %f\n", bound.x, bound.y, bound.w, bound.h);

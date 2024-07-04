@@ -379,6 +379,12 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineAnimation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\MeshRendererComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets\Scripts\ActorList\Asteroid.h" />
@@ -559,6 +565,8 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Math\FTMath.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Math\Random.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineAnimation.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\MeshRendererComponent.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

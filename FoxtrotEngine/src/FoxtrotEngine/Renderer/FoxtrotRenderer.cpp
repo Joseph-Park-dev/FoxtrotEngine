@@ -40,16 +40,6 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 {
 	mRenderWidth	= width;
 	mRenderHeight	= height;
-	mAspect			= GetAspectRatio();
-	/*mClearColor[0] = 217.f / 255.f;
-	mClearColor[1] = 216.f / 255.f;
-	mClearColor[2] = 212.f / 255.f;
-	mClearColor[3] = 1.0f;*/
-
-	mClearColor[0] = 0.0f;
-	mClearColor[1] = 0.0f;
-	mClearColor[2] = 0.0f;
-	mClearColor[3] = 1.0f; 
 
 	DX::ThrowIfFailed(CreateDeviceAndContext(window));
 
@@ -647,6 +637,7 @@ bool FoxtrotRenderer::CreatePixelShader(const std::wstring& filename,
 }
 
 FoxtrotRenderer::FoxtrotRenderer()
+	: mClearColor{0.0f,0.0f,0.0f,1.0f}
 {}
 
 #ifdef _DEBUG

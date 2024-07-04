@@ -51,6 +51,8 @@ public:
 	FTVector2		GetRenderResolution() { return mRenderResolution; }
 	FTVector2		GetDiffFromCenter() { return mDiffFromCenter; }
 	float			GetZoomValue() { return mZoomValue; }
+	float			GetAspectRatio() { return (float)mRenderResolution.x / (float)mRenderResolution.y; }
+
 
 	void			SetLookAtPos(FTVector2 pos) { mLookAtPos = pos; }
 	void			SetRenderResolution(FTVector2 res) { mRenderResolution = res; }
@@ -83,6 +85,14 @@ private:
 	float		mZoomValue;
 	float		mZoomMultiplyValue;
 
+private:
+	float mAspect;
+	FTVector3 mViewEyePos = FTVector3{ 0.0f, 0.0f, -10.0f };
+	FTVector3 mViewEyeDir = FTVector3{ 0.0f, 0.0f, 1.0f };
+	FTVector3 mViewUp = FTVector3{ 0.0f, 1.0f, 0.0f };
+	float mProjFovAngleY = 70.0f;
+	float mNearZ = 0.01f;
+	float mFarZ = 100.0f;
 
 public:
 	void Init() {};

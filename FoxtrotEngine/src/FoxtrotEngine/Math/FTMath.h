@@ -324,7 +324,7 @@ public:
 		,z(inZ)
 	{}
 
-	DirectX::XMFLOAT3 GetD3Vec2()
+	const DirectX::XMFLOAT3 GetDXVec3() const
 	{
 		return DirectX::XMFLOAT3(this->x, this->y, this->z);
 	}

@@ -78,6 +78,21 @@ private:
 	FTVector2 mNextValue;
 };
 
+class Vector3EditCommand : public Command
+{
+public:
+	void Execute() override;
+	void Undo() override;
+
+public:
+	Vector3EditCommand(FTVector3* valRef, FTVector3 nextVal);
+
+private:
+	FTVector3* mValue;
+	FTVector3 mPrevValue;
+	FTVector3 mNextValue;
+};
+
 class StrEditCommand : public Command
 {
 public:

@@ -332,6 +332,8 @@
     <ClCompile Include="FoxtrotEngine\src\include\spine\Updatable.cpp" />
     <ClCompile Include="FoxtrotEngine\src\include\spine\VertexAttachment.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\MeshRendererComponent.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Actors\RectTransform.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Rect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets\Scripts\ActorList\Asteroid.h" />
@@ -530,6 +532,8 @@
     <ClInclude Include="FoxtrotEngine\src\include\spine\VertexAttachment.h" />
     <ClInclude Include="FoxtrotEngine\src\include\spine\Vertices.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\MeshRendererComponent.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Actors\RectTransform.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Rect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

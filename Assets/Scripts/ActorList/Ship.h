@@ -28,7 +28,7 @@ private:
 	GunFiringComponent*	  gun;
 
 public:
-	void InitializeActor() override;
+	void Initialize() override;
 	void UpdateActor(float deltaTime) override;
 
 public:

@@ -7,6 +7,7 @@ class Actor;
 class Camera;
 class Transform;
 struct Mesh;
+struct MeshData;
 
 class MeshRendererComponent :
     public Component

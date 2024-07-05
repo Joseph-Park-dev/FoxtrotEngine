@@ -68,6 +68,7 @@ class FileIOHelper
 {
 public:
 	static void			AddVector2		(std::ofstream& ofs, FTVector2 value);
+	static void			AddVector3		(std::ofstream& ofs, FTVector3 value);
 	static void			AddBasicString	(std::ofstream& ofs, std::string value);
 	static void			AddWString		(std::ofstream& ofs, std::wstring value);
 	static void			AddFloat		(std::ofstream& ofs, float value);
@@ -75,6 +76,7 @@ public:
 	static void			AddSize			(std::ofstream& ofs, size_t value);
 
 	static FTVector2	LoadVector2		(std::ifstream& ifs);
+	static FTVector3	LoadVector3		(std::ifstream& ifs);
 	static std::string	LoadBasicString	(std::ifstream& ifs);
 	static std::wstring LoadWString		(std::ifstream& ifs);
 	static float		LoadFloat		(std::ifstream& ifs);

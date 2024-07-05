@@ -7,7 +7,7 @@ class BackgroundActor
 	: public Actor
 {
 public:
-	void InitializeActor() override;
+	void Initialize() override;
 
 	void AddLayer(TileMapComponent* sprite);
 	void RemoveLayer(TileMapComponent* sprite);

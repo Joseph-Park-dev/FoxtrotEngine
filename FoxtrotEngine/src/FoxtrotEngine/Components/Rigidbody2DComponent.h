@@ -29,8 +29,9 @@ public:
     void SetAccelAlpha(FTVector2 accel) { mAccelerationA = accel; }
 
 public:
-    virtual void Update(float deltaTime) override {};
-    virtual void LateUpdate(float deltaTime) override;
+    virtual void Initialize(FTCore* coreInstance) override {};
+    virtual void Update(float deltaTime)          override {};
+    virtual void LateUpdate(float deltaTime)      override;
 
 public:
     Rigidbody2DComponent(Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);

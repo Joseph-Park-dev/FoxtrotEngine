@@ -37,7 +37,7 @@ void EditorElement::UIUpdate()
 				UpdateActorWorldPosition();
 				UpdateActorLocalPosition();
 				UpdateActorScale();
-				UpdateActorRotation(&Transform::SetRotation);
+				UpdateActorRotation();
 				ImGui::EndTabItem();
 			}
 			if (ImGui::BeginTabItem("Components"))
@@ -239,7 +239,7 @@ void EditorElement::UpdateActorScale()
 	);
 }
 
-void EditorElement::UpdateActorRotation(TransSetFloatFunc func)
+void EditorElement::UpdateActorRotation()
 {
 	CommandHistory::GetInstance()->UpdateVector3Value
 	(

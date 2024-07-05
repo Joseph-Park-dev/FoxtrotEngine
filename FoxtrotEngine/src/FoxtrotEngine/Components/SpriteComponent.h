@@ -5,7 +5,7 @@
 #include "FoxtrotEngine/ResourceSystem/MeshData.h"
 
 class FTTexture;
-class Mesh;
+struct Mesh;
 
 #define SPRITE_FORMAT_SUPPORTED ".png, .jpeg"
 

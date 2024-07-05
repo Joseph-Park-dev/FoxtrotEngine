@@ -69,7 +69,7 @@ void Actor::CopyTransformFrom(Actor& origin)
 	Transform* copied = new Transform;
 	copied->SetWorldPosition	(originTransf->GetWorldPosition());
 	copied->SetLocalPosition	(originTransf->GetLocalPosition());
-	copied->SetScreenPosition	(originTransf->GetScreenPosition());
+	//copied->SetScreenPosition	(originTransf->GetScreenPosition());
 	copied->SetScale			(originTransf->GetScale());
 	copied->SetRotation			(originTransf->GetRotation());
 	this->SetTransform(copied);
@@ -92,7 +92,7 @@ void Actor::CopyTransformFrom(Actor* origin)
 	Transform* copied = new Transform;
 	copied->SetWorldPosition(originTransf->GetWorldPosition());
 	copied->SetLocalPosition(originTransf->GetLocalPosition());
-	copied->SetScreenPosition(originTransf->GetScreenPosition());
+	//copied->SetScreenPosition(originTransf->GetScreenPosition());
 	copied->SetScale(originTransf->GetScale());
 	copied->SetRotation(originTransf->GetRotation());
 	this->SetTransform(copied);
@@ -229,10 +229,10 @@ void Actor::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::AddBasicString (ofs, GetActorGroupStr(GetActorGroup()));
 	FileIOHelper::AddBasicString (ofs, GetStateStr());
 
-	FileIOHelper::AddVector2 (ofs, mTransform->GetWorldPosition());
-	FileIOHelper::AddVector2 (ofs, mTransform->GetLocalPosition());
-	FileIOHelper::AddFloat	 (ofs, Math::ToDegrees(mTransform->GetRotation()));
-	FileIOHelper::AddVector2 (ofs, mTransform->GetScale());
+	FileIOHelper::AddVector3 (ofs, mTransform->GetWorldPosition());
+	FileIOHelper::AddVector3 (ofs, mTransform->GetLocalPosition());
+	FileIOHelper::AddVector3 (ofs, mTransform->GetRotation());
+	FileIOHelper::AddVector3 (ofs, mTransform->GetScale());
 }
 
 void Actor::SaveComponents(std::ofstream& ofs)
@@ -256,10 +256,10 @@ void Actor::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadBasicString(ifs, stringBuffer);
 	SetState(stringBuffer);
 
-	mTransform->SetWorldPosition(FileIOHelper::LoadVector2(ifs));
-	mTransform->SetLocalPosition(FileIOHelper::LoadVector2(ifs));
-	mTransform->SetRotation		(FileIOHelper::LoadFloat(ifs));
-	mTransform->SetScale		(FileIOHelper::LoadVector2(ifs));
+	mTransform->SetWorldPosition(FileIOHelper::LoadVector3(ifs));
+	mTransform->SetLocalPosition(FileIOHelper::LoadVector3(ifs));
+	mTransform->SetRotation		(FileIOHelper::LoadVector3(ifs));
+	mTransform->SetScale		(FileIOHelper::LoadVector3(ifs));
 }
 
 void Actor::LoadComponents(std::ifstream& ifs)

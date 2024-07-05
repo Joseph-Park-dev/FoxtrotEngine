@@ -102,7 +102,7 @@ protected:
 	void CopyComponentsFrom(Actor* origin);
 
 public:
-	virtual void InitializeActor()					{};
+	virtual void Initialize		()					{};
 	virtual void UpdateActor	(float deltaTime)	{};
 	virtual void LateUpdateActor(float deltaTime)	{};
 	virtual void RenderActor	(FoxtrotRenderer* renderer){};

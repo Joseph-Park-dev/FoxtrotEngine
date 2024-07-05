@@ -70,9 +70,13 @@ void MeshRendererComponent::UpdateConstantBufferModel(Mesh* mesh, Transform* tra
 
 void MeshRendererComponent::UpdateConstantBufferView(Mesh* mesh, Camera* camInst)
 {
-	DirectX::XMVECTOR viewEyePos = DirectX::XMLoadFloat3(&camInst->GetViewEyePosDX());
-	DirectX::XMVECTOR viewEyeDir = DirectX::XMLoadFloat3(&camInst->GetViewEyeDirDX());
-	DirectX::XMVECTOR viewUp = DirectX::XMLoadFloat3(&camInst->GetViewUpDX());
+	DirectX::XMFLOAT3 eyePos = camInst->GetViewEyePosDX();
+	DirectX::XMFLOAT3 eyeDir = camInst->GetViewEyeDirDX();
+	DirectX::XMFLOAT3 up = camInst->GetViewUpDX();
+
+	DirectX::XMVECTOR viewEyePos = DirectX::XMLoadFloat3(&eyePos);
+	DirectX::XMVECTOR viewEyeDir = DirectX::XMLoadFloat3(&eyeDir);
+	DirectX::XMVECTOR viewUp = DirectX::XMLoadFloat3(&up);
 
 	mesh->basicVertexConstantBufferData.view =
 		DirectX::XMMatrixLookToLH(viewEyePos, viewEyeDir, viewUp);

@@ -6,7 +6,7 @@ class Component;
 class Transform
 {
 public:
-	void Translate(FTVector2 translation);
+	void Translate(FTVector3 translation);
 
 public:
 	const FTVector3  GetWorldPosition()	 const { return mWorldPosition; }
@@ -14,10 +14,10 @@ public:
 	//const FTVector3  GetForward()		 const { return FTVector3(Math::Cos(mRotation), -Math::Sin(mRotation)); }
 	const FTVector3  GetScale()			 const { return mScale; }
 	const FTVector3	 GetRotation()		 const { return mRotation; }
-	const FTVector3  GetScreenPosition() const;
-#ifdef _DEBUG
-	const FTVector2 GetScreenPositionEditor() const;
-#endif
+//	const FTVector3  GetScreenPosition() const;
+//#ifdef _DEBUG
+//	const FTVector2 GetScreenPositionEditor() const;
+//#endif
 
 	FTVector3*	GetWorldPositionRef()	{ return &mWorldPosition; }
 	FTVector3*	GetLocalPositionRef()	{ return &mLocalPosition; }
@@ -34,6 +34,7 @@ public:
 public:
 	Transform();
 	Transform(Transform& origin);
+	virtual ~Transform() {};
 
 private:
 	FTVector3	mWorldPosition;

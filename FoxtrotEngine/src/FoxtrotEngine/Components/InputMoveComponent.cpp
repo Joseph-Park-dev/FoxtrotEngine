@@ -60,26 +60,26 @@ void InputMoveComponent::Move()
 
 void InputMoveComponent::LateUpdate(float deltaTime)
 {
-    State state = GetMovingState();
-	if (state == MoveComponent::State::IDLE)
-	{
-	}
-	if (state == MoveComponent::State::MOVING_LEFT)
-	{
-		GetOwner()->GetTransform()->Translate(FTVector2(-20.f, 0.f) * deltaTime);
-	}
-	if (state == MoveComponent::State::MOVING_RIGHT)
-	{
-		GetOwner()->GetTransform()->Translate(FTVector2(20.f, 0.f) * deltaTime);
-	}
-	if (state == MoveComponent::State::MOVING_UP)
-	{
-		GetOwner()->GetComponent<class Rigidbody2DComponent>()->AddForce(FTVector2(0.f, -500.f));
-	}
-	if (state == MoveComponent::State::MOVING_DOWN)
-	{
-		GetOwner()->GetTransform()->Translate(FTVector2(0.f, 20.f) * deltaTime);
-	}
+ //   State state = GetMovingState();
+	//if (state == MoveComponent::State::IDLE)
+	//{
+	//}
+	//if (state == MoveComponent::State::MOVING_LEFT)
+	//{
+	//	GetOwner()->GetTransform()->Translate(FTVector2(-20.f, 0.f) * deltaTime);
+	//}
+	//if (state == MoveComponent::State::MOVING_RIGHT)
+	//{
+	//	GetOwner()->GetTransform()->Translate(FTVector2(20.f, 0.f) * deltaTime);
+	//}
+	//if (state == MoveComponent::State::MOVING_UP)
+	//{
+	//	GetOwner()->GetComponent<class Rigidbody2DComponent>()->AddForce(FTVector2(0.f, -500.f));
+	//}
+	//if (state == MoveComponent::State::MOVING_DOWN)
+	//{
+	//	GetOwner()->GetTransform()->Translate(FTVector2(0.f, 20.f) * deltaTime);
+	//}
 }
 
 void InputMoveComponent::Rotate()

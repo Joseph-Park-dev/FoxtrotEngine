@@ -7,10 +7,10 @@
 #include "FoxtrotEngine/Math/FTMath.h"
 #include "FoxtrotEngine/Actors/Actor.h"
 
-void BackgroundActor::InitializeActor()
+void BackgroundActor::Initialize()
 {
 	SetName(L"Background");
-	GetTransform()->SetWorldPosition(FTVector2(0.f, 0.f));
+	GetTransform()->SetWorldPosition(FTVector3(0.f, 0.f, 0.f));
 	////bg->SetScreenSize(FTVector2(1024.f, 768.f));
 
 	TileMapComponent* tiled1 = new TileMapComponent(this, 52);
@@ -54,7 +54,7 @@ void BackgroundActor::RemoveLayer(TileMapComponent* sprite)
 BackgroundActor::BackgroundActor(Scene* scene)
 	: Actor(scene)
 {
-	InitializeActor();
+	Initialize();
 }
 
 //void BackgroundActor::RenderActor(FoxtrotRenderer* renderer)

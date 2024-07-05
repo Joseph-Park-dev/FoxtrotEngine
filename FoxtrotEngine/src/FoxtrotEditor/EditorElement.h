@@ -45,7 +45,7 @@ private:
 	void UpdateActorWorldPosition();
 	void UpdateActorLocalPosition();
 	void UpdateActorScale();
-	void UpdateActorRotation(TransSetFloatFunc func);
+	void UpdateActorRotation();
 	void UpdateComponents();
 
 	void DisplayCompSelectionPopup();

@@ -9,7 +9,7 @@ void PanelUI::OnMouseHovering()
 {
 	if (LeftButtonIsDown())
 	{
-		FTVector2 diff = MOUSE_POS - mDragStartPoint;
+		/*FTVector2 diff = MOUSE_POS - mDragStartPoint;
 		FTVector2 curPos = GetTransform()->GetWorldPosition();
 		curPos += diff;
 		GetTransform()->SetWorldPosition(curPos);
@@ -20,7 +20,7 @@ void PanelUI::OnMouseHovering()
 			((UIActor*)GetChildActors()[i])->GetTransform()->SetWorldPosition(curChildPos);
 		}
 
-		mDragStartPoint = MOUSE_POS;
+		mDragStartPoint = MOUSE_POS;*/
 	}
 }
 

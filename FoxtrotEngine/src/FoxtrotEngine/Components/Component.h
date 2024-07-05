@@ -36,7 +36,7 @@ public:
 	static const char* TypeNames[NUM_COMPONENT_TYPES];
 
 public:
-	virtual void Initialize		(FTCore* coreInstance) = 0;
+	virtual void Initialize		(FTCore* coreInstance) {};
 	virtual void ProcessInput	(class KeyInputManager* keyInputManager) {};
 	virtual void Update			(float deltaTime) {};
 	virtual void LateUpdate		(float deltaTime) {};

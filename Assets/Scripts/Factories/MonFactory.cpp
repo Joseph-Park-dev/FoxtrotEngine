@@ -20,13 +20,13 @@ Asteroid* MonFactory::CreateMonster(Scene* scene, FTVector2 pos, MON_TYPE type)
 		info.RecogRange = 100.f;
 		info.Speed = 150.f;
 		asteroid = new Asteroid(scene, info);
-		asteroid->GetTransform()->SetWorldPosition(pos);
+		//asteroid->GetTransform()->SetWorldPosition(pos);
 		asteroid->SetMonsterInfo(info);
 
-		AIComponent* ai = new AIComponent(asteroid);
-		ai->RegisterState(new AIIdle(ai));
-		ai->RegisterState(new AIPursue(ai));
-		ai->ChangeState(AISTATE_TYPE::IDLE);
+		//AIComponent* ai = new AIComponent(asteroid);
+		//ai->RegisterState(new AIIdle(ai));
+		//ai->RegisterState(new AIPursue(ai));
+		//ai->ChangeState(AISTATE_TYPE::IDLE);
 	}
 	break;
 	}

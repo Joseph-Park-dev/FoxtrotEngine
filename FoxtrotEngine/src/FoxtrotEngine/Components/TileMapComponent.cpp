@@ -100,7 +100,11 @@ void TileMapComponent::Render(FoxtrotRenderer* renderer)
             Tile* tile = &mCurrentTileMap[y][x];
             tile->SetIndexX(x);
             tile->SetIndexY(y);
+
+            // FTVector2 : x,y 로 이루어진 2D 벡터
+            // GetWorldPosition() : x,y,z 로 이루어진 3D 벡터를 리턴
             FTVector2 pivotPos = GetOwner()->GetTransform()->GetWorldPosition();
+            
             FTVector2 pos =
                 FTVector2(pivotPos.x + tile->GetWidth() * tile->GetIndexX(), pivotPos.y + tile->GetHeight() * tile->GetIndexY());
             /*

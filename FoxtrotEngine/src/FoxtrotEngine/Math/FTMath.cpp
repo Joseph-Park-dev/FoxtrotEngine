@@ -53,6 +53,13 @@ FTVector2 FTVector2::Transform(const FTVector2& vec, const Matrix3& mat, float w
 	return retVal;
 }
 
+FTVector3::FTVector3(FTVector2 vec2)
+	: x(vec2.x)
+	, y(vec2.y)
+	, z(0.0f)
+{
+}
+
 FTVector3 FTVector3::Transform(const FTVector3& vec, const Matrix4& mat, float w /*= 1.0f*/)
 {
 	FTVector3 retVal;

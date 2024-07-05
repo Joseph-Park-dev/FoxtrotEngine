@@ -26,7 +26,7 @@ void Camera2D::Update(float deltaTime)
 		}
 		else if (!mIsShaking)
 		{
-			mLookAtPos = mTargetActor->GetTransform()->GetWorldPosition();
+			//mLookAtPos = mTargetActor->GetTransform()->GetWorldPosition();
 		}
 	}
 	//UpdateEffect(deltaTime);
@@ -181,24 +181,25 @@ void Camera2D::SetTargetActorID(int id)
 
 bool Camera2D::IsInRenderedArea(SpriteComponent* sprite) const
 {
-	FTVector2 screenPosLeftTop = FTVector2(mRenderArea.x, mRenderArea.y);
-	FTVector2 screenPosRightBottom = FTVector2(mRenderArea.x + mRenderArea.w, mRenderArea.y + mRenderArea.h);
-	/*screenPosLeftTop = ConvertWorldPosToScreen(screenPosLeftTop);
-	screenPosRightBottom = ConvertWorldPosToScreen(screenPosRightBottom);*/
+	//FTVector2 screenPosLeftTop = FTVector2(mRenderArea.x, mRenderArea.y);
+	//FTVector2 screenPosRightBottom = FTVector2(mRenderArea.x + mRenderArea.w, mRenderArea.y + mRenderArea.h);
+	///*screenPosLeftTop = ConvertWorldPosToScreen(screenPosLeftTop);
+	//screenPosRightBottom = ConvertWorldPosToScreen(screenPosRightBottom);*/
 
-	float screenLeft = screenPosLeftTop.x;
-	float screenRight = screenPosRightBottom.x;
-	float screenTop = screenPosLeftTop.y;
-	float screenBottom = screenPosRightBottom.y;
+	//float screenLeft = screenPosLeftTop.x;
+	//float screenRight = screenPosRightBottom.x;
+	//float screenTop = screenPosLeftTop.y;
+	//float screenBottom = screenPosRightBottom.y;
 
-	Bounds* rect = sprite->GetRect();
-	int left = rect->x;
-	int right = rect->x + rect->w;
-	int top = rect->y;
-	int bottom = rect->y + rect->h;
+	//Bounds* rect = sprite->GetRect();
+	//int left = rect->x;
+	//int right = rect->x + rect->w;
+	//int top = rect->y;
+	//int bottom = rect->y + rect->h;
 
-	return (screenLeft < right && left < screenRight)
-		&& (screenTop < bottom && top < screenBottom);
+	//return (screenLeft < right && left < screenRight)
+	//	&& (screenTop < bottom && top < screenBottom);
+	return true;
 }
 
 // Tile's screen position is inside the camera area

@@ -115,194 +115,7 @@ namespace Math
 	}
 }
 
-// 2D Vector
-class FTVector2
-{
-public:
-	float x;
-	float y;
-
-	FTVector2()
-		:x(0.0f)
-		,y(0.0f)
-	{}
-
-	explicit FTVector2(float inX, float inY)
-		:x(inX)
-		,y(inY)
-	{}
-
-	explicit FTVector2(int inX, int inY)
-		:x(static_cast<float>(inX))
-		,y(static_cast<float>(inY))
-	{}
-
-	explicit FTVector2(ImVec2 imguiVec2)
-		: x(imguiVec2.x)
-		, y(imguiVec2.y)
-	{}
-
-	DirectX::XMFLOAT2 GetD3Vec2()
-	{
-		return DirectX::XMFLOAT2(this->x, this->y);
-	}
-
-	// Set both components in one line
-	void Set(float inX, float inY)
-	{
-		x = inX;
-		y = inY;
-	}
-
-	// Vector addition (a + b)
-	friend FTVector2 operator+(const FTVector2& a, const FTVector2& b)
-	{
-		return FTVector2(a.x + b.x, a.y + b.y);
-	}
-
-	// Vector subtraction (a - b)
-	friend FTVector2 operator-(const FTVector2& a, const FTVector2& b)
-	{
-		return FTVector2(a.x - b.x, a.y - b.y);
-	}
-
-	// Component-wise multiplication
-	// (a.x * b.x, ...)
-	friend FTVector2 operator*(const FTVector2& a, const FTVector2& b)
-	{
-		return FTVector2(a.x * b.x, a.y * b.y);
-	}
-
-	// Scalar multiplication
-	friend FTVector2 operator*(const FTVector2& vec, float scalar)
-	{
-		return FTVector2(vec.x * scalar, vec.y * scalar);
-	}
-
-	// Scalar multiplication
-	friend FTVector2 operator*(float scalar, const FTVector2& vec)
-	{
-		return FTVector2(vec.x * scalar, vec.y * scalar);
-	}
-
-	FTVector2 operator / (FTVector2 vOther)
-	{
-		assert(!(vOther.x == 0.f || vOther.y == 0.f));
-		return FTVector2(x / vOther.x, y / vOther.y);
-	}
-
-	FTVector2 operator / (float _f)
-	{
-		assert(!(_f == 0.f));
-		return FTVector2(x / _f, y / _f);
-	}
-
-	// Scalar *=
-	FTVector2& operator*=(float scalar)
-	{
-		x *= scalar;
-		y *= scalar;
-		return *this;
-	}
-
-	// Vector +=
-	FTVector2& operator+=(const FTVector2& right)
-	{
-		x += right.x;
-		y += right.y;
-		return *this;
-	}
-
-	// Vector -=
-	FTVector2& operator-=(const FTVector2& right)
-	{
-		x -= right.x;
-		y -= right.y;
-		return *this;
-	}
-
-	FTVector2 operator-()
-	{
-		return FTVector2(-x,-y);
-	}
-
-	bool operator==(const FTVector2& right)
-	{
-		return (this->x == right.x) && (this->y == right.y);
-	}
-
-	bool operator!=(const FTVector2& right)
-	{
-		return (this->x != right.x) || (this->y != right.y);
-	}
-
-	void addScaledVector(const FTVector2& vector, float scale)
-	{
-		x += vector.x * scale;
-		y += vector.y * scale;
-	}
-
-	bool IsZero() const
-	{
-		return (x == 0.f && y == 0.f);
-	}
-
-	// Length squared of vector
-	float LengthSq() const
-	{
-		return (x*x + y*y);
-	}
-
-	// Length of vector
-	float Length() const
-	{
-		return (Math::Sqrt(LengthSq()));
-	}
-
-	// Normalize this vector
-	FTVector2 Normalize()
-	{
-		float length = Length();
-		x /= length;
-		y /= length;
-		return *this;
-	}
-
-	// Normalize the provided vector
-	static FTVector2 Normalize(const FTVector2& vec)
-	{
-		FTVector2 temp = vec;
-		temp.Normalize();
-		return temp;
-	}
-
-	// Dot product between two vectors (a dot b)
-	static float Dot(const FTVector2& a, const FTVector2& b)
-	{
-		return (a.x * b.x + a.y * b.y);
-	}
-
-	// Lerp from A to B by f
-	static FTVector2 Lerp(const FTVector2& a, const FTVector2& b, float f)
-	{
-		return FTVector2(a + f * (b - a));
-	}
-	
-	// Reflect V about (normalized) N
-	static FTVector2 Reflect(const FTVector2& v, const FTVector2& n)
-	{
-		return v - 2.0f * FTVector2::Dot(v, n) * n;
-	}
-
-	// Transform vector by matrix
-	static FTVector2 Transform(const FTVector2& vec, const class Matrix3& mat, float w = 1.0f);
-
-	static const FTVector2 Zero;
-	static const FTVector2 UnitX;
-	static const FTVector2 UnitY;
-	static const FTVector2 NegUnitX;
-	static const FTVector2 NegUnitY;
-};
+class FTVector2;
 
 // 3D Vector
 class FTVector3
@@ -323,6 +136,8 @@ public:
 		,y(inY)
 		,z(inZ)
 	{}
+
+	FTVector3(FTVector2 vec2);
 
 	const DirectX::XMFLOAT3 GetDXVec3() const
 	{
@@ -479,6 +294,210 @@ public:
 	static const FTVector3 NegUnitZ;
 	static const FTVector3 Infinity;
 	static const FTVector3 NegInfinity;
+};
+
+// 2D Vector
+class FTVector2
+{
+public:
+	float x;
+	float y;
+
+	FTVector2()
+		:x(0.0f)
+		, y(0.0f)
+	{}
+
+	explicit FTVector2(float inX, float inY)
+		:x(inX)
+		, y(inY)
+	{}
+
+	explicit FTVector2(int inX, int inY)
+		:x(static_cast<float>(inX))
+		, y(static_cast<float>(inY))
+	{}
+
+	explicit FTVector2(ImVec2 imguiVec2)
+		: x(imguiVec2.x)
+		, y(imguiVec2.y)
+	{}
+
+	FTVector2(FTVector3 vec3)
+		: x(vec3.x)
+		, y(vec3.y)
+	{}
+
+	DirectX::XMFLOAT2 GetD3Vec2()
+	{
+		return DirectX::XMFLOAT2(this->x, this->y);
+	}
+
+	// Set both components in one line
+	void Set(float inX, float inY)
+	{
+		x = inX;
+		y = inY;
+	}
+
+	// Vector addition (a + b)
+	friend FTVector2 operator+(const FTVector2& a, const FTVector2& b)
+	{
+		return FTVector2(a.x + b.x, a.y + b.y);
+	}
+
+	// Vector subtraction (a - b)
+	friend FTVector2 operator-(const FTVector2& a, const FTVector2& b)
+	{
+		return FTVector2(a.x - b.x, a.y - b.y);
+	}
+
+	// Component-wise multiplication
+	// (a.x * b.x, ...)
+	friend FTVector2 operator*(const FTVector2& a, const FTVector2& b)
+	{
+		return FTVector2(a.x * b.x, a.y * b.y);
+	}
+
+	// Scalar multiplication
+	friend FTVector2 operator*(const FTVector2& vec, float scalar)
+	{
+		return FTVector2(vec.x * scalar, vec.y * scalar);
+	}
+
+	// Scalar multiplication
+	friend FTVector2 operator*(float scalar, const FTVector2& vec)
+	{
+		return FTVector2(vec.x * scalar, vec.y * scalar);
+	}
+
+	FTVector2 operator / (FTVector2 vOther)
+	{
+		assert(!(vOther.x == 0.f || vOther.y == 0.f));
+		return FTVector2(x / vOther.x, y / vOther.y);
+	}
+
+	FTVector2 operator / (float _f)
+	{
+		assert(!(_f == 0.f));
+		return FTVector2(x / _f, y / _f);
+	}
+
+	FTVector2 operator= (FTVector3& vec3)
+	{
+		return FTVector2(vec3.x, vec3.y);
+	}
+
+	FTVector2 operator= (const FTVector3& vec3)
+	{
+		return FTVector2(vec3.x, vec3.y);
+	}
+
+	// Scalar *=
+	FTVector2& operator*=(float scalar)
+	{
+		x *= scalar;
+		y *= scalar;
+		return *this;
+	}
+
+	// Vector +=
+	FTVector2& operator+=(const FTVector2& right)
+	{
+		x += right.x;
+		y += right.y;
+		return *this;
+	}
+
+	// Vector -=
+	FTVector2& operator-=(const FTVector2& right)
+	{
+		x -= right.x;
+		y -= right.y;
+		return *this;
+	}
+
+	FTVector2 operator-()
+	{
+		return FTVector2(-x, -y);
+	}
+
+	bool operator==(const FTVector2& right)
+	{
+		return (this->x == right.x) && (this->y == right.y);
+	}
+
+	bool operator!=(const FTVector2& right)
+	{
+		return (this->x != right.x) || (this->y != right.y);
+	}
+
+	void addScaledVector(const FTVector2& vector, float scale)
+	{
+		x += vector.x * scale;
+		y += vector.y * scale;
+	}
+
+	bool IsZero() const
+	{
+		return (x == 0.f && y == 0.f);
+	}
+
+	// Length squared of vector
+	float LengthSq() const
+	{
+		return (x * x + y * y);
+	}
+
+	// Length of vector
+	float Length() const
+	{
+		return (Math::Sqrt(LengthSq()));
+	}
+
+	// Normalize this vector
+	FTVector2 Normalize()
+	{
+		float length = Length();
+		x /= length;
+		y /= length;
+		return *this;
+	}
+
+	// Normalize the provided vector
+	static FTVector2 Normalize(const FTVector2& vec)
+	{
+		FTVector2 temp = vec;
+		temp.Normalize();
+		return temp;
+	}
+
+	// Dot product between two vectors (a dot b)
+	static float Dot(const FTVector2& a, const FTVector2& b)
+	{
+		return (a.x * b.x + a.y * b.y);
+	}
+
+	// Lerp from A to B by f
+	static FTVector2 Lerp(const FTVector2& a, const FTVector2& b, float f)
+	{
+		return FTVector2(a + f * (b - a));
+	}
+
+	// Reflect V about (normalized) N
+	static FTVector2 Reflect(const FTVector2& v, const FTVector2& n)
+	{
+		return v - 2.0f * FTVector2::Dot(v, n) * n;
+	}
+
+	// Transform vector by matrix
+	static FTVector2 Transform(const FTVector2& vec, const class Matrix3& mat, float w = 1.0f);
+
+	static const FTVector2 Zero;
+	static const FTVector2 UnitX;
+	static const FTVector2 UnitY;
+	static const FTVector2 NegUnitX;
+	static const FTVector2 NegUnitY;
 };
 
 // 3x3 Matrix

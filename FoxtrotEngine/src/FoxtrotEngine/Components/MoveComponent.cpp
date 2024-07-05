@@ -16,7 +16,7 @@ MoveComponent::MoveComponent(class Actor* owner, int drawOrder, int updateorder)
 
 void MoveComponent::Update(float deltaTime)
 {
-	FTVector2 pos = GetOwner()->GetTransform()->GetWorldPosition();
+	FTVector3 pos = GetOwner()->GetTransform()->GetWorldPosition();
 	GetOwner()->GetTransform()->SetWorldPosition(pos + mVelocity * deltaTime);
 }
 

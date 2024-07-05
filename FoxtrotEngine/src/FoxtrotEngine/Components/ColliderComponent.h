@@ -37,8 +37,9 @@ public:
     ColliderComponent& operator =(ColliderComponent& origin) = delete;
 
 public:
+    virtual void Initialize(FTCore* coreInstance) override {};
     //This can also be used as refreshing method.
-    void LateUpdate(float deltaTime)    override;
+            void LateUpdate(float deltaTime)    override;
 
 public:
     ColliderComponent(class Actor* owner, int drawOrder, int updateOrder);

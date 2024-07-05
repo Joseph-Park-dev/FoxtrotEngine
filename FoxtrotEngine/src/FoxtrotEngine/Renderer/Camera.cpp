@@ -22,3 +22,5 @@ Camera::Camera()
 	, mTargetActor	 (nullptr)
 	, mTargetActorID (CAMERA_TARGET_NONE)
 {}
+
+Camera::~Camera(){}

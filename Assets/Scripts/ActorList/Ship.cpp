@@ -26,10 +26,10 @@ Ship::Ship(Scene* scene)
 	, gun(nullptr)
 	, mDirection(1)
 {
-	InitializeActor();
+	Initialize();
 }
 
-void Ship::InitializeActor()
+void Ship::Initialize()
 {
 }
 

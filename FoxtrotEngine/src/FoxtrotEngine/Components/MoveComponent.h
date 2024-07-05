@@ -49,7 +49,7 @@ public:
 
 private:
     //Rigidbody2DComponent* mRigidbody;
-    FTVector2 mVelocity;
+    FTVector3 mVelocity;
     float mAngularSpeed;
     float mForwardSpeed;
     State mMovingState;

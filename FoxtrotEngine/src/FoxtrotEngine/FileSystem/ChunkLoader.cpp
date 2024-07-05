@@ -243,6 +243,13 @@ void FileIOHelper::AddVector2(std::ofstream& ofs, FTVector2 value)
     AddFloat(ofs, value.y);
 }
 
+void FileIOHelper::AddVector3(std::ofstream& ofs, FTVector3 value)
+{
+    AddFloat(ofs, value.x);
+    AddFloat(ofs, value.y);
+    AddFloat(ofs, value.z);
+}
+
 void FileIOHelper::AddBasicString(std::ofstream& ofs, std::string value)
 {
     //ofs.write((char*)&value[0], STRING_BUFFER_SIZE);
@@ -284,6 +291,15 @@ FTVector2 FileIOHelper::LoadVector2(std::ifstream& ifs)
     float x = LoadFloat(ifs);
     float y = LoadFloat(ifs);
     return FTVector2(x, y);
+}
+
+FTVector3 FileIOHelper::LoadVector3(std::ifstream& ifs)
+{
+    assert(mUnmatched > 0);
+    float x = LoadFloat(ifs);
+    float y = LoadFloat(ifs);
+    float z = LoadFloat(ifs);
+    return FTVector3(x, y, z);
 }
 
 std::string FileIOHelper::LoadBasicString(std::ifstream& ifs)

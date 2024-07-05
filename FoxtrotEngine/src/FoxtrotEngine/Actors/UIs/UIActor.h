@@ -2,6 +2,7 @@
 #include "FoxtrotEngine/Actors/Actor.h"
 
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
+#include "FoxtrotEngine/Actors/RectTransform.h"
 
 class FoxtrotRenderer;
 
@@ -23,6 +24,7 @@ public:
     virtual void OnMouseLButtonClicked();
 
 public:
+    RectTransform* GetRectTransform() { return dynamic_cast<RectTransform*>(GetTransform()); }
     bool GetIsAffectedByCamera() { return mIsAffectedByCamera; }
     void SetIsAffectedByCamera(bool affected) { mIsAffectedByCamera = affected; }
 
@@ -33,12 +35,6 @@ public:
     virtual void LateUpdateActor(float deltaTime) override;
     virtual void RenderActor    (FoxtrotRenderer* renderer) override;
 
-public:
-    UIActor(Scene* scene, bool isCamAffect);
-    UIActor(UIActor& origin);
-    UIActor(Actor* origin);
-    virtual ~UIActor() override;
-
 private:
     bool mIsAffectedByCamera;
     bool mMouseHovering;
@@ -48,5 +44,11 @@ private:
     bool mIsFocused;
 
     friend class UIManager;
+
+public:
+    UIActor(Scene* scene, bool isCamAffect);
+    UIActor(UIActor& origin);
+    UIActor(Actor* origin);
+    virtual ~UIActor() override;
 };
 

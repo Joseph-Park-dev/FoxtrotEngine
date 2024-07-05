@@ -1,5 +1,4 @@
 #pragma once
-
 #include "FoxtrotEngine/Math/FTMath.h"
 
 class Rect
@@ -18,6 +17,7 @@ public:
 		mPosition	= mMin;
 		mSize		= FTVector2(width, height);
 	}
+	static const Rect Zero;
 
 public:
 	bool operator==(Rect& other) {
@@ -39,3 +39,4 @@ private:
 	FTVector2	mSize;
 };
 
+const Rect Rect::Zero(0.0f, 0.0f, 0.0f, 0.0f);

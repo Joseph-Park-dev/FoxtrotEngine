@@ -2,6 +2,7 @@
 
 #include "FoxtrotEngine/Components/Component.h"
 #include "FoxtrotEngine/Actors/Transform.h"
+#include "FoxtrotEngine/Actors/RectTransform.h"
 #include "FoxtrotEngine/Renderer/Camera2D.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 #include "FoxtrotEngine/Managers/KeyInputManager.h"
@@ -19,12 +20,12 @@ void UIActor::LateUpdateActor(float deltaTime)
 
 void UIActor::RenderActor(FoxtrotRenderer* renderer)
 {
-	FTVector2 vPos = GetTransform()->GetWorldPosition();
-	FTVector2 vScale = GetTransform()->GetScale();
-	if (mIsAffectedByCamera)
-	{
-		vPos = Camera2D::GetInstance()->ConvertWorldPosToScreen(vPos);
-	}
+	//FTVector2 vPos = GetRectTransform()->GetAnchoredPosition();
+	//FTVector2 vScale = GetRectTransform()->get();
+	//if (mIsAffectedByCamera)
+	//{
+	//	vPos = Camera2D::GetInstance()->ConvertWorldPosToScreen(vPos);
+	//}
 
 	/*
 	
@@ -87,6 +88,8 @@ UIActor::UIActor(Scene* scene, bool isCamAffect)
 	, mLBtnDown(false)
 	, mIsFocused(false)
 {
+	delete GetTransform();
+	SetTransform(new RectTransform);
 }
 
 UIActor::UIActor(UIActor& origin)

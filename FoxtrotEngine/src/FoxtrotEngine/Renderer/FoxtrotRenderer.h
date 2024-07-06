@@ -24,6 +24,11 @@ class Transform;
 class RenderTextureClass;
 class FTVector2;
 
+enum class Viewtype {
+    Orthographic,
+    Perspective
+};
+
 class FoxtrotRenderer
 {
 public:
@@ -48,19 +53,24 @@ public:
     ComPtr<ID3D11Texture2D> GetDepthStencilBuffer() { return mDepthStencilBuffer; }
     ComPtr<ID3D11InputLayout> GetInputLayout() { return mBasicInputLayout; }
 
-    int   GetRenderWidth() { return mRenderWidth; }
-    int   GetRenderHeight() { return mRenderHeight; }
-    void  RemoveMesh(Mesh* mesh);
-    void  SetRenderWidth(int width) { mRenderWidth = width; }
-    void  SetRenderHeight(int height) { mRenderHeight = height; }
+    int      GetRenderWidth ()              { return mRenderWidth; }
+    int      GetRenderHeight()              { return mRenderHeight; }
+    Viewtype GetViewType    ()              { return mViewType; }
+
+    void  RemoveMesh        (Mesh* mesh);
+    void  SetRenderWidth    (int width)     { mRenderWidth = width; }
+    void  SetRenderHeight   (int height)    { mRenderHeight = height; }
+    void  SetViewType       (Viewtype view) { mViewType = view; }
 
 private:
-    int   mRenderWidth;
-    int   mRenderHeight;
+    int         mRenderWidth;
+    int         mRenderHeight;
     
-    float mClearColor[4];
-    UINT  mNumQualityLevels;
-    UINT  mCreateDeviceFlags;
+    float       mClearColor[4];
+    UINT        mNumQualityLevels;
+    UINT        mCreateDeviceFlags;
+
+    Viewtype    mViewType;
 
 private:
     FTTexture mWallTexture;
@@ -92,8 +102,6 @@ private:
 
     UINT mIndexCount;
     std::vector<Mesh*> mMeshes;
-
-    bool m_usePerspectiveProjection = true;
 
 private:
     RenderTextureClass* mRenderTexture;

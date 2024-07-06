@@ -43,7 +43,7 @@ public:
 	MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder);
 	virtual ~MeshRendererComponent() override;
 
-private:
+protected:
 	void UpdateConstantBufferModel		(Mesh* mesh, Transform* transform);
 	void UpdateConstantBufferView		(Mesh* mesh, Camera* camInst);
 	void UpdateConstantBufferProjection	(Mesh* mesh, Camera* camInst);

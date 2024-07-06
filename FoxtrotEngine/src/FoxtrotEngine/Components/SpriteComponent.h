@@ -24,8 +24,9 @@ public:
 	void		 UpdateTexture	(FoxtrotRenderer* renderer, std::string fileName);
 
 public:
-	virtual void Initialize		(FTCore* coreInstance)	override;
-	virtual void Update			(float deltaTime)		override;
+	virtual void Initialize		(FTCore* coreInstance)		override;
+	virtual void Update			(float deltaTime)			override;
+	virtual void Render			(FoxtrotRenderer* renderer)	override;
 
 public:
 			 SpriteComponent(class Actor* owner, 

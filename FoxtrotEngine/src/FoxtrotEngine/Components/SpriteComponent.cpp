@@ -29,10 +29,7 @@ SpriteComponent::~SpriteComponent()
 
 void SpriteComponent::SetTexture(FoxtrotRenderer* renderer, std::string fileName)
 {
-	std::vector<Mesh*>& meshes = renderer->GetMeshes();
-	std::vector<Mesh*>::iterator iter = std::find(meshes.begin(), meshes.end(), GetMesh());
-	if (iter != meshes.end())
-		GetMesh()->texture = ResourceManager::GetInstance()->GetLoadedTexture(fileName);
+	GetMesh()->texture->CreateTexture(renderer, fileName);
 }
 
 void SpriteComponent::UpdateTexture(FoxtrotRenderer* renderer, std::string fileName)
@@ -54,12 +51,17 @@ void SpriteComponent::UpdateTexture(FoxtrotRenderer* renderer, std::string fileN
 void SpriteComponent::Initialize(FTCore* coreInstance)
 {
 	MeshRendererComponent::Initialize(coreInstance);
-	MeshRendererComponent::InitializeMesh(GeometryGenerator::MakeSquare(1.0f));
+	InitializeMesh(GeometryGenerator::MakeSquare(1.0f));
 }
+
 
 void SpriteComponent::Update(float deltaTime)
 {
-	MeshRendererComponent::UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
+	UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
+}
+
+void SpriteComponent::Render(FoxtrotRenderer* renderer) {
+	RenderMesh(renderer);
 }
 
 #ifdef _DEBUG

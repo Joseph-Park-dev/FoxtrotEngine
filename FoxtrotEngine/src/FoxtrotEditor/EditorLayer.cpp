@@ -185,6 +185,14 @@ void EditorLayer::DisplayFileMenu()
 				}
 			}
 		}
+		if (ImGui::Button("2D"))
+		{
+			FoxtrotRenderer* renderer = FTCoreEditor::GetInstance()->GetGameRenderer();
+			if(renderer->GetViewType() == Viewtype::Perspective)
+				renderer->SetViewType(Viewtype::Orthographic);
+			else if (renderer->GetViewType() == Viewtype::Orthographic)
+				renderer->SetViewType(Viewtype::Perspective);
+		}
 		if (ImGuiFileDialog::Instance()->Display("SaveChunkFile"))
 		{
 			if (ImGuiFileDialog::Instance()->IsOk())

@@ -116,10 +116,18 @@ void MeshRendererComponent::UpdateConstantBufferProjection(Mesh* mesh, Camera* c
 	float aspect = camInst->GetAspect();
 	float nearZ = camInst->GetNearZ();
 	float farZ = camInst->GetFarZ();
-	mesh->basicVertexConstantBufferData.projection =
-		DirectX::XMMatrixPerspectiveFovLH(
-			projFOVAngleY, aspect, nearZ, farZ
-		);
+	if (mRenderer->GetViewType() == Viewtype::Perspective) {
+		mesh->basicVertexConstantBufferData.projection =
+			DirectX::XMMatrixPerspectiveFovLH(
+				projFOVAngleY, aspect, nearZ, farZ
+			);
+	}
+	else if (mRenderer->GetViewType() == Viewtype::Orthographic){
+		mesh->basicVertexConstantBufferData.projection =
+			DirectX::XMMatrixOrthographicOffCenterLH(
+				-aspect, aspect, -1.0f, 1.0f, nearZ, farZ
+			);
+	}
 	mesh->basicVertexConstantBufferData.projection =
 		mesh->basicVertexConstantBufferData.projection.Transpose();
 }

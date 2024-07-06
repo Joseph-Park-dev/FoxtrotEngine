@@ -23,7 +23,7 @@ void Camera::DisplayCameraMenu()
 	posArr[0] = lookAtPos.x;
 	posArr[1] = lookAtPos.y;
 	posArr[2] = lookAtPos.z;
-	ImGui::DragFloat2("Look-At Pos", posArr, LOOKAT_MODSPEED);
+	ImGui::DragFloat3("Look-At Pos", posArr, LOOKAT_MODSPEED);
 	FTVector3 updatedLookAtPos = FTVector3(posArr[0], posArr[1], posArr[2]);
 	delete[] posArr;
 	mViewEyePos = updatedLookAtPos;

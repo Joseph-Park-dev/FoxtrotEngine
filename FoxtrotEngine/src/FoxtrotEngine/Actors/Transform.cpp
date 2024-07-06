@@ -44,3 +44,19 @@ Transform::Transform(Transform & origin)
 	, mScale			(origin.mScale)
 	, mRotation			(origin.mRotation)
 {}
+
+FTVector3 Transform::ConvertRadToDegree(FTVector3 radianRot)
+{
+	float x = Math::ToDegrees(radianRot.x);
+	float y = Math::ToDegrees(radianRot.y);
+	float z = Math::ToDegrees(radianRot.z);
+	return FTVector3(x, y, z);
+}
+
+FTVector3 Transform::ConvertDegreeToRad(FTVector3 degreeRot)
+{
+	float x = Math::ToRadians(degreeRot.x);
+	float y = Math::ToRadians(degreeRot.y);
+	float z = Math::ToRadians(degreeRot.z);
+	return FTVector3(x, y, z);
+}

@@ -10,26 +10,24 @@ class FTTexture :
     public FTResource
 {
 public:
-    bool CreateTexture(FoxtrotRenderer* renderer);
+    void CreateTexture(FoxtrotRenderer* renderer, const std::string filename);
     bool ReleaseTexture();
 
 public:
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> GetResourceView() { return mTextureResourceView; }
-    DirectX::ScratchImage* GetScratchImage() { return mScratchImage; }
     void SetResourceView(Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResView) 
     { mTextureResourceView = shaderResView; }
 
 public:
     FTTexture()
         : FTResource()
-        , mScratchImage{ new DirectX::ScratchImage }
     {}
     virtual ~FTTexture() override { ReleaseTexture(); }
 
 private:
-    DirectX::ScratchImage* mScratchImage;
-    DirectX::TexMetadata mMetaData;
+    Microsoft::WRL::ComPtr<ID3D11Texture2D>          mTexture;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mTextureResourceView;
+    Microsoft::WRL::ComPtr<ID3D11SamplerState>       mSamplerState;
 
 private:
     friend class ResourceManager;

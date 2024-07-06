@@ -33,6 +33,8 @@ protected:
 	FoxtrotRenderer* GetRenderer()	{ return mRenderer; }
 	Mesh*			 GetMesh()		{ return mMesh; }
 
+	void			 SetTexture(std::string fileName);
+
 private:
 	FoxtrotRenderer* mRenderer;
 	Mesh*			 mMesh;

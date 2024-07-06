@@ -194,6 +194,11 @@ public:
 		return FTVector3(vec.x / scalar, vec.y / scalar, vec.z / scalar);
 	}
 
+	bool operator!=(const FTVector3& right)
+	{
+		return (this->x != right.x) || (this->y != right.y) || (this->z != right.z);
+	}
+
 	// Scalar *=
 	FTVector3& operator*=(float scalar)
 	{

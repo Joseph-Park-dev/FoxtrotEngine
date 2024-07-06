@@ -157,24 +157,24 @@ StateEditCommand::StateEditCommand(Actor::State& valRef, Actor::State nextVal)
 
 void Vector3EditCommand::Execute()
 {
-	mPrevValue = *mValue;
-	*mValue = mNextValue;
+	mPrevValue = mValue;
+	mValue = mNextValue;
 	LogVector3("Previous Val", mPrevValue);
-	LogVector3("Current Val", *mValue);
+	LogVector3("Current Val", mValue);
 	LogVector3("Next Val", mNextValue);
 }
 
 void Vector3EditCommand::Undo()
 {
-	FTVector3 nextVal = *mValue;
-	*mValue = mPrevValue;
+	FTVector3 nextVal = mValue;
+	mValue = mPrevValue;
 	mNextValue = nextVal;
 	LogVector3("Previous Val", mPrevValue);
-	LogVector3("Current Val", *mValue);
+	LogVector3("Current Val", mValue);
 	LogVector3("Next Val", mNextValue);
 }
 
-Vector3EditCommand::Vector3EditCommand(FTVector3* valRef, FTVector3 nextVal)
+Vector3EditCommand::Vector3EditCommand(FTVector3& valRef, FTVector3 nextVal)
 	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
 {
 }

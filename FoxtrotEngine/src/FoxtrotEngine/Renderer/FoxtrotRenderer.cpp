@@ -432,15 +432,15 @@ HRESULT FoxtrotRenderer::CreateDepthBuffer()
 		mDepthStencilBuffer.GetAddressOf())))
 	{
 		LogString("CreateTexture2D() failed.");
-		return false;
+		return E_FAIL;
 	}
 	if (FAILED(
 		mDevice->CreateDepthStencilView(mDepthStencilBuffer.Get(), 0, mDepthStencilView.GetAddressOf())))
 	{
 		LogString("CreateDepthStencilView() failed.");
-		return false;
+		return E_FAIL;
 	}
-	return true;
+	return S_OK;
 }
 
 HRESULT FoxtrotRenderer::CreateDepthStencilState()

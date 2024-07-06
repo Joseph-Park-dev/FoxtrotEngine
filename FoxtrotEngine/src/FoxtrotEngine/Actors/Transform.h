@@ -14,15 +14,16 @@ public:
 	//const FTVector3  GetForward()		 const { return FTVector3(Math::Cos(mRotation), -Math::Sin(mRotation)); }
 	const FTVector3  GetScale()			 const { return mScale; }
 	const FTVector3	 GetRotation()		 const { return mRotation; }
+	const FTVector3  GetRotationDegree() const { return ConvertRadToDegree(mRotation); }
 //	const FTVector3  GetScreenPosition() const;
 //#ifdef _DEBUG
 //	const FTVector2 GetScreenPositionEditor() const;
 //#endif
 
-	FTVector3*	GetWorldPositionRef()	{ return &mWorldPosition; }
-	FTVector3*	GetLocalPositionRef()	{ return &mLocalPosition; }
-	FTVector3*	GetScaleRef()			{ return &mScale; }
-	FTVector3*	GetRotationRef()		{ return &mRotation; }
+	FTVector3&	GetWorldPositionRef()	{ return mWorldPosition; }
+	FTVector3&	GetLocalPositionRef()	{ return mLocalPosition; }
+	FTVector3&	GetScaleRef()			{ return mScale; }
+	FTVector3&	GetRotationRef()		{ return mRotation; }
 
 	void	 SetWorldPosition	(const FTVector3 pos)	{ mWorldPosition = pos; }
 	//void	 SetWorldPositionBox2D (const b2Vec2 pos)	{ mWorldPosition = FTVector2(pos.x, pos.y); }
@@ -42,4 +43,8 @@ private:
 	FTVector3	mLocalPosition;
 	FTVector3	mScale;
 	FTVector3	mRotation;
+
+public:
+	static FTVector3 ConvertRadToDegree(FTVector3 radianRot);
+	static FTVector3 ConvertDegreeToRad(FTVector3 degreeRot);
 };

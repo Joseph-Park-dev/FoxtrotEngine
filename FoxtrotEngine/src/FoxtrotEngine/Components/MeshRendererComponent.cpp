@@ -63,14 +63,21 @@ void MeshRendererComponent::RenderMesh(FoxtrotRenderer* renderer)
 	}
 }
 
+void MeshRendererComponent::SetTexture(const std::string fileName)
+{
+	mMesh->texture = new FTTexture;
+	mMesh->texture->CreateTexture(mRenderer, fileName);
+}
+
 MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Component	(owner, drawOrder, updateOrder)
 	, mRenderer	(nullptr)
 	, mMesh		(nullptr)
 {}
 
-MeshRendererComponent::~MeshRendererComponent()
-{}
+MeshRendererComponent::~MeshRendererComponent(){
+	delete mMesh->texture;
+}
 
 void MeshRendererComponent::UpdateConstantBufferModel(Mesh* mesh, Transform* transform)
 {
@@ -119,7 +126,11 @@ void MeshRendererComponent::UpdateConstantBufferProjection(Mesh* mesh, Camera* c
 
 void MeshRendererComponent::AddCube()
 {
-	InitializeMesh(GeometryGenerator::MakeBox());
+	if (!mMesh)
+	{
+		InitializeMesh(GeometryGenerator::MakeBox());
+		//SetTexture("./assets/Asteroid.png");
+	}
 }
 
 void MeshRendererComponent::EditorUpdate(float deltaTime)

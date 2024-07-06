@@ -212,7 +212,6 @@ void EditorElement::UpdateActorWorldPosition()
 	(
 		"World Position",
 		GetTransform()->GetWorldPositionRef(),
-		GetTransform()->GetWorldPosition(),
 		FLOATMOD_SPEED
 	);
 }
@@ -223,7 +222,6 @@ void EditorElement::UpdateActorLocalPosition()
 	(
 		"Local Position",
 		GetTransform()->GetLocalPositionRef(),
-		GetTransform()->GetLocalPosition(),
 		FLOATMOD_SPEED
 	);
 }
@@ -234,20 +232,20 @@ void EditorElement::UpdateActorScale()
 	(
 		"Scale",
 		GetTransform()->GetScaleRef(),
-		GetTransform()->GetScale(),
 		FLOATMOD_SPEED
 	);
 }
 
 void EditorElement::UpdateActorRotation()
 {
+	FTVector3 degreeRot = Transform::ConvertRadToDegree(GetTransform()->GetRotation());
 	CommandHistory::GetInstance()->UpdateVector3Value
 	(
 		"Rotation",
-		GetTransform()->GetRotationRef(),
-		GetTransform()->GetRotation(),
+		degreeRot,
 		FLOATMOD_SPEED
 	);
+	GetTransform()->SetRotation(Transform::ConvertDegreeToRad(degreeRot));
 }
 
 void EditorElement::UpdateComponents()

@@ -17,8 +17,8 @@ void ResourceManager::LoadTexture(FoxtrotRenderer* renderer, const std::string f
 		printf("Message: Loading FTTexture %s\n", fileName.c_str());
 		ptTex = new FTTexture;
 		ptTex->SetRelativePath(fileName);
-		if (!ptTex->CreateTexture(renderer))
-			printf("Error: ResourceManager::LoadTexture() -> CreateTexture failed. \n");
+		//if (!ptTex->CreateTexture(renderer))
+		//	printf("Error: ResourceManager::LoadTexture() -> CreateTexture failed. \n");
 		mMapTextures.insert(std::make_pair(fileName, ptTex));
 	}
 }
@@ -52,8 +52,8 @@ void ResourceManager::UpdateTexture(FoxtrotRenderer* renderer, FTTexture* textur
 			return;
 		}
 		printf("Message: Loading FTTexture %s\n", texture->GetRelativePath());
-		if (!texture->CreateTexture(renderer))
-			printf("Error: ResourceManager::LoadTexture() -> UpdateTexture failed. \n");
+		//if (!texture->CreateTexture(renderer))
+		//	printf("Error: ResourceManager::LoadTexture() -> UpdateTexture failed. \n");
 	}
 	else
 		printf("Warning : FTTexture %s is not loaded. Aborting update...\n");

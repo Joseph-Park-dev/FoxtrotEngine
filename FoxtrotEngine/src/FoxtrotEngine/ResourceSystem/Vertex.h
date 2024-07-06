@@ -2,8 +2,8 @@
 #include "FoxtrotEngine/Math/FTMath.h"
 
 struct Vertex {
-    FTVector3 position;
-    FTVector3 color;
-    FTVector3 normal;
-    FTVector2 texcoord;
+    DirectX::SimpleMath::Vector3 position;
+    DirectX::SimpleMath::Vector3 color;
+    DirectX::SimpleMath::Vector3 normal;
+    DirectX::SimpleMath::Vector2 texcoord;
 };

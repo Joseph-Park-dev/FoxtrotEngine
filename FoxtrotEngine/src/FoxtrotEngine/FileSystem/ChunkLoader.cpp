@@ -216,7 +216,8 @@ ChunkLoader::ChunkLoader()
         {L"Rigidbody2DComponent", &Component::Load<Rigidbody2DComponent>},
         {L"SpriteComponent",      &Component::Load<SpriteComponent>},
         {L"TileMapComponent",     &Component::Load<TileMapComponent>},
-        {L"GunFiringComponent",   &Component::Load<GunFiringComponent>}
+        {L"GunFiringComponent",   &Component::Load<GunFiringComponent>},
+        {L"MeshRendererComponent", &Component::Load<MeshRendererComponent>}
     };
 
     mComponentCreateMap =
@@ -231,7 +232,8 @@ ChunkLoader::ChunkLoader()
         {L"Rigidbody2DComponent", &Component::Create<Rigidbody2DComponent>},
         {L"SpriteComponent",      &Component::Create<SpriteComponent>},
         {L"TileMapComponent",     &Component::Create<TileMapComponent>},
-        {L"GunFiringComponent",   &Component::Create<GunFiringComponent>}
+        {L"GunFiringComponent",   &Component::Create<GunFiringComponent>},
+        {L"MeshRendererComponent", &Component::Create<MeshRendererComponent>}
     };
 };
 

@@ -30,6 +30,7 @@
 #include "FoxtrotEngine/Components/Rigidbody2DComponent.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 #include "Scripts/ActorList/GroundObject.h"
+#include "FoxtrotEngine/Renderer/Camera.h"
 
 void EditorLayer::Update(float deltaTime)
 {
@@ -52,7 +53,7 @@ void EditorLayer::Update(float deltaTime)
 	DisplayFileMenu();
 	DisplayHierarchyMenu();
 	DisplayInspectorMenu();
-	EditorCamera2D::GetInstance()->DisplayCameraMenu();
+	Camera::GetInstance()->DisplayCameraMenu();
 	ApplyCommandHistory();
 
 	ImGui::EndFrame();

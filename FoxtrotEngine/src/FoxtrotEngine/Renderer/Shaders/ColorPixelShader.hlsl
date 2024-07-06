@@ -6,28 +6,13 @@ struct PixelShaderInput
 {
     float4 pos : SV_POSITION;
     float3 color : COLOR;
+    float3 normal : NORMAL;
     float2 texcoord : TEXCOORD;
 };
 
 // SV_Target -> 결과가 render target 에 저장
 float4 main(PixelShaderInput input) : SV_TARGET {
-    //float x = input.texcoord.x;
-    //float y = input.texcoord.y;
-    //float f = (x - 0.5) * (x - 0.5) + (y - 0.5) * (y - 0.5) - 0.3 * 0.3;
-    
-    //if(f < 0.0)
-    //{
-    //    float4 color = g_texture0.Sample(g_sampler, input.texcoord);
-    //    return color * 1.5f;
-    //}
-    //else
-    //
-    //return input.texcoord.x > xSplit
-    //           ? g_texture0.Sample(g_sampler, input.texcoord)
-    //            : g_texture1.Sample(g_sampler, input.texcoord);
-    
-    //return float4(input.color, 1.0);
-    return g_texture0.Sample(g_sampler, input.texcoord);
+    return float4(input.color, 1.0f);
 }
 
 

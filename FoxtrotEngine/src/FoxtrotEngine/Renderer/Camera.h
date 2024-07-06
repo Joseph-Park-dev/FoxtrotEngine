@@ -5,6 +5,7 @@
 
 #define CAMERA_TARGET_NONE	-1
 #define HD_RESOLUTION		FTVector2(1920.f,1080.f)
+#define LOOKAT_MODSPEED		0.01f
 
 class Camera
 {
@@ -48,6 +49,7 @@ public:
 
 #ifdef _DEBUG
 	// void Render(FoxtrotRenderer* renderer);
+	void DisplayCameraMenu();
 #endif // _DEBUG
 
 protected:

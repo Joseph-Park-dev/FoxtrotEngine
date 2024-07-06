@@ -6,14 +6,31 @@
 #include "FoxtrotEngine/ResourceSystem/MeshData.h"
 #include "FoxtrotEngine/Renderer/Camera.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
+#include "FoxtrotEngine/Renderer/GeometryGenerator.h"
 
 #ifdef _DEBUG
 #include "FoxtrotEditor/FTCoreEditor.h"
 #endif
 
-void MeshRendererComponent::InitializeMesh(FTCore* coreInstance, MeshData&& meshData)
+void MeshRendererComponent::Initialize(FTCore* coreInstance)
 {
 	mRenderer = coreInstance->GetGameRenderer();
+}
+
+void MeshRendererComponent::Update(float deltaTime)
+{
+	if(mMesh)
+		UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
+}
+
+void MeshRendererComponent::Render(FoxtrotRenderer* renderer){
+	if(mMesh)
+		RenderMesh(renderer);
+}
+
+void MeshRendererComponent::InitializeMesh(MeshData&& meshData)
+{
+	mMesh = new Mesh;
 	mRenderer->CreateVertexBuffer(meshData.vertices, mMesh->vertexBuffer);
 	mMesh->indexCount = UINT(meshData.indices.size());
 	mRenderer->CreateIndexBuffer(meshData.indices, mMesh->indexBuffer);
@@ -26,6 +43,7 @@ void MeshRendererComponent::InitializeMesh(FTCore* coreInstance, MeshData&& mesh
 		mMesh->vertexConstantBuffer);
 	mRenderer->CreateConstantBuffer(mMesh->pixelShaderConstantBufferData,
 		mMesh->pixelConstantBuffer);
+	mRenderer->GetMeshes().emplace_back(mMesh);
 }
 
 void MeshRendererComponent::UpdateMesh(Transform* transform, Camera* cameraInstance)
@@ -48,7 +66,7 @@ void MeshRendererComponent::RenderMesh(FoxtrotRenderer* renderer)
 MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Component	(owner, drawOrder, updateOrder)
 	, mRenderer	(nullptr)
-	, mMesh		(new Mesh)
+	, mMesh		(nullptr)
 {}
 
 MeshRendererComponent::~MeshRendererComponent()
@@ -97,4 +115,21 @@ void MeshRendererComponent::UpdateConstantBufferProjection(Mesh* mesh, Camera* c
 		);
 	mesh->basicVertexConstantBufferData.projection =
 		mesh->basicVertexConstantBufferData.projection.Transpose();
+}
+
+void MeshRendererComponent::AddCube()
+{
+	InitializeMesh(GeometryGenerator::MakeBox());
+}
+
+void MeshRendererComponent::EditorUpdate(float deltaTime)
+{
+	Update(deltaTime);
+}
+
+void MeshRendererComponent::EditorUIUpdate()
+{
+	if (ImGui::Button("Add Cube")) {
+		AddCube();
+	}
 }

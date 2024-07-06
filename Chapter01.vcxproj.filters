@@ -591,4 +591,8 @@
   <ItemGroup>
     <ResourceCompile Include="Chapter03.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Shaders\ColorPixelShader.hlsl" />
+    <FxCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Shaders\ColorVertexShader.hlsl" />
+  </ItemGroup>
 </Project>

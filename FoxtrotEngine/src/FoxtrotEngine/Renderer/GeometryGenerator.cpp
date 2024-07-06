@@ -1,6 +1,6 @@
 ﻿#include "FoxtrotEngine/Renderer/GeometryGenerator.h"
 
-//#include <directxtk/SimpleMath.h>
+#include <directxtk/SimpleMath.h>
 #include <vector>
 
 #include "FoxtrotEngine/Math/FTMath.h"
@@ -13,39 +13,42 @@
 //using D3DVec2 = DirectX::SimpleMath::Vector2;
 //using D3DVec3 = DirectX::SimpleMath::Vector3;
 
+using Vector3 = DirectX::SimpleMath::Vector3;
+using Vector2 = DirectX::SimpleMath::Vector2;
+
 MeshData GeometryGenerator::MakeSquare(float scale) {
-    std::vector<FTVector3> positions;
-    std::vector<FTVector3> colors;
-    std::vector<FTVector3> normals;
-    std::vector<FTVector2> texcoords; // 텍스춰 좌표
+    std::vector<Vector3> positions;
+    std::vector<Vector3> colors;
+    std::vector<Vector3> normals;
+    std::vector<Vector2> texcoords; // 텍스춰 좌표
 
     // 앞면
-    positions.push_back(FTVector3(-1.0f, 1.0f, 0.0f) * scale);
-    positions.push_back(FTVector3(1.0f, 1.0f, 0.0f) * scale);
-    positions.push_back(FTVector3(1.0f, -1.0f, 0.0f) * scale);
-    positions.push_back(FTVector3(-1.0f, -1.0f, 0.0f) * scale);
-    colors.push_back(FTVector3(0.0f, 0.0f, 1.0f));
-    colors.push_back(FTVector3(0.0f, 0.0f, 1.0f));
-    colors.push_back(FTVector3(0.0f, 0.0f, 1.0f));
-    colors.push_back(FTVector3(0.0f, 0.0f, 1.0f));
-    normals.push_back(FTVector3(0.0f, 0.0f, -1.0f));
-    normals.push_back(FTVector3(0.0f, 0.0f, -1.0f));
-    normals.push_back(FTVector3(0.0f, 0.0f, -1.0f));
-    normals.push_back(FTVector3(0.0f, 0.0f, -1.0f));
+    positions.push_back(Vector3(-1.0f, 1.0f, 0.0f) * scale);
+    positions.push_back(Vector3(1.0f, 1.0f, 0.0f) * scale);
+    positions.push_back(Vector3(1.0f, -1.0f, 0.0f) * scale);
+    positions.push_back(Vector3(-1.0f, -1.0f, 0.0f) * scale);
+    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
 
     // Texture Coordinates (Direct3D 9)
     // https://learn.microsoft.com/en-us/windows/win32/direct3d9/texture-coordinates
-    texcoords.push_back(FTVector2(0.0f, 0.0f));
-    texcoords.push_back(FTVector2(1.0f, 0.0f));
-    texcoords.push_back(FTVector2(1.0f, 1.0f));
-    texcoords.push_back(FTVector2(0.0f, 1.0f));
+    texcoords.push_back(Vector2(0.0f, 0.0f));
+    texcoords.push_back(Vector2(1.0f, 0.0f));
+    texcoords.push_back(Vector2(1.0f, 1.0f));
+    texcoords.push_back(Vector2(0.0f, 1.0f));
 
     MeshData meshData;
     for (size_t i = 0; i < positions.size(); i++) {
         Vertex v;
         v.position = positions[i];
         v.color = colors[i];
-        //v.normal = normals[i];
+        v.normal = normals[i];
         v.texcoord = texcoords[i];
         meshData.vertices.push_back(v);
     }
@@ -57,121 +60,120 @@ MeshData GeometryGenerator::MakeSquare(float scale) {
 }
 
 MeshData GeometryGenerator::MakeBox() {
-
-    std::vector<FTVector3> positions;
-    std::vector<FTVector3> colors;
-    std::vector<FTVector3> normals;
-    std::vector<FTVector2> texcoords; // 텍스춰 좌표
+    std::vector<Vector3> positions;
+    std::vector<Vector3> colors;
+    std::vector<Vector3> normals;
+    std::vector<Vector2> texcoords; // 텍스춰 좌표
 
     const float scale = 1.0f;
 
     // 윗면
-    positions.push_back(FTVector3(-1.0f, 1.0f, -1.0f) * scale);
-    positions.push_back(FTVector3(-1.0f, 1.0f, 1.0f) * scale);
-    positions.push_back(FTVector3(1.0f, 1.0f, 1.0f) * scale);
-    positions.push_back(FTVector3(1.0f, 1.0f, -1.0f) * scale);
-    colors.push_back(FTVector3(1.0f, 0.0f, 0.0f));
-    colors.push_back(FTVector3(1.0f, 0.0f, 0.0f));
-    colors.push_back(FTVector3(1.0f, 0.0f, 0.0f));
-    colors.push_back(FTVector3(1.0f, 0.0f, 0.0f));
-    normals.push_back(FTVector3(0.0f, 1.0f, 0.0f));
-    normals.push_back(FTVector3(0.0f, 1.0f, 0.0f));
-    normals.push_back(FTVector3(0.0f, 1.0f, 0.0f));
-    normals.push_back(FTVector3(0.0f, 1.0f, 0.0f));
-    texcoords.push_back(FTVector2(0.0f, 0.0f));
-    texcoords.push_back(FTVector2(1.0f, 0.0f));
-    texcoords.push_back(FTVector2(1.0f, 1.0f));
-    texcoords.push_back(FTVector2(0.0f, 1.0f));
+    positions.push_back(Vector3(-1.0f, 1.0f, -1.0f) * scale);
+    positions.push_back(Vector3(-1.0f, 1.0f, 1.0f) * scale);
+    positions.push_back(Vector3(1.0f, 1.0f, 1.0f) * scale);
+    positions.push_back(Vector3(1.0f, 1.0f, -1.0f) * scale);
+    colors.push_back(Vector3(1.0f, 0.0f, 0.0f));
+    colors.push_back(Vector3(1.0f, 0.0f, 0.0f));
+    colors.push_back(Vector3(1.0f, 0.0f, 0.0f));
+    colors.push_back(Vector3(1.0f, 0.0f, 0.0f));
+    normals.push_back(Vector3(0.0f, 1.0f, 0.0f));
+    normals.push_back(Vector3(0.0f, 1.0f, 0.0f));
+    normals.push_back(Vector3(0.0f, 1.0f, 0.0f));
+    normals.push_back(Vector3(0.0f, 1.0f, 0.0f));
+    texcoords.push_back(Vector2(0.0f, 0.0f));
+    texcoords.push_back(Vector2(1.0f, 0.0f));
+    texcoords.push_back(Vector2(1.0f, 1.0f));
+    texcoords.push_back(Vector2(0.0f, 1.0f));
 
     // 아랫면
-    positions.push_back(FTVector3(-1.0f, -1.0f, -1.0f) * scale);
-    positions.push_back(FTVector3(1.0f, -1.0f, -1.0f) * scale);
-    positions.push_back(FTVector3(1.0f, -1.0f, 1.0f) * scale);
-    positions.push_back(FTVector3(-1.0f, -1.0f, 1.0f) * scale);
-    colors.push_back(FTVector3(0.0f, 1.0f, 0.0f));
-    colors.push_back(FTVector3(0.0f, 1.0f, 0.0f));
-    colors.push_back(FTVector3(0.0f, 1.0f, 0.0f));
-    colors.push_back(FTVector3(0.0f, 1.0f, 0.0f));
-    normals.push_back(FTVector3(0.0f, -1.0f, 0.0f));
-    normals.push_back(FTVector3(0.0f, -1.0f, 0.0f));
-    normals.push_back(FTVector3(0.0f, -1.0f, 0.0f));
-    normals.push_back(FTVector3(0.0f, -1.0f, 0.0f));
-    texcoords.push_back(FTVector2(0.0f, 0.0f));
-    texcoords.push_back(FTVector2(1.0f, 0.0f));
-    texcoords.push_back(FTVector2(1.0f, 1.0f));
-    texcoords.push_back(FTVector2(0.0f, 1.0f));
+    positions.push_back(Vector3(-1.0f, -1.0f, -1.0f) * scale);
+    positions.push_back(Vector3(1.0f, -1.0f, -1.0f) * scale);
+    positions.push_back(Vector3(1.0f, -1.0f, 1.0f) * scale);
+    positions.push_back(Vector3(-1.0f, -1.0f, 1.0f) * scale);
+    colors.push_back(Vector3(0.0f, 1.0f, 0.0f));
+    colors.push_back(Vector3(0.0f, 1.0f, 0.0f));
+    colors.push_back(Vector3(0.0f, 1.0f, 0.0f));
+    colors.push_back(Vector3(0.0f, 1.0f, 0.0f));
+    normals.push_back(Vector3(0.0f, -1.0f, 0.0f));
+    normals.push_back(Vector3(0.0f, -1.0f, 0.0f));
+    normals.push_back(Vector3(0.0f, -1.0f, 0.0f));
+    normals.push_back(Vector3(0.0f, -1.0f, 0.0f));
+    texcoords.push_back(Vector2(0.0f, 0.0f));
+    texcoords.push_back(Vector2(1.0f, 0.0f));
+    texcoords.push_back(Vector2(1.0f, 1.0f));
+    texcoords.push_back(Vector2(0.0f, 1.0f));
 
     // 앞면
-    positions.push_back(FTVector3(-1.0f, -1.0f, -1.0f) * scale);
-    positions.push_back(FTVector3(-1.0f, 1.0f, -1.0f) * scale);
-    positions.push_back(FTVector3(1.0f, 1.0f, -1.0f) * scale);
-    positions.push_back(FTVector3(1.0f, -1.0f, -1.0f) * scale);
-    colors.push_back(FTVector3(0.0f, 0.0f, 1.0f));
-    colors.push_back(FTVector3(0.0f, 0.0f, 1.0f));
-    colors.push_back(FTVector3(0.0f, 0.0f, 1.0f));
-    colors.push_back(FTVector3(0.0f, 0.0f, 1.0f));
-    normals.push_back(FTVector3(0.0f, 0.0f, -1.0f));
-    normals.push_back(FTVector3(0.0f, 0.0f, -1.0f));
-    normals.push_back(FTVector3(0.0f, 0.0f, -1.0f));
-    normals.push_back(FTVector3(0.0f, 0.0f, -1.0f));
-    texcoords.push_back(FTVector2(0.0f, 0.0f));
-    texcoords.push_back(FTVector2(1.0f, 0.0f));
-    texcoords.push_back(FTVector2(1.0f, 1.0f));
-    texcoords.push_back(FTVector2(0.0f, 1.0f));
+    positions.push_back(Vector3(-1.0f, -1.0f, -1.0f) * scale);
+    positions.push_back(Vector3(-1.0f, 1.0f, -1.0f) * scale);
+    positions.push_back(Vector3(1.0f, 1.0f, -1.0f) * scale);
+    positions.push_back(Vector3(1.0f, -1.0f, -1.0f) * scale);
+    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    texcoords.push_back(Vector2(0.0f, 0.0f));
+    texcoords.push_back(Vector2(1.0f, 0.0f));
+    texcoords.push_back(Vector2(1.0f, 1.0f));
+    texcoords.push_back(Vector2(0.0f, 1.0f));
 
     // 뒷면
-    positions.push_back(FTVector3(-1.0f, -1.0f, 1.0f) * scale);
-    positions.push_back(FTVector3(1.0f, -1.0f, 1.0f) * scale);
-    positions.push_back(FTVector3(1.0f, 1.0f, 1.0f) * scale);
-    positions.push_back(FTVector3(-1.0f, 1.0f, 1.0f) * scale);
-    colors.push_back(FTVector3(0.0f, 1.0f, 1.0f));
-    colors.push_back(FTVector3(0.0f, 1.0f, 1.0f));
-    colors.push_back(FTVector3(0.0f, 1.0f, 1.0f));
-    colors.push_back(FTVector3(0.0f, 1.0f, 1.0f));
-    normals.push_back(FTVector3(0.0f, 0.0f, 1.0f));
-    normals.push_back(FTVector3(0.0f, 0.0f, 1.0f));
-    normals.push_back(FTVector3(0.0f, 0.0f, 1.0f));
-    normals.push_back(FTVector3(0.0f, 0.0f, 1.0f));
-    texcoords.push_back(FTVector2(0.0f, 0.0f));
-    texcoords.push_back(FTVector2(1.0f, 0.0f));
-    texcoords.push_back(FTVector2(1.0f, 1.0f));
-    texcoords.push_back(FTVector2(0.0f, 1.0f));
+    positions.push_back(Vector3(-1.0f, -1.0f, 1.0f) * scale);
+    positions.push_back(Vector3(1.0f, -1.0f, 1.0f) * scale);
+    positions.push_back(Vector3(1.0f, 1.0f, 1.0f) * scale);
+    positions.push_back(Vector3(-1.0f, 1.0f, 1.0f) * scale);
+    colors.push_back(Vector3(0.0f, 1.0f, 1.0f));
+    colors.push_back(Vector3(0.0f, 1.0f, 1.0f));
+    colors.push_back(Vector3(0.0f, 1.0f, 1.0f));
+    colors.push_back(Vector3(0.0f, 1.0f, 1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    texcoords.push_back(Vector2(0.0f, 0.0f));
+    texcoords.push_back(Vector2(1.0f, 0.0f));
+    texcoords.push_back(Vector2(1.0f, 1.0f));
+    texcoords.push_back(Vector2(0.0f, 1.0f));
 
     // 왼쪽
-    positions.push_back(FTVector3(-1.0f, -1.0f, 1.0f) * scale);
-    positions.push_back(FTVector3(-1.0f, 1.0f, 1.0f) * scale);
-    positions.push_back(FTVector3(-1.0f, 1.0f, -1.0f) * scale);
-    positions.push_back(FTVector3(-1.0f, -1.0f, -1.0f) * scale);
-    colors.push_back(FTVector3(1.0f, 1.0f, 0.0f));
-    colors.push_back(FTVector3(1.0f, 1.0f, 0.0f));
-    colors.push_back(FTVector3(1.0f, 1.0f, 0.0f));
-    colors.push_back(FTVector3(1.0f, 1.0f, 0.0f));
-    normals.push_back(FTVector3(-1.0f, 0.0f, 0.0f));
-    normals.push_back(FTVector3(-1.0f, 0.0f, 0.0f));
-    normals.push_back(FTVector3(-1.0f, 0.0f, 0.0f));
-    normals.push_back(FTVector3(-1.0f, 0.0f, 0.0f));
-    texcoords.push_back(FTVector2(0.0f, 0.0f));
-    texcoords.push_back(FTVector2(1.0f, 0.0f));
-    texcoords.push_back(FTVector2(1.0f, 1.0f));
-    texcoords.push_back(FTVector2(0.0f, 1.0f));
+    positions.push_back(Vector3(-1.0f, -1.0f, 1.0f) * scale);
+    positions.push_back(Vector3(-1.0f, 1.0f, 1.0f) * scale);
+    positions.push_back(Vector3(-1.0f, 1.0f, -1.0f) * scale);
+    positions.push_back(Vector3(-1.0f, -1.0f, -1.0f) * scale);
+    colors.push_back(Vector3(1.0f, 1.0f, 0.0f));
+    colors.push_back(Vector3(1.0f, 1.0f, 0.0f));
+    colors.push_back(Vector3(1.0f, 1.0f, 0.0f));
+    colors.push_back(Vector3(1.0f, 1.0f, 0.0f));
+    normals.push_back(Vector3(-1.0f, 0.0f, 0.0f));
+    normals.push_back(Vector3(-1.0f, 0.0f, 0.0f));
+    normals.push_back(Vector3(-1.0f, 0.0f, 0.0f));
+    normals.push_back(Vector3(-1.0f, 0.0f, 0.0f));
+    texcoords.push_back(Vector2(0.0f, 0.0f));
+    texcoords.push_back(Vector2(1.0f, 0.0f));
+    texcoords.push_back(Vector2(1.0f, 1.0f));
+    texcoords.push_back(Vector2(0.0f, 1.0f));
 
     // 오른쪽
-    positions.push_back(FTVector3(1.0f, -1.0f, 1.0f) * scale);
-    positions.push_back(FTVector3(1.0f, -1.0f, -1.0f) * scale);
-    positions.push_back(FTVector3(1.0f, 1.0f, -1.0f) * scale);
-    positions.push_back(FTVector3(1.0f, 1.0f, 1.0f) * scale);
-    colors.push_back(FTVector3(1.0f, 0.0f, 1.0f));
-    colors.push_back(FTVector3(1.0f, 0.0f, 1.0f));
-    colors.push_back(FTVector3(1.0f, 0.0f, 1.0f));
-    colors.push_back(FTVector3(1.0f, 0.0f, 1.0f));
-    normals.push_back(FTVector3(1.0f, 0.0f, 0.0f));
-    normals.push_back(FTVector3(1.0f, 0.0f, 0.0f));
-    normals.push_back(FTVector3(1.0f, 0.0f, 0.0f));
-    normals.push_back(FTVector3(1.0f, 0.0f, 0.0f));
-    texcoords.push_back(FTVector2(0.0f, 0.0f));
-    texcoords.push_back(FTVector2(1.0f, 0.0f));
-    texcoords.push_back(FTVector2(1.0f, 1.0f));
-    texcoords.push_back(FTVector2(0.0f, 1.0f));
+    positions.push_back(Vector3(1.0f, -1.0f, 1.0f) * scale);
+    positions.push_back(Vector3(1.0f, -1.0f, -1.0f) * scale);
+    positions.push_back(Vector3(1.0f, 1.0f, -1.0f) * scale);
+    positions.push_back(Vector3(1.0f, 1.0f, 1.0f) * scale);
+    colors.push_back(Vector3(1.0f, 0.0f, 1.0f));
+    colors.push_back(Vector3(1.0f, 0.0f, 1.0f));
+    colors.push_back(Vector3(1.0f, 0.0f, 1.0f));
+    colors.push_back(Vector3(1.0f, 0.0f, 1.0f));
+    normals.push_back(Vector3(1.0f, 0.0f, 0.0f));
+    normals.push_back(Vector3(1.0f, 0.0f, 0.0f));
+    normals.push_back(Vector3(1.0f, 0.0f, 0.0f));
+    normals.push_back(Vector3(1.0f, 0.0f, 0.0f));
+    texcoords.push_back(Vector2(0.0f, 0.0f));
+    texcoords.push_back(Vector2(1.0f, 0.0f));
+    texcoords.push_back(Vector2(1.0f, 1.0f));
+    texcoords.push_back(Vector2(0.0f, 1.0f));
 
     MeshData meshData;
     for (size_t i = 0; i < positions.size(); i++) {

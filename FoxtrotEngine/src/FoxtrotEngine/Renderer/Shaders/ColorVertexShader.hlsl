@@ -4,14 +4,6 @@ cbuffer ModelViewProjectionConstantBuffer : register(b0)
     matrix view;
     matrix projection;
 };
-// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-//// 이 예제에서 ConstantBuffer로 보낼 데이터
-//struct ModelViewProjectionConstantBuffer
-//{
-//    Matrix model;
-//    Matrix view;
-//    Matrix projection;
-//};
 
 // Semantics
 // https://learn.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-semantics
@@ -21,6 +13,7 @@ struct VertexShaderInput
 {
     float3 pos : POSITION0;
     float3 color : COLOR0;
+    float3 normal : NORMAL0;
     float2 texcoord : TEXCOORD0;
 };
 
@@ -30,6 +23,7 @@ struct PixelShaderInput
 {
     float4 pos : SV_POSITION;
     float3 color : COLOR;
+    float3 normal : NORMAL;
     float2 texcoord : TEXCOORD;
 };
 
@@ -51,6 +45,7 @@ PixelShaderInput main(VertexShaderInput input)
 
     output.pos = pos;
     output.color = input.color;
+    output.normal = input.normal;
     output.texcoord = input.texcoord;
     
     return output;

@@ -114,53 +114,7 @@ void EditorCamera2D::EditorRender(FoxtrotRenderer* renderer)
 
 void EditorCamera2D::DisplayCameraMenu()
 {
-	ImGui::Begin("Main Camera");
-	// Set LookAt Pos
-	FTVector2 lookAtPos = Camera2D::GetInstance()->GetLookAtPos();
-	float* posArr = new float[2];
-	posArr[0] = lookAtPos.x;
-	posArr[1] = lookAtPos.y;
-	ImGui::DragFloat2("Look-At Pos", posArr);
-	FTVector2 updatedLookAtPos = FTVector2(posArr[0], posArr[1]);
-	delete[] posArr;
-	Camera2D::GetInstance()->SetLookAtPos(updatedLookAtPos);
-
-	// Updating screen center since the camera position is moved
-	FTVector2 diff = updatedLookAtPos - lookAtPos;
-	FTVector2 screenCenter = Camera2D::GetInstance()->GetScreenCenter();
-	Camera2D::GetInstance()->SetScreenCenter(screenCenter + diff);
-
-	// Set Target 
-	std::vector<EditorElement*>& editorElems = EditorLayer::GetInstance()->GetEditorElements();
-	std::string* actorNames = new std::string[editorElems.size() + 1];
-	actorNames[0] = "None";
-	for (UINT i = 0; i < editorElems.size(); ++i)
-	{
-		actorNames[i + 1] = ToString(editorElems[i]->GetName());
-	}
-	if (editorElems.size() > 0)
-	{
-		const char* comboPreview = actorNames[mCurrIdx].c_str();
-		if (ImGui::BeginCombo("Target Actor", comboPreview))
-		{
-			for (UINT i = 0; i < editorElems.size() + 1; ++i)
-			{
-				if (ImGui::Selectable(actorNames[i].c_str()))
-				{
-					mCurrIdx = i;
-					if (mCurrIdx == 0)
-						Camera2D::GetInstance()->SetTargetActorID(TARGET_NONE);
-					else if (0 < mCurrIdx)
-					{
-						Camera2D::GetInstance()->SetTargetActorID(editorElems[mCurrIdx - 1]->GetID());
-					}
-				}
-			}
-			ImGui::EndCombo();
-		}
-	}
-	delete[] actorNames;
-	ImGui::End();
+	
 }
 
 FTVector2 EditorCamera2D::ConvertWorldPosToScreen(FTVector2 worldPos) const

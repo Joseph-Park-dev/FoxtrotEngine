@@ -53,7 +53,8 @@ void SpriteComponent::UpdateTexture(FoxtrotRenderer* renderer, std::string fileN
 
 void SpriteComponent::Initialize(FTCore* coreInstance)
 {
-	MeshRendererComponent::InitializeMesh(coreInstance, GeometryGenerator::MakeSquare(1.0f));
+	MeshRendererComponent::Initialize(coreInstance);
+	MeshRendererComponent::InitializeMesh(GeometryGenerator::MakeSquare(1.0f));
 }
 
 void SpriteComponent::Update(float deltaTime)

@@ -105,6 +105,32 @@ void CommandHistory::Update()
 	}
 }
 
+void CommandHistory::UpdateVector2Value(std::string label, FTVector2& ref, float modSpeed)
+{
+	FTVector2 updatedVal = ref;
+	float* vec2 = new float[2];
+	vec2[0] = updatedVal.x;
+	vec2[1] = updatedVal.y;
+	bool isRecording = GetIsRecording();
+	if (ImGui::DragFloat3(label.c_str(), vec2, modSpeed)) {
+		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left)) {
+			SetIsRecording(true);
+			AddCommand(new Vector2EditCommand(ref, updatedVal));
+		}
+		updatedVal = FTVector2(vec2[0], vec2[1]);
+		ref = updatedVal;
+	}
+	else
+	{
+		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
+		{
+			AddCommand(new Vector2EditCommand(ref, updatedVal));
+			SetIsRecording(false);
+		}
+	}
+	delete[] vec2;
+}
+
 void CommandHistory::UpdateVector3Value(std::string label, FTVector3& ref, float modSpeed)
 {
 	FTVector3 updatedVal = ref;

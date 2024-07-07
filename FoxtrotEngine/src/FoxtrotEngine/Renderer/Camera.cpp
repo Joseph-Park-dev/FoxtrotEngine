@@ -1,6 +1,8 @@
 #include "FoxtrotEngine/Renderer/Camera.h"
 
 #include "FoxtrotEngine/Core/FTCore.h"
+#include "FoxtrotEditor/CommandHistory.h"
+#include "FoxtrotEngine/Managers/KeyInputManager.h"
 
 void Camera::Initialize()
 {
@@ -18,15 +20,23 @@ void Camera::DisplayCameraMenu()
 {
 	ImGui::Begin("Main Camera");
 	// Set LookAt Pos
-	FTVector3 lookAtPos = mViewEyePos;
-	float* posArr = new float[3];
-	posArr[0] = lookAtPos.x;
-	posArr[1] = lookAtPos.y;
-	posArr[2] = lookAtPos.z;
-	ImGui::DragFloat3("Look-At Pos", posArr, LOOKAT_MODSPEED);
-	FTVector3 updatedLookAtPos = FTVector3(posArr[0], posArr[1], posArr[2]);
-	delete[] posArr;
-	mViewEyePos = updatedLookAtPos;
+
+	if (ImGui::IsMouseDragging(ImGuiMouseButton_Middle)) {
+		ImVec2 delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Middle) * Drag_MODSPEED;
+		if (mMiddleMouseClickedPos != delta) {
+			mMiddleMouseClickedPos = delta;
+			mViewEyePosition += FTVector3(-delta.x, delta.y, 0.f);
+		}
+	}
+	if (ImGui::IsKeyDown(ImGuiKey_LeftAlt) && ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
+		ImVec2 delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left) * 0.0001;
+		if (mMiddleMouseClickedRot != delta) {
+			mMiddleMouseClickedRot = delta;
+			mViewEyeRotation -= FTVector3(delta.y, delta.x, 0.f);
+		}
+	}
+	CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", mViewEyePosition, LOOKAT_MODSPEED);
+	CommandHistory::GetInstance()->UpdateVector3Value("Look-At Rotation", mViewEyeRotation, LOOKAT_MODSPEED);
 
 	//// Updating screen center since the camera position is moved
 	//FTVector2 diff = updatedLookAtPos - lookAtPos;

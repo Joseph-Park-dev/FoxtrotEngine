@@ -77,24 +77,24 @@ FloatEditCommand::FloatEditCommand(float* valRef, float nextVal)
 
 void Vector2EditCommand::Execute()
 {
-	mPrevValue = *mValue;
-	*mValue = mNextValue;
+	mPrevValue = mValue;
+	mValue = mNextValue;
 	LogVector2("Previous Val", mPrevValue);
-	LogVector2("Current Val", *mValue);
+	LogVector2("Current Val", mValue);
 	LogVector2("Next Val", mNextValue);
 }
 
 void Vector2EditCommand::Undo()
 {
-	FTVector2 nextVal = *mValue;
-	*mValue = mPrevValue;
+	FTVector2 nextVal = mValue;
+	mValue = mPrevValue;
 	mNextValue = nextVal;
 	LogVector2("Previous Val", mPrevValue);
-	LogVector2("Current Val", *mValue);
+	LogVector2("Current Val", mValue);
 	LogVector2("Next Val", mNextValue);
 }
 
-Vector2EditCommand::Vector2EditCommand(FTVector2* valRef, FTVector2 nextVal)
+Vector2EditCommand::Vector2EditCommand(FTVector2& valRef, FTVector2 nextVal)
 	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
 {
 }

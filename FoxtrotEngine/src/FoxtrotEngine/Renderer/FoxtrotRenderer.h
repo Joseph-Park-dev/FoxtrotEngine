@@ -1,5 +1,5 @@
 #pragma once
-#pragma comment(lib, "D3DCompiler.lib");
+#pragma comment(lib, "D3DCompiler.lib")
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <directxtk/SimpleMath.h>

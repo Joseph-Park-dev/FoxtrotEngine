@@ -70,10 +70,10 @@ public:
 	void Undo() override;
 
 public:
-	Vector2EditCommand(FTVector2* valRef, FTVector2 nextVal);
+	Vector2EditCommand(FTVector2& valRef, FTVector2 nextVal);
 
 private:
-	FTVector2* mValue;
+	FTVector2& mValue;
 	FTVector2 mPrevValue;
 	FTVector2 mNextValue;
 };

@@ -26,8 +26,8 @@ public:
         return L"ColliderComponent";
     }
 
-    FTVector2* GetOffsetPosRef()      { return &mOffsetPos; }
-    FTVector2* GetScaleRef()          { return &mScale; }
+    FTVector2& GetOffsetPosRef()      { return mOffsetPos; }
+    FTVector2& GetScaleRef()          { return mScale; }
 
     void SetOffsetPos(FTVector2 offset) { mOffsetPos = offset; }
     void SetScale(FTVector2 scale) { mScale = scale; }

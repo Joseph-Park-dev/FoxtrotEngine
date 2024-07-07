@@ -6,6 +6,7 @@
 #define CAMERA_TARGET_NONE	-1
 #define HD_RESOLUTION		FTVector2(1920.f,1080.f)
 #define LOOKAT_MODSPEED		0.01f
+#define Drag_MODSPEED		0.001f
 
 class Camera
 {
@@ -24,11 +25,15 @@ public:
 	float				GetAspect()				{ return mAspect; }
 	float				GetNearZ()				{ return mNearZ; }
 	float				GetFarZ()				{ return mFarZ; }
+
+	FTVector3			GetViewEyePosition()	{ return mViewEyePosition; }
+	FTVector3			GetViewEyeRotation()	{ return mViewEyeRotation; }
 	
 	int					GetTargetActorID()		{ return mTargetActorID; }
 	FTVector2			GetRenderResolution()	{ return mRenderResolution; }
 
-	void	SetRenderResolution(FTVector2 res) { mRenderResolution = res; }
+	void	SetViewEyePos		(FTVector3 pos) { mViewEyePos = pos; }
+	void	SetRenderResolution	(FTVector2 res) { mRenderResolution = res; }
 
 private:
 	FTVector3	mViewEyePos;
@@ -40,6 +45,10 @@ private:
 	float		mNearZ;
 	float		mFarZ;
 
+	// Camrea Object Transformation
+	FTVector3	mViewEyePosition; // Additional rotation given to camera
+	FTVector3	mViewEyeRotation; // Additional rotation given to camera
+
 	Actor*		mTargetActor;
 	int			mTargetActorID;
 
@@ -50,6 +59,10 @@ public:
 #ifdef _DEBUG
 	// void Render(FoxtrotRenderer* renderer);
 	void DisplayCameraMenu();
+
+private:
+	ImVec2 mMiddleMouseClickedPos;
+	ImVec2 mMiddleMouseClickedRot;
 #endif // _DEBUG
 
 protected:

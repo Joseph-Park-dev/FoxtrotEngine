@@ -27,6 +27,7 @@ public:
 	void MergeCMDRecord();
 	void Update();
 
+	void UpdateVector2Value(std::string label, FTVector2& ref, float modSpeed);
 	void UpdateVector3Value(std::string label, FTVector3& ref, float modSpeed);
 	void UpdateFloatValue(std::string label, float* ref, float modSpeed);
 	void UpdateFloatValue(std::string label, float* ref, float val, float modSpeed, Transform* transf, TransSetFloatFunc setFunc);

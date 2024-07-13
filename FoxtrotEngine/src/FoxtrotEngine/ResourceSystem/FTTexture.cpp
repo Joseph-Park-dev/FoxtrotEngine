@@ -11,7 +11,7 @@
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 
-void FTTexture::CreateTexture(
+bool FTTexture::CreateTexture(
     FoxtrotRenderer* renderer, 
     const std::string filename
 )
@@ -57,6 +57,7 @@ void FTTexture::CreateTexture(
         renderer->GetDevice()->CreateShaderResourceView(mTexture.Get(), nullptr,
             mTextureResourceView.GetAddressOf())
     );
+    return mTexture.Get() != nullptr;
 }
 
 bool FTTexture::ReleaseTexture()

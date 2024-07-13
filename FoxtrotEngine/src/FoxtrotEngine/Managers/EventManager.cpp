@@ -18,7 +18,7 @@ void EventManager::ProcessEvent()
 	mEvent.clear();
 }
 
-void EventManager::Execute(const Event& executedEvent)
+void EventManager::Execute(const FTEvent& executedEvent)
 {
 	switch (executedEvent.incident)
 	{

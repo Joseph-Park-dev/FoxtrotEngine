@@ -187,6 +187,7 @@ namespace DX
 	{
 		if (FAILED(hr))
 		{
+			printf("%s", com_exception(hr).what());
 			throw com_exception(hr);
 		}
 	}

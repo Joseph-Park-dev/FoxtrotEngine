@@ -1,11 +1,13 @@
 ﻿#pragma once
 #include "FoxtrotEngine/ResourceSystem/MeshData.h"
 
+#include "spine/spine.h"
+
 class GeometryGenerator {
   public:
     //static std::vector<MeshData> ReadFromFile(std::string basePath,
     //                                     std::string filename);
-
+    static MeshData MakeSpineAnimation(spine::RenderCommand* command);
     static MeshData MakeSquare(float scale);
     static MeshData MakeBox();
     //static MeshData MakeCylinder(const float bottomRadius,

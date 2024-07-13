@@ -5,7 +5,7 @@
 #include "FoxtrotEngine/Core/SingletonMacro.h"
 #include "FoxtrotEngine/Core/EventType.h"
 
-struct Event
+struct FTEvent
 {
 	EVENT_TYPE incident;
 	ULONG_PTR  lParam;
@@ -17,16 +17,16 @@ class EventManager
 	SINGLETON(EventManager);
 
 public:
-	void AddEvent(const Event& addedEvent) 
+	void AddEvent(const FTEvent& addedEvent)
 			{ mEvent.push_back(addedEvent); }
 
 private:
-	std::vector<Event> mEvent;
+	std::vector<FTEvent> mEvent;
 
 public:
 	void ProcessEvent();
 
 private:
-	void Execute(const Event& executedEvent);
+	void Execute(const FTEvent& executedEvent);
 };
 

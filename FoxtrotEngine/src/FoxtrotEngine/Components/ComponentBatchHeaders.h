@@ -13,3 +13,4 @@
 #include "FoxtrotEngine/Components/TileMapComponent.h"
 #include "FoxtrotEngine/Components/GunFiringComponent.h"
 #include "FoxtrotEngine/Components/MeshRendererComponent.h"
+#include "FoxtrotEngine/Components/SpineAnimRendererComponent.h"

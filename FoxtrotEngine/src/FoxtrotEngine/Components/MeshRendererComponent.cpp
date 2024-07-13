@@ -65,10 +65,9 @@ void MeshRendererComponent::RenderMesh(FoxtrotRenderer* renderer)
 	}
 }
 
-void MeshRendererComponent::SetTexture(const std::string fileName)
+void MeshRendererComponent::SetTexture(FTTexture* texture)
 {
-	mMesh->texture = new FTTexture;
-	mMesh->texture->CreateTexture(mRenderer, fileName);
+	mMesh->texture = texture;
 }
 
 MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder)
@@ -79,6 +78,7 @@ MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int up
 
 MeshRendererComponent::~MeshRendererComponent(){
 	delete mMesh->texture;
+	delete mMesh;
 }
 
 void MeshRendererComponent::UpdateConstantBufferModel(Mesh* mesh, Transform* transform)

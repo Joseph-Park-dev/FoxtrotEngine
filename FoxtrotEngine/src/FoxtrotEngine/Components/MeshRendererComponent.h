@@ -6,6 +6,7 @@
 class Actor;
 class Camera;
 class Transform;
+class FTTexture;
 struct Mesh;
 struct MeshData;
 
@@ -23,7 +24,7 @@ public:
 
 protected:
 	virtual void InitializeMesh(MeshData&& meshData);
-			void UpdateMesh	(Transform* transform, Camera* cameraInstance);
+	virtual	void UpdateMesh	(Transform* transform, Camera* cameraInstance);
 			void RenderMesh	(FoxtrotRenderer* renderer);
 
 public:
@@ -32,12 +33,17 @@ public:
 protected:
 	FoxtrotRenderer* GetRenderer()	{ return mRenderer; }
 	Mesh*			 GetMesh()		{ return mMesh; }
+	std::string		 GetKey()		{ return mKey; }
 
-	void			 SetTexture(std::string fileName);
+	void			 SetKey		(std::string key) { mKey = key; }
+	void			 SetTexture	(FTTexture* texture);
 
 private:
 	FoxtrotRenderer* mRenderer;
 	Mesh*			 mMesh;
+
+	// Identifier for the object in the Resource Map from the ResourceManager instance.
+	std::string      mKey;
 
 public:
 	MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder);

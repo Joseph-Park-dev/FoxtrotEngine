@@ -12,8 +12,8 @@ struct PixelShaderInput
 
 // SV_Target -> 결과가 render target 에 저장
 float4 main(PixelShaderInput input) : SV_TARGET {
-    return float4(input.color, 1.0f);
-    //return g_texture0.Sample(g_sampler, input.texcoord);
+    //return float4(input.color, 1.0f);
+    return g_texture0.Sample(g_sampler, input.texcoord);
 }
 
 

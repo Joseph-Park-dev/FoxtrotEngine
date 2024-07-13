@@ -20,6 +20,16 @@ void Scene_Start::LoadData()
 	FoxtrotRenderer* currRenderer = FTCoreEditor::GetInstance()->GetGameRenderer();
 	std::string asteroidSprite = "D:/[2024_01]/FoxtrotEngine_DirectX/assets/Asteroid.png";
 	ResourceManager::GetInstance()->LoadTexture(currRenderer, asteroidSprite);
+
+	std::string pngPath = "D:/[2024_01]/FoxtrotEngine_DirectX/assets/SpineTest/[Player] ver.01_Spine-File.png";
+	ResourceManager::GetInstance()->LoadTexture(currRenderer, pngPath);
+	std::string atlasPath = "D:/[2024_01]/FoxtrotEngine_DirectX/assets/SpineTest/[Player] ver.01_Spine-File.atlas";
+	std::string skeletonDataPath = "D:/[2024_01]/FoxtrotEngine_DirectX/assets/SpineTest/skeleton.json";
+	ResourceManager::GetInstance()->LoadSpineAnimation(
+		"RunningGrandpa",
+		atlasPath,
+		skeletonDataPath
+	);
 #endif // _DEBUG
 }
 

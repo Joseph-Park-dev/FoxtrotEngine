@@ -257,9 +257,6 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\GeometryGenerator.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTAnimation.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTResource.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineAnimation.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTTexture.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\Tile.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene.cpp" />
@@ -318,6 +315,7 @@
     <ClCompile Include="FoxtrotEngine\src\include\spine\SkeletonClipping.cpp" />
     <ClCompile Include="FoxtrotEngine\src\include\spine\SkeletonData.cpp" />
     <ClCompile Include="FoxtrotEngine\src\include\spine\SkeletonJson.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\include\spine\SkeletonRenderer.cpp" />
     <ClCompile Include="FoxtrotEngine\src\include\spine\Skin.cpp" />
     <ClCompile Include="FoxtrotEngine\src\include\spine\Slot.cpp" />
     <ClCompile Include="FoxtrotEngine\src\include\spine\SlotData.cpp" />
@@ -334,6 +332,8 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\MeshRendererComponent.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Actors\RectTransform.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Rect.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpineAnimRendererComponent.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets\Scripts\ActorList\Asteroid.h" />
@@ -419,9 +419,6 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\resource1.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTAnimation.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTResource.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineAnimation.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTTexture.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\Mesh.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\MeshData.h" />
@@ -511,6 +508,7 @@
     <ClInclude Include="FoxtrotEngine\src\include\spine\SkeletonClipping.h" />
     <ClInclude Include="FoxtrotEngine\src\include\spine\SkeletonData.h" />
     <ClInclude Include="FoxtrotEngine\src\include\spine\SkeletonJson.h" />
+    <ClInclude Include="FoxtrotEngine\src\include\spine\SkeletonRenderer.h" />
     <ClInclude Include="FoxtrotEngine\src\include\spine\Skin.h" />
     <ClInclude Include="FoxtrotEngine\src\include\spine\Slot.h" />
     <ClInclude Include="FoxtrotEngine\src\include\spine\SlotData.h" />
@@ -534,6 +532,8 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\MeshRendererComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Actors\RectTransform.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Rect.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpineAnimRendererComponent.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineAnimation.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

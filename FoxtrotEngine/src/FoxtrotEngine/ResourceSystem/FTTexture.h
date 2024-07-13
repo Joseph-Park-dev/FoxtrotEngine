@@ -10,7 +10,7 @@ class FTTexture :
     public FTResource
 {
 public:
-    void CreateTexture(FoxtrotRenderer* renderer, const std::string filename);
+    bool CreateTexture(FoxtrotRenderer* renderer, const std::string filename);
     bool ReleaseTexture();
 
 public:

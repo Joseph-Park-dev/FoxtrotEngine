@@ -2,10 +2,11 @@
 
 #include "FoxtrotEngine/Managers/ResourceManager.h"
 #include "FoxtrotEngine/ResourceSystem/FTTexture.h"
-//#include "FoxtrotEngine/ResourceSystem/FTSpineAnimation.h"
+#include "FoxtrotEngine/ResourceSystem/FTSpineAnimation.h"
 #include "FoxtrotEngine/Core/FTCore.h"
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
+#include "spine/Atlas.h"
 
 void ResourceManager::LoadTexture(FoxtrotRenderer* renderer, const std::string fileName)
 {
@@ -17,8 +18,8 @@ void ResourceManager::LoadTexture(FoxtrotRenderer* renderer, const std::string f
 		printf("Message: Loading FTTexture %s\n", fileName.c_str());
 		ptTex = new FTTexture;
 		ptTex->SetRelativePath(fileName);
-		//if (!ptTex->CreateTexture(renderer))
-		//	printf("Error: ResourceManager::LoadTexture() -> CreateTexture failed. \n");
+		if (!ptTex->CreateTexture(renderer, fileName))
+			printf("Error: ResourceManager::LoadTexture() -> CreateTexture failed. \n");
 		mMapTextures.insert(std::make_pair(fileName, ptTex));
 	}
 }
@@ -51,12 +52,31 @@ void ResourceManager::UpdateTexture(FoxtrotRenderer* renderer, FTTexture* textur
 			LogString("Error: ResourceManager::UpdateTexture() : ReleaseTexture failed");
 			return;
 		}
-		printf("Message: Loading FTTexture %s\n", texture->GetRelativePath());
+		printf("Message: Loading FTTexture %s\n", texture->GetRelativePath().c_str());
 		//if (!texture->CreateTexture(renderer))
 		//	printf("Error: ResourceManager::LoadTexture() -> UpdateTexture failed. \n");
 	}
 	else
-		printf("Warning : FTTexture %s is not loaded. Aborting update...\n");
+		printf("Warning : FTTexture %s is not loaded. Aborting update...\n", texture->GetRelativePath().c_str());
+}
+
+bool ResourceManager::LoadSpineAnimation(std::string key, std::string atlasPath, std::string skeletonDataPath)
+{
+	FTSpineAnimation* spineAnim = new FTSpineAnimation;
+	if (!spineAnim->CreateAtlas(atlasPath, mSpineTextureLoader)) {
+		LogString("ResourceManager::LoadSpineAnimation()-> CreateAtlas() Failed.");
+		return false;
+	};
+	if (!spineAnim->CreateSkeletonDataJSON(skeletonDataPath)) {
+		LogString("ResourceManager::LoadSpineAnimation()-> CreateSkeletonData() Failed.");
+		return false;
+	}
+	if (!spineAnim->CreateAnimationStateData()) {
+		LogString("ResourceManager::LoadSpineAnimation()-> CreateAnimationStateData() Failed.");
+		return false;
+	}
+	mMapSpineAnimData.insert(std::make_pair(key, spineAnim));
+	return true;
 }
 
 FTTexture* ResourceManager::GetLoadedTexture(const std::string fileName)
@@ -71,38 +91,17 @@ FTTexture* ResourceManager::GetLoadedTexture(const std::string fileName)
 	}
 }
 
-//FTSpineAnimation* ResourceManager::GetLoadedSpineTexture(spine::String fileName)
-//{
-//	std::string fileNameStr = std::string(fileName.buffer());
-//	FTTexture* ptTex = FindTexture(fileNameStr);
-//	if (ptTex != nullptr)
-//		return dynamic_cast<FTSpineAnimation*>(ptTex);
-//	else
-//	{
-//		printf("Error: Unable to find FTTexture with fileName; %s\n", fileNameStr.c_str());
-//		return nullptr;
-//	}
-//}
-//
-//// Loads spine atlas 
-//void ResourceManager::load(spine::AtlasPage& page, const spine::String& path)
-//{
-//	FTTexture* tex = ResourceManager::GetInstance()->GetLoadedTexture(path.buffer());
-//	DirectX::ScratchImage* scratchImg = tex->GetScratchImage();
-//	if (!scratchImg) return;
-//	//page.texture = tex->GetResourceView();
-//	page.texture = dynamic_cast<FTSpineAnimation*>(tex);
-//	page.width = scratchImg->GetImages()->width;
-//	page.height = scratchImg->GetImages()->height;
-//	page.texturePath = path;
-//
-//	/* if (page.magFilter == TextureFilter_Linear) texture->setSmooth(true);
-//	 if (page.uWrap == TextureWrap_Repeat && page.vWrap == TextureWrap_Repeat) texture->setRepeated(true);*/
-//}
-//
-//void ResourceManager::unload(void* texture)
-//{
-//}
+FTSpineAnimation* ResourceManager::GetLoadedSpineAnimation(std::string key)
+{
+	FTSpineAnimation* ptAnim = FindSpineAnimation(key);
+	if (ptAnim != nullptr)
+		return ptAnim;
+	else
+	{
+		printf("Error: Unable to find FTTexture with keyName; %s\n", key.c_str());
+		return nullptr;
+	}
+}
 
 FTTexture* ResourceManager::FindTexture(const std::string fileName)
 {
@@ -112,6 +111,18 @@ FTTexture* ResourceManager::FindTexture(const std::string fileName)
 	else
 	{
 		printf("Error: Cannot find texture %s\n", fileName.c_str());
+		return nullptr;
+	}
+}
+
+FTSpineAnimation* ResourceManager::FindSpineAnimation(const std::string keyName)
+{
+	auto iter = mMapSpineAnimData.find(keyName);
+	if (iter != mMapSpineAnimData.end())
+		return iter->second;
+	else
+	{
+		printf("Error: Cannot find SpineAnimation %s\n", keyName.c_str());
 		return nullptr;
 	}
 }
@@ -130,6 +141,24 @@ ResourceManager::~ResourceManager()
 }
 
 ResourceManager::ResourceManager()
+	: mSpineTextureLoader(new SpineTextureLoader)
 {
 
+}
+
+void ResourceManager::LoadToSpineTexture(spine::AtlasPage& page, spine::String fileName)
+{
+	mSpineTextureLoader->load(page, fileName);
+}
+
+void SpineTextureLoader::load(spine::AtlasPage& page, const spine::String& path)
+{
+	FTTexture* tex = ResourceManager::GetInstance()->GetLoadedTexture(path.buffer());
+	if (tex == nullptr)
+		LogString("SpineTextureLoader::Load() -> Failed to load texture");
+	page.texture = tex;
+}
+
+void SpineTextureLoader::unload(void* texture)
+{
 }

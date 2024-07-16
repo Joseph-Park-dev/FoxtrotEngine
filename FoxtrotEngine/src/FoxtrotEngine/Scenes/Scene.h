@@ -6,7 +6,7 @@
 
 class Actor;
 class FTCore;
-class SpriteComponent;
+class SpriteRendererComponent;
 class KeyInputManager;
 
 // Base class that every scene object is derived from

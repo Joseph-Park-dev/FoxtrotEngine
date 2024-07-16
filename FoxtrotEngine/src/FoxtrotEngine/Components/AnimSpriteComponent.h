@@ -1,11 +1,11 @@
 #pragma once
-#include "FoxtrotEngine/Components/SpriteComponent.h"
+#include "FoxtrotEngine/Components/SpriteRendererComponent.h"
 
 #include <vector>
 
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
 
-class AnimSpriteComponent :public SpriteComponent
+class AnimSpriteComponent :public SpriteRendererComponent
 {
 public:
 	void SetAnimTextures(const std::vector<FTTexture*>& textures);

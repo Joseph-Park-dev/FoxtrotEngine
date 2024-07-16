@@ -1,6 +1,6 @@
 #include "Scripts/ActorList/Asteroid.h"
 
-#include "FoxtrotEngine/Components/SpriteComponent.h"
+#include "FoxtrotEngine/Components/SpriteRendererComponent.h"
 #include "FoxtrotEngine/Components/MoveComponent.h"
 #include "FoxtrotEngine/Math/Random.h"
 #include "FoxtrotEngine/Managers/ResourceManager.h"
@@ -23,7 +23,7 @@
 //{
 //	//GetTransform()->SetRotation(Random::GetFloatRange(0.0f, Math::TwoPi));
 //
-//	SpriteComponent* sc = new SpriteComponent(this);
+//	SpriteRendererComponent* sc = new SpriteRendererComponent(this);
 //	/*sc->SetTexture(
 //		ResourceManager::GetInstance()->GetLoadedTexture(L"Enemy01")
 //	);*/

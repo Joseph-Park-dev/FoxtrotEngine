@@ -1,5 +1,5 @@
 #pragma once
-#include "FoxtrotEngine/Components/SpriteComponent.h"
+#include "FoxtrotEngine/Components/SpriteRendererComponent.h"
 
 #include <string>
 
@@ -9,7 +9,7 @@
 class FTVector2;
 
 class TileMapComponent :
-    public SpriteComponent
+    public SpriteRendererComponent
 {
 public:
     void InitializeTileMap(const std::wstring& fileName, int tileSizeX, int tileSizeY);

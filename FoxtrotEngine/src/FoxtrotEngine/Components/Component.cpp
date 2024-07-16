@@ -16,7 +16,7 @@ const char* Component::TypeNames[NUM_COMPONENT_TYPES] =
 	"InputMoveComponent",
 	"MoveComponent",
 	"Rigidbody2DComponent",
-	"SpriteComponent",
+	"SpriteRendererComponent",
 	"TileMapComponent",
 };
 

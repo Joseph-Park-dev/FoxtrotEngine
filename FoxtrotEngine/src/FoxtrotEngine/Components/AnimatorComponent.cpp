@@ -79,14 +79,14 @@ FTAnimation* AnimatorComponent::FindAnimation(const std::wstring& name)
 
 void AnimatorComponent::SaveProperties(std::ofstream& ofs)
 {
-	SpriteComponent::SaveProperties(ofs);
+	SpriteRendererComponent::SaveProperties(ofs);
 	for (const std::pair<std::wstring, FTAnimation*>& pair : mMapAnimation)
 		FileIOHelper::AddWString(ofs, pair.first);
 }
 
 void AnimatorComponent::LoadProperties(std::ifstream& ifs)
 {
-	SpriteComponent::LoadProperties(ifs);
+	SpriteRendererComponent::LoadProperties(ifs);
 	LogString("Animator LoadProperties() needs to be implemented");
 }
 

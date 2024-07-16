@@ -6,7 +6,7 @@
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
 
 class Transform;
-class SpriteComponent;
+class SpriteRendererComponent;
 class ColliderComponent;
 class KeyInputManager;
 class Actor;

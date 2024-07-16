@@ -27,7 +27,7 @@ public:
 		InputMoveComponent,
 		MoveComponent,
 		Rigidbody2DComponent,
-		SpriteComponent,
+		SpriteRendererComponent,
 		TileMapComponent,
 
 		NUM_COMPONENT_TYPES

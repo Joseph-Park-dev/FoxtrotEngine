@@ -1,5 +1,5 @@
 #pragma once
-#include "FoxtrotEngine/Components/SpriteComponent.h"
+#include "FoxtrotEngine/Components/SpriteRendererComponent.h"
 
 #include <vector>
 
@@ -13,7 +13,7 @@ struct BGTexture
 	FTVector2  mOffset;
 };
 
-class BGSpriteComponent : public SpriteComponent
+class BGSpriteComponent : public SpriteRendererComponent
 {
 public:
 	void SetBGTextures(const std::vector<FTTexture*>& textures);

@@ -3,14 +3,14 @@
 #include "FoxtrotEngine/ResourceSystem/FTTexture.h"
 
 AnimSpriteComponent::AnimSpriteComponent(Actor* owner, int drawOrder, int updateOrder)
-	: SpriteComponent(owner, drawOrder)
+	: SpriteRendererComponent(owner, drawOrder)
 	, mCurrFrame(0.f)
 	, mAnimFPS(24.f)
 {}
 
 void AnimSpriteComponent::Update(float deltaTime)
 {
-	SpriteComponent::Update(deltaTime);
+	SpriteRendererComponent::Update(deltaTime);
 
 	if (mAnimTextures.size() > 0)
 	{

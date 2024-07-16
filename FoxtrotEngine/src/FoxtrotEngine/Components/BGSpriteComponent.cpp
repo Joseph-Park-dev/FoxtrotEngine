@@ -5,13 +5,13 @@
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 
 BGSpriteComponent::BGSpriteComponent(Actor* owner, int drawOrder, int updateOrder)
-	:SpriteComponent(owner, drawOrder)
+	:SpriteRendererComponent(owner, drawOrder)
 	, mScrollSpeed(0.0f)
 {}
 
 void BGSpriteComponent::Update(float deltaTime)
 {
-	SpriteComponent::Update(deltaTime);
+	SpriteRendererComponent::Update(deltaTime);
 	for (auto& bg : mBGTextures)
 	{
 		bg.mOffset.x += mScrollSpeed * deltaTime;

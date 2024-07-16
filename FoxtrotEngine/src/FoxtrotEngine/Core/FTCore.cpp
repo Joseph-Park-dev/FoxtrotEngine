@@ -7,7 +7,7 @@
 #include "FoxtrotEngine/Core/WindowProcess.h"
 #include "FoxtrotEngine/Core/Timer.h"
 #include "FoxtrotEngine/Actors/Actor.h"
-#include "FoxtrotEngine/Components/SpriteComponent.h"
+#include "FoxtrotEngine/Components/SpriteRendererComponent.h"
 #include "FoxtrotEngine/Managers/KeyInputManager.h"
 #include "FoxtrotEngine/Managers/SceneManager.h"
 #include "FoxtrotEngine/Managers/ResourceManager.h"

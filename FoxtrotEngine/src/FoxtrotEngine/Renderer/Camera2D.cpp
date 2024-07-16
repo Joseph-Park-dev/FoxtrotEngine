@@ -7,7 +7,7 @@
 #include "FoxtrotEngine/Scenes/Scene.h"
 #include "FoxtrotEngine/Actors/Actor.h"
 #include "FoxtrotEngine/Actors/Transform.h"
-#include "FoxtrotEngine/Components/SpriteComponent.h"
+#include "FoxtrotEngine/Components/SpriteRendererComponent.h"
 #include "FoxtrotEngine/ResourceSystem/Tile.h"
 #include "FoxtrotEngine/Math/Random.h"
 
@@ -179,7 +179,7 @@ void Camera2D::SetTargetActorID(int id)
 	mTargetActorID = id;
 }
 
-bool Camera2D::IsInRenderedArea(SpriteComponent* sprite) const
+bool Camera2D::IsInRenderedArea(SpriteRendererComponent* sprite) const
 {
 	//FTVector2 screenPosLeftTop = FTVector2(mRenderArea.x, mRenderArea.y);
 	//FTVector2 screenPosRightBottom = FTVector2(mRenderArea.x + mRenderArea.w, mRenderArea.y + mRenderArea.h);

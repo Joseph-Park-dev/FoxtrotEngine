@@ -6,7 +6,7 @@
 #include "FoxtrotEngine/Physics/Bounds.h"
 
 class Actor;
-class SpriteComponent;
+class SpriteRendererComponent;
 class Tile;
 struct RotOscilliation;
 struct Oscilliation;
@@ -59,7 +59,7 @@ public:
 	void			SetTargetActorID(int id);
 	void			SetScreenCenter(FTVector2 center) { mScreenCenter = center; }
 
-	bool			IsInRenderedArea(SpriteComponent* sprite) const;
+	bool			IsInRenderedArea(SpriteRendererComponent* sprite) const;
 	bool			IsInRenderedArea(Tile* tile) const;
 
 	virtual FTVector2 ConvertWorldPosToScreen(FTVector2 worldPos) const;

@@ -14,7 +14,7 @@
 #include "FoxtrotEngine/Components/InputMoveComponent.h"
 #include "FoxtrotEngine/Components/ColliderComponent.h"
 #include "FoxtrotEngine/Components/Rigidbody2DComponent.h"
-#include "FoxtrotEngine/Components/SpriteComponent.h"
+#include "FoxtrotEngine/Components/SpriteRendererComponent.h"
 #include "FoxtrotEngine/Components/GunFiringComponent.h"
 
 Ship::Ship(Scene* scene)

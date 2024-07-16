@@ -4,7 +4,7 @@
 
 #include "FoxtrotEngine/Actors/Actor.h"
 #include "FoxtrotEngine/Actors/ActorGroup.h"
-#include "FoxtrotEngine/Components/SpriteComponent.h"
+#include "FoxtrotEngine/Components/SpriteRendererComponent.h"
 #include "FoxtrotEngine/Managers/EventManager.h"
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
 #include "FoxtrotEngine/Renderer/Camera2D.h"

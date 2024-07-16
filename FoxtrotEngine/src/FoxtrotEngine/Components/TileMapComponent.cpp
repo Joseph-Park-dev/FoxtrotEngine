@@ -137,7 +137,7 @@ void TileMapComponent::RenderEX(FoxtrotRenderer* renderer)
 }
 
 TileMapComponent::TileMapComponent(Actor* owner, int drawOrder, int UpdateOrder)
-    : SpriteComponent(owner, drawOrder)
+    : SpriteRendererComponent(owner, drawOrder)
     , mTileCountX(0)
     , mTileCountY(0)
     , mCurrentTileMap(nullptr)
@@ -170,12 +170,12 @@ void TileMapComponent::SetScreenRectEditorView(FTVector2 worldPos, Tile* tile)
 
 void TileMapComponent::SaveProperties(std::ofstream& ofs)
 {
-    SpriteComponent::SaveProperties(ofs);
+    SpriteRendererComponent::SaveProperties(ofs);
 }
 
 void TileMapComponent::LoadProperties(std::ifstream& ifs)
 {
-    SpriteComponent::LoadProperties(ifs);
+    SpriteRendererComponent::LoadProperties(ifs);
 }
 #endif // _DEBUG
 

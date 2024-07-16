@@ -12,6 +12,11 @@ struct Mesh;
 class SpriteRendererComponent : public MeshRendererComponent
 {
 public:
+	virtual void Initialize(FTCore* coreInstance)		override;
+	virtual void Update(float deltaTime)			override;
+	virtual void Render(FoxtrotRenderer* renderer)	override;
+
+public:
 	int			 GetTexWidth()  const { return mTexWidth; }
 	int			 GetTexHeight() const { return mTexHeight; }
 	std::wstring GetName()		const override
@@ -20,17 +25,11 @@ public:
 	}
 	void		 SetTexWidth	(int texWidth)  { mTexWidth = texWidth; }
 	void		 SetTexHeight	(int texHeight) { mTexHeight = texHeight; }
-	void		 SetTexture		(FTTexture* texture);
 	void		 UpdateTexture	(FoxtrotRenderer* renderer, std::string fileName);
 
 public:
-	virtual void Initialize		(FTCore* coreInstance)		override;
-	virtual void Update			(float deltaTime)			override;
-	virtual void Render			(FoxtrotRenderer* renderer)	override;
-
-public:
-			 SpriteRendererComponent(class Actor* owner, 
-				 int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
+			SpriteRendererComponent
+			(class Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
 	virtual ~SpriteRendererComponent() override;
 
 private:

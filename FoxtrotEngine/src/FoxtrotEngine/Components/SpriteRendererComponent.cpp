@@ -27,11 +27,6 @@ SpriteRendererComponent::~SpriteRendererComponent()
 {
 }
 
-void SpriteRendererComponent::SetTexture(FTTexture* texture)
-{
-	GetMesh()->texture = texture;
-}
-
 void SpriteRendererComponent::UpdateTexture(FoxtrotRenderer* renderer, std::string fileName)
 {
 	std::vector<Mesh*>& meshes = renderer->GetMeshes();
@@ -44,7 +39,6 @@ void SpriteRendererComponent::UpdateTexture(FoxtrotRenderer* renderer, std::stri
 		//FTTexture* texture = (*iter)->texture;
 		//ResourceManager::GetInstance()->UpdateTexture(renderer, texture, channels);
 		//mMesh->texture = ResourceManager::GetInstance()->GetLoadedTexture(fileName);
-		//SetTexture(renderer, fileName);
 	}
 }
 
@@ -93,10 +87,6 @@ void SpriteRendererComponent::EditorUIUpdate()
 		UpdateSprite(GetRenderer());
 		ImGui::SeparatorText("Sprite Size");
 		UpdateScale();
-		if (ImGui::Button("Apply")){
-			if(GetMesh() && GetMesh()->texture)
-				UpdateTexture(GetRenderer(), GetMesh()->texture->GetRelativePath());
-		}
 	}
 }
 
@@ -112,16 +102,43 @@ void SpriteRendererComponent::UpdateSprite(FoxtrotRenderer* renderer)
 		config.path = ".";
 		config.countSelectionMax = 1;
 		ImGuiFileDialog::Instance()->OpenDialog("SelectSprite", "Select Sprite", SPRITE_FORMAT_SUPPORTED, config);
+		ImGui::OpenPopup("Select Sprite");
+		
 	}
 
-	if (ImGuiFileDialog::Instance()->Display("SelectSprite")){
-		if (ImGuiFileDialog::Instance()->IsOk()){
-			std::string spritePath = ImGuiFileDialog::Instance()->GetCurrentPath() + "\\" +
-				ImGuiFileDialog::Instance()->GetCurrentFileName();
-			//SetTexture(renderer, spritePath);
+	if (ImGui::BeginPopupModal("Select Sprite", NULL, ImGuiWindowFlags_MenuBar)) {
+		std::unordered_map<std::string, FTTexture*>& texturesMap = ResourceManager::GetInstance()->GetTexturesMap();
+		if (ImGui::TreeNode("Selection State: Single Selection"))
+		{
+			std::string spriteName = {};
+			static int selected = -1;
+		    int i = 0;
+			for (auto iter = texturesMap.begin(); iter != texturesMap.end(); ++iter, ++i)
+			{
+				if (ImGui::Selectable((*iter).first.c_str(), selected == i))
+				{
+					spriteName = (*iter).first;
+					selected = i;
+				}
+			}
+			ImGui::TreePop();
+			if (selected != -1) {
+				SetTexture(texturesMap[spriteName]);
+			}
 		}
-		ImGuiFileDialog::Instance()->Close();
+		if (ImGui::Button("Close"))
+			ImGui::CloseCurrentPopup();
+		ImGui::EndPopup();
 	}
+
+	//if (ImGuiFileDialog::Instance()->Display("SelectSprite")){
+	//	if (ImGuiFileDialog::Instance()->IsOk()){
+	//		std::string spritePath = ImGuiFileDialog::Instance()->GetCurrentPath() + "\\" +
+	//			ImGuiFileDialog::Instance()->GetCurrentFileName();
+	//		SetTexture(renderer, spritePath);
+	//	}
+	//	ImGuiFileDialog::Instance()->Close();
+	//}
 }
 
 void SpriteRendererComponent::UpdateTexWidth(){
@@ -143,8 +160,7 @@ void SpriteRendererComponent::SaveProperties(std::ofstream& ofs){
 	FileIOHelper::AddFloat(ofs, mTexWidth);
 	FileIOHelper::AddInt(ofs, mTexHeight);
 
-	if(GetMesh()->texture)
-		FileIOHelper::AddBasicString(ofs, GetMesh()->texture->GetRelativePath());
+	//FileIOHelper::AddFTTexture(ofs, GetMesh()->texture);
 }
 
 void SpriteRendererComponent::LoadProperties(std::ifstream& ifs){
@@ -152,8 +168,6 @@ void SpriteRendererComponent::LoadProperties(std::ifstream& ifs){
 	FileIOHelper::LoadInt(ifs, mTexWidth);
 	FileIOHelper::LoadInt(ifs, mTexHeight);
 
-	if (GetMesh() && GetMesh()->texture){
-		std::string fileName = FileIOHelper::LoadBasicString(ifs);
-	}
+	//FileIOHelper::LoadFTTexture(ifs, GetMesh()->texture);
 }
 #endif

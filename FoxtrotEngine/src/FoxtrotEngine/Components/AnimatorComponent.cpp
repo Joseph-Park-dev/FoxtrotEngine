@@ -33,7 +33,7 @@ void AnimatorComponent::CreateAnimationFromTile(
 	FTAnimation* animation = FindAnimation(name);
 	if (animation == nullptr)
 	{
-		InitializeTileMap(fileName, tileSizeX, tileSizeY);
+		//InitializeTileMap(fileName, tileSizeX, tileSizeY);
 		animation = new FTAnimation;
 		animation->SetName(name);
 		animation->SetAnimator(this);
@@ -90,54 +90,54 @@ void AnimatorComponent::LoadProperties(std::ifstream& ifs)
 	LogString("Animator LoadProperties() needs to be implemented");
 }
 
-void AnimatorComponent::SaveAnimation(const std::wstring& animName, const std::wstring& path)
-{
-	FILE* file = nullptr;
-	_wfopen_s(&file, path.c_str(), L"wb");
-	assert(file);
-
-	fprintf(file, "[Animation Name]\n");
-	// This ensures the Animation with animName has been created.
-	std::string strName = std::string(animName.begin(), animName.end());
-	fprintf(file, strName.c_str());
-	fprintf(file, "\n");
-
-	fprintf(file, "[Frame Count]\n");
-	// This ensures the Animation with animName has been created.
-	size_t frameCount = mMapAnimation[animName]->GetReel().size();
-	fprintf(file, "%d\n", frameCount);
-
-	fprintf(file, "[Frame Data]\n");
-	std::vector<AnimationFrame> mReel = mMapAnimation[animName]->GetReel();
-	for (size_t i = 0; i < mReel.size(); ++i)
-	{
-		fprintf(file, "[Frame Index]\n");
-		fprintf(file, "%d\n", i);
-		fprintf(file, "[Tile Width]\n");
-		fprintf(file, "%d\n", mReel[i].tile.GetWidth());
-		fprintf(file, "[Tile Height]\n");
-		fprintf(file, "%d\n", mReel[i].tile.GetHeight());
-		fprintf(file, "[Tile Index]\n");
-		fprintf(file, "%d\n", mReel[i].tile.GetTileNum());
-		fprintf(file, "[Frame Duration]\n");
-		fprintf(file, "%f\n", mReel[i].duration);
-	}
-	fprintf(file, "[FTTexture Name]\n");
-	// This ensures the Animation with animName has been created.
-	//std::wstring strKey = GetTexture()->GetKey();
-	//strName = std::string(strKey.begin(), strKey.end());
-	fprintf(file, strName.c_str());
-	fprintf(file, "\n");
-
-	fprintf(file, "[FTTexture Path]\n");
-	// This ensures the Animation with animName has been created.
-	//std::wstring strPath = GetTexture()->GetRelativePath();
-	//strName = std::string(strPath.begin(), strPath.end());
-	fprintf(file, strName.c_str());
-	fprintf(file, "\n");
-
-	fclose(file);
-}
+//void AnimatorComponent::SaveAnimation(const std::wstring& animName, const std::wstring& path)
+//{
+//	FILE* file = nullptr;
+//	_wfopen_s(&file, path.c_str(), L"wb");
+//	assert(file);
+//
+//	fprintf(file, "[Animation Name]\n");
+//	// This ensures the Animation with animName has been created.
+//	std::string strName = std::string(animName.begin(), animName.end());
+//	fprintf(file, strName.c_str());
+//	fprintf(file, "\n");
+//
+//	fprintf(file, "[Frame Count]\n");
+//	// This ensures the Animation with animName has been created.
+//	size_t frameCount = mMapAnimation[animName]->GetReel().size();
+//	fprintf(file, "%d\n", frameCount);
+//
+//	fprintf(file, "[Frame Data]\n");
+//	std::vector<AnimationFrame> mReel = mMapAnimation[animName]->GetReel();
+//	for (size_t i = 0; i < mReel.size(); ++i)
+//	{
+//		fprintf(file, "[Frame Index]\n");
+//		fprintf(file, "%d\n", i);
+//		fprintf(file, "[Tile Width]\n");
+//		fprintf(file, "%d\n", mReel[i].tile.GetWidth());
+//		fprintf(file, "[Tile Height]\n");
+//		fprintf(file, "%d\n", mReel[i].tile.GetHeight());
+//		fprintf(file, "[Tile Index]\n");
+//		fprintf(file, "%d\n", mReel[i].tile.GetTileNum());
+//		fprintf(file, "[Frame Duration]\n");
+//		fprintf(file, "%f\n", mReel[i].duration);
+//	}
+//	fprintf(file, "[FTTexture Name]\n");
+//	// This ensures the Animation with animName has been created.
+//	//std::wstring strKey = GetTexture()->GetKey();
+//	//strName = std::string(strKey.begin(), strKey.end());
+//	fprintf(file, strName.c_str());
+//	fprintf(file, "\n");
+//
+//	fprintf(file, "[FTTexture Path]\n");
+//	// This ensures the Animation with animName has been created.
+//	//std::wstring strPath = GetTexture()->GetRelativePath();
+//	//strName = std::string(strPath.begin(), strPath.end());
+//	fprintf(file, strName.c_str());
+//	fprintf(file, "\n");
+//
+//	fclose(file);
+//}
 
 //void AnimatorComponent::LoadAnimation(const std::wstring& path)
 //{

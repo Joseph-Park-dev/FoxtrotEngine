@@ -1,47 +1,18 @@
 #pragma once
-#include "FoxtrotEngine/Physics/Bounds.h"
+#include "FoxtrotEngine/Renderer/Rect.h"
 
 class Tile
 {
 public:
-    Bounds*   GetMapRect()      { return &mMapRect; }
-    Bounds*   GetScreenRect()   { return &mScreenRect; }
-    float     GetWidth()        { return mMapRect.w; }
-    float     GetHeight()       { return mMapRect.h; }
-    FTVector2   GetPosOnMap()     { return FTVector2(mMapRect.x, mMapRect.y); }
-    int       GetPosOnMapX()    { return mMapRect.x; }
-    int       GetPosOnMapY()    { return mMapRect.y; }
-    int       GetTileNum()      { return mTileNum; }
-    int       GetIndexX()       { return mTileIndexX; }
-    int       GetIndexY()       { return mTileIndexY; }
+    Rect& GetMapRect()      { return mMapRect; }
+    int  GetTileNumber()   { return mTileNumber; }
+    int  GetTileIndexX()   { return mTileIndexX; }
+    int  GetTileIndexY()   { return mTileIndexY; }
 
-    FTVector2   GetPosOnScreen()  { return FTVector2(mScreenRect.x, mScreenRect.y); }
-    FTVector2   GetScale()        { return FTVector2(mScreenRect.w, mScreenRect.h); }
-
-    void    SetMapRect(Bounds rect)      { mMapRect = rect; }
-    void    SetScreenRect(Bounds rect)   { mScreenRect = rect; }
-    void    SetWidth(int width)          { mMapRect.w = width; }
-    void    SetHeight(int height)        { mMapRect.h = height; }
-    void    SetPosOnMap(FTVector2 pos) 
-    { 
-        mMapRect.x = static_cast<int>(pos.x);
-        mMapRect.y = static_cast<int>(pos.y);
-    }
-    void    SetPosOnMapX(int posX)      { mMapRect.x = posX; }
-    void    SetPosOnMapY(int posY)      { mMapRect.y = posY; }
-    void    SetTileNum(int number)      { mTileNum = number; }
-    void    SetIndexX(int number)       { mTileIndexX = number; }
-    void    SetIndexY(int number)       { mTileIndexY = number; }
-    void    SetPosOnScreen (FTVector2 pos)
-    {
-        mScreenRect.x = static_cast<int>(pos.x);
-        mScreenRect.y = static_cast<int>(pos.y);
-    }
-    void    SetScale(FTVector2 scale)
-    {
-        mScreenRect.w = static_cast<int>(scale.x);
-        mScreenRect.h = static_cast<int>(scale.y);
-    }
+    void  SetRect(Rect rect)            { mMapRect = rect; }
+    void  SetTileNumber(int number)    { mTileNumber = number; }
+    void  SetTileIndexX(int index)     { mTileIndexX = index; }
+    void  SetTileIndexY(int index)     { mTileIndexY = index; }
 
 public:
     Tile();
@@ -49,11 +20,10 @@ public:
 
 private:
     // Tile rect value on tilemap
-    Bounds mMapRect;
+    Rect mMapRect;
     // Tile rect display on screen
-    Bounds mScreenRect;
     // Tile value on tilemap
-    int mTileNum;
+    int mTileNumber;
     // Tile indexes on display screen
     int mTileIndexX;
     int mTileIndexY;

@@ -3,7 +3,7 @@
 #include "FoxtrotEngine/Components/Component.h"
 #include "FoxtrotEngine/Components/AIComponent.h"
 #include "FoxtrotEngine/Components/AnimatorComponent.h"
-#include "FoxtrotEngine/Components/AnimSpriteComponent.h"
+#include "FoxtrotEngine/Components/SpriteAnimComponent.h"
 #include "FoxtrotEngine/Components/BGSpriteComponent.h"
 #include "FoxtrotEngine/Components/ColliderComponent.h"
 #include "FoxtrotEngine/Components/InputMoveComponent.h"

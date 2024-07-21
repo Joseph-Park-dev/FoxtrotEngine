@@ -203,26 +203,26 @@ bool Camera2D::IsInRenderedArea(SpriteRendererComponent* sprite) const
 }
 
 // Tile's screen position is inside the camera area
-bool Camera2D::IsInRenderedArea(Tile* tile) const
-{
-	FTVector2 screenPosLeftTop = FTVector2(mRenderArea.x, mRenderArea.y);
-	FTVector2 screenPosRightBottom = FTVector2(mRenderArea.x + mRenderArea.w, mRenderArea.y + mRenderArea.h);
-	/*screenPosLeftTop = ConvertWorldPosToScreen(screenPosLeftTop);
-	screenPosRightBottom = ConvertWorldPosToScreen(screenPosRightBottom);*/
-
-	float screenLeft = screenPosLeftTop.x;
-	float screenRight = screenPosRightBottom.x;
-	float screenTop = screenPosLeftTop.y;
-	float screenBottom = screenPosRightBottom.y;
-
-	int left = tile->GetPosOnScreen().x - tile->GetScale().x / 2;
-	int right = tile->GetPosOnScreen().x + tile->GetScale().x / 2;
-	int top = tile->GetPosOnScreen().y - tile->GetScale().y / 2;
-	int bottom = tile->GetPosOnScreen().y + tile->GetScale().y / 2;
-
-	return (screenLeft < right && left < screenRight)
-		&& (screenTop < bottom && top < screenBottom);
-}
+//bool Camera2D::IsInRenderedArea(Tile* tile) const
+//{
+//	FTVector2 screenPosLeftTop = FTVector2(mRenderArea.x, mRenderArea.y);
+//	FTVector2 screenPosRightBottom = FTVector2(mRenderArea.x + mRenderArea.w, mRenderArea.y + mRenderArea.h);
+//	/*screenPosLeftTop = ConvertWorldPosToScreen(screenPosLeftTop);
+//	screenPosRightBottom = ConvertWorldPosToScreen(screenPosRightBottom);*/
+//
+//	float screenLeft = screenPosLeftTop.x;
+//	float screenRight = screenPosRightBottom.x;
+//	float screenTop = screenPosLeftTop.y;
+//	float screenBottom = screenPosRightBottom.y;
+//
+//	int left = tile->GetPosOnScreen().x - tile->GetScale().x / 2;
+//	int right = tile->GetPosOnScreen().x + tile->GetScale().x / 2;
+//	int top = tile->GetPosOnScreen().y - tile->GetScale().y / 2;
+//	int bottom = tile->GetPosOnScreen().y + tile->GetScale().y / 2;
+//
+//	return (screenLeft < right && left < screenRight)
+//		&& (screenTop < bottom && top < screenBottom);
+//}
 
 FTVector2 Camera2D::ConvertWorldPosToScreen(FTVector2 worldPos) const
 {

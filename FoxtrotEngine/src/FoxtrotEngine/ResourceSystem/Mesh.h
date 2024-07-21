@@ -19,7 +19,10 @@ static_assert((sizeof(BasicVertexConstantBuffer) % 16) == 0,
     "Constant Buffer size must be 16-byte aligned");
 
 struct PixelShaderConstantBuffer {
-    float padding[4]; // 4 * 4 = 16 bytes
+    float sampleCoordX;
+    float sampleCoordY;
+    float tileWidth; // 4 * 4 = 16 bytes
+    float tileHeight;
 };
 static_assert((sizeof(PixelShaderConstantBuffer) % 16) == 0,
     "Constant Buffer size must be 16-byte aligned");

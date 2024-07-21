@@ -9,7 +9,7 @@
 #include "FoxtrotEngine/Physics/Physics2D.h"
 #include "FoxtrotEngine/Renderer/Camera2D.h"
 
-#include "FoxtrotEngine/Components/AnimSpriteComponent.h"
+#include "FoxtrotEngine/Components/SpriteAnimComponent.h"
 #include "FoxtrotEngine/Components/AnimatorComponent.h"
 #include "FoxtrotEngine/Components/InputMoveComponent.h"
 #include "FoxtrotEngine/Components/ColliderComponent.h"

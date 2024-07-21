@@ -2,6 +2,14 @@ Texture2D g_texture0 : register(t0);  //텍스처 => 인덱스가 0인 텍스처라는 의미
 //Texture2D g_texture1 : register(t1); //텍스처 => 인덱스가 0인 텍스처라는 의미
 SamplerState g_sampler : register(s0);  // 샘플러  (register documentation 참조)
 
+cbuffer TileMapConstantBuffer : register(b0)
+{
+    float tileSamplePosX;
+    float tileSamplePosY;
+    float tileWidth;
+    float tileHeight;
+}
+
 struct PixelShaderInput
 {
     float4 pos : SV_POSITION;
@@ -13,7 +21,11 @@ struct PixelShaderInput
 // SV_Target -> 결과가 render target 에 저장
 float4 main(PixelShaderInput input) : SV_TARGET {
     //return float4(input.color, 1.0f);
-    return g_texture0.Sample(g_sampler, input.texcoord);
+    float2 tileMapCoord = float2(tileSamplePosX, tileSamplePosY);
+    float2 tileArea     = float2(tileWidth, tileHeight);
+    
+    float2 sampleCoord = input.texcoord + tileMapCoord;
+    return g_texture0.Sample(g_sampler, sampleCoord);
 }
 
 

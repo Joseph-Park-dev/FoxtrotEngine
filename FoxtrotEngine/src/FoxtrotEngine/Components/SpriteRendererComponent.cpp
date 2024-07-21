@@ -17,8 +17,6 @@
 
 SpriteRendererComponent::SpriteRendererComponent(Actor* owner, int drawOrder, int updateOrder)
 	: MeshRendererComponent(owner, drawOrder, updateOrder)
-	, mTexWidth(0)
-	, mTexHeight(0)
 	, mChannel(4)
 	, mScale(1.f)
 {}
@@ -51,11 +49,11 @@ void SpriteRendererComponent::Initialize(FTCore* coreInstance)
 
 void SpriteRendererComponent::Update(float deltaTime)
 {
-	UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
+	MeshRendererComponent::UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
 }
 
 void SpriteRendererComponent::Render(FoxtrotRenderer* renderer) {
-	RenderMesh(renderer);
+	MeshRendererComponent::Render(renderer);
 }
 
 #ifdef _DEBUG
@@ -142,11 +140,11 @@ void SpriteRendererComponent::UpdateSprite(FoxtrotRenderer* renderer)
 }
 
 void SpriteRendererComponent::UpdateTexWidth(){
-	CommandHistory::GetInstance()->UpdateIntValue("Texture Width", &mTexWidth, INTMOD_SPEED);
+	CommandHistory::GetInstance()->UpdateIntValue("Texture Width", &GetMesh()->texture->GetTexWidthRef(), INTMOD_SPEED);
 }
 
 void SpriteRendererComponent::UpdateTexHeight(){
-	CommandHistory::GetInstance()->UpdateIntValue("Texture Height", &mTexHeight, INTMOD_SPEED);
+	CommandHistory::GetInstance()->UpdateIntValue("Texture Height", &GetMesh()->texture->GetTexHeightRef(), INTMOD_SPEED);
 }
 
 void SpriteRendererComponent::UpdateScale(){
@@ -157,16 +155,16 @@ void SpriteRendererComponent::SaveProperties(std::ofstream& ofs){
 	Component::SaveProperties(ofs);
 	//FileIOHelper::AddWString(ofs, mTexture->GetKey());
 	//FileIOHelper::AddWString(ofs, mTexture->GetRelativePath());
-	FileIOHelper::AddFloat(ofs, mTexWidth);
-	FileIOHelper::AddInt(ofs, mTexHeight);
+	FileIOHelper::AddFloat(ofs, GetMesh()->texture->GetTexWidth());
+	FileIOHelper::AddFloat(ofs, GetMesh()->texture->GetTexHeight());
 
 	//FileIOHelper::AddFTTexture(ofs, GetMesh()->texture);
 }
 
 void SpriteRendererComponent::LoadProperties(std::ifstream& ifs){
 	Component::LoadProperties(ifs);
-	FileIOHelper::LoadInt(ifs, mTexWidth);
-	FileIOHelper::LoadInt(ifs, mTexHeight);
+	GetMesh()->texture->SetTexWidth(FileIOHelper::LoadFloat(ifs));
+	GetMesh()->texture->SetTexHeight(FileIOHelper::LoadFloat(ifs));
 
 	//FileIOHelper::LoadFTTexture(ifs, GetMesh()->texture);
 }

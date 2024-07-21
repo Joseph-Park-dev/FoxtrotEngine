@@ -1,4 +1,6 @@
 #pragma once
+#include "FoxtrotEngine/ResourceSystem/FTResource.h"
+
 #include <vector>
 #include <string>
 
@@ -16,7 +18,7 @@ struct AnimationFrame
 	float duration;
 };
 
-class FTAnimation
+class FTAnimation : public FTResource
 {
 public:
 	void CreateFrameFromTile(Tile* tile);

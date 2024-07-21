@@ -18,6 +18,15 @@ public:
     void SetResourceView(Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResView) 
     { mTextureResourceView = shaderResView; }
 
+    int	GetTexWidth()  const { return mTexWidth; }
+    int	GetTexHeight() const { return mTexHeight; }
+
+    void SetTexWidth(int texWidth) { mTexWidth = texWidth; }
+    void SetTexHeight(int texHeight) { mTexHeight = texHeight; }
+
+    int& GetTexWidthRef()  { return mTexWidth; }
+    int& GetTexHeightRef() { return mTexHeight; }
+
 public:
     FTTexture()
         : FTResource()
@@ -28,6 +37,9 @@ private:
     Microsoft::WRL::ComPtr<ID3D11Texture2D>          mTexture;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mTextureResourceView;
     Microsoft::WRL::ComPtr<ID3D11SamplerState>       mSamplerState;
+
+    int	mTexWidth;
+    int	mTexHeight;
 
 private:
     friend class ResourceManager;

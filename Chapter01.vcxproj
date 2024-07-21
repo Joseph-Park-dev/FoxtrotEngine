@@ -227,7 +227,7 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\AIComponent.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\AIState.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\AnimatorComponent.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\AnimSpriteComponent.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpriteAnimComponent.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\BGSpriteComponent.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\ColliderComponent.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\Component.cpp" />
@@ -375,7 +375,7 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\AIComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\AIState.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\AnimatorComponent.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\AnimSpriteComponent.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpriteAnimComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\BGSpriteComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\ColliderComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\Component.h" />

@@ -23,6 +23,9 @@ bool FTTexture::CreateTexture(
 
     //assert(channels == 4);
 
+    mTexWidth = width;
+    mTexHeight = height;
+
     std::vector<uint8_t> image;
 
     image.resize(width * height * channels);

@@ -3,17 +3,8 @@
 #include "FoxtrotEngine/Actors/Transform.h"
 
 Tile::Tile()
-    : mTileNum(0)
-    , mTileIndexX(0)
+    : mTileIndexX(0)
     , mTileIndexY(0)
-    , mMapRect{}
-    , mScreenRect{}
-{}
-
-Tile::Tile(int width, int height, int tileNumber)
-    : mTileNum(0)
-    , mTileIndexX(0)
-    , mTileIndexY(0)
-    , mMapRect{}
-    , mScreenRect{}
+    , mTileNumber(0)
+    , mMapRect(Rect(0,0,0,0))
 {}

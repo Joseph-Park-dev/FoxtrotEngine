@@ -8,6 +8,8 @@ public:
 	bool Overlaps(const Rect& other);
 
 public:
+	FTVector2 GetSize() { return mSize; }
+
 	void Set(float x, float y, float width, float height) {
 		mCenter		= FTVector2(x, y);
 		mWidth		= width;

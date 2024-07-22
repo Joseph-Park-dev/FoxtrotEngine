@@ -96,15 +96,6 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 
 	mContext->PSSetShader(mBasicPixelShader.Get(), 0, 0);
 
-	mContext->RSSetState(mRasterizerState.Get());
-
-	/*if (m_drawAsWire) {
-		mContext->RSSetState(m_wireRasterizerSate.Get());
-	}
-	else {
-		mContext->RSSetState(m_solidRasterizerSate.Get());
-	}*/
-
 #ifdef _DEBUG
 	if (!CreateRenderTexture(mRenderWidth, mRenderHeight))
 	{
@@ -166,7 +157,6 @@ void FoxtrotRenderer::Render()
 			mContext->PSSetShaderResources(
 				0, 1, mesh->texture->GetResourceView().GetAddressOf()
 			);
-
 		mContext->PSSetConstantBuffers(
 			0, 1, mesh->pixelConstantBuffer.GetAddressOf());
 
@@ -177,6 +167,14 @@ void FoxtrotRenderer::Render()
 			DXGI_FORMAT_R32_UINT, 0);
 		mContext->IASetPrimitiveTopology(
 			D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		if (mFillMode == FillMode::Solid) {
+			mContext->RSSetState(mSolidRasterizerState.Get());
+		}
+		else {
+			mContext->RSSetState(mWireframeRasterizerState.Get());
+		}
+
 		mContext->DrawIndexed(mesh->indexCount, 0, 0);
 	}
 }
@@ -380,14 +378,24 @@ HRESULT FoxtrotRenderer::CreateRenderTargetView()
 HRESULT FoxtrotRenderer::CreateRasterizerState()
 {
 	// Create a rasterizer state
-	D3D11_RASTERIZER_DESC rastDesc;
-	ZeroMemory(&rastDesc, sizeof(D3D11_RASTERIZER_DESC)); // Need this
+	D3D11_RASTERIZER_DESC rastDescSolid;
+	ZeroMemory(&rastDescSolid, sizeof(D3D11_RASTERIZER_DESC)); // Need this
 	//rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-	rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-	rastDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
-	rastDesc.FrontCounterClockwise = false;
+	rastDescSolid.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+	rastDescSolid.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
+	rastDescSolid.FrontCounterClockwise = false;
 
-	return mDevice->CreateRasterizerState(&rastDesc, &mRasterizerState);
+	D3D11_RASTERIZER_DESC rastDescWireFrame;
+	ZeroMemory(&rastDescWireFrame, sizeof(D3D11_RASTERIZER_DESC)); // Need this
+	//rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+	rastDescWireFrame.FillMode = D3D11_FILL_MODE::D3D11_FILL_WIREFRAME;
+	rastDescWireFrame.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
+	rastDescWireFrame.FrontCounterClockwise = false;
+
+	HRESULT solidResult = mDevice->CreateRasterizerState(&rastDescSolid, &mSolidRasterizerState);
+	HRESULT wireResult = mDevice->CreateRasterizerState(&rastDescWireFrame, &mWireframeRasterizerState);
+	
+	return solidResult & wireResult;
 }
 
 void FoxtrotRenderer::SetViewport()
@@ -639,6 +647,7 @@ bool FoxtrotRenderer::CreatePixelShader(const std::wstring& filename,
 FoxtrotRenderer::FoxtrotRenderer()
 	: mClearColor{0.0f,0.0f,0.0f,1.0f}
 	, mViewType (Viewtype::Perspective)
+	, mFillMode(FillMode::Solid)
 {}
 
 #ifdef _DEBUG

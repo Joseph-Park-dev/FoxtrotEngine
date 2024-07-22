@@ -72,6 +72,8 @@ void SpineAnimRendererComponent::RenderSkeleton(FoxtrotRenderer* renderer)
     spine::RenderCommand* command = mSkeletonRenderer->render(*mSkeleton);
     while (command) {
         MeshData meshData;
+        meshData.vertices.reserve(command->numVertices);
+        meshData.indices.reserve(command->numIndices);
         Vertex vertex;
         float* positions = command->positions;
         float* uvs = command->uvs;
@@ -92,8 +94,11 @@ void SpineAnimRendererComponent::RenderSkeleton(FoxtrotRenderer* renderer)
             vertex.normal.z = -1.0f;
             meshData.vertices.push_back(vertex);
         }
-        //renderer->UpdateBuffer(meshData.vertices, GetMesh()->vertexBuffer);
-        //renderer->UpdateBuffer(meshData.indices, GetMesh()->indexBuffer);
+        for (size_t i = 0; i < command->numIndices; ++i) {
+            meshData.indices.push_back((uint32_t)indices[i]);
+        }
+        renderer->UpdateBuffer(meshData.vertices, GetMesh()->vertexBuffer);
+        renderer->UpdateBuffer(meshData.indices, GetMesh()->indexBuffer);
         command = command->next;
         //smeshData.indices.clear();
     }

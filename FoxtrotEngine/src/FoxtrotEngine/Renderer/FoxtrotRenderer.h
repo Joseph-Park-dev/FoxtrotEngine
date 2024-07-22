@@ -29,6 +29,11 @@ enum class Viewtype {
     Perspective
 };
 
+enum class FillMode {
+    WireFrame,
+    Solid
+};
+
 class FoxtrotRenderer
 {
 public:
@@ -56,11 +61,13 @@ public:
     int      GetRenderWidth ()              { return mRenderWidth; }
     int      GetRenderHeight()              { return mRenderHeight; }
     Viewtype GetViewType    ()              { return mViewType; }
+    FillMode GetFillMode    ()              { return mFillMode; }
 
     void  RemoveMesh        (Mesh* mesh);
     void  SetRenderWidth    (int width)     { mRenderWidth = width; }
     void  SetRenderHeight   (int height)    { mRenderHeight = height; }
     void  SetViewType       (Viewtype view) { mViewType = view; }
+    void  SetFillMode       (FillMode mode) { mFillMode = mode; }
 
 private:
     int         mRenderWidth;
@@ -71,6 +78,7 @@ private:
     UINT        mCreateDeviceFlags;
 
     Viewtype    mViewType;
+    FillMode    mFillMode;
 
 private:
     FTTexture mWallTexture;
@@ -81,7 +89,8 @@ private:
 	ComPtr<ID3D11DeviceContext>		mContext;
 	ComPtr<ID3D11RenderTargetView>	mRenderTargetView;
 	ComPtr<IDXGISwapChain>			mSwapChain;
-	ComPtr<ID3D11RasterizerState>	mRasterizerState;
+    ComPtr<ID3D11RasterizerState>	mSolidRasterizerState;
+    ComPtr<ID3D11RasterizerState>	mWireframeRasterizerState;
 
 	// Depth buffer ฐüทร
 	ComPtr<ID3D11Texture2D>			mDepthStencilBuffer;

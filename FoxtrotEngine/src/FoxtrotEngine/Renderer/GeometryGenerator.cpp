@@ -42,7 +42,7 @@ MeshData GeometryGenerator::MakeSpineAnimation(spine::RenderCommand* command) {
             meshData.vertices.push_back(vertex);
         }
         for (size_t i = 0; i < command->numIndices; ++i) {
-            meshData.indices.push_back(indices[i]);
+            meshData.indices.push_back((uint32_t)indices[i]);
         }
     }
     return meshData;

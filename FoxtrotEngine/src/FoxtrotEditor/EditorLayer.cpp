@@ -193,6 +193,14 @@ void EditorLayer::DisplayFileMenu()
 			else if (renderer->GetViewType() == Viewtype::Orthographic)
 				renderer->SetViewType(Viewtype::Perspective);
 		}
+		if (ImGui::Button("Wireframe"))
+		{
+			FoxtrotRenderer* renderer = FTCoreEditor::GetInstance()->GetGameRenderer();
+			if (renderer->GetFillMode() == FillMode::Solid)
+				renderer->SetFillMode(FillMode::WireFrame);
+			else if (renderer->GetFillMode() == FillMode::WireFrame)
+				renderer->SetFillMode(FillMode::Solid);
+		}
 		if (ImGuiFileDialog::Instance()->Display("SaveChunkFile"))
 		{
 			if (ImGuiFileDialog::Instance()->IsOk())

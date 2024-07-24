@@ -137,6 +137,25 @@ static char* ToString(const wchar_t* text)
 //}
 
 template<typename T>
+size_t GetArrayLength(T* arr) {
+	return sizeof(arr) / sizeof(T*);
+}
+
+template<typename T>
+size_t GetArrayLength(T arr) {
+	return sizeof(arr) / sizeof(T);
+}
+
+template<typename T>
+void SafeDeleteArray(T** arr) {
+	size_t length = GetArrayLength(arr);
+	for (size_t i = 0; i < length; ++i) {
+		delete arr[i];
+	}
+	delete[] arr;
+}
+
+template<typename T>
 void Safe_Delete_Vector(std::vector<T>& vec)
 {
 	for (int i = 0; i < vec.size(); ++i)

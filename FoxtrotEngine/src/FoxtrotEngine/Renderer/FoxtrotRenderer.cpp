@@ -145,38 +145,49 @@ void FoxtrotRenderer::Render()
 	// PS: Pixel Shader
 	// IA: Input-Assembler stage
 
+	if (mRenderPool.empty())
+		return;
+
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 
 	// 버텍스/인덱스 버퍼 설정
-	for (const Mesh* mesh : mMeshes) {
-		mContext->VSSetConstantBuffers(
-			0, 1, mesh->vertexConstantBuffer.GetAddressOf());
-
-		if(mesh->texture != nullptr)
-			mContext->PSSetShaderResources(
-				0, 1, mesh->texture->GetResourceView().GetAddressOf()
-			);
-		mContext->PSSetConstantBuffers(
-			0, 1, mesh->pixelConstantBuffer.GetAddressOf());
-
-		mContext->IASetInputLayout(mBasicInputLayout.Get());
-		mContext->IASetVertexBuffers(0, 1, mesh->vertexBuffer.GetAddressOf(),
-			&stride, &offset);
-		mContext->IASetIndexBuffer(mesh->indexBuffer.Get(),
-			DXGI_FORMAT_R32_UINT, 0);
-		mContext->IASetPrimitiveTopology(
-			D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		if (mFillMode == FillMode::Solid) {
-			mContext->RSSetState(mSolidRasterizerState.Get());
+	for (Mesh** meshArr : mRenderPool) {
+		size_t meshCount = GetArrayLength(meshArr);
+		for (size_t i = 0; i < meshCount; ++i) {
+			RenderSingleMesh(meshArr[i], &stride, &offset);
 		}
-		else {
-			mContext->RSSetState(mWireframeRasterizerState.Get());
-		}
-
-		mContext->DrawIndexed(mesh->indexCount, 0, 0);
 	}
+}
+
+void FoxtrotRenderer::RenderSingleMesh(Mesh* mesh, UINT* stride, UINT* offset)
+{
+	mContext->VSSetConstantBuffers(
+		0, 1, mesh->vertexConstantBuffer.GetAddressOf());
+
+	if (mesh->texture != nullptr)
+		mContext->PSSetShaderResources(
+			0, 1, mesh->texture->GetResourceView().GetAddressOf()
+		);
+	mContext->PSSetConstantBuffers(
+		0, 1, mesh->pixelConstantBuffer.GetAddressOf());
+
+	mContext->IASetInputLayout(mBasicInputLayout.Get());
+	mContext->IASetVertexBuffers(0, 1, mesh->vertexBuffer.GetAddressOf(),
+		stride, offset);
+	mContext->IASetIndexBuffer(mesh->indexBuffer.Get(),
+		DXGI_FORMAT_R32_UINT, 0);
+	mContext->IASetPrimitiveTopology(
+		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	if (mFillMode == FillMode::Solid) {
+		mContext->RSSetState(mSolidRasterizerState.Get());
+	}
+	else {
+		mContext->RSSetState(mWireframeRasterizerState.Get());
+	}
+
+	mContext->DrawIndexed(mesh->indexCount, 0, 0);
 }
 
 // Constant buffer data 업데이트 & 그 내용을 GPU 버퍼로 복사
@@ -241,14 +252,18 @@ void FoxtrotRenderer::ResizeSceneViewport(UINT width, UINT height)
 	}
 }
 
-void FoxtrotRenderer::RemoveMesh(Mesh* mesh)
+void FoxtrotRenderer::AddToRenderPool(Mesh** meshArray){
+	mRenderPool.push_back(meshArray);
+}
+
+void FoxtrotRenderer::RemoveFromRenderPool(Mesh** meshArray)
 {
-	std::vector<Mesh*>::iterator iter = std::find(mMeshes.begin(), mMeshes.end(), mesh);
-	if (iter != mMeshes.end())
+	std::vector<Mesh**>::iterator iter = std::find(mRenderPool.begin(), mRenderPool.end(), meshArray);
+	if (iter != mRenderPool.end())
 	{
-		delete (*iter);
-		mMeshes.erase(iter);
-		mMeshes.shrink_to_fit();
+		delete[] (*iter);
+		mRenderPool.erase(iter);
+		mRenderPool.shrink_to_fit();
 	}
 }
 

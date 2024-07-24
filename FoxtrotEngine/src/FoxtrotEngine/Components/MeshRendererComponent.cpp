@@ -7,6 +7,7 @@
 #include "FoxtrotEngine/Renderer/Camera.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 #include "FoxtrotEngine/Renderer/GeometryGenerator.h"
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
 
 #ifdef _DEBUG
 #include "FoxtrotEditor/FTCoreEditor.h"
@@ -14,75 +15,105 @@
 
 using DXMatrix = DirectX::SimpleMath::Matrix;
 
-void MeshRendererComponent::Initialize(FTCore* coreInstance)
-{
+void MeshRendererComponent::Initialize(FTCore* coreInstance){
 	mRenderer = coreInstance->GetGameRenderer();
 }
 
-void MeshRendererComponent::Update(float deltaTime)
-{
-	if(mMesh)
-		UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
+void MeshRendererComponent::Update(float deltaTime){
+	if(!IsMeshEmpty())
+		UpdateMeshArray(GetOwner()->GetTransform(), Camera::GetInstance());
 }
 
 void MeshRendererComponent::Render(FoxtrotRenderer* renderer){
-	if(mMesh)
-		RenderMesh(renderer);
+	if(!IsMeshEmpty())
+		RenderMeshArray(renderer);
 }
 
-void MeshRendererComponent::InitializeMesh(MeshData&& meshData)
-{
-	mMesh = new Mesh;
-	mRenderer->CreateVertexBuffer(meshData.vertices, mMesh->vertexBuffer);
-	mMesh->indexCount = UINT(meshData.indices.size());
-	mRenderer->CreateIndexBuffer(meshData.indices, mMesh->indexBuffer);
+void MeshRendererComponent::InitializeMesh(std::vector<MeshData>&& meshDataVec){
+	mMeshArr = new Mesh*[meshDataVec.size()];
+	assert(!IsMeshEmpty());
+	for (size_t i = 0; i < meshDataVec.size(); ++i) {
+		AddMesh(std::move(meshDataVec[i]), i);
+	}
+	mRenderer->AddToRenderPool(mMeshArr);
+}
+
+void MeshRendererComponent::InitializeMesh(MeshData&& meshData){
+	mMeshArr = new Mesh*[1];
+	AddMesh(std::move(meshData), 0);
+	mRenderer->AddToRenderPool(mMeshArr);
+}
+
+void MeshRendererComponent::AddMesh(MeshData&& meshData, size_t index) {
+	assert(index < GetArrayLength(mMeshArr));
+	Mesh* mesh = new Mesh;
+	mRenderer->CreateVertexBuffer(meshData.vertices, mesh->vertexBuffer);
+	mesh->indexCount = UINT(meshData.indices.size());
+	mRenderer->CreateIndexBuffer(meshData.indices, mesh->indexBuffer);
 
 	// Create Constant buffers
-	mMesh->basicVertexConstantBufferData.model = DirectX::SimpleMath::Matrix();
-	mMesh->basicVertexConstantBufferData.view = DirectX::SimpleMath::Matrix();
-	mMesh->basicVertexConstantBufferData.projection = DirectX::SimpleMath::Matrix();
-	mRenderer->CreateConstantBuffer(mMesh->basicVertexConstantBufferData,
-		mMesh->vertexConstantBuffer);
-	mRenderer->CreateConstantBuffer(mMesh->pixelShaderConstantBufferData,
-		mMesh->pixelConstantBuffer);
-	mRenderer->GetMeshes().emplace_back(mMesh);
+	mesh->basicVertexConstantBufferData.model = DirectX::SimpleMath::Matrix();
+	mesh->basicVertexConstantBufferData.view = DirectX::SimpleMath::Matrix();
+	mesh->basicVertexConstantBufferData.projection = DirectX::SimpleMath::Matrix();
+	mRenderer->CreateConstantBuffer(mesh->basicVertexConstantBufferData,
+		mesh->vertexConstantBuffer);
+	mRenderer->CreateConstantBuffer(mesh->pixelShaderConstantBufferData,
+		mesh->pixelConstantBuffer);
+	mMeshArr[index] = mesh;
 }
 
-void MeshRendererComponent::UpdateMesh(Transform* transform, Camera* cameraInstance)
-{
-	UpdateConstantBufferModel(mMesh, transform);
-	UpdateConstantBufferView(mMesh, cameraInstance);
-	UpdateConstantBufferProjection(mMesh, cameraInstance);
+bool MeshRendererComponent::IsMeshEmpty(){
+	return GetArrayLength(mMeshArr) < 1 || mMeshArr == nullptr;
 }
 
-void MeshRendererComponent::RenderMesh(FoxtrotRenderer* renderer)
-{
-	if (mMesh) {
-		renderer->UpdateBuffer(mMesh->basicVertexConstantBufferData,
-			mMesh->vertexConstantBuffer);
-		renderer->UpdateBuffer(mMesh->pixelShaderConstantBufferData,
-			mMesh->pixelConstantBuffer);
+void MeshRendererComponent::UpdateMeshArray(Transform* transform, Camera* cameraInstance){
+	if (!IsMeshEmpty()) {
+		for (size_t i = 0; i < GetArrayLength(mMeshArr); ++i) {
+			Mesh* mesh = mMeshArr[i];
+			UpdateConstantBufferModel(mesh, transform);
+			UpdateConstantBufferView(mesh, cameraInstance);
+			UpdateConstantBufferProjection(mesh, cameraInstance);
+		}
 	}
 }
 
-void MeshRendererComponent::SetTexture(FTTexture* texture)
-{
-	mMesh->texture = texture;
+void MeshRendererComponent::RenderMeshArray(FoxtrotRenderer* renderer){
+	if (!IsMeshEmpty()) {
+		for (size_t i = 0; i < GetArrayLength(mMeshArr); ++i) {
+			Mesh* mesh = mMeshArr[i];
+			renderer->UpdateBuffer(mesh->basicVertexConstantBufferData,
+				mesh->vertexConstantBuffer);
+			renderer->UpdateBuffer(mesh->pixelShaderConstantBufferData,
+				mesh->pixelConstantBuffer);
+		}
+	}
+}
+
+void MeshRendererComponent::SetTexture(FTTexture* texture){
+	if (!IsMeshEmpty()) {
+		for (size_t i = 0; i < GetArrayLength(mMeshArr); ++i) {
+			mMeshArr[i]->texture = texture;
+		}
+	}
 }
 
 MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Component	(owner, drawOrder, updateOrder)
 	, mRenderer	(nullptr)
-	, mMesh		(nullptr)
+	, mMeshArr	(nullptr)
 {}
 
 MeshRendererComponent::~MeshRendererComponent(){
-	delete mMesh->texture;
-	delete mMesh;
+	if (!IsMeshEmpty()) {
+		for (size_t i = 0; i < GetArrayLength(mMeshArr); ++i) {
+			delete mMeshArr[i]->texture;
+			delete mMeshArr[i];
+		}
+		delete[] mMeshArr;
+	}
 }
 
-void MeshRendererComponent::UpdateConstantBufferModel(Mesh* mesh, Transform* transform)
-{
+void MeshRendererComponent::UpdateConstantBufferModel(Mesh* mesh, Transform* transform){
 	DirectX::XMFLOAT3 scale = transform->GetScale().GetDXVec3();
 	DirectX::XMFLOAT3 worldPos = transform->GetWorldPosition().GetDXVec3();
 	// 모델의 변환 -> 모델 행렬 결정
@@ -95,8 +126,7 @@ void MeshRendererComponent::UpdateConstantBufferModel(Mesh* mesh, Transform* tra
 	mesh->basicVertexConstantBufferData.model = mesh->basicVertexConstantBufferData.model.Transpose();
 }
 
-void MeshRendererComponent::UpdateConstantBufferView(Mesh* mesh, Camera* camInst)
-{
+void MeshRendererComponent::UpdateConstantBufferView(Mesh* mesh, Camera* camInst){
 	DirectX::XMFLOAT3 eyePosDX = camInst->GetViewEyePosDX();
 	DirectX::XMFLOAT3 eyeDir = camInst->GetViewEyeDirDX();
 	DirectX::XMFLOAT3 up = camInst->GetViewUpDX();
@@ -120,8 +150,7 @@ void MeshRendererComponent::UpdateConstantBufferView(Mesh* mesh, Camera* camInst
 	mesh->basicVertexConstantBufferData.view = mesh->basicVertexConstantBufferData.view.Transpose();
 }
 
-void MeshRendererComponent::UpdateConstantBufferProjection(Mesh* mesh, Camera* camInst)
-{
+void MeshRendererComponent::UpdateConstantBufferProjection(Mesh* mesh, Camera* camInst){
 	float projFOVAngleY = DirectX::XMConvertToRadians(Camera::GetInstance()->GetProjFOVAngleY());
 	float aspect = camInst->GetAspect();
 	float nearZ = camInst->GetNearZ();
@@ -142,22 +171,19 @@ void MeshRendererComponent::UpdateConstantBufferProjection(Mesh* mesh, Camera* c
 		mesh->basicVertexConstantBufferData.projection.Transpose();
 }
 
-void MeshRendererComponent::AddCube()
-{
-	if (!mMesh)
+void MeshRendererComponent::AddCube(){
+	if (IsMeshEmpty())
 	{
 		InitializeMesh(GeometryGenerator::MakeBox());
 		//SetTexture("./assets/Asteroid.png");
 	}
 }
 
-void MeshRendererComponent::EditorUpdate(float deltaTime)
-{
+void MeshRendererComponent::EditorUpdate(float deltaTime){
 	Update(deltaTime);
 }
 
-void MeshRendererComponent::EditorUIUpdate()
-{
+void MeshRendererComponent::EditorUIUpdate(){
 	if (ImGui::Button("Add Cube")) {
 		AddCube();
 	}

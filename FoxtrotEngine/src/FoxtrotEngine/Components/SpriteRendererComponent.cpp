@@ -22,13 +22,11 @@ SpriteRendererComponent::SpriteRendererComponent(Actor* owner, int drawOrder, in
 {}
 
 SpriteRendererComponent::~SpriteRendererComponent()
-{
-}
+{}
 
-void SpriteRendererComponent::UpdateTexture(FoxtrotRenderer* renderer, std::string fileName)
-{
-	std::vector<Mesh*>& meshes = renderer->GetMeshes();
-	std::vector<Mesh*>::iterator iter = std::find(meshes.begin(), meshes.end(), GetMesh());
+void SpriteRendererComponent::UpdateTexture(FoxtrotRenderer* renderer, std::string fileName){
+	std::vector<Mesh**>& meshes = renderer->GetRenderPool();
+	std::vector<Mesh**>::iterator iter = std::find(meshes.begin(), meshes.end(), GetMeshArray());
 	if (iter != meshes.end())
 	{
 		delete (*iter);
@@ -40,16 +38,14 @@ void SpriteRendererComponent::UpdateTexture(FoxtrotRenderer* renderer, std::stri
 	}
 }
 
-void SpriteRendererComponent::Initialize(FTCore* coreInstance)
-{
+void SpriteRendererComponent::Initialize(FTCore* coreInstance){
 	MeshRendererComponent::Initialize(coreInstance);
 	InitializeMesh(GeometryGenerator::MakeSquare(1.0f));
 }
 
 
-void SpriteRendererComponent::Update(float deltaTime)
-{
-	MeshRendererComponent::UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
+void SpriteRendererComponent::Update(float deltaTime){
+	MeshRendererComponent::UpdateMeshArray(GetOwner()->GetTransform(), Camera::GetInstance());
 }
 
 void SpriteRendererComponent::Render(FoxtrotRenderer* renderer) {
@@ -73,13 +69,11 @@ void SpriteRendererComponent::Render(FoxtrotRenderer* renderer) {
 //	//rect->h = mTexHeight;
 //}
 
-void SpriteRendererComponent::EditorUpdate(float deltaTime)
-{
+void SpriteRendererComponent::EditorUpdate(float deltaTime){
 	Update(deltaTime);
 }
 
-void SpriteRendererComponent::EditorUIUpdate()
-{
+void SpriteRendererComponent::EditorUIUpdate(){
 	if (GetRenderer())
 	{
 		UpdateSprite(GetRenderer());
@@ -88,11 +82,10 @@ void SpriteRendererComponent::EditorUIUpdate()
 	}
 }
 
-void SpriteRendererComponent::UpdateSprite(FoxtrotRenderer* renderer)
-{
+void SpriteRendererComponent::UpdateSprite(FoxtrotRenderer* renderer){
 	std::string currentSprite = "No sprite has been assigned";
-	if (GetMesh()->texture)
-		currentSprite = "Current sprite : \n" + GetMesh()->texture->GetRelativePath();
+	if (GetMeshArray()[0]->texture)
+		currentSprite = "Current sprite : \n" + GetMeshArray()[0]->texture->GetRelativePath();
 	ImGui::Text(currentSprite.c_str());
 
 	if (ImGui::Button("Select Sprite")){
@@ -140,11 +133,11 @@ void SpriteRendererComponent::UpdateSprite(FoxtrotRenderer* renderer)
 }
 
 void SpriteRendererComponent::UpdateTexWidth(){
-	CommandHistory::GetInstance()->UpdateIntValue("Texture Width", &GetMesh()->texture->GetTexWidthRef(), INTMOD_SPEED);
+	CommandHistory::GetInstance()->UpdateIntValue("Texture Width", &GetMeshArray()[0]->texture->GetTexWidthRef(), INTMOD_SPEED);
 }
 
 void SpriteRendererComponent::UpdateTexHeight(){
-	CommandHistory::GetInstance()->UpdateIntValue("Texture Height", &GetMesh()->texture->GetTexHeightRef(), INTMOD_SPEED);
+	CommandHistory::GetInstance()->UpdateIntValue("Texture Height", &GetMeshArray()[0]->texture->GetTexHeightRef(), INTMOD_SPEED);
 }
 
 void SpriteRendererComponent::UpdateScale(){
@@ -155,16 +148,16 @@ void SpriteRendererComponent::SaveProperties(std::ofstream& ofs){
 	Component::SaveProperties(ofs);
 	//FileIOHelper::AddWString(ofs, mTexture->GetKey());
 	//FileIOHelper::AddWString(ofs, mTexture->GetRelativePath());
-	FileIOHelper::AddFloat(ofs, GetMesh()->texture->GetTexWidth());
-	FileIOHelper::AddFloat(ofs, GetMesh()->texture->GetTexHeight());
+	FileIOHelper::AddFloat(ofs, GetMeshArray()[0]->texture->GetTexWidth());
+	FileIOHelper::AddFloat(ofs, GetMeshArray()[0]->texture->GetTexHeight());
 
 	//FileIOHelper::AddFTTexture(ofs, GetMesh()->texture);
 }
 
 void SpriteRendererComponent::LoadProperties(std::ifstream& ifs){
 	Component::LoadProperties(ifs);
-	GetMesh()->texture->SetTexWidth(FileIOHelper::LoadFloat(ifs));
-	GetMesh()->texture->SetTexHeight(FileIOHelper::LoadFloat(ifs));
+	GetMeshArray()[0]->texture->SetTexWidth(FileIOHelper::LoadFloat(ifs));
+	GetMeshArray()[0]->texture->SetTexHeight(FileIOHelper::LoadFloat(ifs));
 
 	//FileIOHelper::LoadFTTexture(ifs, GetMesh()->texture);
 }

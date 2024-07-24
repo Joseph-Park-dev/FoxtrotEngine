@@ -23,24 +23,26 @@ public:
 	virtual void Render		(FoxtrotRenderer* renderer) override;
 
 protected:
+	virtual void InitializeMesh(std::vector<MeshData>&& meshDataVec);
 	virtual void InitializeMesh(MeshData&& meshData);
-	virtual	void UpdateMesh	(Transform* transform, Camera* cameraInstance);
-			void RenderMesh	(FoxtrotRenderer* renderer);
+	virtual	void UpdateMeshArray(Transform* transform, Camera* cameraInstance);
+			void RenderMeshArray(FoxtrotRenderer* renderer);
 
 public:
 	virtual std::wstring GetName() const override { return L"MeshRendererComponent"; }
 
 protected:
-	FoxtrotRenderer* GetRenderer()	{ return mRenderer; }
-	Mesh*			 GetMesh()		{ return mMesh; }
-	std::string		 GetKey()		{ return mKey; }
+	FoxtrotRenderer*	GetRenderer()	{ return mRenderer; }
+	Mesh**				GetMeshArray()	{ return mMeshArr; }
+	std::string			GetKey()		{ return mKey; }
+	size_t				GetMeshCount()	{ return GetArrayLength(mMeshArr); }
 
-	void			 SetKey		(std::string key) { mKey = key; }
-	void			 SetTexture	(FTTexture* texture);
+	void				SetKey		(std::string key) { mKey = key; }
+	void				SetTexture	(FTTexture* texture);
 
 private:
-	FoxtrotRenderer* mRenderer;
-	Mesh*			 mMesh;
+	FoxtrotRenderer*	mRenderer;
+	Mesh**				mMeshArr;
 
 	// Identifier for the object in the Resource Map from the ResourceManager instance.
 	std::string      mKey;
@@ -56,6 +58,9 @@ protected:
 
 private:
 	void AddCube();
+	void AddMesh(MeshData&& meshData, size_t index);
+
+	bool IsMeshEmpty();
 
 #ifdef _DEBUG
 	//This section will be omitted from Release mode!

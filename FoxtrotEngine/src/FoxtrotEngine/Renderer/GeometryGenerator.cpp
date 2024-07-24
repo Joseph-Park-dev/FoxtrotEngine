@@ -17,9 +17,11 @@
 using Vector3 = DirectX::SimpleMath::Vector3;
 using Vector2 = DirectX::SimpleMath::Vector2;
 
-MeshData GeometryGenerator::MakeSpineAnimation(spine::RenderCommand* command) {
-    MeshData meshData;
-    if (command) {
+std::vector<MeshData> GeometryGenerator::MakeSpineMeshes(spine::SkeletonRenderer& skelRenderer, spine::Skeleton& skeleton) {
+    std::vector<MeshData> meshes;
+    spine::RenderCommand* command = skelRenderer.render(skeleton);
+    while (command) {
+        MeshData meshData;
         meshData.vertices.reserve(command->numVertices);
         meshData.indices.reserve(command->numIndices);
         Vertex vertex;
@@ -44,8 +46,10 @@ MeshData GeometryGenerator::MakeSpineAnimation(spine::RenderCommand* command) {
         for (size_t i = 0; i < command->numIndices; ++i) {
             meshData.indices.push_back((uint32_t)indices[i]);
         }
+        meshes.push_back(meshData);
+        command = command->next;
     }
-    return meshData;
+    return meshes;
 }
 
 MeshData GeometryGenerator::MakeSquare(float scale) {

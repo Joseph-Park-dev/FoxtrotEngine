@@ -35,7 +35,7 @@ void TileMapComponent::Initialize(FTCore* coreInstance){
 
 void TileMapComponent::Update(float deltaTime)
 {
-    SpriteRendererComponent::UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
+    SpriteRendererComponent::UpdateMeshArray(GetOwner()->GetTransform(), Camera::GetInstance());
 }
 
 void TileMapComponent::InitializeTileMap(){
@@ -101,7 +101,7 @@ void TileMapComponent::InitializeTile(Tile* tile, UINT indexX, UINT indexY)
     Rect& srcRect   = tile->GetMapRect();
     int tileSizeX   = srcRect.GetSize().x;
     int tileSizeY   = srcRect.GetSize().y;
-    int columnCount = GetMesh()->texture->GetTexWidth() / tileSizeX;
+    int columnCount = GetMeshArray()[0]->texture->GetTexWidth() / tileSizeX;
     int srcColumn   = 0; int srcRow = 0;
     srcColumn       = tile->GetTileNumber() % columnCount;
     srcRow          = tile->GetTileNumber() / columnCount;
@@ -131,17 +131,17 @@ void TileMapComponent::Render(FoxtrotRenderer* renderer)
                 FTVector2(pivotPos.x + tile->GetMapRect().GetSize().x * tile->GetTileIndexX(), 
                     pivotPos.y + tile->GetMapRect().GetSize().y * tile->GetTileIndexY());
 
-            float texWidth = GetMesh()->texture->GetTexWidth();
-            float texHeight = GetMesh()->texture->GetTexHeight();
+            float texWidth = GetMeshArray()[0]->texture->GetTexWidth();
+            float texHeight = GetMeshArray()[0]->texture->GetTexHeight();
             float xCoord = tile->GetMapRect().GetSize().x * tile->GetTileIndexX() / texWidth;
             float yCoord = tile->GetMapRect().GetSize().y * tile->GetTileIndexY() / texHeight;
             float tileSizeX = tile->GetMapRect().GetSize().x / texWidth;
             float tileSizeY = tile->GetMapRect().GetSize().y / texHeight;
             
-            GetMesh()->pixelShaderConstantBufferData.sampleCoordX = xCoord;
-            GetMesh()->pixelShaderConstantBufferData.sampleCoordY = yCoord;
-            GetMesh()->pixelShaderConstantBufferData.tileWidth = tileSizeX;
-            GetMesh()->pixelShaderConstantBufferData.tileHeight = tileSizeY;
+            GetMeshArray()[0]->pixelShaderConstantBufferData.sampleCoordX = xCoord;
+            GetMeshArray()[0]->pixelShaderConstantBufferData.sampleCoordY = yCoord;
+            GetMeshArray()[0]->pixelShaderConstantBufferData.tileWidth = tileSizeX;
+            GetMeshArray()[0]->pixelShaderConstantBufferData.tileHeight = tileSizeY;
             SpriteRendererComponent::Render(renderer);
         }
     }

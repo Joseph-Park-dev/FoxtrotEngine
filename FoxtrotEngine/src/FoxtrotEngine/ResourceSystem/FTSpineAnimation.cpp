@@ -6,7 +6,9 @@ bool FTSpineAnimation::CreateAtlas(std::string atlasPath, SpineTextureLoader* sp
 	if (mAtlas)
 		delete mAtlas;
 	mAtlas = new spine::Atlas(atlasPath.c_str(), spineTexLoaderInst);
-	return mAtlas;
+	if (mAtlas)
+		return true;
+	return false;
 }
 
 bool FTSpineAnimation::CreateSkeletonDataBinary(std::string skeletonDataPath)
@@ -17,9 +19,14 @@ bool FTSpineAnimation::CreateSkeletonDataBinary(std::string skeletonDataPath)
 		mSkeletonData = binary.readSkeletonDataFile(skeletonDataPath.c_str());
 		if (!mSkeletonData) {
 			printf("%s\n", binary.getError().buffer());
+			return false;
 		}
+		else {
+			return true;
+		}
+		return false;
 	}
-	return mSkeletonData;
+	return false;
 }
 
 bool FTSpineAnimation::CreateSkeletonDataJSON(std::string skeletonDataPath)
@@ -30,9 +37,14 @@ bool FTSpineAnimation::CreateSkeletonDataJSON(std::string skeletonDataPath)
 		mSkeletonData = JSON.readSkeletonDataFile(skeletonDataPath.c_str());
 		if (!mSkeletonData) {
 			printf("%s\n", JSON.getError().buffer());
+			return false;
 		}
+		else {
+			return true;
+		}
+		return false;
 	}
-	return mSkeletonData;
+	return false;
 }
 
 bool FTSpineAnimation::CreateAnimationStateData()

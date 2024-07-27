@@ -67,7 +67,7 @@ bool ResourceManager::LoadSpineAnimation(std::string key, std::string atlasPath,
 		LogString("ResourceManager::LoadSpineAnimation()-> CreateAtlas() Failed.");
 		return false;
 	};
-	if (!spineAnim->CreateSkeletonDataJSON(skeletonDataPath)) {
+	if (!spineAnim->CreateSkeletonDataBinary(skeletonDataPath)) {
 		LogString("ResourceManager::LoadSpineAnimation()-> CreateSkeletonData() Failed.");
 		return false;
 	}

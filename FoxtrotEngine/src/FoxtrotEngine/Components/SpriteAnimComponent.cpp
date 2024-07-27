@@ -23,7 +23,7 @@ void SpriteAnimComponent::Update(float deltaTime){
 			mCurrFrame -= mAnimTextures.size();
 		}
 	}
-	SetTexture(mAnimTextures[static_cast<int>(mCurrFrame)]);
+	SetTexture(GetMeshArray()[0], mAnimTextures[static_cast<int>(mCurrFrame)]);
 }
 
 void SpriteAnimComponent::Render(FoxtrotRenderer* renderer){

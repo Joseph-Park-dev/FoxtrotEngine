@@ -28,8 +28,6 @@ private:
     spine::AnimationState*   mAnimationState;
 
     spine::SkeletonRenderer* mSkeletonRenderer;
-    spine::RenderCommand*    mCommand;
-
     float                    mScale;
 
 public:

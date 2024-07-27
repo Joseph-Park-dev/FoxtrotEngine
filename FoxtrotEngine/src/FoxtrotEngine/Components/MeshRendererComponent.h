@@ -26,7 +26,7 @@ protected:
 	virtual void InitializeMesh(std::vector<MeshData>&& meshDataVec);
 	virtual void InitializeMesh(MeshData&& meshData);
 	virtual	void UpdateMeshArray(Transform* transform, Camera* cameraInstance);
-			void RenderMeshArray(FoxtrotRenderer* renderer);
+			void UpdateRenderBuffer(FoxtrotRenderer* renderer);
 
 public:
 	virtual std::wstring GetName() const override { return L"MeshRendererComponent"; }
@@ -38,7 +38,9 @@ protected:
 	size_t				GetMeshCount()	{ return GetArrayLength(mMeshArr); }
 
 	void				SetKey		(std::string key) { mKey = key; }
-	void				SetTexture	(FTTexture* texture);
+	void				SetTexture	(Mesh* mesh, FTTexture* texture);
+	void				SetMeshArray(Mesh** meshA) { mMeshArr = meshA; }
+
 
 private:
 	FoxtrotRenderer*	mRenderer;
@@ -69,6 +71,7 @@ public:
 	//virtual void LoadProperties(std::ifstream& ifs) override;
 
 	virtual void EditorUpdate(float deltaTime) override;
+	virtual void EditorRender(FoxtrotRenderer* renderer) override;
 	virtual void EditorUIUpdate() override;
 #endif // DEBUG
 };

@@ -114,7 +114,7 @@ void SpriteRendererComponent::UpdateSprite(FoxtrotRenderer* renderer){
 			}
 			ImGui::TreePop();
 			if (selected != -1) {
-				SetTexture(texturesMap[spriteName]);
+				SetTexture(GetMeshArray()[0], texturesMap[spriteName]);
 			}
 		}
 		if (ImGui::Button("Close"))

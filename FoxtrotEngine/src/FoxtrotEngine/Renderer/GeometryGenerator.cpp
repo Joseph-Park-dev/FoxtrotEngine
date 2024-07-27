@@ -7,6 +7,7 @@
 #include "FoxtrotEngine/ResourceSystem/Vertex.h"
 #include "FoxtrotEngine/ResourceSystem/MeshData.h"
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
+#include "FoxtrotEngine/ResourceSystem/FTTexture.h"
 
 //#include "ModelLoader.h"
 //using namespace DirectX;
@@ -16,41 +17,6 @@
 
 using Vector3 = DirectX::SimpleMath::Vector3;
 using Vector2 = DirectX::SimpleMath::Vector2;
-
-std::vector<MeshData> GeometryGenerator::MakeSpineMeshes(spine::SkeletonRenderer& skelRenderer, spine::Skeleton& skeleton) {
-    std::vector<MeshData> meshes;
-    spine::RenderCommand* command = skelRenderer.render(skeleton);
-    while (command) {
-        MeshData meshData;
-        meshData.vertices.reserve(command->numVertices);
-        meshData.indices.reserve(command->numIndices);
-        Vertex vertex;
-        float* positions = command->positions;
-        float* uvs = command->uvs;
-        uint32_t* colors = command->colors;
-        uint16_t* indices = command->indices;
-        for (int i = 0, j = 0, n = command->numVertices * 2; i < n; ++i, j += 2) {
-            vertex.position.x = positions[j];
-            vertex.position.y = positions[j + 1];
-            vertex.position.z = 0.0f;
-            vertex.texcoord.x = uvs[j];
-            vertex.texcoord.y = uvs[j + 1];
-            vertex.color.x = 1.0f;
-            vertex.color.y = 1.0f;
-            vertex.color.z = 1.0f;
-            vertex.normal.x = 0.0f;
-            vertex.normal.y = 0.0f;
-            vertex.normal.z = -1.0f;
-            meshData.vertices.push_back(vertex);
-        }
-        for (size_t i = 0; i < command->numIndices; ++i) {
-            meshData.indices.push_back((uint32_t)indices[i]);
-        }
-        meshes.push_back(meshData);
-        command = command->next;
-    }
-    return meshes;
-}
 
 MeshData GeometryGenerator::MakeSquare(float scale) {
     std::vector<Vector3> positions;

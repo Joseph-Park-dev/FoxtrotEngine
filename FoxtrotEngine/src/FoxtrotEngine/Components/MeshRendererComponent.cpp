@@ -8,6 +8,7 @@
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 #include "FoxtrotEngine/Renderer/GeometryGenerator.h"
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
+#include "FoxtrotEngine/Managers/ResourceManager.h"
 
 #ifdef _DEBUG
 #include "FoxtrotEditor/FTCoreEditor.h"
@@ -26,12 +27,16 @@ void MeshRendererComponent::Update(float deltaTime){
 
 void MeshRendererComponent::Render(FoxtrotRenderer* renderer){
 	if(!IsMeshEmpty())
-		RenderMeshArray(renderer);
+		UpdateRenderBuffer(renderer);
 }
 
 void MeshRendererComponent::InitializeMesh(std::vector<MeshData>&& meshDataVec){
+	if (mMeshArr) {
+		SafeDeleteArray(mMeshArr);
+	}
 	mMeshArr = new Mesh*[meshDataVec.size()];
 	assert(!IsMeshEmpty());
+	int a = meshDataVec.size();
 	for (size_t i = 0; i < meshDataVec.size(); ++i) {
 		AddMesh(std::move(meshDataVec[i]), i);
 	}
@@ -47,6 +52,7 @@ void MeshRendererComponent::InitializeMesh(MeshData&& meshData){
 void MeshRendererComponent::AddMesh(MeshData&& meshData, size_t index) {
 	assert(index < GetArrayLength(mMeshArr));
 	Mesh* mesh = new Mesh;
+	SetTexture(mesh, ResourceManager::GetInstance()->GetLoadedTexture(meshData.textureKey));
 	mRenderer->CreateVertexBuffer(meshData.vertices, mesh->vertexBuffer);
 	mesh->indexCount = UINT(meshData.indices.size());
 	mRenderer->CreateIndexBuffer(meshData.indices, mesh->indexBuffer);
@@ -77,7 +83,7 @@ void MeshRendererComponent::UpdateMeshArray(Transform* transform, Camera* camera
 	}
 }
 
-void MeshRendererComponent::RenderMeshArray(FoxtrotRenderer* renderer){
+void MeshRendererComponent::UpdateRenderBuffer(FoxtrotRenderer* renderer){
 	if (!IsMeshEmpty()) {
 		for (size_t i = 0; i < GetArrayLength(mMeshArr); ++i) {
 			Mesh* mesh = mMeshArr[i];
@@ -89,12 +95,9 @@ void MeshRendererComponent::RenderMeshArray(FoxtrotRenderer* renderer){
 	}
 }
 
-void MeshRendererComponent::SetTexture(FTTexture* texture){
-	if (!IsMeshEmpty()) {
-		for (size_t i = 0; i < GetArrayLength(mMeshArr); ++i) {
-			mMeshArr[i]->texture = texture;
-		}
-	}
+void MeshRendererComponent::SetTexture(Mesh* mesh, FTTexture* texture) {
+	if(mesh)
+		mesh->texture = texture;
 }
 
 MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder)
@@ -181,6 +184,11 @@ void MeshRendererComponent::AddCube(){
 
 void MeshRendererComponent::EditorUpdate(float deltaTime){
 	Update(deltaTime);
+}
+
+void MeshRendererComponent::EditorRender(FoxtrotRenderer* renderer)
+{
+
 }
 
 void MeshRendererComponent::EditorUIUpdate(){

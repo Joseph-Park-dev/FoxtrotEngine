@@ -19,13 +19,13 @@ void SpineAnimRendererComponent::Initialize(FTCore* coreInstance)
     mSkeleton = new spine::Skeleton(mSpineAnimation->GetSkeletonData());
     mSkeleton->setX(GetOwner()->GetTransform()->GetWorldPosition().x);
     mSkeleton->setY(GetOwner()->GetTransform()->GetWorldPosition().y);
+    mSkeleton->setSkin(NULL);
 
     mSpineAnimation->GetAnimationStateData()->setDefaultMix(0.5f);
     mAnimationState = new spine::AnimationState(mSpineAnimation->GetAnimationStateData());
-    mAnimationState->setAnimation(0, "Idling", false);
+    mAnimationState->setAnimation(0, "Idling", true);
 
-    mSkeletonRenderer = new spine::SkeletonRenderer();
-    InitializeMesh(GeometryGenerator::MakeSpineMeshes(*mSkeletonRenderer, *mSkeleton));
+    //InitializeMesh(GeometryGenerator::MakeSpineMeshes(mSkeletonRenderer, mSkeleton));
     //SetTexture("./assets/Asteroid.png");
 }
 
@@ -46,14 +46,51 @@ void SpineAnimRendererComponent::Update(float deltaTime)
 	MeshRendererComponent::Update(deltaTime);
 }
 
-void SpineAnimRendererComponent::Render(FoxtrotRenderer* renderer)
-{
-    RenderSkeleton(renderer);
-	MeshRendererComponent::Render(renderer);
+void SpineAnimRendererComponent::Render(FoxtrotRenderer* renderer){
+    std::vector<MeshData> meshes;
+    spine::RenderCommand* command = mSkeletonRenderer->render(*mSkeleton);
+    while (command) {
+        MeshData meshData;
+        FTTexture* tex = (FTTexture*)command->texture;
+        meshData.textureKey = tex->GetRelativePath();
+        float* positions = command->positions;
+        float* uvs = command->uvs;
+        uint32_t* colors = command->colors;
+        uint16_t* indices = command->indices;
+        for (int i = 0; i < command->numVertices << 1; i += 2) {
+            Vertex vertex;
+            vertex.position.x = positions[i];
+            vertex.position.y = positions[i + 1];
+            vertex.position.z = 0.0f;
+            vertex.texcoord.x = uvs[i];
+            vertex.texcoord.y = uvs[i + 1];
+            vertex.color.x = 1.0f;
+            vertex.color.y = 1.0f;
+            vertex.color.z = 1.0f;
+            vertex.normal.x = 0.0f;
+            vertex.normal.y = 0.0f;
+            vertex.normal.z = -1.0f;
+            meshData.vertices.push_back(vertex);
+        }
+        for (size_t i = 0; i < command->numIndices; ++i) {
+            meshData.indices.push_back(indices[i]);
+        }
+        meshes.push_back(meshData);
+        SetTexture((FTTexture*)command->texture);
+        InitializeMesh(std::move(meshes));
+        MeshRendererComponent::Render(renderer);
+        command = command->next;
+    }
+    
 }
 
 SpineAnimRendererComponent::SpineAnimRendererComponent(Actor* owner, int drawOrder, int updateOrder)
     : MeshRendererComponent(owner, drawOrder, updateOrder)
+    , mSkeletonRenderer (new spine::SkeletonRenderer())
+    , mSpineAnimation   (nullptr)
+    , mSkeleton         (nullptr)
+    , mAnimationState   (nullptr)
+    , mScale            (0.01f)
 {
 }
 
@@ -63,8 +100,8 @@ SpineAnimRendererComponent::~SpineAnimRendererComponent()
         delete mSpineAnimation;
     if (mSkeleton)
         delete mSkeleton;
-    if (mSkeletonRenderer)
-        delete mSkeletonRenderer;
+    //if (mSkeletonRenderer)
+    //    delete mSkeletonRenderer;
 }
 
 void SpineAnimRendererComponent::RenderSkeleton(FoxtrotRenderer* renderer)

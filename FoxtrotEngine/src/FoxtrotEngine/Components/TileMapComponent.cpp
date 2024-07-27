@@ -29,7 +29,7 @@ void TileMapComponent::Initialize(FTCore* coreInstance){
     mTileSizeX = 32;
     mTileSizeY = 32;
     std::string tileMapSprite = "D:/[2024_01]/FoxtrotEngine_DirectX/assets/Tiles.png";
-    SetTexture(ResourceManager::GetInstance()->GetLoadedTexture(tileMapSprite));
+    SetTexture(GetMeshArray()[0], ResourceManager::GetInstance()->GetLoadedTexture(tileMapSprite));
     InitializeTileMap();
 }
 

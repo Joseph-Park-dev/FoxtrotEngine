@@ -2,6 +2,7 @@
 #include <string>
 #include <unordered_map>
 #include <functional>
+#include <nlohmann/json.hpp>
 
 #include "FoxtrotEngine/Core/SingletonMacro.h"
 
@@ -24,19 +25,28 @@ using ComponentCreateMap = std::unordered_map<std::wstring, ComponentCreateFunc>
 using ComponentLoadFunc = std::function<void(Actor*, std::ifstream& ifs)>;
 using ComponentLoadMap = std::unordered_map<std::wstring, ComponentLoadFunc>;
 
-#define CHUNK_FORMAT ".chunk"
+#define CHUNK_FILE_FORMAT ".json"
 #define FILE_IO_FORMAT ".data"
 class ChunkLoader
 {
+#define MAPKEY_CHUNKDATA "ChunkData"
+#define MAPKEY_ACTORDATA "ActorData"
+
+#define SAVEKEY_TARGETACTORID "TargetActorID"
+#define SAVEKEY_RENDERRES "RenderResolution"
+#define SAVEKEY_SCREENCENTER "ScreenCenter"
+#define SAVEKEY_ACTORCOUNT "ActorCount"
+
+
 	SINGLETON(ChunkLoader)
 // Member Functions for editor level to generate chunk.json files
 public:
 	void SaveChunk(const std::string fileName);
 
 protected:
-	void SaveChunkData(std::ofstream& of);
+	void SaveChunkData(nlohmann::ordered_json& out);
 	void SaveResources(std::ofstream& of);
-	void SaveActors(std::ofstream& of);
+	void SaveActors(nlohmann::ordered_json& out);
 
 // Member functions for engine level to use .chunk files
 public:
@@ -44,7 +54,7 @@ public:
 	void LoadChunkToEditor(const std::string fileName);
 
 protected:
-	void LoadChunkData(std::ifstream& ifs);
+	//void LoadChunkData(YAML::Node& node);
 	void LoadActors(std::ifstream& ifs);
 	void LoadActorsToEditor(std::ifstream& ifs);
 
@@ -67,16 +77,16 @@ private:
 class FileIOHelper
 {
 public:
-	static void			AddVector2		(std::ofstream& ofs, FTVector2 value);
-	static void			AddVector3		(std::ofstream& ofs, FTVector3 value);
-	static void			AddBasicString	(std::ofstream& ofs, std::string value);
-	static void			AddWString		(std::ofstream& ofs, std::wstring value);
-	static void			AddFloat		(std::ofstream& ofs, float value);
-	static void			AddInt			(std::ofstream& ofs, int value);
-	static void			AddSize			(std::ofstream& ofs, size_t value);
+	static void			AddVector2		(nlohmann::ordered_json& json, FTVector2 value);
+	static void			AddVector3		(nlohmann::ordered_json& json, FTVector3 value);
 
+	template <typename T>
+	static void	AddScalarValue(nlohmann::ordered_json& json, T value) {
+		json = value;
+	}
+
+public:
 	static FTVector2	LoadVector2		(std::ifstream& ifs);
-	static FTVector3	LoadVector3		(std::ifstream& ifs);
 	static std::string	LoadBasicString	(std::ifstream& ifs);
 	static std::wstring LoadWString		(std::ifstream& ifs);
 	static float		LoadFloat		(std::ifstream& ifs);
@@ -90,16 +100,13 @@ public:
 	static void			LoadInt			(std::ifstream& ifs, int& value);
 	static void			LoadSize		(std::ifstream& ifs, size_t& value);
 
-
 public:
 	static void SaveFileIOData(std::string filename);
 	static void LoadFileIOData(std::string filename);
-	static void ResetFileIOData() { mUnmatched = 0; }
-	static int	GetUnmatched()	  { return mUnmatched; }
 
-private:
+public:
 	inline static int mUnmatched;
-};
+};	
 
 //struct SavePack {
 //	int priority = 0;

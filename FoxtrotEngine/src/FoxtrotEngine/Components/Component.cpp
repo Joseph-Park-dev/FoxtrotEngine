@@ -37,11 +37,11 @@ Component::Component(const Component& origin)
 Component::~Component()
 {}
 
-void Component::SaveProperties(std::ofstream& ofs)
+void Component::SaveProperties(nlohmann::ordered_json& out)
 {
-	//FileIOHelper::AddString	(of, GetName());
-	FileIOHelper::AddInt(ofs, GetDrawOrder());
-	FileIOHelper::AddInt(ofs, GetUpdateOrder());
+	FileIOHelper::AddScalarValue(out["Name"], ToString(GetName()));
+	FileIOHelper::AddScalarValue(out["DrawOrder"], mDrawOrder);
+	FileIOHelper::AddScalarValue(out["UpdateOrder"], mUpdateOrder);
 }
 
 void Component::LoadProperties(std::ifstream& ifs)

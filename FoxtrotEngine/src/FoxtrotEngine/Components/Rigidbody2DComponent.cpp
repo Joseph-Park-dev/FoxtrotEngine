@@ -119,11 +119,8 @@ void Rigidbody2DComponent::LoadProperties(std::ifstream& ifs)
 }
 
 #ifdef _DEBUG
-void Rigidbody2DComponent::SaveProperties(std::ofstream& ofs)
+void Rigidbody2DComponent::SaveProperties(nlohmann::ordered_json& out)
 {
-	Component::SaveProperties(ofs);
-	FileIOHelper::AddFloat(ofs, mMass);
-	FileIOHelper::AddFloat(ofs, mFrictionCoeff);
-	FileIOHelper::AddVector2(ofs, mMaxVelocity);
+	Component::SaveProperties(out);
 }
 #endif

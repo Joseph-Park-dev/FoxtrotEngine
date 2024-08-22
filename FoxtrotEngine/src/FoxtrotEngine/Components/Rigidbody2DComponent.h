@@ -63,6 +63,6 @@ private:
 public:
     virtual void LoadProperties(std::ifstream& ifs) override;
 #ifdef _DEBUG
-    virtual void SaveProperties(std::ofstream& ofs) override;
+    virtual void SaveProperties(nlohmann::ordered_json& out) override;
 #endif
 };

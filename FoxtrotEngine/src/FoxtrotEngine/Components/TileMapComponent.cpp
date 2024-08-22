@@ -202,9 +202,9 @@ TileMapComponent::~TileMapComponent()
 //    tile->SetScreenRect(dstRect);
 //}
 
-void TileMapComponent::SaveProperties(std::ofstream& ofs)
+void TileMapComponent::SaveProperties(nlohmann::ordered_json& out)
 {
-    SpriteRendererComponent::SaveProperties(ofs);
+    SpriteRendererComponent::SaveProperties(out);
 }
 
 void TileMapComponent::LoadProperties(std::ifstream& ifs)

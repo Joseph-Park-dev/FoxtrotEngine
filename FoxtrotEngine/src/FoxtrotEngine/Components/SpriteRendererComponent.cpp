@@ -144,12 +144,12 @@ void SpriteRendererComponent::UpdateScale(){
 	CommandHistory::GetInstance()->UpdateFloatValue("Texture Scale", &mScale, FLOATMOD_SPEED);
 }
 
-void SpriteRendererComponent::SaveProperties(std::ofstream& ofs){
-	Component::SaveProperties(ofs);
+void SpriteRendererComponent::SaveProperties(nlohmann::ordered_json& out){
+	Component::SaveProperties(out);
+	FileIOHelper::AddScalarValue(out["Channel"], mChannel);
+	FileIOHelper::AddScalarValue(out["Scale"], mScale);
 	//FileIOHelper::AddWString(ofs, mTexture->GetKey());
 	//FileIOHelper::AddWString(ofs, mTexture->GetRelativePath());
-	FileIOHelper::AddFloat(ofs, GetMeshArray()[0]->texture->GetTexWidth());
-	FileIOHelper::AddFloat(ofs, GetMeshArray()[0]->texture->GetTexHeight());
 
 	//FileIOHelper::AddFTTexture(ofs, GetMesh()->texture);
 }

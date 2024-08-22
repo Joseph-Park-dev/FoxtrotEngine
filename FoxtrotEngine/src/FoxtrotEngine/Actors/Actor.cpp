@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <nlohmann/json.hpp>
 
 #include "FoxtrotEngine/Scenes/Scene.h"
 #include "FoxtrotEngine/Managers/KeyInputManager.h"
@@ -222,27 +223,27 @@ void Actor::SetState(std::string state)
 //	fwrite(&GetTransform()->GetWorldPosition(), sizeof(Vector2), 1, file);
 //}
 
-void Actor::SaveProperties(std::ofstream& ofs)
+void Actor::SaveProperties(nlohmann::ordered_json& out)
 {
-	FileIOHelper::AddWString	 (ofs, mName);
-	FileIOHelper::AddInt		 (ofs, mID);
-	FileIOHelper::AddBasicString (ofs, GetActorGroupStr(GetActorGroup()));
-	FileIOHelper::AddBasicString (ofs, GetStateStr());
+	FileIOHelper::AddScalarValue(out["Name"], GetNameStr());
+	FileIOHelper::AddScalarValue(out["ID"], mID);
+	FileIOHelper::AddScalarValue(out["ActorGroup"], GetActorGroupStr(mActorGroup));
+	FileIOHelper::AddScalarValue(out["State"], GetStateStr());
 
-	FileIOHelper::AddVector3 (ofs, mTransform->GetWorldPosition());
-	FileIOHelper::AddVector3 (ofs, mTransform->GetLocalPosition());
-	FileIOHelper::AddVector3 (ofs, mTransform->GetRotation());
-	FileIOHelper::AddVector3 (ofs, mTransform->GetScale());
+	mTransform->SaveProperties(out["Transform"]);
+
+	if(mParent)
+		FileIOHelper::AddScalarValue(out["Parent"], mParent->GetNameStr());
+	//FileIOHelper::AddValue<std::string>("Child", GetStateStr());
 }
 
-void Actor::SaveComponents(std::ofstream& ofs)
+void Actor::SaveComponents(nlohmann::ordered_json& out)
 {
 	size_t count = mComponents.size();
-	FileIOHelper::AddSize(ofs, count);
+	FileIOHelper::AddScalarValue(out["Count"], count);
 	for (size_t i = 0; i < count; ++i)
 	{
-		FileIOHelper::AddWString(ofs, mComponents[i]->GetName());
-		mComponents[i]->SaveProperties(ofs);
+		mComponents[i]->SaveProperties(out["List"][i]);
 	}
 }
 
@@ -256,10 +257,6 @@ void Actor::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadBasicString(ifs, stringBuffer);
 	SetState(stringBuffer);
 
-	mTransform->SetWorldPosition(FileIOHelper::LoadVector3(ifs));
-	mTransform->SetLocalPosition(FileIOHelper::LoadVector3(ifs));
-	mTransform->SetRotation		(FileIOHelper::LoadVector3(ifs));
-	mTransform->SetScale		(FileIOHelper::LoadVector3(ifs));
 }
 
 void Actor::LoadComponents(std::ifstream& ifs)

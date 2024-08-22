@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include <commdlg.h>
 #include <iostream>
+#include <nlohmann/json.hpp>
 
 #include "FoxtrotEngine/Math/FTMath.h"
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
@@ -31,21 +32,14 @@
 #ifdef _DEBUG
 void ChunkLoader::SaveChunk(const std::string fileName)
 {
-    // Serialization into binary
-    std::ofstream file;
-    file.open(fileName, std::ios::binary);
-    assert(file);
-    if (file.is_open())
-    {
-        FileIOHelper::ResetFileIOData();
-        SaveChunkData(file);
-        SaveActors(file);
-        file.close();
-    }
-    FileIOHelper::SaveFileIOData(GetConvertedFileName(fileName, CHUNK_FORMAT, FILE_IO_FORMAT));
+    std::ofstream ofs (fileName);
+    nlohmann::ordered_json out;
+    SaveChunkData(out[MAPKEY_CHUNKDATA]);
+    SaveActors(out[MAPKEY_ACTORDATA]);
+    ofs << std::setw(4) << out << std::endl;
 }
 
-void ChunkLoader::SaveChunkData(std::ofstream& ofs)
+void ChunkLoader::SaveChunkData(nlohmann::ordered_json& out)
 {   
     /*
     ChunkData save order
@@ -56,15 +50,12 @@ void ChunkLoader::SaveChunkData(std::ofstream& ofs)
         2) Number of Actors     -> int
     */
     // Saves Camera2D Values.
-    mCurrentChunkData.TargetActorID = Camera2D::GetInstance()->GetTargetActorID();
-    mCurrentChunkData.RenderResolution = Camera2D::GetInstance()->GetRenderResolution();
-    mCurrentChunkData.ScreenCenter = Camera2D::GetInstance()->GetScreenCenter();
     mCurrentChunkData.ActorCount = EditorLayer::GetInstance()->GetEditorElements().size();
 
-    FileIOHelper::AddInt     (ofs, mCurrentChunkData.TargetActorID);
-    FileIOHelper::AddVector2 (ofs, mCurrentChunkData.RenderResolution);
-    FileIOHelper::AddVector2 (ofs, mCurrentChunkData.ScreenCenter);
-    FileIOHelper::AddInt     (ofs, mCurrentChunkData.ActorCount);
+    FileIOHelper::AddScalarValue<int> (out[SAVEKEY_TARGETACTORID], 1);
+    FileIOHelper::AddVector2          (out[SAVEKEY_RENDERRES], FTVector2::Zero);
+    FileIOHelper::AddVector2          (out[SAVEKEY_SCREENCENTER], FTVector2(123,123));
+    FileIOHelper::AddScalarValue<int> (out[SAVEKEY_ACTORCOUNT], EditorLayer::GetInstance()->GetEditorElements().size());
 }
 
 void ChunkLoader::SaveResources(std::ofstream& of)
@@ -76,26 +67,26 @@ void ChunkLoader::SaveResources(std::ofstream& of)
     }
 }
 
-void ChunkLoader::SaveActors(std::ofstream& ofs)
+void ChunkLoader::SaveActors(nlohmann::ordered_json& out)
 {
     Actor::ResetNextID();
     const std::vector<EditorElement*>& actors = EditorLayer::GetInstance()->GetEditorElements();
     for (size_t i = 0; i < mCurrentChunkData.ActorCount; ++i)
     {
-        actors[i]->SaveProperties(ofs);
-        actors[i]->SaveComponents(ofs);
+        actors[i]->SaveProperties(out[i]);
+        actors[i]->SaveComponents(out[i]["Components"]);
     }
 }
 
 void ChunkLoader::LoadChunk(const std::string fileName)
 {
-    FileIOHelper::LoadFileIOData(GetConvertedFileName(fileName, CHUNK_FORMAT, FILE_IO_FORMAT));
+    FileIOHelper::LoadFileIOData(GetConvertedFileName(fileName, CHUNK_FILE_FORMAT, FILE_IO_FORMAT));
     std::ifstream file;
     file.open(fileName, std::ios::binary);
     assert(file);
     if (file.is_open())
     {
-        LoadChunkData(file);
+        //LoadChunkData(file);
         LoadActors(file);
         file.close();
     }
@@ -103,38 +94,24 @@ void ChunkLoader::LoadChunk(const std::string fileName)
 
 void ChunkLoader::LoadChunkToEditor(const std::string fileName)
 {
-    FileIOHelper::LoadFileIOData(GetConvertedFileName(fileName, CHUNK_FORMAT, FILE_IO_FORMAT));
-    std::ifstream file;
-    file.open(fileName, std::ios::binary);
-    assert(file);
-    if (file.is_open())
-    {
-        LoadChunkData(file);
-        LoadActorsToEditor(file);
-        file.close();
-    }
+    FileIOHelper::LoadFileIOData(GetConvertedFileName(fileName, CHUNK_FILE_FORMAT, FILE_IO_FORMAT));
 }
 
-void ChunkLoader::LoadChunkData(std::ifstream& ifs)
-{
-    /*
-    ChunkData save order
-        1) Camera2D values
-            a) TargetActorID    -> int
-            a) RenderResolution -> FTVector2
-            b) ScreenCenter     -> FTVector2
-        2) Number of Actors     -> int
-    */
-    mCurrentChunkData = {};
-    mCurrentChunkData.TargetActorID = FileIOHelper::LoadInt(ifs);
-    mCurrentChunkData.RenderResolution = FileIOHelper::LoadVector2(ifs);
-    mCurrentChunkData.ScreenCenter = FileIOHelper::LoadVector2(ifs);
-    mCurrentChunkData.ActorCount = FileIOHelper::LoadInt(ifs);
-
-    Camera2D::GetInstance()->SetTargetActorID(mCurrentChunkData.TargetActorID);
-    Camera2D::GetInstance()->SetRenderResolution(mCurrentChunkData.RenderResolution);
-    Camera2D::GetInstance()->SetScreenCenter(mCurrentChunkData.ScreenCenter);
-}
+//void ChunkLoader::LoadChunkData(YAML::Node& node)
+//{
+//    /*
+//    ChunkData save order
+//        1) Camera2D values
+//            a) TargetActorID    -> int
+//            a) RenderResolution -> FTVector2
+//            b) ScreenCenter     -> FTVector2
+//        2) Number of Actors     -> int
+//    */
+//
+//    /*Camera::GetInstance()->SetTargetActorID(mCurrentChunkData.TargetActorID);
+//    Camera::GetInstance()->SetRenderResolution(mCurrentChunkData.RenderResolution);
+//    Camera::GetInstance()->SetScreenCenter(mCurrentChunkData.ScreenCenter);*/
+//}
 
 void ChunkLoader::LoadActors(std::ifstream& ifs)
 {
@@ -241,53 +218,53 @@ ChunkLoader::ChunkLoader()
 
 ChunkLoader::~ChunkLoader(){}
 
-void FileIOHelper::AddVector2(std::ofstream& ofs, FTVector2 value)
+void FileIOHelper::AddVector2(nlohmann::ordered_json& json, FTVector2 value)
 {
-    AddFloat(ofs, value.x);
-    AddFloat(ofs, value.y);
+    json["x"] = value.x;
+    json["y"] = value.y;
+}
+void FileIOHelper::AddVector3(nlohmann::ordered_json& json, FTVector3 value)
+{
+    json["x"] = value.x;
+    json["y"] = value.y;
+    json["z"] = value.z;
 }
 
-void FileIOHelper::AddVector3(std::ofstream& ofs, FTVector3 value)
-{
-    AddFloat(ofs, value.x);
-    AddFloat(ofs, value.y);
-    AddFloat(ofs, value.z);
-}
-
-void FileIOHelper::AddBasicString(std::ofstream& ofs, std::string value)
-{
-    //ofs.write((char*)&value[0], STRING_BUFFER_SIZE);
-    ofs << value << std::endl;
-    ++mUnmatched;
-}
-
-void FileIOHelper::AddWString(std::ofstream& ofs, std::wstring value)
-{
-    //ofs.write((char*)&value[0], WSTRING_BUFFER_SIZE);
-    ofs << ToString(value) << std::endl;
-    ++mUnmatched;
-}
-
-void FileIOHelper::AddFloat(std::ofstream& ofs, float value)
-{
-    //ofs.write((char*)&value, sizeof(float));
-    ofs << value << std::endl;
-    ++mUnmatched;
-}
-
-void FileIOHelper::AddInt(std::ofstream& ofs, int value)
-{
-    //ofs.write((char*)&value, sizeof(int));
-    ofs << value << std::endl;
-    ++mUnmatched;
-}
-
-void FileIOHelper::AddSize(std::ofstream& ofs, size_t value)
-{
-    //ofs.write((char*)&value, sizeof(size_t));
-    ofs << value << std::endl;
-    ++mUnmatched;
-}
+//
+//void FileIOHelper::AddVector2(std::string key, FTVector2 value)
+//{
+//}
+//
+//void FileIOHelper::AddVector3(std::string key, FTVector3 value)
+//{
+//}
+//
+//
+//void FileIOHelper::AddBasicString(std::string key, std::string value)
+//{
+//    //ofs.write((char*)&value[0], STRING_BUFFER_SIZE);
+//    ++mUnmatched;
+//}
+//
+//void FileIOHelper::AddWString(std::string key, std::wstring value)
+//{
+//    
+//}
+//
+//void FileIOHelper::AddFloat(std::string key, float value)
+//{
+//}
+//
+//void FileIOHelper::AddInt(std::string key, int value)
+//{
+//    //ofs.write((char*)&value, sizeof(int));
+//    ++mUnmatched;
+//}
+//
+//void FileIOHelper::AddSize(std::string key, size_t value)
+//{
+//    //ofs.write((char*)&value, sizeof(size_t));
+//    ++mUnmatched;
 
 FTVector2 FileIOHelper::LoadVector2(std::ifstream& ifs)
 {
@@ -297,14 +274,6 @@ FTVector2 FileIOHelper::LoadVector2(std::ifstream& ifs)
     return FTVector2(x, y);
 }
 
-FTVector3 FileIOHelper::LoadVector3(std::ifstream& ifs)
-{
-    assert(mUnmatched > 0);
-    float x = LoadFloat(ifs);
-    float y = LoadFloat(ifs);
-    float z = LoadFloat(ifs);
-    return FTVector3(x, y, z);
-}
 
 std::string FileIOHelper::LoadBasicString(std::ifstream& ifs)
 {

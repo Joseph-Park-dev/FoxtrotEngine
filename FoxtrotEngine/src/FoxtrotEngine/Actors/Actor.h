@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <typeinfo>
+#include <nlohmann/json.hpp>
 
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
 
@@ -16,18 +17,6 @@ class Component;
 class FoxtrotRenderer;
 enum class ACTOR_TAG;
 enum class ACTOR_GROUP;
-
-struct ActorData
-{
-	std::wstring			  mActorFrameName;
-	ACTOR_GROUP				  mActorGroup;
-	std::wstring			  mName;
-	int						  mState;
-	Transform*				  mTransform;
-	std::vector<Component*>	  mComponents;
-	Actor*					  mParent;
-	std::vector<Actor*>	      mChild;
-};
 
 class Actor
 {
@@ -134,8 +123,8 @@ private:
 		   std::vector<Actor*>		mChild;
 
 public:
-	void SaveProperties(std::ofstream& ofs);
-	void SaveComponents(std::ofstream& ofs);
+	void SaveProperties(nlohmann::ordered_json& out);
+	void SaveComponents(nlohmann::ordered_json& out);
 	void LoadProperties(std::ifstream& ifs);
 	void LoadComponents(std::ifstream& ifs);
 	friend class Scene_Tool;

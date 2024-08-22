@@ -67,7 +67,7 @@ private:
 #ifdef _DEBUG
 	//This section will be omitted from Release mode!
 public:
-	//virtual void SaveProperties(std::ofstream& ofs) override;
+	virtual void SaveProperties(nlohmann::ordered_json& out) override;
 	//virtual void LoadProperties(std::ifstream& ifs) override;
 
 	virtual void EditorUpdate(float deltaTime) override;

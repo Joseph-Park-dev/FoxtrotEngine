@@ -76,7 +76,7 @@ void SpineAnimRendererComponent::Render(FoxtrotRenderer* renderer){
             meshData.indices.push_back(indices[i]);
         }
         meshes.push_back(meshData);
-        SetTexture((FTTexture*)command->texture);
+        //SetTexture((FTTexture*)command->texture);
         InitializeMesh(std::move(meshes));
         MeshRendererComponent::Render(renderer);
         command = command->next;

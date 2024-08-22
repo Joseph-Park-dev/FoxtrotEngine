@@ -583,6 +583,7 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineAnimation.h" />
     <ClInclude Include="FoxtrotEngine\src\include\spine\SkeletonRenderer.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpriteRendererComponent.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\FileSystem\SaveKeysList.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

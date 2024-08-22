@@ -48,7 +48,7 @@ private:
     FTAnimation* FindAnimation(const std::wstring& name);
 
 public:
-    virtual void SaveProperties(std::ofstream& ofs) override;
+    virtual void SaveProperties(nlohmann::ordered_json& out) override;
     virtual void LoadProperties(std::ifstream& ifs) override;
 
 public:

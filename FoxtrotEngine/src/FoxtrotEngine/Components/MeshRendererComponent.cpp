@@ -9,6 +9,7 @@
 #include "FoxtrotEngine/Renderer/GeometryGenerator.h"
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
 #include "FoxtrotEngine/Managers/ResourceManager.h"
+#include "FoxtrotEngine/FileSystem/ChunkLoader.h"
 
 #ifdef _DEBUG
 #include "FoxtrotEditor/FTCoreEditor.h"
@@ -180,6 +181,12 @@ void MeshRendererComponent::AddCube(){
 		InitializeMesh(GeometryGenerator::MakeBox());
 		//SetTexture("./assets/Asteroid.png");
 	}
+}
+
+void MeshRendererComponent::SaveProperties(nlohmann::ordered_json& out)
+{
+	Component::SaveProperties(out);
+	FileIOHelper::AddScalarValue(out["Key"], mKey);
 }
 
 void MeshRendererComponent::EditorUpdate(float deltaTime){

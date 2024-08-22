@@ -55,7 +55,7 @@ private:
 
 #ifdef _DEBUG
 public:
-    virtual void SaveProperties(std::ofstream& ofs) override;
+    virtual void SaveProperties(nlohmann::ordered_json& out) override;
     virtual void LoadProperties(std::ifstream& ifs) override;
 
     //void BlitToGameviewEx(FTVector2 wPos, Tile* tile);

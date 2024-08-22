@@ -131,7 +131,7 @@ void EditorLayer::DisplayFileMenu()
 				config.path = ".";
 				config.countSelectionMax = 1;
 				config.flags = ImGuiFileDialogFlags_ConfirmOverwrite;
-				ImGuiFileDialog::Instance()->OpenDialog("SaveChunkFile", "Save", CHUNK_FORMAT, config);
+				ImGuiFileDialog::Instance()->OpenDialog("SaveChunkFile", "Save", CHUNK_FILE_FORMAT, config);
 			}
 		}
 		else if (selection == "Save As" || mSaveAsKeyPressed)
@@ -140,14 +140,14 @@ void EditorLayer::DisplayFileMenu()
 			config.path = ".";
 			config.countSelectionMax = 1;
 			config.flags = ImGuiFileDialogFlags_ConfirmOverwrite;
-			ImGuiFileDialog::Instance()->OpenDialog("SaveChunkFile", "Save As", CHUNK_FORMAT, config);
+			ImGuiFileDialog::Instance()->OpenDialog("SaveChunkFile", "Save As", CHUNK_FILE_FORMAT, config);
 		}
 		else if (selection == "Open" || mOpenKeyPressed)
 		{
 			IGFD::FileDialogConfig config;
 			config.path = ".";
 			config.countSelectionMax = 1;
-			ImGuiFileDialog::Instance()->OpenDialog("OpenChunkFile", "Open Chunk", CHUNK_FORMAT, config);
+			ImGuiFileDialog::Instance()->OpenDialog("OpenChunkFile", "Open Chunk", CHUNK_FILE_FORMAT, config);
 		}
 
 		if (ImGui::Button("New Game Object"))

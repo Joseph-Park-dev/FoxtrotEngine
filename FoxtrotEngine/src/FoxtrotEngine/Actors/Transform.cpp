@@ -1,6 +1,8 @@
 #include "FoxtrotEngine/Actors/Transform.h"
 
-#include "FoxtrotEngine/Renderer/Camera2D.h"
+#include <nlohmann/json.hpp>
+
+#include "FoxtrotEngine/FileSystem/ChunkLoader.h"
 
 void Transform::Translate(FTVector3 translation)
 {
@@ -59,4 +61,17 @@ FTVector3 Transform::ConvertDegreeToRad(FTVector3 degreeRot)
 	float y = Math::ToRadians(degreeRot.y);
 	float z = Math::ToRadians(degreeRot.z);
 	return FTVector3(x, y, z);
+}
+
+void Transform::SaveProperties(nlohmann::ordered_json& out)
+{
+	FileIOHelper::AddVector3(out[SAVEKEY_WORLDPOS], mWorldPosition);
+	FileIOHelper::AddVector3(out[SAVEKEY_SCREENPOS], mScreenPosition);
+	FileIOHelper::AddVector3(out[SAVEKEY_LOCALPOS], mLocalPosition);
+	FileIOHelper::AddVector3(out[SAVEKEY_SCALE], mScale);
+	FileIOHelper::AddVector3(out[SAVEKEY_ROTATION], mRotation);
+}
+
+void Transform::LoadProperties()
+{
 }

@@ -58,6 +58,7 @@ public:
 	Component(const Component& origin);
 	virtual ~Component();
 
+
 	template<class T>
 	static void Load(Actor* actor, std::ifstream& ifs)
 	{
@@ -84,7 +85,7 @@ public:
 	virtual void CloneTo(Actor* actor) {};
 
 public:
-	virtual void SaveProperties(std::ofstream& ofs);
+	virtual void SaveProperties(nlohmann::ordered_json& out);
 	virtual void LoadProperties(std::ifstream& ifs);
 
 public:

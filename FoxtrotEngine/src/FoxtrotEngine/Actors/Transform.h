@@ -1,10 +1,18 @@
 #pragma once
+#include <nlohmann/json.hpp>
+
 #include "FoxtrotEngine/Math/FTMath.h"
 
 class Component;
 
 class Transform
 {
+#define SAVEKEY_WORLDPOS "WorldPosition"
+#define SAVEKEY_SCREENPOS "ScreenPosition"
+#define SAVEKEY_LOCALPOS "LocalPosition"
+#define SAVEKEY_SCALE "Scale"
+#define SAVEKEY_ROTATION "Rotation"
+
 public:
 	void Translate(FTVector3 translation);
 
@@ -47,4 +55,9 @@ private:
 public:
 	static FTVector3 ConvertRadToDegree(FTVector3 radianRot);
 	static FTVector3 ConvertDegreeToRad(FTVector3 degreeRot);
+
+
+public:
+	void SaveProperties(nlohmann::ordered_json& out);
+	void LoadProperties();
 };

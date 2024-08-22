@@ -77,11 +77,9 @@ FTAnimation* AnimatorComponent::FindAnimation(const std::wstring& name)
 	}
 }
 
-void AnimatorComponent::SaveProperties(std::ofstream& ofs)
+void AnimatorComponent::SaveProperties(nlohmann::ordered_json& out)
 {
-	SpriteRendererComponent::SaveProperties(ofs);
-	for (const std::pair<std::wstring, FTAnimation*>& pair : mMapAnimation)
-		FileIOHelper::AddWString(ofs, pair.first);
+	SpriteRendererComponent::SaveProperties(out);
 }
 
 void AnimatorComponent::LoadProperties(std::ifstream& ifs)

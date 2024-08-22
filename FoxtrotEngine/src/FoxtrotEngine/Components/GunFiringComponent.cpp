@@ -55,11 +55,9 @@ GunFiringComponent::~GunFiringComponent()
 {
 }
 
-void GunFiringComponent::SaveProperties(std::ofstream& ofs)
+void GunFiringComponent::SaveProperties(nlohmann::ordered_json& out)
 {
-	Component::SaveProperties(ofs);
-	FileIOHelper::AddFloat(ofs, mDelay);
-	FileIOHelper::AddInt(ofs, (int)mTriggerKey);
+	Component::SaveProperties(out);
 }
 
 void GunFiringComponent::LoadProperties(std::ifstream& ifs)

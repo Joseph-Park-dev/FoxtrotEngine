@@ -88,11 +88,9 @@ void ColliderComponent::Render(FoxtrotRenderer* renderer)
 
 }
 
-void ColliderComponent::SaveProperties(std::ofstream& ofs)
+void ColliderComponent::SaveProperties(nlohmann::ordered_json& out)
 {
-	Component::SaveProperties(ofs);
-	FileIOHelper::AddVector2(ofs, mOffsetPos);
-	FileIOHelper::AddVector2(ofs, mScale);
+	Component::SaveProperties(out);
 }
 
 void ColliderComponent::LoadProperties(std::ifstream& ifs)

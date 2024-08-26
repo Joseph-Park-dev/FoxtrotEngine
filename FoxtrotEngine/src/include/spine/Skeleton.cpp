@@ -565,7 +565,7 @@ Vector<PhysicsConstraint *> &Skeleton::getPhysicsConstraints() {
 
 Skin *Skeleton::getSkin() { return _skin; }
 
-Color &Skeleton::getColor() { return _color; }
+spine::Color &Skeleton::getColor() { return _color; }
 
 void Skeleton::setPosition(float x, float y) {
 	_x = x;

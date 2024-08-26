@@ -41,7 +41,7 @@ private:
 	std::vector<EditorElement*> mEditorElements;
 	UINT mElementNumber;
 	bool mCurrFileSaved;
-	std::string mCurrFilePathName;
+	std::string mCurrFilePath;
 	
 	int mHierarchyIdx;
 	int mActorNameIdx;

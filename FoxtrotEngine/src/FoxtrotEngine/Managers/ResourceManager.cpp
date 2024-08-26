@@ -1,26 +1,37 @@
 #include <unordered_map>
 
+#include "spine/Atlas.h"
+
 #include "FoxtrotEngine/Managers/ResourceManager.h"
 #include "FoxtrotEngine/ResourceSystem/FTTexture.h"
 #include "FoxtrotEngine/ResourceSystem/FTSpineAnimation.h"
+#include "FoxtrotEngine/ResourceSystem/GeometryGenerator.h"
+#include "FoxtrotEngine/ResourceSystem/FTBasicMeshGroup.h"
 #include "FoxtrotEngine/Core/FTCore.h"
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
-#include "spine/Atlas.h"
+#include "FoxtrotEngine/Renderer/D3D11Utils.h"
 
-void ResourceManager::LoadTexture(FoxtrotRenderer* renderer, const std::string fileName)
+void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 {
-	FTTexture* ptTex = FindTexture(fileName);
-	if (ptTex != nullptr)
-		printf("Warning : FTTexture %s is already loaded.\n", fileName.c_str());
-	else
-	{
-		printf("Message: Loading FTTexture %s\n", fileName.c_str());
+	mRenderer = renderer;
+}
+
+void ResourceManager::LoadTexture(const std::string key, const std::string filePath)
+{
+	FTTexture* ptTex = nullptr;
+	std::string path = mPathToAsset + filePath;
+	if (!ResourceExists<FTTexture*>(key, path, mMapTextures)) {
+		printf("Message: Loading FTTexture %s to key %s. \n", path.c_str(), key.c_str());
 		ptTex = new FTTexture;
-		ptTex->SetRelativePath(fileName);
-		if (!ptTex->CreateTexture(renderer, fileName))
+		ptTex->SetRelativePath(path);
+		D3D11Utils::CreateTexture(mRenderer->GetDevice(), mRenderer->GetContext(), ptTex);
+		if (!ptTex)
 			printf("Error: ResourceManager::LoadTexture() -> CreateTexture failed. \n");
-		mMapTextures.insert(std::make_pair(fileName, ptTex));
+		mMapTextures.insert(std::make_pair(key, ptTex));
+	}
+	else {
+		printf("Warning : FTTexture %s is already loaded to key %s.\n", filePath.c_str(), key.c_str());
 	}
 }
 
@@ -43,7 +54,7 @@ void ResourceManager::LoadTexture(FoxtrotRenderer* renderer, const std::string f
 //	}
 //}
 
-void ResourceManager::UpdateTexture(FoxtrotRenderer* renderer, FTTexture* texture, int channels)
+void ResourceManager::UpdateTexture(FTTexture* texture, int channels)
 {
 	if (texture != nullptr)
 	{
@@ -60,70 +71,110 @@ void ResourceManager::UpdateTexture(FoxtrotRenderer* renderer, FTTexture* textur
 		printf("Warning : FTTexture %s is not loaded. Aborting update...\n", texture->GetRelativePath().c_str());
 }
 
-bool ResourceManager::LoadSpineAnimation(std::string key, std::string atlasPath, std::string skeletonDataPath)
+//bool ResourceManager::LoadSpineAnimation(std::string key, std::string atlasPath, std::string skeletonDataPath)
+//{
+//	FTSpineAnimation* spineAnim = new FTSpineAnimation;
+//	if (!spineAnim->CreateAtlas(atlasPath, mSpineTextureLoader)) {
+//		LogString("ResourceManager::LoadSpineAnimation()-> CreateAtlas() Failed.");
+//		return false;
+//	};
+//	if (!spineAnim->CreateSkeletonDataBinary(skeletonDataPath)) {
+//		LogString("ResourceManager::LoadSpineAnimation()-> CreateSkeletonData() Failed.");
+//		return false;
+//	}
+//	if (!spineAnim->CreateAnimationStateData()) {
+//		LogString("ResourceManager::LoadSpineAnimation()-> CreateAnimationStateData() Failed.");
+//		return false;
+//	}
+//	mMapSpineAnimData.insert(std::make_pair(key, spineAnim));
+//	return true;
+//}
+
+void ResourceManager::LoadMeshFromFile(const std::string key, const std::string filePath)
 {
-	FTSpineAnimation* spineAnim = new FTSpineAnimation;
-	if (!spineAnim->CreateAtlas(atlasPath, mSpineTextureLoader)) {
-		LogString("ResourceManager::LoadSpineAnimation()-> CreateAtlas() Failed.");
-		return false;
-	};
-	if (!spineAnim->CreateSkeletonDataBinary(skeletonDataPath)) {
-		LogString("ResourceManager::LoadSpineAnimation()-> CreateSkeletonData() Failed.");
-		return false;
+	std::string path = mPathToAsset + filePath;
+	if (!ResourceExists(key, path, mMapMeshGroup)) {
+		printf("Message: Loading Mesh %s to key %s. \n", path.c_str(), key.c_str());
+		FTBasicMeshGroup* meshGroup = new FTBasicMeshGroup;
+		meshGroup->Initialize(GeometryGenerator::ReadFromFile(filePath), mRenderer->GetDevice(), mRenderer->GetContext());
+		if (!meshGroup)
+		{
+			printf("Error: ResourceManager::LoadMesh() -> LoadMesh failed. \n");
+			return;
+		}
+		mMapMeshGroup.insert(std::make_pair(key, meshGroup));
 	}
-	if (!spineAnim->CreateAnimationStateData()) {
-		LogString("ResourceManager::LoadSpineAnimation()-> CreateAnimationStateData() Failed.");
-		return false;
+	else {
+		printf("Warning : FTTexture %s is already loaded to key %s.\n", filePath.c_str(), key.c_str());
 	}
-	mMapSpineAnimData.insert(std::make_pair(key, spineAnim));
-	return true;
 }
 
-FTTexture* ResourceManager::GetLoadedTexture(const std::string fileName)
+void ResourceManager::LoadBoxMesh(const std::string key)
 {
-	FTTexture* ptTex = FindTexture(fileName);
+	FTBasicMeshGroup* meshGroup = new FTBasicMeshGroup;
+	std::vector<MeshData> meshData;
+	meshData.push_back(GeometryGenerator::MakeBox());
+	meshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
+	if (!meshGroup)
+	{
+		printf("Error: ResourceManager::LoadMesh() -> LoadMesh failed. \n");
+		return;
+	}
+	mMapMeshGroup.insert(std::make_pair(key, meshGroup));
+}
+
+FTTexture* ResourceManager::GetLoadedTexture(const std::string key)
+{
+	FTTexture* ptTex = mMapTextures.at(key);
 	if (ptTex != nullptr)
 		return ptTex;
 	else
 	{
-		printf("Error: Unable to find FTTexture with fileName; %s\n", fileName.c_str());
+		printf("Error: Unable to find FTTexture with key; %s\n", key.c_str());
 		return nullptr;
 	}
 }
 
-FTSpineAnimation* ResourceManager::GetLoadedSpineAnimation(std::string key)
+//FTSpineAnimation* ResourceManager::GetLoadedSpineAnimation(std::string key)
+//{
+//	FTSpineAnimation* ptAnim = FindSpineAnimation(key);
+//	if (ptAnim != nullptr)
+//		return ptAnim;
+//	else
+//	{
+//		printf("Error: Unable to find FTTexture with keyName; %s\n", key.c_str());
+//		return nullptr;
+//	}
+//}
+
+//FTSpineAnimation* ResourceManager::FindSpineAnimation(const std::string keyName)
+//{
+//	auto iter = mMapSpineAnimData.find(keyName);
+//	if (iter != mMapSpineAnimData.end())
+//		return iter->second;
+//	else
+//	{
+//		printf("Error: Cannot find SpineAnimation %s\n", keyName.c_str());
+//		return nullptr;
+//	}
+//}
+
+FTBasicMeshGroup* ResourceManager::GetLoadedMeshes(const std::string key)
 {
-	FTSpineAnimation* ptAnim = FindSpineAnimation(key);
-	if (ptAnim != nullptr)
-		return ptAnim;
+	FTBasicMeshGroup* meshGroup = mMapMeshGroup.at(key);
+	if (meshGroup)
+		return meshGroup;
 	else
 	{
-		printf("Error: Unable to find FTTexture with keyName; %s\n", key.c_str());
-		return nullptr;
+		printf("Error: ResourceManager::GetLoadedMeshes() -> Mesh is empty %s\n", key.c_str());
 	}
 }
 
-FTTexture* ResourceManager::FindTexture(const std::string fileName)
+void ResourceManager::SaveResources(nlohmann::ordered_json& out)
 {
-	auto iter = mMapTextures.find(fileName);
-	if (iter != mMapTextures.end())
-		return iter->second;
-	else
-	{
-		printf("Error: Cannot find texture %s\n", fileName.c_str());
-		return nullptr;
-	}
-}
-
-FTSpineAnimation* ResourceManager::FindSpineAnimation(const std::string keyName)
-{
-	auto iter = mMapSpineAnimData.find(keyName);
-	if (iter != mMapSpineAnimData.end())
-		return iter->second;
-	else
-	{
-		printf("Error: Cannot find SpineAnimation %s\n", keyName.c_str());
-		return nullptr;
+	std::unordered_map<std::string, FTTexture*>::const_iterator iter;
+	for (iter = mMapTextures.begin(); iter != mMapTextures.end(); ++iter) {
+		(*iter).second->SaveProperties(out["Textures"][(*iter).first]);
 	}
 }
 
@@ -142,14 +193,15 @@ ResourceManager::~ResourceManager()
 
 ResourceManager::ResourceManager()
 	: mSpineTextureLoader(new SpineTextureLoader)
+	, mPathToAsset("./assets/")
 {
 
 }
 
-void ResourceManager::LoadToSpineTexture(spine::AtlasPage& page, spine::String fileName)
-{
-	mSpineTextureLoader->load(page, fileName);
-}
+//void ResourceManager::LoadToSpineTexture(spine::AtlasPage& page, spine::String fileName)
+//{
+//	mSpineTextureLoader->load(page, fileName);
+//}
 
 void SpineTextureLoader::load(spine::AtlasPage& page, const spine::String& path)
 {

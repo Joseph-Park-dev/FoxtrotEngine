@@ -203,8 +203,8 @@ bool FTCoreEditor::InitGUI()
 		return false;
 	}
 	if (!ImGui_ImplDX11_Init(
-		GetGameRenderer()->GetDevice(),
-		GetGameRenderer()->GetContext()
+		GetGameRenderer()->GetDevice().Get(),
+		GetGameRenderer()->GetContext().Get()
 	)
 		) {
 		LogString("Imgui DX11 Init failed");

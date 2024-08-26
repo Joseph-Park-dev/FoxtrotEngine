@@ -195,6 +195,7 @@
     <ClCompile Include="Assets\Scripts\ActorList\MouseCursor.cpp" />
     <ClCompile Include="Assets\Scripts\ActorList\Ship.cpp" />
     <ClCompile Include="Assets\Scripts\Factories\MonFactory.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpineAnimRendererComponent.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpriteRendererComponent.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -281,11 +282,14 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Physics\ParticleSystem.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Physics\Physics2D.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Camera2D.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\D3D11Utils.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\FoxtrotRenderer.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\GeometryGenerator.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTAnimation.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTBasicMeshGroup.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTResource.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTTexture.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\GeometryGenerator.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\ModelLoader.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\Tile.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene_Start.cpp" />
@@ -361,10 +365,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Actors\RectTransform.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Rect.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpineAnimRendererComponent.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\FTRect.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -373,6 +374,7 @@
     <ClInclude Include="Assets\Scripts\ActorList\MouseCursor.h" />
     <ClInclude Include="Assets\Scripts\ActorList\Ship.h" />
     <ClInclude Include="Assets\Scripts\Factories\MonFactory.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpineAnimRendererComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpriteRendererComponent.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -477,14 +479,17 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Physics\Ray.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Physics\RayCastHit2D.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Camera2D.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\D3D11Utils.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\FoxtrotRenderer.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\GeometryGenerator.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\resource1.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTAnimation.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTBasicMeshGroup.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTResource.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTTexture.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\GeometryGenerator.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\Mesh.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\MeshData.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\ModelLoader.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\Tile.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\Vertex.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Scenes\Scene.h" />
@@ -596,10 +601,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Actors\RectTransform.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Rect.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpineAnimRendererComponent.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\FTRect.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineAnimation.h" />
   </ItemGroup>
   <ItemGroup>
@@ -618,6 +620,12 @@
     <ResourceCompile Include="Chapter03.rc" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Shaders\BasicPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Shaders\BasicVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Shaders\ColorPixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0_level_9_3</ShaderModel>

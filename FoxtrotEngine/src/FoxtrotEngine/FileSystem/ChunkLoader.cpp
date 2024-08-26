@@ -6,6 +6,7 @@
 #include <commdlg.h>
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include <filesystem>
 
 #include "FoxtrotEngine/Math/FTMath.h"
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
@@ -35,7 +36,8 @@ void ChunkLoader::SaveChunk(const std::string fileName)
     std::ofstream ofs (fileName);
     nlohmann::ordered_json out;
     SaveChunkData(out[MAPKEY_CHUNKDATA]);
-    SaveActors(out[MAPKEY_ACTORDATA]);
+    SaveActorsData(out[MAPKEY_ACTORDATA]);
+    SaveResourcesData(out[MAPKEY_RESOURCEDATA]);
     ofs << std::setw(4) << out << std::endl;
 }
 
@@ -58,16 +60,12 @@ void ChunkLoader::SaveChunkData(nlohmann::ordered_json& out)
     FileIOHelper::AddScalarValue<int> (out[SAVEKEY_ACTORCOUNT], EditorLayer::GetInstance()->GetEditorElements().size());
 }
 
-void ChunkLoader::SaveResources(std::ofstream& of)
+void ChunkLoader::SaveResourcesData(nlohmann::ordered_json& out)
 {
-    std::unordered_map<std::string, FTTexture*>::const_iterator iter;
-    std::unordered_map<std::string, FTTexture*>& texMap = ResourceManager::GetInstance()->GetTexturesMap();
-    for (iter = texMap.begin(); iter != texMap.end(); ++iter) {
-
-    }
+    ResourceManager::GetInstance()->SaveResources(out);
 }
 
-void ChunkLoader::SaveActors(nlohmann::ordered_json& out)
+void ChunkLoader::SaveActorsData(nlohmann::ordered_json& out)
 {
     Actor::ResetNextID();
     const std::vector<EditorElement*>& actors = EditorLayer::GetInstance()->GetEditorElements();

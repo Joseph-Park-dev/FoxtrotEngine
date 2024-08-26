@@ -29,16 +29,16 @@ static_assert((sizeof(PixelShaderConstantBuffer) % 16) == 0,
 
 // 같은 메쉬를 여러번 그릴 때 버퍼들을 재사용
 struct Mesh {
-    BasicVertexConstantBuffer basicVertexConstantBufferData;
-    PixelShaderConstantBuffer pixelShaderConstantBufferData;
-
     ComPtr<ID3D11Buffer> vertexBuffer;
     ComPtr<ID3D11Buffer> indexBuffer;
+
     ComPtr<ID3D11Buffer> vertexConstantBuffer;
     ComPtr<ID3D11Buffer> pixelConstantBuffer;
-    FTTexture*           texture = nullptr;
 
-    UINT indexCount = 0;
+    FTTexture* texture = nullptr;
+
+    UINT mIndexCount = 0;
+    UINT mVertexCount = 0;
 };
 
 // Mesh used for DirectX::GeometricPrimitive

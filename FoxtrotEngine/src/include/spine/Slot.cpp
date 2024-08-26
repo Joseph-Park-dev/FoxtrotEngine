@@ -74,11 +74,11 @@ Skeleton &Slot::getSkeleton() {
 	return _skeleton;
 }
 
-Color &Slot::getColor() {
+spine::Color &Slot::getColor() {
 	return _color;
 }
 
-Color &Slot::getDarkColor() {
+spine::Color &Slot::getDarkColor() {
 	return _darkColor;
 }
 

@@ -1,12 +1,15 @@
 #pragma once
 #include "FoxtrotEngine/Components/Component.h"
 
+#include <nlohmann/json.hpp>
+
 #include "FoxtrotEngine/Core/FTCore.h"
 
 class Actor;
 class Camera;
 class Transform;
 class FTTexture;
+class FTBasicMeshGroup;
 struct Mesh;
 struct MeshData;
 
@@ -23,28 +26,24 @@ public:
 	virtual void Render		(FoxtrotRenderer* renderer) override;
 
 protected:
-	virtual void InitializeMesh(std::vector<MeshData>&& meshDataVec);
-	virtual void InitializeMesh(MeshData&& meshData);
-	virtual	void UpdateMeshArray(Transform* transform, Camera* cameraInstance);
-			void UpdateRenderBuffer(FoxtrotRenderer* renderer);
+	virtual void InitializeMesh();
+	virtual	void UpdateMesh(Transform* transform, Camera* cameraInstance);
+			void UpdateBuffers(FoxtrotRenderer* renderer);
 
 public:
 	virtual std::wstring GetName() const override { return L"MeshRendererComponent"; }
 
 protected:
 	FoxtrotRenderer*	GetRenderer()	{ return mRenderer; }
-	Mesh**				GetMeshArray()	{ return mMeshArr; }
+	FTBasicMeshGroup*	GetMeshArray()	{ return mMeshGroup; }
 	std::string			GetKey()		{ return mKey; }
-	size_t				GetMeshCount()	{ return GetArrayLength(mMeshArr); }
 
 	void				SetKey		(std::string key) { mKey = key; }
 	void				SetTexture	(Mesh* mesh, FTTexture* texture);
-	void				SetMeshArray(Mesh** meshA) { mMeshArr = meshA; }
-
 
 private:
 	FoxtrotRenderer*	mRenderer;
-	Mesh**				mMeshArr;
+	FTBasicMeshGroup*	mMeshGroup;
 
 	// Identifier for the object in the Resource Map from the ResourceManager instance.
 	std::string      mKey;
@@ -54,15 +53,9 @@ public:
 	virtual ~MeshRendererComponent() override;
 
 protected:
-	void UpdateConstantBufferModel		(Mesh* mesh, Transform* transform);
-	void UpdateConstantBufferView		(Mesh* mesh, Camera* camInst);
-	void UpdateConstantBufferProjection	(Mesh* mesh, Camera* camInst);
-
-private:
-	void AddCube();
-	void AddMesh(MeshData&& meshData, size_t index);
-
-	bool IsMeshEmpty();
+	void UpdateConstantBufferModel		(Transform* transform);
+	void UpdateConstantBufferView		(Camera* camInst);
+	void UpdateConstantBufferProjection	(Camera* camInst);
 
 #ifdef _DEBUG
 	//This section will be omitted from Release mode!

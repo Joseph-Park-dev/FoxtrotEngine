@@ -10,6 +10,7 @@
 #include "FoxtrotEngine/Core/FTCore.h"
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
+#include "FoxtrotEngine/FileSystem/ChunkLoader.h"
 
 bool FTTexture::CreateTexture(
     FoxtrotRenderer* renderer, 
@@ -73,4 +74,10 @@ bool FTTexture::ReleaseTexture()
         return false;
     }
     return true;
+}
+
+void FTTexture::SaveProperties(nlohmann::ordered_json& out)
+{
+    FileIOHelper::AddScalarValue(out["Width"], mTexWidth);
+    FileIOHelper::AddScalarValue(out["Height"], mTexHeight);
 }

@@ -36,7 +36,7 @@ RTTI_IMPL(BoundingBoxAttachment, VertexAttachment)
 BoundingBoxAttachment::BoundingBoxAttachment(const String &name) : VertexAttachment(name), _color() {
 }
 
-Color &BoundingBoxAttachment::getColor() {
+spine::Color &BoundingBoxAttachment::getColor() {
 	return _color;
 }
 

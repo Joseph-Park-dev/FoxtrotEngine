@@ -20,11 +20,16 @@ void Scene_Start::LoadData()
 
 #ifdef _DEBUG
 	FoxtrotRenderer* currRenderer = FTCoreEditor::GetInstance()->GetGameRenderer();
-	std::string asteroidSprite = "D:/[2024_01]/FoxtrotEngine_DirectX/assets/Asteroid.png";
-	ResourceManager::GetInstance()->LoadTexture(currRenderer, asteroidSprite);
+	std::string asteroidSprite = "Asteroid.png";
+	ResourceManager::GetInstance()->LoadTexture("Asteroid1", asteroidSprite);
+	ResourceManager::GetInstance()->LoadTexture("Asteroid2", asteroidSprite);
+	ResourceManager::GetInstance()->LoadTexture("Asteroid3", asteroidSprite);
+	ResourceManager::GetInstance()->LoadBoxMesh("Box");
 
-	std::string pngPath = "D:/[2024_01]/FoxtrotEngine_DirectX/assets/SpineTest/Skel/[Player] ver.01_Spine-File.png";
-	ResourceManager::GetInstance()->LoadTexture(currRenderer, pngPath);
+	//ResourceManager::GetInstance()->GetLoadedTexture("TEST");
+
+	/*std::string pngPath = "SpineTest/Skel/[Player] ver.01_Spine - File.png";
+	ResourceManager::GetInstance()->LoadTexture(currRenderer, );
 	std::string atlasPath = "D:/[2024_01]/FoxtrotEngine_DirectX/assets/SpineTest/Skel/[Player] ver.01_Spine-File.atlas";
 	std::string skeletonDataPath = "D:/[2024_01]/FoxtrotEngine_DirectX/assets/SpineTest/Skel/skeleton.skel";
 	ResourceManager::GetInstance()->LoadSpineAnimation(
@@ -34,7 +39,7 @@ void Scene_Start::LoadData()
 	);
 
 	std::string tileMapSprite = "D:/[2024_01]/FoxtrotEngine_DirectX/assets/Tiles.png";
-	ResourceManager::GetInstance()->LoadTexture(currRenderer, tileMapSprite);
+	ResourceManager::GetInstance()->LoadTexture(currRenderer, tileMapSprite);*/
 
 #endif // _DEBUG
 }

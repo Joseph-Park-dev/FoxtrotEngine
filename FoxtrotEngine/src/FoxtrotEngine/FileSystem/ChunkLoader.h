@@ -31,6 +31,7 @@ class ChunkLoader
 {
 #define MAPKEY_CHUNKDATA "ChunkData"
 #define MAPKEY_ACTORDATA "ActorData"
+#define MAPKEY_RESOURCEDATA "ResourceData"
 
 #define SAVEKEY_TARGETACTORID "TargetActorID"
 #define SAVEKEY_RENDERRES "RenderResolution"
@@ -45,8 +46,8 @@ public:
 
 protected:
 	void SaveChunkData(nlohmann::ordered_json& out);
-	void SaveResources(std::ofstream& of);
-	void SaveActors(nlohmann::ordered_json& out);
+	void SaveResourcesData(nlohmann::ordered_json& out);
+	void SaveActorsData(nlohmann::ordered_json& out);
 
 // Member functions for engine level to use .chunk files
 public:

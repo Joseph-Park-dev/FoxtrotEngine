@@ -5,11 +5,10 @@
 
 class GeometryGenerator {
   public:
-    //static std::vector<MeshData> ReadFromFile(std::string basePath,
-    //                                     std::string filename);
-    //static std::vector<MeshData> MakeSpineMeshes(spine::SkeletonRenderer& skelRenderer, spine::Skeleton* skeleton);
     static MeshData MakeSquare(float scale);
     static MeshData MakeBox();
+    static std::vector<MeshData> ReadFromFile(std::string filePath);
+
     //static MeshData MakeCylinder(const float bottomRadius,
     //                             const float topRadius, float height,
     //                             int numSlices);

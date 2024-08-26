@@ -46,7 +46,7 @@ void ClippingAttachment::setEndSlot(SlotData *inValue) {
 	_endSlot = inValue;
 }
 
-Color &ClippingAttachment::getColor() {
+spine::Color &ClippingAttachment::getColor() {
 	return _color;
 }
 

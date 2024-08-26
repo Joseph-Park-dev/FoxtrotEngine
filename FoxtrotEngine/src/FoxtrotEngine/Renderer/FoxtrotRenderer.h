@@ -42,7 +42,6 @@ public:
 
 public:
 	void SwapChainPresent(UINT syncInterval, UINT flags);
-    void Render();
     void RenderClear();
     void SetViewport();
 
@@ -50,22 +49,19 @@ public:
     void ResizeSceneViewport(UINT width, UINT height);
 
 public:
-	ID3D11Device*                   GetDevice()      { return mDevice.Get(); }
-	ID3D11DeviceContext*            GetContext()     { return mContext.Get(); }
-    std::vector<Mesh**>&            GetRenderPool()  { return mRenderPool; }
-    ComPtr<IDXGISwapChain>          GetSwapChain()   { return mSwapChain; }
-    ComPtr<ID3D11RenderTargetView>  GetRenderTargetView()   { return mRenderTargetView; }
-    ComPtr<ID3D11Texture2D>         GetDepthStencilBuffer() { return mDepthStencilBuffer; }
-    ComPtr<ID3D11InputLayout>       GetInputLayout()        { return mBasicInputLayout; }
+    ComPtr<ID3D11Device>&            GetDevice()             { return mDevice; }
+    ComPtr<ID3D11DeviceContext>&     GetContext()            { return mContext; }
+    std::vector<Mesh**>&             GetRenderPool()         { return mRenderPool; }
+    ComPtr<IDXGISwapChain>&          GetSwapChain()          { return mSwapChain; }
+    ComPtr<ID3D11RenderTargetView>&  GetRenderTargetView()   { return mRenderTargetView; }
+    ComPtr<ID3D11Texture2D>&         GetDepthStencilBuffer() { return mDepthStencilBuffer; }
+    ComPtr<ID3D11InputLayout>&       GetInputLayout()        { return mBasicInputLayout; }
 
     int      GetRenderWidth ()              { return mRenderWidth; }
     int      GetRenderHeight()              { return mRenderHeight; }
     Viewtype GetViewType    ()              { return mViewType; }
     FillMode GetFillMode    ()              { return mFillMode; }
 
-    // Add an array of Meshes (Assumed to be passed throught std::vector.Data()
-    void  AddToRenderPool       (Mesh** meshArray);
-    void  RemoveFromRenderPool  (Mesh** meshArray);
     void  SetRenderWidth        (int width)     { mRenderWidth = width; }
     void  SetRenderHeight       (int height)    { mRenderHeight = height; }
     void  SetViewType           (Viewtype view) { mViewType = view; }
@@ -122,7 +118,6 @@ public:
 
 private:
 	bool Initialize(HWND window, int width, int height);
-    void RenderSingleMesh(Mesh* mesh, UINT* stride, UINT* offset);
 
 private:
     HRESULT CreateDeviceAndContext(HWND window);

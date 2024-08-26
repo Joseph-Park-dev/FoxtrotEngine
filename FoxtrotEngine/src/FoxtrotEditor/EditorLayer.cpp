@@ -120,8 +120,8 @@ void EditorLayer::DisplayFileMenu()
 		{
 			if (mCurrFileSaved)
 			{
-				if (!mCurrFilePathName.empty())
-					ChunkLoader::GetInstance()->SaveChunk(mCurrFilePathName);
+				if (!mCurrFilePath.empty())
+					ChunkLoader::GetInstance()->SaveChunk(mCurrFilePath);
 				else
 					LogString("Saved file path doesn't exist but trying to access it");
 			}
@@ -159,11 +159,11 @@ void EditorLayer::DisplayFileMenu()
 		{
 			if (mCurrFileSaved)
 			{
-				if (!mCurrFilePathName.empty())
+				if (!mCurrFilePath.empty())
 				{
-					ChunkLoader::GetInstance()->SaveChunk(mCurrFilePathName);
+					ChunkLoader::GetInstance()->SaveChunk(mCurrFilePath);
 					this->DeleteAll();
-					ChunkLoader::GetInstance()->LoadChunk(mCurrFilePathName);
+					ChunkLoader::GetInstance()->LoadChunk(mCurrFilePath);
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(true);
 				}
 				else
@@ -176,12 +176,12 @@ void EditorLayer::DisplayFileMenu()
 		{
 			if (mCurrFileSaved)
 			{
-				if (!mCurrFilePathName.empty())
+				if (!mCurrFilePath.empty())
 				{
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(false);
 					SceneManager::GetInstance()->GetCurrScene()->DeleteAll();
 					this->DeleteAll();
-					ChunkLoader::GetInstance()->LoadChunkToEditor(mCurrFilePathName);
+					ChunkLoader::GetInstance()->LoadChunkToEditor(mCurrFilePath);
 				}
 			}
 		}
@@ -205,8 +205,8 @@ void EditorLayer::DisplayFileMenu()
 		{
 			if (ImGuiFileDialog::Instance()->IsOk())
 			{
-				mCurrFilePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-				ChunkLoader::GetInstance()->SaveChunk(mCurrFilePathName);
+				mCurrFilePath = ImGuiFileDialog::Instance()->GetFilePathName();
+				ChunkLoader::GetInstance()->SaveChunk(mCurrFilePath);
 				mCurrFileSaved = true;
 			}
 			ImGuiFileDialog::Instance()->Close();
@@ -217,8 +217,8 @@ void EditorLayer::DisplayFileMenu()
 			if (ImGuiFileDialog::Instance()->IsOk())
 			{
 				this->DeleteAll();
-				mCurrFilePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-				ChunkLoader::GetInstance()->LoadChunkToEditor(mCurrFilePathName);
+				mCurrFilePath = ImGuiFileDialog::Instance()->GetFilePathName();
+				ChunkLoader::GetInstance()->LoadChunkToEditor(mCurrFilePath);
 				LogInt(mEditorElements.size());
 				mCurrFileSaved = true;
 			}
@@ -371,7 +371,7 @@ EditorLayer::EditorLayer()
 	//mViewportSize()
 	mEditorElements{}
 	, mCurrFileSaved(false)
-	, mCurrFilePathName{}
+	, mCurrFilePath{}
 	, mHierarchyIdx(0)
 	, mActorNameIdx(0)
 	, mSaveKeyPressed(false)

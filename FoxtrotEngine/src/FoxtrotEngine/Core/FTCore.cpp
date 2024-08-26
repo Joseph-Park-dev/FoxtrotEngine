@@ -130,8 +130,8 @@ void FTCore::InitSingletonManagers()
 {
 	Physics2D::GetInstance()->Init();
 	Camera2D::GetInstance()->Init();
+	ResourceManager::GetInstance()->Initialize(mGameRenderer);
 	SceneManager::GetInstance()->Init();
-	ResourceManager::GetInstance();
 	UIManager::GetInstance();
 	EventManager::GetInstance();
 	KeyInputManager::GetInstance();

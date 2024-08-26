@@ -75,7 +75,7 @@ void PointAttachment::setRotation(float inValue) {
 	_rotation = inValue;
 }
 
-Color &PointAttachment::getColor() {
+spine::Color &PointAttachment::getColor() {
 	return _color;
 }
 

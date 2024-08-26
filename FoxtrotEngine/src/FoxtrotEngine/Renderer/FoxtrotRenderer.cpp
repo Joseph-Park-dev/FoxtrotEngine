@@ -17,6 +17,8 @@
 #include "FoxtrotEngine/Actors/Transform.h"
 #include "FoxtrotEngine/ResourceSystem/Vertex.h"
 #include "FoxtrotEngine/Managers/KeyInputManager.h"
+#include "FoxtrotEngine/Managers/SceneManager.h"
+#include "FoxtrotEngine/Renderer/D3D11Utils.h"
 
 #ifdef _DEBUG
 #include "FoxtrotEditor/EditorLayer.h"
@@ -134,62 +136,6 @@ void FoxtrotRenderer::SwapChainPresent(UINT syncInterval, UINT flags)
 	mSwapChain->Present(syncInterval, flags);
 }
 
-void FoxtrotRenderer::Render()
-{
-	// 전체 장면을 먼제 텍스쳐로 렌더링 합니다
-	// 
-	// 왜 여기로? => Pixel shader에게 텍스처와 셈플러 두가지를 넘겨주기 위함
-	// RS: Rasterizer stage
-	// OM: Output-Merger stage
-	// VS: Vertex Shader
-	// PS: Pixel Shader
-	// IA: Input-Assembler stage
-
-	if (mRenderPool.empty())
-		return;
-
-	UINT stride = sizeof(Vertex);
-	UINT offset = 0;
-
-	// 버텍스/인덱스 버퍼 설정
-	for (Mesh** meshArr : mRenderPool) {
-		size_t meshCount = GetArrayLength(meshArr);
-		for (size_t i = 0; i < meshCount; ++i) {
-			RenderSingleMesh(meshArr[i], &stride, &offset);
-		}
-	}
-}
-
-void FoxtrotRenderer::RenderSingleMesh(Mesh* mesh, UINT* stride, UINT* offset)
-{
-	mContext->VSSetConstantBuffers(
-		0, 1, mesh->vertexConstantBuffer.GetAddressOf());
-
-	if (mesh->texture != nullptr)
-		mContext->PSSetShaderResources(
-			0, 1, mesh->texture->GetResourceView().GetAddressOf()
-		);
-	mContext->PSSetConstantBuffers(
-		0, 1, mesh->pixelConstantBuffer.GetAddressOf());
-
-	mContext->IASetInputLayout(mBasicInputLayout.Get());
-	mContext->IASetVertexBuffers(0, 1, mesh->vertexBuffer.GetAddressOf(),
-		stride, offset);
-	mContext->IASetIndexBuffer(mesh->indexBuffer.Get(),
-		DXGI_FORMAT_R32_UINT, 0);
-	mContext->IASetPrimitiveTopology(
-		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	if (mFillMode == FillMode::Solid) {
-		mContext->RSSetState(mSolidRasterizerState.Get());
-	}
-	else {
-		mContext->RSSetState(mWireframeRasterizerState.Get());
-	}
-
-	mContext->DrawIndexed(mesh->indexCount, 0, 0);
-}
-
 // Constant buffer data 업데이트 & 그 내용을 GPU 버퍼로 복사
 // 이후 Render() 에서 Vertex shader를 실행시키게 되는데,
 // 이때 Constant buffer data를 사용
@@ -249,21 +195,6 @@ void FoxtrotRenderer::ResizeSceneViewport(UINT width, UINT height)
 		CreateRenderTargetView();
 		CreateDepthBuffer();
 		SetViewport();
-	}
-}
-
-void FoxtrotRenderer::AddToRenderPool(Mesh** meshArray){
-	mRenderPool.push_back(meshArray);
-}
-
-void FoxtrotRenderer::RemoveFromRenderPool(Mesh** meshArray)
-{
-	std::vector<Mesh**>::iterator iter = std::find(mRenderPool.begin(), mRenderPool.end(), meshArray);
-	if (iter != mRenderPool.end())
-	{
-		delete[] (*iter);
-		mRenderPool.erase(iter);
-		mRenderPool.shrink_to_fit();
 	}
 }
 
@@ -578,21 +509,6 @@ void FoxtrotRenderer::CreateIndexBuffer(const std::vector<uint32_t>& indices,
 		m_indexBuffer.GetAddressOf());
 }
 
-void CheckResult(HRESULT hr, ID3DBlob* errorBlob) {
-	if (FAILED(hr)) {
-		// 파일이 없을 경우
-		if ((hr & D3D11_ERROR_FILE_NOT_FOUND) != 0) {
-			LogString("File not found.");
-		}
-
-		// 에러 메시지가 있으면 출력
-		if (errorBlob) {
-			std::cout << "Shader compile error\n"
-				<< (char*)errorBlob->GetBufferPointer() << std::endl;
-		}
-	}
-}
-
 bool FoxtrotRenderer::CreateVertexShaderAndInputLayout(
 	const std::wstring& filename,
 	const std::vector<D3D11_INPUT_ELEMENT_DESC>& inputElements,
@@ -695,7 +611,7 @@ void FoxtrotRenderer::RenderToTexture()
 	mRenderTexture->ClearRenderTarget(mContext.Get(), mRenderTexture->GetDepthStencilView().Get(), mClearColor);
 
 	// 이제 장면을 렌더링하면 백 버퍼 대신 텍스처로 렌더링됩니다
-	Render();
+	SceneManager::GetInstance()->Render(this);
 
 	//// 렌더링 대상을 원래의 백 버퍼로 다시 설정하고 렌더링에 대한 렌더링을 더 이상 다시 설정하지 않습니다
 	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());

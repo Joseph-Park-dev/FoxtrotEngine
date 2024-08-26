@@ -57,7 +57,7 @@ void PathAttachment::setConstantSpeed(bool inValue) {
 	_constantSpeed = inValue;
 }
 
-Color &PathAttachment::getColor() {
+spine::Color &PathAttachment::getColor() {
 	return _color;
 }
 

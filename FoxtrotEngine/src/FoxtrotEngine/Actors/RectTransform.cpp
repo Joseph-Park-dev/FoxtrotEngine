@@ -1,8 +1,8 @@
-#include "RectTransform.h"
+#include "FoxtrotEngine/Actors/RectTransform.h"
 
 RectTransform::RectTransform()
 	: mAnchoredPosition	(FTVector2::Zero)
 	, mPivot			(FTVector2::Zero)
-	, mRect				(Rect::Zero)
+	, mRect				(FTRect::Zero)
 {
 }

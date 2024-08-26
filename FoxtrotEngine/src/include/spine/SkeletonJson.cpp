@@ -94,7 +94,7 @@ static float toColor(const char *value, size_t index) {
 	return color / (float) 255;
 }
 
-static void toColor(Color &color, const char *value, bool hasAlpha) {
+static void toColor(spine::Color &color, const char *value, bool hasAlpha) {
 	color.r = toColor(value, 0);
 	color.g = toColor(value, 1);
 	color.b = toColor(value, 2);

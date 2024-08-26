@@ -14,9 +14,11 @@ public:
     bool ReleaseTexture();
 
 public:
-    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> GetResourceView() { return mTextureResourceView; }
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetResourceView() { return mTextureResourceView; }
     void SetResourceView(Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResView) 
     { mTextureResourceView = shaderResView; }
+
+    Microsoft::WRL::ComPtr<ID3D11Texture2D>& GetTexture() { return mTexture; }
 
     int	GetTexWidth()  const { return mTexWidth; }
     int	GetTexHeight() const { return mTexHeight; }
@@ -40,6 +42,12 @@ private:
 
     int	mTexWidth;
     int	mTexHeight;
+
+#ifdef _DEBUG
+public:
+    virtual void SaveProperties(nlohmann::ordered_json& out) override;
+
+#endif // _DEBUG
 
 private:
     friend class ResourceManager;

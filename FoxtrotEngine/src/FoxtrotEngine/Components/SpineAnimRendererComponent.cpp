@@ -9,24 +9,24 @@
 #include "FoxtrotEngine/Actors/Transform.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 #include "FoxtrotEngine/ResourceSystem/MeshData.h"
-#include "FoxtrotEngine/Renderer/GeometryGenerator.h"
+#include "FoxtrotEngine/ResourceSystem/GeometryGenerator.h"
 
 void SpineAnimRendererComponent::Initialize(FTCore* coreInstance)
 {
-	MeshRendererComponent::Initialize(coreInstance);
-    SetKey("RunningGrandpa");
-    mSpineAnimation = ResourceManager::GetInstance()->GetLoadedSpineAnimation(GetKey());
-    mSkeleton = new spine::Skeleton(mSpineAnimation->GetSkeletonData());
-    mSkeleton->setX(GetOwner()->GetTransform()->GetWorldPosition().x);
-    mSkeleton->setY(GetOwner()->GetTransform()->GetWorldPosition().y);
-    mSkeleton->setSkin(NULL);
+	//MeshRendererComponent::Initialize(coreInstance);
+ //   SetKey("RunningGrandpa");
+ //   mSpineAnimation = ResourceManager::GetInstance()->GetLoadedSpineAnimation(GetKey());
+ //   mSkeleton = new spine::Skeleton(mSpineAnimation->GetSkeletonData());
+ //   mSkeleton->setX(GetOwner()->GetTransform()->GetWorldPosition().x);
+ //   mSkeleton->setY(GetOwner()->GetTransform()->GetWorldPosition().y);
+ //   mSkeleton->setSkin(NULL);
 
-    mSpineAnimation->GetAnimationStateData()->setDefaultMix(0.5f);
-    mAnimationState = new spine::AnimationState(mSpineAnimation->GetAnimationStateData());
-    mAnimationState->setAnimation(0, "Idling", true);
+ //   mSpineAnimation->GetAnimationStateData()->setDefaultMix(0.5f);
+ //   mAnimationState = new spine::AnimationState(mSpineAnimation->GetAnimationStateData());
+ //   mAnimationState->setAnimation(0, "Idling", true);
 
-    //InitializeMesh(GeometryGenerator::MakeSpineMeshes(mSkeletonRenderer, mSkeleton));
-    //SetTexture("./assets/Asteroid.png");
+ //   //InitializeMesh(GeometryGenerator::MakeSpineMeshes(mSkeletonRenderer, mSkeleton));
+ //   //SetTexture("./assets/Asteroid.png");
 }
 
 void SpineAnimRendererComponent::Update(float deltaTime)
@@ -77,7 +77,7 @@ void SpineAnimRendererComponent::Render(FoxtrotRenderer* renderer){
         }
         meshes.push_back(meshData);
         //SetTexture((FTTexture*)command->texture);
-        InitializeMesh(std::move(meshes));
+        //InitializeMesh(std::move(meshes));
         MeshRendererComponent::Render(renderer);
         command = command->next;
     }

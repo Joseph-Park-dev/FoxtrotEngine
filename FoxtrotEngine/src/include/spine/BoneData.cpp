@@ -145,7 +145,7 @@ void BoneData::setSkinRequired(bool inValue) {
 	_skinRequired = inValue;
 }
 
-Color &BoneData::getColor() {
+spine::Color &BoneData::getColor() {
 	return _color;
 }
 

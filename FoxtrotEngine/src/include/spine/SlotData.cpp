@@ -58,11 +58,11 @@ BoneData &SlotData::getBoneData() {
 	return _boneData;
 }
 
-Color &SlotData::getColor() {
+spine::Color &SlotData::getColor() {
 	return _color;
 }
 
-Color &SlotData::getDarkColor() {
+spine::Color &SlotData::getDarkColor() {
 	return _darkColor;
 }
 

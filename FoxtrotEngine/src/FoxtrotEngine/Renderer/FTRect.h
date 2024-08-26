@@ -1,11 +1,11 @@
 #pragma once
 #include "FoxtrotEngine/Math/FTMath.h"
 
-class Rect
+class FTRect
 {
 public:
 	bool Contains(const FTVector2& point);
-	bool Overlaps(const Rect& other);
+	bool Overlaps(const FTRect& other);
 
 public:
 	FTVector2 GetSize() { return mSize; }
@@ -19,15 +19,15 @@ public:
 		mPosition	= mMin;
 		mSize		= FTVector2(width, height);
 	}
-	static const Rect Zero;
+	static const FTRect Zero;
 
 public:
-	bool operator==(Rect& other) {
+	bool operator==(FTRect& other) {
 		return this->mMin == other.mMin 
 			&& this->mMax == other.mMax;
 	}
 public:
-	Rect(float x, float y, float width, float height) {
+	FTRect(float x, float y, float width, float height) {
 		Set(x, y, width, height);
 	}
 
@@ -41,4 +41,4 @@ private:
 	FTVector2	mSize;
 };
 
-const Rect Rect::Zero(0.0f, 0.0f, 0.0f, 0.0f);
+const FTRect FTRect::Zero(0.0f, 0.0f, 0.0f, 0.0f);

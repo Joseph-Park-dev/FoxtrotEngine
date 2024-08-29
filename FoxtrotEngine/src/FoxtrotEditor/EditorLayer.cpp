@@ -11,7 +11,7 @@
 #include <d3d11.h>
 
 #include "FoxtrotEditor/EditorElement.h"
-#include "FoxtrotEditor/EditorCamera2D.h"
+
 #include "FoxtrotEditor/FTCoreEditor.h"
 #include "FoxtrotEditor/CommandHistory.h"
 #include "FoxtrotEditor/Command.h"
@@ -86,10 +86,10 @@ void EditorLayer::DisplayViewport()
 		//renderer->ResizeSceneViewport(mSceneViewportSize.x, mSceneViewportSize.y);
 		renderer->SetRenderWidth(mSceneViewportSize.x);
 		renderer->SetRenderHeight(mSceneViewportSize.y);
-		renderer->UpdateRenderTexture(mSceneViewportSize.x, mSceneViewportSize.y);
 		//renderer->UpdateDepthBuffer(mSceneViewportSize.x, mSceneViewportSize.y);
 		mIsResizingViewport = false;
 	}
+	renderer->RenderToTexture();
 	ID3D11ShaderResourceView* viewportTexture = renderer->GetRenderTexture()->GetShaderResourceView().Get();
 	ImVec2 viewportSize = ImVec2(renderer->GetRenderWidth(), renderer->GetRenderHeight());
 	ImGui::Image((void*)viewportTexture, viewportSize);
@@ -187,11 +187,11 @@ void EditorLayer::DisplayFileMenu()
 		}
 		if (ImGui::Button("2D"))
 		{
-			FoxtrotRenderer* renderer = FTCoreEditor::GetInstance()->GetGameRenderer();
-			if(renderer->GetViewType() == Viewtype::Perspective)
-				renderer->SetViewType(Viewtype::Orthographic);
-			else if (renderer->GetViewType() == Viewtype::Orthographic)
-				renderer->SetViewType(Viewtype::Perspective);
+			//FoxtrotRenderer* renderer = FTCoreEditor::GetInstance()->GetGameRenderer();
+			//if(renderer->GetViewType() == Viewtype::Perspective)
+			//	renderer->SetViewType(Viewtype::Orthographic);
+			//else if (renderer->GetViewType() == Viewtype::Orthographic)
+			//	renderer->SetViewType(Viewtype::Perspective);
 		}
 		if (ImGui::Button("Wireframe"))
 		{

@@ -12,20 +12,22 @@ public:
 	RenderTextureClass(const RenderTextureClass&);
 	~RenderTextureClass();
 
-	bool Initialize(ID3D11Device*, int, int, UINT);
-	bool Update(ID3D11Device*, int, int, UINT);
-	void Shutdown();
-	void SetRenderTarget(ID3D11DeviceContext*, ID3D11DepthStencilView*);
-	void ClearRenderTarget(ID3D11DeviceContext* deviceContext, ID3D11DepthStencilView* depthStencilView, float* clearColor);
+	void InitializeTexture(ComPtr<ID3D11Device>& device, int width, int height);
+	void DrawOnTexture(
+		ComPtr<ID3D11DeviceContext>& context, 
+		ComPtr<ID3D11RenderTargetView>& renderTargetView, 
+		ComPtr<ID3D11DepthStencilView>& depthStencilView, 
+		FoxtrotRenderer* renderer
+	);
 
-	ComPtr <ID3D11ShaderResourceView> GetShaderResourceView();
-	ComPtr <ID3D11RenderTargetView> GetRenderTargetView();
-	ComPtr <ID3D11DepthStencilView> GetDepthStencilView();
+public:
+	ComPtr <ID3D11ShaderResourceView>& GetShaderResourceView() { return mShaderResourceView; }
 
 private:
-	ComPtr <ID3D11Texture2D> m_renderTargetTexture;
-	ComPtr <ID3D11RenderTargetView> m_renderTargetView;
-	ComPtr <ID3D11ShaderResourceView> m_shaderResourceView;
-	ComPtr<ID3D11Texture2D>			mDepthStencilBuffer;
-	ComPtr <ID3D11DepthStencilView> mDepthStencilView;
+	ComPtr <ID3D11Texture2D>			mRenderTargetTexture;
+	ComPtr <ID3D11RenderTargetView>		mRenderTargetView;
+	ComPtr <ID3D11ShaderResourceView>	mShaderResourceView;
+
+	//ComPtr<ID3D11Texture2D>			mDepthStencilBuffer;
+	//ComPtr <ID3D11DepthStencilView> mDepthStencilView;
 };

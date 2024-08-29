@@ -109,7 +109,21 @@ void ResourceManager::LoadMeshFromFile(const std::string key, const std::string 
 	}
 }
 
-void ResourceManager::LoadBoxMesh(const std::string key)
+void ResourceManager::LoadSquareMesh(const std::string key)
+{
+	FTBasicMeshGroup* meshGroup = new FTBasicMeshGroup;
+	std::vector<MeshData> meshData;
+	meshData.push_back(GeometryGenerator::MakeSquare(1.0f));
+	meshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
+	if (!meshGroup)
+	{
+		printf("Error: ResourceManager::LoadMesh() -> LoadSquareMesh failed. \n");
+		return;
+	}
+	mMapMeshGroup.insert(std::make_pair(key, meshGroup));
+}
+
+void ResourceManager::LoadBoxeMesh(const std::string key)
 {
 	FTBasicMeshGroup* meshGroup = new FTBasicMeshGroup;
 	std::vector<MeshData> meshData;
@@ -117,7 +131,7 @@ void ResourceManager::LoadBoxMesh(const std::string key)
 	meshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
 	if (!meshGroup)
 	{
-		printf("Error: ResourceManager::LoadMesh() -> LoadMesh failed. \n");
+		printf("Error: ResourceManager::LoadMesh() -> LoadSquareMesh failed. \n");
 		return;
 	}
 	mMapMeshGroup.insert(std::make_pair(key, meshGroup));

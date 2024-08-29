@@ -4,6 +4,7 @@
 #include "FoxtrotEngine/Managers/ResourceManager.h"
 #include "FoxtrotEngine/Managers/SceneManager.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
+#include "FoxtrotEngine/Components/SpriteRendererComponent.h"
 #include "FoxtrotEditor/FTCoreEditor.h"
 #include "FoxtrotEditor/EditorLayer.h"
 
@@ -24,7 +25,8 @@ void Scene_Start::LoadData()
 	ResourceManager::GetInstance()->LoadTexture("Asteroid1", asteroidSprite);
 	ResourceManager::GetInstance()->LoadTexture("Asteroid2", asteroidSprite);
 	ResourceManager::GetInstance()->LoadTexture("Asteroid3", asteroidSprite);
-	ResourceManager::GetInstance()->LoadBoxMesh("Box");
+	ResourceManager::GetInstance()->LoadSquareMesh(MAPKEY_SPRITE_MESH);
+	ResourceManager::GetInstance()->LoadBoxeMesh("Box");
 
 	//ResourceManager::GetInstance()->GetLoadedTexture("TEST");
 

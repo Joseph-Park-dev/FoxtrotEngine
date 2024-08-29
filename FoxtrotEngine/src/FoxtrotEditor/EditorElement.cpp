@@ -6,7 +6,7 @@
 #include <imgui_impl_win32.h>
 
 #include "FoxtrotEditor/EditorLayer.h"
-#include "FoxtrotEditor/EditorCamera2D.h"
+
 #include "FoxtrotEditor/CommandHistory.h"
 
 #include "FoxtrotEngine/Managers/KeyInputManager.h"
@@ -76,7 +76,7 @@ void EditorElement::CheckMouseHover()
 	FTVector2 mousePos = KeyInputManager::GetInstance()->GetMousePosition();
 	if (GetIsAffectedByCamera())
 	{
-		mousePos = EditorCamera2D::GetInstance()->ConvertScreenPosToWorld(mousePos);
+		//mousePos = EditorCamera2D::GetInstance()->ConvertScreenPosToWorld(mousePos);
 	}
 	if (GetTransform()->GetWorldPosition().x - GetTransform()->GetScale().x / 2 <= mousePos.x &&
 		mousePos.x <= GetTransform()->GetWorldPosition().x + GetTransform()->GetScale().x / 2 &&
@@ -133,7 +133,10 @@ void EditorElement::Render(FoxtrotRenderer* renderer)
 {
 	if (IsActive())
 	{
-		RenderComponents(renderer);
+		for (auto comp : GetComponents())
+		{
+			comp->EditorRender(renderer);
+		}
 	}
 }
 

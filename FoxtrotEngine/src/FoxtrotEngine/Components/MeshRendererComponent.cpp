@@ -25,7 +25,7 @@ void MeshRendererComponent::Initialize(FTCore* coreInstance){
 void MeshRendererComponent::Update(float deltaTime){
 	if (mMeshGroup) {
 		UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
-		UpdateBuffers(mRenderer);
+		UpdateBuffers();
 	}
 }
 
@@ -35,8 +35,26 @@ void MeshRendererComponent::Render(FoxtrotRenderer* renderer){
 	}
 }
 
-void MeshRendererComponent::InitializeMesh(){
-	mMeshGroup = ResourceManager::GetInstance()->GetLoadedMeshes(mKey);
+bool MeshRendererComponent::InitializeMesh(){
+	if (!mMeshKey.empty()) {
+		mMeshGroup = ResourceManager::GetInstance()->GetLoadedMeshes(mMeshKey);
+		if (!mMeshGroup) {
+			LogString("ERROR: MeshRendererComponent::InitializeMesh() -> Mesh Init failed");
+			return false;
+		}
+		return true;
+	}
+	else {
+		LogString("ERROR: MeshRendererComponent::InitializeMesh() -> Key doesn't exist");
+		return false;
+	}
+}
+
+bool MeshRendererComponent::InitializeMesh(std::string key)
+{
+	mMeshKey = key;
+	MeshRendererComponent::InitializeMesh();
+	return mMeshGroup != nullptr;
 }
 
 void MeshRendererComponent::UpdateMesh(Transform* transform, Camera* cameraInstance){
@@ -47,13 +65,15 @@ void MeshRendererComponent::UpdateMesh(Transform* transform, Camera* cameraInsta
 	}
 }
 
-void MeshRendererComponent::UpdateBuffers(FoxtrotRenderer* renderer){
-	mMeshGroup->UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext());
+void MeshRendererComponent::UpdateBuffers(){
+	mMeshGroup->UpdateConstantBuffers(mRenderer->GetDevice(), mRenderer->GetContext());
 }
 
-void MeshRendererComponent::SetTexture(Mesh* mesh, FTTexture* texture) {
-	if(mesh)
-		mesh->texture = texture;
+void MeshRendererComponent::SetTexture() {
+	if (!mTexKey.empty())
+		GetMeshGroup()->SetTexture(mTexKey);
+	else 
+		LogString("ERROR: MeshRendererComponent::SetTexture() -> Key doesn't exist");
 }
 
 MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder)
@@ -71,64 +91,27 @@ void MeshRendererComponent::UpdateConstantBufferModel(Transform* transform){
 	DirectX::XMFLOAT3 scale = transform->GetScale().GetDXVec3();
 	DirectX::XMFLOAT3 worldPos = transform->GetWorldPosition().GetDXVec3();
 	// 모델의 변환 -> 모델 행렬 결정
-	mMeshGroup->GetVertexConstantData().model =
+	Matrix model =
 		DXMatrix::CreateScale(scale) *
 		DXMatrix::CreateRotationY(transform->GetRotation().y) *
 		DXMatrix::CreateRotationX(transform->GetRotation().x) *
 		DXMatrix::CreateRotationZ(transform->GetRotation().z) *
 		DXMatrix::CreateTranslation(worldPos);
-	mMeshGroup->GetVertexConstantData().model = mMeshGroup->GetVertexConstantData().model.Transpose();
+	mMeshGroup->GetVertexConstantData().model = model.Transpose();
 }
 
 void MeshRendererComponent::UpdateConstantBufferView(Camera* camInst){
-	DirectX::XMFLOAT3 eyePosDX = camInst->GetViewEyePosDX();
-	DirectX::XMFLOAT3 eyeDir = camInst->GetViewEyeDirDX();
-	DirectX::XMFLOAT3 up = camInst->GetViewUpDX();
-
-	DirectX::XMVECTOR viewEyePos = DirectX::XMLoadFloat3(&eyePosDX);
-	DirectX::XMVECTOR viewEyeDir = DirectX::XMLoadFloat3(&eyeDir);
-	DirectX::XMVECTOR viewUp = DirectX::XMLoadFloat3(&up);
-
-	FTVector3 viewEyeRotation = camInst->GetViewEyeRotation();
-	
-	mMeshGroup->GetVertexConstantData().view =
-		DirectX::XMMatrixLookToLH(viewEyePos, viewEyeDir, viewUp);
-
-	mMeshGroup->GetVertexConstantData().view *=
-		DXMatrix::CreateRotationY(viewEyeRotation.y) *
-		DXMatrix::CreateRotationX(viewEyeRotation.x) *
-		DXMatrix::CreateRotationZ(viewEyeRotation.z);
-		
-	//mesh.basicVertexConstantBufferData.view = 
-	//	DirectX::SimpleMath::Matrix::CreateScale(Camera::GetInstance()->GetZoomValue());
-	mMeshGroup->GetVertexConstantData().view = mMeshGroup->GetVertexConstantData().view.Transpose();
+	mMeshGroup->GetVertexConstantData().view = camInst->GetViewRow().Transpose();
 }
 
 void MeshRendererComponent::UpdateConstantBufferProjection(Camera* camInst){
-	float projFOVAngleY = DirectX::XMConvertToRadians(Camera::GetInstance()->GetProjFOVAngleY());
-	float aspect = camInst->GetAspect();
-	float nearZ = camInst->GetNearZ();
-	float farZ = camInst->GetFarZ();
-	if (mRenderer->GetViewType() == Viewtype::Perspective) {
-		mMeshGroup->GetVertexConstantData().projection =
-			DirectX::XMMatrixPerspectiveFovLH(
-				projFOVAngleY, aspect, nearZ, farZ
-			);
-	}
-	else if (mRenderer->GetViewType() == Viewtype::Orthographic){
-		mMeshGroup->GetVertexConstantData().projection =
-			DirectX::XMMatrixOrthographicOffCenterLH(
-				-aspect, aspect, -1.0f, 1.0f, nearZ, farZ
-			);
-	}
-	mMeshGroup->GetVertexConstantData().projection =
-		mMeshGroup->GetVertexConstantData().projection.Transpose();
+	mMeshGroup->GetVertexConstantData().projection = camInst->GetProjRow().Transpose();
 }
 
 void MeshRendererComponent::SaveProperties(nlohmann::ordered_json& out)
 {
 	Component::SaveProperties(out);
-	FileIOHelper::AddScalarValue(out["Key"], mKey);
+	FileIOHelper::AddScalarValue(out["Key"], mMeshKey);
 }
 
 void MeshRendererComponent::EditorUpdate(float deltaTime){
@@ -137,11 +120,14 @@ void MeshRendererComponent::EditorUpdate(float deltaTime){
 
 void MeshRendererComponent::EditorRender(FoxtrotRenderer* renderer)
 {
-
+	if (mMeshGroup) {
+		mMeshGroup->Render(renderer->GetContext());
+	}
 }
 
 void MeshRendererComponent::EditorUIUpdate(){
 	if (ImGui::Button("Add Cube")) {
 		mMeshGroup = ResourceManager::GetInstance()->GetLoadedMeshes("Box");
+		LogString("Cube added");
 	}
 }

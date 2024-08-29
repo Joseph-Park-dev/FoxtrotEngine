@@ -23,7 +23,7 @@ void Transform::Translate(FTVector3 translation)
 //}
 //
 //#ifdef _DEBUG
-//#include "FoxtrotEditor/EditorCamera2D.h"
+//
 //
 //const FTVector2 Transform::GetScreenPositionEditor() const
 //{

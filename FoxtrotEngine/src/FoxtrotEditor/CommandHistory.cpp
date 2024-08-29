@@ -158,6 +158,33 @@ void CommandHistory::UpdateVector3Value(std::string label, FTVector3& ref, float
 	delete[] vec3;
 }
 
+void CommandHistory::UpdateVector3Value(std::string label, DirectX::SimpleMath::Vector3& ref, float modSpeed)
+{
+	DirectX::SimpleMath::Vector3 updatedVal = ref;
+	float* vec3 = new float[3];
+	vec3[0] = updatedVal.x;
+	vec3[1] = updatedVal.y;
+	vec3[2] = updatedVal.z;
+	bool isRecording = CommandHistory::GetInstance()->GetIsRecording();
+	if (ImGui::DragFloat3(label.c_str(), vec3, modSpeed)) {
+		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left)) {
+			SetIsRecording(true);
+			AddCommand(new DXVector3EditCommand(ref, updatedVal));
+		}
+		updatedVal = DirectX::SimpleMath::Vector3(vec3[0], vec3[1], vec3[2]);
+		ref = updatedVal;
+	}
+	else
+	{
+		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
+		{
+			AddCommand(new DXVector3EditCommand(ref, updatedVal));
+			SetIsRecording(false);
+		}
+	}
+	delete[] vec3;
+}
+
 void CommandHistory::UpdateFloatValue(std::string label, float* ref, float modSpeed)
 {
 	float prevFloat = *ref;

@@ -28,9 +28,6 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\CommandHistory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\EditorCamera2D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\EditorElement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -125,9 +122,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Physics\Physics2D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Camera2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\FoxtrotRenderer.cpp">
@@ -415,7 +409,6 @@
     <ClInclude Include="Assets\Scripts\Factories\MonFactory.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\Command.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\CommandHistory.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\EditorCamera2D.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\EditorElement.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\EditorLayer.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\FTCoreEditor.h" />
@@ -456,7 +449,6 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Physics\Physics2D.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Physics\Ray.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Physics\RayCastHit2D.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Camera2D.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\FoxtrotRenderer.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTAnimation.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTResource.h" />

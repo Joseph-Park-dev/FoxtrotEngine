@@ -9,7 +9,6 @@
 #include "FoxtrotEngine/Components/AIState.h"
 #include "FoxtrotEngine/Actors/ActorTag.h"
 #include "FoxtrotEngine/Actors/Transform.h"
-#include "FoxtrotEngine/Renderer/Camera2D.h"
 #include "FoxtrotEngine/Physics/ParticleSystem.h"
 
 //Asteroid::Asteroid(Scene* scene)

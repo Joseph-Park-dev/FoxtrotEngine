@@ -5,7 +5,7 @@
 #include "FoxtrotEngine/Actors/ActorGroup.h"
 #include "FoxtrotEngine/Actors/Actor.h"
 #include "FoxtrotEngine/Physics/Physics2D.h"
-#include "FoxtrotEngine/Renderer/Camera2D.h"
+
 #include "FoxtrotEngine/FileSystem/ChunkLoader.h"
 
 void GunFiringComponent::Update(float deltaTime)

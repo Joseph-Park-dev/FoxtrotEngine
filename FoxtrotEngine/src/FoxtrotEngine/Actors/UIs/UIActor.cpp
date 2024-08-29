@@ -3,7 +3,7 @@
 #include "FoxtrotEngine/Components/Component.h"
 #include "FoxtrotEngine/Actors/Transform.h"
 #include "FoxtrotEngine/Actors/RectTransform.h"
-#include "FoxtrotEngine/Renderer/Camera2D.h"
+
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 #include "FoxtrotEngine/Managers/KeyInputManager.h"
 #include "FoxtrotEngine/Math/FTMath.h"
@@ -48,7 +48,7 @@ void UIActor::CheckMouseHover()
 	FTVector2 mousePos = KeyInputManager::GetInstance()->GetMousePosition();
 	if (mIsAffectedByCamera)
 	{
-		mousePos = Camera2D::GetInstance()->ConvertScreenPosToWorld(mousePos);
+		//mousePos = Camera2D::GetInstance()->ConvertScreenPosToWorld(mousePos);
 	}
 	if (GetTransform()->GetWorldPosition().x - GetTransform()->GetScale().x/2 <= mousePos.x && 
 		mousePos.x <= GetTransform()->GetWorldPosition().x + GetTransform()->GetScale().x/2 && 

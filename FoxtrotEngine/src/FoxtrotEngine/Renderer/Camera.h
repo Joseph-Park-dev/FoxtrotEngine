@@ -8,49 +8,51 @@
 #define LOOKAT_MODSPEED		0.01f
 #define Drag_MODSPEED		0.001f
 
+using Matrix = DirectX::SimpleMath::Matrix;
+using Vector3 = DirectX::SimpleMath::Vector3;
+
+enum class Viewtype {
+	Orthographic,
+	Perspective
+};
+
 class Camera
 {
 	SINGLETON_PROTECTED(Camera);
 
 public:
-	FTVector3			GetViewEyePos()			{ return mViewEyePos; }
-	FTVector3			GetViewEyeDir()			{ return mViewEyeDir; }
-	FTVector3			GetViewUp()				{ return mViewUp; }
+	Matrix GetViewRow();
+	Matrix GetProjRow();
+	Vector3 GetEyePos();
 
-	DirectX::XMFLOAT3	GetViewEyePosDX()		{ return mViewEyePos.GetDXVec3(); }
-	DirectX::XMFLOAT3	GetViewEyeDirDX()		{ return mViewEyeDir.GetDXVec3(); }
-	DirectX::XMFLOAT3	GetViewUpDX()			{ return mViewUp.GetDXVec3(); }
+	void UpdateMouse(float mouseNdcX, float mouseNdcY);
+	void MoveForward(float dt);
+	void MoveRight(float dt);
+	void MoveUp(float dt);
+	void SetAspectRatio(float aspect);
 
-	float				GetProjFOVAngleY()		{ return mProjFOVAngleY; }
-	float				GetAspect()				{ return mAspect; }
-	float				GetNearZ()				{ return mNearZ; }
-	float				GetFarZ()				{ return mFarZ; }
-
-	FTVector3			GetViewEyePosition()	{ return mViewEyePosition; }
-	FTVector3			GetViewEyeRotation()	{ return mViewEyeRotation; }
-	
-	int					GetTargetActorID()		{ return mTargetActorID; }
-	FTVector2			GetRenderResolution()	{ return mRenderResolution; }
-
-	void	SetViewEyePos		(FTVector3 pos) { mViewEyePos = pos; }
-	void	SetRenderResolution	(FTVector2 res) { mRenderResolution = res; }
+	Viewtype GetViewType() { return mViewType; }
+	float	 GetProjFOVAngleY() { return mProjFOVAngleY; }
+	float	 GetAspectRatio() { return mAspect; }
 
 private:
-	FTVector3	mViewEyePos;
-	FTVector3	mViewEyeDir;
-	FTVector3	mViewUp;
-	FTVector2	mRenderResolution;
-	float		mProjFOVAngleY;
-	float		mAspect;
-	float		mNearZ;
-	float		mFarZ;
+	Vector3 mPosition	= Vector3(0.0f, 0.4f, 0.0f);
+	Vector3 mViewDir	= Vector3(0.0f, 0.0f, 1.0f);
+	Vector3 mUpDir		= Vector3(0.0f, 1.0f, 0.0f); // 이번 예제에서는 고정
+	Vector3 mRightDir	= Vector3(1.0f, 0.0f, 0.0f);
 
-	// Camrea Object Transformation
-	FTVector3	mViewEyePosition; // Additional rotation given to camera
-	FTVector3	mViewEyeRotation; // Additional rotation given to camera
+	// roll, pitch, yaw
+	// https://en.wikipedia.org/wiki/Aircraft_principal_axes
+	float mPitch = 0.0f, mYaw = 0.0f;
+	float mSpeed = 1.0f; // 움직이는 속도
 
-	Actor*		mTargetActor;
-	int			mTargetActorID;
+	// 프로젝션 옵션도 카메라 클래스로 이동
+	float mProjFOVAngleY = 70.0f;
+	float mNearZ = 0.01f;
+	float mFarZ = 100.0f;
+	float mAspect = 1920.0f / 1080.0f;
+
+	Viewtype mViewType;
 
 public:
 	void Initialize();
@@ -67,10 +69,10 @@ private:
 
 protected:
 	void ZoomIn();
-	void ZoomOut();
-
-private:
-	float	GetAspectRatio() const { return (float)mRenderResolution.x / (float)mRenderResolution.y; }
-	void	UpdateTargetActor();
-	void	SetTarget(int id);
+//	void ZoomOut();
+//
+//private:
+//	float	GetAspectRatio() const { return (float)mRenderResolution.x / (float)mRenderResolution.y; }
+//	void	UpdateTargetActor();
+//	void	SetTarget(int id);
 };

@@ -10,7 +10,7 @@
 #include "FoxtrotEngine/Math/FTMath.h"
 #include "FoxtrotEngine/ResourceSystem/Tile.h"
 #include "FoxtrotEngine/ResourceSystem/FTTexture.h"
-#include "FoxtrotEngine/Renderer/Camera2D.h"
+
 #include "FoxtrotEngine/Actors/Transform.h"
 #include "FoxtrotEngine/Core/FTCore.h"
 #include "FoxtrotEngine/ResourceSystem/Mesh.h"
@@ -19,7 +19,7 @@
 #include "FoxtrotEngine/Renderer/FTRect.h"
 
 #ifdef _DEBUG
-#include "FoxtrotEditor/EditorCamera2D.h"
+
 #endif // _DEBUG
 
 #define DEFAULT_TILE_POS 0.f

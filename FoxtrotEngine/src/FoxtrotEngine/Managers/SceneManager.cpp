@@ -71,4 +71,9 @@ void SceneManager::EditorLateUpdate(float deltaTime)
 {
 	mPCurrScene->EditorLateUpdate(deltaTime);
 }
+
+void SceneManager::EditorRender(FoxtrotRenderer* renderer)
+{
+	mPCurrScene->EditorRender(renderer);
+}
 #endif // _DEBUG

@@ -26,7 +26,8 @@ float4 main(PixelShaderInput input) : SV_TARGET {
     
     //float2 sampleCoord = input.texcoord + tileMapCoord;
     //return g_texture0.Sample(g_sampler, input.texcoord);
-    return float4(input.color, 1.0f);
+    //return float4(input.color, 1.0f);
+    return g_texture0.Sample(g_sampler, input.texcoord);
     
 }
 

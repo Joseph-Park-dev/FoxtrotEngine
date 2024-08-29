@@ -2,14 +2,14 @@
 
 #include "FoxtrotEngine/Core/FTCore.h"
 #include "FoxtrotEngine/Managers/KeyInputManager.h"
-#include "FoxtrotEngine/Renderer/Camera2D.h"
+
 #include "FoxtrotEngine/Managers/CollisionManager.h"
 #include "FoxtrotEngine/Math/Random.h"
 #include "FoxtrotEngine/Physics/Physics2D.h"
 #include "FoxtrotEngine/Physics/Ray.h"
 
 #ifdef _DEBUG
-#include "FoxtrotEditor/EditorCamera2D.h"
+
 #endif // _DEBUG
 
 /* origin : world position vector 
@@ -134,12 +134,12 @@ Physics2D::~Physics2D() {}
 RayCastHit2D Physics2D::Raycast(FTVector2 origin, FTVector2 direction, float distance, ACTOR_GROUP actor)
 {
 	FTVector2 rayDir = (direction - origin).Normalize() * distance;
-	Physics::Ray* ray = new Physics::Ray(
-		EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(origin),
-		EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(origin + rayDir),
-		actor
-	);
-	CollisionManager::GetInstance()->RegisterRay(ray);
+	//Physics::Ray* ray = new Physics::Ray(
+	//	//EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(origin),
+	//	//EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(origin + rayDir),
+	//	actor
+	//);
+	//CollisionManager::GetInstance()->RegisterRay(ray);
 	return RayCastHit2D();
 }
 #else

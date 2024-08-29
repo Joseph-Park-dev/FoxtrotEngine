@@ -18,7 +18,7 @@
 #include "FoxtrotEngine/Actors/Actor.h"
 #include "FoxtrotEngine/Actors/UIs/PanelUI.h"
 #include "FoxtrotEngine/Actors/Backgrounds/BackgroundActor.h"
-#include "FoxtrotEngine/Renderer/Camera2D.h"
+
 #include "FoxtrotEngine/Components/ComponentBatchHeaders.h"
 
 #include "Scripts/ActorList/Ship.h"
@@ -27,7 +27,7 @@
 
 #ifdef _DEBUG
 #include "FoxtrotEditor/EditorLayer.h"
-#include "FoxtrotEditor/EditorCamera2D.h"
+
 #endif // _DEBUG
 
 #ifdef _DEBUG

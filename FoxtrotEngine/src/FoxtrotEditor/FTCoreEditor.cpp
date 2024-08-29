@@ -6,7 +6,7 @@
 #include <imgui_impl_win32.h>
 
 #include "FoxtrotEditor/EditorLayer.h"
-#include "FoxtrotEditor/EditorCamera2D.h"
+
 
 #include "FoxtrotEngine/Managers/KeyInputManager.h"
 #include "FoxtrotEngine/Managers/SceneManager.h"
@@ -46,7 +46,7 @@ void FTCoreEditor::ShutDown()
 void FTCoreEditor::InitSingletonManagers()
 {
 	FTCore::InitSingletonManagers();
-	EditorCamera2D::GetInstance();
+	//EditorCamera2D::GetInstance();
 	EditorLayer::GetInstance();
 }
 
@@ -91,7 +91,7 @@ void FTCoreEditor::ProcessInput()
 	MSG msg = {};
 	if (PeekMessage(&msg, GetWindow(), 0, 0, PM_REMOVE))
 	{
-		EditorCamera2D::GetInstance()->ProcessInput(msg);
+		//EditorCamera2D::GetInstance()->ProcessInput(msg);
 	}
 	KeyInputManager::GetInstance()->DetectKeyInput();
 	KeyInputManager::GetInstance()->DetectMouseInput(msg);
@@ -121,8 +121,6 @@ void FTCoreEditor::UpdateGame()
 		SceneManager::GetInstance()->EditorLateUpdate(deltaTime);
 		UIManager::GetInstance()->EditorUpdate(deltaTime);
 	}
-	Camera2D::GetInstance()->Update(deltaTime);
-	EditorCamera2D::GetInstance()->Update(deltaTime);
 	EditorLayer::GetInstance()->Update(deltaTime);
 }
 
@@ -137,7 +135,7 @@ void FTCoreEditor::GenerateOutput()
 	}
 	UpdateWindow(GetWindow());
 
-	GetGameRenderer()->SetViewport();
+	//GetGameRenderer()->SetViewport();
 	//float clearColor[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
 	//mEditorRenderer->RenderClear(clearColor);
 	if (mIsUpdatingGame)
@@ -152,10 +150,9 @@ void FTCoreEditor::GenerateOutput()
 	{
 		EditorLayer::GetInstance()->DisplayEditorElements(GetGameRenderer());
 	}
-	EditorCamera2D::GetInstance()->EditorRender(GetGameRenderer());
 	EditorLayer::GetInstance()->Render(GetGameRenderer());
 	CollisionManager::GetInstance()->RenderRay(GetGameRenderer());
-	GetGameRenderer()->RenderToTexture();
+	//GetGameRenderer()->RenderToTexture(GetGameRenderer());
 	GetGameRenderer()->SwapChainPresent(1, 0);
 }
 

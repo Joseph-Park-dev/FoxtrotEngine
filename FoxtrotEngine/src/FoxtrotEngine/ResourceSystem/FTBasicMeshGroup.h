@@ -16,7 +16,7 @@ public:
 	//	ComPtr<ID3D11DeviceContext>& context
 	//);
 	void Initialize(
-		const std::vector<MeshData>& meshes,
+		const std::vector<MeshData> meshes,
 		ComPtr<ID3D11Device>& device,
 		ComPtr<ID3D11DeviceContext>& context
 	);
@@ -28,8 +28,14 @@ public:
 	void UpdateModelWorld(DirectX::SimpleMath::Matrix& modelToWorldRow);
 
 public:
-	BasicVertexConstantData& GetVertexConstantData() { return mBasicVertexConstantData; }
-	BasicPixelConstantData& GetPixelConstantData() { return mBasicPixelConstantData; }
+	BasicVertexConstantData&	GetVertexConstantData() { return mBasicVertexConstantData; }
+	BasicPixelConstantData&		GetPixelConstantData()	{ return mBasicPixelConstantData; }
+	DirectX::SimpleMath::Matrix GetModelWorldRow()		{ return mModelWorldRow; }
+	FTTexture*					GetTexture()			{ return mMeshes[0]->texture; }
+	FTTexture*					GetTexture(int index)	{ return mMeshes[index]->texture; }
+
+	void					 SetTexture(std::string key);
+	void					 SetTexture(std::string key, int index);
 
 private:
 	DirectX::SimpleMath::Matrix mModelWorldRow	 = DirectX::SimpleMath::Matrix();
@@ -41,7 +47,7 @@ private:
 
 private:
 	// 메쉬 그리기
-	std::vector<Mesh*> mMeshes;
+	std::vector<Mesh*>			mMeshes;
 
 	ComPtr<ID3D11VertexShader>	mBasicVertexShader;
 	ComPtr<ID3D11PixelShader>	mBasicPixelShader;

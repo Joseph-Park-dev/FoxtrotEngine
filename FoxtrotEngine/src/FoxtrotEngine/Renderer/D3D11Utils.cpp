@@ -11,6 +11,9 @@
 #include <stb_image.h>
 #include <stb_image_write.h>
 
+#include "FoxtrotEngine/ResourceSystem/Mesh.h"
+#include "FoxtrotEngine/Actors/Transform.h"
+
 using namespace std;
 using namespace DirectX;
 

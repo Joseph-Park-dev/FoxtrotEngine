@@ -10,7 +10,7 @@
 #include "FoxtrotEngine/Math/FTMath.h"
 #include "FoxtrotEngine/Physics/Physics2D.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
-#include "FoxtrotEngine/Renderer/Camera2D.h"
+
 
 void CollisionManager::MarkGroup(ACTOR_GROUP left, ACTOR_GROUP right)
 {

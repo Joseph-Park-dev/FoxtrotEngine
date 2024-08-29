@@ -29,6 +29,7 @@ public:
 
 	void UpdateVector2Value(std::string label, FTVector2& ref, float modSpeed);
 	void UpdateVector3Value(std::string label, FTVector3& ref, float modSpeed);
+	void UpdateVector3Value(std::string label, DirectX::SimpleMath::Vector3& ref, float modSpeed);
 	void UpdateFloatValue(std::string label, float* ref, float modSpeed);
 	void UpdateFloatValue(std::string label, float* ref, float val, float modSpeed, Transform* transf, TransSetFloatFunc setFunc);
 	void UpdateIntValue(std::string label, int* ref, int modSpeed);

@@ -2,6 +2,8 @@
 #pragma once
 #include <list>
 
+#include "directxtk/SimpleMath.h"
+
 #include "FoxtrotEngine/Math/FTMath.h"
 #include "FoxtrotEngine/Actors/Actor.h"
 
@@ -91,6 +93,21 @@ private:
 	FTVector3& mValue;
 	FTVector3 mPrevValue;
 	FTVector3 mNextValue;
+};
+
+class DXVector3EditCommand : public Command
+{
+public:
+	void Execute() override;
+	void Undo() override;
+
+public:
+	DXVector3EditCommand(DirectX::SimpleMath::Vector3& valRef, DirectX::SimpleMath::Vector3 nextVal);
+
+private:
+	DirectX::SimpleMath::Vector3& mValue;
+	DirectX::SimpleMath::Vector3 mPrevValue;
+	DirectX::SimpleMath::Vector3 mNextValue;
 };
 
 class StrEditCommand : public Command

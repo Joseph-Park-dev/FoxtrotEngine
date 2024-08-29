@@ -4,7 +4,7 @@
 #include "FoxtrotEngine/Managers/ResourceManager.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 
-void FTBasicMeshGroup::Initialize(const std::vector<MeshData>& meshes, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
+void FTBasicMeshGroup::Initialize(const std::vector<MeshData> meshes, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
 	D3D11_SAMPLER_DESC sampDesc;
     ZeroMemory(&sampDesc, sizeof(sampDesc));
@@ -29,18 +29,18 @@ void FTBasicMeshGroup::Initialize(const std::vector<MeshData>& meshes, ComPtr<ID
         D3D11Utils::CreateVertexBuffer(device, meshData.vertices,
             newMesh->vertexBuffer);
         newMesh->mIndexCount = UINT(meshData.indices.size());
-        newMesh->mVertexCount = meshData.vertices.size();
+        newMesh->mVertexCount = UINT(meshData.vertices.size());
         D3D11Utils::CreateIndexBuffer(device, meshData.indices,
             newMesh->indexBuffer);
 
-        if (!meshData.textureKey.empty()) {
+        //if (!meshData.textureKey.empty()) {
 
-            FTTexture* meshTex = ResourceManager::GetInstance()->GetLoadedTexture(meshData.textureKey);
-            if (meshTex)
-                newMesh->texture = meshTex;
-            else
-                printf("ERROR : FTBasicMeshGroup::Initialize() -> Texture with texture key %s does not exist.", meshData.textureKey.c_str());
-        }
+        //    FTTexture* meshTex = ResourceManager::GetInstance()->GetLoadedTexture(meshData.textureKey);
+        //    if (meshTex)
+        //        newMesh->texture = meshTex;
+        //    else
+        //        printf("ERROR : FTBasicMeshGroup::Initialize() -> Texture with texture key %s does not exist.", meshData.textureKey.c_str());
+        //}
 
         newMesh->vertexConstantBuffer = mVertexConstantBuffer;
         newMesh->pixelConstantBuffer = mPixelConstantBuffer;
@@ -80,23 +80,26 @@ void FTBasicMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPt
 
 void FTBasicMeshGroup::Render(ComPtr<ID3D11DeviceContext>& context)
 {
-    context->VSSetShader(mBasicVertexShader.Get(), 0, 0);
-    context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
-    context->PSSetShader(mBasicPixelShader.Get(), 0, 0);
-
     UINT stride = sizeof(Vertex);
     UINT offset = 0;
     for (const Mesh* mesh : mMeshes) {
+        context->VSSetShader(mBasicVertexShader.Get(), 0, 0);
+        context->VSSetSamplers(0, 1, mSamplerState.GetAddressOf());
+        context->VSSetConstantBuffers(0, 1, mesh->vertexConstantBuffer.GetAddressOf());
+
+        context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
+        context->PSSetShader(mBasicPixelShader.Get(), 0, 0);
 
         context->VSSetConstantBuffers(
             0, 1, mesh->vertexConstantBuffer.GetAddressOf());
 
-        //// 물체 렌더링할 때 큐브맵도 같이 사용
-        //ID3D11ShaderResourceView* resViews[1] = {
-        //    mesh->texture->GetResourceView().Get()
-        //};
-        //context->PSSetShaderResources(0, 1, resViews);
-
+        // 물체 렌더링할 때 큐브맵도 같이 사용
+        if (mesh->texture) {
+            std::vector<ID3D11ShaderResourceView*> resViews;
+            resViews.push_back(mesh->texture->GetResourceView().Get());
+            context->VSSetShaderResources(0, 1, mesh->texture->GetResourceView().GetAddressOf());
+            context->PSSetShaderResources(0, resViews.size(), resViews.data());
+        }
         context->PSSetConstantBuffers(0, 1,
             mesh->pixelConstantBuffer.GetAddressOf());
 
@@ -121,6 +124,18 @@ void FTBasicMeshGroup::UpdateModelWorld(DirectX::SimpleMath::Matrix& modelToWorl
     mBasicVertexConstantData.invTranspose = mInvTransposeRow.Transpose();
 }
 
+void FTBasicMeshGroup::SetTexture(std::string key)
+{
+    if (!mMeshes[0]->texture)
+        mMeshes[0]->texture = new FTTexture;
+    mMeshes[0]->texture = ResourceManager::GetInstance()->GetLoadedTexture(key);
+}
+
+void FTBasicMeshGroup::SetTexture(std::string key, int index)
+{
+    mMeshes[index]->texture = ResourceManager::GetInstance()->GetLoadedTexture(key);
+}
+
 HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 {
     // FTTexture sampler 만들기
@@ -140,9 +155,6 @@ HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 
 FTBasicMeshGroup::FTBasicMeshGroup()
 {
-    mBasicVertexConstantData.model = DirectX::SimpleMath::Matrix();
-    mBasicVertexConstantData.view = DirectX::SimpleMath::Matrix();
-    mBasicVertexConstantData.projection = DirectX::SimpleMath::Matrix();
 }
 
 FTBasicMeshGroup::~FTBasicMeshGroup()

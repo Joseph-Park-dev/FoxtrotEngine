@@ -2,7 +2,7 @@
 
 #include "FoxtrotEngine/Actors/Actor.h"
 #include "FoxtrotEngine/Actors/Transform.h"
-#include "FoxtrotEngine/Renderer/Camera2D.h"
+
 #include "FoxtrotEngine/ResourceSystem/Tile.h"
 #include "FoxtrotEngine/ResourceSystem/FTTexture.h"
 #include "FoxtrotEngine/Managers/ResourceManager.h"

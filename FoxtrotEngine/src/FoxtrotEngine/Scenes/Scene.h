@@ -8,6 +8,7 @@ class Actor;
 class FTCore;
 class SpriteRendererComponent;
 class KeyInputManager;
+class FoxtrotRenderer;
 
 // Base class that every scene object is derived from
 class Scene
@@ -65,5 +66,6 @@ private:
 public:
 	void EditorUpdate(float deltaTime);
 	void EditorLateUpdate(float deltaTime);
+	void EditorRender(FoxtrotRenderer* renderer);
 #endif
 };

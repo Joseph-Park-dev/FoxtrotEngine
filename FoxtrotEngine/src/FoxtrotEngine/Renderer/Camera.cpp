@@ -1,5 +1,7 @@
 #include "FoxtrotEngine/Renderer/Camera.h"
 
+#include "directxtk/SimpleMath.h"
+
 #include "FoxtrotEngine/Core/FTCore.h"
 #include "FoxtrotEditor/CommandHistory.h"
 #include "FoxtrotEngine/Managers/KeyInputManager.h"
@@ -25,18 +27,19 @@ void Camera::DisplayCameraMenu()
 		ImVec2 delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Middle) * Drag_MODSPEED;
 		if (mMiddleMouseClickedPos != delta) {
 			mMiddleMouseClickedPos = delta;
-			mViewEyePosition += FTVector3(-delta.x, delta.y, 0.f);
+			//mPosition += FTVector3(-delta.x, delta.y, 0.f);
 		}
 	}
 	if (ImGui::IsKeyDown(ImGuiKey_LeftAlt) && ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
 		ImVec2 delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left) * 0.0001;
 		if (mMiddleMouseClickedRot != delta) {
 			mMiddleMouseClickedRot = delta;
-			mViewEyeRotation -= FTVector3(delta.y, delta.x, 0.f);
+			//mViewEyeRotation -= FTVector3(delta.y, delta.x, 0.f);
 		}
 	}
-	CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", mViewEyePosition, LOOKAT_MODSPEED);
-	CommandHistory::GetInstance()->UpdateVector3Value("Look-At Rotation", mViewEyeRotation, LOOKAT_MODSPEED);
+	CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", mPosition, LOOKAT_MODSPEED);
+	CommandHistory::GetInstance()->UpdateFloatValue("Look-At Yaw", &mYaw, LOOKAT_MODSPEED);
+	CommandHistory::GetInstance()->UpdateFloatValue("Look-At Pitch", &mPitch, LOOKAT_MODSPEED);
 
 	//// Updating screen center since the camera position is moved
 	//FTVector2 diff = updatedLookAtPos - lookAtPos;
@@ -77,16 +80,47 @@ void Camera::DisplayCameraMenu()
 }
 
 Camera::Camera()
-	: mViewEyePos	 (0.0f, 0.0f, -10.0f)
-	, mViewEyeDir	 (0.0f, 0.0f, 1.0f)
-	, mViewUp		 (0.0f, 1.0f, 0.0f)
-	, mProjFOVAngleY (70.0f)
-	, mNearZ		 (0.01f)
-	, mFarZ			 (100.0f)
-	, mRenderResolution(HD_RESOLUTION)
-	, mAspect		 (GetAspectRatio())
-	, mTargetActor	 (nullptr)
-	, mTargetActorID (CAMERA_TARGET_NONE)
 {}
 
 Camera::~Camera(){}
+
+Matrix Camera::GetViewRow()
+{
+	return	Matrix::CreateTranslation(-mPosition) *
+			Matrix::CreateRotationY(-mYaw) *
+			Matrix::CreateRotationX(mPitch);
+}
+
+Matrix Camera::GetProjRow()
+{
+	return mViewType == Viewtype::Perspective
+		? DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(mProjFOVAngleY),
+			mAspect, mNearZ, mFarZ)
+		: DirectX::XMMatrixOrthographicOffCenterLH(-mAspect, mAspect, -1.0f,
+			1.0f, mNearZ, mFarZ);
+}
+
+Vector3 Camera::GetEyePos()
+{
+	return mPosition;
+}
+
+void Camera::UpdateMouse(float mouseNdcX, float mouseNdcY)
+{
+}
+
+void Camera::MoveForward(float dt)
+{
+}
+
+void Camera::MoveRight(float dt)
+{
+}
+
+void Camera::MoveUp(float dt)
+{
+}
+
+void Camera::SetAspectRatio(float aspect)
+{
+}

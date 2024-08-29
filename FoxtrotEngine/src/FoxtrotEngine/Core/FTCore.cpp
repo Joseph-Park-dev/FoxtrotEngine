@@ -15,7 +15,7 @@
 #include "FoxtrotEngine/Managers/EventManager.h"
 #include "FoxtrotEngine/Managers/UIManager.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
-#include "FoxtrotEngine/Renderer/Camera2D.h"
+#include "FoxtrotEngine/Renderer/Camera.h"
 #include "FoxtrotEngine/Physics/Physics2D.h"
 #include "FoxtrotEngine/Physics/ParticleSystem.h"
 #include "FoxtrotEngine/FileSystem/ChunkLoader.h"
@@ -129,7 +129,7 @@ bool FTCore::InitFoxtrotRenderer_D3D11()
 void FTCore::InitSingletonManagers()
 {
 	Physics2D::GetInstance()->Init();
-	Camera2D::GetInstance()->Init();
+	Camera::GetInstance();
 	ResourceManager::GetInstance()->Initialize(mGameRenderer);
 	SceneManager::GetInstance()->Init();
 	UIManager::GetInstance();
@@ -176,7 +176,6 @@ void FTCore::UpdateGame()
 	CollisionManager::GetInstance()->Update();
 	ParticleSystem::GetInstance()->Update(deltaTime);
 	UIManager::GetInstance()->Update(deltaTime);
-	Camera2D::GetInstance()->Update(deltaTime);
 }
 
 void FTCore::GenerateOutput()

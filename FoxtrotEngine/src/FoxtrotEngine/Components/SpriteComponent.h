@@ -1,15 +1,16 @@
 #pragma once
-#include "FoxtrotEngine/Components/MeshRendererComponent.h"
+#include "FoxtrotEngine/Components/Component.h"
 
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
 #include "FoxtrotEngine/ResourceSystem/MeshData.h"
 
 class FTTexture;
+class FoxtrotRenderer;
 struct Mesh;
 
 #define SPRITE_FORMAT_SUPPORTED ".png, .jpeg"
 
-class SpriteRendererComponent : public MeshRendererComponent
+class SpriteRendererComponent : public Component
 {
 public:
 	int			 GetTexWidth()  const { return mTexWidth; }
@@ -34,10 +35,13 @@ public:
 	virtual ~SpriteRendererComponent() override;
 
 private:
-	int				 mTexWidth;
-	int				 mTexHeight;
-	int				 mChannel;
-	float			 mScale;
+	int					mTexWidth;
+	int					mTexHeight;
+	int					mChannel;
+	float				mScale;
+
+	Mesh*				mMesh;
+	FoxtrotRenderer*	mRenderer;
 
 #ifdef _DEBUG
 //This section will be omitted from Release mode!

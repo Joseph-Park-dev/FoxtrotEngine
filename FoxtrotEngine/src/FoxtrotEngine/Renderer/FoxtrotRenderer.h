@@ -24,11 +24,6 @@ class Transform;
 class RenderTextureClass;
 class FTVector2;
 
-enum class Viewtype {
-    Orthographic,
-    Perspective
-};
-
 enum class FillMode {
     WireFrame,
     Solid
@@ -51,7 +46,6 @@ public:
 public:
     ComPtr<ID3D11Device>&            GetDevice()             { return mDevice; }
     ComPtr<ID3D11DeviceContext>&     GetContext()            { return mContext; }
-    std::vector<Mesh**>&             GetRenderPool()         { return mRenderPool; }
     ComPtr<IDXGISwapChain>&          GetSwapChain()          { return mSwapChain; }
     ComPtr<ID3D11RenderTargetView>&  GetRenderTargetView()   { return mRenderTargetView; }
     ComPtr<ID3D11Texture2D>&         GetDepthStencilBuffer() { return mDepthStencilBuffer; }
@@ -59,12 +53,10 @@ public:
 
     int      GetRenderWidth ()              { return mRenderWidth; }
     int      GetRenderHeight()              { return mRenderHeight; }
-    Viewtype GetViewType    ()              { return mViewType; }
     FillMode GetFillMode    ()              { return mFillMode; }
 
     void  SetRenderWidth        (int width)     { mRenderWidth = width; }
     void  SetRenderHeight       (int height)    { mRenderHeight = height; }
-    void  SetViewType           (Viewtype view) { mViewType = view; }
     void  SetFillMode           (FillMode mode) { mFillMode = mode; }
 
 private:
@@ -75,12 +67,9 @@ private:
     UINT        mNumQualityLevels;
     UINT        mCreateDeviceFlags;
 
-    Viewtype    mViewType;
     FillMode    mFillMode;
 
 private:
-    FTTexture mWallTexture;
-
     ComPtr<ID3D11BlendState>        mBlendState;
 
 	ComPtr<ID3D11Device>			mDevice;
@@ -103,12 +92,6 @@ private:
     ComPtr<ID3D11VertexShader> mBasicVertexShader;
     ComPtr<ID3D11PixelShader>  mBasicPixelShader;
     ComPtr<ID3D11InputLayout>  mBasicInputLayout;
-
-    ComPtr<ID3D11Buffer> mVertexBuffer;
-    ComPtr<ID3D11Buffer> mIndexBuffer;
-
-    UINT mIndexCount;
-    std::vector<Mesh**> mRenderPool;
 
 private:
     RenderTextureClass* mRenderTexture;
@@ -220,8 +203,7 @@ public:
 private:
 
 public:
-    bool CreateRenderTexture(int width, int height);
-    bool UpdateRenderTexture(int width, int height);
     void RenderToTexture();
+
 #endif // _DEBUG
 };

@@ -2,7 +2,7 @@
 
 #include "FoxtrotEngine/Components/ColliderComponent.h"
 #include "FoxtrotEngine/Components/Rigidbody2DComponent.h"
-#include "FoxtrotEngine/Renderer/Camera2D.h"
+
 #include "FoxtrotEngine/Actors/Transform.h"
 #include "FoxtrotEngine/Actors/ActorGroup.h"
 #include "FoxtrotEngine/Physics/Physics2D.h"

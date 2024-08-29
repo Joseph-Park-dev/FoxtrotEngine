@@ -27,7 +27,8 @@ public:
 	//bool				LoadSpineAnimation(std::string key, std::string atlasPath, std::string skeletonDataPath);
 
 	void				LoadMeshFromFile(const std::string key, const std::string filePath);
-	void				LoadBoxMesh(const std::string key);
+	void				LoadSquareMesh(const std::string key);
+	void				LoadBoxeMesh(const std::string key);
 
 	FTTexture*			GetLoadedTexture(const std::string key);
 	//FTSpineAnimation*	GetLoadedSpineAnimation(std::string key);

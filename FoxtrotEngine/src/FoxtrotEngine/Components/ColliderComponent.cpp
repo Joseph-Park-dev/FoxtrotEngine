@@ -6,7 +6,7 @@
 #include "FoxtrotEngine/Actors/Actor.h"
 #include "FoxtrotEngine/Actors/Transform.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
-#include "FoxtrotEngine/Renderer/Camera2D.h"
+
 #include "FoxtrotEngine/Physics/Physics2D.h"
 #include "FoxtrotEngine/Managers/KeyInputManager.h"
 #include "FoxtrotEngine/FileSystem/ChunkLoader.h"
@@ -75,7 +75,7 @@ void ColliderComponent::OnRayEnter()
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx11.h>
 
-#include "FoxtrotEditor/EditorCamera2D.h"
+
 #include "FoxtrotEditor/CommandHistory.h"
 
 void ColliderComponent::Render(FoxtrotRenderer* renderer)

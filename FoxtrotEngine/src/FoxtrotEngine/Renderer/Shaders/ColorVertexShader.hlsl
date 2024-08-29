@@ -1,6 +1,7 @@
 cbuffer ModelViewProjectionConstantBuffer : register(b0)
 {
     matrix model;
+    matrix invTranspose;
     matrix view;
     matrix projection;
 };

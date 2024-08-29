@@ -29,5 +29,6 @@ public:
 public:
 	void	EditorUpdate(float deltaTime);
 	void	EditorLateUpdate(float deltaTime);
+	void	EditorRender(FoxtrotRenderer* renderer);
 #endif
 };

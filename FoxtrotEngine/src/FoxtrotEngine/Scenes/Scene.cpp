@@ -7,7 +7,7 @@
 #include "FoxtrotEngine/Components/SpriteRendererComponent.h"
 #include "FoxtrotEngine/Managers/EventManager.h"
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
-#include "FoxtrotEngine/Renderer/Camera2D.h"
+
 #include "FoxtrotEngine/Actors/UIs/PanelUI.h"
 #include "FoxtrotEngine/Actors/Transform.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
@@ -158,6 +158,18 @@ void Scene::EditorLateUpdate(float deltaTime)
 		{
 			ele->EditorLateUpdateComponents(deltaTime);
 			ele->EditorLateUpdateActor();
+		}
+	}
+}
+void Scene::EditorRender(FoxtrotRenderer* renderer)
+{
+	std::vector<EditorElement*>& elements = EditorLayer::GetInstance()->GetEditorElements();
+	for (size_t i = 0; i < elements.size(); ++i)
+	{
+		EditorElement* ele = elements[i];
+		if (ele->IsActive())
+		{
+			ele->Render(renderer);
 		}
 	}
 }

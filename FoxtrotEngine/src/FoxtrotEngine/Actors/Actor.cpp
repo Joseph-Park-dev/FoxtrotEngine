@@ -6,7 +6,7 @@
 
 #include "FoxtrotEngine/Scenes/Scene.h"
 #include "FoxtrotEngine/Managers/KeyInputManager.h"
-#include "FoxtrotEngine/Renderer/Camera2D.h"
+
 #include "FoxtrotEngine/Actors/ActorGroup.h"
 #include "FoxtrotEngine/Actors/ActorTag.h"
 #include "FoxtrotEngine/Actors/Transform.h"

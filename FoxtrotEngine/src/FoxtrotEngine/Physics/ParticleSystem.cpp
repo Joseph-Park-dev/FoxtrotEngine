@@ -4,7 +4,7 @@
 
 #include "FoxtrotEngine/Math/Random.h"
 #include "FoxtrotEngine/Math/FTMath.h"
-#include "FoxtrotEngine/Renderer/Camera2D.h"
+
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 
 // InitPos : WorldPosition, not ScreenPosition
@@ -111,8 +111,8 @@ void ParticleSystem::Render(FoxtrotRenderer* renderer)
 			{
 				if (explosions[i]->particles[j].isActive)
 				{
-					explosions[i]->particles[j].pos =
-						Camera2D::GetInstance()->ConvertWorldPosToScreen(explosions[i]->particles[j].pos);
+					//explosions[i]->particles[j].pos =
+					//	Camera2D::GetInstance()->ConvertWorldPosToScreen(explosions[i]->particles[j].pos);
 					/*
 					
 						Alternative to

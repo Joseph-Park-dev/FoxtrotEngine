@@ -26,27 +26,31 @@ public:
 	virtual void Render		(FoxtrotRenderer* renderer) override;
 
 protected:
-	virtual void InitializeMesh();
+	virtual bool InitializeMesh();
+	virtual bool InitializeMesh(std::string key);
 	virtual	void UpdateMesh(Transform* transform, Camera* cameraInstance);
-			void UpdateBuffers(FoxtrotRenderer* renderer);
+			void UpdateBuffers();
 
 public:
 	virtual std::wstring GetName() const override { return L"MeshRendererComponent"; }
 
 protected:
-	FoxtrotRenderer*	GetRenderer()	{ return mRenderer; }
-	FTBasicMeshGroup*	GetMeshArray()	{ return mMeshGroup; }
-	std::string			GetKey()		{ return mKey; }
+	FoxtrotRenderer*	GetRenderer	()	{ return mRenderer; }
+	FTBasicMeshGroup*	GetMeshGroup()	{ return mMeshGroup; }
+	std::string			GetMeshKey	()	{ return mMeshKey; }
+	std::string			GetTexKey	()	{ return mTexKey; }
 
-	void				SetKey		(std::string key) { mKey = key; }
-	void				SetTexture	(Mesh* mesh, FTTexture* texture);
+	void				SetMeshKey	(std::string key) { mMeshKey.assign(key); }
+	void				SetTexKey	(std::string key) { mTexKey.assign(key); }
+	void				SetTexture();
 
 private:
 	FoxtrotRenderer*	mRenderer;
-	FTBasicMeshGroup*	mMeshGroup;
 
+	FTBasicMeshGroup*	mMeshGroup;
 	// Identifier for the object in the Resource Map from the ResourceManager instance.
-	std::string      mKey;
+	std::string			mMeshKey;
+	std::string			mTexKey;
 
 public:
 	MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder);

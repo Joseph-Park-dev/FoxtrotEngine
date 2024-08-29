@@ -8,21 +8,20 @@
 #include "FoxtrotEngine/Managers/ResourceManager.h"
 #include "FoxtrotEngine/ResourceSystem/FTTexture.h"
 #include "FoxtrotEngine/ResourceSystem/Mesh.h"
+#include "FoxtrotEngine/ResourceSystem/FTBasicMeshGroup.h"
 #include "FoxtrotEngine/ResourceSystem/MeshData.h"
 #include "FoxtrotEngine/ResourceSystem/GeometryGenerator.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 #include "FoxtrotEngine/Physics/Bounds.h"
 #include "FoxtrotEngine/Math/FTMath.h"
 #include "FoxtrotEngine/Renderer/Camera.h"
+#include "FoxtrotEngine/Renderer/D3D11Utils.h"
 
-SpriteRendererComponent::SpriteRendererComponent(Actor* owner, int drawOrder, int updateOrder)
-	: MeshRendererComponent(owner, drawOrder, updateOrder)
-	, mChannel(4)
-	, mScale(1.f)
-{}
-
-SpriteRendererComponent::~SpriteRendererComponent()
-{}
+void SpriteRendererComponent::SetTexture(std::string key)
+{
+	SetTexKey(key);
+	GetMeshGroup()->SetTexture(GetTexKey());
+}
 
 void SpriteRendererComponent::UpdateTexture(FoxtrotRenderer* renderer, std::string fileName){
 	//std::vector<Mesh**>& meshes = renderer->GetRenderPool();
@@ -40,21 +39,54 @@ void SpriteRendererComponent::UpdateTexture(FoxtrotRenderer* renderer, std::stri
 
 void SpriteRendererComponent::Initialize(FTCore* coreInstance){
 	MeshRendererComponent::Initialize(coreInstance);
+	InitializeMesh();
 	//InitializeMesh(GeometryGenerator::MakeSquare(1.0f));
 }
 
 
 void SpriteRendererComponent::Update(float deltaTime){
-	//MeshRendererComponent::UpdateMeshArray(GetOwner()->GetTransform(), Camera::GetInstance());
+	if(GetMeshGroup())
+		MeshRendererComponent::Update(deltaTime);
 }
 
 void SpriteRendererComponent::Render(FoxtrotRenderer* renderer) {
 	MeshRendererComponent::Render(renderer);
 }
 
+bool SpriteRendererComponent::InitializeMesh()
+{
+	MeshRendererComponent::InitializeMesh(MAPKEY_SPRITE_MESH);
+	if (!GetMeshGroup()) {
+		LogString("ERROR: SpriteRendererComponent::InitializeMesh() -> Mesh Init failed");
+		return false;
+	}
+	return true;
+}
+
+
+//void SpriteRendererComponent::InitializeMesh()
+//{
+//	mMesh = new Mesh;
+//	MeshData squareMeshData = GeometryGenerator::MakeSquare(mScale);
+//	D3D11Utils::CreateVertexBuffer(
+//		mRenderer->GetDevice(),
+//		squareMeshData.vertices,
+//		mMesh->vertexBuffer
+//	);
+//
+//	mMesh->mIndexCount = UINT(squareMeshData.indices.size());
+//	mMesh->mVertexCount = squareMeshData.vertices.size();
+//
+//	D3D11Utils::CreateIndexBuffer(
+//		mRenderer->GetDevice(),
+//		squareMeshData.indices,
+//		mMesh->indexBuffer
+//	);
+//}
+
 #ifdef _DEBUG
 #include "FoxtrotEditor/CommandHistory.h"
-#include "FoxtrotEditor/EditorCamera2D.h"
+
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
@@ -82,10 +114,19 @@ void SpriteRendererComponent::EditorUIUpdate(){
 	}
 }
 
+SpriteRendererComponent::SpriteRendererComponent(Actor* owner, int drawOrder, int updateOrder)
+	: MeshRendererComponent(owner, drawOrder, updateOrder)
+	, mChannel(4)
+	, mScale(1.f)
+{}
+
+SpriteRendererComponent::~SpriteRendererComponent()
+{}
+
 void SpriteRendererComponent::UpdateSprite(FoxtrotRenderer* renderer){
 	std::string currentSprite = "No sprite has been assigned";
-	//if (GetMeshArray()[0]->texture)
-		//currentSprite = "Current sprite : \n" + GetMeshArray()[0]->texture->GetRelativePath();
+	if (GetMeshGroup()->GetTexture())
+		currentSprite = "Current sprite : \n" + GetMeshGroup()->GetTexture()->GetRelativePath();
 	ImGui::Text(currentSprite.c_str());
 
 	if (ImGui::Button("Select Sprite")){
@@ -101,20 +142,20 @@ void SpriteRendererComponent::UpdateSprite(FoxtrotRenderer* renderer){
 		std::unordered_map<std::string, FTTexture*>& texturesMap = ResourceManager::GetInstance()->GetTexturesMap();
 		if (ImGui::TreeNode("Selection State: Single Selection"))
 		{
-			std::string spriteName = {};
+			std::string spriteKey = {};
 			static int selected = -1;
 		    int i = 0;
 			for (auto iter = texturesMap.begin(); iter != texturesMap.end(); ++iter, ++i)
 			{
 				if (ImGui::Selectable((*iter).first.c_str(), selected == i))
 				{
-					spriteName = (*iter).first;
+					spriteKey = (*iter).first;
 					selected = i;
 				}
 			}
 			ImGui::TreePop();
 			if (selected != -1) {
-				//SetTexture(GetMeshArray()[0], texturesMap[spriteName]);
+				SetTexture(spriteKey);
 			}
 		}
 		if (ImGui::Button("Close"))

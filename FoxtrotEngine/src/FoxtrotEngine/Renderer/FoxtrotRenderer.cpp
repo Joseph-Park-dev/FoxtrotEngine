@@ -22,7 +22,7 @@
 
 #ifdef _DEBUG
 #include "FoxtrotEditor/EditorLayer.h"
-#include "FoxtrotEditor/EditorCamera2D.h"
+
 #include "FoxtrotEditor/RenderTextureClass.h"
 #endif // _DEBUG
 
@@ -98,12 +98,16 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 
 	mContext->PSSetShader(mBasicPixelShader.Get(), 0, 0);
 
+	mContext->RSSetState(mSolidRasterizerState.Get());
+
 #ifdef _DEBUG
-	if (!CreateRenderTexture(mRenderWidth, mRenderHeight))
+	mRenderTexture = new RenderTextureClass();
+	if (!mRenderTexture)
 	{
 		LogString("Error : FoxtrotRenderer Initialize - CreateRenderTexture failed.");
 		return false;
 	}
+	mRenderTexture->InitializeTexture(mDevice, mRenderWidth, mRenderHeight);
 #endif // _DEBUG
 	return true;
 }
@@ -114,7 +118,6 @@ void FoxtrotRenderer::DestroyRenderer(FoxtrotRenderer* renderer)
 	// 렌더 텍스쳐 객체를 해제한다
 	if (renderer->mRenderTexture)
 	{
-		renderer->mRenderTexture->Shutdown();
 		delete renderer->mRenderTexture;
 		renderer->mRenderTexture = 0;
 	}
@@ -577,46 +580,13 @@ bool FoxtrotRenderer::CreatePixelShader(const std::wstring& filename,
 
 FoxtrotRenderer::FoxtrotRenderer()
 	: mClearColor{0.0f,0.0f,0.0f,1.0f}
-	, mViewType (Viewtype::Perspective)
 	, mFillMode(FillMode::Solid)
 {}
 
 #ifdef _DEBUG
-bool FoxtrotRenderer::CreateRenderTexture(int width, int height)
-{
-	mRenderTexture = new RenderTextureClass();
-	// 렌더링 텍스처 객체를 초기화한다
-	bool result = mRenderTexture->Initialize(mDevice.Get(), width, height, mNumQualityLevels);
-	if (!result)
-	{
-		return false;
-	}
-}
-
-bool FoxtrotRenderer::UpdateRenderTexture(int width, int height)
-{
-	bool result = mRenderTexture->Update(mDevice.Get(), width, height, mNumQualityLevels);
-	if (!result)
-	{
-		return false;
-	}
-}
-
 void FoxtrotRenderer::RenderToTexture()
 {
-	// 렌더링 대상을 렌더링에 맞게 설정합니다
-	mContext->OMSetRenderTargets(1, mRenderTexture->GetRenderTargetView().GetAddressOf(), mRenderTexture->GetDepthStencilView().Get());
-
-	// 렌더링을 텍스처에 지웁니다
-	mRenderTexture->ClearRenderTarget(mContext.Get(), mRenderTexture->GetDepthStencilView().Get(), mClearColor);
-
-	// 이제 장면을 렌더링하면 백 버퍼 대신 텍스처로 렌더링됩니다
-	SceneManager::GetInstance()->Render(this);
-
-	//// 렌더링 대상을 원래의 백 버퍼로 다시 설정하고 렌더링에 대한 렌더링을 더 이상 다시 설정하지 않습니다
-	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
-
-	//return true;
+	mRenderTexture->DrawOnTexture(mContext, mRenderTargetView, mDepthStencilView, this);
 }
 
 //void FoxtrotRenderer::DrawPrimitives()

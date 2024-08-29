@@ -3,7 +3,7 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 
-#include "FoxtrotEngine/Renderer/Camera2D.h"
+
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
 #include "FoxtrotEngine/Core/FTCore.h"
 #ifdef _DEBUG
@@ -70,8 +70,7 @@ KEY_STATE KeyInputManager::GetButtonState(GAMEPADBUTTON eButton)
 
 FTVector2 KeyInputManager::GetMouseWorldPosition()
 {
-	FTVector2 pos = Camera2D::GetInstance()->ConvertScreenPosToWorld(MOUSE_POS);
-	return pos;
+	return FTVector2::Zero;
 }
 
 void KeyInputManager::DetectKeyInput()

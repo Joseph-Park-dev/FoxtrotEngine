@@ -206,9 +206,6 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\CommandHistory.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\EditorCamera2D.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEditor\EditorElement.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -281,7 +278,6 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Physics\Bounds.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Physics\ParticleSystem.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Physics\Physics2D.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Camera2D.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\D3D11Utils.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\FoxtrotRenderer.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTAnimation.cpp" />
@@ -386,9 +382,6 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\CommandHistory.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\EditorCamera2D.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEditor\EditorElement.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -478,7 +471,6 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Physics\Physics2D.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Physics\Ray.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Physics\RayCastHit2D.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\Camera2D.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\D3D11Utils.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\FoxtrotRenderer.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\resource1.h" />

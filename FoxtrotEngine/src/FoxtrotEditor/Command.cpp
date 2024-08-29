@@ -178,3 +178,21 @@ Vector3EditCommand::Vector3EditCommand(FTVector3& valRef, FTVector3 nextVal)
 	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
 {
 }
+
+void DXVector3EditCommand::Execute()
+{
+	mPrevValue = mValue;
+	mValue = mNextValue;
+}
+
+void DXVector3EditCommand::Undo()
+{
+	DirectX::SimpleMath::Vector3 nextVal = mValue;
+	mValue = mPrevValue;
+	mNextValue = nextVal;
+}
+
+DXVector3EditCommand::DXVector3EditCommand(DirectX::SimpleMath::Vector3& valRef, DirectX::SimpleMath::Vector3 nextVal)
+	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
+{
+}

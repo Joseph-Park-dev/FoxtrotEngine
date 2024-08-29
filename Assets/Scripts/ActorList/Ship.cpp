@@ -7,7 +7,7 @@
 #include "FoxtrotEngine/Managers/KeyInputManager.h"
 #include "FoxtrotEngine/Managers/ResourceManager.h"
 #include "FoxtrotEngine/Physics/Physics2D.h"
-#include "FoxtrotEngine/Renderer/Camera2D.h"
+
 
 #include "FoxtrotEngine/Components/SpriteAnimComponent.h"
 #include "FoxtrotEngine/Components/AnimatorComponent.h"

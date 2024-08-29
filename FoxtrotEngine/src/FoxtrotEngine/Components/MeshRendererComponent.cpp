@@ -37,7 +37,9 @@ void MeshRendererComponent::Render(FoxtrotRenderer* renderer){
 
 bool MeshRendererComponent::InitializeMesh(){
 	if (!mMeshKey.empty()) {
-		mMeshGroup = ResourceManager::GetInstance()->GetLoadedMeshes(mMeshKey);
+		mMeshGroup = new FTBasicMeshGroup;
+		std::vector<MeshData>& meshData = ResourceManager::GetInstance()->GetLoadedMeshes(mMeshKey);
+		mMeshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
 		if (!mMeshGroup) {
 			LogString("ERROR: MeshRendererComponent::InitializeMesh() -> Mesh Init failed");
 			return false;
@@ -127,7 +129,7 @@ void MeshRendererComponent::EditorRender(FoxtrotRenderer* renderer)
 
 void MeshRendererComponent::EditorUIUpdate(){
 	if (ImGui::Button("Add Cube")) {
-		mMeshGroup = ResourceManager::GetInstance()->GetLoadedMeshes("Box");
+		//mMeshGroup = ResourceManager::GetInstance()->GetLoadedMeshes("Box");
 		LogString("Cube added");
 	}
 }

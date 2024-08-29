@@ -28,13 +28,13 @@ public:
 
 	void				LoadMeshFromFile(const std::string key, const std::string filePath);
 	void				LoadSquareMesh(const std::string key);
-	void				LoadBoxeMesh(const std::string key);
+	void				LoadBoxMesh(const std::string key);
 
-	FTTexture*			GetLoadedTexture(const std::string key);
+	FTTexture*				GetLoadedTexture(const std::string key);
 	//FTSpineAnimation*	GetLoadedSpineAnimation(std::string key);
 	// Load a previously loaded FTTexture to Spine Atlas Page
 	//void				LoadToSpineTexture(spine::AtlasPage& page, spine::String fileName);
-	FTBasicMeshGroup*	GetLoadedMeshes(const std::string key);
+	std::vector<MeshData>&	GetLoadedMeshes(const std::string key);
 
 public:
 	std::unordered_map<std::string, FTTexture*>& 
@@ -47,7 +47,7 @@ private:
 
 	std::unordered_map<std::string, FTTexture*> mMapTextures;
 	//std::unordered_map<std::string, FTSpineAnimation*> mMapSpineAnimData;
-	std::unordered_map<std::string, FTBasicMeshGroup*> mMapMeshGroup;
+	std::unordered_map<std::string, std::vector<MeshData>> mMapMeshes;
 
 	std::string mPathToAsset;
 	FoxtrotRenderer* mRenderer; // For Loading FTTextures
@@ -58,10 +58,7 @@ private:
 	template<typename FTRESOURCE>
 	bool ResourceExists(const std::string key, const std::string path, const std::unordered_map<std::string, FTRESOURCE>& resMap) {
 		if (0 < resMap.size()) {
-			if (resMap.find(key) != resMap.end()) {
-				printf("Error: ResourceManager::ResourceExists() -> Resource with key %s exists\n", key.c_str());
-				return true;
-			}
+			KeyExists(key, resMap);
 			auto iter = resMap.begin();
 			for (; iter != resMap.end(); ++iter) {
 				if ((*iter).second->GetRelativePath() == path)
@@ -71,6 +68,15 @@ private:
 				}
 			}
 			return false;
+		}
+		return false;
+	}
+
+	template<typename FTRESOURCE>
+	bool KeyExists(const std::string key, const std::unordered_map<std::string, FTRESOURCE>& resMap) {
+		if (resMap.find(key) != resMap.end()) {
+			printf("Error: ResourceManager::ResourceExists() -> Resource with key %s exists\n", key.c_str());
+			return true;
 		}
 		return false;
 	}

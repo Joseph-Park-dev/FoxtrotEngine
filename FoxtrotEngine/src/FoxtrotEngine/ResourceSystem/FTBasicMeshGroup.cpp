@@ -4,7 +4,7 @@
 #include "FoxtrotEngine/Managers/ResourceManager.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 
-void FTBasicMeshGroup::Initialize(const std::vector<MeshData> meshes, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
+void FTBasicMeshGroup::Initialize(std::vector<MeshData>& meshes, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
 	D3D11_SAMPLER_DESC sampDesc;
     ZeroMemory(&sampDesc, sizeof(sampDesc));

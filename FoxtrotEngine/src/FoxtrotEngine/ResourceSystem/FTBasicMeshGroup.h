@@ -14,9 +14,9 @@ public:
 	//	const std::string& key,
 	//	ComPtr<ID3D11Device>& device,
 	//	ComPtr<ID3D11DeviceContext>& context
-	//);
+	//);s
 	void Initialize(
-		const std::vector<MeshData> meshes,
+		std::vector<MeshData>& meshes,
 		ComPtr<ID3D11Device>& device,
 		ComPtr<ID3D11DeviceContext>& context
 	);

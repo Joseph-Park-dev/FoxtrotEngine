@@ -26,7 +26,7 @@ void Scene_Start::LoadData()
 	ResourceManager::GetInstance()->LoadTexture("Asteroid2", asteroidSprite);
 	ResourceManager::GetInstance()->LoadTexture("Asteroid3", asteroidSprite);
 	ResourceManager::GetInstance()->LoadSquareMesh(MAPKEY_SPRITE_MESH);
-	ResourceManager::GetInstance()->LoadBoxeMesh("Box");
+	ResourceManager::GetInstance()->LoadBoxMesh("Box");
 
 	//ResourceManager::GetInstance()->GetLoadedTexture("TEST");
 

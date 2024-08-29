@@ -93,16 +93,15 @@ void ResourceManager::UpdateTexture(FTTexture* texture, int channels)
 void ResourceManager::LoadMeshFromFile(const std::string key, const std::string filePath)
 {
 	std::string path = mPathToAsset + filePath;
-	if (!ResourceExists(key, path, mMapMeshGroup)) {
+	if (!KeyExists(key, mMapMeshes)) {
 		printf("Message: Loading Mesh %s to key %s. \n", path.c_str(), key.c_str());
-		FTBasicMeshGroup* meshGroup = new FTBasicMeshGroup;
-		meshGroup->Initialize(GeometryGenerator::ReadFromFile(filePath), mRenderer->GetDevice(), mRenderer->GetContext());
-		if (!meshGroup)
+		std::vector<MeshData> meshData = GeometryGenerator::ReadFromFile(filePath);
+		if (!meshData.empty())
 		{
 			printf("Error: ResourceManager::LoadMesh() -> LoadMesh failed. \n");
 			return;
 		}
-		mMapMeshGroup.insert(std::make_pair(key, meshGroup));
+		mMapMeshes.insert(std::make_pair(key, meshData));
 	}
 	else {
 		printf("Warning : FTTexture %s is already loaded to key %s.\n", filePath.c_str(), key.c_str());
@@ -111,30 +110,26 @@ void ResourceManager::LoadMeshFromFile(const std::string key, const std::string 
 
 void ResourceManager::LoadSquareMesh(const std::string key)
 {
-	FTBasicMeshGroup* meshGroup = new FTBasicMeshGroup;
 	std::vector<MeshData> meshData;
 	meshData.push_back(GeometryGenerator::MakeSquare(1.0f));
-	meshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
-	if (!meshGroup)
+	if (meshData.empty())
 	{
 		printf("Error: ResourceManager::LoadMesh() -> LoadSquareMesh failed. \n");
 		return;
 	}
-	mMapMeshGroup.insert(std::make_pair(key, meshGroup));
+	mMapMeshes.insert(std::make_pair(key, meshData));
 }
 
-void ResourceManager::LoadBoxeMesh(const std::string key)
+void ResourceManager::LoadBoxMesh(const std::string key)
 {
-	FTBasicMeshGroup* meshGroup = new FTBasicMeshGroup;
 	std::vector<MeshData> meshData;
 	meshData.push_back(GeometryGenerator::MakeBox());
-	meshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
-	if (!meshGroup)
+	if (meshData.empty())
 	{
 		printf("Error: ResourceManager::LoadMesh() -> LoadSquareMesh failed. \n");
 		return;
 	}
-	mMapMeshGroup.insert(std::make_pair(key, meshGroup));
+	mMapMeshes.insert(std::make_pair(key, meshData));
 }
 
 FTTexture* ResourceManager::GetLoadedTexture(const std::string key)
@@ -173,11 +168,11 @@ FTTexture* ResourceManager::GetLoadedTexture(const std::string key)
 //	}
 //}
 
-FTBasicMeshGroup* ResourceManager::GetLoadedMeshes(const std::string key)
+std::vector<MeshData>& ResourceManager::GetLoadedMeshes(const std::string key)
 {
-	FTBasicMeshGroup* meshGroup = mMapMeshGroup.at(key);
-	if (meshGroup)
-		return meshGroup;
+	std::vector<MeshData>& meshes = mMapMeshes.at(key);
+	if (!meshes.empty())
+		return meshes;
 	else
 	{
 		printf("Error: ResourceManager::GetLoadedMeshes() -> Mesh is empty %s\n", key.c_str());

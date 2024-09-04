@@ -68,19 +68,23 @@ void MeshRendererComponent::UpdateMesh(Transform* transform, Camera* cameraInsta
 }
 
 void MeshRendererComponent::UpdateBuffers(){
-	D3D11Utils::UpdateBuffer(
-		mRenderer->GetDevice(), 
-		mRenderer->GetContext(), 
-		GetMeshGroup()->GetVertexConstantData(),
-		GetMeshGroup()->GetVertexConstantBuffer()
-	);
+	if (GetMeshGroup()->GetVertexConstantBuffer().Get()) {
+		D3D11Utils::UpdateBuffer(
+			mRenderer->GetDevice(),
+			mRenderer->GetContext(),
+			GetMeshGroup()->GetVertexConstantData(),
+			GetMeshGroup()->GetVertexConstantBuffer()
+		);
+	}
 
-	D3D11Utils::UpdateBuffer(
-		mRenderer->GetDevice(),
-		mRenderer->GetContext(),
-		GetMeshGroup()->GetPixelConstantData(),
-		GetMeshGroup()->GetPixelConstantBuffer()
-	);
+	if (GetMeshGroup()->GetPixelConstantBuffer().Get()) {
+		D3D11Utils::UpdateBuffer(
+			mRenderer->GetDevice(),
+			mRenderer->GetContext(),
+			GetMeshGroup()->GetPixelConstantData(),
+			GetMeshGroup()->GetPixelConstantBuffer()
+		);
+	}
 }
 
 void MeshRendererComponent::SetTexture() {

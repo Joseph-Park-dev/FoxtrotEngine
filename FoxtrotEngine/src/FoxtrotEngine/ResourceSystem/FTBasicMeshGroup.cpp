@@ -155,8 +155,6 @@ void FTBasicMeshGroup::UpdateModelWorld(DirectX::SimpleMath::Matrix& modelToWorl
 
 void FTBasicMeshGroup::SetTexture(std::string key)
 {
-    if (!mTexture)
-        mTexture = new FTTexture;
     mTexture = ResourceManager::GetInstance()->GetLoadedTexture(key);
 }
 

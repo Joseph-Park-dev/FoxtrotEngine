@@ -66,8 +66,13 @@ private:
 
 #ifdef _DEBUG
 public:
+    //virtual void EditorUpdate(float deltaTime) override;
+    virtual void EditorUIUpdate() override;
+
     virtual void SaveProperties(nlohmann::ordered_json& out) override;
     virtual void LoadProperties(std::ifstream& ifs) override;
+
+    void UpdateCSV();
 
     //virtual void EditorRender(FoxtrotRenderer* renderer) override;
     //void BlitToGameviewEx(FTVector2 wPos, Tile* tile);

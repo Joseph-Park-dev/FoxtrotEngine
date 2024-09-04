@@ -29,29 +29,31 @@
 
 void TileMapComponent::Initialize(FTCore* coreInstance){
     MeshRendererComponent::Initialize(coreInstance);
-    mCSVTileMapPath     = "D:/[2024_01]/FoxtrotEngine_DirectX/assets/MapLayer1.csv";
-    mTileSizeOnScreenX  = 1;
-    mTileSizeOnScreenY  = 1;
-    mTileSizeOnMapX     = 32;
-    mTileSizeOnMapY     = 32;
+    if (!mCSVTileMapPath.empty())
+    {
+        mTileSizeOnScreenX = 1;
+        mTileSizeOnScreenY = 1;
+        mTileSizeOnMapX = 32;
+        mTileSizeOnMapY = 32;
 
-    mMaxCountOnMapX     = 8;
-    mMaxCountOnMapY     = 32;
-    
-    SetTexture("TestTileTex");
-    InitializeTileMap();
-    ResourceManager::GetInstance()->LoadBasicMesh(
-        MAPKEY_SQUARE_GRID,
-        GeometryGenerator::MakeTileMapGrid(
-            mCurrentTileMap,
-            mMaxCountOnScreenX,
-            mMaxCountOnScreenY
-        )
-    );
-    SetMeshKey(MAPKEY_SQUARE_GRID);
-    MeshRendererComponent::InitializeMesh();
+        mMaxCountOnMapX = 8;
+        mMaxCountOnMapY = 32;
 
-    GetOwner()->GetTransform()->SetScale(FTVector3(0.07f, 0.07f, 0.0f));
+        SetTexture("TestTileTex");
+        InitializeTileMap();
+        ResourceManager::GetInstance()->LoadBasicMesh(
+            MAPKEY_SQUARE_GRID,
+            GeometryGenerator::MakeTileMapGrid(
+                mCurrentTileMap,
+                mMaxCountOnScreenX,
+                mMaxCountOnScreenY
+            )
+        );
+        SetMeshKey(MAPKEY_SQUARE_GRID);
+        MeshRendererComponent::InitializeMesh();
+
+        GetOwner()->GetTransform()->SetScale(FTVector3(0.07f, 0.07f, 0.0f));
+    }
 }
 
 void TileMapComponent::InitializeTileMap() {
@@ -177,16 +179,18 @@ TileMapComponent::~TileMapComponent()
 }
 
 #ifdef _DEBUG
-//void TileMapComponent::SetScreenRectEditorView(FTVector2 worldPos, Tile* tile)
-//{
-//    FTVector2 editorPos = EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(worldPos);
-//    Bounds dstRect = {};
-//    dstRect.w = tile->GetWidth() * (1 - EditorCamera2D::GetInstance()->GetZoomValue());
-//    dstRect.h = tile->GetHeight() * (1 - EditorCamera2D::GetInstance()->GetZoomValue());
-//    dstRect.x = static_cast<int>(editorPos.x - (float)dstRect.w / 2);
-//    dstRect.y = static_cast<int>(editorPos.y - (float)dstRect.h / 2);
-//    tile->SetScreenRect(dstRect);
-//}
+#include "FoxtrotEditor/CommandHistory.h"
+
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui.h>
+#include "imgui/FileDialog/ImGuiFileDialog.h"
+#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
+
+void TileMapComponent::EditorUIUpdate()
+{
+    //UpdateSprite(GetRenderer());
+    UpdateCSV();
+}
 
 void TileMapComponent::SaveProperties(nlohmann::ordered_json& out)
 {
@@ -196,6 +200,40 @@ void TileMapComponent::SaveProperties(nlohmann::ordered_json& out)
 void TileMapComponent::LoadProperties(std::ifstream& ifs)
 {
     SpriteRendererComponent::LoadProperties(ifs);
+}
+
+void TileMapComponent::UpdateCSV() {
+    std::string currentCSV = "No .CSV has been assigned";
+    if (!mCSVTileMapPath.empty())
+        currentCSV = "Current .CSV : \n" + mCSVTileMapPath;
+    ImGui::Text(currentCSV.c_str());
+
+    if (ImGui::Button("Select CSV")) {
+        IGFD::FileDialogConfig config;
+        config.path = ".";
+        config.countSelectionMax = 1;
+        ImGuiFileDialog::Instance()->OpenDialog("SelectCSV", "Select Sprite", ".csv", config);
+        ImGui::OpenPopup("Select .CSV");
+    }
+
+    if (ImGuiFileDialog::Instance()->Display("SelectCSV"))
+    {
+        if (ImGuiFileDialog::Instance()->IsOk())
+        {
+            mCSVTileMapPath = ImGuiFileDialog::Instance()->GetFilePathName();
+            Initialize(FTCoreEditor::GetInstance());
+        }
+        ImGuiFileDialog::Instance()->Close();
+    }
+
+    //if (ImGuiFileDialog::Instance()->Display("SelectSprite")){
+    //	if (ImGuiFileDialog::Instance()->IsOk()){
+    //		std::string spritePath = ImGuiFileDialog::Instance()->GetCurrentPath() + "\\" +
+    //			ImGuiFileDialog::Instance()->GetCurrentFileName();
+    //		SetTexture(renderer, spritePath);
+    //	}
+    //	ImGuiFileDialog::Instance()->Close();
+    //}
 }
 #endif // _DEBUG
 

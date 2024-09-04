@@ -55,11 +55,13 @@ public:
 	virtual void LoadProperties(std::ifstream& ifs) override;
 
 	virtual void EditorUpdate(float deltaTime) override;
-			void EditorUIUpdate() override;
+	virtual void EditorUIUpdate() override;
 	virtual void EditorRender(FoxtrotRenderer* renderer) override;
 
-private:
+protected:
 	void UpdateSprite(FoxtrotRenderer* renderer);
+
+private:
 	void UpdateTexWidth();
 	void UpdateTexHeight();
 	void UpdateScale();

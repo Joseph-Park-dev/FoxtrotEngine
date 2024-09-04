@@ -42,14 +42,14 @@ void TileMapComponent::Initialize(FTCore* coreInstance){
         SetTexture("TestTileTex");
         InitializeTileMap();
         ResourceManager::GetInstance()->LoadBasicMesh(
-            MAPKEY_SQUARE_GRID,
+            mCSVTileMapPath,
             GeometryGenerator::MakeTileMapGrid(
                 mCurrentTileMap,
                 mMaxCountOnScreenX,
                 mMaxCountOnScreenY
             )
         );
-        SetMeshKey(MAPKEY_SQUARE_GRID);
+        SetMeshKey(mCSVTileMapPath);
         MeshRendererComponent::InitializeMesh();
 
         GetOwner()->GetTransform()->SetScale(FTVector3(0.07f, 0.07f, 0.0f));

@@ -19,13 +19,19 @@ static_assert((sizeof(BasicVertexConstantData) % 16) == 0,
     "Constant Buffer size must be 16-byte aligned");
 
 struct BasicPixelConstantData {
-    DirectX::SimpleMath::Vector3 eyeWorld;         // 12
-    float mipmapLevel = 0.0f; // 4
-    //DirectX::SimpleMath::Vector3 eyeWorld;         // 12
-    //bool useTexture;          // bool 1 + 3 padding
-    //Material material;        // 48
-    //Light lights[MAX_LIGHTS]; // 48 * MAX_LIGHTS
-    //Vector4 indexColor; // 피킹(Picking)에 사용
+    float dummy1;
+    float dummy2;
+    float dummy3;
+    float dummy4;
 };
 static_assert((sizeof(BasicPixelConstantData) % 16) == 0,
+    "Constant Buffer size must be 16-byte aligned");
+
+struct TileMapConstantData {
+    float texCoordX;
+    float texCoordY;
+    float texSizeX;
+    float texSizeY;
+};
+static_assert((sizeof(TileMapConstantData) % 16) == 0,
     "Constant Buffer size must be 16-byte aligned");

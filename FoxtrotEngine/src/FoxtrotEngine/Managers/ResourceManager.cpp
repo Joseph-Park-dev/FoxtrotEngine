@@ -108,22 +108,20 @@ void ResourceManager::LoadMeshFromFile(const std::string key, const std::string 
 	}
 }
 
-void ResourceManager::LoadSquareMesh(const std::string key)
+void ResourceManager::LoadBasicMesh(const std::string key, MeshData meshData)
 {
-	std::vector<MeshData> meshData;
-	meshData.push_back(GeometryGenerator::MakeSquare(1.0f));
-	if (meshData.empty())
+	std::vector<MeshData> meshDat;
+	meshDat.push_back(meshData);
+	if (meshDat.empty())
 	{
 		printf("Error: ResourceManager::LoadMesh() -> LoadSquareMesh failed. \n");
 		return;
 	}
-	mMapMeshes.insert(std::make_pair(key, meshData));
+	mMapMeshes.insert(std::make_pair(key, meshDat));
 }
 
-void ResourceManager::LoadBoxMesh(const std::string key)
+void ResourceManager::LoadBasicMesh(const std::string key, std::vector<MeshData> meshData)
 {
-	std::vector<MeshData> meshData;
-	meshData.push_back(GeometryGenerator::MakeBox());
 	if (meshData.empty())
 	{
 		printf("Error: ResourceManager::LoadMesh() -> LoadSquareMesh failed. \n");

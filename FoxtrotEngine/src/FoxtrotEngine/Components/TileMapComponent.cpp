@@ -14,7 +14,10 @@
 #include "FoxtrotEngine/Actors/Transform.h"
 #include "FoxtrotEngine/Core/FTCore.h"
 #include "FoxtrotEngine/ResourceSystem/Mesh.h"
+#include "FoxtrotEngine/ResourceSystem/FTBasicMeshGroup.h"
+#include "FoxtrotEngine/ResourceSystem/GeometryGenerator.h"
 #include "FoxtrotEngine/Renderer/Camera.h"
+#include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 #include "FoxtrotEngine/Managers/ResourceManager.h"
 #include "FoxtrotEngine/Renderer/FTRect.h"
 
@@ -22,42 +25,50 @@
 
 #endif // _DEBUG
 
-#define DEFAULT_TILE_POS 0.f
+#define DEFAULT_TILE_POS 0
 
 void TileMapComponent::Initialize(FTCore* coreInstance){
-    SpriteRendererComponent::Initialize(coreInstance);
-    mCSVTileMapPath = "D:/[2024_01]/FoxtrotEngine_DirectX/assets/MapLayer1.csv";
-    mTileSizeX = 32;
-    mTileSizeY = 32;
-    std::string tileMapSprite = "D:/[2024_01]/FoxtrotEngine_DirectX/assets/Tiles.png";
-    //SetTexture(GetMeshArray()[0], ResourceManager::GetInstance()->GetLoadedTexture(tileMapSprite));
+    MeshRendererComponent::Initialize(coreInstance);
+    mCSVTileMapPath     = "D:/[2024_01]/FoxtrotEngine_DirectX/assets/MapLayer1.csv";
+    mTileSizeOnScreenX  = 1;
+    mTileSizeOnScreenY  = 1;
+    mTileSizeOnMapX     = 32;
+    mTileSizeOnMapY     = 32;
+
+    mMaxCountOnMapX     = 8;
+    mMaxCountOnMapY     = 32;
+    
+    SetTexture("TestTileTex");
     InitializeTileMap();
+    ResourceManager::GetInstance()->LoadBasicMesh(
+        MAPKEY_SQUARE_GRID,
+        GeometryGenerator::MakeTileMapGrid(
+            mCurrentTileMap,
+            mMaxCountOnScreenX,
+            mMaxCountOnScreenY
+        )
+    );
+    SetMeshKey(MAPKEY_SQUARE_GRID);
+    MeshRendererComponent::InitializeMesh();
+
+    GetOwner()->GetTransform()->SetScale(FTVector3(0.07f, 0.07f, 0.0f));
 }
 
-void TileMapComponent::Update(float deltaTime)
-{
-    //SpriteRendererComponent::UpdateMeshArray(GetOwner()->GetTransform(), Camera::GetInstance());
-}
-
-void TileMapComponent::InitializeTileMap(){
-    ReadCSV();
-    // Stores each tile with srcsRect values
-    for (int y = 0; y < mTileCountY; y++)
-        for (int x = 0; x < mTileCountX; x++) {
-            InitializeTile(&GetCurrentTileMap()[y][x], x, y);
-        }
+void TileMapComponent::InitializeTileMap() {
+    if (!mCSVTileMapPath.empty())
+        ReadCSV();
 }
 
 void TileMapComponent::ReadCSV()
 {
-	std::ifstream myFile;
+    std::ifstream myFile;
     std::queue<int> result;
 
-	// Open an existing file 
+    // Open an existing file 
     myFile.open(mCSVTileMapPath, std::fstream::in);
     assert(myFile);
-    assert(mTileSizeX != 0 && mTileSizeY != 0);
-	std::string line;
+    assert(mMaxCountOnScreenX != 0 && mMaxCountOnScreenY != 0);
+    std::string line;
     int val;
     int column = 0; int row = 0;
     while (std::getline(myFile, line))
@@ -65,7 +76,7 @@ void TileMapComponent::ReadCSV()
         std::stringstream ss(line);
         // Create a stringstream of the current line
         // Extract each integer
-        while (ss >> val) 
+        while (ss >> val)
         {
             result.push(val);
             if (ss.peek() == ',') ss.ignore();
@@ -73,80 +84,58 @@ void TileMapComponent::ReadCSV()
         }
         ++row;
     }
-    if(row != 0)
+    if (row != 0)
         column /= row;
     myFile.close();
 
-    mTileCountX = column;
-    mTileCountY = row;
-	
-    mCurrentTileMap = new Tile*[row];
-    for (int r = 0; r < row; r++)
+    mMaxCountOnScreenX = column;
+    mMaxCountOnScreenY = row;
+
+    mCurrentTileMap = new Tile * [row];
+    for (int r = 0; r < row; ++r)
     {
         mCurrentTileMap[r] = new Tile[column];
-        for (int c = 0; c < column; c++)
+        for (int c = 0; c < column; ++c)
         {
             if (!result.empty())
             {
-                FTRect& mapRect = mCurrentTileMap[r][c].GetMapRect();
-                mapRect.Set(DEFAULT_TILE_POS, DEFAULT_TILE_POS, mTileSizeX, mTileSizeY);
-                mCurrentTileMap[r][c].SetTileNumber(result.front());
+                InitializeTile(&mCurrentTileMap[r][c], c, r, result.front());
                 result.pop();
             }
         }
     }
 }
 
-void TileMapComponent::InitializeTile(Tile* tile, UINT indexX, UINT indexY)
+void TileMapComponent::InitializeTile(Tile* tile, UINT column, UINT row, UINT tileNum)
 {
-    FTRect& srcRect   = tile->GetMapRect();
-    int tileSizeX   = srcRect.GetSize().x;
-    int tileSizeY   = srcRect.GetSize().y;
-    //int columnCount = GetMeshArray()[0]->texture->GetTexWidth() / tileSizeX;
-    int srcColumn   = 0; int srcRow = 0;
-    //srcColumn       = tile->GetTileNumber() % columnCount;
-    //srcRow          = tile->GetTileNumber() / columnCount;
+    FTRect* rectOnMap  = tile->GetRectOnMap();
+    // Individual Tile size on tilemap
+    float tileWidth  = static_cast<float>(mTileSizeOnMapX) / static_cast<float>(this->GetTexWidth());
+    float tileHeight = static_cast<float>(mTileSizeOnMapY) / static_cast<float>(this->GetTexHeight());
 
-    float x = srcColumn * tileSizeX;
-    float y = srcRow * tileSizeY;
-    float w = tileSizeX;
-    float h = tileSizeY;
-    srcRect.Set(x, y, w, h);
+    int tileIndexX = tileNum % mMaxCountOnMapX;
+    int tileIndexY = tileNum / mMaxCountOnMapX;
+    rectOnMap->Set(tileWidth * tileIndexX, tileHeight * tileIndexY, tileWidth, tileHeight);
 
-    tile->SetTileIndexX(indexX);
-    tile->SetTileIndexY(indexY);
+    FTRect* rectOnScreen = tile->GetRectOnScreen();
+    rectOnScreen->Set(column, row, mTileSizeOnScreenX, mTileSizeOnScreenY);
+}
+
+void TileMapComponent::Update(float deltaTime)
+{
+    if (GetMeshGroup())
+        MeshRendererComponent::Update(deltaTime);
 }
 
 void TileMapComponent::Render(FoxtrotRenderer* renderer)
 {
-    for (int y = 0; y < mTileCountY; y++)
-    {
-        for (int x = 0; x < mTileCountX; x++)
-        {
-            Tile* tile = &mCurrentTileMap[y][x];
-            // FTVector2 : x,y 로 이루어진 2D 벡터
-            // GetWorldPosition() : x,y,z 로 이루어진 3D 벡터를 리턴
-            FTVector2 pivotPos = GetOwner()->GetTransform()->GetWorldPosition();
-            
-            FTVector2 pos =
-                FTVector2(pivotPos.x + tile->GetMapRect().GetSize().x * tile->GetTileIndexX(), 
-                    pivotPos.y + tile->GetMapRect().GetSize().y * tile->GetTileIndexY());
-
-            //float texWidth = GetMeshArray()[0]->texture->GetTexWidth();
-            //float texHeight = GetMeshArray()[0]->texture->GetTexHeight();
-            //float xCoord = tile->GetMapRect().GetSize().x * tile->GetTileIndexX() / texWidth;
-            //float yCoord = tile->GetMapRect().GetSize().y * tile->GetTileIndexY() / texHeight;
-            //float tileSizeX = tile->GetMapRect().GetSize().x / texWidth;
-            //float tileSizeY = tile->GetMapRect().GetSize().y / texHeight;
-            
-            //GetMeshArray()[0]->pixelShaderConstantBufferData.sampleCoordX = xCoord;
-            //GetMeshArray()[0]->pixelShaderConstantBufferData.sampleCoordY = yCoord;
-            //GetMeshArray()[0]->pixelShaderConstantBufferData.tileWidth = tileSizeX;
-            //GetMeshArray()[0]->pixelShaderConstantBufferData.tileHeight = tileSizeY;
-            SpriteRendererComponent::Render(renderer);
-        }
-    }
+    MeshRendererComponent::Render(renderer);
 }
+
+//void TileMapComponent::Render(FoxtrotRenderer* renderer)
+//{
+//    MeshRendererComponent::Render(renderer);
+//}
 
 //
 //void TileMapComponent::RenderEX(FoxtrotRenderer* renderer)
@@ -171,10 +160,6 @@ void TileMapComponent::Render(FoxtrotRenderer* renderer)
 
 TileMapComponent::TileMapComponent(Actor* owner, int drawOrder, int UpdateOrder)
     : SpriteRendererComponent(owner, drawOrder)
-    , mTileCountX(0)
-    , mTileCountY(0)
-    , mTileSizeX(0)
-    , mTileSizeY(0)
     , mCurrentTileMap(nullptr)
 
 {}
@@ -183,7 +168,7 @@ TileMapComponent::~TileMapComponent()
 {
     if (mCurrentTileMap != nullptr)
     {
-        for (int row = 0; row < mTileCountY; row++)
+        for (int row = 0; row < mMaxCountOnScreenY; row++)
         {
             delete[] mCurrentTileMap[row];
         }

@@ -56,6 +56,7 @@ public:
 
 	virtual void EditorUpdate(float deltaTime) override;
 			void EditorUIUpdate() override;
+	virtual void EditorRender(FoxtrotRenderer* renderer) override;
 
 private:
 	void UpdateSprite(FoxtrotRenderer* renderer);

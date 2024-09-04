@@ -8,14 +8,17 @@ public:
 	bool Overlaps(const FTRect& other);
 
 public:
-	FTVector2 GetSize() { return mSize; }
+	const FTVector2& GetSize	 () { return mSize; }
+	const FTVector2& GetPosition() { return mPosition; }
+	const FTVector2& GetMin() { return mMin; }
+	const FTVector2& GetMax () { return mMax; }
 
-	void Set(float x, float y, float width, float height) {
-		mCenter		= FTVector2(x, y);
+	void Set(float posX, float posY, float width, float height) {
+		mCenter		= FTVector2(posX, posY) + FTVector2(width, height) / 2;
 		mWidth		= width;
 		mHeight		= height;
-		mMax		= mCenter + FTVector2(width, height) / 2;
-		mMin		= mCenter - FTVector2(width, height) / 2;
+		mMax		= mCenter + FTVector2(width, height);
+		mMin		= FTVector2(posX, posY);
 		mPosition	= mMin;
 		mSize		= FTVector2(width, height);
 	}
@@ -37,7 +40,7 @@ private:
 	float		mHeight;
 	FTVector2	mMax;
 	FTVector2	mMin;
-	FTVector2	mPosition;
+	FTVector2	mPosition;  // Left Top position of the tile.
 	FTVector2	mSize;
 };
 

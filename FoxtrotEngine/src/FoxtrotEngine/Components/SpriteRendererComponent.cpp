@@ -20,7 +20,9 @@
 void SpriteRendererComponent::SetTexture(std::string key)
 {
 	SetTexKey(key);
-	GetMeshGroup()->SetTexture(GetTexKey());
+	GetMeshGroup()->SetTexture(key);
+	mTexWidth = GetMeshGroup()->GetTexture()->GetTexWidth();
+	mTexHeight = GetMeshGroup()->GetTexture()->GetTexHeight();
 }
 
 void SpriteRendererComponent::UpdateTexture(FoxtrotRenderer* renderer, std::string fileName){
@@ -112,6 +114,11 @@ void SpriteRendererComponent::EditorUIUpdate(){
 		ImGui::SeparatorText("Sprite Size");
 		UpdateScale();
 	}
+}
+
+void SpriteRendererComponent::EditorRender(FoxtrotRenderer* renderer)
+{
+	MeshRendererComponent::EditorRender(renderer);
 }
 
 SpriteRendererComponent::SpriteRendererComponent(Actor* owner, int drawOrder, int updateOrder)

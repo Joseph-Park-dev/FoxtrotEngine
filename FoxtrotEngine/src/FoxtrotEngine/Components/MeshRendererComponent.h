@@ -29,7 +29,7 @@ protected:
 	virtual bool InitializeMesh();
 	virtual bool InitializeMesh(std::string key);
 	virtual	void UpdateMesh(Transform* transform, Camera* cameraInstance);
-			void UpdateBuffers();
+	virtual void UpdateBuffers();
 
 public:
 	virtual std::wstring GetName() const override { return L"MeshRendererComponent"; }
@@ -40,20 +40,20 @@ protected:
 	std::string			GetMeshKey	()	{ return mMeshKey; }
 	std::string			GetTexKey	()	{ return mTexKey; }
 
+	void				SetMeshGroup(FTBasicMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
 	void				SetMeshKey	(std::string key) { mMeshKey.assign(key); }
 	void				SetTexKey	(std::string key) { mTexKey.assign(key); }
 	void				SetTexture();
 
 private:
 	FoxtrotRenderer*	mRenderer;
-
 	FTBasicMeshGroup*	mMeshGroup;
 	// Identifier for the object in the Resource Map from the ResourceManager instance.
 	std::string			mMeshKey;
 	std::string			mTexKey;
 
 public:
-	MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder);
+			MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder);
 	virtual ~MeshRendererComponent() override;
 
 protected:

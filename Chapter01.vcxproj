@@ -480,6 +480,7 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTTexture.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\GeometryGenerator.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\Mesh.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\MeshConstantData.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\MeshData.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\ModelLoader.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\Tile.h" />

@@ -588,6 +588,7 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\ModelLoader.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\D3D11Utils.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpineAnimRendererComponent.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\MeshConstantData.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

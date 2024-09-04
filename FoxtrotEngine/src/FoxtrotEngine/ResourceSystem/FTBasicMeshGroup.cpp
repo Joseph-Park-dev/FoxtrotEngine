@@ -90,14 +90,43 @@ void FTBasicMeshGroup::Render(ComPtr<ID3D11DeviceContext>& context)
         context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
         context->PSSetShader(mBasicPixelShader.Get(), 0, 0);
 
-        context->VSSetConstantBuffers(
-            0, 1, mesh->vertexConstantBuffer.GetAddressOf());
+        // 물체 렌더링할 때 큐브맵도 같이 사용
+        if (mTexture) {
+            std::vector<ID3D11ShaderResourceView*> resViews;
+            resViews.push_back(mTexture->GetResourceView().Get());
+            context->VSSetShaderResources(0, 1, mTexture->GetResourceView().GetAddressOf());
+            context->PSSetShaderResources(0, resViews.size(), resViews.data());
+        }
+        context->PSSetConstantBuffers(0, 1,
+            mesh->pixelConstantBuffer.GetAddressOf());
+
+        context->IASetInputLayout(mBasicInputLayout.Get());
+        context->IASetVertexBuffers(0, 1, mesh->vertexBuffer.GetAddressOf(),
+            &stride, &offset);
+        context->IASetIndexBuffer(mesh->indexBuffer.Get(), DXGI_FORMAT_R32_UINT,
+            0);
+        context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        context->DrawIndexed(mesh->mIndexCount, 0, 0);
+    }
+}
+
+void FTBasicMeshGroup::Render(ComPtr<ID3D11DeviceContext>& context, UINT index)
+{
+    UINT stride = sizeof(Vertex);
+    UINT offset = 0;
+    for (const Mesh* mesh : mMeshes) {
+        context->VSSetShader(mBasicVertexShader.Get(), 0, 0);
+        context->VSSetSamplers(0, 1, mSamplerState.GetAddressOf());
+        context->VSSetConstantBuffers(0, 1, mesh->vertexConstantBuffer.GetAddressOf());
+
+        context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
+        context->PSSetShader(mBasicPixelShader.Get(), 0, 0);
 
         // 물체 렌더링할 때 큐브맵도 같이 사용
-        if (mesh->texture) {
+        if (mTexture) {
             std::vector<ID3D11ShaderResourceView*> resViews;
-            resViews.push_back(mesh->texture->GetResourceView().Get());
-            context->VSSetShaderResources(0, 1, mesh->texture->GetResourceView().GetAddressOf());
+            resViews.push_back(mTexture->GetResourceView().Get());
+            context->VSSetShaderResources(0, 1, mTexture->GetResourceView().GetAddressOf());
             context->PSSetShaderResources(0, resViews.size(), resViews.data());
         }
         context->PSSetConstantBuffers(0, 1,
@@ -126,14 +155,9 @@ void FTBasicMeshGroup::UpdateModelWorld(DirectX::SimpleMath::Matrix& modelToWorl
 
 void FTBasicMeshGroup::SetTexture(std::string key)
 {
-    if (!mMeshes[0]->texture)
-        mMeshes[0]->texture = new FTTexture;
-    mMeshes[0]->texture = ResourceManager::GetInstance()->GetLoadedTexture(key);
-}
-
-void FTBasicMeshGroup::SetTexture(std::string key, int index)
-{
-    mMeshes[index]->texture = ResourceManager::GetInstance()->GetLoadedTexture(key);
+    if (!mTexture)
+        mTexture = new FTTexture;
+    mTexture = ResourceManager::GetInstance()->GetLoadedTexture(key);
 }
 
 HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
@@ -154,6 +178,7 @@ HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 }
 
 FTBasicMeshGroup::FTBasicMeshGroup()
+    : mTexture(new FTTexture)
 {
 }
 

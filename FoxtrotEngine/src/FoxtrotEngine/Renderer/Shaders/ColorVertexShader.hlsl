@@ -12,9 +12,9 @@ cbuffer ModelViewProjectionConstantBuffer : register(b0)
 // Pixel shader's input == Vertex shader's output
 struct VertexShaderInput
 {
-    float3 pos : POSITION0;
-    float3 color : COLOR0;
-    float3 normal : NORMAL0;
+    float3 pos      : POSITION0;
+    float3 color    : COLOR0;
+    float3 normal   : NORMAL0;
     float2 texcoord : TEXCOORD0;
 };
 
@@ -22,10 +22,10 @@ struct VertexShaderInput
 // Vertex shader 단위의 데이터가 아니라, Pixel 단위로 Interpolation이 된 정보가 들어감
 struct PixelShaderInput
 {
-    float4 pos : SV_POSITION;
-    float3 color : COLOR;
-    float3 normal : NORMAL;
-    float2 texcoord : TEXCOORD;
+    float4 pos              : SV_POSITION;
+    float3 color            : COLOR;
+    float3 normal           : NORMAL;
+    float2 texcoord         : TEXCOORD;
 };
 
 // Intrinsic Functions

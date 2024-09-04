@@ -5,6 +5,8 @@
 #include "FoxtrotEngine/Managers/SceneManager.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 #include "FoxtrotEngine/Components/SpriteRendererComponent.h"
+#include "FoxtrotEngine/Components/TileMapComponent.h"
+#include "FoxtrotEngine/ResourceSystem/GeometryGenerator.h"
 #include "FoxtrotEditor/FTCoreEditor.h"
 #include "FoxtrotEditor/EditorLayer.h"
 
@@ -25,8 +27,9 @@ void Scene_Start::LoadData()
 	ResourceManager::GetInstance()->LoadTexture("Asteroid1", asteroidSprite);
 	ResourceManager::GetInstance()->LoadTexture("Asteroid2", asteroidSprite);
 	ResourceManager::GetInstance()->LoadTexture("Asteroid3", asteroidSprite);
-	ResourceManager::GetInstance()->LoadSquareMesh(MAPKEY_SPRITE_MESH);
-	ResourceManager::GetInstance()->LoadBoxMesh("Box");
+	ResourceManager::GetInstance()->LoadBasicMesh(MAPKEY_SPRITE_MESH, GeometryGenerator::MakeSquare(1.0f));
+
+	ResourceManager::GetInstance()->LoadTexture("TestTileTex", "Tiles.png");
 
 	//ResourceManager::GetInstance()->GetLoadedTexture("TEST");
 

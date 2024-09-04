@@ -37,9 +37,9 @@ void AnimatorComponent::CreateAnimationFromTile(
 		animation = new FTAnimation;
 		animation->SetName(name);
 		animation->SetAnimator(this);
-		for (int y = 0; y < GetTileCountY(); y++)
-			for (int x = 0; x < GetTileCountX(); x++)
-				animation->CreateFrameFromTile(&GetCurrentTileMap()[y][x]);
+		//for (int y = 0; y < GetTileCountY(); y++)
+		//	for (int x = 0; x < GetTileCountX(); x++)
+		//		animation->CreateFrameFromTile(&GetCurrentTileMap()[y][x]);
 
 		mMapAnimation.insert(std::make_pair(name, animation));
 	}

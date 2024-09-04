@@ -31,13 +31,13 @@ void MeshRendererComponent::Update(float deltaTime){
 
 void MeshRendererComponent::Render(FoxtrotRenderer* renderer){
 	if (mMeshGroup){
+		renderer->SwitchFillMode();
 		mMeshGroup->Render(renderer->GetContext());
 	}
 }
 
 bool MeshRendererComponent::InitializeMesh(){
 	if (!mMeshKey.empty()) {
-		mMeshGroup = new FTBasicMeshGroup;
 		std::vector<MeshData>& meshData = ResourceManager::GetInstance()->GetLoadedMeshes(mMeshKey);
 		mMeshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
 		if (!mMeshGroup) {
@@ -68,7 +68,19 @@ void MeshRendererComponent::UpdateMesh(Transform* transform, Camera* cameraInsta
 }
 
 void MeshRendererComponent::UpdateBuffers(){
-	mMeshGroup->UpdateConstantBuffers(mRenderer->GetDevice(), mRenderer->GetContext());
+	D3D11Utils::UpdateBuffer(
+		mRenderer->GetDevice(), 
+		mRenderer->GetContext(), 
+		GetMeshGroup()->GetVertexConstantData(),
+		GetMeshGroup()->GetVertexConstantBuffer()
+	);
+
+	D3D11Utils::UpdateBuffer(
+		mRenderer->GetDevice(),
+		mRenderer->GetContext(),
+		GetMeshGroup()->GetPixelConstantData(),
+		GetMeshGroup()->GetPixelConstantBuffer()
+	);
 }
 
 void MeshRendererComponent::SetTexture() {
@@ -80,8 +92,8 @@ void MeshRendererComponent::SetTexture() {
 
 MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Component	(owner, drawOrder, updateOrder)
+	, mMeshGroup(new FTBasicMeshGroup)
 	, mRenderer	 (nullptr)
-	, mMeshGroup (nullptr)
 {}
 
 MeshRendererComponent::~MeshRendererComponent(){
@@ -122,9 +134,7 @@ void MeshRendererComponent::EditorUpdate(float deltaTime){
 
 void MeshRendererComponent::EditorRender(FoxtrotRenderer* renderer)
 {
-	if (mMeshGroup) {
-		mMeshGroup->Render(renderer->GetContext());
-	}
+	Render(renderer);
 }
 
 void MeshRendererComponent::EditorUIUpdate(){

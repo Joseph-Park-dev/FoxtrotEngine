@@ -15,7 +15,7 @@ public:
 	//	ComPtr<ID3D11Device>& device,
 	//	ComPtr<ID3D11DeviceContext>& context
 	//);s
-	void Initialize(
+	virtual void Initialize(
 		std::vector<MeshData>& meshes,
 		ComPtr<ID3D11Device>& device,
 		ComPtr<ID3D11DeviceContext>& context
@@ -25,17 +25,18 @@ public:
 		ComPtr<ID3D11DeviceContext>& context
 	);
 	void Render			 (ComPtr<ID3D11DeviceContext>& context);
+	void Render			 (ComPtr<ID3D11DeviceContext>& context, UINT index);
 	void UpdateModelWorld(DirectX::SimpleMath::Matrix& modelToWorldRow);
 
 public:
+	ComPtr<ID3D11Buffer>&		GetVertexConstantBuffer() { return mVertexConstantBuffer; }
+	ComPtr<ID3D11Buffer>&		GetPixelConstantBuffer() { return mPixelConstantBuffer; }
 	BasicVertexConstantData&	GetVertexConstantData() { return mBasicVertexConstantData; }
 	BasicPixelConstantData&		GetPixelConstantData()	{ return mBasicPixelConstantData; }
 	DirectX::SimpleMath::Matrix GetModelWorldRow()		{ return mModelWorldRow; }
-	FTTexture*					GetTexture()			{ return mMeshes[0]->texture; }
-	FTTexture*					GetTexture(int index)	{ return mMeshes[index]->texture; }
+	FTTexture*					GetTexture()			{ return mTexture; }
 
 	void					 SetTexture(std::string key);
-	void					 SetTexture(std::string key, int index);
 
 private:
 	DirectX::SimpleMath::Matrix mModelWorldRow	 = DirectX::SimpleMath::Matrix();
@@ -48,6 +49,7 @@ private:
 private:
 	// 메쉬 그리기
 	std::vector<Mesh*>			mMeshes;
+	FTTexture*					mTexture;
 
 	ComPtr<ID3D11VertexShader>	mBasicVertexShader;
 	ComPtr<ID3D11PixelShader>	mBasicPixelShader;
@@ -65,4 +67,3 @@ public:
 	FTBasicMeshGroup();
 	~FTBasicMeshGroup() override;
 };
-

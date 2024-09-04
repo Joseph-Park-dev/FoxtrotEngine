@@ -8,6 +8,8 @@
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
 #include "FoxtrotEngine/Managers/SceneManager.h"
 
+#include "FoxtrotEditor/EditorLayer.h"
+
 void RenderTextureClass::InitializeTexture(ComPtr<ID3D11Device>& device, int width, int height)
 {
 	// Initialize Texture2D
@@ -51,6 +53,7 @@ void RenderTextureClass::DrawOnTexture(ComPtr<ID3D11DeviceContext>& context, Com
 	context->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), depthStencilView.Get());
 	context->ClearRenderTargetView(mRenderTargetView.Get(), clearColor);
 
+	//EditorLayer::GetInstance()->DisplayEditorElements(renderer);
 	SceneManager::GetInstance()->EditorRender(renderer);
 
 	context->OMSetRenderTargets(1, renderTargetView.GetAddressOf(), depthStencilView.Get());

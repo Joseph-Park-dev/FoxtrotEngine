@@ -288,6 +288,9 @@ void D3D11Utils::CreateTexture(
     std::vector<uint8_t> image;
     ReadImage(texture->GetRelativePath(), image, width, height);
 
+    texture->SetTexWidth(width);
+    texture->SetTexHeight(height);
+
     // 스테이징 텍스춰 만들고 CPU에서 이미지를 복사합니다.
     ComPtr<ID3D11Texture2D> stagingTexture =
         CreateStagingTexture(device, context, width, height, image);

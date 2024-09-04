@@ -74,7 +74,7 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3 + 4 * 3,
 		 D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 + 4 * 3 + 4 * 3,
-		 D3D11_INPUT_PER_VERTEX_DATA, 0},
+		 D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
 	if (!CreateVertexShaderAndInputLayout(
@@ -199,6 +199,14 @@ void FoxtrotRenderer::ResizeSceneViewport(UINT width, UINT height)
 		CreateDepthBuffer();
 		SetViewport();
 	}
+}
+
+void FoxtrotRenderer::SwitchFillMode()
+{
+	if (mFillMode == FillMode::WireFrame)
+		mContext->RSSetState(mWireframeRasterizerState.Get());
+	else if (mFillMode == FillMode::Solid)
+		mContext->RSSetState(mSolidRasterizerState.Get());
 }
 
 HRESULT FoxtrotRenderer::CreateDeviceAndContext(HWND window)
@@ -441,9 +449,9 @@ HRESULT FoxtrotRenderer::CreateTextureSampler()
 	D3D11_SAMPLER_DESC sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
 	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 	sampDesc.MinLOD = 0;
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;

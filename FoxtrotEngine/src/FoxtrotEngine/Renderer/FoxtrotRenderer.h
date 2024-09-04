@@ -17,6 +17,7 @@
 
 #define VERTEX_SHADER_PATH L"./FoxtrotEngine/src/FoxtrotEngine/Renderer/Shaders/ColorVertexShader.hlsl"
 #define PIXEL_SHADER_PATH L"./FoxtrotEngine/src/FoxtrotEngine/Renderer/Shaders/ColorPixelShader.hlsl"
+#define TILEMAP_PIXEL_SHADER_PATH L"./FoxtrotEngine/src/FoxtrotEngine/Renderer/Shaders/ColorPixelShader.hlsl"
 
 using VertexType = DirectX::VertexPositionColor;
 using namespace Microsoft::WRL;
@@ -54,6 +55,7 @@ public:
     int      GetRenderWidth ()              { return mRenderWidth; }
     int      GetRenderHeight()              { return mRenderHeight; }
     FillMode GetFillMode    ()              { return mFillMode; }
+    void     SwitchFillMode ();
 
     void  SetRenderWidth        (int width)     { mRenderWidth = width; }
     void  SetRenderHeight       (int height)    { mRenderHeight = height; }

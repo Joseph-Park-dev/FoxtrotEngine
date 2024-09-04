@@ -4,27 +4,29 @@
 class Tile
 {
 public:
-    FTRect& GetMapRect()      { return mMapRect; }
-    int  GetTileNumber()   { return mTileNumber; }
-    int  GetTileIndexX()   { return mTileIndexX; }
-    int  GetTileIndexY()   { return mTileIndexY; }
+    FTRect*     GetRectOnScreen() { return mRectOnScreen; }
+    FTRect*     GetRectOnMap()    { return mRectOnMap; }
+    //const int&  GetIndexOnMapX() const { return mIndexOnMapX; }
+    //const int&  GetIndexOnMapY() const { return mIndexOnMapY; }
+    //const int&  GetIndexOnScreenX() const { return mIndexOnScreenX; }
+    //const int&  GetIndexOnScreenY() const { return mIndexOnScreenY; }
 
-    void  SetRect(FTRect rect)            { mMapRect = rect; }
-    void  SetTileNumber(int number)    { mTileNumber = number; }
-    void  SetTileIndexX(int index)     { mTileIndexX = index; }
-    void  SetTileIndexY(int index)     { mTileIndexY = index; }
+    //void  SetTileNumber(int number)    { mTileNumber = number; }
+    //void  SetTileIndexX(int index)     { mTileIndexX = index; }
+    //void  SetTileIndexY(int index)     { mTileIndexY = index; }
 
 public:
     Tile();
+    ~Tile();
 
 private:
-    // Tile rect value on tilemap
-    FTRect mMapRect;
-    // Tile rect display on screen
-    // Tile value on tilemap
-    int mTileNumber;
+    FTRect* mRectOnMap;
+    //int mIndexOnMapX;    // Tile value on tilemap
+    //int mIndexOnMapY;
+
+    FTRect* mRectOnScreen;    // Represents the area on display screen
     // Tile indexes on display screen
-    int mTileIndexX;
-    int mTileIndexY;
+    //int mIndexOnScreenX;
+    //int mIndexOnScreenY;
 };
 

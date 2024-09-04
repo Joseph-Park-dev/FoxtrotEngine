@@ -3,12 +3,13 @@
 #include <directxtk/SimpleMath.h>
 #include <vector>
 
+#include "FoxtrotEngine/Core/TemplateFunctions.h"
 #include "FoxtrotEngine/Math/FTMath.h"
 #include "FoxtrotEngine/ResourceSystem/Vertex.h"
 #include "FoxtrotEngine/ResourceSystem/MeshData.h"
-#include "FoxtrotEngine/Core/TemplateFunctions.h"
 #include "FoxtrotEngine/ResourceSystem/FTTexture.h"
 #include "FoxtrotEngine/ResourceSystem/ModelLoader.h"
+#include "FoxtrotEngine/ResourceSystem/Tile.h"
 
 //#include "ModelLoader.h"
 //using namespace DirectX;
@@ -45,6 +46,114 @@ MeshData GeometryGenerator::MakeSquare(float scale) {
     texcoords.push_back(Vector2(1.0f, 0.0f));
     texcoords.push_back(Vector2(1.0f, 1.0f));
     texcoords.push_back(Vector2(0.0f, 1.0f));
+
+    MeshData meshData;
+    for (size_t i = 0; i < positions.size(); i++) {
+        Vertex v;
+        v.position = positions[i];
+        v.color = colors[i];
+        v.normal = normals[i];
+        v.texcoord = texcoords[i];
+        meshData.vertices.push_back(v);
+    }
+    meshData.indices = {
+        0, 1, 2, 0, 2, 3, // 앞면
+    };
+
+    return meshData;
+}
+
+MeshData GeometryGenerator::MakeSquareGrid(
+    const int numSlices,
+    const int numStacks,
+    const float scale,
+    const Vector2 texScale) {
+    MeshData meshData;
+
+    float dx = 2.0f / numSlices;
+    float dy = 2.0f / numStacks;
+
+    float y = 1.0f;
+    for (int j = 0; j < numStacks + 1; j++) {
+        float x = -1.0f;
+        for (int i = 0; i < numSlices + 1; i++) {
+            Vertex v;
+            v.position = Vector3(x, y, 0.0f) * scale;
+            v.texcoord = Vector2(1.0f) - (Vector2(-x + 1.0f, y + 1.0f) * 0.5f * texScale);
+
+            printf("%f    %f\n", v.texcoord.x, v.texcoord.y);
+
+            meshData.vertices.push_back(v);
+
+            x += dx;
+        }
+        y -= dy;
+    }
+
+    for (int j = 0; j < numStacks; j++) {
+        for (int i = 0; i < numSlices; i++) {
+            meshData.indices.push_back((numSlices + 1) * j + i);
+            meshData.indices.push_back((numSlices + 1) * j + i + 1);
+            meshData.indices.push_back((numSlices + 1) * (j + 1) + i);
+            meshData.indices.push_back((numSlices + 1) * (j + 1) + i);
+            meshData.indices.push_back((numSlices + 1) * j + i + 1);
+            meshData.indices.push_back((numSlices + 1) * (j + 1) + i + 1);
+        }
+    }
+    return meshData;
+}
+
+std::vector<MeshData> GeometryGenerator::MakeTileMapGrid(Tile** tileMap, size_t columnCount, size_t rowCount)
+{
+    std::vector<MeshData> tileMapMeshes;
+    for (size_t r = 0; r < rowCount; ++r) {
+        for (size_t c = 0; c < columnCount; ++c) {
+            MeshData tileMesh = MakeTile(&tileMap[r][c]);
+            tileMapMeshes.push_back(tileMesh);
+        }
+    }
+    return tileMapMeshes;
+}
+
+MeshData GeometryGenerator::MakeTile(Tile* tile)
+{
+    std::vector<Vector3> positions;
+    std::vector<Vector3> colors;
+    std::vector<Vector3> normals;
+    std::vector<Vector2> texcoords; // 텍스춰 좌표
+
+    FTRect* rectOnScreen = tile->GetRectOnScreen();
+
+    const FTVector2& tileMin = rectOnScreen->GetMin();
+    const FTVector2& tileMax = rectOnScreen->GetMax();
+    const float tileWidth = rectOnScreen->GetSize().x;
+    const float tileHeight = rectOnScreen->GetSize().y;
+
+    // 앞면
+    positions.push_back(Vector3(tileMin.x,              -tileMin.y,              0.0f));
+    positions.push_back(Vector3(tileMin.x + tileWidth,  -tileMin.y,              0.0f));
+    positions.push_back(Vector3(tileMin.x + tileWidth,  -tileMin.y - tileHeight, 0.0f));
+    positions.push_back(Vector3(tileMin.x,              -tileMin.y - tileHeight, 0.0f));
+    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+
+    // Texture Coordinates (Direct3D 9)
+    // https://learn.microsoft.com/en-us/windows/win32/direct3d9/texture-coordinates
+    FTRect* rectOnMap = tile->GetRectOnMap();
+    const FTVector2& mapMin = rectOnMap->GetMin();
+    const float widthInMap = rectOnMap->GetSize().x;
+    const float heightInMap = rectOnMap->GetSize().y;
+
+    texcoords.push_back(Vector2(mapMin.x,               mapMin.y));
+    texcoords.push_back(Vector2(mapMin.x + widthInMap,  mapMin.y));
+    texcoords.push_back(Vector2(mapMin.x + widthInMap,  mapMin.y + heightInMap));
+    texcoords.push_back(Vector2(mapMin.x,               mapMin.y + heightInMap));
 
     MeshData meshData;
     for (size_t i = 0; i < positions.size(); i++) {

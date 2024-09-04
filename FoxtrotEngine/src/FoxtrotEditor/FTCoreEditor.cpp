@@ -146,10 +146,10 @@ void FTCoreEditor::GenerateOutput()
 		*/
 		ParticleSystem::GetInstance()->Render(GetGameRenderer());
 	}
-	else
+	/*else
 	{
 		EditorLayer::GetInstance()->DisplayEditorElements(GetGameRenderer());
-	}
+	}*/
 	EditorLayer::GetInstance()->Render(GetGameRenderer());
 	CollisionManager::GetInstance()->RenderRay(GetGameRenderer());
 	//GetGameRenderer()->RenderToTexture(GetGameRenderer());

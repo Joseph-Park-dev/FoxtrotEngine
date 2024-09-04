@@ -4,8 +4,12 @@
 #include "FoxtrotEngine/Renderer/FTRect.h"
 
 Tile::Tile()
-    : mTileIndexX(0)
-    , mTileIndexY(0)
-    , mTileNumber(0)
-    , mMapRect(FTRect(0,0,0,0))
+    : mRectOnScreen(new FTRect(0.0f, 0.0f, 0.0f, 0.0f))
+    , mRectOnMap(new FTRect(0.0f, 0.0f, 0.0f,0.0f))
 {}
+
+Tile::~Tile()
+{
+    delete mRectOnScreen;
+    delete mRectOnMap;
+}

@@ -32,7 +32,7 @@ public:
     {
         return L"TileMapComponent";
     }
-    std::string& GetCSVFilePath() { return mCSVTileMapPath; }
+    std::string& GetCSVFileMapPath() { return mCSVTileMapPath; }
     
     FTVector2    GetTileSizeOnScreen() { return mTileSizeOnScreen; }
     int          GetMaxCountOnScreenX() { return mMaxCountOnScreenX; }
@@ -66,9 +66,11 @@ private:
     Tile**      mCurrentTileMap;
     std::string mCSVTileMapPath;
 
+    // These fields need to be read from .chunk files.
     FTVector2   mTileSizeOnScreen;
     FTVector2   mTileSizeOnMap;
 
+    // These fields need to be initialized when the tilemap is constructed.
     int         mMaxCountOnScreenX;
     int         mMaxCountOnScreenY;
     int         mMaxCountOnMapX;

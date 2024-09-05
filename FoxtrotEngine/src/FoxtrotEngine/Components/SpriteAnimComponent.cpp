@@ -6,26 +6,23 @@
 #include "FoxtrotEngine/ResourceSystem/GeometryGenerator.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 #include "FoxtrotEngine/Managers/ResourceManager.h"
+#include "FoxtrotEngine/FileSystem/ChunkLoader.h"
 
 SpriteAnimComponent::SpriteAnimComponent(Actor* owner, int drawOrder, int updateOrder)
 	: TileMapComponent(owner, drawOrder)
-	, mCurrFrame(0.f)
 	, mAnimFPS(24.f)
-{
-}
+	, mIsRepeated(true)
+	, mCurrFrame(0.f)
+	, mMaxFrame(0)
+	, mIsPlaying(true)
+{}
 
 void SpriteAnimComponent::InitializeAnimation()
 {
 	SetTileSizeOnMap(FTVector2(64, 29));
 	SetTileSizeOnScreen(FTVector2(1, 1));
-	SetTexKey("SpriteAnim");
-}
-
-void SpriteAnimComponent::Initialize(FTCore* coreInstance){
-	MeshRendererComponent::Initialize(coreInstance);
-	InitializeAnimation();
-	SetCSVTileMapPath("./assets/ShipTileMap.csv");
-	if (!GetCSVFilePath().empty()) {
+	//SetTexKey("SpriteAnim");
+	if (!GetCSVFileMapPath().empty()) {
 		SetTexture();
 		assert(GetTexture());
 		SetMaxCountOnMapX(GetTexture()->GetTexWidth() / GetTileSizeOnMap().x);
@@ -33,14 +30,14 @@ void SpriteAnimComponent::Initialize(FTCore* coreInstance){
 		ReadCSV();
 		assert(GetMaxCountOnScreenX() != 0 && GetMaxCountOnScreenY() != 0);
 		ResourceManager::GetInstance()->LoadBasicMesh(
-			GetCSVFilePath(),
+			GetCSVFileMapPath(),
 			GeometryGenerator::MakeSpriteAnimation(
 				GetCurrentTileMap(),
 				GetMaxCountOnScreenX(),
 				GetMaxCountOnScreenY()
 			)
 		);
-		SetMeshKey(GetCSVFilePath());
+		SetMeshKey(GetCSVFileMapPath());
 		MeshRendererComponent::InitializeMesh();
 		mMaxFrame = GetMeshGroup()->GetMeshCount();
 
@@ -48,25 +45,90 @@ void SpriteAnimComponent::Initialize(FTCore* coreInstance){
 	}
 }
 
+void SpriteAnimComponent::EditorUIUpdate()
+{
+	this->UpdateSprite();
+	this->UpdateCSV();
+	this->UpdateIsRepeated();
+	this->UpdatePlayAnim();
+	this->OnConfirmUpdate();
+}
+
+void SpriteAnimComponent::UpdateIsRepeated()
+{
+	ImGui::Checkbox("Is Repeated", &mIsRepeated);
+}
+
+void SpriteAnimComponent::UpdatePlayAnim()
+{
+	if (mIsPlaying) {
+		if (ImGui::Button("Stop")) {
+			Stop();
+		}
+	}
+	else {
+		if (ImGui::Button("Play")) {
+			Play();
+		}
+	}
+}
+
+void SpriteAnimComponent::OnConfirmUpdate()
+{
+	if (ImGui::Button("Update")) {
+		if (!GetCSVFileMapPath().empty())
+			this->InitializeAnimation();
+		else
+			printf("ERROR: SpriteAnimComponent::ConfirmUpdate() -> .CSV path is null");
+	}
+}
+
+void SpriteAnimComponent::Initialize(FTCore* coreInstance){
+	MeshRendererComponent::Initialize(coreInstance);
+	InitializeAnimation();
+}
+
 void SpriteAnimComponent::Update(float deltaTime) {
 	SpriteRendererComponent::Update(deltaTime);
-	mCurrFrame += mAnimFPS * deltaTime;
-	while (mCurrFrame >= mMaxFrame)
-	{
-		mCurrFrame -= mMaxFrame;
+	if (0 < mMaxFrame) {
+		if (mIsPlaying) {
+			mCurrFrame += mAnimFPS * deltaTime;
+			while (mCurrFrame >= mMaxFrame)
+				if (mIsRepeated)
+					mCurrFrame -= mMaxFrame;
+				else {
+					mIsPlaying = false;
+					mCurrFrame = 0;
+					break;
+				}
+		}
 	}
 }
 
 void SpriteAnimComponent::Render(FoxtrotRenderer* renderer){
-	GetMeshGroup()->Render(renderer->GetContext(), static_cast<int>(mCurrFrame));
+	if(FrameIsWithinIndexRange())
+		GetMeshGroup()->Render(renderer->GetContext(), static_cast<int>(mCurrFrame));
 }
 
-//void SpriteAnimComponent::SetAnimTextures(const std::vector<FTTexture*>& textures)
-//{
-//	mAnimTextures = textures;
-//	if (mAnimTextures.size() > 0)
-//	{
-//		mCurrFrame = 0.0f;
-//		//SetTexture(mAnimTextures[0]);
-//	}
-//}
+void SpriteAnimComponent::Play()
+{
+	mIsPlaying = true;
+}
+
+void SpriteAnimComponent::Stop()
+{
+	mIsPlaying = false;
+}
+
+bool SpriteAnimComponent::FrameIsWithinIndexRange()
+{
+	return 0 <= mCurrFrame && mCurrFrame < mMaxFrame;
+}
+
+void SpriteAnimComponent::SaveProperties(nlohmann::ordered_json& out)
+{
+	Component::SaveProperties(out);
+	FileIOHelper::AddScalarValue(out["MeshKey"], GetMeshKey());
+	FileIOHelper::AddScalarValue(out["TextureKey"], GetTexKey());
+	FileIOHelper::AddScalarValue(out["AnimationFPS"], mAnimFPS);
+}

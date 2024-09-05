@@ -191,12 +191,10 @@ void SpriteRendererComponent::UpdateScale(){
 
 void SpriteRendererComponent::SaveProperties(nlohmann::ordered_json& out){
 	Component::SaveProperties(out);
+	FileIOHelper::AddScalarValue(out["TextureWidth"], mTexWidth);
+	FileIOHelper::AddScalarValue(out["TextureHeight"], mTexHeight);
 	FileIOHelper::AddScalarValue(out["Channel"], mChannel);
 	FileIOHelper::AddScalarValue(out["Scale"], mScale);
-	//FileIOHelper::AddWString(ofs, mTexture->GetKey());
-	//FileIOHelper::AddWString(ofs, mTexture->GetRelativePath());
-
-	//FileIOHelper::AddFTTexture(ofs, GetMesh()->texture);
 }
 
 void SpriteRendererComponent::LoadProperties(std::ifstream& ifs){

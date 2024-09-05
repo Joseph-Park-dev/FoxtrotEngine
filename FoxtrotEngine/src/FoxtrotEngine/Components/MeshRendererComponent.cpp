@@ -127,12 +127,6 @@ void MeshRendererComponent::UpdateConstantBufferProjection(Camera* camInst){
 	mMeshGroup->GetVertexConstantData().projection = camInst->GetProjRow().Transpose();
 }
 
-void MeshRendererComponent::SaveProperties(nlohmann::ordered_json& out)
-{
-	Component::SaveProperties(out);
-	FileIOHelper::AddScalarValue(out["Key"], mMeshKey);
-}
-
 void MeshRendererComponent::EditorUpdate(float deltaTime){
 	Update(deltaTime);
 }
@@ -155,4 +149,11 @@ void MeshRendererComponent::OnConfirmUpdate()
 	if (ImGui::Button("Update")) {
 		SetTexture();
 	}
+}
+
+void MeshRendererComponent::SaveProperties(nlohmann::ordered_json& out)
+{
+	Component::SaveProperties(out);
+	FileIOHelper::AddScalarValue(out["MeshKey"], mMeshKey);
+	FileIOHelper::AddScalarValue(out["TextureKey"], mTexKey);
 }

@@ -43,6 +43,7 @@ public:
 	virtual ~SpriteRendererComponent() override;
 
 private:
+	// These fields need to be loaded from .chunk file.
 	int					mTexWidth;
 	int					mTexHeight;
 	int					mChannel;

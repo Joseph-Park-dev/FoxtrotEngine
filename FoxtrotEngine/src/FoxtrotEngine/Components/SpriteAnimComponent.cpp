@@ -131,4 +131,5 @@ void SpriteAnimComponent::SaveProperties(nlohmann::ordered_json& out)
 	FileIOHelper::AddScalarValue(out["MeshKey"], GetMeshKey());
 	FileIOHelper::AddScalarValue(out["TextureKey"], GetTexKey());
 	FileIOHelper::AddScalarValue(out["AnimationFPS"], mAnimFPS);
+	FileIOHelper::AddScalarValue(out["IsRepeated"], mIsRepeated);
 }

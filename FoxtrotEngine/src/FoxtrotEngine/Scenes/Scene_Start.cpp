@@ -30,6 +30,7 @@ void Scene_Start::LoadData()
 	ResourceManager::GetInstance()->LoadBasicMesh(MAPKEY_SPRITE_MESH, GeometryGenerator::MakeSquare(1.0f));
 
 	ResourceManager::GetInstance()->LoadTexture("TestTileTex", "Tiles.png");
+	ResourceManager::GetInstance()->LoadTexture("SpriteAnim", "ShipTileMap.png");
 
 	//ResourceManager::GetInstance()->GetLoadedTexture("TEST");
 

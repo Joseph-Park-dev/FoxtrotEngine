@@ -10,7 +10,6 @@ const char* Component::TypeNames[NUM_COMPONENT_TYPES] =
 {
 	"AIComponent",
 	"AnimatorComponent",
-	"AnimSpriteComponent",
 	"BGSpriteComponent",
 	"ColliderComponent",
 	"InputMoveComponent",
@@ -18,6 +17,7 @@ const char* Component::TypeNames[NUM_COMPONENT_TYPES] =
 	"Rigidbody2DComponent",
 	"SpriteRendererComponent",
 	"TileMapComponent",
+	"SpriteAnimComponent"
 };
 
 Component::Component(Actor* owner, int drawOrder, int updateOrder)

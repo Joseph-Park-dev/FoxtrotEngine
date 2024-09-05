@@ -23,14 +23,34 @@ public:
     //void DrawIndividualTileOnPosEX(FoxtrotRenderer* renderer, FTVector2 worldPos, Tile* tile);
 
 public:
+    void ReadCSV();
+
+public:
     Tile**       GetCurrentTileMap() { return mCurrentTileMap; }
     Tile*        GetTile(int x, int y) { return &mCurrentTileMap[x][y]; }
     std::wstring GetName() const override
     {
         return L"TileMapComponent";
     }
+    std::string& GetCSVFilePath() { return mCSVTileMapPath; }
+    
+    FTVector2    GetTileSizeOnScreen() { return mTileSizeOnScreen; }
+    int          GetMaxCountOnScreenX() { return mMaxCountOnScreenX; }
+    int          GetMaxCountOnScreenY() { return mMaxCountOnScreenY; }
+    
+    FTVector2    GetTileSizeOnMap() { return mTileSizeOnMap; }
+    int          GetMaxCountOnMapX() { return mMaxCountOnMapX; }
+    int          GetMaxCountOnMapY() { return mMaxCountOnMapY; }
 
     void         SetCSVTileMapPath(std::string path) { mCSVTileMapPath.assign(path); }
+    
+    void         SetTileSizeOnScreen(FTVector2 size) { mTileSizeOnScreen = size; }
+    void         SetMaxCountOnScreenX(int count) {  mMaxCountOnScreenX = count; }
+    void         SetMaxCountOnScreenY(int count) {  mMaxCountOnScreenY = count; }
+    
+    void         SetTileSizeOnMap(FTVector2 size) { mTileSizeOnMap = size; }
+    void         SetMaxCountOnMapX(int count) {  mMaxCountOnMapX = count; }
+    void         SetMaxCountOnMapY(int count) {  mMaxCountOnMapY = count; }
 
 public:
             TileMapComponent(
@@ -46,20 +66,17 @@ private:
     Tile**      mCurrentTileMap;
     std::string mCSVTileMapPath;
 
-    int         mTileSizeOnScreenX;
-    int         mTileSizeOnScreenY;
+    FTVector2   mTileSizeOnScreen;
+    FTVector2   mTileSizeOnMap;
+
     int         mMaxCountOnScreenX;
     int         mMaxCountOnScreenY;
-
-    int         mTileSizeOnMapX;
-    int         mTileSizeOnMapY;
     int         mMaxCountOnMapX;
     int         mMaxCountOnMapY;
 
 private:
     void InitializeTileMap();
     void InitializeTile(Tile* tile, UINT column, UINT row, UINT tileNum);
-    void ReadCSV();
 
     //void UpdateMesh(Transform* transform, Camera* cameraInstance) override;
     //void SetScreenRect(FTVector2 worldPos, Tile* tile);
@@ -74,12 +91,5 @@ public:
 
     virtual void OnConfirmUpdate() override;
     void UpdateCSV();
-
-    //virtual void EditorRender(FoxtrotRenderer* renderer) override;
-    //void BlitToGameviewEx(FTVector2 wPos, Tile* tile);
-    //void BlitToGameview(FTVector2 worldPos, Tile* tile);
-
-private:
-    //void SetScreenRectEditorView(FTVector2 editorPos, Tile* tile);
 #endif // _DEBUG
 };

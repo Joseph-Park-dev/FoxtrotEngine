@@ -1,11 +1,11 @@
 #pragma once
-#include "FoxtrotEngine/Components/SpriteRendererComponent.h"
+#include "FoxtrotEngine/Components/TileMapComponent.h"
 
 #include <vector>
 
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
 
-class SpriteAnimComponent :public SpriteRendererComponent
+class SpriteAnimComponent :public TileMapComponent
 {
 public:
 	virtual void Initialize(FTCore* coreInstance)	override;
@@ -26,8 +26,12 @@ public:
 	SpriteAnimComponent(class Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
 
 private:
-	std::vector<FTTexture*> mAnimTextures;
-	float				   mCurrFrame;
-	float				   mAnimFPS;
+	float mCurrFrame;
+	float mAnimFPS;
+
+	UINT  mMaxFrame;
+
+private:
+	void InitializeAnimation();
 };
 

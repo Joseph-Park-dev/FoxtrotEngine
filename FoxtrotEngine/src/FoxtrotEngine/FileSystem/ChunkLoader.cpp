@@ -191,6 +191,7 @@ ChunkLoader::ChunkLoader()
         {L"Rigidbody2DComponent", &Component::Load<Rigidbody2DComponent>},
         {L"SpriteRendererComponent",      &Component::Load<SpriteRendererComponent>},
         {L"TileMapComponent",     &Component::Load<TileMapComponent>},
+        {L"SpriteAnimComponent",     &Component::Load<SpriteAnimComponent>},
         {L"GunFiringComponent",   &Component::Load<GunFiringComponent>},
         {L"MeshRendererComponent", &Component::Load<MeshRendererComponent>},
         {L"SpineAnimRendererComponent", &Component::Load<SpineAnimRendererComponent>}
@@ -208,6 +209,7 @@ ChunkLoader::ChunkLoader()
         {L"Rigidbody2DComponent", &Component::Create<Rigidbody2DComponent>},
         {L"SpriteRendererComponent", &Component::Create<SpriteRendererComponent>},
         {L"TileMapComponent",     &Component::Create<TileMapComponent>},
+        {L"SpriteAnimComponent",     &Component::Create<SpriteAnimComponent>},
         {L"GunFiringComponent",   &Component::Create<GunFiringComponent>},
         {L"MeshRendererComponent", &Component::Create<MeshRendererComponent>},
         {L"SpineAnimRendererComponent", &Component::Create<SpineAnimRendererComponent>}

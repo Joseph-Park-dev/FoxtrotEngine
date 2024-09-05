@@ -29,21 +29,22 @@
 
 void TileMapComponent::Initialize(FTCore* coreInstance){
     MeshRendererComponent::Initialize(coreInstance);
-    //InitializeTileMap();
+    
+    // These Values will be read from files.
+    mTileSizeOnScreen = FTVector2(1, 1);
+    mTileSizeOnMap = FTVector2(32, 32);
+    //SetTexKey("Edit here");
 }
 
 void TileMapComponent::InitializeTileMap() {
     if (!mCSVTileMapPath.empty())
     {
-        mTileSizeOnScreenX = 1;
-        mTileSizeOnScreenY = 1;
-        mTileSizeOnMapX = 32;
-        mTileSizeOnMapY = 32;
-
-        mMaxCountOnMapX = 8;
-        mMaxCountOnMapY = 32;
-
+        SetTexture();
+        assert(GetTexture());
+        mMaxCountOnMapX = GetTexture()->GetTexWidth() / mTileSizeOnMap.x;
+        mMaxCountOnMapY = GetTexture()->GetTexHeight() / mTileSizeOnMap.y;
         ReadCSV();
+        assert(mMaxCountOnScreenX != 0 && mMaxCountOnScreenY != 0);
         ResourceManager::GetInstance()->LoadBasicMesh(
             mCSVTileMapPath,
             GeometryGenerator::MakeTileMapGrid(
@@ -59,6 +60,12 @@ void TileMapComponent::InitializeTileMap() {
     }
 }
 
+/*
+    This defines...
+    1) Max tile count on screen X
+    2) Max tile count on screen Y
+    3) Current Tile Map
+*/ 
 void TileMapComponent::ReadCSV()
 {
     std::ifstream myFile;
@@ -67,7 +74,6 @@ void TileMapComponent::ReadCSV()
     // Open an existing file 
     myFile.open(mCSVTileMapPath, std::fstream::in);
     assert(myFile);
-    assert(mMaxCountOnScreenX != 0 && mMaxCountOnScreenY != 0);
     std::string line;
     int val;
     int column = 0; int row = 0;
@@ -110,15 +116,15 @@ void TileMapComponent::InitializeTile(Tile* tile, UINT column, UINT row, UINT ti
 {
     FTRect* rectOnMap  = tile->GetRectOnMap();
     // Individual Tile size on tilemap
-    float tileWidth  = static_cast<float>(mTileSizeOnMapX) / static_cast<float>(this->GetTexWidth());
-    float tileHeight = static_cast<float>(mTileSizeOnMapY) / static_cast<float>(this->GetTexHeight());
+    float tileWidth  = static_cast<float>(mTileSizeOnMap.x) / static_cast<float>(this->GetTexWidth());
+    float tileHeight = static_cast<float>(mTileSizeOnMap.y) / static_cast<float>(this->GetTexHeight());
 
     int tileIndexX = tileNum % mMaxCountOnMapX;
     int tileIndexY = tileNum / mMaxCountOnMapX;
     rectOnMap->Set(tileWidth * tileIndexX, tileHeight * tileIndexY, tileWidth, tileHeight);
 
     FTRect* rectOnScreen = tile->GetRectOnScreen();
-    rectOnScreen->Set(column, row, mTileSizeOnScreenX, mTileSizeOnScreenY);
+    rectOnScreen->Set(column, row, mTileSizeOnScreen.x, mTileSizeOnScreen.y);
 }
 
 void TileMapComponent::Update(float deltaTime)
@@ -205,11 +211,6 @@ void TileMapComponent::LoadProperties(std::ifstream& ifs)
 void TileMapComponent::OnConfirmUpdate()
 {
     if (ImGui::Button("Update")) {
-        if (GetTexture())
-            this->SetTexture();
-        else
-            printf("ERROR: TileMapComponent::ConfirmUpdate() -> Texture is null");
-
         if (!mCSVTileMapPath.empty())
             this->InitializeTileMap();
         else

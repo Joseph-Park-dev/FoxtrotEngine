@@ -110,11 +110,12 @@ void FTBasicMeshGroup::Render(ComPtr<ID3D11DeviceContext>& context)
     }
 }
 
-void FTBasicMeshGroup::Render(ComPtr<ID3D11DeviceContext>& context, UINT index)
+void FTBasicMeshGroup::Render(ComPtr<ID3D11DeviceContext>& context, int meshIndex)
 {
     UINT stride = sizeof(Vertex);
     UINT offset = 0;
-    for (const Mesh* mesh : mMeshes) {
+    Mesh* mesh = mMeshes.at(meshIndex);
+    if (mesh) {
         context->VSSetShader(mBasicVertexShader.Get(), 0, 0);
         context->VSSetSamplers(0, 1, mSamplerState.GetAddressOf());
         context->VSSetConstantBuffers(0, 1, mesh->vertexConstantBuffer.GetAddressOf());

@@ -171,6 +171,67 @@ MeshData GeometryGenerator::MakeTile(Tile* tile)
     return meshData;
 }
 
+std::vector<MeshData> GeometryGenerator::MakeSpriteAnimation(Tile** tileMap, size_t columnCount, size_t rowCount)
+{
+    std::vector<MeshData> animationMeshes;
+    for (size_t r = 0; r < rowCount; ++r) {
+        for (size_t c = 0; c < columnCount; ++c) {
+            MeshData animFrame = MakeAnimationFrame(&tileMap[r][c]);
+            animationMeshes.push_back(animFrame);
+        }
+    }
+    return animationMeshes;
+}
+
+MeshData GeometryGenerator::MakeAnimationFrame(Tile* tile)
+{
+    std::vector<Vector3> positions;
+    std::vector<Vector3> colors;
+    std::vector<Vector3> normals;
+    std::vector<Vector2> texcoords; // 텍스춰 좌표
+
+    // 앞면
+    positions.push_back(Vector3(-1.0f, 1.0f, 0.0f));
+    positions.push_back(Vector3(1.0f, 1.0f, 0.0f));
+    positions.push_back(Vector3(1.0f, -1.0f, 0.0f));
+    positions.push_back(Vector3(-1.0f, -1.0f, 0.0f));
+    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+
+    // Texture Coordinates (Direct3D 9)
+    // https://learn.microsoft.com/en-us/windows/win32/direct3d9/texture-coordinates
+    FTRect* rectOnMap = tile->GetRectOnMap();
+    const FTVector2& mapMin = rectOnMap->GetMin();
+    const float widthInMap = rectOnMap->GetSize().x;
+    const float heightInMap = rectOnMap->GetSize().y;
+
+    texcoords.push_back(Vector2(mapMin.x, mapMin.y));
+    texcoords.push_back(Vector2(mapMin.x + widthInMap, mapMin.y));
+    texcoords.push_back(Vector2(mapMin.x + widthInMap, mapMin.y + heightInMap));
+    texcoords.push_back(Vector2(mapMin.x, mapMin.y + heightInMap));
+
+    MeshData meshData;
+    for (size_t i = 0; i < positions.size(); i++) {
+        Vertex v;
+        v.position = positions[i];
+        v.color = colors[i];
+        v.normal = normals[i];
+        v.texcoord = texcoords[i];
+        meshData.vertices.push_back(v);
+    }
+    meshData.indices = {
+        0, 1, 2, 0, 2, 3, // 앞면
+    };
+
+    return meshData;
+}
+
 MeshData GeometryGenerator::MakeBox() {
     std::vector<Vector3> positions;
     std::vector<Vector3> colors;

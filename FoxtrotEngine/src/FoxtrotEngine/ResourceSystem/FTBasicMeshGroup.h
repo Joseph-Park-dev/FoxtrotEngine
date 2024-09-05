@@ -25,7 +25,7 @@ public:
 		ComPtr<ID3D11DeviceContext>& context
 	);
 	void Render			 (ComPtr<ID3D11DeviceContext>& context);
-	void Render			 (ComPtr<ID3D11DeviceContext>& context, UINT index);
+	void Render			 (ComPtr<ID3D11DeviceContext>& context, int meshIndex);
 	void UpdateModelWorld(DirectX::SimpleMath::Matrix& modelToWorldRow);
 
 public:
@@ -35,6 +35,7 @@ public:
 	BasicPixelConstantData&		GetPixelConstantData()	{ return mBasicPixelConstantData; }
 	DirectX::SimpleMath::Matrix GetModelWorldRow()		{ return mModelWorldRow; }
 	FTTexture*					GetTexture()			{ return mTexture; }
+	int							GetMeshCount()			{ return mMeshes.size(); }
 
 	void					 SetTexture(std::string key);
 
@@ -42,12 +43,10 @@ private:
 	DirectX::SimpleMath::Matrix mModelWorldRow	 = DirectX::SimpleMath::Matrix();
 	DirectX::SimpleMath::Matrix mInvTransposeRow = DirectX::SimpleMath::Matrix();
 
-	// ExampleApp::Update()에서 접근
 	BasicVertexConstantData mBasicVertexConstantData;
 	BasicPixelConstantData	mBasicPixelConstantData;
 
 private:
-	// 메쉬 그리기
 	std::vector<Mesh*>			mMeshes;
 	FTTexture*					mTexture;
 

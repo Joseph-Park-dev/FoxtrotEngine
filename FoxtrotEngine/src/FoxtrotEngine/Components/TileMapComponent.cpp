@@ -29,6 +29,10 @@
 
 void TileMapComponent::Initialize(FTCore* coreInstance){
     MeshRendererComponent::Initialize(coreInstance);
+    //InitializeTileMap();
+}
+
+void TileMapComponent::InitializeTileMap() {
     if (!mCSVTileMapPath.empty())
     {
         mTileSizeOnScreenX = 1;
@@ -39,8 +43,7 @@ void TileMapComponent::Initialize(FTCore* coreInstance){
         mMaxCountOnMapX = 8;
         mMaxCountOnMapY = 32;
 
-        SetTexture("TestTileTex");
-        InitializeTileMap();
+        ReadCSV();
         ResourceManager::GetInstance()->LoadBasicMesh(
             mCSVTileMapPath,
             GeometryGenerator::MakeTileMapGrid(
@@ -54,11 +57,6 @@ void TileMapComponent::Initialize(FTCore* coreInstance){
 
         GetOwner()->GetTransform()->SetScale(FTVector3(0.07f, 0.07f, 0.0f));
     }
-}
-
-void TileMapComponent::InitializeTileMap() {
-    if (!mCSVTileMapPath.empty())
-        ReadCSV();
 }
 
 void TileMapComponent::ReadCSV()
@@ -168,6 +166,7 @@ TileMapComponent::TileMapComponent(Actor* owner, int drawOrder, int UpdateOrder)
 
 TileMapComponent::~TileMapComponent()
 {
+    ResourceManager::GetInstance()->RemoveLoadedMeshes(GetMeshKey());
     if (mCurrentTileMap != nullptr)
     {
         for (int row = 0; row < mMaxCountOnScreenY; row++)
@@ -188,8 +187,9 @@ TileMapComponent::~TileMapComponent()
 
 void TileMapComponent::EditorUIUpdate()
 {
-    //UpdateSprite(GetRenderer());
+    UpdateSprite();
     UpdateCSV();
+    OnConfirmUpdate();
 }
 
 void TileMapComponent::SaveProperties(nlohmann::ordered_json& out)
@@ -202,6 +202,21 @@ void TileMapComponent::LoadProperties(std::ifstream& ifs)
     SpriteRendererComponent::LoadProperties(ifs);
 }
 
+void TileMapComponent::OnConfirmUpdate()
+{
+    if (ImGui::Button("Update")) {
+        if (GetTexture())
+            this->SetTexture();
+        else
+            printf("ERROR: TileMapComponent::ConfirmUpdate() -> Texture is null");
+
+        if (!mCSVTileMapPath.empty())
+            this->InitializeTileMap();
+        else
+            printf("ERROR: TileMapComponent::ConfirmUpdate() -> .CSV path is null");
+    }
+}
+
 void TileMapComponent::UpdateCSV() {
     std::string currentCSV = "No .CSV has been assigned";
     if (!mCSVTileMapPath.empty())
@@ -212,7 +227,7 @@ void TileMapComponent::UpdateCSV() {
         IGFD::FileDialogConfig config;
         config.path = ".";
         config.countSelectionMax = 1;
-        ImGuiFileDialog::Instance()->OpenDialog("SelectCSV", "Select Sprite", ".csv", config);
+        ImGuiFileDialog::Instance()->OpenDialog("SelectCSV", "Select CSV", ".csv", config);
         ImGui::OpenPopup("Select .CSV");
     }
 
@@ -221,7 +236,6 @@ void TileMapComponent::UpdateCSV() {
         if (ImGuiFileDialog::Instance()->IsOk())
         {
             mCSVTileMapPath = ImGuiFileDialog::Instance()->GetFilePathName();
-            Initialize(FTCoreEditor::GetInstance());
         }
         ImGuiFileDialog::Instance()->Close();
     }

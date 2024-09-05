@@ -23,7 +23,7 @@ public:
 	}
 	void		 SetTexWidth	(int texWidth)  { mTexWidth = texWidth; }
 	void		 SetTexHeight	(int texHeight) { mTexHeight = texHeight; }
-	void		 SetTexture		(std::string key);
+	virtual void SetTexture		()		override;
 	void		 UpdateTexture	(FoxtrotRenderer* renderer, std::string fileName);
 
 public:
@@ -59,7 +59,8 @@ public:
 	virtual void EditorRender(FoxtrotRenderer* renderer) override;
 
 protected:
-	void UpdateSprite(FoxtrotRenderer* renderer);
+	virtual void OnConfirmUpdate() override;
+			void UpdateSprite();
 
 private:
 	void UpdateTexWidth();

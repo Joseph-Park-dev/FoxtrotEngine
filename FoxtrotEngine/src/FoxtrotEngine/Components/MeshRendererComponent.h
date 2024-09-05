@@ -4,12 +4,12 @@
 #include <nlohmann/json.hpp>
 
 #include "FoxtrotEngine/Core/FTCore.h"
+#include "FoxtrotEngine/ResourceSystem/FTBasicMeshGroup.h"
 
 class Actor;
 class Camera;
 class Transform;
 class FTTexture;
-class FTBasicMeshGroup;
 struct Mesh;
 struct MeshData;
 
@@ -39,11 +39,12 @@ protected:
 	FTBasicMeshGroup*	GetMeshGroup()	{ return mMeshGroup; }
 	std::string			GetMeshKey	()	{ return mMeshKey; }
 	std::string			GetTexKey	()	{ return mTexKey; }
+	FTTexture*			GetTexture	()	{ return mMeshGroup->GetTexture(); }
 
 	void				SetMeshGroup(FTBasicMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
 	void				SetMeshKey	(std::string key) { mMeshKey.assign(key); }
 	void				SetTexKey	(std::string key) { mTexKey.assign(key); }
-	void				SetTexture();
+	virtual void		SetTexture();
 
 private:
 	FoxtrotRenderer*	mRenderer;
@@ -70,5 +71,8 @@ public:
 	virtual void EditorUpdate(float deltaTime) override;
 	virtual void EditorRender(FoxtrotRenderer* renderer) override;
 	virtual void EditorUIUpdate() override;
+
+protected:
+	virtual void OnConfirmUpdate();
 #endif // DEBUG
 };

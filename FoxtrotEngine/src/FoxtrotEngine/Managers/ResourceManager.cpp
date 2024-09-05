@@ -177,6 +177,16 @@ std::vector<MeshData>& ResourceManager::GetLoadedMeshes(const std::string key)
 	}
 }
 
+void ResourceManager::RemoveLoadedMeshes(const std::string key)
+{
+	if (KeyExists(key, mMapMeshes)) {
+		mMapMeshes.erase(key);
+	}
+	else {
+		printf("Error: ResourceManager::RemoveLoadedMeshes() -> Mesh with key %s does not exist\n", key.c_str());
+	}
+}
+
 void ResourceManager::SaveResources(nlohmann::ordered_json& out)
 {
 	std::unordered_map<std::string, FTTexture*>::const_iterator iter;

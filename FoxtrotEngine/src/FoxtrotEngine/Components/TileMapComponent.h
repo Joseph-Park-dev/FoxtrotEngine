@@ -72,6 +72,7 @@ public:
     virtual void SaveProperties(nlohmann::ordered_json& out) override;
     virtual void LoadProperties(std::ifstream& ifs) override;
 
+    virtual void OnConfirmUpdate() override;
     void UpdateCSV();
 
     //virtual void EditorRender(FoxtrotRenderer* renderer) override;

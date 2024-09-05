@@ -14,6 +14,7 @@
 
 #ifdef _DEBUG
 #include "FoxtrotEditor/FTCoreEditor.h"
+#include <functional>
 #endif
 
 using DXMatrix = DirectX::SimpleMath::Matrix;
@@ -145,5 +146,13 @@ void MeshRendererComponent::EditorUIUpdate(){
 	if (ImGui::Button("Add Cube")) {
 		//mMeshGroup = ResourceManager::GetInstance()->GetLoadedMeshes("Box");
 		LogString("Cube added");
+	}
+	OnConfirmUpdate();
+}
+
+void MeshRendererComponent::OnConfirmUpdate()
+{
+	if (ImGui::Button("Update")) {
+		SetTexture();
 	}
 }

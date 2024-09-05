@@ -36,6 +36,8 @@ public:
 	//void				LoadToSpineTexture(spine::AtlasPage& page, spine::String fileName);
 	std::vector<MeshData>&	GetLoadedMeshes(const std::string key);
 
+	void				RemoveLoadedMeshes(const std::string key);
+
 public:
 	std::unordered_map<std::string, FTTexture*>& 
 		GetTexturesMap() {

@@ -17,10 +17,9 @@
 #include "FoxtrotEngine/Renderer/Camera.h"
 #include "FoxtrotEngine/Renderer/D3D11Utils.h"
 
-void SpriteRendererComponent::SetTexture(std::string key)
+void SpriteRendererComponent::SetTexture()
 {
-	SetTexKey(key);
-	GetMeshGroup()->SetTexture(key);
+	MeshRendererComponent::SetTexture();
 	mTexWidth = GetMeshGroup()->GetTexture()->GetTexWidth();
 	mTexHeight = GetMeshGroup()->GetTexture()->GetTexHeight();
 }
@@ -110,7 +109,7 @@ void SpriteRendererComponent::EditorUpdate(float deltaTime){
 void SpriteRendererComponent::EditorUIUpdate(){
 	if (GetRenderer())
 	{
-		UpdateSprite(GetRenderer());
+		UpdateSprite();
 		ImGui::SeparatorText("Sprite Size");
 		UpdateScale();
 	}
@@ -130,10 +129,18 @@ SpriteRendererComponent::SpriteRendererComponent(Actor* owner, int drawOrder, in
 SpriteRendererComponent::~SpriteRendererComponent()
 {}
 
-void SpriteRendererComponent::UpdateSprite(FoxtrotRenderer* renderer){
+void SpriteRendererComponent::OnConfirmUpdate()
+{
+	if (ImGui::Button("Update")) {
+		this->SetTexture();
+	}
+}
+
+void SpriteRendererComponent::UpdateSprite(){
 	std::string currentSprite = "No sprite has been assigned";
-	if (GetMeshGroup()->GetTexture())
-		currentSprite = "Current sprite : \n" + GetMeshGroup()->GetTexture()->GetRelativePath();
+	if (!GetTexKey().empty())
+		currentSprite = "Current sprite : \n" + 
+			ResourceManager::GetInstance()->GetLoadedTexture(GetTexKey())->GetRelativePath();
 	ImGui::Text(currentSprite.c_str());
 
 	if (ImGui::Button("Select Sprite")){
@@ -142,7 +149,6 @@ void SpriteRendererComponent::UpdateSprite(FoxtrotRenderer* renderer){
 		config.countSelectionMax = 1;
 		ImGuiFileDialog::Instance()->OpenDialog("SelectSprite", "Select Sprite", SPRITE_FORMAT_SUPPORTED, config);
 		ImGui::OpenPopup("Select Sprite");
-		
 	}
 
 	if (ImGui::BeginPopupModal("Select Sprite", NULL, ImGuiWindowFlags_MenuBar)) {
@@ -162,22 +168,13 @@ void SpriteRendererComponent::UpdateSprite(FoxtrotRenderer* renderer){
 			}
 			ImGui::TreePop();
 			if (selected != -1) {
-				SetTexture(spriteKey);
+				SetTexKey(spriteKey);
 			}
 		}
 		if (ImGui::Button("Close"))
 			ImGui::CloseCurrentPopup();
 		ImGui::EndPopup();
 	}
-
-	//if (ImGuiFileDialog::Instance()->Display("SelectSprite")){
-	//	if (ImGuiFileDialog::Instance()->IsOk()){
-	//		std::string spritePath = ImGuiFileDialog::Instance()->GetCurrentPath() + "\\" +
-	//			ImGuiFileDialog::Instance()->GetCurrentFileName();
-	//		SetTexture(renderer, spritePath);
-	//	}
-	//	ImGuiFileDialog::Instance()->Close();
-	//}
 }
 
 void SpriteRendererComponent::UpdateTexWidth(){

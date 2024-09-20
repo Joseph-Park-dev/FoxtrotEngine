@@ -133,6 +133,19 @@ void Scene::DeletePendingGroup(ACTOR_GROUP group)
 }
 
 #ifdef _DEBUG
+void Scene::EditorProcessInput(KeyInputManager* keyInputManager)
+{
+	std::vector<EditorElement*>& elements = EditorLayer::GetInstance()->GetEditorElements();
+	for (size_t i = 0; i < elements.size(); ++i)
+	{
+		EditorElement* ele = elements[i];
+		if (ele->IsActive())
+		{
+			ele->ProcessInput(keyInputManager);
+		}
+	}
+}
+
 void Scene::EditorUpdate(float deltaTime)
 {
 	std::vector<EditorElement*>& elements = EditorLayer::GetInstance()->GetEditorElements();

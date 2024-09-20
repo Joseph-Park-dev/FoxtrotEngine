@@ -64,6 +64,7 @@ private:
 
 #ifdef _DEBUG
 public:
+	void EditorProcessInput(KeyInputManager* keyInputManager);
 	void EditorUpdate(float deltaTime);
 	void EditorLateUpdate(float deltaTime);
 	void EditorRender(FoxtrotRenderer* renderer);

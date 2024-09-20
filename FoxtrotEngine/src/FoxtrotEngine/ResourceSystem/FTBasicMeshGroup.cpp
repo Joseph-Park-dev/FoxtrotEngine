@@ -6,67 +6,10 @@
 
 void FTBasicMeshGroup::Initialize(std::vector<MeshData>& meshes, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
-	D3D11_SAMPLER_DESC sampDesc;
-    ZeroMemory(&sampDesc, sizeof(sampDesc));
-    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-    sampDesc.MinLOD = 0;
-    sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-    device->CreateSamplerState(&sampDesc, mSamplerState.GetAddressOf());
-
-    mBasicVertexConstantData.model      = DirectX::SimpleMath::Matrix();
-    mBasicVertexConstantData.view       = DirectX::SimpleMath::Matrix();
-    mBasicVertexConstantData.projection = DirectX::SimpleMath::Matrix();
-
-    D3D11Utils::CreateConstantBuffer(device, mBasicVertexConstantData, mVertexConstantBuffer);
-    D3D11Utils::CreateConstantBuffer(device, mBasicPixelConstantData, mPixelConstantBuffer);
-
-    for (const MeshData& meshData : meshes) {
-        Mesh* newMesh = new Mesh;
-        D3D11Utils::CreateVertexBuffer(device, meshData.vertices,
-            newMesh->vertexBuffer);
-        newMesh->mIndexCount = UINT(meshData.indices.size());
-        newMesh->mVertexCount = UINT(meshData.vertices.size());
-        D3D11Utils::CreateIndexBuffer(device, meshData.indices,
-            newMesh->indexBuffer);
-
-        //if (!meshData.textureKey.empty()) {
-
-        //    FTTexture* meshTex = ResourceManager::GetInstance()->GetLoadedTexture(meshData.textureKey);
-        //    if (meshTex)
-        //        newMesh->texture = meshTex;
-        //    else
-        //        printf("ERROR : FTBasicMeshGroup::Initialize() -> Texture with texture key %s does not exist.", meshData.textureKey.c_str());
-        //}
-
-        newMesh->vertexConstantBuffer = mVertexConstantBuffer;
-        newMesh->pixelConstantBuffer = mPixelConstantBuffer;
-
-        this->mMeshes.push_back(newMesh);
-    }
-
-    vector<D3D11_INPUT_ELEMENT_DESC> basicInputElements = {
-        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
-         D3D11_INPUT_PER_VERTEX_DATA, 0},
-        {"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3,
-         D3D11_INPUT_PER_VERTEX_DATA, 0},
-        {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3 + 4 * 3,
-         D3D11_INPUT_PER_VERTEX_DATA, 0},
-        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 + 4 * 3 + 4 * 3,
-         D3D11_INPUT_PER_VERTEX_DATA, 0},
-    };
-
-    D3D11Utils::CreateVertexShaderAndInputLayout(
-        device, VERTEX_SHADER_PATH, basicInputElements,
-        mBasicVertexShader, mBasicInputLayout);
-
-    D3D11Utils::CreatePixelShader(device, PIXEL_SHADER_PATH,
-        mBasicPixelShader);
-
+    InitializeConstantBuffer(device);
+    CreateShaders(device);
     CreateTextureSampler(device);
+    InitializeMeshes(device, meshes);
 }
 
 void FTBasicMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
@@ -157,6 +100,57 @@ void FTBasicMeshGroup::UpdateModelWorld(DirectX::SimpleMath::Matrix& modelToWorl
 void FTBasicMeshGroup::SetTexture(std::string key)
 {
     mTexture = ResourceManager::GetInstance()->GetLoadedTexture(key);
+}
+
+void FTBasicMeshGroup::InitializeConstantBuffer(ComPtr<ID3D11Device>& device)
+{
+    mBasicVertexConstantData.model = DirectX::SimpleMath::Matrix();
+    mBasicVertexConstantData.view = DirectX::SimpleMath::Matrix();
+    mBasicVertexConstantData.projection = DirectX::SimpleMath::Matrix();
+
+    D3D11Utils::CreateConstantBuffer(device, mBasicVertexConstantData, mVertexConstantBuffer);
+    D3D11Utils::CreateConstantBuffer(device, mBasicPixelConstantData, mPixelConstantBuffer);
+
+}
+
+void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<MeshData>& meshes)
+{
+    for (const MeshData& meshData : meshes) {
+        Mesh* newMesh = new Mesh;
+        newMesh->mIndexCount = UINT(meshData.indices.size());
+        newMesh->mVertexCount = UINT(meshData.vertices.size());
+
+        D3D11Utils::CreateVertexBuffer(device, meshData.vertices,
+            newMesh->vertexBuffer);
+        D3D11Utils::CreateIndexBuffer(device, meshData.indices,
+            newMesh->indexBuffer);
+
+        newMesh->vertexConstantBuffer = mVertexConstantBuffer;
+        newMesh->pixelConstantBuffer = mPixelConstantBuffer;
+
+        this->mMeshes.push_back(newMesh);
+    }
+}
+
+void FTBasicMeshGroup::CreateShaders(ComPtr<ID3D11Device>& device)
+{
+    vector<D3D11_INPUT_ELEMENT_DESC> basicInputElements = {
+        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
+         D3D11_INPUT_PER_VERTEX_DATA, 0},
+        {"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3,
+         D3D11_INPUT_PER_VERTEX_DATA, 0},
+        {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3 + 4 * 3,
+         D3D11_INPUT_PER_VERTEX_DATA, 0},
+        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 + 4 * 3 + 4 * 3,
+         D3D11_INPUT_PER_VERTEX_DATA, 0},
+    };
+
+    D3D11Utils::CreateVertexShaderAndInputLayout(
+        device, VERTEX_SHADER_PATH, basicInputElements,
+        mBasicVertexShader, mBasicInputLayout);
+
+    D3D11Utils::CreatePixelShader(device, PIXEL_SHADER_PATH,
+        mBasicPixelShader);
 }
 
 HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)

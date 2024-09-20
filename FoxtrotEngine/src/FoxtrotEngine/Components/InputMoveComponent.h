@@ -3,6 +3,12 @@
 
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
 
+enum class MoveState {
+    Idle,
+    LeftMove,
+    RightMove
+};
+
 class InputMoveComponent :
     public MoveComponent
 {
@@ -22,7 +28,8 @@ public:
     void  SetMaxBreakSpeed(float speed) { mBreakSpeed = speed; }
 
 public:
-    void ProcessInput(class KeyInputManager* keyInputManager) override;
+    virtual void Initialize(FTCore* coreInstance) override;
+            void ProcessInput(class KeyInputManager* keyInputManager) override;
     virtual void Update(float deltaTime) override;
     virtual void LateUpdate(float deltaTime) override;
 
@@ -40,5 +47,10 @@ private:
     float mAccelerationAngular;
     float mBreakSpeed;
     int   currentDir;
+
+    MoveState mMoveState;
+
+public:
+    virtual void EditorUpdate(float deltaTime) override;
 };
 

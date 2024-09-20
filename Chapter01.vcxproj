@@ -280,7 +280,7 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Physics\Physics2D.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\D3D11Utils.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\FoxtrotRenderer.cpp" />
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTAnimation.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpriteAnimation.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTBasicMeshGroup.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTResource.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTTexture.cpp" />
@@ -474,7 +474,7 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\D3D11Utils.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\FoxtrotRenderer.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\resource1.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTAnimation.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpriteAnimation.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTBasicMeshGroup.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTResource.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTTexture.h" />

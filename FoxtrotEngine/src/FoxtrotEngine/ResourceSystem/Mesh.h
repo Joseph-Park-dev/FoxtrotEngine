@@ -27,7 +27,6 @@ struct PixelShaderConstantBuffer {
 static_assert((sizeof(PixelShaderConstantBuffer) % 16) == 0,
     "Constant Buffer size must be 16-byte aligned");
 
-// 같은 메쉬를 여러번 그릴 때 버퍼들을 재사용
 struct Mesh {
     ComPtr<ID3D11Buffer> vertexBuffer;
     ComPtr<ID3D11Buffer> indexBuffer;

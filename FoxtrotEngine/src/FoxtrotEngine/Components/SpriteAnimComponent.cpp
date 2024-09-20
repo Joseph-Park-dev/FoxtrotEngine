@@ -19,7 +19,7 @@ SpriteAnimComponent::SpriteAnimComponent(Actor* owner, int drawOrder, int update
 
 void SpriteAnimComponent::InitializeAnimation()
 {
-	SetTileSizeOnMap(FTVector2(64, 29));
+	SetTileSizeOnMap(FTVector2(320, 320));
 	SetTileSizeOnScreen(FTVector2(1, 1));
 	//SetTexKey("SpriteAnim");
 	if (!GetCSVFileMapPath().empty()) {
@@ -41,7 +41,7 @@ void SpriteAnimComponent::InitializeAnimation()
 		MeshRendererComponent::InitializeMesh();
 		mMaxFrame = GetMeshGroup()->GetMeshCount();
 
-		GetOwner()->GetTransform()->SetScale(FTVector3(0.3f, 0.18f, 0.0f));
+		GetOwner()->GetTransform()->SetScale(FTVector3(0.3f, 0.3f, 0.0f));
 	}
 }
 

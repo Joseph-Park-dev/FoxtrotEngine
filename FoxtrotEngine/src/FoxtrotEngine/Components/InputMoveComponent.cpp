@@ -8,7 +8,7 @@
 
 InputMoveComponent::InputMoveComponent(Actor* owner, int drawOrder, int updateOrder)
 	: MoveComponent(owner, drawOrder, updateOrder)
-	, mMaxForwardSpeed(0.f)
+	, mMaxForwardSpeed(1.7f)
 	, mMaxAngularSpeed(0.f)
 	, mAccelerationForward(0.f)
 	, mAccelerationAngular(0.f)
@@ -16,21 +16,38 @@ InputMoveComponent::InputMoveComponent(Actor* owner, int drawOrder, int updateOr
 	, currentDir(0)
 {}
 
+void InputMoveComponent::Initialize(FTCore* coreInstance)
+{
+	Component::Initialize(coreInstance);
+}
+
 void InputMoveComponent::ProcessInput(KeyInputManager* keyInputManager)
 {
-	Move();
-	Rotate();
+	if (KEY_HOLD(KEY::A)) {
+		mMoveState = MoveState::LeftMove;
+	}
+	if (KEY_HOLD(KEY::D)) {
+		mMoveState = MoveState::RightMove;
+	}
+	if (KEY_NONE(KEY::A) && KEY_NONE(KEY::D)) {
+		mMoveState = MoveState::Idle;
+	}
 }
 
 void InputMoveComponent::Update(float deltaTime)
 {
-	/*if (!Math::NearZero(GetAngularSpeed()))
-	{
-		float rot = GetOwner()->GetRotation();
-		rot += GetAngularSpeed() * deltaTime;
-		GetOwner()->SetRotation(rot);
-	}*/
-	MoveComponent::Update(deltaTime);
+	int dir = 0;
+	if (mMoveState == MoveState::LeftMove) {
+		dir = -1;
+	}
+	else if (mMoveState == MoveState::RightMove) {
+		dir = 1;
+	}
+	GetOwner()->GetTransform()->SetCurrentDirection(dir);
+	FTVector3 pos = GetOwner()->GetTransform()->GetWorldPosition();
+	GetOwner()->GetTransform()->SetWorldPosition(
+		pos + FTVector3(mMaxForwardSpeed,0.f,0.f) * deltaTime * dir
+	);
 }
 
 void InputMoveComponent::Move()
@@ -56,6 +73,11 @@ void InputMoveComponent::Move()
 	//	if (GetPrevMovingState() != MOVING_DOWN)
 	//		SetMovingState(MOVING_DOWN);
 	//}
+}
+
+void InputMoveComponent::EditorUpdate(float deltaTime)
+{
+	this->Update(deltaTime);
 }
 
 void InputMoveComponent::LateUpdate(float deltaTime)

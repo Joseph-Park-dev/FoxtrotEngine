@@ -5,6 +5,7 @@
 
 #include "FoxtrotEngine/ResourceSystem/Tile.h"
 #include "FoxtrotEngine/ResourceSystem/FTTexture.h"
+#include "FoxtrotEngine/ResourceSystem/FTSpriteAnimation.h"
 #include "FoxtrotEngine/Managers/ResourceManager.h"
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
 #include "FoxtrotEngine/Core/FTCore.h"
@@ -18,7 +19,7 @@ AnimatorComponent::AnimatorComponent(Actor* owner, int drawOrder, int updateOrde
 
 AnimatorComponent::~AnimatorComponent()
 {
-	std::unordered_map<std::wstring, FTAnimation*>::iterator iter = mMapAnimation.begin();
+	std::unordered_map<std::wstring, FTSpriteAnimation*>::iterator iter = mMapAnimation.begin();
 	for (; iter != mMapAnimation.end(); ++iter)
 	{
 		delete iter->second;
@@ -27,14 +28,14 @@ AnimatorComponent::~AnimatorComponent()
 }
 
 void AnimatorComponent::CreateAnimationFromTile(
-	const std::wstring& name, const std::wstring& fileName
+	const std::string& name, const std::string& fileName
 	, int tileSizeX, int tileSizeY, float speed)
 {
-	FTAnimation* animation = FindAnimation(name);
+	FTSpriteAnimation* animation = FindAnimation(name);
 	if (animation == nullptr)
 	{
 		//InitializeTileMap(fileName, tileSizeX, tileSizeY);
-		animation = new FTAnimation;
+		animation = new FTSpriteAnimation;
 		animation->SetName(name);
 		animation->SetAnimator(this);
 		//for (int y = 0; y < GetTileCountY(); y++)
@@ -47,7 +48,7 @@ void AnimatorComponent::CreateAnimationFromTile(
 		LogString(L"Animation has already been created", name.c_str());
 }
 
-void AnimatorComponent::Play(const std::wstring& name, bool isRepeating)
+void AnimatorComponent::Play(const std::string& name, bool isRepeating)
 {
 	mCurrentAnim = FindAnimation(name);
 	if (mCurrentAnim == nullptr)
@@ -57,9 +58,9 @@ void AnimatorComponent::Play(const std::wstring& name, bool isRepeating)
 	mIsRepeating = isRepeating;
 }
 
-FTAnimation* AnimatorComponent::FindAnimation(const std::wstring& name)
+FTSpriteAnimation* AnimatorComponent::FindAnimation(const std::wstring& name)
 {
-	std::unordered_map<std::wstring, FTAnimation*>::iterator iter = mMapAnimation.find(name);
+	std::unordered_map<std::wstring, FTSpriteAnimation*>::iterator iter = mMapAnimation.find(name);
 	if (iter == mMapAnimation.end())
 	{
 		LogString(L"Cannot find animation", name.c_str());

@@ -42,13 +42,13 @@ bool MeshRendererComponent::InitializeMesh(){
 		std::vector<MeshData>& meshData = ResourceManager::GetInstance()->GetLoadedMeshes(mMeshKey);
 		mMeshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
 		if (!mMeshGroup) {
-			LogString("ERROR: MeshRendererComponent::InitializeMesh() -> Mesh Init failed");
+			LogString("ERROR: MeshRendererComponent::InitializeMesh() -> Mesh Init failed.\n");
 			return false;
 		}
 		return true;
 	}
 	else {
-		LogString("ERROR: MeshRendererComponent::InitializeMesh() -> Key doesn't exist");
+		LogString("ERROR: MeshRendererComponent::InitializeMesh() -> Key doesn't exist.\n");
 		return false;
 	}
 }
@@ -92,7 +92,7 @@ void MeshRendererComponent::SetTexture() {
 	if (!mTexKey.empty())
 		GetMeshGroup()->SetTexture(mTexKey);
 	else 
-		LogString("ERROR: MeshRendererComponent::SetTexture() -> Key doesn't exist");
+		LogString("ERROR: MeshRendererComponent::SetTexture() -> Key doesn't exist.\n");
 }
 
 MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder)
@@ -107,11 +107,13 @@ MeshRendererComponent::~MeshRendererComponent(){
 }
 
 void MeshRendererComponent::UpdateConstantBufferModel(Transform* transform){
-	DirectX::XMFLOAT3 scale = transform->GetScale().GetDXVec3();
+	FTVector3 scale = transform->GetScale();
+	int dir = transform->GetCurrentDirection();
+	DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x * dir, scale.y, scale.z);
 	DirectX::XMFLOAT3 worldPos = transform->GetWorldPosition().GetDXVec3();
 	// 모델의 변환 -> 모델 행렬 결정
 	Matrix model =
-		DXMatrix::CreateScale(scale) *
+		DXMatrix::CreateScale(scaleWithDir) *
 		DXMatrix::CreateRotationY(transform->GetRotation().y) *
 		DXMatrix::CreateRotationX(transform->GetRotation().x) *
 		DXMatrix::CreateRotationZ(transform->GetRotation().z) *

@@ -127,7 +127,7 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\FoxtrotRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTAnimation.cpp">
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpriteAnimation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTResource.cpp">
@@ -450,7 +450,7 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Physics\Ray.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Physics\RayCastHit2D.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\FoxtrotRenderer.h" />
-    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTAnimation.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpriteAnimation.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTResource.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTTexture.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\Mesh.h" />

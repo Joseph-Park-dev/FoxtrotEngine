@@ -29,7 +29,7 @@ void Scene_Start::LoadData()
 	ResourceManager::GetInstance()->LoadTexture("Asteroid3", asteroidSprite);
 	ResourceManager::GetInstance()->LoadBasicMesh(MAPKEY_SPRITE_MESH, GeometryGenerator::MakeSquare(1.0f));
 
-	ResourceManager::GetInstance()->LoadTexture("TestTileTex", "Tiles.png");
+	ResourceManager::GetInstance()->LoadTexture("HenryRunning", "Henry_Running_TEST/Henry_Running_TEST.png");
 	ResourceManager::GetInstance()->LoadTexture("SpriteAnim", "ShipTileMap.png");
 
 	//ResourceManager::GetInstance()->GetLoadedTexture("TEST");

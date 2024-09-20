@@ -62,6 +62,10 @@ void SceneManager::SwitchScene(SCENE_TYPE sceneType)
 }
 
 #ifdef _DEBUG
+void SceneManager::EditorProcessInput(KeyInputManager* keyInputManager) {
+	mPCurrScene->EditorProcessInput(keyInputManager);
+}
+
 void SceneManager::EditorUpdate(float deltaTime)
 {
 	mPCurrScene->EditorUpdate(deltaTime);

@@ -30,10 +30,10 @@ public:
 	void				LoadBasicMesh(const std::string key, MeshData meshData);
 	void				LoadBasicMesh(const std::string key, std::vector<MeshData> meshData);
 
-	FTTexture*				GetLoadedTexture(const std::string key);
-	//FTSpineAnimation*	GetLoadedSpineAnimation(std::string key);
+	FTTexture*			GetLoadedTexture(const std::string key);
+	// FTSpineAnimation*	GetLoadedSpineAnimation(std::string key);
 	// Load a previously loaded FTTexture to Spine Atlas Page
-	//void				LoadToSpineTexture(spine::AtlasPage& page, spine::String fileName);
+	// void				LoadToSpineTexture(spine::AtlasPage& page, spine::String fileName);
 	std::vector<MeshData>&	GetLoadedMeshes(const std::string key);
 
 	void				RemoveLoadedMeshes(const std::string key);

@@ -96,7 +96,7 @@ void FTCoreEditor::ProcessInput()
 	KeyInputManager::GetInstance()->DetectKeyInput();
 	KeyInputManager::GetInstance()->DetectMouseInput(msg);
 	//KeyInputManager::GetInstance()->DetectGamepadInput();
-	SceneManager::GetInstance()->ProcessInput(KeyInputManager::GetInstance());
+	SceneManager::GetInstance()->EditorProcessInput(KeyInputManager::GetInstance());
 	TranslateMessage(&msg);
 	DispatchMessage(&msg);
 }

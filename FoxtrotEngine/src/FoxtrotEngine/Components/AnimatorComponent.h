@@ -4,26 +4,26 @@
 #include <unordered_map>
 #include <string>
 
-#include "FoxtrotEngine/ResourceSystem/FTAnimation.h"
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
 
 class FoxtrotRenderer;
+class FTSpriteAnimation;
 
 class AnimatorComponent :
-    public TileMapComponent
+    public Component
 {
 public:
     void CreateAnimationFromTile
     (
-        const std::wstring& name, 
-        const std::wstring& fileName, 
+        const std::string& name, 
+        const std::string& fileName, 
         int tileSizeX, 
         int tileSizeY, 
         float speed
     );
-    void Play(const std::wstring& name, bool isRepeating);
-    void SaveAnimation(const std::wstring& animName, const std::wstring& path);
-    void LoadAnimation(const std::wstring& path);
+    void Play(const std::string& name, bool isRepeating);
+    //void SaveAnimation(const std::wstring& animName, const std::wstring& path);
+    //void LoadAnimation(const std::wstring& path);
     
 public:
     std::wstring GetName() const override
@@ -40,12 +40,12 @@ public:
     ~AnimatorComponent();
 
 private:
-    std::unordered_map<std::wstring, FTAnimation*> mMapAnimation;
-    FTAnimation*          mCurrentAnim;
+    std::unordered_map<std::wstring, FTSpriteAnimation*> mMapAnimation;
+    FTSpriteAnimation*  mCurrentAnim;
     bool                mIsRepeating;
 
 private:
-    FTAnimation* FindAnimation(const std::wstring& name);
+    FTSpriteAnimation* FindAnimation(const std::wstring& name);
 
 public:
     virtual void SaveProperties(nlohmann::ordered_json& out) override;

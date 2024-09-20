@@ -31,12 +31,19 @@ void Transform::Translate(FTVector3 translation)
 //}
 //#endif // _DEBUG
 
+void Transform::SetCurrentDirection(int dir)
+{
+	if (dir != 0)
+		mCurrentDirection = dir;
+}
+
 Transform::Transform()
 	: mWorldPosition	(FTVector3::Zero)
 	, mScreenPosition	(FTVector3::Zero)
 	, mLocalPosition	(FTVector3::Zero)
 	, mScale			(FTVector3(1.0f, 1.0f, 1.0f))
 	, mRotation			(FTVector3(0.0f, 0.0f, 0.0f))
+	, mCurrentDirection	(1)
 {}
 
 Transform::Transform(Transform & origin)

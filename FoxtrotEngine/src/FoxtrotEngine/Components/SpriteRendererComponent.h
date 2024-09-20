@@ -9,7 +9,6 @@ class FTTexture;
 class FoxtrotRenderer;
 struct Mesh;
 
-#define SPRITE_FORMAT_SUPPORTED ".png, .jpeg"
 #define MAPKEY_SPRITE_MESH "BasicSquare"
 
 class SpriteRendererComponent : public MeshRendererComponent

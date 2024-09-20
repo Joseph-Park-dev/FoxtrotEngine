@@ -81,3 +81,23 @@ void FTTexture::SaveProperties(nlohmann::ordered_json& out)
     FileIOHelper::AddScalarValue(out["Width"], mTexWidth);
     FileIOHelper::AddScalarValue(out["Height"], mTexHeight);
 }
+
+void FTTexture::UpdateUI(std::string key)
+{
+    if (ImGui::BeginListBox(key.c_str(), ImVec2(-FLT_MIN, 200)))
+    {
+        ImGui::Text(key.c_str());
+
+        ID3D11ShaderResourceView* viewportTexture = this->mTextureResourceView.Get();
+        ImVec2 previewSize = ImVec2(100, 100);
+        ImGui::Image((void*)viewportTexture, previewSize);
+
+        //UpdateRelativePath(TEXTURE_FORMAT_SUPPORTED);
+        std::string currentPath = "No path has been assigned";
+        if (!GetRelativePath().empty())
+            currentPath = "Current path : \n" + GetRelativePath();
+        ImGui::InputInt("Width", &mTexWidth);
+        ImGui::InputInt("Height", &mTexHeight);
+        ImGui::EndListBox();
+    }
+}

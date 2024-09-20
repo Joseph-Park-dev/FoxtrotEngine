@@ -66,6 +66,8 @@ private:
 	void DisplayViewport();
 	void DisplayFileMenu();
 	void DisplayHierarchyMenu();
+	void DisplayResourceMenu();
+
 	void DisplayInspectorMenu();
 	void ApplyCommandHistory();
 	bool SceneViewportSizeChanged();

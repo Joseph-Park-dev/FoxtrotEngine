@@ -7,6 +7,7 @@
 #include "FoxtrotEngine/ResourceSystem/FTSpineAnimation.h"
 #include "FoxtrotEngine/ResourceSystem/GeometryGenerator.h"
 #include "FoxtrotEngine/ResourceSystem/FTBasicMeshGroup.h"
+#include "FoxtrotEngine/ResourceSystem/FTTileMap.h"
 #include "FoxtrotEngine/Core/FTCore.h"
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
@@ -130,6 +131,20 @@ void ResourceManager::LoadBasicMesh(const std::string key, std::vector<MeshData>
 	mMapMeshes.insert(std::make_pair(key, meshData));
 }
 
+void ResourceManager::LoadTileMap(const std::string key, const std::string filePath)
+{
+	std::string path = mPathToAsset + filePath;
+	if (!KeyExists(key, mMapTileMaps)) {
+		printf("Message: Loading tilemap %s to key %s. \n", path.c_str(), key.c_str());
+		FTTileMap* tileMap = new FTTileMap;
+		tileMap->SetRelativePath(path);
+		mMapTileMaps.insert(std::make_pair(key, tileMap));
+	}
+	else {
+		printf("Warning : FTTileMap %s is already loaded to key %s.\n", filePath.c_str(), key.c_str());
+	}
+}
+
 FTTexture* ResourceManager::GetLoadedTexture(const std::string key)
 {
 	FTTexture* ptTex = mMapTextures.at(key);
@@ -172,9 +187,16 @@ std::vector<MeshData>& ResourceManager::GetLoadedMeshes(const std::string key)
 	if (!meshes.empty())
 		return meshes;
 	else
-	{
 		printf("Error: ResourceManager::GetLoadedMeshes() -> Mesh is empty %s\n", key.c_str());
-	}
+}
+
+FTTileMap* ResourceManager::GetLoadedTileMap(const std::string key)
+{
+	FTTileMap* tileMap = mMapTileMaps.at(key);
+	if (tileMap)
+		return tileMap;
+	else
+		printf("Error: ResourceManager::GetLoadedTileMap() -> FTTileMap is empty %s\n", key.c_str());
 }
 
 void ResourceManager::RemoveLoadedMeshes(const std::string key)
@@ -184,14 +206,6 @@ void ResourceManager::RemoveLoadedMeshes(const std::string key)
 	}
 	else {
 		printf("Error: ResourceManager::RemoveLoadedMeshes() -> Mesh with key %s does not exist\n", key.c_str());
-	}
-}
-
-void ResourceManager::SaveResources(nlohmann::ordered_json& out)
-{
-	std::unordered_map<std::string, FTTexture*>::const_iterator iter;
-	for (iter = mMapTextures.begin(); iter != mMapTextures.end(); ++iter) {
-		(*iter).second->SaveProperties(out["Textures"][(*iter).first]);
 	}
 }
 
@@ -215,10 +229,29 @@ ResourceManager::ResourceManager()
 
 }
 
-//void ResourceManager::LoadToSpineTexture(spine::AtlasPage& page, spine::String fileName)
-//{
-//	mSpineTextureLoader->load(page, fileName);
-//}
+#ifdef _DEBUG
+void ResourceManager::SaveResources(nlohmann::ordered_json& out)
+{
+	std::unordered_map<std::string, FTTexture*>::const_iterator iter;
+	for (iter = mMapTextures.begin(); iter != mMapTextures.end(); ++iter) {
+		(*iter).second->SaveProperties(out["Textures"][(*iter).first]);
+	}
+}
+
+void ResourceManager::UpdateUI()
+{
+	if (ImGui::TreeNode("Textures"))
+	{
+		std::unordered_map<std::string, FTTexture*>::const_iterator texIter;
+		texIter = mMapTextures.begin();
+		for (texIter = mMapTextures.begin(); texIter != mMapTextures.end(); ++texIter) {
+			std::string key = (*texIter).first;
+			(*texIter).second->UpdateUI(key);
+		}
+		ImGui::TreePop();
+	}
+}
+#endif
 
 void SpineTextureLoader::load(spine::AtlasPage& page, const spine::String& path)
 {

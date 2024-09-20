@@ -147,7 +147,7 @@ void SpriteRendererComponent::UpdateSprite(){
 		IGFD::FileDialogConfig config;
 		config.path = ".";
 		config.countSelectionMax = 1;
-		ImGuiFileDialog::Instance()->OpenDialog("SelectSprite", "Select Sprite", SPRITE_FORMAT_SUPPORTED, config);
+		ImGuiFileDialog::Instance()->OpenDialog("SelectSprite", "Select Sprite", TEXTURE_FORMAT_SUPPORTED, config);
 		ImGui::OpenPopup("Select Sprite");
 	}
 
@@ -169,6 +169,7 @@ void SpriteRendererComponent::UpdateSprite(){
 			ImGui::TreePop();
 			if (selected != -1) {
 				SetTexKey(spriteKey);
+				SetTexture();
 			}
 		}
 		if (ImGui::Button("Close"))

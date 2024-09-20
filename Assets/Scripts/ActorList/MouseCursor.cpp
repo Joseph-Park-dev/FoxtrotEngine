@@ -15,7 +15,7 @@ void MouseCursor::RenderActor(FoxtrotRenderer* renderer)
 {
 	if (mTM != nullptr)
 	{
-		Tile* cursorIMG = mTM->GetTile(0, 0);
+		//Tile* cursorIMG = mTM->GetTile(0, 0);
 		//mTM->DrawIndividualTileOnPos(renderer, mCursorPosition, cursorIMG);
 	}
 }

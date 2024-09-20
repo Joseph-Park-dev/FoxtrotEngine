@@ -68,4 +68,10 @@ private:
 public:
 	FTBasicMeshGroup();
 	~FTBasicMeshGroup() override;
+
+#ifdef _DEBUG
+public:
+	virtual void UpdateUI(std::string key) override {};
+
+#endif // _DEBUG
 };

@@ -363,6 +363,7 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Actors\RectTransform.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\FTRect.cpp" />
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineAnimation.cpp" />
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTTileMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets\Scripts\ActorList\Asteroid.h" />
@@ -596,6 +597,7 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Actors\RectTransform.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\FTRect.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTSpineAnimation.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTTileMap.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

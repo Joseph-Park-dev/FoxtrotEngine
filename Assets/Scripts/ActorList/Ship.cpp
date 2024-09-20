@@ -48,6 +48,6 @@ void Ship::UpdateAnimation()
 	switch (mCurrentState)
 	{
 	case PLAYER_STATE::WALKING_LEFT:
-		ac->Play(L"WalkingLeft", true);
+		ac->Play("WalkingLeft", true);
 	}
 }

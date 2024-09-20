@@ -19,30 +19,30 @@ SpriteAnimComponent::SpriteAnimComponent(Actor* owner, int drawOrder, int update
 
 void SpriteAnimComponent::InitializeAnimation()
 {
-	SetTileSizeOnMap(FTVector2(320, 320));
-	SetTileSizeOnScreen(FTVector2(1, 1));
-	//SetTexKey("SpriteAnim");
-	if (!GetCSVFileMapPath().empty()) {
-		SetTexture();
-		assert(GetTexture());
-		SetMaxCountOnMapX(GetTexture()->GetTexWidth() / GetTileSizeOnMap().x);
-		SetMaxCountOnMapY(GetTexture()->GetTexHeight() / GetTileSizeOnMap().y);
-		ReadCSV();
-		assert(GetMaxCountOnScreenX() != 0 && GetMaxCountOnScreenY() != 0);
-		ResourceManager::GetInstance()->LoadBasicMesh(
-			GetCSVFileMapPath(),
-			GeometryGenerator::MakeSpriteAnimation(
-				GetCurrentTileMap(),
-				GetMaxCountOnScreenX(),
-				GetMaxCountOnScreenY()
-			)
-		);
-		SetMeshKey(GetCSVFileMapPath());
-		MeshRendererComponent::InitializeMesh();
-		mMaxFrame = GetMeshGroup()->GetMeshCount();
+	//SetTileSizeOnMap(FTVector2(320, 320));
+	//SetTileSizeOnScreen(FTVector2(1, 1));
+	////SetTexKey("SpriteAnim");
+	//if (!GetCSVFileMapPath().empty()) {
+	//	SetTexture();
+	//	assert(GetTexture());
+	//	SetMaxCountOnMapX(GetTexture()->GetTexWidth() / GetTileSizeOnMap().x);
+	//	SetMaxCountOnMapY(GetTexture()->GetTexHeight() / GetTileSizeOnMap().y);
+	//	ReadCSV();
+	//	assert(GetMaxCountOnScreenX() != 0 && GetMaxCountOnScreenY() != 0);
+	//	ResourceManager::GetInstance()->LoadBasicMesh(
+	//		GetCSVFileMapPath(),
+	//		GeometryGenerator::MakeSpriteAnimation(
+	//			GetCurrentTileMap(),
+	//			GetMaxCountOnScreenX(),
+	//			GetMaxCountOnScreenY()
+	//		)
+	//	);
+	//	SetMeshKey(GetCSVFileMapPath());
+	//	MeshRendererComponent::InitializeMesh();
+	//	mMaxFrame = GetMeshGroup()->GetMeshCount();
 
-		GetOwner()->GetTransform()->SetScale(FTVector3(0.3f, 0.3f, 0.0f));
-	}
+	//	GetOwner()->GetTransform()->SetScale(FTVector3(0.3f, 0.3f, 0.0f));
+	//}
 }
 
 void SpriteAnimComponent::EditorUIUpdate()
@@ -75,12 +75,12 @@ void SpriteAnimComponent::UpdatePlayAnim()
 
 void SpriteAnimComponent::OnConfirmUpdate()
 {
-	if (ImGui::Button("Update")) {
+	/*if (ImGui::Button("Update")) {
 		if (!GetCSVFileMapPath().empty())
 			this->InitializeAnimation();
 		else
 			printf("ERROR: SpriteAnimComponent::ConfirmUpdate() -> .CSV path is null");
-	}
+	}*/
 }
 
 void SpriteAnimComponent::Initialize(FTCore* coreInstance){

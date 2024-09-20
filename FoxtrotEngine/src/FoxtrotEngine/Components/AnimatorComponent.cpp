@@ -12,7 +12,7 @@
 #include "FoxtrotEngine/FileSystem/ChunkLoader.h"
 
 AnimatorComponent::AnimatorComponent(Actor* owner, int drawOrder, int updateOrder)
-	: TileMapComponent(owner, drawOrder)
+	: Component(owner, drawOrder)
 	, mCurrentAnim(nullptr)
 	, mIsRepeating(false)
 {}
@@ -31,31 +31,31 @@ void AnimatorComponent::CreateAnimationFromTile(
 	const std::string& name, const std::string& fileName
 	, int tileSizeX, int tileSizeY, float speed)
 {
-	FTSpriteAnimation* animation = FindAnimation(name);
-	if (animation == nullptr)
-	{
-		//InitializeTileMap(fileName, tileSizeX, tileSizeY);
-		animation = new FTSpriteAnimation;
-		animation->SetName(name);
-		animation->SetAnimator(this);
-		//for (int y = 0; y < GetTileCountY(); y++)
-		//	for (int x = 0; x < GetTileCountX(); x++)
-		//		animation->CreateFrameFromTile(&GetCurrentTileMap()[y][x]);
+	//FTSpriteAnimation* animation = FindAnimation(name);
+	//if (animation == nullptr)
+	//{
+	//	//InitializeTileMap(fileName, tileSizeX, tileSizeY);
+	//	animation = new FTSpriteAnimation;
+	//	animation->SetName(name);
+	//	animation->SetAnimator(this);
+	//	//for (int y = 0; y < GetTileCountY(); y++)
+	//	//	for (int x = 0; x < GetTileCountX(); x++)
+	//	//		animation->CreateFrameFromTile(&GetCurrentTileMap()[y][x]);
 
-		mMapAnimation.insert(std::make_pair(name, animation));
-	}
-	else
-		LogString(L"Animation has already been created", name.c_str());
+	//	//mMapAnimation.insert(std::make_pair(name, animation));
+	//}
+	//else
+		//LogString(L"Animation has already been created", name.c_str());
 }
 
 void AnimatorComponent::Play(const std::string& name, bool isRepeating)
 {
-	mCurrentAnim = FindAnimation(name);
+	/*mCurrentAnim = FindAnimation(name);
 	if (mCurrentAnim == nullptr)
 	{
 		LogString("Animation is null");
 	}
-	mIsRepeating = isRepeating;
+	mIsRepeating = isRepeating;*/
 }
 
 FTSpriteAnimation* AnimatorComponent::FindAnimation(const std::wstring& name)
@@ -80,12 +80,12 @@ FTSpriteAnimation* AnimatorComponent::FindAnimation(const std::wstring& name)
 
 void AnimatorComponent::SaveProperties(nlohmann::ordered_json& out)
 {
-	SpriteRendererComponent::SaveProperties(out);
+	//SpriteRendererComponent::SaveProperties(out);
 }
 
 void AnimatorComponent::LoadProperties(std::ifstream& ifs)
 {
-	SpriteRendererComponent::LoadProperties(ifs);
+	//SpriteRendererComponent::LoadProperties(ifs);
 	LogString("Animator LoadProperties() needs to be implemented");
 }
 

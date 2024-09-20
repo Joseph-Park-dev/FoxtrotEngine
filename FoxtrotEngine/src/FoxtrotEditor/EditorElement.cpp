@@ -21,7 +21,7 @@ void EditorElement::EditorLateUpdateActor()
 	CheckMouseHover();
 }
 
-void EditorElement::UIUpdate()
+void EditorElement::UpdateUI()
 {
 	if (GetIsFocused())
 	{

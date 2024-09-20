@@ -24,7 +24,7 @@ public:
 			void EditorLateUpdateComponents(float deltaTime);
 	virtual void EditorUpdateActor();
 	virtual void EditorLateUpdateActor();
-			void UIUpdate();
+			void UpdateUI();
 
 			void Render(FoxtrotRenderer* renderer);
 			void UIRender(FoxtrotRenderer* renderer);

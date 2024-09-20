@@ -9,6 +9,7 @@
 #include "FoxtrotEngine/ResourceSystem/MeshData.h"
 #include "FoxtrotEngine/ResourceSystem/FTTexture.h"
 #include "FoxtrotEngine/ResourceSystem/ModelLoader.h"
+#include "FoxtrotEngine/ResourceSystem/FTTileMap.h"
 #include "FoxtrotEngine/ResourceSystem/Tile.h"
 
 //#include "ModelLoader.h"
@@ -103,12 +104,13 @@ MeshData GeometryGenerator::MakeSquareGrid(
     return meshData;
 }
 
-std::vector<MeshData> GeometryGenerator::MakeTileMapGrid(Tile** tileMap, size_t columnCount, size_t rowCount)
+std::vector<MeshData> GeometryGenerator::MakeTileMapGrid(FTTileMap* tileMap)
 {
     std::vector<MeshData> tileMapMeshes;
-    for (size_t r = 0; r < rowCount; ++r) {
-        for (size_t c = 0; c < columnCount; ++c) {
-            MeshData tileMesh = MakeTile(&tileMap[r][c]);
+    for (size_t r = 0; r < tileMap->GetMaxCountOnScreenX(); ++r) {
+        for (size_t c = 0; c < tileMap->GetMaxCountOnScreenY(); ++c) {
+            Tile* tile = &tileMap->GetTileMap()[r][c];
+            MeshData tileMesh = MakeTile(tile);
             tileMapMeshes.push_back(tileMesh);
         }
     }

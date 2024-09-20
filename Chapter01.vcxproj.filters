@@ -400,6 +400,9 @@
     <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpineAnimRendererComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTTileMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets\Scripts\ActorList\Asteroid.h" />
@@ -589,6 +592,7 @@
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Renderer\D3D11Utils.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\Components\SpineAnimRendererComponent.h" />
     <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\MeshConstantData.h" />
+    <ClInclude Include="FoxtrotEngine\src\FoxtrotEngine\ResourceSystem\FTTileMap.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

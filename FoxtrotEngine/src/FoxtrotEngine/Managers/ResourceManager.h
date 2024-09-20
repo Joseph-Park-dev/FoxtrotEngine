@@ -13,6 +13,7 @@ class FTBasicMeshGroup;
 class FoxtrotRenderer;
 class SpineTextureLoader;
 class MeshData;
+class FTTileMap;
 
 class ResourceManager
 {
@@ -30,11 +31,14 @@ public:
 	void				LoadBasicMesh(const std::string key, MeshData meshData);
 	void				LoadBasicMesh(const std::string key, std::vector<MeshData> meshData);
 
+	void				LoadTileMap(const std::string key, const std::string filePath);
+
 	FTTexture*			GetLoadedTexture(const std::string key);
 	// FTSpineAnimation*	GetLoadedSpineAnimation(std::string key);
 	// Load a previously loaded FTTexture to Spine Atlas Page
 	// void				LoadToSpineTexture(spine::AtlasPage& page, spine::String fileName);
 	std::vector<MeshData>&	GetLoadedMeshes(const std::string key);
+	FTTileMap*			GetLoadedTileMap(const std::string key);
 
 	void				RemoveLoadedMeshes(const std::string key);
 
@@ -47,9 +51,9 @@ public:
 private:
 	SpineTextureLoader* mSpineTextureLoader;
 
-	std::unordered_map<std::string, FTTexture*> mMapTextures;
-	//std::unordered_map<std::string, FTSpineAnimation*> mMapSpineAnimData;
-	std::unordered_map<std::string, std::vector<MeshData>> mMapMeshes;
+	std::unordered_map<std::string, FTTexture*>				mMapTextures;
+	std::unordered_map<std::string, std::vector<MeshData>>	mMapMeshes;
+	std::unordered_map<std::string, FTTileMap*>				mMapTileMaps;
 
 	std::string mPathToAsset;
 	FoxtrotRenderer* mRenderer; // For Loading FTTextures
@@ -83,8 +87,12 @@ private:
 		return false;
 	}
 
+#ifdef _DEBUG
 public:
 	void SaveResources(nlohmann::ordered_json& out);
+
+	void UpdateUI();
+#endif
 };
 
 class SpineTextureLoader : public spine::TextureLoader{

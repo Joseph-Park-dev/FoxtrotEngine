@@ -24,6 +24,11 @@ public:
 public:
 	virtual void SaveProperties(nlohmann::ordered_json& out);
 
+	virtual void UpdateUI(std::string key) = 0;
+
+protected:
+	void UpdateRelativePath(std::string fileExtension);
+
 #endif // _DEBUG
 
 };

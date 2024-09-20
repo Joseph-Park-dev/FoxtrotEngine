@@ -21,6 +21,7 @@
 #include "FoxtrotEngine/FileSystem/ChunkLoader.h"
 #include "FoxtrotEngine/Managers/SceneManager.h"
 #include "FoxtrotEngine/Managers/KeyInputManager.h"
+#include "FoxtrotEngine/Managers/ResourceManager.h"
 #include "FoxtrotEngine/Scenes/Scene.h"
 #include "FoxtrotEngine/Actors/Actor.h"
 #include "FoxtrotEngine/Actors/ActorGroup.h"
@@ -52,6 +53,7 @@ void EditorLayer::Update(float deltaTime)
 	DisplayViewport();
 	DisplayFileMenu();
 	DisplayHierarchyMenu();
+	DisplayResourceMenu();
 	DisplayInspectorMenu();
 	Camera::GetInstance()->DisplayCameraMenu();
 	ApplyCommandHistory();
@@ -259,6 +261,14 @@ void EditorLayer::DisplayHierarchyMenu()
 	ImGui::End();
 }
 
+void EditorLayer::DisplayResourceMenu()
+{
+	std::string menuID = "Resource Manager";
+	ImGui::Begin(menuID.c_str());
+	ResourceManager::GetInstance()->UpdateUI();
+	ImGui::End();
+}
+
 void EditorLayer::DisplayInspectorMenu()
 {
 	std::string menuID = "Inspector";
@@ -268,7 +278,7 @@ void EditorLayer::DisplayInspectorMenu()
 		//mEditorElements[i]->EditorUpdateComponents(deltaTime);
 		if (mEditorElements[i]->GetIsFocused())
 		{
-			mEditorElements[i]->UIUpdate();
+			mEditorElements[i]->UpdateUI();
 			if (mDeleteKeyPressed)
 			{
 				// Delete game object, and erase the pointed from std::vector

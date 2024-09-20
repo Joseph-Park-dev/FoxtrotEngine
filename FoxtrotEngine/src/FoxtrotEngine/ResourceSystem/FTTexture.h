@@ -6,6 +6,8 @@
 
 class FoxtrotRenderer;
 
+#define TEXTURE_FORMAT_SUPPORTED ".png, .jpeg"
+
 class FTTexture :
     public FTResource
 {
@@ -32,6 +34,8 @@ public:
 public:
     FTTexture()
         : FTResource()
+        , mTexWidth(0)
+        , mTexHeight(0)
     {}
     virtual ~FTTexture() override { ReleaseTexture(); }
 
@@ -40,12 +44,14 @@ private:
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mTextureResourceView;
     Microsoft::WRL::ComPtr<ID3D11SamplerState>       mSamplerState;
 
-    int	mTexWidth;
-    int	mTexHeight;
+    int mTexWidth;
+    int mTexHeight;
 
 #ifdef _DEBUG
 public:
     virtual void SaveProperties(nlohmann::ordered_json& out) override;
+
+    virtual void UpdateUI(std::string key) override;
 
 #endif // _DEBUG
 

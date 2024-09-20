@@ -52,7 +52,6 @@ void SpineAnimRendererComponent::Render(FoxtrotRenderer* renderer){
     while (command) {
         MeshData meshData;
         FTTexture* tex = (FTTexture*)command->texture;
-        meshData.textureKey = tex->GetRelativePath();
         float* positions = command->positions;
         float* uvs = command->uvs;
         uint32_t* colors = command->colors;

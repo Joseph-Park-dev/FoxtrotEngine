@@ -2,12 +2,14 @@
 #include <string>
 #include <nlohmann/json.hpp>
 
+#define KEY_LENGTH 50
+
 class FTResource
 {
 public:
 	//std::string  GetKey() { return mKey; }
 	std::string  GetRelativePath(){ return mRelativePath; }
-	//void		 SetKey(const std::string _strKey) { mKey.assign(_strKey); }
+	//void		 SetKey(const std::string key) { mKey.assign(key); }
 	void		 SetRelativePath(const std::string _strPath) { mRelativePath.assign(_strPath); }
 
 protected:
@@ -16,7 +18,9 @@ protected:
 
 public:
 	FTResource()
-		: mRelativePath(std::string{})
+		: mRelativePath{}
+		//mKey{}
+		
 	{}
 	virtual ~FTResource(){}
 
@@ -24,9 +28,10 @@ public:
 public:
 	virtual void SaveProperties(nlohmann::ordered_json& out);
 
-	virtual void UpdateUI(std::string key) = 0;
+	virtual void UpdateUI(std::string& key) = 0;
 
 protected:
+	void UpdateKey(std::string& key);
 	void UpdateRelativePath(std::string fileExtension);
 
 #endif // _DEBUG

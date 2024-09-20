@@ -9,6 +9,8 @@
 
 #include "imgui/FileDialog/ImGuiFileDialog.h"
 #include "imgui/FileDialog/ImGuiFileDialogConfig.h"
+
+#include "FoxtrotEditor/EditorLayer.h"
 #endif // _DEBUG
 
 void FTResource::SaveProperties(nlohmann::ordered_json& out)
@@ -16,8 +18,18 @@ void FTResource::SaveProperties(nlohmann::ordered_json& out)
 	FileIOHelper::AddScalarValue(out["RelativePath"], mRelativePath);
 }
 
-void FTResource::UpdateUI(std::string key)
-{}
+void FTResource::UpdateKey(std::string& key)
+{
+    char* updatedName = _strdup(key.c_str());
+    if (ImGui::InputText("Key", updatedName, KEY_LENGTH))
+    {
+        if (EditorLayer::GetInstance()->GetConfirmKeyPressed())
+        {
+            CommandHistory::GetInstance()->
+                AddCommand(new StrEditCommand(key, std::string(updatedName)));
+        }
+    }
+}
 
 void FTResource::UpdateRelativePath(std::string fileExtension)
 {

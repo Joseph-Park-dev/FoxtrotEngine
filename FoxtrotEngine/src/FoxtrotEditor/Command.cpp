@@ -99,24 +99,24 @@ Vector2EditCommand::Vector2EditCommand(FTVector2& valRef, FTVector2 nextVal)
 {
 }
 
-void StrEditCommand::Execute()
+void WStrEditCommand::Execute()
 {
 	mPrevValue = mValue;
 	mValue = mNextValue;
 }
 
-void StrEditCommand::Undo()
+void WStrEditCommand::Undo()
 {
 	mValue = mPrevValue;
 }
 
-StrEditCommand::StrEditCommand(std::wstring& valRef, std::wstring nextVal)
+WStrEditCommand::WStrEditCommand(std::wstring& valRef, std::wstring nextVal)
 	: mPrevValue()
 	, mValue	(valRef)
 	, mNextValue(nextVal)
 {}
 
-StrEditCommand::~StrEditCommand()
+WStrEditCommand::~WStrEditCommand()
 {}
 
 BoolEditCommand::BoolEditCommand(bool& valRef, bool nextVal)
@@ -194,5 +194,26 @@ void DXVector3EditCommand::Undo()
 
 DXVector3EditCommand::DXVector3EditCommand(DirectX::SimpleMath::Vector3& valRef, DirectX::SimpleMath::Vector3 nextVal)
 	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
+{
+}
+
+void StrEditCommand::Execute()
+{
+	mPrevValue = mValue;
+	mValue = mNextValue;
+}
+
+void StrEditCommand::Undo()
+{
+	mValue = mPrevValue;
+}
+
+StrEditCommand::StrEditCommand(std::string& valRef, std::string nextVal)
+	: mPrevValue()
+	, mValue(valRef)
+	, mNextValue(nextVal)
+{}
+
+StrEditCommand::~StrEditCommand()
 {
 }

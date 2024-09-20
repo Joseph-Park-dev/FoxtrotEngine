@@ -76,18 +76,20 @@ bool FTTexture::ReleaseTexture()
     return true;
 }
 
+#ifdef _DEBUG
+#include "FoxtrotEditor/EditorLayer.h"
+
 void FTTexture::SaveProperties(nlohmann::ordered_json& out)
 {
     FileIOHelper::AddScalarValue(out["Width"], mTexWidth);
     FileIOHelper::AddScalarValue(out["Height"], mTexHeight);
 }
 
-void FTTexture::UpdateUI(std::string key)
+void FTTexture::UpdateUI(std::string& key)
 {
     if (ImGui::BeginListBox(key.c_str(), ImVec2(-FLT_MIN, 200)))
     {
-        ImGui::Text(key.c_str());
-
+        UpdateKey(key);
         ID3D11ShaderResourceView* viewportTexture = this->mTextureResourceView.Get();
         ImVec2 previewSize = ImVec2(100, 100);
         ImGui::Image((void*)viewportTexture, previewSize);
@@ -98,6 +100,8 @@ void FTTexture::UpdateUI(std::string key)
             currentPath = "Current path : \n" + GetRelativePath();
         ImGui::InputInt("Width", &mTexWidth);
         ImGui::InputInt("Height", &mTexHeight);
+
         ImGui::EndListBox();
     }
 }
+#endif // _DEBUG

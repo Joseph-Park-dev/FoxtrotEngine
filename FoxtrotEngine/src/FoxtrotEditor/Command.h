@@ -117,8 +117,24 @@ public:
 	void Undo() override;
 
 public:
-	StrEditCommand(std::wstring& valRef, std::wstring nextVal);
+	StrEditCommand(std::string& valRef, std::string nextVal);
 	~StrEditCommand();
+
+private:
+	std::string&  mValue;
+	std::string   mPrevValue;
+	std::string   mNextValue;
+};
+
+class WStrEditCommand : public Command
+{
+public:
+	void Execute() override;
+	void Undo() override;
+
+public:
+	WStrEditCommand(std::wstring& valRef, std::wstring nextVal);
+	~WStrEditCommand();
 
 private:
 	std::wstring&  mValue;

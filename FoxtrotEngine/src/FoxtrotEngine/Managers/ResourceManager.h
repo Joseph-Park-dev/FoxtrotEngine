@@ -48,6 +48,9 @@ public:
 		return mMapTextures; 
 	}
 
+public:
+	static UINT gItemID;
+
 private:
 	SpineTextureLoader* mSpineTextureLoader;
 

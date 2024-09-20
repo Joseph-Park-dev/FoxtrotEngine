@@ -13,6 +13,8 @@
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 #include "FoxtrotEngine/Renderer/D3D11Utils.h"
 
+UINT ResourceManager::gItemID = 0;
+
 void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 {
 	mRenderer = renderer;
@@ -21,11 +23,10 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 void ResourceManager::LoadTexture(const std::string key, const std::string filePath)
 {
 	FTTexture* ptTex = nullptr;
-	std::string path = mPathToAsset + filePath;
-	if (!ResourceExists<FTTexture*>(key, path, mMapTextures)) {
-		printf("Message: Loading FTTexture %s to key %s. \n", path.c_str(), key.c_str());
+	if (!ResourceExists<FTTexture*>(key, filePath, mMapTextures)) {
+		printf("Message: Loading FTTexture %s to key %s. \n", filePath.c_str(), key.c_str());
 		ptTex = new FTTexture;
-		ptTex->SetRelativePath(path);
+		ptTex->SetRelativePath(filePath);
 		D3D11Utils::CreateTexture(mRenderer->GetDevice(), mRenderer->GetContext(), ptTex);
 		if (!ptTex)
 			printf("Error: ResourceManager::LoadTexture() -> CreateTexture failed. \n");
@@ -230,6 +231,9 @@ ResourceManager::ResourceManager()
 }
 
 #ifdef _DEBUG
+#include "imgui/FileDialog/ImGuiFileDialog.h"
+#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
+
 void ResourceManager::SaveResources(nlohmann::ordered_json& out)
 {
 	std::unordered_map<std::string, FTTexture*>::const_iterator iter;
@@ -240,13 +244,37 @@ void ResourceManager::SaveResources(nlohmann::ordered_json& out)
 
 void ResourceManager::UpdateUI()
 {
+	if (ImGui::Button("Import")) {
+		IGFD::FileDialogConfig config;
+		config.path = ".";
+		config.countSelectionMax = 1;
+		std::string supportedFormat = TEXTURE_FORMAT_SUPPORTED + std::string(", .csv");
+		ImGuiFileDialog::Instance()->OpenDialog("SelectFile", "Select File", supportedFormat.c_str(), config);
+		ImGui::OpenPopup("Select File");
+	}
+	if (ImGuiFileDialog::Instance()->Display("SelectFile"))
+	{
+		if (ImGuiFileDialog::Instance()->IsOk()) {
+			std::string path = ImGuiFileDialog::Instance()->GetFilePathName();
+			std::string extension = path.substr(path.rfind("."));
+			
+			if (StrContains(TEXTURE_FORMAT_SUPPORTED, extension)) {
+				std::string relativePath = path.substr(path.rfind("assets"));
+				ResourceManager::GetInstance()->LoadTexture("Insert Key", relativePath);
+			}
+		}
+		ImGuiFileDialog::Instance()->Close();
+	}
 	if (ImGui::TreeNode("Textures"))
 	{
 		std::unordered_map<std::string, FTTexture*>::const_iterator texIter;
 		texIter = mMapTextures.begin();
 		for (texIter = mMapTextures.begin(); texIter != mMapTextures.end(); ++texIter) {
-			std::string key = (*texIter).first;
-			(*texIter).second->UpdateUI(key);
+			std::string updatedKey = (*texIter).first;
+			(*texIter).second->UpdateUI(updatedKey);
+			if ((*texIter).first.compare(updatedKey)) {
+				
+			}
 		}
 		ImGui::TreePop();
 	}

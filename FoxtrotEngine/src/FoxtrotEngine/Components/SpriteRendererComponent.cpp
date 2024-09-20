@@ -88,7 +88,6 @@ bool SpriteRendererComponent::InitializeMesh()
 #ifdef _DEBUG
 #include "FoxtrotEditor/CommandHistory.h"
 
-
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include "imgui/FileDialog/ImGuiFileDialog.h"

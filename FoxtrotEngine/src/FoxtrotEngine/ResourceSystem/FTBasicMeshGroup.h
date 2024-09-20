@@ -71,7 +71,7 @@ public:
 
 #ifdef _DEBUG
 public:
-	virtual void UpdateUI(std::string key) override {};
+	virtual void UpdateUI(std::string& key) override {};
 
 #endif // _DEBUG
 };

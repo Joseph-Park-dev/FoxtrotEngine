@@ -172,7 +172,7 @@ void EditorElement::UpdateActorName()
 		if (EditorLayer::GetInstance()->GetConfirmKeyPressed())
 		{
 			CommandHistory::GetInstance()->
-				AddCommand(new StrEditCommand(GetNameRef(), ToWString(updatedName)));
+				AddCommand(new WStrEditCommand(GetNameRef(), ToWString(updatedName)));
 		}
 	}
 }

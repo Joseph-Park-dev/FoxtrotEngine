@@ -23,14 +23,14 @@ void Scene_Start::LoadData()
 
 #ifdef _DEBUG
 	FoxtrotRenderer* currRenderer = FTCoreEditor::GetInstance()->GetGameRenderer();
-	std::string asteroidSprite = "Asteroid.png";
-	ResourceManager::GetInstance()->LoadTexture("Asteroid1", asteroidSprite);
-	ResourceManager::GetInstance()->LoadTexture("Asteroid2", asteroidSprite);
-	ResourceManager::GetInstance()->LoadTexture("Asteroid3", asteroidSprite);
+	//std::string asteroidSprite = "Asteroid.png";
+	//ResourceManager::GetInstance()->LoadTexture("Asteroid1", asteroidSprite);
+	//ResourceManager::GetInstance()->LoadTexture("Asteroid2", asteroidSprite);
+	//ResourceManager::GetInstance()->LoadTexture("Asteroid3", asteroidSprite);
 	ResourceManager::GetInstance()->LoadBasicMesh(MAPKEY_SPRITE_MESH, GeometryGenerator::MakeSquare(1.0f));
 
-	ResourceManager::GetInstance()->LoadTexture("HenryRunning", "Henry_Running_TEST/Henry_Running_TEST.png");
-	ResourceManager::GetInstance()->LoadTexture("SpriteAnim", "ShipTileMap.png");
+	//ResourceManager::GetInstance()->LoadTexture("HenryRunning", "Henry_Running_TEST/Henry_Running_TEST.png");
+	//ResourceManager::GetInstance()->LoadTexture("SpriteAnim", "ShipTileMap.png");
 
 	//ResourceManager::GetInstance()->GetLoadedTexture("TEST");
 

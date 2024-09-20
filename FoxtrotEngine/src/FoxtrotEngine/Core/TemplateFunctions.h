@@ -178,6 +178,10 @@ void Safe_Delete_Map(std::unordered_map<TKey, TVal>& map)
 	map.clear();
 }
 
+bool StrContains(const char* str, std::string value) {
+	return std::string(str).find(value) != std::string::npos;
+}
+
 #include <exception>
 
 // Exception handling for D3D11

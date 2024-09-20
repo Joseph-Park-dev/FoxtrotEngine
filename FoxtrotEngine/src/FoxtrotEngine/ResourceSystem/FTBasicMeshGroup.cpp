@@ -97,7 +97,7 @@ void FTBasicMeshGroup::UpdateModelWorld(DirectX::SimpleMath::Matrix& modelToWorl
     mBasicVertexConstantData.invTranspose = mInvTransposeRow.Transpose();
 }
 
-void FTBasicMeshGroup::SetTexture(std::string key)
+void FTBasicMeshGroup::SetTexture(UINT key)
 {
     mTexture = ResourceManager::GetInstance()->GetLoadedTexture(key);
 }

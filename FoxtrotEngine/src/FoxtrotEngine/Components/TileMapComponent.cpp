@@ -30,16 +30,15 @@ void TileMapComponent::Initialize(FTCore* coreInstance){
 }
 
 void TileMapComponent::InitializeTileMap() {
-    assert(mTileMapKey.empty());
-    assert(GetTexKey().empty());
-    assert(GetMeshKey().empty());
+    assert(mTileMapKey != VALUE_NOT_ASSIGNED);
+    assert(GetTexKey() != VALUE_NOT_ASSIGNED);
+    assert(GetMeshKey() != VALUE_NOT_ASSIGNED);
     mTileMap = ResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey);
     if (mTileMap)
     {
         SetTexture();
         mTileMap->ReadCSV();
         ResourceManager::GetInstance()->LoadBasicMesh(
-            GetMeshKey(),
             GeometryGenerator::MakeTileMapGrid(mTileMap)
         );
         MeshRendererComponent::InitializeMesh();
@@ -61,6 +60,7 @@ void TileMapComponent::Render(FoxtrotRenderer* renderer)
 TileMapComponent::TileMapComponent(Actor* owner, int drawOrder, int UpdateOrder)
     : SpriteRendererComponent(owner, drawOrder)
     , mTileMap(nullptr)
+    , mTileMapKey(VALUE_NOT_ASSIGNED)
 
 {}
 

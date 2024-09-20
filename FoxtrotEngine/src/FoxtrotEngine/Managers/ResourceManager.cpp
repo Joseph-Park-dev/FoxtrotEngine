@@ -13,27 +13,31 @@
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 #include "FoxtrotEngine/Renderer/D3D11Utils.h"
 
-UINT ResourceManager::gItemID = 0;
+UINT ResourceManager::gItemKey = 0;
 
 void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 {
 	mRenderer = renderer;
 }
 
-void ResourceManager::LoadTexture(const std::string key, const std::string filePath)
+void ResourceManager::LoadTexture(const std::string filePath)
 {
 	FTTexture* ptTex = nullptr;
+	UINT key = gItemKey;
+	std::string fileName = filePath.substr(filePath.rfind("\\")+1);
 	if (!ResourceExists<FTTexture*>(key, filePath, mMapTextures)) {
-		printf("Message: Loading FTTexture %s to key %s. \n", filePath.c_str(), key.c_str());
+		printf("Message: Loading FTTexture %s to key %d. \n", filePath.c_str(), key);
 		ptTex = new FTTexture;
+		ptTex->SetFileName(fileName);
 		ptTex->SetRelativePath(filePath);
 		D3D11Utils::CreateTexture(mRenderer->GetDevice(), mRenderer->GetContext(), ptTex);
 		if (!ptTex)
 			printf("Error: ResourceManager::LoadTexture() -> CreateTexture failed. \n");
 		mMapTextures.insert(std::make_pair(key, ptTex));
+		++gItemKey;
 	}
 	else {
-		printf("Warning : FTTexture %s is already loaded to key %s.\n", filePath.c_str(), key.c_str());
+		printf("Warning : FTTexture %s is already loaded to key %d.\n", filePath.c_str(), key);
 	}
 }
 
@@ -92,11 +96,12 @@ void ResourceManager::UpdateTexture(FTTexture* texture, int channels)
 //	return true;
 //}
 
-void ResourceManager::LoadMeshFromFile(const std::string key, const std::string filePath)
+void ResourceManager::LoadMeshFromFile(const std::string filePath)
 {
 	std::string path = mPathToAsset + filePath;
+	UINT key = gItemKey;
 	if (!KeyExists(key, mMapMeshes)) {
-		printf("Message: Loading Mesh %s to key %s. \n", path.c_str(), key.c_str());
+		printf("Message: Loading Mesh %s to key %d. \n", path.c_str(), key);
 		std::vector<MeshData> meshData = GeometryGenerator::ReadFromFile(filePath);
 		if (!meshData.empty())
 		{
@@ -104,56 +109,63 @@ void ResourceManager::LoadMeshFromFile(const std::string key, const std::string 
 			return;
 		}
 		mMapMeshes.insert(std::make_pair(key, meshData));
+		++gItemKey;
 	}
 	else {
-		printf("Warning : FTTexture %s is already loaded to key %s.\n", filePath.c_str(), key.c_str());
+		printf("Warning : FTTexture %s is already loaded to key %d.\n", filePath.c_str(), key);
 	}
 }
 
-void ResourceManager::LoadBasicMesh(const std::string key, MeshData meshData)
+void ResourceManager::LoadBasicMesh(MeshData meshData)
 {
 	std::vector<MeshData> meshDat;
 	meshDat.push_back(meshData);
+	UINT key = gItemKey;
 	if (meshDat.empty())
 	{
 		printf("Error: ResourceManager::LoadMesh() -> LoadSquareMesh failed. \n");
 		return;
 	}
 	mMapMeshes.insert(std::make_pair(key, meshDat));
+	++gItemKey;
 }
 
-void ResourceManager::LoadBasicMesh(const std::string key, std::vector<MeshData> meshData)
+void ResourceManager::LoadBasicMesh(std::vector<MeshData> meshData)
 {
+	UINT key = gItemKey;
 	if (meshData.empty())
 	{
 		printf("Error: ResourceManager::LoadMesh() -> LoadSquareMesh failed. \n");
 		return;
 	}
 	mMapMeshes.insert(std::make_pair(key, meshData));
+	++gItemKey;
 }
 
-void ResourceManager::LoadTileMap(const std::string key, const std::string filePath)
+void ResourceManager::LoadTileMap(const std::string filePath)
 {
 	std::string path = mPathToAsset + filePath;
+	UINT key = gItemKey;
 	if (!KeyExists(key, mMapTileMaps)) {
-		printf("Message: Loading tilemap %s to key %s. \n", path.c_str(), key.c_str());
+		printf("Message: Loading tilemap %s to key %d. \n", path.c_str(), key);
 		FTTileMap* tileMap = new FTTileMap;
 		tileMap->SetRelativePath(path);
 		mMapTileMaps.insert(std::make_pair(key, tileMap));
+		++gItemKey;
 	}
 	else {
-		printf("Warning : FTTileMap %s is already loaded to key %s.\n", filePath.c_str(), key.c_str());
+		printf("Warning : FTTileMap %s is already loaded to key %d.\n", filePath.c_str(), key);
 	}
 }
 
-FTTexture* ResourceManager::GetLoadedTexture(const std::string key)
+FTTexture* ResourceManager::GetLoadedTexture(const UINT key)
 {
 	FTTexture* ptTex = mMapTextures.at(key);
 	if (ptTex != nullptr)
 		return ptTex;
 	else
 	{
-		printf("Error: Unable to find FTTexture with key; %s\n", key.c_str());
+		printf("Error: Unable to find FTTexture with key; %d\n", key);
 		return nullptr;
 	}
 }
@@ -182,31 +194,31 @@ FTTexture* ResourceManager::GetLoadedTexture(const std::string key)
 //	}
 //}
 
-std::vector<MeshData>& ResourceManager::GetLoadedMeshes(const std::string key)
+std::vector<MeshData>& ResourceManager::GetLoadedMeshes(UINT key)
 {
 	std::vector<MeshData>& meshes = mMapMeshes.at(key);
 	if (!meshes.empty())
 		return meshes;
 	else
-		printf("Error: ResourceManager::GetLoadedMeshes() -> Mesh is empty %s\n", key.c_str());
+		printf("Error: ResourceManager::GetLoadedMeshes() -> Mesh is empty %d\n", key);
 }
 
-FTTileMap* ResourceManager::GetLoadedTileMap(const std::string key)
+FTTileMap* ResourceManager::GetLoadedTileMap(UINT key)
 {
 	FTTileMap* tileMap = mMapTileMaps.at(key);
 	if (tileMap)
 		return tileMap;
 	else
-		printf("Error: ResourceManager::GetLoadedTileMap() -> FTTileMap is empty %s\n", key.c_str());
+		printf("Error: ResourceManager::GetLoadedTileMap() -> FTTileMap is empty %d\n", key);
 }
 
-void ResourceManager::RemoveLoadedMeshes(const std::string key)
+void ResourceManager::RemoveLoadedMeshes(UINT key)
 {
 	if (KeyExists(key, mMapMeshes)) {
 		mMapMeshes.erase(key);
 	}
 	else {
-		printf("Error: ResourceManager::RemoveLoadedMeshes() -> Mesh with key %s does not exist\n", key.c_str());
+		printf("Error: ResourceManager::RemoveLoadedMeshes() -> Mesh with key %d does not exist\n", key);
 	}
 }
 
@@ -216,7 +228,7 @@ void ResourceManager::RemoveLoadedMeshes(const std::string key)
 
 ResourceManager::~ResourceManager()
 {
-	std::unordered_map<std::string, FTTexture*>::iterator iter = mMapTextures.begin();
+	std::unordered_map<UINT, FTTexture*>::iterator iter = mMapTextures.begin();
 	for (; iter != mMapTextures.end(); iter++)
 	{
 		delete iter->second;
@@ -236,7 +248,7 @@ ResourceManager::ResourceManager()
 
 void ResourceManager::SaveResources(nlohmann::ordered_json& out)
 {
-	std::unordered_map<std::string, FTTexture*>::const_iterator iter;
+	std::unordered_map<UINT, FTTexture*>::const_iterator iter;
 	for (iter = mMapTextures.begin(); iter != mMapTextures.end(); ++iter) {
 		(*iter).second->SaveProperties(out["Textures"][(*iter).first]);
 	}
@@ -260,21 +272,17 @@ void ResourceManager::UpdateUI()
 			
 			if (StrContains(TEXTURE_FORMAT_SUPPORTED, extension)) {
 				std::string relativePath = path.substr(path.rfind("assets"));
-				ResourceManager::GetInstance()->LoadTexture("Insert Key", relativePath);
+				ResourceManager::GetInstance()->LoadTexture(relativePath);
 			}
 		}
 		ImGuiFileDialog::Instance()->Close();
 	}
 	if (ImGui::TreeNode("Textures"))
 	{
-		std::unordered_map<std::string, FTTexture*>::const_iterator texIter;
+		std::unordered_map<UINT, FTTexture*>::const_iterator texIter;
 		texIter = mMapTextures.begin();
 		for (texIter = mMapTextures.begin(); texIter != mMapTextures.end(); ++texIter) {
-			std::string updatedKey = (*texIter).first;
-			(*texIter).second->UpdateUI(updatedKey);
-			if ((*texIter).first.compare(updatedKey)) {
-				
-			}
+			(*texIter).second->UpdateUI();
 		}
 		ImGui::TreePop();
 	}
@@ -283,10 +291,10 @@ void ResourceManager::UpdateUI()
 
 void SpineTextureLoader::load(spine::AtlasPage& page, const spine::String& path)
 {
-	FTTexture* tex = ResourceManager::GetInstance()->GetLoadedTexture(path.buffer());
+	/*FTTexture* tex = ResourceManager::GetInstance()->GetLoadedTexture(path.buffer());
 	if (tex == nullptr)
 		LogString("SpineTextureLoader::Load() -> Failed to load texture");
-	page.texture = tex;
+	page.texture = tex;*/
 }
 
 void SpineTextureLoader::unload(void* texture)

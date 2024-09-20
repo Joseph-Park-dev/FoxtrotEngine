@@ -44,7 +44,7 @@ private:
 public:
     virtual void SaveProperties(nlohmann::ordered_json& out) override;
 
-    virtual void UpdateUI(std::string& key) override;
+    virtual void UpdateUI() override;
 
 #endif // _DEBUG
 };

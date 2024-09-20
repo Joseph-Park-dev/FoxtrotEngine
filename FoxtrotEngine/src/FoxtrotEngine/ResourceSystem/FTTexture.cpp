@@ -85,11 +85,11 @@ void FTTexture::SaveProperties(nlohmann::ordered_json& out)
     FileIOHelper::AddScalarValue(out["Height"], mTexHeight);
 }
 
-void FTTexture::UpdateUI(std::string& key)
+void FTTexture::UpdateUI()
 {
-    if (ImGui::BeginListBox(key.c_str(), ImVec2(-FLT_MIN, 200)))
+    if (ImGui::BeginListBox(GetFileName().c_str(), ImVec2(-FLT_MIN, 200)))
     {
-        UpdateKey(key);
+        ImGui::Text(GetFileName().c_str());
         ID3D11ShaderResourceView* viewportTexture = this->mTextureResourceView.Get();
         ImVec2 previewSize = ImVec2(100, 100);
         ImGui::Image((void*)viewportTexture, previewSize);

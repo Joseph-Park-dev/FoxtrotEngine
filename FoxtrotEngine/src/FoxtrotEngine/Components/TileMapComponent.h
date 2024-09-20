@@ -30,7 +30,7 @@ public:
 
 private:
     FTTileMap*      mTileMap;
-    std::string     mTileMapKey;
+    UINT            mTileMapKey;
 
 private:
     void InitializeTileMap();

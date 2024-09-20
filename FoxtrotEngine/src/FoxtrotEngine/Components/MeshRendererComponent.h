@@ -13,6 +13,8 @@ class FTTexture;
 struct Mesh;
 struct MeshData;
 
+#define VALUE_NOT_ASSIGNED -1
+
 class MeshRendererComponent :
     public Component
 {
@@ -27,7 +29,8 @@ public:
 
 protected:
 	virtual bool InitializeMesh();
-	virtual bool InitializeMesh(std::string key);
+	virtual bool InitializeMesh(UINT key);
+	virtual bool InitializeMesh(MeshData meshData);
 	virtual	void UpdateMesh(Transform* transform, Camera* cameraInstance);
 	virtual void UpdateBuffers();
 
@@ -37,21 +40,21 @@ public:
 protected:
 	FoxtrotRenderer*	GetRenderer	()	{ return mRenderer; }
 	FTBasicMeshGroup*	GetMeshGroup()	{ return mMeshGroup; }
-	std::string			GetMeshKey	()	{ return mMeshKey; }
-	std::string			GetTexKey	()	{ return mTexKey; }
+	UINT				GetMeshKey	()	{ return mMeshKey; }
+	UINT				GetTexKey	()	{ return mTexKey; }
 	FTTexture*			GetTexture	()	{ return mMeshGroup->GetTexture(); }
 
 	void				SetMeshGroup(FTBasicMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
-	void				SetMeshKey	(std::string key) { mMeshKey.assign(key); }
-	void				SetTexKey	(std::string key) { mTexKey.assign(key); }
+	void				SetMeshKey	(UINT key) { mMeshKey = key; }
+	void				SetTexKey	(UINT key) { mTexKey = key; }
 	virtual void		SetTexture();
 
 private:
 	FoxtrotRenderer*	mRenderer;
 	FTBasicMeshGroup*	mMeshGroup;
 	// Identifier for the object in the Resource Map from the ResourceManager instance.
-	std::string			mMeshKey;
-	std::string			mTexKey;
+	UINT				mMeshKey;
+	UINT				mTexKey;
 
 public:
 			MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder);

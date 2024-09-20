@@ -38,7 +38,7 @@ void MeshRendererComponent::Render(FoxtrotRenderer* renderer){
 }
 
 bool MeshRendererComponent::InitializeMesh(){
-	if (!mMeshKey.empty()) {
+	if (mMeshKey != VALUE_NOT_ASSIGNED) {
 		std::vector<MeshData>& meshData = ResourceManager::GetInstance()->GetLoadedMeshes(mMeshKey);
 		mMeshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
 		if (!mMeshGroup) {
@@ -53,11 +53,22 @@ bool MeshRendererComponent::InitializeMesh(){
 	}
 }
 
-bool MeshRendererComponent::InitializeMesh(std::string key)
+bool MeshRendererComponent::InitializeMesh(UINT key)
 {
 	mMeshKey = key;
 	MeshRendererComponent::InitializeMesh();
 	return mMeshGroup != nullptr;
+}
+
+bool MeshRendererComponent::InitializeMesh(MeshData meshData)
+{
+	std::vector<MeshData> meshes = { meshData };
+	mMeshGroup->Initialize(meshes, mRenderer->GetDevice(), mRenderer->GetContext());
+	if (!mMeshGroup) {
+		LogString("ERROR: MeshRendererComponent::InitializeMesh() -> Mesh Init failed.\n");
+		return false;
+	}
+	return true;
 }
 
 void MeshRendererComponent::UpdateMesh(Transform* transform, Camera* cameraInstance){
@@ -89,16 +100,18 @@ void MeshRendererComponent::UpdateBuffers(){
 }
 
 void MeshRendererComponent::SetTexture() {
-	if (!mTexKey.empty())
+	if (mTexKey != VALUE_NOT_ASSIGNED)
 		GetMeshGroup()->SetTexture(mTexKey);
 	else 
 		LogString("ERROR: MeshRendererComponent::SetTexture() -> Key doesn't exist.\n");
 }
 
 MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder)
-	: Component	(owner, drawOrder, updateOrder)
+	: Component(owner, drawOrder, updateOrder)
 	, mMeshGroup(new FTBasicMeshGroup)
-	, mRenderer	 (nullptr)
+	, mRenderer(nullptr)
+	, mMeshKey(VALUE_NOT_ASSIGNED)
+	, mTexKey(VALUE_NOT_ASSIGNED)
 {}
 
 MeshRendererComponent::~MeshRendererComponent(){

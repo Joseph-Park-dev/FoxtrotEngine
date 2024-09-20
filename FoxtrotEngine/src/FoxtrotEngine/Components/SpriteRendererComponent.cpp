@@ -56,14 +56,13 @@ void SpriteRendererComponent::Render(FoxtrotRenderer* renderer) {
 
 bool SpriteRendererComponent::InitializeMesh()
 {
-	MeshRendererComponent::InitializeMesh(MAPKEY_SPRITE_MESH);
+	MeshRendererComponent::InitializeMesh(GeometryGenerator::MakeSquare(mScale));
 	if (!GetMeshGroup()) {
 		LogString("ERROR: SpriteRendererComponent::InitializeMesh() -> Mesh Init failed");
 		return false;
 	}
 	return true;
 }
-
 
 //void SpriteRendererComponent::InitializeMesh()
 //{
@@ -137,7 +136,7 @@ void SpriteRendererComponent::OnConfirmUpdate()
 
 void SpriteRendererComponent::UpdateSprite(){
 	std::string currentSprite = "No sprite has been assigned";
-	if (!GetTexKey().empty())
+	if (GetTexKey() != VALUE_NOT_ASSIGNED)
 		currentSprite = "Current sprite : \n" + 
 			ResourceManager::GetInstance()->GetLoadedTexture(GetTexKey())->GetRelativePath();
 	ImGui::Text(currentSprite.c_str());
@@ -151,15 +150,15 @@ void SpriteRendererComponent::UpdateSprite(){
 	}
 
 	if (ImGui::BeginPopupModal("Select Sprite", NULL, ImGuiWindowFlags_MenuBar)) {
-		std::unordered_map<std::string, FTTexture*>& texturesMap = ResourceManager::GetInstance()->GetTexturesMap();
+		std::unordered_map<UINT, FTTexture*>& texturesMap = ResourceManager::GetInstance()->GetTexturesMap();
 		if (ImGui::TreeNode("Selection State: Single Selection"))
 		{
-			std::string spriteKey = {};
+			UINT spriteKey = VALUE_NOT_ASSIGNED;
 			static int selected = -1;
 		    int i = 0;
 			for (auto iter = texturesMap.begin(); iter != texturesMap.end(); ++iter, ++i)
 			{
-				if (ImGui::Selectable((*iter).first.c_str(), selected == i))
+				if (ImGui::Selectable((*iter).second->GetFileName().c_str(), selected == i))
 				{
 					spriteKey = (*iter).first;
 					selected = i;

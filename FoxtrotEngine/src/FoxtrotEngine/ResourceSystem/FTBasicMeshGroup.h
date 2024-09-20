@@ -29,7 +29,7 @@ public:
 	int							GetMeshCount()			  { return mMeshes.size(); }
 	std::vector<Mesh*>&			GetMeshes()				  { return mMeshes; }
 
-	void						SetTexture(std::string key);
+	void						SetTexture(UINT key);
 
 protected:
 			void InitializeConstantBuffer (ComPtr<ID3D11Device>& device);
@@ -71,7 +71,7 @@ public:
 
 #ifdef _DEBUG
 public:
-	virtual void UpdateUI(std::string& key) override {};
+	virtual void UpdateUI() override {};
 
 #endif // _DEBUG
 };

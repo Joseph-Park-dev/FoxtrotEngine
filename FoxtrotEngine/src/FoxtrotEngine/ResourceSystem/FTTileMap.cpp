@@ -114,7 +114,7 @@ void FTTileMap::SaveProperties(nlohmann::ordered_json& out)
 {
 }
 
-void FTTileMap::UpdateUI(std::string& key)
+void FTTileMap::UpdateUI()
 {
 }
 #endif

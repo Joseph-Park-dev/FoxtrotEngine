@@ -20,46 +20,6 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 	mRenderer = renderer;
 }
 
-void ResourceManager::LoadTexture(const std::string filePath)
-{
-	FTTexture* ptTex = nullptr;
-	UINT key = gItemKey;
-	std::string fileName = filePath.substr(filePath.rfind("\\")+1);
-	if (!ResourceExists<FTTexture*>(key, filePath, mMapTextures)) {
-		printf("Message: Loading FTTexture %s to key %d. \n", filePath.c_str(), key);
-		ptTex = new FTTexture;
-		ptTex->SetFileName(fileName);
-		ptTex->SetRelativePath(filePath);
-		D3D11Utils::CreateTexture(mRenderer->GetDevice(), mRenderer->GetContext(), ptTex);
-		if (!ptTex)
-			printf("Error: ResourceManager::LoadTexture() -> CreateTexture failed. \n");
-		mMapTextures.insert(std::make_pair(key, ptTex));
-		++gItemKey;
-	}
-	else {
-		printf("Warning : FTTexture %s is already loaded to key %d.\n", filePath.c_str(), key);
-	}
-}
-
-//void ResourceManager::LoadSpineTexture(FoxtrotRenderer* renderer, spine::String fileName)
-//{
-//	FTTexture* ptTex = FindTexture(fileName.buffer());
-//	if (ptTex != nullptr)
-//		printf("Warning : FTSpineTexture %ls is already loaded.\n", fileName.buffer());
-//	else {
-//		printf("Message: Loading FTTexture %s\n", fileName.buffer());
-//		FTSpineTexture* spineTex = new FTSpineTexture;
-//		std::string fileNameStr = fileName.buffer();
-//		spineTex->SetRelativePath(fileNameStr);
-//		if (!spineTex->CreateTexture(renderer)) {
-//			printf("Error: ResourceManager::LoadTexture() -> CreateTexture failed. \n");
-//			return;
-//		}
-//		load(*spineTex->GetAtlasPage(), spine::String(spineTex->GetRelativePath().c_str()));
-//		mMapTextures.insert(std::make_pair(fileNameStr, ptTex));
-//	}
-//}
-
 void ResourceManager::UpdateTexture(FTTexture* texture, int channels)
 {
 	if (texture != nullptr)
@@ -76,25 +36,6 @@ void ResourceManager::UpdateTexture(FTTexture* texture, int channels)
 	else
 		printf("Warning : FTTexture %s is not loaded. Aborting update...\n", texture->GetRelativePath().c_str());
 }
-
-//bool ResourceManager::LoadSpineAnimation(std::string key, std::string atlasPath, std::string skeletonDataPath)
-//{
-//	FTSpineAnimation* spineAnim = new FTSpineAnimation;
-//	if (!spineAnim->CreateAtlas(atlasPath, mSpineTextureLoader)) {
-//		LogString("ResourceManager::LoadSpineAnimation()-> CreateAtlas() Failed.");
-//		return false;
-//	};
-//	if (!spineAnim->CreateSkeletonDataBinary(skeletonDataPath)) {
-//		LogString("ResourceManager::LoadSpineAnimation()-> CreateSkeletonData() Failed.");
-//		return false;
-//	}
-//	if (!spineAnim->CreateAnimationStateData()) {
-//		LogString("ResourceManager::LoadSpineAnimation()-> CreateAnimationStateData() Failed.");
-//		return false;
-//	}
-//	mMapSpineAnimData.insert(std::make_pair(key, spineAnim));
-//	return true;
-//}
 
 void ResourceManager::LoadMeshFromFile(const std::string filePath)
 {
@@ -170,30 +111,6 @@ FTTexture* ResourceManager::GetLoadedTexture(const UINT key)
 	}
 }
 
-//FTSpineAnimation* ResourceManager::GetLoadedSpineAnimation(std::string key)
-//{
-//	FTSpineAnimation* ptAnim = FindSpineAnimation(key);
-//	if (ptAnim != nullptr)
-//		return ptAnim;
-//	else
-//	{
-//		printf("Error: Unable to find FTTexture with keyName; %s\n", key.c_str());
-//		return nullptr;
-//	}
-//}
-
-//FTSpineAnimation* ResourceManager::FindSpineAnimation(const std::string keyName)
-//{
-//	auto iter = mMapSpineAnimData.find(keyName);
-//	if (iter != mMapSpineAnimData.end())
-//		return iter->second;
-//	else
-//	{
-//		printf("Error: Cannot find SpineAnimation %s\n", keyName.c_str());
-//		return nullptr;
-//	}
-//}
-
 std::vector<MeshData>& ResourceManager::GetLoadedMeshes(UINT key)
 {
 	std::vector<MeshData>& meshes = mMapMeshes.at(key);
@@ -222,9 +139,19 @@ void ResourceManager::RemoveLoadedMeshes(UINT key)
 	}
 }
 
-//spine::SpineExtension* getDefaultExtension() {
-//	return new spine::DefaultSpineExtension();
-//}
+void ResourceManager::ProcessTexture(FTTexture* texture)
+{
+	D3D11Utils::CreateTexture(mRenderer->GetDevice(), mRenderer->GetContext(), texture);
+	if (!texture)
+		printf("ERROR : ResourceManager::ProcessTexture()->CreateTexture() Failed");
+}
+
+void ResourceManager::ProcessTextures()
+{
+	for (auto& textureItem : mMapTextures) {
+		ProcessTexture(textureItem.second);
+	}
+}
 
 ResourceManager::~ResourceManager()
 {
@@ -243,15 +170,20 @@ ResourceManager::ResourceManager()
 }
 
 #ifdef _DEBUG
+#include <nlohmann/json.hpp>
 #include "imgui/FileDialog/ImGuiFileDialog.h"
 #include "imgui/FileDialog/ImGuiFileDialogConfig.h"
 
 void ResourceManager::SaveResources(nlohmann::ordered_json& out)
 {
-	std::unordered_map<UINT, FTTexture*>::const_iterator iter;
-	for (iter = mMapTextures.begin(); iter != mMapTextures.end(); ++iter) {
-		(*iter).second->SaveProperties(out["Textures"][(*iter).first]);
-	}
+	SaveResourceInMap<FTTexture>(out, mMapTextures);
+	//SaveResourceInMap<FTTileMap>(out, mMapTextures);
+}
+
+void ResourceManager::LoadResources(nlohmann::ordered_json& resourceTree)
+{
+	LoadResourceToMap<FTTexture>(resourceTree, mMapTextures);
+	ProcessTextures();
 }
 
 void ResourceManager::UpdateUI()
@@ -272,7 +204,9 @@ void ResourceManager::UpdateUI()
 			
 			if (StrContains(TEXTURE_FORMAT_SUPPORTED, extension)) {
 				std::string relativePath = path.substr(path.rfind("assets"));
-				ResourceManager::GetInstance()->LoadTexture(relativePath);
+				FTTexture* texture = LoadResource<FTTexture>(relativePath, mMapTextures);
+				ProcessTexture(texture);
+				LogInt(mMapTextures.size());
 			}
 		}
 		ImGuiFileDialog::Instance()->Close();
@@ -282,7 +216,16 @@ void ResourceManager::UpdateUI()
 		std::unordered_map<UINT, FTTexture*>::const_iterator texIter;
 		texIter = mMapTextures.begin();
 		for (texIter = mMapTextures.begin(); texIter != mMapTextures.end(); ++texIter) {
-			(*texIter).second->UpdateUI();
+			if (ImGui::BeginListBox((*texIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 200)))
+			{
+				(*texIter).second->UpdateUI();
+				if (ImGui::Button("Remove")) {
+					RemoveResource<FTTexture>((*texIter).first, mMapTextures);
+					ImGui::EndListBox();
+					break;
+				}
+				ImGui::EndListBox();
+			}
 		}
 		ImGui::TreePop();
 	}

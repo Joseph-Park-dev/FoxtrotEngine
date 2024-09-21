@@ -37,7 +37,7 @@ void ChunkLoader::SaveChunk(const std::string fileName)
     nlohmann::ordered_json out;
     SaveChunkData(out[MAPKEY_CHUNKDATA]);
     SaveActorsData(out[MAPKEY_ACTORDATA]);
-    SaveResourcesData(out[MAPKEY_RESOURCEDATA]);
+    ResourceManager::GetInstance()->SaveResources(out[MAPKEY_RESOURCEDATA]);
     ofs << std::setw(4) << out << std::endl;
 }
 
@@ -60,11 +60,6 @@ void ChunkLoader::SaveChunkData(nlohmann::ordered_json& out)
     FileIOHelper::AddScalarValue<int> (out[SAVEKEY_ACTORCOUNT], EditorLayer::GetInstance()->GetEditorElements().size());
 }
 
-void ChunkLoader::SaveResourcesData(nlohmann::ordered_json& out)
-{
-    ResourceManager::GetInstance()->SaveResources(out);
-}
-
 void ChunkLoader::SaveActorsData(nlohmann::ordered_json& out)
 {
     Actor::ResetNextID();
@@ -78,21 +73,14 @@ void ChunkLoader::SaveActorsData(nlohmann::ordered_json& out)
 
 void ChunkLoader::LoadChunk(const std::string fileName)
 {
-    FileIOHelper::LoadFileIOData(GetConvertedFileName(fileName, CHUNK_FILE_FORMAT, FILE_IO_FORMAT));
-    std::ifstream file;
-    file.open(fileName, std::ios::binary);
-    assert(file);
-    if (file.is_open())
-    {
-        //LoadChunkData(file);
-        LoadActors(file);
-        file.close();
-    }
+    
 }
 
 void ChunkLoader::LoadChunkToEditor(const std::string fileName)
 {
-    FileIOHelper::LoadFileIOData(GetConvertedFileName(fileName, CHUNK_FILE_FORMAT, FILE_IO_FORMAT));
+    std::ifstream ifs(fileName);
+    nlohmann::ordered_json in = nlohmann::ordered_json::parse(ifs);
+    ResourceManager::GetInstance()->LoadResources(in["ResourceData"]);
 }
 
 //void ChunkLoader::LoadChunkData(YAML::Node& node)
@@ -228,6 +216,23 @@ void FileIOHelper::AddVector3(nlohmann::ordered_json& json, FTVector3 value)
     json["x"] = value.x;
     json["y"] = value.y;
     json["z"] = value.z;
+}
+
+FTVector2 FileIOHelper::LoadVector2(nlohmann::ordered_json& json, std::string key)
+{
+    FTVector2 value = FTVector2::Zero;
+    value.x = json[key]["x"];
+    value.y = json[key]["y"];
+    return value;
+}
+
+FTVector3 FileIOHelper::LoadVector3(nlohmann::ordered_json& json, std::string key)
+{
+    FTVector3 value = FTVector3::Zero;
+    value.x = json[key]["x"];
+    value.y = json[key]["y"];
+    value.z = json[key]["z"];
+    return value;
 }
 
 //

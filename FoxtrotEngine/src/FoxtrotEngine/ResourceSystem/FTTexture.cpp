@@ -11,6 +11,7 @@
 #include "FoxtrotEngine/Core/TemplateFunctions.h"
 #include "FoxtrotEngine/Renderer/FoxtrotRenderer.h"
 #include "FoxtrotEngine/FileSystem/ChunkLoader.h"
+#include "FoxtrotEngine/Managers/ResourceManager.h"
 
 bool FTTexture::CreateTexture(
     FoxtrotRenderer* renderer, 
@@ -79,29 +80,32 @@ bool FTTexture::ReleaseTexture()
 #ifdef _DEBUG
 #include "FoxtrotEditor/EditorLayer.h"
 
-void FTTexture::SaveProperties(nlohmann::ordered_json& out)
+void FTTexture::SaveProperties(nlohmann::ordered_json& out, UINT key)
 {
+    FTResource::SaveProperties(out, key);
     FileIOHelper::AddScalarValue(out["Width"], mTexWidth);
     FileIOHelper::AddScalarValue(out["Height"], mTexHeight);
 }
 
+void FTTexture::LoadProperties(nlohmann::ordered_json& itemTree)
+{
+    FTResource::LoadProperties(itemTree);
+    mTexWidth = FileIOHelper::LoadScalarValue<UINT>(itemTree, "Width");
+    mTexHeight = FileIOHelper::LoadScalarValue<UINT>(itemTree, "Height");
+}
+
 void FTTexture::UpdateUI()
 {
-    if (ImGui::BeginListBox(GetFileName().c_str(), ImVec2(-FLT_MIN, 200)))
-    {
-        ImGui::Text(GetFileName().c_str());
-        ID3D11ShaderResourceView* viewportTexture = this->mTextureResourceView.Get();
-        ImVec2 previewSize = ImVec2(100, 100);
-        ImGui::Image((void*)viewportTexture, previewSize);
+    ImGui::Text(GetFileName().c_str());
+    ID3D11ShaderResourceView* viewportTexture = this->mTextureResourceView.Get();
+    ImVec2 previewSize = ImVec2(100, 100);
+    ImGui::Image((void*)viewportTexture, previewSize);
 
-        //UpdateRelativePath(TEXTURE_FORMAT_SUPPORTED);
-        std::string currentPath = "No path has been assigned";
-        if (!GetRelativePath().empty())
-            currentPath = "Current path : \n" + GetRelativePath();
-        ImGui::InputInt("Width", &mTexWidth);
-        ImGui::InputInt("Height", &mTexHeight);
-
-        ImGui::EndListBox();
-    }
+    //UpdateRelativePath(TEXTURE_FORMAT_SUPPORTED);
+    std::string currentPath = "No path has been assigned";
+    if (!GetRelativePath().empty())
+        currentPath = "Current path : \n" + GetRelativePath();
+    ImGui::InputInt("Width", &mTexWidth);
+    ImGui::InputInt("Height", &mTexHeight);
 }
 #endif // _DEBUG

@@ -8,6 +8,10 @@
 
 #include "FoxtrotEngine/Core/SingletonMacro.h"
 
+#ifdef _DEBUG
+#include <nlohmann/json.hpp>
+#endif // _DEBUG
+
 class FTTexture;
 class FTSpineAnimation;
 class FTBasicMeshGroup;
@@ -24,9 +28,7 @@ public:
 	void				Initialize(FoxtrotRenderer* renderer);
 
 public:
-	void				LoadTexture(const std::string filePath);
 	void				UpdateTexture(FTTexture* texture, int channels);
-	//bool				LoadSpineAnimation(std::string key, std::string atlasPath, std::string skeletonDataPath);
 
 	void				LoadMeshFromFile(const std::string filePath);
 	void				LoadBasicMesh(MeshData meshData);
@@ -64,8 +66,47 @@ private:
 	std::string mPathToAsset;
 	FoxtrotRenderer* mRenderer; // For Loading FTTextures
 
+public:
+	template<typename FTRESOURCE>
+	void RemoveResource(UINT key, std::unordered_map<UINT, FTRESOURCE*>& resMap)
+	{
+		FTRESOURCE* resource = resMap.at(key);
+		if (resource)
+		{
+			delete resource;
+			resource = nullptr;
+			resMap.erase(key);
+		}
+	}
+
 private:
-	//FTSpineAnimation*	FindSpineAnimation(const std::string keyName);
+	template<typename FTRESOURCE>
+	FTRESOURCE* LoadResource(const std::string filePath, std::unordered_map<UINT, FTRESOURCE*>& resMap)
+	{
+		UINT key = gItemKey;
+		std::string fileName = filePath.substr(filePath.rfind("\\") + 1);
+		if (!ResourceExists<FTRESOURCE*>(key, filePath, resMap)) {
+			printf("Message: Loading FTTexture %s to key %d. \n", filePath.c_str(), key);
+			FTRESOURCE* res = new FTRESOURCE;
+			res->SetFileName(fileName);
+			res->SetRelativePath(filePath);
+			resMap.insert(std::make_pair(key, res));
+			++gItemKey;
+			return res;
+		}
+		else {
+			printf("Warning : Resource %s is already loaded to key %d.\n", filePath.c_str(), key);
+		}
+	}
+
+	template<typename FTRESOURCE>
+	void LoadResource(nlohmann::ordered_json& itemTree, const UINT key, std::unordered_map<UINT, FTRESOURCE*>& resMap)
+	{
+		FTRESOURCE* resource = new FTRESOURCE;
+		resource->LoadProperties(itemTree);
+		resMap.insert(std::make_pair(key, resource));
+	}
+
 	template<typename FTRESOURCE>
 	bool KeyExists(const UINT key, const std::unordered_map<UINT, FTRESOURCE>& resMap) {
 		if (resMap.find(key) != resMap.end()) {
@@ -94,11 +135,36 @@ private:
 		return false;
 	}
 
+private:
+	void ProcessTexture(FTTexture* texture);
+	void ProcessTextures();
+
 #ifdef _DEBUG
 public:
 	void SaveResources(nlohmann::ordered_json& out);
-
+	void LoadResources(nlohmann::ordered_json& resourceTree);
 	void UpdateUI();
+
+private:
+	template<typename FTRESOURCE>
+	void SaveResourceInMap(nlohmann::ordered_json& out, const std::unordered_map<UINT, FTRESOURCE*>& resMap) {
+		typename std::unordered_map<UINT, FTRESOURCE*>::const_iterator iter;
+		for (iter = resMap.begin(); iter != resMap.end(); ++iter) {
+			(*iter).second->SaveProperties(out[typeid(FTRESOURCE).name()][std::to_string((*iter).first)], (*iter).first);
+		}
+	}
+
+	template<typename FTRESOURCE>
+	void LoadResourceToMap(nlohmann::ordered_json& resTree, std::unordered_map<UINT, FTRESOURCE*>& resMap) {
+		gItemKey = 0;
+		for (auto& itemTree : resTree[typeid(FTRESOURCE).name()]) {
+			UINT key = itemTree["Key"];
+			LoadResource(itemTree, key, resMap);
+			if (gItemKey < key)
+				gItemKey = key;
+		}
+		++gItemKey; // Key of the next resource to be imported.
+	}
 #endif
 };
 

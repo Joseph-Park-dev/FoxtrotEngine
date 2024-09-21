@@ -110,7 +110,7 @@ void FTTileMap::InitializeTile(Tile* tile, UINT column, UINT row, UINT tileNum)
 }
 
 #ifdef _DEBUG
-void FTTileMap::SaveProperties(nlohmann::ordered_json& out)
+void FTTileMap::SaveProperties(nlohmann::ordered_json& out, UINT key)
 {
 }
 

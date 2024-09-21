@@ -46,7 +46,6 @@ public:
 
 protected:
 	void SaveChunkData(nlohmann::ordered_json& out);
-	void SaveResourcesData(nlohmann::ordered_json& out);
 	void SaveActorsData(nlohmann::ordered_json& out);
 
 // Member functions for engine level to use .chunk files
@@ -84,6 +83,14 @@ public:
 	template <typename T>
 	static void	AddScalarValue(nlohmann::ordered_json& json, T value) {
 		json = value;
+	}
+
+	static FTVector2	LoadVector2		(nlohmann::ordered_json& json, std::string key);
+	static FTVector3	LoadVector3		(nlohmann::ordered_json& json, std::string key);
+
+	template <typename ScalarType>
+	static ScalarType	LoadScalarValue	(nlohmann::ordered_json& json, std::string key) {
+		return json[key];
 	}
 
 public:

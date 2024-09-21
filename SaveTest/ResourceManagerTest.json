@@ -1,0 +1,47 @@
+{
+    "ChunkData": {
+        "TargetActorID": 1,
+        "RenderResolution": {
+            "x": 0.0,
+            "y": 0.0
+        },
+        "ScreenCenter": {
+            "x": 123.0,
+            "y": 123.0
+        },
+        "ActorCount": 0
+    },
+    "ActorData": null,
+    "ResourceData": {
+        "class FTTexture": {
+            "1": {
+                "Key": 1,
+                "FileName": "Character01.png",
+                "RelativePath": "assets\\Character01.png",
+                "Width": 128,
+                "Height": 128
+            },
+            "2": {
+                "Key": 2,
+                "FileName": "Character03.png",
+                "RelativePath": "assets\\Character03.png",
+                "Width": 128,
+                "Height": 128
+            },
+            "3": {
+                "Key": 3,
+                "FileName": "Character07.png",
+                "RelativePath": "assets\\Character07.png",
+                "Width": 128,
+                "Height": 128
+            },
+            "5": {
+                "Key": 5,
+                "FileName": "Asteroid.png",
+                "RelativePath": "assets\\Asteroid.png",
+                "Width": 1496,
+                "Height": 1502
+            }
+        }
+    }
+}

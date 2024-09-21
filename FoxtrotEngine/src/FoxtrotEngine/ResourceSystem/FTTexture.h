@@ -49,9 +49,10 @@ private:
 
 #ifdef _DEBUG
 public:
-    virtual void SaveProperties(nlohmann::ordered_json& out) override;
+    virtual void SaveProperties(nlohmann::ordered_json& out, UINT key) override;
+    virtual void LoadProperties(nlohmann::ordered_json& itemTree)      override;
 
-    virtual void UpdateUI() override;
+    virtual void UpdateUI()         override;
 
 #endif // _DEBUG
 

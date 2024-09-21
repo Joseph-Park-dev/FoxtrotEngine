@@ -28,9 +28,10 @@ public:
 
 #ifdef _DEBUG
 public:
-	virtual void SaveProperties(nlohmann::ordered_json& out);
+	virtual void SaveProperties(nlohmann::ordered_json& out, UINT key);
+	virtual void LoadProperties(nlohmann::ordered_json& itemTree);
 
-	virtual void UpdateUI() = 0;
+	virtual void UpdateUI() {};
 
 protected:
 	void UpdateRelativePath(std::string fileExtension);

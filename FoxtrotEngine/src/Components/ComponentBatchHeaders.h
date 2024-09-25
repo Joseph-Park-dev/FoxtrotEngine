@@ -1,0 +1,16 @@
+#pragma once
+
+#include "Components/Component.h"
+#include "Components/AIComponent.h"
+#include "Components/AnimatorComponent.h"
+#include "Components/SpriteAnimComponent.h"
+#include "Components/BGSpriteComponent.h"
+#include "Components/ColliderComponent.h"
+#include "Components/InputMoveComponent.h"
+#include "Components/MoveComponent.h"
+#include "Components/Rigidbody2DComponent.h"
+#include "Components/SpriteRendererComponent.h"
+#include "Components/TileMapComponent.h"
+#include "Components/GunFiringComponent.h"
+#include "Components/MeshRendererComponent.h"
+#include "Components/SpineAnimRendererComponent.h"

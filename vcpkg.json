@@ -13,7 +13,6 @@
       "name": "imgui",
       "features": [ "docking-experimental" ]
     },
-    "nlohmann-json",
     "directxtk",
     "stb",
     "directxtex",

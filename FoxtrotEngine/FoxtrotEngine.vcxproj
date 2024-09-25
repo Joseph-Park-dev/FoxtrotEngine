@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{014cc6a0-8578-4fe6-a16c-c8b45d8a83f9}</ProjectGuid>
+    <RootNamespace>FoxtrotEngine</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <EnableUnitySupport>true</EnableUnitySupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>.\include;.\src;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="include\spine\Animation.cpp" />
+    <ClCompile Include="include\spine\AnimationState.cpp" />
+    <ClCompile Include="include\spine\AnimationStateData.cpp" />
+    <ClCompile Include="include\spine\Atlas.cpp" />
+    <ClCompile Include="include\spine\AtlasAttachmentLoader.cpp" />
+    <ClCompile Include="include\spine\Attachment.cpp" />
+    <ClCompile Include="include\spine\AttachmentLoader.cpp" />
+    <ClCompile Include="include\spine\AttachmentTimeline.cpp" />
+    <ClCompile Include="include\spine\Bone.cpp" />
+    <ClCompile Include="include\spine\BoneData.cpp" />
+    <ClCompile Include="include\spine\BoundingBoxAttachment.cpp" />
+    <ClCompile Include="include\spine\ClippingAttachment.cpp" />
+    <ClCompile Include="include\spine\ColorTimeline.cpp" />
+    <ClCompile Include="include\spine\ConstraintData.cpp" />
+    <ClCompile Include="include\spine\CurveTimeline.cpp" />
+    <ClCompile Include="include\spine\DeformTimeline.cpp" />
+    <ClCompile Include="include\spine\DrawOrderTimeline.cpp" />
+    <ClCompile Include="include\spine\Event.cpp" />
+    <ClCompile Include="include\spine\EventData.cpp" />
+    <ClCompile Include="include\spine\EventTimeline.cpp" />
+    <ClCompile Include="include\spine\Extension.cpp" />
+    <ClCompile Include="include\spine\IkConstraint.cpp" />
+    <ClCompile Include="include\spine\IkConstraintData.cpp" />
+    <ClCompile Include="include\spine\IkConstraintTimeline.cpp" />
+    <ClCompile Include="include\spine\InheritTimeline.cpp" />
+    <ClCompile Include="include\spine\Json.cpp" />
+    <ClCompile Include="include\spine\LinkedMesh.cpp" />
+    <ClCompile Include="include\spine\Log.cpp" />
+    <ClCompile Include="include\spine\MathUtil.cpp" />
+    <ClCompile Include="include\spine\MeshAttachment.cpp" />
+    <ClCompile Include="include\spine\PathAttachment.cpp" />
+    <ClCompile Include="include\spine\PathConstraint.cpp" />
+    <ClCompile Include="include\spine\PathConstraintData.cpp" />
+    <ClCompile Include="include\spine\PathConstraintMixTimeline.cpp" />
+    <ClCompile Include="include\spine\PathConstraintPositionTimeline.cpp" />
+    <ClCompile Include="include\spine\PathConstraintSpacingTimeline.cpp" />
+    <ClCompile Include="include\spine\PhysicsConstraint.cpp" />
+    <ClCompile Include="include\spine\PhysicsConstraintData.cpp" />
+    <ClCompile Include="include\spine\PhysicsConstraintTimeline.cpp" />
+    <ClCompile Include="include\spine\PointAttachment.cpp" />
+    <ClCompile Include="include\spine\RegionAttachment.cpp" />
+    <ClCompile Include="include\spine\RotateTimeline.cpp" />
+    <ClCompile Include="include\spine\RTTI.cpp" />
+    <ClCompile Include="include\spine\ScaleTimeline.cpp" />
+    <ClCompile Include="include\spine\Sequence.cpp" />
+    <ClCompile Include="include\spine\SequenceTimeline.cpp" />
+    <ClCompile Include="include\spine\ShearTimeline.cpp" />
+    <ClCompile Include="include\spine\Skeleton.cpp" />
+    <ClCompile Include="include\spine\SkeletonBinary.cpp" />
+    <ClCompile Include="include\spine\SkeletonBounds.cpp" />
+    <ClCompile Include="include\spine\SkeletonClipping.cpp" />
+    <ClCompile Include="include\spine\SkeletonData.cpp" />
+    <ClCompile Include="include\spine\SkeletonJson.cpp" />
+    <ClCompile Include="include\spine\SkeletonRenderer.cpp" />
+    <ClCompile Include="include\spine\Skin.cpp" />
+    <ClCompile Include="include\spine\Slot.cpp" />
+    <ClCompile Include="include\spine\SlotData.cpp" />
+    <ClCompile Include="include\spine\SpineObject.cpp" />
+    <ClCompile Include="include\spine\TextureLoader.cpp" />
+    <ClCompile Include="include\spine\Timeline.cpp" />
+    <ClCompile Include="include\spine\TransformConstraint.cpp" />
+    <ClCompile Include="include\spine\TransformConstraintData.cpp" />
+    <ClCompile Include="include\spine\TransformConstraintTimeline.cpp" />
+    <ClCompile Include="include\spine\TranslateTimeline.cpp" />
+    <ClCompile Include="include\spine\Triangulator.cpp" />
+    <ClCompile Include="include\spine\Updatable.cpp" />
+    <ClCompile Include="include\spine\VertexAttachment.cpp" />
+    <ClCompile Include="src\Actors\Actor.cpp" />
+    <ClCompile Include="src\Actors\Backgrounds\BackgroundActor.cpp" />
+    <ClCompile Include="src\Actors\RectTransform.cpp" />
+    <ClCompile Include="src\Actors\Transform.cpp" />
+    <ClCompile Include="src\Actors\UIs\ButtonUI.cpp" />
+    <ClCompile Include="src\Actors\UIs\PanelUI.cpp" />
+    <ClCompile Include="src\Actors\UIs\UIActor.cpp" />
+    <ClCompile Include="src\Components\AIComponent.cpp" />
+    <ClCompile Include="src\Components\AIState.cpp" />
+    <ClCompile Include="src\Components\AnimatorComponent.cpp" />
+    <ClCompile Include="src\Components\BGSpriteComponent.cpp" />
+    <ClCompile Include="src\Components\ColliderComponent.cpp" />
+    <ClCompile Include="src\Components\Component.cpp" />
+    <ClCompile Include="src\Components\GunFiringComponent.cpp" />
+    <ClCompile Include="src\Components\InputMoveComponent.cpp" />
+    <ClCompile Include="src\Components\MeshRendererComponent.cpp" />
+    <ClCompile Include="src\Components\MoveComponent.cpp" />
+    <ClCompile Include="src\Components\Rigidbody2DComponent.cpp" />
+    <ClCompile Include="src\Components\SpineAnimRendererComponent.cpp" />
+    <ClCompile Include="src\Components\SpriteAnimComponent.cpp" />
+    <ClCompile Include="src\Components\SpriteComponent.cpp" />
+    <ClCompile Include="src\Components\SpriteRendererComponent.cpp" />
+    <ClCompile Include="src\Components\TileMapComponent.cpp" />
+    <ClCompile Include="src\Core\EventFunctions.cpp" />
+    <ClCompile Include="src\Core\FTCore.cpp" />
+    <ClCompile Include="src\Core\main.cpp" />
+    <ClCompile Include="src\Core\Timer.cpp" />
+    <ClCompile Include="src\FileSystem\ChunkLoader.cpp" />
+    <ClCompile Include="src\Managers\CollisionManager.cpp" />
+    <ClCompile Include="src\Managers\EventManager.cpp" />
+    <ClCompile Include="src\Managers\KeyInputManager.cpp" />
+    <ClCompile Include="src\Managers\ResourceManager.cpp" />
+    <ClCompile Include="src\Managers\SceneManager.cpp" />
+    <ClCompile Include="src\Managers\UIManager.cpp" />
+    <ClCompile Include="src\Math\FTMath.cpp" />
+    <ClCompile Include="src\Math\Random.cpp" />
+    <ClCompile Include="src\Physics\Bounds.cpp" />
+    <ClCompile Include="src\Physics\ParticleSystem.cpp" />
+    <ClCompile Include="src\Physics\Physics2D.cpp" />
+    <ClCompile Include="src\Renderer\Camera.cpp" />
+    <ClCompile Include="src\Renderer\D3D11Utils.cpp" />
+    <ClCompile Include="src\Renderer\FoxtrotRenderer.cpp" />
+    <ClCompile Include="src\Renderer\FTRect.cpp" />
+    <ClCompile Include="src\ResourceSystem\FTBasicMeshGroup.cpp" />
+    <ClCompile Include="src\ResourceSystem\FTResource.cpp" />
+    <ClCompile Include="src\ResourceSystem\FTSpineAnimation.cpp" />
+    <ClCompile Include="src\ResourceSystem\FTSprite.cpp" />
+    <ClCompile Include="src\ResourceSystem\FTSpriteAnimation.cpp" />
+    <ClCompile Include="src\ResourceSystem\FTTexture.cpp" />
+    <ClCompile Include="src\ResourceSystem\FTTileMap.cpp" />
+    <ClCompile Include="src\ResourceSystem\GeometryGenerator.cpp" />
+    <ClCompile Include="src\ResourceSystem\ModelLoader.cpp" />
+    <ClCompile Include="src\ResourceSystem\Tile.cpp" />
+    <ClCompile Include="src\Scenes\Scene.cpp" />
+    <ClCompile Include="src\Scenes\Scene_Start.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\spine\Animation.h" />
+    <ClInclude Include="include\spine\AnimationState.h" />
+    <ClInclude Include="include\spine\AnimationStateData.h" />
+    <ClInclude Include="include\spine\Atlas.h" />
+    <ClInclude Include="include\spine\AtlasAttachmentLoader.h" />
+    <ClInclude Include="include\spine\Attachment.h" />
+    <ClInclude Include="include\spine\AttachmentLoader.h" />
+    <ClInclude Include="include\spine\AttachmentTimeline.h" />
+    <ClInclude Include="include\spine\AttachmentType.h" />
+    <ClInclude Include="include\spine\BlendMode.h" />
+    <ClInclude Include="include\spine\BlockAllocator.h" />
+    <ClInclude Include="include\spine\Bone.h" />
+    <ClInclude Include="include\spine\BoneData.h" />
+    <ClInclude Include="include\spine\BoundingBoxAttachment.h" />
+    <ClInclude Include="include\spine\ClippingAttachment.h" />
+    <ClInclude Include="include\spine\Color.h" />
+    <ClInclude Include="include\spine\ColorTimeline.h" />
+    <ClInclude Include="include\spine\ConstraintData.h" />
+    <ClInclude Include="include\spine\ContainerUtil.h" />
+    <ClInclude Include="include\spine\CurveTimeline.h" />
+    <ClInclude Include="include\spine\Debug.h" />
+    <ClInclude Include="include\spine\DeformTimeline.h" />
+    <ClInclude Include="include\spine\dll.h" />
+    <ClInclude Include="include\spine\DrawOrderTimeline.h" />
+    <ClInclude Include="include\spine\Event.h" />
+    <ClInclude Include="include\spine\EventData.h" />
+    <ClInclude Include="include\spine\EventTimeline.h" />
+    <ClInclude Include="include\spine\Extension.h" />
+    <ClInclude Include="include\spine\HashMap.h" />
+    <ClInclude Include="include\spine\HasRendererObject.h" />
+    <ClInclude Include="include\spine\IkConstraint.h" />
+    <ClInclude Include="include\spine\IkConstraintData.h" />
+    <ClInclude Include="include\spine\IkConstraintTimeline.h" />
+    <ClInclude Include="include\spine\Inherit.h" />
+    <ClInclude Include="include\spine\InheritTimeline.h" />
+    <ClInclude Include="include\spine\Json.h" />
+    <ClInclude Include="include\spine\LinkedMesh.h" />
+    <ClInclude Include="include\spine\Log.h" />
+    <ClInclude Include="include\spine\MathUtil.h" />
+    <ClInclude Include="include\spine\MeshAttachment.h" />
+    <ClInclude Include="include\spine\MixBlend.h" />
+    <ClInclude Include="include\spine\MixDirection.h" />
+    <ClInclude Include="include\spine\PathAttachment.h" />
+    <ClInclude Include="include\spine\PathConstraint.h" />
+    <ClInclude Include="include\spine\PathConstraintData.h" />
+    <ClInclude Include="include\spine\PathConstraintMixTimeline.h" />
+    <ClInclude Include="include\spine\PathConstraintPositionTimeline.h" />
+    <ClInclude Include="include\spine\PathConstraintSpacingTimeline.h" />
+    <ClInclude Include="include\spine\Physics.h" />
+    <ClInclude Include="include\spine\PhysicsConstraint.h" />
+    <ClInclude Include="include\spine\PhysicsConstraintData.h" />
+    <ClInclude Include="include\spine\PhysicsConstraintTimeline.h" />
+    <ClInclude Include="include\spine\PointAttachment.h" />
+    <ClInclude Include="include\spine\Pool.h" />
+    <ClInclude Include="include\spine\PositionMode.h" />
+    <ClInclude Include="include\spine\Property.h" />
+    <ClInclude Include="include\spine\RegionAttachment.h" />
+    <ClInclude Include="include\spine\RotateMode.h" />
+    <ClInclude Include="include\spine\RotateTimeline.h" />
+    <ClInclude Include="include\spine\RTTI.h" />
+    <ClInclude Include="include\spine\ScaleTimeline.h" />
+    <ClInclude Include="include\spine\Sequence.h" />
+    <ClInclude Include="include\spine\SequenceTimeline.h" />
+    <ClInclude Include="include\spine\ShearTimeline.h" />
+    <ClInclude Include="include\spine\Skeleton.h" />
+    <ClInclude Include="include\spine\SkeletonBinary.h" />
+    <ClInclude Include="include\spine\SkeletonBounds.h" />
+    <ClInclude Include="include\spine\SkeletonClipping.h" />
+    <ClInclude Include="include\spine\SkeletonData.h" />
+    <ClInclude Include="include\spine\SkeletonJson.h" />
+    <ClInclude Include="include\spine\SkeletonRenderer.h" />
+    <ClInclude Include="include\spine\Skin.h" />
+    <ClInclude Include="include\spine\Slot.h" />
+    <ClInclude Include="include\spine\SlotData.h" />
+    <ClInclude Include="include\spine\SpacingMode.h" />
+    <ClInclude Include="include\spine\spine.h" />
+    <ClInclude Include="include\spine\SpineObject.h" />
+    <ClInclude Include="include\spine\SpineString.h" />
+    <ClInclude Include="include\spine\TextureLoader.h" />
+    <ClInclude Include="include\spine\TextureRegion.h" />
+    <ClInclude Include="include\spine\Timeline.h" />
+    <ClInclude Include="include\spine\TransformConstraint.h" />
+    <ClInclude Include="include\spine\TransformConstraintData.h" />
+    <ClInclude Include="include\spine\TransformConstraintTimeline.h" />
+    <ClInclude Include="include\spine\TranslateTimeline.h" />
+    <ClInclude Include="include\spine\Triangulator.h" />
+    <ClInclude Include="include\spine\Updatable.h" />
+    <ClInclude Include="include\spine\Vector.h" />
+    <ClInclude Include="include\spine\Version.h" />
+    <ClInclude Include="include\spine\VertexAttachment.h" />
+    <ClInclude Include="include\spine\Vertices.h" />
+    <ClInclude Include="src\Actors\Actor.h" />
+    <ClInclude Include="src\Actors\ActorGroup.h" />
+    <ClInclude Include="src\Actors\ActorTag.h" />
+    <ClInclude Include="src\Actors\Backgrounds\BackgroundActor.h" />
+    <ClInclude Include="src\Actors\RectTransform.h" />
+    <ClInclude Include="src\Actors\Transform.h" />
+    <ClInclude Include="src\Actors\UIs\ButtonUI.h" />
+    <ClInclude Include="src\Actors\UIs\PanelUI.h" />
+    <ClInclude Include="src\Actors\UIs\UIActor.h" />
+    <ClInclude Include="src\Components\AIComponent.h" />
+    <ClInclude Include="src\Components\AIState.h" />
+    <ClInclude Include="src\Components\AnimatorComponent.h" />
+    <ClInclude Include="src\Components\BGSpriteComponent.h" />
+    <ClInclude Include="src\Components\ColliderComponent.h" />
+    <ClInclude Include="src\Components\Component.h" />
+    <ClInclude Include="src\Components\ComponentBatchHeaders.h" />
+    <ClInclude Include="src\Components\GunFiringComponent.h" />
+    <ClInclude Include="src\Components\InputMoveComponent.h" />
+    <ClInclude Include="src\Components\MeshRendererComponent.h" />
+    <ClInclude Include="src\Components\MoveComponent.h" />
+    <ClInclude Include="src\Components\Rigidbody2DComponent.h" />
+    <ClInclude Include="src\Components\SpineAnimRendererComponent.h" />
+    <ClInclude Include="src\Components\SpriteAnimComponent.h" />
+    <ClInclude Include="src\Components\SpriteComponent.h" />
+    <ClInclude Include="src\Components\SpriteRendererComponent.h" />
+    <ClInclude Include="src\Components\TileMapComponent.h" />
+    <ClInclude Include="src\Core\EventFunctions.h" />
+    <ClInclude Include="src\Core\EventType.h" />
+    <ClInclude Include="src\Core\FTCore.h" />
+    <ClInclude Include="src\Core\SingletonMacro.h" />
+    <ClInclude Include="src\Core\TemplateFunctions.h" />
+    <ClInclude Include="src\Core\Timer.h" />
+    <ClInclude Include="src\Core\TypeDefinitions.h" />
+    <ClInclude Include="src\Core\UnitDefinitions.h" />
+    <ClInclude Include="src\Core\WindowProcess.h" />
+    <ClInclude Include="src\FileSystem\ChunkLoader.h" />
+    <ClInclude Include="src\Managers\CollisionManager.h" />
+    <ClInclude Include="src\Managers\EventManager.h" />
+    <ClInclude Include="src\Managers\KeyInputManager.h" />
+    <ClInclude Include="src\Managers\ResourceManager.h" />
+    <ClInclude Include="src\Managers\SceneManager.h" />
+    <ClInclude Include="src\Managers\UIManager.h" />
+    <ClInclude Include="src\Math\FTMath.h" />
+    <ClInclude Include="src\Math\Random.h" />
+    <ClInclude Include="src\Physics\Bounds.h" />
+    <ClInclude Include="src\Physics\ParticleSystem.h" />
+    <ClInclude Include="src\Physics\Physics2D.h" />
+    <ClInclude Include="src\Physics\Ray.h" />
+    <ClInclude Include="src\Physics\RayCastHit2D.h" />
+    <ClInclude Include="src\Renderer\Camera.h" />
+    <ClInclude Include="src\Renderer\D3D11Utils.h" />
+    <ClInclude Include="src\Renderer\FoxtrotRenderer.h" />
+    <ClInclude Include="src\Renderer\FTRect.h" />
+    <ClInclude Include="src\ResourceSystem\FTBasicMeshGroup.h" />
+    <ClInclude Include="src\ResourceSystem\FTResource.h" />
+    <ClInclude Include="src\ResourceSystem\FTSpineAnimation.h" />
+    <ClInclude Include="src\ResourceSystem\FTSprite.h" />
+    <ClInclude Include="src\ResourceSystem\FTSpriteAnimation.h" />
+    <ClInclude Include="src\ResourceSystem\FTTexture.h" />
+    <ClInclude Include="src\ResourceSystem\FTTileMap.h" />
+    <ClInclude Include="src\ResourceSystem\GeometryGenerator.h" />
+    <ClInclude Include="src\ResourceSystem\Mesh.h" />
+    <ClInclude Include="src\ResourceSystem\MeshConstantData.h" />
+    <ClInclude Include="src\ResourceSystem\MeshData.h" />
+    <ClInclude Include="src\ResourceSystem\ModelLoader.h" />
+    <ClInclude Include="src\ResourceSystem\Tile.h" />
+    <ClInclude Include="src\ResourceSystem\Vertex.h" />
+    <ClInclude Include="src\Scenes\Scene.h" />
+    <ClInclude Include="src\Scenes\SceneType.h" />
+    <ClInclude Include="src\Scenes\Scene_Start.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vcpkg.json" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

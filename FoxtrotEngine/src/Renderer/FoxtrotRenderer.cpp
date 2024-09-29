@@ -20,11 +20,11 @@
 #include "Managers/SceneManager.h"
 #include "Renderer/D3D11Utils.h"
 
-#ifdef _DEBUG
+
 #include "EditorLayer.h"
 
 #include "RenderTextureClass.h"
-#endif // _DEBUG
+ // _DEBUG
 
 
 FoxtrotRenderer* FoxtrotRenderer::CreateRenderer(HWND window, int width, int height)
@@ -100,7 +100,7 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 
 	mContext->RSSetState(mSolidRasterizerState.Get());
 
-#ifdef _DEBUG
+
 	mRenderTexture = new RenderTextureClass();
 	if (!mRenderTexture)
 	{
@@ -108,20 +108,20 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 		return false;
 	}
 	mRenderTexture->InitializeTexture(mDevice, mRenderWidth, mRenderHeight);
-#endif // _DEBUG
+ // _DEBUG
 	return true;
 }
 
 void FoxtrotRenderer::DestroyRenderer(FoxtrotRenderer* renderer)
 {
-#ifdef _DEBUG
+
 	// 렌더 텍스쳐 객체를 해제한다
 	if (renderer->mRenderTexture)
 	{
 		delete renderer->mRenderTexture;
 		renderer->mRenderTexture = 0;
 	}
-#endif // _DEBUG
+ // _DEBUG
 	if (renderer == nullptr)
 	{
 		LogString("Renderer is already null");
@@ -591,7 +591,7 @@ FoxtrotRenderer::FoxtrotRenderer()
 	, mFillMode(FillMode::Solid)
 {}
 
-#ifdef _DEBUG
+
 void FoxtrotRenderer::RenderToTexture()
 {
 	mRenderTexture->DrawOnTexture(mContext, mRenderTargetView, mDepthStencilView, this);
@@ -631,4 +631,4 @@ void FoxtrotRenderer::RenderToTexture()
 //		(*iter)->basicVertexConstantBufferData = rect->basicVertexConstantBufferData;
 //	}
 //}
-#endif // _DEBUG
+ // _DEBUG

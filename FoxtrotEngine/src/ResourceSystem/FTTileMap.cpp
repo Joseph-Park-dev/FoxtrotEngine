@@ -109,7 +109,7 @@ void FTTileMap::InitializeTile(Tile* tile, UINT column, UINT row, UINT tileNum)
     rectOnScreen->Set(column, row, mTileWidthOnScreen, mTileHeightOnScreen);
 }
 
-#ifdef _DEBUG
+
 void FTTileMap::SaveProperties(nlohmann::ordered_json& out, UINT key)
 {
 }
@@ -117,4 +117,4 @@ void FTTileMap::SaveProperties(nlohmann::ordered_json& out, UINT key)
 void FTTileMap::UpdateUI()
 {
 }
-#endif
+

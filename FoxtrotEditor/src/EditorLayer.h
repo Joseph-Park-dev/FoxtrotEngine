@@ -7,12 +7,12 @@
 
 #include "Core/SingletonMacro.h"
 #include "EditorElement.h"
+#include "CommandHistory.h"
 
 class FoxtrotRenderer;
 class UIActor;
 class PanelUI;
 class Command;
-class CommandHistory;
 
 class EditorLayer
 {

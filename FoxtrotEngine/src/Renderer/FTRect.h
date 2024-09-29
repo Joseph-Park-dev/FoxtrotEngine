@@ -43,5 +43,3 @@ private:
 	FTVector2	mPosition;  // Left Top position of the tile.
 	FTVector2	mSize;
 };
-
-const FTRect FTRect::Zero(0.0f, 0.0f, 0.0f, 0.0f);

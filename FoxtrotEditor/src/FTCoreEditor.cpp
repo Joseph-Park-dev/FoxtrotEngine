@@ -163,6 +163,8 @@ FTCoreEditor::FTCoreEditor()
 	, mEditorDataFileName()
 {}
 
+FTCoreEditor::~FTCoreEditor(){}
+
 bool FTCoreEditor::InitGUI()
 {
 	IMGUI_CHECKVERSION();

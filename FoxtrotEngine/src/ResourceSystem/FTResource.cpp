@@ -1,7 +1,7 @@
 #include "ResourceSystem/FTResource.h"
 #include "FileSystem/ChunkLoader.h"
 
-#ifdef _DEBUG
+
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
@@ -11,7 +11,7 @@
 #include "imgui/FileDialog/ImGuiFileDialogConfig.h"
 
 #include "EditorLayer.h"
-#endif // _DEBUG
+ // _DEBUG
 
 void FTResource::SaveProperties(nlohmann::ordered_json& out, UINT key)
 {

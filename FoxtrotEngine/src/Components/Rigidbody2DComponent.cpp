@@ -118,9 +118,8 @@ void Rigidbody2DComponent::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadVector2(ifs, mMaxVelocity);
 }
 
-#ifdef _DEBUG
+
 void Rigidbody2DComponent::SaveProperties(nlohmann::ordered_json& out)
 {
 	Component::SaveProperties(out);
 }
-#endif

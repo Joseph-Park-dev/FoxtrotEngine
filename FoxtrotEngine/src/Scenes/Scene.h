@@ -14,7 +14,7 @@ class FoxtrotRenderer;
 class Scene
 {
 public:
-	void AddActor(Actor* actor, ACTOR_GROUP group);
+	void AddActor(Actor* actor, ActorGroup group);
 
 public:
 	virtual void Enter() = 0;
@@ -25,7 +25,7 @@ protected:
 
 public:
 	const std::wstring&  GetName() { return mSceneName; }
-	std::vector<Actor*>& GetActorGroup(ACTOR_GROUP group)
+	std::vector<Actor*>& GetActorGroup(ActorGroup group)
 	{
 		return mActors[(size_t)group];
 	};
@@ -44,8 +44,8 @@ public:
 	void		 DeleteAll();
 
 private:
-	std::vector<Actor*> mActors[(size_t)ACTOR_GROUP::END];
-	std::vector<Actor*> mPendingActors[(size_t)ACTOR_GROUP::END];
+	std::vector<Actor*> mActors[(size_t)ActorGroup::END];
+	std::vector<Actor*> mPendingActors[(size_t)ActorGroup::END];
 	std::wstring		mSceneName;
 	bool				mIsUpdatingActors;
 
@@ -57,16 +57,16 @@ private:
 	void AddPendingActors();
 	void ClearDeadActors();
 	void RemoveActor(Actor* actor);
-	void DeleteGroup(ACTOR_GROUP group);
-	void DeletePendingGroup(ACTOR_GROUP group);
+	void DeleteGroup(ActorGroup group);
+	void DeletePendingGroup(ActorGroup group);
 
 	friend class EventManager;
 
-#ifdef _DEBUG
+
 public:
 	void EditorProcessInput(KeyInputManager* keyInputManager);
 	void EditorUpdate(float deltaTime);
 	void EditorLateUpdate(float deltaTime);
 	void EditorRender(FoxtrotRenderer* renderer);
-#endif
+
 };

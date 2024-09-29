@@ -14,6 +14,7 @@
 #include <directxtk/VertexTypes.h>
 
 #include "ResourceSystem/Mesh.h"
+#include "Core\TemplateFunctions.h"
 
 #define VERTEX_SHADER_PATH L"./src/Renderer/Shaders/ColorVertexShader.hlsl"
 #define PIXEL_SHADER_PATH L"./src/Renderer/Shaders/ColorPixelShader.hlsl"
@@ -21,6 +22,8 @@
 
 using VertexType = DirectX::VertexPositionColor;
 using namespace Microsoft::WRL;
+using namespace DX;
+
 class Transform;
 class RenderTextureClass;
 class FTVector2;
@@ -194,7 +197,7 @@ public:
         memcpy(ms.pData, &bufferData, sizeof(bufferData));
         mContext->Unmap(buffer.Get(), NULL);
     }
-#ifdef _DEBUG
+
 public:
     RenderTextureClass* GetRenderTexture() { return mRenderTexture; }
 //public:
@@ -207,5 +210,5 @@ private:
 public:
     void RenderToTexture();
 
-#endif // _DEBUG
+ // _DEBUG
 };

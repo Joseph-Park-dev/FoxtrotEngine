@@ -29,7 +29,7 @@ void GunFiringComponent::ShootGun()
 		playerPos,
 		MOUSE_WORLDPOS,
 		500.f,
-		ACTOR_GROUP::ENEMY
+		ActorGroup::ENEMY
 	);
 	LogString("Gun fired!");
 }

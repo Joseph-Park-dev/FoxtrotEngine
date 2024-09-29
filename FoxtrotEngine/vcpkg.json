@@ -1,7 +1,6 @@
 {
   "name": "foxtrot-engine",
   "dependencies": [
-    "assimp",
     "directxtex",
     "directxtk",
     {

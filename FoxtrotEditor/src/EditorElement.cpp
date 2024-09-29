@@ -149,7 +149,7 @@ void EditorElement::UIRender(FoxtrotRenderer* renderer)
 EditorElement::EditorElement(Scene* scene)
 	: PanelUI (scene,false)
 	, mRotationModSpeed(1.0f)
-	, mActorGroupIdx((int)ACTOR_GROUP::DEFAULT)
+	, mActorGroupIdx((int)ActorGroup::DEFAULT)
 {}
 
 EditorElement::EditorElement(Actor* actor)
@@ -179,16 +179,16 @@ void EditorElement::UpdateActorName()
 
 void EditorElement::UpdateActorGroup()
 {
-	const char* comboPreview = ActorGroup[mActorGroupIdx];
+	const char* comboPreview = ActorGroupUtil::GetActorGroupStr(mActorGroupIdx);
 	if (ImGui::BeginCombo("Actor Group", comboPreview))
 	{
-		for (size_t n = 0; n < (size_t)ACTOR_GROUP::END - 1; n++)
+		for (size_t n = 0; n < (size_t)ActorGroup::END - 1; n++)
 		{
-			if (ImGui::Selectable(ActorGroup[n]))
+			if (ImGui::Selectable(ActorGroupUtil::GetActorGroupStr(n)))
 			{
 				CommandHistory::GetInstance()->AddCommand(new IntEditCommand(mActorGroupIdx, n));
 				mActorGroupIdx = n;
-				SetActorGroup((ACTOR_GROUP)mActorGroupIdx);
+				SetActorGroup((ActorGroup)mActorGroupIdx);
 			}
 		}
 		ImGui::EndCombo();

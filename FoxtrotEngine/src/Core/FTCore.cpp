@@ -28,12 +28,6 @@ bool FTCore::Initialize()
 		return false;
 	InitSingletonManagers();
 	InitTimer();
-	gPInst = this;
-	if (!gPInst)
-	{
-		LogString("Error: FTCore - instance is null");
-		return false;
-	}
 	return true;
 }
 
@@ -195,7 +189,7 @@ LRESULT FTCore::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	}
 }
 
-//#ifdef _DEBUG
+//
 //void FTCore::SaveEditorData(std::ofstream& ofs)
 //{
 //	int editorW = 0; int editorH = 0;
@@ -204,4 +198,4 @@ LRESULT FTCore::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 //	FileIOHelper::
 //		AddVector2(ofs, FTVector2(editorW, editorH));
 //}
-//#endif // _DEBUG
+// // _DEBUG

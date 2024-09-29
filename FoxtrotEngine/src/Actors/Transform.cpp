@@ -22,7 +22,7 @@ void Transform::Translate(FTVector3 translation)
 //	return Camera2D::GetInstance()->ConvertWorldPosToScreen(mWorldPosition);
 //}
 //
-//#ifdef _DEBUG
+//
 //
 //
 //const FTVector2 Transform::GetScreenPositionEditor() const

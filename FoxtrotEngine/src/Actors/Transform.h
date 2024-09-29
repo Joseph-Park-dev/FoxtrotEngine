@@ -26,7 +26,7 @@ public:
 	const int		 GetCurrentDirection() const { return mCurrentDirection; }
 
 //	const FTVector3  GetScreenPosition() const;
-//#ifdef _DEBUG
+//
 //	const FTVector2 GetScreenPositionEditor() const;
 //#endif
 

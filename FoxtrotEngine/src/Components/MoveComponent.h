@@ -42,6 +42,7 @@ public:
     void  SetPrevMovingState(State state) { mPrevMovingState = state; }
 
 public:
+    virtual void Initialize(FTCore* coreInstance) override {};
     virtual void Update(float deltaTime) override;
 
 public:

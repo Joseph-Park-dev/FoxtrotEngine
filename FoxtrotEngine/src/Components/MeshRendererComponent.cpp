@@ -12,10 +12,10 @@
 #include "Managers/ResourceManager.h"
 #include "FileSystem/ChunkLoader.h"
 
-#ifdef _DEBUG
+
 #include "FTCoreEditor.h"
 #include <functional>
-#endif
+
 
 using DXMatrix = DirectX::SimpleMath::Matrix;
 

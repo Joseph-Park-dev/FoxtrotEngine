@@ -35,7 +35,7 @@ private:
 private:
     void InitializeTileMap();
 
-#ifdef _DEBUG
+
 public:
     //virtual void EditorUpdate(float deltaTime) override;
     virtual void EditorUIUpdate() override;
@@ -45,5 +45,5 @@ public:
 
     virtual void OnConfirmUpdate() override;
     void UpdateCSV();
-#endif // _DEBUG
+ // _DEBUG
 };

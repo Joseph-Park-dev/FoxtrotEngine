@@ -2,8 +2,10 @@
 #include <vector>
 #include <string>
 #include <typeinfo>
+#include <nlohmann/json.hpp>
 
 #include "Core/TemplateFunctions.h"
+#include "Actors/ActorGroup.h"
 
 class Transform;
 class SpriteRendererComponent;
@@ -15,7 +17,6 @@ class Scene;
 class Component;
 class FoxtrotRenderer;
 enum class ACTOR_TAG;
-enum class ACTOR_GROUP;
 
 class Actor
 {
@@ -43,7 +44,7 @@ protected:
 
 public:
 	// Getters/Setters
-	ACTOR_GROUP	  GetActorGroup() const	  { return mActorGroup; }
+	ActorGroup GetActorGroup() const	  { return mActorGroup; }
 	std::wstring  GetName()				  { return mName; }
 	std::string   GetNameStr()			  { return ToString(mName); }
 	std::wstring& GetNameRef()			  { return mName; }
@@ -62,7 +63,7 @@ public:
 	void		  SetName(std::wstring name)		{ mName = name; }
 	void		  SetState(State state)				{ mState = state; }
 	void		  SetState(std::string state);
-	void		  SetActorGroup(ACTOR_GROUP group)	{ mActorGroup = group; }
+	void		  SetActorGroup(ActorGroup group)	{ mActorGroup = group; }
 	void		  SetParent(Actor* parent)			{ mParent = parent; }
 	void		  SetTransform(Transform* transform){ mTransform = transform; }
 	// Shallow copy Component objects -> deep copy pointers
@@ -114,7 +115,7 @@ private:
 	static int						g_NextID;
 		   std::wstring				mName;
 		   int						mID;
-		   ACTOR_GROUP				mActorGroup;
+		   ActorGroup	mActorGroup;
 		   State					mState;
 		   Transform*				mTransform;
 		   std::vector<Component*>	mComponents;

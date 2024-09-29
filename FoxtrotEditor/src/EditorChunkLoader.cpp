@@ -6,6 +6,30 @@
 #include "Managers/ResourceManager.h"
 #include "Math/FTMath.h"
 #include "EditorLayer.h"
+#include "Components/ComponentBatchHeaders.h"
+
+EditorChunkLoader::EditorChunkLoader()
+    :ChunkLoader()
+{
+    mComponentCreateMap =
+    {
+        {L"AIComponent",             &Component::Create<AIComponent>},
+        {L"AnimatorComponent",       &Component::Create<AnimatorComponent>},
+        {L"AnimSpriteComponent",     &Component::Create<SpriteAnimComponent>},
+        {L"BGSpriteComponent",       &Component::Create<BGSpriteComponent>},
+        {L"ColliderComponent",       &Component::Create<ColliderComponent>},
+        {L"InputMoveComponent",      &Component::Create<InputMoveComponent>},
+        {L"MoveComponent",           &Component::Create<MoveComponent>},
+        {L"Rigidbody2DComponent",    &Component::Create<Rigidbody2DComponent>},
+        {L"SpriteRendererComponent", &Component::Create<SpriteRendererComponent>},
+        {L"TileMapComponent",        &Component::Create<TileMapComponent>},
+        {L"SpriteAnimComponent",     &Component::Create<SpriteAnimComponent>},
+        {L"GunFiringComponent",      &Component::Create<GunFiringComponent>},
+        {L"MeshRendererComponent",   &Component::Create<MeshRendererComponent>},
+    };
+}
+
+EditorChunkLoader::~EditorChunkLoader() {}
 
 void EditorChunkLoader::SaveChunk(const std::string fileName)
 {

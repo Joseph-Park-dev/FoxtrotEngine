@@ -9,6 +9,7 @@
 /// </FTCore_Editor>
 
 #include "FTCoreEditor.h"
+#pragma comment	(lib, "FoxtrotEngine.lib")
 
 int main(int argc, char* argv[])
 {

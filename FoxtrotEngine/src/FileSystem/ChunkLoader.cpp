@@ -7,6 +7,7 @@
 #include <iostream>
 #include <filesystem>
 
+#include "EditorLayer.h"
 #include "Math/FTMath.h"
 #include "Core/TemplateFunctions.h"
 #include "Managers/SceneManager.h"
@@ -20,7 +21,7 @@
 
 #include "Components/ComponentBatchHeaders.h"
 
-#ifdef _DEBUG
+
 void ChunkLoader::SaveChunk(const std::string fileName)
 {
     
@@ -110,45 +111,26 @@ std::string ChunkLoader::GetConvertedFileName(std::string curr, std::string prev
 {
     return curr.substr(0, curr.length() - strlen(prevSuffix.c_str())) + postSuffix;
 }
-#endif // _DEBUG
+ // _DEBUG
 
 ChunkLoader::ChunkLoader()
     : mCurrentChunkData{}
 {
     mComponentLoadMap =
     {
-        {L"AIComponent",          &Component::Load<AIComponent>},
-        {L"AnimatorComponent",    &Component::Load<AnimatorComponent>},
-        {L"AnimSpriteComponent",  &Component::Load<SpriteAnimComponent>},
-        {L"BGSpriteComponent",    &Component::Load<BGSpriteComponent>},
-        {L"ColliderComponent",    &Component::Load<ColliderComponent>},
-        {L"InputMoveComponent",   &Component::Load<InputMoveComponent>},
-        {L"MoveComponent",        &Component::Load<MoveComponent>},
-        {L"Rigidbody2DComponent", &Component::Load<Rigidbody2DComponent>},
-        {L"SpriteRendererComponent",      &Component::Load<SpriteRendererComponent>},
-        {L"TileMapComponent",     &Component::Load<TileMapComponent>},
-        {L"SpriteAnimComponent",     &Component::Load<SpriteAnimComponent>},
-        {L"GunFiringComponent",   &Component::Load<GunFiringComponent>},
-        {L"MeshRendererComponent", &Component::Load<MeshRendererComponent>},
-        {L"SpineAnimRendererComponent", &Component::Load<SpineAnimRendererComponent>}
-    };
-
-    mComponentCreateMap =
-    {
-        {L"AIComponent",          &Component::<AIComponent>},
-        {L"AnimatorComponent",    &Component::Create<AnimatorComponent>},
-        {L"AnimSpriteComponent",  &Component::Create<SpriteAnimComponent>},
-        {L"BGSpriteComponent",    &Component::Create<BGSpriteComponent>},
-        {L"ColliderComponent",    &Component::Create<ColliderComponent>},
-        {L"InputMoveComponent",   &Component::Create<InputMoveComponent>},
-        {L"MoveComponent",        &Component::Create<MoveComponent>},
-        {L"Rigidbody2DComponent", &Component::Create<Rigidbody2DComponent>},
-        {L"SpriteRendererComponent", &Component::Create<SpriteRendererComponent>},
-        {L"TileMapComponent",     &Component::Create<TileMapComponent>},
-        {L"SpriteAnimComponent",     &Component::Create<SpriteAnimComponent>},
-        {L"GunFiringComponent",   &Component::Create<GunFiringComponent>},
-        {L"MeshRendererComponent", &Component::Create<MeshRendererComponent>},
-        {L"SpineAnimRendererComponent", &Component::Create<SpineAnimRendererComponent>}
+        {L"AIComponent",                &Component::Load<AIComponent>},
+        {L"AnimatorComponent",          &Component::Load<AnimatorComponent>},
+        {L"AnimSpriteComponent",        &Component::Load<SpriteAnimComponent>},
+        {L"BGSpriteComponent",          &Component::Load<BGSpriteComponent>},
+        {L"ColliderComponent",          &Component::Load<ColliderComponent>},
+        {L"InputMoveComponent",         &Component::Load<InputMoveComponent>},
+        {L"MoveComponent",              &Component::Load<MoveComponent>},
+        {L"Rigidbody2DComponent",       &Component::Load<Rigidbody2DComponent>},
+        {L"SpriteRendererComponent",    &Component::Load<SpriteRendererComponent>},
+        {L"TileMapComponent",           &Component::Load<TileMapComponent>},
+        {L"SpriteAnimComponent",        &Component::Load<SpriteAnimComponent>},
+        {L"GunFiringComponent",         &Component::Load<GunFiringComponent>},
+        {L"MeshRendererComponent",      &Component::Load<MeshRendererComponent>}
     };
 };
 

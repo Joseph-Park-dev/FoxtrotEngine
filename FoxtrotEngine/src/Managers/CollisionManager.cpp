@@ -12,7 +12,7 @@
 #include "Renderer/FoxtrotRenderer.h"
 
 
-void CollisionManager::MarkGroup(ACTOR_GROUP left, ACTOR_GROUP right)
+void CollisionManager::MarkGroup(ActorGroup left, ActorGroup right)
 {
 	UINT iRow = (UINT)left;
 	UINT iCol = (UINT)right;
@@ -38,7 +38,7 @@ void CollisionManager::RegisterRay(Physics::Ray* ray)
 
 void CollisionManager::Reset()
 {
-	memset(mArrCollisionMarks, 0, sizeof(UINT) * (UINT)ACTOR_GROUP::END);
+	memset(mArrCollisionMarks, 0, sizeof(UINT) * (UINT)ActorGroup::END);
 	ResetRegisteredRays();
 	Physics2D::GetInstance()->ResetRayCasts();
 	ResetIntersections();
@@ -46,20 +46,20 @@ void CollisionManager::Reset()
 
 void CollisionManager::Update()
 {
-	for (UINT iRow = 0; iRow < (UINT)ACTOR_GROUP::END; ++iRow)
+	for (UINT iRow = 0; iRow < (UINT)ActorGroup::END; ++iRow)
 	{
-		for (UINT iCol = iRow; iCol < (UINT)ACTOR_GROUP::END; ++iCol)
+		for (UINT iCol = iRow; iCol < (UINT)ActorGroup::END; ++iCol)
 		{
 			if (mArrCollisionMarks[iRow] & (1 << iCol))
 			{
-				UpdateCollisionGroup((ACTOR_GROUP)iRow, (ACTOR_GROUP)iCol);
+				UpdateCollisionGroup((ActorGroup)iRow, (ActorGroup)iCol);
 			}
 		}
-		CompareGroupWithRays((ACTOR_GROUP)iRow);
+		CompareGroupWithRays((ActorGroup)iRow);
 	}
 }
 
-void CollisionManager::UpdateCollisionGroup(ACTOR_GROUP left, ACTOR_GROUP right)
+void CollisionManager::UpdateCollisionGroup(ActorGroup left, ActorGroup right)
 {
 	Scene* pCurScene = SceneManager::GetInstance()->GetCurrScene();
 	const std::vector<Actor*>& vecLeft = pCurScene->GetActorGroup(left);
@@ -221,7 +221,7 @@ void CollisionManager::ConstainColliderPos(ColliderComponent* aCol, ColliderComp
 	}
 }
 
-void CollisionManager::CompareGroupWithRays(ACTOR_GROUP group)
+void CollisionManager::CompareGroupWithRays(ActorGroup group)
 {
 	Scene* pCurScene = SceneManager::GetInstance()->GetCurrScene();
 	const std::vector<Actor*>& actors = pCurScene->GetActorGroup(group);
@@ -278,7 +278,7 @@ void CollisionManager::RenderRay(FoxtrotRenderer* renderer)
 	Physics2D::GetInstance()->ResetRayCasts();
 }
 
-bool CollisionManager::HasRayCasted(Physics::Ray* ray, ColliderComponent* collider, ACTOR_GROUP group)
+bool CollisionManager::HasRayCasted(Physics::Ray* ray, ColliderComponent* collider, ActorGroup group)
 {
 	if (ray->groupFilter == group)
 	{

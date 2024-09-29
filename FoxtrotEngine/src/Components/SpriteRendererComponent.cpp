@@ -1,4 +1,4 @@
-#include "Components/SpriteRendererComponent.h"
+#include "SpriteRendererComponent.h"
 
 #include "Actors/Transform.h"
 #include "Actors/Actor.h"
@@ -84,7 +84,7 @@ bool SpriteRendererComponent::InitializeMesh()
 //	);
 //}
 
-#ifdef _DEBUG
+
 #include "CommandHistory.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -203,4 +203,3 @@ void SpriteRendererComponent::LoadProperties(std::ifstream& ifs){
 
 	//FileIOHelper::LoadFTTexture(ifs, GetMesh()->texture);
 }
-#endif

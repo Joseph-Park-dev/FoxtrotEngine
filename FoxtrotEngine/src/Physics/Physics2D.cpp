@@ -8,9 +8,9 @@
 #include "Physics/Physics2D.h"
 #include "Physics/Ray.h"
 
-#ifdef _DEBUG
 
-#endif // _DEBUG
+
+ // _DEBUG
 
 /* origin : world position vector 
 direction : world position vector */
@@ -130,8 +130,8 @@ Physics2D::Physics2D()
 
 Physics2D::~Physics2D() {}
 
-#ifdef _DEBUG
-RayCastHit2D Physics2D::Raycast(FTVector2 origin, FTVector2 direction, float distance, ACTOR_GROUP actor)
+
+RayCastHit2D Physics2D::Raycast(FTVector2 origin, FTVector2 direction, float distance, ActorGroup actor)
 {
 	FTVector2 rayDir = (direction - origin).Normalize() * distance;
 	//Physics::Ray* ray = new Physics::Ray(
@@ -142,8 +142,8 @@ RayCastHit2D Physics2D::Raycast(FTVector2 origin, FTVector2 direction, float dis
 	//CollisionManager::GetInstance()->RegisterRay(ray);
 	return RayCastHit2D();
 }
-#else
-RayCastHit2D Physics2D::Raycast(FTVector2 origin, FTVector2 direction, float distance, ACTOR_GROUP actor)
+
+RayCastHit2D Physics2D::Raycast(FTVector2 origin, FTVector2 direction, float distance, ActorGroup actor)
 {
 	FTVector2 rayDir = (direction - origin).Normalize() * distance;
 	Physics::Ray* ray = new Physics::Ray(
@@ -154,4 +154,3 @@ RayCastHit2D Physics2D::Raycast(FTVector2 origin, FTVector2 direction, float dis
 	CollisionManager::GetInstance()->RegisterRay(ray);
 	return RayCastHit2D();
 }
-#endif

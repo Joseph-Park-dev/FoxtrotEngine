@@ -17,11 +17,11 @@ void Scene_Start::Enter()
 
 void Scene_Start::LoadData()
 {
-	CollisionManager::GetInstance()->MarkGroup(ACTOR_GROUP::PLAYER, ACTOR_GROUP::ENEMY);
-	CollisionManager::GetInstance()->MarkGroup(ACTOR_GROUP::PLAYER, ACTOR_GROUP::GROUND);
-	CollisionManager::GetInstance()->MarkGroup(ACTOR_GROUP::DEFAULT, ACTOR_GROUP::DEFAULT);
+	CollisionManager::GetInstance()->MarkGroup(ActorGroup::PLAYER, ActorGroup::ENEMY);
+	CollisionManager::GetInstance()->MarkGroup(ActorGroup::PLAYER, ActorGroup::GROUND);
+	CollisionManager::GetInstance()->MarkGroup(ActorGroup::DEFAULT, ActorGroup::DEFAULT);
 
-#ifdef _DEBUG
+
 	FoxtrotRenderer* currRenderer = FTCoreEditor::GetInstance()->GetGameRenderer();
 	//std::string asteroidSprite = "Asteroid.png";
 	//ResourceManager::GetInstance()->LoadTexture("Asteroid1", asteroidSprite);
@@ -46,7 +46,7 @@ void Scene_Start::LoadData()
 	std::string tileMapSprite = "D:/[2024_01]/FoxtrotEngine_DirectX/assets/Tiles.png";
 	ResourceManager::GetInstance()->LoadTexture(currRenderer, tileMapSprite);*/
 
-#endif // _DEBUG
+ // _DEBUG
 }
 
 void Scene_Start::Exit()

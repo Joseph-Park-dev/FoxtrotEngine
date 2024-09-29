@@ -47,14 +47,14 @@ private:
     int mTexWidth;
     int mTexHeight;
 
-#ifdef _DEBUG
+
 public:
     virtual void SaveProperties(nlohmann::ordered_json& out, UINT key) override;
     virtual void LoadProperties(nlohmann::ordered_json& itemTree)      override;
 
     virtual void UpdateUI()         override;
 
-#endif // _DEBUG
+ // _DEBUG
 
 private:
     friend class ResourceManager;

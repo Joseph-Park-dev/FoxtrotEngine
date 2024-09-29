@@ -7,9 +7,9 @@
 #include "Actors/Actor.h"
 #include "Actors/UIs/UIActor.h"
 #include "Managers/KeyInputManager.h"
-#ifdef _DEBUG
+
 #include "EditorLayer.h"
-#endif // DEBUG
+ // DEBUG
 
 UIManager::UIManager()
 	: mFocusedUI(nullptr)
@@ -55,7 +55,7 @@ void UIManager::Update(float deltaTime)
 UIActor* UIManager::GetFocusedUI()
 {
 	Scene* currScene = SceneManager::GetInstance()->GetCurrScene();
-	std::vector<Actor*>& UI = currScene->GetActorGroup(ACTOR_GROUP::UI);
+	std::vector<Actor*>& UI = currScene->GetActorGroup(ActorGroup::UI);
 
 	bool lBtnTap = MOUSE_TAP(MOUSE::MOUSE_LEFT);
 
@@ -144,7 +144,7 @@ void UIManager::SetFocusedUI(UIActor* UI)
 	}
 	mFocusedUI = UI;
 	Scene* currScene = SceneManager::GetInstance()->GetCurrScene();
-	std::vector<Actor*>& UIObjs = currScene->GetActorGroup(ACTOR_GROUP::UI);
+	std::vector<Actor*>& UIObjs = currScene->GetActorGroup(ActorGroup::UI);
 	std::vector<Actor*>::iterator iter = UIObjs.begin();
 	for (; iter != UIObjs.end(); ++iter)
 	{
@@ -162,7 +162,7 @@ void UIManager::Reset()
 	mFocusedUI = nullptr;
 }
 
-#ifdef _DEBUG
+
 void UIManager::EditorUpdate(float deltaTime)
 {
 	mFocusedUI = EditorGetFocusedUI();
@@ -220,4 +220,4 @@ UIActor* UIManager::EditorGetFocusedUI()
 	//elems.push_back(focusedUI);
 	return focusedUI;
 }
-#endif // _DEBUG
+ // _DEBUG

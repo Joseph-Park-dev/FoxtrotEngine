@@ -1,10 +1,7 @@
 #include <unordered_map>
 
-#include "spine/Atlas.h"
-
 #include "Managers/ResourceManager.h"
 #include "ResourceSystem/FTTexture.h"
-#include "ResourceSystem/FTSpineAnimation.h"
 #include "ResourceSystem/GeometryGenerator.h"
 #include "ResourceSystem/FTBasicMeshGroup.h"
 #include "ResourceSystem/FTTileMap.h"
@@ -163,13 +160,12 @@ ResourceManager::~ResourceManager()
 }
 
 ResourceManager::ResourceManager()
-	: mSpineTextureLoader(new SpineTextureLoader)
-	, mPathToAsset("./assets/")
+	: mPathToAsset("./assets/")
 {
 
 }
 
-#ifdef _DEBUG
+
 #include <nlohmann/json.hpp>
 #include "imgui/FileDialog/ImGuiFileDialog.h"
 #include "imgui/FileDialog/ImGuiFileDialogConfig.h"
@@ -230,16 +226,5 @@ void ResourceManager::UpdateUI()
 		ImGui::TreePop();
 	}
 }
-#endif
 
-void SpineTextureLoader::load(spine::AtlasPage& page, const spine::String& path)
-{
-	/*FTTexture* tex = ResourceManager::GetInstance()->GetLoadedTexture(path.buffer());
-	if (tex == nullptr)
-		LogString("SpineTextureLoader::Load() -> Failed to load texture");
-	page.texture = tex;*/
-}
 
-void SpineTextureLoader::unload(void* texture)
-{
-}

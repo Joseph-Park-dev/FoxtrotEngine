@@ -8,6 +8,7 @@
 #include <imgui_impl_win32.h>
 #include "imgui/FileDialog/ImGuiFileDialog.h"
 #include "imgui/FileDialog/ImGuiFileDialogConfig.h"
+#include <imgui_internal.h>
 #include <d3d11.h>
 
 #include "EditorElement.h"
@@ -38,12 +39,12 @@ void EditorLayer::Update(float deltaTime)
 	ImGui::NewFrame();
 
 	ImGui::DockSpaceOverViewport();
-	mSaveKeyPressed    = ImGui::IsKeyChordPressed(ImGuiModFlags_::ImGuiModFlags_Ctrl | ImGuiKey::ImGuiKey_S);
-	mSaveAsKeyPressed  = ImGui::IsKeyChordPressed(ImGuiModFlags_::ImGuiModFlags_Ctrl | ImGuiModFlags_::ImGuiModFlags_Shift | ImGuiKey::ImGuiKey_S);
-	mOpenKeyPressed	   = ImGui::IsKeyChordPressed(ImGuiModFlags_::ImGuiModFlags_Ctrl | ImGuiKey::ImGuiKey_O);
+	mSaveKeyPressed    = ImGui::IsKeyChordPressed(ImGuiKey::ImGuiKey_LeftCtrl | ImGuiKey::ImGuiKey_S);
+	mSaveAsKeyPressed  = ImGui::IsKeyChordPressed(ImGuiKey::ImGuiKey_LeftCtrl | ImGuiKey::ImGuiKey_LeftShift | ImGuiKey::ImGuiKey_S);
+	mOpenKeyPressed	   = ImGui::IsKeyChordPressed(ImGuiKey::ImGuiKey_LeftCtrl | ImGuiKey::ImGuiKey_O);
 	mConfirmKeyPressed = ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Enter);
-	mUndoKeyPressed	   = ImGui::IsKeyChordPressed(ImGuiModFlags_::ImGuiModFlags_Ctrl | ImGuiKey::ImGuiKey_Z);
-	mRedoKeyPressed    = ImGui::IsKeyChordPressed(ImGuiModFlags_::ImGuiModFlags_Ctrl | ImGuiModFlags_::ImGuiModFlags_Shift | ImGuiKey::ImGuiKey_Z);
+	mUndoKeyPressed	   = ImGui::IsKeyChordPressed(ImGuiKey::ImGuiKey_LeftCtrl | ImGuiKey::ImGuiKey_Z);
+	mRedoKeyPressed    = ImGui::IsKeyChordPressed(ImGuiKey::ImGuiKey_LeftCtrl | ImGuiKey::ImGuiKey_LeftShift | ImGuiKey::ImGuiKey_Z);
 	mDeleteKeyPressed  = ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Delete);
 
 	CommandHistory::GetInstance()->Update();

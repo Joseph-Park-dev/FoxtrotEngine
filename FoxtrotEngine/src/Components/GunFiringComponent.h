@@ -18,6 +18,7 @@ public:
     float                SetDelay(float delay) { mDelay = delay; }
 
 public:
+    virtual void Initialize(FTCore* coreInstance) override {};
     virtual void Update(float deltaTime) override;
 
 public:

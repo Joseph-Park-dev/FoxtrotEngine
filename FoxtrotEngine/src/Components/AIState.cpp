@@ -17,7 +17,7 @@ void AIIdle::Update(float deltaTime)
 {
  //	Actor* player =
 	//SceneManager::GetInstance()->GetCurrScene()
-	//	->GetActorGroup(ACTOR_GROUP::PLAYER)[0];
+	//	->GetActorGroup(ActorGroup::PLAYER)[0];
 	//FTVector2 playerPos = player->GetTransform()->GetWorldPosition();
 
 	//Asteroid* monster = (Asteroid*)GetOwner()->GetOwner();
@@ -70,7 +70,7 @@ void AIPursue::OnEnter()
 {
 	mTargetActor =
 		SceneManager::GetInstance()->GetCurrScene()
-		->GetActorGroup(ACTOR_GROUP::PLAYER)[0];
+		->GetActorGroup(ActorGroup::PLAYER)[0];
 }
 
 void AIPursue::OnExit()

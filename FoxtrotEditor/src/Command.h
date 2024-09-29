@@ -1,4 +1,3 @@
-
 #pragma once
 #include <list>
 
@@ -7,7 +6,6 @@
 #include "Math/FTMath.h"
 #include "Actors/Actor.h"
 
-class Command;
 class FTVector2;
 
 class Command

@@ -1,6 +1,6 @@
 #pragma once
 
-enum class ACTOR_GROUP
+enum class ActorGroup
 {
 	DEFAULT,
 	PLAYER,
@@ -12,25 +12,31 @@ enum class ACTOR_GROUP
 	END // This can be increased at one's will
 };
 
-const char* ActorGroup[(unsigned int)ACTOR_GROUP::END] =
+struct ActorGroupUtil
 {
-	"DEFAULT",
-	"PLAYER",
-	"ENEMY",
-	"GROUND",
-	"UI"
-};
+	static const char* GetActorGroupStr(ActorGroup group)
+	{
+		const char* ActorGroup[(unsigned int)ActorGroup::END] =
+		{
+			"DEFAULT",
+			"PLAYER",
+			"ENEMY",
+			"GROUND",
+			"UI"
+		};
+		return ActorGroup[(unsigned int)group];
+	}
 
-const char* GetActorGroupStr(ACTOR_GROUP group)
-{
-	return ActorGroup[(unsigned int)group];
-}
-
-std::unordered_map<std::string, ACTOR_GROUP> ActorGroupMap
-{
-	{ "DEFAULT", ACTOR_GROUP::DEFAULT },
-	{ "PLAYER",  ACTOR_GROUP::PLAYER },
-	{ "ENEMY",   ACTOR_GROUP::ENEMY },
-	{ "GROUND",  ACTOR_GROUP::GROUND },
-	{ "UI",		 ACTOR_GROUP::UI }
+	static const char* GetActorGroupStr(int index)
+	{
+		const char* ActorGroup[(unsigned int)ActorGroup::END] =
+		{
+			"DEFAULT",
+			"PLAYER",
+			"ENEMY",
+			"GROUND",
+			"UI"
+		};
+		return ActorGroup[index];
+	}
 };

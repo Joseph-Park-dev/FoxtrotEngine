@@ -3,9 +3,6 @@
 #include <unordered_map>
 #include <Windows.h>
 
-#include "spine/TextureLoader.h"
-#include "spine/spine.h"
-
 #include "Core/SingletonMacro.h"
 
 class FTTexture;
@@ -135,7 +132,7 @@ private:
 	void ProcessTexture(FTTexture* texture);
 	void ProcessTextures();
 
-#ifdef _DEBUG
+
 public:
 	void SaveResources(nlohmann::ordered_json& out);
 	void LoadResources(nlohmann::ordered_json& resourceTree);
@@ -161,15 +158,5 @@ private:
 		}
 		++gItemKey; // Key of the next resource to be imported.
 	}
-#endif
-};
 
-class SpineTextureLoader : public spine::TextureLoader{
-public:
-	// For spine animation runtime
-	// Called when the atlas loads the texture of a page.
-	virtual void load(spine::AtlasPage& page, const spine::String& key) override;
-
-	// Called when the atlas is disposed and itself disposes its atlas pages.
-	virtual void unload(void* texture) override;
 };

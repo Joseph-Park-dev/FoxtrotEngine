@@ -77,7 +77,7 @@ bool FTTexture::ReleaseTexture()
     return true;
 }
 
-#ifdef _DEBUG
+
 #include "EditorLayer.h"
 
 void FTTexture::SaveProperties(nlohmann::ordered_json& out, UINT key)
@@ -108,4 +108,4 @@ void FTTexture::UpdateUI()
     ImGui::InputInt("Width", &mTexWidth);
     ImGui::InputInt("Height", &mTexHeight);
 }
-#endif // _DEBUG
+ // _DEBUG

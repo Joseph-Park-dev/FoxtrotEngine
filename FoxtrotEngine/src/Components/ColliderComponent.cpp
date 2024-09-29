@@ -69,12 +69,10 @@ void ColliderComponent::OnRayEnter()
 	GetOwner()->OnRayEnter();
 }
 
-#ifdef _DEBUG
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx11.h>
-
 
 #include "CommandHistory.h"
 
@@ -84,8 +82,6 @@ void ColliderComponent::Render(FoxtrotRenderer* renderer)
 	FTVector2 topRight = FTVector2(mFinalPosition.x + mScale.x / 2, mFinalPosition.y + mScale.y / 2);
 	FTVector2 bottomRight = mFinalPosition + mScale / 2;
 	FTVector2 bottomLeft = FTVector2(mFinalPosition.x - mScale.x / 2, mFinalPosition.y + mScale.y / 2);
-
-
 }
 
 void ColliderComponent::SaveProperties(nlohmann::ordered_json& out)
@@ -170,4 +166,3 @@ void ColliderComponent::UpdateScale()
 	}
 	delete[] vec2;
 }
-#endif // DEBUG

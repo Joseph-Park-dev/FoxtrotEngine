@@ -19,7 +19,7 @@ int Actor::g_NextID = 0;
 Actor::Actor(Scene* scene)
 	: mState(EActive)
 	, mTransform(new Transform)
-	, mActorGroup(ACTOR_GROUP::DEFAULT)
+	, mActorGroup(ActorGroup::DEFAULT)
 	, mParent(nullptr)
 	, mID(g_NextID++)
 	, mComponents{}
@@ -265,6 +265,6 @@ void Actor::LoadComponents(std::ifstream& ifs)
 	for (size_t i = 0; i < count; ++i)
 	{
 		std::wstring compName = FileIOHelper::LoadWString(ifs);
-		ChunkLoader::GetInstance()->GetCompLoadMap()[compName](this, ifs);
+		//ChunkLoader::GetInstance()->GetCompLoadMap()[compName](this, ifs);
 	}
 }

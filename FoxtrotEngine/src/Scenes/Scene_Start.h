@@ -2,7 +2,6 @@
 #include "Scenes/Scene.h"
 
 #include "Actors/UIs/UIActor.h"
-#include "Scripts/ActorList/Ship.h"
 
 class Scene_Start : public Scene
 {
@@ -14,7 +13,5 @@ public:
 
 private:
 	virtual void LoadData();
-	Ship* mShip;
-	UIActor* mUI;
 };
 

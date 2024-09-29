@@ -25,7 +25,7 @@ void EventManager::Execute(const FTEvent& executedEvent)
 	case EVENT_TYPE::CREATE_ACTOR:
 	{
 		Actor* newActor = (Actor*)executedEvent.lParam;
-		ACTOR_GROUP group = (ACTOR_GROUP)executedEvent.wParam;
+		ActorGroup group = (ActorGroup)executedEvent.wParam;
 		newActor->SetActorGroup(group);
 		SceneManager::GetInstance()->GetCurrScene()->AddActor(newActor, group);
 	}

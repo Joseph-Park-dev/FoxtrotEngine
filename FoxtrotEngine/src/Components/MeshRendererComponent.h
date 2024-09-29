@@ -65,7 +65,7 @@ protected:
 	void UpdateConstantBufferView		(Camera* camInst);
 	void UpdateConstantBufferProjection	(Camera* camInst);
 
-#ifdef _DEBUG
+
 	//This section will be omitted from Release mode!
 public:
 	virtual void SaveProperties(nlohmann::ordered_json& out) override;
@@ -77,5 +77,4 @@ public:
 
 protected:
 	virtual void OnConfirmUpdate();
-#endif // DEBUG
 };

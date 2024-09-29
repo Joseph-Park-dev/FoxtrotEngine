@@ -5,7 +5,7 @@
 #include "Components/AIState.h"
 #include "Actors/ActorGroup.h"
 
-void Instantiate(Actor* actor, ACTOR_GROUP actorGroup)
+void Instantiate(Actor* actor, ActorGroup actorGroup)
 {
 	FTEvent addedEvent = {};
 	addedEvent.incident = EVENT_TYPE::CREATE_ACTOR;

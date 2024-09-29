@@ -26,7 +26,7 @@ public:
 	{}
 	virtual ~FTResource(){}
 
-#ifdef _DEBUG
+
 public:
 	virtual void SaveProperties(nlohmann::ordered_json& out, UINT key);
 	virtual void LoadProperties(nlohmann::ordered_json& itemTree);
@@ -36,6 +36,6 @@ public:
 protected:
 	void UpdateRelativePath(std::string fileExtension);
 
-#endif // _DEBUG
+ // _DEBUG
 
 };

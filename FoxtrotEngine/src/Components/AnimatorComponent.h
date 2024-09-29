@@ -32,7 +32,8 @@ public:
     }
 
 public:
-    void LateUpdate(float deltaTime) override;
+    virtual void Initialize(FTCore* coreInstance) override {};
+            void LateUpdate(float deltaTime) override;
     virtual void Render(FoxtrotRenderer* renderer) override;
 
 public:

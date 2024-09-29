@@ -69,9 +69,9 @@ public:
 	FTBasicMeshGroup();
 	~FTBasicMeshGroup() override;
 
-#ifdef _DEBUG
+
 public:
 	virtual void UpdateUI() override {};
 
-#endif // _DEBUG
+ // _DEBUG
 };

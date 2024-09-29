@@ -1,4 +1,3 @@
-
 #include "Command.h"
 
 #include <string>
@@ -26,9 +25,6 @@ void IntEditCommandPtr::Execute()
 {
 	mPrevValue = *mValue;
 	*mValue = mNextValue;
-	LogInt("Previous Val", mPrevValue);
-	LogInt("Current Val", *mValue);
-	LogInt("Next Val", mNextValue);
 }
 
 void IntEditCommandPtr::Undo()
@@ -36,9 +32,6 @@ void IntEditCommandPtr::Undo()
 	int nextVal = *mValue;
 	*mValue = mPrevValue;
 	mNextValue = nextVal;
-	LogInt("Previous Val", mPrevValue);
-	LogInt("Current Val", *mValue);
-	LogInt("Next Val", mNextValue);
 }
 
 IntEditCommandPtr::IntEditCommandPtr(int* valRef, int nextVal)
@@ -55,9 +48,6 @@ void FloatEditCommand::Execute()
 {
 	mPrevValue = *mValue;
 	*mValue = mNextValue;
-	LogFloat("Previous Val", mPrevValue);
-	LogFloat("Current Val", *mValue);
-	LogFloat("Next Val", mNextValue);
 }
 
 void FloatEditCommand::Undo()
@@ -65,9 +55,6 @@ void FloatEditCommand::Undo()
 	float nextVal = *mValue;
 	*mValue = mPrevValue;
 	mNextValue = nextVal;
-	LogFloat("Previous Val", mPrevValue);
-	LogFloat("Current Val", *mValue);
-	LogFloat("Next Val", mNextValue);
 }
 
 FloatEditCommand::FloatEditCommand(float* valRef, float nextVal)
@@ -79,9 +66,6 @@ void Vector2EditCommand::Execute()
 {
 	mPrevValue = mValue;
 	mValue = mNextValue;
-	LogVector2("Previous Val", mPrevValue);
-	LogVector2("Current Val", mValue);
-	LogVector2("Next Val", mNextValue);
 }
 
 void Vector2EditCommand::Undo()
@@ -89,9 +73,6 @@ void Vector2EditCommand::Undo()
 	FTVector2 nextVal = mValue;
 	mValue = mPrevValue;
 	mNextValue = nextVal;
-	LogVector2("Previous Val", mPrevValue);
-	LogVector2("Current Val", mValue);
-	LogVector2("Next Val", mNextValue);
 }
 
 Vector2EditCommand::Vector2EditCommand(FTVector2& valRef, FTVector2 nextVal)
@@ -159,9 +140,6 @@ void Vector3EditCommand::Execute()
 {
 	mPrevValue = mValue;
 	mValue = mNextValue;
-	LogVector3("Previous Val", mPrevValue);
-	LogVector3("Current Val", mValue);
-	LogVector3("Next Val", mNextValue);
 }
 
 void Vector3EditCommand::Undo()
@@ -169,9 +147,6 @@ void Vector3EditCommand::Undo()
 	FTVector3 nextVal = mValue;
 	mValue = mPrevValue;
 	mNextValue = nextVal;
-	LogVector3("Previous Val", mPrevValue);
-	LogVector3("Current Val", mValue);
-	LogVector3("Next Val", mNextValue);
 }
 
 Vector3EditCommand::Vector3EditCommand(FTVector3& valRef, FTVector3 nextVal)

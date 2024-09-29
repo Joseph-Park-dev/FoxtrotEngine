@@ -69,7 +69,7 @@ TileMapComponent::~TileMapComponent()
     ResourceManager::GetInstance()->RemoveLoadedMeshes(GetMeshKey());
 }
 
-#ifdef _DEBUG
+
 #include "CommandHistory.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -97,7 +97,7 @@ void TileMapComponent::OnConfirmUpdate()
 void TileMapComponent::UpdateCSV() {
     
 }
-#endif // _DEBUG
+ // _DEBUG
 
 void TileMapComponent::SaveProperties(nlohmann::ordered_json& out)
 {

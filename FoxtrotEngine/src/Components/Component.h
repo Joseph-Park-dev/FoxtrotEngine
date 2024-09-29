@@ -1,11 +1,16 @@
 #pragma once
 #include <fstream>
+#include <nlohmann/json.hpp>
+
+#include "..\..\FoxtrotEditor\src\EditorLayer.h"
 
 #define DEFAULT_DRAWORDER 100
 #define DEFAULT_UPDATEORDER 100
 
 class Actor;
 class FoxtrotRenderer;
+class FTCore;
+class KeyInputManager;
 
 class Component
 {
@@ -30,7 +35,7 @@ public:
 
 public:
 	virtual void Initialize		(FTCore* coreInstance) = 0;
-	virtual void ProcessInput	(class KeyInputManager* keyInputManager) {};
+	virtual void ProcessInput	(KeyInputManager* keyInputManager) {};
 	virtual void Update			(float deltaTime) {};
 	virtual void LateUpdate		(float deltaTime) {};
 	virtual void Render			(FoxtrotRenderer* renderer) {};
@@ -51,14 +56,22 @@ public:
 	Component(const Component& origin);
 	virtual ~Component();
 
+	template<class T>
+	static void Create(Actor* actor)
+	{
+		// Dynamically allocate actor of type T
+		T* t = new T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
+		// Call LoadProperties on new actor
+		t->Initialize(FTCoreEditor::GetInstance());
+	}
 
 	template<class T>
 	static void Load(Actor* actor, std::ifstream& ifs)
 	{
 		// Dynamically allocate actor of type T
-		T* t = new T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
+		//T* t = new T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
 		// Call LoadProperties on new actor
-		t->LoadProperties(ifs);
+		//t->LoadProperties(ifs);
 	}
 	
 	// Returns new object with copied values 
@@ -66,8 +79,10 @@ public:
 	virtual void CloneTo(Actor* actor) {};
 
 public:
-	virtual void SaveProperties(nlohmann::ordered_json& out);
 	virtual void LoadProperties(std::ifstream& ifs);
+
+public:
+	virtual void SaveProperties(nlohmann::ordered_json& out);
 
 public:
 	virtual void EditorUpdate(float deltaTime){};

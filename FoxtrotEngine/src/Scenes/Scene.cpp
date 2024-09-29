@@ -11,9 +11,9 @@
 #include "Actors/UIs/PanelUI.h"
 #include "Actors/Transform.h"
 #include "Renderer/FoxtrotRenderer.h"
-#ifdef _DEBUG
+
 #include "EditorLayer.h"
-#endif // _DEBUG
+ // _DEBUG
 
 Scene::Scene()
 	:mIsUpdatingActors(false)
@@ -27,7 +27,7 @@ Scene::~Scene()
 void Scene::ProcessInput(KeyInputManager* keyInputManager)
 {
 	mIsUpdatingActors = true;
-	for (size_t i = 0; i < (size_t)ACTOR_GROUP::END; ++i)
+	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
 	{
 		for (size_t j = 0; j < mActors[i].size(); ++j)
 		{
@@ -42,7 +42,7 @@ void Scene::ProcessInput(KeyInputManager* keyInputManager)
 void Scene::Update(float deltaTime)
 {
 	mIsUpdatingActors = true;
-	for (size_t i = 0; i < (size_t)ACTOR_GROUP::END; ++i)
+	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
 	{
 		for (size_t j = 0; j < mActors[i].size(); ++j)
 		{
@@ -60,7 +60,7 @@ void Scene::Update(float deltaTime)
 
 void Scene::LateUpdate(float deltaTime)
 {
-	for (size_t i = 0; i < (size_t)ACTOR_GROUP::END; ++i)
+	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
 	{
 		for (size_t j = 0; j < mActors[i].size(); ++j)
 		{
@@ -76,7 +76,7 @@ void Scene::LateUpdate(float deltaTime)
 
 void Scene::Render(FoxtrotRenderer* renderer)
 {
-	for (size_t i = 0; i < (size_t)ACTOR_GROUP::END; ++i)
+	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
 	{
 		for (size_t j = 0; j < mActors[i].size(); ++j)
 		{
@@ -90,7 +90,7 @@ void Scene::Render(FoxtrotRenderer* renderer)
 	}
 }
 
-void Scene::AddActor(Actor* actor, ACTOR_GROUP group)
+void Scene::AddActor(Actor* actor, ActorGroup group)
 {
 	if (mIsUpdatingActors)
 	{
@@ -111,28 +111,28 @@ void Scene::ProcessEvent()
 
 void Scene::DeleteAll()
 {
-	for (size_t i = 0; i < (size_t)ACTOR_GROUP::END; ++i)
+	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
 	{
-		DeleteGroup((ACTOR_GROUP)i);
-		DeletePendingGroup((ACTOR_GROUP)i);
+		DeleteGroup((ActorGroup)i);
+		DeletePendingGroup((ActorGroup)i);
 	}
 }
 
-void Scene::DeleteGroup(ACTOR_GROUP group)
+void Scene::DeleteGroup(ActorGroup group)
 {
 	for (Actor* actor : mActors[(UINT)group])
 		delete actor;
 	mActors[(UINT)group].clear();
 }
 
-void Scene::DeletePendingGroup(ACTOR_GROUP group)
+void Scene::DeletePendingGroup(ActorGroup group)
 {
 	for (Actor* pending : mPendingActors[(UINT)group])
 		delete pending;
 	mPendingActors[(UINT)group].clear();
 }
 
-#ifdef _DEBUG
+
 void Scene::EditorProcessInput(KeyInputManager* keyInputManager)
 {
 	std::vector<EditorElement*>& elements = EditorLayer::GetInstance()->GetEditorElements();
@@ -186,11 +186,11 @@ void Scene::EditorRender(FoxtrotRenderer* renderer)
 		}
 	}
 }
-#endif // _DEBUG
+ // _DEBUG
 
 void Scene::AddPendingActors()
 {
-	for (size_t i = 0; i < (size_t)ACTOR_GROUP::END; ++i)
+	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
 	{
 		for (size_t j = 0; j < mActors[i].size(); ++j)
 		{
@@ -205,7 +205,7 @@ void Scene::AddPendingActors()
 
 void Scene::ClearDeadActors()
 {
-	for (size_t i = 0; i < (size_t)ACTOR_GROUP::END; ++i)
+	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
 	{
 		for (size_t j = 0; j < mActors[i].size(); ++j)
 		{
@@ -219,7 +219,7 @@ void Scene::ClearDeadActors()
 
 void Scene::RemoveActor(Actor* actor)
 {
-	for (size_t i = 0; i < (size_t)ACTOR_GROUP::END; ++i)
+	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
 	{
 		auto iter = std::find(mPendingActors[i].begin(), mPendingActors[i].end(), actor);
 		if (iter != mPendingActors[i].end())

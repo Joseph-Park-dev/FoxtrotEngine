@@ -58,14 +58,14 @@ public:
 	void Initialize();
 	virtual void Update(float deltaTime);
 
-#ifdef _DEBUG
+
 	// void Render(FoxtrotRenderer* renderer);
 	void DisplayCameraMenu();
 
 private:
 	ImVec2 mMiddleMouseClickedPos;
 	ImVec2 mMiddleMouseClickedRot;
-#endif // _DEBUG
+ // _DEBUG
 
 protected:
 	void ZoomIn();

@@ -40,12 +40,12 @@ private:
 private:
     void    InitializeTile(Tile* tile, UINT column, UINT row, UINT tileNum);
 
-#ifdef _DEBUG
+
 public:
     virtual void SaveProperties(nlohmann::ordered_json& out, UINT key) override;
 
     virtual void UpdateUI() override;
 
-#endif // _DEBUG
+ // _DEBUG
 };
 

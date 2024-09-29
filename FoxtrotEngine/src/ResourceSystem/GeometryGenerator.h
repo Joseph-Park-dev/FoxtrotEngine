@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "ResourceSystem/MeshData.h"
-
-#include "spine/spine.h"
+#include "ResourceSystem/FTTileMap.h"
 
 class Tile;
 

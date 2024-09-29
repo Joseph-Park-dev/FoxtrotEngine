@@ -5,12 +5,12 @@ namespace Physics
 {
 	struct Ray
 	{
-		Ray(FTVector2 orig, FTVector2 end, ACTOR_GROUP group)
+		Ray(FTVector2 orig, FTVector2 end, ActorGroup group)
 			:origin(orig), endPoint(end), groupFilter(group)
 		{}
 		FTVector2	origin;
 		FTVector2	endPoint;
-		ACTOR_GROUP groupFilter;
+		ActorGroup groupFilter;
 		float		mass;
 		FTVector3	origin2Point;
 		FTVector3	relativePosition;

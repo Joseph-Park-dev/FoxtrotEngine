@@ -16,10 +16,11 @@ class SpriteRendererComponent : public MeshRendererComponent
 public:
 	int			 GetTexWidth()  const { return mTexWidth; }
 	int			 GetTexHeight() const { return mTexHeight; }
-	std::wstring GetName()		const override
-	{
+
+	std::wstring GetName()		const override{
 		return L"SpriteRendererComponent";
 	}
+
 	void		 SetTexWidth	(int texWidth)  { mTexWidth = texWidth; }
 	void		 SetTexHeight	(int texHeight) { mTexHeight = texHeight; }
 	virtual void SetTexture		()		override;
@@ -48,7 +49,6 @@ private:
 	int					mChannel;
 	float				mScale;
 
-#ifdef _DEBUG
 //This section will be omitted from Release mode!
 public:
 	virtual void SaveProperties(nlohmann::ordered_json& out) override;
@@ -66,5 +66,4 @@ private:
 	void UpdateTexWidth();
 	void UpdateTexHeight();
 	void UpdateScale();
-#endif // DEBUG
 };

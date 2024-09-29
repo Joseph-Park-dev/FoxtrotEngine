@@ -3,7 +3,6 @@
 #include "Physics/RayCastHit2D.h"
 
 class FTVector2;
-enum class ACTOR_GROUP;
 class ColliderComponent;
 class Rigidbody2DComponent;
 
@@ -23,7 +22,7 @@ class Physics2D
 	SINGLETON(Physics2D);
 
 public:
-	static RayCastHit2D Raycast(FTVector2 origin, FTVector2 direction, float distance, ACTOR_GROUP actor);
+	static RayCastHit2D Raycast(FTVector2 origin, FTVector2 direction, float distance, ActorGroup actor);
 	void RegisterRayCastHit(RayCastHit2D rc) { mRayCastHits.emplace_back(rc); }
 	void ResetRayCasts();
 

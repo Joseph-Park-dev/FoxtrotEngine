@@ -14,8 +14,8 @@ class Component;
 class Scene;
 
 using ComponentCreateFunc = std::function<void (Actor*)>;
-using ComponentCreateMap = std::unordered_map<std::wstring, ComponentCreateFunc>;
 using ComponentLoadFunc = std::function<void(Actor*, std::ifstream& ifs)>;
+using ComponentCreateMap = std::unordered_map<std::wstring, ComponentCreateFunc>;
 using ComponentLoadMap = std::unordered_map<std::wstring, ComponentLoadFunc>;
 
 #define CHUNK_FILE_FORMAT ".json"
@@ -30,9 +30,14 @@ using ComponentLoadMap = std::unordered_map<std::wstring, ComponentLoadFunc>;
 #define SAVEKEY_SCREENCENTER "ScreenCenter"
 #define SAVEKEY_ACTORCOUNT "ActorCount"
 
+struct ChunkData
+{
+	int ActorCount;
+};
+
 class ChunkLoader
 {
-	SINGLETON(ChunkLoader)
+	SINGLETON_PROTECTED(ChunkLoader)
 
 // Member Functions for editor level to generate chunk.json files
 public:
@@ -44,12 +49,12 @@ protected:
 	void LoadActorsToEditor(std::ifstream& ifs);
 
 public:
-	ComponentCreateMap& GetCompCreateMap()	{ return mComponentCreateMap; }
-	ComponentLoadMap&	GetCompLoadMap()	{ return mComponentLoadMap; }
+	ComponentCreateMap&	GetCompCreateMap()	{ return mComponentCreateMap; }
 
 private:
-	ComponentCreateMap mComponentCreateMap;
 	ComponentLoadMap mComponentLoadMap;
+	ComponentCreateMap mComponentCreateMap;
+	ChunkData mCurrentChunkData;
 
 private:
 	Actor*		LoadIndividualActor(std::ifstream& ifs, Scene* currScene);

@@ -6,9 +6,9 @@
 
 #include "Core/TemplateFunctions.h"
 #include "Core/FTCore.h"
-#ifdef _DEBUG
+
 #include "EditorLayer.h"
-#endif // DEBUG
+ // DEBUG
 
 
 KeyInputManager::KeyInputManager()

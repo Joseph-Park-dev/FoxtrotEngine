@@ -43,7 +43,7 @@ private:
 	void InitializeAnimation();
 	bool FrameIsWithinIndexRange();
 
-#ifdef _DEBUG
+
 public:
 	virtual void EditorUIUpdate() override;
 			void UpdateIsRepeated();
@@ -52,6 +52,6 @@ public:
 
 	virtual void SaveProperties(nlohmann::ordered_json& out) override;
 	//virtual void LoadProperties(std::ifstream& ifs) override;
-#endif // _DEBUG
+ // _DEBUG
 };
 

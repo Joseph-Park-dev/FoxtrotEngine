@@ -1,7 +1,6 @@
 {
   "name": "foxtrot-editor",
   "dependencies": [
-    "assimp",
     "directxtex",
     "directxtk",
     {

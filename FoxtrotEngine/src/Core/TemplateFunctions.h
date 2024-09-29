@@ -24,59 +24,59 @@
 //	return str;
 //}
 
-void LogInt(int val)
+inline void LogInt(int val)
 {
 	printf("int : %d\n", val);
 }
 
-void LogInt(std::string message, int val)
+inline void LogInt(std::string message, int val)
 {
 	std::string msg = message + std::to_string(val) + "\n";
 	printf(msg.c_str());
 }
 
-void LogFloat(float val)
+inline void LogFloat(float val)
 {
 	printf("float : %f\n", val);
 }
 
-void LogFloat(std::string message, float val)
+inline void LogFloat(std::string message, float val)
 {
 	std::string msg = message + std::to_string(val) + "\n";
 	printf(msg.c_str());
 }
 
-void LogVector2(FTVector2 val)
+inline void LogVector2(FTVector2 val)
 {
 	printf("X : %f Y : %f\n", val.x, val.y);
 }
 
-void LogVector2(ImVec2 val)
+inline void LogVector2(ImVec2 val)
 {
 	printf("X : %f Y : %f\n", val.x, val.y);
 }
 
-void LogVector3(DirectX::SimpleMath::Vector3 val)
+inline void LogVector3(DirectX::SimpleMath::Vector3 val)
 {
 	printf("X : %f Y : %f Z : %f\n", val.x, val.y, val.z);
 }
 
-void LogVector2(std::string message, FTVector2 val)
+inline void LogVector2(std::string message, FTVector2 val)
 {
 	printf("%s, X : %f Y : %f\n", message.c_str(), val.x, val.y);
 }
 
-void LogVector3(std::string message, FTVector3 val)
+inline void LogVector3(std::string message, FTVector3 val)
 {
 	printf("%s, X : %f Y : %f Z : %f\n", message.c_str(), val.x, val.y, val.z);
 }
 
-void LogRect(Bounds bound)
+inline void LogRect(Bounds bound)
 {
 	printf("Pos X : %f, Pos Y : %f, Width : %f, Height : %f\n", bound.x, bound.y, bound.w, bound.h);
 }
 
-void LogBool(bool val)
+inline void LogBool(bool val)
 {
 	if (val)
 		printf("Bool Log : True\n");
@@ -84,22 +84,22 @@ void LogBool(bool val)
 		printf("Bool Log : False\n");
 }
 
-void LogString(std::wstring val)
+inline void LogString(std::wstring val)
 {
 	printf("%ls\n", val.c_str());
 }
 
-void LogString(std::string val)
+inline void LogString(std::string val)
 {
 	printf("%s\n", val.c_str());
 }
 
-void LogString(std::wstring message, std::wstring val)
+inline void LogString(std::wstring message, std::wstring val)
 {
 	printf("%ls\n", (message + L" :" + val).c_str());
 }
 
-void LogString(std::string message, std::string val)
+inline void LogString(std::string message, std::string val)
 {
 	printf("%s\n", (message + " :" + val).c_str());
 }
@@ -178,7 +178,7 @@ void Safe_Delete_Map(std::unordered_map<TKey, TVal>& map)
 	map.clear();
 }
 
-bool StrContains(const char* str, std::string value) {
+inline bool StrContains(const char* str, std::string value) {
 	return std::string(str).find(value) != std::string::npos;
 }
 

@@ -372,8 +372,4 @@
   <ItemGroup>
     <None Include="vcpkg.json" />
   </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="src\Renderer\Shaders\ColorPixelShader.hlsl" />
-    <FxCompile Include="src\Renderer\Shaders\ColorVertexShader.hlsl" />
-  </ItemGroup>
 </Project>

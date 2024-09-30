@@ -56,7 +56,7 @@ void EditorLayer::Update(float deltaTime)
 	DisplayInspectorMenu();
 	Camera::GetInstance()->DisplayCameraMenu();
 	ApplyCommandHistory();
-
+	DisplayErrorMessage();
 	ImGui::EndFrame();
 }
 
@@ -101,6 +101,9 @@ void EditorLayer::DisplayFileMenu()
 {
 	if (ImGui::BeginMainMenuBar())
 	{
+		const size_t maxMenuEle = 5;
+		const std::string fileMenu[maxMenuEle] = { "New Project", "Open Project", "Save", "Save As", "Open" };
+
 		std::string selection = {};
 		if (ImGui::Button("File"))
 		{
@@ -109,33 +112,34 @@ void EditorLayer::DisplayFileMenu()
 
 		if (ImGui::BeginPopup("FilePopUp"))
 		{
-			const size_t maxMenuEle = 3;
-			const std::string fileMenu[maxMenuEle] = { "Save", "Save As", "Open" };
 			for (size_t i = 0; i < maxMenuEle; ++i)
 				if (ImGui::Selectable(fileMenu[i].c_str()))
 					selection = fileMenu[i];
 			ImGui::EndPopup();
 		}
 
-		if (selection == "Save" || mSaveKeyPressed)
+		if (selection == fileMenu[0])
 		{
-			if (mCurrFileSaved)
-			{
-				if (!mCurrFilePath.empty())
-					EditorChunkLoader::GetInstance()->SaveChunk(mCurrFilePath);
-				else
-					LogString("Saved file path doesn't exist but trying to access it");
-			}
-			else
-			{
-				IGFD::FileDialogConfig config;
-				config.path = ".";
-				config.countSelectionMax = 1;
-				config.flags = ImGuiFileDialogFlags_ConfirmOverwrite;
-				ImGuiFileDialog::Instance()->OpenDialog("SaveChunkFile", "Save", CHUNK_FILE_FORMAT, config);
-			}
+			IGFD::FileDialogConfig config;
+			config.path = ".";
+			config.countSelectionMax = 1;
+			config.flags = ImGuiFileDialogFlags_ConfirmOverwrite;
+			ImGuiFileDialog::Instance()->OpenDialog("NewProject", "New Project", "", config);
 		}
-		else if (selection == "Save As" || mSaveAsKeyPressed)
+		else if (selection == fileMenu[1])
+		{
+			IGFD::FileDialogConfig config;
+			config.path = ".";
+			config.countSelectionMax = 1;
+			config.flags = ImGuiFileDialogFlags_ConfirmOverwrite;
+			ImGuiFileDialog::Instance()->OpenDialog("OpenProject", "Open Project", "", config);
+		}
+		// Save menu
+		else if (selection == fileMenu[2] || mSaveKeyPressed)
+		{
+			SaveChunkFromUI();
+		}
+		else if (selection == fileMenu[3] || mSaveAsKeyPressed)
 		{
 			IGFD::FileDialogConfig config;
 			config.path = ".";
@@ -143,7 +147,7 @@ void EditorLayer::DisplayFileMenu()
 			config.flags = ImGuiFileDialogFlags_ConfirmOverwrite;
 			ImGuiFileDialog::Instance()->OpenDialog("SaveChunkFile", "Save As", CHUNK_FILE_FORMAT, config);
 		}
-		else if (selection == "Open" || mOpenKeyPressed)
+		else if (selection == fileMenu[4] || mOpenKeyPressed)
 		{
 			IGFD::FileDialogConfig config;
 			config.path = ".";
@@ -202,6 +206,42 @@ void EditorLayer::DisplayFileMenu()
 			else if (renderer->GetFillMode() == FillMode::WireFrame)
 				renderer->SetFillMode(FillMode::Solid);
 		}
+
+		if (ImGuiFileDialog::Instance()->Display("NewProject"))
+		{
+			if (ImGuiFileDialog::Instance()->IsOk())
+			{
+				mCurrProjectPath = ImGuiFileDialog::Instance()->GetFilePathName();
+				if (!ProjectPathExists(mCurrProjectPath))
+				{
+					// Create base directory for a project
+					std::filesystem::create_directory(mCurrProjectPath);
+					// Create sub directories - "./Assets"
+					std::filesystem::create_directory(mCurrProjectPath + "/Assets");
+					std::filesystem::create_directory(mCurrProjectPath + "/FoxtrotEngine_ProjectData");
+				}
+				else {
+					mErrorType = ErrorType::ProjectPathExists;
+				}
+			}
+			ImGuiFileDialog::Instance()->Close();
+		}
+
+		if (ImGuiFileDialog::Instance()->Display("OpenProject"))
+		{
+			if (ImGuiFileDialog::Instance()->IsOk())
+			{
+				std::string path = ImGuiFileDialog::Instance()->GetFilePathName();
+				if (ProjectPathExists(path)) {
+					mCurrProjectPath.assign(path);
+				}
+				else {
+					mErrorType = ErrorType::ProjectNotValid;
+				}
+			}
+			ImGuiFileDialog::Instance()->Close();
+		}
+
 		if (ImGuiFileDialog::Instance()->Display("SaveChunkFile"))
 		{
 			if (ImGuiFileDialog::Instance()->IsOk())
@@ -307,6 +347,121 @@ bool EditorLayer::SceneViewportSizeChanged()
 		return true;
 	}
 	return false;
+}
+
+bool EditorLayer::ProjectPathExists(std::string& projDir)
+{
+	std::string assetDir = projDir + "\\Assets";
+	std::string projDataDir = projDir + "\\FoxtrotEngine_ProjectData";
+	return std::filesystem::exists(assetDir) && std::filesystem::exists(projDataDir);
+}
+
+void EditorLayer::SaveChunkFromUI()
+{
+	if (mCurrFileSaved)
+	{
+		if (!mCurrFilePath.empty())
+			EditorChunkLoader::GetInstance()->SaveChunk(mCurrFilePath);
+		else
+			LogString("Saved file path doesn't exist but trying to access it");
+	}
+	else
+	{
+		IGFD::FileDialogConfig config;
+		config.path = ".";
+		config.countSelectionMax = 1;
+		config.flags = ImGuiFileDialogFlags_ConfirmOverwrite;
+		ImGuiFileDialog::Instance()->OpenDialog("SaveChunkFile", "Save", CHUNK_FILE_FORMAT, config);
+	}
+}
+
+void EditorLayer::DisplayErrorMessage()
+{
+	switch (mErrorType)
+	{
+	case ErrorType::None:
+		break;
+
+	case ErrorType::ProjectPathExists:
+		PopUpError_ProjectPathExists();
+		break;
+
+	case ErrorType::ProjectNotValid:
+		PopUpError_ProjectNotValid();
+		break;
+
+	case ErrorType::ChunkNotSaved:
+		PopUpError_ChunkNotSaved();
+		break;
+
+	default:
+		break;
+	}
+}
+
+void EditorLayer::PopUpError_ProjectPathExists()
+{
+	ImGui::OpenPopup("Project path exists");
+	// Always center this window when appearing
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+	if (ImGui::BeginPopupModal("Project path exists", NULL))
+	{
+		ImGui::Text("Foxtrot Engine project\nalready exists in this directory.");
+		ImGui::Separator();
+
+		if (ImGui::Button("OK", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); mErrorType = ErrorType::None; }
+		ImGui::SetItemDefaultFocus();
+		ImGui::EndPopup();
+	}
+}
+
+void EditorLayer::PopUpError_ProjectNotValid()
+{
+	ImGui::OpenPopup("ProjectNotValid");
+	// Always center this window when appearing
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+	if (ImGui::BeginPopupModal("ProjectNotValid", NULL))
+	{
+		ImGui::Text("The directory is not a valid Foxtrot Engine Project");
+		ImGui::Separator();
+
+		if (ImGui::Button("OK", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); mErrorType = ErrorType::None;}
+		ImGui::SetItemDefaultFocus();
+		ImGui::EndPopup();
+	}
+}
+
+void EditorLayer::PopUpError_ChunkNotSaved()
+{
+	ImGui::OpenPopup("Chunk is not saved");
+	// Always center this window when appearing
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+	if (ImGui::BeginPopupModal("Chunk is not saved", NULL))
+	{
+		ImGui::Text(".Chunk is not saved.\nSave the file before closing the editor.");
+		ImGui::Separator();
+
+		if (ImGui::Button("Discard", ImVec2(120, 0))) { 
+			FTCoreEditor::GetInstance()->SetIsRunning(false); 
+			ImGui::EndPopup();
+			return; 
+		}
+
+		ImGui::SetItemDefaultFocus();
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel", ImVec2(120, 0))) 
+		{ 
+			ImGui::CloseCurrentPopup(); 
+			mErrorType = ErrorType::None;
+		}
+		ImGui::EndPopup();
+	}
 }
 
 //void EditorLayer::ResizeUIWindow(std::string menuID)

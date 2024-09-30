@@ -55,9 +55,10 @@ LRESULT FTCoreEditor::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		return true;
 
 	switch (msg) {
-	case WM_DESTROY:
+	case WM_CLOSE:
 	{
-		SetIsRunning(false);
+		if(!EditorLayer::GetInstance()->GetCurrentFileSaved())
+			EditorLayer::GetInstance()->SetErrorType(ErrorType::ChunkNotSaved);
 		return 0;
 	}
 	case WM_SIZE:

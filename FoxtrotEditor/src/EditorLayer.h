@@ -14,6 +14,14 @@ class UIActor;
 class PanelUI;
 class Command;
 
+enum class ErrorType
+{
+	None,
+	ProjectPathExists,
+	ChunkNotSaved,
+	ProjectNotValid
+};
+
 class EditorLayer
 {
 	SINGLETON(EditorLayer);
@@ -34,6 +42,10 @@ public:
 	bool GetConfirmKeyPressed() const { return mConfirmKeyPressed; }
 	ImVec2 GetSceneViewportPos() const { return mSceneViewportPos; }
 	ImVec2 GetSceneViewportSize() const { return mSceneViewportSize; }
+	bool GetCurrentFileSaved() const { return mCurrFileSaved; }
+	ErrorType GetErrorType() { return mErrorType; }
+
+	void SetErrorType(ErrorType type) { mErrorType = type; }
 
 private:
 	// After directX implementation
@@ -41,6 +53,7 @@ private:
 	std::vector<EditorElement*> mEditorElements;
 	UINT mElementNumber;
 	bool mCurrFileSaved;
+	std::string mCurrProjectPath;
 	std::string mCurrFilePath;
 	
 	int mHierarchyIdx;
@@ -59,6 +72,8 @@ private:
 	ImVec2 mSceneViewportSize;
 	bool mIsResizingViewport;
 
+	ErrorType mErrorType;
+
 private:
 	void DeleteAll();
 	void UnfocusEditorElements();
@@ -71,5 +86,13 @@ private:
 	void DisplayInspectorMenu();
 	void ApplyCommandHistory();
 	bool SceneViewportSizeChanged();
+	bool ProjectPathExists(std::string& projDir);
+
+	void SaveChunkFromUI();
+
+	void DisplayErrorMessage();
+	void PopUpError_ProjectPathExists();
+	void PopUpError_ProjectNotValid();
+	void PopUpError_ChunkNotSaved();
 	//void ResizeUIWindow(std::string menuID);
 };

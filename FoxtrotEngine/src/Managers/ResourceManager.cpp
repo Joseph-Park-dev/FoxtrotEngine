@@ -160,7 +160,7 @@ ResourceManager::~ResourceManager()
 }
 
 ResourceManager::ResourceManager()
-	: mPathToAsset("./assets/")
+	: mPathToAsset("./Assets")
 {
 
 }
@@ -226,5 +226,3 @@ void ResourceManager::UpdateUI()
 		ImGui::TreePop();
 	}
 }
-
-

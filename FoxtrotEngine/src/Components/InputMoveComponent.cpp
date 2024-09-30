@@ -17,9 +17,7 @@ InputMoveComponent::InputMoveComponent(Actor* owner, int drawOrder, int updateOr
 {}
 
 void InputMoveComponent::Initialize(FTCore* coreInstance)
-{
-	Component::Initialize(coreInstance);
-}
+{}
 
 void InputMoveComponent::ProcessInput(KeyInputManager* keyInputManager)
 {

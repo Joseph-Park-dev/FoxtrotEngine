@@ -1,4 +1,4 @@
-#include "Components/Component.h"
+#include "Component.h"
 
 #include <nlohmann/json.hpp>
 
@@ -27,7 +27,6 @@ Component::Component(Actor* owner, int drawOrder, int updateOrder)
 	, mUpdateOrder(updateOrder)
 {
 	mOwner->AddComponent(this);
-	Initialize(FTCore::GetInstance());
 }
 
 Component::Component(const Component& origin)

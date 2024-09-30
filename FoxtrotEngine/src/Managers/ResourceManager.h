@@ -23,7 +23,7 @@ public:
 public:
 	void				UpdateTexture(FTTexture* texture, int channels);
 
-	void				LoadMeshFromFile(const std::string filePath);
+	//void				LoadMeshFromFile(const std::string filePath);
 	void				LoadBasicMesh(MeshData meshData);
 	void				LoadBasicMesh(std::vector<MeshData> meshData);
 

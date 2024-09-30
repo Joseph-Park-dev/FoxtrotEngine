@@ -15,7 +15,7 @@ class GeometryGenerator {
     static std::vector<MeshData> MakeSpriteAnimation(Tile** tileMap, size_t columnCount, size_t rowCount);
     static MeshData MakeAnimationFrame(Tile* tile);
     static MeshData MakeBox();
-    static std::vector<MeshData> ReadFromFile(std::string filePath);
+    //static std::vector<MeshData> ReadFromFile(std::string filePath);
 
     //static MeshData MakeCylinder(const float bottomRadius,
     //                             const float topRadius, float height,

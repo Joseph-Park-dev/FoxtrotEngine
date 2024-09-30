@@ -227,7 +227,7 @@ void Actor::SaveProperties(nlohmann::ordered_json& out)
 {
 	FileIOHelper::AddScalarValue(out["Name"], GetNameStr());
 	FileIOHelper::AddScalarValue(out["ID"], mID);
-	FileIOHelper::AddScalarValue(out["ActorGroup"], GetActorGroupStr(mActorGroup));
+	FileIOHelper::AddScalarValue(out["ActorGroup"], ActorGroupUtil::GetActorGroupStr(mActorGroup));
 	FileIOHelper::AddScalarValue(out["State"], GetStateStr());
 
 	mTransform->SaveProperties(out["Transform"]);
@@ -253,7 +253,7 @@ void Actor::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadInt(ifs, mID);
 	std::string stringBuffer;
 	FileIOHelper::LoadBasicString(ifs, stringBuffer);
-	mActorGroup = ActorGroupMap[stringBuffer];
+	mActorGroup = ActorGroupUtil::GetActorGroup(stringBuffer);
 	FileIOHelper::LoadBasicString(ifs, stringBuffer);
 	SetState(stringBuffer);
 

@@ -99,9 +99,9 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(IncludePath)</IncludePath>
-    <OutDir>.\build</OutDir>
+    <OutDir>..\FoxtrotEditor</OutDir>
     <TargetExt>.lib</TargetExt>
+    <PublicIncludeDirectories>..\FoxtrotEditor\include;..\FoxtrotEditor\src;$(ProjectDir)src;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">
     <IncludePath>.\include;.\src;$(IncludePath)</IncludePath>
@@ -159,7 +159,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>.\include;.\src;..\FoxtrotEditor\include;..\FoxtrotEditor\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\FoxtrotEditor\include;..\FoxtrotEditor\src;.\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -215,12 +215,10 @@
     <ClCompile Include="src\Components\MoveComponent.cpp" />
     <ClCompile Include="src\Components\Rigidbody2DComponent.cpp" />
     <ClCompile Include="src\Components\SpriteAnimComponent.cpp" />
-    <ClCompile Include="src\Components\SpriteComponent.cpp" />
     <ClCompile Include="src\Components\SpriteRendererComponent.cpp" />
     <ClCompile Include="src\Components\TileMapComponent.cpp" />
     <ClCompile Include="src\Core\EventFunctions.cpp" />
     <ClCompile Include="src\Core\FTCore.cpp" />
-    <ClCompile Include="src\Core\main.cpp" />
     <ClCompile Include="src\Core\Timer.cpp" />
     <ClCompile Include="src\FileSystem\ChunkLoader.cpp" />
     <ClCompile Include="src\Managers\CollisionManager.cpp" />
@@ -245,7 +243,6 @@
     <ClCompile Include="src\ResourceSystem\FTTexture.cpp" />
     <ClCompile Include="src\ResourceSystem\FTTileMap.cpp" />
     <ClCompile Include="src\ResourceSystem\GeometryGenerator.cpp" />
-    <ClCompile Include="src\ResourceSystem\ModelLoader.cpp" />
     <ClCompile Include="src\ResourceSystem\Tile.cpp" />
     <ClCompile Include="src\Scenes\Scene.cpp" />
     <ClCompile Include="src\Scenes\Scene_Start.cpp" />
@@ -313,7 +310,6 @@
     <ClInclude Include="src\ResourceSystem\Mesh.h" />
     <ClInclude Include="src\ResourceSystem\MeshConstantData.h" />
     <ClInclude Include="src\ResourceSystem\MeshData.h" />
-    <ClInclude Include="src\ResourceSystem\ModelLoader.h" />
     <ClInclude Include="src\ResourceSystem\Tile.h" />
     <ClInclude Include="src\ResourceSystem\Vertex.h" />
     <ClInclude Include="src\Scenes\Scene.h" />
@@ -322,6 +318,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="src\Renderer\Shaders\ColorPixelShader.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0_level_9_3</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="src\Renderer\Shaders\ColorVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

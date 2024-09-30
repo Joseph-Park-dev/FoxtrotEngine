@@ -72,9 +72,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(WindowsSDK_IncludePath);..\FoxtrotEngine\src;$(IncludePath)</IncludePath>
+    <IncludePath>$(WindowsSDK_IncludePath);..\FoxtrotEngine\src;..\FoxtrotEngine\include;$(IncludePath)</IncludePath>
     <SourcePath>$(VC_SourcePath)</SourcePath>
     <OutDir>.\build\</OutDir>
+    <PublicIncludeDirectories>.\include;.\src;..\FoxtrotEngine\src;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
@@ -117,7 +118,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>.\src;.\include;..\FoxtrotEngine\src;..\FoxtrotEngine\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\include;.\src;..\FoxtrotEngine\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -143,6 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="src\EditorChunkLoader.cpp" />
     <ClCompile Include="include\imgui\FileDialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="src\Command.cpp" />
@@ -150,7 +152,6 @@
     <ClCompile Include="src\EditorElement.cpp" />
     <ClCompile Include="src\EditorLayer.cpp" />
     <ClCompile Include="src\FTCoreEditor.cpp" />
-    <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\RenderTextureClass.cpp" />
   </ItemGroup>
   <ItemGroup>

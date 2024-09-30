@@ -16,8 +16,8 @@
 #include "ResourceSystem/Mesh.h"
 #include "Core\TemplateFunctions.h"
 
-#define VERTEX_SHADER_PATH L"./src/Renderer/Shaders/ColorVertexShader.hlsl"
-#define PIXEL_SHADER_PATH L"./src/Renderer/Shaders/ColorPixelShader.hlsl"
+#define VERTEX_SHADER_PATH L"../FoxtrotEngine/src/Renderer/Shaders/ColorVertexShader.hlsl"
+#define PIXEL_SHADER_PATH L"../FoxtrotEngine/src/Renderer/Shaders/ColorPixelShader.hlsl"
 #define TILEMAP_PIXEL_SHADER_PATH L"./src/Renderer/Shaders/ColorPixelShader.hlsl"
 
 using VertexType = DirectX::VertexPositionColor;

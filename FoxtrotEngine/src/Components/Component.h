@@ -2,7 +2,7 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 
-#include "..\..\FoxtrotEditor\src\EditorLayer.h"
+#include "EditorLayer.h"
 
 #define DEFAULT_DRAWORDER 100
 #define DEFAULT_UPDATEORDER 100

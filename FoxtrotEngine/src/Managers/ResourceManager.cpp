@@ -34,25 +34,25 @@ void ResourceManager::UpdateTexture(FTTexture* texture, int channels)
 		printf("Warning : FTTexture %s is not loaded. Aborting update...\n", texture->GetRelativePath().c_str());
 }
 
-void ResourceManager::LoadMeshFromFile(const std::string filePath)
-{
-	std::string path = mPathToAsset + filePath;
-	UINT key = gItemKey;
-	if (!KeyExists(key, mMapMeshes)) {
-		printf("Message: Loading Mesh %s to key %d. \n", path.c_str(), key);
-		std::vector<MeshData> meshData = GeometryGenerator::ReadFromFile(filePath);
-		if (!meshData.empty())
-		{
-			printf("Error: ResourceManager::LoadMesh() -> LoadMesh failed. \n");
-			return;
-		}
-		mMapMeshes.insert(std::make_pair(key, meshData));
-		++gItemKey;
-	}
-	else {
-		printf("Warning : FTTexture %s is already loaded to key %d.\n", filePath.c_str(), key);
-	}
-}
+//void ResourceManager::LoadMeshFromFile(const std::string filePath)
+//{
+//	std::string path = mPathToAsset + filePath;
+//	UINT key = gItemKey;
+//	if (!KeyExists(key, mMapMeshes)) {
+//		printf("Message: Loading Mesh %s to key %d. \n", path.c_str(), key);
+//		std::vector<MeshData> meshData = GeometryGenerator::ReadFromFile(filePath);
+//		if (!meshData.empty())
+//		{
+//			printf("Error: ResourceManager::LoadMesh() -> LoadMesh failed. \n");
+//			return;
+//		}
+//		mMapMeshes.insert(std::make_pair(key, meshData));
+//		++gItemKey;
+//	}
+//	else {
+//		printf("Warning : FTTexture %s is already loaded to key %d.\n", filePath.c_str(), key);
+//	}
+//}
 
 void ResourceManager::LoadBasicMesh(MeshData meshData)
 {

@@ -18,7 +18,7 @@ using std::shared_ptr;
 using std::vector;
 using std::wstring;
 
-void CheckResult(HRESULT hr, ID3DBlob* errorBlob) {
+inline void CheckResult(HRESULT hr, ID3DBlob* errorBlob) {
     if (FAILED(hr)) {
         // 파일이 없을 경우
         if ((hr & D3D11_ERROR_FILE_NOT_FOUND) != 0) {

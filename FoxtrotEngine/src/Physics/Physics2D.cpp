@@ -143,14 +143,14 @@ RayCastHit2D Physics2D::Raycast(FTVector2 origin, FTVector2 direction, float dis
 	return RayCastHit2D();
 }
 
-RayCastHit2D Physics2D::Raycast(FTVector2 origin, FTVector2 direction, float distance, ActorGroup actor)
-{
-	FTVector2 rayDir = (direction - origin).Normalize() * distance;
-	Physics::Ray* ray = new Physics::Ray(
-		Camera2D::GetInstance()->ConvertWorldPosToScreen(origin),
-		Camera2D::GetInstance()->ConvertWorldPosToScreen(origin + rayDir),
-		actor
-	);
-	CollisionManager::GetInstance()->RegisterRay(ray);
-	return RayCastHit2D();
-}
+//RayCastHit2D Physics2D::Raycast(FTVector2 origin, FTVector2 direction, float distance, ActorGroup actor)
+//{
+//	FTVector2 rayDir = (direction - origin).Normalize() * distance;
+//	Physics::Ray* ray = new Physics::Ray(
+//		Camera2D::GetInstance()->ConvertWorldPosToScreen(origin),
+//		Camera2D::GetInstance()->ConvertWorldPosToScreen(origin + rayDir),
+//		actor
+//	);
+//	CollisionManager::GetInstance()->RegisterRay(ray);
+//	return RayCastHit2D();
+//}

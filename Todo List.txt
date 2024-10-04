@@ -1,0 +1,34 @@
+**Foxtrot Engine**
+Read .chunk files that defines 
+Actor Properties
+	Actor Transform
+	Actor Components
+		- User-defined components
+		- Engine-embedded components
+
+Camera Properties
+	Camera Transform
+	Camera Components
+		- User-defined components
+		- Engine-embedded components
+
+Then executes it as behaviours
+
+**FoxtrotEditor**
+Make .chunk files
+
+**To do list**
+Edit the values on the Hierarchy view & Display on the Scene - IMGUI
+	Actor Transform
+	Camera Transform
+	Actor Components
+		- User-defined components
+		- Engine-embedded components
+	Camera Components
+		- User-defined components
+		- Engine-embedded components
+
+
+
+
+

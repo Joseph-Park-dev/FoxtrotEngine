@@ -13,6 +13,62 @@
 
 UINT ColliderComponent::g_nextID = 0;
 
+void ColliderComponent::LoadProperties(std::ifstream& ifs)
+{
+	Component::LoadProperties(ifs);
+	FileIOHelper::LoadVector2(ifs, mOffsetPos);
+	FileIOHelper::LoadVector2(ifs, mScale);
+}
+
+FTVector2 ColliderComponent::GetOffsetPos() const
+{
+	return mOffsetPos;
+}
+
+FTVector2 ColliderComponent::GetFinalPosition() const
+{
+	return mFinalPosition;
+}
+
+FTVector2 ColliderComponent::GetScale() const
+{
+	return mScale;
+}
+
+CollidedSide ColliderComponent::GetCollidedSide() const
+{
+	return mCollidedSide;
+}
+
+uint32_t ColliderComponent::GetID() const
+{
+	return mID;
+}
+
+FTVector2& ColliderComponent::GetOffsetPosRef()
+{
+	return mOffsetPos;
+}
+
+FTVector2& ColliderComponent::GetScaleRef()
+{
+	return mScale;
+}
+
+void ColliderComponent::SetOffsetPos(FTVector2 offsetPos)
+{
+	mOffsetPos = offsetPos;
+}
+
+void ColliderComponent::SetScale(FTVector2 scale)
+{
+	mScale = scale;
+}
+
+void ColliderComponent::Initialize(FTCore* coreInstance)
+{
+}
+
 void ColliderComponent::LateUpdate(float deltaTime)
 {
 	FTVector2 ownerPos = GetOwner()->GetTransform()->GetWorldPosition();
@@ -21,23 +77,25 @@ void ColliderComponent::LateUpdate(float deltaTime)
 }
 
 ColliderComponent::ColliderComponent(Actor* owner, int drawOrder, int updateOrder)
-	:Component(owner, drawOrder, updateOrder)
+	: Component(owner, drawOrder, updateOrder)
 	, mOffsetPos(FTVector2::Zero)
 	, mFinalPosition(FTVector2::Zero)
-	, mScale(FTVector2(50,50))
+	, mScale(FTVector2(50, 50))
 	, mColliCount(0)
 	, mCollidedSide(CollidedSide::NONE)
 	, mID(g_nextID++)
-{}
+{
+}
 
-ColliderComponent::ColliderComponent(const ColliderComponent & origin)
+ColliderComponent::ColliderComponent(const ColliderComponent& origin)
 	: Component(nullptr, origin.GetDrawOrder(), origin.GetUpdateOrder())
 	, mOffsetPos(origin.mOffsetPos)
 	, mScale(origin.mScale)
 	, mID(g_nextID++)
 	, mCollidedSide(CollidedSide::NONE)
 	, mColliCount(0)
-{}
+{
+}
 
 void ColliderComponent::CloneTo(Actor* actor)
 {
@@ -69,12 +127,18 @@ void ColliderComponent::OnRayEnter()
 	GetOwner()->OnRayEnter();
 }
 
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
-#include <imgui_impl_win32.h>
-#include <imgui_impl_dx11.h>
+#ifdef FOXTROT_EDITOR
+	#define IMGUI_DEFINE_MATH_OPERATORS
+	#include <imgui.h>
+	#include <imgui_impl_win32.h>
+	#include <imgui_impl_dx11.h>
 
-#include "CommandHistory.h"
+	#include "CommandHistory.h"
+
+void ColliderComponent::SaveProperties(nlohmann::ordered_json& out)
+{
+	Component::SaveProperties(out);
+}
 
 void ColliderComponent::Render(FoxtrotRenderer* renderer)
 {
@@ -82,18 +146,6 @@ void ColliderComponent::Render(FoxtrotRenderer* renderer)
 	FTVector2 topRight = FTVector2(mFinalPosition.x + mScale.x / 2, mFinalPosition.y + mScale.y / 2);
 	FTVector2 bottomRight = mFinalPosition + mScale / 2;
 	FTVector2 bottomLeft = FTVector2(mFinalPosition.x - mScale.x / 2, mFinalPosition.y + mScale.y / 2);
-}
-
-void ColliderComponent::SaveProperties(nlohmann::ordered_json& out)
-{
-	Component::SaveProperties(out);
-}
-
-void ColliderComponent::LoadProperties(std::ifstream& ifs)
-{
-	Component::LoadProperties(ifs);
-	FileIOHelper::LoadVector2(ifs, mOffsetPos);
-	FileIOHelper::LoadVector2(ifs, mScale);
 }
 
 void ColliderComponent::EditorLateUpdate(float deltaTime)
@@ -110,7 +162,7 @@ void ColliderComponent::EditorUIUpdate()
 void ColliderComponent::UpdateOffsetPos()
 {
 	FTVector2 updatedVal = GetOffsetPos();
-	float* vec2 = new float[2];
+	float*	  vec2 = new float[2];
 	vec2[0] = updatedVal.x;
 	vec2[1] = updatedVal.y;
 	bool isRecording = CommandHistory::GetInstance()->GetIsRecording();
@@ -119,8 +171,7 @@ void ColliderComponent::UpdateOffsetPos()
 		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
 		{
 			CommandHistory::GetInstance()->SetIsRecording(true);
-			CommandHistory::GetInstance()->
-				AddCommand(new Vector2EditCommand(GetOffsetPosRef(), GetOffsetPos()));
+			CommandHistory::GetInstance()->AddCommand(new Vector2EditCommand(GetOffsetPosRef(), GetOffsetPos()));
 		}
 		updatedVal = FTVector2(vec2[0], vec2[1]);
 		SetOffsetPos(updatedVal);
@@ -129,8 +180,7 @@ void ColliderComponent::UpdateOffsetPos()
 	{
 		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
 		{
-			CommandHistory::GetInstance()->
-				AddCommand(new Vector2EditCommand(GetOffsetPosRef(), updatedVal));
+			CommandHistory::GetInstance()->AddCommand(new Vector2EditCommand(GetOffsetPosRef(), updatedVal));
 			CommandHistory::GetInstance()->SetIsRecording(false);
 		}
 	}
@@ -140,7 +190,7 @@ void ColliderComponent::UpdateOffsetPos()
 void ColliderComponent::UpdateScale()
 {
 	FTVector2 updatedVal = GetScale();
-	float* vec2 = new float[2];
+	float*	  vec2 = new float[2];
 	vec2[0] = updatedVal.x;
 	vec2[1] = updatedVal.y;
 	bool isRecording = CommandHistory::GetInstance()->GetIsRecording();
@@ -149,8 +199,7 @@ void ColliderComponent::UpdateScale()
 		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
 		{
 			CommandHistory::GetInstance()->SetIsRecording(true);
-			CommandHistory::GetInstance()->
-				AddCommand(new Vector2EditCommand(GetScaleRef(), GetScale()));
+			CommandHistory::GetInstance()->AddCommand(new Vector2EditCommand(GetScaleRef(), GetScale()));
 		}
 		updatedVal = FTVector2(vec2[0], vec2[1]);
 		SetScale(updatedVal);
@@ -159,10 +208,10 @@ void ColliderComponent::UpdateScale()
 	{
 		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
 		{
-			CommandHistory::GetInstance()->
-				AddCommand(new Vector2EditCommand(GetScaleRef(), updatedVal));
+			CommandHistory::GetInstance()->AddCommand(new Vector2EditCommand(GetScaleRef(), updatedVal));
 			CommandHistory::GetInstance()->SetIsRecording(false);
 		}
 	}
 	delete[] vec2;
 }
+#endif

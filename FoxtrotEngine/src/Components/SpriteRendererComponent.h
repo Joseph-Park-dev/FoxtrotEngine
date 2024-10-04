@@ -49,10 +49,12 @@ private:
 	int					mChannel;
 	float				mScale;
 
-//This section will be omitted from Release mode!
+public:
+	virtual void LoadProperties(std::ifstream& ifs) override;
+
+#ifdef FOXTROT_EDITOR
 public:
 	virtual void SaveProperties(nlohmann::ordered_json& out) override;
-	virtual void LoadProperties(std::ifstream& ifs) override;
 
 	virtual void EditorUpdate(float deltaTime) override;
 	virtual void EditorUIUpdate() override;
@@ -67,3 +69,4 @@ private:
 	void UpdateTexHeight();
 	void UpdateScale();
 };
+#endif // FOXTROT_EDITOR

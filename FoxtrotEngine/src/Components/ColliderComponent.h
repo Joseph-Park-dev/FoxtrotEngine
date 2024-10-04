@@ -8,77 +8,80 @@ class FTVector2;
 
 enum class CollidedSide
 {
-    NONE, LEFT, RIGHT, UP, DOWN
+	NONE,
+	LEFT,
+	RIGHT,
+	UP,
+	DOWN
 };
 
 class ColliderComponent :
-    public Component
+	public Component
 {
 public:
-    FTVector2      GetOffsetPos()     { return mOffsetPos; }
-    // Get world position (anchorpoint at the center)
-    FTVector2      GetFinalPosition() { return mFinalPosition; }
-    FTVector2      GetScale()         { return mScale; }
-    CollidedSide GetCollidedSide()  { return mCollidedSide; }
-    uint32_t     GetID()            { return mID; }
-    std::wstring GetName() const override
-    {
-        return L"ColliderComponent";
-    }
-
-    FTVector2& GetOffsetPosRef()      { return mOffsetPos; }
-    FTVector2& GetScaleRef()          { return mScale; }
-
-    void SetOffsetPos(FTVector2 offset) { mOffsetPos = offset; }
-    void SetScale(FTVector2 scale) { mScale = scale; }
+	virtual std::wstring GetName() const override
+	{
+		return L"ColliderComponent";
+	}
+	virtual void LoadProperties(std::ifstream& ifs) override;
 
 public:
-    // Shallow copying is not needed (duplicated ID)
-    ColliderComponent& operator =(ColliderComponent& origin) = delete;
+	FTVector2 GetOffsetPos() const;
+	// Get world position (anchor-pointed to the center)
+	FTVector2	 GetFinalPosition() const;
+	FTVector2	 GetScale() const;
+	CollidedSide GetCollidedSide() const;
+	uint32_t	 GetID() const;
+
+	FTVector2& GetOffsetPosRef();
+	FTVector2& GetScaleRef();
+
+	void SetOffsetPos(FTVector2 offsetPos);
+	void SetScale(FTVector2 scale);
 
 public:
-    virtual void Initialize(FTCore* coreInstance) override {};
-    //This can also be used as refreshing method.
-            void LateUpdate(float deltaTime)    override;
+	virtual void Initialize(FTCore* coreInstance) override;
+	// This can also be used as refreshing method.
+	void LateUpdate(float deltaTime) override;
 
 public:
-    ColliderComponent(class Actor* owner, int drawOrder, int updateOrder);
-    ColliderComponent(const ColliderComponent& origin);
-    //~ColliderComponent() override;
-    virtual void CloneTo(Actor* actor) override;
+	ColliderComponent(class Actor* owner, int drawOrder, int updateOrder);
+	ColliderComponent(const ColliderComponent& origin);
+	//~ColliderComponent() override;
+	virtual void CloneTo(Actor* actor) override;
+
+public:
+	// Shallow copying is not needed (duplicated ID)
+	ColliderComponent& operator=(ColliderComponent& origin) = delete;
+	friend class CollisionManager;
+	friend class Actor;
 
 private:
-    void OnCollisionEnter(ColliderComponent* other);
-    void OnCollisionStay (ColliderComponent* other);
-    void OnCollisionExit (ColliderComponent* other);
+	void OnCollisionEnter(ColliderComponent* other);
+	void OnCollisionStay(ColliderComponent* other);
+	void OnCollisionExit(ColliderComponent* other);
 
-    void OnRayEnter();
-
-    friend class CollisionManager;
-    friend class Actor;
+	void OnRayEnter();
 
 private:
-    FTVector2    mOffsetPos;
-    FTVector2    mFinalPosition;
-    FTVector2    mScale;
-    CollidedSide mCollidedSide;
+	FTVector2	 mOffsetPos;
+	FTVector2	 mFinalPosition;
+	FTVector2	 mScale;
+	CollidedSide mCollidedSide;
 
-    static  uint32_t g_nextID;
-            uint32_t mID;
-            uint32_t mColliCount;
+	static uint32_t g_nextID;
+	uint32_t		mID;
+	uint32_t		mColliCount;
 
-
+#ifdef FOXTROT_EDITOR
 public:
-    virtual void SaveProperties(nlohmann::ordered_json& out) override;
-    virtual void LoadProperties(std::ifstream& ifs) override;
-    //virtual void LoadProperties(std::ofstream& of);
+	virtual void SaveProperties(nlohmann::ordered_json& out) override;
+	void		 Render(FoxtrotRenderer* renderer) override;
+	void		 EditorLateUpdate(float deltaTime) override;
+	void		 EditorUIUpdate() override;
 
-    void Render(FoxtrotRenderer* renderer) override;
-    void EditorLateUpdate(float deltaTime) override;
-    void EditorUIUpdate() override;
-    
 private:
-    void UpdateOffsetPos();
-    void UpdateScale();
- // DEBUG
+	void UpdateOffsetPos();
+	void UpdateScale();
+#endif
 };

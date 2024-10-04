@@ -11,25 +11,26 @@
 AIPursue::AIPursue(AIComponent* owner)
 	: AIState(owner)
 	, mTargetActor(nullptr)
-{}
+{
+}
 
 void AIIdle::Update(float deltaTime)
 {
- //	Actor* player =
-	//SceneManager::GetInstance()->GetCurrScene()
+	//	Actor* player =
+	// SceneManager::GetInstance()->GetCurrScene()
 	//	->GetActorGroup(ActorGroup::PLAYER)[0];
-	//FTVector2 playerPos = player->GetTransform()->GetWorldPosition();
+	// FTVector2 playerPos = player->GetTransform()->GetWorldPosition();
 
-	//Asteroid* monster = (Asteroid*)GetOwner()->GetOwner();
-	//FTVector2 monsterPos = monster->GetTransform()->GetWorldPosition();
+	// Asteroid* monster = (Asteroid*)GetOwner()->GetOwner();
+	// FTVector2 monsterPos = monster->GetTransform()->GetWorldPosition();
 	//
-	//FTVector2 diff = playerPos - monsterPos;
-	//float len = diff.Length();
+	// FTVector2 diff = playerPos - monsterPos;
+	// float len = diff.Length();
 	//
-	//if (len < monster->GetMonsterInfo().RecogRange)
+	// if (len < monster->GetMonsterInfo().RecogRange)
 	//{
 	//	ChangeAIState(GetOwner(), AISTATE_TYPE::PURSUE);
-	//}
+	// }
 }
 
 void AIIdle::OnEnter()
@@ -54,7 +55,7 @@ void AIPatrol::OnExit()
 
 void AIPursue::Update(float deltaTime)
 {
-	//if (mTargetActor != nullptr)
+	// if (mTargetActor != nullptr)
 	//{
 	//	FTVector2 playerPos = mTargetActor->GetTransform()->GetWorldPosition();
 
@@ -69,8 +70,7 @@ void AIPursue::Update(float deltaTime)
 void AIPursue::OnEnter()
 {
 	mTargetActor =
-		SceneManager::GetInstance()->GetCurrScene()
-		->GetActorGroup(ActorGroup::PLAYER)[0];
+		SceneManager::GetInstance()->GetCurrScene()->GetActorGroup(ActorGroup::PLAYER)[0];
 }
 
 void AIPursue::OnExit()

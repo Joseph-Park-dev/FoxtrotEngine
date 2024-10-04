@@ -27,13 +27,14 @@ public:
 public:
 	AIState(class AIComponent* owner)
 		: mOwner(owner)
-	{}
+	{
+	}
 
 private:
 	AIComponent* mOwner;
 };
 
-class AIIdle :public AIState
+class AIIdle : public AIState
 {
 public:
 	virtual void OnEnter() override;
@@ -48,10 +49,11 @@ public:
 public:
 	AIIdle(class AIComponent* owner)
 		: AIState(owner)
-	{}
+	{
+	}
 };
 
-class AIPatrol :public AIState
+class AIPatrol : public AIState
 {
 public:
 	virtual void Update(float deltaTime) override;
@@ -64,10 +66,11 @@ public:
 public:
 	AIPatrol(class AIComponent* owner)
 		: AIState(owner)
-	{}
+	{
+	}
 };
 
-class AIPursue :public AIState
+class AIPursue : public AIState
 {
 public:
 	virtual void OnEnter() override;

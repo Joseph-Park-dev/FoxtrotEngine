@@ -46,7 +46,7 @@ public:
 
 protected:
 	void LoadActors(std::ifstream& ifs);
-	void LoadActorsToEditor(std::ifstream& ifs);
+	//void LoadActorsToEditor(std::ifstream& ifs);
 
 public:
 	ComponentCreateMap&	GetCompCreateMap()	{ return mComponentCreateMap; }

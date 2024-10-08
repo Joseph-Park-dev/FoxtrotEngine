@@ -61,7 +61,7 @@ void CollisionManager::Update()
 
 void CollisionManager::UpdateCollisionGroup(ActorGroup left, ActorGroup right)
 {
-	Scene* pCurScene = SceneManager::GetInstance()->GetCurrScene();
+	Scene* pCurScene = SceneManager::GetInstance()->GetCurrentScene();
 	const std::vector<Actor*>& vecLeft = pCurScene->GetActorGroup(left);
 	const std::vector<Actor*>& vecRight = pCurScene->GetActorGroup(right);
 	for (size_t i = 0; i < vecLeft.size(); ++i)
@@ -223,7 +223,7 @@ void CollisionManager::ConstainColliderPos(ColliderComponent* aCol, ColliderComp
 
 void CollisionManager::CompareGroupWithRays(ActorGroup group)
 {
-	Scene* pCurScene = SceneManager::GetInstance()->GetCurrScene();
+	Scene* pCurScene = SceneManager::GetInstance()->GetCurrentScene();
 	const std::vector<Actor*>& actors = pCurScene->GetActorGroup(group);
 	for (size_t i = 0; i < actors.size(); ++i)
 	{

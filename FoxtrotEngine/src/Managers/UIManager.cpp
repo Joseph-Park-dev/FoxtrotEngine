@@ -9,6 +9,7 @@
 #include "Managers/KeyInputManager.h"
 
 #include "EditorLayer.h"
+#include "EditorSceneManager.h"
  // DEBUG
 
 UIManager::UIManager()
@@ -54,7 +55,7 @@ void UIManager::Update(float deltaTime)
 
 UIActor* UIManager::GetFocusedUI()
 {
-	Scene* currScene = SceneManager::GetInstance()->GetCurrScene();
+	Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
 	std::vector<Actor*>& UI = currScene->GetActorGroup(ActorGroup::UI);
 
 	bool lBtnTap = MOUSE_TAP(MOUSE::MOUSE_LEFT);
@@ -143,7 +144,7 @@ void UIManager::SetFocusedUI(UIActor* UI)
 		return;
 	}
 	mFocusedUI = UI;
-	Scene* currScene = SceneManager::GetInstance()->GetCurrScene();
+	Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
 	std::vector<Actor*>& UIObjs = currScene->GetActorGroup(ActorGroup::UI);
 	std::vector<Actor*>::iterator iter = UIObjs.begin();
 	for (; iter != UIObjs.end(); ++iter)
@@ -195,18 +196,20 @@ void UIManager::EditorUpdate(float deltaTime)
 
 UIActor* UIManager::EditorGetFocusedUI()
 {
-	std::vector<EditorElement*>& elems = EditorLayer::GetInstance()->GetEditorElements();
+	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+	std::vector<Actor*>& elems = scene->GetActorGroup(ActorGroup::EDITOR);
 
 	bool lBtnTap = MOUSE_TAP(MOUSE::MOUSE_LEFT);
 
-	EditorElement* focusedUI = (EditorElement*)mFocusedUI;
+	UIActor* focusedUI = mFocusedUI;
 	if (!lBtnTap)
 		return focusedUI;
-	std::vector<EditorElement*>::iterator targetIter = elems.end();
-	std::vector<EditorElement*>::iterator iter = elems.begin();
+	std::vector<Actor*>::iterator targetIter = elems.end();
+	std::vector<Actor*>::iterator iter = elems.begin();
 	for (; iter != elems.end(); ++iter)
 	{
-		if ((*iter)->IsMouseHovering())
+		EditorElement* element = (EditorElement*)(*iter);
+		if (element->IsMouseHovering())
 		{
 			targetIter = iter;
 		}

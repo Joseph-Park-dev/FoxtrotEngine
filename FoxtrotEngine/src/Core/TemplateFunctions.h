@@ -136,6 +136,17 @@ static char* ToString(const wchar_t* text)
 //	return b2Vec2(vec.x, vec.y);
 //}
 
+//template<class T, class Func>
+//void Loop2DArray(T vectorArray, std::function<Func> func) {
+//	size_t rowSize = GetArrayLength<T>(vectorArray);
+//	for (size_t i = 0; i < rowSize; ++i) {
+//		auto& iter = vectorArray[i].begin();
+//		for (; iter != vectorArray[i].end(); ++iter) {
+//			func();
+//		}
+//	}
+//}
+
 template<typename T>
 size_t GetArrayLength(T* arr) {
 	return sizeof(arr) / sizeof(T*);

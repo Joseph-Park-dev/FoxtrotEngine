@@ -1,4 +1,3 @@
-
 #include "EditorLayer.h"
 
 #include <unordered_map>
@@ -17,6 +16,8 @@
 #include "CommandHistory.h"
 #include "Command.h"
 #include "RenderTextureClass.h"
+#include "EditorSceneManager.h"
+#include "EditorScene.h"
 
 #include "Core/FTCore.h"
 #include "Managers/SceneManager.h"
@@ -65,12 +66,6 @@ void EditorLayer::Render(FoxtrotRenderer* renderer)
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	//ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
-}
-
-void EditorLayer::DisplayEditorElements(FoxtrotRenderer* renderer)
-{
-	for (int i = 0; i < mEditorElements.size(); ++i)
-		mEditorElements[i]->Render(renderer);
 }
 
 void EditorLayer::DisplayViewport()
@@ -157,8 +152,7 @@ void EditorLayer::DisplayFileMenu()
 
 		if (ImGui::Button("New Game Object"))
 		{
-			Scene* currScene = SceneManager::GetInstance()->GetCurrScene();
-			AddEditorElement(currScene);
+			EditorSceneManager::GetInstance()->GetEditorScene()->AddEditorElement();
 		}
 		if (ImGui::Button("Play"))
 		{
@@ -167,7 +161,7 @@ void EditorLayer::DisplayFileMenu()
 				if (!mCurrFilePath.empty())
 				{
 					EditorChunkLoader::GetInstance()->SaveChunk(mCurrFilePath);
-					this->DeleteAll();
+					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 					EditorChunkLoader::GetInstance()->LoadChunk(mCurrFilePath);
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(true);
 				}
@@ -184,8 +178,7 @@ void EditorLayer::DisplayFileMenu()
 				if (!mCurrFilePath.empty())
 				{
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(false);
-					SceneManager::GetInstance()->GetCurrScene()->DeleteAll();
-					this->DeleteAll();
+					SceneManager::GetInstance()->GetCurrentScene()->DeleteAll();
 					EditorChunkLoader::GetInstance()->LoadChunk(mCurrFilePath);
 				}
 			}
@@ -257,10 +250,9 @@ void EditorLayer::DisplayFileMenu()
 		{
 			if (ImGuiFileDialog::Instance()->IsOk())
 			{
-				this->DeleteAll();
+				EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 				mCurrFilePath = ImGuiFileDialog::Instance()->GetFilePathName();
 				EditorChunkLoader::GetInstance()->LoadChunk(mCurrFilePath);
-				LogInt(mEditorElements.size());
 				mCurrFileSaved = true;
 			}
 			ImGuiFileDialog::Instance()->Close();
@@ -279,13 +271,23 @@ void EditorLayer::DisplayHierarchyMenu()
 	ImGui::Begin(menuID.c_str());
 	if (ImGui::BeginListBox("Hierarchy", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
 	{
-		std::string* actorNames = new std::string[mEditorElements.size()];
-		for (UINT i = 0; i < mEditorElements.size(); ++i)
+		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+		size_t eleSize = scene->GetActorCount();
+
+		std::string* actorNames = new std::string[eleSize];
+
+		for (size_t i = 0; i < (size_t)ActorGroup::END; ++i) 
 		{
-			actorNames[i] = ToString(mEditorElements[i]->GetName());
+			size_t size = scene->GetActorGroup(i).size();
+			for (int j = 0; j < size; ++j) 
+			{
+				Actor* actor = scene->GetActorGroup(i)[j];
+				actorNames[(size_t)ActorGroup::END * i + j] = ToString(actor->GetName());
+			}
 		}
-		bool* selection = new bool[mEditorElements.size()];
-		for (UINT i = 0; i < mEditorElements.size(); ++i)
+
+		bool* selection = new bool[eleSize];
+		for (UINT i = 0; i < eleSize; ++i)
 		{
 			if (ImGui::Selectable(actorNames[i].c_str(), mActorNameIdx == i))
 			{
@@ -312,17 +314,23 @@ void EditorLayer::DisplayInspectorMenu()
 {
 	std::string menuID = "Inspector";
 	ImGui::Begin(menuID.c_str());
-	for (int i = 0; i < mEditorElements.size(); ++i)
+	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+	std::vector<Actor*>* actors = scene->GetActors();
+
+	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
 	{
-		//mEditorElements[i]->EditorUpdateComponents(deltaTime);
-		if (mEditorElements[i]->GetIsFocused())
+		for (size_t j = 0; j < actors[i].size(); ++j) 
 		{
-			mEditorElements[i]->UpdateUI();
-			if (mDeleteKeyPressed)
+			EditorElement* ele = (EditorElement*)actors[i][j];
+			if (ele->GetIsFocused())
 			{
-				// Delete game object, and erase the pointed from std::vector
-				delete mEditorElements[i];
-				mEditorElements.erase(mEditorElements.begin() + i);
+				ele->UpdateUI();
+				if (mDeleteKeyPressed)
+				{
+					// Delete game object, and erase the pointed from std::vector
+					delete ele;
+					actors[i].erase(actors[i].begin() + j);
+				}
 			}
 		}
 	}
@@ -332,10 +340,17 @@ void EditorLayer::DisplayInspectorMenu()
 
 void EditorLayer::ApplyCommandHistory()
 {
-	if (mActorNameIdx < mEditorElements.size())
+	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+	std::vector<Actor*>* actors = scene->GetActors();
+
+	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
 	{
-		UnfocusEditorElements();
-		mEditorElements[mActorNameIdx]->SetIsFocused(true);
+		for (size_t j = 0; j < actors[i].size(); ++j)
+		{
+			scene->UnfocusEditorElements();
+			EditorElement* ele = (EditorElement*)actors[i][j];
+			ele->SetIsFocused(true);
+		}
 	}
 }
 
@@ -486,40 +501,6 @@ void EditorLayer::ShutDown()
 	ImGui::DestroyContext();
 }
 
-// Adds empty EditorElements
-void EditorLayer::AddEditorElement(Scene* scene)
-{
-	UnfocusEditorElements();
-	EditorElement* editorElement = new EditorElement(scene);
-	editorElement->SetName(L"Game Object" + std::to_wstring(++mElementNumber));
-	editorElement->SetIsFocused(true);
-	mEditorElements.emplace_back(editorElement);
-}
-
-void EditorLayer::AddEditorElement(Actor* actor)
-{
-	UnfocusEditorElements();
-	EditorElement* editorElement = new EditorElement(actor);
-	mEditorElements.emplace_back(editorElement);
-	++mElementNumber;
-}
-
-void EditorLayer::DeleteAll()
-{
-	for (size_t i = 0; i < mEditorElements.size(); ++i)
-		delete mEditorElements[i];
-	mEditorElements.clear();
-}
-
-void EditorLayer::UnfocusEditorElements()
-{
-	for (int i = 0; i < mEditorElements.size(); ++i)
-	{
-		if (mEditorElements[i]->GetIsFocused())
-			mEditorElements[i]->SetIsFocused(false);
-	}
-}
-
 // After directX implementation
 //void EditorLayer::DisplayViewport()
 //{
@@ -531,10 +512,7 @@ void EditorLayer::UnfocusEditorElements()
 //}
 
 EditorLayer::EditorLayer()
-	:
-	//mViewportSize()
-	mEditorElements{}
-	, mCurrFileSaved(false)
+	: mCurrFileSaved(false)
 	, mCurrFilePath{}
 	, mHierarchyIdx(0)
 	, mActorNameIdx(0)

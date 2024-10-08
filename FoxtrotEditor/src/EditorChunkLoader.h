@@ -17,8 +17,5 @@ protected:
 	void SaveActorsData(nlohmann::ordered_json& out);
 
 private:
-	void LoadActorsToEditor(std::ifstream& ifs);
-
-private:
 	ComponentCreateMap mComponentCreateMap;
 };

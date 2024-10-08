@@ -9,6 +9,7 @@
 #include "Managers/SceneManager.h"
 
 #include "EditorLayer.h"
+#include "EditorSceneManager.h"
 
 void RenderTextureClass::InitializeTexture(ComPtr<ID3D11Device>& device, int width, int height)
 {
@@ -54,7 +55,7 @@ void RenderTextureClass::DrawOnTexture(ComPtr<ID3D11DeviceContext>& context, Com
 	context->ClearRenderTargetView(mRenderTargetView.Get(), clearColor);
 
 	//EditorLayer::GetInstance()->DisplayEditorElements(renderer);
-	SceneManager::GetInstance()->EditorRender(renderer);
+	EditorSceneManager::GetInstance()->Render(renderer);
 
 	context->OMSetRenderTargets(1, renderTargetView.GetAddressOf(), depthStencilView.Get());
 }

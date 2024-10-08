@@ -1,17 +1,12 @@
 #pragma once
+
 #include "Core/SingletonMacro.h"
-#include "Scenes/SceneType.h"
 
-class Scene;
-class FoxtrotRenderer;
+#include "EditorScene.h"
 
-class SceneManager
+class EditorSceneManager
 {
-	SINGLETON(SceneManager)
-
-public:
-	void	SwitchScene(SCENE_TYPE sceneType);
-	Scene*	GetCurrentScene()	{ return mPCurrScene; }
+	SINGLETON(EditorSceneManager)
 
 public:
 	virtual void Init();
@@ -21,7 +16,9 @@ public:
 	virtual void Render(FoxtrotRenderer* renderer);
 	virtual void ProcessEvent();
 
+public:
+	EditorScene* GetEditorScene();
+
 private:
-	Scene*  mArrScene[(unsigned int)SCENE_TYPE::END];
-	Scene*  mPCurrScene;
+	EditorScene* mEditorScene;
 };

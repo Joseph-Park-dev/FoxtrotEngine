@@ -6,7 +6,7 @@
 #include <imgui_impl_win32.h>
 
 #include "EditorLayer.h"
-
+#include "EditorSceneManager.h"
 #include "CommandHistory.h"
 
 #include "Managers/KeyInputManager.h"
@@ -53,20 +53,21 @@ void EditorElement::UpdateUI()
 
 void EditorElement::OnMouseLButtonClicked()
 {
-	std::vector<EditorElement*>& elems = EditorLayer::GetInstance()->GetEditorElements();
-	for (int i = 0; i < elems.size(); ++i)
-	{
-		if (elems[i]->GetIsFocused())
-			elems[i]->SetIsFocused(false);
-	}
+	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+	scene->UnfocusEditorElements();
 	SetIsFocused(true);
-	for (int i = 0; i < elems.size(); ++i)
+	std::vector<Actor*>* actors = scene->GetActors();
+	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
 	{
-		if (elems[i]->GetIsFocused())
+		for (int j = 0; j < actors[i].size(); ++j)
 		{
-			int& mActorNameIDX = EditorLayer::GetInstance()->GetActorNameIdx();
-			CommandHistory::GetInstance()->AddCommand(new IntEditCommand(mActorNameIDX, i));
-			break;
+			EditorElement* elems = (EditorElement*)actors[i][j];
+			if (elems->GetIsFocused())
+			{
+				int& mActorNameIDX = EditorLayer::GetInstance()->GetActorNameIdx();
+				CommandHistory::GetInstance()->AddCommand(new IntEditCommand(mActorNameIDX, i));
+				break;
+			}
 		}
 	}
 }

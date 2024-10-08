@@ -26,7 +26,6 @@ Scene::~Scene()
 
 void Scene::ProcessInput(KeyInputManager* keyInputManager)
 {
-	mIsUpdatingActors = true;
 	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
 	{
 		for (size_t j = 0; j < mActors[i].size(); ++j)
@@ -36,7 +35,6 @@ void Scene::ProcessInput(KeyInputManager* keyInputManager)
 				actor->ProcessInput(keyInputManager);
 		}
 	}
-	mIsUpdatingActors = false;
 }
 
 void Scene::Update(float deltaTime)
@@ -180,59 +178,3 @@ void Scene::RemoveActor(Actor* actor)
 		}
 	}
 }
-
-#ifdef FOXTROT_EDITOR
-void Scene::EditorProcessInput(KeyInputManager* keyInputManager)
-{
-	std::vector<EditorElement*>& elements = EditorLayer::GetInstance()->GetEditorElements();
-	for (size_t i = 0; i < elements.size(); ++i)
-	{
-		EditorElement* ele = elements[i];
-		if (ele->IsActive())
-		{
-			ele->ProcessInput(keyInputManager);
-		}
-	}
-}
-
-void Scene::EditorUpdate(float deltaTime)
-{
-	std::vector<EditorElement*>& elements = EditorLayer::GetInstance()->GetEditorElements();
-	for (size_t i = 0; i < elements.size(); ++i)
-	{
-		EditorElement* ele = elements[i];
-		if (ele->IsActive())
-		{
-			// The order of the Update functions should not be revised.
-			ele->EditorUpdateComponents(deltaTime);
-			ele->EditorUpdateActor();
-		}
-	}
-}
-
-void Scene::EditorLateUpdate(float deltaTime)
-{
-	std::vector<EditorElement*>& elements = EditorLayer::GetInstance()->GetEditorElements();
-	for (size_t i = 0; i < elements.size(); ++i)
-	{
-		EditorElement* ele = elements[i];
-		if (ele->IsActive())
-		{
-			ele->EditorLateUpdateComponents(deltaTime);
-			ele->EditorLateUpdateActor();
-		}
-	}
-}
-void Scene::EditorRender(FoxtrotRenderer* renderer)
-{
-	std::vector<EditorElement*>& elements = EditorLayer::GetInstance()->GetEditorElements();
-	for (size_t i = 0; i < elements.size(); ++i)
-	{
-		EditorElement* ele = elements[i];
-		if (ele->IsActive())
-		{
-			ele->Render(renderer);
-		}
-	}
-}
-#endif // FOXTROT_EDITOR

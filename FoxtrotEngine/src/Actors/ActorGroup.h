@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/TemplateFunctions.h"
+
 enum class ActorGroup
 {
 	DEFAULT,

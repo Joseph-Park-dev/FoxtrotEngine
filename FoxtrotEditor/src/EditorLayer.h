@@ -1,4 +1,3 @@
-
 #pragma once
 #include <functional>
 #include <nlohmann/json.hpp>
@@ -32,10 +31,6 @@ public:
 	void ShutDown();
 
 public:
-	std::vector<EditorElement*>& GetEditorElements() { return mEditorElements; }
-	void AddEditorElement(Scene* scene);
-	void AddEditorElement(Actor* ele);
-	void DisplayEditorElements(FoxtrotRenderer* renderer);
 	int& GetActorNameIdx() { return mActorNameIdx; }
 	bool GetUndoKeyPressed()	const { return mUndoKeyPressed; }
 	bool GetRedoKeyPressed()	const { return mRedoKeyPressed; }
@@ -50,7 +45,6 @@ public:
 private:
 	// After directX implementation
 	// ImVec2 mViewportSize;
-	std::vector<EditorElement*> mEditorElements;
 	UINT mElementNumber;
 	bool mCurrFileSaved;
 	std::string mCurrProjectPath;
@@ -75,8 +69,6 @@ private:
 	ErrorType mErrorType;
 
 private:
-	void DeleteAll();
-	void UnfocusEditorElements();
 	// After directX implementation
 	void DisplayViewport();
 	void DisplayFileMenu();
@@ -94,5 +86,4 @@ private:
 	void PopUpError_ProjectPathExists();
 	void PopUpError_ProjectNotValid();
 	void PopUpError_ChunkNotSaved();
-	//void ResizeUIWindow(std::string menuID);
 };

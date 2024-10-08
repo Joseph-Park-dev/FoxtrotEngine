@@ -27,7 +27,7 @@ void EventManager::Execute(const FTEvent& executedEvent)
 		Actor* newActor = (Actor*)executedEvent.lParam;
 		ActorGroup group = (ActorGroup)executedEvent.wParam;
 		newActor->SetActorGroup(group);
-		SceneManager::GetInstance()->GetCurrScene()->AddActor(newActor, group);
+		SceneManager::GetInstance()->GetCurrentScene()->AddActor(newActor, group);
 	}
 	break;
 	case EVENT_TYPE::DESTROY_ACTOR:

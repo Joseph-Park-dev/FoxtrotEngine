@@ -164,7 +164,6 @@ void FTCore::ProcessEvent()
 	SceneManager::GetInstance()->ProcessEvent();
 }
 
-
 FTCore::FTCore()
 	: mWindow(nullptr)
 	, mGameRenderer(nullptr)

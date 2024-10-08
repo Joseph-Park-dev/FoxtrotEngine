@@ -33,15 +33,28 @@ public:
 	{
 		return mActors[group];
 	};
+	std::vector<Actor*>* GetActors() {
+		return mActors;
+	}
+	size_t GetActorCount()
+	{
+		size_t size = 0;
+		for (size_t i = 0; i < size_t(ActorGroup::END); ++i) {
+			size += GetActorGroup(i).size();
+		}
+		return size;
+	};
+
 	void SetName(const std::wstring& name) { mSceneName = name; }
+	void SetIsUpdatingActors(bool value){ mIsUpdatingActors = value; }
 
 public:
-	void		 ProcessInput(KeyInputManager* keyInputManager);
+	virtual void ProcessInput(KeyInputManager* keyInputManager);
 	virtual void Update(float deltaTime);
-	void		 LateUpdate(float deltaTime);
-	void		 Render(FoxtrotRenderer* renderer);
-	void		 ProcessEvent();
-	void		 DeleteAll();
+	virtual void LateUpdate(float deltaTime);
+	virtual void Render(FoxtrotRenderer* renderer);
+			void ProcessEvent();
+	virtual void DeleteAll();
 
 private:
 	std::vector<Actor*> mActors[(size_t)ActorGroup::END];
@@ -61,12 +74,4 @@ private:
 	void DeletePendingGroup(ActorGroup group);
 
 	friend class EventManager;
-
-#ifdef FOXTROT_EDITOR
-public:
-	void EditorProcessInput(KeyInputManager* keyInputManager);
-	void EditorUpdate(float deltaTime);
-	void EditorLateUpdate(float deltaTime);
-	void EditorRender(FoxtrotRenderer* renderer);
-#endif // FOXTROT_EDITOR
 };

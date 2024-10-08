@@ -1,5 +1,6 @@
 #pragma once
 #include "Actors/UIs/PanelUI.h"
+#include "Components/Component.h"
 #include "CommandHistory.h"
 #include "FTCoreEditor.h"
 

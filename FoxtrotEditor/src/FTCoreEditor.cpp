@@ -6,8 +6,9 @@
 #include <imgui_impl_win32.h>
 
 #include "EditorLayer.h"
+#include "EditorSceneManager.h"
+
 #include "Managers/KeyInputManager.h"
-#include "Managers/SceneManager.h"
 #include "Core/FTCore.h"
 #include "Core/Timer.h"
 #include "Physics/Physics2D.h"
@@ -16,6 +17,9 @@
 #include "Managers/UIManager.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "Core/WindowProcess.h"
+#include "Renderer/Camera.h"
+#include "Managers/ResourceManager.h"
+#include "Managers/EventManager.h"
 
 bool FTCoreEditor::Initialize()
 {
@@ -41,7 +45,13 @@ void FTCoreEditor::ShutDown()
 
 void FTCoreEditor::InitSingletonManagers()
 {
-	FTCore::InitSingletonManagers();
+	Physics2D::GetInstance()->Init();
+	Camera::GetInstance();
+	ResourceManager::GetInstance()->Initialize(GetGameRenderer());
+	EditorSceneManager::GetInstance()->Init();
+	UIManager::GetInstance();
+	EventManager::GetInstance();
+	KeyInputManager::GetInstance();
 	//EditorCamera2D::GetInstance();
 	EditorLayer::GetInstance();
 }
@@ -93,7 +103,7 @@ void FTCoreEditor::ProcessInput()
 	KeyInputManager::GetInstance()->DetectKeyInput();
 	KeyInputManager::GetInstance()->DetectMouseInput(msg);
 	//KeyInputManager::GetInstance()->DetectGamepadInput();
-	SceneManager::GetInstance()->EditorProcessInput(KeyInputManager::GetInstance());
+	EditorSceneManager::GetInstance()->ProcessInput(KeyInputManager::GetInstance());
 	TranslateMessage(&msg);
 	DispatchMessage(&msg);
 }
@@ -106,16 +116,15 @@ void FTCoreEditor::UpdateGame()
 	if (mIsUpdatingGame)
 	{
 		Physics2D::GetInstance()->Update();
-		SceneManager::GetInstance()->Update(deltaTime);
-		SceneManager::GetInstance()->Lateupdate(deltaTime);
+
 		CollisionManager::GetInstance()->Update();
 		ParticleSystem::GetInstance()->Update(deltaTime);
 		UIManager::GetInstance()->Update(deltaTime);
 	}
 	else
 	{
-		SceneManager::GetInstance()->EditorUpdate(deltaTime);
-		SceneManager::GetInstance()->EditorLateUpdate(deltaTime);
+		EditorSceneManager::GetInstance()->Update(deltaTime);
+		EditorSceneManager::GetInstance()->Lateupdate(deltaTime);
 		UIManager::GetInstance()->EditorUpdate(deltaTime);
 	}
 	EditorLayer::GetInstance()->Update(deltaTime);
@@ -137,16 +146,15 @@ void FTCoreEditor::GenerateOutput()
 	//mEditorRenderer->RenderClear(clearColor);
 	if (mIsUpdatingGame)
 	{
-		SceneManager::GetInstance()->Render(GetGameRenderer());
 		/* Essential - Don't delete this
 		Camera2D::GetInstance()->Render(mEditorRenderer);
 		*/
 		ParticleSystem::GetInstance()->Render(GetGameRenderer());
 	}
-	/*else
+	else
 	{
-		EditorLayer::GetInstance()->DisplayEditorElements(GetGameRenderer());
-	}*/
+		EditorSceneManager::GetInstance()->Render(GetGameRenderer());
+	}
 	EditorLayer::GetInstance()->Render(GetGameRenderer());
 	CollisionManager::GetInstance()->RenderRay(GetGameRenderer());
 	//GetGameRenderer()->RenderToTexture(GetGameRenderer());
@@ -155,6 +163,7 @@ void FTCoreEditor::GenerateOutput()
 
 void FTCoreEditor::ProcessEvent()
 {
+	EditorSceneManager::GetInstance()->ProcessEvent();
 }
 
 FTCoreEditor::FTCoreEditor()

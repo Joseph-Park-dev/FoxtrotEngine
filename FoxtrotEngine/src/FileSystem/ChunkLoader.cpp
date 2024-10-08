@@ -48,7 +48,7 @@ void ChunkLoader::LoadChunk(const std::string fileName)
 
 void ChunkLoader::LoadActors(std::ifstream& ifs)
 {
-    Scene* currScene = SceneManager::GetInstance()->GetCurrScene();
+    Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
     for (size_t i = 0; i < mCurrentChunkData.ActorCount; ++i)
     {
         Actor* actor = LoadIndividualActor(ifs, currScene);
@@ -59,7 +59,7 @@ void ChunkLoader::LoadActors(std::ifstream& ifs)
 //void ChunkLoader::LoadActors(std::ifstream& ifs)
 //{
 //    orderedJSONRef actorList = mJSON["ActorList"];
-//    Scene* currScene = SceneManager::GetInstance()->GetCurrScene();
+//    Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
 //
 //    size_t actorCount = actorList["Count"];
 //    for (size_t i = 0; i < actorCount; ++i)
@@ -73,7 +73,7 @@ void ChunkLoader::LoadActors(std::ifstream& ifs)
 //void ChunkLoader::LoadActorsToEditor(std::ifstream& ifs)
 //{
 //    orderedJSONRef actorList = mJSON["ActorList"];
-//    Scene* currScene = SceneManager::GetInstance()->GetCurrScene();
+//    Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
 //
 //    size_t actorCount = actorList["Count"];
 //    for (size_t i = 0; i < actorCount; ++i)

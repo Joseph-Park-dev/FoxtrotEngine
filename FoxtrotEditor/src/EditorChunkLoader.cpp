@@ -6,8 +6,9 @@
 #include "Managers/ResourceManager.h"
 #include "Managers/SceneManager.h"
 #include "Math/FTMath.h"
-#include "EditorLayer.h"
 #include "Components/ComponentBatchHeaders.h"
+#include "EditorLayer.h"
+#include "EditorSceneManager.h"
 
 EditorChunkLoader::EditorChunkLoader()
     :ChunkLoader()
@@ -54,29 +55,22 @@ void EditorChunkLoader::SaveChunkData(nlohmann::ordered_json& out)
     FileIOHelper::AddScalarValue<int>(out[SAVEKEY_TARGETACTORID], 1);
     FileIOHelper::AddVector2(out[SAVEKEY_RENDERRES], FTVector2::Zero);
     FileIOHelper::AddVector2(out[SAVEKEY_SCREENCENTER], FTVector2(123, 123));
-    FileIOHelper::AddScalarValue<int>(out[SAVEKEY_ACTORCOUNT], EditorLayer::GetInstance()->GetEditorElements().size());
+    EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+    FileIOHelper::AddScalarValue<int>(out[SAVEKEY_ACTORCOUNT], scene->GetActorCount());
 }
 
 void EditorChunkLoader::SaveActorsData(nlohmann::ordered_json& out)
 {
     Actor::ResetNextID();
-    const std::vector<EditorElement*>& actors = EditorLayer::GetInstance()->GetEditorElements();
-    for (size_t i = 0; i < actors.size(); ++i)
+    EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+    std::vector<Actor*>* actors = scene->GetActors();
+    for (size_t i = 0; i < (size_t)ActorGroup::END; ++i) 
     {
-        actors[i]->SaveProperties(out[i]);
-        actors[i]->SaveComponents(out[i]["Components"]);
+        for (size_t j = 0; j < actors[i].size(); ++j)
+        {
+            EditorElement* element = (EditorElement*)actors[i][j];
+            element->SaveProperties(out[i]);
+            element->SaveComponents(out[i]["Components"]);
+        }
     }
-}
-
-void EditorChunkLoader::LoadActorsToEditor(std::ifstream& ifs)
-{
-	//Scene* currScene = SceneManager::GetInstance()->GetCurrScene();
-	//for (size_t i = 0; i < mCurrentChunkData.ActorCount; ++i)
-	//{
-	//	Actor* tempActor = LoadIndividualActor(ifs, currScene);
-	//	// Copies Actor Data to EditorElement.
-	//	EditorLayer::GetInstance()->AddEditorElement(tempActor);
-	//	// This prevents duplicated game objects.
-	//	delete tempActor;
-	//}
 }

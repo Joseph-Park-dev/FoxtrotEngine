@@ -21,7 +21,9 @@ private:
 	UIActor* GetTargetedUI(UIActor* parentUI);
 
 #ifdef FOXTROT_EDITOR
+public:
 	void EditorUpdate(float deltaTime);
+private:
 	UIActor* EditorGetFocusedUI();
 #endif // FOXTROT_EDITOR
 };

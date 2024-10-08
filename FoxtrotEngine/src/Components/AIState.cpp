@@ -17,7 +17,7 @@ AIPursue::AIPursue(AIComponent* owner)
 void AIIdle::Update(float deltaTime)
 {
 	//	Actor* player =
-	// SceneManager::GetInstance()->GetCurrScene()
+	// SceneManager::GetInstance()->GetCurrentScene()
 	//	->GetActorGroup(ActorGroup::PLAYER)[0];
 	// FTVector2 playerPos = player->GetTransform()->GetWorldPosition();
 
@@ -69,8 +69,6 @@ void AIPursue::Update(float deltaTime)
 
 void AIPursue::OnEnter()
 {
-	mTargetActor =
-		SceneManager::GetInstance()->GetCurrScene()->GetActorGroup(ActorGroup::PLAYER)[0];
 }
 
 void AIPursue::OnExit()

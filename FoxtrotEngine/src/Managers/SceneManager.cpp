@@ -1,7 +1,6 @@
 #include "Managers/SceneManager.h"
 
-#include "Scenes/Scene_Start.h"
-//#include "Scenes/Scene_Tool.h"
+#include "Scenes/Scene.h"
 #include "Renderer/FoxtrotRenderer.h"
 
 SceneManager::SceneManager()
@@ -22,8 +21,8 @@ SceneManager::~SceneManager()
 
 void SceneManager::Init()
 {
-	mArrScene[(UINT)SCENE_TYPE::START] = new Scene_Start;
-	mArrScene[(UINT)SCENE_TYPE::START]->SetName(L"Start Scene");
+	//mArrScene[(UINT)SCENE_TYPE::START] = new Scene_Start;
+	//mArrScene[(UINT)SCENE_TYPE::START]->SetName(L"Start Scene");
 
 	mPCurrScene = mArrScene[(UINT)SCENE_TYPE::START];
 	mPCurrScene->Enter();
@@ -60,24 +59,3 @@ void SceneManager::SwitchScene(SCENE_TYPE sceneType)
 	mPCurrScene = mArrScene[(UINT)sceneType];
 	mPCurrScene->Enter();
 }
-
-#ifdef FOXTROT_EDITOR
-void SceneManager::EditorProcessInput(KeyInputManager* keyInputManager) {
-	mPCurrScene->EditorProcessInput(keyInputManager);
-}
-
-void SceneManager::EditorUpdate(float deltaTime)
-{
-	mPCurrScene->EditorUpdate(deltaTime);
-}
-
-void SceneManager::EditorLateUpdate(float deltaTime)
-{
-	mPCurrScene->EditorLateUpdate(deltaTime);
-}
-
-void SceneManager::EditorRender(FoxtrotRenderer* renderer)
-{
-	mPCurrScene->EditorRender(renderer);
-}
-#endif // FOXTROT_EDITOR

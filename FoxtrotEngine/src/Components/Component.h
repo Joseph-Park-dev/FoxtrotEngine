@@ -1,16 +1,17 @@
 #pragma once
 #include <fstream>
-#include <nlohmann/json.hpp>
-
-#include "EditorLayer.h"
-
-#define DEFAULT_DRAWORDER 100
-#define DEFAULT_UPDATEORDER 100
 
 class Actor;
 class FoxtrotRenderer;
 class FTCore;
 class KeyInputManager;
+
+#define DEFAULT_DRAWORDER 100
+#define DEFAULT_UPDATEORDER 100
+
+#ifdef FOXTROT_EDITOR
+#include <nlohmann/json.hpp>
+#endif // FOXTROT_EDITOR
 
 class Component
 {
@@ -19,15 +20,6 @@ public:
 	virtual void		 LoadProperties(std::ifstream& ifs);
 
 public:
-	template <class T>
-	static void Create(Actor* actor)
-	{
-		// Dynamically allocate actor of type T
-		T* t = new T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
-		// Call LoadProperties on new actor
-		t->Initialize(FTCoreEditor::GetInstance());
-	}
-
 	template <class T>
 	static void Load(Actor* actor, std::ifstream& ifs)
 	{

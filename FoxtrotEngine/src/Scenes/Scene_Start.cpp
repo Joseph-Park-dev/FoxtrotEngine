@@ -7,8 +7,11 @@
 #include "Components/SpriteRendererComponent.h"
 #include "Components/TileMapComponent.h"
 #include "ResourceSystem/GeometryGenerator.h"
+
+#ifdef FOXTROT_EDITOR
 #include "FTCoreEditor.h"
 #include "EditorLayer.h"
+#endif // FOXTROT_EDITOR
 
 void Scene_Start::Enter()
 {
@@ -22,7 +25,7 @@ void Scene_Start::LoadData()
 	CollisionManager::GetInstance()->MarkGroup(ActorGroup::DEFAULT, ActorGroup::DEFAULT);
 
 
-	FoxtrotRenderer* currRenderer = FTCoreEditor::GetInstance()->GetGameRenderer();
+	//FoxtrotRenderer* currRenderer = FTCoreEditor::GetInstance()->GetGameRenderer();
 	//std::string asteroidSprite = "Asteroid.png";
 	//ResourceManager::GetInstance()->LoadTexture("Asteroid1", asteroidSprite);
 	//ResourceManager::GetInstance()->LoadTexture("Asteroid2", asteroidSprite);

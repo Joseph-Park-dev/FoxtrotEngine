@@ -58,6 +58,12 @@ void AnimatorComponent::Play(const std::string& name, bool isRepeating)
 	mIsRepeating = isRepeating;*/
 }
 
+void AnimatorComponent::LoadProperties(std::ifstream& ifs)
+{
+	// SpriteRendererComponent::LoadProperties(ifs);
+	LogString("Animator LoadProperties() needs to be implemented");
+}
+
 FTSpriteAnimation* AnimatorComponent::FindAnimation(const std::wstring& name)
 {
 	std::unordered_map<std::wstring, FTSpriteAnimation*>::iterator iter = mMapAnimation.find(name);
@@ -76,17 +82,6 @@ FTSpriteAnimation* AnimatorComponent::FindAnimation(const std::wstring& name)
 			return nullptr;
 		}
 	}
-}
-
-void AnimatorComponent::SaveProperties(nlohmann::ordered_json& out)
-{
-	//SpriteRendererComponent::SaveProperties(out);
-}
-
-void AnimatorComponent::LoadProperties(std::ifstream& ifs)
-{
-	//SpriteRendererComponent::LoadProperties(ifs);
-	LogString("Animator LoadProperties() needs to be implemented");
 }
 
 //void AnimatorComponent::SaveAnimation(const std::wstring& animName, const std::wstring& path)
@@ -244,6 +239,12 @@ void AnimatorComponent::Render(FoxtrotRenderer* renderer)
 	}
 }
 
+#ifdef FOXTROT_EDITOR
+void AnimatorComponent::SaveProperties(nlohmann::ordered_json& out)
+{
+	// SpriteRendererComponent::SaveProperties(out);
+}
+
 void AnimatorComponent::EditorLateUpdate(float deltaTime)
 {
 	if (mCurrentAnim != nullptr)
@@ -256,3 +257,4 @@ void AnimatorComponent::EditorLateUpdate(float deltaTime)
 		}
 	}
 }
+#endif // FOXTROT_EDITOR

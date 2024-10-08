@@ -25,12 +25,6 @@ public:
 	Matrix GetProjRow();
 	Vector3 GetEyePos();
 
-	void UpdateMouse(float mouseNdcX, float mouseNdcY);
-	void MoveForward(float dt);
-	void MoveRight(float dt);
-	void MoveUp(float dt);
-	void SetAspectRatio(float aspect);
-
 	Viewtype GetViewType() { return mViewType; }
 	float	 GetProjFOVAngleY() { return mProjFOVAngleY; }
 	float	 GetAspectRatio() { return mAspect; }
@@ -58,10 +52,6 @@ public:
 	void Initialize();
 	virtual void Update(float deltaTime);
 
-
-	// void Render(FoxtrotRenderer* renderer);
-	void DisplayCameraMenu();
-
 private:
 	ImVec2 mMiddleMouseClickedPos;
 	ImVec2 mMiddleMouseClickedRot;
@@ -69,10 +59,9 @@ private:
 
 protected:
 	void ZoomIn();
-//	void ZoomOut();
-//
-//private:
-//	float	GetAspectRatio() const { return (float)mRenderResolution.x / (float)mRenderResolution.y; }
-//	void	UpdateTargetActor();
-//	void	SetTarget(int id);
+
+#ifdef FOXTROT_EDITOR
+public:
+	void DisplayCameraMenu();
+#endif // FOXTROT_EDITOR
 };

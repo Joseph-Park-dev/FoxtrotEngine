@@ -62,11 +62,11 @@ private:
 
 	friend class EventManager;
 
-
+#ifdef FOXTROT_EDITOR
 public:
 	void EditorProcessInput(KeyInputManager* keyInputManager);
 	void EditorUpdate(float deltaTime);
 	void EditorLateUpdate(float deltaTime);
 	void EditorRender(FoxtrotRenderer* renderer);
-
+#endif // FOXTROT_EDITOR
 };

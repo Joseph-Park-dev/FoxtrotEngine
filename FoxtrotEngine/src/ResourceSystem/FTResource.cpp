@@ -1,7 +1,7 @@
 #include "ResourceSystem/FTResource.h"
 #include "FileSystem/ChunkLoader.h"
 
-
+#ifdef FOXTROT_EDITOR
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
@@ -11,7 +11,6 @@
 #include "imgui/FileDialog/ImGuiFileDialogConfig.h"
 
 #include "EditorLayer.h"
- // _DEBUG
 
 void FTResource::SaveProperties(nlohmann::ordered_json& out, UINT key)
 {
@@ -48,3 +47,4 @@ void FTResource::UpdateRelativePath(std::string fileExtension)
         ImGuiFileDialog::Instance()->Close();
     }
 }
+#endif // FOXTROT_EDITOR

@@ -15,12 +15,14 @@ public:
 	void	 SetFocusedUI(UIActor* UI);
 	void	 Reset();
 
-	void	 EditorUpdate(float deltaTime);
-
 private:
 	UIActor* GetFocusedUI();
 	// Returns Overlapped targeted UI within parentUI's area. 
 	UIActor* GetTargetedUI(UIActor* parentUI);
+
+#ifdef FOXTROT_EDITOR
+	void EditorUpdate(float deltaTime);
 	UIActor* EditorGetFocusedUI();
+#endif // FOXTROT_EDITOR
 };
 

@@ -10,9 +10,6 @@
 #include <directxtk/PrimitiveBatch.h>
 #include <directxtk/VertexTypes.h>
 
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
-
 #include "Core/TemplateFunctions.h"
 #include "Actors/Transform.h"
 #include "ResourceSystem/Vertex.h"
@@ -20,12 +17,12 @@
 #include "Managers/SceneManager.h"
 #include "Renderer/D3D11Utils.h"
 
-
+#ifdef FOXTROT_EDITOR
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui.h>
 #include "EditorLayer.h"
-
 #include "RenderTextureClass.h"
- // _DEBUG
-
+#endif // FOXTROT_EDITOR
 
 FoxtrotRenderer* FoxtrotRenderer::CreateRenderer(HWND window, int width, int height)
 {
@@ -100,7 +97,7 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 
 	mContext->RSSetState(mSolidRasterizerState.Get());
 
-
+#ifdef FOXTROT_EDITOR
 	mRenderTexture = new RenderTextureClass();
 	if (!mRenderTexture)
 	{
@@ -108,20 +105,21 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 		return false;
 	}
 	mRenderTexture->InitializeTexture(mDevice, mRenderWidth, mRenderHeight);
- // _DEBUG
+#endif // FOXTROT_EDITOR
 	return true;
 }
 
 void FoxtrotRenderer::DestroyRenderer(FoxtrotRenderer* renderer)
 {
-
+#ifdef FOXTROT_EDITOR
 	// 렌더 텍스쳐 객체를 해제한다
 	if (renderer->mRenderTexture)
 	{
 		delete renderer->mRenderTexture;
 		renderer->mRenderTexture = 0;
 	}
- // _DEBUG
+#endif // FOXTROT_EDITOR
+
 	if (renderer == nullptr)
 	{
 		LogString("Renderer is already null");
@@ -144,9 +142,6 @@ void FoxtrotRenderer::SwapChainPresent(UINT syncInterval, UINT flags)
 // 이때 Constant buffer data를 사용
 // mContext->VSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
 //void FoxtrotRenderer::UpdateConstantBufferData(Transform* transform)
-//{
-//	
-//}
 
 void FoxtrotRenderer::RenderClear()
 {
@@ -591,11 +586,12 @@ FoxtrotRenderer::FoxtrotRenderer()
 	, mFillMode(FillMode::Solid)
 {}
 
-
+#ifdef FOXTROT_EDITOR
 void FoxtrotRenderer::RenderToTexture()
 {
 	mRenderTexture->DrawOnTexture(mContext, mRenderTargetView, mDepthStencilView, this);
 }
+#endif // FOXTROT_EDITOR
 
 //void FoxtrotRenderer::DrawPrimitives()
 //{

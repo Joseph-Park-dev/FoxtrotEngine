@@ -123,9 +123,13 @@ private:
 		   std::vector<Actor*>		mChild;
 
 public:
-	void SaveProperties(nlohmann::ordered_json& out);
-	void SaveComponents(nlohmann::ordered_json& out);
 	void LoadProperties(std::ifstream& ifs);
 	void LoadComponents(std::ifstream& ifs);
 	friend class Scene_Tool;
+
+#ifdef FOXTROT_EDITOR
+public:
+	void SaveProperties(nlohmann::ordered_json& out);
+	void SaveComponents(nlohmann::ordered_json& out);
+#endif //  FOXTROT_EDITOR
 };

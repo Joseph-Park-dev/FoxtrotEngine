@@ -55,14 +55,16 @@ GunFiringComponent::~GunFiringComponent()
 {
 }
 
-void GunFiringComponent::SaveProperties(nlohmann::ordered_json& out)
-{
-	Component::SaveProperties(out);
-}
-
 void GunFiringComponent::LoadProperties(std::ifstream& ifs)
 {
 	Component::LoadProperties(ifs);
 	mDelay = FileIOHelper::LoadFloat(ifs);
 	mTriggerKey = (MOUSE)FileIOHelper::LoadInt(ifs);
 }
+
+#ifdef FOXTROT_EDITOR
+void GunFiringComponent::SaveProperties(nlohmann::ordered_json& out)
+{
+	Component::SaveProperties(out);
+}
+#endif // FOXTROT_EDITOR

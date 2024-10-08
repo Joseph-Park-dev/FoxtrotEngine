@@ -45,44 +45,6 @@ void SpriteAnimComponent::InitializeAnimation()
 	//}
 }
 
-void SpriteAnimComponent::EditorUIUpdate()
-{
-	this->UpdateSprite();
-	this->UpdateCSV();
-	this->UpdateIsRepeated();
-	this->UpdatePlayAnim();
-	this->OnConfirmUpdate();
-}
-
-void SpriteAnimComponent::UpdateIsRepeated()
-{
-	ImGui::Checkbox("Is Repeated", &mIsRepeated);
-}
-
-void SpriteAnimComponent::UpdatePlayAnim()
-{
-	if (mIsPlaying) {
-		if (ImGui::Button("Stop")) {
-			Stop();
-		}
-	}
-	else {
-		if (ImGui::Button("Play")) {
-			Play();
-		}
-	}
-}
-
-void SpriteAnimComponent::OnConfirmUpdate()
-{
-	/*if (ImGui::Button("Update")) {
-		if (!GetCSVFileMapPath().empty())
-			this->InitializeAnimation();
-		else
-			printf("ERROR: SpriteAnimComponent::ConfirmUpdate() -> .CSV path is null");
-	}*/
-}
-
 void SpriteAnimComponent::Initialize(FTCore* coreInstance){
 	MeshRendererComponent::Initialize(coreInstance);
 	InitializeAnimation();
@@ -125,6 +87,49 @@ bool SpriteAnimComponent::FrameIsWithinIndexRange()
 	return 0 <= mCurrFrame && mCurrFrame < mMaxFrame;
 }
 
+#ifdef FOXTROT_EDITOR
+void SpriteAnimComponent::EditorUIUpdate()
+{
+	this->UpdateSprite();
+	this->UpdateCSV();
+	this->UpdateIsRepeated();
+	this->UpdatePlayAnim();
+	this->OnConfirmUpdate();
+}
+
+void SpriteAnimComponent::UpdateIsRepeated()
+{
+	ImGui::Checkbox("Is Repeated", &mIsRepeated);
+}
+
+void SpriteAnimComponent::UpdatePlayAnim()
+{
+	if (mIsPlaying)
+	{
+		if (ImGui::Button("Stop"))
+		{
+			Stop();
+		}
+	}
+	else
+	{
+		if (ImGui::Button("Play"))
+		{
+			Play();
+		}
+	}
+}
+
+void SpriteAnimComponent::OnConfirmUpdate()
+{
+	/*if (ImGui::Button("Update")) {
+		if (!GetCSVFileMapPath().empty())
+			this->InitializeAnimation();
+		else
+			printf("ERROR: SpriteAnimComponent::ConfirmUpdate() -> .CSV path is null");
+	}*/
+}
+
 void SpriteAnimComponent::SaveProperties(nlohmann::ordered_json& out)
 {
 	Component::SaveProperties(out);
@@ -133,3 +138,4 @@ void SpriteAnimComponent::SaveProperties(nlohmann::ordered_json& out)
 	FileIOHelper::AddScalarValue(out["AnimationFPS"], mAnimFPS);
 	FileIOHelper::AddScalarValue(out["IsRepeated"], mIsRepeated);
 }
+#endif

@@ -74,8 +74,6 @@ bool FTCore::InitializeWindow()
 
 	ShowWindow(mWindow, SW_SHOWDEFAULT);
 	UpdateWindow(mWindow);
-
-	LogString("Initialization Complete");
 	return true;
 }
 
@@ -141,8 +139,17 @@ void FTCore::UpdateGame()
 
 void FTCore::GenerateOutput()
 {
-	mGameRenderer->SetViewport();
-	mGameRenderer->RenderClear();
+	MSG msg = {};
+	InvalidateRect(mWindow, NULL, true);
+	if (PeekMessage(&msg, mWindow, 0, 0, PM_REMOVE))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+	UpdateWindow(mWindow);
+
+	//mGameRenderer->SetViewport();
+	//mGameRenderer->RenderClear();
 	SceneManager::GetInstance()->Render(GetGameRenderer());
 	/* Essential - Don't delete this
 	Camera2D::GetInstance()->Render(mEditorRenderer);
@@ -185,8 +192,8 @@ LRESULT FTCore::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		SetIsRunning(false);
 		return 0;
 	}
-	return DefWindowProc(hwnd, msg, wParam, lParam);
 	}
+	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
 //

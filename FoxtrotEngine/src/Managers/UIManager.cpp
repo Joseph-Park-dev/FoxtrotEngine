@@ -162,6 +162,7 @@ void UIManager::Reset()
 	mFocusedUI = nullptr;
 }
 
+#ifdef FOXTROT_EDITOR
 
 void UIManager::EditorUpdate(float deltaTime)
 {
@@ -220,4 +221,4 @@ UIActor* UIManager::EditorGetFocusedUI()
 	//elems.push_back(focusedUI);
 	return focusedUI;
 }
- // _DEBUG
+#endif

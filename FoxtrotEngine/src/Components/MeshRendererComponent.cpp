@@ -1,5 +1,7 @@
 #include "Components/MeshRendererComponent.h"
 
+#include <functional>
+
 #include "Actors/Transform.h"
 #include "Actors/Actor.h"
 #include "ResourceSystem/Mesh.h"
@@ -12,10 +14,9 @@
 #include "Managers/ResourceManager.h"
 #include "FileSystem/ChunkLoader.h"
 
-
+#ifdef FOXTROT_EDITOR
 #include "FTCoreEditor.h"
-#include <functional>
-
+#endif // FOXTROT_EDITOR
 
 using DXMatrix = DirectX::SimpleMath::Matrix;
 
@@ -142,7 +143,16 @@ void MeshRendererComponent::UpdateConstantBufferProjection(Camera* camInst){
 	mMeshGroup->GetVertexConstantData().projection = camInst->GetProjRow().Transpose();
 }
 
-void MeshRendererComponent::EditorUpdate(float deltaTime){
+#ifdef FOXTROT_EDITOR
+void MeshRendererComponent::SaveProperties(nlohmann::ordered_json& out)
+{
+	Component::SaveProperties(out);
+	FileIOHelper::AddScalarValue(out["MeshKey"], mMeshKey);
+	FileIOHelper::AddScalarValue(out["TextureKey"], mTexKey);
+}
+
+void MeshRendererComponent::EditorUpdate(float deltaTime)
+{
 	Update(deltaTime);
 }
 
@@ -151,9 +161,11 @@ void MeshRendererComponent::EditorRender(FoxtrotRenderer* renderer)
 	Render(renderer);
 }
 
-void MeshRendererComponent::EditorUIUpdate(){
-	if (ImGui::Button("Add Cube")) {
-		//mMeshGroup = ResourceManager::GetInstance()->GetLoadedMeshes("Box");
+void MeshRendererComponent::EditorUIUpdate()
+{
+	if (ImGui::Button("Add Cube"))
+	{
+		// mMeshGroup = ResourceManager::GetInstance()->GetLoadedMeshes("Box");
 		LogString("Cube added");
 	}
 	OnConfirmUpdate();
@@ -161,14 +173,9 @@ void MeshRendererComponent::EditorUIUpdate(){
 
 void MeshRendererComponent::OnConfirmUpdate()
 {
-	if (ImGui::Button("Update")) {
+	if (ImGui::Button("Update"))
+	{
 		SetTexture();
 	}
 }
-
-void MeshRendererComponent::SaveProperties(nlohmann::ordered_json& out)
-{
-	Component::SaveProperties(out);
-	FileIOHelper::AddScalarValue(out["MeshKey"], mMeshKey);
-	FileIOHelper::AddScalarValue(out["TextureKey"], mTexKey);
-}
+#endif

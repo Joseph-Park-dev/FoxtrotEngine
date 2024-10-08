@@ -47,15 +47,13 @@ private:
     int mTexWidth;
     int mTexHeight;
 
+	friend class ResourceManager;
 
+#ifdef FOXTROT_EDITOR
 public:
     virtual void SaveProperties(nlohmann::ordered_json& out, UINT key) override;
     virtual void LoadProperties(nlohmann::ordered_json& itemTree)      override;
 
     virtual void UpdateUI()         override;
-
- // _DEBUG
-
-private:
-    friend class ResourceManager;
+#endif // FOXTROT_EDITOR
 };

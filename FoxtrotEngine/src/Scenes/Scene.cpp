@@ -132,7 +132,56 @@ void Scene::DeletePendingGroup(ActorGroup group)
 	mPendingActors[(UINT)group].clear();
 }
 
+void Scene::AddPendingActors()
+{
+	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	{
+		for (size_t j = 0; j < mActors[i].size(); ++j)
+		{
+			for (auto pending : mPendingActors[i])
+			{
+				mActors[i].emplace_back(pending);
+			}
+			mPendingActors[i].clear();
+		}
+	}
+}
 
+void Scene::ClearDeadActors()
+{
+	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	{
+		for (size_t j = 0; j < mActors[i].size(); ++j)
+		{
+			if (mActors[i][j]->IsDead())
+			{
+				RemoveActor(mActors[i][j]);
+			}
+		}
+	}
+}
+
+void Scene::RemoveActor(Actor* actor)
+{
+	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	{
+		auto iter = std::find(mPendingActors[i].begin(), mPendingActors[i].end(), actor);
+		if (iter != mPendingActors[i].end())
+		{
+			std::iter_swap(iter, mPendingActors[i].end() - 1);
+			mPendingActors[i].pop_back();
+		}
+
+		iter = std::find(mActors[i].begin(), mActors[i].end(), actor);
+		if (iter != mActors[i].end())
+		{
+			std::iter_swap(iter, mActors[i].end() - 1);
+			mActors[i].pop_back();
+		}
+	}
+}
+
+#ifdef FOXTROT_EDITOR
 void Scene::EditorProcessInput(KeyInputManager* keyInputManager)
 {
 	std::vector<EditorElement*>& elements = EditorLayer::GetInstance()->GetEditorElements();
@@ -186,53 +235,4 @@ void Scene::EditorRender(FoxtrotRenderer* renderer)
 		}
 	}
 }
- // _DEBUG
-
-void Scene::AddPendingActors()
-{
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
-	{
-		for (size_t j = 0; j < mActors[i].size(); ++j)
-		{
-			for (auto pending : mPendingActors[i])
-			{
-				mActors[i].emplace_back(pending);
-			}
-			mPendingActors[i].clear();
-		}
-	}
-}
-
-void Scene::ClearDeadActors()
-{
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
-	{
-		for (size_t j = 0; j < mActors[i].size(); ++j)
-		{
-			if (mActors[i][j]->IsDead())
-			{
-				RemoveActor(mActors[i][j]);
-			}
-		}
-	}
-}
-
-void Scene::RemoveActor(Actor* actor)
-{
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
-	{
-		auto iter = std::find(mPendingActors[i].begin(), mPendingActors[i].end(), actor);
-		if (iter != mPendingActors[i].end())
-		{
-			std::iter_swap(iter, mPendingActors[i].end() - 1);
-			mPendingActors[i].pop_back();
-		}
-
-		iter = std::find(mActors[i].begin(), mActors[i].end(), actor);
-		if (iter != mActors[i].end())
-		{
-			std::iter_swap(iter, mActors[i].end() - 1);
-			mActors[i].pop_back();
-		}
-	}
-}
+#endif // FOXTROT_EDITOR

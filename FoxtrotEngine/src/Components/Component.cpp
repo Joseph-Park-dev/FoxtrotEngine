@@ -29,7 +29,7 @@ void Component::Render(FoxtrotRenderer* renderer)
 {
 }
 
-const Actor* Component::GetOwner() const
+Actor* Component::GetOwner() const
 {
 	return mOwner;
 }

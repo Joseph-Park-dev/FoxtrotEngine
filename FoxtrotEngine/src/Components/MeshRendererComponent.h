@@ -19,9 +19,6 @@ class MeshRendererComponent :
     public Component
 {
 public:
-	// core paramter
-	// Editor Mode : FTCoreEditor
-	// Game Mode   : FTCore
 	virtual	void Initialize	(FTCore* coreInstance)		override;
 	virtual void Update		(float deltaTime)			override;
 	virtual void LateUpdate	(float deltaTime)			override {};
@@ -66,7 +63,7 @@ protected:
 	void UpdateConstantBufferProjection	(Camera* camInst);
 
 
-	//This section will be omitted from Release mode!
+#ifdef FOXTROT_EDITOR
 public:
 	virtual void SaveProperties(nlohmann::ordered_json& out) override;
 	//virtual void LoadProperties(std::ifstream& ifs) override;
@@ -77,4 +74,5 @@ public:
 
 protected:
 	virtual void OnConfirmUpdate();
+#endif
 };

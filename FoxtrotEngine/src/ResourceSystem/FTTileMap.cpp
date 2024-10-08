@@ -108,13 +108,3 @@ void FTTileMap::InitializeTile(Tile* tile, UINT column, UINT row, UINT tileNum)
     FTRect* rectOnScreen = tile->GetRectOnScreen();
     rectOnScreen->Set(column, row, mTileWidthOnScreen, mTileHeightOnScreen);
 }
-
-
-void FTTileMap::SaveProperties(nlohmann::ordered_json& out, UINT key)
-{
-}
-
-void FTTileMap::UpdateUI()
-{
-}
-

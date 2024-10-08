@@ -17,6 +17,8 @@ public:
     float                GetDelay() { return mDelay; }
     float                SetDelay(float delay) { mDelay = delay; }
 
+	virtual void		 LoadProperties(std::ifstream& ifs) override;
+
 public:
     virtual void Initialize(FTCore* coreInstance) override {};
     virtual void Update(float deltaTime) override;
@@ -26,13 +28,13 @@ public:
     GunFiringComponent(Actor* owner, int drawOrder, int updateorder, MOUSE triggerKey, float delay);
     ~GunFiringComponent();
 
-public:
-    virtual void SaveProperties(nlohmann::ordered_json& out) override;
-    virtual void LoadProperties(std::ifstream& ifs) override;
-
 private:
     MOUSE mTriggerKey;
     float mDelay;
     float mCurrentTick;
-};
 
+#ifdef FOXTROT_EDITOR
+public:
+	virtual void SaveProperties(nlohmann::ordered_json& out) override;
+#endif // FOXTROT_EDITOR
+};

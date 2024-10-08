@@ -35,15 +35,15 @@ private:
 private:
     void InitializeTileMap();
 
-
 public:
+	virtual void LoadProperties(std::ifstream& ifs) override;
+
+#ifdef FOXTROT_EDITOR
+public:
+	virtual void SaveProperties(nlohmann::ordered_json& out) override;
     //virtual void EditorUpdate(float deltaTime) override;
     virtual void EditorUIUpdate() override;
-
-    virtual void SaveProperties(nlohmann::ordered_json& out) override;
-    virtual void LoadProperties(std::ifstream& ifs) override;
-
     virtual void OnConfirmUpdate() override;
     void UpdateCSV();
- // _DEBUG
+#endif
 };

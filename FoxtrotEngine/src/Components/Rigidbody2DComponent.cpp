@@ -36,6 +36,15 @@ void Rigidbody2DComponent::AddVelocity(FTVector2 velocity)
 	mVelocity += velocity;
 }
 
+void Rigidbody2DComponent::LoadProperties(std::ifstream& ifs)
+{
+	Component::LoadProperties(ifs);
+	FileIOHelper::LoadFloat(ifs, mMass);
+	FileIOHelper::LoadFloat(ifs, mFrictionCoeff);
+	FileIOHelper::LoadVector2(ifs, mMaxVelocity);
+}
+
+
 void Rigidbody2DComponent::LateUpdate(float deltaTime)
 {
 	UpdateLinearPosition(deltaTime);
@@ -110,16 +119,9 @@ void Rigidbody2DComponent::ClearForceAndAccel()
 	mAcceleration = FTVector2::Zero;
 }
 
-void Rigidbody2DComponent::LoadProperties(std::ifstream& ifs)
-{
-	Component::LoadProperties(ifs);
-	FileIOHelper::LoadFloat(ifs, mMass);
-	FileIOHelper::LoadFloat(ifs, mFrictionCoeff);
-	FileIOHelper::LoadVector2(ifs, mMaxVelocity);
-}
-
-
+#ifdef FOXTROT_EDITOR
 void Rigidbody2DComponent::SaveProperties(nlohmann::ordered_json& out)
 {
 	Component::SaveProperties(out);
 }
+#endif // FOXTROT_EDITOR

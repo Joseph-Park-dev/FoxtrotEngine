@@ -42,6 +42,7 @@ private:
 	void InitializeAnimation();
 	bool FrameIsWithinIndexRange();
 
+#ifdef FOXTROT_EDITOR
 public:
 	virtual void EditorUIUpdate() override;
 	void		 UpdateIsRepeated();
@@ -51,4 +52,5 @@ public:
 	virtual void SaveProperties(nlohmann::ordered_json& out) override;
 	// virtual void LoadProperties(std::ifstream& ifs) override;
 	// _DEBUG
+#endif
 };

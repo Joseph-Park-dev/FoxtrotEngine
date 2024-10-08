@@ -22,6 +22,10 @@
 #include "Renderer/FTRect.h"
 #include "FileSystem/ChunkLoader.h"
 
+#ifdef FOXTROT_EDITOR
+#include "CommandHistory.h"
+#endif 
+
 #define DEFAULT_TILE_POS 0
 
 void TileMapComponent::Initialize(FTCore* coreInstance){
@@ -69,13 +73,24 @@ TileMapComponent::~TileMapComponent()
     ResourceManager::GetInstance()->RemoveLoadedMeshes(GetMeshKey());
 }
 
+void TileMapComponent::LoadProperties(std::ifstream& ifs)
+{
+	SpriteRendererComponent::LoadProperties(ifs);
+}
 
-#include "CommandHistory.h"
+#ifdef FOXTROT_EDITOR
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include "imgui/FileDialog/ImGuiFileDialog.h"
 #include "imgui/FileDialog/ImGuiFileDialogConfig.h"
+
+void TileMapComponent::SaveProperties(nlohmann::ordered_json& out)
+{
+	Component::SaveProperties(out);
+	FileIOHelper::AddScalarValue(out["MeshKey"], GetMeshKey());
+	FileIOHelper::AddScalarValue(out["TextureKey"], GetTexKey());
+}
 
 void TileMapComponent::EditorUIUpdate()
 {
@@ -97,16 +112,4 @@ void TileMapComponent::OnConfirmUpdate()
 void TileMapComponent::UpdateCSV() {
     
 }
- // _DEBUG
-
-void TileMapComponent::SaveProperties(nlohmann::ordered_json& out)
-{
-    Component::SaveProperties(out);
-    FileIOHelper::AddScalarValue(out["MeshKey"], GetMeshKey());
-    FileIOHelper::AddScalarValue(out["TextureKey"], GetTexKey());
-}
-
-void TileMapComponent::LoadProperties(std::ifstream& ifs)
-{
-    SpriteRendererComponent::LoadProperties(ifs);
-}
+#endif

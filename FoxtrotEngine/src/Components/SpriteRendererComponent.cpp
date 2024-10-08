@@ -92,13 +92,6 @@ bool SpriteRendererComponent::InitializeMesh()
 //	);
 // }
 
-#include "CommandHistory.h"
-
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include "imgui/FileDialog/ImGuiFileDialog.h"
-#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
-#include <imgui.h>
-
 // void SpriteRendererComponent::SetTexture()
 //{
 //	//rect->x = (int)GetOwner()->GetTransform()->GetWorldPosition().x;
@@ -112,6 +105,23 @@ SpriteRendererComponent::SpriteRendererComponent(Actor* owner, int drawOrder,
 	: MeshRendererComponent(owner, drawOrder, updateOrder), mChannel(4), mScale(1.f) {}
 
 SpriteRendererComponent::~SpriteRendererComponent() {}
+
+void SpriteRendererComponent::LoadProperties(std::ifstream& ifs)
+{
+	Component::LoadProperties(ifs);
+	// GetMeshArray()[0]->texture->SetTexWidth(FileIOHelper::LoadFloat(ifs));
+	// GetMeshArray()[0]->texture->SetTexHeight(FileIOHelper::LoadFloat(ifs));
+
+	// FileIOHelper::LoadFTTexture(ifs, GetMesh()->texture);
+}
+
+#ifdef FOXTROT_EDITOR
+#include "CommandHistory.h"
+
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "imgui/FileDialog/ImGuiFileDialog.h"
+#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
+#include <imgui.h>
 
 void SpriteRendererComponent::SaveProperties(nlohmann::ordered_json& out)
 {
@@ -218,12 +228,4 @@ void SpriteRendererComponent::UpdateScale()
 	CommandHistory::GetInstance()->UpdateFloatValue("Texture Scale", &mScale,
 		FLOATMOD_SPEED);
 }
-
-void SpriteRendererComponent::LoadProperties(std::ifstream& ifs)
-{
-	Component::LoadProperties(ifs);
-	// GetMeshArray()[0]->texture->SetTexWidth(FileIOHelper::LoadFloat(ifs));
-	// GetMeshArray()[0]->texture->SetTexHeight(FileIOHelper::LoadFloat(ifs));
-
-	// FileIOHelper::LoadFTTexture(ifs, GetMesh()->texture);
-}
+#endif

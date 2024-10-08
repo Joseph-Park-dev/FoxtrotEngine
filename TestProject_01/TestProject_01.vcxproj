@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{7b2d616c-ef0b-43d4-94a1-640897d09bcc}</ProjectGuid>
-    <RootNamespace>FoxtrotEditor</RootNamespace>
+    <ProjectGuid>{630468a2-e70a-495c-9ba7-b5de486991b9}</ProjectGuid>
+    <RootNamespace>TestProject01</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -44,7 +44,6 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableUnitySupport>false</EnableUnitySupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -72,16 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(WindowsSDK_IncludePath);..\FoxtrotEngine\src;..\FoxtrotEngine\include;$(IncludePath)</IncludePath>
-    <SourcePath>$(VC_SourcePath)</SourcePath>
-    <OutDir>.\build\</OutDir>
-    <PublicIncludeDirectories>.\include;.\src;..\FoxtrotEngine\src;$(PublicIncludeDirectories)</PublicIncludeDirectories>
-  </PropertyGroup>
-  <PropertyGroup Label="Vcpkg">
-    <VcpkgEnableManifest>true</VcpkgEnableManifest>
-  </PropertyGroup>
-  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <VcpkgInstalledDir>.\vcpkg_installed</VcpkgInstalledDir>
+    <PublicIncludeDirectories>..\FoxtrotEngine\src;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -115,15 +105,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>.\include;.\src;..\FoxtrotEngine\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\FoxtrotEngine\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\FoxtrotEngine\build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>FoxtrotEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -145,41 +133,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="src\EditorChunkLoader.cpp" />
-    <ClCompile Include="include\imgui\FileDialog\ImGuiFileDialog.cpp" />
-    <ClCompile Include="src\Command.cpp" />
-    <ClCompile Include="src\CommandHistory.cpp" />
-    <ClCompile Include="src\EditorElement.cpp" />
-    <ClCompile Include="src\EditorLayer.cpp" />
-    <ClCompile Include="src\FTCoreEditor.cpp" />
-    <ClCompile Include="src\RenderTextureClass.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\EditorChunkLoader.h" />
-    <ClInclude Include="include\imgui\FileDialog\ImGuiFileDialog.h" />
-    <ClInclude Include="include\imgui\FileDialog\ImGuiFileDialogConfig.h" />
-    <ClInclude Include="src\Command.h" />
-    <ClInclude Include="src\CommandHistory.h" />
-    <ClInclude Include="src\EditorElement.h" />
-    <ClInclude Include="src\EditorLayer.h" />
-    <ClInclude Include="src\FTCoreEditor.h" />
-    <ClInclude Include="src\RenderTextureClass.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="include\imgui\FileDialog\dirent\ChangeLog" />
-    <None Include="include\imgui\FileDialog\dirent\LICENSE" />
-    <None Include="include\imgui\FileDialog\dirent\README.md" />
-    <None Include="include\imgui\FileDialog\stb\LICENSE" />
-    <None Include="include\imgui\FileDialog\stb\README.md" />
-    <None Include="include\imgui\misc\debuggers\imgui.gdb" />
-    <None Include="include\imgui\misc\debuggers\imgui.natstepfilter" />
-    <None Include="vcpkg.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Natvis Include="include\imgui\misc\debuggers\imgui.natvis" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="include\imgui\misc\debuggers\README.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

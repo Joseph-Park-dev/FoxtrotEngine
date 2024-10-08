@@ -26,10 +26,11 @@ public:
     //void LoadAnimation(const std::wstring& path);
     
 public:
-    std::wstring GetName() const override
+    virtual std::wstring GetName() const override
     {
         return L"AnimatorComponent";
     }
+	virtual void LoadProperties(std::ifstream& ifs) override;
 
 public:
     virtual void Initialize(FTCore* coreInstance) override {};
@@ -48,10 +49,10 @@ private:
 private:
     FTSpriteAnimation* FindAnimation(const std::wstring& name);
 
+#ifdef FOXTROT_EDITOR
 public:
     virtual void SaveProperties(nlohmann::ordered_json& out) override;
-    virtual void LoadProperties(std::ifstream& ifs) override;
 
-public:
     virtual void EditorLateUpdate(float deltaTime) override;
+#endif
 };

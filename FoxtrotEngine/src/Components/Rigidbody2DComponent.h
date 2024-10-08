@@ -11,6 +11,8 @@ public:
 	void AddForce(FTVector2 force);
 	void AddVelocity(FTVector2 velocity);
 
+	virtual void LoadProperties(std::ifstream& ifs) override;
+
 public:
 	float		 GetMass() { return mMass; }
 	std::wstring GetName() const override { return L"Rigidbody2DComponent"; }
@@ -57,8 +59,8 @@ private:
 	void UpdateVelocity(float deltaTime);
 	void ClearForceAndAccel();
 
+#ifdef FOXTROT_EDITOR
 public:
-	virtual void LoadProperties(std::ifstream& ifs) override;
-
 	virtual void SaveProperties(nlohmann::ordered_json& out) override;
+#endif;
 };

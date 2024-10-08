@@ -68,5 +68,5 @@ private:
 	void UpdateTexWidth();
 	void UpdateTexHeight();
 	void UpdateScale();
-};
 #endif // FOXTROT_EDITOR
+};

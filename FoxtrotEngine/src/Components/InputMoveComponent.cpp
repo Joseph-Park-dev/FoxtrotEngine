@@ -73,11 +73,6 @@ void InputMoveComponent::Move()
 	//}
 }
 
-void InputMoveComponent::EditorUpdate(float deltaTime)
-{
-	this->Update(deltaTime);
-}
-
 void InputMoveComponent::LateUpdate(float deltaTime)
 {
  //   State state = GetMovingState();
@@ -118,3 +113,10 @@ void InputMoveComponent::Rotate()
 	//}
 	//SetAngularSpeed(angularSpeed);
 }
+
+#ifdef FOXTROT_EDITOR
+void InputMoveComponent::EditorUpdate(float deltaTime)
+{
+	this->Update(deltaTime);
+}
+#endif // FOXTROT_EDITOR

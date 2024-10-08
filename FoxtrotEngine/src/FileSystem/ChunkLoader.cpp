@@ -7,7 +7,6 @@
 #include <iostream>
 #include <filesystem>
 
-#include "EditorLayer.h"
 #include "Math/FTMath.h"
 #include "Core/TemplateFunctions.h"
 #include "Managers/SceneManager.h"
@@ -20,7 +19,6 @@
 #include "Actors/Backgrounds/BackgroundActor.h"
 
 #include "Components/ComponentBatchHeaders.h"
-
 
 void ChunkLoader::SaveChunk(const std::string fileName)
 {
@@ -55,19 +53,6 @@ void ChunkLoader::LoadActors(std::ifstream& ifs)
     {
         Actor* actor = LoadIndividualActor(ifs, currScene);
         currScene->AddActor(actor, actor->GetActorGroup());
-    }
-}
-
-void ChunkLoader::LoadActorsToEditor(std::ifstream& ifs)
-{
-    Scene* currScene = SceneManager::GetInstance()->GetCurrScene();
-    for (size_t i = 0; i < mCurrentChunkData.ActorCount; ++i)
-    {
-        Actor* tempActor = LoadIndividualActor(ifs, currScene);
-        // Copies Actor Data to EditorElement.
-        EditorLayer::GetInstance()->AddEditorElement(tempActor);
-        // This prevents duplicated game objects.
-        delete tempActor;
     }
 }
 

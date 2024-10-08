@@ -223,30 +223,6 @@ void Actor::SetState(std::string state)
 //	fwrite(&GetTransform()->GetWorldPosition(), sizeof(Vector2), 1, file);
 //}
 
-void Actor::SaveProperties(nlohmann::ordered_json& out)
-{
-	FileIOHelper::AddScalarValue(out["Name"], GetNameStr());
-	FileIOHelper::AddScalarValue(out["ID"], mID);
-	FileIOHelper::AddScalarValue(out["ActorGroup"], ActorGroupUtil::GetActorGroupStr(mActorGroup));
-	FileIOHelper::AddScalarValue(out["State"], GetStateStr());
-
-	mTransform->SaveProperties(out["Transform"]);
-
-	if(mParent)
-		FileIOHelper::AddScalarValue(out["Parent"], mParent->GetNameStr());
-	//FileIOHelper::AddValue<std::string>("Child", GetStateStr());
-}
-
-void Actor::SaveComponents(nlohmann::ordered_json& out)
-{
-	size_t count = mComponents.size();
-	FileIOHelper::AddScalarValue(out["Count"], count);
-	for (size_t i = 0; i < count; ++i)
-	{
-		mComponents[i]->SaveProperties(out["List"][i]);
-	}
-}
-
 void Actor::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::LoadWString(ifs, mName);
@@ -268,3 +244,29 @@ void Actor::LoadComponents(std::ifstream& ifs)
 		//ChunkLoader::GetInstance()->GetCompLoadMap()[compName](this, ifs);
 	}
 }
+
+#ifdef FOXTROT_EDITOR
+void Actor::SaveProperties(nlohmann::ordered_json& out)
+{
+	FileIOHelper::AddScalarValue(out["Name"], GetNameStr());
+	FileIOHelper::AddScalarValue(out["ID"], mID);
+	FileIOHelper::AddScalarValue(out["ActorGroup"], ActorGroupUtil::GetActorGroupStr(mActorGroup));
+	FileIOHelper::AddScalarValue(out["State"], GetStateStr());
+
+	mTransform->SaveProperties(out["Transform"]);
+
+	if (mParent)
+		FileIOHelper::AddScalarValue(out["Parent"], mParent->GetNameStr());
+	// FileIOHelper::AddValue<std::string>("Child", GetStateStr());
+}
+
+void Actor::SaveComponents(nlohmann::ordered_json& out)
+{
+	size_t count = mComponents.size();
+	FileIOHelper::AddScalarValue(out["Count"], count);
+	for (size_t i = 0; i < count; ++i)
+	{
+		mComponents[i]->SaveProperties(out["List"][i]);
+	}
+}
+#endif // FOXTROT_EDITOR

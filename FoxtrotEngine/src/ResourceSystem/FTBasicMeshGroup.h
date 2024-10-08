@@ -69,9 +69,8 @@ public:
 	FTBasicMeshGroup();
 	~FTBasicMeshGroup() override;
 
-
+#ifdef FOXTROT_EDITOR
 public:
 	virtual void UpdateUI() override {};
-
- // _DEBUG
+#endif // FOXTROT_EDITOR
 };

@@ -4,6 +4,7 @@
 #include <nlohmann/json.hpp>
 
 #include "Managers/ResourceManager.h"
+#include "Managers/SceneManager.h"
 #include "Math/FTMath.h"
 #include "EditorLayer.h"
 #include "Components/ComponentBatchHeaders.h"
@@ -13,19 +14,19 @@ EditorChunkLoader::EditorChunkLoader()
 {
     mComponentCreateMap =
     {
-        {L"AIComponent",             &Component::Create<AIComponent>},
-        {L"AnimatorComponent",       &Component::Create<AnimatorComponent>},
-        {L"AnimSpriteComponent",     &Component::Create<SpriteAnimComponent>},
-        {L"BGSpriteComponent",       &Component::Create<BGSpriteComponent>},
-        {L"ColliderComponent",       &Component::Create<ColliderComponent>},
-        {L"InputMoveComponent",      &Component::Create<InputMoveComponent>},
-        {L"MoveComponent",           &Component::Create<MoveComponent>},
-        {L"Rigidbody2DComponent",    &Component::Create<Rigidbody2DComponent>},
-        {L"SpriteRendererComponent", &Component::Create<SpriteRendererComponent>},
-        {L"TileMapComponent",        &Component::Create<TileMapComponent>},
-        {L"SpriteAnimComponent",     &Component::Create<SpriteAnimComponent>},
-        {L"GunFiringComponent",      &Component::Create<GunFiringComponent>},
-        {L"MeshRendererComponent",   &Component::Create<MeshRendererComponent>},
+        {L"AIComponent",             &EditorElement::Create<AIComponent>},
+        {L"AnimatorComponent",       &EditorElement::Create<AnimatorComponent>},
+        {L"AnimSpriteComponent",     &EditorElement::Create<SpriteAnimComponent>},
+        {L"BGSpriteComponent",       &EditorElement::Create<BGSpriteComponent>},
+        {L"ColliderComponent",       &EditorElement::Create<ColliderComponent>},
+        {L"InputMoveComponent",      &EditorElement::Create<InputMoveComponent>},
+        {L"MoveComponent",           &EditorElement::Create<MoveComponent>},
+        {L"Rigidbody2DComponent",    &EditorElement::Create<Rigidbody2DComponent>},
+        {L"SpriteRendererComponent", &EditorElement::Create<SpriteRendererComponent>},
+        {L"TileMapComponent",        &EditorElement::Create<TileMapComponent>},
+        {L"SpriteAnimComponent",     &EditorElement::Create<SpriteAnimComponent>},
+        {L"GunFiringComponent",      &EditorElement::Create<GunFiringComponent>},
+        {L"MeshRendererComponent",   &EditorElement::Create<MeshRendererComponent>},
     };
 }
 
@@ -65,4 +66,17 @@ void EditorChunkLoader::SaveActorsData(nlohmann::ordered_json& out)
         actors[i]->SaveProperties(out[i]);
         actors[i]->SaveComponents(out[i]["Components"]);
     }
+}
+
+void EditorChunkLoader::LoadActorsToEditor(std::ifstream& ifs)
+{
+	//Scene* currScene = SceneManager::GetInstance()->GetCurrScene();
+	//for (size_t i = 0; i < mCurrentChunkData.ActorCount; ++i)
+	//{
+	//	Actor* tempActor = LoadIndividualActor(ifs, currScene);
+	//	// Copies Actor Data to EditorElement.
+	//	EditorLayer::GetInstance()->AddEditorElement(tempActor);
+	//	// This prevents duplicated game objects.
+	//	delete tempActor;
+	//}
 }

@@ -61,7 +61,7 @@ void SceneManager::SwitchScene(SCENE_TYPE sceneType)
 	mPCurrScene->Enter();
 }
 
-
+#ifdef FOXTROT_EDITOR
 void SceneManager::EditorProcessInput(KeyInputManager* keyInputManager) {
 	mPCurrScene->EditorProcessInput(keyInputManager);
 }
@@ -80,4 +80,4 @@ void SceneManager::EditorRender(FoxtrotRenderer* renderer)
 {
 	mPCurrScene->EditorRender(renderer);
 }
- // _DEBUG
+#endif // FOXTROT_EDITOR

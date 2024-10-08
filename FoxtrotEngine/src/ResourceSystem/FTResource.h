@@ -26,7 +26,7 @@ public:
 	{}
 	virtual ~FTResource(){}
 
-
+#ifdef FOXTROT_EDITOR
 public:
 	virtual void SaveProperties(nlohmann::ordered_json& out, UINT key);
 	virtual void LoadProperties(nlohmann::ordered_json& itemTree);
@@ -35,7 +35,5 @@ public:
 
 protected:
 	void UpdateRelativePath(std::string fileExtension);
-
- // _DEBUG
-
+#endif // FOXTROT_EDITOR
 };

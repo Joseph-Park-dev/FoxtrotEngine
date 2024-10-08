@@ -99,9 +99,6 @@ private:
     ComPtr<ID3D11PixelShader>  mBasicPixelShader;
     ComPtr<ID3D11InputLayout>  mBasicInputLayout;
 
-private:
-    RenderTextureClass* mRenderTexture;
-
 public:
     FoxtrotRenderer();
 
@@ -199,17 +196,14 @@ public:
         mContext->Unmap(buffer.Get(), NULL);
     }
 
+#ifdef FOXTROT_EDITOR
+public:
+	void RenderToTexture();
+
 public:
     RenderTextureClass* GetRenderTexture() { return mRenderTexture; }
-//public:
-//    void DrawPrimitives();
-//    void DrawRectangle(GeometricPrimitiveMesh* rect);
-//private:
-//    std::vector<GeometricPrimitiveMesh*> mRegisteredPrimitive;
+    
 private:
-
-public:
-    void RenderToTexture();
-
- // _DEBUG
+	RenderTextureClass* mRenderTexture;
+#endif // FOXTROT_EDITOR
 };

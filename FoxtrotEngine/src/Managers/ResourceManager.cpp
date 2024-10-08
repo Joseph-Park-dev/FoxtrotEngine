@@ -165,7 +165,7 @@ ResourceManager::ResourceManager()
 
 }
 
-
+#ifdef FOXTROT_EDITOR
 #include <nlohmann/json.hpp>
 #include "imgui/FileDialog/ImGuiFileDialog.h"
 #include "imgui/FileDialog/ImGuiFileDialogConfig.h"
@@ -226,3 +226,4 @@ void ResourceManager::UpdateUI()
 		ImGui::TreePop();
 	}
 }
+#endif // FOXTROT_EDITOR

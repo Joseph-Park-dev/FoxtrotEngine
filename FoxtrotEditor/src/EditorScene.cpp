@@ -65,77 +65,21 @@ void EditorScene::DeleteAll()
 		for (size_t j = 0; j < actors[i].size(); ++j)
 		{
 			UnfocusEditorElements();
-			EditorElement* ele = (EditorElement*)actors[i][j];
+			EditorElement* ele = dynamic_cast<EditorElement*>(actors[i][j]);
 			delete ele;
 		}
 		actors[i].clear();
 	}
 }
 
-void EditorScene::ProcessInput(KeyInputManager* keyInputManager)
-{
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
-	{
-		size_t groupSize = GetActorGroup(i).size();
-		for (size_t j = 0; j < groupSize; ++j)
-		{
-			EditorElement* ele = (EditorElement*)GetActorGroup(i)[j];
-			if (ele->IsActive())
-				ele->ProcessInput(keyInputManager);
-		}
-	}
-}
-
-void EditorScene::Update(float deltaTime)
-{
-	SetIsUpdatingActors(true);
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i){
-		size_t groupSize = GetActorGroup(i).size();
-		for (size_t j = 0; j < groupSize; ++j){
-			EditorElement* ele = (EditorElement*)GetActorGroup(i)[j];
-			if (ele->IsActive()) {
-				ele->EditorUpdateComponents(deltaTime);
-				ele->EditorUpdateActor();
-			}
-		}
-	}
-	SetIsUpdatingActors(false);
-}
-
-void EditorScene::LateUpdate(float deltaTime)
-{
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i) {
-		size_t groupSize = GetActorGroup(i).size();
-		for (size_t j = 0; j < groupSize; ++j) {
-			EditorElement* ele = (EditorElement*)GetActorGroup(i)[j];
-			if (ele->IsActive()) {
-				ele->EditorLateUpdateComponents(deltaTime);
-				ele->EditorLateUpdateActor();
-			}
-		}
-	}
-}
-void EditorScene::Render(FoxtrotRenderer* renderer)
-{
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i) {
-		size_t groupSize = GetActorGroup(i).size();
-		for (size_t j = 0; j < groupSize; ++j) {
-			EditorElement* ele = (EditorElement*)GetActorGroup(i)[j];
-			if (ele->IsActive()) {
-				ele->Render(renderer);
-			}
-		}
-	}
-}
-
 void EditorScene::UnfocusEditorElements()
 {
-	size_t rowSize = GetArrayLength(GetActors());
+	std::vector<Actor*>* actors = GetActors();
+	size_t rowSize = GetArrayLength(actors);
 	for (size_t i = 0; i < rowSize; ++i) {
-		std::vector<Actor*>* actors = GetActors();
 		auto iter = actors->begin();
 		for (; iter != GetActors()[i].end(); ++iter) {
-			EditorElement* ele = (EditorElement*)(*iter);
+			EditorElement* ele = dynamic_cast<EditorElement*>(*iter);
 			if (ele->GetIsFocused())
 				ele->SetIsFocused(false);
 		}
@@ -146,9 +90,10 @@ void EditorScene::AddEditorElement()
 {
 	UnfocusEditorElements();
 	EditorElement* editorElement = new EditorElement(this);
-	editorElement->SetName(L"Game Object" + std::to_wstring(this->GetActorCount()));
+	std::string name = "Game Object " + std::to_string(this->GetActorCount());
+	editorElement->SetName(name);
 	editorElement->SetIsFocused(true);
-	AddActor(editorElement, ActorGroup::DEFAULT);
+	EditorScene::AddActor(editorElement, ActorGroup::DEFAULT);
 }
 
 void EditorScene::AddEditorElement(Actor* actor)

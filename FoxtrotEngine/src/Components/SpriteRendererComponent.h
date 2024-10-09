@@ -55,10 +55,7 @@ public:
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void SaveProperties(nlohmann::ordered_json& out) override;
-
-	virtual void EditorUpdate(float deltaTime) override;
 	virtual void EditorUIUpdate() override;
-	virtual void EditorRender(FoxtrotRenderer* renderer) override;
 
 protected:
 	virtual void OnConfirmUpdate() override;

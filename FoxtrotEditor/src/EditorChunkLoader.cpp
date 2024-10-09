@@ -68,9 +68,9 @@ void EditorChunkLoader::SaveActorsData(nlohmann::ordered_json& out)
     {
         for (size_t j = 0; j < actors[i].size(); ++j)
         {
-            EditorElement* element = (EditorElement*)actors[i][j];
-            element->SaveProperties(out[i]);
-            element->SaveComponents(out[i]["Components"]);
+            EditorElement* element = dynamic_cast<EditorElement*>(actors[i][j]);
+            element->SaveProperties(out[j]);
+            element->SaveComponents(out[j]["Components"]);
         }
     }
 }

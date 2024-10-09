@@ -40,12 +40,12 @@ void EditorLayer::Update(float deltaTime)
 	ImGui::NewFrame();
 
 	ImGui::DockSpaceOverViewport();
-	mSaveKeyPressed    = ImGui::IsKeyChordPressed(ImGuiKey::ImGuiKey_LeftCtrl | ImGuiKey::ImGuiKey_S);
-	mSaveAsKeyPressed  = ImGui::IsKeyChordPressed(ImGuiKey::ImGuiKey_LeftCtrl | ImGuiKey::ImGuiKey_LeftShift | ImGuiKey::ImGuiKey_S);
-	mOpenKeyPressed	   = ImGui::IsKeyChordPressed(ImGuiKey::ImGuiKey_LeftCtrl | ImGuiKey::ImGuiKey_O);
+	mSaveKeyPressed    = ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_S);
+	mSaveAsKeyPressed  = ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_LeftShift | ImGuiKey::ImGuiKey_S);
+	mOpenKeyPressed	   = ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_O);
 	mConfirmKeyPressed = ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Enter);
-	mUndoKeyPressed	   = ImGui::IsKeyChordPressed(ImGuiKey::ImGuiKey_LeftCtrl | ImGuiKey::ImGuiKey_Z);
-	mRedoKeyPressed    = ImGui::IsKeyChordPressed(ImGuiKey::ImGuiKey_LeftCtrl | ImGuiKey::ImGuiKey_LeftShift | ImGuiKey::ImGuiKey_Z);
+	mUndoKeyPressed	   = ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_Z);
+	mRedoKeyPressed    = ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey::ImGuiKey_Z);
 	mDeleteKeyPressed  = ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Delete);
 
 	CommandHistory::GetInstance()->Update();
@@ -56,7 +56,7 @@ void EditorLayer::Update(float deltaTime)
 	DisplayResourceMenu();
 	DisplayInspectorMenu();
 	Camera::GetInstance()->DisplayCameraMenu();
-	ApplyCommandHistory();
+	//ApplyCommandHistory();
 	DisplayErrorMessage();
 	ImGui::EndFrame();
 }
@@ -274,28 +274,34 @@ void EditorLayer::DisplayHierarchyMenu()
 		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
 		size_t eleSize = scene->GetActorCount();
 
-		std::string* actorNames = new std::string[eleSize];
+		std::vector<std::string> actorNames;
+		actorNames.reserve(eleSize);
 
 		for (size_t i = 0; i < (size_t)ActorGroup::END; ++i) 
 		{
 			size_t size = scene->GetActorGroup(i).size();
-			for (int j = 0; j < size; ++j) 
+			if (0 < size)
 			{
-				Actor* actor = scene->GetActorGroup(i)[j];
-				actorNames[(size_t)ActorGroup::END * i + j] = ToString(actor->GetName());
+				for (int j = 0; j < size; ++j)
+				{
+					Actor* actor = scene->GetActorGroup(i)[j];
+					actorNames.push_back(actor->GetName());
+				}
 			}
 		}
-
-		bool* selection = new bool[eleSize];
 		for (UINT i = 0; i < eleSize; ++i)
 		{
 			if (ImGui::Selectable(actorNames[i].c_str(), mActorNameIdx == i))
 			{
-				CommandHistory::GetInstance()->AddCommand(new IntEditCommand(mActorNameIdx, i));
 				mActorNameIdx = i;
+				CommandHistory::GetInstance()->AddCommand(new IntEditCommand(mActorNameIdx, i));
+				EditorSceneManager::GetInstance()->GetEditorScene()->UnfocusEditorElements();
+				size_t group = i / ((size_t)ActorGroup::END - 1);
+				size_t idx = i % ((size_t)ActorGroup::END - 1);
+				Actor* actor = scene->GetActorGroup(group)[idx];
+				dynamic_cast<EditorElement*>(actor)->SetIsFocused(true);
 			}
 		}
-		delete[] actorNames;
 		ImGui::EndListBox();
 	}
 	//ResizeUIWindow(menuID);
@@ -317,41 +323,28 @@ void EditorLayer::DisplayInspectorMenu()
 	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
 	std::vector<Actor*>* actors = scene->GetActors();
 
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	size_t group = mActorNameIdx / ((size_t)ActorGroup::END - 1);
+	size_t idx = mActorNameIdx % ((size_t)ActorGroup::END - 1);
+
+	if (0 < scene->GetActorCount())
 	{
-		for (size_t j = 0; j < actors[i].size(); ++j) 
+		Actor* actor = scene->GetActorGroup(group)[idx];
+		EditorElement* ele = dynamic_cast<EditorElement*>(actor);
+		if (ele->GetIsFocused())
 		{
-			EditorElement* ele = (EditorElement*)actors[i][j];
-			if (ele->GetIsFocused())
+			ele->UpdateUI();
+			if (mDeleteKeyPressed)
 			{
-				ele->UpdateUI();
-				if (mDeleteKeyPressed)
-				{
-					// Delete game object, and erase the pointed from std::vector
-					delete ele;
-					actors[i].erase(actors[i].begin() + j);
-				}
+				// Delete game object, and erase the pointed from std::vector
+				delete ele;
+				actors[group].erase(actors[group].begin() + idx);
+				if(0 < mActorNameIdx)
+					mActorNameIdx = scene->GetActorCount()-1;
 			}
 		}
 	}
 	//ResizeUIWindow(menuID);
 	ImGui::End();
-}
-
-void EditorLayer::ApplyCommandHistory()
-{
-	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-	std::vector<Actor*>* actors = scene->GetActors();
-
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
-	{
-		for (size_t j = 0; j < actors[i].size(); ++j)
-		{
-			scene->UnfocusEditorElements();
-			EditorElement* ele = (EditorElement*)actors[i][j];
-			ele->SetIsFocused(true);
-		}
-	}
 }
 
 bool EditorLayer::SceneViewportSizeChanged()
@@ -526,6 +519,7 @@ EditorLayer::EditorLayer()
 	, mIsResizingViewport(false)
 	, mElementNumber(0)
 	, mSceneViewportSize(ImVec2(1920.f, 1080.f))
+	, mErrorType(ErrorType::None)
 {
 	// Initial command stored in front of every following commands
 	CommandHistory::GetInstance()->AddCommand(new IntEditCommand(mActorNameIdx, 0));

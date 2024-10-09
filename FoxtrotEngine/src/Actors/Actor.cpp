@@ -225,7 +225,7 @@ void Actor::SetState(std::string state)
 
 void Actor::LoadProperties(std::ifstream& ifs)
 {
-	FileIOHelper::LoadWString(ifs, mName);
+	FileIOHelper::LoadBasicString(ifs, mName);
 	FileIOHelper::LoadInt(ifs, mID);
 	std::string stringBuffer;
 	FileIOHelper::LoadBasicString(ifs, stringBuffer);
@@ -248,7 +248,7 @@ void Actor::LoadComponents(std::ifstream& ifs)
 #ifdef FOXTROT_EDITOR
 void Actor::SaveProperties(nlohmann::ordered_json& out)
 {
-	FileIOHelper::AddScalarValue(out["Name"], GetNameStr());
+	FileIOHelper::AddScalarValue(out["Name"], GetName());
 	FileIOHelper::AddScalarValue(out["ID"], mID);
 	FileIOHelper::AddScalarValue(out["ActorGroup"], ActorGroupUtil::GetActorGroupStr(mActorGroup));
 	FileIOHelper::AddScalarValue(out["State"], GetStateStr());
@@ -256,7 +256,7 @@ void Actor::SaveProperties(nlohmann::ordered_json& out)
 	mTransform->SaveProperties(out["Transform"]);
 
 	if (mParent)
-		FileIOHelper::AddScalarValue(out["Parent"], mParent->GetNameStr());
+		FileIOHelper::AddScalarValue(out["Parent"], mParent->GetName());
 	// FileIOHelper::AddValue<std::string>("Child", GetStateStr());
 }
 

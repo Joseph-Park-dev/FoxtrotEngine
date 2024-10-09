@@ -77,7 +77,6 @@ private:
 public:
 	virtual void SaveProperties(nlohmann::ordered_json& out) override;
 	void		 Render(FoxtrotRenderer* renderer) override;
-	void		 EditorLateUpdate(float deltaTime) override;
 	void		 EditorUIUpdate() override;
 
 private:

@@ -244,17 +244,4 @@ void AnimatorComponent::SaveProperties(nlohmann::ordered_json& out)
 {
 	// SpriteRendererComponent::SaveProperties(out);
 }
-
-void AnimatorComponent::EditorLateUpdate(float deltaTime)
-{
-	if (mCurrentAnim != nullptr)
-	{
-		mCurrentAnim->Update(deltaTime);
-		if (mCurrentAnim->IsFinished())
-		{
-			if (mIsRepeating)
-				mCurrentAnim->SetFrame(0);
-		}
-	}
-}
 #endif // FOXTROT_EDITOR

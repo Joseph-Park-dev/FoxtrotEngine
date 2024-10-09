@@ -282,7 +282,6 @@ bool CollisionManager::HasRayCasted(Physics::Ray* ray, ColliderComponent* collid
 {
 	if (ray->groupFilter == group)
 	{
-		std::wstring str = collider->GetOwner()->GetName();
 		FTVector2 origin = ray->origin;
 		FTVector2 endPoint = ray->endPoint;
 		FTVector2 leftTop = collider->GetFinalPosition() - collider->mScale / 2;

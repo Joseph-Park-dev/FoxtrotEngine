@@ -12,13 +12,6 @@ public:
 	virtual void DeleteAll() override;
 
 public:
-	virtual void ProcessInput	(KeyInputManager* keyInputManager) override;
-	virtual void Update			(float deltaTime) override;
-	virtual void LateUpdate		(float deltaTime) override;
-	virtual void Render			(FoxtrotRenderer* renderer) override;
-	//virtual void ProcessEvent	() override;
-
-public:
 	void UnfocusEditorElements();
 	void AddEditorElement();
 	void AddEditorElement(Actor* actor);

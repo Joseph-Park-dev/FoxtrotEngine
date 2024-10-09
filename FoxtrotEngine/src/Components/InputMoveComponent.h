@@ -51,7 +51,6 @@ private:
     MoveState mMoveState;
 
 #ifdef FOXTROT_EDITOR
-public:
-    virtual void EditorUpdate(float deltaTime) override;
+// Editor code comes here.
 #endif // FOXTROT_EDITOR
 };

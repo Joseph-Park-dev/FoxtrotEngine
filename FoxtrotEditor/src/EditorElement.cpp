@@ -16,16 +16,11 @@
 #include "Renderer/FoxtrotRenderer.h"
 #include "Components/Component.h"
 
-void EditorElement::EditorLateUpdateActor()
-{
-	CheckMouseHover();
-}
-
 void EditorElement::UpdateUI()
 {
 	if (GetIsFocused())
 	{
-		ImGui::BeginChild(GetNameStr().c_str());
+		ImGui::BeginChild(GetName().c_str());
 		if (ImGui::BeginTabBar("MyTabBar", ImGuiTabBarFlags_None))
 		{
 			if (ImGui::BeginTabItem("Basic Data"))
@@ -49,6 +44,13 @@ void EditorElement::UpdateUI()
 		}
 		ImGui::EndChild();
 	}
+	CheckMouseHover();
+}
+
+void EditorElement::RenderUI(FoxtrotRenderer* renderer)
+{
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
 void EditorElement::OnMouseLButtonClicked()
@@ -104,49 +106,6 @@ void EditorElement::OnMouseLButtonDown()
 		PanelUI::OnMouseLButtonDown();
 }
 
-void EditorElement::EditorUpdateComponents(float deltaTime)
-{
-	if (IsActive())
-	{
-		for (auto comp : GetComponents())
-		{
-			comp->EditorUpdate(deltaTime);
-		}
-	}
-}
-
-void EditorElement::EditorLateUpdateComponents(float deltaTime)
-{
-	if (IsActive())
-	{
-		for (auto comp : GetComponents())
-		{
-			comp->EditorLateUpdate(deltaTime);
-		}
-	}
-}
-
-void EditorElement::EditorUpdateActor()
-{
-}
-
-void EditorElement::Render(FoxtrotRenderer* renderer)
-{
-	if (IsActive())
-	{
-		for (auto comp : GetComponents())
-		{
-			comp->EditorRender(renderer);
-		}
-	}
-}
-
-void EditorElement::UIRender(FoxtrotRenderer* renderer)
-{
-	ImGui::Render();
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-}
-
 EditorElement::EditorElement(Scene* scene)
 	: PanelUI (scene,false)
 	, mRotationModSpeed(1.0f)
@@ -167,13 +126,13 @@ EditorElement::EditorElement(Actor* actor)
 
 void EditorElement::UpdateActorName()
 {
-	char* updatedName = _strdup(GetNameStr().c_str());
+	char* updatedName = _strdup(GetName().c_str());
 	if (ImGui::InputText("Name", updatedName, ACTORNAME_MAX))
 	{
 		if (EditorLayer::GetInstance()->GetConfirmKeyPressed())
 		{
 			CommandHistory::GetInstance()->
-				AddCommand(new WStrEditCommand(GetNameRef(), ToWString(updatedName)));
+				AddCommand(new StrEditCommand(GetNameRef(), updatedName));
 		}
 	}
 }
@@ -254,7 +213,7 @@ void EditorElement::UpdateActorRotation()
 
 void EditorElement::UpdateComponents()
 {
-	if (ImGui::BeginChild(GetNameStr().c_str()))
+	if (ImGui::BeginChild(GetName().c_str()))
 	{
 		size_t count = 0;
 		for (Component* comp : GetComponents())

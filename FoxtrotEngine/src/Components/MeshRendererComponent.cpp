@@ -151,16 +151,6 @@ void MeshRendererComponent::SaveProperties(nlohmann::ordered_json& out)
 	FileIOHelper::AddScalarValue(out["TextureKey"], mTexKey);
 }
 
-void MeshRendererComponent::EditorUpdate(float deltaTime)
-{
-	Update(deltaTime);
-}
-
-void MeshRendererComponent::EditorRender(FoxtrotRenderer* renderer)
-{
-	Render(renderer);
-}
-
 void MeshRendererComponent::EditorUIUpdate()
 {
 	if (ImGui::Button("Add Cube"))

@@ -132,11 +132,6 @@ void SpriteRendererComponent::SaveProperties(nlohmann::ordered_json& out)
 	FileIOHelper::AddScalarValue(out["Scale"], mScale);
 }
 
-void SpriteRendererComponent::EditorUpdate(float deltaTime)
-{
-	Update(deltaTime);
-}
-
 void SpriteRendererComponent::EditorUIUpdate()
 {
 	if (GetRenderer())
@@ -145,11 +140,6 @@ void SpriteRendererComponent::EditorUIUpdate()
 		ImGui::SeparatorText("Sprite Size");
 		UpdateScale();
 	}
-}
-
-void SpriteRendererComponent::EditorRender(FoxtrotRenderer* renderer)
-{
-	MeshRendererComponent::EditorRender(renderer);
 }
 
 void SpriteRendererComponent::OnConfirmUpdate()

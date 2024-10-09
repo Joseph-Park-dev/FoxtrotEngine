@@ -57,11 +57,6 @@ private:
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void SaveProperties(nlohmann::ordered_json& out);
-
-public:
-	virtual void EditorUpdate(float deltaTime);
-	virtual void EditorLateUpdate(float deltaTime);
-	virtual void EditorRender(FoxtrotRenderer* renderer);
 	virtual void EditorUIUpdate();
 #endif // FOXTROT_EDITOR
 };

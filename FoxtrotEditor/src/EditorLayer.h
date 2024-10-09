@@ -76,7 +76,6 @@ private:
 	void DisplayResourceMenu();
 
 	void DisplayInspectorMenu();
-	void ApplyCommandHistory();
 	bool SceneViewportSizeChanged();
 	bool ProjectPathExists(std::string& projDir);
 

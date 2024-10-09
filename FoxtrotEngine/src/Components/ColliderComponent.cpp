@@ -148,11 +148,6 @@ void ColliderComponent::Render(FoxtrotRenderer* renderer)
 	FTVector2 bottomLeft = FTVector2(mFinalPosition.x - mScale.x / 2, mFinalPosition.y + mScale.y / 2);
 }
 
-void ColliderComponent::EditorLateUpdate(float deltaTime)
-{
-	LateUpdate(deltaTime);
-}
-
 void ColliderComponent::EditorUIUpdate()
 {
 	UpdateOffsetPos();

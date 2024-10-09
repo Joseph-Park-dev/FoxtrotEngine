@@ -97,10 +97,12 @@ void CommandHistory::Update()
 	if (EditorLayer::GetInstance()->GetUndoKeyPressed())
 	{
 		UndoCommand();
+		LogString("undo");
 	}
 	if (EditorLayer::GetInstance()->GetRedoKeyPressed())
 	{
 		RedoCommand();
+		LogString("redo");
 	}
 }
 

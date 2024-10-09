@@ -44,10 +44,9 @@ protected:
 
 public:
 	// Getters/Setters
-	ActorGroup GetActorGroup() const	  { return mActorGroup; }
-	std::wstring  GetName()				  { return mName; }
-	std::string   GetNameStr()			  { return ToString(mName); }
-	std::wstring& GetNameRef()			  { return mName; }
+	ActorGroup	  GetActorGroup() const	  { return mActorGroup; }
+	std::string   GetName()				  { return mName; }
+	std::string&  GetNameRef()			  { return mName; }
 	State		  GetState()	  const   { return mState; }
 	std::string	  GetStateStr()	  const;
 	State&		  GetStateRef()	  		  { return mState; }
@@ -55,12 +54,12 @@ public:
 	bool		  IsDead()		  const   { return mState == State::EDead; }
 	Transform*    GetTransform()  const	  { return mTransform; }
 	Actor*		  GetParent()	  const	  { return mParent; }
-	std::vector<Component*>& GetComponents() { return mComponents; }
+	std::vector<Component*>& GetComponents()  { return mComponents; }
 	std::vector<Actor*>&     GetChildActors() { return mChild; }
 	unsigned int  GetID()		{ return mID; }
 	static void   ResetNextID() { g_NextID = 0; }
 
-	void		  SetName(std::wstring name)		{ mName = name; }
+	void		  SetName(std::string name)			{ mName = name; }
 	void		  SetState(State state)				{ mState = state; }
 	void		  SetState(std::string state);
 	void		  SetActorGroup(ActorGroup group)	{ mActorGroup = group; }
@@ -98,9 +97,9 @@ public:
 
 public:
 			void ProcessInput		 (KeyInputManager* keyInputManager);
-			void UpdateComponents	 (float deltaTime);
+	virtual void UpdateComponents	 (float deltaTime);
 			void LateUpdateComponents(float deltaTime);
-			void RenderComponents	 (FoxtrotRenderer* renderer);
+	virtual void RenderComponents	 (FoxtrotRenderer* renderer);
 
 public:
 	Actor(Scene* scene);
@@ -113,7 +112,7 @@ public:
 
 private:
 	static int						g_NextID;
-		   std::wstring				mName;
+		   std::string				mName;
 		   int						mID;
 		   ActorGroup	mActorGroup;
 		   State					mState;

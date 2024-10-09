@@ -21,6 +21,11 @@ void IntEditCommand::Undo()
 	mValue = mPrevValue;
 }
 
+IntEditCommand::IntEditCommand(int& valRef, int nextVal)
+	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
+{
+}
+
 void IntEditCommandPtr::Execute()
 {
 	mPrevValue = *mValue;
@@ -35,11 +40,6 @@ void IntEditCommandPtr::Undo()
 }
 
 IntEditCommandPtr::IntEditCommandPtr(int* valRef, int nextVal)
-	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
-{
-}
-
-IntEditCommand::IntEditCommand(int& valRef, int nextVal)
 	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
 {
 }

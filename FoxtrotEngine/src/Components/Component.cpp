@@ -74,15 +74,7 @@ void Component::SaveProperties(nlohmann::ordered_json& out)
 	FileIOHelper::AddScalarValue(out["DrawOrder"], mDrawOrder);
 	FileIOHelper::AddScalarValue(out["UpdateOrder"], mUpdateOrder);
 }
-void Component::EditorUpdate(float deltaTime)
-{
-}
-void Component::EditorLateUpdate(float deltaTime)
-{
-}
-void Component::EditorRender(FoxtrotRenderer* renderer)
-{
-}
+
 void Component::EditorUIUpdate()
 {
 }

@@ -115,8 +115,6 @@ void InputMoveComponent::Rotate()
 }
 
 #ifdef FOXTROT_EDITOR
-void InputMoveComponent::EditorUpdate(float deltaTime)
-{
-	this->Update(deltaTime);
-}
+// Editor code comes here.
+
 #endif // FOXTROT_EDITOR

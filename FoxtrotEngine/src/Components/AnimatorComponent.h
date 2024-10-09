@@ -52,7 +52,5 @@ private:
 #ifdef FOXTROT_EDITOR
 public:
     virtual void SaveProperties(nlohmann::ordered_json& out) override;
-
-    virtual void EditorLateUpdate(float deltaTime) override;
 #endif
 };

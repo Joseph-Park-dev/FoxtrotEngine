@@ -11,8 +11,8 @@
 #include "Actors/ActorTag.h"
 #include "Actors/Transform.h"
 #include "FileSystem/ChunkLoader.h"
+#include "FileSystem/ChunkFileKeys.h"
 #include "Components/Component.h"
-//#include "Actors/UIs/UIActor.h"
 
 int Actor::g_NextID = 0;
 
@@ -225,14 +225,6 @@ void Actor::SetState(std::string state)
 
 void Actor::LoadProperties(std::ifstream& ifs)
 {
-	FileIOHelper::LoadBasicString(ifs, mName);
-	FileIOHelper::LoadInt(ifs, mID);
-	std::string stringBuffer;
-	FileIOHelper::LoadBasicString(ifs, stringBuffer);
-	mActorGroup = ActorGroupUtil::GetActorGroup(stringBuffer);
-	FileIOHelper::LoadBasicString(ifs, stringBuffer);
-	SetState(stringBuffer);
-
 }
 
 void Actor::LoadComponents(std::ifstream& ifs)
@@ -245,6 +237,58 @@ void Actor::LoadComponents(std::ifstream& ifs)
 	}
 }
 
+void Actor::LoadProperties(nlohmann::ordered_json& in)
+{
+	mName.assign(FileIOHelper::LoadScalarValue<std::string>(in, "Name"));
+	mID = FileIOHelper::LoadScalarValue<int>(in, "ID");
+
+	std::string actorGroupStr = FileIOHelper::LoadScalarValue<std::string>(in, "ActorGroup");
+	mActorGroup = ActorGroupUtil::GetActorGroup(actorGroupStr);
+
+	std::string stateStr = FileIOHelper::LoadScalarValue<std::string>(in, "State");
+	State state = State::EActive;
+	if (stateStr == "paused")
+		state = State::EPaused;
+	else if (stateStr == "dead")
+		state = State::EDead;
+	mState = state;
+
+}
+
+void Actor::LoadComponents(nlohmann::ordered_json& in)
+{
+	size_t count = FileIOHelper::LoadScalarValue<size_t>(in, "Count");
+	for (size_t i = 0; i < count; ++i)
+	{
+		//std::string compName = 
+		//ChunkLoader::GetInstance()->GetCompLoadMap()[compName](this, ifs);
+	}
+}
+
+void Actor::SaveProperties(std::ofstream& ofs)
+{
+	FileIOHelper::BeginDataPackSave	(ofs, ChunkKeys::ACTOR_PROPERTIES, 5);
+	FileIOHelper::SaveString		(ofs, ChunkKeys::NAME, GetName());
+	FileIOHelper::SaveInt			(ofs, ChunkKeys::ID, mID);
+	FileIOHelper::SaveString		(ofs, ChunkKeys::ACTOR_GROUP, ActorGroupUtil::GetActorGroupStr(mActorGroup));
+	FileIOHelper::SaveString		(ofs, ChunkKeys::STATE, GetStateStr());
+	if (mParent)
+		FileIOHelper::SaveString	(ofs, ChunkKeys::PARENT, mParent->GetName());
+	else
+		FileIOHelper::SaveString	(ofs, ChunkKeys::PARENT, "nullptr");
+}
+
+void Actor::SaveComponents(std::ofstream& ofs)
+{
+	size_t count = mComponents.size();
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::ACTOR_PROPERTIES, 5);
+	FileIOHelper::SaveInt(ofs, count);
+	for (size_t i = 0; i < count; ++i)
+	{
+		mComponents[i]->SaveProperties(out["List"][i]);
+	}
+}
+
 #ifdef FOXTROT_EDITOR
 void Actor::SaveProperties(nlohmann::ordered_json& out)
 {
@@ -252,11 +296,13 @@ void Actor::SaveProperties(nlohmann::ordered_json& out)
 	FileIOHelper::AddScalarValue(out["ID"], mID);
 	FileIOHelper::AddScalarValue(out["ActorGroup"], ActorGroupUtil::GetActorGroupStr(mActorGroup));
 	FileIOHelper::AddScalarValue(out["State"], GetStateStr());
-
-	mTransform->SaveProperties(out["Transform"]);
-
 	if (mParent)
 		FileIOHelper::AddScalarValue(out["Parent"], mParent->GetName());
+	else
+		FileIOHelper::AddScalarValue(out["Parent"], "nullptr");
+
+	mTransform->SaveProperties(out["Transform"]);
+	
 	// FileIOHelper::AddValue<std::string>("Child", GetStateStr());
 }
 

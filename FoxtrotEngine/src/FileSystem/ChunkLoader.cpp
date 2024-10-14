@@ -22,12 +22,22 @@
 
 void ChunkLoader::SaveChunk(const std::string fileName)
 {
-    
+    std::ofstream ofs(fileName);
+    int count = FileIOHelper::BeginDataPackSave(ofs,)
 }
 
 void ChunkLoader::LoadChunk(const std::string fileName)
 {
-    
+    std::ifstream ofs(fileName);
+
+}
+
+void ChunkLoader::SaveChunkData(std::fstream& out)
+{
+}
+
+void ChunkLoader::SaveActorsData(std::fstream& out)
+{
 }
 
 //void ChunkLoader::LoadChunkData(YAML::Node& node)
@@ -52,6 +62,16 @@ void ChunkLoader::LoadActors(std::ifstream& ifs)
     for (size_t i = 0; i < mCurrentChunkData.ActorCount; ++i)
     {
         Actor* actor = LoadIndividualActor(ifs, currScene);
+        currScene->AddActor(actor, actor->GetActorGroup());
+    }
+}
+
+void ChunkLoader::LoadActors(nlohmann::ordered_json& in)
+{
+    Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
+    for (size_t i = 0; i < mCurrentChunkData.ActorCount; ++i)
+    {
+        Actor* actor = LoadIndividualActor(in, currScene);
         currScene->AddActor(actor, actor->GetActorGroup());
     }
 }
@@ -92,6 +112,14 @@ Actor* ChunkLoader::LoadIndividualActor(std::ifstream& ifs, Scene* currScene)
     return actor;
 }
 
+Actor* ChunkLoader::LoadIndividualActor(nlohmann::ordered_json& in, Scene* currScene)
+{
+    Actor* actor = new Actor(currScene);
+    actor->LoadProperties(in);
+    actor->LoadComponents(in["Components"]);
+    return actor;
+}
+
 std::string ChunkLoader::GetConvertedFileName(std::string curr, std::string prevSuffix, std::string postSuffix)
 {
     return curr.substr(0, curr.length() - strlen(prevSuffix.c_str())) + postSuffix;
@@ -103,19 +131,18 @@ ChunkLoader::ChunkLoader()
 {
     mComponentLoadMap =
     {
-        {L"AIComponent",                &Component::Load<AIComponent>},
-        {L"AnimatorComponent",          &Component::Load<AnimatorComponent>},
-        {L"AnimSpriteComponent",        &Component::Load<SpriteAnimComponent>},
-        {L"BGSpriteComponent",          &Component::Load<BGSpriteComponent>},
-        {L"ColliderComponent",          &Component::Load<ColliderComponent>},
-        {L"InputMoveComponent",         &Component::Load<InputMoveComponent>},
-        {L"MoveComponent",              &Component::Load<MoveComponent>},
-        {L"Rigidbody2DComponent",       &Component::Load<Rigidbody2DComponent>},
-        {L"SpriteRendererComponent",    &Component::Load<SpriteRendererComponent>},
-        {L"TileMapComponent",           &Component::Load<TileMapComponent>},
-        {L"SpriteAnimComponent",        &Component::Load<SpriteAnimComponent>},
-        {L"GunFiringComponent",         &Component::Load<GunFiringComponent>},
-        {L"MeshRendererComponent",      &Component::Load<MeshRendererComponent>}
+        {"AIComponent",                &Component::Load<AIComponent>},
+        {"AnimatorComponent",          &Component::Load<AnimatorComponent>},
+        {"BGSpriteComponent",          &Component::Load<BGSpriteComponent>},
+        {"ColliderComponent",          &Component::Load<ColliderComponent>},
+        {"InputMoveComponent",         &Component::Load<InputMoveComponent>},
+        {"MoveComponent",              &Component::Load<MoveComponent>},
+        {"Rigidbody2DComponent",       &Component::Load<Rigidbody2DComponent>},
+        {"SpriteRendererComponent",    &Component::Load<SpriteRendererComponent>},
+        {"TileMapComponent",           &Component::Load<TileMapComponent>},
+        {"SpriteAnimComponent",        &Component::Load<SpriteAnimComponent>},
+        {"GunFiringComponent",         &Component::Load<GunFiringComponent>},
+        {"MeshRendererComponent",      &Component::Load<MeshRendererComponent>}
     };
 };
 
@@ -150,190 +177,107 @@ FTVector3 FileIOHelper::LoadVector3(nlohmann::ordered_json& json, std::string ke
     return value;
 }
 
-//
-//void FileIOHelper::AddVector2(std::string key, FTVector2 value)
-//{
-//}
-//
-//void FileIOHelper::AddVector3(std::string key, FTVector3 value)
-//{
-//}
-//
-//
-//void FileIOHelper::AddBasicString(std::string key, std::string value)
-//{
-//    //ofs.write((char*)&value[0], STRING_BUFFER_SIZE);
-//    ++mUnmatched;
-//}
-//
-//void FileIOHelper::AddWString(std::string key, std::wstring value)
-//{
-//    
-//}
-//
-//void FileIOHelper::AddFloat(std::string key, float value)
-//{
-//}
-//
-//void FileIOHelper::AddInt(std::string key, int value)
-//{
-//    //ofs.write((char*)&value, sizeof(int));
-//    ++mUnmatched;
-//}
-//
-//void FileIOHelper::AddSize(std::string key, size_t value)
-//{
-//    //ofs.write((char*)&value, sizeof(size_t));
-//    ++mUnmatched;
-
-FTVector2 FileIOHelper::LoadVector2(std::ifstream& ifs)
+int FileIOHelper::BeginDataPackLoad(std::ifstream& ifs)
 {
-    assert(mUnmatched > 0);
-    float x = LoadFloat(ifs);
-    float y = LoadFloat(ifs);
-    return FTVector2(x, y);
+    std::string dataPackKey;
+    std::getline(ifs, dataPackKey, '\n');
+
+    // Parse data pack key 
+    std::string name = ExtractUntil(dataPackKey, '<');
+    int	count = std::stoi(GetBracketedVal(dataPackKey, '<', '>'));
+
+    std::cout << "Parsing data pack : " << name << '\n';
+    std::cout << name << '\n';
+
+    return count;
 }
 
-
-std::string FileIOHelper::LoadBasicString(std::ifstream& ifs)
+void FileIOHelper::ParseVector3(std::string& line, FTVector3& arg)
 {
-    assert(mUnmatched > 0);
-    --mUnmatched;
-    std::string str;
-    std::getline(ifs, str);
-    return str;
+    line = GetBracketedVal(line, '(', ')');
+    float x = std::stof(ExtractUntil(line, ','));
+    float y = std::stof(ExtractUntil(line, ','));
+    float z = std::stof(ExtractUntil(line, ')'));
+
+    arg = FTVector3(x, y, z);
 }
 
-std::wstring FileIOHelper::LoadWString(std::ifstream& ifs)
+void FileIOHelper::ParseVector2(std::string& line, FTVector2& arg)
 {
-    assert(mUnmatched > 0);
-    --mUnmatched;
-    std::string str;
-    std::getline(ifs, str);
-    return ToWString(str);
+    line = GetBracketedVal(line, '(', ')');
+    float x = std::stof(ExtractUntil(line, ','));
+    float y = std::stof(ExtractUntil(line, ','));
+
+    arg = FTVector2(x, y);
 }
 
-float FileIOHelper::LoadFloat(std::ifstream& ifs)
+void FileIOHelper::ParseInt(std::string& line, int& arg)
 {
-    assert(mUnmatched > 0);
-    --mUnmatched;
-    std::string buf;
-    std::getline(ifs, buf);
-    return std::stof(buf);
+    line = GetBracketedVal(line, '(', ')');
+    arg = std::stoi(line);
 }
 
-int FileIOHelper::LoadInt(std::ifstream& ifs)
+void FileIOHelper::ParseFloat(std::string& line, float& arg)
 {
-    assert(mUnmatched > 0);
-    --mUnmatched;
-    std::string buf;
-    std::getline(ifs, buf);
-    return std::stoi(buf);
+    line = GetBracketedVal(line, '(', ')');
+    arg = std::stof(line);
 }
 
-size_t FileIOHelper::LoadSize(std::ifstream& ifs)
+void FileIOHelper::ParseString(std::string& line, std::string& arg)
 {
-    assert(mUnmatched > 0);
-    --mUnmatched;
-    std::string buf;
-    std::getline(ifs, buf);
-    return static_cast<size_t>(std::stoi(buf));
+    line = GetBracketedVal(line, '(', ')');
+    arg.assign(line);
 }
 
-void FileIOHelper::LoadVector2(std::ifstream& ifs, FTVector2& value)
+int FileIOHelper::BeginDataPackSave(std::ofstream& ofs, const std::string dataPackKey, const int varCount)
 {
-    assert(mUnmatched > 0);
-    float x = 0.f; float y = 0.f;
-    LoadFloat(ifs, x);
-    LoadFloat(ifs, y);
-    value = FTVector2(x, y);
+    ofs << dataPackKey << "<" << std::to_string(varCount) << ">" << std::endl;
+    std::cout << "Saving data pack : " << dataPackKey << '\n';
+    return varCount;
 }
 
-void FileIOHelper::LoadBasicString(std::ifstream& ifs, std::string& value)
+void FileIOHelper::SaveVector3(std::ofstream& ofs, const std::string valName, const FTVector3& vec3)
 {
-    assert(mUnmatched > 0);
-    value = LoadBasicString(ifs);
+    ofs << valName << "[Vector3]" << std::endl;
+    ofs << vec3 << std::endl;
 }
 
-void FileIOHelper::LoadWString(std::ifstream& ifs, std::wstring& value)
+void FileIOHelper::SaveVector2(std::ofstream& ofs, const std::string valName, const FTVector2& vec2)
 {
-    assert(mUnmatched > 0);
-    value = LoadWString(ifs);
+    ofs << valName << "[Vector2]" << std::endl;
+    ofs << vec2 << std::endl;
 }
 
-void FileIOHelper::LoadFloat(std::ifstream& ifs, float& value)
+void FileIOHelper::SaveInt(std::ofstream& ofs, const std::string valName, const int& intVal)
 {
-    assert(mUnmatched > 0);
-    value = LoadFloat(ifs);
+    ofs << valName << "[int]" << std::endl;
+    ofs << std::to_string(intVal) << std::endl;
 }
 
-void FileIOHelper::LoadInt(std::ifstream& ifs, int& value)
+void FileIOHelper::SaveFloat(std::ofstream& ofs, const std::string valName, const float& floatVal)
 {
-    assert(mUnmatched > 0);
-    value = LoadInt(ifs);
+    ofs << valName << "[float]" << std::endl;
+    ofs << std::to_string(floatVal) << std::endl;
 }
 
-void FileIOHelper::LoadSize(std::ifstream& ifs, size_t& value)
+void FileIOHelper::SaveString(std::ofstream& ofs, const std::string valName, const std::string& strVal)
 {
-    assert(mUnmatched > 0);
-    value = LoadSize(ifs);
+    ofs << valName << "[string]" << std::endl;
+    ofs << strVal << std::endl;
 }
 
-void FileIOHelper::SaveFileIOData(std::string filename)
-{
-    std::ofstream file;
-    file.open(filename, std::ios::out | std::ios::binary);
-    if (file)
-    {
-        file.write((char*)&mUnmatched, sizeof(int));
-        file.close();
-    }
+std::string FileIOHelper::ExtractUntil(std::string& line, const char end) {
+    size_t typeBeg = line.find(end);
+    std::string result = line.substr(0, typeBeg);
+
+    // Erase the extracted value from line, including end character.
+    line.erase(0, typeBeg + 1);
+    return result;
 }
 
-void FileIOHelper::LoadFileIOData(std::string filename)
-{
-    std::ifstream file;
-    file.open(filename, std::ios::in | std::ios::binary);
-    if (file)
-    {
-        file.read((char*)&mUnmatched, sizeof(int));
-        file.close();
-    }
+std::string FileIOHelper::GetBracketedVal(std::string& str, const char left, const char right) {
+    size_t begin = str.find(left);
+    size_t end = str.find(right);
+    return str.substr(begin + 1, end - (begin + 1));
 }
 
-//void SaveWString(const std::wstring& str, FILE* file)
-//{
-//    // Data serialization (데이터 직렬화)
-//    const wchar_t* name = str.c_str();
-//    size_t len = str.length();
-//
-//    fwrite(&len, sizeof(size_t), 1, file);
-//    fwrite(name, sizeof(wchar_t), len, file);
-//    SDL_Log("Saved : %ls", name);
-//}
-//
-//void LoadWString(std::wstring& str, FILE* file)
-//{
-//    size_t len = 0;
-//    fread(&len, sizeof(size_t), 1, file);
-//    wchar_t szBuff[256] = {};
-//    fread(szBuff, sizeof(wchar_t), len, file);
-//    str = szBuff;
-//    SDL_Log("Loaded : %ls", str.c_str());
-//}
-//
-//void LoadDataFromFile(char* dst, FILE* file)
-//{
-//    int i = 0;
-//    while (true)
-//    {
-//        char c = (char)getc(file);
-//        if (c == '\n')
-//        {
-//            dst[i++] = '\0';
-//            break;
-//        }
-//
-//        dst[i++] = c;
-//    }
-//}

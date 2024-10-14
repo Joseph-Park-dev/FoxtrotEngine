@@ -124,7 +124,12 @@ private:
 public:
 	void LoadProperties(std::ifstream& ifs);
 	void LoadComponents(std::ifstream& ifs);
-	friend class Scene_Tool;
+
+	void LoadProperties(nlohmann::ordered_json& ifs);
+	void LoadComponents(nlohmann::ordered_json& ifs);
+
+	void SaveProperties(std::ofstream& ofs);
+	void SaveComponents(std::ofstream& ofs);
 
 #ifdef FOXTROT_EDITOR
 public:

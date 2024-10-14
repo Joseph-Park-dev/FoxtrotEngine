@@ -32,7 +32,7 @@ protected:
 	virtual void UpdateBuffers();
 
 public:
-	virtual std::wstring GetName() const override { return L"MeshRendererComponent"; }
+	virtual std::string GetName() const override { return "MeshRendererComponent"; }
 
 protected:
 	FoxtrotRenderer*	GetRenderer	()	{ return mRenderer; }

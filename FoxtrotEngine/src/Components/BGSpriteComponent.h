@@ -18,7 +18,7 @@ class BGSpriteComponent : public SpriteRendererComponent {
 
   public:
 	float GetScrollSpeed() const { return mScrollSpeed; }
-	std::wstring GetName() const override { return L"BGSpriteComponent"; }
+	std::string  GetName() const override { return "BGSpriteComponent"; }
 
 	void SetScreenSize(const FTVector2 &size) { mScreenSize = size; }
 	void SetScrollSpeed(float speed) { mScrollSpeed = speed; }

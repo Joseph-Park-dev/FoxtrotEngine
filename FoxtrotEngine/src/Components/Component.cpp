@@ -7,12 +7,6 @@
 #include "Core/TemplateFunctions.h"
 #include "Core/FTCore.h"
 
-void Component::LoadProperties(std::ifstream& ifs)
-{
-	FileIOHelper::LoadInt(ifs, mDrawOrder);
-	FileIOHelper::LoadInt(ifs, mUpdateOrder);
-}
-
 void Component::ProcessInput(KeyInputManager* keyInputManager)
 {
 }
@@ -67,10 +61,22 @@ void Component::CloneTo(Actor* actor)
 {
 }
 
+void Component::LoadProperties(nlohmann::ordered_json& in)
+{
+	mDrawOrder	 = FileIOHelper::LoadScalarValue<int>(in, "DrawOrder");
+	mUpdateOrder = FileIOHelper::LoadScalarValue<int>(in, "UpdateOrder");
+}
+
+void Component::LoadProperties(std::ifstream& ifs)
+{
+	FileIOHelper::LoadInt(ifs, mDrawOrder);
+	FileIOHelper::LoadInt(ifs, mUpdateOrder);
+}
+
 #ifdef FOXTROT_EDITOR
 void Component::SaveProperties(nlohmann::ordered_json& out)
 {
-	FileIOHelper::AddScalarValue(out["Name"], ToString(GetName()));
+	FileIOHelper::AddScalarValue(out["Name"], GetName());
 	FileIOHelper::AddScalarValue(out["DrawOrder"], mDrawOrder);
 	FileIOHelper::AddScalarValue(out["UpdateOrder"], mUpdateOrder);
 }

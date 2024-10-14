@@ -29,9 +29,9 @@ public:
 public:
     float GetAngularSpeed() const { return mAngularSpeed; }
     float GetForwardSpeed() const { return mForwardSpeed; }
-    std::wstring GetName() const override
+    std::string GetName() const override
     {
-        return L"MoveComponent";
+        return "MoveComponent";
     }
     State GetMovingState() const { return mMovingState; }
     State GetPrevMovingState() const { return mPrevMovingState; }

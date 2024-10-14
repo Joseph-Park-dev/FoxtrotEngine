@@ -15,7 +15,7 @@ public:
 
 public:
 	float		 GetMass() { return mMass; }
-	std::wstring GetName() const override { return L"Rigidbody2DComponent"; }
+	std::string  GetName() const override { return "Rigidbody2DComponent"; }
 	bool		 GetIsGrounded() { return mIsGrounded; }
 	bool		 GetIsBlockedUp() { return mIsBlockedUp; }
 

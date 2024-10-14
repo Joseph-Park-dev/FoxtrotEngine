@@ -16,7 +16,8 @@ class KeyInputManager;
 class Component
 {
 public:
-	virtual std::wstring GetName() const = 0;
+	virtual std::string  GetName() const = 0;
+	virtual void		 LoadProperties(nlohmann::ordered_json& in);
 	virtual void		 LoadProperties(std::ifstream& ifs);
 
 public:

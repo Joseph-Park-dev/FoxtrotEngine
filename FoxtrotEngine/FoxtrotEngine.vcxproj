@@ -343,6 +343,7 @@
     <ClInclude Include="src\Core\TypeDefinitions.h" />
     <ClInclude Include="src\Core\UnitDefinitions.h" />
     <ClInclude Include="src\Core\WindowProcess.h" />
+    <ClInclude Include="src\FileSystem\ChunkFileKeys.h" />
     <ClInclude Include="src\FileSystem\ChunkLoader.h" />
     <ClInclude Include="src\Managers\CollisionManager.h" />
     <ClInclude Include="src\Managers\EventManager.h" />

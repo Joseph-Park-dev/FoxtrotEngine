@@ -13,7 +13,7 @@ class AIComponent :
 	public Component
 {
 public:
-	virtual std::wstring GetName() const override { return L"AIComponent"; }
+	virtual std::string GetName() const override { return "AIComponent"; }
 
 public:
 	void ChangeState(AISTATE_TYPE name);

@@ -16,7 +16,7 @@ public:
 	void Stop();
 
 public:
-	std::wstring GetName() const override { return L"SpriteAnimComponent"; }
+	std::string GetName() const override { return "SpriteAnimComponent"; }
 
 public:
 	float GetAnimFPS() const { return mAnimFPS; }

@@ -15,19 +15,19 @@ EditorChunkLoader::EditorChunkLoader()
 {
     mComponentCreateMap =
     {
-        {L"AIComponent",             &EditorElement::Create<AIComponent>},
-        {L"AnimatorComponent",       &EditorElement::Create<AnimatorComponent>},
-        {L"AnimSpriteComponent",     &EditorElement::Create<SpriteAnimComponent>},
-        {L"BGSpriteComponent",       &EditorElement::Create<BGSpriteComponent>},
-        {L"ColliderComponent",       &EditorElement::Create<ColliderComponent>},
-        {L"InputMoveComponent",      &EditorElement::Create<InputMoveComponent>},
-        {L"MoveComponent",           &EditorElement::Create<MoveComponent>},
-        {L"Rigidbody2DComponent",    &EditorElement::Create<Rigidbody2DComponent>},
-        {L"SpriteRendererComponent", &EditorElement::Create<SpriteRendererComponent>},
-        {L"TileMapComponent",        &EditorElement::Create<TileMapComponent>},
-        {L"SpriteAnimComponent",     &EditorElement::Create<SpriteAnimComponent>},
-        {L"GunFiringComponent",      &EditorElement::Create<GunFiringComponent>},
-        {L"MeshRendererComponent",   &EditorElement::Create<MeshRendererComponent>},
+        {"AIComponent",             &EditorElement::Create<AIComponent>},
+        {"AnimatorComponent",       &EditorElement::Create<AnimatorComponent>},
+        {"AnimSpriteComponent",     &EditorElement::Create<SpriteAnimComponent>},
+        {"BGSpriteComponent",       &EditorElement::Create<BGSpriteComponent>},
+        {"ColliderComponent",       &EditorElement::Create<ColliderComponent>},
+        {"InputMoveComponent",      &EditorElement::Create<InputMoveComponent>},
+        {"MoveComponent",           &EditorElement::Create<MoveComponent>},
+        {"Rigidbody2DComponent",    &EditorElement::Create<Rigidbody2DComponent>},
+        {"SpriteRendererComponent", &EditorElement::Create<SpriteRendererComponent>},
+        {"TileMapComponent",        &EditorElement::Create<TileMapComponent>},
+        {"SpriteAnimComponent",     &EditorElement::Create<SpriteAnimComponent>},
+        {"GunFiringComponent",      &EditorElement::Create<GunFiringComponent>},
+        {"MeshRendererComponent",   &EditorElement::Create<MeshRendererComponent>},
     };
 }
 
@@ -69,8 +69,9 @@ void EditorChunkLoader::SaveActorsData(nlohmann::ordered_json& out)
         for (size_t j = 0; j < actors[i].size(); ++j)
         {
             EditorElement* element = dynamic_cast<EditorElement*>(actors[i][j]);
-            element->SaveProperties(out[j]);
-            element->SaveComponents(out[j]["Components"]);
+            size_t index = (size_t)ActorGroup::END * i + j;
+            element->SaveProperties(out[index]);
+            element->SaveComponents(out[index]["Components"]);
         }
     }
 }

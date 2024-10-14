@@ -9,9 +9,57 @@
             "x": 123.0,
             "y": 123.0
         },
-        "ActorCount": 0
+        "ActorCount": 1
     },
-    "ActorData": null,
+    "ActorData": [
+        {
+            "Name": "Game Object 0",
+            "ID": 1,
+            "ActorGroup": "DEFAULT",
+            "State": "active",
+            "Transform": {
+                "WorldPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "ScreenPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "LocalPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "Rotation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "Components": {
+                "Count": 1,
+                "List": [
+                    {
+                        "Name": "SpriteRendererComponent",
+                        "DrawOrder": 100,
+                        "UpdateOrder": 100,
+                        "TextureWidth": 1496,
+                        "TextureHeight": 1502,
+                        "Channel": 4,
+                        "Scale": 1.5299999713897705
+                    }
+                ]
+            }
+        }
+    ],
     "ResourceData": {
         "class FTTexture": {
             "1": {

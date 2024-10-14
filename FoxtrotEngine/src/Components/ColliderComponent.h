@@ -19,9 +19,9 @@ class ColliderComponent :
 	public Component
 {
 public:
-	virtual std::wstring GetName() const override
+	virtual std::string GetName() const override
 	{
-		return L"ColliderComponent";
+		return "ColliderComponent";
 	}
 	virtual void LoadProperties(std::ifstream& ifs) override;
 

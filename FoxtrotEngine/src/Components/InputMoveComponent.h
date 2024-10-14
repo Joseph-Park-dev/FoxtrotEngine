@@ -17,9 +17,9 @@ public:
 	float GetMaxForward() const { return mMaxForwardSpeed; }
 	float GetMaxAngular() const { return mMaxAngularSpeed; }
     float GetBreakSpeed() const { return mBreakSpeed; }
-    std::wstring GetName() const override
+    std::string GetName() const override
     {
-        return L"InputMoveComponent";
+        return "InputMoveComponent";
     }
 	void  SetMaxForwardSpeed(float speed) { mMaxForwardSpeed = speed; }
 	void  SetMaxAngularSpeed(float speed) { mMaxAngularSpeed = speed; }

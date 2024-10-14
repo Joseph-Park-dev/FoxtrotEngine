@@ -7,6 +7,7 @@
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
+#include "EditorChunkLoader.h"
 #include "CommandHistory.h"
 
 #include "Managers/KeyInputManager.h"
@@ -218,7 +219,7 @@ void EditorElement::UpdateComponents()
 		size_t count = 0;
 		for (Component* comp : GetComponents())
 		{
-			std::string name = std::to_string(count) + " " + ToString(comp->GetName());
+			std::string name = std::to_string(count) + " " + comp->GetName();
 			if (ImGui::TreeNode(name.c_str()))
 			{
 				comp->EditorUIUpdate();
@@ -242,9 +243,9 @@ void EditorElement::DisplayCompSelectionPopup()
 	if (ImGui::BeginPopup("CompSelectPopUp"))
 	{
 		ImGui::SeparatorText("Add Components");
-		ComponentCreateMap::iterator iter = ChunkLoader::GetInstance()->GetCompCreateMap().begin();
-		for (; iter != ChunkLoader::GetInstance()->GetCompCreateMap().end(); ++iter)
-			if (ImGui::Selectable(ToString((*iter).first).c_str()))
+		ComponentCreateMap::iterator iter = EditorChunkLoader::GetInstance()->GetCompCreateMap().begin();
+		for (; iter != EditorChunkLoader::GetInstance()->GetCompCreateMap().end(); ++iter)
+			if (ImGui::Selectable((*iter).first.c_str()))
 				(*iter).second(this);
 		ImGui::EndPopup();
 	}

@@ -26,9 +26,9 @@ public:
     //void LoadAnimation(const std::wstring& path);
     
 public:
-    virtual std::wstring GetName() const override
+    virtual std::string GetName() const override
     {
-        return L"AnimatorComponent";
+        return "AnimatorComponent";
     }
 	virtual void LoadProperties(std::ifstream& ifs) override;
 

@@ -17,8 +17,8 @@ public:
 	int			 GetTexWidth()  const { return mTexWidth; }
 	int			 GetTexHeight() const { return mTexHeight; }
 
-	std::wstring GetName()		const override{
-		return L"SpriteRendererComponent";
+	std::string GetName()		const override{
+		return	"SpriteRendererComponent";
 	}
 
 	void		 SetTexWidth	(int texWidth)  { mTexWidth = texWidth; }

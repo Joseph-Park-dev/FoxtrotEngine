@@ -13,7 +13,7 @@ public:
     void ShootGun();
 
 public:
-    virtual std::wstring GetName() const override { return L"GunFiringComponent"; }
+    virtual std::string  GetName() const override { return "GunFiringComponent"; }
     float                GetDelay() { return mDelay; }
     float                SetDelay(float delay) { mDelay = delay; }
 

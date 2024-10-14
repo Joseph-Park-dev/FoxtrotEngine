@@ -3,11 +3,11 @@
 #include <unordered_map>
 #include <functional>
 #include <nlohmann/json.hpp>
+#include <fstream>
 
 #include "Core/SingletonMacro.h"
+#include "Math/FTMath.h"
 
-class FTVector2;
-class FTVector3;
 class Transform;
 class Actor;
 class Component;
@@ -15,8 +15,7 @@ class Scene;
 
 using ComponentCreateFunc = std::function<void (Actor*)>;
 using ComponentLoadFunc = std::function<void(Actor*, std::ifstream& ifs)>;
-using ComponentCreateMap = std::unordered_map<std::wstring, ComponentCreateFunc>;
-using ComponentLoadMap = std::unordered_map<std::wstring, ComponentLoadFunc>;
+using ComponentLoadMap = std::unordered_map<std::string, ComponentLoadFunc>;
 
 #define CHUNK_FILE_FORMAT ".json"
 #define FILE_IO_FORMAT ".data"
@@ -45,24 +44,38 @@ public:
 	virtual void LoadChunk(const std::string fileName);
 
 protected:
-	void LoadActors(std::ifstream& ifs);
-	//void LoadActorsToEditor(std::ifstream& ifs);
+	//Save .Chunk for the editor
+	void SaveChunkData(std::fstream& out);
+	void SaveActorsData(std::fstream& out);
 
-public:
-	ComponentCreateMap&	GetCompCreateMap()	{ return mComponentCreateMap; }
+protected:
+	void LoadActors(std::ifstream& ifs);
+	void LoadActors(nlohmann::ordered_json& in);
+	//void LoadActorsToEditor(std::ifstream& ifs);
 
 private:
 	ComponentLoadMap mComponentLoadMap;
-	ComponentCreateMap mComponentCreateMap;
 	ChunkData mCurrentChunkData;
 
 private:
 	Actor*		LoadIndividualActor(std::ifstream& ifs, Scene* currScene);
+	Actor*		LoadIndividualActor(nlohmann::ordered_json& ifs, Scene* currScene);
 	std::string GetConvertedFileName(std::string curr, std::string prevSuffix, std::string postSuffix);
 };
 
 #define STRING_BUFFER_SIZE 50 * sizeof(char)
 #define WSTRING_BUFFER_SIZE 50 * sizeof(wchar_t)
+
+std::ofstream& operator<<(std::ofstream& ofs, FTVector3& vec3) {
+	ofs << "(" << std::to_string(vec3.x) << "," << std::to_string(vec3.y) << "," << std::to_string(vec3.z) << ")";
+	return ofs;
+}
+
+std::ofstream& operator<<(std::ofstream& ofs, FTVector2& vec2) {
+	ofs << "(" << std::to_string(vec2.x) << "," << std::to_string(vec2.y) << ")";
+	return ofs;
+}
+
 class FileIOHelper
 {
 public:
@@ -83,54 +96,30 @@ public:
 	}
 
 public:
-	static FTVector2	LoadVector2		(std::ifstream& ifs);
-	static std::string	LoadBasicString	(std::ifstream& ifs);
-	static std::wstring LoadWString		(std::ifstream& ifs);
-	static float		LoadFloat		(std::ifstream& ifs);
-	static int			LoadInt			(std::ifstream& ifs);
-	static size_t		LoadSize		(std::ifstream& ifs);
+	static int	BeginDataPackLoad(std::ifstream& ifs);
 
-	static void			LoadVector2		(std::ifstream& ifs, FTVector2& value);
-	static void			LoadBasicString	(std::ifstream& ifs, std::string& value);
-	static void			LoadWString		(std::ifstream& ifs, std::wstring& value);
-	static void			LoadFloat		(std::ifstream& ifs, float& value);
-	static void			LoadInt			(std::ifstream& ifs, int& value);
-	static void			LoadSize		(std::ifstream& ifs, size_t& value);
+	static void	ParseVector3(std::string& line, FTVector3& arg);
+	static void	ParseVector2(std::string& line, FTVector2& arg);
+
+	static void	ParseInt(std::string& line, int& arg);
+	static void	ParseFloat(std::string& line, float& arg);
+	static void ParseString(std::string& line, std::string& arg);
 
 public:
-	static void SaveFileIOData(std::string filename);
-	static void LoadFileIOData(std::string filename);
+	static int	BeginDataPackSave(std::ofstream& ofs, const std::string dataPackKey, const int varCount);
+	static void SaveVector3(std::ofstream& ofs, const std::string valName, const FTVector3& vec3);
+	static void SaveVector2(std::ofstream& ofs, const std::string valName, const FTVector2& vec2);
+	
+	static void SaveInt(std::ofstream& ofs, const std::string valName, const int& intVal);
+	static void SaveFloat(std::ofstream& ofs, const std::string valName, const float& floatVal);
+	static void SaveString(std::ofstream& ofs, const std::string valName, const std::string& strVal);
 
-public:
-	inline static int mUnmatched;
+	friend std::ofstream& operator<<(std::ofstream& ofs, FTVector3& vec3);
+	friend std::ofstream& operator<<(std::ofstream& ofs, FTVector2& vec2);
+
+private:
+	static std::string ExtractUntil(std::string& line, const char end);
+	static std::string GetBracketedVal(std::string& str, const char left, const char right);
+
+	private 
 };	
-
-//struct SavePack {
-//	int priority = 0;
-//};
-//
-//struct ChunkData : SavePack{
-//	int TargetActorID;
-//	FTVector2 RenderResolution;
-//	FTVector2 ScreenCenter;
-//	size_t ActorCount;
-//};
-//
-//struct ActorData : SavePack{
-//	std::wstring Name;
-//	int			 ID;
-//	std::string	 ActorGroup;
-//	std::string	 State;
-//
-//	FTVector2	 WorldPosition;
-//	FTVector2	 LocalPosition;
-//	float		 Rotation;
-//	FTVector2	 Scale;
-//
-//	
-//};
-//
-//using BasicStringDataPack = std::pair < std::wstring, std::function<void(std::ifstream&)>>;
-//using WStringDataPack = std::pair < std::wstring, std::function<void(std::ifstream&)>>;
-//using FloatDataPack = std::pair < std::wstring, std::function<void(std::ifstream&)>>;
-//using IntegerDataPack = std::pair < std::wstring, std::function<void(std::ifstream&)>>;

@@ -15,6 +15,8 @@
 #include <directxmath.h>
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
+#include <fstream>
+#include <string>
 
 namespace Math
 {
@@ -138,6 +140,11 @@ public:
 	{}
 
 	FTVector3(FTVector2 vec2);
+
+	friend std::ofstream& operator<<(std::ofstream& ofs, const FTVector3& vec3) {
+		ofs << "(" << std::to_string(vec3.x) << "," << std::to_string(vec3.y) << "," << std::to_string(vec3.z) << ")";
+		return ofs;
+	}
 
 	const DirectX::XMFLOAT3 GetDXVec3() const
 	{
@@ -332,6 +339,11 @@ public:
 		: x(vec3.x)
 		, y(vec3.y)
 	{}
+
+	friend std::ofstream& operator<<(std::ofstream& ofs, const FTVector2& vec2) {
+		ofs << "(" << std::to_string(vec2.x) << "," << std::to_string(vec2.y) << ")";
+		return ofs;
+	}
 
 	DirectX::XMFLOAT2 GetD3Vec2()
 	{

@@ -62,10 +62,14 @@ protected:
 	void UpdateConstantBufferView		(Camera* camInst);
 	void UpdateConstantBufferProjection	(Camera* camInst);
 
+public:
+	virtual void		 SaveProperties(std::ofstream& ofs);
+	virtual void		 LoadProperties(std::ifstream& ifs);
 
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void SaveProperties(nlohmann::ordered_json& out) override;
+	virtual void LoadProperties(nlohmann::ordered_json& in)	 override;
 	virtual void EditorUIUpdate() override;
 
 protected:

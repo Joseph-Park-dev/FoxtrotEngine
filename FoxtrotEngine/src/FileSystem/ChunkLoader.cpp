@@ -19,11 +19,12 @@
 #include "Actors/Backgrounds/BackgroundActor.h"
 
 #include "Components/ComponentBatchHeaders.h"
+#include "FileSystem/ChunkFileKeys.h"
 
 void ChunkLoader::SaveChunk(const std::string fileName)
 {
     std::ofstream ofs(fileName);
-    int count = FileIOHelper::BeginDataPackSave(ofs,)
+    SaveChunkData(ofs);
 }
 
 void ChunkLoader::LoadChunk(const std::string fileName)
@@ -32,11 +33,18 @@ void ChunkLoader::LoadChunk(const std::string fileName)
 
 }
 
-void ChunkLoader::SaveChunkData(std::fstream& out)
+void ChunkLoader::SaveChunkData(std::ofstream& out)
 {
+    FileIOHelper::BeginDataPackSave(out, ChunkKeys::CHUNK_DATA);
+    FileIOHelper::SaveInt(out, ChunkKeys::TARGET_ACTOR, 1);
+    FileIOHelper::SaveVector2(out, ChunkKeys::RENDER_RESOLUTION, FTVector2::Zero);
+    FileIOHelper::SaveVector2(out, ChunkKeys::RENDER_SCREENCENTER, FTVector2(123, 123));
+    Scene* scene = SceneManager::GetInstance()->GetCurrentScene();
+    FileIOHelper::SaveInt(out, ChunkKeys::ACTOR_COUNT, scene->GetActorCount());
+    FileIOHelper::EndDataPackSave(out, ChunkKeys::CHUNK_DATA);
 }
 
-void ChunkLoader::SaveActorsData(std::fstream& out)
+void ChunkLoader::SaveActorsData(std::ofstream& out)
 {
 }
 
@@ -148,6 +156,12 @@ ChunkLoader::ChunkLoader()
 
 ChunkLoader::~ChunkLoader(){}
 
+std::list<std::string> FileIOHelper::mDataBuffer = {};
+std::list<int> FileIOHelper::mItemCounts = {};
+std::list<std::string> FileIOHelper::mCurrentDataPack = {};
+int FileIOHelper::mDataPackIdent = 0;
+std::string FileIOHelper::mItemIdent = std::string(mDataPackIdent, '\t');
+
 void FileIOHelper::AddVector2(nlohmann::ordered_json& json, FTVector2 value)
 {
     json["x"] = value.x;
@@ -229,41 +243,84 @@ void FileIOHelper::ParseString(std::string& line, std::string& arg)
     arg.assign(line);
 }
 
-int FileIOHelper::BeginDataPackSave(std::ofstream& ofs, const std::string dataPackKey, const int varCount)
+void FileIOHelper::BeginDataPackSave(std::ofstream& ofs, std::string dataPackKey)
 {
-    ofs << dataPackKey << "<" << std::to_string(varCount) << ">" << std::endl;
+    mDataPackIdent = mItemCounts.size();
+    mItemIdent = std::string(mDataPackIdent + 1, '\t');
+
+    if (0 < mItemCounts.size()) 
+    {
+        ++mItemCounts.back();
+    }
+    mItemCounts.push_back(0);
+    mCurrentDataPack.push_back(dataPackKey);
+    
     std::cout << "Saving data pack : " << dataPackKey << '\n';
-    return varCount;
+}
+
+void FileIOHelper::EndDataPackSave(std::ofstream& ofs, std::string dataPackKey)
+{
+    assert(mCurrentDataPack.back() == dataPackKey);
+
+    int itemCount = mItemCounts.back();
+    mItemCounts.pop_back();
+    mCurrentDataPack.pop_back();
+    mDataPackIdent = mItemCounts.size();
+    mItemIdent = std::string(mDataPackIdent + 1, '\t');
+
+    // Returning to the datapack ident level
+    std::string title = std::string(mDataPackIdent, '\t') + dataPackKey + "<" + std::to_string(itemCount) + ">";
+    mDataBuffer.push_back(title);
+}
+
+void FileIOHelper::SaveBufferToFile(std::ofstream& ofs)
+{
+    // Key & Value pairs = size() * 2
+    std::list<std::string>::reverse_iterator iter = mDataBuffer.rbegin();
+    for (; iter != mDataBuffer.rend(); ++iter) {
+        ofs << *iter << '\n';
+    }
+    mDataBuffer.clear();
 }
 
 void FileIOHelper::SaveVector3(std::ofstream& ofs, const std::string valName, const FTVector3& vec3)
 {
-    ofs << valName << "[Vector3]" << std::endl;
-    ofs << vec3 << std::endl;
+    std::string itemTitle =  mItemIdent + valName + "[Vector3]" + '\n';
+    std::string item = mItemIdent + "(" + std::to_string(vec3.x) + "," + std::to_string(vec3.y) + "," + std::to_string(vec3.z) + ")";
+    mDataBuffer.push_back(itemTitle + item);
+    ++mItemCounts.back();
 }
 
 void FileIOHelper::SaveVector2(std::ofstream& ofs, const std::string valName, const FTVector2& vec2)
 {
-    ofs << valName << "[Vector2]" << std::endl;
-    ofs << vec2 << std::endl;
+    std::string itemTitle = mItemIdent + valName + "[Vector2]" + '\n';
+    std::string item = mItemIdent + "(" + std::to_string(vec2.x) + "," + std::to_string(vec2.y) + ")";
+    mDataBuffer.push_back(itemTitle + item);
+    ++mItemCounts.back();
 }
 
 void FileIOHelper::SaveInt(std::ofstream& ofs, const std::string valName, const int& intVal)
 {
-    ofs << valName << "[int]" << std::endl;
-    ofs << std::to_string(intVal) << std::endl;
+    std::string itemTitle = mItemIdent + valName + "[int]" + '\n';
+    std::string item = mItemIdent + std::to_string(intVal);
+    mDataBuffer.push_back(itemTitle + item);
+    ++mItemCounts.back();
 }
 
 void FileIOHelper::SaveFloat(std::ofstream& ofs, const std::string valName, const float& floatVal)
 {
-    ofs << valName << "[float]" << std::endl;
-    ofs << std::to_string(floatVal) << std::endl;
+    std::string itemTitle = mItemIdent + valName + "[float]" + '\n';
+    std::string item = mItemIdent + std::to_string(floatVal);
+    mDataBuffer.push_back(itemTitle + item);
+    ++mItemCounts.back();
 }
 
 void FileIOHelper::SaveString(std::ofstream& ofs, const std::string valName, const std::string& strVal)
 {
-    ofs << valName << "[string]" << std::endl;
-    ofs << strVal << std::endl;
+    std::string itemTitle = mItemIdent + valName + "[string]" + '\n';
+    std::string item = mItemIdent + strVal;
+    mDataBuffer.push_back(itemTitle + item);
+    ++mItemCounts.back();
 }
 
 std::string FileIOHelper::ExtractUntil(std::string& line, const char end) {
@@ -280,4 +337,3 @@ std::string FileIOHelper::GetBracketedVal(std::string& str, const char left, con
     size_t end = str.find(right);
     return str.substr(begin + 1, end - (begin + 1));
 }
-

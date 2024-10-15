@@ -16,8 +16,6 @@ UINT ColliderComponent::g_nextID = 0;
 void ColliderComponent::LoadProperties(std::ifstream& ifs)
 {
 	Component::LoadProperties(ifs);
-	FileIOHelper::LoadVector2(ifs, mOffsetPos);
-	FileIOHelper::LoadVector2(ifs, mScale);
 }
 
 FTVector2 ColliderComponent::GetOffsetPos() const

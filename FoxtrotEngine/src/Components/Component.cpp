@@ -4,6 +4,7 @@
 
 #include "Actors/Actor.h"
 #include "FileSystem/ChunkLoader.h"
+#include "FileSystem/ChunkFileKeys.h"
 #include "Core/TemplateFunctions.h"
 #include "Core/FTCore.h"
 
@@ -61,6 +62,12 @@ void Component::CloneTo(Actor* actor)
 {
 }
 
+void Component::SaveProperties(std::ofstream& ofs)
+{
+	FileIOHelper::SaveInt(ofs, ChunkKeys::DRAW_ORDER, mDrawOrder);
+	FileIOHelper::SaveInt(ofs, ChunkKeys::UPDATE_ORDER, mUpdateOrder);
+}
+
 void Component::LoadProperties(nlohmann::ordered_json& in)
 {
 	mDrawOrder	 = FileIOHelper::LoadScalarValue<int>(in, "DrawOrder");
@@ -69,8 +76,8 @@ void Component::LoadProperties(nlohmann::ordered_json& in)
 
 void Component::LoadProperties(std::ifstream& ifs)
 {
-	FileIOHelper::LoadInt(ifs, mDrawOrder);
-	FileIOHelper::LoadInt(ifs, mUpdateOrder);
+	//FileIOHelper::load(ifs, mDrawOrder);
+	//FileIOHelper::LoadInt(ifs, mUpdateOrder);
 }
 
 #ifdef FOXTROT_EDITOR

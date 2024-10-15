@@ -39,9 +39,6 @@ void Rigidbody2DComponent::AddVelocity(FTVector2 velocity)
 void Rigidbody2DComponent::LoadProperties(std::ifstream& ifs)
 {
 	Component::LoadProperties(ifs);
-	FileIOHelper::LoadFloat(ifs, mMass);
-	FileIOHelper::LoadFloat(ifs, mFrictionCoeff);
-	FileIOHelper::LoadVector2(ifs, mMaxVelocity);
 }
 
 

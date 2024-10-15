@@ -229,12 +229,12 @@ void Actor::LoadProperties(std::ifstream& ifs)
 
 void Actor::LoadComponents(std::ifstream& ifs)
 {
-	size_t count = FileIOHelper::LoadSize(ifs);
-	for (size_t i = 0; i < count; ++i)
-	{
-		std::wstring compName = FileIOHelper::LoadWString(ifs);
-		//ChunkLoader::GetInstance()->GetCompLoadMap()[compName](this, ifs);
-	}
+	//size_t count = FileIOHelper::(ifs);
+	//for (size_t i = 0; i < count; ++i)
+	//{
+	//	std::wstring compName = FileIOHelper::LoadWString(ifs);
+	//	//ChunkLoader::GetInstance()->GetCompLoadMap()[compName](this, ifs);
+	//}
 }
 
 void Actor::LoadProperties(nlohmann::ordered_json& in)
@@ -267,7 +267,6 @@ void Actor::LoadComponents(nlohmann::ordered_json& in)
 
 void Actor::SaveProperties(std::ofstream& ofs)
 {
-	FileIOHelper::BeginDataPackSave	(ofs, ChunkKeys::ACTOR_PROPERTIES, 5);
 	FileIOHelper::SaveString		(ofs, ChunkKeys::NAME, GetName());
 	FileIOHelper::SaveInt			(ofs, ChunkKeys::ID, mID);
 	FileIOHelper::SaveString		(ofs, ChunkKeys::ACTOR_GROUP, ActorGroupUtil::GetActorGroupStr(mActorGroup));
@@ -281,12 +280,13 @@ void Actor::SaveProperties(std::ofstream& ofs)
 void Actor::SaveComponents(std::ofstream& ofs)
 {
 	size_t count = mComponents.size();
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::ACTOR_PROPERTIES, 5);
-	FileIOHelper::SaveInt(ofs, count);
-	for (size_t i = 0; i < count; ++i)
-	{
-		mComponents[i]->SaveProperties(out["List"][i]);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::COMPONENTS);
+	for (size_t i = 0; i < count; ++i) {
+		FileIOHelper::BeginDataPackSave(ofs, mComponents[i]->GetName());
+		mComponents[i]->SaveProperties(ofs);
+		FileIOHelper::EndDataPackSave(ofs, mComponents[i]->GetName());
 	}
+	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::COMPONENTS);
 }
 
 #ifdef FOXTROT_EDITOR

@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <list>
 #include <unordered_map>
 #include <functional>
 #include <nlohmann/json.hpp>
@@ -17,18 +18,6 @@ using ComponentCreateFunc = std::function<void (Actor*)>;
 using ComponentLoadFunc = std::function<void(Actor*, std::ifstream& ifs)>;
 using ComponentLoadMap = std::unordered_map<std::string, ComponentLoadFunc>;
 
-#define CHUNK_FILE_FORMAT ".json"
-#define FILE_IO_FORMAT ".data"
-
-#define MAPKEY_CHUNKDATA "ChunkData"
-#define MAPKEY_ACTORDATA "ActorData"
-#define MAPKEY_RESOURCEDATA "ResourceData"
-
-#define SAVEKEY_TARGETACTORID "TargetActorID"
-#define SAVEKEY_RENDERRES "RenderResolution"
-#define SAVEKEY_SCREENCENTER "ScreenCenter"
-#define SAVEKEY_ACTORCOUNT "ActorCount"
-
 struct ChunkData
 {
 	int ActorCount;
@@ -45,8 +34,8 @@ public:
 
 protected:
 	//Save .Chunk for the editor
-	void SaveChunkData(std::fstream& out);
-	void SaveActorsData(std::fstream& out);
+	void SaveChunkData(std::ofstream& out);
+	void SaveActorsData(std::ofstream& out);
 
 protected:
 	void LoadActors(std::ifstream& ifs);
@@ -65,16 +54,6 @@ private:
 
 #define STRING_BUFFER_SIZE 50 * sizeof(char)
 #define WSTRING_BUFFER_SIZE 50 * sizeof(wchar_t)
-
-std::ofstream& operator<<(std::ofstream& ofs, FTVector3& vec3) {
-	ofs << "(" << std::to_string(vec3.x) << "," << std::to_string(vec3.y) << "," << std::to_string(vec3.z) << ")";
-	return ofs;
-}
-
-std::ofstream& operator<<(std::ofstream& ofs, FTVector2& vec2) {
-	ofs << "(" << std::to_string(vec2.x) << "," << std::to_string(vec2.y) << ")";
-	return ofs;
-}
 
 class FileIOHelper
 {
@@ -106,7 +85,11 @@ public:
 	static void ParseString(std::string& line, std::string& arg);
 
 public:
-	static int	BeginDataPackSave(std::ofstream& ofs, const std::string dataPackKey, const int varCount);
+	// Initialize identation, start new list of item
+	static void	BeginDataPackSave(std::ofstream& ofs, std::string dataPackKey);
+	static void	EndDataPackSave(std::ofstream& ofs, std::string dataPackKey);
+	static void SaveBufferToFile(std::ofstream& ofs);
+
 	static void SaveVector3(std::ofstream& ofs, const std::string valName, const FTVector3& vec3);
 	static void SaveVector2(std::ofstream& ofs, const std::string valName, const FTVector2& vec2);
 	
@@ -114,12 +97,18 @@ public:
 	static void SaveFloat(std::ofstream& ofs, const std::string valName, const float& floatVal);
 	static void SaveString(std::ofstream& ofs, const std::string valName, const std::string& strVal);
 
-	friend std::ofstream& operator<<(std::ofstream& ofs, FTVector3& vec3);
-	friend std::ofstream& operator<<(std::ofstream& ofs, FTVector2& vec2);
-
 private:
 	static std::string ExtractUntil(std::string& line, const char end);
 	static std::string GetBracketedVal(std::string& str, const char left, const char right);
 
-	private 
+	static std::list<std::string> mDataBuffer;
+
+	// Stores the number of items for each data pack.
+	// Pushed back with 0 when nested data pack save is begun
+	static std::list<int> mItemCounts;
+
+	// Points to the current data pack that is being saved.
+	static std::list<std::string> mCurrentDataPack;
+	static int mDataPackIdent;
+	static std::string mItemIdent;
 };	

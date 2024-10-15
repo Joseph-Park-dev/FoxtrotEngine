@@ -17,8 +17,11 @@ public:
 
 protected:
 	//Save .Chunk for the editor
-	void SaveChunkData(nlohmann::ordered_json& out);
-	void SaveActorsData(nlohmann::ordered_json& out);
+	void SaveChunkData(nlohmann::ordered_json& ofs);
+	void SaveActorsData(nlohmann::ordered_json& ofs);
+
+	void SaveChunkData(std::ofstream& ofs);
+	void SaveActorsData(std::ofstream& ofs);
 
 private:
 	ComponentCreateMap mComponentCreateMap;

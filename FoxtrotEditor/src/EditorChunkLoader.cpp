@@ -7,6 +7,8 @@
 #include "Managers/SceneManager.h"
 #include "Math/FTMath.h"
 #include "Components/ComponentBatchHeaders.h"
+#include "FileSystem/ChunkFileKeys.h"
+
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
 
@@ -36,11 +38,10 @@ EditorChunkLoader::~EditorChunkLoader() {}
 void EditorChunkLoader::SaveChunk(const std::string fileName)
 {
     std::ofstream ofs(fileName);
-    nlohmann::ordered_json out;
-    SaveChunkData(out[MAPKEY_CHUNKDATA]);
-    SaveActorsData(out[MAPKEY_ACTORDATA]);
-    ResourceManager::GetInstance()->SaveResources(out[MAPKEY_RESOURCEDATA]);
-    ofs << std::setw(4) << out << std::endl;
+    // Save -> ActorData comes first, // Load -> ChunkData comes first
+    SaveActorsData(ofs);
+    SaveChunkData(ofs);
+    FileIOHelper::SaveBufferToFile(ofs);
 }
 
 void EditorChunkLoader::LoadChunk(const std::string fileName)
@@ -52,11 +53,11 @@ void EditorChunkLoader::LoadChunk(const std::string fileName)
 
 void EditorChunkLoader::SaveChunkData(nlohmann::ordered_json& out)
 {
-    FileIOHelper::AddScalarValue<int>(out[SAVEKEY_TARGETACTORID], 1);
-    FileIOHelper::AddVector2(out[SAVEKEY_RENDERRES], FTVector2::Zero);
-    FileIOHelper::AddVector2(out[SAVEKEY_SCREENCENTER], FTVector2(123, 123));
+    FileIOHelper::AddScalarValue<int>(out[ChunkKeys::TARGET_ACTOR], 1);
+    FileIOHelper::AddVector2(out[ChunkKeys::RENDER_RESOLUTION], FTVector2::Zero);
+    FileIOHelper::AddVector2(out[ChunkKeys::RENDER_SCREENCENTER], FTVector2(123, 123));
     EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-    FileIOHelper::AddScalarValue<int>(out[SAVEKEY_ACTORCOUNT], scene->GetActorCount());
+    FileIOHelper::AddScalarValue<int>(out[ChunkKeys::ACTOR_COUNT], scene->GetActorCount());
 }
 
 void EditorChunkLoader::SaveActorsData(nlohmann::ordered_json& out)
@@ -74,4 +75,36 @@ void EditorChunkLoader::SaveActorsData(nlohmann::ordered_json& out)
             element->SaveComponents(out[index]["Components"]);
         }
     }
+}
+
+void EditorChunkLoader::SaveChunkData(std::ofstream& ofs)
+{
+    FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::CHUNK_DATA);
+    FileIOHelper::SaveInt(ofs, ChunkKeys::TARGET_ACTOR, 1);
+    FileIOHelper::SaveVector2(ofs, ChunkKeys::RENDER_RESOLUTION, FTVector2::Zero);
+    FileIOHelper::SaveVector2(ofs, ChunkKeys::RENDER_SCREENCENTER, FTVector2(123, 123));
+    EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+    FileIOHelper::SaveInt(ofs, ChunkKeys::ACTOR_COUNT, scene->GetActorCount());
+    FileIOHelper::EndDataPackSave(ofs, ChunkKeys::CHUNK_DATA);
+}
+
+void EditorChunkLoader::SaveActorsData(std::ofstream& ofs)
+{
+    Actor::ResetNextID();
+    EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+    std::vector<Actor*>* actors = scene->GetActors();
+    FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::ACTOR_PROPERTIES);
+    for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+    {
+        for (size_t j = 0; j < actors[i].size(); ++j)
+        {
+            EditorElement* element = dynamic_cast<EditorElement*>(actors[i][j]);
+            size_t index = (size_t)ActorGroup::END * i + j;
+            FileIOHelper::BeginDataPackSave(ofs, element->GetName());
+            element->SaveProperties(ofs);
+            element->SaveComponents(ofs);
+            FileIOHelper::EndDataPackSave(ofs, element->GetName());
+        }
+    }
+    FileIOHelper::EndDataPackSave(ofs, ChunkKeys::ACTOR_PROPERTIES);
 }

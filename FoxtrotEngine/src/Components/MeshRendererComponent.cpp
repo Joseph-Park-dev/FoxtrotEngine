@@ -13,6 +13,7 @@
 #include "Core/TemplateFunctions.h"
 #include "Managers/ResourceManager.h"
 #include "FileSystem/ChunkLoader.h"
+#include "FileSystem/ChunkFileKeys.h"
 
 #ifdef FOXTROT_EDITOR
 #include "FTCoreEditor.h"
@@ -143,12 +144,27 @@ void MeshRendererComponent::UpdateConstantBufferProjection(Camera* camInst){
 	mMeshGroup->GetVertexConstantData().projection = camInst->GetProjRow().Transpose();
 }
 
+void MeshRendererComponent::SaveProperties(std::ofstream& ofs)
+{
+	Component::SaveProperties(ofs);
+	FileIOHelper::SaveInt(ofs, ChunkKeys::MESH_KEY, mMeshKey);
+	FileIOHelper::SaveInt(ofs, ChunkKeys::TEXTURE_KEY, mTexKey);
+}
+
+void MeshRendererComponent::LoadProperties(std::ifstream& ifs)
+{
+}
+
 #ifdef FOXTROT_EDITOR
 void MeshRendererComponent::SaveProperties(nlohmann::ordered_json& out)
 {
 	Component::SaveProperties(out);
 	FileIOHelper::AddScalarValue(out["MeshKey"], mMeshKey);
 	FileIOHelper::AddScalarValue(out["TextureKey"], mTexKey);
+}
+
+void MeshRendererComponent::LoadProperties(nlohmann::ordered_json& in)
+{
 }
 
 void MeshRendererComponent::EditorUIUpdate()

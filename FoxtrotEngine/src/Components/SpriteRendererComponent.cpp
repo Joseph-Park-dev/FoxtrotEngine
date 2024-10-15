@@ -106,6 +106,11 @@ SpriteRendererComponent::SpriteRendererComponent(Actor* owner, int drawOrder,
 
 SpriteRendererComponent::~SpriteRendererComponent() {}
 
+void SpriteRendererComponent::SaveProperties(std::ofstream& ofs)
+{
+	Component::SaveProperties(ofs);
+}
+
 void SpriteRendererComponent::LoadProperties(std::ifstream& ifs)
 {
 	Component::LoadProperties(ifs);

@@ -17,8 +17,6 @@ class Component
 {
 public:
 	virtual std::string  GetName() const = 0;
-	virtual void		 LoadProperties(nlohmann::ordered_json& in);
-	virtual void		 LoadProperties(std::ifstream& ifs);
 
 public:
 	template <class T>
@@ -55,9 +53,14 @@ private:
 	int	   mUpdateOrder;
 	int	   mDrawOrder;
 
+public:
+	virtual void		 SaveProperties(std::ofstream& ofs);
+	virtual void		 LoadProperties(std::ifstream& ifs);
+
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void SaveProperties(nlohmann::ordered_json& out);
+	virtual void LoadProperties(nlohmann::ordered_json& in);
 	virtual void EditorUIUpdate();
 #endif // FOXTROT_EDITOR
 };

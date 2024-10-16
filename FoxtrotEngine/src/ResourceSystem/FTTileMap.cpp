@@ -7,6 +7,8 @@
 #include "ResourceSystem/Tile.h"
 #include "Renderer/FTRect.h"
 #include "Core/TemplateFunctions.h"
+#include "FileSystem/ChunkFileKeys.h"
+#include "FileSystem/ChunkLoader.h"
 
 void FTTileMap::ReadCSV()
 {
@@ -111,13 +113,22 @@ void FTTileMap::InitializeTile(Tile* tile, UINT column, UINT row, UINT tileNum)
 
 void FTTileMap::SaveProperties(std::ofstream& ofs)
 {
+    FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::FTTILEMAP);
     FTResource::SaveProperties(ofs);
     FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TILEMAP_SCREEN_WIDTH, mTileWidthOnScreen);
     FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TILEMAP_SCREEN_HEIGHT, mTileHeightOnScreen);
     FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TILEMAP_MAP_MAX_COUNT_X, mMaxCountOnMapX);
     FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TILEMAP_MAP_MAX_COUNT_Y, mMaxCountOnMapY);
+    FileIOHelper::EndDataPackSave(ofs, ChunkKeys::FTTILEMAP);
+
 }
 
 void FTTileMap::LoadProperties(std::ifstream& ifs)
 {
+    FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTTILEMAP);
+    FileIOHelper::LoadUnsignedInt(ifs, mMaxCountOnMapY);
+    FileIOHelper::LoadUnsignedInt(ifs, mMaxCountOnMapX);
+    FileIOHelper::LoadUnsignedInt(ifs, mTileHeightOnScreen);
+    FileIOHelper::LoadUnsignedInt(ifs, mTileWidthOnScreen);
+    FTResource::LoadProperties(ifs);
 }

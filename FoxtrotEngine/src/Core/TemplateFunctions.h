@@ -131,6 +131,12 @@ static char* ToString(const wchar_t* text)
 	return nullptr;
 }
 
+inline void LTrim(std::string& str) {
+	str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](unsigned char ch) {
+		return !(ch == '\t');
+		}));
+}
+
 //b2Vec2 ToB2Vec2(FTVector2 vec)
 //{
 //	return b2Vec2(vec.x, vec.y);

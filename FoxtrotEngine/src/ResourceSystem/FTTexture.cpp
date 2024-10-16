@@ -94,6 +94,10 @@ void FTTexture::SaveProperties(std::ofstream& ofs)
 
 void FTTexture::LoadProperties(std::ifstream& ifs)
 {
+    FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTTEXTURE);
+    FileIOHelper::LoadInt(ifs, mTexHeight);
+    FileIOHelper::LoadInt(ifs, mTexWidth);
+    FTResource::LoadProperties(ifs);
 }
 
 #ifdef FOXTROT_EDITOR

@@ -97,14 +97,6 @@ private:
 	}
 
 	template<typename FTRESOURCE>
-	void LoadResource(nlohmann::ordered_json& itemTree, const UINT key, std::unordered_map<UINT, FTRESOURCE*>& resMap)
-	{
-		FTRESOURCE* resource = new FTRESOURCE;
-		resource->LoadProperties(itemTree);
-		resMap.insert(std::make_pair(key, resource));
-	}
-
-	template<typename FTRESOURCE>
 	bool KeyExists(const UINT key, const std::unordered_map<UINT, FTRESOURCE>& resMap) {
 		if (resMap.find(key) != resMap.end()) {
 			printf("Error: ResourceManager::ResourceExists() -> Resource with key %d exists\n", key);
@@ -136,14 +128,6 @@ private:
 	void ProcessTexture(FTTexture* texture);
 	void ProcessTextures();
 
-	template<typename FTRESOURCE>
-	void SaveResourceInMap(std::ofstream& ofs, const std::unordered_map<UINT, FTRESOURCE*>& resMap) {
-		typename std::unordered_map<UINT, FTRESOURCE*>::const_iterator iter;
-		for (iter = resMap.begin(); iter != resMap.end(); ++iter) {
-			(*iter).second->SaveProperties(ofs);
-		}
-	}
-
 	//template<typename FTRESOURCE>
 	//void LoadResourceToMap(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap) {
 	//	gItemKey = 0;
@@ -159,6 +143,36 @@ private:
 public:
 	void SaveResources(std::ofstream& ofs);
 	void LoadResources(std::ifstream& ifs);
+
+	template<typename FTRESOURCE>
+	void SaveResourceInMap(std::ofstream& ofs, const std::unordered_map<UINT, FTRESOURCE*>& resMap) {
+		typename std::unordered_map<UINT, FTRESOURCE*>::const_iterator iter;
+		for (iter = resMap.begin(); iter != resMap.end(); ++iter) {
+			(*iter).second->SaveProperties(ofs);
+		}
+	}
+
+	template<typename FTRESOURCE>
+	void LoadResourceToMap(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap, size_t& resCount) {
+		if (0 < resCount)
+		{
+			gItemKey = 0;
+			for (size_t i = 0; i < resCount; ++i) {
+				LoadResource(ifs, gItemKey, resMap);
+				++gItemKey; // Key of the next resource to be imported.
+			}
+			// Subtract the number of resources loaded.
+			resCount -= gItemKey;
+		}
+	}
+
+	template<typename FTRESOURCE>
+	void LoadResource(std::ifstream& ifs, const UINT key, std::unordered_map<UINT, FTRESOURCE*>& resMap)
+	{
+		FTRESOURCE* resource = new FTRESOURCE;
+		resource->LoadProperties(ifs);
+		resMap.insert(std::make_pair(key, resource));
+	}
 
 #ifdef FOXTROT_EDITOR
 public:
@@ -185,6 +199,14 @@ private:
 				gItemKey = key;
 		}
 		++gItemKey; // Key of the next resource to be imported.
+	}
+
+	template<typename FTRESOURCE>
+	void LoadResource(nlohmann::ordered_json& itemTree, const UINT key, std::unordered_map<UINT, FTRESOURCE*>& resMap)
+	{
+		FTRESOURCE* resource = new FTRESOURCE;
+		resource->LoadProperties(itemTree);
+		resMap.insert(std::make_pair(key, resource));
 	}
 #endif // FOXTROT_EDITOR
 };

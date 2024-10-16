@@ -171,11 +171,16 @@ void ResourceManager::SaveResources(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::RESOURCE_DATA);
 	SaveResourceInMap<FTTexture>(ofs, mMapTextures);
+	SaveResourceInMap<FTTileMap>(ofs, mMapTileMaps);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::RESOURCE_DATA);
 }
 
 void ResourceManager::LoadResources(std::ifstream& ifs)
 {
+	size_t count = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::RESOURCE_DATA);
+	LoadResourceToMap<FTTexture>(ifs, mMapTextures, count);
+	ProcessTextures();
+	LoadResourceToMap<FTTileMap>(ifs, mMapTileMaps, count);
 }
 
 #ifdef FOXTROT_EDITOR

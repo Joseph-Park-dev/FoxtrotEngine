@@ -192,19 +192,112 @@ FTVector3 FileIOHelper::LoadVector3(nlohmann::ordered_json& json, std::string ke
     return value;
 }
 
-int FileIOHelper::BeginDataPackLoad(std::ifstream& ifs)
+size_t FileIOHelper::BeginDataPackLoad(std::ifstream& ifs, std::string dataPackKey)
 {
-    std::string dataPackKey;
-    std::getline(ifs, dataPackKey, '\n');
+    std::string loadedDataPackKey;
+    std::getline(ifs, loadedDataPackKey, '\n');
+    LTrim(loadedDataPackKey);
 
     // Parse data pack key 
-    std::string name = ExtractUntil(dataPackKey, '<');
-    int	count = std::stoi(GetBracketedVal(dataPackKey, '<', '>'));
+    std::string name = ExtractUntil(loadedDataPackKey, '<');
+    size_t count = std::stoi(GetBracketedVal(loadedDataPackKey, '<', '>'));
+
+    assert(name == dataPackKey);
 
     std::cout << "Parsing data pack : " << name << '\n';
     std::cout << name << '\n';
-
     return count;
+}
+
+void FileIOHelper::LoadInt(std::ifstream& ifs, int& intVal)
+{
+    // Parse data information.
+    std::string line;
+    std::getline(ifs, line, '\n');
+
+    std::string name = ExtractUntil(line, '[');
+    std::string typeNameStr = GetBracketedVal(line, '[', ']');
+    line.clear();
+
+    // Parse the actual data.
+    std::getline(ifs, line, '\n');
+    ParseInt(line, intVal);
+}
+
+void FileIOHelper::LoadUnsignedInt(std::ifstream& ifs, unsigned int& intVal)
+{
+    // Parse data information.
+    std::string line;
+    std::getline(ifs, line, '\n');
+
+    std::string name = ExtractUntil(line, '[');
+    std::string typeNameStr = GetBracketedVal(line, '[', ']');
+    line.clear();
+
+    // Parse the actual data.
+    std::getline(ifs, line, '\n');
+    ParseUnsignedInt(line, intVal);
+    LogInt(intVal);
+}
+
+void FileIOHelper::LoadFloat(std::ifstream& ifs, float& floatVal)
+{
+    // Parse data information.
+    std::string line;
+    std::getline(ifs, line, '\n');
+
+    std::string name = ExtractUntil(line, '[');
+    std::string typeNameStr = GetBracketedVal(line, '[', ']');
+    line.clear();
+
+    // Parse the actual data.
+    std::getline(ifs, line, '\n');
+    ParseFloat(line, floatVal);
+}
+
+void FileIOHelper::LoadBasicString(std::ifstream& ifs, std::string& strVal)
+{
+    // Parse data information.
+    std::string line;
+    std::getline(ifs, line, '\n');
+
+    std::string name = ExtractUntil(line, '[');
+    std::string typeNameStr = GetBracketedVal(line, '[', ']');
+    line.clear();
+
+    // Parse the actual data.
+    std::getline(ifs, line, '\n');
+    ParseString(line, strVal);
+}
+
+void FileIOHelper::LoadVector2(std::ifstream& ifs, FTVector2& vec2)
+{
+    // Parse data information.
+    std::string line;
+    std::getline(ifs, line, '\n');
+
+    std::string name = ExtractUntil(line, '[');
+    std::string typeNameStr = GetBracketedVal(line, '[', ']');
+    line.clear();
+
+    // Parse the actual data.
+    std::getline(ifs, line, '\n');
+    ParseVector2(line, vec2);
+}
+
+void FileIOHelper::LoadVector3(std::ifstream& ifs, FTVector3& vec3)
+{
+    // Parse data information.
+    std::string line;
+    std::getline(ifs, line, '\n');
+
+    std::string name = ExtractUntil(line, '[');
+    std::string typeNameStr = GetBracketedVal(line, '[', ']');
+    line.clear();
+
+    // Parse the actual data.
+    std::getline(ifs, line, '\n');
+    ParseVector3(line, vec3);
 }
 
 void FileIOHelper::ParseVector3(std::string& line, FTVector3& arg)
@@ -228,19 +321,25 @@ void FileIOHelper::ParseVector2(std::string& line, FTVector2& arg)
 
 void FileIOHelper::ParseInt(std::string& line, int& arg)
 {
-    line = GetBracketedVal(line, '(', ')');
+    LTrim(line);
     arg = std::stoi(line);
+}
+
+void FileIOHelper::ParseUnsignedInt(std::string& line, unsigned int& arg)
+{
+    LTrim(line);
+    arg = std::stoul(line, nullptr, 0);
 }
 
 void FileIOHelper::ParseFloat(std::string& line, float& arg)
 {
-    line = GetBracketedVal(line, '(', ')');
+    LTrim(line);
     arg = std::stof(line);
 }
 
 void FileIOHelper::ParseString(std::string& line, std::string& arg)
 {
-    line = GetBracketedVal(line, '(', ')');
+    LTrim(line);
     arg.assign(line);
 }
 

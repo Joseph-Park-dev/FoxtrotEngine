@@ -23,8 +23,12 @@ void FTResource::SaveProperties(std::ofstream& ofs)
     FileIOHelper::SaveString(ofs, ChunkKeys::RELATIVE_PATH, mRelativePath);
 }
 
+// When loading properties, invert the order of the member variables
+// (Due to the loading order)
 void FTResource::LoadProperties(std::ifstream& ifs)
 {
+    FileIOHelper::LoadBasicString(ifs, mRelativePath);
+    FileIOHelper::LoadBasicString(ifs, mFileName);
 }
 
 #ifdef FOXTROT_EDITOR

@@ -75,14 +75,21 @@ public:
 	}
 
 public:
-	static int	BeginDataPackLoad(std::ifstream& ifs);
+	static size_t BeginDataPackLoad(std::ifstream& ifs, std::string dataPackKey);
+	static void   LoadInt(std::ifstream& ifs, int& intVal);
+	static void   LoadUnsignedInt(std::ifstream& ofs, unsigned int& intVal);
+	static void   LoadFloat(std::ifstream& ifs, float& floatVal);
+	static void   LoadBasicString(std::ifstream& ifs, std::string& strVal);
+	static void   LoadVector2(std::ifstream& ifs, FTVector2& vec2);
+	static void   LoadVector3(std::ifstream& ifs, FTVector3& vec3);
 
-	static void	ParseVector3(std::string& line, FTVector3& arg);
-	static void	ParseVector2(std::string& line, FTVector2& arg);
+	static void	  ParseVector3(std::string& line, FTVector3& arg);
+	static void	  ParseVector2(std::string& line, FTVector2& arg);
 
-	static void	ParseInt(std::string& line, int& arg);
-	static void	ParseFloat(std::string& line, float& arg);
-	static void ParseString(std::string& line, std::string& arg);
+	static void	  ParseInt(std::string& line, int& arg);
+	static void   ParseUnsignedInt(std::string& line, unsigned int& arg);
+	static void	  ParseFloat(std::string& line, float& arg);
+	static void   ParseString(std::string& line, std::string& arg);
 
 public:
 	// Initialize identation, start new list of item
@@ -99,9 +106,6 @@ public:
 	static void SaveString(std::ofstream& ofs, const std::string valName, const std::string& strVal);
 
 private:
-	static std::string ExtractUntil(std::string& line, const char end);
-	static std::string GetBracketedVal(std::string& str, const char left, const char right);
-
 	static std::list<std::string> mDataBuffer;
 
 	// Stores the number of items for each data pack.
@@ -112,4 +116,8 @@ private:
 	static std::list<std::string> mCurrentDataPack;
 	static int mDataPackIdent;
 	static std::string mItemIdent;
+
+private:
+	static std::string ExtractUntil(std::string& line, const char end);
+	static std::string GetBracketedVal(std::string& str, const char left, const char right);
 };	

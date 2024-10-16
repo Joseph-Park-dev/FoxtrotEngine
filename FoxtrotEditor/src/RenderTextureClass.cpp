@@ -6,7 +6,6 @@
 
 #include "Renderer/FoxtrotRenderer.h"
 #include "Core/TemplateFunctions.h"
-#include "Managers/SceneManager.h"
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"

@@ -14,15 +14,15 @@ struct Mesh;
 class SpriteRendererComponent : public MeshRendererComponent
 {
 public:
-	int			 GetTexWidth()  const { return mTexWidth; }
-	int			 GetTexHeight() const { return mTexHeight; }
+	int			 GetTexWidth()  { return GetMeshGroup()->GetTexture()->GetTexWidth() * mTexScale.x; }
+	int			 GetTexHeight() { return GetMeshGroup()->GetTexture()->GetTexHeight() * mTexScale.y; }
 
 	std::string GetName()		const override{
 		return	"SpriteRendererComponent";
 	}
 
-	void		 SetTexWidth	(int texWidth)  { mTexWidth = texWidth; }
-	void		 SetTexHeight	(int texHeight) { mTexHeight = texHeight; }
+	//void		 SetTexWidth	(int texWidth)  { GetMeshGroup()->GetTexture()->SetTexWidth(texWidth); }
+	//void		 SetTexHeight	(int texHeight) { GetMeshGroup()->GetTexture()->SetTexWidth(texHeight); }
 	virtual void SetTexture		()		override;
 	void		 UpdateTexture	(FoxtrotRenderer* renderer, std::string fileName);
 
@@ -44,10 +44,8 @@ public:
 
 private:
 	// These fields need to be loaded from .chunk file.
-	int					mTexWidth;
-	int					mTexHeight;
-	int					mChannel;
-	float				mScale;
+	int		  mChannel;
+	FTVector2 mTexScale;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;

@@ -6,6 +6,7 @@ class Tile;
 
 class GeometryGenerator {
   public:
+    static MeshData MakeSquare();
     static MeshData MakeSquare(float scale);
     // MakeSquare() for Making tilemap
     static MeshData MakeSquareGrid(const int numSlices, const int numStacks, const float scale, const DirectX::SimpleMath::Vector2 texScale);

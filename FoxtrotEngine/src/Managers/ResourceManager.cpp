@@ -9,6 +9,8 @@
 #include "Core/TemplateFunctions.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/D3D11Utils.h"
+#include "FileSystem/ChunkLoader.h"
+#include "FileSystem/ChunkFileKeys.h"
 
 UINT ResourceManager::gItemKey = 0;
 
@@ -163,6 +165,17 @@ ResourceManager::ResourceManager()
 	: mPathToAsset("./Assets")
 {
 
+}
+
+void ResourceManager::SaveResources(std::ofstream& ofs)
+{
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::RESOURCE_DATA);
+	SaveResourceInMap<FTTexture>(ofs, mMapTextures);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::RESOURCE_DATA);
+}
+
+void ResourceManager::LoadResources(std::ifstream& ifs)
+{
 }
 
 #ifdef FOXTROT_EDITOR

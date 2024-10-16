@@ -108,3 +108,16 @@ void FTTileMap::InitializeTile(Tile* tile, UINT column, UINT row, UINT tileNum)
     FTRect* rectOnScreen = tile->GetRectOnScreen();
     rectOnScreen->Set(column, row, mTileWidthOnScreen, mTileHeightOnScreen);
 }
+
+void FTTileMap::SaveProperties(std::ofstream& ofs)
+{
+    FTResource::SaveProperties(ofs);
+    FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TILEMAP_SCREEN_WIDTH, mTileWidthOnScreen);
+    FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TILEMAP_SCREEN_HEIGHT, mTileHeightOnScreen);
+    FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TILEMAP_MAP_MAX_COUNT_X, mMaxCountOnMapX);
+    FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TILEMAP_MAP_MAX_COUNT_Y, mMaxCountOnMapY);
+}
+
+void FTTileMap::LoadProperties(std::ifstream& ifs)
+{
+}

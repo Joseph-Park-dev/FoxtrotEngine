@@ -94,6 +94,7 @@ public:
 	static void SaveVector2(std::ofstream& ofs, const std::string valName, const FTVector2& vec2);
 	
 	static void SaveInt(std::ofstream& ofs, const std::string valName, const int& intVal);
+	static void SaveUnsignedInt(std::ofstream& ofs, const std::string valName, const unsigned int& intVal);
 	static void SaveFloat(std::ofstream& ofs, const std::string valName, const float& floatVal);
 	static void SaveString(std::ofstream& ofs, const std::string valName, const std::string& strVal);
 

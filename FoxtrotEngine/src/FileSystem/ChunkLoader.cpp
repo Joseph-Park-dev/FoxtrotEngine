@@ -2,6 +2,7 @@
 
 #include <string>
 #include <fstream>
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <commdlg.h>
 #include <iostream>
@@ -302,6 +303,14 @@ void FileIOHelper::SaveVector2(std::ofstream& ofs, const std::string valName, co
 void FileIOHelper::SaveInt(std::ofstream& ofs, const std::string valName, const int& intVal)
 {
     std::string itemTitle = mItemIdent + valName + "[int]" + '\n';
+    std::string item = mItemIdent + std::to_string(intVal);
+    mDataBuffer.push_back(itemTitle + item);
+    ++mItemCounts.back();
+}
+
+void FileIOHelper::SaveUnsignedInt(std::ofstream& ofs, const std::string valName, const unsigned int& intVal)
+{
+    std::string itemTitle = mItemIdent + valName + "[unsigned int]" + '\n';
     std::string item = mItemIdent + std::to_string(intVal);
     mDataBuffer.push_back(itemTitle + item);
     ++mItemCounts.back();

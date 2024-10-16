@@ -40,6 +40,7 @@ void EditorChunkLoader::SaveChunk(const std::string fileName)
     std::ofstream ofs(fileName);
     // Save -> ActorData comes first, // Load -> ChunkData comes first
     SaveActorsData(ofs);
+    ResourceManager::GetInstance()->SaveResources(ofs);
     SaveChunkData(ofs);
     FileIOHelper::SaveBufferToFile(ofs);
 }
@@ -47,8 +48,7 @@ void EditorChunkLoader::SaveChunk(const std::string fileName)
 void EditorChunkLoader::LoadChunk(const std::string fileName)
 {
     std::ifstream ifs(fileName);
-    nlohmann::ordered_json in = nlohmann::ordered_json::parse(ifs);
-    ResourceManager::GetInstance()->LoadResources(in["ResourceData"]);
+    //ResourceManager::GetInstance()->LoadResources(in["ResourceData"]);
 }
 
 void EditorChunkLoader::SaveChunkData(nlohmann::ordered_json& out)

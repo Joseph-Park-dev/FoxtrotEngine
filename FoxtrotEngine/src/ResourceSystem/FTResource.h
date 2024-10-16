@@ -1,8 +1,11 @@
 #pragma once
 #include <string>
-#include <nlohmann/json.hpp>
 
 #define KEY_LENGTH 50
+
+#ifdef FOXTROT_EDITOR
+#include <nlohmann/json.hpp>
+#endif
 
 class FTResource
 {
@@ -26,9 +29,13 @@ public:
 	{}
 	virtual ~FTResource(){}
 
+public:
+	virtual void SaveProperties(std::ofstream& ofs);
+	virtual void LoadProperties(std::ifstream& ifs);
+
 #ifdef FOXTROT_EDITOR
 public:
-	virtual void SaveProperties(nlohmann::ordered_json& out, UINT key);
+	virtual void SaveProperties(nlohmann::ordered_json& out, unsigned int key);
 	virtual void LoadProperties(nlohmann::ordered_json& itemTree);
 
 	virtual void UpdateUI() {};

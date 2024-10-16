@@ -1,5 +1,9 @@
 #include "ResourceSystem/FTResource.h"
+
+#include <fstream>
+
 #include "FileSystem/ChunkLoader.h"
+#include "FileSystem/ChunkFileKeys.h"
 
 #ifdef FOXTROT_EDITOR
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -11,8 +15,20 @@
 #include "imgui/FileDialog/ImGuiFileDialogConfig.h"
 
 #include "EditorLayer.h"
+#endif //FOXTROT_EDITOR
 
-void FTResource::SaveProperties(nlohmann::ordered_json& out, UINT key)
+void FTResource::SaveProperties(std::ofstream& ofs)
+{
+    FileIOHelper::SaveString(ofs, ChunkKeys::FILE_NAME, mFileName);
+    FileIOHelper::SaveString(ofs, ChunkKeys::RELATIVE_PATH, mRelativePath);
+}
+
+void FTResource::LoadProperties(std::ifstream& ifs)
+{
+}
+
+#ifdef FOXTROT_EDITOR
+void FTResource::SaveProperties(nlohmann::ordered_json& out, unsigned int key)
 {
     FileIOHelper::AddScalarValue(out["Key"], key);
     FileIOHelper::AddScalarValue(out["FileName"], mFileName);

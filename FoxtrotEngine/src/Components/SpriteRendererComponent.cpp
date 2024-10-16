@@ -4,6 +4,7 @@
 #include "Actors/Transform.h"
 #include "Core/FTCore.h"
 #include "FileSystem/ChunkLoader.h"
+#include "FileSystem/ChunkFileKeys.h"
 #include "Managers/ResourceManager.h"
 #include "Math/FTMath.h"
 #include "Physics/Bounds.h"
@@ -20,8 +21,8 @@
 void SpriteRendererComponent::SetTexture()
 {
 	MeshRendererComponent::SetTexture();
-	mTexWidth = GetMeshGroup()->GetTexture()->GetTexWidth();
-	mTexHeight = GetMeshGroup()->GetTexture()->GetTexHeight();
+	//mTexWidth = GetMeshGroup()->GetTexture()->GetTexWidth();
+	//mTexHeight = GetMeshGroup()->GetTexture()->GetTexHeight();
 }
 
 void SpriteRendererComponent::UpdateTexture(FoxtrotRenderer* renderer, std::string fileName)
@@ -62,7 +63,7 @@ void SpriteRendererComponent::Render(FoxtrotRenderer* renderer)
 bool SpriteRendererComponent::InitializeMesh()
 {
 	MeshRendererComponent::InitializeMesh(
-		GeometryGenerator::MakeSquare(mScale));
+		GeometryGenerator::MakeSquare());
 	if (!GetMeshGroup())
 	{
 		LogString("ERROR: SpriteRendererComponent::InitializeMesh() -> Mesh "
@@ -102,13 +103,14 @@ bool SpriteRendererComponent::InitializeMesh()
 
 SpriteRendererComponent::SpriteRendererComponent(Actor* owner, int drawOrder,
 	int updateOrder)
-	: MeshRendererComponent(owner, drawOrder, updateOrder), mChannel(4), mScale(1.f) {}
+	: MeshRendererComponent(owner, drawOrder, updateOrder), mChannel(4), mTexScale(FTVector2(1.0f,1.0f)) {}
 
 SpriteRendererComponent::~SpriteRendererComponent() {}
 
 void SpriteRendererComponent::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
+	FileIOHelper::SaveVector2(ofs, ChunkKeys::TEXTURE_WIDTH, mTexScale);
 }
 
 void SpriteRendererComponent::LoadProperties(std::ifstream& ifs)
@@ -131,10 +133,10 @@ void SpriteRendererComponent::LoadProperties(std::ifstream& ifs)
 void SpriteRendererComponent::SaveProperties(nlohmann::ordered_json& out)
 {
 	Component::SaveProperties(out);
-	FileIOHelper::AddScalarValue(out["TextureWidth"], mTexWidth);
-	FileIOHelper::AddScalarValue(out["TextureHeight"], mTexHeight);
+	//FileIOHelper::AddScalarValue(out["TextureWidth"], mTexWidth);
+	//FileIOHelper::AddScalarValue(out["TextureHeight"], mTexHeight);
 	FileIOHelper::AddScalarValue(out["Channel"], mChannel);
-	FileIOHelper::AddScalarValue(out["Scale"], mScale);
+	FileIOHelper::AddVector2(out["Scale"], mTexScale);
 }
 
 void SpriteRendererComponent::EditorUIUpdate()
@@ -220,7 +222,7 @@ void SpriteRendererComponent::UpdateTexHeight()
 
 void SpriteRendererComponent::UpdateScale()
 {
-	CommandHistory::GetInstance()->UpdateFloatValue("Texture Scale", &mScale,
+	CommandHistory::GetInstance()->UpdateVector2Value("Texture Scale", mTexScale,
 		FLOATMOD_SPEED);
 }
 #endif

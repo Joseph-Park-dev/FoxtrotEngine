@@ -1,10 +1,13 @@
 #pragma once
 #include <string>
 #include <unordered_map>
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <nlohmann/json.hpp>
 
 #include "Core/SingletonMacro.h"
+#include "FileSystem/ChunkLoader.h"
+#include "FileSystem/ChunkFileKeys.h"
 
 class FTTexture;
 class FTSpineAnimation;
@@ -133,7 +136,31 @@ private:
 	void ProcessTexture(FTTexture* texture);
 	void ProcessTextures();
 
+	template<typename FTRESOURCE>
+	void SaveResourceInMap(std::ofstream& ofs, const std::unordered_map<UINT, FTRESOURCE*>& resMap) {
+		typename std::unordered_map<UINT, FTRESOURCE*>::const_iterator iter;
+		for (iter = resMap.begin(); iter != resMap.end(); ++iter) {
+			(*iter).second->SaveProperties(ofs);
+		}
+	}
 
+	//template<typename FTRESOURCE>
+	//void LoadResourceToMap(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap) {
+	//	gItemKey = 0;
+	//	for (auto& itemTree : resTree[typeid(FTRESOURCE).name()]) {
+	//		UINT key = itemTree["Key"];
+	//		LoadResource(itemTree, key, resMap);
+	//		if (gItemKey < key)
+	//			gItemKey = key;
+	//	}
+	//	++gItemKey; // Key of the next resource to be imported.
+	//}
+
+public:
+	void SaveResources(std::ofstream& ofs);
+	void LoadResources(std::ifstream& ifs);
+
+#ifdef FOXTROT_EDITOR
 public:
 	void SaveResources(nlohmann::ordered_json& out);
 	void LoadResources(nlohmann::ordered_json& resourceTree);
@@ -159,5 +186,5 @@ private:
 		}
 		++gItemKey; // Key of the next resource to be imported.
 	}
-
+#endif // FOXTROT_EDITOR
 };

@@ -21,6 +21,7 @@
 #include "Managers/ResourceManager.h"
 #include "Renderer/FTRect.h"
 #include "FileSystem/ChunkLoader.h"
+#include "FileSystem/ChunkFileKeys.h"
 
 #ifdef FOXTROT_EDITOR
 #include "CommandHistory.h"
@@ -73,9 +74,15 @@ TileMapComponent::~TileMapComponent()
     ResourceManager::GetInstance()->RemoveLoadedMeshes(GetMeshKey());
 }
 
+void TileMapComponent::SaveProperties(std::ofstream& ofs)
+{
+    Component::SaveProperties(ofs);
+    FileIOHelper::SaveInt(ofs, ChunkKeys::TILEMAP_KEY, mTileMapKey);
+}
+
 void TileMapComponent::LoadProperties(std::ifstream& ifs)
 {
-	SpriteRendererComponent::LoadProperties(ifs);
+    Component::LoadProperties(ifs);
 }
 
 #ifdef FOXTROT_EDITOR

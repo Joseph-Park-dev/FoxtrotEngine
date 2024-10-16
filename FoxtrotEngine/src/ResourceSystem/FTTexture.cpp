@@ -11,7 +11,13 @@
 #include "Core/TemplateFunctions.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "FileSystem/ChunkLoader.h"
+#include "FileSystem/ChunkFileKeys.h"
 #include "Managers/ResourceManager.h"
+
+
+#ifdef FOXTROT_EDITOR
+#include "EditorLayer.h"
+#endif
 
 bool FTTexture::CreateTexture(
     FoxtrotRenderer* renderer, 
@@ -77,8 +83,20 @@ bool FTTexture::ReleaseTexture()
     return true;
 }
 
+void FTTexture::SaveProperties(std::ofstream& ofs)
+{
+    FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::FTTEXTURE);
+    FTResource::SaveProperties(ofs);
+    FileIOHelper::SaveInt(ofs, ChunkKeys::TEXTURE_WIDTH, mTexWidth);
+    FileIOHelper::SaveInt(ofs, ChunkKeys::TEXTURE_HEIGHT, mTexHeight);
+    FileIOHelper::EndDataPackSave(ofs, ChunkKeys::FTTEXTURE);
+}
+
+void FTTexture::LoadProperties(std::ifstream& ifs)
+{
+}
+
 #ifdef FOXTROT_EDITOR
-#include "EditorLayer.h"
 
 void FTTexture::SaveProperties(nlohmann::ordered_json& out, UINT key)
 {

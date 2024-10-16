@@ -1,6 +1,7 @@
 #pragma once
 #include "ResourceSystem/FTResource.h"
 
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
 class Tile;
@@ -39,5 +40,9 @@ private:
 
 private:
     void    InitializeTile(Tile* tile, UINT column, UINT row, UINT tileNum);
+
+public:
+    virtual void SaveProperties(std::ofstream& ofs);
+    virtual void LoadProperties(std::ifstream& ifs);
 };
 

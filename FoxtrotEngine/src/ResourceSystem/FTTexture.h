@@ -49,6 +49,10 @@ private:
 
 	friend class ResourceManager;
 
+public:
+    virtual void SaveProperties(std::ofstream& ofs);
+    virtual void LoadProperties(std::ifstream& ifs);
+
 #ifdef FOXTROT_EDITOR
 public:
     virtual void SaveProperties(nlohmann::ordered_json& out, UINT key) override;

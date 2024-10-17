@@ -104,8 +104,8 @@ public:
 public:
 	Actor(Scene* scene);
 	// Copy Constructor
-	Actor(Actor& origin);
-	Actor(Actor* origin);
+	Actor(Actor& origin, Scene* scene);
+	Actor(Actor* origin, Scene* scene);
 	virtual ~Actor();
 
 	virtual Actor* Clone() { return nullptr; }

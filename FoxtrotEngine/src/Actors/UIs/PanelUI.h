@@ -13,7 +13,7 @@ public:
 
 
 public:
-	PanelUI(class Scene* scene, bool isCamAffected);
-	PanelUI(Actor* origin);
+	PanelUI(Scene* scene, bool isCamAffected);
+	PanelUI(Actor* origin, Scene* scene);
 	virtual ~PanelUI() override; 
 };

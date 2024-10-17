@@ -39,8 +39,8 @@ PanelUI::PanelUI(Scene* scene, bool isCamAffected)
 {
 }
 
-PanelUI::PanelUI(Actor* origin)
-	: UIActor(origin)
+PanelUI::PanelUI(Actor* origin, Scene* scene)
+	: UIActor(origin, scene)
 	, mDragStartPoint(FTVector2::Zero)
 {
 }

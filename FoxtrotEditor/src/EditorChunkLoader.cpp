@@ -50,6 +50,7 @@ void EditorChunkLoader::LoadChunk(const std::string fileName)
     std::ifstream ifs(fileName);
     LoadChunkData(ifs);
     ResourceManager::GetInstance()->LoadResources(ifs);
+
 }
 
 void EditorChunkLoader::SaveChunkData(nlohmann::ordered_json& out)
@@ -133,4 +134,17 @@ void EditorChunkLoader::LoadChunkData(std::ifstream& ifs)
 
 void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
 {
+    //Actor::ResetNextID();
+    //EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+    //size_t count = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::ACTOR_PROPERTIES);
+    //for (size_t i = 0; i < count; ++i)
+    //{
+    //    EditorElement* element = new EditorElement(scene);
+    //    size_t index = (size_t)ActorGroup::END * i + j;
+    //    FileIOHelper::BeginDataPackSave(ofs, element->GetName());
+    //    element->SaveProperties(ofs);
+    //    element->SaveComponents(ofs);
+    //    FileIOHelper::EndDataPackSave(ofs, element->GetName());
+    //}
+    //FileIOHelper::EndDataPackSave(ofs, ChunkKeys::ACTOR_PROPERTIES);
 }

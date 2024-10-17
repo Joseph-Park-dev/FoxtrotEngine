@@ -24,10 +24,12 @@ Actor::Actor(Scene* scene)
 	, mID(g_NextID++)
 	, mComponents{}
 	, mChild{}
-{}
+{
+	scene->AddActor(this, mActorGroup);
+}
 
 // Constructor to copy Actor
-Actor::Actor(Actor& origin)
+Actor::Actor(Actor& origin, Scene* scene)
 	: mState(origin.mState)
 	, mTransform(nullptr)
 	, mActorGroup(origin.mActorGroup)
@@ -38,10 +40,11 @@ Actor::Actor(Actor& origin)
 { 
 	CopyTransformFrom(origin);
 	CopyComponentsFrom(origin);
+	scene->AddActor(this, mActorGroup);
 }
 
 // Constructor to copy Actor
-Actor::Actor(Actor* origin)
+Actor::Actor(Actor* origin, Scene* scene)
 	: mState(origin->mState)
 	, mTransform(nullptr)
 	, mActorGroup(origin->mActorGroup)
@@ -52,6 +55,7 @@ Actor::Actor(Actor* origin)
 {
 	CopyTransformFrom(origin);
 	CopyComponentsFrom(origin);
+	scene->AddActor(this, mActorGroup);
 }
 
 Actor::~Actor()

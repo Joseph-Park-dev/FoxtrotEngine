@@ -93,14 +93,12 @@ void EditorScene::AddEditorElement()
 	std::string name = "Game Object " + std::to_string(this->GetActorCount());
 	editorElement->SetName(name);
 	editorElement->SetIsFocused(true);
-	EditorScene::AddActor(editorElement, ActorGroup::DEFAULT);
 }
 
 void EditorScene::AddEditorElement(Actor* actor)
 {
 	UnfocusEditorElements();
-	EditorElement* editorElement = new EditorElement(actor);
-	AddActor(editorElement, actor->GetActorGroup());
+	EditorElement* editorElement = new EditorElement(actor, this);
 }
 
 EditorScene::EditorScene()

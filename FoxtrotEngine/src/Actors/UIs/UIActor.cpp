@@ -92,17 +92,16 @@ UIActor::UIActor(Scene* scene, bool isCamAffect)
 	SetTransform(new RectTransform);
 }
 
-UIActor::UIActor(UIActor& origin)
-	: Actor(origin)
+UIActor::UIActor(UIActor& origin, Scene* scene)
+	: Actor(origin, scene)
 	, mIsAffectedByCamera(origin.mIsAffectedByCamera)
 	, mMouseHovering(origin.mMouseHovering)
 	, mLBtnDown(origin.mLBtnDown)
 	, mIsFocused(origin.mIsFocused)
-{
-}
+{}
 
-UIActor::UIActor(Actor* origin)
-	: Actor(origin)
+UIActor::UIActor(Actor* origin, Scene* scene)
+	: Actor(origin, scene)
 	, mIsAffectedByCamera(true)
 	, mMouseHovering(false)
 	, mLBtnDown(false)

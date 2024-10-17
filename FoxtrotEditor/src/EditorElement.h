@@ -37,7 +37,7 @@ public:
 
 public:
 	EditorElement(Scene* scene);
-	EditorElement(Actor* actor);
+	EditorElement(Actor* actor, Scene* scene);
 
 private:
 	// Stores ActorGroup index -> is int for Uint -> int conversion not supported

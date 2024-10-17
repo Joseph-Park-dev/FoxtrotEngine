@@ -113,8 +113,8 @@ EditorElement::EditorElement(Scene* scene)
 	, mActorGroupIdx((int)ActorGroup::DEFAULT)
 {}
 
-EditorElement::EditorElement(Actor* actor)
-	: PanelUI(actor)
+EditorElement::EditorElement(Actor* actor, Scene* scene)
+	: PanelUI(actor, scene)
 	, mActorGroupIdx((int)actor->GetActorGroup())
 	, mRotationModSpeed(1.0f)
 {

@@ -47,8 +47,8 @@ private:
 
 public:
     UIActor(Scene* scene, bool isCamAffect);
-    UIActor(UIActor& origin);
-    UIActor(Actor* origin);
+    UIActor(UIActor& origin, Scene* scene);
+    UIActor(Actor* origin, Scene* scene);
     virtual ~UIActor() override;
 };
 

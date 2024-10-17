@@ -13,6 +13,7 @@
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
 #include "Components/Component.h"
+#include "Core/FTCore.h"
 
 int Actor::g_NextID = 0;
 
@@ -227,18 +228,91 @@ void Actor::SetState(std::string state)
 //	fwrite(&GetTransform()->GetWorldPosition(), sizeof(Vector2), 1, file);
 //}
 
-void Actor::LoadProperties(std::ifstream& ifs)
+void Actor::SaveProperties(std::ofstream& ofs)
 {
+	FileIOHelper::SaveString		(ofs, ChunkKeys::NAME, GetName());
+	FileIOHelper::SaveInt			(ofs, ChunkKeys::ID, mID);
+	FileIOHelper::SaveString		(ofs, ChunkKeys::ACTOR_GROUP, ActorGroupUtil::GetActorGroupStr(mActorGroup));
+	FileIOHelper::SaveString		(ofs, ChunkKeys::STATE, GetStateStr());
+	if (mParent)
+		FileIOHelper::SaveString	(ofs, ChunkKeys::PARENT, mParent->GetName());
+	else
+		FileIOHelper::SaveString	(ofs, ChunkKeys::PARENT, "nullptr");
+
+	// Changing the call location of Transform is NOT recommended
+	// Nested .chunk DataPack has unknown problem.
+	mTransform->SaveProperties(ofs);
+
 }
 
-void Actor::LoadComponents(std::ifstream& ifs)
+void Actor::SaveComponents(std::ofstream& ofs)
 {
-	//size_t count = FileIOHelper::(ifs);
-	//for (size_t i = 0; i < count; ++i)
-	//{
-	//	std::wstring compName = FileIOHelper::LoadWString(ifs);
-	//	//ChunkLoader::GetInstance()->GetCompLoadMap()[compName](this, ifs);
-	//}
+	size_t count = mComponents.size();
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::COMPONENTS);
+	for (size_t i = 0; i < count; ++i) {
+		FileIOHelper::BeginDataPackSave(ofs, mComponents[i]->GetName());
+		mComponents[i]->SaveProperties(ofs);
+		FileIOHelper::EndDataPackSave(ofs, mComponents[i]->GetName());
+	}
+	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::COMPONENTS);
+}
+
+void Actor::LoadProperties(std::ifstream& ifs)
+{
+	// Changing the call location of Transform is NOT recommended
+	// Nested .chunk DataPack has unknown problem.
+	mTransform->LoadProperties(ifs);
+
+	std::string parentName;
+	FileIOHelper::LoadBasicString(ifs, parentName);
+	// <Parent finding feature here!>
+
+	std::string stateStr;
+	FileIOHelper::LoadBasicString(ifs, stateStr);
+	SetState(stateStr);
+
+	std::string actorGroupStr;
+	FileIOHelper::LoadBasicString(ifs, actorGroupStr);
+	mActorGroup = ActorGroupUtil::GetActorGroup(actorGroupStr);
+
+	FileIOHelper::LoadInt(ifs, mID);
+	FileIOHelper::LoadBasicString(ifs, mName);
+}
+
+void Actor::LoadComponents(std::ifstream& ifs, FTCore* coreInst)
+{
+	std::pair<int, std::string>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::COMPONENTS);
+	for (size_t i = 0; i < pack.first; ++i) {
+		std::pair<size_t, std::string> compPack = FileIOHelper::BeginDataPackLoad(ifs);
+		ChunkLoader::GetInstance()->GetComponentLoadMap().at(compPack.second)(this, ifs, coreInst);
+	}
+}
+
+#ifdef FOXTROT_EDITOR
+void Actor::SaveProperties(nlohmann::ordered_json& out)
+{
+	FileIOHelper::AddScalarValue(out["Name"], GetName());
+	FileIOHelper::AddScalarValue(out["ID"], mID);
+	FileIOHelper::AddScalarValue(out["ActorGroup"], ActorGroupUtil::GetActorGroupStr(mActorGroup));
+	FileIOHelper::AddScalarValue(out["State"], GetStateStr());
+	if (mParent)
+		FileIOHelper::AddScalarValue(out["Parent"], mParent->GetName());
+	else
+		FileIOHelper::AddScalarValue(out["Parent"], "nullptr");
+
+	mTransform->SaveProperties(out["Transform"]);
+	
+	// FileIOHelper::AddValue<std::string>("Child", GetStateStr());
+}
+
+void Actor::SaveComponents(nlohmann::ordered_json& out)
+{
+	size_t count = mComponents.size();
+	FileIOHelper::AddScalarValue(out["Count"], count);
+	for (size_t i = 0; i < count; ++i)
+	{
+		mComponents[i]->SaveProperties(out["List"][i]);
+	}
 }
 
 void Actor::LoadProperties(nlohmann::ordered_json& in)
@@ -266,57 +340,6 @@ void Actor::LoadComponents(nlohmann::ordered_json& in)
 	{
 		//std::string compName = 
 		//ChunkLoader::GetInstance()->GetCompLoadMap()[compName](this, ifs);
-	}
-}
-
-void Actor::SaveProperties(std::ofstream& ofs)
-{
-	FileIOHelper::SaveString		(ofs, ChunkKeys::NAME, GetName());
-	FileIOHelper::SaveInt			(ofs, ChunkKeys::ID, mID);
-	FileIOHelper::SaveString		(ofs, ChunkKeys::ACTOR_GROUP, ActorGroupUtil::GetActorGroupStr(mActorGroup));
-	FileIOHelper::SaveString		(ofs, ChunkKeys::STATE, GetStateStr());
-	if (mParent)
-		FileIOHelper::SaveString	(ofs, ChunkKeys::PARENT, mParent->GetName());
-	else
-		FileIOHelper::SaveString	(ofs, ChunkKeys::PARENT, "nullptr");
-}
-
-void Actor::SaveComponents(std::ofstream& ofs)
-{
-	size_t count = mComponents.size();
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::COMPONENTS);
-	for (size_t i = 0; i < count; ++i) {
-		FileIOHelper::BeginDataPackSave(ofs, mComponents[i]->GetName());
-		mComponents[i]->SaveProperties(ofs);
-		FileIOHelper::EndDataPackSave(ofs, mComponents[i]->GetName());
-	}
-	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::COMPONENTS);
-}
-
-#ifdef FOXTROT_EDITOR
-void Actor::SaveProperties(nlohmann::ordered_json& out)
-{
-	FileIOHelper::AddScalarValue(out["Name"], GetName());
-	FileIOHelper::AddScalarValue(out["ID"], mID);
-	FileIOHelper::AddScalarValue(out["ActorGroup"], ActorGroupUtil::GetActorGroupStr(mActorGroup));
-	FileIOHelper::AddScalarValue(out["State"], GetStateStr());
-	if (mParent)
-		FileIOHelper::AddScalarValue(out["Parent"], mParent->GetName());
-	else
-		FileIOHelper::AddScalarValue(out["Parent"], "nullptr");
-
-	mTransform->SaveProperties(out["Transform"]);
-	
-	// FileIOHelper::AddValue<std::string>("Child", GetStateStr());
-}
-
-void Actor::SaveComponents(nlohmann::ordered_json& out)
-{
-	size_t count = mComponents.size();
-	FileIOHelper::AddScalarValue(out["Count"], count);
-	for (size_t i = 0; i < count; ++i)
-	{
-		mComponents[i]->SaveProperties(out["List"][i]);
 	}
 }
 #endif // FOXTROT_EDITOR

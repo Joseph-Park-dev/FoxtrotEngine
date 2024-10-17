@@ -22,16 +22,6 @@ public:
 			void OnMouseLButtonDown() override;
 
 public:
-	template <class T>
-	static void Create(Actor* actor)
-	{
-		// Dynamically allocate actor of type T
-		T* t = new T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
-		// Call LoadProperties on new actor
-		t->Initialize(FTCoreEditor::GetInstance());
-	}
-
-public:
 			void UpdateUI();
 			void RenderUI(FoxtrotRenderer* renderer);
 

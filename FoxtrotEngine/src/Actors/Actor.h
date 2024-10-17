@@ -5,6 +5,7 @@
 #include <nlohmann/json.hpp>
 
 #include "Core/TemplateFunctions.h"
+#include "Core/FTCore.h"
 #include "Actors/ActorGroup.h"
 
 class Transform;
@@ -122,18 +123,18 @@ private:
 		   std::vector<Actor*>		mChild;
 
 public:
-	void LoadProperties(std::ifstream& ifs);
-	void LoadComponents(std::ifstream& ifs);
-
-	void LoadProperties(nlohmann::ordered_json& ifs);
-	void LoadComponents(nlohmann::ordered_json& ifs);
-
 	void SaveProperties(std::ofstream& ofs);
 	void SaveComponents(std::ofstream& ofs);
+
+	void LoadProperties(std::ifstream& ifs);
+	void LoadComponents(std::ifstream& ifs, FTCore* coreInst);
 
 #ifdef FOXTROT_EDITOR
 public:
 	void SaveProperties(nlohmann::ordered_json& out);
 	void SaveComponents(nlohmann::ordered_json& out);
+
+	void LoadProperties(nlohmann::ordered_json& ifs);
+	void LoadComponents(nlohmann::ordered_json& ifs);
 #endif //  FOXTROT_EDITOR
 };

@@ -1,6 +1,9 @@
 #pragma once
-#include "FileSystem\ChunkLoader.h"
+#include "FileSystem/ChunkLoader.h"
 
+#include "Core/FTCore.h"
+
+using ComponentCreateFunc = std::function<void(Actor*, FTCore*)>;
 using ComponentCreateMap = std::unordered_map<std::string, ComponentCreateFunc>;
 
 class EditorChunkLoader :

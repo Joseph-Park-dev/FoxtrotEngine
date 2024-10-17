@@ -17,22 +17,26 @@
 #include "EditorLayer.h"
 #endif //FOXTROT_EDITOR
 
-void FTResource::SaveProperties(std::ofstream& ofs)
+void FTResource::SaveProperties(std::ofstream& ofs, UINT key)
 {
+    FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::KEY, key);
     FileIOHelper::SaveString(ofs, ChunkKeys::FILE_NAME, mFileName);
     FileIOHelper::SaveString(ofs, ChunkKeys::RELATIVE_PATH, mRelativePath);
 }
 
 // When loading properties, invert the order of the member variables
 // (Due to the loading order)
-void FTResource::LoadProperties(std::ifstream& ifs)
+UINT FTResource::LoadProperties(std::ifstream& ifs)
 {
     FileIOHelper::LoadBasicString(ifs, mRelativePath);
     FileIOHelper::LoadBasicString(ifs, mFileName);
+    UINT key = 0;
+    FileIOHelper::LoadUnsignedInt(ifs, key);
+    return key;
 }
 
 #ifdef FOXTROT_EDITOR
-void FTResource::SaveProperties(nlohmann::ordered_json& out, unsigned int key)
+void FTResource::SaveProperties(nlohmann::ordered_json& out, UINT key)
 {
     FileIOHelper::AddScalarValue(out["Key"], key);
     FileIOHelper::AddScalarValue(out["FileName"], mFileName);

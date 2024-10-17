@@ -113,7 +113,7 @@ void CommandHistory::UpdateVector2Value(std::string label, FTVector2& ref, float
 	vec2[0] = updatedVal.x;
 	vec2[1] = updatedVal.y;
 	bool isRecording = GetIsRecording();
-	if (ImGui::DragFloat3(label.c_str(), vec2, modSpeed)) {
+	if (ImGui::DragFloat2(label.c_str(), vec2, modSpeed)) {
 		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left)) {
 			SetIsRecording(true);
 			AddCommand(new Vector2EditCommand(ref, updatedVal));

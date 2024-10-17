@@ -77,11 +77,12 @@ TileMapComponent::~TileMapComponent()
 void TileMapComponent::SaveProperties(std::ofstream& ofs)
 {
     Component::SaveProperties(ofs);
-    FileIOHelper::SaveInt(ofs, ChunkKeys::TILEMAP_KEY, mTileMapKey);
+    FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TILEMAP_KEY, mTileMapKey);
 }
 
 void TileMapComponent::LoadProperties(std::ifstream& ifs)
 {
+    FileIOHelper::LoadUnsignedInt(ifs, mTileMapKey);
     Component::LoadProperties(ifs);
 }
 
@@ -101,6 +102,7 @@ void TileMapComponent::SaveProperties(nlohmann::ordered_json& out)
 
 void TileMapComponent::EditorUIUpdate()
 {
+    CHECK_RENDERER(GetRenderer());
     UpdateSprite();
     UpdateCSV();
     OnConfirmUpdate();

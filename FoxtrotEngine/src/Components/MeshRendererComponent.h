@@ -15,6 +15,8 @@ struct MeshData;
 
 #define VALUE_NOT_ASSIGNED -1
 
+#define CHECK_RENDERER(RendererInst) if(!RendererInst) ImGui::Text("Renderer is not loaded");
+
 class MeshRendererComponent :
     public Component
 {

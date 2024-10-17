@@ -111,10 +111,10 @@ void FTTileMap::InitializeTile(Tile* tile, UINT column, UINT row, UINT tileNum)
     rectOnScreen->Set(column, row, mTileWidthOnScreen, mTileHeightOnScreen);
 }
 
-void FTTileMap::SaveProperties(std::ofstream& ofs)
+void FTTileMap::SaveProperties(std::ofstream& ofs, UINT key)
 {
     FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::FTTILEMAP);
-    FTResource::SaveProperties(ofs);
+    FTResource::SaveProperties(ofs, key);
     FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TILEMAP_SCREEN_WIDTH, mTileWidthOnScreen);
     FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TILEMAP_SCREEN_HEIGHT, mTileHeightOnScreen);
     FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TILEMAP_MAP_MAX_COUNT_X, mMaxCountOnMapX);
@@ -123,12 +123,13 @@ void FTTileMap::SaveProperties(std::ofstream& ofs)
 
 }
 
-void FTTileMap::LoadProperties(std::ifstream& ifs)
+UINT FTTileMap::LoadProperties(std::ifstream& ifs)
 {
     FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTTILEMAP);
     FileIOHelper::LoadUnsignedInt(ifs, mMaxCountOnMapY);
     FileIOHelper::LoadUnsignedInt(ifs, mMaxCountOnMapX);
     FileIOHelper::LoadUnsignedInt(ifs, mTileHeightOnScreen);
     FileIOHelper::LoadUnsignedInt(ifs, mTileWidthOnScreen);
-    FTResource::LoadProperties(ifs);
+    UINT key = FTResource::LoadProperties(ifs);
+    return key;
 }

@@ -117,7 +117,7 @@ Actor* ChunkLoader::LoadIndividualActor(std::ifstream& ifs, Scene* currScene)
 {
     Actor* actor = new Actor(currScene);
     actor->LoadProperties(ifs);
-    actor->LoadComponents(ifs);
+    actor->LoadComponents(ifs, FTCore::GetInstance());
     return actor;
 }
 
@@ -192,7 +192,25 @@ FTVector3 FileIOHelper::LoadVector3(nlohmann::ordered_json& json, std::string ke
     return value;
 }
 
-size_t FileIOHelper::BeginDataPackLoad(std::ifstream& ifs, std::string dataPackKey)
+// This function is less safe since there is no assert to check data pack name
+std::pair<size_t, std::string> FileIOHelper::BeginDataPackLoad(std::ifstream& ifs)
+{
+    std::string loadedDataPackKey;
+    std::getline(ifs, loadedDataPackKey, '\n');
+    LTrim(loadedDataPackKey);
+
+    // Parse data pack key 
+    std::string name = ExtractUntil(loadedDataPackKey, '<');
+    size_t count = std::stoi(GetBracketedVal(loadedDataPackKey, '<', '>'));
+
+    std::cout << "Parsing data pack : " << name << '\n';
+    std::cout << name << '\n';
+
+    std::pair<size_t, std::string> result{ count, name };
+    return result;
+}
+
+std::pair<size_t, std::string> FileIOHelper::BeginDataPackLoad(std::ifstream& ifs, std::string dataPackKey)
 {
     std::string loadedDataPackKey;
     std::getline(ifs, loadedDataPackKey, '\n');
@@ -206,7 +224,9 @@ size_t FileIOHelper::BeginDataPackLoad(std::ifstream& ifs, std::string dataPackK
 
     std::cout << "Parsing data pack : " << name << '\n';
     std::cout << name << '\n';
-    return count;
+
+    std::pair<size_t, std::string> result{ count, name };
+    return result;
 }
 
 void FileIOHelper::LoadInt(std::ifstream& ifs, int& intVal)

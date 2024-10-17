@@ -61,8 +61,12 @@ public:
 	static FTVector3 ConvertRadToDegree(FTVector3 radianRot);
 	static FTVector3 ConvertDegreeToRad(FTVector3 degreeRot);
 
+	void SaveProperties(std::ofstream& ofs);
+	void LoadProperties(std::ifstream& ofs);
 
+#ifdef FOXTROT_EDITOR
 public:
 	void SaveProperties(nlohmann::ordered_json& out);
 	void LoadProperties();
+#endif // FOXTROT_EDITOR
 };

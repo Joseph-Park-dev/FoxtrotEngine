@@ -148,7 +148,7 @@ public:
 	void SaveResourceInMap(std::ofstream& ofs, const std::unordered_map<UINT, FTRESOURCE*>& resMap) {
 		typename std::unordered_map<UINT, FTRESOURCE*>::const_iterator iter;
 		for (iter = resMap.begin(); iter != resMap.end(); ++iter) {
-			(*iter).second->SaveProperties(ofs);
+			(*iter).second->SaveProperties(ofs, (*iter).first);
 		}
 	}
 
@@ -156,21 +156,25 @@ public:
 	void LoadResourceToMap(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap, size_t& resCount) {
 		if (0 < resCount)
 		{
-			gItemKey = 0;
-			for (size_t i = 0; i < resCount; ++i) {
-				LoadResource(ifs, gItemKey, resMap);
-				++gItemKey; // Key of the next resource to be imported.
+			--resCount;
+			gItemKey = resCount;
+			while(0 <= gItemKey)
+			{
+				LoadResource(ifs, resMap);
+				if (resCount == 0)
+					break;
+				--resCount; // Key of the next resource to be imported.
+				gItemKey = resCount;
 			}
 			// Subtract the number of resources loaded.
-			resCount -= gItemKey;
 		}
 	}
 
 	template<typename FTRESOURCE>
-	void LoadResource(std::ifstream& ifs, const UINT key, std::unordered_map<UINT, FTRESOURCE*>& resMap)
+	void LoadResource(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
 		FTRESOURCE* resource = new FTRESOURCE;
-		resource->LoadProperties(ifs);
+		UINT key = resource->LoadProperties(ifs);
 		resMap.insert(std::make_pair(key, resource));
 	}
 

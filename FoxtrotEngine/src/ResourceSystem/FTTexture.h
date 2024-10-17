@@ -50,8 +50,8 @@ private:
 	friend class ResourceManager;
 
 public:
-    virtual void SaveProperties(std::ofstream& ofs);
-    virtual void LoadProperties(std::ifstream& ifs);
+    virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
+    virtual UINT LoadProperties(std::ifstream& ifs)           override;
 
 #ifdef FOXTROT_EDITOR
 public:

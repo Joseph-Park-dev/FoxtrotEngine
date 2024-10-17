@@ -3,6 +3,7 @@
 #include <nlohmann/json.hpp>
 
 #include "FileSystem/ChunkLoader.h"
+#include "FileSystem/ChunkFileKeys.h"
 
 void Transform::Translate(FTVector3 translation)
 {
@@ -70,6 +71,26 @@ FTVector3 Transform::ConvertDegreeToRad(FTVector3 degreeRot)
 	return FTVector3(x, y, z);
 }
 
+void Transform::SaveProperties(std::ofstream& ofs)
+{
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::TRANSFORM);
+	FileIOHelper::SaveVector3(ofs, ChunkKeys::WORLD_POS, mWorldPosition);
+	FileIOHelper::SaveVector3(ofs, ChunkKeys::LOCAL_POS, mLocalPosition);
+	FileIOHelper::SaveVector3(ofs, ChunkKeys::SCALE,	 mScale);
+	FileIOHelper::SaveVector3(ofs, ChunkKeys::ROTATION,  mRotation);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::TRANSFORM);
+}
+
+void Transform::LoadProperties(std::ifstream& ifs)
+{
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::TRANSFORM);
+	FileIOHelper::LoadVector3(ifs, mRotation);
+	FileIOHelper::LoadVector3(ifs, mScale);
+	FileIOHelper::LoadVector3(ifs, mLocalPosition);
+	FileIOHelper::LoadVector3(ifs, mWorldPosition);
+}
+
+#ifdef FOXTROT_EDITOR
 void Transform::SaveProperties(nlohmann::ordered_json& out)
 {
 	FileIOHelper::AddVector3(out[SAVEKEY_WORLDPOS], mWorldPosition);
@@ -82,3 +103,4 @@ void Transform::SaveProperties(nlohmann::ordered_json& out)
 void Transform::LoadProperties()
 {
 }
+#endif // FOXTROT_EDITOR

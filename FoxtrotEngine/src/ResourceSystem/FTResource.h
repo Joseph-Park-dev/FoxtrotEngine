@@ -30,12 +30,12 @@ public:
 	virtual ~FTResource(){}
 
 public:
-	virtual void SaveProperties(std::ofstream& ofs);
-	virtual void LoadProperties(std::ifstream& ifs);
+	virtual void SaveProperties(std::ofstream& ofs, UINT key);;
+	virtual UINT LoadProperties(std::ifstream& ifs);
 
 #ifdef FOXTROT_EDITOR
 public:
-	virtual void SaveProperties(nlohmann::ordered_json& out, unsigned int key);
+	virtual void SaveProperties(nlohmann::ordered_json& out, UINT key);
 	virtual void LoadProperties(nlohmann::ordered_json& itemTree);
 
 	virtual void UpdateUI() {};

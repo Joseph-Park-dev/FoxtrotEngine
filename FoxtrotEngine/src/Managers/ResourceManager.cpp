@@ -177,7 +177,8 @@ void ResourceManager::SaveResources(std::ofstream& ofs)
 
 void ResourceManager::LoadResources(std::ifstream& ifs)
 {
-	size_t count = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::RESOURCE_DATA);
+	std::pair<size_t, std::string>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::RESOURCE_DATA);
+	size_t count = pack.first;
 	LoadResourceToMap<FTTexture>(ifs, mMapTextures, count);
 	ProcessTextures();
 	LoadResourceToMap<FTTileMap>(ifs, mMapTileMaps, count);

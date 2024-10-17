@@ -8,14 +8,14 @@
 
 #include "Core/SingletonMacro.h"
 #include "Math/FTMath.h"
+#include "Core/FTCore.h"
 
 class Transform;
 class Actor;
 class Component;
 class Scene;
 
-using ComponentCreateFunc = std::function<void (Actor*)>;
-using ComponentLoadFunc = std::function<void(Actor*, std::ifstream& ifs)>;
+using ComponentLoadFunc = std::function<void(Actor*, std::ifstream&, FTCore*)>;
 using ComponentLoadMap = std::unordered_map<std::string, ComponentLoadFunc>;
 
 struct ChunkData
@@ -31,6 +31,9 @@ class ChunkLoader
 public:
 	virtual void SaveChunk(const std::string fileName);
 	virtual void LoadChunk(const std::string fileName);
+
+public:
+	ComponentLoadMap& GetComponentLoadMap() { return mComponentLoadMap; }
 
 protected:
 	//Save .Chunk for the editor
@@ -69,13 +72,15 @@ public:
 	static FTVector2	LoadVector2		(nlohmann::ordered_json& json, std::string key);
 	static FTVector3	LoadVector3		(nlohmann::ordered_json& json, std::string key);
 
+
 	template <typename ScalarType>
 	static ScalarType	LoadScalarValue	(nlohmann::ordered_json& json, std::string key) {
 		return json[key];
 	}
 
 public:
-	static size_t BeginDataPackLoad(std::ifstream& ifs, std::string dataPackKey);
+	static std::pair<size_t, std::string> BeginDataPackLoad(std::ifstream& ifs);
+	static std::pair<size_t, std::string> BeginDataPackLoad(std::ifstream& ifs, std::string dataPackKey);
 	static void   LoadInt(std::ifstream& ifs, int& intVal);
 	static void   LoadUnsignedInt(std::ifstream& ofs, unsigned int& intVal);
 	static void   LoadFloat(std::ifstream& ifs, float& floatVal);

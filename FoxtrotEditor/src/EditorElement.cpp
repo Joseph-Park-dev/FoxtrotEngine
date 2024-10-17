@@ -246,7 +246,7 @@ void EditorElement::DisplayCompSelectionPopup()
 		ComponentCreateMap::iterator iter = EditorChunkLoader::GetInstance()->GetCompCreateMap().begin();
 		for (; iter != EditorChunkLoader::GetInstance()->GetCompCreateMap().end(); ++iter)
 			if (ImGui::Selectable((*iter).first.c_str()))
-				(*iter).second(this);
+				(*iter).second(this, FTCoreEditor::GetInstance());
 		ImGui::EndPopup();
 	}
 }

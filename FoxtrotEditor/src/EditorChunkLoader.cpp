@@ -17,19 +17,18 @@ EditorChunkLoader::EditorChunkLoader()
 {
     mComponentCreateMap =
     {
-        {"AIComponent",             &EditorElement::Create<AIComponent>},
-        {"AnimatorComponent",       &EditorElement::Create<AnimatorComponent>},
-        {"AnimSpriteComponent",     &EditorElement::Create<SpriteAnimComponent>},
-        {"BGSpriteComponent",       &EditorElement::Create<BGSpriteComponent>},
-        {"ColliderComponent",       &EditorElement::Create<ColliderComponent>},
-        {"InputMoveComponent",      &EditorElement::Create<InputMoveComponent>},
-        {"MoveComponent",           &EditorElement::Create<MoveComponent>},
-        {"Rigidbody2DComponent",    &EditorElement::Create<Rigidbody2DComponent>},
-        {"SpriteRendererComponent", &EditorElement::Create<SpriteRendererComponent>},
-        {"TileMapComponent",        &EditorElement::Create<TileMapComponent>},
-        {"SpriteAnimComponent",     &EditorElement::Create<SpriteAnimComponent>},
-        {"GunFiringComponent",      &EditorElement::Create<GunFiringComponent>},
-        {"MeshRendererComponent",   &EditorElement::Create<MeshRendererComponent>},
+        {"AIComponent",             &Component::Create<AIComponent>},
+        {"AnimatorComponent",       &Component::Create<AnimatorComponent>},
+        {"BGSpriteComponent",       &Component::Create<BGSpriteComponent>},
+        {"ColliderComponent",       &Component::Create<ColliderComponent>},
+        {"InputMoveComponent",      &Component::Create<InputMoveComponent>},
+        {"MoveComponent",           &Component::Create<MoveComponent>},
+        {"Rigidbody2DComponent",    &Component::Create<Rigidbody2DComponent>},
+        {"SpriteRendererComponent", &Component::Create<SpriteRendererComponent>},
+        {"TileMapComponent",        &Component::Create<TileMapComponent>},
+        {"SpriteAnimComponent",     &Component::Create<SpriteAnimComponent>},
+        {"GunFiringComponent",      &Component::Create<GunFiringComponent>},
+        {"MeshRendererComponent",   &Component::Create<MeshRendererComponent>},
     };
 }
 
@@ -50,7 +49,7 @@ void EditorChunkLoader::LoadChunk(const std::string fileName)
     std::ifstream ifs(fileName);
     LoadChunkData(ifs);
     ResourceManager::GetInstance()->LoadResources(ifs);
-
+    LoadActorsData(ifs);
 }
 
 void EditorChunkLoader::SaveChunkData(nlohmann::ordered_json& out)
@@ -118,7 +117,6 @@ void EditorChunkLoader::LoadChunkData(std::ifstream& ifs)
     FTVector2 center = FTVector2::Zero;
     int actorCount = 0;
 
-
     FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::CHUNK_DATA);
     FileIOHelper::LoadInt(ifs, targetActor);
     FileIOHelper::LoadVector2(ifs, res);
@@ -134,17 +132,14 @@ void EditorChunkLoader::LoadChunkData(std::ifstream& ifs)
 
 void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
 {
-    //Actor::ResetNextID();
-    //EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-    //size_t count = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::ACTOR_PROPERTIES);
-    //for (size_t i = 0; i < count; ++i)
-    //{
-    //    EditorElement* element = new EditorElement(scene);
-    //    size_t index = (size_t)ActorGroup::END * i + j;
-    //    FileIOHelper::BeginDataPackSave(ofs, element->GetName());
-    //    element->SaveProperties(ofs);
-    //    element->SaveComponents(ofs);
-    //    FileIOHelper::EndDataPackSave(ofs, element->GetName());
-    //}
-    //FileIOHelper::EndDataPackSave(ofs, ChunkKeys::ACTOR_PROPERTIES);
+    Actor::ResetNextID();
+    EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+    std::pair<size_t, std::string>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::ACTOR_PROPERTIES);
+    for (size_t i = 0; i < pack.first; ++i)
+    {
+        FileIOHelper::BeginDataPackLoad(ifs);
+        EditorElement* element = new EditorElement(scene);
+        element->LoadComponents(ifs, FTCoreEditor::GetInstance());
+        element->LoadProperties(ifs);
+    }
 }

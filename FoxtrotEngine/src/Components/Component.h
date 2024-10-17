@@ -1,6 +1,10 @@
 #pragma once
 #include <fstream>
 
+#ifdef FOXTROT_EDITOR
+#include "FTCoreEditor.h"
+#endif
+
 class Actor;
 class FoxtrotRenderer;
 class FTCore;
@@ -17,16 +21,6 @@ class Component
 {
 public:
 	virtual std::string  GetName() const = 0;
-
-public:
-	template <class T>
-	static void Load(Actor* actor, std::ifstream& ifs)
-	{
-		// Dynamically allocate actor of type T
-		// T* t = new T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
-		// Call LoadProperties on new actor
-		// t->LoadProperties(ifs);
-	}
 
 public:
 	virtual void Initialize(FTCore* coreInstance) = 0;
@@ -57,10 +51,31 @@ public:
 	virtual void		 SaveProperties(std::ofstream& ofs);
 	virtual void		 LoadProperties(std::ifstream& ifs);
 
+public:
+	template <class T>
+	static void Load(Actor* actor, std::ifstream& ifs, FTCore* coreInst)
+	{
+		///Dynamically allocate actor of type T
+		T* t = new T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
+		t->Initialize(coreInst);
+		//Call LoadProperties on new actor
+		t->LoadProperties(ifs);
+	}
+
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void SaveProperties(nlohmann::ordered_json& out);
 	virtual void LoadProperties(nlohmann::ordered_json& in);
 	virtual void EditorUIUpdate();
+
+public:
+	template <class T>
+	static void Create(Actor* actor, FTCore* coreInst)
+	{
+		// Dynamically allocate actor of type T
+		T* t = new T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
+		// Call LoadProperties on new actor
+		t->Initialize(coreInst);
+	}
 #endif // FOXTROT_EDITOR
 };

@@ -147,12 +147,15 @@ void MeshRendererComponent::UpdateConstantBufferProjection(Camera* camInst){
 void MeshRendererComponent::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
-	FileIOHelper::SaveInt(ofs, ChunkKeys::MESH_KEY, mMeshKey);
-	FileIOHelper::SaveInt(ofs, ChunkKeys::TEXTURE_KEY, mTexKey);
+	FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::MESH_KEY, mMeshKey);
+	FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TEXTURE_KEY, mTexKey);
 }
 
 void MeshRendererComponent::LoadProperties(std::ifstream& ifs)
 {
+	FileIOHelper::LoadUnsignedInt(ifs, mTexKey);
+	FileIOHelper::LoadUnsignedInt(ifs, mMeshKey);
+	Component::LoadProperties(ifs);
 }
 
 #ifdef FOXTROT_EDITOR
@@ -169,6 +172,7 @@ void MeshRendererComponent::LoadProperties(nlohmann::ordered_json& in)
 
 void MeshRendererComponent::EditorUIUpdate()
 {
+	CHECK_RENDERER(GetRenderer());
 	if (ImGui::Button("Add Cube"))
 	{
 		// mMeshGroup = ResourceManager::GetInstance()->GetLoadedMeshes("Box");

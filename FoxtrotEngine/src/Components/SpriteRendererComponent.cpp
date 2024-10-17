@@ -111,15 +111,18 @@ void SpriteRendererComponent::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
 	FileIOHelper::SaveVector2(ofs, ChunkKeys::TEXTURE_WIDTH, mTexScale);
+	FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TEXTURE_KEY, GetTexKey());
 }
 
 void SpriteRendererComponent::LoadProperties(std::ifstream& ifs)
 {
+	UINT texKey = 0;
+	FileIOHelper::LoadUnsignedInt(ifs, texKey);
+	SetTexKey(texKey);
+	FileIOHelper::LoadVector2(ifs, mTexScale);
 	Component::LoadProperties(ifs);
-	// GetMeshArray()[0]->texture->SetTexWidth(FileIOHelper::LoadFloat(ifs));
-	// GetMeshArray()[0]->texture->SetTexHeight(FileIOHelper::LoadFloat(ifs));
-
-	// FileIOHelper::LoadFTTexture(ifs, GetMesh()->texture);
+	
+	SetTexture();
 }
 
 #ifdef FOXTROT_EDITOR
@@ -141,12 +144,10 @@ void SpriteRendererComponent::SaveProperties(nlohmann::ordered_json& out)
 
 void SpriteRendererComponent::EditorUIUpdate()
 {
-	if (GetRenderer())
-	{
-		UpdateSprite();
-		ImGui::SeparatorText("Sprite Size");
-		UpdateScale();
-	}
+	CHECK_RENDERER(GetRenderer());
+	UpdateSprite();
+	ImGui::SeparatorText("Sprite Size");
+	UpdateScale();
 }
 
 void SpriteRendererComponent::OnConfirmUpdate()

@@ -58,6 +58,7 @@ void EditorLayer::Update(float deltaTime)
 	DisplayInspectorMenu();
 	Camera::GetInstance()->DisplayCameraMenu();
 	//ApplyCommandHistory();
+	DisplayInfoMessage();
 	DisplayErrorMessage();
 	ImGui::EndFrame();
 }
@@ -242,6 +243,7 @@ void EditorLayer::DisplayFileMenu()
 			{
 				mCurrFilePath = ImGuiFileDialog::Instance()->GetFilePathName();
 				EditorChunkLoader::GetInstance()->SaveChunk(mCurrFilePath);
+				mInfoType = InfoType::ChunkIsSaved;
 				mCurrFileSaved = true;
 			}
 			ImGuiFileDialog::Instance()->Close();
@@ -369,8 +371,11 @@ void EditorLayer::SaveChunkFromUI()
 {
 	if (mCurrFileSaved)
 	{
-		if (!mCurrFilePath.empty())
+		if (!mCurrFilePath.empty()) {
 			EditorChunkLoader::GetInstance()->SaveChunk(mCurrFilePath);
+			mInfoType = InfoType::ChunkIsSaved;
+		}
+
 		else
 			LogString("Saved file path doesn't exist but trying to access it");
 	}
@@ -381,6 +386,18 @@ void EditorLayer::SaveChunkFromUI()
 		config.countSelectionMax = 1;
 		config.flags = ImGuiFileDialogFlags_ConfirmOverwrite;
 		ImGuiFileDialog::Instance()->OpenDialog("SaveChunkFile", "Save", ChunkKeys::CHUNK_FILE_FORMAT, config);
+	}
+}
+
+void EditorLayer::DisplayInfoMessage()
+{
+	switch (mInfoType)
+	{
+	case InfoType::ChunkIsSaved:
+		PopUpInfo_ChunkIsSaved();
+		break;
+	default:
+		break;
 	}
 }
 
@@ -407,6 +424,29 @@ void EditorLayer::DisplayErrorMessage()
 		break;
 	}
 }
+
+void EditorLayer::PopUpInfo_ChunkIsSaved()
+{
+	ImGui::OpenPopup("Info");
+	// Always center this window when appearing
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+	if (ImGui::BeginPopupModal("Info", NULL))
+	{
+		ImGui::Text(".chunk file is saved.");
+		ImGui::Separator();
+		ImGui::SetItemDefaultFocus();
+
+		if (ImGui::Button("OK", ImVec2(120, 0)))
+		{
+			ImGui::CloseCurrentPopup();
+			mInfoType = InfoType::None;
+		}
+		ImGui::EndPopup();
+	}
+}
+
 
 void EditorLayer::PopUpError_ProjectPathExists()
 {
@@ -520,6 +560,7 @@ EditorLayer::EditorLayer()
 	, mIsResizingViewport(false)
 	, mElementNumber(0)
 	, mSceneViewportSize(ImVec2(1920.f, 1080.f))
+	, mInfoType(InfoType::None)
 	, mErrorType(ErrorType::None)
 {
 	// Initial command stored in front of every following commands

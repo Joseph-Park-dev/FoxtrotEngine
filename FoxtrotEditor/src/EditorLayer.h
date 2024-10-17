@@ -21,6 +21,12 @@ enum class ErrorType
 	ProjectNotValid
 };
 
+enum class InfoType
+{
+	None,
+	ChunkIsSaved
+};
+
 class EditorLayer
 {
 	SINGLETON(EditorLayer);
@@ -66,6 +72,7 @@ private:
 	ImVec2 mSceneViewportSize;
 	bool mIsResizingViewport;
 
+	InfoType mInfoType;
 	ErrorType mErrorType;
 
 private:
@@ -80,6 +87,9 @@ private:
 	bool ProjectPathExists(std::string& projDir);
 
 	void SaveChunkFromUI();
+
+	void DisplayInfoMessage();
+	void PopUpInfo_ChunkIsSaved();
 
 	void DisplayErrorMessage();
 	void PopUpError_ProjectPathExists();

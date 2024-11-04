@@ -105,7 +105,7 @@ void MeshRendererComponent::SetTexture() {
 	if (mTexKey != VALUE_NOT_ASSIGNED)
 		GetMeshGroup()->SetTexture(mTexKey);
 	else 
-		LogString("ERROR: MeshRendererComponent::SetTexture() -> Key doesn't exist.\n");
+		printf("ERROR: MeshRendererComponent::SetTexture() -> key is not assigned.\n", mTexKey);
 }
 
 MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder)

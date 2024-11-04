@@ -151,14 +151,13 @@ void SpriteRendererComponent::EditorUIUpdate()
 	UpdateSprite();
 	ImGui::SeparatorText("Sprite Size");
 	UpdateScale();
+	OnConfirmUpdate();
 }
 
 void SpriteRendererComponent::OnConfirmUpdate()
 {
 	if (ImGui::Button("Update"))
-	{
 		this->SetTexture();
-	}
 }
 
 void SpriteRendererComponent::UpdateSprite()
@@ -203,7 +202,7 @@ void SpriteRendererComponent::UpdateSprite()
 			if (selected != -1)
 			{
 				SetTexKey(spriteKey);
-				SetTexture();
+				//SetTexture();
 			}
 		}
 		if (ImGui::Button("Close"))

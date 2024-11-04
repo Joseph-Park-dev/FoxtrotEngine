@@ -16,6 +16,11 @@ class TileMapComponent :
     public SpriteRendererComponent
 {
 public:
+    std::string GetName()		const override {
+        return	"TileMapComponent";
+    }
+
+public:
     virtual void Initialize(FTCore* coreInstance)	    override;
     virtual void Update    (float deltaTime)            override;
     virtual void Render    (FoxtrotRenderer* renderer)  override;

@@ -4,12 +4,6 @@
 #include "Renderer/FTRect.h"
 
 Tile::Tile()
-    : mRectOnScreen(new FTRect(0.0f, 0.0f, 0.0f, 0.0f))
-    , mRectOnMap(new FTRect(0.0f, 0.0f, 0.0f,0.0f))
+    : mRectOnScreen(FTRect(0.0f, 0.0f, 0.0f, 0.0f))
+    , mRectOnMap(FTRect(0.0f, 0.0f, 0.0f,0.0f))
 {}
-
-Tile::~Tile()
-{
-    delete mRectOnScreen;
-    delete mRectOnMap;
-}

@@ -313,6 +313,20 @@
   <ItemGroup>
     <Text Include="include\imgui\misc\debuggers\README.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="assets\Shaders\BasicPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="assets\Shaders\BasicVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="assets\Shaders\ColorPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="assets\Shaders\ColorVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Vertex</ShaderType>
+    </FxCompile>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

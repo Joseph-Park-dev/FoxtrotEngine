@@ -14,11 +14,11 @@ public:
 	const FTVector2& GetMax () { return mMax; }
 
 	void Set(float posX, float posY, float width, float height) {
-		mCenter		= FTVector2(posX, posY) + FTVector2(width, height) / 2;
 		mWidth		= width;
 		mHeight		= height;
-		mMax		= mCenter + FTVector2(width, height);
+		mCenter		= FTVector2(posX, posY) + FTVector2(width, height) / 2;
 		mMin		= FTVector2(posX, posY);
+		mMax		= mMin + FTVector2(width, height);
 		mPosition	= mMin;
 		mSize		= FTVector2(width, height);
 	}

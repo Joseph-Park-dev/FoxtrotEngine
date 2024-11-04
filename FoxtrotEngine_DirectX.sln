@@ -29,8 +29,8 @@ Global
 		{7B2D616C-EF0B-43D4-94A1-640897D09BCC}.Foxtrot_Debug|x64.Build.0 = Foxtrot_Debug|x64
 		{7B2D616C-EF0B-43D4-94A1-640897D09BCC}.Foxtrot_Debug|x86.ActiveCfg = Foxtrot_Debug|Win32
 		{7B2D616C-EF0B-43D4-94A1-640897D09BCC}.Foxtrot_Debug|x86.Build.0 = Foxtrot_Debug|Win32
-		{7B2D616C-EF0B-43D4-94A1-640897D09BCC}.Foxtrot_Editor_Debug|x64.ActiveCfg = Debug|x64
-		{7B2D616C-EF0B-43D4-94A1-640897D09BCC}.Foxtrot_Editor_Debug|x64.Build.0 = Debug|x64
+		{7B2D616C-EF0B-43D4-94A1-640897D09BCC}.Foxtrot_Editor_Debug|x64.ActiveCfg = Foxtrot_Editor_Debug|x64
+		{7B2D616C-EF0B-43D4-94A1-640897D09BCC}.Foxtrot_Editor_Debug|x64.Build.0 = Foxtrot_Editor_Debug|x64
 		{7B2D616C-EF0B-43D4-94A1-640897D09BCC}.Foxtrot_Editor_Debug|x86.ActiveCfg = Foxtrot_Editor_Debug|Win32
 		{7B2D616C-EF0B-43D4-94A1-640897D09BCC}.Foxtrot_Editor_Debug|x86.Build.0 = Foxtrot_Editor_Debug|Win32
 		{7B2D616C-EF0B-43D4-94A1-640897D09BCC}.Release|x64.ActiveCfg = Release|x64

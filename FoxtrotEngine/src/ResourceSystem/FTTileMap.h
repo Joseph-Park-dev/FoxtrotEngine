@@ -15,7 +15,7 @@ public:
     void    ReadCSV();
 
 public:
-    Tile**  GetTileMap          () { return mTileMap; }
+    Tile&   GetTile(size_t row, size_t column);
     UINT    GetMaxCountOnScreenX() { return mMaxCountOnScreenX; }
     UINT    GetMaxCountOnScreenY() { return mMaxCountOnScreenY; }
 
@@ -36,12 +36,12 @@ private:
     UINT    mMaxCountOnMapY;
 
     // These fields need to be initialized when the tilemap is constructed.
-    Tile**  mTileMap;
+    Tile*   mTileMap;
     UINT    mMaxCountOnScreenX;
     UINT    mMaxCountOnScreenY;
 
 private:
-    void    InitializeTile(Tile* tile, UINT column, UINT row, UINT tileNum);
+    void    InitializeTile(Tile& tile, UINT column, UINT row, UINT tileNum);
 
 public:
     virtual void SaveProperties(std::ofstream& ofs, UINT key) override;

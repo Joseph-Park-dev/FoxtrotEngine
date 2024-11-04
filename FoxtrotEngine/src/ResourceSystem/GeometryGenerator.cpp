@@ -150,9 +150,11 @@ MeshData GeometryGenerator::MakeSquareGrid(
 std::vector<MeshData> GeometryGenerator::MakeTileMapGrid(FTTileMap* tileMap)
 {
     std::vector<MeshData> tileMapMeshes;
-    for (size_t r = 0; r < tileMap->GetMaxCountOnScreenX(); ++r) {
-        for (size_t c = 0; c < tileMap->GetMaxCountOnScreenY(); ++c) {
-            Tile* tile = &tileMap->GetTileMap()[r][c];
+    LogInt("X : ", tileMap->GetMaxCountOnScreenX());
+    LogInt("Y : ", tileMap->GetMaxCountOnScreenY());
+    for (size_t r = 0; r < tileMap->GetMaxCountOnScreenY(); ++r) {
+        for (size_t c = 0; c < tileMap->GetMaxCountOnScreenX(); ++c) {
+            Tile& tile = tileMap->GetTile(r,c);
             MeshData tileMesh = MakeTile(tile);
             tileMapMeshes.push_back(tileMesh);
         }
@@ -160,19 +162,19 @@ std::vector<MeshData> GeometryGenerator::MakeTileMapGrid(FTTileMap* tileMap)
     return tileMapMeshes;
 }
 
-MeshData GeometryGenerator::MakeTile(Tile* tile)
+MeshData GeometryGenerator::MakeTile(Tile& tile)
 {
     std::vector<Vector3> positions;
     std::vector<Vector3> colors;
     std::vector<Vector3> normals;
     std::vector<Vector2> texcoords; // 텍스춰 좌표
 
-    FTRect* rectOnScreen = tile->GetRectOnScreen();
+    FTRect& rectOnScreen = tile.GetRectOnScreen();
 
-    const FTVector2& tileMin = rectOnScreen->GetMin();
-    const FTVector2& tileMax = rectOnScreen->GetMax();
-    const float tileWidth = rectOnScreen->GetSize().x;
-    const float tileHeight = rectOnScreen->GetSize().y;
+    const FTVector2& tileMin = rectOnScreen.GetMin();
+    const FTVector2& tileMax = rectOnScreen.GetMax();
+    const float tileWidth = rectOnScreen.GetSize().x;
+    const float tileHeight = rectOnScreen.GetSize().y;
 
     // 앞면
     positions.push_back(Vector3(tileMin.x,              -tileMin.y,              0.0f));
@@ -188,12 +190,11 @@ MeshData GeometryGenerator::MakeTile(Tile* tile)
     normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
     normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
 
-    // Texture Coordinates (Direct3D 9)
-    // https://learn.microsoft.com/en-us/windows/win32/direct3d9/texture-coordinates
-    FTRect* rectOnMap = tile->GetRectOnMap();
-    const FTVector2& mapMin = rectOnMap->GetMin();
-    const float widthInMap = rectOnMap->GetSize().x;
-    const float heightInMap = rectOnMap->GetSize().y;
+    // Texture Coordinates
+    FTRect& rectOnMap = tile.GetRectOnMap();
+    const FTVector2& mapMin = rectOnMap.GetMin();
+    const float widthInMap = rectOnMap.GetSize().x;
+    const float heightInMap = rectOnMap.GetSize().y;
 
     texcoords.push_back(Vector2(mapMin.x,               mapMin.y));
     texcoords.push_back(Vector2(mapMin.x + widthInMap,  mapMin.y));
@@ -216,19 +217,19 @@ MeshData GeometryGenerator::MakeTile(Tile* tile)
     return meshData;
 }
 
-std::vector<MeshData> GeometryGenerator::MakeSpriteAnimation(Tile** tileMap, size_t columnCount, size_t rowCount)
+std::vector<MeshData> GeometryGenerator::MakeSpriteAnimation(Tile* tileMap, size_t columnCount, size_t rowCount)
 {
     std::vector<MeshData> animationMeshes;
     for (size_t r = 0; r < rowCount; ++r) {
         for (size_t c = 0; c < columnCount; ++c) {
-            MeshData animFrame = MakeAnimationFrame(&tileMap[r][c]);
+            MeshData animFrame = MakeAnimationFrame(tileMap[rowCount * r + c]);
             animationMeshes.push_back(animFrame);
         }
     }
     return animationMeshes;
 }
 
-MeshData GeometryGenerator::MakeAnimationFrame(Tile* tile)
+MeshData GeometryGenerator::MakeAnimationFrame(Tile tile)
 {
     std::vector<Vector3> positions;
     std::vector<Vector3> colors;
@@ -251,10 +252,10 @@ MeshData GeometryGenerator::MakeAnimationFrame(Tile* tile)
 
     // Texture Coordinates (Direct3D 9)
     // https://learn.microsoft.com/en-us/windows/win32/direct3d9/texture-coordinates
-    FTRect* rectOnMap = tile->GetRectOnMap();
-    const FTVector2& mapMin = rectOnMap->GetMin();
-    const float widthInMap = rectOnMap->GetSize().x;
-    const float heightInMap = rectOnMap->GetSize().y;
+    FTRect& rectOnMap = tile.GetRectOnMap();
+    const FTVector2& mapMin = rectOnMap.GetMin();
+    const float widthInMap = rectOnMap.GetSize().x;
+    const float heightInMap = rectOnMap.GetSize().y;
 
     texcoords.push_back(Vector2(mapMin.x, mapMin.y));
     texcoords.push_back(Vector2(mapMin.x + widthInMap, mapMin.y));

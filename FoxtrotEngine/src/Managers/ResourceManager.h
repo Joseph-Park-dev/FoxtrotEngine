@@ -29,7 +29,7 @@ public:
 
 	//void				LoadMeshFromFile(const std::string filePath);
 	void				LoadBasicMesh(MeshData meshData);
-	void				LoadBasicMesh(std::vector<MeshData> meshData);
+	UINT				LoadBasicMesh(std::vector<MeshData> meshData);
 
 	void				LoadTileMap(const std::string filePath);
 
@@ -44,6 +44,11 @@ public:
 	std::unordered_map<UINT, FTTexture*>& 
 		GetTexturesMap() {
 		return mMapTextures; 
+	}
+	// I know the name feels so funny...
+	std::unordered_map<UINT, FTTileMap*>&
+		GetTileMapsMap() {
+		return mMapTileMaps;
 	}
 
 public:

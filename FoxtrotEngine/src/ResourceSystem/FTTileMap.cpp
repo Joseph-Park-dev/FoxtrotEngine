@@ -47,19 +47,23 @@ void FTTileMap::ReadCSV()
     mMaxCountOnScreenX = column;
     mMaxCountOnScreenY = row;
 
-    mTileMap = new Tile * [row];
+    mTileMap = new Tile[column * row];
     for (int r = 0; r < row; ++r)
     {
-        mTileMap[r] = new Tile[column];
         for (int c = 0; c < column; ++c)
         {
             if (!result.empty())
             {
-                InitializeTile(&mTileMap[r][c], c, r, result.front());
+                InitializeTile(mTileMap[mMaxCountOnScreenX * r + c], c, r, result.front());
                 result.pop();
             }
         }
     }
+}
+
+Tile& FTTileMap::GetTile(size_t row, size_t column)
+{
+    return mTileMap[mMaxCountOnScreenX * row + column];
 }
 
 void FTTileMap::SetTileWidth(UINT width)
@@ -93,22 +97,22 @@ FTTileMap::FTTileMap()
 
 FTTileMap::~FTTileMap()
 {
-    SafeDeleteArray(mTileMap);
+    delete[] mTileMap;
 }
 
-void FTTileMap::InitializeTile(Tile* tile, UINT column, UINT row, UINT tileNum)
+void FTTileMap::InitializeTile(Tile& tile, UINT column, UINT row, UINT tileNum)
 {
-    FTRect* rectOnMap = tile->GetRectOnMap();
+    FTRect& rectOnMap = tile.GetRectOnMap();
     // Individual Tile size on tilemap
     float tileWidthOnMap = 1 / static_cast<float>(mMaxCountOnMapX);
     float tileHeightOnMap = 1 / static_cast<float>(mMaxCountOnMapY);
 
     int tileIndexX = tileNum % mMaxCountOnMapX;
     int tileIndexY = tileNum / mMaxCountOnMapX;
-    rectOnMap->Set(tileWidthOnMap * tileIndexX, tileHeightOnMap * tileIndexY, tileWidthOnMap, tileHeightOnMap);
+    rectOnMap.Set(tileWidthOnMap * tileIndexX, tileHeightOnMap * tileIndexY, tileWidthOnMap, tileHeightOnMap);
 
-    FTRect* rectOnScreen = tile->GetRectOnScreen();
-    rectOnScreen->Set(column, row, mTileWidthOnScreen, mTileHeightOnScreen);
+    FTRect& rectOnScreen = tile.GetRectOnScreen();
+    rectOnScreen.Set(column * mTileWidthOnScreen, row * mTileHeightOnScreen, mTileWidthOnScreen, mTileHeightOnScreen);
 }
 
 void FTTileMap::SaveProperties(std::ofstream& ofs, UINT key)
@@ -144,10 +148,10 @@ void FTTileMap::UpdateUI()
     if (!GetRelativePath().empty())
         currentPath = "Current path : \n" + GetRelativePath();
     
-    int tileWidthOnScreen = 0;
-    int tileHeightOnScreen = 0;
-    int maxCountOnMapX = 0;
-    int maxCountOnMapY = 0;
+    int tileWidthOnScreen = static_cast<int>(mTileWidthOnScreen);
+    int tileHeightOnScreen = static_cast<int>(mTileHeightOnScreen);
+    int maxCountOnMapX = static_cast<int>(mMaxCountOnMapX);
+    int maxCountOnMapY = static_cast<int>(mMaxCountOnMapY);
 
     ImGui::InputInt("Tile width on screen", &tileWidthOnScreen);
     ImGui::InputInt("Tile height on screen", &tileHeightOnScreen);

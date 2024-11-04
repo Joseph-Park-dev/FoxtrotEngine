@@ -75,16 +75,17 @@ void ResourceManager::LoadBasicMesh(MeshData meshData)
 	++gItemKey;
 }
 
-void ResourceManager::LoadBasicMesh(std::vector<MeshData> meshData)
+UINT ResourceManager::LoadBasicMesh(std::vector<MeshData> meshData)
 {
 	UINT key = gItemKey;
 	if (meshData.empty())
 	{
 		printf("Error: ResourceManager::LoadMesh() -> LoadSquareMesh failed. \n");
-		return;
+		return -1;
 	}
 	mMapMeshes.insert(std::make_pair(key, meshData));
 	++gItemKey;
+	return key;
 }
 
 void ResourceManager::LoadTileMap(const std::string filePath)

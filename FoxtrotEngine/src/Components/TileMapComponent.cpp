@@ -37,17 +37,18 @@ void TileMapComponent::Initialize(FTCore* coreInstance){
 void TileMapComponent::InitializeTileMap() {
     assert(mTileMapKey != VALUE_NOT_ASSIGNED);
     assert(GetTexKey() != VALUE_NOT_ASSIGNED);
-    assert(GetMeshKey() != VALUE_NOT_ASSIGNED);
+    //assert(GetMeshKey() != VALUE_NOT_ASSIGNED);
     mTileMap = ResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey);
     if (mTileMap)
     {
         SetTexture();
         mTileMap->ReadCSV();
-        ResourceManager::GetInstance()->LoadBasicMesh(
+        UINT meshKey = ResourceManager::GetInstance()->LoadBasicMesh(
             GeometryGenerator::MakeTileMapGrid(mTileMap)
         );
+		SetMeshKey(meshKey);
         MeshRendererComponent::InitializeMesh();
-        GetOwner()->GetTransform()->SetScale(FTVector3(0.07f, 0.07f, 0.0f));
+        //GetOwner()->GetTransform()->SetScale(FTVector3(0.03f, 0.03f, 1.0f));
     }
 }
 
@@ -110,15 +111,57 @@ void TileMapComponent::EditorUIUpdate()
 
 void TileMapComponent::OnConfirmUpdate()
 {
-    if (ImGui::Button("Update")) {
-        if (!mTileMap->GetRelativePath().empty())
-            this->InitializeTileMap();
-        else
-            printf("ERROR: TileMapComponent::ConfirmUpdate() -> .CSV path is null");
-    }
+    if (ImGui::Button("Update"))
+        this->InitializeTileMap();
 }
 
 void TileMapComponent::UpdateCSV() {
-    
+	std::string currentCSV = "No .csv has been assigned";
+	if (mTileMapKey != VALUE_NOT_ASSIGNED)
+		currentCSV =
+		"Current sprite : \n" + ResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey)->GetRelativePath();
+	ImGui::Text(currentCSV.c_str());
+
+	if (ImGui::Button("Select .CSV"))
+	{
+		IGFD::FileDialogConfig config;
+		config.path = ".";
+		config.countSelectionMax = 1;
+		ImGuiFileDialog::Instance()->OpenDialog(
+			"SelectCSV", "Select .CSV", TEXTURE_FORMAT_SUPPORTED, config);
+		ImGui::OpenPopup("Select .CSV");
+	}
+
+	if (ImGui::BeginPopupModal("Select .CSV", NULL,
+		ImGuiWindowFlags_MenuBar))
+	{
+		std::unordered_map<UINT, FTTileMap*>& tileMapsMap =
+			ResourceManager::GetInstance()->GetTileMapsMap();
+		if (ImGui::TreeNode("Selection State: Single Selection"))
+		{
+			UINT	   tileMapKey = VALUE_NOT_ASSIGNED;
+			static int selected = -1;
+			int		   i = 0;
+			for (auto iter = tileMapsMap.begin(); iter != tileMapsMap.end();
+				++iter, ++i)
+			{
+				if (ImGui::Selectable((*iter).second->GetFileName().c_str(),
+					selected == i))
+				{
+					tileMapKey = (*iter).first;
+					selected = i;
+				}
+			}
+			ImGui::TreePop();
+			if (selected != -1)
+			{
+				mTileMapKey = tileMapKey;
+				//SetTexture();
+			}
+		}
+		if (ImGui::Button("Close"))
+			ImGui::CloseCurrentPopup();
+		ImGui::EndPopup();
+	}
 }
 #endif

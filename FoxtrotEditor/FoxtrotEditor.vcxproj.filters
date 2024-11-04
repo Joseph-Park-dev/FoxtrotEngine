@@ -100,4 +100,10 @@
   <ItemGroup>
     <Text Include="include\imgui\misc\debuggers\README.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="assets\Shaders\BasicPixelShader.hlsl" />
+    <FxCompile Include="assets\Shaders\BasicVertexShader.hlsl" />
+    <FxCompile Include="assets\Shaders\ColorPixelShader.hlsl" />
+    <FxCompile Include="assets\Shaders\ColorVertexShader.hlsl" />
+  </ItemGroup>
 </Project>

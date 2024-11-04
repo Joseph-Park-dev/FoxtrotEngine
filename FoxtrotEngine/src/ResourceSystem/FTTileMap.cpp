@@ -133,3 +133,29 @@ UINT FTTileMap::LoadProperties(std::ifstream& ifs)
     UINT key = FTResource::LoadProperties(ifs);
     return key;
 }
+
+void FTTileMap::UpdateUI()
+{
+    ImGui::Text(GetFileName().c_str());
+    ImVec2 previewSize = ImVec2(100, 100);
+
+    //UpdateRelativePath(TEXTURE_FORMAT_SUPPORTED);
+    std::string currentPath = "No path has been assigned";
+    if (!GetRelativePath().empty())
+        currentPath = "Current path : \n" + GetRelativePath();
+    
+    int tileWidthOnScreen = 0;
+    int tileHeightOnScreen = 0;
+    int maxCountOnMapX = 0;
+    int maxCountOnMapY = 0;
+
+    ImGui::InputInt("Tile width on screen", &tileWidthOnScreen);
+    ImGui::InputInt("Tile height on screen", &tileHeightOnScreen);
+    ImGui::InputInt("Max count on Map X", &maxCountOnMapX);
+    ImGui::InputInt("Max count on Map Y", &maxCountOnMapY);
+
+    mTileWidthOnScreen = static_cast<UINT>(tileWidthOnScreen);
+    mTileHeightOnScreen = static_cast<UINT>(tileHeightOnScreen);
+    mMaxCountOnMapX = static_cast<UINT>(maxCountOnMapX);
+    mMaxCountOnMapY = static_cast<UINT>(maxCountOnMapY);
+}

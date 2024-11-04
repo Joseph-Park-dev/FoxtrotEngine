@@ -6,6 +6,8 @@
 
 class Tile;
 
+#define TILEMAP_FORMAT_SUPPORTED ".csv"
+
 class FTTileMap :
     public FTResource
 {
@@ -44,5 +46,10 @@ private:
 public:
     virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
     virtual UINT LoadProperties(std::ifstream& ifs)           override;
+
+#ifdef FOXTROT_EDITOR
+public:
+    virtual void UpdateUI()         override;
+#endif // FOXTROT_EDITOR
 };
 

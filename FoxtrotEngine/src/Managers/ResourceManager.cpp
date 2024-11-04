@@ -213,19 +213,26 @@ void ResourceManager::UpdateUI()
 	}
 	if (ImGuiFileDialog::Instance()->Display("SelectFile"))
 	{
-		if (ImGuiFileDialog::Instance()->IsOk()) {
+		if (ImGuiFileDialog::Instance()->IsOk()) 
+		{
 			std::string path = ImGuiFileDialog::Instance()->GetFilePathName();
 			std::string extension = path.substr(path.rfind("."));
 			
-			if (StrContains(TEXTURE_FORMAT_SUPPORTED, extension)) {
+			if (StrContains(TEXTURE_FORMAT_SUPPORTED, extension)) 
+			{
 				std::string relativePath = path.substr(path.rfind("assets"));
 				FTTexture* texture = LoadResource<FTTexture>(relativePath, mMapTextures);
 				ProcessTexture(texture);
-				LogInt(mMapTextures.size());
+			}
+			else if (StrContains(TILEMAP_FORMAT_SUPPORTED, extension)) 
+			{
+				std::string relativePath = path.substr(path.rfind("assets"));
+				FTTileMap* tileMap = LoadResource<FTTileMap>(relativePath, mMapTileMaps);
 			}
 		}
 		ImGuiFileDialog::Instance()->Close();
 	}
+
 	if (ImGui::TreeNode("Textures"))
 	{
 		std::unordered_map<UINT, FTTexture*>::const_iterator texIter;
@@ -236,6 +243,25 @@ void ResourceManager::UpdateUI()
 				(*texIter).second->UpdateUI();
 				if (ImGui::Button("Remove")) {
 					RemoveResource<FTTexture>((*texIter).first, mMapTextures);
+					ImGui::EndListBox();
+					break;
+				}
+				ImGui::EndListBox();
+			}
+		}
+		ImGui::TreePop();
+	}
+
+	if (ImGui::TreeNode("TileMaps"))
+	{
+		std::unordered_map<UINT, FTTileMap*>::const_iterator tileIter;
+		tileIter = mMapTileMaps.begin();
+		for (; tileIter != mMapTileMaps.end(); ++tileIter) {
+			if (ImGui::BeginListBox((*tileIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 200)))
+			{
+				(*tileIter).second->UpdateUI();
+				if (ImGui::Button("Remove")) {
+					RemoveResource<FTTileMap>((*tileIter).first, mMapTileMaps);
 					ImGui::EndListBox();
 					break;
 				}

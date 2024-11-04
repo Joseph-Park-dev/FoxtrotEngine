@@ -9,8 +9,6 @@ class FTTexture;
 class FoxtrotRenderer;
 struct Mesh;
 
-#define MAPKEY_SPRITE_MESH "BasicSquare"
-
 class SpriteRendererComponent : public MeshRendererComponent
 {
 public:

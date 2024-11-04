@@ -63,7 +63,10 @@ void SpriteRendererComponent::Render(FoxtrotRenderer* renderer)
 bool SpriteRendererComponent::InitializeMesh()
 {
 	MeshRendererComponent::InitializeMesh(
-		GeometryGenerator::MakeSquare());
+		ResourceManager::GetInstance()->GetLoadedPrimitive(
+			ChunkKeys::PRIMITIVE_SQUARE
+		)
+	);
 	if (!GetMeshGroup())
 	{
 		LogString("ERROR: SpriteRendererComponent::InitializeMesh() -> Mesh "

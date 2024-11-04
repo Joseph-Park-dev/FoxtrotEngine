@@ -39,12 +39,15 @@ namespace ChunkKeys {
 	constexpr const char* TEXTURE_WIDTH = "Texture Width";
 	constexpr const char* TEXTURE_HEIGHT = "Texture Height";
 
-	//FTTileMap
+	// FTTileMap
 	constexpr const char* FTTILEMAP = "FTTileMap";
 	constexpr const char* TILEMAP_SCREEN_WIDTH = "Tile Width On Screen";
 	constexpr const char* TILEMAP_SCREEN_HEIGHT = "Tile Height On Screen";
 	constexpr const char* TILEMAP_MAP_MAX_COUNT_X = "Max Count On Map X";
 	constexpr const char* TILEMAP_MAP_MAX_COUNT_Y = "Max Count On Map Y";
+
+	// Primitive Geometries
+	constexpr const UINT PRIMITIVE_SQUARE = 0;
 
 // Component Related
 	constexpr const char* COMPONENTS = "Components";

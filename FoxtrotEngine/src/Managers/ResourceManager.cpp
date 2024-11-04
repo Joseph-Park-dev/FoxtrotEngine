@@ -184,19 +184,30 @@ ResourceManager::ResourceManager()
 
 void ResourceManager::SaveResources(std::ofstream& ofs)
 {
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::RESOURCE_DATA);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::RESOURCE_DATA);\
+
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::FTTEXTURE_GROUP);
 	SaveResourceInMap<FTTexture>(ofs, mMapTextures);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::FTTEXTURE_GROUP);
+
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::FTTILEMAP_GROUP);
 	SaveResourceInMap<FTTileMap>(ofs, mMapTileMaps);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::FTTILEMAP_GROUP);
+
 	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::RESOURCE_DATA);
 }
 
 void ResourceManager::LoadResources(std::ifstream& ifs)
 {
-	std::pair<size_t, std::string>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::RESOURCE_DATA);
-	size_t count = pack.first;
-	LoadResourceToMap<FTTexture>(ifs, mMapTextures, count);
+	std::pair<size_t, std::string>&& resPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::RESOURCE_DATA);
+	size_t count = resPack.first;
+
+	std::pair<size_t, std::string>&& ftTileMapPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTTILEMAP_GROUP);
+	LoadResourceToMap<FTTileMap>(ifs, mMapTileMaps, ftTileMapPack.first);
+
+	std::pair<size_t, std::string>&& ftTexturePack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTTEXTURE_GROUP);
+	LoadResourceToMap<FTTexture>(ifs, mMapTextures, ftTexturePack.first);
 	ProcessTextures();
-	LoadResourceToMap<FTTileMap>(ifs, mMapTileMaps, count);
 }
 
 #ifdef FOXTROT_EDITOR

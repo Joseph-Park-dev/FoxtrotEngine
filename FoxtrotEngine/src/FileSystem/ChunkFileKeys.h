@@ -34,6 +34,10 @@ namespace ChunkKeys {
 	constexpr const char* RENDER_SCREENCENTER = "Screen Center";
 
 // Resource Related
+	// Group Save Keys
+	constexpr const char* FTTEXTURE_GROUP = "FTTexture Group";
+	constexpr const char* FTTILEMAP_GROUP = "FTTileMap Group";
+
 	// FTTexture
 	constexpr const char* FTTEXTURE = "FTTexture";
 	constexpr const char* TEXTURE_WIDTH = "Texture Width";

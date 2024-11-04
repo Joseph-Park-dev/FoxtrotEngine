@@ -33,12 +33,10 @@ public:
 
 	void				LoadTileMap(const std::string filePath);
 
-	FTTexture*			GetLoadedTexture(UINT key);
-	// FTSpineAnimation*	GetLoadedSpineAnimation(std::string key);
-	// Load a previously loaded FTTexture to Spine Atlas Page
-	// void				LoadToSpineTexture(spine::AtlasPage& page, spine::String fileName);
+	FTTexture*				GetLoadedTexture(UINT key);
 	std::vector<MeshData>&	GetLoadedMeshes(UINT key);
-	FTTileMap*			GetLoadedTileMap(UINT key);
+	FTTileMap*				GetLoadedTileMap(UINT key);
+	MeshData&				GetLoadedPrimitive(UINT key);
 
 	void				RemoveLoadedMeshes(UINT key);
 

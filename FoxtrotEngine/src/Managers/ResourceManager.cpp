@@ -17,6 +17,11 @@ UINT ResourceManager::gItemKey = 0;
 void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 {
 	mRenderer = renderer;
+
+	// Add primitive geometries as resources
+	mMapPrimitives.insert(
+		std::pair(ChunkKeys::PRIMITIVE_SQUARE, GeometryGenerator::MakeSquare())
+	);
 }
 
 void ResourceManager::UpdateTexture(FTTexture* texture, int channels)
@@ -128,6 +133,15 @@ FTTileMap* ResourceManager::GetLoadedTileMap(UINT key)
 		printf("Error: ResourceManager::GetLoadedTileMap() -> FTTileMap is empty %d\n", key);
 }
 
+MeshData& ResourceManager::GetLoadedPrimitive(UINT key)
+{
+	MeshData& primitive = mMapPrimitives.at(key);
+	if (!primitive.IsEmpty())
+		return primitive;
+	else
+		printf("Error: ResourceManager::GetLoadedPrimitive() -> Primitive is empty %d\n", key);
+}
+
 void ResourceManager::RemoveLoadedMeshes(UINT key)
 {
 	if (KeyExists(key, mMapMeshes)) {
@@ -163,6 +177,7 @@ ResourceManager::~ResourceManager()
 
 ResourceManager::ResourceManager()
 	: mPathToAsset("./Assets")
+	, mRenderer(nullptr)
 {
 
 }

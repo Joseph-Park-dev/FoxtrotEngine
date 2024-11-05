@@ -79,12 +79,19 @@ void TileMapComponent::SaveProperties(std::ofstream& ofs)
 {
     Component::SaveProperties(ofs);
     FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TILEMAP_KEY, mTileMapKey);
+	FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::MESH_KEY, GetTexKey());
 }
 
 void TileMapComponent::LoadProperties(std::ifstream& ifs)
 {
+	UINT texKey = 0;
+	FileIOHelper::LoadUnsignedInt(ifs, texKey);
+	SetTexKey(texKey);
     FileIOHelper::LoadUnsignedInt(ifs, mTileMapKey);
     Component::LoadProperties(ifs);
+
+	if(GetTexKey() != VALUE_NOT_ASSIGNED && mTileMapKey != VALUE_NOT_ASSIGNED)
+		this->InitializeTileMap();
 }
 
 #ifdef FOXTROT_EDITOR

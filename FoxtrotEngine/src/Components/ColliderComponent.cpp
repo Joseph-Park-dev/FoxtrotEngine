@@ -10,6 +10,7 @@
 #include "Physics/Physics2D.h"
 #include "Managers/KeyInputManager.h"
 #include "FileSystem/ChunkLoader.h"
+#include "Components/Rigidbody2DComponent.h"
 
 UINT ColliderComponent::g_nextID = 0;
 
@@ -65,6 +66,7 @@ void ColliderComponent::SetScale(FTVector2 scale)
 
 void ColliderComponent::Initialize(FTCore* coreInstance)
 {
+	mPolygon = b2MakeBox(mScale.x / 2, mScale.y / 2);
 }
 
 void ColliderComponent::LateUpdate(float deltaTime)

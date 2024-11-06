@@ -18,6 +18,8 @@
 #include <fstream>
 #include <string>
 
+#include "box2d/box2d.h"
+
 namespace Math
 {
 	const float Pi = 3.1415926535f;
@@ -144,6 +146,11 @@ public:
 	friend std::ofstream& operator<<(std::ofstream& ofs, const FTVector3& vec3) {
 		ofs << "(" << std::to_string(vec3.x) << "," << std::to_string(vec3.y) << "," << std::to_string(vec3.z) << ")";
 		return ofs;
+	}
+
+	const b2Vec2 GetB2Vec2() const
+	{
+		return b2Vec2{ this->x, this->y };
 	}
 
 	const DirectX::XMFLOAT3 GetDXVec3() const
@@ -343,6 +350,11 @@ public:
 	friend std::ofstream& operator<<(std::ofstream& ofs, const FTVector2& vec2) {
 		ofs << "(" << std::to_string(vec2.x) << "," << std::to_string(vec2.y) << ")";
 		return ofs;
+	}
+	
+	b2Vec2 GetB2Vec2()
+	{
+		return b2Vec2{ this->x, this->y };
 	}
 
 	DirectX::XMFLOAT2 GetD3Vec2()

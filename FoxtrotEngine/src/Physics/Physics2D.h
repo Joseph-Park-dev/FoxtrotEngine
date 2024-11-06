@@ -6,6 +6,12 @@ class FTVector2;
 class ColliderComponent;
 class Rigidbody2DComponent;
 
+#ifdef FOXTROT_EDITOR
+#pragma comment (lib, "box2dd.lib")
+#endif // FOXTROT_EDITOR
+
+#include "box2d/box2d.h"
+
 struct PointMass
 {
 	PointMass()
@@ -29,14 +35,17 @@ public:
 public:
 	std::vector<RayCastHit2D>& GetRayCastHits(){ return mRayCastHits; }
 	void RenderRayCastHits(FoxtrotRenderer* renderer);
-	/*b2World* GetPhysicsWorld() { return mPhysicsWorld; }
-	static b2Vec2 ToB2Vec2(FTVector2 val) { return b2Vec2(val.x, val.y); }*/
+	
+	b2WorldId& GetCurrentWorldID() { return mWorldID; }
 
 public:
-	void Init();
+	void Initialize();
 	void Update();
 
 private:
+	b2WorldId	mWorldID;
+	int			mSubStepCount;
+
 	std::vector<RayCastHit2D> mRayCastHits;
 	PointMass*				  mElements;
 

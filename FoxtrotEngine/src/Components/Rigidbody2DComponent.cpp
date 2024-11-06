@@ -42,13 +42,33 @@ void Rigidbody2DComponent::LoadProperties(std::ifstream& ifs)
 }
 
 
+void Rigidbody2DComponent::Initialize(FTCore* coreInstance)
+{
+	b2BodyDef bodyDef;
+	bodyDef = b2DefaultBodyDef();
+	bodyDef.type = b2_dynamicBody;
+	bodyDef.position = GetOwner()->GetTransform()->GetWorldPosition().GetB2Vec2();
+	mBodyID = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &bodyDef);
+
+	ColliderComponent* collider = GetOwner()->GetComponent<ColliderComponent>();
+	if (collider) {
+		b2Polygon& polygon = collider->GetPolygon();
+		b2ShapeDef polygonShapeDef = b2DefaultShapeDef();
+		polygonShapeDef.density = 1.0f;
+		b2CreatePolygonShape(mBodyID, &polygonShapeDef, &polygon);
+	}
+}
+
 void Rigidbody2DComponent::LateUpdate(float deltaTime)
 {
-	UpdateLinearPosition(deltaTime);
+	b2Vec2 position = b2Body_GetPosition(mBodyID);
+	GetOwner()->GetTransform()->SetWorldPosition(FTVector2(position.x, position.y));
+
+	/*UpdateLinearPosition(deltaTime);
 	UpdateAcceleration(deltaTime);
 	UpdateGravity(deltaTime);
 	UpdateVelocity(deltaTime);
-	ClearForceAndAccel();
+	ClearForceAndAccel();*/
 }
 
 void Rigidbody2DComponent::UpdateLinearPosition(float deltaTime)

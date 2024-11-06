@@ -7,7 +7,7 @@
 #include "Math/Random.h"
 #include "Physics/Physics2D.h"
 #include "Physics/Ray.h"
-
+#include "Core/Timer.h"
 
 
  // _DEBUG
@@ -45,15 +45,20 @@ void Physics2D::RenderRayCastHits(FoxtrotRenderer* renderer)
 	}
 }
 
-void Physics2D::Init()
+void Physics2D::Initialize()
 {
-	//b2Vec2 gravity = b2Vec2(0.f, 50.f);
-	//mPhysicsWorld = new b2World(gravity);
+	float characterHeightInPixels = 64.f;
+	float characterHeightInMeters = 1.8f;
+	b2SetLengthUnitsPerMeter(characterHeightInPixels / characterHeightInMeters);
+
+	b2WorldDef worldDef = b2DefaultWorldDef();
+	worldDef.gravity = b2Vec2{ 0.0f, -9.8f };
+	mWorldID = b2CreateWorld(&worldDef);
 }
 
 void Physics2D::Update()
 {
-	//mPhysicsWorld->Step(mTimeStep, mVelocityIterations, mPositionIterations);
+	b2World_Step(mWorldID, 1.f/60.f, mSubStepCount);
 }
 
 FTVector3 Physics2D::CalcCenterOfGravity(int numElements)
@@ -123,12 +128,11 @@ Matrix3 Physics2D::CalcInertiaProduct(int numElements)
 
 Physics2D::Physics2D()
 	: mElements(nullptr)
-	/*, mTimeStep(1.f/60.f)
-	, mVelocityIterations(6)
-	, mPositionIterations(2)*/
+	, mWorldID()
+	, mSubStepCount(4)
 {}
 
-Physics2D::~Physics2D() {}
+Physics2D::~Physics2D() { b2DestroyWorld(mWorldID); }
 
 
 RayCastHit2D Physics2D::Raycast(FTVector2 origin, FTVector2 direction, float distance, ActorGroup actor)

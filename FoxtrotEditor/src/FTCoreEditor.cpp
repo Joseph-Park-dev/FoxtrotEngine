@@ -45,7 +45,7 @@ void FTCoreEditor::ShutDown()
 
 void FTCoreEditor::InitSingletonManagers()
 {
-	Physics2D::GetInstance()->Init();
+	Physics2D::GetInstance()->Initialize();
 	Camera::GetInstance();
 	ResourceManager::GetInstance()->Initialize(GetGameRenderer());
 	EditorSceneManager::GetInstance()->Init();
@@ -123,6 +123,7 @@ void FTCoreEditor::UpdateGame()
 	}
 	else
 	{
+		Physics2D::GetInstance()->Update();
 		EditorSceneManager::GetInstance()->Update(deltaTime);
 		EditorSceneManager::GetInstance()->Lateupdate(deltaTime);
 		UIManager::GetInstance()->EditorUpdate(deltaTime);

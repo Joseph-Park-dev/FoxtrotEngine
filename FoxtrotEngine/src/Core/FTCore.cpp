@@ -87,7 +87,7 @@ bool FTCore::InitFoxtrotRenderer_D3D11()
 
 void FTCore::InitSingletonManagers()
 {
-	Physics2D::GetInstance()->Init();
+	Physics2D::GetInstance()->Initialize();
 	Camera::GetInstance();
 	ResourceManager::GetInstance()->Initialize(mGameRenderer);
 	SceneManager::GetInstance()->Init();

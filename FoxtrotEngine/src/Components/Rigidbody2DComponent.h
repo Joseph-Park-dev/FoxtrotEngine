@@ -5,6 +5,13 @@
 class FTVector2;
 class Actor;
 
+enum class BodyType 
+{
+	STATIC,
+	KINEMATIC,
+	DYNAMIC
+};
+
 class Rigidbody2DComponent : public Component
 {
 public:
@@ -18,6 +25,7 @@ public:
 	std::string  GetName() const override { return "Rigidbody2DComponent"; }
 	bool		 GetIsGrounded() { return mIsGrounded; }
 	bool		 GetIsBlockedUp() { return mIsBlockedUp; }
+	b2BodyId	 GetBodyID() { return mBodyID; }
 
 	void SetMass(float mass) { mMass = mass; }
 	void SetVelocity(FTVector2 velocity) { mVelocity = velocity; }
@@ -26,8 +34,10 @@ public:
 	void SetIsBlockedUp(bool val) { mIsBlockedUp = val; }
 	void SetAccelAlpha(FTVector2 accel) { mAccelerationA = accel; }
 
+	void SetBodyType(BodyType type) { mBodyType = type; }
+
 public:
-	virtual void Initialize(FTCore* coreInstance) override{};
+	virtual void Initialize(FTCore* coreInstance) override;
 	virtual void Update(float deltaTime) override{};
 	virtual void LateUpdate(float deltaTime) override;
 
@@ -36,6 +46,11 @@ public:
 		int updateOrder = DEFAULT_UPDATEORDER);
 	~Rigidbody2DComponent(){};
 	virtual void CloneTo(Actor* actor) override;
+
+private:
+	b2BodyId	mBodyID;
+	BodyType	mBodyType;
+	b2Polygon	mPolygon;
 
 private:
 	FTVector2 mForce;

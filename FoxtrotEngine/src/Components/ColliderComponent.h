@@ -36,6 +36,8 @@ public:
 	FTVector2& GetOffsetPosRef();
 	FTVector2& GetScaleRef();
 
+	b2Polygon& GetPolygon() { return mPolygon; }
+
 	void SetOffsetPos(FTVector2 offsetPos);
 	void SetScale(FTVector2 scale);
 
@@ -64,10 +66,13 @@ private:
 	void OnRayEnter();
 
 private:
-	FTVector2	 mOffsetPos;
-	FTVector2	 mFinalPosition;
-	FTVector2	 mScale;
-	CollidedSide mCollidedSide;
+	b2Polygon		mPolygon;
+
+private:
+	FTVector2		mOffsetPos;
+	FTVector2		mFinalPosition;
+	FTVector2		mScale;
+	CollidedSide	mCollidedSide;
 
 	static uint32_t g_nextID;
 	uint32_t		mID;

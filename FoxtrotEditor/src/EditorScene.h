@@ -17,7 +17,14 @@ public:
 	void AddEditorElement(Actor* actor);
 
 public:
+	void EditorUpdate(float deltaTime);
+	void EditorRender(FoxtrotRenderer* renderer);
+
+public:
 	EditorScene();
+
+private:
+	bool mIsUpdatingActors;
 
 private:
 	virtual void LoadData();

@@ -2,7 +2,7 @@
 
 #include "Managers/SceneManager.h"
 
-void EditorSceneManager::Init()
+void EditorSceneManager::Initialize()
 {
 	mEditorScene->Enter();
 }
@@ -13,14 +13,21 @@ void EditorSceneManager::ProcessInput(KeyInputManager* keyInputManager) {
 
 void EditorSceneManager::Update(float deltaTime){
 	mEditorScene->Update(deltaTime);
-}
-
-void EditorSceneManager::Lateupdate(float deltaTime){
 	mEditorScene->LateUpdate(deltaTime);
 }
 
 void EditorSceneManager::Render(FoxtrotRenderer* renderer){
 	mEditorScene->Render(renderer);
+}
+
+void EditorSceneManager::EditorUpdate(float deltaTime)
+{
+	mEditorScene->EditorUpdate(deltaTime);
+}
+
+void EditorSceneManager::EditorRender(FoxtrotRenderer* renderer)
+{
+	mEditorScene->EditorRender(renderer);
 }
 
 void EditorSceneManager::ProcessEvent(){

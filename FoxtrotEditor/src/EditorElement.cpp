@@ -64,7 +64,7 @@ void EditorElement::OnMouseLButtonClicked()
 	{
 		for (int j = 0; j < actors[i].size(); ++j)
 		{
-			EditorElement* elems = (EditorElement*)actors[i][j];
+			EditorElement* elems = dynamic_cast<EditorElement*>(actors[i][j]);
 			if (elems->GetIsFocused())
 			{
 				int& mActorNameIDX = EditorLayer::GetInstance()->GetActorNameIdx();
@@ -105,6 +105,18 @@ void EditorElement::OnMouseLButtonDown()
 {
 	if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow))
 		PanelUI::OnMouseLButtonDown();
+}
+
+void EditorElement::EditorUpdate(float deltaTime)
+{
+	for (auto comp : GetComponents()) 
+		comp->EditorUpdate(deltaTime);
+}
+
+void EditorElement::EditorRender(FoxtrotRenderer* renderer)
+{
+	for (auto comp : GetComponents())
+		comp->EditorRender(renderer);
 }
 
 EditorElement::EditorElement(Scene* scene)

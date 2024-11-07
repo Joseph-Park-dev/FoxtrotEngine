@@ -115,7 +115,7 @@ private:
 	static int						g_NextID;
 		   std::string				mName;
 		   int						mID;
-		   ActorGroup	mActorGroup;
+		   ActorGroup				mActorGroup;
 		   State					mState;
 		   Transform*				mTransform;
 		   std::vector<Component*>	mComponents;

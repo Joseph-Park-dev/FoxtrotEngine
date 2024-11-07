@@ -5,7 +5,7 @@
 
 SceneManager::SceneManager()
 	: mArrScene{}
-	, mPCurrScene(nullptr)
+	, mPCurrScene(new Scene)
 {}
 
 SceneManager::~SceneManager()
@@ -17,14 +17,13 @@ SceneManager::~SceneManager()
 			delete mArrScene[i];
 		}
 	}
+	delete mPCurrScene;
 }
 
-void SceneManager::Init()
+void SceneManager::Initialize()
 {
 	//mArrScene[(UINT)SCENE_TYPE::START] = new Scene_Start;
 	//mArrScene[(UINT)SCENE_TYPE::START]->SetName(L"Start Scene");
-
-	mPCurrScene = mArrScene[(UINT)SCENE_TYPE::START];
 	mPCurrScene->Enter();
 }
 

@@ -18,8 +18,6 @@ public:
 	void AddForce(FTVector2 force);
 	void AddVelocity(FTVector2 velocity);
 
-	virtual void LoadProperties(std::ifstream& ifs) override;
-
 public:
 	float		 GetMass() { return mMass; }
 	std::string  GetName() const override { return "Rigidbody2DComponent"; }
@@ -44,13 +42,14 @@ public:
 public:
 	Rigidbody2DComponent(Actor* owner, int drawOrder = DEFAULT_DRAWORDER,
 		int updateOrder = DEFAULT_UPDATEORDER);
-	~Rigidbody2DComponent(){};
+	~Rigidbody2DComponent();
 	virtual void CloneTo(Actor* actor) override;
 
 private:
 	b2BodyId	mBodyID;
+	b2BodyDef	mBodyDef;
+
 	BodyType	mBodyType;
-	b2Polygon	mPolygon;
 
 private:
 	FTVector2 mForce;
@@ -74,8 +73,22 @@ private:
 	void UpdateVelocity(float deltaTime);
 	void ClearForceAndAccel();
 
+public:
+	virtual void SaveProperties(std::ofstream& ofs);
+	virtual void LoadProperties(std::ifstream& ifs);
+
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void SaveProperties(nlohmann::ordered_json& out) override;
+
+public:
+	virtual void EditorUpdate(float deltaTime)			 override;
+	virtual void EditorRender(FoxtrotRenderer* renderer) override;
+
+public:
+	virtual void EditorUIUpdate() override;
+
+private:
+	void UpdateBodyType();
 #endif;
 };

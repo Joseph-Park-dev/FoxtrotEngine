@@ -180,7 +180,9 @@ void EditorLayer::DisplayFileMenu()
 				if (!mCurrFilePath.empty())
 				{
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(false);
-					SceneManager::GetInstance()->GetCurrentScene()->DeleteAll();
+					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
+					ResourceManager::GetInstance()->DeleteAll();
+					ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 					EditorChunkLoader::GetInstance()->LoadChunk(mCurrFilePath);
 				}
 			}

@@ -57,15 +57,28 @@ public:
 	{
 		///Dynamically allocate actor of type T
 		T* t = new T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
-		t->Initialize(coreInst);
-		//Call LoadProperties on new actor
+		// Load Properties first -> then initialize with the loaded values.
 		t->LoadProperties(ifs);
+		t->Initialize(coreInst);
 	}
 
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void SaveProperties(nlohmann::ordered_json& out);
 	virtual void LoadProperties(nlohmann::ordered_json& in);
+
+public:
+	// Member functions for EditorElement objects.
+	// Functions for editor specific tasks, which means
+	// codes to be executed in the Editor, but not in the produced game.
+	// 
+	// Renderer dependent components, 
+	// (such as MeshRendererComponent, SpriteRendererComponent, etc.)
+	// usually use FTCore level Update() & Render().
+	virtual void EditorUpdate(float deltaTime) {};
+	virtual void EditorRender(FoxtrotRenderer* renderer) {};
+
+public:
 	virtual void EditorUIUpdate();
 
 public:

@@ -20,6 +20,7 @@
 #include "Renderer/Camera.h"
 #include "Managers/ResourceManager.h"
 #include "Managers/EventManager.h"
+#include "Managers/SceneManager.h"
 
 bool FTCoreEditor::Initialize()
 {
@@ -45,14 +46,9 @@ void FTCoreEditor::ShutDown()
 
 void FTCoreEditor::InitSingletonManagers()
 {
-	Physics2D::GetInstance()->Initialize();
-	Camera::GetInstance();
+	FTCore::InitSingletonManagers();
 	ResourceManager::GetInstance()->Initialize(GetGameRenderer());
-	EditorSceneManager::GetInstance()->Init();
-	UIManager::GetInstance();
-	EventManager::GetInstance();
-	KeyInputManager::GetInstance();
-	//EditorCamera2D::GetInstance();
+	EditorSceneManager::GetInstance()->Initialize();
 	EditorLayer::GetInstance();
 }
 
@@ -115,19 +111,11 @@ void FTCoreEditor::UpdateGame()
 
 	if (mIsUpdatingGame)
 	{
+		EditorSceneManager::GetInstance()->Update(deltaTime);
 		Physics2D::GetInstance()->Update();
-
-		CollisionManager::GetInstance()->Update();
-		ParticleSystem::GetInstance()->Update(deltaTime);
-		UIManager::GetInstance()->Update(deltaTime);
 	}
 	else
-	{
-		Physics2D::GetInstance()->Update();
-		EditorSceneManager::GetInstance()->Update(deltaTime);
-		EditorSceneManager::GetInstance()->Lateupdate(deltaTime);
-		UIManager::GetInstance()->EditorUpdate(deltaTime);
-	}
+		EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
 	EditorLayer::GetInstance()->Update(deltaTime);
 }
 
@@ -142,23 +130,12 @@ void FTCoreEditor::GenerateOutput()
 	}
 	UpdateWindow(GetWindow());
 
-	//GetGameRenderer()->SetViewport();
-	//float clearColor[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
-	//mEditorRenderer->RenderClear(clearColor);
 	if (mIsUpdatingGame)
-	{
-		/* Essential - Don't delete this
-		Camera2D::GetInstance()->Render(mEditorRenderer);
-		*/
-		ParticleSystem::GetInstance()->Render(GetGameRenderer());
-	}
-	else
-	{
 		EditorSceneManager::GetInstance()->Render(GetGameRenderer());
-	}
+	else
+		EditorSceneManager::GetInstance()->EditorRender(GetGameRenderer());
+
 	EditorLayer::GetInstance()->Render(GetGameRenderer());
-	CollisionManager::GetInstance()->RenderRay(GetGameRenderer());
-	//GetGameRenderer()->RenderToTexture(GetGameRenderer());
 	GetGameRenderer()->SwapChainPresent(1, 0);
 }
 

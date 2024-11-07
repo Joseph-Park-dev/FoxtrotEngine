@@ -23,6 +23,7 @@ class ResourceManager
 
 public:
 	void				Initialize(FoxtrotRenderer* renderer);
+	void				DeleteAll();
 
 public:
 	void				UpdateTexture(FTTexture* texture, int channels);
@@ -55,8 +56,6 @@ public:
 	static UINT gItemKey;
 
 private:
-	SpineTextureLoader* mSpineTextureLoader;
-
 	std::unordered_map<UINT, FTTexture*>			mMapTextures;
 	std::unordered_map<UINT, std::vector<MeshData>>	mMapMeshes;
 	std::unordered_map<UINT, FTTileMap*>			mMapTileMaps;
@@ -67,6 +66,15 @@ private:
 	FoxtrotRenderer* mRenderer; // For Loading FTTextures
 
 public:
+	template<typename FTRESOURCE>
+	void ClearMap(std::unordered_map<UINT, FTRESOURCE*>& resMap) 
+	{
+		auto iter = resMap.begin();
+		for (; iter != resMap.end(); ++iter)
+			delete (*iter).second;
+		resMap.clear();
+	}
+
 	template<typename FTRESOURCE>
 	void RemoveResource(UINT key, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{

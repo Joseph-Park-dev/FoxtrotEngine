@@ -14,7 +14,7 @@ public:
 	Scene*	GetCurrentScene()	{ return mPCurrScene; }
 
 public:
-	virtual void Init();
+	virtual void Initialize();
 	virtual void ProcessInput(class KeyInputManager* keyInputManager);
 	virtual void Update(float deltaTime);
 	virtual void Lateupdate(float deltaTime);

@@ -70,6 +70,7 @@ void EditorScene::DeleteAll()
 		}
 		actors[i].clear();
 	}
+	actors->clear();
 }
 
 void EditorScene::UnfocusEditorElements()
@@ -101,7 +102,38 @@ void EditorScene::AddEditorElement(Actor* actor)
 	EditorElement* editorElement = new EditorElement(actor, this);
 }
 
+void EditorScene::EditorUpdate(float deltaTime)
+{
+	mIsUpdatingActors = true;
+	std::vector<Actor*>* actors = GetActors();
+	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	{
+		for (size_t j = 0; j < actors[i].size(); ++j)
+		{
+			EditorElement* ele = dynamic_cast<EditorElement*>(actors[i][j]);
+			ele->EditorUpdate(deltaTime);
+		}
+	}
+	mIsUpdatingActors = false;
+}
+
+void EditorScene::EditorRender(FoxtrotRenderer* renderer)
+{
+	mIsUpdatingActors = true;
+	std::vector<Actor*>* actors = GetActors();
+	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	{
+		for (size_t j = 0; j < actors[i].size(); ++j)
+		{
+			EditorElement* ele = dynamic_cast<EditorElement*>(actors[i][j]);
+			ele->EditorRender(renderer);
+		}
+	}
+	mIsUpdatingActors = false;
+}
+
 EditorScene::EditorScene()
 	: Scene()
+	, mIsUpdatingActors(false)
 {
 }

@@ -24,6 +24,14 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 	);
 }
 
+void ResourceManager::DeleteAll()
+{
+	ClearMap<FTTexture>(mMapTextures);
+	mMapMeshes.clear();
+	ClearMap<FTTileMap>(mMapTileMaps);
+	mMapPrimitives.clear();
+}
+
 void ResourceManager::UpdateTexture(FTTexture* texture, int channels)
 {
 	if (texture != nullptr)

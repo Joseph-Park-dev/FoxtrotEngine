@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 
+#define VALUE_NOT_ASSIGNED -1
+
 namespace ChunkKeys {
 // File formats
 	constexpr const char* CHUNK_FILE_FORMAT = ".chunk";
@@ -65,6 +67,14 @@ namespace ChunkKeys {
 // Sprite Renderer Component
 	constexpr const char* CHANNEL = "Channel";
 	constexpr const char* SPRITE_SCALE = "Scale";
+
+// Rigidbody2DComponent
+	constexpr const char* BODY_TYPE = "Body Type";
+
+	constexpr const int BODY_TYPE_STATIC = 0;
+	constexpr const int BODY_TYPE_KINEMATIC = 1;
+	constexpr const int BODY_TYPE_DYNAMIC = 2;
+
 
 // Tile Map Component
 	constexpr const char* TILEMAP_KEY = "TileMapKey";

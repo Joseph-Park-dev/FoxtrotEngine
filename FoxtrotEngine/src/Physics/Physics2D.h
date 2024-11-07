@@ -44,6 +44,7 @@ public:
 
 private:
 	b2WorldId	mWorldID;
+	float		mFixedTimeStep;
 	int			mSubStepCount;
 
 	std::vector<RayCastHit2D> mRayCastHits;

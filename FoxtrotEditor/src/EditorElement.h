@@ -22,6 +22,11 @@ public:
 			void OnMouseLButtonDown() override;
 
 public:
+			// Runs on FTCoreEditor::UpdateGame() when mIsUpdatingGame IS NOT true
+			void EditorUpdate(float deltaTime);
+			void EditorRender(FoxtrotRenderer* renderer);
+
+public:
 			void UpdateUI();
 			void RenderUI(FoxtrotRenderer* renderer);
 
@@ -31,8 +36,8 @@ public:
 
 private:
 	// Stores ActorGroup index -> is int for Uint -> int conversion not supported
-	int mActorGroupIdx;
-	float mRotationModSpeed;
+	int		mActorGroupIdx;
+	float	mRotationModSpeed;
 
 private:
 	void UpdateActorName();

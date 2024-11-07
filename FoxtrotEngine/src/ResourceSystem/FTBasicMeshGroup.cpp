@@ -171,10 +171,9 @@ HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 }
 
 FTBasicMeshGroup::FTBasicMeshGroup()
-    : mTexture(new FTTexture)
+    : mTexture(nullptr)
 {
 }
 
 FTBasicMeshGroup::~FTBasicMeshGroup()
-{
-}
+{}

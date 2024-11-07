@@ -76,39 +76,12 @@ bool SpriteRendererComponent::InitializeMesh()
 	return true;
 }
 
-// void SpriteRendererComponent::InitializeMesh()
-//{
-//	mMesh = new Mesh;
-//	MeshData squareMeshData = GeometryGenerator::MakeSquare(mScale);
-//	D3D11Utils::CreateVertexBuffer(
-//		mRenderer->GetDevice(),
-//		squareMeshData.vertices,
-//		mMesh->vertexBuffer
-//	);
-//
-//	mMesh->mIndexCount = UINT(squareMeshData.indices.size());
-//	mMesh->mVertexCount = squareMeshData.vertices.size();
-//
-//	D3D11Utils::CreateIndexBuffer(
-//		mRenderer->GetDevice(),
-//		squareMeshData.indices,
-//		mMesh->indexBuffer
-//	);
-// }
-
-// void SpriteRendererComponent::SetTexture()
-//{
-//	//rect->x = (int)GetOwner()->GetTransform()->GetWorldPosition().x;
-//	//rect->y = (int)GetOwner()->GetTransform()->GetWorldPosition().y;
-//	//rect->w = mTextWidth;
-//	//rect->h = mTexHeight;
-// }
-
 SpriteRendererComponent::SpriteRendererComponent(Actor* owner, int drawOrder,
 	int updateOrder)
 	: MeshRendererComponent(owner, drawOrder, updateOrder), mChannel(4), mTexScale(FTVector2(1.0f,1.0f)) {}
 
-SpriteRendererComponent::~SpriteRendererComponent() {}
+SpriteRendererComponent::~SpriteRendererComponent() 
+{}
 
 void SpriteRendererComponent::SaveProperties(std::ofstream& ofs)
 {
@@ -143,6 +116,17 @@ void SpriteRendererComponent::SaveProperties(nlohmann::ordered_json& out)
 	//FileIOHelper::AddScalarValue(out["TextureHeight"], mTexHeight);
 	FileIOHelper::AddScalarValue(out["Channel"], mChannel);
 	FileIOHelper::AddVector2(out["Scale"], mTexScale);
+}
+
+void SpriteRendererComponent::EditorUpdate(float deltaTime)
+{
+	if (GetMeshGroup())
+		MeshRendererComponent::Update(deltaTime);
+}
+
+void SpriteRendererComponent::EditorRender(FoxtrotRenderer* renderer)
+{
+	SpriteRendererComponent::Render(renderer);
 }
 
 void SpriteRendererComponent::EditorUIUpdate()

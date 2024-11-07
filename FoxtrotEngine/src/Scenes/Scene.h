@@ -17,11 +17,11 @@ public:
 	void AddActor(Actor* actor, ActorGroup group);
 
 public:
-	virtual void Enter() = 0;
-	virtual void Exit() = 0;
+	virtual void Enter() {};
+	virtual void Exit() {};
 
 protected:
-	virtual void LoadData() = 0;
+	virtual void LoadData() {};
 
 public:
 	const std::wstring&  GetName() { return mSceneName; }

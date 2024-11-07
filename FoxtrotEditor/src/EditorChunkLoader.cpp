@@ -102,8 +102,8 @@ void EditorChunkLoader::SaveActorsData(std::ofstream& ofs)
             EditorElement* element = dynamic_cast<EditorElement*>(actors[i][j]);
             size_t index = (size_t)ActorGroup::END * i + j;
             FileIOHelper::BeginDataPackSave(ofs, element->GetName());
-            element->SaveProperties(ofs);
             element->SaveComponents(ofs);
+            element->SaveProperties(ofs);
             FileIOHelper::EndDataPackSave(ofs, element->GetName());
         }
     }
@@ -139,7 +139,7 @@ void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
     {
         FileIOHelper::BeginDataPackLoad(ifs);
         EditorElement* element = new EditorElement(scene);
-        element->LoadComponents(ifs, FTCoreEditor::GetInstance());
         element->LoadProperties(ifs);
+        element->LoadComponents(ifs, FTCoreEditor::GetInstance());
     }
 }

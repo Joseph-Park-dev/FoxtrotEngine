@@ -19,6 +19,11 @@ void ColliderComponent::LoadProperties(std::ifstream& ifs)
 	Component::LoadProperties(ifs);
 }
 
+void ColliderComponent::CreateShape(b2BodyId bodyID, b2ShapeDef* shapeDef, b2Polygon* polygon)
+{
+	b2CreatePolygonShape(bodyID, shapeDef, polygon);
+}
+
 FTVector2 ColliderComponent::GetOffsetPos() const
 {
 	return mOffsetPos;
@@ -97,6 +102,10 @@ ColliderComponent::ColliderComponent(const ColliderComponent& origin)
 {
 }
 
+ColliderComponent::~ColliderComponent()
+{
+}
+
 void ColliderComponent::CloneTo(Actor* actor)
 {
 	ColliderComponent* newColliderComp = new ColliderComponent(actor, GetDrawOrder(), GetUpdateOrder());
@@ -140,12 +149,12 @@ void ColliderComponent::SaveProperties(nlohmann::ordered_json& out)
 	Component::SaveProperties(out);
 }
 
-void ColliderComponent::Render(FoxtrotRenderer* renderer)
+void ColliderComponent::EditorUpdate(float deltaTime)
 {
-	FTVector2 topLeft = mFinalPosition - mScale / 2;
-	FTVector2 topRight = FTVector2(mFinalPosition.x + mScale.x / 2, mFinalPosition.y + mScale.y / 2);
-	FTVector2 bottomRight = mFinalPosition + mScale / 2;
-	FTVector2 bottomLeft = FTVector2(mFinalPosition.x - mScale.x / 2, mFinalPosition.y + mScale.y / 2);
+}
+
+void ColliderComponent::EditorRender(FoxtrotRenderer* renderer)
+{
 }
 
 void ColliderComponent::EditorUIUpdate()

@@ -75,6 +75,7 @@ bool FTTexture::ReleaseTexture()
 {
     mTextureResourceView.Reset();
     mTexture.Reset();
+    mSamplerState.Reset();
     if (mTextureResourceView.Get())
     {
         LogString("FTTexture()::ReleaseTexture() -> Release Texture Failed");

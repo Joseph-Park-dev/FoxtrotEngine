@@ -26,6 +26,9 @@ public:
 	virtual void LoadProperties(std::ifstream& ifs) override;
 
 public:
+	void CreateShape(b2BodyId bodyID, b2ShapeDef* shapeDef, b2Polygon* polygon);
+
+public:
 	FTVector2 GetOffsetPos() const;
 	// Get world position (anchor-pointed to the center)
 	FTVector2	 GetFinalPosition() const;
@@ -49,7 +52,7 @@ public:
 public:
 	ColliderComponent(class Actor* owner, int drawOrder, int updateOrder);
 	ColliderComponent(const ColliderComponent& origin);
-	//~ColliderComponent() override;
+	virtual ~ColliderComponent() override;
 	virtual void CloneTo(Actor* actor) override;
 
 public:
@@ -81,8 +84,13 @@ private:
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void SaveProperties(nlohmann::ordered_json& out) override;
-	void		 Render(FoxtrotRenderer* renderer) override;
-	void		 EditorUIUpdate() override;
+
+public:
+	virtual void EditorUpdate(float deltaTime)			 override;
+	virtual void EditorRender(FoxtrotRenderer* renderer) override;
+
+public:
+			void EditorUIUpdate() override;
 
 private:
 	void UpdateOffsetPos();

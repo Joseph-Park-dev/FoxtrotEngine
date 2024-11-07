@@ -58,7 +58,7 @@ void Physics2D::Initialize()
 
 void Physics2D::Update()
 {
-	b2World_Step(mWorldID, 1.f/60.f, mSubStepCount);
+	b2World_Step(mWorldID, mFixedTimeStep, mSubStepCount);
 }
 
 FTVector3 Physics2D::CalcCenterOfGravity(int numElements)
@@ -130,6 +130,7 @@ Physics2D::Physics2D()
 	: mElements(nullptr)
 	, mWorldID()
 	, mSubStepCount(4)
+	, mFixedTimeStep(1.f/60.f)
 {}
 
 Physics2D::~Physics2D() { b2DestroyWorld(mWorldID); }

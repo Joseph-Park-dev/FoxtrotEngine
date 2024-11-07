@@ -63,10 +63,13 @@ Actor::~Actor()
 {
 	if(mTransform)
 		delete mTransform;
+
 	for (size_t i = 0; i < mComponents.size(); ++i)
 		delete mComponents[i];
 	mComponents.clear();
-	mChild.clear();
+
+	for (size_t i = 0; i < mChild.size(); ++i)
+		mChild.clear();	
 }
 
 void Actor::CopyTransformFrom(Actor& origin)

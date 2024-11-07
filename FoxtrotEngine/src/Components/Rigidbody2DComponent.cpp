@@ -5,6 +5,7 @@
 #include "Actors/Transform.h"
 #include "Math/FTMath.h"
 #include "FileSystem/ChunkLoader.h"
+#include "FileSystem/ChunkFileKeys.h"
 
 Rigidbody2DComponent::Rigidbody2DComponent(class Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner, drawOrder, updateOrder)
@@ -17,7 +18,13 @@ Rigidbody2DComponent::Rigidbody2DComponent(class Actor* owner, int drawOrder, in
 	, mFrictionCoeff(0.1f)
 	, mIsGrounded(false)
 	, mIsBlockedUp(false)
+	, mBodyDef(b2DefaultBodyDef())
 {}
+
+Rigidbody2DComponent::~Rigidbody2DComponent()
+{
+	b2DestroyBody(mBodyID);
+}
 
 void Rigidbody2DComponent::CloneTo(Actor* actor)
 {
@@ -36,26 +43,34 @@ void Rigidbody2DComponent::AddVelocity(FTVector2 velocity)
 	mVelocity += velocity;
 }
 
-void Rigidbody2DComponent::LoadProperties(std::ifstream& ifs)
-{
-	Component::LoadProperties(ifs);
-}
-
-
 void Rigidbody2DComponent::Initialize(FTCore* coreInstance)
 {
-	b2BodyDef bodyDef;
-	bodyDef = b2DefaultBodyDef();
-	bodyDef.type = b2_dynamicBody;
-	bodyDef.position = GetOwner()->GetTransform()->GetWorldPosition().GetB2Vec2();
-	mBodyID = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &bodyDef);
+	if(b2Body_IsValid(mBodyID))
+		b2DestroyBody(mBodyID);
+
+	switch (mBodyType)
+	{
+	case BodyType::STATIC:
+		mBodyDef.type = b2_staticBody;
+		break;
+	case BodyType::KINEMATIC:
+		mBodyDef.type = b2_kinematicBody;
+		break;
+	case BodyType::DYNAMIC:
+		mBodyDef.type = b2_dynamicBody;
+		break;
+	default:
+		break;
+	}
+
+	mBodyDef.position = GetOwner()->GetTransform()->GetWorldPosition().GetB2Vec2();
+	mBodyID = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &mBodyDef);
 
 	ColliderComponent* collider = GetOwner()->GetComponent<ColliderComponent>();
 	if (collider) {
 		b2Polygon& polygon = collider->GetPolygon();
 		b2ShapeDef polygonShapeDef = b2DefaultShapeDef();
-		polygonShapeDef.density = 1.0f;
-		b2CreatePolygonShape(mBodyID, &polygonShapeDef, &polygon);
+		collider->CreateShape(mBodyID, &polygonShapeDef, &polygon);
 	}
 }
 
@@ -136,9 +151,92 @@ void Rigidbody2DComponent::ClearForceAndAccel()
 	mAcceleration = FTVector2::Zero;
 }
 
+void Rigidbody2DComponent::SaveProperties(std::ofstream& ofs)
+{
+	Component::SaveProperties(ofs);
+	switch (mBodyType)
+	{
+	case BodyType::STATIC:
+		FileIOHelper::SaveInt(ofs, ChunkKeys::BODY_TYPE, ChunkKeys::BODY_TYPE_STATIC);
+		break;
+	case BodyType::KINEMATIC:
+		FileIOHelper::SaveInt(ofs, ChunkKeys::BODY_TYPE, ChunkKeys::BODY_TYPE_KINEMATIC);
+		break;
+	case BodyType::DYNAMIC:
+		FileIOHelper::SaveInt(ofs, ChunkKeys::BODY_TYPE, ChunkKeys::BODY_TYPE_DYNAMIC);
+		break;
+	default:
+		break;
+	}
+}
+
+void Rigidbody2DComponent::LoadProperties(std::ifstream& ifs)
+{
+	int bodyTypeInt = VALUE_NOT_ASSIGNED;
+	FileIOHelper::LoadInt(ifs, bodyTypeInt);
+	Component::LoadProperties(ifs);
+
+	mBodyType = (BodyType)bodyTypeInt;
+}
+
 #ifdef FOXTROT_EDITOR
 void Rigidbody2DComponent::SaveProperties(nlohmann::ordered_json& out)
 {
 	Component::SaveProperties(out);
 }
+
+void Rigidbody2DComponent::EditorUpdate(float deltaTime)
+{
+}
+
+void Rigidbody2DComponent::EditorRender(FoxtrotRenderer* renderer)
+{
+}
+
+void Rigidbody2DComponent::EditorUIUpdate()
+{
+	UpdateBodyType();
+}
+
+void Rigidbody2DComponent::UpdateBodyType()
+{
+	const char* items[] = { "Static", "Kinematic", "Dynamic" };
+	static int currentItem = VALUE_NOT_ASSIGNED;
+
+	switch (mBodyType)
+	{
+	case BodyType::STATIC:
+		currentItem = 0;
+		break;
+	case BodyType::KINEMATIC:
+		currentItem = 1;
+		break;
+	case BodyType::DYNAMIC:
+		currentItem = 2;
+		break;
+	default:
+		break;
+	}
+
+	const char* comboPreview = items[currentItem];
+	if (ImGui::BeginCombo("Body Type", comboPreview))
+	{
+		for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+		{
+			const bool is_selected = (currentItem == n);
+			if (ImGui::Selectable(items[n], is_selected)) {
+				currentItem = n;
+				mBodyType = (BodyType)currentItem;
+			}
+
+			// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+
+		}
+		ImGui::EndCombo();
+	}
+}
+
+
 #endif // FOXTROT_EDITOR

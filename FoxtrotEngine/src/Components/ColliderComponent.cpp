@@ -155,12 +155,31 @@ void ColliderComponent::EditorUpdate(float deltaTime)
 
 void ColliderComponent::EditorRender(FoxtrotRenderer* renderer)
 {
+
 }
 
 void ColliderComponent::EditorUIUpdate()
 {
 	UpdateOffsetPos();
 	UpdateScale();
+}
+
+void ColliderComponent::RenderDebugGeometries(FoxtrotRenderer* renderer, ImDrawList* imDrawList, FTVector2 screenCenter)
+{
+	FTVector2 resolution = FTVector2(renderer->GetRenderWidth(), -renderer->GetRenderHeight());
+	FTVector2 ownerPos = GetOwner()->GetTransform()->GetWorldPosition();
+	ownerPos *= resolution;
+
+	FTVector2 min = screenCenter + ownerPos + mOffsetPos - (mScale / 2);
+	FTVector2 max = screenCenter + ownerPos + mOffsetPos + (mScale / 2);
+	imDrawList->AddRect(
+		min.GetImVec2(), 
+		max.GetImVec2(),
+		ImGui::ColorConvertFloat4ToU32(ImVec4(255.f, 0.f, 0.f, 255.f)),
+		0.0f,
+		0,
+		10.0f
+		);
 }
 
 void ColliderComponent::UpdateOffsetPos()

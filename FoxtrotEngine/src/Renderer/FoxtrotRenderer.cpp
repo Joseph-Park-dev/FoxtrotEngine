@@ -61,8 +61,6 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 
 	DX::ThrowIfFailed(CoInitializeEx(nullptr, COINIT_MULTITHREADED));
 
-	SetViewport();
-
 	std::vector<D3D11_INPUT_ELEMENT_DESC> inputElements = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
 		 D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -163,28 +161,6 @@ void FoxtrotRenderer::ResizeWindow(UINT width, UINT height)
 
 		mRenderWidth = (float)width;
 		mRenderHeight = (float)height;
-		mSwapChain->ResizeBuffers(0, // 현재 개수 유지
-			mRenderWidth,
-			mRenderHeight,
-			DXGI_FORMAT_UNKNOWN, // 현재 포맷 유지
-			0);
-		CreateRenderTargetView();
-		CreateDepthBuffer();
-		SetViewport();
-	}
-}
-
-void FoxtrotRenderer::ResizeSceneViewport(UINT width, UINT height)
-{
-	if (mSwapChain) { // 처음 실행이 아닌지 확인
-		// Create 되는 변수들 Release 
-		mRenderTargetView.Reset();
-		mDepthStencilBuffer.Reset();
-		mDepthStencilView.Reset();
-		mContext->Flush(); //요게 없으면 메모리가 훅 올라갑니다!
-
-		mRenderWidth = width;
-		mRenderHeight = height;
 		mSwapChain->ResizeBuffers(0, // 현재 개수 유지
 			mRenderWidth,
 			mRenderHeight,

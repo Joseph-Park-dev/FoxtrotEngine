@@ -54,6 +54,14 @@ void EditorElement::RenderUI(FoxtrotRenderer* renderer)
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
+void EditorElement::RenderDebugGeometries(FoxtrotRenderer* renderer, ImDrawList* imDrawList, FTVector2 screenCenter)
+{
+	for (auto comp : GetComponents()) 
+	{
+		comp->RenderDebugGeometries(renderer, imDrawList, screenCenter);
+	}
+}
+
 void EditorElement::OnMouseLButtonClicked()
 {
 	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();

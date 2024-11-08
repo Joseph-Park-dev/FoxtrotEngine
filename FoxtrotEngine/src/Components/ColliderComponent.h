@@ -1,6 +1,9 @@
 #pragma once
 #include "Component.h"
 
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui.h>
+
 #include "Core/TemplateFunctions.h"
 #include "ResourceSystem/Mesh.h"
 
@@ -91,6 +94,7 @@ public:
 
 public:
 			void EditorUIUpdate() override;
+			void RenderDebugGeometries(FoxtrotRenderer* renderer, ImDrawList* imDrawList, FTVector2 screenCenter) override;
 
 private:
 	void UpdateOffsetPos();

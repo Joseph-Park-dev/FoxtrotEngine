@@ -24,6 +24,9 @@ public:
 	virtual void ProcessEvent();
 
 public:
+	void RenderDebugGeometries(FoxtrotRenderer* renderer, ImDrawList* imDrawList, FTVector2 screenCenter);
+
+public:
 	EditorScene* GetEditorScene();
 
 private:

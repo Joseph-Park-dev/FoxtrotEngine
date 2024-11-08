@@ -46,7 +46,6 @@ public:
     void SetViewport();
 
     void ResizeWindow(UINT width, UINT height);
-    void ResizeSceneViewport(UINT width, UINT height);
 
 public:
     ComPtr<ID3D11Device>&            GetDevice()             { return mDevice; }

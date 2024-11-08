@@ -80,6 +80,7 @@ public:
 
 public:
 	virtual void EditorUIUpdate();
+	virtual void RenderDebugGeometries(FoxtrotRenderer* renderer, ImDrawList* imDrawList, FTVector2 screenCenter);
 
 public:
 	template <class T>

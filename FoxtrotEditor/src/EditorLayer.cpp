@@ -63,13 +63,6 @@ void EditorLayer::Update(float deltaTime)
 	ImGui::EndFrame();
 }
 
-void EditorLayer::Render(FoxtrotRenderer* renderer)
-{
-	ImGui::Render();
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-	//ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
-}
-
 void EditorLayer::DisplayViewport()
 {
 	ImGui::Begin("Scene");
@@ -87,10 +80,15 @@ void EditorLayer::DisplayViewport()
 		//renderer->UpdateDepthBuffer(mSceneViewportSize.x, mSceneViewportSize.y);
 		mIsResizingViewport = false;
 	}
+
 	renderer->RenderToTexture();
+
 	ID3D11ShaderResourceView* viewportTexture = renderer->GetRenderTexture()->GetShaderResourceView().Get();
 	ImVec2 viewportSize = ImVec2(renderer->GetRenderWidth(), renderer->GetRenderHeight());
-	ImGui::Image((void*)viewportTexture, viewportSize);
+	ImGui::Image((ImTextureID)viewportTexture, viewportSize);
+
+	mDebugDrawList = ImGui::GetForegroundDrawList();
+
 	ImGui::End();
 }
 
@@ -164,6 +162,8 @@ void EditorLayer::DisplayFileMenu()
 				{
 					EditorChunkLoader::GetInstance()->SaveChunk(mCurrFilePath);
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
+					ResourceManager::GetInstance()->DeleteAll();
+					ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 					EditorChunkLoader::GetInstance()->LoadChunk(mCurrFilePath);
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(true);
 				}
@@ -513,6 +513,24 @@ void EditorLayer::PopUpError_ChunkNotSaved()
 		}
 		ImGui::EndPopup();
 	}
+}
+
+void EditorLayer::Render(FoxtrotRenderer* renderer)
+{
+	ImGui::Render();
+	ImDrawData* drawData = ImGui::GetDrawData();
+	
+	ImVec2 screenCenter = mSceneViewportPos + (mSceneViewportSize / 2);
+	EditorSceneManager::GetInstance()->
+		RenderDebugGeometries(
+			renderer,
+			mDebugDrawList, 
+			FTVector2(screenCenter.x, screenCenter.y)
+		);
+
+	drawData->AddDrawList(mDebugDrawList);
+	ImGui_ImplDX11_RenderDrawData(drawData);
+	//ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
 }
 
 //void EditorLayer::ResizeUIWindow(std::string menuID)

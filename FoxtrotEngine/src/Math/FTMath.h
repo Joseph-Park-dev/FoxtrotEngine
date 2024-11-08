@@ -362,6 +362,11 @@ public:
 		return DirectX::XMFLOAT2(this->x, this->y);
 	}
 
+	ImVec2 GetImVec2()
+	{
+		return ImVec2(this->x, this->y);
+	}
+
 	// Set both components in one line
 	void Set(float inX, float inY)
 	{
@@ -427,6 +432,13 @@ public:
 	{
 		x *= scalar;
 		y *= scalar;
+		return *this;
+	}
+
+	FTVector2& operator*=(FTVector2 vec2)
+	{
+		x = x * vec2.x;
+		y = y * vec2.y;
 		return *this;
 	}
 

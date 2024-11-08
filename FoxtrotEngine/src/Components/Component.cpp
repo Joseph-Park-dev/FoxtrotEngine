@@ -91,4 +91,7 @@ void Component::LoadProperties(nlohmann::ordered_json& in)
 void Component::EditorUIUpdate()
 {
 }
+void Component::RenderDebugGeometries(FoxtrotRenderer* renderer, ImDrawList* imDrawList, FTVector2 screenCenter)
+{
+}
 #endif

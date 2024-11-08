@@ -51,29 +51,32 @@ public:
 private:
 	// After directX implementation
 	// ImVec2 mViewportSize;
-	UINT mElementNumber;
-	bool mCurrFileSaved;
+	UINT		mElementNumber;
+	bool		mCurrFileSaved;
 	std::string mCurrProjectPath;
 	std::string mCurrFilePath;
 	
-	int mHierarchyIdx;
-	int mActorNameIdx;
+	int			mHierarchyIdx;
+	int			mActorNameIdx;
 
-	bool mSaveKeyPressed;
-	bool mSaveAsKeyPressed;
-	bool mOpenKeyPressed;
-	bool mConfirmKeyPressed;
+	bool		mSaveKeyPressed;
+	bool		mSaveAsKeyPressed;
+	bool		mOpenKeyPressed;
+	bool		mConfirmKeyPressed;
 
-	bool mUndoKeyPressed;
-	bool mRedoKeyPressed;
-	bool mDeleteKeyPressed;
+	bool		mUndoKeyPressed;
+	bool		mRedoKeyPressed;
+	bool		mDeleteKeyPressed;
 
-	ImVec2 mSceneViewportPos;
-	ImVec2 mSceneViewportSize;
-	bool mIsResizingViewport;
+	// Viewport related
+	ImDrawList* mDebugDrawList;
+	ImVec2		mSceneViewportPos;
+	ImVec2		mSceneViewportSize;
+	bool		mIsResizingViewport;
 
-	InfoType mInfoType;
-	ErrorType mErrorType;
+	// UI event types
+	InfoType	mInfoType;
+	ErrorType	mErrorType;
 
 private:
 	// After directX implementation

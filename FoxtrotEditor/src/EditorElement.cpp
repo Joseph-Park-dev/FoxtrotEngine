@@ -192,32 +192,38 @@ void EditorElement::UpdateActorState()
 
 void EditorElement::UpdateActorWorldPosition()
 {
+	FTVector3 updatedVal = GetTransform()->GetWorldPosition();
 	CommandHistory::GetInstance()->UpdateVector3Value
 	(
 		"World Position",
-		GetTransform()->GetWorldPositionRef(),
+		updatedVal,
 		FLOATMOD_SPEED
 	);
+	GetTransform()->SetWorldPosition(updatedVal);
 }
 
 void EditorElement::UpdateActorLocalPosition()
 {
+	FTVector3 updatedVal = GetTransform()->GetLocalPosition();
 	CommandHistory::GetInstance()->UpdateVector3Value
 	(
 		"Local Position",
-		GetTransform()->GetLocalPositionRef(),
+		updatedVal,
 		FLOATMOD_SPEED
 	);
+	GetTransform()->SetLocalPosition(updatedVal);
 }
 
 void EditorElement::UpdateActorScale()
 {
+	FTVector3 updatedVal = GetTransform()->GetScale();
 	CommandHistory::GetInstance()->UpdateVector3Value
 	(
 		"Scale",
-		GetTransform()->GetScaleRef(),
+		updatedVal,
 		FLOATMOD_SPEED
 	);
+	GetTransform()->SetScale(updatedVal);
 }
 
 void EditorElement::UpdateActorRotation()

@@ -4,17 +4,20 @@
 
 #include "Core/FTCore.h"
 #include "Managers/KeyInputManager.h"
+#include "Renderer/FoxtrotRenderer.h"
 
 #ifdef FOXTROT_EDITOR
 #include "CommandHistory.h"
 #endif // FOXTROT_EDITOR
 
-void Camera::Initialize()
+void Camera::Initialize(FoxtrotRenderer* renderer)
 {
+	mRenderer = renderer;
 }
 
 void Camera::Update(float deltaTime)
 {
+	CalcNDCRatio();
 }
 
 void Camera::ZoomIn()
@@ -25,6 +28,12 @@ Camera::Camera()
 {}
 
 Camera::~Camera(){}
+
+void Camera::CalcNDCRatio()
+{
+	mNDCRatio =
+		static_cast<float>(2) / static_cast<float>(mRenderer->GetRenderHeight());
+}
 
 Matrix Camera::GetViewRow()
 {
@@ -38,8 +47,11 @@ Matrix Camera::GetProjRow()
 	return mViewType == Viewtype::Perspective
 		? DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(mProjFOVAngleY),
 			mAspect, mNearZ, mFarZ)
-		: DirectX::XMMatrixOrthographicOffCenterLH(-mAspect, mAspect, -1.0f,
-			1.0f, mNearZ, mFarZ);
+		: DirectX::XMMatrixOrthographicOffCenterLH(
+			-mAspect, mAspect, 
+			-1, 1, 
+			mNearZ, mFarZ
+		);
 }
 
 Vector3 Camera::GetEyePos()

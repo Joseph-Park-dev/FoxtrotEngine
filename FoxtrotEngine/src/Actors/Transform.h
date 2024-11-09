@@ -25,23 +25,21 @@ public:
 	const FTVector3  GetRotationDegree()   const { return ConvertRadToDegree(mRotation); }
 	const int		 GetCurrentDirection() const { return mCurrentDirection; }
 
-//	const FTVector3  GetScreenPosition() const;
-//
-//	const FTVector2 GetScreenPositionEditor() const;
-//#endif
+	// This is used when the positive Y direction should be inverted
+	// (e.g. When drawing Debug Geometries)
+	const FTVector3	 GetWorldPositionYInverted() const
+	{
+		FTVector3 vec3 = mWorldPosition;
+		vec3.y = -vec3.y;
+		return vec3;
+	}
 
-	FTVector3&	GetWorldPositionRef()	{ return mWorldPosition; }
-	FTVector3&	GetLocalPositionRef()	{ return mLocalPosition; }
-	FTVector3&	GetScaleRef()			{ return mScale; }
-	FTVector3&	GetRotationRef()		{ return mRotation; }
-
-	void	 SetWorldPosition	 (const FTVector3 pos)	{ mWorldPosition = pos; }
-	//void	 SetWorldPositionBox2D (const b2Vec2 pos)	{ mWorldPosition = FTVector2(pos.x, pos.y); }
-	void	 SetScreenPosition	 (const FTVector3 pos)	{ mScreenPosition = pos; }
-	void	 SetLocalPosition	 (FTVector3 pos)			{ mLocalPosition = pos; }
-	void	 SetScale		     (FTVector3 scale)		{ mScale = scale; }
-	void	 SetRotation		 (FTVector3 rotation)	{ mRotation = rotation; }
-	void	 SetCurrentDirection(int dir);
+	void SetWorldPosition	 (const FTVector3 pos)	{ mWorldPosition = pos; }
+	void SetScreenPosition	 (const FTVector3 pos)	{ mScreenPosition = pos; }
+	void SetLocalPosition	 (FTVector3 pos)		{ mLocalPosition = pos; }
+	void SetScale		     (FTVector3 scale)		{ mScale = scale; }
+	void SetRotation		 (FTVector3 rotation)	{ mRotation = rotation; }
+	void SetCurrentDirection (int dir);
 
 public:
 	Transform();

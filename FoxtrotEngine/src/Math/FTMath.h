@@ -411,10 +411,16 @@ public:
 		return FTVector2(x / vOther.x, y / vOther.y);
 	}
 
-	FTVector2 operator / (float _f)
+	FTVector2 operator / (float scalar)
 	{
-		assert(!(_f == 0.f));
-		return FTVector2(x / _f, y / _f);
+		assert(!(scalar == 0.f));
+		return FTVector2(x / scalar, y / scalar);
+	}
+
+	FTVector2 operator /= (float scalar)
+	{
+		assert(!(scalar == 0.f));
+		return FTVector2(x / scalar, y / scalar);
 	}
 
 	FTVector2 operator= (FTVector3& vec3)

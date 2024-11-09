@@ -125,14 +125,17 @@ void MeshRendererComponent::UpdateConstantBufferModel(Transform* transform){
 	FTVector3 scale = transform->GetScale();
 	int dir = transform->GetCurrentDirection();
 	DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x * dir, scale.y, scale.z);
-	DirectX::XMFLOAT3 worldPos = transform->GetWorldPosition().GetDXVec3();
-	// 모델의 변환 -> 모델 행렬 결정
+	FTVector3 worldPos = FTVector3(
+		transform->GetWorldPosition().x * Camera::GetInstance()->GetNDCRatio(),
+		transform->GetWorldPosition().y * Camera::GetInstance()->GetNDCRatio(),
+		transform->GetWorldPosition().z
+	);
 	Matrix model =
 		DXMatrix::CreateScale(scaleWithDir) *
 		DXMatrix::CreateRotationY(transform->GetRotation().y) *
 		DXMatrix::CreateRotationX(transform->GetRotation().x) *
 		DXMatrix::CreateRotationZ(transform->GetRotation().z) *
-		DXMatrix::CreateTranslation(worldPos);
+		DXMatrix::CreateTranslation(worldPos.GetDXVec3());
 	mMeshGroup->GetVertexConstantData().model = model.Transpose();
 }
 

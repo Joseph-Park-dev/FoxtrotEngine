@@ -88,7 +88,7 @@ bool FTCore::InitFoxtrotRenderer_D3D11()
 void FTCore::InitSingletonManagers()
 {
 	Physics2D::GetInstance()->Initialize();
-	Camera::GetInstance();
+	Camera::GetInstance()->Initialize(mGameRenderer);
 	ResourceManager::GetInstance()->Initialize(mGameRenderer);
 	SceneManager::GetInstance()->Initialize();
 	UIManager::GetInstance();
@@ -129,12 +129,13 @@ void FTCore::UpdateGame()
 	Timer::GetInstance()->Update();
 	float deltaTime = Timer::GetInstance()->GetDeltaTime();
 
-	Physics2D::GetInstance()->Update();
 	SceneManager::GetInstance()->Update(deltaTime);
 	SceneManager::GetInstance()->Lateupdate(deltaTime);
+	Physics2D::GetInstance()->Update();
 	CollisionManager::GetInstance()->Update();
 	ParticleSystem::GetInstance()->Update(deltaTime);
 	UIManager::GetInstance()->Update(deltaTime);
+	Camera::GetInstance()->Update(deltaTime);
 }
 
 void FTCore::GenerateOutput()

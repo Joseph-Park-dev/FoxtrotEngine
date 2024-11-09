@@ -166,10 +166,7 @@ void ColliderComponent::EditorUIUpdate()
 
 void ColliderComponent::RenderDebugGeometries(FoxtrotRenderer* renderer, ImDrawList* imDrawList, FTVector2 screenCenter)
 {
-	FTVector2 resolution = FTVector2(renderer->GetRenderWidth(), -renderer->GetRenderHeight());
-	FTVector2 ownerPos = GetOwner()->GetTransform()->GetWorldPosition();
-	ownerPos *= resolution;
-
+	FTVector2 ownerPos = GetOwner()->GetTransform()->GetWorldPositionYInverted();
 	FTVector2 min = screenCenter + ownerPos + mOffsetPos - (mScale / 2);
 	FTVector2 max = screenCenter + ownerPos + mOffsetPos + (mScale / 2);
 	imDrawList->AddRect(
@@ -178,63 +175,21 @@ void ColliderComponent::RenderDebugGeometries(FoxtrotRenderer* renderer, ImDrawL
 		ImGui::ColorConvertFloat4ToU32(ImVec4(255.f, 0.f, 0.f, 255.f)),
 		0.0f,
 		0,
-		10.0f
+		3.0f
 		);
 }
 
 void ColliderComponent::UpdateOffsetPos()
 {
 	FTVector2 updatedVal = GetOffsetPos();
-	float*	  vec2 = new float[2];
-	vec2[0] = updatedVal.x;
-	vec2[1] = updatedVal.y;
-	bool isRecording = CommandHistory::GetInstance()->GetIsRecording();
-	if (ImGui::DragFloat2("Offset Position", vec2))
-	{
-		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
-		{
-			CommandHistory::GetInstance()->SetIsRecording(true);
-			CommandHistory::GetInstance()->AddCommand(new Vector2EditCommand(GetOffsetPosRef(), GetOffsetPos()));
-		}
-		updatedVal = FTVector2(vec2[0], vec2[1]);
-		SetOffsetPos(updatedVal);
-	}
-	else
-	{
-		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
-		{
-			CommandHistory::GetInstance()->AddCommand(new Vector2EditCommand(GetOffsetPosRef(), updatedVal));
-			CommandHistory::GetInstance()->SetIsRecording(false);
-		}
-	}
-	delete[] vec2;
+	CommandHistory::GetInstance()->UpdateVector2Value("Offset Position", updatedVal, FLOATMOD_SPEED);
+	mOffsetPos = updatedVal;
 }
 
 void ColliderComponent::UpdateScale()
 {
 	FTVector2 updatedVal = GetScale();
-	float*	  vec2 = new float[2];
-	vec2[0] = updatedVal.x;
-	vec2[1] = updatedVal.y;
-	bool isRecording = CommandHistory::GetInstance()->GetIsRecording();
-	if (ImGui::DragFloat2("Scale", vec2))
-	{
-		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
-		{
-			CommandHistory::GetInstance()->SetIsRecording(true);
-			CommandHistory::GetInstance()->AddCommand(new Vector2EditCommand(GetScaleRef(), GetScale()));
-		}
-		updatedVal = FTVector2(vec2[0], vec2[1]);
-		SetScale(updatedVal);
-	}
-	else
-	{
-		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
-		{
-			CommandHistory::GetInstance()->AddCommand(new Vector2EditCommand(GetScaleRef(), updatedVal));
-			CommandHistory::GetInstance()->SetIsRecording(false);
-		}
-	}
-	delete[] vec2;
+	CommandHistory::GetInstance()->UpdateVector2Value("Scale", updatedVal, FLOATMOD_SPEED);
+	mScale = updatedVal;
 }
 #endif

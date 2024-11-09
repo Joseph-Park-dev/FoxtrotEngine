@@ -16,6 +16,7 @@
 #include "Managers/KeyInputManager.h"
 #include "Managers/SceneManager.h"
 #include "Renderer/D3D11Utils.h"
+#include "Renderer/Camera.h"
 
 #ifdef FOXTROT_EDITOR
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -337,6 +338,7 @@ void FoxtrotRenderer::SetViewport()
 	// m_screenViewport.Width = static_cast<float>(m_screenHeight);
 	mScreenViewport.MinDepth = 0.0f;
 	mScreenViewport.MaxDepth = 1.0f; // Note: important for depth buffering
+	Camera::GetInstance()->CalcNDCRatio();
 	mContext->RSSetViewports(1, &mScreenViewport);
 }
 

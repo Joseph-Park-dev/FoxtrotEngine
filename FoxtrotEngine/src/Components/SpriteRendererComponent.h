@@ -59,6 +59,8 @@ public:
 
 public:
 	virtual void EditorUIUpdate() override;
+			void RenderDebugGeometries(FoxtrotRenderer* renderer, ImDrawList* imDrawList, FTVector2 screenCenter) override;
+
 
 protected:
 	virtual void OnConfirmUpdate() override;

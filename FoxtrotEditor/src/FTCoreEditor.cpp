@@ -117,6 +117,7 @@ void FTCoreEditor::UpdateGame()
 	else
 		EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
 	EditorLayer::GetInstance()->Update(deltaTime);
+	Camera::GetInstance()->Update(deltaTime);
 }
 
 void FTCoreEditor::GenerateOutput()

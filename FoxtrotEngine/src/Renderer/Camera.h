@@ -21,15 +21,23 @@ class Camera
 	SINGLETON_PROTECTED(Camera);
 
 public:
+	void CalcNDCRatio();
+
+public:
 	Matrix GetViewRow();
 	Matrix GetProjRow();
 	Vector3 GetEyePos();
 
-	Viewtype GetViewType() { return mViewType; }
+	Viewtype GetViewType()		{ return mViewType; }
 	float	 GetProjFOVAngleY() { return mProjFOVAngleY; }
-	float	 GetAspectRatio() { return mAspect; }
+	float	 GetAspectRatio()	{ return mAspect; }
+	float	 GetNDCRatio()		{ return mNDCRatio; }
+
+	void	 SetViewType(Viewtype viewType) { mViewType = viewType; }
 
 private:
+	FoxtrotRenderer* mRenderer;
+	
 	Vector3 mPosition	= Vector3(0.0f, 0.4f, 0.0f);
 	Vector3 mViewDir	= Vector3(0.0f, 0.0f, 1.0f);
 	Vector3 mUpDir		= Vector3(0.0f, 1.0f, 0.0f); // 이번 예제에서는 고정
@@ -38,24 +46,24 @@ private:
 	// roll, pitch, yaw
 	// https://en.wikipedia.org/wiki/Aircraft_principal_axes
 	float mPitch = 0.0f, mYaw = 0.0f;
-	float mSpeed = 1.0f; // 움직이는 속도
+	float mSpeed = 1.0f;
 
-	// 프로젝션 옵션도 카메라 클래스로 이동
 	float mProjFOVAngleY = 70.0f;
 	float mNearZ = 0.01f;
 	float mFarZ = 100.0f;
 	float mAspect = 1920.0f / 1080.0f;
 
+	float mNDCRatio;
+
 	Viewtype mViewType;
 
 public:
-	void Initialize();
+	void Initialize(FoxtrotRenderer* renderer);
 	virtual void Update(float deltaTime);
 
 private:
 	ImVec2 mMiddleMouseClickedPos;
 	ImVec2 mMiddleMouseClickedRot;
- // _DEBUG
 
 protected:
 	void ZoomIn();

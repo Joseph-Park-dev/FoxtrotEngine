@@ -62,7 +62,7 @@ void Rigidbody2DComponent::Initialize(FTCore* coreInstance)
 	default:
 		break;
 	}
-
+	mBodyDef.gravityScale = 50;
 	mBodyDef.position = GetOwner()->GetTransform()->GetWorldPosition().GetB2Vec2();
 	mBodyID = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &mBodyDef);
 

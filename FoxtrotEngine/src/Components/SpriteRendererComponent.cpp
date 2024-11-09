@@ -46,7 +46,7 @@ void SpriteRendererComponent::Initialize(FTCore* coreInstance)
 {
 	MeshRendererComponent::Initialize(coreInstance);
 	InitializeMesh();
-	// InitializeMesh(GeometryGenerator::MakeSquare(1.0f));
+	Component::Initialize(coreInstance);
 }
 
 void SpriteRendererComponent::Update(float deltaTime)

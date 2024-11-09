@@ -62,16 +62,19 @@ void Rigidbody2DComponent::Initialize(FTCore* coreInstance)
 	default:
 		break;
 	}
-	mBodyDef.gravityScale = 50;
 	mBodyDef.position = GetOwner()->GetTransform()->GetWorldPosition().GetB2Vec2();
 	mBodyID = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &mBodyDef);
 
 	ColliderComponent* collider = GetOwner()->GetComponent<ColliderComponent>();
-	if (collider) {
+	if (collider) 
+	{
+		if (!collider->GetIsInitialized())
+			collider->Initialize(coreInstance);
 		b2Polygon& polygon = collider->GetPolygon();
 		b2ShapeDef polygonShapeDef = b2DefaultShapeDef();
 		collider->CreateShape(mBodyID, &polygonShapeDef, &polygon);
 	}
+	Component::Initialize(coreInstance);
 }
 
 void Rigidbody2DComponent::LateUpdate(float deltaTime)

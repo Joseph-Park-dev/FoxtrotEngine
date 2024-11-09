@@ -31,7 +31,7 @@
 
 void TileMapComponent::Initialize(FTCore* coreInstance){
     MeshRendererComponent::Initialize(coreInstance);
-    //SetTexKey("Edit here");
+	Component::Initialize(coreInstance);
 }
 
 void TileMapComponent::InitializeTileMap() {

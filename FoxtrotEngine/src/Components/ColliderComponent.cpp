@@ -72,6 +72,7 @@ void ColliderComponent::SetScale(FTVector2 scale)
 void ColliderComponent::Initialize(FTCore* coreInstance)
 {
 	mPolygon = b2MakeBox(mScale.x / 2, mScale.y / 2);
+	Component::Initialize(coreInstance);
 }
 
 void ColliderComponent::LateUpdate(float deltaTime)

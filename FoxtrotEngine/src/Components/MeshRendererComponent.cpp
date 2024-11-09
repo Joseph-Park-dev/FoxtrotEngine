@@ -23,6 +23,7 @@ using DXMatrix = DirectX::SimpleMath::Matrix;
 
 void MeshRendererComponent::Initialize(FTCore* coreInstance){
 	mRenderer = coreInstance->GetGameRenderer();
+	Component::Initialize(coreInstance);
 }
 
 void MeshRendererComponent::Update(float deltaTime){

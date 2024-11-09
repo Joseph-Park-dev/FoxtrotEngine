@@ -285,10 +285,14 @@ void Actor::LoadProperties(std::ifstream& ifs)
 void Actor::LoadComponents(std::ifstream& ifs, FTCore* coreInst)
 {
 	std::pair<int, std::string>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::COMPONENTS);
+	mComponents.reserve(pack.first);
 	for (size_t i = 0; i < pack.first; ++i) {
 		std::pair<size_t, std::string> compPack = FileIOHelper::BeginDataPackLoad(ifs);
 		ChunkLoader::GetInstance()->GetComponentLoadMap().at(compPack.second)(this, ifs, coreInst);
 	}
+	for (size_t i = 0; i < mComponents.size(); ++i)
+		if(!mComponents[i]->GetIsInitialized())
+			mComponents[i]->Initialize(coreInst);
 }
 
 #ifdef FOXTROT_EDITOR

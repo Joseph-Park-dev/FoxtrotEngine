@@ -23,16 +23,17 @@ public:
 	virtual std::string  GetName() const = 0;
 
 public:
-	virtual void Initialize(FTCore* coreInstance) = 0;
+	virtual void Initialize(FTCore* coreInstance);
 	virtual void ProcessInput(KeyInputManager* keyInputManager);
 	virtual void Update(float deltaTime);
 	virtual void LateUpdate(float deltaTime);
 	virtual void Render(FoxtrotRenderer* renderer);
 
 public:
-	Actor*	  GetOwner() const;
-	const int GetUpdateOrder() const;
-	const int GetDrawOrder() const;
+	Actor*		GetOwner() const;
+	const int	GetUpdateOrder() const;
+	const int	GetDrawOrder() const;
+	const bool	GetIsInitialized() const;
 
 public:
 	Component(class Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
@@ -43,9 +44,13 @@ public:
 	virtual void CloneTo(Actor* actor);
 
 private:
-	Actor* mOwner;
-	int	   mUpdateOrder;
-	int	   mDrawOrder;
+	Actor*	mOwner;
+	int		mUpdateOrder;
+	int		mDrawOrder;
+	
+private:
+	// This is turned as true as the Initialize(FTCore*) is executed.
+	bool	mIsInitialized;
 
 public:
 	virtual void		 SaveProperties(std::ofstream& ofs);
@@ -59,7 +64,6 @@ public:
 		T* t = new T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
 		// Load Properties first -> then initialize with the loaded values.
 		t->LoadProperties(ifs);
-		t->Initialize(coreInst);
 	}
 
 #ifdef FOXTROT_EDITOR

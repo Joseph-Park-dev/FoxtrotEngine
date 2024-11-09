@@ -8,6 +8,11 @@
 #include "Core/TemplateFunctions.h"
 #include "Core/FTCore.h"
 
+void Component::Initialize(FTCore* coreInstance)
+{
+	mIsInitialized = true;
+}
+
 void Component::ProcessInput(KeyInputManager* keyInputManager)
 {
 }
@@ -39,10 +44,16 @@ const int Component::GetDrawOrder() const
 	return mDrawOrder;
 }
 
+const bool Component::GetIsInitialized() const
+{
+	return mIsInitialized;
+}
+
 Component::Component(Actor* owner, int drawOrder, int updateOrder)
 	: mOwner(owner)
 	, mDrawOrder(drawOrder)
 	, mUpdateOrder(updateOrder)
+	, mIsInitialized(false)
 {
 	mOwner->AddComponent(this);
 }

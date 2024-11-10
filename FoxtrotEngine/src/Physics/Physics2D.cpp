@@ -3,7 +3,6 @@
 #include "Core/FTCore.h"
 #include "Managers/KeyInputManager.h"
 
-#include "Managers/CollisionManager.h"
 #include "Math/Random.h"
 #include "Physics/Physics2D.h"
 #include "Physics/Ray.h"

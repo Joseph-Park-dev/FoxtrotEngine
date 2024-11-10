@@ -12,7 +12,6 @@
 #include "Core/FTCore.h"
 #include "Core/Timer.h"
 #include "Physics/Physics2D.h"
-#include "Managers/CollisionManager.h"
 #include "Physics/ParticleSystem.h"
 #include "Managers/UIManager.h"
 #include "Renderer/FoxtrotRenderer.h"

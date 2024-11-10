@@ -1,6 +1,5 @@
 #include "EditorScene.h"
 
-#include "Managers/CollisionManager.h"
 #include "Managers/ResourceManager.h"
 #include "Managers/SceneManager.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -19,9 +18,9 @@ void EditorScene::Enter()
 
 void EditorScene::LoadData()
 {
-	CollisionManager::GetInstance()->MarkGroup(ActorGroup::PLAYER, ActorGroup::ENEMY);
-	CollisionManager::GetInstance()->MarkGroup(ActorGroup::PLAYER, ActorGroup::GROUND);
-	CollisionManager::GetInstance()->MarkGroup(ActorGroup::DEFAULT, ActorGroup::DEFAULT);
+	//CollisionManager::GetInstance()->MarkGroup(ActorGroup::PLAYER, ActorGroup::ENEMY);
+	//CollisionManager::GetInstance()->MarkGroup(ActorGroup::PLAYER, ActorGroup::GROUND);
+	//CollisionManager::GetInstance()->MarkGroup(ActorGroup::DEFAULT, ActorGroup::DEFAULT);
 
 
 	//FoxtrotRenderer* currRenderer = FTCoreEditor::GetInstance()->GetGameRenderer();
@@ -53,7 +52,7 @@ void EditorScene::LoadData()
 
 void EditorScene::Exit()
 {
-	CollisionManager::GetInstance()->Reset();
+	//CollisionManager::GetInstance()->Reset();
 }
 
 void EditorScene::DeleteAll()
@@ -132,7 +131,7 @@ void EditorScene::EditorRender(FoxtrotRenderer* renderer)
 	mIsUpdatingActors = false;
 }
 
-void EditorScene::RenderDebugGeometries(FoxtrotRenderer* renderer, ImDrawList* imDrawList, FTVector2 screenCenter)
+void EditorScene::RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter)
 {
 	std::vector<Actor*>* actors = GetActors();
 	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
@@ -140,7 +139,7 @@ void EditorScene::RenderDebugGeometries(FoxtrotRenderer* renderer, ImDrawList* i
 		for (size_t j = 0; j < actors[i].size(); ++j)
 		{
 			EditorElement* ele = dynamic_cast<EditorElement*>(actors[i][j]);
-			ele->RenderDebugGeometries(renderer, imDrawList, screenCenter);
+			ele->RenderDebugGeometries(imDrawList, screenCenter);
 		}
 	}
 }

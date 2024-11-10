@@ -21,7 +21,7 @@ public:
 	void EditorRender(FoxtrotRenderer* renderer);
 
 public:
-	void RenderDebugGeometries(FoxtrotRenderer* renderer, ImDrawList* imDrawList, FTVector2 screenCenter);
+	void RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter);
 
 public:
 	EditorScene();

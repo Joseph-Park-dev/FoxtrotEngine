@@ -34,9 +34,9 @@ void EditorSceneManager::ProcessEvent(){
 	mEditorScene->ProcessEvent();
 }
 
-void EditorSceneManager::RenderDebugGeometries(FoxtrotRenderer* renderer, ImDrawList* imDrawList, FTVector2 screenCenter)
+void EditorSceneManager::RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter)
 {
-	mEditorScene->RenderDebugGeometries(renderer, imDrawList, screenCenter);
+	mEditorScene->RenderDebugGeometries(imDrawList, screenCenter);
 }
 
 EditorScene* EditorSceneManager::GetEditorScene()

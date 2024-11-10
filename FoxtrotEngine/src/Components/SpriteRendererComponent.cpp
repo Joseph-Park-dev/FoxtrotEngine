@@ -138,9 +138,9 @@ void SpriteRendererComponent::EditorUIUpdate()
 	OnConfirmUpdate();
 }
 
-void SpriteRendererComponent::RenderDebugGeometries(FoxtrotRenderer* renderer, ImDrawList* imDrawList, FTVector2 screenCenter)
+void SpriteRendererComponent::RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter)
 {
-	FTVector2 ownerPos = GetOwner()->GetTransform()->GetWorldPositionYInverted();
+	/*FTVector2 ownerPos = GetOwner()->GetTransform()->GetWorldPositionYInverted();
 	FTVector2 scale = GetTexture()->GetTexScale() * Camera::GetInstance()->GetNDCRatio();
 	FTVector2 min = screenCenter + ownerPos - (scale / 2);
 	FTVector2 max = screenCenter + ownerPos + (scale / 2);
@@ -151,7 +151,7 @@ void SpriteRendererComponent::RenderDebugGeometries(FoxtrotRenderer* renderer, I
 		0.0f,
 		0,
 		3.0f
-	);
+	);*/
 }
 
 void SpriteRendererComponent::OnConfirmUpdate()

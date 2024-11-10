@@ -523,7 +523,6 @@ void EditorLayer::Render(FoxtrotRenderer* renderer)
 	ImVec2 screenCenter = mSceneViewportPos + (mSceneViewportSize / 2);
 	EditorSceneManager::GetInstance()->
 		RenderDebugGeometries(
-			renderer,
 			mDebugDrawList, 
 			FTVector2(screenCenter.x, screenCenter.y)
 		);

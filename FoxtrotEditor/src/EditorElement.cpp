@@ -54,11 +54,11 @@ void EditorElement::RenderUI(FoxtrotRenderer* renderer)
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
-void EditorElement::RenderDebugGeometries(FoxtrotRenderer* renderer, ImDrawList* imDrawList, FTVector2 screenCenter)
+void EditorElement::RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter)
 {
 	for (auto comp : GetComponents()) 
 	{
-		comp->RenderDebugGeometries(renderer, imDrawList, screenCenter);
+		comp->RenderDebugGeometries(imDrawList, screenCenter);
 	}
 }
 

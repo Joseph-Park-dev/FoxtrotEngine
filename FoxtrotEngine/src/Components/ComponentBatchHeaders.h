@@ -6,6 +6,7 @@
 #include "Components/SpriteAnimComponent.h"
 #include "Components/BGSpriteComponent.h"
 #include "Components/ColliderComponent.h"
+#include "Components/BoxColliderComponent.h"
 #include "Components/InputMoveComponent.h"
 #include "Components/MoveComponent.h"
 #include "Components/Rigidbody2DComponent.h"

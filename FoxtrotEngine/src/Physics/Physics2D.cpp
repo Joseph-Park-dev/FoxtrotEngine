@@ -1,18 +1,13 @@
+#include "Physics/Physics2D.h"
+
 #include <vector>
 
 #include "Core/FTCore.h"
 #include "Managers/KeyInputManager.h"
-
 #include "Math/Random.h"
-#include "Physics/Physics2D.h"
 #include "Physics/Ray.h"
 #include "Core/Timer.h"
 
-
- // _DEBUG
-
-/* origin : world position vector 
-direction : world position vector */
 void Physics2D::ResetRayCasts()
 {
 	mRayCastHits.clear();
@@ -21,27 +16,6 @@ void Physics2D::ResetRayCasts()
 
 void Physics2D::RenderRayCastHits(FoxtrotRenderer* renderer)
 {
-	for (size_t i = 0; i < mRayCastHits.size(); ++i)
-	{
-
-		/*
-		
-			Alternative of
-				SDL_Rect rect = {};
-				rect.x = mRayCastHits[i].point.x;
-				rect.y = mRayCastHits[i].point.y;
-				rect.w = 10;
-				rect.h = 10;
-				SDL_RenderDrawRect
-				(
-					renderer,
-					&rect
-				);
-		
-		*/
-
-		
-	}
 }
 
 void Physics2D::Initialize()

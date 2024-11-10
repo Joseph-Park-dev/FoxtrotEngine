@@ -258,6 +258,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Components\BoxColliderComponent.cpp" />
     <ClCompile Include="src\Actors\Actor.cpp" />
     <ClCompile Include="src\Actors\Backgrounds\BackgroundActor.cpp" />
     <ClCompile Include="src\Actors\RectTransform.cpp" />
@@ -283,7 +284,6 @@
     <ClCompile Include="src\Core\FTCore.cpp" />
     <ClCompile Include="src\Core\Timer.cpp" />
     <ClCompile Include="src\FileSystem\ChunkLoader.cpp" />
-    <ClCompile Include="src\Managers\CollisionManager.cpp" />
     <ClCompile Include="src\Managers\EventManager.cpp" />
     <ClCompile Include="src\Managers\KeyInputManager.cpp" />
     <ClCompile Include="src\Managers\ResourceManager.cpp" />
@@ -309,6 +309,7 @@
     <ClCompile Include="src\Scenes\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Components\BoxColliderComponent.h" />
     <ClInclude Include="src\Actors\Actor.h" />
     <ClInclude Include="src\Actors\ActorGroup.h" />
     <ClInclude Include="src\Actors\ActorTag.h" />
@@ -345,7 +346,6 @@
     <ClInclude Include="src\Core\WindowProcess.h" />
     <ClInclude Include="src\FileSystem\ChunkFileKeys.h" />
     <ClInclude Include="src\FileSystem\ChunkLoader.h" />
-    <ClInclude Include="src\Managers\CollisionManager.h" />
     <ClInclude Include="src\Managers\EventManager.h" />
     <ClInclude Include="src\Managers\KeyInputManager.h" />
     <ClInclude Include="src\Managers\ResourceManager.h" />

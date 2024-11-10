@@ -70,7 +70,7 @@ void Rigidbody2DComponent::Initialize(FTCore* coreInstance)
 	{
 		if (!collider->GetIsInitialized())
 			collider->Initialize(coreInstance);
-		b2Polygon& polygon = collider->GetPolygon();
+		b2Polygon& polygon = collider->GetPolygonRef();
 		b2ShapeDef polygonShapeDef = b2DefaultShapeDef();
 		collider->CreateShape(mBodyID, &polygonShapeDef, &polygon);
 	}

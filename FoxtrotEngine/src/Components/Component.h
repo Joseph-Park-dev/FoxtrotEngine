@@ -36,7 +36,7 @@ public:
 	const bool	GetIsInitialized() const;
 
 public:
-	Component(class Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
+	Component(Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
 	Component(const Component& origin);
 	virtual ~Component();
 	// Returns new object with copied values
@@ -58,7 +58,7 @@ public:
 
 public:
 	template <class T>
-	static void Load(Actor* actor, std::ifstream& ifs, FTCore* coreInst)
+	static void Load(Actor* actor, std::ifstream& ifs)
 	{
 		///Dynamically allocate actor of type T
 		T* t = new T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);

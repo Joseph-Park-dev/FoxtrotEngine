@@ -143,7 +143,7 @@ ChunkLoader::ChunkLoader()
         {"AIComponent",                &Component::Load<AIComponent>},
         {"AnimatorComponent",          &Component::Load<AnimatorComponent>},
         {"BGSpriteComponent",          &Component::Load<BGSpriteComponent>},
-        {"ColliderComponent",          &Component::Load<ColliderComponent>},
+        {"ColliderComponent",          &Component::Load<BoxColliderComponent>},
         {"InputMoveComponent",         &Component::Load<InputMoveComponent>},
         {"MoveComponent",              &Component::Load<MoveComponent>},
         {"Rigidbody2DComponent",       &Component::Load<Rigidbody2DComponent>},

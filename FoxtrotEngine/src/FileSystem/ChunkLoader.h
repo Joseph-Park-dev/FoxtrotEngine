@@ -15,7 +15,7 @@ class Actor;
 class Component;
 class Scene;
 
-using ComponentLoadFunc = std::function<void(Actor*, std::ifstream&, FTCore*)>;
+using ComponentLoadFunc = std::function<void(Actor*, std::ifstream&)>;
 using ComponentLoadMap = std::unordered_map<std::string, ComponentLoadFunc>;
 
 struct ChunkData

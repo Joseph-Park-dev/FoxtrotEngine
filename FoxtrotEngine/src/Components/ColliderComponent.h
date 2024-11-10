@@ -9,15 +9,6 @@
 
 class FTVector2;
 
-enum class CollidedSide
-{
-	NONE,
-	LEFT,
-	RIGHT,
-	UP,
-	DOWN
-};
-
 class ColliderComponent :
 	public Component
 {
@@ -26,37 +17,35 @@ public:
 	{
 		return "ColliderComponent";
 	}
-	virtual void LoadProperties(std::ifstream& ifs) override;
 
 public:
 	void CreateShape(b2BodyId bodyID, b2ShapeDef* shapeDef, b2Polygon* polygon);
 
 public:
-	FTVector2 GetOffsetPos() const;
-	// Get world position (anchor-pointed to the center)
-	FTVector2	 GetFinalPosition() const;
-	FTVector2	 GetScale() const;
-	CollidedSide GetCollidedSide() const;
-	uint32_t	 GetID() const;
+	// Use Setters to assign data out of this class.
+	// But I allowed this can be modified exceptionally 
+	// to prevent pass-by-value.
+	b2Polygon&	GetPolygonRef() { return mPolygon; }
 
-	FTVector2& GetOffsetPosRef();
-	FTVector2& GetScaleRef();
+	FTVector2	GetOffsetPos() const;
+	// Get world position of the collider 
+	// (anchor-pointed to the center)
+	FTVector2	GetFinalPosition() const;
 
-	b2Polygon& GetPolygon() { return mPolygon; }
+	FTVector2&	GetOffsetPosRef();
 
-	void SetOffsetPos(FTVector2 offsetPos);
-	void SetScale(FTVector2 scale);
+	void		SetOffsetPos(FTVector2 offsetPos);
 
 public:
+	// This can also be used when refreshing the object.
 	virtual void Initialize(FTCore* coreInstance) override;
-	// This can also be used as refreshing method.
-	void LateUpdate(float deltaTime) override;
+			void LateUpdate(float deltaTime) override;
 
 public:
 	ColliderComponent(class Actor* owner, int drawOrder, int updateOrder);
 	ColliderComponent(const ColliderComponent& origin);
 	virtual ~ColliderComponent() override;
-	virtual void CloneTo(Actor* actor) override;
+	//virtual void CloneTo(Actor* actor) override;
 
 public:
 	// Shallow copying is not needed (duplicated ID)
@@ -74,15 +63,12 @@ private:
 private:
 	b2Polygon		mPolygon;
 
-private:
 	FTVector2		mOffsetPos;
 	FTVector2		mFinalPosition;
-	FTVector2		mScale;
-	CollidedSide	mCollidedSide;
 
-	static uint32_t g_nextID;
-	uint32_t		mID;
-	uint32_t		mColliCount;
+public:
+	virtual void SaveProperties(std::ofstream& ofs) override;
+	virtual void LoadProperties(std::ifstream& ifs) override;
 
 #ifdef FOXTROT_EDITOR
 public:
@@ -93,11 +79,13 @@ public:
 	virtual void EditorRender(FoxtrotRenderer* renderer) override;
 
 public:
-			void EditorUIUpdate() override;
-			void RenderDebugGeometries(FoxtrotRenderer* renderer, ImDrawList* imDrawList, FTVector2 screenCenter) override;
+	virtual	void EditorUIUpdate() override;
+	virtual	void RenderDebugGeometries(
+				ImDrawList* imDrawList, 
+				FTVector2 screenCenter
+			) = 0;
 
 private:
 	void UpdateOffsetPos();
-	void UpdateScale();
 #endif
 };

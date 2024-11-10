@@ -8,7 +8,7 @@
 #include "Command.h"
 
 #define COMMAND_MAXCOUNT 30
-#define FLOATMOD_SPEED 0.01f
+#define FLOATMOD_SPEED 0.1f
 #define INTMOD_SPEED 1
 using TransSetFloatFunc = std::function<void(Transform*, float)>;
 

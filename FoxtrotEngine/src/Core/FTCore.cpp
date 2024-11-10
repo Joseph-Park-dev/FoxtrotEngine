@@ -11,7 +11,7 @@
 #include "Managers/KeyInputManager.h"
 #include "Managers/SceneManager.h"
 #include "Managers/ResourceManager.h"
-#include "Managers/CollisionManager.h"
+//#include "Managers/CollisionManager.h"
 #include "Managers/EventManager.h"
 #include "Managers/UIManager.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -132,7 +132,6 @@ void FTCore::UpdateGame()
 	SceneManager::GetInstance()->Update(deltaTime);
 	SceneManager::GetInstance()->Lateupdate(deltaTime);
 	Physics2D::GetInstance()->Update();
-	CollisionManager::GetInstance()->Update();
 	ParticleSystem::GetInstance()->Update(deltaTime);
 	UIManager::GetInstance()->Update(deltaTime);
 	Camera::GetInstance()->Update(deltaTime);
@@ -149,13 +148,7 @@ void FTCore::GenerateOutput()
 	}
 	UpdateWindow(mWindow);
 
-	//mGameRenderer->SetViewport();
-	//mGameRenderer->RenderClear();
 	SceneManager::GetInstance()->Render(GetGameRenderer());
-	/* Essential - Don't delete this
-	Camera2D::GetInstance()->Render(mEditorRenderer);
-	*/
-	CollisionManager::GetInstance()->RenderRay(GetGameRenderer());
 	ParticleSystem::GetInstance()->Render(GetGameRenderer());
 	GetGameRenderer()->SwapChainPresent(1, 0);
 }

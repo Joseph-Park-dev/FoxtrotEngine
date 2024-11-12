@@ -7,6 +7,11 @@
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
 
+#ifdef FOXTROT_EDITOR
+#include "CommandHistory.h"
+#endif // FOXTROT_EDITOR
+
+
 Rigidbody2DComponent::Rigidbody2DComponent(class Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner, drawOrder, updateOrder)
 	, mMass(1.f)
@@ -18,7 +23,10 @@ Rigidbody2DComponent::Rigidbody2DComponent(class Actor* owner, int drawOrder, in
 	, mFrictionCoeff(0.1f)
 	, mIsGrounded(false)
 	, mIsBlockedUp(false)
-	, mBodyDef(b2DefaultBodyDef())
+#ifdef FOXTROT_EDITOR
+	, mBodyDefCache(b2DefaultBodyDef())
+#endif // FOXTROT_EDITOR
+
 {}
 
 Rigidbody2DComponent::~Rigidbody2DComponent()
@@ -48,22 +56,24 @@ void Rigidbody2DComponent::Initialize(FTCore* coreInstance)
 	if(b2Body_IsValid(mBodyID))
 		b2DestroyBody(mBodyID);
 
+	b2BodyDef bodyDef = b2DefaultBodyDef();
+
 	switch (mBodyType)
 	{
 	case BodyType::STATIC:
-		mBodyDef.type = b2_staticBody;
+		bodyDef.type = b2_staticBody;
 		break;
 	case BodyType::KINEMATIC:
-		mBodyDef.type = b2_kinematicBody;
+		bodyDef.type = b2_kinematicBody;
 		break;
 	case BodyType::DYNAMIC:
-		mBodyDef.type = b2_dynamicBody;
+		bodyDef.type = b2_dynamicBody;
 		break;
 	default:
 		break;
 	}
-	mBodyDef.position = GetOwner()->GetTransform()->GetWorldPosition().GetB2Vec2();
-	mBodyID = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &mBodyDef);
+	bodyDef.position = GetOwner()->GetTransform()->GetWorldPosition().GetB2Vec2();
+	mBodyID = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &bodyDef);
 
 	ColliderComponent* collider = GetOwner()->GetComponent<ColliderComponent>();
 	if (collider) 
@@ -198,7 +208,47 @@ void Rigidbody2DComponent::EditorRender(FoxtrotRenderer* renderer)
 
 void Rigidbody2DComponent::EditorUIUpdate()
 {
+	CommandHistory::GetInstance()->UpdateBoolValue("Allow Fast Rotation", mBodyDefCache.allowFastRotation);
+	CommandHistory::GetInstance()->UpdateFloatValue("Angular Damping", &mBodyDefCache.angularDamping, FLOATMOD_SPEED);
+	CommandHistory::GetInstance()->UpdateFloatValue("Angular Velocity", &mBodyDefCache.angularVelocity, FLOATMOD_SPEED);
+	CommandHistory::GetInstance()->UpdateBoolValue("Enable Sleep", mBodyDefCache.enableSleep);
+	CommandHistory::GetInstance()->UpdateBoolValue("Fixed Rotation", mBodyDefCache.fixedRotation);
+	CommandHistory::GetInstance()->UpdateFloatValue("Gravity Scale", &mBodyDefCache.gravityScale, FLOATMOD_SPEED);
+
+	CommandHistory::GetInstance()->UpdateBoolValue("Is Awake", mBodyDefCache.isAwake);
+	CommandHistory::GetInstance()->UpdateBoolValue("Is Bullet", mBodyDefCache.isBullet);
+	CommandHistory::GetInstance()->UpdateBoolValue("Is Enabled", mBodyDefCache.isEnabled);
+
+	CommandHistory::GetInstance()->UpdateVector2Value("Initial Velocity", mBodyDefCache.linearVelocity, FLOATMOD_SPEED);
+
+	CommandHistory::GetInstance()->UpdateFloatValue("Sleep Threshold", &mBodyDefCache.sleepThreshold, FLOATMOD_SPEED);
 	UpdateBodyType();
+
+	OnConfirmUpdate();
+
+	ImGui::SeparatorText("Body Info");
+	mBodyDefCache.position = GetOwner()->GetTransform()->GetWorldPosition().GetB2Vec2();
+	std::string pos = {
+		"x : " + std::to_string(mBodyDefCache.position.x) +
+		"y : " + std::to_string(mBodyDefCache.position.y)
+	};
+	ImGui::TextColored(ImVec4(0.f, 200.f, 0.f, 255), pos.c_str());
+
+	mBodyDefCache.rotation = b2MakeRot(GetOwner()->GetTransform()->GetRotation().z);
+	std::string rot = {
+		"Rotation : " + std::to_string(b2Rot_GetAngle(mBodyDefCache.rotation))
+	};
+	ImGui::TextColored(ImVec4(0.f, 200.f, 0.f, 255), rot.c_str());
+
+	ImGui::Separator();
+}
+
+void Rigidbody2DComponent::OnConfirmUpdate()
+{
+	if(ImGui::Button("Update")) 
+	{
+		mBodyID = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &mBodyDefCache);
+	}
 }
 
 void Rigidbody2DComponent::UpdateBodyType()
@@ -241,5 +291,7 @@ void Rigidbody2DComponent::UpdateBodyType()
 	}
 }
 
-
+void Rigidbody2DComponent::UpdateGravityScale()
+{
+}
 #endif // FOXTROT_EDITOR

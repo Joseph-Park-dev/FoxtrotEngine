@@ -63,7 +63,7 @@ private:
 private:
 	b2Polygon		mPolygon;
 
-	FTVector2		mOffsetPos;
+	FTVector2		mOffset;
 	FTVector2		mFinalPosition;
 
 public:

@@ -47,8 +47,6 @@ public:
 
 private:
 	b2BodyId	mBodyID;
-	b2BodyDef	mBodyDef;
-
 	BodyType	mBodyType;
 
 private:
@@ -88,7 +86,15 @@ public:
 public:
 	virtual void EditorUIUpdate() override;
 
+protected:
+	virtual void OnConfirmUpdate() override;
+
+private:
+	// This is used only on editor to update the values.
+	b2BodyDef mBodyDefCache;
+
 private:
 	void UpdateBodyType();
+	void UpdateGravityScale();
 #endif;
 };

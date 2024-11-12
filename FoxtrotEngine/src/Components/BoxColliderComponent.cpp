@@ -1,4 +1,7 @@
-#include "BoxColliderComponent.h"
+#include "Components/BoxColliderComponent.h"
+
+#include "FileSystem/ChunkLoader.h"
+#include "FileSystem/ChunkFileKeys.h"
 
 #ifdef FOXTROT_EDITOR
 #include "CommandHistory.h"
@@ -28,10 +31,14 @@ BoxColliderComponent::BoxColliderComponent(Actor* owner, int drawOrder, int upda
 
 void BoxColliderComponent::SaveProperties(std::ofstream& ofs)
 {
+	ColliderComponent::SaveProperties(ofs);
+	FileIOHelper::SaveVector2(ofs, ChunkKeys::COLLIDER_SCALE, mScale);
 }
 
 void BoxColliderComponent::LoadProperties(std::ifstream& ifs)
 {
+	FileIOHelper::LoadVector2(ifs, mScale);
+	ColliderComponent::LoadProperties(ifs);
 }
 
 void BoxColliderComponent::EditorUpdate(float deltaTime)
@@ -44,6 +51,8 @@ void BoxColliderComponent::EditorRender(FoxtrotRenderer* renderer)
 
 void BoxColliderComponent::EditorUIUpdate()
 {
+	ColliderComponent::EditorUIUpdate();
+	UpdateScale();
 }
 
 void BoxColliderComponent::RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter)

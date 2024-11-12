@@ -132,6 +132,33 @@ void CommandHistory::UpdateVector2Value(std::string label, FTVector2& ref, float
 	delete[] vec2;
 }
 
+void CommandHistory::UpdateVector2Value(std::string label, b2Vec2& ref, float modSpeed)
+{
+	b2Vec2 updatedVal = ref;
+	float* vec2 = new float[2];
+	vec2[0] = updatedVal.x;
+	vec2[1] = updatedVal.y;
+	bool isRecording = GetIsRecording();
+	if (ImGui::DragFloat2(label.c_str(), vec2, modSpeed)) {
+		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left)) {
+			SetIsRecording(true);
+			AddCommand(new B2Vec2EditCommand(ref, updatedVal));
+		}
+		updatedVal.x = vec2[0];
+		updatedVal.y = vec2[1];
+		ref = updatedVal;
+	}
+	else
+	{
+		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
+		{
+			AddCommand(new B2Vec2EditCommand(ref, updatedVal));
+			SetIsRecording(false);
+		}
+	}
+	delete[] vec2;
+}
+
 void CommandHistory::UpdateVector3Value(std::string label, FTVector3& ref, float modSpeed)
 {
 	FTVector3 updatedVal = ref;
@@ -265,6 +292,21 @@ void CommandHistory::UpdateIntValue(std::string label, int* ref, int modSpeed)
 		}
 	}
 	delete intBuf;
+}
+
+void CommandHistory::UpdateBoolValue(std::string label, bool& ref)
+{
+	bool valToUpdate = ref;
+	bool isRecording = CommandHistory::GetInstance()->GetIsRecording();
+	if (ImGui::Checkbox(label.c_str(), &valToUpdate))
+	{
+		if (valToUpdate != ref)
+		{
+			CommandHistory::GetInstance()->
+				AddCommand(new BoolEditCommand(ref, valToUpdate));
+			ref = valToUpdate;
+		}
+	}
 }
 
 Command* CommandHistory::QueryCommand()

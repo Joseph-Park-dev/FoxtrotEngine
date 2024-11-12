@@ -60,24 +60,29 @@ namespace ChunkKeys {
 	constexpr const char* DRAW_ORDER = "DrawOrder";
 	constexpr const char* UPDATE_ORDER = "UpdateOrder";
 
-// Mesh Renderer Component
+	// Mesh Renderer Component
 	constexpr const char* MESH_KEY = "MeshKey";
 	constexpr const char* TEXTURE_KEY = "TextureKey";
 
-// Sprite Renderer Component
+	// Sprite Renderer Component
 	constexpr const char* CHANNEL = "Channel";
 	constexpr const char* SPRITE_SCALE = "Scale";
 
-// Rigidbody2DComponent
+	// Rigidbody2DComponent
 	constexpr const char* BODY_TYPE = "Body Type";
 
 	constexpr const int BODY_TYPE_STATIC = 0;
 	constexpr const int BODY_TYPE_KINEMATIC = 1;
 	constexpr const int BODY_TYPE_DYNAMIC = 2;
 
-
-// Tile Map Component
+	// Tile Map Component
 	constexpr const char* TILEMAP_KEY = "TileMapKey";
+
+	// Collider Component
+	constexpr const char* OFFSET = "Offset";
+
+		// Box Collider Component
+	constexpr const char* COLLIDER_SCALE = "Scale";
 
 // General Terms
 	constexpr const char* NAME = "Name";

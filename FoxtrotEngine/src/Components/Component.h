@@ -95,5 +95,8 @@ public:
 		// Call LoadProperties on new actor
 		t->Initialize(coreInst);
 	}
+
+protected:
+	virtual void OnConfirmUpdate();
 #endif // FOXTROT_EDITOR
 };

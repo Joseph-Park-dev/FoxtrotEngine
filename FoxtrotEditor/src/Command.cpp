@@ -100,41 +100,22 @@ WStrEditCommand::WStrEditCommand(std::wstring& valRef, std::wstring nextVal)
 WStrEditCommand::~WStrEditCommand()
 {}
 
-BoolEditCommand::BoolEditCommand(bool& valRef, bool nextVal)
-	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
+void B2Vec2EditCommand::Execute()
 {
+	mPrevValue = mValue;
+	mValue = mNextValue;
 }
 
-BoolEditCommand::~BoolEditCommand()
+void B2Vec2EditCommand::Undo()
+{
+	mValue = mPrevValue;
+}
+
+B2Vec2EditCommand::B2Vec2EditCommand(b2Vec2& valRef, b2Vec2 nextVal)
+	: mPrevValue()
+	, mValue(valRef)
+	, mNextValue(nextVal)
 {}
-
-void BoolEditCommand::Execute()
-{
-	mPrevValue = mValue;
-	mValue = mNextValue;
-}
-
-void BoolEditCommand::Undo()
-{
-	mValue = mPrevValue;
-}
-
-void StateEditCommand::Execute()
-{
-	mPrevValue = mValue;
-	mValue = mNextValue;
-}
-
-void StateEditCommand::Undo()
-{
-	mValue = mPrevValue;
-}
-
-StateEditCommand::StateEditCommand(Actor::State& valRef, Actor::State nextVal)
-	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
-{
-}
-
 
 void Vector3EditCommand::Execute()
 {
@@ -191,4 +172,40 @@ StrEditCommand::StrEditCommand(std::string& valRef, std::string nextVal)
 
 StrEditCommand::~StrEditCommand()
 {
+}
+
+void StateEditCommand::Execute()
+{
+	mPrevValue = mValue;
+	mValue = mNextValue;
+}
+
+void StateEditCommand::Undo()
+{
+	mValue = mPrevValue;
+}
+
+StateEditCommand::StateEditCommand(Actor::State& valRef, Actor::State nextVal)
+	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
+{
+}
+
+BoolEditCommand::BoolEditCommand(bool& valRef, bool nextVal)
+	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
+{
+}
+
+
+BoolEditCommand::~BoolEditCommand()
+{}
+
+void BoolEditCommand::Execute()
+{
+	mPrevValue = mValue;
+	mValue = mNextValue;
+}
+
+void BoolEditCommand::Undo()
+{
+	mValue = mPrevValue;
 }

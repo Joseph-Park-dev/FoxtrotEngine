@@ -105,4 +105,7 @@ void Component::EditorUIUpdate()
 void Component::RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter)
 {
 }
+void Component::OnConfirmUpdate()
+{
+}
 #endif

@@ -10,6 +10,7 @@
 #include "Physics/Physics2D.h"
 #include "Managers/KeyInputManager.h"
 #include "FileSystem/ChunkLoader.h"
+#include "FileSystem/ChunkFileKeys.h"
 #include "Components/Rigidbody2DComponent.h"
 
 void ColliderComponent::CreateShape(b2BodyId bodyID, b2ShapeDef* shapeDef, b2Polygon* polygon)
@@ -19,7 +20,7 @@ void ColliderComponent::CreateShape(b2BodyId bodyID, b2ShapeDef* shapeDef, b2Pol
 
 FTVector2 ColliderComponent::GetOffsetPos() const
 {
-	return mOffsetPos;
+	return mOffset;
 }
 
 FTVector2 ColliderComponent::GetFinalPosition() const
@@ -29,12 +30,12 @@ FTVector2 ColliderComponent::GetFinalPosition() const
 
 FTVector2& ColliderComponent::GetOffsetPosRef()
 {
-	return mOffsetPos;
+	return mOffset;
 }
 
 void ColliderComponent::SetOffsetPos(FTVector2 offsetPos)
 {
-	mOffsetPos = offsetPos;
+	mOffset = offsetPos;
 }
 
 void ColliderComponent::Initialize(FTCore* coreInstance)
@@ -45,20 +46,20 @@ void ColliderComponent::Initialize(FTCore* coreInstance)
 void ColliderComponent::LateUpdate(float deltaTime)
 {
 	FTVector2 ownerPos = GetOwner()->GetTransform()->GetWorldPosition();
-	mFinalPosition = ownerPos + mOffsetPos;
+	mFinalPosition = ownerPos + mOffset;
 }
 
 ColliderComponent::ColliderComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner, drawOrder, updateOrder)
 	, mPolygon()
-	, mOffsetPos(FTVector2::Zero)
+	, mOffset(FTVector2::Zero)
 	, mFinalPosition(FTVector2::Zero)
 {
 }
 
 ColliderComponent::ColliderComponent(const ColliderComponent& origin)
 	: Component(nullptr, origin.GetDrawOrder(), origin.GetUpdateOrder())
-	, mOffsetPos(origin.mOffsetPos)
+	, mOffset(origin.mOffset)
 {
 }
 
@@ -95,10 +96,12 @@ void ColliderComponent::OnRayEnter()
 void ColliderComponent::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
+	FileIOHelper::SaveVector2(ofs, ChunkKeys::OFFSET, mOffset);
 }
 
 void ColliderComponent::LoadProperties(std::ifstream& ifs)
 {
+	FileIOHelper::LoadVector2(ifs, mOffset);
 	Component::LoadProperties(ifs);
 }
 
@@ -136,6 +139,6 @@ void ColliderComponent::UpdateOffsetPos()
 {
 	FTVector2 updatedVal = GetOffsetPos();
 	CommandHistory::GetInstance()->UpdateVector2Value("Offset Position", updatedVal, FLOATMOD_SPEED);
-	mOffsetPos = updatedVal;
+	mOffset = updatedVal;
 }
 #endif

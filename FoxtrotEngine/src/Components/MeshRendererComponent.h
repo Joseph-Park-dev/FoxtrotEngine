@@ -75,6 +75,6 @@ public:
 	virtual void EditorUIUpdate() override;
 
 protected:
-	virtual void OnConfirmUpdate();
+	virtual void OnConfirmUpdate() override;
 #endif
 };

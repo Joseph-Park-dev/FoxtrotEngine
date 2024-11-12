@@ -78,6 +78,21 @@ private:
 	FTVector2 mNextValue;
 };
 
+class B2Vec2EditCommand : public Command
+{
+public:
+	void Execute() override;
+	void Undo() override;
+
+public:
+	B2Vec2EditCommand(b2Vec2& valRef, b2Vec2 nextVal);
+
+private:
+	b2Vec2& mValue;
+	b2Vec2 mPrevValue;
+	b2Vec2 mNextValue;
+};
+
 class Vector3EditCommand : public Command
 {
 public:
@@ -140,6 +155,21 @@ private:
 	std::wstring   mNextValue;
 };
 
+class StateEditCommand : public Command
+{
+public:
+	void Execute() override;
+	void Undo() override;
+
+public:
+	StateEditCommand(Actor::State& valRef, Actor::State nextVal);
+
+private:
+	Actor::State& mValue;
+	Actor::State  mPrevValue;
+	Actor::State  mNextValue;
+};
+
 class BoolEditCommand : public Command
 {
 public:
@@ -154,19 +184,4 @@ private:
 	bool& mValue;
 	bool  mPrevValue;
 	bool  mNextValue;
-};
-
-class StateEditCommand : public Command
-{
-public:
-	void Execute() override;
-	void Undo() override;
-
-public:
-	StateEditCommand(Actor::State& valRef, Actor::State nextVal);
-
-private:
-	Actor::State& mValue;
-	Actor::State  mPrevValue;
-	Actor::State  mNextValue;
 };

@@ -69,6 +69,18 @@ namespace ChunkKeys {
 	constexpr const char* SPRITE_SCALE = "Scale";
 
 	// Rigidbody2DComponent
+	constexpr const char* ALLOW_FAST_ROTATION = "Allow Fast Rotation";
+	constexpr const char* ANGULAR_DAMPING	  = "Angular Damping";
+	constexpr const char* ANGULAR_VELOCITY	  = "Angular Velocity";
+	constexpr const char* ENABLE_SLEEP		  = "Enable Sleep";
+	constexpr const char* FIXED_ROTATION	  = "Fixed Rotation";
+	constexpr const char* GRAVITY_SCALE		  = "Gravity Scale";
+	constexpr const char* IS_AWAKE			  = "Is Awake";
+	constexpr const char* IS_BULLET			  = "Is Bullet";
+	constexpr const char* IS_ENABLED		  = "Is Enabled";
+	constexpr const char* INITIAL_VELOCITY	  = "Initial Velocity";
+	constexpr const char* SLEEP_THRESHOLD	  = "Sleep Threshold";
+
 	constexpr const char* BODY_TYPE = "Body Type";
 
 	constexpr const int BODY_TYPE_STATIC = 0;

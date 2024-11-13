@@ -131,6 +131,16 @@ static char* ToString(const wchar_t* text)
 	return nullptr;
 }
 
+static const char* ToString(bool boolVal)
+{
+	return boolVal ? "true" : "false";
+}
+
+static const bool StrToBool(std::string& str) 
+{
+	return str == "true" ? true : false;
+}
+
 inline void LTrim(std::string& str) {
 	str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](unsigned char ch) {
 		return !(ch == '\t');

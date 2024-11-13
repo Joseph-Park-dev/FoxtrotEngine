@@ -3,7 +3,7 @@
 #include "Physics/RayCastHit2D.h"
 
 class FTVector2;
-class ColliderComponent;
+class Collider2DComponent;
 class Rigidbody2DComponent;
 
 #ifdef FOXTROT_EDITOR

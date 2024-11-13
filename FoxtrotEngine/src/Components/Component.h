@@ -53,8 +53,8 @@ private:
 	bool	mIsInitialized;
 
 public:
-	virtual void		 SaveProperties(std::ofstream& ofs);
-	virtual void		 LoadProperties(std::ifstream& ifs);
+	virtual void SaveProperties(std::ofstream& ofs);
+	virtual void LoadProperties(std::ifstream& ifs);
 
 public:
 	template <class T>

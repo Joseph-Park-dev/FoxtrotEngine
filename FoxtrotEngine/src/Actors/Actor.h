@@ -10,7 +10,7 @@
 
 class Transform;
 class SpriteRendererComponent;
-class ColliderComponent;
+class Collider2DComponent;
 class KeyInputManager;
 class Actor;
 class UIActor;
@@ -37,11 +37,11 @@ public:
 	void RemoveComponent(class Component* component);
 
 protected:
-	virtual void OnCollisionEnter(ColliderComponent* _pOther);
-	virtual void OnCollisionStay(ColliderComponent* _pOther);
-	virtual void OnCollisionExit(ColliderComponent* _pOther);
+	virtual void OnCollisionEnter(Collider2DComponent* _pOther);
+	virtual void OnCollisionStay(Collider2DComponent* _pOther);
+	virtual void OnCollisionExit(Collider2DComponent* _pOther);
 	virtual void OnRayEnter();
-	friend class ColliderComponent;
+	friend class Collider2DComponent;
 
 public:
 	// Getters/Setters

@@ -34,7 +34,7 @@ void MoveComponent::Accelerate(float& currentSpeed, float accel, float maxSpeed,
 
 void MoveComponent::Accelerate(FTVector2 velocity)
 {
-	GetOwner()->GetComponent<class Rigidbody2DComponent>()->AddForce(velocity);
+	//GetOwner()->GetComponent<class Rigidbody2DComponent>()->AddForce(velocity);
 }
 
 void MoveComponent::Deccelerate(float& currentSpeed, int& currentDir, float breakSpeed)

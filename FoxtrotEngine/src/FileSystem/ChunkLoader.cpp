@@ -143,7 +143,7 @@ ChunkLoader::ChunkLoader()
         {"AIComponent",                &Component::Load<AIComponent>},
         {"AnimatorComponent",          &Component::Load<AnimatorComponent>},
         {"BGSpriteComponent",          &Component::Load<BGSpriteComponent>},
-        {"BoxColliderComponent",       &Component::Load<BoxColliderComponent>},
+        {"BoxCollider2DComponent",       &Component::Load<BoxCollider2DComponent>},
         {"InputMoveComponent",         &Component::Load<InputMoveComponent>},
         {"MoveComponent",              &Component::Load<MoveComponent>},
         {"Rigidbody2DComponent",       &Component::Load<Rigidbody2DComponent>},
@@ -275,6 +275,21 @@ void FileIOHelper::LoadFloat(std::ifstream& ifs, float& floatVal)
     ParseFloat(line, floatVal);
 }
 
+void FileIOHelper::LoadBool(std::ifstream& ifs, bool& boolVal)
+{
+    // Parse data information.
+    std::string line;
+    std::getline(ifs, line, '\n');
+
+    std::string name = ExtractUntil(line, '[');
+    std::string typeNameStr = GetBracketedVal(line, '[', ']');
+    line.clear();
+
+    // Parse the actual data.
+    std::getline(ifs, line, '\n');
+    ParseBool(line, boolVal);
+}
+
 void FileIOHelper::LoadBasicString(std::ifstream& ifs, std::string& strVal)
 {
     // Parse data information.
@@ -291,6 +306,21 @@ void FileIOHelper::LoadBasicString(std::ifstream& ifs, std::string& strVal)
 }
 
 void FileIOHelper::LoadVector2(std::ifstream& ifs, FTVector2& vec2)
+{
+    // Parse data information.
+    std::string line;
+    std::getline(ifs, line, '\n');
+
+    std::string name = ExtractUntil(line, '[');
+    std::string typeNameStr = GetBracketedVal(line, '[', ']');
+    line.clear();
+
+    // Parse the actual data.
+    std::getline(ifs, line, '\n');
+    ParseVector2(line, vec2);
+}
+
+void FileIOHelper::LoadVector2(std::ifstream& ifs, b2Vec2& vec2)
 {
     // Parse data information.
     std::string line;
@@ -339,6 +369,15 @@ void FileIOHelper::ParseVector2(std::string& line, FTVector2& arg)
     arg = FTVector2(x, y);
 }
 
+void FileIOHelper::ParseVector2(std::string& line, b2Vec2& arg)
+{
+    line = GetBracketedVal(line, '(', ')');
+    float x = std::stof(ExtractUntil(line, ','));
+    float y = std::stof(ExtractUntil(line, ','));
+
+    arg = FTVector2(x, y).GetB2Vec2();
+}
+
 void FileIOHelper::ParseInt(std::string& line, int& arg)
 {
     LTrim(line);
@@ -355,6 +394,12 @@ void FileIOHelper::ParseFloat(std::string& line, float& arg)
 {
     LTrim(line);
     arg = std::stof(line);
+}
+
+void FileIOHelper::ParseBool(std::string& line, bool& arg)
+{
+    LTrim(line);
+    arg = StrToBool(line);
 }
 
 void FileIOHelper::ParseString(std::string& line, std::string& arg)
@@ -419,6 +464,14 @@ void FileIOHelper::SaveVector2(std::ofstream& ofs, const std::string valName, co
     ++mItemCounts.back();
 }
 
+void FileIOHelper::SaveVector2(std::ofstream& ofs, const std::string valName, const b2Vec2& vec2)
+{
+    std::string itemTitle = mItemIdent + valName + "[Vector2]" + '\n';
+    std::string item = mItemIdent + "(" + std::to_string(vec2.x) + "," + std::to_string(vec2.y) + ")";
+    mDataBuffer.push_back(itemTitle + item);
+    ++mItemCounts.back();
+}
+
 void FileIOHelper::SaveInt(std::ofstream& ofs, const std::string valName, const int& intVal)
 {
     std::string itemTitle = mItemIdent + valName + "[int]" + '\n';
@@ -447,6 +500,14 @@ void FileIOHelper::SaveString(std::ofstream& ofs, const std::string valName, con
 {
     std::string itemTitle = mItemIdent + valName + "[string]" + '\n';
     std::string item = mItemIdent + strVal;
+    mDataBuffer.push_back(itemTitle + item);
+    ++mItemCounts.back();
+}
+
+void FileIOHelper::SaveBool(std::ofstream& ofs, const std::string valName, const bool& boolVal)
+{
+    std::string itemTitle = mItemIdent + valName + "[bool]" + '\n';
+    std::string item = mItemIdent + ToString(boolVal);
     mDataBuffer.push_back(itemTitle + item);
     ++mItemCounts.back();
 }

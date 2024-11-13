@@ -5,34 +5,13 @@
 class FTVector2;
 class Actor;
 
-enum class BodyType 
-{
-	STATIC,
-	KINEMATIC,
-	DYNAMIC
-};
-
 class Rigidbody2DComponent : public Component
 {
 public:
-	void AddForce(FTVector2 force);
-	void AddVelocity(FTVector2 velocity);
-
-public:
-	float		 GetMass() { return mMass; }
-	std::string  GetName() const override { return "Rigidbody2DComponent"; }
-	bool		 GetIsGrounded() { return mIsGrounded; }
-	bool		 GetIsBlockedUp() { return mIsBlockedUp; }
-	b2BodyId	 GetBodyID() { return mBodyID; }
-
-	void SetMass(float mass) { mMass = mass; }
-	void SetVelocity(FTVector2 velocity) { mVelocity = velocity; }
-	void SetMaxVelocity(FTVector2 velocity) { mMaxVelocity = velocity; }
-	void SetIsGrounded(bool val) { mIsGrounded = val; }
-	void SetIsBlockedUp(bool val) { mIsBlockedUp = val; }
-	void SetAccelAlpha(FTVector2 accel) { mAccelerationA = accel; }
-
-	void SetBodyType(BodyType type) { mBodyType = type; }
+	std::string  GetName() const override 
+	{ 
+		return "Rigidbody2DComponent"; 
+	}
 
 public:
 	virtual void Initialize(FTCore* coreInstance) override;
@@ -47,36 +26,16 @@ public:
 
 private:
 	b2BodyId	mBodyID;
-	BodyType	mBodyType;
-
-private:
-	FTVector2 mForce;
-	FTVector2 mAcceleration;
-	FTVector2 mAccelerationA;
-	float	  mMass;
-
-	FTVector2 mVelocity;
-	FTVector2 mMaxVelocity;
-	float	  mFrictionCoeff;
-	bool	  mIsGrounded;
-	bool	  mIsBlockedUp;
-
-	// Box2D attributes
-	// b2Body*     mBody;
-
-private:
-	void UpdateLinearPosition(float deltaTime);
-	void UpdateAcceleration(float deltaTime);
-	void UpdateGravity(float deltaTime);
-	void UpdateVelocity(float deltaTime);
-	void ClearForceAndAccel();
 
 public:
-	virtual void SaveProperties(std::ofstream& ofs);
-	virtual void LoadProperties(std::ifstream& ifs);
+	virtual void LoadProperties(std::ifstream& ifs) override;
 
 #ifdef FOXTROT_EDITOR
 public:
+	/* The engine expects no RigidBody attributes will be updated
+	   during the runtime of the game.
+	   Therefore, Saving the attributes will only be required on Editor.*/
+	virtual void SaveProperties(std::ofstream& ofs) override;
 	virtual void SaveProperties(nlohmann::ordered_json& out) override;
 
 public:

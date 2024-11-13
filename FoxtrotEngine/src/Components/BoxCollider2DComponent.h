@@ -1,13 +1,13 @@
 #pragma once
-#include "Components/ColliderComponent.h"
+#include "Components/Collider2DComponent.h"
 
-class BoxColliderComponent :
-    public ColliderComponent
+class BoxCollider2DComponent :
+    public Collider2DComponent
 {
 public:
 	virtual std::string GetName() const override
 	{
-		return "BoxColliderComponent";
+		return "BoxCollider2DComponent";
 	}
 	const	FTVector2	GetScale() const;
 			void		SetScale(FTVector2 scale);
@@ -16,7 +16,7 @@ public:
 	virtual void Initialize(FTCore* coreInstance) override;
 
 public:
-	BoxColliderComponent(
+	BoxCollider2DComponent(
 		Actor* owner,
 		int drawOrder = DEFAULT_DRAWORDER,
 		int updateOrder = DEFAULT_UPDATEORDER

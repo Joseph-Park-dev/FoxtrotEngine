@@ -190,15 +190,15 @@ void Actor::RemoveComponent(Component* component)
 	}
 }
 
-void Actor::OnCollisionEnter(ColliderComponent* _pOther)
+void Actor::OnCollisionEnter(Collider2DComponent* _pOther)
 {
 }
 
-void Actor::OnCollisionStay(ColliderComponent* _pOther)
+void Actor::OnCollisionStay(Collider2DComponent* _pOther)
 {
 }
 
-void Actor::OnCollisionExit(ColliderComponent* _pOther)
+void Actor::OnCollisionExit(Collider2DComponent* _pOther)
 {
 }
 

@@ -9,13 +9,13 @@
 
 class FTVector2;
 
-class ColliderComponent :
+class Collider2DComponent :
 	public Component
 {
 public:
 	virtual std::string GetName() const override
 	{
-		return "ColliderComponent";
+		return "Collider2DComponent";
 	}
 
 public:
@@ -42,21 +42,21 @@ public:
 			void LateUpdate(float deltaTime) override;
 
 public:
-	ColliderComponent(class Actor* owner, int drawOrder, int updateOrder);
-	ColliderComponent(const ColliderComponent& origin);
-	virtual ~ColliderComponent() override;
+	Collider2DComponent(class Actor* owner, int drawOrder, int updateOrder);
+	Collider2DComponent(const Collider2DComponent& origin);
+	virtual ~Collider2DComponent() override;
 	//virtual void CloneTo(Actor* actor) override;
 
 public:
 	// Shallow copying is not needed (duplicated ID)
-	ColliderComponent& operator=(ColliderComponent& origin) = delete;
+	Collider2DComponent& operator=(Collider2DComponent& origin) = delete;
 	friend class CollisionManager;
 	friend class Actor;
 
 private:
-	void OnCollisionEnter(ColliderComponent* other);
-	void OnCollisionStay(ColliderComponent* other);
-	void OnCollisionExit(ColliderComponent* other);
+	void OnCollisionEnter(Collider2DComponent* other);
+	void OnCollisionStay(Collider2DComponent* other);
+	void OnCollisionExit(Collider2DComponent* other);
 
 	void OnRayEnter();
 

@@ -285,6 +285,7 @@
     <ClCompile Include="src\RenderTextureClass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\EditorUtils.h" />
     <ClInclude Include="src\EditorChunkLoader.h" />
     <ClInclude Include="include\imgui\FileDialog\ImGuiFileDialog.h" />
     <ClInclude Include="include\imgui\FileDialog\ImGuiFileDialogConfig.h" />

@@ -9,6 +9,7 @@
 #include "EditorSceneManager.h"
 #include "EditorChunkLoader.h"
 #include "CommandHistory.h"
+#include "EditorUtils.h"
 
 #include "Managers/KeyInputManager.h"
 #include "FileSystem/ChunkLoader.h"
@@ -255,11 +256,10 @@ void EditorElement::UpdateComponents()
 			}
 			++count;
 		}
-		if (ImGui::Button("AddComponent"))
-		{
+		if (ButtonCenteredOnLine("Add Component"))
 			ImGui::OpenPopup("CompSelectPopUp");
-		}
 		DisplayCompSelectionPopup();
+
 		ImGui::EndChild();
 	}
 }

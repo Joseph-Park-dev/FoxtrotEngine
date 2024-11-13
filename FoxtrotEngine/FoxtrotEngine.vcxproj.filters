@@ -48,9 +48,6 @@
     <ClCompile Include="src\Components\BGSpriteComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Components\ColliderComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Components\Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -159,7 +156,10 @@
     <ClCompile Include="src\Scenes\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Components\BoxColliderComponent.cpp">
+    <ClCompile Include="src\Components\BoxCollider2DComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Components\Collider2DComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -201,9 +201,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Components\BGSpriteComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Components\ColliderComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Components\Component.h">
@@ -362,7 +359,10 @@
     <ClInclude Include="src\FileSystem\ChunkFileKeys.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Components\BoxColliderComponent.h">
+    <ClInclude Include="src\Components\BoxCollider2DComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\Collider2DComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

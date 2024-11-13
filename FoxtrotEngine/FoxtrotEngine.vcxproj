@@ -258,7 +258,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Components\BoxColliderComponent.cpp" />
+    <ClCompile Include="src\Components\BoxCollider2DComponent.cpp" />
     <ClCompile Include="src\Actors\Actor.cpp" />
     <ClCompile Include="src\Actors\Backgrounds\BackgroundActor.cpp" />
     <ClCompile Include="src\Actors\RectTransform.cpp" />
@@ -270,7 +270,7 @@
     <ClCompile Include="src\Components\AIState.cpp" />
     <ClCompile Include="src\Components\AnimatorComponent.cpp" />
     <ClCompile Include="src\Components\BGSpriteComponent.cpp" />
-    <ClCompile Include="src\Components\ColliderComponent.cpp" />
+    <ClCompile Include="src\Components\Collider2DComponent.cpp" />
     <ClCompile Include="src\Components\Component.cpp" />
     <ClCompile Include="src\Components\GunFiringComponent.cpp" />
     <ClCompile Include="src\Components\InputMoveComponent.cpp" />
@@ -309,7 +309,7 @@
     <ClCompile Include="src\Scenes\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Components\BoxColliderComponent.h" />
+    <ClInclude Include="src\Components\BoxCollider2DComponent.h" />
     <ClInclude Include="src\Actors\Actor.h" />
     <ClInclude Include="src\Actors\ActorGroup.h" />
     <ClInclude Include="src\Actors\ActorTag.h" />
@@ -323,7 +323,7 @@
     <ClInclude Include="src\Components\AIState.h" />
     <ClInclude Include="src\Components\AnimatorComponent.h" />
     <ClInclude Include="src\Components\BGSpriteComponent.h" />
-    <ClInclude Include="src\Components\ColliderComponent.h" />
+    <ClInclude Include="src\Components\Collider2DComponent.h" />
     <ClInclude Include="src\Components\Component.h" />
     <ClInclude Include="src\Components\ComponentBatchHeaders.h" />
     <ClInclude Include="src\Components\GunFiringComponent.h" />

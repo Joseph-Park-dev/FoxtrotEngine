@@ -1,4 +1,4 @@
-#include "Components/BoxColliderComponent.h"
+#include "Components/BoxCollider2DComponent.h"
 
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
@@ -7,55 +7,55 @@
 #include "CommandHistory.h"
 #endif
 
-const FTVector2 BoxColliderComponent::GetScale() const
+const FTVector2 BoxCollider2DComponent::GetScale() const
 {
     return mScale;
 }
 
-void BoxColliderComponent::SetScale(FTVector2 scale)
+void BoxCollider2DComponent::SetScale(FTVector2 scale)
 {
 	mScale = scale;
 }
 
-void BoxColliderComponent::Initialize(FTCore* coreInstance)
+void BoxCollider2DComponent::Initialize(FTCore* coreInstance)
 {
-	ColliderComponent::Initialize(coreInstance);
+	Collider2DComponent::Initialize(coreInstance);
 	GetPolygonRef() = b2MakeBox(mScale.x / 2, mScale.y / 2);
 }
 
-BoxColliderComponent::BoxColliderComponent(Actor* owner, int drawOrder, int updateOrder)
-	: ColliderComponent(owner, drawOrder, updateOrder)
+BoxCollider2DComponent::BoxCollider2DComponent(Actor* owner, int drawOrder, int updateOrder)
+	: Collider2DComponent(owner, drawOrder, updateOrder)
 	, mScale(FTVector2(50.f,50.f))
 {
 }
 
-void BoxColliderComponent::SaveProperties(std::ofstream& ofs)
+void BoxCollider2DComponent::SaveProperties(std::ofstream& ofs)
 {
-	ColliderComponent::SaveProperties(ofs);
+	Collider2DComponent::SaveProperties(ofs);
 	FileIOHelper::SaveVector2(ofs, ChunkKeys::COLLIDER_SCALE, mScale);
 }
 
-void BoxColliderComponent::LoadProperties(std::ifstream& ifs)
+void BoxCollider2DComponent::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::LoadVector2(ifs, mScale);
-	ColliderComponent::LoadProperties(ifs);
+	Collider2DComponent::LoadProperties(ifs);
 }
 
-void BoxColliderComponent::EditorUpdate(float deltaTime)
+void BoxCollider2DComponent::EditorUpdate(float deltaTime)
 {
 }
 
-void BoxColliderComponent::EditorRender(FoxtrotRenderer* renderer)
+void BoxCollider2DComponent::EditorRender(FoxtrotRenderer* renderer)
 {
 }
 
-void BoxColliderComponent::EditorUIUpdate()
+void BoxCollider2DComponent::EditorUIUpdate()
 {
-	ColliderComponent::EditorUIUpdate();
+	Collider2DComponent::EditorUIUpdate();
 	UpdateScale();
 }
 
-void BoxColliderComponent::RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter)
+void BoxCollider2DComponent::RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter)
 {
 	FTVector2 ownerPos = GetOwner()->GetTransform()->GetWorldPositionYInverted();
 	FTVector2 min = screenCenter + ownerPos + GetOffsetPos() - (mScale / 2);
@@ -71,7 +71,7 @@ void BoxColliderComponent::RenderDebugGeometries(ImDrawList* imDrawList, FTVecto
 }
 
 #ifdef FOXTROT_EDITOR
-void BoxColliderComponent::UpdateScale()
+void BoxCollider2DComponent::UpdateScale()
 {
 	FTVector2 updatedVal = GetScale();
 	CommandHistory::GetInstance()->UpdateVector2Value("Scale", updatedVal, FLOATMOD_SPEED);

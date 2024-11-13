@@ -19,8 +19,8 @@ void BoxCollider2DComponent::SetScale(FTVector2 scale)
 
 void BoxCollider2DComponent::Initialize(FTCore* coreInstance)
 {
-	Collider2DComponent::Initialize(coreInstance);
 	GetPolygonRef() = b2MakeBox(mScale.x / 2, mScale.y / 2);
+	Collider2DComponent::Initialize(coreInstance);
 }
 
 BoxCollider2DComponent::BoxCollider2DComponent(Actor* owner, int drawOrder, int updateOrder)

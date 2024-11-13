@@ -31,17 +31,13 @@ void Rigidbody2DComponent::CloneTo(Actor* actor)
 	Rigidbody2DComponent* newComp = new Rigidbody2DComponent(actor, GetDrawOrder(), GetUpdateOrder());
 }
 
+b2BodyId& Rigidbody2DComponent::GetBodyID()
+{
+	return mBodyID;
+}
+
 void Rigidbody2DComponent::Initialize(FTCore* coreInstance)
 {
-	BoxCollider2DComponent* collider = GetOwner()->GetComponent<BoxCollider2DComponent>();
-	if (collider) 
-	{
-		if (!collider->GetIsInitialized())
-			collider->Initialize(coreInstance);
-		b2Polygon& polygon = collider->GetPolygonRef();
-		b2ShapeDef polygonShapeDef = b2DefaultShapeDef();
-		collider->CreateShape(mBodyID, &polygonShapeDef, &polygon);
-	}
 	Component::Initialize(coreInstance);
 }
 

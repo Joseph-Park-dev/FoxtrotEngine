@@ -40,6 +40,15 @@ void Collider2DComponent::SetOffsetPos(FTVector2 offsetPos)
 
 void Collider2DComponent::Initialize(FTCore* coreInstance)
 {
+	Rigidbody2DComponent* rb = GetOwner()->GetComponent<Rigidbody2DComponent>();
+	if (rb)
+	{
+		if (b2Body_IsValid(rb->GetBodyID())) 
+		{
+			b2ShapeDef polygonShapeDef = b2DefaultShapeDef();
+			CreateShape(rb->GetBodyID(), &polygonShapeDef, &mPolygon);
+		}
+	}
 	Component::Initialize(coreInstance);
 }
 

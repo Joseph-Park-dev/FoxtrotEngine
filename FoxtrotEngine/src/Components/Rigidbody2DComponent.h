@@ -12,6 +12,7 @@ public:
 	{ 
 		return "Rigidbody2DComponent"; 
 	}
+	b2BodyId& GetBodyID();
 
 public:
 	virtual void Initialize(FTCore* coreInstance) override;

@@ -19,14 +19,7 @@ public:
 	}
 
 public:
-	void CreateShape(b2BodyId bodyID, b2ShapeDef* shapeDef, b2Polygon* polygon);
-
-public:
-	// Use Setters to assign data out of this class.
-	// But I allowed this can be modified exceptionally 
-	// to prevent pass-by-value.
-	b2Polygon&	GetPolygonRef() { return mPolygon; }
-
+	b2ShapeId&	GetShapeID();
 	FTVector2	GetOffsetPos() const;
 	// Get world position of the collider 
 	// (anchor-pointed to the center)
@@ -61,7 +54,7 @@ private:
 	void OnRayEnter();
 
 private:
-	b2Polygon		mPolygon;
+	b2ShapeId		mShapeID;
 
 	FTVector2		mOffset;
 	FTVector2		mFinalPosition;

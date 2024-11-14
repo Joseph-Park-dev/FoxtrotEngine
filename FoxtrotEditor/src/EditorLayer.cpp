@@ -518,17 +518,17 @@ void EditorLayer::PopUpError_ChunkNotSaved()
 void EditorLayer::Render(FoxtrotRenderer* renderer)
 {
 	ImGui::Render();
-	ImDrawData* drawData = ImGui::GetDrawData();
-	
-	ImVec2 screenCenter = mSceneViewportPos + (mSceneViewportSize / 2);
-	EditorSceneManager::GetInstance()->
-		RenderDebugGeometries(
-			mDebugDrawList, 
-			FTVector2(screenCenter.x, screenCenter.y)
-		);
+	//ImDrawData* drawData = ImGui::GetDrawData();
+	//
+	//ImVec2 screenCenter = mSceneViewportPos + (mSceneViewportSize / 2);
+	//EditorSceneManager::GetInstance()->
+	//	RenderDebugGeometries(
+	//		mDebugDrawList, 
+	//		FTVector2(screenCenter.x, screenCenter.y)
+	//	);
 
-	drawData->AddDrawList(mDebugDrawList);
-	ImGui_ImplDX11_RenderDrawData(drawData);
+	//drawData->AddDrawList(mDebugDrawList);
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	//ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
 }
 

@@ -13,9 +13,9 @@
 #include "FileSystem/ChunkFileKeys.h"
 #include "Components/Rigidbody2DComponent.h"
 
-void Collider2DComponent::CreateShape(b2BodyId bodyID, b2ShapeDef* shapeDef, b2Polygon* polygon)
+b2ShapeId& Collider2DComponent::GetShapeID()
 {
-	b2CreatePolygonShape(bodyID, shapeDef, polygon);
+	return mShapeID;
 }
 
 FTVector2 Collider2DComponent::GetOffsetPos() const
@@ -40,16 +40,7 @@ void Collider2DComponent::SetOffsetPos(FTVector2 offsetPos)
 
 void Collider2DComponent::Initialize(FTCore* coreInstance)
 {
-	Rigidbody2DComponent* rb = GetOwner()->GetComponent<Rigidbody2DComponent>();
-	if (rb)
-	{
-		if (b2Body_IsValid(rb->GetBodyID())) 
-		{
-			b2ShapeDef polygonShapeDef = b2DefaultShapeDef();
-			CreateShape(rb->GetBodyID(), &polygonShapeDef, &mPolygon);
-		}
-	}
-	Component::Initialize(coreInstance);
+	LogString("Warning : Non-overrided Collider2D::Initialize() is being used -> Not affected by Simulation");
 }
 
 void Collider2DComponent::LateUpdate(float deltaTime)
@@ -60,7 +51,6 @@ void Collider2DComponent::LateUpdate(float deltaTime)
 
 Collider2DComponent::Collider2DComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner, drawOrder, updateOrder)
-	, mPolygon()
 	, mOffset(FTVector2::Zero)
 	, mFinalPosition(FTVector2::Zero)
 {

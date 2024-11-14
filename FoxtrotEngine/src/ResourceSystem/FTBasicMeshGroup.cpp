@@ -85,17 +85,17 @@ void FTBasicMeshGroup::Render(ComPtr<ID3D11DeviceContext>& context, int meshInde
         context->DrawIndexed(mesh->mIndexCount, 0, 0);
     }
 }
-
-void FTBasicMeshGroup::UpdateModelWorld(DirectX::SimpleMath::Matrix& modelToWorldRow)
-{
-    this->mModelWorldRow = modelToWorldRow;
-    this->mInvTransposeRow = modelToWorldRow;
-    mInvTransposeRow.Translation(DirectX::SimpleMath::Vector3(0.0f));
-    mInvTransposeRow = mInvTransposeRow.Invert().Transpose();
-
-    mBasicVertexConstantData.model = modelToWorldRow.Transpose();
-    mBasicVertexConstantData.invTranspose = mInvTransposeRow.Transpose();
-}
+//
+//void FTBasicMeshGroup::UpdateModelWorld(DirectX::SimpleMath::Matrix& modelToWorldRow)
+//{
+//    this->mModelWorldRow = modelToWorldRow;
+//    this->mInvTransposeRow = modelToWorldRow;
+//    mInvTransposeRow.Translation(DirectX::SimpleMath::Vector3(0.0f));
+//    mInvTransposeRow = mInvTransposeRow.Invert().Transpose();
+//
+//    mBasicVertexConstantData.model = modelToWorldRow.Transpose();
+//    mBasicVertexConstantData.invTranspose = mInvTransposeRow.Transpose();
+//}
 
 void FTBasicMeshGroup::SetTexture(UINT key)
 {
@@ -110,7 +110,6 @@ void FTBasicMeshGroup::InitializeConstantBuffer(ComPtr<ID3D11Device>& device)
 
     D3D11Utils::CreateConstantBuffer(device, mBasicVertexConstantData, mVertexConstantBuffer);
     D3D11Utils::CreateConstantBuffer(device, mBasicPixelConstantData, mPixelConstantBuffer);
-
 }
 
 void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<MeshData>& meshes)

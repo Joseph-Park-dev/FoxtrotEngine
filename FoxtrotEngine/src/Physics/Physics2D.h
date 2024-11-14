@@ -59,4 +59,10 @@ private:
 private:
 	FTVector3 CalcCenterOfGravity(int numElements);
 	Matrix3 CalcInertiaProduct(int numElements);
+
+#ifdef FOXTROT_EDITOR
+public:
+	void Render();
+#endif // FOXTROT_EDITOR
+
 };

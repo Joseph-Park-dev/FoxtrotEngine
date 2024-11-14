@@ -18,7 +18,7 @@ using std::shared_ptr;
 using std::vector;
 using std::wstring;
 
-inline void CheckResult(HRESULT hr, ID3DBlob* errorBlob) {
+inline HRESULT CheckResult(HRESULT hr, ID3DBlob* errorBlob) {
     if (FAILED(hr)) {
         // 파일이 없을 경우
         if ((hr & D3D11_ERROR_FILE_NOT_FOUND) != 0) {
@@ -31,6 +31,7 @@ inline void CheckResult(HRESULT hr, ID3DBlob* errorBlob) {
                 << (char*)errorBlob->GetBufferPointer() << std::endl;
         }
     }
+    return hr;
 }
 
 class D3D11Utils {
@@ -39,7 +40,7 @@ public:
         CreateDepthBuffer(ComPtr<ID3D11Device>& device, int screenWidth,
             int screenHeight, UINT& numQualityLevels,
             ComPtr<ID3D11DepthStencilView>& depthStencilView);
-    static void CreateVertexShaderAndInputLayout(
+    static HRESULT CreateVertexShaderAndInputLayout(
         ComPtr<ID3D11Device>& device, const wstring& filename,
         const vector<D3D11_INPUT_ELEMENT_DESC>& inputElements,
         ComPtr<ID3D11VertexShader>& vertexShader,
@@ -57,7 +58,7 @@ public:
         CreateGeometryShader(ComPtr<ID3D11Device>& device, const wstring& filename,
             ComPtr<ID3D11GeometryShader>& geometryShader);
 
-    static void CreatePixelShader(ComPtr<ID3D11Device>& device,
+    static HRESULT CreatePixelShader(ComPtr<ID3D11Device>& device,
         const wstring& filename,
         ComPtr<ID3D11PixelShader>& pixelShader);
 
@@ -75,10 +76,10 @@ public:
 
         D3D11_BUFFER_DESC bufferDesc;
         ZeroMemory(&bufferDesc, sizeof(bufferDesc));
-        bufferDesc.Usage = D3D11_USAGE_IMMUTABLE; // 초기화 후 변경X
+        bufferDesc.Usage = D3D11_USAGE_DYNAMIC; // 초기화 후 변경X
         bufferDesc.ByteWidth = UINT(sizeof(T_VERTEX) * vertices.size());
         bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-        bufferDesc.CPUAccessFlags = 0; // 0 if no CPU access is necessary.
+        bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; // 0 if no CPU access is necessary.
         bufferDesc.StructureByteStride = sizeof(T_VERTEX);
 
         D3D11_SUBRESOURCE_DATA vertexBufferData = {

@@ -162,6 +162,9 @@
     <ClCompile Include="src\Components\Collider2DComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Components\CircleCollider2DComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Actors\Backgrounds\BackgroundActor.h">
@@ -363,6 +366,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Components\Collider2DComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\CircleCollider2DComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

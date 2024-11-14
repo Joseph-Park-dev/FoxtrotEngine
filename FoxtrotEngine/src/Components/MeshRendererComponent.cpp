@@ -83,7 +83,7 @@ void MeshRendererComponent::UpdateMesh(Transform* transform, Camera* cameraInsta
 }
 
 void MeshRendererComponent::UpdateBuffers(){
-	if (GetMeshGroup()->GetVertexConstantBuffer().Get()) {
+	/*if (GetMeshGroup()->GetVertexConstantBuffer().Get()) {
 		D3D11Utils::UpdateBuffer(
 			mRenderer->GetDevice(),
 			mRenderer->GetContext(),
@@ -99,14 +99,15 @@ void MeshRendererComponent::UpdateBuffers(){
 			GetMeshGroup()->GetPixelConstantData(),
 			GetMeshGroup()->GetPixelConstantBuffer()
 		);
-	}
+	}*/
+	mMeshGroup->UpdateConstantBuffers(mRenderer->GetDevice(), mRenderer->GetContext());
 }
 
 void MeshRendererComponent::SetTexture() {
 	if (mTexKey != VALUE_NOT_ASSIGNED)
 		GetMeshGroup()->SetTexture(mTexKey);
 	else 
-		printf("ERROR: MeshRendererComponent::SetTexture() -> key is not assigned.\n", mTexKey);
+		printf("ERROR: MeshRendererComponent::SetTexture() -> key %d is not assigned.\n", mTexKey);
 }
 
 MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder)

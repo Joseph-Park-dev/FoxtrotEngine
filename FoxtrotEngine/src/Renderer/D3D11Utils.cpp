@@ -13,6 +13,7 @@
 
 #include "ResourceSystem/Mesh.h"
 #include "Actors/Transform.h"
+#include "Core/TemplateFunctions.h"
 
 using namespace std;
 using namespace DirectX;
@@ -53,7 +54,7 @@ bool D3D11Utils::CreateDepthBuffer(
     return true;
 }
 
-void D3D11Utils::CreateVertexShaderAndInputLayout(
+HRESULT D3D11Utils::CreateVertexShaderAndInputLayout(
     ComPtr<ID3D11Device>& device, const wstring& filename,
     const vector<D3D11_INPUT_ELEMENT_DESC>& inputElements,
     ComPtr<ID3D11VertexShader>& vertexShader,
@@ -75,13 +76,18 @@ void D3D11Utils::CreateVertexShaderAndInputLayout(
 
     CheckResult(hr, errorBlob.Get());
 
-    device->CreateVertexShader(shaderBlob->GetBufferPointer(),
+    DX::ThrowIfFailed(
+        device->CreateVertexShader(shaderBlob->GetBufferPointer(),
         shaderBlob->GetBufferSize(), NULL,
-        &vertexShader);
+        &vertexShader)
+    );
 
+    DX::ThrowIfFailed(
     device->CreateInputLayout(inputElements.data(), UINT(inputElements.size()),
         shaderBlob->GetBufferPointer(),
-        shaderBlob->GetBufferSize(), &inputLayout);
+        shaderBlob->GetBufferSize(), &inputLayout)
+        );
+    return hr;
 }
 
 void D3D11Utils::CreateHullShader(ComPtr<ID3D11Device>& device,
@@ -132,7 +138,7 @@ void D3D11Utils::CreateDomainShader(
         &domainShader);
 }
 
-void D3D11Utils::CreatePixelShader(ComPtr<ID3D11Device>& device,
+HRESULT D3D11Utils::CreatePixelShader(ComPtr<ID3D11Device>& device,
     const wstring& filename,
     ComPtr<ID3D11PixelShader>& pixelShader) {
     ComPtr<ID3DBlob> shaderBlob;
@@ -151,9 +157,11 @@ void D3D11Utils::CreatePixelShader(ComPtr<ID3D11Device>& device,
 
     CheckResult(hr, errorBlob.Get());
 
-    device->CreatePixelShader(shaderBlob->GetBufferPointer(),
+    hr = device->CreatePixelShader(shaderBlob->GetBufferPointer(),
         shaderBlob->GetBufferSize(), NULL,
         &pixelShader);
+    CheckResult(hr, errorBlob.Get());
+    return hr;
 }
 
 void D3D11Utils::CreateIndexBuffer(ComPtr<ID3D11Device>& device,

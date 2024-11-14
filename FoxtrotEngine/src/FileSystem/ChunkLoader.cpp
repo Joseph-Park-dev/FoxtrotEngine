@@ -203,8 +203,8 @@ std::pair<size_t, std::string> FileIOHelper::BeginDataPackLoad(std::ifstream& if
     std::string name = ExtractUntil(loadedDataPackKey, '<');
     size_t count = std::stoi(GetBracketedVal(loadedDataPackKey, '<', '>'));
 
-    std::cout << "Parsing data pack : " << name << '\n';
-    std::cout << name << '\n';
+    //std::cout << "Parsing data pack : " << name << '\n';
+    //std::cout << name << '\n';
 
     std::pair<size_t, std::string> result{ count, name };
     return result;
@@ -222,8 +222,8 @@ std::pair<size_t, std::string> FileIOHelper::BeginDataPackLoad(std::ifstream& if
 
     assert(name == dataPackKey);
 
-    std::cout << "Parsing data pack : " << name << '\n';
-    std::cout << name << '\n';
+    //std::cout << "Parsing data pack : " << name << '\n';
+    //std::cout << name << '\n';
 
     std::pair<size_t, std::string> result{ count, name };
     return result;

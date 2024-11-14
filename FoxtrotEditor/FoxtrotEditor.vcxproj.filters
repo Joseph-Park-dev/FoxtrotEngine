@@ -48,6 +48,9 @@
     <ClCompile Include="src\EditorScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\DebugGeometries.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Command.h">
@@ -86,6 +89,9 @@
     <ClInclude Include="src\EditorUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\DebugGeometries.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\imgui\misc\debuggers\imgui.gdb" />
@@ -108,5 +114,7 @@
     <FxCompile Include="assets\Shaders\BasicVertexShader.hlsl" />
     <FxCompile Include="assets\Shaders\ColorPixelShader.hlsl" />
     <FxCompile Include="assets\Shaders\ColorVertexShader.hlsl" />
+    <FxCompile Include="assets\Shaders\EditorDebugGeometryVS.hlsl" />
+    <FxCompile Include="assets\Shaders\EditorDebugGeometryPS.hlsl" />
   </ItemGroup>
 </Project>

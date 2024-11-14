@@ -4,6 +4,8 @@
 #include <wrl.h> // ComPtr
 #include <DirectXTex.h>
 
+#include "Math/FTMath.h"
+
 class FoxtrotRenderer;
 
 #define TEXTURE_FORMAT_SUPPORTED ".png, .jpeg"

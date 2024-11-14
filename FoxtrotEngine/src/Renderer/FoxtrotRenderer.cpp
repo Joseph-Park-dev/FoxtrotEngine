@@ -73,19 +73,23 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 		 D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
-	if (!CreateVertexShaderAndInputLayout(
-		VERTEX_SHADER_PATH, inputElements, mBasicVertexShader,
-		mBasicInputLayout))
-	{
-		return false;
-	}
-	if (!CreatePixelShader(PIXEL_SHADER_PATH, mBasicPixelShader))
-	{
-		return false;
-	}
+	DX::ThrowIfFailed(
+		D3D11Utils::CreateVertexShaderAndInputLayout(
+			mDevice,
+			VERTEX_SHADER_PATH, 
+			inputElements, 
+			mBasicVertexShader,
+			mBasicInputLayout)
+	);
 
-	/*mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(),
-	mDepthStencilView.Get());*/
+	DX::ThrowIfFailed(
+		D3D11Utils::CreatePixelShader(
+			mDevice,
+			PIXEL_SHADER_PATH, 
+			mBasicPixelShader
+		)
+	);
+
 	mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
 
 	mContext->VSSetShader(mBasicVertexShader.Get(), 0, 0);
@@ -493,72 +497,6 @@ void FoxtrotRenderer::CreateIndexBuffer(const std::vector<uint32_t>& indices,
 		m_indexBuffer.GetAddressOf());
 }
 
-bool FoxtrotRenderer::CreateVertexShaderAndInputLayout(
-	const std::wstring& filename,
-	const std::vector<D3D11_INPUT_ELEMENT_DESC>& inputElements,
-	ComPtr<ID3D11VertexShader>& vertexShader,
-	ComPtr<ID3D11InputLayout>& inputLayout) {
-
-	ComPtr<ID3DBlob> shaderBlob;
-	ComPtr<ID3DBlob> errorBlob;
-
-	UINT compileFlags = 0;
-#if defined(DEBUG) || defined(_DEBUG)
-	compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
-#endif
-
-	// 주의: 쉐이더의 시작점의 이름이 "main"인 함수로 지정
-	HRESULT hr = D3DCompileFromFile(filename.c_str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0",
-		compileFlags, 0, &shaderBlob, &errorBlob);
-
-	CheckResult(hr, errorBlob.Get());
-
-	HRESULT createVS = mDevice->CreateVertexShader(shaderBlob->GetBufferPointer(),
-							shaderBlob->GetBufferSize(), NULL,vertexShader.GetAddressOf());
-	if (FAILED(createVS))
-	{
-		LogString("Create Vertex Shader failed");
-		return false;
-	}
-	HRESULT createIptLayout = mDevice->CreateInputLayout(inputElements.data(),
-		UINT(inputElements.size()),
-		shaderBlob->GetBufferPointer(),
-		shaderBlob->GetBufferSize(), inputLayout.GetAddressOf());
-	if(FAILED(createIptLayout))
-	{
-		LogString("Create Input Layout failed");
-		return false;
-	}
-	return true;
-}
-
-bool FoxtrotRenderer::CreatePixelShader(const std::wstring& filename,
-	ComPtr<ID3D11PixelShader>& pixelShader) {
-	ComPtr<ID3DBlob> shaderBlob;
-	ComPtr<ID3DBlob> errorBlob;
-
-	UINT compileFlags = 0;
-#if defined(DEBUG) || defined(_DEBUG)
-	compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
-#endif
-
-	// 주의: 쉐이더의 시작점의 이름이 "main"인 함수로 지정
-	HRESULT hr = D3DCompileFromFile(filename.c_str(), 0, 0, "main", "ps_5_0",
-		compileFlags, 0, &shaderBlob, &errorBlob);
-
-	CheckResult(hr, errorBlob.Get());
-
-	HRESULT createPS = mDevice->CreatePixelShader(shaderBlob->GetBufferPointer(),
-		shaderBlob->GetBufferSize(), NULL,
-		pixelShader.GetAddressOf());
-	if (FAILED(createPS))
-	{
-		LogString("Create Pixel Shader failed");
-		return false;
-	}
-	return true;
-}
-
 FoxtrotRenderer::FoxtrotRenderer()
 	: mClearColor{0.0f,0.0f,0.0f,1.0f}
 	, mFillMode(FillMode::Solid)
@@ -570,39 +508,3 @@ void FoxtrotRenderer::RenderToTexture()
 	mRenderTexture->DrawOnTexture(mContext, mRenderTargetView, mDepthStencilView, this);
 }
 #endif // FOXTROT_EDITOR
-
-//void FoxtrotRenderer::DrawPrimitives()
-//{
-//	//PAINTSTRUCT ps;
-//	//HDC hdc = BeginPaint(hwnd, &ps);
-//	//for (size_t i = 0; i < mRegisteredPrimitive.size(); ++i)
-//	//{
-//	//	FTVector2 topLeft = mRegisteredPrimitive[i].first;
-//	//	FTVector2 bottomRight = mRegisteredPrimitive[i].second;
-//	//	HPEN pen = CreatePen(PS_DASH, 2, RGB(255, 0, 0));
-//	//	SelectObject(hdc, GetStockObject(NULL_BRUSH));
-//	//	(HPEN)SelectObject(hdc, pen);
-//	//	Rectangle(hdc, (int)topLeft.x, (int)topLeft.y, (int)bottomRight.x, (int)bottomRight.y);
-//	//	DeleteObject(pen);
-//	//}
-//	//EndPaint(hwnd, &ps);
-//	//mRegisteredPrimitive.clear();
-//	for (size_t i = 0; i < mRegisteredPrimitive.size(); ++i) {
-//		DirectX::FXMMATRIX world = mRegisteredPrimitive[i]->basicVertexConstantBufferData.model;
-//		DirectX::FXMMATRIX view = mRegisteredPrimitive[i]->basicVertexConstantBufferData.view;
-//		DirectX::FXMMATRIX projection = mRegisteredPrimitive[i]->basicVertexConstantBufferData.projection;
-//		mRegisteredPrimitive[i]->primitive->Draw(world, view, projection, DirectX::Colors::Red);
-//	}
-//}
-//
-//void FoxtrotRenderer::DrawRectangle(GeometricPrimitiveMesh* rect){
-//	std::vector<GeometricPrimitiveMesh*>::iterator iter =
-//		std::find(mRegisteredPrimitive.begin(), mRegisteredPrimitive.end(), rect);
-//	if (iter == mRegisteredPrimitive.end()) {
-//		mRegisteredPrimitive.push_back(rect);
-//	}
-//	else{
-//		(*iter)->basicVertexConstantBufferData = rect->basicVertexConstantBufferData;
-//	}
-//}
- // _DEBUG

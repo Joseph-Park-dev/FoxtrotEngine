@@ -6,9 +6,11 @@
 
 #include "Renderer/FoxtrotRenderer.h"
 #include "Core/TemplateFunctions.h"
+#include "Physics/Physics2D.h"
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
+#include "DebugGeometries.h"
 
 void RenderTextureClass::InitializeTexture(ComPtr<ID3D11Device>& device, int width, int height)
 {
@@ -55,6 +57,8 @@ void RenderTextureClass::DrawOnTexture(ComPtr<ID3D11DeviceContext>& context, Com
 
 	//EditorLayer::GetInstance()->DisplayEditorElements(renderer);
 	EditorSceneManager::GetInstance()->Render(renderer);
+	Physics2D::GetInstance()->Render();
+	DebugGeometries::GetInstance()->Render(renderer);
 
 	context->OMSetRenderTargets(1, renderTargetView.GetAddressOf(), depthStencilView.Get());
 }

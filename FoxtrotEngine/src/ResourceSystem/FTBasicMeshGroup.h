@@ -10,13 +10,20 @@
 class FTBasicMeshGroup : public FTResource
 {
 public:
+	void UpdateConstantBuffers(
+		ComPtr<ID3D11Device>& device,
+		ComPtr<ID3D11DeviceContext>& context
+	);
+	//void UpdateModelWorld(DirectX::SimpleMath::Matrix& modelToWorldRow);
+
+public:
 	virtual void Initialize(
 		std::vector<MeshData>& meshes,
 		ComPtr<ID3D11Device>& device,
 		ComPtr<ID3D11DeviceContext>& context
 	);
 	virtual void Update			 (float deltaTime) {};
-			void Render			 (ComPtr<ID3D11DeviceContext>& context);
+	virtual	void Render			 (ComPtr<ID3D11DeviceContext>& context);
 			void Render			 (ComPtr<ID3D11DeviceContext>& context, int meshIndex);
 
 public:
@@ -24,7 +31,14 @@ public:
 	ComPtr<ID3D11Buffer>&		GetPixelConstantBuffer()  { return mPixelConstantBuffer; }
 	BasicVertexConstantData&	GetVertexConstantData()   { return mBasicVertexConstantData; }
 	BasicPixelConstantData&		GetPixelConstantData()	  { return mBasicPixelConstantData; }
-	DirectX::SimpleMath::Matrix GetModelWorldRow()		  { return mModelWorldRow; }
+
+	ComPtr<ID3D11VertexShader>& GetVertexShader()	{ return mBasicVertexShader; }
+	ComPtr<ID3D11PixelShader>&	GetPixelShader()	{ return mBasicPixelShader; }
+	ComPtr<ID3D11InputLayout>&	GetInputLayout()	{ return mBasicInputLayout; }
+	ComPtr<ID3D11SamplerState>&	GetSamplerState()	{ return mSamplerState; }
+
+
+	// DirectX::SimpleMath::Matrix GetModelWorldRow()		  { return mModelWorldRow; }
 	FTTexture*					GetTexture()			  { return mTexture; }
 	int							GetMeshCount()			  { return mMeshes.size(); }
 	std::vector<Mesh*>&			GetMeshes()				  { return mMeshes; }
@@ -34,17 +48,11 @@ public:
 protected:
 			void InitializeConstantBuffer (ComPtr<ID3D11Device>& device);
 	virtual void InitializeMeshes		  (ComPtr<ID3D11Device>& device, std::vector<MeshData>& meshes);
-			void CreateShaders			  (ComPtr<ID3D11Device>& device);
-
-			void UpdateConstantBuffers(
-				ComPtr<ID3D11Device>& device,
-				ComPtr<ID3D11DeviceContext>& context
-			);
-			void UpdateModelWorld(DirectX::SimpleMath::Matrix& modelToWorldRow);
+	virtual	void CreateShaders			  (ComPtr<ID3D11Device>& device);
 
 private:
-	DirectX::SimpleMath::Matrix mModelWorldRow	 = DirectX::SimpleMath::Matrix();
-	DirectX::SimpleMath::Matrix mInvTransposeRow = DirectX::SimpleMath::Matrix();
+	//DirectX::SimpleMath::Matrix mModelWorldRow	 = DirectX::SimpleMath::Matrix();
+	//DirectX::SimpleMath::Matrix mInvTransposeRow = DirectX::SimpleMath::Matrix();
 
 	BasicVertexConstantData mBasicVertexConstantData;
 	BasicPixelConstantData	mBasicPixelConstantData;

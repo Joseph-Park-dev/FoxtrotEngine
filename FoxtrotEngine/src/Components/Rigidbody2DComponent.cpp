@@ -44,7 +44,12 @@ void Rigidbody2DComponent::Initialize(FTCore* coreInstance)
 void Rigidbody2DComponent::LateUpdate(float deltaTime)
 {
 	b2Vec2 position = b2Body_GetPosition(mBodyID);
+	b2Rot  rotation = b2Body_GetRotation(mBodyID);
+
 	GetOwner()->GetTransform()->SetWorldPosition(FTVector2(position.x, position.y));
+	float rotZ = b2Rot_GetAngle(rotation);
+	FTVector3 prevRot = GetOwner()->GetTransform()->GetRotation();
+	GetOwner()->GetTransform()->SetRotation(FTVector3(prevRot.x, prevRot.y, rotZ));
 }
 
 void Rigidbody2DComponent::LoadProperties(std::ifstream& ifs)

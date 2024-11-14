@@ -8,6 +8,11 @@
 #include "Physics/Ray.h"
 #include "Core/Timer.h"
 
+#ifdef FOXTROT_EDITOR
+#include "DebugGeometries.h"
+#endif // FOXTROT_EDITOR
+
+
 void Physics2D::ResetRayCasts()
 {
 	mRayCastHits.clear();
@@ -121,14 +126,9 @@ RayCastHit2D Physics2D::Raycast(FTVector2 origin, FTVector2 direction, float dis
 	return RayCastHit2D();
 }
 
-//RayCastHit2D Physics2D::Raycast(FTVector2 origin, FTVector2 direction, float distance, ActorGroup actor)
-//{
-//	FTVector2 rayDir = (direction - origin).Normalize() * distance;
-//	Physics::Ray* ray = new Physics::Ray(
-//		Camera2D::GetInstance()->ConvertWorldPosToScreen(origin),
-//		Camera2D::GetInstance()->ConvertWorldPosToScreen(origin + rayDir),
-//		actor
-//	);
-//	CollisionManager::GetInstance()->RegisterRay(ray);
-//	return RayCastHit2D();
-//}
+#ifdef FOXTROT_EDITOR
+void Physics2D::Render()
+{
+	b2World_Draw(mWorldID, DebugGeometries::GetInstance()->GetDebugDraw());
+}
+#endif // FOXTROT_EDITOR

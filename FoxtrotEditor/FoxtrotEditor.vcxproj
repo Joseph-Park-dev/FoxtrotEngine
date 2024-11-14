@@ -272,6 +272,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DebugGeometries.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\EditorChunkLoader.cpp" />
     <ClCompile Include="include\imgui\FileDialog\ImGuiFileDialog.cpp" />
@@ -285,6 +286,7 @@
     <ClCompile Include="src\RenderTextureClass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\DebugGeometries.h" />
     <ClInclude Include="src\EditorUtils.h" />
     <ClInclude Include="src\EditorChunkLoader.h" />
     <ClInclude Include="include\imgui\FileDialog\ImGuiFileDialog.h" />
@@ -326,6 +328,26 @@
     </FxCompile>
     <FxCompile Include="assets\Shaders\ColorVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="assets\Shaders\EditorDebugGeometryPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|Win32'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="assets\Shaders\EditorDebugGeometryVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|Win32'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

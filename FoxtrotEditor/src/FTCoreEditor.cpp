@@ -7,6 +7,7 @@
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
+#include "DebugGeometries.h"
 
 #include "Managers/KeyInputManager.h"
 #include "Core/FTCore.h"
@@ -49,6 +50,7 @@ void FTCoreEditor::InitSingletonManagers()
 	ResourceManager::GetInstance()->Initialize(GetGameRenderer());
 	EditorSceneManager::GetInstance()->Initialize();
 	EditorLayer::GetInstance();
+	DebugGeometries::GetInstance()->Initialize(this->GetInstance());
 }
 
 // Imgui forwawrd declaration
@@ -135,6 +137,7 @@ void FTCoreEditor::GenerateOutput()
 	else
 		EditorSceneManager::GetInstance()->EditorRender(GetGameRenderer());
 
+	DebugGeometries::GetInstance()->Render(GetGameRenderer());
 	EditorLayer::GetInstance()->Render(GetGameRenderer());
 	GetGameRenderer()->SwapChainPresent(1, 0);
 }

@@ -113,14 +113,6 @@ private:
     HRESULT CreateBlendState();
     HRESULT CreateTextureSampler();
 
-    bool CreateVertexShaderAndInputLayout(
-        const std::wstring& filename,
-        const std::vector<D3D11_INPUT_ELEMENT_DESC>& inputElements,
-        ComPtr<ID3D11VertexShader>& vertexShader,
-        ComPtr<ID3D11InputLayout>& inputLayout
-    );
-    bool CreatePixelShader(const std::wstring& filename, ComPtr<ID3D11PixelShader>& pixelShader);
-
 public:
     bool UpdateDepthBuffer(int width, int height);
     void CreateIndexBuffer(const std::vector<uint32_t>& indices, ComPtr<ID3D11Buffer>& m_indexBuffer);

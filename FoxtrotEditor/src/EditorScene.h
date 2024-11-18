@@ -14,6 +14,7 @@ public:
 public:
 	void UnfocusEditorElements();
 	void AddEditorElement();
+	void AddEditorElement(EditorElement* copied);
 	void AddEditorElement(Actor* actor);
 
 public:

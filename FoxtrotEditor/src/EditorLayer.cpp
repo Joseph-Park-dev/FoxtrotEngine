@@ -42,13 +42,14 @@ void EditorLayer::Update(float deltaTime)
 	ImGui::NewFrame();
 
 	ImGui::DockSpaceOverViewport();
-	mSaveKeyPressed    = ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_S);
-	mSaveAsKeyPressed  = ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_LeftShift | ImGuiKey::ImGuiKey_S);
-	mOpenKeyPressed	   = ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_O);
-	mConfirmKeyPressed = ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Enter);
-	mUndoKeyPressed	   = ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_Z);
-	mRedoKeyPressed    = ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey::ImGuiKey_Z);
-	mDeleteKeyPressed  = ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Delete);
+	mSaveKeyPressed			= ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_S);
+	mSaveAsKeyPressed		= ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_LeftShift | ImGuiKey::ImGuiKey_S);
+	mOpenKeyPressed			= ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_O);
+	mConfirmKeyPressed		= ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Enter);
+	mUndoKeyPressed			= ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_Z);
+	mRedoKeyPressed			= ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey::ImGuiKey_Z);
+	mDeleteKeyPressed		= ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Delete);
+	mDuplicateKeyPressed	= ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_D);
 
 	CommandHistory::GetInstance()->Update();
 	
@@ -85,8 +86,6 @@ void EditorLayer::DisplayViewport()
 	ID3D11ShaderResourceView* viewportTexture = renderer->GetRenderTexture()->GetShaderResourceView().Get();
 	ImVec2 viewportSize = ImVec2(renderer->GetRenderWidth(), renderer->GetRenderHeight());
 	ImGui::Image((ImTextureID)viewportTexture, viewportSize);
-
-	mDebugDrawList = ImGui::GetForegroundDrawList();
 
 	ImGui::End();
 }
@@ -305,12 +304,16 @@ void EditorLayer::DisplayHierarchyMenu()
 				size_t group = i / ((size_t)ActorGroup::END - 1);
 				size_t idx = i % ((size_t)ActorGroup::END - 1);
 				Actor* actor = scene->GetActorGroup(group)[idx];
-				dynamic_cast<EditorElement*>(actor)->SetIsFocused(true);
+				mFocusedEditorElement = dynamic_cast<EditorElement*>(actor);
+				mFocusedEditorElement->SetIsFocused(true);
 			}
 		}
 		ImGui::EndListBox();
 	}
-	//ResizeUIWindow(menuID);
+
+	if (mDuplicateKeyPressed)
+		EditorSceneManager::GetInstance()->GetEditorScene()
+			->AddEditorElement(mFocusedEditorElement);
 	ImGui::End();
 }
 

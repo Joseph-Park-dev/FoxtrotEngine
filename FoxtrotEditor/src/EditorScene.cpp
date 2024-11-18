@@ -95,6 +95,13 @@ void EditorScene::AddEditorElement()
 	editorElement->SetIsFocused(true);
 }
 
+void EditorScene::AddEditorElement(EditorElement* copied)
+{
+	EditorElement* editorElement = new EditorElement(copied, this);
+	std::string name = copied->GetName() + " copy " + std::to_string(this->GetActorCount());
+	editorElement->SetName(name);
+}
+
 void EditorScene::AddEditorElement(Actor* actor)
 {
 	UnfocusEditorElements();

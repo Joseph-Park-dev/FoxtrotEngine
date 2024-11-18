@@ -110,7 +110,6 @@ void EditorElement::OnMouseLButtonDown()
 
 void EditorElement::EditorUpdate(float deltaTime)
 {
-	LogVector2(GetTransform()->GetWorldPosition());
 	for (auto comp : GetComponents()) 
 		comp->EditorUpdate(deltaTime);
 }
@@ -137,6 +136,18 @@ EditorElement::EditorElement(Actor* actor, Scene* scene)
 	SetState(actor->GetState());
 	SetParent(actor->GetParent());
 	SetChildActors(actor->GetChildActors());
+}
+
+EditorElement::EditorElement(EditorElement* origin, Scene* scene)
+	: PanelUI(origin, scene)
+	, mActorGroupIdx((int)origin->GetActorGroup())
+	, mRotationModSpeed(1.0f)
+{
+	SetActorGroup(origin->GetActorGroup());
+	SetState(origin->GetState());
+	SetParent(origin->GetParent());
+	SetChildActors(origin->GetChildActors());
+	CopyComponents(origin);
 }
 
 void EditorElement::UpdateActorName()
@@ -267,5 +278,13 @@ void EditorElement::DisplayCompSelectionPopup()
 			if (ImGui::Selectable((*iter).first.c_str()))
 				(*iter).second(this, FTCoreEditor::GetInstance());
 		ImGui::EndPopup();
+	}
+}
+
+void EditorElement::CopyComponents(EditorElement* origin)
+{
+	for (size_t i = 0; i < origin->GetComponents().size(); ++i)
+	{
+		LogString(GetComponents()[i]->GetName());
 	}
 }

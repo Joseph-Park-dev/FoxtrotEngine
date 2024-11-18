@@ -67,16 +67,19 @@ private:
 	bool		mUndoKeyPressed;
 	bool		mRedoKeyPressed;
 	bool		mDeleteKeyPressed;
+	bool		mDuplicateKeyPressed;
+
+	// Copy+Paste related
+	EditorElement*	mFocusedEditorElement;
 
 	// Viewport related
-	ImDrawList* mDebugDrawList;
-	ImVec2		mSceneViewportPos;
-	ImVec2		mSceneViewportSize;
-	bool		mIsResizingViewport;
+	ImVec2			mSceneViewportPos;
+	ImVec2			mSceneViewportSize;
+	bool			mIsResizingViewport;
 
 	// UI event types
-	InfoType	mInfoType;
-	ErrorType	mErrorType;
+	InfoType		mInfoType;
+	ErrorType		mErrorType;
 
 private:
 	// After directX implementation

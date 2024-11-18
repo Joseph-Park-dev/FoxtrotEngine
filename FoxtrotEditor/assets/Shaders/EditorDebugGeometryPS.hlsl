@@ -3,7 +3,6 @@ struct PixelShaderInput
 {
     float4 pos : SV_POSITION;
     float3 color : COLOR;
-    float3 normal : NORMAL;
 };
 
 // SV_Target -> 결과가 render target 에 저장

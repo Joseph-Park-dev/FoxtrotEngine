@@ -57,7 +57,7 @@ void RenderTextureClass::DrawOnTexture(ComPtr<ID3D11DeviceContext>& context, Com
 
 	//EditorLayer::GetInstance()->DisplayEditorElements(renderer);
 	EditorSceneManager::GetInstance()->Render(renderer);
-	Physics2D::GetInstance()->Render();
+	EditorSceneManager::GetInstance()->EditorRender(renderer);
 	DebugGeometries::GetInstance()->Render(renderer);
 
 	context->OMSetRenderTargets(1, renderTargetView.GetAddressOf(), depthStencilView.Get());

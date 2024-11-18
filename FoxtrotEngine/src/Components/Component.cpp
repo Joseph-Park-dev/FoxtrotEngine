@@ -102,9 +102,9 @@ void Component::LoadProperties(nlohmann::ordered_json& in)
 void Component::EditorUIUpdate()
 {
 }
-void Component::RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter)
-{
-}
+void Component::UpdateDebugGeometries(FTVector3 pos, FTVector3 rot, FTVector3 scale, Camera* cameraInst)
+{}
+
 void Component::OnConfirmUpdate()
 {
 }

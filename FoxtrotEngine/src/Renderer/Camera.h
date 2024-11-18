@@ -38,9 +38,9 @@ public:
 private:
 	FoxtrotRenderer* mRenderer;
 	
-	Vector3 mPosition	= Vector3(0.0f, 0.4f, 0.0f);
+	Vector3 mPosition	= Vector3(0.0f, 0.0f, 0.0f);
 	Vector3 mViewDir	= Vector3(0.0f, 0.0f, 1.0f);
-	Vector3 mUpDir		= Vector3(0.0f, 1.0f, 0.0f); // 이번 예제에서는 고정
+	Vector3 mUpDir		= Vector3(0.0f, 1.0f, 0.0f);
 	Vector3 mRightDir	= Vector3(1.0f, 0.0f, 0.0f);
 
 	// roll, pitch, yaw

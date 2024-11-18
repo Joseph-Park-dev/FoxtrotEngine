@@ -7,9 +7,7 @@
 
 #ifdef FOXTROT_EDITOR
 #include "CommandHistory.h"
-#include "DebugGeometries.h"
-
-// Used to access primitive geometries
+// Used to access Debug geometries
 #include "ResourceSystem/GeometryGenerator.h"
 #endif
 
@@ -40,7 +38,8 @@ void BoxCollider2DComponent::Initialize(FTCore* coreInstance)
 	Component::Initialize(coreInstance);
 
 #ifdef FOXTROT_EDITOR
-	DebugGeometries::GetInstance()->AddPolygons(GeometryGenerator::MakeSquare(0.1f), &mScale);
+	mDebugRect = new FTRectangle;
+	mDebugRect->Initialize(coreInstance->GetGameRenderer());
 #endif // FOXTROT_EDITOR
 }
 
@@ -48,6 +47,11 @@ BoxCollider2DComponent::BoxCollider2DComponent(Actor* owner, int drawOrder, int 
 	: Collider2DComponent(owner, drawOrder, updateOrder)
 	, mScale(FTVector2(10.f,10.f))
 {
+}
+
+BoxCollider2DComponent::~BoxCollider2DComponent()
+{
+	mDebugRect = nullptr;
 }
 
 void BoxCollider2DComponent::SaveProperties(std::ofstream& ofs)
@@ -62,13 +66,24 @@ void BoxCollider2DComponent::LoadProperties(std::ifstream& ifs)
 	Collider2DComponent::LoadProperties(ifs);
 }
 
+#ifdef FOXTROT_EDITOR
 void BoxCollider2DComponent::EditorUpdate(float deltaTime)
 {
+	Transform* transform = GetOwner()->GetTransform();
+	FTVector3 pos = transform->GetWorldPosition();
+	pos = pos * FTVector3(1.f, -1.f, 1.f);
+	FTVector3 rot = transform->GetRotation();
+	FTVector3 scale = FTVector3(
+		transform->GetScale().x * mScale.x,
+		transform->GetScale().y * mScale.y,
+		1.f
+	);
+
+	UpdateDebugGeometries(pos, rot, scale, Camera::GetInstance());
 }
 
 void BoxCollider2DComponent::EditorRender(FoxtrotRenderer* renderer)
-{
-}
+{}
 
 void BoxCollider2DComponent::EditorUIUpdate()
 {
@@ -76,22 +91,20 @@ void BoxCollider2DComponent::EditorUIUpdate()
 	UpdateScale();
 }
 
-void BoxCollider2DComponent::RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter)
+void BoxCollider2DComponent::UpdateDebugGeometries(FTVector3 pos, FTVector3 rot, FTVector3 scale, Camera* cameraInst)
 {
-	FTVector2 ownerPos = GetOwner()->GetTransform()->GetWorldPositionYInverted();
-	FTVector2 min = screenCenter + ownerPos + GetOffsetPos() - (mScale / 2);
-	FTVector2 max = screenCenter + ownerPos + GetOffsetPos() + (mScale / 2);
-	imDrawList->AddRect(
-		min.GetImVec2(),
-		max.GetImVec2(),
-		ImGui::ColorConvertFloat4ToU32(ImVec4(255.f, 0.f, 0.f, 255.f)),
-		0.0f,
-		0,
-		3.0f
+	/*float NDC = Camera::GetInstance()->GetNDCRatio();
+	pos *= NDC;
+	scale *= NDC;*/
+
+	mDebugRect->Update(
+		pos,
+		rot,
+		scale,
+		Camera::GetInstance()
 	);
 }
 
-#ifdef FOXTROT_EDITOR
 void BoxCollider2DComponent::UpdateScale()
 {
 	FTVector2 updatedVal = GetScale();

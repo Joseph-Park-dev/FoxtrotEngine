@@ -3,6 +3,10 @@
 
 #ifdef FOXTROT_EDITOR
 #include "FTCoreEditor.h"
+
+#include <nlohmann/json.hpp>
+
+#include "Renderer/Camera.h"
 #endif
 
 class Actor;
@@ -12,10 +16,6 @@ class KeyInputManager;
 
 #define DEFAULT_DRAWORDER 100
 #define DEFAULT_UPDATEORDER 100
-
-#ifdef FOXTROT_EDITOR
-#include <nlohmann/json.hpp>
-#endif // FOXTROT_EDITOR
 
 class Component
 {
@@ -78,13 +78,18 @@ public:
 	// 
 	// Renderer dependent components, 
 	// (such as MeshRendererComponent, SpriteRendererComponent, etc.)
-	// usually use FTCore level Update() & Render().
+	// usually use FTCore Update() & Render().
 	virtual void EditorUpdate(float deltaTime) {};
 	virtual void EditorRender(FoxtrotRenderer* renderer) {};
 
 public:
 	virtual void EditorUIUpdate();
-	virtual void RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter);
+	virtual void UpdateDebugGeometries(
+		FTVector3 pos,
+		FTVector3 rot,
+		FTVector3 scale,
+		Camera* cameraInst
+	);
 
 public:
 	template <class T>

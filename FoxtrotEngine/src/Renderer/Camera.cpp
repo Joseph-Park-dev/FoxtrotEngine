@@ -8,6 +8,7 @@
 
 #ifdef FOXTROT_EDITOR
 #include "CommandHistory.h"
+#include "EditorLayer.h"
 #endif // FOXTROT_EDITOR
 
 void Camera::Initialize(FoxtrotRenderer* renderer)
@@ -44,12 +45,16 @@ Matrix Camera::GetViewRow()
 
 Matrix Camera::GetProjRow()
 {
+	float unitsPerPixel = 1.f/35.5f; // 1 unit = 100 pixels
+	float worldWidth = mRenderer->GetRenderWidth() * unitsPerPixel;
+	float worldHeight = mRenderer->GetRenderHeight() * unitsPerPixel;
+
 	return mViewType == Viewtype::Perspective
 		? DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(mProjFOVAngleY),
 			mAspect, mNearZ, mFarZ)
 		: DirectX::XMMatrixOrthographicOffCenterLH(
-			-mAspect, mAspect, 
-			-1, 1, 
+			0.0f, worldWidth, 
+			worldHeight, 0.0f, 
 			mNearZ, mFarZ
 		);
 }

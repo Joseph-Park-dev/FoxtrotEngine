@@ -72,20 +72,20 @@ HRESULT D3D11Utils::CreateVertexShaderAndInputLayout(
     // D3D_COMPILE_STANDARD_FILE_INCLUDE 추가: 쉐이더에서 include 사용
     HRESULT hr = D3DCompileFromFile(
         filename.c_str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main",
-        "vs_5_0", compileFlags, 0, &shaderBlob, &errorBlob);
+        "vs_5_0", compileFlags, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
 
     CheckResult(hr, errorBlob.Get());
 
     DX::ThrowIfFailed(
         device->CreateVertexShader(shaderBlob->GetBufferPointer(),
         shaderBlob->GetBufferSize(), NULL,
-        &vertexShader)
+        vertexShader.GetAddressOf())
     );
 
     DX::ThrowIfFailed(
     device->CreateInputLayout(inputElements.data(), UINT(inputElements.size()),
         shaderBlob->GetBufferPointer(),
-        shaderBlob->GetBufferSize(), &inputLayout)
+        shaderBlob->GetBufferSize(), inputLayout.GetAddressOf())
         );
     return hr;
 }

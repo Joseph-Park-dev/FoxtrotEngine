@@ -18,6 +18,7 @@
 #include "RenderTextureClass.h"
 #include "EditorSceneManager.h"
 #include "EditorScene.h"
+#include "DebugGeometries.h"
 
 #include "Core/FTCore.h"
 #include "Managers/SceneManager.h"
@@ -51,7 +52,6 @@ void EditorLayer::Update(float deltaTime)
 
 	CommandHistory::GetInstance()->Update();
 	
-	DisplayViewport();
 	DisplayFileMenu();
 	DisplayHierarchyMenu();
 	DisplayResourceMenu();
@@ -60,6 +60,8 @@ void EditorLayer::Update(float deltaTime)
 	//ApplyCommandHistory();
 	DisplayInfoMessage();
 	DisplayErrorMessage();
+
+	DisplayViewport();
 	ImGui::EndFrame();
 }
 
@@ -80,9 +82,6 @@ void EditorLayer::DisplayViewport()
 		//renderer->UpdateDepthBuffer(mSceneViewportSize.x, mSceneViewportSize.y);
 		mIsResizingViewport = false;
 	}
-
-	renderer->RenderToTexture();
-
 	ID3D11ShaderResourceView* viewportTexture = renderer->GetRenderTexture()->GetShaderResourceView().Get();
 	ImVec2 viewportSize = ImVec2(renderer->GetRenderWidth(), renderer->GetRenderHeight());
 	ImGui::Image((ImTextureID)viewportTexture, viewportSize);
@@ -161,6 +160,7 @@ void EditorLayer::DisplayFileMenu()
 				if (!mCurrFilePath.empty())
 				{
 					EditorChunkLoader::GetInstance()->SaveChunk(mCurrFilePath);
+					DebugGeometries::GetInstance()->DeleteAll();
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 					ResourceManager::GetInstance()->DeleteAll();
 					ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
@@ -180,6 +180,7 @@ void EditorLayer::DisplayFileMenu()
 				if (!mCurrFilePath.empty())
 				{
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(false);
+					DebugGeometries::GetInstance()->DeleteAll();
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 					ResourceManager::GetInstance()->DeleteAll();
 					ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());

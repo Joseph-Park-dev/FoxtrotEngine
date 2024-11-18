@@ -73,10 +73,6 @@ public:
 
 public:
 	virtual	void EditorUIUpdate() override;
-	virtual	void RenderDebugGeometries(
-				ImDrawList* imDrawList, 
-				FTVector2 screenCenter
-			) = 0;
 
 private:
 	void UpdateOffsetPos();

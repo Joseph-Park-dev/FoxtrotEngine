@@ -63,7 +63,7 @@ bool MeshRendererComponent::InitializeMesh(UINT key)
 	return mMeshGroup != nullptr;
 }
 
-bool MeshRendererComponent::InitializeMesh(MeshData meshData)
+bool MeshRendererComponent::InitializeMesh(MeshData& meshData)
 {
 	std::vector<MeshData> meshes = { meshData };
 	mMeshGroup->Initialize(meshes, mRenderer->GetDevice(), mRenderer->GetContext());
@@ -128,8 +128,8 @@ void MeshRendererComponent::UpdateConstantBufferModel(Transform* transform){
 	int dir = transform->GetCurrentDirection();
 	DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x * dir, scale.y, scale.z);
 	FTVector3 worldPos = FTVector3(
-		transform->GetWorldPosition().x * Camera::GetInstance()->GetNDCRatio(),
-		transform->GetWorldPosition().y * Camera::GetInstance()->GetNDCRatio(),
+		transform->GetWorldPosition().x,
+		-transform->GetWorldPosition().y,
 		transform->GetWorldPosition().z
 	);
 	Matrix model =

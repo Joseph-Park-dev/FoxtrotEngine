@@ -59,7 +59,7 @@ public:
 
 public:
 	virtual void EditorUIUpdate() override;
-			void RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter) override;
+	//		void RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter) override;
 
 
 protected:

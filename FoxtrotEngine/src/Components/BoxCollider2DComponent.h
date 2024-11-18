@@ -1,6 +1,11 @@
 #pragma once
 #include "Components/Collider2DComponent.h"
 
+#ifdef FOXTROT_EDITOR
+#include "FTShape.h"
+#endif // FOXTROT_EDITOR
+
+
 class BoxCollider2DComponent :
     public Collider2DComponent
 {
@@ -21,6 +26,7 @@ public:
 		int drawOrder = DEFAULT_DRAWORDER,
 		int updateOrder = DEFAULT_UPDATEORDER
 	);
+	~BoxCollider2DComponent() override;
 
 private:
 	FTVector2 mScale;
@@ -36,13 +42,17 @@ public:
 
 public:
 			void EditorUIUpdate() override;
-			void RenderDebugGeometries(
-				ImDrawList* imDrawList,
-				FTVector2 screenCenter
+			void UpdateDebugGeometries(
+				FTVector3 pos, 
+				FTVector3 rot, 
+				FTVector3 scale, 
+				Camera* cameraInst
 			) override;
+
+private:
+	FTRectangle* mDebugRect;
 
 private:
 	void UpdateScale();
 #endif // FOXTROT_EDITOR
 };
-

@@ -23,6 +23,7 @@
 #include <imgui.h>
 #include "EditorLayer.h"
 #include "RenderTextureClass.h"
+#include "DebugGeometries.h"
 #endif // FOXTROT_EDITOR
 
 FoxtrotRenderer* FoxtrotRenderer::CreateRenderer(HWND window, int width, int height)
@@ -412,13 +413,6 @@ HRESULT FoxtrotRenderer::CreateBlendState()
 
 	return mDevice->CreateBlendState(&omDesc, mBlendState.GetAddressOf());
 }
-
-//bool FoxtrotRenderer::ImportTextures()
-//{
-//	if(!mWallTexture.CreateTexture("./Assets/Asteroid.png", mDevice))
-//		return false;
-//	return true;
-//}
 
 HRESULT FoxtrotRenderer::CreateTextureSampler()
 {

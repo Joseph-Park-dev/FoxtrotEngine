@@ -131,18 +131,6 @@ void EditorScene::EditorRender(FoxtrotRenderer* renderer)
 	mIsUpdatingActors = false;
 }
 
-void EditorScene::RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter)
-{
-	std::vector<Actor*>* actors = GetActors();
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
-	{
-		for (size_t j = 0; j < actors[i].size(); ++j)
-		{
-			EditorElement* ele = dynamic_cast<EditorElement*>(actors[i][j]);
-			ele->RenderDebugGeometries(imDrawList, screenCenter);
-		}
-	}
-}
 
 EditorScene::EditorScene()
 	: Scene()

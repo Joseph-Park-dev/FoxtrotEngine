@@ -131,9 +131,6 @@ void Collider2DComponent::EditorUIUpdate()
 	UpdateOffsetPos();
 }
 
-void Collider2DComponent::RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter)
-{}
-
 void Collider2DComponent::UpdateOffsetPos()
 {
 	FTVector2 updatedVal = GetOffsetPos();

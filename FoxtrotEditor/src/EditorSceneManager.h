@@ -24,9 +24,6 @@ public:
 	virtual void ProcessEvent();
 
 public:
-	void RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter);
-
-public:
 	EditorScene* GetEditorScene();
 
 private:

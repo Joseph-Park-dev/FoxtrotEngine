@@ -272,8 +272,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\DebugGeometries.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\FTShape.cpp" />
+    <ClCompile Include="src\DebugGeometries.cpp" />
     <ClCompile Include="src\EditorChunkLoader.cpp" />
     <ClCompile Include="include\imgui\FileDialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="src\Command.cpp" />
@@ -286,6 +287,7 @@
     <ClCompile Include="src\RenderTextureClass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\FTShape.h" />
     <ClInclude Include="src\DebugGeometries.h" />
     <ClInclude Include="src\EditorUtils.h" />
     <ClInclude Include="src\EditorChunkLoader.h" />

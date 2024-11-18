@@ -28,10 +28,10 @@ MeshData GeometryGenerator::MakeSquare() {
     std::vector<Vector2> texcoords; // 텍스춰 좌표
 
     // 앞면
-    positions.push_back(Vector3(-1.0f, 1.0f, 0.0f));
-    positions.push_back(Vector3(1.0f, 1.0f, 0.0f));
-    positions.push_back(Vector3(1.0f, -1.0f, 0.0f));
-    positions.push_back(Vector3(-1.0f, -1.0f, 0.0f));
+    positions.push_back(Vector3(-0.5f, 0.5f, 0.0f));
+    positions.push_back(Vector3(0.5f, 0.5f, 0.0f));
+    positions.push_back(Vector3(0.5f, -0.5f, 0.0f));
+    positions.push_back(Vector3(-0.5f, -0.5f, 0.0f));
     colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
     colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
     colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
@@ -71,10 +71,10 @@ MeshData GeometryGenerator::MakeSquare(float scale) {
     std::vector<Vector2> texcoords; // 텍스춰 좌표
 
     // 앞면
-    positions.push_back(Vector3(-1.0f, 1.0f, 0.0f) * scale);
-    positions.push_back(Vector3(1.0f, 1.0f, 0.0f) * scale);
-    positions.push_back(Vector3(1.0f, -1.0f, 0.0f) * scale);
-    positions.push_back(Vector3(-1.0f, -1.0f, 0.0f) * scale);
+    positions.push_back(Vector3(-0.5f, 0.5f, 0.0f) * scale);
+    positions.push_back(Vector3(0.5f, 0.5f, 0.0f) * scale);
+    positions.push_back(Vector3(0.5f, -0.5f, 0.0f) * scale);
+    positions.push_back(Vector3(-0.5f, -0.5f, 0.0f) * scale);
     colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
     colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
     colors.push_back(Vector3(0.0f, 0.0f, 1.0f));

@@ -9,6 +9,7 @@
 #include "Core/TemplateFunctions.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/D3D11Utils.h"
+#include "Renderer/Camera.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
 
@@ -20,7 +21,10 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 
 	// Add primitive geometries as resources
 	mMapPrimitives.insert(
-		std::pair(ChunkKeys::PRIMITIVE_SQUARE, GeometryGenerator::MakeSquare())
+		std::pair(
+			ChunkKeys::PRIMITIVE_SQUARE,
+			GeometryGenerator::MakeSquare()
+		)
 	);
 }
 

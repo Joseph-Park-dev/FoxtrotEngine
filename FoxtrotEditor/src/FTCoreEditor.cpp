@@ -50,7 +50,7 @@ void FTCoreEditor::InitSingletonManagers()
 	ResourceManager::GetInstance()->Initialize(GetGameRenderer());
 	EditorSceneManager::GetInstance()->Initialize();
 	EditorLayer::GetInstance();
-	DebugGeometries::GetInstance()->Initialize(this->GetInstance());
+	DebugGeometries::GetInstance()->Initialize(GetGameRenderer());
 }
 
 // Imgui forwawrd declaration
@@ -113,6 +113,7 @@ void FTCoreEditor::UpdateGame()
 	if (mIsUpdatingGame)
 	{
 		EditorSceneManager::GetInstance()->Update(deltaTime);
+		EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
 		Physics2D::GetInstance()->Update();
 	}
 	else
@@ -132,12 +133,7 @@ void FTCoreEditor::GenerateOutput()
 	}
 	UpdateWindow(GetWindow());
 
-	if (mIsUpdatingGame)
-		EditorSceneManager::GetInstance()->Render(GetGameRenderer());
-	else
-		EditorSceneManager::GetInstance()->EditorRender(GetGameRenderer());
-
-	DebugGeometries::GetInstance()->Render(GetGameRenderer());
+	GetGameRenderer()->RenderToTexture();
 	EditorLayer::GetInstance()->Render(GetGameRenderer());
 	GetGameRenderer()->SwapChainPresent(1, 0);
 }

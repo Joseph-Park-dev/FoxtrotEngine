@@ -29,7 +29,6 @@ public:
 public:
 			void UpdateUI();
 			void RenderUI(FoxtrotRenderer* renderer);
-			void RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter);
 
 public:
 	EditorElement(Scene* scene);

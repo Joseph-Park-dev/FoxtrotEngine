@@ -55,14 +55,6 @@ void EditorElement::RenderUI(FoxtrotRenderer* renderer)
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
-void EditorElement::RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter)
-{
-	for (auto comp : GetComponents()) 
-	{
-		comp->RenderDebugGeometries(imDrawList, screenCenter);
-	}
-}
-
 void EditorElement::OnMouseLButtonClicked()
 {
 	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
@@ -118,6 +110,7 @@ void EditorElement::OnMouseLButtonDown()
 
 void EditorElement::EditorUpdate(float deltaTime)
 {
+	LogVector2(GetTransform()->GetWorldPosition());
 	for (auto comp : GetComponents()) 
 		comp->EditorUpdate(deltaTime);
 }

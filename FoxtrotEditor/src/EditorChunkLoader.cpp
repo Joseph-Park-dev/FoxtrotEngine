@@ -140,6 +140,7 @@ void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
         FileIOHelper::BeginDataPackLoad(ifs);
         EditorElement* element = new EditorElement(scene);
         element->LoadProperties(ifs);
-        element->LoadComponents(ifs, FTCoreEditor::GetInstance());
+        element->LoadComponents(ifs);
+        element->Initialize(FTCoreEditor::GetInstance());
     }
 }

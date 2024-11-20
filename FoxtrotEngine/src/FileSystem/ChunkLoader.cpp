@@ -117,7 +117,7 @@ Actor* ChunkLoader::LoadIndividualActor(std::ifstream& ifs, Scene* currScene)
 {
     Actor* actor = new Actor(currScene);
     actor->LoadProperties(ifs);
-    actor->LoadComponents(ifs, FTCore::GetInstance());
+    actor->LoadComponents(ifs);
     return actor;
 }
 

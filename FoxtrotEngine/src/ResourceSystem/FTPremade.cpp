@@ -90,16 +90,14 @@ void FTPremade::UpdateUI()
 	}
 	if (ImGui::BeginPopupModal("EditPremade"))
 	{
-		EditorElement dummyForUI(mOrigin);
 		if (mOrigin)
 		{
+			EditorElement dummyForUI = EditorElement(mOrigin);
 			dummyForUI.SetIsFocused(true);
 			dummyForUI.UpdateUI(true);
 			dummyForUI.CloneTo(mOrigin);
-		}
-		if (ImGui::Button("Save"))
-		{
-			Save(&dummyForUI);
+			if (ImGui::Button("Save"))
+				Save(&dummyForUI);
 		}
 		if (ImGui::Button("Close"))
 		{

@@ -38,10 +38,11 @@ public:
 public:
 	Component(Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
 	Component(const Component& origin);
+	Component(const Component* origin);
 	virtual ~Component();
 	// Returns new object with copied values
 	// (Needs to be distinguished with copy constructor)
-	virtual void CloneTo(Actor* actor);
+	virtual void CloneTo(Actor* actor) {};
 
 private:
 	Actor*	mOwner;

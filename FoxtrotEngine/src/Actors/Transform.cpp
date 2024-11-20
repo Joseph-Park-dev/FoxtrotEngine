@@ -53,6 +53,7 @@ Transform::Transform(Transform & origin)
 	, mLocalPosition	(origin.mLocalPosition)
 	, mScale			(origin.mScale)
 	, mRotation			(origin.mRotation)
+	, mCurrentDirection	(origin.mCurrentDirection)
 {}
 
 FTVector3 Transform::ConvertRadToDegree(FTVector3 radianRot)

@@ -138,22 +138,6 @@ void SpriteRendererComponent::EditorUIUpdate()
 	OnConfirmUpdate();
 }
 
-//void SpriteRendererComponent::RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter)
-//{
-//	/*FTVector2 ownerPos = GetOwner()->GetTransform()->GetWorldPositionYInverted();
-//	FTVector2 scale = GetTexture()->GetTexScale() * Camera::GetInstance()->GetNDCRatio();
-//	FTVector2 min = screenCenter + ownerPos - (scale / 2);
-//	FTVector2 max = screenCenter + ownerPos + (scale / 2);
-//	imDrawList->AddRect(
-//		min.GetImVec2(),
-//		max.GetImVec2(),
-//		ImGui::ColorConvertFloat4ToU32(ImVec4(0.f, 0.f, 255.f, 255.f)),
-//		0.0f,
-//		0,
-//		3.0f
-//	);*/
-//}
-
 void SpriteRendererComponent::OnConfirmUpdate()
 {
 	if (ImGui::Button("Update"))
@@ -164,8 +148,16 @@ void SpriteRendererComponent::UpdateSprite()
 {
 	std::string currentSprite = "No sprite has been assigned";
 	if (GetTexKey() != VALUE_NOT_ASSIGNED)
+	{
 		currentSprite =
 			"Current sprite : \n" + ResourceManager::GetInstance()->GetLoadedTexture(GetTexKey())->GetRelativePath();
+		if (GetTexture())
+		{
+			ImVec2 size = ImVec2(100, 100);
+			ImGui::Image((ImTextureID)GetTexture()->GetResourceView().Get(), size);
+		}
+	}
+		
 	ImGui::Text(currentSprite.c_str());
 
 	if (ImGui::Button("Select Sprite"))

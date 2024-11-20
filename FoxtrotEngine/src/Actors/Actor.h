@@ -8,6 +8,10 @@
 #include "Core/FTCore.h"
 #include "Actors/ActorGroup.h"
 
+#ifdef FOXTROT_EDITOR
+class EditorElement;
+#endif // FOXTROT_EDITOR
+
 class Transform;
 class SpriteRendererComponent;
 class Collider2DComponent;
@@ -33,42 +37,43 @@ public:
 		actor->SetParent(this);
 		mChild.emplace_back(actor);
 	}
-	void AddComponent(class Component* component);
-	void RemoveComponent(class Component* component);
+	void AddComponent(Component* component);
+	void RemoveComponent(Component* component);
+	void RemoveAllComponents();
 
-protected:
-	virtual void OnCollisionEnter(Collider2DComponent* _pOther);
-	virtual void OnCollisionStay(Collider2DComponent* _pOther);
-	virtual void OnCollisionExit(Collider2DComponent* _pOther);
-	virtual void OnRayEnter();
-	friend class Collider2DComponent;
+public:
+	void CopyTransformFrom(Actor& origin);
+	void CopyComponentsFrom(Actor& origin);
+	void CopyChildObject(Actor& origin);
+
+	void CopyTransformFrom(Actor* origin);
+	void CopyComponentsFrom(Actor* origin);
+	void CopyChildObject(Actor* origin);
 
 public:
 	// Getters/Setters
-	ActorGroup	  GetActorGroup() const	  { return mActorGroup; }
-	std::string   GetName()				  { return mName; }
-	std::string&  GetNameRef()			  { return mName; }
-	State		  GetState()	  const   { return mState; }
+	ActorGroup	  GetActorGroup() const			{ return mActorGroup; }
+	std::string   GetName()		  const			{ return mName; }
+	std::string&  GetNameRef()					{ return mName; }
+	State		  GetState()	  const			{ return mState; }
 	std::string	  GetStateStr()	  const;
-	State&		  GetStateRef()	  		  { return mState; }
-	bool		  IsActive()	  const	  { return mState == State::EActive; }
-	bool		  IsDead()		  const   { return mState == State::EDead; }
-	Transform*    GetTransform()  const	  { return mTransform; }
-	Actor*		  GetParent()	  const	  { return mParent; }
-	std::vector<Component*>& GetComponents()  { return mComponents; }
-	std::vector<Actor*>&     GetChildActors() { return mChild; }
-	unsigned int  GetID()		{ return mID; }
-	static void   ResetNextID() { g_NextID = 0; }
+	State&		  GetStateRef()	  				{ return mState; }
+	bool		  IsActive()	  const			{ return mState == State::EActive; }
+	bool		  IsDead()		  const			{ return mState == State::EDead; }
+	Transform*    GetTransform()  const			{ return mTransform; }
+	Actor*		  GetParent()	  const			{ return mParent; }
+	std::vector<Component*>& GetComponents()	{ return mComponents; }
+	std::vector<Actor*>&     GetChildActors()	{ return mChild; }
+	UINT		  GetID()		  const			{ return mID; }
 
-	void		  SetName(std::string name)			{ mName = name; }
-	void		  SetState(State state)				{ mState = state; }
-	void		  SetState(std::string state);
-	void		  SetActorGroup(ActorGroup group)	{ mActorGroup = group; }
-	void		  SetParent(Actor* parent)			{ mParent = parent; }
-	void		  SetTransform(Transform* transform){ mTransform = transform; }
-	// Shallow copy Component objects -> deep copy pointers
-	void		  SetComponents(std::vector<Component*>& components) { mComponents = components; }
-	void		  SetChildActors(std::vector<Actor*>& children)  { mChild = children; }
+	void		  SetName		 (std::string name)						{ mName = name; }
+	void		  SetState		 (State state)							{ mState = state; }
+	void		  SetState		 (std::string state);
+	void		  SetActorGroup	 (ActorGroup group)						{ mActorGroup = group; }
+	void		  SetParent		 (Actor* parent)						{ mParent = parent; }
+	void		  SetTransform	 (Transform* transform)					{ mTransform = transform; }
+	void		  SetComponents	 (std::vector<Component*>& components)	{ mComponents = components; }
+	void		  SetChildActors (std::vector<Actor*>& children)		{ mChild = children; }
 
 	template<class T>
 	T* GetComponent()
@@ -83,15 +88,8 @@ public:
 		return nullptr;
 	};
 
-protected:
-	void CopyTransformFrom(Actor& origin);
-	void CopyComponentsFrom(Actor& origin);
-
-	void CopyTransformFrom(Actor* origin);
-	void CopyComponentsFrom(Actor* origin);
-
 public:
-	virtual void Initialize		()					{};
+	virtual void Initialize		(FTCore* coreInst);
 	virtual void UpdateActor	(float deltaTime)	{};
 	virtual void LateUpdateActor(float deltaTime)	{};
 	virtual void RenderActor	(FoxtrotRenderer* renderer){};
@@ -103,24 +101,36 @@ public:
 	virtual void RenderComponents	 (FoxtrotRenderer* renderer);
 
 public:
+	// Constructor used for FTPremade origin,
+	// not recommended to use outside of FTPremade
+	Actor();
+	Actor(Actor* origin); 
+
+	// Use this when adding Actors to a scene.
 	Actor(Scene* scene);
-	// Copy Constructor
+	// Copy Constructors
 	Actor(Actor& origin, Scene* scene);
 	Actor(Actor* origin, Scene* scene);
 	virtual ~Actor();
 
-	virtual Actor* Clone() { return nullptr; }
+	virtual void CloneTo(Actor* target);
+
+protected:
+	virtual void OnCollisionEnter(Collider2DComponent* _pOther);
+	virtual void OnCollisionStay(Collider2DComponent* _pOther);
+	virtual void OnCollisionExit(Collider2DComponent* _pOther);
+	virtual void OnRayEnter();
+	friend class Collider2DComponent;
 
 private:
-	static int						g_NextID;
-		   std::string				mName;
-		   int						mID;
-		   ActorGroup				mActorGroup;
-		   State					mState;
-		   Transform*				mTransform;
-		   std::vector<Component*>	mComponents;
-		   Actor*					mParent;
-		   std::vector<Actor*>		mChild;
+	std::string				mName;
+	int						mID;
+	ActorGroup				mActorGroup;
+	State					mState;
+	Transform*				mTransform;
+	std::vector<Component*>	mComponents;
+	Actor*					mParent;
+	std::vector<Actor*>		mChild;
 
 public:
 	void SaveProperties(std::ofstream& ofs);

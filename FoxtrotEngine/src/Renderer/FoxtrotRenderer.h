@@ -16,8 +16,8 @@
 #include "ResourceSystem/Mesh.h"
 #include "Core\TemplateFunctions.h"
 
-#define VERTEX_SHADER_PATH L"assets/Shaders/ColorVertexShader.hlsl"
-#define PIXEL_SHADER_PATH L"assets/Shaders/ColorPixelShader.hlsl"
+#define VERTEX_SHADER_PATH L"Assets/Shaders/ColorVertexShader.hlsl"
+#define PIXEL_SHADER_PATH L"Assets/Shaders/ColorPixelShader.hlsl"
 
 using VertexType = DirectX::VertexPositionColor;
 using namespace Microsoft::WRL;

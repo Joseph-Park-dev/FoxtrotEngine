@@ -12,13 +12,14 @@
 #include "EditorUtils.h"
 
 #include "Managers/KeyInputManager.h"
+#include "Managers/ResourceManager.h"
 #include "FileSystem/ChunkLoader.h"
 #include "Actors/Transform.h"
 #include "Actors/ActorGroup.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "Components/Component.h"
 
-void EditorElement::UpdateUI()
+void EditorElement::UpdateUI(bool isPremade)
 {
 	if (mIsFocused)
 	{
@@ -42,6 +43,8 @@ void EditorElement::UpdateUI()
 				UpdateComponents();
 				ImGui::EndTabItem();
 			}
+			if(!isPremade)
+				UpdateMakePrefabBtn();
 			ImGui::EndTabBar();
 		}
 		ImGui::EndChild();
@@ -255,10 +258,11 @@ void EditorElement::DisplayCompSelectionPopup()
 	}
 }
 
-void EditorElement::CopyComponents(EditorElement* origin)
+void EditorElement::UpdateMakePrefabBtn()
 {
-	for (size_t i = 0; i < origin->GetComponents().size(); ++i)
+	if (ButtonCenteredOnLine("Make Premade"))
 	{
-		LogString(GetComponents()[i]->GetName());
+		FTPremade* premade = new FTPremade();
+		premade->Create(this);
 	}
 }

@@ -8,6 +8,7 @@
 #include "Core/SingletonMacro.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
+#include "ResourceSystem/FTPremade.h"
 
 class FTTexture;
 class FTSpineAnimation;
@@ -37,6 +38,7 @@ public:
 	FTTexture*				GetLoadedTexture(UINT key);
 	std::vector<MeshData>&	GetLoadedMeshes(UINT key);
 	FTTileMap*				GetLoadedTileMap(UINT key);
+	FTPremade*				GetLoadedPremade(UINT key);
 	MeshData&				GetLoadedPrimitive(UINT key);
 
 	void				RemoveLoadedMeshes(UINT key);
@@ -59,6 +61,7 @@ private:
 	std::unordered_map<UINT, FTTexture*>			mMapTextures;
 	std::unordered_map<UINT, std::vector<MeshData>>	mMapMeshes;
 	std::unordered_map<UINT, FTTileMap*>			mMapTileMaps;
+	std::unordered_map<UINT, FTPremade*>			mMapPremades;
 
 	std::unordered_map<UINT, MeshData>				mMapPrimitives;
 

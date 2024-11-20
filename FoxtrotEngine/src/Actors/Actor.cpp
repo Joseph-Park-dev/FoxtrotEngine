@@ -15,14 +15,34 @@
 #include "Components/Component.h"
 #include "Core/FTCore.h"
 
-int Actor::g_NextID = 0;
+#ifdef FOXTROT_EDITOR
+#include "EditorElement.h"
+#endif // FOXTROT_EDITOR
+
+Actor::Actor()
+	: mTransform(new Transform)
+{
+	// THIS SHOULD BE REMAINED EMPTY;
+}
+
+Actor::Actor(Actor* origin)
+	: mState(EActive)
+	, mTransform(new Transform)
+	, mActorGroup(origin->mActorGroup)
+	, mParent(origin->mParent)
+	, mComponents{}
+	, mChild{}
+{
+	CopyTransformFrom(origin);
+	CopyComponentsFrom(origin);
+	CopyChildObject(origin);
+}
 
 Actor::Actor(Scene* scene)
 	: mState(EActive)
 	, mTransform(new Transform)
 	, mActorGroup(ActorGroup::DEFAULT)
 	, mParent(nullptr)
-	, mID(g_NextID++)
 	, mComponents{}
 	, mChild{}
 {
@@ -32,30 +52,30 @@ Actor::Actor(Scene* scene)
 // Constructor to copy Actor
 Actor::Actor(Actor& origin, Scene* scene)
 	: mState(origin.mState)
-	, mTransform(nullptr)
+	, mTransform(new Transform)
 	, mActorGroup(origin.mActorGroup)
 	, mParent(nullptr)
-	, mID(g_NextID++)
 	, mComponents{}
 	, mChild{}
 { 
 	CopyTransformFrom(origin);
 	CopyComponentsFrom(origin);
+	CopyChildObject(origin);
 	scene->AddActor(this, mActorGroup);
 }
 
 // Constructor to copy Actor
 Actor::Actor(Actor* origin, Scene* scene)
 	: mState(origin->mState)
-	, mTransform(nullptr)
+	, mTransform(new Transform)
 	, mActorGroup(origin->mActorGroup)
 	, mParent(nullptr)
-	, mID(g_NextID++)
 	, mComponents{}
 	, mChild{}
 {
 	CopyTransformFrom(origin);
 	CopyComponentsFrom(origin);
+	CopyChildObject(origin);
 	scene->AddActor(this, mActorGroup);
 }
 
@@ -72,50 +92,74 @@ Actor::~Actor()
 		mChild.clear();	
 }
 
+void Actor::CloneTo(Actor* target)
+{
+	target->mState = this->mState;
+	target->mActorGroup = this->mActorGroup;
+	target->CopyTransformFrom(this);
+	target->CopyChildObject(this);
+	target->CopyComponentsFrom(this);
+	target->mParent = this->mParent;
+}
+
 void Actor::CopyTransformFrom(Actor& origin)
 {
 	Transform* originTransf = origin.GetTransform();
-	Transform* copied = new Transform;
-	copied->SetWorldPosition	(originTransf->GetWorldPosition());
-	copied->SetLocalPosition	(originTransf->GetLocalPosition());
-	//copied->SetScreenPosition	(originTransf->GetScreenPosition());
-	copied->SetScale			(originTransf->GetScale());
-	copied->SetRotation			(originTransf->GetRotation());
-	this->SetTransform(copied);
+	mTransform->SetWorldPosition	(originTransf->GetWorldPosition());
+	mTransform->SetLocalPosition	(originTransf->GetLocalPosition());
+	mTransform->SetScale			(originTransf->GetScale());
+	mTransform->SetRotation			(originTransf->GetRotation());
+	mTransform->SetCurrentDirection(originTransf->GetCurrentDirection());
 }
 
 void Actor::CopyComponentsFrom(Actor& origin)
 {
-	std::vector<Component*>& components = origin.GetComponents();
-	for (size_t i = 0; i < components.size(); ++i)
-	{
-		components[i]->CloneTo(this);
-		delete components[i];
-	}
-	components.clear();
+	this->RemoveAllComponents();
+
+	std::vector<Component*>& compsToCopy = origin.GetComponents();
+	for (size_t i = 0; i < compsToCopy.size(); ++i)
+		compsToCopy[i]->CloneTo(this);
 }
 
 void Actor::CopyTransformFrom(Actor* origin)
 {
 	Transform* originTransf = origin->GetTransform();
-	Transform* copied = new Transform;
-	copied->SetWorldPosition(originTransf->GetWorldPosition());
-	copied->SetLocalPosition(originTransf->GetLocalPosition());
+	mTransform->SetWorldPosition(originTransf->GetWorldPosition());
+	mTransform->SetLocalPosition(originTransf->GetLocalPosition());
 	//copied->SetScreenPosition(originTransf->GetScreenPosition());
-	copied->SetScale(originTransf->GetScale());
-	copied->SetRotation(originTransf->GetRotation());
-	this->SetTransform(copied);
+	mTransform->SetScale(originTransf->GetScale());
+	mTransform->SetRotation(originTransf->GetRotation());
 }
 
 void Actor::CopyComponentsFrom(Actor* origin)
 {
-	std::vector<Component*>& components = origin->GetComponents();
-	for (size_t i = 0; i < components.size(); ++i)
-	{
-		components[i]->CloneTo(this);
-		delete components[i];
-	}
-	components.clear();
+	this->RemoveAllComponents();
+
+	std::vector<Component*>& compsToCopy = origin->GetComponents();
+	for (size_t i = 0; i < compsToCopy.size(); ++i)
+		compsToCopy[i]->CloneTo(this);
+}
+
+void Actor::CopyChildObject(Actor* origin)
+{
+	std::vector<Actor*>& childObjects = origin->GetChildActors();
+	for (size_t i = 0; i < childObjects.size(); ++i)
+		this->AddChild(new Actor(childObjects[i]));
+}
+
+void Actor::CopyChildObject(Actor& origin)
+{
+	std::vector<Actor*>& childObjects = origin.GetChildActors();
+	for (size_t i = 0; i < childObjects.size(); ++i)
+		this->AddChild(new Actor(childObjects[i]));
+}
+
+void Actor::Initialize(FTCore* coreInst)
+{
+	// Initializes Component
+	for (size_t i = 0; i < mComponents.size(); ++i)
+		if (!mComponents[i]->GetIsInitialized())
+			mComponents[i]->Initialize(coreInst);
 }
 
 void Actor::ProcessInput(KeyInputManager* keyInputManager)
@@ -190,6 +234,13 @@ void Actor::RemoveComponent(Component* component)
 	}
 }
 
+void Actor::RemoveAllComponents()
+{
+	for (size_t i = 0; i < mComponents.size(); ++i)
+		delete mComponents[i];
+	mComponents.clear();
+}
+
 void Actor::OnCollisionEnter(Collider2DComponent* _pOther)
 {
 }
@@ -233,6 +284,7 @@ void Actor::SetState(std::string state)
 
 void Actor::SaveProperties(std::ofstream& ofs)
 {
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::ACTOR_PROPERTIES);
 	FileIOHelper::SaveString		(ofs, ChunkKeys::NAME, GetName());
 	FileIOHelper::SaveInt			(ofs, ChunkKeys::ID, mID);
 	FileIOHelper::SaveString		(ofs, ChunkKeys::ACTOR_GROUP, ActorGroupUtil::GetActorGroupStr(mActorGroup));
@@ -244,8 +296,8 @@ void Actor::SaveProperties(std::ofstream& ofs)
 
 	// Changing the call location of Transform is NOT recommended
 	// Nested .chunk DataPack has unknown problem.
-	mTransform->SaveProperties(ofs);
-
+	mTransform->SaveProperties		(ofs);
+	FileIOHelper::EndDataPackSave	(ofs, ChunkKeys::ACTOR_PROPERTIES);
 }
 
 void Actor::SaveComponents(std::ofstream& ofs)
@@ -282,7 +334,7 @@ void Actor::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadBasicString(ifs, mName);
 }
 
-void Actor::LoadComponents(std::ifstream& ifs, FTCore* coreInst)
+void Actor::LoadComponents(std::ifstream& ifs)
 {
 	std::pair<int, std::string>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::COMPONENTS);
 	mComponents.reserve(pack.first);
@@ -290,9 +342,6 @@ void Actor::LoadComponents(std::ifstream& ifs, FTCore* coreInst)
 		std::pair<size_t, std::string> compPack = FileIOHelper::BeginDataPackLoad(ifs);
 		ChunkLoader::GetInstance()->GetComponentLoadMap().at(compPack.second)(this, ifs);
 	}
-	for (size_t i = 0; i < mComponents.size(); ++i)
-		if(!mComponents[i]->GetIsInitialized())
-			mComponents[i]->Initialize(coreInst);
 }
 
 #ifdef FOXTROT_EDITOR
@@ -349,4 +398,4 @@ void Actor::LoadComponents(nlohmann::ordered_json& in)
 		//ChunkLoader::GetInstance()->GetCompLoadMap()[compName](this, ifs);
 	}
 }
-#endif // FOXTROT_EDITOR
+#endif	

@@ -63,13 +63,20 @@ Component::Component(const Component& origin)
 	, mUpdateOrder(origin.mUpdateOrder)
 	, mDrawOrder(origin.mDrawOrder)
 	, mIsInitialized(false)
-{}
-
-Component::~Component()
 {
+	mOwner->AddComponent(this);
 }
 
-void Component::CloneTo(Actor* actor)
+Component::Component(const Component* origin)
+	: mOwner(origin->mOwner)
+	, mUpdateOrder(origin->mUpdateOrder)
+	, mDrawOrder(origin->mDrawOrder)
+	, mIsInitialized(false)
+{
+	mOwner->AddComponent(this);
+}
+
+Component::~Component()
 {
 }
 

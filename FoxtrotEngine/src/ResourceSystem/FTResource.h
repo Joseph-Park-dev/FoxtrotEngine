@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <Windows.h>
 
 #define KEY_LENGTH 50
 
@@ -30,7 +31,7 @@ public:
 	virtual ~FTResource(){}
 
 public:
-	virtual void SaveProperties(std::ofstream& ofs, UINT key);;
+	virtual void SaveProperties(std::ofstream& ofs, UINT key);
 	virtual UINT LoadProperties(std::ifstream& ifs);
 
 #ifdef FOXTROT_EDITOR

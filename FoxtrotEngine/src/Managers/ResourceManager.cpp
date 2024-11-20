@@ -5,6 +5,7 @@
 #include "ResourceSystem/GeometryGenerator.h"
 #include "ResourceSystem/FTBasicMeshGroup.h"
 #include "ResourceSystem/FTTileMap.h"
+#include "ResourceSystem/FTPremade.h"
 #include "Core/FTCore.h"
 #include "Core/TemplateFunctions.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -31,8 +32,10 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 void ResourceManager::DeleteAll()
 {
 	ClearMap<FTTexture>(mMapTextures);
-	mMapMeshes.clear();
 	ClearMap<FTTileMap>(mMapTileMaps);
+	ClearMap<FTPremade>(mMapPremades);
+
+	mMapMeshes.clear();
 	mMapPrimitives.clear();
 }
 
@@ -52,26 +55,6 @@ void ResourceManager::UpdateTexture(FTTexture* texture, int channels)
 	else
 		printf("Warning : FTTexture %s is not loaded. Aborting update...\n", texture->GetRelativePath().c_str());
 }
-
-//void ResourceManager::LoadMeshFromFile(const std::string filePath)
-//{
-//	std::string path = mPathToAsset + filePath;
-//	UINT key = gItemKey;
-//	if (!KeyExists(key, mMapMeshes)) {
-//		printf("Message: Loading Mesh %s to key %d. \n", path.c_str(), key);
-//		std::vector<MeshData> meshData = GeometryGenerator::ReadFromFile(filePath);
-//		if (!meshData.empty())
-//		{
-//			printf("Error: ResourceManager::LoadMesh() -> LoadMesh failed. \n");
-//			return;
-//		}
-//		mMapMeshes.insert(std::make_pair(key, meshData));
-//		++gItemKey;
-//	}
-//	else {
-//		printf("Warning : FTTexture %s is already loaded to key %d.\n", filePath.c_str(), key);
-//	}
-//}
 
 void ResourceManager::LoadBasicMesh(MeshData meshData)
 {
@@ -144,6 +127,15 @@ FTTileMap* ResourceManager::GetLoadedTileMap(UINT key)
 		return tileMap;
 	else
 		printf("Error: ResourceManager::GetLoadedTileMap() -> FTTileMap is empty %d\n", key);
+}
+
+FTPremade* ResourceManager::GetLoadedPremade(UINT key)
+{
+	FTPremade* premade = mMapPremades.at(key);
+	if (premade)
+		return premade;
+	else
+		printf("Error: ResourceManager::GetLoadedPremade() -> FTPremade is empty %d\n", key);
 }
 
 MeshData& ResourceManager::GetLoadedPrimitive(UINT key)
@@ -246,7 +238,14 @@ void ResourceManager::UpdateUI()
 		IGFD::FileDialogConfig config;
 		config.path = ".";
 		config.countSelectionMax = 1;
-		std::string supportedFormat = TEXTURE_FORMAT_SUPPORTED + std::string(", .csv");
+
+		std::string supportedFormat =
+			TEXTURE_FORMAT_SUPPORTED +
+			std::string(", ") +
+			TILEMAP_FORMAT_SUPPORTED +
+			std::string(", ") +
+			FTPremade_FORMAT_SUPPORTED;
+
 		ImGuiFileDialog::Instance()->OpenDialog("SelectFile", "Select File", supportedFormat.c_str(), config);
 		ImGui::OpenPopup("Select File");
 	}
@@ -259,14 +258,20 @@ void ResourceManager::UpdateUI()
 			
 			if (StrContains(TEXTURE_FORMAT_SUPPORTED, extension)) 
 			{
-				std::string relativePath = path.substr(path.rfind("assets"));
+				std::string relativePath = path.substr(path.rfind("Assets"));
 				FTTexture* texture = LoadResource<FTTexture>(relativePath, mMapTextures);
 				ProcessTexture(texture);
 			}
 			else if (StrContains(TILEMAP_FORMAT_SUPPORTED, extension)) 
 			{
-				std::string relativePath = path.substr(path.rfind("assets"));
+				std::string relativePath = path.substr(path.rfind("Assets"));
 				FTTileMap* tileMap = LoadResource<FTTileMap>(relativePath, mMapTileMaps);
+			}
+			else if (StrContains(FTPremade_FORMAT_SUPPORTED, extension))
+			{
+				std::string relativePath = path.substr(path.rfind("Assets"));
+				FTPremade* premade = LoadResource<FTPremade>(relativePath, mMapPremades);
+				premade->Load();
 			}
 		}
 		ImGuiFileDialog::Instance()->Close();
@@ -301,6 +306,25 @@ void ResourceManager::UpdateUI()
 				(*tileIter).second->UpdateUI();
 				if (ImGui::Button("Remove")) {
 					RemoveResource<FTTileMap>((*tileIter).first, mMapTileMaps);
+					ImGui::EndListBox();
+					break;
+				}
+				ImGui::EndListBox();
+			}
+		}
+		ImGui::TreePop();
+	}
+
+	if (ImGui::TreeNode("Premades"))
+	{
+		std::unordered_map<UINT, FTPremade*>::const_iterator premadeIter;
+		premadeIter = mMapPremades.begin();
+		for (; premadeIter != mMapPremades.end(); ++premadeIter) {
+			if (ImGui::BeginListBox((*premadeIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 200)))
+			{
+				(*premadeIter).second->UpdateUI();
+				if (ImGui::Button("Remove")) {
+					RemoveResource<FTPremade>((*premadeIter).first, mMapPremades);
 					ImGui::EndListBox();
 					break;
 				}

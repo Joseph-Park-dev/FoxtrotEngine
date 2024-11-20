@@ -3,8 +3,8 @@
 #include "Renderer/D3D11Utils.h"
 
 DebugGeometries::DebugGeometries()
-    : mVertexShaderPath(L"./assets/Shaders/EditorDebugGeometryVS.hlsl")
-    , mPixelShaderPath(L"./assets/Shaders/EditorDebugGeometryPS.hlsl")
+    : mVertexShaderPath(L"./Assets/Shaders/EditorDebugGeometryVS.hlsl")
+    , mPixelShaderPath(L"./Assets/Shaders/EditorDebugGeometryPS.hlsl")
 {}
 
 DebugGeometries::~DebugGeometries()

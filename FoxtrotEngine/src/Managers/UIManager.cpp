@@ -163,65 +163,65 @@ void UIManager::Reset()
 	mFocusedUI = nullptr;
 }
 
-#ifdef FOXTROT_EDITOR
-
-void UIManager::EditorUpdate(float deltaTime)
-{
-	mFocusedUI = EditorGetFocusedUI();
-	if (!mFocusedUI)
-		return;
-	bool lBtnTap = MOUSE_TAP(MOUSE::MOUSE_LEFT);
-	bool lBtnAway = MOUSE_AWAY(MOUSE::MOUSE_LEFT);
-	UIActor* targetUI = GetTargetedUI(mFocusedUI);
-	if (targetUI != nullptr)
-	{
-		targetUI->OnMouseHovering();
-		if (lBtnTap)
-		{
-			targetUI->OnMouseLButtonDown();
-			targetUI->mLBtnDown = true;
-		}
-		else if (lBtnAway)
-		{
-			targetUI->OnMouseLButtonUp();
-			if (targetUI->mLBtnDown)
-			{
-				targetUI->OnMouseLButtonClicked();
-			}
-			// Uncheck when the left button is released
-			targetUI->mLBtnDown = false;
-		}
-	}
-}
-
-UIActor* UIManager::EditorGetFocusedUI()
-{
-	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-	std::vector<Actor*>& elems = scene->GetActorGroup(ActorGroup::EDITOR);
-
-	bool lBtnTap = MOUSE_TAP(MOUSE::MOUSE_LEFT);
-
-	UIActor* focusedUI = mFocusedUI;
-	if (!lBtnTap)
-		return focusedUI;
-	std::vector<Actor*>::iterator targetIter = elems.end();
-	std::vector<Actor*>::iterator iter = elems.begin();
-	for (; iter != elems.end(); ++iter)
-	{
-		EditorElement* element = (EditorElement*)(*iter);
-		if (element->IsMouseHovering())
-		{
-			targetIter = iter;
-		}
-	}
-	// There's no UI focused
-	if (targetIter == elems.end())
-	{
-		return nullptr;
-	}
-	focusedUI = (EditorElement*)*targetIter;
-	//elems.erase(targetIter);
-	//elems.push_back(focusedUI);
-	return focusedUI;
-}
-#endif
+//#ifdef FOXTROT_EDITOR
+//
+//void UIManager::EditorUpdate(float deltaTime)
+//{
+//	mFocusedUI = EditorGetFocusedUI();
+//	if (!mFocusedUI)
+//		return;
+//	bool lBtnTap = MOUSE_TAP(MOUSE::MOUSE_LEFT);
+//	bool lBtnAway = MOUSE_AWAY(MOUSE::MOUSE_LEFT);
+//	UIActor* targetUI = GetTargetedUI(mFocusedUI);
+//	if (targetUI != nullptr)
+//	{
+//		targetUI->OnMouseHovering();
+//		if (lBtnTap)
+//		{
+//			targetUI->OnMouseLButtonDown();
+//			targetUI->mLBtnDown = true;
+//		}
+//		else if (lBtnAway)
+//		{
+//			targetUI->OnMouseLButtonUp();
+//			if (targetUI->mLBtnDown)
+//			{
+//				targetUI->OnMouseLButtonClicked();
+//			}
+//			// Uncheck when the left button is released
+//			targetUI->mLBtnDown = false;
+//		}
+//	}
+//}
+//
+//UIActor* UIManager::EditorGetFocusedUI()
+//{
+//	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+//	std::vector<Actor*>& elems = scene->GetActorGroup(ActorGroup::EDITOR);
+//
+//	bool lBtnTap = MOUSE_TAP(MOUSE::MOUSE_LEFT);
+//
+//	UIActor* focusedUI = mFocusedUI;
+//	if (!lBtnTap)
+//		return focusedUI;
+//	std::vector<Actor*>::iterator targetIter = elems.end();
+//	std::vector<Actor*>::iterator iter = elems.begin();
+//	for (; iter != elems.end(); ++iter)
+//	{
+//		EditorElement* element = (EditorElement*)(*iter);
+//		if (element->IsMouseHovering())
+//		{
+//			targetIter = iter;
+//		}
+//	}
+//	// There's no UI focused
+//	if (targetIter == elems.end())
+//	{
+//		return nullptr;
+//	}
+//	focusedUI = (EditorElement*)*targetIter;
+//	//elems.erase(targetIter);
+//	//elems.push_back(focusedUI);
+//	return focusedUI;
+//}
+//#endif

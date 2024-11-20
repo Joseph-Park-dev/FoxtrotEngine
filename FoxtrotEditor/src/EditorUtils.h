@@ -2,7 +2,7 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 
-bool ButtonCenteredOnLine(const char* label, float alignment = 0.5f)
+inline bool ButtonCenteredOnLine(const char* label, float alignment = 0.5f)
 {
     ImGuiStyle& style = ImGui::GetStyle();
 

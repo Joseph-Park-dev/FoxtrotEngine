@@ -63,7 +63,6 @@ void EditorChunkLoader::SaveChunkData(nlohmann::ordered_json& out)
 
 void EditorChunkLoader::SaveActorsData(nlohmann::ordered_json& out)
 {
-    Actor::ResetNextID();
     EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
     std::vector<Actor*>* actors = scene->GetActors();
     for (size_t i = 0; i < (size_t)ActorGroup::END; ++i) 
@@ -91,10 +90,9 @@ void EditorChunkLoader::SaveChunkData(std::ofstream& ofs)
 
 void EditorChunkLoader::SaveActorsData(std::ofstream& ofs)
 {
-    Actor::ResetNextID();
     EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
     std::vector<Actor*>* actors = scene->GetActors();
-    FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::ACTOR_PROPERTIES);
+    FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::ACTOR_DATA);
     for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
     {
         for (size_t j = 0; j < actors[i].size(); ++j)
@@ -107,7 +105,7 @@ void EditorChunkLoader::SaveActorsData(std::ofstream& ofs)
             FileIOHelper::EndDataPackSave(ofs, element->GetName());
         }
     }
-    FileIOHelper::EndDataPackSave(ofs, ChunkKeys::ACTOR_PROPERTIES);
+    FileIOHelper::EndDataPackSave(ofs, ChunkKeys::ACTOR_DATA);
 }
 
 void EditorChunkLoader::LoadChunkData(std::ifstream& ifs)
@@ -132,7 +130,6 @@ void EditorChunkLoader::LoadChunkData(std::ifstream& ifs)
 
 void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
 {
-    Actor::ResetNextID();
     EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
     std::pair<size_t, std::string>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::ACTOR_PROPERTIES);
     for (size_t i = 0; i < pack.first; ++i)

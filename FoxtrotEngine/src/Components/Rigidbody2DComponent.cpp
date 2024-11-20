@@ -29,6 +29,7 @@ Rigidbody2DComponent::~Rigidbody2DComponent()
 void Rigidbody2DComponent::CloneTo(Actor* actor)
 {
 	Rigidbody2DComponent* newComp = new Rigidbody2DComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	newComp->mBodyDefCache = this->mBodyDefCache;
 }
 
 b2BodyId& Rigidbody2DComponent::GetBodyID()
@@ -87,7 +88,6 @@ void Rigidbody2DComponent::LoadProperties(std::ifstream& ifs)
 	mBodyDefCache = bodyDef;
 #endif // FOXTROT_EDITOR
 }
-
 #ifdef FOXTROT_EDITOR
 void Rigidbody2DComponent::SaveProperties(std::ofstream& ofs)
 {

@@ -341,7 +341,7 @@ void EditorLayer::DisplayInspectorMenu()
 		EditorElement* ele = dynamic_cast<EditorElement*>(actor);
 		if (ele->GetIsFocused())
 		{
-			ele->UpdateUI();
+			ele->UpdateUI(false);
 			if (mDeleteKeyPressed)
 			{
 				// Delete game object, and erase the pointed from std::vector

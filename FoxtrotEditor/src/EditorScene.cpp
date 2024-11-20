@@ -36,15 +36,15 @@ void EditorScene::LoadData()
 
 	/*std::string pngPath = "SpineTest/Skel/[Player] ver.01_Spine - File.png";
 	ResourceManager::GetInstance()->LoadTexture(currRenderer, );
-	std::string atlasPath = "D:/[2024_01]/FoxtrotEngine_DirectX/assets/SpineTest/Skel/[Player] ver.01_Spine-File.atlas";
-	std::string skeletonDataPath = "D:/[2024_01]/FoxtrotEngine_DirectX/assets/SpineTest/Skel/skeleton.skel";
+	std::string atlasPath = "D:/[2024_01]/FoxtrotEngine_DirectX/Assets/SpineTest/Skel/[Player] ver.01_Spine-File.atlas";
+	std::string skeletonDataPath = "D:/[2024_01]/FoxtrotEngine_DirectX/Assets/SpineTest/Skel/skeleton.skel";
 	ResourceManager::GetInstance()->LoadSpineAnimation(
 		"RunningGrandpa",
 		atlasPath,
 		skeletonDataPath
 	);
 
-	std::string tileMapSprite = "D:/[2024_01]/FoxtrotEngine_DirectX/assets/Tiles.png";
+	std::string tileMapSprite = "D:/[2024_01]/FoxtrotEngine_DirectX/Assets/Tiles.png";
 	ResourceManager::GetInstance()->LoadTexture(currRenderer, tileMapSprite);*/
 
  // _DEBUG

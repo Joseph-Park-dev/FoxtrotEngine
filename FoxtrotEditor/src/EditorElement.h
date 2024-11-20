@@ -18,17 +18,21 @@ public:
 	void SetIsFocused(bool isFocused) { mIsFocused = isFocused; }
 
 public:
+	// Runs on FTCoreEditor::UpdateGame() when mIsUpdatingGame is NOT true
+	void EditorUpdate(float deltaTime);
+	void EditorRender(FoxtrotRenderer* renderer);
 
 public:
-			// Runs on FTCoreEditor::UpdateGame() when mIsUpdatingGame IS NOT true
-			void EditorUpdate(float deltaTime);
-			void EditorRender(FoxtrotRenderer* renderer);
+	void UpdateUI(bool isPremade);
+	void RenderUI(FoxtrotRenderer* renderer);
 
 public:
-			void UpdateUI();
-			void RenderUI(FoxtrotRenderer* renderer);
+	// Constructors used for FTPremade origin, possibily to make a dummy
+	// not recommended to use outside of FTPremade
+	EditorElement();
+	EditorElement(Actor* origin);
 
-public:
+	// Use this when adding EditorElements to a scene.
 	EditorElement(Scene* scene);
 	EditorElement(Actor* actor, Scene* scene);
 	EditorElement(EditorElement* origin, Scene* scene);
@@ -47,10 +51,9 @@ private:
 	void UpdateActorLocalPosition();
 	void UpdateActorScale();
 	void UpdateActorRotation();
-	void UpdateComponents();
 
+	void UpdateComponents();
 	void DisplayCompSelectionPopup();
 
-private:
-	void CopyComponents(EditorElement* origin);
+	void UpdateMakePrefabBtn();
 };

@@ -20,7 +20,7 @@
 
 void EditorElement::UpdateUI()
 {
-	if (GetIsFocused())
+	if (mIsFocused)
 	{
 		ImGui::BeginChild(GetName().c_str());
 		if (ImGui::BeginTabBar("MyTabBar", ImGuiTabBarFlags_None))
@@ -46,66 +46,12 @@ void EditorElement::UpdateUI()
 		}
 		ImGui::EndChild();
 	}
-	CheckMouseHover();
 }
 
 void EditorElement::RenderUI(FoxtrotRenderer* renderer)
 {
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-}
-
-void EditorElement::OnMouseLButtonClicked()
-{
-	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-	scene->UnfocusEditorElements();
-	SetIsFocused(true);
-	std::vector<Actor*>* actors = scene->GetActors();
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
-	{
-		for (int j = 0; j < actors[i].size(); ++j)
-		{
-			EditorElement* elems = dynamic_cast<EditorElement*>(actors[i][j]);
-			if (elems->GetIsFocused())
-			{
-				int& mActorNameIDX = EditorLayer::GetInstance()->GetActorNameIdx();
-				CommandHistory::GetInstance()->AddCommand(new IntEditCommand(mActorNameIDX, i));
-				break;
-			}
-		}
-	}
-}
-
-void EditorElement::CheckMouseHover()
-{
-	FTVector2 mousePos = KeyInputManager::GetInstance()->GetMousePosition();
-	if (GetIsAffectedByCamera())
-	{
-		//mousePos = EditorCamera2D::GetInstance()->ConvertScreenPosToWorld(mousePos);
-	}
-	if (GetTransform()->GetWorldPosition().x - GetTransform()->GetScale().x / 2 <= mousePos.x &&
-		mousePos.x <= GetTransform()->GetWorldPosition().x + GetTransform()->GetScale().x / 2 &&
-		GetTransform()->GetWorldPosition().y - GetTransform()->GetScale().y / 2 <= mousePos.y &&
-		mousePos.y <= GetTransform()->GetWorldPosition().y + GetTransform()->GetScale().y / 2)
-	{
-		SetMouseHovering(true);
-	}
-	else
-	{
-		SetMouseHovering(false);
-	}
-}
-
-void EditorElement::OnMouseHovering()
-{
-	if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow))
-		PanelUI::OnMouseHovering();
-}
-
-void EditorElement::OnMouseLButtonDown()
-{
-	if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow))
-		PanelUI::OnMouseLButtonDown();
 }
 
 void EditorElement::EditorUpdate(float deltaTime)
@@ -120,16 +66,43 @@ void EditorElement::EditorRender(FoxtrotRenderer* renderer)
 		comp->EditorRender(renderer);
 }
 
+EditorElement::EditorElement()
+	: Actor()
+	, mActorGroupIdx(0)
+	, mRotationModSpeed(0.f)
+	, mIsFocused(false)
+{
+}
+
+EditorElement::EditorElement(Actor* origin)
+	: Actor(origin)
+	, mActorGroupIdx(0)
+	, mRotationModSpeed(1.0f)
+	, mIsFocused(false)
+{
+	SetActorGroup(origin->GetActorGroup());
+	SetName(origin->GetName());
+	SetState(origin->GetState());
+	SetParent(origin->GetParent());
+	SetChildActors(origin->GetChildActors());
+
+	CopyTransformFrom(origin);
+	CopyComponentsFrom(origin);
+	CopyChildObject(origin);
+}
+
 EditorElement::EditorElement(Scene* scene)
-	: PanelUI (scene,false)
+	: Actor (scene)
 	, mRotationModSpeed(1.0f)
 	, mActorGroupIdx((int)ActorGroup::DEFAULT)
+	, mIsFocused(false)
 {}
 
 EditorElement::EditorElement(Actor* actor, Scene* scene)
-	: PanelUI(actor, scene)
+	: Actor(actor, scene)
 	, mActorGroupIdx((int)actor->GetActorGroup())
 	, mRotationModSpeed(1.0f)
+	, mIsFocused(false)
 {
 	SetActorGroup(actor->GetActorGroup());
 	SetName(actor->GetName());
@@ -139,15 +112,16 @@ EditorElement::EditorElement(Actor* actor, Scene* scene)
 }
 
 EditorElement::EditorElement(EditorElement* origin, Scene* scene)
-	: PanelUI(origin, scene)
+	: Actor(origin, scene)
 	, mActorGroupIdx((int)origin->GetActorGroup())
 	, mRotationModSpeed(1.0f)
+	, mIsFocused(false)
 {
 	SetActorGroup(origin->GetActorGroup());
 	SetState(origin->GetState());
 	SetParent(origin->GetParent());
 	SetChildActors(origin->GetChildActors());
-	CopyComponents(origin);
+	//CopyComponents(origin);
 }
 
 void EditorElement::UpdateActorName()

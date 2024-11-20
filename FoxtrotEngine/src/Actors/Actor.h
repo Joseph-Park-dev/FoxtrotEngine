@@ -127,7 +127,7 @@ public:
 	void SaveComponents(std::ofstream& ofs);
 
 	void LoadProperties(std::ifstream& ifs);
-	void LoadComponents(std::ifstream& ifs, FTCore* coreInst);
+	void LoadComponents(std::ifstream& ifs);
 
 #ifdef FOXTROT_EDITOR
 public:

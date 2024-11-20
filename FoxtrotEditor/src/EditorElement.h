@@ -11,15 +11,13 @@ class EditorLayer;
 #define ACTORNAME_MAX 100
 
 class EditorElement :
-    public PanelUI
+    public Actor
 {
 public:
-	virtual void OnMouseLButtonClicked() override;
+	bool GetIsFocused() { return mIsFocused; }
+	void SetIsFocused(bool isFocused) { mIsFocused = isFocused; }
 
 public:
-			void CheckMouseHover() override;
-			void OnMouseHovering() override;
-			void OnMouseLButtonDown() override;
 
 public:
 			// Runs on FTCoreEditor::UpdateGame() when mIsUpdatingGame IS NOT true
@@ -39,6 +37,7 @@ private:
 	// Stores ActorGroup index -> is int for Uint -> int conversion not supported
 	int		mActorGroupIdx;
 	float	mRotationModSpeed;
+	bool	mIsFocused;
 
 private:
 	void UpdateActorName();

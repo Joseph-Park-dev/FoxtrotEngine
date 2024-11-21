@@ -138,6 +138,16 @@ FTPremade* ResourceManager::GetLoadedPremade(UINT key)
 		printf("Error: ResourceManager::GetLoadedPremade() -> FTPremade is empty %d\n", key);
 }
 
+FTPremade* ResourceManager::GetLoadedPremade(std::string fileName)
+{
+	std::unordered_map<UINT, FTPremade*>::iterator iter = mMapPremades.begin();
+	for (; iter != mMapPremades.end(); ++iter)
+		if ((*iter).second->GetFileName() == fileName)
+			return (*iter).second;
+		else
+			printf("Error: ResourceManager::GetLoadedPremade() -> Cannot find FTPremade %s\n", fileName);
+}
+
 MeshData& ResourceManager::GetLoadedPrimitive(UINT key)
 {
 	MeshData& primitive = mMapPrimitives.at(key);
@@ -198,6 +208,10 @@ void ResourceManager::SaveResources(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::FTTILEMAP_GROUP);
 	SaveResourceInMap<FTTileMap>(ofs, mMapTileMaps);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::FTTILEMAP_GROUP);
+
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::FTPREMADE_GROUP);
+	SaveResourceInMap<FTPremade>(ofs, mMapPremades);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::FTPREMADE_GROUP);
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::RESOURCE_DATA);
 }

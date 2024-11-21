@@ -39,6 +39,7 @@ public:
 	std::vector<MeshData>&	GetLoadedMeshes(UINT key);
 	FTTileMap*				GetLoadedTileMap(UINT key);
 	FTPremade*				GetLoadedPremade(UINT key);
+	FTPremade*				GetLoadedPremade(std::string fileName);
 	MeshData&				GetLoadedPrimitive(UINT key);
 
 	void				RemoveLoadedMeshes(UINT key);

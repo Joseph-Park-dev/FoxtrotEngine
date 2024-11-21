@@ -39,6 +39,7 @@ namespace ChunkKeys {
 	// Group Save Keys
 	constexpr const char* FTTEXTURE_GROUP = "FTTexture Group";
 	constexpr const char* FTTILEMAP_GROUP = "FTTileMap Group";
+	constexpr const char* FTPREMADE_GROUP = "FTPremade Group";
 
 	// FTTexture
 	constexpr const char* FTTEXTURE = "FTTexture";

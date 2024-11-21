@@ -211,11 +211,6 @@ void EditorLayer::DisplayFileMenu()
 				mCurrProjectPath = ImGuiFileDialog::Instance()->GetFilePathName();
 				if (!ProjectPathExists(mCurrProjectPath))
 				{
-					// Create base directory for a project
-					std::filesystem::create_directory(mCurrProjectPath);
-					// Create sub directories - "./Assets"
-					std::filesystem::create_directory(mCurrProjectPath + "/Assets");
-					std::filesystem::create_directory(mCurrProjectPath + "/FoxtrotEngine_ProjectData");
 				}
 				else {
 					mErrorType = ErrorType::ProjectPathExists;
@@ -368,9 +363,10 @@ bool EditorLayer::SceneViewportSizeChanged()
 
 bool EditorLayer::ProjectPathExists(std::string& projDir)
 {
-	std::string assetDir = projDir + "\\Assets";
-	std::string projDataDir = projDir + "\\FoxtrotEngine_ProjectData";
-	return std::filesystem::exists(assetDir) && std::filesystem::exists(projDataDir);
+	//std::string assetDir = projDir + "\\Assets";
+	//std::string projDataDir = projDir + "\\FoxtrotEngine_ProjectData";
+	//return std::filesystem::exists(assetDir) && std::filesystem::exists(projDataDir);
+	return false;
 }
 
 void EditorLayer::SaveChunkFromUI()

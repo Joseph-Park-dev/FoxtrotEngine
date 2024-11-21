@@ -1,7 +1,5 @@
 #include "Component.h"
 
-#include <nlohmann/json.hpp>
-
 #include "Actors/Actor.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
@@ -93,19 +91,6 @@ void Component::LoadProperties(std::ifstream& ifs)
 }
 
 #ifdef FOXTROT_EDITOR
-void Component::SaveProperties(nlohmann::ordered_json& out)
-{
-	FileIOHelper::AddScalarValue(out["Name"], GetName());
-	FileIOHelper::AddScalarValue(out["DrawOrder"], mDrawOrder);
-	FileIOHelper::AddScalarValue(out["UpdateOrder"], mUpdateOrder);
-}
-
-void Component::LoadProperties(nlohmann::ordered_json& in)
-{
-	mDrawOrder = FileIOHelper::LoadScalarValue<int>(in, "DrawOrder");
-	mUpdateOrder = FileIOHelper::LoadScalarValue<int>(in, "UpdateOrder");
-}
-
 void Component::EditorUIUpdate()
 {
 }

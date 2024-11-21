@@ -25,6 +25,10 @@
 
 #ifdef FOXTROT_EDITOR
 #include "CommandHistory.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui.h>
+#include "imgui/FileDialog/ImGuiFileDialog.h"
+#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
 #endif 
 
 #define DEFAULT_TILE_POS 0
@@ -95,19 +99,6 @@ void TileMapComponent::LoadProperties(std::ifstream& ifs)
 }
 
 #ifdef FOXTROT_EDITOR
-
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
-#include "imgui/FileDialog/ImGuiFileDialog.h"
-#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
-
-void TileMapComponent::SaveProperties(nlohmann::ordered_json& out)
-{
-	Component::SaveProperties(out);
-	FileIOHelper::AddScalarValue(out["MeshKey"], GetMeshKey());
-	FileIOHelper::AddScalarValue(out["TextureKey"], GetTexKey());
-}
-
 void TileMapComponent::EditorUIUpdate()
 {
     CHECK_RENDERER(GetRenderer());

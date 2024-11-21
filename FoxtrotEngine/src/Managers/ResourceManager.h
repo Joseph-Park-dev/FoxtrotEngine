@@ -3,7 +3,6 @@
 #include <unordered_map>
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
-#include <nlohmann/json.hpp>
 
 #include "Core/SingletonMacro.h"
 #include "FileSystem/ChunkLoader.h"
@@ -193,37 +192,6 @@ public:
 
 #ifdef FOXTROT_EDITOR
 public:
-	void SaveResources(nlohmann::ordered_json& out);
-	void LoadResources(nlohmann::ordered_json& resourceTree);
 	void UpdateUI();
-
-private:
-	template<typename FTRESOURCE>
-	void SaveResourceInMap(nlohmann::ordered_json& out, const std::unordered_map<UINT, FTRESOURCE*>& resMap) {
-		typename std::unordered_map<UINT, FTRESOURCE*>::const_iterator iter;
-		for (iter = resMap.begin(); iter != resMap.end(); ++iter) {
-			(*iter).second->SaveProperties(out[typeid(FTRESOURCE).name()][std::to_string((*iter).first)], (*iter).first);
-		}
-	}
-
-	template<typename FTRESOURCE>
-	void LoadResourceToMap(nlohmann::ordered_json& resTree, std::unordered_map<UINT, FTRESOURCE*>& resMap) {
-		gItemKey = 0;
-		for (auto& itemTree : resTree[typeid(FTRESOURCE).name()]) {
-			UINT key = itemTree["Key"];
-			LoadResource(itemTree, key, resMap);
-			if (gItemKey < key)
-				gItemKey = key;
-		}
-		++gItemKey; // Key of the next resource to be imported.
-	}
-
-	template<typename FTRESOURCE>
-	void LoadResource(nlohmann::ordered_json& itemTree, const UINT key, std::unordered_map<UINT, FTRESOURCE*>& resMap)
-	{
-		FTRESOURCE* resource = new FTRESOURCE;
-		resource->LoadProperties(itemTree);
-		resMap.insert(std::make_pair(key, resource));
-	}
 #endif // FOXTROT_EDITOR
 };

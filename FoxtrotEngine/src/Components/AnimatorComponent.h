@@ -48,9 +48,4 @@ private:
 
 private:
     FTSpriteAnimation* FindAnimation(const std::wstring& name);
-
-#ifdef FOXTROT_EDITOR
-public:
-    virtual void SaveProperties(nlohmann::ordered_json& out) override;
-#endif
 };

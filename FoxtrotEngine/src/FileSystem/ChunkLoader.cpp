@@ -49,22 +49,6 @@ void ChunkLoader::SaveActorsData(std::ofstream& out)
 {
 }
 
-//void ChunkLoader::LoadChunkData(YAML::Node& node)
-//{
-//    /*
-//    ChunkData save order
-//        1) Camera2D values
-//            a) TargetActorID    -> int
-//            a) RenderResolution -> FTVector2
-//            b) ScreenCenter     -> FTVector2
-//        2) Number of Actors     -> int
-//    */
-//
-//    /*Camera::GetInstance()->SetTargetActorID(mCurrentChunkData.TargetActorID);
-//    Camera::GetInstance()->SetRenderResolution(mCurrentChunkData.RenderResolution);
-//    Camera::GetInstance()->SetScreenCenter(mCurrentChunkData.ScreenCenter);*/
-//}
-
 void ChunkLoader::LoadActors(std::ifstream& ifs)
 {
     Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
@@ -75,44 +59,6 @@ void ChunkLoader::LoadActors(std::ifstream& ifs)
     }
 }
 
-void ChunkLoader::LoadActors(nlohmann::ordered_json& in)
-{
-    Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
-    for (size_t i = 0; i < mCurrentChunkData.ActorCount; ++i)
-    {
-        Actor* actor = LoadIndividualActor(in, currScene);
-        currScene->AddActor(actor, actor->GetActorGroup());
-    }
-}
-
-//void ChunkLoader::LoadActors(std::ifstream& ifs)
-//{
-//    orderedJSONRef actorList = mJSON["ActorList"];
-//    Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
-//
-//    size_t actorCount = actorList["Count"];
-//    for (size_t i = 0; i < actorCount; ++i)
-//    {
-//        orderedJSONRef actorTree = actorList[std::to_string(i)];
-//        Actor* actor = LoadIndividualActor(currScene, actorTree);
-//        currScene->AddActor(actor, actor->GetActorGroup());
-//    }
-//}
-//
-//void ChunkLoader::LoadActorsToEditor(std::ifstream& ifs)
-//{
-//    orderedJSONRef actorList = mJSON["ActorList"];
-//    Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
-//
-//    size_t actorCount = actorList["Count"];
-//    for (size_t i = 0; i < actorCount; ++i)
-//    {
-//        orderedJSONRef actorTree = actorList[std::to_string(i)];
-//        Actor* actor = LoadIndividualActor(currScene, actorTree);
-//        EditorLayer::GetInstance()->AddEditorElement(actor);
-//    }
-//}
-//
 Actor* ChunkLoader::LoadIndividualActor(std::ifstream& ifs, Scene* currScene)
 {
     Actor* actor = new Actor(currScene);
@@ -121,19 +67,10 @@ Actor* ChunkLoader::LoadIndividualActor(std::ifstream& ifs, Scene* currScene)
     return actor;
 }
 
-Actor* ChunkLoader::LoadIndividualActor(nlohmann::ordered_json& in, Scene* currScene)
-{
-    Actor* actor = new Actor(currScene);
-    actor->LoadProperties(in);
-    actor->LoadComponents(in["Components"]);
-    return actor;
-}
-
 std::string ChunkLoader::GetConvertedFileName(std::string curr, std::string prevSuffix, std::string postSuffix)
 {
     return curr.substr(0, curr.length() - strlen(prevSuffix.c_str())) + postSuffix;
 }
- // _DEBUG
 
 ChunkLoader::ChunkLoader()
     : mCurrentChunkData{}
@@ -162,35 +99,6 @@ std::list<int> FileIOHelper::mItemCounts = {};
 std::list<std::string> FileIOHelper::mCurrentDataPack = {};
 int FileIOHelper::mDataPackIdent = 0;
 std::string FileIOHelper::mItemIdent = std::string(mDataPackIdent, '\t');
-
-void FileIOHelper::AddVector2(nlohmann::ordered_json& json, FTVector2 value)
-{
-    json["x"] = value.x;
-    json["y"] = value.y;
-}
-void FileIOHelper::AddVector3(nlohmann::ordered_json& json, FTVector3 value)
-{
-    json["x"] = value.x;
-    json["y"] = value.y;
-    json["z"] = value.z;
-}
-
-FTVector2 FileIOHelper::LoadVector2(nlohmann::ordered_json& json, std::string key)
-{
-    FTVector2 value = FTVector2::Zero;
-    value.x = json[key]["x"];
-    value.y = json[key]["y"];
-    return value;
-}
-
-FTVector3 FileIOHelper::LoadVector3(nlohmann::ordered_json& json, std::string key)
-{
-    FTVector3 value = FTVector3::Zero;
-    value.x = json[key]["x"];
-    value.y = json[key]["y"];
-    value.z = json[key]["z"];
-    return value;
-}
 
 // This function is less safe since there is no assert to check data pack name
 std::pair<size_t, std::string> FileIOHelper::BeginDataPackLoad(std::ifstream& ifs)

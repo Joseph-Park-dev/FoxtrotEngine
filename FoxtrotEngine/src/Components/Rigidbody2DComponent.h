@@ -37,7 +37,6 @@ public:
 	   during the runtime of the game.
 	   Therefore, Saving the attributes will only be required on Editor.*/
 	virtual void SaveProperties(std::ofstream& ofs) override;
-	virtual void SaveProperties(nlohmann::ordered_json& out) override;
 
 public:
 	virtual void EditorUpdate(float deltaTime)			 override;

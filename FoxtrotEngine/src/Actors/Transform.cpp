@@ -1,7 +1,5 @@
 #include "Actors/Transform.h"
 
-#include <nlohmann/json.hpp>
-
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
 
@@ -90,18 +88,3 @@ void Transform::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadVector3(ifs, mLocalPosition);
 	FileIOHelper::LoadVector3(ifs, mWorldPosition);
 }
-
-#ifdef FOXTROT_EDITOR
-void Transform::SaveProperties(nlohmann::ordered_json& out)
-{
-	FileIOHelper::AddVector3(out[SAVEKEY_WORLDPOS], mWorldPosition);
-	FileIOHelper::AddVector3(out[SAVEKEY_SCREENPOS], mScreenPosition);
-	FileIOHelper::AddVector3(out[SAVEKEY_LOCALPOS], mLocalPosition);
-	FileIOHelper::AddVector3(out[SAVEKEY_SCALE], mScale);
-	FileIOHelper::AddVector3(out[SAVEKEY_ROTATION], mRotation);
-}
-
-void Transform::LoadProperties()
-{
-}
-#endif // FOXTROT_EDITOR

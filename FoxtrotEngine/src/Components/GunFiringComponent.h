@@ -32,9 +32,4 @@ private:
     MOUSE mTriggerKey;
     float mDelay;
     float mCurrentTick;
-
-#ifdef FOXTROT_EDITOR
-public:
-	virtual void SaveProperties(nlohmann::ordered_json& out) override;
-#endif // FOXTROT_EDITOR
 };

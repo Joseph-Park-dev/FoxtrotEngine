@@ -1,6 +1,4 @@
 #pragma once
-#include <nlohmann/json.hpp>
-
 #include "Math/FTMath.h"
 
 class Component;
@@ -61,10 +59,4 @@ public:
 
 	void SaveProperties(std::ofstream& ofs);
 	void LoadProperties(std::ifstream& ofs);
-
-#ifdef FOXTROT_EDITOR
-public:
-	void SaveProperties(nlohmann::ordered_json& out);
-	void LoadProperties();
-#endif // FOXTROT_EDITOR
 };

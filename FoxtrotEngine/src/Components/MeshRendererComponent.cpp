@@ -164,17 +164,6 @@ void MeshRendererComponent::LoadProperties(std::ifstream& ifs)
 }
 
 #ifdef FOXTROT_EDITOR
-void MeshRendererComponent::SaveProperties(nlohmann::ordered_json& out)
-{
-	Component::SaveProperties(out);
-	FileIOHelper::AddScalarValue(out["MeshKey"], mMeshKey);
-	FileIOHelper::AddScalarValue(out["TextureKey"], mTexKey);
-}
-
-void MeshRendererComponent::LoadProperties(nlohmann::ordered_json& in)
-{
-}
-
 void MeshRendererComponent::EditorUIUpdate()
 {
 	CHECK_RENDERER(GetRenderer());

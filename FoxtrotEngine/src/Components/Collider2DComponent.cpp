@@ -13,6 +13,16 @@
 #include "FileSystem/ChunkFileKeys.h"
 #include "Components/Rigidbody2DComponent.h"
 
+#ifdef FOXTROT_EDITOR
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui.h>
+#include <imgui_impl_win32.h>
+#include <imgui_impl_dx11.h>
+
+#include "CommandHistory.h"
+#endif // FOXTROT_EDITOR
+
+
 b2ShapeId& Collider2DComponent::GetShapeID()
 {
 	return mShapeID;
@@ -105,18 +115,6 @@ void Collider2DComponent::LoadProperties(std::ifstream& ifs)
 }
 
 #ifdef FOXTROT_EDITOR
-	#define IMGUI_DEFINE_MATH_OPERATORS
-	#include <imgui.h>
-	#include <imgui_impl_win32.h>
-	#include <imgui_impl_dx11.h>
-
-	#include "CommandHistory.h"
-
-void Collider2DComponent::SaveProperties(nlohmann::ordered_json& out)
-{
-	Component::SaveProperties(out);
-}
-
 void Collider2DComponent::EditorUpdate(float deltaTime)
 {
 }

@@ -1,6 +1,5 @@
 #pragma once
 #include <functional>
-#include <nlohmann/json.hpp>
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 

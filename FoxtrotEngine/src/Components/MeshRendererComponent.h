@@ -1,8 +1,6 @@
 #pragma once
 #include "Components/Component.h"
 
-#include <nlohmann/json.hpp>
-
 #include "Core/FTCore.h"
 #include "ResourceSystem/FTBasicMeshGroup.h"
 
@@ -70,8 +68,6 @@ public:
 
 #ifdef FOXTROT_EDITOR
 public:
-	virtual void SaveProperties(nlohmann::ordered_json& out) override;
-	virtual void LoadProperties(nlohmann::ordered_json& in)	 override;
 	virtual void EditorUIUpdate() override;
 
 protected:

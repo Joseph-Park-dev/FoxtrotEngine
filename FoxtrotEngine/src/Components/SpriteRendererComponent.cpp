@@ -18,6 +18,16 @@
 #include "ResourceSystem/MeshData.h"
 #include "Scenes/Scene.h"
 
+#ifdef FOXTROT_EDITOR
+#include "CommandHistory.h"
+
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "imgui/FileDialog/ImGuiFileDialog.h"
+#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
+#include <imgui.h>
+#endif // FOXTROT_EDITOR
+
+
 void SpriteRendererComponent::SetTexture()
 {
 	MeshRendererComponent::SetTexture();
@@ -102,22 +112,6 @@ void SpriteRendererComponent::LoadProperties(std::ifstream& ifs)
 }
 
 #ifdef FOXTROT_EDITOR
-#include "CommandHistory.h"
-
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include "imgui/FileDialog/ImGuiFileDialog.h"
-#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
-#include <imgui.h>
-
-void SpriteRendererComponent::SaveProperties(nlohmann::ordered_json& out)
-{
-	Component::SaveProperties(out);
-	//FileIOHelper::AddScalarValue(out["TextureWidth"], mTexWidth);
-	//FileIOHelper::AddScalarValue(out["TextureHeight"], mTexHeight);
-	FileIOHelper::AddScalarValue(out["Channel"], mChannel);
-	FileIOHelper::AddVector2(out["Scale"], mTexScale);
-}
-
 void SpriteRendererComponent::EditorUpdate(float deltaTime)
 {
 	if (GetMeshGroup())

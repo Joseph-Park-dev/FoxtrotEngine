@@ -119,10 +119,6 @@ void Rigidbody2DComponent::SaveProperties(std::ofstream& ofs)
 	}
 }
 
-void Rigidbody2DComponent::SaveProperties(nlohmann::ordered_json& out)
-{
-}
-
 void Rigidbody2DComponent::EditorUpdate(float deltaTime)
 {
 }

@@ -129,13 +129,4 @@ void SpriteAnimComponent::OnConfirmUpdate()
 			printf("ERROR: SpriteAnimComponent::ConfirmUpdate() -> .CSV path is null");
 	}*/
 }
-
-void SpriteAnimComponent::SaveProperties(nlohmann::ordered_json& out)
-{
-	Component::SaveProperties(out);
-	FileIOHelper::AddScalarValue(out["MeshKey"], GetMeshKey());
-	FileIOHelper::AddScalarValue(out["TextureKey"], GetTexKey());
-	FileIOHelper::AddScalarValue(out["AnimationFPS"], mAnimFPS);
-	FileIOHelper::AddScalarValue(out["IsRepeated"], mIsRepeated);
-}
 #endif

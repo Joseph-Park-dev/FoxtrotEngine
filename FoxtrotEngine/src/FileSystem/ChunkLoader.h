@@ -3,7 +3,6 @@
 #include <list>
 #include <unordered_map>
 #include <functional>
-#include <nlohmann/json.hpp>
 #include <fstream>
 
 #include "Core/SingletonMacro.h"
@@ -42,7 +41,6 @@ protected:
 
 protected:
 	void LoadActors(std::ifstream& ifs);
-	void LoadActors(nlohmann::ordered_json& in);
 	//void LoadActorsToEditor(std::ifstream& ifs);
 
 private:
@@ -51,7 +49,6 @@ private:
 
 private:
 	Actor*		LoadIndividualActor(std::ifstream& ifs, Scene* currScene);
-	Actor*		LoadIndividualActor(nlohmann::ordered_json& ifs, Scene* currScene);
 	std::string GetConvertedFileName(std::string curr, std::string prevSuffix, std::string postSuffix);
 };
 
@@ -60,24 +57,6 @@ private:
 
 class FileIOHelper
 {
-public:
-	static void			AddVector2		(nlohmann::ordered_json& json, FTVector2 value);
-	static void			AddVector3		(nlohmann::ordered_json& json, FTVector3 value);
-
-	template <typename T>
-	static void	AddScalarValue(nlohmann::ordered_json& json, T value) {
-		json = value;
-	}
-
-	static FTVector2	LoadVector2		(nlohmann::ordered_json& json, std::string key);
-	static FTVector3	LoadVector3		(nlohmann::ordered_json& json, std::string key);
-
-
-	template <typename ScalarType>
-	static ScalarType	LoadScalarValue	(nlohmann::ordered_json& json, std::string key) {
-		return json[key];
-	}
-
 public:
 	static std::pair<size_t, std::string> BeginDataPackLoad(std::ifstream& ifs);
 	static std::pair<size_t, std::string> BeginDataPackLoad(std::ifstream& ifs, std::string dataPackKey);

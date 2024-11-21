@@ -36,19 +36,6 @@ UINT FTResource::LoadProperties(std::ifstream& ifs)
 }
 
 #ifdef FOXTROT_EDITOR
-void FTResource::SaveProperties(nlohmann::ordered_json& out, UINT key)
-{
-    FileIOHelper::AddScalarValue(out["Key"], key);
-    FileIOHelper::AddScalarValue(out["FileName"], mFileName);
-	FileIOHelper::AddScalarValue(out["RelativePath"], mRelativePath);
-}
-
-void FTResource::LoadProperties(nlohmann::ordered_json& itemTree)
-{
-    mFileName.assign(FileIOHelper::LoadScalarValue<std::string>(itemTree, "FileName"));
-    mRelativePath.assign(FileIOHelper::LoadScalarValue<std::string>(itemTree, "RelativePath"));
-}
-
 void FTResource::UpdateRelativePath(std::string fileExtension)
 {
     std::string currentPath = "No path has been assigned";

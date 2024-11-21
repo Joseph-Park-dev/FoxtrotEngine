@@ -2,12 +2,6 @@
 #include <string>
 #include <Windows.h>
 
-#define KEY_LENGTH 50
-
-#ifdef FOXTROT_EDITOR
-#include <nlohmann/json.hpp>
-#endif
-
 class FTResource
 {
 public:
@@ -36,9 +30,6 @@ public:
 
 #ifdef FOXTROT_EDITOR
 public:
-	virtual void SaveProperties(nlohmann::ordered_json& out, UINT key);
-	virtual void LoadProperties(nlohmann::ordered_json& itemTree);
-
 	virtual void UpdateUI() {};
 
 protected:

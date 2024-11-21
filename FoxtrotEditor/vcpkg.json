@@ -21,7 +21,6 @@
         "win32-binding"
       ]
     },
-    "nlohmann-json",
     "stb"
   ]
 }

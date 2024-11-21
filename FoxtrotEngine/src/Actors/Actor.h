@@ -2,7 +2,6 @@
 #include <vector>
 #include <string>
 #include <typeinfo>
-#include <nlohmann/json.hpp>
 
 #include "Core/TemplateFunctions.h"
 #include "Core/FTCore.h"
@@ -138,13 +137,4 @@ public:
 
 	void LoadProperties(std::ifstream& ifs);
 	void LoadComponents(std::ifstream& ifs);
-
-#ifdef FOXTROT_EDITOR
-public:
-	void SaveProperties(nlohmann::ordered_json& out);
-	void SaveComponents(nlohmann::ordered_json& out);
-
-	void LoadProperties(nlohmann::ordered_json& ifs);
-	void LoadComponents(nlohmann::ordered_json& ifs);
-#endif //  FOXTROT_EDITOR
 };

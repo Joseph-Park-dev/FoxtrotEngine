@@ -59,10 +59,3 @@ void GunFiringComponent::LoadProperties(std::ifstream& ifs)
 {
 	Component::LoadProperties(ifs);
 }
-
-#ifdef FOXTROT_EDITOR
-void GunFiringComponent::SaveProperties(nlohmann::ordered_json& out)
-{
-	Component::SaveProperties(out);
-}
-#endif // FOXTROT_EDITOR

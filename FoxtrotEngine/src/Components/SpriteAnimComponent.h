@@ -48,9 +48,5 @@ public:
 	void		 UpdateIsRepeated();
 	void		 UpdatePlayAnim();
 	virtual void OnConfirmUpdate() override;
-
-	virtual void SaveProperties(nlohmann::ordered_json& out) override;
-	// virtual void LoadProperties(std::ifstream& ifs) override;
-	// _DEBUG
-#endif
+#endif //FOXTROT_EDITOR
 };

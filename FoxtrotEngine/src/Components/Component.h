@@ -4,8 +4,6 @@
 #ifdef FOXTROT_EDITOR
 #include "FTCoreEditor.h"
 
-#include <nlohmann/json.hpp>
-
 #include "Renderer/Camera.h"
 #endif
 
@@ -68,10 +66,6 @@ public:
 	}
 
 #ifdef FOXTROT_EDITOR
-public:
-	virtual void SaveProperties(nlohmann::ordered_json& out);
-	virtual void LoadProperties(nlohmann::ordered_json& in);
-
 public:
 	// Member functions for EditorElement objects.
 	// Functions for editor specific tasks, which means

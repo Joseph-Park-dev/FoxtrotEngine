@@ -58,9 +58,6 @@ public:
 
 #ifdef FOXTROT_EDITOR
 public:
-    virtual void SaveProperties(nlohmann::ordered_json& out, UINT key) override;
-    virtual void LoadProperties(nlohmann::ordered_json& itemTree)      override;
-
     virtual void UpdateUI()         override;
 #endif // FOXTROT_EDITOR
 };

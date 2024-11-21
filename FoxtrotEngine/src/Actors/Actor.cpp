@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <functional>
-#include <nlohmann/json.hpp>
 
 #include "Scenes/Scene.h"
 #include "Managers/KeyInputManager.h"
@@ -343,59 +342,3 @@ void Actor::LoadComponents(std::ifstream& ifs)
 		ChunkLoader::GetInstance()->GetComponentLoadMap().at(compPack.second)(this, ifs);
 	}
 }
-
-#ifdef FOXTROT_EDITOR
-void Actor::SaveProperties(nlohmann::ordered_json& out)
-{
-	FileIOHelper::AddScalarValue(out["Name"], GetName());
-	FileIOHelper::AddScalarValue(out["ID"], mID);
-	FileIOHelper::AddScalarValue(out["ActorGroup"], ActorGroupUtil::GetActorGroupStr(mActorGroup));
-	FileIOHelper::AddScalarValue(out["State"], GetStateStr());
-	if (mParent)
-		FileIOHelper::AddScalarValue(out["Parent"], mParent->GetName());
-	else
-		FileIOHelper::AddScalarValue(out["Parent"], "nullptr");
-
-	mTransform->SaveProperties(out["Transform"]);
-	
-	// FileIOHelper::AddValue<std::string>("Child", GetStateStr());
-}
-
-void Actor::SaveComponents(nlohmann::ordered_json& out)
-{
-	size_t count = mComponents.size();
-	FileIOHelper::AddScalarValue(out["Count"], count);
-	for (size_t i = 0; i < count; ++i)
-	{
-		mComponents[i]->SaveProperties(out["List"][i]);
-	}
-}
-
-void Actor::LoadProperties(nlohmann::ordered_json& in)
-{
-	mName.assign(FileIOHelper::LoadScalarValue<std::string>(in, "Name"));
-	mID = FileIOHelper::LoadScalarValue<int>(in, "ID");
-
-	std::string actorGroupStr = FileIOHelper::LoadScalarValue<std::string>(in, "ActorGroup");
-	mActorGroup = ActorGroupUtil::GetActorGroup(actorGroupStr);
-
-	std::string stateStr = FileIOHelper::LoadScalarValue<std::string>(in, "State");
-	State state = State::EActive;
-	if (stateStr == "paused")
-		state = State::EPaused;
-	else if (stateStr == "dead")
-		state = State::EDead;
-	mState = state;
-
-}
-
-void Actor::LoadComponents(nlohmann::ordered_json& in)
-{
-	size_t count = FileIOHelper::LoadScalarValue<size_t>(in, "Count");
-	for (size_t i = 0; i < count; ++i)
-	{
-		//std::string compName = 
-		//ChunkLoader::GetInstance()->GetCompLoadMap()[compName](this, ifs);
-	}
-}
-#endif	

@@ -1,7 +1,6 @@
 #include "EditorChunkLoader.h"
 
 #include <fstream>
-#include <nlohmann/json.hpp>
 
 #include "Managers/ResourceManager.h"
 #include "Managers/SceneManager.h"
@@ -50,31 +49,6 @@ void EditorChunkLoader::LoadChunk(const std::string fileName)
     LoadChunkData(ifs);
     ResourceManager::GetInstance()->LoadResources(ifs);
     LoadActorsData(ifs);
-}
-
-void EditorChunkLoader::SaveChunkData(nlohmann::ordered_json& out)
-{
-    FileIOHelper::AddScalarValue<int>(out[ChunkKeys::TARGET_ACTOR], 1);
-    FileIOHelper::AddVector2(out[ChunkKeys::RENDER_RESOLUTION], FTVector2::Zero);
-    FileIOHelper::AddVector2(out[ChunkKeys::RENDER_SCREENCENTER], FTVector2(123, 123));
-    EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-    FileIOHelper::AddScalarValue<int>(out[ChunkKeys::ACTOR_COUNT], scene->GetActorCount());
-}
-
-void EditorChunkLoader::SaveActorsData(nlohmann::ordered_json& out)
-{
-    EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-    std::vector<Actor*>* actors = scene->GetActors();
-    for (size_t i = 0; i < (size_t)ActorGroup::END; ++i) 
-    {
-        for (size_t j = 0; j < actors[i].size(); ++j)
-        {
-            EditorElement* element = dynamic_cast<EditorElement*>(actors[i][j]);
-            size_t index = (size_t)ActorGroup::END * i + j;
-            element->SaveProperties(out[index]);
-            element->SaveComponents(out[index]["Components"]);
-        }
-    }
 }
 
 void EditorChunkLoader::SaveChunkData(std::ofstream& ofs)

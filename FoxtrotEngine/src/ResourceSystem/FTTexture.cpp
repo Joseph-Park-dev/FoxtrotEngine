@@ -103,21 +103,6 @@ UINT FTTexture::LoadProperties(std::ifstream& ifs)
 }
 
 #ifdef FOXTROT_EDITOR
-
-void FTTexture::SaveProperties(nlohmann::ordered_json& out, UINT key)
-{
-    FTResource::SaveProperties(out, key);
-    FileIOHelper::AddScalarValue(out["Width"], mTexWidth);
-    FileIOHelper::AddScalarValue(out["Height"], mTexHeight);
-}
-
-void FTTexture::LoadProperties(nlohmann::ordered_json& itemTree)
-{
-    FTResource::LoadProperties(itemTree);
-    mTexWidth = FileIOHelper::LoadScalarValue<UINT>(itemTree, "Width");
-    mTexHeight = FileIOHelper::LoadScalarValue<UINT>(itemTree, "Height");
-}
-
 void FTTexture::UpdateUI()
 {
     ImGui::Text(GetFileName().c_str());

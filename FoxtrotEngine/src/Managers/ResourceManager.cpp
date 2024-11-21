@@ -14,6 +14,11 @@
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
 
+#ifdef FOXTROT_EDITOR
+#include "imgui/FileDialog/ImGuiFileDialog.h"
+#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
+#endif // FOXTROT_EDITOR
+
 UINT ResourceManager::gItemKey = 0;
 
 void ResourceManager::Initialize(FoxtrotRenderer* renderer)
@@ -230,22 +235,6 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 }
 
 #ifdef FOXTROT_EDITOR
-#include <nlohmann/json.hpp>
-#include "imgui/FileDialog/ImGuiFileDialog.h"
-#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
-
-void ResourceManager::SaveResources(nlohmann::ordered_json& out)
-{
-	SaveResourceInMap<FTTexture>(out, mMapTextures);
-	//SaveResourceInMap<FTTileMap>(out, mMapTextures);
-}
-
-void ResourceManager::LoadResources(nlohmann::ordered_json& resourceTree)
-{
-	LoadResourceToMap<FTTexture>(resourceTree, mMapTextures);
-	ProcessTextures();
-}
-
 void ResourceManager::UpdateUI()
 {
 	if (ImGui::Button("Import")) {

@@ -7,6 +7,7 @@
 #include "Math/FTMath.h"
 #include "Components/ComponentBatchHeaders.h"
 #include "FileSystem/ChunkFileKeys.h"
+#include "FileSystem/FileIOHelper.h"
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
@@ -105,7 +106,7 @@ void EditorChunkLoader::LoadChunkData(std::ifstream& ifs)
 void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
 {
     EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-    std::pair<size_t, std::string>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::ACTOR_PROPERTIES);
+    std::pair<size_t, std::string>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::ACTOR_DATA);
     for (size_t i = 0; i < pack.first; ++i)
     {
         FileIOHelper::BeginDataPackLoad(ifs);

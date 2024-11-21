@@ -13,6 +13,7 @@
 #include "Renderer/Camera.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
+#include "FileSystem/FileIOHelper.h"
 
 #ifdef FOXTROT_EDITOR
 #include "imgui/FileDialog/ImGuiFileDialog.h"
@@ -150,7 +151,7 @@ FTPremade* ResourceManager::GetLoadedPremade(std::string fileName)
 		if ((*iter).second->GetFileName() == fileName)
 			return (*iter).second;
 		else
-			printf("Error: ResourceManager::GetLoadedPremade() -> Cannot find FTPremade %s\n", fileName);
+			printf("Error: ResourceManager::GetLoadedPremade() -> Cannot find FTPremade %s\n", fileName.c_str());
 }
 
 MeshData& ResourceManager::GetLoadedPrimitive(UINT key)
@@ -225,6 +226,9 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 {
 	std::pair<size_t, std::string>&& resPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::RESOURCE_DATA);
 	size_t count = resPack.first;
+
+	std::pair<size_t, std::string>&& ftPremadePack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTPREMADE_GROUP);
+	LoadResourceToMap<FTPremade>(ifs, mMapPremades, ftPremadePack.first);
 
 	std::pair<size_t, std::string>&& ftTileMapPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTTILEMAP_GROUP);
 	LoadResourceToMap<FTTileMap>(ifs, mMapTileMaps, ftTileMapPack.first);

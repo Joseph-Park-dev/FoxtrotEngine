@@ -11,6 +11,7 @@
 #include "Actors/Transform.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
+#include "FileSystem/FileIOHelper.h"
 #include "Components/Component.h"
 #include "Core/FTCore.h"
 
@@ -313,6 +314,7 @@ void Actor::SaveComponents(std::ofstream& ofs)
 
 void Actor::LoadProperties(std::ifstream& ifs)
 {
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::ACTOR_PROPERTIES);
 	// Changing the call location of Transform is NOT recommended
 	// Nested .chunk DataPack has unknown problem.
 	mTransform->LoadProperties(ifs);

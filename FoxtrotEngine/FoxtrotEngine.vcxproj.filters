@@ -168,6 +168,9 @@
     <ClCompile Include="src\ResourceSystem\FTPremade.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\FileSystem\FileIOHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Actors\Backgrounds\BackgroundActor.h">
@@ -375,6 +378,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ResourceSystem\FTPremade.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FileSystem\FileIOHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

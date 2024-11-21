@@ -2,6 +2,7 @@
 
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
+#include "FileSystem/FileIOHelper.h"
 
 void Transform::Translate(FTVector3 translation)
 {

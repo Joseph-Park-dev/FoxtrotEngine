@@ -89,7 +89,7 @@ private:
 
 	void DisplayInspectorMenu();
 	bool SceneViewportSizeChanged();
-	bool ProjectPathExists(std::string& projDir);
+	bool ProjectExists(std::string& projDir);
 
 	void SaveChunkFromUI();
 

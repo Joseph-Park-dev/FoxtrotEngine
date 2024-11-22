@@ -171,6 +171,9 @@
     <ClCompile Include="src\FileSystem\FileIOHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\FileSystem\DirectoryHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Actors\Backgrounds\BackgroundActor.h">
@@ -381,6 +384,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\FileSystem\FileIOHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FileSystem\DirectoryHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

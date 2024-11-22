@@ -247,7 +247,7 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 #ifdef FOXTROT_EDITOR
 void ResourceManager::LoadAllResourcesInAsset()
 {
-	DirectoryHelper::IterateDirectoryRecurse(
+	DirectoryHelper::IterateForFileRecurse(
 		mPathToAsset,
 		[](std::string&& path) { ResourceManager::GetInstance()->LoadResByType(path); }
 		);

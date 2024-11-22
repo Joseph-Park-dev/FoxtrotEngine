@@ -34,6 +34,7 @@
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/Camera.h"
 #include "FileSystem/ChunkFileKeys.h"
+#include "FileSystem/DirectoryHelper.h"
 
 void EditorLayer::Update(float deltaTime)
 {
@@ -209,8 +210,13 @@ void EditorLayer::DisplayFileMenu()
 			if (ImGuiFileDialog::Instance()->IsOk())
 			{
 				mCurrProjectPath = ImGuiFileDialog::Instance()->GetFilePathName();
-				if (!ProjectPathExists(mCurrProjectPath))
+				if (!ProjectExists(mCurrProjectPath))
 				{
+					std::filesystem::create_directory(mCurrProjectPath);
+					std::filesystem::create_directory(mCurrProjectPath + "/Assets");
+					std::filesystem::create_directory(mCurrProjectPath + "/Builds");
+					std::filesystem::create_directory(mCurrProjectPath + "/Chunks");
+					std::filesystem::create_directory(mCurrProjectPath + "/FoxtrotEngine");
 				}
 				else {
 					mErrorType = ErrorType::ProjectPathExists;
@@ -224,8 +230,10 @@ void EditorLayer::DisplayFileMenu()
 			if (ImGuiFileDialog::Instance()->IsOk())
 			{
 				std::string path = ImGuiFileDialog::Instance()->GetFilePathName();
-				if (ProjectPathExists(path)) {
+				if (ProjectExists(path)) {
 					mCurrProjectPath.assign(path);
+					ResourceManager::GetInstance()->SetPathToAsset(std::move(path));
+					ResourceManager::GetInstance()->LoadAllResourcesInAsset();
 				}
 				else {
 					mErrorType = ErrorType::ProjectNotValid;
@@ -361,12 +369,13 @@ bool EditorLayer::SceneViewportSizeChanged()
 	return false;
 }
 
-bool EditorLayer::ProjectPathExists(std::string& projDir)
+bool EditorLayer::ProjectExists(std::string& projDir)
 {
-	//std::string assetDir = projDir + "\\Assets";
-	//std::string projDataDir = projDir + "\\FoxtrotEngine_ProjectData";
-	//return std::filesystem::exists(assetDir) && std::filesystem::exists(projDataDir);
-	return false;
+	return
+		std::filesystem::exists(projDir + "/Assets") &&
+		std::filesystem::exists(projDir + "/Builds") &&
+		std::filesystem::exists(projDir + "/Chunks") &&
+		std::filesystem::exists(projDir + "/FoxtrotEngine");
 }
 
 void EditorLayer::SaveChunkFromUI()
@@ -518,34 +527,8 @@ void EditorLayer::PopUpError_ChunkNotSaved()
 void EditorLayer::Render(FoxtrotRenderer* renderer)
 {
 	ImGui::Render();
-	//ImDrawData* drawData = ImGui::GetDrawData();
-	//
-	//ImVec2 screenCenter = mSceneViewportPos + (mSceneViewportSize / 2);
-	//EditorSceneManager::GetInstance()->
-	//	RenderDebugGeometries(
-	//		mDebugDrawList, 
-	//		FTVector2(screenCenter.x, screenCenter.y)
-	//	);
-
-	//drawData->AddDrawList(mDebugDrawList);
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-	//ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
 }
-
-//void EditorLayer::ResizeUIWindow(std::string menuID)
-//{
-//	if (ImGui::IsWindowDocked())
-//	{
-//		if (mUIMap[menuID].first != ImGui::GetWindowPos() ||
-//			mUIMap[menuID].second != ImGui::GetWindowSize())
-//		{
-//			std::pair<ImVec2, ImVec2> windowInfo = std::make_pair(ImGui::GetWindowPos(), ImGui::GetWindowSize());
-//			mUIMap[menuID] = windowInfo;
-//
-//			LogVector2(FTVector2(windowInfo.first.x, windowInfo.first.y));
-//		}
-//	}
-//}
 
 void EditorLayer::ShutDown()
 {
@@ -553,16 +536,6 @@ void EditorLayer::ShutDown()
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 }
-
-// After directX implementation
-//void EditorLayer::DisplayViewport()
-//{
-//	ImGui::Begin("Viewport");
-//	ImVec2 contentRegion = ImGui::GetContentRegionAvail();
-//	if (mViewportSize != contentRegion)
-//		mViewportSize = contentRegion
-//	ImGui::End();
-//}
 
 EditorLayer::EditorLayer()
 	: mCurrFileSaved(false)

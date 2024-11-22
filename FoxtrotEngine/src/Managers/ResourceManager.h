@@ -67,7 +67,7 @@ public:
 
 	void SetPathToAsset(std::string&& projectPath)
 	{
-		mPathToAsset.assign(projectPath + "/Assets/");
+		mPathToAsset.assign(projectPath + "\\Assets");
 	}
 
 public:

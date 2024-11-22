@@ -65,23 +65,27 @@ public:
 		return mMapTileMaps;
 	}
 
+	std::string& GetPathToAsset()
+	{
+		return mPathToAsset;
+	}
+
 	void SetPathToAsset(std::string&& projectPath)
 	{
 		mPathToAsset.assign(projectPath + "\\Assets");
 	}
 
 public:
-	static UINT gItemKey;
+	static	UINT		gItemKey;
+			std::string mPathToAsset;
 
 private:
 	std::unordered_map<UINT, FTTexture*>			mMapTextures;
 	std::unordered_map<UINT, std::vector<MeshData>>	mMapMeshes;
 	std::unordered_map<UINT, FTTileMap*>			mMapTileMaps;
 	std::unordered_map<UINT, FTPremade*>			mMapPremades;
-
 	std::unordered_map<UINT, MeshData>				mMapPrimitives;
 
-	std::string mPathToAsset;
 	FoxtrotRenderer* mRenderer; // For Loading FTTextures
 
 public:
@@ -185,7 +189,8 @@ public:
 	{
 		typename std::unordered_map<UINT, FTRESOURCE*>::const_iterator iter;
 		for (iter = resMap.begin(); iter != resMap.end(); ++iter) {
-			(*iter).second->SaveProperties(ofs, (*iter).first);
+			if((*iter).second->GetIsReferenced())
+				(*iter).second->SaveProperties(ofs, (*iter).first);
 		}
 	}
 

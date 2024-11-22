@@ -273,6 +273,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\DirectoryHelper.cpp" />
     <ClCompile Include="src\FTShape.cpp" />
     <ClCompile Include="src\DebugGeometries.cpp" />
     <ClCompile Include="src\EditorChunkLoader.cpp" />
@@ -287,6 +288,7 @@
     <ClCompile Include="src\RenderTextureClass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\DirectoryHelper.h" />
     <ClInclude Include="src\FTShape.h" />
     <ClInclude Include="src\DebugGeometries.h" />
     <ClInclude Include="src\EditorUtils.h" />

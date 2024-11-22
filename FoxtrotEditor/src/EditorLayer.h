@@ -2,6 +2,7 @@
 #include <functional>
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
+#include "imgui/FileDialog/imfilebrowser.h"
 
 #include "Core/SingletonMacro.h"
 #include "EditorElement.h"
@@ -16,8 +17,19 @@ enum class ErrorType
 {
 	None,
 	ProjectPathExists,
+	ProjectPathNotEmpty,
 	ChunkNotSaved,
 	ProjectNotValid
+};
+
+enum class FileMenuEvents
+{
+	None,
+	NewProject,
+	OpenProject,
+	Save,
+	SaveAs,
+	Open
 };
 
 enum class InfoType
@@ -46,6 +58,7 @@ public:
 	ErrorType GetErrorType() { return mErrorType; }
 
 	void SetErrorType(ErrorType type) { mErrorType = type; }
+	void SetCurrentProjPath(std::string& path) { mCurrProjectPath.assign(path); }
 
 private:
 	// After directX implementation
@@ -78,7 +91,24 @@ private:
 
 	// UI event types
 	InfoType		mInfoType;
+	FileMenuEvents	mFileMenuEvent;
 	ErrorType		mErrorType;
+
+	ImGui::FileBrowser mFileDialog;
+	ImGuiFileBrowserFlags mDirSelectFlag =
+		ImGuiFileBrowserFlags_SelectDirectory |
+		ImGuiFileBrowserFlags_HideRegularFiles |
+		ImGuiFileBrowserFlags_ConfirmOnEnter |
+		ImGuiFileBrowserFlags_CloseOnEsc |
+		ImGuiFileBrowserFlags_CreateNewDir |
+		ImGuiFileBrowserFlags_EditPathString;
+
+	ImGuiFileBrowserFlags mFileSelectFlag =
+		ImGuiFileBrowserFlags_EnterNewFilename |
+		ImGuiFileBrowserFlags_ConfirmOnEnter |
+		ImGuiFileBrowserFlags_CloseOnEsc |
+		ImGuiFileBrowserFlags_CreateNewDir |
+		ImGuiFileBrowserFlags_EditPathString;
 
 private:
 	// After directX implementation
@@ -89,9 +119,7 @@ private:
 
 	void DisplayInspectorMenu();
 	bool SceneViewportSizeChanged();
-	bool ProjectExists(std::string& projDir);
-
-	void SaveChunkFromUI();
+	bool ProjectExists(std::string projDir);
 
 	void DisplayInfoMessage();
 	void PopUpInfo_ChunkIsSaved();
@@ -99,5 +127,12 @@ private:
 	void DisplayErrorMessage();
 	void PopUpError_ProjectPathExists();
 	void PopUpError_ProjectNotValid();
+	void PopUpError_FolderNotEmpty();
 	void PopUpError_ChunkNotSaved();
+
+	void CreateNewProject(std::filesystem::path& path);
+	void OpenProject(std::filesystem::path& path);
+	void Save(std::filesystem::path& path);
+	void SaveAs(std::filesystem::path& path);
+	void Open(std::filesystem::path& path);
 };

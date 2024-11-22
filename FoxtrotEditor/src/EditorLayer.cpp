@@ -5,9 +5,8 @@
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
-#include "imgui/FileDialog/ImGuiFileDialog.h"
-#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
 #include <imgui_internal.h>
+#include "imgui/FileDialog/imfilebrowser.h"
 #include <d3d11.h>
 
 #include "EditorElement.h"
@@ -19,6 +18,7 @@
 #include "EditorSceneManager.h"
 #include "EditorScene.h"
 #include "DebugGeometries.h"
+#include "DirectoryHelper.h"
 
 #include "Core/FTCore.h"
 #include "Managers/SceneManager.h"
@@ -34,7 +34,6 @@
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/Camera.h"
 #include "FileSystem/ChunkFileKeys.h"
-#include "FileSystem/DirectoryHelper.h"
 
 void EditorLayer::Update(float deltaTime)
 {
@@ -100,9 +99,7 @@ void EditorLayer::DisplayFileMenu()
 
 		std::string selection = {};
 		if (ImGui::Button("File"))
-		{
 			ImGui::OpenPopup("FilePopUp");
-		}
 
 		if (ImGui::BeginPopup("FilePopUp"))
 		{
@@ -114,39 +111,56 @@ void EditorLayer::DisplayFileMenu()
 
 		if (selection == fileMenu[0])
 		{
-			IGFD::FileDialogConfig config;
-			config.path = ".";
-			config.countSelectionMax = 1;
-			config.flags = ImGuiFileDialogFlags_ConfirmOverwrite;
-			ImGuiFileDialog::Instance()->OpenDialog("NewProject", "New Project", "", config);
+			mFileDialog = ImGui::FileBrowser(mDirSelectFlag);
+			mFileDialog.SetTitle("New Project");
+			mFileDialog.Open();
+			mFileMenuEvent = FileMenuEvents::NewProject;
 		}
 		else if (selection == fileMenu[1])
 		{
-			IGFD::FileDialogConfig config;
-			config.path = ".";
-			config.countSelectionMax = 1;
-			config.flags = ImGuiFileDialogFlags_ConfirmOverwrite;
-			ImGuiFileDialog::Instance()->OpenDialog("OpenProject", "Open Project", "", config);
+			mFileDialog = ImGui::FileBrowser(mDirSelectFlag);
+			mFileDialog.SetTitle("Open Project");
+			mFileDialog.Open();
+			mFileMenuEvent = FileMenuEvents::OpenProject;
 		}
-		// Save menu
 		else if (selection == fileMenu[2] || mSaveKeyPressed)
 		{
-			SaveChunkFromUI();
+			if (mCurrFileSaved)
+			{
+				if (!mCurrFilePath.empty()) {
+					EditorChunkLoader::GetInstance()->SaveChunk(mCurrFilePath);
+					mInfoType = InfoType::ChunkIsSaved;
+				}
+				else
+					LogString("Saved file path doesn't exist but trying to access it");
+			}
+			else
+			{
+				mFileDialog = ImGui::FileBrowser(mFileSelectFlag);
+				mFileDialog.SetTitle("Save");
+				mFileDialog.SetTypeFilters({ ChunkKeys::CHUNK_FILE_FORMAT });
+				mFileDialog.SetDirectory(mCurrProjectPath);
+				mFileDialog.Open();
+				mFileMenuEvent = FileMenuEvents::Save;
+			}
 		}
 		else if (selection == fileMenu[3] || mSaveAsKeyPressed)
 		{
-			IGFD::FileDialogConfig config;
-			config.path = ".";
-			config.countSelectionMax = 1;
-			config.flags = ImGuiFileDialogFlags_ConfirmOverwrite;
-			ImGuiFileDialog::Instance()->OpenDialog("SaveChunkFile", "Save As", ChunkKeys::CHUNK_FILE_FORMAT, config);
+			mFileDialog = ImGui::FileBrowser(mFileSelectFlag);
+			mFileDialog.SetTitle("Save As");
+			mFileDialog.SetTypeFilters({ ChunkKeys::CHUNK_FILE_FORMAT });
+			mFileDialog.SetDirectory(mCurrProjectPath);
+			mFileDialog.Open();
+			mFileMenuEvent = FileMenuEvents::SaveAs;
 		}
 		else if (selection == fileMenu[4] || mOpenKeyPressed)
 		{
-			IGFD::FileDialogConfig config;
-			config.path = ".";
-			config.countSelectionMax = 1;
-			ImGuiFileDialog::Instance()->OpenDialog("OpenChunkFile", "Open Chunk", ChunkKeys::CHUNK_FILE_FORMAT, config);
+			mFileDialog = ImGui::FileBrowser(mFileSelectFlag);
+			mFileDialog.SetTitle("Open Chunk");
+			mFileDialog.SetTypeFilters({ ChunkKeys::CHUNK_FILE_FORMAT });
+			mFileDialog.SetDirectory(mCurrProjectPath);
+			mFileDialog.Open();
+			mFileMenuEvent = FileMenuEvents::Open;
 		}
 
 		if (ImGui::Button("New Game Object"))
@@ -191,7 +205,7 @@ void EditorLayer::DisplayFileMenu()
 		if (ImGui::Button("2D"))
 		{
 			FoxtrotRenderer* renderer = FTCoreEditor::GetInstance()->GetGameRenderer();
-			if(Camera::GetInstance()->GetViewType() == Viewtype::Perspective)
+			if (Camera::GetInstance()->GetViewType() == Viewtype::Perspective)
 				Camera::GetInstance()->SetViewType(Viewtype::Orthographic);
 			else if (Camera::GetInstance()->GetViewType() == Viewtype::Orthographic)
 				Camera::GetInstance()->SetViewType(Viewtype::Perspective);
@@ -204,73 +218,44 @@ void EditorLayer::DisplayFileMenu()
 			else if (renderer->GetFillMode() == FillMode::WireFrame)
 				renderer->SetFillMode(FillMode::Solid);
 		}
-
-		if (ImGuiFileDialog::Instance()->Display("NewProject"))
-		{
-			if (ImGuiFileDialog::Instance()->IsOk())
-			{
-				mCurrProjectPath = ImGuiFileDialog::Instance()->GetFilePathName();
-				if (!ProjectExists(mCurrProjectPath))
-				{
-					std::filesystem::create_directory(mCurrProjectPath);
-					std::filesystem::create_directory(mCurrProjectPath + "/Assets");
-					std::filesystem::create_directory(mCurrProjectPath + "/Builds");
-					std::filesystem::create_directory(mCurrProjectPath + "/Chunks");
-					std::filesystem::create_directory(mCurrProjectPath + "/FoxtrotEngine");
-				}
-				else {
-					mErrorType = ErrorType::ProjectPathExists;
-				}
-			}
-			ImGuiFileDialog::Instance()->Close();
-		}
-
-		if (ImGuiFileDialog::Instance()->Display("OpenProject"))
-		{
-			if (ImGuiFileDialog::Instance()->IsOk())
-			{
-				std::string path = ImGuiFileDialog::Instance()->GetFilePathName();
-				if (ProjectExists(path)) {
-					mCurrProjectPath.assign(path);
-					ResourceManager::GetInstance()->SetPathToAsset(std::move(path));
-					ResourceManager::GetInstance()->LoadAllResourcesInAsset();
-				}
-				else {
-					mErrorType = ErrorType::ProjectNotValid;
-				}
-			}
-			ImGuiFileDialog::Instance()->Close();
-		}
-
-		if (ImGuiFileDialog::Instance()->Display("SaveChunkFile"))
-		{
-			if (ImGuiFileDialog::Instance()->IsOk())
-			{
-				mCurrFilePath = ImGuiFileDialog::Instance()->GetFilePathName();
-				EditorChunkLoader::GetInstance()->SaveChunk(mCurrFilePath);
-				mInfoType = InfoType::ChunkIsSaved;
-				mCurrFileSaved = true;
-			}
-			ImGuiFileDialog::Instance()->Close();
-		}
-
-		if (ImGuiFileDialog::Instance()->Display("OpenChunkFile"))
-		{
-			if (ImGuiFileDialog::Instance()->IsOk())
-			{
-				EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
-				mCurrFilePath = ImGuiFileDialog::Instance()->GetFilePathName();
-				EditorChunkLoader::GetInstance()->LoadChunk(mCurrFilePath);
-				mCurrFileSaved = true;
-			}
-			ImGuiFileDialog::Instance()->Close();
-		}
-		if (ImGui::IsKeyPressed(ImGuiKey_Escape))
-		{
-			ImGuiFileDialog::Instance()->Close();
-		}
 		ImGui::EndMainMenuBar();
 	}
+	mFileDialog.Display();
+
+
+	if (mFileDialog.HasSelected())
+	{
+		std::filesystem::path path = mFileDialog.GetSelected();
+		switch (mFileMenuEvent)
+		{
+		case FileMenuEvents::None:
+			break;
+
+		case FileMenuEvents::NewProject:
+			CreateNewProject(path);
+			break;
+
+		case FileMenuEvents::OpenProject:
+			OpenProject(path);
+			break;
+
+		case FileMenuEvents::Save:
+			Save(path);
+			break;
+
+		case FileMenuEvents::SaveAs:
+			SaveAs(path);
+			break;
+
+		case FileMenuEvents::Open:
+			Open(path);
+			break;
+
+		default:
+			break;
+		}
+	}
+	mFileDialog.ClearSelected();
 }
 
 void EditorLayer::DisplayHierarchyMenu()
@@ -369,35 +354,13 @@ bool EditorLayer::SceneViewportSizeChanged()
 	return false;
 }
 
-bool EditorLayer::ProjectExists(std::string& projDir)
+bool EditorLayer::ProjectExists(std::string projDir)
 {
 	return
-		std::filesystem::exists(projDir + "/Assets") &&
-		std::filesystem::exists(projDir + "/Builds") &&
-		std::filesystem::exists(projDir + "/Chunks") &&
-		std::filesystem::exists(projDir + "/FoxtrotEngine");
-}
-
-void EditorLayer::SaveChunkFromUI()
-{
-	if (mCurrFileSaved)
-	{
-		if (!mCurrFilePath.empty()) {
-			EditorChunkLoader::GetInstance()->SaveChunk(mCurrFilePath);
-			mInfoType = InfoType::ChunkIsSaved;
-		}
-
-		else
-			LogString("Saved file path doesn't exist but trying to access it");
-	}
-	else
-	{
-		IGFD::FileDialogConfig config;
-		config.path = ".";
-		config.countSelectionMax = 1;
-		config.flags = ImGuiFileDialogFlags_ConfirmOverwrite;
-		ImGuiFileDialog::Instance()->OpenDialog("SaveChunkFile", "Save", ChunkKeys::CHUNK_FILE_FORMAT, config);
-	}
+		std::filesystem::exists(projDir + "//Assets") &&
+		std::filesystem::exists(projDir + "//Builds") &&
+		std::filesystem::exists(projDir + "//Chunks") &&
+		std::filesystem::exists(projDir + "//FoxtrotEngine");
 }
 
 void EditorLayer::DisplayInfoMessage()
@@ -422,11 +385,12 @@ void EditorLayer::DisplayErrorMessage()
 	case ErrorType::ProjectPathExists:
 		PopUpError_ProjectPathExists();
 		break;
-
 	case ErrorType::ProjectNotValid:
 		PopUpError_ProjectNotValid();
 		break;
-
+	case ErrorType::ProjectPathNotEmpty:
+		PopUpError_FolderNotEmpty();
+		break;
 	case ErrorType::ChunkNotSaved:
 		PopUpError_ChunkNotSaved();
 		break;
@@ -495,6 +459,24 @@ void EditorLayer::PopUpError_ProjectNotValid()
 	}
 }
 
+void EditorLayer::PopUpError_FolderNotEmpty()
+{
+	ImGui::OpenPopup("FolderNotEmpty");
+	// Always center this window when appearing
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+	if (ImGui::BeginPopupModal("FolderNotEmpty", NULL))
+	{
+		ImGui::Text("The directory is not empty to create a FT Engine Project.");
+		ImGui::Separator();
+
+		if (ImGui::Button("OK", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); mErrorType = ErrorType::None; }
+		ImGui::SetItemDefaultFocus();
+		ImGui::EndPopup();
+	}
+}
+
 void EditorLayer::PopUpError_ChunkNotSaved()
 {
 	ImGui::OpenPopup("Chunk is not saved");
@@ -522,6 +504,63 @@ void EditorLayer::PopUpError_ChunkNotSaved()
 		}
 		ImGui::EndPopup();
 	}
+}
+
+void EditorLayer::CreateNewProject(std::filesystem::path& path)
+{
+	bool projExists = ProjectExists(path.string());
+	bool pathIsEmpty = std::filesystem::is_empty(path);
+
+	if (!projExists && pathIsEmpty)
+	{
+		mCurrProjectPath.assign(path.string());
+		std::filesystem::create_directory(mCurrProjectPath + "\\Assets");
+		std::filesystem::create_directory(mCurrProjectPath + "\\Builds");
+		std::filesystem::create_directory(mCurrProjectPath + "\\Chunks");
+		std::filesystem::create_directory(mCurrProjectPath + "\\FoxtrotEngine");
+	}
+	else {
+		if (projExists)
+			mErrorType = ErrorType::ProjectPathExists;
+		else if (!pathIsEmpty)
+			mErrorType = ErrorType::ProjectPathNotEmpty;
+	}
+}
+
+void EditorLayer::OpenProject(std::filesystem::path& path)
+{
+	if (ProjectExists(path.string())) {
+		mCurrProjectPath.assign(path.string());
+		ResourceManager::GetInstance()->SetPathToAsset(std::move(mCurrProjectPath));
+		ResourceManager::GetInstance()->LoadAllResourcesInAsset();
+	}
+	else {
+		mErrorType = ErrorType::ProjectNotValid;
+	}
+}
+
+void EditorLayer::Save(std::filesystem::path& path)
+{
+	mCurrFilePath.assign(path.string());
+	EditorChunkLoader::GetInstance()->SaveChunk(mCurrFilePath);
+	mInfoType = InfoType::ChunkIsSaved;
+	mCurrFileSaved = true;
+}
+
+void EditorLayer::SaveAs(std::filesystem::path& path)
+{
+	mCurrFilePath.assign(path.string());
+	EditorChunkLoader::GetInstance()->SaveChunk(mCurrFilePath);
+	mInfoType = InfoType::ChunkIsSaved;
+	mCurrFileSaved = true;
+}
+
+void EditorLayer::Open(std::filesystem::path& path)
+{
+	mCurrFilePath.assign(path.string());
+	EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
+	EditorChunkLoader::GetInstance()->LoadChunk(mCurrFilePath);
+	mCurrFileSaved = true;
 }
 
 void EditorLayer::Render(FoxtrotRenderer* renderer)

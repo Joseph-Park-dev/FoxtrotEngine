@@ -258,7 +258,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\FileSystem\DirectoryHelper.cpp" />
     <ClCompile Include="src\FileSystem\FileIOHelper.cpp" />
     <ClCompile Include="src\ResourceSystem\FTPremade.cpp" />
     <ClCompile Include="src\Components\CircleCollider2DComponent.cpp" />
@@ -313,7 +312,6 @@
     <ClCompile Include="src\Scenes\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\FileSystem\DirectoryHelper.h" />
     <ClInclude Include="src\FileSystem\FileIOHelper.h" />
     <ClInclude Include="src\ResourceSystem\FTPremade.h" />
     <ClInclude Include="src\Components\CircleCollider2DComponent.h" />

@@ -7,6 +7,7 @@
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
 #include "Components/BoxCollider2DComponent.h"
+#include "FileSystem/FileIOHelper.h"
 
 #ifdef FOXTROT_EDITOR
 #include "CommandHistory.h"

@@ -14,6 +14,7 @@
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
+#include "FileSystem/DirectoryHelper.h"
 
 #ifdef FOXTROT_EDITOR
 #include "imgui/FileDialog/ImGuiFileDialog.h"
@@ -182,9 +183,14 @@ void ResourceManager::ProcessTexture(FTTexture* texture)
 
 void ResourceManager::ProcessTextures()
 {
-	for (auto& textureItem : mMapTextures) {
+	for (auto& textureItem : mMapTextures)
 		ProcessTexture(textureItem.second);
-	}
+}
+
+void ResourceManager::ProcessPremades()
+{
+	for (auto& premadeItem : mMapPremades)
+		premadeItem.second->Load();
 }
 
 ResourceManager::~ResourceManager()
@@ -239,6 +245,52 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 }
 
 #ifdef FOXTROT_EDITOR
+void ResourceManager::LoadAllResourcesInAsset()
+{
+	DirectoryHelper::IterateDirectoryRecurse(
+		mPathToAsset,
+		[](std::string&& path) { ResourceManager::GetInstance()->LoadResByType(path); }
+		);
+	ProcessTextures();
+	ProcessPremades();
+}
+
+void ResourceManager::LoadResByType(std::string& filePath)
+{
+	ResType type = GetResType(filePath);
+	printf("Loading file... %s\n", filePath.c_str());
+	switch (type)
+	{
+	case ResType::UNSUPPORTED:
+		printf("File %s is unsupported\n", filePath.c_str());
+		break;
+	case ResType::FTTEXTURE:
+		LoadResource(filePath, mMapTextures);
+		break;
+	case ResType::FTTILEMAP:
+		LoadResource(filePath, mMapTileMaps);
+		break;
+	case ResType::FTPREMADE:
+		LoadResource(filePath, mMapPremades);
+		break;
+	default:
+		break;
+	}
+}
+
+ResType ResourceManager::GetResType(std::string& fileName)
+{
+	std::string format = fileName.substr(fileName.rfind("."));
+	if (StrContains(TEXTURE_FORMAT_SUPPORTED, format))
+		return ResType::FTTEXTURE;
+	else if (StrContains(TILEMAP_FORMAT_SUPPORTED, format))
+		return ResType::FTTILEMAP;
+	else if (StrContains(FTPremade_FORMAT_SUPPORTED, format))
+		return ResType::FTPREMADE;
+	else
+		return ResType::UNSUPPORTED;
+}
+
 void ResourceManager::UpdateUI()
 {
 	if (ImGui::Button("Import")) {

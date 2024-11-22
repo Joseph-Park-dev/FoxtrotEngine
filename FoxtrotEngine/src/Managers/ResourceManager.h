@@ -17,6 +17,14 @@ class SpineTextureLoader;
 class MeshData;
 class FTTileMap;
 
+enum class ResType
+{
+	UNSUPPORTED,
+	FTTEXTURE,
+	FTTILEMAP,
+	FTPREMADE
+};
+
 class ResourceManager
 {
 	SINGLETON(ResourceManager);
@@ -24,6 +32,9 @@ class ResourceManager
 public:
 	void				Initialize(FoxtrotRenderer* renderer);
 	void				DeleteAll();
+
+	void				SaveResources(std::ofstream& ofs);
+	void				LoadResources(std::ifstream& ifs);
 
 public:
 	void				UpdateTexture(FTTexture* texture, int channels);
@@ -52,6 +63,11 @@ public:
 	std::unordered_map<UINT, FTTileMap*>&
 		GetTileMapsMap() {
 		return mMapTileMaps;
+	}
+
+	void SetPathToAsset(std::string&& projectPath)
+	{
+		mPathToAsset.assign(projectPath + "/Assets/");
 	}
 
 public:
@@ -111,6 +127,14 @@ private:
 	}
 
 	template<typename FTRESOURCE>
+	void LoadResource(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap)
+	{
+		FTRESOURCE* resource = new FTRESOURCE;
+		UINT key = resource->LoadProperties(ifs);
+		resMap.insert(std::make_pair(key, resource));
+	}
+
+	template<typename FTRESOURCE>
 	bool KeyExists(const UINT key, const std::unordered_map<UINT, FTRESOURCE>& resMap) {
 		if (resMap.find(key) != resMap.end()) {
 			printf("Error: ResourceManager::ResourceExists() -> Resource with key %d exists\n", key);
@@ -141,6 +165,7 @@ private:
 private:
 	void ProcessTexture(FTTexture* texture);
 	void ProcessTextures();
+	void ProcessPremades();
 
 	//template<typename FTRESOURCE>
 	//void LoadResourceToMap(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap) {
@@ -155,9 +180,6 @@ private:
 	//}
 
 public:
-	void SaveResources(std::ofstream& ofs);
-	void LoadResources(std::ifstream& ifs);
-
 	template<typename FTRESOURCE>
 	void SaveResourceInMap(std::ofstream& ofs, const std::unordered_map<UINT, FTRESOURCE*>& resMap) 
 	{
@@ -168,12 +190,12 @@ public:
 	}
 
 	template<typename FTRESOURCE>
-	void LoadResourceToMap(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap, size_t& resCount) 
+	void LoadResourceToMap(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap, size_t& resCount)
 	{
 		gItemKey += resCount;
 		if (0 < resCount)
 		{
-			while(0 < resCount)
+			while (0 < resCount)
 			{
 				LoadResource(ifs, resMap);
 				--resCount; // Key of the next resource to be imported.
@@ -182,16 +204,16 @@ public:
 		}
 	}
 
-	template<typename FTRESOURCE>
-	void LoadResource(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap)
-	{
-		FTRESOURCE* resource = new FTRESOURCE;
-		UINT key = resource->LoadProperties(ifs);
-		resMap.insert(std::make_pair(key, resource));
-	}
-
 #ifdef FOXTROT_EDITOR
 public:
+	void LoadAllResourcesInAsset();
+	void LoadResByType(std::string& fileName);
+
+public:
 	void UpdateUI();
+
+private:
+	ResType GetResType(std::string& fileName);
+
 #endif // FOXTROT_EDITOR
 };

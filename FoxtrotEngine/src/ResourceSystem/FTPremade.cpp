@@ -1,6 +1,7 @@
 #include "ResourceSystem/FTPremade.h"
 
 #include "FileSystem/ChunkLoader.h"
+#include "FileSystem/FileIOHelper.h"
 #include "Managers/ResourceManager.h"
 #include "Scenes/Scene.h"
 

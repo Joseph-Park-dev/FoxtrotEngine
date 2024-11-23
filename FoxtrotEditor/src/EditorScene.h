@@ -3,6 +3,8 @@
 
 #include <vector>
 
+class EditorElement;
+
 class EditorScene : public Scene
 {
 public:

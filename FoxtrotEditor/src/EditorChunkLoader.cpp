@@ -40,27 +40,16 @@ void EditorChunkLoader::SaveChunk(const std::string fileName)
     // Save -> ActorData comes first, // Load -> ChunkData comes first
     SaveActorsData(ofs);
     ResourceManager::GetInstance()->SaveResources(ofs);
-    SaveChunkData(ofs);
+    SaveChunkData(ofs, EditorSceneManager::GetInstance()->GetEditorScene());
     FileIOHelper::SaveBufferToFile(ofs);
 }
 
 void EditorChunkLoader::LoadChunk(const std::string fileName)
 {
     std::ifstream ifs(fileName);
-    LoadChunkData(ifs);
+    LoadChunkData(ifs, EditorSceneManager::GetInstance()->GetEditorScene());
     ResourceManager::GetInstance()->LoadResources(ifs);
     LoadActorsData(ifs);
-}
-
-void EditorChunkLoader::SaveChunkData(std::ofstream& ofs)
-{
-    FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::CHUNK_DATA);
-    FileIOHelper::SaveInt(ofs, ChunkKeys::TARGET_ACTOR, 1);
-    FileIOHelper::SaveVector2(ofs, ChunkKeys::RENDER_RESOLUTION, FTVector2::Zero);
-    FileIOHelper::SaveVector2(ofs, ChunkKeys::RENDER_SCREENCENTER, FTVector2(123, 123));
-    EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-    FileIOHelper::SaveInt(ofs, ChunkKeys::ACTOR_COUNT, scene->GetActorCount());
-    FileIOHelper::EndDataPackSave(ofs, ChunkKeys::CHUNK_DATA);
 }
 
 void EditorChunkLoader::SaveActorsData(std::ofstream& ofs)
@@ -81,26 +70,6 @@ void EditorChunkLoader::SaveActorsData(std::ofstream& ofs)
         }
     }
     FileIOHelper::EndDataPackSave(ofs, ChunkKeys::ACTOR_DATA);
-}
-
-void EditorChunkLoader::LoadChunkData(std::ifstream& ifs)
-{
-    int targetActor = 0;
-    FTVector2 res = FTVector2::Zero;
-    FTVector2 center = FTVector2::Zero;
-    int actorCount = 0;
-
-    FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::CHUNK_DATA);
-    FileIOHelper::LoadInt(ifs, targetActor);
-    FileIOHelper::LoadVector2(ifs, res);
-    FileIOHelper::LoadVector2(ifs, center);
-    EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-    FileIOHelper::LoadInt(ifs, actorCount);
-
-    LogInt(targetActor);
-    LogVector2(res);
-    LogVector2(center);
-    LogInt(actorCount);
 }
 
 void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)

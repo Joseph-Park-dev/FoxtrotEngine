@@ -18,36 +18,6 @@ void EditorScene::Enter()
 
 void EditorScene::LoadData()
 {
-	//CollisionManager::GetInstance()->MarkGroup(ActorGroup::PLAYER, ActorGroup::ENEMY);
-	//CollisionManager::GetInstance()->MarkGroup(ActorGroup::PLAYER, ActorGroup::GROUND);
-	//CollisionManager::GetInstance()->MarkGroup(ActorGroup::DEFAULT, ActorGroup::DEFAULT);
-
-
-	//FoxtrotRenderer* currRenderer = FTCoreEditor::GetInstance()->GetGameRenderer();
-	//std::string asteroidSprite = "Asteroid.png";
-	//ResourceManager::GetInstance()->LoadTexture("Asteroid1", asteroidSprite);
-	//ResourceManager::GetInstance()->LoadTexture("Asteroid2", asteroidSprite);
-	//ResourceManager::GetInstance()->LoadTexture("Asteroid3", asteroidSprite);
-
-	//ResourceManager::GetInstance()->LoadTexture("HenryRunning", "Henry_Running_TEST/Henry_Running_TEST.png");
-	//ResourceManager::GetInstance()->LoadTexture("SpriteAnim", "ShipTileMap.png");
-
-	//ResourceManager::GetInstance()->GetLoadedTexture("TEST");
-
-	/*std::string pngPath = "SpineTest/Skel/[Player] ver.01_Spine - File.png";
-	ResourceManager::GetInstance()->LoadTexture(currRenderer, );
-	std::string atlasPath = "D:/[2024_01]/FoxtrotEngine_DirectX/Assets/SpineTest/Skel/[Player] ver.01_Spine-File.atlas";
-	std::string skeletonDataPath = "D:/[2024_01]/FoxtrotEngine_DirectX/Assets/SpineTest/Skel/skeleton.skel";
-	ResourceManager::GetInstance()->LoadSpineAnimation(
-		"RunningGrandpa",
-		atlasPath,
-		skeletonDataPath
-	);
-
-	std::string tileMapSprite = "D:/[2024_01]/FoxtrotEngine_DirectX/Assets/Tiles.png";
-	ResourceManager::GetInstance()->LoadTexture(currRenderer, tileMapSprite);*/
-
- // _DEBUG
 }
 
 void EditorScene::Exit()

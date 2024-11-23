@@ -26,28 +26,32 @@
 void ChunkLoader::SaveChunk(const std::string fileName)
 {
     std::ofstream ofs(fileName);
-    SaveChunkData(ofs);
+    SaveChunkData(ofs, SceneManager::GetInstance()->GetCurrentScene());
 }
 
 void ChunkLoader::LoadChunk(const std::string fileName)
 {
     std::ifstream ofs(fileName);
-
 }
 
-void ChunkLoader::SaveChunkData(std::ofstream& out)
+void ChunkLoader::SaveChunkData(std::ofstream& out, Scene* currScene)
 {
     FileIOHelper::BeginDataPackSave(out, ChunkKeys::CHUNK_DATA);
     FileIOHelper::SaveInt(out, ChunkKeys::TARGET_ACTOR, 1);
-    FileIOHelper::SaveVector2(out, ChunkKeys::RENDER_RESOLUTION, FTVector2::Zero);
-    FileIOHelper::SaveVector2(out, ChunkKeys::RENDER_SCREENCENTER, FTVector2(123, 123));
-    Scene* scene = SceneManager::GetInstance()->GetCurrentScene();
-    FileIOHelper::SaveInt(out, ChunkKeys::ACTOR_COUNT, scene->GetActorCount());
+    FileIOHelper::SaveInt(out, ChunkKeys::ACTOR_COUNT, currScene->GetActorCount());
     FileIOHelper::EndDataPackSave(out, ChunkKeys::CHUNK_DATA);
 }
 
 void ChunkLoader::SaveActorsData(std::ofstream& out)
 {
+}
+
+void ChunkLoader::LoadChunkData(std::ifstream& ifs, Scene* currScene)
+{
+    int targetActor = 0;
+    FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::CHUNK_DATA);
+    FileIOHelper::LoadInt(ifs, targetActor);
+    FileIOHelper::LoadSize(ifs, mCurrentChunkData.ActorCount);
 }
 
 void ChunkLoader::LoadActors(std::ifstream& ifs)

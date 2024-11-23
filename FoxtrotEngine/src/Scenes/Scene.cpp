@@ -91,13 +91,9 @@ void Scene::Render(FoxtrotRenderer* renderer)
 void Scene::AddActor(Actor* actor, ActorGroup group)
 {
 	if (mIsUpdatingActors)
-	{
 		mPendingActors[(UINT)group].emplace_back(actor);
-	}
 	else
-	{
 		mActors[(UINT)group].emplace_back(actor);
-	}
 }
 
 void Scene::ProcessEvent()

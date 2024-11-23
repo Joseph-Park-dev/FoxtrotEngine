@@ -19,10 +19,7 @@ public:
 	ComponentCreateMap& GetCompCreateMap() { return mComponentCreateMap; }
 
 protected:
-	void SaveChunkData(std::ofstream& ofs);
 	void SaveActorsData(std::ofstream& ofs);
-
-	void LoadChunkData(std::ifstream& ifs);
 	void LoadActorsData(std::ifstream& ifs);
 
 private:

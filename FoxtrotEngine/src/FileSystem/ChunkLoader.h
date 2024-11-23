@@ -19,7 +19,7 @@ using ComponentLoadMap = std::unordered_map<std::string, ComponentLoadFunc>;
 
 struct ChunkData
 {
-	int ActorCount;
+	size_t ActorCount;
 };
 
 class ChunkLoader
@@ -36,11 +36,13 @@ public:
 
 protected:
 	//Save .Chunk for the editor
-	void SaveChunkData(std::ofstream& out);
-	void SaveActorsData(std::ofstream& out);
+			void SaveChunkData(std::ofstream& out, Scene* currScene);
+			void SaveActorsData(std::ofstream& out);
+
+			void LoadChunkData(std::ifstream& out, Scene* currScene);
 
 protected:
-	void LoadActors(std::ifstream& ifs);
+			void LoadActors(std::ifstream& ifs);
 
 private:
 	ComponentLoadMap mComponentLoadMap;

@@ -48,25 +48,20 @@ public:
 	void ShutDown();
 
 public:
-	int& GetActorNameIdx() { return mActorNameIdx; }
-	bool GetUndoKeyPressed()	const { return mUndoKeyPressed; }
-	bool GetRedoKeyPressed()	const { return mRedoKeyPressed; }
-	bool GetConfirmKeyPressed() const { return mConfirmKeyPressed; }
-	ImVec2 GetSceneViewportPos() const { return mSceneViewportPos; }
-	ImVec2 GetSceneViewportSize() const { return mSceneViewportSize; }
-	bool GetCurrentFileSaved() const { return mCurrFileSaved; }
-	ErrorType GetErrorType() { return mErrorType; }
+	int&		GetActorNameIdx() { return mActorNameIdx; }
+	bool		GetUndoKeyPressed()	const { return mUndoKeyPressed; }
+	bool		GetRedoKeyPressed()	const { return mRedoKeyPressed; }
+	bool		GetConfirmKeyPressed() const { return mConfirmKeyPressed; }
+	ImVec2		GetSceneViewportPos() const { return mSceneViewportPos; }
+	ImVec2		GetSceneViewportSize() const { return mSceneViewportSize; }
+	ErrorType	GetErrorType() { return mErrorType; }
 
 	void SetErrorType(ErrorType type) { mErrorType = type; }
-	void SetCurrentProjPath(std::string& path) { mCurrProjectPath.assign(path); }
 
 private:
 	// After directX implementation
 	// ImVec2 mViewportSize;
 	UINT		mElementNumber;
-	bool		mCurrFileSaved;
-	std::string mCurrProjectPath;
-	std::string mCurrFilePath;
 	
 	int			mHierarchyIdx;
 	int			mActorNameIdx;
@@ -111,6 +106,7 @@ private:
 		ImGuiFileBrowserFlags_EditPathString;
 
 private:
+	void TEST_Instantiate();
 	// After directX implementation
 	void DisplayViewport();
 	void DisplayFileMenu();

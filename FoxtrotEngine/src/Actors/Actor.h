@@ -51,7 +51,8 @@ public:
 
 public:
 	// Getters/Setters
-	ActorGroup	  GetActorGroup() const			{ return mActorGroup; }
+	ActorGroup	  GetActorGroup()	 const		{ return mActorGroup; }
+	ActorGroup*	  GetActorGroupPtr()			{ return &mActorGroup; }
 	std::string   GetName()		  const			{ return mName; }
 	std::string&  GetNameRef()					{ return mName; }
 	State		  GetState()	  const			{ return mState; }

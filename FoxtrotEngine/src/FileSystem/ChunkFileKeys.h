@@ -7,6 +7,7 @@ namespace ChunkKeys {
 // File formats
 	constexpr const char* CHUNK_FILE_FORMAT = ".chunk";
 	constexpr const char* EDITOR_FILE_FORMAT = ".json";
+	constexpr const char* PREMADE_FILE_FORMAT = ".premade";
 
 // Data Pack Names
 	constexpr const char* CHUNK_DATA = "Chunk Data";
@@ -55,6 +56,9 @@ namespace ChunkKeys {
 
 	// Primitive Geometries
 	constexpr const UINT PRIMITIVE_SQUARE = 0;
+
+	// Premades
+	constexpr const char* FTPREMADE = "FTPremade";
 
 // Component Related
 	constexpr const char* COMPONENTS = "Components";

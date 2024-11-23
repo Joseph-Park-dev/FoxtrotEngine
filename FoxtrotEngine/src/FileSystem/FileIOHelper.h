@@ -62,6 +62,5 @@ private:
 	static std::string mItemIdent;
 
 private:
-	static std::string ExtractUntil(std::string& line, const char end);
 	static std::string GetBracketedVal(std::string& str, const char left, const char right);
 };

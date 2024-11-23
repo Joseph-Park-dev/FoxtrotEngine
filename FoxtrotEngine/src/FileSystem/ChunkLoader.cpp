@@ -50,8 +50,8 @@ void ChunkLoader::LoadChunkData(std::ifstream& ifs, Scene* currScene)
 {
     int targetActor = 0;
     FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::CHUNK_DATA);
-    FileIOHelper::LoadInt(ifs, targetActor);
     FileIOHelper::LoadSize(ifs, mCurrentChunkData.ActorCount);
+    FileIOHelper::LoadInt(ifs, targetActor);
 }
 
 void ChunkLoader::LoadActors(std::ifstream& ifs)

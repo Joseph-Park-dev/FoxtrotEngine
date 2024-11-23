@@ -8,6 +8,7 @@
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
 #include "DebugGeometries.h"
+#include "DirectoryHelper.h"
 
 #include "Managers/KeyInputManager.h"
 #include "Core/FTCore.h"
@@ -65,7 +66,7 @@ LRESULT FTCoreEditor::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	switch (msg) {
 	case WM_CLOSE:
 	{
-		if (!EditorLayer::GetInstance()->GetCurrentFileSaved())
+		if (!CHUNK_IS_SAVED)
 			EditorLayer::GetInstance()->SetErrorType(ErrorType::ChunkNotSaved);
 		else
 			this->SetIsRunning(false);
@@ -144,6 +145,7 @@ void FTCoreEditor::GenerateOutput()
 void FTCoreEditor::ProcessEvent()
 {
 	EditorSceneManager::GetInstance()->ProcessEvent();
+	EventManager::GetInstance()->ProcessEvent();
 }
 
 FTCoreEditor::FTCoreEditor()

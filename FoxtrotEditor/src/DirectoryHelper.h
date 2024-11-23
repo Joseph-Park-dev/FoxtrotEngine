@@ -7,11 +7,17 @@
 #include <shlobj_core.h>
 
 #include "FTCoreEditor.h"
-
 #include "Managers/ResourceManager.h"
+
+#define PATH_PROJECT DirectoryHelper::GetInstance()->GetProjectPath()
+#define PATH_CHUNK DirectoryHelper::GetInstance()->GetChunkPath()
+#define CHUNK_IS_SAVED DirectoryHelper::GetInstance()->GetCurrChunkSaved()
+#define SET_CHUNK_IS_SAVED(saved) DirectoryHelper::GetInstance()->SetCurrChunkSaved(saved);
 
 class DirectoryHelper
 {
+	SINGLETON(DirectoryHelper)
+
 public:
 	template <class UnaryOperation>
 	static void IterateForFileRecurse(
@@ -26,4 +32,18 @@ public:
 				unaryOp(std::move(dirEntry.path().string()));
 		}
 	}
+
+public:
+	std::string& GetProjectPath();
+	std::string& GetChunkPath();
+	bool GetCurrChunkSaved() const;
+
+	void SetProjPath(std::string&& path);
+	void SetChunkPath(std::string&& path);
+	void SetCurrChunkSaved(bool val);
+
+private:
+	std::string mCurrProjectPath;
+	std::string mCurrChunkPath;
+	bool		mCurrChunkSaved;
 };

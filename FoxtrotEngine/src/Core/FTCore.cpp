@@ -156,6 +156,7 @@ void FTCore::GenerateOutput()
 void FTCore::ProcessEvent()
 {
 	SceneManager::GetInstance()->ProcessEvent();
+	EventManager::GetInstance()->ProcessEvent();
 }
 
 FTCore::FTCore()

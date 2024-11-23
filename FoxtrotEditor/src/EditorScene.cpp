@@ -77,6 +77,24 @@ void EditorScene::AddEditorElement(Actor* actor)
 {
 	UnfocusEditorElements();
 	EditorElement* editorElement = new EditorElement(actor, this);
+
+	// Finds the actor with the same name and adds numbered suffix.
+	std::string name = actor->GetName();
+	std::vector<Actor*>* actors = GetActors();
+	int count = 0;
+	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	{
+		for (size_t j = 0; j < actors[i].size(); ++j)
+		{
+			std::string buf = actors[i][j]->GetName();
+			name = ExtractUntil(name, '(');
+			buf = ExtractUntil(buf, '(');
+			if (name == buf)
+				++count;
+		}
+	}
+	if (0 < count)
+		editorElement->SetName(actor->GetName() + "(" + std::to_string(count) + ")");
 }
 
 void EditorScene::EditorUpdate(float deltaTime)

@@ -147,21 +147,14 @@ inline void LTrim(std::string& str) {
 		}));
 }
 
-//b2Vec2 ToB2Vec2(FTVector2 vec)
-//{
-//	return b2Vec2(vec.x, vec.y);
-//}
+inline std::string ExtractUntil(std::string& line, const char end) {
+	size_t typeBeg = line.find(end);
+	std::string result = line.substr(0, typeBeg);
 
-//template<class T, class Func>
-//void Loop2DArray(T vectorArray, std::function<Func> func) {
-//	size_t rowSize = GetArrayLength<T>(vectorArray);
-//	for (size_t i = 0; i < rowSize; ++i) {
-//		auto& iter = vectorArray[i].begin();
-//		for (; iter != vectorArray[i].end(); ++iter) {
-//			func();
-//		}
-//	}
-//}
+	// Erase the extracted value from line, including end character.
+	line.erase(0, typeBeg + 1);
+	return result;
+}
 
 template<typename T>
 size_t GetArrayLength(T* arr) {

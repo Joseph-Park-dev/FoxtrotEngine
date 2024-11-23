@@ -100,7 +100,6 @@ void Scene::ProcessEvent()
 {
 	AddPendingActors();
 	ClearDeadActors();
-	EventManager::GetInstance()->ProcessEvent();
 }
 
 void Scene::DeleteAll()

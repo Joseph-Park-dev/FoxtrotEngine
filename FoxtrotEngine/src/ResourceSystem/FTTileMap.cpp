@@ -9,6 +9,7 @@
 #include "Core/TemplateFunctions.h"
 #include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/ChunkLoader.h"
+#include "FileSystem/FileIOHelper.h"
 
 void FTTileMap::ReadCSV()
 {

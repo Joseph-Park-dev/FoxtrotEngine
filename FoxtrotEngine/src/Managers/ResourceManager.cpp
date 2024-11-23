@@ -111,70 +111,65 @@ FTTexture* ResourceManager::GetLoadedTexture(const UINT key)
 {
 	FTTexture* ptTex = mMapTextures.at(key);
 	if (ptTex != nullptr)
-	{
 		ptTex->SetIsReferenced(true);
-		return ptTex;
-	}
 	else
-	{
 		printf("Error: Unable to find FTTexture with key; %d\n", key);
-		return nullptr;
-	}
+	return ptTex;
 }
 
 std::vector<MeshData>& ResourceManager::GetLoadedMeshes(UINT key)
 {
 	std::vector<MeshData>& meshes = mMapMeshes.at(key);
-	if (!meshes.empty())
-		return meshes;
-	else
+	if (meshes.empty())
 		printf("Error: ResourceManager::GetLoadedMeshes() -> Mesh is empty %d\n", key);
+	return meshes;
 }
 
 FTTileMap* ResourceManager::GetLoadedTileMap(UINT key)
 {
 	FTTileMap* tileMap = mMapTileMaps.at(key);
 	if (tileMap)
-	{
 		tileMap->SetIsReferenced(true);
-		return tileMap;
-	}
 	else
 		printf("Error: ResourceManager::GetLoadedTileMap() -> FTTileMap is empty %d\n", key);
+	return tileMap;
 }
 
 FTPremade* ResourceManager::GetLoadedPremade(UINT key)
 {
 	FTPremade* premade = mMapPremades.at(key);
 	if (premade)
-	{
 		premade->SetIsReferenced(true);
-		return premade;
-	}
 	else
 		printf("Error: ResourceManager::GetLoadedPremade() -> FTPremade is empty %d\n", key);
+	return premade;
 }
 
-FTPremade* ResourceManager::GetLoadedPremade(std::string fileName)
+FTPremade* ResourceManager::GetLoadedPremade(std::string&& fileName)
 {
+	std::string premadeFullName = fileName + ChunkKeys::PREMADE_FILE_FORMAT;
 	std::unordered_map<UINT, FTPremade*>::iterator iter = mMapPremades.begin();
 	for (; iter != mMapPremades.end(); ++iter)
-		if ((*iter).second->GetFileName() == fileName)
+	{
+		if ((*iter).second->GetFileName() == premadeFullName)
 		{
 			(*iter).second->SetIsReferenced(true);
 			return (*iter).second;
 		}
 		else
-			printf("Error: ResourceManager::GetLoadedPremade() -> Cannot find FTPremade %s\n", fileName.c_str());
+		{
+			printf("Error: ResourceManager::GetLoadedPremade() -> Cannot find FTPremade %s\n", premadeFullName.c_str());
+			return nullptr;
+		}
+	}
 }
 
 MeshData& ResourceManager::GetLoadedPrimitive(UINT key)
 {
 	MeshData& primitive = mMapPrimitives.at(key);
-	if (!primitive.IsEmpty())
-		return primitive;
-	else
+	if (primitive.IsEmpty())
 		printf("Error: ResourceManager::GetLoadedPrimitive() -> Primitive is empty %d\n", key);
+	return primitive;
 }
 
 void ResourceManager::RemoveLoadedMeshes(UINT key)
@@ -392,7 +387,7 @@ void ResourceManager::UpdateUI()
 		std::unordered_map<UINT, FTPremade*>::const_iterator premadeIter;
 		premadeIter = mMapPremades.begin();
 		for (; premadeIter != mMapPremades.end(); ++premadeIter) {
-			if (ImGui::BeginListBox((*premadeIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 200)))
+			if (ImGui::BeginListBox((*premadeIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 100)))
 			{
 				(*premadeIter).second->UpdateUI();
 				if (ImGui::Button("Remove")) {

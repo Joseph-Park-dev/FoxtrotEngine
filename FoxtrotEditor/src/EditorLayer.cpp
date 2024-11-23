@@ -35,6 +35,8 @@
 #include "Renderer/Camera.h"
 #include "FileSystem/ChunkFileKeys.h"
 
+#include "Core/EventFunctions.h"
+
 void EditorLayer::Update(float deltaTime)
 {
 	ImGui_ImplDX11_NewFrame();
@@ -64,6 +66,15 @@ void EditorLayer::Update(float deltaTime)
 
 	DisplayViewport();
 	ImGui::EndFrame();
+	TEST_Instantiate();
+}
+
+void EditorLayer::TEST_Instantiate()
+{
+	if(KEY_TAP(KEY::SPACE))
+	{
+		Instantiate("Game Object 1");
+	}
 }
 
 void EditorLayer::DisplayViewport()
@@ -125,10 +136,10 @@ void EditorLayer::DisplayFileMenu()
 		}
 		else if (selection == fileMenu[2] || mSaveKeyPressed)
 		{
-			if (mCurrFileSaved)
+			if (CHUNK_IS_SAVED)
 			{
-				if (!mCurrFilePath.empty()) {
-					EditorChunkLoader::GetInstance()->SaveChunk(mCurrFilePath);
+				if (!PATH_PROJECT.empty()) {
+					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
 					mInfoType = InfoType::ChunkIsSaved;
 				}
 				else
@@ -139,7 +150,7 @@ void EditorLayer::DisplayFileMenu()
 				mFileDialog = ImGui::FileBrowser(mFileSelectFlag);
 				mFileDialog.SetTitle("Save");
 				mFileDialog.SetTypeFilters({ ChunkKeys::CHUNK_FILE_FORMAT });
-				mFileDialog.SetDirectory(mCurrProjectPath);
+				mFileDialog.SetDirectory(PATH_PROJECT);
 				mFileDialog.Open();
 				mFileMenuEvent = FileMenuEvents::Save;
 			}
@@ -149,7 +160,7 @@ void EditorLayer::DisplayFileMenu()
 			mFileDialog = ImGui::FileBrowser(mFileSelectFlag);
 			mFileDialog.SetTitle("Save As");
 			mFileDialog.SetTypeFilters({ ChunkKeys::CHUNK_FILE_FORMAT });
-			mFileDialog.SetDirectory(mCurrProjectPath);
+			mFileDialog.SetDirectory(PATH_PROJECT);
 			mFileDialog.Open();
 			mFileMenuEvent = FileMenuEvents::SaveAs;
 		}
@@ -158,7 +169,7 @@ void EditorLayer::DisplayFileMenu()
 			mFileDialog = ImGui::FileBrowser(mFileSelectFlag);
 			mFileDialog.SetTitle("Open Chunk");
 			mFileDialog.SetTypeFilters({ ChunkKeys::CHUNK_FILE_FORMAT });
-			mFileDialog.SetDirectory(mCurrProjectPath);
+			mFileDialog.SetDirectory(PATH_PROJECT);
 			mFileDialog.Open();
 			mFileMenuEvent = FileMenuEvents::Open;
 		}
@@ -169,16 +180,16 @@ void EditorLayer::DisplayFileMenu()
 		}
 		if (ImGui::Button("Play"))
 		{
-			if (mCurrFileSaved)
+			if (CHUNK_IS_SAVED)
 			{
-				if (!mCurrFilePath.empty())
+				if (!PATH_CHUNK.empty())
 				{
-					EditorChunkLoader::GetInstance()->SaveChunk(mCurrFilePath);
+					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
 					DebugGeometries::GetInstance()->DeleteAll();
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 					ResourceManager::GetInstance()->DeleteAll();
 					ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
-					EditorChunkLoader::GetInstance()->LoadChunk(mCurrFilePath);
+					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(true);
 				}
 				else
@@ -189,16 +200,16 @@ void EditorLayer::DisplayFileMenu()
 		}
 		if (ImGui::Button("Stop"))
 		{
-			if (mCurrFileSaved)
+			if (CHUNK_IS_SAVED)
 			{
-				if (!mCurrFilePath.empty())
+				if (!PATH_CHUNK.empty())
 				{
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(false);
 					DebugGeometries::GetInstance()->DeleteAll();
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 					ResourceManager::GetInstance()->DeleteAll();
 					ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
-					EditorChunkLoader::GetInstance()->LoadChunk(mCurrFilePath);
+					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
 				}
 			}
 		}
@@ -267,8 +278,8 @@ void EditorLayer::DisplayHierarchyMenu()
 		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
 		size_t eleSize = scene->GetActorCount();
 
-		std::vector<std::string> actorNames;
-		actorNames.reserve(eleSize);
+		std::vector<Actor*> actorsRow;
+		actorsRow.reserve(eleSize);
 
 		for (size_t i = 0; i < (size_t)ActorGroup::END; ++i) 
 		{
@@ -276,22 +287,18 @@ void EditorLayer::DisplayHierarchyMenu()
 			if (0 < size)
 			{
 				for (int j = 0; j < size; ++j)
-				{
-					Actor* actor = scene->GetActorGroup(i)[j];
-					actorNames.push_back(actor->GetName());
-				}
+					actorsRow.push_back(scene->GetActorGroup(i)[j]);
 			}
 		}
+
 		for (UINT i = 0; i < eleSize; ++i)
 		{
-			if (ImGui::Selectable(actorNames[i].c_str(), mActorNameIdx == i))
+			if (ImGui::Selectable(actorsRow.at(i)->GetName().c_str(), mActorNameIdx == i))
 			{
 				mActorNameIdx = i;
 				CommandHistory::GetInstance()->AddCommand(new IntEditCommand(mActorNameIdx, i));
 				EditorSceneManager::GetInstance()->GetEditorScene()->UnfocusEditorElements();
-				size_t group = i / ((size_t)ActorGroup::END - 1);
-				size_t idx = i % ((size_t)ActorGroup::END - 1);
-				Actor* actor = scene->GetActorGroup(group)[idx];
+				Actor* actor = actorsRow[mActorNameIdx];
 				mFocusedEditorElement = dynamic_cast<EditorElement*>(actor);
 				mFocusedEditorElement->SetIsFocused(true);
 			}
@@ -318,14 +325,23 @@ void EditorLayer::DisplayInspectorMenu()
 	std::string menuID = "Inspector";
 	ImGui::Begin(menuID.c_str());
 	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-	std::vector<Actor*>* actors = scene->GetActors();
-
-	size_t group = mActorNameIdx / ((size_t)ActorGroup::END - 1);
-	size_t idx = mActorNameIdx % ((size_t)ActorGroup::END - 1);
-
-	if (0 < scene->GetActorCount())
+	size_t eleSize = scene->GetActorCount();
+	if (0 < eleSize)
 	{
-		Actor* actor = scene->GetActorGroup(group)[idx];
+		std::vector<Actor*> actorsRow;
+		actorsRow.reserve(eleSize);
+
+		for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+		{
+			size_t size = scene->GetActorGroup(i).size();
+			if (0 < size)
+			{
+				for (int j = 0; j < size; ++j)
+					actorsRow.push_back(scene->GetActorGroup(i)[j]);
+			}
+		}
+
+		Actor* actor = actorsRow[mActorNameIdx];
 		EditorElement* ele = dynamic_cast<EditorElement*>(actor);
 		if (ele->GetIsFocused())
 		{
@@ -334,7 +350,11 @@ void EditorLayer::DisplayInspectorMenu()
 			{
 				// Delete game object, and erase the pointed from std::vector
 				delete ele;
-				actors[group].erase(actors[group].begin() + idx);
+				ActorGroup group = actor->GetActorGroup();
+				
+				std::vector<Actor*>::iterator iter = 
+					std::find(scene->GetActorGroup(group).begin(), scene->GetActorGroup(group).end(), actor);
+				scene->GetActorGroup(group).erase(iter);
 				if(0 < mActorNameIdx)
 					mActorNameIdx = scene->GetActorCount()-1;
 			}
@@ -513,11 +533,11 @@ void EditorLayer::CreateNewProject(std::filesystem::path& path)
 
 	if (!projExists && pathIsEmpty)
 	{
-		mCurrProjectPath.assign(path.string());
-		std::filesystem::create_directory(mCurrProjectPath + "\\Assets");
-		std::filesystem::create_directory(mCurrProjectPath + "\\Builds");
-		std::filesystem::create_directory(mCurrProjectPath + "\\Chunks");
-		std::filesystem::create_directory(mCurrProjectPath + "\\FoxtrotEngine");
+		PATH_PROJECT.assign(path.string());
+		std::filesystem::create_directory(PATH_PROJECT + "\\Assets");
+		std::filesystem::create_directory(PATH_PROJECT + "\\Builds");
+		std::filesystem::create_directory(PATH_PROJECT + "\\Chunks");
+		std::filesystem::create_directory(PATH_PROJECT + "\\FoxtrotEngine");
 	}
 	else {
 		if (projExists)
@@ -530,8 +550,8 @@ void EditorLayer::CreateNewProject(std::filesystem::path& path)
 void EditorLayer::OpenProject(std::filesystem::path& path)
 {
 	if (ProjectExists(path.string())) {
-		mCurrProjectPath.assign(path.string());
-		ResourceManager::GetInstance()->SetPathToAsset(std::move(mCurrProjectPath));
+		PATH_PROJECT.assign(path.string());
+		ResourceManager::GetInstance()->SetPathToAsset(std::move(PATH_PROJECT));
 		ResourceManager::GetInstance()->LoadAllResourcesInAsset();
 	}
 	else {
@@ -541,26 +561,26 @@ void EditorLayer::OpenProject(std::filesystem::path& path)
 
 void EditorLayer::Save(std::filesystem::path& path)
 {
-	mCurrFilePath.assign(path.string());
-	EditorChunkLoader::GetInstance()->SaveChunk(mCurrFilePath);
+	PATH_CHUNK.assign(path.string());
+	EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
 	mInfoType = InfoType::ChunkIsSaved;
-	mCurrFileSaved = true;
+	SET_CHUNK_IS_SAVED(true)
 }
 
 void EditorLayer::SaveAs(std::filesystem::path& path)
 {
-	mCurrFilePath.assign(path.string());
-	EditorChunkLoader::GetInstance()->SaveChunk(mCurrFilePath);
+	PATH_CHUNK.assign(path.string());
+	EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
 	mInfoType = InfoType::ChunkIsSaved;
-	mCurrFileSaved = true;
+	SET_CHUNK_IS_SAVED(true)
 }
 
 void EditorLayer::Open(std::filesystem::path& path)
 {
-	mCurrFilePath.assign(path.string());
+	PATH_CHUNK.assign(path.string());
 	EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
-	EditorChunkLoader::GetInstance()->LoadChunk(mCurrFilePath);
-	mCurrFileSaved = true;
+	EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
+	SET_CHUNK_IS_SAVED(true)
 }
 
 void EditorLayer::Render(FoxtrotRenderer* renderer)
@@ -571,17 +591,13 @@ void EditorLayer::Render(FoxtrotRenderer* renderer)
 
 void EditorLayer::ShutDown()
 {
-	if (mFocusedEditorElement)
-		delete mFocusedEditorElement;
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 }
 
 EditorLayer::EditorLayer()
-	: mCurrFileSaved(false)
-	, mCurrFilePath{}
-	, mHierarchyIdx(0)
+	: mHierarchyIdx(0)
 	, mActorNameIdx(0)
 	, mSaveKeyPressed(false)
 	, mSaveAsKeyPressed(false)

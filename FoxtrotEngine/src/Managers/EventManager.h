@@ -8,8 +8,7 @@
 struct FTEvent
 {
 	EVENT_TYPE incident;
-	ULONG_PTR  lParam;
-	ULONG_PTR  wParam;
+	std::vector<void*> eventData;
 };
 
 class EventManager

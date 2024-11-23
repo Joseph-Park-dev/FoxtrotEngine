@@ -12,6 +12,7 @@
 #include "Renderer/FoxtrotRenderer.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
+#include "FileSystem/FileIOHelper.h"
 #include "Managers/ResourceManager.h"
 
 

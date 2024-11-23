@@ -9,6 +9,11 @@
 #include "Components/AIState.h"
 #include "Scenes/Scene.h"
 
+#ifdef FOXTROT_EDITOR
+#include "EditorSceneManager.h"
+#endif // FOXTROT_EDITOR
+
+
 void EventManager::ProcessEvent()
 {
 	for (size_t i = 0; i < mEvent.size(); ++i)
@@ -24,29 +29,27 @@ void EventManager::Execute(const FTEvent& executedEvent)
 	{
 	case EVENT_TYPE::CREATE_ACTOR:
 	{
-		Actor* newActor = (Actor*)executedEvent.lParam;
-		ActorGroup group = (ActorGroup)executedEvent.wParam;
+		Actor* newActor = static_cast<Actor*>(executedEvent.eventData.at(0));
+		ActorGroup group = *(static_cast<ActorGroup*>(executedEvent.eventData.at(1)));
 		newActor->SetActorGroup(group);
+#ifdef FOXTROT_EDITOR
+		EditorSceneManager::GetInstance()->GetEditorScene()->AddEditorElement(newActor);
+#else
 		SceneManager::GetInstance()->GetCurrentScene()->AddActor(newActor, group);
+#endif // FOXTROT_EDITOR
+
 	}
 	break;
 	case EVENT_TYPE::DESTROY_ACTOR:
 	{
-		Actor* destroyedActor = (Actor*)executedEvent.lParam;
-		destroyedActor->SetState(Actor::State::EDead);
+		Actor* actorToDestroy = static_cast<Actor*>(executedEvent.eventData.at(0));
+		actorToDestroy->SetState(Actor::State::EDead);
 	}
 	break;
 	case EVENT_TYPE::SWITCH_SCENE:
 	{
-		SceneManager::GetInstance()->SwitchScene((SCENE_TYPE)executedEvent.lParam);
+		SceneManager::GetInstance()->SwitchScene(*static_cast<SCENE_TYPE*>(executedEvent.eventData.at(0)));
 		UIManager::GetInstance()->Reset();
-	}
-	break;
-	case EVENT_TYPE::CHANGE_AISTATE:
-	{
-		AIComponent* ai = (AIComponent*)executedEvent.lParam;
-		AISTATE_TYPE state = (AISTATE_TYPE)executedEvent.wParam;
-		ai->ChangeState(state);
 	}
 	break;
 	}

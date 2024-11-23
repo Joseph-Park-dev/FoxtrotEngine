@@ -80,6 +80,22 @@ void FileIOHelper::LoadUnsignedInt(std::ifstream& ifs, unsigned int& intVal)
     LogInt(intVal);
 }
 
+void FileIOHelper::LoadSize(std::ifstream& ifs, size_t& sizeVal)
+{
+    // Parse data information.
+    std::string line;
+    std::getline(ifs, line, '\n');
+
+    std::string name = ExtractUntil(line, '[');
+    std::string typeNameStr = GetBracketedVal(line, '[', ']');
+    line.clear();
+
+    // Parse the actual data.
+    std::getline(ifs, line, '\n');
+    ParseSize(line, sizeVal);
+    LogInt(sizeVal);
+}
+
 void FileIOHelper::LoadFloat(std::ifstream& ifs, float& floatVal)
 {
     // Parse data information.
@@ -208,6 +224,12 @@ void FileIOHelper::ParseUnsignedInt(std::string& line, unsigned int& arg)
 {
     LTrim(line);
     arg = std::stoul(line, nullptr, 0);
+}
+
+void FileIOHelper::ParseSize(std::string& line, size_t& arg)
+{
+    LTrim(line);
+    arg = static_cast<size_t>(std::stoul(line, nullptr, 0));
 }
 
 void FileIOHelper::ParseFloat(std::string& line, float& arg)

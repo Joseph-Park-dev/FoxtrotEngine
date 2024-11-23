@@ -13,7 +13,8 @@ public:
 	static std::pair<size_t, std::string> BeginDataPackLoad(std::ifstream& ifs, std::string dataPackKey);
 
 	static void   LoadInt(std::ifstream& ifs, int& intVal);
-	static void   LoadUnsignedInt(std::ifstream& ofs, unsigned int& intVal);
+	static void   LoadUnsignedInt(std::ifstream& ifs, unsigned int& intVal);
+	static void   LoadSize(std::ifstream& ifs, size_t& sizeVal);
 	static void   LoadFloat(std::ifstream& ifs, float& floatVal);
 	static void	  LoadBool(std::ifstream& ifs, bool& boolVal);
 	static void   LoadBasicString(std::ifstream& ifs, std::string& strVal);
@@ -27,6 +28,7 @@ public:
 
 	static void	  ParseInt(std::string& line, int& arg);
 	static void   ParseUnsignedInt(std::string& line, unsigned int& arg);
+	static void   ParseSize(std::string& line, size_t& arg);
 	static void	  ParseFloat(std::string& line, float& arg);
 	static void	  ParseBool(std::string& line, bool& arg);
 	static void   ParseString(std::string& line, std::string& arg);

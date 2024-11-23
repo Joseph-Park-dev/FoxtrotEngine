@@ -39,6 +39,8 @@ public:
 	bool GetIsRecording() { return mRecording; }
 	void SetIsRecording(bool val) { mRecording = val; }
 
+public:
+	void ShutDown();
 private:
 	std::deque<Command*> mCommandDeq;
 	int  mCommandPointer;

@@ -21,6 +21,8 @@ public:
 	virtual void Render(FoxtrotRenderer* renderer);
 	virtual void ProcessEvent();
 
+			void DeleteAll();
+
 private:
 	Scene*  mArrScene[(unsigned int)SCENE_TYPE::END];
 	Scene*  mPCurrScene;

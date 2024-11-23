@@ -34,6 +34,12 @@ void EditorSceneManager::ProcessEvent(){
 	mEditorScene->ProcessEvent();
 }
 
+void EditorSceneManager::DeleteAll()
+{
+	if(mEditorScene)
+		mEditorScene->DeleteAll();
+}
+
 EditorScene* EditorSceneManager::GetEditorScene()
 {
 	return mEditorScene;

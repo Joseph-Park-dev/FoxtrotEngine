@@ -52,6 +52,18 @@ void SceneManager::ProcessEvent()
 	mPCurrScene->ProcessEvent();
 }
 
+void SceneManager::DeleteAll()
+{
+	for (size_t i = 0; i < (size_t)SCENE_TYPE::END; ++i)
+	{
+		if (mArrScene[i])
+		{
+			mArrScene[i]->DeleteAll();
+			delete mArrScene[i];
+		}
+	}
+}
+
 void SceneManager::SwitchScene(SCENE_TYPE sceneType)
 {
 	mPCurrScene->Exit();

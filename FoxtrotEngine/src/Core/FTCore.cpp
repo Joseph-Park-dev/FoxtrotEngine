@@ -172,6 +172,8 @@ FTCore::~FTCore()
 
 void FTCore::ShutDown()
 {
+	SceneManager::GetInstance()->DeleteAll();
+	ResourceManager::GetInstance()->DeleteAll();
 	FoxtrotRenderer::DestroyRenderer(mGameRenderer);
 	DestroyWindow(mWindow);
 	PostQuitMessage(0);

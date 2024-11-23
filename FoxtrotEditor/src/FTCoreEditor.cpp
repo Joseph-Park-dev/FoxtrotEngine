@@ -39,7 +39,8 @@ bool FTCoreEditor::Initialize()
 
 void FTCoreEditor::ShutDown()
 {
-	//SaveEditorData();
+	CommandHistory::GetInstance()->ShutDown();
+	EditorSceneManager::GetInstance()->DeleteAll();
 	EditorLayer::GetInstance()->ShutDown();
 	FTCore::ShutDown();
 }

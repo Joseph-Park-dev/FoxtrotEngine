@@ -57,7 +57,7 @@ void EditorScene::Exit()
 
 void EditorScene::DeleteAll()
 {
-	std::vector<Actor*>* actors = GetActors();
+;	std::vector<Actor*>* actors = GetActors();
 	UnfocusEditorElements();
 
 	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
@@ -70,6 +70,7 @@ void EditorScene::DeleteAll()
 		actors[i].clear();
 	}
 	actors->clear();
+	Scene::DeleteAll();
 }
 
 void EditorScene::UnfocusEditorElements()

@@ -309,6 +309,14 @@ void CommandHistory::UpdateBoolValue(std::string label, bool& ref)
 	}
 }
 
+void CommandHistory::ShutDown()
+{
+	if (!mCommandDeq.empty())
+		for (size_t i = 0; i < mCommandDeq.size(); ++i)
+			delete mCommandDeq.at(i);
+	mCommandDeq.clear();
+}
+
 Command* CommandHistory::QueryCommand()
 {
 	if(!mCommandDeq.empty())
@@ -320,6 +328,7 @@ CommandHistory::CommandHistory()
 	: mCommandDeq{}
 	, mCommandPointer(0) // Pointer value becomes 0 when the 1st element is inserted
 	, mCMDStartPointer(0)
+	, mCMDEndPointer(0)
 	, mRecording(false)
 {}
 

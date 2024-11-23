@@ -571,6 +571,8 @@ void EditorLayer::Render(FoxtrotRenderer* renderer)
 
 void EditorLayer::ShutDown()
 {
+	if (mFocusedEditorElement)
+		delete mFocusedEditorElement;
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
@@ -594,6 +596,7 @@ EditorLayer::EditorLayer()
 	, mFocusedEditorElement(nullptr)
 	, mSceneViewportSize(ImVec2(1920.f, 1080.f))
 	, mInfoType(InfoType::None)
+	, mFileMenuEvent(FileMenuEvents::None)
 	, mErrorType(ErrorType::None)
 {
 	// Initial command stored in front of every following commands

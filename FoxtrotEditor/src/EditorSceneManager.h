@@ -23,6 +23,8 @@ public:
 
 	virtual void ProcessEvent();
 
+			void DeleteAll();
+
 public:
 	EditorScene* GetEditorScene();
 

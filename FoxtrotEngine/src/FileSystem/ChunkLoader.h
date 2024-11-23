@@ -41,7 +41,6 @@ protected:
 
 protected:
 	void LoadActors(std::ifstream& ifs);
-	//void LoadActorsToEditor(std::ifstream& ifs);
 
 private:
 	ComponentLoadMap mComponentLoadMap;

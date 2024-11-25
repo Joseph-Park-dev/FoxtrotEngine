@@ -10,7 +10,7 @@ class AIComponent;
 
 // Object Spawning & Destroying
 void Instantiate(Actor* actor, ActorGroup* actorGroup);
-void Instantiate(const char* premadeName);
+void Instantiate(const char* premadeName, Scene* scene);
 void Destroy(Actor* actor);
 
 // Scene Management

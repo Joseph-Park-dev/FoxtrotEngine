@@ -1,8 +1,12 @@
 #pragma once
 #include "ResourceSystem/FTResource.h"
 
+class Actor;
+class FTCore;
+class Scene;
 #ifdef FOXTROT_EDITOR
-#include "EditorElement.h"
+class EditorElement;
+class EditorScene;
 #endif // FOXTROT_EDITOR
 
 #define FTPremade_FORMAT_SUPPORTED ".premade"
@@ -15,8 +19,8 @@ public:
     ~FTPremade() override;
 
 public:
-    void Load();
-    void AddToScene(Scene* scene, FTCore* coreInst);
+    void Load(FTCore* ftCoreInst);
+    void AddToScene(Scene* scene);
 
 public:
     bool GetIsLoaded();
@@ -25,8 +29,8 @@ public:
     Actor* GetOrigin();
 
 private:
+    // Member variable that holds the actual Actor Data.
     Actor*  mOrigin;
-    size_t  mCount;
     bool    mIsLoaded;
 
 public:
@@ -39,6 +43,7 @@ public:
             void Save   (EditorElement* ele);
 
     virtual void UpdateUI ()        override;
+            void AddToScene(EditorScene* scene);
 #endif // FOXTROT_EDITOR
 };
 

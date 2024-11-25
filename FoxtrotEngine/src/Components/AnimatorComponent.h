@@ -48,4 +48,9 @@ private:
 
 private:
     FTSpriteAnimation* FindAnimation(const std::wstring& name);
+
+#ifdef FOXTROT_EDITOR
+public:
+    virtual void CloneTo(Actor* actor) override;
+#endif // FOXTROT_EDITOR
 };

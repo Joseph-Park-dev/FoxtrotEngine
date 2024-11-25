@@ -41,21 +41,25 @@ protected:
 	UINT				GetTexKey	()	{ return mTexKey; }
 	FTTexture*			GetTexture	()	{ return mMeshGroup->GetTexture(); }
 
+	void				SetRenderer	(FoxtrotRenderer* renderer) { mRenderer = renderer; }
 	void				SetMeshGroup(FTBasicMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
 	void				SetMeshKey	(UINT key) { mMeshKey = key; }
 	void				SetTexKey	(UINT key) { mTexKey = key; }
 	virtual void		SetTexture();
 
 private:
-	FoxtrotRenderer*	mRenderer;
-	FTBasicMeshGroup*	mMeshGroup;
 	// Identifier for the object in the Resource Map from the ResourceManager instance.
+	// These will be read from .chunk file.
 	UINT				mMeshKey;
 	UINT				mTexKey;
 
+	// These will be set in Initialize() member function.
+	FoxtrotRenderer*	mRenderer;
+	FTBasicMeshGroup*	mMeshGroup;
+
 public:
 			MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder);
-	virtual ~MeshRendererComponent() override;
+	virtual ~MeshRendererComponent()	override;
 
 protected:
 	void UpdateConstantBufferModel		(Transform* transform);
@@ -69,6 +73,7 @@ public:
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void EditorUIUpdate() override;
+	virtual void CloneTo(Actor* actor)	override;
 
 protected:
 	virtual void OnConfirmUpdate() override;

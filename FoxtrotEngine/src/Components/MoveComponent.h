@@ -55,5 +55,10 @@ private:
     float mForwardSpeed;
     State mMovingState;
     State mPrevMovingState;
+
+#ifdef FOXTROT_EDITOR
+public:
+    virtual void CloneTo(Actor* actor) override;
+#endif // FOXTROT_EDITOR
 };
 

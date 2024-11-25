@@ -51,6 +51,6 @@ private:
     MoveState mMoveState;
 
 #ifdef FOXTROT_EDITOR
-// Editor code comes here.
+    virtual void CloneTo(Actor* actor) override;
 #endif // FOXTROT_EDITOR
 };

@@ -16,16 +16,15 @@ void Instantiate(Actor* actor, ActorGroup* actorGroup)
 	EventManager::GetInstance()->AddEvent(addedEvent);
 }
 
-void Instantiate(const char* premadeName)
+void Instantiate(const char* premadeName, Scene* scene)
 {
 	FTEvent addedEvent = {};
 	addedEvent.incident = EVENT_TYPE::CREATE_ACTOR;
 	FTPremade* premade = ResourceManager::GetInstance()->GetLoadedPremade(std::move(premadeName));
 	if (premade)
 	{
-		Actor* actor = premade->GetOrigin();
-		addedEvent.eventData.push_back(actor);
-		addedEvent.eventData.push_back(actor->GetActorGroupPtr());
+		addedEvent.eventData.push_back(premade);
+		addedEvent.eventData.push_back(scene);
 		EventManager::GetInstance()->AddEvent(addedEvent);
 	}
 	else

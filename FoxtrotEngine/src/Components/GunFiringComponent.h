@@ -32,4 +32,8 @@ private:
     MOUSE mTriggerKey;
     float mDelay;
     float mCurrentTick;
+
+#ifdef FOXTROT_EDITOR
+    virtual void CloneTo(Actor* actor) override;
+#endif // FOXTROT_EDITOR
 };

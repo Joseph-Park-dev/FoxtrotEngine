@@ -14,6 +14,7 @@
 #include "Managers/ResourceManager.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
+#include "FileSystem/FileIOHelper.h"
 
 #ifdef FOXTROT_EDITOR
 #include "FTCoreEditor.h"
@@ -21,26 +22,36 @@
 
 using DXMatrix = DirectX::SimpleMath::Matrix;
 
-void MeshRendererComponent::Initialize(FTCore* coreInstance){
+void MeshRendererComponent::Initialize(FTCore* coreInstance)
+{
 	mRenderer = coreInstance->GetGameRenderer();
+	if (mMeshKey != VALUE_NOT_ASSIGNED)
+	{
+		this->InitializeMesh();
+		if (mTexKey != VALUE_NOT_ASSIGNED)
+			SetTexture();
+	}
 	Component::Initialize(coreInstance);
 }
 
-void MeshRendererComponent::Update(float deltaTime){
+void MeshRendererComponent::Update(float deltaTime)
+{
 	if (mMeshGroup) {
 		UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
 		UpdateBuffers();
 	}
 }
 
-void MeshRendererComponent::Render(FoxtrotRenderer* renderer){
+void MeshRendererComponent::Render(FoxtrotRenderer* renderer)
+{
 	if (mMeshGroup){
 		renderer->SwitchFillMode();
 		mMeshGroup->Render(renderer->GetContext());
 	}
 }
 
-bool MeshRendererComponent::InitializeMesh(){
+bool MeshRendererComponent::InitializeMesh()
+{
 	if (mMeshKey != VALUE_NOT_ASSIGNED) {
 		std::vector<MeshData>& meshData = ResourceManager::GetInstance()->GetLoadedMeshes(mMeshKey);
 		mMeshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
@@ -74,7 +85,8 @@ bool MeshRendererComponent::InitializeMesh(MeshData& meshData)
 	return true;
 }
 
-void MeshRendererComponent::UpdateMesh(Transform* transform, Camera* cameraInstance){
+void MeshRendererComponent::UpdateMesh(Transform* transform, Camera* cameraInstance)
+{
 	if (mMeshGroup) {
 		UpdateConstantBufferModel(transform);
 		UpdateConstantBufferView(cameraInstance);
@@ -82,24 +94,8 @@ void MeshRendererComponent::UpdateMesh(Transform* transform, Camera* cameraInsta
 	}
 }
 
-void MeshRendererComponent::UpdateBuffers(){
-	/*if (GetMeshGroup()->GetVertexConstantBuffer().Get()) {
-		D3D11Utils::UpdateBuffer(
-			mRenderer->GetDevice(),
-			mRenderer->GetContext(),
-			GetMeshGroup()->GetVertexConstantData(),
-			GetMeshGroup()->GetVertexConstantBuffer()
-		);
-	}
-
-	if (GetMeshGroup()->GetPixelConstantBuffer().Get()) {
-		D3D11Utils::UpdateBuffer(
-			mRenderer->GetDevice(),
-			mRenderer->GetContext(),
-			GetMeshGroup()->GetPixelConstantData(),
-			GetMeshGroup()->GetPixelConstantBuffer()
-		);
-	}*/
+void MeshRendererComponent::UpdateBuffers()
+{
 	mMeshGroup->UpdateConstantBuffers(mRenderer->GetDevice(), mRenderer->GetContext());
 }
 
@@ -182,4 +178,10 @@ void MeshRendererComponent::OnConfirmUpdate()
 		SetTexture();
 	}
 }
-#endif
+void MeshRendererComponent::CloneTo(Actor* actor)
+{
+	MeshRendererComponent* newComp = new MeshRendererComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	newComp->mMeshKey = this->mMeshKey;
+	newComp->mTexKey = this->mTexKey;
+}
+#endif // FOXTROT_EDITOR

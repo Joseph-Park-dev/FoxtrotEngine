@@ -3,6 +3,7 @@
 #include "Actors/Actor.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
+#include "FileSystem/FileIOHelper.h"
 #include "Core/TemplateFunctions.h"
 #include "Core/FTCore.h"
 

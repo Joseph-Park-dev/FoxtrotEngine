@@ -41,3 +41,10 @@ AIComponent::~AIComponent()
 {
 	Safe_Delete_Map(mStateMap);
 }
+
+#ifdef FOXTROT_EDITOR
+void AIComponent::CloneTo(Actor* actor)
+{
+	CLONE_TO_NOT_IMPLEMENTED
+}
+#endif // FOXTROT_EDITOR

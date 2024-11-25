@@ -73,7 +73,7 @@ void EditorLayer::TEST_Instantiate()
 {
 	if(KEY_TAP(KEY::SPACE))
 	{
-		Instantiate("Game Object 1");
+		Instantiate("Game Object 1", EditorSceneManager::GetInstance()->GetEditorScene());
 	}
 }
 
@@ -291,7 +291,7 @@ void EditorLayer::DisplayHierarchyMenu()
 			}
 		}
 
-		for (UINT i = 0; i < eleSize; ++i)
+		for (size_t i = 0; i < eleSize; ++i)
 		{
 			if (ImGui::Selectable(actorsRow.at(i)->GetName().c_str(), mActorNameIdx == i))
 			{
@@ -349,14 +349,14 @@ void EditorLayer::DisplayInspectorMenu()
 			if (mDeleteKeyPressed)
 			{
 				// Delete game object, and erase the pointed from std::vector
-				delete ele;
-				ActorGroup group = actor->GetActorGroup();
+				ActorGroup group = ele->GetActorGroup();
 				
 				std::vector<Actor*>::iterator iter = 
 					std::find(scene->GetActorGroup(group).begin(), scene->GetActorGroup(group).end(), actor);
 				scene->GetActorGroup(group).erase(iter);
-				if(0 < mActorNameIdx)
-					mActorNameIdx = scene->GetActorCount()-1;
+				if (0 < mActorNameIdx)
+					mActorNameIdx = scene->GetActorCount() - 1;
+				delete ele;
 			}
 		}
 	}
@@ -388,8 +388,25 @@ void EditorLayer::DisplayInfoMessage()
 	switch (mInfoType)
 	{
 	case InfoType::ChunkIsSaved:
-		PopUpInfo_ChunkIsSaved();
+		PopUpInfo(".chunk is saved.");
 		break;
+	case InfoType::PremadeIsCreated:
+	{
+		auto onConfirm = [this]()
+			-> void
+			{
+				FTPremade* newPremade = new FTPremade();
+				newPremade->Create(mFocusedEditorElement);
+				ImGui::CloseCurrentPopup();
+				mInfoType = InfoType::None;
+			};
+		if (mFocusedEditorElement)
+		{
+			std::string msg = "Create Premade with name : " + mFocusedEditorElement->GetName() + "?";
+			PopUpInquiry("Create Premade", msg.c_str(), onConfirm);
+		}
+	}
+	break;
 	default:
 		break;
 	}
@@ -403,16 +420,31 @@ void EditorLayer::DisplayErrorMessage()
 		break;
 
 	case ErrorType::ProjectPathExists:
-		PopUpError_ProjectPathExists();
+		PopUpError(
+			"Project path exists", 
+			"Foxtrot Engine project\nalready exists in this directory."
+		);
 		break;
+
 	case ErrorType::ProjectNotValid:
-		PopUpError_ProjectNotValid();
+		PopUpError(
+			"Project Not Valid", 
+			"The directory is not a valid Foxtrot Engine Project"
+		);
 		break;
+
 	case ErrorType::ProjectPathNotEmpty:
-		PopUpError_FolderNotEmpty();
+		PopUpError(
+			"Folder Not Empty", 
+			"The directory is not empty to create a FT Engine Project."
+		);
 		break;
+
 	case ErrorType::ChunkNotSaved:
-		PopUpError_ChunkNotSaved();
+		PopUpError(
+			"Chunk is not saved",
+			".Chunk is not saved.\nSave the file before closing the editor."
+		);
 		break;
 
 	default:
@@ -420,7 +452,7 @@ void EditorLayer::DisplayErrorMessage()
 	}
 }
 
-void EditorLayer::PopUpInfo_ChunkIsSaved()
+void EditorLayer::PopUpInfo(const char* msg)
 {
 	ImGui::OpenPopup("Info");
 	// Always center this window when appearing
@@ -429,7 +461,7 @@ void EditorLayer::PopUpInfo_ChunkIsSaved()
 
 	if (ImGui::BeginPopupModal("Info", NULL))
 	{
-		ImGui::Text(".chunk file is saved.");
+		ImGui::Text(msg);
 		ImGui::Separator();
 		ImGui::SetItemDefaultFocus();
 
@@ -442,86 +474,24 @@ void EditorLayer::PopUpInfo_ChunkIsSaved()
 	}
 }
 
-
-void EditorLayer::PopUpError_ProjectPathExists()
+void EditorLayer::PopUpError(const char* title, const char* msg)
 {
-	ImGui::OpenPopup("Project path exists");
+	ImGui::OpenPopup(title);
 	// Always center this window when appearing
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
-	if (ImGui::BeginPopupModal("Project path exists", NULL))
+	if (ImGui::BeginPopupModal(title, NULL))
 	{
-		ImGui::Text("Foxtrot Engine project\nalready exists in this directory.");
+		ImGui::Text(msg);
 		ImGui::Separator();
 
-		if (ImGui::Button("OK", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); mErrorType = ErrorType::None; }
-		ImGui::SetItemDefaultFocus();
-		ImGui::EndPopup();
-	}
-}
-
-void EditorLayer::PopUpError_ProjectNotValid()
-{
-	ImGui::OpenPopup("ProjectNotValid");
-	// Always center this window when appearing
-	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
-	if (ImGui::BeginPopupModal("ProjectNotValid", NULL))
-	{
-		ImGui::Text("The directory is not a valid Foxtrot Engine Project");
-		ImGui::Separator();
-
-		if (ImGui::Button("OK", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); mErrorType = ErrorType::None;}
-		ImGui::SetItemDefaultFocus();
-		ImGui::EndPopup();
-	}
-}
-
-void EditorLayer::PopUpError_FolderNotEmpty()
-{
-	ImGui::OpenPopup("FolderNotEmpty");
-	// Always center this window when appearing
-	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
-	if (ImGui::BeginPopupModal("FolderNotEmpty", NULL))
-	{
-		ImGui::Text("The directory is not empty to create a FT Engine Project.");
-		ImGui::Separator();
-
-		if (ImGui::Button("OK", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); mErrorType = ErrorType::None; }
-		ImGui::SetItemDefaultFocus();
-		ImGui::EndPopup();
-	}
-}
-
-void EditorLayer::PopUpError_ChunkNotSaved()
-{
-	ImGui::OpenPopup("Chunk is not saved");
-	// Always center this window when appearing
-	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
-	if (ImGui::BeginPopupModal("Chunk is not saved", NULL))
-	{
-		ImGui::Text(".Chunk is not saved.\nSave the file before closing the editor.");
-		ImGui::Separator();
-
-		if (ImGui::Button("Discard", ImVec2(120, 0))) { 
-			FTCoreEditor::GetInstance()->SetIsRunning(false); 
-			ImGui::EndPopup();
-			return; 
-		}
-
-		ImGui::SetItemDefaultFocus();
-		ImGui::SameLine();
-		if (ImGui::Button("Cancel", ImVec2(120, 0))) 
+		if (ImGui::Button("OK", ImVec2(120, 0))) 
 		{ 
 			ImGui::CloseCurrentPopup(); 
-			mErrorType = ErrorType::None;
+			mErrorType = ErrorType::None; 
 		}
+		ImGui::SetItemDefaultFocus();
 		ImGui::EndPopup();
 	}
 }

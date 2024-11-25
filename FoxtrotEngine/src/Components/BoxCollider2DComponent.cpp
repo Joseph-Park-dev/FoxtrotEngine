@@ -2,6 +2,7 @@
 
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
+#include "FileSystem/FileIOHelper.h"
 #include "Components/Rigidbody2DComponent.h"
 #include "Renderer/Camera.h"
 
@@ -122,5 +123,12 @@ void BoxCollider2DComponent::UpdateScale()
 			b2Shape_SetPolygon(GetShapeID(), &polygon);
 		}
 	}
+}
+
+void BoxCollider2DComponent::CloneTo(Actor* actor)
+{
+	BoxCollider2DComponent* newComp = new BoxCollider2DComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	newComp->SetOffsetPos(this->GetOffsetPos());
+	newComp->mScale = this->mScale;
 }
 #endif // FOXTROT_EDITOR

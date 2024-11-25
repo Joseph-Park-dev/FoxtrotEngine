@@ -34,7 +34,7 @@ public:
 	void				DeleteAll();
 
 	void				SaveResources(std::ofstream& ofs);
-	void				LoadResources(std::ifstream& ifs);
+	void				LoadResources(std::ifstream& ifs, FTCore* ftCoreInst);
 
 public:
 	void				UpdateTexture(FTTexture* texture, int channels);
@@ -169,7 +169,7 @@ private:
 private:
 	void ProcessTexture(FTTexture* texture);
 	void ProcessTextures();
-	void ProcessPremades();
+	void ProcessPremades(FTCore* coreInst);
 
 	//template<typename FTRESOURCE>
 	//void LoadResourceToMap(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap) {

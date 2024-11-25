@@ -47,6 +47,8 @@ public:
 #ifdef FOXTROT_EDITOR
 public:
     virtual void EditorUIUpdate() override;
+    virtual void CloneTo(Actor* actor)	override;
+
     virtual void OnConfirmUpdate() override;
     void UpdateCSV();
 #endif

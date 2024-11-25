@@ -156,12 +156,9 @@ FTPremade* ResourceManager::GetLoadedPremade(std::string&& fileName)
 			(*iter).second->SetIsReferenced(true);
 			return (*iter).second;
 		}
-		else
-		{
-			printf("Error: ResourceManager::GetLoadedPremade() -> Cannot find FTPremade %s\n", premadeFullName.c_str());
-			return nullptr;
-		}
 	}
+	printf("Error: ResourceManager::GetLoadedPremade() -> Cannot find FTPremade %s\n", premadeFullName.c_str());
+	return nullptr;
 }
 
 MeshData& ResourceManager::GetLoadedPrimitive(UINT key)
@@ -195,19 +192,17 @@ void ResourceManager::ProcessTextures()
 		ProcessTexture(textureItem.second);
 }
 
-void ResourceManager::ProcessPremades()
+void ResourceManager::ProcessPremades(FTCore* coreInst)
 {
 	for (auto& premadeItem : mMapPremades)
-		premadeItem.second->Load();
+		premadeItem.second->Load(coreInst);
 }
 
 ResourceManager::~ResourceManager()
 {
 	std::unordered_map<UINT, FTTexture*>::iterator iter = mMapTextures.begin();
 	for (; iter != mMapTextures.end(); iter++)
-	{
 		delete iter->second;
-	}
 }
 
 ResourceManager::ResourceManager()
@@ -236,7 +231,7 @@ void ResourceManager::SaveResources(std::ofstream& ofs)
 	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::RESOURCE_DATA);
 }
 
-void ResourceManager::LoadResources(std::ifstream& ifs)
+void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 {
 	std::pair<size_t, std::string>&& resPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::RESOURCE_DATA);
 	size_t count = resPack.first;
@@ -249,7 +244,9 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 
 	std::pair<size_t, std::string>&& ftTexturePack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTTEXTURE_GROUP);
 	LoadResourceToMap<FTTexture>(ifs, mMapTextures, ftTexturePack.first);
+	
 	ProcessTextures();
+	ProcessPremades(ftCoreInst);
 }
 
 #ifdef FOXTROT_EDITOR
@@ -260,7 +257,7 @@ void ResourceManager::LoadAllResourcesInAsset()
 		[](std::string&& path) { ResourceManager::GetInstance()->LoadResByType(path); }
 		);
 	ProcessTextures();
-	ProcessPremades();
+	ProcessPremades(FTCoreEditor::GetInstance());
 }
 
 void ResourceManager::LoadResByType(std::string& filePath)
@@ -338,7 +335,7 @@ void ResourceManager::UpdateUI()
 			{
 				std::string relativePath = path.substr(path.rfind("Assets"));
 				FTPremade* premade = LoadResource<FTPremade>(relativePath, mMapPremades);
-				premade->Load();
+				premade->Load(FTCoreEditor::GetInstance());
 			}
 		}
 		ImGuiFileDialog::Instance()->Close();

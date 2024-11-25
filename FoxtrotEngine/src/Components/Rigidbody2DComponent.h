@@ -23,7 +23,6 @@ public:
 	Rigidbody2DComponent(Actor* owner, int drawOrder = DEFAULT_DRAWORDER,
 		int updateOrder = DEFAULT_UPDATEORDER);
 	~Rigidbody2DComponent();
-	virtual void CloneTo(Actor* actor) override;
 
 private:
 	b2BodyId	mBodyID;
@@ -44,6 +43,7 @@ public:
 
 public:
 	virtual void EditorUIUpdate() override;
+	virtual void CloneTo(Actor* actor) override;
 
 protected:
 	virtual void OnConfirmUpdate() override;

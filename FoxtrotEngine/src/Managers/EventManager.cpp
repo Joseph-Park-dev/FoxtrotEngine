@@ -8,6 +8,7 @@
 #include "Components/AIComponent.h"
 #include "Components/AIState.h"
 #include "Scenes/Scene.h"
+#include "ResourceSystem/FTPremade.h"
 
 #ifdef FOXTROT_EDITOR
 #include "EditorSceneManager.h"
@@ -29,15 +30,14 @@ void EventManager::Execute(const FTEvent& executedEvent)
 	{
 	case EVENT_TYPE::CREATE_ACTOR:
 	{
-		Actor* newActor = static_cast<Actor*>(executedEvent.eventData.at(0));
-		ActorGroup group = *(static_cast<ActorGroup*>(executedEvent.eventData.at(1)));
-		newActor->SetActorGroup(group);
-#ifdef FOXTROT_EDITOR
-		EditorSceneManager::GetInstance()->GetEditorScene()->AddEditorElement(newActor);
-#else
-		SceneManager::GetInstance()->GetCurrentScene()->AddActor(newActor, group);
-#endif // FOXTROT_EDITOR
+		FTPremade* premade = static_cast<FTPremade*>(executedEvent.eventData.at(0));
 
+#ifdef FOXTROT_EDITOR
+		EditorScene* scene = static_cast<EditorScene*>(executedEvent.eventData.at(1));
+#else
+		Scene* scene = static_cast<Scene*>(executedEvent.eventData.at(1));
+#endif
+		premade->AddToScene(scene);
 	}
 	break;
 	case EVENT_TYPE::DESTROY_ACTOR:

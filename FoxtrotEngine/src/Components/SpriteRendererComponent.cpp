@@ -5,6 +5,7 @@
 #include "Core/FTCore.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
+#include "FileSystem/FileIOHelper.h"
 #include "Managers/ResourceManager.h"
 #include "Math/FTMath.h"
 #include "Physics/Bounds.h"
@@ -54,8 +55,11 @@ void SpriteRendererComponent::UpdateTexture(FoxtrotRenderer* renderer, std::stri
 
 void SpriteRendererComponent::Initialize(FTCore* coreInstance)
 {
-	MeshRendererComponent::Initialize(coreInstance);
+	SetRenderer(coreInstance->GetGameRenderer());
+	// Sprite Renderer uses square mesh directly - mesh key is not needed
 	InitializeMesh();
+	if (GetTexKey() != VALUE_NOT_ASSIGNED)
+		SetTexture();
 	Component::Initialize(coreInstance);
 }
 
@@ -86,8 +90,7 @@ bool SpriteRendererComponent::InitializeMesh()
 	return true;
 }
 
-SpriteRendererComponent::SpriteRendererComponent(Actor* owner, int drawOrder,
-	int updateOrder)
+SpriteRendererComponent::SpriteRendererComponent(Actor* owner, int drawOrder,int updateOrder)
 	: MeshRendererComponent(owner, drawOrder, updateOrder), mChannel(4), mTexScale(FTVector2(1.0f,1.0f)) {}
 
 SpriteRendererComponent::~SpriteRendererComponent() 
@@ -107,8 +110,6 @@ void SpriteRendererComponent::LoadProperties(std::ifstream& ifs)
 	SetTexKey(texKey);
 	FileIOHelper::LoadVector2(ifs, mTexScale);
 	Component::LoadProperties(ifs);
-	
-	SetTexture();
 }
 
 #ifdef FOXTROT_EDITOR
@@ -214,4 +215,13 @@ void SpriteRendererComponent::UpdateScale()
 	CommandHistory::GetInstance()->UpdateVector2Value("Texture Scale", mTexScale,
 		FLOATMOD_SPEED);
 }
-#endif
+
+void SpriteRendererComponent::CloneTo(Actor* actor)
+{
+	SpriteRendererComponent* newComp = new SpriteRendererComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	newComp->SetMeshKey(this->GetMeshKey());
+	newComp->SetTexKey(this->GetTexKey());
+	newComp->mChannel = this->mChannel;
+	newComp->mTexScale = this->mTexScale;
+}
+#endif // FOXTROT_EDITOR

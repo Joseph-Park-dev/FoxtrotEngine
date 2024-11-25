@@ -25,7 +25,7 @@ public:
 	void		 UpdateTexture	(FoxtrotRenderer* renderer, std::string fileName);
 
 public:
-			void Initialize		(FTCore* coreInstance);
+	virtual	void Initialize		(FTCore* coreInstance)		override;
 	virtual void Update			(float deltaTime)			override;
 	virtual void Render			(FoxtrotRenderer* renderer)	override;
 
@@ -38,7 +38,7 @@ public:
 				int drawOrder = DEFAULT_DRAWORDER, 
 				int updateOrder = DEFAULT_UPDATEORDER
 			 );
-	virtual ~SpriteRendererComponent() override;
+	virtual ~SpriteRendererComponent()	override;
 
 private:
 	// These fields need to be loaded from .chunk file.
@@ -56,8 +56,7 @@ public:
 
 public:
 	virtual void EditorUIUpdate() override;
-	//		void RenderDebugGeometries(ImDrawList* imDrawList, FTVector2 screenCenter) override;
-
+	virtual void CloneTo(Actor* actor)	override;
 
 protected:
 	virtual void OnConfirmUpdate() override;

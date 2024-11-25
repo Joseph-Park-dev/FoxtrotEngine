@@ -35,7 +35,8 @@ enum class FileMenuEvents
 enum class InfoType
 {
 	None,
-	ChunkIsSaved
+	ChunkIsSaved,
+	PremadeIsCreated
 };
 
 class EditorLayer
@@ -56,7 +57,61 @@ public:
 	ImVec2		GetSceneViewportSize() const { return mSceneViewportSize; }
 	ErrorType	GetErrorType() { return mErrorType; }
 
-	void SetErrorType(ErrorType type) { mErrorType = type; }
+	void		SetInfoType(InfoType type) { mInfoType = type; }
+	void		SetErrorType(ErrorType type) { mErrorType = type; }
+
+public:
+	template <class FUNCTOR>
+	void PopUpInquiry(const char* title, const char* msg, FUNCTOR&& onConfirm)
+	{
+		ImGui::OpenPopup(title);
+		// Always center this window when appearing
+		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+		if (ImGui::BeginPopupModal(title, NULL))
+		{
+			ImGui::Text(msg);
+			ImGui::Separator();
+			ImGui::SetItemDefaultFocus();
+
+			if (ImGui::Button("Confirm", ImVec2(120, 0)))
+			{
+				onConfirm();
+				ImGui::CloseCurrentPopup();
+			}
+			if (ImGui::Button("Cancel", ImVec2(120, 0)))
+			{ 
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::EndPopup();
+		}
+	}
+
+	template <class FUNCTOR>
+	void PopUpInquiry(const char* title, const char* msg, FUNCTOR onConfirm, FUNCTOR&& onCancel)
+	{
+		ImGui::OpenPopup(title);
+		// Always center this window when appearing
+		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+		if (ImGui::BeginPopupModal(title, NULL))
+		{
+			ImGui::Text(msg);
+			ImGui::Separator();
+			ImGui::SetItemDefaultFocus();
+
+			if (ImGui::Button("Confirm", ImVec2(120, 0)))
+				onConfirm();
+			if (ImGui::Button("Cancel", ImVec2(120, 0)))
+				onCancel();
+
+			ImGui::CloseCurrentPopup();
+			mInfoType = InfoType::None;
+			ImGui::EndPopup();
+		}
+	}
 
 private:
 	// After directX implementation
@@ -118,13 +173,10 @@ private:
 	bool ProjectExists(std::string projDir);
 
 	void DisplayInfoMessage();
-	void PopUpInfo_ChunkIsSaved();
+	void PopUpInfo(const char* msg);
 
 	void DisplayErrorMessage();
-	void PopUpError_ProjectPathExists();
-	void PopUpError_ProjectNotValid();
-	void PopUpError_FolderNotEmpty();
-	void PopUpError_ChunkNotSaved();
+	void PopUpError(const char* title, const char* msg);
 
 	void CreateNewProject(std::filesystem::path& path);
 	void OpenProject(std::filesystem::path& path);

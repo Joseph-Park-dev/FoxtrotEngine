@@ -14,6 +14,11 @@ MoveComponent::MoveComponent(class Actor* owner, int drawOrder, int updateorder)
 	//mRigidbody = GetOwner()->GetComponent<Rigidbody2DComponent>();
 }
 
+void MoveComponent::CloneTo(Actor* actor)
+{
+	CLONE_TO_NOT_IMPLEMENTED
+}
+
 void MoveComponent::Update(float deltaTime)
 {
 	FTVector3 pos = GetOwner()->GetTransform()->GetWorldPosition();

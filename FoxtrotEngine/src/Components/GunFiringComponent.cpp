@@ -55,6 +55,11 @@ GunFiringComponent::~GunFiringComponent()
 {
 }
 
+void GunFiringComponent::CloneTo(Actor* actor)
+{
+	CLONE_TO_NOT_IMPLEMENTED
+}
+
 void GunFiringComponent::LoadProperties(std::ifstream& ifs)
 {
 	Component::LoadProperties(ifs);

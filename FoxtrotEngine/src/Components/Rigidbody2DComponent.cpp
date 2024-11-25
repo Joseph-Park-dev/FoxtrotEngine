@@ -27,12 +27,6 @@ Rigidbody2DComponent::~Rigidbody2DComponent()
 		b2DestroyBody(mBodyID);
 }
 
-void Rigidbody2DComponent::CloneTo(Actor* actor)
-{
-	Rigidbody2DComponent* newComp = new Rigidbody2DComponent(actor, GetDrawOrder(), GetUpdateOrder());
-	newComp->mBodyDefCache = this->mBodyDefCache;
-}
-
 b2BodyId& Rigidbody2DComponent::GetBodyID()
 {
 	return mBodyID;
@@ -160,6 +154,12 @@ void Rigidbody2DComponent::EditorUIUpdate()
 	ImGui::TextColored(ImVec4(0.f, 200.f, 0.f, 255), rot.c_str());
 
 	ImGui::Separator();
+}
+
+void Rigidbody2DComponent::CloneTo(Actor* actor)
+{
+	Rigidbody2DComponent* newComp = new Rigidbody2DComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	newComp->mBodyDefCache = this->mBodyDefCache;
 }
 
 void Rigidbody2DComponent::OnConfirmUpdate()

@@ -17,6 +17,7 @@ public:
 	void UnfocusEditorElements();
 	void AddEditorElement();
 	void AddEditorElement(EditorElement* copied);
+	// Deep copies the data from actor
 	void AddEditorElement(Actor* actor);
 
 public:

@@ -77,6 +77,7 @@ void EditorScene::AddEditorElement(Actor* actor)
 {
 	UnfocusEditorElements();
 	EditorElement* editorElement = new EditorElement(actor, this);
+	editorElement->Initialize(FTCoreEditor::GetInstance());
 
 	// Finds the actor with the same name and adds numbered suffix.
 	std::string name = actor->GetName();

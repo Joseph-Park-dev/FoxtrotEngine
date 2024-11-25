@@ -30,4 +30,9 @@ public:
 private:
 	std::unordered_map<AISTATE_TYPE, class AIState*> mStateMap;
 	class AIState*									 mCurrentState;
+
+#ifdef FOXTROT_EDITOR
+public:
+	virtual void CloneTo(Actor* actor) override;
+#endif // FOXTROT_EDITOR
 };

@@ -22,6 +22,7 @@
 #include "Renderer/FTRect.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
+#include "FileSystem/FileIOHelper.h"
 
 #ifdef FOXTROT_EDITOR
 #include "CommandHistory.h"
@@ -105,6 +106,12 @@ void TileMapComponent::EditorUIUpdate()
     UpdateSprite();
     UpdateCSV();
     OnConfirmUpdate();
+}
+
+void TileMapComponent::CloneTo(Actor* actor)
+{
+	TileMapComponent* newComp = new TileMapComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	newComp->mTileMapKey = this->mTileMapKey;
 }
 
 void TileMapComponent::OnConfirmUpdate()

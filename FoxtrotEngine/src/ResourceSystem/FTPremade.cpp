@@ -4,6 +4,7 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Managers/ResourceManager.h"
 #include "Scenes/Scene.h"
+#include "Actors/Actor.h"
 
 #ifdef FOXTROT_EDITOR
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -13,7 +14,9 @@
 
 #include "EditorUtils.h"
 #include "EditorSceneManager.h"
+#include "EditorScene.h"
 #include "DirectoryHelper.h"
+#include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
 
@@ -33,21 +36,28 @@ FTPremade::FTPremade()
 FTPremade::~FTPremade()
 {
 	delete mOrigin;
+	mOrigin = nullptr;
 }
 
-void FTPremade::Load()
+void FTPremade::Load(FTCore* ftCoreInst)
 {
+#ifdef FOXTROT_EDITOR
+	mOrigin = new EditorElement();
+#else
 	mOrigin = new Actor();
+#endif // FOXTROT_EDITOR
 	std::ifstream ifs(GetRelativePath());
 	std::pair<size_t, std::string> pack = FileIOHelper::BeginDataPackLoad(ifs);
 	mOrigin->LoadProperties(ifs);
 	mOrigin->LoadComponents(ifs);
+
+	mOrigin->Initialize(ftCoreInst);
 	mIsLoaded = true;
 }
 
-void FTPremade::AddToScene(Scene* scene, FTCore* coreInst)
+// FTCore is needed for initialization
+void FTPremade::AddToScene(Scene* scene)
 {
-	mOrigin->Initialize(coreInst);
 	scene->AddActor(mOrigin, mOrigin->GetActorGroup());
 }
 
@@ -132,6 +142,7 @@ void FTPremade::UpdateUI()
 		if (mOrigin)
 		{
 			EditorElement dummyForUI = EditorElement(mOrigin);
+			mOrigin->RemoveAllComponents();
 			dummyForUI.SetIsFocused(true);
 			dummyForUI.UpdateUI(true);
 			dummyForUI.CloneTo(mOrigin);
@@ -144,5 +155,9 @@ void FTPremade::UpdateUI()
 		}
 		ImGui::EndPopup();
 	}
+}
+void FTPremade::AddToScene(EditorScene* scene)
+{
+	scene->AddEditorElement(mOrigin);
 }
 #endif

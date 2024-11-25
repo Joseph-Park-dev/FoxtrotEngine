@@ -17,6 +17,8 @@ class KeyInputManager;
 
 class Component
 {
+#define CLONE_TO_NOT_IMPLEMENTED printf("ERROR: CloneTo of %s is not implemented.", typeid(this).name());
+
 public:
 	virtual std::string  GetName() const = 0;
 
@@ -38,9 +40,6 @@ public:
 	Component(const Component& origin);
 	Component(const Component* origin);
 	virtual ~Component();
-	// Returns new object with copied values
-	// (Needs to be distinguished with copy constructor)
-	virtual void CloneTo(Actor* actor) {};
 
 private:
 	Actor*	mOwner;
@@ -79,6 +78,10 @@ public:
 
 public:
 	virtual void EditorUIUpdate();
+	// Deep copy function for Editing Premade on FTEditor
+	// (Initialize() is not included)
+	virtual void CloneTo(Actor* actor) = 0;
+
 	virtual void UpdateDebugGeometries(
 		FTVector3 pos,
 		FTVector3 rot,

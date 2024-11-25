@@ -115,6 +115,8 @@ void InputMoveComponent::Rotate()
 }
 
 #ifdef FOXTROT_EDITOR
-// Editor code comes here.
-
+void InputMoveComponent::CloneTo(Actor* actor)
+{
+	CLONE_TO_NOT_IMPLEMENTED
+}
 #endif // FOXTROT_EDITOR

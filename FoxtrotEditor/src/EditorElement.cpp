@@ -262,7 +262,7 @@ void EditorElement::UpdateMakePrefabBtn()
 {
 	if (ButtonCenteredOnLine("Make Premade"))
 	{
-		FTPremade* premade = new FTPremade();
-		premade->Create(this);
+		bool confirmed = false;
+		EditorLayer::GetInstance()->SetInfoType(InfoType::PremadeIsCreated);
 	}
 }

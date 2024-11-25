@@ -42,6 +42,7 @@ public:
 
 public:
 			void EditorUIUpdate() override;
+	virtual void CloneTo(Actor* actor) override;
 			void UpdateDebugGeometries(
 				FTVector3 pos, 
 				FTVector3 rot, 

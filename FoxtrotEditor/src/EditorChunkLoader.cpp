@@ -48,7 +48,7 @@ void EditorChunkLoader::LoadChunk(const std::string fileName)
 {
     std::ifstream ifs(fileName);
     LoadChunkData(ifs, EditorSceneManager::GetInstance()->GetEditorScene());
-    ResourceManager::GetInstance()->LoadResources(ifs);
+    ResourceManager::GetInstance()->LoadResources(ifs, FTCoreEditor::GetInstance());
     LoadActorsData(ifs);
 }
 

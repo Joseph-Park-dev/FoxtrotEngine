@@ -108,3 +108,10 @@ void AnimatorComponent::Render(FoxtrotRenderer* renderer)
 		}
 	}
 }
+
+#ifdef FOXTROT_EDITOR
+void AnimatorComponent::CloneTo(Actor* actor)
+{
+	CLONE_TO_NOT_IMPLEMENTED
+}
+#endif // FOXTROT_EDITOR

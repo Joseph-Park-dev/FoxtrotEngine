@@ -73,7 +73,7 @@ void EditorLayer::TEST_Instantiate()
 {
 	if(KEY_TAP(KEY::SPACE))
 	{
-		Instantiate("Game Object 1", EditorSceneManager::GetInstance()->GetEditorScene());
+		ResourceManager::GetInstance()->DeleteAll();
 	}
 }
 
@@ -188,7 +188,7 @@ void EditorLayer::DisplayFileMenu()
 					DebugGeometries::GetInstance()->DeleteAll();
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 					ResourceManager::GetInstance()->DeleteAll();
-					ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+					//ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(true);
 				}
@@ -208,7 +208,7 @@ void EditorLayer::DisplayFileMenu()
 					DebugGeometries::GetInstance()->DeleteAll();
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 					ResourceManager::GetInstance()->DeleteAll();
-					ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+					//ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
 				}
 			}
@@ -441,10 +441,19 @@ void EditorLayer::DisplayErrorMessage()
 		break;
 
 	case ErrorType::ChunkNotSaved:
-		PopUpError(
+	{
+		auto onConfirm = [this]()
+			-> void
+			{
+				FTCoreEditor::GetInstance()->SetIsRunning(false);
+				mInfoType = InfoType::None;
+			};
+		PopUpInquiry(
 			"Chunk is not saved",
-			".Chunk is not saved.\nSave the file before closing the editor."
+			".Chunk is not saved.\n Discard the chunk?"
+			, onConfirm
 		);
+	}
 		break;
 
 	default:
@@ -515,6 +524,7 @@ void EditorLayer::CreateNewProject(std::filesystem::path& path)
 		else if (!pathIsEmpty)
 			mErrorType = ErrorType::ProjectPathNotEmpty;
 	}
+	ResourceManager::GetInstance()->DeleteAll();
 }
 
 void EditorLayer::OpenProject(std::filesystem::path& path)
@@ -522,6 +532,8 @@ void EditorLayer::OpenProject(std::filesystem::path& path)
 	if (ProjectExists(path.string())) {
 		PATH_PROJECT.assign(path.string());
 		ResourceManager::GetInstance()->SetPathToAsset(std::move(PATH_PROJECT));
+		ResourceManager::GetInstance()->DeleteAll();
+		ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 		ResourceManager::GetInstance()->LoadAllResourcesInAsset();
 	}
 	else {

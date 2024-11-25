@@ -42,6 +42,7 @@ void FTCoreEditor::ShutDown()
 {
 	CommandHistory::GetInstance()->ShutDown();
 	EditorSceneManager::GetInstance()->DeleteAll();
+	ResourceManager::GetInstance()->DeleteAll();
 	EditorLayer::GetInstance()->ShutDown();
 	FTCore::ShutDown();
 }

@@ -79,10 +79,12 @@ public:
 			{
 				onConfirm();
 				ImGui::CloseCurrentPopup();
+				mInfoType = InfoType::None;
 			}
 			if (ImGui::Button("Cancel", ImVec2(120, 0)))
 			{ 
 				ImGui::CloseCurrentPopup();
+				mInfoType = InfoType::None;
 			}
 			ImGui::EndPopup();
 		}

@@ -94,7 +94,10 @@ public:
 	{
 		auto iter = resMap.begin();
 		for (; iter != resMap.end(); ++iter)
+		{
 			delete (*iter).second;
+			(*iter).second = nullptr;
+		}
 		resMap.clear();
 	}
 

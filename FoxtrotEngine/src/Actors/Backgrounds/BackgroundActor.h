@@ -21,4 +21,3 @@ public:
 private:
 	std::vector<TileMapComponent*> backgroundLayers;
 };
-

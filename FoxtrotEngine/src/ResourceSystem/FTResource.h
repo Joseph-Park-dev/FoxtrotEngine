@@ -5,12 +5,12 @@
 class FTResource
 {
 public:
-	std::string  GetFileName() { return mFileName; }
-	std::string  GetRelativePath(){ return mRelativePath; }
-	bool		 GetIsReferenced() { return mIsReferenced; }
-	void		 SetFileName(const std::string name) { mFileName.assign(name); }
-	void		 SetRelativePath(const std::string _strPath) { mRelativePath.assign(_strPath); }
-	void		 SetIsReferenced(bool val) { mIsReferenced = val; }
+	std::string&  GetFileName() { return mFileName; }
+	std::string&  GetRelativePath(){ return mRelativePath; }
+	bool		  GetIsReferenced() { return mIsReferenced; }
+	void		  SetFileName(const std::string name) { mFileName.assign(name); }
+	void		  SetRelativePath(const std::string _strPath) { mRelativePath.assign(_strPath); }
+	void		  SetIsReferenced(bool val) { mIsReferenced = val; }
 
 protected:
 	std::string mFileName;

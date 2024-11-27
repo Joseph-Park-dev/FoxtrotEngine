@@ -39,7 +39,7 @@ FTPremade::~FTPremade()
 	mOrigin = nullptr;
 }
 
-void FTPremade::Load(FTCore* ftCoreInst)
+void FTPremade::Load()
 {
 #ifdef FOXTROT_EDITOR
 	mOrigin = DBG_NEW EditorElement();
@@ -51,14 +51,14 @@ void FTPremade::Load(FTCore* ftCoreInst)
 	mOrigin->LoadProperties(ifs);
 	mOrigin->LoadComponents(ifs);
 
-	mOrigin->Initialize(ftCoreInst);
 	mIsLoaded = true;
 }
 
 // FTCore is needed for initialization
-void FTPremade::AddToScene(Scene* scene)
+void FTPremade::AddToScene(Scene* scene, FTCore* ftCoreInst)
 {
 	scene->AddActor(mOrigin, mOrigin->GetActorGroup());
+	mOrigin->Initialize(ftCoreInst);
 }
 
 bool FTPremade::GetIsLoaded()

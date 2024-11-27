@@ -250,6 +250,7 @@ void ReadImage(const std::string filename, std::vector<uint8_t>& image,
     else {
         std::cout << "Cannot read " << channels << " channels" << endl;
     }
+    delete[] img;
 }
 
 ComPtr<ID3D11Texture2D>

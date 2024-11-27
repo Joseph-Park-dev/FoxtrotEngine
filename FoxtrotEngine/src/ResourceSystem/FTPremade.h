@@ -19,8 +19,8 @@ public:
     ~FTPremade() override;
 
 public:
-    void Load(FTCore* ftCoreInst);
-    void AddToScene(Scene* scene);
+    void Load();
+    void AddToScene(Scene* scene, FTCore* ftCoreInst);
 
 public:
     bool GetIsLoaded();

@@ -20,6 +20,8 @@
 #include "DebugGeometries.h"
 #include "DirectoryHelper.h"
 
+#define _CRTDBG_MAP_ALLOC
+
 #include "Core/FTCore.h"
 #include "Managers/SceneManager.h"
 #include "Managers/KeyInputManager.h"
@@ -74,6 +76,12 @@ void EditorLayer::TEST_Instantiate()
 	if(KEY_TAP(KEY::SPACE))
 	{
 		ResourceManager::GetInstance()->DeleteAll();
+		printf("deleted beautifully");
+	}
+	else if (KEY_TAP(KEY::W))
+	{
+		ResourceManager::GetInstance()->LoadAllResourcesInAsset();
+		printf("deleted beautifully");
 	}
 }
 
@@ -208,7 +216,7 @@ void EditorLayer::DisplayFileMenu()
 					DebugGeometries::GetInstance()->DeleteAll();
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 					ResourceManager::GetInstance()->DeleteAll();
-					//ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+					ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
 				}
 			}
@@ -536,7 +544,6 @@ void EditorLayer::OpenProject(std::filesystem::path& path)
 		ResourceManager::GetInstance()->SetPathToAsset(std::move(PATH_PROJECT));
 		ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 		ResourceManager::GetInstance()->LoadAllResourcesInAsset();
-
 	}
 	else {
 		mErrorType = ErrorType::ProjectNotValid;
@@ -561,7 +568,6 @@ void EditorLayer::SaveAs(std::filesystem::path& path)
 
 void EditorLayer::Open(std::filesystem::path& path)
 {
-	DebugGeometries::GetInstance()->DeleteAll();
 	EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 	PATH_CHUNK.assign(path.string());
 	EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);

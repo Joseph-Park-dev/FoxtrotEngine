@@ -174,7 +174,7 @@ private:
 private:
 	void ProcessTexture(FTTexture* texture);
 	void ProcessTextures();
-	void ProcessPremades(FTCore* coreInst);
+	void ProcessPremades();
 
 	//template<typename FTRESOURCE>
 	//void LoadResourceToMap(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap) {

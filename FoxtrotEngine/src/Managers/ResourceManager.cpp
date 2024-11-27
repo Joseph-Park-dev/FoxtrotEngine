@@ -192,10 +192,10 @@ void ResourceManager::ProcessTextures()
 		ProcessTexture(textureItem.second);
 }
 
-void ResourceManager::ProcessPremades(FTCore* coreInst)
+void ResourceManager::ProcessPremades()
 {
 	for (auto& premadeItem : mMapPremades)
-		premadeItem.second->Load(coreInst);
+		premadeItem.second->Load();
 }
 
 ResourceManager::~ResourceManager()
@@ -246,7 +246,7 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	LoadResourceToMap<FTTexture>(ifs, mMapTextures, ftTexturePack.first);
 	
 	ProcessTextures();
-	ProcessPremades(ftCoreInst);
+	ProcessPremades();
 }
 
 #ifdef FOXTROT_EDITOR
@@ -257,7 +257,7 @@ void ResourceManager::LoadAllResourcesInAsset()
 		[](std::string&& path) { ResourceManager::GetInstance()->LoadResByType(path); }
 		);
 	ProcessTextures();
-	ProcessPremades(FTCoreEditor::GetInstance());
+	ProcessPremades();
 }
 
 void ResourceManager::LoadResByType(std::string& filePath)
@@ -335,7 +335,7 @@ void ResourceManager::UpdateUI()
 			{
 				std::string relativePath = path.substr(path.rfind("Assets"));
 				FTPremade* premade = LoadResource<FTPremade>(relativePath, mMapPremades);
-				premade->Load(FTCoreEditor::GetInstance());
+				premade->Load();
 			}
 		}
 		ImGuiFileDialog::Instance()->Close();

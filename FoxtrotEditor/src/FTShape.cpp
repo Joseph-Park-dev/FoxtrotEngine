@@ -11,6 +11,7 @@ using DXMatrix = DirectX::SimpleMath::Matrix;
 
 FTShape::FTShape()
     : mMesh(nullptr)
+    , mVertexConstantData()
     , mPixelConstantData()
 {
 }
@@ -22,6 +23,10 @@ FTShape::~FTShape()
         delete mMesh;
         mMesh = nullptr;
     }
+    if (mVertexConstantBuffer.Get())
+        mVertexConstantBuffer.Reset();
+    if (mPixelConstantBuffer.Get())
+        mPixelConstantBuffer.Reset();
 }
 
 void FTShape::Initialize(FoxtrotRenderer* renderer)
@@ -56,6 +61,11 @@ void FTShape::Render(
 {
     if (!mMesh)
         return;
+    if (!mVertexConstantBuffer.Get())
+        return;
+    if (!mPixelConstantBuffer.Get())
+        return;
+
     UINT stride = sizeof(Vertex);
     UINT offset = 0;
     size_t meshSize = GetArrayLength<Mesh>(mMesh);
@@ -152,11 +162,17 @@ void FTShape::InitializeConstantBuffer(ComPtr<ID3D11Device>& device)
 
 void FTShape::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
-    D3D11Utils::UpdateBuffer(device, context, mVertexConstantData,
-        mVertexConstantBuffer);
+    if (mVertexConstantBuffer)
+        D3D11Utils::UpdateBuffer(device, context, mVertexConstantData,
+            mVertexConstantBuffer);
+    else
+        printf("ERROR : FTShape::UpdateConstantBuffers() -> Vertex Constant Buffer is null");
 
-    D3D11Utils::UpdateBuffer(device, context, mPixelConstantData,
-        mPixelConstantBuffer);
+    if(mPixelConstantBuffer)
+        D3D11Utils::UpdateBuffer(device, context, mPixelConstantData,
+            mPixelConstantBuffer);
+    else 
+        printf("ERROR : FTShape::UpdateConstantBuffers() -> Pixel Constant Buffer is null");
 }
 
 FTRectangle::FTRectangle()

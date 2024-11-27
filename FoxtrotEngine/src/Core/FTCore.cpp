@@ -11,7 +11,6 @@
 #include "Managers/KeyInputManager.h"
 #include "Managers/SceneManager.h"
 #include "Managers/ResourceManager.h"
-//#include "Managers/CollisionManager.h"
 #include "Managers/EventManager.h"
 #include "Managers/UIManager.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -19,6 +18,8 @@
 #include "Physics/Physics2D.h"
 #include "Physics/ParticleSystem.h"
 #include "FileSystem/ChunkLoader.h"
+
+#include "Debugging/DebugMemAlloc.h"
 
 // FTCore related singleton initializations -> used in the runtimes of the produced games.
 Physics2D*			Physics2D::mInstance = nullptr;
@@ -200,6 +201,7 @@ void FTCore::ShutDown()
 	ChunkLoader::GetInstance()->Destroy();
 	Camera::GetInstance()->Destroy();
 	Timer::GetInstance()->Destroy();
+	ParticleSystem::GetInstance()->Destroy();
 
 	DestroyWindow(mWindow);
 	PostQuitMessage(0);

@@ -23,4 +23,3 @@ private:
 public:
     RectTransform();
 };
-

@@ -1,11 +1,13 @@
 #pragma once
+#include "Debugging/DebugMemAlloc.h"
+
 // For making singleton classes.
 // Don't forget to call Destory() to delete mObject!
 #define SINGLETON(TYPE) public:\
 							static TYPE* GetInstance() \
 								{ \
 									if(mInstance == nullptr) \
-										mInstance = new TYPE(); \
+										mInstance = DBG_NEW TYPE(); \
 									return mInstance; \
 								} \
 							static void Destroy() \
@@ -28,7 +30,7 @@
 							static TYPE* GetInstance() \
 								{ \
 									if(mInstance == nullptr) \
-										mInstance = new TYPE(); \
+										mInstance = DBG_NEW TYPE(); \
 									return mInstance; \
 								} \
 							static void Destroy() \

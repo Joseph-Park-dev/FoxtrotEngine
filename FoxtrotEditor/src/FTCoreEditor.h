@@ -6,6 +6,8 @@
 
 #include "Core/FTCore.h"
 
+#include "Debugging/DebugMemAlloc.h"
+
 class FTCoreEditor :
     public FTCore
 {

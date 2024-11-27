@@ -56,12 +56,11 @@ void FTCoreEditor::ShutDown()
 	EditorLayer::GetInstance()->ShutDown();
 
 	CommandHistory::GetInstance()->Destroy();
-	EditorSceneManager::GetInstance()->Destroy();
-	EditorLayer::GetInstance()->Destroy();
-	EditorChunkLoader::GetInstance()->Destroy();
 	DebugGeometries::GetInstance()->Destroy();
 	DirectoryHelper::GetInstance()->Destroy();
-
+	EditorLayer::GetInstance()->Destroy();
+	EditorSceneManager::GetInstance()->Destroy();
+	EditorChunkLoader::GetInstance()->Destroy();
 	FTCore::ShutDown();
 }
 

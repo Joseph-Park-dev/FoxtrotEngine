@@ -48,7 +48,7 @@ void FTTileMap::ReadCSV()
     mMaxCountOnScreenX = column;
     mMaxCountOnScreenY = row;
 
-    mTileMap = new Tile[column * row];
+    mTileMap = DBG_NEW Tile[column * row];
     for (int r = 0; r < row; ++r)
     {
         for (int c = 0; c < column; ++c)

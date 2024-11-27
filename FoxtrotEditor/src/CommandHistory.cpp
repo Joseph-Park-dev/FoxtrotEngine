@@ -9,6 +9,7 @@
 #include "Command.h"
 #include "EditorLayer.h"
 #include "Core/TemplateFunctions.h"
+#include "Debugging/DebugMemAlloc.h"
 
 void CommandHistory::AddCommand(Command* command)
 {
@@ -109,14 +110,14 @@ void CommandHistory::Update()
 void CommandHistory::UpdateVector2Value(std::string label, FTVector2& ref, float modSpeed)
 {
 	FTVector2 updatedVal = ref;
-	float* vec2 = new float[2];
+	float* vec2 = DBG_NEW float[2];
 	vec2[0] = updatedVal.x;
 	vec2[1] = updatedVal.y;
 	bool isRecording = GetIsRecording();
 	if (ImGui::DragFloat2(label.c_str(), vec2, modSpeed)) {
 		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left)) {
 			SetIsRecording(true);
-			AddCommand(new Vector2EditCommand(ref, updatedVal));
+			AddCommand(DBG_NEW Vector2EditCommand(ref, updatedVal));
 		}
 		updatedVal = FTVector2(vec2[0], vec2[1]);
 		ref = updatedVal;
@@ -125,7 +126,7 @@ void CommandHistory::UpdateVector2Value(std::string label, FTVector2& ref, float
 	{
 		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
 		{
-			AddCommand(new Vector2EditCommand(ref, updatedVal));
+			AddCommand(DBG_NEW Vector2EditCommand(ref, updatedVal));
 			SetIsRecording(false);
 		}
 	}
@@ -135,14 +136,14 @@ void CommandHistory::UpdateVector2Value(std::string label, FTVector2& ref, float
 void CommandHistory::UpdateVector2Value(std::string label, b2Vec2& ref, float modSpeed)
 {
 	b2Vec2 updatedVal = ref;
-	float* vec2 = new float[2];
+	float* vec2 = DBG_NEW float[2];
 	vec2[0] = updatedVal.x;
 	vec2[1] = updatedVal.y;
 	bool isRecording = GetIsRecording();
 	if (ImGui::DragFloat2(label.c_str(), vec2, modSpeed)) {
 		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left)) {
 			SetIsRecording(true);
-			AddCommand(new B2Vec2EditCommand(ref, updatedVal));
+			AddCommand(DBG_NEW B2Vec2EditCommand(ref, updatedVal));
 		}
 		updatedVal.x = vec2[0];
 		updatedVal.y = vec2[1];
@@ -152,7 +153,7 @@ void CommandHistory::UpdateVector2Value(std::string label, b2Vec2& ref, float mo
 	{
 		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
 		{
-			AddCommand(new B2Vec2EditCommand(ref, updatedVal));
+			AddCommand(DBG_NEW B2Vec2EditCommand(ref, updatedVal));
 			SetIsRecording(false);
 		}
 	}
@@ -162,7 +163,7 @@ void CommandHistory::UpdateVector2Value(std::string label, b2Vec2& ref, float mo
 void CommandHistory::UpdateVector3Value(std::string label, FTVector3& ref, float modSpeed)
 {
 	FTVector3 updatedVal = ref;
-	float* vec3 = new float[3];
+	float* vec3 = DBG_NEW float[3];
 	vec3[0] = updatedVal.x;
 	vec3[1] = updatedVal.y;
 	vec3[2] = updatedVal.z;
@@ -170,7 +171,7 @@ void CommandHistory::UpdateVector3Value(std::string label, FTVector3& ref, float
 	if (ImGui::DragFloat3(label.c_str(), vec3, modSpeed)){
 		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left)){
 			SetIsRecording(true);
-			AddCommand(new Vector3EditCommand(ref, updatedVal));
+			AddCommand(DBG_NEW Vector3EditCommand(ref, updatedVal));
 		}
 		updatedVal = FTVector3(vec3[0], vec3[1], vec3[2]);
 		ref = updatedVal;
@@ -179,7 +180,7 @@ void CommandHistory::UpdateVector3Value(std::string label, FTVector3& ref, float
 	{
 		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
 		{
-			AddCommand(new Vector3EditCommand(ref, updatedVal));
+			AddCommand(DBG_NEW Vector3EditCommand(ref, updatedVal));
 			SetIsRecording(false);
 		}
 	}
@@ -189,7 +190,7 @@ void CommandHistory::UpdateVector3Value(std::string label, FTVector3& ref, float
 void CommandHistory::UpdateVector3Value(std::string label, DirectX::SimpleMath::Vector3& ref, float modSpeed)
 {
 	DirectX::SimpleMath::Vector3 updatedVal = ref;
-	float* vec3 = new float[3];
+	float* vec3 = DBG_NEW float[3];
 	vec3[0] = updatedVal.x;
 	vec3[1] = updatedVal.y;
 	vec3[2] = updatedVal.z;
@@ -197,7 +198,7 @@ void CommandHistory::UpdateVector3Value(std::string label, DirectX::SimpleMath::
 	if (ImGui::DragFloat3(label.c_str(), vec3, modSpeed)) {
 		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left)) {
 			SetIsRecording(true);
-			AddCommand(new DXVector3EditCommand(ref, updatedVal));
+			AddCommand(DBG_NEW DXVector3EditCommand(ref, updatedVal));
 		}
 		updatedVal = DirectX::SimpleMath::Vector3(vec3[0], vec3[1], vec3[2]);
 		ref = updatedVal;
@@ -206,7 +207,7 @@ void CommandHistory::UpdateVector3Value(std::string label, DirectX::SimpleMath::
 	{
 		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
 		{
-			AddCommand(new DXVector3EditCommand(ref, updatedVal));
+			AddCommand(DBG_NEW DXVector3EditCommand(ref, updatedVal));
 			SetIsRecording(false);
 		}
 	}
@@ -216,7 +217,7 @@ void CommandHistory::UpdateVector3Value(std::string label, DirectX::SimpleMath::
 void CommandHistory::UpdateFloatValue(std::string label, float* ref, float modSpeed)
 {
 	float prevFloat = *ref;
-	float* rotationBuf = new float(prevFloat);
+	float* rotationBuf = DBG_NEW float(prevFloat);
 	bool isRecording = CommandHistory::GetInstance()->GetIsRecording();
 	if (ImGui::DragFloat(label.c_str(), rotationBuf, modSpeed))
 	{
@@ -224,7 +225,7 @@ void CommandHistory::UpdateFloatValue(std::string label, float* ref, float modSp
 		{
 			CommandHistory::GetInstance()->SetIsRecording(true);
 			CommandHistory::GetInstance()->
-				AddCommand(new FloatEditCommand(ref, prevFloat));
+				AddCommand(DBG_NEW FloatEditCommand(ref, prevFloat));
 		}
 		*ref = *rotationBuf;
 	}
@@ -233,7 +234,7 @@ void CommandHistory::UpdateFloatValue(std::string label, float* ref, float modSp
 		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
 		{
 			CommandHistory::GetInstance()->
-				AddCommand(new FloatEditCommand(ref, prevFloat));
+				AddCommand(DBG_NEW FloatEditCommand(ref, prevFloat));
 			CommandHistory::GetInstance()->SetIsRecording(false);
 		}
 	}
@@ -243,7 +244,7 @@ void CommandHistory::UpdateFloatValue(std::string label, float* ref, float modSp
 void CommandHistory::UpdateFloatValue(std::string label, float* ref, float val, float modSpeed, Transform* transf, TransSetFloatFunc setFunc)
 {
 	float prevRotation = val;
-	float* rotationBuf = new float(prevRotation);
+	float* rotationBuf = DBG_NEW float(prevRotation);
 	bool isRecording = CommandHistory::GetInstance()->GetIsRecording();
 	if (ImGui::DragFloat(label.c_str(), rotationBuf, modSpeed))
 	{
@@ -251,7 +252,7 @@ void CommandHistory::UpdateFloatValue(std::string label, float* ref, float val, 
 		{
 			CommandHistory::GetInstance()->SetIsRecording(true);
 			CommandHistory::GetInstance()->
-				AddCommand(new FloatEditCommand(ref, prevRotation));
+				AddCommand(DBG_NEW FloatEditCommand(ref, prevRotation));
 		}
 		setFunc(transf, *rotationBuf);
 	}
@@ -260,7 +261,7 @@ void CommandHistory::UpdateFloatValue(std::string label, float* ref, float val, 
 		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
 		{
 			CommandHistory::GetInstance()->
-				AddCommand(new FloatEditCommand(ref, val));
+				AddCommand(DBG_NEW FloatEditCommand(ref, val));
 			CommandHistory::GetInstance()->SetIsRecording(false);
 		}
 	}
@@ -270,7 +271,7 @@ void CommandHistory::UpdateFloatValue(std::string label, float* ref, float val, 
 void CommandHistory::UpdateIntValue(std::string label, int* ref, int modSpeed)
 {
 	int prevInt = *ref;
-	int* intBuf = new int(prevInt);
+	int* intBuf = DBG_NEW int(prevInt);
 	bool isRecording = CommandHistory::GetInstance()->GetIsRecording();
 	if (ImGui::DragInt(label.c_str(), intBuf, modSpeed))
 	{
@@ -278,7 +279,7 @@ void CommandHistory::UpdateIntValue(std::string label, int* ref, int modSpeed)
 		{
 			CommandHistory::GetInstance()->SetIsRecording(true);
 			CommandHistory::GetInstance()->
-				AddCommand(new IntEditCommandPtr(ref, prevInt));
+				AddCommand(DBG_NEW IntEditCommandPtr(ref, prevInt));
 		}
 		*ref = *intBuf;
 	}
@@ -287,7 +288,7 @@ void CommandHistory::UpdateIntValue(std::string label, int* ref, int modSpeed)
 		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
 		{
 			CommandHistory::GetInstance()->
-				AddCommand(new IntEditCommandPtr(ref, prevInt));
+				AddCommand(DBG_NEW IntEditCommandPtr(ref, prevInt));
 			CommandHistory::GetInstance()->SetIsRecording(false);
 		}
 	}
@@ -303,7 +304,7 @@ void CommandHistory::UpdateBoolValue(std::string label, bool& ref)
 		if (valToUpdate != ref)
 		{
 			CommandHistory::GetInstance()->
-				AddCommand(new BoolEditCommand(ref, valToUpdate));
+				AddCommand(DBG_NEW BoolEditCommand(ref, valToUpdate));
 			ref = valToUpdate;
 		}
 	}

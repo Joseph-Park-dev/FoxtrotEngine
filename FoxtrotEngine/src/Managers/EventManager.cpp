@@ -60,5 +60,4 @@ EventManager::EventManager()
 }
 
 EventManager::~EventManager()
-{
-}
+{}

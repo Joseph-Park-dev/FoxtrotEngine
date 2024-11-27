@@ -60,7 +60,7 @@ void EditorScene::UnfocusEditorElements()
 void EditorScene::AddEditorElement()
 {
 	UnfocusEditorElements();
-	EditorElement* editorElement = new EditorElement(this);
+	EditorElement* editorElement = DBG_NEW EditorElement(this);
 	std::string name = "Game Object " + std::to_string(this->GetActorCount());
 	editorElement->SetName(name);
 	editorElement->SetIsFocused(true);
@@ -68,7 +68,7 @@ void EditorScene::AddEditorElement()
 
 void EditorScene::AddEditorElement(EditorElement* copied)
 {
-	EditorElement* editorElement = new EditorElement(copied, this);
+	EditorElement* editorElement = DBG_NEW EditorElement(copied, this);
 	std::string name = copied->GetName() + " copy " + std::to_string(this->GetActorCount());
 	editorElement->SetName(name);
 }
@@ -76,7 +76,7 @@ void EditorScene::AddEditorElement(EditorElement* copied)
 void EditorScene::AddEditorElement(Actor* actor)
 {
 	UnfocusEditorElements();
-	EditorElement* editorElement = new EditorElement(actor, this);
+	EditorElement* editorElement = DBG_NEW EditorElement(actor, this);
 	editorElement->Initialize(FTCoreEditor::GetInstance());
 
 	// Finds the actor with the same name and adds numbered suffix.

@@ -66,7 +66,7 @@ void ChunkLoader::LoadActors(std::ifstream& ifs)
 
 Actor* ChunkLoader::LoadIndividualActor(std::ifstream& ifs, Scene* currScene)
 {
-    Actor* actor = new Actor(currScene);
+    Actor* actor = DBG_NEW Actor(currScene);
     actor->LoadProperties(ifs);
     actor->LoadComponents(ifs);
     return actor;

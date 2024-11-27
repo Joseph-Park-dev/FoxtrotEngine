@@ -5,7 +5,7 @@
 
 SceneManager::SceneManager()
 	: mArrScene{}
-	, mPCurrScene(new Scene)
+	, mPCurrScene(DBG_NEW Scene)
 {}
 
 SceneManager::~SceneManager()
@@ -22,7 +22,7 @@ SceneManager::~SceneManager()
 
 void SceneManager::Initialize()
 {
-	//mArrScene[(UINT)SCENE_TYPE::START] = new Scene_Start;
+	//mArrScene[(UINT)SCENE_TYPE::START] = DBG_NEW Scene_Start;
 	//mArrScene[(UINT)SCENE_TYPE::START]->SetName(L"Start Scene");
 	mPCurrScene->Enter();
 }
@@ -60,8 +60,11 @@ void SceneManager::DeleteAll()
 		{
 			mArrScene[i]->DeleteAll();
 			delete mArrScene[i];
+			mArrScene[i] = nullptr;
 		}
 	}
+	delete mPCurrScene;
+	mPCurrScene = nullptr;
 }
 
 void SceneManager::SwitchScene(SCENE_TYPE sceneType)

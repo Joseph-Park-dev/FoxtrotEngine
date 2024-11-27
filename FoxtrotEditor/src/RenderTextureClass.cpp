@@ -29,7 +29,7 @@ void RenderTextureClass::InitializeTexture(ComPtr<ID3D11Device>& device, int wid
 	textureDesc.CPUAccessFlags = 0;
 	textureDesc.MiscFlags = 0;
 
-	device->CreateTexture2D(&textureDesc, NULL, mRenderTargetTexture.GetAddressOf());
+	DX::ThrowIfFailed (device->CreateTexture2D(&textureDesc, NULL, mRenderTargetTexture.GetAddressOf()));
 
 	// Initialize RenderTargetView
 	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
@@ -37,7 +37,13 @@ void RenderTextureClass::InitializeTexture(ComPtr<ID3D11Device>& device, int wid
 	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 
-	device->CreateRenderTargetView(mRenderTargetTexture.Get(), &renderTargetViewDesc, mRenderTargetView.GetAddressOf());
+	DX::ThrowIfFailed(
+		device->CreateRenderTargetView(
+			mRenderTargetTexture.Get(),
+			&renderTargetViewDesc,
+			mRenderTargetView.GetAddressOf()
+		)
+	);
 
 	// Initialize ShaderResourceView
 	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
@@ -46,7 +52,11 @@ void RenderTextureClass::InitializeTexture(ComPtr<ID3D11Device>& device, int wid
 	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
 	shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
-	device->CreateShaderResourceView(mRenderTargetTexture.Get(), &shaderResourceViewDesc, mShaderResourceView.GetAddressOf());
+	DX::ThrowIfFailed(
+		device->CreateShaderResourceView(mRenderTargetTexture.Get(),
+			&shaderResourceViewDesc,
+			mShaderResourceView.GetAddressOf())
+	);
 }
 
 void RenderTextureClass::DrawOnTexture(ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11RenderTargetView>& renderTargetView, ComPtr<ID3D11DepthStencilView>& depthStencilView, FoxtrotRenderer* renderer)

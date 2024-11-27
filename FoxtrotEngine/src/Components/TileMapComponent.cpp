@@ -78,6 +78,7 @@ TileMapComponent::TileMapComponent(Actor* owner, int drawOrder, int UpdateOrder)
 TileMapComponent::~TileMapComponent()
 {
     ResourceManager::GetInstance()->RemoveLoadedMeshes(GetMeshKey());
+	mTileMap = nullptr;
 }
 
 void TileMapComponent::SaveProperties(std::ofstream& ofs)
@@ -110,7 +111,7 @@ void TileMapComponent::EditorUIUpdate()
 
 void TileMapComponent::CloneTo(Actor* actor)
 {
-	TileMapComponent* newComp = new TileMapComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	TileMapComponent* newComp = DBG_NEW TileMapComponent(actor, GetDrawOrder(), GetUpdateOrder());
 	newComp->mTileMapKey = this->mTileMapKey;
 }
 

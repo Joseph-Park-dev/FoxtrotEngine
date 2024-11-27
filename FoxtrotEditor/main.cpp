@@ -7,24 +7,14 @@
 /// Editor fields & functions for development
 /// Displays editor window, Provides functionality to create & edit .chunk files.
 /// </FTCore_Editor>
+/// 
 
-#define _CRTDBG_MAP_ALLOC
-
-#ifdef _DEBUG
-#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
-#else
-#define DBG_NEW new
-#endif // DEBUG
-
-
+#include <crtdbg.h>
 #include "FTCoreEditor.h"
 #pragma comment	(lib, "FoxtrotEngine.lib")
 
 int main(int argc, char* argv[])
 {
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	//_CrtSetBreakAlloc(159);
-
 	bool success = FTCoreEditor::GetInstance()->Initialize();
 	if (success)
 		FTCoreEditor::GetInstance()->RunLoop();
@@ -33,7 +23,7 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	FTCoreEditor::GetInstance()->ShutDown();
-
-	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
+	FTCoreEditor::GetInstance()->Destroy();
+	_CrtDumpMemoryLeaks();
 	return 0;
 }

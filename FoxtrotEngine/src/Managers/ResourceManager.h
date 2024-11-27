@@ -8,6 +8,7 @@
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
 #include "ResourceSystem/FTPremade.h"
+#include "Debugging/DebugMemAlloc.h"
 
 class FTTexture;
 class FTSpineAnimation;
@@ -121,7 +122,7 @@ private:
 		std::string fileName = filePath.substr(filePath.rfind("\\") + 1);
 		if (!ResourceExists<FTRESOURCE*>(key, filePath, resMap)) {
 			printf("Message: Loading FTTexture %s to key %d. \n", filePath.c_str(), key);
-			FTRESOURCE* res = new FTRESOURCE;
+			FTRESOURCE* res = DBG_NEW FTRESOURCE;
 			res->SetFileName(fileName);
 			res->SetRelativePath(filePath);
 			resMap.insert(std::make_pair(key, res));
@@ -130,13 +131,14 @@ private:
 		}
 		else {
 			printf("Warning : Resource %s is already loaded to key %d.\n", filePath.c_str(), key);
+			return nullptr;
 		}
 	}
 
 	template<typename FTRESOURCE>
 	void LoadResource(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
-		FTRESOURCE* resource = new FTRESOURCE;
+		FTRESOURCE* resource = DBG_NEW FTRESOURCE;
 		UINT key = resource->LoadProperties(ifs);
 		resMap.insert(std::make_pair(key, resource));
 	}

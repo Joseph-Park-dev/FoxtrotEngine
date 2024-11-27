@@ -135,7 +135,7 @@ void EditorElement::UpdateActorName()
 		if (EditorLayer::GetInstance()->GetConfirmKeyPressed())
 		{
 			CommandHistory::GetInstance()->
-				AddCommand(new StrEditCommand(GetNameRef(), updatedName));
+				AddCommand(DBG_NEW StrEditCommand(GetNameRef(), updatedName));
 		}
 	}
 }
@@ -149,7 +149,7 @@ void EditorElement::UpdateActorGroup()
 		{
 			if (ImGui::Selectable(ActorGroupUtil::GetActorGroupStr(n)))
 			{
-				CommandHistory::GetInstance()->AddCommand(new IntEditCommand(mActorGroupIdx, n));
+				CommandHistory::GetInstance()->AddCommand(DBG_NEW IntEditCommand(mActorGroupIdx, n));
 				mActorGroupIdx = n;
 				SetActorGroup((ActorGroup)mActorGroupIdx);
 			}
@@ -169,7 +169,7 @@ void EditorElement::UpdateActorState()
 		state = State::EDead;
 
 	if (state != GetState())
-		CommandHistory::GetInstance()->AddCommand(new StateEditCommand(GetStateRef(), state));
+		CommandHistory::GetInstance()->AddCommand(DBG_NEW StateEditCommand(GetStateRef(), state));
 }
 
 void EditorElement::UpdateActorWorldPosition()

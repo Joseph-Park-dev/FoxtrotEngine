@@ -22,6 +22,16 @@
 #include "Managers/ResourceManager.h"
 #include "Managers/EventManager.h"
 #include "Managers/SceneManager.h"
+#include "EditorChunkLoader.h"
+
+// FTCoreEditor related singleton initializations -> used in Foxtrot Editor Runtime
+CommandHistory*		CommandHistory::mInstance = nullptr;
+DebugGeometries*	DebugGeometries::mInstance = nullptr;
+DirectoryHelper*	DirectoryHelper::mInstance = nullptr;
+EditorLayer*		EditorLayer::mInstance = nullptr;
+EditorSceneManager* EditorSceneManager::mInstance = nullptr;
+EditorChunkLoader*	EditorChunkLoader::mInstance = nullptr;
+FTCoreEditor*		FTCoreEditor::mInstance = nullptr;
 
 bool FTCoreEditor::Initialize()
 {
@@ -44,13 +54,20 @@ void FTCoreEditor::ShutDown()
 	EditorSceneManager::GetInstance()->DeleteAll();
 	ResourceManager::GetInstance()->DeleteAll();
 	EditorLayer::GetInstance()->ShutDown();
+
+	CommandHistory::GetInstance()->Destroy();
+	EditorSceneManager::GetInstance()->Destroy();
+	EditorLayer::GetInstance()->Destroy();
+	EditorChunkLoader::GetInstance()->Destroy();
+	DebugGeometries::GetInstance()->Destroy();
+	DirectoryHelper::GetInstance()->Destroy();
+
 	FTCore::ShutDown();
 }
 
 void FTCoreEditor::InitSingletonManagers()
 {
 	FTCore::InitSingletonManagers();
-	ResourceManager::GetInstance()->Initialize(GetGameRenderer());
 	EditorSceneManager::GetInstance()->Initialize();
 	EditorLayer::GetInstance();
 	DebugGeometries::GetInstance()->Initialize(GetGameRenderer());

@@ -49,7 +49,7 @@ FTVector2 FTVector2::Transform(const FTVector2& vec, const Matrix3& mat, float w
 	FTVector2 retVal;
 	retVal.x = vec.x * mat.mat[0][0] + vec.y * mat.mat[1][0] + w * mat.mat[2][0];
 	retVal.y = vec.x * mat.mat[0][1] + vec.y * mat.mat[1][1] + w * mat.mat[2][1];
-	//ignore w since we aren't returning a new value for it...
+	//ignore w since we aren't returning a DBG_NEW value for it...
 	return retVal;
 }
 
@@ -69,7 +69,7 @@ FTVector3 FTVector3::Transform(const FTVector3& vec, const Matrix4& mat, float w
 		vec.z * mat.mat[2][1] + w * mat.mat[3][1];
 	retVal.z = vec.x * mat.mat[0][2] + vec.y * mat.mat[1][2] +
 		vec.z * mat.mat[2][2] + w * mat.mat[3][2];
-	//ignore w since we aren't returning a new value for it...
+	//ignore w since we aren't returning a DBG_NEW value for it...
 	return retVal;
 }
 

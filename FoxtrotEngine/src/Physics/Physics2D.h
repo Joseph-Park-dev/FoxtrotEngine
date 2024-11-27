@@ -41,6 +41,7 @@ public:
 public:
 	void Initialize();
 	void Update();
+	void ShutDown();
 
 private:
 	b2WorldId	mWorldID;

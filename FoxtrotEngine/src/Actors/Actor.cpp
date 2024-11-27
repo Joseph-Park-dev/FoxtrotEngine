@@ -14,20 +14,21 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Components/Component.h"
 #include "Core/FTCore.h"
+#include "Debugging/DebugMemAlloc.h"
 
 #ifdef FOXTROT_EDITOR
 #include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
 Actor::Actor()
-	: mTransform(new Transform)
+	: mTransform(DBG_NEW Transform)
 {
 	// THIS SHOULD BE REMAINED EMPTY;
 }
 
 Actor::Actor(Actor* origin)
 	: mState(EActive)
-	, mTransform(new Transform)
+	, mTransform(DBG_NEW Transform)
 	, mActorGroup(origin->mActorGroup)
 	, mParent(origin->mParent)
 	, mComponents{}
@@ -40,7 +41,7 @@ Actor::Actor(Actor* origin)
 
 Actor::Actor(Scene* scene)
 	: mState(EActive)
-	, mTransform(new Transform)
+	, mTransform(DBG_NEW Transform)
 	, mActorGroup(ActorGroup::DEFAULT)
 	, mParent(nullptr)
 	, mComponents{}
@@ -52,7 +53,7 @@ Actor::Actor(Scene* scene)
 // Constructor to copy Actor
 Actor::Actor(Actor& origin, Scene* scene)
 	: mState(origin.mState)
-	, mTransform(new Transform)
+	, mTransform(DBG_NEW Transform)
 	, mActorGroup(origin.mActorGroup)
 	, mParent(nullptr)
 	, mComponents{}
@@ -67,7 +68,7 @@ Actor::Actor(Actor& origin, Scene* scene)
 // Constructor to copy Actor
 Actor::Actor(Actor* origin, Scene* scene)
 	: mState(origin->mState)
-	, mTransform(new Transform)
+	, mTransform(DBG_NEW Transform)
 	, mActorGroup(origin->mActorGroup)
 	, mParent(nullptr)
 	, mComponents{}
@@ -81,8 +82,11 @@ Actor::Actor(Actor* origin, Scene* scene)
 
 Actor::~Actor()
 {
-	if(mTransform)
+	if (mTransform)
+	{
 		delete mTransform;
+		mTransform = nullptr;
+	}
 
 	for (size_t i = 0; i < mComponents.size(); ++i)
 		delete mComponents[i];
@@ -144,14 +148,14 @@ void Actor::CopyChildObject(Actor* origin)
 {
 	std::vector<Actor*>& childObjects = origin->GetChildActors();
 	for (size_t i = 0; i < childObjects.size(); ++i)
-		this->AddChild(new Actor(childObjects[i]));
+		this->AddChild(DBG_NEW Actor(childObjects[i]));
 }
 
 void Actor::CopyChildObject(Actor& origin)
 {
 	std::vector<Actor*>& childObjects = origin.GetChildActors();
 	for (size_t i = 0; i < childObjects.size(); ++i)
-		this->AddChild(new Actor(childObjects[i]));
+		this->AddChild(DBG_NEW Actor(childObjects[i]));
 }
 
 void Actor::Initialize(FTCore* coreInst)

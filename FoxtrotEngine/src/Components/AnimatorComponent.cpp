@@ -35,7 +35,7 @@ void AnimatorComponent::CreateAnimationFromTile(
 	//if (animation == nullptr)
 	//{
 	//	//InitializeTileMap(fileName, tileSizeX, tileSizeY);
-	//	animation = new FTSpriteAnimation;
+	//	animation = DBG_NEW FTSpriteAnimation;
 	//	animation->SetName(name);
 	//	animation->SetAnimator(this);
 	//	//for (int y = 0; y < GetTileCountY(); y++)

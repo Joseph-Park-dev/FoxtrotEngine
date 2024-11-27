@@ -40,7 +40,10 @@ public:
         , mTexWidth(0)
         , mTexHeight(0)
     {}
-    virtual ~FTTexture() override { ReleaseTexture(); }
+    virtual ~FTTexture() override 
+    { 
+        ReleaseTexture(); 
+    }
 
 private:
     Microsoft::WRL::ComPtr<ID3D11Texture2D>          mTexture;

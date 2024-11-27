@@ -39,20 +39,28 @@ void BoxCollider2DComponent::Initialize(FTCore* coreInstance)
 	Component::Initialize(coreInstance);
 
 #ifdef FOXTROT_EDITOR
-	mDebugRect = new FTRectangle;
+	mDebugRect = DBG_NEW FTRectangle;
 	mDebugRect->Initialize(coreInstance->GetGameRenderer());
 #endif // FOXTROT_EDITOR
 }
 
 BoxCollider2DComponent::BoxCollider2DComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Collider2DComponent(owner, drawOrder, updateOrder)
-	, mScale(FTVector2(10.f,10.f))
+	, mScale(FTVector2(10.f, 10.f))
+#ifdef FOXTROT_EDITOR
+	, mDebugRect(nullptr)
+#endif
 {
 }
 
 BoxCollider2DComponent::~BoxCollider2DComponent()
 {
+	if (b2Shape_IsValid(GetShapeID()))
+		b2DestroyShape(GetShapeID(), true);
+#ifdef FOXTROT_EDITOR
+	delete mDebugRect;
 	mDebugRect = nullptr;
+#endif
 }
 
 void BoxCollider2DComponent::SaveProperties(std::ofstream& ofs)
@@ -127,7 +135,7 @@ void BoxCollider2DComponent::UpdateScale()
 
 void BoxCollider2DComponent::CloneTo(Actor* actor)
 {
-	BoxCollider2DComponent* newComp = new BoxCollider2DComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	BoxCollider2DComponent* newComp = DBG_NEW BoxCollider2DComponent(actor, GetDrawOrder(), GetUpdateOrder());
 	newComp->SetOffsetPos(this->GetOffsetPos());
 	newComp->mScale = this->mScale;
 }

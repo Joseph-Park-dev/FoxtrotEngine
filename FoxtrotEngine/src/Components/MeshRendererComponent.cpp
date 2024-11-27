@@ -108,7 +108,7 @@ void MeshRendererComponent::SetTexture() {
 
 MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner, drawOrder, updateOrder)
-	, mMeshGroup(new FTBasicMeshGroup)
+	, mMeshGroup(DBG_NEW FTBasicMeshGroup)
 	, mRenderer(nullptr)
 	, mMeshKey(VALUE_NOT_ASSIGNED)
 	, mTexKey(VALUE_NOT_ASSIGNED)
@@ -180,7 +180,7 @@ void MeshRendererComponent::OnConfirmUpdate()
 }
 void MeshRendererComponent::CloneTo(Actor* actor)
 {
-	MeshRendererComponent* newComp = new MeshRendererComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	MeshRendererComponent* newComp = DBG_NEW MeshRendererComponent(actor, GetDrawOrder(), GetUpdateOrder());
 	newComp->mMeshKey = this->mMeshKey;
 	newComp->mTexKey = this->mTexKey;
 }

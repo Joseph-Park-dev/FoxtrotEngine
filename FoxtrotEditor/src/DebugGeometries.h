@@ -14,6 +14,7 @@ public:
 
 public:
 	void AddShape(FTShape* shape);
+	void RemoveShape(FTShape* shape);
 	void DeleteAll();
 
 private:

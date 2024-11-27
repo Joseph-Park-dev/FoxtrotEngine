@@ -218,7 +218,7 @@ void SpriteRendererComponent::UpdateScale()
 
 void SpriteRendererComponent::CloneTo(Actor* actor)
 {
-	SpriteRendererComponent* newComp = new SpriteRendererComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	SpriteRendererComponent* newComp = DBG_NEW SpriteRendererComponent(actor, GetDrawOrder(), GetUpdateOrder());
 	newComp->SetMeshKey(this->GetMeshKey());
 	newComp->SetTexKey(this->GetTexKey());
 	newComp->mChannel = this->mChannel;

@@ -42,9 +42,9 @@ FTPremade::~FTPremade()
 void FTPremade::Load(FTCore* ftCoreInst)
 {
 #ifdef FOXTROT_EDITOR
-	mOrigin = new EditorElement();
+	mOrigin = DBG_NEW EditorElement();
 #else
-	mOrigin = new Actor();
+	mOrigin = DBG_NEW Actor();
 #endif // FOXTROT_EDITOR
 	std::ifstream ifs(GetRelativePath());
 	std::pair<size_t, std::string> pack = FileIOHelper::BeginDataPackLoad(ifs);
@@ -68,10 +68,9 @@ bool FTPremade::GetIsLoaded()
 
 Actor* FTPremade::GetOrigin()
 {
-	if (mOrigin)
-		return mOrigin;
-	else
+	if (!mOrigin)
 		printf("ERROR : Origin for this premade is null");
+	return mOrigin;
 }
 
 #ifdef FOXTROT_EDITOR

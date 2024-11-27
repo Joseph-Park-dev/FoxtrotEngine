@@ -93,12 +93,16 @@ FTTileMap::FTTileMap()
     , mTileHeightOnScreen(0)
     , mMaxCountOnMapX(0)
     , mMaxCountOnMapY(0)
+    , mTileMap(nullptr)
+    , mMaxCountOnScreenX(0)
+    , mMaxCountOnScreenY(0)
 {
 }
 
 FTTileMap::~FTTileMap()
 {
-    delete[] mTileMap;
+    if(mTileMap)
+        delete[] mTileMap;
 }
 
 void FTTileMap::InitializeTile(Tile& tile, UINT column, UINT row, UINT tileNum)

@@ -38,6 +38,8 @@ void EditorSceneManager::DeleteAll()
 {
 	if(mEditorScene)
 		mEditorScene->DeleteAll();
+	delete mEditorScene;
+	mEditorScene = nullptr;
 }
 
 EditorScene* EditorSceneManager::GetEditorScene()
@@ -46,9 +48,10 @@ EditorScene* EditorSceneManager::GetEditorScene()
 }
 
 EditorSceneManager::EditorSceneManager()
-	: mEditorScene(new EditorScene)
+	: mEditorScene(DBG_NEW EditorScene)
 {}
 
 EditorSceneManager::~EditorSceneManager(){
 	delete mEditorScene;
+	mEditorScene = nullptr;
 }

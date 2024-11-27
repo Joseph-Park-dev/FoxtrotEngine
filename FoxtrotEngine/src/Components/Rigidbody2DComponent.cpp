@@ -16,6 +16,7 @@
 
 Rigidbody2DComponent::Rigidbody2DComponent(class Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner, drawOrder, updateOrder)
+	, mBodyID{}
 #ifdef FOXTROT_EDITOR
 	, mBodyDefCache(b2DefaultBodyDef())
 #endif // FOXTROT_EDITOR
@@ -158,7 +159,7 @@ void Rigidbody2DComponent::EditorUIUpdate()
 
 void Rigidbody2DComponent::CloneTo(Actor* actor)
 {
-	Rigidbody2DComponent* newComp = new Rigidbody2DComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	Rigidbody2DComponent* newComp = DBG_NEW Rigidbody2DComponent(actor, GetDrawOrder(), GetUpdateOrder());
 	newComp->mBodyDefCache = this->mBodyDefCache;
 }
 

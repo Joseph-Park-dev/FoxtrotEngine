@@ -79,7 +79,7 @@ void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
     for (size_t i = 0; i < pack.first; ++i)
     {
         FileIOHelper::BeginDataPackLoad(ifs);
-        EditorElement* element = new EditorElement(scene);
+        EditorElement* element = DBG_NEW EditorElement(scene);
         element->LoadProperties(ifs);
         element->LoadComponents(ifs);
         element->Initialize(FTCoreEditor::GetInstance());

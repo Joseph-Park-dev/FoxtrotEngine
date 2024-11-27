@@ -115,7 +115,7 @@ void FTBasicMeshGroup::InitializeConstantBuffer(ComPtr<ID3D11Device>& device)
 void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<MeshData>& meshes)
 {
     for (const MeshData& meshData : meshes) {
-        Mesh* newMesh = new Mesh;
+        Mesh* newMesh = DBG_NEW Mesh;
         newMesh->mIndexCount = UINT(meshData.indices.size());
         newMesh->mVertexCount = UINT(meshData.vertices.size());
 

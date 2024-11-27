@@ -97,7 +97,7 @@ void ResourceManager::LoadTileMap(const std::string filePath)
 	UINT key = gItemKey;
 	if (!KeyExists(key, mMapTileMaps)) {
 		printf("Message: Loading tilemap %s to key %d. \n", path.c_str(), key);
-		FTTileMap* tileMap = new FTTileMap;
+		FTTileMap* tileMap = DBG_NEW FTTileMap;
 		tileMap->SetRelativePath(path);
 		mMapTileMaps.insert(std::make_pair(key, tileMap));
 		++gItemKey;

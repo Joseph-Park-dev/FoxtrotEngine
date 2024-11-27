@@ -14,7 +14,8 @@
 #include <directxtk/VertexTypes.h>
 
 #include "ResourceSystem/Mesh.h"
-#include "Core\TemplateFunctions.h"
+#include "Core/TemplateFunctions.h"
+#include "Debugging/DebugMemAlloc.h"
 
 #define VERTEX_SHADER_PATH L"Assets/Shaders/ColorVertexShader.hlsl"
 #define PIXEL_SHADER_PATH L"Assets/Shaders/ColorPixelShader.hlsl"

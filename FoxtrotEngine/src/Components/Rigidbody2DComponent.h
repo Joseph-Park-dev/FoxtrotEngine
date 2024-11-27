@@ -22,7 +22,7 @@ public:
 public:
 	Rigidbody2DComponent(Actor* owner, int drawOrder = DEFAULT_DRAWORDER,
 		int updateOrder = DEFAULT_UPDATEORDER);
-	~Rigidbody2DComponent();
+	virtual ~Rigidbody2DComponent() override;
 
 private:
 	b2BodyId	mBodyID;

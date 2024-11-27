@@ -89,7 +89,7 @@ UIActor::UIActor(Scene* scene, bool isCamAffect)
 	, mIsFocused(false)
 {
 	delete GetTransform();
-	SetTransform(new RectTransform);
+	SetTransform(DBG_NEW RectTransform);
 }
 
 UIActor::UIActor(UIActor& origin, Scene* scene)

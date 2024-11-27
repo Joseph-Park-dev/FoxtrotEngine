@@ -99,7 +99,7 @@ void Camera::DisplayCameraMenu()
 
 	//// Set Target
 	// std::vector<EditorElement*>& editorElems = EditorLayer::GetInstance()->GetEditorElements();
-	// std::string* actorNames = new std::string[editorElems.size() + 1];
+	// std::string* actorNames = DBG_NEW std::string[editorElems.size() + 1];
 	// actorNames[0] = "None";
 	// for (UINT i = 0; i < editorElems.size(); ++i)
 	//{

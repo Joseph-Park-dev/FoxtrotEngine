@@ -28,7 +28,7 @@
 
 FoxtrotRenderer* FoxtrotRenderer::CreateRenderer(HWND window, int width, int height)
 {
-	FoxtrotRenderer* ftRenderer = new FoxtrotRenderer();
+	FoxtrotRenderer* ftRenderer = DBG_NEW FoxtrotRenderer();
 	if (!ftRenderer->Initialize(window, width, height))
 	{
 		LogString("Failed to Initialize FT_Renderer");
@@ -102,7 +102,7 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 	mContext->RSSetState(mSolidRasterizerState.Get());
 
 #ifdef FOXTROT_EDITOR
-	mRenderTexture = new RenderTextureClass();
+	mRenderTexture = DBG_NEW RenderTextureClass;
 	if (!mRenderTexture)
 	{
 		LogString("Error : FoxtrotRenderer Initialize - CreateRenderTexture failed.");
@@ -307,6 +307,8 @@ HRESULT FoxtrotRenderer::CreateRenderTargetView()
 		return mDevice->CreateRenderTargetView(
 			backBuffer.Get(), NULL, mRenderTargetView.GetAddressOf()
 		);
+	else
+		printf("ERROR : FoxtrotRenderer::CreateRenderTargetView() -> BackBuffer not set");
 }
 
 HRESULT FoxtrotRenderer::CreateRasterizerState()
@@ -494,6 +496,9 @@ void FoxtrotRenderer::CreateIndexBuffer(const std::vector<uint32_t>& indices,
 FoxtrotRenderer::FoxtrotRenderer()
 	: mClearColor{0.0f,0.0f,0.0f,1.0f}
 	, mFillMode(FillMode::Solid)
+#ifdef FOXTROT_EDITOR
+	, mRenderTexture(nullptr)
+#endif // FOXTROT_EDITOR
 {}
 
 #ifdef FOXTROT_EDITOR

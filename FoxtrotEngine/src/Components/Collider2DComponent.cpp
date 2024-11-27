@@ -74,11 +74,13 @@ Collider2DComponent::Collider2DComponent(const Collider2DComponent& origin)
 
 Collider2DComponent::~Collider2DComponent()
 {
+	if (b2Shape_IsValid(mShapeID))
+		b2DestroyShape(mShapeID, true);
 }
 
 //void Collider2DComponent::CloneTo(Actor* actor)
 //{
-//	Collider2DComponent* newColliderComp = new Collider2DComponent(actor, GetDrawOrder(), GetUpdateOrder());
+//	Collider2DComponent* newColliderComp = DBG_NEW Collider2DComponent(actor, GetDrawOrder(), GetUpdateOrder());
 //	newColliderComp->mOffsetPos = this->mOffsetPos;
 //}
 

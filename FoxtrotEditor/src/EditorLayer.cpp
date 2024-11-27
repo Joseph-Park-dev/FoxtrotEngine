@@ -296,7 +296,7 @@ void EditorLayer::DisplayHierarchyMenu()
 			if (ImGui::Selectable(actorsRow.at(i)->GetName().c_str(), mActorNameIdx == i))
 			{
 				mActorNameIdx = i;
-				CommandHistory::GetInstance()->AddCommand(new IntEditCommand(mActorNameIdx, i));
+				CommandHistory::GetInstance()->AddCommand(DBG_NEW IntEditCommand(mActorNameIdx, i));
 				EditorSceneManager::GetInstance()->GetEditorScene()->UnfocusEditorElements();
 				Actor* actor = actorsRow[mActorNameIdx];
 				mFocusedEditorElement = dynamic_cast<EditorElement*>(actor);
@@ -395,7 +395,7 @@ void EditorLayer::DisplayInfoMessage()
 		auto onConfirm = [this]()
 			-> void
 			{
-				FTPremade* newPremade = new FTPremade();
+				FTPremade* newPremade = DBG_NEW FTPremade();
 				newPremade->Create(mFocusedEditorElement);
 				ImGui::CloseCurrentPopup();
 				mInfoType = InfoType::None;
@@ -530,11 +530,13 @@ void EditorLayer::CreateNewProject(std::filesystem::path& path)
 void EditorLayer::OpenProject(std::filesystem::path& path)
 {
 	if (ProjectExists(path.string())) {
+		EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
+		ResourceManager::GetInstance()->DeleteAll();
 		PATH_PROJECT.assign(path.string());
 		ResourceManager::GetInstance()->SetPathToAsset(std::move(PATH_PROJECT));
-		ResourceManager::GetInstance()->DeleteAll();
 		ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 		ResourceManager::GetInstance()->LoadAllResourcesInAsset();
+
 	}
 	else {
 		mErrorType = ErrorType::ProjectNotValid;
@@ -559,8 +561,9 @@ void EditorLayer::SaveAs(std::filesystem::path& path)
 
 void EditorLayer::Open(std::filesystem::path& path)
 {
-	PATH_CHUNK.assign(path.string());
+	DebugGeometries::GetInstance()->DeleteAll();
 	EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
+	PATH_CHUNK.assign(path.string());
 	EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
 	SET_CHUNK_IS_SAVED(true)
 }
@@ -598,7 +601,7 @@ EditorLayer::EditorLayer()
 	, mErrorType(ErrorType::None)
 {
 	// Initial command stored in front of every following commands
-	CommandHistory::GetInstance()->AddCommand(new IntEditCommand(mActorNameIdx, 0));
+	CommandHistory::GetInstance()->AddCommand(DBG_NEW IntEditCommand(mActorNameIdx, 0));
 }
 
 EditorLayer::~EditorLayer()

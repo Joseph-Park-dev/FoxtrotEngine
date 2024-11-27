@@ -312,6 +312,7 @@
     <ClCompile Include="src\Scenes\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Debugging\DebugMemAlloc.h" />
     <ClInclude Include="src\FileSystem\FileIOHelper.h" />
     <ClInclude Include="src\ResourceSystem\FTPremade.h" />
     <ClInclude Include="src\Components\CircleCollider2DComponent.h" />

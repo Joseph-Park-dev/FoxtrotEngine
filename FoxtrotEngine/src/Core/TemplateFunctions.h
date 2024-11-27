@@ -12,12 +12,13 @@
 
 #include "Math/FTMath.h"
 #include "Physics/Bounds.h"
+#include "Debugging/DebugMemAlloc.h"
 
 //static std::string ToString(const wchar_t* text)
 //{
 //	size_t i = 0;
 //	size_t size = std::wcslen(text);
-//	char* str = new char[size];
+//	char* str = DBG_NEW char[size];
 //	if (size > 0) {
 //		wcstombs_s(&i, str, size, text, _TRUNCATE);
 //	}
@@ -122,7 +123,7 @@ static char* ToString(const wchar_t* text)
 {
 	size_t i = 0;
 	size_t size = std::wcslen(text);
-	char* str = new char[size];
+	char* str = DBG_NEW char[size];
 	if (0 < size) 
 	{
 		wcstombs_s(&i, str, size, text, _TRUNCATE);

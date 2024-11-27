@@ -9,12 +9,8 @@ DebugGeometries::DebugGeometries()
 
 DebugGeometries::~DebugGeometries()
 {
-    for (FTShape* shape : mShapes)
-    {
-        if (shape)
-            delete shape;
-    }
-    mShapes.clear();
+    if(0 < mShapes.size())
+        mShapes.clear();
 }
 
 void DebugGeometries::Initialize(FoxtrotRenderer* renderer)
@@ -46,6 +42,16 @@ void DebugGeometries::AddShape(FTShape* shape)
     mShapes.push_back(shape);
 }
 
+void DebugGeometries::RemoveShape(FTShape* shape)
+{
+    auto iter = std::find(mShapes.begin(), mShapes.end(), shape);
+    if (iter != mShapes.end())
+    {
+        delete shape;
+        mShapes.erase(iter);
+    }
+}
+
 void DebugGeometries::DeleteAll()
 {
     if (mShapes.size() < 1)
@@ -53,7 +59,10 @@ void DebugGeometries::DeleteAll()
     for (FTShape* shape : mShapes)
     {
         if (shape)
+        {
             delete shape;
+            shape = nullptr;
+        }
     }
     mShapes.clear();
 }

@@ -20,6 +20,19 @@
 #include "Physics/ParticleSystem.h"
 #include "FileSystem/ChunkLoader.h"
 
+// FTCore related singleton initializations -> used in the runtimes of the produced games.
+Physics2D*			Physics2D::mInstance = nullptr;
+Camera*				Camera::mInstance = nullptr;
+ResourceManager*	ResourceManager::mInstance = nullptr;
+SceneManager*		SceneManager::mInstance = nullptr;
+UIManager*			UIManager::mInstance = nullptr;
+EventManager*		EventManager::mInstance = nullptr;
+KeyInputManager*	KeyInputManager::mInstance = nullptr;
+ChunkLoader*		ChunkLoader::mInstance = nullptr;
+ParticleSystem*		ParticleSystem::mInstance = nullptr;
+Timer*				Timer::mInstance = nullptr;
+FTCore*				FTCore::mInstance = nullptr;
+
 bool FTCore::Initialize()
 {
 	if (!InitializeWindow())
@@ -175,7 +188,19 @@ void FTCore::ShutDown()
 {
 	SceneManager::GetInstance()->DeleteAll();
 	ResourceManager::GetInstance()->DeleteAll();
+	Physics2D::GetInstance()->ShutDown();
 	FoxtrotRenderer::DestroyRenderer(mGameRenderer);
+
+	EventManager::GetInstance()->Destroy();
+	KeyInputManager::GetInstance()->Destroy();
+	ResourceManager::GetInstance()->Destroy();
+	SceneManager::GetInstance()->Destroy();
+	UIManager::GetInstance()->Destroy();
+	Physics2D::GetInstance()->Destroy();
+	ChunkLoader::GetInstance()->Destroy();
+	Camera::GetInstance()->Destroy();
+	Timer::GetInstance()->Destroy();
+
 	DestroyWindow(mWindow);
 	PostQuitMessage(0);
 }
@@ -191,14 +216,3 @@ LRESULT FTCore::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	}
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
-
-//
-//void FTCore::SaveEditorData(std::ofstream& ofs)
-//{
-//	int editorW = 0; int editorH = 0;
-//	SDL_GetWindowSize(mEditorWindow, &editorW, &editorH);
-//	FileIOHelper::AddBasicString(ofs, mEditorResolutionKey);
-//	FileIOHelper::
-//		AddVector2(ofs, FTVector2(editorW, editorH));
-//}
-// // _DEBUG

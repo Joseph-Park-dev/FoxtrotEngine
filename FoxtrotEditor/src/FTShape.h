@@ -60,7 +60,7 @@ private:
 class FTRectangle : public FTShape
 {
 public:
-			FTRectangle();
+	FTRectangle();
 
 public:
 	virtual void Initialize(FoxtrotRenderer* renderer) override;

@@ -383,6 +383,9 @@
     <ClInclude Include="src\FileSystem\FileIOHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Debugging\DebugMemAlloc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

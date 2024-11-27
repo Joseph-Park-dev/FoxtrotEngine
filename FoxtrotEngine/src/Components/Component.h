@@ -59,7 +59,7 @@ public:
 	static void Load(Actor* actor, std::ifstream& ifs)
 	{
 		///Dynamically allocate actor of type T
-		T* t = new T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
+		T* t = DBG_NEW T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
 		// Load Properties first -> then initialize with the loaded values.
 		t->LoadProperties(ifs);
 	}
@@ -94,8 +94,8 @@ public:
 	static void Create(Actor* actor, FTCore* coreInst)
 	{
 		// Dynamically allocate actor of type T
-		T* t = new T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
-		// Call LoadProperties on new actor
+		T* t = DBG_NEW T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
+		// Call LoadProperties on DBG_NEW actor
 		t->Initialize(coreInst);
 	}
 

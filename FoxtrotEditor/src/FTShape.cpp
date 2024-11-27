@@ -11,13 +11,17 @@ using DXMatrix = DirectX::SimpleMath::Matrix;
 
 FTShape::FTShape()
     : mMesh(nullptr)
+    , mPixelConstantData()
 {
 }
 
 FTShape::~FTShape()
 {
-    if(mMesh)
+    if (mMesh)
+    {
         delete mMesh;
+        mMesh = nullptr;
+    }
 }
 
 void FTShape::Initialize(FoxtrotRenderer* renderer)
@@ -80,7 +84,7 @@ void FTShape::Render(
 
 void FTShape::InitializeMesh(ComPtr<ID3D11Device>& device, MeshData&& meshData)
 {
-    mMesh = new Mesh;
+    mMesh = DBG_NEW Mesh;
     mMesh->mIndexCount = UINT(meshData.indices.size());
     mMesh->mVertexCount = UINT(meshData.vertices.size());
 

@@ -10,7 +10,7 @@
 // InitPos : WorldPosition, not ScreenPosition
 void ParticleSystem::CreateExplosion(FTVector2 initPos, float initSpeed, int duration, float gravity, float angle)
 {
-	FTParticleExplosion* explosion = new FTParticleExplosion;
+	FTParticleExplosion* explosion = DBG_NEW FTParticleExplosion;
 	explosion->isActive = true;
 	explosion->initialPos = initPos;
 	explosion->initialSpeed = initSpeed;

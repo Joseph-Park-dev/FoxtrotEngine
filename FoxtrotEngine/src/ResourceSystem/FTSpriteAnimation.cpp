@@ -37,7 +37,7 @@ void FTSpriteAnimation::SetFrameDuration(int frameNum, float duration)
 void FTSpriteAnimation::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<MeshData>& meshes)
 {
 	for (const MeshData& meshData : meshes) {
-		AnimationFrame* newMesh = new AnimationFrame;
+		AnimationFrame* newMesh = DBG_NEW AnimationFrame;
 		newMesh->mIndexCount = UINT(meshData.indices.size());
 		newMesh->mVertexCount = UINT(meshData.vertices.size());
 

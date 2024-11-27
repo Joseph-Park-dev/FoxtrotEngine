@@ -34,6 +34,11 @@ void Physics2D::Update()
 	b2World_Step(mWorldID, mFixedTimeStep, mSubStepCount);
 }
 
+void Physics2D::ShutDown()
+{
+	b2DestroyWorld(mWorldID);
+}
+
 FTVector3 Physics2D::CalcCenterOfGravity(int numElements)
 {
 	float totalMass = 0;
@@ -106,13 +111,13 @@ Physics2D::Physics2D()
 	, mFixedTimeStep(1.f/60.f)
 {}
 
-Physics2D::~Physics2D() { b2DestroyWorld(mWorldID); }
+Physics2D::~Physics2D() {}
 
 
 RayCastHit2D Physics2D::Raycast(FTVector2 origin, FTVector2 direction, float distance, ActorGroup actor)
 {
 	FTVector2 rayDir = (direction - origin).Normalize() * distance;
-	//Physics::Ray* ray = new Physics::Ray(
+	//Physics::Ray* ray = DBG_NEW Physics::Ray(
 	//	//EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(origin),
 	//	//EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(origin + rayDir),
 	//	actor

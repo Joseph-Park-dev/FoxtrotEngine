@@ -10,6 +10,7 @@
 #include "CommandHistory.h"
 // Used to access Debug geometries
 #include "ResourceSystem/GeometryGenerator.h"
+#include "DebugGeometries.h"
 #endif
 
 const FTVector2 BoxCollider2DComponent::GetScale() const
@@ -58,7 +59,7 @@ BoxCollider2DComponent::~BoxCollider2DComponent()
 	if (b2Shape_IsValid(GetShapeID()))
 		b2DestroyShape(GetShapeID(), true);
 #ifdef FOXTROT_EDITOR
-	delete mDebugRect;
+	DebugGeometries::GetInstance()->RemoveShape(mDebugRect);
 	mDebugRect = nullptr;
 #endif
 }

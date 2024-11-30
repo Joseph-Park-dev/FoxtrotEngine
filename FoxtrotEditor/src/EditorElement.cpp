@@ -86,7 +86,7 @@ EditorElement::EditorElement(Actor* origin)
 	SetActorGroup(origin->GetActorGroup());
 	SetName(origin->GetName());
 	SetState(origin->GetState());
-	SetParent(origin->GetParent());
+	SetParent(nullptr);
 	SetChildActors(origin->GetChildActors());
 
 	CopyTransformFrom(origin);

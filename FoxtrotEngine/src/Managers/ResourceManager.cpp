@@ -39,29 +39,11 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 
 void ResourceManager::DeleteAll()
 {
-	ClearMap<FTTexture>(mMapTextures);
-	ClearMap<FTTileMap>(mMapTileMaps);
-	ClearMap<FTPremade>(mMapPremades);
-
+	mMapTextures.clear();
+	mMapTileMaps.clear();
+	mMapPremades.clear();
 	mMapMeshes.clear();
 	mMapPrimitives.clear();
-}
-
-void ResourceManager::UpdateTexture(FTTexture* texture, int channels)
-{
-	if (texture != nullptr)
-	{
-		if (!texture->ReleaseTexture())
-		{
-			LogString("Error: ResourceManager::UpdateTexture() : ReleaseTexture failed");
-			return;
-		}
-		printf("Message: Loading FTTexture %s\n", texture->GetRelativePath().c_str());
-		//if (!texture->CreateTexture(renderer))
-		//	printf("Error: ResourceManager::LoadTexture() -> UpdateTexture failed. \n");
-	}
-	else
-		printf("Warning : FTTexture %s is not loaded. Aborting update...\n", texture->GetRelativePath().c_str());
 }
 
 void ResourceManager::LoadBasicMesh(MeshData meshData)
@@ -107,17 +89,15 @@ void ResourceManager::LoadTileMap(const std::string filePath)
 	}
 }
 
-FTTexture* ResourceManager::GetLoadedTexture(const UINT key)
+std::shared_ptr<FTTexture>& ResourceManager::GetLoadedTexture(const UINT key)
 {
-	FTTexture* ptTex = mMapTextures.at(key);
-	if (ptTex != nullptr)
-		ptTex->SetIsReferenced(true);
-	else
+	std::shared_ptr<FTTexture>& ptTex = mMapTextures.at(key);
+	if (!ptTex)
 		printf("Error: Unable to find FTTexture with key; %d\n", key);
 	return ptTex;
 }
 
-std::vector<MeshData>& ResourceManager::GetLoadedMeshes(UINT key)
+std::vector<MeshData>& ResourceManager::GetLoadedMeshes(const UINT key)
 {
 	std::vector<MeshData>& meshes = mMapMeshes.at(key);
 	if (meshes.empty())
@@ -125,43 +105,36 @@ std::vector<MeshData>& ResourceManager::GetLoadedMeshes(UINT key)
 	return meshes;
 }
 
-FTTileMap* ResourceManager::GetLoadedTileMap(UINT key)
+std::shared_ptr<FTTileMap>& ResourceManager::GetLoadedTileMap(const UINT key)
 {
-	FTTileMap* tileMap = mMapTileMaps.at(key);
-	if (tileMap)
-		tileMap->SetIsReferenced(true);
-	else
+	std::shared_ptr<FTTileMap>& tileMap = mMapTileMaps.at(key);
+	if (!tileMap)
 		printf("Error: ResourceManager::GetLoadedTileMap() -> FTTileMap is empty %d\n", key);
 	return tileMap;
 }
 
-FTPremade* ResourceManager::GetLoadedPremade(UINT key)
+std::shared_ptr<FTPremade>& ResourceManager::GetLoadedPremade(const UINT key)
 {
-	FTPremade* premade = mMapPremades.at(key);
-	if (premade)
-		premade->SetIsReferenced(true);
-	else
+	std::shared_ptr<FTPremade>& premade = mMapPremades.at(key);
+	if (!premade)
 		printf("Error: ResourceManager::GetLoadedPremade() -> FTPremade is empty %d\n", key);
 	return premade;
 }
 
-FTPremade* ResourceManager::GetLoadedPremade(std::string&& fileName)
+std::shared_ptr<FTPremade>& ResourceManager::GetLoadedPremade(std::string&& fileName)
 {
 	std::string premadeFullName = fileName + ChunkKeys::PREMADE_FILE_FORMAT;
-	std::unordered_map<UINT, FTPremade*>::iterator iter = mMapPremades.begin();
+	std::unordered_map<UINT, std::shared_ptr<FTPremade>>::iterator iter = mMapPremades.begin();
 	for (; iter != mMapPremades.end(); ++iter)
 	{
 		if ((*iter).second->GetFileName() == premadeFullName)
-		{
-			(*iter).second->SetIsReferenced(true);
 			return (*iter).second;
-		}
 	}
 	printf("Error: ResourceManager::GetLoadedPremade() -> Cannot find FTPremade %s\n", premadeFullName.c_str());
-	return nullptr;
+	return;
 }
 
-MeshData& ResourceManager::GetLoadedPrimitive(UINT key)
+MeshData& ResourceManager::GetLoadedPrimitive(const UINT key)
 {
 	MeshData& primitive = mMapPrimitives.at(key);
 	if (primitive.IsEmpty())
@@ -169,7 +142,7 @@ MeshData& ResourceManager::GetLoadedPrimitive(UINT key)
 	return primitive;
 }
 
-void ResourceManager::RemoveLoadedMeshes(UINT key)
+void ResourceManager::RemoveLoadedMeshes(const UINT key)
 {
 	if (KeyExists(key, mMapMeshes)) {
 		mMapMeshes.erase(key);
@@ -179,7 +152,27 @@ void ResourceManager::RemoveLoadedMeshes(UINT key)
 	}
 }
 
-void ResourceManager::ProcessTexture(FTTexture* texture)
+std::unordered_map<UINT, std::shared_ptr<FTTexture>>& ResourceManager::GetTexturesMap()
+{
+	return mMapTextures;
+}
+
+std::unordered_map<UINT, std::shared_ptr<FTTileMap>>& ResourceManager::GetTileMapsMap()
+{
+	return mMapTileMaps;
+}
+
+std::string& ResourceManager::GetPathToAsset()
+{
+	return mPathToAsset;
+}
+
+void ResourceManager::SetPathToAsset(std::string&& projectPath)
+{
+	mPathToAsset.assign(projectPath + "\\Assets");
+}
+
+void ResourceManager::ProcessTexture(std::shared_ptr<FTTexture>& texture)
 {
 	D3D11Utils::CreateTexture(mRenderer->GetDevice(), mRenderer->GetContext(), texture);
 	if (!texture)
@@ -200,32 +193,28 @@ void ResourceManager::ProcessPremades()
 
 ResourceManager::~ResourceManager()
 {
-	std::unordered_map<UINT, FTTexture*>::iterator iter = mMapTextures.begin();
-	for (; iter != mMapTextures.end(); iter++)
-		delete iter->second;
+	DeleteAll();
 }
 
 ResourceManager::ResourceManager()
 	: mPathToAsset("./Assets")
 	, mRenderer(nullptr)
-{
-
-}
+{}
 
 void ResourceManager::SaveResources(std::ofstream& ofs)
 {
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::RESOURCE_DATA);\
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::RESOURCE_DATA);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::FTTEXTURE_GROUP);
-	SaveResourceInMap<FTTexture>(ofs, mMapTextures);
+	SaveResourceToChunk<FTTexture>(ofs, mMapTextures);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::FTTEXTURE_GROUP);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::FTTILEMAP_GROUP);
-	SaveResourceInMap<FTTileMap>(ofs, mMapTileMaps);
+	SaveResourceToChunk<FTTileMap>(ofs, mMapTileMaps);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::FTTILEMAP_GROUP);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::FTPREMADE_GROUP);
-	SaveResourceInMap<FTPremade>(ofs, mMapPremades);
+	SaveResourceToChunk<FTPremade>(ofs, mMapPremades);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::FTPREMADE_GROUP);
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::RESOURCE_DATA);
@@ -237,13 +226,16 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	size_t count = resPack.first;
 
 	std::pair<size_t, std::string>&& ftPremadePack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTPREMADE_GROUP);
-	LoadResourceToMap<FTPremade>(ifs, mMapPremades, ftPremadePack.first);
+	mMapPremades.reserve(ftPremadePack.first);
+	LoadResourceFromChunk<FTPremade>(ifs, mMapPremades, ftPremadePack.first);
 
 	std::pair<size_t, std::string>&& ftTileMapPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTTILEMAP_GROUP);
-	LoadResourceToMap<FTTileMap>(ifs, mMapTileMaps, ftTileMapPack.first);
+	mMapTileMaps.reserve(ftTileMapPack.first);
+	LoadResourceFromChunk<FTTileMap>(ifs, mMapTileMaps, ftTileMapPack.first);
 
 	std::pair<size_t, std::string>&& ftTexturePack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTTEXTURE_GROUP);
-	LoadResourceToMap<FTTexture>(ifs, mMapTextures, ftTexturePack.first);
+	mMapTextures.reserve(ftTexturePack.first);
+	LoadResourceFromChunk<FTTexture>(ifs, mMapTextures, ftTexturePack.first);
 	
 	ProcessTextures();
 	ProcessPremades();
@@ -252,9 +244,10 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 #ifdef FOXTROT_EDITOR
 void ResourceManager::LoadAllResourcesInAsset()
 {
+	gItemKey = 0;
 	DirectoryHelper::IterateForFileRecurse(
 		mPathToAsset,
-		[](std::string&& path) { ResourceManager::GetInstance()->LoadResByType(path); }
+		[&](std::string&& path) { LoadResByType(path); }
 		);
 	ProcessTextures();
 	ProcessPremades();
@@ -323,18 +316,18 @@ void ResourceManager::UpdateUI()
 			if (StrContains(TEXTURE_FORMAT_SUPPORTED, extension)) 
 			{
 				std::string relativePath = path.substr(path.rfind("Assets"));
-				FTTexture* texture = LoadResource<FTTexture>(relativePath, mMapTextures);
+				std::shared_ptr<FTTexture> texture = LoadResource<FTTexture>(relativePath, mMapTextures);
 				ProcessTexture(texture);
 			}
 			else if (StrContains(TILEMAP_FORMAT_SUPPORTED, extension)) 
 			{
 				std::string relativePath = path.substr(path.rfind("Assets"));
-				FTTileMap* tileMap = LoadResource<FTTileMap>(relativePath, mMapTileMaps);
+				std::shared_ptr<FTTileMap> tileMap = LoadResource<FTTileMap>(relativePath, mMapTileMaps);
 			}
 			else if (StrContains(FTPremade_FORMAT_SUPPORTED, extension))
 			{
 				std::string relativePath = path.substr(path.rfind("Assets"));
-				FTPremade* premade = LoadResource<FTPremade>(relativePath, mMapPremades);
+				std::shared_ptr <FTPremade> premade = LoadResource<FTPremade>(relativePath, mMapPremades);
 				premade->Load();
 			}
 		}
@@ -343,7 +336,7 @@ void ResourceManager::UpdateUI()
 
 	if (ImGui::TreeNode("Textures"))
 	{
-		std::unordered_map<UINT, FTTexture*>::const_iterator texIter;
+		std::unordered_map<UINT, std::shared_ptr<FTTexture>>::const_iterator texIter;
 		texIter = mMapTextures.begin();
 		for (texIter = mMapTextures.begin(); texIter != mMapTextures.end(); ++texIter) {
 			if (ImGui::BeginListBox((*texIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 200)))
@@ -362,7 +355,7 @@ void ResourceManager::UpdateUI()
 
 	if (ImGui::TreeNode("TileMaps"))
 	{
-		std::unordered_map<UINT, FTTileMap*>::const_iterator tileIter;
+		std::unordered_map<UINT, std::shared_ptr<FTTileMap>>::const_iterator tileIter;
 		tileIter = mMapTileMaps.begin();
 		for (; tileIter != mMapTileMaps.end(); ++tileIter) {
 			if (ImGui::BeginListBox((*tileIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 200)))
@@ -381,7 +374,7 @@ void ResourceManager::UpdateUI()
 
 	if (ImGui::TreeNode("Premades"))
 	{
-		std::unordered_map<UINT, FTPremade*>::const_iterator premadeIter;
+		std::unordered_map<UINT, std::shared_ptr<FTPremade>>::const_iterator premadeIter;
 		premadeIter = mMapPremades.begin();
 		for (; premadeIter != mMapPremades.end(); ++premadeIter) {
 			if (ImGui::BeginListBox((*premadeIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 100)))

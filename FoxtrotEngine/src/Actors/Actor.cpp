@@ -22,6 +22,7 @@
 
 Actor::Actor()
 	: mTransform(DBG_NEW Transform)
+	, mParent(nullptr)
 {
 	// THIS SHOULD BE REMAINED EMPTY;
 }

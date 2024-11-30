@@ -28,38 +28,12 @@
 #include <imgui.h>
 #endif // FOXTROT_EDITOR
 
-
-void SpriteRendererComponent::SetTexture()
-{
-	MeshRendererComponent::SetTexture();
-	//mTexWidth = GetMeshGroup()->GetTexture()->GetTexWidth();
-	//mTexHeight = GetMeshGroup()->GetTexture()->GetTexHeight();
-}
-
-void SpriteRendererComponent::UpdateTexture(FoxtrotRenderer* renderer, std::string fileName)
-{
-	// std::vector<Mesh**>& meshes = renderer->GetRenderPool();
-	// std::vector<Mesh**>::iterator iter = std::find(meshes.begin(),
-	// meshes.end(), GetMeshArray()); if (iter != meshes.end())
-	//{
-	//	delete (*iter);
-	//	meshes.erase(iter);
-
-	//	//FTTexture* texture = (*iter)->texture;
-	//	//ResourceManager::GetInstance()->UpdateTexture(renderer, texture,
-	// channels);
-	//	//mMesh->texture =
-	// ResourceManager::GetInstance()->GetLoadedTexture(fileName);
-	//}
-}
-
 void SpriteRendererComponent::Initialize(FTCore* coreInstance)
 {
 	SetRenderer(coreInstance->GetGameRenderer());
 	// Sprite Renderer uses square mesh directly - mesh key is not needed
 	InitializeMesh();
-	if (GetTexKey() != VALUE_NOT_ASSIGNED)
-		SetTexture();
+	SetTexture();
 	Component::Initialize(coreInstance);
 }
 
@@ -92,9 +66,6 @@ bool SpriteRendererComponent::InitializeMesh()
 
 SpriteRendererComponent::SpriteRendererComponent(Actor* owner, int drawOrder,int updateOrder)
 	: MeshRendererComponent(owner, drawOrder, updateOrder), mChannel(4), mTexScale(FTVector2(1.0f,1.0f)) {}
-
-SpriteRendererComponent::~SpriteRendererComponent() 
-{}
 
 void SpriteRendererComponent::SaveProperties(std::ofstream& ofs)
 {

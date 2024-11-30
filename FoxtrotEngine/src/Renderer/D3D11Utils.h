@@ -148,7 +148,7 @@ public:
     static void
         CreateTexture(ComPtr<ID3D11Device>& device,
             ComPtr<ID3D11DeviceContext>& context,
-            FTTexture* texture);
+            std::shared_ptr<FTTexture>& texture);
 
     static void
         CreateTextureArray(ComPtr<ID3D11Device>& device,

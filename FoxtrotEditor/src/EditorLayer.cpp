@@ -75,8 +75,8 @@ void EditorLayer::TEST_Instantiate()
 {
 	if(KEY_TAP(KEY::SPACE))
 	{
-		ResourceManager::GetInstance()->DeleteAll();
-		printf("deleted beautifully");
+		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+		Instantiate("Game Object 1", scene);
 	}
 	else if (KEY_TAP(KEY::W))
 	{
@@ -148,6 +148,7 @@ void EditorLayer::DisplayFileMenu()
 			{
 				if (!PATH_PROJECT.empty()) {
 					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
+					printf("Chunk saved to %s", PATH_CHUNK.c_str());
 					mInfoType = InfoType::ChunkIsSaved;
 				}
 				else
@@ -196,7 +197,7 @@ void EditorLayer::DisplayFileMenu()
 					DebugGeometries::GetInstance()->DeleteAll();
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 					ResourceManager::GetInstance()->DeleteAll();
-					//ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+					ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(true);
 				}

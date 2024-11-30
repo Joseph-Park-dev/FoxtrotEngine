@@ -15,14 +15,9 @@ public:
 	int			 GetTexWidth()  { return GetMeshGroup()->GetTexture()->GetTexWidth() * mTexScale.x; }
 	int			 GetTexHeight() { return GetMeshGroup()->GetTexture()->GetTexHeight() * mTexScale.y; }
 
-	std::string GetName()		const override{
+	std::string  GetName()		const override{
 		return	"SpriteRendererComponent";
 	}
-
-	//void		 SetTexWidth	(int texWidth)  { GetMeshGroup()->GetTexture()->SetTexWidth(texWidth); }
-	//void		 SetTexHeight	(int texHeight) { GetMeshGroup()->GetTexture()->SetTexWidth(texHeight); }
-	virtual void SetTexture		()		override;
-	void		 UpdateTexture	(FoxtrotRenderer* renderer, std::string fileName);
 
 public:
 	virtual	void Initialize		(FTCore* coreInstance)		override;
@@ -38,7 +33,6 @@ public:
 				int drawOrder = DEFAULT_DRAWORDER, 
 				int updateOrder = DEFAULT_UPDATEORDER
 			 );
-	virtual ~SpriteRendererComponent()	override;
 
 private:
 	// These fields need to be loaded from .chunk file.

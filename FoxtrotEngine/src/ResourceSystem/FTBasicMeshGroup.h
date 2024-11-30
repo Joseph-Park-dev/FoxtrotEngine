@@ -37,8 +37,6 @@ public:
 	ComPtr<ID3D11InputLayout>&	GetInputLayout()	{ return mBasicInputLayout; }
 	ComPtr<ID3D11SamplerState>&	GetSamplerState()	{ return mSamplerState; }
 
-
-	// DirectX::SimpleMath::Matrix GetModelWorldRow()		  { return mModelWorldRow; }
 	FTTexture*					GetTexture()			  { return mTexture; }
 	int							GetMeshCount()			  { return mMeshes.size(); }
 	std::vector<Mesh*>&			GetMeshes()				  { return mMeshes; }
@@ -74,7 +72,7 @@ private:
 	HRESULT CreateTextureSampler(ComPtr<ID3D11Device>& device);
 
 public:
-	FTBasicMeshGroup();
+	 FTBasicMeshGroup();
 	~FTBasicMeshGroup() override;
 
 #ifdef FOXTROT_EDITOR

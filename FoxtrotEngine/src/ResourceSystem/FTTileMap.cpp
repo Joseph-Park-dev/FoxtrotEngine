@@ -101,8 +101,11 @@ FTTileMap::FTTileMap()
 
 FTTileMap::~FTTileMap()
 {
-    if(mTileMap)
+    if (mTileMap)
+    {
         delete[] mTileMap;
+        mTileMap = nullptr;
+    }
 }
 
 void FTTileMap::InitializeTile(Tile& tile, UINT column, UINT row, UINT tileNum)

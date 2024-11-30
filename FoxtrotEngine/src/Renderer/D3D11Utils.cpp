@@ -291,7 +291,7 @@ ComPtr<ID3D11Texture2D>
 }
 
 void D3D11Utils::CreateTexture(
-    ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, FTTexture* texture)
+    ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, std::shared_ptr<FTTexture>& texture)
 {
     int width, height;
     std::vector<uint8_t> image;

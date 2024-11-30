@@ -99,6 +99,11 @@ void FTBasicMeshGroup::Render(ComPtr<ID3D11DeviceContext>& context, int meshInde
 
 void FTBasicMeshGroup::SetTexture(UINT key)
 {
+    if (mTexture)
+    {
+        delete mTexture;
+        mTexture = nullptr;
+    }
     mTexture = ResourceManager::GetInstance()->GetLoadedTexture(key);
 }
 
@@ -170,9 +175,19 @@ HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 }
 
 FTBasicMeshGroup::FTBasicMeshGroup()
-    : mTexture(nullptr)
+    : mMeshes()
+    , mTexture(nullptr)
+    , mBasicVertexConstantData()
+    , mBasicPixelConstantData()
 {
 }
 
 FTBasicMeshGroup::~FTBasicMeshGroup()
-{}
+{
+    if (mTexture)
+    {
+        mTexture->SubtractRefCount();
+        delete mTexture;
+        mTexture = nullptr;
+    }
+}

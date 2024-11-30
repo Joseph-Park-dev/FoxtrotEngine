@@ -18,6 +18,14 @@
 #include "EditorLayer.h"
 #endif //FOXTROT_EDITOR
 
+FTResource::FTResource()
+    : mFileName{}
+    , mRelativePath{}
+{}
+
+FTResource::~FTResource()
+{}
+
 void FTResource::SaveProperties(std::ofstream& ofs, UINT key)
 {
     FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::KEY, key);

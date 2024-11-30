@@ -1,6 +1,9 @@
 #include "DirectoryHelper.h"
 
 DirectoryHelper::DirectoryHelper()
+	: mCurrProjectPath()
+	, mCurrChunkPath()
+	, mCurrChunkSaved(false)
 {}
 
 DirectoryHelper::~DirectoryHelper()

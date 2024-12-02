@@ -15,7 +15,6 @@ class Transform;
 class SpriteRendererComponent;
 class Collider2DComponent;
 class KeyInputManager;
-class Actor;
 class UIActor;
 class Scene;
 class Component;

@@ -13,7 +13,8 @@ void BackgroundActor::Initialize()
 	//GetTransform()->SetWorldPosition(FTVector3(0.f, 0.f, 0.f));
 	//////bg->SetScreenSize(FTVector2(1024.f, 768.f));
 
-	//TileMapComponent* tiled1 = DBG_NEW TileMapComponent(this, 52);
+	//TileMapComponent* tiled1 = 
+	// TileMapComponent(this, 52);
 	////tiled1->SetTexture();
 	//tiled1->InitializeTileMap(L"Assets/MapLayer1.csv", 32, 32);
 

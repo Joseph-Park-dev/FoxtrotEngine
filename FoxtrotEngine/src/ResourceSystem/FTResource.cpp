@@ -21,9 +21,7 @@
 FTResource::FTResource()
     : mFileName{}
     , mRelativePath{}
-{}
-
-FTResource::~FTResource()
+    , mIsReferenced(0)
 {}
 
 void FTResource::SaveProperties(std::ofstream& ofs, UINT key)

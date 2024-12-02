@@ -14,7 +14,6 @@
 class Camera;
 
 using Microsoft::WRL::ComPtr;
-using std::shared_ptr;
 using std::vector;
 using std::wstring;
 
@@ -148,7 +147,7 @@ public:
     static void
         CreateTexture(ComPtr<ID3D11Device>& device,
             ComPtr<ID3D11DeviceContext>& context,
-            std::shared_ptr<FTTexture>& texture);
+            FTTexture* texture);
 
     static void
         CreateTextureArray(ComPtr<ID3D11Device>& device,

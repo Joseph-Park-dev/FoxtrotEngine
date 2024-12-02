@@ -48,10 +48,7 @@ void TileMapComponent::InitializeTileMap() {
     {
         SetTexture();
         mTileMap->ReadCSV();
-        UINT meshKey = ResourceManager::GetInstance()->LoadBasicMesh(
-            GeometryGenerator::MakeTileMapGrid(mTileMap)
-        );
-		SetMeshKey(meshKey);
+		SetMeshKey(ChunkKeys::PRIMITIVE_SQUARE);
         MeshRendererComponent::InitializeMesh();
         //GetOwner()->GetTransform()->SetScale(FTVector3(0.03f, 0.03f, 1.0f));
     }

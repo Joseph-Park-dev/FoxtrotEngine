@@ -139,8 +139,11 @@ public:
 		auto iter = resMap.begin();
 		for (; iter != resMap.end(); ++iter)
 		{
-			delete (*iter).second;
-			(*iter).second = nullptr;
+			if ((*iter).second != nullptr)
+			{
+				delete (*iter).second;
+				(*iter).second = nullptr;
+			}
 		}
 		resMap.clear();
 	}

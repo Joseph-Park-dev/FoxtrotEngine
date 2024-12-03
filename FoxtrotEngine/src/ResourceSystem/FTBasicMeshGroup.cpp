@@ -184,10 +184,19 @@ FTBasicMeshGroup::FTBasicMeshGroup()
 
 FTBasicMeshGroup::~FTBasicMeshGroup()
 {
-    if (mTexture)
+    if (mTexture != nullptr)
     {
         mTexture->SubtractRefCount();
-        delete mTexture;
         mTexture = nullptr;
     }
+
+    for (Mesh* mesh : mMeshes)
+    {
+        if (mesh)
+        {
+            delete mesh;
+            mesh = nullptr;
+        }
+    }
+    mMeshes.clear();
 }

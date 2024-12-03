@@ -20,8 +20,6 @@
 #include "DebugGeometries.h"
 #include "DirectoryHelper.h"
 
-#define _CRTDBG_MAP_ALLOC
-
 #include "Core/FTCore.h"
 #include "Managers/SceneManager.h"
 #include "Managers/KeyInputManager.h"
@@ -80,7 +78,7 @@ void EditorLayer::TEST_Instantiate()
 	}
 	else if (KEY_TAP(KEY::W))
 	{
-		ResourceManager::GetInstance()->LoadAllResourcesInAsset();
+		ResourceManager::GetInstance()->DeleteAll();
 		printf("deleted beautifully");
 	}
 }
@@ -540,6 +538,7 @@ void EditorLayer::OpenProject(std::filesystem::path& path)
 {
 	if (ProjectExists(path.string())) {
 		EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
+		DebugGeometries::GetInstance()->DeleteAll();
 		ResourceManager::GetInstance()->DeleteAll();
 		PATH_PROJECT.assign(path.string());
 		ResourceManager::GetInstance()->SetPathToAsset(std::move(PATH_PROJECT));

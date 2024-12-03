@@ -20,7 +20,7 @@ EditorChunkLoader::EditorChunkLoader()
         {"AIComponent",             &Component::Create<AIComponent>},
         {"AnimatorComponent",       &Component::Create<AnimatorComponent>},
         {"BGSpriteComponent",       &Component::Create<BGSpriteComponent>},
-        {"BoxCollider2DComponent",    &Component::Create<BoxCollider2DComponent>},
+        {"BoxCollider2DComponent",  &Component::Create<BoxCollider2DComponent>},
         {"InputMoveComponent",      &Component::Create<InputMoveComponent>},
         {"MoveComponent",           &Component::Create<MoveComponent>},
         {"Rigidbody2DComponent",    &Component::Create<Rigidbody2DComponent>},

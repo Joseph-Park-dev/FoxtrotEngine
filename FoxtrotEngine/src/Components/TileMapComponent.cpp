@@ -34,6 +34,16 @@
 
 #define DEFAULT_TILE_POS 0
 
+UINT TileMapComponent::GetTileMapKey() const
+{
+	return mTileMapKey;
+}
+
+FTTileMap* TileMapComponent::GetTileMap() const
+{
+	return mTileMap;
+}
+
 void TileMapComponent::Initialize(FTCore* coreInstance){
     MeshRendererComponent::Initialize(coreInstance);
 	Component::Initialize(coreInstance);
@@ -159,6 +169,58 @@ void TileMapComponent::UpdateCSV() {
 			if (selected != -1)
 			{
 				mTileMapKey = tileMapKey;
+				//SetTexture();
+			}
+		}
+		if (ImGui::Button("Close"))
+			ImGui::CloseCurrentPopup();
+		ImGui::EndPopup();
+	}
+}
+void TileMapComponent::UpdateCSV(UINT& key)
+{
+	std::string currentCSV = {};
+	if (key != VALUE_NOT_ASSIGNED)
+		currentCSV =
+		"Current sprite : \n" + ResourceManager::GetInstance()->GetLoadedTileMap(key)->GetRelativePath();
+	else
+		currentCSV = "No .csv has been assigned";
+	ImGui::Text(currentCSV.c_str());
+
+	if (ImGui::Button("Select .CSV"))
+	{
+		IGFD::FileDialogConfig config;
+		config.path = ".";
+		config.countSelectionMax = 1;
+		ImGuiFileDialog::Instance()->OpenDialog(
+			"SelectCSV", "Select .CSV", TEXTURE_FORMAT_SUPPORTED, config);
+		ImGui::OpenPopup("Select .CSV");
+	}
+
+	if (ImGui::BeginPopupModal("Select .CSV", NULL,
+		ImGuiWindowFlags_MenuBar))
+	{
+		std::unordered_map<UINT, FTTileMap*>& tileMapsMap =
+			ResourceManager::GetInstance()->GetTileMapsMap();
+		if (ImGui::TreeNode("Selection State: Single Selection"))
+		{
+			UINT	   tileMapKey = VALUE_NOT_ASSIGNED;
+			static int selected = -1;
+			int		   i = 0;
+			for (auto iter = tileMapsMap.begin(); iter != tileMapsMap.end();
+				++iter, ++i)
+			{
+				if (ImGui::Selectable((*iter).second->GetFileName().c_str(),
+					selected == i))
+				{
+					tileMapKey = (*iter).first;
+					selected = i;
+				}
+			}
+			ImGui::TreePop();
+			if (selected != -1)
+			{
+				key = tileMapKey;
 				//SetTexture();
 			}
 		}

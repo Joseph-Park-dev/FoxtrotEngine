@@ -1,31 +1,40 @@
 #include "ResourceSystem/FTSpriteAnimation.h"
 
+#include "FileSystem/ChunkFileKeys.h"
+#include "Renderer/FoxtrotRenderer.h"
+
 void FTSpriteAnimation::Initialize(std::vector<MeshData>& meshes, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
 	FTBasicMeshGroup::InitializeConstantBuffer(device);
 	this->InitializeMeshes(device, meshes);
 	FTBasicMeshGroup::CreateShaders(device);
+	mMaxFrame = meshes.size();
 }
 
 void FTSpriteAnimation::Update(float deltaTime)
 {
 	if (mIsFinished)
 		return;
-	mAccTime += deltaTime;
-	if (mReel[mCurrFrame]->Duration < mAccTime)
+	if (0 < mMaxFrame)
 	{
-		++mCurrFrame;
-		if (mReel.size() <= mCurrFrame)
+		mCurrFrame += mAnimFPS * deltaTime;
+		while (mCurrFrame >= mMaxFrame)
 		{
-			if (!mIsRepeated) {
-				mCurrFrame = -1;
-				mIsFinished = true;
-				mAccTime = 0.f;
-				return;
+			if (mIsRepeated)
+				mCurrFrame -= mMaxFrame;
+			else {
+				mCurrFrame = 0;
+				break;
 			}
 		}
-		mAccTime -= mReel[mCurrFrame]->Duration;
 	}
+	LogInt(static_cast<int>(mCurrFrame));
+}
+
+void FTSpriteAnimation::Render(ComPtr<ID3D11DeviceContext>& context)
+{
+	if (FrameIsWithinIndexRange())
+		FTBasicMeshGroup::Render(context, static_cast<int>(mCurrFrame));
 }
 
 void FTSpriteAnimation::SetFrameDuration(int frameNum, float duration)
@@ -36,6 +45,7 @@ void FTSpriteAnimation::SetFrameDuration(int frameNum, float duration)
 
 void FTSpriteAnimation::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<MeshData>& meshes)
 {
+	GetMeshes().reserve(meshes.size());
 	for (const MeshData& meshData : meshes) {
 		AnimationFrame* newMesh = DBG_NEW AnimationFrame;
 		newMesh->mIndexCount = UINT(meshData.indices.size());
@@ -55,7 +65,8 @@ void FTSpriteAnimation::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vect
 
 FTSpriteAnimation::FTSpriteAnimation()
 	: mName			{}
-	, mAnimFPS		(60.0f)
+	, mMaxFrame		(0.f)
+	, mAnimFPS		(30.0f)
 	, mIsRepeated	(true)
 	, mAnimator		(nullptr)
 	, mReel			{}
@@ -63,4 +74,49 @@ FTSpriteAnimation::FTSpriteAnimation()
 	, mAccTime		(0.f)
 	, mIsFinished	(false)
 
+	, mTexKey		(VALUE_NOT_ASSIGNED)
+	, mTileMapKey	(VALUE_NOT_ASSIGNED)
 {}
+
+FTSpriteAnimation::~FTSpriteAnimation()
+{
+	for (size_t i = 0; i < mReel.size(); ++i)
+	{
+		if (mReel[i])
+		{
+			delete mReel[i];
+			mReel[i] = nullptr;
+		}
+	}
+	mReel.clear();
+}
+
+bool FTSpriteAnimation::FrameIsWithinIndexRange()
+{
+	return 0 <= mCurrFrame && mCurrFrame < mMaxFrame;
+}
+
+void FTSpriteAnimation::SaveProperties(std::ofstream& ofs, UINT key)
+{
+}
+
+UINT FTSpriteAnimation::LoadProperties(std::ifstream& ifs)
+{
+	return 0;
+}
+
+#ifdef FOXTROT_EDITOR
+void FTSpriteAnimation::UpdateUI()
+{
+	UpdateIsRepeated();
+}
+
+void FTSpriteAnimation::UpdateIsRepeated()
+{
+	ImGui::Checkbox("Is Repeated", &mIsRepeated);
+}
+
+void FTSpriteAnimation::OnConfirmUpdate()
+{
+}
+#endif // FOXTROT_EDITOR

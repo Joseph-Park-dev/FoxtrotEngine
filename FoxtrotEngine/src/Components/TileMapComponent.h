@@ -19,6 +19,8 @@ public:
     std::string GetName()		const override {
         return	"TileMapComponent";
     }
+    UINT        GetTileMapKey() const;
+    FTTileMap*  GetTileMap() const;
 
 public:
     virtual void Initialize(FTCore* coreInstance)	    override;
@@ -33,12 +35,12 @@ public:
             );
     virtual ~TileMapComponent() override;
 
+protected:
+    void InitializeTileMap();
+
 private:
     FTTileMap*      mTileMap;
     UINT            mTileMapKey;
-
-private:
-    void InitializeTileMap();
 
 public:
     virtual void SaveProperties(std::ofstream& ofs) override;
@@ -51,5 +53,6 @@ public:
 
     virtual void OnConfirmUpdate() override;
     void UpdateCSV();
+    void UpdateCSV(UINT& key);
 #endif
 };

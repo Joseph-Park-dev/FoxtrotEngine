@@ -15,9 +15,12 @@ public:
     void    ReadCSV();
 
 public:
+    Tile*   GetTiles() { return mTileMap; }
     Tile&   GetTile(size_t row, size_t column);
     UINT    GetMaxCountOnScreenX() { return mMaxCountOnScreenX; }
     UINT    GetMaxCountOnScreenY() { return mMaxCountOnScreenY; }
+    UINT    GetMaxCountOnMapX() { return mMaxCountOnMapX; }
+    UINT    GetMaxCountOnMapY() { return mMaxCountOnMapY; }
 
     void    SetTileWidth(UINT width);
     void    SetTileHeight(UINT height);

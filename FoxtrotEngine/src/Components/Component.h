@@ -96,7 +96,7 @@ public:
 		// Dynamically allocate actor of type T
 		T* t = DBG_NEW T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
 		// Call LoadProperties on DBG_NEW actor
-		//t->Initialize(coreInst);
+		t->Initialize(coreInst);
 	}
 
 protected:

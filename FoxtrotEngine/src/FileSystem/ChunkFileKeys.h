@@ -115,4 +115,7 @@ namespace ChunkKeys {
 
 	constexpr const char* COUNT = "Count";
 	constexpr const char* LIST = "List";
+
+// Buffer Sizes
+	constexpr size_t MAX_BUFFER_INPUT_TEXT = 50;
 }

@@ -158,6 +158,5 @@ void FTPremade::UpdateUI()
 void FTPremade::AddToScene(EditorScene* scene)
 {
 	scene->AddEditorElement(mOrigin);
-	//mOrigin->Initialize(FTCoreEditor::GetInstance());
 }
 #endif

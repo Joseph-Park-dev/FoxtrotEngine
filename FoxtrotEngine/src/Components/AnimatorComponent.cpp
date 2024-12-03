@@ -2,60 +2,78 @@
 
 #include "Actors/Actor.h"
 #include "Actors/Transform.h"
-
 #include "ResourceSystem/Tile.h"
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/FTSpriteAnimation.h"
+#include "ResourceSystem/GeometryGenerator.h"
 #include "Managers/ResourceManager.h"
 #include "Core/TemplateFunctions.h"
 #include "Core/FTCore.h"
 #include "FileSystem/ChunkLoader.h"
+#include "Renderer/FoxtrotRenderer.h"
 
 AnimatorComponent::AnimatorComponent(Actor* owner, int drawOrder, int updateOrder)
-	: Component(owner, drawOrder)
+	: TileMapComponent(owner, drawOrder)
 	, mCurrentAnim(nullptr)
-	, mIsRepeating(false)
 {}
 
 AnimatorComponent::~AnimatorComponent()
 {
-	std::unordered_map<std::wstring, FTSpriteAnimation*>::iterator iter = mMapAnimation.begin();
-	for (; iter != mMapAnimation.end(); ++iter)
+	std::unordered_map<std::string, FTSpriteAnimation*>::iterator iter = mLoadedAnimations.begin();
+	for (; iter != mLoadedAnimations.end(); ++iter)
 	{
 		delete iter->second;
+		iter->second = nullptr;
 	}
-	mMapAnimation.clear();
+	mLoadedAnimations.clear();
 }
 
-void AnimatorComponent::CreateAnimationFromTile(
-	const std::string& name, const std::string& fileName
-	, int tileSizeX, int tileSizeY, float speed)
+void AnimatorComponent::Play(const std::string& name, bool isRepeated)
 {
-	//FTSpriteAnimation* animation = FindAnimation(name);
-	//if (animation == nullptr)
-	//{
-	//	//InitializeTileMap(fileName, tileSizeX, tileSizeY);
-	//	animation = DBG_NEW FTSpriteAnimation;
-	//	animation->SetName(name);
-	//	animation->SetAnimator(this);
-	//	//for (int y = 0; y < GetTileCountY(); y++)
-	//	//	for (int x = 0; x < GetTileCountX(); x++)
-	//	//		animation->CreateFrameFromTile(&GetCurrentTileMap()[y][x]);
-
-	//	//mMapAnimation.insert(std::make_pair(name, animation));
-	//}
-	//else
-		//LogString(L"Animation has already been created", name.c_str());
-}
-
-void AnimatorComponent::Play(const std::string& name, bool isRepeating)
-{
-	/*mCurrentAnim = FindAnimation(name);
+	mCurrentAnim = FindAnimation(name);
 	if (mCurrentAnim == nullptr)
+		printf("ERROR : AnimatorComponent::Play()->Animation is null\n");
+	mCurrentAnim->SetIsFinished(false);
+	mCurrentAnim->SetIsRepeated(isRepeated);
+}
+
+void AnimatorComponent::Stop()
+{
+	mCurrentAnim->SetIsFinished(true);
+}
+
+void AnimatorComponent::CreateAnimationFromTile(std::string&& name, UINT texKey, UINT tileMapKey)
+{
+	FTSpriteAnimation* animation = FindAnimation(name);
+	if (animation == nullptr)
 	{
-		LogString("Animation is null");
+		animation = DBG_NEW FTSpriteAnimation;
+		animation->SetTexKey(texKey);
+		animation->SetTileMapKey(tileMapKey);
+
+		FTTileMap* tileMapBuf = ResourceManager::GetInstance()->GetLoadedTileMap(tileMapKey);
+		if (tileMapBuf)
+			tileMapBuf->ReadCSV();
+		if (texKey != VALUE_NOT_ASSIGNED)
+			animation->SetTexture(texKey);
+
+		animation->SetName(name);
+		animation->SetAnimator(this);
+		std::vector<MeshData> meshDataBuf;
+		GeometryGenerator::MakeSpriteAnimation(
+			meshDataBuf, tileMapBuf->GetTiles(),
+			tileMapBuf->GetMaxCountOnMapX(),
+			tileMapBuf->GetMaxCountOnMapY()
+		);
+		animation->Initialize(meshDataBuf, GetRenderer()->GetDevice(), GetRenderer()->GetContext());
+		if (mLoadedAnimations.size() < 1)
+			mCurrentAnim = animation;
+
+		mLoadedAnimations.insert(std::make_pair(name, animation));
+		printf("FTSpriteAnimation created, %s", name.c_str());
 	}
-	mIsRepeating = isRepeating;*/
+	else
+		printf("AnimatorComponent::CreateAnimationFromTile()->Animation has already been created; %s\n", name.c_str());
 }
 
 void AnimatorComponent::LoadProperties(std::ifstream& ifs)
@@ -64,12 +82,12 @@ void AnimatorComponent::LoadProperties(std::ifstream& ifs)
 	LogString("Animator LoadProperties() needs to be implemented");
 }
 
-FTSpriteAnimation* AnimatorComponent::FindAnimation(const std::wstring& name)
+FTSpriteAnimation* AnimatorComponent::FindAnimation(const std::string& name)
 {
-	std::unordered_map<std::wstring, FTSpriteAnimation*>::iterator iter = mMapAnimation.find(name);
-	if (iter == mMapAnimation.end())
+	std::unordered_map<std::string, FTSpriteAnimation*>::iterator iter = mLoadedAnimations.find(name);
+	if (iter == mLoadedAnimations.end())
 	{
-		LogString(L"Cannot find animation", name.c_str());
+		printf("ERROR : AnimatorComponent::FindAnimation()-> Cannot find animation %s\n", name.c_str());
 		return nullptr;
 	}
 	else
@@ -78,38 +96,111 @@ FTSpriteAnimation* AnimatorComponent::FindAnimation(const std::wstring& name)
 			return iter->second;
 		else
 		{
-			LogString(L"Animation is null", name.c_str());
+			printf("ERROR : AnimatorComponent::FindAnimation()-> Animation is null\n");
 			return nullptr;
 		}
 	}
 }
 
+void AnimatorComponent::Initialize(FTCore* coreInstance)
+{
+	TileMapComponent::Initialize(coreInstance);
+}
+
 void AnimatorComponent::LateUpdate(float deltaTime)
 {
 	if (mCurrentAnim != nullptr)
-	{
 		mCurrentAnim->Update(deltaTime);
-		if (mCurrentAnim->IsFinished())
-		{
-			if (mIsRepeating)
-				mCurrentAnim->SetFrame(0);
-		}
-	}
 }
 
 void AnimatorComponent::Render(FoxtrotRenderer* renderer)
 {
 	if (mCurrentAnim != nullptr)
+		mCurrentAnim->Render(renderer->GetContext());
+}
+
+#ifdef FOXTROT_EDITOR
+void AnimatorComponent::EditorUpdate(float deltaTime)
+{
+	if (mCurrentAnim != nullptr)
+		mCurrentAnim->Update(deltaTime);
+}
+
+void AnimatorComponent::EditorUIUpdate()
+{
+	std::unordered_map<std::string, FTSpriteAnimation*>::iterator iter = mLoadedAnimations.begin();
+	for (; iter != mLoadedAnimations.end(); ++iter)
 	{
-		if (!mCurrentAnim->IsFinished())
+		UINT texKey = (*iter).second->GetTexKey();
+		UpdateSprite(texKey);
+
+		UINT tileMapKey = (*iter).second->GetTileMapKey();
+		UpdateCSV();
+		(*iter).second->UpdateUI();
+
+		(*iter).second->SetTexKey(texKey);
+		(*iter).second->SetTileMapKey(texKey);
+
+		ImGui::Separator();
+		UpdatePlayAnim();
+	}
+	CreateAnimation();
+}
+
+void AnimatorComponent::UpdatePlayAnim()
+{
+	if (mCurrentAnim)
+	{
+		if (mCurrentAnim->GetIsFinished())
 		{
-			FTVector3 worldPos = GetOwner()->GetTransform()->GetWorldPosition();
-			// DrawIndividualTileOnPosEX(renderer, worldPos, mCurrentAnim->GetTile());
+			if (ImGui::Button("Stop"))
+			{
+				Stop();
+			}
+		}
+		else
+		{
+			if (ImGui::Button("Play"))
+			{
+				Play(mCurrentAnim->GetName(), true);
+			}
 		}
 	}
 }
 
-#ifdef FOXTROT_EDITOR
+void AnimatorComponent::CreateAnimation()
+{
+	if (ImGui::Button("Create Sprite Animation"))
+	{
+		ImGui::OpenPopup("CreateSpriteAnimation");
+	}
+	if (ImGui::BeginPopupModal("CreateSpriteAnimation"))
+	{
+		static char* name = _strdup("NULL");
+		ImGui::InputText("Name", name, ChunkKeys::MAX_BUFFER_INPUT_TEXT);
+
+		static UINT texKey = VALUE_NOT_ASSIGNED;
+		UpdateSprite(texKey);
+
+		static UINT tileMapKey = VALUE_NOT_ASSIGNED;
+		UpdateCSV(tileMapKey);
+
+		if (ImGui::Button("Create"))
+		{
+			CreateAnimationFromTile(std::string(name), texKey, tileMapKey);
+		}
+
+		if (ImGui::Button("Close"))
+			ImGui::CloseCurrentPopup();
+		ImGui::Separator();
+		ImGui::EndPopup();
+	}
+}
+
+void AnimatorComponent::OnConfirmUpdate()
+{
+}
+
 void AnimatorComponent::CloneTo(Actor* actor)
 {
 	CLONE_TO_NOT_IMPLEMENTED

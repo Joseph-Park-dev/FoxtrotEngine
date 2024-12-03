@@ -217,16 +217,14 @@ MeshData GeometryGenerator::MakeTile(Tile& tile)
     return meshData;
 }
 
-std::vector<MeshData> GeometryGenerator::MakeSpriteAnimation(Tile* tileMap, size_t columnCount, size_t rowCount)
+void GeometryGenerator::MakeSpriteAnimation(std::vector<MeshData>& animMeshes, Tile* tileMap, size_t columnCount, size_t rowCount)
 {
-    std::vector<MeshData> animationMeshes;
     for (size_t r = 0; r < rowCount; ++r) {
         for (size_t c = 0; c < columnCount; ++c) {
             MeshData animFrame = MakeAnimationFrame(tileMap[rowCount * r + c]);
-            animationMeshes.push_back(animFrame);
+            animMeshes.push_back(animFrame);
         }
     }
-    return animationMeshes;
 }
 
 MeshData GeometryGenerator::MakeAnimationFrame(Tile tile)

@@ -169,6 +169,67 @@ void SpriteRendererComponent::UpdateSprite()
 	}
 }
 
+void SpriteRendererComponent::UpdateSprite(UINT& key)
+{
+	std::string currentSprite = {};
+	if (key != VALUE_NOT_ASSIGNED)
+	{
+		FTTexture* sprite = ResourceManager::GetInstance()->GetLoadedTexture(key);
+		currentSprite =
+			"Current sprite : \n" + sprite->GetRelativePath();
+		if (sprite)
+		{
+			ImVec2 size = ImVec2(100, 100);
+			ImGui::Image((ImTextureID)sprite->GetResourceView().Get(), size);
+		}
+	}
+	else
+		currentSprite = "No sprite has been assigned";
+
+	ImGui::Text(currentSprite.c_str());
+
+	if (ImGui::Button("Select Sprite"))
+	{
+		IGFD::FileDialogConfig config;
+		config.path = ".";
+		config.countSelectionMax = 1;
+		ImGuiFileDialog::Instance()->OpenDialog(
+			"SelectSprite", "Select Sprite", TEXTURE_FORMAT_SUPPORTED, config);
+		ImGui::OpenPopup("Select Sprite");
+	}
+
+	if (ImGui::BeginPopupModal("Select Sprite", NULL,
+		ImGuiWindowFlags_MenuBar))
+	{
+		std::unordered_map<UINT, FTTexture*>& texturesMap =
+			ResourceManager::GetInstance()->GetTexturesMap();
+		if (ImGui::TreeNode("Selection State: Single Selection"))
+		{
+			UINT	   spriteKey = VALUE_NOT_ASSIGNED;
+			static int selected = -1;
+			int		   i = 0;
+			for (auto iter = texturesMap.begin(); iter != texturesMap.end();
+				++iter, ++i)
+			{
+				if (ImGui::Selectable((*iter).second->GetFileName().c_str(),
+					selected == i))
+				{
+					spriteKey = (*iter).first;
+					selected = i;
+				}
+			}
+			ImGui::TreePop();
+			if (selected != -1)
+			{
+				key = spriteKey;
+			}
+		}
+		if (ImGui::Button("Close"))
+			ImGui::CloseCurrentPopup();
+		ImGui::EndPopup();
+	}
+}
+
 void SpriteRendererComponent::UpdateTexWidth()
 {
 	// CommandHistory::GetInstance()->UpdateIntValue("Texture Width",

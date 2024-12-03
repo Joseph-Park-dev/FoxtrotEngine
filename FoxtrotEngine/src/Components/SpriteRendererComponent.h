@@ -55,6 +55,7 @@ public:
 protected:
 	virtual void OnConfirmUpdate() override;
 			void UpdateSprite();
+			void UpdateSprite(UINT& key);
 
 private:
 	void UpdateTexWidth();

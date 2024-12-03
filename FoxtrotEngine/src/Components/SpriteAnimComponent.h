@@ -22,7 +22,6 @@ public:
 	float GetAnimFPS() const { return mAnimFPS; }
 
 	void SetAnimFPS(float fps) { mAnimFPS = fps; }
-	void SetAnimTextures(const std::vector<FTTexture*>& textures);
 
 public:
 	SpriteAnimComponent(class Actor* owner, int drawOrder = DEFAULT_DRAWORDER,
@@ -40,13 +39,4 @@ private:
 
 private:
 	void InitializeAnimation();
-	bool FrameIsWithinIndexRange();
-
-#ifdef FOXTROT_EDITOR
-public:
-	virtual void EditorUIUpdate() override;
-	void		 UpdateIsRepeated();
-	void		 UpdatePlayAnim();
-	virtual void OnConfirmUpdate() override;
-#endif //FOXTROT_EDITOR
 };

@@ -13,17 +13,7 @@ class GeometryGenerator {
     static std::vector<MeshData> MakeTileMapGrid(FTTileMap* tileMap);
     static MeshData MakeTile(Tile& tile);
 
-    static std::vector<MeshData> MakeSpriteAnimation(Tile* tileMap, size_t columnCount, size_t rowCount);
+    static void MakeSpriteAnimation(std::vector<MeshData>& animMeshes, Tile* tileMap, size_t columnCount, size_t rowCount);
     static MeshData MakeAnimationFrame(Tile tile);
     static MeshData MakeBox();
-    //static std::vector<MeshData> ReadFromFile(std::string filePath);
-
-    //static MeshData MakeCylinder(const float bottomRadius,
-    //                             const float topRadius, float height,
-    //                             int numSlices);
-    //static MeshData MakeSphere(const float radius, const int numSlices,
-    //                           const int numStacks);
-    //static MeshData MakeTetrahedron();
-    //static MeshData MakeIcosahedron();
-    //static MeshData SubdivideToSphere(const float radius, MeshData meshData);
 };

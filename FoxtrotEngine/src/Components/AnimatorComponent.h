@@ -10,18 +10,12 @@ class FoxtrotRenderer;
 class FTSpriteAnimation;
 
 class AnimatorComponent :
-    public Component
+    public TileMapComponent
 {
 public:
-    void CreateAnimationFromTile
-    (
-        const std::string& name, 
-        const std::string& fileName, 
-        int tileSizeX, 
-        int tileSizeY, 
-        float speed
-    );
-    void Play(const std::string& name, bool isRepeating);
+    void Play(const std::string& name, bool isRepeated);
+    void Stop();
+    void CreateAnimationFromTile(std::string&& name, UINT texKey, UINT tileMapKey);
     //void SaveAnimation(const std::wstring& animName, const std::wstring& path);
     //void LoadAnimation(const std::wstring& path);
     
@@ -33,7 +27,7 @@ public:
 	virtual void LoadProperties(std::ifstream& ifs) override;
 
 public:
-    virtual void Initialize(FTCore* coreInstance) override {};
+    virtual void Initialize(FTCore* coreInstance) override;
             void LateUpdate(float deltaTime) override;
     virtual void Render(FoxtrotRenderer* renderer) override;
 
@@ -42,14 +36,23 @@ public:
     ~AnimatorComponent();
 
 private:
-    std::unordered_map<std::wstring, FTSpriteAnimation*> mMapAnimation;
+    std::unordered_map<std::string, FTSpriteAnimation*> mLoadedAnimations;
     FTSpriteAnimation*  mCurrentAnim;
-    bool                mIsRepeating;
 
 private:
-    FTSpriteAnimation* FindAnimation(const std::wstring& name);
+    FTSpriteAnimation* FindAnimation(const std::string& name);
 
 #ifdef FOXTROT_EDITOR
+public:
+    virtual void EditorUpdate(float deltaTime) override;
+
+public:
+    virtual void EditorUIUpdate() override;
+            void UpdatePlayAnim();
+            void CreateAnimation();
+
+    virtual void OnConfirmUpdate() override;
+
 public:
     virtual void CloneTo(Actor* actor) override;
 #endif // FOXTROT_EDITOR

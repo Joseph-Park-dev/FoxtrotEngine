@@ -26,8 +26,8 @@ public:
 		ComPtr<ID3D11DeviceContext>& context
 	) override;
 
-public:
 	virtual void Update(float deltaTime) override;
+	virtual	void Render(ComPtr<ID3D11DeviceContext>& context) override;
 
 public:
 	std::string& GetName() { return mName; }
@@ -37,6 +37,11 @@ public:
 			LogString("Reel has finished playing");
 		return mReel[mCurrFrame];
 	}
+
+	UINT GetTexKey		() { return mTexKey; }
+	UINT GetTileMapKey	() { return mTileMapKey; }
+	bool GetIsFinished	() { return mIsFinished; }
+
 	void SetName(std::string name) { mName.assign(name); }
 	void SetFrame(int frameNumber) 
 	{
@@ -46,7 +51,15 @@ public:
 	}
 	void SetFrameDuration(int frameNum, float duration);
 	void SetAnimator(AnimatorComponent* animator) { mAnimator = animator; }
-	bool IsFinished() { return mIsFinished; }
+	void SetIsFinished(bool val) { mIsFinished = val; }
+	void SetIsRepeated(bool val) { mIsRepeated = val; }
+
+	void SetTexKey		(UINT key)	 { mTexKey = key; }
+	void SetTileMapKey	(UINT key)	 { mTileMapKey = key; }
+
+public:
+	FTSpriteAnimation();
+	~FTSpriteAnimation() override;
 
 protected:
 	virtual void InitializeMeshes(
@@ -54,20 +67,40 @@ protected:
 		std::vector<MeshData>& meshes
 	) override;
 
-public:
-	FTSpriteAnimation();
-
 private:
 	// These fields need to be loaded from .chunk file
 	std::string					 mName;
 	float						 mAnimFPS;
 	bool						 mIsRepeated;
 
+	UINT						 mTexKey;
+	UINT						 mTileMapKey;
+	
 	// These fields need to be initialized when the component is added.
 	AnimatorComponent*			 mAnimator;
 	std::vector<AnimationFrame*> mReel;
-	int							 mCurrFrame;
+	float						 mMaxFrame;
+	float						 mCurrFrame;
 	float						 mAccTime;
 	bool						 mIsFinished;
+
+private:
+	bool FrameIsWithinIndexRange();
+
+public:
+	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
+	virtual UINT LoadProperties(std::ifstream& ifs)           override;
+
+#ifdef FOXTROT_EDITOR
+public:
+	// Note that this member function is not overriden.
+	// Values can be modified only in Animator Component.
+	void UpdateUI();
+
+private:
+	void UpdateIsRepeated();
+	void OnConfirmUpdate();
+
+#endif // FOXTROT_EDITOR
 };
 

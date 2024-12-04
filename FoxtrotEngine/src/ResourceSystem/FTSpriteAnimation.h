@@ -12,7 +12,7 @@ class Tile;
 class AnimatorComponent;
 class FTTexture;
 
-struct AnimationFrame : Mesh
+struct AnimationFrame
 { 
 	float Duration;
 };
@@ -26,36 +26,26 @@ public:
 		ComPtr<ID3D11DeviceContext>& context
 	) override;
 
-	virtual void Update(float deltaTime) override;
+	virtual void Update(float deltaTime)					  override;
 	virtual	void Render(ComPtr<ID3D11DeviceContext>& context) override;
 
 public:
-	std::string& GetName() { return mName; }
-	AnimationFrame* GetFrame()
-	{
-		if (mIsFinished)
-			LogString("Reel has finished playing");
-		return mReel[mCurrFrame];
-	}
-
-	UINT GetTexKey		() { return mTexKey; }
-	UINT GetTileMapKey	() { return mTileMapKey; }
-	bool GetIsFinished	() { return mIsFinished; }
-
-	void SetName(std::string name) { mName.assign(name); }
-	void SetFrame(int frameNumber) 
-	{
-		mIsFinished = false;
-		mCurrFrame = frameNumber;
-		mAccTime = 0.f;
-	}
-	void SetFrameDuration(int frameNum, float duration);
-	void SetAnimator(AnimatorComponent* animator) { mAnimator = animator; }
-	void SetIsFinished(bool val) { mIsFinished = val; }
-	void SetIsRepeated(bool val) { mIsRepeated = val; }
-
-	void SetTexKey		(UINT key)	 { mTexKey = key; }
-	void SetTileMapKey	(UINT key)	 { mTileMapKey = key; }
+	std::string&	GetName	 ();
+	AnimationFrame* GetFrame ();
+							 
+	UINT GetTexKey			 ();
+	UINT GetTileMapKey		 ();
+	bool GetIsFinished		 ();
+							 
+	void SetName			 (std::string&& name);
+	void SetFrame			 (int frameNumber);
+	void SetFrameDuration	 (int frameNum, float duration);
+	void SetAnimator		 (AnimatorComponent* animator);
+	void SetIsFinished		 (bool val);
+	void SetIsRepeated		 (bool val);
+							 
+	void SetTexKey			 (UINT key);
+	void SetTileMapKey		 (UINT key);
 
 public:
 	FTSpriteAnimation();
@@ -72,6 +62,7 @@ private:
 	std::string					 mName;
 	float						 mAnimFPS;
 	bool						 mIsRepeated;
+	int							 mMaxFrameIdx;
 
 	UINT						 mTexKey;
 	UINT						 mTileMapKey;
@@ -79,8 +70,7 @@ private:
 	// These fields need to be initialized when the component is added.
 	AnimatorComponent*			 mAnimator;
 	std::vector<AnimationFrame*> mReel;
-	float						 mMaxFrame;
-	float						 mCurrFrame;
+	int							 mCurrFrame;
 	float						 mAccTime;
 	bool						 mIsFinished;
 
@@ -100,6 +90,7 @@ public:
 private:
 	void UpdateIsRepeated();
 	void OnConfirmUpdate();
+	void UpdateMaxFrame();
 
 #endif // FOXTROT_EDITOR
 };

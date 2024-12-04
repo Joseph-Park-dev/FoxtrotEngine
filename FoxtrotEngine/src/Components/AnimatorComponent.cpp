@@ -57,7 +57,7 @@ void AnimatorComponent::CreateAnimationFromTile(std::string&& name, UINT texKey,
 		if (texKey != VALUE_NOT_ASSIGNED)
 			animation->SetTexture(texKey);
 
-		animation->SetName(name);
+		animation->SetName(std::move(name));
 		animation->SetAnimator(this);
 		std::vector<MeshData> meshDataBuf;
 		GeometryGenerator::MakeSpriteAnimation(

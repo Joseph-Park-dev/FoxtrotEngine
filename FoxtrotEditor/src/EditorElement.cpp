@@ -138,6 +138,7 @@ void EditorElement::UpdateActorName()
 				AddCommand(DBG_NEW StrEditCommand(GetNameRef(), updatedName));
 		}
 	}
+	delete updatedName;
 }
 
 void EditorElement::UpdateActorGroup()

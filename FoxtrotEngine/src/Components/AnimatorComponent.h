@@ -34,7 +34,7 @@ public:
 
 public:
     AnimatorComponent(class Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
-    ~AnimatorComponent();
+    ~AnimatorComponent() override;
 
 private:
     std::unordered_map<std::string, FTSpriteAnimation*> mLoadedAnimations;

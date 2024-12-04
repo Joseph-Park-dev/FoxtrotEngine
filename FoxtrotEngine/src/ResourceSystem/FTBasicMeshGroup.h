@@ -44,9 +44,10 @@ public:
 	void						SetTexture(UINT key);
 
 protected:
-			void InitializeConstantBuffer (ComPtr<ID3D11Device>& device);
-	virtual void InitializeMeshes		  (ComPtr<ID3D11Device>& device, std::vector<MeshData>& meshes);
-	virtual	void CreateShaders			  (ComPtr<ID3D11Device>& device);
+			void	InitializeConstantBuffer (ComPtr<ID3D11Device>& device);
+	virtual void	InitializeMeshes		  (ComPtr<ID3D11Device>& device, std::vector<MeshData>& meshes);
+	virtual	void	CreateShaders			  (ComPtr<ID3D11Device>& device);
+	virtual HRESULT CreateTextureSampler(ComPtr<ID3D11Device>& device);
 
 private:
 	//DirectX::SimpleMath::Matrix mModelWorldRow	 = DirectX::SimpleMath::Matrix();
@@ -67,9 +68,6 @@ private:
 
 	ComPtr<ID3D11Buffer>		mVertexConstantBuffer;
 	ComPtr<ID3D11Buffer>		mPixelConstantBuffer;
-
-private:
-	HRESULT CreateTextureSampler(ComPtr<ID3D11Device>& device);
 
 public:
 	 FTBasicMeshGroup();

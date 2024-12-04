@@ -29,7 +29,8 @@ Visual Studio project.
 ## Embed Dirent into Your Own Project
 
 If you wish to distribute dirent.h alongside with your own source code, then
-copy ``include/dirent.h`` file to a new sub-directory within your project and
+copy ``include/dirent.h`` file to a 
+sub-directory within your project and
 add that directory to include path on Windows while omitting the directory
 under Linux/UNIX.  This allows your project to be compiled against native
 dirent.h on Linux/UNIX while substituting the functionality on Microsoft

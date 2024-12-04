@@ -8,6 +8,7 @@ void FTSpriteAnimation::Initialize(std::vector<MeshData>& meshes, ComPtr<ID3D11D
 	FTBasicMeshGroup::InitializeConstantBuffer(device);
 	this->InitializeMeshes(device, meshes);
 	FTBasicMeshGroup::CreateShaders(device);
+	FTBasicMeshGroup::CreateTextureSampler(device);
 }
 
 void FTSpriteAnimation::Update(float deltaTime)

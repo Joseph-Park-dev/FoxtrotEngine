@@ -22,8 +22,18 @@ AnimatorComponent::~AnimatorComponent()
 	std::unordered_map<std::string, FTSpriteAnimation*>::iterator iter = mLoadedAnimations.begin();
 	for (; iter != mLoadedAnimations.end(); ++iter)
 	{
-		delete iter->second;
-		iter->second = nullptr;
+		if (iter->second)
+		{
+			if (iter->second == mCurrentAnim)
+			{
+				mCurrentAnim = nullptr;
+			}
+			else
+			{
+				delete iter->second;
+				iter->second = nullptr;
+			}
+		}
 	}
 	mLoadedAnimations.clear();
 }

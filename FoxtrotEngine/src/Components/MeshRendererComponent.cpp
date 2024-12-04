@@ -31,6 +31,7 @@ void MeshRendererComponent::Initialize(FTCore* coreInstance)
 		if (mTexKey != VALUE_NOT_ASSIGNED)
 			SetTexture();
 	}
+	//mMeshGroup = DBG_NEW FTBasicMeshGroup;
 	Component::Initialize(coreInstance);
 }
 
@@ -54,6 +55,7 @@ bool MeshRendererComponent::InitializeMesh()
 {
 	if (mMeshKey != VALUE_NOT_ASSIGNED) {
 		std::vector<MeshData>& meshData = ResourceManager::GetInstance()->GetLoadedMeshes(mMeshKey);
+		mMeshGroup = DBG_NEW FTBasicMeshGroup;
 		mMeshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
 		if (!mMeshGroup) {
 			LogString("ERROR: MeshRendererComponent::InitializeMesh() -> Mesh Init failed.\n");
@@ -108,7 +110,7 @@ void MeshRendererComponent::SetTexture() {
 
 MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner, drawOrder, updateOrder)
-	, mMeshGroup(DBG_NEW FTBasicMeshGroup)
+	, mMeshGroup(nullptr)
 	, mRenderer(nullptr)
 	, mMeshKey(VALUE_NOT_ASSIGNED)
 	, mTexKey(VALUE_NOT_ASSIGNED)

@@ -41,7 +41,6 @@ void FTSpriteAnimation::Render(ComPtr<ID3D11DeviceContext>& context)
 {
 	if (FrameIsWithinIndexRange())
 		FTBasicMeshGroup::Render(context, mCurrFrame);
-	LogInt("Frame : ", mCurrFrame);
 }
 
 std::string& FTSpriteAnimation::GetName()

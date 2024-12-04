@@ -9,7 +9,8 @@ class FTTexture;
 class FoxtrotRenderer;
 struct Mesh;
 
-class SpriteRendererComponent : public MeshRendererComponent
+class SpriteRendererComponent 
+	: public MeshRendererComponent
 {
 public:
 	int			 GetTexWidth()  { return GetMeshGroup()->GetTexture()->GetTexWidth() * mTexScale.x; }

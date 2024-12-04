@@ -27,9 +27,10 @@ public:
 	virtual void LoadProperties(std::ifstream& ifs) override;
 
 public:
-    virtual void Initialize(FTCore* coreInstance) override;
-            void LateUpdate(float deltaTime) override;
-    virtual void Render(FoxtrotRenderer* renderer) override;
+    virtual void Initialize(FTCore* coreInstance)   override;
+            void Update(float deltaTime)            override;
+            void LateUpdate(float deltaTime)        override;
+    virtual void Render(FoxtrotRenderer* renderer)  override;
 
 public:
     AnimatorComponent(class Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);

@@ -67,7 +67,10 @@ void AnimatorComponent::CreateAnimationFromTile(std::string&& name, UINT texKey,
 		);
 		animation->Initialize(meshDataBuf, GetRenderer()->GetDevice(), GetRenderer()->GetContext());
 		if (mLoadedAnimations.size() < 1)
+		{
 			mCurrentAnim = animation;
+			SetMeshGroup(mCurrentAnim);
+		}
 
 		mLoadedAnimations.insert(std::make_pair(name, animation));
 		printf("FTSpriteAnimation created, %s", name.c_str());
@@ -107,6 +110,12 @@ void AnimatorComponent::Initialize(FTCore* coreInstance)
 	TileMapComponent::Initialize(coreInstance);
 }
 
+void AnimatorComponent::Update(float deltaTime)
+{
+	if (mCurrentAnim != nullptr)
+		TileMapComponent::Update(deltaTime);
+}
+
 void AnimatorComponent::LateUpdate(float deltaTime)
 {
 	if (mCurrentAnim != nullptr)
@@ -123,7 +132,10 @@ void AnimatorComponent::Render(FoxtrotRenderer* renderer)
 void AnimatorComponent::EditorUpdate(float deltaTime)
 {
 	if (mCurrentAnim != nullptr)
+	{
+		Update(deltaTime);
 		mCurrentAnim->Update(deltaTime);
+	}
 }
 
 void AnimatorComponent::EditorUIUpdate()

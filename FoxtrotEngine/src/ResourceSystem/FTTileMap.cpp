@@ -55,7 +55,7 @@ void FTTileMap::ReadCSV()
         {
             if (!result.empty())
             {
-                InitializeTile(mTileMap[mMaxCountOnScreenX * r + c], c, r, result.front());
+                InitializeTile(mTileMap[column * r + c], c, r, result.front());
                 result.pop();
             }
         }

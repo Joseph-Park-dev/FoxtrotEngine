@@ -221,7 +221,8 @@ void GeometryGenerator::MakeSpriteAnimation(std::vector<MeshData>& animMeshes, T
 {
     for (size_t r = 0; r < rowCount; ++r) {
         for (size_t c = 0; c < columnCount; ++c) {
-            MeshData animFrame = MakeAnimationFrame(tileMap[rowCount * r + c]);
+            size_t idx = columnCount * r + c;
+            MeshData animFrame = MakeAnimationFrame(tileMap[columnCount * r + c]);
             animMeshes.push_back(animFrame);
         }
     }

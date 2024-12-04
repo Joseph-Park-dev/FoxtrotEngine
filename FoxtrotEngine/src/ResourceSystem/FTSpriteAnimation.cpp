@@ -142,7 +142,7 @@ void FTSpriteAnimation::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vect
 FTSpriteAnimation::FTSpriteAnimation()
 	: mName			{}
 	, mMaxFrameIdx  (21)
-	, mAnimFPS		(2.0f)
+	, mAnimFPS		(30.0f)
 	, mIsRepeated	(true)
 	, mAnimator		(nullptr)
 	, mReel			{}

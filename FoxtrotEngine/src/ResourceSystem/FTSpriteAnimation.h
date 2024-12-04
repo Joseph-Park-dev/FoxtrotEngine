@@ -47,6 +47,8 @@ public:
 	void SetTexKey			 (UINT key);
 	void SetTileMapKey		 (UINT key);
 
+	void IncreaseIdx() { ++mCurrFrame; }
+
 public:
 	FTSpriteAnimation();
 	~FTSpriteAnimation() override;

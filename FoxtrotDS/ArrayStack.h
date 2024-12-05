@@ -82,7 +82,7 @@ namespace FTDS
 		}
 
 		// Gets the array which stores the data of the stack.
-		// This can be used when freeing memory from this object. 
+		// This can be used when freeing memory. 
 		TYPE* Data() { return mData; }
 
 	public:

@@ -2,66 +2,151 @@
 #include "DSLogs.h"
 
 constexpr size_t MAX_STACK_SIZE = 50;
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
+#include "../FoxtrotEngine/src/Debugging/DebugMemAlloc.h"
 
-template <typename TYPE>
-class ArrayStack
+namespace FTDS
 {
-public:
-	void Push(TYPE element);
-	void Pop();
-	void Peek();
+	template <class TYPE>
+	class ArrayStack
+	{
+	public:
+		void Push(TYPE& element)
+		{
+			assert(!IsFull()); // Stack must not be full.
+			mData[++mTop] = element;
+		}
 
-public:
-	bool IsEmpty();
-	bool IsFull();
+		void Push(TYPE&& element)
+		{
+			assert(!IsFull()); // Stack must not be full.
+			mData[++mTop] = element;
+		}
 
-public:
-	ArrayStack();
-	~ArrayStack();
+		TYPE Pop() 
+		{
+			assert(!IsEmpty()); // Stack must have somthing to pop in itself.
+			return mData[mTop--];
+		}
 
-private:
-	int top;
-	TYPE data[MAX_STACK_SIZE];
-};
+		TYPE Peek()
+		{
+			assert(!IsEmpty()); // Stack must have somthing to pop in itself.
+			return mData[mTop];
+		}
 
-template<typename TYPE>
-inline void ArrayStack<TYPE>::Push(TYPE element)
-{
-	assert(!IsFull()); // Stack is full.
-	data[++top] = element;
-		
-}
+		void Reserve(size_t newCapacity)
+		{
+			assert(0 < newCapacity); // Input capacity must be bigger than Zero.
+			// When the current capacity is zero; initialization phase.
+			if (mCapacity < 1)
+			{
+				mData = DBG_NEW TYPE[newCapacity];
+				mCapacity = newCapacity;
+				return;
+			}
+			if (mCapacity != newCapacity)
+			{
+				// WARNING : if the input capacity is smaller than current one,
+				//			 The data whose index is bigger than input capacity 
+				//			 will be truncated.
+				ReAllocate(mCapacity, newCapacity);
+			}
+			else
+				return;
+		}
 
-template<typename TYPE>
-inline void ArrayStack<TYPE>::Pop()
-{
-	assert
-	if(IsEmpty()) LogError("Stack is empty")
-}
+		size_t	Size() { return (mTop + 1); }
+		size_t	Capacity() { return mCapacity; }
 
-template<typename TYPE>
-inline void ArrayStack<TYPE>::Peek()
-{
-}
+		void Clear()
+		{
+			if (mData)
+			{
+				delete[] mData;
+				mData = nullptr;
+				mTop = -1;
+				mCapacity = 0;
+			}
+		}
 
-template<typename TYPE>
-inline bool ArrayStack<TYPE>::IsEmpty()
-{
-	return false;
-}
+	public:
+		bool IsEmpty() { return mTop == -1; }
+		bool IsFull()
+		{
+			if (0 < mCapacity)
+				return mTop == mCapacity - 1;
+			else
+				return false; // Stack with no capacity is not considered as full.
+		}
 
-template<typename TYPE>
-inline bool ArrayStack<TYPE>::IsFull()
-{
-	return false;
-}
+		// Gets the array which stores the data of the stack.
+		// This can be used when freeing memory from this object. 
+		TYPE* Data() { return mData; }
 
-template<typename TYPE>
-inline ArrayStack<TYPE>::ArrayStack()
-{
-}
+	public:
+		ArrayStack()
+			: mData(nullptr)
+			, mTop(-1)
+			, mCapacity(0)
+		{}
+		/// <Note on deallocation>
+		/// If an ArrayStack consist of dynamically allocated objects,
+		/// (which means, variables created with "new" keyword)
+		/// its data element must be deleted one by one to prevent memory leak.
+		/// Clear() or the destructor won't free those objects automatically.
+		/// </Note on deallocation>
+		~ArrayStack()
+		{
+			if (mData)
+			{
+				delete[] mData;
+				mData = nullptr;
+			}
+		}
 
-template<typename TYPE>
-inline ArrayStack<TYPE>::~ArrayStack()
-{
+	private:
+		TYPE*	mData;
+		size_t	mTop;
+		size_t	mCapacity;
+
+	private:
+		void ReAllocate(size_t currCap, size_t newCap)
+		{
+			// Shallow-copy the array elements from mData to copy buffer.
+			TYPE* copyBuf = new TYPE[currCap];
+			for (size_t i = 0; i < currCap; ++i)
+				copyBuf[i] = mData[i];
+
+			// Reset mData with new capacity.
+			delete[] mData;
+			mData = DBG_NEW TYPE[newCap];
+
+			// Shallow-copy the array elements from copy buffer to mData.
+			if (currCap < newCap) // When memory occupation gets bigger.
+			{
+				for (size_t i = 0; i < currCap; ++i)
+					mData[i] = copyBuf[i];
+				// For the additional empty memory space, fill them with zero TYPEs.
+				for (size_t i = 0; i < newCap - currCap; ++i)
+					mData[currCap + i] = TYPE();
+			}
+			else // When memory occupation gets smaller.
+			{
+				// Copies only the amount of new capacity.
+				for (size_t i = 0; i < newCap; ++i)
+					mData[i] = copyBuf[i];
+			}
+
+			// Set the modified capacity.
+			mCapacity = newCap;
+
+			// Modify the mTop if the data were truncated.
+			if (mCapacity <= mTop)
+				mTop = mCapacity - 1;
+
+			delete[] copyBuf;
+		}
+	};
 }

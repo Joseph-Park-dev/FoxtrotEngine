@@ -21,9 +21,15 @@
     <ClInclude Include="DSLogs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TestHeaderBatch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ArrayStack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

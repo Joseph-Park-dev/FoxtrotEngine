@@ -8,6 +8,14 @@ constexpr size_t MAX_STACK_SIZE = 50;
 
 namespace FTDS
 {
+	/// <Note_on_deallocation>
+	/// If an ArrayStack consist of dynamically allocated objects,
+	/// (which means, variables created with "new" keyword)
+	/// its data element must be deleted one by one to prevent memory leak.
+	/// Clear() or the destructor won't free those objects automatically.
+	///
+	/// Use Capacity() to free the object, don't use Size().
+	/// </Note_on_deallocation>
 	template <class TYPE>
 	class ArrayStack
 	{
@@ -88,12 +96,7 @@ namespace FTDS
 			, mTop(-1)
 			, mCapacity(0)
 		{}
-		/// <Note on deallocation>
-		/// If an ArrayStack consist of dynamically allocated objects,
-		/// (which means, variables created with "new" keyword)
-		/// its data element must be deleted one by one to prevent memory leak.
-		/// Clear() or the destructor won't free those objects automatically.
-		/// </Note on deallocation>
+
 		~ArrayStack()
 		{
 			if (mData)

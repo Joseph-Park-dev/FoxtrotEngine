@@ -14,13 +14,13 @@ namespace FTDS
 	public:
 		void Push(TYPE& element)
 		{
-			assert(!IsFull()); // Stack must not be full.
+			assert(!IsFull()); // Stack must not be full. Use Reserve(size_t).
 			mData[++mTop] = element;
 		}
 
 		void Push(TYPE&& element)
 		{
-			assert(!IsFull()); // Stack must not be full.
+			assert(!IsFull()); // Stack must not be full. Use Reserve(size_t).
 			mData[++mTop] = element;
 		}
 
@@ -46,11 +46,8 @@ namespace FTDS
 				mCapacity = newCapacity;
 				return;
 			}
-			if (mCapacity != newCapacity)
+			if (mCapacity < newCapacity)
 			{
-				// WARNING : if the input capacity is smaller than current one,
-				//			 The data whose index is bigger than input capacity 
-				//			 will be truncated.
 				ReAllocate(mCapacity, newCapacity);
 			}
 			else
@@ -112,6 +109,7 @@ namespace FTDS
 		size_t	mCapacity;
 
 	private:
+		// Re-allocate memory space when new capacity is bigger than current capacity
 		void ReAllocate(size_t currCap, size_t newCap)
 		{
 			// Shallow-copy the array elements from mData to copy buffer.
@@ -130,23 +128,12 @@ namespace FTDS
 					mData[i] = copyBuf[i];
 				// For the additional empty memory space, fill them with zero TYPEs.
 				for (size_t i = 0; i < newCap - currCap; ++i)
-					mData[currCap + i] = TYPE();
+					mData[currCap + i] = NULL;
 			}
-			else // When memory occupation gets smaller.
-			{
-				// Copies only the amount of new capacity.
-				for (size_t i = 0; i < newCap; ++i)
-					mData[i] = copyBuf[i];
-			}
+			delete[] copyBuf;
 
 			// Set the modified capacity.
 			mCapacity = newCap;
-
-			// Modify the mTop if the data were truncated.
-			if (mCapacity <= mTop)
-				mTop = mCapacity - 1;
-
-			delete[] copyBuf;
 		}
 	};
 }

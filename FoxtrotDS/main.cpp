@@ -17,6 +17,8 @@
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 
+#include <vector>
+
 struct TestDataPack
 {
 public:
@@ -35,26 +37,22 @@ public:
 int main(int argc, char* argv[])
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	FTDS::ArrayStack<TestDataPack*>arrayStack = FTDS::ArrayStack<TestDataPack*>();
+	FTDS::ArrayStack<int>arrayStack = FTDS::ArrayStack<int>();
 	arrayStack.Reserve(7);
 	printf("%zd\n", arrayStack.Capacity());
 	printf("%zd\n", arrayStack.Size());
 
 	for (int i = 0; i < 7; ++i)
-		arrayStack.Push(DBG_NEW TestDataPack(i));
+		arrayStack.Push(i);
 
 	printf("%d\n",arrayStack.Size());
 
-	arrayStack.Reserve(7);
+	arrayStack.Reserve(3);
 	printf("%zd\n", arrayStack.Capacity());
 	printf("%zd\n", arrayStack.Size());
-	arrayStack.Peek()->PrintValues(arrayStack.Size()-1);
 
 	for (size_t i = arrayStack.Size(); 0 < i; --i)
-		arrayStack.Pop()->PrintValues(arrayStack.Size() - 1);
-
-	for (size_t i = 0; i < arrayStack.Capacity(); ++i)
-		delete arrayStack.Data()[i];
+		printf("%d\n", arrayStack.Pop());
 
 	arrayStack.Clear();
 	return 0;

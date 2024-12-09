@@ -177,12 +177,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ArrayDS.h" />
     <ClInclude Include="ArrayStack.h" />
+    <ClInclude Include="CircularQueue.h" />
     <ClInclude Include="DSLogs.h" />
     <ClInclude Include="TestHeaderBatch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ArrayDS.cpp" />
     <ClCompile Include="ArrayStack.cpp" />
+    <ClCompile Include="CircularQueue.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

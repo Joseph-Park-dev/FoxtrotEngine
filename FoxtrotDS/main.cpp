@@ -37,28 +37,30 @@ public:
 int main(int argc, char* argv[])
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	FTDS::ArrayStack<TestDataPack*>arrayStack = FTDS::ArrayStack<TestDataPack*>();
-	arrayStack.Reserve(7);
-	printf("%zd\n", arrayStack.Capacity());
-	printf("%zd\n", arrayStack.Size());
+	FTDS::CircularQueue<int>circularQueue = FTDS::CircularQueue<int>();
+	circularQueue.Reserve(7);
+	printf("%zd\n", circularQueue.Capacity());
+	printf("%zd\n", circularQueue.Size());
 
 	for (int i = 0; i < 7; ++i)
-		arrayStack.Push(DBG_NEW TestDataPack(i));
+		circularQueue.Enqueue(i);
 
-	printf("%d\n",arrayStack.Size());
+	printf("%d\n", circularQueue.Size());
 
-	arrayStack.Reserve(10);
-	printf("%zd\n", arrayStack.Capacity());
-	printf("%zd\n", arrayStack.Size());
-	arrayStack.Peek()->PrintValues(arrayStack.Size()-1);
+	circularQueue.Reserve(10);
+	printf("%zd\n", circularQueue.Capacity());
+	printf("%zd\n", circularQueue.Size());
 
-	for (size_t i = arrayStack.Size(); 0 < i; --i)
-		arrayStack.Pop()->PrintValues(arrayStack.Size() - 1);
+	for (int i = 0; i < 3; ++i)
+	{
+		circularQueue.Enqueue(i);
+	}
+	printf("value : %d\n", circularQueue.Peek());
 
-	for (size_t i = 0; i < arrayStack.Size(); ++i)
-		delete arrayStack.Data()[i];
+	for (size_t i = circularQueue.Size(); 0 < i; --i)
+		printf("value : %d\n", circularQueue.Dequeue());
 
-	arrayStack.Clear();
+	circularQueue.Clear();
 
 	return 0;
 }

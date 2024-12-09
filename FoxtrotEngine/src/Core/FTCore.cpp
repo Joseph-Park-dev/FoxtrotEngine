@@ -18,6 +18,8 @@
 #include "Physics/Physics2D.h"
 #include "Physics/ParticleSystem.h"
 #include "FileSystem/ChunkLoader.h"
+#include "FileSystem/FileIOHelper.h"
+#include "Scenes/Scene.h"
 
 #include "Debugging/DebugMemAlloc.h"
 
@@ -34,12 +36,26 @@ ParticleSystem*		ParticleSystem::mInstance = nullptr;
 Timer*				Timer::mInstance = nullptr;
 FTCore*				FTCore::mInstance = nullptr;
 
+void FTCore::LoadGameData()
+{
+	std::ifstream ifs(mGameDataPath);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::GAME_DATA);
+	std::pair<size_t, std::string> chunkListPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::CHUNK_LIST);
+	for (size_t i = 0; i < chunkListPack.first; ++i)
+	{
+		std::string chunkTitle = {};
+		FileIOHelper::LoadBasicString(ifs, chunkTitle);
+		SceneManager::GetInstance()->GetChunkList().push_back(chunkTitle);
+	}
+}
+
 bool FTCore::Initialize()
 {
 	if (!InitializeWindow())
 		return false;
 	if (!InitFoxtrotRenderer_D3D11())
 		return false;
+	LoadGameData();
 	InitSingletonManagers();
 	InitTimer();
 	return true;
@@ -74,7 +90,10 @@ bool FTCore::InitializeWindow()
 	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, false);
 
 	// 윈도우를 만들때 위에서 계산한 wr 사용
-	mWindow = CreateWindow(wc.lpszClassName, mWindowTitle.c_str(), WS_OVERLAPPEDWINDOW,
+	mWindow = CreateWindow(
+		wc.lpszClassName, 
+		mWindowTitle.c_str(),
+		WS_OVERLAPPED | WS_SYSMENU,
 		100,                // 윈도우 좌측 상단의 x 좌표
 		100,                // 윈도우 좌측 상단의 y 좌표
 		wr.right - wr.left, // 윈도우 가로 방향 해상도
@@ -180,6 +199,11 @@ FTCore::FTCore()
 	, mWindowWidth(1920)
 	, mWindowHeight(1080)
 	, mWindowTitle(L"Foxtrot Engine (ver.0.01)")
+	, mGameDataPath(
+		std::string("./")
+		+ std::string(ChunkKeys::GAME_DATA)
+		+ std::string(ChunkKeys::GAMEDATA_FILE_FORMAT)
+		)
 {}
 
 FTCore::~FTCore()
@@ -187,7 +211,7 @@ FTCore::~FTCore()
 
 void FTCore::ShutDown()
 {
-	SceneManager::GetInstance()->DeleteAll();
+	SceneManager::GetInstance()->GetCurrentScene()->DeleteAll();
 	ResourceManager::GetInstance()->DeleteAll();
 	Physics2D::GetInstance()->ShutDown();
 	FoxtrotRenderer::DestroyRenderer(mGameRenderer);

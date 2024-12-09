@@ -146,6 +146,7 @@ UINT FTTileMap::LoadProperties(std::ifstream& ifs)
     return key;
 }
 
+#ifdef FOXTROT_EDITOR
 void FTTileMap::UpdateUI()
 {
     ImGui::Text(GetFileName().c_str());
@@ -171,3 +172,4 @@ void FTTileMap::UpdateUI()
     mMaxCountOnMapX = static_cast<UINT>(maxCountOnMapX);
     mMaxCountOnMapY = static_cast<UINT>(maxCountOnMapY);
 }
+#endif

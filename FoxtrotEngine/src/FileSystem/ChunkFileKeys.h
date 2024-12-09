@@ -5,6 +5,7 @@
 
 namespace ChunkKeys {
 // File formats
+	constexpr const char* GAMEDATA_FILE_FORMAT = ".gdpack";
 	constexpr const char* CHUNK_FILE_FORMAT = ".chunk";
 	constexpr const char* EDITOR_FILE_FORMAT = ".json";
 	constexpr const char* PREMADE_FILE_FORMAT = ".premade";
@@ -17,6 +18,10 @@ namespace ChunkKeys {
 
 	constexpr const char* ACTOR_PROPERTIES = "Actor Properties";
 	constexpr const char* TRANSFORM = "Transform";
+
+	constexpr const char* GAME_DATA = "Game Data";
+	constexpr const char* CHUNK_LIST = "Chunk List";
+	constexpr const char* CHUNK_LIST_PATH = "Chunk List Path";
 
 // Scene Related
 	constexpr const char* ACTOR_COUNT = "Actor Count";

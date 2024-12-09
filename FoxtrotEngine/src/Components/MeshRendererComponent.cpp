@@ -47,6 +47,7 @@ void MeshRendererComponent::Render(FoxtrotRenderer* renderer)
 {
 	if (mMeshGroup){
 		renderer->SwitchFillMode();
+		renderer->SetRenderTargetView();
 		mMeshGroup->Render(renderer->GetContext());
 	}
 }
@@ -55,7 +56,6 @@ bool MeshRendererComponent::InitializeMesh()
 {
 	if (mMeshKey != VALUE_NOT_ASSIGNED) {
 		std::vector<MeshData>& meshData = ResourceManager::GetInstance()->GetLoadedMeshes(mMeshKey);
-		mMeshGroup = DBG_NEW FTBasicMeshGroup;
 		mMeshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
 		if (!mMeshGroup) {
 			LogString("ERROR: MeshRendererComponent::InitializeMesh() -> Mesh Init failed.\n");
@@ -110,7 +110,7 @@ void MeshRendererComponent::SetTexture() {
 
 MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner, drawOrder, updateOrder)
-	, mMeshGroup(nullptr)
+	, mMeshGroup(DBG_NEW FTBasicMeshGroup)
 	, mRenderer(nullptr)
 	, mMeshKey(VALUE_NOT_ASSIGNED)
 	, mTexKey(VALUE_NOT_ASSIGNED)

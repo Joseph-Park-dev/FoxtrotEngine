@@ -51,6 +51,7 @@ FTTexture* ResourceManager::GetLoadedTexture(const UINT key)
 	FTTexture* ptTex = mMapTextures.at(key);
 	if (!ptTex)
 		printf("Error: Unable to find FTTexture with key; %d\n", key);
+	ptTex->AddRefCount();
 	return ptTex;
 }
 

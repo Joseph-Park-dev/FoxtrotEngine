@@ -19,8 +19,8 @@ public:
 	ComponentCreateMap& GetCompCreateMap() { return mComponentCreateMap; }
 
 protected:
-	void SaveActorsData(std::ofstream& ofs);
-	void LoadActorsData(std::ifstream& ifs);
+	virtual void SaveActorsData(std::ofstream& ofs) override;
+	virtual void LoadActorsData(std::ifstream& ifs) override;
 
 private:
 	ComponentCreateMap mComponentCreateMap;

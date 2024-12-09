@@ -36,20 +36,18 @@ public:
 
 protected:
 	//Save .Chunk for the editor
-			void SaveChunkData(std::ofstream& out, Scene* currScene);
-			void SaveActorsData(std::ofstream& out);
-
-			void LoadChunkData(std::ifstream& out, Scene* currScene);
+			void SaveChunkData(std::ofstream& out);
+			void LoadChunkData(std::ifstream& out);
 
 protected:
-			void LoadActors(std::ifstream& ifs);
+	virtual void SaveActorsData(std::ofstream& ofs);
+	virtual void LoadActorsData(std::ifstream& ifs);
 
 private:
 	ComponentLoadMap mComponentLoadMap;
 	ChunkData mCurrentChunkData;
 
 private:
-	Actor*		LoadIndividualActor(std::ifstream& ifs, Scene* currScene);
 	std::string GetConvertedFileName(std::string curr, std::string prevSuffix, std::string postSuffix);
 };
 

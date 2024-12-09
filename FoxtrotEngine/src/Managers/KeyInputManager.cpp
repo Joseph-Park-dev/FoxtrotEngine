@@ -1,15 +1,13 @@
 #include "Managers/KeyInputManager.h"
 
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
-
-
 #include "Core/TemplateFunctions.h"
 #include "Core/FTCore.h"
 
+#ifdef FOXTROT_EDITOR
 #include "EditorLayer.h"
- // DEBUG
-
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui.h>
+#endif // FOXTROT_EDITOR
 
 KeyInputManager::KeyInputManager()
 	: mMousePosition(FTVector2::Zero)

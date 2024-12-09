@@ -61,9 +61,11 @@ public:
 	void Initialize(FoxtrotRenderer* renderer);
 	virtual void Update(float deltaTime);
 
+#ifdef FOXTROT_EDITOR
 private:
 	ImVec2 mMiddleMouseClickedPos;
 	ImVec2 mMiddleMouseClickedRot;
+#endif // FOXTROT_EDITOR
 
 protected:
 	void ZoomIn();

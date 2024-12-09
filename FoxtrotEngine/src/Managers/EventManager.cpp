@@ -37,7 +37,7 @@ void EventManager::Execute(const FTEvent& executedEvent)
 #else
 		Scene* scene = static_cast<Scene*>(executedEvent.eventData.at(1));
 #endif
-		premade->AddToScene(scene);
+		premade->AddToScene(scene, FTCore::GetInstance());
 	}
 	break;
 	case EVENT_TYPE::DESTROY_ACTOR:
@@ -48,7 +48,7 @@ void EventManager::Execute(const FTEvent& executedEvent)
 	break;
 	case EVENT_TYPE::SWITCH_SCENE:
 	{
-		SceneManager::GetInstance()->SwitchScene(*static_cast<SCENE_TYPE*>(executedEvent.eventData.at(0)));
+		SceneManager::GetInstance()->SwitchScene(*static_cast<size_t*>(executedEvent.eventData.at(0)));
 		UIManager::GetInstance()->Reset();
 	}
 	break;

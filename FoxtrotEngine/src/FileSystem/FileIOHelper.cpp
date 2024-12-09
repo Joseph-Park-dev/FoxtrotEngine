@@ -306,6 +306,7 @@ void FileIOHelper::SaveVector2(std::ofstream& ofs, const std::string valName, co
     ++mItemCounts.back();
 }
 
+#ifdef FOXTROT_EDITOR
 void FileIOHelper::SaveVector2(std::ofstream& ofs, const std::string valName, const b2Vec2& vec2)
 {
     std::string itemTitle = mItemIdent + valName + "[Vector2]" + '\n';
@@ -313,6 +314,8 @@ void FileIOHelper::SaveVector2(std::ofstream& ofs, const std::string valName, co
     mDataBuffer.push_back(itemTitle + item);
     ++mItemCounts.back();
 }
+#endif // FOXTROT_EDITOR
+
 
 void FileIOHelper::SaveInt(std::ofstream& ofs, const std::string valName, const int& intVal)
 {

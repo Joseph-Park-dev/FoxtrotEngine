@@ -32,7 +32,9 @@ private:
 	// Initializes Common functionality.
 	virtual bool InitializeWindow();
 			bool InitFoxtrotRenderer_D3D11();
+			void LoadGameData();
 			void InitTimer();
+
 protected:
 	virtual	void InitSingletonManagers();
 
@@ -62,4 +64,7 @@ private:
 	int				 mWindowWidth;
 	int				 mWindowHeight;
 	std::wstring	 mWindowTitle;
+
+private:
+	std::string		 mGameDataPath;
 };

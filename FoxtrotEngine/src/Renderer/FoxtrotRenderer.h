@@ -43,6 +43,7 @@ public:
 	void SwapChainPresent(UINT syncInterval, UINT flags);
     void RenderClear();
     void SetViewport();
+    void SetRenderTargetView();
 
     void ResizeWindow(UINT width, UINT height);
 

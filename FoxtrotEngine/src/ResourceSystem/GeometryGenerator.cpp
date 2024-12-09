@@ -8,7 +8,6 @@
 #include "ResourceSystem/Vertex.h"
 #include "ResourceSystem/MeshData.h"
 #include "ResourceSystem/FTTexture.h"
-#include "ResourceSystem/ModelLoader.h"
 #include "ResourceSystem/FTTileMap.h"
 #include "ResourceSystem/Tile.h"
 

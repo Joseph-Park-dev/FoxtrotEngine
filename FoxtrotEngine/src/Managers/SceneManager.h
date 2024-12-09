@@ -4,26 +4,35 @@
 
 class Scene;
 class FoxtrotRenderer;
+class KeyInputManager;
 
 class SceneManager
 {
 	SINGLETON(SceneManager)
 
 public:
-	void	SwitchScene(SCENE_TYPE sceneType);
-	Scene*	GetCurrentScene()	{ return mPCurrScene; }
+			void	SwitchScene(size_t index);
+			Scene*	GetCurrentScene();
 
 public:
-	virtual void Initialize();
-	virtual void ProcessInput(class KeyInputManager* keyInputManager);
-	virtual void Update(float deltaTime);
-	virtual void Lateupdate(float deltaTime);
-	virtual void Render(FoxtrotRenderer* renderer);
-	virtual void ProcessEvent();
+	std::vector<std::string>& GetChunkList();
+	void					  SetChunkListPath(std::string&& path);
 
-			void DeleteAll();
+public:
+	virtual void Initialize		();
+	virtual void ProcessInput	(KeyInputManager* keyInputManager);
+	virtual void Update			(float deltaTime);
+	virtual void Lateupdate		(float deltaTime);
+	virtual void Render			(FoxtrotRenderer* renderer);
+	virtual void ProcessEvent	();
+
+public:
+			void SaveSceneList(std::ofstream& ofs);
+			//void LoadSceneList();
 
 private:
-	Scene*  mArrScene[(unsigned int)SCENE_TYPE::END];
-	Scene*  mPCurrScene;
+	std::string				 mChunkListPath;
+	
+	Scene*					 mCurrentScene;
+	std::vector<std::string> mChunkList; // List, and order of .chunks
 };

@@ -1,75 +1,88 @@
 #include "Managers/SceneManager.h"
 
+#include <fstream>
+#include <string>
+
 #include "Scenes/Scene.h"
 #include "Renderer/FoxtrotRenderer.h"
+#include "FileSystem/FileIOHelper.h"
+#include "FileSystem/ChunkFileKeys.h"
+#include "FileSystem/ChunkLoader.h"
 
 SceneManager::SceneManager()
-	: mArrScene{}
-	, mPCurrScene(DBG_NEW Scene)
+	: mChunkList()
+	, mCurrentScene(new Scene)
 {}
 
 SceneManager::~SceneManager()
 {
-	for (unsigned int i = 0; i < (unsigned int)SCENE_TYPE::END; ++i)
-	{
-		if (mArrScene[i] != nullptr)
-		{
-			delete mArrScene[i];
-		}
-	}
-	delete mPCurrScene;
+	mChunkList.clear();
+	delete mCurrentScene;
+}
+
+void SceneManager::SwitchScene(size_t index)
+{
+	mCurrentScene->DeleteAll();
+	ChunkLoader::GetInstance()->LoadChunk(std::string(".\\Chunks\\") + mChunkList.at(index));
+}
+
+Scene* SceneManager::GetCurrentScene()
+{
+	return mCurrentScene;
+}
+
+std::vector<std::string>& SceneManager::GetChunkList()
+{
+	return mChunkList;
+}
+
+void SceneManager::SetChunkListPath(std::string&& path)
+{
+	mChunkListPath.assign(path);
 }
 
 void SceneManager::Initialize()
 {
-	//mArrScene[(UINT)SCENE_TYPE::START] = DBG_NEW Scene_Start;
-	//mArrScene[(UINT)SCENE_TYPE::START]->SetName(L"Start Scene");
-	mPCurrScene->Enter();
+	SwitchScene(0);
 }
 
 void SceneManager::ProcessInput(KeyInputManager* keyInputManager)
 {
-	mPCurrScene->ProcessInput(keyInputManager);
+	mCurrentScene->ProcessInput(keyInputManager);
 }
 
 void SceneManager::Update(float deltaTime)
 {
-	mPCurrScene->Update(deltaTime);
+	mCurrentScene->Update(deltaTime);
 }
 
 void SceneManager::Lateupdate(float deltaTime)
 {
-	mPCurrScene->LateUpdate(deltaTime);
+	mCurrentScene->LateUpdate(deltaTime);
 }
 
 void SceneManager::Render(FoxtrotRenderer* renderer)
 {
-	mPCurrScene->Render(renderer);
+	mCurrentScene->Render(renderer);
 }
 
 void SceneManager::ProcessEvent()
 {
-	mPCurrScene->ProcessEvent();
+	mCurrentScene->ProcessEvent();
 }
 
-void SceneManager::DeleteAll()
+void SceneManager::SaveSceneList (std::ofstream& ofs)
 {
-	for (size_t i = 0; i < (size_t)SCENE_TYPE::END; ++i)
-	{
-		if (mArrScene[i])
-		{
-			mArrScene[i]->DeleteAll();
-			delete mArrScene[i];
-			mArrScene[i] = nullptr;
-		}
-	}
-	delete mPCurrScene;
-	mPCurrScene = nullptr;
 }
 
-void SceneManager::SwitchScene(SCENE_TYPE sceneType)
-{
-	mPCurrScene->Exit();
-	mPCurrScene = mArrScene[(UINT)sceneType];
-	mPCurrScene->Enter();
-}
+//void SceneManager::LoadSceneList()
+//{
+//	std::ifstream ifs(mChunkListPath);
+//	std::pair<size_t, std::string> pack = FileIOHelper::BeginDataPackLoad(ifs);
+//	for (size_t i = 0; i < pack.first; ++i)
+//	{
+//		std::string title = {};
+//		FileIOHelper::LoadBasicString(ifs, title);
+//		mChunkList.push_back(title);
+//	}
+//}

@@ -8,9 +8,10 @@
 #include "Actors/UIs/UIActor.h"
 #include "Managers/KeyInputManager.h"
 
+#ifdef FOXTROT_EDITOR
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
- // DEBUG
+#endif // FOXTROT_EDITOR
 
 UIManager::UIManager()
 	: mFocusedUI(nullptr)

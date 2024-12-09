@@ -66,7 +66,13 @@ void FTCoreEditor::ShutDown()
 
 void FTCoreEditor::InitSingletonManagers()
 {
-	FTCore::InitSingletonManagers();
+	Physics2D::GetInstance()->Initialize();
+	Camera::GetInstance()->Initialize(GetGameRenderer());
+	ResourceManager::GetInstance()->Initialize(GetGameRenderer());
+	UIManager::GetInstance();
+	EventManager::GetInstance();
+	KeyInputManager::GetInstance();
+
 	EditorSceneManager::GetInstance()->Initialize();
 	EditorLayer::GetInstance();
 	DebugGeometries::GetInstance()->Initialize(GetGameRenderer());

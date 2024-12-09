@@ -1,11 +1,15 @@
 #pragma once
 #include "Component.h"
 
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
+#include "box2d/box2d.h"
 
 #include "Core/TemplateFunctions.h"
 #include "ResourceSystem/Mesh.h"
+
+#ifdef FOXTROT_EDITOR
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui.h>
+#endif // FOXTROT_EDITOR
 
 class FTVector2;
 

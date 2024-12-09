@@ -65,7 +65,8 @@ bool SpriteRendererComponent::InitializeMesh()
 }
 
 SpriteRendererComponent::SpriteRendererComponent(Actor* owner, int drawOrder,int updateOrder)
-	: MeshRendererComponent(owner, drawOrder, updateOrder), mChannel(4), mTexScale(FTVector2(1.0f,1.0f)) {}
+	: MeshRendererComponent(owner, drawOrder, updateOrder), mChannel(4), mTexScale(FTVector2(1.0f,1.0f)) 
+{}
 
 void SpriteRendererComponent::SaveProperties(std::ofstream& ofs)
 {
@@ -92,7 +93,7 @@ void SpriteRendererComponent::EditorUpdate(float deltaTime)
 
 void SpriteRendererComponent::EditorRender(FoxtrotRenderer* renderer)
 {
-	SpriteRendererComponent::Render(renderer);
+	//SpriteRendererComponent::Render(renderer);
 }
 
 void SpriteRendererComponent::EditorUIUpdate()

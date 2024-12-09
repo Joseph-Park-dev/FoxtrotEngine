@@ -8,9 +8,6 @@ class EditorElement;
 class EditorScene : public Scene
 {
 public:
-	virtual void Enter() override;
-	virtual void Exit()  override;
-
 	virtual void DeleteAll() override;
 
 public:
@@ -29,8 +26,5 @@ public:
 
 private:
 	bool mIsUpdatingActors;
-
-private:
-	virtual void LoadData();
 };
 

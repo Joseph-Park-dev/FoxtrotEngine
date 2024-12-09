@@ -3,9 +3,7 @@
 #include "Managers/SceneManager.h"
 
 void EditorSceneManager::Initialize()
-{
-	mEditorScene->Enter();
-}
+{}
 
 void EditorSceneManager::ProcessInput(KeyInputManager* keyInputManager) {
 	mEditorScene->ProcessInput(keyInputManager);

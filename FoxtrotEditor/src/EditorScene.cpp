@@ -11,20 +11,6 @@
 #include "EditorLayer.h"
 #include "EditorElement.h"
 
-void EditorScene::Enter()
-{
-	LoadData();
-}
-
-void EditorScene::LoadData()
-{
-}
-
-void EditorScene::Exit()
-{
-	//CollisionManager::GetInstance()->Reset();
-}
-
 void EditorScene::DeleteAll()
 {
 ;	std::vector<Actor*>* actors = GetActors();

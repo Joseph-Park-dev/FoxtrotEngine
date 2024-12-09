@@ -47,6 +47,7 @@ public:
 
 public:
     MoveComponent(class Actor* owner, int drawOrder, int updateorder);
+    virtual void CloneTo(Actor* actor) override;
 
 private:
     //Rigidbody2DComponent* mRigidbody;
@@ -55,10 +56,5 @@ private:
     float mForwardSpeed;
     State mMovingState;
     State mPrevMovingState;
-
-#ifdef FOXTROT_EDITOR
-public:
-    virtual void CloneTo(Actor* actor) override;
-#endif // FOXTROT_EDITOR
 };
 

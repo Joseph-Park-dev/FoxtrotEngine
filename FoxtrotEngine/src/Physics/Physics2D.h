@@ -6,10 +6,7 @@ class FTVector2;
 class Collider2DComponent;
 class Rigidbody2DComponent;
 
-#ifdef FOXTROT_EDITOR
 #pragma comment (lib, "box2dd.lib")
-#endif // FOXTROT_EDITOR
-
 #include "box2d/box2d.h"
 
 struct PointMass

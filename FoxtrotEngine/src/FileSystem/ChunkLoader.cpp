@@ -26,16 +26,20 @@
 void ChunkLoader::SaveChunk(const std::string fileName)
 {
     std::ofstream ofs(fileName);
-    SaveChunkData(ofs, SceneManager::GetInstance()->GetCurrentScene());
+    SaveChunkData(ofs);
 }
 
 void ChunkLoader::LoadChunk(const std::string fileName)
 {
-    std::ifstream ofs(fileName);
+    std::ifstream ifs(fileName);
+    LoadChunkData(ifs);
+    ResourceManager::GetInstance()->LoadResources(ifs, FTCore::GetInstance());
+    LoadActorsData(ifs);
 }
 
-void ChunkLoader::SaveChunkData(std::ofstream& out, Scene* currScene)
+void ChunkLoader::SaveChunkData(std::ofstream& out)
 {
+    Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
     FileIOHelper::BeginDataPackSave(out, ChunkKeys::CHUNK_DATA);
     FileIOHelper::SaveInt(out, ChunkKeys::TARGET_ACTOR, 1);
     FileIOHelper::SaveInt(out, ChunkKeys::ACTOR_COUNT, currScene->GetActorCount());
@@ -46,30 +50,26 @@ void ChunkLoader::SaveActorsData(std::ofstream& out)
 {
 }
 
-void ChunkLoader::LoadChunkData(std::ifstream& ifs, Scene* currScene)
+void ChunkLoader::LoadActorsData(std::ifstream& ifs)
+{
+    Scene* scene = SceneManager::GetInstance()->GetCurrentScene();
+    std::pair<size_t, std::string>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::ACTOR_DATA);
+    for (size_t i = 0; i < pack.first; ++i)
+    {
+        FileIOHelper::BeginDataPackLoad(ifs);
+        Actor* actor = DBG_NEW Actor(scene);
+        actor->LoadProperties(ifs);
+        actor->LoadComponents(ifs);
+        actor->Initialize(FTCore::GetInstance());
+    }
+}
+
+void ChunkLoader::LoadChunkData(std::ifstream& ifs)
 {
     int targetActor = 0;
     FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::CHUNK_DATA);
     FileIOHelper::LoadSize(ifs, mCurrentChunkData.ActorCount);
     FileIOHelper::LoadInt(ifs, targetActor);
-}
-
-void ChunkLoader::LoadActors(std::ifstream& ifs)
-{
-    Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
-    for (size_t i = 0; i < mCurrentChunkData.ActorCount; ++i)
-    {
-        Actor* actor = LoadIndividualActor(ifs, currScene);
-        currScene->AddActor(actor, actor->GetActorGroup());
-    }
-}
-
-Actor* ChunkLoader::LoadIndividualActor(std::ifstream& ifs, Scene* currScene)
-{
-    Actor* actor = DBG_NEW Actor(currScene);
-    actor->LoadProperties(ifs);
-    actor->LoadComponents(ifs);
-    return actor;
 }
 
 std::string ChunkLoader::GetConvertedFileName(std::string curr, std::string prevSuffix, std::string postSuffix)

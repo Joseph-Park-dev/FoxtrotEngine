@@ -40,6 +40,7 @@ public:
 	Component(const Component& origin);
 	Component(const Component* origin);
 	virtual ~Component();
+	virtual void CloneTo(Actor* actor) {};
 
 private:
 	Actor*	mOwner;
@@ -80,7 +81,6 @@ public:
 	virtual void EditorUIUpdate();
 	// Deep copy function for Editing Premade on FTEditor
 	// (Initialize() is not included)
-	virtual void CloneTo(Actor* actor) = 0;
 
 	virtual void UpdateDebugGeometries(
 		FTVector3 pos,

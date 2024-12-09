@@ -40,14 +40,14 @@ void EditorChunkLoader::SaveChunk(const std::string fileName)
     // Save -> ActorData comes first, // Load -> ChunkData comes first
     SaveActorsData(ofs);
     ResourceManager::GetInstance()->SaveResources(ofs);
-    SaveChunkData(ofs, EditorSceneManager::GetInstance()->GetEditorScene());
+    SaveChunkData(ofs);
     FileIOHelper::SaveBufferToFile(ofs);
 }
 
 void EditorChunkLoader::LoadChunk(const std::string fileName)
 {
     std::ifstream ifs(fileName);
-    LoadChunkData(ifs, EditorSceneManager::GetInstance()->GetEditorScene());
+    LoadChunkData(ifs);
     ResourceManager::GetInstance()->LoadResources(ifs, FTCoreEditor::GetInstance());
     LoadActorsData(ifs);
 }

@@ -349,6 +349,12 @@ void FoxtrotRenderer::SetViewport()
 	mContext->RSSetViewports(1, &mScreenViewport);
 }
 
+void FoxtrotRenderer::SetRenderTargetView()
+{
+	SetViewport();
+	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
+}
+
 HRESULT FoxtrotRenderer::CreateDepthBuffer()
 {
 	// Create depth buffer

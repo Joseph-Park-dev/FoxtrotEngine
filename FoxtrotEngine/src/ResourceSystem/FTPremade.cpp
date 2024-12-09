@@ -73,6 +73,20 @@ Actor* FTPremade::GetOrigin()
 	return mOrigin;
 }
 
+void FTPremade::SaveProperties(std::ofstream& ofs, UINT key)
+{
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::FTPREMADE);
+	FTResource::SaveProperties(ofs, key);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::FTPREMADE);
+}
+
+UINT FTPremade::LoadProperties(std::ifstream& ifs)
+{
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTPREMADE);
+	UINT key = FTResource::LoadProperties(ifs);
+	return key;
+}
+
 #ifdef FOXTROT_EDITOR
 void FTPremade::Create(EditorElement* ele)
 {
@@ -111,20 +125,6 @@ void FTPremade::Save(EditorElement* ele)
 	}
 	else
 		printf("ERROR: FTPremade::Create -> Failed to open file\n");
-}
-
-void FTPremade::SaveProperties(std::ofstream& ofs, UINT key)
-{
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::FTPREMADE);
-	FTResource::SaveProperties(ofs, key);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::FTPREMADE);
-}
-
-UINT FTPremade::LoadProperties(std::ifstream& ifs)
-{
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTPREMADE);
-	UINT key = FTResource::LoadProperties(ifs);
-	return key;
 }
 
 void FTPremade::UpdateUI()

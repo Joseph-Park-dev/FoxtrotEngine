@@ -1,5 +1,7 @@
 #include "Components/Rigidbody2DComponent.h"
 
+#include "box2d/box2d.h"
+
 #include "Physics/Physics2D.h"
 #include "Actors/Actor.h"
 #include "Actors/Transform.h"

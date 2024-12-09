@@ -34,6 +34,7 @@
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/Camera.h"
 #include "FileSystem/ChunkFileKeys.h"
+#include "FileSystem/FileIOHelper.h"
 
 #include "Core/EventFunctions.h"
 
@@ -524,6 +525,12 @@ void EditorLayer::CreateNewProject(std::filesystem::path& path)
 		std::filesystem::create_directory(PATH_PROJECT + "\\Builds");
 		std::filesystem::create_directory(PATH_PROJECT + "\\Chunks");
 		std::filesystem::create_directory(PATH_PROJECT + "\\FoxtrotEngine");
+		std::ofstream ofs(PATH_PROJECT + "\\FoxtrotEngine" + "\\GameData" + ChunkKeys::GAMEDATA_FILE_FORMAT);
+		FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::GAME_DATA);
+		FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::CHUNK_LIST);
+		FileIOHelper::EndDataPackSave(ofs, ChunkKeys::CHUNK_LIST);
+		FileIOHelper::EndDataPackSave(ofs, ChunkKeys::GAME_DATA);
+		FileIOHelper::SaveBufferToFile(ofs);
 	}
 	else {
 		if (projExists)

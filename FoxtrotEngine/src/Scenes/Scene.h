@@ -17,13 +17,6 @@ public:
 	void AddActor(Actor* actor, ActorGroup group);
 
 public:
-	virtual void Enter() {};
-	virtual void Exit() {};
-
-protected:
-	virtual void LoadData() {};
-
-public:
 	const std::wstring&  GetName() { return mSceneName; }
 	std::vector<Actor*>& GetActorGroup(ActorGroup group)
 	{

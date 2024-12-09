@@ -79,7 +79,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableUnitySupport>false</EnableUnitySupport>
+    <EnableUnitySupport>true</EnableUnitySupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -323,15 +323,20 @@
   <ItemGroup>
     <FxCompile Include="assets\Shaders\BasicPixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">4.0_level_9_3</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="assets\Shaders\BasicVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="assets\Shaders\ColorPixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="assets\Shaders\ColorVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="assets\Shaders\EditorDebugGeometryPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Pixel</ShaderType>

@@ -12,8 +12,9 @@
 #include "Actors/Transform.h"
 #include "Renderer/FoxtrotRenderer.h"
 
+#ifdef FOXTROT_EDITOR
 #include "EditorLayer.h"
- // _DEBUG
+#endif // FOXTROT_EDITOR
 
 Scene::Scene()
 	:mIsUpdatingActors(false)

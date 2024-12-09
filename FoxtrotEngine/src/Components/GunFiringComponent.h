@@ -27,13 +27,10 @@ public:
     GunFiringComponent(Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateorder = DEFAULT_UPDATEORDER);
     GunFiringComponent(Actor* owner, int drawOrder, int updateorder, MOUSE triggerKey, float delay);
     ~GunFiringComponent();
+    virtual void CloneTo(Actor* actor) override;
 
 private:
     MOUSE mTriggerKey;
     float mDelay;
     float mCurrentTick;
-
-#ifdef FOXTROT_EDITOR
-    virtual void CloneTo(Actor* actor) override;
-#endif // FOXTROT_EDITOR
 };

@@ -11,11 +11,13 @@ struct Vertex {
         position.y = y;
     }
 
+#ifdef FOXTROT_EDITOR
     Vertex(b2Vec2 vec2)
     {
         position.x = vec2.x;
         position.y = vec2.y;
     }
+#endif // FOXTROT_EDITOR
 
     DirectX::SimpleMath::Vector3 position;
     DirectX::SimpleMath::Vector3 color;

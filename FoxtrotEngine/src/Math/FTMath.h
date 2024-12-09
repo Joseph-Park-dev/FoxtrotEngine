@@ -13,12 +13,15 @@
 #include <limits>
 #include <assert.h>
 #include <directxmath.h>
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
 #include <fstream>
 #include <string>
 
-#include "box2d/box2d.h"
+#include "box2d\box2d.h"
+
+#ifdef FOXTROT_EDITOR
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui.h>
+#endif // FOXTROT_EDITOR
 
 namespace Math
 {
@@ -337,10 +340,17 @@ public:
 		, y(static_cast<float>(inY))
 	{}
 
+#ifdef FOXTROT_EDITOR
 	explicit FTVector2(ImVec2 imguiVec2)
 		: x(imguiVec2.x)
 		, y(imguiVec2.y)
 	{}
+
+	ImVec2 GetImVec2()
+	{
+		return ImVec2(this->x, this->y);
+	}
+#endif // FOXTROT_EDITOR
 
 	FTVector2(FTVector3 vec3)
 		: x(vec3.x)
@@ -352,19 +362,14 @@ public:
 		return ofs;
 	}
 	
-	b2Vec2 GetB2Vec2()
-	{
-		return b2Vec2{ this->x, this->y };
-	}
-
 	DirectX::XMFLOAT2 GetD3Vec2()
 	{
 		return DirectX::XMFLOAT2(this->x, this->y);
 	}
 
-	ImVec2 GetImVec2()
+	b2Vec2 GetB2Vec2()
 	{
-		return ImVec2(this->x, this->y);
+		return b2Vec2{ this->x, this->y };
 	}
 
 	// Set both components in one line

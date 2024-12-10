@@ -39,7 +39,6 @@ void UIComponent::CheckMouseHover()
 	{
 		mMouseHovering = false;
 	}
-	LogVector2(mousePos);
 }
 
 void UIComponent::OnMouseHovering()

@@ -23,7 +23,7 @@ void ButtonUIComponent::OnMouseLButtonClicked()
 	{
 		((*mSceneInstance).*mSceneFunc)();
 	}
-	printf("Clicked!");
+	printf("Clicked!\n");
 }
 
 ButtonUIComponent::ButtonUIComponent(Actor* owner, int drawOrder, int updateOrder)

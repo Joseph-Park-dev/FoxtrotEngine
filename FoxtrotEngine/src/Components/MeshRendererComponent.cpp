@@ -47,7 +47,7 @@ void MeshRendererComponent::Render(FoxtrotRenderer* renderer)
 {
 	if (mMeshGroup){
 		renderer->SwitchFillMode();
-		renderer->SetRenderTargetView();
+		//renderer->SetRenderTargetView();
 		mMeshGroup->Render(renderer->GetContext());
 	}
 }

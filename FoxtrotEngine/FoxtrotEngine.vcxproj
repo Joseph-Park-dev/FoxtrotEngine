@@ -137,7 +137,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">
     <IncludePath>.\include;.\src;$(IncludePath)</IncludePath>
-    <OutDir>..\Test_Project_FTEngine\FoxtrotEngine</OutDir>
+    <OutDir>..\FoxtrotEditor</OutDir>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
@@ -266,9 +266,9 @@
     <ClCompile Include="src\Actors\Backgrounds\BackgroundActor.cpp" />
     <ClCompile Include="src\Actors\RectTransform.cpp" />
     <ClCompile Include="src\Actors\Transform.cpp" />
-    <ClCompile Include="src\Actors\UIs\ButtonUI.cpp" />
-    <ClCompile Include="src\Actors\UIs\PanelUI.cpp" />
-    <ClCompile Include="src\Actors\UIs\UIActor.cpp" />
+    <ClCompile Include="src\Components\UIs\ButtonUIComponent.cpp" />
+    <ClCompile Include="src\Components\UIs\PanelUIComponent.cpp" />
+    <ClCompile Include="src\Components\UIs\UIComponent.cpp" />
     <ClCompile Include="src\Components\AIComponent.cpp" />
     <ClCompile Include="src\Components\AIState.cpp" />
     <ClCompile Include="src\Components\AnimatorComponent.cpp" />
@@ -323,9 +323,9 @@
     <ClInclude Include="src\Actors\Backgrounds\BackgroundActor.h" />
     <ClInclude Include="src\Actors\RectTransform.h" />
     <ClInclude Include="src\Actors\Transform.h" />
-    <ClInclude Include="src\Actors\UIs\ButtonUI.h" />
-    <ClInclude Include="src\Actors\UIs\PanelUI.h" />
-    <ClInclude Include="src\Actors\UIs\UIActor.h" />
+    <ClInclude Include="src\Components\UIs\ButtonUIComponent.h" />
+    <ClInclude Include="src\Components\UIs\PanelUIComponent.h" />
+    <ClInclude Include="src\Components\UIs\UIComponent.h" />
     <ClInclude Include="src\Components\AIComponent.h" />
     <ClInclude Include="src\Components\AIState.h" />
     <ClInclude Include="src\Components\AnimatorComponent.h" />

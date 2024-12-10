@@ -11,14 +11,14 @@
 #include "EditorLayer.h"
 #endif // FOXTROT_EDITOR
 
-void Camera::Initialize(FoxtrotRenderer* renderer)
+void Camera::Initialize(FoxtrotRenderer* renderer, UINT pixels, float unit = 1)
 {
 	mRenderer = renderer;
+	InitializePixelsPerUnit(pixels, unit);
 }
 
 void Camera::Update(float deltaTime)
 {
-	CalcNDCRatio();
 }
 
 void Camera::ZoomIn()
@@ -26,15 +26,22 @@ void Camera::ZoomIn()
 }
 
 Camera::Camera()
+	: mRenderer(nullptr)
+	, mPosition(Vector3(0.0f, 0.0f, 0.0f))
+	, mViewDir(Vector3(0.0f, 0.0f, 1.0f))
+	, mUpDir(Vector3(0.0f, -1.0f, 0.0f))
+	, mRightDir(Vector3(1.0f, 0.0f, 0.0f))
+	, mPitch(0.0f)
+	, mYaw(0.0f)
+	, mProjFOVAngleY(70.f)
+	, mNearZ(0.01f)
+	, mFarZ(100.0f)
+	, mAspect(1920.f / 1080.f)
+	, mPixelsPerUnit(0.f)
+	, mViewType(Viewtype::Orthographic)
 {}
 
 Camera::~Camera(){}
-
-void Camera::CalcNDCRatio()
-{
-	mNDCRatio =
-		static_cast<float>(2) / static_cast<float>(mRenderer->GetRenderHeight());
-}
 
 Matrix Camera::GetViewRow()
 {
@@ -45,7 +52,7 @@ Matrix Camera::GetViewRow()
 
 Matrix Camera::GetProjRow()
 {
-	float unitsPerPixel = 1.f/35.5f; // 1 unit = 100 pixels
+	float unitsPerPixel = 1 / mPixelsPerUnit;
 	float worldWidth = mRenderer->GetRenderWidth() * unitsPerPixel;
 	float worldHeight = mRenderer->GetRenderHeight() * unitsPerPixel;
 
@@ -62,6 +69,11 @@ Matrix Camera::GetProjRow()
 Vector3 Camera::GetEyePos()
 {
 	return mPosition;
+}
+
+void Camera::InitializePixelsPerUnit(float pixels, float units)
+{
+	mPixelsPerUnit = pixels / units;
 }
 
 #ifdef FOXTROT_EDITOR

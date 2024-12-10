@@ -1,13 +1,14 @@
 #pragma once
-#include "Actors/Actor.h"
+#include "Components/Component.h"
 
 #include "Core/TemplateFunctions.h"
 #include "Actors/RectTransform.h"
 
 class FoxtrotRenderer;
+class FTRectangle;
 
-class UIActor :
-    public Actor
+class UIComponent :
+    public Component
 {
 public:
     bool IsMouseHovering() { return mMouseHovering; }
@@ -24,31 +25,39 @@ public:
     virtual void OnMouseLButtonClicked();
 
 public:
-    RectTransform* GetRectTransform() { return dynamic_cast<RectTransform*>(GetTransform()); }
+    //RectTransform* GetRectTransform() { return dynamic_cast<RectTransform*>(GetTransform()); }
     bool GetIsAffectedByCamera() { return mIsAffectedByCamera; }
     void SetIsAffectedByCamera(bool affected) { mIsAffectedByCamera = affected; }
 
     void SetMouseHovering(bool hovering) { mMouseHovering = hovering; }
 
 public:
-    virtual void UpdateActor    (float deltaTime) override;
-    virtual void LateUpdateActor(float deltaTime) override;
-    virtual void RenderActor    (FoxtrotRenderer* renderer) override;
+    virtual void Initialize(FTCore* ftCoreInst) override;
+    virtual void Update(float deltaTime);
+    virtual void LateUpdate(float deltaTime);
+    virtual void Render(FoxtrotRenderer* renderer);
+
+
+public:
+    UIComponent(Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
+    virtual ~UIComponent() override;
 
 private:
     bool mIsAffectedByCamera;
     bool mMouseHovering;
     bool mLBtnDown;
     bool mLBtnClicked;
-
     bool mIsFocused;
+    FTVector2 mSize;
 
     friend class UIManager;
 
+#ifdef FOXTROT_EDITOR
 public:
-    UIActor(Scene* scene, bool isCamAffect);
-    UIActor(UIActor& origin, Scene* scene);
-    UIActor(Actor* origin, Scene* scene);
-    virtual ~UIActor() override;
-};
+    virtual void EditorUpdate(float deltaTime) override;
+    virtual void EditorUIUpdate() override;
 
+private:
+    FTRectangle* mDebugRect;
+#endif // FOXTROT_EDITOR
+};

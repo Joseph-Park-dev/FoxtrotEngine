@@ -21,9 +21,6 @@ class Camera
 	SINGLETON_PROTECTED(Camera);
 
 public:
-	void CalcNDCRatio();
-
-public:
 	Matrix GetViewRow();
 	Matrix GetProjRow();
 	Vector3 GetEyePos();
@@ -31,46 +28,44 @@ public:
 	Viewtype GetViewType()		{ return mViewType; }
 	float	 GetProjFOVAngleY() { return mProjFOVAngleY; }
 	float	 GetAspectRatio()	{ return mAspect; }
-	float	 GetNDCRatio()		{ return mNDCRatio; }
+	float	 GetPixelsPerUnit() { return mPixelsPerUnit; }
 
 	void	 SetViewType(Viewtype viewType) { mViewType = viewType; }
+
+public:
+	// "pixels" define how much of them should fit in a given unit.
+	void Initialize(FoxtrotRenderer* renderer, UINT pixels, float unit);
+	virtual void Update(float deltaTime);
+
+protected:
+	void ZoomIn();
 
 private:
 	FoxtrotRenderer* mRenderer;
 	
-	Vector3 mPosition	= Vector3(0.0f, 0.0f, 0.0f);
-	Vector3 mViewDir	= Vector3(0.0f, 0.0f, 1.0f);
-	Vector3 mUpDir		= Vector3(0.0f, 1.0f, 0.0f);
-	Vector3 mRightDir	= Vector3(1.0f, 0.0f, 0.0f);
+	Vector3 mPosition;
+	Vector3 mViewDir;
+	Vector3 mUpDir;
+	Vector3 mRightDir;
 
 	// roll, pitch, yaw
 	// https://en.wikipedia.org/wiki/Aircraft_principal_axes
-	float mPitch = 0.0f, mYaw = 0.0f;
-	float mSpeed = 1.0f;
-
-	float mProjFOVAngleY = 70.0f;
-	float mNearZ = 0.01f;
-	float mFarZ = 100.0f;
-	float mAspect = 1920.0f / 1080.0f;
-
-	float mNDCRatio;
+	float mPitch, mYaw;
+	float mProjFOVAngleY;
+	float mNearZ, mFarZ;
+	float mAspect;
+	float mPixelsPerUnit;	// Used for pixel-perfect calculation.
 
 	Viewtype mViewType;
 
-public:
-	void Initialize(FoxtrotRenderer* renderer);
-	virtual void Update(float deltaTime);
+private:
+	void InitializePixelsPerUnit(float pixels, float units = 1.f);
 
 #ifdef FOXTROT_EDITOR
 private:
 	ImVec2 mMiddleMouseClickedPos;
 	ImVec2 mMiddleMouseClickedRot;
-#endif // FOXTROT_EDITOR
 
-protected:
-	void ZoomIn();
-
-#ifdef FOXTROT_EDITOR
 public:
 	void DisplayCameraMenu();
 #endif // FOXTROT_EDITOR

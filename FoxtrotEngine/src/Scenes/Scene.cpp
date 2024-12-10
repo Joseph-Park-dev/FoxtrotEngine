@@ -5,10 +5,10 @@
 #include "Actors/Actor.h"
 #include "Actors/ActorGroup.h"
 #include "Components/SpriteRendererComponent.h"
+#include "Components/UIs/PanelUIComponent.h"
 #include "Managers/EventManager.h"
 #include "Core/TemplateFunctions.h"
 
-#include "Actors/UIs/PanelUI.h"
 #include "Actors/Transform.h"
 #include "Renderer/FoxtrotRenderer.h"
 

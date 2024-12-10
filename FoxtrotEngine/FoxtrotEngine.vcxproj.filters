@@ -18,13 +18,13 @@
     <ClCompile Include="src\Actors\Backgrounds\BackgroundActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Actors\UIs\ButtonUI.cpp">
+    <ClCompile Include="src\Components\UIs\ButtonUIComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Actors\UIs\PanelUI.cpp">
+    <ClCompile Include="src\Components\UIs\PanelUIComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Actors\UIs\UIActor.cpp">
+    <ClCompile Include="src\Components\UIs\UIComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Actors\Actor.cpp">
@@ -176,13 +176,13 @@
     <ClInclude Include="src\Actors\Backgrounds\BackgroundActor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Actors\UIs\ButtonUI.h">
+    <ClInclude Include="src\Components\UIs\ButtonUIComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Actors\UIs\PanelUI.h">
+    <ClInclude Include="src\Components\UIs\PanelUIComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Actors\UIs\UIActor.h">
+    <ClInclude Include="src\Components\UIs\UIComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Actors\Actor.h">

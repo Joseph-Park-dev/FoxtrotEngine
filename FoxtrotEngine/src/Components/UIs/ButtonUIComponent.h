@@ -1,5 +1,5 @@
 #pragma once
-#include "Actors/UIs/UIActor.h"
+#include "Components/UIs/UIComponent.h"
 
 class Scene;
 
@@ -7,16 +7,14 @@ typedef void(*BTN_FUNC) (int, int);
 typedef void(Scene::*SCENE_MEMFUNC)(void);
 typedef void(Actor::*ACTOR_MEMFUNC)(void);
 
-class ButtonUI
-	: public UIActor
+class ButtonUIComponent
+	: public UIComponent
 {
-private:
-	BTN_FUNC	  mFunc;
-	int			  mParam1;
-	int			  mParam2;
-
-	SCENE_MEMFUNC mSceneFunc;
-	Scene*		  mSceneInstance;
+public:
+	virtual std::string GetName() const override
+	{
+		return "ButtonUIComponent";
+	}
 
 public:
 	virtual void OnMouseHovering() override;
@@ -38,7 +36,19 @@ public:
 	}
 
 public:
-	ButtonUI(class Scene* scene, bool isCamAffected);
-	~ButtonUI();
+	ButtonUIComponent(
+		Actor* owner,
+		int drawOrder = DEFAULT_DRAWORDER,
+		int updateOrder = DEFAULT_UPDATEORDER
+);
+	~ButtonUIComponent() override;
+
+private:
+	BTN_FUNC	  mFunc;
+	int			  mParam1;
+	int			  mParam2;
+
+	SCENE_MEMFUNC mSceneFunc;
+	Scene*		  mSceneInstance;
 };
 

@@ -5,8 +5,8 @@
 #include "Scenes/Scene.h"
 #include "Managers/SceneManager.h"
 #include "Actors/Actor.h"
-#include "Actors/UIs/UIActor.h"
 #include "Managers/KeyInputManager.h"
+#include "Components/UIs/UIComponent.h"
 
 #ifdef FOXTROT_EDITOR
 #include "EditorLayer.h"
@@ -22,6 +22,11 @@ UIManager::UIManager()
 UIManager::~UIManager()
 {}
 
+void UIManager::RegisterUI(UIComponent* UI)
+{
+	mUIs.push_back(UI);
+}
+
 void UIManager::Update(float deltaTime)
 {
 	// 1. Identify Focused UI
@@ -32,10 +37,10 @@ void UIManager::Update(float deltaTime)
 	bool lBtnTap = MOUSE_TAP(MOUSE::MOUSE_LEFT);
 	bool lBtnAway = MOUSE_AWAY(MOUSE::MOUSE_LEFT);
 	
-	UIActor* targetUI = GetTargetedUI(mFocusedUI);
+	UIComponent* targetUI = GetTargetedUI(mFocusedUI);
 	if (targetUI != nullptr)
 	{
-		targetUI->OnMouseHovering();
+		targetUI->OnMouseHovering(); // Double check mouse hovering
 		if (lBtnTap)
 		{
 			targetUI->OnMouseLButtonDown();
@@ -54,46 +59,46 @@ void UIManager::Update(float deltaTime)
 	}
 }
 
-UIActor* UIManager::GetFocusedUI()
+UIComponent* UIManager::GetFocusedUI()
 {
-	Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
-	std::vector<Actor*>& UI = currScene->GetActorGroup(ActorGroup::UI);
+	//Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
+	//std::vector<Actor*>& UI = currScene->GetActorGroup(ActorGroup::UI);
 
 	bool lBtnTap = MOUSE_TAP(MOUSE::MOUSE_LEFT);
 
-	UIActor* focusedUI = mFocusedUI;
+	UIComponent* focusedUI = mFocusedUI;
 	if (!lBtnTap)
 		return focusedUI;
 
-	std::vector<Actor*>::iterator targetIter= UI.end();
-	std::vector<Actor*>::iterator iter = UI.begin();
-	for (; iter != UI.end(); ++iter)
+	std::vector<UIComponent*>::iterator targetIter= mUIs.end();
+	std::vector<UIComponent*>::iterator iter = mUIs.begin();
+	for (; iter != mUIs.end(); ++iter)
 	{
-		if (((UIActor*)*iter)->IsMouseHovering())
+		if (((UIComponent*)*iter)->IsMouseHovering())
 		{
 			targetIter = iter;
 		}
 	}
 	// There's no UI focused
-	if (targetIter == UI.end())
+	if (targetIter == mUIs.end())
 	{
 		return nullptr;
 	}
-	focusedUI = (UIActor*)*targetIter;
-	UI.erase(targetIter);
-	UI.push_back(focusedUI);
+	focusedUI = *targetIter;
+	//mUIs.erase(targetIter);
+	//mUIs.push_back(focusedUI);
 	return focusedUI;
 }
 
-UIActor* UIManager::GetTargetedUI(UIActor* parentUI)
+UIComponent* UIManager::GetTargetedUI(UIComponent* parentUI)
 {
 	bool lBtnAway = MOUSE_AWAY(MOUSE::MOUSE_LEFT);
 
-	UIActor* targetUI = nullptr;
+	UIComponent* targetUI = nullptr;
 	// 1. Including parent UI, inspect all its child objects
 	//	  (using BFS utilizing queue DS)
-	static std::list<UIActor*> queue;
-	static std::vector<UIActor*> noneTarget;
+	static std::list<UIComponent*> queue;
+	static std::vector<UIComponent*> noneTarget;
 
 	queue.clear();
 	noneTarget.clear();
@@ -103,7 +108,7 @@ UIActor* UIManager::GetTargetedUI(UIActor* parentUI)
 	while (!queue.empty())
 	{
 		// 2. Among the overlapped UIs, select the one with higher priority
-		UIActor* UI = queue.front();
+		UIComponent* UI = queue.front();
 		queue.pop_front();
 
 		if (UI->IsMouseHovering())
@@ -119,10 +124,12 @@ UIActor* UIManager::GetTargetedUI(UIActor* parentUI)
 			noneTarget.push_back(UI);
 		}
 
-		std::vector<Actor*>& childActors = UI->GetChildActors();
+		std::vector<Actor*>& childActors = UI->GetOwner()->GetChildActors();
 		for (size_t i = 0; i < childActors.size(); ++i)
 		{
-			queue.push_back((UIActor*)childActors[i]);
+			UIComponent* uiComp = childActors[i]->GetComponent<UIComponent>();
+			if(uiComp)
+				queue.push_back(uiComp);
 		}
 		if (lBtnAway)
 		{
@@ -138,26 +145,26 @@ UIActor* UIManager::GetTargetedUI(UIActor* parentUI)
 	return targetUI;
 }
 
-void UIManager::SetFocusedUI(UIActor* UI)
-{
-	if (mFocusedUI == UI || mFocusedUI == nullptr)
-	{
-		return;
-	}
-	mFocusedUI = UI;
-	Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
-	std::vector<Actor*>& UIObjs = currScene->GetActorGroup(ActorGroup::UI);
-	std::vector<Actor*>::iterator iter = UIObjs.begin();
-	for (; iter != UIObjs.end(); ++iter)
-	{
-		if (*iter == mFocusedUI)
-		{
-			break;
-		}
-	}
-	UIObjs.erase(iter);
-	UIObjs.push_back(mFocusedUI);
-}
+//void UIManager::SetFocusedUI(UIComponent* UI)
+//{
+//	if (mFocusedUI == UI || mFocusedUI == nullptr)
+//	{
+//		return;
+//	}
+//	mFocusedUI = UI;
+//	Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
+//	std::vector<Actor*>& UIObjs = currScene->GetActorGroup(ActorGroup::UI);
+//	std::vector<Actor*>::iterator iter = UIObjs.begin();
+//	for (; iter != UIObjs.end(); ++iter)
+//	{
+//		if (*iter == mFocusedUI)
+//		{
+//			break;
+//		}
+//	}
+//	UIObjs.erase(iter);
+//	UIObjs.push_back(mFocusedUI);
+//}
 
 void UIManager::Reset()
 {
@@ -173,7 +180,7 @@ void UIManager::Reset()
 //		return;
 //	bool lBtnTap = MOUSE_TAP(MOUSE::MOUSE_LEFT);
 //	bool lBtnAway = MOUSE_AWAY(MOUSE::MOUSE_LEFT);
-//	UIActor* targetUI = GetTargetedUI(mFocusedUI);
+//	UIComponent* targetUI = GetTargetedUI(mFocusedUI);
 //	if (targetUI != nullptr)
 //	{
 //		targetUI->OnMouseHovering();
@@ -195,14 +202,14 @@ void UIManager::Reset()
 //	}
 //}
 //
-//UIActor* UIManager::EditorGetFocusedUI()
+//UIComponent* UIManager::EditorGetFocusedUI()
 //{
 //	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
 //	std::vector<Actor*>& elems = scene->GetActorGroup(ActorGroup::EDITOR);
 //
 //	bool lBtnTap = MOUSE_TAP(MOUSE::MOUSE_LEFT);
 //
-//	UIActor* focusedUI = mFocusedUI;
+//	UIComponent* focusedUI = mFocusedUI;
 //	if (!lBtnTap)
 //		return focusedUI;
 //	std::vector<Actor*>::iterator targetIter = elems.end();

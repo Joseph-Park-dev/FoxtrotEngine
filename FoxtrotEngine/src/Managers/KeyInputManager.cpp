@@ -109,6 +109,12 @@ void KeyInputManager::DetectMouseInput(MSG msg)
 		int mouseX = LOWORD(msg.lParam);
 		int mouseY = HIWORD(msg.lParam);
 		mMousePosition = FTVector2((float)mouseX, (float)mouseY);
+#ifdef FOXTROT_EDITOR
+		ImVec2 viewportPos = EditorLayer::GetInstance()->GetSceneViewportPos();
+		mMousePosition -= viewportPos;
+
+#endif // FOXTROT_EDITOR
+		//mMousePosition *= Camera::GetInstance()->GetNDCRatio();
 	}
 	for (int mouseButton = 0; mouseButton < (int)MOUSE::LAST_FLAG; ++mouseButton)
 	{

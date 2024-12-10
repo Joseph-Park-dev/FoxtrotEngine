@@ -116,8 +116,6 @@ void FTShape::UpdateConstantBufferModel(Transform* transform)
         transform->GetWorldPosition().z
     );
     FTVector3 scale = transform->GetScale();
-
-    float NDC = Camera::GetInstance()->GetNDCRatio();
     DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x * dir, scale.y, scale.z);
 
     Matrix model =

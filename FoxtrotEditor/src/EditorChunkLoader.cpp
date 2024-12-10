@@ -29,6 +29,9 @@ EditorChunkLoader::EditorChunkLoader()
         {"SpriteAnimComponent",     &Component::Create<SpriteAnimComponent>},
         {"GunFiringComponent",      &Component::Create<GunFiringComponent>},
         {"MeshRendererComponent",   &Component::Create<MeshRendererComponent>},
+
+        {"ButtonUIComponent",   &Component::Create<ButtonUIComponent>},
+        {"PanelUIComponent",   &Component::Create<PanelUIComponent>},
     };
 }
 

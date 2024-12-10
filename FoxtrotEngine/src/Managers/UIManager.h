@@ -1,30 +1,32 @@
 #pragma once
 #include "Core/SingletonMacro.h"
 
-class UIActor;
+class UIComponent;
 
 class UIManager
 {
 	SINGLETON(UIManager);
 
-private:
-	UIActor*	mFocusedUI;
-
 public:
-	void	 Update(float deltaTime);
-	void	 SetFocusedUI(UIActor* UI);
-	void	 Reset();
+	void RegisterUI(UIComponent* UI);
+	void Update(float deltaTime);
+	//void SetFocusedUI(UIComponent* UI);
+	void Reset();
 
 private:
-	UIActor* GetFocusedUI();
+	UIComponent* GetFocusedUI();
 	// Returns Overlapped targeted UI within parentUI's area. 
-	UIActor* GetTargetedUI(UIActor* parentUI);
+	UIComponent* GetTargetedUI(UIComponent* parentUI);
+
+private:
+	UIComponent* mFocusedUI;
+	std::vector<UIComponent*> mUIs;
 
 #ifdef FOXTROT_EDITOR
 //public:
 //	void EditorUpdate(float deltaTime);
 //private:
-//	UIActor* EditorGetFocusedUI();
+//	UIComponent* EditorGetFocusedUI();
 #endif // FOXTROT_EDITOR
 };
 

@@ -345,7 +345,6 @@ void FoxtrotRenderer::SetViewport()
 	// m_screenViewport.Width = static_cast<float>(m_screenHeight);
 	mScreenViewport.MinDepth = 0.0f;
 	mScreenViewport.MaxDepth = 1.0f; // Note: important for depth buffering
-	Camera::GetInstance()->CalcNDCRatio();
 	mContext->RSSetViewports(1, &mScreenViewport);
 }
 

@@ -350,6 +350,13 @@ public:
 	{
 		return ImVec2(this->x, this->y);
 	}
+
+	FTVector2 operator-=(const ImVec2& imguiVec2)
+	{
+		x -= imguiVec2.x;
+		y -= imguiVec2.y;
+		return *this;
+	}
 #endif // FOXTROT_EDITOR
 
 	FTVector2(FTVector3 vec3)

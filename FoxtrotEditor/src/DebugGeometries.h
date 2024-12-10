@@ -13,7 +13,6 @@ public:
 	void Render(FoxtrotRenderer* renderer);
 
 public:
-	void AddShape(FTShape* shape);
 	void RemoveShape(FTShape* shape);
 	void DeleteAll();
 
@@ -29,5 +28,8 @@ private:
 	ComPtr<ID3D11InputLayout>	mInputLayout;
 
 private:
+	void AddShape(FTShape* shape);
 	void CreateShaders(ComPtr<ID3D11Device>& device);
+
+	friend class FTRectangle;
 };

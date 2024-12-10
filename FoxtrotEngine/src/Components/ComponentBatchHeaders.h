@@ -14,3 +14,6 @@
 #include "Components/TileMapComponent.h"
 #include "Components/GunFiringComponent.h"
 #include "Components/MeshRendererComponent.h"
+
+#include "Components/UIs/PanelUIComponent.h"
+#include "Components/UIs/ButtonUIComponent.h"

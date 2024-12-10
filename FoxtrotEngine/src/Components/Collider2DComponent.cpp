@@ -11,6 +11,7 @@
 #include "Managers/KeyInputManager.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
+#include "FileSystem/FileIOHelper.h"
 #include "Components/Rigidbody2DComponent.h"
 
 #ifdef FOXTROT_EDITOR

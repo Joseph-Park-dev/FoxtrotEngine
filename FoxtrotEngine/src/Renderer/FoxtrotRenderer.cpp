@@ -77,27 +77,44 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 	DX::ThrowIfFailed(
 		D3D11Utils::CreateVertexShaderAndInputLayout(
 			mDevice,
-			VERTEX_SHADER_PATH, 
+			SOLID_VS_PATH, 
 			inputElements, 
-			mBasicVertexShader,
-			mBasicInputLayout)
+			mSolidVS,
+			mSolidInputLayout)
 	);
 
 	DX::ThrowIfFailed(
 		D3D11Utils::CreatePixelShader(
 			mDevice,
-			PIXEL_SHADER_PATH, 
-			mBasicPixelShader
+			SOLID_PS_PATH, 
+			mSolidPS
+		)
+	);
+
+	DX::ThrowIfFailed(
+		D3D11Utils::CreateVertexShaderAndInputLayout(
+			mDevice,
+			TEXTURE_VS_PATH,
+			inputElements,
+			mTextureVS,
+			mTextureInputLayout)
+	);
+
+	DX::ThrowIfFailed(
+		D3D11Utils::CreatePixelShader(
+			mDevice,
+			TEXTURE_PS_PATH,
+			mTexturePS
 		)
 	);
 
 	mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
 
-	mContext->VSSetShader(mBasicVertexShader.Get(), 0, 0);
+	mContext->VSSetShader(mSolidVS.Get(), 0, 0);
 
 	mContext->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
 
-	mContext->PSSetShader(mBasicPixelShader.Get(), 0, 0);
+	mContext->PSSetShader(mSolidPS.Get(), 0, 0);
 
 	mContext->RSSetState(mSolidRasterizerState.Get());
 

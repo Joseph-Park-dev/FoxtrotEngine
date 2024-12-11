@@ -7,7 +7,6 @@ void FTSpriteAnimation::Initialize(std::vector<MeshData>& meshes, ComPtr<ID3D11D
 {
 	FTBasicMeshGroup::InitializeConstantBuffer(device);
 	this->InitializeMeshes(device, meshes);
-	FTBasicMeshGroup::CreateShaders(device);
 	FTBasicMeshGroup::CreateTextureSampler(device);
 }
 
@@ -38,10 +37,10 @@ void FTSpriteAnimation::Update(float deltaTime)
 	}
 }
 
-void FTSpriteAnimation::Render(ComPtr<ID3D11DeviceContext>& context)
+void FTSpriteAnimation::Render(FoxtrotRenderer* renderer)
 {
 	if (FrameIsWithinIndexRange())
-		FTBasicMeshGroup::Render(context, mCurrFrame);
+		FTBasicMeshGroup::Render(renderer, mCurrFrame);
 }
 
 std::string& FTSpriteAnimation::GetName()

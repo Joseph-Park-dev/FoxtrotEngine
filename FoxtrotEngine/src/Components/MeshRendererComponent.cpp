@@ -48,7 +48,7 @@ void MeshRendererComponent::Render(FoxtrotRenderer* renderer)
 	if (mMeshGroup){
 		renderer->SwitchFillMode();
 		//renderer->SetRenderTargetView();
-		mMeshGroup->Render(renderer->GetContext());
+		mMeshGroup->Render(renderer);
 	}
 }
 
@@ -124,15 +124,16 @@ MeshRendererComponent::~MeshRendererComponent(){
 	}
 }
 
-void MeshRendererComponent::UpdateConstantBufferModel(Transform* transform){
-	FTVector3 scale = transform->GetScale();
+void MeshRendererComponent::UpdateConstantBufferModel(Transform* transform)
+{
 	int dir = transform->GetCurrentDirection();
-	DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x * dir, scale.y, scale.z);
 	FTVector3 worldPos = FTVector3(
 		transform->GetWorldPosition().x,
 		-transform->GetWorldPosition().y,
 		transform->GetWorldPosition().z
 	);
+	FTVector3 scale = transform->GetScale();
+	DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x * dir, scale.y, scale.z);
 	Matrix model =
 		DXMatrix::CreateScale(scaleWithDir) *
 		DXMatrix::CreateRotationY(transform->GetRotation().y) *

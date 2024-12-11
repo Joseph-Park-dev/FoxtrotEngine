@@ -135,7 +135,7 @@ void AnimatorComponent::LateUpdate(float deltaTime)
 void AnimatorComponent::Render(FoxtrotRenderer* renderer)
 {
 	if (mCurrentAnim != nullptr)
-		mCurrentAnim->Render(renderer->GetContext());
+		mCurrentAnim->Render(renderer);
 }
 
 #ifdef FOXTROT_EDITOR

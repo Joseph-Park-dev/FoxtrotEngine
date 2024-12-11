@@ -23,8 +23,8 @@ public:
 		ComPtr<ID3D11DeviceContext>& context
 	);
 	virtual void Update			 (float deltaTime) {};
-	virtual	void Render			 (ComPtr<ID3D11DeviceContext>& context);
-			void Render			 (ComPtr<ID3D11DeviceContext>& context, int meshIndex);
+	virtual	void Render			 (FoxtrotRenderer* renderer);
+			void Render			 (FoxtrotRenderer* renderer, int meshIndex);
 
 public:
 	ComPtr<ID3D11Buffer>&		GetVertexConstantBuffer() { return mVertexConstantBuffer; }
@@ -32,9 +32,6 @@ public:
 	BasicVertexConstantData&	GetVertexConstantData()   { return mBasicVertexConstantData; }
 	BasicPixelConstantData&		GetPixelConstantData()	  { return mBasicPixelConstantData; }
 
-	ComPtr<ID3D11VertexShader>& GetVertexShader()	{ return mBasicVertexShader; }
-	ComPtr<ID3D11PixelShader>&	GetPixelShader()	{ return mBasicPixelShader; }
-	ComPtr<ID3D11InputLayout>&	GetInputLayout()	{ return mBasicInputLayout; }
 	ComPtr<ID3D11SamplerState>&	GetSamplerState()	{ return mSamplerState; }
 
 	FTTexture*					GetTexture()			  { return mTexture; }
@@ -46,7 +43,6 @@ public:
 protected:
 			void	InitializeConstantBuffer (ComPtr<ID3D11Device>& device);
 	virtual void	InitializeMeshes		  (ComPtr<ID3D11Device>& device, std::vector<MeshData>& meshes);
-	virtual	void	CreateShaders			  (ComPtr<ID3D11Device>& device);
 	virtual HRESULT CreateTextureSampler(ComPtr<ID3D11Device>& device);
 
 private:
@@ -59,10 +55,6 @@ private:
 private:
 	std::vector<Mesh*>			mMeshes;
 	FTTexture*					mTexture;
-
-	ComPtr<ID3D11VertexShader>	mBasicVertexShader;
-	ComPtr<ID3D11PixelShader>	mBasicPixelShader;
-	ComPtr<ID3D11InputLayout>	mBasicInputLayout;
 
 	ComPtr<ID3D11SamplerState>	mSamplerState;
 

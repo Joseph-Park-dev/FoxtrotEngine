@@ -30,8 +30,12 @@ EditorChunkLoader::EditorChunkLoader()
         {"GunFiringComponent",      &Component::Create<GunFiringComponent>},
         {"MeshRendererComponent",   &Component::Create<MeshRendererComponent>},
 
+        // UI related
         {"ButtonUIComponent",   &Component::Create<ButtonUIComponent>},
         {"PanelUIComponent",   &Component::Create<PanelUIComponent>},
+
+        // Actor Behaviors
+
     };
 }
 

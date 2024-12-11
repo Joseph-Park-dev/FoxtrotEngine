@@ -171,6 +171,12 @@
     <ClCompile Include="src\FileSystem\FileIOHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ResourceSystem\FTShape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Actors\BasicGeometries\SquareActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Actors\Backgrounds\BackgroundActor.h">
@@ -384,6 +390,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Debugging\DebugMemAlloc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceSystem\FTShape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Actors\BasicGeometries\SquareActor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -26,8 +26,8 @@ public:
 		ComPtr<ID3D11DeviceContext>& context
 	) override;
 
-	virtual void Update(float deltaTime)					  override;
-	virtual	void Render(ComPtr<ID3D11DeviceContext>& context) override;
+	virtual void Update(float deltaTime)			override;
+	virtual	void Render(FoxtrotRenderer* renderer)  override;
 
 public:
 	std::string&	GetName	 ();

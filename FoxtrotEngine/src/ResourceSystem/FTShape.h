@@ -21,6 +21,8 @@ public:
 			void Update(Transform* transform, Camera* cameraInst);
 			void Update(FTVector3 pos, FTVector3 rot, FTVector3 scale, Camera* cameraInst);
 
+	// This is for ShapeActors (e.g. SquareActor)
+			void Render(FoxtrotRenderer* renderer);
 	// This should be called in DebugGeometries instance only once per frame.
 	// You don't have to use this member function by yourself.
 			void Render(

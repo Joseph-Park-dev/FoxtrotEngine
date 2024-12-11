@@ -7,7 +7,6 @@
 void FTBasicMeshGroup::Initialize(std::vector<MeshData>& meshes, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
     InitializeConstantBuffer(device);
-    CreateShaders(device);
     CreateTextureSampler(device);
     InitializeMeshes(device, meshes);
 }
@@ -21,29 +20,39 @@ void FTBasicMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPt
         mPixelConstantBuffer);
 }
 
-void FTBasicMeshGroup::Render(ComPtr<ID3D11DeviceContext>& context)
+void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer)
 {
     UINT stride = sizeof(Vertex);
     UINT offset = 0;
+    ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
+
     for (const Mesh* mesh : mMeshes) {
-        context->VSSetShader(mBasicVertexShader.Get(), 0, 0);
         context->VSSetSamplers(0, 1, mSamplerState.GetAddressOf());
         context->VSSetConstantBuffers(0, 1, mesh->vertexConstantBuffer.GetAddressOf());
 
         context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
-        context->PSSetShader(mBasicPixelShader.Get(), 0, 0);
 
         // 물체 렌더링할 때 큐브맵도 같이 사용
         if (mTexture) {
+            context->VSSetShader(renderer->GetTextureVS().Get(), 0, 0);
+            context->PSSetShader(renderer->GetTexturePS().Get(), 0, 0);
+            context->IASetInputLayout(renderer->GetTextureInputLayout().Get());
+
             std::vector<ID3D11ShaderResourceView*> resViews;
             resViews.push_back(mTexture->GetResourceView().Get());
             context->VSSetShaderResources(0, 1, mTexture->GetResourceView().GetAddressOf());
             context->PSSetShaderResources(0, resViews.size(), resViews.data());
         }
+        else
+        {
+            context->VSSetShader(renderer->GetSolidVS().Get(), 0, 0);
+            context->PSSetShader(renderer->GetSolidPS().Get(), 0, 0);
+            context->IASetInputLayout(renderer->GetSolidInputLayout().Get());
+        }
+
         context->PSSetConstantBuffers(0, 1,
             mesh->pixelConstantBuffer.GetAddressOf());
 
-        context->IASetInputLayout(mBasicInputLayout.Get());
         context->IASetVertexBuffers(0, 1, mesh->vertexBuffer.GetAddressOf(),
             &stride, &offset);
         context->IASetIndexBuffer(mesh->indexBuffer.Get(), DXGI_FORMAT_R32_UINT,
@@ -53,30 +62,40 @@ void FTBasicMeshGroup::Render(ComPtr<ID3D11DeviceContext>& context)
     }
 }
 
-void FTBasicMeshGroup::Render(ComPtr<ID3D11DeviceContext>& context, int meshIndex)
+void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, int meshIndex)
 {
     UINT stride = sizeof(Vertex);
     UINT offset = 0;
     Mesh* mesh = mMeshes.at(meshIndex);
+    ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
+
     if (mesh) {
-        context->VSSetShader(mBasicVertexShader.Get(), 0, 0);
         context->VSSetSamplers(0, 1, mSamplerState.GetAddressOf());
         context->VSSetConstantBuffers(0, 1, mesh->vertexConstantBuffer.GetAddressOf());
 
         context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
-        context->PSSetShader(mBasicPixelShader.Get(), 0, 0);
 
         // 물체 렌더링할 때 큐브맵도 같이 사용
         if (mTexture) {
+            context->VSSetShader(renderer->GetTextureVS().Get(), 0, 0);
+            context->PSSetShader(renderer->GetTexturePS().Get(), 0, 0);
+            context->IASetInputLayout(renderer->GetTextureInputLayout().Get());
+
             std::vector<ID3D11ShaderResourceView*> resViews;
             resViews.push_back(mTexture->GetResourceView().Get());
             context->VSSetShaderResources(0, 1, mTexture->GetResourceView().GetAddressOf());
             context->PSSetShaderResources(0, resViews.size(), resViews.data());
         }
+        else
+        {
+            context->VSSetShader(renderer->GetSolidVS().Get(), 0, 0);
+            context->PSSetShader(renderer->GetSolidPS().Get(), 0, 0);
+            context->IASetInputLayout(renderer->GetSolidInputLayout().Get());
+        }
+
         context->PSSetConstantBuffers(0, 1,
             mesh->pixelConstantBuffer.GetAddressOf());
 
-        context->IASetInputLayout(mBasicInputLayout.Get());
         context->IASetVertexBuffers(0, 1, mesh->vertexBuffer.GetAddressOf(),
             &stride, &offset);
         context->IASetIndexBuffer(mesh->indexBuffer.Get(), DXGI_FORMAT_R32_UINT,
@@ -134,27 +153,6 @@ void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vecto
 
         this->mMeshes.push_back(newMesh);
     }
-}
-
-void FTBasicMeshGroup::CreateShaders(ComPtr<ID3D11Device>& device)
-{
-    vector<D3D11_INPUT_ELEMENT_DESC> basicInputElements = {
-        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
-         D3D11_INPUT_PER_VERTEX_DATA, 0},
-        {"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3,
-         D3D11_INPUT_PER_VERTEX_DATA, 0},
-        {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3 + 4 * 3,
-         D3D11_INPUT_PER_VERTEX_DATA, 0},
-        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 + 4 * 3 + 4 * 3,
-         D3D11_INPUT_PER_VERTEX_DATA, 0},
-    };
-
-    D3D11Utils::CreateVertexShaderAndInputLayout(
-        device, VERTEX_SHADER_PATH, basicInputElements,
-        mBasicVertexShader, mBasicInputLayout);
-
-    D3D11Utils::CreatePixelShader(device, PIXEL_SHADER_PATH,
-        mBasicPixelShader);
 }
 
 HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)

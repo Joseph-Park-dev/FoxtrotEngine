@@ -51,9 +51,6 @@
     <ClCompile Include="src\DebugGeometries.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\FTShape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\DirectoryHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -98,9 +95,6 @@
     <ClInclude Include="src\DebugGeometries.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\FTShape.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\DirectoryHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -122,10 +116,10 @@
     <Text Include="include\imgui\misc\debuggers\README.txt" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="assets\Shaders\BasicPixelShader.hlsl" />
-    <FxCompile Include="assets\Shaders\BasicVertexShader.hlsl" />
-    <FxCompile Include="assets\Shaders\ColorPixelShader.hlsl" />
-    <FxCompile Include="assets\Shaders\ColorVertexShader.hlsl" />
+    <FxCompile Include="assets\Shaders\TexturePS.hlsl" />
+    <FxCompile Include="assets\Shaders\TextureVS.hlsl" />
+    <FxCompile Include="assets\Shaders\SolidPS.hlsl" />
+    <FxCompile Include="assets\Shaders\SolidVS.hlsl" />
     <FxCompile Include="assets\Shaders\EditorDebugGeometryVS.hlsl" />
     <FxCompile Include="assets\Shaders\EditorDebugGeometryPS.hlsl" />
   </ItemGroup>

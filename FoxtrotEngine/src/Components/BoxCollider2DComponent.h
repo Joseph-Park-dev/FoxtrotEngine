@@ -2,7 +2,7 @@
 #include "Components/Collider2DComponent.h"
 
 #ifdef FOXTROT_EDITOR
-#include "FTShape.h"
+#include "ResourceSystem/FTShape.h"
 #endif // FOXTROT_EDITOR
 
 

@@ -1,4 +1,4 @@
-#include "FTShape.h"
+#include "ResourceSystem/FTShape.h"
 
 #include "Renderer/D3D11Utils.h"
 
@@ -50,6 +50,41 @@ void FTShape::Update(FTVector3 pos, FTVector3 rot, FTVector3 scale, Camera* came
     UpdateConstantBufferModel(pos, rot, scale);
     UpdateConstantBufferView(cameraInst);
     UpdateConstantBufferProjection(cameraInst);
+}
+
+void FTShape::Render(FoxtrotRenderer* renderer)
+{
+    if (!mMesh)
+        return;
+    if (!mVertexConstantBuffer.Get())
+        return;
+    if (!mPixelConstantBuffer.Get())
+        return;
+
+    UINT stride = sizeof(Vertex);
+    UINT offset = 0;
+    size_t meshSize = GetArrayLength<Mesh>(mMesh);
+
+    UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext());
+
+    ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
+    for (size_t i = 0; i < meshSize; ++i)
+    {
+        context->VSSetShader(renderer->GetSolidVS().Get(), 0, 0);
+        context->VSSetConstantBuffers(0, 1, mMesh[i].vertexConstantBuffer.GetAddressOf());
+
+        context->PSSetShader(renderer->GetSolidPS().Get(), 0, 0);
+        context->PSSetConstantBuffers(0, 1,
+            mMesh[i].pixelConstantBuffer.GetAddressOf());
+
+        context->IASetInputLayout(renderer->GetSolidInputLayout().Get());
+        context->IASetVertexBuffers(0, 1, mMesh[i].vertexBuffer.GetAddressOf(),
+            &stride, &offset);
+        context->IASetIndexBuffer(mMesh[i].indexBuffer.Get(), DXGI_FORMAT_R32_UINT,
+            0);
+        context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        context->DrawIndexed(mMesh[i].mIndexCount, 0, 0);
+    }
 }
 
 void FTShape::Render(

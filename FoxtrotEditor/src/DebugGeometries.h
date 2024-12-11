@@ -1,6 +1,6 @@
 #pragma once
 #include "Core/SingletonMacro.h"
-#include "FTShape.h"
+#include "ResourceSystem/FTShape.h"
 #include "Renderer/FoxtrotRenderer.h"
 
 // This provides a context to render shapes as DebugGeometries

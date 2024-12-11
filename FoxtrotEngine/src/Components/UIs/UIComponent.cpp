@@ -12,7 +12,7 @@
 
 #ifdef FOXTROT_EDITOR
 #include "DebugGeometries.h"
-#include "FTShape.h"
+#include "ResourceSystem/FTShape.h"
 #include "CommandHistory.h"
 #endif // DEBUG
 

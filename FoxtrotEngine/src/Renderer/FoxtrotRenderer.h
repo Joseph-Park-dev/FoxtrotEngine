@@ -17,8 +17,10 @@
 #include "Core/TemplateFunctions.h"
 #include "Debugging/DebugMemAlloc.h"
 
-#define VERTEX_SHADER_PATH L"Assets/Shaders/ColorVertexShader.hlsl"
-#define PIXEL_SHADER_PATH L"Assets/Shaders/ColorPixelShader.hlsl"
+#define SOLID_VS_PATH   L"Assets/Shaders/SolidVS.hlsl"
+#define SOLID_PS_PATH   L"Assets/Shaders/SolidPS.hlsl"
+#define TEXTURE_VS_PATH L"Assets/Shaders/TextureVS.hlsl"
+#define TEXTURE_PS_PATH L"Assets/Shaders/TexturePS.hlsl"
 
 using VertexType = DirectX::VertexPositionColor;
 using namespace Microsoft::WRL;
@@ -53,7 +55,15 @@ public:
     ComPtr<IDXGISwapChain>&          GetSwapChain()          { return mSwapChain; }
     ComPtr<ID3D11RenderTargetView>&  GetRenderTargetView()   { return mRenderTargetView; }
     ComPtr<ID3D11Texture2D>&         GetDepthStencilBuffer() { return mDepthStencilBuffer; }
-    ComPtr<ID3D11InputLayout>&       GetInputLayout()        { return mBasicInputLayout; }
+
+    ComPtr<ID3D11VertexShader>&      GetSolidVS()            { return mSolidVS; }
+    ComPtr<ID3D11PixelShader>&       GetSolidPS()            { return mSolidPS; }
+    ComPtr<ID3D11InputLayout>&       GetSolidInputLayout()   { return mSolidInputLayout; }
+
+    ComPtr<ID3D11VertexShader>&      GetTextureVS()          { return mTextureVS; }
+    ComPtr<ID3D11PixelShader>&       GetTexturePS()          { return mTexturePS; }
+    ComPtr<ID3D11InputLayout>&       GetTextureInputLayout() { return mTextureInputLayout; }
+
 
     int      GetRenderWidth ()              { return mRenderWidth; }
     int      GetRenderHeight()              { return mRenderHeight; }
@@ -94,9 +104,14 @@ private:
 
 	D3D11_VIEWPORT mScreenViewport;
 
-    ComPtr<ID3D11VertexShader> mBasicVertexShader;
-    ComPtr<ID3D11PixelShader>  mBasicPixelShader;
-    ComPtr<ID3D11InputLayout>  mBasicInputLayout;
+    // Shaders
+    ComPtr<ID3D11VertexShader> mSolidVS;
+    ComPtr<ID3D11PixelShader>  mSolidPS;
+    ComPtr<ID3D11InputLayout>  mSolidInputLayout;
+
+    ComPtr<ID3D11VertexShader> mTextureVS;
+    ComPtr<ID3D11PixelShader>  mTexturePS;
+    ComPtr<ID3D11InputLayout>  mTextureInputLayout;
 
 public:
     FoxtrotRenderer();

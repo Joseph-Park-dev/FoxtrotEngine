@@ -118,6 +118,10 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 
 	mContext->RSSetState(mSolidRasterizerState.Get());
 
+	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
+
+	SetViewport();
+
 #ifdef FOXTROT_EDITOR
 	mRenderTexture = DBG_NEW RenderTextureClass;
 	if (!mRenderTexture)
@@ -355,6 +359,7 @@ void FoxtrotRenderer::SetViewport()
 {
 	// Set the viewport
 	ZeroMemory(&mScreenViewport, sizeof(D3D11_VIEWPORT));
+
 	mScreenViewport.TopLeftX = 0;
 	mScreenViewport.TopLeftY = 0;
 	mScreenViewport.Width = float(mRenderWidth);

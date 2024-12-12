@@ -20,7 +20,7 @@ void UIComponent::CheckMouseHover()
 {
 	FTVector2 mousePos		= KeyInputManager::GetInstance()->GetMousePosition();
 	Transform* transform	= GetOwner()->GetTransform();
-	FTVector2 worldPosition = transform->GetWorldPosition() * Camera::GetInstance()->GetPixelsPerUnit();
+	FTVector2 worldPosition = transform->GetWorldPosition();
 	FTVector2 scale = mSize * FTVector2(transform->GetScale()) * Camera::GetInstance()->GetPixelsPerUnit();
 
 	if (mIsAffectedByCamera)
@@ -88,8 +88,11 @@ UIComponent::UIComponent(Actor* owner, int drawOrder, int updateOrder)
 	, mLBtnDown(false)
 	, mLBtnClicked(false)
 	, mIsFocused(false)
+	, mSize(FTVector2(1.f, 1.f))
+
+#ifdef FOXTROT_EDITOR
 	, mDebugRect(nullptr)
-	, mSize(FTVector2(1.f,1.f))
+#endif // FOXTROT_EDITOR
 {}
 
 UIComponent::~UIComponent()

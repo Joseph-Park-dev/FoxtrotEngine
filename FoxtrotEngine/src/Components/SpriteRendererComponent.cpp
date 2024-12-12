@@ -87,8 +87,7 @@ void SpriteRendererComponent::LoadProperties(std::ifstream& ifs)
 #ifdef FOXTROT_EDITOR
 void SpriteRendererComponent::EditorUpdate(float deltaTime)
 {
-	if (GetMeshGroup())
-		MeshRendererComponent::Update(deltaTime);
+	Update(deltaTime);
 }
 
 void SpriteRendererComponent::EditorRender(FoxtrotRenderer* renderer)

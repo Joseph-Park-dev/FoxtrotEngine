@@ -6,6 +6,7 @@
 #include "ResourceSystem/FTBasicMeshGroup.h"
 #include "ResourceSystem/FTTileMap.h"
 #include "ResourceSystem/FTPremade.h"
+#include "ResourceSystem/FTSpriteAnimation.h"
 #include "Core/FTCore.h"
 #include "Core/TemplateFunctions.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -115,6 +116,15 @@ void ResourceManager::RemoveLoadedMeshes(const UINT key)
 	}
 }
 
+FTSpriteAnimation* ResourceManager::GetLoadedSpriteAnim(const UINT key)
+{
+	FTSpriteAnimation* spriteAnim = mMapSpriteAnimation.at(key);
+	if (!spriteAnim)
+		printf("Error: ResourceManager::GetLoadedSpriteAnim() -> FTSpriteAnimation is empty %d\n", key);
+	spriteAnim->AddRefCount();
+	return spriteAnim;
+}
+
 std::unordered_map<UINT, FTTexture*>& ResourceManager::GetTexturesMap()
 {
 	return mMapTextures;
@@ -123,6 +133,11 @@ std::unordered_map<UINT, FTTexture*>& ResourceManager::GetTexturesMap()
 std::unordered_map<UINT, FTTileMap*>& ResourceManager::GetTileMapsMap()
 {
 	return mMapTileMaps;
+}
+
+std::unordered_map<UINT, FTSpriteAnimation*>& ResourceManager::GetSpriteAnimMap()
+{
+	return mMapSpriteAnimation;
 }
 
 std::string& ResourceManager::GetPathToAsset()
@@ -142,6 +157,32 @@ void ResourceManager::ProcessTexture(FTTexture* texture)
 		printf("ERROR : ResourceManager::ProcessTexture()->CreateTexture() Failed");
 }
 
+void ResourceManager::ProcessTileMap(FTTileMap* tileMap)
+{
+	if (tileMap)
+		tileMap->ReadCSV();
+	else
+		printf("ERROR : ResourceManager::ProcessTexture()->TileMap is null");
+}
+
+void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
+{
+	FTTileMap* tileMapBuf = ResourceManager::GetInstance()->GetLoadedTileMap(spriteAnim->GetTileMapKey());
+	if (tileMapBuf)
+		tileMapBuf->ReadCSV();
+
+	if (spriteAnim->GetTexKey() != VALUE_NOT_ASSIGNED)
+		spriteAnim->SetTexture(spriteAnim->GetTexKey());
+
+	std::vector<MeshData> meshDataBuf;
+	GeometryGenerator::MakeSpriteAnimation(
+		meshDataBuf, tileMapBuf->GetTiles(),
+		tileMapBuf->GetMaxCountOnMapX(),
+		tileMapBuf->GetMaxCountOnMapY()
+	);
+	spriteAnim->Initialize(meshDataBuf, mRenderer->GetDevice(), mRenderer->GetContext());
+}
+
 void ResourceManager::ProcessTextures()
 {
 	for (auto& textureItem : mMapTextures)
@@ -152,6 +193,18 @@ void ResourceManager::ProcessPremades()
 {
 	for (auto& premadeItem : mMapPremades)
 		premadeItem.second->Load();
+}
+
+void ResourceManager::ProcessTileMaps()
+{
+	for (auto& tileMapItem : mMapTileMaps)
+		ProcessTileMap(tileMapItem.second);
+}
+
+void ResourceManager::ProcessSpriteAnims()
+{
+	for (auto& animMapItem : mMapSpriteAnimation)
+		ProcessSpriteAnim(animMapItem.second);
 }
 
 ResourceManager::~ResourceManager()
@@ -180,6 +233,10 @@ void ResourceManager::SaveResources(std::ofstream& ofs)
 	SaveResourceToChunk<FTPremade>(ofs, mMapPremades);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::FTPREMADE_GROUP);
 
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::FT_SPRITE_ANIMATION_GROUP);
+	SaveResourceToChunk<FTSpriteAnimation>(ofs, mMapSpriteAnimation);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::FT_SPRITE_ANIMATION_GROUP);
+
 	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::RESOURCE_DATA);
 }
 
@@ -187,6 +244,10 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 {
 	std::pair<size_t, std::string> resPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::RESOURCE_DATA);
 	size_t count = resPack.first;
+
+	std::pair<size_t, std::string> ftSpriteAnimPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FT_SPRITE_ANIMATION_GROUP);
+	mMapTextures.reserve(ftSpriteAnimPack.first);
+	LoadResourceFromChunk<FTSpriteAnimation>(ifs, mMapSpriteAnimation, ftSpriteAnimPack.first);
 
 	std::pair<size_t, std::string> ftPremadePack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTPREMADE_GROUP);
 	mMapPremades.reserve(ftPremadePack.first);
@@ -201,6 +262,8 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	LoadResourceFromChunk<FTTexture>(ifs, mMapTextures, ftTexturePack.first);
 	
 	ProcessTextures();
+	ProcessTileMaps();
+	ProcessSpriteAnims();
 	ProcessPremades();
 }
 

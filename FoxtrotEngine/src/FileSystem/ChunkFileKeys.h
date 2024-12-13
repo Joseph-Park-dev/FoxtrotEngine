@@ -46,6 +46,7 @@ namespace ChunkKeys {
 	constexpr const char* FTTEXTURE_GROUP = "FTTexture Group";
 	constexpr const char* FTTILEMAP_GROUP = "FTTileMap Group";
 	constexpr const char* FTPREMADE_GROUP = "FTPremade Group";
+	constexpr const char* FT_SPRITE_ANIMATION_GROUP = "FTSpriteAnimation Group";
 
 	// FTTexture
 	constexpr const char* FTTEXTURE = "FTTexture";
@@ -64,6 +65,12 @@ namespace ChunkKeys {
 
 	// Premades
 	constexpr const char* FTPREMADE = "FTPremade";
+
+	// FT SPRITE ANIMATION
+	constexpr const char* FT_SPRITE_ANIMATION = "FTSpriteAnimation";
+	constexpr const char* ANIM_FPS			= "Animation FPS";
+	constexpr const char* IS_REPEATED		= "Is Repeated";
+	constexpr const char* MAX_FRAME_INDEX	= "Max Frame Index";
 
 // Component Related
 	constexpr const char* COMPONENTS = "Components";
@@ -104,7 +111,7 @@ namespace ChunkKeys {
 	constexpr const char* OFFSET = "Offset";
 	constexpr const char* SHOW_DEBUG_SHAPE = "Show Debug Shape";
 
-		// Box Collider Component
+	// Box Collider Component
 	constexpr const char* COLLIDER_SCALE = "Scale";
 
 // General Terms

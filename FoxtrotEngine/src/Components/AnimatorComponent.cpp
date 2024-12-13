@@ -18,33 +18,24 @@ AnimatorComponent::AnimatorComponent(Actor* owner, int drawOrder, int updateOrde
 {}
 
 AnimatorComponent::~AnimatorComponent()
-{
-	std::unordered_map<std::string, FTSpriteAnimation*>::iterator iter = mLoadedAnimations.begin();
-	for (; iter != mLoadedAnimations.end(); ++iter)
-	{
-		if (iter->second)
-		{
-			if (iter->second == mCurrentAnim)
-			{
-				mCurrentAnim = nullptr;
-			}
-			else
-			{
-				delete iter->second;
-				iter->second = nullptr;
-			}
-		}
-	}
-	mLoadedAnimations.clear();
-}
+{}
 
-void AnimatorComponent::Play(const std::string& name, bool isRepeated)
+void AnimatorComponent::Play(bool isRepeated)
 {
-	mCurrentAnim = FindAnimation(name);
 	if (mCurrentAnim == nullptr)
 		printf("ERROR : AnimatorComponent::Play()->Animation is null\n");
 	mCurrentAnim->SetIsFinished(false);
 	mCurrentAnim->SetIsRepeated(isRepeated);
+}
+
+void AnimatorComponent::Play(const UINT key, bool isRepeated)
+{
+	mCurrentAnim = ResourceManager::GetInstance()->GetLoadedSpriteAnim(key);
+	if (mCurrentAnim == nullptr)
+		printf("ERROR : AnimatorComponent::Play()->Animation is null\n");
+	mCurrentAnim->SetIsFinished(false);
+	mCurrentAnim->SetIsRepeated(isRepeated);
+	SetMeshGroup(mCurrentAnim);
 }
 
 void AnimatorComponent::Stop()
@@ -54,65 +45,53 @@ void AnimatorComponent::Stop()
 
 void AnimatorComponent::CreateAnimationFromTile(std::string&& name, UINT texKey, UINT tileMapKey)
 {
-	FTSpriteAnimation* animation = FindAnimation(name);
-	if (animation == nullptr)
+	FTSpriteAnimation* animation = DBG_NEW FTSpriteAnimation;
+	animation->SetTexKey(texKey);
+	animation->SetTileMapKey(tileMapKey);
+
+	FTTileMap* tileMapBuf = ResourceManager::GetInstance()->GetLoadedTileMap(tileMapKey);
+	if (tileMapBuf)
+		tileMapBuf->ReadCSV();
+	if (texKey != VALUE_NOT_ASSIGNED)
+		animation->SetTexture(texKey);
+
+	animation->SetFileName(name);
+	animation->SetName(std::move(name));
+	animation->SetAnimator(this);
+	std::vector<MeshData> meshDataBuf;
+	GeometryGenerator::MakeSpriteAnimation(
+		meshDataBuf, tileMapBuf->GetTiles(),
+		tileMapBuf->GetMaxCountOnMapX(),
+		tileMapBuf->GetMaxCountOnMapY()
+	);
+	animation->Initialize(meshDataBuf, GetRenderer()->GetDevice(), GetRenderer()->GetContext());
+
+	//if (mLoadedKeys.size() < 1)
+	//{
+	//	mCurrentAnim = animation;
+	//	//SetMeshGroup(mCurrentAnim);
+	//}
+	ResourceManager::GetInstance()->LoadResource(
+		animation, 
+		ResourceManager::GetInstance()->GetSpriteAnimMap()
+	);
+	printf("FTSpriteAnimation created, %s", name.c_str());
+}
+
+void AnimatorComponent::LoadAnimation(const UINT key)
+{
+	mLoadedKeys.push_back(key);
+	if (mLoadedKeys.size() == 1)
 	{
-		animation = DBG_NEW FTSpriteAnimation;
-		animation->SetTexKey(texKey);
-		animation->SetTileMapKey(tileMapKey);
-
-		FTTileMap* tileMapBuf = ResourceManager::GetInstance()->GetLoadedTileMap(tileMapKey);
-		if (tileMapBuf)
-			tileMapBuf->ReadCSV();
-		if (texKey != VALUE_NOT_ASSIGNED)
-			animation->SetTexture(texKey);
-
-		animation->SetName(std::move(name));
-		animation->SetAnimator(this);
-		std::vector<MeshData> meshDataBuf;
-		GeometryGenerator::MakeSpriteAnimation(
-			meshDataBuf, tileMapBuf->GetTiles(),
-			tileMapBuf->GetMaxCountOnMapX(),
-			tileMapBuf->GetMaxCountOnMapY()
-		);
-		animation->Initialize(meshDataBuf, GetRenderer()->GetDevice(), GetRenderer()->GetContext());
-		if (mLoadedAnimations.size() < 1)
-		{
-			mCurrentAnim = animation;
-			SetMeshGroup(mCurrentAnim);
-		}
-
-		mLoadedAnimations.insert(std::make_pair(name, animation));
-		printf("FTSpriteAnimation created, %s", name.c_str());
+		mCurrentAnim = ResourceManager::GetInstance()->GetLoadedSpriteAnim(mLoadedKeys.at(0));
+		SetMeshGroup(mCurrentAnim);
 	}
-	else
-		printf("AnimatorComponent::CreateAnimationFromTile()->Animation has already been created; %s\n", name.c_str());
 }
 
 void AnimatorComponent::LoadProperties(std::ifstream& ifs)
 {
 	// SpriteRendererComponent::LoadProperties(ifs);
 	LogString("Animator LoadProperties() needs to be implemented");
-}
-
-FTSpriteAnimation* AnimatorComponent::FindAnimation(const std::string& name)
-{
-	std::unordered_map<std::string, FTSpriteAnimation*>::iterator iter = mLoadedAnimations.find(name);
-	if (iter == mLoadedAnimations.end())
-	{
-		printf("ERROR : AnimatorComponent::FindAnimation()-> Cannot find animation %s\n", name.c_str());
-		return nullptr;
-	}
-	else
-	{
-		if(iter->second)
-			return iter->second;
-		else
-		{
-			printf("ERROR : AnimatorComponent::FindAnimation()-> Animation is null\n");
-			return nullptr;
-		}
-	}
 }
 
 void AnimatorComponent::Initialize(FTCore* coreInstance)
@@ -150,22 +129,8 @@ void AnimatorComponent::EditorUpdate(float deltaTime)
 
 void AnimatorComponent::EditorUIUpdate()
 {
-	std::unordered_map<std::string, FTSpriteAnimation*>::iterator iter = mLoadedAnimations.begin();
-	for (; iter != mLoadedAnimations.end(); ++iter)
-	{
-		UINT texKey = (*iter).second->GetTexKey();
-		UpdateSprite(texKey);
-
-		UINT tileMapKey = (*iter).second->GetTileMapKey();
-		UpdateCSV();
-		(*iter).second->UpdateUI();
-
-		(*iter).second->SetTexKey(texKey);
-		(*iter).second->SetTileMapKey(texKey);
-
-		ImGui::Separator();
-		UpdatePlayAnim();
-	}
+	UpdatePlayAnim();
+	UpdatePlayList();
 	CreateAnimation();
 }
 
@@ -184,8 +149,30 @@ void AnimatorComponent::UpdatePlayAnim()
 		{
 			if (ImGui::Button("Play"))
 			{
-				Play(mCurrentAnim->GetName(), true);
+				Play( true);
 			}
+		}
+	}
+}
+
+void AnimatorComponent::UpdatePlayList()
+{
+	ImGui::Text("Play List");
+	UINT key = ResourceManager::GetInstance()->ShowResourceSelection(
+		"Load Animation",
+		ResourceManager::GetInstance()->GetSpriteAnimMap()
+	);
+	if (key != VALUE_NOT_ASSIGNED)
+		LoadAnimation(key);
+
+	if (0 < mLoadedKeys.size())
+	{
+		for (size_t i = 0; i < mLoadedKeys.size(); ++i)
+		{
+			FTSpriteAnimation* anim = ResourceManager::GetInstance()->GetLoadedSpriteAnim(mLoadedKeys.at(i));
+			ImGui::Text(anim->GetName().c_str());
+			ImGui::SameLine();
+			ImGui::Text(std::to_string(mLoadedKeys.at(i)).c_str());
 		}
 	}
 }

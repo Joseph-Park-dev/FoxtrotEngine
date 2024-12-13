@@ -1,6 +1,7 @@
 #include "ResourceSystem/FTSpriteAnimation.h"
 
 #include "FileSystem/ChunkFileKeys.h"
+#include "FileSystem/FileIOHelper.h"
 #include "Renderer/FoxtrotRenderer.h"
 
 void FTSpriteAnimation::Initialize(std::vector<MeshData>& meshes, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
@@ -173,11 +174,33 @@ bool FTSpriteAnimation::FrameIsWithinIndexRange()
 
 void FTSpriteAnimation::SaveProperties(std::ofstream& ofs, UINT key)
 {
+	FileIOHelper::BeginDataPackSave	(ofs, ChunkKeys::FT_SPRITE_ANIMATION);
+
+	FTResource::SaveProperties(ofs, key);
+	FileIOHelper::SaveString		(ofs, ChunkKeys::NAME, mName);
+	FileIOHelper::SaveFloat			(ofs, ChunkKeys::ANIM_FPS, mAnimFPS);
+	FileIOHelper::SaveBool			(ofs, ChunkKeys::IS_REPEATED, mIsRepeated);
+	FileIOHelper::SaveInt			(ofs, ChunkKeys::MAX_FRAME_INDEX, mMaxFrameIdx);
+	FileIOHelper::SaveUnsignedInt	(ofs, ChunkKeys::TEXTURE_KEY, mTexKey);
+	FileIOHelper::SaveUnsignedInt	(ofs, ChunkKeys::TILEMAP_KEY, mTileMapKey);
+
+	FileIOHelper::EndDataPackSave	(ofs, ChunkKeys::FT_SPRITE_ANIMATION);
 }
 
 UINT FTSpriteAnimation::LoadProperties(std::ifstream& ifs)
 {
-	return 0;
+	FileIOHelper::BeginDataPackLoad	(ifs, ChunkKeys::FT_SPRITE_ANIMATION);
+
+	FileIOHelper::LoadUnsignedInt(ifs, mTileMapKey);
+	FileIOHelper::LoadUnsignedInt(ifs, mTexKey);
+
+	FileIOHelper::LoadInt			(ifs, mMaxFrameIdx);
+	FileIOHelper::LoadBool			(ifs, mIsRepeated);
+	FileIOHelper::LoadFloat			(ifs, mAnimFPS);
+	FileIOHelper::LoadBasicString	(ifs, mName);
+
+	UINT key = FTResource::LoadProperties(ifs);
+	return key;
 }
 
 #ifdef FOXTROT_EDITOR

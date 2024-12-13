@@ -13,9 +13,11 @@ class AnimatorComponent :
     public TileMapComponent
 {
 public:
-    void Play(const std::string& name, bool isRepeated);
+    void Play(bool isRepeated);  // Play current animation
+    void Play(const UINT key, bool isRepeated);
     void Stop();
     void CreateAnimationFromTile(std::string&& name, UINT texKey, UINT tileMapKey);
+    void LoadAnimation(const UINT key);
     //void SaveAnimation(const std::wstring& animName, const std::wstring& path);
     //void LoadAnimation(const std::wstring& path);
     
@@ -37,11 +39,8 @@ public:
     ~AnimatorComponent() override;
 
 private:
-    std::unordered_map<std::string, FTSpriteAnimation*> mLoadedAnimations;
+    std::vector<UINT>   mLoadedKeys;
     FTSpriteAnimation*  mCurrentAnim;
-
-private:
-    FTSpriteAnimation* FindAnimation(const std::string& name);
 
 #ifdef FOXTROT_EDITOR
 public:
@@ -50,6 +49,7 @@ public:
 public:
     virtual void EditorUIUpdate() override;
             void UpdatePlayAnim();
+            void UpdatePlayList();
             void CreateAnimation();
 
     virtual void OnConfirmUpdate() override;

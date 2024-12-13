@@ -33,10 +33,10 @@ public:
 
 private:
     // These fields need to be read from .chunk files or be modified on the editor.
-    UINT    mTileWidthOnScreen;
-    UINT    mTileHeightOnScreen;
-    UINT    mMaxCountOnMapX;
-    UINT    mMaxCountOnMapY;
+    UINT        mTileWidthOnScreen;
+    UINT        mTileHeightOnScreen;
+    UINT        mMaxCountOnMapX;
+    UINT        mMaxCountOnMapY;
 
     // These fields need to be initialized when the tilemap is constructed.
     Tile*   mTileMap;

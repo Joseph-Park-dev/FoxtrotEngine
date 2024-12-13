@@ -10,8 +10,15 @@
 #include "ResourceSystem/FTPremade.h"
 #include "Debugging/DebugMemAlloc.h"
 
+#ifdef FOXTROT_EDITOR
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "imgui/FileDialog/ImGuiFileDialog.h"
+#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
+#include <imgui.h>
+#endif // FOXTROT_EDITOR
+
 class FTTexture;
-class FTSpineAnimation;
+class FTSpriteAnimation;
 class FTBasicMeshGroup;
 class FoxtrotRenderer;
 class SpineTextureLoader;
@@ -45,11 +52,14 @@ public:
 	std::vector<MeshData>&		GetLoadedMeshes	(const UINT key);
 	MeshData&					GetLoadedPrimitive(const UINT key);
 	void						RemoveLoadedMeshes(const UINT key);
+	FTSpriteAnimation*			GetLoadedSpriteAnim(const UINT key);
+
 
 public:
 	std::unordered_map<UINT, FTTexture*>& GetTexturesMap();
 	// I know the name feels so funny...
 	std::unordered_map<UINT, FTTileMap*>& GetTileMapsMap();
+	std::unordered_map<UINT, FTSpriteAnimation*>& GetSpriteAnimMap();
 	
 	std::string& GetPathToAsset();
 	void		 SetPathToAsset(std::string&& projectPath);
@@ -62,6 +72,8 @@ private:
 	std::unordered_map<UINT, FTTexture*>			mMapTextures;
 	std::unordered_map<UINT, FTTileMap*>			mMapTileMaps;
 	std::unordered_map<UINT, FTPremade*>			mMapPremades;
+	std::unordered_map<UINT, FTSpriteAnimation*>	mMapSpriteAnimation;
+
 	std::unordered_map<UINT, std::vector<MeshData>>	mMapMeshes;
 	std::unordered_map<UINT, MeshData>				mMapPrimitives;
 
@@ -102,13 +114,23 @@ private:
 	{
 		FTRESOURCE* resource = DBG_NEW FTRESOURCE;
 		UINT key = resource->LoadProperties(ifs);
+		
+		if (KeyExists(key, resMap))
+		{
+			FTRESOURCE* deprecated = resMap.at(key);
+			if (deprecated)
+			{
+				delete deprecated;
+				resMap.erase(key);
+			}
+		}
 		resMap.insert(std::make_pair(key, resource));
 	}
 
 /// <Creating New Resources> -------------------------------------
 /// Template member functions for creating new resources & adding to resource map.
 /// </Creating New Resources>
-private:
+public:
 	template<typename FTRESOURCE>
 	FTRESOURCE* LoadResource(std::string& filePath, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
@@ -127,6 +149,15 @@ private:
 			printf("Warning : Resource %s is already loaded to key %d.\n", filePath.c_str(), key);
 			return nullptr;
 		}
+	}
+
+// Add newly created resource from components (e.g FTSpriteAnimation)
+	template<typename FTRESOURCE>
+	void LoadResource(FTRESOURCE* res, std::unordered_map<UINT, FTRESOURCE*>& resMap)
+	{
+		UINT key = gItemKey;
+		resMap.insert(std::make_pair(key, res));
+		++gItemKey;
 	}
 
 /// <Removing Resources> -------------------------------------
@@ -167,8 +198,12 @@ public:
 /// </Processing Resources>
 private:
 	void ProcessTexture(FTTexture* texture);
+	void ProcessTileMap(FTTileMap* tileMap);
+	void ProcessSpriteAnim(FTSpriteAnimation* spriteAnim);
 	void ProcessTextures();
 	void ProcessPremades();
+	void ProcessTileMaps();
+	void ProcessSpriteAnims();
 
 /// <Validating Resources> -------------------------------------
 /// Template member functions for validating the keys & resources.
@@ -212,6 +247,48 @@ public:
 
 public:
 	void UpdateUI();
+
+	template <class FTRESOURCE>
+	UINT ShowResourceSelection(
+		const char* buttonLabel, 
+		std::unordered_map<UINT, FTRESOURCE*>& resMap
+	)
+	{
+		if (ImGui::Button(buttonLabel))
+		{
+			IGFD::FileDialogConfig config;
+			config.path = ".";
+			config.countSelectionMax = 1;
+			ImGuiFileDialog::Instance()->OpenDialog(
+				"SelectResource", "Select Resource", NULL, config);
+			ImGui::OpenPopup("Select Resource");
+		}
+
+		UINT resKey = VALUE_NOT_ASSIGNED;
+		if (ImGui::BeginPopupModal("Select Resource", NULL,
+			ImGuiWindowFlags_MenuBar))
+		{
+			if (ImGui::TreeNode("Selection State: Single Selection"))
+			{
+				static int selected = VALUE_NOT_ASSIGNED;
+				int		   i = 0;
+				for (auto iter = resMap.begin(); iter != resMap.end();
+					++iter, ++i)
+				{
+					if (ImGui::Selectable((*iter).second->GetFileName().c_str(),
+						selected == i))
+					{
+						resKey = (*iter).first;
+					}
+				}
+				ImGui::TreePop();
+			}
+			if (ImGui::Button("Close"))
+				ImGui::CloseCurrentPopup();
+			ImGui::EndPopup();
+		}
+		return resKey;
+	}
 
 private:
 	ResType GetResType(std::string& fileName);

@@ -10,7 +10,6 @@ enum class ActorGroup
 	GROUND,
 	UI,
 
-	EDITOR,
 	END // This can be increased at one's will
 };
 
@@ -23,7 +22,7 @@ struct ActorGroupUtil
 
 	static const char* GetActorGroupStr(int index)
 	{
-		return ActorGroupString[index];
+		return ActorGroupString.at(index);
 	}
 
 	static ActorGroup GetActorGroup(std::string str) {

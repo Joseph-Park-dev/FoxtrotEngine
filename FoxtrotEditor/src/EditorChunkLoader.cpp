@@ -85,7 +85,7 @@ void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
     std::pair<size_t, std::string>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::ACTOR_DATA);
     for (size_t i = 0; i < pack.first; ++i)
     {
-        FileIOHelper::BeginDataPackLoad(ifs);
+        std::pair<size_t, std::string>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
         EditorElement* element = DBG_NEW EditorElement(scene);
         element->LoadProperties(ifs);
         element->LoadComponents(ifs);

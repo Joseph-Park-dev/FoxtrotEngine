@@ -13,6 +13,7 @@
 #include "Managers/ResourceManager.h"
 #include "Managers/EventManager.h"
 #include "Managers/UIManager.h"
+#include "Managers/CollisionManager.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/Camera.h"
 #include "Physics/Physics2D.h"
@@ -27,6 +28,7 @@
 Physics2D*			Physics2D::mInstance = nullptr;
 Camera*				Camera::mInstance = nullptr;
 ResourceManager*	ResourceManager::mInstance = nullptr;
+CollisionManager*	CollisionManager::mInstance = nullptr;
 SceneManager*		SceneManager::mInstance = nullptr;
 UIManager*			UIManager::mInstance = nullptr;
 EventManager*		EventManager::mInstance = nullptr;
@@ -123,6 +125,7 @@ void FTCore::InitSingletonManagers()
 	Physics2D::GetInstance()->Initialize();
 	Camera::GetInstance()->Initialize(mGameRenderer, 64.f, 1.8f);
 	ResourceManager::GetInstance()->Initialize(mGameRenderer);
+	CollisionManager::GetInstance()->Initialize();
 	SceneManager::GetInstance()->Initialize();
 	UIManager::GetInstance();
 	EventManager::GetInstance();

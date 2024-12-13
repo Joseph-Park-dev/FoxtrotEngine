@@ -133,7 +133,7 @@ void MeshRendererComponent::UpdateConstantBufferModel(Transform* transform)
 		transform->GetWorldPosition().z
 	);
 	FTVector3 scale = transform->GetScale();
-	DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x * dir, scale.y, scale.z);
+	DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x * dir, -scale.y, scale.z);
 	Matrix model =
 		DXMatrix::CreateScale(scaleWithDir) *
 		DXMatrix::CreateRotationY(transform->GetRotation().y) *

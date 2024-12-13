@@ -243,6 +243,15 @@ public:
 		return *this;
 	}
 
+	// Vector /=
+	FTVector3& operator/=(const float& right)
+	{
+		x /= right;
+		y /= right;
+		z /= right;
+		return *this;
+	}
+
 	// Length squared of vector
 	float LengthSq() const
 	{

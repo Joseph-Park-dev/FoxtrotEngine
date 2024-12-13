@@ -68,6 +68,7 @@ FTTileMap* ResourceManager::GetLoadedTileMap(const UINT key)
 	FTTileMap* tileMap = mMapTileMaps.at(key);
 	if (!tileMap)
 		printf("Error: ResourceManager::GetLoadedTileMap() -> FTTileMap is empty %d\n", key);
+	tileMap->AddRefCount();
 	return tileMap;
 }
 
@@ -76,6 +77,7 @@ FTPremade* ResourceManager::GetLoadedPremade(const UINT key)
 	FTPremade* premade = mMapPremades.at(key);
 	if (!premade)
 		printf("Error: ResourceManager::GetLoadedPremade() -> FTPremade is empty %d\n", key);
+	premade->AddRefCount();
 	return premade;
 }
 
@@ -86,7 +88,11 @@ FTPremade* ResourceManager::GetLoadedPremade(std::string&& fileName)
 	for (; iter != mMapPremades.end(); ++iter)
 	{
 		if ((*iter).second->GetFileName() == premadeFullName)
+		{
+			(*iter).second->AddRefCount();
 			return (*iter).second;
+
+		}
 	}
 	printf("Error: ResourceManager::GetLoadedPremade() -> Cannot find FTPremade %s\n", premadeFullName.c_str());
 	return nullptr;

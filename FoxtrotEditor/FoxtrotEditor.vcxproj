@@ -340,7 +340,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">4.0_level_9_3</ShaderModel>
     </FxCompile>
-    <FxCompile Include="assets\Shaders\EditorDebugGeometryPS.hlsl">
+    <FxCompile Include="assets\Shaders\EditorDebugShapePS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -351,7 +351,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|Win32'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">4.0_level_9_3</ShaderModel>
     </FxCompile>
-    <FxCompile Include="assets\Shaders\EditorDebugGeometryVS.hlsl">
+    <FxCompile Include="assets\Shaders\EditorDebugShapeVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>

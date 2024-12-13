@@ -27,6 +27,9 @@ public:
     virtual void Update    (float deltaTime)            override;
     virtual void Render    (FoxtrotRenderer* renderer)  override;
 
+protected:
+    void InitializeTileMap();
+
 public:
              TileMapComponent(
                 Actor* owner, 
@@ -35,8 +38,6 @@ public:
             );
     virtual ~TileMapComponent() override;
 
-protected:
-    void InitializeTileMap();
 
 private:
     FTTileMap*      mTileMap;

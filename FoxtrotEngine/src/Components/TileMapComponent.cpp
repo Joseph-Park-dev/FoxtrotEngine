@@ -59,7 +59,7 @@ void TileMapComponent::InitializeTileMap() {
         SetTexture();
         mTileMap->ReadCSV();
 		SetMeshKey(ChunkKeys::PRIMITIVE_SQUARE);
-        MeshRendererComponent::InitializeMesh();
+        SpriteRendererComponent::InitializeMesh();
         //GetOwner()->GetTransform()->SetScale(FTVector3(0.03f, 0.03f, 1.0f));
     }
 }

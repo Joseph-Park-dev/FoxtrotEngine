@@ -120,7 +120,7 @@
     <FxCompile Include="assets\Shaders\TextureVS.hlsl" />
     <FxCompile Include="assets\Shaders\SolidPS.hlsl" />
     <FxCompile Include="assets\Shaders\SolidVS.hlsl" />
-    <FxCompile Include="assets\Shaders\EditorDebugGeometryVS.hlsl" />
-    <FxCompile Include="assets\Shaders\EditorDebugGeometryPS.hlsl" />
+    <FxCompile Include="assets\Shaders\EditorDebugShapeVS.hlsl" />
+    <FxCompile Include="assets\Shaders\EditorDebugShapePS.hlsl" />
   </ItemGroup>
 </Project>

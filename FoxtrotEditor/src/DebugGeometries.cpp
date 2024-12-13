@@ -3,8 +3,8 @@
 #include "Renderer/D3D11Utils.h"
 
 DebugGeometries::DebugGeometries()
-    : mVertexShaderPath(L"./Assets/Shaders/EditorDebugGeometryVS.hlsl")
-    , mPixelShaderPath(L"./Assets/Shaders/EditorDebugGeometryPS.hlsl")
+    : mVertexShaderPath(L"./Assets/Shaders/EditorDebugShapeVS.hlsl")
+    , mPixelShaderPath(L"./Assets/Shaders/EditorDebugShapePS.hlsl")
 {}
 
 DebugGeometries::~DebugGeometries()
@@ -24,7 +24,7 @@ void DebugGeometries::Render(FoxtrotRenderer* renderer)
         return;
     for (FTShape* shape : mShapes)
     {
-        if (shape)
+        if (shape->GetIsActive())
         {
             shape->Render
             (

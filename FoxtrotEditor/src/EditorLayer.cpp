@@ -24,6 +24,7 @@
 #include "Managers/SceneManager.h"
 #include "Managers/KeyInputManager.h"
 #include "Managers/ResourceManager.h"
+#include "Managers/CollisionManager.h"
 #include "Scenes/Scene.h"
 #include "Actors/Actor.h"
 #include "Actors/ActorGroup.h"
@@ -59,6 +60,7 @@ void EditorLayer::Update(float deltaTime)
 	DisplayFileMenu();
 	DisplayHierarchyMenu();
 	DisplayResourceMenu();
+	DisplayCollisionMenu();
 	DisplayInspectorMenu();
 	Camera::GetInstance()->DisplayCameraMenu();
 	//ApplyCommandHistory();
@@ -67,7 +69,7 @@ void EditorLayer::Update(float deltaTime)
 
 	DisplayViewport();
 	ImGui::EndFrame();
-	TEST_Instantiate();
+	//TEST_Instantiate();
 }
 
 void EditorLayer::TEST_Instantiate()
@@ -325,6 +327,14 @@ void EditorLayer::DisplayResourceMenu()
 	std::string menuID = "Resource Manager";
 	ImGui::Begin(menuID.c_str());
 	ResourceManager::GetInstance()->UpdateUI();
+	ImGui::End();
+}
+
+void EditorLayer::DisplayCollisionMenu()
+{
+	std::string menuID = "Collision Manager";
+	ImGui::Begin(menuID.c_str());
+	CollisionManager::GetInstance()->UpdateUI();
 	ImGui::End();
 }
 

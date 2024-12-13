@@ -258,8 +258,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Actors\BasicGeometries\SquareActor.cpp" />
     <ClCompile Include="src\FileSystem\FileIOHelper.cpp" />
+    <ClCompile Include="src\Managers\CollisionManager.cpp" />
     <ClCompile Include="src\ResourceSystem\FTPremade.cpp" />
     <ClCompile Include="src\Components\CircleCollider2DComponent.cpp" />
     <ClCompile Include="src\Components\BoxCollider2DComponent.cpp" />
@@ -314,9 +314,9 @@
     <ClCompile Include="src\Scenes\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Actors\BasicGeometries\SquareActor.h" />
     <ClInclude Include="src\Debugging\DebugMemAlloc.h" />
     <ClInclude Include="src\FileSystem\FileIOHelper.h" />
+    <ClInclude Include="src\Managers\CollisionManager.h" />
     <ClInclude Include="src\ResourceSystem\FTPremade.h" />
     <ClInclude Include="src\Components\CircleCollider2DComponent.h" />
     <ClInclude Include="src\Components\BoxCollider2DComponent.h" />

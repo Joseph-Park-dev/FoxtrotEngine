@@ -174,7 +174,7 @@
     <ClCompile Include="src\ResourceSystem\FTShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Actors\BasicGeometries\SquareActor.cpp">
+    <ClCompile Include="src\Managers\CollisionManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -395,7 +395,7 @@
     <ClInclude Include="src\ResourceSystem\FTShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Actors\BasicGeometries\SquareActor.h">
+    <ClInclude Include="src\Managers\CollisionManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

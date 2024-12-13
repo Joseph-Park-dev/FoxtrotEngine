@@ -28,7 +28,6 @@ public:
 	// Get world position of the collider 
 	// (anchor-pointed to the center)
 	FTVector2	GetFinalPosition() const;
-
 	FTVector2&	GetOffsetPosRef();
 
 	void		SetOffsetPos(FTVector2 offsetPos);
@@ -59,6 +58,7 @@ private:
 
 private:
 	b2ShapeId		mShapeID;
+	UINT			mCollidedGroup;	// Group that will be collided with this obj.
 
 	FTVector2		mOffset;
 	FTVector2		mFinalPosition;
@@ -74,6 +74,13 @@ public:
 
 public:
 	virtual	void EditorUIUpdate() override;
+
+protected:
+	virtual void ToggleDebugShape();
+			bool IsShowingDebugShape();
+
+private:
+	bool mShowDebugShape;
 
 private:
 	void UpdateOffsetPos();

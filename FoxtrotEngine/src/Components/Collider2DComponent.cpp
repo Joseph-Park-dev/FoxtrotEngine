@@ -64,6 +64,11 @@ Collider2DComponent::Collider2DComponent(Actor* owner, int drawOrder, int update
 	: Component(owner, drawOrder, updateOrder)
 	, mOffset(FTVector2::Zero)
 	, mFinalPosition(FTVector2::Zero)
+	, mShapeID(b2_nullShapeId)
+#ifdef FOXTROT_EDITOR
+	, mShowDebugShape(true)
+#endif // FOXTROT_EDITOR
+
 {
 }
 
@@ -109,10 +114,12 @@ void Collider2DComponent::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
 	FileIOHelper::SaveVector2(ofs, ChunkKeys::OFFSET, mOffset);
+	FileIOHelper::SaveBool(ofs, ChunkKeys::SHOW_DEBUG_SHAPE, mShowDebugShape);
 }
 
 void Collider2DComponent::LoadProperties(std::ifstream& ifs)
 {
+	FileIOHelper::LoadBool(ifs, mShowDebugShape);
 	FileIOHelper::LoadVector2(ifs, mOffset);
 	Component::LoadProperties(ifs);
 }
@@ -129,6 +136,7 @@ void Collider2DComponent::EditorRender(FoxtrotRenderer* renderer)
 
 void Collider2DComponent::EditorUIUpdate()
 {
+	ToggleDebugShape();
 	UpdateOffsetPos();
 }
 
@@ -137,5 +145,15 @@ void Collider2DComponent::UpdateOffsetPos()
 	FTVector2 updatedVal = GetOffsetPos();
 	CommandHistory::GetInstance()->UpdateVector2Value("Offset Position", updatedVal, FLOATMOD_SPEED);
 	mOffset = updatedVal;
+}
+
+void Collider2DComponent::ToggleDebugShape()
+{
+	ImGui::Checkbox("Show Debug Shape", &mShowDebugShape);
+}
+
+bool Collider2DComponent::IsShowingDebugShape()
+{
+	return mShowDebugShape;
 }
 #endif

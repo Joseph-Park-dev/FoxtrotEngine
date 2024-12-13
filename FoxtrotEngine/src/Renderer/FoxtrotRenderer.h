@@ -64,7 +64,6 @@ public:
     ComPtr<ID3D11PixelShader>&       GetTexturePS()          { return mTexturePS; }
     ComPtr<ID3D11InputLayout>&       GetTextureInputLayout() { return mTextureInputLayout; }
 
-
     int      GetRenderWidth ()              { return mRenderWidth; }
     int      GetRenderHeight()              { return mRenderHeight; }
     FillMode GetFillMode    ()              { return mFillMode; }

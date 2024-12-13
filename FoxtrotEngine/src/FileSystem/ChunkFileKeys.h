@@ -102,6 +102,7 @@ namespace ChunkKeys {
 
 	// Collider Component
 	constexpr const char* OFFSET = "Offset";
+	constexpr const char* SHOW_DEBUG_SHAPE = "Show Debug Shape";
 
 		// Box Collider Component
 	constexpr const char* COLLIDER_SCALE = "Scale";

@@ -121,6 +121,11 @@ void UIComponent::EditorUpdate(float deltaTime)
 	);
 }
 
+void UIComponent::EditorRender(FoxtrotRenderer* renderer)
+{
+	mDebugRect->Render(renderer);
+}
+
 void UIComponent::EditorUIUpdate()
 {
 	CommandHistory::GetInstance()->UpdateVector2Value("Size", mSize, FLOATMOD_SPEED);

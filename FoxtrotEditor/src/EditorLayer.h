@@ -169,6 +169,7 @@ private:
 	void DisplayFileMenu();
 	void DisplayHierarchyMenu();
 	void DisplayResourceMenu();
+	void DisplayCollisionMenu();
 
 	void DisplayInspectorMenu();
 	bool SceneViewportSizeChanged();

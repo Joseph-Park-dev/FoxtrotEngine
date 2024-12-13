@@ -42,13 +42,15 @@ public:
 
 public:
 			void EditorUIUpdate() override;
-	virtual void CloneTo(Actor* actor) override;
+			void ToggleDebugShape() override;
 			void UpdateDebugGeometries(
 				FTVector3 pos, 
 				FTVector3 rot, 
 				FTVector3 scale, 
 				Camera* cameraInst
 			) override;
+
+	virtual void CloneTo(Actor* actor) override;
 
 private:
 	FTRectangle* mDebugRect;

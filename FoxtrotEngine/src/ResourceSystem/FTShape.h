@@ -13,6 +13,9 @@ public:
 
 public:
 	BasicVertexConstantData& GetVertexConstantData() { return mVertexConstantData; }
+	bool GetIsActive() { return mIsActive; }
+
+	void SetIsActive(bool val) { mIsActive = val; }
 
 public:
 	virtual void Initialize(FoxtrotRenderer* renderer);
@@ -43,6 +46,7 @@ protected:
 
 private:
 	Mesh* mMesh;
+	bool  mIsActive;
 
 private:
 	BasicVertexConstantData mVertexConstantData;

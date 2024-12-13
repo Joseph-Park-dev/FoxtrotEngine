@@ -5,6 +5,7 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Components/Rigidbody2DComponent.h"
 #include "Renderer/Camera.h"
+#include "Managers/CollisionManager.h"
 
 #ifdef FOXTROT_EDITOR
 #include "CommandHistory.h"
@@ -31,7 +32,11 @@ void BoxCollider2DComponent::Initialize(FTCore* coreInstance)
 		if (b2Body_IsValid(rb->GetBodyID()))
 		{
 			b2ShapeDef polygonShapeDef = b2DefaultShapeDef();
-			b2Polygon polygon = b2MakeBox(mScale.x / 2, mScale.y / 2);
+			FTVector2 polygonScale = mScale * FTVector2(GetOwner()->GetTransform()->GetScale());
+			b2Polygon polygon = b2MakeBox(polygonScale.x / 2, polygonScale.y / 2);
+
+			//CollisionManager::GetInstance()->MarkGroup(polygonShapeDef, )
+
 			GetShapeID() = b2CreatePolygonShape(rb->GetBodyID(), &polygonShapeDef, &polygon);
 		}
 		else
@@ -40,6 +45,8 @@ void BoxCollider2DComponent::Initialize(FTCore* coreInstance)
 #ifdef FOXTROT_EDITOR
 	mDebugRect = DBG_NEW FTRectangle;
 	mDebugRect->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+	if (!IsShowingDebugShape())
+		mDebugRect->SetIsActive(false);
 #endif // FOXTROT_EDITOR
 
 	Component::Initialize(coreInstance);
@@ -78,26 +85,35 @@ void BoxCollider2DComponent::LoadProperties(std::ifstream& ifs)
 #ifdef FOXTROT_EDITOR
 void BoxCollider2DComponent::EditorUpdate(float deltaTime)
 {
-	Transform* transform = GetOwner()->GetTransform();
-	FTVector3 pos = transform->GetWorldPosition();
-	pos = pos * FTVector3(1.f, -1.f, 1.f);
-	FTVector3 rot = transform->GetRotation();
-	FTVector3 scale = FTVector3(
-		transform->GetScale().x * mScale.x,
-		transform->GetScale().y * mScale.y,
-		1.f
-	);
-
-	UpdateDebugGeometries(pos, rot, scale, Camera::GetInstance());
+	if (IsShowingDebugShape())
+	{
+		Transform* transform = GetOwner()->GetTransform();
+		FTVector3 pos = transform->GetWorldPosition();
+		pos = pos * FTVector3(1.f, -1.f, 1.f);
+		FTVector3 rot = transform->GetRotation();
+		FTVector3 scale = FTVector3(
+			transform->GetScale().x * mScale.x,
+			transform->GetScale().y * mScale.y,
+			1.f
+		);
+		UpdateDebugGeometries(pos, rot, scale, Camera::GetInstance());
+	}
 }
 
 void BoxCollider2DComponent::EditorRender(FoxtrotRenderer* renderer)
-{}
+{
+}
 
 void BoxCollider2DComponent::EditorUIUpdate()
 {
 	Collider2DComponent::EditorUIUpdate();
 	UpdateScale();
+}
+
+void BoxCollider2DComponent::ToggleDebugShape()
+{
+	Collider2DComponent::ToggleDebugShape();
+	mDebugRect->SetIsActive(IsShowingDebugShape());
 }
 
 void BoxCollider2DComponent::UpdateDebugGeometries(FTVector3 pos, FTVector3 rot, FTVector3 scale, Camera* cameraInst)
@@ -123,8 +139,10 @@ void BoxCollider2DComponent::UpdateScale()
 		mScale = updatedVal;
 		if (mScale.x <= 0 || mScale.y <= 0)
 			return;
+
+		FTVector2 resultantScale = mScale * FTVector2(GetOwner()->GetTransform()->GetScale());
 		b2ShapeDef polygonShapeDef = b2DefaultShapeDef();
-		b2Polygon polygon = b2MakeBox(mScale.x / 2, mScale.y / 2);
+		b2Polygon polygon = b2MakeBox(resultantScale.x / 2, resultantScale.y / 2);
 		if (b2Shape_IsValid(GetShapeID()))
 		{
 			//b2DestroyShape(GetShapeID(), true);

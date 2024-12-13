@@ -69,11 +69,11 @@ void RenderTextureClass::DrawOnTexture(ComPtr<ID3D11DeviceContext>& context, Com
 	EditorSceneManager::GetInstance()->Render(renderer);
 	EditorSceneManager::GetInstance()->EditorRender(renderer);
 
-	renderer->SetFillMode(FillMode::WireFrame);
-	renderer->SwitchFillMode();
+	//renderer->SetFillMode(FillMode::WireFrame);
+	//renderer->SwitchFillMode();
 	DebugGeometries::GetInstance()->Render(renderer);
-	renderer->SetFillMode(FillMode::Solid);
-	renderer->SwitchFillMode();
+	//renderer->SetFillMode(FillMode::Solid);
+	//renderer->SwitchFillMode();
 	context->OMSetRenderTargets(1, renderTargetView.GetAddressOf(), depthStencilView.Get());
 }
 

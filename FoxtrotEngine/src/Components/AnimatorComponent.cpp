@@ -10,6 +10,7 @@
 #include "Core/TemplateFunctions.h"
 #include "Core/FTCore.h"
 #include "FileSystem/ChunkLoader.h"
+#include "FileSystem/FileIOHelper.h"
 #include "Renderer/FoxtrotRenderer.h"
 
 AnimatorComponent::AnimatorComponent(Actor* owner, int drawOrder, int updateOrder)
@@ -88,10 +89,26 @@ void AnimatorComponent::LoadAnimation(const UINT key)
 	}
 }
 
+void AnimatorComponent::SaveProperties(std::ofstream& ofs)
+{
+	Component::SaveProperties(ofs);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::LOADED_KEYS);
+	for (size_t i = 0; i < mLoadedKeys.size(); ++i)
+		FileIOHelper::SaveUnsignedInt(ofs, std::to_string(i), mLoadedKeys.at(i));
+	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::LOADED_KEYS);
+}
+
 void AnimatorComponent::LoadProperties(std::ifstream& ifs)
 {
-	// SpriteRendererComponent::LoadProperties(ifs);
-	LogString("Animator LoadProperties() needs to be implemented");
+	std::pair<size_t, std::string> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::LOADED_KEYS);
+	mLoadedKeys.reserve(pack.first);
+	for (size_t i = 0; i < pack.first; ++i)
+	{
+		UINT key = 0;
+		FileIOHelper::LoadUnsignedInt(ifs, key);
+		LoadAnimation(key);
+	}
+	Component::LoadProperties(ifs);
 }
 
 void AnimatorComponent::Initialize(FTCore* coreInstance)

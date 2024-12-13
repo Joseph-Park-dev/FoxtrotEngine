@@ -26,7 +26,6 @@ public:
     {
         return "AnimatorComponent";
     }
-	virtual void LoadProperties(std::ifstream& ifs) override;
 
 public:
     virtual void Initialize(FTCore* coreInstance)   override;
@@ -41,6 +40,10 @@ public:
 private:
     std::vector<UINT>   mLoadedKeys;
     FTSpriteAnimation*  mCurrentAnim;
+
+public:
+    virtual void SaveProperties(std::ofstream& ofs) override;
+    virtual void LoadProperties(std::ifstream& ifs) override;
 
 #ifdef FOXTROT_EDITOR
 public:

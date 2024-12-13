@@ -70,7 +70,7 @@ namespace ChunkKeys {
 	constexpr const char* FT_SPRITE_ANIMATION = "FTSpriteAnimation";
 	constexpr const char* ANIM_FPS			= "Animation FPS";
 	constexpr const char* IS_REPEATED		= "Is Repeated";
-	constexpr const char* MAX_FRAME_INDEX	= "Max Frame Index";
+	constexpr const char* MAX_FRAME_INDEX = "Max Frame Index";
 
 // Component Related
 	constexpr const char* COMPONENTS = "Components";
@@ -113,6 +113,9 @@ namespace ChunkKeys {
 
 	// Box Collider Component
 	constexpr const char* COLLIDER_SCALE = "Scale";
+
+	// Animator Component
+	constexpr const char* LOADED_KEYS = "Loaded Keys";
 
 // General Terms
 	constexpr const char* NAME = "Name";

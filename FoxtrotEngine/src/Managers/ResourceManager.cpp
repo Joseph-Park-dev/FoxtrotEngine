@@ -43,6 +43,7 @@ void ResourceManager::DeleteAll()
 	ClearMap<FTTexture>(mMapTextures);
 	ClearMap<FTTileMap>(mMapTileMaps);
 	ClearMap<FTPremade>(mMapPremades);
+	ClearMap<FTSpriteAnimation>(mMapSpriteAnimation);
 	mMapMeshes.clear();
 	mMapPrimitives.clear();
 }

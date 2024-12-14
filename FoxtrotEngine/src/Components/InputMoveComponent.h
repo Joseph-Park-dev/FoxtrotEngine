@@ -6,8 +6,11 @@
 enum class MoveState {
     Idle,
     LeftMove,
-    RightMove
+    RightMove,
+    Jump
 };
+
+class Rigidbody2DComponent;
 
 class InputMoveComponent :
     public MoveComponent
@@ -41,6 +44,8 @@ private:
     void Move();
 
 private:
+    Rigidbody2DComponent* mRigidBody;
+
     float mMaxForwardSpeed;
     float mMaxAngularSpeed;
     float mAccelerationForward;

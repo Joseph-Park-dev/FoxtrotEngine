@@ -8,16 +8,20 @@
 
 InputMoveComponent::InputMoveComponent(Actor* owner, int drawOrder, int updateOrder)
 	: MoveComponent(owner, drawOrder, updateOrder)
-	, mMaxForwardSpeed(1.7f)
+	, mMaxForwardSpeed(3.7f)
 	, mMaxAngularSpeed(0.f)
 	, mAccelerationForward(0.f)
 	, mAccelerationAngular(0.f)
 	, mBreakSpeed(0.f)
 	, currentDir(0)
+	, mMoveState(MoveState::Idle)
+	, mRigidBody(nullptr)
 {}
 
 void InputMoveComponent::Initialize(FTCore* coreInstance)
-{}
+{
+	mRigidBody = GetOwner()->GetComponent<Rigidbody2DComponent>();
+}
 
 void InputMoveComponent::ProcessInput(KeyInputManager* keyInputManager)
 {
@@ -27,7 +31,9 @@ void InputMoveComponent::ProcessInput(KeyInputManager* keyInputManager)
 	if (KEY_HOLD(KEY::D)) {
 		mMoveState = MoveState::RightMove;
 	}
-	if (KEY_NONE(KEY::A) && KEY_NONE(KEY::D)) {
+	if (KEY_TAP(KEY::SPACE))
+		mMoveState = MoveState::Jump;
+	if (KEY_NONE(KEY::A) && KEY_NONE(KEY::D) && KEY_NONE(KEY::SPACE)) {
 		mMoveState = MoveState::Idle;
 	}
 }
@@ -41,11 +47,25 @@ void InputMoveComponent::Update(float deltaTime)
 	else if (mMoveState == MoveState::RightMove) {
 		dir = 1;
 	}
-	GetOwner()->GetTransform()->SetCurrentDirection(dir);
-	FTVector3 pos = GetOwner()->GetTransform()->GetWorldPosition();
-	GetOwner()->GetTransform()->SetWorldPosition(
-		pos + FTVector3(mMaxForwardSpeed,0.f,0.f) * deltaTime * dir
-	);
+	if (mMoveState == MoveState::Jump)
+	{
+		b2Body_ApplyLinearImpulse(
+			mRigidBody->GetBodyID(),
+			FTVector3(0.f, 3.f, 0.f).GetB2Vec2(),
+			GetOwner()->GetTransform()->GetWorldPosition().GetB2Vec2(),
+			true
+		);
+	}
+	if (dir != 0)
+	{
+		GetOwner()->GetTransform()->SetCurrentDirection(dir);
+		b2Body_ApplyLinearImpulse(
+			mRigidBody->GetBodyID(),
+			FTVector3(mMaxForwardSpeed * dir, 0.f, 0.f).GetB2Vec2(),
+			GetOwner()->GetTransform()->GetWorldPosition().GetB2Vec2(),
+			true
+		);
+	}
 }
 
 void InputMoveComponent::Move()

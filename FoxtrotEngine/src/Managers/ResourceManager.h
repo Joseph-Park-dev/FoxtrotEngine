@@ -115,14 +115,12 @@ private:
 		FTRESOURCE* resource = DBG_NEW FTRESOURCE;
 		UINT key = resource->LoadProperties(ifs);
 		
-		if (KeyExists(key, resMap))
+		if(KeyExists(key, resMap))
 		{
 			FTRESOURCE* deprecated = resMap.at(key);
-			if (deprecated)
-			{
-				delete deprecated;
-				resMap.erase(key);
-			}
+			delete deprecated;
+			resMap.at(key) = nullptr;
+			resMap.erase(key);
 		}
 		resMap.insert(std::make_pair(key, resource));
 	}
@@ -168,13 +166,16 @@ public:
 	void ClearMap(std::unordered_map<UINT, FTRESOURCE*>& resMap) 
 	{
 		auto iter = resMap.begin();
-		for (; iter != resMap.end(); ++iter)
+		while(iter != resMap.end())
 		{
 			if ((*iter).second != nullptr)
 			{
 				delete (*iter).second;
 				(*iter).second = nullptr;
+				iter = resMap.erase(iter);
 			}
+			else
+				++iter;
 		}
 		resMap.clear();
 	}

@@ -84,6 +84,8 @@ void AnimatorComponent::LoadAnimation(const UINT key)
 	mLoadedKeys.push_back(key);
 	if (mLoadedKeys.size() == 1)
 	{
+		delete GetMeshGroup();
+		SetMeshGroup(nullptr);
 		mCurrentAnim = ResourceManager::GetInstance()->GetLoadedSpriteAnim(mLoadedKeys.at(0));
 		SetMeshGroup(mCurrentAnim);
 	}

@@ -118,10 +118,7 @@ MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int up
 
 MeshRendererComponent::~MeshRendererComponent(){
 	if (mMeshGroup)
-	{
-		delete mMeshGroup;
 		mMeshGroup = nullptr;
-	}
 }
 
 void MeshRendererComponent::UpdateConstantBufferModel(Transform* transform)

@@ -247,7 +247,7 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	size_t count = resPack.first;
 
 	std::pair<size_t, std::string> ftSpriteAnimPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FT_SPRITE_ANIMATION_GROUP);
-	mMapTextures.reserve(ftSpriteAnimPack.first);
+	mMapSpriteAnimation.reserve(ftSpriteAnimPack.first);
 	LoadResourceFromChunk<FTSpriteAnimation>(ifs, mMapSpriteAnimation, ftSpriteAnimPack.first);
 
 	std::pair<size_t, std::string> ftPremadePack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTPREMADE_GROUP);

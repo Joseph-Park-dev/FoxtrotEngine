@@ -196,8 +196,8 @@ void EditorLayer::DisplayFileMenu()
 				{
 					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
 					DebugGeometries::GetInstance()->DeleteAll();
-					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 					ResourceManager::GetInstance()->DeleteAll();
+					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 					ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(true);

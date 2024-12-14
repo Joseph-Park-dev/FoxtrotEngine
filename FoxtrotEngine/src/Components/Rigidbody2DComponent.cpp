@@ -79,6 +79,7 @@ void Rigidbody2DComponent::LoadProperties(std::ifstream& ifs)
 	// Initialize transform-related body definitions
 	bodyDef.position = GetOwner()->GetTransform()->GetWorldPosition().GetB2Vec2();
 	bodyDef.rotation = b2MakeRot(-GetOwner()->GetTransform()->GetRotation().z);
+	bodyDef.fixedRotation = true;
 
 	mBodyID = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &bodyDef);
 

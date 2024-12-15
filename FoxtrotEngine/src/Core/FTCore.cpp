@@ -168,6 +168,7 @@ void FTCore::UpdateGame()
 	SceneManager::GetInstance()->Update(deltaTime);
 	SceneManager::GetInstance()->Lateupdate(deltaTime);
 	Physics2D::GetInstance()->Update();
+	CollisionManager::GetInstance()->Update();
 	ParticleSystem::GetInstance()->Update(deltaTime);
 	UIManager::GetInstance()->Update(deltaTime);
 	Camera::GetInstance()->Update(deltaTime);

@@ -32,12 +32,15 @@ void BoxCollider2DComponent::Initialize(FTCore* coreInstance)
 		if (b2Body_IsValid(rb->GetBodyID()))
 		{
 			b2ShapeDef polygonShapeDef = b2DefaultShapeDef();
+			// Setting the category of this collider as ActorGroup
+			polygonShapeDef.filter.categoryBits = uint64_t(GetOwner()->GetActorGroup());
+			CollisionManager::GetInstance()->MarkGroup(polygonShapeDef, GetOwner()->GetActorGroup());
+
 			FTVector2 polygonScale = mScale * FTVector2(GetOwner()->GetTransform()->GetScale());
 			b2Polygon polygon = b2MakeBox(polygonScale.x / 2, polygonScale.y / 2);
 
-			//CollisionManager::GetInstance()->MarkGroup(polygonShapeDef, )
-
 			GetShapeID() = b2CreatePolygonShape(rb->GetBodyID(), &polygonShapeDef, &polygon);
+			CollisionManager::GetInstance()->RegisterCollider(GetShapeID().index1, this);
 		}
 		else
 			LogString("ERROR : BoxCollider2DComponent::Initialize() -> BodyId not valid");

@@ -8,6 +8,7 @@
 #include "FileSystem/FileIOHelper.h"
 #include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/ChunkLoader.h"
+#include "Managers/CollisionManager.h"
 
 SceneManager::SceneManager()
 	: mChunkList()
@@ -22,6 +23,7 @@ SceneManager::~SceneManager()
 
 void SceneManager::SwitchScene(size_t index)
 {
+	CollisionManager::GetInstance()->Reset();
 	mCurrentScene->DeleteAll();
 	ChunkLoader::GetInstance()->LoadChunk(std::string(".\\Chunks\\") + mChunkList.at(index));
 }

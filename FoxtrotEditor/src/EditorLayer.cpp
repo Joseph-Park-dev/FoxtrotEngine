@@ -291,7 +291,7 @@ void EditorLayer::DisplayHierarchyMenu()
 		std::vector<Actor*> actorsRow;
 		actorsRow.reserve(eleSize);
 
-		for (size_t i = 0; i < (size_t)ActorGroup::END; ++i) 
+		for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i) 
 		{
 			size_t size = scene->GetActorGroup(i).size();
 			if (0 < size)
@@ -349,7 +349,7 @@ void EditorLayer::DisplayInspectorMenu()
 		std::vector<Actor*> actorsRow;
 		actorsRow.reserve(eleSize);
 
-		for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+		for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
 		{
 			size_t size = scene->GetActorGroup(i).size();
 			if (0 < size)

@@ -12,6 +12,7 @@
 #endif // FOXTROT_EDITOR
 
 class FTVector2;
+class Actor;
 
 class Collider2DComponent :
 	public Component
@@ -23,14 +24,15 @@ public:
 	}
 
 public:
-	b2ShapeId&	GetShapeID();
-	FTVector2	GetOffsetPos() const;
+	b2ShapeId&				 GetShapeID();
+	FTVector2				 GetOffsetPos()			const;
+	FTVector2&				 GetOffsetPosRef();
 	// Get world position of the collider 
 	// (anchor-pointed to the center)
-	FTVector2	GetFinalPosition() const;
-	FTVector2&	GetOffsetPosRef();
+	FTVector2				 GetFinalPosition()		const;
+	bool					 GetIsColliding()		const;
 
-	void		SetOffsetPos(FTVector2 offsetPos);
+	void SetOffsetPos(FTVector2 offsetPos);
 
 public:
 	// This can also be used when refreshing the object.
@@ -38,7 +40,7 @@ public:
 			void LateUpdate(float deltaTime) override;
 
 public:
-	Collider2DComponent(class Actor* owner, int drawOrder, int updateOrder);
+	Collider2DComponent(Actor* owner, int drawOrder, int updateOrder);
 	Collider2DComponent(const Collider2DComponent& origin);
 	virtual ~Collider2DComponent() override;
 	//virtual void CloneTo(Actor* actor) override;
@@ -57,11 +59,10 @@ private:
 	void OnRayEnter();
 
 private:
-	b2ShapeId		mShapeID;
-	UINT			mCollidedGroup;	// Group that will be collided with this obj.
-
-	FTVector2		mOffset;
-	FTVector2		mFinalPosition;
+	b2ShapeId				mShapeID;
+	FTVector2				mOffset;
+	FTVector2				mFinalPosition;
+	bool					mIsColliding;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;

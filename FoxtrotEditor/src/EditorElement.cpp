@@ -71,7 +71,6 @@ void EditorElement::EditorRender(FoxtrotRenderer* renderer)
 
 EditorElement::EditorElement()
 	: Actor()
-	, mActorGroupIdx(0)
 	, mRotationModSpeed(0.f)
 	, mIsFocused(false)
 {
@@ -79,7 +78,6 @@ EditorElement::EditorElement()
 
 EditorElement::EditorElement(Actor* origin)
 	: Actor(origin)
-	, mActorGroupIdx(0)
 	, mRotationModSpeed(1.0f)
 	, mIsFocused(false)
 {
@@ -97,13 +95,11 @@ EditorElement::EditorElement(Actor* origin)
 EditorElement::EditorElement(Scene* scene)
 	: Actor (scene)
 	, mRotationModSpeed(1.0f)
-	, mActorGroupIdx((int)ActorGroup::DEFAULT)
 	, mIsFocused(false)
 {}
 
 EditorElement::EditorElement(Actor* actor, Scene* scene)
 	: Actor(actor, scene)
-	, mActorGroupIdx((int)actor->GetActorGroup())
 	, mRotationModSpeed(1.0f)
 	, mIsFocused(false)
 {
@@ -116,7 +112,6 @@ EditorElement::EditorElement(Actor* actor, Scene* scene)
 
 EditorElement::EditorElement(EditorElement* origin, Scene* scene)
 	: Actor(origin, scene)
-	, mActorGroupIdx((int)origin->GetActorGroup())
 	, mRotationModSpeed(1.0f)
 	, mIsFocused(false)
 {
@@ -143,16 +138,17 @@ void EditorElement::UpdateActorName()
 
 void EditorElement::UpdateActorGroup()
 {
-	const char* comboPreview = ActorGroupUtil::GetActorGroupStr(mActorGroupIdx);
+	const char* comboPreview = ActorGroupUtil::GetActorGroupStr(GetActorGroup());
 	if (ImGui::BeginCombo("Actor Group", comboPreview))
 	{
 		for (size_t n = 0; n < (size_t)ActorGroup::END - 1; n++)
 		{
 			if (ImGui::Selectable(ActorGroupUtil::GetActorGroupStr(n)))
 			{
-				CommandHistory::GetInstance()->AddCommand(DBG_NEW IntEditCommand(mActorGroupIdx, n));
-				mActorGroupIdx = n;
-				SetActorGroup((ActorGroup)mActorGroupIdx);
+				int grpIdx = static_cast<int>(GetActorGroup());
+				CommandHistory::GetInstance()->AddCommand(DBG_NEW IntEditCommand(grpIdx, n));
+				grpIdx = n;
+				SetActorGroup((ActorGroup)grpIdx);
 			}
 		}
 		ImGui::EndCombo();

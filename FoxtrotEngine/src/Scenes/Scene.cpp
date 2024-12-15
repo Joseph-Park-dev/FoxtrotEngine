@@ -27,7 +27,7 @@ Scene::~Scene()
 
 void Scene::ProcessInput(KeyInputManager* keyInputManager)
 {
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
 	{
 		for (size_t j = 0; j < mActors[i].size(); ++j)
 		{
@@ -41,7 +41,7 @@ void Scene::ProcessInput(KeyInputManager* keyInputManager)
 void Scene::Update(float deltaTime)
 {
 	mIsUpdatingActors = true;
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
 	{
 		for (size_t j = 0; j < mActors[i].size(); ++j)
 		{
@@ -59,7 +59,7 @@ void Scene::Update(float deltaTime)
 
 void Scene::LateUpdate(float deltaTime)
 {
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
 	{
 		for (size_t j = 0; j < mActors[i].size(); ++j)
 		{
@@ -75,7 +75,7 @@ void Scene::LateUpdate(float deltaTime)
 
 void Scene::Render(FoxtrotRenderer* renderer)
 {
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
 	{
 		for (size_t j = 0; j < mActors[i].size(); ++j)
 		{
@@ -105,7 +105,7 @@ void Scene::ProcessEvent()
 
 void Scene::DeleteAll()
 {
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
 	{
 		DeleteGroup((ActorGroup)i);
 		DeletePendingGroup((ActorGroup)i);
@@ -128,7 +128,7 @@ void Scene::DeletePendingGroup(ActorGroup group)
 
 void Scene::AddPendingActors()
 {
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
 	{
 		for (size_t j = 0; j < mActors[i].size(); ++j)
 		{
@@ -143,7 +143,7 @@ void Scene::AddPendingActors()
 
 void Scene::ClearDeadActors()
 {
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
 	{
 		for (size_t j = 0; j < mActors[i].size(); ++j)
 		{
@@ -157,7 +157,7 @@ void Scene::ClearDeadActors()
 
 void Scene::RemoveActor(Actor* actor)
 {
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
 	{
 		auto iter = std::find(mPendingActors[i].begin(), mPendingActors[i].end(), actor);
 		if (iter != mPendingActors[i].end())

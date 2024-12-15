@@ -16,7 +16,7 @@ void EditorScene::DeleteAll()
 ;	std::vector<Actor*>* actors = GetActors();
 	UnfocusEditorElements();
 
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
 	{
 		for (size_t j = 0; j < actors[i].size(); ++j)
 		{
@@ -69,7 +69,7 @@ void EditorScene::AddEditorElement(Actor* actor)
 	std::string name = actor->GetName();
 	std::vector<Actor*>* actors = GetActors();
 	int count = 0;
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
 	{
 		for (size_t j = 0; j < actors[i].size(); ++j)
 		{
@@ -88,7 +88,7 @@ void EditorScene::EditorUpdate(float deltaTime)
 {
 	mIsUpdatingActors = true;
 	std::vector<Actor*>* actors = GetActors();
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
 	{
 		for (size_t j = 0; j < actors[i].size(); ++j)
 		{
@@ -103,7 +103,7 @@ void EditorScene::EditorRender(FoxtrotRenderer* renderer)
 {
 	mIsUpdatingActors = true;
 	std::vector<Actor*>* actors = GetActors();
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
 	{
 		for (size_t j = 0; j < actors[i].size(); ++j)
 		{

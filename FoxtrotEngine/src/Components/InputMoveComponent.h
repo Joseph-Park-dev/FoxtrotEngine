@@ -16,14 +16,16 @@ class InputMoveComponent :
     public MoveComponent
 {
 public:
-	// Getters/setters for private variables
-	float GetMaxForward() const { return mMaxForwardSpeed; }
-	float GetMaxAngular() const { return mMaxAngularSpeed; }
-    float GetBreakSpeed() const { return mBreakSpeed; }
     std::string GetName() const override
     {
         return "InputMoveComponent";
     }
+
+public:
+	// Getters/setters for private variables
+	float GetMaxForward() const { return mMaxForwardSpeed; }
+	float GetMaxAngular() const { return mMaxAngularSpeed; }
+    float GetBreakSpeed() const { return mBreakSpeed; }
 	void  SetMaxForwardSpeed(float speed) { mMaxForwardSpeed = speed; }
 	void  SetMaxAngularSpeed(float speed) { mMaxAngularSpeed = speed; }
     void  SetAccelerationForward(float accel) { mAccelerationForward = accel; }

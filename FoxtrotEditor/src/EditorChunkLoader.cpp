@@ -64,7 +64,8 @@ void EditorChunkLoader::SaveActorsData(std::ofstream& ofs)
     EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
     std::vector<Actor*>* actors = scene->GetActors();
     FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::ACTOR_DATA);
-    for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+    
+    for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
     {
         for (size_t j = 0; j < actors[i].size(); ++j)
         {

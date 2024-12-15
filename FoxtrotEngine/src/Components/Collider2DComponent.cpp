@@ -9,6 +9,7 @@
 
 #include "Physics/Physics2D.h"
 #include "Managers/KeyInputManager.h"
+#include "Managers/CollisionManager.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
@@ -39,6 +40,11 @@ FTVector2 Collider2DComponent::GetFinalPosition() const
 	return mFinalPosition;
 }
 
+bool Collider2DComponent::GetIsColliding() const
+{
+	return mIsColliding;
+}
+
 FTVector2& Collider2DComponent::GetOffsetPosRef()
 {
 	return mOffset;
@@ -51,7 +57,6 @@ void Collider2DComponent::SetOffsetPos(FTVector2 offsetPos)
 
 void Collider2DComponent::Initialize(FTCore* coreInstance)
 {
-	LogString("Warning : Non-overrided Collider2D::Initialize() is being used -> Not affected by Simulation");
 }
 
 void Collider2DComponent::LateUpdate(float deltaTime)
@@ -65,6 +70,7 @@ Collider2DComponent::Collider2DComponent(Actor* owner, int drawOrder, int update
 	, mOffset(FTVector2::Zero)
 	, mFinalPosition(FTVector2::Zero)
 	, mShapeID(b2_nullShapeId)
+	, mIsColliding(false)
 #ifdef FOXTROT_EDITOR
 	, mShowDebugShape(true)
 #endif // FOXTROT_EDITOR
@@ -73,7 +79,7 @@ Collider2DComponent::Collider2DComponent(Actor* owner, int drawOrder, int update
 }
 
 Collider2DComponent::Collider2DComponent(const Collider2DComponent& origin)
-	: Component(nullptr, origin.GetDrawOrder(), origin.GetUpdateOrder())
+	: Component(origin.GetOwner(), origin.GetDrawOrder(), origin.GetUpdateOrder())
 	, mOffset(origin.mOffset)
 {
 }

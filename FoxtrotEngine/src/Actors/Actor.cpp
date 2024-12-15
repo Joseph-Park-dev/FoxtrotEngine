@@ -248,6 +248,7 @@ void Actor::RemoveAllComponents()
 
 void Actor::OnCollisionEnter(Collider2DComponent* _pOther)
 {
+	LogString("CollisionEnter");
 }
 
 void Actor::OnCollisionStay(Collider2DComponent* _pOther)

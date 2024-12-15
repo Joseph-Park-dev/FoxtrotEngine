@@ -144,6 +144,7 @@ void FTCoreEditor::UpdateGame()
 		EditorSceneManager::GetInstance()->Update(deltaTime);
 		EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
 		Physics2D::GetInstance()->Update();
+		CollisionManager::GetInstance()->Update();
 	}
 	else
 		EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);

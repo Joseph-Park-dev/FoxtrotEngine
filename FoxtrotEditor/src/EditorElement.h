@@ -38,8 +38,6 @@ public:
 	EditorElement(EditorElement* origin, Scene* scene);
 
 private:
-	// Stores ActorGroup index -> is int for Uint -> int conversion not supported
-	int		mActorGroupIdx;
 	float	mRotationModSpeed;
 	bool	mIsFocused;
 

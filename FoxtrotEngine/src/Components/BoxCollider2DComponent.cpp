@@ -41,6 +41,8 @@ void BoxCollider2DComponent::Initialize(FTCore* coreInstance)
 
 			GetShapeID() = b2CreatePolygonShape(rb->GetBodyID(), &polygonShapeDef, &polygon);
 			CollisionManager::GetInstance()->RegisterCollider(GetShapeID().index1, this);
+
+			CollisionManager::GetInstance()->Print();
 		}
 		else
 			LogString("ERROR : BoxCollider2DComponent::Initialize() -> BodyId not valid");

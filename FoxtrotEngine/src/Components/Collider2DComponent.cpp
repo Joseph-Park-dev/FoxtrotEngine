@@ -40,9 +40,9 @@ FTVector2 Collider2DComponent::GetFinalPosition() const
 	return mFinalPosition;
 }
 
-bool Collider2DComponent::GetIsColliding() const
+std::unordered_map<int32_t, CollisionState>& Collider2DComponent::GetCollisionStates()
 {
-	return mIsColliding;
+	return mCollisionStates;
 }
 
 FTVector2& Collider2DComponent::GetOffsetPosRef()
@@ -70,7 +70,6 @@ Collider2DComponent::Collider2DComponent(Actor* owner, int drawOrder, int update
 	, mOffset(FTVector2::Zero)
 	, mFinalPosition(FTVector2::Zero)
 	, mShapeID(b2_nullShapeId)
-	, mIsColliding(false)
 #ifdef FOXTROT_EDITOR
 	, mShowDebugShape(true)
 #endif // FOXTROT_EDITOR

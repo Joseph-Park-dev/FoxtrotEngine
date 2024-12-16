@@ -22,6 +22,13 @@ union COLLIDER_ID
 	uint64_t ID;
 };
 
+enum class CollisionState
+{
+	ENTER,
+	STAY,
+	EXIT
+};
+
 class CollisionManager
 {
 	SINGLETON(CollisionManager);
@@ -36,7 +43,7 @@ public:
 	void RegisterCollider(int32_t index, Collider2DComponent* collider);
 
 private:
-	uint64_t mCollisionMarks[(size_t)ActorGroup::END-1];
+	bool mCollisionMarks[((size_t)ActorGroup::END-1) * ((size_t)ActorGroup::END-1)];
 	std::unordered_map<int32_t, Collider2DComponent*> mRegColliders;
 
 //	std::unordered_map<uint64_t, bool> mCollisionInfo;
@@ -47,11 +54,12 @@ private:
 public:
 	void Initialize();
 	void Update();
-	//void RenderRay(FoxtrotRenderer* renderer);
+	
+	void Print();
 
 private:
 	void UpdateCollisionGroup();
-	bool IsCollided(ActorGroup groupA, ActorGroup groupB);
+	//bool IsCollided(ActorGroup groupA, ActorGroup groupB);
 	//bool HasCollided(Collider2DComponent* leftCol, Collider2DComponent* rightCol);
 	//void UpdateCollisionGroup(ActorGroup left, ActorGroup right);
 	//bool AABBIntersection(ColliderComponent* aCol, ColliderComponent* bCol);

@@ -32,6 +32,13 @@ struct ActorGroupUtil
 		return ActorGroupString.at(index + 1);
 	}
 
+	// Index does not guarantee to be ranged within the active elements.
+	// For example, index 0 will return NOT_ASSIGNED, which is not used.
+	static ActorGroup GetActorGroup(size_t index) 
+	{
+		return static_cast<ActorGroup>(index);
+	}
+
 	static ActorGroup GetActorGroup(std::string str) {
 		auto it = std::find(ActorGroupString.begin(), ActorGroupString.end(), str);
 		if (it != ActorGroupString.end())

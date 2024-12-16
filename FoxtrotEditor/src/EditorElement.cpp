@@ -108,6 +108,10 @@ EditorElement::EditorElement(Actor* actor, Scene* scene)
 	SetState(actor->GetState());
 	SetParent(actor->GetParent());
 	SetChildActors(actor->GetChildActors());
+
+	CopyTransformFrom(actor);
+	CopyComponentsFrom(actor);
+	CopyChildObject(actor);
 }
 
 EditorElement::EditorElement(EditorElement* origin, Scene* scene)
@@ -141,12 +145,12 @@ void EditorElement::UpdateActorGroup()
 	const char* comboPreview = ActorGroupUtil::GetActorGroupStr(GetActorGroup());
 	if (ImGui::BeginCombo("Actor Group", comboPreview))
 	{
-		for (size_t n = 0; n < (size_t)ActorGroup::END - 1; n++)
+		for (size_t n = 0; n <= ActorGroupUtil::GetCount()-1; ++n)
 		{
 			if (ImGui::Selectable(ActorGroupUtil::GetActorGroupStr(n)))
 			{
 				int grpIdx = static_cast<int>(GetActorGroup());
-				CommandHistory::GetInstance()->AddCommand(DBG_NEW IntEditCommand(grpIdx, n));
+				CommandHistory::GetInstance()->AddCommand(DBG_NEW IntEditCommand(grpIdx, ++n));
 				grpIdx = n;
 				SetActorGroup((ActorGroup)grpIdx);
 			}

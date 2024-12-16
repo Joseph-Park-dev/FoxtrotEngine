@@ -14,22 +14,34 @@
 
 void CollisionManager::MarkGroup(b2ShapeDef& object, ActorGroup objectActorGroup)
 {
-	object.filter.maskBits = mCollisionMarks[(uint64_t)objectActorGroup - 1];
+	size_t count = ActorGroupUtil::GetCount();
+	uint64_t maskBits = 0;
+	for (size_t i = 0; i < count; ++i)
+	{
+		if (mCollisionMarks[((size_t)objectActorGroup-1) * count + i])
+			maskBits |= (uint64_t)(i + 1);
+		if(mCollisionMarks[i * count + ((size_t)objectActorGroup - 1)])
+			maskBits |= (uint64_t)objectActorGroup-1;
+	}
+	object.filter.maskBits = maskBits;
+
+	std::cout << std::bitset<16>() << maskBits << std::endl;
 }
 
 void CollisionManager::Reset()
 {
-	memset(mCollisionMarks, 0, sizeof(UINT) * ActorGroupUtil::GetCount());
+	//memset(mCollisionMarks, 0, sizeof(uint64_t) * ActorGroupUtil::GetCount());
 	mRegColliders.clear();
 }
 
 void CollisionManager::RegisterCollider(int32_t index, Collider2DComponent* collider)
 {
-	mRegColliders.emplace(index, collider);
+	mRegColliders.insert({index, collider});
 }
 
 CollisionManager::CollisionManager()
 	: mCollisionMarks()
+	, mRegColliders()
 {}
 
 CollisionManager::~CollisionManager()
@@ -42,30 +54,70 @@ void CollisionManager::Update()
 	UpdateCollisionGroup();
 }
 
+void CollisionManager::Print()
+{
+	for (auto& shape : mRegColliders)
+		LogString(shape.second->GetOwner()->GetName());
+}
+
 void CollisionManager::UpdateCollisionGroup()
 {
 	b2ContactEvents events = b2World_GetContactEvents(Physics2D::GetInstance()->GetCurrentWorldID());
+	static b2ShapeId shapeIdA;
+	static b2ShapeId shapeIdB;
+
+	Collider2DComponent* colliderA = nullptr;
+	Collider2DComponent* colliderB = nullptr;
+
 	for (size_t i = 0; i < events.beginCount; ++i)
 	{
 		b2ContactBeginTouchEvent* ev = events.beginEvents + i;
-		b2ShapeId shapeIdA = ev->shapeIdA;
-		b2ShapeId shapeIdB = ev->shapeIdB;
+		shapeIdA = ev->shapeIdA;
+		shapeIdB = ev->shapeIdB;
 
-		Collider2DComponent* colliderA = mRegColliders.at(shapeIdA.index1);
-		Collider2DComponent* colliderB = mRegColliders.at(shapeIdB.index1);
-		
+		colliderA = mRegColliders.at(shapeIdA.index1);
+		colliderB = mRegColliders.at(shapeIdB.index1);
+
+		colliderA->GetCollisionStates().insert({ shapeIdB.index1, CollisionState(CollisionState::ENTER) });
+		colliderB->GetCollisionStates().insert({ shapeIdA.index1, CollisionState(CollisionState::ENTER) });
+
 		colliderA->OnCollisionEnter(colliderB);
 		colliderB->OnCollisionEnter(colliderA);
+
+		colliderA->GetCollisionStates()[shapeIdB.index1] = CollisionState::STAY;
+		colliderB->GetCollisionStates()[shapeIdA.index1] = CollisionState::STAY;
+	}
+
+	if (b2Shape_IsValid(shapeIdA) && b2Shape_IsValid(shapeIdB))
+	{
+		b2ContactData data;
+		b2Shape_GetContactData(shapeIdA, &data, 1);
+
+		if (b2Shape_IsValid(data.shapeIdA) && b2Shape_IsValid(data.shapeIdB))
+		{
+			shapeIdA = data.shapeIdA;
+			shapeIdB = data.shapeIdB;
+
+			colliderA = mRegColliders.at(shapeIdA.index1);
+			colliderB = mRegColliders.at(shapeIdB.index1);
+
+			if (colliderA->GetCollisionStates()[shapeIdB.index1] == CollisionState::STAY
+				&& colliderB->GetCollisionStates()[shapeIdA.index1] == CollisionState::STAY)
+			{
+				colliderA->OnCollisionStay(colliderB);
+				colliderB->OnCollisionStay(colliderA);
+			}
+		}
 	}
 
 	for (size_t i = 0; i < events.hitCount; ++i)
 	{
 		b2ContactHitEvent* ev = events.hitEvents + i;
-		b2ShapeId shapeIdA = ev->shapeIdA;
-		b2ShapeId shapeIdB = ev->shapeIdB;
+		shapeIdA = ev->shapeIdA;
+		shapeIdB = ev->shapeIdB;
 
-		Collider2DComponent* colliderA = mRegColliders.at(shapeIdA.index1);
-		Collider2DComponent* colliderB = mRegColliders.at(shapeIdB.index1);
+		colliderA = mRegColliders.at(shapeIdA.index1);
+		colliderB = mRegColliders.at(shapeIdB.index1);
 
 		colliderA->OnCollisionStay(colliderB);
 		colliderB->OnCollisionStay(colliderA);
@@ -74,20 +126,21 @@ void CollisionManager::UpdateCollisionGroup()
 	for (size_t i = 0; i < events.endCount; ++i)
 	{
 		b2ContactEndTouchEvent* ev = events.endEvents + i;
-		b2ShapeId shapeIdA = ev->shapeIdA;
-		b2ShapeId shapeIdB = ev->shapeIdB;
+		shapeIdA = ev->shapeIdA;
+		shapeIdB = ev->shapeIdB;
 
-		Collider2DComponent* colliderA = mRegColliders.at(shapeIdA.index1);
-		Collider2DComponent* colliderB = mRegColliders.at(shapeIdB.index1);
+		colliderA = mRegColliders.at(shapeIdA.index1);
+		colliderB = mRegColliders.at(shapeIdB.index1);
+
+		colliderA->GetCollisionStates()[shapeIdB.index1] = CollisionState::EXIT;
+		colliderB->GetCollisionStates()[shapeIdA.index1] = CollisionState::EXIT;
 
 		colliderA->OnCollisionExit(colliderB);
 		colliderB->OnCollisionExit(colliderA);
-	}
-}
 
-bool CollisionManager::IsCollided(ActorGroup groupA, ActorGroup groupB)
-{
-	return mCollisionMarks[(uint64_t)groupA] & ((uint64_t)1 << (uint64_t)groupB);
+		colliderA->GetCollisionStates().erase(shapeIdB.index1);
+		colliderB->GetCollisionStates().erase(shapeIdA.index1);
+	}
 }
 
 void CollisionManager::Initialize()
@@ -116,21 +169,24 @@ void CollisionManager::UpdateCollisionMarks()
 				std::string mark =
 				std::string(ActorGroupUtil::GetActorGroupStr(i)) + '/'
 					+ std::string(ActorGroupUtil::GetActorGroupStr(j));
-				size_t idx = (size_t)ActorGroup::END * j + i;
+				size_t idx = ActorGroupUtil::GetCount() * i + j;
 				if (ImGui::Checkbox(mark.c_str(), &marks[idx]))
 				{
-					uint64_t bitmask = static_cast<uint64_t>(j);
-					if (!(mCollisionMarks[i] & ((uint64_t)1 << bitmask))) // if not marked;
+					if (marks[idx]) // if not marked;
 					{
-						mCollisionMarks[i] |= ((uint64_t)1 << bitmask);
+						mCollisionMarks[idx] = true;
+						mCollisionMarks[ActorGroupUtil::GetCount() * j + i] = true;
+
 						printf("Marked %s, %s\n",
 							ActorGroupUtil::GetActorGroupStr(i), ActorGroupUtil::GetActorGroupStr(j));
 					}
 					else
 					{
+						mCollisionMarks[idx] = false;
+						mCollisionMarks[ActorGroupUtil::GetCount() * j + i] = false;
+
 						printf("Un-Marked %s, %s\n",
 							ActorGroupUtil::GetActorGroupStr(i), ActorGroupUtil::GetActorGroupStr(j));
-						mCollisionMarks[i] &= ~((uint64_t)1 << bitmask);
 					}
 				}
 			}

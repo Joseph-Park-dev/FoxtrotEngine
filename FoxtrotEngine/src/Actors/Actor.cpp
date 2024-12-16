@@ -13,6 +13,7 @@
 #include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Components/Component.h"
+#include "Components/Collider2DComponent.h"
 #include "Core/FTCore.h"
 #include "Debugging/DebugMemAlloc.h"
 
@@ -246,17 +247,18 @@ void Actor::RemoveAllComponents()
 	mComponents.clear();
 }
 
-void Actor::OnCollisionEnter(Collider2DComponent* _pOther)
+void Actor::OnCollisionEnter(Collider2DComponent* other)
 {
-	LogString("CollisionEnter");
+	LogString(mName + " : Collision Enter with " + other->GetOwner()->GetName());
 }
 
-void Actor::OnCollisionStay(Collider2DComponent* _pOther)
+void Actor::OnCollisionStay(Collider2DComponent* other)
 {
 }
 
-void Actor::OnCollisionExit(Collider2DComponent* _pOther)
+void Actor::OnCollisionExit(Collider2DComponent* other)
 {
+	LogString(mName + " : Collision Exit with " + other->GetOwner()->GetName());
 }
 
 void Actor::OnRayEnter()

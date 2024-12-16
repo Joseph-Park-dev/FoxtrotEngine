@@ -13,6 +13,7 @@
 
 class FTVector2;
 class Actor;
+enum class CollisionState;
 
 class Collider2DComponent :
 	public Component
@@ -30,7 +31,7 @@ public:
 	// Get world position of the collider 
 	// (anchor-pointed to the center)
 	FTVector2				 GetFinalPosition()		const;
-	bool					 GetIsColliding()		const;
+	std::unordered_map<int32_t, CollisionState>& GetCollisionStates();
 
 	void SetOffsetPos(FTVector2 offsetPos);
 
@@ -46,8 +47,7 @@ public:
 	//virtual void CloneTo(Actor* actor) override;
 
 public:
-	// Shallow copying is not needed (duplicated ID)
-	Collider2DComponent& operator=(Collider2DComponent& origin) = delete;
+	//Collider2DComponent& operator=(Collider2DComponent& origin);
 	friend class CollisionManager;
 	friend class Actor;
 
@@ -62,7 +62,8 @@ private:
 	b2ShapeId				mShapeID;
 	FTVector2				mOffset;
 	FTVector2				mFinalPosition;
-	bool					mIsColliding;
+
+	std::unordered_map<int32_t, CollisionState> mCollisionStates;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;

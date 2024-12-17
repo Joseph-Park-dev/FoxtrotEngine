@@ -51,7 +51,7 @@
     <ClCompile Include="src\Components\Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Components\GunFiringComponent.cpp">
+    <ClCompile Include="src\Components\GunFiringBehavior.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Components\InputMoveComponent.cpp">
@@ -177,6 +177,9 @@
     <ClCompile Include="src\Managers\CollisionManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Components\ActorBehaviors\Bullets\BulletBehavior.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Actors\Backgrounds\BackgroundActor.h">
@@ -224,7 +227,7 @@
     <ClInclude Include="src\Components\ComponentBatchHeaders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Components\GunFiringComponent.h">
+    <ClInclude Include="src\Components\GunFiringBehavior.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Components\InputMoveComponent.h">
@@ -396,6 +399,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Managers\CollisionManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\ActorBehaviors\Bullets\BulletBehavior.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

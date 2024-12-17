@@ -56,6 +56,8 @@ bool MeshRendererComponent::InitializeMesh()
 {
 	if (mMeshKey != VALUE_NOT_ASSIGNED) {
 		std::vector<MeshData>& meshData = ResourceManager::GetInstance()->GetLoadedMeshes(mMeshKey);
+		if (!mMeshGroup)
+			mMeshGroup = DBG_NEW FTBasicMeshGroup;
 		mMeshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
 		if (!mMeshGroup) {
 			LogString("ERROR: MeshRendererComponent::InitializeMesh() -> Mesh Init failed.\n");
@@ -78,6 +80,8 @@ bool MeshRendererComponent::InitializeMesh(UINT key)
 
 bool MeshRendererComponent::InitializeMesh(MeshData& meshData)
 {
+	if (!mMeshGroup)
+		mMeshGroup = DBG_NEW FTBasicMeshGroup;
 	std::vector<MeshData> meshes = { meshData };
 	mMeshGroup->Initialize(meshes, mRenderer->GetDevice(), mRenderer->GetContext());
 	if (!mMeshGroup) {
@@ -98,12 +102,14 @@ void MeshRendererComponent::UpdateMesh(Transform* transform, Camera* cameraInsta
 
 void MeshRendererComponent::UpdateBuffers()
 {
-	mMeshGroup->UpdateConstantBuffers(mRenderer->GetDevice(), mRenderer->GetContext());
+	if(mMeshGroup)
+		mMeshGroup->UpdateConstantBuffers(mRenderer->GetDevice(), mRenderer->GetContext());
 }
 
 void MeshRendererComponent::SetTexture() {
 	if (mTexKey != VALUE_NOT_ASSIGNED)
-		GetMeshGroup()->SetTexture(mTexKey);
+		if(GetMeshGroup())
+			GetMeshGroup()->SetTexture(mTexKey);
 	else 
 		printf("ERROR: MeshRendererComponent::SetTexture() -> key %d is not assigned.\n", mTexKey);
 }
@@ -118,7 +124,10 @@ MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int up
 
 MeshRendererComponent::~MeshRendererComponent(){
 	if (mMeshGroup)
+	{
+		//delete mMeshGroup;
 		mMeshGroup = nullptr;
+	}
 }
 
 void MeshRendererComponent::UpdateConstantBufferModel(Transform* transform)

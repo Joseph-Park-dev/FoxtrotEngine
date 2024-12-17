@@ -20,9 +20,9 @@ public:
 
 public:
     void Load();
-    void AddToScene(Scene* scene, FTCore* ftCoreInst);
 
 public:
+    void AddToScene(Scene* scene, FTCore* ftCoreInst);
     bool GetIsLoaded();
 
 public:
@@ -43,7 +43,7 @@ public:
             void Save   (EditorElement* ele);
 
     virtual void UpdateUI ()        override;
-            void AddToScene(EditorScene* scene);
+            EditorElement* AddToScene(EditorScene* scene);
 #endif // FOXTROT_EDITOR
 };
 

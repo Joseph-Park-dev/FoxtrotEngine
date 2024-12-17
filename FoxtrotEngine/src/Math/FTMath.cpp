@@ -57,8 +57,13 @@ FTVector3::FTVector3(FTVector2 vec2)
 	: x(vec2.x)
 	, y(vec2.y)
 	, z(0.0f)
-{
-}
+{}
+
+FTVector3::FTVector3(b2Vec2 vec2)
+	: x(vec2.x)
+	, y(vec2.y)
+	, z(0.0f)
+{}
 
 FTVector3 FTVector3::Transform(const FTVector3& vec, const Matrix4& mat, float w /*= 1.0f*/)
 {

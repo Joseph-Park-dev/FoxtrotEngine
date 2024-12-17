@@ -79,7 +79,6 @@ void Rigidbody2DComponent::LoadProperties(std::ifstream& ifs)
 	// Initialize transform-related body definitions
 	bodyDef.position = GetOwner()->GetTransform()->GetWorldPosition().GetB2Vec2();
 	bodyDef.rotation = b2MakeRot(-GetOwner()->GetTransform()->GetRotation().z);
-	bodyDef.fixedRotation = true;
 
 	mBodyID = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &bodyDef);
 
@@ -141,8 +140,6 @@ void Rigidbody2DComponent::EditorUIUpdate()
 	CommandHistory::GetInstance()->UpdateFloatValue	  (ChunkKeys::SLEEP_THRESHOLD,    &mBodyDefCache.sleepThreshold,  FLOATMOD_SPEED);
 	UpdateBodyType();
 
-	OnConfirmUpdate();
-
 	ImGui::SeparatorText("Body Info");
 	mBodyDefCache.position = GetOwner()->GetTransform()->GetWorldPosition().GetB2Vec2();
 	std::string pos = {
@@ -164,10 +161,7 @@ void Rigidbody2DComponent::CloneTo(Actor* actor)
 {
 	Rigidbody2DComponent* newComp = DBG_NEW Rigidbody2DComponent(actor, GetDrawOrder(), GetUpdateOrder());
 	newComp->mBodyDefCache = this->mBodyDefCache;
-}
-
-void Rigidbody2DComponent::OnConfirmUpdate()
-{
+	newComp->mBodyID = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &mBodyDefCache);
 }
 
 void Rigidbody2DComponent::UpdateBodyType()

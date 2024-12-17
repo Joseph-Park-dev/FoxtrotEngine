@@ -97,17 +97,28 @@ void SpriteRendererComponent::EditorRender(FoxtrotRenderer* renderer)
 
 void SpriteRendererComponent::EditorUIUpdate()
 {
+	SetRenderer(FTCoreEditor::GetInstance()->GetGameRenderer());
 	CHECK_RENDERER(GetRenderer());
 	UpdateSprite();
 	ImGui::SeparatorText("Sprite Size");
 	UpdateScale();
 	OnConfirmUpdate();
+	OnResetTexture();
 }
 
 void SpriteRendererComponent::OnConfirmUpdate()
 {
 	if (ImGui::Button("Update"))
 		this->SetTexture();
+}
+
+void SpriteRendererComponent::OnResetTexture()
+{
+	if (ImGui::Button("Reset"))
+	{
+		GetMeshGroup()->ResetTexture();
+		SetTexKey(VALUE_NOT_ASSIGNED);
+	}
 }
 
 void SpriteRendererComponent::UpdateSprite()
@@ -117,7 +128,7 @@ void SpriteRendererComponent::UpdateSprite()
 	{
 		currentSprite =
 			"Current sprite : \n" + ResourceManager::GetInstance()->GetLoadedTexture(GetTexKey())->GetRelativePath();
-		if (GetTexture())
+		if (GetMeshGroup() && GetTexture())
 		{
 			ImVec2 size = ImVec2(100, 100);
 			ImGui::Image((ImTextureID)GetTexture()->GetResourceView().Get(), size);

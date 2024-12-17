@@ -61,7 +61,7 @@ void RenderTextureClass::InitializeTexture(ComPtr<ID3D11Device>& device, int wid
 
 void RenderTextureClass::DrawOnTexture(ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11RenderTargetView>& renderTargetView, ComPtr<ID3D11DepthStencilView>& depthStencilView, FoxtrotRenderer* renderer)
 {
-	float clearColor[4] = { 0.0,0.0,0.0,1.0 };
+	float clearColor[4] = { 0.3,0.3,0.3,1.0 };
 	context->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), depthStencilView.Get());
 	context->ClearRenderTargetView(mRenderTargetView.Get(), clearColor);
 

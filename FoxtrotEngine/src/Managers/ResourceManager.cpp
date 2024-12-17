@@ -160,10 +160,10 @@ void ResourceManager::ProcessTexture(FTTexture* texture)
 
 void ResourceManager::ProcessTileMap(FTTileMap* tileMap)
 {
-	if (tileMap)
+	/*if (tileMap)
 		tileMap->ReadCSV();
 	else
-		printf("ERROR : ResourceManager::ProcessTexture()->TileMap is null");
+		printf("ERROR : ResourceManager::ProcessTexture()->TileMap is null");*/
 }
 
 void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)

@@ -21,6 +21,9 @@ class Camera
 	SINGLETON_PROTECTED(Camera);
 
 public:
+	FTVector3 ConvertScreenPosToWorld(FTVector2 screenPos);
+
+public:
 	Matrix GetViewRow();
 	Matrix GetProjRow();
 	Vector3 GetEyePos();
@@ -47,6 +50,9 @@ private:
 	Vector3 mViewDir;
 	Vector3 mUpDir;
 	Vector3 mRightDir;
+
+	FTVector2 mDiff;
+	FTVector2 mScreenCenter;
 
 	// roll, pitch, yaw
 	// https://en.wikipedia.org/wiki/Aircraft_principal_axes

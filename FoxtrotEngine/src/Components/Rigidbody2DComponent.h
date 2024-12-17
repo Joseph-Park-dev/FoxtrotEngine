@@ -45,9 +45,6 @@ public:
 	virtual void EditorUIUpdate() override;
 	virtual void CloneTo(Actor* actor) override;
 
-protected:
-	virtual void OnConfirmUpdate() override;
-
 private:
 	// This is used only on editor to update the values.
 	b2BodyDef mBodyDefCache;

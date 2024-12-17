@@ -37,6 +37,7 @@ Camera::Camera()
 	, mNearZ(0.01f)
 	, mFarZ(100.0f)
 	, mAspect(1920.f / 1080.f)
+	, mScreenCenter(FTVector2(1920.f, 1080.f) * 0.5f)
 	, mPixelsPerUnit(0.f)
 	, mViewType(Viewtype::Orthographic)
 {}
@@ -74,6 +75,26 @@ Vector3 Camera::GetEyePos()
 void Camera::InitializePixelsPerUnit(float pixels, float units)
 {
 	mPixelsPerUnit = pixels / units;
+}
+
+FTVector3 Camera::ConvertScreenPosToWorld(FTVector2 screenPos)
+{
+	float screenWidth = mRenderer->GetRenderWidth();
+	float screenHeight = mRenderer->GetRenderHeight();
+
+	FTVector2 topLeft = FTVector2::Zero;
+	FTVector2 bottomRight = FTVector2(screenWidth-1, screenHeight-1);
+
+	float nx = (screenPos.x / screenWidth) * 2.f - 1.f;
+	float ny = 1 - (screenPos.y / screenHeight) * 2.f;
+	float z = 0.0f;
+
+	DirectX::XMVECTOR ndcPos = DirectX::XMVectorSet(nx, ny, z, 1.0f);
+	DirectX::XMMATRIX inverseViewProj = DirectX::XMMatrixInverse(nullptr, (GetViewRow() * GetProjRow()));
+	DirectX::XMVECTOR worldPos = DirectX::XMVector4Transform(ndcPos, inverseViewProj);
+	
+	DirectX::SimpleMath::Vector3 vec3(worldPos);
+	return FTVector3(vec3.x, vec3.y, vec3.z);
 }
 
 #ifdef FOXTROT_EDITOR

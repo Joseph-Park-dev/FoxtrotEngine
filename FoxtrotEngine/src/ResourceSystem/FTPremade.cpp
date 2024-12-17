@@ -41,11 +41,8 @@ FTPremade::~FTPremade()
 
 void FTPremade::Load()
 {
-#ifdef FOXTROT_EDITOR
-	mOrigin = DBG_NEW EditorElement();
-#else
-	mOrigin = DBG_NEW Actor();
-#endif // FOXTROT_EDITOR
+	if (!mOrigin)
+		mOrigin = DBG_NEW Actor();
 	std::ifstream ifs(GetRelativePath());
 	std::pair<size_t, std::string> pack = FileIOHelper::BeginDataPackLoad(ifs);
 	mOrigin->LoadProperties(ifs);
@@ -58,7 +55,7 @@ void FTPremade::Load()
 void FTPremade::AddToScene(Scene* scene, FTCore* ftCoreInst)
 {
 	scene->AddActor(mOrigin, mOrigin->GetActorGroup());
-	mOrigin->Initialize(ftCoreInst);
+	//mOrigin->Initialize(ftCoreInst);
 }
 
 bool FTPremade::GetIsLoaded()
@@ -155,8 +152,11 @@ void FTPremade::UpdateUI()
 		ImGui::EndPopup();
 	}
 }
-void FTPremade::AddToScene(EditorScene* scene)
+EditorElement* FTPremade::AddToScene(EditorScene* scene)
 {
-	scene->AddEditorElement(mOrigin);
+	EditorElement* ele = DBG_NEW EditorElement(mOrigin, scene);
+	ele->Initialize(FTCoreEditor::GetInstance());
+	scene->AddEditorElement(ele);
+	return ele;
 }
 #endif

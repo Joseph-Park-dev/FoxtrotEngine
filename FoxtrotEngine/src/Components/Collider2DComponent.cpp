@@ -71,7 +71,7 @@ Collider2DComponent::Collider2DComponent(Actor* owner, int drawOrder, int update
 	, mFinalPosition(FTVector2::Zero)
 	, mShapeID(b2_nullShapeId)
 #ifdef FOXTROT_EDITOR
-	, mShowDebugShape(true)
+	, mShowDebugShape(false)
 #endif // FOXTROT_EDITOR
 
 {
@@ -154,7 +154,10 @@ void Collider2DComponent::UpdateOffsetPos()
 
 void Collider2DComponent::ToggleDebugShape()
 {
-	ImGui::Checkbox("Show Debug Shape", &mShowDebugShape);
+	static bool showDebugShape;
+	ImGui::Checkbox("Show Debug Shape", &showDebugShape);
+	mShowDebugShape = showDebugShape;
+	LogBool(mShowDebugShape);
 }
 
 bool Collider2DComponent::IsShowingDebugShape()

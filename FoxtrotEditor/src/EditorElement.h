@@ -7,6 +7,7 @@
 class Scene;
 class Actor;
 class EditorLayer;
+class EditorScene;
 
 #define ACTORNAME_MAX 100
 
@@ -34,8 +35,8 @@ public:
 
 	// Use this when adding EditorElements to a scene.
 	EditorElement(Scene* scene);
-	EditorElement(Actor* actor, Scene* scene);
-	EditorElement(EditorElement* origin, Scene* scene);
+	EditorElement(Actor* actor, EditorScene* scene);
+	EditorElement(EditorElement* origin, EditorScene* scene);
 
 private:
 	float	mRotationModSpeed;

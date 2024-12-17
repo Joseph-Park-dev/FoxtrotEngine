@@ -12,8 +12,10 @@
 #include "Components/Rigidbody2DComponent.h"
 #include "Components/SpriteRendererComponent.h"
 #include "Components/TileMapComponent.h"
-#include "Components/GunFiringComponent.h"
 #include "Components/MeshRendererComponent.h"
 
 #include "Components/UIs/PanelUIComponent.h"
 #include "Components/UIs/ButtonUIComponent.h"
+
+#include "Components/GunFiringBehavior.h"
+#include "Components/ActorBehaviors/Bullets/BulletBehavior.h"

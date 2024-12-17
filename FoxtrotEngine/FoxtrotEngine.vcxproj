@@ -258,6 +258,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Components\ActorBehaviors\Bullets\BulletBehavior.cpp" />
     <ClCompile Include="src\FileSystem\FileIOHelper.cpp" />
     <ClCompile Include="src\Managers\CollisionManager.cpp" />
     <ClCompile Include="src\ResourceSystem\FTPremade.cpp" />
@@ -276,7 +277,7 @@
     <ClCompile Include="src\Components\BGSpriteComponent.cpp" />
     <ClCompile Include="src\Components\Collider2DComponent.cpp" />
     <ClCompile Include="src\Components\Component.cpp" />
-    <ClCompile Include="src\Components\GunFiringComponent.cpp" />
+    <ClCompile Include="src\Components\GunFiringBehavior.cpp" />
     <ClCompile Include="src\Components\InputMoveComponent.cpp" />
     <ClCompile Include="src\Components\MeshRendererComponent.cpp" />
     <ClCompile Include="src\Components\MoveComponent.cpp" />
@@ -314,6 +315,7 @@
     <ClCompile Include="src\Scenes\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Components\ActorBehaviors\Bullets\BulletBehavior.h" />
     <ClInclude Include="src\Debugging\DebugMemAlloc.h" />
     <ClInclude Include="src\FileSystem\FileIOHelper.h" />
     <ClInclude Include="src\Managers\CollisionManager.h" />
@@ -336,7 +338,7 @@
     <ClInclude Include="src\Components\Collider2DComponent.h" />
     <ClInclude Include="src\Components\Component.h" />
     <ClInclude Include="src\Components\ComponentBatchHeaders.h" />
-    <ClInclude Include="src\Components\GunFiringComponent.h" />
+    <ClInclude Include="src\Components\GunFiringBehavior.h" />
     <ClInclude Include="src\Components\InputMoveComponent.h" />
     <ClInclude Include="src\Components\MeshRendererComponent.h" />
     <ClInclude Include="src\Components\MoveComponent.h" />

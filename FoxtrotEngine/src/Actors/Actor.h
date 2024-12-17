@@ -131,6 +131,9 @@ private:
 	Actor*					mParent;
 	std::vector<Actor*>		mChild;
 
+private:
+	bool CheckCompInitialized();
+
 public:
 	void SaveProperties(std::ofstream& ofs);
 	void SaveComponents(std::ofstream& ofs);

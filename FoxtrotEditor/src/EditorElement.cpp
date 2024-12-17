@@ -77,7 +77,7 @@ EditorElement::EditorElement()
 }
 
 EditorElement::EditorElement(Actor* origin)
-	: Actor(origin)
+	: Actor()
 	, mRotationModSpeed(1.0f)
 	, mIsFocused(false)
 {
@@ -98,8 +98,8 @@ EditorElement::EditorElement(Scene* scene)
 	, mIsFocused(false)
 {}
 
-EditorElement::EditorElement(Actor* actor, Scene* scene)
-	: Actor(actor, scene)
+EditorElement::EditorElement(Actor* actor, EditorScene* scene)
+	: Actor(scene)
 	, mRotationModSpeed(1.0f)
 	, mIsFocused(false)
 {
@@ -112,10 +112,12 @@ EditorElement::EditorElement(Actor* actor, Scene* scene)
 	CopyTransformFrom(actor);
 	CopyComponentsFrom(actor);
 	CopyChildObject(actor);
+
+	//this->Initialize(FTCoreEditor::GetInstance());
 }
 
-EditorElement::EditorElement(EditorElement* origin, Scene* scene)
-	: Actor(origin, scene)
+EditorElement::EditorElement(EditorElement* origin, EditorScene* scene)
+	: Actor()
 	, mRotationModSpeed(1.0f)
 	, mIsFocused(false)
 {

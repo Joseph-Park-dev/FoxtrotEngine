@@ -162,7 +162,6 @@ void Actor::CopyChildObject(Actor& origin)
 
 void Actor::Initialize(FTCore* coreInst)
 {
-	// Initializes Component
 	for (size_t i = 0; i < mComponents.size(); ++i)
 		if (!mComponents[i]->GetIsInitialized())
 			mComponents[i]->Initialize(coreInst);
@@ -289,6 +288,14 @@ void Actor::SetState(std::string state)
 //{
 //	fwrite(&GetTransform()->GetWorldPosition(), sizeof(Vector2), 1, file);
 //}
+
+bool Actor::CheckCompInitialized()
+{
+	for (size_t i = 0; i < mComponents.size(); ++i)
+		if (!mComponents[i]->GetIsInitialized())
+			return false;
+	return true;
+}
 
 void Actor::SaveProperties(std::ofstream& ofs)
 {

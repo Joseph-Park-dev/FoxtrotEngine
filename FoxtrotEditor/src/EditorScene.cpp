@@ -54,9 +54,8 @@ void EditorScene::AddEditorElement()
 
 void EditorScene::AddEditorElement(EditorElement* copied)
 {
-	EditorElement* editorElement = DBG_NEW EditorElement(copied, this);
 	std::string name = copied->GetName() + " copy " + std::to_string(this->GetActorCount());
-	editorElement->SetName(name);
+	copied->SetName(name);
 }
 
 void EditorScene::AddEditorElement(Actor* actor)

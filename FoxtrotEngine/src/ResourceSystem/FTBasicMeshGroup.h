@@ -15,6 +15,7 @@ public:
 		ComPtr<ID3D11DeviceContext>& context
 	);
 	//void UpdateModelWorld(DirectX::SimpleMath::Matrix& modelToWorldRow);
+	void ResetTexture();
 
 public:
 	virtual void Initialize(

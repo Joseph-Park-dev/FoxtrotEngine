@@ -33,11 +33,14 @@ void EventManager::Execute(const FTEvent& executedEvent)
 		FTPremade* premade = static_cast<FTPremade*>(executedEvent.eventData.at(0));
 
 #ifdef FOXTROT_EDITOR
-		EditorScene* scene = static_cast<EditorScene*>(executedEvent.eventData.at(1));
+		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+		//premade->GetOrigin()->Initialize(FTCoreEditor::GetInstance());
+		premade->AddToScene(scene);
 #else
 		Scene* scene = static_cast<Scene*>(executedEvent.eventData.at(1));
-#endif
+		premade->GetOrigin()->Initialize(FTCore::GetInstance());
 		premade->AddToScene(scene, FTCore::GetInstance());
+#endif
 	}
 	break;
 	case EVENT_TYPE::DESTROY_ACTOR:

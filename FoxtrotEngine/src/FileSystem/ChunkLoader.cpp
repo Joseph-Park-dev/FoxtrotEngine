@@ -91,8 +91,10 @@ ChunkLoader::ChunkLoader()
         {"SpriteRendererComponent",    &Component::Load<SpriteRendererComponent>},
         {"TileMapComponent",           &Component::Load<TileMapComponent>},
         {"SpriteAnimComponent",        &Component::Load<SpriteAnimComponent>},
-        {"GunFiringComponent",         &Component::Load<GunFiringComponent>},
-        {"MeshRendererComponent",      &Component::Load<MeshRendererComponent>}
+        {"MeshRendererComponent",      &Component::Load<MeshRendererComponent>},
+
+        {"GunFiringBehavior",         &Component::Load<GunFiringBehavior>},
+        {"BulletBehavior",         &Component::Load<BulletBehavior>},
     };
 };
 

@@ -20,6 +20,14 @@ void FTBasicMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPt
         mPixelConstantBuffer);
 }
 
+void FTBasicMeshGroup::ResetTexture()
+{
+    if (mTexture)
+    {
+        mTexture->ReleaseTexture();
+    }
+}
+
 void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer)
 {
     UINT stride = sizeof(Vertex);

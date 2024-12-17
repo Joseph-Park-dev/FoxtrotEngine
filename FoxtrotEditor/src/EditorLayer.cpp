@@ -77,7 +77,7 @@ void EditorLayer::TEST_Instantiate()
 	if(KEY_TAP(KEY::SPACE))
 	{
 		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-		Instantiate("Game Object 1", scene);
+		Instantiate("Game Object 1");
 	}
 	else if (KEY_TAP(KEY::W))
 	{
@@ -89,8 +89,8 @@ void EditorLayer::TEST_Instantiate()
 void EditorLayer::DisplayViewport()
 {
 	ImGui::Begin("Scene");
-	mSceneViewportPos = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
 	FoxtrotRenderer* renderer = FTCoreEditor::GetInstance()->GetGameRenderer();
+	mSceneViewportPos = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
 	if (MOUSE_HOLD(MOUSE::MOUSE_LEFT) && SceneViewportSizeChanged())
 	{
 		mIsResizingViewport = true;

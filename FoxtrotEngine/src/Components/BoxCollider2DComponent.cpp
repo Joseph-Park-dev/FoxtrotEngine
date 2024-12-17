@@ -42,7 +42,7 @@ void BoxCollider2DComponent::Initialize(FTCore* coreInstance)
 			GetShapeID() = b2CreatePolygonShape(rb->GetBodyID(), &polygonShapeDef, &polygon);
 			CollisionManager::GetInstance()->RegisterCollider(GetShapeID().index1, this);
 
-			CollisionManager::GetInstance()->Print();
+			//CollisionManager::GetInstance()->Print();
 		}
 		else
 			LogString("ERROR : BoxCollider2DComponent::Initialize() -> BodyId not valid");
@@ -59,7 +59,7 @@ void BoxCollider2DComponent::Initialize(FTCore* coreInstance)
 
 BoxCollider2DComponent::BoxCollider2DComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Collider2DComponent(owner, drawOrder, updateOrder)
-	, mScale(FTVector2(10.f, 10.f))
+	, mScale(FTVector2(1.f, 1.f))
 #ifdef FOXTROT_EDITOR
 	, mDebugRect(nullptr)
 #endif
@@ -118,7 +118,8 @@ void BoxCollider2DComponent::EditorUIUpdate()
 void BoxCollider2DComponent::ToggleDebugShape()
 {
 	Collider2DComponent::ToggleDebugShape();
-	mDebugRect->SetIsActive(IsShowingDebugShape());
+	if(mDebugRect)
+		mDebugRect->SetIsActive(IsShowingDebugShape());
 }
 
 void BoxCollider2DComponent::UpdateDebugGeometries(FTVector3 pos, FTVector3 rot, FTVector3 scale, Camera* cameraInst)
@@ -127,12 +128,15 @@ void BoxCollider2DComponent::UpdateDebugGeometries(FTVector3 pos, FTVector3 rot,
 	pos *= NDC;
 	scale *= NDC;*/
 
-	mDebugRect->Update(
-		pos,
-		rot,
-		scale,
-		Camera::GetInstance()
-	);
+	if (mDebugRect->GetIsActive())
+	{
+		mDebugRect->Update(
+			pos,
+			rot,
+			scale,
+			Camera::GetInstance()
+		);
+	}
 }
 
 void BoxCollider2DComponent::UpdateScale()

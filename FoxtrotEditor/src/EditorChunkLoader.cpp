@@ -27,15 +27,15 @@ EditorChunkLoader::EditorChunkLoader()
         {"SpriteRendererComponent", &Component::Create<SpriteRendererComponent>},
         {"TileMapComponent",        &Component::Create<TileMapComponent>},
         {"SpriteAnimComponent",     &Component::Create<SpriteAnimComponent>},
-        {"GunFiringComponent",      &Component::Create<GunFiringComponent>},
         {"MeshRendererComponent",   &Component::Create<MeshRendererComponent>},
 
         // UI related
-        {"ButtonUIComponent",   &Component::Create<ButtonUIComponent>},
-        {"PanelUIComponent",   &Component::Create<PanelUIComponent>},
+        {"ButtonUIComponent",       &Component::Create<ButtonUIComponent>},
+        {"PanelUIComponent",        &Component::Create<PanelUIComponent>},
 
         // Actor Behaviors
-
+        {"GunFiringBehavior",       &Component::Create<GunFiringBehavior>},
+        {"BulletBehavior",          &Component::Create<BulletBehavior>}
     };
 }
 

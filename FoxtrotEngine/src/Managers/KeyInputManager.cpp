@@ -68,7 +68,7 @@ KEY_STATE KeyInputManager::GetButtonState(GAMEPADBUTTON eButton)
 
 FTVector2 KeyInputManager::GetMouseWorldPosition()
 {
-	return FTVector2::Zero;
+	return Camera::GetInstance()->ConvertScreenPosToWorld(MOUSE_POS);
 }
 
 void KeyInputManager::DetectKeyInput()

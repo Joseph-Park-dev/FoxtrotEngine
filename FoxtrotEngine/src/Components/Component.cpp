@@ -12,6 +12,11 @@ void Component::Initialize(FTCore* coreInstance)
 	mIsInitialized = true;
 }
 
+void Component::Setup()
+{
+	mIsSetup = true;
+}
+
 void Component::ProcessInput(KeyInputManager* keyInputManager)
 {
 }
@@ -48,20 +53,17 @@ const bool Component::GetIsInitialized() const
 	return mIsInitialized;
 }
 
+const bool Component::GetIsSetup() const
+{
+	return mIsSetup;
+}
+
 Component::Component(Actor* owner, int drawOrder, int updateOrder)
 	: mOwner(owner)
 	, mDrawOrder(drawOrder)
 	, mUpdateOrder(updateOrder)
 	, mIsInitialized(false)
-{
-	mOwner->AddComponent(this);
-}
-
-Component::Component(const Component& origin)
-	: mOwner(origin.mOwner)
-	, mUpdateOrder(origin.mUpdateOrder)
-	, mDrawOrder(origin.mDrawOrder)
-	, mIsInitialized(false)
+	, mIsSetup(false)
 {
 	mOwner->AddComponent(this);
 }
@@ -71,9 +73,13 @@ Component::Component(const Component* origin)
 	, mUpdateOrder(origin->mUpdateOrder)
 	, mDrawOrder(origin->mDrawOrder)
 	, mIsInitialized(false)
+	, mIsSetup(false)
 {
 	mOwner->AddComponent(this);
 }
+
+void Component::CloneTo(Actor* actor)
+{}
 
 Component::~Component()
 {

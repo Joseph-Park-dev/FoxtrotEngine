@@ -11,9 +11,10 @@
 #include "ResourceSystem/FTPremade.h"
 
 #ifdef FOXTROT_EDITOR
+#include "FTCoreEditor.h"
 #include "EditorSceneManager.h"
+#include "EditorElement.h"
 #endif // FOXTROT_EDITOR
-
 
 void EventManager::ProcessEvent()
 {
@@ -30,13 +31,13 @@ void EventManager::Execute(const FTEvent& executedEvent)
 	{
 	case EVENT_TYPE::CREATE_ACTOR:
 	{
-		FTPremade* premade = static_cast<FTPremade*>(executedEvent.eventData.at(0));
 
 #ifdef FOXTROT_EDITOR
+		EditorElement* created = static_cast<EditorElement*>(executedEvent.eventData.at(0));
 		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-		//premade->GetOrigin()->Initialize(FTCoreEditor::GetInstance());
-		premade->AddToScene(scene);
+		scene->AddEditorElement(created);
 #else
+		Actor* created = static_cast<Actor*>(executedEvent.eventData.at(0));
 		Scene* scene = static_cast<Scene*>(executedEvent.eventData.at(1));
 		premade->GetOrigin()->Initialize(FTCore::GetInstance());
 		premade->AddToScene(scene, FTCore::GetInstance());

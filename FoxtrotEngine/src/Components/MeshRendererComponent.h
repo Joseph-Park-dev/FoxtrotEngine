@@ -26,8 +26,8 @@ public:
 
 protected:
 	virtual bool InitializeMesh();
-	virtual bool InitializeMesh(UINT key);
-	virtual bool InitializeMesh(MeshData& meshData);
+			bool InitializeMesh(UINT key);
+			bool InitializeMesh(MeshData& meshData);
 	virtual	void UpdateMesh(Transform* transform, Camera* cameraInstance);
 	virtual void UpdateBuffers();
 

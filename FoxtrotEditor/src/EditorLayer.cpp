@@ -89,6 +89,11 @@ void EditorLayer::TEST_Instantiate()
 void EditorLayer::DisplayViewport()
 {
 	ImGui::Begin("Scene");
+	if (ImGui::IsWindowFocused())
+		mCursorOnViewport = true;
+	else
+		mCursorOnViewport = false;
+
 	FoxtrotRenderer* renderer = FTCoreEditor::GetInstance()->GetGameRenderer();
 	mSceneViewportPos = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
 	if (MOUSE_HOLD(MOUSE::MOUSE_LEFT) && SceneViewportSizeChanged())
@@ -221,6 +226,7 @@ void EditorLayer::DisplayFileMenu()
 					CollisionManager::GetInstance()->Reset();
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 					ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+					ResourceManager::GetInstance()->LoadAllResourcesInAsset();
 					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
 				}
 			}
@@ -606,6 +612,11 @@ void EditorLayer::ShutDown()
 	ImGui::DestroyContext();
 }
 
+bool EditorLayer::CursorOnViewport() const
+{
+	return mCursorOnViewport;
+}
+
 EditorLayer::EditorLayer()
 	: mHierarchyIdx(0)
 	, mActorNameIdx(0)
@@ -618,6 +629,7 @@ EditorLayer::EditorLayer()
 	, mDeleteKeyPressed(false)
 	, mDuplicateKeyPressed(false)
 	, mIsResizingViewport(false)
+	, mCursorOnViewport(false)
 	, mElementNumber(0)
 	, mFocusedEditorElement(nullptr)
 	, mSceneViewportSize(ImVec2(1920.f, 1080.f))

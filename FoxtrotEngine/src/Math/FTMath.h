@@ -350,6 +350,11 @@ public:
 		, y(static_cast<float>(inY))
 	{}
 
+	explicit FTVector2(b2Vec2 vec2)
+		: x(static_cast<float>(vec2.x))
+		, y(static_cast<float>(vec2.y))
+	{}
+
 #ifdef FOXTROT_EDITOR
 	explicit FTVector2(ImVec2 imguiVec2)
 		: x(imguiVec2.x)

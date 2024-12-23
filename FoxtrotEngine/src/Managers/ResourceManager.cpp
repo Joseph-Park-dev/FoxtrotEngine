@@ -153,9 +153,15 @@ void ResourceManager::SetPathToAsset(std::string&& projectPath)
 
 void ResourceManager::ProcessTexture(FTTexture* texture)
 {
+	if (texture->GetIsProcessed())
+		return;
+
 	D3D11Utils::CreateTexture(mRenderer->GetDevice(), mRenderer->GetContext(), texture);
+
 	if (!texture)
 		printf("ERROR : ResourceManager::ProcessTexture()->CreateTexture() Failed");
+	else
+		texture->SetIsProcessed(true);
 }
 
 void ResourceManager::ProcessTileMap(FTTileMap* tileMap)
@@ -193,7 +199,11 @@ void ResourceManager::ProcessTextures()
 void ResourceManager::ProcessPremades()
 {
 	for (auto& premadeItem : mMapPremades)
+	{
 		premadeItem.second->Load();
+		// All loaded premades are included as default.
+		premadeItem.second->AddRefCount();
+	}
 }
 
 void ResourceManager::ProcessTileMaps()
@@ -277,6 +287,8 @@ void ResourceManager::LoadAllResourcesInAsset()
 		[&](std::string&& path) { LoadResByType(path); }
 		);
 	ProcessTextures();
+	ProcessTileMaps();
+	ProcessSpriteAnims();
 	ProcessPremades();
 }
 

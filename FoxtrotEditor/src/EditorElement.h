@@ -28,15 +28,52 @@ public:
 	void RenderUI(FoxtrotRenderer* renderer);
 
 public:
-	// Constructors used for FTPremade origin, possibily to make a dummy
-	// not recommended to use outside of FTPremade
-	EditorElement();
-	EditorElement(Actor* origin);
+	/// <summary>
+	/// Constructor that creates the empty EditorElement to be used in FTEditor.
+	/// </summary>
+	//EditorElement();
 
-	// Use this when adding EditorElements to a scene.
-	EditorElement(Scene* scene);
+	/// <summary>
+	/// Constructor that adds EditorElements to scene during initialization phase.
+	/// (When a .chunk is being loaded)
+	/// </summary>
+	/// <param name="scene : "> A scene object which this EditorElement is loaded to.</param>
+	EditorElement(EditorScene* scene);
+
+	/// <summary>
+	/// Constructor that is used for FTPremade UI.
+	/// Fetches the values from FTPremade origin to modify them.
+	/// Not recommended to use outside of FTPremade
+	/// </summary>
+	/// <param name="origin : "> Actor nested inside of Premade to copy values from. </param>
+	EditorElement(Actor* actor);
+
+	/// <summary>
+	/// Constructor that is used for FTPremade origin.
+	/// This Fetches the FTPremade origin, makes EditorElement and adds itself to EditorScene.
+	/// Not recommended to use outside of FTPremade
+	/// </summary>
+	/// <param name="origin : "> Actor nested inside of Premade to copy values from. </param>
+	EditorElement(Actor* actor, EditorScene* scene);
+
+	/// <summary>
+	/// Constructor that deep-copies the EditorElement, and adds itself to EditorScene.
+	/// Especially useful to duplicate EditorElements on FTEditor.
+	/// </summary>
+	/// <param name="origin : ">EditorElement to be copied.</param>
+	/// <param name="scene : ">EditorScene this object will be added.</param>
+	EditorElement(EditorElement* origin, EditorScene* scene);
+
+	/*
+	/// <summary>
+	/// Constructor called when "Stop" is triggered in FTEditor.
+	/// Trans
+	/// </summary>
+	/// <param name="actor : "> Actor in scene whose values are copied from.</param>
+	/// <param name="scene : "> A scene object which this EditorElement is loaded to.</param>
 	EditorElement(Actor* actor, EditorScene* scene);
 	EditorElement(EditorElement* origin, EditorScene* scene);
+	*/
 
 private:
 	float	mRotationModSpeed;

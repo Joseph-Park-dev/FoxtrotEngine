@@ -22,10 +22,8 @@ public:
 
 public:
 	virtual	void Initialize		(FTCore* coreInstance)		override;
-	virtual void Update			(float deltaTime)			override;
-	virtual void Render			(FoxtrotRenderer* renderer)	override;
 
-public:
+protected:
 	virtual bool InitializeMesh	()		override;
 
 public:

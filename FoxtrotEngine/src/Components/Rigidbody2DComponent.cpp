@@ -40,6 +40,9 @@ void Rigidbody2DComponent::Initialize(FTCore* coreInstance)
 	Component::Initialize(coreInstance);
 }
 
+void Rigidbody2DComponent::Setup()
+{}
+
 void Rigidbody2DComponent::LateUpdate(float deltaTime)
 {
 	b2Vec2 position = b2Body_GetPosition(mBodyID);

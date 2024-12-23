@@ -5,8 +5,8 @@ class Actor;
 class FTCore;
 class Scene;
 #ifdef FOXTROT_EDITOR
-class EditorElement;
 class EditorScene;
+#include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
 #define FTPremade_FORMAT_SUPPORTED ".premade"
@@ -19,14 +19,11 @@ public:
     ~FTPremade() override;
 
 public:
-    void Load();
+    void    Load();
 
 public:
-    void AddToScene(Scene* scene, FTCore* ftCoreInst);
-    bool GetIsLoaded();
-
-public:
-    Actor* GetOrigin();
+    Actor*  GetOrigin();
+    bool    GetIsLoaded();
 
 private:
     // Member variable that holds the actual Actor Data.
@@ -39,11 +36,13 @@ public:
 
 #ifdef FOXTROT_EDITOR
 public:
-            void Create (EditorElement* ele);
-            void Save   (EditorElement* ele);
+            void           Create (EditorElement* ele);
+            void           Save   (EditorElement* ele);
 
-    virtual void UpdateUI ()        override;
-            EditorElement* AddToScene(EditorScene* scene);
+    virtual void           UpdateUI ()        override;
+
+private:
+    EditorElement* mDummyForUI;
 #endif // FOXTROT_EDITOR
 };
 

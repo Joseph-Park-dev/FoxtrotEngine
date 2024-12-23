@@ -13,13 +13,12 @@
 
 #ifdef FOXTROT_EDITOR
 #include "EditorSceneManager.h"
-#include "EditorElement.h"
+#include "EditorLayer.h"
 #endif // FOXTROT_EDITOR
 
 
 void GunFiringBehavior::Initialize(FTCore* coreInstance)
 {
-	mBullet = ResourceManager::GetInstance()->GetLoadedPremade("Bullet");
 	Component::Initialize(coreInstance);
 }
 
@@ -47,22 +46,16 @@ void GunFiringBehavior::Update(float deltaTime)
 
 void GunFiringBehavior::ShootGun()
 {
-	mBullet = ResourceManager::GetInstance()->GetLoadedPremade("Bullet");
-	//mBullet->GetOrigin()->Initialize(FTCoreEditor::GetInstance());
-	EditorElement* bulletCopy = mBullet->AddToScene(EditorSceneManager::GetInstance()->GetEditorScene());
-	//bulletCopy->Initialize(FTCoreEditor::GetInstance());
-	BulletBehavior* behavior = bulletCopy->GetComponent<BulletBehavior>();
-	Rigidbody2DComponent* rigidBody = bulletCopy->GetComponent<Rigidbody2DComponent>();
-
-	b2Vec2 pos = (this->GetOwner()->GetTransform()->GetWorldPosition() + FTVector3(-2.f,0.f,0.f)).GetB2Vec2();
-	b2Rot rot = b2Body_GetRotation(rigidBody->GetBodyID());
-
-	FTVector3 dir = FTVector3(GetOwner()->GetTransform()->GetCurrentDirection(), 1.0f, 1.0f);
-	bulletCopy->GetTransform()->SetWorldPosition(pos * dir);
-	b2Body_SetTransform(rigidBody->GetBodyID(), pos, rot);
-
-	behavior->SetImpulseQuantity(mDirection * mSpeed);
-	behavior->Thrust();
+#ifdef FOXTROT_EDITOR
+	if (!EditorLayer::GetInstance()->CursorOnViewport())
+		return;
+#endif // FOXTROT_EDITOR
+	Actor* bulletCopy = Instantiate("Bullet");
+	bulletCopy->GetComponent<BulletBehavior>()->SetDirection(mDirection);
+	bulletCopy->GetComponent<BulletBehavior>()->SetStartPosition(
+		GetOwner()->GetTransform()->GetWorldPosition()
+	);
+	LogVector3("vec : ", GetOwner()->GetTransform()->GetWorldPosition());
 }
 
 GunFiringBehavior::GunFiringBehavior(Actor* owner, int drawOrder, int updateorder)
@@ -71,19 +64,14 @@ GunFiringBehavior::GunFiringBehavior(Actor* owner, int drawOrder, int updateorde
 	, mDelay(0.2f)
 	, mCurrentTick(0.f)
 	, mDirection(FTVector2(1.0f,0.f))
-	, mSpeed (10.f)
-	, mBullet(nullptr)
-{
-}
+{}
 
 GunFiringBehavior::GunFiringBehavior(Actor* owner, int drawOrder, int updateorder, MOUSE triggerKey, float delay)
 	: Component(owner, drawOrder, updateorder)
 	, mTriggerKey(triggerKey)
 	, mDelay(delay)
 	, mCurrentTick(0.f)
-{
-
-}
+{}
 
 GunFiringBehavior::~GunFiringBehavior()
 {

@@ -69,64 +69,23 @@ void EditorElement::EditorRender(FoxtrotRenderer* renderer)
 		comp->EditorRender(renderer);
 }
 
-EditorElement::EditorElement()
-	: Actor()
-	, mRotationModSpeed(0.f)
-	, mIsFocused(false)
-{
-}
-
-EditorElement::EditorElement(Actor* origin)
-	: Actor()
-	, mRotationModSpeed(1.0f)
-	, mIsFocused(false)
-{
-	SetActorGroup(origin->GetActorGroup());
-	SetName(origin->GetName());
-	SetState(origin->GetState());
-	SetParent(nullptr);
-	SetChildActors(origin->GetChildActors());
-
-	CopyTransformFrom(origin);
-	CopyComponentsFrom(origin);
-	CopyChildObject(origin);
-}
-
-EditorElement::EditorElement(Scene* scene)
+EditorElement::EditorElement(EditorScene* scene)
 	: Actor (scene)
 	, mRotationModSpeed(1.0f)
 	, mIsFocused(false)
 {}
 
+EditorElement::EditorElement(Actor* actor)
+	: Actor(actor)
+	, mRotationModSpeed(1.0f)
+	, mIsFocused(false)
+{}
+
 EditorElement::EditorElement(Actor* actor, EditorScene* scene)
-	: Actor(scene)
+	: Actor(actor, scene)
 	, mRotationModSpeed(1.0f)
 	, mIsFocused(false)
-{
-	SetActorGroup(actor->GetActorGroup());
-	SetName(actor->GetName());
-	SetState(actor->GetState());
-	SetParent(actor->GetParent());
-	SetChildActors(actor->GetChildActors());
-
-	CopyTransformFrom(actor);
-	CopyComponentsFrom(actor);
-	CopyChildObject(actor);
-
-	//this->Initialize(FTCoreEditor::GetInstance());
-}
-
-EditorElement::EditorElement(EditorElement* origin, EditorScene* scene)
-	: Actor()
-	, mRotationModSpeed(1.0f)
-	, mIsFocused(false)
-{
-	SetActorGroup(origin->GetActorGroup());
-	SetState(origin->GetState());
-	SetParent(origin->GetParent());
-	SetChildActors(origin->GetChildActors());
-	//CopyComponents(origin);
-}
+{}
 
 void EditorElement::UpdateActorName()
 {

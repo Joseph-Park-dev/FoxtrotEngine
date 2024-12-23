@@ -40,9 +40,6 @@ private:
     // These fields will be assembled to form an impulse quantity
     // (Muzzle velocity)
     FTVector2   mDirection;
-    float       mSpeed;
-
-    FTPremade*  mBullet;
 
 private:
     FTVector2&& CalcDirection(FTVector2&& origin, FTVector2&& point);

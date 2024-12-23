@@ -24,6 +24,10 @@ FTPremade::FTPremade()
 	: FTResource()
 	, mOrigin(nullptr)
 	, mIsLoaded(false)
+#ifdef FOXTROT_EDITOR
+	, mDummyForUI(nullptr)
+#endif // FOXTROT_EDITOR
+
 {
 #ifdef FOXTROT_EDITOR
 	std::string path = PATH_PROJECT + "\\Assets\\Premades\\";
@@ -48,14 +52,13 @@ void FTPremade::Load()
 	mOrigin->LoadProperties(ifs);
 	mOrigin->LoadComponents(ifs);
 
-	mIsLoaded = true;
-}
+#ifdef FOXTROT_EDITOR
+	mOrigin->Initialize(FTCoreEditor::GetInstance());
+#else
+	mOrigin->Initialize(FTCore::GetInstance());
+#endif // FOXTROT_EDITOR
 
-// FTCore is needed for initialization
-void FTPremade::AddToScene(Scene* scene, FTCore* ftCoreInst)
-{
-	scene->AddActor(mOrigin, mOrigin->GetActorGroup());
-	//mOrigin->Initialize(ftCoreInst);
+	mIsLoaded = true;
 }
 
 bool FTPremade::GetIsLoaded()
@@ -126,24 +129,26 @@ void FTPremade::Save(EditorElement* ele)
 
 void FTPremade::UpdateUI()
 {
-	ImGui::Text(mFileName.c_str());
+	ImGui::Text(GetFileName().c_str());
 	ImGui::Separator();
 	if (ButtonCenteredOnLine("Edit Premade"))
 	{
-		if(mOrigin)
+		if (mOrigin)
+		{
+			mDummyForUI = new EditorElement(mOrigin);
 			ImGui::OpenPopup("EditPremade");
+		}
 	}
 	if (ImGui::BeginPopupModal("EditPremade"))
 	{
 		if (mOrigin)
 		{
-			EditorElement dummyForUI = EditorElement(mOrigin);
-			mOrigin->RemoveAllComponents();
-			dummyForUI.SetIsFocused(true);
-			dummyForUI.UpdateUI(true);
-			dummyForUI.CloneTo(mOrigin);
+			// Only values from Actor is needed here.
+			// Thus dynamic_cast is not needed.
+			mDummyForUI->SetIsFocused(true);
+			mDummyForUI->UpdateUI(true);
 			if (ImGui::Button("Save"))
-				Save(&dummyForUI);
+				Save(mDummyForUI);
 		}
 		if (ImGui::Button("Close"))
 		{
@@ -151,12 +156,5 @@ void FTPremade::UpdateUI()
 		}
 		ImGui::EndPopup();
 	}
-}
-EditorElement* FTPremade::AddToScene(EditorScene* scene)
-{
-	EditorElement* ele = DBG_NEW EditorElement(mOrigin, scene);
-	ele->Initialize(FTCoreEditor::GetInstance());
-	scene->AddEditorElement(ele);
-	return ele;
 }
 #endif

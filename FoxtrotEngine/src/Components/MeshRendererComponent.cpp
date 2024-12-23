@@ -116,7 +116,7 @@ void MeshRendererComponent::SetTexture() {
 
 MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner, drawOrder, updateOrder)
-	, mMeshGroup(DBG_NEW FTBasicMeshGroup)
+	, mMeshGroup(nullptr)
 	, mRenderer(nullptr)
 	, mMeshKey(VALUE_NOT_ASSIGNED)
 	, mTexKey(VALUE_NOT_ASSIGNED)

@@ -24,6 +24,36 @@ enum class ACTOR_TAG;
 class Actor
 {
 public:
+	/// <summary>
+	/// Constructor that adds an Actor to scene during initialization phase.
+	/// (When a .chunk is being loaded)
+	/// </summary>
+	/// <param name="scene : "> A scene object which this Actor is loaded to.</param>
+	Actor(Scene* scene);
+
+	/// <summary>
+	/// Copy constructors that adds a deep-copied Actor to the scene during initialization phase.
+	/// (When a .chunk is being loaded)
+	/// </summary>
+	/// <param name="actor : "> Actor being copied.</param>
+	/// <param name="scene : "> A scene object which this Actor is loaded to.</param>
+	Actor(Actor* actor, Scene* scene);
+
+	/// <summary>
+	/// Creates an empty Actor with zero-initialized values.
+	/// </summary>
+	Actor();
+
+	/// <summary>
+	/// Creates an deep-copied Actor from another Actor Obj, or an Origin from Premade.
+	/// This doesn't add the created Actor to the scene, but stores the initialized one.
+	/// </summary>
+	/// <param name="actor : "> Actor being copied.</param>
+	Actor(Actor* actor);
+
+	virtual ~Actor();
+
+public:
 	enum State
 	{
 		EActive, EPaused, EDead
@@ -40,13 +70,9 @@ public:
 	void RemoveAllComponents();
 
 public:
-	void CopyTransformFrom(Actor& origin);
-	void CopyComponentsFrom(Actor& origin);
-	void CopyChildObject(Actor& origin);
-
-	void CopyTransformFrom(Actor* origin);
-	void CopyComponentsFrom(Actor* origin);
-	void CopyChildObject(Actor* origin);
+	void CopyTransformFrom(Actor* actor);
+	void CopyComponentsFrom(Actor* actor);
+	void CopyChildObjectFrom(Actor* actor);
 
 public:
 	// Getters/Setters
@@ -98,21 +124,6 @@ public:
 	virtual void UpdateComponents	 (float deltaTime);
 			void LateUpdateComponents(float deltaTime);
 	virtual void RenderComponents	 (FoxtrotRenderer* renderer);
-
-public:
-	// Constructor used for FTPremade origin,
-	// not recommended to use outside of FTPremade
-	Actor();
-	Actor(Actor* origin); 
-
-	// Use this when adding Actors to a scene.
-	Actor(Scene* scene);
-	// Copy Constructors
-	Actor(Actor& origin, Scene* scene);
-	Actor(Actor* origin, Scene* scene);
-	virtual ~Actor();
-
-	virtual void CloneTo(Actor* target);
 
 protected:
 	virtual void OnCollisionEnter(Collider2DComponent* _pOther);

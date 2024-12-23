@@ -60,6 +60,8 @@ public:
 	void		SetInfoType(InfoType type) { mInfoType = type; }
 	void		SetErrorType(ErrorType type) { mErrorType = type; }
 
+	bool		CursorOnViewport() const;
+
 public:
 	template <class FUNCTOR>
 	void PopUpInquiry(const char* title, const char* msg, FUNCTOR&& onConfirm)
@@ -140,6 +142,7 @@ private:
 	ImVec2			mSceneViewportPos;
 	ImVec2			mSceneViewportSize;
 	bool			mIsResizingViewport;
+	bool			mCursorOnViewport;
 
 	// UI event types
 	InfoType		mInfoType;

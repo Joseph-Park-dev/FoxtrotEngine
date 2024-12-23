@@ -16,6 +16,7 @@ public:
 
 public:
 	virtual void Initialize(FTCore* coreInstance) override;
+	virtual void Setup() override;
 	virtual void Update(float deltaTime) override{};
 	virtual void LateUpdate(float deltaTime) override;
 

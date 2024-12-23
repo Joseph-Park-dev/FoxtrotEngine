@@ -4,16 +4,43 @@
 #include "Actors/Transform.h"
 #include "Core/EventFunctions.h"
 
+void BulletBehavior::SetStartPosition(FTVector2 pos)
+{
+	mStartPosition = pos;
+}
+
 void BulletBehavior::SetImpulseQuantity(FTVector2 impulse)
 {
 	mImpulseQuantity = impulse * FTVector2(1.0f, -1.0f);
 }
 
+void BulletBehavior::SetDirection(FTVector2 direction)
+{
+	mDirection = direction;
+}
+
+void BulletBehavior::SetSpeed(float speed)
+{
+	mSpeed = speed;
+}
+
 void BulletBehavior::Initialize(FTCore* coreInstance)
 {
 	mRigidbody = GetOwner()->GetComponent<Rigidbody2DComponent>();
-	if(mRigidbody)
-		Component::Initialize(coreInstance);
+	Component::Initialize(coreInstance);
+}
+
+void BulletBehavior::Setup()
+{
+	GetOwner()->GetTransform()->SetWorldPosition(mStartPosition);
+	b2Body_SetTransform(
+		mRigidbody->GetBodyID(),
+		mStartPosition.GetB2Vec2(),
+		b2MakeRot(GetOwner()->GetTransform()->GetRotation().z)
+	);
+	SetImpulseQuantity(mDirection * mSpeed);
+	Thrust();
+	Component::Setup();
 }
 
 void BulletBehavior::Update(float deltaTime)
@@ -25,22 +52,26 @@ void BulletBehavior::Update(float deltaTime)
 
 void BulletBehavior::LateUpdate(float deltaTime)
 {
-	//GetOwner()->GetTransform()->SetWorldPosition(
-	//	b2Body_GetPosition(mRigidbody->GetBodyID())
-	//);
+	// Updating bullet position 
+	GetOwner()->GetTransform()->SetWorldPosition(
+		b2Body_GetPosition(mRigidbody->GetBodyID())
+	);
 
-	//b2Rot  rotation = b2Body_GetRotation(mRigidbody->GetBodyID());
-	//float rotZ = b2Rot_GetAngle(rotation);
-	//FTVector3 prevRot = GetOwner()->GetTransform()->GetRotation();
-	//FTVector3 updatedRot = FTVector3(prevRot.x, prevRot.y, -rotZ);
-	//GetOwner()->GetTransform()->SetRotation(updatedRot);
-	//LogVector3("Rotation", updatedRot);
+	// Updating bullet rotation
+	b2Rot  rotation = b2Body_GetRotation(mRigidbody->GetBodyID());
+	float rotZ = b2Rot_GetAngle(rotation);
+	FTVector3 prevRot = GetOwner()->GetTransform()->GetRotation();
+	FTVector3 updatedRot = FTVector3(prevRot.x, prevRot.y, -rotZ);
+	GetOwner()->GetTransform()->SetRotation(updatedRot);
 }
 
 BulletBehavior::BulletBehavior(Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER)
 	: Component(owner, drawOrder, updateOrder)
 	, mRigidbody(nullptr)
 	, mImpulseQuantity(FTVector2::Zero)
+	, mDirection(FTVector2::Zero)
+	, mStartPosition(FTVector2::Zero)
+	, mSpeed(10.0f)
 	, mDuration(3.0f)
 {}
 

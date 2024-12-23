@@ -21,65 +21,58 @@
 #include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
-Actor::Actor()
-	: mTransform(DBG_NEW Transform)
-	, mParent(nullptr)
-{
-	// THIS SHOULD BE REMAINED EMPTY;
-}
-
-Actor::Actor(Actor* origin)
-	: mState(EActive)
-	, mTransform(DBG_NEW Transform)
-	, mActorGroup(origin->mActorGroup)
-	, mParent(origin->mParent)
-	, mComponents{}
-	, mChild{}
-{
-	CopyTransformFrom(origin);
-	CopyComponentsFrom(origin);
-	CopyChildObject(origin);
-}
-
 Actor::Actor(Scene* scene)
-	: mState(EActive)
-	, mTransform(DBG_NEW Transform)
+	: mName("New Empty Actor")
 	, mActorGroup(ActorGroup::DEFAULT)
+	, mState(EActive)
+	, mTransform(DBG_NEW Transform)
+	, mComponents()
 	, mParent(nullptr)
-	, mComponents{}
 	, mChild{}
 {
 	scene->AddActor(this, mActorGroup);
 }
 
-// Constructor to copy Actor
-Actor::Actor(Actor& origin, Scene* scene)
-	: mState(origin.mState)
+Actor::Actor(Actor* actor, Scene* scene)
+	: mName(actor->GetName() + " Copy")
+	, mActorGroup(actor->mActorGroup)
+	, mState(actor->mState)
 	, mTransform(DBG_NEW Transform)
-	, mActorGroup(origin.mActorGroup)
+	, mComponents()
 	, mParent(nullptr)
-	, mComponents{}
 	, mChild{}
-{ 
-	CopyTransformFrom(origin);
-	CopyComponentsFrom(origin);
-	CopyChildObject(origin);
+{
+	CopyTransformFrom(actor);
+	CopyComponentsFrom(actor);
+	CopyChildObjectFrom(actor);
+
 	scene->AddActor(this, mActorGroup);
 }
 
-// Constructor to copy Actor
-Actor::Actor(Actor* origin, Scene* scene)
-	: mState(origin->mState)
+Actor::Actor()
+	: mName("Empty Actor")
+	, mActorGroup(ActorGroup::DEFAULT)
+	, mState(State::EActive)
 	, mTransform(DBG_NEW Transform)
-	, mActorGroup(origin->mActorGroup)
+	, mComponents()
 	, mParent(nullptr)
-	, mComponents{}
+	, mChild()
+{
+	// THIS BLOCK SHOULD BE REMAINED EMPTY;
+}
+
+Actor::Actor(Actor* actor)
+	: mName(actor->GetName())
+	, mActorGroup(actor->mActorGroup)
+	, mState(EActive)
+	, mTransform(DBG_NEW Transform)
+	, mComponents()
+	, mParent(actor->mParent)
 	, mChild{}
 {
-	CopyTransformFrom(origin);
-	CopyComponentsFrom(origin);
-	CopyChildObject(origin);
-	scene->AddActor(this, mActorGroup);
+	CopyTransformFrom(actor);
+	CopyComponentsFrom(actor);
+	CopyChildObjectFrom(actor);
 }
 
 Actor::~Actor()
@@ -98,38 +91,9 @@ Actor::~Actor()
 		mChild.clear();	
 }
 
-void Actor::CloneTo(Actor* target)
+void Actor::CopyTransformFrom(Actor* actor)
 {
-	target->mState = this->mState;
-	target->mActorGroup = this->mActorGroup;
-	target->CopyTransformFrom(this);
-	target->CopyChildObject(this);
-	target->CopyComponentsFrom(this);
-	target->mParent = this->mParent;
-}
-
-void Actor::CopyTransformFrom(Actor& origin)
-{
-	Transform* originTransf = origin.GetTransform();
-	mTransform->SetWorldPosition	(originTransf->GetWorldPosition());
-	mTransform->SetLocalPosition	(originTransf->GetLocalPosition());
-	mTransform->SetScale			(originTransf->GetScale());
-	mTransform->SetRotation			(originTransf->GetRotation());
-	mTransform->SetCurrentDirection(originTransf->GetCurrentDirection());
-}
-
-void Actor::CopyComponentsFrom(Actor& origin)
-{
-	this->RemoveAllComponents();
-
-	std::vector<Component*>& compsToCopy = origin.GetComponents();
-	for (size_t i = 0; i < compsToCopy.size(); ++i)
-		compsToCopy[i]->CloneTo(this);
-}
-
-void Actor::CopyTransformFrom(Actor* origin)
-{
-	Transform* originTransf = origin->GetTransform();
+	Transform* originTransf = actor->GetTransform();
 	mTransform->SetWorldPosition(originTransf->GetWorldPosition());
 	mTransform->SetLocalPosition(originTransf->GetLocalPosition());
 	//copied->SetScreenPosition(originTransf->GetScreenPosition());
@@ -137,25 +101,18 @@ void Actor::CopyTransformFrom(Actor* origin)
 	mTransform->SetRotation(originTransf->GetRotation());
 }
 
-void Actor::CopyComponentsFrom(Actor* origin)
+void Actor::CopyComponentsFrom(Actor* actor)
 {
 	this->RemoveAllComponents();
 
-	std::vector<Component*>& compsToCopy = origin->GetComponents();
+	std::vector<Component*>& compsToCopy = actor->GetComponents();
 	for (size_t i = 0; i < compsToCopy.size(); ++i)
 		compsToCopy[i]->CloneTo(this);
 }
 
-void Actor::CopyChildObject(Actor* origin)
+void Actor::CopyChildObjectFrom(Actor* actor)
 {
-	std::vector<Actor*>& childObjects = origin->GetChildActors();
-	for (size_t i = 0; i < childObjects.size(); ++i)
-		this->AddChild(DBG_NEW Actor(childObjects[i]));
-}
-
-void Actor::CopyChildObject(Actor& origin)
-{
-	std::vector<Actor*>& childObjects = origin.GetChildActors();
+	std::vector<Actor*>& childObjects = actor->GetChildActors();
 	for (size_t i = 0; i < childObjects.size(); ++i)
 		this->AddChild(DBG_NEW Actor(childObjects[i]));
 }
@@ -184,6 +141,8 @@ void Actor::UpdateComponents(float deltaTime)
 	{
 		for (auto comp : mComponents)
 		{
+			if (!comp->GetIsSetup())
+				comp->Setup();
 			comp->Update(deltaTime);
 		}
 	}

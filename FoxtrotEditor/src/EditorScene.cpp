@@ -52,18 +52,9 @@ void EditorScene::AddEditorElement()
 	editorElement->SetIsFocused(true);
 }
 
-void EditorScene::AddEditorElement(EditorElement* copied)
-{
-	std::string name = copied->GetName() + " copy " + std::to_string(this->GetActorCount());
-	copied->SetName(name);
-}
-
 void EditorScene::AddEditorElement(Actor* actor)
 {
 	UnfocusEditorElements();
-	EditorElement* editorElement = DBG_NEW EditorElement(actor, this);
-	editorElement->Initialize(FTCoreEditor::GetInstance());
-
 	// Finds the actor with the same name and adds numbered suffix.
 	std::string name = actor->GetName();
 	std::vector<Actor*>* actors = GetActors();
@@ -80,7 +71,8 @@ void EditorScene::AddEditorElement(Actor* actor)
 		}
 	}
 	if (0 < count)
-		editorElement->SetName(actor->GetName() + "(" + std::to_string(count) + ")");
+		actor->SetName(actor->GetName() + "(" + std::to_string(count) + ")");
+	this->AddActor(actor, actor->GetActorGroup());
 }
 
 void EditorScene::EditorUpdate(float deltaTime)

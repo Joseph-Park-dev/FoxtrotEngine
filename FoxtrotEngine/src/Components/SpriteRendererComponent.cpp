@@ -31,21 +31,14 @@
 void SpriteRendererComponent::Initialize(FTCore* coreInstance)
 {
 	SetRenderer(coreInstance->GetGameRenderer());
-	// Sprite Renderer uses square mesh directly - mesh key is not needed
-	InitializeMesh();
-	SetTexture();
+	SetMeshKey(ChunkKeys::PRIMITIVE_SQUARE);
+	if (GetMeshKey() != VALUE_NOT_ASSIGNED)
+	{
+		this->InitializeMesh();
+		if (GetTexKey() != VALUE_NOT_ASSIGNED)
+			SetTexture();
+	}
 	Component::Initialize(coreInstance);
-}
-
-void SpriteRendererComponent::Update(float deltaTime)
-{
-	if (GetMeshGroup())
-		MeshRendererComponent::Update(deltaTime);
-}
-
-void SpriteRendererComponent::Render(FoxtrotRenderer* renderer)
-{
-	MeshRendererComponent::Render(renderer);
 }
 
 bool SpriteRendererComponent::InitializeMesh()
@@ -58,7 +51,7 @@ bool SpriteRendererComponent::InitializeMesh()
 	if (!GetMeshGroup())
 	{
 		LogString("ERROR: SpriteRendererComponent::InitializeMesh() -> Mesh "
-				  "Init failed");
+			"Init failed");
 		return false;
 	}
 	return true;
@@ -109,7 +102,9 @@ void SpriteRendererComponent::EditorUIUpdate()
 void SpriteRendererComponent::OnConfirmUpdate()
 {
 	if (ImGui::Button("Update"))
+	{
 		this->SetTexture();
+	}
 }
 
 void SpriteRendererComponent::OnResetTexture()

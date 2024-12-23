@@ -24,6 +24,7 @@ public:
 
 public:
 	virtual void Initialize(FTCore* coreInstance);
+	virtual void Setup();
 	virtual void ProcessInput(KeyInputManager* keyInputManager);
 	virtual void Update(float deltaTime);
 	virtual void LateUpdate(float deltaTime);
@@ -34,13 +35,22 @@ public:
 	const int	GetUpdateOrder() const;
 	const int	GetDrawOrder() const;
 	const bool	GetIsInitialized() const;
+	const bool	GetIsSetup() const;
 
 public:
+	/// <summary>
+	/// Creates a Component to be assigned to the Actor.
+	/// </summary>
 	Component(Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
-	Component(const Component& origin);
-	Component(const Component* origin);
+	
+	/// <summary>
+	/// Deep copies Component from another.
+	/// </summary>
+	/// <param name="comp : "> Component to copy values from.</param>
+	Component(const Component* comp);
+	virtual void CloneTo(Actor* actor);
+
 	virtual ~Component();
-	virtual void CloneTo(Actor* actor) {};
 
 private:
 	Actor*	mOwner;
@@ -50,6 +60,8 @@ private:
 private:
 	// This is turned as true as the Initialize(FTCore*) is executed.
 	bool	mIsInitialized;
+	// This is turned as true as the Setup() is executed.
+	bool	mIsSetup;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs);

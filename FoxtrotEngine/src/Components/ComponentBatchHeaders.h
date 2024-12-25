@@ -18,4 +18,4 @@
 #include "Components/UIs/ButtonUIComponent.h"
 
 #include "Components/GunFiringBehavior.h"
-#include "Components/ActorBehaviors/Bullets/BulletBehavior.h"
+#include "Components/ActorBehaviors/Bullet/BulletBehavior.h"

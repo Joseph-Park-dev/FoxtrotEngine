@@ -1,4 +1,4 @@
-#include "Components/ActorBehaviors/Bullets/BulletBehavior.h"
+#include "Components/ActorBehaviors/Bullet/BulletBehavior.h"
 
 #include "Actors/Actor.h"
 #include "Actors/Transform.h"

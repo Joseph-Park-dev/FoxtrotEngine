@@ -8,6 +8,7 @@ class GeometryGenerator {
   public:
     static MeshData MakeSquare();
     static MeshData MakeSquare(float scale);
+    static MeshData MakeSquare(FTVector3 color);
     // MakeSquare() for Making tilemap
     static MeshData MakeSquareGrid(const int numSlices, const int numStacks, const float scale, const DirectX::SimpleMath::Vector2 texScale);
     static std::vector<MeshData> MakeTileMapGrid(FTTileMap* tileMap);

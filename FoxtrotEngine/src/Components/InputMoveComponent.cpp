@@ -8,135 +8,19 @@
 
 InputMoveComponent::InputMoveComponent(Actor* owner, int drawOrder, int updateOrder)
 	: MoveComponent(owner, drawOrder, updateOrder)
-	, mMaxForwardSpeed(3.7f)
-	, mMaxAngularSpeed(0.f)
-	, mAccelerationForward(0.f)
-	, mAccelerationAngular(0.f)
-	, mBreakSpeed(0.f)
-	, currentDir(0)
-	, mMoveState(MoveState::Idle)
-	, mRigidBody(nullptr)
 {}
-
-void InputMoveComponent::Initialize(FTCore* coreInstance)
-{
-	mRigidBody = GetOwner()->GetComponent<Rigidbody2DComponent>();
-}
 
 void InputMoveComponent::ProcessInput(KeyInputManager* keyInputManager)
 {
-	if (KEY_HOLD(KEY::A)) {
-		mMoveState = MoveState::LeftMove;
-	}
-	if (KEY_HOLD(KEY::D)) {
-		mMoveState = MoveState::RightMove;
-	}
+	if (KEY_HOLD(KEY::A))
+		SetHorizontalDir(MoveComponent::HorizontalDir::LEFT);
+	else if (KEY_HOLD(KEY::D))
+		SetHorizontalDir(MoveComponent::HorizontalDir::RIGHT);
+	else
+		SetHorizontalDir(MoveComponent::HorizontalDir::IDLE);
+
 	if (KEY_TAP(KEY::SPACE))
-		mMoveState = MoveState::Jump;
-	if (KEY_NONE(KEY::A) && KEY_NONE(KEY::D) && KEY_NONE(KEY::SPACE)) {
-		mMoveState = MoveState::Idle;
-	}
+		SetVerticalDir(MoveComponent::VerticalDir::UP);
+	else
+		SetVerticalDir(MoveComponent::VerticalDir::GROUND);
 }
-
-void InputMoveComponent::Update(float deltaTime)
-{
-	int dir = 0;
-	if (mMoveState == MoveState::LeftMove) {
-		dir = -1;
-	}
-	else if (mMoveState == MoveState::RightMove) {
-		dir = 1;
-	}
-	if (mMoveState == MoveState::Jump)
-	{
-		b2Body_ApplyLinearImpulse(
-			mRigidBody->GetBodyID(),
-			FTVector3(0.f, 3.f, 0.f).GetB2Vec2(),
-			GetOwner()->GetTransform()->GetWorldPosition().GetB2Vec2(),
-			true
-		);
-	}
-	if (dir != 0)
-	{
-		GetOwner()->GetTransform()->SetCurrentDirection(dir);
-		b2Body_ApplyLinearImpulse(
-			mRigidBody->GetBodyID(),
-			FTVector3(mMaxForwardSpeed * dir, 0.f, 0.f).GetB2Vec2(),
-			GetOwner()->GetTransform()->GetWorldPosition().GetB2Vec2(),
-			true
-		);
-	}
-}
-
-void InputMoveComponent::Move()
-{
-	////float forwardSpeed = GetForwardSpeed();
-	//if (KEY_TAP(KEY::RIGHT))
-	//{
-	//	if (GetPrevMovingState() != MOVING_RIGHT)
-	//		SetMovingState(MOVING_RIGHT);
-	//}
-	//if (KEY_TAP(KEY::LEFT))
-	//{
-	//	if (GetPrevMovingState() != MOVING_LEFT)
-	//		SetMovingState(MOVING_LEFT);
-	//}
-	//if (KEY_TAP(KEY::UP))
-	//{
-	//	if (GetPrevMovingState() != MOVING_UP)
-	//		SetMovingState(MOVING_UP);
-	//}
-	//if (KEY_TAP(KEY::DOWN))
-	//{
-	//	if (GetPrevMovingState() != MOVING_DOWN)
-	//		SetMovingState(MOVING_DOWN);
-	//}
-}
-
-void InputMoveComponent::LateUpdate(float deltaTime)
-{
- //   State state = GetMovingState();
-	//if (state == MoveComponent::State::IDLE)
-	//{
-	//}
-	//if (state == MoveComponent::State::MOVING_LEFT)
-	//{
-	//	GetOwner()->GetTransform()->Translate(FTVector2(-20.f, 0.f) * deltaTime);
-	//}
-	//if (state == MoveComponent::State::MOVING_RIGHT)
-	//{
-	//	GetOwner()->GetTransform()->Translate(FTVector2(20.f, 0.f) * deltaTime);
-	//}
-	//if (state == MoveComponent::State::MOVING_UP)
-	//{
-	//	GetOwner()->GetComponent<class Rigidbody2DComponent>()->AddForce(FTVector2(0.f, -500.f));
-	//}
-	//if (state == MoveComponent::State::MOVING_DOWN)
-	//{
-	//	GetOwner()->GetTransform()->Translate(FTVector2(0.f, 20.f) * deltaTime);
-	//}
-}
-
-void InputMoveComponent::Rotate()
-{
-	//float angularSpeed = GetAngularSpeed();
-	//if (KEY_HOLD(KEY::LEFT))
-	//{
-	//	currentDir = 1;
-	//	Accelerate(FTVector2(0.f, -100.f));
-	//}
-	//if (KEY_HOLD(KEY::RIGHT))
-	//{
-	//	currentDir = -1;
-	//	Accelerate(FTVector2(0.f, 100.f));
-
-	//}
-	//SetAngularSpeed(angularSpeed);
-}
-
-#ifdef FOXTROT_EDITOR
-void InputMoveComponent::CloneTo(Actor* actor)
-{
-	CLONE_TO_NOT_IMPLEMENTED
-}
-#endif // FOXTROT_EDITOR

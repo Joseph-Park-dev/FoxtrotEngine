@@ -24,24 +24,28 @@ MeshData GeometryGenerator::MakeSquare() {
     std::vector<Vector3> positions;
     std::vector<Vector3> colors;
     std::vector<Vector3> normals;
-    std::vector<Vector2> texcoords; // 텍스춰 좌표
+    std::vector<Vector2> texcoords;
 
-    // 앞면
+    positions.reserve(4);
+    colors.reserve(4);
+    normals.reserve(4);
+    texcoords.reserve(4);
+
     positions.push_back(Vector3(-0.5f, 0.5f, 0.0f));
     positions.push_back(Vector3(0.5f, 0.5f, 0.0f));
     positions.push_back(Vector3(0.5f, -0.5f, 0.0f));
     positions.push_back(Vector3(-0.5f, -0.5f, 0.0f));
+
     colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
     colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
     colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
     colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+
     normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
     normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
     normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
     normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
 
-    // Texture Coordinates (Direct3D 9)
-    // https://learn.microsoft.com/en-us/windows/win32/direct3d9/texture-coordinates
     texcoords.push_back(Vector2(0.0f, 0.0f));
     texcoords.push_back(Vector2(1.0f, 0.0f));
     texcoords.push_back(Vector2(1.0f, 1.0f));
@@ -67,24 +71,76 @@ MeshData GeometryGenerator::MakeSquare(float scale) {
     std::vector<Vector3> positions;
     std::vector<Vector3> colors;
     std::vector<Vector3> normals;
-    std::vector<Vector2> texcoords; // 텍스춰 좌표
+    std::vector<Vector2> texcoords;
 
-    // 앞면
+    positions.reserve(4);
+    colors.reserve(4);
+    normals.reserve(4);
+    texcoords.reserve(4);
+
     positions.push_back(Vector3(-0.5f, 0.5f, 0.0f) * scale);
     positions.push_back(Vector3(0.5f, 0.5f, 0.0f) * scale);
     positions.push_back(Vector3(0.5f, -0.5f, 0.0f) * scale);
     positions.push_back(Vector3(-0.5f, -0.5f, 0.0f) * scale);
+
     colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
     colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
     colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
     colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+
     normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
     normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
     normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
     normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
 
-    // Texture Coordinates (Direct3D 9)
-    // https://learn.microsoft.com/en-us/windows/win32/direct3d9/texture-coordinates
+    texcoords.push_back(Vector2(0.0f, 0.0f));
+    texcoords.push_back(Vector2(1.0f, 0.0f));
+    texcoords.push_back(Vector2(1.0f, 1.0f));
+    texcoords.push_back(Vector2(0.0f, 1.0f));
+
+    MeshData meshData;
+    for (size_t i = 0; i < positions.size(); i++) {
+        Vertex v;
+        v.position = positions[i];
+        v.color = colors[i];
+        v.normal = normals[i];
+        v.texcoord = texcoords[i];
+        meshData.vertices.push_back(v);
+    }
+    meshData.indices = {
+        0, 1, 2, 0, 2, 3, // 앞면
+    };
+
+    return meshData;
+}
+
+MeshData GeometryGenerator::MakeSquare(FTVector3 color)
+{
+    std::vector<Vector3> positions;
+    std::vector<Vector3> colors;
+    std::vector<Vector3> normals;
+    std::vector<Vector2> texcoords;
+
+    positions.reserve(4);
+    colors.reserve(4);
+    normals.reserve(4);
+    texcoords.reserve(4);
+
+    positions.push_back(Vector3(-0.5f, 0.5f, 0.0f));
+    positions.push_back(Vector3(0.5f, 0.5f, 0.0f));
+    positions.push_back(Vector3(0.5f, -0.5f, 0.0f));
+    positions.push_back(Vector3(-0.5f, -0.5f, 0.0f));
+
+    colors.push_back(Vector3(color.GetDXVec3()));
+    colors.push_back(Vector3(color.GetDXVec3()));
+    colors.push_back(Vector3(color.GetDXVec3()));
+    colors.push_back(Vector3(color.GetDXVec3()));
+
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+
     texcoords.push_back(Vector2(0.0f, 0.0f));
     texcoords.push_back(Vector2(1.0f, 0.0f));
     texcoords.push_back(Vector2(1.0f, 1.0f));

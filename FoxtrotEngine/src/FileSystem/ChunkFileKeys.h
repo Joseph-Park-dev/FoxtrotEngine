@@ -117,6 +117,11 @@ namespace ChunkKeys {
 	// Animator Component
 	constexpr const char* LOADED_KEYS = "Loaded Keys";
 
+	// Move Component
+	constexpr const char* FORWARD_SPEED		= "Forward Speed";
+	constexpr const char* JUMP_FORCE		= "Jump Force";
+	constexpr const char* ANGULAR_SPEED		= "Angular Speed";
+
 // General Terms
 	constexpr const char* NAME = "Name";
 	constexpr const char* ID = "ID";

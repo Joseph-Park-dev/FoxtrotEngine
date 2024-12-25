@@ -6,7 +6,7 @@
 #include "Actors/ActorGroup.h"
 #include "Actors/Actor.h"
 #include "Physics/Physics2D.h"
-#include "ActorBehaviors/Bullets/BulletBehavior.h"
+#include "ActorBehaviors/Bullet/BulletBehavior.h"
 
 #include "FileSystem/ChunkLoader.h"
 #include "Core/EventFunctions.h"

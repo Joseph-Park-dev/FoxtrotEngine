@@ -10,51 +10,72 @@ class MoveComponent :
     public Component
 {
 protected:
-    enum State
+    enum Controllable
     {
-        IDLE,
-        MOVING_LEFT,
-        MOVING_RIGHT,
-        MOVING_UP,
-        MOVING_DOWN
+        NO,
+        YES
     };
-public:
-    void Accelerate(float& currentSpeed, float accel, float maxSpeed, int forwardDir);
-    void Accelerate(FTVector2 velocity);
-    void Deccelerate(float& currentSpeed, int& currentDir, float breakSpeed);
-    //void Accelerate(FTVector2 velocity);
-    // Temporarily commented for testing Rigidbody2D-AddForce
-    // void Deccelerate(float& currentSpeed, int& currentDir, float breakSpeed);
+
+    enum HorizontalDir
+    {
+        LEFT    = -1,
+        IDLE    = 0,
+        RIGHT   = 1
+    };
+
+    enum VerticalDir
+    {
+        // DOWN    = -1,
+        GROUND  = 0,
+        UP      = 1
+    };
 
 public:
-    float GetAngularSpeed() const { return mAngularSpeed; }
-    float GetForwardSpeed() const { return mForwardSpeed; }
     std::string GetName() const override
     {
         return "MoveComponent";
     }
-    State GetMovingState() const { return mMovingState; }
-    State GetPrevMovingState() const { return mPrevMovingState; }
-    //Rigidbody2DComponent* GetRigidbody() const { return mRigidbody; }
-    void  SetAngularSpeed(float speed) { mAngularSpeed = speed; }
-    void  SetForwardSpeed(float speed) { mForwardSpeed = speed; }
-    void  SetMovingState(State state) { mMovingState = state; }
-    void  SetPrevMovingState(State state) { mPrevMovingState = state; }
 
 public:
-    virtual void Initialize(FTCore* coreInstance) override {};
+    void Accelerate();
+    void Jump();
+
+public:
+    float GetAngularSpeed() const { return mAngularSpeed; }
+    float GetForwardSpeed() const { return mForwardSpeed; }
+    Controllable  IsControllable()   const { return mIsControllable; }
+    HorizontalDir GetHorizontalDir() const { return mHorizontalDir; }
+    VerticalDir   GetVerticalDir()   const { return mVerticalDir; }
+
+    void  SetHorizontalDir  (HorizontalDir dir) { mHorizontalDir = dir; }
+    void  SetVerticalDir    (VerticalDir dir)   { mVerticalDir = dir; }
+    void  SetAngularSpeed   (float speed) { mAngularSpeed = speed; }
+    void  SetForwardSpeed   (float speed) { mForwardSpeed = speed; }
+
+public:
+    virtual void Initialize(FTCore* coreInstance) override;
     virtual void Update(float deltaTime) override;
 
 public:
     MoveComponent(class Actor* owner, int drawOrder, int updateorder);
-    virtual void CloneTo(Actor* actor) override;
 
 private:
-    //Rigidbody2DComponent* mRigidbody;
-    FTVector3 mVelocity;
-    float mAngularSpeed;
-    float mForwardSpeed;
-    State mMovingState;
-    State mPrevMovingState;
-};
+    Rigidbody2DComponent*   mRigidbody;
 
+    float                   mForwardSpeed;
+    float                   mJumpForce;
+    float                   mAngularSpeed;
+
+    Controllable            mIsControllable;
+    HorizontalDir           mHorizontalDir;
+    VerticalDir             mVerticalDir;
+
+public:
+    virtual void SaveProperties(std::ofstream& ofs) override;
+    virtual void LoadProperties(std::ifstream& ifs) override;
+
+#ifdef FOXTROT_EDITOR
+    virtual void EditorUIUpdate() override;
+    virtual void CloneTo(Actor* actor) override;
+#endif // FOXTROT_EDITOR
+};

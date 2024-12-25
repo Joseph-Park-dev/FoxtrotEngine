@@ -177,7 +177,7 @@
     <ClCompile Include="src\Managers\CollisionManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Components\ActorBehaviors\Bullets\BulletBehavior.cpp">
+    <ClCompile Include="src\Components\ActorBehaviors\Bullet\BulletBehavior.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -401,7 +401,7 @@
     <ClInclude Include="src\Managers\CollisionManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Components\ActorBehaviors\Bullets\BulletBehavior.h">
+    <ClInclude Include="src\Components\ActorBehaviors\Bullet\BulletBehavior.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

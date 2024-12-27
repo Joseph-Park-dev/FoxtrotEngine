@@ -24,8 +24,6 @@ void CollisionManager::MarkGroup(b2ShapeDef& object, ActorGroup objectActorGroup
 			maskBits |= (uint64_t)objectActorGroup-1;
 	}
 	object.filter.maskBits = maskBits;
-
-	std::cout << std::bitset<16>() << maskBits << std::endl;
 }
 
 void CollisionManager::Reset()
@@ -39,15 +37,31 @@ void CollisionManager::RegisterCollider(int32_t index, Collider2DComponent* coll
 	mRegColliders.insert({index, collider});
 }
 
+b2QueryFilter CollisionManager::GetQueryFilter(ActorGroup objectActorGroup)
+{
+	b2QueryFilter filter = b2DefaultQueryFilter();
+	filter.categoryBits = (uint64_t)objectActorGroup;
+
+	size_t count = ActorGroupUtil::GetCount();
+	uint64_t maskBits = 0;
+	for (size_t i = 0; i < count; ++i)
+	{
+		if (mCollisionMarks[((size_t)objectActorGroup - 1) * count + i])
+			maskBits |= (uint64_t)(i + 1);
+		if (mCollisionMarks[i * count + ((size_t)objectActorGroup - 1)])
+			maskBits |= (uint64_t)objectActorGroup - 1;
+	}
+	filter.maskBits = maskBits;
+	return filter;
+}
+
 CollisionManager::CollisionManager()
 	: mCollisionMarks()
 	, mRegColliders()
 {}
 
 CollisionManager::~CollisionManager()
-{
-	delete[] mCollisionMarks;
-}
+{}
 
 void CollisionManager::Update()
 {

@@ -27,7 +27,7 @@ public:
 	) override;
 
 	virtual void Update(float deltaTime)			override;
-	virtual	void Render(FoxtrotRenderer* renderer)  override;
+	virtual	void Render(FoxtrotRenderer* renderer, FTTexture* texture)  override;
 
 public:
 	std::string&	GetName	 ();
@@ -50,7 +50,8 @@ public:
 	void IncreaseIdx() { ++mCurrFrame; }
 
 public:
-	FTSpriteAnimation();
+	 FTSpriteAnimation();
+	 FTSpriteAnimation(FTSpriteAnimation* other);
 	~FTSpriteAnimation() override;
 
 protected:
@@ -77,7 +78,7 @@ private:
 	bool						 mIsFinished;
 
 private:
-	bool FrameIsWithinIndexRange();
+	bool FrameIsWithinIndexRange(int currentFrame);
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;

@@ -20,15 +20,7 @@ void FTBasicMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPt
         mPixelConstantBuffer);
 }
 
-void FTBasicMeshGroup::ResetTexture()
-{
-    if (mTexture)
-    {
-        mTexture->ReleaseTexture();
-    }
-}
-
-void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer)
+void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture)
 {
     UINT stride = sizeof(Vertex);
     UINT offset = 0;
@@ -40,15 +32,14 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer)
 
         context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
 
-        // 물체 렌더링할 때 큐브맵도 같이 사용
-        if (mTexture) {
+        if (texture) {
             context->VSSetShader(renderer->GetTextureVS().Get(), 0, 0);
             context->PSSetShader(renderer->GetTexturePS().Get(), 0, 0);
             context->IASetInputLayout(renderer->GetTextureInputLayout().Get());
 
             std::vector<ID3D11ShaderResourceView*> resViews;
-            resViews.push_back(mTexture->GetResourceView().Get());
-            context->VSSetShaderResources(0, 1, mTexture->GetResourceView().GetAddressOf());
+            resViews.push_back(texture->GetResourceView().Get());
+            context->VSSetShaderResources(0, 1, texture->GetResourceView().GetAddressOf());
             context->PSSetShaderResources(0, resViews.size(), resViews.data());
         }
         else
@@ -70,7 +61,7 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer)
     }
 }
 
-void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, int meshIndex)
+void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture, int meshIndex)
 {
     UINT stride = sizeof(Vertex);
     UINT offset = 0;
@@ -83,15 +74,14 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, int meshIndex)
 
         context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
 
-        // 물체 렌더링할 때 큐브맵도 같이 사용
-        if (mTexture) {
+        if (texture) {
             context->VSSetShader(renderer->GetTextureVS().Get(), 0, 0);
             context->PSSetShader(renderer->GetTexturePS().Get(), 0, 0);
             context->IASetInputLayout(renderer->GetTextureInputLayout().Get());
 
             std::vector<ID3D11ShaderResourceView*> resViews;
-            resViews.push_back(mTexture->GetResourceView().Get());
-            context->VSSetShaderResources(0, 1, mTexture->GetResourceView().GetAddressOf());
+            resViews.push_back(texture->GetResourceView().Get());
+            context->VSSetShaderResources(0, 1, texture->GetResourceView().GetAddressOf());
             context->PSSetShaderResources(0, resViews.size(), resViews.data());
         }
         else
@@ -112,6 +102,19 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, int meshIndex)
         context->DrawIndexed(mesh->mIndexCount, 0, 0);
     }
 }
+
+void FTBasicMeshGroup::Clear()
+{
+    for (Mesh* mesh : mMeshes)
+    {
+        if (mesh)
+        {
+            delete mesh;
+            mesh = nullptr;
+        }
+    }
+    mMeshes.clear();
+}
 //
 //void FTBasicMeshGroup::UpdateModelWorld(DirectX::SimpleMath::Matrix& modelToWorldRow)
 //{
@@ -123,16 +126,6 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, int meshIndex)
 //    mBasicVertexConstantData.model = modelToWorldRow.Transpose();
 //    mBasicVertexConstantData.invTranspose = mInvTransposeRow.Transpose();
 //}
-
-void FTBasicMeshGroup::SetTexture(UINT key)
-{
-    if (mTexture)
-    {
-        delete mTexture;
-        mTexture = nullptr;
-    }
-    mTexture = ResourceManager::GetInstance()->GetLoadedTexture(key);
-}
 
 void FTBasicMeshGroup::InitializeConstantBuffer(ComPtr<ID3D11Device>& device)
 {
@@ -181,8 +174,8 @@ HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 }
 
 FTBasicMeshGroup::FTBasicMeshGroup()
-    : mMeshes()
-    , mTexture(nullptr)
+    : FTResource()
+    , mMeshes()
     , mBasicVertexConstantData()
     , mBasicPixelConstantData()
 {
@@ -190,19 +183,5 @@ FTBasicMeshGroup::FTBasicMeshGroup()
 
 FTBasicMeshGroup::~FTBasicMeshGroup()
 {
-    if (mTexture != nullptr)
-    {
-        mTexture->SubtractRefCount();
-        mTexture = nullptr;
-    }
-
-    for (Mesh* mesh : mMeshes)
-    {
-        if (mesh)
-        {
-            delete mesh;
-            mesh = nullptr;
-        }
-    }
-    mMeshes.clear();
+    Clear();
 }

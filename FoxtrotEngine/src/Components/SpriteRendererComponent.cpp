@@ -30,13 +30,13 @@
 
 void SpriteRendererComponent::Initialize(FTCore* coreInstance)
 {
-	SetRenderer(coreInstance->GetGameRenderer());
-	SetMeshKey(ChunkKeys::PRIMITIVE_SQUARE);
+	SetRenderer	(coreInstance->GetGameRenderer());
+	SetMeshKey	(ChunkKeys::PRIMITIVE_SQUARE);
 	if (GetMeshKey() != VALUE_NOT_ASSIGNED)
 	{
 		this->InitializeMesh();
 		if (GetTexKey() != VALUE_NOT_ASSIGNED)
-			SetTexture();
+			MeshRendererComponent::SetTexture();
 	}
 	Component::Initialize(coreInstance);
 }
@@ -111,7 +111,7 @@ void SpriteRendererComponent::OnResetTexture()
 {
 	if (ImGui::Button("Reset"))
 	{
-		GetMeshGroup()->ResetTexture();
+		GetTexture()->ReleaseTexture();
 		SetTexKey(VALUE_NOT_ASSIGNED);
 	}
 }

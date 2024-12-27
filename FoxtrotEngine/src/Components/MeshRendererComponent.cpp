@@ -48,13 +48,14 @@ void MeshRendererComponent::Render(FoxtrotRenderer* renderer)
 	if (mMeshGroup){
 		renderer->SwitchFillMode();
 		//renderer->SetRenderTargetView();
-		mMeshGroup->Render(renderer);
+		mMeshGroup->Render(renderer, mTexture);
 	}
 }
 
 bool MeshRendererComponent::InitializeMesh()
 {
-	if (mMeshKey != VALUE_NOT_ASSIGNED) {
+	if (mMeshKey != VALUE_NOT_ASSIGNED) 
+	{
 		std::vector<MeshData>& meshData = ResourceManager::GetInstance()->GetLoadedMeshes(mMeshKey);
 		if (!mMeshGroup)
 			mMeshGroup = DBG_NEW FTBasicMeshGroup;
@@ -91,6 +92,19 @@ bool MeshRendererComponent::InitializeMesh(MeshData& meshData)
 	return true;
 }
 
+bool MeshRendererComponent::SetTexture()
+{
+	if (mTexKey == VALUE_NOT_ASSIGNED)
+	{
+		printf("ERROR: MeshRendererComponent::SetTexture() -> TexKey not assigned.\n");
+		return false;
+	}
+	mTexture = ResourceManager::GetInstance()->GetLoadedTexture(mTexKey);
+	if (!mTexture)
+		printf("ERROR: MeshRendererComponent::SetTexture() -> Cannot set texture %d, returning nullptr.\n", mTexKey);
+	return mTexture != nullptr;
+}
+
 void MeshRendererComponent::UpdateMesh(Transform* transform, Camera* cameraInstance)
 {
 	if (mMeshGroup) {
@@ -106,26 +120,19 @@ void MeshRendererComponent::UpdateBuffers()
 		mMeshGroup->UpdateConstantBuffers(mRenderer->GetDevice(), mRenderer->GetContext());
 }
 
-void MeshRendererComponent::SetTexture() {
-	if (mTexKey != VALUE_NOT_ASSIGNED)
-		if(GetMeshGroup())
-			GetMeshGroup()->SetTexture(mTexKey);
-	else 
-		printf("ERROR: MeshRendererComponent::SetTexture() -> key %d is not assigned.\n", mTexKey);
-}
-
 MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder)
-	: Component(owner, drawOrder, updateOrder)
-	, mMeshGroup(nullptr)
-	, mRenderer(nullptr)
-	, mMeshKey(VALUE_NOT_ASSIGNED)
-	, mTexKey(VALUE_NOT_ASSIGNED)
+	: Component		(owner, drawOrder, updateOrder)
+	, mMeshGroup	(nullptr)
+	, mTexture		(nullptr)
+	, mRenderer		(nullptr)
+	, mMeshKey		(VALUE_NOT_ASSIGNED)
+	, mTexKey		(VALUE_NOT_ASSIGNED)
 {}
 
 MeshRendererComponent::~MeshRendererComponent(){
 	if (mMeshGroup)
 	{
-		//delete mMeshGroup;
+		delete mMeshGroup;
 		mMeshGroup = nullptr;
 	}
 }

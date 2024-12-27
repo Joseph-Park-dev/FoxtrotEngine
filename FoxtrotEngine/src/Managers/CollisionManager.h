@@ -41,6 +41,7 @@ public:
 public:
 	//std::vector<Physics::Ray*>& GetRegisteredRays() { return mRegisteredRays; }
 	void RegisterCollider(int32_t index, Collider2DComponent* collider);
+	b2QueryFilter GetQueryFilter(ActorGroup objectActorGroup);
 
 private:
 	bool mCollisionMarks[((size_t)ActorGroup::END-1) * ((size_t)ActorGroup::END-1)];

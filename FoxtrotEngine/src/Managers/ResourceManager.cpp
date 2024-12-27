@@ -178,9 +178,6 @@ void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
 	if (tileMapBuf)
 		tileMapBuf->ReadCSV();
 
-	if (spriteAnim->GetTexKey() != VALUE_NOT_ASSIGNED)
-		spriteAnim->SetTexture(spriteAnim->GetTexKey());
-
 	std::vector<MeshData> meshDataBuf;
 	GeometryGenerator::MakeSpriteAnimation(
 		meshDataBuf, tileMapBuf->GetTiles(),

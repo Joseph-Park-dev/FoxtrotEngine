@@ -219,6 +219,7 @@ void FTCore::ShutDown()
 	ResourceManager::GetInstance()->DeleteAll();
 	Physics2D::GetInstance()->ShutDown();
 	FoxtrotRenderer::DestroyRenderer(mGameRenderer);
+	CollisionManager::GetInstance()->Destroy();
 
 	EventManager::GetInstance()->Destroy();
 	KeyInputManager::GetInstance()->Destroy();

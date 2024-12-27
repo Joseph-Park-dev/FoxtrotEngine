@@ -13,8 +13,8 @@ class SpriteRendererComponent
 	: public MeshRendererComponent
 {
 public:
-	int			 GetTexWidth()  { return GetMeshGroup()->GetTexture()->GetTexWidth() * mTexScale.x; }
-	int			 GetTexHeight() { return GetMeshGroup()->GetTexture()->GetTexHeight() * mTexScale.y; }
+	int			 GetTexWidth()  { return GetTexture()->GetTexWidth() * mTexScale.x; }
+	int			 GetTexHeight() { return GetTexture()->GetTexHeight() * mTexScale.y; }
 
 	std::string  GetName()		const override{
 		return	"SpriteRendererComponent";

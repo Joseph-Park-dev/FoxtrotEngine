@@ -181,6 +181,7 @@
     <ClInclude Include="ArrayStack.h" />
     <ClInclude Include="CircularQueue.h" />
     <ClInclude Include="DSLogs.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="TestHeaderBatch.h" />
   </ItemGroup>
   <ItemGroup>

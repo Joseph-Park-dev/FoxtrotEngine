@@ -19,6 +19,9 @@ void FTTileMap::ReadCSV()
     assert(mMaxCountOnMapX != 0);
     assert(mMaxCountOnMapY != 0);
 
+    if (mTileMap)
+        delete[] mTileMap;
+
     std::ifstream myFile;
     std::queue<int> result;
 

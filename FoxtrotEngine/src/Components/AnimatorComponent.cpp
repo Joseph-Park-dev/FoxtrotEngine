@@ -19,7 +19,19 @@ AnimatorComponent::AnimatorComponent(Actor* owner, int drawOrder, int updateOrde
 {}
 
 AnimatorComponent::~AnimatorComponent()
-{}
+{
+	mLoadedKeys.clear();
+	for (size_t i = 0; i < mLoadedAnimations.size(); ++i)
+	{
+		// mCurrentAnim destruction will be taken care of in MeshRendererComponent
+		if (mCurrentAnim != mLoadedAnimations.at(i))
+		{
+			delete mLoadedAnimations[i];
+			mLoadedAnimations[i] = nullptr;
+		}
+	}
+	mLoadedAnimations.clear();
+}
 
 void AnimatorComponent::Play(bool isRepeated)
 {
@@ -31,12 +43,14 @@ void AnimatorComponent::Play(bool isRepeated)
 
 void AnimatorComponent::Play(const UINT key, bool isRepeated)
 {
-	mCurrentAnim = ResourceManager::GetInstance()->GetLoadedSpriteAnim(key);
+	mCurrentAnim = mLoadedAnimations.at(key);
 	if (mCurrentAnim == nullptr)
 		printf("ERROR : AnimatorComponent::Play()->Animation is null\n");
+	SetMeshGroup(mCurrentAnim);
+	SetTexKey(mCurrentAnim->GetTexKey());
+	SetTexture();
 	mCurrentAnim->SetIsFinished(false);
 	mCurrentAnim->SetIsRepeated(isRepeated);
-	SetMeshGroup(mCurrentAnim);
 }
 
 void AnimatorComponent::Stop()
@@ -44,17 +58,19 @@ void AnimatorComponent::Stop()
 	mCurrentAnim->SetIsFinished(true);
 }
 
-void AnimatorComponent::CreateAnimationFromTile(std::string&& name, UINT texKey, UINT tileMapKey)
+FTSpriteAnimation* AnimatorComponent::CreateAnimationFromTile(std::string&& name, UINT texKey, UINT tileMapKey)
 {
 	FTSpriteAnimation* animation = DBG_NEW FTSpriteAnimation;
-	animation->SetTexKey(texKey);
-	animation->SetTileMapKey(tileMapKey);
+	if (!GetRenderer())
+		printf("ERROR : AnimatorComponent::CreateAnimationFromTile()-> Renderer is null");
+	if (texKey != VALUE_NOT_ASSIGNED)
+		animation->SetTexKey(texKey);
+	if(tileMapKey != VALUE_NOT_ASSIGNED)
+		animation->SetTileMapKey(tileMapKey);
 
 	FTTileMap* tileMapBuf = ResourceManager::GetInstance()->GetLoadedTileMap(tileMapKey);
 	if (tileMapBuf)
 		tileMapBuf->ReadCSV();
-	if (texKey != VALUE_NOT_ASSIGNED)
-		animation->SetTexture(texKey);
 
 	animation->SetFileName(name);
 	animation->SetName(std::move(name));
@@ -66,28 +82,30 @@ void AnimatorComponent::CreateAnimationFromTile(std::string&& name, UINT texKey,
 		tileMapBuf->GetMaxCountOnMapY()
 	);
 	animation->Initialize(meshDataBuf, GetRenderer()->GetDevice(), GetRenderer()->GetContext());
-
-	//if (mLoadedKeys.size() < 1)
-	//{
-	//	mCurrentAnim = animation;
-	//	//SetMeshGroup(mCurrentAnim);
-	//}
-	ResourceManager::GetInstance()->LoadResource(
-		animation, 
-		ResourceManager::GetInstance()->GetSpriteAnimMap()
-	);
 	printf("FTSpriteAnimation created, %s", name.c_str());
+	
+	return animation;
 }
 
 void AnimatorComponent::LoadAnimation(const UINT key)
 {
-	mLoadedKeys.push_back(key);
-	if (mLoadedKeys.size() == 1)
+	FTSpriteAnimation* anim = ResourceManager::GetInstance()->GetLoadedSpriteAnim(key);
+	FTSpriteAnimation* copied = CreateAnimationFromTile(
+		std::move(anim->GetName()), 
+		anim->GetTexKey(),
+		anim->GetTileMapKey()
+	);
+	mLoadedAnimations.push_back(copied);
+
+	if (mLoadedAnimations.size() == 1)
 	{
 		delete GetMeshGroup();
 		SetMeshGroup(nullptr);
-		mCurrentAnim = ResourceManager::GetInstance()->GetLoadedSpriteAnim(mLoadedKeys.at(0));
+		mCurrentAnim = mLoadedAnimations.at(0);
 		SetMeshGroup(mCurrentAnim);
+
+		SetTexKey(mCurrentAnim->GetTexKey());
+		SetTexture();
 	}
 }
 
@@ -108,14 +126,16 @@ void AnimatorComponent::LoadProperties(std::ifstream& ifs)
 	{
 		UINT key = 0;
 		FileIOHelper::LoadUnsignedInt(ifs, key);
-		LoadAnimation(key);
+		mLoadedKeys.push_back(key);
 	}
 	Component::LoadProperties(ifs);
 }
 
 void AnimatorComponent::Initialize(FTCore* coreInstance)
 {
-	TileMapComponent::Initialize(coreInstance);
+	MeshRendererComponent::Initialize(coreInstance);
+	for (size_t i = 0; i < mLoadedKeys.size(); ++i)
+		LoadAnimation(mLoadedKeys.at(i));
 }
 
 void AnimatorComponent::Update(float deltaTime)
@@ -133,7 +153,7 @@ void AnimatorComponent::LateUpdate(float deltaTime)
 void AnimatorComponent::Render(FoxtrotRenderer* renderer)
 {
 	if (mCurrentAnim != nullptr)
-		mCurrentAnim->Render(renderer);
+		mCurrentAnim->Render(renderer, GetTexture());
 }
 
 #ifdef FOXTROT_EDITOR
@@ -182,7 +202,10 @@ void AnimatorComponent::UpdatePlayList()
 		ResourceManager::GetInstance()->GetSpriteAnimMap()
 	);
 	if (key != VALUE_NOT_ASSIGNED)
+	{
+		mLoadedKeys.push_back(key);
 		LoadAnimation(key);
+	}
 
 	if (0 < mLoadedKeys.size())
 	{
@@ -215,7 +238,11 @@ void AnimatorComponent::CreateAnimation()
 
 		if (ImGui::Button("Create"))
 		{
-			CreateAnimationFromTile(std::string(name), texKey, tileMapKey);
+			FTSpriteAnimation* anim = CreateAnimationFromTile(std::string(name), texKey, tileMapKey);
+			ResourceManager::GetInstance()->LoadResource(
+				anim,
+				ResourceManager::GetInstance()->GetSpriteAnimMap()
+			);
 		}
 
 		if (ImGui::Button("Close"))

@@ -61,6 +61,7 @@ public:
 
 private:
     Rigidbody2DComponent*   mRigidbody;
+    b2QueryFilter           mGroundFilter;
 
     float                   mForwardSpeed;
     float                   mJumpForce;
@@ -69,6 +70,7 @@ private:
     Controllable            mIsControllable;
     HorizontalDir           mHorizontalDir;
     VerticalDir             mVerticalDir;
+    bool                    mIsGrounded;
 
 public:
     virtual void SaveProperties(std::ofstream& ofs) override;

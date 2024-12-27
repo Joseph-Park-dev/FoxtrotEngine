@@ -44,9 +44,9 @@ FTTileMap* TileMapComponent::GetTileMap() const
 	return mTileMap;
 }
 
-void TileMapComponent::Initialize(FTCore* coreInstance){
+void TileMapComponent::Initialize(FTCore* coreInstance)
+{
     MeshRendererComponent::Initialize(coreInstance);
-	Component::Initialize(coreInstance);
 }
 
 void TileMapComponent::InitializeTileMap() {
@@ -56,7 +56,7 @@ void TileMapComponent::InitializeTileMap() {
     mTileMap = ResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey);
     if (mTileMap)
     {
-        SetTexture();
+		SetTexture();
         mTileMap->ReadCSV();
 		SetMeshKey(ChunkKeys::PRIMITIVE_SQUARE);
         SpriteRendererComponent::InitializeMesh();
@@ -84,7 +84,7 @@ TileMapComponent::TileMapComponent(Actor* owner, int drawOrder, int UpdateOrder)
 
 TileMapComponent::~TileMapComponent()
 {
-    ResourceManager::GetInstance()->RemoveLoadedMeshes(GetMeshKey());
+    //ResourceManager::GetInstance()->RemoveLoadedMeshes(GetMeshKey());
 	mTileMap = nullptr;
 }
 

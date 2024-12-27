@@ -6,22 +6,29 @@
 #include "Actors/Transform.h"
 #include "FileSystem/FileIOHelper.h"
 #include "FileSystem/ChunkFileKeys.h"
+#include "Managers/CollisionManager.h"
+#include "Physics/Physics2D.h"
 
 #ifdef FOXTROT_EDITOR
 #include "CommandHistory.h"
 #endif // FOXTROT_EDITOR
 
-
 MoveComponent::MoveComponent(class Actor* owner, int drawOrder, int updateorder)
 	: Component			(owner, drawOrder , updateorder)
 	, mRigidbody		(nullptr)
+	, mGroundFilter		(b2DefaultQueryFilter())
 	, mForwardSpeed		(0.f)
 	, mJumpForce		(0.f)
 	, mAngularSpeed		(0.f)
 	, mIsControllable	(Controllable::YES)
 	, mHorizontalDir	(HorizontalDir::IDLE)
 	, mVerticalDir		(VerticalDir::GROUND)
-{}
+	, mIsGrounded		(false)
+{
+	mGroundFilter = CollisionManager::GetInstance()->GetQueryFilter(
+		GetOwner()->GetActorGroup()
+	);
+}
 
 void MoveComponent::Accelerate()
 {
@@ -35,9 +42,12 @@ void MoveComponent::Accelerate()
 
 void MoveComponent::Jump()
 {
-	b2Vec2 vel = b2Vec2_zero;
-	vel.y = mVerticalDir * mJumpForce;
-	b2Body_ApplyLinearImpulseToCenter(mRigidbody->GetBodyID(), vel, true);
+	if (mIsGrounded)
+	{
+		b2Vec2 vel = b2Vec2_zero;
+		vel.y = mVerticalDir * mJumpForce;
+		b2Body_ApplyLinearImpulseToCenter(mRigidbody->GetBodyID(), vel, true);
+	}
 }
 
 void MoveComponent::Initialize(FTCore* coreInstance)
@@ -57,6 +67,20 @@ void MoveComponent::Update(float deltaTime)
 		if (mVerticalDir != VerticalDir::GROUND)
 			Jump();
 	}
+
+	b2RayCastInput rcInput;
+	b2AABB aaBB = b2Body_ComputeAABB(mRigidbody->GetBodyID());
+	b2Vec2 center = b2AABB_Center(aaBB);
+	b2Vec2 extent = b2AABB_Extents(aaBB);
+	b2Vec2 length = b2Vec2_zero;
+	length.y = -0.5f - extent.y;
+	b2RayResult result = b2World_CastRayClosest(
+		Physics2D::GetInstance()->GetCurrentWorldID(), 
+		center, 
+		length,
+		mGroundFilter
+	);
+	mIsGrounded = result.hit;
 }
 
 void MoveComponent::SaveProperties(std::ofstream& ofs)

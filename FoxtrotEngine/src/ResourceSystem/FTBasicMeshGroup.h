@@ -14,8 +14,6 @@ public:
 		ComPtr<ID3D11Device>& device,
 		ComPtr<ID3D11DeviceContext>& context
 	);
-	//void UpdateModelWorld(DirectX::SimpleMath::Matrix& modelToWorldRow);
-	void ResetTexture();
 
 public:
 	virtual void Initialize(
@@ -24,8 +22,9 @@ public:
 		ComPtr<ID3D11DeviceContext>& context
 	);
 	virtual void Update			 (float deltaTime) {};
-	virtual	void Render			 (FoxtrotRenderer* renderer);
-			void Render			 (FoxtrotRenderer* renderer, int meshIndex);
+	virtual void Render			 (FoxtrotRenderer* renderer, FTTexture* texture);
+			void Render			 (FoxtrotRenderer* renderer, FTTexture* texture, int meshIndex);
+			void Clear			 ();
 
 public:
 	ComPtr<ID3D11Buffer>&		GetVertexConstantBuffer() { return mVertexConstantBuffer; }
@@ -33,13 +32,9 @@ public:
 	BasicVertexConstantData&	GetVertexConstantData()   { return mBasicVertexConstantData; }
 	BasicPixelConstantData&		GetPixelConstantData()	  { return mBasicPixelConstantData; }
 
-	ComPtr<ID3D11SamplerState>&	GetSamplerState()	{ return mSamplerState; }
-
-	FTTexture*					GetTexture()			  { return mTexture; }
+	ComPtr<ID3D11SamplerState>&	GetSamplerState()		  { return mSamplerState; }
 	int							GetMeshCount()			  { return mMeshes.size(); }
 	std::vector<Mesh*>&			GetMeshes()				  { return mMeshes; }
-
-	void						SetTexture(UINT key);
 
 protected:
 			void	InitializeConstantBuffer (ComPtr<ID3D11Device>& device);
@@ -55,19 +50,12 @@ private:
 
 private:
 	std::vector<Mesh*>			mMeshes;
-	FTTexture*					mTexture;
 
 	ComPtr<ID3D11SamplerState>	mSamplerState;
-
 	ComPtr<ID3D11Buffer>		mVertexConstantBuffer;
 	ComPtr<ID3D11Buffer>		mPixelConstantBuffer;
 
 public:
 	 FTBasicMeshGroup();
 	~FTBasicMeshGroup() override;
-
-#ifdef FOXTROT_EDITOR
-public:
-	virtual void UpdateUI() override {};
-#endif // FOXTROT_EDITOR
 };

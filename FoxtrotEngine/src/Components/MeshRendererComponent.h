@@ -28,6 +28,7 @@ protected:
 	virtual bool InitializeMesh();
 			bool InitializeMesh(UINT key);
 			bool InitializeMesh(MeshData& meshData);
+			bool SetTexture();
 	virtual	void UpdateMesh(Transform* transform, Camera* cameraInstance);
 	virtual void UpdateBuffers();
 
@@ -39,13 +40,12 @@ protected:
 	FTBasicMeshGroup*	GetMeshGroup()	{ return mMeshGroup; }
 	UINT				GetMeshKey	()	{ return mMeshKey; }
 	UINT				GetTexKey	()	{ return mTexKey; }
-	FTTexture*			GetTexture	()	{ return mMeshGroup->GetTexture(); }
+	FTTexture*			GetTexture	()	{ return mTexture; }
 
 	void				SetRenderer	(FoxtrotRenderer* renderer) { mRenderer = renderer; }
 	void				SetMeshGroup(FTBasicMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
 	void				SetMeshKey	(UINT key) { mMeshKey = key; }
 	void				SetTexKey	(UINT key) { mTexKey = key; }
-	virtual void		SetTexture();
 
 private:
 	// Identifier for the object in the Resource Map from the ResourceManager instance.
@@ -56,10 +56,11 @@ private:
 	// These will be set in Initialize() member function.
 	FoxtrotRenderer*	mRenderer;
 	FTBasicMeshGroup*	mMeshGroup;
+	FTTexture*			mTexture;
 
 public:
-			MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder);
-	virtual ~MeshRendererComponent()	override;
+			 MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder);
+	virtual ~MeshRendererComponent() override;
 
 protected:
 	void UpdateConstantBufferModel		(Transform* transform);
@@ -67,8 +68,8 @@ protected:
 	void UpdateConstantBufferProjection	(Camera* camInst);
 
 public:
-	virtual void		 SaveProperties(std::ofstream& ofs);
-	virtual void		 LoadProperties(std::ifstream& ifs);
+	virtual void SaveProperties(std::ofstream& ofs);
+	virtual void LoadProperties(std::ifstream& ifs);
 
 #ifdef FOXTROT_EDITOR
 public:

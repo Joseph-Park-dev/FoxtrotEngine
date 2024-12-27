@@ -16,10 +16,8 @@ public:
     void Play(bool isRepeated);  // Play current animation
     void Play(const UINT key, bool isRepeated);
     void Stop();
-    void CreateAnimationFromTile(std::string&& name, UINT texKey, UINT tileMapKey);
+    FTSpriteAnimation* CreateAnimationFromTile(std::string&& name, UINT texKey, UINT tileMapKey);
     void LoadAnimation(const UINT key);
-    //void SaveAnimation(const std::wstring& animName, const std::wstring& path);
-    //void LoadAnimation(const std::wstring& path);
     
 public:
     virtual std::string GetName() const override
@@ -34,12 +32,13 @@ public:
     virtual void Render(FoxtrotRenderer* renderer)  override;
 
 public:
-    AnimatorComponent(class Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
+     AnimatorComponent(class Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
     ~AnimatorComponent() override;
 
 private:
-    std::vector<UINT>   mLoadedKeys;
-    FTSpriteAnimation*  mCurrentAnim;
+    std::vector<UINT>               mLoadedKeys;
+    std::vector<FTSpriteAnimation*> mLoadedAnimations;
+    FTSpriteAnimation*              mCurrentAnim;
 
 public:
     virtual void SaveProperties(std::ofstream& ofs) override;

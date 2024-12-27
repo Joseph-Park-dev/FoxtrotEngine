@@ -38,10 +38,10 @@ void FTSpriteAnimation::Update(float deltaTime)
 	}
 }
 
-void FTSpriteAnimation::Render(FoxtrotRenderer* renderer)
+void FTSpriteAnimation::Render(FoxtrotRenderer* renderer, FTTexture* texture)
 {
-	if (FrameIsWithinIndexRange())
-		FTBasicMeshGroup::Render(renderer, mCurrFrame);
+	if (FrameIsWithinIndexRange(mCurrFrame))
+		FTBasicMeshGroup::Render(renderer, texture, mCurrFrame);
 }
 
 std::string& FTSpriteAnimation::GetName()
@@ -140,7 +140,8 @@ void FTSpriteAnimation::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vect
 }
 
 FTSpriteAnimation::FTSpriteAnimation()
-	: mName			{}
+	: FTBasicMeshGroup()
+	, mName			{}
 	, mMaxFrameIdx  (21)
 	, mAnimFPS		(30.0f)
 	, mIsRepeated	(true)
@@ -153,6 +154,27 @@ FTSpriteAnimation::FTSpriteAnimation()
 	, mTexKey		(VALUE_NOT_ASSIGNED)
 	, mTileMapKey	(VALUE_NOT_ASSIGNED)
 {}
+
+FTSpriteAnimation::FTSpriteAnimation(FTSpriteAnimation* other)
+	: FTBasicMeshGroup()
+	, mMaxFrameIdx	(other->mMaxFrameIdx)
+	, mAnimFPS		(other->mAnimFPS)
+	, mIsRepeated	(other->mIsRepeated)
+	, mTexKey		(other->mTexKey)
+	, mTileMapKey	(other->mTileMapKey)
+	, mAnimator		(other->mAnimator)
+	, mCurrFrame	(0)
+	, mAccTime		(0.f)
+	, mIsFinished	(false)
+{
+	this->mName.assign(other->mName);
+	for (size_t i = 0; i < mReel.size(); ++i)
+	{
+		AnimationFrame* frame = new AnimationFrame();
+		frame->Duration = mReel[i]->Duration;
+		this->mReel.push_back(frame);
+	}
+}
 
 FTSpriteAnimation::~FTSpriteAnimation()
 {
@@ -167,9 +189,9 @@ FTSpriteAnimation::~FTSpriteAnimation()
 	mReel.clear();
 }
 
-bool FTSpriteAnimation::FrameIsWithinIndexRange()
+bool FTSpriteAnimation::FrameIsWithinIndexRange(int currentFrame)
 {
-	return 0 <= mCurrFrame && mCurrFrame <= mMaxFrameIdx;
+	return 0 <= currentFrame && currentFrame <= mMaxFrameIdx;
 }
 
 void FTSpriteAnimation::SaveProperties(std::ofstream& ofs, UINT key)

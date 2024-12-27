@@ -68,12 +68,6 @@ void CollisionManager::Update()
 	UpdateCollisionGroup();
 }
 
-void CollisionManager::Print()
-{
-	for (auto& shape : mRegColliders)
-		LogString(shape.second->GetOwner()->GetName());
-}
-
 void CollisionManager::UpdateCollisionGroup()
 {
 	b2ContactEvents events = b2World_GetContactEvents(Physics2D::GetInstance()->GetCurrentWorldID());

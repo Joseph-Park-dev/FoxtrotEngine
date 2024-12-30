@@ -250,15 +250,9 @@ void Camera::DisplayCameraMenu()
 			{
 				currIdx = i;
 				if (currIdx == 0)
-				{
 					mTarget = nullptr;
-					LogInt(currIdx);
-				}
 				else
-				{
 					mTarget = editorScene->FindActor(actorNames[currIdx]);
-					LogString(mTarget->GetName());
-				}
 			}
 		}
 		ImGui::EndCombo();

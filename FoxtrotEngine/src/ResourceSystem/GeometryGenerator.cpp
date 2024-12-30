@@ -162,6 +162,54 @@ MeshData GeometryGenerator::MakeSquare(FTVector3 color)
     return meshData;
 }
 
+MeshData GeometryGenerator::MakeSquare(float scale, FTVector3 color)
+{
+    std::vector<Vector3> positions;
+    std::vector<Vector3> colors;
+    std::vector<Vector3> normals;
+    std::vector<Vector2> texcoords;
+
+    positions.reserve(4);
+    colors.reserve(4);
+    normals.reserve(4);
+    texcoords.reserve(4);
+
+    positions.push_back(Vector3(-0.5f, 0.5f, 0.0f) * scale);
+    positions.push_back(Vector3(0.5f, 0.5f, 0.0f) * scale);
+    positions.push_back(Vector3(0.5f, -0.5f, 0.0f) * scale);
+    positions.push_back(Vector3(-0.5f, -0.5f, 0.0f) * scale);
+
+    colors.push_back(color.GetDXVec3());
+    colors.push_back(color.GetDXVec3());
+    colors.push_back(color.GetDXVec3());
+    colors.push_back(color.GetDXVec3());
+
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+
+    texcoords.push_back(Vector2(0.0f, 0.0f));
+    texcoords.push_back(Vector2(1.0f, 0.0f));
+    texcoords.push_back(Vector2(1.0f, 1.0f));
+    texcoords.push_back(Vector2(0.0f, 1.0f));
+
+    MeshData meshData;
+    for (size_t i = 0; i < positions.size(); i++) {
+        Vertex v;
+        v.position = positions[i];
+        v.color = colors[i];
+        v.normal = normals[i];
+        v.texcoord = texcoords[i];
+        meshData.vertices.push_back(v);
+    }
+    meshData.indices = {
+        0, 1, 2, 0, 2, 3, // 앞면
+    };
+
+    return meshData;
+}
+
 MeshData GeometryGenerator::MakeSquareGrid(
     const int numSlices,
     const int numStacks,

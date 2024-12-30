@@ -17,6 +17,7 @@
 #include <string>
 
 #include "box2d\box2d.h"
+#include "directxtk/SimpleMath.h"
 
 #ifdef FOXTROT_EDITOR
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -146,6 +147,7 @@ public:
 
 	FTVector3(FTVector2 vec2);
 	FTVector3(b2Vec2 vec2);
+	FTVector3(DirectX::SimpleMath::Vector3 vec3);
 
 	friend std::ofstream& operator<<(std::ofstream& ofs, const FTVector3& vec3) {
 		ofs << "(" << std::to_string(vec3.x) << "," << std::to_string(vec3.y) << "," << std::to_string(vec3.z) << ")";

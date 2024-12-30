@@ -243,6 +243,11 @@ void Actor::SetState(std::string state)
 		mState = EActive;
 }
 
+bool Actor::HasName(std::string& name)
+{
+	return this->GetName() == name;
+}
+
 //void Actor::SaveCharacterData(FILE* file)
 //{
 //	fwrite(&GetTransform()->GetWorldPosition(), sizeof(Vector2), 1, file);

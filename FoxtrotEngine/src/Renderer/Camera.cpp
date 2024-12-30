@@ -5,10 +5,14 @@
 #include "Core/FTCore.h"
 #include "Managers/KeyInputManager.h"
 #include "Renderer/FoxtrotRenderer.h"
+#include "FileSystem/FileIOHelper.h"
+#include "FileSystem/ChunkFileKeys.h"
 
 #ifdef FOXTROT_EDITOR
 #include "CommandHistory.h"
 #include "EditorLayer.h"
+#include "EditorSceneManager.h"
+#include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
 void Camera::Initialize(FoxtrotRenderer* renderer, UINT pixels, float unit = 1)
@@ -27,6 +31,7 @@ void Camera::ZoomIn()
 
 Camera::Camera()
 	: mRenderer(nullptr)
+	, mTarget(nullptr)
 	, mPosition(Vector3(0.0f, 0.0f, 0.0f))
 	, mViewDir(Vector3(0.0f, 0.0f, 1.0f))
 	, mUpDir(Vector3(0.0f, -1.0f, 0.0f))
@@ -46,9 +51,17 @@ Camera::~Camera(){}
 
 Matrix Camera::GetViewRow()
 {
-	return	Matrix::CreateTranslation(-mPosition) *
-			Matrix::CreateRotationY(-mYaw) *
-			Matrix::CreateRotationX(mPitch);
+	if (mTarget)
+	{
+		Transform* transform = mTarget->GetTransform();
+		mPosition = ConvertToCenter(transform->GetWorldPosition()).GetDXVec3();
+		mYaw = -transform->GetRotation().y;
+		mPitch = transform->GetRotation().x;
+	}
+	return
+		Matrix::CreateTranslation(mPosition) *
+		Matrix::CreateRotationY(mYaw) *
+		Matrix::CreateRotationX(mPitch);
 }
 
 Matrix Camera::GetProjRow()
@@ -92,6 +105,11 @@ float Camera::GetPixelsPerUnit()
 	return mPixelsPerUnit;
 }
 
+void Camera::SetTargetActor(Actor* actor)
+{
+	mTarget = actor;
+}
+
 void Camera::SetViewType(Viewtype viewType)
 {
 	mViewType = viewType;
@@ -100,6 +118,45 @@ void Camera::SetViewType(Viewtype viewType)
 void Camera::InitializePixelsPerUnit(float pixels, float units)
 {
 	mPixelsPerUnit = pixels / units;
+}
+
+FTVector3 Camera::ConvertToCenter(FTVector3 topLeftPos)
+{
+	FTVector3 pos = topLeftPos * FTVector3(-1.f, 1.f, 1.0f);
+	float unitsPerPixel = 1 / mPixelsPerUnit;
+	float worldWidth = mRenderer->GetRenderWidth() * unitsPerPixel;
+	float worldHeight = mRenderer->GetRenderHeight() * unitsPerPixel;
+	pos += FTVector3(worldWidth / 2, worldHeight / 2, 0.f);
+	return pos;
+}
+
+FTVector3 Camera::ConvertToTopLeft(FTVector3 centerPos)
+{
+	float unitsPerPixel = 1 / mPixelsPerUnit;
+	float worldWidth = mRenderer->GetRenderWidth() * unitsPerPixel;
+	float worldHeight = mRenderer->GetRenderHeight() * unitsPerPixel;
+	FTVector3 pos = centerPos - FTVector3(worldWidth / 2, worldHeight / 2, 0.f);
+	pos = pos * FTVector3(-1.f, 1.f, 1.0f);
+	return pos;
+}
+
+void Camera::SaveProperties(std::ofstream& ofs)
+{
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::CAMERA_DATA);
+	if(mTarget)
+		FileIOHelper::SaveString(ofs, ChunkKeys::TARGET_ACTOR, mTarget->GetName());
+	else
+		FileIOHelper::SaveString(ofs, ChunkKeys::TARGET_ACTOR, ChunkKeys::NULL_OBJ);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::CAMERA_DATA);
+}
+
+void Camera::LoadProperties(std::ifstream& ifs)
+{
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::CAMERA_DATA);
+	std::string targetActor = {};
+	FileIOHelper::LoadBasicString(ifs, targetActor);
+	if (targetActor != ChunkKeys::NULL_OBJ)
+		mTarget = EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(targetActor);
 }
 
 FTVector3 Camera::ConvertScreenPosToWorld(FTVector2 screenPos)
@@ -146,45 +203,59 @@ void Camera::DisplayCameraMenu()
 			// mViewEyeRotation -= FTVector3(delta.y, delta.x, 0.f);
 		}
 	}
-	CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", mPosition, LOOKAT_MODSPEED);
+	FTVector3 pos = ConvertToCenter(FTVector3(mPosition));
+	CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", pos, LOOKAT_MODSPEED);
 	CommandHistory::GetInstance()->UpdateFloatValue("Look-At Yaw", &mYaw, LOOKAT_MODSPEED);
 	CommandHistory::GetInstance()->UpdateFloatValue("Look-At Pitch", &mPitch, LOOKAT_MODSPEED);
+	mPosition = ConvertToTopLeft(pos).GetDXVec3();
 
 	//// Updating screen center since the camera position is moved
 	// FTVector2 diff = updatedLookAtPos - lookAtPos;
 	// FTVector2 screenCenter = Camera2D::GetInstance()->GetScreenCenter();
 	// Camera2D::GetInstance()->SetScreenCenter(screenCenter + diff);
 
-	//// Set Target
-	// std::vector<EditorElement*>& editorElems = EditorLayer::GetInstance()->GetEditorElements();
-	// std::string* actorNames = DBG_NEW std::string[editorElems.size() + 1];
-	// actorNames[0] = "None";
-	// for (UINT i = 0; i < editorElems.size(); ++i)
-	//{
-	//	actorNames[i + 1] = ToString(editorElems[i]->GetName());
-	// }
-	// if (editorElems.size() > 0)
-	//{
-	//	const char* comboPreview = actorNames[mCurrIdx].c_str();
-	//	if (ImGui::BeginCombo("Target Actor", comboPreview))
-	//	{
-	//		for (UINT i = 0; i < editorElems.size() + 1; ++i)
-	//		{
-	//			if (ImGui::Selectable(actorNames[i].c_str()))
-	//			{
-	//				mCurrIdx = i;
-	//				if (mCurrIdx == 0)
-	//					Camera2D::GetInstance()->SetTargetActorID(TARGET_NONE);
-	//				else if (0 < mCurrIdx)
-	//				{
-	//					Camera2D::GetInstance()->SetTargetActorID(editorElems[mCurrIdx - 1]->GetID());
-	//				}
-	//			}
-	//		}
-	//		ImGui::EndCombo();
-	//	}
-	// }
-	// delete[] actorNames;
+	// Set Target
+	EditorScene* editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
+	std::vector<Actor*>* editorElems = editorScene->GetActors();
+	std::string* actorNames = DBG_NEW std::string[editorScene->GetActorCount() + 1];
+	actorNames[0] = "None";
+	size_t idx = 1;
+	static size_t currIdx;
+
+	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	{
+		if (0 < editorElems[i].size())
+		{
+			for (size_t j = 0; j < editorElems[i].size(); ++j)
+			{
+				actorNames[idx] = dynamic_cast<EditorElement*>(editorElems[i][j])->GetName();
+				++idx;
+			}
+		}
+	}
+	const char* comboPreview = actorNames[currIdx].c_str();
+	if (ImGui::BeginCombo("Target Actor", comboPreview))
+	{
+		for (size_t i = 0; i < idx; ++i)
+		{
+			if (ImGui::Selectable(actorNames[i].c_str()))
+			{
+				currIdx = i;
+				if (currIdx == 0)
+				{
+					mTarget = nullptr;
+					LogInt(currIdx);
+				}
+				else
+				{
+					mTarget = editorScene->FindActor(actorNames[currIdx]);
+					LogString(mTarget->GetName());
+				}
+			}
+		}
+		ImGui::EndCombo();
+	}
+	delete[] actorNames;
 	ImGui::End();
 }
 #endif // FOXTROT_EDITOR

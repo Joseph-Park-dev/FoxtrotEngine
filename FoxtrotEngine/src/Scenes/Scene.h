@@ -42,6 +42,15 @@ public:
 	void SetIsUpdatingActors(bool value){ mIsUpdatingActors = value; }
 
 public:
+	/// <summary>
+	/// Finds the Actor from current scene
+	/// </summary>
+	/// <param name="group : ">ActorGroup this Actor is assigned to.</param>
+	/// <param name="name : ">Actor's name</param>
+	/// <returns></returns>
+	Actor* FindActor(std::string& name);
+
+public:
 	virtual void ProcessInput(KeyInputManager* keyInputManager);
 	virtual void Update(float deltaTime);
 	virtual void LateUpdate(float deltaTime);

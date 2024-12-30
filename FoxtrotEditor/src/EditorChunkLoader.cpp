@@ -45,6 +45,7 @@ void EditorChunkLoader::SaveChunk(const std::string fileName)
 {
     std::ofstream ofs(fileName);
     // Save -> ActorData comes first, // Load -> ChunkData comes first
+    Camera::GetInstance()->SaveProperties(ofs);
     SaveActorsData(ofs);
     ResourceManager::GetInstance()->SaveResources(ofs);
     SaveChunkData(ofs);
@@ -57,6 +58,7 @@ void EditorChunkLoader::LoadChunk(const std::string fileName)
     LoadChunkData(ifs);
     ResourceManager::GetInstance()->LoadResources(ifs, FTCoreEditor::GetInstance());
     LoadActorsData(ifs);
+    Camera::GetInstance()->LoadProperties(ifs);
 }
 
 void EditorChunkLoader::SaveActorsData(std::ofstream& ofs)

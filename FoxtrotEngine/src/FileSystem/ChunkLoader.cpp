@@ -40,7 +40,6 @@ void ChunkLoader::SaveChunkData(std::ofstream& out)
 {
     Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
     FileIOHelper::BeginDataPackSave(out, ChunkKeys::CHUNK_DATA);
-    FileIOHelper::SaveInt(out, ChunkKeys::TARGET_ACTOR, 1);
     FileIOHelper::SaveInt(out, ChunkKeys::ACTOR_COUNT, currScene->GetActorCount());
     FileIOHelper::EndDataPackSave(out, ChunkKeys::CHUNK_DATA);
 }
@@ -68,7 +67,6 @@ void ChunkLoader::LoadChunkData(std::ifstream& ifs)
     int targetActor = 0;
     FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::CHUNK_DATA);
     FileIOHelper::LoadSize(ifs, mCurrentChunkData.ActorCount);
-    FileIOHelper::LoadInt(ifs, targetActor);
 }
 
 std::string ChunkLoader::GetConvertedFileName(std::string curr, std::string prevSuffix, std::string postSuffix)

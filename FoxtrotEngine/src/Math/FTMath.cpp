@@ -65,6 +65,12 @@ FTVector3::FTVector3(b2Vec2 vec2)
 	, z(0.0f)
 {}
 
+FTVector3::FTVector3(DirectX::SimpleMath::Vector3 vec3)
+	: x(vec3.x)
+	, y(vec3.y)
+	, z(vec3.z)
+{}
+
 FTVector3 FTVector3::Transform(const FTVector3& vec, const Matrix4& mat, float w /*= 1.0f*/)
 {
 	FTVector3 retVal;

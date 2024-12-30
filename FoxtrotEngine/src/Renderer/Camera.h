@@ -33,7 +33,9 @@ public:
 	float	 GetAspectRatio();	
 	float	 GetPixelsPerUnit();
 
-	void	 SetViewType(Viewtype viewType);
+
+	void	 SetTargetActor	(Actor* actor);
+	void	 SetViewType	(Viewtype viewType);
 
 public:
 	// "pixels" defines how much of them should fit in a given unit.
@@ -46,6 +48,7 @@ protected:
 private:
 	FoxtrotRenderer* mRenderer;
 	
+	Actor*  mTarget;
 	Vector3 mPosition;
 	Vector3 mViewDir;
 	Vector3 mUpDir;
@@ -66,6 +69,13 @@ private:
 
 private:
 	void InitializePixelsPerUnit(float pixels, float units = 1.f);
+
+	FTVector3 ConvertToCenter(FTVector3 topLeftPos);
+	FTVector3 ConvertToTopLeft(FTVector3 centerPos);
+
+public:
+	void SaveProperties(std::ofstream& ofs);
+	void LoadProperties(std::ifstream& ifs);
 
 #ifdef FOXTROT_EDITOR
 private:

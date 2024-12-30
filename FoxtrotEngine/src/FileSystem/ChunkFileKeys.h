@@ -4,6 +4,7 @@
 #define VALUE_NOT_ASSIGNED -1
 
 namespace ChunkKeys {
+	constexpr const char* NULL_OBJ = "Null";
 // File formats
 	constexpr const char* GAMEDATA_FILE_FORMAT = ".gdpack";
 	constexpr const char* CHUNK_FILE_FORMAT = ".chunk";

@@ -100,6 +100,8 @@ public:
 	void		  SetComponents	 (std::vector<Component*>& components)	{ mComponents = components; }
 	void		  SetChildActors (std::vector<Actor*>& children)		{ mChild = children; }
 
+	bool		  HasName		 (std::string& name);
+
 	template<class T>
 	T* GetComponent()
 	{

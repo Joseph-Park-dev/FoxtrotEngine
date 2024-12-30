@@ -72,6 +72,31 @@ Vector3 Camera::GetEyePos()
 	return mPosition;
 }
 
+Viewtype Camera::GetViewType()
+{
+	return mViewType;
+}
+
+float Camera::GetProjFOVAngleY()
+{
+	return mProjFOVAngleY;
+}
+
+float Camera::GetAspectRatio()
+{
+	return mAspect;
+}
+
+float Camera::GetPixelsPerUnit()
+{
+	return mPixelsPerUnit;
+}
+
+void Camera::SetViewType(Viewtype viewType)
+{
+	mViewType = viewType;
+}
+
 void Camera::InitializePixelsPerUnit(float pixels, float units)
 {
 	mPixelsPerUnit = pixels / units;

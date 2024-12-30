@@ -24,21 +24,21 @@ public:
 	FTVector3 ConvertScreenPosToWorld(FTVector2 screenPos);
 
 public:
-	Matrix GetViewRow();
-	Matrix GetProjRow();
-	Vector3 GetEyePos();
+	Matrix	 GetViewRow();
+	Matrix	 GetProjRow();
+	Vector3  GetEyePos();
 
-	Viewtype GetViewType()		{ return mViewType; }
-	float	 GetProjFOVAngleY() { return mProjFOVAngleY; }
-	float	 GetAspectRatio()	{ return mAspect; }
-	float	 GetPixelsPerUnit() { return mPixelsPerUnit; }
+	Viewtype GetViewType();
+	float	 GetProjFOVAngleY();
+	float	 GetAspectRatio();	
+	float	 GetPixelsPerUnit();
 
-	void	 SetViewType(Viewtype viewType) { mViewType = viewType; }
+	void	 SetViewType(Viewtype viewType);
 
 public:
-	// "pixels" define how much of them should fit in a given unit.
-	void Initialize(FoxtrotRenderer* renderer, UINT pixels, float unit);
-	virtual void Update(float deltaTime);
+	// "pixels" defines how much of them should fit in a given unit.
+			void Initialize	(FoxtrotRenderer* renderer, UINT pixels, float unit);
+	virtual void Update		(float deltaTime);
 
 protected:
 	void ZoomIn();

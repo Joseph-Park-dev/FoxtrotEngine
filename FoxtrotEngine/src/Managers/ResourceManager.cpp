@@ -32,8 +32,20 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 	// Add primitive geometries as resources
 	mMapPrimitives.insert(
 		std::pair(
-			ChunkKeys::PRIMITIVE_SQUARE,
-			GeometryGenerator::MakeSquare()
+			ChunkKeys::PRIMITIVE_SQUARE_RED,
+			GeometryGenerator::MakeSquare(FTVector3(1.0f, 0.0f, 0.0f))
+		)
+	);
+	mMapPrimitives.insert(
+		std::pair(
+			ChunkKeys::PRIMITIVE_SQUARE_GREEN,
+			GeometryGenerator::MakeSquare(FTVector3(0.0f, 1.0f, 0.0f))
+		)
+	);
+	mMapPrimitives.insert(
+		std::pair(
+			ChunkKeys::PRIMITIVE_SQUARE_BLUE,
+			GeometryGenerator::MakeSquare(FTVector3(0.0f, 0.0f, 1.0f))
 		)
 	);
 }

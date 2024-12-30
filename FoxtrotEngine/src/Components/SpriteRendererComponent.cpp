@@ -31,7 +31,14 @@
 void SpriteRendererComponent::Initialize(FTCore* coreInstance)
 {
 	SetRenderer	(coreInstance->GetGameRenderer());
-	SetMeshKey	(ChunkKeys::PRIMITIVE_SQUARE);
+
+	if(GetOwner()->GetActorGroup() == ActorGroup::PLAYER)
+		SetMeshKey	(ChunkKeys::PRIMITIVE_SQUARE_BLUE);
+	else if (GetOwner()->GetActorGroup() == ActorGroup::ENEMY)
+		SetMeshKey(ChunkKeys::PRIMITIVE_SQUARE_RED);
+	else
+		SetMeshKey(ChunkKeys::PRIMITIVE_SQUARE_GREEN);
+
 	if (GetMeshKey() != VALUE_NOT_ASSIGNED)
 	{
 		this->InitializeMesh();
@@ -45,7 +52,7 @@ bool SpriteRendererComponent::InitializeMesh()
 {
 	MeshRendererComponent::InitializeMesh(
 		ResourceManager::GetInstance()->GetLoadedPrimitive(
-			ChunkKeys::PRIMITIVE_SQUARE
+			GetMeshKey()
 		)
 	);
 	if (!GetMeshGroup())

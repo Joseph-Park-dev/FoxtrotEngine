@@ -37,7 +37,8 @@ void MeshRendererComponent::Initialize(FTCore* coreInstance)
 
 void MeshRendererComponent::Update(float deltaTime)
 {
-	if (mMeshGroup) {
+	if (mMeshGroup) 
+	{
 		UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
 		UpdateBuffers();
 	}
@@ -45,7 +46,8 @@ void MeshRendererComponent::Update(float deltaTime)
 
 void MeshRendererComponent::Render(FoxtrotRenderer* renderer)
 {
-	if (mMeshGroup){
+	if (mMeshGroup)
+	{
 		renderer->SwitchFillMode();
 		//renderer->SetRenderTargetView();
 		mMeshGroup->Render(renderer, mTexture);
@@ -85,7 +87,8 @@ bool MeshRendererComponent::InitializeMesh(MeshData& meshData)
 		mMeshGroup = DBG_NEW FTBasicMeshGroup;
 	std::vector<MeshData> meshes = { meshData };
 	mMeshGroup->Initialize(meshes, mRenderer->GetDevice(), mRenderer->GetContext());
-	if (!mMeshGroup) {
+	if (!mMeshGroup) 
+	{
 		LogString("ERROR: MeshRendererComponent::InitializeMesh() -> Mesh Init failed.\n");
 		return false;
 	}
@@ -107,7 +110,8 @@ bool MeshRendererComponent::SetTexture()
 
 void MeshRendererComponent::UpdateMesh(Transform* transform, Camera* cameraInstance)
 {
-	if (mMeshGroup) {
+	if (mMeshGroup) 
+	{
 		UpdateConstantBufferModel(transform);
 		UpdateConstantBufferView(cameraInstance);
 		UpdateConstantBufferProjection(cameraInstance);
@@ -129,7 +133,8 @@ MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int up
 	, mTexKey		(VALUE_NOT_ASSIGNED)
 {}
 
-MeshRendererComponent::~MeshRendererComponent(){
+MeshRendererComponent::~MeshRendererComponent()
+{
 	if (mMeshGroup)
 	{
 		delete mMeshGroup;

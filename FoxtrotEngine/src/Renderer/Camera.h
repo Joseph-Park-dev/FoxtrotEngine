@@ -33,9 +33,9 @@ public:
 	float	 GetAspectRatio();	
 	float	 GetPixelsPerUnit();
 
-
 	void	 SetTargetActor	(Actor* actor);
 	void	 SetViewType	(Viewtype viewType);
+	void	 SetOffset		(FTVector2 offset);
 
 public:
 	// "pixels" defines how much of them should fit in a given unit.
@@ -47,8 +47,8 @@ protected:
 
 private:
 	FoxtrotRenderer* mRenderer;
-	
 	Actor*  mTarget;
+
 	Vector3 mPosition;
 	Vector3 mViewDir;
 	Vector3 mUpDir;
@@ -56,6 +56,7 @@ private:
 
 	FTVector2 mDiff;
 	FTVector2 mScreenCenter;
+	FTVector3 mOffset;
 
 	// roll, pitch, yaw
 	// https://en.wikipedia.org/wiki/Aircraft_principal_axes

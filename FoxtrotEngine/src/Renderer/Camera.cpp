@@ -55,7 +55,7 @@ Matrix Camera::GetViewRow()
 	if (mTarget)
 	{
 		Transform* transform = mTarget->GetTransform();
-		mPosition = ConvertToCenter(transform->GetWorldPosition()).GetDXVec3();
+		mPosition = ConvertToCenter(transform->GetWorldPosition() + mOffset).GetDXVec3();
 		mYaw = -transform->GetRotation().y;
 		mPitch = transform->GetRotation().x;
 	}
@@ -116,6 +116,11 @@ void Camera::SetViewType(Viewtype viewType)
 	mViewType = viewType;
 }
 
+void Camera::SetOffset(FTVector2 offset)
+{
+	mOffset = offset;
+}
+
 void Camera::InitializePixelsPerUnit(float pixels, float units)
 {
 	mPixelsPerUnit = pixels / units;
@@ -148,12 +153,14 @@ void Camera::SaveProperties(std::ofstream& ofs)
 		FileIOHelper::SaveString(ofs, ChunkKeys::TARGET_ACTOR, mTarget->GetName());
 	else
 		FileIOHelper::SaveString(ofs, ChunkKeys::TARGET_ACTOR, ChunkKeys::NULL_OBJ);
+	FileIOHelper::SaveVector3(ofs, ChunkKeys::OFFSET, mOffset);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::CAMERA_DATA);
 }
 
 void Camera::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::CAMERA_DATA);
+	FileIOHelper::LoadVector3(ifs, mOffset);
 	std::string targetActor = {};
 	FileIOHelper::LoadBasicString(ifs, targetActor);
 	if (targetActor != ChunkKeys::NULL_OBJ)
@@ -257,6 +264,7 @@ void Camera::DisplayCameraMenu()
 		ImGui::EndCombo();
 	}
 	delete[] actorNames;
+	CommandHistory::GetInstance()->UpdateVector3Value("Offset from target", mOffset, LOOKAT_MODSPEED);
 	ImGui::End();
 }
 #endif // FOXTROT_EDITOR

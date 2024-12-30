@@ -50,6 +50,23 @@ void MoveComponent::Jump()
 	}
 }
 
+void MoveComponent::SetIsGrounded()
+{
+	b2RayCastInput rcInput;
+	b2AABB aaBB = b2Body_ComputeAABB(mRigidbody->GetBodyID());
+	b2Vec2 center = b2AABB_Center(aaBB);
+	b2Vec2 extent = b2AABB_Extents(aaBB);
+	b2Vec2 length = b2Vec2_zero;
+	length.y = -0.5f - extent.y;
+	b2RayResult result = b2World_CastRayClosest(
+		Physics2D::GetInstance()->GetCurrentWorldID(),
+		center,
+		length,
+		mGroundFilter
+	);
+	mIsGrounded = result.hit;
+}
+
 void MoveComponent::Initialize(FTCore* coreInstance)
 {
 	mRigidbody = GetOwner()->GetComponent<Rigidbody2DComponent>();
@@ -66,21 +83,8 @@ void MoveComponent::Update(float deltaTime)
 			Accelerate();
 		if (mVerticalDir != VerticalDir::GROUND)
 			Jump();
+		SetIsGrounded();
 	}
-
-	b2RayCastInput rcInput;
-	b2AABB aaBB = b2Body_ComputeAABB(mRigidbody->GetBodyID());
-	b2Vec2 center = b2AABB_Center(aaBB);
-	b2Vec2 extent = b2AABB_Extents(aaBB);
-	b2Vec2 length = b2Vec2_zero;
-	length.y = -0.5f - extent.y;
-	b2RayResult result = b2World_CastRayClosest(
-		Physics2D::GetInstance()->GetCurrentWorldID(), 
-		center, 
-		length,
-		mGroundFilter
-	);
-	mIsGrounded = result.hit;
 }
 
 void MoveComponent::SaveProperties(std::ofstream& ofs)

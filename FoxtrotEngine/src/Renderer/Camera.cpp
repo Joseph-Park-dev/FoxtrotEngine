@@ -51,6 +51,7 @@ Camera::~Camera(){}
 
 Matrix Camera::GetViewRow()
 {
+	float unitsPerPixel = 1 / mPixelsPerUnit;
 	if (mTarget)
 	{
 		Transform* transform = mTarget->GetTransform();
@@ -203,11 +204,11 @@ void Camera::DisplayCameraMenu()
 			// mViewEyeRotation -= FTVector3(delta.y, delta.x, 0.f);
 		}
 	}
-	FTVector3 pos = ConvertToCenter(FTVector3(mPosition));
+	FTVector3 pos = ConvertToTopLeft(FTVector3(mPosition));
 	CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", pos, LOOKAT_MODSPEED);
 	CommandHistory::GetInstance()->UpdateFloatValue("Look-At Yaw", &mYaw, LOOKAT_MODSPEED);
 	CommandHistory::GetInstance()->UpdateFloatValue("Look-At Pitch", &mPitch, LOOKAT_MODSPEED);
-	mPosition = ConvertToTopLeft(pos).GetDXVec3();
+	mPosition = ConvertToCenter(pos).GetDXVec3();
 
 	//// Updating screen center since the camera position is moved
 	// FTVector2 diff = updatedLookAtPos - lookAtPos;

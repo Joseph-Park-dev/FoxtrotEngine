@@ -1,5 +1,9 @@
 # Foxtrot Engine 2D [![License](https://img.shields.io/badge/license-GNUGPLv3-green)](./LICENSE)
 
+<p align="center">
+<img src="./assets/Logo/FoxtrotEngine_LOGO.png" width="40%" height="40%" title="LOGO"/>
+</p>
+
 Foxtrot is a 2D game engine based on DirectX 11 for Windows.
 It includes Foxtrot Editor which allows users to create & modify scene data, and Foxtrot Engine which executes the produced game based on those data. Scene data are stored as a ".chunk" file, which is a file structure that describes the game data and the required resources.
 
@@ -44,6 +48,7 @@ This section will be updated.
 Foxtrot Engine has been developed not only as a portfolio to get employed in the game industry but also as a tool of education to obtain game development experiences. The developer also expects to develop this project until it reaches the point of being able to produce a finished 2D game title. Here is the list of upcoming features and goals.
 
 - Artificial intelligence for characters (current WIP)<br>
+- Spine animation renderer <br>
 - Particle system<br>
 - UI testing (this was implemented, but not tested)<br>
 - Establishment of the workflow of Foxtrot Engine -> The development routine <br>

@@ -131,7 +131,7 @@
     <PublicIncludeDirectories>..\FoxtrotEditor\include;..\FoxtrotEditor\src;$(ProjectDir)src;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
-    <OutDir>..\FoxtrotEditor</OutDir>
+    <OutDir>..\FoxtrotEditor\FoxtrotEngine</OutDir>
     <TargetExt>.lib</TargetExt>
     <PublicIncludeDirectories>..\FoxtrotEditor\include;..\FoxtrotEditor\src;$(ProjectDir)include;$(ProjectDir)src;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>

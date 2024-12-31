@@ -140,7 +140,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
     <IncludePath>$(WindowsSDK_IncludePath);..\FoxtrotEngine\src;..\FoxtrotEngine\include;$(IncludePath)</IncludePath>
     <SourcePath>$(VC_SourcePath)</SourcePath>
-    <OutDir>.\build\</OutDir>
+    <OutDir>.\Builds</OutDir>
     <PublicIncludeDirectories>.\include;.\src;..\FoxtrotEngine\src;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">

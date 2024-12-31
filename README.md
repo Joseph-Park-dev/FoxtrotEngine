@@ -1,7 +1,7 @@
 # Foxtrot Engine 2D [![License](https://img.shields.io/badge/license-GNUGPLv3-green)](./LICENSE)
 
 <p align="center">
-<img src="./assets/Logo/FoxtrotEngine_LOGO.png" width="40%" height="40%" title="LOGO"/>
+<img src="./Assets/Logo/FoxtrotEngine_LOGO.png" width="40%" height="40%" title="LOGO"/>
 </p>
 
 Foxtrot is a 2D game engine based on DirectX 11 for Windows.

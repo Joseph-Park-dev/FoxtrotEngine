@@ -13,7 +13,6 @@
 /// </summary>
 
 #pragma once
-
 #include <deque>
 #include <functional>
 

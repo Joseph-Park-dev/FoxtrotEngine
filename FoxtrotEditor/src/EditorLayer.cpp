@@ -37,7 +37,6 @@
 #include "Actors/Actor.h"
 #include "Actors/ActorGroup.h"
 #include "Actors/Transform.h"
-#include "Actors/Backgrounds/BackgroundActor.h"
 #include "Components/Rigidbody2DComponent.h"
 #include "Components/UIs/PanelUIComponent.h"
 #include "Renderer/FoxtrotRenderer.h"

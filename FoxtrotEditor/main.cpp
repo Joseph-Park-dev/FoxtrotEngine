@@ -1,23 +1,17 @@
 // ----------------------------------------------------------------
-// Foxtrot Engine (2D/3D)
-// Copyright (C) 2024 JungBae Park. All rights reserved.
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
-
-/// <FTCore_Editor>
-/// Editor fields & functions for development
-/// Displays editor window, Provides functionality to create & edit .chunk files.
-/// </FTCore_Editor>
+/// <summary>
+/// Main function of Foxtrot Editor.
+/// </summary>
 
 #pragma once
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
-
-#ifdef _DEBUG
-#define DBG_NEW DBG_NEW ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
-//#define DBG_NEW DBG_NEW
-#else
-#define DBG_NEW DBG_NEW
-#endif // DEBUG
 
 #include "FTCoreEditor.h"
 #pragma comment	(lib, "FoxtrotEngine.lib")

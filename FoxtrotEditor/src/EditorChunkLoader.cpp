@@ -1,3 +1,11 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "EditorChunkLoader.h"
 
 #include <fstream>
@@ -15,6 +23,8 @@
 EditorChunkLoader::EditorChunkLoader()
     :ChunkLoader()
 {
+    // You must list all Components to be used during runtime.
+    // That includes the user defined Components, or "Behavior"s.
     mComponentCreateMap =
     {
         {"AIComponent",             &Component::Create<AIComponent>},

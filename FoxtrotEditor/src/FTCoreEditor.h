@@ -1,9 +1,16 @@
-#pragma once
-/// <FTCore_Editor>
-/// Editor fields & functions for development -> Active in Debug build; 
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
 /// Displays editor window, Provides functionality to create & edit .chunk files.
-/// </FTCore_Editor>
+/// This also runs the EditorScene, emulating the actual Scene in produced game.
+/// </summary>
 
+#pragma once
 #include "Core/FTCore.h"
 
 #include "Debugging/DebugMemAlloc.h"
@@ -28,14 +35,14 @@ private:
 	bool			 mIsUpdatingGame;
 	bool			 mIsResizingWindow;
 	std::string		 mEditorDataFileName;
-	// std::string		 mEditorResolutionKey;
 
 private:
-// These functions are to be included in Initialze()
+	// These member functions are to be included in Initialize()
 	void InitSingletonManagers() override;
 	bool InitGUI();
 
 private:
+	// GameLoop functions
 	void ProcessInput()   override;
 	void UpdateGame()	  override;
 	void GenerateOutput() override;

@@ -1,7 +1,15 @@
-﻿#include "RenderTextureClass.h"
+﻿// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
+#include "RenderTextureClass.h"
 
 #include <d3d11.h>
-#include <wrl.h> // ComPtr
+#include <wrl.h>
 #include <functional>
 
 #include "Renderer/FoxtrotRenderer.h"
@@ -10,7 +18,7 @@
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
-#include "DebugGeometries.h"
+#include "DebugShapes.h"
 
 void RenderTextureClass::InitializeTexture(ComPtr<ID3D11Device>& device, int width, int height)
 {
@@ -71,22 +79,17 @@ void RenderTextureClass::DrawOnTexture(ComPtr<ID3D11DeviceContext>& context, Com
 
 	//renderer->SetFillMode(FillMode::WireFrame);
 	//renderer->SwitchFillMode();
-	DebugGeometries::GetInstance()->Render(renderer);
+	DebugShapes::GetInstance()->Render(renderer);
 	//renderer->SetFillMode(FillMode::Solid);
 	//renderer->SwitchFillMode();
 	context->OMSetRenderTargets(1, renderTargetView.GetAddressOf(), depthStencilView.Get());
 }
 
 RenderTextureClass::RenderTextureClass()
-{
-}
-
-
-RenderTextureClass::RenderTextureClass(const RenderTextureClass& other)
-{
-}
-
+	: mRenderTargetTexture	(nullptr)
+	, mRenderTargetView		(nullptr)
+	, mShaderResourceView	(nullptr)
+{}
 
 RenderTextureClass::~RenderTextureClass()
-{
-}
+{}

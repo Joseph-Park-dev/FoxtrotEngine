@@ -23,7 +23,7 @@
 #include <imgui.h>
 #include "EditorLayer.h"
 #include "RenderTextureClass.h"
-#include "DebugGeometries.h"
+#include "DebugShapes.h"
 #endif // FOXTROT_EDITOR
 
 FoxtrotRenderer* FoxtrotRenderer::CreateRenderer(HWND window, int width, int height)

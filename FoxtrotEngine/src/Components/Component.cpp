@@ -101,7 +101,7 @@ void Component::LoadProperties(std::ifstream& ifs)
 void Component::EditorUIUpdate()
 {
 }
-void Component::UpdateDebugGeometries(FTVector3 pos, FTVector3 rot, FTVector3 scale, Camera* cameraInst)
+void Component::UpdateDebugShapes(FTVector3 pos, FTVector3 rot, FTVector3 scale, Camera* cameraInst)
 {}
 
 void Component::OnConfirmUpdate()

@@ -1,3 +1,11 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "EditorElement.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -51,12 +59,6 @@ void EditorElement::UpdateUI(bool isPremade)
 	}
 }
 
-void EditorElement::RenderUI(FoxtrotRenderer* renderer)
-{
-	ImGui::Render();
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-}
-
 void EditorElement::EditorUpdate(float deltaTime)
 {
 	for (auto comp : GetComponents()) 
@@ -71,19 +73,16 @@ void EditorElement::EditorRender(FoxtrotRenderer* renderer)
 
 EditorElement::EditorElement(EditorScene* scene)
 	: Actor (scene)
-	, mRotationModSpeed(1.0f)
 	, mIsFocused(false)
 {}
 
 EditorElement::EditorElement(Actor* actor)
 	: Actor(actor)
-	, mRotationModSpeed(1.0f)
 	, mIsFocused(false)
 {}
 
 EditorElement::EditorElement(Actor* actor, EditorScene* scene)
 	: Actor(actor, scene)
-	, mRotationModSpeed(1.0f)
 	, mIsFocused(false)
 {}
 

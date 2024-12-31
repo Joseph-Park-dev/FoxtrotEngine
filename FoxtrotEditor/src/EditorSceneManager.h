@@ -1,5 +1,16 @@
-#pragma once
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// A singleton object that manages EditorScene & its elements.
+/// Note that the class is not inherited from class SceneManager.
+/// </summary>
 
+#pragma once
 #include "Core/SingletonMacro.h"
 
 #include "EditorScene.h"
@@ -13,17 +24,21 @@ public:
 	virtual void ProcessInput(class KeyInputManager* keyInputManager);
 
 	// Runs on editor when pressing Play button.
-	virtual void Update(float deltaTime);
-	virtual void Render(FoxtrotRenderer* renderer);
+	void Update(float deltaTime);
 
-	// Runs on editor BEFORE pressing Play button.
+	// Runs on editor when pressing Play button.
+	void Render(FoxtrotRenderer* renderer);
+
 	// Additional editor features especially for debugging purpose.
-	virtual void EditorUpdate(float deltaTime);
-	virtual void EditorRender(FoxtrotRenderer* renderer);
+	void EditorUpdate(float deltaTime);
+	
+	// Additional editor features especially for debugging purpose.
+	void EditorRender(FoxtrotRenderer* renderer);
 
-	virtual void ProcessEvent();
+	void ProcessEvent();
 
-			void DeleteAll();
+	// Deletes all objects in a Scene.
+	void DeleteAll();
 
 public:
 	EditorScene* GetEditorScene();

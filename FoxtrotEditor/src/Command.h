@@ -1,3 +1,14 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// An event-like object to be enqueued when changing values from Foxtrot Editor.
+/// </summary>
+
 #pragma once
 #include <list>
 
@@ -6,13 +17,18 @@
 #include "Math/FTMath.h"
 #include "Actors/Actor.h"
 
-class FTVector2;
-
 class Command
 {
 public:
-	virtual void Execute() {};
-	virtual void Undo() {};
+	/// <summary>
+	/// Set the existing value as the previous, new value as the current.
+	/// </summary>
+	virtual void Execute() = 0;
+
+	/// <summary>
+	/// Set the previous value as the current.
+	/// </summary>
+	virtual void Undo()  = 0;
 
 public:
 	Command();

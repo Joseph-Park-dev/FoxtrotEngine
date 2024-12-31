@@ -1,3 +1,11 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "CommandHistory.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -42,6 +50,7 @@ void CommandHistory::UndoCommand()
 		Command* cmd = QueryCommand();
 		if (cmd)
 		{
+			LogInt(mCommandPointer);
 			cmd->Undo();
 			--mCommandPointer;
 		}
@@ -53,30 +62,29 @@ void CommandHistory::RedoCommand()
 	if (mCommandPointer < mCommandDeq.size() - 1)
 	{
 		++mCommandPointer;
+		LogInt(mCommandPointer);
 		Command* cmd = QueryCommand();
 		if (cmd)
-		{
 			cmd->Execute();
-		}
 	}
 }
 
 void CommandHistory::StartCMDRecord()
 {
-	if (!mRecording)
+	if (!mIsRecording)
 	{
-		mRecording = true;
+		mIsRecording = true;
 		mCMDStartPointer = mCommandPointer;
 	}
 }
 
 void CommandHistory::EndCMDRecord()
 {
-	if (mRecording)
+	if (mIsRecording)
 	{
-		mRecording = false;
+		mIsRecording = false;
 		mCMDEndPointer = mCommandPointer;
-		//MergeCMDRecord();
+		MergeCMDRecord();
 	}
 }
 
@@ -113,10 +121,10 @@ void CommandHistory::UpdateVector2Value(std::string label, FTVector2& ref, float
 	float* vec2 = DBG_NEW float[2];
 	vec2[0] = updatedVal.x;
 	vec2[1] = updatedVal.y;
-	bool isRecording = GetIsRecording();
+	bool isRecording = mIsRecording;
 	if (ImGui::DragFloat2(label.c_str(), vec2, modSpeed)) {
 		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left)) {
-			SetIsRecording(true);
+			mIsRecording = true;
 			AddCommand(DBG_NEW Vector2EditCommand(ref, updatedVal));
 		}
 		updatedVal = FTVector2(vec2[0], vec2[1]);
@@ -127,7 +135,7 @@ void CommandHistory::UpdateVector2Value(std::string label, FTVector2& ref, float
 		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
 		{
 			AddCommand(DBG_NEW Vector2EditCommand(ref, updatedVal));
-			SetIsRecording(false);
+			mIsRecording = false;
 		}
 	}
 	delete[] vec2;
@@ -139,10 +147,10 @@ void CommandHistory::UpdateVector2Value(std::string label, b2Vec2& ref, float mo
 	float* vec2 = DBG_NEW float[2];
 	vec2[0] = updatedVal.x;
 	vec2[1] = updatedVal.y;
-	bool isRecording = GetIsRecording();
+	bool isRecording = mIsRecording;
 	if (ImGui::DragFloat2(label.c_str(), vec2, modSpeed)) {
 		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left)) {
-			SetIsRecording(true);
+			mIsRecording = true;
 			AddCommand(DBG_NEW B2Vec2EditCommand(ref, updatedVal));
 		}
 		updatedVal.x = vec2[0];
@@ -154,7 +162,7 @@ void CommandHistory::UpdateVector2Value(std::string label, b2Vec2& ref, float mo
 		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
 		{
 			AddCommand(DBG_NEW B2Vec2EditCommand(ref, updatedVal));
-			SetIsRecording(false);
+			mIsRecording = false;
 		}
 	}
 	delete[] vec2;
@@ -167,10 +175,10 @@ void CommandHistory::UpdateVector3Value(std::string label, FTVector3& ref, float
 	vec3[0] = updatedVal.x;
 	vec3[1] = updatedVal.y;
 	vec3[2] = updatedVal.z;
-	bool isRecording = CommandHistory::GetInstance()->GetIsRecording();
+	bool isRecording = mIsRecording;
 	if (ImGui::DragFloat3(label.c_str(), vec3, modSpeed)){
 		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left)){
-			SetIsRecording(true);
+			mIsRecording = true;
 			AddCommand(DBG_NEW Vector3EditCommand(ref, updatedVal));
 		}
 		updatedVal = FTVector3(vec3[0], vec3[1], vec3[2]);
@@ -181,7 +189,8 @@ void CommandHistory::UpdateVector3Value(std::string label, FTVector3& ref, float
 		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
 		{
 			AddCommand(DBG_NEW Vector3EditCommand(ref, updatedVal));
-			SetIsRecording(false);
+			mIsRecording = false;
+			LogInt(mCommandDeq.size());
 		}
 	}
 	delete[] vec3;
@@ -194,10 +203,10 @@ void CommandHistory::UpdateVector3Value(std::string label, DirectX::SimpleMath::
 	vec3[0] = updatedVal.x;
 	vec3[1] = updatedVal.y;
 	vec3[2] = updatedVal.z;
-	bool isRecording = CommandHistory::GetInstance()->GetIsRecording();
+	bool isRecording = mIsRecording;
 	if (ImGui::DragFloat3(label.c_str(), vec3, modSpeed)) {
 		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left)) {
-			SetIsRecording(true);
+			mIsRecording = true;
 			AddCommand(DBG_NEW DXVector3EditCommand(ref, updatedVal));
 		}
 		updatedVal = DirectX::SimpleMath::Vector3(vec3[0], vec3[1], vec3[2]);
@@ -208,7 +217,7 @@ void CommandHistory::UpdateVector3Value(std::string label, DirectX::SimpleMath::
 		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
 		{
 			AddCommand(DBG_NEW DXVector3EditCommand(ref, updatedVal));
-			SetIsRecording(false);
+			mIsRecording = false;
 		}
 	}
 	delete[] vec3;
@@ -218,12 +227,12 @@ void CommandHistory::UpdateFloatValue(std::string label, float* ref, float modSp
 {
 	float prevFloat = *ref;
 	float* rotationBuf = DBG_NEW float(prevFloat);
-	bool isRecording = CommandHistory::GetInstance()->GetIsRecording();
+	bool isRecording = mIsRecording;
 	if (ImGui::DragFloat(label.c_str(), rotationBuf, modSpeed))
 	{
 		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
 		{
-			CommandHistory::GetInstance()->SetIsRecording(true);
+			mIsRecording = true;
 			CommandHistory::GetInstance()->
 				AddCommand(DBG_NEW FloatEditCommand(ref, prevFloat));
 		}
@@ -235,34 +244,7 @@ void CommandHistory::UpdateFloatValue(std::string label, float* ref, float modSp
 		{
 			CommandHistory::GetInstance()->
 				AddCommand(DBG_NEW FloatEditCommand(ref, prevFloat));
-			CommandHistory::GetInstance()->SetIsRecording(false);
-		}
-	}
-	delete rotationBuf;
-}
-
-void CommandHistory::UpdateFloatValue(std::string label, float* ref, float val, float modSpeed, Transform* transf, TransSetFloatFunc setFunc)
-{
-	float prevRotation = val;
-	float* rotationBuf = DBG_NEW float(prevRotation);
-	bool isRecording = CommandHistory::GetInstance()->GetIsRecording();
-	if (ImGui::DragFloat(label.c_str(), rotationBuf, modSpeed))
-	{
-		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
-		{
-			CommandHistory::GetInstance()->SetIsRecording(true);
-			CommandHistory::GetInstance()->
-				AddCommand(DBG_NEW FloatEditCommand(ref, prevRotation));
-		}
-		setFunc(transf, *rotationBuf);
-	}
-	else
-	{
-		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
-		{
-			CommandHistory::GetInstance()->
-				AddCommand(DBG_NEW FloatEditCommand(ref, val));
-			CommandHistory::GetInstance()->SetIsRecording(false);
+			mIsRecording = false;
 		}
 	}
 	delete rotationBuf;
@@ -272,12 +254,12 @@ void CommandHistory::UpdateIntValue(std::string label, int* ref, int modSpeed)
 {
 	int prevInt = *ref;
 	int* intBuf = DBG_NEW int(prevInt);
-	bool isRecording = CommandHistory::GetInstance()->GetIsRecording();
+	bool isRecording = mIsRecording;
 	if (ImGui::DragInt(label.c_str(), intBuf, modSpeed))
 	{
 		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
 		{
-			CommandHistory::GetInstance()->SetIsRecording(true);
+			mIsRecording = true;
 			CommandHistory::GetInstance()->
 				AddCommand(DBG_NEW IntEditCommandPtr(ref, prevInt));
 		}
@@ -289,7 +271,7 @@ void CommandHistory::UpdateIntValue(std::string label, int* ref, int modSpeed)
 		{
 			CommandHistory::GetInstance()->
 				AddCommand(DBG_NEW IntEditCommandPtr(ref, prevInt));
-			CommandHistory::GetInstance()->SetIsRecording(false);
+			mIsRecording = false;
 		}
 	}
 	delete intBuf;
@@ -298,7 +280,7 @@ void CommandHistory::UpdateIntValue(std::string label, int* ref, int modSpeed)
 void CommandHistory::UpdateBoolValue(std::string label, bool& ref)
 {
 	bool valToUpdate = ref;
-	bool isRecording = CommandHistory::GetInstance()->GetIsRecording();
+	bool isRecording = mIsRecording;
 	if (ImGui::Checkbox(label.c_str(), &valToUpdate))
 	{
 		if (valToUpdate != ref)
@@ -330,7 +312,7 @@ CommandHistory::CommandHistory()
 	, mCommandPointer(0) // Pointer value becomes 0 when the 1st element is inserted
 	, mCMDStartPointer(0)
 	, mCMDEndPointer(0)
-	, mRecording(false)
+	, mIsRecording(false)
 {}
 
 CommandHistory::~CommandHistory()

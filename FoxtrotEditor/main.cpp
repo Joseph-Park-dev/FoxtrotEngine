@@ -8,7 +8,6 @@
 /// Displays editor window, Provides functionality to create & edit .chunk files.
 /// </FTCore_Editor>
 
-
 #pragma once
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>

@@ -43,7 +43,7 @@ public:
 public:
 			void EditorUIUpdate() override;
 			void ToggleDebugShape() override;
-			void UpdateDebugGeometries(
+			void UpdateDebugShapes(
 				FTVector3 pos, 
 				FTVector3 rot, 
 				FTVector3 scale, 

@@ -48,7 +48,7 @@
     <ClCompile Include="src\EditorScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\DebugGeometries.cpp">
+    <ClCompile Include="src\DebugShapes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\DirectoryHelper.cpp">
@@ -92,7 +92,7 @@
     <ClInclude Include="src\EditorUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DebugGeometries.h">
+    <ClInclude Include="src\DebugShapes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\DirectoryHelper.h">

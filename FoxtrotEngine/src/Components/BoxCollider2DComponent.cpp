@@ -11,7 +11,7 @@
 #include "CommandHistory.h"
 // Used to access Debug geometries
 #include "ResourceSystem/GeometryGenerator.h"
-#include "DebugGeometries.h"
+#include "DebugShapes.h"
 #endif
 
 const FTVector2 BoxCollider2DComponent::GetScale() const
@@ -70,7 +70,7 @@ BoxCollider2DComponent::~BoxCollider2DComponent()
 	if (b2Shape_IsValid(GetShapeID()))
 		b2DestroyShape(GetShapeID(), true);
 #ifdef FOXTROT_EDITOR
-	DebugGeometries::GetInstance()->RemoveShape(mDebugRect);
+	DebugShapes::GetInstance()->RemoveShape(mDebugRect);
 	mDebugRect = nullptr;
 #endif
 }
@@ -101,7 +101,7 @@ void BoxCollider2DComponent::EditorUpdate(float deltaTime)
 			transform->GetScale().y * mScale.y,
 			1.f
 		);
-		UpdateDebugGeometries(pos, rot, scale, Camera::GetInstance());
+		UpdateDebugShapes(pos, rot, scale, Camera::GetInstance());
 	}
 }
 
@@ -122,7 +122,7 @@ void BoxCollider2DComponent::ToggleDebugShape()
 		mDebugRect->SetIsActive(IsShowingDebugShape());
 }
 
-void BoxCollider2DComponent::UpdateDebugGeometries(FTVector3 pos, FTVector3 rot, FTVector3 scale, Camera* cameraInst)
+void BoxCollider2DComponent::UpdateDebugShapes(FTVector3 pos, FTVector3 rot, FTVector3 scale, Camera* cameraInst)
 {
 	/*float NDC = Camera::GetInstance()->GetNDCRatio();
 	pos *= NDC;

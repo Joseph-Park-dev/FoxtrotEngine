@@ -274,7 +274,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\DirectoryHelper.cpp" />
-    <ClCompile Include="src\DebugGeometries.cpp" />
+    <ClCompile Include="src\DebugShapes.cpp" />
     <ClCompile Include="src\EditorChunkLoader.cpp" />
     <ClCompile Include="include\imgui\FileDialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="src\Command.cpp" />
@@ -288,7 +288,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DirectoryHelper.h" />
-    <ClInclude Include="src\DebugGeometries.h" />
+    <ClInclude Include="src\DebugShapes.h" />
     <ClInclude Include="src\EditorUtils.h" />
     <ClInclude Include="src\EditorChunkLoader.h" />
     <ClInclude Include="include\imgui\FileDialog\ImGuiFileDialog.h" />

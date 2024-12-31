@@ -26,7 +26,7 @@ public:
 
 	// This is for ShapeActors (e.g. SquareActor)
 			void Render(FoxtrotRenderer* renderer);
-	// This should be called in DebugGeometries instance only once per frame.
+	// This should be called in DebugShapes instance only once per frame.
 	// You don't have to use this member function by yourself.
 			void Render(
 				FoxtrotRenderer* renderer, 

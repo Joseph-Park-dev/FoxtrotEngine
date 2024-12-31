@@ -11,7 +11,7 @@
 #include "Actors/Actor.h"
 
 #ifdef FOXTROT_EDITOR
-#include "DebugGeometries.h"
+#include "DebugShapes.h"
 #include "ResourceSystem/FTShape.h"
 #include "CommandHistory.h"
 #endif // DEBUG

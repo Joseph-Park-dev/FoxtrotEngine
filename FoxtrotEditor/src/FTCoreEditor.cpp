@@ -1,3 +1,11 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "FTCoreEditor.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -7,7 +15,7 @@
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
-#include "DebugGeometries.h"
+#include "DebugShapes.h"
 #include "DirectoryHelper.h"
 
 #include "Managers/KeyInputManager.h"
@@ -27,7 +35,7 @@
 
 // FTCoreEditor related singleton initializations -> used in Foxtrot Editor Runtime
 CommandHistory*		CommandHistory::mInstance = nullptr;
-DebugGeometries*	DebugGeometries::mInstance = nullptr;
+DebugShapes*		DebugShapes::mInstance = nullptr;
 DirectoryHelper*	DirectoryHelper::mInstance = nullptr;
 EditorLayer*		EditorLayer::mInstance = nullptr;
 EditorSceneManager* EditorSceneManager::mInstance = nullptr;
@@ -57,7 +65,7 @@ void FTCoreEditor::ShutDown()
 	EditorLayer::GetInstance()->ShutDown();
 
 	CommandHistory::GetInstance()->Destroy();
-	DebugGeometries::GetInstance()->Destroy();
+	DebugShapes::GetInstance()->Destroy();
 	DirectoryHelper::GetInstance()->Destroy();
 	EditorLayer::GetInstance()->Destroy();
 	EditorSceneManager::GetInstance()->Destroy();
@@ -77,7 +85,7 @@ void FTCoreEditor::InitSingletonManagers()
 
 	EditorSceneManager::GetInstance()->Initialize();
 	EditorLayer::GetInstance();
-	DebugGeometries::GetInstance()->Initialize(GetGameRenderer());
+	DebugShapes::GetInstance()->Initialize(GetGameRenderer());
 }
 
 // Imgui forwawrd declaration

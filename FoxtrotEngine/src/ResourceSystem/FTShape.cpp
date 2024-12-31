@@ -7,7 +7,7 @@
 #include "Renderer/FoxtrotRenderer.h"
 
 #ifdef FOXTROT_EDITOR
-#include "DebugGeometries.h"
+#include "DebugShapes.h"
 #endif // FOXTROT_EDITOR
 
 using DXMatrix = DirectX::SimpleMath::Matrix;
@@ -221,7 +221,7 @@ void FTRectangle::Initialize(FoxtrotRenderer* renderer)
 {
     FTShape::Initialize(renderer);
     InitializeMesh(renderer->GetDevice(), GeometryGenerator::MakeSquare());
-    DebugGeometries::GetInstance()->AddShape(this);
+    DebugShapes::GetInstance()->AddShape(this);
 }
 
 void FTRectangle::UpdateConstantBufferModel(FTVector3 pos, FTVector3 rot, FTVector3 scale)

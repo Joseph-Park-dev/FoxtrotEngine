@@ -94,7 +94,7 @@ public:
 	// Deep copy function for Editing Premade on FTEditor
 	// (Initialize() is not included)
 
-	virtual void UpdateDebugGeometries(
+	virtual void UpdateDebugShapes(
 		FTVector3 pos,
 		FTVector3 rot,
 		FTVector3 scale,

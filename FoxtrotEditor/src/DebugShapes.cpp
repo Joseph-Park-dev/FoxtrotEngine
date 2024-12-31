@@ -1,24 +1,32 @@
-#include "DebugGeometries.h"
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
+#include "DebugShapes.h"
 
 #include "Renderer/D3D11Utils.h"
 
-DebugGeometries::DebugGeometries()
+DebugShapes::DebugShapes()
     : mVertexShaderPath(L"./Assets/Shaders/EditorDebugShapeVS.hlsl")
     , mPixelShaderPath(L"./Assets/Shaders/EditorDebugShapePS.hlsl")
 {}
 
-DebugGeometries::~DebugGeometries()
+DebugShapes::~DebugShapes()
 {
     if(0 < mShapes.size())
         mShapes.clear();
 }
 
-void DebugGeometries::Initialize(FoxtrotRenderer* renderer)
+void DebugShapes::Initialize(FoxtrotRenderer* renderer)
 {
     this->CreateShaders(renderer->GetDevice());
 }
 
-void DebugGeometries::Render(FoxtrotRenderer* renderer)
+void DebugShapes::Render(FoxtrotRenderer* renderer)
 {
     if (mShapes.size() < 1)
         return;
@@ -37,12 +45,12 @@ void DebugGeometries::Render(FoxtrotRenderer* renderer)
     }
 }
 
-void DebugGeometries::AddShape(FTShape* shape)
+void DebugShapes::AddShape(FTShape* shape)
 {
     mShapes.push_back(shape);
 }
 
-void DebugGeometries::RemoveShape(FTShape* shape)
+void DebugShapes::RemoveShape(FTShape* shape)
 {
     auto iter = std::find(mShapes.begin(), mShapes.end(), shape);
     if (iter != mShapes.end())
@@ -52,7 +60,7 @@ void DebugGeometries::RemoveShape(FTShape* shape)
     }
 }
 
-void DebugGeometries::DeleteAll()
+void DebugShapes::DeleteAll()
 {
     if (mShapes.size() < 1)
         return;
@@ -67,7 +75,7 @@ void DebugGeometries::DeleteAll()
     mShapes.clear();
 }
 
-void DebugGeometries::CreateShaders(ComPtr<ID3D11Device>& device)
+void DebugShapes::CreateShaders(ComPtr<ID3D11Device>& device)
 {
     std::vector<D3D11_INPUT_ELEMENT_DESC> basicInputElements = {
     {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,

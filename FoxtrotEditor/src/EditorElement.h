@@ -1,3 +1,17 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// A holder object that has the values of an Actor.
+/// This will be on Foxtrot Editor, and the user can modify its values.
+/// Values of EditorElements will be saved as an ActorData in .Chunk file,
+/// and will be used to create Actors in the produced game. 
+/// </summary>
+
 #pragma once
 #include "Components/UIs/PanelUIComponent.h"
 #include "Components/Component.h"
@@ -19,20 +33,20 @@ public:
 	void SetIsFocused(bool isFocused) { mIsFocused = isFocused; }
 
 public:
-	// Runs on FTCoreEditor::UpdateGame() when mIsUpdatingGame is NOT true
+	// Updates editor specific features -> this will be omitted from the produced game.
 	void EditorUpdate(float deltaTime);
+
+	// Renders editor specific features -> this will be omitted from the produced game.
 	void EditorRender(FoxtrotRenderer* renderer);
 
 public:
+	/// <summary>
+	/// Updates UIs displayed on Inspector menu.
+	/// </summary>
+	/// <param name="isPremade : ">Is this object premade?</param>
 	void UpdateUI(bool isPremade);
-	void RenderUI(FoxtrotRenderer* renderer);
 
 public:
-	/// <summary>
-	/// Constructor that creates the empty EditorElement to be used in FTEditor.
-	/// </summary>
-	//EditorElement();
-
 	/// <summary>
 	/// Constructor that adds EditorElements to scene during initialization phase.
 	/// (When a .chunk is being loaded)
@@ -56,28 +70,8 @@ public:
 	/// <param name="origin : "> Actor nested inside of Premade to copy values from. </param>
 	EditorElement(Actor* actor, EditorScene* scene);
 
-	/// <summary>
-	/// Constructor that deep-copies the EditorElement, and adds itself to EditorScene.
-	/// Especially useful to duplicate EditorElements on FTEditor.
-	/// </summary>
-	/// <param name="origin : ">EditorElement to be copied.</param>
-	/// <param name="scene : ">EditorScene this object will be added.</param>
-	EditorElement(EditorElement* origin, EditorScene* scene);
-
-	/*
-	/// <summary>
-	/// Constructor called when "Stop" is triggered in FTEditor.
-	/// Trans
-	/// </summary>
-	/// <param name="actor : "> Actor in scene whose values are copied from.</param>
-	/// <param name="scene : "> A scene object which this EditorElement is loaded to.</param>
-	EditorElement(Actor* actor, EditorScene* scene);
-	EditorElement(EditorElement* origin, EditorScene* scene);
-	*/
-
 private:
-	float	mRotationModSpeed;
-	bool	mIsFocused;
+	bool mIsFocused;  // Is this item clicked on Foxtrot Editor's hierarchy menu?
 
 private:
 	void UpdateActorName();

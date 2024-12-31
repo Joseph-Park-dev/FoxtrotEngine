@@ -157,7 +157,6 @@ void Collider2DComponent::ToggleDebugShape()
 	static bool showDebugShape;
 	ImGui::Checkbox("Show Debug Shape", &showDebugShape);
 	mShowDebugShape = showDebugShape;
-	LogBool(mShowDebugShape);
 }
 
 bool Collider2DComponent::IsShowingDebugShape()

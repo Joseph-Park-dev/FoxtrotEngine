@@ -1,3 +1,11 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "EditorLayer.h"
 
 #include <unordered_map>
@@ -17,7 +25,7 @@
 #include "RenderTextureClass.h"
 #include "EditorSceneManager.h"
 #include "EditorScene.h"
-#include "DebugGeometries.h"
+#include "DebugShapes.h"
 #include "DirectoryHelper.h"
 
 #include "Core/FTCore.h"
@@ -63,27 +71,11 @@ void EditorLayer::Update(float deltaTime)
 	DisplayCollisionMenu();
 	DisplayInspectorMenu();
 	Camera::GetInstance()->DisplayCameraMenu();
-	//ApplyCommandHistory();
 	DisplayInfoMessage();
 	DisplayErrorMessage();
 
 	DisplayViewport();
 	ImGui::EndFrame();
-	//TEST_Instantiate();
-}
-
-void EditorLayer::TEST_Instantiate()
-{
-	if(KEY_TAP(KEY::SPACE))
-	{
-		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-		Instantiate("Game Object 1");
-	}
-	else if (KEY_TAP(KEY::W))
-	{
-		ResourceManager::GetInstance()->DeleteAll();
-		printf("deleted beautifully");
-	}
 }
 
 void EditorLayer::DisplayViewport()
@@ -200,7 +192,7 @@ void EditorLayer::DisplayFileMenu()
 				if (!PATH_CHUNK.empty())
 				{
 					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
-					DebugGeometries::GetInstance()->DeleteAll();
+					DebugShapes::GetInstance()->DeleteAll();
 					ResourceManager::GetInstance()->DeleteAll();
 					CollisionManager::GetInstance()->Reset();
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
@@ -221,7 +213,7 @@ void EditorLayer::DisplayFileMenu()
 				if (!PATH_CHUNK.empty())
 				{
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(false);
-					DebugGeometries::GetInstance()->DeleteAll();
+					DebugShapes::GetInstance()->DeleteAll();
 					ResourceManager::GetInstance()->DeleteAll();
 					CollisionManager::GetInstance()->Reset();
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
@@ -563,7 +555,7 @@ void EditorLayer::OpenProject(std::filesystem::path& path)
 {
 	if (ProjectExists(path.string())) {
 		EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
-		DebugGeometries::GetInstance()->DeleteAll();
+		DebugShapes::GetInstance()->DeleteAll();
 		ResourceManager::GetInstance()->DeleteAll();
 		PATH_PROJECT.assign(path.string());
 		ResourceManager::GetInstance()->SetPathToAsset(std::move(PATH_PROJECT));
@@ -630,7 +622,6 @@ EditorLayer::EditorLayer()
 	, mDuplicateKeyPressed(false)
 	, mIsResizingViewport(false)
 	, mCursorOnViewport(false)
-	, mElementNumber(0)
 	, mFocusedEditorElement(nullptr)
 	, mSceneViewportSize(ImVec2(1920.f, 1080.f))
 	, mInfoType(InfoType::None)

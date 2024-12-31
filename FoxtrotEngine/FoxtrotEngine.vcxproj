@@ -265,7 +265,6 @@
     <ClCompile Include="src\Components\CircleCollider2DComponent.cpp" />
     <ClCompile Include="src\Components\BoxCollider2DComponent.cpp" />
     <ClCompile Include="src\Actors\Actor.cpp" />
-    <ClCompile Include="src\Actors\Backgrounds\BackgroundActor.cpp" />
     <ClCompile Include="src\Actors\RectTransform.cpp" />
     <ClCompile Include="src\Actors\Transform.cpp" />
     <ClCompile Include="src\Components\UIs\ButtonUIComponent.cpp" />
@@ -325,7 +324,6 @@
     <ClInclude Include="src\Actors\Actor.h" />
     <ClInclude Include="src\Actors\ActorGroup.h" />
     <ClInclude Include="src\Actors\ActorTag.h" />
-    <ClInclude Include="src\Actors\Backgrounds\BackgroundActor.h" />
     <ClInclude Include="src\Actors\RectTransform.h" />
     <ClInclude Include="src\Actors\Transform.h" />
     <ClInclude Include="src\Components\UIs\ButtonUIComponent.h" />

@@ -287,6 +287,8 @@
     <ClCompile Include="src\RenderTextureClass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="resource1.h" />
     <ClInclude Include="src\DirectoryHelper.h" />
     <ClInclude Include="src\DebugShapes.h" />
     <ClInclude Include="src\EditorUtils.h" />
@@ -362,6 +364,19 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|Win32'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">4.0_level_9_3</ShaderModel>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\Icons\FoxtrotEngine_icon.png_x16_2024_12_31_21_18_53.ico" />
+    <Image Include="Assets\Icons\FoxtrotEngine_icon.png_x24_2024_12_31_20_50_30.ico" />
+    <Image Include="Assets\Icons\FoxtrotEngine_icon.png_x32_2024_12_31_20_50_30.ico" />
+    <Image Include="Assets\Icons\FoxtrotEngine_icon.png_x48_2024_12_31_20_50_30.ico" />
+    <Image Include="E:\OneDrive\[02_Drawing]\[GameProjects]\Logo\FoxtrotEngine 2D\FoxtrotEngine_icon\FoxtrotEngine_icon.png_x24_2024_12_31_20_50_30.ico" />
+    <Image Include="E:\OneDrive\[02_Drawing]\[GameProjects]\Logo\FoxtrotEngine 2D\FoxtrotEngine_icon\FoxtrotEngine_icon.png_x32_2024_12_31_20_50_30.ico" />
+    <Image Include="E:\OneDrive\[02_Drawing]\[GameProjects]\Logo\FoxtrotEngine 2D\FoxtrotEngine_icon\FoxtrotEngine_icon.png_x48_2024_12_31_20_50_30.ico" />
+    <Image Include="icon1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="FoxtrotEditor.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

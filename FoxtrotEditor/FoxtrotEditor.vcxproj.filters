@@ -98,6 +98,12 @@
     <ClInclude Include="src\DirectoryHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\imgui\misc\debuggers\imgui.gdb" />
@@ -122,5 +128,36 @@
     <FxCompile Include="assets\Shaders\SolidVS.hlsl" />
     <FxCompile Include="assets\Shaders\EditorDebugShapeVS.hlsl" />
     <FxCompile Include="assets\Shaders\EditorDebugShapePS.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="E:\OneDrive\[02_Drawing]\[GameProjects]\Logo\FoxtrotEngine 2D\FoxtrotEngine_icon\FoxtrotEngine_icon.png_x48_2024_12_31_20_50_30.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="E:\OneDrive\[02_Drawing]\[GameProjects]\Logo\FoxtrotEngine 2D\FoxtrotEngine_icon\FoxtrotEngine_icon.png_x24_2024_12_31_20_50_30.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="E:\OneDrive\[02_Drawing]\[GameProjects]\Logo\FoxtrotEngine 2D\FoxtrotEngine_icon\FoxtrotEngine_icon.png_x32_2024_12_31_20_50_30.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Icons\FoxtrotEngine_icon.png_x24_2024_12_31_20_50_30.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Icons\FoxtrotEngine_icon.png_x32_2024_12_31_20_50_30.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Icons\FoxtrotEngine_icon.png_x48_2024_12_31_20_50_30.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Icons\FoxtrotEngine_icon.png_x16_2024_12_31_21_18_53.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="FoxtrotEditor.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

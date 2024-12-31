@@ -1,7 +1,7 @@
 # Foxtrot Engine 2D [![License](https://img.shields.io/badge/license-GNUGPLv3-green)](./LICENSE)
 
 <p align="center">
-<img src="./Assets/Logo/FoxtrotEngine_LOGO.png" width="40%" height="40%" title="LOGO"/>
+<img src="./Assets/Logo/FoxtrotEngine_LOGO.png" width="55%" height="55%" title="LOGO"/>
 </p>
 
 Foxtrot is a 2D game engine based on DirectX 11 for Windows.
@@ -38,7 +38,7 @@ C++ Language Standard : ISO C++17 Standard (/std:c++17) <br>
 Vcpkg is enabled, using Manifest. Check out the vcpkg file for package info.
 
 ### 3. Use the correct solution configuration
-Use **Foxtrot_Debug** to when building a game in production. <br>
+Use **Foxtrot_Debug** when building a game in production. <br>
 **Foxtrot_Editor_Debug** is used for updating Foxtrot Editor so unless you are working on improving the Editor, it is not necessary.
 
 ## User Manual

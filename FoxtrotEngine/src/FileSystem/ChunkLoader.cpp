@@ -16,7 +16,6 @@
 #include "Actors/ActorGroup.h"
 #include "Actors/Transform.h"
 #include "Actors/Actor.h"
-#include "Actors/Backgrounds/BackgroundActor.h"
 
 #include "Components/ComponentBatchHeaders.h"
 #include "FileSystem/ChunkFileKeys.h"

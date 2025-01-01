@@ -12,10 +12,12 @@
 #include "Core/TemplateFunctions.h"
 #include "Managers/SceneManager.h"
 #include "Managers/ResourceManager.h"
+#include "Managers/CollisionManager.h"
 #include "Scenes/Scene.h"
 #include "Actors/ActorGroup.h"
 #include "Actors/Transform.h"
 #include "Actors/Actor.h"
+#include "Renderer/Camera.h"
 
 #include "Components/ComponentBatchHeaders.h"
 #include "FileSystem/ChunkFileKeys.h"
@@ -31,8 +33,10 @@ void ChunkLoader::LoadChunk(const std::string fileName)
 {
     std::ifstream ifs(fileName);
     LoadChunkData(ifs);
+    CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
     ResourceManager::GetInstance()->LoadResources(ifs, FTCore::GetInstance());
     LoadActorsData(ifs);
+    Camera::GetInstance()->LoadProperties(ifs);
 }
 
 void ChunkLoader::SaveChunkData(std::ofstream& out)
@@ -53,7 +57,7 @@ void ChunkLoader::LoadActorsData(std::ifstream& ifs)
     std::pair<size_t, std::string>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::ACTOR_DATA);
     for (size_t i = 0; i < pack.first; ++i)
     {
-        FileIOHelper::BeginDataPackLoad(ifs);
+        std::pair<size_t, std::string>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
         Actor* actor = DBG_NEW Actor(scene);
         actor->LoadProperties(ifs);
         actor->LoadComponents(ifs);

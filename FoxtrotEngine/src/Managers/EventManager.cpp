@@ -38,9 +38,8 @@ void EventManager::Execute(const FTEvent& executedEvent)
 		scene->AddEditorElement(created);
 #else
 		Actor* created = static_cast<Actor*>(executedEvent.eventData.at(0));
-		Scene* scene = static_cast<Scene*>(executedEvent.eventData.at(1));
-		premade->GetOrigin()->Initialize(FTCore::GetInstance());
-		premade->AddToScene(scene, FTCore::GetInstance());
+		Scene* scene = SceneManager::GetInstance()->GetCurrentScene();
+		scene->AddActor(created, created->GetActorGroup());
 #endif
 	}
 	break;

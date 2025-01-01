@@ -170,7 +170,7 @@ void FoxtrotRenderer::SwapChainPresent(UINT syncInterval, UINT flags)
 
 void FoxtrotRenderer::RenderClear()
 {
-	float clearColor[4] = { 211.0f,211.0f,211.0f,1.0f };
+	float clearColor[4] = { 0.3,0.3,0.3,1.0 };
 	mContext->ClearRenderTargetView(mRenderTargetView.Get(), clearColor);
 	mContext->ClearDepthStencilView(mDepthStencilView.Get(),
 		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,

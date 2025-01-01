@@ -176,6 +176,7 @@ void FTCore::UpdateGame()
 
 void FTCore::GenerateOutput()
 {
+	mGameRenderer->RenderClear();
 	MSG msg = {};
 	InvalidateRect(mWindow, NULL, true);
 	if (PeekMessage(&msg, mWindow, 0, 0, PM_REMOVE))
@@ -185,9 +186,9 @@ void FTCore::GenerateOutput()
 	}
 	UpdateWindow(mWindow);
 
-	SceneManager::GetInstance()->Render(GetGameRenderer());
-	ParticleSystem::GetInstance()->Render(GetGameRenderer());
-	GetGameRenderer()->SwapChainPresent(1, 0);
+	SceneManager::GetInstance()->Render(mGameRenderer);
+	ParticleSystem::GetInstance()->Render(mGameRenderer);
+	mGameRenderer->SwapChainPresent(1, 0);
 }
 
 void FTCore::ProcessEvent()

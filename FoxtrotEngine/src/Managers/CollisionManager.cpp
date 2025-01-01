@@ -11,6 +11,8 @@
 #include "Math/FTMath.h"
 #include "Physics/Physics2D.h"
 #include "Renderer/FoxtrotRenderer.h"
+#include "FileSystem/FileIOHelper.h"
+#include "FileSystem/ChunkFileKeys.h"
 
 void CollisionManager::MarkGroup(b2ShapeDef& object, ActorGroup objectActorGroup)
 {
@@ -151,6 +153,61 @@ void CollisionManager::UpdateCollisionGroup()
 	}
 }
 
+void CollisionManager::SaveCollisionMarks(std::ofstream& ofs)
+{
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::COLLISION_MANAGER);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::COLLISION_MARKS);
+	for (size_t row = 0; row < ActorGroupUtil::GetCount(); ++row)
+	{
+		for (size_t col = 0; col < row + 1; ++col)
+		{
+			std::string mark =
+				std::string(ActorGroupUtil::GetActorGroupStr(row)) + '/'
+				+ std::string(ActorGroupUtil::GetActorGroupStr(col));
+
+			size_t idx = ActorGroupUtil::GetCount() * row + col;
+			size_t reflectedIdx = ActorGroupUtil::GetCount() * col + row;
+			FileIOHelper::SaveBool(ofs, mark, mCollisionMarks[idx]);
+		}
+	}
+	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::COLLISION_MARKS);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::COLLISION_MANAGER);
+}
+
+void CollisionManager::LoadCollisionMarks(std::ifstream& ifs)
+{
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::COLLISION_MANAGER);
+	std::pair<size_t, std::string> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::COLLISION_MARKS);
+	std::vector<bool> marksCache = {};
+	marksCache.reserve(pack.first);
+
+	for (size_t i = 0; i < pack.first; ++i)
+	{
+		bool value = false;
+		FileIOHelper::LoadBool(ifs, value);
+		marksCache.push_back(value);
+	}
+
+	// Linear marks should be reversed because of the order in file.
+	// After reversed, FIRST GROUP / FIRST GROUP combination should come first.
+	std::reverse(marksCache.begin(), marksCache.end()); 
+
+	for (size_t row = 0; row < ActorGroupUtil::GetCount(); ++row)
+	{
+		for (size_t col = 0; col < row + 1; ++col)
+		{
+			size_t idx = ActorGroupUtil::GetCount() * col + row;
+			size_t reflectedIdx = ActorGroupUtil::GetCount() * row + col;
+
+			bool mark = marksCache.back();
+			mCollisionMarks[idx] = mark;
+			mCollisionMarks[reflectedIdx] = mark;
+
+			marksCache.pop_back();
+		}
+	}
+}
+
 void CollisionManager::Initialize()
 {}
 
@@ -168,33 +225,33 @@ void CollisionManager::UpdateCollisionMarks()
 		// ActorGroupUtil::GetCount() is not used.
 		const size_t group = (size_t)ActorGroup::END - 1;  
 		static bool marks[(group * (group + 1)) / 2];
-		for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
+		for (size_t row = 0; row < ActorGroupUtil::GetCount(); ++row)
 		{
 			ImGui::TableNextRow();
-			for (size_t j = 0; j < i+1; ++j)
+			for (size_t col = 0; col < row+1; ++col)
 			{
-				ImGui::TableSetColumnIndex(j);
+				ImGui::TableSetColumnIndex(col);
 				std::string mark =
-				std::string(ActorGroupUtil::GetActorGroupStr(i)) + '/'
-					+ std::string(ActorGroupUtil::GetActorGroupStr(j));
-				size_t idx = ActorGroupUtil::GetCount() * i + j;
-				if (ImGui::Checkbox(mark.c_str(), &marks[idx]))
+				std::string(ActorGroupUtil::GetActorGroupStr(row)) + '/'
+					+ std::string(ActorGroupUtil::GetActorGroupStr(col));
+				size_t idx = ActorGroupUtil::GetCount() * row + col;
+				size_t reflectedIdx = ActorGroupUtil::GetCount() * col + row;
+				if (ImGui::Checkbox(mark.c_str(), &mCollisionMarks[idx]))
 				{
-					if (marks[idx]) // if not marked;
+					if (mCollisionMarks[idx]) // if not marked;
 					{
-						mCollisionMarks[idx] = true;
-						mCollisionMarks[ActorGroupUtil::GetCount() * j + i] = true;
+						LogInt("marked ", idx);
+						mCollisionMarks[reflectedIdx] = true;
 
-						printf("Marked %s, %s\n",
-							ActorGroupUtil::GetActorGroupStr(i), ActorGroupUtil::GetActorGroupStr(j));
+						//printf("Marked %s, %s\n",
+							//ActorGroupUtil::GetActorGroupStr(i), ActorGroupUtil::GetActorGroupStr(j));
 					}
 					else
 					{
-						mCollisionMarks[idx] = false;
-						mCollisionMarks[ActorGroupUtil::GetCount() * j + i] = false;
+						mCollisionMarks[reflectedIdx] = false;
 
 						printf("Un-Marked %s, %s\n",
-							ActorGroupUtil::GetActorGroupStr(i), ActorGroupUtil::GetActorGroupStr(j));
+							ActorGroupUtil::GetActorGroupStr(row), ActorGroupUtil::GetActorGroupStr(col));
 					}
 				}
 			}

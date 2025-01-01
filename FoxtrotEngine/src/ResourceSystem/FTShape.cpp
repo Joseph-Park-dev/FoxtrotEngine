@@ -221,7 +221,10 @@ void FTRectangle::Initialize(FoxtrotRenderer* renderer)
 {
     FTShape::Initialize(renderer);
     InitializeMesh(renderer->GetDevice(), GeometryGenerator::MakeSquare());
+
+#ifdef FOXTROT_EDITOR
     DebugShapes::GetInstance()->AddShape(this);
+#endif // FOXTROT_EDITOR
 }
 
 void FTRectangle::UpdateConstantBufferModel(FTVector3 pos, FTVector3 rot, FTVector3 scale)

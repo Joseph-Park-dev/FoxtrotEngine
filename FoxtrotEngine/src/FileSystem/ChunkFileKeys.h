@@ -24,6 +24,12 @@ namespace ChunkKeys {
 	constexpr const char* CHUNK_LIST = "Chunk List";
 	constexpr const char* CHUNK_LIST_PATH = "Chunk List Path";
 
+	constexpr const char* COLLISION_MANAGER = "Collision Manager";
+
+// Manager Related
+	// Collision Manager
+	constexpr const char* COLLISION_MARKS = "Collision Marks";
+
 // Scene Related
 	constexpr const char* ACTOR_COUNT = "Actor Count";
 

@@ -4,6 +4,8 @@
 
 #include "Core/FTCore.h"
 #include "Managers/KeyInputManager.h"
+#include "Managers/SceneManager.h"
+#include "Scenes/Scene.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "FileSystem/FileIOHelper.h"
 #include "FileSystem/ChunkFileKeys.h"
@@ -163,8 +165,15 @@ void Camera::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadVector3(ifs, mOffset);
 	std::string targetActor = {};
 	FileIOHelper::LoadBasicString(ifs, targetActor);
+
+#ifdef FOXTROT_EDITOR
 	if (targetActor != ChunkKeys::NULL_OBJ)
 		mTarget = EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(targetActor);
+#else
+	if (targetActor != ChunkKeys::NULL_OBJ)
+		mTarget = SceneManager::GetInstance()->GetCurrentScene()->FindActor(targetActor);
+#endif // FOXTROT_EDITOR
+
 }
 
 FTVector3 Camera::ConvertScreenPosToWorld(FTVector2 screenPos)

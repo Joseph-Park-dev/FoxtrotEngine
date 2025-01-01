@@ -42,6 +42,10 @@ public:
 private:
 	void UpdateCollisionGroup();
 
+public:
+	void SaveCollisionMarks(std::ofstream& ofs);
+	void LoadCollisionMarks(std::ifstream& ifs);
+
 #ifdef FOXTROT_EDITOR
 public:
 	void UpdateUI();

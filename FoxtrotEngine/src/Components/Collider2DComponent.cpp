@@ -127,12 +127,10 @@ void Collider2DComponent::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
 	FileIOHelper::SaveVector2(ofs, ChunkKeys::OFFSET, mOffset);
-	FileIOHelper::SaveBool(ofs, ChunkKeys::SHOW_DEBUG_SHAPE, mShowDebugShape);
 }
 
 void Collider2DComponent::LoadProperties(std::ifstream& ifs)
 {
-	FileIOHelper::LoadBool(ifs, mShowDebugShape);
 	FileIOHelper::LoadVector2(ifs, mOffset);
 	Component::LoadProperties(ifs);
 }

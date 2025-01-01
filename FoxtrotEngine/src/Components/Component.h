@@ -12,16 +12,17 @@
 #pragma once
 #include <fstream>
 
+#include "Debugging/DebugMemAlloc.h"
+
 #ifdef FOXTROT_EDITOR
 #include "FTCoreEditor.h"
-
-#include "Renderer/Camera.h"
 #endif
 
 class Actor;
 class FoxtrotRenderer;
 class FTCore;
 class KeyInputManager;
+class Camera;
 
 #define DEFAULT_DRAWORDER 100
 #define DEFAULT_UPDATEORDER 100

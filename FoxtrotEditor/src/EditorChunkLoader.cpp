@@ -12,6 +12,7 @@
 
 #include "Managers/ResourceManager.h"
 #include "Managers/SceneManager.h"
+#include "Managers/CollisionManager.h"
 #include "Math/FTMath.h"
 #include "Components/ComponentBatchHeaders.h"
 #include "FileSystem/ChunkFileKeys.h"
@@ -56,6 +57,7 @@ void EditorChunkLoader::SaveChunk(const std::string fileName)
     Camera::GetInstance()->SaveProperties(ofs);
     SaveActorsData(ofs);
     ResourceManager::GetInstance()->SaveResources(ofs);
+    CollisionManager::GetInstance()->SaveCollisionMarks(ofs);
     SaveChunkData(ofs);
     FileIOHelper::SaveBufferToFile(ofs);
 }
@@ -64,6 +66,7 @@ void EditorChunkLoader::LoadChunk(const std::string fileName)
 {
     std::ifstream ifs(fileName);
     LoadChunkData(ifs);
+    CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
     ResourceManager::GetInstance()->LoadResources(ifs, FTCoreEditor::GetInstance());
     LoadActorsData(ifs);
     Camera::GetInstance()->LoadProperties(ifs);

@@ -1,3 +1,15 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// Detects mouse hovering & clicking and executes the registered 
+/// operations as a button.
+/// </summary>
+
 #pragma once
 #include "Components/UIs/UIComponent.h"
 
@@ -36,11 +48,11 @@ public:
 	}
 
 public:
-	ButtonUIComponent(
+	 ButtonUIComponent(
 		Actor* owner,
 		int drawOrder = DEFAULT_DRAWORDER,
 		int updateOrder = DEFAULT_UPDATEORDER
-);
+	 );
 	~ButtonUIComponent() override;
 
 private:

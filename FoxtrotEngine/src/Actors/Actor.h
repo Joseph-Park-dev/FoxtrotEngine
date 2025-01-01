@@ -1,3 +1,15 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// An object that can be placed into a Scene.
+/// An Actor is consist of Transformation, Components, Behaviours, etc.
+/// </summary>
+
 #pragma once
 #include <vector>
 #include <string>
@@ -70,8 +82,14 @@ public:
 	void RemoveAllComponents();
 
 public:
+	// Deep copies transform from another Actor.
 	void CopyTransformFrom(Actor* actor);
+
+	// Creates new Component with values from another Actor.
 	void CopyComponentsFrom(Actor* actor);
+
+	// This method has problems in the current version
+	// : recursive calling
 	void CopyChildObjectFrom(Actor* actor);
 
 public:
@@ -89,7 +107,6 @@ public:
 	Actor*		  GetParent()	  const			{ return mParent; }
 	std::vector<Component*>& GetComponents()	{ return mComponents; }
 	std::vector<Actor*>&     GetChildActors()	{ return mChild; }
-	UINT		  GetID()		  const			{ return mID; }
 
 	void		  SetName		 (std::string name)						{ mName = name; }
 	void		  SetState		 (State state)							{ mState = state; }
@@ -117,9 +134,9 @@ public:
 
 public:
 	virtual void Initialize		(FTCore* coreInst);
-	virtual void UpdateActor	(float deltaTime)	{};
-	virtual void LateUpdateActor(float deltaTime)	{};
-	virtual void RenderActor	(FoxtrotRenderer* renderer){};
+	virtual void UpdateActor	(float deltaTime)			{};
+	virtual void LateUpdateActor(float deltaTime)			{};
+	virtual void RenderActor	(FoxtrotRenderer* renderer)	{};
 
 public:
 			void ProcessInput		 (KeyInputManager* keyInputManager);
@@ -136,16 +153,12 @@ protected:
 
 private:
 	std::string				mName;
-	int						mID;
 	ActorGroup				mActorGroup;
 	State					mState;
 	Transform*				mTransform;
 	std::vector<Component*>	mComponents;
 	Actor*					mParent;
 	std::vector<Actor*>		mChild;
-
-private:
-	bool CheckCompInitialized();
 
 public:
 	void SaveProperties(std::ofstream& ofs);

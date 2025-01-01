@@ -1,8 +1,14 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "Components/UIs/UIComponent.h"
 
-#include "Components/Component.h"
 #include "Actors/Transform.h"
-#include "Actors/RectTransform.h"
 
 #include "Renderer/FoxtrotRenderer.h"
 #include "Managers/KeyInputManager.h"
@@ -15,6 +21,46 @@
 #include "ResourceSystem/FTShape.h"
 #include "CommandHistory.h"
 #endif // DEBUG
+
+bool UIComponent::IsMouseHovering()
+{
+	return mMouseHovering;
+}
+
+bool UIComponent::LeftButtonIsDown()
+{
+	return mLBtnDown;
+}
+
+bool UIComponent::LeftButtonIsClicked()
+{
+	return mLBtnClicked;
+}
+
+bool UIComponent::GetIsFocused()
+{
+	return mIsFocused;
+}
+
+bool UIComponent::GetIsAffectedByCamera()
+{
+	return mIsAffectedByCamera;
+}
+
+void UIComponent::SetIsFocused(bool isFocused)
+{
+	mIsFocused = isFocused;
+}
+
+void UIComponent::SetIsAffectedByCamera(bool affected)
+{
+	mIsAffectedByCamera = affected;
+}
+
+void UIComponent::SetMouseHovering(bool hovering)
+{
+	mMouseHovering = hovering;
+}
 
 void UIComponent::CheckMouseHover()
 {
@@ -69,8 +115,7 @@ void UIComponent::Initialize(FTCore* ftCoreInst)
 }
 
 void UIComponent::Update(float deltaTime)
-{
-}
+{}
 
 void UIComponent::LateUpdate(float deltaTime)
 {
@@ -78,8 +123,7 @@ void UIComponent::LateUpdate(float deltaTime)
 }
 
 void UIComponent::Render(FoxtrotRenderer* renderer)
-{
-}
+{}
 
 UIComponent::UIComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner, drawOrder, updateOrder)

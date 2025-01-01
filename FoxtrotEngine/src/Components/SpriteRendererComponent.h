@@ -1,3 +1,16 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// Base Component for rendering 2D sprites.
+/// This uses FTTexture as an image source, and primitive square
+/// as a mesh to display FTTexture on.
+/// </summary>
+
 #pragma once
 #include "Components/MeshRendererComponent.h"
 
@@ -48,18 +61,13 @@ public:
 	virtual void EditorRender(FoxtrotRenderer* renderer) override;
 
 public:
-	virtual void EditorUIUpdate() override;
+	virtual void EditorUIUpdate()		override;
 	virtual void CloneTo(Actor* actor)	override;
 
 protected:
-	virtual void OnConfirmUpdate() override;
+	virtual void OnConfirmUpdate()		override;
 			void OnResetTexture();
 			void UpdateSprite();
 			void UpdateSprite(UINT& key);
-
-private:
-	void UpdateTexWidth();
-	void UpdateTexHeight();
-	void UpdateScale();
 #endif // FOXTROT_EDITOR
 };

@@ -127,7 +127,6 @@ namespace ChunkKeys {
 
 // General Terms
 	constexpr const char* NAME = "Name";
-	constexpr const char* ID = "ID";
 	constexpr const char* STATE = "State";
 	constexpr const char* KEY = "Key";
 	constexpr const char* FILE_NAME = "FileName";

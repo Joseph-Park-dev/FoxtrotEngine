@@ -1,3 +1,14 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// Component for Rigidbody simulation based on Box2D.
+/// </summary>
+
 #pragma once
 #include "Components/Component.h"
 #include "Core/TemplateFunctions.h"
@@ -35,7 +46,7 @@ public:
 public:
 	/* The engine expects no RigidBody attributes will be updated
 	   during the runtime of the game.
-	   Therefore, Saving the attributes will only be required on Editor.*/
+	   Therefore, Saving the attributes will be only required on Editor.*/
 	virtual void SaveProperties(std::ofstream& ofs) override;
 
 public:

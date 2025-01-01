@@ -1,10 +1,20 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// Collider shaped as a box, or a square or a rectangle.
+/// </summary>
+
 #pragma once
 #include "Components/Collider2DComponent.h"
 
 #ifdef FOXTROT_EDITOR
 #include "ResourceSystem/FTShape.h"
 #endif // FOXTROT_EDITOR
-
 
 class BoxCollider2DComponent :
     public Collider2DComponent
@@ -21,11 +31,11 @@ public:
 	virtual void Initialize(FTCore* coreInstance) override;
 
 public:
-	BoxCollider2DComponent(
-		Actor* owner,
-		int drawOrder = DEFAULT_DRAWORDER,
-		int updateOrder = DEFAULT_UPDATEORDER
-	);
+	 BoxCollider2DComponent(
+		 Actor* owner,
+		 int drawOrder = DEFAULT_DRAWORDER,
+		 int updateOrder = DEFAULT_UPDATEORDER
+	 );
 	~BoxCollider2DComponent() override;
 
 private:

@@ -131,7 +131,7 @@
     <PublicIncludeDirectories>..\FoxtrotEditor\include;..\FoxtrotEditor\src;$(ProjectDir)src;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
-    <OutDir>..\FoxtrotEditor\FoxtrotEngine</OutDir>
+    <OutDir>..\FoxtrotEditor</OutDir>
     <TargetExt>.lib</TargetExt>
     <PublicIncludeDirectories>..\FoxtrotEditor\include;..\FoxtrotEditor\src;$(ProjectDir)include;$(ProjectDir)src;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
@@ -265,7 +265,6 @@
     <ClCompile Include="src\Components\CircleCollider2DComponent.cpp" />
     <ClCompile Include="src\Components\BoxCollider2DComponent.cpp" />
     <ClCompile Include="src\Actors\Actor.cpp" />
-    <ClCompile Include="src\Actors\RectTransform.cpp" />
     <ClCompile Include="src\Actors\Transform.cpp" />
     <ClCompile Include="src\Components\UIs\ButtonUIComponent.cpp" />
     <ClCompile Include="src\Components\UIs\PanelUIComponent.cpp" />
@@ -273,7 +272,6 @@
     <ClCompile Include="src\Components\AIComponent.cpp" />
     <ClCompile Include="src\Components\AIState.cpp" />
     <ClCompile Include="src\Components\AnimatorComponent.cpp" />
-    <ClCompile Include="src\Components\BGSpriteComponent.cpp" />
     <ClCompile Include="src\Components\Collider2DComponent.cpp" />
     <ClCompile Include="src\Components\Component.cpp" />
     <ClCompile Include="src\Components\GunFiringBehavior.cpp" />
@@ -281,7 +279,6 @@
     <ClCompile Include="src\Components\MeshRendererComponent.cpp" />
     <ClCompile Include="src\Components\MoveComponent.cpp" />
     <ClCompile Include="src\Components\Rigidbody2DComponent.cpp" />
-    <ClCompile Include="src\Components\SpriteAnimComponent.cpp" />
     <ClCompile Include="src\Components\SpriteRendererComponent.cpp" />
     <ClCompile Include="src\Components\TileMapComponent.cpp" />
     <ClCompile Include="src\Core\EventFunctions.cpp" />
@@ -323,8 +320,6 @@
     <ClInclude Include="src\Components\BoxCollider2DComponent.h" />
     <ClInclude Include="src\Actors\Actor.h" />
     <ClInclude Include="src\Actors\ActorGroup.h" />
-    <ClInclude Include="src\Actors\ActorTag.h" />
-    <ClInclude Include="src\Actors\RectTransform.h" />
     <ClInclude Include="src\Actors\Transform.h" />
     <ClInclude Include="src\Components\UIs\ButtonUIComponent.h" />
     <ClInclude Include="src\Components\UIs\PanelUIComponent.h" />
@@ -332,7 +327,6 @@
     <ClInclude Include="src\Components\AIComponent.h" />
     <ClInclude Include="src\Components\AIState.h" />
     <ClInclude Include="src\Components\AnimatorComponent.h" />
-    <ClInclude Include="src\Components\BGSpriteComponent.h" />
     <ClInclude Include="src\Components\Collider2DComponent.h" />
     <ClInclude Include="src\Components\Component.h" />
     <ClInclude Include="src\Components\ComponentBatchHeaders.h" />
@@ -341,7 +335,6 @@
     <ClInclude Include="src\Components\MeshRendererComponent.h" />
     <ClInclude Include="src\Components\MoveComponent.h" />
     <ClInclude Include="src\Components\Rigidbody2DComponent.h" />
-    <ClInclude Include="src\Components\SpriteAnimComponent.h" />
     <ClInclude Include="src\Components\SpriteComponent.h" />
     <ClInclude Include="src\Components\SpriteRendererComponent.h" />
     <ClInclude Include="src\Components\TileMapComponent.h" />

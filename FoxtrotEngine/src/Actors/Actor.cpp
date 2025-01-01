@@ -1,3 +1,11 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "Actors/Actor.h"
 
 #include <algorithm>
@@ -7,7 +15,6 @@
 #include "Managers/KeyInputManager.h"
 
 #include "Actors/ActorGroup.h"
-#include "Actors/ActorTag.h"
 #include "Actors/Transform.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
@@ -112,9 +119,9 @@ void Actor::CopyComponentsFrom(Actor* actor)
 
 void Actor::CopyChildObjectFrom(Actor* actor)
 {
-	std::vector<Actor*>& childObjects = actor->GetChildActors();
-	for (size_t i = 0; i < childObjects.size(); ++i)
-		this->AddChild(DBG_NEW Actor(childObjects[i]));
+	//std::vector<Actor*>& childObjects = actor->GetChildActors();
+	//for (size_t i = 0; i < childObjects.size(); ++i)
+	//	this->AddChild(DBG_NEW Actor(childObjects[i]));
 }
 
 void Actor::Initialize(FTCore* coreInst)
@@ -248,24 +255,10 @@ bool Actor::HasName(std::string& name)
 	return this->GetName() == name;
 }
 
-//void Actor::SaveCharacterData(FILE* file)
-//{
-//	fwrite(&GetTransform()->GetWorldPosition(), sizeof(Vector2), 1, file);
-//}
-
-bool Actor::CheckCompInitialized()
-{
-	for (size_t i = 0; i < mComponents.size(); ++i)
-		if (!mComponents[i]->GetIsInitialized())
-			return false;
-	return true;
-}
-
 void Actor::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::ACTOR_PROPERTIES);
 	FileIOHelper::SaveString		(ofs, ChunkKeys::NAME, GetName());
-	FileIOHelper::SaveInt			(ofs, ChunkKeys::ID, mID);
 	FileIOHelper::SaveString		(ofs, ChunkKeys::ACTOR_GROUP, ActorGroupUtil::GetActorGroupStr(mActorGroup));
 	FileIOHelper::SaveString		(ofs, ChunkKeys::STATE, GetStateStr());
 	if (mParent)
@@ -310,7 +303,6 @@ void Actor::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadBasicString(ifs, actorGroupStr);
 	mActorGroup = ActorGroupUtil::GetActorGroup(actorGroupStr);
 
-	FileIOHelper::LoadInt(ifs, mID);
 	FileIOHelper::LoadBasicString(ifs, mName);
 }
 

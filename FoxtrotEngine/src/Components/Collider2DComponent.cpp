@@ -1,3 +1,11 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "Components/Collider2DComponent.h"
 
 #include <assert.h>
@@ -40,7 +48,7 @@ FTVector2 Collider2DComponent::GetFinalPosition() const
 	return mFinalPosition;
 }
 
-std::unordered_map<int32_t, CollisionState>& Collider2DComponent::GetCollisionStates()
+CollisionStatesMap& Collider2DComponent::GetCollisionStates()
 {
 	return mCollisionStates;
 }

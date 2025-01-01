@@ -1,10 +1,18 @@
-#pragma once
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// All default Components provided by Foxtrot Engine at one place.
+/// </summary>
 
+#pragma once
 #include "Components/Component.h"
 #include "Components/AIComponent.h"
 #include "Components/AnimatorComponent.h"
-#include "Components/SpriteAnimComponent.h"
-#include "Components/BGSpriteComponent.h"
 #include "Components/Collider2DComponent.h"
 #include "Components/BoxCollider2DComponent.h"
 #include "Components/InputMoveComponent.h"

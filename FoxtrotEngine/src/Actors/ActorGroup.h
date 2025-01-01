@@ -1,10 +1,22 @@
-#pragma once
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// A tag that sorts the Actors to groups.
+/// This is used for making collision marks, or executing a group-based
+/// operations.
+/// </summary>
 
+#pragma once
 #include "Core/TemplateFunctions.h"
 
 enum class ActorGroup
 {
-	NOT_ASSIGNED	= 0X00000000,
+	NOT_ASSIGNED	= 0X00000000, // Do not assign this value manually.
 
 	DEFAULT			= 0x00000001,
 	PLAYER			= 0x00000002,
@@ -12,7 +24,7 @@ enum class ActorGroup
 	GROUND			= 0x00000004,
 	UI				= 0x00000005,
 
-	END // This can be increased at one's will
+	END
 };
 
 struct ActorGroupUtil

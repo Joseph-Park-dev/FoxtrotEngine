@@ -1,58 +1,87 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "Actors/Transform.h"
 
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
 
-void Transform::Translate(FTVector3 translation)
+const FTVector3 Transform::GetWorldPosition() const
 {
-	//if (mWorldPosition.x < 0.0f) { mWorldPosition.x = 1022.0f; }
-	//else if (mWorldPosition.x > 1024.0f) { mWorldPosition.x = 2.0f; }
-
-	//if (mWorldPosition.y < 0.0f) { mWorldPosition.y = 766.0f; }
-	//else if (mWorldPosition.y > 768.0f) { mWorldPosition.y = 2.0f; }
-
-	mWorldPosition = mWorldPosition + translation;
-	/*if (mParent != nullptr)
-		mWorldPosition + mLocalPosition;*/
+	return mWorldPosition;
 }
 
-//const FTVector2 Transform::GetScreenPosition() const
-//{
-//	return Camera2D::GetInstance()->ConvertWorldPosToScreen(mWorldPosition);
-//}
-//
-//
-//
-//
-//const FTVector2 Transform::GetScreenPositionEditor() const
-//{
-//	return EditorCamera2D::GetInstance()->ConvertWorldPosToScreen(mWorldPosition);
-//}
-//#endif // _DEBUG
+const FTVector3 Transform::GetLocalPosition() const
+{
+	return mLocalPosition;
+}
+
+const FTVector3 Transform::GetScale() const
+{
+	return mScale;
+}
+
+const FTVector3 Transform::GetRotation() const
+{
+	return mRotation;
+}
+
+const FTVector3 Transform::GetRotationDegree() const
+{
+	return ConvertRadToDegree(mRotation);
+}
+
+const int Transform::GetHorizontalDirection() const
+{
+	return mHorizontalDirection;
+}
+
+void Transform::SetWorldPosition(const FTVector3 pos)
+{
+	mWorldPosition = pos;
+}
+
+void Transform::SetLocalPosition(FTVector3 pos)
+{
+	mLocalPosition = pos;
+}
+
+void Transform::SetScale(FTVector3 scale)
+{
+	mScale = scale;
+}
+
+void Transform::SetRotation(FTVector3 rotation)
+{
+	mRotation = rotation;
+}
 
 void Transform::SetCurrentDirection(int dir)
 {
 	if (dir != 0)
-		mCurrentDirection = dir;
+		mHorizontalDirection = dir;
 }
 
 Transform::Transform()
 	: mWorldPosition	(FTVector3::Zero)
-	, mScreenPosition	(FTVector3::Zero)
 	, mLocalPosition	(FTVector3::Zero)
 	, mScale			(FTVector3(1.0f, 1.0f, 1.0f))
 	, mRotation			(FTVector3(0.0f, 0.0f, 0.0f))
-	, mCurrentDirection	(1)
+	, mHorizontalDirection	(1)
 {}
 
 Transform::Transform(Transform & origin)
-	: mWorldPosition	(origin.mWorldPosition)
-	, mScreenPosition	(origin.mScreenPosition)
-	, mLocalPosition	(origin.mLocalPosition)
-	, mScale			(origin.mScale)
-	, mRotation			(origin.mRotation)
-	, mCurrentDirection	(origin.mCurrentDirection)
+	: mWorldPosition		(origin.mWorldPosition)
+	, mLocalPosition		(origin.mLocalPosition)
+	, mScale				(origin.mScale)
+	, mRotation				(origin.mRotation)
+	, mHorizontalDirection	(origin.mHorizontalDirection)
 {}
 
 FTVector3 Transform::ConvertRadToDegree(FTVector3 radianRot)

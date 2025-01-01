@@ -1,3 +1,14 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// Base Component to render sprites, tilemaps, animations as meshes.
+/// </summary>
+
 #pragma once
 #include "Components/Component.h"
 
@@ -21,16 +32,16 @@ class MeshRendererComponent :
 public:
 	virtual	void Initialize	(FTCore* coreInstance)		override;
 	virtual void Update		(float deltaTime)			override;
-	virtual void LateUpdate	(float deltaTime)			override {};
 	virtual void Render		(FoxtrotRenderer* renderer) override;
 
 protected:
-	virtual bool InitializeMesh();
-			bool InitializeMesh(UINT key);
-			bool InitializeMesh(MeshData& meshData);
-			bool SetTexture();
-	virtual	void UpdateMesh(Transform* transform, Camera* cameraInstance);
-	virtual void UpdateBuffers();
+	virtual bool InitializeMesh	();
+			bool InitializeMesh	(UINT key);
+			bool InitializeMesh	(MeshData& meshData);
+
+			bool SetTexture		();
+	virtual	void UpdateMesh		(Transform* transform, Camera* cameraInstance);
+	virtual void UpdateBuffers	();
 
 public:
 	virtual std::string GetName() const override { return "MeshRendererComponent"; }

@@ -1,3 +1,14 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// Base class for all Components.
+/// </summary>
+
 #pragma once
 #include <fstream>
 
@@ -23,25 +34,29 @@ public:
 	virtual std::string  GetName() const = 0;
 
 public:
-	virtual void Initialize(FTCore* coreInstance);
-	virtual void Setup();
-	virtual void ProcessInput(KeyInputManager* keyInputManager);
-	virtual void Update(float deltaTime);
-	virtual void LateUpdate(float deltaTime);
-	virtual void Render(FoxtrotRenderer* renderer);
+	virtual void Initialize		(FTCore* coreInstance);
+	virtual void Setup			();
+	virtual void ProcessInput	(KeyInputManager* keyInputManager);
+	virtual void Update			(float deltaTime);
+	virtual void LateUpdate		(float deltaTime);
+	virtual void Render			(FoxtrotRenderer* renderer);
 
 public:
-	Actor*		GetOwner() const;
-	const int	GetUpdateOrder() const;
-	const int	GetDrawOrder() const;
-	const bool	GetIsInitialized() const;
-	const bool	GetIsSetup() const;
+	Actor*		GetOwner()			const;
+	const int	GetUpdateOrder()	const;
+	const int	GetDrawOrder()		const;
+	const bool	GetIsInitialized()	const;
+	const bool	GetIsSetup()		const;
 
 public:
 	/// <summary>
 	/// Creates a Component to be assigned to the Actor.
 	/// </summary>
-	Component(Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
+	Component(
+		Actor* owner, 
+		int drawOrder = DEFAULT_DRAWORDER, 
+		int updateOrder = DEFAULT_UPDATEORDER
+	);
 	
 	/// <summary>
 	/// Deep copies Component from another.

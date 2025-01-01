@@ -80,18 +80,16 @@ ChunkLoader::ChunkLoader()
     {
         {"AIComponent",                &Component::Load<AIComponent>},
         {"AnimatorComponent",          &Component::Load<AnimatorComponent>},
-        {"BGSpriteComponent",          &Component::Load<BGSpriteComponent>},
-        {"BoxCollider2DComponent",       &Component::Load<BoxCollider2DComponent>},
+        {"BoxCollider2DComponent",     &Component::Load<BoxCollider2DComponent>},
         {"InputMoveComponent",         &Component::Load<InputMoveComponent>},
         {"MoveComponent",              &Component::Load<MoveComponent>},
         {"Rigidbody2DComponent",       &Component::Load<Rigidbody2DComponent>},
         {"SpriteRendererComponent",    &Component::Load<SpriteRendererComponent>},
         {"TileMapComponent",           &Component::Load<TileMapComponent>},
-        {"SpriteAnimComponent",        &Component::Load<SpriteAnimComponent>},
         {"MeshRendererComponent",      &Component::Load<MeshRendererComponent>},
 
-        {"GunFiringBehavior",         &Component::Load<GunFiringBehavior>},
-        {"BulletBehavior",         &Component::Load<BulletBehavior>},
+        {"GunFiringBehavior",          &Component::Load<GunFiringBehavior>},
+        {"BulletBehavior",             &Component::Load<BulletBehavior>},
     };
 };
 

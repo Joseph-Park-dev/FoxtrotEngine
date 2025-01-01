@@ -1,3 +1,11 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "Components/AnimatorComponent.h"
 
 #include "Actors/Actor.h"
@@ -250,10 +258,6 @@ void AnimatorComponent::CreateAnimation()
 		ImGui::Separator();
 		ImGui::EndPopup();
 	}
-}
-
-void AnimatorComponent::OnConfirmUpdate()
-{
 }
 
 void AnimatorComponent::CloneTo(Actor* actor)

@@ -1,3 +1,11 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "SpriteRendererComponent.h"
 
 #include "Actors/Actor.h"
@@ -100,9 +108,6 @@ void SpriteRendererComponent::EditorUIUpdate()
 	SetRenderer(FTCoreEditor::GetInstance()->GetGameRenderer());
 	CHECK_RENDERER(GetRenderer());
 	UpdateSprite();
-	ImGui::SeparatorText("Sprite Size");
-	UpdateScale();
-	OnConfirmUpdate();
 	OnResetTexture();
 }
 
@@ -241,24 +246,6 @@ void SpriteRendererComponent::UpdateSprite(UINT& key)
 			ImGui::CloseCurrentPopup();
 		ImGui::EndPopup();
 	}
-}
-
-void SpriteRendererComponent::UpdateTexWidth()
-{
-	// CommandHistory::GetInstance()->UpdateIntValue("Texture Width",
-	// &GetMeshArray()[0]->texture->GetTexWidthRef(), INTMOD_SPEED);
-}
-
-void SpriteRendererComponent::UpdateTexHeight()
-{
-	// CommandHistory::GetInstance()->UpdateIntValue("Texture Height",
-	// &GetMeshArray()[0]->texture->GetTexHeightRef(), INTMOD_SPEED);
-}
-
-void SpriteRendererComponent::UpdateScale()
-{
-	CommandHistory::GetInstance()->UpdateVector2Value("Texture Scale", mTexScale,
-		FLOATMOD_SPEED);
 }
 
 void SpriteRendererComponent::CloneTo(Actor* actor)

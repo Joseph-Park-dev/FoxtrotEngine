@@ -1,3 +1,14 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// Base class for all 2D Collider Components.
+/// </summary>
+
 #pragma once
 #include "Component.h"
 
@@ -15,6 +26,8 @@ class FTVector2;
 class Actor;
 enum class CollisionState;
 
+using CollisionStatesMap = std::unordered_map<int32_t, CollisionState>;
+
 class Collider2DComponent :
 	public Component
 {
@@ -25,13 +38,13 @@ public:
 	}
 
 public:
-	b2ShapeId&				 GetShapeID();
-	FTVector2				 GetOffsetPos()			const;
-	FTVector2&				 GetOffsetPosRef();
+	b2ShapeId&				GetShapeID();
+	FTVector2				GetOffsetPos()			const;
+	FTVector2&				GetOffsetPosRef();
 	// Get world position of the collider 
 	// (anchor-pointed to the center)
-	FTVector2				 GetFinalPosition()		const;
-	std::unordered_map<int32_t, CollisionState>& GetCollisionStates();
+	FTVector2				GetFinalPosition()		const;
+	CollisionStatesMap&		GetCollisionStates();
 
 	void SetOffsetPos(FTVector2 offsetPos);
 
@@ -63,7 +76,7 @@ private:
 	FTVector2				mOffset;
 	FTVector2				mFinalPosition;
 
-	std::unordered_map<int32_t, CollisionState> mCollisionStates;
+	CollisionStatesMap		mCollisionStates;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;

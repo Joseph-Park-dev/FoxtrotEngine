@@ -1,3 +1,15 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// This renders FTTilemaps using FTTexture as a texture pack,
+/// primitive square as a mesh, and FTTileMap as a .CSV source.
+/// </summary>
+
 #pragma once
 #include "Components/SpriteRendererComponent.h"
 
@@ -9,8 +21,6 @@
 #include "ResourceSystem/FTTileMap.h";
 
 class FTVector2;
-
-#define MAPKEY_SQUARE_GRID "BasicSquareGrid"
 
 class TileMapComponent :
     public SpriteRendererComponent
@@ -32,10 +42,10 @@ protected:
 
 public:
              TileMapComponent(
-                Actor* owner, 
-                int drawOrder = DEFAULT_DRAWORDER, 
-                int UpdateOrder = DEFAULT_UPDATEORDER
-            );
+                 Actor* owner, 
+                 int drawOrder   = DEFAULT_DRAWORDER, 
+                 int UpdateOrder = DEFAULT_UPDATEORDER
+             );
     virtual ~TileMapComponent() override;
 
 
@@ -53,7 +63,9 @@ public:
     virtual void CloneTo(Actor* actor)	override;
 
     virtual void OnConfirmUpdate() override;
-    void UpdateCSV();
-    void UpdateCSV(UINT& key);
+
+protected:
+            void UpdateCSV();
+            void UpdateCSV(UINT& key);
 #endif
 };

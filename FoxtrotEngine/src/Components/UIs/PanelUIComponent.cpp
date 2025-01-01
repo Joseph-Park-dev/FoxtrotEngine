@@ -1,3 +1,11 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "Components/UIs/PanelUIComponent.h"
 
 #include "Managers/KeyInputManager.h"
@@ -17,15 +25,12 @@ void PanelUIComponent::OnMouseLButtonDown()
 }
 
 void PanelUIComponent::OnMouseLButtonUp()
-{
-}
+{}
 
 PanelUIComponent::PanelUIComponent(Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER)
 	: UIComponent(owner, drawOrder, updateOrder)
 	, mDragStartPoint(FTVector2::Zero)
-{
-}
+{}
 
 PanelUIComponent::~PanelUIComponent()
-{
-}
+{}

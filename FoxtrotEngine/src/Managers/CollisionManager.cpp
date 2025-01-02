@@ -30,7 +30,11 @@ void CollisionManager::MarkGroup(b2ShapeDef& object, ActorGroup objectActorGroup
 
 void CollisionManager::Reset()
 {
-	//memset(mCollisionMarks, 0, sizeof(uint64_t) * ActorGroupUtil::GetCount());
+	memset(
+		mCollisionMarks, 
+		0, 
+		sizeof(uint64_t) * ActorGroupUtil::GetCount() * ActorGroupUtil::GetCount()
+	);
 	mRegColliders.clear();
 }
 

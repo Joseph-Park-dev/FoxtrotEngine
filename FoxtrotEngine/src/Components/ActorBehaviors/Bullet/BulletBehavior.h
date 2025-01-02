@@ -49,4 +49,3 @@ public:
 	void CloneTo(Actor* actor);
 #endif
 };
-

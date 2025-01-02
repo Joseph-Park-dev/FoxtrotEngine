@@ -1,7 +1,14 @@
-#define _CRT_SECURE_NO_WARNINGS // stb_image_write compile error fix
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
 
 #include "D3D11Utils.h"
 
+#define _CRT_SECURE_NO_WARNINGS // stb_image_write compile error fix
 #include <directxtk/DDSTextureLoader.h> // 큐브맵 읽을 때 필요
 #include <dxgi.h>                       // DXGIFactory
 #include <dxgi1_4.h>                    // DXGIFactory4

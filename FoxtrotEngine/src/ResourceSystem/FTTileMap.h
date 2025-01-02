@@ -1,3 +1,15 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// A class that holds the tilemap data, such as .csv array, tile sizes,
+/// number of tiles from a texture pack (tile count on map), etc.
+/// </summary>
+
 #pragma once
 #include "ResourceSystem/FTResource.h"
 
@@ -5,8 +17,6 @@
 #include <Windows.h>
 
 class Tile;
-
-#define TILEMAP_FORMAT_SUPPORTED ".csv"
 
 class FTTileMap :
     public FTResource

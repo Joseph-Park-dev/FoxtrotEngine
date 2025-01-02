@@ -1,3 +1,11 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "ResourceSystem/FTTexture.h"
 
 #include <string>
@@ -14,7 +22,6 @@
 #include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Managers/ResourceManager.h"
-
 
 #ifdef FOXTROT_EDITOR
 #include "EditorLayer.h"
@@ -59,7 +66,6 @@ void FTTexture::UpdateUI()
     ImVec2 previewSize = ImVec2(100, 100);
     ImGui::Image((void*)viewportTexture, previewSize);
 
-    //UpdateRelativePath(TEXTURE_FORMAT_SUPPORTED);
     std::string currentPath = "No path has been assigned";
     if (!GetRelativePath().empty())
         currentPath = "Current path : \n" + GetRelativePath();

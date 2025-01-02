@@ -1,3 +1,18 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// A manager that saves/loads FTResources referred in a .Chunk file.
+/// 
+/// In the Foxtrot Editor, this loads all supported resources in the 
+/// "Asset" folder, and saves the FTResources that are referred in a
+/// .Chunk file or used in a Scene.
+/// </summary>
+
 #pragma once
 #include <string>
 #include <unordered_map>

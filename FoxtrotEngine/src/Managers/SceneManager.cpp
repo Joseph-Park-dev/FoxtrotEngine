@@ -1,7 +1,16 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "Managers/SceneManager.h"
 
 #include <fstream>
 #include <string>
+#include <vector>
 
 #include "Scenes/Scene.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -76,15 +85,3 @@ void SceneManager::ProcessEvent()
 void SceneManager::SaveSceneList (std::ofstream& ofs)
 {
 }
-
-//void SceneManager::LoadSceneList()
-//{
-//	std::ifstream ifs(mChunkListPath);
-//	std::pair<size_t, std::string> pack = FileIOHelper::BeginDataPackLoad(ifs);
-//	for (size_t i = 0; i < pack.first; ++i)
-//	{
-//		std::string title = {};
-//		FileIOHelper::LoadBasicString(ifs, title);
-//		mChunkList.push_back(title);
-//	}
-//}

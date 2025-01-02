@@ -1,3 +1,15 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// A signleton class that manages all particle effects.
+/// Features will be added in the future versions.
+/// </summary>
+
 #pragma once
 #include "Core/SingletonMacro.h"
 

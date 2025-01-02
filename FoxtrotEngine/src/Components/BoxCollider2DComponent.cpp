@@ -14,6 +14,7 @@
 #include "Components/Rigidbody2DComponent.h"
 #include "Renderer/Camera.h"
 #include "Managers/CollisionManager.h"
+#include "Actors/Transform.h"
 
 #ifdef FOXTROT_EDITOR
 #include "CommandHistory.h"
@@ -49,8 +50,6 @@ void BoxCollider2DComponent::Initialize(FTCore* coreInstance)
 
 			GetShapeID() = b2CreatePolygonShape(rb->GetBodyID(), &polygonShapeDef, &polygon);
 			CollisionManager::GetInstance()->RegisterCollider(GetShapeID().index1, this);
-
-			//CollisionManager::GetInstance()->Print();
 		}
 		else
 			LogString("ERROR : BoxCollider2DComponent::Initialize() -> BodyId not valid");

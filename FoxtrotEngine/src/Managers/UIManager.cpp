@@ -1,6 +1,12 @@
-#include "Managers/UIManager.h"
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
 
-#include <list>
+#include "Managers/UIManager.h"
 
 #include "Scenes/Scene.h"
 #include "Managers/SceneManager.h"
@@ -15,9 +21,7 @@
 
 UIManager::UIManager()
 	: mFocusedUI(nullptr)
-{
-
-}
+{}
 
 UIManager::~UIManager()
 {}
@@ -145,91 +149,7 @@ UIComponent* UIManager::GetTargetedUI(UIComponent* parentUI)
 	return targetUI;
 }
 
-//void UIManager::SetFocusedUI(UIComponent* UI)
-//{
-//	if (mFocusedUI == UI || mFocusedUI == nullptr)
-//	{
-//		return;
-//	}
-//	mFocusedUI = UI;
-//	Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
-//	std::vector<Actor*>& UIObjs = currScene->GetActorGroup(ActorGroup::UI);
-//	std::vector<Actor*>::iterator iter = UIObjs.begin();
-//	for (; iter != UIObjs.end(); ++iter)
-//	{
-//		if (*iter == mFocusedUI)
-//		{
-//			break;
-//		}
-//	}
-//	UIObjs.erase(iter);
-//	UIObjs.push_back(mFocusedUI);
-//}
-
 void UIManager::Reset()
 {
 	mFocusedUI = nullptr;
 }
-
-//#ifdef FOXTROT_EDITOR
-//
-//void UIManager::EditorUpdate(float deltaTime)
-//{
-//	mFocusedUI = EditorGetFocusedUI();
-//	if (!mFocusedUI)
-//		return;
-//	bool lBtnTap = MOUSE_TAP(MOUSE::MOUSE_LEFT);
-//	bool lBtnAway = MOUSE_AWAY(MOUSE::MOUSE_LEFT);
-//	UIComponent* targetUI = GetTargetedUI(mFocusedUI);
-//	if (targetUI != nullptr)
-//	{
-//		targetUI->OnMouseHovering();
-//		if (lBtnTap)
-//		{
-//			targetUI->OnMouseLButtonDown();
-//			targetUI->mLBtnDown = true;
-//		}
-//		else if (lBtnAway)
-//		{
-//			targetUI->OnMouseLButtonUp();
-//			if (targetUI->mLBtnDown)
-//			{
-//				targetUI->OnMouseLButtonClicked();
-//			}
-//			// Uncheck when the left button is released
-//			targetUI->mLBtnDown = false;
-//		}
-//	}
-//}
-//
-//UIComponent* UIManager::EditorGetFocusedUI()
-//{
-//	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-//	std::vector<Actor*>& elems = scene->GetActorGroup(ActorGroup::EDITOR);
-//
-//	bool lBtnTap = MOUSE_TAP(MOUSE::MOUSE_LEFT);
-//
-//	UIComponent* focusedUI = mFocusedUI;
-//	if (!lBtnTap)
-//		return focusedUI;
-//	std::vector<Actor*>::iterator targetIter = elems.end();
-//	std::vector<Actor*>::iterator iter = elems.begin();
-//	for (; iter != elems.end(); ++iter)
-//	{
-//		EditorElement* element = (EditorElement*)(*iter);
-//		if (element->IsMouseHovering())
-//		{
-//			targetIter = iter;
-//		}
-//	}
-//	// There's no UI focused
-//	if (targetIter == elems.end())
-//	{
-//		return nullptr;
-//	}
-//	focusedUI = (EditorElement*)*targetIter;
-//	//elems.erase(targetIter);
-//	//elems.push_back(focusedUI);
-//	return focusedUI;
-//}
-//#endif

@@ -6,8 +6,12 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 /// <summary>
+/// The core class that runs the FoxtrotEditor.
+/// Initializes an editor instance, runs the editor loop, and does shutdown
+/// operation when terminating the editor instance.
 /// Displays editor window, Provides functionality to create & edit .chunk files.
-/// This also runs the EditorScene, emulating the actual Scene in produced game.
+/// This also runs the EditorScene, as a derived class of FTCore
+/// emulating the actual Scene in produced game.
 /// </summary>
 
 #pragma once

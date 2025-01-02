@@ -1,6 +1,23 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// This loads the currently designated .Chunk file for the Scene.
+/// A .Chunk file is consist of...
+/// 1. Chunk data   : defines the data for the .Chunk itself.
+/// 2. Manager data : CollisionMarks from CollisionManager,
+///                   FTResources loaded by ResourceManager, etc.
+/// 3. Actor data   : Data for the Actors. ActorProperties and
+///                   Components assigned to each Actor.
+/// 4. Camera Property : TargetActor, Offset, etc.
+/// </summary>
+
 #pragma once
 #include <string>
-#include <list>
 #include <unordered_map>
 #include <functional>
 #include <fstream>

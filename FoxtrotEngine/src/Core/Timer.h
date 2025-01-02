@@ -1,3 +1,15 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// This ensures the game runs in the consistent context of time.
+/// Responsible to update the Delta Time.
+/// </summary>
+
 #pragma once
 #include <profileapi.h>
 

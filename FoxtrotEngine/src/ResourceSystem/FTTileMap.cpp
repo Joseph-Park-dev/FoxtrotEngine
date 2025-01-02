@@ -1,3 +1,11 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "FTTileMap.h"
 
 #include <fstream>
@@ -155,7 +163,7 @@ void FTTileMap::UpdateUI()
     ImGui::Text(GetFileName().c_str());
     ImVec2 previewSize = ImVec2(100, 100);
 
-    //UpdateRelativePath(TEXTURE_FORMAT_SUPPORTED);
+    //UpdateRelativePath(ChunkKeys::TEXTURE_FORMAT_SUPPORTED);
     std::string currentPath = "No path has been assigned";
     if (!GetRelativePath().empty())
         currentPath = "Current path : \n" + GetRelativePath();

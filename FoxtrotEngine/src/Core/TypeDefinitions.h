@@ -1,3 +1,15 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// Defines custom types.
+/// These may not be used and if so, these will be removed.
+/// </summary>
+
 #pragma once
 
 #if defined(_WIN64)

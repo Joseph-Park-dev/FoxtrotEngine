@@ -96,9 +96,6 @@
     <ClCompile Include="src\Math\Random.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Physics\Bounds.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Physics\ParticleSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -121,9 +118,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ResourceSystem\FTResource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTSprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ResourceSystem\FTSpriteAnimation.cpp">
@@ -278,9 +272,6 @@
     <ClInclude Include="src\Math\Random.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Physics\Bounds.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Physics\ParticleSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -311,9 +302,6 @@
     <ClInclude Include="src\ResourceSystem\FTResource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTSprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\ResourceSystem\FTSpriteAnimation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -342,9 +330,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Scenes\Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Scenes\SceneType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\FileSystem\ChunkFileKeys.h">

@@ -1,11 +1,16 @@
-#include "Core/TypeDefinitions.h"
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "Core/EventFunctions.h"
+
+#include "Core/TypeDefinitions.h"
 #include "Managers/EventManager.h"
 #include "Managers/ResourceManager.h"
-#include "Scenes/SceneType.h"
-#include "Components/AIState.h"
-#include "Actors/ActorGroup.h"
-#include "Actors/Actor.h"
 #include "ResourceSystem/FTPremade.h"
 
 #ifdef FOXTROT_EDITOR
@@ -68,13 +73,5 @@ void Destroy(Actor* actor)
 	FTEvent addedEvent = {};
 	addedEvent.incident = EVENT_TYPE::DESTROY_ACTOR;
 	addedEvent.eventData.push_back(actor);
-	EventManager::GetInstance()->AddEvent(addedEvent);
-}
-
-void SwitchScene(SCENE_TYPE* sceneType)
-{
-	FTEvent addedEvent = {};
-	addedEvent.incident = EVENT_TYPE::SWITCH_SCENE;
-	addedEvent.eventData.push_back(sceneType);
 	EventManager::GetInstance()->AddEvent(addedEvent);
 }

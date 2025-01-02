@@ -149,7 +149,7 @@ void TileMapComponent::UpdateCSV() {
 		config.path = ".";
 		config.countSelectionMax = 1;
 		ImGuiFileDialog::Instance()->OpenDialog(
-			"SelectCSV", "Select .CSV", TEXTURE_FORMAT_SUPPORTED, config);
+			"SelectCSV", "Select .CSV", ChunkKeys::TEXTURE_FORMAT_SUPPORTED, config);
 		ImGui::OpenPopup("Select .CSV");
 	}
 
@@ -201,7 +201,7 @@ void TileMapComponent::UpdateCSV(UINT& key)
 		config.path = ".";
 		config.countSelectionMax = 1;
 		ImGuiFileDialog::Instance()->OpenDialog(
-			"SelectCSV", "Select .CSV", TEXTURE_FORMAT_SUPPORTED, config);
+			"SelectCSV", "Select .CSV", ChunkKeys::TEXTURE_FORMAT_SUPPORTED, config);
 		ImGui::OpenPopup("Select .CSV");
 	}
 

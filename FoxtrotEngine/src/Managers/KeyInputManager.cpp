@@ -1,7 +1,16 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "Managers/KeyInputManager.h"
 
 #include "Core/TemplateFunctions.h"
 #include "Core/FTCore.h"
+#include "Renderer/Camera.h"
 
 #ifdef FOXTROT_EDITOR
 #include "EditorLayer.h"
@@ -35,21 +44,6 @@ void KeyInputManager::Init()
 		mVecButton.push_back(tKeyInfo{ KEY_STATE::NONE, false });
 	}
 }
-
-/*
-
-	Alternative to
-	SDL_GameController* KeyInputManager::FindGamepad()
-	{
-		for (int i = 0; i < SDL_NumJoysticks(); i++) {
-			if (SDL_IsGameController(i)) {
-				return SDL_GameControllerOpen(i);
-			}
-		}
-		return nullptr;
-	}
-
-*/
 
 KEY_STATE KeyInputManager::GetKeyState(KEY eKey)
 {
@@ -173,35 +167,3 @@ void KeyInputManager::UnlockCursorOutOfSceneViewport()
 {
 	ClipCursor(nullptr);
 }
-
-//void KeyInputManager::DetectGamepadInput()
-//{
-//	for (int padButton = 0; padButton < (int)GAMEPADBUTTON::LAST_FLAG; ++padButton)
-//	{
-//		const Uint8 buttonState = SDL_GameControllerGetButton(mGamepad, (SDL_GameControllerButton)padButton);
-//		if (buttonState)
-//		{
-//			if (mVecButton[padButton].isPushedPrevFrame)
-//			{
-//				mVecButton[padButton].eKeyState = KEY_STATE::HOLD;
-//			}
-//			else
-//			{
-//				mVecButton[padButton].eKeyState = KEY_STATE::TAP;
-//			}
-//			mVecButton[padButton].isPushedPrevFrame = true;
-//		}
-//		else
-//		{
-//			if (mVecButton[padButton].isPushedPrevFrame)
-//			{
-//				mVecButton[padButton].eKeyState = KEY_STATE::AWAY;
-//			}
-//			else
-//			{
-//				mVecButton[padButton].eKeyState = KEY_STATE::NONE;
-//			}
-//			mVecButton[padButton].isPushedPrevFrame = false;
-//		}
-//	}
-//}

@@ -1,3 +1,14 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// Defines the global utility functions.
+/// </summary>
+
 #pragma once
 #include <vector>
 #include <unordered_map>
@@ -14,7 +25,6 @@
 #endif // FOXTROT_EDITOR
 
 #include "Math/FTMath.h"
-#include "Physics/Bounds.h"
 #include "Debugging/DebugMemAlloc.h"
 
 //static std::string ToString(const wchar_t* text)
@@ -75,11 +85,6 @@ inline void LogVector2(std::string message, FTVector2 val)
 inline void LogVector3(std::string message, FTVector3 val)
 {
 	printf("%s, X : %f Y : %f Z : %f\n", message.c_str(), val.x, val.y, val.z);
-}
-
-inline void LogRect(Bounds bound)
-{
-	printf("Pos X : %f, Pos Y : %f, Width : %f, Height : %f\n", bound.x, bound.y, bound.w, bound.h);
 }
 
 inline void LogBool(bool val)

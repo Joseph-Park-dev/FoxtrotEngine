@@ -1,3 +1,16 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// A signleton class that manages physics simulation.
+/// The simulation is done by Box2D, triggered by the wrapper functions.
+/// Features will be added in the future versions.
+/// </summary>
+
 #pragma once
 #include "Core/SingletonMacro.h"
 #include "Physics/RayCastHit2D.h"
@@ -25,7 +38,8 @@ class Physics2D
 	SINGLETON(Physics2D);
 
 public:
-	static RayCastHit2D Raycast(FTVector2 origin, FTVector2 direction, float distance, ActorGroup actor);
+	// Raycast wrapper for box2D
+	// static RayCastHit2D Raycast(FTVector2 origin, FTVector2 direction, float distance, ActorGroup actor);
 	void RegisterRayCastHit(RayCastHit2D rc) { mRayCastHits.emplace_back(rc); }
 	void ResetRayCasts();
 
@@ -47,14 +61,4 @@ private:
 
 	std::vector<RayCastHit2D> mRayCastHits;
 	PointMass*				  mElements;
-
-	// These variables kick in when Box2D iss used.
-	/*b2World*				  mPhysicsWorld;
-	float					  mTimeStep;
-	int32					  mVelocityIterations;
-	int32					  mPositionIterations;*/
-
-private:
-	FTVector3 CalcCenterOfGravity(int numElements);
-	Matrix3 CalcInertiaProduct(int numElements);
 };

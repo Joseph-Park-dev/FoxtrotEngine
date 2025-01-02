@@ -1,3 +1,11 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "ResourceSystem/FTPremade.h"
 
 #include "FileSystem/ChunkLoader.h"
@@ -92,8 +100,8 @@ void FTPremade::Create(EditorElement* ele)
 {
 	assert(!GetRelativePath().empty());
 	SetFileName(ele->GetName());
-	std::string as = GetRelativePath() + GetFileName() + FTPremade_FORMAT_SUPPORTED;
-	std::ofstream ofs(GetRelativePath() + GetFileName() + FTPremade_FORMAT_SUPPORTED);
+	std::string as = GetRelativePath() + GetFileName() + ChunkKeys::PREMADE_FILE_FORMAT;
+	std::ofstream ofs(GetRelativePath() + GetFileName() + ChunkKeys::PREMADE_FILE_FORMAT);
 	if (ofs)
 	{
 		FileIOHelper::BeginDataPackSave(ofs, GetFileName());

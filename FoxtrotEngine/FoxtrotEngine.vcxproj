@@ -292,7 +292,6 @@
     <ClCompile Include="src\Managers\UIManager.cpp" />
     <ClCompile Include="src\Math\FTMath.cpp" />
     <ClCompile Include="src\Math\Random.cpp" />
-    <ClCompile Include="src\Physics\Bounds.cpp" />
     <ClCompile Include="src\Physics\ParticleSystem.cpp" />
     <ClCompile Include="src\Physics\Physics2D.cpp" />
     <ClCompile Include="src\Renderer\Camera.cpp" />
@@ -302,7 +301,6 @@
     <ClCompile Include="src\ResourceSystem\FTBasicMeshGroup.cpp" />
     <ClCompile Include="src\ResourceSystem\FTResource.cpp" />
     <ClCompile Include="src\ResourceSystem\FTShape.cpp" />
-    <ClCompile Include="src\ResourceSystem\FTSprite.cpp" />
     <ClCompile Include="src\ResourceSystem\FTSpriteAnimation.cpp" />
     <ClCompile Include="src\ResourceSystem\FTTexture.cpp" />
     <ClCompile Include="src\ResourceSystem\FTTileMap.cpp" />
@@ -356,7 +354,6 @@
     <ClInclude Include="src\Managers\UIManager.h" />
     <ClInclude Include="src\Math\FTMath.h" />
     <ClInclude Include="src\Math\Random.h" />
-    <ClInclude Include="src\Physics\Bounds.h" />
     <ClInclude Include="src\Physics\ParticleSystem.h" />
     <ClInclude Include="src\Physics\Physics2D.h" />
     <ClInclude Include="src\Physics\Ray.h" />
@@ -368,7 +365,6 @@
     <ClInclude Include="src\ResourceSystem\FTBasicMeshGroup.h" />
     <ClInclude Include="src\ResourceSystem\FTResource.h" />
     <ClInclude Include="src\ResourceSystem\FTShape.h" />
-    <ClInclude Include="src\ResourceSystem\FTSprite.h" />
     <ClInclude Include="src\ResourceSystem\FTSpriteAnimation.h" />
     <ClInclude Include="src\ResourceSystem\FTTexture.h" />
     <ClInclude Include="src\ResourceSystem\FTTileMap.h" />
@@ -379,7 +375,6 @@
     <ClInclude Include="src\ResourceSystem\Tile.h" />
     <ClInclude Include="src\ResourceSystem\Vertex.h" />
     <ClInclude Include="src\Scenes\Scene.h" />
-    <ClInclude Include="src\Scenes\SceneType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

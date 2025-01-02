@@ -1,6 +1,17 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// A singleton manager that holds a Scene instance, switches a Scene, 
+/// and runs the Scene as a part of the game loop.
+/// </summary>
+
 #pragma once
 #include "Core/SingletonMacro.h"
-#include "Scenes/SceneType.h"
 
 class Scene;
 class FoxtrotRenderer;
@@ -28,7 +39,6 @@ public:
 
 public:
 			void SaveSceneList(std::ofstream& ofs);
-			//void LoadSceneList();
 
 private:
 	std::string				 mChunkListPath;

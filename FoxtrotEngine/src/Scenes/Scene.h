@@ -1,3 +1,15 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// An object that the Actors are placed, and interacts with each others.
+/// Managed by the SceneManager.
+/// </summary>
+
 #pragma once
 #include <string>
 #include <vector>

@@ -16,7 +16,6 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Managers/ResourceManager.h"
 #include "Math/FTMath.h"
-#include "Physics/Bounds.h"
 #include "Renderer/Camera.h"
 #include "Renderer/D3D11Utils.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -150,7 +149,7 @@ void SpriteRendererComponent::UpdateSprite()
 		config.path = ".";
 		config.countSelectionMax = 1;
 		ImGuiFileDialog::Instance()->OpenDialog(
-			"SelectSprite", "Select Sprite", TEXTURE_FORMAT_SUPPORTED, config);
+			"SelectSprite", "Select Sprite", ChunkKeys::TEXTURE_FORMAT_SUPPORTED, config);
 		ImGui::OpenPopup("Select Sprite");
 	}
 
@@ -212,7 +211,7 @@ void SpriteRendererComponent::UpdateSprite(UINT& key)
 		config.path = ".";
 		config.countSelectionMax = 1;
 		ImGuiFileDialog::Instance()->OpenDialog(
-			"SelectSprite", "Select Sprite", TEXTURE_FORMAT_SUPPORTED, config);
+			"SelectSprite", "Select Sprite", ChunkKeys::TEXTURE_FORMAT_SUPPORTED, config);
 		ImGui::OpenPopup("Select Sprite");
 	}
 

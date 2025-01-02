@@ -1,3 +1,11 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include <unordered_map>
 
 #include "Managers/ResourceManager.h"
@@ -327,11 +335,11 @@ void ResourceManager::LoadResByType(std::string& filePath)
 ResType ResourceManager::GetResType(std::string& fileName)
 {
 	std::string format = fileName.substr(fileName.rfind("."));
-	if (StrContains(TEXTURE_FORMAT_SUPPORTED, format))
+	if (StrContains(ChunkKeys::TEXTURE_FORMAT_SUPPORTED, format))
 		return ResType::FTTEXTURE;
-	else if (StrContains(TILEMAP_FORMAT_SUPPORTED, format))
+	else if (StrContains(ChunkKeys::TILEMAP_FORMAT_SUPPORTED, format))
 		return ResType::FTTILEMAP;
-	else if (StrContains(FTPremade_FORMAT_SUPPORTED, format))
+	else if (StrContains(ChunkKeys::PREMADE_FILE_FORMAT, format))
 		return ResType::FTPREMADE;
 	else
 		return ResType::UNSUPPORTED;
@@ -345,11 +353,11 @@ void ResourceManager::UpdateUI()
 		config.countSelectionMax = 1;
 
 		std::string supportedFormat =
-			TEXTURE_FORMAT_SUPPORTED +
+			ChunkKeys::TEXTURE_FORMAT_SUPPORTED +
 			std::string(", ") +
-			TILEMAP_FORMAT_SUPPORTED +
+			ChunkKeys::TILEMAP_FORMAT_SUPPORTED +
 			std::string(", ") +
-			FTPremade_FORMAT_SUPPORTED;
+			ChunkKeys::PREMADE_FILE_FORMAT;
 
 		ImGuiFileDialog::Instance()->OpenDialog("SelectFile", "Select File", supportedFormat.c_str(), config);
 		ImGui::OpenPopup("Select File");
@@ -361,18 +369,18 @@ void ResourceManager::UpdateUI()
 			std::string path = ImGuiFileDialog::Instance()->GetFilePathName();
 			std::string extension = path.substr(path.rfind("."));
 			
-			if (StrContains(TEXTURE_FORMAT_SUPPORTED, extension)) 
+			if (StrContains(ChunkKeys::TEXTURE_FORMAT_SUPPORTED, extension)) 
 			{
 				std::string relativePath = path.substr(path.rfind("Assets"));
 				FTTexture* texture = LoadResource<FTTexture>(relativePath, mMapTextures);
 				ProcessTexture(texture);
 			}
-			else if (StrContains(TILEMAP_FORMAT_SUPPORTED, extension)) 
+			else if (StrContains(ChunkKeys::TILEMAP_FORMAT_SUPPORTED, extension))
 			{
 				std::string relativePath = path.substr(path.rfind("Assets"));
 				FTTileMap* tileMap = LoadResource<FTTileMap>(relativePath, mMapTileMaps);
 			}
-			else if (StrContains(FTPremade_FORMAT_SUPPORTED, extension))
+			else if (StrContains(ChunkKeys::PREMADE_FILE_FORMAT, extension))
 			{
 				std::string relativePath = path.substr(path.rfind("Assets"));
 				FTPremade* premade = LoadResource<FTPremade>(relativePath, mMapPremades);

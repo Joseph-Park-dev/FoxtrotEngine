@@ -1,6 +1,15 @@
-#pragma once
-#include <string>
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// Keys that are used to identify the values saved into .Chunk files.
+/// </summary>
 
+#pragma once
 #define VALUE_NOT_ASSIGNED -1
 
 namespace ChunkKeys {
@@ -10,6 +19,8 @@ namespace ChunkKeys {
 	constexpr const char* CHUNK_FILE_FORMAT = ".chunk";
 	constexpr const char* EDITOR_FILE_FORMAT = ".json";
 	constexpr const char* PREMADE_FILE_FORMAT = ".premade";
+	constexpr const char* TEXTURE_FORMAT_SUPPORTED  = ".png, .jpeg";
+	constexpr const char* TILEMAP_FORMAT_SUPPORTED = ".csv";
 
 // Data Pack Names
 	constexpr const char* CHUNK_DATA = "Chunk Data";

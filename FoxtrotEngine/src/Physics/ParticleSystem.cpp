@@ -1,10 +1,17 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "Physics/ParticleSystem.h"
 
 #include <vector>
 
 #include "Math/Random.h"
 #include "Math/FTMath.h"
-
 #include "Renderer/FoxtrotRenderer.h"
 
 // InitPos : WorldPosition, not ScreenPosition

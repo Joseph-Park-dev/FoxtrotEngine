@@ -1,3 +1,16 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// A class that holds the image data to be used as a sprite.
+/// This can be used as a single sprite, a texture pack for a tilemap
+/// and an animation, etc.
+/// </summary>
+
 #pragma once
 #include "ResourceSystem/FTResource.h"
 
@@ -8,7 +21,6 @@
 
 class FoxtrotRenderer;
 
-#define TEXTURE_FORMAT_SUPPORTED ".png, .jpeg"
 
 class FTTexture :
     public FTResource

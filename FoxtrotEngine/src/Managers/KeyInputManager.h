@@ -1,3 +1,17 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// A singleton manager that detects the inputs from the player, 
+/// and their related data. Keyboard clicks and mouse position 
+/// would be a perfect example.
+/// Gamepad input support will be added in the future versions.
+/// </summary>
+
 #pragma once
 #include <unordered_map>
 #include <vector>
@@ -96,9 +110,14 @@ public:
 	void SetGamepad(SDL_GameController* gamepad) { mGamepad = gamepad; }*/
 
 private:
+	// Keyboard related data.
 	std::vector<tKeyInfo>	mVecKey;
 	std::vector<tKeyInfo>	mVecMouse;
 	std::vector<tKeyInfo>	mVecButton;
+
+	// Mouse related data.
+	FTVector2				mMousePosition;
+	int						mMouseState;
 
 private:
 	using KeyboardMap = std::unordered_map<unsigned char, tKeyInfo>;
@@ -118,19 +137,6 @@ private:
 		VK_RBUTTON,
 		VK_MBUTTON
 	};
-	/*int arrGamepadCode[(int)GAMEPADBUTTON::LAST_FLAG] =
-	{
-		SDL_CONTROLLER_BUTTON_INVALID,
-
-		SDL_CONTROLLER_BUTTON_A,
-		SDL_CONTROLLER_BUTTON_B,
-		SDL_CONTROLLER_BUTTON_X,
-		SDL_CONTROLLER_BUTTON_Y
-	};*/
-
-private:
-	FTVector2			mMousePosition;
-	int					mMouseState;
 
 private:
 	void Init();

@@ -1,3 +1,16 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// Takes care of all collisions occurring in a Scene during a game
+/// session. All of them are done by box2D library in the current 
+/// version.
+/// </summary>
+
 #pragma once
 #include <string>
 #include <unordered_map>

@@ -1,8 +1,15 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "Managers/CollisionManager.h"
 
 #include <iostream>
 #include <unordered_map>
-#include <bitset>
 
 #include "Scenes/Scene.h"
 #include "Managers/SceneManager.h"
@@ -33,7 +40,7 @@ void CollisionManager::Reset()
 	memset(
 		mCollisionMarks, 
 		0, 
-		sizeof(uint64_t) * ActorGroupUtil::GetCount() * ActorGroupUtil::GetCount()
+		sizeof(bool) * ActorGroupUtil::GetCount() * ActorGroupUtil::GetCount()
 	);
 	mRegColliders.clear();
 }

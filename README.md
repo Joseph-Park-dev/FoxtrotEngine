@@ -47,7 +47,7 @@ Use **Foxtrot_Debug** when building a game in production. <br>
 ### 4. Build the Projects
 #### a. Building Foxtrot Editor
 Set the configuration to **"Foxtrot_Editor_Debug"**. <br>
-Build the project **"FoxtrotEngine"** first, and then build the project **"FoxtrotEditor"**. The output "FoxtrotEditor.exe" should be in<br> **"{root}/FoxtrotEditor/Builds"**.<br>
+Build the project **"FoxtrotEngine"** first, and then build the project **"FoxtrotEditor"**. The output "FoxtrotEditor.exe" should be in **"{root}/FoxtrotEditor/Builds"**.<br>
 The user manual is not provided yet, but you can still play around with the editor. <br>
 
 **IMPORTANT:** the files, "Game Data.gdpack" and "imgui.ini" are **CRUCIAL** for Foxtrot Editor to work properly. Keep them in the Builds folder. <br>
@@ -63,7 +63,7 @@ Foxtrot Engine has been developed not only as a portfolio but also as a tool of 
 - Particle system<br>
 - UI testing (this was implemented, but not tested)<br>
 - Establishment of the workflow of Foxtrot Engine; The development routine <br>
-- Finishing the prototype version of the game, SPARED.
+- Finishing the prototype version of the game, **"SPARED"**.
 
 ## Additional Info.
 Some rendering utility functions related to DirectX 11 were made using educational resources from [HongLab](https://honglab.co.kr/). <br>

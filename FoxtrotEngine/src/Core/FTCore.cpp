@@ -99,16 +99,16 @@ bool FTCore::InitializeWindow()
 	// wr의 값이 바뀜
 	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, false);
 
-	// 윈도우를 만들때 위에서 계산한 wr 사용
 	mWindow = CreateWindow(
-		wc.lpszClassName, 
+		wc.lpszClassName,
 		mWindowTitle.c_str(),
-		WS_OVERLAPPED | WS_SYSMENU,
-		100,                // 윈도우 좌측 상단의 x 좌표
-		100,                // 윈도우 좌측 상단의 y 좌표
-		wr.right - wr.left, // 윈도우 가로 방향 해상도
-		wr.bottom - wr.top, // 윈도우 세로 방향 해상도
+		WS_OVERLAPPEDWINDOW | WS_SYSMENU,
+		100,                // x-coordinate, top left
+		100,                // y-coordinate, top left
+		wr.right - wr.left, // horizontal resolution
+		wr.bottom - wr.top, // vertical resolution
 		NULL, NULL, wc.hInstance, NULL);
+
 	if (!mWindow)
 	{
 		LogString("CreateWindow() failed.");
@@ -211,7 +211,7 @@ FTCore::FTCore()
 	, mIsRunning(true)
 	, mWindowWidth(1920)
 	, mWindowHeight(1080)
-	, mWindowTitle(L"Foxtrot Engine (ver.0.1.2)")
+	, mWindowTitle(L"Untitled Game Project")
 	, mGameDataPath(
 		std::string("./")
 		+ std::string(ChunkKeys::GAME_DATA)

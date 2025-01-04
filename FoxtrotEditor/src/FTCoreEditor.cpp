@@ -188,7 +188,9 @@ FTCoreEditor::FTCoreEditor()
 	, mIsUpdatingGame(false)
 	, mIsResizingWindow(false)
 	, mEditorDataFileName()
-{}
+{
+	SetWindowTitle(L"Foxtrot Engine (ver.0.1.2)");
+}
 
 FTCoreEditor::~FTCoreEditor(){}
 

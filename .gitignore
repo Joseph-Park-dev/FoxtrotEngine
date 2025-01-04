@@ -1,6 +1,10 @@
 # Created by https://www.toptal.com/developers/gitignore/api/vcpkg,c++,visualstudio,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=vcpkg,c++,visualstudio,visualstudiocode
 
+### FT ###
+*.cso
+*.exp
+
 ### C++ ###
 # Prerequisites
 *.d

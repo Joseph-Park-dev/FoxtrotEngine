@@ -211,7 +211,7 @@ FTCore::FTCore()
 	, mIsRunning(true)
 	, mWindowWidth(1920)
 	, mWindowHeight(1080)
-	, mWindowTitle(L"Foxtrot Engine (ver.0.01)")
+	, mWindowTitle(L"Foxtrot Engine (ver.0.1.2)")
 	, mGameDataPath(
 		std::string("./")
 		+ std::string(ChunkKeys::GAME_DATA)

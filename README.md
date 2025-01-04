@@ -69,6 +69,18 @@ Foxtrot Engine has been developed not only as a portfolio but also as a tool of 
 - Establishment of the workflow of Foxtrot Engine; The development routine <br>
 - Finishing the prototype version of the game, **"SPARED"**.
 
-## Additional Info.
-Some rendering utility functions related to DirectX 11 were made using educational resources from [HongLab](https://honglab.co.kr/). <br>
-몇몇 DX11 렌더링 함수와 관련하여, [홍정모 연구소](https://honglab.co.kr/)의 컴퓨터 그래픽스 새싹코스를 참고하였습니다.
+## References
+1. Gregory, J. Game Engine Architecture (Third Edition). A K Peters/CRC Press. ISBN-13: 978-1138035454.
+   - Used as a primary reference for engine architecture design.
+
+2. Jeong-Mo Hong. Introduction to Computer Graphics with DirectX 11 [Online Course]. HongLab. https://honglab.co.kr/collections/graphics
+   - Implemented 2D renderer based on PART 2, Chapter 6: Rendering Pipeline.
+   - Used code examples from PART 2. Realtime Pipeline; DirectX 11 utility functions to load and process textures.
+
+3. Madhav, S. Game Programming in C++: Creating 3D Games (1st Edition). Addison-Wesley Professional. ISBN-13: 978-0134597201.
+   - Referenced for designing the game loop architectures.
+   - Used component pattern for Actor architecture.
+   - Used code examples on math; Vector classes with related functions.
+
+4. Nystrom, R. Game Programming Patterns. Genever Benning. https://gameprogrammingpatterns.com/
+   - Applied Command pattern for undo and redo system on Foxtrot Editor (Chapter: Command)

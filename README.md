@@ -1,8 +1,12 @@
 # Foxtrot Engine 2D [![License](https://img.shields.io/badge/license-GNUGPLv3-green)](./LICENSE)
 
 <p align="center">
-<img src="./Logo/FoxtrotEngine_LOGO.png" width="55%" height="55%" title="LOGO"/>
+<img src="./Logo/FoxtrotEngine_LOGO.png" width="55%" height="55%" title="LOGO" href="https://github.com/Joseph-Park-dev/FoxtrotEngine/"/>
 </p>
+
+<!-- <p align="center">
+<img src="./Logo/itch.io_badge-color.svg" width="20%" height="20%" title="itchioBadge" href="https://goocatstudio.itch.io/"/>
+</p> -->
 
 Foxtrot is a 2D game engine based on DirectX 11 for Windows.
 It includes Foxtrot Editor which allows users to create & modify scene data, and Foxtrot Engine which executes the produced game based on those data. Scene data are stored as a ".chunk" file, which is a file structure that describes the game data and the required resources.
@@ -53,3 +57,7 @@ Foxtrot Engine has been developed not only as a portfolio to get employed in the
 - UI testing (this was implemented, but not tested)<br>
 - Establishment of the workflow of Foxtrot Engine -> The development routine <br>
 - Finishing the prototype version of the game, SPARED.
+
+## Additional Info.
+Some rendering utility functions related to DirectX 11 were made using educational resources from [HongLab](https://honglab.co.kr/). <br>
+몇몇 DX11 렌더링 함수와 관련하여, [홍정모 연구소](https://honglab.co.kr/)의 컴퓨터 그래픽스 새싹코스를 참고하였습니다.

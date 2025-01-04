@@ -217,16 +217,7 @@ void FoxtrotRenderer::SwitchFillMode()
 
 HRESULT FoxtrotRenderer::CreateDeviceAndContext(HWND window)
 {
-	// 만약 그래픽스 카드 호환성 문제로 D3D11CreateDevice()가 실패하는 경우에는
-	// D3D_DRIVER_TYPE_HARDWARE 대신 D3D_DRIVER_TYPE_WARP 사용해보세요
-	// const D3D_DRIVER_TYPE driverType = D3D_DRIVER_TYPE_WARP;
 	const D3D_DRIVER_TYPE driverType = D3D_DRIVER_TYPE_HARDWARE;
-
-	// 여기서 생성하는 것들
-	// m_device, mContext, m_swapChain,
-	// m_renderTargetView, m_screenViewport, m_rasterizerState
-
-	// m_device와 mContext 생성
 
 	mCreateDeviceFlags = 0;
 #if defined(DEBUG) || defined(_DEBUG)
@@ -237,7 +228,7 @@ HRESULT FoxtrotRenderer::CreateDeviceAndContext(HWND window)
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> context;
 
 	const D3D_FEATURE_LEVEL featureLevels[2] = {
-		D3D_FEATURE_LEVEL_11_0, // 더 높은 버전이 먼저 오도록 설정
+		D3D_FEATURE_LEVEL_11_0, // The highest DX version. 
 		D3D_FEATURE_LEVEL_9_3 };
 	D3D_FEATURE_LEVEL featureLevel;
 

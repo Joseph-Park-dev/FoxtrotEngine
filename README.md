@@ -49,7 +49,7 @@ Use **Foxtrot_Debug** when building a game in production. <br>
 This section will be updated.
 
 ## Plans and Goals
-Foxtrot Engine has been developed not only as a portfolio to get employed in the game industry but also as a tool of education to obtain game development experiences. The developer also expects to develop this project until it reaches the point of being able to produce a finished 2D game title. Here is the list of upcoming features and goals.
+Foxtrot Engine has been developed not only as a portfolio but also as a tool of education to obtain game development experiences. The developer also expects to develop this project until it can produce a finished 2D game title. Here is the list of upcoming features and goals.
 
 - Artificial intelligence for characters (current WIP)<br>
 - Spine animation renderer <br>

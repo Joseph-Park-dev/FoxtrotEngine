@@ -1,11 +1,15 @@
 # Foxtrot Engine 2D [![License](https://img.shields.io/badge/license-GNUGPLv3-green)](./LICENSE)
 
-<p align="center" href = "https://github.com/Joseph-Park-dev/FoxtrotEngine/">
-<img src="./Logo/FoxtrotEngine_LOGO.png" width="55%" height="55%" title="LOGO">
+<p align="center">
+    <a href="https://github.com/Joseph-Park-dev/FoxtrotEngine/">
+        <img src="./Logo/FoxtrotEngine_LOGO.png" width="55%" height="55%" title="LOGO">
+    </a>
 </p>
 
-<p align="center" href = "https://goocatstudio.itch.io/foxtrot-engine-2d">
-<img src="./Logo/itch.io_badge-color.svg" width="20%" height="20%" title="itchioBadge">
+<p align="center">
+    <a href="https://goocatstudio.itch.io/foxtrot-engine-2d/">
+        <img src="./Logo/itch.io_badge-color.svg" width="20%" height="20%" title="itchioBadge">
+    </a>
 </p>
 
 Foxtrot Engine 2D is a 2D game engine based on DirectX 11 for Windows.

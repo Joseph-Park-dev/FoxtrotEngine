@@ -420,7 +420,7 @@ void EditorLayer::DisplayInfoMessage()
 		if (mFocusedEditorElement)
 		{
 			std::string msg = "Create Premade with name : " + mFocusedEditorElement->GetName() + "?";
-			PopUpInquiry("Create Premade", msg.c_str(), onConfirm);
+			PopUpInfo("Create Premade", msg.c_str(), onConfirm);
 		}
 	}
 	break;
@@ -459,16 +459,26 @@ void EditorLayer::DisplayErrorMessage()
 
 	case ErrorType::ChunkNotSaved:
 	{
-		auto onConfirm = [this]()
+		std::function<void()> onConfirm = [this]()
 			-> void
 			{
 				FTCoreEditor::GetInstance()->SetIsRunning(false);
-				mInfoType = InfoType::None;
+				mErrorType = ErrorType::None;
+				ImGui::CloseCurrentPopup();
 			};
+
+		std::function<void()> onCancel = [this]()
+			-> void
+			{
+				mErrorType = ErrorType::None;
+				ImGui::CloseCurrentPopup();
+			};
+
 		PopUpInquiry(
 			"Chunk is not saved",
-			".Chunk is not saved.\n Discard the chunk?"
-			, onConfirm
+			".Chunk is not saved.\n Discard the chunk?",
+			onConfirm,
+			onCancel
 		);
 	}
 		break;

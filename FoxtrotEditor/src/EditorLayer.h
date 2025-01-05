@@ -78,7 +78,7 @@ public:
 public:
 	// Pops up a message box with confirm button only.
 	template <class FUNCTOR>
-	void PopUpInquiry(const char* title, const char* msg, FUNCTOR&& onConfirm)
+	void PopUpInfo(const char* title, const char* msg, FUNCTOR&& onConfirm)
 	{
 		ImGui::OpenPopup(title);
 		// Always center this window when appearing
@@ -109,7 +109,7 @@ public:
 	// Pops up a message box with confirm and cancel buttons.
 	// (User needs to choose)
 	template <class FUNCTOR>
-	void PopUpInquiry(const char* title, const char* msg, FUNCTOR onConfirm, FUNCTOR&& onCancel)
+	void PopUpInquiry(const char* title, const char* msg, FUNCTOR&& onConfirm, FUNCTOR&& onCancel)
 	{
 		ImGui::OpenPopup(title);
 		// Always center this window when appearing
@@ -124,11 +124,9 @@ public:
 
 			if (ImGui::Button("Confirm", ImVec2(120, 0)))
 				onConfirm();
+
 			if (ImGui::Button("Cancel", ImVec2(120, 0)))
 				onCancel();
-
-			ImGui::CloseCurrentPopup();
-			mInfoType = InfoType::None;
 			ImGui::EndPopup();
 		}
 	}

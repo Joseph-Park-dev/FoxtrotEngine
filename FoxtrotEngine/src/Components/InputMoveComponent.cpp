@@ -20,15 +20,17 @@ InputMoveComponent::InputMoveComponent(Actor* owner, int drawOrder, int updateOr
 
 void InputMoveComponent::ProcessInput(KeyInputManager* keyInputManager)
 {
+	Transform* transform = GetOwner()->GetTransform();
+	Steering steering = Steering::Halt();
+	
 	if (KEY_HOLD(KEY::A))
-		SetHorizontalDir(MoveComponent::HorizontalDir::LEFT);
+		steering.Linear = FTVector3::NegUnitX;
 	else if (KEY_HOLD(KEY::D))
-		SetHorizontalDir(MoveComponent::HorizontalDir::RIGHT);
+		steering.Linear = FTVector3::UnitX;
 	else
-		SetHorizontalDir(MoveComponent::HorizontalDir::IDLE);
+		steering.Linear = FTVector3::Zero;
 
 	if (KEY_TAP(KEY::SPACE))
-		SetVerticalDir(MoveComponent::VerticalDir::UP);
-	else
-		SetVerticalDir(MoveComponent::VerticalDir::GROUND);
+		steering.JumpTriggered = true;
+	GetOwner()->GetTransform()->SetSteering(steering);
 }

@@ -8,6 +8,9 @@ class AgentBehavior :
     public Component
 {
 public:
+    virtual Steering CreateSteering();
+
+public:
     void Initialize (FTCore* ftCoreInstance) override;
     void Setup      ()                       override;
     void Update     (float deltaTime)        override;

@@ -16,8 +16,15 @@
 
 struct Steering
 {
-	float Angular;
-	FTVector3 Linear;
+	float		Angular;
+	FTVector3	Linear;
+
+	bool		JumpTriggered;
+
+	static Steering* CreateEmptySteering()
+	{
+		return new Steering(0.f, FTVector3::Zero);
+	}
 
 	static Steering Halt()
 	{
@@ -27,5 +34,23 @@ struct Steering
 	Steering(float angular, FTVector3 linear)
 		: Angular(angular)
 		, Linear (linear)
+		, JumpTriggered(false)
 	{}
+
+	friend bool operator==(Steering left, Steering right)
+	{
+		return left.Linear.x == right.Linear.x
+			&& left.Linear.y == right.Linear.y
+			&& left.Angular	 == right.Angular
+			&& left.JumpTriggered == right.JumpTriggered;
+	}
+
+	friend bool operator!=(Steering left, Steering right)
+	{
+		return left.Linear.x != right.Linear.x
+			|| left.Linear.y != right.Linear.y
+			|| left.Angular != right.Angular
+			|| left.JumpTriggered != right.JumpTriggered;
+
+	}
 };

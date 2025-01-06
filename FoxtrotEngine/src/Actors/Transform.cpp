@@ -42,6 +42,11 @@ const FTVector3 Transform::GetRightward() const
 	return mRightward;
 }
 
+const Steering* Transform::GetSteering() const
+{
+	return mSteering;
+}
+
 void Transform::SetWorldPosition(const FTVector3 pos)
 {
 	mWorldPosition = pos;
@@ -70,8 +75,11 @@ void Transform::SetRightward(FTVector3 dir)
 
 void Transform::SetSteering(Steering steering)
 {
-	mSteering->Angular	= steering.Angular;
-	mSteering->Linear	= steering.Linear;
+	if (!mSteering)
+		mSteering = Steering::CreateEmptySteering();
+	mSteering->Angular			= steering.Angular;
+	mSteering->Linear			= steering.Linear;
+	mSteering->JumpTriggered	= steering.JumpTriggered;
 }
 
 Transform::Transform()

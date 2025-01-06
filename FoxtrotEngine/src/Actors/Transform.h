@@ -24,6 +24,7 @@ public:
 	const FTVector3	 GetRotation()			const;
 	const FTVector3  GetRotationDegree()	const;
 	const FTVector3	 GetRightward()			const;
+	const Steering*  GetSteering()			const;
 
 	void SetWorldPosition	(const FTVector3 pos);
 	void SetLocalPosition	(const FTVector3 pos);

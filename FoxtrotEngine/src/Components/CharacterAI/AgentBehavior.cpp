@@ -3,6 +3,11 @@
 #include "Actors/Actor.h"
 #include "Actors/Transform.h"
 
+Steering AgentBehavior::CreateSteering()
+{
+	return Steering::Halt();
+}
+
 void AgentBehavior::Initialize(FTCore* coreInstance)
 {
 	mAgent = this->GetOwner()->GetTransform();
@@ -16,7 +21,7 @@ void AgentBehavior::Setup()
 
 void AgentBehavior::Update(float deltaTime)
 {
-	mAgent->SetSteering(Steering::Halt());
+	mAgent->SetSteering(CreateSteering());
 }
 
 AgentBehavior::AgentBehavior()

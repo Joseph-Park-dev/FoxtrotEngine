@@ -22,8 +22,6 @@ class MoveComponent :
     public Component
 {
     enum Controllable;
-    enum HorizontalDir;
-    enum VerticalDir;
 
 public:
     virtual std::string GetName() const override
@@ -35,24 +33,20 @@ public:
     float         GetForwardSpeed()  const { return mForwardSpeed; }
     float         GetAngularSpeed()  const { return mAngularSpeed; }
     Controllable  IsControllable()   const { return mIsControllable; }
-    HorizontalDir GetHorizontalDir() const { return mHorizontalDir; }
-    VerticalDir   GetVerticalDir()   const { return mVerticalDir; }
 
     void  SetForwardSpeed   (float speed)       { mForwardSpeed = speed; }
     void  SetAngularSpeed   (float speed)       { mAngularSpeed = speed; }
-    void  SetHorizontalDir  (HorizontalDir dir) { mHorizontalDir = dir; }
-    void  SetVerticalDir    (VerticalDir dir)   { mVerticalDir = dir; }
 
 public:
     virtual void Initialize(FTCore* coreInstance) override;
-    virtual void Update(float deltaTime) override;
+    virtual void LateUpdate(float deltaTime) override;
 
 public:
     MoveComponent(class Actor* owner, int drawOrder, int updateorder);
 
 protected:
-    void Accelerate();
-    void Jump();
+    void Accelerate (b2Vec2 currVel, const Steering* steering);
+    void Jump       (b2Vec2 currVel, const Steering* steering);
     void SetIsGrounded();
 
 protected:
@@ -60,20 +54,6 @@ protected:
     {
         NO,
         YES
-    };
-
-    enum HorizontalDir
-    {
-        LEFT = -1,
-        IDLE = 0,
-        RIGHT = 1
-    };
-
-    enum VerticalDir
-    {
-        // DOWN    = -1,
-        GROUND = 0,
-        UP = 1
     };
 
 private:
@@ -85,8 +65,6 @@ private:
     float                   mJumpForce;
 
     Controllable            mIsControllable;
-    HorizontalDir           mHorizontalDir;
-    VerticalDir             mVerticalDir;
     bool                    mIsGrounded;
 
 public:

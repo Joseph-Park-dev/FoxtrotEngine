@@ -129,6 +129,10 @@ void Actor::Initialize(FTCore* coreInst)
 	for (size_t i = 0; i < mComponents.size(); ++i)
 		if (!mComponents[i]->GetIsInitialized())
 			mComponents[i]->Initialize(coreInst);
+
+	for(size_t i =0; i < mComponents.size(); ++i)
+		if (!mComponents[i]->GetIsSetup())
+			mComponents[i]->Setup();
 }
 
 void Actor::ProcessInput(KeyInputManager* keyInputManager)
@@ -148,8 +152,6 @@ void Actor::UpdateComponents(float deltaTime)
 	{
 		for (auto comp : mComponents)
 		{
-			if (!comp->GetIsSetup())
-				comp->Setup();
 			comp->Update(deltaTime);
 		}
 	}
@@ -170,14 +172,6 @@ void Actor::RenderComponents(FoxtrotRenderer* renderer)
 		comp->Render(renderer);
 	}
 }
-
-//void Actor::RenderComponents(FoxtrotRenderer* renderer)
-//{
-//	for (auto comp : mComponents)
-//	{
-//		comp->Render(renderer);
-//	}
-//}
 
 void Actor::AddComponent(Component* component)
 {

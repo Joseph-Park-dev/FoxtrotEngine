@@ -13,21 +13,25 @@
 #pragma once
 #include "Math/FTMath.h"
 
+#include "Components/CharacterAI/Steering.h"
+
 class Transform
 {
 public:
-	const FTVector3  GetWorldPosition()		  const;
-	const FTVector3  GetLocalPosition()		  const;
-	const FTVector3  GetScale()				  const;
-	const FTVector3	 GetRotation()			  const;
-	const FTVector3  GetRotationDegree()	  const;
-	const int		 GetHorizontalDirection() const;
+	const FTVector3  GetWorldPosition()		const;
+	const FTVector3  GetLocalPosition()		const;
+	const FTVector3  GetScale()				const;
+	const FTVector3	 GetRotation()			const;
+	const FTVector3  GetRotationDegree()	const;
+	const FTVector3	 GetRightward()			const;
+	const Steering*  GetSteering()			const;
 
-	void SetWorldPosition	 (const FTVector3 pos);
-	void SetLocalPosition	 (FTVector3 pos);
-	void SetScale		     (FTVector3 scale);
-	void SetRotation		 (FTVector3 rotation);
-	void SetCurrentDirection (int dir);
+	void SetWorldPosition	(const FTVector3 pos);
+	void SetLocalPosition	(const FTVector3 pos);
+	void SetScale		    (const FTVector3 scale);
+	void SetRotation		(const FTVector3 rotation);
+	void SetRightward		(const FTVector3 dir);
+	void SetSteering		(const Steering steering);
 
 	static FTVector3 ConvertRadToDegree(FTVector3 radianRot);
 	static FTVector3 ConvertDegreeToRad(FTVector3 degreeRot);
@@ -35,14 +39,16 @@ public:
 public:
 			 Transform	();
 			 Transform	(Transform& origin);
-	virtual ~Transform	() {};
+	virtual ~Transform	();
 
 private:
+	Steering*	mSteering;
+
 	FTVector3	mWorldPosition;
 	FTVector3	mLocalPosition;
 	FTVector3	mScale;
 	FTVector3	mRotation;
-	int			mHorizontalDirection;
+	FTVector3	mRightward;	// A local rightward direction
 
 public:
 	void SaveProperties(std::ofstream& ofs);

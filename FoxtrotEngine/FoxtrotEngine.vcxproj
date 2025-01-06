@@ -260,6 +260,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Components\CharacterAI\AgentBehavior.cpp" />
     <ClCompile Include="src\Components\ActorBehaviors\Bullet\BulletBehavior.cpp" />
     <ClCompile Include="src\FileSystem\FileIOHelper.cpp" />
     <ClCompile Include="src\Managers\CollisionManager.cpp" />
@@ -311,7 +312,9 @@
     <ClCompile Include="src\Scenes\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Components\CharacterAI\AgentBehavior.h" />
     <ClInclude Include="src\Components\ActorBehaviors\Bullet\BulletBehavior.h" />
+    <ClInclude Include="src\Components\CharacterAI\Steering.h" />
     <ClInclude Include="src\Debugging\DebugMemAlloc.h" />
     <ClInclude Include="src\FileSystem\FileIOHelper.h" />
     <ClInclude Include="src\Managers\CollisionManager.h" />

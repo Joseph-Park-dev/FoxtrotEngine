@@ -162,6 +162,9 @@
     <ClCompile Include="src\Components\ActorBehaviors\Bullet\BulletBehavior.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Components\CharacterAI\AgentBehavior.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Components\UIs\ButtonUIComponent.h">
@@ -360,6 +363,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Components\ActorBehaviors\Bullet\BulletBehavior.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\CharacterAI\Steering.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\CharacterAI\AgentBehavior.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -155,7 +155,7 @@ void FTShape::InitializeMesh(ComPtr<ID3D11Device>& device, MeshData&& meshData)
 
 void FTShape::UpdateConstantBufferModel(Transform* transform)
 {
-    int dir = transform->GetHorizontalDirection();
+    int dir = transform->GetRightward().x;
     FTVector3 worldPos = FTVector3(
         transform->GetWorldPosition().x,
         transform->GetWorldPosition().y,

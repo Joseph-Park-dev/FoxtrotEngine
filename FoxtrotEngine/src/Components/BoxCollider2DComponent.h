@@ -28,7 +28,8 @@ public:
 			void		SetScale(FTVector2 scale);
 
 public:
-	virtual void Initialize(FTCore* coreInstance) override;
+	virtual void Initialize(FTCore* coreInstance)	override;
+	virtual void Setup()							override;
 
 public:
 	 BoxCollider2DComponent(

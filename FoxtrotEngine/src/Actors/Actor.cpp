@@ -187,10 +187,7 @@ void Actor::AddComponent(Component* component)
 	for (;iter != mComponents.end();++iter)
 	{
 		if (updateOrder < (*iter)->GetUpdateOrder())
-		{
-			if(drawOrder < (*iter)->GetDrawOrder())
-				break;
-		}
+			break;
 	}
 	mComponents.insert(iter, component);
 }

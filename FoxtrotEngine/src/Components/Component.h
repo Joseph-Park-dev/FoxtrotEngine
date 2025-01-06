@@ -117,6 +117,8 @@ public:
 		Camera* cameraInst
 	);
 
+	void		 SetUpdateOrder(int updateOrder);
+
 public:
 	template <class T>
 	static void Create(Actor* actor, FTCore* coreInst)

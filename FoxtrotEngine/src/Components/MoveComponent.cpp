@@ -79,7 +79,6 @@ void MoveComponent::SetIsGrounded()
 void MoveComponent::Initialize(FTCore* coreInstance)
 {
 	mRigidbody = GetOwner()->GetComponent<Rigidbody2DComponent>();
-	assert(mRigidbody);  // Rigidbody is crucial for this compoenent to work.
 	if (mRigidbody)
 		Component::Initialize(coreInstance);
 }

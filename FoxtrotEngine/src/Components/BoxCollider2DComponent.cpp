@@ -35,6 +35,18 @@ void BoxCollider2DComponent::SetScale(FTVector2 scale)
 
 void BoxCollider2DComponent::Initialize(FTCore* coreInstance)
 {
+#ifdef FOXTROT_EDITOR
+	mDebugRect = DBG_NEW FTRectangle;
+	mDebugRect->Initialize(coreInstance->GetGameRenderer());
+	if (!IsShowingDebugShape())
+		mDebugRect->SetIsActive(false);
+#endif // FOXTROT_EDITOR
+
+	Component::Initialize(coreInstance);
+}
+
+void BoxCollider2DComponent::Setup()
+{
 	Rigidbody2DComponent* rb = GetOwner()->GetComponent<Rigidbody2DComponent>();
 	if (rb)
 	{
@@ -54,14 +66,7 @@ void BoxCollider2DComponent::Initialize(FTCore* coreInstance)
 		else
 			LogString("ERROR : BoxCollider2DComponent::Initialize() -> BodyId not valid");
 	}
-#ifdef FOXTROT_EDITOR
-	mDebugRect = DBG_NEW FTRectangle;
-	mDebugRect->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
-	if (!IsShowingDebugShape())
-		mDebugRect->SetIsActive(false);
-#endif // FOXTROT_EDITOR
-
-	Component::Initialize(coreInstance);
+	Component::Setup();
 }
 
 BoxCollider2DComponent::BoxCollider2DComponent(Actor* owner, int drawOrder, int updateOrder)

@@ -67,14 +67,20 @@ void Transform::SetRightward(FTVector3 dir)
 	assert(mRightward != FTVector3::Zero);
 	mRightward = dir;
 }
+
+void Transform::SetSteering(Steering steering)
+{
+	mSteering->Angular	= steering.Angular;
+	mSteering->Linear	= steering.Linear;
 }
 
 Transform::Transform()
-	: mWorldPosition	(FTVector3::Zero)
-	, mLocalPosition	(FTVector3::Zero)
-	, mScale			(FTVector3(1.0f, 1.0f, 1.0f))
-	, mRotation			(FTVector3(0.0f, 0.0f, 0.0f))
+	: mWorldPosition		(FTVector3::Zero)
+	, mLocalPosition		(FTVector3::Zero)
+	, mScale				(FTVector3(1.0f, 1.0f, 1.0f))
+	, mRotation				(FTVector3(0.0f, 0.0f, 0.0f))
 	, mRightward			(FTVector3(1.0f, 0.0f, 0.0f))
+	, mSteering				(nullptr)
 {}
 
 Transform::Transform(Transform & origin)
@@ -82,7 +88,18 @@ Transform::Transform(Transform & origin)
 	, mLocalPosition		(origin.mLocalPosition)
 	, mScale				(origin.mScale)
 	, mRotation				(origin.mRotation)
+	, mRightward			(origin.mRightward)
+	, mSteering				(nullptr)
 {}
+
+Transform::~Transform()
+{
+	if (mSteering)
+	{
+		delete mSteering;
+		mSteering = nullptr;
+	}
+}
 
 FTVector3 Transform::ConvertRadToDegree(FTVector3 radianRot)
 {

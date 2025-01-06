@@ -46,7 +46,10 @@ void MoveComponent::Accelerate()
 	else
 		vel.x = mHorizontalDir * mForwardSpeed;
 	b2Body_SetLinearVelocity(mRigidbody->GetBodyID(), vel);
-	GetOwner()->GetTransform()->SetCurrentDirection(mHorizontalDir);
+
+	FTVector3 right = GetOwner()->GetTransform()->GetRightward();
+	right.x = mHorizontalDir;
+	GetOwner()->GetTransform()->SetRightward(right);
 }
 
 void MoveComponent::Jump()

@@ -87,7 +87,9 @@ Collider2DComponent::Collider2DComponent(Actor* owner, int drawOrder, int update
 
 Collider2DComponent::Collider2DComponent(const Collider2DComponent& origin)
 	: Component(origin.GetOwner(), origin.GetDrawOrder(), origin.GetUpdateOrder())
+	, mShapeID(b2_nullShapeId)
 	, mOffset(origin.mOffset)
+	, mShowDebugShape(false)
 {
 }
 
@@ -96,12 +98,6 @@ Collider2DComponent::~Collider2DComponent()
 	if (b2Shape_IsValid(mShapeID))
 		b2DestroyShape(mShapeID, true);
 }
-
-//void Collider2DComponent::CloneTo(Actor* actor)
-//{
-//	Collider2DComponent* newColliderComp = DBG_NEW Collider2DComponent(actor, GetDrawOrder(), GetUpdateOrder());
-//	newColliderComp->mOffsetPos = this->mOffsetPos;
-//}
 
 void Collider2DComponent::OnCollisionEnter(Collider2DComponent* other)
 {

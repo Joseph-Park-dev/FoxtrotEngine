@@ -21,13 +21,14 @@ public:
 	const FTVector3  GetScale()				  const;
 	const FTVector3	 GetRotation()			  const;
 	const FTVector3  GetRotationDegree()	  const;
-	const int		 GetHorizontalDirection() const;
 
 	void SetWorldPosition	 (const FTVector3 pos);
 	void SetLocalPosition	 (FTVector3 pos);
 	void SetScale		     (FTVector3 scale);
 	void SetRotation		 (FTVector3 rotation);
 	void SetCurrentDirection (int dir);
+	const FTVector3	 GetRightward()			const;
+	void SetRightward		(const FTVector3 dir);
 
 	static FTVector3 ConvertRadToDegree(FTVector3 radianRot);
 	static FTVector3 ConvertDegreeToRad(FTVector3 degreeRot);
@@ -42,7 +43,7 @@ private:
 	FTVector3	mLocalPosition;
 	FTVector3	mScale;
 	FTVector3	mRotation;
-	int			mHorizontalDirection;
+	FTVector3	mRightward;	// A local rightward direction
 
 public:
 	void SaveProperties(std::ofstream& ofs);

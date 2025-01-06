@@ -107,12 +107,16 @@ void Component::LoadProperties(std::ifstream& ifs)
 
 #ifdef FOXTROT_EDITOR
 void Component::EditorUIUpdate()
-{
-}
+{}
+
 void Component::UpdateDebugShapes(FTVector3 pos, FTVector3 rot, FTVector3 scale, Camera* cameraInst)
 {}
 
-void Component::OnConfirmUpdate()
+void Component::SetUpdateOrder(int updateOrder)
 {
+	mUpdateOrder = updateOrder;
 }
+
+void Component::OnConfirmUpdate()
+{}
 #endif

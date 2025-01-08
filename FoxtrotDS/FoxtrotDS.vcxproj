@@ -154,6 +154,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>..\FoxtrotEngine\include;..\FoxtrotEngine\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -180,8 +181,10 @@
     <ClInclude Include="ArrayDS.h" />
     <ClInclude Include="ArrayStack.h" />
     <ClInclude Include="CircularQueue.h" />
+    <ClInclude Include="ComparisonFunctions.h" />
     <ClInclude Include="DSLogs.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="SortingFunctions.h" />
     <ClInclude Include="TestHeaderBatch.h" />
   </ItemGroup>
   <ItemGroup>

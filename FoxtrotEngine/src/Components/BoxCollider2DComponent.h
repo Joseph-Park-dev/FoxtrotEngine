@@ -31,6 +31,8 @@ public:
 	virtual void Initialize(FTCore* coreInstance)	override;
 	virtual void Setup()							override;
 
+	virtual void CloneTo(Actor* actor)				override;
+
 public:
 	 BoxCollider2DComponent(
 		 Actor* owner,
@@ -60,8 +62,6 @@ public:
 				FTVector3 scale, 
 				Camera* cameraInst
 			) override;
-
-	virtual void CloneTo(Actor* actor) override;
 
 private:
 	FTRectangle* mDebugRect;

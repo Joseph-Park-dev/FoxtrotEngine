@@ -26,10 +26,10 @@ public:
 	b2BodyId& GetBodyID();
 
 public:
-	virtual void Initialize(FTCore* coreInstance) override;
-	virtual void Setup() override;
-	virtual void Update(float deltaTime) override{};
-	virtual void LateUpdate(float deltaTime) override;
+	virtual void Initialize	(FTCore* coreInstance)	override;
+	virtual void LateUpdate	(float deltaTime)		override;
+
+	virtual void CloneTo	(Actor* actor)          override;
 
 public:
 	Rigidbody2DComponent(Actor* owner, int drawOrder = DEFAULT_DRAWORDER,
@@ -55,7 +55,6 @@ public:
 
 public:
 	virtual void EditorUIUpdate() override;
-	virtual void CloneTo(Actor* actor) override;
 
 private:
 	// This is used only on editor to update the values.

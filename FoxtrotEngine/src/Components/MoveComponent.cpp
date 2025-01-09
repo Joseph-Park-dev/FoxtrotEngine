@@ -108,6 +108,14 @@ void MoveComponent::LateUpdate(float deltaTime)
 	}
 }
 
+void MoveComponent::CloneTo(Actor* actor)
+{
+	MoveComponent* newComp = DBG_NEW MoveComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	newComp->mForwardSpeed = this->mForwardSpeed;
+	newComp->mJumpForce = this->mJumpForce;
+	newComp->mAngularSpeed = this->mAngularSpeed;
+}
+
 void MoveComponent::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
@@ -130,13 +138,5 @@ void MoveComponent::EditorUIUpdate()
 	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKeys::FORWARD_SPEED, &mForwardSpeed, FLOATMOD_SPEED);
 	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKeys::JUMP_FORCE, &mJumpForce, FLOATMOD_SPEED);
 	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKeys::ANGULAR_SPEED, &mAngularSpeed, FLOATMOD_SPEED);
-}
-
-void MoveComponent::CloneTo(Actor* actor)
-{
-	MoveComponent* newComp	= DBG_NEW MoveComponent(actor, GetDrawOrder(), GetUpdateOrder());
-	newComp->mForwardSpeed	= this->mForwardSpeed;
-	newComp->mJumpForce		= this->mJumpForce;
-	newComp->mAngularSpeed	= this->mAngularSpeed;
 }
 #endif // FOXTROT_EDITOR

@@ -40,6 +40,11 @@ void CircleCollider2DComponent::Initialize(FTCore* coreInstance)
     Component::Initialize(coreInstance);
 }
 
+void CircleCollider2DComponent::CloneTo(Actor* actor)
+{
+	CLONE_TO_NOT_IMPLEMENTED
+}
+
 CircleCollider2DComponent::CircleCollider2DComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Collider2DComponent(owner, drawOrder, updateOrder)
 	, mRadius(50.f)

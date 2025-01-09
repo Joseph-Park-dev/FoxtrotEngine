@@ -22,8 +22,6 @@ class FTTexture;
 struct Mesh;
 struct MeshData;
 
-#define VALUE_NOT_ASSIGNED -1
-
 #define CHECK_RENDERER(RendererInst) if(!RendererInst) ImGui::Text("Renderer is not loaded");
 
 class MeshRendererComponent :
@@ -33,6 +31,8 @@ public:
 	virtual	void Initialize	(FTCore* coreInstance)		override;
 	virtual void Update		(float deltaTime)			override;
 	virtual void Render		(FoxtrotRenderer* renderer) override;
+
+	virtual void CloneTo	(Actor* actor)				override;
 
 protected:
 	virtual bool InitializeMesh	();
@@ -85,7 +85,6 @@ public:
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void EditorUIUpdate() override;
-	virtual void CloneTo(Actor* actor)	override;
 
 protected:
 	virtual void OnConfirmUpdate() override;

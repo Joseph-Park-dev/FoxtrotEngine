@@ -33,6 +33,7 @@ public:
 
 	/// <summary>
 	/// Adds an EditorElement with copied values from actor.
+	/// Useful when Stopping a scene on FTEditor.
 	/// </summary>
 	/// <param name="actor : ">Actor to copy values from.</param>
 	void AddEditorElement(Actor* actor);

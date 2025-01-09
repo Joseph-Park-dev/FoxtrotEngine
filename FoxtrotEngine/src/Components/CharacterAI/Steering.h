@@ -17,7 +17,7 @@
 struct Steering
 {
 	float		Angular;
-	FTVector3	Linear;
+	FTVector3	Linear;  // Normalized direction of movement
 
 	bool		JumpTriggered;
 

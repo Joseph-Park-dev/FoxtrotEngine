@@ -34,3 +34,11 @@ void InputMoveComponent::ProcessInput(KeyInputManager* keyInputManager)
 		steering.JumpTriggered = true;
 	GetOwner()->GetTransform()->SetSteering(steering);
 }
+
+void InputMoveComponent::CloneTo(Actor* actor)
+{
+	InputMoveComponent* newComp = DBG_NEW InputMoveComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	newComp->SetForwardSpeed (GetForwardSpeed());
+	newComp->SetAngularSpeed (GetAngularSpeed());
+	newComp->SetJumpForce	 (GetJumpForce());
+}

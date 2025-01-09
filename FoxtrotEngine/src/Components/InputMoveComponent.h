@@ -26,7 +26,8 @@ public:
     }
 
 public:
-    void ProcessInput(class KeyInputManager* keyInputManager) override;
+            void ProcessInput   (class KeyInputManager* keyInputManager) override;
+    virtual void CloneTo        (Actor* actor)                           override;
 
 public:
     InputMoveComponent(class Actor* owner, int drawOrder, int updateOrder);

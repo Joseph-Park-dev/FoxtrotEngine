@@ -86,6 +86,17 @@ EditorElement::EditorElement(Actor* actor, EditorScene* scene)
 	, mIsFocused(false)
 {}
 
+EditorElement::EditorElement(FTPremade* premade, EditorScene* scene)
+	: Actor(premade, scene)
+	, mIsFocused(false)
+{}
+
+EditorElement::EditorElement(EditorElement* element, EditorScene* scene)
+	: Actor(element, scene)
+	, mIsFocused(false)
+{
+}
+
 void EditorElement::UpdateActorName()
 {
 	char* updatedName = _strdup(GetName().c_str());

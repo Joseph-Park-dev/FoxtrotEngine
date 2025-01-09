@@ -50,14 +50,15 @@ public:
 
 public:
 	// This can also be used when refreshing the object.
-	virtual void Initialize(FTCore* coreInstance) override;
-			void LateUpdate(float deltaTime) override;
+	virtual void Initialize	(FTCore* coreInstance)	override;
+			void LateUpdate	(float deltaTime)		override;
+			
+	virtual void CloneTo	(Actor* actor)			override;
 
 public:
 	Collider2DComponent(Actor* owner, int drawOrder, int updateOrder);
 	Collider2DComponent(const Collider2DComponent& origin);
 	virtual ~Collider2DComponent() override;
-	//virtual void CloneTo(Actor* actor) override;
 
 public:
 	//Collider2DComponent& operator=(Collider2DComponent& origin);

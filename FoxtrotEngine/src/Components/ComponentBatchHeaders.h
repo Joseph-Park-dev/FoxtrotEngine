@@ -27,3 +27,4 @@
 
 #include "Components/GunFiringBehavior.h"
 #include "Components/ActorBehaviors/Bullet/BulletBehavior.h"
+#include "Components/CharacterAI/Seek.h"

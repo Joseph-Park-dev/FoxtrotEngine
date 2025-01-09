@@ -10,16 +10,20 @@ class AgentBehavior :
 public:
     virtual Steering CreateSteering();
 
+protected:
+    Transform*  GetTarget() { return mTarget; }
+
+    void    SetTarget(Transform* target);
+
 public:
     void Initialize (FTCore* ftCoreInstance) override;
     void Setup      ()                       override;
     void Update     (float deltaTime)        override;
 
 public:
-    AgentBehavior();
+    AgentBehavior(Actor* owner, int drawOrder, int updateOrder);
     ~AgentBehavior() override;
 
 private:
-    Actor*      mTarget;
-    Transform*  mAgent;
+    Transform* mTarget;
 };

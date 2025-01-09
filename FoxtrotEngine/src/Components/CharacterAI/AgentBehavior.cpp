@@ -8,9 +8,13 @@ Steering AgentBehavior::CreateSteering()
 	return Steering::Halt();
 }
 
+void AgentBehavior::SetTarget(Transform* target)
+{
+	mTarget = target;
+}
+
 void AgentBehavior::Initialize(FTCore* coreInstance)
 {
-	mAgent = this->GetOwner()->GetTransform();
 	Component::Initialize(coreInstance);
 }
 
@@ -21,12 +25,11 @@ void AgentBehavior::Setup()
 
 void AgentBehavior::Update(float deltaTime)
 {
-	mAgent->SetSteering(CreateSteering());
+	GetOwner()->GetTransform()->SetSteering(CreateSteering());
 }
 
-AgentBehavior::AgentBehavior()
-	: Component	(GetOwner(), DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER)
-	, mAgent	(nullptr)
+AgentBehavior::AgentBehavior(Actor* owner, int drawOrder, int updateOrder)
+	: Component	(owner, drawOrder, updateOrder)
 	, mTarget	(nullptr)
 {}
 

@@ -44,7 +44,8 @@ EditorChunkLoader::EditorChunkLoader()
 
         // Actor Behaviors
         {"GunFiringBehavior",       &Component::Create<GunFiringBehavior>},
-        {"BulletBehavior",          &Component::Create<BulletBehavior>}
+        {"BulletBehavior",          &Component::Create<BulletBehavior>},
+        {"Seek",                    &Component::Create<Seek>}
     };
 }
 
@@ -100,9 +101,11 @@ void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
     for (size_t i = 0; i < pack.first; ++i)
     {
         std::pair<size_t, std::string>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
-        EditorElement* element = DBG_NEW EditorElement(scene);
-        element->LoadProperties(ifs);
-        element->LoadComponents(ifs);
+        Actor actor = Actor();
+        actor.LoadProperties(ifs);
+        actor.LoadComponents(ifs);
+
+        EditorElement* element = DBG_NEW EditorElement(&actor, scene);
         element->Initialize(FTCoreEditor::GetInstance());
     }
 }

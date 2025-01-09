@@ -23,9 +23,12 @@ public:
 	}
 
 public:
-	virtual void OnMouseHovering() override;
-	virtual void OnMouseLButtonDown() override;
-	virtual void OnMouseLButtonUp() override;
+	virtual void OnMouseHovering()		override;
+	virtual void OnMouseLButtonDown()	override;
+	virtual void OnMouseLButtonUp()		override;
+
+public:
+	virtual void CloneTo(Actor* actor)	override;
 
 public:
 	 PanelUIComponent(

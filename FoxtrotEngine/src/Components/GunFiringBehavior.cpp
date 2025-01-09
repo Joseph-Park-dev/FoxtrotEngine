@@ -52,6 +52,11 @@ void GunFiringBehavior::Update(float deltaTime)
 		mCurrentTick = 0;
 }
 
+void GunFiringBehavior::CloneTo(Actor* actor)
+{
+	GunFiringBehavior* newComp = DBG_NEW GunFiringBehavior(actor, GetDrawOrder(), GetUpdateOrder());
+}
+
 void GunFiringBehavior::ShootGun()
 {
 #ifdef FOXTROT_EDITOR
@@ -83,11 +88,6 @@ GunFiringBehavior::GunFiringBehavior(Actor* owner, int drawOrder, int updateorde
 
 GunFiringBehavior::~GunFiringBehavior()
 {
-}
-
-void GunFiringBehavior::CloneTo(Actor* actor)
-{
-	CLONE_TO_NOT_IMPLEMENTED
 }
 
 FTVector2&& GunFiringBehavior::CalcDirection(FTVector2&& origin, FTVector2&& point)

@@ -30,16 +30,20 @@ public:
     }
 
 public:
-    float         GetForwardSpeed()  const { return mForwardSpeed; }
-    float         GetAngularSpeed()  const { return mAngularSpeed; }
-    Controllable  IsControllable()   const { return mIsControllable; }
+    float         GetForwardSpeed ()  const { return mForwardSpeed; }
+    float         GetAngularSpeed ()  const { return mAngularSpeed; }
+    float         GetJumpForce    ()  const { return mJumpForce; }
+    Controllable  IsControllable  ()  const { return mIsControllable; }
 
     void  SetForwardSpeed   (float speed)       { mForwardSpeed = speed; }
     void  SetAngularSpeed   (float speed)       { mAngularSpeed = speed; }
+    void  SetJumpForce      (float jumpForce)   { mJumpForce = jumpForce; }
 
 public:
-    virtual void Initialize(FTCore* coreInstance) override;
-    virtual void LateUpdate(float deltaTime) override;
+    virtual void Initialize (FTCore* coreInstance)   override;
+    virtual void LateUpdate (float deltaTime)        override;
+
+    virtual void CloneTo    (Actor* actor)           override;
 
 public:
     MoveComponent(class Actor* owner, int drawOrder, int updateorder);
@@ -73,6 +77,5 @@ public:
 
 #ifdef FOXTROT_EDITOR
     virtual void EditorUIUpdate() override;
-    virtual void CloneTo(Actor* actor) override;
 #endif // FOXTROT_EDITOR
 };

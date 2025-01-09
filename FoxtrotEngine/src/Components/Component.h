@@ -42,6 +42,8 @@ public:
 	virtual void LateUpdate		(float deltaTime);
 	virtual void Render			(FoxtrotRenderer* renderer);
 
+	virtual void CloneTo		(Actor* actor) = 0;
+
 public:
 	Actor*		GetOwner()			const;
 	const int	GetUpdateOrder()	const;
@@ -64,8 +66,6 @@ public:
 	/// </summary>
 	/// <param name="comp : "> Component to copy values from.</param>
 	Component(const Component* comp);
-	virtual void CloneTo(Actor* actor);
-
 	virtual ~Component();
 
 private:
@@ -107,9 +107,6 @@ public:
 
 public:
 	virtual void EditorUIUpdate();
-	// Deep copy function for Editing Premade on FTEditor
-	// (Initialize() is not included)
-
 	virtual void UpdateDebugShapes(
 		FTVector3 pos,
 		FTVector3 rot,

@@ -40,14 +40,10 @@ public:
     virtual void OnMouseLButtonClicked  ();
 
 public:
-
-
-public:
     virtual void Initialize (FTCore* ftCoreInst)        override;
     virtual void Update     (float deltaTime)           override;
     virtual void LateUpdate (float deltaTime)           override;
     virtual void Render     (FoxtrotRenderer* renderer) override;
-
 
 public:
              UIComponent(

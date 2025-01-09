@@ -75,8 +75,6 @@ void Transform::SetRightward(FTVector3 dir)
 
 void Transform::SetSteering(Steering steering)
 {
-	if (!mSteering)
-		mSteering = Steering::CreateEmptySteering();
 	mSteering->Angular			= steering.Angular;
 	mSteering->Linear			= steering.Linear;
 	mSteering->JumpTriggered	= steering.JumpTriggered;
@@ -88,7 +86,7 @@ Transform::Transform()
 	, mScale				(FTVector3(1.0f, 1.0f, 1.0f))
 	, mRotation				(FTVector3(0.0f, 0.0f, 0.0f))
 	, mRightward			(FTVector3(1.0f, 0.0f, 0.0f))
-	, mSteering				(nullptr)
+	, mSteering				(Steering::CreateEmptySteering())
 {}
 
 Transform::Transform(Transform & origin)
@@ -97,7 +95,7 @@ Transform::Transform(Transform & origin)
 	, mScale				(origin.mScale)
 	, mRotation				(origin.mRotation)
 	, mRightward			(origin.mRightward)
-	, mSteering				(nullptr)
+	, mSteering				(Steering::CreateEmptySteering())
 {}
 
 Transform::~Transform()

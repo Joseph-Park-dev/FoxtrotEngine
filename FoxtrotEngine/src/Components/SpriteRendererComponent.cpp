@@ -55,6 +55,15 @@ void SpriteRendererComponent::Initialize(FTCore* coreInstance)
 	Component::Initialize(coreInstance);
 }
 
+void SpriteRendererComponent::CloneTo(Actor* actor)
+{
+	SpriteRendererComponent* newComp = DBG_NEW SpriteRendererComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	newComp->SetMeshKey(this->GetMeshKey());
+	newComp->SetTexKey(this->GetTexKey());
+	newComp->mChannel = this->mChannel;
+	newComp->mTexScale = this->mTexScale;
+}
+
 bool SpriteRendererComponent::InitializeMesh()
 {
 	MeshRendererComponent::InitializeMesh(
@@ -245,14 +254,5 @@ void SpriteRendererComponent::UpdateSprite(UINT& key)
 			ImGui::CloseCurrentPopup();
 		ImGui::EndPopup();
 	}
-}
-
-void SpriteRendererComponent::CloneTo(Actor* actor)
-{
-	SpriteRendererComponent* newComp = DBG_NEW SpriteRendererComponent(actor, GetDrawOrder(), GetUpdateOrder());
-	newComp->SetMeshKey(this->GetMeshKey());
-	newComp->SetTexKey(this->GetTexKey());
-	newComp->mChannel = this->mChannel;
-	newComp->mTexScale = this->mTexScale;
 }
 #endif // FOXTROT_EDITOR

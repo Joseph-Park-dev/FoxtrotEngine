@@ -262,6 +262,8 @@ void AnimatorComponent::CreateAnimation()
 
 void AnimatorComponent::CloneTo(Actor* actor)
 {
-	CLONE_TO_NOT_IMPLEMENTED
+	AnimatorComponent* newComp = DBG_NEW AnimatorComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	for (size_t i = 0; i < mLoadedKeys.size(); ++i)
+		newComp->mLoadedKeys.push_back(mLoadedKeys.at(i));
 }
 #endif // FOXTROT_EDITOR

@@ -63,23 +63,23 @@ void EditorScene::AddEditorElement()
 void EditorScene::AddEditorElement(Actor* actor)
 {
 	UnfocusEditorElements();
-	// Finds the actor with the same name and adds numbered suffix.
-	std::string name = actor->GetName();
-	std::vector<Actor*>* actors = GetActors();
-	int count = 0;
-	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
-	{
-		for (size_t j = 0; j < actors[i].size(); ++j)
-		{
-			std::string buf = actors[i][j]->GetName();
-			name = ExtractUntil(name, '(');
-			buf = ExtractUntil(buf, '(');
-			if (name == buf)
-				++count;
-		}
-	}
-	if (0 < count)
-		actor->SetName(actor->GetName() + "(" + std::to_string(count) + ")");
+	//// Finds the actor with the same name and adds numbered suffix.
+	//std::string name = actor->GetName();
+	//std::vector<Actor*>* actors = GetActors();
+	//int count = 0;
+	//for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
+	//{
+	//	for (size_t j = 0; j < actors[i].size(); ++j)
+	//	{
+	//		std::string buf = actors[i][j]->GetName();
+	//		name = ExtractUntil(name, '(');
+	//		buf = ExtractUntil(buf, '(');
+	//		if (name == buf)
+	//			++count;
+	//	}
+	//}
+	//if (0 < count)
+	//	actor->SetName(actor->GetName() + "(" + std::to_string(count) + ")");
 	this->AddActor(actor, actor->GetActorGroup());
 }
 

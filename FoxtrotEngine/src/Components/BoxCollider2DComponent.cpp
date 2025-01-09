@@ -69,6 +69,13 @@ void BoxCollider2DComponent::Setup()
 	Component::Setup();
 }
 
+void BoxCollider2DComponent::CloneTo(Actor* actor)
+{
+	BoxCollider2DComponent* newComp = DBG_NEW BoxCollider2DComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	newComp->SetOffsetPos(this->GetOffsetPos());
+	newComp->mScale = this->mScale;
+}
+
 BoxCollider2DComponent::BoxCollider2DComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Collider2DComponent(owner, drawOrder, updateOrder)
 	, mScale(FTVector2(1.f, 1.f))
@@ -170,12 +177,5 @@ void BoxCollider2DComponent::UpdateScale()
 			b2Shape_SetPolygon(GetShapeID(), &polygon);
 		}
 	}
-}
-
-void BoxCollider2DComponent::CloneTo(Actor* actor)
-{
-	BoxCollider2DComponent* newComp = DBG_NEW BoxCollider2DComponent(actor, GetDrawOrder(), GetUpdateOrder());
-	newComp->SetOffsetPos(this->GetOffsetPos());
-	newComp->mScale = this->mScale;
 }
 #endif // FOXTROT_EDITOR

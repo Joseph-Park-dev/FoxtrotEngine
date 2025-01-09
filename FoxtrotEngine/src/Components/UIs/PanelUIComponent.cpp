@@ -27,6 +27,11 @@ void PanelUIComponent::OnMouseLButtonDown()
 void PanelUIComponent::OnMouseLButtonUp()
 {}
 
+void PanelUIComponent::CloneTo(Actor * actor)
+{
+	PanelUIComponent* newComp = DBG_NEW PanelUIComponent(actor, GetDrawOrder(), GetUpdateOrder());
+}
+
 PanelUIComponent::PanelUIComponent(Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER)
 	: UIComponent(owner, drawOrder, updateOrder)
 	, mDragStartPoint(FTVector2::Zero)

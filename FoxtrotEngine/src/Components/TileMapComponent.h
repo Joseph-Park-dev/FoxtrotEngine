@@ -37,6 +37,8 @@ public:
     virtual void Update    (float deltaTime)            override;
     virtual void Render    (FoxtrotRenderer* renderer)  override;
 
+    virtual void CloneTo(Actor* actor)	                override;
+
 protected:
     void InitializeTileMap();
 
@@ -60,8 +62,6 @@ public:
 #ifdef FOXTROT_EDITOR
 public:
     virtual void EditorUIUpdate() override;
-    virtual void CloneTo(Actor* actor)	override;
-
     virtual void OnConfirmUpdate() override;
 
 protected:

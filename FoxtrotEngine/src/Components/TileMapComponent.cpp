@@ -83,6 +83,12 @@ void TileMapComponent::Render(FoxtrotRenderer* renderer)
     MeshRendererComponent::Render(renderer);
 }
 
+void TileMapComponent::CloneTo(Actor* actor)
+{
+	TileMapComponent* newComp = DBG_NEW TileMapComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	newComp->mTileMapKey = this->mTileMapKey;
+}
+
 TileMapComponent::TileMapComponent(Actor* owner, int drawOrder, int UpdateOrder)
     : SpriteRendererComponent(owner, drawOrder)
     , mTileMap(nullptr)
@@ -122,12 +128,6 @@ void TileMapComponent::EditorUIUpdate()
     UpdateSprite();
     UpdateCSV();
     OnConfirmUpdate();
-}
-
-void TileMapComponent::CloneTo(Actor* actor)
-{
-	TileMapComponent* newComp = DBG_NEW TileMapComponent(actor, GetDrawOrder(), GetUpdateOrder());
-	newComp->mTileMapKey = this->mTileMapKey;
 }
 
 void TileMapComponent::OnConfirmUpdate()

@@ -23,10 +23,25 @@
 #include "Components/Collider2DComponent.h"
 #include "Core/FTCore.h"
 #include "Debugging/DebugMemAlloc.h"
+#include "ResourceSystem/FTPremade.h"
+
+#include "ComparisonFunctions.h"
 
 #ifdef FOXTROT_EDITOR
 #include "EditorElement.h"
 #endif // FOXTROT_EDITOR
+
+Actor::Actor()
+	: mName("New Empty Actor")
+	, mActorGroup(ActorGroup::DEFAULT)
+	, mState(State::EActive)
+	, mTransform(DBG_NEW Transform)
+	, mComponents()
+	, mParent(nullptr)
+	, mChild()
+{
+	// THIS BLOCK SHOULD BE REMAINED EMPTY;
+}
 
 Actor::Actor(Scene* scene)
 	: mName("New Empty Actor")
@@ -38,34 +53,6 @@ Actor::Actor(Scene* scene)
 	, mChild{}
 {
 	scene->AddActor(this, mActorGroup);
-}
-
-Actor::Actor(Actor* actor, Scene* scene)
-	: mName(actor->GetName() + " Copy")
-	, mActorGroup(actor->mActorGroup)
-	, mState(actor->mState)
-	, mTransform(DBG_NEW Transform)
-	, mComponents()
-	, mParent(nullptr)
-	, mChild{}
-{
-	CopyTransformFrom(actor);
-	CopyComponentsFrom(actor);
-	CopyChildObjectFrom(actor);
-
-	scene->AddActor(this, mActorGroup);
-}
-
-Actor::Actor()
-	: mName("Empty Actor")
-	, mActorGroup(ActorGroup::DEFAULT)
-	, mState(State::EActive)
-	, mTransform(DBG_NEW Transform)
-	, mComponents()
-	, mParent(nullptr)
-	, mChild()
-{
-	// THIS BLOCK SHOULD BE REMAINED EMPTY;
 }
 
 Actor::Actor(Actor* actor)
@@ -80,6 +67,28 @@ Actor::Actor(Actor* actor)
 	CopyTransformFrom(actor);
 	CopyComponentsFrom(actor);
 	CopyChildObjectFrom(actor);
+}
+
+Actor::Actor(Actor* actor, Scene* scene)
+	: mName			(actor->GetName())
+	, mActorGroup	(actor->mActorGroup)
+	, mState		(actor->mState)
+	, mTransform	(DBG_NEW Transform)
+	, mComponents	()
+	, mParent		(nullptr)
+	, mChild		()
+{
+	CopyTransformFrom(actor);
+	CopyComponentsFrom(actor);
+	CopyChildObjectFrom(actor);
+
+	scene->AddActor(this, mActorGroup);
+}
+
+Actor::Actor(FTPremade* premade, Scene* scene)
+	: Actor(premade->GetOrigin(), scene)
+{
+	this->mName += " Copy";
 }
 
 Actor::~Actor()
@@ -129,10 +138,6 @@ void Actor::Initialize(FTCore* coreInst)
 	for (size_t i = 0; i < mComponents.size(); ++i)
 		if (!mComponents[i]->GetIsInitialized())
 			mComponents[i]->Initialize(coreInst);
-
-	for(size_t i =0; i < mComponents.size(); ++i)
-		if (!mComponents[i]->GetIsSetup())
-			mComponents[i]->Setup();
 }
 
 void Actor::ProcessInput(KeyInputManager* keyInputManager)
@@ -152,6 +157,8 @@ void Actor::UpdateComponents(float deltaTime)
 	{
 		for (auto comp : mComponents)
 		{
+			if (!comp->GetIsSetup())
+				comp->Setup();
 			comp->Update(deltaTime);
 		}
 	}
@@ -160,17 +167,13 @@ void Actor::UpdateComponents(float deltaTime)
 void Actor::LateUpdateComponents(float deltaTime)
 {
 	for (auto comp : mComponents)
-	{
 		comp->LateUpdate(deltaTime);
-	}
 }
 
 void Actor::RenderComponents(FoxtrotRenderer* renderer)
 {
 	for (auto comp : mComponents)
-	{
 		comp->Render(renderer);
-	}
 }
 
 void Actor::AddComponent(Component* component)
@@ -244,6 +247,11 @@ void Actor::SetState(std::string state)
 bool Actor::HasName(std::string& name)
 {
 	return this->GetName() == name;
+}
+
+bool Actor::HasName(const char* name)
+{
+	return FTDS::StringEqual(mName.c_str(), name);
 }
 
 void Actor::SaveProperties(std::ofstream& ofs)

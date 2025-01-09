@@ -222,7 +222,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>..\FoxtrotEditor\include;..\FoxtrotEditor\src;.\include;.\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\FoxtrotEditor\include;..\FoxtrotEditor\src;.\include;.\src;..\FoxtrotDS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -260,6 +260,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Components\CharacterAI\Seek.cpp" />
     <ClCompile Include="src\Components\CharacterAI\AgentBehavior.cpp" />
     <ClCompile Include="src\Components\ActorBehaviors\Bullet\BulletBehavior.cpp" />
     <ClCompile Include="src\FileSystem\FileIOHelper.cpp" />
@@ -312,6 +313,7 @@
     <ClCompile Include="src\Scenes\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Components\CharacterAI\Seek.h" />
     <ClInclude Include="src\Components\CharacterAI\AgentBehavior.h" />
     <ClInclude Include="src\Components\ActorBehaviors\Bullet\BulletBehavior.h" />
     <ClInclude Include="src\Components\CharacterAI\Steering.h" />

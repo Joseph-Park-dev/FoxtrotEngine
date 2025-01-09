@@ -86,9 +86,6 @@ Component::Component(const Component* origin)
 	mOwner->AddComponent(this);
 }
 
-void Component::CloneTo(Actor* actor)
-{}
-
 Component::~Component()
 {
 }

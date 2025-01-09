@@ -28,6 +28,15 @@ class Scene
 public:
 	void AddActor(Actor* actor, ActorGroup group);
 
+	/// <summary>
+	/// Finds the Actor from current scene by linear-searching the hierarchy.
+	/// </summary>
+	/// <param name="group : ">ActorGroup this Actor is assigned to.</param>
+	/// <param name="name : ">Actor's name</param>
+	/// <returns></returns>
+	Actor* FindActor(std::string& name);
+	Actor* FindActor(const char* name);
+
 public:
 	const std::wstring&  GetName() { return mSceneName; }
 	std::vector<Actor*>& GetActorGroup(ActorGroup group)
@@ -52,15 +61,6 @@ public:
 
 	void SetName(const std::wstring& name) { mSceneName = name; }
 	void SetIsUpdatingActors(bool value){ mIsUpdatingActors = value; }
-
-public:
-	/// <summary>
-	/// Finds the Actor from current scene
-	/// </summary>
-	/// <param name="group : ">ActorGroup this Actor is assigned to.</param>
-	/// <param name="name : ">Actor's name</param>
-	/// <returns></returns>
-	Actor* FindActor(std::string& name);
 
 public:
 	virtual void ProcessInput(KeyInputManager* keyInputManager);

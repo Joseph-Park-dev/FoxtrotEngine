@@ -31,11 +31,17 @@ class UIActor;
 class Scene;
 class Component;
 class FoxtrotRenderer;
+class FTPremade;
 enum class ACTOR_TAG;
 
 class Actor
 {
 public:
+	/// <summary>
+	/// Creates an empty Actor with zero-initialized values, but doesn't add it to the Scene.
+	/// </summary>
+	Actor();
+
 	/// <summary>
 	/// Constructor that adds an Actor to scene during initialization phase.
 	/// (When a .chunk is being loaded)
@@ -44,24 +50,25 @@ public:
 	Actor(Scene* scene);
 
 	/// <summary>
-	/// Copy constructors that adds a deep-copied Actor to the scene during initialization phase.
-	/// (When a .chunk is being loaded)
+	/// Creates an deep-copied Actor from another Actor Obj, or an Origin from Premade.
+	/// This doesn't add the created Actor to the scene, but stores the initialized one.
+	/// </summary>
+	/// <param name="actor : "> Actor being copied.</param>
+	Actor(Actor* actor);
+
+	/// <summary>
+	/// Copy constructors that adds a deep-copied Actor to the scene.
 	/// </summary>
 	/// <param name="actor : "> Actor being copied.</param>
 	/// <param name="scene : "> A scene object which this Actor is loaded to.</param>
 	Actor(Actor* actor, Scene* scene);
 
 	/// <summary>
-	/// Creates an empty Actor with zero-initialized values.
+	/// Copies the origin from the FTPremade into this object, adding it to the scene
 	/// </summary>
-	Actor();
-
-	/// <summary>
-	/// Creates an deep-copied Actor from another Actor Obj, or an Origin from Premade.
-	/// This doesn't add the created Actor to the scene, but stores the initialized one.
-	/// </summary>
-	/// <param name="actor : "> Actor being copied.</param>
-	Actor(Actor* actor);
+	/// <param name="premade : ">Premade to copy origin from.</param>
+	/// <param name="scene : ">A scene object to add this object to.</param>
+	Actor(FTPremade* premade, Scene* scene);
 
 	virtual ~Actor();
 
@@ -118,6 +125,7 @@ public:
 	void		  SetChildActors (std::vector<Actor*>& children)		{ mChild = children; }
 
 	bool		  HasName		 (std::string& name);
+	bool		  HasName		 (const char* name);
 
 	template<class T>
 	T* GetComponent()

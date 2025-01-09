@@ -32,8 +32,10 @@ public:
 	void RegisterState(class AIState* state);
 
 public:
-	virtual void Initialize(FTCore* coreInstance) override;
-	void		 Update(float deltaTime) override;
+	virtual void Initialize	(FTCore* coreInstance)	override;
+			void Update		(float deltaTime)		override;
+
+	virtual void CloneTo	(Actor* actor)			override;
 
 public:
 	AIComponent(class Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
@@ -42,9 +44,4 @@ public:
 private:
 	std::unordered_map<AISTATE_TYPE, class AIState*> mStateMap;
 	class AIState*									 mCurrentState;
-
-#ifdef FOXTROT_EDITOR
-public:
-	virtual void CloneTo(Actor* actor) override;
-#endif // FOXTROT_EDITOR
 };

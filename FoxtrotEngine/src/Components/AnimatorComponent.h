@@ -46,10 +46,12 @@ public:
     void LoadAnimation(const UINT key);
     
 public:
-    virtual void Initialize(FTCore* coreInstance)   override;
-            void Update(float deltaTime)            override;
-            void LateUpdate(float deltaTime)        override;
-    virtual void Render(FoxtrotRenderer* renderer)  override;
+    virtual void Initialize (FTCore* coreInstance)      override;
+            void Update     (float deltaTime)           override;
+            void LateUpdate (float deltaTime)           override;
+    virtual void Render     (FoxtrotRenderer* renderer) override;
+
+    virtual void CloneTo    (Actor* actor)              override;
 
 public:
      AnimatorComponent(
@@ -72,8 +74,6 @@ public:
 public:
     virtual void EditorUpdate   (float deltaTime)   override;
     virtual void EditorUIUpdate ()                  override;
-
-    virtual void CloneTo        (Actor* actor)      override;
 
 private:
             void UpdatePlayAnim();

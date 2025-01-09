@@ -47,6 +47,20 @@ Actor* Scene::FindActor(std::string& name)
 	}
 }
 
+Actor* Scene::FindActor(const char* name)
+{
+	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	{
+		std::vector<Actor*>& actors = GetActorGroup(i);
+		auto func = [&](Actor* actor) { return actor->HasName(name); };
+		auto iter = std::find_if(actors.begin(), actors.end(), func);
+		if (iter != actors.end())
+			return *iter;
+		else
+			continue;
+	}
+}
+
 void Scene::ProcessInput(KeyInputManager* keyInputManager)
 {
 	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)

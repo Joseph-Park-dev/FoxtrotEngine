@@ -40,6 +40,11 @@ void AIComponent::Update(float deltaTime)
 		mCurrentState->Update(deltaTime);
 }
 
+void AIComponent::CloneTo(Actor* actor)
+{
+	CLONE_TO_NOT_IMPLEMENTED
+}
+
 AIComponent::AIComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner)
 	, mCurrentState(nullptr)
@@ -50,10 +55,3 @@ AIComponent::~AIComponent()
 {
 	Safe_Delete_Map(mStateMap);
 }
-
-#ifdef FOXTROT_EDITOR
-void AIComponent::CloneTo(Actor* actor)
-{
-	CLONE_TO_NOT_IMPLEMENTED
-}
-#endif // FOXTROT_EDITOR

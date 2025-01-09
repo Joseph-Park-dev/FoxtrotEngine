@@ -73,6 +73,9 @@ void Collider2DComponent::LateUpdate(float deltaTime)
 	mFinalPosition = ownerPos + mOffset;
 }
 
+void Collider2DComponent::CloneTo(Actor* actor)
+{}
+
 Collider2DComponent::Collider2DComponent(Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner, drawOrder, updateOrder)
 	, mOffset(FTVector2::Zero)

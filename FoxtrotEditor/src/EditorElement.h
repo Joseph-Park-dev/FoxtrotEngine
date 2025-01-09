@@ -22,6 +22,7 @@ class Scene;
 class Actor;
 class EditorLayer;
 class EditorScene;
+class FTPremade;
 
 #define ACTORNAME_MAX 100
 
@@ -48,27 +49,38 @@ public:
 
 public:
 	/// <summary>
-	/// Constructor that adds EditorElements to scene during initialization phase.
-	/// (When a .chunk is being loaded)
+	/// Constructor that adds an Empty EditorElement to the scene.
 	/// </summary>
-	/// <param name="scene : "> A scene object which this EditorElement is loaded to.</param>
+	/// <param name="scene : ">A scene object which this EditorElement is loaded to.</param>
 	EditorElement(EditorScene* scene);
 
 	/// <summary>
-	/// Constructor that is used for FTPremade UI.
-	/// Fetches the values from FTPremade origin to modify them.
-	/// Not recommended to use outside of FTPremade
+	/// Constructor that deep-copies an Actor object.
 	/// </summary>
-	/// <param name="origin : "> Actor nested inside of Premade to copy values from. </param>
+	/// <param name="origin : ">An Actor object to deep-copy values from.</param>
 	EditorElement(Actor* actor);
+
+	/// <summary>
+	/// Constructor that deep-copies an Actor object.
+	/// </summary>
+	/// <param name="origin : ">An Actor object to deep-copy values from.</param>
+	/// <param name="scene : ">A scene object which this EditorElement is loaded to.</param>
+	EditorElement(Actor* actor, EditorScene* scene);
 
 	/// <summary>
 	/// Constructor that is used for FTPremade origin.
 	/// This Fetches the FTPremade origin, makes EditorElement and adds itself to EditorScene.
 	/// Not recommended to use outside of FTPremade
 	/// </summary>
-	/// <param name="origin : "> Actor nested inside of Premade to copy values from. </param>
-	EditorElement(Actor* actor, EditorScene* scene);
+	/// <param name="origin : ">Actor nested inside of Premade to copy values from. </param>
+	EditorElement(FTPremade* premade, EditorScene* scene);
+
+	/// <summary>
+	/// Constructor that adds a deep-copied EditorElement to the Scene.
+	/// </summary>
+	/// <param name="element : ">An EditorElement to deep-copy values from.</param>
+	/// <param name="scene : ">A scene object which this EditorElement is loaded to.</param>
+	EditorElement(EditorElement* element, EditorScene* scene);
 
 private:
 	bool mIsFocused;  // Is this item clicked on Foxtrot Editor's hierarchy menu?

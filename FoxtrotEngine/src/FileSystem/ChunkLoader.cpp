@@ -102,6 +102,8 @@ ChunkLoader::ChunkLoader()
 
         {"GunFiringBehavior",          &Component::Load<GunFiringBehavior>},
         {"BulletBehavior",             &Component::Load<BulletBehavior>},
+
+        {"Seek",                       &Component::Load<Seek>},
     };
 };
 

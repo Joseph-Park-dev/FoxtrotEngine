@@ -48,6 +48,9 @@ public:
 	}
 
 public:
+	virtual void CloneTo(Actor* actor) override;
+
+public:
 	 ButtonUIComponent(
 		Actor* owner,
 		int drawOrder = DEFAULT_DRAWORDER,

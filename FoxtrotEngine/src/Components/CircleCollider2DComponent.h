@@ -25,7 +25,9 @@ public:
 			void		SetRadius(float radius);
 
 public:
-	virtual void Initialize(FTCore* coreInstance) override;
+	virtual void Initialize	(FTCore* coreInstance)	override;
+
+	virtual void CloneTo	(Actor* actor)			override;
 
 public:
 	CircleCollider2DComponent(

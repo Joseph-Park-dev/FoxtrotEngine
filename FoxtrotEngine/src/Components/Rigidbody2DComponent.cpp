@@ -48,9 +48,6 @@ void Rigidbody2DComponent::Initialize(FTCore* coreInstance)
 	Component::Initialize(coreInstance);
 }
 
-void Rigidbody2DComponent::Setup()
-{}
-
 void Rigidbody2DComponent::LateUpdate(float deltaTime)
 {
 	b2Vec2 position = b2Body_GetPosition(mBodyID);
@@ -61,6 +58,13 @@ void Rigidbody2DComponent::LateUpdate(float deltaTime)
 	FTVector3 prevRot = GetOwner()->GetTransform()->GetRotation();
 	FTVector3 updatedRot = FTVector3(prevRot.x, prevRot.y, -rotZ);
 	GetOwner()->GetTransform()->SetRotation(updatedRot);
+}
+
+void Rigidbody2DComponent::CloneTo(Actor* actor)
+{
+	Rigidbody2DComponent* newComp = DBG_NEW Rigidbody2DComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	newComp->mBodyDefCache = this->mBodyDefCache;
+	newComp->mBodyID = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &mBodyDefCache);
 }
 
 void Rigidbody2DComponent::LoadProperties(std::ifstream& ifs)
@@ -166,13 +170,6 @@ void Rigidbody2DComponent::EditorUIUpdate()
 	ImGui::TextColored(ImVec4(0.f, 200.f, 0.f, 255), rot.c_str());
 
 	ImGui::Separator();
-}
-
-void Rigidbody2DComponent::CloneTo(Actor* actor)
-{
-	Rigidbody2DComponent* newComp = DBG_NEW Rigidbody2DComponent(actor, GetDrawOrder(), GetUpdateOrder());
-	newComp->mBodyDefCache = this->mBodyDefCache;
-	newComp->mBodyID = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &mBodyDefCache);
 }
 
 void Rigidbody2DComponent::UpdateBodyType()

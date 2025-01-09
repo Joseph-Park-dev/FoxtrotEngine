@@ -32,6 +32,11 @@ void ButtonUIComponent::OnMouseLButtonClicked()
 	printf("Clicked!\n");
 }
 
+void ButtonUIComponent::CloneTo(Actor* actor)
+{
+	ButtonUIComponent* newComp = DBG_NEW ButtonUIComponent(actor, GetDrawOrder(), GetUpdateOrder());
+}
+
 ButtonUIComponent::ButtonUIComponent(Actor* owner, int drawOrder, int updateOrder)
 	: UIComponent		(owner, drawOrder, updateOrder)
 	, mFunc				(nullptr)

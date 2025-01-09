@@ -35,6 +35,7 @@ public:
 
 public:
 	virtual	void Initialize		(FTCore* coreInstance)		override;
+	virtual void CloneTo(Actor* actor)	override;
 
 protected:
 	virtual bool InitializeMesh	()		override;
@@ -62,7 +63,6 @@ public:
 
 public:
 	virtual void EditorUIUpdate()		override;
-	virtual void CloneTo(Actor* actor)	override;
 
 protected:
 	virtual void OnConfirmUpdate()		override;

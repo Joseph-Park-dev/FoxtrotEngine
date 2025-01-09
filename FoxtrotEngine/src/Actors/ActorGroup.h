@@ -71,6 +71,7 @@ struct ActorGroupUtil
 		"PLAYER",
 		"ENEMY",
 		"GROUND",
-		"UI"
+		"UI",
+		"END"
 	};
 };

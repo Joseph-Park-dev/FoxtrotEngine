@@ -62,6 +62,13 @@ void MeshRendererComponent::Render(FoxtrotRenderer* renderer)
 	}
 }
 
+void MeshRendererComponent::CloneTo(Actor* actor)
+{
+	MeshRendererComponent* newComp = DBG_NEW MeshRendererComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	newComp->mMeshKey = this->mMeshKey;
+	newComp->mTexKey = this->mTexKey;
+}
+
 bool MeshRendererComponent::InitializeMesh()
 {
 	if (mMeshKey != VALUE_NOT_ASSIGNED) 
@@ -209,11 +216,5 @@ void MeshRendererComponent::OnConfirmUpdate()
 	{
 		SetTexture();
 	}
-}
-void MeshRendererComponent::CloneTo(Actor* actor)
-{
-	MeshRendererComponent* newComp = DBG_NEW MeshRendererComponent(actor, GetDrawOrder(), GetUpdateOrder());
-	newComp->mMeshKey = this->mMeshKey;
-	newComp->mTexKey = this->mTexKey;
 }
 #endif // FOXTROT_EDITOR

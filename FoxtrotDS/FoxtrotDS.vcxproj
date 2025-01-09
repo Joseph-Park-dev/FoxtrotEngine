@@ -184,6 +184,7 @@
     <ClInclude Include="ComparisonFunctions.h" />
     <ClInclude Include="DSLogs.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="SearchFuncs.h" />
     <ClInclude Include="SortingFunctions.h" />
     <ClInclude Include="TestHeaderBatch.h" />
   </ItemGroup>

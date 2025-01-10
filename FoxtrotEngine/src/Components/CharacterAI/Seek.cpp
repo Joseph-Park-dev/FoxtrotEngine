@@ -24,16 +24,6 @@ Steering Seek::CreateSteering()
     return steering;
 }
 
-void Seek::Initialize(FTCore* ftCoreInstance)
-{
-    AgentBehavior::Initialize(ftCoreInstance);
-}
-
-void Seek::Setup()
-{
-    AgentBehavior::Setup();
-}
-
 void Seek::CloneTo(Actor* actor)
 {
     Seek* newComp = DBG_NEW Seek(actor, GetDrawOrder(), GetUpdateOrder());

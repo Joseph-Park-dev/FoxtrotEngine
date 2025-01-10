@@ -168,6 +168,9 @@
     <ClCompile Include="src\Components\CharacterAI\Seek.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Components\CharacterAI\Flee.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Components\UIs\ButtonUIComponent.h">
@@ -375,6 +378,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Components\CharacterAI\Seek.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\CharacterAI\Flee.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

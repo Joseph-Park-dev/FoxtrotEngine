@@ -197,7 +197,6 @@ void EditorLayer::DisplayFileMenu()
 					EditorSceneManager::GetInstance()->	GetEditorScene()->DeleteAll();
 					ResourceManager::	GetInstance()->	Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 					EditorChunkLoader::	GetInstance()->	LoadChunk(PATH_CHUNK);
-					EditorSceneManager::GetInstance()->	GetEditorScene()->Setup();
 					FTCoreEditor::		GetInstance()->	SetIsUpdatingGame(true);
 				}
 				else
@@ -212,14 +211,14 @@ void EditorLayer::DisplayFileMenu()
 			{
 				if (!PATH_CHUNK.empty())
 				{
-					FTCoreEditor::GetInstance()->SetIsUpdatingGame(false);
-					DebugShapes::GetInstance()->DeleteAll();
-					ResourceManager::GetInstance()->DeleteAll();
-					CollisionManager::GetInstance()->Reset();
+					FTCoreEditor::		GetInstance()->SetIsUpdatingGame(false);
+					DebugShapes::		GetInstance()->DeleteAll();
+					ResourceManager::	GetInstance()->DeleteAll();
+					CollisionManager::	GetInstance()->Reset();
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
-					ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
-					ResourceManager::GetInstance()->LoadAllResourcesInAsset();
-					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
+					ResourceManager::	GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+					ResourceManager::	GetInstance()->LoadAllResourcesInAsset();
+					EditorChunkLoader::	GetInstance()->LoadChunk(PATH_CHUNK);
 				}
 			}
 		}

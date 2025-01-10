@@ -260,6 +260,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Components\CharacterAI\Flee.cpp" />
     <ClCompile Include="src\Components\CharacterAI\Seek.cpp" />
     <ClCompile Include="src\Components\CharacterAI\AgentBehavior.cpp" />
     <ClCompile Include="src\Components\ActorBehaviors\Bullet\BulletBehavior.cpp" />
@@ -313,6 +314,7 @@
     <ClCompile Include="src\Scenes\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Components\CharacterAI\Flee.h" />
     <ClInclude Include="src\Components\CharacterAI\Seek.h" />
     <ClInclude Include="src\Components\CharacterAI\AgentBehavior.h" />
     <ClInclude Include="src\Components\ActorBehaviors\Bullet\BulletBehavior.h" />

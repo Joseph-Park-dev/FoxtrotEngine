@@ -70,6 +70,7 @@ void ChunkLoader::LoadActorsData(std::ifstream& ifs)
         actor->LoadProperties(ifs);
         actor->LoadComponents(ifs);
         actor->Initialize(FTCore::GetInstance());
+        actor->Setup();
     }
 }
 
@@ -104,6 +105,7 @@ ChunkLoader::ChunkLoader()
         {"BulletBehavior",             &Component::Load<BulletBehavior>},
 
         {"Seek",                       &Component::Load<Seek>},
+        {"Flee",                       &Component::Load<Flee>}
     };
 };
 

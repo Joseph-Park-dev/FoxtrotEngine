@@ -65,6 +65,9 @@ inline void DisplayActorSelection(const char* label, Actor* selected)
 	}
 	static int currIdx;
 	DisplayArrayAsCombo<std::string>(label, actorNames, idx, currIdx);
-	selected = FIND_EDITOR_ELEMENT(actorNames[currIdx]);
+	if (0 < currIdx)
+		selected = FIND_EDITOR_ELEMENT(actorNames[currIdx]);
+	else
+		selected = nullptr;
 	delete[] actorNames;
 }

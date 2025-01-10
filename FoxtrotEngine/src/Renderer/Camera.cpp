@@ -259,7 +259,7 @@ void Camera::DisplayCameraMenu()
 		}
 	}
 	const char* comboPreview = actorNames[currIdx].c_str();
-	if (ImGui::BeginCombo("Target Actor", comboPreview))
+	if (ImGui::BeginCombo(ChunkKeys::TARGET_ACTOR, comboPreview))
 	{
 		for (size_t i = 0; i < idx; ++i)
 		{

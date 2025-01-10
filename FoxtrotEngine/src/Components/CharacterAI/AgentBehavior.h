@@ -11,9 +11,11 @@ public:
     virtual Steering CreateSteering();
 
 protected:
-    Transform*  GetTarget() { return mTarget; }
+    Actor*       GetTarget();
+    std::string& GetTargetName();
 
-    void    SetTarget(Transform* target);
+    void    SetTarget(Actor* target);
+    void    SetTargetName(std::string& targetName);
 
 public:
     void Initialize (FTCore* ftCoreInstance) override;
@@ -25,5 +27,15 @@ public:
     ~AgentBehavior() override;
 
 private:
-    Transform* mTarget;
+    Actor*      mTarget;
+    std::string mTargetName;
+
+public:
+    virtual void SaveProperties(std::ofstream& ofs) override;
+    virtual void LoadProperties(std::ifstream& ifs) override;
+
+#ifdef FOXTROT_EDITOR
+public:
+    virtual void EditorUIUpdate() override;
+#endif // FOXTROT_EDITOR
 };

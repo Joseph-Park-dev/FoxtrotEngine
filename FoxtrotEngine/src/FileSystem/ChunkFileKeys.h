@@ -118,29 +118,32 @@ namespace ChunkKeys {
 	constexpr const char* INITIAL_VELOCITY	  = "Initial Velocity";
 	constexpr const char* SLEEP_THRESHOLD	  = "Sleep Threshold";
 
-	constexpr const char* BODY_TYPE = "Body Type";
+	constexpr const char* BODY_TYPE			  = "Body Type";
 
 	constexpr const int BODY_TYPE_STATIC = 0;
 	constexpr const int BODY_TYPE_KINEMATIC = 1;
 	constexpr const int BODY_TYPE_DYNAMIC = 2;
 
 	// Tile Map Component
-	constexpr const char* TILEMAP_KEY = "TileMapKey";
+	constexpr const char* TILEMAP_KEY		= "TileMapKey";
 
 	// Collider Component
 	constexpr const char* OFFSET = "Offset";
-	constexpr const char* SHOW_DEBUG_SHAPE = "Show Debug Shape";
+	constexpr const char* SHOW_DEBUG_SHAPE	= "Show Debug Shape";
 
 	// Box Collider Component
-	constexpr const char* COLLIDER_SCALE = "Scale";
+	constexpr const char* COLLIDER_SCALE	= "Scale";
 
 	// Animator Component
-	constexpr const char* LOADED_KEYS = "Loaded Keys";
+	constexpr const char* LOADED_KEYS		= "Loaded Keys";
 
 	// Move Component
 	constexpr const char* FORWARD_SPEED		= "Forward Speed";
 	constexpr const char* JUMP_FORCE		= "Jump Force";
 	constexpr const char* ANGULAR_SPEED		= "Angular Speed";
+
+	// Character AI
+	constexpr const char* TARGET_NAME		= "Target Name";
 
 // General Terms
 	constexpr const char* NAME = "Name";

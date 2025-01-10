@@ -14,6 +14,7 @@
 #include <imgui.h>
 
 #include "EditorElement.h"
+#include "EditorSceneManager.h"
 
 inline bool ButtonCenteredOnLine(const char* label, float alignment = 0.5f)
 {

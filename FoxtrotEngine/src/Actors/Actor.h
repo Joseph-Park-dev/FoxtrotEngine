@@ -142,6 +142,7 @@ public:
 
 public:
 	virtual void Initialize		(FTCore* coreInst);
+	virtual void Setup			();
 	virtual void UpdateActor	(float deltaTime)			{};
 	virtual void LateUpdateActor(float deltaTime)			{};
 	virtual void RenderActor	(FoxtrotRenderer* renderer)	{};

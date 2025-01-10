@@ -61,6 +61,19 @@ Actor* Scene::FindActor(const char* name)
 	}
 }
 
+void Scene::Setup()
+{
+	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
+	{
+		for (size_t j = 0; j < mActors[i].size(); ++j)
+		{
+			Actor* actor = mActors[i][j];
+			if (actor->IsActive())
+				actor->Setup();
+		}
+	}
+}
+
 void Scene::ProcessInput(KeyInputManager* keyInputManager)
 {
 	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)

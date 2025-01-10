@@ -190,14 +190,15 @@ void EditorLayer::DisplayFileMenu()
 			{
 				if (!PATH_CHUNK.empty())
 				{
-					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
-					DebugShapes::GetInstance()->DeleteAll();
-					ResourceManager::GetInstance()->DeleteAll();
-					CollisionManager::GetInstance()->Reset();
-					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
-					ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
-					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
-					FTCoreEditor::GetInstance()->SetIsUpdatingGame(true);
+					EditorChunkLoader::	GetInstance()->	SaveChunk(PATH_CHUNK);
+					DebugShapes::		GetInstance()->	DeleteAll();
+					ResourceManager::	GetInstance()->	DeleteAll();
+					CollisionManager::	GetInstance()->	Reset();
+					EditorSceneManager::GetInstance()->	GetEditorScene()->DeleteAll();
+					ResourceManager::	GetInstance()->	Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+					EditorChunkLoader::	GetInstance()->	LoadChunk(PATH_CHUNK);
+					EditorSceneManager::GetInstance()->	GetEditorScene()->Setup();
+					FTCoreEditor::		GetInstance()->	SetIsUpdatingGame(true);
 				}
 				else
 					LogString("Saved file path doesn't exist but trying to access it");

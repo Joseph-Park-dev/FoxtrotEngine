@@ -140,6 +140,15 @@ void Actor::Initialize(FTCore* coreInst)
 			mComponents[i]->Initialize(coreInst);
 }
 
+void Actor::Setup()
+{
+	for (auto comp : mComponents)
+	{
+		if (!comp->GetIsSetup())
+			comp->Setup();
+	}
+}
+
 void Actor::ProcessInput(KeyInputManager* keyInputManager)
 {
 	if (IsActive())
@@ -154,14 +163,8 @@ void Actor::ProcessInput(KeyInputManager* keyInputManager)
 void Actor::UpdateComponents(float deltaTime)
 {
 	if (IsActive())
-	{
 		for (auto comp : mComponents)
-		{
-			if (!comp->GetIsSetup())
-				comp->Setup();
 			comp->Update(deltaTime);
-		}
-	}
 }
 
 void Actor::LateUpdateComponents(float deltaTime)

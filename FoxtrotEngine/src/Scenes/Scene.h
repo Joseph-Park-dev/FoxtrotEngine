@@ -63,6 +63,7 @@ public:
 	void SetIsUpdatingActors(bool value){ mIsUpdatingActors = value; }
 
 public:
+	virtual void Setup();
 	virtual void ProcessInput(KeyInputManager* keyInputManager);
 	virtual void Update(float deltaTime);
 	virtual void LateUpdate(float deltaTime);

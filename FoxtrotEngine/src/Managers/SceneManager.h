@@ -17,6 +17,8 @@ class Scene;
 class FoxtrotRenderer;
 class KeyInputManager;
 
+#define FIND_ACTOR(name) SceneManager::GetInstance()->GetCurrentScene()->FindActor(name)
+
 class SceneManager
 {
 	SINGLETON(SceneManager)

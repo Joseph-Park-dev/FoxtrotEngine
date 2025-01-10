@@ -15,6 +15,8 @@
 
 #include "EditorScene.h"
 
+#define FIND_EDITOR_ELEMENT(name) EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(name)
+
 class EditorSceneManager
 {
 	SINGLETON(EditorSceneManager)

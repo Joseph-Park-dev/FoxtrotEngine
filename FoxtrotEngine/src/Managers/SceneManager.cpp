@@ -35,6 +35,7 @@ void SceneManager::SwitchScene(size_t index)
 	CollisionManager::GetInstance()->Reset();
 	mCurrentScene->DeleteAll();
 	ChunkLoader::GetInstance()->LoadChunk(std::string(".\\Chunks\\") + mChunkList.at(index));
+	mCurrentScene->Setup();
 }
 
 Scene* SceneManager::GetCurrentScene()

@@ -2,6 +2,7 @@
 #include <assert.h>
 
 #include "Node.h"
+#include "../FoxtrotEngine/src/Debugging/DebugMemAlloc.h"
 
 namespace FTDS
 {
@@ -11,7 +12,7 @@ namespace FTDS
 	public:
 		void PushBack(TYPE val) 
 		{
-			Node<TYPE>* node = new Node<TYPE>(val);
+			Node<TYPE>* node = DBG_NEW Node<TYPE>(val);
 			if (IsEmpty())
 			{
 				assert(!mHead);
@@ -30,7 +31,7 @@ namespace FTDS
 		{
 			// Given index should be smaller than the number of nodes.
 			assert(idx < mCount);  
-			Node<TYPE>* node	= new Node<TYPE>(val);
+			Node<TYPE>* node	= DBG_NEW Node<TYPE>(val);
 
 			Node<TYPE>* prev	= GetNode(idx);
 			Node<TYPE>* next	= prev->Next;

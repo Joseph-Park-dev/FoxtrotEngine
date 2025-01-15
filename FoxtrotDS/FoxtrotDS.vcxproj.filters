@@ -15,45 +15,39 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ArrayStack.h">
+    <ClInclude Include="Static\ArrayStack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DSLogs.h">
+    <ClInclude Include="Utils\DSLogs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestHeaderBatch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CircularQueue.h">
+    <ClInclude Include="Static\CircularQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ArrayDS.h">
+    <ClInclude Include="Static\ArrayDS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Node.h">
+    <ClInclude Include="Sort\InsertionSort.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SortingFunctions.h">
+    <ClInclude Include="Compare\StringEqual.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ComparisonFunctions.h">
+    <ClInclude Include="Search\BinarySearch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SearchFuncs.h">
+    <ClInclude Include="Dynamic\Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dynamic\LinkedList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ArrayStack.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CircularQueue.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ArrayDS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

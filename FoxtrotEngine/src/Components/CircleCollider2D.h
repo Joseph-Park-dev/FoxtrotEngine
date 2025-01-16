@@ -11,15 +11,15 @@
 /// </summary>
 
 #pragma once
-#include "Components/Collider2DComponent.h"
+#include "Components/Collider2D.h"
 
-class CircleCollider2DComponent :
-    public Collider2DComponent
+class CircleCollider2D :
+    public Collider2D
 {
 public:
 	virtual std::string GetName() const override
 	{
-		return "BoxCollider2DComponent";
+		return "BoxCollider2D";
 	}
 	const	float		GetRadius() const;
 			void		SetRadius(float radius);
@@ -30,7 +30,7 @@ public:
 	virtual void CloneTo	(Actor* actor)			override;
 
 public:
-	CircleCollider2DComponent(
+	CircleCollider2D(
 		Actor* owner,
 		int drawOrder = DEFAULT_DRAWORDER,
 		int updateOrder = DEFAULT_UPDATEORDER

@@ -6,25 +6,25 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Components/CircleCollider2DComponent.h"
+#include "Components/CircleCollider2D.h"
 
-#include "Components/Rigidbody2DComponent.h"
+#include "Components/Rigidbody2D.h"
 #include "Actors/Actor.h"
 #include "Actors/Transform.h"
 
-const float CircleCollider2DComponent::GetRadius() const
+const float CircleCollider2D::GetRadius() const
 {
     return mRadius;
 }
 
-void CircleCollider2DComponent::SetRadius(float radius)
+void CircleCollider2D::SetRadius(float radius)
 {
     mRadius = radius;
 }
 
-void CircleCollider2DComponent::Initialize(FTCore* coreInstance)
+void CircleCollider2D::Initialize(FTCore* coreInstance)
 {
-	Rigidbody2DComponent* rb = GetOwner()->GetComponent<Rigidbody2DComponent>();
+	Rigidbody2D* rb = GetOwner()->GetComponent<Rigidbody2D>();
 	if (rb)
 	{
 		if (b2Body_IsValid(rb->GetBodyID()))
@@ -35,45 +35,45 @@ void CircleCollider2DComponent::Initialize(FTCore* coreInstance)
 			b2CreateCircleShape(rb->GetBodyID(), &polygonShapeDef, &circle);
 		}
 		else
-			LogString("ERROR : CircleCollider2DComponent::Initialize() -> BodyId not valid");
+			LogString("ERROR : CircleCollider2D::Initialize() -> BodyId not valid");
 	}
-    Component::Initialize(coreInstance);
+	Component::Initialize(coreInstance);
 }
 
-void CircleCollider2DComponent::CloneTo(Actor* actor)
+void CircleCollider2D::CloneTo(Actor* actor)
 {
 	CLONE_TO_NOT_IMPLEMENTED
 }
 
-CircleCollider2DComponent::CircleCollider2DComponent(Actor* owner, int drawOrder, int updateOrder)
-	: Collider2DComponent(owner, drawOrder, updateOrder)
+CircleCollider2D::CircleCollider2D(Actor* owner, int drawOrder, int updateOrder)
+	: Collider2D(owner, drawOrder, updateOrder)
 	, mRadius(50.f)
 {
 }
 
-void CircleCollider2DComponent::SaveProperties(std::ofstream& ofs)
+void CircleCollider2D::SaveProperties(std::ofstream& ofs)
 {
 }
 
-void CircleCollider2DComponent::LoadProperties(std::ifstream& ifs)
+void CircleCollider2D::LoadProperties(std::ifstream& ifs)
 {
 }
 
 #ifdef FOXTROT_EDITOR
-void CircleCollider2DComponent::EditorUpdate(float deltaTime)
+void CircleCollider2D::EditorUpdate(float deltaTime)
 {
 }
 
-void CircleCollider2DComponent::EditorRender(FoxtrotRenderer* renderer)
+void CircleCollider2D::EditorRender(FoxtrotRenderer* renderer)
 {
 
 }
 
-void CircleCollider2DComponent::EditorUIUpdate()
+void CircleCollider2D::EditorUIUpdate()
 {
 }
 
-void CircleCollider2DComponent::UpdateScale()
+void CircleCollider2D::UpdateScale()
 {
 }
 #endif // FOXTROT_EDITOR

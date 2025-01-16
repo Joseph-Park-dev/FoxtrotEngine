@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 /// <summary>
-/// Component for Rigidbody simulation based on Box2D.
+///  for Rigidbody simulation based on Box2D.
 /// </summary>
 
 #pragma once
@@ -16,12 +16,12 @@
 class FTVector2;
 class Actor;
 
-class Rigidbody2DComponent : public Component
+class Rigidbody2D : public Component
 {
 public:
 	std::string  GetName() const override 
 	{ 
-		return "Rigidbody2DComponent"; 
+		return "Rigidbody2D"; 
 	}
 	b2BodyId& GetBodyID();
 
@@ -32,9 +32,9 @@ public:
 	virtual void CloneTo	(Actor* actor)          override;
 
 public:
-	Rigidbody2DComponent(Actor* owner, int drawOrder = DEFAULT_DRAWORDER,
+	Rigidbody2D(Actor* owner, int drawOrder = DEFAULT_DRAWORDER,
 		int updateOrder = DEFAULT_UPDATEORDER);
-	virtual ~Rigidbody2DComponent() override;
+	virtual ~Rigidbody2D() override;
 
 private:
 	b2BodyId	mBodyID;

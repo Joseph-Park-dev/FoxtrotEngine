@@ -34,7 +34,7 @@ void BulletBehavior::SetSpeed(float speed)
 
 void BulletBehavior::Initialize(FTCore* coreInstance)
 {
-	mRigidbody = GetOwner()->GetComponent<Rigidbody2DComponent>();
+	mRigidbody = GetOwner()->GetComponent<Rigidbody2D>();
 	Component::Initialize(coreInstance);
 }
 

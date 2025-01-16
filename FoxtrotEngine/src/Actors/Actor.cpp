@@ -20,7 +20,7 @@
 #include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Components/Component.h"
-#include "Components/Collider2DComponent.h"
+#include "Components/Collider2D.h"
 #include "Core/FTCore.h"
 #include "Debugging/DebugMemAlloc.h"
 #include "ResourceSystem/FTPremade.h"
@@ -203,16 +203,16 @@ void Actor::RemoveAllComponents()
 	mComponents.clear();
 }
 
-void Actor::OnCollisionEnter(Collider2DComponent* other)
+void Actor::OnCollisionEnter(Collider2D* other)
 {
 	LogString(mName + " : Collision Enter with " + other->GetOwner()->GetName());
 }
 
-void Actor::OnCollisionStay(Collider2DComponent* other)
+void Actor::OnCollisionStay(Collider2D* other)
 {
 }
 
-void Actor::OnCollisionExit(Collider2DComponent* other)
+void Actor::OnCollisionExit(Collider2D* other)
 {
 	LogString(mName + " : Collision Exit with " + other->GetOwner()->GetName());
 }

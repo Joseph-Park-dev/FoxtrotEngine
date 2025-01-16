@@ -45,7 +45,7 @@ void CollisionManager::Reset()
 	mRegColliders.clear();
 }
 
-void CollisionManager::RegisterCollider(int32_t index, Collider2DComponent* collider)
+void CollisionManager::RegisterCollider(int32_t index, Collider2D* collider)
 {
 	mRegColliders.insert({index, collider});
 }
@@ -87,8 +87,8 @@ void CollisionManager::UpdateCollisionGroup()
 	static b2ShapeId shapeIdA;
 	static b2ShapeId shapeIdB;
 
-	Collider2DComponent* colliderA = nullptr;
-	Collider2DComponent* colliderB = nullptr;
+	Collider2D* colliderA = nullptr;
+	Collider2D* colliderB = nullptr;
 
 	for (size_t i = 0; i < events.beginCount; ++i)
 	{

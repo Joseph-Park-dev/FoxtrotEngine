@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Components/MeshRendererComponent.h"
+#include "Components/MeshRenderer.h"
 
 #include <functional>
 
@@ -30,7 +30,7 @@
 
 using DXMatrix = DirectX::SimpleMath::Matrix;
 
-void MeshRendererComponent::Initialize(FTCore* coreInstance)
+void MeshRenderer::Initialize(FTCore* coreInstance)
 {
 	mRenderer = coreInstance->GetGameRenderer();
 	if (mMeshKey != VALUE_NOT_ASSIGNED)
@@ -43,7 +43,7 @@ void MeshRendererComponent::Initialize(FTCore* coreInstance)
 	Component::Initialize(coreInstance);
 }
 
-void MeshRendererComponent::Update(float deltaTime)
+void MeshRenderer::Update(float deltaTime)
 {
 	if (mMeshGroup) 
 	{
@@ -52,7 +52,7 @@ void MeshRendererComponent::Update(float deltaTime)
 	}
 }
 
-void MeshRendererComponent::Render(FoxtrotRenderer* renderer)
+void MeshRenderer::Render(FoxtrotRenderer* renderer)
 {
 	if (mMeshGroup)
 	{
@@ -62,14 +62,14 @@ void MeshRendererComponent::Render(FoxtrotRenderer* renderer)
 	}
 }
 
-void MeshRendererComponent::CloneTo(Actor* actor)
+void MeshRenderer::CloneTo(Actor* actor)
 {
-	MeshRendererComponent* newComp = DBG_NEW MeshRendererComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	MeshRenderer* newComp = DBG_NEW MeshRenderer(actor, GetDrawOrder(), GetUpdateOrder());
 	newComp->mMeshKey = this->mMeshKey;
 	newComp->mTexKey = this->mTexKey;
 }
 
-bool MeshRendererComponent::InitializeMesh()
+bool MeshRenderer::InitializeMesh()
 {
 	if (mMeshKey != VALUE_NOT_ASSIGNED) 
 	{
@@ -78,25 +78,25 @@ bool MeshRendererComponent::InitializeMesh()
 			mMeshGroup = DBG_NEW FTBasicMeshGroup;
 		mMeshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
 		if (!mMeshGroup) {
-			LogString("ERROR: MeshRendererComponent::InitializeMesh() -> Mesh Init failed.\n");
+			LogString("ERROR: MeshRenderer::InitializeMesh() -> Mesh Init failed.\n");
 			return false;
 		}
 		return true;
 	}
 	else {
-		LogString("ERROR: MeshRendererComponent::InitializeMesh() -> Key doesn't exist.\n");
+		LogString("ERROR: MeshRenderer::InitializeMesh() -> Key doesn't exist.\n");
 		return false;
 	}
 }
 
-bool MeshRendererComponent::InitializeMesh(UINT key)
+bool MeshRenderer::InitializeMesh(UINT key)
 {
 	mMeshKey = key;
-	MeshRendererComponent::InitializeMesh();
+	MeshRenderer::InitializeMesh();
 	return mMeshGroup != nullptr;
 }
 
-bool MeshRendererComponent::InitializeMesh(MeshData& meshData)
+bool MeshRenderer::InitializeMesh(MeshData& meshData)
 {
 	if (!mMeshGroup)
 		mMeshGroup = DBG_NEW FTBasicMeshGroup;
@@ -104,26 +104,26 @@ bool MeshRendererComponent::InitializeMesh(MeshData& meshData)
 	mMeshGroup->Initialize(meshes, mRenderer->GetDevice(), mRenderer->GetContext());
 	if (!mMeshGroup) 
 	{
-		LogString("ERROR: MeshRendererComponent::InitializeMesh() -> Mesh Init failed.\n");
+		LogString("ERROR: MeshRenderer::InitializeMesh() -> Mesh Init failed.\n");
 		return false;
 	}
 	return true;
 }
 
-bool MeshRendererComponent::SetTexture()
+bool MeshRenderer::SetTexture()
 {
 	if (mTexKey == VALUE_NOT_ASSIGNED)
 	{
-		printf("ERROR: MeshRendererComponent::SetTexture() -> TexKey not assigned.\n");
+		printf("ERROR: MeshRenderer::SetTexture() -> TexKey not assigned.\n");
 		return false;
 	}
 	mTexture = ResourceManager::GetInstance()->GetLoadedTexture(mTexKey);
 	if (!mTexture)
-		printf("ERROR: MeshRendererComponent::SetTexture() -> Cannot set texture %d, returning nullptr.\n", mTexKey);
+		printf("ERROR: MeshRenderer::SetTexture() -> Cannot set texture %d, returning nullptr.\n", mTexKey);
 	return mTexture != nullptr;
 }
 
-void MeshRendererComponent::UpdateMesh(Transform* transform, Camera* cameraInstance)
+void MeshRenderer::UpdateMesh(Transform* transform, Camera* cameraInstance)
 {
 	if (mMeshGroup) 
 	{
@@ -133,13 +133,13 @@ void MeshRendererComponent::UpdateMesh(Transform* transform, Camera* cameraInsta
 	}
 }
 
-void MeshRendererComponent::UpdateBuffers()
+void MeshRenderer::UpdateBuffers()
 {
 	if(mMeshGroup)
 		mMeshGroup->UpdateConstantBuffers(mRenderer->GetDevice(), mRenderer->GetContext());
 }
 
-MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder)
+MeshRenderer::MeshRenderer(Actor* owner, int drawOrder, int updateOrder)
 	: Component		(owner, drawOrder, updateOrder)
 	, mMeshGroup	(nullptr)
 	, mTexture		(nullptr)
@@ -148,7 +148,7 @@ MeshRendererComponent::MeshRendererComponent(Actor* owner, int drawOrder, int up
 	, mTexKey		(VALUE_NOT_ASSIGNED)
 {}
 
-MeshRendererComponent::~MeshRendererComponent()
+MeshRenderer::~MeshRenderer()
 {
 	if (mMeshGroup)
 	{
@@ -157,7 +157,7 @@ MeshRendererComponent::~MeshRendererComponent()
 	}
 }
 
-void MeshRendererComponent::UpdateConstantBufferModel(Transform* transform)
+void MeshRenderer::UpdateConstantBufferModel(Transform* transform)
 {
 	int dir = transform->GetRightward().x;
 	FTVector3 worldPos = FTVector3(
@@ -176,22 +176,22 @@ void MeshRendererComponent::UpdateConstantBufferModel(Transform* transform)
 	mMeshGroup->GetVertexConstantData().model = model.Transpose();
 }
 
-void MeshRendererComponent::UpdateConstantBufferView(Camera* camInst){
+void MeshRenderer::UpdateConstantBufferView(Camera* camInst){
 	mMeshGroup->GetVertexConstantData().view = camInst->GetViewRow().Transpose();
 }
 
-void MeshRendererComponent::UpdateConstantBufferProjection(Camera* camInst){
+void MeshRenderer::UpdateConstantBufferProjection(Camera* camInst){
 	mMeshGroup->GetVertexConstantData().projection = camInst->GetProjRow().Transpose();
 }
 
-void MeshRendererComponent::SaveProperties(std::ofstream& ofs)
+void MeshRenderer::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
 	FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::MESH_KEY, mMeshKey);
 	FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TEXTURE_KEY, mTexKey);
 }
 
-void MeshRendererComponent::LoadProperties(std::ifstream& ifs)
+void MeshRenderer::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::LoadUnsignedInt(ifs, mTexKey);
 	FileIOHelper::LoadUnsignedInt(ifs, mMeshKey);
@@ -199,7 +199,7 @@ void MeshRendererComponent::LoadProperties(std::ifstream& ifs)
 }
 
 #ifdef FOXTROT_EDITOR
-void MeshRendererComponent::EditorUIUpdate()
+void MeshRenderer::EditorUIUpdate()
 {
 	CHECK_RENDERER(GetRenderer());
 	if (ImGui::Button("Add Cube"))
@@ -210,7 +210,7 @@ void MeshRendererComponent::EditorUIUpdate()
 	OnConfirmUpdate();
 }
 
-void MeshRendererComponent::OnConfirmUpdate()
+void MeshRenderer::OnConfirmUpdate()
 {
 	if (ImGui::Button("Update"))
 	{

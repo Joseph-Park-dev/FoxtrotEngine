@@ -6,12 +6,12 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Components/BoxCollider2DComponent.h"
+#include "Components/BoxCollider2D.h"
 
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
-#include "Components/Rigidbody2DComponent.h"
+#include "Components/Rigidbody2D.h"
 #include "Renderer/Camera.h"
 #include "Managers/CollisionManager.h"
 #include "Actors/Transform.h"
@@ -23,17 +23,17 @@
 #include "DebugShapes.h"
 #endif
 
-const FTVector2 BoxCollider2DComponent::GetScale() const
+const FTVector2 BoxCollider2D::GetScale() const
 {
     return mScale;
 }
 
-void BoxCollider2DComponent::SetScale(FTVector2 scale)
+void BoxCollider2D::SetScale(FTVector2 scale)
 {
 	mScale = scale;
 }
 
-void BoxCollider2DComponent::Initialize(FTCore* coreInstance)
+void BoxCollider2D::Initialize(FTCore* coreInstance)
 {
 #ifdef FOXTROT_EDITOR
 	mDebugRect = DBG_NEW FTRectangle;
@@ -45,9 +45,9 @@ void BoxCollider2DComponent::Initialize(FTCore* coreInstance)
 	Component::Initialize(coreInstance);
 }
 
-void BoxCollider2DComponent::Setup()
+void BoxCollider2D::Setup()
 {
-	Rigidbody2DComponent* rb = GetOwner()->GetComponent<Rigidbody2DComponent>();
+	Rigidbody2D* rb = GetOwner()->GetComponent<Rigidbody2D>();
 	if (rb)
 	{
 		if (b2Body_IsValid(rb->GetBodyID()))
@@ -64,27 +64,27 @@ void BoxCollider2DComponent::Setup()
 			CollisionManager::GetInstance()->RegisterCollider(GetShapeID().index1, this);
 		}
 		else
-			LogString("ERROR : BoxCollider2DComponent::Initialize() -> BodyId not valid");
+			LogString("ERROR : BoxCollider2D::Initialize() -> BodyId not valid");
 	}
 	Component::Setup();
 }
 
-void BoxCollider2DComponent::CloneTo(Actor* actor)
+void BoxCollider2D::CloneTo(Actor* actor)
 {
-	BoxCollider2DComponent* newComp = DBG_NEW BoxCollider2DComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	BoxCollider2D* newComp = DBG_NEW BoxCollider2D(actor, GetDrawOrder(), GetUpdateOrder());
 	newComp->SetOffsetPos(this->GetOffsetPos());
 	newComp->mScale = this->mScale;
 }
 
-BoxCollider2DComponent::BoxCollider2DComponent(Actor* owner, int drawOrder, int updateOrder)
-	: Collider2DComponent(owner, drawOrder, updateOrder)
+BoxCollider2D::BoxCollider2D(Actor* owner, int drawOrder, int updateOrder)
+	: Collider2D(owner, drawOrder, updateOrder)
 	, mScale(FTVector2(1.f, 1.f))
 #ifdef FOXTROT_EDITOR
 	, mDebugRect(nullptr)
 #endif
 {}
 
-BoxCollider2DComponent::~BoxCollider2DComponent()
+BoxCollider2D::~BoxCollider2D()
 {
 	if (b2Shape_IsValid(GetShapeID()))
 		b2DestroyShape(GetShapeID(), true);
@@ -94,20 +94,20 @@ BoxCollider2DComponent::~BoxCollider2DComponent()
 #endif
 }
 
-void BoxCollider2DComponent::SaveProperties(std::ofstream& ofs)
+void BoxCollider2D::SaveProperties(std::ofstream& ofs)
 {
-	Collider2DComponent::SaveProperties(ofs);
+	Collider2D::SaveProperties(ofs);
 	FileIOHelper::SaveVector2(ofs, ChunkKeys::COLLIDER_SCALE, mScale);
 }
 
-void BoxCollider2DComponent::LoadProperties(std::ifstream& ifs)
+void BoxCollider2D::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::LoadVector2(ifs, mScale);
-	Collider2DComponent::LoadProperties(ifs);
+	Collider2D::LoadProperties(ifs);
 }
 
 #ifdef FOXTROT_EDITOR
-void BoxCollider2DComponent::EditorUpdate(float deltaTime)
+void BoxCollider2D::EditorUpdate(float deltaTime)
 {
 	if (IsShowingDebugShape())
 	{
@@ -124,24 +124,24 @@ void BoxCollider2DComponent::EditorUpdate(float deltaTime)
 	}
 }
 
-void BoxCollider2DComponent::EditorRender(FoxtrotRenderer* renderer)
+void BoxCollider2D::EditorRender(FoxtrotRenderer* renderer)
 {
 }
 
-void BoxCollider2DComponent::EditorUIUpdate()
+void BoxCollider2D::EditorUIUpdate()
 {
-	Collider2DComponent::EditorUIUpdate();
+	Collider2D::EditorUIUpdate();
 	UpdateScale();
 }
 
-void BoxCollider2DComponent::ToggleDebugShape()
+void BoxCollider2D::ToggleDebugShape()
 {
-	Collider2DComponent::ToggleDebugShape();
+	Collider2D::ToggleDebugShape();
 	if(mDebugRect)
 		mDebugRect->SetIsActive(IsShowingDebugShape());
 }
 
-void BoxCollider2DComponent::UpdateDebugShapes(FTVector3 pos, FTVector3 rot, FTVector3 scale, Camera* cameraInst)
+void BoxCollider2D::UpdateDebugShapes(FTVector3 pos, FTVector3 rot, FTVector3 scale, Camera* cameraInst)
 {
 	/*float NDC = Camera::GetInstance()->GetNDCRatio();
 	pos *= NDC;
@@ -158,7 +158,7 @@ void BoxCollider2DComponent::UpdateDebugShapes(FTVector3 pos, FTVector3 rot, FTV
 	}
 }
 
-void BoxCollider2DComponent::UpdateScale()
+void BoxCollider2D::UpdateScale()
 {
 	FTVector2 updatedVal = GetScale();
 	CommandHistory::GetInstance()->UpdateVector2Value("Scale", updatedVal, FLOATMOD_SPEED);

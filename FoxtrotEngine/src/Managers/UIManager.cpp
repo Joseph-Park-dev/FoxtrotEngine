@@ -12,7 +12,7 @@
 #include "Managers/SceneManager.h"
 #include "Actors/Actor.h"
 #include "Managers/KeyInputManager.h"
-#include "Components/UIs/UIComponent.h"
+#include "Components/UIs/UI.h"
 
 #ifdef FOXTROT_EDITOR
 #include "EditorLayer.h"
@@ -26,7 +26,7 @@ UIManager::UIManager()
 UIManager::~UIManager()
 {}
 
-void UIManager::RegisterUI(UIComponent* UI)
+void UIManager::RegisterUI(UI* UI)
 {
 	mUIs.push_back(UI);
 }
@@ -41,7 +41,7 @@ void UIManager::Update(float deltaTime)
 	bool lBtnTap = MOUSE_TAP(MOUSE::MOUSE_LEFT);
 	bool lBtnAway = MOUSE_AWAY(MOUSE::MOUSE_LEFT);
 	
-	UIComponent* targetUI = GetTargetedUI(mFocusedUI);
+	UI* targetUI = GetTargetedUI(mFocusedUI);
 	if (targetUI != nullptr)
 	{
 		targetUI->OnMouseHovering(); // Double check mouse hovering
@@ -63,22 +63,22 @@ void UIManager::Update(float deltaTime)
 	}
 }
 
-UIComponent* UIManager::GetFocusedUI()
+UI* UIManager::GetFocusedUI()
 {
 	//Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
 	//std::vector<Actor*>& UI = currScene->GetActorGroup(ActorGroup::UI);
 
 	bool lBtnTap = MOUSE_TAP(MOUSE::MOUSE_LEFT);
 
-	UIComponent* focusedUI = mFocusedUI;
+	UI* focusedUI = mFocusedUI;
 	if (!lBtnTap)
 		return focusedUI;
 
-	std::vector<UIComponent*>::iterator targetIter= mUIs.end();
-	std::vector<UIComponent*>::iterator iter = mUIs.begin();
+	std::vector<UI*>::iterator targetIter= mUIs.end();
+	std::vector<UI*>::iterator iter = mUIs.begin();
 	for (; iter != mUIs.end(); ++iter)
 	{
-		if (((UIComponent*)*iter)->IsMouseHovering())
+		if (((UI*)*iter)->IsMouseHovering())
 		{
 			targetIter = iter;
 		}
@@ -94,15 +94,15 @@ UIComponent* UIManager::GetFocusedUI()
 	return focusedUI;
 }
 
-UIComponent* UIManager::GetTargetedUI(UIComponent* parentUI)
+UI* UIManager::GetTargetedUI(UI* parentUI)
 {
 	bool lBtnAway = MOUSE_AWAY(MOUSE::MOUSE_LEFT);
 
-	UIComponent* targetUI = nullptr;
+	UI* targetUI = nullptr;
 	// 1. Including parent UI, inspect all its child objects
 	//	  (using BFS utilizing queue DS)
-	static std::list<UIComponent*> queue;
-	static std::vector<UIComponent*> noneTarget;
+	static std::list<UI*> queue;
+	static std::vector<UI*> noneTarget;
 
 	queue.clear();
 	noneTarget.clear();
@@ -112,26 +112,26 @@ UIComponent* UIManager::GetTargetedUI(UIComponent* parentUI)
 	while (!queue.empty())
 	{
 		// 2. Among the overlapped UIs, select the one with higher priority
-		UIComponent* UI = queue.front();
+		UI* ui = queue.front();
 		queue.pop_front();
 
-		if (UI->IsMouseHovering())
+		if (ui->IsMouseHovering())
 		{
 			if (targetUI != nullptr)
 			{
 				noneTarget.push_back(targetUI);
 			}
-			targetUI = UI;
+			targetUI = ui;
 		}
 		else
 		{
-			noneTarget.push_back(UI);
+			noneTarget.push_back(ui);
 		}
 
-		std::vector<Actor*>& childActors = UI->GetOwner()->GetChildActors();
+		std::vector<Actor*>& childActors = ui->GetOwner()->GetChildActors();
 		for (size_t i = 0; i < childActors.size(); ++i)
 		{
-			UIComponent* uiComp = childActors[i]->GetComponent<UIComponent>();
+			UI* uiComp = childActors[i]->GetComponent<UI>();
 			if(uiComp)
 				queue.push_back(uiComp);
 		}

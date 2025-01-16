@@ -13,7 +13,7 @@
 /// </summary>
 
 #pragma once
-#include "Components/UIs/PanelUIComponent.h"
+#include "Components/UIs/PanelUI.h"
 #include "Components/Component.h"
 #include "CommandHistory.h"
 #include "FTCoreEditor.h"

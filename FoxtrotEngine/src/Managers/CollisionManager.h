@@ -41,12 +41,12 @@ public:
 	void Reset();
 
 public:
-	void RegisterCollider(int32_t index, Collider2DComponent* collider);
+	void RegisterCollider(int32_t index, Collider2D* collider);
 	b2QueryFilter GetQueryFilter(ActorGroup objectActorGroup);
 
 private:
 	bool mCollisionMarks[((size_t)ActorGroup::END-1) * ((size_t)ActorGroup::END-1)];
-	std::unordered_map<int32_t, Collider2DComponent*> mRegColliders;
+	std::unordered_map<int32_t, Collider2D*> mRegColliders;
 
 public:
 	void Initialize();

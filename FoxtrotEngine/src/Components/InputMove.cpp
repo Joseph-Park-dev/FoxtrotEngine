@@ -6,19 +6,19 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Components/InputMoveComponent.h"
+#include "Components/InputMove.h"
 
 #include "Managers/KeyInputManager.h"
 #include "Math/FTMath.h"
 #include "Actors/Actor.h"
 #include "Actors/Transform.h"
-#include "Components/Rigidbody2DComponent.h"
+#include "Components/Rigidbody2D.h"
 
-InputMoveComponent::InputMoveComponent(Actor* owner, int drawOrder, int updateOrder)
-	: MoveComponent(owner, drawOrder, updateOrder)
+InputMove::InputMove(Actor* owner, int drawOrder, int updateOrder)
+	: Move(owner, drawOrder, updateOrder)
 {}
 
-void InputMoveComponent::ProcessInput(KeyInputManager* keyInputManager)
+void InputMove::ProcessInput(KeyInputManager* keyInputManager)
 {
 	Transform* transform = GetOwner()->GetTransform();
 	Steering steering = Steering::Halt();
@@ -35,9 +35,9 @@ void InputMoveComponent::ProcessInput(KeyInputManager* keyInputManager)
 	GetOwner()->GetTransform()->SetSteering(steering);
 }
 
-void InputMoveComponent::CloneTo(Actor* actor)
+void InputMove::CloneTo(Actor* actor)
 {
-	InputMoveComponent* newComp = DBG_NEW InputMoveComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	InputMove* newComp = DBG_NEW InputMove(actor, GetDrawOrder(), GetUpdateOrder());
 	newComp->SetForwardSpeed (GetForwardSpeed());
 	newComp->SetAngularSpeed (GetAngularSpeed());
 	newComp->SetJumpForce	 (GetJumpForce());

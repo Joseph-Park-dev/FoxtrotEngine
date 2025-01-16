@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Components/UIs/UIComponent.h"
+#include "Components/UIs/UI.h"
 
 #include "Actors/Transform.h"
 
@@ -22,47 +22,47 @@
 #include "CommandHistory.h"
 #endif // DEBUG
 
-bool UIComponent::IsMouseHovering()
+bool UI::IsMouseHovering()
 {
 	return mMouseHovering;
 }
 
-bool UIComponent::LeftButtonIsDown()
+bool UI::LeftButtonIsDown()
 {
 	return mLBtnDown;
 }
 
-bool UIComponent::LeftButtonIsClicked()
+bool UI::LeftButtonIsClicked()
 {
 	return mLBtnClicked;
 }
 
-bool UIComponent::GetIsFocused()
+bool UI::GetIsFocused()
 {
 	return mIsFocused;
 }
 
-bool UIComponent::GetIsAffectedByCamera()
+bool UI::GetIsAffectedByCamera()
 {
 	return mIsAffectedByCamera;
 }
 
-void UIComponent::SetIsFocused(bool isFocused)
+void UI::SetIsFocused(bool isFocused)
 {
 	mIsFocused = isFocused;
 }
 
-void UIComponent::SetIsAffectedByCamera(bool affected)
+void UI::SetIsAffectedByCamera(bool affected)
 {
 	mIsAffectedByCamera = affected;
 }
 
-void UIComponent::SetMouseHovering(bool hovering)
+void UI::SetMouseHovering(bool hovering)
 {
 	mMouseHovering = hovering;
 }
 
-void UIComponent::CheckMouseHover()
+void UI::CheckMouseHover()
 {
 	FTVector2 mousePos		= KeyInputManager::GetInstance()->GetMousePosition();
 	Transform* transform	= GetOwner()->GetTransform();
@@ -87,25 +87,25 @@ void UIComponent::CheckMouseHover()
 	}
 }
 
-void UIComponent::OnMouseHovering()
+void UI::OnMouseHovering()
 {}
 
-void UIComponent::OnMouseLButtonDown()
+void UI::OnMouseLButtonDown()
 {
 	printf("%s", GetName().c_str());
 }
 
-void UIComponent::OnMouseLButtonUp()
+void UI::OnMouseLButtonUp()
 {
 	//SDL_Log("%ls", GetName().c_str());
 }
 
-void UIComponent::OnMouseLButtonClicked()
+void UI::OnMouseLButtonClicked()
 {
 	//SDL_Log("%ls", GetName().c_str());
 }
 
-void UIComponent::Initialize(FTCore* ftCoreInst)
+void UI::Initialize(FTCore* ftCoreInst)
 {
 	UIManager::GetInstance()->RegisterUI(this);
 #ifdef FOXTROT_EDITOR
@@ -114,18 +114,18 @@ void UIComponent::Initialize(FTCore* ftCoreInst)
 #endif // DEBUG
 }
 
-void UIComponent::Update(float deltaTime)
+void UI::Update(float deltaTime)
 {}
 
-void UIComponent::LateUpdate(float deltaTime)
+void UI::LateUpdate(float deltaTime)
 {
 	CheckMouseHover();
 }
 
-void UIComponent::Render(FoxtrotRenderer* renderer)
+void UI::Render(FoxtrotRenderer* renderer)
 {}
 
-UIComponent::UIComponent(Actor* owner, int drawOrder, int updateOrder)
+UI::UI(Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner, drawOrder, updateOrder)
 	, mIsAffectedByCamera(false)
 	, mMouseHovering(false)
@@ -139,11 +139,11 @@ UIComponent::UIComponent(Actor* owner, int drawOrder, int updateOrder)
 #endif // FOXTROT_EDITOR
 {}
 
-UIComponent::~UIComponent()
+UI::~UI()
 {}
 
 #ifdef FOXTROT_EDITOR
-void UIComponent::EditorUpdate(float deltaTime)
+void UI::EditorUpdate(float deltaTime)
 {
 	CheckMouseHover();
 
@@ -165,12 +165,12 @@ void UIComponent::EditorUpdate(float deltaTime)
 	);
 }
 
-void UIComponent::EditorRender(FoxtrotRenderer* renderer)
+void UI::EditorRender(FoxtrotRenderer* renderer)
 {
 	mDebugRect->Render(renderer);
 }
 
-void UIComponent::EditorUIUpdate()
+void UI::EditorUIUpdate()
 {
 	CommandHistory::GetInstance()->UpdateVector2Value("Size", mSize, FLOATMOD_SPEED);
 }

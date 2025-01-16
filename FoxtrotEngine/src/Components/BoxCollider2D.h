@@ -10,19 +10,19 @@
 /// </summary>
 
 #pragma once
-#include "Components/Collider2DComponent.h"
+#include "Components/Collider2D.h"
 
 #ifdef FOXTROT_EDITOR
 #include "ResourceSystem/FTShape.h"
 #endif // FOXTROT_EDITOR
 
-class BoxCollider2DComponent :
-    public Collider2DComponent
+class BoxCollider2D :
+    public Collider2D
 {
 public:
 	virtual std::string GetName() const override
 	{
-		return "BoxCollider2DComponent";
+		return "BoxCollider2D";
 	}
 	const	FTVector2	GetScale() const;
 			void		SetScale(FTVector2 scale);
@@ -34,12 +34,12 @@ public:
 	virtual void CloneTo(Actor* actor)				override;
 
 public:
-	 BoxCollider2DComponent(
+	 BoxCollider2D(
 		 Actor* owner,
 		 int drawOrder = DEFAULT_DRAWORDER,
 		 int updateOrder = DEFAULT_UPDATEORDER
 	 );
-	~BoxCollider2DComponent() override;
+	~BoxCollider2D() override;
 
 private:
 	FTVector2 mScale;

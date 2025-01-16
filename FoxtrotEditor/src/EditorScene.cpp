@@ -11,8 +11,8 @@
 #include "Managers/ResourceManager.h"
 #include "Managers/SceneManager.h"
 #include "Renderer/FoxtrotRenderer.h"
-#include "Components/SpriteRendererComponent.h"
-#include "Components/TileMapComponent.h"
+#include "Components/SpriteRenderer.h"
+#include "Components/TileMapRenderer.h"
 #include "ResourceSystem/GeometryGenerator.h"
 
 #include "FTCoreEditor.h"

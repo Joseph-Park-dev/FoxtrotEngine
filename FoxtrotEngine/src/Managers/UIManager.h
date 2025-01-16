@@ -13,24 +13,24 @@
 #pragma once
 #include "Core/SingletonMacro.h"
 
-class UIComponent;
+class UI;
 
 class UIManager
 {
 	SINGLETON(UIManager);
 
 public:
-	void RegisterUI(UIComponent* UI);
+	void RegisterUI(UI* UI);
 	void Update(float deltaTime);
-	//void SetFocusedUI(UIComponent* UI);
+	//void SetFocusedUI(UI* UI);
 	void Reset();
 
 private:
-	UIComponent* GetFocusedUI();
+	UI* GetFocusedUI();
 	// Returns Overlapped targeted UI within parentUI's area. 
-	UIComponent* GetTargetedUI(UIComponent* parentUI);
+	UI* GetTargetedUI(UI* parentUI);
 
 private:
-	UIComponent* mFocusedUI;
-	std::vector<UIComponent*> mUIs;
+	UI* mFocusedUI;
+	std::vector<UI*> mUIs;
 };

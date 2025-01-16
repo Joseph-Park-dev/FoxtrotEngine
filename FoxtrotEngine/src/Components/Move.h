@@ -16,9 +16,9 @@
 #include "Core/TemplateFunctions.h"
 
 class FTVector2;
-class Rigidbody2DComponent;
+class Rigidbody2D;
 
-class MoveComponent :
+class Move :
     public Component
 {
     enum Controllable;
@@ -26,7 +26,7 @@ class MoveComponent :
 public:
     virtual std::string GetName() const override
     {
-        return "MoveComponent";
+        return "Move";
     }
 
 public:
@@ -46,7 +46,7 @@ public:
     virtual void CloneTo    (Actor* actor)           override;
 
 public:
-    MoveComponent(class Actor* owner, int drawOrder, int updateorder);
+    Move(class Actor* owner, int drawOrder, int updateorder);
 
 protected:
     void Accelerate (b2Vec2 currVel, const Steering* steering);
@@ -61,7 +61,7 @@ protected:
     };
 
 private:
-    Rigidbody2DComponent*   mRigidbody;
+    Rigidbody2D*   mRigidbody;
     b2QueryFilter           mGroundFilter;
 
     float                   mForwardSpeed;

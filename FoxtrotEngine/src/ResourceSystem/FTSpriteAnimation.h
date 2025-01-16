@@ -22,7 +22,7 @@
 #include "ResourceSystem/Tile.h"
 
 class Tile;
-class AnimatorComponent;
+class Animator;
 class FTTexture;
 
 struct AnimationFrame
@@ -53,7 +53,7 @@ public:
 	void SetName			 (std::string&& name);
 	void SetFrame			 (int frameNumber);
 	void SetFrameDuration	 (int frameNum, float duration);
-	void SetAnimator		 (AnimatorComponent* animator);
+	void SetAnimator		 (Animator* animator);
 	void SetIsFinished		 (bool val);
 	void SetIsRepeated		 (bool val);
 							 
@@ -84,7 +84,7 @@ private:
 	UINT						 mTileMapKey;
 	
 	// These fields need to be initialized when the component is added.
-	AnimatorComponent*			 mAnimator;
+	Animator*			 mAnimator;
 	std::vector<AnimationFrame*> mReel;
 	int							 mCurrFrame;
 	float						 mAccTime;

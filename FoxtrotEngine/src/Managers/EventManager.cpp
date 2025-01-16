@@ -13,7 +13,7 @@
 #include "Core/EventType.h"
 #include "Actors/Actor.h"
 #include "Actors/ActorGroup.h"
-#include "Components/AIComponent.h"
+#include "Components/AI.h"
 #include "Components/AIState.h"
 #include "Scenes/Scene.h"
 #include "ResourceSystem/FTPremade.h"

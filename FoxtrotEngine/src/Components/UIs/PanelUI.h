@@ -11,15 +11,15 @@
 /// </summary>
 
 #pragma once
-#include "Components/UIs/UIComponent.h"
+#include "Components/UIs/UI.h"
 
-class PanelUIComponent :
-	public UIComponent
+class PanelUI :
+	public UI
 {
 public:
 	virtual std::string GetName() const override
 	{
-		return "PanelUIComponent";
+		return "PanelUI";
 	}
 
 public:
@@ -31,12 +31,12 @@ public:
 	virtual void CloneTo(Actor* actor)	override;
 
 public:
-	 PanelUIComponent(
+	 PanelUI(
 		Actor* owner, 
 		int drawOrder, 
 		int updateOrder
 	 );
-	~PanelUIComponent() override;
+	~PanelUI() override;
 
 private:
 	FTVector2 mDragStartPoint;

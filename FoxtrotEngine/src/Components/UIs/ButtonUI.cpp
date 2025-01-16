@@ -6,20 +6,20 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Components/UIs/ButtonUIComponent.h"
+#include "Components/UIs/ButtonUI.h"
 
 #include "Scenes/Scene.h"
 
-void ButtonUIComponent::OnMouseHovering()
+void ButtonUI::OnMouseHovering()
 {}
 
-void ButtonUIComponent::OnMouseLButtonDown()
+void ButtonUI::OnMouseLButtonDown()
 {}
 
-void ButtonUIComponent::OnMouseLButtonUp()
+void ButtonUI::OnMouseLButtonUp()
 {}
 
-void ButtonUIComponent::OnMouseLButtonClicked()
+void ButtonUI::OnMouseLButtonClicked()
 {
 	if (mFunc != nullptr)
 	{
@@ -32,13 +32,13 @@ void ButtonUIComponent::OnMouseLButtonClicked()
 	printf("Clicked!\n");
 }
 
-void ButtonUIComponent::CloneTo(Actor* actor)
+void ButtonUI::CloneTo(Actor* actor)
 {
-	ButtonUIComponent* newComp = DBG_NEW ButtonUIComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	ButtonUI* newComp = DBG_NEW ButtonUI(actor, GetDrawOrder(), GetUpdateOrder());
 }
 
-ButtonUIComponent::ButtonUIComponent(Actor* owner, int drawOrder, int updateOrder)
-	: UIComponent		(owner, drawOrder, updateOrder)
+ButtonUI::ButtonUI(Actor* owner, int drawOrder, int updateOrder)
+	: UI		(owner, drawOrder, updateOrder)
 	, mFunc				(nullptr)
 	, mParam1			(0)
 	, mParam2			(0)
@@ -46,5 +46,5 @@ ButtonUIComponent::ButtonUIComponent(Actor* owner, int drawOrder, int updateOrde
 	, mSceneFunc		(nullptr)
 {}
 
-ButtonUIComponent::~ButtonUIComponent()
+ButtonUI::~ButtonUI()
 {}

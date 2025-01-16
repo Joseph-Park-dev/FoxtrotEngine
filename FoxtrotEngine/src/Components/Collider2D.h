@@ -6,11 +6,11 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 /// <summary>
-/// Base class for all 2D Collider Components.
+/// Base class for all 2D Collider s.
 /// </summary>
 
 #pragma once
-#include "Component.h"
+#include "Components/Component.h"
 
 #include "box2d/box2d.h"
 
@@ -28,13 +28,13 @@ enum class CollisionState;
 
 using CollisionStatesMap = std::unordered_map<int32_t, CollisionState>;
 
-class Collider2DComponent :
+class Collider2D :
 	public Component
 {
 public:
 	virtual std::string GetName() const override
 	{
-		return "Collider2DComponent";
+		return "Collider2D";
 	}
 
 public:
@@ -56,19 +56,19 @@ public:
 	virtual void CloneTo	(Actor* actor)			override;
 
 public:
-	Collider2DComponent(Actor* owner, int drawOrder, int updateOrder);
-	Collider2DComponent(const Collider2DComponent& origin);
-	virtual ~Collider2DComponent() override;
+	Collider2D(Actor* owner, int drawOrder, int updateOrder);
+	Collider2D(const Collider2D& origin);
+	virtual ~Collider2D() override;
 
 public:
-	//Collider2DComponent& operator=(Collider2DComponent& origin);
+	//Collider2D& operator=(Collider2D& origin);
 	friend class CollisionManager;
 	friend class Actor;
 
 private:
-	void OnCollisionEnter(Collider2DComponent* other);
-	void OnCollisionStay(Collider2DComponent* other);
-	void OnCollisionExit(Collider2DComponent* other);
+	void OnCollisionEnter(Collider2D* other);
+	void OnCollisionStay(Collider2D* other);
+	void OnCollisionExit(Collider2D* other);
 
 	void OnRayEnter();
 

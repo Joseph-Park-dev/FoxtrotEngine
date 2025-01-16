@@ -29,7 +29,7 @@
 
 #include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
-#include "Components/ComponentBatchHeaders.h"
+#include "Components/BatchHeaders.h"
 
 void ChunkLoader::SaveChunk(const std::string fileName)
 {
@@ -91,21 +91,21 @@ ChunkLoader::ChunkLoader()
 {
     mComponentLoadMap =
     {
-        {"AIComponent",                &Component::Load<AIComponent>},
-        {"AnimatorComponent",          &Component::Load<AnimatorComponent>},
-        {"BoxCollider2DComponent",     &Component::Load<BoxCollider2DComponent>},
-        {"InputMoveComponent",         &Component::Load<InputMoveComponent>},
-        {"MoveComponent",              &Component::Load<MoveComponent>},
-        {"Rigidbody2DComponent",       &Component::Load<Rigidbody2DComponent>},
-        {"SpriteRendererComponent",    &Component::Load<SpriteRendererComponent>},
-        {"TileMapComponent",           &Component::Load<TileMapComponent>},
-        {"MeshRendererComponent",      &Component::Load<MeshRendererComponent>},
+        {"AI",                &Component::Load<AI>},
+        {"Animator",          &Component::Load<Animator>},
+        {"BoxCollider2D",     &Component::Load<BoxCollider2D>},
+        {"InputMove",         &Component::Load<InputMove>},
+        {"Move",              &Component::Load<Move>},
+        {"Rigidbody2D",       &Component::Load<Rigidbody2D>},
+        {"SpriteRenderer",    &Component::Load<SpriteRenderer>},
+        {"TileMap",           &Component::Load<TileMapRenderer>},
+        {"MeshRenderer",      &Component::Load<MeshRenderer>},
 
-        {"GunFiringBehavior",          &Component::Load<GunFiringBehavior>},
-        {"BulletBehavior",             &Component::Load<BulletBehavior>},
+        {"GunFiringBehavior", &Component::Load<GunFiringBehavior>},
+        {"BulletBehavior",    &Component::Load<BulletBehavior>},
 
-        {"Seek",                       &Component::Load<Seek>},
-        {"Flee",                       &Component::Load<Flee>}
+        {"Seek",              &Component::Load<Seek>},
+        {"Flee",              &Component::Load<Flee>}
     };
 };
 

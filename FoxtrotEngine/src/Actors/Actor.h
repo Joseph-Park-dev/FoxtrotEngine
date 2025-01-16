@@ -24,8 +24,8 @@ class EditorElement;
 #endif // FOXTROT_EDITOR
 
 class Transform;
-class SpriteRendererComponent;
-class Collider2DComponent;
+class SpriteRenderer;
+class Collider2D;
 class KeyInputManager;
 class UIActor;
 class Scene;
@@ -154,11 +154,11 @@ public:
 	virtual void RenderComponents	 (FoxtrotRenderer* renderer);
 
 protected:
-	virtual void OnCollisionEnter(Collider2DComponent* _pOther);
-	virtual void OnCollisionStay(Collider2DComponent* _pOther);
-	virtual void OnCollisionExit(Collider2DComponent* _pOther);
+	virtual void OnCollisionEnter(Collider2D* _pOther);
+	virtual void OnCollisionStay(Collider2D* _pOther);
+	virtual void OnCollisionExit(Collider2D* _pOther);
 	virtual void OnRayEnter();
-	friend class Collider2DComponent;
+	friend class Collider2D;
 
 private:
 	std::string				mName;

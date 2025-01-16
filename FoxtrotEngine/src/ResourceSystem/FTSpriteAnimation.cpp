@@ -97,7 +97,7 @@ void FTSpriteAnimation::SetFrameDuration(int frameNum, float duration)
 	reinterpret_cast<AnimationFrame*>(mesh)->Duration = duration;
 }
 
-void FTSpriteAnimation::SetAnimator(AnimatorComponent* animator)
+void FTSpriteAnimation::SetAnimator(Animator* animator)
 {
 	mAnimator = animator;
 }

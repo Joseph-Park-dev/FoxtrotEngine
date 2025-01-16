@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "SpriteRendererComponent.h"
+#include "SpriteRenderer.h"
 
 #include "Actors/Actor.h"
 #include "Actors/Transform.h"
@@ -35,7 +35,7 @@
 #include <imgui.h>
 #endif // FOXTROT_EDITOR
 
-void SpriteRendererComponent::Initialize(FTCore* coreInstance)
+void SpriteRenderer::Initialize(FTCore* coreInstance)
 {
 	SetRenderer	(coreInstance->GetGameRenderer());
 
@@ -50,48 +50,48 @@ void SpriteRendererComponent::Initialize(FTCore* coreInstance)
 	{
 		this->InitializeMesh();
 		if (GetTexKey() != VALUE_NOT_ASSIGNED)
-			MeshRendererComponent::SetTexture();
+			MeshRenderer::SetTexture();
 	}
 	Component::Initialize(coreInstance);
 }
 
-void SpriteRendererComponent::CloneTo(Actor* actor)
+void SpriteRenderer::CloneTo(Actor* actor)
 {
-	SpriteRendererComponent* newComp = DBG_NEW SpriteRendererComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	SpriteRenderer* newComp = DBG_NEW SpriteRenderer(actor, GetDrawOrder(), GetUpdateOrder());
 	newComp->SetMeshKey(this->GetMeshKey());
 	newComp->SetTexKey(this->GetTexKey());
 	newComp->mChannel = this->mChannel;
 	newComp->mTexScale = this->mTexScale;
 }
 
-bool SpriteRendererComponent::InitializeMesh()
+bool SpriteRenderer::InitializeMesh()
 {
-	MeshRendererComponent::InitializeMesh(
+	MeshRenderer::InitializeMesh(
 		ResourceManager::GetInstance()->GetLoadedPrimitive(
 			GetMeshKey()
 		)
 	);
 	if (!GetMeshGroup())
 	{
-		LogString("ERROR: SpriteRendererComponent::InitializeMesh() -> Mesh "
+		LogString("ERROR: SpriteRenderer::InitializeMesh() -> Mesh "
 			"Init failed");
 		return false;
 	}
 	return true;
 }
 
-SpriteRendererComponent::SpriteRendererComponent(Actor* owner, int drawOrder,int updateOrder)
-	: MeshRendererComponent(owner, drawOrder, updateOrder), mChannel(4), mTexScale(FTVector2(1.0f,1.0f)) 
+SpriteRenderer::SpriteRenderer(Actor* owner, int drawOrder,int updateOrder)
+	: MeshRenderer(owner, drawOrder, updateOrder), mChannel(4), mTexScale(FTVector2(1.0f,1.0f)) 
 {}
 
-void SpriteRendererComponent::SaveProperties(std::ofstream& ofs)
+void SpriteRenderer::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
 	FileIOHelper::SaveVector2(ofs, ChunkKeys::TEXTURE_WIDTH, mTexScale);
 	FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TEXTURE_KEY, GetTexKey());
 }
 
-void SpriteRendererComponent::LoadProperties(std::ifstream& ifs)
+void SpriteRenderer::LoadProperties(std::ifstream& ifs)
 {
 	UINT texKey = 0;
 	FileIOHelper::LoadUnsignedInt(ifs, texKey);
@@ -101,17 +101,17 @@ void SpriteRendererComponent::LoadProperties(std::ifstream& ifs)
 }
 
 #ifdef FOXTROT_EDITOR
-void SpriteRendererComponent::EditorUpdate(float deltaTime)
+void SpriteRenderer::EditorUpdate(float deltaTime)
 {
 	Update(deltaTime);
 }
 
-void SpriteRendererComponent::EditorRender(FoxtrotRenderer* renderer)
+void SpriteRenderer::EditorRender(FoxtrotRenderer* renderer)
 {
-	//SpriteRendererComponent::Render(renderer);
+	//SpriteRenderer::Render(renderer);
 }
 
-void SpriteRendererComponent::EditorUIUpdate()
+void SpriteRenderer::EditorUIUpdate()
 {
 	SetRenderer(FTCoreEditor::GetInstance()->GetGameRenderer());
 	CHECK_RENDERER(GetRenderer());
@@ -119,7 +119,7 @@ void SpriteRendererComponent::EditorUIUpdate()
 	OnResetTexture();
 }
 
-void SpriteRendererComponent::OnConfirmUpdate()
+void SpriteRenderer::OnConfirmUpdate()
 {
 	if (ImGui::Button("Update"))
 	{
@@ -127,7 +127,7 @@ void SpriteRendererComponent::OnConfirmUpdate()
 	}
 }
 
-void SpriteRendererComponent::OnResetTexture()
+void SpriteRenderer::OnResetTexture()
 {
 	if (ImGui::Button("Reset"))
 	{
@@ -136,7 +136,7 @@ void SpriteRendererComponent::OnResetTexture()
 	}
 }
 
-void SpriteRendererComponent::UpdateSprite()
+void SpriteRenderer::UpdateSprite()
 {
 	std::string currentSprite = "No sprite has been assigned";
 	if (GetTexKey() != VALUE_NOT_ASSIGNED)
@@ -195,7 +195,7 @@ void SpriteRendererComponent::UpdateSprite()
 	}
 }
 
-void SpriteRendererComponent::UpdateSprite(UINT& key)
+void SpriteRenderer::UpdateSprite(UINT& key)
 {
 	std::string currentSprite = {};
 	if (key != VALUE_NOT_ASSIGNED)

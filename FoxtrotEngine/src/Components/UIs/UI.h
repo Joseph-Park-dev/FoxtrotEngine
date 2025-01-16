@@ -18,7 +18,7 @@
 class FoxtrotRenderer;
 class FTRectangle;
 
-class UIComponent :
+class UI :
     public Component
 {
 public:
@@ -46,12 +46,12 @@ public:
     virtual void Render     (FoxtrotRenderer* renderer) override;
 
 public:
-             UIComponent(
-                 Actor* owner, 
-                 int drawOrder = DEFAULT_DRAWORDER, 
-                 int updateOrder = DEFAULT_UPDATEORDER
-             );
-    virtual ~UIComponent() override;
+    UI(
+        Actor* owner, 
+        int drawOrder = DEFAULT_DRAWORDER, 
+        int updateOrder = DEFAULT_UPDATEORDER
+    );
+    virtual ~UI() override;
 
 private:
     bool        mIsAffectedByCamera;

@@ -12,8 +12,8 @@
 
 #include "Actors/Actor.h"
 #include "Actors/ActorGroup.h"
-#include "Components/SpriteRendererComponent.h"
-#include "Components/UIs/PanelUIComponent.h"
+#include "Components/SpriteRenderer.h"
+#include "Components/UIs/PanelUI.h"
 #include "Managers/EventManager.h"
 #include "Core/TemplateFunctions.h"
 

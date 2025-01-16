@@ -14,7 +14,7 @@
 #include "Managers/SceneManager.h"
 #include "Managers/CollisionManager.h"
 #include "Math/FTMath.h"
-#include "Components/ComponentBatchHeaders.h"
+#include "Components/BatchHeaders.h"
 #include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
 
@@ -25,28 +25,28 @@ EditorChunkLoader::EditorChunkLoader()
     :ChunkLoader()
 {
     // You must list all Components to be used during runtime.
-    // That includes the user defined Components, or "Behavior"s.
+    // That includes the user defined s, or "Behavior"s.
     mComponentCreateMap =
     {
-        {"AIComponent",             &Component::Create<AIComponent>},
-        {"AnimatorComponent",       &Component::Create<AnimatorComponent>},
-        {"BoxCollider2DComponent",  &Component::Create<BoxCollider2DComponent>},
-        {"InputMoveComponent",      &Component::Create<InputMoveComponent>},
-        {"MoveComponent",           &Component::Create<MoveComponent>},
-        {"Rigidbody2DComponent",    &Component::Create<Rigidbody2DComponent>},
-        {"SpriteRendererComponent", &Component::Create<SpriteRendererComponent>},
-        {"TileMapComponent",        &Component::Create<TileMapComponent>},
-        {"MeshRendererComponent",   &Component::Create<MeshRendererComponent>},
+        {"AI",                  &Component::Create<AI>},
+        {"Animator",            &Component::Create<Animator>},
+        {"BoxCollider2D",       &Component::Create<BoxCollider2D>},
+        {"InputMove",           &Component::Create<InputMove>},
+        {"Move",                &Component::Create<Move>},
+        {"Rigidbody2D",         &Component::Create<Rigidbody2D>},
+        {"SpriteRenderer",      &Component::Create<SpriteRenderer>},
+        {"TileMapRenderer",     &Component::Create<TileMapRenderer>},
+        {"MeshRenderer",        &Component::Create<MeshRenderer>},
 
         // UI related
-        {"ButtonUIComponent",       &Component::Create<ButtonUIComponent>},
-        {"PanelUIComponent",        &Component::Create<PanelUIComponent>},
+        {"ButtonUI",            &Component::Create<ButtonUI>},
+        {"PanelUI",             &Component::Create<PanelUI>},
 
         // Actor Behaviors
-        {"GunFiringBehavior",       &Component::Create<GunFiringBehavior>},
-        {"BulletBehavior",          &Component::Create<BulletBehavior>},
-        {"Seek",                    &Component::Create<Seek>},
-        {"Flee",                    &Component::Create<Flee>}
+        {"GunFiringBehavior",   &Component::Create<GunFiringBehavior>},
+        {"BulletBehavior",      &Component::Create<BulletBehavior>},
+        {"Seek",                &Component::Create<Seek>},
+        {"Flee",                &Component::Create<Flee>}
     };
 }
 

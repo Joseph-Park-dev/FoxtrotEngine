@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Components/AnimatorComponent.h"
+#include "Components/Animator.h"
 
 #include "Actors/Actor.h"
 #include "Actors/Transform.h"
@@ -21,17 +21,17 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Renderer/FoxtrotRenderer.h"
 
-AnimatorComponent::AnimatorComponent(Actor* owner, int drawOrder, int updateOrder)
-	: TileMapComponent(owner, drawOrder)
+Animator::Animator(Actor* owner, int drawOrder, int updateOrder)
+	: TileMapRenderer(owner, drawOrder)
 	, mCurrentAnim(nullptr)
 {}
 
-AnimatorComponent::~AnimatorComponent()
+Animator::~Animator()
 {
 	mLoadedKeys.clear();
 	for (size_t i = 0; i < mLoadedAnimations.size(); ++i)
 	{
-		// mCurrentAnim destruction will be taken care of in MeshRendererComponent
+		// mCurrentAnim destruction will be taken care of in MeshRenderer
 		if (mCurrentAnim != mLoadedAnimations.at(i))
 		{
 			delete mLoadedAnimations[i];
@@ -41,19 +41,19 @@ AnimatorComponent::~AnimatorComponent()
 	mLoadedAnimations.clear();
 }
 
-void AnimatorComponent::Play(bool isRepeated)
+void Animator::Play(bool isRepeated)
 {
 	if (mCurrentAnim == nullptr)
-		printf("ERROR : AnimatorComponent::Play()->Animation is null\n");
+		printf("ERROR : Animator::Play()->Animation is null\n");
 	mCurrentAnim->SetIsFinished(false);
 	mCurrentAnim->SetIsRepeated(isRepeated);
 }
 
-void AnimatorComponent::Play(const UINT key, bool isRepeated)
+void Animator::Play(const UINT key, bool isRepeated)
 {
 	mCurrentAnim = mLoadedAnimations.at(key);
 	if (mCurrentAnim == nullptr)
-		printf("ERROR : AnimatorComponent::Play()->Animation is null\n");
+		printf("ERROR : Animator::Play()->Animation is null\n");
 	SetMeshGroup(mCurrentAnim);
 	SetTexKey(mCurrentAnim->GetTexKey());
 	SetTexture();
@@ -61,16 +61,16 @@ void AnimatorComponent::Play(const UINT key, bool isRepeated)
 	mCurrentAnim->SetIsRepeated(isRepeated);
 }
 
-void AnimatorComponent::Stop()
+void Animator::Stop()
 {
 	mCurrentAnim->SetIsFinished(true);
 }
 
-FTSpriteAnimation* AnimatorComponent::CreateAnimationFromTile(std::string&& name, UINT texKey, UINT tileMapKey)
+FTSpriteAnimation* Animator::CreateAnimationFromTile(std::string&& name, UINT texKey, UINT tileMapKey)
 {
 	FTSpriteAnimation* animation = DBG_NEW FTSpriteAnimation;
 	if (!GetRenderer())
-		printf("ERROR : AnimatorComponent::CreateAnimationFromTile()-> Renderer is null");
+		printf("ERROR : Animator::CreateAnimationFromTile()-> Renderer is null");
 	if (texKey != VALUE_NOT_ASSIGNED)
 		animation->SetTexKey(texKey);
 	if(tileMapKey != VALUE_NOT_ASSIGNED)
@@ -95,7 +95,7 @@ FTSpriteAnimation* AnimatorComponent::CreateAnimationFromTile(std::string&& name
 	return animation;
 }
 
-void AnimatorComponent::LoadAnimation(const UINT key)
+void Animator::LoadAnimation(const UINT key)
 {
 	FTSpriteAnimation* anim = ResourceManager::GetInstance()->GetLoadedSpriteAnim(key);
 	FTSpriteAnimation* copied = CreateAnimationFromTile(
@@ -117,7 +117,7 @@ void AnimatorComponent::LoadAnimation(const UINT key)
 	}
 }
 
-void AnimatorComponent::SaveProperties(std::ofstream& ofs)
+void Animator::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::LOADED_KEYS);
@@ -126,7 +126,7 @@ void AnimatorComponent::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::LOADED_KEYS);
 }
 
-void AnimatorComponent::LoadProperties(std::ifstream& ifs)
+void Animator::LoadProperties(std::ifstream& ifs)
 {
 	std::pair<size_t, std::string> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::LOADED_KEYS);
 	mLoadedKeys.reserve(pack.first);
@@ -139,33 +139,33 @@ void AnimatorComponent::LoadProperties(std::ifstream& ifs)
 	Component::LoadProperties(ifs);
 }
 
-void AnimatorComponent::Initialize(FTCore* coreInstance)
+void Animator::Initialize(FTCore* coreInstance)
 {
-	MeshRendererComponent::Initialize(coreInstance);
+	MeshRenderer::Initialize(coreInstance);
 	for (size_t i = 0; i < mLoadedKeys.size(); ++i)
 		LoadAnimation(mLoadedKeys.at(i));
 }
 
-void AnimatorComponent::Update(float deltaTime)
+void Animator::Update(float deltaTime)
 {
 	if (mCurrentAnim != nullptr)
-		TileMapComponent::Update(deltaTime);
+		TileMapRenderer::Update(deltaTime);
 }
 
-void AnimatorComponent::LateUpdate(float deltaTime)
+void Animator::LateUpdate(float deltaTime)
 {
 	if (mCurrentAnim != nullptr)
 		mCurrentAnim->Update(deltaTime);
 }
 
-void AnimatorComponent::Render(FoxtrotRenderer* renderer)
+void Animator::Render(FoxtrotRenderer* renderer)
 {
 	if (mCurrentAnim != nullptr)
 		mCurrentAnim->Render(renderer, GetTexture());
 }
 
 #ifdef FOXTROT_EDITOR
-void AnimatorComponent::EditorUpdate(float deltaTime)
+void Animator::EditorUpdate(float deltaTime)
 {
 	if (mCurrentAnim != nullptr)
 	{
@@ -174,14 +174,14 @@ void AnimatorComponent::EditorUpdate(float deltaTime)
 	}
 }
 
-void AnimatorComponent::EditorUIUpdate()
+void Animator::EditorUIUpdate()
 {
 	UpdatePlayAnim();
 	UpdatePlayList();
 	CreateAnimation();
 }
 
-void AnimatorComponent::UpdatePlayAnim()
+void Animator::UpdatePlayAnim()
 {
 	if (mCurrentAnim)
 	{
@@ -202,7 +202,7 @@ void AnimatorComponent::UpdatePlayAnim()
 	}
 }
 
-void AnimatorComponent::UpdatePlayList()
+void Animator::UpdatePlayList()
 {
 	ImGui::Text("Play List");
 	UINT key = ResourceManager::GetInstance()->ShowResourceSelection(
@@ -227,7 +227,7 @@ void AnimatorComponent::UpdatePlayList()
 	}
 }
 
-void AnimatorComponent::CreateAnimation()
+void Animator::CreateAnimation()
 {
 	if (ImGui::Button("Create Sprite Animation"))
 	{
@@ -260,9 +260,9 @@ void AnimatorComponent::CreateAnimation()
 	}
 }
 
-void AnimatorComponent::CloneTo(Actor* actor)
+void Animator::CloneTo(Actor* actor)
 {
-	AnimatorComponent* newComp = DBG_NEW AnimatorComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	Animator* newComp = DBG_NEW Animator(actor, GetDrawOrder(), GetUpdateOrder());
 	for (size_t i = 0; i < mLoadedKeys.size(); ++i)
 		newComp->mLoadedKeys.push_back(mLoadedKeys.at(i));
 }

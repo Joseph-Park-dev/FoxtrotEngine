@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Components/TileMapComponent.h"
+#include "Components/TileMapRenderer.h"
 
 #include <queue>
 #include <string>
@@ -42,22 +42,22 @@
 
 #define DEFAULT_TILE_POS 0
 
-UINT TileMapComponent::GetTileMapKey() const
+UINT TileMapRenderer::GetTileMapKey() const
 {
 	return mTileMapKey;
 }
 
-FTTileMap* TileMapComponent::GetTileMap() const
+FTTileMap* TileMapRenderer::GetTileMap() const
 {
 	return mTileMap;
 }
 
-void TileMapComponent::Initialize(FTCore* coreInstance)
+void TileMapRenderer::Initialize(FTCore* coreInstance)
 {
-    MeshRendererComponent::Initialize(coreInstance);
+    MeshRenderer::Initialize(coreInstance);
 }
 
-void TileMapComponent::InitializeTileMap() {
+void TileMapRenderer::InitializeTileMap() {
     assert(mTileMapKey != VALUE_NOT_ASSIGNED);
     assert(GetTexKey() != VALUE_NOT_ASSIGNED);
     //assert(GetMeshKey() != VALUE_NOT_ASSIGNED);
@@ -67,62 +67,62 @@ void TileMapComponent::InitializeTileMap() {
 		SetTexture();
         mTileMap->ReadCSV();
 		SetMeshKey(ChunkKeys::PRIMITIVE_SQUARE_BLUE);
-        SpriteRendererComponent::InitializeMesh();
+        SpriteRenderer::InitializeMesh();
         //GetOwner()->GetTransform()->SetScale(FTVector3(0.03f, 0.03f, 1.0f));
     }
 }
 
-void TileMapComponent::Update(float deltaTime)
+void TileMapRenderer::Update(float deltaTime)
 {
     if (GetMeshGroup())
-        MeshRendererComponent::Update(deltaTime);
+        MeshRenderer::Update(deltaTime);
 }
 
-void TileMapComponent::Render(FoxtrotRenderer* renderer)
+void TileMapRenderer::Render(FoxtrotRenderer* renderer)
 {
-    MeshRendererComponent::Render(renderer);
+    MeshRenderer::Render(renderer);
 }
 
-void TileMapComponent::CloneTo(Actor* actor)
+void TileMapRenderer::CloneTo(Actor* actor)
 {
-	TileMapComponent* newComp = DBG_NEW TileMapComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	TileMapRenderer* newComp = DBG_NEW TileMapRenderer(actor, GetDrawOrder(), GetUpdateOrder());
 	newComp->mTileMapKey = this->mTileMapKey;
 }
 
-TileMapComponent::TileMapComponent(Actor* owner, int drawOrder, int UpdateOrder)
-    : SpriteRendererComponent(owner, drawOrder)
+TileMapRenderer::TileMapRenderer(Actor* owner, int drawOrder, int UpdateOrder)
+    : SpriteRenderer(owner, drawOrder)
     , mTileMap(nullptr)
     , mTileMapKey(VALUE_NOT_ASSIGNED)
 
 {}
 
-TileMapComponent::~TileMapComponent()
+TileMapRenderer::~TileMapRenderer()
 {
     //ResourceManager::GetInstance()->RemoveLoadedMeshes(GetMeshKey());
 	mTileMap = nullptr;
 }
 
-void TileMapComponent::SaveProperties(std::ofstream& ofs)
+void TileMapRenderer::SaveProperties(std::ofstream& ofs)
 {
-    Component::SaveProperties(ofs);
+	Component::SaveProperties(ofs);
     FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TILEMAP_KEY, mTileMapKey);
 	FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::MESH_KEY, GetTexKey());
 }
 
-void TileMapComponent::LoadProperties(std::ifstream& ifs)
+void TileMapRenderer::LoadProperties(std::ifstream& ifs)
 {
 	UINT texKey = 0;
 	FileIOHelper::LoadUnsignedInt(ifs, texKey);
 	SetTexKey(texKey);
     FileIOHelper::LoadUnsignedInt(ifs, mTileMapKey);
-    Component::LoadProperties(ifs);
+	Component::LoadProperties(ifs);
 
 	if(GetTexKey() != VALUE_NOT_ASSIGNED && mTileMapKey != VALUE_NOT_ASSIGNED)
 		this->InitializeTileMap();
 }
 
 #ifdef FOXTROT_EDITOR
-void TileMapComponent::EditorUIUpdate()
+void TileMapRenderer::EditorUIUpdate()
 {
     CHECK_RENDERER(GetRenderer());
     UpdateSprite();
@@ -130,13 +130,13 @@ void TileMapComponent::EditorUIUpdate()
     OnConfirmUpdate();
 }
 
-void TileMapComponent::OnConfirmUpdate()
+void TileMapRenderer::OnConfirmUpdate()
 {
     if (ImGui::Button("Update"))
         this->InitializeTileMap();
 }
 
-void TileMapComponent::UpdateCSV() {
+void TileMapRenderer::UpdateCSV() {
 	std::string currentCSV = "No .csv has been assigned";
 	if (mTileMapKey != VALUE_NOT_ASSIGNED)
 		currentCSV =
@@ -185,7 +185,7 @@ void TileMapComponent::UpdateCSV() {
 		ImGui::EndPopup();
 	}
 }
-void TileMapComponent::UpdateCSV(UINT& key)
+void TileMapRenderer::UpdateCSV(UINT& key)
 {
 	std::string currentCSV = {};
 	if (key != VALUE_NOT_ASSIGNED)

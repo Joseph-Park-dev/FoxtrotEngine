@@ -21,11 +21,11 @@
 
 class AIState;
 
-class AIComponent :
+class AI :
 	public Component
 {
 public:
-	virtual std::string GetName() const override { return "AIComponent"; }
+	virtual std::string GetName() const override { return "AI"; }
 
 public:
 	void ChangeState(AISTATE_TYPE name);
@@ -38,8 +38,8 @@ public:
 	virtual void CloneTo	(Actor* actor)			override;
 
 public:
-	AIComponent(class Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
-	virtual ~AIComponent() override;
+	AI(class Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
+	virtual ~AI() override;
 
 private:
 	std::unordered_map<AISTATE_TYPE, class AIState*> mStateMap;

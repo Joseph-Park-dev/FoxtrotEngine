@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 /// <summary>
-/// Base Component to render sprites, tilemaps, animations as meshes.
+/// Base  to render sprites, tilemaps, animations as meshes.
 /// </summary>
 
 #pragma once
@@ -24,7 +24,7 @@ struct MeshData;
 
 #define CHECK_RENDERER(RendererInst) if(!RendererInst) ImGui::Text("Renderer is not loaded");
 
-class MeshRendererComponent :
+class MeshRenderer :
     public Component
 {
 public:
@@ -44,7 +44,7 @@ protected:
 	virtual void UpdateBuffers	();
 
 public:
-	virtual std::string GetName() const override { return "MeshRendererComponent"; }
+	virtual std::string GetName() const override { return "MeshRenderer"; }
 
 protected:
 	FoxtrotRenderer*	GetRenderer	()	{ return mRenderer; }
@@ -70,8 +70,8 @@ private:
 	FTTexture*			mTexture;
 
 public:
-			 MeshRendererComponent(Actor* owner, int drawOrder, int updateOrder);
-	virtual ~MeshRendererComponent() override;
+			 MeshRenderer(Actor* owner, int drawOrder, int updateOrder);
+	virtual ~MeshRenderer() override;
 
 protected:
 	void UpdateConstantBufferModel		(Transform* transform);

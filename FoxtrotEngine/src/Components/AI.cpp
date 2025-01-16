@@ -6,12 +6,12 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Components/AIComponent.h"
+#include "Components/AI.h"
 
 #include "Components/AIState.h"
 #include "Core/TemplateFunctions.h"
 
-void AIComponent::ChangeState(AISTATE_TYPE stateType)
+void AI::ChangeState(AISTATE_TYPE stateType)
 {
 	if (mCurrentState)
 		mCurrentState->OnExit();
@@ -24,34 +24,34 @@ void AIComponent::ChangeState(AISTATE_TYPE stateType)
 	mCurrentState->OnEnter();
 }
 
-void AIComponent::RegisterState(AIState* state)
+void AI::RegisterState(AIState* state)
 {
 	mStateMap.emplace(state->GetType(), state);
 }
 
-void AIComponent::Initialize(FTCore* coreInstance)
+void AI::Initialize(FTCore* coreInstance)
 {
 	Component::Initialize(coreInstance);
 }
 
-void AIComponent::Update(float deltaTime)
+void AI::Update(float deltaTime)
 {
 	if (mCurrentState)
 		mCurrentState->Update(deltaTime);
 }
 
-void AIComponent::CloneTo(Actor* actor)
+void AI::CloneTo(Actor* actor)
 {
 	CLONE_TO_NOT_IMPLEMENTED
 }
 
-AIComponent::AIComponent(Actor* owner, int drawOrder, int updateOrder)
+AI::AI(Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner)
 	, mCurrentState(nullptr)
 {
 }
 
-AIComponent::~AIComponent()
+AI::~AI()
 {
 	Safe_Delete_Map(mStateMap);
 }

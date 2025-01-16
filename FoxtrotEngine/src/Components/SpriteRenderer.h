@@ -12,7 +12,7 @@
 /// </summary>
 
 #pragma once
-#include "Components/MeshRendererComponent.h"
+#include "Components/MeshRenderer.h"
 
 #include "Core/TemplateFunctions.h"
 #include "ResourceSystem/MeshData.h"
@@ -22,15 +22,15 @@ class FTTexture;
 class FoxtrotRenderer;
 struct Mesh;
 
-class SpriteRendererComponent 
-	: public MeshRendererComponent
+class SpriteRenderer 
+	: public MeshRenderer
 {
 public:
 	int			 GetTexWidth()  { return GetTexture()->GetTexWidth() * mTexScale.x; }
 	int			 GetTexHeight() { return GetTexture()->GetTexHeight() * mTexScale.y; }
 
 	std::string  GetName()		const override{
-		return	"SpriteRendererComponent";
+		return	"SpriteRenderer";
 	}
 
 public:
@@ -41,7 +41,7 @@ protected:
 	virtual bool InitializeMesh	()		override;
 
 public:
-			SpriteRendererComponent(
+			SpriteRenderer(
 				Actor* owner, 
 				int drawOrder = DEFAULT_DRAWORDER, 
 				int updateOrder = DEFAULT_UPDATEORDER

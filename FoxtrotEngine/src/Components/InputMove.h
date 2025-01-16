@@ -10,19 +10,19 @@
 /// </summary>
 
 #pragma once
-#include "Components/MoveComponent.h"
+#include "Components/Move.h"
 
 #include "Core/TemplateFunctions.h"
 
-class Rigidbody2DComponent;
+class Rigidbody2D;
 
-class InputMoveComponent :
-    public MoveComponent
+class InputMove :
+    public Move
 {
 public:
     std::string GetName() const override
     {
-        return "InputMoveComponent";
+        return "InputMove";
     }
 
 public:
@@ -30,5 +30,5 @@ public:
     virtual void CloneTo        (Actor* actor)                           override;
 
 public:
-    InputMoveComponent(class Actor* owner, int drawOrder, int updateOrder);
+    InputMove(class Actor* owner, int drawOrder, int updateOrder);
 };

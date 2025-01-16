@@ -8,15 +8,15 @@
 
 #include "Components/AIState.h"
 
-#include "Components/AIComponent.h"
+#include "Components/AI.h"
 #include "Actors/Actor.h"
 #include "Managers/SceneManager.h"
 #include "Scenes/Scene.h"
-#include "Components/MoveComponent.h"
+#include "Components/Move.h"
 #include "Actors/Transform.h"
 #include "Core/EventFunctions.h"
 
-AIPursue::AIPursue(AIComponent* owner)
+AIPursue::AIPursue(AI* owner)
 	: AIState(owner)
 	, mTargetActor(nullptr)
 {

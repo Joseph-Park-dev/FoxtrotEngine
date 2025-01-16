@@ -6,36 +6,36 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Components/UIs/PanelUIComponent.h"
+#include "Components/UIs/PanelUI.h"
 
 #include "Managers/KeyInputManager.h"
 #include "Actors/Transform.h"
 #include "Actors/Actor.h"
 #include "Math/FTMath.h"
 
-void PanelUIComponent::OnMouseHovering()
+void PanelUI::OnMouseHovering()
 {
 	if (LeftButtonIsDown())
-		printf("PanelUIComponent - Left button is down");
+		printf("PanelUI - Left button is down");
 }
 
-void PanelUIComponent::OnMouseLButtonDown()
+void PanelUI::OnMouseLButtonDown()
 {
 	mDragStartPoint = MOUSE_POS;
 }
 
-void PanelUIComponent::OnMouseLButtonUp()
+void PanelUI::OnMouseLButtonUp()
 {}
 
-void PanelUIComponent::CloneTo(Actor * actor)
+void PanelUI::CloneTo(Actor * actor)
 {
-	PanelUIComponent* newComp = DBG_NEW PanelUIComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	PanelUI* newComp = DBG_NEW PanelUI(actor, GetDrawOrder(), GetUpdateOrder());
 }
 
-PanelUIComponent::PanelUIComponent(Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER)
-	: UIComponent(owner, drawOrder, updateOrder)
+PanelUI::PanelUI(Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER)
+	: UI(owner, drawOrder, updateOrder)
 	, mDragStartPoint(FTVector2::Zero)
 {}
 
-PanelUIComponent::~PanelUIComponent()
+PanelUI::~PanelUI()
 {}

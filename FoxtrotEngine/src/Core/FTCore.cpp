@@ -15,7 +15,7 @@
 #include "Core/WindowProcess.h"
 #include "Core/Timer.h"
 #include "Actors/Actor.h"
-#include "Components/SpriteRendererComponent.h"
+#include "Components/SpriteRenderer.h"
 #include "Managers/KeyInputManager.h"
 #include "Managers/SceneManager.h"
 #include "Managers/ResourceManager.h"

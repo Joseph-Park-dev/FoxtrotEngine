@@ -14,7 +14,7 @@
 #include <string>
 
 class Actor;
-class AIComponent;
+class AI;
 
 enum class AISTATE_TYPE
 {
@@ -31,19 +31,19 @@ public:
 
 public:
 	virtual AISTATE_TYPE GetType() = 0;
-	AIComponent*		 GetOwner() { return mOwner; }
+	AI*		 GetOwner() { return mOwner; }
 
 public:
 	virtual void Update(float deltaTime) = 0;
 
 public:
-	AIState(class AIComponent* owner)
+	AIState(class AI* owner)
 		: mOwner(owner)
 	{
 	}
 
 private:
-	AIComponent* mOwner;
+	AI* mOwner;
 };
 
 class AIIdle : public AIState
@@ -59,7 +59,7 @@ public:
 	virtual void Update(float deltaTime) override;
 
 public:
-	AIIdle(class AIComponent* owner)
+	AIIdle(class AI* owner)
 		: AIState(owner)
 	{
 	}
@@ -76,7 +76,7 @@ public:
 	AISTATE_TYPE GetType() { return AISTATE_TYPE::PATROL; }
 
 public:
-	AIPatrol(class AIComponent* owner)
+	AIPatrol(class AI* owner)
 		: AIState(owner)
 	{
 	}
@@ -95,7 +95,7 @@ public:
 	virtual void Update(float deltaTime) override;
 
 public:
-	AIPursue(class AIComponent* owner);
+	AIPursue(class AI* owner);
 
 private:
 	Actor* mTargetActor;

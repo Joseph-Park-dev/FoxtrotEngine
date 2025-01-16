@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Components/Rigidbody2DComponent.h"
+#include "Components/Rigidbody2D.h"
 
 #include "box2d/box2d.h"
 
@@ -16,7 +16,7 @@
 #include "Math/FTMath.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/ChunkFileKeys.h"
-#include "Components/BoxCollider2DComponent.h"
+#include "Components/BoxCollider2D.h"
 #include "FileSystem/FileIOHelper.h"
 
 #ifdef FOXTROT_EDITOR
@@ -24,7 +24,7 @@
 #endif // FOXTROT_EDITOR
 
 
-Rigidbody2DComponent::Rigidbody2DComponent(class Actor* owner, int drawOrder, int updateOrder)
+Rigidbody2D::Rigidbody2D(class Actor* owner, int drawOrder, int updateOrder)
 	: Component(owner, drawOrder, updateOrder)
 	, mBodyID{}
 #ifdef FOXTROT_EDITOR
@@ -32,23 +32,23 @@ Rigidbody2DComponent::Rigidbody2DComponent(class Actor* owner, int drawOrder, in
 #endif // FOXTROT_EDITOR
 {}
 
-Rigidbody2DComponent::~Rigidbody2DComponent()
+Rigidbody2D::~Rigidbody2D()
 {
 	if(b2Body_IsValid(mBodyID))
 		b2DestroyBody(mBodyID);
 }
 
-b2BodyId& Rigidbody2DComponent::GetBodyID()
+b2BodyId& Rigidbody2D::GetBodyID()
 {
 	return mBodyID;
 }
 
-void Rigidbody2DComponent::Initialize(FTCore* coreInstance)
+void Rigidbody2D::Initialize(FTCore* coreInstance)
 {
 	Component::Initialize(coreInstance);
 }
 
-void Rigidbody2DComponent::LateUpdate(float deltaTime)
+void Rigidbody2D::LateUpdate(float deltaTime)
 {
 	b2Vec2 position = b2Body_GetPosition(mBodyID);
 	b2Rot  rotation = b2Body_GetRotation(mBodyID);
@@ -60,14 +60,14 @@ void Rigidbody2DComponent::LateUpdate(float deltaTime)
 	GetOwner()->GetTransform()->SetRotation(updatedRot);
 }
 
-void Rigidbody2DComponent::CloneTo(Actor* actor)
+void Rigidbody2D::CloneTo(Actor* actor)
 {
-	Rigidbody2DComponent* newComp = DBG_NEW Rigidbody2DComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	Rigidbody2D* newComp = DBG_NEW Rigidbody2D(actor, GetDrawOrder(), GetUpdateOrder());
 	newComp->mBodyDefCache = this->mBodyDefCache;
 	newComp->mBodyID = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &mBodyDefCache);
 }
 
-void Rigidbody2DComponent::LoadProperties(std::ifstream& ifs)
+void Rigidbody2D::LoadProperties(std::ifstream& ifs)
 {
 	if (b2Body_IsValid(mBodyID))
 		b2DestroyBody(mBodyID);
@@ -102,7 +102,7 @@ void Rigidbody2DComponent::LoadProperties(std::ifstream& ifs)
 #endif // FOXTROT_EDITOR
 }
 #ifdef FOXTROT_EDITOR
-void Rigidbody2DComponent::SaveProperties(std::ofstream& ofs)
+void Rigidbody2D::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties (ofs);
 	FileIOHelper::SaveBool	  (ofs, ChunkKeys::ALLOW_FAST_ROTATION, mBodyDefCache.allowFastRotation);
@@ -132,15 +132,15 @@ void Rigidbody2DComponent::SaveProperties(std::ofstream& ofs)
 	}
 }
 
-void Rigidbody2DComponent::EditorUpdate(float deltaTime)
+void Rigidbody2D::EditorUpdate(float deltaTime)
 {
 }
 
-void Rigidbody2DComponent::EditorRender(FoxtrotRenderer* renderer)
+void Rigidbody2D::EditorRender(FoxtrotRenderer* renderer)
 {
 }
 
-void Rigidbody2DComponent::EditorUIUpdate()
+void Rigidbody2D::EditorUIUpdate()
 {
 	CommandHistory::GetInstance()->UpdateBoolValue	  (ChunkKeys::ALLOW_FAST_ROTATION, mBodyDefCache.allowFastRotation);
 	CommandHistory::GetInstance()->UpdateFloatValue	  (ChunkKeys::ANGULAR_DAMPING,	  &mBodyDefCache.angularDamping,  FLOATMOD_SPEED);
@@ -172,7 +172,7 @@ void Rigidbody2DComponent::EditorUIUpdate()
 	ImGui::Separator();
 }
 
-void Rigidbody2DComponent::UpdateBodyType()
+void Rigidbody2D::UpdateBodyType()
 {
 	const char* items[] = { "Static", "Kinematic", "Dynamic" };
 	static int currentItem = VALUE_NOT_ASSIGNED;
@@ -211,7 +211,7 @@ void Rigidbody2DComponent::UpdateBodyType()
 	}
 }
 
-void Rigidbody2DComponent::UpdateGravityScale()
+void Rigidbody2D::UpdateGravityScale()
 {
 }
 #endif // FOXTROT_EDITOR

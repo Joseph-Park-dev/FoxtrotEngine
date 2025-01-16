@@ -11,7 +11,7 @@
 /// </summary>
 
 #pragma once
-#include "Components/SpriteRendererComponent.h"
+#include "Components/SpriteRenderer.h"
 
 #include <string>
 
@@ -22,12 +22,12 @@
 
 class FTVector2;
 
-class TileMapComponent :
-    public SpriteRendererComponent
+class TileMapRenderer :
+    public SpriteRenderer
 {
 public:
     std::string GetName()		const override {
-        return	"TileMapComponent";
+        return	"TileMap";
     }
     UINT        GetTileMapKey() const;
     FTTileMap*  GetTileMap() const;
@@ -43,12 +43,12 @@ protected:
     void InitializeTileMap();
 
 public:
-             TileMapComponent(
+             TileMapRenderer(
                  Actor* owner, 
                  int drawOrder   = DEFAULT_DRAWORDER, 
                  int UpdateOrder = DEFAULT_UPDATEORDER
              );
-    virtual ~TileMapComponent() override;
+    virtual ~TileMapRenderer() override;
 
 
 private:

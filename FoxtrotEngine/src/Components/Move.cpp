@@ -6,11 +6,11 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Components/MoveComponent.h"
+#include "Components/Move.h"
 
 #include "Math/FTMath.h"
 #include "Actors/Actor.h"
-#include "Components/Rigidbody2DComponent.h"
+#include "Components/Rigidbody2D.h"
 #include "Components/CharacterAI/Steering.h"
 #include "Actors/Transform.h"
 #include "FileSystem/FileIOHelper.h"
@@ -22,8 +22,8 @@
 #include "CommandHistory.h"
 #endif // FOXTROT_EDITOR
 
-MoveComponent::MoveComponent(class Actor* owner, int drawOrder, int updateorder)
-	: Component			(owner, drawOrder , updateorder)
+Move::Move(Actor* owner, int drawOrder, int updateorder)
+	: Component(owner, drawOrder , updateorder)
 	, mRigidbody		(nullptr)
 	, mGroundFilter		(b2DefaultQueryFilter())
 	, mForwardSpeed		(0.f)
@@ -37,7 +37,7 @@ MoveComponent::MoveComponent(class Actor* owner, int drawOrder, int updateorder)
 	);
 }
 
-void MoveComponent::Accelerate(b2Vec2 currVel, const Steering* steering)
+void Move::Accelerate(b2Vec2 currVel, const Steering* steering)
 {
 	if (0 < Math::Abs(steering->Linear.x))
 	{
@@ -57,7 +57,7 @@ void MoveComponent::Accelerate(b2Vec2 currVel, const Steering* steering)
 	b2Body_SetLinearVelocity(mRigidbody->GetBodyID(), currVel);
 }
 
-void MoveComponent::Jump(b2Vec2 currVel, const Steering* steering)
+void Move::Jump(b2Vec2 currVel, const Steering* steering)
 {
 	if (mIsGrounded)
 	{
@@ -67,7 +67,7 @@ void MoveComponent::Jump(b2Vec2 currVel, const Steering* steering)
 	}
 }
 
-void MoveComponent::SetIsGrounded()
+void Move::SetIsGrounded()
 {
 	b2RayCastInput rcInput;
 	b2AABB aaBB = b2Body_ComputeAABB(mRigidbody->GetBodyID());
@@ -84,14 +84,14 @@ void MoveComponent::SetIsGrounded()
 	mIsGrounded = result.hit;
 }
 
-void MoveComponent::Initialize(FTCore* coreInstance)
+void Move::Initialize(FTCore* coreInstance)
 {
-	mRigidbody = GetOwner()->GetComponent<Rigidbody2DComponent>();
+	mRigidbody = GetOwner()->GetComponent<Rigidbody2D>();
 	if (mRigidbody)
 		Component::Initialize(coreInstance);
 }
 
-void MoveComponent::LateUpdate(float deltaTime)
+void Move::LateUpdate(float deltaTime)
 {
 	if (mIsControllable)
 	{
@@ -108,15 +108,15 @@ void MoveComponent::LateUpdate(float deltaTime)
 	}
 }
 
-void MoveComponent::CloneTo(Actor* actor)
+void Move::CloneTo(Actor* actor)
 {
-	MoveComponent* newComp = DBG_NEW MoveComponent(actor, GetDrawOrder(), GetUpdateOrder());
+	Move* newComp = DBG_NEW Move(actor, GetDrawOrder(), GetUpdateOrder());
 	newComp->mForwardSpeed = this->mForwardSpeed;
 	newComp->mJumpForce = this->mJumpForce;
 	newComp->mAngularSpeed = this->mAngularSpeed;
 }
 
-void MoveComponent::SaveProperties(std::ofstream& ofs)
+void Move::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
 	FileIOHelper::SaveFloat(ofs, ChunkKeys::FORWARD_SPEED,	mForwardSpeed);
@@ -124,7 +124,7 @@ void MoveComponent::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::SaveFloat(ofs, ChunkKeys::ANGULAR_SPEED,	mAngularSpeed);
 }
 
-void MoveComponent::LoadProperties(std::ifstream& ifs)
+void Move::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::LoadFloat(ifs, mForwardSpeed);
 	FileIOHelper::LoadFloat(ifs, mJumpForce);
@@ -133,7 +133,7 @@ void MoveComponent::LoadProperties(std::ifstream& ifs)
 }
 
 #ifdef FOXTROT_EDITOR
-void MoveComponent::EditorUIUpdate()
+void Move::EditorUIUpdate()
 {
 	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKeys::FORWARD_SPEED, &mForwardSpeed, FLOATMOD_SPEED);
 	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKeys::JUMP_FORCE, &mJumpForce, FLOATMOD_SPEED);

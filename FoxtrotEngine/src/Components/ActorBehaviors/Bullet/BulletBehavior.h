@@ -9,7 +9,7 @@
 #pragma once
 #include "Components/Component.h"
 
-#include "Components/Rigidbody2DComponent.h"
+#include "Components/Rigidbody2D.h"
 
 class BulletBehavior :
     public Component
@@ -36,7 +36,7 @@ public:
 	BulletBehavior(Actor* owner, int drawOrder, int updateOrder);
 
 private:
-	Rigidbody2DComponent* mRigidbody;
+	Rigidbody2D* mRigidbody;
 	FTVector2			  mImpulseQuantity;
 	FTVector2			  mStartPosition;
 	FTVector2			  mDirection;

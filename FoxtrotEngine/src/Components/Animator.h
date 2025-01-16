@@ -13,7 +13,7 @@
 /// </summary>
 
 #pragma once
-#include "Components/TileMapComponent.h"
+#include "Components/TileMapRenderer.h"
 
 #include <unordered_map>
 #include <string>
@@ -23,13 +23,13 @@
 class FoxtrotRenderer;
 class FTSpriteAnimation;
 
-class AnimatorComponent :
-    public TileMapComponent
+class Animator :
+    public TileMapRenderer
 {
 public:
     virtual std::string GetName() const override
     {
-        return "AnimatorComponent";
+        return "Animator";
     }
 
 public:
@@ -54,12 +54,12 @@ public:
     virtual void CloneTo    (Actor* actor)              override;
 
 public:
-     AnimatorComponent(
+     Animator(
          class Actor* owner, 
          int drawOrder = DEFAULT_DRAWORDER, 
          int updateOrder = DEFAULT_UPDATEORDER
      );
-    ~AnimatorComponent() override;
+    ~Animator() override;
 
 private:
     std::vector<UINT>               mLoadedKeys;

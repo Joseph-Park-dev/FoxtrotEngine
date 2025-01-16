@@ -11,7 +11,7 @@
 /// </summary>
 
 #pragma once
-#include "Components/UIs/UIComponent.h"
+#include "Components/UIs/UI.h"
 
 class Scene;
 
@@ -19,13 +19,13 @@ typedef void(*BTN_FUNC) (int, int);
 typedef void(Scene::*SCENE_MEMFUNC)(void);
 typedef void(Actor::*ACTOR_MEMFUNC)(void);
 
-class ButtonUIComponent
-	: public UIComponent
+class ButtonUI
+	: public UI
 {
 public:
 	virtual std::string GetName() const override
 	{
-		return "ButtonUIComponent";
+		return "ButtonUI";
 	}
 
 public:
@@ -51,12 +51,12 @@ public:
 	virtual void CloneTo(Actor* actor) override;
 
 public:
-	 ButtonUIComponent(
+	 ButtonUI(
 		Actor* owner,
 		int drawOrder = DEFAULT_DRAWORDER,
 		int updateOrder = DEFAULT_UPDATEORDER
 	 );
-	~ButtonUIComponent() override;
+	~ButtonUI() override;
 
 private:
 	BTN_FUNC	  mFunc;
@@ -66,4 +66,3 @@ private:
 	SCENE_MEMFUNC mSceneFunc;
 	Scene*		  mSceneInstance;
 };
-

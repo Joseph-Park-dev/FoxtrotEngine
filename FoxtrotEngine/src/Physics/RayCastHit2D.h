@@ -10,7 +10,7 @@
 /// </summary>
 
 #pragma once
-#include "Components/Collider2DComponent.h"
+#include "Components/Collider2D.h"
 #include "Actors/Actor.h"
 #include "Math/FTMath.h"
 

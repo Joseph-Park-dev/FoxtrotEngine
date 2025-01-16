@@ -25,7 +25,7 @@
 #include "Debugging/DebugMemAlloc.h"
 #include "ResourceSystem/FTPremade.h"
 
-#include "ComparisonFunctions.h"
+#include "Compare/StringEqual.h"
 
 #ifdef FOXTROT_EDITOR
 #include "EditorElement.h"

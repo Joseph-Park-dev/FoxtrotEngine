@@ -74,6 +74,54 @@ void FTTileMap::ReadCSV()
     }
 }
 
+void FTTileMap::ReadCSV(std::wstring& str)
+{
+    // These values cannot be 0;
+    assert(mTileWidthOnScreen != 0);
+    assert(mTileHeightOnScreen != 0);
+    assert(mMaxCountOnMapX != 0);
+    assert(mMaxCountOnMapY != 0);
+
+    if (mTileMap)
+        delete[] mTileMap;
+
+    std::ifstream myFile;
+    std::queue<int> result;
+
+    // Open an existing file 
+    myFile.open(GetRelativePath(), std::fstream::in);
+    assert(myFile);
+    std::string line;
+    int val;
+    int column = 0; int row = 0;
+    while (std::getline(myFile, line))
+    {
+        std::stringstream ss(line);
+        // Create a stringstream of the current line
+        // Extract each integer
+        while (ss >> val)
+        {
+            result.push(val);
+            if (ss.peek() == ',') ss.ignore();
+            ++column;
+        }
+        ++row;
+    }
+    if (row != 0)
+        column /= row;
+    myFile.close();
+
+    mMaxCountOnScreenX = column;
+    mMaxCountOnScreenY = row;
+
+    mTileMap = DBG_NEW Tile[str.size()];
+    for (size_t i = 0; i < str.size(); ++i)
+    {
+        UINT chIdx = str.at(i) - WSTRING_OFFSET;
+        InitializeTile(mTileMap[i], i, 0, chIdx);
+    }
+}
+
 Tile& FTTileMap::GetTile(size_t row, size_t column)
 {
     return mTileMap[mMaxCountOnScreenX * row + column];

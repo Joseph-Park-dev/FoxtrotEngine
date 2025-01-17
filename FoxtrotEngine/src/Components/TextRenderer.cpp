@@ -55,12 +55,12 @@ void TextRenderer::InitializeTileMap()
         SetTileMap(ResourceManager::GetInstance()->GetLoadedTileMap(GetTileMapKey()));
         if (GetTileMap())
         {
-            GetTileMap()->ReadCSV();
+            GetTileMap()->ReadCSV(mText);
             if(GetTexKey() != VALUE_NOT_ASSIGNED)
                 SetTexture();
             SetMeshKey(ChunkKeys::PRIMITIVE_SQUARE_BLUE);
             std::vector<MeshData> meshData;
-            //GeometryGenerator::MakeTextGrid(meshData, GetTileMap()->GetTiles(), 20);
+            GeometryGenerator::MakeSpriteTextGrid(meshData, GetTileMap()->GetTiles(), mText.size());
             MeshRenderer::InitializeMesh(meshData);
         }
     }

@@ -26,6 +26,7 @@ class FTTileMap :
 {
 public:
     void ReadCSV();
+    void ReadCSV(std::wstring& str);
 
 public:
     Tile*   GetTiles() { return mTileMap; }

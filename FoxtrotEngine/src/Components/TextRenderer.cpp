@@ -33,14 +33,18 @@ void TextRenderer::CloneTo(Actor* actor)
     newComp->SetMeshKey(this->GetMeshKey());
     newComp->SetTexKey(this->GetTexKey());
     newComp->SetTileMapKey(this->GetTileMapKey());
+    newComp->mText = this->mText;
+
+    newComp->mTextAttribute->Scale          = mTextAttribute->Scale;
+    newComp->mTextAttribute->CharSpacing    = mTextAttribute->CharSpacing;
+    newComp->mTextAttribute->LineSpacing    = mTextAttribute->LineSpacing;
+    newComp->mTextAttribute->MaxChars       = mTextAttribute->MaxChars;
 }
 
 TextRenderer::TextRenderer(Actor* owner, int drawOrder, int UpdateOrder)
     : TileMapRenderer(owner, drawOrder, UpdateOrder)
     , mTextAttribute(DBG_NEW TextAttribute)
-{
-    mText.append("New Text");
-}
+{}
 
 TextRenderer::~TextRenderer()
 {
@@ -68,10 +72,21 @@ void TextRenderer::InitializeTileMap()
 void TextRenderer::SaveProperties(std::ofstream& ofs)
 {
     TileMapRenderer::SaveProperties(ofs);
+    FileIOHelper::SaveFloat(ofs, ChunkKeys::SCALE, mTextAttribute->Scale);
+    FileIOHelper::SaveFloat(ofs, ChunkKeys::CHAR_SPACING, mTextAttribute->CharSpacing);
+    FileIOHelper::SaveFloat(ofs, ChunkKeys::LINE_SPACING, mTextAttribute->LineSpacing);
+    FileIOHelper::SaveInt(ofs, ChunkKeys::MAX_CHAR_PER_LINE, mTextAttribute->MaxChars);
+    FileIOHelper::SaveString(ofs, ChunkKeys::TEXT, mText);
 }
 
 void TextRenderer::LoadProperties(std::ifstream& ifs)
 {
+    FileIOHelper::LoadBasicString(ifs, mText);
+    FileIOHelper::LoadInt   (ifs, mTextAttribute->MaxChars);
+    FileIOHelper::LoadFloat (ifs, mTextAttribute->LineSpacing);
+    FileIOHelper::LoadFloat (ifs, mTextAttribute->CharSpacing);
+    FileIOHelper::LoadFloat (ifs, mTextAttribute->Scale);
+
     UINT texKey = 0;
     FileIOHelper::LoadUnsignedInt(ifs, texKey);
     SetTexKey(texKey);

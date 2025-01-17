@@ -130,6 +130,9 @@ namespace ChunkKeys {
 	constexpr const char* TILEMAP_KEY		= "TileMapKey";
 
 	// TextRenderer Component
+	constexpr const char* CHAR_SPACING		= "Character Spacing";
+	constexpr const char* LINE_SPACING		= "Line Spacing";
+	constexpr const char* MAX_CHAR_PER_LINE	= "Max Char per Line";
 	constexpr const char* TEXT				= "Text";
 
 	// Collider Component

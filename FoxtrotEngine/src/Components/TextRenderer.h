@@ -40,6 +40,7 @@ public:
     virtual void OnConfirmUpdate()  override;
 
             void UpdateText();
+            void UpdateTextAttribute();
 #endif // FOXTROT_EDITOR
 };
 

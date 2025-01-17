@@ -391,14 +391,22 @@ MeshData GeometryGenerator::MakeAnimationFrame(Tile tile)
 
 void GeometryGenerator::MakeSpriteTextGrid(std::vector<MeshData>& textMeshes, Tile* tileMap, size_t length, TextAttribute* attribute)
 {
-    for (size_t i = 0; i < length; ++i)
+    if (0 < attribute->MaxChars)
     {
-        MeshData spriteText = MakeSpriteText(tileMap[i], attribute);
-        textMeshes.push_back(spriteText);
+        size_t maxRow = length / attribute->MaxChars < 1 ? 1 : length / attribute->MaxChars;
+        for (size_t i = 0; i <= maxRow; ++i)
+        {
+            for (size_t j = 0; j < attribute->MaxChars; ++j)
+            {
+                size_t idx = attribute->MaxChars * i + j;
+                MeshData spriteText = MakeSpriteText(tileMap[idx], attribute, j, i);
+                textMeshes.push_back(spriteText);
+            }
+        }
     }
 }
 
-MeshData GeometryGenerator::MakeSpriteText(Tile tile, TextAttribute* attrib)
+MeshData GeometryGenerator::MakeSpriteText(Tile tile, TextAttribute* attrib, size_t col, size_t row)
 {
     std::vector<Vector3> positions;
     std::vector<Vector3> colors;
@@ -407,16 +415,15 @@ MeshData GeometryGenerator::MakeSpriteText(Tile tile, TextAttribute* attrib)
 
     FTRect& rectOnScreen = tile.GetRectOnScreen();
 
-    const FTVector2& tileMin = rectOnScreen.GetMin() * FTVector2(attrib->CharSpacing, 0.f);
-    const FTVector2& tileMax = rectOnScreen.GetMax() * FTVector2(attrib->CharSpacing, 0.f);
     const float tileWidth = rectOnScreen.GetSize().x * attrib->Scale;
     const float tileHeight = rectOnScreen.GetSize().y * attrib->Scale;
+    FTVector2 tileMin = FTVector2(tileWidth * col, tileHeight * row) * FTVector2(attrib->CharSpacing, 1.f);
 
     // 앞면
-    positions.push_back(Vector3(tileMin.x, -tileMin.y, 0.0f));
-    positions.push_back(Vector3(tileMin.x + tileWidth, -tileMin.y, 0.0f));
+    positions.push_back(Vector3(tileMin.x,             -tileMin.y,              0.0f));
+    positions.push_back(Vector3(tileMin.x + tileWidth, -tileMin.y,              0.0f));
     positions.push_back(Vector3(tileMin.x + tileWidth, -tileMin.y - tileHeight, 0.0f));
-    positions.push_back(Vector3(tileMin.x, -tileMin.y - tileHeight, 0.0f));
+    positions.push_back(Vector3(tileMin.x,             -tileMin.y - tileHeight, 0.0f));
     colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
     colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
     colors.push_back(Vector3(0.0f, 0.0f, 1.0f));

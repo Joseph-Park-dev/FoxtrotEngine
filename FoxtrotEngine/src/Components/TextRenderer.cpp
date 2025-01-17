@@ -112,4 +112,5 @@ void TextRenderer::UpdateTextAttribute()
     ImGui::DragFloat(ChunkKeys::SCALE, &mTextAttribute->Scale, FLOATMOD_SPEED);
     ImGui::DragFloat(ChunkKeys::CHAR_SPACING, &mTextAttribute->CharSpacing, FLOATMOD_SPEED);
     ImGui::DragFloat(ChunkKeys::LINE_SPACING, &mTextAttribute->LineSpacing, FLOATMOD_SPEED);
+    ImGui::DragInt(ChunkKeys::MAX_CHAR_PER_LINE, &mTextAttribute->MaxChars);
 }

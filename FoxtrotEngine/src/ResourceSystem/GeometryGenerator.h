@@ -29,7 +29,7 @@ class GeometryGenerator {
     static void MakeSpriteAnimation(std::vector<MeshData>& animMeshes, Tile* tileMap, size_t columnCount, size_t rowCount);
     static MeshData MakeAnimationFrame(Tile tile);
     static void MakeSpriteTextGrid(std::vector<MeshData>& textMeshes, Tile* tileMap, size_t length, TextAttribute* attribute);
-    static MeshData MakeSpriteText(Tile tile, TextAttribute* attrib);
+    static MeshData MakeSpriteText(Tile tile, TextAttribute* attrib, size_t col, size_t row);
 
     static MeshData MakeBox();
 };

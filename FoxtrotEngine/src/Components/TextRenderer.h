@@ -27,11 +27,19 @@ protected:
     virtual void InitializeTileMap() override;
 
 private:
-    std::wstring   mText;
+    std::string   mText;
     TextAttribute* mTextAttribute;
 
 public:
     virtual void SaveProperties(std::ofstream& ofs) override;
     virtual void LoadProperties(std::ifstream& ifs) override;
+
+#ifdef FOXTROT_EDITOR
+public:
+    virtual void EditorUIUpdate()   override;
+    virtual void OnConfirmUpdate()  override;
+
+            void UpdateText();
+#endif // FOXTROT_EDITOR
 };
 

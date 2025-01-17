@@ -74,7 +74,7 @@ void FTTileMap::ReadCSV()
     }
 }
 
-void FTTileMap::ReadCSV(std::wstring& str)
+void FTTileMap::ReadCSV(std::string& str)
 {
     // These values cannot be 0;
     assert(mTileWidthOnScreen != 0);

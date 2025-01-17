@@ -37,10 +37,10 @@ void TextRenderer::CloneTo(Actor* actor)
 
 TextRenderer::TextRenderer(Actor* owner, int drawOrder, int UpdateOrder)
     : TileMapRenderer(owner, drawOrder, UpdateOrder)
-    , mText(L"Hello text!")
     , mTextAttribute(DBG_NEW TextAttribute)
 {
     mTextAttribute->CharSpacing = 100.f;
+    mText.append("New Text");
 }
 
 TextRenderer::~TextRenderer()
@@ -81,4 +81,29 @@ void TextRenderer::LoadProperties(std::ifstream& ifs)
     FileIOHelper::LoadUnsignedInt(ifs, tileMapKey);
     SetTileMapKey(tileMapKey);
     Component::LoadProperties(ifs);
+}
+
+void TextRenderer::EditorUIUpdate()
+{
+    CHECK_RENDERER(GetRenderer());
+    TileMapRenderer::UpdateSprite();
+    TileMapRenderer::UpdateCSV();
+    UpdateText();
+    
+    OnConfirmUpdate();
+}
+
+void TextRenderer::OnConfirmUpdate()
+{
+    if (ImGui::Button("Update"))
+        this->InitializeTileMap();
+}
+
+void TextRenderer::UpdateText()
+{
+    char str[MAX_STRING_SIZE];
+    strcpy_s(str, mText.size()+1, mText.c_str());
+    ImGui::InputText(ChunkKeys::TEXT, str, MAX_STRING_SIZE);
+    if (mText != str)
+        mText = str;
 }

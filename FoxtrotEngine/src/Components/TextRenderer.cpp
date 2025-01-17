@@ -39,7 +39,6 @@ TextRenderer::TextRenderer(Actor* owner, int drawOrder, int UpdateOrder)
     : TileMapRenderer(owner, drawOrder, UpdateOrder)
     , mTextAttribute(DBG_NEW TextAttribute)
 {
-    mTextAttribute->CharSpacing = 100.f;
     mText.append("New Text");
 }
 
@@ -60,7 +59,7 @@ void TextRenderer::InitializeTileMap()
                 SetTexture();
             SetMeshKey(ChunkKeys::PRIMITIVE_SQUARE_BLUE);
             std::vector<MeshData> meshData;
-            GeometryGenerator::MakeSpriteTextGrid(meshData, GetTileMap()->GetTiles(), mText.size());
+            GeometryGenerator::MakeSpriteTextGrid(meshData, GetTileMap()->GetTiles(), mText.size(), mTextAttribute);
             MeshRenderer::InitializeMesh(meshData);
         }
     }
@@ -89,7 +88,7 @@ void TextRenderer::EditorUIUpdate()
     TileMapRenderer::UpdateSprite();
     TileMapRenderer::UpdateCSV();
     UpdateText();
-    
+    UpdateTextAttribute();
     OnConfirmUpdate();
 }
 
@@ -106,4 +105,11 @@ void TextRenderer::UpdateText()
     ImGui::InputText(ChunkKeys::TEXT, str, MAX_STRING_SIZE);
     if (mText != str)
         mText = str;
+}
+
+void TextRenderer::UpdateTextAttribute()
+{
+    ImGui::DragFloat(ChunkKeys::SCALE, &mTextAttribute->Scale, FLOATMOD_SPEED);
+    ImGui::DragFloat(ChunkKeys::CHAR_SPACING, &mTextAttribute->CharSpacing, FLOATMOD_SPEED);
+    ImGui::DragFloat(ChunkKeys::LINE_SPACING, &mTextAttribute->LineSpacing, FLOATMOD_SPEED);
 }

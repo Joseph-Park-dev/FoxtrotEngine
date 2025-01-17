@@ -389,16 +389,16 @@ MeshData GeometryGenerator::MakeAnimationFrame(Tile tile)
     return meshData;
 }
 
-void GeometryGenerator::MakeSpriteTextGrid(std::vector<MeshData>& textMeshes, Tile* tileMap, size_t length)
+void GeometryGenerator::MakeSpriteTextGrid(std::vector<MeshData>& textMeshes, Tile* tileMap, size_t length, TextAttribute* attribute)
 {
     for (size_t i = 0; i < length; ++i)
     {
-        MeshData spriteText = MakeSpriteText(tileMap[i]);
+        MeshData spriteText = MakeSpriteText(tileMap[i], attribute);
         textMeshes.push_back(spriteText);
     }
 }
 
-MeshData GeometryGenerator::MakeSpriteText(Tile tile)
+MeshData GeometryGenerator::MakeSpriteText(Tile tile, TextAttribute* attrib)
 {
     std::vector<Vector3> positions;
     std::vector<Vector3> colors;
@@ -407,10 +407,10 @@ MeshData GeometryGenerator::MakeSpriteText(Tile tile)
 
     FTRect& rectOnScreen = tile.GetRectOnScreen();
 
-    const FTVector2& tileMin = rectOnScreen.GetMin();
-    const FTVector2& tileMax = rectOnScreen.GetMax();
-    const float tileWidth = rectOnScreen.GetSize().x;
-    const float tileHeight = rectOnScreen.GetSize().y;
+    const FTVector2& tileMin = rectOnScreen.GetMin() * FTVector2(attrib->CharSpacing, 0.f);
+    const FTVector2& tileMax = rectOnScreen.GetMax() * FTVector2(attrib->CharSpacing, 0.f);
+    const float tileWidth = rectOnScreen.GetSize().x * attrib->Scale;
+    const float tileHeight = rectOnScreen.GetSize().y * attrib->Scale;
 
     // 앞면
     positions.push_back(Vector3(tileMin.x, -tileMin.y, 0.0f));

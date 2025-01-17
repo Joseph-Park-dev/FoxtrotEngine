@@ -13,6 +13,9 @@
 #pragma once
 #include "ResourceSystem/FTResource.h"
 
+#define WSTRING_OFFSET 32
+#define MAX_TEXT_LINES 50
+
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
@@ -22,7 +25,8 @@ class FTTileMap :
     public FTResource
 {
 public:
-    void    ReadCSV();
+    void ReadCSV();
+    void ReadCSV(std::string& str);
 
 public:
     Tile*   GetTiles() { return mTileMap; }
@@ -32,14 +36,20 @@ public:
     UINT    GetMaxCountOnMapX() { return mMaxCountOnMapX; }
     UINT    GetMaxCountOnMapY() { return mMaxCountOnMapY; }
 
+    void    SetTiles(Tile* tiles);
     void    SetTileWidth(UINT width);
     void    SetTileHeight(UINT height);
+    void    SetMaxCountOnScreenX(UINT xCount);
+    void    SetMaxCountOnScreenY(UINT yCount);
     void    SetMaxCountOnMapX(UINT xCount);
     void    SetMaxCountOnMapY(UINT yCount);
 
 public:
              FTTileMap();
     virtual ~FTTileMap() override;
+
+protected:
+    void InitializeTile(Tile& tile, UINT column, UINT row, UINT tileNum);
 
 private:
     // These fields need to be read from .chunk files or be modified on the editor.
@@ -52,9 +62,6 @@ private:
     Tile*   mTileMap;
     UINT    mMaxCountOnScreenX;
     UINT    mMaxCountOnScreenY;
-
-private:
-    void    InitializeTile(Tile& tile, UINT column, UINT row, UINT tileNum);
 
 public:
     virtual void SaveProperties(std::ofstream& ofs, UINT key) override;

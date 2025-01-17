@@ -18,6 +18,7 @@
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/FTTileMap.h"
 #include "ResourceSystem/Tile.h"
+#include "ResourceSystem/TextAttribute.h"
 
 //#include "ModelLoader.h"
 //using namespace DirectX;
@@ -351,6 +352,71 @@ MeshData GeometryGenerator::MakeAnimationFrame(Tile tile)
     positions.push_back(Vector3(1.0f, 1.0f, 0.0f));
     positions.push_back(Vector3(1.0f, -1.0f, 0.0f));
     positions.push_back(Vector3(-1.0f, -1.0f, 0.0f));
+    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+
+    // Texture Coordinates (Direct3D 9)
+    // https://learn.microsoft.com/en-us/windows/win32/direct3d9/texture-coordinates
+    FTRect& rectOnMap = tile.GetRectOnMap();
+    const FTVector2& mapMin = rectOnMap.GetMin();
+    const float widthInMap = rectOnMap.GetSize().x;
+    const float heightInMap = rectOnMap.GetSize().y;
+
+    texcoords.push_back(Vector2(mapMin.x, mapMin.y));
+    texcoords.push_back(Vector2(mapMin.x + widthInMap, mapMin.y));
+    texcoords.push_back(Vector2(mapMin.x + widthInMap, mapMin.y + heightInMap));
+    texcoords.push_back(Vector2(mapMin.x, mapMin.y + heightInMap));
+
+    MeshData meshData;
+    for (size_t i = 0; i < positions.size(); i++) {
+        Vertex v;
+        v.position = positions[i];
+        v.color = colors[i];
+        v.normal = normals[i];
+        v.texcoord = texcoords[i];
+        meshData.vertices.push_back(v);
+    }
+    meshData.indices = {
+        0, 1, 2, 0, 2, 3, // 앞면
+    };
+
+    return meshData;
+}
+
+void GeometryGenerator::MakeSpriteTextGrid(std::vector<MeshData>& textMeshes, Tile* tileMap, size_t length)
+{
+    for (size_t i = 0; i < length; ++i)
+    {
+        MeshData spriteText = MakeSpriteText(tileMap[i]);
+        textMeshes.push_back(spriteText);
+    }
+}
+
+MeshData GeometryGenerator::MakeSpriteText(Tile tile)
+{
+    std::vector<Vector3> positions;
+    std::vector<Vector3> colors;
+    std::vector<Vector3> normals;
+    std::vector<Vector2> texcoords; // 텍스춰 좌표
+
+    FTRect& rectOnScreen = tile.GetRectOnScreen();
+
+    const FTVector2& tileMin = rectOnScreen.GetMin();
+    const FTVector2& tileMax = rectOnScreen.GetMax();
+    const float tileWidth = rectOnScreen.GetSize().x;
+    const float tileHeight = rectOnScreen.GetSize().y;
+
+    // 앞면
+    positions.push_back(Vector3(tileMin.x, -tileMin.y, 0.0f));
+    positions.push_back(Vector3(tileMin.x + tileWidth, -tileMin.y, 0.0f));
+    positions.push_back(Vector3(tileMin.x + tileWidth, -tileMin.y - tileHeight, 0.0f));
+    positions.push_back(Vector3(tileMin.x, -tileMin.y - tileHeight, 0.0f));
     colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
     colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
     colors.push_back(Vector3(0.0f, 0.0f, 1.0f));

@@ -260,6 +260,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ResourceSystem\FTFontMap.cpp" />
     <ClCompile Include="src\Components\AI.cpp" />
     <ClCompile Include="src\Components\Animator.cpp" />
     <ClCompile Include="src\Components\BoxCollider2D.cpp" />
@@ -313,8 +314,10 @@
     <ClCompile Include="src\ResourceSystem\GeometryGenerator.cpp" />
     <ClCompile Include="src\ResourceSystem\Tile.cpp" />
     <ClCompile Include="src\Scenes\Scene.cpp" />
+    <ClCompile Include="src\Components\TextRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ResourceSystem\FTFontMap.h" />
     <ClInclude Include="src\Components\AI.h" />
     <ClInclude Include="src\Components\Animator.h" />
     <ClInclude Include="src\Components\BatchHeaders.h" />
@@ -383,9 +386,11 @@
     <ClInclude Include="src\ResourceSystem\Mesh.h" />
     <ClInclude Include="src\ResourceSystem\MeshConstantData.h" />
     <ClInclude Include="src\ResourceSystem\MeshData.h" />
+    <ClInclude Include="src\ResourceSystem\TextAttribute.h" />
     <ClInclude Include="src\ResourceSystem\Tile.h" />
     <ClInclude Include="src\ResourceSystem\Vertex.h" />
     <ClInclude Include="src\Scenes\Scene.h" />
+    <ClInclude Include="src\Components\TextRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

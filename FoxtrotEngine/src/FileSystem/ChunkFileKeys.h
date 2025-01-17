@@ -11,6 +11,7 @@
 
 #pragma once
 #define VALUE_NOT_ASSIGNED -1
+#define MAX_STRING_SIZE 50
 
 namespace ChunkKeys {
 	constexpr const char* NULL_OBJ = "Null";
@@ -20,7 +21,8 @@ namespace ChunkKeys {
 	constexpr const char* EDITOR_FILE_FORMAT = ".json";
 	constexpr const char* PREMADE_FILE_FORMAT = ".premade";
 	constexpr const char* TEXTURE_FORMAT_SUPPORTED  = ".png, .jpeg";
-	constexpr const char* TILEMAP_FORMAT_SUPPORTED = ".csv";
+	constexpr const char* TILEMAP_FORMAT_SUPPORTED = ".csv, .text";
+	constexpr const wchar_t* NEW_LINE = L"<br>";
 
 // Data Pack Names
 	constexpr const char* CHUNK_DATA = "Chunk Data";
@@ -126,6 +128,9 @@ namespace ChunkKeys {
 
 	// Tile Map Component
 	constexpr const char* TILEMAP_KEY		= "TileMapKey";
+
+	// TextRenderer Component
+	constexpr const char* TEXT				= "Text";
 
 	// Collider Component
 	constexpr const char* OFFSET = "Offset";

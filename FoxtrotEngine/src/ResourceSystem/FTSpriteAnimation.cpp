@@ -128,16 +128,16 @@ void FTSpriteAnimation::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vect
 	mReel.reserve(meshes.size());
 	for (const MeshData& meshData : meshes) {
 		Mesh* newMesh = DBG_NEW Mesh;
-		newMesh->mIndexCount = UINT(meshData.indices.size());
-		newMesh->mVertexCount = UINT(meshData.vertices.size());
+		newMesh->IndexCount = UINT(meshData.indices.size());
+		newMesh->VertexCount = UINT(meshData.vertices.size());
 
 		D3D11Utils::CreateVertexBuffer(device, meshData.vertices,
-			newMesh->vertexBuffer);
+			newMesh->VertexBuffer);
 		D3D11Utils::CreateIndexBuffer(device, meshData.indices,
-			newMesh->indexBuffer);
+			newMesh->IndexBuffer);
 
-		newMesh->vertexConstantBuffer	= GetVertexConstantBuffer();
-		newMesh->pixelConstantBuffer	= GetPixelConstantBuffer();
+		D3D11Utils::CreateConstantBuffer(device, newMesh->VertexConstantData, newMesh->VertexConstantBuffer);
+		D3D11Utils::CreateConstantBuffer(device, newMesh->PixelConstantData, newMesh->PixelConstantBuffer);
 
 		this->GetMeshes().push_back(newMesh);
 
@@ -178,7 +178,7 @@ FTSpriteAnimation::FTSpriteAnimation(FTSpriteAnimation* other)
 	this->mName.assign(other->mName);
 	for (size_t i = 0; i < mReel.size(); ++i)
 	{
-		AnimationFrame* frame = new AnimationFrame();
+		AnimationFrame* frame = DBG_NEW AnimationFrame();
 		frame->Duration = mReel[i]->Duration;
 		this->mReel.push_back(frame);
 	}

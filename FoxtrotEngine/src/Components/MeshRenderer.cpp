@@ -110,6 +110,19 @@ bool MeshRenderer::InitializeMesh(MeshData& meshData)
 	return true;
 }
 
+bool MeshRenderer::InitializeMesh(std::vector<MeshData>& meshData)
+{
+	if (!mMeshGroup)
+		mMeshGroup = DBG_NEW FTBasicMeshGroup;
+	mMeshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
+	if (!mMeshGroup)
+	{
+		LogString("ERROR: MeshRenderer::InitializeMesh() -> Mesh Init failed.\n");
+		return false;
+	}
+	return true;
+}
+
 bool MeshRenderer::SetTexture()
 {
 	if (mTexKey == VALUE_NOT_ASSIGNED)
@@ -159,29 +172,34 @@ MeshRenderer::~MeshRenderer()
 
 void MeshRenderer::UpdateConstantBufferModel(Transform* transform)
 {
-	int dir = transform->GetRightward().x;
-	FTVector3 worldPos = FTVector3(
-		transform->GetWorldPosition().x,
-		-transform->GetWorldPosition().y,
-		transform->GetWorldPosition().z
-	);
-	FTVector3 scale = transform->GetScale();
-	DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x * dir, -scale.y, scale.z);
-	Matrix model =
-		DXMatrix::CreateScale(scaleWithDir) *
-		DXMatrix::CreateRotationY(transform->GetRotation().y) *
-		DXMatrix::CreateRotationX(transform->GetRotation().x) *
-		DXMatrix::CreateRotationZ(transform->GetRotation().z) *
-		DXMatrix::CreateTranslation(worldPos.GetDXVec3());
-	mMeshGroup->GetVertexConstantData().model = model.Transpose();
+	for (Mesh* mesh : mMeshGroup->GetMeshes())
+	{
+		int dir = transform->GetRightward().x;
+		FTVector3 worldPos = FTVector3(
+			transform->GetWorldPosition().x,
+			-transform->GetWorldPosition().y,
+			transform->GetWorldPosition().z
+		);
+		FTVector3 scale = transform->GetScale();
+		DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x * dir, -scale.y, scale.z);
+		Matrix model =
+			DXMatrix::CreateScale(scaleWithDir) *
+			DXMatrix::CreateRotationY(transform->GetRotation().y) *
+			DXMatrix::CreateRotationX(transform->GetRotation().x) *
+			DXMatrix::CreateRotationZ(transform->GetRotation().z) *
+			DXMatrix::CreateTranslation(worldPos.GetDXVec3());
+		mesh->VertexConstantData.model = model.Transpose();
+	}
 }
 
 void MeshRenderer::UpdateConstantBufferView(Camera* camInst){
-	mMeshGroup->GetVertexConstantData().view = camInst->GetViewRow().Transpose();
+	for (Mesh* mesh : mMeshGroup->GetMeshes())
+		mesh->VertexConstantData.view = camInst->GetViewRow().Transpose();
 }
 
 void MeshRenderer::UpdateConstantBufferProjection(Camera* camInst){
-	mMeshGroup->GetVertexConstantData().projection = camInst->GetProjRow().Transpose();
+	for (Mesh* mesh : mMeshGroup->GetMeshes())
+		mesh->VertexConstantData.projection = camInst->GetProjRow().Transpose();
 }
 
 void MeshRenderer::SaveProperties(std::ofstream& ofs)

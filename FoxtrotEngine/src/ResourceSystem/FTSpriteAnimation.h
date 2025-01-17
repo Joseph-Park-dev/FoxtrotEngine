@@ -39,7 +39,7 @@ public:
 		ComPtr<ID3D11DeviceContext>& context
 	) override;
 
-	virtual void Update(float deltaTime)			override;
+	virtual void Update(float deltaTime);
 	virtual	void Render(FoxtrotRenderer* renderer, FTTexture* texture)  override;
 
 public:

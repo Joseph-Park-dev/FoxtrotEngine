@@ -167,6 +167,24 @@ inline std::string ExtractUntil(std::string& line, const char end) {
 	return result;
 }
 
+inline bool EndsWith(
+	const std::wstring& fullString,
+	const std::wstring& ending
+)
+{
+	// Check if the ending string is longer than the full
+	// string
+	if (ending.size() > fullString.size())
+		return false;
+
+	// Compare the ending of the full string with the target
+	// ending
+	return fullString.compare(fullString.size()
+		- ending.size(),
+		ending.size(), ending)
+		== 0;
+}
+
 template<typename T>
 size_t GetArrayLength(T* arr) {
 	return sizeof(arr) / sizeof(T*);

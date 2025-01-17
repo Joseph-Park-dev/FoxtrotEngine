@@ -31,16 +31,13 @@ public:
     }
     UINT        GetTileMapKey() const;
     FTTileMap*  GetTileMap() const;
+    
+    void        SetTileMapKey(UINT key);
+    void        SetTileMap(FTTileMap* tileMap);
 
 public:
     virtual void Initialize(FTCore* coreInstance)	    override;
-    virtual void Update    (float deltaTime)            override;
-    virtual void Render    (FoxtrotRenderer* renderer)  override;
-
     virtual void CloneTo(Actor* actor)	                override;
-
-protected:
-    void InitializeTileMap();
 
 public:
              TileMapRenderer(
@@ -50,6 +47,8 @@ public:
              );
     virtual ~TileMapRenderer() override;
 
+protected:
+    virtual void InitializeTileMap();
 
 private:
     FTTileMap*      mTileMap;

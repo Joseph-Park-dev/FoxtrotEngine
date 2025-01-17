@@ -20,6 +20,7 @@
 #include "Components/Rigidbody2D.h"
 #include "Components/SpriteRenderer.h"
 #include "Components/TileMapRenderer.h"
+#include "Components/TextRenderer.h"
 #include "Components/MeshRenderer.h"
 
 #include "Components/UIs/PanelUI.h"

@@ -99,6 +99,7 @@ ChunkLoader::ChunkLoader()
         {"Rigidbody2D",       &Component::Load<Rigidbody2D>},
         {"SpriteRenderer",    &Component::Load<SpriteRenderer>},
         {"TileMap",           &Component::Load<TileMapRenderer>},
+        {"TextRenderer",      &Component::Load<TextRenderer>},
         {"MeshRenderer",      &Component::Load<MeshRenderer>},
 
         {"GunFiringBehavior", &Component::Load<GunFiringBehavior>},

@@ -36,6 +36,7 @@ EditorChunkLoader::EditorChunkLoader()
         {"Rigidbody2D",         &Component::Create<Rigidbody2D>},
         {"SpriteRenderer",      &Component::Create<SpriteRenderer>},
         {"TileMapRenderer",     &Component::Create<TileMapRenderer>},
+        {"TextRenderer",        &Component::Create<TextRenderer>},
         {"MeshRenderer",        &Component::Create<MeshRenderer>},
 
         // UI related

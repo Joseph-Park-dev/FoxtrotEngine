@@ -109,7 +109,7 @@ void UI::Initialize(FTCore* ftCoreInst)
 {
 	UIManager::GetInstance()->RegisterUI(this);
 #ifdef FOXTROT_EDITOR
-	mDebugRect = new FTRectangle;
+	mDebugRect = DBG_NEW FTRectangle;
 	mDebugRect->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 #endif // DEBUG
 }

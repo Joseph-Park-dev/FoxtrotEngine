@@ -37,14 +37,9 @@ public:
 			void Clear			 ();
 
 public:
-	//ComPtr<ID3D11Buffer>&		GetVertexConstantBuffer() { return mVertexConstantBuffer; }
-	//ComPtr<ID3D11Buffer>&		GetPixelConstantBuffer()  { return mPixelConstantBuffer; }
-	//BasicVertexConstantData&	GetVertexConstantData()   { return mBasicVertexConstantData; }
-	//BasicPixelConstantData&		GetPixelConstantData()	  { return mBasicPixelConstantData; }
-
-	ComPtr<ID3D11SamplerState>&	GetSamplerState()		  { return mSamplerState; }
-	int							GetMeshCount()			  { return mMeshes.size(); }
-	std::vector<Mesh*>&			GetMeshes()				  { return mMeshes; }
+	ComPtr<ID3D11SamplerState>& GetSamplerState();
+	int							GetMeshCount();
+	std::vector<Mesh*>&			GetMeshes();
 
 protected:
 			void	InitializeConstantBuffer (ComPtr<ID3D11Device>& device);

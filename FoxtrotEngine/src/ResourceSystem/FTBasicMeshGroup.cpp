@@ -134,17 +134,21 @@ void FTBasicMeshGroup::Clear()
     }
     mMeshes.clear();
 }
-//
-//void FTBasicMeshGroup::UpdateModelWorld(DirectX::SimpleMath::Matrix& modelToWorldRow)
-//{
-//    this->mModelWorldRow = modelToWorldRow;
-//    this->mInvTransposeRow = modelToWorldRow;
-//    mInvTransposeRow.Translation(DirectX::SimpleMath::Vector3(0.0f));
-//    mInvTransposeRow = mInvTransposeRow.Invert().Transpose();
-//
-//    mBasicVertexConstantData.model = modelToWorldRow.Transpose();
-//    mBasicVertexConstantData.invTranspose = mInvTransposeRow.Transpose();
-//}
+
+ComPtr<ID3D11SamplerState>& FTBasicMeshGroup::GetSamplerState()
+{
+    return mSamplerState;
+}
+
+int FTBasicMeshGroup::GetMeshCount()
+{
+    return mMeshes.size();
+}
+
+std::vector<Mesh*>& FTBasicMeshGroup::GetMeshes()
+{
+    return mMeshes;
+}
 
 void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<MeshData>& meshes)
 {

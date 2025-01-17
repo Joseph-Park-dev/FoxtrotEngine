@@ -115,6 +115,7 @@ void SpriteRenderer::EditorUIUpdate()
 {
 	SetRenderer(FTCoreEditor::GetInstance()->GetGameRenderer());
 	CHECK_RENDERER(GetRenderer());
+	OnConfirmUpdate();
 	UpdateSprite();
 	OnResetTexture();
 }
@@ -122,9 +123,7 @@ void SpriteRenderer::EditorUIUpdate()
 void SpriteRenderer::OnConfirmUpdate()
 {
 	if (ImGui::Button("Update"))
-	{
 		this->SetTexture();
-	}
 }
 
 void SpriteRenderer::OnResetTexture()

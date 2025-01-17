@@ -18,6 +18,7 @@
 //#include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/Vertex.h"
+#include "ResourceSystem/MeshConstantData.h"
 
 using Microsoft::WRL::ComPtr;
 
@@ -38,15 +39,26 @@ struct PixelShaderConstantBuffer {
 static_assert((sizeof(PixelShaderConstantBuffer) % 16) == 0,
     "Constant Buffer size must be 16-byte aligned");
 
-struct Mesh {
-    ComPtr<ID3D11Buffer> vertexBuffer;
-    ComPtr<ID3D11Buffer> indexBuffer;
+struct Mesh 
+{
+    Mesh()
+    {
+        VertexConstantData.model = DirectX::SimpleMath::Matrix();
+        VertexConstantData.view = DirectX::SimpleMath::Matrix();
+        VertexConstantData.projection = DirectX::SimpleMath::Matrix();
+    }
 
-    ComPtr<ID3D11Buffer> vertexConstantBuffer;
-    ComPtr<ID3D11Buffer> pixelConstantBuffer;
+    ComPtr<ID3D11Buffer> VertexBuffer;
+    ComPtr<ID3D11Buffer> IndexBuffer;
 
-    UINT mIndexCount = 0;
-    UINT mVertexCount = 0;
+    ComPtr<ID3D11Buffer> VertexConstantBuffer;
+    ComPtr<ID3D11Buffer> PixelConstantBuffer;
+
+    BasicVertexConstantData VertexConstantData;
+    BasicPixelConstantData	PixelConstantData;
+
+    UINT IndexCount = 0;
+    UINT VertexCount = 0;
 };
 
 // Mesh used for DirectX::GeometricPrimitive

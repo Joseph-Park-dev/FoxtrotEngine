@@ -14,18 +14,28 @@
 
 void FTBasicMeshGroup::Initialize(std::vector<MeshData>& meshes, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
-    InitializeConstantBuffer(device);
     CreateTextureSampler(device);
     InitializeMeshes(device, meshes);
+    InitializeConstantBuffer(device);
 }
 
 void FTBasicMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
-    D3D11Utils::UpdateBuffer(device, context, mBasicVertexConstantData,
-        mVertexConstantBuffer);
+    for (Mesh* mesh : mMeshes)
+    {
+        if (mesh)
+        {
+            D3D11Utils::UpdateBuffer(
+                device, context, mesh->VertexConstantData,
+                mesh->VertexConstantBuffer
+            );
 
-    D3D11Utils::UpdateBuffer(device, context, mBasicPixelConstantData,
-        mPixelConstantBuffer);
+            D3D11Utils::UpdateBuffer(
+                device, context, mesh->PixelConstantData,
+                mesh->PixelConstantBuffer
+            );
+        }
+    }
 }
 
 void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture)
@@ -36,11 +46,12 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture)
 
     for (const Mesh* mesh : mMeshes) {
         context->VSSetSamplers(0, 1, mSamplerState.GetAddressOf());
-        context->VSSetConstantBuffers(0, 1, mesh->vertexConstantBuffer.GetAddressOf());
+        context->VSSetConstantBuffers(0, 1, mesh->VertexConstantBuffer.GetAddressOf());
 
         context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
 
-        if (texture) {
+        if (texture) 
+        {
             context->VSSetShader(renderer->GetTextureVS().Get(), 0, 0);
             context->PSSetShader(renderer->GetTexturePS().Get(), 0, 0);
             context->IASetInputLayout(renderer->GetTextureInputLayout().Get());
@@ -58,14 +69,14 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture)
         }
 
         context->PSSetConstantBuffers(0, 1,
-            mesh->pixelConstantBuffer.GetAddressOf());
+            mesh->PixelConstantBuffer.GetAddressOf());
 
-        context->IASetVertexBuffers(0, 1, mesh->vertexBuffer.GetAddressOf(),
+        context->IASetVertexBuffers(0, 1, mesh->VertexBuffer.GetAddressOf(),
             &stride, &offset);
-        context->IASetIndexBuffer(mesh->indexBuffer.Get(), DXGI_FORMAT_R32_UINT,
+        context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT,
             0);
         context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        context->DrawIndexed(mesh->mIndexCount, 0, 0);
+        context->DrawIndexed(mesh->IndexCount, 0, 0);
     }
 }
 
@@ -78,7 +89,7 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture, int
 
     if (mesh) {
         context->VSSetSamplers(0, 1, mSamplerState.GetAddressOf());
-        context->VSSetConstantBuffers(0, 1, mesh->vertexConstantBuffer.GetAddressOf());
+        context->VSSetConstantBuffers(0, 1, mesh->VertexConstantBuffer.GetAddressOf());
 
         context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
 
@@ -100,14 +111,14 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture, int
         }
 
         context->PSSetConstantBuffers(0, 1,
-            mesh->pixelConstantBuffer.GetAddressOf());
+            mesh->PixelConstantBuffer.GetAddressOf());
 
-        context->IASetVertexBuffers(0, 1, mesh->vertexBuffer.GetAddressOf(),
+        context->IASetVertexBuffers(0, 1, mesh->VertexBuffer.GetAddressOf(),
             &stride, &offset);
-        context->IASetIndexBuffer(mesh->indexBuffer.Get(), DXGI_FORMAT_R32_UINT,
+        context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT,
             0);
         context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        context->DrawIndexed(mesh->mIndexCount, 0, 0);
+        context->DrawIndexed(mesh->IndexCount, 0, 0);
     }
 }
 
@@ -135,32 +146,28 @@ void FTBasicMeshGroup::Clear()
 //    mBasicVertexConstantData.invTranspose = mInvTransposeRow.Transpose();
 //}
 
-void FTBasicMeshGroup::InitializeConstantBuffer(ComPtr<ID3D11Device>& device)
-{
-    mBasicVertexConstantData.model = DirectX::SimpleMath::Matrix();
-    mBasicVertexConstantData.view = DirectX::SimpleMath::Matrix();
-    mBasicVertexConstantData.projection = DirectX::SimpleMath::Matrix();
-
-    D3D11Utils::CreateConstantBuffer(device, mBasicVertexConstantData, mVertexConstantBuffer);
-    D3D11Utils::CreateConstantBuffer(device, mBasicPixelConstantData, mPixelConstantBuffer);
-}
-
 void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<MeshData>& meshes)
 {
     for (const MeshData& meshData : meshes) {
         Mesh* newMesh = DBG_NEW Mesh;
-        newMesh->mIndexCount = UINT(meshData.indices.size());
-        newMesh->mVertexCount = UINT(meshData.vertices.size());
+        newMesh->IndexCount = UINT(meshData.indices.size());
+        newMesh->VertexCount = UINT(meshData.vertices.size());
 
         D3D11Utils::CreateVertexBuffer(device, meshData.vertices,
-            newMesh->vertexBuffer);
+            newMesh->VertexBuffer);
         D3D11Utils::CreateIndexBuffer(device, meshData.indices,
-            newMesh->indexBuffer);
-
-        newMesh->vertexConstantBuffer = mVertexConstantBuffer;
-        newMesh->pixelConstantBuffer = mPixelConstantBuffer;
+            newMesh->IndexBuffer);
 
         this->mMeshes.push_back(newMesh);
+    }
+}
+
+void FTBasicMeshGroup::InitializeConstantBuffer(ComPtr<ID3D11Device>& device)
+{
+    for (Mesh* mesh : mMeshes) 
+    {
+        D3D11Utils::CreateConstantBuffer(device, mesh->VertexConstantData, mesh->VertexConstantBuffer);
+        D3D11Utils::CreateConstantBuffer(device, mesh->PixelConstantData, mesh->PixelConstantBuffer);
     }
 }
 
@@ -184,10 +191,7 @@ HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 FTBasicMeshGroup::FTBasicMeshGroup()
     : FTResource()
     , mMeshes()
-    , mBasicVertexConstantData()
-    , mBasicPixelConstantData()
-{
-}
+{}
 
 FTBasicMeshGroup::~FTBasicMeshGroup()
 {

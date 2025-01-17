@@ -23,7 +23,7 @@ struct Steering
 
 	static Steering* CreateEmptySteering()
 	{
-		return new Steering(0.f, FTVector3::Zero);
+		return DBG_NEW Steering(0.f, FTVector3::Zero);
 	}
 
 	static Steering Halt()

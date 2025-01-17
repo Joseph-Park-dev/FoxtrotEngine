@@ -20,7 +20,8 @@ namespace ChunkKeys {
 	constexpr const char* EDITOR_FILE_FORMAT = ".json";
 	constexpr const char* PREMADE_FILE_FORMAT = ".premade";
 	constexpr const char* TEXTURE_FORMAT_SUPPORTED  = ".png, .jpeg";
-	constexpr const char* TILEMAP_FORMAT_SUPPORTED = ".csv";
+	constexpr const char* TILEMAP_FORMAT_SUPPORTED = ".csv, .text";
+	constexpr const wchar_t* NEW_LINE = L"<br>";
 
 // Data Pack Names
 	constexpr const char* CHUNK_DATA = "Chunk Data";

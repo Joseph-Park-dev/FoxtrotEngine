@@ -143,7 +143,7 @@ void FTPremade::UpdateUI()
 	{
 		if (mOrigin)
 		{
-			mDummyForUI = new EditorElement(mOrigin);
+			mDummyForUI = DBG_NEW EditorElement(mOrigin);
 			ImGui::OpenPopup("EditPremade");
 		}
 	}

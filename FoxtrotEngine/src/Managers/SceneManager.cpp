@@ -21,7 +21,7 @@
 
 SceneManager::SceneManager()
 	: mChunkList()
-	, mCurrentScene(new Scene)
+	, mCurrentScene(DBG_NEW Scene)
 {}
 
 SceneManager::~SceneManager()

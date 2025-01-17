@@ -37,7 +37,7 @@ Actor* Instantiate(const char* premadeName)
 
 #ifdef FOXTROT_EDITOR
 	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-	EditorElement* editorElement = new EditorElement(origin);
+	EditorElement* editorElement = DBG_NEW EditorElement(origin);
 	editorElement->Initialize(FTCoreEditor::GetInstance());
 
 	if (editorElement)

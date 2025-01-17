@@ -52,35 +52,37 @@ FTTileMap* TileMapRenderer::GetTileMap() const
 	return mTileMap;
 }
 
+void TileMapRenderer::SetTileMapKey(UINT key)
+{
+	mTileMapKey = key;
+}
+
+void TileMapRenderer::SetTileMap(FTTileMap* tileMap)
+{
+	mTileMap = tileMap;
+}
+
 void TileMapRenderer::Initialize(FTCore* coreInstance)
 {
     MeshRenderer::Initialize(coreInstance);
+	if (GetTexKey() != VALUE_NOT_ASSIGNED && mTileMapKey != VALUE_NOT_ASSIGNED)
+		this->InitializeTileMap();
 }
 
 void TileMapRenderer::InitializeTileMap() {
-    assert(mTileMapKey != VALUE_NOT_ASSIGNED);
-    assert(GetTexKey() != VALUE_NOT_ASSIGNED);
-    //assert(GetMeshKey() != VALUE_NOT_ASSIGNED);
-    mTileMap = ResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey);
-    if (mTileMap)
-    {
-		SetTexture();
-        mTileMap->ReadCSV();
-		SetMeshKey(ChunkKeys::PRIMITIVE_SQUARE_BLUE);
-        SpriteRenderer::InitializeMesh();
-        //GetOwner()->GetTransform()->SetScale(FTVector3(0.03f, 0.03f, 1.0f));
-    }
-}
-
-void TileMapRenderer::Update(float deltaTime)
-{
-    if (GetMeshGroup())
-        MeshRenderer::Update(deltaTime);
-}
-
-void TileMapRenderer::Render(FoxtrotRenderer* renderer)
-{
-    MeshRenderer::Render(renderer);
+	if (GetTileMapKey() != VALUE_NOT_ASSIGNED)
+	{
+		mTileMap = ResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey);
+		if (mTileMap)
+		{
+			if (GetTexKey() != VALUE_NOT_ASSIGNED)
+				SetTexture();
+			mTileMap->ReadCSV();
+			SetMeshKey(ChunkKeys::PRIMITIVE_SQUARE_BLUE);
+			std::vector<MeshData> meshData = GeometryGenerator::MakeTileMapGrid(mTileMap);
+			MeshRenderer::InitializeMesh(meshData);
+		}
+	}
 }
 
 void TileMapRenderer::CloneTo(Actor* actor)
@@ -89,8 +91,8 @@ void TileMapRenderer::CloneTo(Actor* actor)
 	newComp->mTileMapKey = this->mTileMapKey;
 }
 
-TileMapRenderer::TileMapRenderer(Actor* owner, int drawOrder, int UpdateOrder)
-    : SpriteRenderer(owner, drawOrder)
+TileMapRenderer::TileMapRenderer(Actor* owner, int drawOrder, int updateOrder)
+    : SpriteRenderer(owner, drawOrder, updateOrder)
     , mTileMap(nullptr)
     , mTileMapKey(VALUE_NOT_ASSIGNED)
 
@@ -116,9 +118,6 @@ void TileMapRenderer::LoadProperties(std::ifstream& ifs)
 	SetTexKey(texKey);
     FileIOHelper::LoadUnsignedInt(ifs, mTileMapKey);
 	Component::LoadProperties(ifs);
-
-	if(GetTexKey() != VALUE_NOT_ASSIGNED && mTileMapKey != VALUE_NOT_ASSIGNED)
-		this->InitializeTileMap();
 }
 
 #ifdef FOXTROT_EDITOR

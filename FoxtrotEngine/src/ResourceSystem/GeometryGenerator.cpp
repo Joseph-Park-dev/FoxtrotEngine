@@ -18,6 +18,7 @@
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/FTTileMap.h"
 #include "ResourceSystem/Tile.h"
+#include "ResourceSystem/TextAttribute.h"
 
 //#include "ModelLoader.h"
 //using namespace DirectX;

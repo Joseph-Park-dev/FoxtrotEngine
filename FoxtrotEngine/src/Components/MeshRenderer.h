@@ -37,7 +37,8 @@ public:
 protected:
 	virtual bool InitializeMesh	();
 			bool InitializeMesh	(UINT key);
-			bool InitializeMesh	(MeshData& meshData);
+			bool InitializeMesh (MeshData& meshData);
+			bool InitializeMesh	(std::vector<MeshData>& meshData);
 
 			bool SetTexture		();
 	virtual	void UpdateMesh		(Transform* transform, Camera* cameraInstance);

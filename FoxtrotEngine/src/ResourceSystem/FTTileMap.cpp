@@ -11,6 +11,7 @@
 #include <fstream>
 #include <sstream>
 #include <queue>
+#include <string>
 
 #include "ResourceSystem/Tile.h"
 #include "Renderer/FTRect.h"
@@ -78,6 +79,11 @@ Tile& FTTileMap::GetTile(size_t row, size_t column)
     return mTileMap[mMaxCountOnScreenX * row + column];
 }
 
+void FTTileMap::SetTiles(Tile* tiles)
+{
+    mTileMap = tiles;
+}
+
 void FTTileMap::SetTileWidth(UINT width)
 {
     mTileWidthOnScreen = width;
@@ -86,6 +92,16 @@ void FTTileMap::SetTileWidth(UINT width)
 void FTTileMap::SetTileHeight(UINT height)
 {
     mTileHeightOnScreen = height;
+}
+
+void FTTileMap::SetMaxCountOnScreenX(UINT xCount)
+{
+    mMaxCountOnScreenX = xCount;
+}
+
+void FTTileMap::SetMaxCountOnScreenY(UINT yCount)
+{
+    mMaxCountOnScreenY = yCount;
 }
 
 void FTTileMap::SetMaxCountOnMapX(UINT xCount)

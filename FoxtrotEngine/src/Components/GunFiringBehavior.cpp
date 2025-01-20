@@ -68,6 +68,7 @@ void GunFiringBehavior::ShootGun()
 	bulletCopy->GetComponent<BulletBehavior>()->SetStartPosition(
 		GetOwner()->GetTransform()->GetWorldPosition()
 	);
+	bulletCopy->GetComponent<BulletBehavior>()->Thrust();
 	LogVector3("vec : ", GetOwner()->GetTransform()->GetWorldPosition());
 }
 

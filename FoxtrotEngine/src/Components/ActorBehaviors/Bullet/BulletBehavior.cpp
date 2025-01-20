@@ -40,14 +40,6 @@ void BulletBehavior::Initialize(FTCore* coreInstance)
 
 void BulletBehavior::Setup()
 {
-	GetOwner()->GetTransform()->SetWorldPosition(mStartPosition);
-	b2Body_SetTransform(
-		mRigidbody->GetBodyID(),
-		mStartPosition.GetB2Vec2(),
-		b2MakeRot(GetOwner()->GetTransform()->GetRotation().z)
-	);
-	SetImpulseQuantity(mDirection * mSpeed);
-	Thrust();
 	Component::Setup();
 }
 
@@ -85,6 +77,14 @@ BulletBehavior::BulletBehavior(Actor* owner, int updateOrder = DEFAULT_UPDATEORD
 
 void BulletBehavior::Thrust()
 {
+	GetOwner()->GetTransform()->SetWorldPosition(mStartPosition);
+	b2Body_SetTransform(
+		mRigidbody->GetBodyID(),
+		mStartPosition.GetB2Vec2(),
+		b2MakeRot(GetOwner()->GetTransform()->GetRotation().z)
+	);
+	SetImpulseQuantity(mDirection * mSpeed);
+
 	if (!mImpulseQuantity.IsZero())
 	{
 		b2Body_ApplyLinearImpulseToCenter(

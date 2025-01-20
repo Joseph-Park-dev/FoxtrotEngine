@@ -39,6 +39,7 @@ Actor* Instantiate(const char* premadeName)
 	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
 	EditorElement* editorElement = DBG_NEW EditorElement(origin);
 	editorElement->Initialize(FTCoreEditor::GetInstance());
+	editorElement->Setup();
 
 	if (editorElement)
 	{
@@ -55,6 +56,9 @@ Actor* Instantiate(const char* premadeName)
 #else
 	if (origin)
 	{
+		origin->Initialize(FTCore::GetInstance());
+		origin->Setup();
+
 		addedEvent.eventData.push_back(origin);
 		addedEvent.eventData.push_back(nullptr);
 		EventManager::GetInstance()->AddEvent(addedEvent);

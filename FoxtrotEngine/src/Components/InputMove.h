@@ -30,5 +30,5 @@ public:
     virtual void CloneTo        (Actor* actor)                           override;
 
 public:
-    InputMove(class Actor* owner, int drawOrder, int updateOrder);
+    InputMove(class Actor* owner, int updateOrder);
 };

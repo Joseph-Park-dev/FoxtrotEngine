@@ -14,8 +14,8 @@
 #include "Actors/Transform.h"
 #include "Components/Rigidbody2D.h"
 
-InputMove::InputMove(Actor* owner, int drawOrder, int updateOrder)
-	: Move(owner, drawOrder, updateOrder)
+InputMove::InputMove(Actor* owner, int updateOrder)
+	: Move(owner, updateOrder)
 {}
 
 void InputMove::ProcessInput(KeyInputManager* keyInputManager)
@@ -37,7 +37,7 @@ void InputMove::ProcessInput(KeyInputManager* keyInputManager)
 
 void InputMove::CloneTo(Actor* actor)
 {
-	InputMove* newComp = DBG_NEW InputMove(actor, GetDrawOrder(), GetUpdateOrder());
+	InputMove* newComp = DBG_NEW InputMove(actor, GetUpdateOrder());
 	newComp->SetForwardSpeed (GetForwardSpeed());
 	newComp->SetAngularSpeed (GetAngularSpeed());
 	newComp->SetJumpForce	 (GetJumpForce());

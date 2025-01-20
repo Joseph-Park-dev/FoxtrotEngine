@@ -37,8 +37,8 @@ public:
     virtual void CloneTo(Actor* actor)                          override;
 
 public:
-    GunFiringBehavior(Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateorder = DEFAULT_UPDATEORDER);
-    GunFiringBehavior(Actor* owner, int drawOrder, int updateorder, MOUSE triggerKey, float delay);
+    GunFiringBehavior(Actor* owner, int updateorder = DEFAULT_UPDATEORDER);
+    GunFiringBehavior(Actor* owner, int updateorder, MOUSE triggerKey, float delay);
     ~GunFiringBehavior();
 
 private:

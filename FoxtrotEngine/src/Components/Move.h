@@ -46,7 +46,7 @@ public:
     virtual void CloneTo    (Actor* actor)           override;
 
 public:
-    Move(class Actor* owner, int drawOrder, int updateorder);
+    Move(class Actor* owner, int updateorder);
 
 protected:
     void Accelerate (b2Vec2 currVel, const Steering* steering);

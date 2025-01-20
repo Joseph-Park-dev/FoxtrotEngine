@@ -71,13 +71,13 @@ void BoxCollider2D::Setup()
 
 void BoxCollider2D::CloneTo(Actor* actor)
 {
-	BoxCollider2D* newComp = DBG_NEW BoxCollider2D(actor, GetDrawOrder(), GetUpdateOrder());
+	BoxCollider2D* newComp = DBG_NEW BoxCollider2D(actor, GetUpdateOrder());
 	newComp->SetOffsetPos(this->GetOffsetPos());
 	newComp->mScale = this->mScale;
 }
 
-BoxCollider2D::BoxCollider2D(Actor* owner, int drawOrder, int updateOrder)
-	: Collider2D(owner, drawOrder, updateOrder)
+BoxCollider2D::BoxCollider2D(Actor* owner, int updateOrder)
+	: Collider2D(owner, updateOrder)
 	, mScale(FTVector2(1.f, 1.f))
 #ifdef FOXTROT_EDITOR
 	, mDebugRect(nullptr)

@@ -45,7 +45,7 @@ void AI::CloneTo(Actor* actor)
 	CLONE_TO_NOT_IMPLEMENTED
 }
 
-AI::AI(Actor* owner, int drawOrder, int updateOrder)
+AI::AI(Actor* owner, int updateOrder)
 	: Component(owner)
 	, mCurrentState(nullptr)
 {

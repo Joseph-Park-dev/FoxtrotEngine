@@ -54,7 +54,7 @@ void GunFiringBehavior::Update(float deltaTime)
 
 void GunFiringBehavior::CloneTo(Actor* actor)
 {
-	GunFiringBehavior* newComp = DBG_NEW GunFiringBehavior(actor, GetDrawOrder(), GetUpdateOrder());
+	GunFiringBehavior* newComp = DBG_NEW GunFiringBehavior(actor, GetUpdateOrder());
 }
 
 void GunFiringBehavior::ShootGun()
@@ -71,16 +71,16 @@ void GunFiringBehavior::ShootGun()
 	LogVector3("vec : ", GetOwner()->GetTransform()->GetWorldPosition());
 }
 
-GunFiringBehavior::GunFiringBehavior(Actor* owner, int drawOrder, int updateorder)
-	: Component(owner, drawOrder, updateorder)
+GunFiringBehavior::GunFiringBehavior(Actor* owner, int updateorder)
+	: Component(owner, updateorder)
 	, mTriggerKey(MOUSE::MOUSE_LEFT)
 	, mDelay(0.2f)
 	, mCurrentTick(0.f)
 	, mDirection(FTVector2(1.0f,0.f))
 {}
 
-GunFiringBehavior::GunFiringBehavior(Actor* owner, int drawOrder, int updateorder, MOUSE triggerKey, float delay)
-	: Component(owner, drawOrder, updateorder)
+GunFiringBehavior::GunFiringBehavior(Actor* owner, int updateorder, MOUSE triggerKey, float delay)
+	: Component(owner, updateorder)
 	, mTriggerKey(triggerKey)
 	, mDelay(delay)
 	, mCurrentTick(0.f)

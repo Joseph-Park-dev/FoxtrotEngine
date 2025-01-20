@@ -56,7 +56,7 @@ public:
 	virtual void CloneTo	(Actor* actor)			override;
 
 public:
-	Collider2D(Actor* owner, int drawOrder, int updateOrder);
+	Collider2D(Actor* owner, int updateOrder);
 	Collider2D(const Collider2D& origin);
 	virtual ~Collider2D() override;
 
@@ -70,7 +70,7 @@ private:
 	void OnCollisionStay(Collider2D* other);
 	void OnCollisionExit(Collider2D* other);
 
-	void OnRayEnter();
+	//void OnRayEnter();
 
 private:
 	b2ShapeId				mShapeID;

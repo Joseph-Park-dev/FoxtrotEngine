@@ -42,7 +42,6 @@ public:
 public:
              TileMapRenderer(
                  Actor* owner, 
-                 int drawOrder   = DEFAULT_DRAWORDER, 
                  int UpdateOrder = DEFAULT_UPDATEORDER
              );
     virtual ~TileMapRenderer() override;

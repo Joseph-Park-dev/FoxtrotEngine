@@ -24,10 +24,10 @@ Steering Flee::CreateSteering()
 
 void Flee::CloneTo(Actor* actor)
 {
-    Flee* newComp = DBG_NEW Flee(actor, GetDrawOrder(), GetUpdateOrder());
+    Flee* newComp = DBG_NEW Flee(actor, GetUpdateOrder());
     newComp->SetTargetName(this->GetTargetName());
 }
 
-Flee::Flee(Actor* owner, int drawOrder, int updateOrder)
-	: AgentBehavior(owner, drawOrder, updateOrder)
+Flee::Flee(Actor* owner, int updateOrder)
+	: AgentBehavior(owner, updateOrder)
 {}

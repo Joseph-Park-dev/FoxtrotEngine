@@ -45,8 +45,8 @@ void CircleCollider2D::CloneTo(Actor* actor)
 	CLONE_TO_NOT_IMPLEMENTED
 }
 
-CircleCollider2D::CircleCollider2D(Actor* owner, int drawOrder, int updateOrder)
-	: Collider2D(owner, drawOrder, updateOrder)
+CircleCollider2D::CircleCollider2D(Actor* owner, int updateOrder)
+	: Collider2D(owner, updateOrder)
 	, mRadius(50.f)
 {
 }

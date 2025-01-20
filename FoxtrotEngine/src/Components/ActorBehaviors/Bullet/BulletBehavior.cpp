@@ -73,8 +73,8 @@ void BulletBehavior::LateUpdate(float deltaTime)
 	GetOwner()->GetTransform()->SetRotation(updatedRot);
 }
 
-BulletBehavior::BulletBehavior(Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER)
-	: Component(owner, drawOrder, updateOrder)
+BulletBehavior::BulletBehavior(Actor* owner, int updateOrder = DEFAULT_UPDATEORDER)
+	: FTBehavior(owner, updateOrder)
 	, mRigidbody(nullptr)
 	, mImpulseQuantity(FTVector2::Zero)
 	, mDirection(FTVector2::Zero)
@@ -98,7 +98,7 @@ void BulletBehavior::Thrust()
 #ifdef FOXTROT_EDITOR
 void BulletBehavior::CloneTo(Actor* actor)
 {
-	BulletBehavior* newComp = DBG_NEW BulletBehavior(actor, GetDrawOrder(), GetUpdateOrder());
+	BulletBehavior* newComp = DBG_NEW BulletBehavior(actor, GetUpdateOrder());
 	newComp->mImpulseQuantity = this->mImpulseQuantity;
 	newComp->mRigidbody = this->mRigidbody;
 }

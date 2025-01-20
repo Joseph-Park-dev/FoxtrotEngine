@@ -24,8 +24,8 @@
 #endif // FOXTROT_EDITOR
 
 
-Rigidbody2D::Rigidbody2D(class Actor* owner, int drawOrder, int updateOrder)
-	: Component(owner, drawOrder, updateOrder)
+Rigidbody2D::Rigidbody2D(class Actor* owner, int updateOrder)
+	: Component(owner, updateOrder)
 	, mBodyID{}
 #ifdef FOXTROT_EDITOR
 	, mBodyDefCache(b2DefaultBodyDef())
@@ -62,7 +62,7 @@ void Rigidbody2D::LateUpdate(float deltaTime)
 
 void Rigidbody2D::CloneTo(Actor* actor)
 {
-	Rigidbody2D* newComp = DBG_NEW Rigidbody2D(actor, GetDrawOrder(), GetUpdateOrder());
+	Rigidbody2D* newComp = DBG_NEW Rigidbody2D(actor, GetUpdateOrder());
 	newComp->mBodyDefCache = this->mBodyDefCache;
 	newComp->mBodyID = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &mBodyDefCache);
 }

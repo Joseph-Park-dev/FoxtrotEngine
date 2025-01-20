@@ -38,7 +38,7 @@ public:
 	virtual void CloneTo	(Actor* actor)			override;
 
 public:
-	AI(class Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER);
+	AI(class Actor* owner, int updateOrder = DEFAULT_UPDATEORDER);
 	virtual ~AI() override;
 
 private:

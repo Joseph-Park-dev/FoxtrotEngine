@@ -7,12 +7,12 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include "Components/Component.h"
+#include "Behaviors/FTBehavior.h"
 
 #include "Components/Rigidbody2D.h"
 
 class BulletBehavior :
-    public Component
+    public FTBehavior
 {
 public:
 	virtual std::string  GetName() const { return "BulletBehavior"; }
@@ -33,16 +33,16 @@ public:
 	virtual void LateUpdate(float deltaTime)		override;
 
 public:
-	BulletBehavior(Actor* owner, int drawOrder, int updateOrder);
+	BulletBehavior(Actor* owner, int updateOrder);
 
 private:
-	Rigidbody2D* mRigidbody;
-	FTVector2			  mImpulseQuantity;
-	FTVector2			  mStartPosition;
-	FTVector2			  mDirection;
-	float				  mSpeed;
+	Rigidbody2D*		mRigidbody;
+	FTVector2			mImpulseQuantity;
+	FTVector2			mStartPosition;
+	FTVector2			mDirection;
+	float				mSpeed;
 
-	float				  mDuration;
+	float				mDuration;
 
 #ifdef FOXTROT_EDITOR
 public:

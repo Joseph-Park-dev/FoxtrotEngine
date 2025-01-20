@@ -29,7 +29,7 @@ void TextRenderer::Render(FoxtrotRenderer* renderer)
 
 void TextRenderer::CloneTo(Actor* actor)
 {
-    TextRenderer* newComp = DBG_NEW TextRenderer(actor, GetDrawOrder(), GetUpdateOrder());
+    TextRenderer* newComp = DBG_NEW TextRenderer(actor, GetUpdateOrder());
     newComp->SetMeshKey(this->GetMeshKey());
     newComp->SetTexKey(this->GetTexKey());
     newComp->SetTileMapKey(this->GetTileMapKey());
@@ -41,8 +41,8 @@ void TextRenderer::CloneTo(Actor* actor)
     newComp->mTextAttribute->MaxChars       = mTextAttribute->MaxChars;
 }
 
-TextRenderer::TextRenderer(Actor* owner, int drawOrder, int UpdateOrder)
-    : TileMapRenderer(owner, drawOrder, UpdateOrder)
+TextRenderer::TextRenderer(Actor* owner, int UpdateOrder)
+    : TileMapRenderer(owner, UpdateOrder)
     , mTextAttribute(DBG_NEW TextAttribute)
 {}
 

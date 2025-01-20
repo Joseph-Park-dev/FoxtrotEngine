@@ -22,6 +22,7 @@
 #include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Components/Rigidbody2D.h"
+#include "Behaviors/FTBehavior.h"
 
 #ifdef FOXTROT_EDITOR
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -76,8 +77,8 @@ void Collider2D::LateUpdate(float deltaTime)
 void Collider2D::CloneTo(Actor* actor)
 {}
 
-Collider2D::Collider2D(Actor* owner, int drawOrder, int updateOrder)
-	: Component(owner, drawOrder, updateOrder)
+Collider2D::Collider2D(Actor* owner, int updateOrder)
+	: Component(owner, updateOrder)
 	, mOffset(FTVector2::Zero)
 	, mFinalPosition(FTVector2::Zero)
 	, mShapeID(b2_nullShapeId)
@@ -89,7 +90,7 @@ Collider2D::Collider2D(Actor* owner, int drawOrder, int updateOrder)
 }
 
 Collider2D::Collider2D(const Collider2D& origin)
-	: Component(origin.GetOwner(), origin.GetDrawOrder(), origin.GetUpdateOrder())
+	: Component(origin.GetOwner(), origin.GetUpdateOrder())
 	, mShapeID(b2_nullShapeId)
 	, mOffset(origin.mOffset)
 	, mShowDebugShape(false)
@@ -104,22 +105,35 @@ Collider2D::~Collider2D()
 
 void Collider2D::OnCollisionEnter(Collider2D* other)
 {
-	GetOwner()->OnCollisionEnter(other);
+	std::vector<Component*>::iterator iter = GetOwner()->GetComponents().begin();
+	for (; iter != GetOwner()->GetComponents().end(); ++iter)
+	{
+		FTBehavior* behav = dynamic_cast<FTBehavior*>(*iter);
+		if (behav)
+			behav->OnCollisionEnter(other);
+	}
 }
 
 void Collider2D::OnCollisionStay(Collider2D* other)
 {
-	GetOwner()->OnCollisionStay(other);
+	std::vector<Component*>::iterator iter = GetOwner()->GetComponents().begin();
+	for (; iter != GetOwner()->GetComponents().end(); ++iter)
+	{
+		FTBehavior* behav = dynamic_cast<FTBehavior*>(*iter);
+		if (behav)
+			behav->OnCollisionStay(other);
+	}
 }
 
 void Collider2D::OnCollisionExit(Collider2D* other)
 {
-	GetOwner()->OnCollisionExit(other);
-}
-
-void Collider2D::OnRayEnter()
-{
-	GetOwner()->OnRayEnter();
+	std::vector<Component*>::iterator iter = GetOwner()->GetComponents().begin();
+	for (; iter != GetOwner()->GetComponents().end(); ++iter)
+	{
+		FTBehavior* behav = dynamic_cast<FTBehavior*>(*iter);
+		if (behav)
+			behav->OnCollisionExit(other);
+	}
 }
 
 void Collider2D::SaveProperties(std::ofstream& ofs)

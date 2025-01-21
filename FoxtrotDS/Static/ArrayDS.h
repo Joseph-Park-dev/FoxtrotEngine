@@ -3,7 +3,7 @@
 #include <crtdbg.h>
 #include <cassert>
 
-#include "../FoxtrotEngine/src/Debugging/DebugMemAlloc.h"
+#include "Debugging/DebugMemAlloc.h"
 
 namespace FTDS
 {

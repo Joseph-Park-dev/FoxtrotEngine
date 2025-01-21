@@ -27,9 +27,7 @@
 void EventManager::ProcessEvent()
 {
 	for (size_t i = 0; i < mEvent.size(); ++i)
-	{
 		Execute(mEvent[i]);
-	}
 	mEvent.clear();
 }
 

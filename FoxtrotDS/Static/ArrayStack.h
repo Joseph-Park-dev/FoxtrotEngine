@@ -1,5 +1,4 @@
 #pragma once
-#include "Utils/DSLogs.h"
 #include "ArrayDS.h"
 
 namespace FTDS
@@ -8,25 +7,25 @@ namespace FTDS
 	class ArrayStack : public FTDS::ArrayDS<TYPE>
 	{
 	public:
-		void Push(TYPE& element)
+		virtual void Push(TYPE& element)
 		{
 			assert(!IsFull()); // Stack must not be full. Use Reserve(size_t).
 			this->mData[++mTop] = element;
 		}
 
-		void Push(TYPE&& element)
+		virtual void Push(TYPE&& element)
 		{
 			assert(!IsFull()); // Stack must not be full. Use Reserve(size_t).
 			this->mData[++mTop] = element;
 		}
 
-		TYPE Pop()
+		virtual TYPE Pop()
 		{
 			assert(!IsEmpty()); // Stack must have somthing to pop in itself.
 			return this->mData[mTop--];
 		}
 
-		TYPE Peek()
+		virtual TYPE Peek()
 		{
 			assert(!IsEmpty()); // Stack must have somthing to pop in itself.
 			return this->mData[mTop];
@@ -62,7 +61,7 @@ namespace FTDS
 			}
 		}
 
-	private:
-		size_t	mTop;
+	protected:
+		int	mTop;
 	};
 };

@@ -48,7 +48,7 @@ public:
 public:
     UI(
         Actor* owner, 
-        int drawOrder = DEFAULT_DRAWORDER, 
+         
         int updateOrder = DEFAULT_UPDATEORDER
     );
     virtual ~UI() override;

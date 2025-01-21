@@ -87,12 +87,12 @@ void TileMapRenderer::InitializeTileMap() {
 
 void TileMapRenderer::CloneTo(Actor* actor)
 {
-	TileMapRenderer* newComp = DBG_NEW TileMapRenderer(actor, GetDrawOrder(), GetUpdateOrder());
+	TileMapRenderer* newComp = DBG_NEW TileMapRenderer(actor, GetUpdateOrder());
 	newComp->mTileMapKey = this->mTileMapKey;
 }
 
-TileMapRenderer::TileMapRenderer(Actor* owner, int drawOrder, int updateOrder)
-    : SpriteRenderer(owner, drawOrder, updateOrder)
+TileMapRenderer::TileMapRenderer(Actor* owner, int updateOrder)
+    : SpriteRenderer(owner, updateOrder)
     , mTileMap(nullptr)
     , mTileMapKey(VALUE_NOT_ASSIGNED)
 

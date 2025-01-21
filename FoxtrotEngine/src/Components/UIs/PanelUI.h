@@ -33,7 +33,6 @@ public:
 public:
 	 PanelUI(
 		Actor* owner, 
-		int drawOrder, 
 		int updateOrder
 	 );
 	~PanelUI() override;

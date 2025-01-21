@@ -26,10 +26,10 @@ Steering Seek::CreateSteering()
 
 void Seek::CloneTo(Actor* actor)
 {
-    Seek* newComp = DBG_NEW Seek(actor, GetDrawOrder(), GetUpdateOrder());
+    Seek* newComp = DBG_NEW Seek(actor, GetUpdateOrder());
     newComp->SetTargetName(this->GetTargetName());
 }
 
-Seek::Seek(Actor* owner, int drawOrder, int updateOrder)
-    : AgentBehavior(owner, drawOrder, updateOrder)
+Seek::Seek(Actor* owner, int updateOrder)
+    : AgentBehavior(owner, updateOrder)
 {}

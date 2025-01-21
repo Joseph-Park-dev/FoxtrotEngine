@@ -57,7 +57,7 @@ void SpriteRenderer::Initialize(FTCore* coreInstance)
 
 void SpriteRenderer::CloneTo(Actor* actor)
 {
-	SpriteRenderer* newComp = DBG_NEW SpriteRenderer(actor, GetDrawOrder(), GetUpdateOrder());
+	SpriteRenderer* newComp = DBG_NEW SpriteRenderer(actor, GetUpdateOrder());
 	newComp->SetMeshKey(this->GetMeshKey());
 	newComp->SetTexKey(this->GetTexKey());
 	newComp->mChannel = this->mChannel;
@@ -80,8 +80,8 @@ bool SpriteRenderer::InitializeMesh()
 	return true;
 }
 
-SpriteRenderer::SpriteRenderer(Actor* owner, int drawOrder,int updateOrder)
-	: MeshRenderer(owner, drawOrder, updateOrder), mChannel(4), mTexScale(FTVector2(1.0f,1.0f)) 
+SpriteRenderer::SpriteRenderer(Actor* owner,int updateOrder)
+	: MeshRenderer(owner, updateOrder), mChannel(4), mTexScale(FTVector2(1.0f,1.0f)) 
 {}
 
 void SpriteRenderer::SaveProperties(std::ofstream& ofs)

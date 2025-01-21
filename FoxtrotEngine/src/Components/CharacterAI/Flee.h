@@ -12,6 +12,6 @@ public:
     virtual void CloneTo(Actor* actor)       override;
 
 public:
-    Flee(Actor* owner, int drawOrder, int updateOrder);
+    Flee(Actor* owner, int updateOrder);
 };
 

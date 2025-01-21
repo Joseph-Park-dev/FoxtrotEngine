@@ -24,7 +24,6 @@ class FTCore;
 class KeyInputManager;
 class Camera;
 
-#define DEFAULT_DRAWORDER 100
 #define DEFAULT_UPDATEORDER 100
 
 class Component
@@ -47,7 +46,6 @@ public:
 public:
 	Actor*		GetOwner()			const;
 	const int	GetUpdateOrder()	const;
-	const int	GetDrawOrder()		const;
 	const bool	GetIsInitialized()	const;
 	const bool	GetIsSetup()		const;
 
@@ -57,7 +55,6 @@ public:
 	/// </summary>
 	Component(
 		Actor* owner, 
-		int drawOrder = DEFAULT_DRAWORDER, 
 		int updateOrder = DEFAULT_UPDATEORDER
 	);
 	
@@ -71,7 +68,6 @@ public:
 private:
 	Actor*	mOwner;
 	int		mUpdateOrder;
-	int		mDrawOrder;
 	
 private:
 	// This is turned as true as the Initialize(FTCore*) is executed.
@@ -88,7 +84,7 @@ public:
 	static void Load(Actor* actor, std::ifstream& ifs)
 	{
 		///Dynamically allocate actor of type T
-		T* t = DBG_NEW T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
+		T* t = DBG_NEW T(actor, DEFAULT_UPDATEORDER);
 		// Load Properties first -> then initialize with the loaded values.
 		t->LoadProperties(ifs);
 	}
@@ -121,7 +117,7 @@ public:
 	static void Create(Actor* actor, FTCore* coreInst)
 	{
 		// Dynamically allocate actor of type T
-		T* t = DBG_NEW T(actor, DEFAULT_DRAWORDER, DEFAULT_UPDATEORDER);
+		T* t = DBG_NEW T(actor, DEFAULT_UPDATEORDER);
 		// Call LoadProperties on DBG_NEW actor
 		t->Initialize(coreInst);
 	}

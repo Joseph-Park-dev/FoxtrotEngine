@@ -153,13 +153,6 @@ public:
 			void LateUpdateComponents(float deltaTime);
 	virtual void RenderComponents	 (FoxtrotRenderer* renderer);
 
-protected:
-	virtual void OnCollisionEnter(Collider2D* _pOther);
-	virtual void OnCollisionStay(Collider2D* _pOther);
-	virtual void OnCollisionExit(Collider2D* _pOther);
-	virtual void OnRayEnter();
-	friend class Collider2D;
-
 private:
 	std::string				mName;
 	ActorGroup				mActorGroup;

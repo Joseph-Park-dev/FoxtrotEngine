@@ -125,8 +125,8 @@ void UI::LateUpdate(float deltaTime)
 void UI::Render(FoxtrotRenderer* renderer)
 {}
 
-UI::UI(Actor* owner, int drawOrder, int updateOrder)
-	: Component(owner, drawOrder, updateOrder)
+UI::UI(Actor* owner, int updateOrder)
+	: Component(owner, updateOrder)
 	, mIsAffectedByCamera(false)
 	, mMouseHovering(false)
 	, mLBtnDown(false)

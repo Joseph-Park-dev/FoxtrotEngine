@@ -22,8 +22,8 @@
 #include "CommandHistory.h"
 #endif // FOXTROT_EDITOR
 
-Move::Move(Actor* owner, int drawOrder, int updateorder)
-	: Component(owner, drawOrder , updateorder)
+Move::Move(Actor* owner, int updateorder)
+	: Component(owner , updateorder)
 	, mRigidbody		(nullptr)
 	, mGroundFilter		(b2DefaultQueryFilter())
 	, mForwardSpeed		(0.f)
@@ -110,7 +110,7 @@ void Move::LateUpdate(float deltaTime)
 
 void Move::CloneTo(Actor* actor)
 {
-	Move* newComp = DBG_NEW Move(actor, GetDrawOrder(), GetUpdateOrder());
+	Move* newComp = DBG_NEW Move(actor, GetUpdateOrder());
 	newComp->mForwardSpeed = this->mForwardSpeed;
 	newComp->mJumpForce = this->mJumpForce;
 	newComp->mAngularSpeed = this->mAngularSpeed;

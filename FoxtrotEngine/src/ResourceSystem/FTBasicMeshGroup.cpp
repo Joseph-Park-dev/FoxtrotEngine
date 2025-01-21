@@ -153,14 +153,7 @@ std::vector<Mesh*>& FTBasicMeshGroup::GetMeshes()
 void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<MeshData>& meshes)
 {
     if (0 < meshes.size())
-    {
-        for (Mesh* mesh : mMeshes) 
-        {
-            delete mesh;
-            mesh = nullptr;
-        }
-        mMeshes.clear();
-    }
+        Clear();
 
     for (const MeshData& meshData : meshes) {
         Mesh* newMesh = DBG_NEW Mesh;

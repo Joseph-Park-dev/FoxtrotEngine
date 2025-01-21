@@ -12,5 +12,5 @@ public:
     virtual void CloneTo(Actor* actor) override;
 
 public:
-    Seek(Actor* owner, int drawOrder, int updateOrder);
+    Seek(Actor* owner, int updateOrder);
 };

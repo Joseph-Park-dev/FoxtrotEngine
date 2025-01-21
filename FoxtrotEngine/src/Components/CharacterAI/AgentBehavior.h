@@ -23,7 +23,7 @@ public:
     void Update     (float deltaTime)        override;
 
 public:
-    AgentBehavior(Actor* owner, int drawOrder, int updateOrder);
+    AgentBehavior(Actor* owner, int updateOrder);
     ~AgentBehavior() override;
 
 private:

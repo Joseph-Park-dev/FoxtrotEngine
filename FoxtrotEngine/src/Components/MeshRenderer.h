@@ -71,7 +71,7 @@ private:
 	FTTexture*			mTexture;
 
 public:
-			 MeshRenderer(Actor* owner, int drawOrder, int updateOrder);
+			 MeshRenderer(Actor* owner, int updateOrder);
 	virtual ~MeshRenderer() override;
 
 protected:

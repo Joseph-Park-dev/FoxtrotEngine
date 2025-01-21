@@ -29,11 +29,11 @@ void PanelUI::OnMouseLButtonUp()
 
 void PanelUI::CloneTo(Actor * actor)
 {
-	PanelUI* newComp = DBG_NEW PanelUI(actor, GetDrawOrder(), GetUpdateOrder());
+	PanelUI* newComp = DBG_NEW PanelUI(actor, GetUpdateOrder());
 }
 
-PanelUI::PanelUI(Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER)
-	: UI(owner, drawOrder, updateOrder)
+PanelUI::PanelUI(Actor* owner, int updateOrder = DEFAULT_UPDATEORDER)
+	: UI(owner, updateOrder)
 	, mDragStartPoint(FTVector2::Zero)
 {}
 

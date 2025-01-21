@@ -64,7 +64,7 @@ void MeshRenderer::Render(FoxtrotRenderer* renderer)
 
 void MeshRenderer::CloneTo(Actor* actor)
 {
-	MeshRenderer* newComp = DBG_NEW MeshRenderer(actor, GetDrawOrder(), GetUpdateOrder());
+	MeshRenderer* newComp = DBG_NEW MeshRenderer(actor, GetUpdateOrder());
 	newComp->mMeshKey = this->mMeshKey;
 	newComp->mTexKey = this->mTexKey;
 }
@@ -152,8 +152,8 @@ void MeshRenderer::UpdateBuffers()
 		mMeshGroup->UpdateConstantBuffers(mRenderer->GetDevice(), mRenderer->GetContext());
 }
 
-MeshRenderer::MeshRenderer(Actor* owner, int drawOrder, int updateOrder)
-	: Component		(owner, drawOrder, updateOrder)
+MeshRenderer::MeshRenderer(Actor* owner, int updateOrder)
+	: Component		(owner, updateOrder)
 	, mMeshGroup	(nullptr)
 	, mTexture		(nullptr)
 	, mRenderer		(nullptr)

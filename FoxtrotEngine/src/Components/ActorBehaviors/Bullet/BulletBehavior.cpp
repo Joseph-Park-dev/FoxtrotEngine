@@ -40,14 +40,6 @@ void BulletBehavior::Initialize(FTCore* coreInstance)
 
 void BulletBehavior::Setup()
 {
-	GetOwner()->GetTransform()->SetWorldPosition(mStartPosition);
-	b2Body_SetTransform(
-		mRigidbody->GetBodyID(),
-		mStartPosition.GetB2Vec2(),
-		b2MakeRot(GetOwner()->GetTransform()->GetRotation().z)
-	);
-	SetImpulseQuantity(mDirection * mSpeed);
-	Thrust();
 	Component::Setup();
 }
 
@@ -73,8 +65,8 @@ void BulletBehavior::LateUpdate(float deltaTime)
 	GetOwner()->GetTransform()->SetRotation(updatedRot);
 }
 
-BulletBehavior::BulletBehavior(Actor* owner, int drawOrder = DEFAULT_DRAWORDER, int updateOrder = DEFAULT_UPDATEORDER)
-	: Component(owner, drawOrder, updateOrder)
+BulletBehavior::BulletBehavior(Actor* owner, int updateOrder = DEFAULT_UPDATEORDER)
+	: FTBehavior(owner, updateOrder)
 	, mRigidbody(nullptr)
 	, mImpulseQuantity(FTVector2::Zero)
 	, mDirection(FTVector2::Zero)
@@ -85,6 +77,14 @@ BulletBehavior::BulletBehavior(Actor* owner, int drawOrder = DEFAULT_DRAWORDER, 
 
 void BulletBehavior::Thrust()
 {
+	GetOwner()->GetTransform()->SetWorldPosition(mStartPosition);
+	b2Body_SetTransform(
+		mRigidbody->GetBodyID(),
+		mStartPosition.GetB2Vec2(),
+		b2MakeRot(GetOwner()->GetTransform()->GetRotation().z)
+	);
+	SetImpulseQuantity(mDirection * mSpeed);
+
 	if (!mImpulseQuantity.IsZero())
 	{
 		b2Body_ApplyLinearImpulseToCenter(
@@ -98,7 +98,7 @@ void BulletBehavior::Thrust()
 #ifdef FOXTROT_EDITOR
 void BulletBehavior::CloneTo(Actor* actor)
 {
-	BulletBehavior* newComp = DBG_NEW BulletBehavior(actor, GetDrawOrder(), GetUpdateOrder());
+	BulletBehavior* newComp = DBG_NEW BulletBehavior(actor, GetUpdateOrder());
 	newComp->mImpulseQuantity = this->mImpulseQuantity;
 	newComp->mRigidbody = this->mRigidbody;
 }

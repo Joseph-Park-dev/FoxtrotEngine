@@ -149,7 +149,7 @@ void FTPremade::UpdateUI()
 	}
 	if (ImGui::BeginPopupModal("EditPremade"))
 	{
-		if (mOrigin)
+		if (mDummyForUI)
 		{
 			// Only values from Actor is needed here.
 			// Thus dynamic_cast is not needed.

@@ -212,6 +212,7 @@ void Scene::RemoveActor(Actor* actor)
 		if (iter != mPendingActors[i].end())
 		{
 			std::iter_swap(iter, mPendingActors[i].end() - 1);
+			delete mPendingActors[i].back();
 			mPendingActors[i].pop_back();
 		}
 
@@ -219,6 +220,7 @@ void Scene::RemoveActor(Actor* actor)
 		if (iter != mActors[i].end())
 		{
 			std::iter_swap(iter, mActors[i].end() - 1);
+			delete mActors[i].back();
 			mActors[i].pop_back();
 		}
 	}

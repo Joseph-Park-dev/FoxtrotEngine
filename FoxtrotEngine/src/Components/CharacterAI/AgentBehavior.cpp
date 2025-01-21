@@ -58,8 +58,8 @@ void AgentBehavior::Update(float deltaTime)
 	GetOwner()->GetTransform()->SetSteering(CreateSteering());
 }
 
-AgentBehavior::AgentBehavior(Actor* owner, int drawOrder, int updateOrder)
-	: Component		(owner, drawOrder, updateOrder)
+AgentBehavior::AgentBehavior(Actor* owner, int updateOrder)
+	: Component		(owner, updateOrder)
 	, mTarget		(nullptr)
 	, mTargetName	()
 {}

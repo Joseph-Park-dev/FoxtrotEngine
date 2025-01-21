@@ -18,7 +18,7 @@ public:
 public:
     TextRenderer(
         Actor* owner,
-        int drawOrder = DEFAULT_DRAWORDER,
+        
         int UpdateOrder = DEFAULT_UPDATEORDER
     );
     ~TextRenderer() override;

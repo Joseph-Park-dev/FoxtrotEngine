@@ -32,7 +32,7 @@ public:
 	virtual void CloneTo	(Actor* actor)          override;
 
 public:
-	Rigidbody2D(Actor* owner, int drawOrder = DEFAULT_DRAWORDER,
+	Rigidbody2D(Actor* owner,
 		int updateOrder = DEFAULT_UPDATEORDER);
 	virtual ~Rigidbody2D() override;
 

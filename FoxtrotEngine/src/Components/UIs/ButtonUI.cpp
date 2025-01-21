@@ -34,11 +34,11 @@ void ButtonUI::OnMouseLButtonClicked()
 
 void ButtonUI::CloneTo(Actor* actor)
 {
-	ButtonUI* newComp = DBG_NEW ButtonUI(actor, GetDrawOrder(), GetUpdateOrder());
+	ButtonUI* newComp = DBG_NEW ButtonUI(actor, GetUpdateOrder());
 }
 
-ButtonUI::ButtonUI(Actor* owner, int drawOrder, int updateOrder)
-	: UI		(owner, drawOrder, updateOrder)
+ButtonUI::ButtonUI(Actor* owner, int updateOrder)
+	: UI		(owner, updateOrder)
 	, mFunc				(nullptr)
 	, mParam1			(0)
 	, mParam2			(0)

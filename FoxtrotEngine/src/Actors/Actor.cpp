@@ -176,7 +176,6 @@ void Actor::RenderComponents(FoxtrotRenderer* renderer)
 void Actor::AddComponent(Component* component)
 {
 	int updateOrder = component->GetUpdateOrder();
-	int drawOrder = component->GetDrawOrder();
 	auto iter = mComponents.begin();
 	for (;iter != mComponents.end();++iter)
 	{
@@ -201,24 +200,6 @@ void Actor::RemoveAllComponents()
 	for (size_t i = 0; i < mComponents.size(); ++i)
 		delete mComponents[i];
 	mComponents.clear();
-}
-
-void Actor::OnCollisionEnter(Collider2D* other)
-{
-	LogString(mName + " : Collision Enter with " + other->GetOwner()->GetName());
-}
-
-void Actor::OnCollisionStay(Collider2D* other)
-{
-}
-
-void Actor::OnCollisionExit(Collider2D* other)
-{
-	LogString(mName + " : Collision Exit with " + other->GetOwner()->GetName());
-}
-
-void Actor::OnRayEnter()
-{
 }
 
 std::string Actor::GetStateStr() const

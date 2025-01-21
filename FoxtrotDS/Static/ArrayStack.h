@@ -44,13 +44,8 @@ namespace FTDS
 		}
 
 	public:
-		virtual bool IsEmpty() override { return mTop == -1; }
-		virtual bool IsFull() override
-		{
-			if (0 < this->mSize)
-				return mTop == this->mSize - 1;
-			return true;
-		}
+		virtual bool IsEmpty()	override { return mTop == -1; }
+		virtual bool IsFull()	override { return mTop == this->mSize - 1; }
 
 	public:
 		ArrayStack()

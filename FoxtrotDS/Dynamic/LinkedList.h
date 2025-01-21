@@ -83,7 +83,7 @@ namespace FTDS
 
 	public:
 		bool	IsEmpty()	{ return mCount == 0; }
-		size_t	GetCount()	{ return mCount; }
+		size_t	Count()		{ return mCount; }
 
 	public:
 		LinkedList<TYPE>()

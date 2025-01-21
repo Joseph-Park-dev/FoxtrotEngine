@@ -1,8 +1,6 @@
 #pragma once
-#include "DSLogs.h"
+#include "Utils/DSLogs.h"
 #include "ArrayDS.h"
-
-constexpr size_t MAX_STACK_SIZE = 50;
 
 namespace FTDS
 {
@@ -34,8 +32,6 @@ namespace FTDS
 			return this->mData[mTop];
 		}
 
-		virtual size_t Size() override { return (mTop + 1); }
-
 		virtual void Clear() override
 		{
 			if (this->mData)
@@ -43,19 +39,13 @@ namespace FTDS
 				delete[] this->mData;
 				this->mData = nullptr;
 				mTop = -1;
-				this->mCapacity = 0;
+				this->mSize = 0;
 			}
 		}
 
 	public:
-		virtual bool IsEmpty() override { return mTop == -1; }
-		virtual bool IsFull() override
-		{
-			if (0 < this->mCapacity)
-				return mTop == this->mCapacity - 1;
-			else
-				return false; // Stack with no capacity is not considered as full.
-		}
+		virtual bool IsEmpty()	override { return mTop == -1; }
+		virtual bool IsFull()	override { return mTop == this->mSize - 1; }
 
 	public:
 		ArrayStack()

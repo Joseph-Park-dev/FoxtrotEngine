@@ -2,7 +2,7 @@
 #include <assert.h>
 
 #include "Node.h"
-#include "../FoxtrotEngine/src/Debugging/DebugMemAlloc.h"
+#include "Debugging/DebugMemAlloc.h"
 
 namespace FTDS
 {

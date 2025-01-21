@@ -3,7 +3,7 @@
 #include <crtdbg.h>
 #include <cassert>
 
-#include "../FoxtrotEngine/src/Debugging/DebugMemAlloc.h"
+#include "Debugging/DebugMemAlloc.h"
 
 namespace FTDS
 {
@@ -12,26 +12,24 @@ namespace FTDS
 	/// (which means, it has variables created with "new" keyword)
 	/// its data element must be deleted one by one to prevent memory leak.
 	/// Clear() or the destructor won't free those objects automatically.
-	///
-	/// Use Capacity() to free the object, DO NOT use Size().
 	/// </Note_on_deallocation>
 	template <class TYPE>
 	class ArrayDS
 	{
 	public:
-		virtual void Reserve(size_t newCapacity)
+		virtual void Reserve(size_t newSize)
 		{
-			assert(0 < newCapacity); // Input capacity must be bigger than Zero.
+			assert(0 < newSize); // Input capacity must be bigger than Zero.
 			// When the current capacity is zero; initialization phase.
-			if (mCapacity < 1)
+			if (mSize < 1)
 			{
-				mData = DBG_NEW TYPE[newCapacity];
-				mCapacity = newCapacity;
+				mData = DBG_NEW TYPE[newSize];
+				mSize = newSize;
 				return;
 			}
-			if (mCapacity < newCapacity)
+			else if (mSize < newSize)
 			{
-				ReAllocate(newCapacity);
+				ReAllocate(newSize);
 			}
 			else
 				return;
@@ -49,13 +47,13 @@ namespace FTDS
 	public:
 		// Gets the array which stores the data of the stack.
 		// This can be used when freeing memory. 
-		TYPE*	Data()		{ return mData; }
-		size_t&	Capacity()	{ return mCapacity; }
+		TYPE*	Data()	{ return mData; }
+		size_t	Size()	{ return mSize; }
 
 	public:
 		ArrayDS()
 			: mData(nullptr)
-			, mCapacity(0)
+			, mSize(0)
 		{}
 
 		virtual ~ArrayDS()
@@ -66,41 +64,31 @@ namespace FTDS
 	public:
 		virtual bool	IsEmpty()	= 0;
 		virtual bool	IsFull()	= 0;
-		virtual size_t	Size()		= 0;
 
 	protected:
 		TYPE*	mData;
-		size_t	mCapacity;
+		size_t	mSize;
 
 	private:
-		void ReAllocate(size_t newCap);
+		void ReAllocate(size_t newSize);
 	};
 
 	template<class TYPE>
 	// Re-allocate memory space when new capacity is bigger than current capacity
-	inline void ArrayDS<TYPE>::ReAllocate(size_t newCap)
+	inline void ArrayDS<TYPE>::ReAllocate(size_t newSize)
 	{
-		// Shallow-copy the array elements from mData to copy buffer.
-		TYPE* copyBuf = new TYPE[mCapacity];
-		for (size_t i = 0; i < mCapacity; ++i)
-			copyBuf[i] = mData[i];
+		// Create an array with renewed capacity.
+		TYPE* newArr = new TYPE[newSize];
 
-		// Reset mData with new capacity.
+		// Copy existing data to new array.
+		for (size_t i = 0; i < mSize; ++i)
+			newArr[i] = mData[i];
+
+		// Free existing memory space & set current data to new array.
 		delete[] mData;
-		mData = DBG_NEW TYPE[newCap];
-
-		// Shallow-copy the array elements from copy buffer to mData.
-		if (mCapacity < newCap) // When memory occupation gets bigger.
-		{
-			for (size_t i = 0; i < mCapacity; ++i)
-				mData[i] = copyBuf[i];
-			// For the additional empty memory space, fill them with zero TYPEs.
-			for (size_t i = 0; i < newCap - mCapacity; ++i)
-				mData[mCapacity + i] = NULL;
-		}
-		delete[] copyBuf;
+		mData = newArr;
 
 		// Set the modified capacity.
-		mCapacity = newCap;
+		mSize = newSize;
 	}
 }

@@ -29,8 +29,6 @@ void CollisionManager::MarkGroup(b2ShapeDef& object, ActorGroup objectActorGroup
 	{
 		if (mCollisionMarks[((size_t)objectActorGroup-1) * count + i])
 			maskBits |= (uint64_t)(i + 1);
-		if(mCollisionMarks[i * count + ((size_t)objectActorGroup - 1)])
-			maskBits |= (uint64_t)objectActorGroup-1;
 	}
 	object.filter.maskBits = maskBits;
 }
@@ -201,7 +199,7 @@ void CollisionManager::LoadCollisionMarks(std::ifstream& ifs)
 
 	// Linear marks should be reversed because of the order in file.
 	// After reversed, FIRST GROUP / FIRST GROUP combination should come first.
-	std::reverse(marksCache.begin(), marksCache.end()); 
+	//std::reverse(marksCache.begin(), marksCache.end()); 
 
 	for (size_t row = 0; row < ActorGroupUtil::GetCount(); ++row)
 	{

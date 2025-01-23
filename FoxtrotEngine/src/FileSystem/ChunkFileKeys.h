@@ -10,11 +10,13 @@
 /// </summary>
 
 #pragma once
-#define VALUE_NOT_ASSIGNED -1
 #define MAX_STRING_SIZE 50
 
-namespace ChunkKeys {
+namespace ChunkKeys 
+{
+	constexpr const int	  VALUE_NOT_ASSIGNED = 0;
 	constexpr const char* NULL_OBJ = "Null";
+
 // File formats
 	constexpr const char* GAMEDATA_FILE_FORMAT = ".gdpack";
 	constexpr const char* CHUNK_FILE_FORMAT = ".chunk";

@@ -43,7 +43,6 @@ protected:
 public:
 			SpriteRenderer(
 				Actor* owner, 
-				 
 				int updateOrder = DEFAULT_UPDATEORDER
 			 );
 

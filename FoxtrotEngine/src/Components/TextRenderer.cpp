@@ -53,13 +53,13 @@ TextRenderer::~TextRenderer()
 
 void TextRenderer::InitializeTileMap()
 {
-    if (GetTileMapKey() != VALUE_NOT_ASSIGNED)
+    if (GetTileMapKey() != ChunkKeys::VALUE_NOT_ASSIGNED)
     {
         SetTileMap(ResourceManager::GetInstance()->GetLoadedTileMap(GetTileMapKey()));
         if (GetTileMap())
         {
             GetTileMap()->ReadCSV(mText);
-            if(GetTexKey() != VALUE_NOT_ASSIGNED)
+            if(GetTexKey() != ChunkKeys::VALUE_NOT_ASSIGNED)
                 SetTexture();
             SetMeshKey(ChunkKeys::PRIMITIVE_SQUARE_BLUE);
             std::vector<MeshData> meshData;

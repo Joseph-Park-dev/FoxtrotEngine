@@ -28,6 +28,7 @@
 
 #ifdef FOXTROT_EDITOR
 #include "CommandHistory.h"
+#include "EditorUtils.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui/FileDialog/ImGuiFileDialog.h"
@@ -46,10 +47,10 @@ void SpriteRenderer::Initialize(FTCore* coreInstance)
 	else
 		SetMeshKey(ChunkKeys::PRIMITIVE_SQUARE_GREEN);
 
-	if (GetMeshKey() != VALUE_NOT_ASSIGNED)
+	if (GetMeshKey() != ChunkKeys::VALUE_NOT_ASSIGNED)
 	{
 		this->InitializeMesh();
-		if (GetTexKey() != VALUE_NOT_ASSIGNED)
+		if (GetTexKey() != ChunkKeys::VALUE_NOT_ASSIGNED)
 			MeshRenderer::SetTexture();
 	}
 	Component::Initialize(coreInstance);
@@ -81,7 +82,9 @@ bool SpriteRenderer::InitializeMesh()
 }
 
 SpriteRenderer::SpriteRenderer(Actor* owner,int updateOrder)
-	: MeshRenderer(owner, updateOrder), mChannel(4), mTexScale(FTVector2(1.0f,1.0f)) 
+	: MeshRenderer(owner, updateOrder)
+	, mChannel(4)
+	, mTexScale(FTVector2(1.0f,1.0f)) 
 {}
 
 void SpriteRenderer::SaveProperties(std::ofstream& ofs)
@@ -131,14 +134,14 @@ void SpriteRenderer::OnResetTexture()
 	if (ImGui::Button("Reset"))
 	{
 		GetTexture()->ReleaseTexture();
-		SetTexKey(VALUE_NOT_ASSIGNED);
+		SetTexKey(ChunkKeys::VALUE_NOT_ASSIGNED);
 	}
 }
 
 void SpriteRenderer::UpdateSprite()
 {
 	std::string currentSprite = "No sprite has been assigned";
-	if (GetTexKey() != VALUE_NOT_ASSIGNED)
+	if (GetTexKey() != ChunkKeys::VALUE_NOT_ASSIGNED)
 	{
 		currentSprite =
 			"Current sprite : \n" + ResourceManager::GetInstance()->GetLoadedTexture(GetTexKey())->GetRelativePath();
@@ -148,56 +151,21 @@ void SpriteRenderer::UpdateSprite()
 			ImGui::Image((ImTextureID)GetTexture()->GetResourceView().Get(), size);
 		}
 	}
-		
 	ImGui::Text(currentSprite.c_str());
 
-	if (ImGui::Button("Select Sprite"))
-	{
-		IGFD::FileDialogConfig config;
-		config.path = ".";
-		config.countSelectionMax = 1;
-		ImGuiFileDialog::Instance()->OpenDialog(
-			"SelectSprite", "Select Sprite", ChunkKeys::TEXTURE_FORMAT_SUPPORTED, config);
-		ImGui::OpenPopup("Select Sprite");
-	}
-
-	if (ImGui::BeginPopupModal("Select Sprite", NULL,
-			ImGuiWindowFlags_MenuBar))
-	{
-		std::unordered_map<UINT, FTTexture*>& texturesMap =
-			ResourceManager::GetInstance()->GetTexturesMap();
-		if (ImGui::TreeNode("Selection State: Single Selection"))
-		{
-			UINT	   spriteKey = VALUE_NOT_ASSIGNED;
-			static int selected = -1;
-			int		   i = 0;
-			for (auto iter = texturesMap.begin(); iter != texturesMap.end();
-				 ++iter, ++i)
-			{
-				if (ImGui::Selectable((*iter).second->GetFileName().c_str(),
-						selected == i))
-				{
-					spriteKey = (*iter).first;
-					selected = i;
-				}
-			}
-			ImGui::TreePop();
-			if (selected != -1)
-			{
-				SetTexKey(spriteKey);
-				//SetTexture();
-			}
-		}
-		if (ImGui::Button("Close"))
-			ImGui::CloseCurrentPopup();
-		ImGui::EndPopup();
-	}
+	UINT key = 
+		FTEditorUtils::DisplayResSelection<FTTexture>(
+			"Select Sprite", 
+			ResourceManager::GetInstance()->GetTexturesMap()
+		);
+	if (key != ChunkKeys::VALUE_NOT_ASSIGNED)
+		SetTexKey(key);
 }
 
 void SpriteRenderer::UpdateSprite(UINT& key)
 {
 	std::string currentSprite = {};
-	if (key != VALUE_NOT_ASSIGNED)
+	if (key != ChunkKeys::VALUE_NOT_ASSIGNED)
 	{
 		FTTexture* sprite = ResourceManager::GetInstance()->GetLoadedTexture(key);
 		currentSprite =
@@ -230,7 +198,7 @@ void SpriteRenderer::UpdateSprite(UINT& key)
 			ResourceManager::GetInstance()->GetTexturesMap();
 		if (ImGui::TreeNode("Selection State: Single Selection"))
 		{
-			UINT	   spriteKey = VALUE_NOT_ASSIGNED;
+			UINT	   spriteKey = ChunkKeys::VALUE_NOT_ASSIGNED;
 			static int selected = -1;
 			int		   i = 0;
 			for (auto iter = texturesMap.begin(); iter != texturesMap.end();

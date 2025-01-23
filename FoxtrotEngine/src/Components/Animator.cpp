@@ -21,6 +21,11 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Renderer/FoxtrotRenderer.h"
 
+#ifdef FOXTROT_EDITOR
+#include "EditorUtils.h"
+#endif // FOXTROT_EDITOR
+
+
 Animator::Animator(Actor* owner, int updateOrder)
 	: TileMapRenderer(owner)
 	, mCurrentAnim(nullptr)
@@ -71,9 +76,9 @@ FTSpriteAnimation* Animator::CreateAnimationFromTile(std::string&& name, UINT te
 	FTSpriteAnimation* animation = DBG_NEW FTSpriteAnimation;
 	if (!GetRenderer())
 		printf("ERROR : Animator::CreateAnimationFromTile()-> Renderer is null");
-	if (texKey != VALUE_NOT_ASSIGNED)
+	if (texKey != ChunkKeys::VALUE_NOT_ASSIGNED)
 		animation->SetTexKey(texKey);
-	if(tileMapKey != VALUE_NOT_ASSIGNED)
+	if(tileMapKey != ChunkKeys::VALUE_NOT_ASSIGNED)
 		animation->SetTileMapKey(tileMapKey);
 
 	FTTileMap* tileMapBuf = ResourceManager::GetInstance()->GetLoadedTileMap(tileMapKey);
@@ -205,11 +210,12 @@ void Animator::UpdatePlayAnim()
 void Animator::UpdatePlayList()
 {
 	ImGui::Text("Play List");
-	UINT key = ResourceManager::GetInstance()->ShowResourceSelection(
-		"Load Animation",
-		ResourceManager::GetInstance()->GetSpriteAnimMap()
-	);
-	if (key != VALUE_NOT_ASSIGNED)
+	UINT key =
+		FTEditorUtils::DisplayResSelection<FTSpriteAnimation>(
+			"Load Animation",
+			ResourceManager::GetInstance()->GetSpriteAnimMap()
+		);
+	if (key != ChunkKeys::VALUE_NOT_ASSIGNED)
 	{
 		mLoadedKeys.push_back(key);
 		LoadAnimation(key);
@@ -238,10 +244,10 @@ void Animator::CreateAnimation()
 		static char* name = _strdup("NULL");
 		ImGui::InputText("Name", name, ChunkKeys::MAX_BUFFER_INPUT_TEXT);
 
-		static UINT texKey = VALUE_NOT_ASSIGNED;
+		static UINT texKey = ChunkKeys::VALUE_NOT_ASSIGNED;
 		UpdateSprite(texKey);
 
-		static UINT tileMapKey = VALUE_NOT_ASSIGNED;
+		static UINT tileMapKey = ChunkKeys::VALUE_NOT_ASSIGNED;
 		UpdateCSV(tileMapKey);
 
 		if (ImGui::Button("Create"))

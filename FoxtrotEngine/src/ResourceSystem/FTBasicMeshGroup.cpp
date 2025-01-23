@@ -44,7 +44,8 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture)
     UINT offset = 0;
     ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
 
-    for (const Mesh* mesh : mMeshes) {
+    for (const Mesh* mesh : mMeshes) 
+    {
         context->VSSetSamplers(0, 1, mSamplerState.GetAddressOf());
         context->VSSetConstantBuffers(0, 1, mesh->VertexConstantBuffer.GetAddressOf());
 
@@ -87,13 +88,15 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture, int
     Mesh* mesh = mMeshes.at(meshIndex);
     ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
 
-    if (mesh) {
+    if (mesh) 
+    {
         context->VSSetSamplers(0, 1, mSamplerState.GetAddressOf());
         context->VSSetConstantBuffers(0, 1, mesh->VertexConstantBuffer.GetAddressOf());
 
         context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
 
-        if (texture) {
+        if (texture) 
+        {
             context->VSSetShader(renderer->GetTextureVS().Get(), 0, 0);
             context->PSSetShader(renderer->GetTexturePS().Get(), 0, 0);
             context->IASetInputLayout(renderer->GetTextureInputLayout().Get());

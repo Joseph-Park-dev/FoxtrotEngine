@@ -85,7 +85,7 @@ void AgentBehavior::LoadProperties(std::ifstream& ifs)
 #ifdef FOXTROT_EDITOR
 void AgentBehavior::EditorUIUpdate()
 {
-	DisplayActorSelection(ChunkKeys::TARGET_NAME, mTarget);
+	FTEditorUtils::DisplayActorSelection(ChunkKeys::TARGET_NAME, mTarget);
 	if(mTarget)
 		mTargetName = mTarget->GetName();
 }

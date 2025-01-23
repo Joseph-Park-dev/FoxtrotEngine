@@ -213,7 +213,7 @@ void EditorElement::UpdateComponents()
 			}
 			++count;
 		}
-		if (ButtonCenteredOnLine("Add Component"))
+		if (FTEditorUtils::ButtonCenteredOnLine("Add Component"))
 			ImGui::OpenPopup("CompSelectPopUp");
 		DisplayCompSelectionPopup();
 
@@ -236,7 +236,7 @@ void EditorElement::DisplayCompSelectionPopup()
 
 void EditorElement::UpdateMakePrefabBtn()
 {
-	if (ButtonCenteredOnLine("Make Premade"))
+	if (FTEditorUtils::ButtonCenteredOnLine("Make Premade"))
 	{
 		bool confirmed = false;
 		EditorLayer::GetInstance()->SetInfoType(InfoType::PremadeIsCreated);

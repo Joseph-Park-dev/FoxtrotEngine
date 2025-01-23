@@ -139,7 +139,7 @@ void FTPremade::UpdateUI()
 {
 	ImGui::Text(GetFileName().c_str());
 	ImGui::Separator();
-	if (ButtonCenteredOnLine("Edit Premade"))
+	if (FTEditorUtils::ButtonCenteredOnLine("Edit Premade"))
 	{
 		if (mOrigin)
 		{

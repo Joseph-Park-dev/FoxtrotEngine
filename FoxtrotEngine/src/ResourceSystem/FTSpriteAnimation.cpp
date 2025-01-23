@@ -159,8 +159,8 @@ FTSpriteAnimation::FTSpriteAnimation()
 	, mAccTime		(0.f)
 	, mIsFinished	(false)
 
-	, mTexKey		(VALUE_NOT_ASSIGNED)
-	, mTileMapKey	(VALUE_NOT_ASSIGNED)
+	, mTexKey		(ChunkKeys::VALUE_NOT_ASSIGNED)
+	, mTileMapKey	(ChunkKeys::VALUE_NOT_ASSIGNED)
 {}
 
 FTSpriteAnimation::FTSpriteAnimation(FTSpriteAnimation* other)

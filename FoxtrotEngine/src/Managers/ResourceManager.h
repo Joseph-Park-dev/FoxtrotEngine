@@ -60,14 +60,14 @@ public:
 	void						LoadResources(std::ifstream& ifs, FTCore* ftCoreInst);
 
 public:
-	FTTexture*					GetLoadedTexture(const UINT key);
-	FTTileMap*					GetLoadedTileMap(const UINT key);
-	FTPremade*					GetLoadedPremade(const UINT key);
+	FTTexture*					GetLoadedTexture(const UINT mItemKey);
+	FTTileMap*					GetLoadedTileMap(const UINT mItemKey);
+	FTPremade*					GetLoadedPremade(const UINT mItemKey);
 	FTPremade*					GetLoadedPremade(std::string&& fileName);
-	std::vector<MeshData>&		GetLoadedMeshes	(const UINT key);
-	MeshData&					GetLoadedPrimitive(const UINT key);
-	void						RemoveLoadedMeshes(const UINT key);
-	FTSpriteAnimation*			GetLoadedSpriteAnim(const UINT key);
+	std::vector<MeshData>&		GetLoadedMeshes	(const UINT mItemKey);
+	MeshData&					GetLoadedPrimitive(const UINT mItemKey);
+	void						RemoveLoadedMeshes(const UINT mItemKey);
+	FTSpriteAnimation*			GetLoadedSpriteAnim(const UINT mItemKey);
 
 
 public:
@@ -79,9 +79,10 @@ public:
 	std::string& GetPathToAsset();
 	void		 SetPathToAsset(std::string&& projectPath);
 
-public:
-	static	UINT		gItemKey;
-			std::string mPathToAsset;
+private:
+	UINT				mItemKey;
+	std::string			mPathToAsset;
+	FoxtrotRenderer*	mRenderer;		// For Loading FTTextures
 
 private:
 	std::unordered_map<UINT, FTTexture*>			mMapTextures;
@@ -91,8 +92,6 @@ private:
 
 	std::unordered_map<UINT, std::vector<MeshData>>	mMapMeshes;
 	std::unordered_map<UINT, MeshData>				mMapPrimitives;
-
-	FoxtrotRenderer* mRenderer; // For Loading FTTextures
 
 /// <Chunk IO> -------------------------------------
 /// Template member functions for saving/loading resources to/from chunk.
@@ -111,7 +110,7 @@ public:
 	template<typename FTRESOURCE>
 	void LoadResourceFromChunk(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap, size_t& resCount)
 	{
-		gItemKey += resCount;
+		mItemKey += resCount;
 		if (0 < resCount)
 		{
 			while (0 < resCount)
@@ -128,16 +127,16 @@ private:
 	void LoadResource(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
 		FTRESOURCE* resource = DBG_NEW FTRESOURCE;
-		UINT key = resource->LoadProperties(ifs);
+		UINT mItemKey = resource->LoadProperties(ifs);
 		
-		if(KeyExists(key, resMap))
+		if(KeyExists(mItemKey, resMap))
 		{
-			FTRESOURCE* deprecated = resMap.at(key);
+			FTRESOURCE* deprecated = resMap.at(mItemKey);
 			delete deprecated;
-			resMap.at(key) = nullptr;
-			resMap.erase(key);
+			resMap.at(mItemKey) = nullptr;
+			resMap.erase(mItemKey);
 		}
-		resMap.insert(std::make_pair(key, resource));
+		resMap.insert(std::make_pair(mItemKey, resource));
 	}
 
 /// <Creating New Resources> -------------------------------------
@@ -147,19 +146,19 @@ public:
 	template<typename FTRESOURCE>
 	FTRESOURCE* LoadResource(std::string& filePath, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
-		UINT key = gItemKey;
 		std::string fileName = filePath.substr(filePath.rfind("\\") + 1);
-		if (!ResourceExists<FTRESOURCE*>(key, filePath, resMap)) {
-			printf("Message: Loading FTTexture %s to key %d. \n", filePath.c_str(), key);
+		UINT pending = mItemKey + 1;
+		if (!ResourceExists<FTRESOURCE*>(pending, filePath, resMap)) {
+			printf("Message: Loading FTTexture %s to mItemKey %d. \n", filePath.c_str(), pending);
 			FTRESOURCE* res = DBG_NEW FTRESOURCE;
 			res->SetFileName(fileName);
 			res->SetRelativePath(filePath);
-			resMap.insert(std::make_pair(key, res));
-			++gItemKey;
+			resMap.insert(std::make_pair(pending, res));
+			mItemKey = pending;
 			return res;
 		}
 		else {
-			printf("Warning : Resource %s is already loaded to key %d.\n", filePath.c_str(), key);
+			printf("Warning : Resource %s is already loaded to mItemKey %d.\n", filePath.c_str(), pending);
 			return nullptr;
 		}
 	}
@@ -168,9 +167,8 @@ public:
 	template<typename FTRESOURCE>
 	void LoadResource(FTRESOURCE* res, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
-		UINT key = gItemKey;
-		resMap.insert(std::make_pair(key, res));
-		++gItemKey;
+		++mItemKey;
+		resMap.insert(std::make_pair(mItemKey, res));
 	}
 
 /// <Removing Resources> -------------------------------------
@@ -196,17 +194,17 @@ public:
 	}
 
 	template<typename FTRESOURCE>
-	void RemoveResource(UINT key, std::unordered_map<UINT, FTRESOURCE*>& resMap)
+	void RemoveResource(UINT mItemKey, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
-		FTRESOURCE* resource = resMap.at(key);
+		FTRESOURCE* resource = resMap.at(mItemKey);
 		if (resource)
 		{
 			delete resource;
 			resource = nullptr;
-			resMap.erase(key);
+			resMap.erase(mItemKey);
 		}
 		else
-			printf("ERROR: ResourceManager::RemoveResource()->key %d does not exist", key);
+			printf("ERROR: ResourceManager::RemoveResource()->mItemKey %d does not exist", mItemKey);
 	}
 
 /// <Processing Resources> -------------------------------------
@@ -226,18 +224,18 @@ private:
 /// </Validating Resources>
 private:
 	template<typename FTRESOURCE>
-	bool KeyExists(const UINT key, const std::unordered_map<UINT, FTRESOURCE>& resMap) {
-		if (resMap.find(key) != resMap.end()) {
-			printf("Error: ResourceManager::ResourceExists() -> Resource with key %d exists\n", key);
+	bool KeyExists(const UINT mItemKey, const std::unordered_map<UINT, FTRESOURCE>& resMap) {
+		if (resMap.find(mItemKey) != resMap.end()) {
+			printf("Error: ResourceManager::ResourceExists() -> Resource with mItemKey %d exists\n", mItemKey);
 			return true;
 		}
 		return false;
 	}
 
 	template<typename FTRESOURCE>
-	bool ResourceExists(const UINT key, const std::string path, const std::unordered_map<UINT, FTRESOURCE>& resMap) {
+	bool ResourceExists(const UINT mItemKey, const std::string path, const std::unordered_map<UINT, FTRESOURCE>& resMap) {
 		if (0 < resMap.size()) {
-			if (!KeyExists(key, resMap)) {
+			if (!KeyExists(mItemKey, resMap)) {
 				auto iter = resMap.begin();
 				for (; iter != resMap.end(); ++iter) {
 					if ((*iter).second->GetRelativePath() == path)
@@ -263,48 +261,6 @@ public:
 
 public:
 	void UpdateUI();
-
-	template <class FTRESOURCE>
-	UINT ShowResourceSelection(
-		const char* buttonLabel, 
-		std::unordered_map<UINT, FTRESOURCE*>& resMap
-	)
-	{
-		if (ImGui::Button(buttonLabel))
-		{
-			IGFD::FileDialogConfig config;
-			config.path = ".";
-			config.countSelectionMax = 1;
-			ImGuiFileDialog::Instance()->OpenDialog(
-				"SelectResource", "Select Resource", NULL, config);
-			ImGui::OpenPopup("Select Resource");
-		}
-
-		UINT resKey = VALUE_NOT_ASSIGNED;
-		if (ImGui::BeginPopupModal("Select Resource", NULL,
-			ImGuiWindowFlags_MenuBar))
-		{
-			if (ImGui::TreeNode("Selection State: Single Selection"))
-			{
-				static int selected = VALUE_NOT_ASSIGNED;
-				int		   i = 0;
-				for (auto iter = resMap.begin(); iter != resMap.end();
-					++iter, ++i)
-				{
-					if (ImGui::Selectable((*iter).second->GetFileName().c_str(),
-						selected == i))
-					{
-						resKey = (*iter).first;
-					}
-				}
-				ImGui::TreePop();
-			}
-			if (ImGui::Button("Close"))
-				ImGui::CloseCurrentPopup();
-			ImGui::EndPopup();
-		}
-		return resKey;
-	}
 
 private:
 	ResType GetResType(std::string& fileName);

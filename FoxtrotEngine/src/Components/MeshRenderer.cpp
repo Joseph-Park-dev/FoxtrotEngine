@@ -33,10 +33,10 @@ using DXMatrix = DirectX::SimpleMath::Matrix;
 void MeshRenderer::Initialize(FTCore* coreInstance)
 {
 	mRenderer = coreInstance->GetGameRenderer();
-	if (mMeshKey != VALUE_NOT_ASSIGNED)
+	if (mMeshKey != ChunkKeys::VALUE_NOT_ASSIGNED)
 	{
 		this->InitializeMesh();
-		if (mTexKey != VALUE_NOT_ASSIGNED)
+		if (mTexKey != ChunkKeys::VALUE_NOT_ASSIGNED)
 			SetTexture();
 	}
 	//mMeshGroup = DBG_NEW FTBasicMeshGroup;
@@ -71,7 +71,7 @@ void MeshRenderer::CloneTo(Actor* actor)
 
 bool MeshRenderer::InitializeMesh()
 {
-	if (mMeshKey != VALUE_NOT_ASSIGNED) 
+	if (mMeshKey != ChunkKeys::VALUE_NOT_ASSIGNED) 
 	{
 		std::vector<MeshData>& meshData = ResourceManager::GetInstance()->GetLoadedMeshes(mMeshKey);
 		if (!mMeshGroup)
@@ -125,7 +125,7 @@ bool MeshRenderer::InitializeMesh(std::vector<MeshData>& meshData)
 
 bool MeshRenderer::SetTexture()
 {
-	if (mTexKey == VALUE_NOT_ASSIGNED)
+	if (mTexKey == ChunkKeys::VALUE_NOT_ASSIGNED)
 	{
 		printf("ERROR: MeshRenderer::SetTexture() -> TexKey not assigned.\n");
 		return false;
@@ -157,8 +157,8 @@ MeshRenderer::MeshRenderer(Actor* owner, int updateOrder)
 	, mMeshGroup	(nullptr)
 	, mTexture		(nullptr)
 	, mRenderer		(nullptr)
-	, mMeshKey		(VALUE_NOT_ASSIGNED)
-	, mTexKey		(VALUE_NOT_ASSIGNED)
+	, mMeshKey		(ChunkKeys::VALUE_NOT_ASSIGNED)
+	, mTexKey		(ChunkKeys::VALUE_NOT_ASSIGNED)
 {}
 
 MeshRenderer::~MeshRenderer()

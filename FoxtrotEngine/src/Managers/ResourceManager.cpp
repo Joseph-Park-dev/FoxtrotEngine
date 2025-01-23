@@ -31,8 +31,6 @@
 #include "DirectoryHelper.h"
 #endif // FOXTROT_EDITOR
 
-UINT ResourceManager::gItemKey = 0;
-
 void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 {
 	mRenderer = renderer;
@@ -241,7 +239,8 @@ ResourceManager::~ResourceManager()
 }
 
 ResourceManager::ResourceManager()
-	: mPathToAsset("./Assets")
+	: mItemKey(ChunkKeys::VALUE_NOT_ASSIGNED)
+	, mPathToAsset("./Assets")
 	, mRenderer(nullptr)
 {}
 
@@ -298,7 +297,7 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 #ifdef FOXTROT_EDITOR
 void ResourceManager::LoadAllResourcesInAsset()
 {
-	gItemKey = 0;
+	mItemKey = ChunkKeys::VALUE_NOT_ASSIGNED;
 	DirectoryHelper::IterateForFileRecurse(
 		mPathToAsset,
 		[&](std::string&& path) { LoadResByType(path); }

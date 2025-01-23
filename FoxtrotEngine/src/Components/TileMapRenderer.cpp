@@ -65,17 +65,17 @@ void TileMapRenderer::SetTileMap(FTTileMap* tileMap)
 void TileMapRenderer::Initialize(FTCore* coreInstance)
 {
     MeshRenderer::Initialize(coreInstance);
-	if (GetTexKey() != VALUE_NOT_ASSIGNED && mTileMapKey != VALUE_NOT_ASSIGNED)
+	if (GetTexKey() != ChunkKeys::VALUE_NOT_ASSIGNED && mTileMapKey != ChunkKeys::VALUE_NOT_ASSIGNED)
 		this->InitializeTileMap();
 }
 
 void TileMapRenderer::InitializeTileMap() {
-	if (GetTileMapKey() != VALUE_NOT_ASSIGNED)
+	if (GetTileMapKey() != ChunkKeys::VALUE_NOT_ASSIGNED)
 	{
 		mTileMap = ResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey);
 		if (mTileMap)
 		{
-			if (GetTexKey() != VALUE_NOT_ASSIGNED)
+			if (GetTexKey() != ChunkKeys::VALUE_NOT_ASSIGNED)
 				SetTexture();
 			mTileMap->ReadCSV();
 			SetMeshKey(ChunkKeys::PRIMITIVE_SQUARE_BLUE);
@@ -94,7 +94,7 @@ void TileMapRenderer::CloneTo(Actor* actor)
 TileMapRenderer::TileMapRenderer(Actor* owner, int updateOrder)
     : SpriteRenderer(owner, updateOrder)
     , mTileMap(nullptr)
-    , mTileMapKey(VALUE_NOT_ASSIGNED)
+    , mTileMapKey(ChunkKeys::VALUE_NOT_ASSIGNED)
 
 {}
 
@@ -137,7 +137,7 @@ void TileMapRenderer::OnConfirmUpdate()
 
 void TileMapRenderer::UpdateCSV() {
 	std::string currentCSV = "No .csv has been assigned";
-	if (mTileMapKey != VALUE_NOT_ASSIGNED)
+	if (mTileMapKey != ChunkKeys::VALUE_NOT_ASSIGNED)
 		currentCSV =
 		"Current sprite : \n" + ResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey)->GetRelativePath();
 	ImGui::Text(currentCSV.c_str());
@@ -159,7 +159,7 @@ void TileMapRenderer::UpdateCSV() {
 			ResourceManager::GetInstance()->GetTileMapsMap();
 		if (ImGui::TreeNode("Selection State: Single Selection"))
 		{
-			UINT	   tileMapKey = VALUE_NOT_ASSIGNED;
+			UINT	   tileMapKey = ChunkKeys::VALUE_NOT_ASSIGNED;
 			static int selected = -1;
 			int		   i = 0;
 			for (auto iter = tileMapsMap.begin(); iter != tileMapsMap.end();
@@ -187,7 +187,7 @@ void TileMapRenderer::UpdateCSV() {
 void TileMapRenderer::UpdateCSV(UINT& key)
 {
 	std::string currentCSV = {};
-	if (key != VALUE_NOT_ASSIGNED)
+	if (key != ChunkKeys::VALUE_NOT_ASSIGNED)
 		currentCSV =
 		"Current sprite : \n" + ResourceManager::GetInstance()->GetLoadedTileMap(key)->GetRelativePath();
 	else
@@ -211,7 +211,7 @@ void TileMapRenderer::UpdateCSV(UINT& key)
 			ResourceManager::GetInstance()->GetTileMapsMap();
 		if (ImGui::TreeNode("Selection State: Single Selection"))
 		{
-			UINT	   tileMapKey = VALUE_NOT_ASSIGNED;
+			UINT	   tileMapKey = ChunkKeys::VALUE_NOT_ASSIGNED;
 			static int selected = -1;
 			int		   i = 0;
 			for (auto iter = tileMapsMap.begin(); iter != tileMapsMap.end();

@@ -10,44 +10,32 @@ namespace FTDS
 	class LinkedList 
 	{
 	public:
-		void PushBack(TYPE val) 
+		virtual void Push(TYPE val) 
 		{
 			Node<TYPE>* node = DBG_NEW Node<TYPE>(val);
 			if (IsEmpty())
 			{
-				assert(!mHead);
+				assert(mHead);
 				mHead = node;
 			}
 			else
 			{
-				assert(0 < mCount);
-				Node<TYPE>* last = GetNode(mCount - 1);
+				assert(0 < mSize);
+				Node<TYPE>* last = GetNode(mSize - 1);
 				last->Next = node;
 			}
-			++mCount;
+			++mSize;
 		}
 
-		void Insert(TYPE val, size_t idx)
-		{
-			// Given index should be smaller than the number of nodes.
-			assert(idx < mCount);  
-			Node<TYPE>* node	= DBG_NEW Node<TYPE>(val);
-
-			Node<TYPE>* prev	= GetNode(idx);
-			Node<TYPE>* next	= prev->Next;
-
-			prev->Next = node;
-			node->Next = next;
-			++mCount;
-		}
-
-		void Pop()
+		virtual void Pop()
 		{
 			assert(!IsEmpty());
 			Node<TYPE>* prev = mHead;
-			if (1 < mCount)
+			if (1 < mSize)
 			{
-				prev = GetNode(mCount - 2);
+				// the count 2 = array offset (index 0) + 
+				// subtraction by 1 to get previous value.
+				prev = GetNode(mSize - 2);
 				delete prev->Next;
 				prev->Next = nullptr;
 			}
@@ -56,12 +44,26 @@ namespace FTDS
 				delete mHead;
 				mHead = nullptr;
 			}
-			--mCount;
+			--mSize;
+		}
+
+		void Insert(TYPE val, size_t idx)
+		{
+			// Given index should be smaller than the number of nodes.
+			assert(idx < mSize);  
+			Node<TYPE>* node	= DBG_NEW Node<TYPE>(val);
+
+			Node<TYPE>* prev	= GetNode(idx);
+			Node<TYPE>* next	= prev->Next;
+
+			prev->Next = node;
+			node->Next = next;
+			++mSize;
 		}
 
 		void Delete(size_t idx)
 		{
-			assert(idx < mCount);
+			assert(idx < mSize);
 			Node<TYPE>* target = mHead;
 			if (0 < idx)
 			{
@@ -73,38 +75,41 @@ namespace FTDS
 			}
 			else
 				mHead = mHead->Next;
-			--mCount;
+			--mSize;
 			delete target;
 			target = nullptr;
 		}
 
 		TYPE Peek(size_t idx) { return GetNode(idx)->Value; };
-		TYPE Back() { return GetNode(mCount-1)->Value; }
+		TYPE Back() { return GetNode(mSize-1)->Value; }
 
 	public:
-		bool	IsEmpty()	{ return mCount == 0; }
-		size_t	Count()		{ return mCount; }
+		bool	IsEmpty()	{ return mSize == 0; }
+		size_t	Size()		{ return mSize; }
 
 	public:
 		LinkedList<TYPE>()
 			: mHead(nullptr)
-			, mCount(0)
+			, mSize(0)
 		{}
 
 		~LinkedList<TYPE>()
 		{
-			for (size_t i = 0; i < mCount; ++i)
+			for (size_t i = 0; i < mSize; ++i)
 			{
-				Node<TYPE>* next = mHead->Next;
-				delete mHead;
-				mHead = nullptr;
-				mHead = next;
+				if (mHead)
+				{
+					Node<TYPE>* next = mHead->Next;
+					delete mHead;
+					mHead = nullptr;
+					mHead = next;
+				}
 			}
 		}
 
-	private:
+	protected:
 		Node<TYPE>*	mHead;
-		size_t		mCount;
+		size_t		mSize;
 
 	private:
 		Node<TYPE>* GetNode(size_t idx) 

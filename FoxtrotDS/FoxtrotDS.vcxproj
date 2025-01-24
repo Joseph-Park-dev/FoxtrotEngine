@@ -178,6 +178,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Dynamic\LinkedStack.h" />
     <ClInclude Include="Static\CircularStack.h" />
     <ClInclude Include="Static\ArrayDS.h" />
     <ClInclude Include="Static\ArrayStack.h" />

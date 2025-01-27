@@ -47,7 +47,7 @@ namespace FTDS
 			--mSize;
 		}
 
-		void Insert(TYPE val, size_t idx)
+		virtual void Insert(TYPE val, size_t idx)
 		{
 			// Given index should be smaller than the number of nodes.
 			assert(idx < mSize);  
@@ -60,6 +60,9 @@ namespace FTDS
 			node->Next = next;
 			++mSize;
 		}
+
+		virtual TYPE Back() { return GetNode(mSize-1)->Value; }
+		virtual TYPE Peek(size_t idx) { return GetNode(idx)->Value; };
 
 		void Delete(size_t idx)
 		{
@@ -79,9 +82,6 @@ namespace FTDS
 			delete target;
 			target = nullptr;
 		}
-
-		TYPE Peek(size_t idx) { return GetNode(idx)->Value; };
-		TYPE Back() { return GetNode(mSize-1)->Value; }
 
 	public:
 		bool	IsEmpty()	{ return mSize == 0; }

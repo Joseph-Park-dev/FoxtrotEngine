@@ -40,12 +40,11 @@ namespace FTDS
     public:
         LinkedStack()
             : LinkedList<TYPE>()
-        { }
+        {}
 
         ~LinkedStack()
         {
-            while (!this->IsEmpty())
-                Pop();
+            while (!this->IsEmpty()) Pop();
         }
     };
 }

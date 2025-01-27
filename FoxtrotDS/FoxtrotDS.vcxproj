@@ -178,8 +178,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Dynamic\LinkedQueue.h" />
     <ClInclude Include="Dynamic\LinkedStack.h" />
-    <ClInclude Include="Static\CircularStack.h" />
     <ClInclude Include="Static\ArrayDS.h" />
     <ClInclude Include="Static\ArrayStack.h" />
     <ClInclude Include="Static\CircularQueue.h" />
@@ -192,7 +192,6 @@
     <ClInclude Include="TestHeaderBatch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Static\CircularStack.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

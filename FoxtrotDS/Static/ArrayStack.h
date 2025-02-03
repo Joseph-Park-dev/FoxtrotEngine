@@ -6,29 +6,30 @@ namespace FTDS
 	template <class TYPE>
 	class ArrayStack : public FTDS::ArrayDS<TYPE>
 	{
+		using FTDS::ArrayDS<TYPE>::mData;
+		using FTDS::ArrayDS<TYPE>::mCapacity;
+		using FTDS::ArrayDS<TYPE>::mSize;
+
 	public:
 		virtual void Push(TYPE& element)
 		{
-			assert(!IsFull()); // Stack must not be full. Use Reserve(size_t).
+			assert(!this->IsFull()); // Stack must not be full. Use Reserve(size_t).
 			this->mData[++mTop] = element;
+			++mSize;
 		}
 
 		virtual void Push(TYPE&& element)
 		{
-			assert(!IsFull()); // Stack must not be full. Use Reserve(size_t).
+			assert(!this->IsFull()); // Stack must not be full. Use Reserve(size_t).
 			this->mData[++mTop] = element;
+			++mSize;
 		}
 
-		virtual TYPE Pop()
+		virtual void Pop()
 		{
-			assert(!IsEmpty()); // Stack must have somthing to pop in itself.
-			return this->mData[mTop--];
-		}
-
-		virtual TYPE Peek()
-		{
-			assert(!IsEmpty()); // Stack must have somthing to pop in itself.
-			return this->mData[mTop];
+			assert(!this->IsEmpty()); // Stack must have somthing to pop in itself.
+			--mTop;
+			--mSize;
 		}
 
 		virtual void Clear() override
@@ -43,8 +44,11 @@ namespace FTDS
 		}
 
 	public:
-		virtual bool IsEmpty()	override { return mTop == -1; }
-		virtual bool IsFull()	override { return mTop == this->mSize - 1; }
+		TYPE Peek()
+		{
+			assert(!this->IsEmpty()); // Stack must have somthing to pop in itself.
+			return this->mData[mTop];
+		}
 
 	public:
 		ArrayStack()

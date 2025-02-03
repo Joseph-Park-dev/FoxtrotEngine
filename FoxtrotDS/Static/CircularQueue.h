@@ -8,38 +8,38 @@ namespace FTDS
 	template <class TYPE>
 	class CircularQueue : public FTDS::ArrayDS<TYPE>
 	{
+		using FTDS::ArrayDS<TYPE>::mData;
+		using FTDS::ArrayDS<TYPE>::mCapacity;
+		using FTDS::ArrayDS<TYPE>::mSize;
+
 	public:
 		void Enqueue(TYPE value)
 		{
-			assert(!IsFull());
-			mRear = mRear % this->mCapacity;
-			this->mData[mRear] = value;
-			++mRear;
+			mRear = (mRear + 1) % mCapacity;
+			mData[mRear] = value;	
+
+			if (this->IsFull())
+				mFront = (mRear + 1) % mCapacity;
+			else
+				++mSize;
 		}
-		TYPE Dequeue()
+		void Dequeue()
 		{
-			assert(!IsEmpty());
-			mFront = mFront % this->mCapacity;
-			TYPE value = this->mData[mFront];
-			++mFront;
-			return value;
+			assert(!this->IsEmpty());
+			mFront = (mFront + 1) % mCapacity;
+			--mSize;
 		}
 		TYPE Peek()
 		{
-			assert(!IsEmpty());
-			return this->mData[mFront % this->mCapacity];
+			assert(!this->IsEmpty());
+			return mData[mFront];
 		}
-
-	public:
-		virtual bool	IsEmpty()	override { return mFront == mRear; }
-		virtual bool	IsFull()	override { return (mRear + 1) % (this->mCapacity + 1)  == mFront; }
-		virtual size_t	Size()		override { return mRear - mFront; }
 
 	public:
 		CircularQueue()
 			: ArrayDS<TYPE>()
 			, mFront(0)
-			, mRear(0)
+			, mRear(-1)
 		{}
 
 	private:

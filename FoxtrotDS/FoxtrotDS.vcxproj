@@ -184,6 +184,7 @@
     <ClInclude Include="Static\ArrayStack.h" />
     <ClInclude Include="Static\CircularQueue.h" />
     <ClInclude Include="Compare\StringEqual.h" />
+    <ClInclude Include="Static\CircularStack.h" />
     <ClInclude Include="Utils\DSLogs.h" />
     <ClInclude Include="Dynamic\LinkedList.h" />
     <ClInclude Include="Dynamic\Node.h" />

@@ -51,6 +51,9 @@
     <ClInclude Include="Dynamic\LinkedQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Static\CircularStack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

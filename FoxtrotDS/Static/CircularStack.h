@@ -43,20 +43,6 @@ namespace FTDS
 			return mData[mTop];
 		}
 
-		TYPE Peek(size_t idx)
-		{
-			assert(!this->IsEmpty()); // Stack must have somthing to pop in itself.
-			return mData[idx];
-		}
-
-		TYPE Front()
-		{
-			size_t idx = 0;
-			if (this->IsFull())
-				idx = (mTop + 1) % static_cast<int>(mCapacity)
-			return mData[idx];
-		}
-
 	public:
 		CircularStack()
 			: ArrayStack<TYPE>()

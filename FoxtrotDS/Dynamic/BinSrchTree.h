@@ -7,10 +7,17 @@ namespace FTDS
 	class BinSrchTree
 	{
 	public:
-		void InsertNode(TreeNode* current = mRoot, TYPE val)
+		void InsertNode(TreeNode<TYPE>* current, TYPE val)
 		{
+			if (mRoot == nullptr)
+			{
+				mRoot = new TreeNode<TYPE>(val);
+				return;
+			}
+
 			if (current->Value == val)
 				return;
+
 			if (val < current->Value)
 			{
 				if (current->Left != nullptr)
@@ -33,14 +40,14 @@ namespace FTDS
 			}
 		}
 
-		TreeNode<TYPE>* FindNode(TreeNode* current = mRoot, TYPE target)
+		TreeNode<TYPE>* FindNode(TreeNode<TYPE>* current, TYPE target)
 		{
 			if (!current)
-				return NULL;
+				return nullptr;
 			if (current->Value == target)
 				return current;
 
-			if (Leftward(current, target)
+			if (Leftward(current, target))
 				return FindNode(current->Left, target);
 			else if (Rightward(current, target))
 				return FindNode(current->Right, target);
@@ -48,16 +55,22 @@ namespace FTDS
 			return nullptr;
 		}
 
-	private:
-		TreeNode* mRoot;
+	public:
+		TreeNode<TYPE>* Root() { return mRoot; }
+
+	public:
+		BinSrchTree() :mRoot(nullptr) {};
 
 	private:
-		bool Leftward(TreeNode* curr, TYPE t)
+		TreeNode<TYPE>* mRoot;
+
+	private:
+		bool Leftward(TreeNode<TYPE>* curr, TYPE t)
 		{
 			return t < curr->Value && curr->Left != nullptr;
 		}
 
-		bool Rightward(TreeNode* curr, TYPE t)
+		bool Rightward(TreeNode<TYPE>* curr, TYPE t)
 		{
 			return curr->Value < t && curr->Right != nullptr;
 		}

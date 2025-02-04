@@ -154,7 +154,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\FoxtrotEngine\include;..\FoxtrotEngine\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\FoxtrotEngine\include;..\FoxtrotEngine\src;.\Compare;.\Dynamic;.\Search;.\Sort;.\Static;.\Utils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

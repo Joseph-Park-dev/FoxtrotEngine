@@ -1,4 +1,5 @@
 #pragma once
+
 namespace FTDS
 {
 	template <typename TYPE>

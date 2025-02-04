@@ -182,6 +182,7 @@
     <ClInclude Include="Dynamic\LinkedQueue.h" />
     <ClInclude Include="Dynamic\LinkedStack.h" />
     <ClInclude Include="Dynamic\TreeNode.h" />
+    <ClInclude Include="Search\DepthFirstSearch.h" />
     <ClInclude Include="Static\ArrayDS.h" />
     <ClInclude Include="Static\ArrayStack.h" />
     <ClInclude Include="Static\CircularQueue.h" />

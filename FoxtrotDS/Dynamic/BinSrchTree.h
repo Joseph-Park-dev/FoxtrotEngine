@@ -1,78 +1,67 @@
 #pragma once
-#include "TreeNode.h"
+#include "BinaryNode.h"
+#include "BinTree.h"
 
 namespace FTDS
 {
-	template <typename TYPE>
-	class BinSrchTree
+	template <typename TYPE, typename CALLBACK>
+	class BinSrchTree : public FTDS::BinTree<TYPE, CALLBACK>
 	{
+		using BinTree<TYPE, CALLBACK>::mRoot;
+
 	public:
-		void InsertNode(TreeNode<TYPE>* current, TYPE val)
+		void InsertNode(int key, TYPE val)
 		{
 			if (mRoot == nullptr)
 			{
-				mRoot = new TreeNode<TYPE>(val);
+				mRoot = new BinaryNode<TYPE>(key, val);
 				return;
 			}
-
-			if (current->Value == val)
-				return;
-
-			if (val < current->Value)
-			{
-				if (current->Left != nullptr)
-					InsertNode(current->Left, val);
-				else
-				{
-					current->Left = new TreeNode<TYPE>(val);
-					current->Left->Parent = current;
-				}
-			}
-			else
-			{
-				if (current->Right != nullptr)
-					InsertNode(current->Right, val);
-				else
-				{
-					current->Right = new TreeNode<TYPE>(val);
-					current->Right->Parent = current;
-				}
-			}
+			InsertNode(mRoot, key, val);
 		}
 
-		TreeNode<TYPE>* FindNode(TreeNode<TYPE>* current, TYPE target)
+		BinaryNode<TYPE>* FindNode(BinaryNode<TYPE>* current, TYPE target)
 		{
 			if (!current)
 				return nullptr;
 			if (current->Value == target)
 				return current;
-
 			if (Leftward(current, target))
 				return FindNode(current->Left, target);
-			else if (Rightward(current, target))
+			if (Rightward(current, target))
 				return FindNode(current->Right, target);
-
 			return nullptr;
 		}
 
-	public:
-		TreeNode<TYPE>* Root() { return mRoot; }
-
-	public:
-		BinSrchTree() :mRoot(nullptr) {};
-
 	private:
-		TreeNode<TYPE>* mRoot;
-
-	private:
-		bool Leftward(TreeNode<TYPE>* curr, TYPE t)
+		bool Leftward(BinaryNode<TYPE>* curr, TYPE t)
 		{
 			return t < curr->Value && curr->Left != nullptr;
 		}
 
-		bool Rightward(TreeNode<TYPE>* curr, TYPE t)
+		bool Rightward(BinaryNode<TYPE>* curr, TYPE t)
 		{
 			return curr->Value < t && curr->Right != nullptr;
+		}
+
+		void InsertNode(BinaryNode<TYPE>* current, int key, TYPE val)
+		{
+			if (key < current->Key)
+			{
+				if (current->Left != nullptr)
+					InsertNode(current->Left, key, val);
+				else
+					current->Left = new BinaryNode<TYPE>(key, val);
+			}
+			else if (current->Key < key)
+			{
+				if (current->Right != nullptr)
+					InsertNode(current->Right, key, val);
+				else
+					current->Right = new BinaryNode<TYPE>(key, val);
+			}
+			else // current->Value == val
+				return;
 		}
 	};
 }

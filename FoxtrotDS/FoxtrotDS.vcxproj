@@ -179,9 +179,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Dynamic\BinSrchTree.h" />
+    <ClInclude Include="Dynamic\BinTree.h" />
     <ClInclude Include="Dynamic\LinkedQueue.h" />
     <ClInclude Include="Dynamic\LinkedStack.h" />
-    <ClInclude Include="Dynamic\TreeNode.h" />
+    <ClInclude Include="Dynamic\BinaryNode.h" />
     <ClInclude Include="Search\DepthFirstSearch.h" />
     <ClInclude Include="Static\ArrayDS.h" />
     <ClInclude Include="Static\ArrayStack.h" />

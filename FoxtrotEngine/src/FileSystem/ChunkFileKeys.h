@@ -132,13 +132,11 @@ namespace ChunkKeys
 	constexpr const char* TILEMAP_KEY		= "TileMapKey";
 
 	// TextRenderer Component
-	constexpr const char* CHAR_SPACING		= "Character Spacing";
-	constexpr const char* LINE_SPACING		= "Line Spacing";
-	constexpr const char* MAX_CHAR_PER_LINE	= "Max Char per Line";
 	constexpr const char* TEXT				= "Text";
+	constexpr const char* ORIGIN			= "Origin";
 
 	// Collider Component
-	constexpr const char* OFFSET = "Offset";
+	constexpr const char* OFFSET			= "Offset";
 	constexpr const char* SHOW_DEBUG_SHAPE	= "Show Debug Shape";
 
 	// Box Collider Component
@@ -156,18 +154,20 @@ namespace ChunkKeys
 	constexpr const char* TARGET_NAME		= "Target Name";
 
 // General Terms
-	constexpr const char* NAME = "Name";
-	constexpr const char* STATE = "State";
-	constexpr const char* KEY = "Key";
-	constexpr const char* FILE_NAME = "FileName";
-	constexpr const char* PATH = "Path";
-	constexpr const char* RELATIVE_PATH = "RelativePath";
+	constexpr const char* NAME				= "Name";
+	constexpr const char* STATE				= "State";
+	constexpr const char* KEY				= "Key";
+	constexpr const char* FILE_NAME			= "FileName";
+	constexpr const char* PATH				= "Path";
+	constexpr const char* RELATIVE_PATH		= "RelativePath";
 
-	constexpr const char* PARENT = "Parent";
-	constexpr const char* CHILD = "Child";
+	constexpr const char* PARENT			= "Parent";
+	constexpr const char* CHILD				= "Child";
 
-	constexpr const char* COUNT = "Count";
-	constexpr const char* LIST = "List";
+	constexpr const char* COUNT				= "Count";
+	constexpr const char* LIST				= "List";
+
+	constexpr const char* COLOR				= "Color";
 
 // Buffer Sizes
 	constexpr size_t MAX_BUFFER_INPUT_TEXT = 50;

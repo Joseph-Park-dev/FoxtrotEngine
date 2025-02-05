@@ -56,7 +56,6 @@ public:
 public:
      Animator(
          class Actor* owner, 
-          
          int updateOrder = DEFAULT_UPDATEORDER
      );
     ~Animator() override;
@@ -79,5 +78,7 @@ private:
             void UpdatePlayAnim();
             void UpdatePlayList();
             void CreateAnimation();
+
+            void TEST_CreateSpine();
 #endif // FOXTROT_EDITOR
 };

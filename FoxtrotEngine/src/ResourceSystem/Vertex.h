@@ -35,3 +35,14 @@ struct Vertex {
     DirectX::SimpleMath::Vector3 normal;
     DirectX::SimpleMath::Vector2 texcoord;
 };
+
+struct SpineVertex {
+    // Position in x/y plane
+    DirectX::SimpleMath::Vector2 position;
+
+    // UV coordinates
+    DirectX::SimpleMath::Vector2 texcoord;
+
+    // Packed RGBA color
+    uint32_t color;
+};

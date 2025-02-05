@@ -26,12 +26,12 @@ void FTBasicMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPt
         if (mesh)
         {
             D3D11Utils::UpdateBuffer(
-                device, context, mesh->VertexConstantData,
+                context, mesh->VertexConstantData,
                 mesh->VertexConstantBuffer
             );
 
             D3D11Utils::UpdateBuffer(
-                device, context, mesh->PixelConstantData,
+                context, mesh->PixelConstantData,
                 mesh->PixelConstantBuffer
             );
         }

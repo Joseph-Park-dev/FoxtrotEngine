@@ -19,7 +19,7 @@ struct RayCastHit2D
 	RayCastHit2D()
 		: collider(nullptr), actor(nullptr), distance(0.f), point(FTVector2::Zero)
 	{}
-	Collider2DComponent*	collider;
+	Collider2D*			collider;
 	Actor*				actor;
 	float				distance;
 	FTVector2			point;

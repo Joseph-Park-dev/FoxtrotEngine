@@ -176,6 +176,7 @@ void Animator::EditorUpdate(float deltaTime)
 	{
 		Update(deltaTime);
 		mCurrentAnim->Update(deltaTime);
+
 	}
 }
 

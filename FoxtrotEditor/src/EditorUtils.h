@@ -12,9 +12,11 @@
 #pragma once
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
+#include "imgui/FileDialog/ImGuiFileDialog.h"
 
 #include "EditorElement.h"
 #include "EditorSceneManager.h"
+#include "FileSystem/ChunkFileKeys.h"
 
 namespace FTEditorUtils
 {

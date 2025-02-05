@@ -207,13 +207,13 @@ void FTShape::InitializeConstantBuffer(ComPtr<ID3D11Device>& device)
 void FTShape::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
     if (mVertexConstantBuffer)
-        D3D11Utils::UpdateBuffer(device, context, mVertexConstantData,
+        D3D11Utils::UpdateBuffer(context, mVertexConstantData,
             mVertexConstantBuffer);
     else
         printf("ERROR : FTShape::UpdateConstantBuffers() -> Vertex Constant Buffer is null");
 
     if(mPixelConstantBuffer)
-        D3D11Utils::UpdateBuffer(device, context, mPixelConstantData,
+        D3D11Utils::UpdateBuffer(context, mPixelConstantData,
             mPixelConstantBuffer);
     else 
         printf("ERROR : FTShape::UpdateConstantBuffers() -> Pixel Constant Buffer is null");

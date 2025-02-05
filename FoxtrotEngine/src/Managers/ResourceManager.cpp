@@ -24,6 +24,8 @@
 #include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
 
+#include "Compare/StringEqual.h"
+
 #ifdef FOXTROT_EDITOR
 #include "imgui/FileDialog/ImGuiFileDialog.h"
 #include "imgui/FileDialog/ImGuiFileDialogConfig.h"
@@ -73,6 +75,18 @@ FTTexture* ResourceManager::GetLoadedTexture(const UINT key)
 		printf("Error: Unable to find FTTexture with key; %d\n", key);
 	ptTex->AddRefCount();
 	return ptTex;
+}
+
+FTTexture* ResourceManager::GetLoadedTexture(const char* name)
+{
+	auto iter = mMapTextures.begin();
+	for (; iter != mMapTextures.end(); ++iter)
+		if (FTDS::StringEqual((*iter).second->GetFileName().c_str(), name))
+		{
+			(*iter).second->AddRefCount();
+			return (*iter).second;
+		}
+	return nullptr;
 }
 
 std::vector<MeshData>& ResourceManager::GetLoadedMeshes(const UINT key)

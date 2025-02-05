@@ -33,11 +33,15 @@ public:
 
 	static void   LoadVector2(std::ifstream& ifs, FTVector2& vec2);
 	static void	  LoadVector2(std::ifstream& ifs, b2Vec2& vec2);
+	static void	  LoadVector2(std::ifstream& ifs, DirectX::XMFLOAT2& vec2);
 	static void   LoadVector3(std::ifstream& ifs, FTVector3& vec3);
+	static void   LoadVector4(std::ifstream& ifs, DirectX::XMFLOAT4& vec4);
 
 	static void	  ParseVector3(std::string& line, FTVector3& arg);
 	static void	  ParseVector2(std::string& line, FTVector2& arg);
 	static void	  ParseVector2(std::string& line, b2Vec2& arg);
+	static void   ParseVector2(std::string& line, DirectX::XMFLOAT2& arg);
+	static void	  ParseVector4(std::string& line, DirectX::XMFLOAT4& arg);
 
 	static void	  ParseInt(std::string& line, int& arg);
 	static void   ParseUnsignedInt(std::string& line, unsigned int& arg);
@@ -54,7 +58,10 @@ public:
 
 	static void SaveVector3(std::ofstream& ofs, const std::string valName, const FTVector3& vec3);
 	static void SaveVector2(std::ofstream& ofs, const std::string valName, const FTVector2& vec2);
+	static void SaveVector2(std::ofstream& ofs, const std::string valName, const DirectX::XMFLOAT2& vec2);
 	static void SaveVector2(std::ofstream& ofs, const std::string valName, const b2Vec2& vec2);
+
+	static void SaveVector4(std::ofstream& ofs, const std::string valName, const DirectX::XMFLOAT4& vec4);
 
 	static void SaveInt(std::ofstream& ofs, const std::string valName, const int& intVal);
 	static void SaveUnsignedInt(std::ofstream& ofs, const std::string valName, const unsigned int& intVal);

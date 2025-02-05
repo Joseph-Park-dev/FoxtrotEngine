@@ -76,20 +76,24 @@ public:
         const vector<uint32_t>& indices,
         ComPtr<ID3D11Buffer>& indexBuffer);
 
+    static void CreateIndexBuffer(ComPtr<ID3D11Device>& device, 
+        UINT numIndices, 
+        ComPtr<ID3D11Buffer>& indexBuffer);
+
     template <typename T_VERTEX>
     static void CreateVertexBuffer(ComPtr<ID3D11Device>& device,
         const vector<T_VERTEX>& vertices,
-        ComPtr<ID3D11Buffer>& vertexBuffer) {
-
+        ComPtr<ID3D11Buffer>& vertexBuffer) 
+    {
         // D3D11_USAGE enumeration (d3d11.h)
         // https://learn.microsoft.com/en-us/windows/win32/api/d3d11/ne-d3d11-d3d11_usage
 
         D3D11_BUFFER_DESC bufferDesc;
         ZeroMemory(&bufferDesc, sizeof(bufferDesc));
-        bufferDesc.Usage = D3D11_USAGE_DYNAMIC; // 초기화 후 변경X
+        bufferDesc.Usage = D3D11_USAGE_IMMUTABLE; // 초기화 후 변경X
         bufferDesc.ByteWidth = UINT(sizeof(T_VERTEX) * vertices.size());
         bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-        bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; // 0 if no CPU access is necessary.
+        bufferDesc.CPUAccessFlags = 0; // 0 if no CPU access is necessary.
         bufferDesc.StructureByteStride = sizeof(T_VERTEX);
 
         D3D11_SUBRESOURCE_DATA vertexBufferData = {
@@ -99,6 +103,26 @@ public:
         vertexBufferData.SysMemSlicePitch = 0;
 
         const HRESULT hr = device->CreateBuffer(&bufferDesc, &vertexBufferData,
+            vertexBuffer.GetAddressOf());
+        if (FAILED(hr)) {
+            std::cout << "CreateBuffer() failed. " << std::hex << hr
+                << std::endl;
+        };
+    }
+
+    template <typename T_VERTEX>
+    static void CreateVertexBuffer(ComPtr<ID3D11Device>& device,
+        UINT numVertices, 
+        ComPtr<ID3D11Buffer>& vertexBuffer)
+    {
+        D3D11_BUFFER_DESC vertexBufferDesc;
+        ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
+        vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC; // Use DYNAMIC to allow CPU writes
+        vertexBufferDesc.ByteWidth = sizeof(T_VERTEX) * numVertices; // Corrected calculation
+        vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+        vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+        const HRESULT hr = device->CreateBuffer(&vertexBufferDesc, nullptr,
             vertexBuffer.GetAddressOf());
         if (FAILED(hr)) {
             std::cout << "CreateBuffer() failed. " << std::hex << hr
@@ -139,7 +163,7 @@ public:
     }
 
     template <typename T_DATA>
-    static void UpdateBuffer(ComPtr<ID3D11Device>& device,
+    static void UpdateBuffer(
         ComPtr<ID3D11DeviceContext>& context,
         const T_DATA& bufferData,
         ComPtr<ID3D11Buffer>& buffer) {

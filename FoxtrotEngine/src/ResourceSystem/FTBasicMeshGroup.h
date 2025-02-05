@@ -43,8 +43,8 @@ public:
 
 protected:
 			void	InitializeConstantBuffer (ComPtr<ID3D11Device>& device);
-	virtual void	InitializeMeshes		  (ComPtr<ID3D11Device>& device, std::vector<MeshData>& meshes);
-	virtual HRESULT CreateTextureSampler(ComPtr<ID3D11Device>& device);
+	virtual void	InitializeMeshes		 (ComPtr<ID3D11Device>& device, std::vector<MeshData>& meshes);
+	virtual HRESULT CreateTextureSampler	 (ComPtr<ID3D11Device>& device);
 
 private:
 	std::vector<Mesh*>			mMeshes;

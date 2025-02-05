@@ -173,8 +173,10 @@ HRESULT D3D11Utils::CreatePixelShader(ComPtr<ID3D11Device>& device,
 
 void D3D11Utils::CreateIndexBuffer(ComPtr<ID3D11Device>& device,
     const std::vector<uint32_t>& indices,
-    ComPtr<ID3D11Buffer>& indexBuffer) {
+    ComPtr<ID3D11Buffer>& indexBuffer) 
+{
     D3D11_BUFFER_DESC bufferDesc = {};
+    ZeroMemory(&bufferDesc, sizeof(bufferDesc));
     bufferDesc.Usage = D3D11_USAGE_IMMUTABLE; // 초기화 후 변경X
     bufferDesc.ByteWidth = UINT(sizeof(uint32_t) * indices.size());
     bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -188,6 +190,18 @@ void D3D11Utils::CreateIndexBuffer(ComPtr<ID3D11Device>& device,
 
     device->CreateBuffer(&bufferDesc, &indexBufferData,
         indexBuffer.GetAddressOf());
+}
+
+void D3D11Utils::CreateIndexBuffer(ComPtr<ID3D11Device>& device,
+    UINT numIndices,
+    ComPtr<ID3D11Buffer>& indexBuffer)
+{
+    D3D11_BUFFER_DESC indexBufferDesc;
+    ZeroMemory(&indexBufferDesc, sizeof(indexBufferDesc));
+    indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+    indexBufferDesc.ByteWidth = sizeof(uint16_t) * numIndices;
+    indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    device->CreateBuffer(&indexBufferDesc, nullptr, &indexBuffer);
 }
 
 void D3D11Utils::CreateGeometryShader(

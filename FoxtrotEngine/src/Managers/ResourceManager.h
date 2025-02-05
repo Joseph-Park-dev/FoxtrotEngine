@@ -61,6 +61,7 @@ public:
 
 public:
 	FTTexture*					GetLoadedTexture(const UINT mItemKey);
+	FTTexture*					GetLoadedTexture(const char* name);
 	FTTileMap*					GetLoadedTileMap(const UINT mItemKey);
 	FTPremade*					GetLoadedPremade(const UINT mItemKey);
 	FTPremade*					GetLoadedPremade(std::string&& fileName);

@@ -179,6 +179,21 @@ void FileIOHelper::LoadVector2(std::ifstream& ifs, b2Vec2& vec2)
     ParseVector2(line, vec2);
 }
 
+void FileIOHelper::LoadVector2(std::ifstream& ifs, DirectX::XMFLOAT2& vec2)
+{
+    // Parse data information.
+    std::string line;
+    std::getline(ifs, line, '\n');
+
+    std::string name = ExtractUntil(line, '[');
+    std::string typeNameStr = GetBracketedVal(line, '[', ']');
+    line.clear();
+
+    // Parse the actual data.
+    std::getline(ifs, line, '\n');
+    ParseVector2(line, vec2);
+}
+
 void FileIOHelper::LoadVector3(std::ifstream& ifs, FTVector3& vec3)
 {
     // Parse data information.
@@ -192,6 +207,21 @@ void FileIOHelper::LoadVector3(std::ifstream& ifs, FTVector3& vec3)
     // Parse the actual data.
     std::getline(ifs, line, '\n');
     ParseVector3(line, vec3);
+}
+
+void FileIOHelper::LoadVector4(std::ifstream& ifs, DirectX::XMFLOAT4& vec4)
+{
+    // Parse data information.
+    std::string line;
+    std::getline(ifs, line, '\n');
+
+    std::string name = ExtractUntil(line, '[');
+    std::string typeNameStr = GetBracketedVal(line, '[', ']');
+    line.clear();
+
+    // Parse the actual data.
+    std::getline(ifs, line, '\n');
+    ParseVector4(line, vec4);
 }
 
 void FileIOHelper::ParseVector3(std::string& line, FTVector3& arg)
@@ -220,6 +250,26 @@ void FileIOHelper::ParseVector2(std::string& line, b2Vec2& arg)
     float y = std::stof(ExtractUntil(line, ','));
 
     arg = FTVector2(x, y).GetB2Vec2();
+}
+
+void FileIOHelper::ParseVector2(std::string& line, DirectX::XMFLOAT2& arg)
+{
+    line = GetBracketedVal(line, '(', ')');
+    float x = std::stof(ExtractUntil(line, ','));
+    float y = std::stof(ExtractUntil(line, ','));
+
+    arg = DirectX::XMFLOAT2(x, y);
+}
+
+void FileIOHelper::ParseVector4(std::string& line, DirectX::XMFLOAT4& arg)
+{
+    line = GetBracketedVal(line, '(', ')');
+    float x = std::stof(ExtractUntil(line, ','));
+    float y = std::stof(ExtractUntil(line, ','));
+    float z = std::stof(ExtractUntil(line, ','));
+    float w = std::stof(ExtractUntil(line, ')'));
+
+    arg = DirectX::XMFLOAT4(x, y, z, w);
 }
 
 void FileIOHelper::ParseInt(std::string& line, int& arg)
@@ -314,6 +364,14 @@ void FileIOHelper::SaveVector2(std::ofstream& ofs, const std::string valName, co
     ++mItemCounts.back();
 }
 
+void FileIOHelper::SaveVector2(std::ofstream& ofs, const std::string valName, const DirectX::XMFLOAT2& vec2)
+{
+    std::string itemTitle = mItemIdent + valName + "[Vector2]" + '\n';
+    std::string item = mItemIdent + "(" + std::to_string(vec2.x) + "," + std::to_string(vec2.y) + ")";
+    mDataBuffer.push_back(itemTitle + item);
+    ++mItemCounts.back();
+}
+
 #ifdef FOXTROT_EDITOR
 void FileIOHelper::SaveVector2(std::ofstream& ofs, const std::string valName, const b2Vec2& vec2)
 {
@@ -324,6 +382,20 @@ void FileIOHelper::SaveVector2(std::ofstream& ofs, const std::string valName, co
 }
 #endif // FOXTROT_EDITOR
 
+void FileIOHelper::SaveVector4(std::ofstream& ofs, const std::string valName, const DirectX::XMFLOAT4& vec4)
+{
+    std::string itemTitle = mItemIdent + valName + "[Vector4]" + '\n';
+    std::string item = 
+        mItemIdent + 
+        "(" + 
+        std::to_string(vec4.x) + "," 
+        + std::to_string(vec4.y) 
+        + std::to_string(vec4.z) + "," 
+        + std::to_string(vec4.w) + 
+        ")";
+    mDataBuffer.push_back(itemTitle + item);
+    ++mItemCounts.back();
+}
 
 void FileIOHelper::SaveInt(std::ofstream& ofs, const std::string valName, const int& intVal)
 {

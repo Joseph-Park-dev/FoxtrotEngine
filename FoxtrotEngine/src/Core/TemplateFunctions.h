@@ -18,6 +18,7 @@
 #include <fstream>
 #include <string>
 #include <directxtk/SimpleMath.h>
+#include <filesystem>
 
 #ifdef FOXTROT_EDITOR
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -150,6 +151,13 @@ static const char* ToString(bool boolVal)
 static const bool StrToBool(std::string& str) 
 {
 	return str == "true" ? true : false;
+}
+
+inline std::string ExtractFileName(const char* path)
+{
+	std::filesystem::path p(path);
+	std::string str = p.filename().string();
+	return str;
 }
 
 inline void LTrim(std::string& str) {

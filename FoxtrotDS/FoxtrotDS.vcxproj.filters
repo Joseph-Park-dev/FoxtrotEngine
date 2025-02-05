@@ -6,7 +6,7 @@
   <ItemGroup>
     <ClInclude Include="Dynamic\LinkedQueue.h" />
     <ClInclude Include="Dynamic\LinkedStack.h" />
-    <ClInclude Include="Dynamic\TreeNode.h" />
+    <ClInclude Include="Dynamic\BinaryNode.h" />
     <ClInclude Include="Static\ArrayDS.h" />
     <ClInclude Include="Static\ArrayStack.h" />
     <ClInclude Include="Static\CircularQueue.h" />
@@ -20,5 +20,6 @@
     <ClInclude Include="TestHeaderBatch.h" />
     <ClInclude Include="Dynamic\BinSrchTree.h" />
     <ClInclude Include="Search\DepthFirstSearch.h" />
+    <ClInclude Include="Dynamic\BinTree.h" />
   </ItemGroup>
 </Project>

@@ -389,77 +389,77 @@ MeshData GeometryGenerator::MakeAnimationFrame(Tile tile)
     return meshData;
 }
 
-void GeometryGenerator::MakeSpriteTextGrid(std::vector<MeshData>& textMeshes, Tile* tileMap, size_t length, TextAttribute* attribute)
-{
-    if (0 < attribute->MaxChars)
-    {
-        size_t maxRow = length / attribute->MaxChars < 1 ? 1 : length / attribute->MaxChars;
-        for (size_t i = 0; i <= maxRow; ++i)
-        {
-            for (size_t j = 0; j < attribute->MaxChars; ++j)
-            {
-                size_t idx = attribute->MaxChars * i + j;
-                MeshData spriteText = MakeSpriteText(tileMap[idx], attribute, j, i);
-                textMeshes.push_back(spriteText);
-            }
-        }
-    }
-}
-
-MeshData GeometryGenerator::MakeSpriteText(Tile tile, TextAttribute* attrib, size_t col, size_t row)
-{
-    std::vector<Vector3> positions;
-    std::vector<Vector3> colors;
-    std::vector<Vector3> normals;
-    std::vector<Vector2> texcoords; // 텍스춰 좌표
-
-    FTRect& rectOnScreen = tile.GetRectOnScreen();
-
-    const float tileWidth = rectOnScreen.GetSize().x * attrib->Scale;
-    const float tileHeight = rectOnScreen.GetSize().y * attrib->Scale;
-    FTVector2 tileMin = FTVector2(tileWidth * col, tileHeight * row) * FTVector2(attrib->CharSpacing, 1.f);
-
-    // 앞면
-    positions.push_back(Vector3(tileMin.x,             -tileMin.y,              0.0f));
-    positions.push_back(Vector3(tileMin.x + tileWidth, -tileMin.y,              0.0f));
-    positions.push_back(Vector3(tileMin.x + tileWidth, -tileMin.y - tileHeight, 0.0f));
-    positions.push_back(Vector3(tileMin.x,             -tileMin.y - tileHeight, 0.0f));
-    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-
-    // Texture Coordinates (Direct3D 9)
-    // https://learn.microsoft.com/en-us/windows/win32/direct3d9/texture-coordinates
-    FTRect& rectOnMap = tile.GetRectOnMap();
-    const FTVector2& mapMin = rectOnMap.GetMin();
-    const float widthInMap = rectOnMap.GetSize().x;
-    const float heightInMap = rectOnMap.GetSize().y;
-
-    texcoords.push_back(Vector2(mapMin.x, mapMin.y));
-    texcoords.push_back(Vector2(mapMin.x + widthInMap, mapMin.y));
-    texcoords.push_back(Vector2(mapMin.x + widthInMap, mapMin.y + heightInMap));
-    texcoords.push_back(Vector2(mapMin.x, mapMin.y + heightInMap));
-
-    MeshData meshData;
-    for (size_t i = 0; i < positions.size(); i++) {
-        Vertex v;
-        v.position = positions[i];
-        v.color = colors[i];
-        v.normal = normals[i];
-        v.texcoord = texcoords[i];
-        meshData.vertices.push_back(v);
-    }
-    meshData.indices = {
-        0, 1, 2, 0, 2, 3, // 앞면
-    };
-
-    return meshData;
-}
+//void GeometryGenerator::MakeSpriteTextGrid(std::vector<MeshData>& textMeshes, Tile* tileMap, size_t length, TextAttribute* attribute)
+//{
+//    if (0 < attribute->MaxChars)
+//    {
+//        size_t maxRow = length / attribute->MaxChars < 1 ? 1 : length / attribute->MaxChars;
+//        for (size_t i = 0; i <= maxRow; ++i)
+//        {
+//            for (size_t j = 0; j < attribute->MaxChars; ++j)
+//            {
+//                size_t idx = attribute->MaxChars * i + j;
+//                MeshData spriteText = MakeSpriteText(tileMap[idx], attribute, j, i);
+//                textMeshes.push_back(spriteText);
+//            }
+//        }
+//    }
+//}
+//
+//MeshData GeometryGenerator::MakeSpriteText(Tile tile, TextAttribute* attrib, size_t col, size_t row)
+//{
+//    std::vector<Vector3> positions;
+//    std::vector<Vector3> colors;
+//    std::vector<Vector3> normals;
+//    std::vector<Vector2> texcoords; // 텍스춰 좌표
+//
+//    FTRect& rectOnScreen = tile.GetRectOnScreen();
+//
+//    const float tileWidth = rectOnScreen.GetSize().x * attrib->Scale;
+//    const float tileHeight = rectOnScreen.GetSize().y * attrib->Scale;
+//    FTVector2 tileMin = FTVector2(tileWidth * col, tileHeight * row) * FTVector2(attrib->CharSpacing, 1.f);
+//
+//    // 앞면
+//    positions.push_back(Vector3(tileMin.x,             -tileMin.y,              0.0f));
+//    positions.push_back(Vector3(tileMin.x + tileWidth, -tileMin.y,              0.0f));
+//    positions.push_back(Vector3(tileMin.x + tileWidth, -tileMin.y - tileHeight, 0.0f));
+//    positions.push_back(Vector3(tileMin.x,             -tileMin.y - tileHeight, 0.0f));
+//    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+//    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+//    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+//    colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
+//    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+//    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+//    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+//    normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+//
+//    // Texture Coordinates (Direct3D 9)
+//    // https://learn.microsoft.com/en-us/windows/win32/direct3d9/texture-coordinates
+//    FTRect& rectOnMap = tile.GetRectOnMap();
+//    const FTVector2& mapMin = rectOnMap.GetMin();
+//    const float widthInMap = rectOnMap.GetSize().x;
+//    const float heightInMap = rectOnMap.GetSize().y;
+//
+//    texcoords.push_back(Vector2(mapMin.x, mapMin.y));
+//    texcoords.push_back(Vector2(mapMin.x + widthInMap, mapMin.y));
+//    texcoords.push_back(Vector2(mapMin.x + widthInMap, mapMin.y + heightInMap));
+//    texcoords.push_back(Vector2(mapMin.x, mapMin.y + heightInMap));
+//
+//    MeshData meshData;
+//    for (size_t i = 0; i < positions.size(); i++) {
+//        Vertex v;
+//        v.position = positions[i];
+//        v.color = colors[i];
+//        v.normal = normals[i];
+//        v.texcoord = texcoords[i];
+//        meshData.vertices.push_back(v);
+//    }
+//    meshData.indices = {
+//        0, 1, 2, 0, 2, 3, // 앞면
+//    };
+//
+//    return meshData;
+//}
 
 MeshData GeometryGenerator::MakeBox() {
     std::vector<Vector3> positions;

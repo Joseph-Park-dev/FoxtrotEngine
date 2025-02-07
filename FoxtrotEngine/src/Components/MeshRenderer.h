@@ -85,6 +85,7 @@ public:
 
 #ifdef FOXTROT_EDITOR
 public:
+	virtual void EditorUpdate(float deltaTime) override;
 	virtual void EditorUIUpdate() override;
 
 protected:

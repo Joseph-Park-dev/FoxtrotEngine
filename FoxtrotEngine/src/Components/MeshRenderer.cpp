@@ -217,12 +217,19 @@ void MeshRenderer::LoadProperties(std::ifstream& ifs)
 }
 
 #ifdef FOXTROT_EDITOR
+void MeshRenderer::EditorUpdate(float deltaTime)
+{
+	Update(deltaTime);
+}
+
 void MeshRenderer::EditorUIUpdate()
 {
 	CHECK_RENDERER(GetRenderer());
 	if (ImGui::Button("Add Cube"))
 	{
-		// mMeshGroup = ResourceManager::GetInstance()->GetLoadedMeshes("Box");
+		MeshData meshData =
+			ResourceManager::GetInstance()->GetLoadedPrimitive (ChunkKeys::PRIMITIVE_BOX);
+		InitializeMesh(meshData);
 		LogString("Cube added");
 	}
 	OnConfirmUpdate();

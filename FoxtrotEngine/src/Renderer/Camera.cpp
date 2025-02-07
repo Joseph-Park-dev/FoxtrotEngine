@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -19,10 +19,10 @@
 #include "FileSystem/ChunkFileKeys.h"
 
 #ifdef FOXTROT_EDITOR
-#include "CommandHistory.h"
-#include "EditorLayer.h"
-#include "EditorSceneManager.h"
-#include "EditorElement.h"
+	#include "CommandHistory.h"
+	#include "EditorLayer.h"
+	#include "EditorSceneManager.h"
+	#include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
 void Camera::Initialize(FoxtrotRenderer* renderer, UINT pixels, float unit = 1)
@@ -54,10 +54,11 @@ Camera::Camera()
 	, mAspect(1920.f / 1080.f)
 	, mScreenCenter(FTVector2(1920.f, 1080.f) * 0.5f)
 	, mPixelsPerUnit(0.f)
-	, mViewType(Viewtype::Orthographic)
-{}
+	, mViewType(Viewtype::Perspective)
+{
+}
 
-Camera::~Camera(){}
+Camera::~Camera() {}
 
 Matrix Camera::GetViewRow()
 {
@@ -69,10 +70,7 @@ Matrix Camera::GetViewRow()
 		mYaw = -transform->GetRotation().y;
 		mPitch = transform->GetRotation().x;
 	}
-	return
-		Matrix::CreateTranslation(mPosition) *
-		Matrix::CreateRotationY(mYaw) *
-		Matrix::CreateRotationX(mPitch);
+	return Matrix::CreateTranslation(mPosition) * Matrix::CreateRotationY(mYaw) * Matrix::CreateRotationX(mPitch);
 }
 
 Matrix Camera::GetProjRow()
@@ -81,14 +79,15 @@ Matrix Camera::GetProjRow()
 	float worldWidth = mRenderer->GetRenderWidth() * unitsPerPixel;
 	float worldHeight = mRenderer->GetRenderHeight() * unitsPerPixel;
 
+	mAspect = mRenderer->GetRenderWidth() / mRenderer->GetRenderHeight();
+
 	return mViewType == Viewtype::Perspective
 		? DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(mProjFOVAngleY),
-			mAspect, mNearZ, mFarZ)
+			  mAspect, mNearZ, mFarZ)
 		: DirectX::XMMatrixOrthographicOffCenterLH(
-			0.0f, worldWidth, 
-			worldHeight, 0.0f, 
-			mNearZ, mFarZ
-		);
+			  0.0f, worldWidth,
+			  worldHeight, 0.0f,
+			  mNearZ, mFarZ);
 }
 
 Vector3 Camera::GetEyePos()
@@ -139,18 +138,18 @@ void Camera::InitializePixelsPerUnit(float pixels, float units)
 FTVector3 Camera::ConvertToCenter(FTVector3 topLeftPos)
 {
 	FTVector3 pos = topLeftPos * FTVector3(-1.f, 1.f, 1.0f);
-	float unitsPerPixel = 1 / mPixelsPerUnit;
-	float worldWidth = mRenderer->GetRenderWidth() * unitsPerPixel;
-	float worldHeight = mRenderer->GetRenderHeight() * unitsPerPixel;
+	float	  unitsPerPixel = 1 / mPixelsPerUnit;
+	float	  worldWidth = mRenderer->GetRenderWidth() * unitsPerPixel;
+	float	  worldHeight = mRenderer->GetRenderHeight() * unitsPerPixel;
 	pos += FTVector3(worldWidth / 2, worldHeight / 2, 0.f);
 	return pos;
 }
 
 FTVector3 Camera::ConvertToTopLeft(FTVector3 centerPos)
 {
-	float unitsPerPixel = 1 / mPixelsPerUnit;
-	float worldWidth = mRenderer->GetRenderWidth() * unitsPerPixel;
-	float worldHeight = mRenderer->GetRenderHeight() * unitsPerPixel;
+	float	  unitsPerPixel = 1 / mPixelsPerUnit;
+	float	  worldWidth = mRenderer->GetRenderWidth() * unitsPerPixel;
+	float	  worldHeight = mRenderer->GetRenderHeight() * unitsPerPixel;
 	FTVector3 pos = centerPos - FTVector3(worldWidth / 2, worldHeight / 2, 0.f);
 	pos = pos * FTVector3(-1.f, 1.f, 1.0f);
 	return pos;
@@ -159,7 +158,7 @@ FTVector3 Camera::ConvertToTopLeft(FTVector3 centerPos)
 void Camera::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::CAMERA_DATA);
-	if(mTarget)
+	if (mTarget)
 		FileIOHelper::SaveString(ofs, ChunkKeys::TARGET_ACTOR, mTarget->GetName());
 	else
 		FileIOHelper::SaveString(ofs, ChunkKeys::TARGET_ACTOR, ChunkKeys::NULL_OBJ);
@@ -181,7 +180,6 @@ void Camera::LoadProperties(std::ifstream& ifs)
 	if (targetActor != ChunkKeys::NULL_OBJ)
 		mTarget = SceneManager::GetInstance()->GetCurrentScene()->FindActor(targetActor);
 #endif // FOXTROT_EDITOR
-
 }
 
 FTVector3 Camera::ConvertScreenPosToWorld(FTVector2 screenPos)
@@ -190,7 +188,7 @@ FTVector3 Camera::ConvertScreenPosToWorld(FTVector2 screenPos)
 	float screenHeight = mRenderer->GetRenderHeight();
 
 	FTVector2 topLeft = FTVector2::Zero;
-	FTVector2 bottomRight = FTVector2(screenWidth-1, screenHeight-1);
+	FTVector2 bottomRight = FTVector2(screenWidth - 1, screenHeight - 1);
 
 	float nx = (screenPos.x / screenWidth) * 2.f - 1.f;
 	float ny = 1 - (screenPos.y / screenHeight) * 2.f;
@@ -199,7 +197,7 @@ FTVector3 Camera::ConvertScreenPosToWorld(FTVector2 screenPos)
 	DirectX::XMVECTOR ndcPos = DirectX::XMVectorSet(nx, ny, z, 1.0f);
 	DirectX::XMMATRIX inverseViewProj = DirectX::XMMatrixInverse(nullptr, (GetViewRow() * GetProjRow()));
 	DirectX::XMVECTOR worldPos = DirectX::XMVector4Transform(ndcPos, inverseViewProj);
-	
+
 	DirectX::SimpleMath::Vector3 vec3(worldPos);
 	return FTVector3(vec3.x, vec3.y, vec3.z);
 }
@@ -240,11 +238,11 @@ void Camera::DisplayCameraMenu()
 	// Camera2D::GetInstance()->SetScreenCenter(screenCenter + diff);
 
 	// Set Target
-	EditorScene* editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
+	EditorScene*		 editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
 	std::vector<Actor*>* editorElems = editorScene->GetActors();
 	std::string* actorNames = DBG_NEW std::string[editorScene->GetActorCount() + 1];
 	actorNames[0] = "None";
-	size_t idx = 1;
+	size_t		  idx = 1;
 	static size_t currIdx;
 
 	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
@@ -276,6 +274,22 @@ void Camera::DisplayCameraMenu()
 	}
 	delete[] actorNames;
 	CommandHistory::GetInstance()->UpdateVector3Value("Offset from target", mOffset, LOOKAT_MODSPEED);
+
+	if (ImGui::Button("2D"))
+	{
+		FoxtrotRenderer* renderer = FTCoreEditor::GetInstance()->GetGameRenderer();
+		if (GetViewType() == Viewtype::Perspective)
+		{
+			SetViewType(Viewtype::Orthographic);
+			LogString("Orthographic");
+		}
+		else if (GetViewType() == Viewtype::Orthographic)
+		{
+			SetViewType(Viewtype::Perspective);
+			LogString("Perspective");
+		}
+	}
+
 	ImGui::End();
 }
 #endif // FOXTROT_EDITOR

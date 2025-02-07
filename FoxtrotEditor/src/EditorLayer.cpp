@@ -222,14 +222,6 @@ void EditorLayer::DisplayFileMenu()
 				}
 			}
 		}
-		if (ImGui::Button("2D"))
-		{
-			FoxtrotRenderer* renderer = FTCoreEditor::GetInstance()->GetGameRenderer();
-			if (Camera::GetInstance()->GetViewType() == Viewtype::Perspective)
-				Camera::GetInstance()->SetViewType(Viewtype::Orthographic);
-			else if (Camera::GetInstance()->GetViewType() == Viewtype::Orthographic)
-				Camera::GetInstance()->SetViewType(Viewtype::Perspective);
-		}
 		if (ImGui::Button("Wireframe"))
 		{
 			FoxtrotRenderer* renderer = FTCoreEditor::GetInstance()->GetGameRenderer();

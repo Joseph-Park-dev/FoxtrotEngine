@@ -59,16 +59,16 @@ protected:
 
 private:
 	FoxtrotRenderer* mRenderer;
-	Actor*  mTarget;
+	Actor*		mTarget;
 
-	Vector3 mPosition;
-	Vector3 mViewDir;
-	Vector3 mUpDir;
-	Vector3 mRightDir;
+	Vector3		mPosition;
+	Vector3		mViewDir;
+	Vector3		mUpDir;
+	Vector3		mRightDir;
 
-	FTVector2 mDiff;
-	FTVector2 mScreenCenter;
-	FTVector3 mOffset;
+	FTVector2	mDiff;
+	FTVector2	mScreenCenter;
+	FTVector3	mOffset;
 
 	// roll, pitch, yaw
 	// https://en.wikipedia.org/wiki/Aircraft_principal_axes

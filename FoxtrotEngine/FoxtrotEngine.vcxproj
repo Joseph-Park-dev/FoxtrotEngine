@@ -466,6 +466,7 @@
     <ClInclude Include="src\Components\UIs\TextRenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".clang-format" />
     <None Include="vcpkg.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

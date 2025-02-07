@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -96,32 +96,34 @@ LRESULT FTCoreEditor::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam))
 		return true;
 
-	switch (msg) {
-	case WM_CLOSE:
+	switch (msg)
 	{
-		if (!CHUNK_IS_SAVED)
-			EditorLayer::GetInstance()->SetErrorType(ErrorType::ChunkNotSaved);
-		else
-			this->SetIsRunning(false);
-		return 0;
-	}
-	case WM_SIZE:
-	{
-		// Reset and resize swapchain
-		// std::cout << (UINT)LOWORD(lParam) << " " << (UINT)HIWORD(lParam)
-		//          << std::endl;
-		mIsResizingWindow = true;
-		if (GetGameRenderer())
+		case WM_CLOSE:
 		{
-			SetWindowWidth(UINT(LOWORD(lParam)));
-			SetWindowHeight(UINT(HIWORD(lParam)));
+			if (!CHUNK_IS_SAVED)
+				EditorLayer::GetInstance()->SetErrorType(ErrorType::ChunkNotSaved);
+			else
+				this->SetIsRunning(false);
+			return 0;
 		}
-		break;
-	}
+		case WM_SIZE:
+		{
+			// Reset and resize swapchain
+			// std::cout << (UINT)LOWORD(lParam) << " " << (UINT)HIWORD(lParam)
+			//          << std::endl;
+			mIsResizingWindow = true;
+			if (GetGameRenderer())
+			{
+				SetWindowWidth(UINT(LOWORD(lParam)));
+				SetWindowHeight(UINT(HIWORD(lParam)));
+			}
+			break;
+		}
 	}
 	if (mIsResizingWindow && MOUSE_AWAY(MOUSE::MOUSE_LEFT))
 	{
-		GetGameRenderer()->ResizeWindow(GetWindowWidth(), GetWindowHeight());
+		FTVector2 res = FTVector2(GetWindowWidth(), GetWindowHeight());
+		GetGameRenderer()->ResizeWindow(res);
 		mIsResizingWindow = false;
 	}
 	return DefWindowProc(hwnd, msg, wParam, lParam);
@@ -132,11 +134,11 @@ void FTCoreEditor::ProcessInput()
 	MSG msg = {};
 	if (PeekMessage(&msg, GetWindow(), 0, 0, PM_REMOVE))
 	{
-		//EditorCamera2D::GetInstance()->ProcessInput(msg);
+		// EditorCamera2D::GetInstance()->ProcessInput(msg);
 	}
 	KeyInputManager::GetInstance()->DetectKeyInput();
 	KeyInputManager::GetInstance()->DetectMouseInput(msg);
-	//KeyInputManager::GetInstance()->DetectGamepadInput();
+	// KeyInputManager::GetInstance()->DetectGamepadInput();
 	EditorSceneManager::GetInstance()->ProcessInput(KeyInputManager::GetInstance());
 	TranslateMessage(&msg);
 	DispatchMessage(&msg);
@@ -163,6 +165,8 @@ void FTCoreEditor::UpdateGame()
 
 void FTCoreEditor::GenerateOutput()
 {
+	GetGameRenderer()->RenderClear();
+
 	MSG msg = {};
 	InvalidateRect(GetWindow(), NULL, true);
 	if (PeekMessage(&msg, GetWindow(), 0, 0, PM_REMOVE))
@@ -192,7 +196,7 @@ FTCoreEditor::FTCoreEditor()
 	SetWindowTitle(L"Foxtrot Engine (ver.0.1.2)");
 }
 
-FTCoreEditor::~FTCoreEditor(){}
+FTCoreEditor::~FTCoreEditor() {}
 
 bool FTCoreEditor::InitGUI()
 {
@@ -202,17 +206,19 @@ bool FTCoreEditor::InitGUI()
 	(void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	// io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 	io.DisplaySize = ImVec2(float(GetWindowWidth()), float(GetWindowHeight()));
+
 	ImGui::StyleColorsDark();
-	if (!ImGui_ImplWin32_Init(GetWindow())) {
+	if (!ImGui_ImplWin32_Init(GetWindow()))
+	{
 		LogString("Imgui Wind32 Init failed");
 		return false;
 	}
 	if (!ImGui_ImplDX11_Init(
-		GetGameRenderer()->GetDevice().Get(),
-		GetGameRenderer()->GetContext().Get()
-	)
-		) {
+			GetGameRenderer()->GetDevice().Get(),
+			GetGameRenderer()->GetContext().Get()))
+	{
 		LogString("Imgui DX11 Init failed");
 		return false;
 	}

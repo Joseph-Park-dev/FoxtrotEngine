@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -25,7 +25,8 @@
 #include "FileSystem/FileIOHelper.h"
 
 #ifdef FOXTROT_EDITOR
-#include "FTCoreEditor.h"
+	#include "FTCoreEditor.h"
+	#include "EditorUtils.h"
 #endif // FOXTROT_EDITOR
 
 using DXMatrix = DirectX::SimpleMath::Matrix;
@@ -39,13 +40,13 @@ void MeshRenderer::Initialize(FTCore* coreInstance)
 		if (mTexKey != ChunkKeys::VALUE_NOT_ASSIGNED)
 			SetTexture();
 	}
-	//mMeshGroup = DBG_NEW FTBasicMeshGroup;
+	// mMeshGroup = DBG_NEW FTBasicMeshGroup;
 	Component::Initialize(coreInstance);
 }
 
 void MeshRenderer::Update(float deltaTime)
 {
-	if (mMeshGroup) 
+	if (mMeshGroup)
 	{
 		UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
 		UpdateBuffers();
@@ -57,7 +58,7 @@ void MeshRenderer::Render(FoxtrotRenderer* renderer)
 	if (mMeshGroup)
 	{
 		renderer->SwitchFillMode();
-		//renderer->SetRenderTargetView();
+		// renderer->SetRenderTargetView();
 		mMeshGroup->Render(renderer, mTexture);
 	}
 }
@@ -65,25 +66,27 @@ void MeshRenderer::Render(FoxtrotRenderer* renderer)
 void MeshRenderer::CloneTo(Actor* actor)
 {
 	MeshRenderer* newComp = DBG_NEW MeshRenderer(actor, GetUpdateOrder());
-	newComp->mMeshKey = this->mMeshKey;
-	newComp->mTexKey = this->mTexKey;
+	newComp->mMeshKey	  = this->mMeshKey;
+	newComp->mTexKey	  = this->mTexKey;
 }
 
 bool MeshRenderer::InitializeMesh()
 {
-	if (mMeshKey != ChunkKeys::VALUE_NOT_ASSIGNED) 
+	if (mMeshKey != ChunkKeys::VALUE_NOT_ASSIGNED)
 	{
 		std::vector<MeshData>& meshData = ResourceManager::GetInstance()->GetLoadedMeshes(mMeshKey);
 		if (!mMeshGroup)
 			mMeshGroup = DBG_NEW FTBasicMeshGroup;
 		mMeshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
-		if (!mMeshGroup) {
+		if (!mMeshGroup)
+		{
 			LogString("ERROR: MeshRenderer::InitializeMesh() -> Mesh Init failed.\n");
 			return false;
 		}
 		return true;
 	}
-	else {
+	else
+	{
 		LogString("ERROR: MeshRenderer::InitializeMesh() -> Key doesn't exist.\n");
 		return false;
 	}
@@ -102,7 +105,7 @@ bool MeshRenderer::InitializeMesh(MeshData& meshData)
 		mMeshGroup = DBG_NEW FTBasicMeshGroup;
 	std::vector<MeshData> meshes = { meshData };
 	mMeshGroup->Initialize(meshes, mRenderer->GetDevice(), mRenderer->GetContext());
-	if (!mMeshGroup) 
+	if (!mMeshGroup)
 	{
 		LogString("ERROR: MeshRenderer::InitializeMesh() -> Mesh Init failed.\n");
 		return false;
@@ -138,7 +141,7 @@ bool MeshRenderer::SetTexture()
 
 void MeshRenderer::UpdateMesh(Transform* transform, Camera* cameraInstance)
 {
-	if (mMeshGroup) 
+	if (mMeshGroup)
 	{
 		UpdateConstantBufferModel(transform);
 		UpdateConstantBufferView(cameraInstance);
@@ -148,18 +151,19 @@ void MeshRenderer::UpdateMesh(Transform* transform, Camera* cameraInstance)
 
 void MeshRenderer::UpdateBuffers()
 {
-	if(mMeshGroup)
+	if (mMeshGroup)
 		mMeshGroup->UpdateConstantBuffers(mRenderer->GetDevice(), mRenderer->GetContext());
 }
 
 MeshRenderer::MeshRenderer(Actor* owner, int updateOrder)
-	: Component		(owner, updateOrder)
-	, mMeshGroup	(nullptr)
-	, mTexture		(nullptr)
-	, mRenderer		(nullptr)
-	, mMeshKey		(ChunkKeys::VALUE_NOT_ASSIGNED)
-	, mTexKey		(ChunkKeys::VALUE_NOT_ASSIGNED)
-{}
+	: Component(owner, updateOrder)
+	, mMeshGroup(nullptr)
+	, mTexture(nullptr)
+	, mRenderer(nullptr)
+	, mMeshKey(ChunkKeys::VALUE_NOT_ASSIGNED)
+	, mTexKey(ChunkKeys::VALUE_NOT_ASSIGNED)
+{
+}
 
 MeshRenderer::~MeshRenderer()
 {
@@ -174,30 +178,31 @@ void MeshRenderer::UpdateConstantBufferModel(Transform* transform)
 {
 	for (Mesh* mesh : mMeshGroup->GetMeshes())
 	{
-		int dir = transform->GetRightward().x;
+		int		  dir	   = transform->GetRightward().x;
 		FTVector3 worldPos = FTVector3(
 			transform->GetWorldPosition().x,
-			-transform->GetWorldPosition().y,
-			transform->GetWorldPosition().z
-		);
-		FTVector3 scale = transform->GetScale();
+			transform->GetWorldPosition().y,
+			transform->GetWorldPosition().z);
+		FTVector3		  scale		   = transform->GetScale();
 		DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x * dir, -scale.y, scale.z);
-		Matrix model =
-			DXMatrix::CreateScale(scaleWithDir) *
-			DXMatrix::CreateRotationY(transform->GetRotation().y) *
-			DXMatrix::CreateRotationX(transform->GetRotation().x) *
-			DXMatrix::CreateRotationZ(transform->GetRotation().z) *
+		Matrix			  model =
+			DXMatrix::CreateScale(scaleWithDir) * 
+			DXMatrix::CreateRotationX(transform->GetRotation().x) * 
+			DXMatrix::CreateRotationY(transform->GetRotation().y) * 
+			DXMatrix::CreateRotationZ(transform->GetRotation().z) * 
 			DXMatrix::CreateTranslation(worldPos.GetDXVec3());
 		mesh->VertexConstantData.model = model.Transpose();
 	}
 }
 
-void MeshRenderer::UpdateConstantBufferView(Camera* camInst){
+void MeshRenderer::UpdateConstantBufferView(Camera* camInst)
+{
 	for (Mesh* mesh : mMeshGroup->GetMeshes())
 		mesh->VertexConstantData.view = camInst->GetViewRow().Transpose();
 }
 
-void MeshRenderer::UpdateConstantBufferProjection(Camera* camInst){
+void MeshRenderer::UpdateConstantBufferProjection(Camera* camInst)
+{
 	for (Mesh* mesh : mMeshGroup->GetMeshes())
 		mesh->VertexConstantData.projection = camInst->GetProjRow().Transpose();
 }
@@ -217,15 +222,23 @@ void MeshRenderer::LoadProperties(std::ifstream& ifs)
 }
 
 #ifdef FOXTROT_EDITOR
+void MeshRenderer::EditorUpdate(float deltaTime)
+{
+	Update(deltaTime);
+}
+
 void MeshRenderer::EditorUIUpdate()
 {
 	CHECK_RENDERER(GetRenderer());
 	if (ImGui::Button("Add Cube"))
 	{
-		// mMeshGroup = ResourceManager::GetInstance()->GetLoadedMeshes("Box");
+		MeshData meshData =
+			ResourceManager::GetInstance()->GetLoadedPrimitive(ChunkKeys::PRIMITIVE_BOX);
+		InitializeMesh(meshData);
 		LogString("Cube added");
 	}
 	OnConfirmUpdate();
+	UpdateSprite();
 }
 
 void MeshRenderer::OnConfirmUpdate()
@@ -233,6 +246,97 @@ void MeshRenderer::OnConfirmUpdate()
 	if (ImGui::Button("Update"))
 	{
 		SetTexture();
+	}
+}
+
+void MeshRenderer::OnResetTexture()
+{
+	if (ImGui::Button("Reset"))
+	{
+		GetTexture()->ReleaseTexture();
+		SetTexKey(ChunkKeys::VALUE_NOT_ASSIGNED);
+	}
+}
+
+void MeshRenderer::UpdateSprite()
+{
+	std::string currentSprite = "No sprite has been assigned";
+	if (mTexKey != ChunkKeys::VALUE_NOT_ASSIGNED)
+	{
+		currentSprite =
+			"Current sprite : \n" + ResourceManager::GetInstance()->GetLoadedTexture(GetTexKey())->GetRelativePath();
+		if (mMeshGroup && mTexture)
+		{
+			ImVec2 size = ImVec2(100, 100);
+			ImGui::Image((ImTextureID)GetTexture()->GetResourceView().Get(), size);
+		}
+	}
+	ImGui::Text(currentSprite.c_str());
+
+	UINT key =
+		FTEditorUtils::DisplayResSelection<FTTexture>(
+			"Select Sprite",
+			ResourceManager::GetInstance()->GetTexturesMap());
+	if (key != ChunkKeys::VALUE_NOT_ASSIGNED)
+		mTexKey = key;
+}
+
+void MeshRenderer::UpdateSprite(UINT& key)
+{
+	std::string currentSprite = {};
+	if (key != ChunkKeys::VALUE_NOT_ASSIGNED)
+	{
+		FTTexture* sprite = ResourceManager::GetInstance()->GetLoadedTexture(key);
+		currentSprite =
+			"Current sprite : \n" + sprite->GetRelativePath();
+		if (sprite)
+		{
+			ImVec2 size = ImVec2(100, 100);
+			ImGui::Image((ImTextureID)sprite->GetResourceView().Get(), size);
+		}
+	}
+	else
+		currentSprite = "No sprite has been assigned";
+
+	ImGui::Text(currentSprite.c_str());
+
+	if (ImGui::Button("Select Sprite"))
+	{
+		IGFD::FileDialogConfig config;
+		config.path				 = ".";
+		config.countSelectionMax = 1;
+		ImGuiFileDialog::Instance()->OpenDialog(
+			"SelectSprite", "Select Sprite", ChunkKeys::TEXTURE_FORMAT_SUPPORTED, config);
+		ImGui::OpenPopup("Select Sprite");
+	}
+
+	if (ImGui::BeginPopupModal("Select Sprite", NULL, ImGuiWindowFlags_MenuBar))
+	{
+		std::unordered_map<UINT, FTTexture*>& texturesMap =
+			ResourceManager::GetInstance()->GetTexturesMap();
+		if (ImGui::TreeNode("Selection State: Single Selection"))
+		{
+			UINT	   spriteKey = ChunkKeys::VALUE_NOT_ASSIGNED;
+			static int selected	 = -1;
+			int		   i		 = 0;
+			for (auto iter = texturesMap.begin(); iter != texturesMap.end();
+				 ++iter, ++i)
+			{
+				if (ImGui::Selectable((*iter).second->GetFileName().c_str(), selected == i))
+				{
+					spriteKey = (*iter).first;
+					selected  = i;
+				}
+			}
+			ImGui::TreePop();
+			if (selected != -1)
+			{
+				key = spriteKey;
+			}
+		}
+		if (ImGui::Button("Close"))
+			ImGui::CloseCurrentPopup();
+		ImGui::EndPopup();
 	}
 }
 #endif // FOXTROT_EDITOR

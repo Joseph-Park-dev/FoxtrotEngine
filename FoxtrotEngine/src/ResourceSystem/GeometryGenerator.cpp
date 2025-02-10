@@ -581,7 +581,7 @@ MeshData GeometryGenerator::MakeBox() {
     for (size_t i = 0; i < positions.size(); i++) {
         Vertex v;
         v.position  = positions[i];
-        v.color = colors[i];
+        v.color     = colors[i];
         v.normal    = normals[i];
         v.texcoord  = texcoords[i];
         meshData.vertices.push_back(v);

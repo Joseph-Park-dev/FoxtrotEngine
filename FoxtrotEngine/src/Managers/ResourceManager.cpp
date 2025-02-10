@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -27,10 +27,10 @@
 #include "Compare/StringEqual.h"
 
 #ifdef FOXTROT_EDITOR
-#include "imgui/FileDialog/ImGuiFileDialog.h"
-#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
+	#include "imgui/FileDialog/ImGuiFileDialog.h"
+	#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
 
-#include "DirectoryHelper.h"
+	#include "DirectoryHelper.h"
 #endif // FOXTROT_EDITOR
 
 void ResourceManager::Initialize(FoxtrotRenderer* renderer)
@@ -41,21 +41,20 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 	mMapPrimitives.insert(
 		std::pair(
 			ChunkKeys::PRIMITIVE_SQUARE_RED,
-			GeometryGenerator::MakeSquare(FTVector3(1.0f, 0.0f, 0.0f))
-		)
-	);
+			GeometryGenerator::MakeSquare(FTVector3(1.0f, 0.0f, 0.0f))));
 	mMapPrimitives.insert(
 		std::pair(
 			ChunkKeys::PRIMITIVE_SQUARE_GREEN,
-			GeometryGenerator::MakeSquare(FTVector3(0.0f, 1.0f, 0.0f))
-		)
-	);
+			GeometryGenerator::MakeSquare(FTVector3(0.0f, 1.0f, 0.0f))));
 	mMapPrimitives.insert(
 		std::pair(
 			ChunkKeys::PRIMITIVE_SQUARE_BLUE,
-			GeometryGenerator::MakeSquare(FTVector3(0.0f, 0.0f, 1.0f))
-		)
-	);
+			GeometryGenerator::MakeSquare(FTVector3(0.0f, 0.0f, 1.0f))));
+
+	mMapPrimitives.insert(
+		std::pair(
+			ChunkKeys::PRIMITIVE_BOX,
+			GeometryGenerator::MakeBox()));
 }
 
 void ResourceManager::DeleteAll()
@@ -117,15 +116,14 @@ FTPremade* ResourceManager::GetLoadedPremade(const UINT key)
 
 FTPremade* ResourceManager::GetLoadedPremade(std::string&& fileName)
 {
-	std::string premadeFullName = fileName + ChunkKeys::PREMADE_FILE_FORMAT;
-	std::unordered_map<UINT, FTPremade*>::iterator iter = mMapPremades.begin();
+	std::string									   premadeFullName = fileName + ChunkKeys::PREMADE_FILE_FORMAT;
+	std::unordered_map<UINT, FTPremade*>::iterator iter			   = mMapPremades.begin();
 	for (; iter != mMapPremades.end(); ++iter)
 	{
 		if ((*iter).second->GetFileName() == premadeFullName)
 		{
 			(*iter).second->AddRefCount();
 			return (*iter).second;
-
 		}
 	}
 	printf("Error: ResourceManager::GetLoadedPremade() -> Cannot find FTPremade %s\n", premadeFullName.c_str());
@@ -141,10 +139,12 @@ MeshData& ResourceManager::GetLoadedPrimitive(const UINT key)
 
 void ResourceManager::RemoveLoadedMeshes(const UINT key)
 {
-	if (KeyExists(key, mMapMeshes)) {
+	if (KeyExists(key, mMapMeshes))
+	{
 		mMapMeshes.erase(key);
 	}
-	else {
+	else
+	{
 		printf("Error: ResourceManager::RemoveLoadedMeshes() -> Mesh with key %d does not exist\n", key);
 	}
 }
@@ -214,8 +214,7 @@ void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
 	GeometryGenerator::MakeSpriteAnimation(
 		meshDataBuf, tileMapBuf->GetTiles(),
 		tileMapBuf->GetMaxCountOnMapX(),
-		tileMapBuf->GetMaxCountOnMapY()
-	);
+		tileMapBuf->GetMaxCountOnMapY());
 	spriteAnim->Initialize(meshDataBuf, mRenderer->GetDevice(), mRenderer->GetContext());
 }
 
@@ -256,7 +255,8 @@ ResourceManager::ResourceManager()
 	: mItemKey(ChunkKeys::VALUE_NOT_ASSIGNED)
 	, mPathToAsset("./Assets")
 	, mRenderer(nullptr)
-{}
+{
+}
 
 void ResourceManager::SaveResources(std::ofstream& ofs)
 {
@@ -284,7 +284,7 @@ void ResourceManager::SaveResources(std::ofstream& ofs)
 void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 {
 	std::pair<size_t, std::string> resPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::RESOURCE_DATA);
-	size_t count = resPack.first;
+	size_t						   count   = resPack.first;
 
 	std::pair<size_t, std::string> ftSpriteAnimPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FT_SPRITE_ANIMATION_GROUP);
 	mMapSpriteAnimation.reserve(ftSpriteAnimPack.first);
@@ -301,7 +301,7 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	std::pair<size_t, std::string> ftTexturePack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTTEXTURE_GROUP);
 	mMapTextures.reserve(ftTexturePack.first);
 	LoadResourceFromChunk<FTTexture>(ifs, mMapTextures, ftTexturePack.first);
-	
+
 	ProcessTextures();
 	ProcessTileMaps();
 	ProcessSpriteAnims();
@@ -314,8 +314,7 @@ void ResourceManager::LoadAllResourcesInAsset()
 	mItemKey = ChunkKeys::VALUE_NOT_ASSIGNED;
 	DirectoryHelper::IterateForFileRecurse(
 		mPathToAsset,
-		[&](std::string&& path) { LoadResByType(path); }
-		);
+		[&](std::string&& path) { LoadResByType(path); });
 	ProcessTextures();
 	ProcessTileMaps();
 	ProcessSpriteAnims();
@@ -328,20 +327,20 @@ void ResourceManager::LoadResByType(std::string& filePath)
 	printf("Loading file... %s\n", filePath.c_str());
 	switch (type)
 	{
-	case ResType::UNSUPPORTED:
-		printf("File %s is unsupported\n", filePath.c_str());
-		break;
-	case ResType::FTTEXTURE:
-		LoadResource(filePath, mMapTextures);
-		break;
-	case ResType::FTTILEMAP:
-		LoadResource(filePath, mMapTileMaps);
-		break;
-	case ResType::FTPREMADE:
-		LoadResource(filePath, mMapPremades);
-		break;
-	default:
-		break;
+		case ResType::UNSUPPORTED:
+			printf("File %s is unsupported\n", filePath.c_str());
+			break;
+		case ResType::FTTEXTURE:
+			LoadResource(filePath, mMapTextures);
+			break;
+		case ResType::FTTILEMAP:
+			LoadResource(filePath, mMapTileMaps);
+			break;
+		case ResType::FTPREMADE:
+			LoadResource(filePath, mMapPremades);
+			break;
+		default:
+			break;
 	}
 }
 
@@ -360,43 +359,40 @@ ResType ResourceManager::GetResType(std::string& fileName)
 
 void ResourceManager::UpdateUI()
 {
-	if (ImGui::Button("Import")) {
+	if (ImGui::Button("Import"))
+	{
 		IGFD::FileDialogConfig config;
-		config.path = ".";
+		config.path				 = ".";
 		config.countSelectionMax = 1;
 
 		std::string supportedFormat =
-			ChunkKeys::TEXTURE_FORMAT_SUPPORTED +
-			std::string(", ") +
-			ChunkKeys::TILEMAP_FORMAT_SUPPORTED +
-			std::string(", ") +
-			ChunkKeys::PREMADE_FILE_FORMAT;
+			ChunkKeys::TEXTURE_FORMAT_SUPPORTED + std::string(", ") + ChunkKeys::TILEMAP_FORMAT_SUPPORTED + std::string(", ") + ChunkKeys::PREMADE_FILE_FORMAT;
 
 		ImGuiFileDialog::Instance()->OpenDialog("SelectFile", "Select File", supportedFormat.c_str(), config);
 		ImGui::OpenPopup("Select File");
 	}
 	if (ImGuiFileDialog::Instance()->Display("SelectFile"))
 	{
-		if (ImGuiFileDialog::Instance()->IsOk()) 
+		if (ImGuiFileDialog::Instance()->IsOk())
 		{
-			std::string path = ImGuiFileDialog::Instance()->GetFilePathName();
+			std::string path	  = ImGuiFileDialog::Instance()->GetFilePathName();
 			std::string extension = path.substr(path.rfind("."));
-			
-			if (StrContains(ChunkKeys::TEXTURE_FORMAT_SUPPORTED, extension)) 
+
+			if (StrContains(ChunkKeys::TEXTURE_FORMAT_SUPPORTED, extension))
 			{
 				std::string relativePath = path.substr(path.rfind("Assets"));
-				FTTexture* texture = LoadResource<FTTexture>(relativePath, mMapTextures);
+				FTTexture*	texture		 = LoadResource<FTTexture>(relativePath, mMapTextures);
 				ProcessTexture(texture);
 			}
 			else if (StrContains(ChunkKeys::TILEMAP_FORMAT_SUPPORTED, extension))
 			{
 				std::string relativePath = path.substr(path.rfind("Assets"));
-				FTTileMap* tileMap = LoadResource<FTTileMap>(relativePath, mMapTileMaps);
+				FTTileMap*	tileMap		 = LoadResource<FTTileMap>(relativePath, mMapTileMaps);
 			}
 			else if (StrContains(ChunkKeys::PREMADE_FILE_FORMAT, extension))
 			{
 				std::string relativePath = path.substr(path.rfind("Assets"));
-				FTPremade* premade = LoadResource<FTPremade>(relativePath, mMapPremades);
+				FTPremade*	premade		 = LoadResource<FTPremade>(relativePath, mMapPremades);
 				premade->Load();
 			}
 		}
@@ -407,11 +403,13 @@ void ResourceManager::UpdateUI()
 	{
 		std::unordered_map<UINT, FTTexture*>::const_iterator texIter;
 		texIter = mMapTextures.begin();
-		for (texIter = mMapTextures.begin(); texIter != mMapTextures.end(); ++texIter) {
+		for (texIter = mMapTextures.begin(); texIter != mMapTextures.end(); ++texIter)
+		{
 			if (ImGui::BeginListBox((*texIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 200)))
 			{
 				(*texIter).second->UpdateUI();
-				if (ImGui::Button("Remove")) {
+				if (ImGui::Button("Remove"))
+				{
 					RemoveResource<FTTexture>((*texIter).first, mMapTextures);
 					ImGui::EndListBox();
 					break;
@@ -426,11 +424,13 @@ void ResourceManager::UpdateUI()
 	{
 		std::unordered_map<UINT, FTTileMap*>::const_iterator tileIter;
 		tileIter = mMapTileMaps.begin();
-		for (; tileIter != mMapTileMaps.end(); ++tileIter) {
+		for (; tileIter != mMapTileMaps.end(); ++tileIter)
+		{
 			if (ImGui::BeginListBox((*tileIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 200)))
 			{
 				(*tileIter).second->UpdateUI();
-				if (ImGui::Button("Remove")) {
+				if (ImGui::Button("Remove"))
+				{
 					RemoveResource<FTTileMap>((*tileIter).first, mMapTileMaps);
 					ImGui::EndListBox();
 					break;
@@ -445,11 +445,13 @@ void ResourceManager::UpdateUI()
 	{
 		std::unordered_map<UINT, FTPremade*>::const_iterator premadeIter;
 		premadeIter = mMapPremades.begin();
-		for (; premadeIter != mMapPremades.end(); ++premadeIter) {
+		for (; premadeIter != mMapPremades.end(); ++premadeIter)
+		{
 			if (ImGui::BeginListBox((*premadeIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 100)))
 			{
 				(*premadeIter).second->UpdateUI();
-				if (ImGui::Button("Remove")) {
+				if (ImGui::Button("Remove"))
+				{
 					RemoveResource<FTPremade>((*premadeIter).first, mMapPremades);
 					ImGui::EndListBox();
 					break;

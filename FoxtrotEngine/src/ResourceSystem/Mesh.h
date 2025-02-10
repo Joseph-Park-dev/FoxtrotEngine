@@ -24,6 +24,7 @@ using Microsoft::WRL::ComPtr;
 
 struct BasicVertexConstantBuffer {
     DirectX::SimpleMath::Matrix model;
+    DirectX::SimpleMath::Matrix invTranspose;
     DirectX::SimpleMath::Matrix view;
     DirectX::SimpleMath::Matrix projection;
 };
@@ -44,6 +45,7 @@ struct Mesh
     Mesh()
     {
         VertexConstantData.model = DirectX::SimpleMath::Matrix();
+        VertexConstantData.invTranspose = DirectX::SimpleMath::Matrix();
         VertexConstantData.view = DirectX::SimpleMath::Matrix();
         VertexConstantData.projection = DirectX::SimpleMath::Matrix();
     }

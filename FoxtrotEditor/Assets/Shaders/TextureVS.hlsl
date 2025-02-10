@@ -6,6 +6,8 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+#include "Common.hlsli"
+
 cbuffer ModelViewProjectionConstantBuffer : register(b0)
 {
     matrix model;
@@ -14,36 +16,24 @@ cbuffer ModelViewProjectionConstantBuffer : register(b0)
     matrix projection;
 };
 
-// Pixel shader's input == Vertex shader's output
-struct VertexShaderInput
+TexPSInput main(TexVSInput input)
 {
-    float3 pos : POSITION0;
-    float3 color : COLOR0;
-    float3 normal : NORMAL0;
-    float2 texcoord : TEXCOORD0;
-};
-
-struct PixelShaderInput
-{
-    float4 pos : SV_POSITION;
-    float3 color : COLOR;
-    float3 normal : NORMAL;
-    float2 texcoord : TEXCOORD;
-};
-
-PixelShaderInput main(VertexShaderInput input)
-{
-    PixelShaderInput output;
-    float4 pos = float4(input.pos, 1.0f);
-
+    TexPSInput output;
+    float4 pos = float4(input.posModel, 1.0f);
     pos = mul(pos, model);
+    
+    output.posWorld = pos.xyz; // 월드 위치 따로 저장
+
     pos = mul(pos, view);
     pos = mul(pos, projection);
 
-    output.pos = pos;
-    output.color = input.color;
-    output.normal = input.normal;
+    output.posProj = pos;
     output.texcoord = input.texcoord;
+    // output.color = input.color;
     
+    float4 normal = float4(input.normalModel, 0.0f);
+    output.normalWorld = mul(normal, invTranspose).xyz;
+    output.normalWorld = normalize(output.normalWorld);
+
     return output;
 }

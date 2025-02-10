@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -15,15 +15,16 @@
 #include "Math/FTMath.h"
 #include "Actors/Actor.h"
 
-#define CAMERA_TARGET_NONE	-1
-#define HD_RESOLUTION		FTVector2(1920.f,1080.f)
-#define LOOKAT_MODSPEED		0.01f
-#define Drag_MODSPEED		0.001f
+#define CAMERA_TARGET_NONE -1
+#define HD_RESOLUTION FTVector2(1920.f, 1080.f)
+#define LOOKAT_MODSPEED 0.01f
+#define Drag_MODSPEED 0.001f
 
-using Matrix = DirectX::SimpleMath::Matrix;
+using Matrix  = DirectX::SimpleMath::Matrix;
 using Vector3 = DirectX::SimpleMath::Vector3;
 
-enum class Viewtype {
+enum class Viewtype
+{
 	Orthographic,
 	Perspective
 };
@@ -36,30 +37,30 @@ public:
 	FTVector3 ConvertScreenPosToWorld(FTVector2 screenPos);
 
 public:
-	Matrix	 GetViewRow();
-	Matrix	 GetProjRow();
-	Vector3  GetEyePos();
+	Matrix	GetViewRow();
+	Matrix	GetProjRow();
+	Vector3 GetEyePos();
 
 	Viewtype GetViewType();
 	float	 GetProjFOVAngleY();
-	float	 GetAspectRatio();	
+	float	 GetAspectRatio();
 	float	 GetPixelsPerUnit();
 
-	void	 SetTargetActor	(Actor* actor);
-	void	 SetViewType	(Viewtype viewType);
-	void	 SetOffset		(FTVector2 offset);
+	void SetTargetActor(Actor* actor);
+	void SetViewType(Viewtype viewType);
+	void SetOffset(FTVector2 offset);
 
 public:
 	// "pixels" defines how much of them should fit in a given unit.
-			void Initialize	(FoxtrotRenderer* renderer, UINT pixels, float unit);
-	virtual void Update		(float deltaTime);
+	void		 Initialize(FoxtrotRenderer* renderer, UINT pixels, float unit);
+	virtual void Update(float deltaTime);
 
 protected:
 	void ZoomIn();
 
 private:
 	FoxtrotRenderer* mRenderer;
-	Actor*  mTarget;
+	Actor*			 mTarget;
 
 	Vector3 mPosition;
 	Vector3 mViewDir;
@@ -76,7 +77,7 @@ private:
 	float mProjFOVAngleY;
 	float mNearZ, mFarZ;
 	float mAspect;
-	float mPixelsPerUnit;	// Used for pixel-perfect calculation.
+	float mPixelsPerUnit; // Used for pixel-perfect calculation.
 
 	Viewtype mViewType;
 

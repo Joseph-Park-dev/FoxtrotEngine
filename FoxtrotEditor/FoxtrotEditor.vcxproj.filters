@@ -114,6 +114,7 @@
     <None Include="include\imgui\FileDialog\dirent\LICENSE" />
     <None Include="include\imgui\FileDialog\dirent\README.md" />
     <None Include="vcpkg.json" />
+    <None Include="Assets\Shaders\Common.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="include\imgui\misc\debuggers\imgui.natvis" />
@@ -128,6 +129,7 @@
     <FxCompile Include="assets\Shaders\SolidVS.hlsl" />
     <FxCompile Include="assets\Shaders\EditorDebugShapeVS.hlsl" />
     <FxCompile Include="assets\Shaders\EditorDebugShapePS.hlsl" />
+    <FxCompile Include="Assets\Shaders\BlinnPhongPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon1.ico">

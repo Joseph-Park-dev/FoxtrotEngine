@@ -86,6 +86,7 @@ namespace ChunkKeys
 	constexpr const UINT PRIMITIVE_SQUARE_RED = 0;
 	constexpr const UINT PRIMITIVE_SQUARE_GREEN = 1;
 	constexpr const UINT PRIMITIVE_SQUARE_BLUE = 2;
+	constexpr const UINT PRIMITIVE_BOX = 3;
 
 	// Premades
 	constexpr const char* FTPREMADE = "FTPremade";

@@ -77,7 +77,11 @@ ComPtr<ID3D11Device>&			FoxtrotRenderer::GetDevice() { return mDevice; }
 ComPtr<ID3D11DeviceContext>&	FoxtrotRenderer::GetContext() { return mContext; }
 ComPtr<IDXGISwapChain>&			FoxtrotRenderer::GetSwapChain() { return mSwapChain; }
 ComPtr<ID3D11RenderTargetView>& FoxtrotRenderer::GetRenderTargetView() { return mRenderTargetView; }
+ComPtr<ID3D11DepthStencilView>& FoxtrotRenderer::GetDSV() { return mDepthStencilView; }
 ComPtr<ID3D11Texture2D>&		FoxtrotRenderer::GetDepthStencilBuffer() { return mDepthStencilBuffer; }
+
+ComPtr<ID3D11DepthStencilState>& FoxtrotRenderer::GetDSS() { return mDepthStencilState; }
+ComPtr<ID3D11DepthStencilState>& FoxtrotRenderer::GetDSS2D() { return mDepthStencilState2D; }
 
 ComPtr<ID3D11VertexShader>& FoxtrotRenderer::GetSolidVS() { return mSolidVS; }
 ComPtr<ID3D11InputLayout>&	FoxtrotRenderer::GetSolidInputLayout() { return mSolidInputLayout; }
@@ -171,7 +175,8 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 	DX::ThrowIfFailed(D3D11Utils::CreateDepthBuffer(
 		mDevice, mRenderWidth, mRenderHeight, mNumQualityLevels, mDepthStencilView));
 
-	DX::ThrowIfFailed(CreateDepthStencilState());
+	DX::ThrowIfFailed(CreateDepthStencilState(mDepthStencilState));
+	DX::ThrowIfFailed(CreateDepthStencilState(mDepthStencilState2D, false));
 
 	DX::ThrowIfFailed(CreateBlendState());
 	mContext->OMSetBlendState(mBlendState.Get(), 0, D3D11_DEFAULT_SAMPLE_MASK);
@@ -299,15 +304,15 @@ void FoxtrotRenderer::SetViewport(FLOAT topLeftX, FLOAT topLeftY, FLOAT resX, FL
 	mContext->RSSetViewports(1, &mScreenViewport);
 }
 
-HRESULT FoxtrotRenderer::CreateDepthStencilState()
+HRESULT FoxtrotRenderer::CreateDepthStencilState(ComPtr<ID3D11DepthStencilState>& dss, bool depthEnabled)
 {
 	// Create depth stencil state
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-	depthStencilDesc.DepthEnable	= true; // false
+	depthStencilDesc.DepthEnable = depthEnabled; // false
 	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ALL;
-	depthStencilDesc.DepthFunc		= D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL;
-	return mDevice->CreateDepthStencilState(&depthStencilDesc, mDepthStencilState.GetAddressOf());
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL;
+	return mDevice->CreateDepthStencilState(&depthStencilDesc, dss.GetAddressOf());
 }
 
 HRESULT FoxtrotRenderer::CreateBlendState()

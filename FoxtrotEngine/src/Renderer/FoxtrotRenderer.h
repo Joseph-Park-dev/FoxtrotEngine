@@ -74,8 +74,11 @@ public:
 	ComPtr<ID3D11DeviceContext>&	GetContext();
 	ComPtr<IDXGISwapChain>&			GetSwapChain();
 	ComPtr<ID3D11RenderTargetView>& GetRenderTargetView();
-	ComPtr<ID3D11DepthStencilView>& GetDSV() { return mDepthStencilView; }
+	ComPtr<ID3D11DepthStencilView>& GetDSV();
 	ComPtr<ID3D11Texture2D>&		GetDepthStencilBuffer();
+
+	ComPtr<ID3D11DepthStencilState>& GetDSS();
+	ComPtr<ID3D11DepthStencilState>& GetDSS2D();
 
 	// Shaders without textures (Getters).
 	ComPtr<ID3D11VertexShader>& GetSolidVS();
@@ -120,6 +123,7 @@ private:
 	ComPtr<ID3D11Texture2D>			mDepthStencilBuffer;
 	ComPtr<ID3D11DepthStencilView>	mDepthStencilView;
 	ComPtr<ID3D11DepthStencilState> mDepthStencilState;
+	ComPtr<ID3D11DepthStencilState> mDepthStencilState2D;
 
 	// Texturing
 	ComPtr<ID3D11SamplerState> mSamplerState;
@@ -148,7 +152,7 @@ private:
 
 	// ID3D11 Helper functions
 	HRESULT CreateRasterizerState();
-	HRESULT CreateDepthStencilState();
+	HRESULT CreateDepthStencilState(ComPtr<ID3D11DepthStencilState>& dss, bool depthEnabled = true);
 	HRESULT CreateBlendState();
 	HRESULT CreateTextureSampler();
 

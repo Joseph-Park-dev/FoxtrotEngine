@@ -456,6 +456,8 @@
     <ClInclude Include="src\ResourceSystem\FTTexture.h" />
     <ClInclude Include="src\ResourceSystem\FTTileMap.h" />
     <ClInclude Include="src\ResourceSystem\GeometryGenerator.h" />
+    <ClInclude Include="src\ResourceSystem\Light.h" />
+    <ClInclude Include="src\ResourceSystem\Material.h" />
     <ClInclude Include="src\ResourceSystem\Mesh.h" />
     <ClInclude Include="src\ResourceSystem\MeshConstantData.h" />
     <ClInclude Include="src\ResourceSystem\MeshData.h" />

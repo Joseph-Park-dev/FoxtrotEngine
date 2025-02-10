@@ -151,16 +151,16 @@ HRESULT D3D11Utils::CreateDeviceAndContext(
 
 HRESULT D3D11Utils::CreateDepthBuffer(
 	ComPtr<ID3D11Device>&			device,
-	int								screenWidth,
-	int								screenHeight,
+	int								renderWidth,
+	int								renderHeight,
 	UINT&							numQualityLevels,
 	ComPtr<ID3D11DepthStencilView>& depthStencilView)
 {
 	depthStencilView.Reset();
 
 	D3D11_TEXTURE2D_DESC depthStencilBufferDesc;
-	depthStencilBufferDesc.Width	 = screenWidth;
-	depthStencilBufferDesc.Height	 = screenHeight;
+	depthStencilBufferDesc.Width	 = renderWidth;
+	depthStencilBufferDesc.Height	 = renderHeight;
 	depthStencilBufferDesc.MipLevels = 1;
 	depthStencilBufferDesc.ArraySize = 1;
 	depthStencilBufferDesc.Format	 = DXGI_FORMAT_D24_UNORM_S8_UINT;

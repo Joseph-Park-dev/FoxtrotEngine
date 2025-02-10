@@ -73,6 +73,7 @@ public:
 	ComPtr<ID3D11DeviceContext>&	GetContext();
 	ComPtr<IDXGISwapChain>&			GetSwapChain();
 	ComPtr<ID3D11RenderTargetView>& GetRenderTargetView();
+	ComPtr<ID3D11DepthStencilView>& GetDSV() { return mDepthStencilView; }
 	ComPtr<ID3D11Texture2D>&		GetDepthStencilBuffer();
 
 	// Shaders without textures (Getters).

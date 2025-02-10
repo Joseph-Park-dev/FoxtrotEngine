@@ -63,8 +63,8 @@ public:
 	static HRESULT
 	CreateDepthBuffer(
 		ComPtr<ID3D11Device>&			device,
-		int								screenWidth,
-		int								screenHeight,
+		int								renderWidth,
+		int								renderHeight,
 		UINT&							numQualityLevels,
 		ComPtr<ID3D11DepthStencilView>& depthStencilView);
 

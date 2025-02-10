@@ -40,4 +40,5 @@ private:
 	ComPtr<ID3D11Texture2D>			 mRenderTargetTexture;
 	ComPtr<ID3D11RenderTargetView>	 mRenderTargetView;
 	ComPtr<ID3D11ShaderResourceView> mShaderResourceView;
+	ComPtr<ID3D11DepthStencilView>	 mDepthStencilView;
 };

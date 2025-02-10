@@ -100,9 +100,11 @@ void FoxtrotRenderer::SetRenderHeight(const UINT height) { mRenderHeight = heigh
 
 void FoxtrotRenderer::RenderClear()
 {
-	float clearColor[4] = { 0.3, 0.3, 0.3, 1.0 };
+	float clearColor[4] = { 1.0, 0.3, 0.3, 1.0 };
 	mContext->ClearRenderTargetView(mRenderTargetView.Get(), clearColor);
 	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 }
 
 void FoxtrotRenderer::ResizeWindow(FTVector2& windowRes)
@@ -124,7 +126,8 @@ void FoxtrotRenderer::ResizeWindow(FTVector2& windowRes)
 		ImVec2 topLeft = EditorLayer::GetInstance()->GetSceneViewportPos();
 		mRenderWidth   = EditorLayer::GetInstance()->GetSceneViewportSize().x;
 		mRenderHeight  = EditorLayer::GetInstance()->GetSceneViewportSize().y;
-		D3D11Utils::CreateRenderTargetView(mRenderTexture->GetRTV(), mDevice, mSwapChain);
+		// D3D11Utils::CreateRenderTargetView(mRenderTexture->GetRTV(), mDevice, mSwapChain);
+		mRenderTexture->InitializeTexture(mDevice, mRenderWidth, mRenderHeight, mNumQualityLevels);
 #else
 		FTVector2 topLeft = FTVector2(0.f, 0.f);
 		mRenderWidth	  = windowRes.x;
@@ -133,7 +136,7 @@ void FoxtrotRenderer::ResizeWindow(FTVector2& windowRes)
 
 		D3D11Utils::CreateDepthBuffer(mDevice, windowRes.x, windowRes.y, mNumQualityLevels, mDepthStencilView);
 		D3D11Utils::CreateRenderTargetView(mRenderTargetView, mDevice, mSwapChain);
-		SetViewport(topLeft.x, topLeft.y, mRenderWidth, mRenderHeight);
+		SetViewport(0, 0, mRenderWidth, mRenderHeight);
 	}
 }
 
@@ -221,7 +224,7 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 
 	mContext->RSSetState(mSolidRasterizerState.Get());
 
-	// mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
+	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 
 	SetViewport(FTVector2(0.f, 0.f), FTVector2(mRenderWidth, mRenderHeight));
 

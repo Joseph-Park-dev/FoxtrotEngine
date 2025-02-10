@@ -33,6 +33,7 @@
 #define SOLID_PS_PATH L"Assets/Shaders/SolidPS.hlsl"
 #define TEXTURE_VS_PATH L"Assets/Shaders/TextureVS.hlsl"
 #define TEXTURE_PS_PATH L"Assets/Shaders/TexturePS.hlsl"
+#define BLINN_PHONG_PS_PATH L"BlinnPhongPS"
 
 using VertexType = DirectX::VertexPositionColor;
 using namespace Microsoft::WRL;
@@ -85,6 +86,7 @@ public:
 	ComPtr<ID3D11VertexShader>& GetTextureVS();
 	ComPtr<ID3D11InputLayout>&	GetTextureInputLayout();
 	ComPtr<ID3D11PixelShader>&	GetTexturePS();
+	ComPtr<ID3D11PixelShader>&	GetBlinnPhongPS();
 
 	// Rendering size related (Getters and Setters).
 	UINT GetRenderWidth() const;
@@ -132,6 +134,7 @@ private:
 
 	ComPtr<ID3D11VertexShader> mTextureVS;
 	ComPtr<ID3D11PixelShader>  mTexturePS;
+	ComPtr<ID3D11PixelShader>  mBlinnPhongPS;
 	ComPtr<ID3D11InputLayout>  mTextureInputLayout;
 
 	ComPtr<ID3D11BlendState> mBlendState;

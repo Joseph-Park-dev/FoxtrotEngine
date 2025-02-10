@@ -86,6 +86,7 @@ ComPtr<ID3D11PixelShader>&	FoxtrotRenderer::GetSolidPS() { return mSolidPS; }
 ComPtr<ID3D11VertexShader>& FoxtrotRenderer::GetTextureVS() { return mTextureVS; }
 ComPtr<ID3D11InputLayout>&	FoxtrotRenderer::GetTextureInputLayout() { return mTextureInputLayout; }
 ComPtr<ID3D11PixelShader>&	FoxtrotRenderer::GetTexturePS() { return mTexturePS; }
+ComPtr<ID3D11PixelShader>&	FoxtrotRenderer::GetBlinnPhongPS() { return mBlinnPhongPS; }
 
 UINT FoxtrotRenderer::GetRenderWidth() const { return mRenderWidth; }
 UINT FoxtrotRenderer::GetRenderHeight() const { return mRenderHeight; }
@@ -100,7 +101,7 @@ void FoxtrotRenderer::SetRenderHeight(const UINT height) { mRenderHeight = heigh
 
 void FoxtrotRenderer::RenderClear()
 {
-	float clearColor[4] = { 1.0, 0.3, 0.3, 1.0 };
+	float clearColor[4] = { 0.0, 0.0, 0.0, 1.0 };
 	mContext->ClearRenderTargetView(mRenderTargetView.Get(), clearColor);
 	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -181,7 +182,6 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 
 	std::vector<D3D11_INPUT_ELEMENT_DESC> inputElements = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3 + 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 + 4 * 3 + 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
@@ -213,6 +213,12 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 			mDevice,
 			TEXTURE_PS_PATH,
 			mTexturePS));
+
+	DX::ThrowIfFailed(
+		D3D11Utils::CreatePixelShader(
+			mDevice,
+			BLINN_PHONG_PS_PATH,
+			mBlinnPhongPS));
 
 	mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
 

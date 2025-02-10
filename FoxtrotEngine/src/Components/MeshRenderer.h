@@ -90,5 +90,8 @@ public:
 
 protected:
 	virtual void OnConfirmUpdate() override;
+	void OnResetTexture();
+	void UpdateSprite();
+	void UpdateSprite(UINT& key);
 #endif
 };

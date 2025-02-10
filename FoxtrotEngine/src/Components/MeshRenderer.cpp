@@ -26,6 +26,7 @@
 
 #ifdef FOXTROT_EDITOR
 	#include "FTCoreEditor.h"
+	#include "EditorUtils.h"
 #endif // FOXTROT_EDITOR
 
 using DXMatrix = DirectX::SimpleMath::Matrix;
@@ -237,6 +238,7 @@ void MeshRenderer::EditorUIUpdate()
 		LogString("Cube added");
 	}
 	OnConfirmUpdate();
+	UpdateSprite();
 }
 
 void MeshRenderer::OnConfirmUpdate()
@@ -244,6 +246,97 @@ void MeshRenderer::OnConfirmUpdate()
 	if (ImGui::Button("Update"))
 	{
 		SetTexture();
+	}
+}
+
+void MeshRenderer::OnResetTexture()
+{
+	if (ImGui::Button("Reset"))
+	{
+		GetTexture()->ReleaseTexture();
+		SetTexKey(ChunkKeys::VALUE_NOT_ASSIGNED);
+	}
+}
+
+void MeshRenderer::UpdateSprite()
+{
+	std::string currentSprite = "No sprite has been assigned";
+	if (mTexKey != ChunkKeys::VALUE_NOT_ASSIGNED)
+	{
+		currentSprite =
+			"Current sprite : \n" + ResourceManager::GetInstance()->GetLoadedTexture(GetTexKey())->GetRelativePath();
+		if (mMeshGroup && mTexture)
+		{
+			ImVec2 size = ImVec2(100, 100);
+			ImGui::Image((ImTextureID)GetTexture()->GetResourceView().Get(), size);
+		}
+	}
+	ImGui::Text(currentSprite.c_str());
+
+	UINT key =
+		FTEditorUtils::DisplayResSelection<FTTexture>(
+			"Select Sprite",
+			ResourceManager::GetInstance()->GetTexturesMap());
+	if (key != ChunkKeys::VALUE_NOT_ASSIGNED)
+		mTexKey = key;
+}
+
+void MeshRenderer::UpdateSprite(UINT& key)
+{
+	std::string currentSprite = {};
+	if (key != ChunkKeys::VALUE_NOT_ASSIGNED)
+	{
+		FTTexture* sprite = ResourceManager::GetInstance()->GetLoadedTexture(key);
+		currentSprite =
+			"Current sprite : \n" + sprite->GetRelativePath();
+		if (sprite)
+		{
+			ImVec2 size = ImVec2(100, 100);
+			ImGui::Image((ImTextureID)sprite->GetResourceView().Get(), size);
+		}
+	}
+	else
+		currentSprite = "No sprite has been assigned";
+
+	ImGui::Text(currentSprite.c_str());
+
+	if (ImGui::Button("Select Sprite"))
+	{
+		IGFD::FileDialogConfig config;
+		config.path				 = ".";
+		config.countSelectionMax = 1;
+		ImGuiFileDialog::Instance()->OpenDialog(
+			"SelectSprite", "Select Sprite", ChunkKeys::TEXTURE_FORMAT_SUPPORTED, config);
+		ImGui::OpenPopup("Select Sprite");
+	}
+
+	if (ImGui::BeginPopupModal("Select Sprite", NULL, ImGuiWindowFlags_MenuBar))
+	{
+		std::unordered_map<UINT, FTTexture*>& texturesMap =
+			ResourceManager::GetInstance()->GetTexturesMap();
+		if (ImGui::TreeNode("Selection State: Single Selection"))
+		{
+			UINT	   spriteKey = ChunkKeys::VALUE_NOT_ASSIGNED;
+			static int selected	 = -1;
+			int		   i		 = 0;
+			for (auto iter = texturesMap.begin(); iter != texturesMap.end();
+				 ++iter, ++i)
+			{
+				if (ImGui::Selectable((*iter).second->GetFileName().c_str(), selected == i))
+				{
+					spriteKey = (*iter).first;
+					selected  = i;
+				}
+			}
+			ImGui::TreePop();
+			if (selected != -1)
+			{
+				key = spriteKey;
+			}
+		}
+		if (ImGui::Button("Close"))
+			ImGui::CloseCurrentPopup();
+		ImGui::EndPopup();
 	}
 }
 #endif // FOXTROT_EDITOR

@@ -17,6 +17,9 @@
 
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/Vertex.h"
+#include "ResourceSystem/Material.h"
+#include "ResourceSystem/Light.h"
+#include "Managers/LightManager.h"
 
 using Microsoft::WRL::ComPtr;
 
@@ -29,11 +32,12 @@ struct BasicVertexConstantData {
 static_assert((sizeof(BasicVertexConstantData) % 16) == 0,
     "Constant Buffer size must be 16-byte aligned");
 
-struct BasicPixelConstantData {
-    float dummy1;
-    float dummy2;
-    float dummy3;
-    float dummy4;
+struct BasicPixelConstantData
+{
+    DirectX::SimpleMath::Vector3 EyeWorld;
+    bool UseTexture;
+    FTMaterial Material;
+    Light Lights[GameData::MAX_LIGHTS];
 };
 static_assert((sizeof(BasicPixelConstantData) % 16) == 0,
     "Constant Buffer size must be 16-byte aligned");

@@ -64,7 +64,7 @@ MeshData GeometryGenerator::MakeSquare() {
     for (size_t i = 0; i < positions.size(); i++) {
         Vertex v;
         v.position = positions[i];
-        v.color = colors[i];
+        //v.color = colors[i];
         v.normal = normals[i];
         v.texcoord = texcoords[i];
         meshData.vertices.push_back(v);
@@ -111,7 +111,7 @@ MeshData GeometryGenerator::MakeSquare(float scale) {
     for (size_t i = 0; i < positions.size(); i++) {
         Vertex v;
         v.position = positions[i];
-        v.color = colors[i];
+        //v.color = colors[i];
         v.normal = normals[i];
         v.texcoord = texcoords[i];
         meshData.vertices.push_back(v);
@@ -159,7 +159,7 @@ MeshData GeometryGenerator::MakeSquare(FTVector3 color)
     for (size_t i = 0; i < positions.size(); i++) {
         Vertex v;
         v.position = positions[i];
-        v.color = colors[i];
+        //v.color = colors[i];
         v.normal = normals[i];
         v.texcoord = texcoords[i];
         meshData.vertices.push_back(v);
@@ -207,7 +207,7 @@ MeshData GeometryGenerator::MakeSquare(float scale, FTVector3 color)
     for (size_t i = 0; i < positions.size(); i++) {
         Vertex v;
         v.position = positions[i];
-        v.color = colors[i];
+        //v.color = colors[i];
         v.normal = normals[i];
         v.texcoord = texcoords[i];
         meshData.vertices.push_back(v);
@@ -317,7 +317,7 @@ MeshData GeometryGenerator::MakeTile(Tile& tile)
     for (size_t i = 0; i < positions.size(); i++) {
         Vertex v;
         v.position = positions[i];
-        v.color = colors[i];
+        //v.color = colors[i];
         v.normal = normals[i];
         v.texcoord = texcoords[i];
         meshData.vertices.push_back(v);
@@ -377,7 +377,7 @@ MeshData GeometryGenerator::MakeAnimationFrame(Tile tile)
     for (size_t i = 0; i < positions.size(); i++) {
         Vertex v;
         v.position = positions[i];
-        v.color = colors[i];
+        //v.color = colors[i];
         v.normal = normals[i];
         v.texcoord = texcoords[i];
         meshData.vertices.push_back(v);
@@ -581,7 +581,7 @@ MeshData GeometryGenerator::MakeBox() {
     for (size_t i = 0; i < positions.size(); i++) {
         Vertex v;
         v.position  = positions[i];
-        v.color     = colors[i];
+        //v.color     = colors[i];
         v.normal    = normals[i];
         v.texcoord  = texcoords[i];
         meshData.vertices.push_back(v);

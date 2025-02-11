@@ -34,8 +34,7 @@ namespace FTEditorUtils
 		return ImGui::Button(label);
 	}
 
-	template <typename TYPE>
-	inline void DisplayArrayAsCombo(const char* label, TYPE* array, size_t arraySize, int& targetIdx)
+	inline void DisplayArrayAsCombo(const char* label, std::string* array, size_t arraySize, int& targetIdx)
 	{
 		const char* comboPreview = array[targetIdx].c_str();
 		if (ImGui::BeginCombo(label, comboPreview))
@@ -43,6 +42,20 @@ namespace FTEditorUtils
 			for (size_t i = 0; i < arraySize; ++i)
 			{
 				if (ImGui::Selectable(array[i].c_str()))
+					targetIdx = i;
+			}
+			ImGui::EndCombo();
+		}
+	}
+
+	inline void DisplayArrayAsCombo(const char* label, const char** array, size_t arraySize, int& targetIdx)
+	{
+		const char* comboPreview = array[targetIdx];
+		if (ImGui::BeginCombo(label, comboPreview))
+		{
+			for (size_t i = 0; i < arraySize; ++i)
+			{
+				if (ImGui::Selectable(array[i]))
 					targetIdx = i;
 			}
 			ImGui::EndCombo();
@@ -68,7 +81,7 @@ namespace FTEditorUtils
 			}
 		}
 		static int currIdx;
-		DisplayArrayAsCombo<std::string>(label, actorNames, idx, currIdx);
+		DisplayArrayAsCombo(label, actorNames, idx, currIdx);
 		if (0 < currIdx)
 			selected = FIND_EDITOR_ELEMENT(actorNames[currIdx]);
 		else
@@ -88,7 +101,7 @@ namespace FTEditorUtils
 			config.path = ".";
 			config.countSelectionMax = 1;
 			ImGuiFileDialog::Instance()->OpenDialog(
-				"Dialog", label, ChunkKeys::TEXTURE_FORMAT_SUPPORTED, config);
+				"Dialog", label, FileTypes::TEXTURE, config);
 			ImGui::OpenPopup(label);
 		}
 

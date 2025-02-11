@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -11,6 +11,8 @@
 
 #pragma once
 #include "Components/Component.h"
+
+#include <directxtk/SimpleMath.h>
 
 #include "Core/FTCore.h"
 #include "ResourceSystem/FTBasicMeshGroup.h"
@@ -22,62 +24,62 @@ class FTTexture;
 struct Mesh;
 struct MeshData;
 
-#define CHECK_RENDERER(RendererInst) if(!RendererInst) ImGui::Text("Renderer is not loaded");
+#define CHECK_RENDERER(RendererInst) \
+	if (!RendererInst)               \
+		ImGui::Text("Renderer is not loaded");
 
 class MeshRenderer :
-    public Component
+	public Component
 {
-public:
-	virtual	void Initialize	(FTCore* coreInstance)		override;
-	virtual void Update		(float deltaTime)			override;
-	virtual void Render		(FoxtrotRenderer* renderer) override;
-
-	virtual void CloneTo	(Actor* actor)				override;
-
-protected:
-	virtual bool InitializeMesh	();
-			bool InitializeMesh	(UINT key);
-			bool InitializeMesh (MeshData& meshData);
-			bool InitializeMesh	(std::vector<MeshData>& meshData);
-
-			bool SetTexture		();
-	virtual	void UpdateMesh		(Transform* transform, Camera* cameraInstance);
-	virtual void UpdateBuffers	();
-
 public:
 	virtual std::string GetName() const override { return "MeshRenderer"; }
 
-protected:
-	FoxtrotRenderer*	GetRenderer	()	{ return mRenderer; }
-	FTBasicMeshGroup*	GetMeshGroup()	{ return mMeshGroup; }
-	UINT				GetMeshKey	()	{ return mMeshKey; }
-	UINT				GetTexKey	()	{ return mTexKey; }
-	FTTexture*			GetTexture	()	{ return mTexture; }
+public:
+	FoxtrotRenderer*  GetRenderer() { return mRenderer; }
+	FTBasicMeshGroup* GetMeshGroup() { return mMeshGroup; }
+	UINT			  GetMeshKey() { return mMeshKey; }
+	UINT			  GetTexKey() { return mTexKey; }
+	FTTexture*		  GetTexture() { return mTexture; }
 
-	void				SetRenderer	(FoxtrotRenderer* renderer) { mRenderer = renderer; }
-	void				SetMeshGroup(FTBasicMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
-	void				SetMeshKey	(UINT key) { mMeshKey = key; }
-	void				SetTexKey	(UINT key) { mTexKey = key; }
+	void SetRenderer(FoxtrotRenderer* renderer) { mRenderer = renderer; }
+	void SetMeshGroup(FTBasicMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
+	void SetMeshKey(UINT key) { mMeshKey = key; }
+	void SetTexKey(UINT key) { mTexKey = key; }
+
+public:
+	virtual void Initialize(FTCore* coreInstance) override;
+	virtual void Update(float deltaTime) override;
+	virtual void Render(FoxtrotRenderer* renderer) override;
+
+	virtual void CloneTo(Actor* actor) override;
+
+public:
+	MeshRenderer(Actor* owner, int updateOrder);
+	virtual ~MeshRenderer() override;
+
+protected:
+	virtual bool InitializeMesh();
+	bool		 InitializeMesh(UINT key);
+	bool		 InitializeMesh(MeshData& meshData);
+	bool		 InitializeMesh(std::vector<MeshData>& meshData);
+
+	bool		 SetTexture();
+	virtual void UpdateMesh(Transform* transform, Camera* camInst);
+	virtual void UpdateBuffers();
+
+	DirectX::SimpleMath::Matrix CalcModelMat(Transform* transform);
 
 private:
 	// Identifier for the object in the Resource Map from the ResourceManager instance.
 	// These will be read from .chunk file.
-	UINT				mMeshKey;
-	UINT				mTexKey;
+	UINT mMeshKey;
+	UINT mTexKey;
 
 	// These will be set in Initialize() member function.
-	FoxtrotRenderer*	mRenderer;
-	FTBasicMeshGroup*	mMeshGroup;
-	FTTexture*			mTexture;
-
-public:
-			 MeshRenderer(Actor* owner, int updateOrder);
-	virtual ~MeshRenderer() override;
-
-protected:
-	void UpdateConstantBufferModel		(Transform* transform);
-	void UpdateConstantBufferView		(Camera* camInst);
-	void UpdateConstantBufferProjection	(Camera* camInst);
+	FoxtrotRenderer*  mRenderer;
+	FTBasicMeshGroup* mMeshGroup;
+	FTTexture*		  mTexture;
+	FTMaterial*		  mMaterial;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs);
@@ -90,8 +92,8 @@ public:
 
 protected:
 	virtual void OnConfirmUpdate() override;
-	void OnResetTexture();
-	void UpdateSprite();
-	void UpdateSprite(UINT& key);
+	void		 OnResetTexture();
+	void		 UpdateSprite();
+	void		 UpdateSprite(UINT& key);
 #endif
 };

@@ -33,7 +33,7 @@
 #define SOLID_PS_PATH L"Assets/Shaders/SolidPS.hlsl"
 #define TEXTURE_VS_PATH L"Assets/Shaders/TextureVS.hlsl"
 #define TEXTURE_PS_PATH L"Assets/Shaders/TexturePS.hlsl"
-#define BLINN_PHONG_PS_PATH L"BlinnPhongPS"
+#define BLINN_PHONG_PS_PATH L"Assets/Shaders/BlinnPhongPS.hlsl"
 
 using VertexType = DirectX::VertexPositionColor;
 using namespace Microsoft::WRL;

@@ -100,8 +100,8 @@ void FTPremade::Create(EditorElement* ele)
 {
 	assert(!GetRelativePath().empty());
 	SetFileName(ele->GetName());
-	std::string as = GetRelativePath() + GetFileName() + ChunkKeys::PREMADE_FILE_FORMAT;
-	std::ofstream ofs(GetRelativePath() + GetFileName() + ChunkKeys::PREMADE_FILE_FORMAT);
+	std::string as = GetRelativePath() + GetFileName() + FileTypes::PREMADE;
+	std::ofstream ofs(GetRelativePath() + GetFileName() + FileTypes::PREMADE);
 	if (ofs)
 	{
 		FileIOHelper::BeginDataPackSave(ofs, GetFileName());

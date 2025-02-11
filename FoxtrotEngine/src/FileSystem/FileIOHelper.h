@@ -51,7 +51,7 @@ public:
 	static void   ParseString(std::string& line, std::string& arg);
 
 public:
-	// Initialize identation, start DBG_NEW list of item
+	// Initialize identation, start a new list of item
 	static void	BeginDataPackSave(std::ofstream& ofs, std::string dataPackKey);
 	static void	EndDataPackSave(std::ofstream& ofs, std::string dataPackKey);
 	static void SaveBufferToFile(std::ofstream& ofs);

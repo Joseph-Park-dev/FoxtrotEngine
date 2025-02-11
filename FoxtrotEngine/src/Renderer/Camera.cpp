@@ -43,7 +43,7 @@ Camera::Camera()
 	: mRenderer(nullptr)
 	, mTarget(nullptr)
 	, mPosition(Vector3(0.0f, 0.0f, 0.0f))
-	, mViewDir(Vector3(0.0f, 0.0f, 1.0f))
+	, mViewDir(Vector3(0.0f, 0.0f, -1.0f))
 	, mUpDir(Vector3(0.0f, -1.0f, 0.0f))
 	, mRightDir(Vector3(1.0f, 0.0f, 0.0f))
 	, mPitch(0.0f)
@@ -70,7 +70,7 @@ Matrix Camera::GetViewRow()
 		mYaw				 = -transform->GetRotation().y;
 		mPitch				 = transform->GetRotation().x;
 	}
-	return Matrix::CreateTranslation(mPosition) * Matrix::CreateRotationY(mYaw) * Matrix::CreateRotationX(mPitch);
+	return Matrix::CreateTranslation(-mPosition) * Matrix::CreateRotationY(-mYaw) * Matrix::CreateRotationX(mPitch);
 }
 
 Matrix Camera::GetProjRow()

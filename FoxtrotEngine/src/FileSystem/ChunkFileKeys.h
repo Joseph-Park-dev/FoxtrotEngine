@@ -12,19 +12,22 @@
 #pragma once
 #define MAX_STRING_SIZE 50
 
+namespace FileTypes
+{
+	// Essential Files
+	constexpr const char* CHUNK = ".chunk";
+	constexpr const char* GDPACK = ".gdpack";
+
+	// FTResources
+	constexpr const char* PREMADE = ".premade";
+	constexpr const char* TEXTURE = ".png, .jpeg, .jpg";
+	constexpr const char* TILEMAP = ".csv, .txt";
+}
+
 namespace ChunkKeys 
 {
 	constexpr const int	  VALUE_NOT_ASSIGNED = 0;
 	constexpr const char* NULL_OBJ = "Null";
-
-// File formats
-	constexpr const char* GAMEDATA_FILE_FORMAT = ".gdpack";
-	constexpr const char* CHUNK_FILE_FORMAT = ".chunk";
-	constexpr const char* EDITOR_FILE_FORMAT = ".json";
-	constexpr const char* PREMADE_FILE_FORMAT = ".premade";
-	constexpr const char* TEXTURE_FORMAT_SUPPORTED  = ".png, .jpeg";
-	constexpr const char* TILEMAP_FORMAT_SUPPORTED = ".csv, .text";
-	constexpr const wchar_t* NEW_LINE = L"<br>";
 
 // Data Pack Names
 	constexpr const char* CHUNK_DATA = "Chunk Data";
@@ -40,6 +43,8 @@ namespace ChunkKeys
 	constexpr const char* CHUNK_LIST_PATH = "Chunk List Path";
 
 	constexpr const char* COLLISION_MANAGER = "Collision Manager";
+
+	constexpr const char* LIGHT = "Light";
 
 // Manager Related
 	// Collision Manager

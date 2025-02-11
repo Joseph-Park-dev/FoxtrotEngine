@@ -9,6 +9,7 @@
 #include "Components/MeshRenderer.h"
 
 #include <functional>
+#include <directxtk/SimpleMath.h>
 
 #include "Actors/Transform.h"
 #include "Actors/Actor.h"
@@ -78,6 +79,9 @@ bool MeshRenderer::InitializeMesh()
 		if (!mMeshGroup)
 			mMeshGroup = DBG_NEW FTBasicMeshGroup;
 		mMeshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
+
+		if (!mMaterial)
+			mMaterial = DBG_NEW FTMaterial;
 		if (!mMeshGroup)
 		{
 			LogString("ERROR: MeshRenderer::InitializeMesh() -> Mesh Init failed.\n");
@@ -103,6 +107,8 @@ bool MeshRenderer::InitializeMesh(MeshData& meshData)
 {
 	if (!mMeshGroup)
 		mMeshGroup = DBG_NEW FTBasicMeshGroup;
+	if (!mMaterial)
+		mMaterial = DBG_NEW FTMaterial;
 	std::vector<MeshData> meshes = { meshData };
 	mMeshGroup->Initialize(meshes, mRenderer->GetDevice(), mRenderer->GetContext());
 	if (!mMeshGroup)
@@ -117,6 +123,8 @@ bool MeshRenderer::InitializeMesh(std::vector<MeshData>& meshData)
 {
 	if (!mMeshGroup)
 		mMeshGroup = DBG_NEW FTBasicMeshGroup;
+	if (!mMaterial)
+		mMaterial = DBG_NEW FTMaterial;
 	mMeshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
 	if (!mMeshGroup)
 	{
@@ -139,13 +147,58 @@ bool MeshRenderer::SetTexture()
 	return mTexture != nullptr;
 }
 
-void MeshRenderer::UpdateMesh(Transform* transform, Camera* cameraInstance)
+void MeshRenderer::UpdateMesh(Transform* transform, Camera* camInst)
 {
 	if (mMeshGroup)
 	{
-		UpdateConstantBufferModel(transform);
-		UpdateConstantBufferView(cameraInstance);
-		UpdateConstantBufferProjection(cameraInstance);
+		// Model Transformation
+		Matrix&& modelMat		 = std::move(CalcModelMat(transform));
+		Matrix	 invTransposeMat = modelMat.Transpose();
+		invTransposeMat.Translation(Vector3(0.0f));
+		invTransposeMat = invTransposeMat.Transpose().Invert();
+
+		// View Transformation
+		Matrix&& viewMat  = camInst->GetViewRow();
+		Vector3	 eyeWorld = Vector3::Transform(Vector3(0.0f), viewMat.Invert());
+
+		// Project Transformation
+		Matrix&& projMat = std::move(camInst->GetProjRow());
+
+		for (Mesh* mesh : mMeshGroup->GetMeshes())
+		{
+			mesh->VertexConstantData.model		  = modelMat.Transpose();
+			mesh->VertexConstantData.view		  = viewMat.Transpose();
+			mesh->VertexConstantData.projection	  = projMat.Transpose();
+			mesh->VertexConstantData.invTranspose = std::move(invTransposeMat);
+
+			mesh->PixelConstantData.EyeWorld   = eyeWorld;
+			mesh->PixelConstantData.UseTexture = true;
+
+			mesh->PixelConstantData.Material.Diffuse  = mMaterial->Diffuse;
+			mesh->PixelConstantData.Material.Specular = mMaterial->Specular;
+
+			for (size_t i = 0; i < GameData::MAX_LIGHTS; ++i)
+			{
+				if (!LightManager::GetInstance()->IsActive(i))
+					mesh->PixelConstantData.Lights[i].Strength *= 0.0f;
+				else
+				{
+					for (size_t j = 0; j < Light::TYPE::END; ++j)
+					{
+						// 다른 조명 끄기
+						if (LightManager::GetInstance()->GetType(i) != (Light::TYPE)j)
+						{
+							mesh->PixelConstantData.Lights[i].Strength *= 0.0f;
+						}
+						else
+						{
+							mesh->PixelConstantData.Lights[i] = LightManager::GetInstance()->GetLight(i);
+						}
+					}
+					mesh->PixelConstantData.Lights[i] = LightManager::GetInstance()->GetLight(i);
+				}
+			}
+		}
 	}
 }
 
@@ -155,10 +208,23 @@ void MeshRenderer::UpdateBuffers()
 		mMeshGroup->UpdateConstantBuffers(mRenderer->GetDevice(), mRenderer->GetContext());
 }
 
+Matrix MeshRenderer::CalcModelMat(Transform* transform)
+{
+	int				  dir		   = transform->GetRightward().x;
+	FTVector3		  scale		   = transform->GetScale();
+	DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x, scale.y, scale.z);
+	return DXMatrix::CreateScale(scaleWithDir) * 
+		DXMatrix::CreateRotationX(transform->GetRotation().x) * 
+		DXMatrix::CreateRotationY(transform->GetRotation().y) * 
+		DXMatrix::CreateRotationZ(transform->GetRotation().z) * 
+		DXMatrix::CreateTranslation(transform->GetWorldPosition().GetDXVec3());
+}
+
 MeshRenderer::MeshRenderer(Actor* owner, int updateOrder)
 	: Component(owner, updateOrder)
 	, mMeshGroup(nullptr)
 	, mTexture(nullptr)
+	, mMaterial(nullptr)
 	, mRenderer(nullptr)
 	, mMeshKey(ChunkKeys::VALUE_NOT_ASSIGNED)
 	, mTexKey(ChunkKeys::VALUE_NOT_ASSIGNED)
@@ -172,39 +238,11 @@ MeshRenderer::~MeshRenderer()
 		delete mMeshGroup;
 		mMeshGroup = nullptr;
 	}
-}
-
-void MeshRenderer::UpdateConstantBufferModel(Transform* transform)
-{
-	for (Mesh* mesh : mMeshGroup->GetMeshes())
+	if (mMaterial)
 	{
-		int		  dir	   = transform->GetRightward().x;
-		FTVector3 worldPos = FTVector3(
-			transform->GetWorldPosition().x,
-			transform->GetWorldPosition().y,
-			transform->GetWorldPosition().z);
-		FTVector3		  scale		   = transform->GetScale();
-		DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x * dir, -scale.y, scale.z);
-		Matrix			  model =
-			DXMatrix::CreateScale(scaleWithDir) * 
-			DXMatrix::CreateRotationX(transform->GetRotation().x) * 
-			DXMatrix::CreateRotationY(transform->GetRotation().y) * 
-			DXMatrix::CreateRotationZ(transform->GetRotation().z) * 
-			DXMatrix::CreateTranslation(worldPos.GetDXVec3());
-		mesh->VertexConstantData.model = model.Transpose();
+		delete mMaterial;
+		mMaterial = nullptr;
 	}
-}
-
-void MeshRenderer::UpdateConstantBufferView(Camera* camInst)
-{
-	for (Mesh* mesh : mMeshGroup->GetMeshes())
-		mesh->VertexConstantData.view = camInst->GetViewRow().Transpose();
-}
-
-void MeshRenderer::UpdateConstantBufferProjection(Camera* camInst)
-{
-	for (Mesh* mesh : mMeshGroup->GetMeshes())
-		mesh->VertexConstantData.projection = camInst->GetProjRow().Transpose();
 }
 
 void MeshRenderer::SaveProperties(std::ofstream& ofs)
@@ -306,7 +344,7 @@ void MeshRenderer::UpdateSprite(UINT& key)
 		config.path				 = ".";
 		config.countSelectionMax = 1;
 		ImGuiFileDialog::Instance()->OpenDialog(
-			"SelectSprite", "Select Sprite", ChunkKeys::TEXTURE_FORMAT_SUPPORTED, config);
+			"SelectSprite", "Select Sprite", FileTypes::TEXTURE, config);
 		ImGui::OpenPopup("Select Sprite");
 	}
 

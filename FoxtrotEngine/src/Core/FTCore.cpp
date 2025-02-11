@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -22,6 +22,7 @@
 #include "Managers/EventManager.h"
 #include "Managers/UIManager.h"
 #include "Managers/CollisionManager.h"
+#include "Managers/LightManager.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/Camera.h"
 #include "Physics/Physics2D.h"
@@ -33,18 +34,19 @@
 #include "Debugging/DebugMemAlloc.h"
 
 // FTCore related singleton initializations -> used in the runtimes of the produced games.
-Physics2D*			Physics2D::mInstance = nullptr;
-Camera*				Camera::mInstance = nullptr;
-ResourceManager*	ResourceManager::mInstance = nullptr;
-CollisionManager*	CollisionManager::mInstance = nullptr;
-SceneManager*		SceneManager::mInstance = nullptr;
-UIManager*			UIManager::mInstance = nullptr;
-EventManager*		EventManager::mInstance = nullptr;
-KeyInputManager*	KeyInputManager::mInstance = nullptr;
-ChunkLoader*		ChunkLoader::mInstance = nullptr;
-ParticleSystem*		ParticleSystem::mInstance = nullptr;
-Timer*				Timer::mInstance = nullptr;
-FTCore*				FTCore::mInstance = nullptr;
+Physics2D*		  Physics2D::mInstance		  = nullptr;
+Camera*			  Camera::mInstance			  = nullptr;
+ResourceManager*  ResourceManager::mInstance  = nullptr;
+CollisionManager* CollisionManager::mInstance = nullptr;
+SceneManager*	  SceneManager::mInstance	  = nullptr;
+UIManager*		  UIManager::mInstance		  = nullptr;
+EventManager*	  EventManager::mInstance	  = nullptr;
+KeyInputManager*  KeyInputManager::mInstance  = nullptr;
+ChunkLoader*	  ChunkLoader::mInstance	  = nullptr;
+ParticleSystem*	  ParticleSystem::mInstance	  = nullptr;
+LightManager*	  LightManager::mInstance	  = nullptr;
+Timer*			  Timer::mInstance			  = nullptr;
+FTCore*			  FTCore::mInstance			  = nullptr;
 
 void FTCore::LoadGameData()
 {
@@ -73,8 +75,7 @@ bool FTCore::Initialize()
 
 bool FTCore::InitializeWindow()
 {
-	WNDCLASSEX wc =
-	{
+	WNDCLASSEX wc = {
 		sizeof(WNDCLASSEX),
 		CS_CLASSDC,
 		WndProc,
@@ -103,11 +104,14 @@ bool FTCore::InitializeWindow()
 		wc.lpszClassName,
 		mWindowTitle.c_str(),
 		WS_OVERLAPPEDWINDOW | WS_SYSMENU,
-		100,                // x-coordinate, top left
-		100,                // y-coordinate, top left
+		100,				// x-coordinate, top left
+		100,				// y-coordinate, top left
 		wr.right - wr.left, // horizontal resolution
 		wr.bottom - wr.top, // vertical resolution
-		NULL, NULL, wc.hInstance, NULL);
+		NULL,
+		NULL,
+		wc.hInstance,
+		NULL);
 
 	if (!mWindow)
 	{
@@ -138,6 +142,7 @@ void FTCore::InitSingletonManagers()
 	UIManager::GetInstance();
 	EventManager::GetInstance();
 	KeyInputManager::GetInstance();
+	LightManager::GetInstance();
 }
 
 void FTCore::InitTimer()
@@ -162,7 +167,7 @@ void FTCore::ProcessInput()
 	MSG msg = {};
 	KeyInputManager::GetInstance()->DetectKeyInput();
 	KeyInputManager::GetInstance()->DetectMouseInput(msg);
-	//KeyInputManager::GetInstance()->DetectGamepadInput();
+	// KeyInputManager::GetInstance()->DetectGamepadInput();
 	SceneManager::GetInstance()->ProcessInput(KeyInputManager::GetInstance());
 	TranslateMessage(&msg);
 	DispatchMessage(&msg);
@@ -213,14 +218,15 @@ FTCore::FTCore()
 	, mWindowHeight(1080)
 	, mWindowTitle(L"Untitled Game Project")
 	, mGameDataPath(
-		std::string("./")
-		+ std::string(ChunkKeys::GAME_DATA)
-		+ std::string(ChunkKeys::GAMEDATA_FILE_FORMAT)
-		)
-{}
+		  std::string("./")
+		  + std::string(ChunkKeys::GAME_DATA)
+		  + std::string(FileTypes::GDPACK))
+{
+}
 
 FTCore::~FTCore()
-{}
+{
+}
 
 void FTCore::ShutDown()
 {
@@ -240,6 +246,7 @@ void FTCore::ShutDown()
 	Camera::GetInstance()->Destroy();
 	Timer::GetInstance()->Destroy();
 	ParticleSystem::GetInstance()->Destroy();
+	LightManager::GetInstance()->Destroy();
 
 	DestroyWindow(mWindow);
 	PostQuitMessage(0);
@@ -247,12 +254,13 @@ void FTCore::ShutDown()
 
 LRESULT FTCore::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	switch (msg) {
-	case WM_DESTROY:
+	switch (msg)
 	{
-		SetIsRunning(false);
-		return 0;
-	}
+		case WM_DESTROY:
+		{
+			SetIsRunning(false);
+			return 0;
+		}
 	}
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }

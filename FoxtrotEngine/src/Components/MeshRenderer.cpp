@@ -166,38 +166,25 @@ void MeshRenderer::UpdateMesh(Transform* transform, Camera* camInst)
 
 		for (Mesh* mesh : mMeshGroup->GetMeshes())
 		{
-			mesh->VertexConstantData.model		  = modelMat.Transpose();
-			mesh->VertexConstantData.view		  = viewMat.Transpose();
-			mesh->VertexConstantData.projection	  = projMat.Transpose();
+			mesh->VertexConstantData.model = modelMat.Transpose();
+			mesh->VertexConstantData.view = viewMat.Transpose();
+			mesh->VertexConstantData.projection = projMat.Transpose();
 			mesh->VertexConstantData.invTranspose = std::move(invTransposeMat);
 
-			mesh->PixelConstantData.EyeWorld   = eyeWorld;
+			mesh->PixelConstantData.EyeWorld = eyeWorld;
 			mesh->PixelConstantData.UseTexture = true;
 
-			mesh->PixelConstantData.Material.Diffuse  = mMaterial->Diffuse;
+			mesh->PixelConstantData.Material.Diffuse = mMaterial->Diffuse;
 			mesh->PixelConstantData.Material.Specular = mMaterial->Specular;
 
-			for (size_t i = 0; i < GameData::MAX_LIGHTS; ++i)
+			for (size_t i = 0; i < Light::TYPE::END; ++i)
 			{
-				if (!LightManager::GetInstance()->IsActive(i))
-					mesh->PixelConstantData.Lights[i].Strength *= 0.0f;
+				if (LightManager::GetInstance()->GetType(0) == (Light::TYPE)i)
+					mesh->PixelConstantData.Lights[i] = LightManager::GetInstance()->GetLight(0);
 				else
-				{
-					for (size_t j = 0; j < Light::TYPE::END; ++j)
-					{
-						// 다른 조명 끄기
-						if (LightManager::GetInstance()->GetType(i) != (Light::TYPE)j)
-						{
-							mesh->PixelConstantData.Lights[i].Strength *= 0.0f;
-						}
-						else
-						{
-							mesh->PixelConstantData.Lights[i] = LightManager::GetInstance()->GetLight(i);
-						}
-					}
-					mesh->PixelConstantData.Lights[i] = LightManager::GetInstance()->GetLight(i);
-				}
+					mesh->PixelConstantData.Lights[i].Strength *= 0.0f;
 			}
+
 		}
 	}
 }

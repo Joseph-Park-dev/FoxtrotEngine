@@ -42,18 +42,14 @@ void LightManager::DisplayLightMenu()
 	ImGui::Begin("Lights");
 	const char* lightTypesStr[3] = { "DIRECTIONAL", "POINT", "SPOT" };
 	static int	indices[3];
-	for (size_t i = 0; i < GameData::MAX_LIGHTS; ++i)
+	if (ImGui::BeginListBox(std::string("Light " + std::to_string(0)).c_str(), ImVec2(-FLT_MIN, 200)))
 	{
-		if (ImGui::BeginListBox(std::string("Light " + std::to_string(i)).c_str(), ImVec2(-FLT_MIN, 200)))
-		{
-			ImGui::Checkbox(LightKeys::IS_ACTIVE, &mActiveStatus[i]);
-			FTEditorUtils::DisplayArrayAsCombo(LightKeys::TYPE, lightTypesStr, Light::TYPE::END, indices[i]);
-			mLights[i].UpdateUI();
-			ImGui::EndListBox();
-		}
-		mTypes[i] = (Light::TYPE)indices[i];
+		ImGui::Checkbox(LightKeys::IS_ACTIVE, &mActiveStatus[0]);
+		FTEditorUtils::DisplayArrayAsCombo(LightKeys::TYPE, lightTypesStr, Light::TYPE::END, indices[0]);
+		mLights[0].UpdateUI();
+		ImGui::EndListBox();
 	}
-	ImGui::TreePop();
+	mTypes[0] = (Light::TYPE)indices[0];
 	ImGui::End();
 }
 #endif // FOXTROT_EDITOR

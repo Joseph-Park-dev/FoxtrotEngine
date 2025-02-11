@@ -215,12 +215,13 @@ FTCore::FTCore()
 	, mGameDataPath(
 		std::string("./")
 		+ std::string(ChunkKeys::GAME_DATA)
-		+ std::string(ChunkKeys::GAMEDATA_FILE_FORMAT)
-		)
-{}
+		  + std::string(FileTypes::GDPACK))
+{
+}
 
 FTCore::~FTCore()
-{}
+{
+}
 
 void FTCore::ShutDown()
 {

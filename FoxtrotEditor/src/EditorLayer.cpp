@@ -155,7 +155,7 @@ void EditorLayer::DisplayFileMenu()
 			{
 				mFileDialog = ImGui::FileBrowser(mFileSelectFlag);
 				mFileDialog.SetTitle("Save");
-				mFileDialog.SetTypeFilters({ ChunkKeys::CHUNK_FILE_FORMAT });
+				mFileDialog.SetTypeFilters({ FileTypes::CHUNK });
 				mFileDialog.SetDirectory(PATH_PROJECT);
 				mFileDialog.Open();
 				mFileMenuEvent = FileMenuEvents::Save;
@@ -165,7 +165,7 @@ void EditorLayer::DisplayFileMenu()
 		{
 			mFileDialog = ImGui::FileBrowser(mFileSelectFlag);
 			mFileDialog.SetTitle("Save As");
-			mFileDialog.SetTypeFilters({ ChunkKeys::CHUNK_FILE_FORMAT });
+			mFileDialog.SetTypeFilters({ FileTypes::CHUNK });
 			mFileDialog.SetDirectory(PATH_PROJECT);
 			mFileDialog.Open();
 			mFileMenuEvent = FileMenuEvents::SaveAs;
@@ -174,7 +174,7 @@ void EditorLayer::DisplayFileMenu()
 		{
 			mFileDialog = ImGui::FileBrowser(mFileSelectFlag);
 			mFileDialog.SetTitle("Open Chunk");
-			mFileDialog.SetTypeFilters({ ChunkKeys::CHUNK_FILE_FORMAT });
+			mFileDialog.SetTypeFilters({ FileTypes::CHUNK });
 			mFileDialog.SetDirectory(PATH_PROJECT);
 			mFileDialog.Open();
 			mFileMenuEvent = FileMenuEvents::Open;
@@ -536,7 +536,7 @@ void EditorLayer::CreateNewProject(std::filesystem::path& path)
 		std::filesystem::create_directory(PATH_PROJECT + "\\Builds");
 		std::filesystem::create_directory(PATH_PROJECT + "\\Chunks");
 		std::filesystem::create_directory(PATH_PROJECT + "\\FoxtrotEngine");
-		std::ofstream ofs(PATH_PROJECT + "\\FoxtrotEngine" + "\\GameData" + ChunkKeys::GAMEDATA_FILE_FORMAT);
+		std::ofstream ofs(PATH_PROJECT + "\\FoxtrotEngine" + "\\GameData" + FileTypes::GDPACK);
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::GAME_DATA);
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::CHUNK_LIST);
 		FileIOHelper::EndDataPackSave(ofs, ChunkKeys::CHUNK_LIST);

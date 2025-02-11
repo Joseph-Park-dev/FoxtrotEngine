@@ -306,7 +306,7 @@ void MeshRenderer::UpdateSprite(UINT& key)
 		config.path				 = ".";
 		config.countSelectionMax = 1;
 		ImGuiFileDialog::Instance()->OpenDialog(
-			"SelectSprite", "Select Sprite", ChunkKeys::TEXTURE_FORMAT_SUPPORTED, config);
+			"SelectSprite", "Select Sprite", FileTypes::TEXTURE, config);
 		ImGui::OpenPopup("Select Sprite");
 	}
 

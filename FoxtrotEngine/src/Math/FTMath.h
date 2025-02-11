@@ -1,14 +1,14 @@
 // ----------------------------------------------------------------
 // From Game Programming in C++ by Sanjay Madhav
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-// 
+//
 // Released under the BSD License
 // https://github.com/gameprogcpp/code
 // ----------------------------------------------------------------
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -30,16 +30,16 @@
 #include "directxtk/SimpleMath.h"
 
 #ifdef FOXTROT_EDITOR
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
+	#define IMGUI_DEFINE_MATH_OPERATORS
+	#include <imgui.h>
 #endif // FOXTROT_EDITOR
 
 namespace Math
 {
-	const float Pi = 3.1415926535f;
-	const float TwoPi = Pi * 2.0f;
-	const float PiOver2 = Pi / 2.0f;
-	const float Infinity = std::numeric_limits<float>::infinity();
+	const float Pi			= 3.1415926535f;
+	const float TwoPi		= Pi * 2.0f;
+	const float PiOver2		= Pi / 2.0f;
+	const float Infinity	= std::numeric_limits<float>::infinity();
 	const float NegInfinity = -std::numeric_limits<float>::infinity();
 
 	inline float ToRadians(float degrees)
@@ -106,7 +106,7 @@ namespace Math
 	{
 		return acosf(value);
 	}
-	
+
 	inline float Atan2(float y, float x)
 	{
 		return atan2f(y, x);
@@ -126,12 +126,12 @@ namespace Math
 	{
 		return sqrtf(value);
 	}
-	
+
 	inline float Fmod(float numer, float denom)
 	{
 		return fmod(numer, denom);
 	}
-}
+} // namespace Math
 
 class FTVector2;
 
@@ -144,22 +144,32 @@ public:
 	float z;
 
 	FTVector3()
-		:x(0.0f)
-		,y(0.0f)
-		,z(0.0f)
-	{}
+		: x(0.0f)
+		, y(0.0f)
+		, z(0.0f)
+	{
+	}
+
+	explicit FTVector3(float in)
+		: x(in)
+		, y(in)
+		, z(in)
+	{
+	}
 
 	explicit FTVector3(float inX, float inY, float inZ)
-		:x(inX)
-		,y(inY)
-		,z(inZ)
-	{}
+		: x(inX)
+		, y(inY)
+		, z(inZ)
+	{
+	}
 
 	FTVector3(FTVector2 vec2);
 	FTVector3(b2Vec2 vec2);
 	FTVector3(DirectX::SimpleMath::Vector3 vec3);
 
-	friend std::ofstream& operator<<(std::ofstream& ofs, const FTVector3& vec3) {
+	friend std::ofstream& operator<<(std::ofstream& ofs, const FTVector3& vec3)
+	{
 		ofs << "(" << std::to_string(vec3.x) << "," << std::to_string(vec3.y) << "," << std::to_string(vec3.z) << ")";
 		return ofs;
 	}
@@ -179,6 +189,12 @@ public:
 	{
 		return reinterpret_cast<const float*>(&x);
 	}
+
+	//float* Data() 
+	//{
+	//	float floatArr[3] = { this->x, this->y, this->z };
+	//	return floatArr;
+	//}
 
 	// Set all three components in one line
 	void Set(float inX, float inY, float inZ)
@@ -268,7 +284,7 @@ public:
 	// Length squared of vector
 	float LengthSq() const
 	{
-		return (x*x + y*y + z*z);
+		return (x * x + y * y + z * z);
 	}
 
 	// Length of vector
@@ -315,7 +331,7 @@ public:
 	{
 		return FTVector3(a + f * (b - a));
 	}
-	
+
 	// Reflect V about (normalized) N
 	static FTVector3 Reflect(const FTVector3& v, const FTVector3& n)
 	{
@@ -348,30 +364,35 @@ public:
 	float y;
 
 	FTVector2()
-		:x(0.0f)
+		: x(0.0f)
 		, y(0.0f)
-	{}
+	{
+	}
 
 	explicit FTVector2(float inX, float inY)
-		:x(inX)
+		: x(inX)
 		, y(inY)
-	{}
+	{
+	}
 
 	explicit FTVector2(int inX, int inY)
-		:x(static_cast<float>(inX))
+		: x(static_cast<float>(inX))
 		, y(static_cast<float>(inY))
-	{}
+	{
+	}
 
 	explicit FTVector2(b2Vec2 vec2)
 		: x(static_cast<float>(vec2.x))
 		, y(static_cast<float>(vec2.y))
-	{}
+	{
+	}
 
 #ifdef FOXTROT_EDITOR
 	explicit FTVector2(ImVec2 imguiVec2)
 		: x(imguiVec2.x)
 		, y(imguiVec2.y)
-	{}
+	{
+	}
 
 	ImVec2 GetImVec2()
 	{
@@ -389,13 +410,15 @@ public:
 	FTVector2(FTVector3 vec3)
 		: x(vec3.x)
 		, y(vec3.y)
-	{}
+	{
+	}
 
-	friend std::ofstream& operator<<(std::ofstream& ofs, const FTVector2& vec2) {
+	friend std::ofstream& operator<<(std::ofstream& ofs, const FTVector2& vec2)
+	{
 		ofs << "(" << std::to_string(vec2.x) << "," << std::to_string(vec2.y) << ")";
 		return ofs;
 	}
-	
+
 	DirectX::XMFLOAT2 GetD3Vec2()
 	{
 		return DirectX::XMFLOAT2(this->x, this->y);
@@ -444,30 +467,30 @@ public:
 		return FTVector2(vec.x * scalar, vec.y * scalar);
 	}
 
-	FTVector2 operator / (FTVector2 vOther)
+	FTVector2 operator/(FTVector2 vOther)
 	{
 		assert(!(vOther.x == 0.f || vOther.y == 0.f));
 		return FTVector2(x / vOther.x, y / vOther.y);
 	}
 
-	FTVector2 operator / (float scalar)
+	FTVector2 operator/(float scalar)
 	{
 		assert(!(scalar == 0.f));
 		return FTVector2(x / scalar, y / scalar);
 	}
 
-	FTVector2 operator /= (float scalar)
+	FTVector2 operator/=(float scalar)
 	{
 		assert(!(scalar == 0.f));
 		return FTVector2(x / scalar, y / scalar);
 	}
 
-	FTVector2 operator= (FTVector3& vec3)
+	FTVector2 operator=(FTVector3& vec3)
 	{
 		return FTVector2(vec3.x, vec3.y);
 	}
 
-	FTVector2 operator= (const FTVector3& vec3)
+	FTVector2 operator=(const FTVector3& vec3)
 	{
 		return FTVector2(vec3.x, vec3.y);
 	}
@@ -613,52 +636,34 @@ public:
 	{
 		Matrix3 retVal;
 		// row 0
-		retVal.mat[0][0] = 
-			left.mat[0][0] * right.mat[0][0] +
-			left.mat[0][1] * right.mat[1][0] +
-			left.mat[0][2] * right.mat[2][0];
+		retVal.mat[0][0] =
+			left.mat[0][0] * right.mat[0][0] + left.mat[0][1] * right.mat[1][0] + left.mat[0][2] * right.mat[2][0];
 
-		retVal.mat[0][1] = 
-			left.mat[0][0] * right.mat[0][1] +
-			left.mat[0][1] * right.mat[1][1] +
-			left.mat[0][2] * right.mat[2][1];
+		retVal.mat[0][1] =
+			left.mat[0][0] * right.mat[0][1] + left.mat[0][1] * right.mat[1][1] + left.mat[0][2] * right.mat[2][1];
 
-		retVal.mat[0][2] = 
-			left.mat[0][0] * right.mat[0][2] +
-			left.mat[0][1] * right.mat[1][2] +
-			left.mat[0][2] * right.mat[2][2];
-		
+		retVal.mat[0][2] =
+			left.mat[0][0] * right.mat[0][2] + left.mat[0][1] * right.mat[1][2] + left.mat[0][2] * right.mat[2][2];
+
 		// row 1
-		retVal.mat[1][0] = 
-			left.mat[1][0] * right.mat[0][0] +
-			left.mat[1][1] * right.mat[1][0] +
-			left.mat[1][2] * right.mat[2][0];
+		retVal.mat[1][0] =
+			left.mat[1][0] * right.mat[0][0] + left.mat[1][1] * right.mat[1][0] + left.mat[1][2] * right.mat[2][0];
 
-		retVal.mat[1][1] = 
-			left.mat[1][0] * right.mat[0][1] +
-			left.mat[1][1] * right.mat[1][1] +
-			left.mat[1][2] * right.mat[2][1];
+		retVal.mat[1][1] =
+			left.mat[1][0] * right.mat[0][1] + left.mat[1][1] * right.mat[1][1] + left.mat[1][2] * right.mat[2][1];
 
-		retVal.mat[1][2] = 
-			left.mat[1][0] * right.mat[0][2] +
-			left.mat[1][1] * right.mat[1][2] +
-			left.mat[1][2] * right.mat[2][2];
-		
+		retVal.mat[1][2] =
+			left.mat[1][0] * right.mat[0][2] + left.mat[1][1] * right.mat[1][2] + left.mat[1][2] * right.mat[2][2];
+
 		// row 2
-		retVal.mat[2][0] = 
-			left.mat[2][0] * right.mat[0][0] +
-			left.mat[2][1] * right.mat[1][0] +
-			left.mat[2][2] * right.mat[2][0];
+		retVal.mat[2][0] =
+			left.mat[2][0] * right.mat[0][0] + left.mat[2][1] * right.mat[1][0] + left.mat[2][2] * right.mat[2][0];
 
 		retVal.mat[2][1] =
-			left.mat[2][0] * right.mat[0][1] +
-			left.mat[2][1] * right.mat[1][1] +
-			left.mat[2][2] * right.mat[2][1];
+			left.mat[2][0] * right.mat[0][1] + left.mat[2][1] * right.mat[1][1] + left.mat[2][2] * right.mat[2][1];
 
-		retVal.mat[2][2] = 
-			left.mat[2][0] * right.mat[0][2] +
-			left.mat[2][1] * right.mat[1][2] +
-			left.mat[2][2] * right.mat[2][2];
+		retVal.mat[2][2] =
+			left.mat[2][0] * right.mat[0][2] + left.mat[2][1] * right.mat[1][2] + left.mat[2][2] * right.mat[2][2];
 
 		return retVal;
 	}
@@ -672,8 +677,7 @@ public:
 	// Create a scale matrix with x and y scales
 	static Matrix3 CreateScale(float xScale, float yScale)
 	{
-		float temp[3][3] =
-		{
+		float temp[3][3] = {
 			{ xScale, 0.0f, 0.0f },
 			{ 0.0f, yScale, 0.0f },
 			{ 0.0f, 0.0f, 1.0f },
@@ -696,8 +700,7 @@ public:
 	// theta is in radians
 	static Matrix3 CreateRotation(float theta)
 	{
-		float temp[3][3] =
-		{
+		float temp[3][3] = {
 			{ Math::Cos(theta), Math::Sin(theta), 0.0f },
 			{ -Math::Sin(theta), Math::Cos(theta), 0.0f },
 			{ 0.0f, 0.0f, 1.0f },
@@ -708,8 +711,7 @@ public:
 	// Create a translation matrix (on the xy-plane)
 	static Matrix3 CreateTranslation(const FTVector2& trans)
 	{
-		float temp[3][3] =
-		{
+		float temp[3][3] = {
 			{ 1.0f, 0.0f, 0.0f },
 			{ 0.0f, 1.0f, 0.0f },
 			{ trans.x, trans.y, 1.0f },
@@ -747,105 +749,57 @@ public:
 	{
 		Matrix4 retVal;
 		// row 0
-		retVal.mat[0][0] = 
-			a.mat[0][0] * b.mat[0][0] + 
-			a.mat[0][1] * b.mat[1][0] + 
-			a.mat[0][2] * b.mat[2][0] +
-			a.mat[0][3] * b.mat[3][0];
+		retVal.mat[0][0] =
+			a.mat[0][0] * b.mat[0][0] + a.mat[0][1] * b.mat[1][0] + a.mat[0][2] * b.mat[2][0] + a.mat[0][3] * b.mat[3][0];
 
-		retVal.mat[0][1] = 
-			a.mat[0][0] * b.mat[0][1] + 
-			a.mat[0][1] * b.mat[1][1] + 
-			a.mat[0][2] * b.mat[2][1] + 
-			a.mat[0][3] * b.mat[3][1];
+		retVal.mat[0][1] =
+			a.mat[0][0] * b.mat[0][1] + a.mat[0][1] * b.mat[1][1] + a.mat[0][2] * b.mat[2][1] + a.mat[0][3] * b.mat[3][1];
 
-		retVal.mat[0][2] = 
-			a.mat[0][0] * b.mat[0][2] + 
-			a.mat[0][1] * b.mat[1][2] + 
-			a.mat[0][2] * b.mat[2][2] + 
-			a.mat[0][3] * b.mat[3][2];
-		
-		retVal.mat[0][3] = 
-			a.mat[0][0] * b.mat[0][3] + 
-			a.mat[0][1] * b.mat[1][3] + 
-			a.mat[0][2] * b.mat[2][3] + 
-			a.mat[0][3] * b.mat[3][3];
+		retVal.mat[0][2] =
+			a.mat[0][0] * b.mat[0][2] + a.mat[0][1] * b.mat[1][2] + a.mat[0][2] * b.mat[2][2] + a.mat[0][3] * b.mat[3][2];
+
+		retVal.mat[0][3] =
+			a.mat[0][0] * b.mat[0][3] + a.mat[0][1] * b.mat[1][3] + a.mat[0][2] * b.mat[2][3] + a.mat[0][3] * b.mat[3][3];
 
 		// row 1
-		retVal.mat[1][0] = 
-			a.mat[1][0] * b.mat[0][0] + 
-			a.mat[1][1] * b.mat[1][0] + 
-			a.mat[1][2] * b.mat[2][0] + 
-			a.mat[1][3] * b.mat[3][0];
+		retVal.mat[1][0] =
+			a.mat[1][0] * b.mat[0][0] + a.mat[1][1] * b.mat[1][0] + a.mat[1][2] * b.mat[2][0] + a.mat[1][3] * b.mat[3][0];
 
-		retVal.mat[1][1] = 
-			a.mat[1][0] * b.mat[0][1] + 
-			a.mat[1][1] * b.mat[1][1] + 
-			a.mat[1][2] * b.mat[2][1] + 
-			a.mat[1][3] * b.mat[3][1];
+		retVal.mat[1][1] =
+			a.mat[1][0] * b.mat[0][1] + a.mat[1][1] * b.mat[1][1] + a.mat[1][2] * b.mat[2][1] + a.mat[1][3] * b.mat[3][1];
 
-		retVal.mat[1][2] = 
-			a.mat[1][0] * b.mat[0][2] + 
-			a.mat[1][1] * b.mat[1][2] + 
-			a.mat[1][2] * b.mat[2][2] + 
-			a.mat[1][3] * b.mat[3][2];
+		retVal.mat[1][2] =
+			a.mat[1][0] * b.mat[0][2] + a.mat[1][1] * b.mat[1][2] + a.mat[1][2] * b.mat[2][2] + a.mat[1][3] * b.mat[3][2];
 
-		retVal.mat[1][3] = 
-			a.mat[1][0] * b.mat[0][3] +
-			a.mat[1][1] * b.mat[1][3] +
-			a.mat[1][2] * b.mat[2][3] +
-			a.mat[1][3] * b.mat[3][3];
+		retVal.mat[1][3] =
+			a.mat[1][0] * b.mat[0][3] + a.mat[1][1] * b.mat[1][3] + a.mat[1][2] * b.mat[2][3] + a.mat[1][3] * b.mat[3][3];
 
 		// row 2
-		retVal.mat[2][0] = 
-			a.mat[2][0] * b.mat[0][0] +
-			a.mat[2][1] * b.mat[1][0] +
-			a.mat[2][2] * b.mat[2][0] +
-			a.mat[2][3] * b.mat[3][0];
+		retVal.mat[2][0] =
+			a.mat[2][0] * b.mat[0][0] + a.mat[2][1] * b.mat[1][0] + a.mat[2][2] * b.mat[2][0] + a.mat[2][3] * b.mat[3][0];
 
-		retVal.mat[2][1] = 
-			a.mat[2][0] * b.mat[0][1] + 
-			a.mat[2][1] * b.mat[1][1] + 
-			a.mat[2][2] * b.mat[2][1] + 
-			a.mat[2][3] * b.mat[3][1];
+		retVal.mat[2][1] =
+			a.mat[2][0] * b.mat[0][1] + a.mat[2][1] * b.mat[1][1] + a.mat[2][2] * b.mat[2][1] + a.mat[2][3] * b.mat[3][1];
 
-		retVal.mat[2][2] = 
-			a.mat[2][0] * b.mat[0][2] +
-			a.mat[2][1] * b.mat[1][2] + 
-			a.mat[2][2] * b.mat[2][2] + 
-			a.mat[2][3] * b.mat[3][2];
+		retVal.mat[2][2] =
+			a.mat[2][0] * b.mat[0][2] + a.mat[2][1] * b.mat[1][2] + a.mat[2][2] * b.mat[2][2] + a.mat[2][3] * b.mat[3][2];
 
-		retVal.mat[2][3] = 
-			a.mat[2][0] * b.mat[0][3] + 
-			a.mat[2][1] * b.mat[1][3] + 
-			a.mat[2][2] * b.mat[2][3] + 
-			a.mat[2][3] * b.mat[3][3];
+		retVal.mat[2][3] =
+			a.mat[2][0] * b.mat[0][3] + a.mat[2][1] * b.mat[1][3] + a.mat[2][2] * b.mat[2][3] + a.mat[2][3] * b.mat[3][3];
 
 		// row 3
-		retVal.mat[3][0] = 
-			a.mat[3][0] * b.mat[0][0] + 
-			a.mat[3][1] * b.mat[1][0] + 
-			a.mat[3][2] * b.mat[2][0] + 
-			a.mat[3][3] * b.mat[3][0];
+		retVal.mat[3][0] =
+			a.mat[3][0] * b.mat[0][0] + a.mat[3][1] * b.mat[1][0] + a.mat[3][2] * b.mat[2][0] + a.mat[3][3] * b.mat[3][0];
 
-		retVal.mat[3][1] = 
-			a.mat[3][0] * b.mat[0][1] + 
-			a.mat[3][1] * b.mat[1][1] + 
-			a.mat[3][2] * b.mat[2][1] + 
-			a.mat[3][3] * b.mat[3][1];
+		retVal.mat[3][1] =
+			a.mat[3][0] * b.mat[0][1] + a.mat[3][1] * b.mat[1][1] + a.mat[3][2] * b.mat[2][1] + a.mat[3][3] * b.mat[3][1];
 
-		retVal.mat[3][2] = 
-			a.mat[3][0] * b.mat[0][2] +
-			a.mat[3][1] * b.mat[1][2] +
-			a.mat[3][2] * b.mat[2][2] +
-			a.mat[3][3] * b.mat[3][2];
+		retVal.mat[3][2] =
+			a.mat[3][0] * b.mat[0][2] + a.mat[3][1] * b.mat[1][2] + a.mat[3][2] * b.mat[2][2] + a.mat[3][3] * b.mat[3][2];
 
-		retVal.mat[3][3] = 
-			a.mat[3][0] * b.mat[0][3] +
-			a.mat[3][1] * b.mat[1][3] +
-			a.mat[3][2] * b.mat[2][3] +
-			a.mat[3][3] * b.mat[3][3];
-		
+		retVal.mat[3][3] =
+			a.mat[3][0] * b.mat[0][3] + a.mat[3][1] * b.mat[1][3] + a.mat[3][2] * b.mat[2][3] + a.mat[3][3] * b.mat[3][3];
+
 		return retVal;
 	}
 
@@ -863,7 +817,7 @@ public:
 	{
 		return FTVector3(mat[3][0], mat[3][1], mat[3][2]);
 	}
-	
+
 	// Get the X axis of the matrix (forward)
 	FTVector3 GetXAxis() const
 	{
@@ -895,8 +849,7 @@ public:
 	// Create a scale matrix with x, y, and z scales
 	static Matrix4 CreateScale(float xScale, float yScale, float zScale)
 	{
-		float temp[4][4] =
-		{
+		float temp[4][4] = {
 			{ xScale, 0.0f, 0.0f, 0.0f },
 			{ 0.0f, yScale, 0.0f, 0.0f },
 			{ 0.0f, 0.0f, zScale, 0.0f },
@@ -919,9 +872,8 @@ public:
 	// Rotation about x-axis
 	static Matrix4 CreateRotationX(float theta)
 	{
-		float temp[4][4] =
-		{
-			{ 1.0f, 0.0f, 0.0f , 0.0f },
+		float temp[4][4] = {
+			{ 1.0f, 0.0f, 0.0f, 0.0f },
 			{ 0.0f, Math::Cos(theta), Math::Sin(theta), 0.0f },
 			{ 0.0f, -Math::Sin(theta), Math::Cos(theta), 0.0f },
 			{ 0.0f, 0.0f, 0.0f, 1.0f },
@@ -932,8 +884,7 @@ public:
 	// Rotation about y-axis
 	static Matrix4 CreateRotationY(float theta)
 	{
-		float temp[4][4] =
-		{
+		float temp[4][4] = {
 			{ Math::Cos(theta), 0.0f, -Math::Sin(theta), 0.0f },
 			{ 0.0f, 1.0f, 0.0f, 0.0f },
 			{ Math::Sin(theta), 0.0f, Math::Cos(theta), 0.0f },
@@ -945,8 +896,7 @@ public:
 	// Rotation about z-axis
 	static Matrix4 CreateRotationZ(float theta)
 	{
-		float temp[4][4] =
-		{
+		float temp[4][4] = {
 			{ Math::Cos(theta), Math::Sin(theta), 0.0f, 0.0f },
 			{ -Math::Sin(theta), Math::Cos(theta), 0.0f, 0.0f },
 			{ 0.0f, 0.0f, 1.0f, 0.0f },
@@ -960,8 +910,7 @@ public:
 
 	static Matrix4 CreateTranslation(const FTVector3& trans)
 	{
-		float temp[4][4] =
-		{
+		float temp[4][4] = {
 			{ 1.0f, 0.0f, 0.0f, 0.0f },
 			{ 0.0f, 1.0f, 0.0f, 0.0f },
 			{ 0.0f, 0.0f, 1.0f, 0.0f },
@@ -980,8 +929,7 @@ public:
 		trans.y = -FTVector3::Dot(yaxis, eye);
 		trans.z = -FTVector3::Dot(zaxis, eye);
 
-		float temp[4][4] =
-		{
+		float temp[4][4] = {
 			{ xaxis.x, yaxis.x, zaxis.x, 0.0f },
 			{ xaxis.y, yaxis.y, zaxis.y, 0.0f },
 			{ xaxis.z, yaxis.z, zaxis.z, 0.0f },
@@ -990,7 +938,7 @@ public:
 		return Matrix4(temp);
 	}
 
-	//static Matrix4 CreateOrtho(float width, float height, float near, float far)
+	// static Matrix4 CreateOrtho(float width, float height, float near, float far)
 	//{
 	//	float temp[4][4] =
 	//	{
@@ -1000,9 +948,9 @@ public:
 	//		{ 0.0f, 0.0f, near / (near - far), 1.0f }
 	//	};
 	//	return Matrix4(temp);
-	//}
+	// }
 
-	//static Matrix4 CreatePerspectiveFOV(float fovY, float width, float height, float near, float far)
+	// static Matrix4 CreatePerspectiveFOV(float fovY, float width, float height, float near, float far)
 	//{
 	//	float yScale = Math::Cot(fovY / 2.0f);
 	//	float xScale = yScale * height / width;
@@ -1014,21 +962,20 @@ public:
 	//		{ 0.0f, 0.0f, -near * far / (far - near), 0.0f }
 	//	};
 	//	return Matrix4(temp);
-	//}
+	// }
 
 	// Create "Simple" View-Projection Matrix from Chapter 6
 	static Matrix4 CreateSimpleViewProj(float width, float height)
 	{
-		float temp[4][4] =
-		{
-			{ 2.0f/width, 0.0f, 0.0f, 0.0f },
-			{ 0.0f, 2.0f/height, 0.0f, 0.0f },
+		float temp[4][4] = {
+			{ 2.0f / width, 0.0f, 0.0f, 0.0f },
+			{ 0.0f, 2.0f / height, 0.0f, 0.0f },
 			{ 0.0f, 0.0f, 1.0f, 0.0f },
 			{ 0.0f, 0.0f, 1.0f, 1.0f }
 		};
 		return Matrix4(temp);
 	}
-	
+
 	static const Matrix4 Identity;
 };
 
@@ -1059,10 +1006,10 @@ public:
 	explicit FTQuaternion(const FTVector3& axis, float angle)
 	{
 		float scalar = Math::Sin(angle / 2.0f);
-		x = axis.x * scalar;
-		y = axis.y * scalar;
-		z = axis.z * scalar;
-		w = Math::Cos(angle / 2.0f);
+		x			 = axis.x * scalar;
+		y			 = axis.y * scalar;
+		z			 = axis.z * scalar;
+		w			 = Math::Cos(angle / 2.0f);
 	}
 
 	// Directly set the internal components
@@ -1083,7 +1030,7 @@ public:
 
 	float LengthSq() const
 	{
-		return (x*x + y*y + z*z + w*w);
+		return (x * x + y * y + z * z + w * w);
 	}
 
 	float Length() const
@@ -1140,10 +1087,10 @@ public:
 
 		if (cosom < 0.9999f)
 		{
-			const float omega = Math::Acos(cosom);
+			const float omega  = Math::Acos(cosom);
 			const float invSin = 1.f / Math::Sin(omega);
-			scale0 = Math::Sin((1.f - f) * omega) * invSin;
-			scale1 = Math::Sin(f * omega) * invSin;
+			scale0			   = Math::Sin((1.f - f) * omega) * invSin;
+			scale1			   = Math::Sin(f * omega) * invSin;
 		}
 		else
 		{
@@ -1178,9 +1125,9 @@ public:
 		FTVector3 qv(q.x, q.y, q.z);
 		FTVector3 pv(p.x, p.y, p.z);
 		FTVector3 newVec = p.w * qv + q.w * pv + FTVector3::Cross(pv, qv);
-		retVal.x = newVec.x;
-		retVal.y = newVec.y;
-		retVal.z = newVec.z;
+		retVal.x		 = newVec.x;
+		retVal.y		 = newVec.y;
+		retVal.z		 = newVec.z;
 
 		// Scalar component is:
 		// ps * qs - pv . qv
@@ -1192,7 +1139,7 @@ public:
 	static const FTQuaternion Identity;
 };
 
-//namespace Color
+// namespace Color
 //{
 //	static const FTVector3 Black(0.0f, 0.0f, 0.0f);
 //	static const FTVector3 White(1.0f, 1.0f, 1.0f);
@@ -1204,4 +1151,4 @@ public:
 //	static const FTVector3 LightBlue(0.68f, 0.85f, 0.9f);
 //	static const FTVector3 LightPink(1.0f, 0.71f, 0.76f);
 //	static const FTVector3 LightGreen(0.56f, 0.93f, 0.56f);
-//}
+// }

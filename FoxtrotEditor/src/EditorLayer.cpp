@@ -33,6 +33,7 @@
 #include "Managers/KeyInputManager.h"
 #include "Managers/ResourceManager.h"
 #include "Managers/CollisionManager.h"
+#include "Managers/LightManager.h"
 #include "Scenes/Scene.h"
 #include "Actors/Actor.h"
 #include "Actors/ActorGroup.h"
@@ -70,6 +71,7 @@ void EditorLayer::Update(float deltaTime)
 	DisplayCollisionMenu();
 	DisplayInspectorMenu();
 	Camera::GetInstance()->DisplayCameraMenu();
+	LightManager::GetInstance()->DisplayLightMenu();
 	DisplayInfoMessage();
 	DisplayErrorMessage();
 

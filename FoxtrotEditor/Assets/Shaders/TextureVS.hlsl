@@ -8,7 +8,7 @@
 
 #include "Common.hlsli"
 
-cbuffer ModelViewProjectionConstantBuffer : register(b0)
+cbuffer VertexConstantBuffer : register(b0)
 {
     matrix model;
     matrix invTranspose;
@@ -16,24 +16,27 @@ cbuffer ModelViewProjectionConstantBuffer : register(b0)
     matrix projection;
 };
 
-TexPSInput main(TexVSInput input)
+TexPSInput main(TexVSInput vsInput)
 {
     TexPSInput output;
-    float4 pos = float4(input.posModel, 1.0f);
+    
+    // Calculating world space position
+    float4 pos = float4(vsInput.posModel, 1.0);
     pos = mul(pos, model);
     
-    output.posWorld = pos.xyz; // 월드 위치 따로 저장
-
-    pos = mul(pos, view);
-    pos = mul(pos, projection);
-
-    output.posProj = pos;
-    output.texcoord = input.texcoord;
-    // output.color = input.color;
+    output.posWorld = pos.xyz;
     
-    float4 normal = float4(input.normalModel, 0.0f);
+    pos = mul(pos, view);       // Camera space position
+    pos = mul(pos, projection); // Clip space position
+    output.posProj = pos;
+    
+    // Calculating transformed normal
+    float4 normal = float4(vsInput.normalModel, 0.0f);
     output.normalWorld = mul(normal, invTranspose).xyz;
     output.normalWorld = normalize(output.normalWorld);
-
+    
+    // Assigning texture coordinates
+    output.texcoord = vsInput.texcoord;
+    
     return output;
 }

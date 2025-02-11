@@ -54,7 +54,7 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture)
         if (texture) 
         {
             context->VSSetShader(renderer->GetTextureVS().Get(), 0, 0);
-            context->PSSetShader(renderer->GetTexturePS().Get(), 0, 0);
+            context->PSSetShader(renderer->GetBlinnPhongPS().Get(), 0, 0);
             context->IASetInputLayout(renderer->GetTextureInputLayout().Get());
 
             std::vector<ID3D11ShaderResourceView*> resViews;
@@ -98,7 +98,7 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture, int
         if (texture) 
         {
             context->VSSetShader(renderer->GetTextureVS().Get(), 0, 0);
-            context->PSSetShader(renderer->GetTexturePS().Get(), 0, 0);
+            context->PSSetShader(renderer->GetBlinnPhongPS().Get(), 0, 0);
             context->IASetInputLayout(renderer->GetTextureInputLayout().Get());
 
             std::vector<ID3D11ShaderResourceView*> resViews;

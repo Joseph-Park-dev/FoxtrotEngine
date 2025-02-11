@@ -34,13 +34,13 @@
 #include "EditorChunkLoader.h"
 
 // FTCoreEditor related singleton initializations -> used in Foxtrot Editor Runtime
-CommandHistory*		CommandHistory::mInstance = nullptr;
-DebugShapes*		DebugShapes::mInstance = nullptr;
-DirectoryHelper*	DirectoryHelper::mInstance = nullptr;
-EditorLayer*		EditorLayer::mInstance = nullptr;
+CommandHistory*		CommandHistory::mInstance	  = nullptr;
+DebugShapes*		DebugShapes::mInstance		  = nullptr;
+DirectoryHelper*	DirectoryHelper::mInstance	  = nullptr;
+EditorLayer*		EditorLayer::mInstance		  = nullptr;
 EditorSceneManager* EditorSceneManager::mInstance = nullptr;
-EditorChunkLoader*	EditorChunkLoader::mInstance = nullptr;
-FTCoreEditor*		FTCoreEditor::mInstance = nullptr;
+EditorChunkLoader*	EditorChunkLoader::mInstance  = nullptr;
+FTCoreEditor*		FTCoreEditor::mInstance		  = nullptr;
 
 bool FTCoreEditor::Initialize()
 {
@@ -82,6 +82,7 @@ void FTCoreEditor::InitSingletonManagers()
 	EventManager::GetInstance();
 	KeyInputManager::GetInstance();
 	CollisionManager::GetInstance()->Initialize();
+	LightManager::GetInstance();
 
 	EditorSceneManager::GetInstance()->Initialize();
 	EditorLayer::GetInstance();

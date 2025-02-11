@@ -37,7 +37,7 @@ HRESULT D3D11Utils::CreateDeviceAndContext(
 	const D3D_DRIVER_TYPE driverType = D3D_DRIVER_TYPE_HARDWARE;
 
 	int createDeviceFlags = 0;
-#if defined(DEBUG) || defined(_DEBUG)
+#if defined(FOXTROT_EDITOR) || defined(_DEBUG)
 	createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
@@ -214,15 +214,25 @@ HRESULT D3D11Utils::CreateVertexShaderAndInputLayout(
 	// 쉐이더의 시작점의 이름이 "main"인 함수로 지정
 	// D3D_COMPILE_STANDARD_FILE_INCLUDE 추가: 쉐이더에서 include 사용
 	HRESULT hr = D3DCompileFromFile(
-		filename.c_str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", compileFlags, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
+		filename.c_str(), 0, 
+		D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", 
+		compileFlags, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
 
 	CheckResult(hr, errorBlob.Get());
 
 	DX::ThrowIfFailed(
-		device->CreateVertexShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), NULL, vertexShader.GetAddressOf()));
+		device->CreateVertexShader(
+			shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), 
+			NULL, vertexShader.GetAddressOf()));
 
 	DX::ThrowIfFailed(
-		device->CreateInputLayout(inputElements.data(), UINT(inputElements.size()), shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), inputLayout.GetAddressOf()));
+		device->CreateInputLayout(
+			inputElements.data(), 
+			UINT(inputElements.size()), 
+			shaderBlob->GetBufferPointer(), 
+			shaderBlob->GetBufferSize(), 
+			inputLayout.GetAddressOf())
+	);
 	return hr;
 }
 
@@ -419,7 +429,10 @@ void ReadImage(const std::string filename, std::vector<uint8_t>& image, int& wid
 }
 
 ComPtr<ID3D11Texture2D>
-CreateStagingTexture(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, const int width, const int height, const std::vector<uint8_t>& image, const int mipLevels = 1, const int arraySize = 1)
+CreateStagingTexture(ComPtr<ID3D11Device>& device, 
+	ComPtr<ID3D11DeviceContext>& context, const int width, const int height, 
+	const std::vector<uint8_t>& image, const int mipLevels = 1, 
+	const int arraySize = 1)
 {
 
 	// 스테이징 텍스춰 만들기
@@ -501,7 +514,9 @@ void D3D11Utils::CreateTexture(
 }
 
 void D3D11Utils::CreateTextureArray(
-	ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, const std::vector<std::string> filenames, ComPtr<ID3D11Texture2D>& texture, ComPtr<ID3D11ShaderResourceView>& textureResourceView)
+	ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, 
+	const std::vector<std::string> filenames, ComPtr<ID3D11Texture2D>& texture, 
+	ComPtr<ID3D11ShaderResourceView>& textureResourceView)
 {
 
 	using namespace std;
@@ -592,7 +607,9 @@ void D3D11Utils::CreateCubemapTexture(
 	}
 }
 
-void D3D11Utils::WriteToFile(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Texture2D>& textureToWrite, const std::string filename)
+void D3D11Utils::WriteToFile(ComPtr<ID3D11Device>& device, 
+	ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Texture2D>& textureToWrite, 
+	const std::string filename)
 {
 
 	D3D11_TEXTURE2D_DESC desc;

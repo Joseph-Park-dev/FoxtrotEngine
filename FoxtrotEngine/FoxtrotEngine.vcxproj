@@ -260,8 +260,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Components\SpineAnimRenderer.cpp" />
     <ClCompile Include="src\Managers\LightManager.cpp" />
     <ClCompile Include="src\Behaviors\FTBehavior.cpp" />
+    <ClCompile Include="src\Managers\FTSpineExtension.cpp" />
     <ClCompile Include="src\Renderer\FTSpineTextureLoader.cpp" />
     <ClCompile Include="src\ResourceSystem\FTFontMap.cpp" />
     <ClCompile Include="src\Components\AI.cpp" />
@@ -388,9 +390,11 @@
     <ClCompile Include="src\spine\VertexAttachment.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Components\SpineAnimRenderer.h" />
     <ClInclude Include="src\Managers\LightManager.h" />
     <ClInclude Include="src\Behaviors\FTBehavior.h" />
     <ClInclude Include="src\FileSystem\MaterialFileKeys.h" />
+    <ClInclude Include="src\Managers\FTSpineExtension.h" />
     <ClInclude Include="src\Renderer\FTSpineTextureLoader.h" />
     <ClInclude Include="src\ResourceSystem\FTFontMap.h" />
     <ClInclude Include="src\Components\AI.h" />

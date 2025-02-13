@@ -187,15 +187,15 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 
 	std::vector<D3D11_INPUT_ELEMENT_DESC> inputElements = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3 , D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 + 4 * 3 , D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 + 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	std::vector<D3D11_INPUT_ELEMENT_DESC> inputElementsSolid = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3 , D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3 + 4 * 3 , D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 + 4 * 3 + 4 * 3 , D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3 + 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 + 4 * 3 + 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	DX::ThrowIfFailed(
@@ -261,22 +261,19 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 HRESULT FoxtrotRenderer::CreateRasterizerState()
 {
 	// Create a rasterizer state
-	D3D11_RASTERIZER_DESC rastDescSolid;
-	ZeroMemory(&rastDescSolid, sizeof(D3D11_RASTERIZER_DESC)); // Need this
+	D3D11_RASTERIZER_DESC rastDesc;
+	ZeroMemory(&rastDesc, sizeof(D3D11_RASTERIZER_DESC)); // Need this
 	// rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-	rastDescSolid.FillMode				= D3D11_FILL_MODE::D3D11_FILL_SOLID;
-	rastDescSolid.CullMode				= D3D11_CULL_MODE::D3D11_CULL_NONE;
-	rastDescSolid.FrontCounterClockwise = false;
+	rastDesc.FillMode			   = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+	rastDesc.CullMode			   = D3D11_CULL_MODE::D3D11_CULL_NONE;
+	rastDesc.FrontCounterClockwise = false;
+	rastDesc.DepthClipEnable	   = true;
 
-	D3D11_RASTERIZER_DESC rastDescWireFrame;
-	ZeroMemory(&rastDescWireFrame, sizeof(D3D11_RASTERIZER_DESC)); // Need this
-	// rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-	rastDescWireFrame.FillMode				= D3D11_FILL_MODE::D3D11_FILL_WIREFRAME;
-	rastDescWireFrame.CullMode				= D3D11_CULL_MODE::D3D11_CULL_NONE;
-	rastDescWireFrame.FrontCounterClockwise = false;
+	HRESULT solidResult = mDevice->CreateRasterizerState(&rastDesc, &mSolidRasterizerState);
 
-	HRESULT solidResult = mDevice->CreateRasterizerState(&rastDescSolid, &mSolidRasterizerState);
-	HRESULT wireResult	= mDevice->CreateRasterizerState(&rastDescWireFrame, &mWireframeRasterizerState);
+	rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_WIREFRAME;
+
+	HRESULT wireResult = mDevice->CreateRasterizerState(&rastDesc, &mWireframeRasterizerState);
 
 	return solidResult & wireResult;
 }
@@ -316,9 +313,9 @@ HRESULT FoxtrotRenderer::CreateDepthStencilState(ComPtr<ID3D11DepthStencilState>
 	// Create depth stencil state
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-	depthStencilDesc.DepthEnable = depthEnabled; // false
+	depthStencilDesc.DepthEnable	= depthEnabled; // false
 	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ALL;
-	depthStencilDesc.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL;
+	depthStencilDesc.DepthFunc		= D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL;
 	return mDevice->CreateDepthStencilState(&depthStencilDesc, dss.GetAddressOf());
 }
 

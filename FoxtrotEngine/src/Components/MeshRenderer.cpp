@@ -166,15 +166,15 @@ void MeshRenderer::UpdateMesh(Transform* transform, Camera* camInst)
 
 		for (Mesh* mesh : mMeshGroup->GetMeshes())
 		{
-			mesh->VertexConstantData.model = modelMat.Transpose();
-			mesh->VertexConstantData.view = viewMat.Transpose();
-			mesh->VertexConstantData.projection = projMat.Transpose();
+			mesh->VertexConstantData.model		  = modelMat.Transpose();
+			mesh->VertexConstantData.view		  = viewMat.Transpose();
+			mesh->VertexConstantData.projection	  = projMat.Transpose();
 			mesh->VertexConstantData.invTranspose = std::move(invTransposeMat);
 
-			mesh->PixelConstantData.EyeWorld = eyeWorld;
+			mesh->PixelConstantData.EyeWorld   = eyeWorld;
 			mesh->PixelConstantData.UseTexture = true;
 
-			mesh->PixelConstantData.Material.Diffuse = mMaterial->Diffuse;
+			mesh->PixelConstantData.Material.Diffuse  = mMaterial->Diffuse;
 			mesh->PixelConstantData.Material.Specular = mMaterial->Specular;
 
 			for (size_t i = 0; i < Light::TYPE::END; ++i)
@@ -184,7 +184,6 @@ void MeshRenderer::UpdateMesh(Transform* transform, Camera* camInst)
 				else
 					mesh->PixelConstantData.Lights[i].Strength *= 0.0f;
 			}
-
 		}
 	}
 }
@@ -200,10 +199,10 @@ Matrix MeshRenderer::CalcModelMat(Transform* transform)
 	int				  dir		   = transform->GetRightward().x;
 	FTVector3		  scale		   = transform->GetScale();
 	DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x, scale.y, scale.z);
-	return DXMatrix::CreateScale(scaleWithDir) * 
-		DXMatrix::CreateRotationX(transform->GetRotation().x) * 
-		DXMatrix::CreateRotationY(transform->GetRotation().y) * 
-		DXMatrix::CreateRotationZ(transform->GetRotation().z) * 
+	return DXMatrix::CreateScale(scaleWithDir) *
+		DXMatrix::CreateRotationX(transform->GetRotation().x) *
+		DXMatrix::CreateRotationY(transform->GetRotation().y) *
+		DXMatrix::CreateRotationZ(transform->GetRotation().z) *
 		DXMatrix::CreateTranslation(transform->GetWorldPosition().GetDXVec3());
 }
 

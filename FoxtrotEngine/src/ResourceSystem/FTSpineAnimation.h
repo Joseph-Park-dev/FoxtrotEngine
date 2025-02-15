@@ -4,18 +4,23 @@
 #include <spine/spine.h>
 
 #include "Managers/ResourceManager.h"
+#include "Renderer/FoxtrotRenderer.h"
 
 class MyTextureLoader : public spine::TextureLoader
 {
 public:
-	MyTextureLoader();
+	MyTextureLoader(FoxtrotRenderer* renderer);
 
 	virtual ~MyTextureLoader() {}
 
 	// Called when the atlas loads the texture of a page.
 	virtual void load(spine::AtlasPage& page, const spine::String& path)
 	{
-		FTTexture* texture = ResourceManager::GetInstance()->GetLoadedTexture(path.buffer());
+		FTTexture* texture = new FTTexture();
+		texture->SetFileName("test");
+		texture->SetRelativePath(path.buffer());
+
+		D3D11Utils::CreateTexture(mrend->GetDevice(), mrend->GetContext(), texture);
 
 		// if texture loading failed, we simply return.
 		if (!texture)
@@ -23,7 +28,7 @@ public:
 
 		// store the Texture on the rendererObject so we can
 		// retrieve it later for rendering.
-		page.texture = texture;
+		page.texture = (void*)texture;
 	}
 
 	// Called when the atlas is disposed and itself disposes its atlas pages.
@@ -31,15 +36,19 @@ public:
 	{
 		printf("Unloaded");
 	}
+
+private:
+	FoxtrotRenderer* mrend;
 };
 
-class FTSpineAnimation
+class FTSpineAnimation : public FTBasicMeshGroup
 {
 public:
-	FTSpineAnimation();
+	FTSpineAnimation(FoxtrotRenderer* renderer);
 	~FTSpineAnimation();
 
 public:
+	void Initialize(FoxtrotRenderer* renderer);
 	void Update(float deltaTime);
 	void Render(FoxtrotRenderer* renderer);
 

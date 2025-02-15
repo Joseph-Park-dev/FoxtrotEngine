@@ -38,7 +38,8 @@
 #include <spine/SpineString.h>
 #include <spine/Property.h>
 
-namespace spine {
+namespace spine
+{
 	class Timeline;
 
 	class Skeleton;
@@ -47,7 +48,8 @@ namespace spine {
 
 	class AnimationState;
 
-	class SP_API Animation : public SpineObject {
+	class SP_API Animation : public SpineObject
+	{
 		friend class AnimationState;
 
 		friend class TrackEntry;
@@ -97,35 +99,35 @@ namespace spine {
 		friend class TwoColorTimeline;
 
 	public:
-		Animation(const String &name, Vector<Timeline *> &timelines, float duration);
+		Animation(const String& name, Vector<Timeline*>& timelines, float duration);
 
 		~Animation();
 
 		/// Applies all the animation's timelines to the specified skeleton.
 		/// See also Timeline::apply(Skeleton&, float, float, Vector, float, MixPose, MixDirection)
-		void apply(Skeleton &skeleton, float lastTime, float time, bool loop, Vector<Event *> *pEvents, float alpha,
-				   MixBlend blend, MixDirection direction);
+		void apply(Skeleton& skeleton, float lastTime, float time, bool loop, Vector<Event*>* pEvents, float alpha, MixBlend blend, MixDirection direction);
 
-		const String &getName();
+		const String& getName();
 
-		Vector<Timeline *> &getTimelines();
+		Vector<Timeline*>& getTimelines();
 
-		bool hasTimeline(Vector<PropertyId> &ids);
+		bool hasTimeline(Vector<PropertyId>& ids);
 
 		float getDuration();
 
 		void setDuration(float inValue);
 
 		/// @param target After the first and before the last entry.
-		static int search(Vector<float> &values, float target);
+		static int search(Vector<float>& values, float target);
 
-		static int search(Vector<float> &values, float target, int step);
+		static int search(Vector<float>& values, float target, int step);
+
 	private:
-		Vector<Timeline *> _timelines;
+		Vector<Timeline*>		  _timelines;
 		HashMap<PropertyId, bool> _timelineIds;
-		float _duration;
-		String _name;
+		float					  _duration;
+		String					  _name;
 	};
-}
+} // namespace spine
 
 #endif /* Spine_Animation_h */

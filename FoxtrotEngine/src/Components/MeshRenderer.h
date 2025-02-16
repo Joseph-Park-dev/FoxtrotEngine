@@ -79,7 +79,9 @@ private:
 	FoxtrotRenderer*  mRenderer;
 	FTBasicMeshGroup* mMeshGroup;
 	FTTexture*		  mTexture;
-	FTMaterial*		  mMaterial;
+
+protected:
+	FTMaterial* mMaterial;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs);

@@ -1,7 +1,7 @@
 ﻿// ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -15,32 +15,32 @@
 #include <wrl.h> // ComPtr
 #include <vector>
 
-//#include "ResourceSystem/FTTexture.h"
+// #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/Vertex.h"
 #include "ResourceSystem/MeshConstantData.h"
 
 using Microsoft::WRL::ComPtr;
 
-struct Mesh 
+struct Mesh
 {
-    Mesh()
-    {
-        VertexConstantData.model = DirectX::SimpleMath::Matrix();
-        VertexConstantData.invTranspose = DirectX::SimpleMath::Matrix();
-        VertexConstantData.view = DirectX::SimpleMath::Matrix();
-        VertexConstantData.projection = DirectX::SimpleMath::Matrix();
-    }
+	Mesh()
+	{
+		VertexConstantData.model		= DirectX::SimpleMath::Matrix();
+		VertexConstantData.invTranspose = DirectX::SimpleMath::Matrix();
+		VertexConstantData.view			= DirectX::SimpleMath::Matrix();
+		VertexConstantData.projection	= DirectX::SimpleMath::Matrix();
+	}
 
-    ComPtr<ID3D11Buffer> VertexBuffer;
-    ComPtr<ID3D11Buffer> IndexBuffer;
+	ComPtr<ID3D11Buffer> VertexBuffer;
+	ComPtr<ID3D11Buffer> IndexBuffer;
 
-    ComPtr<ID3D11Buffer> VertexConstantBuffer;
-    ComPtr<ID3D11Buffer> PixelConstantBuffer;
+	ComPtr<ID3D11Buffer> VertexConstantBuffer;
+	ComPtr<ID3D11Buffer> PixelConstantBuffer;
 
-    BasicVertexConstantData VertexConstantData;
-    BasicPixelConstantData	PixelConstantData;
+	BasicVertexConstantData VertexConstantData;
+	BasicPixelConstantData	PixelConstantData;
 
-    UINT IndexCount = 0;
-    UINT VertexCount = 0;
+	UINT IndexCount	 = 0;
+	UINT VertexCount = 0;
 };

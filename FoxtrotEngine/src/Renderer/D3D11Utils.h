@@ -21,6 +21,7 @@
 #include <wrl/client.h> // ComPtr
 
 #include <ResourceSystem/FTTexture.h>
+#include "Core/TemplateFunctions.h"
 
 class Camera;
 
@@ -122,10 +123,10 @@ public:
 
 		D3D11_BUFFER_DESC bufferDesc;
 		ZeroMemory(&bufferDesc, sizeof(bufferDesc));
-		bufferDesc.Usage			   = D3D11_USAGE_IMMUTABLE; // 초기화 후 변경X
+		bufferDesc.Usage			   = D3D11_USAGE_DYNAMIC; // 초기화 후 변경X
 		bufferDesc.ByteWidth		   = UINT(sizeof(T_VERTEX) * vertices.size());
 		bufferDesc.BindFlags		   = D3D11_BIND_VERTEX_BUFFER;
-		bufferDesc.CPUAccessFlags	   = 0; // 0 if no CPU access is necessary.
+		bufferDesc.CPUAccessFlags	   = D3D11_CPU_ACCESS_WRITE; // 0 if no CPU access is necessary.
 		bufferDesc.StructureByteStride = sizeof(T_VERTEX);
 
 		D3D11_SUBRESOURCE_DATA vertexBufferData = {
@@ -136,11 +137,7 @@ public:
 		vertexBufferData.SysMemSlicePitch = 0;
 
 		const HRESULT hr = device->CreateBuffer(&bufferDesc, &vertexBufferData, vertexBuffer.GetAddressOf());
-		if (FAILED(hr))
-		{
-			std::cout << "CreateBuffer() failed. " << std::hex << hr
-					  << std::endl;
-		};
+		DX::ThrowIfFailed(hr);
 	}
 
 	template <typename T_VERTEX>
@@ -157,11 +154,7 @@ public:
 		vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
 		const HRESULT hr = device->CreateBuffer(&vertexBufferDesc, nullptr, vertexBuffer.GetAddressOf());
-		if (FAILED(hr))
-		{
-			std::cout << "CreateBuffer() failed. " << std::hex << hr
-					  << std::endl;
-		};
+		DX::ThrowIfFailed(hr);
 	}
 
 	template <typename T_CONSTANT>
@@ -191,11 +184,7 @@ public:
 		initData.SysMemSlicePitch = 0;
 
 		auto hr = device->CreateBuffer(&cbDesc, &initData, constantBuffer.GetAddressOf());
-		if (FAILED(hr))
-		{
-			std::cout << "CreateConstantBuffer() CreateBuffer failed()."
-					  << std::endl;
-		}
+		DX::ThrowIfFailed(hr);
 	}
 
 	template <typename T_DATA>
@@ -207,12 +196,12 @@ public:
 
 		if (!buffer)
 		{
-			std::cout << "UpdateBuffer() buffer was not initialized."
+			std::cout << "UpdateBuffer() : buffer was not initialized."
 					  << std::endl;
 		}
 
 		D3D11_MAPPED_SUBRESOURCE ms;
-		context->Map(buffer.Get(), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms);
+		DX::ThrowIfFailed(context->Map(buffer.Get(), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms));
 		memcpy(ms.pData, &bufferData, sizeof(bufferData));
 		context->Unmap(buffer.Get(), NULL);
 	}

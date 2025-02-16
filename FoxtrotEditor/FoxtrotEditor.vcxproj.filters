@@ -162,4 +162,7 @@
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\FoxtrotEngine\FoxtrotEngine.lib" />
+  </ItemGroup>
 </Project>

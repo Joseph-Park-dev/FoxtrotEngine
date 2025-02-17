@@ -35,7 +35,7 @@ namespace FTDS
 		virtual void Clear() override
 		{
 			FTDS::ArrayDS<TYPE>::Clear();
-				mTop = -1;
+			mTop = -1;
 		}
 
 	public:
@@ -49,18 +49,16 @@ namespace FTDS
 		ArrayStack()
 			: ArrayDS<TYPE>()
 			, mTop(-1)
-		{}
-
-		virtual ~ArrayStack() override
 		{
-			if (this->mData)
-			{
-				delete[] this->mData;
-				this->mData = nullptr;
-			}
+		}
+
+		ArrayStack(size_t capacity)
+			: ArrayDS<TYPE>(capacity)
+			, mTop(-1)
+		{
 		}
 
 	protected:
-		int	mTop;
+		int mTop;
 	};
-};
+}; // namespace FTDS

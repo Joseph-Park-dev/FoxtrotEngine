@@ -21,5 +21,9 @@
     <ClInclude Include="Dynamic\BinSrchTree.h" />
     <ClInclude Include="Search\DepthFirstSearch.h" />
     <ClInclude Include="Dynamic\BinTree.h" />
+    <ClInclude Include="Static\ArrayList.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".clang-format" />
   </ItemGroup>
 </Project>

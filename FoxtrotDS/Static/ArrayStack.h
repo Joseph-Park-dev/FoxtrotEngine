@@ -34,13 +34,8 @@ namespace FTDS
 
 		virtual void Clear() override
 		{
-			if (this->mData)
-			{
-				delete[] this->mData;
-				this->mData = nullptr;
+			FTDS::ArrayDS<TYPE>::Clear();
 				mTop = -1;
-				this->mSize = 0;
-			}
 		}
 
 	public:

@@ -1,7 +1,6 @@
 #pragma once
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 #include <cassert>
+#include <memory>
 
 #include "Debugging/DebugMemAlloc.h"
 
@@ -13,85 +12,82 @@ namespace FTDS
 	/// its data element must be deleted one by one to prevent memory leak.
 	/// Clear() or the destructor won't free those objects automatically.
 	/// </Note_on_deallocation>
-	template <class TYPE>
+	template <typename TYPE>
 	class ArrayDS
 	{
 	public:
-		virtual void Reserve(size_t newSize)
+		void Reserve(size_t newCapacity)
 		{
-			assert(0 < newSize); // Input capacity must be bigger than Zero.
+			assert(0 < newCapacity); // Input capacity must be bigger than Zero.
 			// When the current capacity is zero; initialization phase.
-			if (mCapacity < 1)
-			{
-				mData = DBG_NEW TYPE[newSize];
-				mCapacity = newSize;
-				return;
-			}
-			else if (mCapacity < newSize)
-			{
-				ReAllocate(newSize);
-			}
-			else
-				return;
+			AllocateMem(newCapacity);
 		}
 
+		// Clears the data, leaving the capacity unchanged.
 		virtual void Clear()
 		{
 			if (mData)
 			{
-				delete[] mData;
-				mData = nullptr;
-			};
+				memset(mData, NULL, sizeof(mData));
+				mSize = 0;
+			}
 		}
 
 	public:
+		virtual bool IsEmpty() { return mSize == 0; }
+		virtual bool IsFull() { return mCapacity <= mSize; }
+
+	public:
 		// Gets the array which stores the data of the stack.
-		// This can be used when freeing memory. 
-		TYPE*	Data()		{ return mData; }
-		size_t	Size()		{ return mSize; }
-		size_t	Capacity()	{ return mCapacity; }
+		// This can be used when freeing memory.
+		TYPE*  Data() { return mData; }
+		size_t Size() { return mSize; }
+		size_t Capacity() { return mCapacity; }
 
 	public:
 		ArrayDS()
 			: mData(nullptr)
 			, mSize(0)
 			, mCapacity(0)
-		{}
+		{
+		}
+
+		ArrayDS(size_t capacity)
+			: mData(nullptr)
+			, mSize(0)
+			, mCapacity(0)
+		{
+			Reserve(capacity);
+		}
 
 		virtual ~ArrayDS()
 		{
-			Clear();
+			delete[] mData;
 		}
 
-	public:
-		virtual bool IsEmpty()	{ return mSize == 0; }
-		virtual bool IsFull()	{ return mCapacity <= mSize; }
-
 	protected:
-		TYPE*	mData;
-		size_t	mSize;
-		size_t  mCapacity;
+		TYPE*  mData;
+		size_t mSize;
+		size_t mCapacity;
 
 	private:
-		void ReAllocate(size_t newSize);
+		// Re-allocate memory space when new capacity is bigger than current capacity
+		void AllocateMem(size_t newCap)
+		{
+			if (newCap < mCapacity)
+				return;
+
+			// Create an array with renewed capacity.
+			TYPE* newArr = new TYPE[newCap];
+
+			// Copy previous data.
+			memcpy_s(newArr, sizeof(newArr), mData, sizeof(TYPE) * mSize);
+			delete[] mData;
+
+			// Set new array as current data.
+			mData = newArr;
+			// Set new capacity.
+			mCapacity = newCap;
+		}
 	};
-
-	template<class TYPE>
-	// Re-allocate memory space when new capacity is bigger than current capacity
-	inline void ArrayDS<TYPE>::ReAllocate(size_t newCap)
-	{
-		// Create an array with renewed capacity.
-		TYPE* newArr = new TYPE[newCap];
-
-		// Copy existing data to new array.
-		for (size_t i = 0; i < mSize; ++i)
-			newArr[i] = mData[i];
-
-		// Free existing memory space & set current data to new array.
-		delete[] mData;
-		mData = newArr;
-
-		// Set the modified capacity.
-		mCapacity = newCap;
-	}
-}
+} // namespace FTDS

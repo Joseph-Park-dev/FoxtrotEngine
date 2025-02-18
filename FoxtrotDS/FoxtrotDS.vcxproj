@@ -185,6 +185,7 @@
     <ClInclude Include="Dynamic\BinaryNode.h" />
     <ClInclude Include="Search\DepthFirstSearch.h" />
     <ClInclude Include="Static\ArrayDS.h" />
+    <ClInclude Include="Static\ArrayList.h" />
     <ClInclude Include="Static\ArrayStack.h" />
     <ClInclude Include="Static\CircularQueue.h" />
     <ClInclude Include="Compare\StringEqual.h" />
@@ -198,6 +199,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".clang-format" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -214,25 +214,21 @@ HRESULT D3D11Utils::CreateVertexShaderAndInputLayout(
 	// 쉐이더의 시작점의 이름이 "main"인 함수로 지정
 	// D3D_COMPILE_STANDARD_FILE_INCLUDE 추가: 쉐이더에서 include 사용
 	HRESULT hr = D3DCompileFromFile(
-		filename.c_str(), 0, 
-		D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", 
-		compileFlags, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
+		filename.c_str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", compileFlags, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
 
 	CheckResult(hr, errorBlob.Get());
 
 	DX::ThrowIfFailed(
 		device->CreateVertexShader(
-			shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), 
-			NULL, vertexShader.GetAddressOf()));
+			shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), NULL, vertexShader.GetAddressOf()));
 
 	DX::ThrowIfFailed(
 		device->CreateInputLayout(
-			inputElements.data(), 
-			UINT(inputElements.size()), 
-			shaderBlob->GetBufferPointer(), 
-			shaderBlob->GetBufferSize(), 
-			inputLayout.GetAddressOf())
-	);
+			inputElements.data(),
+			UINT(inputElements.size()),
+			shaderBlob->GetBufferPointer(),
+			shaderBlob->GetBufferSize(),
+			inputLayout.GetAddressOf()));
 	return hr;
 }
 
@@ -327,10 +323,10 @@ void D3D11Utils::CreateIndexBuffer(ComPtr<ID3D11Device>& device, const std::vect
 {
 	D3D11_BUFFER_DESC bufferDesc = {};
 	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
-	bufferDesc.Usage			   = D3D11_USAGE_IMMUTABLE; // 초기화 후 변경X
+	bufferDesc.Usage			   = D3D11_USAGE_DYNAMIC; // 초기화 후 변경X
 	bufferDesc.ByteWidth		   = UINT(sizeof(uint32_t) * indices.size());
 	bufferDesc.BindFlags		   = D3D11_BIND_INDEX_BUFFER;
-	bufferDesc.CPUAccessFlags	   = 0; // 0 if no CPU access is necessary.
+	bufferDesc.CPUAccessFlags	   = D3D11_CPU_ACCESS_WRITE; // 0 if no CPU access is necessary.
 	bufferDesc.StructureByteStride = sizeof(uint32_t);
 
 	D3D11_SUBRESOURCE_DATA indexBufferData = { 0 };
@@ -338,17 +334,19 @@ void D3D11Utils::CreateIndexBuffer(ComPtr<ID3D11Device>& device, const std::vect
 	indexBufferData.SysMemPitch			   = 0;
 	indexBufferData.SysMemSlicePitch	   = 0;
 
-	device->CreateBuffer(&bufferDesc, &indexBufferData, indexBuffer.GetAddressOf());
+	DX::ThrowIfFailed(device->CreateBuffer(&bufferDesc, &indexBufferData, indexBuffer.GetAddressOf()));
 }
 
 void D3D11Utils::CreateIndexBuffer(ComPtr<ID3D11Device>& device, UINT numIndices, ComPtr<ID3D11Buffer>& indexBuffer)
 {
 	D3D11_BUFFER_DESC indexBufferDesc;
 	ZeroMemory(&indexBufferDesc, sizeof(indexBufferDesc));
-	indexBufferDesc.Usage	  = D3D11_USAGE_DEFAULT;
-	indexBufferDesc.ByteWidth = sizeof(uint16_t) * numIndices;
-	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	device->CreateBuffer(&indexBufferDesc, nullptr, &indexBuffer);
+	indexBufferDesc.Usage		   = D3D11_USAGE_DYNAMIC;
+	indexBufferDesc.ByteWidth	   = sizeof(uint32_t) * numIndices;
+	indexBufferDesc.BindFlags	   = D3D11_BIND_INDEX_BUFFER;
+	indexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+	DX::ThrowIfFailed(device->CreateBuffer(&indexBufferDesc, nullptr, &indexBuffer));
 }
 
 void D3D11Utils::CreateGeometryShader(
@@ -429,10 +427,7 @@ void ReadImage(const std::string filename, std::vector<uint8_t>& image, int& wid
 }
 
 ComPtr<ID3D11Texture2D>
-CreateStagingTexture(ComPtr<ID3D11Device>& device, 
-	ComPtr<ID3D11DeviceContext>& context, const int width, const int height, 
-	const std::vector<uint8_t>& image, const int mipLevels = 1, 
-	const int arraySize = 1)
+CreateStagingTexture(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, const int width, const int height, const std::vector<uint8_t>& image, const int mipLevels = 1, const int arraySize = 1)
 {
 
 	// 스테이징 텍스춰 만들기
@@ -514,9 +509,7 @@ void D3D11Utils::CreateTexture(
 }
 
 void D3D11Utils::CreateTextureArray(
-	ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, 
-	const std::vector<std::string> filenames, ComPtr<ID3D11Texture2D>& texture, 
-	ComPtr<ID3D11ShaderResourceView>& textureResourceView)
+	ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, const std::vector<std::string> filenames, ComPtr<ID3D11Texture2D>& texture, ComPtr<ID3D11ShaderResourceView>& textureResourceView)
 {
 
 	using namespace std;
@@ -607,9 +600,7 @@ void D3D11Utils::CreateCubemapTexture(
 	}
 }
 
-void D3D11Utils::WriteToFile(ComPtr<ID3D11Device>& device, 
-	ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Texture2D>& textureToWrite, 
-	const std::string filename)
+void D3D11Utils::WriteToFile(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Texture2D>& textureToWrite, const std::string filename)
 {
 
 	D3D11_TEXTURE2D_DESC desc;

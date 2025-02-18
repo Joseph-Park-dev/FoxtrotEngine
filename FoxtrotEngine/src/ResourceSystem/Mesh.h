@@ -40,6 +40,8 @@ struct Mesh
 
 	BasicVertexConstantData VertexConstantData;
 	BasicPixelConstantData	PixelConstantData;
+	
+	NormalVCData NormalVertexConstData;
 
 	UINT IndexCount	 = 0;
 	UINT VertexCount = 0;

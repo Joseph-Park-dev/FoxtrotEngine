@@ -39,16 +39,41 @@ public:
 	int							GetMeshCount();
 	std::vector<Mesh*>&			GetMeshes();
 
+	BasicVCData& GetVCData();
+	BasicPCData& GetPCData();
+
+	bool GetDrawTexture();
+
+public:
+	FTBasicMeshGroup();
+	virtual ~FTBasicMeshGroup() override;
+
 protected:
-	void			InitializeConstantBuffer(ComPtr<ID3D11Device>& device);
-	virtual void	InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<MeshData>& meshes);
 	virtual HRESULT CreateTextureSampler(ComPtr<ID3D11Device>& device);
+	virtual void	InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<MeshData>& meshes);
+	void			InitializeConstantBuffers(ComPtr<ID3D11Device>& device);
 
 private:
 	std::vector<Mesh*>		   mMeshes;
 	ComPtr<ID3D11SamplerState> mSamplerState;
 
+	ComPtr<ID3D11Buffer> mVertexConstBuffer;
+	ComPtr<ID3D11Buffer> mPixelConstBuffer;
+	BasicVCData			 mVertexConstData;
+	BasicPCData			 mPixelConstData;
+
+	bool mDrawTexture;
+
+#ifdef FOXTROT_EDITOR
 public:
-	FTBasicMeshGroup();
-	virtual ~FTBasicMeshGroup() override;
+	virtual void UpdateUI() override;
+
+private:
+	Mesh*		 mNormalLines;
+	NormalVCData mNormalVertexConstData;
+
+	float mNormalScale;
+	bool  mDrawNormal;
+	bool  mValModified;
+#endif
 };

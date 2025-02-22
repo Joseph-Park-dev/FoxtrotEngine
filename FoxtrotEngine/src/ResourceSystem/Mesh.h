@@ -24,24 +24,11 @@ using Microsoft::WRL::ComPtr;
 
 struct Mesh
 {
-	Mesh()
-	{
-		VertexConstantData.model		= DirectX::SimpleMath::Matrix();
-		VertexConstantData.invTranspose = DirectX::SimpleMath::Matrix();
-		VertexConstantData.view			= DirectX::SimpleMath::Matrix();
-		VertexConstantData.projection	= DirectX::SimpleMath::Matrix();
-	}
-
 	ComPtr<ID3D11Buffer> VertexBuffer;
 	ComPtr<ID3D11Buffer> IndexBuffer;
 
 	ComPtr<ID3D11Buffer> VertexConstantBuffer;
 	ComPtr<ID3D11Buffer> PixelConstantBuffer;
-
-	BasicVertexConstantData VertexConstantData;
-	BasicPixelConstantData	PixelConstantData;
-	
-	NormalVCData NormalVertexConstData;
 
 	UINT IndexCount	 = 0;
 	UINT VertexCount = 0;

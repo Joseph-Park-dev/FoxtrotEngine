@@ -131,6 +131,7 @@
     <FxCompile Include="assets\Shaders\EditorDebugShapePS.hlsl" />
     <FxCompile Include="Assets\Shaders\BlinnPhongPS.hlsl" />
     <FxCompile Include="Assets\Shaders\NormalVS.hlsl" />
+    <FxCompile Include="Assets\Shaders\NormalPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon1.ico">

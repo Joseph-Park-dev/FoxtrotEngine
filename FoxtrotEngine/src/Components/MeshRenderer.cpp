@@ -166,23 +166,24 @@ void MeshRenderer::UpdateMesh(Transform* transform, Camera* camInst)
 
 		for (Mesh* mesh : mMeshGroup->GetMeshes())
 		{
-			mesh->VertexConstantData.model		  = modelMat.Transpose();
-			mesh->VertexConstantData.view		  = viewMat.Transpose();
-			mesh->VertexConstantData.projection	  = projMat.Transpose();
-			mesh->VertexConstantData.invTranspose = std::move(invTransposeMat);
+			BasicVCData& vcd = mMeshGroup->GetVCData();
+			vcd.model		 = modelMat.Transpose();
+			vcd.view		 = viewMat.Transpose();
+			vcd.projection	 = projMat.Transpose();
+			vcd.invTranspose = std::move(invTransposeMat);
 
-			mesh->PixelConstantData.EyeWorld   = eyeWorld;
-			mesh->PixelConstantData.UseTexture = true;
+			BasicPCData& pcd = mMeshGroup->GetPCData();
+			pcd.EyeWorld	 = eyeWorld;
 
-			mesh->PixelConstantData.Material.Diffuse  = mMaterial->Diffuse;
-			mesh->PixelConstantData.Material.Specular = mMaterial->Specular;
+			pcd.Material.Diffuse  = mMaterial->Diffuse;
+			pcd.Material.Specular = mMaterial->Specular;
 
 			for (size_t i = 0; i < Light::TYPE::END; ++i)
 			{
 				if (LightManager::GetInstance()->GetType(0) == (Light::TYPE)i)
-					mesh->PixelConstantData.Lights[i] = LightManager::GetInstance()->GetLight(0);
+					pcd.Lights[i] = LightManager::GetInstance()->GetLight(0);
 				else
-					mesh->PixelConstantData.Lights[i].Strength *= 0.0f;
+					pcd.Lights[i].Strength *= 0.0f;
 			}
 		}
 	}
@@ -254,6 +255,10 @@ void MeshRenderer::EditorUpdate(float deltaTime)
 void MeshRenderer::EditorUIUpdate()
 {
 	CHECK_RENDERER(GetRenderer());
+
+	if (mMeshGroup)
+		mMeshGroup->UpdateUI();
+
 	if (ImGui::Button("Add Cube"))
 	{
 		MeshData meshData =
@@ -268,9 +273,7 @@ void MeshRenderer::EditorUIUpdate()
 void MeshRenderer::OnConfirmUpdate()
 {
 	if (ImGui::Button("Update"))
-	{
 		SetTexture();
-	}
 }
 
 void MeshRenderer::OnResetTexture()

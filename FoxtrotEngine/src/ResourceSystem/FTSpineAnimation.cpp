@@ -53,12 +53,12 @@ void FTSpineAnimation::Initialize(FoxtrotRenderer* renderer)
 	Mesh*		   mesh	   = new Mesh;
 	RenderCommand* command = mskeletonRenderer->render(*mSkeleton);
 
-	D3D11Utils::CreateVertexBuffer<Vertex>(renderer->GetDevice(), command->numVertices, mesh->VertexBuffer);
-	D3D11Utils::CreateIndexBuffer(renderer->GetDevice(), command->numIndices, mesh->IndexBuffer);
-	mesh->VertexCount = command->numVertices;
-	mesh->IndexCount  = command->numIndices;
-	D3D11Utils::CreateConstantBuffer(renderer->GetDevice(), mesh->VertexConstantData, mesh->VertexConstantBuffer);
-	D3D11Utils::CreateConstantBuffer(renderer->GetDevice(), mesh->PixelConstantData, mesh->PixelConstantBuffer);
+	//D3D11Utils::CreateVertexBuffer<Vertex>(renderer->GetDevice(), command->numVertices, mesh->VertexBuffer);
+	//D3D11Utils::CreateIndexBuffer(renderer->GetDevice(), command->numIndices, mesh->IndexBuffer);
+	//mesh->VertexCount = command->numVertices;
+	//mesh->IndexCount  = command->numIndices;
+	//D3D11Utils::CreateConstantBuffer(renderer->GetDevice(), mesh->VertexConstantData, mesh->VertexConstantBuffer);
+	//D3D11Utils::CreateConstantBuffer(renderer->GetDevice(), mesh->PixelConstantData, mesh->PixelConstantBuffer);
 
 	GetMeshes().push_back(mesh);
 }

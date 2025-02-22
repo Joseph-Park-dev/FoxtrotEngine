@@ -14,7 +14,7 @@
 
 void FTSpriteAnimation::Initialize(std::vector<MeshData>& meshes, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
-	FTBasicMeshGroup::InitializeConstantBuffer(device);
+	FTBasicMeshGroup::InitializeConstantBuffers(device);
 	this->InitializeMeshes(device, meshes);
 	FTBasicMeshGroup::CreateTextureSampler(device);
 }
@@ -136,8 +136,8 @@ void FTSpriteAnimation::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vect
 		D3D11Utils::CreateIndexBuffer(device, meshData.indices,
 			newMesh->IndexBuffer);
 
-		D3D11Utils::CreateConstantBuffer(device, newMesh->VertexConstantData, newMesh->VertexConstantBuffer);
-		D3D11Utils::CreateConstantBuffer(device, newMesh->PixelConstantData, newMesh->PixelConstantBuffer);
+		D3D11Utils::CreateConstantBuffer(device, GetVCData(), newMesh->VertexConstantBuffer);
+		D3D11Utils::CreateConstantBuffer(device, GetPCData(), newMesh->PixelConstantBuffer);
 
 		this->GetMeshes().push_back(newMesh);
 

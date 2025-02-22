@@ -6,8 +6,8 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-Texture2D g_texture0 : register(t0); 
-SamplerState g_sampler : register(s0);  
+Texture2D g_texture0 : register(t0);
+SamplerState g_sampler : register(s0);
 
 struct PixelShaderInput
 {
@@ -17,7 +17,7 @@ struct PixelShaderInput
     float2 texcoord : TEXCOORD;
 };
 
-float4 main(PixelShaderInput input) : SV_TARGET {
-    
-    return float4(input.color, 1.5);
+float4 main(PixelShaderInput input) : SV_TARGET
+{
+    return float4(input.color, 1.0);
 }

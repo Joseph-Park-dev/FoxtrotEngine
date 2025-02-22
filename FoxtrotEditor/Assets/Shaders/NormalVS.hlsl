@@ -8,12 +8,12 @@ cbuffer NormalVertexConstantBuffer : register(b0)
     matrix projection;
 };
 
-cbuffer NormalVertexConstantBufer : register(b0)
+cbuffer NormalVertexConstantBufer : register(b1)
 {
     float scale;
 }
 
-float4 main(TexVSInput input) : SV_POSITION
+TexPSInput main(TexVSInput input)
 {
     TexPSInput output;
     float4 pos = float4(input.posModel, 1.0f);

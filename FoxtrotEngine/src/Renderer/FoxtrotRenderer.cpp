@@ -92,16 +92,13 @@ ComPtr<ID3D11InputLayout>&	FoxtrotRenderer::GetTextureInputLayout() { return mTe
 ComPtr<ID3D11PixelShader>&	FoxtrotRenderer::GetTexturePS() { return mTexturePS; }
 ComPtr<ID3D11PixelShader>&	FoxtrotRenderer::GetBlinnPhongPS() { return mBlinnPhongPS; }
 
+ComPtr<ID3D11VertexShader>& FoxtrotRenderer::GetNormalVS() { return mNormalVS; }
+ComPtr<ID3D11PixelShader>&	FoxtrotRenderer::GetNormalPS() { return mNormalPS; }
+
 UINT FoxtrotRenderer::GetRenderWidth() const { return mRenderWidth; }
 UINT FoxtrotRenderer::GetRenderHeight() const { return mRenderHeight; }
 void FoxtrotRenderer::SetRenderWidth(const UINT width) { mRenderWidth = width; }
 void FoxtrotRenderer::SetRenderHeight(const UINT height) { mRenderHeight = height; }
-
-// Constant buffer data 업데이트 & 그 내용을 GPU 버퍼로 복사
-// 이후 Render() 에서 Vertex shader를 실행시키게 되는데,
-// 이때 Constant buffer data를 사용
-// mContext->VSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
-// void FoxtrotRenderer::UpdateConstantBufferData(Transform* transform)
 
 void FoxtrotRenderer::RenderClear()
 {
@@ -227,10 +224,18 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 			mTexturePS));
 
 	DX::ThrowIfFailed(
+		D3D11Utils::CreateVertexShaderAndInputLayout(
+			mDevice,
+			NORMAL_VS_PATH,
+			inputElements,
+			mNormalVS,
+			mTextureInputLayout));
+
+	DX::ThrowIfFailed(
 		D3D11Utils::CreatePixelShader(
 			mDevice,
-			BLINN_PHONG_PS_PATH,
-			mBlinnPhongPS));
+			NORMAL_PS_PATH,
+			mNormalPS));
 
 	mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
 

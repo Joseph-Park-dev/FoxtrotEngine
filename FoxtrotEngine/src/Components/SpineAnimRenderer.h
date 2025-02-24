@@ -7,7 +7,7 @@ class SpineAnimRenderer :
 	public MeshRenderer
 {
 public:
-	SpineAnimRenderer(Actor* owner, int updateOrder = DEFAULT_UPDATEORDER);
+	SpineAnimRenderer(Actor* owner, int updateOrder = DefaultVal::UPDATE_ORDER);
 
 	virtual void CloneTo(Actor* actor) override;
 

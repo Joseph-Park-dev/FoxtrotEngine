@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -21,41 +21,45 @@ class Scene;
 
 #ifdef FOXTROT_EDITOR
 class EditorScene;
-#include "EditorElement.h"
+	#include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
 class FTPremade :
-    public FTResource
+	public FTResource
 {
 public:
-    FTPremade();
-    ~FTPremade() override;
+	FTPremade();
+	~FTPremade() override;
 
 public:
-    void    Load();
+	void Load();
 
 public:
-    Actor*  GetOrigin();
-    bool    GetIsLoaded();
+	Actor* GetOrigin();
+	bool   GetIsLoaded();
 
 private:
-    // Member variable that holds the actual Actor Data.
-    Actor*  mOrigin;
-    bool    mIsLoaded;
+	// Member variable that holds the actual Actor Data.
+	Actor* mOrigin;
+	bool   mIsLoaded;
 
 public:
-    virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
-    virtual UINT LoadProperties(std::ifstream& ifs) override;
+	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
+	virtual UINT LoadProperties(std::ifstream& ifs) override;
 
 #ifdef FOXTROT_EDITOR
 public:
-            void           Create (EditorElement* ele);
-            void           Save   (EditorElement* ele);
+	void Create(EditorElement* ele);
+	void Save(EditorElement* ele);
 
-    virtual void           UpdateUI ()        override;
+	virtual void UpdateUI() override;
 
 private:
-    EditorElement* mDummyForUI;
+	EditorElement* mDummyForUI;
 #endif // FOXTROT_EDITOR
 };
 
+namespace ChunkKey
+{
+	constexpr const char* FTPREMADE = "FTPremade";
+}

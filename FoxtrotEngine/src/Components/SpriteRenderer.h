@@ -41,7 +41,7 @@ protected:
 public:
 	SpriteRenderer(
 		Actor* owner,
-		int	   updateOrder = DEFAULT_UPDATEORDER);
+		int	   updateOrder = DefaultVal::UPDATE_ORDER);
 
 private:
 	// These fields need to be loaded from .chunk file.
@@ -61,3 +61,9 @@ public:
 	virtual void EditorUIUpdate() override;
 #endif // FOXTROT_EDITOR
 };
+
+namespace ChunkKey
+{
+	constexpr const char* CHANNEL	   = "Channel";
+	constexpr const char* SPRITE_SCALE = "Scale";
+} // namespace ChunkKey

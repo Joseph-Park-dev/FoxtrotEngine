@@ -44,8 +44,8 @@ void LightManager::DisplayLightMenu()
 	static int	indices[3];
 	if (ImGui::BeginListBox(std::string("Light " + std::to_string(0)).c_str(), ImVec2(-FLT_MIN, 200)))
 	{
-		ImGui::Checkbox(LightKeys::IS_ACTIVE, &mActiveStatus[0]);
-		FTEditorUtils::DisplayArrayAsCombo(LightKeys::TYPE, lightTypesStr, Light::TYPE::END, indices[0]);
+		ImGui::Checkbox(LightKey::IS_ACTIVE, &mActiveStatus[0]);
+		FTEditorUtils::DisplayArrayAsCombo(LightKey::TYPE, lightTypesStr, Light::TYPE::END, indices[0]);
 		mLights[0].UpdateUI();
 		ImGui::EndListBox();
 	}

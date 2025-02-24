@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -19,25 +19,24 @@ class Actor;
 class Rigidbody2D : public Component
 {
 public:
-	std::string  GetName() const override 
-	{ 
-		return "Rigidbody2D"; 
+	std::string GetName() const override
+	{
+		return "Rigidbody2D";
 	}
 	b2BodyId& GetBodyID();
 
 public:
-	virtual void Initialize	(FTCore* coreInstance)	override;
-	virtual void LateUpdate	(float deltaTime)		override;
+	virtual void Initialize(FTCore* coreInstance) override;
+	virtual void LateUpdate(float deltaTime) override;
 
-	virtual void CloneTo	(Actor* actor)          override;
+	virtual void CloneTo(Actor* actor) override;
 
 public:
-	Rigidbody2D(Actor* owner,
-		int updateOrder = DEFAULT_UPDATEORDER);
+	Rigidbody2D(Actor* owner, int updateOrder = DefaultVal::UPDATE_ORDER);
 	virtual ~Rigidbody2D() override;
 
 private:
-	b2BodyId	mBodyID;
+	b2BodyId mBodyID;
 
 public:
 	virtual void LoadProperties(std::ifstream& ifs) override;
@@ -50,7 +49,7 @@ public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
 
 public:
-	virtual void EditorUpdate(float deltaTime)			 override;
+	virtual void EditorUpdate(float deltaTime) override;
 	virtual void EditorRender(FoxtrotRenderer* renderer) override;
 
 public:
@@ -65,3 +64,24 @@ private:
 	void UpdateGravityScale();
 #endif;
 };
+
+namespace ChunkKey
+{
+	constexpr const char* ALLOW_FAST_ROTATION = "Allow Fast Rotation";
+	constexpr const char* ANGULAR_DAMPING	  = "Angular Damping";
+	constexpr const char* ANGULAR_VELOCITY	  = "Angular Velocity";
+	constexpr const char* ENABLE_SLEEP		  = "Enable Sleep";
+	constexpr const char* FIXED_ROTATION	  = "Fixed Rotation";
+	constexpr const char* GRAVITY_SCALE		  = "Gravity Scale";
+	constexpr const char* IS_AWAKE			  = "Is Awake";
+	constexpr const char* IS_BULLET			  = "Is Bullet";
+	constexpr const char* IS_ENABLED		  = "Is Enabled";
+	constexpr const char* INITIAL_VELOCITY	  = "Initial Velocity";
+	constexpr const char* SLEEP_THRESHOLD	  = "Sleep Threshold";
+
+	constexpr const char* BODY_TYPE = "Body Type";
+
+	constexpr const int BODY_TYPE_STATIC	= 0;
+	constexpr const int BODY_TYPE_KINEMATIC = 1;
+	constexpr const int BODY_TYPE_DYNAMIC	= 2;
+} // namespace ChunkKey

@@ -32,7 +32,7 @@ void PanelUI::CloneTo(Actor * actor)
 	PanelUI* newComp = DBG_NEW PanelUI(actor, GetUpdateOrder());
 }
 
-PanelUI::PanelUI(Actor* owner, int updateOrder = DEFAULT_UPDATEORDER)
+PanelUI::PanelUI(Actor* owner, int updateOrder = DefaultVal::UPDATE_ORDER)
 	: UI(owner, updateOrder)
 	, mDragStartPoint(FTVector2::Zero)
 {}

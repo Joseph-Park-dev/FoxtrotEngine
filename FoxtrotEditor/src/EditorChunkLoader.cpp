@@ -15,7 +15,6 @@
 #include "Managers/CollisionManager.h"
 #include "Math/FTMath.h"
 #include "Components/BatchHeaders.h"
-#include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
 
 #include "EditorLayer.h"
@@ -79,7 +78,7 @@ void EditorChunkLoader::SaveActorsData(std::ofstream& ofs)
 {
 	EditorScene*		 scene	= EditorSceneManager::GetInstance()->GetEditorScene();
 	std::vector<Actor*>* actors = scene->GetActors();
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::ACTOR_DATA);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::ACTOR_DATA);
 
 	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
 	{
@@ -93,13 +92,13 @@ void EditorChunkLoader::SaveActorsData(std::ofstream& ofs)
 			FileIOHelper::EndDataPackSave(ofs, element->GetName());
 		}
 	}
-	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::ACTOR_DATA);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::ACTOR_DATA);
 }
 
 void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
 {
 	EditorScene*					 scene = EditorSceneManager::GetInstance()->GetEditorScene();
-	std::pair<size_t, std::string>&& pack  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::ACTOR_DATA);
+	std::pair<size_t, std::string>&& pack  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
 	for (size_t i = 0; i < pack.first; ++i)
 	{
 		std::pair<size_t, std::string>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);

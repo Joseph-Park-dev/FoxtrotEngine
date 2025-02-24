@@ -67,3 +67,9 @@ public:
 	void UpdateCollisionMarks();
 #endif // FOXTROT_EDITOR
 };
+
+namespace ChunkKey
+{
+	constexpr const char* COLLISION_MANAGER = "Collision Manager";
+	constexpr const char* COLLISION_MARKS = "Collision Marks";
+}

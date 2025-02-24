@@ -1,13 +1,13 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 /// <summary>
 /// A class that holds the Sprite Animation.
-/// This will be registered to the Animator Component assigned to 
+/// This will be registered to the Animator Component assigned to
 /// an Actor.
 /// </summary>
 
@@ -26,7 +26,7 @@ class Animator;
 class FTTexture;
 
 struct AnimationFrame
-{ 
+{
 	float Duration;
 };
 
@@ -34,57 +34,55 @@ class FTSpriteAnimation : public FTBasicMeshGroup
 {
 public:
 	virtual void Initialize(
-		std::vector<MeshData>& meshes,
-		ComPtr<ID3D11Device>& device,
-		ComPtr<ID3D11DeviceContext>& context
-	) override;
+		std::vector<MeshData>&		 meshes,
+		ComPtr<ID3D11Device>&		 device,
+		ComPtr<ID3D11DeviceContext>& context) override;
 
 	virtual void Update(float deltaTime);
-	virtual	void Render(FoxtrotRenderer* renderer, FTTexture* texture)  override;
+	virtual void Render(FoxtrotRenderer* renderer, FTTexture* texture) override;
 
 public:
-	std::string&	GetName	 ();
-	AnimationFrame* GetFrame ();
-							 
-	UINT GetTexKey			 ();
-	UINT GetTileMapKey		 ();
-	bool GetIsFinished		 ();
-							 
-	void SetName			 (std::string&& name);
-	void SetFrame			 (int frameNumber);
-	void SetFrameDuration	 (int frameNum, float duration);
-	void SetAnimator		 (Animator* animator);
-	void SetIsFinished		 (bool val);
-	void SetIsRepeated		 (bool val);
-							 
-	void SetTexKey			 (UINT key);
-	void SetTileMapKey		 (UINT key);
+	std::string&	GetName();
+	AnimationFrame* GetFrame();
+
+	UINT GetTexKey();
+	UINT GetTileMapKey();
+	bool GetIsFinished();
+
+	void SetName(std::string&& name);
+	void SetFrame(int frameNumber);
+	void SetFrameDuration(int frameNum, float duration);
+	void SetAnimator(Animator* animator);
+	void SetIsFinished(bool val);
+	void SetIsRepeated(bool val);
+
+	void SetTexKey(UINT key);
+	void SetTileMapKey(UINT key);
 
 	void IncreaseIdx() { ++mCurrFrame; }
 
 public:
-	 FTSpriteAnimation();
-	 FTSpriteAnimation(FTSpriteAnimation* other);
+	FTSpriteAnimation();
+	FTSpriteAnimation(FTSpriteAnimation* other);
 	~FTSpriteAnimation() override;
 
 protected:
 	virtual void InitializeMeshes(
-		ComPtr<ID3D11Device>& device, 
-		std::vector<MeshData>& meshes
-	) override;
+		ComPtr<ID3D11Device>&  device,
+		std::vector<MeshData>& meshes) override;
 
 private:
 	// These fields need to be loaded from .chunk file
-	std::string					 mName;
-	float						 mAnimFPS;
-	bool						 mIsRepeated;
-	int							 mMaxFrameIdx;
+	std::string mName;
+	float		mAnimFPS;
+	bool		mIsRepeated;
+	int			mMaxFrameIdx;
 
-	UINT						 mTexKey;
-	UINT						 mTileMapKey;
-	
+	UINT mTexKey;
+	UINT mTileMapKey;
+
 	// These fields need to be initialized when the component is added.
-	Animator*			 mAnimator;
+	Animator*					 mAnimator;
 	std::vector<AnimationFrame*> mReel;
 	int							 mCurrFrame;
 	float						 mAccTime;
@@ -95,7 +93,7 @@ private:
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
-	virtual UINT LoadProperties(std::ifstream& ifs)           override;
+	virtual UINT LoadProperties(std::ifstream& ifs) override;
 
 #ifdef FOXTROT_EDITOR
 public:
@@ -111,3 +109,10 @@ private:
 #endif // FOXTROT_EDITOR
 };
 
+namespace ChunkKey
+{
+	constexpr const char* FT_SPRITE_ANIMATION = "FTSpriteAnimation";
+	constexpr const char* ANIM_FPS			  = "Animation FPS";
+	constexpr const char* IS_REPEATED		  = "Is Repeated";
+	constexpr const char* MAX_FRAME_INDEX	  = "Max Frame Index";
+} // namespace ChunkKey

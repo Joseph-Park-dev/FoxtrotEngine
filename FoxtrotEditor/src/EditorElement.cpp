@@ -203,7 +203,7 @@ void EditorElement::UpdateComponents()
 			if (ImGui::TreeNode(name.c_str()))
 			{
 				int updateOrder = comp->GetUpdateOrder();
-				ImGui::InputInt(ChunkKeys::UPDATE_ORDER, &updateOrder);
+				ImGui::InputInt(ChunkKey::UPDATE_ORDER, &updateOrder);
 				comp->SetUpdateOrder(updateOrder);
 
 				comp->EditorUIUpdate();

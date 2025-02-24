@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -22,54 +22,62 @@
 class Tile;
 
 class FTTileMap :
-    public FTResource
+	public FTResource
 {
 public:
-    void ReadCSV();
-    void ReadCSV(std::string& str);
+	void ReadCSV();
+	void ReadCSV(std::string& str);
 
 public:
-    Tile*   GetTiles() { return mTileMap; }
-    Tile&   GetTile(size_t row, size_t column);
-    UINT    GetMaxCountOnScreenX() { return mMaxCountOnScreenX; }
-    UINT    GetMaxCountOnScreenY() { return mMaxCountOnScreenY; }
-    UINT    GetMaxCountOnMapX() { return mMaxCountOnMapX; }
-    UINT    GetMaxCountOnMapY() { return mMaxCountOnMapY; }
+	Tile* GetTiles() { return mTileMap; }
+	Tile& GetTile(size_t row, size_t column);
+	UINT  GetMaxCountOnScreenX() { return mMaxCountOnScreenX; }
+	UINT  GetMaxCountOnScreenY() { return mMaxCountOnScreenY; }
+	UINT  GetMaxCountOnMapX() { return mMaxCountOnMapX; }
+	UINT  GetMaxCountOnMapY() { return mMaxCountOnMapY; }
 
-    void    SetTiles(Tile* tiles);
-    void    SetTileWidth(UINT width);
-    void    SetTileHeight(UINT height);
-    void    SetMaxCountOnScreenX(UINT xCount);
-    void    SetMaxCountOnScreenY(UINT yCount);
-    void    SetMaxCountOnMapX(UINT xCount);
-    void    SetMaxCountOnMapY(UINT yCount);
+	void SetTiles(Tile* tiles);
+	void SetTileWidth(UINT width);
+	void SetTileHeight(UINT height);
+	void SetMaxCountOnScreenX(UINT xCount);
+	void SetMaxCountOnScreenY(UINT yCount);
+	void SetMaxCountOnMapX(UINT xCount);
+	void SetMaxCountOnMapY(UINT yCount);
 
 public:
-             FTTileMap();
-    virtual ~FTTileMap() override;
+	FTTileMap();
+	virtual ~FTTileMap() override;
 
 protected:
-    void InitializeTile(Tile& tile, UINT column, UINT row, UINT tileNum);
+	void InitializeTile(Tile& tile, UINT column, UINT row, UINT tileNum);
 
 private:
-    // These fields need to be read from .chunk files or be modified on the editor.
-    UINT        mTileWidthOnScreen;
-    UINT        mTileHeightOnScreen;
-    UINT        mMaxCountOnMapX;
-    UINT        mMaxCountOnMapY;
+	// These fields need to be read from .chunk files or be modified on the editor.
+	UINT mTileWidthOnScreen;
+	UINT mTileHeightOnScreen;
+	UINT mMaxCountOnMapX;
+	UINT mMaxCountOnMapY;
 
-    // These fields need to be initialized when the tilemap is constructed.
-    Tile*   mTileMap;
-    UINT    mMaxCountOnScreenX;
-    UINT    mMaxCountOnScreenY;
+	// These fields need to be initialized when the tilemap is constructed.
+	Tile* mTileMap;
+	UINT  mMaxCountOnScreenX;
+	UINT  mMaxCountOnScreenY;
 
 public:
-    virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
-    virtual UINT LoadProperties(std::ifstream& ifs)           override;
+	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
+	virtual UINT LoadProperties(std::ifstream& ifs) override;
 
 #ifdef FOXTROT_EDITOR
 public:
-    virtual void UpdateUI()         override;
+	virtual void UpdateUI() override;
 #endif // FOXTROT_EDITOR
 };
 
+namespace ChunkKey
+{
+	constexpr const char* FTTILEMAP				  = "FTTileMap";
+	constexpr const char* TILEMAP_SCREEN_WIDTH	  = "Tile Width On Screen";
+	constexpr const char* TILEMAP_SCREEN_HEIGHT	  = "Tile Height On Screen";
+	constexpr const char* TILEMAP_MAP_MAX_COUNT_X = "Max Count On Map X";
+	constexpr const char* TILEMAP_MAP_MAX_COUNT_Y = "Max Count On Map Y";
+} // namespace ChunkKey

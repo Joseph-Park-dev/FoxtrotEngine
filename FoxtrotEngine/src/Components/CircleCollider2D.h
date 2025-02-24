@@ -33,7 +33,7 @@ public:
 	CircleCollider2D(
 		Actor* owner,
 		
-		int updateOrder = DEFAULT_UPDATEORDER
+		int updateOrder = DefaultVal::UPDATE_ORDER
 	);
 
 private:

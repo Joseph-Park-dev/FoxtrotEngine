@@ -8,7 +8,6 @@
 
 #include "ResourceSystem/FTSpriteAnimation.h"
 
-#include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Renderer/FoxtrotRenderer.h"
 
@@ -159,8 +158,8 @@ FTSpriteAnimation::FTSpriteAnimation()
 	, mAccTime		(0.f)
 	, mIsFinished	(false)
 
-	, mTexKey		(ChunkKeys::VALUE_NOT_ASSIGNED)
-	, mTileMapKey	(ChunkKeys::VALUE_NOT_ASSIGNED)
+	, mTexKey		(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	, mTileMapKey	(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 {}
 
 FTSpriteAnimation::FTSpriteAnimation(FTSpriteAnimation* other)
@@ -204,22 +203,22 @@ bool FTSpriteAnimation::FrameIsWithinIndexRange(int currentFrame)
 
 void FTSpriteAnimation::SaveProperties(std::ofstream& ofs, UINT key)
 {
-	FileIOHelper::BeginDataPackSave	(ofs, ChunkKeys::FT_SPRITE_ANIMATION);
+	FileIOHelper::BeginDataPackSave	(ofs, ChunkKey::FT_SPRITE_ANIMATION);
 
 	FTResource::SaveProperties(ofs, key);
-	FileIOHelper::SaveString		(ofs, ChunkKeys::NAME, mName);
-	FileIOHelper::SaveFloat			(ofs, ChunkKeys::ANIM_FPS, mAnimFPS);
-	FileIOHelper::SaveBool			(ofs, ChunkKeys::IS_REPEATED, mIsRepeated);
-	FileIOHelper::SaveInt			(ofs, ChunkKeys::MAX_FRAME_INDEX, mMaxFrameIdx);
-	FileIOHelper::SaveUnsignedInt	(ofs, ChunkKeys::TEXTURE_KEY, mTexKey);
-	FileIOHelper::SaveUnsignedInt	(ofs, ChunkKeys::TILEMAP_KEY, mTileMapKey);
+	FileIOHelper::SaveString		(ofs, ChunkKey::NAME, mName);
+	FileIOHelper::SaveFloat			(ofs, ChunkKey::ANIM_FPS, mAnimFPS);
+	FileIOHelper::SaveBool			(ofs, ChunkKey::IS_REPEATED, mIsRepeated);
+	FileIOHelper::SaveInt			(ofs, ChunkKey::MAX_FRAME_INDEX, mMaxFrameIdx);
+	FileIOHelper::SaveUnsignedInt	(ofs, ChunkKey::TEXTURE_KEY, mTexKey);
+	FileIOHelper::SaveUnsignedInt	(ofs, ChunkKey::TILEMAP_KEY, mTileMapKey);
 
-	FileIOHelper::EndDataPackSave	(ofs, ChunkKeys::FT_SPRITE_ANIMATION);
+	FileIOHelper::EndDataPackSave	(ofs, ChunkKey::FT_SPRITE_ANIMATION);
 }
 
 UINT FTSpriteAnimation::LoadProperties(std::ifstream& ifs)
 {
-	FileIOHelper::BeginDataPackLoad	(ifs, ChunkKeys::FT_SPRITE_ANIMATION);
+	FileIOHelper::BeginDataPackLoad	(ifs, ChunkKey::FT_SPRITE_ANIMATION);
 
 	FileIOHelper::LoadUnsignedInt(ifs, mTileMapKey);
 	FileIOHelper::LoadUnsignedInt(ifs, mTexKey);

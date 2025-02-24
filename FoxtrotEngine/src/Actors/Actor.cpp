@@ -17,7 +17,6 @@
 #include "Actors/ActorGroup.h"
 #include "Actors/Transform.h"
 #include "FileSystem/ChunkLoader.h"
-#include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Components/Component.h"
 #include "Components/Collider2D.h"
@@ -234,36 +233,36 @@ bool Actor::HasName(const char* name)
 
 void Actor::SaveProperties(std::ofstream& ofs)
 {
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::ACTOR_PROPERTIES);
-	FileIOHelper::SaveString		(ofs, ChunkKeys::NAME, GetName());
-	FileIOHelper::SaveString		(ofs, ChunkKeys::ACTOR_GROUP, ActorGroupUtil::GetActorGroupStr(mActorGroup));
-	FileIOHelper::SaveString		(ofs, ChunkKeys::STATE, GetStateStr());
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::ACTOR_PROPERTIES);
+	FileIOHelper::SaveString		(ofs, ChunkKey::NAME, GetName());
+	FileIOHelper::SaveString		(ofs, ChunkKey::ACTOR_GROUP, ActorGroupUtil::GetActorGroupStr(mActorGroup));
+	FileIOHelper::SaveString		(ofs, ChunkKey::STATE, GetStateStr());
 	if (mParent)
-		FileIOHelper::SaveString	(ofs, ChunkKeys::PARENT, mParent->GetName());
+		FileIOHelper::SaveString	(ofs, ChunkKey::PARENT, mParent->GetName());
 	else
-		FileIOHelper::SaveString	(ofs, ChunkKeys::PARENT, "nullptr");
+		FileIOHelper::SaveString	(ofs, ChunkKey::PARENT, "nullptr");
 
 	// Changing the call location of Transform is NOT recommended
 	// Nested .chunk DataPack has unknown problem.
 	mTransform->SaveProperties		(ofs);
-	FileIOHelper::EndDataPackSave	(ofs, ChunkKeys::ACTOR_PROPERTIES);
+	FileIOHelper::EndDataPackSave	(ofs, ChunkKey::ACTOR_PROPERTIES);
 }
 
 void Actor::SaveComponents(std::ofstream& ofs)
 {
 	size_t count = mComponents.size();
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::COMPONENTS);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::COMPONENTS);
 	for (size_t i = 0; i < count; ++i) {
 		FileIOHelper::BeginDataPackSave(ofs, mComponents[i]->GetName());
 		mComponents[i]->SaveProperties(ofs);
 		FileIOHelper::EndDataPackSave(ofs, mComponents[i]->GetName());
 	}
-	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::COMPONENTS);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::COMPONENTS);
 }
 
 void Actor::LoadProperties(std::ifstream& ifs)
 {
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::ACTOR_PROPERTIES);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_PROPERTIES);
 	// Changing the call location of Transform is NOT recommended
 	// Nested .chunk DataPack has unknown problem.
 	mTransform->LoadProperties(ifs);
@@ -285,7 +284,7 @@ void Actor::LoadProperties(std::ifstream& ifs)
 
 void Actor::LoadComponents(std::ifstream& ifs)
 {
-	std::pair<int, std::string>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::COMPONENTS);
+	std::pair<int, std::string>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COMPONENTS);
 	mComponents.reserve(pack.first);
 	for (size_t i = 0; i < pack.first; ++i) {
 		std::pair<size_t, std::string> compPack = FileIOHelper::BeginDataPackLoad(ifs);

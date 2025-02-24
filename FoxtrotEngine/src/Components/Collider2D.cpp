@@ -19,7 +19,6 @@
 #include "Managers/KeyInputManager.h"
 #include "Managers/CollisionManager.h"
 #include "FileSystem/ChunkLoader.h"
-#include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Components/Rigidbody2D.h"
 #include "Behaviors/FTBehavior.h"
@@ -139,7 +138,7 @@ void Collider2D::OnCollisionExit(Collider2D* other)
 void Collider2D::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
-	FileIOHelper::SaveVector2(ofs, ChunkKeys::OFFSET, mOffset);
+	FileIOHelper::SaveVector2(ofs, ChunkKey::OFFSET, mOffset);
 }
 
 void Collider2D::LoadProperties(std::ifstream& ifs)

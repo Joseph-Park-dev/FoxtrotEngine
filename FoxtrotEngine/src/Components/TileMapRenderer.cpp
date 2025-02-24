@@ -29,7 +29,6 @@
 #include "Managers/ResourceManager.h"
 #include "Renderer/FTRect.h"
 #include "FileSystem/ChunkLoader.h"
-#include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
 
 #ifdef FOXTROT_EDITOR
@@ -65,20 +64,20 @@ void TileMapRenderer::SetTileMap(FTTileMap* tileMap)
 void TileMapRenderer::Initialize(FTCore* coreInstance)
 {
     MeshRenderer::Initialize(coreInstance);
-	if (GetTexKey() != ChunkKeys::VALUE_NOT_ASSIGNED && mTileMapKey != ChunkKeys::VALUE_NOT_ASSIGNED)
+	if (GetTexKey() != ChunkKey::NullVal::VALUE_NOT_ASSIGNED && mTileMapKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		this->InitializeTileMap();
 }
 
 void TileMapRenderer::InitializeTileMap() {
-	if (GetTileMapKey() != ChunkKeys::VALUE_NOT_ASSIGNED)
+	if (GetTileMapKey() != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	{
 		mTileMap = ResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey);
 		if (mTileMap)
 		{
-			if (GetTexKey() != ChunkKeys::VALUE_NOT_ASSIGNED)
+			if (GetTexKey() != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 				SetTexture();
 			mTileMap->ReadCSV();
-			SetMeshKey(ChunkKeys::PRIMITIVE_SQUARE_BLUE);
+			SetMeshKey(ChunkKey::PRIMITIVE_SQUARE_BLUE);
 			std::vector<MeshData> meshData = GeometryGenerator::MakeTileMapGrid(mTileMap);
 			MeshRenderer::InitializeMesh(meshData);
 		}
@@ -94,7 +93,7 @@ void TileMapRenderer::CloneTo(Actor* actor)
 TileMapRenderer::TileMapRenderer(Actor* owner, int updateOrder)
     : SpriteRenderer(owner, updateOrder)
     , mTileMap(nullptr)
-    , mTileMapKey(ChunkKeys::VALUE_NOT_ASSIGNED)
+    , mTileMapKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 
 {}
 
@@ -107,8 +106,8 @@ TileMapRenderer::~TileMapRenderer()
 void TileMapRenderer::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
-    FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TILEMAP_KEY, mTileMapKey);
-	FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::MESH_KEY, GetTexKey());
+    FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TILEMAP_KEY, mTileMapKey);
+	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::MESH_KEY, GetTexKey());
 }
 
 void TileMapRenderer::LoadProperties(std::ifstream& ifs)
@@ -137,7 +136,7 @@ void TileMapRenderer::OnConfirmUpdate()
 
 void TileMapRenderer::UpdateCSV() {
 	std::string currentCSV = "No .csv has been assigned";
-	if (mTileMapKey != ChunkKeys::VALUE_NOT_ASSIGNED)
+	if (mTileMapKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		currentCSV =
 		"Current sprite : \n" + ResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey)->GetRelativePath();
 	ImGui::Text(currentCSV.c_str());
@@ -159,7 +158,7 @@ void TileMapRenderer::UpdateCSV() {
 			ResourceManager::GetInstance()->GetTileMapsMap();
 		if (ImGui::TreeNode("Selection State: Single Selection"))
 		{
-			UINT	   tileMapKey = ChunkKeys::VALUE_NOT_ASSIGNED;
+			UINT	   tileMapKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 			static int selected = -1;
 			int		   i = 0;
 			for (auto iter = tileMapsMap.begin(); iter != tileMapsMap.end();
@@ -187,7 +186,7 @@ void TileMapRenderer::UpdateCSV() {
 void TileMapRenderer::UpdateCSV(UINT& key)
 {
 	std::string currentCSV = {};
-	if (key != ChunkKeys::VALUE_NOT_ASSIGNED)
+	if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		currentCSV =
 		"Current sprite : \n" + ResourceManager::GetInstance()->GetLoadedTileMap(key)->GetRelativePath();
 	else
@@ -211,7 +210,7 @@ void TileMapRenderer::UpdateCSV(UINT& key)
 			ResourceManager::GetInstance()->GetTileMapsMap();
 		if (ImGui::TreeNode("Selection State: Single Selection"))
 		{
-			UINT	   tileMapKey = ChunkKeys::VALUE_NOT_ASSIGNED;
+			UINT	   tileMapKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 			static int selected = -1;
 			int		   i = 0;
 			for (auto iter = tileMapsMap.begin(); iter != tileMapsMap.end();

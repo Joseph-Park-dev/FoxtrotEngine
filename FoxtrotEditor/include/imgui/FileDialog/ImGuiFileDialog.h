@@ -1640,9 +1640,9 @@ public:
 
 #pragma endregion
 
-#pragma region FileType
+#pragma region FileTypes
 
-class IGFD_API FileType {
+class IGFD_API FileTypes {
 public:
     enum class ContentType {
         // The ordering will be used during sort.
@@ -1657,8 +1657,8 @@ private:
     bool m_Symlink = false;
 
 public:
-    FileType();
-    FileType(const ContentType& vContentType, const bool& vIsSymlink);
+    FileTypes();
+    FileTypes(const ContentType& vContentType, const bool& vIsSymlink);
 
     void SetContent(const ContentType& vContentType);
     void SetSymLink(const bool& vIsSymlink);
@@ -1670,10 +1670,10 @@ public:
     bool isSymLink() const;
 
     // Comparisons only care about the content type, ignoring whether it's a symlink or not.
-    bool operator==(const FileType& rhs) const;
-    bool operator!=(const FileType& rhs) const;
-    bool operator<(const FileType& rhs) const;
-    bool operator>(const FileType& rhs) const;
+    bool operator==(const FileTypes& rhs) const;
+    bool operator!=(const FileTypes& rhs) const;
+    bool operator<(const FileTypes& rhs) const;
+    bool operator>(const FileTypes& rhs) const;
 };
 
 #pragma endregion
@@ -1690,7 +1690,7 @@ public:
     std::array<std::string, EXT_MAX_LEVEL> fileNameLevels;
     std::array<std::string, EXT_MAX_LEVEL> fileNameLevels_optimized;  // optimized for search => insensitivecase
     size_t countExtDot = 0U;                                         // count dots in file extention. this count will give the levels in fileExtLevels
-    FileType fileType;                                               // fileType
+    FileTypes fileType;                                               // fileType
     std::string filePath;                                            // path of the file
     std::string fileName;                                            // file name only
     std::string fileNameExt;                                         // filename of the file (file name + extention) (but no path)
@@ -1815,11 +1815,11 @@ private:
     void m_AddFile(const FileDialogInternal& vFileDialogInternal,
         const std::string& vPath,
         const std::string& vFileName,
-        const FileType& vFileType);  // add file called by scandir
+        const FileTypes& vFileType);  // add file called by scandir
     void m_AddPath(const FileDialogInternal& vFileDialogInternal,
         const std::string& vPath,
         const std::string& vFileName,
-        const FileType& vFileType);  // add file called by scandir
+        const FileTypes& vFileType);  // add file called by scandir
     void m_ScanDirForPathSelection(const FileDialogInternal& vFileDialogInternal,
         const std::string& vPath);  // scan the directory for retrieve the path list
     void m_OpenPathPopup(const FileDialogInternal& vFileDialogInternal,

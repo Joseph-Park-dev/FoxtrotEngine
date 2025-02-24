@@ -16,7 +16,6 @@
 #include "ResourceSystem/Tile.h"
 #include "Renderer/FTRect.h"
 #include "Core/TemplateFunctions.h"
-#include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
 
@@ -200,19 +199,19 @@ void FTTileMap::InitializeTile(Tile& tile, UINT column, UINT row, UINT tileNum)
 
 void FTTileMap::SaveProperties(std::ofstream& ofs, UINT key)
 {
-    FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::FTTILEMAP);
+    FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTILEMAP);
     FTResource::SaveProperties(ofs, key);
-    FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TILEMAP_SCREEN_WIDTH, mTileWidthOnScreen);
-    FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TILEMAP_SCREEN_HEIGHT, mTileHeightOnScreen);
-    FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TILEMAP_MAP_MAX_COUNT_X, mMaxCountOnMapX);
-    FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TILEMAP_MAP_MAX_COUNT_Y, mMaxCountOnMapY);
-    FileIOHelper::EndDataPackSave(ofs, ChunkKeys::FTTILEMAP);
+    FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TILEMAP_SCREEN_WIDTH, mTileWidthOnScreen);
+    FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TILEMAP_SCREEN_HEIGHT, mTileHeightOnScreen);
+    FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TILEMAP_MAP_MAX_COUNT_X, mMaxCountOnMapX);
+    FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TILEMAP_MAP_MAX_COUNT_Y, mMaxCountOnMapY);
+    FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTILEMAP);
 
 }
 
 UINT FTTileMap::LoadProperties(std::ifstream& ifs)
 {
-    FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTTILEMAP);
+    FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTILEMAP);
     FileIOHelper::LoadUnsignedInt(ifs, mMaxCountOnMapY);
     FileIOHelper::LoadUnsignedInt(ifs, mMaxCountOnMapX);
     FileIOHelper::LoadUnsignedInt(ifs, mTileHeightOnScreen);
@@ -227,7 +226,7 @@ void FTTileMap::UpdateUI()
     ImGui::Text(GetFileName().c_str());
     ImVec2 previewSize = ImVec2(100, 100);
 
-    //UpdateRelativePath(ChunkKeys::TEXTURE_FORMAT_SUPPORTED);
+    //UpdateRelativePath(ChunkKey::TEXTURE_FORMAT_SUPPORTED);
     std::string currentPath = "No path has been assigned";
     if (!GetRelativePath().empty())
         currentPath = "Current path : \n" + GetRelativePath();

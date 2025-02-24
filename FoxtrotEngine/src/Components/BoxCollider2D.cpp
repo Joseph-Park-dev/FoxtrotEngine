@@ -8,13 +8,11 @@
 
 #include "Components/BoxCollider2D.h"
 
-#include "FileSystem/ChunkLoader.h"
-#include "FileSystem/ChunkFileKeys.h"
-#include "FileSystem/FileIOHelper.h"
 #include "Components/Rigidbody2D.h"
 #include "Renderer/Camera.h"
 #include "Managers/CollisionManager.h"
 #include "Actors/Transform.h"
+#include "FileSystem/FileIOHelper.h"
 
 #ifdef FOXTROT_EDITOR
 #include "CommandHistory.h"
@@ -97,7 +95,7 @@ BoxCollider2D::~BoxCollider2D()
 void BoxCollider2D::SaveProperties(std::ofstream& ofs)
 {
 	Collider2D::SaveProperties(ofs);
-	FileIOHelper::SaveVector2(ofs, ChunkKeys::COLLIDER_SCALE, mScale);
+	FileIOHelper::SaveVector2(ofs, ChunkKey::COLLIDER_SCALE, mScale);
 }
 
 void BoxCollider2D::LoadProperties(std::ifstream& ifs)

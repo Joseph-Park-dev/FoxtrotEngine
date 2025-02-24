@@ -6,7 +6,15 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 /// <summary>
-/// Various buffer sizes by data types.
+/// Keys that are used to identify null values.
 /// </summary>
-/// 
+
 #pragma once
+namespace ChunkKey
+{
+	namespace NullVal
+	{
+		constexpr const int	  VALUE_NOT_ASSIGNED = 0;
+		constexpr const char* NULL_OBJ			 = "Null";
+	} // namespace NullVal
+} // namespace ChunkKey

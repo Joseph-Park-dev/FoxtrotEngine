@@ -54,7 +54,7 @@ public:
 	 ButtonUI(
 		Actor* owner,
 		
-		int updateOrder = DEFAULT_UPDATEORDER
+		int updateOrder = DefaultVal::UPDATE_ORDER
 	 );
 	~ButtonUI() override;
 

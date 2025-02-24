@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -32,7 +32,7 @@ class Component;
 class Scene;
 
 using ComponentLoadFunc = std::function<void(Actor*, std::ifstream&)>;
-using ComponentLoadMap = std::unordered_map<std::string, ComponentLoadFunc>;
+using ComponentLoadMap	= std::unordered_map<std::string, ComponentLoadFunc>;
 
 struct ChunkData
 {
@@ -43,7 +43,7 @@ class ChunkLoader
 {
 	SINGLETON_PROTECTED(ChunkLoader)
 
-// Member Functions for editor level to generate chunk.json files
+	// Member Functions for editor level to generate chunk.json files
 public:
 	virtual void SaveChunk(const std::string fileName);
 	virtual void LoadChunk(const std::string fileName);
@@ -52,9 +52,9 @@ public:
 	ComponentLoadMap& GetComponentLoadMap() { return mComponentLoadMap; }
 
 protected:
-	//Save .Chunk for the editor
-			void SaveChunkData(std::ofstream& out);
-			void LoadChunkData(std::ifstream& out);
+	// Save .Chunk for the editor
+	void SaveChunkData(std::ofstream& out);
+	void LoadChunkData(std::ifstream& out);
 
 protected:
 	virtual void SaveActorsData(std::ofstream& ofs);
@@ -62,11 +62,33 @@ protected:
 
 private:
 	ComponentLoadMap mComponentLoadMap;
-	ChunkData mCurrentChunkData;
+	ChunkData		 mCurrentChunkData;
 
 private:
 	std::string GetConvertedFileName(std::string curr, std::string prevSuffix, std::string postSuffix);
 };
 
-#define STRING_BUFFER_SIZE 50 * sizeof(char)
-#define WSTRING_BUFFER_SIZE 50 * sizeof(wchar_t)
+namespace ChunkKey
+{
+	// Data Pack Names
+	constexpr const char* CHUNK_DATA	= "Chunk Data";
+	constexpr const char* ACTOR_DATA	= "Actor Data";
+	constexpr const char* RESOURCE_DATA = "Resource Data";
+
+	constexpr const char* ACTOR_PROPERTIES = "Actor Properties";
+	constexpr const char* TRANSFORM		   = "Transform";
+
+	constexpr const char* GAME_DATA		  = "Game Data";
+	constexpr const char* CHUNK_LIST	  = "Chunk List";
+	constexpr const char* CHUNK_LIST_PATH = "Chunk List Path";
+
+	// Actor Related
+	constexpr const char* ACTOR_COUNT = "Actor Count";
+} // namespace ChunkKey
+
+namespace BufferSize
+{
+	constexpr size_t MAX_CHAR_COUNT		 = 30;
+	constexpr size_t STRING_BUFFER_SIZE	 = 50 * sizeof(char);
+	constexpr size_t WSTRING_BUFFER_SIZE = 50 * sizeof(wchar_t);
+} // namespace BufferSize

@@ -14,7 +14,6 @@
 #include "Components/CharacterAI/Steering.h"
 #include "Actors/Transform.h"
 #include "FileSystem/FileIOHelper.h"
-#include "FileSystem/ChunkFileKeys.h"
 #include "Managers/CollisionManager.h"
 #include "Physics/Physics2D.h"
 
@@ -119,9 +118,9 @@ void Move::CloneTo(Actor* actor)
 void Move::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
-	FileIOHelper::SaveFloat(ofs, ChunkKeys::FORWARD_SPEED,	mForwardSpeed);
-	FileIOHelper::SaveFloat(ofs, ChunkKeys::JUMP_FORCE,		mJumpForce);
-	FileIOHelper::SaveFloat(ofs, ChunkKeys::ANGULAR_SPEED,	mAngularSpeed);
+	FileIOHelper::SaveFloat(ofs, ChunkKey::FORWARD_SPEED,	mForwardSpeed);
+	FileIOHelper::SaveFloat(ofs, ChunkKey::JUMP_FORCE,		mJumpForce);
+	FileIOHelper::SaveFloat(ofs, ChunkKey::ANGULAR_SPEED,	mAngularSpeed);
 }
 
 void Move::LoadProperties(std::ifstream& ifs)
@@ -135,8 +134,8 @@ void Move::LoadProperties(std::ifstream& ifs)
 #ifdef FOXTROT_EDITOR
 void Move::EditorUIUpdate()
 {
-	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKeys::FORWARD_SPEED, &mForwardSpeed, FLOATMOD_SPEED);
-	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKeys::JUMP_FORCE, &mJumpForce, FLOATMOD_SPEED);
-	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKeys::ANGULAR_SPEED, &mAngularSpeed, FLOATMOD_SPEED);
+	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKey::FORWARD_SPEED, &mForwardSpeed, FLOATMOD_SPEED);
+	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKey::JUMP_FORCE, &mJumpForce, FLOATMOD_SPEED);
+	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKey::ANGULAR_SPEED, &mAngularSpeed, FLOATMOD_SPEED);
 }
 #endif // FOXTROT_EDITOR

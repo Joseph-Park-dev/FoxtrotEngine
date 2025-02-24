@@ -21,7 +21,6 @@
 #include "Renderer/D3D11Utils.h"
 #include "Renderer/Camera.h"
 #include "FileSystem/ChunkLoader.h"
-#include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
 
 #include "Compare/StringEqual.h"
@@ -40,20 +39,20 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 	// Add primitive geometries as resources
 	mMapPrimitives.insert(
 		std::pair(
-			ChunkKeys::PRIMITIVE_SQUARE_RED,
+			ChunkKey::PRIMITIVE_SQUARE_RED,
 			GeometryGenerator::MakeSquare(FTVector3(1.0f, 0.0f, 0.0f))));
 	mMapPrimitives.insert(
 		std::pair(
-			ChunkKeys::PRIMITIVE_SQUARE_GREEN,
+			ChunkKey::PRIMITIVE_SQUARE_GREEN,
 			GeometryGenerator::MakeSquare(FTVector3(0.0f, 1.0f, 0.0f))));
 	mMapPrimitives.insert(
 		std::pair(
-			ChunkKeys::PRIMITIVE_SQUARE_BLUE,
+			ChunkKey::PRIMITIVE_SQUARE_BLUE,
 			GeometryGenerator::MakeSquare(FTVector3(0.0f, 0.0f, 1.0f))));
 
 	mMapPrimitives.insert(
 		std::pair(
-			ChunkKeys::PRIMITIVE_BOX,
+			ChunkKey::PRIMITIVE_BOX,
 			GeometryGenerator::MakeBox()));
 }
 
@@ -252,7 +251,7 @@ ResourceManager::~ResourceManager()
 }
 
 ResourceManager::ResourceManager()
-	: mItemKey(ChunkKeys::VALUE_NOT_ASSIGNED)
+	: mItemKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	, mPathToAsset("./Assets")
 	, mRenderer(nullptr)
 {
@@ -260,45 +259,45 @@ ResourceManager::ResourceManager()
 
 void ResourceManager::SaveResources(std::ofstream& ofs)
 {
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::RESOURCE_DATA);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::RESOURCE_DATA);
 
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::FTTEXTURE_GROUP);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTEXTURE_GROUP);
 	SaveResourceToChunk<FTTexture>(ofs, mMapTextures);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::FTTEXTURE_GROUP);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTEXTURE_GROUP);
 
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::FTTILEMAP_GROUP);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTILEMAP_GROUP);
 	SaveResourceToChunk<FTTileMap>(ofs, mMapTileMaps);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::FTTILEMAP_GROUP);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTILEMAP_GROUP);
 
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::FTPREMADE_GROUP);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTPREMADE_GROUP);
 	SaveResourceToChunk<FTPremade>(ofs, mMapPremades);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::FTPREMADE_GROUP);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTPREMADE_GROUP);
 
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::FT_SPRITE_ANIMATION_GROUP);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
 	SaveResourceToChunk<FTSpriteAnimation>(ofs, mMapSpriteAnimation);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::FT_SPRITE_ANIMATION_GROUP);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
 
-	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::RESOURCE_DATA);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::RESOURCE_DATA);
 }
 
 void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 {
-	std::pair<size_t, std::string> resPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::RESOURCE_DATA);
+	std::pair<size_t, std::string> resPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RESOURCE_DATA);
 	size_t						   count   = resPack.first;
 
-	std::pair<size_t, std::string> ftSpriteAnimPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FT_SPRITE_ANIMATION_GROUP);
+	std::pair<size_t, std::string> ftSpriteAnimPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
 	mMapSpriteAnimation.reserve(ftSpriteAnimPack.first);
 	LoadResourceFromChunk<FTSpriteAnimation>(ifs, mMapSpriteAnimation, ftSpriteAnimPack.first);
 
-	std::pair<size_t, std::string> ftPremadePack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTPREMADE_GROUP);
+	std::pair<size_t, std::string> ftPremadePack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPREMADE_GROUP);
 	mMapPremades.reserve(ftPremadePack.first);
 	LoadResourceFromChunk<FTPremade>(ifs, mMapPremades, ftPremadePack.first);
 
-	std::pair<size_t, std::string> ftTileMapPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTTILEMAP_GROUP);
+	std::pair<size_t, std::string> ftTileMapPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTILEMAP_GROUP);
 	mMapTileMaps.reserve(ftTileMapPack.first);
 	LoadResourceFromChunk<FTTileMap>(ifs, mMapTileMaps, ftTileMapPack.first);
 
-	std::pair<size_t, std::string> ftTexturePack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTTEXTURE_GROUP);
+	std::pair<size_t, std::string> ftTexturePack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTEXTURE_GROUP);
 	mMapTextures.reserve(ftTexturePack.first);
 	LoadResourceFromChunk<FTTexture>(ifs, mMapTextures, ftTexturePack.first);
 
@@ -311,7 +310,7 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 #ifdef FOXTROT_EDITOR
 void ResourceManager::LoadAllResourcesInAsset()
 {
-	mItemKey = ChunkKeys::VALUE_NOT_ASSIGNED;
+	mItemKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 	DirectoryHelper::IterateForFileRecurse(
 		mPathToAsset,
 		[&](std::string&& path) { LoadResByType(path); });

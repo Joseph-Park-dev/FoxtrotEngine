@@ -1,7 +1,7 @@
 #pragma once
 #include "Math/FTMath.h"
 #include "FileSystem/FileIOHelper.h"
-#include "FileSystem/MaterialFileKeys.h"
+#include "FileSystem/MaterialKeys.h"
 
 struct FTMaterial
 {

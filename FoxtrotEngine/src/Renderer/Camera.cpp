@@ -16,7 +16,6 @@
 #include "Scenes/Scene.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "FileSystem/FileIOHelper.h"
-#include "FileSystem/ChunkFileKeys.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
@@ -155,27 +154,27 @@ FTVector3 Camera::ConvertToTopLeft(FTVector3 centerPos)
 
 void Camera::SaveProperties(std::ofstream& ofs)
 {
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::CAMERA_DATA);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CAMERA_DATA);
 	if (mTarget)
-		FileIOHelper::SaveString(ofs, ChunkKeys::TARGET_ACTOR, mTarget->GetName());
+		FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, mTarget->GetName());
 	else
-		FileIOHelper::SaveString(ofs, ChunkKeys::TARGET_ACTOR, ChunkKeys::NULL_OBJ);
-	FileIOHelper::SaveVector3(ofs, ChunkKeys::OFFSET, mOffset);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::CAMERA_DATA);
+		FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, ChunkKey::NullVal::NULL_OBJ);
+	FileIOHelper::SaveVector3(ofs, ChunkKey::OFFSET, mOffset);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CAMERA_DATA);
 }
 
 void Camera::LoadProperties(std::ifstream& ifs)
 {
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::CAMERA_DATA);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CAMERA_DATA);
 	FileIOHelper::LoadVector3(ifs, mOffset);
 	std::string targetActor = {};
 	FileIOHelper::LoadBasicString(ifs, targetActor);
 
 #ifdef FOXTROT_EDITOR
-	if (targetActor != ChunkKeys::NULL_OBJ)
+	if (targetActor != ChunkKey::NullVal::NULL_OBJ)
 		mTarget = EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(targetActor);
 #else
-	if (targetActor != ChunkKeys::NULL_OBJ)
+	if (targetActor != ChunkKey::NULL_OBJ)
 		mTarget = SceneManager::GetInstance()->GetCurrentScene()->FindActor(targetActor);
 #endif // FOXTROT_EDITOR
 }
@@ -255,7 +254,7 @@ void Camera::DisplayCameraMenu()
 		}
 	}
 	const char* comboPreview = actorNames[currIdx].c_str();
-	if (ImGui::BeginCombo(ChunkKeys::TARGET_ACTOR, comboPreview))
+	if (ImGui::BeginCombo(ChunkKey::TARGET_ACTOR, comboPreview))
 	{
 		for (size_t i = 0; i < idx; ++i)
 		{

@@ -507,7 +507,7 @@ public:
         try {
             const std::filesystem::path fspath(vPath);
             const auto dir_iter   = std::filesystem::directory_iterator(fspath);
-            IGFD::FileType fstype = IGFD::FileType(IGFD::FileType::ContentType::Directory, std::filesystem::is_symlink(std::filesystem::status(fspath)));
+            IGFD::FileTypes fstype = IGFD::FileTypes(IGFD::FileTypes::ContentType::Directory, std::filesystem::is_symlink(std::filesystem::status(fspath)));
             {
                 IGFD::FileInfos file_two_dot;
                 file_two_dot.filePath    = vPath;
@@ -516,16 +516,16 @@ public:
                 res.push_back(file_two_dot);
             }
             for (const auto& file : dir_iter) {
-                IGFD::FileType fileType;
+                IGFD::FileTypes fileType;
                 if (file.is_symlink()) {
                     fileType.SetSymLink(file.is_symlink());
-                    fileType.SetContent(IGFD::FileType::ContentType::LinkToUnknown);
+                    fileType.SetContent(IGFD::FileTypes::ContentType::LinkToUnknown);
                 }
                 if (file.is_directory()) {
-                    fileType.SetContent(IGFD::FileType::ContentType::Directory);
+                    fileType.SetContent(IGFD::FileTypes::ContentType::Directory);
                 }  // directory or symlink to directory
                 else if (file.is_regular_file()) {
-                    fileType.SetContent(IGFD::FileType::ContentType::File);
+                    fileType.SetContent(IGFD::FileTypes::ContentType::File);
                 }
                 if (fileType.isValid()) {
                     auto fileNameExt = file.path().filename().string();
@@ -680,10 +680,10 @@ public:
         if (n && files) {
             for (size_t i = 0; i < n; ++i) {
                 struct dirent* ent = files[i];
-                IGFD::FileType fileType;
+                IGFD::FileTypes fileType;
                 switch (ent->d_type) {
-                    case DT_DIR: fileType.SetContent(IGFD::FileType::ContentType::Directory); break;
-                    case DT_REG: fileType.SetContent(IGFD::FileType::ContentType::File); break;
+                    case DT_DIR: fileType.SetContent(IGFD::FileTypes::ContentType::Directory); break;
+                    case DT_REG: fileType.SetContent(IGFD::FileTypes::ContentType::File); break;
 #if defined(_IGFD_UNIX_) || (DT_LNK != DT_UNKNOWN)
                     case DT_LNK:
 #endif
@@ -698,13 +698,13 @@ public:
                             if (sb.st_mode & S_IFLNK) {
                                 fileType.SetSymLink(true);
                                 // by default if we can't figure out the target type.
-                                fileType.SetContent(IGFD::FileType::ContentType::LinkToUnknown);
+                                fileType.SetContent(IGFD::FileTypes::ContentType::LinkToUnknown);
                             }
                             if (sb.st_mode & S_IFREG) {
-                                fileType.SetContent(IGFD::FileType::ContentType::File);
+                                fileType.SetContent(IGFD::FileTypes::ContentType::File);
                                 break;
                             } else if (sb.st_mode & S_IFDIR) {
-                                fileType.SetContent(IGFD::FileType::ContentType::Directory);
+                                fileType.SetContent(IGFD::FileTypes::ContentType::Directory);
                                 break;
                             }
                         }
@@ -1517,43 +1517,43 @@ void IGFD::FilterManager::SetDefaultFilterIfNotDefined() {
 
 #pragma endregion
 
-#pragma region FileType
+#pragma region FileTypes
 
-IGFD::FileType::FileType() = default;
-IGFD::FileType::FileType(const ContentType& vContentType, const bool& vIsSymlink) : m_Content(vContentType), m_Symlink(vIsSymlink) {
+IGFD::FileTypes::FileTypes() = default;
+IGFD::FileTypes::FileTypes(const ContentType& vContentType, const bool& vIsSymlink) : m_Content(vContentType), m_Symlink(vIsSymlink) {
 }
-void IGFD::FileType::SetContent(const ContentType& vContentType) {
+void IGFD::FileTypes::SetContent(const ContentType& vContentType) {
     m_Content = vContentType;
 }
-void IGFD::FileType::SetSymLink(const bool& vIsSymlink) {
+void IGFD::FileTypes::SetSymLink(const bool& vIsSymlink) {
     m_Symlink = vIsSymlink;
 }
-bool IGFD::FileType::isValid() const {
+bool IGFD::FileTypes::isValid() const {
     return m_Content != ContentType::Invalid;
 }
-bool IGFD::FileType::isDir() const {
+bool IGFD::FileTypes::isDir() const {
     return m_Content == ContentType::Directory;
 }
-bool IGFD::FileType::isFile() const {
+bool IGFD::FileTypes::isFile() const {
     return m_Content == ContentType::File;
 }
-bool IGFD::FileType::isLinkToUnknown() const {
+bool IGFD::FileTypes::isLinkToUnknown() const {
     return m_Content == ContentType::LinkToUnknown;
 }
-bool IGFD::FileType::isSymLink() const {
+bool IGFD::FileTypes::isSymLink() const {
     return m_Symlink;
 }
 // Comparisons only care about the content type, ignoring whether it's a symlink or not.
-bool IGFD::FileType::operator==(const FileType& rhs) const {
+bool IGFD::FileTypes::operator==(const FileTypes& rhs) const {
     return m_Content == rhs.m_Content;
 }
-bool IGFD::FileType::operator!=(const FileType& rhs) const {
+bool IGFD::FileTypes::operator!=(const FileTypes& rhs) const {
     return m_Content != rhs.m_Content;
 }
-bool IGFD::FileType::operator<(const FileType& rhs) const {
+bool IGFD::FileTypes::operator<(const FileTypes& rhs) const {
     return m_Content < rhs.m_Content;
 }
-bool IGFD::FileType::operator>(const FileType& rhs) const {
+bool IGFD::FileTypes::operator>(const FileTypes& rhs) const {
     return m_Content > rhs.m_Content;
 }
 
@@ -1850,7 +1850,7 @@ void IGFD::FileManager::ClearPathLists() {
     m_PathList.clear();
 }
 
-void IGFD::FileManager::m_AddFile(const FileDialogInternal& vFileDialogInternal, const std::string& vPath, const std::string& vFileName, const FileType& vFileType) {
+void IGFD::FileManager::m_AddFile(const FileDialogInternal& vFileDialogInternal, const std::string& vPath, const std::string& vFileName, const FileTypes& vFileType) {
     auto infos = std::make_shared<FileInfos>();
 
     infos->filePath              = vPath;
@@ -1883,7 +1883,7 @@ void IGFD::FileManager::m_AddFile(const FileDialogInternal& vFileDialogInternal,
     }
 }
 
-void IGFD::FileManager::m_AddPath(const FileDialogInternal& vFileDialogInternal, const std::string& vPath, const std::string& vFileName, const FileType& vFileType) {
+void IGFD::FileManager::m_AddPath(const FileDialogInternal& vFileDialogInternal, const std::string& vPath, const std::string& vFileName, const FileTypes& vFileType) {
     if (!vFileType.isDir()) return;
 
     auto infos = std::make_shared<FileInfos>();
@@ -1973,7 +1973,7 @@ bool IGFD::FileManager::GetDrives() {
             auto info                   = std::make_shared<FileInfos>();
             info->fileNameExt           = drive;
             info->fileNameExt_optimized = Utils::LowerCaseString(drive);
-            info->fileType.SetContent(FileType::ContentType::Directory);
+            info->fileType.SetContent(FileTypes::ContentType::Directory);
 
             if (!info->fileNameExt.empty()) {
                 m_FileList.push_back(info);

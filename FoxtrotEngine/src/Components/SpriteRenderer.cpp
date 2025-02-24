@@ -12,7 +12,6 @@
 #include "Actors/Transform.h"
 #include "Core/FTCore.h"
 #include "FileSystem/ChunkLoader.h"
-#include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Managers/ResourceManager.h"
 #include "Math/FTMath.h"
@@ -41,16 +40,16 @@ void SpriteRenderer::Initialize(FTCore* coreInstance)
 	SetRenderer	(coreInstance->GetGameRenderer());
 
 	if(GetOwner()->GetActorGroup() == ActorGroup::PLAYER)
-		SetMeshKey	(ChunkKeys::PRIMITIVE_SQUARE_BLUE);
+		SetMeshKey	(ChunkKey::PRIMITIVE_SQUARE_BLUE);
 	else if (GetOwner()->GetActorGroup() == ActorGroup::ENEMY)
-		SetMeshKey(ChunkKeys::PRIMITIVE_SQUARE_RED);
+		SetMeshKey(ChunkKey::PRIMITIVE_SQUARE_RED);
 	else
-		SetMeshKey(ChunkKeys::PRIMITIVE_SQUARE_GREEN);
+		SetMeshKey(ChunkKey::PRIMITIVE_SQUARE_GREEN);
 
-	if (GetMeshKey() != ChunkKeys::VALUE_NOT_ASSIGNED)
+	if (GetMeshKey() != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	{
 		this->InitializeMesh();
-		if (GetTexKey() != ChunkKeys::VALUE_NOT_ASSIGNED)
+		if (GetTexKey() != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 			MeshRenderer::SetTexture();
 	}
 	Component::Initialize(coreInstance);
@@ -90,8 +89,8 @@ SpriteRenderer::SpriteRenderer(Actor* owner,int updateOrder)
 void SpriteRenderer::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
-	FileIOHelper::SaveVector2(ofs, ChunkKeys::TEXTURE_WIDTH, mTexScale);
-	FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TEXTURE_KEY, GetTexKey());
+	FileIOHelper::SaveVector2(ofs, ChunkKey::TEXTURE_WIDTH, mTexScale);
+	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TEXTURE_KEY, GetTexKey());
 }
 
 void SpriteRenderer::LoadProperties(std::ifstream& ifs)

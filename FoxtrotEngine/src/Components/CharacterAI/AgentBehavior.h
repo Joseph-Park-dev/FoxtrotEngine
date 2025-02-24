@@ -5,37 +5,42 @@
 #include "Components/CharacterAI/Steering.h"
 
 class AgentBehavior :
-    public Component
+	public Component
 {
 public:
-    virtual Steering CreateSteering();
+	virtual Steering CreateSteering();
 
 protected:
-    Actor*       GetTarget();
-    std::string& GetTargetName();
+	Actor*		 GetTarget();
+	std::string& GetTargetName();
 
-    void    SetTarget(Actor* target);
-    void    SetTargetName(std::string& targetName);
-
-public:
-    void Initialize (FTCore* ftCoreInstance) override;
-    void Setup      ()                       override;
-    void Update     (float deltaTime)        override;
+	void SetTarget(Actor* target);
+	void SetTargetName(std::string& targetName);
 
 public:
-    AgentBehavior(Actor* owner, int updateOrder);
-    ~AgentBehavior() override;
+	void Initialize(FTCore* ftCoreInstance) override;
+	void Setup() override;
+	void Update(float deltaTime) override;
+
+public:
+	AgentBehavior(Actor* owner, int updateOrder);
+	~AgentBehavior() override;
 
 private:
-    Actor*      mTarget;
-    std::string mTargetName;
+	Actor*		mTarget;
+	std::string mTargetName;
 
 public:
-    virtual void SaveProperties(std::ofstream& ofs) override;
-    virtual void LoadProperties(std::ifstream& ifs) override;
+	virtual void SaveProperties(std::ofstream& ofs) override;
+	virtual void LoadProperties(std::ifstream& ifs) override;
 
 #ifdef FOXTROT_EDITOR
 public:
-    virtual void EditorUIUpdate() override;
+	virtual void EditorUIUpdate() override;
 #endif // FOXTROT_EDITOR
 };
+
+namespace ChunkKey
+{
+	constexpr const char* TARGET_NAME = "Target Name";
+}

@@ -19,7 +19,6 @@
 #include "Core/TemplateFunctions.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "FileSystem/ChunkLoader.h"
-#include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Managers/ResourceManager.h"
 
@@ -42,16 +41,16 @@ bool FTTexture::ReleaseTexture()
 
 void FTTexture::SaveProperties(std::ofstream& ofs, UINT key)
 {
-    FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::FTTEXTURE);
+    FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTEXTURE);
     FTResource::SaveProperties(ofs, key);
-    FileIOHelper::SaveInt(ofs, ChunkKeys::TEXTURE_WIDTH, mTexWidth);
-    FileIOHelper::SaveInt(ofs, ChunkKeys::TEXTURE_HEIGHT, mTexHeight);
-    FileIOHelper::EndDataPackSave(ofs, ChunkKeys::FTTEXTURE);
+    FileIOHelper::SaveInt(ofs, ChunkKey::TEXTURE_WIDTH, mTexWidth);
+    FileIOHelper::SaveInt(ofs, ChunkKey::TEXTURE_HEIGHT, mTexHeight);
+    FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTEXTURE);
 }
 
 UINT FTTexture::LoadProperties(std::ifstream& ifs)
 {
-    FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTTEXTURE);
+    FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTEXTURE);
     FileIOHelper::LoadInt(ifs, mTexHeight);
     FileIOHelper::LoadInt(ifs, mTexWidth);
     UINT key = FTResource::LoadProperties(ifs);

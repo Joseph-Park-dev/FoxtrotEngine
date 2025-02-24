@@ -14,6 +14,9 @@
 #include <filesystem>
 #include <list>
 
+#include "FileSystem/FileTypes.h"
+#include "FileSystem/NullKeys.h"
+
 class FTVector2;
 class FTVector3;
 struct b2Vec2;

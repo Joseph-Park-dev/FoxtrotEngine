@@ -11,7 +11,6 @@
 #include <fstream>
 
 #include "FileSystem/ChunkLoader.h"
-#include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
 
 #ifdef FOXTROT_EDITOR
@@ -35,9 +34,9 @@ FTResource::FTResource()
 
 void FTResource::SaveProperties(std::ofstream& ofs, UINT key)
 {
-    FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::KEY, key);
-    FileIOHelper::SaveString(ofs, ChunkKeys::FILE_NAME, mFileName);
-    FileIOHelper::SaveString(ofs, ChunkKeys::RELATIVE_PATH, mRelativePath);
+    FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::KEY, key);
+    FileIOHelper::SaveString(ofs, ChunkKey::FILE_NAME, mFileName);
+    FileIOHelper::SaveString(ofs, ChunkKey::RELATIVE_PATH, mRelativePath);
 }
 
 // When loading properties, invert the order of the member variables

@@ -19,7 +19,6 @@
 #include "Physics/Physics2D.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "FileSystem/FileIOHelper.h"
-#include "FileSystem/ChunkFileKeys.h"
 
 void CollisionManager::MarkGroup(b2ShapeDef& object, ActorGroup objectActorGroup)
 {
@@ -164,8 +163,8 @@ void CollisionManager::UpdateCollisionGroup()
 
 void CollisionManager::SaveCollisionMarks(std::ofstream& ofs)
 {
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::COLLISION_MANAGER);
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::COLLISION_MARKS);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::COLLISION_MANAGER);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::COLLISION_MARKS);
 	for (size_t row = 0; row < ActorGroupUtil::GetCount(); ++row)
 	{
 		for (size_t col = 0; col < row + 1; ++col)
@@ -179,14 +178,14 @@ void CollisionManager::SaveCollisionMarks(std::ofstream& ofs)
 			FileIOHelper::SaveBool(ofs, mark, mCollisionMarks[idx]);
 		}
 	}
-	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::COLLISION_MARKS);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::COLLISION_MANAGER);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::COLLISION_MARKS);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::COLLISION_MANAGER);
 }
 
 void CollisionManager::LoadCollisionMarks(std::ifstream& ifs)
 {
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::COLLISION_MANAGER);
-	std::pair<size_t, std::string> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::COLLISION_MARKS);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COLLISION_MANAGER);
+	std::pair<size_t, std::string> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COLLISION_MARKS);
 	std::vector<bool> marksCache = {};
 	marksCache.reserve(pack.first);
 

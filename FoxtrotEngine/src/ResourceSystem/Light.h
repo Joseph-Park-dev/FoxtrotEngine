@@ -2,15 +2,13 @@
 #include <directxtk/SimpleMath.h>
 
 #include "FileSystem/FileIOHelper.h"
-#include "FileSystem/ChunkFileKeys.h"
-#include "FileSystem/MaterialFileKeys.h"
 #include "Math/FTMath.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
 #endif // FOXTROT_EDITOR
 
-namespace LightKeys
+namespace LightKey
 {
 	constexpr const char* NAME = "Light";
 	constexpr const char* TYPE = "Type";
@@ -30,7 +28,12 @@ namespace LightKeys
 	constexpr const char* POSITION		= "Position";
 	constexpr const char* SPOT_POWER	= "Spot Power";
 	constexpr const char* IS_ACTIVE		= "Is Active";
-} // namespace LightKeys
+} // namespace LightKey
+
+namespace ChunkKey
+{
+	constexpr const char* LIGHT = "Light";
+}
 
 struct Light
 {
@@ -52,23 +55,23 @@ struct Light
 
 	void SaveProperties(std::ofstream& ofs, TYPE& type, bool& isActive)
 	{
-		FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::LIGHT);
+		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::LIGHT);
 
-		FileIOHelper::SaveInt(ofs, LightKeys::TYPE, type);
-		FileIOHelper::SaveBool(ofs, LightKeys::IS_ACTIVE, isActive);
-		FileIOHelper::SaveVector3(ofs, LightKeys::STRENGTH, Strength);
-		FileIOHelper::SaveFloat(ofs, LightKeys::FALLOFF_START, FallOffStart);
-		FileIOHelper::SaveFloat(ofs, LightKeys::FALLOFF_END, FallOffEnd);
-		FileIOHelper::SaveVector3(ofs, LightKeys::DIRECTION, Direction);
-		FileIOHelper::SaveVector3(ofs, LightKeys::POSITION, Position);
-		FileIOHelper::SaveFloat(ofs, LightKeys::SPOT_POWER, SpotPower);
+		FileIOHelper::SaveInt(ofs, LightKey::TYPE, type);
+		FileIOHelper::SaveBool(ofs, LightKey::IS_ACTIVE, isActive);
+		FileIOHelper::SaveVector3(ofs, LightKey::STRENGTH, Strength);
+		FileIOHelper::SaveFloat(ofs, LightKey::FALLOFF_START, FallOffStart);
+		FileIOHelper::SaveFloat(ofs, LightKey::FALLOFF_END, FallOffEnd);
+		FileIOHelper::SaveVector3(ofs, LightKey::DIRECTION, Direction);
+		FileIOHelper::SaveVector3(ofs, LightKey::POSITION, Position);
+		FileIOHelper::SaveFloat(ofs, LightKey::SPOT_POWER, SpotPower);
 
-		FileIOHelper::EndDataPackSave(ofs, ChunkKeys::LIGHT);
+		FileIOHelper::EndDataPackSave(ofs, ChunkKey::LIGHT);
 	}
 
 	void LoadProperties(std::ifstream& ifs, TYPE& type, bool& isActive)
 	{
-		FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::LIGHT);
+		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::LIGHT);
 
 		FileIOHelper::LoadFloat(ifs, SpotPower);
 		FileIOHelper::LoadVector3(ifs, Position);
@@ -85,12 +88,12 @@ struct Light
 #ifdef FOXTROT_EDITOR
 	void UpdateUI()
 	{
-		CommandHistory::GetInstance()->UpdateVector3Value(LightKeys::STRENGTH, Strength);
-		CommandHistory::GetInstance()->UpdateFloatValue(LightKeys::FALLOFF_START, &FallOffStart);
-		CommandHistory::GetInstance()->UpdateFloatValue(LightKeys::FALLOFF_END, &FallOffEnd);
-		CommandHistory::GetInstance()->UpdateVector3Value(LightKeys::DIRECTION, Direction);
-		CommandHistory::GetInstance()->UpdateVector3Value(LightKeys::POSITION, Position);
-		CommandHistory::GetInstance()->UpdateFloatValue(LightKeys::SPOT_POWER, &SpotPower);
+		CommandHistory::GetInstance()->UpdateVector3Value(LightKey::STRENGTH, Strength);
+		CommandHistory::GetInstance()->UpdateFloatValue(LightKey::FALLOFF_START, &FallOffStart);
+		CommandHistory::GetInstance()->UpdateFloatValue(LightKey::FALLOFF_END, &FallOffEnd);
+		CommandHistory::GetInstance()->UpdateVector3Value(LightKey::DIRECTION, Direction);
+		CommandHistory::GetInstance()->UpdateVector3Value(LightKey::POSITION, Position);
+		CommandHistory::GetInstance()->UpdateFloatValue(LightKey::SPOT_POWER, &SpotPower);
 	}
 
 #endif
@@ -104,13 +107,13 @@ namespace FTEditorUtils
 		switch (type)
 		{
 			case Light::TYPE::DIRECTIONAL:
-				return LightKeys::TypeStr::DIRECTIONAL;
+				return LightKey::TypeStr::DIRECTIONAL;
 			case Light::TYPE::POINT:
-				return LightKeys::TypeStr::POINT;
+				return LightKey::TypeStr::POINT;
 			case Light::TYPE::SPOT:
-				return LightKeys::TypeStr::SPOT;
+				return LightKey::TypeStr::SPOT;
 			default:
-				return LightKeys::TypeStr::NULL_OBJ;
+				return LightKey::TypeStr::NULL_OBJ;
 		}
 	}
 } // namespace FTEditorUtils

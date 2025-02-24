@@ -76,9 +76,9 @@ FTSpriteAnimation* Animator::CreateAnimationFromTile(std::string&& name, UINT te
 	FTSpriteAnimation* animation = DBG_NEW FTSpriteAnimation;
 	if (!GetRenderer())
 		printf("ERROR : Animator::CreateAnimationFromTile()-> Renderer is null");
-	if (texKey != ChunkKeys::VALUE_NOT_ASSIGNED)
+	if (texKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		animation->SetTexKey(texKey);
-	if(tileMapKey != ChunkKeys::VALUE_NOT_ASSIGNED)
+	if(tileMapKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		animation->SetTileMapKey(tileMapKey);
 
 	FTTileMap* tileMapBuf = ResourceManager::GetInstance()->GetLoadedTileMap(tileMapKey);
@@ -125,15 +125,15 @@ void Animator::LoadAnimation(const UINT key)
 void Animator::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::LOADED_KEYS);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::LOADED_KEYS);
 	for (size_t i = 0; i < mLoadedKeys.size(); ++i)
 		FileIOHelper::SaveUnsignedInt(ofs, std::to_string(i), mLoadedKeys.at(i));
-	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::LOADED_KEYS);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::LOADED_KEYS);
 }
 
 void Animator::LoadProperties(std::ifstream& ifs)
 {
-	std::pair<size_t, std::string> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::LOADED_KEYS);
+	std::pair<size_t, std::string> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::LOADED_KEYS);
 	mLoadedKeys.reserve(pack.first);
 	for (size_t i = 0; i < pack.first; ++i)
 	{
@@ -216,7 +216,7 @@ void Animator::UpdatePlayList()
 			"Load Animation",
 			ResourceManager::GetInstance()->GetSpriteAnimMap()
 		);
-	if (key != ChunkKeys::VALUE_NOT_ASSIGNED)
+	if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	{
 		mLoadedKeys.push_back(key);
 		LoadAnimation(key);
@@ -243,12 +243,12 @@ void Animator::CreateAnimation()
 	if (ImGui::BeginPopupModal("CreateSpriteAnimation"))
 	{
 		static char* name = _strdup("NULL");
-		ImGui::InputText("Name", name, ChunkKeys::MAX_BUFFER_INPUT_TEXT);
+		ImGui::InputText("Name", name, BufferSize::STRING_BUFFER_SIZE);
 
-		static UINT texKey = ChunkKeys::VALUE_NOT_ASSIGNED;
+		static UINT texKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 		UpdateSprite(texKey);
 
-		static UINT tileMapKey = ChunkKeys::VALUE_NOT_ASSIGNED;
+		static UINT tileMapKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 		UpdateCSV(tileMapKey);
 
 		if (ImGui::Button("Create"))

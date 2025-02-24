@@ -53,3 +53,10 @@ protected:
 	void UpdateRelativePath(std::string fileExtension);
 #endif // FOXTROT_EDITOR
 };
+
+namespace ChunkKey
+{
+	constexpr const char* KEY = "Key";
+	constexpr const char* FILE_NAME = "FileName";
+	constexpr const char* RELATIVE_PATH = "RelativePath";
+}

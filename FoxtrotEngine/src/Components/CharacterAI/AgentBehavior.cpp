@@ -3,7 +3,6 @@
 #include "Actors/Actor.h"
 #include "Actors/Transform.h"
 #include "FileSystem/FileIOHelper.h"
-#include "FileSystem/ChunkFileKeys.h"
 #include "Managers/SceneManager.h"
 
 #ifdef FOXTROT_EDITOR
@@ -44,10 +43,10 @@ void AgentBehavior::Initialize(FTCore* coreInstance)
 void AgentBehavior::Setup()
 {
 #ifdef FOXTROT_EDITOR
-	if(mTargetName != ChunkKeys::NULL_OBJ)
+	if(mTargetName != ChunkKey::NullVal::NULL_OBJ)
 		mTarget = FIND_EDITOR_ELEMENT(mTargetName);
 #else
-	if (mTargetName != ChunkKeys::NULL_OBJ)
+	if (mTargetName != ChunkKey::NULL_OBJ)
 		mTarget = FIND_ACTOR(mTargetName);
 #endif // FOXTROT_EDITOR
 	Component::Setup();
@@ -71,9 +70,9 @@ void AgentBehavior::SaveProperties(std::ofstream & ofs)
 {
 	Component::SaveProperties(ofs);
 	if(mTarget)
-		FileIOHelper::SaveString(ofs, ChunkKeys::TARGET_NAME, mTargetName);
+		FileIOHelper::SaveString(ofs, ChunkKey::TARGET_NAME, mTargetName);
 	else
-		FileIOHelper::SaveString(ofs, ChunkKeys::TARGET_NAME, ChunkKeys::NULL_OBJ);
+		FileIOHelper::SaveString(ofs, ChunkKey::TARGET_NAME, ChunkKey::NullVal::NULL_OBJ);
 }
 
 void AgentBehavior::LoadProperties(std::ifstream& ifs)
@@ -85,7 +84,7 @@ void AgentBehavior::LoadProperties(std::ifstream& ifs)
 #ifdef FOXTROT_EDITOR
 void AgentBehavior::EditorUIUpdate()
 {
-	FTEditorUtils::DisplayActorSelection(ChunkKeys::TARGET_NAME, mTarget);
+	FTEditorUtils::DisplayActorSelection(ChunkKey::TARGET_NAME, mTarget);
 	if(mTarget)
 		mTargetName = mTarget->GetName();
 }

@@ -65,7 +65,7 @@ void BulletBehavior::LateUpdate(float deltaTime)
 	GetOwner()->GetTransform()->SetRotation(updatedRot);
 }
 
-BulletBehavior::BulletBehavior(Actor* owner, int updateOrder = DEFAULT_UPDATEORDER)
+BulletBehavior::BulletBehavior(Actor* owner, int updateOrder = DefaultVal::UPDATE_ORDER)
 	: FTBehavior(owner, updateOrder)
 	, mRigidbody(nullptr)
 	, mImpulseQuantity(FTVector2::Zero)

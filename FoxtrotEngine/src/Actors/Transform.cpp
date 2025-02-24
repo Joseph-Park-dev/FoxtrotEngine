@@ -9,7 +9,7 @@
 #include "Actors/Transform.h"
 
 #include "FileSystem/ChunkLoader.h"
-#include "FileSystem/ChunkFileKeys.h"
+
 #include "FileSystem/FileIOHelper.h"
 
 const FTVector3 Transform::GetWorldPosition() const
@@ -125,17 +125,17 @@ FTVector3 Transform::ConvertDegreeToRad(FTVector3 degreeRot)
 
 void Transform::SaveProperties(std::ofstream& ofs)
 {
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::TRANSFORM);
-	FileIOHelper::SaveVector3(ofs, ChunkKeys::WORLD_POS, mWorldPosition);
-	FileIOHelper::SaveVector3(ofs, ChunkKeys::LOCAL_POS, mLocalPosition);
-	FileIOHelper::SaveVector3(ofs, ChunkKeys::SCALE,	 mScale);
-	FileIOHelper::SaveVector3(ofs, ChunkKeys::ROTATION,  mRotation);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::TRANSFORM);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::TRANSFORM);
+	FileIOHelper::SaveVector3(ofs, ChunkKey::WORLD_POS, mWorldPosition);
+	FileIOHelper::SaveVector3(ofs, ChunkKey::LOCAL_POS, mLocalPosition);
+	FileIOHelper::SaveVector3(ofs, ChunkKey::SCALE,	 mScale);
+	FileIOHelper::SaveVector3(ofs, ChunkKey::ROTATION,  mRotation);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::TRANSFORM);
 }
 
 void Transform::LoadProperties(std::ifstream& ifs)
 {
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::TRANSFORM);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::TRANSFORM);
 	FileIOHelper::LoadVector3(ifs, mRotation);
 	FileIOHelper::LoadVector3(ifs, mScale);
 	FileIOHelper::LoadVector3(ifs, mLocalPosition);

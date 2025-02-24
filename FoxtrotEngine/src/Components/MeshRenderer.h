@@ -99,3 +99,9 @@ protected:
 	void		 UpdateSprite(UINT& key);
 #endif
 };
+
+namespace ChunkKey
+{
+	constexpr const char* MESH_KEY	  = "MeshKey";
+	constexpr const char* TEXTURE_KEY = "TextureKey";
+} // namespace ChunkKey

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -10,7 +10,6 @@
 
 #include "Actors/Actor.h"
 #include "FileSystem/ChunkLoader.h"
-#include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Core/TemplateFunctions.h"
 #include "Core/FTCore.h"
@@ -86,7 +85,7 @@ Component::~Component()
 
 void Component::SaveProperties(std::ofstream& ofs)
 {
-	FileIOHelper::SaveInt(ofs, ChunkKeys::UPDATE_ORDER, mUpdateOrder);
+	FileIOHelper::SaveInt(ofs, ChunkKey::UPDATE_ORDER, mUpdateOrder);
 }
 
 void Component::LoadProperties(std::ifstream& ifs)
@@ -96,10 +95,12 @@ void Component::LoadProperties(std::ifstream& ifs)
 
 #ifdef FOXTROT_EDITOR
 void Component::EditorUIUpdate()
-{}
+{
+}
 
 void Component::UpdateDebugShapes(FTVector3 pos, FTVector3 rot, FTVector3 scale, Camera* cameraInst)
-{}
+{
+}
 
 void Component::SetUpdateOrder(int updateOrder)
 {
@@ -107,5 +108,6 @@ void Component::SetUpdateOrder(int updateOrder)
 }
 
 void Component::OnConfirmUpdate()
-{}
+{
+}
 #endif

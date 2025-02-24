@@ -22,7 +22,6 @@
 #include "Core/TemplateFunctions.h"
 #include "Managers/ResourceManager.h"
 #include "FileSystem/ChunkLoader.h"
-#include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
 
 #ifdef FOXTROT_EDITOR
@@ -33,10 +32,10 @@
 void MeshRenderer::Initialize(FTCore* coreInstance)
 {
 	mRenderer = coreInstance->GetGameRenderer();
-	if (mMeshKey != ChunkKeys::VALUE_NOT_ASSIGNED)
+	if (mMeshKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	{
 		this->InitializeMesh();
-		if (mTexKey != ChunkKeys::VALUE_NOT_ASSIGNED)
+		if (mTexKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 			SetTexture();
 	}
 	// mMeshGroup = DBG_NEW FTBasicMeshGroup;
@@ -71,7 +70,7 @@ void MeshRenderer::CloneTo(Actor* actor)
 
 bool MeshRenderer::InitializeMesh()
 {
-	if (mMeshKey != ChunkKeys::VALUE_NOT_ASSIGNED)
+	if (mMeshKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	{
 		std::vector<MeshData>& meshData = ResourceManager::GetInstance()->GetLoadedMeshes(mMeshKey);
 		if (!mMeshGroup)
@@ -134,7 +133,7 @@ bool MeshRenderer::InitializeMesh(std::vector<MeshData>& meshData)
 
 bool MeshRenderer::SetTexture()
 {
-	if (mTexKey == ChunkKeys::VALUE_NOT_ASSIGNED)
+	if (mTexKey == ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	{
 		printf("ERROR: MeshRenderer::SetTexture() -> TexKey not assigned.\n");
 		return false;
@@ -211,8 +210,8 @@ MeshRenderer::MeshRenderer(Actor* owner, int updateOrder)
 	, mTexture(nullptr)
 	, mMaterial(nullptr)
 	, mRenderer(nullptr)
-	, mMeshKey(ChunkKeys::VALUE_NOT_ASSIGNED)
-	, mTexKey(ChunkKeys::VALUE_NOT_ASSIGNED)
+	, mMeshKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	, mTexKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 {
 }
 
@@ -233,8 +232,8 @@ MeshRenderer::~MeshRenderer()
 void MeshRenderer::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
-	FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::MESH_KEY, mMeshKey);
-	FileIOHelper::SaveUnsignedInt(ofs, ChunkKeys::TEXTURE_KEY, mTexKey);
+	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::MESH_KEY, mMeshKey);
+	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TEXTURE_KEY, mTexKey);
 }
 
 void MeshRenderer::LoadProperties(std::ifstream& ifs)
@@ -260,7 +259,7 @@ void MeshRenderer::EditorUIUpdate()
 	if (ImGui::Button("Add Cube"))
 	{
 		MeshData meshData =
-			ResourceManager::GetInstance()->GetLoadedPrimitive(ChunkKeys::PRIMITIVE_BOX);
+			ResourceManager::GetInstance()->GetLoadedPrimitive(ChunkKey::PRIMITIVE_BOX);
 		InitializeMesh(meshData);
 		LogString("Cube added");
 	}
@@ -279,14 +278,14 @@ void MeshRenderer::OnResetTexture()
 	if (ImGui::Button("Reset"))
 	{
 		GetTexture()->ReleaseTexture();
-		SetTexKey(ChunkKeys::VALUE_NOT_ASSIGNED);
+		SetTexKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED);
 	}
 }
 
 void MeshRenderer::UpdateSprite()
 {
 	std::string currentSprite = "No sprite has been assigned";
-	if (mTexKey != ChunkKeys::VALUE_NOT_ASSIGNED)
+	if (mTexKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	{
 		currentSprite =
 			"Current sprite : \n" + ResourceManager::GetInstance()->GetLoadedTexture(GetTexKey())->GetRelativePath();
@@ -302,14 +301,14 @@ void MeshRenderer::UpdateSprite()
 		FTEditorUtils::DisplayResSelection<FTTexture>(
 			"Select Sprite",
 			ResourceManager::GetInstance()->GetTexturesMap());
-	if (key != ChunkKeys::VALUE_NOT_ASSIGNED)
+	if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		mTexKey = key;
 }
 
 void MeshRenderer::UpdateSprite(UINT& key)
 {
 	std::string currentSprite = {};
-	if (key != ChunkKeys::VALUE_NOT_ASSIGNED)
+	if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	{
 		FTTexture* sprite = ResourceManager::GetInstance()->GetLoadedTexture(key);
 		currentSprite =
@@ -341,7 +340,7 @@ void MeshRenderer::UpdateSprite(UINT& key)
 			ResourceManager::GetInstance()->GetTexturesMap();
 		if (ImGui::TreeNode("Selection State: Single Selection"))
 		{
-			UINT	   spriteKey = ChunkKeys::VALUE_NOT_ASSIGNED;
+			UINT	   spriteKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 			static int selected	 = -1;
 			int		   i		 = 0;
 			for (auto iter = texturesMap.begin(); iter != texturesMap.end();

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -21,57 +21,66 @@
 
 class FoxtrotRenderer;
 
-
 class FTTexture :
-    public FTResource
+	public FTResource
 {
 public:
-    bool ReleaseTexture();
+	bool ReleaseTexture();
 
 public:
-    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetResourceView() { return mTextureResourceView; }
-    void SetResourceView(Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResView) 
-    { mTextureResourceView = shaderResView; }
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetResourceView() { return mTextureResourceView; }
+	void											  SetResourceView(Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResView)
+	{
+		mTextureResourceView = shaderResView;
+	}
 
-    Microsoft::WRL::ComPtr<ID3D11Texture2D>& GetTexture() { return mTexture; }
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>& GetTexture() { return mTexture; }
 
-    const FTVector2 GetTexScale() const { return FTVector2(mTexWidth, mTexHeight); }
-    int	GetTexWidth()  const { return mTexWidth; }
-    int	GetTexHeight() const { return mTexHeight; }
+	const FTVector2 GetTexScale() const { return FTVector2(mTexWidth, mTexHeight); }
+	int				GetTexWidth() const { return mTexWidth; }
+	int				GetTexHeight() const { return mTexHeight; }
 
-    void SetTexWidth(int texWidth) { mTexWidth = texWidth; }
-    void SetTexHeight(int texHeight) { mTexHeight = texHeight; }
+	void SetTexWidth(int texWidth) { mTexWidth = texWidth; }
+	void SetTexHeight(int texHeight) { mTexHeight = texHeight; }
 
-    int& GetTexWidthRef()  { return mTexWidth; }
-    int& GetTexHeightRef() { return mTexHeight; }
+	int& GetTexWidthRef() { return mTexWidth; }
+	int& GetTexHeightRef() { return mTexHeight; }
 
 public:
-    FTTexture()
-        : FTResource()
-        , mTexWidth(0)
-        , mTexHeight(0)
-    {}
-    virtual ~FTTexture() override 
-    { 
-        ReleaseTexture(); 
-    }
+	FTTexture()
+		: FTResource()
+		, mTexWidth(0)
+		, mTexHeight(0)
+	{
+	}
+	virtual ~FTTexture() override
+	{
+		ReleaseTexture();
+	}
 
 private:
-    Microsoft::WRL::ComPtr<ID3D11Texture2D>          mTexture;
-    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mTextureResourceView;
-    Microsoft::WRL::ComPtr<ID3D11SamplerState>       mSamplerState;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>			 mTexture;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mTextureResourceView;
+	Microsoft::WRL::ComPtr<ID3D11SamplerState>		 mSamplerState;
 
-    int mTexWidth;
-    int mTexHeight;
+	int mTexWidth;
+	int mTexHeight;
 
 	friend class ResourceManager;
 
 public:
-    virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
-    virtual UINT LoadProperties(std::ifstream& ifs)           override;
+	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
+	virtual UINT LoadProperties(std::ifstream& ifs) override;
 
 #ifdef FOXTROT_EDITOR
 public:
-    virtual void UpdateUI()         override;
+	virtual void UpdateUI() override;
 #endif // FOXTROT_EDITOR
 };
+
+namespace ChunkKey
+{
+	constexpr const char* FTTEXTURE		 = "FTTexture";
+	constexpr const char* TEXTURE_WIDTH	 = "Texture Width";
+	constexpr const char* TEXTURE_HEIGHT = "Texture Height";
+} // namespace ChunkKey

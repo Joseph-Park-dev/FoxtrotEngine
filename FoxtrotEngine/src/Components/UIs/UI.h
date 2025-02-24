@@ -49,7 +49,7 @@ public:
     UI(
         Actor* owner, 
          
-        int updateOrder = DEFAULT_UPDATEORDER
+        int updateOrder = DefaultVal::UPDATE_ORDER
     );
     virtual ~UI() override;
 

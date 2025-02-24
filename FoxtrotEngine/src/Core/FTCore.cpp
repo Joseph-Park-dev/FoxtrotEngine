@@ -51,8 +51,8 @@ FTCore*			  FTCore::mInstance			  = nullptr;
 void FTCore::LoadGameData()
 {
 	std::ifstream ifs(mGameDataPath);
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::GAME_DATA);
-	std::pair<size_t, std::string> chunkListPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::CHUNK_LIST);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::GAME_DATA);
+	std::pair<size_t, std::string> chunkListPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CHUNK_LIST);
 	for (size_t i = 0; i < chunkListPack.first; ++i)
 	{
 		std::string chunkTitle = {};
@@ -219,7 +219,7 @@ FTCore::FTCore()
 	, mWindowTitle(L"Untitled Game Project")
 	, mGameDataPath(
 		  std::string("./")
-		  + std::string(ChunkKeys::GAME_DATA)
+		  + std::string(ChunkKey::GAME_DATA)
 		  + std::string(FileTypes::GDPACK))
 {
 }

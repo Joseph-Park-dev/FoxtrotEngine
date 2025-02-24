@@ -15,7 +15,6 @@
 #include "Actors/Transform.h"
 #include "Math/FTMath.h"
 #include "FileSystem/ChunkLoader.h"
-#include "FileSystem/ChunkFileKeys.h"
 #include "Components/BoxCollider2D.h"
 #include "FileSystem/FileIOHelper.h"
 
@@ -74,7 +73,7 @@ void Rigidbody2D::LoadProperties(std::ifstream& ifs)
 
 	b2BodyDef bodyDef = b2DefaultBodyDef();
 
-	int bodyTypeInt = ChunkKeys::VALUE_NOT_ASSIGNED;
+	int bodyTypeInt = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 	FileIOHelper::LoadInt(ifs, bodyTypeInt);
 	bodyDef.type = static_cast<b2BodyType>(bodyTypeInt);
 
@@ -105,27 +104,27 @@ void Rigidbody2D::LoadProperties(std::ifstream& ifs)
 void Rigidbody2D::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties (ofs);
-	FileIOHelper::SaveBool	  (ofs, ChunkKeys::ALLOW_FAST_ROTATION, mBodyDefCache.allowFastRotation);
-	FileIOHelper::SaveFloat	  (ofs, ChunkKeys::ANGULAR_DAMPING, mBodyDefCache.angularDamping);
-	FileIOHelper::SaveFloat	  (ofs, ChunkKeys::ANGULAR_VELOCITY, mBodyDefCache.angularVelocity);
-	FileIOHelper::SaveBool	  (ofs, ChunkKeys::ENABLE_SLEEP, mBodyDefCache.enableSleep);
-	FileIOHelper::SaveBool	  (ofs, ChunkKeys::FIXED_ROTATION, mBodyDefCache.fixedRotation);
-	FileIOHelper::SaveFloat	  (ofs, ChunkKeys::GRAVITY_SCALE, mBodyDefCache.gravityScale);
-	FileIOHelper::SaveBool	  (ofs, ChunkKeys::IS_AWAKE, mBodyDefCache.isAwake);
-	FileIOHelper::SaveBool	  (ofs, ChunkKeys::IS_BULLET, mBodyDefCache.isBullet);
-	FileIOHelper::SaveBool	  (ofs, ChunkKeys::IS_ENABLED, mBodyDefCache.isEnabled);
-	FileIOHelper::SaveVector2 (ofs, ChunkKeys::INITIAL_VELOCITY, mBodyDefCache.linearVelocity);
-	FileIOHelper::SaveFloat	  (ofs, ChunkKeys::SLEEP_THRESHOLD, mBodyDefCache.sleepThreshold);
+	FileIOHelper::SaveBool	  (ofs, ChunkKey::ALLOW_FAST_ROTATION, mBodyDefCache.allowFastRotation);
+	FileIOHelper::SaveFloat	  (ofs, ChunkKey::ANGULAR_DAMPING, mBodyDefCache.angularDamping);
+	FileIOHelper::SaveFloat	  (ofs, ChunkKey::ANGULAR_VELOCITY, mBodyDefCache.angularVelocity);
+	FileIOHelper::SaveBool	  (ofs, ChunkKey::ENABLE_SLEEP, mBodyDefCache.enableSleep);
+	FileIOHelper::SaveBool	  (ofs, ChunkKey::FIXED_ROTATION, mBodyDefCache.fixedRotation);
+	FileIOHelper::SaveFloat	  (ofs, ChunkKey::GRAVITY_SCALE, mBodyDefCache.gravityScale);
+	FileIOHelper::SaveBool	  (ofs, ChunkKey::IS_AWAKE, mBodyDefCache.isAwake);
+	FileIOHelper::SaveBool	  (ofs, ChunkKey::IS_BULLET, mBodyDefCache.isBullet);
+	FileIOHelper::SaveBool	  (ofs, ChunkKey::IS_ENABLED, mBodyDefCache.isEnabled);
+	FileIOHelper::SaveVector2 (ofs, ChunkKey::INITIAL_VELOCITY, mBodyDefCache.linearVelocity);
+	FileIOHelper::SaveFloat	  (ofs, ChunkKey::SLEEP_THRESHOLD, mBodyDefCache.sleepThreshold);
 	switch (mBodyDefCache.type)
 	{
 	case b2_staticBody:
-		FileIOHelper::SaveInt(ofs, ChunkKeys::BODY_TYPE, ChunkKeys::BODY_TYPE_STATIC);
+		FileIOHelper::SaveInt(ofs, ChunkKey::BODY_TYPE, ChunkKey::BODY_TYPE_STATIC);
 		break;
 	case b2_kinematicBody:
-		FileIOHelper::SaveInt(ofs, ChunkKeys::BODY_TYPE, ChunkKeys::BODY_TYPE_KINEMATIC);
+		FileIOHelper::SaveInt(ofs, ChunkKey::BODY_TYPE, ChunkKey::BODY_TYPE_KINEMATIC);
 		break;
 	case b2_dynamicBody:
-		FileIOHelper::SaveInt(ofs, ChunkKeys::BODY_TYPE, ChunkKeys::BODY_TYPE_DYNAMIC);
+		FileIOHelper::SaveInt(ofs, ChunkKey::BODY_TYPE, ChunkKey::BODY_TYPE_DYNAMIC);
 		break;
 	default:
 		break;
@@ -142,17 +141,17 @@ void Rigidbody2D::EditorRender(FoxtrotRenderer* renderer)
 
 void Rigidbody2D::EditorUIUpdate()
 {
-	CommandHistory::GetInstance()->UpdateBoolValue	  (ChunkKeys::ALLOW_FAST_ROTATION, mBodyDefCache.allowFastRotation);
-	CommandHistory::GetInstance()->UpdateFloatValue	  (ChunkKeys::ANGULAR_DAMPING,	  &mBodyDefCache.angularDamping,  FLOATMOD_SPEED);
-	CommandHistory::GetInstance()->UpdateFloatValue	  (ChunkKeys::ANGULAR_VELOCITY,   &mBodyDefCache.angularVelocity, FLOATMOD_SPEED);
-	CommandHistory::GetInstance()->UpdateBoolValue	  (ChunkKeys::ENABLE_SLEEP,		   mBodyDefCache.enableSleep);
-	CommandHistory::GetInstance()->UpdateBoolValue	  (ChunkKeys::FIXED_ROTATION,	   mBodyDefCache.fixedRotation);
-	CommandHistory::GetInstance()->UpdateFloatValue	  (ChunkKeys::GRAVITY_SCALE,	  &mBodyDefCache.gravityScale,	  FLOATMOD_SPEED);
-	CommandHistory::GetInstance()->UpdateBoolValue	  (ChunkKeys::IS_AWAKE,			   mBodyDefCache.isAwake);
-	CommandHistory::GetInstance()->UpdateBoolValue	  (ChunkKeys::IS_BULLET,		   mBodyDefCache.isBullet);
-	CommandHistory::GetInstance()->UpdateBoolValue	  (ChunkKeys::IS_ENABLED,		   mBodyDefCache.isEnabled);
-	CommandHistory::GetInstance()->UpdateVector2Value (ChunkKeys::INITIAL_VELOCITY,    mBodyDefCache.linearVelocity,  FLOATMOD_SPEED);
-	CommandHistory::GetInstance()->UpdateFloatValue	  (ChunkKeys::SLEEP_THRESHOLD,    &mBodyDefCache.sleepThreshold,  FLOATMOD_SPEED);
+	CommandHistory::GetInstance()->UpdateBoolValue	  (ChunkKey::ALLOW_FAST_ROTATION, mBodyDefCache.allowFastRotation);
+	CommandHistory::GetInstance()->UpdateFloatValue	  (ChunkKey::ANGULAR_DAMPING,	  &mBodyDefCache.angularDamping,  FLOATMOD_SPEED);
+	CommandHistory::GetInstance()->UpdateFloatValue	  (ChunkKey::ANGULAR_VELOCITY,   &mBodyDefCache.angularVelocity, FLOATMOD_SPEED);
+	CommandHistory::GetInstance()->UpdateBoolValue	  (ChunkKey::ENABLE_SLEEP,		   mBodyDefCache.enableSleep);
+	CommandHistory::GetInstance()->UpdateBoolValue	  (ChunkKey::FIXED_ROTATION,	   mBodyDefCache.fixedRotation);
+	CommandHistory::GetInstance()->UpdateFloatValue	  (ChunkKey::GRAVITY_SCALE,	  &mBodyDefCache.gravityScale,	  FLOATMOD_SPEED);
+	CommandHistory::GetInstance()->UpdateBoolValue	  (ChunkKey::IS_AWAKE,			   mBodyDefCache.isAwake);
+	CommandHistory::GetInstance()->UpdateBoolValue	  (ChunkKey::IS_BULLET,		   mBodyDefCache.isBullet);
+	CommandHistory::GetInstance()->UpdateBoolValue	  (ChunkKey::IS_ENABLED,		   mBodyDefCache.isEnabled);
+	CommandHistory::GetInstance()->UpdateVector2Value (ChunkKey::INITIAL_VELOCITY,    mBodyDefCache.linearVelocity,  FLOATMOD_SPEED);
+	CommandHistory::GetInstance()->UpdateFloatValue	  (ChunkKey::SLEEP_THRESHOLD,    &mBodyDefCache.sleepThreshold,  FLOATMOD_SPEED);
 	UpdateBodyType();
 
 	ImGui::SeparatorText("Body Info");
@@ -175,7 +174,7 @@ void Rigidbody2D::EditorUIUpdate()
 void Rigidbody2D::UpdateBodyType()
 {
 	const char* items[] = { "Static", "Kinematic", "Dynamic" };
-	static int currentItem = ChunkKeys::VALUE_NOT_ASSIGNED;
+	static int currentItem = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 
 	switch (mBodyDefCache.type)
 	{
@@ -193,7 +192,7 @@ void Rigidbody2D::UpdateBodyType()
 	}
 
 	const char* comboPreview = items[currentItem];
-	if (ImGui::BeginCombo(ChunkKeys::BODY_TYPE, comboPreview))
+	if (ImGui::BeginCombo(ChunkKey::BODY_TYPE, comboPreview))
 	{
 		for (int n = 0; n < IM_ARRAYSIZE(items); n++)
 		{

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -24,61 +24,64 @@ class FoxtrotRenderer;
 class FTSpriteAnimation;
 
 class Animator :
-    public TileMapRenderer
+	public TileMapRenderer
 {
 public:
-    virtual std::string GetName() const override
-    {
-        return "Animator";
-    }
+	virtual std::string GetName() const override
+	{
+		return "Animator";
+	}
 
 public:
-    void Play(bool isRepeated);  // Play current animation
-    void Play(const UINT key, bool isRepeated);
-    void Stop();
+	void Play(bool isRepeated); // Play current animation
+	void Play(const UINT key, bool isRepeated);
+	void Stop();
 
 public:
-    FTSpriteAnimation* CreateAnimationFromTile(
-        std::string&& name, 
-        UINT texKey, 
-        UINT tileMapKey
-    );
-    void LoadAnimation(const UINT key);
-    
-public:
-    virtual void Initialize (FTCore* coreInstance)      override;
-            void Update     (float deltaTime)           override;
-            void LateUpdate (float deltaTime)           override;
-    virtual void Render     (FoxtrotRenderer* renderer) override;
-
-    virtual void CloneTo    (Actor* actor)              override;
+	FTSpriteAnimation* CreateAnimationFromTile(
+		std::string&& name,
+		UINT		  texKey,
+		UINT		  tileMapKey);
+	void LoadAnimation(const UINT key);
 
 public:
-     Animator(
-         class Actor* owner, 
-         int updateOrder = DEFAULT_UPDATEORDER
-     );
-    ~Animator() override;
+	virtual void Initialize(FTCore* coreInstance) override;
+	void		 Update(float deltaTime) override;
+	void		 LateUpdate(float deltaTime) override;
+	virtual void Render(FoxtrotRenderer* renderer) override;
+
+	virtual void CloneTo(Actor* actor) override;
+
+public:
+	Animator(
+		class Actor* owner,
+		int			 updateOrder = DefaultVal::UPDATE_ORDER);
+	~Animator() override;
 
 private:
-    std::vector<UINT>               mLoadedKeys;
-    std::vector<FTSpriteAnimation*> mLoadedAnimations;
-    FTSpriteAnimation*              mCurrentAnim;
+	std::vector<UINT>				mLoadedKeys;
+	std::vector<FTSpriteAnimation*> mLoadedAnimations;
+	FTSpriteAnimation*				mCurrentAnim;
 
 public:
-    virtual void SaveProperties(std::ofstream& ofs) override;
-    virtual void LoadProperties(std::ifstream& ifs) override;
+	virtual void SaveProperties(std::ofstream& ofs) override;
+	virtual void LoadProperties(std::ifstream& ifs) override;
 
 #ifdef FOXTROT_EDITOR
 public:
-    virtual void EditorUpdate   (float deltaTime)   override;
-    virtual void EditorUIUpdate ()                  override;
+	virtual void EditorUpdate(float deltaTime) override;
+	virtual void EditorUIUpdate() override;
 
 private:
-            void UpdatePlayAnim();
-            void UpdatePlayList();
-            void CreateAnimation();
+	void UpdatePlayAnim();
+	void UpdatePlayList();
+	void CreateAnimation();
 
-            void TEST_CreateSpine();
+	void TEST_CreateSpine();
 #endif // FOXTROT_EDITOR
 };
+
+namespace ChunkKey
+{
+	constexpr const char* LOADED_KEYS = "Loaded Keys";
+}

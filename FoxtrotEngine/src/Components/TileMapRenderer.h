@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -23,47 +23,52 @@
 class FTVector2;
 
 class TileMapRenderer :
-    public SpriteRenderer
+	public SpriteRenderer
 {
 public:
-    std::string GetName()		const override {
-        return	"TileMap";
-    }
-    UINT        GetTileMapKey() const;
-    FTTileMap*  GetTileMap() const;
-    
-    void        SetTileMapKey(UINT key);
-    void        SetTileMap(FTTileMap* tileMap);
+	std::string GetName() const override
+	{
+		return "TileMap";
+	}
+	UINT	   GetTileMapKey() const;
+	FTTileMap* GetTileMap() const;
+
+	void SetTileMapKey(UINT key);
+	void SetTileMap(FTTileMap* tileMap);
 
 public:
-    virtual void Initialize(FTCore* coreInstance)	    override;
-    virtual void CloneTo(Actor* actor)	                override;
+	virtual void Initialize(FTCore* coreInstance) override;
+	virtual void CloneTo(Actor* actor) override;
 
 public:
-             TileMapRenderer(
-                 Actor* owner, 
-                 int UpdateOrder = DEFAULT_UPDATEORDER
-             );
-    virtual ~TileMapRenderer() override;
+	TileMapRenderer(
+		Actor* owner,
+		int	   UpdateOrder = DefaultVal::UPDATE_ORDER);
+	virtual ~TileMapRenderer() override;
 
 protected:
-    virtual void InitializeTileMap();
+	virtual void InitializeTileMap();
 
 private:
-    FTTileMap*      mTileMap;
-    UINT            mTileMapKey;
+	FTTileMap* mTileMap;
+	UINT	   mTileMapKey;
 
 public:
-    virtual void SaveProperties(std::ofstream& ofs) override;
-    virtual void LoadProperties(std::ifstream& ifs) override;
+	virtual void SaveProperties(std::ofstream& ofs) override;
+	virtual void LoadProperties(std::ifstream& ifs) override;
 
 #ifdef FOXTROT_EDITOR
 public:
-    virtual void EditorUIUpdate() override;
-    virtual void OnConfirmUpdate() override;
+	virtual void EditorUIUpdate() override;
+	virtual void OnConfirmUpdate() override;
 
 protected:
-            void UpdateCSV();
-            void UpdateCSV(UINT& key);
+	void UpdateCSV();
+	void UpdateCSV(UINT& key);
 #endif
 };
+
+namespace ChunkKey
+{
+	constexpr const char* TILEMAP_KEY = "TileMapKey";
+}

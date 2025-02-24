@@ -83,14 +83,14 @@ Actor* FTPremade::GetOrigin()
 
 void FTPremade::SaveProperties(std::ofstream& ofs, UINT key)
 {
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKeys::FTPREMADE);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTPREMADE);
 	FTResource::SaveProperties(ofs, key);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKeys::FTPREMADE);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTPREMADE);
 }
 
 UINT FTPremade::LoadProperties(std::ifstream& ifs)
 {
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::FTPREMADE);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPREMADE);
 	UINT key = FTResource::LoadProperties(ifs);
 	return key;
 }

@@ -23,6 +23,14 @@
 using Matrix  = DirectX::SimpleMath::Matrix;
 using Vector3 = DirectX::SimpleMath::Vector3;
 
+namespace ChunkKey
+{
+	constexpr const char* CAMERA_DATA = "Camera Data";
+	constexpr const char* TARGET_ACTOR = "Target Actor";
+	constexpr const char* RENDER_RESOLUTION = "Render Resolution";
+	constexpr const char* RENDER_SCREENCENTER = "Screen Center";
+} // namespace ChunkKey
+
 enum class Viewtype
 {
 	Orthographic,

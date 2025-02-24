@@ -16,7 +16,8 @@
 
 #include "EditorElement.h"
 #include "EditorSceneManager.h"
-#include "FileSystem/ChunkFileKeys.h"
+#include "FileSystem/FileTypes.h"
+#include "FileSystem/NullKeys.h"
 
 namespace FTEditorUtils
 {
@@ -105,7 +106,7 @@ namespace FTEditorUtils
 			ImGui::OpenPopup(label);
 		}
 
-		UINT key = ChunkKeys::VALUE_NOT_ASSIGNED;
+		UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 		if (ImGui::BeginPopupModal(label, NULL,
 			ImGuiWindowFlags_MenuBar))
 		{
@@ -116,7 +117,7 @@ namespace FTEditorUtils
 				{
 					if (ImGui::Selectable((*iter).second->GetFileName().c_str()))
 					{
-						if ((*iter).first != ChunkKeys::VALUE_NOT_ASSIGNED)
+						if ((*iter).first != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 							key = (*iter).first;
 					}
 				}

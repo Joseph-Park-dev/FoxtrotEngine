@@ -27,7 +27,6 @@
 #include "Actors/Actor.h"
 #include "Renderer/Camera.h"
 
-#include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Components/BatchHeaders.h"
 
@@ -50,9 +49,9 @@ void ChunkLoader::LoadChunk(const std::string fileName)
 void ChunkLoader::SaveChunkData(std::ofstream& out)
 {
     Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
-    FileIOHelper::BeginDataPackSave(out, ChunkKeys::CHUNK_DATA);
-    FileIOHelper::SaveInt(out, ChunkKeys::ACTOR_COUNT, currScene->GetActorCount());
-    FileIOHelper::EndDataPackSave(out, ChunkKeys::CHUNK_DATA);
+    FileIOHelper::BeginDataPackSave(out, ChunkKey::CHUNK_DATA);
+    FileIOHelper::SaveInt(out, ChunkKey::ACTOR_COUNT, currScene->GetActorCount());
+    FileIOHelper::EndDataPackSave(out, ChunkKey::CHUNK_DATA);
 }
 
 void ChunkLoader::SaveActorsData(std::ofstream& out)
@@ -62,7 +61,7 @@ void ChunkLoader::SaveActorsData(std::ofstream& out)
 void ChunkLoader::LoadActorsData(std::ifstream& ifs)
 {
     Scene* scene = SceneManager::GetInstance()->GetCurrentScene();
-    std::pair<size_t, std::string>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::ACTOR_DATA);
+    std::pair<size_t, std::string>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
     for (size_t i = 0; i < pack.first; ++i)
     {
         std::pair<size_t, std::string>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
@@ -77,7 +76,7 @@ void ChunkLoader::LoadActorsData(std::ifstream& ifs)
 void ChunkLoader::LoadChunkData(std::ifstream& ifs)
 {
     int targetActor = 0;
-    FileIOHelper::BeginDataPackLoad(ifs, ChunkKeys::CHUNK_DATA);
+    FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CHUNK_DATA);
     FileIOHelper::LoadSize(ifs, mCurrentChunkData.ActorCount);
 }
 

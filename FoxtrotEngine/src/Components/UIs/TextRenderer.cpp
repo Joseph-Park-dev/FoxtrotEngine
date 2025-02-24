@@ -1,6 +1,5 @@
 #include "Components/UIs/TextRenderer.h"
 
-#include "FileSystem/ChunkFileKeys.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Managers/ResourceManager.h"
 #include "ResourceSystem/GeometryGenerator.h"
@@ -70,12 +69,12 @@ TextRenderer::~TextRenderer()
 void TextRenderer::SaveProperties(std::ofstream& ofs)
 {
     Component::SaveProperties(ofs);
-    FileIOHelper::SaveFloat     (ofs, ChunkKeys::ROTATION,  mTextAttribute->Rotation);
-    FileIOHelper::SaveVector2   (ofs, ChunkKeys::OFFSET,    mTextAttribute->Offset);
-    FileIOHelper::SaveVector4   (ofs, ChunkKeys::COLOR,     mTextAttribute->Color);
-    FileIOHelper::SaveVector2   (ofs, ChunkKeys::ORIGIN,    mTextAttribute->Origin);
-    FileIOHelper::SaveVector2   (ofs, ChunkKeys::SCALE,     mTextAttribute->Scale);
-    FileIOHelper::SaveString    (ofs, ChunkKeys::TEXT,      mText);
+    FileIOHelper::SaveFloat     (ofs, ChunkKey::ROTATION,  mTextAttribute->Rotation);
+    FileIOHelper::SaveVector2   (ofs, ChunkKey::OFFSET,    mTextAttribute->Offset);
+    FileIOHelper::SaveVector4   (ofs, ChunkKey::COLOR,     mTextAttribute->Color);
+    FileIOHelper::SaveVector2   (ofs, ChunkKey::ORIGIN,    mTextAttribute->Origin);
+    FileIOHelper::SaveVector2   (ofs, ChunkKey::SCALE,     mTextAttribute->Scale);
+    FileIOHelper::SaveString    (ofs, ChunkKey::TEXT,      mText);
 }
 
 void TextRenderer::LoadProperties(std::ifstream& ifs)
@@ -97,9 +96,9 @@ void TextRenderer::EditorUIUpdate()
 
 void TextRenderer::UpdateText()
 {
-    char str[MAX_STRING_SIZE];
+    char str[BufferSize::MAX_CHAR_COUNT];
     strcpy_s(str, mText.size()+1, mText.c_str());
-    ImGui::InputText(ChunkKeys::TEXT, str, MAX_STRING_SIZE);
+    ImGui::InputText(ChunkKey::TEXT, str, BufferSize::MAX_CHAR_COUNT);
     if (mText != str)
         mText = str;
 }
@@ -112,11 +111,11 @@ void TextRenderer::UpdateTextAttribute()
     float scale[2]  = { mTextAttribute->Scale.x,mTextAttribute->Scale.y };
     float color[4]  = { mTextAttribute->Color.x, mTextAttribute->Color.y, mTextAttribute->Color.z, mTextAttribute->Color.w };
 
-    ImGui::DragFloat    (ChunkKeys::ROTATION, &rotation, FLOATMOD_SPEED);
-    ImGui::DragFloat2   (ChunkKeys::OFFSET,   offset,    FLOATMOD_SPEED);
-    ImGui::DragFloat2   (ChunkKeys::ORIGIN,   origin,    FLOATMOD_SPEED);
-    ImGui::DragFloat2   (ChunkKeys::SCALE,    scale,     FLOATMOD_SPEED);
-    ImGui::ColorPicker4 (ChunkKeys::COLOR,    color,     FLOATMOD_SPEED);
+    ImGui::DragFloat    (ChunkKey::ROTATION, &rotation, FLOATMOD_SPEED);
+    ImGui::DragFloat2   (ChunkKey::OFFSET,   offset,    FLOATMOD_SPEED);
+    ImGui::DragFloat2   (ChunkKey::ORIGIN,   origin,    FLOATMOD_SPEED);
+    ImGui::DragFloat2   (ChunkKey::SCALE,    scale,     FLOATMOD_SPEED);
+    ImGui::ColorPicker4 (ChunkKey::COLOR,    color,     FLOATMOD_SPEED);
 
     mTextAttribute->Rotation = rotation;
     mTextAttribute->Offset   = DirectX::SimpleMath::Vector2(offset[0], offset[1]);

@@ -79,3 +79,10 @@ public:
 	virtual void EditorUIUpdate() override;
 #endif // FOXTROT_EDITOR
 };
+
+namespace ChunkKey
+{
+	constexpr const char* FORWARD_SPEED = "Forward Speed";
+	constexpr const char* JUMP_FORCE	= "Jump Force";
+	constexpr const char* ANGULAR_SPEED = "Angular Speed";
+} // namespace ChunkKey

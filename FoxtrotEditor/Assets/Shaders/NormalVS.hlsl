@@ -23,16 +23,16 @@ TexPSInput main(TexVSInput input)
     output.normalWorld = mul(normal, invTranspose).xyz;
     output.normalWorld = normalize(output.normalWorld);
     
-    output.posWorld = mul(pos, model);
+    pos = mul(pos, model);
     float t = input.texcoord.x;
-    pos.xyz = output.normalWorld * t * scale;
+    pos.xyz += output.normalWorld * t * scale;
     
     output.posWorld = pos.xyz;
     
     pos = mul(pos, view);
     pos = mul(pos, projection);
-    output.posProj = pos;
     
+    output.posProj = pos;
     output.texcoord = input.texcoord;
     
     return output;

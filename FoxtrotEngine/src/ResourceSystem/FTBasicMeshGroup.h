@@ -72,7 +72,6 @@ private:
 	Mesh*		 mNormalLines;
 	NormalVCData mNormalVertexConstData;
 
-	float mNormalScale;
 	bool  mDrawNormal;
 	bool  mValModified;
 #endif

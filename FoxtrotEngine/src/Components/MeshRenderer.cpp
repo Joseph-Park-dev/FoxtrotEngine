@@ -30,8 +30,6 @@
 	#include "EditorUtils.h"
 #endif // FOXTROT_EDITOR
 
-using DXMatrix = DirectX::SimpleMath::Matrix;
-
 void MeshRenderer::Initialize(FTCore* coreInstance)
 {
 	mRenderer = coreInstance->GetGameRenderer();
@@ -200,11 +198,11 @@ Matrix MeshRenderer::CalcModelMat(Transform* transform)
 	int				  dir		   = transform->GetRightward().x;
 	FTVector3		  scale		   = transform->GetScale();
 	DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x, scale.y, scale.z);
-	return DXMatrix::CreateScale(scaleWithDir) *
-		DXMatrix::CreateRotationX(transform->GetRotation().x) *
-		DXMatrix::CreateRotationY(transform->GetRotation().y) *
-		DXMatrix::CreateRotationZ(transform->GetRotation().z) *
-		DXMatrix::CreateTranslation(transform->GetWorldPosition().GetDXVec3());
+	return Matrix::CreateScale(scaleWithDir) *
+		Matrix::CreateRotationX(transform->GetRotation().x) *
+		Matrix::CreateRotationY(transform->GetRotation().y) *
+		Matrix::CreateRotationZ(transform->GetRotation().z) *
+		Matrix::CreateTranslation(transform->GetWorldPosition().GetDXVec3());
 }
 
 MeshRenderer::MeshRenderer(Actor* owner, int updateOrder)

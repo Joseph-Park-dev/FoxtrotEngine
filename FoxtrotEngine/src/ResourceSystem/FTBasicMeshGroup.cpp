@@ -39,7 +39,7 @@ void FTBasicMeshGroup::UpdateConstantBuffers(
 	if (mDrawNormal && mValModified)
 	{
 		D3D11Utils::UpdateBuffer(
-			context, mNormalVertexConstData, mVertexConstBuffer);
+			context, mNormalVertexConstData, mNormalLines->VertexConstantBuffer);
 		mValModified = false;
 	}
 #endif // FOXTROT_EDITOR
@@ -78,10 +78,11 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture)
 	{
 		context->VSSetShader(renderer->GetNormalVS().Get(), 0, 0);
 		context->PSSetShader(renderer->GetNormalPS().Get(), 0, 0);
-		ID3D11Buffer* pptr[2] = { mVertexConstBuffer.Get(), mNormalLines->VertexBuffer.Get() };
+		ID3D11Buffer* pptr[2] = { mVertexConstBuffer.Get(), mNormalLines->VertexConstantBuffer.Get() };
 		context->VSSetConstantBuffers(0, 2, pptr);
 		context->IASetVertexBuffers(0, 1, mNormalLines->VertexBuffer.GetAddressOf(), &stride, &offset);
 		context->IASetIndexBuffer(mNormalLines->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 		context->DrawIndexed(mNormalLines->IndexCount, 0, 0);
 	}
 }
@@ -239,9 +240,7 @@ FTBasicMeshGroup::FTBasicMeshGroup()
 	, mNormalLines(nullptr)
 	, mDrawTexture(true)
 #ifdef FOXTROT_EDITOR
-	, mNormalScale(0.1f)
 	, mDrawNormal(false)
-	, mValModified(false)
 #endif // FOXTROT_EDITOR
 {
 }
@@ -259,6 +258,9 @@ void FTBasicMeshGroup::UpdateUI()
 
 	CommandHistory::GetInstance()->UpdateBoolValue("Draw Normal", mDrawNormal);
 
-	CommandHistory::GetInstance()->UpdateFloatValue("Normal Scale", &mNormalScale);
+	if (ImGui::DragFloat("Normal Scale", &mNormalVertexConstData.scale, FLOATMOD_SPEED))
+	{
+		mValModified = true;
+	}
 }
 #endif // FOXTROT_EDITOR

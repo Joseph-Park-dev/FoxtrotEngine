@@ -1,7 +1,7 @@
 ﻿// ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -23,30 +23,39 @@
 
 using Microsoft::WRL::ComPtr;
 
-struct BasicVertexConstantData {
-    DirectX::SimpleMath::Matrix model;
-    DirectX::SimpleMath::Matrix invTranspose;
-    DirectX::SimpleMath::Matrix view;
-    DirectX::SimpleMath::Matrix projection;
-};
-static_assert((sizeof(BasicVertexConstantData) % 16) == 0,
-    "Constant Buffer size must be 16-byte aligned");
-
-struct BasicPixelConstantData
+struct BasicVCData
 {
-    DirectX::SimpleMath::Vector3 EyeWorld;
-    bool UseTexture;
-    FTMaterial Material;
-    Light Lights[GameData::MAX_LIGHTS];
+	DirectX::SimpleMath::Matrix model		 = DirectX::SimpleMath::Matrix();
+	DirectX::SimpleMath::Matrix invTranspose = DirectX::SimpleMath::Matrix();
+	DirectX::SimpleMath::Matrix view		 = DirectX::SimpleMath::Matrix();
+	DirectX::SimpleMath::Matrix projection	 = DirectX::SimpleMath::Matrix();
 };
-static_assert((sizeof(BasicPixelConstantData) % 16) == 0,
-    "Constant Buffer size must be 16-byte aligned");
+static_assert((sizeof(BasicVCData) % 16) == 0,
+	"Constant Buffer size must be 16-byte aligned");
 
-struct TileMapConstantData {
-    float texCoordX;
-    float texCoordY;
-    float texSizeX;
-    float texSizeY;
+struct BasicPCData
+{
+	DirectX::SimpleMath::Vector3 EyeWorld;
+	uint32_t				     UseTexture;
+	FTMaterial					 Material;
+	Light						 Lights[GameData::MAX_LIGHTS];
 };
-static_assert((sizeof(TileMapConstantData) % 16) == 0,
-    "Constant Buffer size must be 16-byte aligned");
+static_assert((sizeof(BasicPCData) % 16) == 0,
+	"Constant Buffer size must be 16-byte aligned");
+
+struct NormalVCData
+{
+	float scale = 0.1f;
+	float dummy[3];
+};
+static_assert((sizeof(NormalVCData) % 16) == 0, 
+	"Constant Buffer size must be 16-byte aligned");
+
+struct TileMapConstantData
+{
+	float texCoordX;
+	float texCoordY;
+	float texSizeX;
+	float texSizeY;
+};
+static_assert((sizeof(TileMapConstantData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");

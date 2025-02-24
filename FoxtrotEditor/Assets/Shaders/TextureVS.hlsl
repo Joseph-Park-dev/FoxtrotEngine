@@ -37,6 +37,6 @@ TexPSInput main(TexVSInput vsInput)
     
     // Assigning texture coordinates
     output.texcoord = vsInput.texcoord;
-    
+   
     return output;
 }

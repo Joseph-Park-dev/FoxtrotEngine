@@ -23,7 +23,7 @@ public:
 	virtual ~FTShape();
 
 public:
-	BasicVertexConstantData& GetVertexConstantData() { return mVertexConstantData; }
+	BasicVCData& GetVertexConstantData() { return mVertexConstantData; }
 	bool GetIsActive() { return mIsActive; }
 
 	void SetIsActive(bool val) { mIsActive = val; }
@@ -60,8 +60,8 @@ private:
 	bool  mIsActive;
 
 private:
-	BasicVertexConstantData mVertexConstantData;
-	BasicPixelConstantData	mPixelConstantData;
+	BasicVCData mVertexConstantData;
+	BasicPCData	mPixelConstantData;
 
 	ComPtr<ID3D11Buffer>	mVertexConstantBuffer;
 	ComPtr<ID3D11Buffer>	mPixelConstantBuffer;

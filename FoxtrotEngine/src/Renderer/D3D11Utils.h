@@ -123,10 +123,10 @@ public:
 
 		D3D11_BUFFER_DESC bufferDesc;
 		ZeroMemory(&bufferDesc, sizeof(bufferDesc));
-		bufferDesc.Usage			   = D3D11_USAGE_DYNAMIC; // 초기화 후 변경X
+		bufferDesc.Usage			   = D3D11_USAGE_IMMUTABLE; // 초기화 후 변경X
 		bufferDesc.ByteWidth		   = UINT(sizeof(T_VERTEX) * vertices.size());
 		bufferDesc.BindFlags		   = D3D11_BIND_VERTEX_BUFFER;
-		bufferDesc.CPUAccessFlags	   = D3D11_CPU_ACCESS_WRITE; // 0 if no CPU access is necessary.
+		bufferDesc.CPUAccessFlags	   = 0; // 0 if no CPU access is necessary.
 		bufferDesc.StructureByteStride = sizeof(T_VERTEX);
 
 		D3D11_SUBRESOURCE_DATA vertexBufferData = {
@@ -148,10 +148,10 @@ public:
 	{
 		D3D11_BUFFER_DESC vertexBufferDesc;
 		ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
-		vertexBufferDesc.Usage			= D3D11_USAGE_DYNAMIC;			  // Use DYNAMIC to allow CPU writes
+		vertexBufferDesc.Usage			= D3D11_USAGE_IMMUTABLE;		  // Use DYNAMIC to allow CPU writes
 		vertexBufferDesc.ByteWidth		= sizeof(T_VERTEX) * numVertices; // Corrected calculation
 		vertexBufferDesc.BindFlags		= D3D11_BIND_VERTEX_BUFFER;
-		vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		vertexBufferDesc.CPUAccessFlags = 0;
 
 		const HRESULT hr = device->CreateBuffer(&vertexBufferDesc, nullptr, vertexBuffer.GetAddressOf());
 		DX::ThrowIfFailed(hr);

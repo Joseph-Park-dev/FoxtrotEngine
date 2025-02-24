@@ -35,6 +35,10 @@
 #define TEXTURE_PS_PATH L"Assets/Shaders/TexturePS.hlsl"
 #define BLINN_PHONG_PS_PATH L"Assets/Shaders/BlinnPhongPS.hlsl"
 
+#define NORMAL_VS_PATH L"Assets/Shaders/NormalVS.hlsl"
+#define NORMAL_PS_PATH L"Assets/Shaders/NormalPS.hlsl"
+
+
 using VertexType = DirectX::VertexPositionColor;
 using namespace Microsoft::WRL;
 using namespace DX;
@@ -91,6 +95,10 @@ public:
 	ComPtr<ID3D11PixelShader>&	GetTexturePS();
 	ComPtr<ID3D11PixelShader>&	GetBlinnPhongPS();
 
+	// Shaders that render normal lines (Getters).
+	ComPtr<ID3D11VertexShader>& GetNormalVS();
+	ComPtr<ID3D11PixelShader>&	GetNormalPS();
+
 	// Rendering size related (Getters and Setters).
 	UINT GetRenderWidth() const;
 	UINT GetRenderHeight() const;
@@ -140,6 +148,9 @@ private:
 	ComPtr<ID3D11PixelShader>  mTexturePS;
 	ComPtr<ID3D11PixelShader>  mBlinnPhongPS;
 	ComPtr<ID3D11InputLayout>  mTextureInputLayout;
+
+	ComPtr<ID3D11VertexShader> mNormalVS;
+	ComPtr<ID3D11PixelShader>  mNormalPS;
 
 	ComPtr<ID3D11BlendState> mBlendState;
 

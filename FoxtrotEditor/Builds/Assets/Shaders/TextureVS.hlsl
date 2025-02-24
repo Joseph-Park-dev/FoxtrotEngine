@@ -6,7 +6,9 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-cbuffer ModelViewProjectionConstantBuffer : register(b0)
+#include "Common.hlsli"
+
+cbuffer VertexConstantBuffer : register(b0)
 {
     matrix model;
     matrix invTranspose;
@@ -14,36 +16,27 @@ cbuffer ModelViewProjectionConstantBuffer : register(b0)
     matrix projection;
 };
 
-// Pixel shader's input == Vertex shader's output
-struct VertexShaderInput
+TexPSInput main(TexVSInput vsInput)
 {
-    float3 pos : POSITION0;
-    float3 color : COLOR0;
-    float3 normal : NORMAL0;
-    float2 texcoord : TEXCOORD0;
-};
-
-struct PixelShaderInput
-{
-    float4 pos : SV_POSITION;
-    float3 color : COLOR;
-    float3 normal : NORMAL;
-    float2 texcoord : TEXCOORD;
-};
-
-PixelShaderInput main(VertexShaderInput input)
-{
-    PixelShaderInput output;
-    float4 pos = float4(input.pos, 1.0f);
-
-    pos = mul(pos, model);
-    pos = mul(pos, view);
-    pos = mul(pos, projection);
-
-    output.pos = pos;
-    output.color = input.color;
-    output.normal = input.normal;
-    output.texcoord = input.texcoord;
+    TexPSInput output;
     
+    // Calculating world space position
+    float4 pos = float4(vsInput.posModel, 1.0);
+    pos = mul(pos, model);
+    
+    output.posWorld = pos.xyz;
+    
+    pos = mul(pos, view);       // Camera space position
+    pos = mul(pos, projection); // Clip space position
+    output.posProj = pos;
+    
+    // Calculating transformed normal
+    float4 normal = float4(vsInput.normalModel, 0.0f);
+    output.normalWorld = mul(normal, invTranspose).xyz;
+    output.normalWorld = normalize(output.normalWorld);
+    
+    // Assigning texture coordinates
+    output.texcoord = vsInput.texcoord;
+   
     return output;
 }

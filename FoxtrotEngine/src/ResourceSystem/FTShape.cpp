@@ -181,7 +181,7 @@ void FTShape::UpdateConstantBufferModel(FTVector3 pos, FTVector3 rot, FTVector3 
         DXMatrix::CreateRotationX(rot.x) *
         DXMatrix::CreateRotationZ(rot.z) *
         DXMatrix::CreateTranslation(pos.GetDXVec3());
-    GetVertexConstantData().model = model.Transpose();
+    mVertexConstantData.model = model.Transpose();
 }
 
 void FTShape::UpdateConstantBufferView(Camera* camInst)

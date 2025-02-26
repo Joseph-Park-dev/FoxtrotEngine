@@ -15,6 +15,7 @@
 #include "ResourceSystem/FTTileMap.h"
 #include "ResourceSystem/FTPremade.h"
 #include "ResourceSystem/FTSpriteAnimation.h"
+#include "ResourceSystem/ModelLoader.h"
 #include "Core/FTCore.h"
 #include "Core/TemplateFunctions.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -37,23 +38,35 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 	mRenderer = renderer;
 
 	// Add primitive geometries as resources
-	mMapPrimitives.insert(
+	mMap2DPrimitives.insert(
 		std::pair(
 			ChunkKey::PRIMITIVE_SQUARE_RED,
 			GeometryGenerator::MakeSquare(FTVector3(1.0f, 0.0f, 0.0f))));
-	mMapPrimitives.insert(
+	mMap2DPrimitives.insert(
 		std::pair(
 			ChunkKey::PRIMITIVE_SQUARE_GREEN,
 			GeometryGenerator::MakeSquare(FTVector3(0.0f, 1.0f, 0.0f))));
-	mMapPrimitives.insert(
+	mMap2DPrimitives.insert(
 		std::pair(
 			ChunkKey::PRIMITIVE_SQUARE_BLUE,
 			GeometryGenerator::MakeSquare(FTVector3(0.0f, 0.0f, 1.0f))));
 
-	mMapPrimitives.insert(
+	mMap3DPrimitives.insert(
 		std::pair(
 			ChunkKey::PRIMITIVE_BOX,
 			GeometryGenerator::MakeBox()));
+	mMap3DPrimitives.insert(
+		std::pair(
+			ChunkKeys::PRIMITIVE_PLANE,
+			GeometryGenerator::MakeSquareGrid(1.0f, 1.0f, 2, 2)));
+	mMap3DPrimitives.insert(
+		std::pair(
+			ChunkKeys::PRIMITIVE_CYLINDER,
+			GeometryGenerator::MakeCylinder(1.0f, 1.0f, 2, 5)));
+	mMap3DPrimitives.insert(
+		std::pair(
+			ChunkKeys::PRIMITIVE_SPHERE,
+			GeometryGenerator::MakeSphere(1.0f, 10, 10)));
 }
 
 void ResourceManager::DeleteAll()
@@ -63,7 +76,8 @@ void ResourceManager::DeleteAll()
 	ClearMap<FTPremade>(mMapPremades);
 	ClearMap<FTSpriteAnimation>(mMapSpriteAnimation);
 	mMapMeshes.clear();
-	mMapPrimitives.clear();
+	mMap2DPrimitives.clear();
+	mMap3DPrimitives.clear();
 }
 
 FTTexture* ResourceManager::GetLoadedTexture(const UINT key)
@@ -87,9 +101,9 @@ FTTexture* ResourceManager::GetLoadedTexture(const char* name)
 	return nullptr;
 }
 
-std::vector<MeshData>& ResourceManager::GetLoadedMeshes(const UINT key)
+std::vector<FTMeshData>& ResourceManager::GetLoadedMeshes(const UINT key)
 {
-	std::vector<MeshData>& meshes = mMapMeshes.at(key);
+	std::vector<FTMeshData>& meshes = mMapMeshes.at(key);
 	if (meshes.empty())
 		printf("Error: ResourceManager::GetLoadedMeshes() -> Mesh is empty %d\n", key);
 	return meshes;
@@ -128,9 +142,18 @@ FTPremade* ResourceManager::GetLoadedPremade(std::string&& fileName)
 	printf("Error: ResourceManager::GetLoadedPremade() -> Cannot find FTPremade %s\n", premadeFullName.c_str());
 	return nullptr;
 }
-MeshData& ResourceManager::GetLoadedPrimitive(const UINT key)
+
+FTMeshData& ResourceManager::GetLoaded2DPrimitive(const UINT key)
 {
-	MeshData& primitive = mMapPrimitives.at(key);
+	FTMeshData& primitive = mMap2DPrimitives.at(key);
+	if (primitive.IsEmpty())
+		printf("Error: ResourceManager::GetLoadedPrimitive() -> Primitive is empty %d\n", key);
+	return primitive;
+}
+
+FTMeshData& ResourceManager::GetLoaded3DPrimitive(const UINT key)
+{
+	FTMeshData& primitive = mMap3DPrimitives.at(key);
 	if (primitive.IsEmpty())
 		printf("Error: ResourceManager::GetLoadedPrimitive() -> Primitive is empty %d\n", key);
 	return primitive;
@@ -209,11 +232,9 @@ void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
 	if (tileMapBuf)
 		tileMapBuf->ReadCSV();
 
-	std::vector<MeshData> meshDataBuf;
+	std::vector<FTMeshData> meshDataBuf;
 	GeometryGenerator::MakeSpriteAnimation(
-		meshDataBuf, tileMapBuf->GetTiles(),
-		tileMapBuf->GetMaxCountOnMapX(),
-		tileMapBuf->GetMaxCountOnMapY());
+		meshDataBuf, tileMapBuf->GetTiles(), tileMapBuf->GetMaxCountOnMapX(), tileMapBuf->GetMaxCountOnMapY());
 	spriteAnim->Initialize(meshDataBuf, mRenderer->GetDevice(), mRenderer->GetContext());
 }
 
@@ -338,6 +359,13 @@ void ResourceManager::LoadResByType(std::string& filePath)
 		case ResType::FTPREMADE:
 			LoadResource(filePath, mMapPremades);
 			break;
+		case ResType::FTMESH:
+		{
+			std::string fileName = ExtractFileName(filePath.c_str());
+			std::string path	 = ExtractUntil(filePath, fileName.c_str());
+			mMapMeshes.insert(std::make_pair(++mItemKey, GeometryGenerator::ReadFromFile(path, fileName)));
+		}
+		break;
 		default:
 			break;
 	}
@@ -352,6 +380,8 @@ ResType ResourceManager::GetResType(std::string& fileName)
 		return ResType::FTTILEMAP;
 	else if (StrContains(FileTypes::PREMADE, format))
 		return ResType::FTPREMADE;
+	else if (StrContains(FileTypes::MESH, format))
+		return ResType::FTMESH;
 	else
 		return ResType::UNSUPPORTED;
 }

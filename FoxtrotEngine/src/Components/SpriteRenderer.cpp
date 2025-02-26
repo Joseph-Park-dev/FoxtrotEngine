@@ -22,7 +22,7 @@
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/GeometryGenerator.h"
 #include "ResourceSystem/Mesh.h"
-#include "ResourceSystem/MeshData.h"
+#include "ResourceSystem/FTMeshData.h"
 #include "Scenes/Scene.h"
 
 #ifdef FOXTROT_EDITOR
@@ -67,7 +67,7 @@ void SpriteRenderer::CloneTo(Actor* actor)
 bool SpriteRenderer::InitializeMesh()
 {
 	MeshRenderer::InitializeMesh(
-		ResourceManager::GetInstance()->GetLoadedPrimitive(
+		ResourceManager::GetInstance()->GetLoaded2DPrimitive(
 			GetMeshKey()
 		)
 	);

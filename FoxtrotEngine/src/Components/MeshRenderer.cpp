@@ -14,7 +14,7 @@
 #include "Actors/Transform.h"
 #include "Actors/Actor.h"
 #include "ResourceSystem/Mesh.h"
-#include "ResourceSystem/MeshData.h"
+#include "ResourceSystem/FTMeshData.h"
 #include "ResourceSystem/FTBasicMeshGroup.h"
 #include "Renderer/Camera.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -72,7 +72,7 @@ bool MeshRenderer::InitializeMesh()
 {
 	if (mMeshKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	{
-		std::vector<MeshData>& meshData = ResourceManager::GetInstance()->GetLoadedMeshes(mMeshKey);
+		std::vector<FTMeshData>& meshData = ResourceManager::GetInstance()->GetLoadedMeshes(mMeshKey);
 		if (!mMeshGroup)
 			mMeshGroup = DBG_NEW FTBasicMeshGroup;
 		mMeshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
@@ -100,13 +100,13 @@ bool MeshRenderer::InitializeMesh(UINT key)
 	return mMeshGroup != nullptr;
 }
 
-bool MeshRenderer::InitializeMesh(MeshData& meshData)
+bool MeshRenderer::InitializeMesh(FTMeshData& meshData)
 {
 	if (!mMeshGroup)
 		mMeshGroup = DBG_NEW FTBasicMeshGroup;
 	if (!mMaterial)
 		mMaterial = DBG_NEW FTMaterial;
-	std::vector<MeshData> meshes = { meshData };
+	std::vector<FTMeshData> meshes = { meshData };
 	mMeshGroup->Initialize(meshes, mRenderer->GetDevice(), mRenderer->GetContext());
 	if (!mMeshGroup)
 	{
@@ -116,7 +116,7 @@ bool MeshRenderer::InitializeMesh(MeshData& meshData)
 	return true;
 }
 
-bool MeshRenderer::InitializeMesh(std::vector<MeshData>& meshData)
+bool MeshRenderer::InitializeMesh(std::vector<FTMeshData>& meshData)
 {
 	if (!mMeshGroup)
 		mMeshGroup = DBG_NEW FTBasicMeshGroup;
@@ -257,19 +257,21 @@ void MeshRenderer::EditorUIUpdate()
 		mMeshGroup->UpdateUI();
 
 	if (ImGui::Button("Add Cube"))
-	{
-		MeshData meshData =
-			ResourceManager::GetInstance()->GetLoadedPrimitive(ChunkKey::PRIMITIVE_BOX);
-		InitializeMesh(meshData);
-		LogString("Cube added");
-	}
-	OnConfirmUpdate();
+		AddCube();
+	if (ImGui::Button("Add Plane"))
+		AddPlane();
+	if (ImGui::Button("Add Cylinder"))
+		AddCylinder();
+	if (ImGui::Button("Add Sphere"))
+		AddSphere();
+	
 	UpdateSprite();
+	OnConfirmUpdate();
 }
 
 void MeshRenderer::OnConfirmUpdate()
 {
-	if (ImGui::Button("Update"))
+	if (ImGui::Button("UpdateSprite"))
 		SetTexture();
 }
 
@@ -362,5 +364,43 @@ void MeshRenderer::UpdateSprite(UINT& key)
 			ImGui::CloseCurrentPopup();
 		ImGui::EndPopup();
 	}
+}
+void MeshRenderer::AddCube()
+{
+	FTMeshData meshData =
+		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKeys::PRIMITIVE_BOX);
+	InitializeMesh(meshData);
+	LogString("Cube added");
+}
+
+void MeshRenderer::AddPlane()
+{
+	FTMeshData meshData =
+		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKeys::PRIMITIVE_PLANE);
+	InitializeMesh(meshData);
+	LogString("Plane added");
+}
+
+void MeshRenderer::AddCylinder()
+{
+	FTMeshData meshData =
+		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKeys::PRIMITIVE_CYLINDER);
+	InitializeMesh(meshData);
+	LogString("Cylinder added");
+}
+
+void MeshRenderer::AddSphere()
+{
+	FTMeshData meshData =
+		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKeys::PRIMITIVE_SPHERE);
+	InitializeMesh(meshData);
+	LogString("Sphere added");
+}
+
+void MeshRenderer::Add3DModel()
+{
+	FTMeshData meshData =
+		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKeys::PRIMITIVE_SPHERE);
+	InitializeMesh(meshData);
 }
 #endif // FOXTROT_EDITOR

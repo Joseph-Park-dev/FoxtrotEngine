@@ -11,7 +11,7 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Renderer/FoxtrotRenderer.h"
 
-void FTSpriteAnimation::Initialize(std::vector<MeshData>& meshes, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
+void FTSpriteAnimation::Initialize(std::vector<FTMeshData>& meshes, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
 	FTBasicMeshGroup::InitializeConstantBuffers(device);
 	this->InitializeMeshes(device, meshes);
@@ -121,18 +121,18 @@ void FTSpriteAnimation::SetTileMapKey(UINT key)
 	mTileMapKey = key;
 }
 
-void FTSpriteAnimation::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<MeshData>& meshes)
+void FTSpriteAnimation::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTMeshData>& meshes)
 {
 	GetMeshes().reserve(meshes.size());
 	mReel.reserve(meshes.size());
-	for (const MeshData& meshData : meshes) {
+	for (FTMeshData& meshData : meshes) {
 		Mesh* newMesh = DBG_NEW Mesh;
-		newMesh->IndexCount = UINT(meshData.indices.size());
-		newMesh->VertexCount = UINT(meshData.vertices.size());
+		newMesh->IndexCount = UINT(meshData.GetIndices().size());
+		newMesh->VertexCount = UINT(meshData.GetVertices().size());
 
-		D3D11Utils::CreateVertexBuffer(device, meshData.vertices,
+		D3D11Utils::CreateVertexBuffer(device, meshData.GetVertices(),
 			newMesh->VertexBuffer);
-		D3D11Utils::CreateIndexBuffer(device, meshData.indices,
+		D3D11Utils::CreateIndexBuffer(device, meshData.GetIndices(),
 			newMesh->IndexBuffer);
 
 		D3D11Utils::CreateConstantBuffer(device, GetVCData(), newMesh->VertexConstantBuffer);

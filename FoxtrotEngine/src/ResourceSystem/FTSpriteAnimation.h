@@ -34,10 +34,10 @@ class FTSpriteAnimation : public FTBasicMeshGroup
 {
 public:
 	virtual void Initialize(
-		std::vector<MeshData>&		 meshes,
-		ComPtr<ID3D11Device>&		 device,
-		ComPtr<ID3D11DeviceContext>& context) override;
-
+		std::vector<FTMeshData>& meshes,
+		ComPtr<ID3D11Device>& device,
+		ComPtr<ID3D11DeviceContext>& context
+	) override;
 	virtual void Update(float deltaTime);
 	virtual void Render(FoxtrotRenderer* renderer, FTTexture* texture) override;
 
@@ -68,8 +68,9 @@ public:
 
 protected:
 	virtual void InitializeMeshes(
-		ComPtr<ID3D11Device>&  device,
-		std::vector<MeshData>& meshes) override;
+		ComPtr<ID3D11Device>& device, 
+		std::vector<FTMeshData>& meshes
+	) override;
 
 private:
 	// These fields need to be loaded from .chunk file

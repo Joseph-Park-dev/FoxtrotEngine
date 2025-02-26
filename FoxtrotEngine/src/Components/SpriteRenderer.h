@@ -15,7 +15,7 @@
 #include "Components/MeshRenderer.h"
 
 #include "Core/TemplateFunctions.h"
-#include "ResourceSystem/MeshData.h"
+#include "ResourceSystem/FTMeshData.h"
 
 class Actor;
 class FTTexture;

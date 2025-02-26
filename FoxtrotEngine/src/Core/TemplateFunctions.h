@@ -183,6 +183,15 @@ inline std::string ExtractUntil(std::string& line, const char end) {
 	return result;
 }
 
+inline std::string ExtractUntil(std::string& line, const char* end) {
+	size_t typeBeg = line.find(end);
+	std::string result = line.substr(0, typeBeg);
+
+	// Erase the extracted value from line, including end character.
+	line.erase(0, typeBeg + 1);
+	return result;
+}
+
 inline bool EndsWith(
 	const std::wstring& fullString,
 	const std::wstring& ending

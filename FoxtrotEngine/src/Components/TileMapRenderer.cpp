@@ -77,8 +77,8 @@ void TileMapRenderer::InitializeTileMap() {
 			if (GetTexKey() != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 				SetTexture();
 			mTileMap->ReadCSV();
-			SetMeshKey(ChunkKey::PRIMITIVE_SQUARE_BLUE);
-			std::vector<MeshData> meshData = GeometryGenerator::MakeTileMapGrid(mTileMap);
+			SetMeshKey(ChunkKeys::PRIMITIVE_SQUARE_BLUE);
+			std::vector<FTMeshData> meshData = GeometryGenerator::MakeTileMapGrid(mTileMap);
 			MeshRenderer::InitializeMesh(meshData);
 		}
 	}

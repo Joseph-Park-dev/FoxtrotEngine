@@ -11,7 +11,7 @@
 
 #pragma once
 #include "ResourceSystem/Mesh.h"
-#include "ResourceSystem/MeshData.h"
+#include "ResourceSystem/FTMeshData.h"
 #include "ResourceSystem/MeshConstantData.h"
 #include "Actors/Transform.h"
 #include "Renderer/Camera.h"
@@ -47,7 +47,7 @@ public:
 			);
 
 protected:
-			void InitializeMesh(ComPtr<ID3D11Device>& device, MeshData&& meshData);
+			void InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData&& meshData);
 
 protected:
 	virtual void UpdateConstantBufferModel(Transform* transform);

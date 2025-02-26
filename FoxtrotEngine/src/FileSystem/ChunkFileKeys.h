@@ -87,11 +87,13 @@ namespace ChunkKeys
 	constexpr const char* TILEMAP_MAP_MAX_COUNT_X = "Max Count On Map X";
 	constexpr const char* TILEMAP_MAP_MAX_COUNT_Y = "Max Count On Map Y";
 
-	// Primitive Geometries
-	constexpr const UINT PRIMITIVE_SQUARE_RED = 0;
-	constexpr const UINT PRIMITIVE_SQUARE_GREEN = 1;
-	constexpr const UINT PRIMITIVE_SQUARE_BLUE = 2;
-	constexpr const UINT PRIMITIVE_BOX = 3;
+	// Primitive 2D Geometries
+	constexpr const UINT PRIMITIVE_SQUARE_RED = 1;
+	constexpr const UINT PRIMITIVE_SQUARE_GREEN = 2;
+	constexpr const UINT PRIMITIVE_SQUARE_BLUE = 3;
+	// Primitive 3D Geometries
+	constexpr const UINT PRIMITIVE_BOX = 1;
+	constexpr const UINT PRIMITIVE_PLANE = 2;
 
 	// Premades
 	constexpr const char* FTPREMADE = "FTPremade";

@@ -38,23 +38,27 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 	mRenderer = renderer;
 
 	// Add primitive geometries as resources
-	mMapPrimitives.insert(
+	mMap2DPrimitives.insert(
 		std::pair(
 			ChunkKeys::PRIMITIVE_SQUARE_RED,
 			GeometryGenerator::MakeSquare(FTVector3(1.0f, 0.0f, 0.0f))));
-	mMapPrimitives.insert(
+	mMap2DPrimitives.insert(
 		std::pair(
 			ChunkKeys::PRIMITIVE_SQUARE_GREEN,
 			GeometryGenerator::MakeSquare(FTVector3(0.0f, 1.0f, 0.0f))));
-	mMapPrimitives.insert(
+	mMap2DPrimitives.insert(
 		std::pair(
 			ChunkKeys::PRIMITIVE_SQUARE_BLUE,
 			GeometryGenerator::MakeSquare(FTVector3(0.0f, 0.0f, 1.0f))));
 
-	mMapPrimitives.insert(
+	mMap3DPrimitives.insert(
 		std::pair(
 			ChunkKeys::PRIMITIVE_BOX,
 			GeometryGenerator::MakeBox()));
+	mMap3DPrimitives.insert(
+		std::pair(
+			ChunkKeys::PRIMITIVE_PLANE,
+			GeometryGenerator::MakeSquareGrid(1.0f, 1.0f, 2, 2)));
 }
 
 void ResourceManager::DeleteAll()
@@ -64,7 +68,8 @@ void ResourceManager::DeleteAll()
 	ClearMap<FTPremade>(mMapPremades);
 	ClearMap<FTSpriteAnimation>(mMapSpriteAnimation);
 	mMapMeshes.clear();
-	mMapPrimitives.clear();
+	mMap2DPrimitives.clear();
+	mMap3DPrimitives.clear();
 }
 
 FTTexture* ResourceManager::GetLoadedTexture(const UINT key)
@@ -129,9 +134,18 @@ FTPremade* ResourceManager::GetLoadedPremade(std::string&& fileName)
 	printf("Error: ResourceManager::GetLoadedPremade() -> Cannot find FTPremade %s\n", premadeFullName.c_str());
 	return nullptr;
 }
-MeshData& ResourceManager::GetLoadedPrimitive(const UINT key)
+
+MeshData& ResourceManager::GetLoaded2DPrimitive(const UINT key)
 {
-	MeshData& primitive = mMapPrimitives.at(key);
+	MeshData& primitive = mMap2DPrimitives.at(key);
+	if (primitive.IsEmpty())
+		printf("Error: ResourceManager::GetLoadedPrimitive() -> Primitive is empty %d\n", key);
+	return primitive;
+}
+
+MeshData& ResourceManager::GetLoaded3DPrimitive(const UINT key)
+{
+	MeshData& primitive = mMap3DPrimitives.at(key);
 	if (primitive.IsEmpty())
 		printf("Error: ResourceManager::GetLoadedPrimitive() -> Primitive is empty %d\n", key);
 	return primitive;
@@ -212,9 +226,7 @@ void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
 
 	std::vector<MeshData> meshDataBuf;
 	GeometryGenerator::MakeSpriteAnimation(
-		meshDataBuf, tileMapBuf->GetTiles(),
-		tileMapBuf->GetMaxCountOnMapX(),
-		tileMapBuf->GetMaxCountOnMapY());
+		meshDataBuf, tileMapBuf->GetTiles(), tileMapBuf->GetMaxCountOnMapX(), tileMapBuf->GetMaxCountOnMapY());
 	spriteAnim->Initialize(meshDataBuf, mRenderer->GetDevice(), mRenderer->GetContext());
 }
 

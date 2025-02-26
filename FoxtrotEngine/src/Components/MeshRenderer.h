@@ -97,5 +97,9 @@ protected:
 	void		 OnResetTexture();
 	void		 UpdateSprite();
 	void		 UpdateSprite(UINT& key);
+
+private:
+	void AddCube();
+	void AddPlane();
 #endif
 };

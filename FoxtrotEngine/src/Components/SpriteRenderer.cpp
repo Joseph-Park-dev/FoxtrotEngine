@@ -68,7 +68,7 @@ void SpriteRenderer::CloneTo(Actor* actor)
 bool SpriteRenderer::InitializeMesh()
 {
 	MeshRenderer::InitializeMesh(
-		ResourceManager::GetInstance()->GetLoadedPrimitive(
+		ResourceManager::GetInstance()->GetLoaded2DPrimitive(
 			GetMeshKey()
 		)
 	);

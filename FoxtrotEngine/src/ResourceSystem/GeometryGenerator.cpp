@@ -226,56 +226,6 @@ MeshData GeometryGenerator::MakeSquare(float scale, FTVector3 color)
 	return meshData;
 }
 
-MeshData GeometryGenerator::MakeSquareGrid(
-	const float width,
-	const float height,
-	const int	numSlices,
-	const int	numStacks)
-{
-	MeshData meshData;
-
-	const float dx = width / numSlices;
-	const float dy = height / numStacks;
-
-	std::vector<Vertex>&   vertices = meshData.vertices;
-	std::vector<uint32_t>& indices	= meshData.indices;
-
-	Vector3 leftBottom = Vector3(-0.5f * width, -0.5f * height, 0.0f);
-
-	for (size_t j = 0; j <= numStacks; ++j)
-	{
-		Vector3 startStackPoint =
-			Vector3::Transform(leftBottom, Matrix::CreateTranslation(0.0f, dy * j, 0.0f));
-
-		for (size_t i = 0; i <= numSlices; ++i)
-		{
-			Vertex v;
-			v.position = Vector3::Transform(startStackPoint, Matrix::CreateTranslation(dx * i, 0.0f, 0.0f));
-			v.normal   = -Vector3::UnitZ;
-			v.texcoord = Vector2(float(i) / numSlices, 1.0f - float(j) / numStacks);
-			vertices.push_back(v);
-		}
-	}
-
-	for (int j = 0; j < numStacks; ++j)
-	{
-		const int offset = (numSlices + 1) * j;
-
-		for (int i = 0; i < numSlices; ++i)
-		{
-			indices.push_back(offset + i);
-			indices.push_back(offset + i + numSlices + 1);
-			indices.push_back(offset + i + 1 + numSlices + 1);
-
-			indices.push_back(offset + i);
-			indices.push_back(offset + i + 1 + numSlices + 1);
-			indices.push_back(offset + i + 1);
-		}
-	}
-
-	return meshData;
-}
-
 std::vector<MeshData> GeometryGenerator::MakeTileMapGrid(FTTileMap* tileMap)
 {
 	std::vector<MeshData> tileMapMeshes;
@@ -613,38 +563,200 @@ MeshData GeometryGenerator::MakeBox()
 	}
 
 	meshData.indices = {
-		0, 1, 2, 0, 2, 3, // 윗면
+		0, 1, 2, 0, 2, 3, // Up
 		4,
 		5,
 		6,
 		4,
 		6,
-		7, // 아랫면
+		7, // Down
 		8,
 		9,
 		10,
 		8,
 		10,
-		11, // 앞면
+		11, // Front
 		12,
 		13,
 		14,
 		12,
 		14,
-		15, // 뒷면
+		15, // Back
 		16,
 		17,
 		18,
 		16,
 		18,
-		19, // 왼쪽
+		19, // Left
 		20,
 		21,
 		22,
 		20,
 		22,
-		23 // 오른쪽
+		23 // Right
 	};
+
+	return meshData;
+}
+
+MeshData GeometryGenerator::MakeSquareGrid(
+	const float width,
+	const float height,
+	const int	numSlices,
+	const int	numStacks)
+{
+	MeshData meshData;
+
+	const float dx = width / numSlices;
+	const float dy = height / numStacks;
+
+	std::vector<Vertex>&   vertices = meshData.vertices;
+	std::vector<uint32_t>& indices	= meshData.indices;
+
+	Vector3 leftBottom = Vector3(-0.5f * width, -0.5f * height, 0.0f);
+
+	for (size_t j = 0; j <= numStacks; ++j)
+	{
+		Vector3 startStackPoint =
+			Vector3::Transform(leftBottom, Matrix::CreateTranslation(0.0f, dy * j, 0.0f));
+
+		for (size_t i = 0; i <= numSlices; ++i)
+		{
+			Vertex v;
+			v.position = Vector3::Transform(startStackPoint, Matrix::CreateTranslation(dx * i, 0.0f, 0.0f));
+			v.normal   = -Vector3::UnitZ;
+			v.texcoord = Vector2(float(i) / numSlices, 1.0f - float(j) / numStacks);
+			vertices.push_back(v);
+		}
+	}
+
+	for (int j = 0; j < numStacks; ++j)
+	{
+		const int offset = (numSlices + 1) * j;
+
+		for (int i = 0; i < numSlices; ++i)
+		{
+			indices.push_back(offset + i);
+			indices.push_back(offset + i + numSlices + 1);
+			indices.push_back(offset + i + 1 + numSlices + 1);
+
+			indices.push_back(offset + i);
+			indices.push_back(offset + i + 1 + numSlices + 1);
+			indices.push_back(offset + i + 1);
+		}
+	}
+
+	return meshData;
+}
+
+MeshData GeometryGenerator::MakeCylinder(const float bottomRadius, const float topRadius, float height, int sliceCount)
+{
+	using namespace DirectX;
+	using DirectX::SimpleMath::Matrix;
+	using DirectX::SimpleMath::Vector3;
+
+	// Texture 좌표계때문에 (sliceCount + 1) x 2 개의 버텍스 사용
+
+	const float dTheta = -XM_2PI / float(sliceCount);
+
+	MeshData meshData;
+
+	std::vector<Vertex>& vertices = meshData.vertices;
+
+	// 옆면의 바닥 버텍스들 (인덱스 0 이상 sliceCount 미만)
+	for (int i = 0; i <= sliceCount; i++)
+	{
+		Vertex v;
+
+		// TODO: 작성 (텍스춰 좌표계, 버텍스 노멀 필요)
+		v.position = Vector3::Transform(Vector3(bottomRadius, -0.5f * height, 0.0f), Matrix::CreateRotationY(dTheta * float(i)));
+		v.normal   = v.position - Vector3(0.0f, -0.5f * height, 0.0f);
+		v.normal.Normalize();
+		v.texcoord = Vector2(float(i) / sliceCount, 0.0f);
+
+		vertices.push_back(v);
+	}
+
+	// 옆면의 맨 위 버텍스들 (인덱스 sliceCount 이상 2 * sliceCount 미만)
+	for (int i = 0; i <= sliceCount; i++)
+	{
+		Vertex v;
+
+		// TODO: 작성 (텍스춰 좌표계, 버텍스 노멀 필요)
+		v.position = Vector3::Transform(Vector3(bottomRadius, 0.5f * height, 0.0f), Matrix::CreateRotationY(dTheta * float(i)));
+		v.normal   = v.position - Vector3(0.0f, 0.5f * height, 0.0f);
+		v.normal.Normalize();
+		v.texcoord = Vector2(float(i) / sliceCount, 1.0f);
+
+		vertices.push_back(v);
+	}
+
+	std::vector<uint32_t>& indices = meshData.indices;
+
+	for (int i = 0; i < sliceCount; i++)
+	{
+		// TODO: 삼각형 두 개 씩
+		indices.push_back(i);
+		indices.push_back(i + sliceCount + 1);
+		indices.push_back(i + sliceCount + 1 + 1);
+
+		indices.push_back(i);
+		indices.push_back(i + 1 + sliceCount + 1);
+		indices.push_back(i + 1);
+	}
+
+	return meshData;
+}
+
+MeshData GeometryGenerator::MakeSphere(const float radius, const int numSlices,
+	const int numStacks) 
+{
+	using namespace DirectX;
+
+	const float dTheta = -XM_2PI / float(numSlices);
+	const float dPhi = -XM_PI / float(numStacks);
+
+	MeshData meshData;
+
+	std::vector<Vertex>& vertices = meshData.vertices;
+
+	for (int j = 0; j <= numStacks; j++) {
+
+		Vector3 stackStartPoint =
+			Vector3::Transform(
+				Vector3(0.0f, -radius, 0.0f), Matrix::CreateRotationZ(dPhi * float(j)));
+
+		for (int i = 0; i <= numSlices; i++) {
+			Vertex v;
+
+			v.position = Vector3::Transform(
+				stackStartPoint, Matrix::CreateRotationY(dTheta * float(i))
+			);
+			v.normal = v.position;
+			v.normal.Normalize();
+			v.texcoord = Vector2(float(i) / numSlices, 1 - float(j) / numStacks);
+
+			vertices.push_back(v);
+		}
+	}
+
+	std::vector<uint32_t>& indices = meshData.indices;
+
+	for (int j = 0; j < numStacks; j++) {
+
+		const int offset = (numSlices + 1) * j;
+
+		for (int i = 0; i < numSlices; i++) {
+
+			indices.push_back(offset + i);
+			indices.push_back(offset + i + numSlices + 1);
+			indices.push_back(offset + i + 1 + numSlices + 1);
+
+			indices.push_back(offset + i);
+			indices.push_back(offset + i + 1 + numSlices + 1);
+			indices.push_back(offset + i + 1);
+		}
+	}
 
 	return meshData;
 }

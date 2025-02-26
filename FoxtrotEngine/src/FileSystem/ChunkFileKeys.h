@@ -94,6 +94,8 @@ namespace ChunkKeys
 	// Primitive 3D Geometries
 	constexpr const UINT PRIMITIVE_BOX = 1;
 	constexpr const UINT PRIMITIVE_PLANE = 2;
+	constexpr const UINT PRIMITIVE_CYLINDER = 3;
+	constexpr const UINT PRIMITIVE_SPHERE = 4;
 
 	// Premades
 	constexpr const char* FTPREMADE = "FTPremade";

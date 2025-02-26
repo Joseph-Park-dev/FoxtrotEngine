@@ -101,5 +101,7 @@ protected:
 private:
 	void AddCube();
 	void AddPlane();
+	void AddCylinder();
+	void AddSphere();
 #endif
 };

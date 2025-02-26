@@ -261,6 +261,10 @@ void MeshRenderer::EditorUIUpdate()
 		AddCube();
 	if (ImGui::Button("Add Plane"))
 		AddPlane();
+	if (ImGui::Button("Add Cylinder"))
+		AddCylinder();
+	if (ImGui::Button("Add Sphere"))
+		AddSphere();
 
 	UpdateSprite();
 	OnConfirmUpdate();
@@ -369,11 +373,28 @@ void MeshRenderer::AddCube()
 	InitializeMesh(meshData);
 	LogString("Cube added");
 }
+
 void MeshRenderer::AddPlane()
 {
 	MeshData meshData =
 		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKeys::PRIMITIVE_PLANE);
 	InitializeMesh(meshData);
 	LogString("Plane added");
+}
+
+void MeshRenderer::AddCylinder()
+{
+	MeshData meshData =
+		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKeys::PRIMITIVE_CYLINDER);
+	InitializeMesh(meshData);
+	LogString("Cylinder added");
+}
+
+void MeshRenderer::AddSphere()
+{
+	MeshData meshData =
+		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKeys::PRIMITIVE_SPHERE);
+	InitializeMesh(meshData);
+	LogString("Sphere added");
 }
 #endif // FOXTROT_EDITOR

@@ -291,5 +291,9 @@ namespace ChunkKey
 	constexpr const unsigned int PRIMITIVE_SQUARE_RED	= 0;
 	constexpr const unsigned int PRIMITIVE_SQUARE_GREEN = 1;
 	constexpr const unsigned int PRIMITIVE_SQUARE_BLUE	= 2;
-	constexpr const unsigned int PRIMITIVE_BOX = 3;
+
+	constexpr const unsigned int PRIMITIVE_BOX = 1;
+	constexpr const unsigned int PRIMITIVE_SQUARE_GRID = 2;
+	constexpr const unsigned int PRIMITIVE_CYLINDER = 3;
+	constexpr const unsigned int PRIMITIVE_SPHERE = 4;
 } // namespace ChunkKey

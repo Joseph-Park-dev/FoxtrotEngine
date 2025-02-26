@@ -20,6 +20,7 @@ namespace FileTypes
 	constexpr const char* PREMADE = ".premade";
 	constexpr const char* TEXTURE = ".png, .jpeg, .jpg";
 	constexpr const char* TILEMAP = ".csv, .txt";
+	constexpr const char* MESH = ".fbx";
 
 	constexpr const char* MATERIAL = "Material";
 }

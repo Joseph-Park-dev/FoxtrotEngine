@@ -368,7 +368,7 @@ void MeshRenderer::UpdateSprite(UINT& key)
 void MeshRenderer::AddCube()
 {
 	FTMeshData meshData =
-		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKeys::PRIMITIVE_BOX);
+		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKey::PRIMITIVE_BOX);
 	InitializeMesh(meshData);
 	LogString("Cube added");
 }
@@ -376,7 +376,7 @@ void MeshRenderer::AddCube()
 void MeshRenderer::AddPlane()
 {
 	FTMeshData meshData =
-		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKeys::PRIMITIVE_PLANE);
+		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKey::PRIMITIVE_SQUARE_GRID);
 	InitializeMesh(meshData);
 	LogString("Plane added");
 }
@@ -384,7 +384,7 @@ void MeshRenderer::AddPlane()
 void MeshRenderer::AddCylinder()
 {
 	FTMeshData meshData =
-		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKeys::PRIMITIVE_CYLINDER);
+		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKey::PRIMITIVE_CYLINDER);
 	InitializeMesh(meshData);
 	LogString("Cylinder added");
 }
@@ -392,7 +392,7 @@ void MeshRenderer::AddCylinder()
 void MeshRenderer::AddSphere()
 {
 	FTMeshData meshData =
-		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKeys::PRIMITIVE_SPHERE);
+		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKey::PRIMITIVE_SPHERE);
 	InitializeMesh(meshData);
 	LogString("Sphere added");
 }
@@ -400,7 +400,7 @@ void MeshRenderer::AddSphere()
 void MeshRenderer::Add3DModel()
 {
 	FTMeshData meshData =
-		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKeys::PRIMITIVE_SPHERE);
+		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKey::PRIMITIVE_SPHERE);
 	InitializeMesh(meshData);
 }
 #endif // FOXTROT_EDITOR

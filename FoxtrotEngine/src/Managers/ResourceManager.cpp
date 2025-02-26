@@ -57,15 +57,15 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 			GeometryGenerator::MakeBox()));
 	mMap3DPrimitives.insert(
 		std::pair(
-			ChunkKeys::PRIMITIVE_PLANE,
+			ChunkKey::PRIMITIVE_SQUARE_GRID,
 			GeometryGenerator::MakeSquareGrid(1.0f, 1.0f, 2, 2)));
 	mMap3DPrimitives.insert(
 		std::pair(
-			ChunkKeys::PRIMITIVE_CYLINDER,
+			ChunkKey::PRIMITIVE_CYLINDER,
 			GeometryGenerator::MakeCylinder(1.0f, 1.0f, 2, 5)));
 	mMap3DPrimitives.insert(
 		std::pair(
-			ChunkKeys::PRIMITIVE_SPHERE,
+			ChunkKey::PRIMITIVE_SPHERE,
 			GeometryGenerator::MakeSphere(1.0f, 10, 10)));
 }
 

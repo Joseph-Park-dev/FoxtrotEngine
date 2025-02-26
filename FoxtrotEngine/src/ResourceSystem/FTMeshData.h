@@ -7,6 +7,7 @@
 // ----------------------------------------------------------------
 /// <summary>
 /// Defines the vertices and indices to create a Mesh.
+/// This will be included in FTMeshDataPack
 /// </summary>
 
 #pragma once
@@ -16,21 +17,10 @@
 
 struct Vertex;
 
-class FTMeshData :
-	public FTResource
+struct FTMeshData
 {
-public:
-	std::vector<Vertex>&   GetVertices();
-	std::vector<uint32_t>& GetIndices();
+	bool IsEmpty() const;
 
-	const size_t VerticesCount() const;
-	const size_t IndicesCount() const;
-	bool		 IsEmpty() const;
-
-public:
-	FTMeshData();
-
-private:
-	std::vector<Vertex>	  mVertices;
-	std::vector<uint32_t> mIndices;
+	std::vector<Vertex>	  Vertices;
+	std::vector<uint32_t> Indices;
 };

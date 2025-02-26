@@ -15,6 +15,7 @@
 #include "ResourceSystem/FTTileMap.h"
 #include "ResourceSystem/FTPremade.h"
 #include "ResourceSystem/FTSpriteAnimation.h"
+#include "ResourceSystem/FTMeshDataPack.h"
 #include "ResourceSystem/ModelLoader.h"
 #include "Core/FTCore.h"
 #include "Core/TemplateFunctions.h"
@@ -75,7 +76,8 @@ void ResourceManager::DeleteAll()
 	ClearMap<FTTileMap>(mMapTileMaps);
 	ClearMap<FTPremade>(mMapPremades);
 	ClearMap<FTSpriteAnimation>(mMapSpriteAnimation);
-	mMapMeshes.clear();
+	ClearMap<FTMeshDataPack>(mMapMeshData);
+	mMapMeshData.clear();
 	mMap2DPrimitives.clear();
 	mMap3DPrimitives.clear();
 }
@@ -99,14 +101,6 @@ FTTexture* ResourceManager::GetLoadedTexture(const char* name)
 			return (*iter).second;
 		}
 	return nullptr;
-}
-
-std::vector<FTMeshData>& ResourceManager::GetLoadedMeshes(const UINT key)
-{
-	std::vector<FTMeshData>& meshes = mMapMeshes.at(key);
-	if (meshes.empty())
-		printf("Error: ResourceManager::GetLoadedMeshes() -> Mesh is empty %d\n", key);
-	return meshes;
 }
 
 FTTileMap* ResourceManager::GetLoadedTileMap(const UINT key)
@@ -143,6 +137,14 @@ FTPremade* ResourceManager::GetLoadedPremade(std::string&& fileName)
 	return nullptr;
 }
 
+FTMeshDataPack* ResourceManager::GetLoadedMeshData(const UINT key)
+{
+	FTMeshDataPack* meshes = mMapMeshData.at(key);
+	if (!meshes)
+		printf("Error: ResourceManager::GetLoadedMeshes() -> Mesh is empty %d\n", key);
+	return meshes;
+}
+
 FTMeshData& ResourceManager::GetLoaded2DPrimitive(const UINT key)
 {
 	FTMeshData& primitive = mMap2DPrimitives.at(key);
@@ -161,9 +163,10 @@ FTMeshData& ResourceManager::GetLoaded3DPrimitive(const UINT key)
 
 void ResourceManager::RemoveLoadedMeshes(const UINT key)
 {
-	if (KeyExists(key, mMapMeshes))
+	if (KeyExists(key, mMapMeshData))
 	{
-		mMapMeshes.erase(key);
+		delete mMapMeshData.at(key);
+		mMapMeshData.erase(key);
 	}
 	else
 	{
@@ -195,6 +198,11 @@ std::unordered_map<UINT, FTSpriteAnimation*>& ResourceManager::GetSpriteAnimMap(
 	return mMapSpriteAnimation;
 }
 
+std::unordered_map<UINT, FTMeshDataPack*>& ResourceManager::GetMeshDataMap()
+{
+	return mMapMeshData;
+}
+
 std::string& ResourceManager::GetPathToAsset()
 {
 	return mPathToAsset;
@@ -216,6 +224,12 @@ void ResourceManager::ProcessTexture(FTTexture* texture)
 		printf("ERROR : ResourceManager::ProcessTexture()->CreateTexture() Failed");
 	else
 		texture->SetIsProcessed(true);
+}
+
+void ResourceManager::ProcessSingleMeshData(FTMeshDataPack* meshDataPack)
+{
+	meshDataPack->GetMeshData() = 
+		GeometryGenerator::ReadFromFile(meshDataPack->GetRelativePath());
 }
 
 void ResourceManager::ProcessTileMap(FTTileMap* tileMap)
@@ -242,6 +256,12 @@ void ResourceManager::ProcessTextures()
 {
 	for (auto& textureItem : mMapTextures)
 		ProcessTexture(textureItem.second);
+}
+
+void ResourceManager::ProcessMeshData()
+{
+	for (auto& meshData : mMapMeshData)
+		ProcessSingleMeshData(meshData.second);
 }
 
 void ResourceManager::ProcessPremades()
@@ -323,6 +343,7 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	LoadResourceFromChunk<FTTexture>(ifs, mMapTextures, ftTexturePack.first);
 
 	ProcessTextures();
+	ProcessMeshData();
 	ProcessTileMaps();
 	ProcessSpriteAnims();
 	ProcessPremades();
@@ -336,6 +357,7 @@ void ResourceManager::LoadAllResourcesInAsset()
 		mPathToAsset,
 		[&](std::string&& path) { LoadResByType(path); });
 	ProcessTextures();
+	ProcessMeshData();
 	ProcessTileMaps();
 	ProcessSpriteAnims();
 	ProcessPremades();
@@ -360,11 +382,7 @@ void ResourceManager::LoadResByType(std::string& filePath)
 			LoadResource(filePath, mMapPremades);
 			break;
 		case ResType::FTMESH:
-		{
-			std::string fileName = ExtractFileName(filePath.c_str());
-			std::string path	 = ExtractUntil(filePath, fileName.c_str());
-			mMapMeshes.insert(std::make_pair(++mItemKey, GeometryGenerator::ReadFromFile(path, fileName)));
-		}
+			LoadResource(filePath, mMapMeshData);
 		break;
 		default:
 			break;

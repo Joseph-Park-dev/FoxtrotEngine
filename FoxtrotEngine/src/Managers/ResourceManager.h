@@ -37,6 +37,7 @@ class FTBasicMeshGroup;
 class FoxtrotRenderer;
 class SpineTextureLoader;
 class FTMeshData;
+class FTMeshDataPack;
 class FTTileMap;
 
 enum class ResType
@@ -60,24 +61,25 @@ public:
 	void LoadResources(std::ifstream& ifs, FTCore* ftCoreInst);
 
 public:
-	FTTexture*			   GetLoadedTexture(const UINT mItemKey);
-	FTTexture*			   GetLoadedTexture(const char* name);
-	FTTileMap*			   GetLoadedTileMap(const UINT mItemKey);
-	FTPremade*			   GetLoadedPremade(const UINT mItemKey);
-	FTPremade*			   GetLoadedPremade(std::string&& fileName);
+	FTTexture* GetLoadedTexture(const UINT mItemKey);
+	FTTexture* GetLoadedTexture(const char* name);
+	FTTileMap* GetLoadedTileMap(const UINT mItemKey);
+	FTPremade* GetLoadedPremade(const UINT mItemKey);
+	FTPremade* GetLoadedPremade(std::string&& fileName);
 
-	std::vector<FTMeshData>& GetLoadedMeshes(const UINT mItemKey);
-	FTMeshData&			   GetLoaded2DPrimitive(const UINT key);
-	FTMeshData&			   GetLoaded3DPrimitive(const UINT key);
-	
-	void				   RemoveLoadedMeshes(const UINT mItemKey);
-	FTSpriteAnimation*	   GetLoadedSpriteAnim(const UINT mItemKey);
+	FTMeshDataPack* GetLoadedMeshData(const UINT key);
+	FTMeshData&		GetLoaded2DPrimitive(const UINT key);
+	FTMeshData&		GetLoaded3DPrimitive(const UINT key);
+
+	void			   RemoveLoadedMeshes(const UINT mItemKey);
+	FTSpriteAnimation* GetLoadedSpriteAnim(const UINT mItemKey);
 
 public:
 	std::unordered_map<UINT, FTTexture*>& GetTexturesMap();
 	// I know the name feels so funny...
 	std::unordered_map<UINT, FTTileMap*>&		  GetTileMapsMap();
 	std::unordered_map<UINT, FTSpriteAnimation*>& GetSpriteAnimMap();
+	std::unordered_map<UINT, FTMeshDataPack*>&	  GetMeshDataMap();
 
 	std::string& GetPathToAsset();
 	void		 SetPathToAsset(std::string&& projectPath);
@@ -93,9 +95,9 @@ private:
 	std::unordered_map<UINT, FTPremade*>		 mMapPremades;
 	std::unordered_map<UINT, FTSpriteAnimation*> mMapSpriteAnimation;
 
-	std::unordered_map<UINT, std::vector<FTMeshData>> mMapMeshes;
-	std::unordered_map<UINT, FTMeshData>				mMap2DPrimitives;
-	std::unordered_map<UINT, FTMeshData>				mMap3DPrimitives;
+	std::unordered_map<UINT, FTMeshDataPack*> mMapMeshData;
+	std::unordered_map<UINT, FTMeshData>	  mMap2DPrimitives;
+	std::unordered_map<UINT, FTMeshData>	  mMap3DPrimitives;
 
 	/// <Chunk IO> -------------------------------------
 	/// Template member functions for saving/loading resources to/from chunk.
@@ -219,9 +221,12 @@ public:
 	/// </Processing Resources>
 private:
 	void ProcessTexture(FTTexture* texture);
+	void ProcessSingleMeshData(FTMeshDataPack* meshDataPack);
 	void ProcessTileMap(FTTileMap* tileMap);
 	void ProcessSpriteAnim(FTSpriteAnimation* spriteAnim);
+
 	void ProcessTextures();
+	void ProcessMeshData();
 	void ProcessPremades();
 	void ProcessTileMaps();
 	void ProcessSpriteAnims();
@@ -292,8 +297,8 @@ namespace ChunkKey
 	constexpr const unsigned int PRIMITIVE_SQUARE_GREEN = 1;
 	constexpr const unsigned int PRIMITIVE_SQUARE_BLUE	= 2;
 
-	constexpr const unsigned int PRIMITIVE_BOX = 1;
+	constexpr const unsigned int PRIMITIVE_BOX		   = 1;
 	constexpr const unsigned int PRIMITIVE_SQUARE_GRID = 2;
-	constexpr const unsigned int PRIMITIVE_CYLINDER = 3;
-	constexpr const unsigned int PRIMITIVE_SPHERE = 4;
+	constexpr const unsigned int PRIMITIVE_CYLINDER	   = 3;
+	constexpr const unsigned int PRIMITIVE_SPHERE	   = 4;
 } // namespace ChunkKey

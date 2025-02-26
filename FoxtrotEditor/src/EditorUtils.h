@@ -127,6 +127,6 @@ namespace FTEditorUtils
 				ImGui::CloseCurrentPopup();
 			ImGui::EndPopup();
 		}
-		return key;
+		return key; // to avoid key = 0, VALUE_NOT_ASSIGNED.
 	}
 }

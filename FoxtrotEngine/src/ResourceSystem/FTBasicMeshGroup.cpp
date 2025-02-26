@@ -163,14 +163,14 @@ void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vecto
 	if (0 < meshes.size())
 		Clear();
 
-	for (FTMeshData& meshData : meshes)
+	for (const FTMeshData& meshData : meshes)
 	{
 		Mesh* newMesh		 = DBG_NEW Mesh;
-		newMesh->VertexCount = UINT(meshData.VerticesCount());
-		newMesh->IndexCount	 = UINT(meshData.IndicesCount());
+		newMesh->VertexCount = UINT(meshData.Vertices.size());
+		newMesh->IndexCount	 = UINT(meshData.Indices.size());
 
-		D3D11Utils::CreateVertexBuffer(device, meshData.GetVertices(), newMesh->VertexBuffer);
-		D3D11Utils::CreateIndexBuffer(device, meshData.GetIndices(), newMesh->IndexBuffer);
+		D3D11Utils::CreateVertexBuffer(device, meshData.Vertices, newMesh->VertexBuffer);
+		D3D11Utils::CreateIndexBuffer(device, meshData.Indices, newMesh->IndexBuffer);
 
 		this->mMeshes.push_back(newMesh);
 	}
@@ -180,11 +180,11 @@ void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vecto
 	std::vector<uint32_t> normalIndices;
 
 	size_t offset = 0;
-	for (FTMeshData& meshData : meshes)
+	for (const FTMeshData& meshData : meshes)
 	{
-		for (size_t i = 0; i < meshData.VerticesCount(); ++i)
+		for (size_t i = 0; i < meshData.Vertices.size(); ++i)
 		{
-			Vertex v = meshData.GetVertices().at(i);
+			Vertex v = meshData.Vertices.at(i);
 
 			v.texcoord.x = 0.0f; // start point
 			normalVertices.push_back(v);
@@ -195,7 +195,7 @@ void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vecto
 			normalIndices.push_back(uint32_t(2 * (i + offset)));
 			normalIndices.push_back(uint32_t(2 * (i + offset) + 1));
 		}
-		offset = meshData.VerticesCount();
+		offset = meshData.Vertices.size();
 	}
 
 	D3D11Utils::CreateVertexBuffer<Vertex>(device, normalVertices, mNormalLines->VertexBuffer);

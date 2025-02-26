@@ -141,12 +141,12 @@ void FTShape::Render(
 void FTShape::InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData&& meshData)
 {
     mMesh = DBG_NEW Mesh;
-    mMesh->IndexCount = UINT(meshData.GetIndices().size());
-    mMesh->VertexCount = UINT(meshData.GetVertices().size());
+    mMesh->IndexCount = UINT(meshData.Indices.size());
+    mMesh->VertexCount = UINT(meshData.Vertices.size());
 
-    D3D11Utils::CreateVertexBuffer(device, meshData.GetVertices(),
+    D3D11Utils::CreateVertexBuffer(device, meshData.Vertices,
         mMesh->VertexBuffer);
-    D3D11Utils::CreateIndexBuffer(device, meshData.GetIndices(),
+    D3D11Utils::CreateIndexBuffer(device, meshData.Indices,
         mMesh->IndexBuffer);
 
     mMesh->VertexConstantBuffer = mVertexConstantBuffer;

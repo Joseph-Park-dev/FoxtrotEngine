@@ -14,7 +14,7 @@
 #include "Actors/Transform.h"
 #include "Actors/Actor.h"
 #include "ResourceSystem/Mesh.h"
-#include "ResourceSystem/MeshData.h"
+#include "ResourceSystem/FTMeshData.h"
 #include "ResourceSystem/FTBasicMeshGroup.h"
 #include "Renderer/Camera.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -73,7 +73,7 @@ bool MeshRenderer::InitializeMesh()
 {
 	if (mMeshKey != ChunkKeys::VALUE_NOT_ASSIGNED)
 	{
-		std::vector<MeshData>& meshData = ResourceManager::GetInstance()->GetLoadedMeshes(mMeshKey);
+		std::vector<FTMeshData>& meshData = ResourceManager::GetInstance()->GetLoadedMeshes(mMeshKey);
 		if (!mMeshGroup)
 			mMeshGroup = DBG_NEW FTBasicMeshGroup;
 		mMeshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
@@ -101,13 +101,13 @@ bool MeshRenderer::InitializeMesh(UINT key)
 	return mMeshGroup != nullptr;
 }
 
-bool MeshRenderer::InitializeMesh(MeshData& meshData)
+bool MeshRenderer::InitializeMesh(FTMeshData& meshData)
 {
 	if (!mMeshGroup)
 		mMeshGroup = DBG_NEW FTBasicMeshGroup;
 	if (!mMaterial)
 		mMaterial = DBG_NEW FTMaterial;
-	std::vector<MeshData> meshes = { meshData };
+	std::vector<FTMeshData> meshes = { meshData };
 	mMeshGroup->Initialize(meshes, mRenderer->GetDevice(), mRenderer->GetContext());
 	if (!mMeshGroup)
 	{
@@ -117,7 +117,7 @@ bool MeshRenderer::InitializeMesh(MeshData& meshData)
 	return true;
 }
 
-bool MeshRenderer::InitializeMesh(std::vector<MeshData>& meshData)
+bool MeshRenderer::InitializeMesh(std::vector<FTMeshData>& meshData)
 {
 	if (!mMeshGroup)
 		mMeshGroup = DBG_NEW FTBasicMeshGroup;
@@ -368,7 +368,7 @@ void MeshRenderer::UpdateSprite(UINT& key)
 }
 void MeshRenderer::AddCube()
 {
-	MeshData meshData =
+	FTMeshData meshData =
 		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKeys::PRIMITIVE_BOX);
 	InitializeMesh(meshData);
 	LogString("Cube added");
@@ -376,7 +376,7 @@ void MeshRenderer::AddCube()
 
 void MeshRenderer::AddPlane()
 {
-	MeshData meshData =
+	FTMeshData meshData =
 		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKeys::PRIMITIVE_PLANE);
 	InitializeMesh(meshData);
 	LogString("Plane added");
@@ -384,7 +384,7 @@ void MeshRenderer::AddPlane()
 
 void MeshRenderer::AddCylinder()
 {
-	MeshData meshData =
+	FTMeshData meshData =
 		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKeys::PRIMITIVE_CYLINDER);
 	InitializeMesh(meshData);
 	LogString("Cylinder added");
@@ -392,9 +392,16 @@ void MeshRenderer::AddCylinder()
 
 void MeshRenderer::AddSphere()
 {
-	MeshData meshData =
+	FTMeshData meshData =
 		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKeys::PRIMITIVE_SPHERE);
 	InitializeMesh(meshData);
 	LogString("Sphere added");
+}
+
+void MeshRenderer::Add3DModel()
+{
+	FTMeshData meshData =
+		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKeys::PRIMITIVE_SPHERE);
+	InitializeMesh(meshData);
 }
 #endif // FOXTROT_EDITOR

@@ -23,7 +23,7 @@
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/GeometryGenerator.h"
 #include "ResourceSystem/Mesh.h"
-#include "ResourceSystem/MeshData.h"
+#include "ResourceSystem/FTMeshData.h"
 #include "Scenes/Scene.h"
 
 #ifdef FOXTROT_EDITOR

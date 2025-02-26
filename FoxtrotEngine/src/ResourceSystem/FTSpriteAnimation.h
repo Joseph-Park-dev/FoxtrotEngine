@@ -34,7 +34,7 @@ class FTSpriteAnimation : public FTBasicMeshGroup
 {
 public:
 	virtual void Initialize(
-		std::vector<MeshData>& meshes,
+		std::vector<FTMeshData>& meshes,
 		ComPtr<ID3D11Device>& device,
 		ComPtr<ID3D11DeviceContext>& context
 	) override;
@@ -70,7 +70,7 @@ public:
 protected:
 	virtual void InitializeMeshes(
 		ComPtr<ID3D11Device>& device, 
-		std::vector<MeshData>& meshes
+		std::vector<FTMeshData>& meshes
 	) override;
 
 private:

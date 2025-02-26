@@ -88,7 +88,7 @@ FTSpriteAnimation* Animator::CreateAnimationFromTile(std::string&& name, UINT te
 	animation->SetFileName(name);
 	animation->SetName(std::move(name));
 	animation->SetAnimator(this);
-	std::vector<MeshData> meshDataBuf;
+	std::vector<FTMeshData> meshDataBuf;
 	GeometryGenerator::MakeSpriteAnimation(
 		meshDataBuf, tileMapBuf->GetTiles(),
 		tileMapBuf->GetMaxCountOnMapX(),

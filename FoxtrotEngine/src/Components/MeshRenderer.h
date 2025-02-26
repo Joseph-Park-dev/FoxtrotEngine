@@ -22,7 +22,7 @@ class Camera;
 class Transform;
 class FTTexture;
 struct Mesh;
-struct MeshData;
+struct FTMeshData;
 
 #define CHECK_RENDERER(RendererInst) \
 	if (!RendererInst)               \
@@ -60,8 +60,8 @@ public:
 protected:
 	virtual bool InitializeMesh();
 	bool		 InitializeMesh(UINT key);
-	bool		 InitializeMesh(MeshData& meshData);
-	bool		 InitializeMesh(std::vector<MeshData>& meshData);
+	bool		 InitializeMesh(FTMeshData& meshData);
+	bool		 InitializeMesh(std::vector<FTMeshData>& meshData);
 
 	bool		 SetTexture();
 	virtual void UpdateMesh(Transform* transform, Camera* camInst);
@@ -103,5 +103,7 @@ private:
 	void AddPlane();
 	void AddCylinder();
 	void AddSphere();
+
+	void Add3DModel();
 #endif
 };

@@ -6,14 +6,14 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 /// <summary>
-/// Class that holds the Meshes created from a MeshData.
+/// Class that holds the Meshes created from a FTMeshData.
 /// </summary>
 
 #pragma once
 #include <directxtk/SimpleMath.h>
 
 #include "Renderer/D3D11Utils.h"
-#include "ResourceSystem/MeshData.h"
+#include "ResourceSystem/FTMeshData.h"
 #include "ResourceSystem/Mesh.h"
 #include "ResourceSystem/MeshConstantData.h"
 #include "ResourceSystem/FTResource.h"
@@ -27,7 +27,7 @@ public:
 
 public:
 	virtual void Initialize(
-		std::vector<MeshData>&		 meshes,
+		std::vector<FTMeshData>&		 meshes,
 		ComPtr<ID3D11Device>&		 device,
 		ComPtr<ID3D11DeviceContext>& context);
 	virtual void Render(FoxtrotRenderer* renderer, FTTexture* texture);
@@ -50,7 +50,7 @@ public:
 
 protected:
 	virtual HRESULT CreateTextureSampler(ComPtr<ID3D11Device>& device);
-	virtual void	InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<MeshData>& meshes);
+	virtual void	InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTMeshData>& meshes);
 	void			InitializeConstantBuffers(ComPtr<ID3D11Device>& device);
 
 private:

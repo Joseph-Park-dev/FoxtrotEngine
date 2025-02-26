@@ -37,7 +37,7 @@ class FTSpriteAnimation;
 class FTBasicMeshGroup;
 class FoxtrotRenderer;
 class SpineTextureLoader;
-class MeshData;
+class FTMeshData;
 class FTTileMap;
 
 enum class ResType
@@ -45,7 +45,8 @@ enum class ResType
 	UNSUPPORTED,
 	FTTEXTURE,
 	FTTILEMAP,
-	FTPREMADE
+	FTPREMADE,
+	FTMESH
 };
 
 class ResourceManager
@@ -65,9 +66,9 @@ public:
 	FTTileMap*			   GetLoadedTileMap(const UINT mItemKey);
 	FTPremade*			   GetLoadedPremade(const UINT mItemKey);
 	FTPremade*			   GetLoadedPremade(std::string&& fileName);
-	std::vector<MeshData>& GetLoadedMeshes(const UINT mItemKey);
-	MeshData&			   GetLoaded2DPrimitive(const UINT key);
-	MeshData&			   GetLoaded3DPrimitive(const UINT key);
+	std::vector<FTMeshData>& GetLoadedMeshes(const UINT mItemKey);
+	FTMeshData&			   GetLoaded2DPrimitive(const UINT key);
+	FTMeshData&			   GetLoaded3DPrimitive(const UINT key);
 	void				   RemoveLoadedMeshes(const UINT mItemKey);
 	FTSpriteAnimation*	   GetLoadedSpriteAnim(const UINT mItemKey);
 
@@ -91,9 +92,9 @@ private:
 	std::unordered_map<UINT, FTPremade*>		 mMapPremades;
 	std::unordered_map<UINT, FTSpriteAnimation*> mMapSpriteAnimation;
 
-	std::unordered_map<UINT, std::vector<MeshData>> mMapMeshes;
-	std::unordered_map<UINT, MeshData>				mMap2DPrimitives;
-	std::unordered_map<UINT, MeshData>				mMap3DPrimitives;
+	std::unordered_map<UINT, std::vector<FTMeshData>> mMapMeshes;
+	std::unordered_map<UINT, FTMeshData>				mMap2DPrimitives;
+	std::unordered_map<UINT, FTMeshData>				mMap3DPrimitives;
 
 	/// <Chunk IO> -------------------------------------
 	/// Template member functions for saving/loading resources to/from chunk.

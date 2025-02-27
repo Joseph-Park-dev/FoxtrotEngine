@@ -45,7 +45,8 @@ EditorChunkLoader::EditorChunkLoader()
 		{ "GunFiringBehavior", &Component::Create<GunFiringBehavior> },
 		{ "BulletBehavior", &Component::Create<BulletBehavior> },
 		{ "Seek", &Component::Create<Seek> },
-		{ "Flee", &Component::Create<Flee> }
+		{ "Flee", &Component::Create<Flee> },
+		{ "Monkey Spin", FTBehavior::Create<MonkeySpin>}
 	};
 }
 

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -32,26 +32,26 @@
 
 void ChunkLoader::SaveChunk(const std::string fileName)
 {
-    std::ofstream ofs(fileName);
-    SaveChunkData(ofs);
+	std::ofstream ofs(fileName);
+	SaveChunkData(ofs);
 }
 
 void ChunkLoader::LoadChunk(const std::string fileName)
 {
-    std::ifstream ifs(fileName);
-    LoadChunkData(ifs);
-    CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
-    ResourceManager::GetInstance()->LoadResources(ifs, FTCore::GetInstance());
-    LoadActorsData(ifs);
-    Camera::GetInstance()->LoadProperties(ifs);
+	std::ifstream ifs(fileName);
+	LoadChunkData(ifs);
+	CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
+	ResourceManager::GetInstance()->LoadResources(ifs, FTCore::GetInstance());
+	LoadActorsData(ifs);
+	Camera::GetInstance()->LoadProperties(ifs);
 }
 
 void ChunkLoader::SaveChunkData(std::ofstream& out)
 {
-    Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
-    FileIOHelper::BeginDataPackSave(out, ChunkKey::CHUNK_DATA);
-    FileIOHelper::SaveInt(out, ChunkKey::ACTOR_COUNT, currScene->GetActorCount());
-    FileIOHelper::EndDataPackSave(out, ChunkKey::CHUNK_DATA);
+	Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
+	FileIOHelper::BeginDataPackSave(out, ChunkKey::CHUNK_DATA);
+	FileIOHelper::SaveInt(out, ChunkKey::ACTOR_COUNT, currScene->GetActorCount());
+	FileIOHelper::EndDataPackSave(out, ChunkKey::CHUNK_DATA);
 }
 
 void ChunkLoader::SaveActorsData(std::ofstream& out)
@@ -60,53 +60,53 @@ void ChunkLoader::SaveActorsData(std::ofstream& out)
 
 void ChunkLoader::LoadActorsData(std::ifstream& ifs)
 {
-    Scene* scene = SceneManager::GetInstance()->GetCurrentScene();
-    std::pair<size_t, std::string>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
-    for (size_t i = 0; i < pack.first; ++i)
-    {
-        std::pair<size_t, std::string>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
-        Actor* actor = DBG_NEW Actor(scene);
-        actor->LoadProperties(ifs);
-        actor->LoadComponents(ifs);
-        actor->Initialize(FTCore::GetInstance());
-        actor->Setup();
-    }
+	Scene*							 scene = SceneManager::GetInstance()->GetCurrentScene();
+	std::pair<size_t, std::string>&& pack  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
+	for (size_t i = 0; i < pack.first; ++i)
+	{
+		std::pair<size_t, std::string>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
+		Actor* actor							   = DBG_NEW Actor(scene);
+		actor->LoadProperties(ifs);
+		actor->LoadComponents(ifs);
+		actor->Initialize(FTCore::GetInstance());
+		actor->Setup();
+	}
 }
 
 void ChunkLoader::LoadChunkData(std::ifstream& ifs)
 {
-    int targetActor = 0;
-    FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CHUNK_DATA);
-    FileIOHelper::LoadSize(ifs, mCurrentChunkData.ActorCount);
+	int targetActor = 0;
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CHUNK_DATA);
+	FileIOHelper::LoadSize(ifs, mCurrentChunkData.ActorCount);
 }
 
 std::string ChunkLoader::GetConvertedFileName(std::string curr, std::string prevSuffix, std::string postSuffix)
 {
-    return curr.substr(0, curr.length() - strlen(prevSuffix.c_str())) + postSuffix;
+	return curr.substr(0, curr.length() - strlen(prevSuffix.c_str())) + postSuffix;
 }
 
 ChunkLoader::ChunkLoader()
-    : mCurrentChunkData{}
+	: mCurrentChunkData{}
 {
-    mComponentLoadMap =
-    {
-        {"AI",                &Component::Load<AI>},
-        {"Animator",          &Component::Load<Animator>},
-        {"BoxCollider2D",     &Component::Load<BoxCollider2D>},
-        {"InputMove",         &Component::Load<InputMove>},
-        {"Move",              &Component::Load<Move>},
-        {"Rigidbody2D",       &Component::Load<Rigidbody2D>},
-        {"SpriteRenderer",    &Component::Load<SpriteRenderer>},
-        {"TileMap",           &Component::Load<TileMapRenderer>},
-        {"TextRenderer",      &Component::Load<TextRenderer>},
-        {"MeshRenderer",      &Component::Load<MeshRenderer>},
+	mComponentLoadMap = {
+		{ "AI", &Component::Load<AI> },
+		{ "Animator", &Component::Load<Animator> },
+		{ "BoxCollider2D", &Component::Load<BoxCollider2D> },
+		{ "InputMove", &Component::Load<InputMove> },
+		{ "Move", &Component::Load<Move> },
+		{ "Rigidbody2D", &Component::Load<Rigidbody2D> },
+		{ "SpriteRenderer", &Component::Load<SpriteRenderer> },
+		{ "TileMap", &Component::Load<TileMapRenderer> },
+		{ "TextRenderer", &Component::Load<TextRenderer> },
+		{ "MeshRenderer", &Component::Load<MeshRenderer> },
 
-        {"GunFiringBehavior", &Component::Load<GunFiringBehavior>},
-        {"BulletBehavior",    &Component::Load<BulletBehavior>},
+		{ "GunFiringBehavior", &Component::Load<GunFiringBehavior> },
+		{ "BulletBehavior", &Component::Load<BulletBehavior> },
 
-        {"Seek",              &Component::Load<Seek>},
-        {"Flee",              &Component::Load<Flee>}
-    };
+		{ "Seek", &Component::Load<Seek> },
+		{ "Flee", &Component::Load<Flee> },
+		{ "Monkey Spin", &FTBehavior::Load<MonkeySpin> }
+	};
 };
 
-ChunkLoader::~ChunkLoader(){}
+ChunkLoader::~ChunkLoader() {}

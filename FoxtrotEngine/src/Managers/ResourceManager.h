@@ -133,8 +133,8 @@ private:
 	template <typename FTRESOURCE>
 	void LoadResource(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
-		FTRESOURCE* resource					= DBG_NEW FTRESOURCE;
-		UINT						   mItemKey = resource->LoadProperties(ifs);
+		FTRESOURCE* resource = DBG_NEW FTRESOURCE;
+		UINT		mItemKey = resource->LoadProperties(ifs);
 
 		if (KeyExists(mItemKey, resMap))
 		{
@@ -289,6 +289,7 @@ private:
 namespace ChunkKey
 {
 	constexpr const char* FTTEXTURE_GROUP			= "FTTexture Group";
+	constexpr const char* FTMESH_GROUP				= "FTMesh Group";
 	constexpr const char* FTTILEMAP_GROUP			= "FTTileMap Group";
 	constexpr const char* FTPREMADE_GROUP			= "FTPremade Group";
 	constexpr const char* FT_SPRITE_ANIMATION_GROUP = "FTSpriteAnimation Group";

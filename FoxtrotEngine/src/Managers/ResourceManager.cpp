@@ -141,7 +141,11 @@ FTMeshDataPack* ResourceManager::GetLoadedMeshData(const UINT key)
 {
 	FTMeshDataPack* meshes = mMapMeshData.at(key);
 	if (!meshes)
+	{
 		printf("Error: ResourceManager::GetLoadedMeshes() -> Mesh is empty %d\n", key);
+		return nullptr;
+	}
+	meshes->AddRefCount();
 	return meshes;
 }
 
@@ -228,7 +232,7 @@ void ResourceManager::ProcessTexture(FTTexture* texture)
 
 void ResourceManager::ProcessSingleMeshData(FTMeshDataPack* meshDataPack)
 {
-	meshDataPack->GetMeshData() = 
+	meshDataPack->GetMeshData() =
 		GeometryGenerator::ReadFromFile(meshDataPack->GetRelativePath());
 }
 
@@ -318,29 +322,37 @@ void ResourceManager::SaveResources(std::ofstream& ofs)
 	SaveResourceToChunk<FTSpriteAnimation>(ofs, mMapSpriteAnimation);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
 
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTMESH_GROUP);
+	SaveResourceToChunk<FTMeshDataPack>(ofs, mMapMeshData);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTMESH_GROUP);
+
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::RESOURCE_DATA);
 }
 
 void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 {
-	std::pair<size_t, std::string> resPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RESOURCE_DATA);
-	size_t						   count   = resPack.first;
+	std::pair<size_t, std::string> resPack	 = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RESOURCE_DATA);
+	size_t						   packCount = resPack.first;
 
-	std::pair<size_t, std::string> ftSpriteAnimPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
-	mMapSpriteAnimation.reserve(ftSpriteAnimPack.first);
-	LoadResourceFromChunk<FTSpriteAnimation>(ifs, mMapSpriteAnimation, ftSpriteAnimPack.first);
+	std::pair<size_t, std::string> desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMESH_GROUP);
+	mMapMeshData.reserve(desc.first);
+	LoadResourceFromChunk<FTMeshDataPack>(ifs, mMapMeshData, desc.first);
 
-	std::pair<size_t, std::string> ftPremadePack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPREMADE_GROUP);
-	mMapPremades.reserve(ftPremadePack.first);
-	LoadResourceFromChunk<FTPremade>(ifs, mMapPremades, ftPremadePack.first);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
+	mMapSpriteAnimation.reserve(desc.first);
+	LoadResourceFromChunk<FTSpriteAnimation>(ifs, mMapSpriteAnimation, desc.first);
 
-	std::pair<size_t, std::string> ftTileMapPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTILEMAP_GROUP);
-	mMapTileMaps.reserve(ftTileMapPack.first);
-	LoadResourceFromChunk<FTTileMap>(ifs, mMapTileMaps, ftTileMapPack.first);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPREMADE_GROUP);
+	mMapPremades.reserve(desc.first);
+	LoadResourceFromChunk<FTPremade>(ifs, mMapPremades, desc.first);
 
-	std::pair<size_t, std::string> ftTexturePack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTEXTURE_GROUP);
-	mMapTextures.reserve(ftTexturePack.first);
-	LoadResourceFromChunk<FTTexture>(ifs, mMapTextures, ftTexturePack.first);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTILEMAP_GROUP);
+	mMapTileMaps.reserve(desc.first);
+	LoadResourceFromChunk<FTTileMap>(ifs, mMapTileMaps, desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTEXTURE_GROUP);
+	mMapTextures.reserve(desc.first);
+	LoadResourceFromChunk<FTTexture>(ifs, mMapTextures, desc.first);
 
 	ProcessTextures();
 	ProcessMeshData();
@@ -383,7 +395,7 @@ void ResourceManager::LoadResByType(std::string& filePath)
 			break;
 		case ResType::FTMESH:
 			LoadResource(filePath, mMapMeshData);
-		break;
+			break;
 		default:
 			break;
 	}

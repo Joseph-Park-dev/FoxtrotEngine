@@ -7,7 +7,12 @@ void MonkeySpin::Update(float deltaTime)
 {
 	FTVector3 rotation = GetOwner()->GetTransform()->GetRotation();
 	GetOwner()->GetTransform()->SetRotation(
-		rotation + FTVector3::UnitY * deltaTime);
+			rotation + FTVector3::UnitY * deltaTime);
+
+	float height = rotation.y;
+	height = Math::Fmod(height, 360.f);
+	height = Math::Sin(height);
+	GetOwner()->GetTransform()->SetWorldPosition(FTVector3::UnitY * height * 0.5f);
 }
 
 void MonkeySpin::CloneTo(Actor* actor)
@@ -29,4 +34,3 @@ void MonkeySpin::LoadProperties(std::ifstream& ifs)
 {
 	Component::LoadProperties(ifs);
 }
-

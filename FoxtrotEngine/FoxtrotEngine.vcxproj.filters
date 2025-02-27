@@ -1056,6 +1056,9 @@
     <ClCompile Include="src\ResourceSystem\FTMeshDataPack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Behaviors\MonkeySpin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Actors\Actor.h">
@@ -2502,6 +2505,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ResourceSystem\FTMeshDataPack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Behaviors\MonkeySpin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

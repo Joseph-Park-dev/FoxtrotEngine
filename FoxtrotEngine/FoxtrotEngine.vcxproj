@@ -222,7 +222,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>.\include;.\include\assimp;.\src;..\FoxtrotEditor\include;..\FoxtrotEditor\src;..\FoxtrotDS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\include;.\src;..\FoxtrotEditor\include;..\FoxtrotEditor\src;..\FoxtrotDS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -260,6 +260,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Behaviors\MonkeySpin.cpp" />
     <ClCompile Include="src\ResourceSystem\FTMeshDataPack.cpp" />
     <ClCompile Include="include\assimp\AssetLib\3DS\3DSConverter.cpp" />
     <ClCompile Include="include\assimp\AssetLib\3DS\3DSExporter.cpp" />
@@ -609,6 +610,7 @@
     <ClCompile Include="src\spine\VertexAttachment.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Behaviors\MonkeySpin.h" />
     <ClInclude Include="src\ResourceSystem\FTMeshDataPack.h" />
     <ClInclude Include="include\assimp\aabb.h" />
     <ClInclude Include="include\assimp\ai_assert.h" />

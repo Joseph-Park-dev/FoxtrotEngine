@@ -99,12 +99,11 @@ protected:
 	void		 UpdateSprite(UINT& key);
 
 private:
+	void AddModel();
 	void AddCube();
 	void AddPlane();
 	void AddCylinder();
 	void AddSphere();
-
-	void Add3DModel();
 #endif
 };
 

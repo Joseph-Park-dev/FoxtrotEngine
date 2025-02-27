@@ -71,9 +71,9 @@ FTMeshData GeometryGenerator::MakeSquare()
 		// v.color = colors[i];
 		v.normal   = normals[i];
 		v.texcoord = texcoords[i];
-		meshData.GetVertices().push_back(v);
+		meshData.Vertices.push_back(v);
 	}
-	meshData.GetIndices() = {
+	meshData.Indices = {
 		0, 1, 2, 0, 2, 3, // 앞면
 	};
 
@@ -120,9 +120,9 @@ FTMeshData GeometryGenerator::MakeSquare(float scale)
 		// v.color = colors[i];
 		v.normal   = normals[i];
 		v.texcoord = texcoords[i];
-		meshData.GetVertices().push_back(v);
+		meshData.Vertices.push_back(v);
 	}
-	meshData.GetIndices() = {
+	meshData.Indices = {
 		0, 1, 2, 0, 2, 3, // 앞면
 	};
 
@@ -169,9 +169,9 @@ FTMeshData GeometryGenerator::MakeSquare(FTVector3 color)
 		// v.color = colors[i];
 		v.normal   = normals[i];
 		v.texcoord = texcoords[i];
-		meshData.GetVertices().push_back(v);
+		meshData.Vertices.push_back(v);
 	}
-	meshData.GetIndices() = {
+	meshData.Indices = {
 		0, 1, 2, 0, 2, 3, // 앞면
 	};
 
@@ -218,9 +218,9 @@ FTMeshData GeometryGenerator::MakeSquare(float scale, FTVector3 color)
 		// v.color = colors[i];
 		v.normal   = normals[i];
 		v.texcoord = texcoords[i];
-		meshData.GetVertices().push_back(v);
+		meshData.Vertices.push_back(v);
 	}
-	meshData.GetIndices() = {
+	meshData.Indices = {
 		0, 1, 2, 0, 2, 3, // 앞면
 	};
 
@@ -291,9 +291,9 @@ FTMeshData GeometryGenerator::MakeTile(Tile& tile)
 		// v.color = colors[i];
 		v.normal   = normals[i];
 		v.texcoord = texcoords[i];
-		meshData.GetVertices().push_back(v);
+		meshData.Vertices.push_back(v);
 	}
-	meshData.GetIndices() = {
+	meshData.Indices = {
 		0, 1, 2, 0, 2, 3, // 앞면
 	};
 
@@ -354,9 +354,9 @@ FTMeshData GeometryGenerator::MakeAnimationFrame(Tile tile)
 		// v.color = colors[i];
 		v.normal   = normals[i];
 		v.texcoord = texcoords[i];
-		meshData.GetVertices().push_back(v);
+		meshData.Vertices.push_back(v);
 	}
-	meshData.GetIndices() = {
+	meshData.Indices = {
 		0, 1, 2, 0, 2, 3, // 앞면
 	};
 
@@ -426,9 +426,9 @@ FTMeshData GeometryGenerator::MakeAnimationFrame(Tile tile)
 //         v.color = colors[i];
 //         v.normal = normals[i];
 //         v.texcoord = texcoords[i];
-//         meshData.GetVertices().push_back(v);
+//         meshData.Vertices.push_back(v);
 //     }
-//     meshData.GetIndices() = {
+//     meshData.Indices = {
 //         0, 1, 2, 0, 2, 3, // 앞면
 //     };
 //
@@ -560,10 +560,10 @@ FTMeshData GeometryGenerator::MakeBox()
 		// v.color     = colors[i];
 		v.normal   = normals[i];
 		v.texcoord = texcoords[i];
-		meshData.GetVertices().push_back(v);
+		meshData.Vertices.push_back(v);
 	}
 
-	meshData.GetIndices() = {
+	meshData.Indices = {
 		0, 1, 2, 0, 2, 3, // Up
 		4,
 		5,
@@ -611,8 +611,8 @@ FTMeshData GeometryGenerator::MakeSquareGrid(
 	const float dx = width / numSlices;
 	const float dy = height / numStacks;
 
-	std::vector<Vertex>&   vertices = meshData.GetVertices();
-	std::vector<uint32_t>& indices	= meshData.GetIndices();
+	std::vector<Vertex>&   vertices = meshData.Vertices;
+	std::vector<uint32_t>& indices	= meshData.Indices;
 
 	Vector3 leftBottom = Vector3(-0.5f * width, -0.5f * height, 0.0f);
 
@@ -662,7 +662,7 @@ FTMeshData GeometryGenerator::MakeCylinder(const float bottomRadius, const float
 
 	FTMeshData meshData;
 
-	std::vector<Vertex>& vertices = meshData.GetVertices();
+	std::vector<Vertex>& vertices = meshData.Vertices;
 
 	// 옆면의 바닥 버텍스들 (인덱스 0 이상 sliceCount 미만)
 	for (int i = 0; i <= sliceCount; i++)
@@ -692,7 +692,7 @@ FTMeshData GeometryGenerator::MakeCylinder(const float bottomRadius, const float
 		vertices.push_back(v);
 	}
 
-	std::vector<uint32_t>& indices = meshData.GetIndices();
+	std::vector<uint32_t>& indices = meshData.Indices;
 
 	for (int i = 0; i < sliceCount; i++)
 	{
@@ -718,7 +718,7 @@ FTMeshData GeometryGenerator::MakeSphere(const float radius, const int numSlices
 
 	FTMeshData meshData;
 
-	std::vector<Vertex>& vertices = meshData.GetVertices();
+	std::vector<Vertex>& vertices = meshData.Vertices;
 
 	for (int j = 0; j <= numStacks; j++)
 	{
@@ -741,7 +741,7 @@ FTMeshData GeometryGenerator::MakeSphere(const float radius, const int numSlices
 		}
 	}
 
-	std::vector<uint32_t>& indices = meshData.GetIndices();
+	std::vector<uint32_t>& indices = meshData.Indices;
 
 	for (int j = 0; j < numStacks; j++)
 	{
@@ -764,6 +764,48 @@ FTMeshData GeometryGenerator::MakeSphere(const float radius, const int numSlices
 	return meshData;
 }
 
+std::vector<FTMeshData> GeometryGenerator::ReadFromFile(std::string resPath)
+{
+	using namespace DirectX;
+
+	ModelLoader modelLoader;
+	modelLoader.Load(resPath);
+	std::vector<FTMeshData>& meshes = modelLoader.meshes;
+
+	// Normalize Vertices
+	Vector3 vmin(1000, 1000, 1000);
+	Vector3 vmax(-1000, -1000, -1000);
+	for (auto& mesh : meshes)
+	{
+		for (auto& v : mesh.Vertices)
+		{
+			vmin.x = XMMin(vmin.x, v.position.x);
+			vmin.y = XMMin(vmin.y, v.position.y);
+			vmin.z = XMMin(vmin.z, v.position.z);
+			vmax.x = XMMax(vmax.x, v.position.x);
+			vmax.y = XMMax(vmax.y, v.position.y);
+			vmax.z = XMMax(vmax.z, v.position.z);
+		}
+	}
+
+	float dx = vmax.x - vmin.x, dy = vmax.y - vmin.y, dz = vmax.z - vmin.z;
+	float dl = XMMax(XMMax(dx, dy), dz);
+	float cx = (vmax.x + vmin.x) * 0.5f, cy = (vmax.y + vmin.y) * 0.5f,
+		cz = (vmax.z + vmin.z) * 0.5f;
+
+	for (auto& mesh : meshes)
+	{
+		for (auto& v : mesh.Vertices)
+		{
+			v.position.x = (v.position.x - cx) / dl;
+			v.position.y = (v.position.y - cy) / dl;
+			v.position.z = (v.position.z - cz) / dl;
+		}
+	}
+
+	return meshes;
+}
+
 std::vector<FTMeshData> GeometryGenerator::ReadFromFile(std::string basePath, std::string filename)
 {
 	using namespace DirectX;
@@ -772,12 +814,12 @@ std::vector<FTMeshData> GeometryGenerator::ReadFromFile(std::string basePath, st
 	modelLoader.Load(basePath, filename);
 	std::vector<FTMeshData>& meshes = modelLoader.meshes;
 
-	// Normalize GetVertices()
+	// Normalize Vertices
 	Vector3 vmin(1000, 1000, 1000);
 	Vector3 vmax(-1000, -1000, -1000);
 	for (auto& mesh : meshes)
 	{
-		for (auto& v : mesh.GetVertices())
+		for (auto& v : mesh.Vertices)
 		{
 			vmin.x = XMMin(vmin.x, v.position.x);
 			vmin.y = XMMin(vmin.y, v.position.y);
@@ -795,7 +837,7 @@ std::vector<FTMeshData> GeometryGenerator::ReadFromFile(std::string basePath, st
 
 	for (auto& mesh : meshes)
 	{
-		for (auto& v : mesh.GetVertices())
+		for (auto& v : mesh.Vertices)
 		{
 			v.position.x = (v.position.x - cx) / dl;
 			v.position.y = (v.position.y - cy) / dl;

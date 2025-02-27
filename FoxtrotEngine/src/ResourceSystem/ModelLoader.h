@@ -16,7 +16,8 @@
 
 class ModelLoader {
   public:
-    void Load(std::string basePath, std::string filename);
+      void Load(std::string resPath);
+      void Load(std::string basePath, std::string filename);
 
     void ProcessNode(aiNode *node, const aiScene *scene,
                      DirectX::SimpleMath::Matrix tr);

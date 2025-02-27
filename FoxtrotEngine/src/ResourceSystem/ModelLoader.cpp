@@ -4,6 +4,19 @@
 
 using namespace DirectX::SimpleMath;
 
+void ModelLoader::Load(std::string resPath) {
+    this->basePath = basePath;
+
+    Assimp::Importer importer;
+
+    const aiScene* pScene = importer.ReadFile(
+        resPath,
+        aiProcess_Triangulate | aiProcess_ConvertToLeftHanded);
+
+    Matrix tr; // Initial transformation
+    ProcessNode(pScene->mRootNode, pScene, tr);
+}
+
 void ModelLoader::Load(std::string basePath, std::string filename) {
     this->basePath = basePath;
 
@@ -71,7 +84,7 @@ void ModelLoader::ProcessNode(aiNode *node, const aiScene *scene, Matrix tr) {
         aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
         auto newMesh = this->ProcessMesh(mesh, scene);
 
-        for (auto &v : newMesh.GetVertices()) {
+        for (auto &v : newMesh.Vertices) {
             v.position = DirectX::SimpleMath::Vector3::Transform(v.position, m);
         }
 
@@ -116,8 +129,8 @@ FTMeshData ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene) {
     }
 
     FTMeshData newMesh;
-    newMesh.GetVertices() = vertices;
-    newMesh.GetIndices() = indices;
+    newMesh.Vertices = vertices;
+    newMesh.Indices = indices;
 
     // http://assimp.sourceforge.net/lib_html/materials.html
     if (mesh->mMaterialIndex >= 0) {

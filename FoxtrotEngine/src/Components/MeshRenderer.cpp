@@ -14,7 +14,7 @@
 #include "Actors/Transform.h"
 #include "Actors/Actor.h"
 #include "ResourceSystem/Mesh.h"
-#include "ResourceSystem/FTMeshData.h"
+#include "ResourceSystem/FTMeshDataPack.h"
 #include "ResourceSystem/FTBasicMeshGroup.h"
 #include "Renderer/Camera.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -23,6 +23,7 @@
 #include "Managers/ResourceManager.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
+#include "Compare/StringEqual.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "FTCoreEditor.h"
@@ -72,10 +73,10 @@ bool MeshRenderer::InitializeMesh()
 {
 	if (mMeshKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	{
-		std::vector<FTMeshData>& meshData = ResourceManager::GetInstance()->GetLoadedMeshes(mMeshKey);
+		FTMeshDataPack* meshData = ResourceManager::GetInstance()->GetLoadedMeshData(mMeshKey);
 		if (!mMeshGroup)
 			mMeshGroup = DBG_NEW FTBasicMeshGroup;
-		mMeshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
+		mMeshGroup->Initialize(meshData->GetMeshData(), mRenderer->GetDevice(), mRenderer->GetContext());
 
 		if (!mMaterial)
 			mMaterial = DBG_NEW FTMaterial;
@@ -264,7 +265,8 @@ void MeshRenderer::EditorUIUpdate()
 		AddCylinder();
 	if (ImGui::Button("Add Sphere"))
 		AddSphere();
-	
+	AddModel();
+
 	UpdateSprite();
 	OnConfirmUpdate();
 }
@@ -365,6 +367,14 @@ void MeshRenderer::UpdateSprite(UINT& key)
 		ImGui::EndPopup();
 	}
 }
+void MeshRenderer::AddModel()
+{
+	UINT key =
+		FTEditorUtils::DisplayResSelection(
+			"Select Mesh", ResourceManager::GetInstance()->GetMeshDataMap());
+	if(key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+		InitializeMesh(key);
+}
 void MeshRenderer::AddCube()
 {
 	FTMeshData meshData =
@@ -395,12 +405,5 @@ void MeshRenderer::AddSphere()
 		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKey::PRIMITIVE_SPHERE);
 	InitializeMesh(meshData);
 	LogString("Sphere added");
-}
-
-void MeshRenderer::Add3DModel()
-{
-	FTMeshData meshData =
-		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKey::PRIMITIVE_SPHERE);
-	InitializeMesh(meshData);
 }
 #endif // FOXTROT_EDITOR

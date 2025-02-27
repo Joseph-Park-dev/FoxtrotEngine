@@ -127,12 +127,12 @@ void FTSpriteAnimation::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vect
 	mReel.reserve(meshes.size());
 	for (FTMeshData& meshData : meshes) {
 		Mesh* newMesh = DBG_NEW Mesh;
-		newMesh->IndexCount = UINT(meshData.GetIndices().size());
-		newMesh->VertexCount = UINT(meshData.GetVertices().size());
+		newMesh->IndexCount = UINT(meshData.Indices.size());
+		newMesh->VertexCount = UINT(meshData.Vertices.size());
 
-		D3D11Utils::CreateVertexBuffer(device, meshData.GetVertices(),
+		D3D11Utils::CreateVertexBuffer(device, meshData.Vertices,
 			newMesh->VertexBuffer);
-		D3D11Utils::CreateIndexBuffer(device, meshData.GetIndices(),
+		D3D11Utils::CreateIndexBuffer(device, meshData.Indices,
 			newMesh->IndexBuffer);
 
 		D3D11Utils::CreateConstantBuffer(device, GetVCData(), newMesh->VertexConstantBuffer);

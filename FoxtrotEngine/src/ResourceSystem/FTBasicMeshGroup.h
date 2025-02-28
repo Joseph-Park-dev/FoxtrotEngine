@@ -27,7 +27,7 @@ public:
 
 public:
 	virtual void Initialize(
-		std::vector<FTMeshData>&		 meshes,
+		std::vector<FTMeshData>&	 meshes,
 		ComPtr<ID3D11Device>&		 device,
 		ComPtr<ID3D11DeviceContext>& context);
 	virtual void Render(FoxtrotRenderer* renderer, FTTexture* texture);
@@ -36,7 +36,7 @@ public:
 
 public:
 	ComPtr<ID3D11SamplerState>& GetSamplerState();
-	int							GetMeshCount();
+	size_t						GetMeshCount();
 	std::vector<Mesh*>&			GetMeshes();
 
 	BasicVCData& GetVCData();
@@ -62,17 +62,17 @@ private:
 	BasicVCData			 mVertexConstData;
 	BasicPCData			 mPixelConstData;
 
+	Mesh*		 mNormalLines;
+	NormalVCData mNormalVertexConstData;
+
 	bool mDrawTexture;
+	bool mDrawNormal;
 
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void UpdateUI() override;
 
 private:
-	Mesh*		 mNormalLines;
-	NormalVCData mNormalVertexConstData;
-
-	bool  mDrawNormal;
-	bool  mValModified;
+	bool mValModified;
 #endif
 };

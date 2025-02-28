@@ -90,7 +90,7 @@ private:
 	Viewtype mViewType;
 
 private:
-	void InitializePixelsPerUnit(float pixels, float units = 1.f);
+	void InitializePixelsPerUnit(UINT pixels, float units = 1.f);
 
 	FTVector3 ConvertToCenter(FTVector3 topLeftPos);
 	FTVector3 ConvertToTopLeft(FTVector3 centerPos);

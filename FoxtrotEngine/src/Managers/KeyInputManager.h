@@ -20,6 +20,7 @@
 #include <Windows.h>
 
 #include "Core/SingletonMacro.h"
+#include "Math/FTMath.h"
 
 enum class KEY
 {

@@ -16,11 +16,9 @@
 #include <string>
 
 #include "Core/TemplateFunctions.h"
-#include "ResourceSystem/Tile.h"
-#include "ResourceSystem/MeshConstantData.h"
-#include "ResourceSystem/FTTileMap.h";
 
 class FTVector2;
+class FTTileMap;
 
 class TileMapRenderer :
 	public SpriteRenderer

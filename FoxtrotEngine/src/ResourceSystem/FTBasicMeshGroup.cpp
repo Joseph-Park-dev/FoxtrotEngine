@@ -63,7 +63,7 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture)
 		{
 			std::vector<ID3D11ShaderResourceView*> resViews;
 			resViews.push_back(texture->GetResourceView().Get());
-			context->PSSetShaderResources(0, resViews.size(), resViews.data());
+			context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
 		}
 		context->PSSetConstantBuffers(0, 1, mesh->PixelConstantBuffer.GetAddressOf());
 
@@ -112,7 +112,7 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture, int
 				std::vector<ID3D11ShaderResourceView*> resViews;
 				resViews.push_back(texture->GetResourceView().Get());
 				context->VSSetShaderResources(0, 1, texture->GetResourceView().GetAddressOf());
-				context->PSSetShaderResources(0, resViews.size(), resViews.data());
+				context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
 			}
 			else
 			{
@@ -150,7 +150,7 @@ void FTBasicMeshGroup::Clear()
 }
 
 ComPtr<ID3D11SamplerState>& FTBasicMeshGroup::GetSamplerState() { return mSamplerState; }
-int							FTBasicMeshGroup::GetMeshCount() { return mMeshes.size(); }
+size_t						FTBasicMeshGroup::GetMeshCount() { return mMeshes.size(); }
 std::vector<Mesh*>&			FTBasicMeshGroup::GetMeshes() { return mMeshes; }
 
 BasicVCData& FTBasicMeshGroup::GetVCData() { return mVertexConstData; }

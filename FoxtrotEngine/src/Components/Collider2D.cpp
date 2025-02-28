@@ -92,7 +92,9 @@ Collider2D::Collider2D(const Collider2D& origin)
 	: Component(origin.GetOwner(), origin.GetUpdateOrder())
 	, mShapeID(b2_nullShapeId)
 	, mOffset(origin.mOffset)
+#ifdef FOXTROT_EDITOR
 	, mShowDebugShape(false)
+#endif
 {
 }
 

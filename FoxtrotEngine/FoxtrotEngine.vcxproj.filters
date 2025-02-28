@@ -183,9 +183,6 @@
     <ClCompile Include="src\Behaviors\FTBehavior.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer\FTSpineTextureLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Managers\LightManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -423,9 +420,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Behaviors\FTBehavior.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Renderer\FTSpineTextureLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ResourceSystem\Light.h">

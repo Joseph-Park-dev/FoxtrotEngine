@@ -206,12 +206,12 @@ void FTSpriteAnimation::SaveProperties(std::ofstream& ofs, UINT key)
 	FileIOHelper::BeginDataPackSave	(ofs, ChunkKey::FT_SPRITE_ANIMATION);
 
 	FTResource::SaveProperties(ofs, key);
-	FileIOHelper::SaveString		(ofs, ChunkKey::NAME, mName);
+	FileIOHelper::SaveString		(ofs, ChunkKey::ANIM_NAME, mName);
 	FileIOHelper::SaveFloat			(ofs, ChunkKey::ANIM_FPS, mAnimFPS);
-	FileIOHelper::SaveBool			(ofs, ChunkKey::IS_REPEATED, mIsRepeated);
-	FileIOHelper::SaveInt			(ofs, ChunkKey::MAX_FRAME_INDEX, mMaxFrameIdx);
-	FileIOHelper::SaveUnsignedInt	(ofs, ChunkKey::TEXTURE_KEY, mTexKey);
-	FileIOHelper::SaveUnsignedInt	(ofs, ChunkKey::TILEMAP_KEY, mTileMapKey);
+	FileIOHelper::SaveBool			(ofs, ChunkKey::ANIM_IS_REPEATED, mIsRepeated);
+	FileIOHelper::SaveInt			(ofs, ChunkKey::ANIM_MAX_FRAME_INDEX, mMaxFrameIdx);
+	FileIOHelper::SaveUnsignedInt	(ofs, ChunkKey::ANIM_TEXTURE_KEY, mTexKey);
+	FileIOHelper::SaveUnsignedInt	(ofs, ChunkKey::ANIM_TILEMAP_KEY, mTileMapKey);
 
 	FileIOHelper::EndDataPackSave	(ofs, ChunkKey::FT_SPRITE_ANIMATION);
 }

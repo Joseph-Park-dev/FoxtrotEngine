@@ -18,12 +18,12 @@
 #include "box2d/box2d.h"
 
 #include "Core/SingletonMacro.h"
-#include "Actors/ActorGroup.h"
-#include "Physics/Ray.h"
 
 struct Ray;
 class Collider2DComponent;
 class FTVector2;
+class Collider2D;
+enum class ActorGroup;
 
 enum class CollisionState
 {
@@ -45,7 +45,7 @@ public:
 	b2QueryFilter GetQueryFilter(ActorGroup objectActorGroup);
 
 private:
-	bool mCollisionMarks[((size_t)ActorGroup::END-1) * ((size_t)ActorGroup::END-1)];
+	bool* mCollisionMarks;
 	std::unordered_map<int32_t, Collider2D*> mRegColliders;
 
 public:

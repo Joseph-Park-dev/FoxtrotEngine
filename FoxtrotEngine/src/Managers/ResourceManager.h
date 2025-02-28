@@ -20,8 +20,6 @@
 #include <Windows.h>
 
 #include "Core/SingletonMacro.h"
-#include "FileSystem/ChunkLoader.h"
-#include "ResourceSystem/FTPremade.h"
 #include "Debugging/DebugMemAlloc.h"
 
 #ifdef FOXTROT_EDITOR
@@ -31,14 +29,15 @@
 	#include <imgui.h>
 #endif // FOXTROT_EDITOR
 
+class FoxtrotRenderer;
 class FTTexture;
 class FTSpriteAnimation;
 class FTBasicMeshGroup;
-class FoxtrotRenderer;
-class SpineTextureLoader;
-class FTMeshData;
+struct FTMeshData;
 class FTMeshDataPack;
 class FTTileMap;
+class FTPremade;
+class FTCore;
 
 enum class ResType
 {
@@ -117,7 +116,7 @@ public:
 	template <typename FTRESOURCE>
 	void LoadResourceFromChunk(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap, size_t& resCount)
 	{
-		mItemKey += resCount;
+		mItemKey += static_cast<UINT>(resCount);
 		if (0 < resCount)
 		{
 			while (0 < resCount)
@@ -133,8 +132,8 @@ private:
 	template <typename FTRESOURCE>
 	void LoadResource(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
-		FTRESOURCE* resource = DBG_NEW FTRESOURCE;
-		UINT		mItemKey = resource->LoadProperties(ifs);
+		FTRESOURCE* resource					= DBG_NEW FTRESOURCE;
+		UINT						   mItemKey = resource->LoadProperties(ifs);
 
 		if (KeyExists(mItemKey, resMap))
 		{

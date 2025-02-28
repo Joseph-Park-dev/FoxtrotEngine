@@ -34,10 +34,9 @@ class FTSpriteAnimation : public FTBasicMeshGroup
 {
 public:
 	virtual void Initialize(
-		std::vector<FTMeshData>& meshes,
-		ComPtr<ID3D11Device>& device,
-		ComPtr<ID3D11DeviceContext>& context
-	) override;
+		std::vector<FTMeshData>&	 meshes,
+		ComPtr<ID3D11Device>&		 device,
+		ComPtr<ID3D11DeviceContext>& context) override;
 	virtual void Update(float deltaTime);
 	virtual void Render(FoxtrotRenderer* renderer, FTTexture* texture) override;
 
@@ -68,9 +67,8 @@ public:
 
 protected:
 	virtual void InitializeMeshes(
-		ComPtr<ID3D11Device>& device, 
-		std::vector<FTMeshData>& meshes
-	) override;
+		ComPtr<ID3D11Device>&	 device,
+		std::vector<FTMeshData>& meshes) override;
 
 private:
 	// These fields need to be loaded from .chunk file
@@ -112,8 +110,11 @@ private:
 
 namespace ChunkKey
 {
-	constexpr const char* FT_SPRITE_ANIMATION = "FTSpriteAnimation";
-	constexpr const char* ANIM_FPS			  = "Animation FPS";
-	constexpr const char* IS_REPEATED		  = "Is Repeated";
-	constexpr const char* MAX_FRAME_INDEX	  = "Max Frame Index";
+	constexpr const char* FT_SPRITE_ANIMATION  = "FTSpriteAnimation";
+	constexpr const char* ANIM_NAME			   = "Name";
+	constexpr const char* ANIM_FPS			   = "FPS";
+	constexpr const char* ANIM_IS_REPEATED	   = "Is Repeated";
+	constexpr const char* ANIM_MAX_FRAME_INDEX = "Max Frame Index";
+	constexpr const char* ANIM_TEXTURE_KEY	   = "Texture Key";
+	constexpr const char* ANIM_TILEMAP_KEY	   = "Tilemap Key";
 } // namespace ChunkKey

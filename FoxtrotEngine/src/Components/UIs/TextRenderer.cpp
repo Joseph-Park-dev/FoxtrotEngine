@@ -4,6 +4,8 @@
 #include "Managers/ResourceManager.h"
 #include "ResourceSystem/GeometryGenerator.h"
 #include "Renderer/FoxtrotRenderer.h"
+#include "Actors/Actor.h"
+#include "Actors/Transform.h"
 
 using DirectX::DX11::SpriteSortMode;
 
@@ -69,11 +71,11 @@ TextRenderer::~TextRenderer()
 void TextRenderer::SaveProperties(std::ofstream& ofs)
 {
     Component::SaveProperties(ofs);
-    FileIOHelper::SaveFloat     (ofs, ChunkKey::ROTATION,  mTextAttribute->Rotation);
-    FileIOHelper::SaveVector2   (ofs, ChunkKey::OFFSET,    mTextAttribute->Offset);
-    FileIOHelper::SaveVector4   (ofs, ChunkKey::COLOR,     mTextAttribute->Color);
-    FileIOHelper::SaveVector2   (ofs, ChunkKey::ORIGIN,    mTextAttribute->Origin);
-    FileIOHelper::SaveVector2   (ofs, ChunkKey::SCALE,     mTextAttribute->Scale);
+    FileIOHelper::SaveFloat     (ofs, ChunkKey::TEXT_ROTATION,  mTextAttribute->Rotation);
+    FileIOHelper::SaveVector2   (ofs, ChunkKey::TEXT_OFFSET,    mTextAttribute->Offset);
+    FileIOHelper::SaveVector4   (ofs, ChunkKey::TEXT_COLOR,     mTextAttribute->Color);
+    FileIOHelper::SaveVector2   (ofs, ChunkKey::TEXT_ORIGIN,    mTextAttribute->Origin);
+    FileIOHelper::SaveVector2   (ofs, ChunkKey::TEXT_SCALE,     mTextAttribute->Scale);
     FileIOHelper::SaveString    (ofs, ChunkKey::TEXT,      mText);
 }
 
@@ -88,6 +90,7 @@ void TextRenderer::LoadProperties(std::ifstream& ifs)
     Component::LoadProperties(ifs);
 }
 
+#ifdef FOXTROT_EDITOR
 void TextRenderer::EditorUIUpdate()
 {
     UpdateText();
@@ -111,11 +114,10 @@ void TextRenderer::UpdateTextAttribute()
     float scale[2]  = { mTextAttribute->Scale.x,mTextAttribute->Scale.y };
     float color[4]  = { mTextAttribute->Color.x, mTextAttribute->Color.y, mTextAttribute->Color.z, mTextAttribute->Color.w };
 
-    ImGui::DragFloat    (ChunkKey::ROTATION, &rotation, FLOATMOD_SPEED);
-    ImGui::DragFloat2   (ChunkKey::OFFSET,   offset,    FLOATMOD_SPEED);
-    ImGui::DragFloat2   (ChunkKey::ORIGIN,   origin,    FLOATMOD_SPEED);
-    ImGui::DragFloat2   (ChunkKey::SCALE,    scale,     FLOATMOD_SPEED);
-    ImGui::ColorPicker4 (ChunkKey::COLOR,    color,     FLOATMOD_SPEED);
+    ImGui::DragFloat2   (ChunkKey::TEXT_OFFSET,   offset,    FLOATMOD_SPEED);
+    ImGui::DragFloat2   (ChunkKey::TEXT_ORIGIN,   origin,    FLOATMOD_SPEED);
+    ImGui::DragFloat2   (ChunkKey::TEXT_SCALE,    scale,     FLOATMOD_SPEED);
+    ImGui::ColorPicker4 (ChunkKey::TEXT_COLOR,    color,     FLOATMOD_SPEED);
 
     mTextAttribute->Rotation = rotation;
     mTextAttribute->Offset   = DirectX::SimpleMath::Vector2(offset[0], offset[1]);
@@ -123,3 +125,4 @@ void TextRenderer::UpdateTextAttribute()
     mTextAttribute->Scale    = DirectX::SimpleMath::Vector2(scale[0], scale[1]);
     mTextAttribute->Color    = DirectX::SimpleMath::Vector4(color[0], color[1], color[2], color[3]);
 }
+#endif // FOXTROT_EDITOR

@@ -12,7 +12,9 @@
 /// </summary>
 
 #pragma once
-#include "Math/FTMath.h"
+#include "Debugging/DebugMemAlloc.h"
+
+class FTVector3;
 
 struct Steering
 {

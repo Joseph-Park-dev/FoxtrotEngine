@@ -117,8 +117,8 @@ void FoxtrotRenderer::ResizeWindow(FTVector2& windowRes)
 		mDepthStencilView.Reset();
 
 		mSwapChain->ResizeBuffers(0, // 현재 개수 유지
-								  windowRes.x,
-								  windowRes.y,
+								  static_cast<int>(windowRes.x),
+								  static_cast<int>(windowRes.y),
 								  DXGI_FORMAT_UNKNOWN, // 현재 포맷 유지
 								  0);
 
@@ -132,13 +132,13 @@ void FoxtrotRenderer::ResizeWindow(FTVector2& windowRes)
 		mRenderTexture->InitializeTexture(mDevice, mRenderWidth, mRenderHeight, mNumQualityLevels);
 #else
 		FTVector2 topLeft = FTVector2(0.f, 0.f);
-		mRenderWidth	  = windowRes.x;
-		mRenderHeight	  = windowRes.y;
+		mRenderWidth	  = static_cast<int>(windowRes.x);
+		mRenderHeight	  = static_cast<int>(windowRes.y);
 #endif // FOXTROT_EDITOR
 
-		D3D11Utils::CreateDepthBuffer(mDevice, windowRes.x, windowRes.y, mNumQualityLevels, mDepthStencilView);
+		D3D11Utils::CreateDepthBuffer(mDevice, mRenderWidth, mRenderHeight, mNumQualityLevels, mDepthStencilView);
 		D3D11Utils::CreateRenderTargetView(mRenderTargetView, mDevice, mSwapChain);
-		SetViewport(0, 0, mRenderWidth, mRenderHeight);
+		SetViewport(0, 0, windowRes.x, windowRes.y);
 	}
 }
 

@@ -8,9 +8,9 @@ struct FTMaterial
 	FTVector3 Ambient	= FTVector3(0.1f);
 	float	  Shininess = 1.0f;
 	FTVector3 Diffuse	= FTVector3(0.5f);
-	float	  dummy1;
+	float	  dummy1	= 0.f;
 	FTVector3 Specular	= FTVector3(0.5f);
-	float	  dummy2;
+	float	  dummy2	= 0.f;
 
 	void SaveProperties(std::ofstream& ofs, const char* name)
 	{

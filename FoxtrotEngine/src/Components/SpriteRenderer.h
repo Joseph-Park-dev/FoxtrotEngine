@@ -15,7 +15,6 @@
 #include "Components/MeshRenderer.h"
 
 #include "Core/TemplateFunctions.h"
-#include "ResourceSystem/FTMeshData.h"
 
 class Actor;
 class FTTexture;
@@ -28,8 +27,8 @@ public:
 	virtual std::string GetName() const override { return "SpriteRenderer"; }
 
 public:
-	int GetTexWidth() { return GetTexture()->GetTexWidth() * mTexScale.x; }
-	int GetTexHeight() { return GetTexture()->GetTexHeight() * mTexScale.y; }
+	int GetTexWidth();
+	int GetTexHeight();
 
 public:
 	virtual void Initialize(FTCore* coreInstance) override;

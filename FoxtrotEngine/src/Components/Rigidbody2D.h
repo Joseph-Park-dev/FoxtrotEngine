@@ -11,6 +11,7 @@
 
 #pragma once
 #include "Components/Component.h"
+
 #include "Core/TemplateFunctions.h"
 
 class FTVector2;

@@ -15,7 +15,7 @@
 
 #include <vector>
 
-struct Vertex;
+#include "ResourceSystem/Vertex.h"
 
 struct FTMeshData
 {

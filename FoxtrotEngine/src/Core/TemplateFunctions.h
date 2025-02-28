@@ -211,11 +211,6 @@ inline bool EndsWith(
 }
 
 template<typename T>
-size_t GetArrayLength(T* arr) {
-	return sizeof(arr) / sizeof(T*);
-}
-
-template<typename T>
 size_t GetArrayLength(T arr) {
 	return sizeof(arr) / sizeof(T);
 }

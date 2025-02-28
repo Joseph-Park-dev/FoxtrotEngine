@@ -9,7 +9,6 @@
 #include "ResourceSystem/FTShape.h"
 
 #include "Renderer/D3D11Utils.h"
-
 #include "Core/TemplateFunctions.h"
 #include "ResourceSystem/GeometryGenerator.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -24,6 +23,7 @@ FTShape::FTShape()
     : mMesh(nullptr)
     , mVertexConstantData()
     , mPixelConstantData()
+    , mIsActive(true)
 {
 }
 
@@ -74,32 +74,28 @@ void FTShape::Render(FoxtrotRenderer* renderer)
 
     UINT stride = sizeof(Vertex);
     UINT offset = 0;
-    size_t meshSize = GetArrayLength<Mesh>(mMesh);
 
     UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext());
 
     ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
-    for (size_t i = 0; i < meshSize; ++i)
-    {
-        context->VSSetShader(renderer->GetSolidVS().Get(), 0, 0);
-        context->VSSetConstantBuffers(0, 1, mMesh[i].VertexConstantBuffer.GetAddressOf());
+    context->VSSetShader(renderer->GetSolidVS().Get(), 0, 0);
+    context->VSSetConstantBuffers(0, 1, mMesh->VertexConstantBuffer.GetAddressOf());
 
-        context->PSSetShader(renderer->GetSolidPS().Get(), 0, 0);
-        context->PSSetConstantBuffers(0, 1,
-            mMesh[i].PixelConstantBuffer.GetAddressOf());
+    context->PSSetShader(renderer->GetSolidPS().Get(), 0, 0);
+    context->PSSetConstantBuffers(0, 1,
+        mMesh->PixelConstantBuffer.GetAddressOf());
 
-        context->IASetInputLayout(renderer->GetSolidInputLayout().Get());
-        context->IASetVertexBuffers(0, 1, mMesh[i].VertexBuffer.GetAddressOf(),
-            &stride, &offset);
-        context->IASetIndexBuffer(mMesh[i].IndexBuffer.Get(), DXGI_FORMAT_R32_UINT,
-            0);
-        context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        context->DrawIndexed(mMesh[i].IndexCount, 0, 0);
-    }
+    context->IASetInputLayout(renderer->GetSolidInputLayout().Get());
+    context->IASetVertexBuffers(0, 1, mMesh->VertexBuffer.GetAddressOf(),
+        &stride, &offset);
+    context->IASetIndexBuffer(mMesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT,
+        0);
+    context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    context->DrawIndexed(mMesh->IndexCount, 0, 0);
 }
 
 void FTShape::Render(
-    FoxtrotRenderer* renderer, 
+    FoxtrotRenderer* renderer,
     ComPtr<ID3D11VertexShader>& vertexShader,
     ComPtr<ID3D11PixelShader>& pixelShader,
     ComPtr<ID3D11InputLayout>& inputLayout
@@ -114,28 +110,24 @@ void FTShape::Render(
 
     UINT stride = sizeof(Vertex);
     UINT offset = 0;
-    size_t meshSize = GetArrayLength<Mesh>(mMesh);
 
     UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext());
 
     ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
-    for (size_t i = 0; i < meshSize; ++i)
-    {
-        context->VSSetShader(vertexShader.Get(), 0, 0);
-        context->VSSetConstantBuffers(0, 1, mMesh[i].VertexConstantBuffer.GetAddressOf());
+    context->VSSetShader(vertexShader.Get(), 0, 0);
+    context->VSSetConstantBuffers(0, 1, mMesh->VertexConstantBuffer.GetAddressOf());
 
-        context->PSSetShader(pixelShader.Get(), 0, 0);
-        context->PSSetConstantBuffers(0, 1,
-            mMesh[i].PixelConstantBuffer.GetAddressOf());
+    context->PSSetShader(pixelShader.Get(), 0, 0);
+    context->PSSetConstantBuffers(0, 1,
+        mMesh->PixelConstantBuffer.GetAddressOf());
 
-        context->IASetInputLayout(inputLayout.Get());
-        context->IASetVertexBuffers(0, 1, mMesh[i].VertexBuffer.GetAddressOf(),
-            &stride, &offset);
-        context->IASetIndexBuffer(mMesh[i].IndexBuffer.Get(), DXGI_FORMAT_R32_UINT,
-            0);
-        context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        context->DrawIndexed(mMesh[i].IndexCount, 0, 0);
-    }
+    context->IASetInputLayout(inputLayout.Get());
+    context->IASetVertexBuffers(0, 1, mMesh->VertexBuffer.GetAddressOf(),
+        &stride, &offset);
+    context->IASetIndexBuffer(mMesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT,
+        0);
+    context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    context->DrawIndexed(mMesh->IndexCount, 0, 0);
 }
 
 void FTShape::InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData&& meshData)
@@ -155,7 +147,7 @@ void FTShape::InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData&& meshData
 
 void FTShape::UpdateConstantBufferModel(Transform* transform)
 {
-    int dir = transform->GetRightward().x;
+    int dir = static_cast<int>(transform->GetRightward().x);
     FTVector3 worldPos = FTVector3(
         transform->GetWorldPosition().x,
         transform->GetWorldPosition().y,

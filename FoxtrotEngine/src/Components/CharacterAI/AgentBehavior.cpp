@@ -46,7 +46,7 @@ void AgentBehavior::Setup()
 	if(mTargetName != ChunkKey::NullVal::NULL_OBJ)
 		mTarget = FIND_EDITOR_ELEMENT(mTargetName);
 #else
-	if (mTargetName != ChunkKey::NULL_OBJ)
+	if (mTargetName != ChunkKey::NullVal::NULL_OBJ)
 		mTarget = FIND_ACTOR(mTargetName);
 #endif // FOXTROT_EDITOR
 	Component::Setup();

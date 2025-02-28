@@ -239,8 +239,9 @@ FTBasicMeshGroup::FTBasicMeshGroup()
 	, mMeshes()
 	, mNormalLines(nullptr)
 	, mDrawTexture(true)
-#ifdef FOXTROT_EDITOR
 	, mDrawNormal(false)
+#ifdef FOXTROT_EDITOR
+	, mValModified(false)
 #endif // FOXTROT_EDITOR
 {
 }

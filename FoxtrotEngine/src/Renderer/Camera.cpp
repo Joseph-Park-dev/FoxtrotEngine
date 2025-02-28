@@ -160,14 +160,17 @@ void Camera::SaveProperties(std::ofstream& ofs)
 		FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, mTarget->GetName());
 	else
 		FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, ChunkKey::NullVal::NULL_OBJ);
-	FileIOHelper::SaveVector3(ofs, ChunkKey::OFFSET, mOffset);
+	FileIOHelper::SaveVector3(ofs, ChunkKey::CAM_POSITION, mPosition);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CAMERA_DATA);
 }
 
 void Camera::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CAMERA_DATA);
-	FileIOHelper::LoadVector3(ifs, mOffset);
+
+	FTVector3 pos = FTVector3::Zero;
+	FileIOHelper::LoadVector3(ifs, pos);
+	mPosition = pos.GetDXVec3();
 	std::string targetActor = {};
 	FileIOHelper::LoadBasicString(ifs, targetActor);
 

@@ -21,6 +21,7 @@
 
 #include "Core/SingletonMacro.h"
 #include "Debugging/DebugMemAlloc.h"
+#include "Core/TemplateFunctions.h"
 
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS
@@ -132,8 +133,8 @@ private:
 	template <typename FTRESOURCE>
 	void LoadResource(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
-		FTRESOURCE* resource					= DBG_NEW FTRESOURCE;
-		UINT						   mItemKey = resource->LoadProperties(ifs);
+		FTRESOURCE* resource = DBG_NEW FTRESOURCE;
+		UINT		mItemKey = resource->LoadProperties(ifs);
 
 		if (KeyExists(mItemKey, resMap))
 		{
@@ -152,8 +153,10 @@ public:
 	template <typename FTRESOURCE>
 	FTRESOURCE* LoadResource(std::string& filePath, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
+		// Get Relative path to Assets folder
 		std::string fileName = filePath.substr(filePath.rfind("\\") + 1);
 		UINT		pending	 = mItemKey + 1;
+
 		if (!ResourceExists<FTRESOURCE*>(pending, filePath, resMap))
 		{
 			printf("Message: Loading FTTexture %s to mItemKey %d. \n", filePath.c_str(), pending);

@@ -44,5 +44,5 @@ float4 main(TexPSInput input) : SV_TARGET
         color += ComputeSpotLight(lights[i], material, input.posWorld, input.normalWorld, toEye);
     }
 
-    return useTexture ? float4(color, 1.0) * g_texture0.Sample(g_sampler, input.texcoord) : float4(1.0, 1.0, 1.0, 1.0);
+    return useTexture ? float4(color, 1.0) * g_texture0.Sample(g_sampler, input.texcoord) : float4(color, 1.0);
 }

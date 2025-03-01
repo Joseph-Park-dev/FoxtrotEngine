@@ -12,6 +12,7 @@
 
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
+#include "Core/TemplateFunctions.h"
 
 #ifdef FOXTROT_EDITOR
 #define IMGUI_DEFINE_MATH_OPERATORS

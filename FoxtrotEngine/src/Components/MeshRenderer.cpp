@@ -375,6 +375,7 @@ void MeshRenderer::AddModel()
 	if(key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		InitializeMesh(key);
 }
+
 void MeshRenderer::AddCube()
 {
 	FTMeshData meshData =

@@ -95,11 +95,9 @@ void BulletBehavior::Thrust()
 	}
 }
 
-#ifdef FOXTROT_EDITOR
 void BulletBehavior::CloneTo(Actor* actor)
 {
 	BulletBehavior* newComp = DBG_NEW BulletBehavior(actor, GetUpdateOrder());
 	newComp->mImpulseQuantity = this->mImpulseQuantity;
 	newComp->mRigidbody = this->mRigidbody;
 }
-#endif

@@ -20,9 +20,8 @@
 #include <Windows.h>
 
 #include "Core/SingletonMacro.h"
-#include "FileSystem/ChunkLoader.h"
-#include "ResourceSystem/FTPremade.h"
 #include "Debugging/DebugMemAlloc.h"
+#include "Core/TemplateFunctions.h"
 
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS
@@ -31,14 +30,15 @@
 	#include <imgui.h>
 #endif // FOXTROT_EDITOR
 
+class FoxtrotRenderer;
 class FTTexture;
 class FTSpriteAnimation;
 class FTBasicMeshGroup;
-class FoxtrotRenderer;
-class SpineTextureLoader;
-class FTMeshData;
+struct FTMeshData;
 class FTMeshDataPack;
 class FTTileMap;
+class FTPremade;
+class FTCore;
 
 enum class ResType
 {
@@ -117,7 +117,7 @@ public:
 	template <typename FTRESOURCE>
 	void LoadResourceFromChunk(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap, size_t& resCount)
 	{
-		mItemKey += resCount;
+		mItemKey += static_cast<UINT>(resCount);
 		if (0 < resCount)
 		{
 			while (0 < resCount)
@@ -153,8 +153,10 @@ public:
 	template <typename FTRESOURCE>
 	FTRESOURCE* LoadResource(std::string& filePath, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
+		// Get Relative path to Assets folder
 		std::string fileName = filePath.substr(filePath.rfind("\\") + 1);
 		UINT		pending	 = mItemKey + 1;
+
 		if (!ResourceExists<FTRESOURCE*>(pending, filePath, resMap))
 		{
 			printf("Message: Loading FTTexture %s to mItemKey %d. \n", filePath.c_str(), pending);

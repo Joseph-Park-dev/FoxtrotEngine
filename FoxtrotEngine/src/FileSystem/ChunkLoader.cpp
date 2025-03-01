@@ -12,7 +12,6 @@
 #include <fstream>
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
-#include <commdlg.h>
 #include <iostream>
 #include <filesystem>
 
@@ -50,7 +49,7 @@ void ChunkLoader::SaveChunkData(std::ofstream& out)
 {
 	Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
 	FileIOHelper::BeginDataPackSave(out, ChunkKey::CHUNK_DATA);
-	FileIOHelper::SaveInt(out, ChunkKey::ACTOR_COUNT, currScene->GetActorCount());
+	FileIOHelper::SaveSize(out, ChunkKey::ACTOR_COUNT, currScene->GetActorCount());
 	FileIOHelper::EndDataPackSave(out, ChunkKey::CHUNK_DATA);
 }
 

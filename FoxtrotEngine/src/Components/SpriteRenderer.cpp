@@ -35,6 +35,16 @@
 #include <imgui.h>
 #endif // FOXTROT_EDITOR
 
+int SpriteRenderer::GetTexWidth()
+{
+	return GetTexture()->GetTexWidth() * static_cast<int>(mTexScale.x);
+}
+
+int SpriteRenderer::GetTexHeight()
+{
+	return GetTexture()->GetTexHeight() * static_cast<int>(mTexScale.y);
+}
+
 void SpriteRenderer::Initialize(FTCore* coreInstance)
 {
 	SetRenderer	(coreInstance->GetGameRenderer());

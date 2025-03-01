@@ -8,6 +8,8 @@
 
 #include "Components/Move.h"
 
+#include <box2d/box2d.h>
+
 #include "Math/FTMath.h"
 #include "Actors/Actor.h"
 #include "Components/Rigidbody2D.h"
@@ -68,7 +70,7 @@ void Move::Jump(b2Vec2 currVel, const Steering* steering)
 
 void Move::SetIsGrounded()
 {
-	b2RayCastInput rcInput;
+	b2RayCastInput rcInput = b2RayCastInput();
 	b2AABB aaBB = b2Body_ComputeAABB(mRigidbody->GetBodyID());
 	b2Vec2 center = b2AABB_Center(aaBB);
 	b2Vec2 extent = b2AABB_Extents(aaBB);

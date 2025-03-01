@@ -8,8 +8,7 @@
 
 #include "D3D11Utils.h"
 
-#define _CRT_SECURE_NO_WARNINGS			// stb_image_write compile error fix
-#include <directxtk/DDSTextureLoader.h> // 큐브맵 읽을 때 필요
+#include <directxtk/DDSTextureLoader.h> // For reading Cubemaps
 #include <dxgi.h>						// DXGIFactory
 #include <dxgi1_4.h>					// DXGIFactory4
 #include <iostream>

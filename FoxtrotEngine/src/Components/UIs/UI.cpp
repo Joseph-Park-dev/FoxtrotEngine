@@ -15,6 +15,7 @@
 #include "Managers/UIManager.h"
 #include "Math/FTMath.h"
 #include "Actors/Actor.h"
+#include "Renderer/Camera.h"
 
 #ifdef FOXTROT_EDITOR
 #include "DebugShapes.h"

@@ -195,7 +195,7 @@ void MeshRenderer::UpdateBuffers()
 
 Matrix MeshRenderer::CalcModelMat(Transform* transform)
 {
-	int				  dir		   = transform->GetRightward().x;
+	int				  dir		   = (int)transform->GetRightward().x;
 	FTVector3		  scale		   = transform->GetScale();
 	DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x, scale.y, scale.z);
 	return Matrix::CreateScale(scaleWithDir) *
@@ -375,6 +375,7 @@ void MeshRenderer::AddModel()
 	if(key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		InitializeMesh(key);
 }
+
 void MeshRenderer::AddCube()
 {
 	FTMeshData meshData =

@@ -11,6 +11,8 @@
 /// </summary>
 
 #pragma once
+#include <vector>
+
 #include "Core/SingletonMacro.h"
 
 class UI;

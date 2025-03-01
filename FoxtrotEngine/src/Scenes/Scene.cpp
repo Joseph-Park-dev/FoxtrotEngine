@@ -45,6 +45,7 @@ Actor* Scene::FindActor(std::string& name)
 		else
 			continue;
 	}
+	return nullptr;
 }
 
 Actor* Scene::FindActor(const char* name)
@@ -59,6 +60,7 @@ Actor* Scene::FindActor(const char* name)
 		else
 			continue;
 	}
+	return nullptr;
 }
 
 void Scene::Setup()

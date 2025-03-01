@@ -12,8 +12,9 @@
 
 #pragma once
 #include "Core/SingletonMacro.h"
+#include "Math/FTMath.h"
 
-class FTVector2;
+class FoxtrotRenderer;
 
 struct FTParticle
 {

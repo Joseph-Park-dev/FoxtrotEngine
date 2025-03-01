@@ -12,6 +12,7 @@
 
 #pragma once
 #include "Core/SingletonMacro.h"
+#include "Scenes/Scene.h"
 
 class Scene;
 class FoxtrotRenderer;

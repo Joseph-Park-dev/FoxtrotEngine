@@ -62,8 +62,12 @@ void Rigidbody2D::LateUpdate(float deltaTime)
 void Rigidbody2D::CloneTo(Actor* actor)
 {
 	Rigidbody2D* newComp = DBG_NEW Rigidbody2D(actor, GetUpdateOrder());
+#ifdef FOXTROT_EDITOR
 	newComp->mBodyDefCache = this->mBodyDefCache;
 	newComp->mBodyID = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &mBodyDefCache);
+#else
+	Debug::LogError(__LINE__, __FILE__, "CloneTo() is not implemented");
+#endif // FOXTROT_EDITOR
 }
 
 void Rigidbody2D::LoadProperties(std::ifstream& ifs)

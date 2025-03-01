@@ -45,7 +45,10 @@ public:
 
 namespace ChunkKey
 {
-	constexpr const char* TEXT	 = "Text";
-	constexpr const char* ORIGIN = "Origin";
-	constexpr const char* COLOR = "Color";
+	constexpr const char* TEXT			= "Text";
+	constexpr const char* TEXT_OFFSET	= "Offset";
+	constexpr const char* TEXT_ROTATION = "Rotation";
+	constexpr const char* TEXT_ORIGIN	= "Origin";
+	constexpr const char* TEXT_SCALE	= "Scale";
+	constexpr const char* TEXT_COLOR	= "Color";
 } // namespace ChunkKey

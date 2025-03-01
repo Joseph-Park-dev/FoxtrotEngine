@@ -8,6 +8,7 @@
 
 #include "Components/GunFiringBehavior.h"
 
+#include "Math/FTMath.h"
 #include "Managers/KeyInputManager.h"
 #include "Managers/ResourceManager.h"
 #include "Actors/Transform.h"

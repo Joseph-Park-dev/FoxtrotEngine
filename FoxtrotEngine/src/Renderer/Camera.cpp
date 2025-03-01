@@ -16,6 +16,7 @@
 #include "Scenes/Scene.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "FileSystem/FileIOHelper.h"
+#include "Actors/Transform.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
@@ -127,9 +128,9 @@ void Camera::SetOffset(FTVector2 offset)
 	mOffset = offset;
 }
 
-void Camera::InitializePixelsPerUnit(float pixels, float units)
+void Camera::InitializePixelsPerUnit(UINT pixels, float units)
 {
-	mPixelsPerUnit = pixels / units;
+	mPixelsPerUnit = (float)pixels / units;
 }
 
 FTVector3 Camera::ConvertToCenter(FTVector3 topLeftPos)
@@ -159,14 +160,17 @@ void Camera::SaveProperties(std::ofstream& ofs)
 		FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, mTarget->GetName());
 	else
 		FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, ChunkKey::NullVal::NULL_OBJ);
-	FileIOHelper::SaveVector3(ofs, ChunkKey::OFFSET, mOffset);
+	FileIOHelper::SaveVector3(ofs, ChunkKey::CAM_POSITION, mPosition);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CAMERA_DATA);
 }
 
 void Camera::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CAMERA_DATA);
-	FileIOHelper::LoadVector3(ifs, mOffset);
+
+	FTVector3 pos = FTVector3::Zero;
+	FileIOHelper::LoadVector3(ifs, pos);
+	mPosition = pos.GetDXVec3();
 	std::string targetActor = {};
 	FileIOHelper::LoadBasicString(ifs, targetActor);
 
@@ -174,15 +178,15 @@ void Camera::LoadProperties(std::ifstream& ifs)
 	if (targetActor != ChunkKey::NullVal::NULL_OBJ)
 		mTarget = EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(targetActor);
 #else
-	if (targetActor != ChunkKey::NULL_OBJ)
+	if (targetActor != ChunkKey::NullVal::NULL_OBJ)
 		mTarget = SceneManager::GetInstance()->GetCurrentScene()->FindActor(targetActor);
 #endif // FOXTROT_EDITOR
 }
 
 FTVector3 Camera::ConvertScreenPosToWorld(FTVector2 screenPos)
 {
-	float screenWidth  = mRenderer->GetRenderWidth();
-	float screenHeight = mRenderer->GetRenderHeight();
+	float screenWidth  = static_cast<float>(mRenderer->GetRenderWidth());
+	float screenHeight = static_cast<float>(mRenderer->GetRenderHeight());
 
 	FTVector2 topLeft	  = FTVector2::Zero;
 	FTVector2 bottomRight = FTVector2(screenWidth - 1, screenHeight - 1);
@@ -223,11 +227,11 @@ void Camera::DisplayCameraMenu()
 			// mViewEyeRotation -= FTVector3(delta.y, delta.x, 0.f);
 		}
 	}
-	//FTVector3 pos = ConvertToTopLeft(FTVector3(mPosition));
+	// FTVector3 pos = ConvertToTopLeft(FTVector3(mPosition));
 	CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", mPosition, LOOKAT_MODSPEED);
 	CommandHistory::GetInstance()->UpdateFloatValue("Look-At Yaw", &mYaw, LOOKAT_MODSPEED);
 	CommandHistory::GetInstance()->UpdateFloatValue("Look-At Pitch", &mPitch, LOOKAT_MODSPEED);
-	//mPosition = ConvertToCenter(pos).GetDXVec3();
+	// mPosition = ConvertToCenter(pos).GetDXVec3();
 
 	//// Updating screen center since the camera position is moved
 	// FTVector2 diff = updatedLookAtPos - lookAtPos;

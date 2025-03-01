@@ -43,6 +43,7 @@
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/Camera.h"
 #include "FileSystem/FileIOHelper.h"
+#include "ResourceSystem/FTPremade.h"
 
 #include "Core/EventFunctions.h"
 

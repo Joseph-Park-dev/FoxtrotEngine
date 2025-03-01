@@ -56,7 +56,7 @@ struct ActorGroupUtil
 		auto it = std::find(ActorGroupString.begin(), ActorGroupString.end(), str);
 		if (it != ActorGroupString.end())
 		{
-			int index = it - ActorGroupString.begin();
+			auto index = it - ActorGroupString.begin();
 			return (ActorGroup)index;
 		}
 		else

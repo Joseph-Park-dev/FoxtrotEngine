@@ -169,6 +169,13 @@ void Animator::Render(FoxtrotRenderer* renderer)
 		mCurrentAnim->Render(renderer, GetTexture());
 }
 
+void Animator::CloneTo(Actor* actor)
+{
+	Animator* newComp = DBG_NEW Animator(actor, GetUpdateOrder());
+	for (size_t i = 0; i < mLoadedKeys.size(); ++i)
+		newComp->mLoadedKeys.push_back(mLoadedKeys.at(i));
+}
+
 #ifdef FOXTROT_EDITOR
 void Animator::EditorUpdate(float deltaTime)
 {
@@ -265,12 +272,5 @@ void Animator::CreateAnimation()
 		ImGui::Separator();
 		ImGui::EndPopup();
 	}
-}
-
-void Animator::CloneTo(Actor* actor)
-{
-	Animator* newComp = DBG_NEW Animator(actor, GetUpdateOrder());
-	for (size_t i = 0; i < mLoadedKeys.size(); ++i)
-		newComp->mLoadedKeys.push_back(mLoadedKeys.at(i));
 }
 #endif // FOXTROT_EDITOR

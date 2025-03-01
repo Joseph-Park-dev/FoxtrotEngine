@@ -22,7 +22,6 @@
 #include <shlobj_core.h>
 
 #include "FTCoreEditor.h"
-#include "Managers/ResourceManager.h"
 
 #define PATH_PROJECT DirectoryHelper::GetInstance()->GetProjectPath()
 #define PATH_CHUNK DirectoryHelper::GetInstance()->GetChunkPath()

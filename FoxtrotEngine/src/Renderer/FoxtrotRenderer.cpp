@@ -102,7 +102,7 @@ void FoxtrotRenderer::SetRenderHeight(const UINT height) { mRenderHeight = heigh
 
 void FoxtrotRenderer::RenderClear()
 {
-	float clearColor[4] = { 0.0, 0.0, 0.0, 1.0 };
+	float clearColor[4] = { 0.3f, 0.3f, 0.3f, 1.0 };
 	mContext->ClearRenderTargetView(mRenderTargetView.Get(), clearColor);
 	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -117,8 +117,8 @@ void FoxtrotRenderer::ResizeWindow(FTVector2& windowRes)
 		mDepthStencilView.Reset();
 
 		mSwapChain->ResizeBuffers(0, // 현재 개수 유지
-								  windowRes.x,
-								  windowRes.y,
+								  static_cast<UINT>(windowRes.x),
+								  static_cast<UINT>(windowRes.y),
 								  DXGI_FORMAT_UNKNOWN, // 현재 포맷 유지
 								  0);
 
@@ -126,14 +126,14 @@ void FoxtrotRenderer::ResizeWindow(FTVector2& windowRes)
 #ifdef FOXTROT_EDITOR
 		mRenderTexture->GetRTV().Reset();
 		ImVec2 topLeft = EditorLayer::GetInstance()->GetSceneViewportPos();
-		mRenderWidth   = EditorLayer::GetInstance()->GetSceneViewportSize().x;
-		mRenderHeight  = EditorLayer::GetInstance()->GetSceneViewportSize().y;
+		mRenderWidth   = static_cast<int>(EditorLayer::GetInstance()->GetSceneViewportSize().x);
+		mRenderHeight  = static_cast<int>(EditorLayer::GetInstance()->GetSceneViewportSize().y);
 		// D3D11Utils::CreateRenderTargetView(mRenderTexture->GetRTV(), mDevice, mSwapChain);
 		mRenderTexture->InitializeTexture(mDevice, mRenderWidth, mRenderHeight, mNumQualityLevels);
 #else
 		FTVector2 topLeft = FTVector2(0.f, 0.f);
-		mRenderWidth	  = windowRes.x;
-		mRenderHeight	  = windowRes.y;
+		mRenderWidth	  = static_cast<int>(windowRes.x);
+		mRenderHeight	  = static_cast<int>(windowRes.y);
 #endif // FOXTROT_EDITOR
 
 		D3D11Utils::CreateDepthBuffer(mDevice, windowRes.x, windowRes.y, mNumQualityLevels, mDepthStencilView);

@@ -114,10 +114,10 @@ void FTTileMap::ReadCSV(std::string& str)
     mMaxCountOnScreenY = row;
 
     mTileMap = DBG_NEW Tile[str.size()];
-    for (size_t i = 0; i < str.size(); ++i)
+    for (UINT i = 0; i < (UINT)str.size(); ++i)
     {
-        UINT chIdx = str.at(i) - WSTRING_OFFSET;
-        InitializeTile(mTileMap[i], i, 0, chIdx);
+        UINT idx = str.at(i) - WSTRING_OFFSET;
+        InitializeTile(mTileMap[i], i, 0, idx);
     }
 }
 
@@ -194,7 +194,11 @@ void FTTileMap::InitializeTile(Tile& tile, UINT column, UINT row, UINT tileNum)
     rectOnMap.Set(tileWidthOnMap * tileIndexX, tileHeightOnMap * tileIndexY, tileWidthOnMap, tileHeightOnMap);
 
     FTRect& rectOnScreen = tile.GetRectOnScreen();
-    rectOnScreen.Set(column * mTileWidthOnScreen, row * mTileHeightOnScreen, mTileWidthOnScreen, mTileHeightOnScreen);
+    rectOnScreen.Set(
+        static_cast<float>(column * mTileWidthOnScreen), 
+        static_cast<float>(row * mTileHeightOnScreen), 
+        static_cast<float>(mTileWidthOnScreen), 
+        static_cast<float>(mTileHeightOnScreen));
 }
 
 void FTTileMap::SaveProperties(std::ofstream& ofs, UINT key)

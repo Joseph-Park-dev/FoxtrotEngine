@@ -66,12 +66,14 @@ b2QueryFilter CollisionManager::GetQueryFilter(ActorGroup objectActorGroup)
 }
 
 CollisionManager::CollisionManager()
-	: mCollisionMarks()
-	, mRegColliders()
+	: mRegColliders()
+	, mCollisionMarks(new bool[((size_t)ActorGroup::END - 1) * ((size_t)ActorGroup::END - 1)])
 {}
 
 CollisionManager::~CollisionManager()
-{}
+{
+	delete[] mCollisionMarks;
+}
 
 void CollisionManager::Update()
 {

@@ -8,8 +8,8 @@
 
 #include "Core/FTCore.h"
 
-#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#define WIN32_LEAN_AND_MEAN
 
 #include "Core/TemplateFunctions.h"
 #include "Core/WindowProcess.h"
@@ -135,7 +135,7 @@ bool FTCore::InitFoxtrotRenderer_D3D11()
 void FTCore::InitSingletonManagers()
 {
 	Physics2D::GetInstance()->Initialize();
-	Camera::GetInstance()->Initialize(mGameRenderer, 64.f, 1.8f);
+	Camera::GetInstance()->Initialize(mGameRenderer, 64, 1.8f);
 	ResourceManager::GetInstance()->Initialize(mGameRenderer);
 	CollisionManager::GetInstance()->Initialize();
 	SceneManager::GetInstance()->Initialize();

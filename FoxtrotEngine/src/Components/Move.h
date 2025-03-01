@@ -17,12 +17,18 @@
 
 class FTVector2;
 class Rigidbody2D;
+struct Steering;
+struct b2Vec2;
+
+enum Controllable
+{
+	NO,
+	YES
+};
 
 class Move :
 	public Component
 {
-	enum Controllable;
-
 public:
 	virtual std::string GetName() const override
 	{
@@ -52,13 +58,6 @@ protected:
 	void Accelerate(b2Vec2 currVel, const Steering* steering);
 	void Jump(b2Vec2 currVel, const Steering* steering);
 	void SetIsGrounded();
-
-protected:
-	enum Controllable
-	{
-		NO,
-		YES
-	};
 
 private:
 	Rigidbody2D*  mRigidbody;

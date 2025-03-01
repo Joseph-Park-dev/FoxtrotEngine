@@ -12,6 +12,7 @@
 
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
+#include "Core/TemplateFunctions.h"
 
 #ifdef FOXTROT_EDITOR
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -23,6 +24,7 @@
 #include "imgui/FileDialog/ImGuiFileDialogConfig.h"
 
 #include "EditorLayer.h"
+#include "DirectoryHelper.h"
 #endif //FOXTROT_EDITOR
 
 FTResource::FTResource()
@@ -34,9 +36,15 @@ FTResource::FTResource()
 
 void FTResource::SaveProperties(std::ofstream& ofs, UINT key)
 {
+    // Makes file path relative to the project dir.
+    std::string buf = {};
+    buf.assign(mRelativePath);
+    ExtractUntil(buf, "\\Assets\\");
+    buf = ".\\" + buf;
+
     FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::KEY, key);
     FileIOHelper::SaveString(ofs, ChunkKey::FILE_NAME, mFileName);
-    FileIOHelper::SaveString(ofs, ChunkKey::RELATIVE_PATH, mRelativePath);
+    FileIOHelper::SaveString(ofs, ChunkKey::RELATIVE_PATH, buf);
 }
 
 // When loading properties, invert the order of the member variables
@@ -47,6 +55,13 @@ UINT FTResource::LoadProperties(std::ifstream& ifs)
     FileIOHelper::LoadBasicString(ifs, mFileName);
     UINT key = 0;
     FileIOHelper::LoadUnsignedInt(ifs, key);
+
+#ifdef FOXTROT_EDITOR
+    // Removes the dot in the front.
+    ExtractUntil(mRelativePath, '.');
+    mRelativePath = PATH_PROJECT + mRelativePath;
+#endif
+
     return key;
 }
 

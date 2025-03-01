@@ -1,4 +1,5 @@
 #pragma once
+#include <DirectXColors.h>
 
 using Vector2 = DirectX::SimpleMath::Vector2;
 using Vector4 = DirectX::SimpleMath::Vector4;

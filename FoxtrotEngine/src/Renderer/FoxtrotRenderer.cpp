@@ -95,6 +95,11 @@ ComPtr<ID3D11PixelShader>&	FoxtrotRenderer::GetBlinnPhongPS() { return mBlinnPho
 ComPtr<ID3D11VertexShader>& FoxtrotRenderer::GetNormalVS() { return mNormalVS; }
 ComPtr<ID3D11PixelShader>&	FoxtrotRenderer::GetNormalPS() { return mNormalPS; }
 
+FTVector2 FoxtrotRenderer::GetRenderResolution()
+{
+	return FTVector2(static_cast<float>(mRenderWidth), static_cast<float>(mRenderHeight));
+}
+
 UINT FoxtrotRenderer::GetRenderWidth() const { return mRenderWidth; }
 UINT FoxtrotRenderer::GetRenderHeight() const { return mRenderHeight; }
 void FoxtrotRenderer::SetRenderWidth(const UINT width) { mRenderWidth = width; }

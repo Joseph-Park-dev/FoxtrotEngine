@@ -38,7 +38,6 @@
 #define NORMAL_VS_PATH L"Assets/Shaders/NormalVS.hlsl"
 #define NORMAL_PS_PATH L"Assets/Shaders/NormalPS.hlsl"
 
-
 using VertexType = DirectX::VertexPositionColor;
 using namespace Microsoft::WRL;
 using namespace DX;
@@ -100,10 +99,11 @@ public:
 	ComPtr<ID3D11PixelShader>&	GetNormalPS();
 
 	// Rendering size related (Getters and Setters).
-	UINT GetRenderWidth() const;
-	UINT GetRenderHeight() const;
-	void SetRenderWidth(const UINT width);
-	void SetRenderHeight(const UINT height);
+	FTVector2 GetRenderResolution();
+	UINT	  GetRenderWidth() const;
+	UINT	  GetRenderHeight() const;
+	void	  SetRenderWidth(const UINT width);
+	void	  SetRenderHeight(const UINT height);
 
 	// FillMode related (Getters and Setters)
 	void	 SwitchFillMode() const;

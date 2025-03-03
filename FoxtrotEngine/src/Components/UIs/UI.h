@@ -17,20 +17,23 @@
 
 class FoxtrotRenderer;
 class FTRectangle;
+class FTRect;
 
 class UI :
 	public Component
 {
 public:
-	bool IsMouseHovering();
-	bool LeftButtonIsDown();
-	bool LeftButtonIsClicked();
-	bool GetIsFocused();
-	bool GetIsAffectedByCamera();
+	bool	IsMouseHovering();
+	bool	LeftButtonIsDown();
+	bool	LeftButtonIsClicked();
+	bool	GetIsFocused();
+	bool	GetIsAffectedByCamera();
+	FTRect* GetInputArea();
 
 	void SetIsFocused(bool isFocused);
 	void SetIsAffectedByCamera(bool affected);
 	void SetMouseHovering(bool hovering);
+	void SetInputArea(FTRect* rect);
 
 public:
 	virtual void CheckMouseHover();
@@ -46,21 +49,27 @@ public:
 	virtual void Render(FoxtrotRenderer* renderer) override;
 
 public:
-	UI(
-		Actor* owner,
-
-		int updateOrder = DefaultVal::UPDATE_ORDER);
+	UI(Actor* owner,
+	   int	  updateOrder = DefaultVal::UPDATE_ORDER);
 	virtual ~UI() override;
 
 private:
-	bool	  mIsAffectedByCamera;
-	bool	  mMouseHovering;
-	bool	  mLBtnDown;
-	bool	  mLBtnClicked;
-	bool	  mIsFocused;
-	FTVector2 mSize;
+	bool mIsAffectedByCamera;
+	bool mMouseHovering;
+	bool mLBtnDown;
+	bool mLBtnClicked;
+	bool mIsFocused;
+
+	// An area this UI can receive input from.
+	FTRect* mInputArea;
+	// Need to get Render Width & Render Height
+	FoxtrotRenderer* mRenderer;
 
 	friend class UIManager;
+
+public:
+	void SaveProperties(std::ofstream& ifs) override;
+	void LoadProperties(std::ifstream& ofs) override;
 
 #ifdef FOXTROT_EDITOR
 public:

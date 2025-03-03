@@ -11,6 +11,8 @@ public:
 	}
 
 public:
+	virtual void Initialize(FTCore* coreInstance) override {};
+	void Setup() override;
 	void Update(float deltaTime) override;
 	void CloneTo(Actor* actor) override;
 
@@ -18,5 +20,5 @@ public:
 	MonkeySpin(Actor* owner, int updateOrder);
 	void SaveProperties(std::ofstream& ofs) override;
 	void LoadProperties(std::ifstream& ifs) override;
-	virtual void Initialize(FTCore* coreInstance) override {};
+	void ExitGame();
 };

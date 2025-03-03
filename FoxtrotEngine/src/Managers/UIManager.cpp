@@ -41,7 +41,8 @@ void UIManager::Update(float deltaTime)
 	bool lBtnTap = MOUSE_TAP(MOUSE::MOUSE_LEFT);
 	bool lBtnAway = MOUSE_AWAY(MOUSE::MOUSE_LEFT);
 	
-	UI* targetUI = GetTargetedUI(mFocusedUI);
+	//UI* targetUI = GetTargetedUI(mFocusedUI);
+	UI* targetUI = mFocusedUI;
 	if (targetUI != nullptr)
 	{
 		targetUI->OnMouseHovering(); // Double check mouse hovering
@@ -65,32 +66,32 @@ void UIManager::Update(float deltaTime)
 
 UI* UIManager::GetFocusedUI()
 {
-	//Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
-	//std::vector<Actor*>& UI = currScene->GetActorGroup(ActorGroup::UI);
-
-	bool lBtnTap = MOUSE_TAP(MOUSE::MOUSE_LEFT);
-
-	UI* focusedUI = mFocusedUI;
-	if (!lBtnTap)
-		return focusedUI;
-
-	std::vector<UI*>::iterator targetIter= mUIs.end();
+	std::list<UI*> hoveredUI;
 	std::vector<UI*>::iterator iter = mUIs.begin();
 	for (; iter != mUIs.end(); ++iter)
 	{
-		if (((UI*)*iter)->IsMouseHovering())
-		{
-			targetIter = iter;
-		}
+		if ((*iter)->IsMouseHovering())
+			hoveredUI.push_back(*iter);
 	}
+
 	// There's no UI focused
-	if (targetIter == mUIs.end())
-	{
+	if (hoveredUI.empty())
 		return nullptr;
+
+	UI* focusedUI = nullptr;
+	focusedUI = hoveredUI.back();
+	hoveredUI.pop_back();
+
+	while(!hoveredUI.empty())
+	{
+		UI* ui = hoveredUI.back();
+		float depth = ui->GetOwner()->GetTransform()->GetWorldPosition().z;
+		float currDepth = focusedUI->GetOwner()->GetTransform()->GetWorldPosition().z;
+		if (currDepth < depth)
+			focusedUI = ui;
+		hoveredUI.pop_back();
 	}
-	focusedUI = *targetIter;
-	//mUIs.erase(targetIter);
-	//mUIs.push_back(focusedUI);
+
 	return focusedUI;
 }
 
@@ -115,33 +116,39 @@ UI* UIManager::GetTargetedUI(UI* parentUI)
 		UI* ui = queue.front();
 		queue.pop_front();
 
-		if (ui->IsMouseHovering())
+		if (ui)
 		{
-			if (targetUI != nullptr)
+			if (ui->IsMouseHovering())
 			{
-				noneTarget.push_back(targetUI);
-			}
-			targetUI = ui;
-		}
-		else
-		{
-			noneTarget.push_back(ui);
-		}
-
-		std::vector<Actor*>& childActors = ui->GetOwner()->GetChildActors();
-		for (size_t i = 0; i < childActors.size(); ++i)
-		{
-			UI* uiComp = childActors[i]->GetComponent<UI>();
-			if(uiComp)
-				queue.push_back(uiComp);
-		}
-		if (lBtnAway)
-		{
-			for (size_t i = 0; i < noneTarget.size(); ++i)
-			{
-				if (lBtnAway)
+				if (targetUI != nullptr)
 				{
-					noneTarget[i]->mLBtnDown = false;
+					noneTarget.push_back(targetUI);
+				}
+				targetUI = ui;
+			}
+			else
+			{
+				noneTarget.push_back(ui);
+			}
+
+			std::vector<Actor*>& childActors = ui->GetOwner()->GetChildActors();
+			if (!childActors.empty())
+			{
+				for (size_t i = 0; i < childActors.size(); ++i)
+				{
+					UI* uiComp = childActors[i]->GetComponent<UI>();
+					if (uiComp)
+						queue.push_back(uiComp);
+				}
+			}
+			if (lBtnAway)
+			{
+				for (size_t i = 0; i < noneTarget.size(); ++i)
+				{
+					if (lBtnAway)
+					{
+						noneTarget[i]->mLBtnDown = false;
+					}
 				}
 			}
 		}
@@ -151,5 +158,6 @@ UI* UIManager::GetTargetedUI(UI* parentUI)
 
 void UIManager::Reset()
 {
+	mUIs.clear();
 	mFocusedUI = nullptr;
 }

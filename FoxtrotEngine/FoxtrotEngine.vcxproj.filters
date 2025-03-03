@@ -198,6 +198,9 @@
     <ClCompile Include="src\Behaviors\MonkeySpin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="include\delegates\Delegates.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Actors\Actor.h">
@@ -1647,6 +1650,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\FunctionUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\delegates\catch.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\delegates\Delegates.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

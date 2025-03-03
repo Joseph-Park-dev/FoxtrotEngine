@@ -99,6 +99,8 @@ ChunkLoader::ChunkLoader()
 		{ "TextRenderer", &Component::Load<TextRenderer> },
 		{ "MeshRenderer", &Component::Load<MeshRenderer> },
 
+		{ "ButtonUI", &Component::Load<ButtonUI> },
+
 		{ "GunFiringBehavior", &Component::Load<GunFiringBehavior> },
 		{ "BulletBehavior", &Component::Load<BulletBehavior> },
 

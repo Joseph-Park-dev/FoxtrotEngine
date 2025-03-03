@@ -19,7 +19,7 @@ Delegates::SetAllocationCallbacks(allocFunction, freeFunc);
 // USAGE
 
 ## Classes ##
-- ```Delegate<RetVal, Args>```
+- ```FTDelegate<RetVal, Args>```
 - ```MulticastDelegate<Args>```
 
 ## Features ##
@@ -28,15 +28,15 @@ Delegates::SetAllocationCallbacks(allocFunction, freeFunc);
 	- Member functions
 	- Lambda's
 	- std::shared_ptr
-- Delegate object is allocated inline if it is under 32 bytes
+- FTDelegate object is allocated inline if it is under 32 bytes
 - Add payload to delegate during bind-time
 - Move operations enable optimization
 
 ## Example Usage ##
 
-### Delegate ###
+### FTDelegate ###
 
-Delegate<int, float> del;
+FTDelegate<int, float> del;
 del.BindLambda([](float a, int payload)
 {
 	std::cout << "Lambda delegate parameter: " << a << std::endl;
@@ -110,14 +110,14 @@ Raw delegate payload: 10
 #endif
 
 #define DECLARE_DELEGATE(name, ...) \
-using name = Delegate<void, __VA_ARGS__>
+using name = FTDelegate<void, __VA_ARGS__>
 
 #define DECLARE_DELEGATE_RET(name, retValue, ...) \
-using name = Delegate<retValue, __VA_ARGS__>
+using name = FTDelegate<retValue, __VA_ARGS__>
 
 #define DECLARE_MULTICAST_DELEGATE(name, ...) \
 using name = MulticastDelegate<__VA_ARGS__>; \
-using name ## Delegate = MulticastDelegate<__VA_ARGS__>::DelegateT
+using name ## FTDelegate = MulticastDelegate<__VA_ARGS__>::DelegateT
 
 #define DECLARE_EVENT(name, ownerType, ...) \
 class name : public MulticastDelegate<__VA_ARGS__> \
@@ -686,14 +686,14 @@ protected:
 	}
 
 	//Allocator for the delegate itself.
-	//Delegate gets allocated when its is smaller or equal than 64 bytes in size.
+	//FTDelegate gets allocated when its is smaller or equal than 64 bytes in size.
 	//Can be changed by preference
 	InlineAllocator<DELEGATE_INLINE_ALLOCATION_SIZE> m_Allocator;
 };
 
-//Delegate that can be bound to by just ONE object
+//FTDelegate that can be bound to by just ONE object
 template<typename RetVal, typename... Args>
-class Delegate : public DelegateBase
+class FTDelegate : public DelegateBase
 {
 private:
 	template<typename T, typename... Args2>
@@ -706,52 +706,52 @@ public:
 
 	//Create delegate using member function
 	template<typename T, typename... Args2>
-	NO_DISCARD static Delegate CreateRaw(T* pObj, NonConstMemberFunction<T, Args2...> pFunction, Args2... args)
+	NO_DISCARD static FTDelegate CreateRaw(T* pObj, NonConstMemberFunction<T, Args2...> pFunction, Args2... args)
 	{
-		Delegate handler;
+		FTDelegate handler;
 		handler.Bind<RawDelegate<false, T, RetVal(Args...), Args2...>>(pObj, pFunction, std::forward<Args2>(args)...);
 		return handler;
 	}
 
 	template<typename T, typename... Args2>
-	NO_DISCARD static Delegate CreateRaw(T* pObj, ConstMemberFunction<T, Args2...> pFunction, Args2... args)
+	NO_DISCARD static FTDelegate CreateRaw(T* pObj, ConstMemberFunction<T, Args2...> pFunction, Args2... args)
 	{
-		Delegate handler;
+		FTDelegate handler;
 		handler.Bind<RawDelegate<true, T, RetVal(Args...), Args2...>>(pObj, pFunction, std::forward<Args2>(args)...);
 		return handler;
 	}
 
 	//Create delegate using global/static function
 	template<typename... Args2>
-	NO_DISCARD static Delegate CreateStatic(RetVal(*pFunction)(Args..., Args2...), Args2... args)
+	NO_DISCARD static FTDelegate CreateStatic(RetVal(*pFunction)(Args..., Args2...), Args2... args)
 	{
-		Delegate handler;
+		FTDelegate handler;
 		handler.Bind<StaticDelegate<RetVal(Args...), Args2...>>(pFunction, std::forward<Args2>(args)...);
 		return handler;
 	}
 
 	//Create delegate using std::shared_ptr
 	template<typename T, typename... Args2>
-	NO_DISCARD static Delegate CreateSP(const std::shared_ptr<T>& pObject, NonConstMemberFunction<T, Args2...> pFunction, Args2... args)
+	NO_DISCARD static FTDelegate CreateSP(const std::shared_ptr<T>& pObject, NonConstMemberFunction<T, Args2...> pFunction, Args2... args)
 	{
-		Delegate handler;
+		FTDelegate handler;
 		handler.Bind<SPDelegate<false, T, RetVal(Args...), Args2...>>(pObject, pFunction, std::forward<Args2>(args)...);
 		return handler;
 	}
 
 	template<typename T, typename... Args2>
-	NO_DISCARD static Delegate CreateSP(const std::shared_ptr<T>& pObject, ConstMemberFunction<T, Args2...> pFunction, Args2... args)
+	NO_DISCARD static FTDelegate CreateSP(const std::shared_ptr<T>& pObject, ConstMemberFunction<T, Args2...> pFunction, Args2... args)
 	{
-		Delegate handler;
+		FTDelegate handler;
 		handler.Bind<SPDelegate<true, T, RetVal(Args...), Args2...>>(pObject, pFunction, std::forward<Args2>(args)...);
 		return handler;
 	}
 
 	//Create delegate using a lambda
 	template<typename TLambda, typename... Args2>
-	NO_DISCARD static Delegate CreateLambda(TLambda&& lambda, Args2... args)
+	NO_DISCARD static FTDelegate CreateLambda(TLambda&& lambda, Args2... args)
 	{
-		Delegate handler;
+		FTDelegate handler;
 		using LambdaType = std::decay_t<TLambda>;
 		handler.Bind<LambdaDelegate<LambdaType, RetVal(Args...), Args2...>>(std::forward<LambdaType>(lambda), std::forward<Args2>(args)...);
 		return handler;
@@ -802,7 +802,7 @@ public:
 	//Execute the delegate with the given parameters
 	RetVal Execute(Args... args) const
 	{
-		DELEGATE_ASSERT(m_Allocator.HasAllocation(), "Delegate is not bound");
+		DELEGATE_ASSERT(m_Allocator.HasAllocation(), "FTDelegate is not bound");
 		return ((IDelegateT*)GetDelegate())->Execute(std::forward<Args>(args)...);
 	}
 
@@ -825,12 +825,12 @@ private:
 	}
 };
 
-//Delegate that can be bound to by MULTIPLE objects
+//FTDelegate that can be bound to by MULTIPLE objects
 template<typename... Args>
 class MulticastDelegate : public DelegateBase
 {
 public:
-	using DelegateT = Delegate<void, Args...>;
+	using DelegateT = FTDelegate<void, Args...>;
 
 private:
 	struct DelegateHandlerPair

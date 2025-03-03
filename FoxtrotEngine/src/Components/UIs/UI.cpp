@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -11,6 +11,7 @@
 #include "Actors/Transform.h"
 
 #include "Renderer/FoxtrotRenderer.h"
+#include "Renderer/FTRect.h"
 #include "Managers/KeyInputManager.h"
 #include "Managers/UIManager.h"
 #include "Math/FTMath.h"
@@ -18,9 +19,9 @@
 #include "Renderer/Camera.h"
 
 #ifdef FOXTROT_EDITOR
-#include "DebugShapes.h"
-#include "ResourceSystem/FTShape.h"
-#include "CommandHistory.h"
+	#include "DebugShapes.h"
+	#include "ResourceSystem/FTShape.h"
+	#include "CommandHistory.h"
 #endif // DEBUG
 
 bool UI::IsMouseHovering()
@@ -48,6 +49,11 @@ bool UI::GetIsAffectedByCamera()
 	return mIsAffectedByCamera;
 }
 
+FTRect* UI::GetInputArea()
+{
+	return mInputArea;
+}
+
 void UI::SetIsFocused(bool isFocused)
 {
 	mIsFocused = isFocused;
@@ -63,33 +69,33 @@ void UI::SetMouseHovering(bool hovering)
 	mMouseHovering = hovering;
 }
 
+void UI::SetInputArea(FTRect* rect)
+{
+	mInputArea = rect;
+}
+
 void UI::CheckMouseHover()
 {
-	FTVector2 mousePos		= KeyInputManager::GetInstance()->GetMousePosition();
-	Transform* transform	= GetOwner()->GetTransform();
-	FTVector2 worldPosition = transform->GetWorldPosition();
-	FTVector2 scale = mSize * FTVector2(transform->GetScale()) * Camera::GetInstance()->GetPixelsPerUnit();
-
 	if (mIsAffectedByCamera)
 	{
-		//mousePos = Camera2D::GetInstance()->ConvertScreenPosToWorld(mousePos);
+		// mousePos = Camera2D::GetInstance()->ConvertScreenPosToWorld(mousePos);
 	}
-	if (worldPosition.x - scale.x/2 <= mousePos.x &&	// Mouse X boundaries
-		mousePos.x <= worldPosition.x + scale.x/2 &&
 
-		-worldPosition.y - scale.y/2 <= mousePos.y &&	// Mouse Y boundaries
-		mousePos.y <= -worldPosition.y + scale.y/2)
-	{
+	LogVector2(MOUSE_POS);
+	FTRect rect;
+	FTVector2 ndcPos = mRenderer->GetRenderResolution() / 2 + mInputArea->GetCenter() * Camera::GetInstance()->GetPixelsPerUnit();
+	FTVector2 ndcSize = mInputArea->GetSize() * 1 / Camera::GetInstance()->GetPixelsPerUnit();
+	rect.Set(ndcPos, ndcSize);
+
+	if (rect.Overlaps(MOUSE_POS))
 		mMouseHovering = true;
-	}
 	else
-	{
 		mMouseHovering = false;
-	}
 }
 
 void UI::OnMouseHovering()
-{}
+{
+}
 
 void UI::OnMouseLButtonDown()
 {
@@ -98,17 +104,18 @@ void UI::OnMouseLButtonDown()
 
 void UI::OnMouseLButtonUp()
 {
-	//SDL_Log("%ls", GetName().c_str());
+	// SDL_Log("%ls", GetName().c_str());
 }
 
 void UI::OnMouseLButtonClicked()
 {
-	//SDL_Log("%ls", GetName().c_str());
+	// SDL_Log("%ls", GetName().c_str());
 }
 
 void UI::Initialize(FTCore* ftCoreInst)
 {
 	UIManager::GetInstance()->RegisterUI(this);
+	mRenderer = ftCoreInst->GetGameRenderer();
 #ifdef FOXTROT_EDITOR
 	mDebugRect = DBG_NEW FTRectangle;
 	mDebugRect->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
@@ -116,7 +123,8 @@ void UI::Initialize(FTCore* ftCoreInst)
 }
 
 void UI::Update(float deltaTime)
-{}
+{
+}
 
 void UI::LateUpdate(float deltaTime)
 {
@@ -124,7 +132,8 @@ void UI::LateUpdate(float deltaTime)
 }
 
 void UI::Render(FoxtrotRenderer* renderer)
-{}
+{
+}
 
 UI::UI(Actor* owner, int updateOrder)
 	: Component(owner, updateOrder)
@@ -133,37 +142,49 @@ UI::UI(Actor* owner, int updateOrder)
 	, mLBtnDown(false)
 	, mLBtnClicked(false)
 	, mIsFocused(false)
-	, mSize(FTVector2(1.f, 1.f))
+	, mInputArea(new FTRect())
+	, mRenderer(nullptr)
 
 #ifdef FOXTROT_EDITOR
 	, mDebugRect(nullptr)
 #endif // FOXTROT_EDITOR
-{}
+{
+}
 
 UI::~UI()
-{}
+{
+	delete mInputArea;
+}
+
+void UI::SaveProperties(std::ofstream& ofs)
+{
+	Component::SaveProperties(ofs);
+	mInputArea->SaveProperties(ofs);
+}
+
+void UI::LoadProperties(std::ifstream& ifs)
+{
+	mInputArea->LoadProperties(ifs);
+	Component::LoadProperties(ifs);
+}
 
 #ifdef FOXTROT_EDITOR
 void UI::EditorUpdate(float deltaTime)
 {
-	CheckMouseHover();
+	// CheckMouseHover();
 
-	Transform* transform = GetOwner()->GetTransform();
-	FTVector3 pos = transform->GetWorldPosition();
-	pos = pos * FTVector3(1.f, -1.f, 1.f);
-	FTVector3 rot = transform->GetRotation();
+	FTVector2 pos	= mInputArea->GetCenter();
+	FTVector3 rot	= GetOwner()->GetTransform()->GetRotation();
 	FTVector3 scale = FTVector3(
-		transform->GetScale().x * mSize.x,
-		transform->GetScale().y * mSize.y,
-		1.f
-	);
+		mInputArea->GetSize().x / Camera::GetInstance()->GetPixelsPerUnit(),
+		mInputArea->GetSize().y / Camera::GetInstance()->GetPixelsPerUnit(),
+		1.f);
 
 	mDebugRect->Update(
 		pos,
 		rot,
 		scale,
-		Camera::GetInstance()
-	);
+		Camera::GetInstance());
 }
 
 void UI::EditorRender(FoxtrotRenderer* renderer)
@@ -173,6 +194,6 @@ void UI::EditorRender(FoxtrotRenderer* renderer)
 
 void UI::EditorUIUpdate()
 {
-	CommandHistory::GetInstance()->UpdateVector2Value("Size", mSize, FLOATMOD_SPEED);
+	mInputArea->UpdateUI();
 }
 #endif // FOXTROT_EDITOR

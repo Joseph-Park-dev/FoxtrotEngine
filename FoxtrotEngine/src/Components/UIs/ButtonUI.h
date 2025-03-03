@@ -13,6 +13,8 @@
 #pragma once
 #include "Components/UIs/UI.h"
 
+#include "delegates/Delegates.h"
+
 class Scene;
 
 typedef void(*BTN_FUNC) (int, int);
@@ -34,18 +36,13 @@ public:
 	virtual void OnMouseLButtonUp() override;
 	virtual void OnMouseLButtonClicked() override;
 
-	void SetClickedCallBack(BTN_FUNC func, int param1, int param2)
-	{
-		mFunc = func;
-		mParam1 = param1;
-		mParam2 = param2;
-	}
-
 	void SetClickedCallBack(Scene* scene, SCENE_MEMFUNC sceneFunc)
 	{
 		mSceneInstance = scene;
 		mSceneFunc = sceneFunc;
 	}
+
+	MulticastDelegate<> mOnLBtnClicked_void;
 
 public:
 	virtual void CloneTo(Actor* actor) override;
@@ -53,7 +50,6 @@ public:
 public:
 	 ButtonUI(
 		Actor* owner,
-		
 		int updateOrder = DefaultVal::UPDATE_ORDER
 	 );
 	~ButtonUI() override;

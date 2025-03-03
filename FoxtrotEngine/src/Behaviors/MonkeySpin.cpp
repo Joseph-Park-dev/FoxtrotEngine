@@ -1,7 +1,21 @@
 #include "MonkeySpin.h"
 
+#include "delegates/Delegates.h"
+
 #include "Actors/Actor.h"
 #include "Actors/Transform.h"
+#include "Components/UIs/ButtonUI.h"
+#include "EditorSceneManager.h"
+
+void MonkeySpin::Setup()
+{
+	Actor* actor = FIND_EDITOR_ELEMENT("Button");
+	if (actor)
+	{
+		ButtonUI* btn = actor->GetComponent<ButtonUI>();
+		btn->mOnLBtnClicked_void.AddRaw(this, &MonkeySpin::ExitGame);
+	}
+}
 
 void MonkeySpin::Update(float deltaTime)
 {
@@ -33,4 +47,9 @@ void MonkeySpin::SaveProperties(std::ofstream& ofs)
 void MonkeySpin::LoadProperties(std::ifstream& ifs)
 {
 	Component::LoadProperties(ifs);
+}
+
+void MonkeySpin::ExitGame()
+{
+	printf("Exit Game!");
 }

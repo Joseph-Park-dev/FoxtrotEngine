@@ -190,11 +190,11 @@ public:
 		return reinterpret_cast<const float*>(&x);
 	}
 
-	//float* Data() 
+	// float* Data()
 	//{
 	//	float floatArr[3] = { this->x, this->y, this->z };
 	//	return floatArr;
-	//}
+	// }
 
 	// Set all three components in one line
 	void Set(float inX, float inY, float inZ)

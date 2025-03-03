@@ -8,10 +8,16 @@
 
 #include "Components/UIs/ButtonUI.h"
 
+#include <tuple>
+#include "delegates/Delegates.h"
+
 #include "Scenes/Scene.h"
+#include "Renderer/FTRect.h"
 
 void ButtonUI::OnMouseHovering()
-{}
+{
+	printf("hover!\n");
+}
 
 void ButtonUI::OnMouseLButtonDown()
 {}
@@ -29,12 +35,15 @@ void ButtonUI::OnMouseLButtonClicked()
 	{
 		((*mSceneInstance).*mSceneFunc)();
 	}
+
+	mOnLBtnClicked_void.Broadcast();
 	printf("Clicked!\n");
 }
 
 void ButtonUI::CloneTo(Actor* actor)
 {
 	ButtonUI* newComp = DBG_NEW ButtonUI(actor, GetUpdateOrder());
+	this->GetInputArea()->CloneTo(newComp->GetInputArea());
 }
 
 ButtonUI::ButtonUI(Actor* owner, int updateOrder)
@@ -47,4 +56,6 @@ ButtonUI::ButtonUI(Actor* owner, int updateOrder)
 {}
 
 ButtonUI::~ButtonUI()
-{}
+{
+	mOnLBtnClicked_void.Clear();
+}

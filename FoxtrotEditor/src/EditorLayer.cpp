@@ -33,6 +33,7 @@
 #include "Managers/KeyInputManager.h"
 #include "Managers/ResourceManager.h"
 #include "Managers/CollisionManager.h"
+#include "Managers/UIManager.h"
 #include "Managers/LightManager.h"
 #include "Scenes/Scene.h"
 #include "Actors/Actor.h"
@@ -195,6 +196,7 @@ void EditorLayer::DisplayFileMenu()
 					EditorChunkLoader::	GetInstance()->	SaveChunk(PATH_CHUNK);
 					DebugShapes::		GetInstance()->	DeleteAll();
 					ResourceManager::	GetInstance()->	DeleteAll();
+					UIManager::GetInstance()->Reset();
 					CollisionManager::	GetInstance()->	Reset();
 					EditorSceneManager::GetInstance()->	GetEditorScene()->DeleteAll();
 					ResourceManager::	GetInstance()->	Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());

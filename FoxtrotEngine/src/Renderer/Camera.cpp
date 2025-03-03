@@ -170,7 +170,7 @@ void Camera::LoadProperties(std::ifstream& ifs)
 
 	FTVector3 pos = FTVector3::Zero;
 	FileIOHelper::LoadVector3(ifs, pos);
-	mPosition = pos.GetDXVec3();
+	mPosition				= pos.GetDXVec3();
 	std::string targetActor = {};
 	FileIOHelper::LoadBasicString(ifs, targetActor);
 
@@ -201,6 +201,14 @@ FTVector3 Camera::ConvertScreenPosToWorld(FTVector2 screenPos)
 
 	DirectX::SimpleMath::Vector3 vec3(worldPos);
 	return FTVector3(vec3.x, vec3.y, vec3.z);
+}
+
+FTVector2 Camera::ConvertScreenPosToNDC(FTVector2 screenPos)
+{
+	FTVector2 ndc;
+	ndc.x = screenPos.x / mRenderer->GetRenderWidth() * 2 - 1;
+	ndc.y = screenPos.y / mRenderer->GetRenderHeight() * 2 - 1;
+	return ndc;
 }
 
 #ifdef FOXTROT_EDITOR

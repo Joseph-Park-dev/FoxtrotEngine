@@ -25,11 +25,11 @@ using Vector3 = DirectX::SimpleMath::Vector3;
 
 namespace ChunkKey
 {
-	constexpr const char* CAMERA_DATA = "Camera Data";
-	constexpr const char* TARGET_ACTOR = "Target Actor";
-	constexpr const char* RENDER_RESOLUTION = "Render Resolution";
+	constexpr const char* CAMERA_DATA		  = "Camera Data";
+	constexpr const char* TARGET_ACTOR		  = "Target Actor";
+	constexpr const char* RENDER_RESOLUTION	  = "Render Resolution";
 	constexpr const char* RENDER_SCREENCENTER = "Screen Center";
-	constexpr const char* CAM_POSITION = "Position";
+	constexpr const char* CAM_POSITION		  = "Position";
 } // namespace ChunkKey
 
 enum class Viewtype
@@ -44,6 +44,7 @@ class Camera
 
 public:
 	FTVector3 ConvertScreenPosToWorld(FTVector2 screenPos);
+	FTVector2 ConvertScreenPosToNDC(FTVector2 screenPos);
 
 public:
 	Matrix	GetViewRow();

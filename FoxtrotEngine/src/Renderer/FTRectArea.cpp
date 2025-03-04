@@ -6,43 +6,38 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Renderer/FTRect.h"
+#include "Renderer/FTRectArea.h"
 #include "FileSystem/FileIOHelper.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
 #endif
 
-const FTRect FTRect::Zero(0.0f, 0.0f, 0.0f, 0.0f);
+const FTRectArea FTRectArea::Zero(0.0f, 0.0f, 0.0f, 0.0f);
 
-bool FTRect::Overlaps(const FTVector2& point)
+bool FTRectArea::Overlaps(const FTVector2& point)
 {
 	return mMin.x <= point.x && point.x <= mMax.x && mMin.y <= point.y && point.y <= mMax.y;
 }
 
-bool FTRect::Overlaps(const FTRect& other)
+bool FTRectArea::Overlaps(const FTRectArea& other)
 {
 	FTVector2 rightMin = other.mMin;
 	FTVector2 rightMax = other.mMax;
 	return Overlaps(other.mMin) || Overlaps(other.mMax);
 }
 
-void FTRect::SetPosition(FTVector2 val)
+void FTRectArea::SetPosition(FTVector2 val)
 {
 	mCenter = val;
 }
 
-void FTRect::SetSize(FTVector2 val)
+void FTRectArea::SetSize(FTVector2 val)
 {
 	mSize = val;
 }
 
-void FTRect::Set()
-{
-	Set(mCenter, mSize);
-}
-
-void FTRect::Set(FTVector2 center, FTVector2 dimension)
+void FTRectArea::Set(FTVector2 center, FTVector2 dimension)
 {
 	mCenter = center;
 	mSize	= dimension;
@@ -52,44 +47,47 @@ void FTRect::Set(FTVector2 center, FTVector2 dimension)
 	mMax	= mCenter + mSize / 2;
 }
 
-void FTRect::Set(float posX, float posY, float width, float height)
+void FTRectArea::Set(float posX, float posY, float width, float height)
 {
-	mMin	= FTVector2(posX, posY);
+	mCenter = FTVector2(posX, posY);
 	mWidth	= width;
 	mHeight = height;
 	mSize	= FTVector2(width, height);
-	mCenter = mMin + mSize / 2;
-	mMax	= mMin + mSize;
+	mMin	= mCenter - mSize / 2;
+	mMax	= mCenter + mSize / 2;
 }
 
-void FTRect::CloneTo(FTRect* rect)
+void FTRectArea::CloneTo(FTRectArea* rect)
 {
 	rect->mCenter = mCenter;
+	rect->mWidth  = mWidth;
+	rect->mHeight = mHeight;
 	rect->mSize	  = mSize;
-	Set();
+	rect->mMin	  = mMin;
+	rect->mMax	  = mMax;
 }
 
-void FTRect::SaveProperties(std::ofstream& ofs)
+void FTRectArea::SaveProperties(std::ofstream& ofs)
 {
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTRECT);
-	FileIOHelper::SaveVector2(ofs, ChunkKey::FTRECT_CENTER, mCenter);
-	FileIOHelper::SaveVector2(ofs, ChunkKey::FTRECT_SIZE, mSize);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTRECT);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTRectArea);
+	FileIOHelper::SaveVector2(ofs, ChunkKey::FTRectArea_CENTER, mCenter);
+	FileIOHelper::SaveVector2(ofs, ChunkKey::FTRectArea_SIZE, mSize);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTRectArea);
 }
 
-void FTRect::LoadProperties(std::ifstream& ifs)
+void FTRectArea::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs);
 	FileIOHelper::LoadVector2(ifs, mSize);
 	FileIOHelper::LoadVector2(ifs, mCenter);
-	Set();
+	Set(mCenter, mSize);
 }
 
 #ifdef FOXTROT_EDITOR
-void FTRect::UpdateUI()
+void FTRectArea::UpdateUI()
 {
 	CommandHistory::GetInstance()->UpdateVector2Value("Center", mCenter);
 	CommandHistory::GetInstance()->UpdateVector2Value("Size", mSize);
-	Set();
+	Set(mCenter, mSize);
 }
 #endif

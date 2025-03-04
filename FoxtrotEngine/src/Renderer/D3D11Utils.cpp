@@ -152,7 +152,7 @@ HRESULT D3D11Utils::CreateDepthBuffer(
 	ComPtr<ID3D11Device>&			device,
 	int								renderWidth,
 	int								renderHeight,
-	UINT&							numQualityLevels,
+	UINT							numQualityLevels,
 	ComPtr<ID3D11DepthStencilView>& depthStencilView)
 {
 	depthStencilView.Reset();
@@ -245,6 +245,60 @@ HRESULT D3D11Utils::CreateRenderTargetView(
 		resultRTV = device->CreateRenderTargetView(
 			backBuffer.Get(), nullptr, rtv.GetAddressOf());
 
+		return resultRTV;
+	}
+	else
+	{
+		printf("ERROR : FoxtrotRenderer::CreateRenderTargetView() -> BackBuffer not set");
+		return E_FAIL;
+	}
+}
+
+HRESULT D3D11Utils::CreateRenderTargetView(
+	ComPtr<ID3D11RenderTargetView>& RTV,
+	ComPtr<ID3D11Device>& device,
+	ComPtr<IDXGISwapChain>& swapChain,
+	ComPtr<ID3D11Texture2D>& indexTexture,
+	ComPtr<ID3D11Texture2D>& indexTempTexture,
+	ComPtr<ID3D11Texture2D>& indexStagingTexture)
+{
+	RTV.Reset();
+	ComPtr<ID3D11Texture2D> backBuffer;
+	swapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+	if (backBuffer)
+	{
+		HRESULT resultRTV;
+		resultRTV = device->CreateRenderTargetView(
+			backBuffer.Get(), nullptr, RTV.GetAddressOf());
+
+		D3D11_TEXTURE2D_DESC desc;
+		backBuffer->GetDesc(&desc);
+		desc.SampleDesc.Count = 1;
+		desc.SampleDesc.Quality = 0;
+		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		desc.MiscFlags = 0;
+
+		device->CreateTexture2D(
+			&desc, nullptr, indexTempTexture.GetAddressOf());
+
+		// Creating 1x1 sized staging texture
+		desc.BindFlags = 0;
+		desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+		desc.Usage = D3D11_USAGE_STAGING;
+		desc.Width = 1;
+		desc.Height = 1;
+
+		resultRTV = device->CreateTexture2D(
+			&desc, nullptr, indexStagingTexture.GetAddressOf());
+
+		backBuffer->GetDesc(&desc); // Same desc with "backBuffer"
+		resultRTV = device->CreateTexture2D(&desc, nullptr,
+			indexTexture.GetAddressOf());
+
+		resultRTV = device->CreateRenderTargetView(
+			indexTexture.Get(), nullptr,
+			RTV.GetAddressOf());
+		
 		return resultRTV;
 	}
 	else

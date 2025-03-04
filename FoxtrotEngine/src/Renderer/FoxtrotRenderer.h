@@ -43,7 +43,7 @@ using namespace Microsoft::WRL;
 using namespace DX;
 
 class Transform;
-class RenderTextureClass;
+class ViewportRenderer;
 class FTVector2;
 
 enum class FillMode
@@ -64,6 +64,10 @@ public:
 	// Changes window resolution.
 	void ResizeWindow(FTVector2& windowRes);
 
+	// Gets the pixel color at the cursor position,
+	// pastes the value to mPickColor
+	void SampleCursorPosColor();
+
 	// Clears the screen with clearColor.
 	void RenderClear();
 
@@ -79,6 +83,12 @@ public:
 	ComPtr<ID3D11RenderTargetView>& GetRenderTargetView();
 	ComPtr<ID3D11DepthStencilView>& GetDSV();
 	ComPtr<ID3D11Texture2D>&		GetDepthStencilBuffer();
+
+	ComPtr<ID3D11Texture2D>&		GetIndexTexture();
+	ComPtr<ID3D11Texture2D>&		GetIndexTempTexture();
+	ComPtr<ID3D11Texture2D>&		GetIndexStagingTexture(); // 1x1 sized
+	ComPtr<ID3D11RenderTargetView>& GetIndexRenderTargetView();
+	uint8_t*						GetCursorPosColor();
 
 	ComPtr<ID3D11DepthStencilState>& GetDSS();
 	ComPtr<ID3D11DepthStencilState>& GetDSS2D();
@@ -104,6 +114,7 @@ public:
 	UINT	  GetRenderHeight() const;
 	void	  SetRenderWidth(const UINT width);
 	void	  SetRenderHeight(const UINT height);
+	UINT	  GetNumQualityLevels();
 
 	// FillMode related (Getters and Setters)
 	void	 SwitchFillMode() const;
@@ -119,13 +130,12 @@ private:
 	FillMode mFillMode;
 
 private:
-	ComPtr<ID3D11Device>			 mDevice;
-	ComPtr<ID3D11DeviceContext>		 mContext;
-	ComPtr<ID3D11RenderTargetView>	 mRenderTargetView;
-	ComPtr<ID3D11ShaderResourceView> mShaderResourceView;
-	ComPtr<IDXGISwapChain>			 mSwapChain;
-	ComPtr<ID3D11RasterizerState>	 mSolidRasterizerState;
-	ComPtr<ID3D11RasterizerState>	 mWireframeRasterizerState;
+	ComPtr<ID3D11Device>		   mDevice;
+	ComPtr<ID3D11DeviceContext>	   mContext;
+	ComPtr<ID3D11RenderTargetView> mRenderTargetView;
+	ComPtr<IDXGISwapChain>		   mSwapChain;
+	ComPtr<ID3D11RasterizerState>  mSolidRasterizerState;
+	ComPtr<ID3D11RasterizerState>  mWireframeRasterizerState;
 
 	// Depth buffer related
 	ComPtr<ID3D11Texture2D>			mDepthStencilBuffer;
@@ -154,6 +164,16 @@ private:
 
 	ComPtr<ID3D11BlendState> mBlendState;
 
+	// Indexing related (for mouse picking)
+	ComPtr<ID3D11Texture2D>		   mIndexTexture;
+	ComPtr<ID3D11Texture2D>		   mIndexTempTexture;
+	ComPtr<ID3D11Texture2D>		   mIndexStagingTexture; // 1x1 sized
+	ComPtr<ID3D11RenderTargetView> mIndexRenderTargetView;
+	// Pixel color (RGBA) at the cursor position.
+	uint8_t mCursorPosColor[4] = {
+		0,
+	};
+
 public:
 	FoxtrotRenderer();
 
@@ -172,13 +192,14 @@ private:
 
 #ifdef FOXTROT_EDITOR
 public:
-	void RenderToTexture();
+	void RenderOnViewport();
 	void SetViewport(const ImVec2& topLeft, const ImVec2& resolution);
 
 public:
-	RenderTextureClass* GetRenderTexture() { return mRenderTexture; }
+	ViewportRenderer* GetViewportRenderer();
+	bool			  IsInRenderedArea(FTVector2 pos);
 
 private:
-	RenderTextureClass* mRenderTexture;
+	ViewportRenderer* mViewportRenderer;
 #endif // FOXTROT_EDITOR
 };

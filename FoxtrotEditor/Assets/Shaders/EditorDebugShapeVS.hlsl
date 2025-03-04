@@ -6,6 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+#include "Common.hlsli"
 cbuffer ModelViewProjectionConstantBuffer : register(b0)
 {
     matrix model;
@@ -14,28 +15,23 @@ cbuffer ModelViewProjectionConstantBuffer : register(b0)
     matrix projection;
 };
 
-struct VertexShaderInput
+SolidPSInput main(SolidVSInput input)
 {
-    float3 pos : POSITION0;
-    float3 color : COLOR0;
-};
-
-struct PixelShaderInput
-{
-    float4 pos : SV_POSITION;
-    float3 color : COLOR;
-};
-
-PixelShaderInput main(VertexShaderInput input)
-{
-    PixelShaderInput output;
-    float4 pos = float4(input.pos, 1.0f);
-
+    SolidPSInput output;
+    
+    float4 pos = float4(input.posModel, 1.0);
     pos = mul(pos, model);
+    
+    output.posWorld = pos.xyz;
+    
     pos = mul(pos, view);
     pos = mul(pos, projection);
-
-    output.pos = pos;
+    output.posProj = pos;
+    
+    float4 normal = float4(input.normalModel, 0.0f);
+    output.normalWorld = mul(normal, invTranspose);
+    output.normalWorld = normalize(output.normalWorld);
+    
     output.color = input.color;
     
     return output;

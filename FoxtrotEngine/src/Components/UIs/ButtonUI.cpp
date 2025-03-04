@@ -12,7 +12,8 @@
 #include "delegates/Delegates.h"
 
 #include "Scenes/Scene.h"
-#include "Renderer/FTRect.h"
+#include "Renderer/FTRectArea.h"
+#include "ResourceSystem/FTRectangle.h"
 
 void ButtonUI::OnMouseHovering()
 {
@@ -43,7 +44,7 @@ void ButtonUI::OnMouseLButtonClicked()
 void ButtonUI::CloneTo(Actor* actor)
 {
 	ButtonUI* newComp = DBG_NEW ButtonUI(actor, GetUpdateOrder());
-	this->GetInputArea()->CloneTo(newComp->GetInputArea());
+	GetInputArea()->GetRectArea()->CloneTo(newComp->GetInputArea()->GetRectArea());
 }
 
 ButtonUI::ButtonUI(Actor* owner, int updateOrder)

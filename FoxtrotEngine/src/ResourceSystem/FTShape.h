@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -10,50 +10,57 @@
 /// </summary>
 
 #pragma once
-#include "ResourceSystem/Mesh.h"
-#include "ResourceSystem/FTMeshData.h"
+#include <d3d11.h>
+#include <wrl.h>
+
+#include "Math/FTMath.h"
 #include "ResourceSystem/MeshConstantData.h"
-#include "Actors/Transform.h"
-#include "Renderer/Camera.h"
+
+struct Mesh;
+struct FTMeshData;
+class FoxtrotRenderer;
+class Transform;
+class Camera;
+class FTRectArea;
+using namespace Microsoft::WRL;
 
 class FTShape
 {
 public:
-	FTShape();
-	virtual ~FTShape();
-
-public:
-	BasicVCData& GetVertexConstantData() { return mVertexConstantData; }
-	bool GetIsActive() { return mIsActive; }
+	BasicVCData& GetVertexConstantData();
+	IndexPCData& GetPixelConstantData();
+	Mesh*		 GetMesh();
+	bool		 GetIsActive() { return mIsActive; }
 
 	void SetIsActive(bool val) { mIsActive = val; }
 
 public:
 	virtual void Initialize(FoxtrotRenderer* renderer);
 
-	// This should be included in components to EditorUpdate(float) 
-			void Update(Transform* transform, Camera* cameraInst);
-			void Update(FTVector3 pos, FTVector3 rot, FTVector3 scale, Camera* cameraInst);
+	// This should be included in components to EditorUpdate(float)
+	virtual void Update() = 0;
 
 	// This is for ShapeActors (e.g. SquareActor)
-			void Render(FoxtrotRenderer* renderer);
+	void Render(FoxtrotRenderer* renderer);
 	// This should be called in DebugShapes instance only once per frame.
 	// You don't have to use this member function by yourself.
-			void Render(
-				FoxtrotRenderer* renderer, 
-				ComPtr<ID3D11VertexShader>& vertexShader, 
-				ComPtr<ID3D11PixelShader>& pixelShader, 
-				ComPtr<ID3D11InputLayout>& inputLayout
-			);
+	void Render(
+		FoxtrotRenderer*			renderer,
+		ComPtr<ID3D11VertexShader>& vertexShader,
+		ComPtr<ID3D11PixelShader>&	pixelShader,
+		ComPtr<ID3D11InputLayout>&	inputLayout);
+
+public:
+	FTShape();
+	virtual ~FTShape();
 
 protected:
-			void InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData&& meshData);
+	void InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData&& meshData);
 
 protected:
-	virtual void UpdateConstantBufferModel(Transform* transform);
-	virtual void UpdateConstantBufferModel(FTVector3 pos, FTVector3 rot, FTVector3 scale);
-			void UpdateConstantBufferView(Camera* camInst);
-			void UpdateConstantBufferProjection(Camera* camInst);
+	virtual void UpdateConstantBufferModel() = 0;
+	void		 UpdateConstantBufferView(Camera* camInst);
+	void		 UpdateConstantBufferProjection(Camera* camInst);
 
 private:
 	Mesh* mMesh;
@@ -61,30 +68,14 @@ private:
 
 private:
 	BasicVCData mVertexConstantData;
-	BasicPCData	mPixelConstantData;
+	IndexPCData mPixelConstantData;
 
-	ComPtr<ID3D11Buffer>	mVertexConstantBuffer;
-	ComPtr<ID3D11Buffer>	mPixelConstantBuffer;
+	ComPtr<ID3D11Buffer> mVertexConstantBuffer;
+	ComPtr<ID3D11Buffer> mPixelConstantBuffer;
 
 private:
 	void InitializeConstantBuffer(ComPtr<ID3D11Device>& device);
 	void UpdateConstantBuffers(
-		ComPtr<ID3D11Device>& device,
-		ComPtr<ID3D11DeviceContext>& context
-	);
-};
-
-class FTRectangle : public FTShape
-{
-public:
-	FTRectangle();
-
-public:
-	virtual void Initialize(FoxtrotRenderer* renderer) override;
-
-protected:
-	virtual void UpdateConstantBufferModel(FTVector3 pos, FTVector3 rot, FTVector3 scale) override;
-
-private:
-	FTVector2 mSize;
+		ComPtr<ID3D11Device>&		 device,
+		ComPtr<ID3D11DeviceContext>& context);
 };

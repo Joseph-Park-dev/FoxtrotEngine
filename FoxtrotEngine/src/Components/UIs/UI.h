@@ -17,23 +17,23 @@
 
 class FoxtrotRenderer;
 class FTRectangle;
-class FTRect;
 
 class UI :
 	public Component
 {
 public:
-	bool	IsMouseHovering();
-	bool	LeftButtonIsDown();
-	bool	LeftButtonIsClicked();
-	bool	GetIsFocused();
-	bool	GetIsAffectedByCamera();
-	FTRect* GetInputArea();
+	bool		 IsMouseHovering();
+	bool		 LeftButtonIsDown();
+	bool		 LeftButtonIsClicked();
+	bool		 GetIsFocused();
+	bool		 GetIsAffectedByCamera();
+	FTRectangle* GetInputArea();
 
 	void SetIsFocused(bool isFocused);
 	void SetIsAffectedByCamera(bool affected);
 	void SetMouseHovering(bool hovering);
-	void SetInputArea(FTRect* rect);
+	void SetInputArea(FTRectangle* rect);
+	void SetColorID(uint8_t r, uint8_t g, uint8_t b);
 
 public:
 	virtual void CheckMouseHover();
@@ -60,12 +60,16 @@ private:
 	bool mLBtnClicked;
 	bool mIsFocused;
 
-	// An area this UI can receive input from.
-	FTRect* mInputArea;
-	// Need to get Render Width & Render Height
+	// Needed to get Render Width & Render Height
 	FoxtrotRenderer* mRenderer;
+	uint8_t			 mColorID[4];
+	// An area this UI can receive input from.
+	FTRectangle* mInputArea;
 
 	friend class UIManager;
+
+private:
+	bool CompareColorIDs(uint8_t* cursorPosCol);
 
 public:
 	void SaveProperties(std::ofstream& ifs) override;
@@ -76,8 +80,5 @@ public:
 	virtual void EditorUpdate(float deltaTime) override;
 	virtual void EditorRender(FoxtrotRenderer* renderer) override;
 	virtual void EditorUIUpdate() override;
-
-private:
-	FTRectangle* mDebugRect;
 #endif // FOXTROT_EDITOR
 };

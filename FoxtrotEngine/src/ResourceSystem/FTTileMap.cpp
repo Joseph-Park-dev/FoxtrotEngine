@@ -14,7 +14,7 @@
 #include <string>
 
 #include "ResourceSystem/Tile.h"
-#include "Renderer/FTRect.h"
+#include "Renderer/FTRectArea.h"
 #include "Core/TemplateFunctions.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
@@ -184,7 +184,7 @@ FTTileMap::~FTTileMap()
 
 void FTTileMap::InitializeTile(Tile& tile, UINT column, UINT row, UINT tileNum)
 {
-    FTRect& rectOnMap = tile.GetRectOnMap();
+    FTRectArea& rectOnMap = tile.GetRectOnMap();
     // Individual Tile size on tilemap
     float tileWidthOnMap = 1 / static_cast<float>(mMaxCountOnMapX);
     float tileHeightOnMap = 1 / static_cast<float>(mMaxCountOnMapY);
@@ -193,7 +193,7 @@ void FTTileMap::InitializeTile(Tile& tile, UINT column, UINT row, UINT tileNum)
     int tileIndexY = tileNum / mMaxCountOnMapX;
     rectOnMap.Set(tileWidthOnMap * tileIndexX, tileHeightOnMap * tileIndexY, tileWidthOnMap, tileHeightOnMap);
 
-    FTRect& rectOnScreen = tile.GetRectOnScreen();
+    FTRectArea& rectOnScreen = tile.GetRectOnScreen();
     rectOnScreen.Set(
         static_cast<float>(column * mTileWidthOnScreen), 
         static_cast<float>(row * mTileHeightOnScreen), 

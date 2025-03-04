@@ -13,11 +13,11 @@
 #pragma once
 #include "Math/FTMath.h"
 
-class FTRect
+class FTRectArea
 {
 public:
 	bool Overlaps(const FTVector2& point);
-	bool Overlaps(const FTRect& other);
+	bool Overlaps(const FTRectArea& other);
 
 public:
 	const FTVector2& GetSize() { return mSize; }
@@ -28,39 +28,37 @@ public:
 	void SetPosition(FTVector2 val);
 	void SetSize(FTVector2 val);
 
-	// Update FTRect values using the existing member variables
-	void Set();
-	// Update FTRect values using the new ones.
+	// Update FTRectArea values using the new ones.
 	void Set(FTVector2 center, FTVector2 dimension);
 	void Set(float posX, float posY, float width, float height);
 
-	static const FTRect Zero;
+	static const FTRectArea Zero;
 
 public:
-	bool operator==(FTRect& other)
+	bool operator==(FTRectArea& other)
 	{
 		return this->mMin == other.mMin && this->mMax == other.mMax;
 	}
 
 public:
-	FTRect()
+	FTRectArea()
 	{
 		Set(0.f, 0.f, 0.f, 0.f);
 	}
 
-	FTRect(float x, float y, float width, float height)
+	FTRectArea(float x, float y, float width, float height)
 	{
 		Set(x, y, width, height);
 	}
-	void CloneTo(FTRect* rect);
+	void CloneTo(FTRectArea* rect);
 
 private:
 	FTVector2 mCenter;
 	float	  mWidth;
 	float	  mHeight;
+	FTVector2 mSize;
 	FTVector2 mMax;
 	FTVector2 mMin;
-	FTVector2 mSize;
 
 public:
 	void SaveProperties(std::ofstream& ifs);
@@ -74,7 +72,7 @@ public:
 
 namespace ChunkKey
 {
-	constexpr const char* FTRECT		= "FTRect";
-	constexpr const char* FTRECT_CENTER = "Center";
-	constexpr const char* FTRECT_SIZE	= "Size";
+	constexpr const char* FTRectArea		= "FTRectArea";
+	constexpr const char* FTRectArea_CENTER = "Center";
+	constexpr const char* FTRectArea_SIZE	= "Size";
 } // namespace ChunkKey

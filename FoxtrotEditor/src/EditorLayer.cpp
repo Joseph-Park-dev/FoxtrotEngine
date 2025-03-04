@@ -22,7 +22,7 @@
 #include "EditorChunkLoader.h"
 #include "CommandHistory.h"
 #include "Command.h"
-#include "RenderTextureClass.h"
+#include "ViewportRenderer.h"
 #include "EditorSceneManager.h"
 #include "EditorScene.h"
 #include "DebugShapes.h"
@@ -102,7 +102,7 @@ void EditorLayer::DisplayViewport()
 		//renderer->UpdateDepthBuffer(mSceneViewportSize.x, mSceneViewportSize.y);
 		mIsResizingViewport = false;
 	}
-	ID3D11ShaderResourceView* viewportTexture = renderer->GetRenderTexture()->GetShaderResourceView().Get();
+	ID3D11ShaderResourceView* viewportTexture = renderer->GetViewportRenderer()->GetViewportSRV().Get();
 	ImVec2 viewportSize = ImVec2(renderer->GetRenderWidth(), renderer->GetRenderHeight());
 	ImGui::Image((ImTextureID)viewportTexture, viewportSize);
 

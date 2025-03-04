@@ -201,6 +201,8 @@ void FTCore::GenerateOutput()
 
 	SceneManager::GetInstance()->Render(mGameRenderer);
 	ParticleSystem::GetInstance()->Render(mGameRenderer);
+	
+	mGameRenderer->SampleCursorPosColor();
 	mGameRenderer->SwapChainPresent(1, 0);
 }
 

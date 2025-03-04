@@ -110,6 +110,21 @@ float3 ComputeSpotLight(Light L, Material mat, float3 pos, float3 normal,
     }
 }
 
+struct SolidVSInput
+{
+    float3 posModel : POSITION;
+    float3 normalModel : NORMAL;
+    float4 color : COLOR;
+};
+
+struct SolidPSInput
+{
+    float4 posProj : SV_POSITION;
+    float3 posWorld : POSITION;
+    float3 normalWorld : NORMAL;
+    float4 color : COLOR;
+};
+
 struct TexVSInput
 {
     float3 posModel : POSITION;
@@ -123,4 +138,10 @@ struct TexPSInput
     float3 posWorld : POSITION;
     float3 normalWorld : NORMAL;
     float2 texcoord : TEXCOORD;
+};
+
+struct IndexPSOutput
+{
+    float4 pixelColor : SV_Target0;
+    float4 indexColor : SV_Target1;
 };

@@ -11,12 +11,13 @@
 #include "Actors/Transform.h"
 
 #include "Renderer/FoxtrotRenderer.h"
-#include "Renderer/FTRect.h"
+#include "ResourceSystem/FTRectangle.h"
+#include "Renderer/FTRectArea.h"
+#include "Renderer/Camera.h"
 #include "Managers/KeyInputManager.h"
 #include "Managers/UIManager.h"
 #include "Math/FTMath.h"
 #include "Actors/Actor.h"
-#include "Renderer/Camera.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "DebugShapes.h"
@@ -26,6 +27,8 @@
 
 bool UI::IsMouseHovering()
 {
+	if(mMouseHovering)
+		printf("Hovered!\n");
 	return mMouseHovering;
 }
 
@@ -49,7 +52,7 @@ bool UI::GetIsAffectedByCamera()
 	return mIsAffectedByCamera;
 }
 
-FTRect* UI::GetInputArea()
+FTRectangle* UI::GetInputArea()
 {
 	return mInputArea;
 }
@@ -69,9 +72,19 @@ void UI::SetMouseHovering(bool hovering)
 	mMouseHovering = hovering;
 }
 
-void UI::SetInputArea(FTRect* rect)
+void UI::SetInputArea(FTRectangle* area)
 {
-	mInputArea = rect;
+	mInputArea = area;
+}
+
+void UI::SetColorID(uint8_t r, uint8_t g, uint8_t b)
+{
+	mColorID[0] = r;
+	mColorID[1] = g;
+	mColorID[2] = b;
+	mColorID[3] = 255.0f;
+	mInputArea->GetPixelConstantData().IndexColor = 
+		DirectX::SimpleMath::Vector4((float)r/255, (float)g/255, (float)b/255, 1.0);
 }
 
 void UI::CheckMouseHover()
@@ -81,16 +94,7 @@ void UI::CheckMouseHover()
 		// mousePos = Camera2D::GetInstance()->ConvertScreenPosToWorld(mousePos);
 	}
 
-	LogVector2(MOUSE_POS);
-	FTRect rect;
-	FTVector2 ndcPos = mRenderer->GetRenderResolution() / 2 + mInputArea->GetCenter() * Camera::GetInstance()->GetPixelsPerUnit();
-	FTVector2 ndcSize = mInputArea->GetSize() * 1 / Camera::GetInstance()->GetPixelsPerUnit();
-	rect.Set(ndcPos, ndcSize);
-
-	if (rect.Overlaps(MOUSE_POS))
-		mMouseHovering = true;
-	else
-		mMouseHovering = false;
+	mMouseHovering = CompareColorIDs(mRenderer->GetCursorPosColor());
 }
 
 void UI::OnMouseHovering()
@@ -116,10 +120,7 @@ void UI::Initialize(FTCore* ftCoreInst)
 {
 	UIManager::GetInstance()->RegisterUI(this);
 	mRenderer = ftCoreInst->GetGameRenderer();
-#ifdef FOXTROT_EDITOR
-	mDebugRect = DBG_NEW FTRectangle;
-	mDebugRect->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
-#endif // DEBUG
+	mInputArea->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 }
 
 void UI::Update(float deltaTime)
@@ -133,6 +134,7 @@ void UI::LateUpdate(float deltaTime)
 
 void UI::Render(FoxtrotRenderer* renderer)
 {
+
 }
 
 UI::UI(Actor* owner, int updateOrder)
@@ -142,29 +144,34 @@ UI::UI(Actor* owner, int updateOrder)
 	, mLBtnDown(false)
 	, mLBtnClicked(false)
 	, mIsFocused(false)
-	, mInputArea(new FTRect())
+	, mInputArea(DBG_NEW FTRectangle)
 	, mRenderer(nullptr)
-
-#ifdef FOXTROT_EDITOR
-	, mDebugRect(nullptr)
-#endif // FOXTROT_EDITOR
 {
 }
 
 UI::~UI()
 {
-	delete mInputArea;
+}
+
+bool UI::CompareColorIDs(uint8_t* cursorPosCol)
+{
+	printf("%u, %u, %u, %u\n", cursorPosCol[0], cursorPosCol[1], cursorPosCol[2], cursorPosCol[3]);
+
+	return mColorID[0] == cursorPosCol[0] &&
+		mColorID[1] == cursorPosCol[1] &&
+		mColorID[2] == cursorPosCol[2] &&
+		mColorID[3] == cursorPosCol[3];
 }
 
 void UI::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
-	mInputArea->SaveProperties(ofs);
+	mInputArea->GetRectArea()->SaveProperties(ofs);
 }
 
 void UI::LoadProperties(std::ifstream& ifs)
 {
-	mInputArea->LoadProperties(ifs);
+	mInputArea->GetRectArea()->LoadProperties(ifs);
 	Component::LoadProperties(ifs);
 }
 
@@ -172,28 +179,16 @@ void UI::LoadProperties(std::ifstream& ifs)
 void UI::EditorUpdate(float deltaTime)
 {
 	// CheckMouseHover();
-
-	FTVector2 pos	= mInputArea->GetCenter();
-	FTVector3 rot	= GetOwner()->GetTransform()->GetRotation();
-	FTVector3 scale = FTVector3(
-		mInputArea->GetSize().x / Camera::GetInstance()->GetPixelsPerUnit(),
-		mInputArea->GetSize().y / Camera::GetInstance()->GetPixelsPerUnit(),
-		1.f);
-
-	mDebugRect->Update(
-		pos,
-		rot,
-		scale,
-		Camera::GetInstance());
+	mInputArea->Update();
 }
 
 void UI::EditorRender(FoxtrotRenderer* renderer)
 {
-	mDebugRect->Render(renderer);
+	mInputArea->Render(renderer);
 }
 
 void UI::EditorUIUpdate()
 {
-	mInputArea->UpdateUI();
+	mInputArea->GetRectArea()->UpdateUI();
 }
 #endif // FOXTROT_EDITOR

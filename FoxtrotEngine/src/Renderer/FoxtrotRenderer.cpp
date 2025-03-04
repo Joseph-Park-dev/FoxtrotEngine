@@ -30,7 +30,7 @@
 	#define IMGUI_DEFINE_MATH_OPERATORS
 	#include <imgui.h>
 	#include "EditorLayer.h"
-	#include "RenderTextureClass.h"
+	#include "ViewportRenderer.h"
 	#include "DebugShapes.h"
 #endif // FOXTROT_EDITOR
 
@@ -49,10 +49,10 @@ void FoxtrotRenderer::DestroyRenderer(FoxtrotRenderer* renderer)
 {
 #ifdef FOXTROT_EDITOR
 	// 렌더 텍스쳐 객체를 해제한다
-	if (renderer->mRenderTexture)
+	if (renderer->mViewportRenderer)
 	{
-		delete renderer->mRenderTexture;
-		renderer->mRenderTexture = 0;
+		delete renderer->mViewportRenderer;
+		renderer->mViewportRenderer = 0;
 	}
 #endif // FOXTROT_EDITOR
 
@@ -80,6 +80,12 @@ ComPtr<ID3D11RenderTargetView>& FoxtrotRenderer::GetRenderTargetView() { return 
 ComPtr<ID3D11DepthStencilView>& FoxtrotRenderer::GetDSV() { return mDepthStencilView; }
 ComPtr<ID3D11Texture2D>&		FoxtrotRenderer::GetDepthStencilBuffer() { return mDepthStencilBuffer; }
 
+ComPtr<ID3D11Texture2D>&		FoxtrotRenderer::GetIndexTexture() { return mIndexTexture; }
+ComPtr<ID3D11Texture2D>&		FoxtrotRenderer::GetIndexTempTexture() { return mIndexTempTexture; }
+ComPtr<ID3D11Texture2D>&		FoxtrotRenderer::GetIndexStagingTexture() { return mIndexStagingTexture; }
+ComPtr<ID3D11RenderTargetView>& FoxtrotRenderer::GetIndexRenderTargetView() { return mIndexRenderTargetView; }
+uint8_t*						FoxtrotRenderer::GetCursorPosColor() { return mCursorPosColor; }
+
 ComPtr<ID3D11DepthStencilState>& FoxtrotRenderer::GetDSS() { return mDepthStencilState; }
 ComPtr<ID3D11DepthStencilState>& FoxtrotRenderer::GetDSS2D() { return mDepthStencilState2D; }
 
@@ -104,46 +110,79 @@ UINT FoxtrotRenderer::GetRenderWidth() const { return mRenderWidth; }
 UINT FoxtrotRenderer::GetRenderHeight() const { return mRenderHeight; }
 void FoxtrotRenderer::SetRenderWidth(const UINT width) { mRenderWidth = width; }
 void FoxtrotRenderer::SetRenderHeight(const UINT height) { mRenderHeight = height; }
+UINT FoxtrotRenderer::GetNumQualityLevels() { return mNumQualityLevels; }
 
 void FoxtrotRenderer::RenderClear()
 {
 	float clearColor[4] = { 0.3f, 0.3f, 0.3f, 1.0 };
 	mContext->ClearRenderTargetView(mRenderTargetView.Get(), clearColor);
+	mContext->ClearRenderTargetView(mIndexRenderTargetView.Get(), clearColor);
 	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
-	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
+	mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
 }
 
 void FoxtrotRenderer::ResizeWindow(FTVector2& windowRes)
 {
+	mRenderTargetView.Reset();
+	mDepthStencilView.Reset();
+	mIndexRenderTargetView.Reset();
 	if (mSwapChain)
 	{
-		mRenderTargetView.Reset();
-		mDepthStencilView.Reset();
-
-		mSwapChain->ResizeBuffers(0, // 현재 개수 유지
-								  static_cast<UINT>(windowRes.x),
-								  static_cast<UINT>(windowRes.y),
-								  DXGI_FORMAT_UNKNOWN, // 현재 포맷 유지
-								  0);
+		DX::ThrowIfFailed(
+			mSwapChain->ResizeBuffers(0, // 현재 개수 유지
+									  static_cast<UINT>(windowRes.x),
+									  static_cast<UINT>(windowRes.y),
+									  DXGI_FORMAT_UNKNOWN, // 현재 포맷 유지
+									  0));
+		D3D11Utils::CreateRenderTargetView(mRenderTargetView, mDevice, mSwapChain);
+		D3D11Utils::CreateDepthBuffer(mDevice, windowRes.x, windowRes.y, mNumQualityLevels, mDepthStencilView);
 
 		// Viewport position & resolution.
 #ifdef FOXTROT_EDITOR
-		mRenderTexture->GetRTV().Reset();
+		mViewportRenderer->Reset();
 		ImVec2 topLeft = EditorLayer::GetInstance()->GetSceneViewportPos();
 		mRenderWidth   = static_cast<int>(EditorLayer::GetInstance()->GetSceneViewportSize().x);
 		mRenderHeight  = static_cast<int>(EditorLayer::GetInstance()->GetSceneViewportSize().y);
-		// D3D11Utils::CreateRenderTargetView(mRenderTexture->GetRTV(), mDevice, mSwapChain);
-		mRenderTexture->InitializeTexture(mDevice, mRenderWidth, mRenderHeight, mNumQualityLevels);
+		// D3D11Utils::CreateRenderTargetView(mViewportRenderer->GetRTV(), mDevice, mSwapChain);
+		mViewportRenderer->InitializeTexture(this, mRenderWidth, mRenderHeight, mNumQualityLevels);
 #else
 		FTVector2 topLeft = FTVector2(0.f, 0.f);
 		mRenderWidth	  = static_cast<int>(windowRes.x);
 		mRenderHeight	  = static_cast<int>(windowRes.y);
+		D3D11Utils::CreateDepthBuffer(mDevice, windowRes.x, windowRes.y, mNumQualityLevels, mDepthStencilView);
 #endif // FOXTROT_EDITOR
 
-		D3D11Utils::CreateDepthBuffer(mDevice, windowRes.x, windowRes.y, mNumQualityLevels, mDepthStencilView);
-		D3D11Utils::CreateRenderTargetView(mRenderTargetView, mDevice, mSwapChain);
 		SetViewport(0, 0, mRenderWidth, mRenderHeight);
+	}
+}
+
+void FoxtrotRenderer::SampleCursorPosColor()
+{
+	// Copies the back buffer data to temp texture.
+	if (mIndexTexture && mIndexTempTexture)
+	{
+		mContext->ResolveSubresource(mIndexTempTexture.Get(), 0, mIndexTexture.Get(), 0, DXGI_FORMAT_R8G8B8A8_UNORM);
+		
+		if (IsInRenderedArea(MOUSE_POS))
+		{
+			D3D11_BOX box;
+			box.left = MOUSE_POS.x;
+			box.right = MOUSE_POS.x + 1;
+			box.top = MOUSE_POS.y;
+			box.bottom = MOUSE_POS.y + 1;
+			box.front = 0;
+			box.back = 1;
+			mContext->CopySubresourceRegion(mIndexStagingTexture.Get(), 0, 0, 0, 0, mIndexTempTexture.Get(), 0, &box);
+
+			D3D11_MAPPED_SUBRESOURCE ms;
+			mContext->Map(mIndexStagingTexture.Get(), NULL, D3D11_MAP_READ, NULL,
+				&ms); // D3D11_MAP_READ 주의
+
+			if(ms.pData)
+				memcpy(mCursorPosColor, ms.pData, sizeof(uint8_t) * 4);
+
+			mContext->Unmap(mIndexStagingTexture.Get(), NULL);
+		}
 	}
 }
 
@@ -169,8 +208,6 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 	/*HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
 	if (FAILED(hr))
 		return false;*/
-
-	DX::ThrowIfFailed(D3D11Utils::CreateRenderTargetView(mRenderTargetView, mDevice, mSwapChain));
 
 	DX::ThrowIfFailed(CreateRasterizerState());
 
@@ -252,18 +289,21 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 
 	mContext->RSSetState(mSolidRasterizerState.Get());
 
-	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
-
 	SetViewport(FTVector2(0.f, 0.f), FTVector2(mRenderWidth, mRenderHeight));
 
+	DX::ThrowIfFailed(D3D11Utils::CreateRenderTargetView(mRenderTargetView, mDevice, mSwapChain));
+
+	ID3D11RenderTargetView* targetsPrev[] = { mRenderTargetView.Get() };
+	mContext->OMSetRenderTargets(1, targetsPrev, mDepthStencilView.Get());
+
 #ifdef FOXTROT_EDITOR
-	mRenderTexture = DBG_NEW RenderTextureClass;
-	if (!mRenderTexture)
+	mViewportRenderer = DBG_NEW ViewportRenderer;
+	if (!mViewportRenderer)
 	{
 		LogString("Error : FoxtrotRenderer Initialize - CreateRenderTexture failed.");
 		return false;
 	}
-	mRenderTexture->InitializeTexture(mDevice, mRenderWidth, mRenderHeight, mNumQualityLevels);
+	mViewportRenderer->InitializeTexture(this, mRenderWidth, mRenderHeight, mNumQualityLevels);
 #endif // FOXTROT_EDITOR
 	return true;
 }
@@ -367,15 +407,15 @@ FoxtrotRenderer::FoxtrotRenderer()
 	: mClearColor{ 0.0f, 0.0f, 0.0f, 1.0f }
 	, mFillMode(FillMode::Solid)
 #ifdef FOXTROT_EDITOR
-	, mRenderTexture(nullptr)
+	, mViewportRenderer(nullptr)
 #endif // FOXTROT_EDITOR
 {
 }
 
 #ifdef FOXTROT_EDITOR
-void FoxtrotRenderer::RenderToTexture()
+void FoxtrotRenderer::RenderOnViewport()
 {
-	mRenderTexture->DrawOnTexture(mContext, mRenderTargetView, mDepthStencilView, this);
+	mViewportRenderer->DrawOnTexture(mContext, mRenderTargetView, mDepthStencilView, this);
 }
 
 void FoxtrotRenderer::SetViewport(const ImVec2& topLeft, const ImVec2& resolution)
@@ -391,5 +431,16 @@ void FoxtrotRenderer::SetViewport(const ImVec2& topLeft, const ImVec2& resolutio
 	mScreenViewport.MinDepth = 0.0f;
 	mScreenViewport.MaxDepth = 1.0f; // Note: important for depth buffering
 	mContext->RSSetViewports(1, &mScreenViewport);
+}
+
+ViewportRenderer* FoxtrotRenderer::GetViewportRenderer()
+{
+	return mViewportRenderer;
+}
+
+bool FoxtrotRenderer::IsInRenderedArea(FTVector2 pos)
+{
+	return 0 <= pos.x && pos.x <= mRenderWidth - 1 && 
+		0 <= pos.y && pos.y <= mRenderHeight - 1;
 }
 #endif // FOXTROT_EDITOR

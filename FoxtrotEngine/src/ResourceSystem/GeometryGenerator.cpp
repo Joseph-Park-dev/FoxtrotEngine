@@ -251,7 +251,7 @@ FTMeshData GeometryGenerator::MakeTile(Tile& tile)
 	std::vector<Vector3> normals;
 	std::vector<Vector2> texcoords; // 텍스춰 좌표
 
-	FTRect& rectOnScreen = tile.GetRectOnScreen();
+	FTRectArea& rectOnScreen = tile.GetRectOnScreen();
 
 	const FTVector2& tileMin	= rectOnScreen.GetMin();
 	const FTVector2& tileMax	= rectOnScreen.GetMax();
@@ -273,7 +273,7 @@ FTMeshData GeometryGenerator::MakeTile(Tile& tile)
 	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
 
 	// Texture Coordinates
-	FTRect&			 rectOnMap	 = tile.GetRectOnMap();
+	FTRectArea&		 rectOnMap	 = tile.GetRectOnMap();
 	const FTVector2& mapMin		 = rectOnMap.GetMin();
 	const float		 widthInMap	 = rectOnMap.GetSize().x;
 	const float		 heightInMap = rectOnMap.GetSize().y;
@@ -336,7 +336,7 @@ FTMeshData GeometryGenerator::MakeAnimationFrame(Tile tile)
 
 	// Texture Coordinates (Direct3D 9)
 	// https://learn.microsoft.com/en-us/windows/win32/direct3d9/texture-coordinates
-	FTRect&			 rectOnMap	 = tile.GetRectOnMap();
+	FTRectArea&		 rectOnMap	 = tile.GetRectOnMap();
 	const FTVector2& mapMin		 = rectOnMap.GetMin();
 	const float		 widthInMap	 = rectOnMap.GetSize().x;
 	const float		 heightInMap = rectOnMap.GetSize().y;
@@ -387,7 +387,7 @@ FTMeshData GeometryGenerator::MakeAnimationFrame(Tile tile)
 //     std::vector<Vector3> normals;
 //     std::vector<Vector2> texcoords; // 텍스춰 좌표
 //
-//     FTRect& rectOnScreen = tile.GetRectOnScreen();
+//     FTRectArea& rectOnScreen = tile.GetRectOnScreen();
 //
 //     const float tileWidth = rectOnScreen.GetSize().x * attrib->Scale;
 //     const float tileHeight = rectOnScreen.GetSize().y * attrib->Scale;
@@ -409,7 +409,7 @@ FTMeshData GeometryGenerator::MakeAnimationFrame(Tile tile)
 //
 //     // Texture Coordinates (Direct3D 9)
 //     // https://learn.microsoft.com/en-us/windows/win32/direct3d9/texture-coordinates
-//     FTRect& rectOnMap = tile.GetRectOnMap();
+//     FTRectArea& rectOnMap = tile.GetRectOnMap();
 //     const FTVector2& mapMin = rectOnMap.GetMin();
 //     const float widthInMap = rectOnMap.GetSize().x;
 //     const float heightInMap = rectOnMap.GetSize().y;
@@ -791,7 +791,7 @@ std::vector<FTMeshData> GeometryGenerator::ReadFromFile(std::string resPath)
 	float dx = vmax.x - vmin.x, dy = vmax.y - vmin.y, dz = vmax.z - vmin.z;
 	float dl = XMMax(XMMax(dx, dy), dz);
 	float cx = (vmax.x + vmin.x) * 0.5f, cy = (vmax.y + vmin.y) * 0.5f,
-		cz = (vmax.z + vmin.z) * 0.5f;
+		  cz = (vmax.z + vmin.z) * 0.5f;
 
 	for (auto& mesh : meshes)
 	{

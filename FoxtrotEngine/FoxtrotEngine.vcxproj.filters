@@ -78,7 +78,7 @@
     <ClCompile Include="src\Renderer\FoxtrotRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer\FTRect.cpp">
+    <ClCompile Include="src\Renderer\FTRectArea.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ResourceSystem\FTBasicMeshGroup.cpp">
@@ -201,6 +201,9 @@
     <ClCompile Include="include\delegates\Delegates.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ResourceSystem\FTRectangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Actors\Actor.h">
@@ -296,7 +299,7 @@
     <ClInclude Include="src\Renderer\FoxtrotRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\FTRect.h">
+    <ClInclude Include="src\Renderer\FTRectArea.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ResourceSystem\FTBasicMeshGroup.h">
@@ -1656,6 +1659,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\delegates\Delegates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceSystem\FTRectangle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

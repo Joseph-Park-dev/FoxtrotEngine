@@ -8,6 +8,9 @@
 
 #include "Managers/UIManager.h"
 
+#include <directxtk/SimpleMath.h>
+
+#include "Math/Random.h"
 #include "Scenes/Scene.h"
 #include "Managers/SceneManager.h"
 #include "Actors/Actor.h"
@@ -28,6 +31,10 @@ UIManager::~UIManager()
 
 void UIManager::RegisterUI(UI* UI)
 {
+	UI->SetColorID(
+		Random::GetIntRange(0,255), 
+		Random::GetIntRange(0, 255), 
+		Random::GetIntRange(0, 255));
 	mUIs.push_back(UI);
 }
 

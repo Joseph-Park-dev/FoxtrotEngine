@@ -13,6 +13,7 @@
 #include "Managers/CollisionManager.h"
 #include "Actors/Transform.h"
 #include "FileSystem/FileIOHelper.h"
+#include "ResourceSystem/FTRectangle.h"
 
 #ifdef FOXTROT_EDITOR
 #include "CommandHistory.h"

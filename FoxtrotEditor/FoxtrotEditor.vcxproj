@@ -285,7 +285,7 @@
     <ClCompile Include="src\EditorScene.cpp" />
     <ClCompile Include="src\EditorSceneManager.cpp" />
     <ClCompile Include="src\FTCoreEditor.cpp" />
-    <ClCompile Include="src\RenderTextureClass.cpp" />
+    <ClCompile Include="src\ViewportRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -303,7 +303,7 @@
     <ClInclude Include="src\EditorScene.h" />
     <ClInclude Include="src\EditorSceneManager.h" />
     <ClInclude Include="src\FTCoreEditor.h" />
-    <ClInclude Include="src\RenderTextureClass.h" />
+    <ClInclude Include="src\ViewportRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\Common.hlsli" />

@@ -30,7 +30,7 @@
     <ClCompile Include="src\FTCoreEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\RenderTextureClass.cpp">
+    <ClCompile Include="src\ViewportRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="include\imgui\FileDialog\ImGuiFileDialog.cpp">
@@ -71,7 +71,7 @@
     <ClInclude Include="src\FTCoreEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\RenderTextureClass.h">
+    <ClInclude Include="src\ViewportRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\imgui\FileDialog\ImGuiFileDialog.h">

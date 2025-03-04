@@ -39,6 +39,7 @@ struct BasicPCData
 	uint32_t				     UseTexture;
 	FTMaterial					 Material;
 	Light						 Lights[GameData::MAX_LIGHTS];
+	DirectX::SimpleMath::Vector4 IndexColor;
 };
 static_assert((sizeof(BasicPCData) % 16) == 0,
 	"Constant Buffer size must be 16-byte aligned");
@@ -58,4 +59,13 @@ struct TileMapConstantData
 	float texSizeX;
 	float texSizeY;
 };
-static_assert((sizeof(TileMapConstantData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
+static_assert((sizeof(TileMapConstantData) % 16) == 0, 
+	"Constant Buffer size must be 16-byte aligned");
+
+// Data use for Mouse Picking
+struct IndexPCData
+{
+	DirectX::SimpleMath::Vector4 IndexColor;
+};
+static_assert((sizeof(BasicPCData) % 16) == 0,
+	"Constant Buffer size must be 16-byte aligned");

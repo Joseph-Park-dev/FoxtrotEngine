@@ -10,3 +10,10 @@
 /// </summary>
 /// 
 #pragma once
+
+namespace BufferSize
+{
+	constexpr size_t MAX_CHAR_COUNT = 30;
+	constexpr size_t STRING_BUFFER_SIZE = 50 * sizeof(char);
+	constexpr size_t WSTRING_BUFFER_SIZE = 50 * sizeof(wchar_t);
+} // namespace BufferSize

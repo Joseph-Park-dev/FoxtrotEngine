@@ -4,8 +4,10 @@
 #include "Managers/ResourceManager.h"
 #include "ResourceSystem/GeometryGenerator.h"
 #include "Renderer/FoxtrotRenderer.h"
+#include "Renderer/Camera.h"
 #include "Actors/Actor.h"
 #include "Actors/Transform.h"
+#include "FileSystem/BufferSizes.h"
 
 using DirectX::DX11::SpriteSortMode;
 
@@ -32,7 +34,7 @@ void TextRenderer::Render(FoxtrotRenderer* renderer)
     spriteBatch->Begin(SpriteSortMode::SpriteSortMode_Deferred);
     spriteFont->DrawString(
         spriteBatch, mText.c_str(),
-        pos.GetD3Vec2() + mTextAttribute->Offset,
+        (pos * Camera::GetInstance()->GetPixelsPerUnit()).GetD3Vec2() + mTextAttribute->Offset,
         mTextAttribute->Color,
         mTextAttribute->Rotation,
         mTextAttribute->Origin,

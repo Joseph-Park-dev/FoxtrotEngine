@@ -19,6 +19,7 @@
 #include "Core/FTCore.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
+#include "FileSystem/BufferSizes.h"
 #include "Renderer/FoxtrotRenderer.h"
 
 #ifdef FOXTROT_EDITOR

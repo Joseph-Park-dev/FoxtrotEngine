@@ -49,12 +49,16 @@ void FTRectangle::Update()
 
 void FTRectangle::Update(FTVector3 pos, FTVector3 rot, FTVector3 scale, Camera* camInst)
 {
+    if (!GetMesh())
+        return;
+    FTVector3 center = pos + FTVector3(mRectArea->GetCenter());
+    FTVector3 size = scale * FTVector3(mRectArea->GetSize());
     Matrix model =
-        Matrix::CreateScale(scale.GetDXVec3()) *
+        Matrix::CreateScale(size.GetDXVec3()) *
         Matrix::CreateRotationY(rot.y) *
         Matrix::CreateRotationX(rot.x) *
         Matrix::CreateRotationZ(rot.z) *
-        Matrix::CreateTranslation(pos.GetDXVec3());
+        Matrix::CreateTranslation(center.GetDXVec3());
     GetVertexConstantData().model = model.Transpose();
     GetVertexConstantData().view = camInst->GetViewRow().Transpose();
     GetVertexConstantData().projection = camInst->GetProjRow().Transpose();

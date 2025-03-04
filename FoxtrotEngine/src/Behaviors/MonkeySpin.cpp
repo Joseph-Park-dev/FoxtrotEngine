@@ -52,4 +52,5 @@ void MonkeySpin::LoadProperties(std::ifstream& ifs)
 void MonkeySpin::ExitGame()
 {
 	printf("Exit Game!");
+	FTCoreEditor::GetInstance()->SetIsRunning(false);
 }

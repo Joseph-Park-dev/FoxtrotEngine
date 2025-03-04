@@ -125,6 +125,12 @@ void UI::Initialize(FTCore* ftCoreInst)
 
 void UI::Update(float deltaTime)
 {
+	Transform* transform = GetOwner()->GetTransform();
+	mInputArea->Update(
+		transform->GetWorldPosition(),
+		transform->GetRotation(),
+		transform->GetScale(),
+		Camera::GetInstance());
 }
 
 void UI::LateUpdate(float deltaTime)
@@ -146,6 +152,7 @@ UI::UI(Actor* owner, int updateOrder)
 	, mIsFocused(false)
 	, mInputArea(DBG_NEW FTRectangle)
 	, mRenderer(nullptr)
+	, mColorID()
 {
 }
 
@@ -178,8 +185,7 @@ void UI::LoadProperties(std::ifstream& ifs)
 #ifdef FOXTROT_EDITOR
 void UI::EditorUpdate(float deltaTime)
 {
-	// CheckMouseHover();
-	mInputArea->Update();
+	this->Update(deltaTime);
 }
 
 void UI::EditorRender(FoxtrotRenderer* renderer)

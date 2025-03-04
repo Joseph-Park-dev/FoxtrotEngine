@@ -177,7 +177,7 @@ void FTCoreEditor::GenerateOutput()
 	}
 	UpdateWindow(GetWindow());
 
-	GetGameRenderer()->RenderToTexture();
+	GetGameRenderer()->RenderOnViewport();
 	EditorLayer::GetInstance()->Render(GetGameRenderer());
 	GetGameRenderer()->SwapChainPresent(1, 0);
 }

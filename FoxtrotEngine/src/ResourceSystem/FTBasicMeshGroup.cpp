@@ -10,6 +10,7 @@
 
 #include "ResourceSystem/GeometryGenerator.h"
 #include "Managers/ResourceManager.h"
+#include "Managers/KeyInputManager.h"
 #include "Renderer/Camera.h"
 #include "Renderer/FoxtrotRenderer.h"
 

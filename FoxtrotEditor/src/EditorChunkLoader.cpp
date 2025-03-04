@@ -16,6 +16,7 @@
 #include "Math/FTMath.h"
 #include "Components/BatchHeaders.h"
 #include "FileSystem/FileIOHelper.h"
+#include "Renderer/Camera.h"
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"

@@ -16,6 +16,8 @@
 	#include "ResourceSystem/FTShape.h"
 #endif // FOXTROT_EDITOR
 
+class FTRectangle;
+
 class BoxCollider2D :
 	public Collider2D
 {

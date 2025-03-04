@@ -27,7 +27,7 @@
 #include "Renderer/Camera.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "Managers/ResourceManager.h"
-#include "Renderer/FTRect.h"
+#include "Renderer/FTRectArea.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
 

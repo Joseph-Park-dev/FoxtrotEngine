@@ -260,6 +260,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ResourceSystem\FTRectangle.cpp" />
     <ClCompile Include="include\delegates\Delegates.cpp" />
     <ClCompile Include="src\Behaviors\MonkeySpin.cpp" />
     <ClCompile Include="src\ResourceSystem\FTMeshDataPack.cpp" />
@@ -310,7 +311,7 @@
     <ClCompile Include="src\Renderer\Camera.cpp" />
     <ClCompile Include="src\Renderer\D3D11Utils.cpp" />
     <ClCompile Include="src\Renderer\FoxtrotRenderer.cpp" />
-    <ClCompile Include="src\Renderer\FTRect.cpp" />
+    <ClCompile Include="src\Renderer\FTRectArea.cpp" />
     <ClCompile Include="src\ResourceSystem\FTBasicMeshGroup.cpp" />
     <ClCompile Include="src\ResourceSystem\FTResource.cpp" />
     <ClCompile Include="src\ResourceSystem\FTShape.cpp" />
@@ -324,6 +325,7 @@
     <ClCompile Include="src\Components\UIs\TextRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ResourceSystem\FTRectangle.h" />
     <ClInclude Include="include\delegates\catch.hpp" />
     <ClInclude Include="include\delegates\Delegates.h" />
     <ClInclude Include="src\Behaviors\MonkeySpin.h" />
@@ -791,7 +793,7 @@
     <ClInclude Include="src\Renderer\Camera.h" />
     <ClInclude Include="src\Renderer\D3D11Utils.h" />
     <ClInclude Include="src\Renderer\FoxtrotRenderer.h" />
-    <ClInclude Include="src\Renderer\FTRect.h" />
+    <ClInclude Include="src\Renderer\FTRectArea.h" />
     <ClInclude Include="src\ResourceSystem\FTBasicMeshGroup.h" />
     <ClInclude Include="src\ResourceSystem\FTResource.h" />
     <ClInclude Include="src\ResourceSystem\FTShape.h" />

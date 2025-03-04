@@ -16,13 +16,13 @@ using namespace Microsoft::WRL;
 
 class FoxtrotRenderer;
 
-class RenderTextureClass
+class ViewportRenderer
 {
 public:
-	RenderTextureClass();
-	~RenderTextureClass();
+	ViewportRenderer();
+	~ViewportRenderer();
 
-	void InitializeTexture(ComPtr<ID3D11Device>& device, int width, int height, UINT numQualityLevels);
+	void InitializeTexture(FoxtrotRenderer* renderer, int width, int height, UINT numQualityLevels);
 
 	// Switches the RenderTarget to this object's, renders the scene,
 	// and switch RenderTarget back to FoxtrotRenderer's (in FTCoreEditor).
@@ -32,13 +32,18 @@ public:
 		ComPtr<ID3D11DepthStencilView>& depthStencilView,
 		FoxtrotRenderer*				renderer);
 
+	void Reset();
+
 public:
-	ComPtr<ID3D11RenderTargetView>&	  GetRTV() { return mRenderTargetView; }
-	ComPtr<ID3D11ShaderResourceView>& GetShaderResourceView() { return mShaderResourceView; }
+	ComPtr<ID3D11RenderTargetView>&	  GetViewportRTV() { return mViewportRTV; }
+	ComPtr<ID3D11ShaderResourceView>& GetViewportSRV() { return mViewportSRV; }
 
 private:
-	ComPtr<ID3D11Texture2D>			 mRenderTargetTexture;
-	ComPtr<ID3D11RenderTargetView>	 mRenderTargetView;
-	ComPtr<ID3D11ShaderResourceView> mShaderResourceView;
-	ComPtr<ID3D11DepthStencilView>	 mDepthStencilView;
+	ComPtr<ID3D11Texture2D>			 mViewportTex;
+	ComPtr<ID3D11RenderTargetView>	 mViewportRTV;
+	ComPtr<ID3D11ShaderResourceView> mViewportSRV;
+	ComPtr<ID3D11DepthStencilView>	 mViewportDSV;
+
+private:
+	void CreateRenderTargetView(FoxtrotRenderer* renderer);
 };

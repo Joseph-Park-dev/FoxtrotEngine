@@ -27,7 +27,7 @@ FTShape::FTShape()
 	: mMesh(nullptr)
 	, mVertexConstantData()
 	, mPixelConstantData()
-	, mIsActive(true)
+	, mIsActive(false)
 {
 }
 

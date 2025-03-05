@@ -20,4 +20,17 @@ public:
 
 private:
 	FTRectArea* mRectArea;
+
+public:
+	void SaveProperties(std::ofstream& ofs);
+	void LoadProperties(std::ifstream& ifs);
+
+#ifdef FOXTROT_EDITOR
+	void UpdateUI();
+#endif
 };
+
+namespace ChunkKey
+{
+	constexpr const char* FTRECTANGLE = "FTRectangle";
+}

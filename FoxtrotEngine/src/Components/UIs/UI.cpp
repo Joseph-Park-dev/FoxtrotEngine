@@ -120,7 +120,7 @@ void UI::Initialize(FTCore* ftCoreInst)
 {
 	UIManager::GetInstance()->RegisterUI(this);
 	mRenderer = ftCoreInst->GetGameRenderer();
-	mInputArea->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+	mInputArea->Initialize(ftCoreInst->GetGameRenderer());
 }
 
 void UI::Update(float deltaTime)

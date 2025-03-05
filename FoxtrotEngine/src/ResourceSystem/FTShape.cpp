@@ -48,6 +48,7 @@ Mesh*		 FTShape::GetMesh() { return mMesh; }
 void FTShape::Initialize(FoxtrotRenderer* renderer)
 {
 	InitializeConstantBuffer(renderer->GetDevice());
+	DebugShapes::GetInstance()->AddShape(this);
 }
 
 void FTShape::Render(FoxtrotRenderer* renderer)

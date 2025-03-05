@@ -190,6 +190,8 @@ private:
 	void SetViewport(FTVector2 topLeft, FTVector2 resolution);
 	void SetViewport(FLOAT topLeftX, FLOAT topLeftY, FLOAT resX, FLOAT resY);
 
+	bool IsInRenderedArea(FTVector2 pos);
+
 #ifdef FOXTROT_EDITOR
 public:
 	void RenderOnViewport();
@@ -197,7 +199,6 @@ public:
 
 public:
 	ViewportRenderer* GetViewportRenderer();
-	bool			  IsInRenderedArea(FTVector2 pos);
 
 private:
 	ViewportRenderer* mViewportRenderer;

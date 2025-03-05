@@ -24,6 +24,11 @@ Light&		 LightManager::GetLight(size_t i) const { return mLights[i]; }
 Light::TYPE& LightManager::GetType(size_t i) const { return mTypes[i]; }
 bool&		 LightManager::IsActive(size_t i) const { return mActiveStatus[i]; }
 
+void LightManager::Initialize()
+{
+	mTypes[0] = Light::TYPE::DIRECTIONAL;
+}
+
 void LightManager::SaveProperties(std::ofstream& ofs)
 {
 	for (size_t i = 0; i < GameData::MAX_LIGHTS; ++i)

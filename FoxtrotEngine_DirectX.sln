@@ -13,6 +13,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoxtrotDS", "FoxtrotDS\FoxtrotDS.vcxproj", "{EFDF9DF9-F14D-4F66-8B80-533E3253A60F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test_Project_FTEngine", "..\Test_Project_FTEngine\Test_Project_FTEngine.vcxproj", "{6886425A-3558-4C5B-BE2F-ACA8D7B4A017}"
+	ProjectSection(ProjectDependencies) = postProject
+		{014CC6A0-8578-4FE6-A16C-C8B45D8A83F9} = {014CC6A0-8578-4FE6-A16C-C8B45D8A83F9}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

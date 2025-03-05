@@ -16,6 +16,9 @@ public:
 	Light::TYPE& GetType(size_t i) const;
 	bool&		 IsActive(size_t i) const;
 
+public:
+	void Initialize();
+
 private:
 	Light*		 mLights;
 	Light::TYPE* mTypes;

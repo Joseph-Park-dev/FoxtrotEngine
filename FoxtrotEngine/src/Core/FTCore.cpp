@@ -23,6 +23,7 @@
 #include "Managers/UIManager.h"
 #include "Managers/CollisionManager.h"
 #include "Managers/LightManager.h"
+#include "Managers/DebugShapes.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/Camera.h"
 #include "Physics/Physics2D.h"
@@ -46,6 +47,7 @@ ChunkLoader*	  ChunkLoader::mInstance	  = nullptr;
 ParticleSystem*	  ParticleSystem::mInstance	  = nullptr;
 LightManager*	  LightManager::mInstance	  = nullptr;
 Timer*			  Timer::mInstance			  = nullptr;
+DebugShapes*	  DebugShapes::mInstance	  = nullptr;
 FTCore*			  FTCore::mInstance			  = nullptr;
 
 void FTCore::LoadGameData()
@@ -142,7 +144,8 @@ void FTCore::InitSingletonManagers()
 	UIManager::GetInstance();
 	EventManager::GetInstance();
 	KeyInputManager::GetInstance();
-	LightManager::GetInstance();
+	LightManager::GetInstance()->Initialize();
+	DebugShapes::GetInstance()->Initialize(mGameRenderer);
 }
 
 void FTCore::InitTimer()
@@ -165,9 +168,12 @@ void FTCore::RunLoop()
 void FTCore::ProcessInput()
 {
 	MSG msg = {};
+	if (PeekMessage(&msg, GetWindow(), 0, 0, PM_REMOVE))
+	{
+		// EditorCamera2D::GetInstance()->ProcessInput(msg);
+	}
 	KeyInputManager::GetInstance()->DetectKeyInput();
 	KeyInputManager::GetInstance()->DetectMouseInput(msg);
-	// KeyInputManager::GetInstance()->DetectGamepadInput();
 	SceneManager::GetInstance()->ProcessInput(KeyInputManager::GetInstance());
 	TranslateMessage(&msg);
 	DispatchMessage(&msg);
@@ -201,7 +207,8 @@ void FTCore::GenerateOutput()
 
 	SceneManager::GetInstance()->Render(mGameRenderer);
 	ParticleSystem::GetInstance()->Render(mGameRenderer);
-	
+
+	DebugShapes::GetInstance()->Render(mGameRenderer);
 	mGameRenderer->SampleCursorPosColor();
 	mGameRenderer->SwapChainPresent(1, 0);
 }
@@ -220,9 +227,7 @@ FTCore::FTCore()
 	, mWindowHeight(1080)
 	, mWindowTitle(L"Untitled Game Project")
 	, mGameDataPath(
-		  std::string("./")
-		  + std::string(ChunkKey::GAME_DATA)
-		  + std::string(FileTypes::GDPACK))
+		  std::string("./") + std::string(ChunkKey::GAME_DATA) + std::string(FileTypes::GDPACK))
 {
 }
 

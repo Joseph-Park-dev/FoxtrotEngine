@@ -5,11 +5,21 @@
 #include "Actors/Actor.h"
 #include "Actors/Transform.h"
 #include "Components/UIs/ButtonUI.h"
+
+#ifdef FOXTROT_EDITOR
 #include "EditorSceneManager.h"
+#else
+#include "Managers/SceneManager.h"
+#endif
 
 void MonkeySpin::Setup()
 {
+#ifdef FOXTROT_EDITOR
 	Actor* actor = FIND_EDITOR_ELEMENT("Button");
+#else
+	Actor* actor = FIND_ACTOR("Button");
+#endif
+
 	if (actor)
 	{
 		ButtonUI* btn = actor->GetComponent<ButtonUI>();
@@ -52,5 +62,10 @@ void MonkeySpin::LoadProperties(std::ifstream& ifs)
 void MonkeySpin::ExitGame()
 {
 	printf("Exit Game!");
+
+#ifdef FOXTROT_EDITOR
 	FTCoreEditor::GetInstance()->SetIsRunning(false);
+#else
+	FTCore::GetInstance()->SetIsRunning(false);
+#endif
 }

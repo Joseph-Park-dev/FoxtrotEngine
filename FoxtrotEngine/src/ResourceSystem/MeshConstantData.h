@@ -66,6 +66,8 @@ static_assert((sizeof(TileMapConstantData) % 16) == 0,
 struct IndexPCData
 {
 	DirectX::SimpleMath::Vector4 IndexColor;
+	uint32_t IsActive;
+	uint32_t dummy[3];
 };
 static_assert((sizeof(BasicPCData) % 16) == 0,
 	"Constant Buffer size must be 16-byte aligned");

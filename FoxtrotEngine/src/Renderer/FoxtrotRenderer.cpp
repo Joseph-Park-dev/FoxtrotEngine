@@ -39,7 +39,7 @@ FoxtrotRenderer* FoxtrotRenderer::CreateRenderer(HWND window, int width, int hei
 	FoxtrotRenderer* ftRenderer = DBG_NEW FoxtrotRenderer();
 	if (!ftRenderer->Initialize(window, width, height))
 	{
-		LogString("Failed to Initialize FT_Renderer");
+		LogString("Failed to Initialize FTRenderer");
 		return nullptr;
 	}
 	return ftRenderer;

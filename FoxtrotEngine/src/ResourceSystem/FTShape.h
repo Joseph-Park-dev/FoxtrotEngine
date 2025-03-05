@@ -79,3 +79,8 @@ private:
 		ComPtr<ID3D11Device>&		 device,
 		ComPtr<ID3D11DeviceContext>& context);
 };
+
+namespace ChunkKey
+{
+	constexpr const char* FTSHAPE_IS_ACTIVE = "Is Active";
+}

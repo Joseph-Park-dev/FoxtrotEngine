@@ -80,5 +80,5 @@ public:
 	virtual void EditorUpdate(float deltaTime) override;
 	virtual void EditorRender(FoxtrotRenderer* renderer) override;
 	virtual void EditorUIUpdate() override;
-#endif // FOXTROT_EDITOR
+#endif
 };

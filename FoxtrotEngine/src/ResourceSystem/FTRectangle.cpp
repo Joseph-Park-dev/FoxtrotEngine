@@ -9,19 +9,7 @@
 #include "DebugShapes.h"
 #endif // FOXTROT_EDITOR
 
-
 using Matrix = DirectX::SimpleMath::Matrix;
-
-FTRectangle::FTRectangle()
-    : FTShape()
-    , mRectArea(new FTRectArea())
-{
-}
-
-FTRectangle::~FTRectangle()
-{
-    delete mRectArea;
-}
 
 FTRectArea* FTRectangle::GetRectArea()
 {
@@ -62,6 +50,8 @@ void FTRectangle::Update(FTVector3 pos, FTVector3 rot, FTVector3 scale, Camera* 
     GetVertexConstantData().model = model.Transpose();
     GetVertexConstantData().view = camInst->GetViewRow().Transpose();
     GetVertexConstantData().projection = camInst->GetProjRow().Transpose();
+    
+    GetPixelConstantData().IsActive = GetIsActive();
 }
 
 void FTRectangle::UpdateConstantBufferModel()
@@ -71,3 +61,42 @@ void FTRectangle::UpdateConstantBufferModel()
         Matrix::CreateTranslation(mRectArea->GetCenter().x, mRectArea->GetCenter().y, 0.0f);
     GetVertexConstantData().model = model.Transpose();
 }
+
+FTRectangle::FTRectangle()
+    : FTShape()
+    , mRectArea(new FTRectArea())
+{
+}
+
+FTRectangle::~FTRectangle()
+{
+    delete mRectArea;
+}
+
+void FTRectangle::SaveProperties(std::ofstream& ofs)
+{
+    FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTRECTANGLE);
+    FileIOHelper::SaveBool(ofs, ChunkKey::FTSHAPE_IS_ACTIVE, GetIsActive());
+    mRectArea->SaveProperties(ofs);
+    FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTRECTANGLE);
+}
+
+void FTRectangle::LoadProperties(std::ifstream& ifs)
+{
+    bool isActive = false;
+
+    FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTRECTANGLE);
+    mRectArea->LoadProperties(ifs);
+    FileIOHelper::LoadBool(ifs, isActive);
+
+    SetIsActive(isActive);
+}
+
+#ifdef FOXTROT_EDITOR
+void FTRectangle::UpdateUI()
+{
+    bool isActive = GetIsActive();
+    CommandHistory::GetInstance()->UpdateBoolValue("Render Shape", isActive);
+    SetIsActive(isActive);
+}
+#endif

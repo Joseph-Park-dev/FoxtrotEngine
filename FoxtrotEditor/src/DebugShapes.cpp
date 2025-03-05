@@ -33,14 +33,11 @@ void DebugShapes::Render(FoxtrotRenderer* renderer)
 		return;
 	for (FTShape* shape : mShapes)
 	{
-		if (shape->GetIsActive())
-		{
-			shape->Render(
-				renderer,
-				mVertexShader,
-				mPixelShader,
-				mInputLayout);
-		}
+		shape->Render(
+			renderer,
+			mVertexShader,
+			mPixelShader,
+			mInputLayout);
 	}
 }
 

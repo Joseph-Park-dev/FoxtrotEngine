@@ -23,6 +23,7 @@
 #include "ResourceSystem/Vertex.h"
 #include "Managers/KeyInputManager.h"
 #include "Managers/SceneManager.h"
+#include "Managers/DebugShapes.h"
 #include "Renderer/D3D11Utils.h"
 #include "Renderer/Camera.h"
 
@@ -31,7 +32,6 @@
 	#include <imgui.h>
 	#include "EditorLayer.h"
 	#include "ViewportRenderer.h"
-	#include "DebugShapes.h"
 #endif // FOXTROT_EDITOR
 
 FoxtrotRenderer* FoxtrotRenderer::CreateRenderer(HWND window, int width, int height)

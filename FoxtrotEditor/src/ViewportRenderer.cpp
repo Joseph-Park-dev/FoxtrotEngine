@@ -16,10 +16,10 @@
 #include "Renderer/D3D11Utils.h"
 #include "Core/TemplateFunctions.h"
 #include "Physics/Physics2D.h"
+#include "Managers/DebugShapes.h"
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
-#include "DebugShapes.h"
 
 void ViewportRenderer::InitializeTexture(FoxtrotRenderer* renderer, int width, int height, UINT numQualityLevels)
 {

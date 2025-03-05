@@ -15,9 +15,9 @@
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
-#include "DebugShapes.h"
 #include "DirectoryHelper.h"
 
+#include "Managers/DebugShapes.h"
 #include "Managers/KeyInputManager.h"
 #include "Core/FTCore.h"
 #include "Core/Timer.h"

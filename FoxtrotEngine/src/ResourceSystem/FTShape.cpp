@@ -16,10 +16,7 @@
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/Camera.h"
 #include "Actors/Transform.h"
-
-#ifdef FOXTROT_EDITOR
-	#include "DebugShapes.h"
-#endif // FOXTROT_EDITOR
+#include "Managers/DebugShapes.h"
 
 using Matrix = DirectX::SimpleMath::Matrix;
 

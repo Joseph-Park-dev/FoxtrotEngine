@@ -25,10 +25,10 @@
 #include "ViewportRenderer.h"
 #include "EditorSceneManager.h"
 #include "EditorScene.h"
-#include "DebugShapes.h"
 #include "DirectoryHelper.h"
 
 #include "Core/FTCore.h"
+#include "Managers/DebugShapes.h"
 #include "Managers/SceneManager.h"
 #include "Managers/KeyInputManager.h"
 #include "Managers/ResourceManager.h"

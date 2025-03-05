@@ -14,12 +14,12 @@
 #include "Actors/Transform.h"
 #include "FileSystem/FileIOHelper.h"
 #include "ResourceSystem/FTRectangle.h"
+#include "Managers/DebugShapes.h"
 
 #ifdef FOXTROT_EDITOR
 #include "CommandHistory.h"
 // Used to access Debug geometries
 #include "ResourceSystem/GeometryGenerator.h"
-#include "DebugShapes.h"
 #endif
 
 const FTVector2 BoxCollider2D::GetScale() const

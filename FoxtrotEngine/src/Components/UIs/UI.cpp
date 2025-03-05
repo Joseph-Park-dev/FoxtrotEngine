@@ -27,7 +27,7 @@
 
 bool UI::IsMouseHovering()
 {
-	if(mMouseHovering)
+	if (mMouseHovering)
 		printf("Hovered!\n");
 	return mMouseHovering;
 }
@@ -83,8 +83,8 @@ void UI::SetColorID(uint8_t r, uint8_t g, uint8_t b)
 	mColorID[1] = g;
 	mColorID[2] = b;
 	mColorID[3] = 255.0f;
-	mInputArea->GetPixelConstantData().IndexColor = 
-		DirectX::SimpleMath::Vector4((float)r/255, (float)g/255, (float)b/255, 1.0);
+	mInputArea->GetPixelConstantData().IndexColor =
+		DirectX::SimpleMath::Vector4((float)r / 255, (float)g / 255, (float)b / 255, 1.0);
 }
 
 void UI::CheckMouseHover()
@@ -140,7 +140,6 @@ void UI::LateUpdate(float deltaTime)
 
 void UI::Render(FoxtrotRenderer* renderer)
 {
-
 }
 
 UI::UI(Actor* owner, int updateOrder)
@@ -173,12 +172,12 @@ bool UI::CompareColorIDs(uint8_t* cursorPosCol)
 void UI::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
-	mInputArea->GetRectArea()->SaveProperties(ofs);
+	mInputArea->SaveProperties(ofs);
 }
 
 void UI::LoadProperties(std::ifstream& ifs)
 {
-	mInputArea->GetRectArea()->LoadProperties(ifs);
+	mInputArea->LoadProperties(ifs);
 	Component::LoadProperties(ifs);
 }
 
@@ -190,11 +189,11 @@ void UI::EditorUpdate(float deltaTime)
 
 void UI::EditorRender(FoxtrotRenderer* renderer)
 {
-	mInputArea->Render(renderer);
+	//mInputArea->Render(renderer);
 }
 
 void UI::EditorUIUpdate()
 {
-	mInputArea->GetRectArea()->UpdateUI();
+	mInputArea->UpdateUI();
 }
 #endif // FOXTROT_EDITOR

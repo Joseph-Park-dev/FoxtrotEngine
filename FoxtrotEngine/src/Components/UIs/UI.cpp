@@ -16,13 +16,13 @@
 #include "Renderer/Camera.h"
 #include "Managers/KeyInputManager.h"
 #include "Managers/UIManager.h"
+#include "Managers/DebugShapes.h"
 #include "Math/FTMath.h"
 #include "Actors/Actor.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "DebugShapes.h"
-	#include "ResourceSystem/FTShape.h"
-	#include "CommandHistory.h"
+#include "ResourceSystem/FTShape.h"
+#include "CommandHistory.h"
 #endif // DEBUG
 
 bool UI::IsMouseHovering()
@@ -120,7 +120,7 @@ void UI::Initialize(FTCore* ftCoreInst)
 {
 	UIManager::GetInstance()->RegisterUI(this);
 	mRenderer = ftCoreInst->GetGameRenderer();
-	mInputArea->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+	mInputArea->Initialize(ftCoreInst->GetGameRenderer());
 }
 
 void UI::Update(float deltaTime)

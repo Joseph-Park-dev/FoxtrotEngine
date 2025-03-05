@@ -260,6 +260,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Managers\DebugShapes.cpp" />
     <ClCompile Include="src\ResourceSystem\FTRectangle.cpp" />
     <ClCompile Include="include\delegates\Delegates.cpp" />
     <ClCompile Include="src\Behaviors\MonkeySpin.cpp" />
@@ -325,6 +326,7 @@
     <ClCompile Include="src\Components\UIs\TextRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Managers\DebugShapes.h" />
     <ClInclude Include="src\ResourceSystem\FTRectangle.h" />
     <ClInclude Include="include\delegates\catch.hpp" />
     <ClInclude Include="include\delegates\Delegates.h" />

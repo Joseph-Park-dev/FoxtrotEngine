@@ -15,9 +15,9 @@
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
-#include "DebugShapes.h"
 #include "DirectoryHelper.h"
 
+#include "Managers/DebugShapes.h"
 #include "Managers/KeyInputManager.h"
 #include "Core/FTCore.h"
 #include "Core/Timer.h"
@@ -35,7 +35,6 @@
 
 // FTCoreEditor related singleton initializations -> used in Foxtrot Editor Runtime
 CommandHistory*		CommandHistory::mInstance	  = nullptr;
-DebugShapes*		DebugShapes::mInstance		  = nullptr;
 DirectoryHelper*	DirectoryHelper::mInstance	  = nullptr;
 EditorLayer*		EditorLayer::mInstance		  = nullptr;
 EditorSceneManager* EditorSceneManager::mInstance = nullptr;
@@ -82,11 +81,11 @@ void FTCoreEditor::InitSingletonManagers()
 	EventManager::GetInstance();
 	KeyInputManager::GetInstance();
 	CollisionManager::GetInstance()->Initialize();
-	LightManager::GetInstance();
+	LightManager::GetInstance()->Initialize();
+	DebugShapes::GetInstance()->Initialize(GetGameRenderer());
 
 	EditorSceneManager::GetInstance()->Initialize();
 	EditorLayer::GetInstance();
-	DebugShapes::GetInstance()->Initialize(GetGameRenderer());
 }
 
 // Imgui forwawrd declaration

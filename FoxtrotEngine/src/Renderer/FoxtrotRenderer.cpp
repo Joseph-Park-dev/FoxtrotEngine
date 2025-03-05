@@ -23,6 +23,7 @@
 #include "ResourceSystem/Vertex.h"
 #include "Managers/KeyInputManager.h"
 #include "Managers/SceneManager.h"
+#include "Managers/DebugShapes.h"
 #include "Renderer/D3D11Utils.h"
 #include "Renderer/Camera.h"
 
@@ -31,7 +32,6 @@
 	#include <imgui.h>
 	#include "EditorLayer.h"
 	#include "ViewportRenderer.h"
-	#include "DebugShapes.h"
 #endif // FOXTROT_EDITOR
 
 FoxtrotRenderer* FoxtrotRenderer::CreateRenderer(HWND window, int width, int height)
@@ -149,6 +149,7 @@ void FoxtrotRenderer::ResizeWindow(FTVector2& windowRes)
 		FTVector2 topLeft = FTVector2(0.f, 0.f);
 		mRenderWidth	  = static_cast<int>(windowRes.x);
 		mRenderHeight	  = static_cast<int>(windowRes.y);
+		D3D11Utils::CreateRenderTargetView(mIndexRenderTargetView, mDevice, mSwapChain, mIndexTexture, mIndexTempTexture, mIndexStagingTexture);
 		D3D11Utils::CreateDepthBuffer(mDevice, windowRes.x, windowRes.y, mNumQualityLevels, mDepthStencilView);
 #endif // FOXTROT_EDITOR
 
@@ -162,23 +163,23 @@ void FoxtrotRenderer::SampleCursorPosColor()
 	if (mIndexTexture && mIndexTempTexture)
 	{
 		mContext->ResolveSubresource(mIndexTempTexture.Get(), 0, mIndexTexture.Get(), 0, DXGI_FORMAT_R8G8B8A8_UNORM);
-		
+
 		if (IsInRenderedArea(MOUSE_POS))
 		{
 			D3D11_BOX box;
-			box.left = MOUSE_POS.x;
-			box.right = MOUSE_POS.x + 1;
-			box.top = MOUSE_POS.y;
+			box.left   = MOUSE_POS.x;
+			box.right  = MOUSE_POS.x + 1;
+			box.top	   = MOUSE_POS.y;
 			box.bottom = MOUSE_POS.y + 1;
-			box.front = 0;
-			box.back = 1;
+			box.front  = 0;
+			box.back   = 1;
 			mContext->CopySubresourceRegion(mIndexStagingTexture.Get(), 0, 0, 0, 0, mIndexTempTexture.Get(), 0, &box);
 
 			D3D11_MAPPED_SUBRESOURCE ms;
 			mContext->Map(mIndexStagingTexture.Get(), NULL, D3D11_MAP_READ, NULL,
-				&ms); // D3D11_MAP_READ 주의
+						  &ms); // D3D11_MAP_READ 주의
 
-			if(ms.pData)
+			if (ms.pData)
 				memcpy(mCursorPosColor, ms.pData, sizeof(uint8_t) * 4);
 
 			mContext->Unmap(mIndexStagingTexture.Get(), NULL);
@@ -293,8 +294,14 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 
 	DX::ThrowIfFailed(D3D11Utils::CreateRenderTargetView(mRenderTargetView, mDevice, mSwapChain));
 
-	ID3D11RenderTargetView* targetsPrev[] = { mRenderTargetView.Get() };
-	mContext->OMSetRenderTargets(1, targetsPrev, mDepthStencilView.Get());
+#ifdef FOXTROT_EDITOR
+
+#else
+	D3D11Utils::CreateRenderTargetView(mIndexRenderTargetView, mDevice, mSwapChain, mIndexTexture, mIndexTempTexture, mIndexStagingTexture);
+	ID3D11RenderTargetView* targets[] = { mRenderTargetView.Get(), mIndexRenderTargetView.Get() };
+	mContext->OMSetRenderTargets(2, targets, mDepthStencilView.Get());
+#endif // 
+
 
 #ifdef FOXTROT_EDITOR
 	mViewportRenderer = DBG_NEW ViewportRenderer;
@@ -403,6 +410,12 @@ HRESULT FoxtrotRenderer::CreateTextureSampler()
 	return mDevice->CreateSamplerState(&sampDesc, mSamplerState.GetAddressOf());
 }
 
+bool FoxtrotRenderer::IsInRenderedArea(FTVector2 pos)
+{
+	return 0 <= pos.x && pos.x <= mRenderWidth - 1 &&
+		0 <= pos.y && pos.y <= mRenderHeight - 1;
+}
+
 FoxtrotRenderer::FoxtrotRenderer()
 	: mClearColor{ 0.0f, 0.0f, 0.0f, 1.0f }
 	, mFillMode(FillMode::Solid)
@@ -436,11 +449,5 @@ void FoxtrotRenderer::SetViewport(const ImVec2& topLeft, const ImVec2& resolutio
 ViewportRenderer* FoxtrotRenderer::GetViewportRenderer()
 {
 	return mViewportRenderer;
-}
-
-bool FoxtrotRenderer::IsInRenderedArea(FTVector2 pos)
-{
-	return 0 <= pos.x && pos.x <= mRenderWidth - 1 && 
-		0 <= pos.y && pos.y <= mRenderHeight - 1;
 }
 #endif // FOXTROT_EDITOR

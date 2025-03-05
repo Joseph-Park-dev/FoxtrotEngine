@@ -27,8 +27,6 @@
 
 bool UI::IsMouseHovering()
 {
-	if (mMouseHovering)
-		printf("Hovered!\n");
 	return mMouseHovering;
 }
 

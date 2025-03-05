@@ -17,7 +17,6 @@
 
 void ButtonUI::OnMouseHovering()
 {
-	printf("hover!\n");
 }
 
 void ButtonUI::OnMouseLButtonDown()
@@ -38,7 +37,6 @@ void ButtonUI::OnMouseLButtonClicked()
 	}
 
 	mOnLBtnClicked_void.Broadcast();
-	printf("Clicked!\n");
 }
 
 void ButtonUI::CloneTo(Actor* actor)

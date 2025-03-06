@@ -31,7 +31,7 @@ void TextRenderer::Render(FoxtrotRenderer* renderer)
     FTVector2 pos = GetOwner()->GetTransform()->GetWorldPosition();
 
     renderer->GetContext()->OMSetDepthStencilState(renderer->GetDSS2D().Get(), 0);
-    spriteBatch->Begin(SpriteSortMode::SpriteSortMode_Deferred);
+    spriteBatch->Begin(SpriteSortMode::SpriteSortMode_Deferred, renderer->GetBlendState().Get());
     spriteFont->DrawString(
         spriteBatch, mText.c_str(),
         (pos * Camera::GetInstance()->GetPixelsPerUnit()).GetD3Vec2() + mTextAttribute->Offset,
@@ -41,7 +41,7 @@ void TextRenderer::Render(FoxtrotRenderer* renderer)
         mTextAttribute->Scale
     );
     spriteBatch->End();
-    renderer->GetContext()->OMSetDepthStencilState(renderer->GetDSS().Get(), 0);
+     renderer->GetContext()->OMSetDepthStencilState(renderer->GetDSS().Get(), 0);
 }
 
 void TextRenderer::CloneTo(Actor* actor)

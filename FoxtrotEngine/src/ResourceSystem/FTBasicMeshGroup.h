@@ -43,6 +43,10 @@ public:
 	BasicPCData& GetPCData();
 
 	bool GetDrawTexture();
+	bool GetDrawNormal();
+
+	void SetDrawTexture(bool drawTexture);
+	void SetDrawNormal(bool drawNormal);
 
 public:
 	FTBasicMeshGroup();
@@ -76,3 +80,9 @@ private:
 	bool mValModified;
 #endif
 };
+
+namespace ChunkKey
+{
+	constexpr const char* FTMESHGROUP_DRAW_TEXTURE = "Draw Texture";
+	constexpr const char* FTMESHGROUP_DRAW_NORMALS = "Draw Normals";
+}

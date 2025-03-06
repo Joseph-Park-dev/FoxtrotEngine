@@ -24,6 +24,8 @@ DebugShapes::~DebugShapes()
 
 void DebugShapes::Initialize(FoxtrotRenderer* renderer)
 {
+	/*if (0 < mShapes.size())
+		mShapes.clear();*/
 	this->CreateShaders(renderer->GetDevice());
 }
 
@@ -61,13 +63,7 @@ void DebugShapes::DeleteAll()
 	if (mShapes.size() < 1)
 		return;
 	for (FTShape* shape : mShapes)
-	{
-		if (shape)
-		{
-			delete shape;
-			shape = nullptr;
-		}
-	}
+		RemoveShape(shape);
 	mShapes.clear();
 }
 

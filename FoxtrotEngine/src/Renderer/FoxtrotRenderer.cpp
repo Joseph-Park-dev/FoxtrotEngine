@@ -79,6 +79,7 @@ ComPtr<IDXGISwapChain>&			FoxtrotRenderer::GetSwapChain() { return mSwapChain; }
 ComPtr<ID3D11RenderTargetView>& FoxtrotRenderer::GetRenderTargetView() { return mRenderTargetView; }
 ComPtr<ID3D11DepthStencilView>& FoxtrotRenderer::GetDSV() { return mDepthStencilView; }
 ComPtr<ID3D11Texture2D>&		FoxtrotRenderer::GetDepthStencilBuffer() { return mDepthStencilBuffer; }
+ComPtr<ID3D11BlendState>&		FoxtrotRenderer::GetBlendState() { return mBlendState; }
 
 ComPtr<ID3D11Texture2D>&		FoxtrotRenderer::GetIndexTexture() { return mIndexTexture; }
 ComPtr<ID3D11Texture2D>&		FoxtrotRenderer::GetIndexTempTexture() { return mIndexTempTexture; }
@@ -300,8 +301,7 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 	D3D11Utils::CreateRenderTargetView(mIndexRenderTargetView, mDevice, mSwapChain, mIndexTexture, mIndexTempTexture, mIndexStagingTexture);
 	ID3D11RenderTargetView* targets[] = { mRenderTargetView.Get(), mIndexRenderTargetView.Get() };
 	mContext->OMSetRenderTargets(2, targets, mDepthStencilView.Get());
-#endif // 
-
+#endif //
 
 #ifdef FOXTROT_EDITOR
 	mViewportRenderer = DBG_NEW ViewportRenderer;

@@ -83,6 +83,7 @@ public:
 	ComPtr<ID3D11RenderTargetView>& GetRenderTargetView();
 	ComPtr<ID3D11DepthStencilView>& GetDSV();
 	ComPtr<ID3D11Texture2D>&		GetDepthStencilBuffer();
+	ComPtr<ID3D11BlendState>&		GetBlendState();
 
 	ComPtr<ID3D11Texture2D>&		GetIndexTexture();
 	ComPtr<ID3D11Texture2D>&		GetIndexTempTexture();

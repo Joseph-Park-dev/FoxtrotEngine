@@ -155,12 +155,11 @@ UI::UI(Actor* owner, int updateOrder)
 
 UI::~UI()
 {
+	DebugShapes::GetInstance()->RemoveShape(mInputArea);
 }
 
 bool UI::CompareColorIDs(uint8_t* cursorPosCol)
 {
-	printf("%u, %u, %u, %u\n", cursorPosCol[0], cursorPosCol[1], cursorPosCol[2], cursorPosCol[3]);
-
 	return mColorID[0] == cursorPosCol[0] &&
 		mColorID[1] == cursorPosCol[1] &&
 		mColorID[2] == cursorPosCol[2] &&

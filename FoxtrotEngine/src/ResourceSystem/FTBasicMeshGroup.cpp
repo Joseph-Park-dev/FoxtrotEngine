@@ -33,6 +33,7 @@ void FTBasicMeshGroup::UpdateConstantBuffers(
 	D3D11Utils::UpdateBuffer(
 		context, mVertexConstData, mVertexConstBuffer);
 
+	mPixelConstData.UseTexture = mDrawTexture;
 	D3D11Utils::UpdateBuffer(
 		context, mPixelConstData, mPixelConstBuffer);
 
@@ -60,12 +61,16 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture)
 	{
 		context->VSSetConstantBuffers(0, 1, mesh->VertexConstantBuffer.GetAddressOf());
 
-		if (texture)
+		if (mDrawTexture)
 		{
-			std::vector<ID3D11ShaderResourceView*> resViews;
-			resViews.push_back(texture->GetResourceView().Get());
-			context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
+			if (texture)
+			{
+				std::vector<ID3D11ShaderResourceView*> resViews;
+				resViews.push_back(texture->GetResourceView().Get());
+				context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
+			}
 		}
+		
 		context->PSSetConstantBuffers(0, 1, mesh->PixelConstantBuffer.GetAddressOf());
 
 		context->IASetInputLayout(renderer->GetTextureInputLayout().Get());
@@ -158,6 +163,10 @@ BasicVCData& FTBasicMeshGroup::GetVCData() { return mVertexConstData; }
 BasicPCData& FTBasicMeshGroup::GetPCData() { return mPixelConstData; }
 
 bool FTBasicMeshGroup::GetDrawTexture() { return mDrawTexture; }
+bool FTBasicMeshGroup::GetDrawNormal() { return mDrawNormal; }
+
+void FTBasicMeshGroup::SetDrawTexture(bool drawTexture) { mDrawTexture = drawTexture; }
+void FTBasicMeshGroup::SetDrawNormal(bool drawNormal) { mDrawNormal = drawNormal; }
 
 void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTMeshData>& meshes)
 {
@@ -256,8 +265,6 @@ FTBasicMeshGroup::~FTBasicMeshGroup()
 void FTBasicMeshGroup::UpdateUI()
 {
 	CommandHistory::GetInstance()->UpdateBoolValue("Draw Texture", mDrawTexture);
-	mPixelConstData.UseTexture = mDrawTexture;
-
 	CommandHistory::GetInstance()->UpdateBoolValue("Draw Normal", mDrawNormal);
 
 	if (ImGui::DragFloat("Normal Scale", &mNormalVertexConstData.scale, FLOATMOD_SPEED))

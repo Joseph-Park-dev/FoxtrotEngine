@@ -67,6 +67,8 @@ void MeshRenderer::CloneTo(Actor* actor)
 	MeshRenderer* newComp = DBG_NEW MeshRenderer(actor, GetUpdateOrder());
 	newComp->mMeshKey	  = this->mMeshKey;
 	newComp->mTexKey	  = this->mTexKey;
+	newComp->mMeshGroup->SetDrawTexture(this->mMeshGroup->GetDrawTexture());
+	newComp->mMeshGroup->SetDrawNormal(this->mMeshGroup->GetDrawNormal());
 }
 
 bool MeshRenderer::InitializeMesh()
@@ -207,7 +209,7 @@ Matrix MeshRenderer::CalcModelMat(Transform* transform)
 
 MeshRenderer::MeshRenderer(Actor* owner, int updateOrder)
 	: Component(owner, updateOrder)
-	, mMeshGroup(nullptr)
+	, mMeshGroup(DBG_NEW FTBasicMeshGroup)
 	, mTexture(nullptr)
 	, mMaterial(nullptr)
 	, mRenderer(nullptr)
@@ -233,6 +235,9 @@ MeshRenderer::~MeshRenderer()
 void MeshRenderer::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
+	FileIOHelper::SaveBool(ofs, ChunkKey::FTMESHGROUP_DRAW_TEXTURE, mMeshGroup->GetDrawTexture());
+	FileIOHelper::SaveBool(ofs, ChunkKey::FTMESHGROUP_DRAW_NORMALS, mMeshGroup->GetDrawNormal());
+
 	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::MESH_KEY, mMeshKey);
 	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TEXTURE_KEY, mTexKey);
 }
@@ -241,6 +246,14 @@ void MeshRenderer::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::LoadUnsignedInt(ifs, mTexKey);
 	FileIOHelper::LoadUnsignedInt(ifs, mMeshKey);
+
+	bool drawVal = false;
+	FileIOHelper::LoadBool(ifs, drawVal);
+	mMeshGroup->SetDrawNormal(drawVal);
+
+	FileIOHelper::LoadBool(ifs, drawVal);
+	mMeshGroup->SetDrawTexture(drawVal);
+
 	Component::LoadProperties(ifs);
 }
 
@@ -372,7 +385,7 @@ void MeshRenderer::AddModel()
 	UINT key =
 		FTEditorUtils::DisplayResSelection(
 			"Select Mesh", ResourceManager::GetInstance()->GetMeshDataMap());
-	if(key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		InitializeMesh(key);
 }
 

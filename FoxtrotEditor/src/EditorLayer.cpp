@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -55,17 +55,17 @@ void EditorLayer::Update(float deltaTime)
 	ImGui::NewFrame();
 
 	ImGui::DockSpaceOverViewport();
-	mSaveKeyPressed			= ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_S);
-	mSaveAsKeyPressed		= ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_LeftShift | ImGuiKey::ImGuiKey_S);
-	mOpenKeyPressed			= ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_O);
-	mConfirmKeyPressed		= ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Enter);
-	mUndoKeyPressed			= ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_Z);
-	mRedoKeyPressed			= ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey::ImGuiKey_Z);
-	mDeleteKeyPressed		= ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Delete);
-	mDuplicateKeyPressed	= ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_D);
+	mSaveKeyPressed		 = ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_S);
+	mSaveAsKeyPressed	 = ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_LeftShift | ImGuiKey::ImGuiKey_S);
+	mOpenKeyPressed		 = ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_O);
+	mConfirmKeyPressed	 = ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Enter);
+	mUndoKeyPressed		 = ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_Z);
+	mRedoKeyPressed		 = ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey::ImGuiKey_Z);
+	mDeleteKeyPressed	 = ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Delete);
+	mDuplicateKeyPressed = ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_D);
 
 	CommandHistory::GetInstance()->Update();
-	
+
 	DisplayFileMenu();
 	DisplayHierarchyMenu();
 	DisplayResourceMenu();
@@ -89,21 +89,21 @@ void EditorLayer::DisplayViewport()
 		mCursorOnViewport = false;
 
 	FoxtrotRenderer* renderer = FTCoreEditor::GetInstance()->GetGameRenderer();
-	mSceneViewportPos = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
+	mSceneViewportPos		  = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
 	if (MOUSE_HOLD(MOUSE::MOUSE_LEFT) && SceneViewportSizeChanged())
 	{
 		mIsResizingViewport = true;
 	}
 	if (mIsResizingViewport && MOUSE_AWAY(MOUSE::MOUSE_LEFT))
 	{
-		//renderer->ResizeSceneViewport(mSceneViewportSize.x, mSceneViewportSize.y);
+		// renderer->ResizeSceneViewport(mSceneViewportSize.x, mSceneViewportSize.y);
 		renderer->SetRenderWidth(mSceneViewportSize.x);
 		renderer->SetRenderHeight(mSceneViewportSize.y);
-		//renderer->UpdateDepthBuffer(mSceneViewportSize.x, mSceneViewportSize.y);
+		// renderer->UpdateDepthBuffer(mSceneViewportSize.x, mSceneViewportSize.y);
 		mIsResizingViewport = false;
 	}
 	ID3D11ShaderResourceView* viewportTexture = renderer->GetViewportRenderer()->GetViewportSRV().Get();
-	ImVec2 viewportSize = ImVec2(renderer->GetRenderWidth(), renderer->GetRenderHeight());
+	ImVec2					  viewportSize	  = ImVec2(renderer->GetRenderWidth(), renderer->GetRenderHeight());
 	ImGui::Image((ImTextureID)viewportTexture, viewportSize);
 
 	ImGui::End();
@@ -113,7 +113,7 @@ void EditorLayer::DisplayFileMenu()
 {
 	if (ImGui::BeginMainMenuBar())
 	{
-		const size_t maxMenuEle = 5;
+		const size_t	  maxMenuEle		   = 5;
 		const std::string fileMenu[maxMenuEle] = { "New Project", "Open Project", "Save", "Save As", "Open" };
 
 		std::string selection = {};
@@ -146,7 +146,8 @@ void EditorLayer::DisplayFileMenu()
 		{
 			if (CHUNK_IS_SAVED)
 			{
-				if (!PATH_PROJECT.empty()) {
+				if (!PATH_PROJECT.empty())
+				{
 					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
 					printf("Chunk saved to %s", PATH_CHUNK.c_str());
 					mInfoType = InfoType::ChunkIsSaved;
@@ -193,15 +194,15 @@ void EditorLayer::DisplayFileMenu()
 			{
 				if (!PATH_CHUNK.empty())
 				{
-					EditorChunkLoader::	GetInstance()->	SaveChunk(PATH_CHUNK);
-					DebugShapes::		GetInstance()->	DeleteAll();
-					ResourceManager::	GetInstance()->	DeleteAll();
+					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
+					DebugShapes::GetInstance()->DeleteAll();
+					ResourceManager::GetInstance()->DeleteAll();
 					UIManager::GetInstance()->Reset();
-					CollisionManager::	GetInstance()->	Reset();
-					EditorSceneManager::GetInstance()->	GetEditorScene()->DeleteAll();
-					ResourceManager::	GetInstance()->	Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
-					EditorChunkLoader::	GetInstance()->	LoadChunk(PATH_CHUNK);
-					FTCoreEditor::		GetInstance()->	SetIsUpdatingGame(true);
+					CollisionManager::GetInstance()->Reset();
+					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
+					ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
+					FTCoreEditor::GetInstance()->SetIsUpdatingGame(true);
 				}
 				else
 					LogString("Saved file path doesn't exist but trying to access it");
@@ -215,14 +216,14 @@ void EditorLayer::DisplayFileMenu()
 			{
 				if (!PATH_CHUNK.empty())
 				{
-					FTCoreEditor::		GetInstance()->SetIsUpdatingGame(false);
-					DebugShapes::		GetInstance()->DeleteAll();
-					ResourceManager::	GetInstance()->DeleteAll();
-					CollisionManager::	GetInstance()->Reset();
+					FTCoreEditor::GetInstance()->SetIsUpdatingGame(false);
+					DebugShapes::GetInstance()->DeleteAll();
+					ResourceManager::GetInstance()->DeleteAll();
+					CollisionManager::GetInstance()->Reset();
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
-					ResourceManager::	GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
-					ResourceManager::	GetInstance()->LoadAllResourcesInAsset();
-					EditorChunkLoader::	GetInstance()->LoadChunk(PATH_CHUNK);
+					ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+					ResourceManager::GetInstance()->LoadAllResourcesInAsset();
+					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
 				}
 			}
 		}
@@ -238,37 +239,36 @@ void EditorLayer::DisplayFileMenu()
 	}
 	mFileDialog.Display();
 
-
 	if (mFileDialog.HasSelected())
 	{
 		std::filesystem::path path = mFileDialog.GetSelected();
 		switch (mFileMenuEvent)
 		{
-		case FileMenuEvents::None:
-			break;
+			case FileMenuEvents::None:
+				break;
 
-		case FileMenuEvents::NewProject:
-			CreateNewProject(path);
-			break;
+			case FileMenuEvents::NewProject:
+				CreateNewProject(path);
+				break;
 
-		case FileMenuEvents::OpenProject:
-			OpenProject(path);
-			break;
+			case FileMenuEvents::OpenProject:
+				OpenProject(path);
+				break;
 
-		case FileMenuEvents::Save:
-			Save(path);
-			break;
+			case FileMenuEvents::Save:
+				Save(path);
+				break;
 
-		case FileMenuEvents::SaveAs:
-			SaveAs(path);
-			break;
+			case FileMenuEvents::SaveAs:
+				SaveAs(path);
+				break;
 
-		case FileMenuEvents::Open:
-			Open(path);
-			break;
+			case FileMenuEvents::Open:
+				Open(path);
+				break;
 
-		default:
-			break;
+			default:
+				break;
 		}
 	}
 	mFileDialog.ClearSelected();
@@ -280,13 +280,13 @@ void EditorLayer::DisplayHierarchyMenu()
 	ImGui::Begin(menuID.c_str());
 	if (ImGui::BeginListBox("Hierarchy", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
 	{
-		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-		size_t eleSize = scene->GetActorCount();
+		EditorScene* scene	 = EditorSceneManager::GetInstance()->GetEditorScene();
+		size_t		 eleSize = scene->GetActorCount();
 
 		std::vector<Actor*> actorsRow;
 		actorsRow.reserve(eleSize);
 
-		for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i) 
+		for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
 		{
 			size_t size = scene->GetActorGroup(i).size();
 			if (0 < size)
@@ -303,7 +303,7 @@ void EditorLayer::DisplayHierarchyMenu()
 				mActorNameIdx = i;
 				CommandHistory::GetInstance()->AddCommand(DBG_NEW IntEditCommand(mActorNameIdx, i));
 				EditorSceneManager::GetInstance()->GetEditorScene()->UnfocusEditorElements();
-				Actor* actor = actorsRow[mActorNameIdx];
+				Actor* actor		  = actorsRow[mActorNameIdx];
 				mFocusedEditorElement = dynamic_cast<EditorElement*>(actor);
 				mFocusedEditorElement->SetIsFocused(true);
 			}
@@ -312,8 +312,7 @@ void EditorLayer::DisplayHierarchyMenu()
 	}
 
 	if (mDuplicateKeyPressed)
-		EditorSceneManager::GetInstance()->GetEditorScene()
-			->AddEditorElement(mFocusedEditorElement);
+		EditorSceneManager::GetInstance()->GetEditorScene()->AddEditorElement(mFocusedEditorElement);
 	ImGui::End();
 }
 
@@ -337,8 +336,8 @@ void EditorLayer::DisplayInspectorMenu()
 {
 	std::string menuID = "Inspector";
 	ImGui::Begin(menuID.c_str());
-	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-	size_t eleSize = scene->GetActorCount();
+	EditorScene* scene	 = EditorSceneManager::GetInstance()->GetEditorScene();
+	size_t		 eleSize = scene->GetActorCount();
 	if (0 < eleSize)
 	{
 		std::vector<Actor*> actorsRow;
@@ -354,8 +353,8 @@ void EditorLayer::DisplayInspectorMenu()
 			}
 		}
 
-		Actor* actor = actorsRow[mActorNameIdx];
-		EditorElement* ele = dynamic_cast<EditorElement*>(actor);
+		Actor*		   actor = actorsRow[mActorNameIdx];
+		EditorElement* ele	 = dynamic_cast<EditorElement*>(actor);
 		if (ele->GetIsFocused())
 		{
 			ele->UpdateUI(false);
@@ -363,8 +362,8 @@ void EditorLayer::DisplayInspectorMenu()
 			{
 				// Delete game object, and erase the pointed from std::vector
 				ActorGroup group = ele->GetActorGroup();
-				
-				std::vector<Actor*>::iterator iter = 
+
+				std::vector<Actor*>::iterator iter =
 					std::find(scene->GetActorGroup(group).begin(), scene->GetActorGroup(group).end(), actor);
 				scene->GetActorGroup(group).erase(iter);
 				if (0 < mActorNameIdx)
@@ -373,7 +372,7 @@ void EditorLayer::DisplayInspectorMenu()
 			}
 		}
 	}
-	//ResizeUIWindow(menuID);
+	// ResizeUIWindow(menuID);
 	ImGui::End();
 }
 
@@ -389,39 +388,34 @@ bool EditorLayer::SceneViewportSizeChanged()
 
 bool EditorLayer::ProjectExists(std::string projDir)
 {
-	return
-		std::filesystem::exists(projDir + "//Assets") &&
-		std::filesystem::exists(projDir + "//Builds") &&
-		std::filesystem::exists(projDir + "//Chunks") &&
-		std::filesystem::exists(projDir + "//FoxtrotEngine");
+	return std::filesystem::exists(projDir + "//Assets") && std::filesystem::exists(projDir + "//Builds") && std::filesystem::exists(projDir + "//Chunks") && std::filesystem::exists(projDir + "//FoxtrotEngine");
 }
 
 void EditorLayer::DisplayInfoMessage()
 {
 	switch (mInfoType)
 	{
-	case InfoType::ChunkIsSaved:
-		PopUpInfo(".chunk is saved.");
-		break;
-	case InfoType::PremadeIsCreated:
-	{
-		auto onConfirm = [this]()
-			-> void
-			{
+		case InfoType::ChunkIsSaved:
+			PopUpInfo(".chunk is saved.");
+			break;
+		case InfoType::PremadeIsCreated:
+		{
+			auto onConfirm = [this]()
+				-> void {
 				FTPremade* newPremade = DBG_NEW FTPremade();
 				newPremade->Create(mFocusedEditorElement);
 				ImGui::CloseCurrentPopup();
 				mInfoType = InfoType::None;
 			};
-		if (mFocusedEditorElement)
-		{
-			std::string msg = "Create Premade with name : " + mFocusedEditorElement->GetName() + "?";
-			PopUpInfo("Create Premade", msg.c_str(), onConfirm);
+			if (mFocusedEditorElement)
+			{
+				std::string msg = "Create Premade with name : " + mFocusedEditorElement->GetName() + "?";
+				PopUpInfo("Create Premade", msg.c_str(), onConfirm);
+			}
 		}
-	}
-	break;
-	default:
 		break;
+		default:
+			break;
 	}
 }
 
@@ -429,58 +423,52 @@ void EditorLayer::DisplayErrorMessage()
 {
 	switch (mErrorType)
 	{
-	case ErrorType::None:
-		break;
+		case ErrorType::None:
+			break;
 
-	case ErrorType::ProjectPathExists:
-		PopUpError(
-			"Project path exists", 
-			"Foxtrot Engine project\nalready exists in this directory."
-		);
-		break;
+		case ErrorType::ProjectPathExists:
+			PopUpError(
+				"Project path exists",
+				"Foxtrot Engine project\nalready exists in this directory.");
+			break;
 
-	case ErrorType::ProjectNotValid:
-		PopUpError(
-			"Project Not Valid", 
-			"The directory is not a valid Foxtrot Engine Project"
-		);
-		break;
+		case ErrorType::ProjectNotValid:
+			PopUpError(
+				"Project Not Valid",
+				"The directory is not a valid Foxtrot Engine Project");
+			break;
 
-	case ErrorType::ProjectPathNotEmpty:
-		PopUpError(
-			"Folder Not Empty", 
-			"The directory is not empty to create a FT Engine Project."
-		);
-		break;
+		case ErrorType::ProjectPathNotEmpty:
+			PopUpError(
+				"Folder Not Empty",
+				"The directory is not empty to create a FT Engine Project.");
+			break;
 
-	case ErrorType::ChunkNotSaved:
-	{
-		std::function<void()> onConfirm = [this]()
-			-> void
-			{
+		case ErrorType::ChunkNotSaved:
+		{
+			std::function<void()> onConfirm = [this]()
+				-> void {
 				FTCoreEditor::GetInstance()->SetIsRunning(false);
 				mErrorType = ErrorType::None;
 				ImGui::CloseCurrentPopup();
 			};
 
-		std::function<void()> onCancel = [this]()
-			-> void
-			{
+			std::function<void()> onCancel = [this]()
+				-> void {
 				mErrorType = ErrorType::None;
 				ImGui::CloseCurrentPopup();
 			};
 
-		PopUpInquiry(
-			"Chunk is not saved",
-			".Chunk is not saved.\n Discard the chunk?",
-			onConfirm,
-			onCancel
-		);
-	}
+			PopUpInquiry(
+				"Chunk is not saved",
+				".Chunk is not saved.\n Discard the chunk?",
+				onConfirm,
+				onCancel);
+		}
 		break;
 
-	default:
-		break;
+		default:
+			break;
 	}
 }
 
@@ -518,10 +506,10 @@ void EditorLayer::PopUpError(const char* title, const char* msg)
 		ImGui::Text(msg);
 		ImGui::Separator();
 
-		if (ImGui::Button("OK", ImVec2(120, 0))) 
-		{ 
-			ImGui::CloseCurrentPopup(); 
-			mErrorType = ErrorType::None; 
+		if (ImGui::Button("OK", ImVec2(120, 0)))
+		{
+			ImGui::CloseCurrentPopup();
+			mErrorType = ErrorType::None;
 		}
 		ImGui::SetItemDefaultFocus();
 		ImGui::EndPopup();
@@ -530,7 +518,7 @@ void EditorLayer::PopUpError(const char* title, const char* msg)
 
 void EditorLayer::CreateNewProject(std::filesystem::path& path)
 {
-	bool projExists = ProjectExists(path.string());
+	bool projExists	 = ProjectExists(path.string());
 	bool pathIsEmpty = std::filesystem::is_empty(path);
 
 	if (!projExists && pathIsEmpty)
@@ -545,9 +533,10 @@ void EditorLayer::CreateNewProject(std::filesystem::path& path)
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CHUNK_LIST);
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::CHUNK_LIST);
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::GAME_DATA);
-		FileIOHelper::SaveBufferToFile(ofs);
+		FileIOHelper::SaveBufferToFile(ofs, false);
 	}
-	else {
+	else
+	{
 		if (projExists)
 			mErrorType = ErrorType::ProjectPathExists;
 		else if (!pathIsEmpty)
@@ -558,7 +547,8 @@ void EditorLayer::CreateNewProject(std::filesystem::path& path)
 
 void EditorLayer::OpenProject(std::filesystem::path& path)
 {
-	if (ProjectExists(path.string())) {
+	if (ProjectExists(path.string()))
+	{
 		EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 		DebugShapes::GetInstance()->DeleteAll();
 		ResourceManager::GetInstance()->DeleteAll();
@@ -567,7 +557,8 @@ void EditorLayer::OpenProject(std::filesystem::path& path)
 		ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 		ResourceManager::GetInstance()->LoadAllResourcesInAsset();
 	}
-	else {
+	else
+	{
 		mErrorType = ErrorType::ProjectNotValid;
 	}
 }
@@ -638,4 +629,5 @@ EditorLayer::EditorLayer()
 }
 
 EditorLayer::~EditorLayer()
-{}
+{
+}

@@ -165,8 +165,6 @@ void FTCoreEditor::UpdateGame()
 
 void FTCoreEditor::GenerateOutput()
 {
-	GetGameRenderer()->RenderClear();
-
 	MSG msg = {};
 	InvalidateRect(GetWindow(), NULL, true);
 	if (PeekMessage(&msg, GetWindow(), 0, 0, PM_REMOVE))
@@ -175,9 +173,10 @@ void FTCoreEditor::GenerateOutput()
 		DispatchMessage(&msg);
 	}
 	UpdateWindow(GetWindow());
-
+	GetGameRenderer()->RenderClear();
 	GetGameRenderer()->RenderOnViewport();
 	EditorLayer::GetInstance()->Render(GetGameRenderer());
+
 	GetGameRenderer()->SwapChainPresent(1, 0);
 }
 

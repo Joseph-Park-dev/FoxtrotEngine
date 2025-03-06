@@ -61,18 +61,18 @@ public:
 	void LoadResources(std::ifstream& ifs, FTCore* ftCoreInst);
 
 public:
-	FTTexture* GetLoadedTexture(const UINT mItemKey);
+	FTTexture* GetLoadedTexture(const UINT key);
 	FTTexture* GetLoadedTexture(const char* name);
-	FTTileMap* GetLoadedTileMap(const UINT mItemKey);
-	FTPremade* GetLoadedPremade(const UINT mItemKey);
+	FTTileMap* GetLoadedTileMap(const UINT key);
+	FTPremade* GetLoadedPremade(const UINT key);
 	FTPremade* GetLoadedPremade(std::string&& fileName);
 
 	FTMeshDataPack* GetLoadedMeshData(const UINT key);
 	FTMeshData&		GetLoaded2DPrimitive(const UINT key);
 	FTMeshData&		GetLoaded3DPrimitive(const UINT key);
 
-	void			   RemoveLoadedMeshes(const UINT mItemKey);
-	FTSpriteAnimation* GetLoadedSpriteAnim(const UINT mItemKey);
+	void			   RemoveLoadedMeshes(const UINT key);
+	FTSpriteAnimation* GetLoadedSpriteAnim(const UINT key);
 
 public:
 	std::unordered_map<UINT, FTTexture*>& GetTexturesMap();

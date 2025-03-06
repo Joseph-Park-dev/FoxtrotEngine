@@ -20,6 +20,7 @@
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
+#include "EditorChunkLoader.h"
 
 void ViewportRenderer::InitializeTexture(FoxtrotRenderer* renderer, int width, int height, UINT numQualityLevels)
 {
@@ -37,12 +38,13 @@ void ViewportRenderer::DrawOnTexture(ComPtr<ID3D11DeviceContext>& context, ComPt
 											  renderer->GetIndexRenderTargetView().Get() };
 	context->OMSetRenderTargets(2, targetsPrev, mViewportDSV.Get());
 
-	// EditorLayer::GetInstance()->DisplayEditorElements(renderer);
-	EditorSceneManager::GetInstance()->Render(renderer);
-	EditorSceneManager::GetInstance()->EditorRender(renderer);
-
-	DebugShapes::GetInstance()->Render(renderer);
-	renderer->SampleCursorPosColor();
+	if (!EditorChunkLoader::GetInstance()->IsLoadingChunk())
+	{
+		EditorSceneManager::GetInstance()->Render(renderer);
+		EditorSceneManager::GetInstance()->EditorRender(renderer);
+		DebugShapes::GetInstance()->Render(renderer);
+		renderer->SampleCursorPosColor();
+	}
 
 	ID3D11RenderTargetView* targetsAfter[] = { renderTargetView.Get() };
 	context->OMSetRenderTargets(1, targetsAfter, depthStencilView.Get());

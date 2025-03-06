@@ -51,6 +51,10 @@ public:
 public:
 	ComponentLoadMap& GetComponentLoadMap() { return mComponentLoadMap; }
 
+	const bool IsLoadingChunk() const;
+	void Lock();
+	void Unlock();
+
 protected:
 	// Save .Chunk for the editor
 	void SaveChunkData(std::ofstream& out);
@@ -63,6 +67,7 @@ protected:
 private:
 	ComponentLoadMap mComponentLoadMap;
 	ChunkData		 mCurrentChunkData;
+	bool			 mIsLoading;
 
 private:
 	std::string GetConvertedFileName(std::string curr, std::string prevSuffix, std::string postSuffix);

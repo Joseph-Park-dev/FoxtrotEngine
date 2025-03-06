@@ -37,12 +37,27 @@ void ChunkLoader::SaveChunk(const std::string fileName)
 
 void ChunkLoader::LoadChunk(const std::string fileName)
 {
-	std::ifstream ifs(fileName);
+	std::ifstream ifs(fileName, std::ios::binary);
 	LoadChunkData(ifs);
 	CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
 	ResourceManager::GetInstance()->LoadResources(ifs, FTCore::GetInstance());
 	LoadActorsData(ifs);
 	Camera::GetInstance()->LoadProperties(ifs);
+}
+
+const bool ChunkLoader::IsLoadingChunk() const
+{
+	return mIsLoading;
+}
+
+void ChunkLoader::Lock()
+{
+	mIsLoading = true;
+}
+
+void ChunkLoader::Unlock()
+{
+	mIsLoading = false;
 }
 
 void ChunkLoader::SaveChunkData(std::ofstream& out)

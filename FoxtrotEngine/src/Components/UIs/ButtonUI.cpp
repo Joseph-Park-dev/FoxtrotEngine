@@ -36,7 +36,7 @@ void ButtonUI::OnMouseLButtonClicked()
 		((*mSceneInstance).*mSceneFunc)();
 	}
 
-	mOnLBtnClicked_void.Broadcast();
+	OnMouseLeftBTNClicked.Broadcast();
 }
 
 void ButtonUI::CloneTo(Actor* actor)
@@ -56,5 +56,5 @@ ButtonUI::ButtonUI(Actor* owner, int updateOrder)
 
 ButtonUI::~ButtonUI()
 {
-	mOnLBtnClicked_void.Clear();
+	OnMouseLeftBTNClicked.Clear();
 }

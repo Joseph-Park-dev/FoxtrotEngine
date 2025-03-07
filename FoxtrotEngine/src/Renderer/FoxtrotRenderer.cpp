@@ -145,7 +145,7 @@ void FoxtrotRenderer::ResizeWindow(FTVector2& windowRes)
 		mRenderWidth   = static_cast<int>(EditorLayer::GetInstance()->GetSceneViewportSize().x);
 		mRenderHeight  = static_cast<int>(EditorLayer::GetInstance()->GetSceneViewportSize().y);
 		// D3D11Utils::CreateRenderTargetView(mViewportRenderer->GetRTV(), mDevice, mSwapChain);
-		mViewportRenderer->InitializeTexture(this, mRenderWidth, mRenderHeight, mNumQualityLevels);
+		mViewportRenderer->InitializeTexture(this);
 #else
 		FTVector2 topLeft = FTVector2(0.f, 0.f);
 		mRenderWidth	  = static_cast<int>(windowRes.x);
@@ -199,10 +199,10 @@ void FoxtrotRenderer::SwitchFillMode() const
 FillMode FoxtrotRenderer::GetFillMode() const { return mFillMode; }
 void	 FoxtrotRenderer::SetFillMode(const FillMode mode) { mFillMode = mode; }
 
-bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
+bool FoxtrotRenderer::Initialize(HWND window, int renderWidth, int renderHeight)
 {
-	mRenderWidth  = width;
-	mRenderHeight = height;
+	mRenderWidth  = renderWidth;
+	mRenderHeight = renderHeight;
 
 	DX::ThrowIfFailed(D3D11Utils::CreateDeviceAndContext(
 		window, mDevice, mContext, mSwapChain, mRenderWidth, mRenderHeight, mNumQualityLevels));
@@ -294,7 +294,6 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 	SetViewport(FTVector2(0.f, 0.f), FTVector2(mRenderWidth, mRenderHeight));
 
 	DX::ThrowIfFailed(D3D11Utils::CreateRenderTargetView(mRenderTargetView, mDevice, mSwapChain));
-
 #ifdef FOXTROT_EDITOR
 
 #else
@@ -310,7 +309,7 @@ bool FoxtrotRenderer::Initialize(HWND window, int width, int height)
 		LogString("Error : FoxtrotRenderer Initialize - CreateRenderTexture failed.");
 		return false;
 	}
-	mViewportRenderer->InitializeTexture(this, mRenderWidth, mRenderHeight, mNumQualityLevels);
+	mViewportRenderer->InitializeTexture(this);
 #endif // FOXTROT_EDITOR
 	return true;
 }

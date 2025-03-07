@@ -7,7 +7,7 @@ class MonkeySpin :
 public:
 	virtual std::string GetName() const override
 	{
-		return "Monkey Spin";
+		return "MonkeySpin";
 	}
 
 public:

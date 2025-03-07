@@ -22,7 +22,7 @@ public:
 	ViewportRenderer();
 	~ViewportRenderer();
 
-	void InitializeTexture(FoxtrotRenderer* renderer, int width, int height, UINT numQualityLevels);
+	void InitializeTexture(FoxtrotRenderer* renderer);
 
 	// Switches the RenderTarget to this object's, renders the scene,
 	// and switch RenderTarget back to FoxtrotRenderer's (in FTCoreEditor).

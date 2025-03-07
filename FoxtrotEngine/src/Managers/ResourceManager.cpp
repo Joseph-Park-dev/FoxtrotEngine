@@ -234,6 +234,8 @@ void ResourceManager::ProcessSingleMeshData(FTMeshDataPack* meshDataPack)
 {
 	meshDataPack->GetMeshData() =
 		GeometryGenerator::ReadFromFile(meshDataPack->GetRelativePath());
+	printf(meshDataPack->GetRelativePath().c_str());
+	printf("\n");
 }
 
 void ResourceManager::ProcessTileMap(FTTileMap* tileMap)

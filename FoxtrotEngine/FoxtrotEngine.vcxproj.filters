@@ -207,6 +207,9 @@
     <ClCompile Include="src\Managers\DebugShapes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Behaviors\ResponsiveButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Actors\Actor.h">
@@ -1670,6 +1673,33 @@
     <ClInclude Include="src\Managers\DebugShapes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Behaviors\ResponsiveButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Tweeny\dispatcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Tweeny\easing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Tweeny\easingresolve.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Tweeny\int2type.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Tweeny\tween.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Tweeny\tweenpoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Tweeny\tweentraits.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Tweeny\tweeny.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />
@@ -1716,6 +1746,10 @@
     <None Include="include\assimp\vector3.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="include\Tweeny\tween.tcc" />
+    <None Include="include\Tweeny\tweenone.tcc" />
+    <None Include="include\Tweeny\tweenpoint.tcc" />
+    <None Include="include\Tweeny\tweeny.tcc" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="include\assimp\res\assimp.rc">

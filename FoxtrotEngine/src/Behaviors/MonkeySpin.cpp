@@ -23,7 +23,7 @@ void MonkeySpin::Setup()
 	if (actor)
 	{
 		ButtonUI* btn = actor->GetComponent<ButtonUI>();
-		btn->mOnLBtnClicked_void.AddRaw(this, &MonkeySpin::ExitGame);
+		btn->OnMouseLeftBTNClicked.AddRaw(this, &MonkeySpin::ExitGame);
 	}
 }
 

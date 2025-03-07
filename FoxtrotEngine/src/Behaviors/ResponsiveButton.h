@@ -19,12 +19,20 @@ public:
 
 public:
 	ResponsiveButton(Actor* owner, int updateOrder);
+	~ResponsiveButton() override;
 
 private:
 	ButtonUI* mButton;
+	float	  mCurrTime;
+	float	  mDuration;
+	float	  mRatio;
 
 private:
 	void OnMouseHover();
 	void OnMouseEscape();
 	void OnMouseClicked();
+
+public:
+	void SaveProperties(std::ofstream& ofs) override;
+	void LoadProperties(std::ifstream& ifs) override;
 };

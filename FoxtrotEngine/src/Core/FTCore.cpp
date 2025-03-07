@@ -142,11 +142,11 @@ void FTCore::InitSingletonManagers()
 	DebugShapes::GetInstance()->Initialize(mGameRenderer);
 	CollisionManager::GetInstance()->Initialize();
 	ResourceManager::GetInstance()->Initialize(mGameRenderer);
-	SceneManager::GetInstance()->Initialize();
 	UIManager::GetInstance();
 	EventManager::GetInstance();
 	KeyInputManager::GetInstance();
 	LightManager::GetInstance()->Initialize();
+	SceneManager::GetInstance()->Initialize();
 }
 
 void FTCore::InitTimer()

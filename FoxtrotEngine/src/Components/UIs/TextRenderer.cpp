@@ -22,7 +22,7 @@ void TextRenderer::Initialize(FTCore* coreInstance)
     spriteBatch = new DirectX::SpriteBatch(renderer->GetContext().Get());
     spriteFont = new DirectX::SpriteFont(
         renderer->GetDevice().Get(),
-        L"D:/[2024_01]/Test_Project_FTEngine/Assets/Nanum.spritefont"
+        L"./Assets/Nanum.spritefont"
     );
 }
 

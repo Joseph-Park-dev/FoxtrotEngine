@@ -48,6 +48,11 @@ std::pair<size_t, std::string> FileIOHelper::BeginDataPackLoad(std::ifstream& if
 	std::string name  = ExtractUntil(loadedDataPackKey, '<');
 	size_t		count = std::stoi(GetBracketedVal(loadedDataPackKey, '<', '>'));
 
+	if (name != dataPackKey)
+	{
+		printf("name mismatch!");
+	}
+
 	assert(name == dataPackKey);
 
 	// std::cout << "Parsing data pack : " << name << '\n';
@@ -85,7 +90,7 @@ void FileIOHelper::LoadUnsignedInt(std::ifstream& ifs, unsigned int& intVal)
 	// Parse the actual data.
 	std::getline(ifs, line, '\n');
 	ParseUnsignedInt(line, intVal);
-	LogInt(intVal);
+	//LogInt(intVal);
 }
 
 void FileIOHelper::LoadSize(std::ifstream& ifs, size_t& sizeVal)

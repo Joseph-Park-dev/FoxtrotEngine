@@ -260,6 +260,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Behaviors\ResponsiveButton.cpp" />
     <ClCompile Include="src\Managers\DebugShapes.cpp" />
     <ClCompile Include="src\ResourceSystem\FTRectangle.cpp" />
     <ClCompile Include="include\delegates\Delegates.cpp" />
@@ -326,6 +327,15 @@
     <ClCompile Include="src\Components\UIs\TextRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Tweeny\dispatcher.h" />
+    <ClInclude Include="include\Tweeny\easing.h" />
+    <ClInclude Include="include\Tweeny\easingresolve.h" />
+    <ClInclude Include="include\Tweeny\int2type.h" />
+    <ClInclude Include="include\Tweeny\tween.h" />
+    <ClInclude Include="include\Tweeny\tweenpoint.h" />
+    <ClInclude Include="include\Tweeny\tweentraits.h" />
+    <ClInclude Include="include\Tweeny\tweeny.h" />
+    <ClInclude Include="src\Behaviors\ResponsiveButton.h" />
     <ClInclude Include="src\Managers\DebugShapes.h" />
     <ClInclude Include="src\ResourceSystem\FTRectangle.h" />
     <ClInclude Include="include\delegates\catch.hpp" />
@@ -830,6 +840,10 @@
     <None Include="include\assimp\SmoothingGroups.inl" />
     <None Include="include\assimp\vector2.inl" />
     <None Include="include\assimp\vector3.inl" />
+    <None Include="include\Tweeny\tween.tcc" />
+    <None Include="include\Tweeny\tweenone.tcc" />
+    <None Include="include\Tweeny\tweenpoint.tcc" />
+    <None Include="include\Tweeny\tweeny.tcc" />
     <None Include="vcpkg.json" />
   </ItemGroup>
   <ItemGroup>

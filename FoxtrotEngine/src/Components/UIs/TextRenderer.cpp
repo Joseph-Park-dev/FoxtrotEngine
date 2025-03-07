@@ -34,7 +34,7 @@ void TextRenderer::Render(FoxtrotRenderer* renderer)
     spriteBatch->Begin(SpriteSortMode::SpriteSortMode_Deferred, renderer->GetBlendState().Get());
     spriteFont->DrawString(
         spriteBatch, mText.c_str(),
-        (pos * Camera::GetInstance()->GetPixelsPerUnit()).GetD3Vec2() + mTextAttribute->Offset,
+        pos.GetD3Vec2() + mTextAttribute->Offset,
         mTextAttribute->Color,
         mTextAttribute->Rotation,
         mTextAttribute->Origin,

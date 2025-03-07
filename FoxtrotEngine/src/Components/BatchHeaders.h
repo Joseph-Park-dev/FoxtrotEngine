@@ -31,3 +31,4 @@
 #include "Components/CharacterAI/Seek.h"
 #include "Components/CharacterAI/Flee.h"
 #include "Behaviors/MonkeySpin.h"
+#include "Behaviors/ResponsiveButton.h"

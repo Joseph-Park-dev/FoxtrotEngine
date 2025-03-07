@@ -180,7 +180,7 @@ public:
 
 private:
 	// Intended to be used during initialization.
-	bool Initialize(HWND window, int width, int height);
+	bool Initialize(HWND window, int renderWidth, int renderHeight);
 
 	// ID3D11 Helper functions
 	HRESULT CreateRasterizerState();

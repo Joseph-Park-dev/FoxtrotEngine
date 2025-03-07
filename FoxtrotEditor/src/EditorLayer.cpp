@@ -99,6 +99,7 @@ void EditorLayer::DisplayViewport()
 		// renderer->ResizeSceneViewport(mSceneViewportSize.x, mSceneViewportSize.y);
 		renderer->SetRenderWidth(mSceneViewportSize.x);
 		renderer->SetRenderHeight(mSceneViewportSize.y);
+		renderer->GetViewportRenderer()->InitializeTexture(renderer);
 		// renderer->UpdateDepthBuffer(mSceneViewportSize.x, mSceneViewportSize.y);
 		mIsResizingViewport = false;
 	}
@@ -533,7 +534,7 @@ void EditorLayer::CreateNewProject(std::filesystem::path& path)
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CHUNK_LIST);
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::CHUNK_LIST);
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::GAME_DATA);
-		FileIOHelper::SaveBufferToFile(ofs, false);
+		FileIOHelper::SaveBufferToFile(ofs);
 	}
 	else
 	{

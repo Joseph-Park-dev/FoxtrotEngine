@@ -37,7 +37,7 @@ void ChunkLoader::SaveChunk(const std::string fileName)
 
 void ChunkLoader::LoadChunk(const std::string fileName)
 {
-	std::ifstream ifs(fileName, std::ios::binary);
+	std::ifstream ifs(fileName);
 	LoadChunkData(ifs);
 	CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
 	ResourceManager::GetInstance()->LoadResources(ifs, FTCore::GetInstance());
@@ -121,7 +121,8 @@ ChunkLoader::ChunkLoader()
 
 		{ "Seek", &Component::Load<Seek> },
 		{ "Flee", &Component::Load<Flee> },
-		{ "Monkey Spin", &FTBehavior::Load<MonkeySpin> }
+		{ "MonkeySpin", &FTBehavior::Load<MonkeySpin> },
+		{ "ResponsiveButton", &FTBehavior::Load<ResponsiveButton> }
 	};
 };
 

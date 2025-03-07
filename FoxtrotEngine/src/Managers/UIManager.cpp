@@ -14,6 +14,7 @@
 #include "Scenes/Scene.h"
 #include "Managers/SceneManager.h"
 #include "Actors/Actor.h"
+#include "Actors/Transform.h"
 #include "Managers/KeyInputManager.h"
 #include "Components/UIs/UI.h"
 

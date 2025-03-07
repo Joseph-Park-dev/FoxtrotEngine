@@ -42,7 +42,7 @@ public:
 		mSceneFunc = sceneFunc;
 	}
 
-	MulticastDelegate<> mOnLBtnClicked_void;
+	MulticastDelegate<> OnMouseLeftBTNClicked;
 
 public:
 	virtual void CloneTo(Actor* actor) override;

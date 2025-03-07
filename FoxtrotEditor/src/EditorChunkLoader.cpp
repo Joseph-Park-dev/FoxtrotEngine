@@ -47,7 +47,8 @@ EditorChunkLoader::EditorChunkLoader()
 		{ "BulletBehavior", &Component::Create<BulletBehavior> },
 		{ "Seek", &Component::Create<Seek> },
 		{ "Flee", &Component::Create<Flee> },
-		{ "Monkey Spin", FTBehavior::Create<MonkeySpin> }
+		{ "MonkeySpin", &FTBehavior::Create<MonkeySpin> },
+		{ "ResponsiveButton", &FTBehavior::Create<ResponsiveButton> }
 	};
 }
 

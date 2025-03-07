@@ -22,7 +22,7 @@
 #include "EditorSceneManager.h"
 #include "EditorChunkLoader.h"
 
-void ViewportRenderer::InitializeTexture(FoxtrotRenderer* renderer, int width, int height, UINT numQualityLevels)
+void ViewportRenderer::InitializeTexture(FoxtrotRenderer* renderer)
 {
 	CreateRenderTargetView(renderer);
 }

@@ -53,12 +53,12 @@ FTCore*			  FTCore::mInstance			  = nullptr;
 void FTCore::LoadGameData()
 {
 	std::ifstream ifs(mGameDataPath);
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::GAME_DATA, false);
-	std::pair<size_t, std::string> chunkListPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CHUNK_LIST, false);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::GAME_DATA);
+	std::pair<size_t, std::string> chunkListPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CHUNK_LIST);
 	for (size_t i = 0; i < chunkListPack.first; ++i)
 	{
 		std::string chunkTitle = {};
-		FileIOHelper::LoadBasicString(ifs, chunkTitle, false);
+		FileIOHelper::LoadBasicString(ifs, chunkTitle);
 		SceneManager::GetInstance()->GetChunkList().push_back(chunkTitle);
 	}
 }
@@ -121,8 +121,8 @@ bool FTCore::InitializeWindow()
 		return false;
 	}
 
-	SetForegroundWindow(mWindow);
 	ShowWindow(mWindow, SW_SHOWDEFAULT);
+	SetForegroundWindow(mWindow);
 	UpdateWindow(mWindow);
 	return true;
 }
@@ -139,14 +139,14 @@ void FTCore::InitSingletonManagers()
 {
 	Physics2D::GetInstance()->Initialize();
 	Camera::GetInstance()->Initialize(mGameRenderer, 64, 1.8f);
-	ResourceManager::GetInstance()->Initialize(mGameRenderer);
 	DebugShapes::GetInstance()->Initialize(mGameRenderer);
 	CollisionManager::GetInstance()->Initialize();
-	SceneManager::GetInstance()->Initialize();
+	ResourceManager::GetInstance()->Initialize(mGameRenderer);
 	UIManager::GetInstance();
 	EventManager::GetInstance();
 	KeyInputManager::GetInstance();
 	LightManager::GetInstance()->Initialize();
+	SceneManager::GetInstance()->Initialize();
 }
 
 void FTCore::InitTimer()
@@ -224,8 +224,8 @@ FTCore::FTCore()
 	: mWindow(nullptr)
 	, mGameRenderer(nullptr)
 	, mIsRunning(true)
-	, mWindowWidth(1920)
-	, mWindowHeight(1080)
+	, mWindowWidth(1280)
+	, mWindowHeight(720)
 	, mWindowTitle(L"Foxtrot Engine Showcase (ver.0.1.2)")
 	, mGameDataPath(
 		  std::string("./") + std::string(ChunkKey::GAME_DATA) + std::string(FileTypes::GDPACK))

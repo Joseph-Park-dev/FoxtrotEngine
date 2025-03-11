@@ -260,11 +260,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Behaviors\ResponsiveButton.cpp" />
+    <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\ResponsiveButton.cpp" />
     <ClCompile Include="src\Managers\DebugShapes.cpp" />
     <ClCompile Include="src\ResourceSystem\FTRectangle.cpp" />
     <ClCompile Include="include\delegates\Delegates.cpp" />
-    <ClCompile Include="src\Behaviors\MonkeySpin.cpp" />
     <ClCompile Include="src\ResourceSystem\FTMeshDataPack.cpp" />
     <ClCompile Include="src\ResourceSystem\FTMeshData.cpp" />
     <ClCompile Include="src\Managers\LightManager.cpp" />
@@ -277,7 +276,6 @@
     <ClCompile Include="src\Components\CharacterAI\Flee.cpp" />
     <ClCompile Include="src\Components\CharacterAI\Seek.cpp" />
     <ClCompile Include="src\Components\CharacterAI\AgentBehavior.cpp" />
-    <ClCompile Include="src\Components\ActorBehaviors\Bullet\BulletBehavior.cpp" />
     <ClCompile Include="src\Components\CircleCollider2D.cpp" />
     <ClCompile Include="src\Components\Collider2D.cpp" />
     <ClCompile Include="src\Components\InputMove.cpp" />
@@ -296,7 +294,6 @@
     <ClCompile Include="src\Actors\Transform.cpp" />
     <ClCompile Include="src\Components\AIState.cpp" />
     <ClCompile Include="src\Components\Component.cpp" />
-    <ClCompile Include="src\Components\GunFiringBehavior.cpp" />
     <ClCompile Include="src\Core\EventFunctions.cpp" />
     <ClCompile Include="src\Core\FTCore.cpp" />
     <ClCompile Include="src\Core\Timer.cpp" />
@@ -335,12 +332,10 @@
     <ClInclude Include="include\Tweeny\tweenpoint.h" />
     <ClInclude Include="include\Tweeny\tweentraits.h" />
     <ClInclude Include="include\Tweeny\tweeny.h" />
-    <ClInclude Include="src\Behaviors\ResponsiveButton.h" />
     <ClInclude Include="src\Managers\DebugShapes.h" />
     <ClInclude Include="src\ResourceSystem\FTRectangle.h" />
     <ClInclude Include="include\delegates\catch.hpp" />
     <ClInclude Include="include\delegates\Delegates.h" />
-    <ClInclude Include="src\Behaviors\MonkeySpin.h" />
     <ClInclude Include="src\Core\FunctionUtils.h" />
     <ClInclude Include="src\ResourceSystem\FTMeshDataPack.h" />
     <ClInclude Include="include\assimp\aabb.h" />
@@ -756,7 +751,6 @@
     <ClInclude Include="src\Components\CharacterAI\Flee.h" />
     <ClInclude Include="src\Components\CharacterAI\Seek.h" />
     <ClInclude Include="src\Components\CharacterAI\AgentBehavior.h" />
-    <ClInclude Include="src\Components\ActorBehaviors\Bullet\BulletBehavior.h" />
     <ClInclude Include="src\Components\CharacterAI\Steering.h" />
     <ClInclude Include="src\Components\CircleCollider2D.h" />
     <ClInclude Include="src\Components\Collider2D.h" />
@@ -778,7 +772,6 @@
     <ClInclude Include="src\Actors\Transform.h" />
     <ClInclude Include="src\Components\AIState.h" />
     <ClInclude Include="src\Components\Component.h" />
-    <ClInclude Include="src\Components\GunFiringBehavior.h" />
     <ClInclude Include="src\Components\SpriteComponent.h" />
     <ClInclude Include="src\Core\EventFunctions.h" />
     <ClInclude Include="src\Core\EventType.h" />

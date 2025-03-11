@@ -27,9 +27,6 @@
     <ClCompile Include="src\Components\Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Components\GunFiringBehavior.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Core\EventFunctions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -117,9 +114,6 @@
     <ClCompile Include="src\Managers\CollisionManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Components\ActorBehaviors\Bullet\BulletBehavior.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Components\CharacterAI\AgentBehavior.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -195,9 +189,6 @@
     <ClCompile Include="src\ResourceSystem\FTMeshDataPack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Behaviors\MonkeySpin.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="include\delegates\Delegates.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -207,7 +198,7 @@
     <ClCompile Include="src\Managers\DebugShapes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Behaviors\ResponsiveButton.cpp">
+    <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\ResponsiveButton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -225,9 +216,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Components\Component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Components\GunFiringBehavior.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Components\SpriteComponent.h">
@@ -357,9 +345,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Managers\CollisionManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Components\ActorBehaviors\Bullet\BulletBehavior.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Components\CharacterAI\Steering.h">
@@ -1655,9 +1640,6 @@
     <ClInclude Include="src\ResourceSystem\FTMeshDataPack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Behaviors\MonkeySpin.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Core\FunctionUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1671,9 +1653,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Managers\DebugShapes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Behaviors\ResponsiveButton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Tweeny\dispatcher.h">

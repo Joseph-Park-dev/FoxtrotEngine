@@ -14,11 +14,13 @@
 #include <crtdbg.h>
 
 #include "FTCoreEditor.h"
+#include "IncludedCustomBehaviors.h"
 
 int main(int argc, char* argv[])
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	bool success = FTCoreEditor::GetInstance()->Initialize();
+	IncludeCustomBehaviors();
 	if (success)
 		FTCoreEditor::GetInstance()->RunLoop();
 	else {

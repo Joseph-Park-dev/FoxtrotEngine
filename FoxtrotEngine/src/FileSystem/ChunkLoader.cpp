@@ -116,13 +116,8 @@ ChunkLoader::ChunkLoader()
 
 		{ "ButtonUI", &Component::Load<ButtonUI> },
 
-		{ "GunFiringBehavior", &Component::Load<GunFiringBehavior> },
-		{ "BulletBehavior", &Component::Load<BulletBehavior> },
-
 		{ "Seek", &Component::Load<Seek> },
 		{ "Flee", &Component::Load<Flee> },
-		{ "MonkeySpin", &FTBehavior::Load<MonkeySpin> },
-		{ "ResponsiveButton", &FTBehavior::Load<ResponsiveButton> }
 	};
 };
 

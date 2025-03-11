@@ -43,12 +43,8 @@ EditorChunkLoader::EditorChunkLoader()
 		{ "PanelUI", &Component::Create<PanelUI> },
 
 		// Actor Behaviors
-		{ "GunFiringBehavior", &Component::Create<GunFiringBehavior> },
-		{ "BulletBehavior", &Component::Create<BulletBehavior> },
 		{ "Seek", &Component::Create<Seek> },
 		{ "Flee", &Component::Create<Flee> },
-		{ "MonkeySpin", &FTBehavior::Create<MonkeySpin> },
-		{ "ResponsiveButton", &FTBehavior::Create<ResponsiveButton> }
 	};
 }
 

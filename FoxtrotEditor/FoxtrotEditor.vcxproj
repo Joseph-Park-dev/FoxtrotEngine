@@ -247,7 +247,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>..\FoxtrotEngine\include;..\FoxtrotEngine\include\assimp;..\FoxtrotEngine\include\assimp\include;..\FoxtrotEngine\include\assimp\code;..\FoxtrotEngine\src;.\include;.\src;..\FoxtrotDS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\[2024_01]\Test_Project_FTEngine\Assets\Scripts;..\FoxtrotEngine\include;..\FoxtrotEngine\include\assimp;..\FoxtrotEngine\include\assimp\include;..\FoxtrotEngine\include\assimp\code;..\FoxtrotEngine\src;.\include;.\src;..\FoxtrotDS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

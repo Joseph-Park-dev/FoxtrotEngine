@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -23,14 +23,14 @@
 #include "Renderer/FoxtrotRenderer.h"
 
 #ifdef FOXTROT_EDITOR
-#include "EditorUtils.h"
+	#include "EditorUtils.h"
 #endif // FOXTROT_EDITOR
-
 
 Animator::Animator(Actor* owner, int updateOrder)
 	: TileMapRenderer(owner)
 	, mCurrentAnim(nullptr)
-{}
+{
+}
 
 Animator::~Animator()
 {
@@ -79,7 +79,7 @@ FTSpriteAnimation* Animator::CreateAnimationFromTile(std::string&& name, UINT te
 		printf("ERROR : Animator::CreateAnimationFromTile()-> Renderer is null");
 	if (texKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		animation->SetTexKey(texKey);
-	if(tileMapKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	if (tileMapKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		animation->SetTileMapKey(tileMapKey);
 
 	FTTileMap* tileMapBuf = ResourceManager::GetInstance()->GetLoadedTileMap(tileMapKey);
@@ -91,24 +91,20 @@ FTSpriteAnimation* Animator::CreateAnimationFromTile(std::string&& name, UINT te
 	animation->SetAnimator(this);
 	std::vector<FTMeshData> meshDataBuf;
 	GeometryGenerator::MakeSpriteAnimation(
-		meshDataBuf, tileMapBuf->GetTiles(),
-		tileMapBuf->GetMaxCountOnMapX(),
-		tileMapBuf->GetMaxCountOnMapY()
-	);
+		meshDataBuf, tileMapBuf->GetTiles(), tileMapBuf->GetMaxCountOnMapX(), tileMapBuf->GetMaxCountOnMapY());
 	animation->Initialize(meshDataBuf, GetRenderer()->GetDevice(), GetRenderer()->GetContext());
 	printf("FTSpriteAnimation created, %s", name.c_str());
-	
+
 	return animation;
 }
 
 void Animator::LoadAnimation(const UINT key)
 {
-	FTSpriteAnimation* anim = ResourceManager::GetInstance()->GetLoadedSpriteAnim(key);
+	FTSpriteAnimation* anim	  = ResourceManager::GetInstance()->GetLoadedSpriteAnim(key);
 	FTSpriteAnimation* copied = CreateAnimationFromTile(
-		std::move(anim->GetName()), 
+		std::move(anim->GetName()),
 		anim->GetTexKey(),
-		anim->GetTileMapKey()
-	);
+		anim->GetTileMapKey());
 	mLoadedAnimations.push_back(copied);
 
 	if (mLoadedAnimations.size() == 1)
@@ -184,7 +180,6 @@ void Animator::EditorUpdate(float deltaTime)
 	{
 		Update(deltaTime);
 		mCurrentAnim->Update(deltaTime);
-
 	}
 }
 
@@ -210,7 +205,7 @@ void Animator::UpdatePlayAnim()
 		{
 			if (ImGui::Button("Play"))
 			{
-				Play( true);
+				Play(true);
 			}
 		}
 	}
@@ -219,11 +214,12 @@ void Animator::UpdatePlayAnim()
 void Animator::UpdatePlayList()
 {
 	ImGui::Text("Play List");
-	UINT key =
-		FTEditorUtils::DisplayResSelection<FTSpriteAnimation>(
-			"Load Animation",
-			ResourceManager::GetInstance()->GetSpriteAnimMap()
-		);
+	UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
+	FTEditorUtils::DisplayResSelection<FTSpriteAnimation>(
+		"Load Animation",
+		ResourceManager::GetInstance()->GetSpriteAnimMap(),
+		key);
+
 	if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	{
 		mLoadedKeys.push_back(key);
@@ -264,8 +260,7 @@ void Animator::CreateAnimation()
 			FTSpriteAnimation* anim = CreateAnimationFromTile(std::string(name), texKey, tileMapKey);
 			ResourceManager::GetInstance()->LoadResource(
 				anim,
-				ResourceManager::GetInstance()->GetSpriteAnimMap()
-			);
+				ResourceManager::GetInstance()->GetSpriteAnimMap());
 		}
 
 		if (ImGui::Button("Close"))

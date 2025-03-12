@@ -17,7 +17,7 @@
 
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/Vertex.h"
-#include "ResourceSystem/Material.h"
+#include "ResourceSystem/FTMaterial.h"
 #include "ResourceSystem/Light.h"
 #include "Managers/LightManager.h"
 
@@ -37,7 +37,7 @@ struct BasicPCData
 {
 	DirectX::SimpleMath::Vector3 EyeWorld;
 	uint32_t				     UseTexture;
-	FTMaterial					 Material;
+	MaterialData				 MatData;
 	Light						 Lights[GameData::MAX_LIGHTS];
 	DirectX::SimpleMath::Vector4 IndexColor;
 };

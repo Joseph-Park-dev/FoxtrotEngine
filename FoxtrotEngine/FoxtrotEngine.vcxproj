@@ -260,6 +260,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\MonkeySpin.cpp" />
     <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\ResponsiveButton.cpp" />
     <ClCompile Include="src\Managers\DebugShapes.cpp" />
     <ClCompile Include="src\ResourceSystem\FTRectangle.cpp" />
@@ -318,10 +319,14 @@
     <ClCompile Include="src\ResourceSystem\FTTexture.cpp" />
     <ClCompile Include="src\ResourceSystem\FTTileMap.cpp" />
     <ClCompile Include="src\ResourceSystem\GeometryGenerator.cpp" />
+    <ClCompile Include="src\ResourceSystem\FTMaterial.cpp" />
     <ClCompile Include="src\ResourceSystem\ModelLoader.cpp" />
     <ClCompile Include="src\ResourceSystem\Tile.cpp" />
     <ClCompile Include="src\Scenes\Scene.cpp" />
-    <ClCompile Include="src\Components\UIs\TextRenderer.cpp" />
+    <ClCompile Include="src\Components\UIs\TextRenderer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
+      </ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Tweeny\dispatcher.h" />
@@ -807,7 +812,7 @@
     <ClInclude Include="src\ResourceSystem\FTTileMap.h" />
     <ClInclude Include="src\ResourceSystem\GeometryGenerator.h" />
     <ClInclude Include="src\ResourceSystem\Light.h" />
-    <ClInclude Include="src\ResourceSystem\Material.h" />
+    <ClInclude Include="src\ResourceSystem\FTMaterial.h" />
     <ClInclude Include="src\ResourceSystem\Mesh.h" />
     <ClInclude Include="src\ResourceSystem\MeshConstantData.h" />
     <ClInclude Include="src\ResourceSystem\ModelLoader.h" />
@@ -815,7 +820,10 @@
     <ClInclude Include="src\ResourceSystem\Tile.h" />
     <ClInclude Include="src\ResourceSystem\Vertex.h" />
     <ClInclude Include="src\Scenes\Scene.h" />
-    <ClInclude Include="src\Components\UIs\TextRenderer.h" />
+    <ClInclude Include="src\Components\UIs\TextRenderer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
+      </ExcludedFromBuild>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

@@ -80,8 +80,6 @@ bool MeshRenderer::InitializeMesh()
 			mMeshGroup = DBG_NEW FTBasicMeshGroup;
 		mMeshGroup->Initialize(meshData->GetMeshData(), mRenderer->GetDevice(), mRenderer->GetContext());
 
-		if (!mMaterial)
-			mMaterial = DBG_NEW FTMaterial;
 		if (!mMeshGroup)
 		{
 			LogString("ERROR: MeshRenderer::InitializeMesh() -> Mesh Init failed.\n");
@@ -107,8 +105,7 @@ bool MeshRenderer::InitializeMesh(FTMeshData& meshData)
 {
 	if (!mMeshGroup)
 		mMeshGroup = DBG_NEW FTBasicMeshGroup;
-	if (!mMaterial)
-		mMaterial = DBG_NEW FTMaterial;
+
 	std::vector<FTMeshData> meshes = { meshData };
 	mMeshGroup->Initialize(meshes, mRenderer->GetDevice(), mRenderer->GetContext());
 	if (!mMeshGroup)
@@ -123,8 +120,7 @@ bool MeshRenderer::InitializeMesh(std::vector<FTMeshData>& meshData)
 {
 	if (!mMeshGroup)
 		mMeshGroup = DBG_NEW FTBasicMeshGroup;
-	if (!mMaterial)
-		mMaterial = DBG_NEW FTMaterial;
+
 	mMeshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
 	if (!mMeshGroup)
 	{
@@ -145,6 +141,19 @@ bool MeshRenderer::SetTexture()
 	if (!mTexture)
 		printf("ERROR: MeshRenderer::SetTexture() -> Cannot set texture %d, returning nullptr.\n", mTexKey);
 	return mTexture != nullptr;
+}
+
+bool MeshRenderer::SetMaterial()
+{
+	if (mMaterialKey == ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	{
+		Debug::LogError(__LINE__, __FILE__, "Material Key not assigned");
+		return false;
+	}
+	mMaterial = ResourceManager::GetInstance()->GetLoadedMaterial(mMaterialKey);
+	if (!mMaterial)
+		Debug::LogError(__LINE__, __FILE__, "Cannot set Material, returning nullptr.\n");
+	return mMaterial != nullptr;
 }
 
 void MeshRenderer::UpdateMesh(Transform* transform, Camera* camInst)
@@ -175,8 +184,10 @@ void MeshRenderer::UpdateMesh(Transform* transform, Camera* camInst)
 			BasicPCData& pcd = mMeshGroup->GetPCData();
 			pcd.EyeWorld	 = eyeWorld;
 
-			pcd.Material.Diffuse  = mMaterial->Diffuse;
-			pcd.Material.Specular = mMaterial->Specular;
+			if (mMaterial)
+				mMaterial->AssignData(pcd.MatData);
+			else
+				FTMaterial::AssignNull(pcd.MatData);
 
 			for (size_t i = 0; i < Light::TYPE::END; ++i)
 			{
@@ -197,8 +208,9 @@ void MeshRenderer::UpdateBuffers()
 
 Matrix MeshRenderer::CalcModelMat(Transform* transform)
 {
-	int				  dir		   = (int)transform->GetRightward().x;
-	FTVector3		  scale		   = transform->GetScale();
+	int		  dir	= (int)transform->GetRightward().x;
+	FTVector3 scale = transform->GetScale();
+
 	DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x, scale.y, scale.z);
 	return Matrix::CreateScale(scaleWithDir) *
 		Matrix::CreateRotationX(transform->GetRotation().x) *
@@ -209,12 +221,13 @@ Matrix MeshRenderer::CalcModelMat(Transform* transform)
 
 MeshRenderer::MeshRenderer(Actor* owner, int updateOrder)
 	: Component(owner, updateOrder)
-	, mMeshGroup(DBG_NEW FTBasicMeshGroup)
+	, mMeshGroup(nullptr)
 	, mTexture(nullptr)
 	, mMaterial(nullptr)
 	, mRenderer(nullptr)
 	, mMeshKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	, mTexKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	, mMaterialKey(ChunkKey::Material::BASIC_MATERIAL)
 {
 }
 
@@ -227,7 +240,6 @@ MeshRenderer::~MeshRenderer()
 	}
 	if (mMaterial)
 	{
-		delete mMaterial;
 		mMaterial = nullptr;
 	}
 }
@@ -263,12 +275,34 @@ void MeshRenderer::EditorUpdate(float deltaTime)
 	Update(deltaTime);
 }
 
+void MeshRenderer::EditorRender(FoxtrotRenderer* renderer)
+{
+	// Render(renderer);
+}
+
 void MeshRenderer::EditorUIUpdate()
 {
 	CHECK_RENDERER(GetRenderer());
 
 	if (mMeshGroup)
+	{
 		mMeshGroup->UpdateUI();
+		UINT key = mMaterialKey;
+		FTEditorUtils::DisplayResSelection(
+			"Material", 
+			ResourceManager::GetInstance()->GetMapMaterials(),
+			key
+		);
+		if (mMaterialKey != key)
+		{
+			mMaterialKey = key;
+			SetMaterial();
+		}
+		if (mMaterialKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+			mMaterial->UpdateUI();
+		else
+			mMaterial = nullptr;
+	}
 
 	if (ImGui::Button("Add Cube"))
 		AddCube();
@@ -314,12 +348,14 @@ void MeshRenderer::UpdateSprite()
 	}
 	ImGui::Text(currentSprite.c_str());
 
-	UINT key =
-		FTEditorUtils::DisplayResSelection<FTTexture>(
-			"Select Sprite",
-			ResourceManager::GetInstance()->GetTexturesMap());
-	if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-		mTexKey = key;
+	UINT key = mTexKey;
+	FTEditorUtils::DisplayResSelection<FTTexture>(
+		"Select Sprite",
+		ResourceManager::GetInstance()->GetTexturesMap(),
+		mTexKey);
+
+	if (key != mTexKey)
+		SetTexKey(mTexKey);
 }
 
 void MeshRenderer::UpdateSprite(UINT& key)
@@ -382,10 +418,10 @@ void MeshRenderer::UpdateSprite(UINT& key)
 }
 void MeshRenderer::AddModel()
 {
-	UINT key =
-		FTEditorUtils::DisplayResSelection(
-			"Select Mesh", ResourceManager::GetInstance()->GetMeshDataMap());
-	if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	UINT key = mMeshKey;
+	FTEditorUtils::DisplayResSelection(
+		"Select Mesh", ResourceManager::GetInstance()->GetMeshDataMap(), key);
+	if (mMeshKey != key)
 		InitializeMesh(key);
 }
 

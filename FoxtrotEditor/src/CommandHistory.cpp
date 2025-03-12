@@ -250,6 +250,33 @@ void CommandHistory::UpdateFloatValue(std::string label, float* ref, float modSp
 	delete rotationBuf;
 }
 
+void CommandHistory::UpdateFloatValue(std::string label, float& ref, float modSpeed)
+{
+	float prevFloat = ref;
+	float* floatBuf = DBG_NEW float(prevFloat);
+	bool isRecording = mIsRecording;
+	if (ImGui::DragFloat(label.c_str(), floatBuf, modSpeed))
+	{
+		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
+		{
+			mIsRecording = true;
+			CommandHistory::GetInstance()->
+				AddCommand(DBG_NEW FloatEditCommand(&ref, prevFloat));
+		}
+		ref = *floatBuf;
+	}
+	else
+	{
+		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
+		{
+			CommandHistory::GetInstance()->
+				AddCommand(DBG_NEW FloatEditCommand(&ref, prevFloat));
+			mIsRecording = false;
+		}
+	}
+	delete floatBuf;
+}
+
 void CommandHistory::UpdateIntValue(std::string label, int* ref, int modSpeed)
 {
 	int prevInt = *ref;

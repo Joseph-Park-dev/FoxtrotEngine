@@ -101,6 +101,7 @@ std::string ChunkLoader::GetConvertedFileName(std::string curr, std::string prev
 
 ChunkLoader::ChunkLoader()
 	: mCurrentChunkData{}
+	, mIsLoading(false)
 {
 	mComponentLoadMap = {
 		{ "AI", &Component::Load<AI> },

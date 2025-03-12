@@ -17,6 +17,7 @@
 #include "ResourceSystem/FTSpriteAnimation.h"
 #include "ResourceSystem/FTMeshDataPack.h"
 #include "ResourceSystem/ModelLoader.h"
+#include "ResourceSystem/FTMaterial.h"
 #include "Core/FTCore.h"
 #include "Core/TemplateFunctions.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -37,6 +38,13 @@
 void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 {
 	mRenderer = renderer;
+
+	mMapTextures.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
+	mMapTileMaps.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
+	mMapPremades.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
+	mMapSpriteAnimation.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
+	mMapMeshData.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
+	mMapMaterials.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 
 	// Add primitive geometries as resources
 	mMap2DPrimitives.insert(
@@ -68,6 +76,13 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 		std::pair(
 			ChunkKey::PRIMITIVE_SPHERE,
 			GeometryGenerator::MakeSphere(1.0f, 10, 10)));
+
+	FTMaterial* basicMat = DBG_NEW FTMaterial;
+	basicMat->SetFileName("Basic Material");
+	mMapMaterials.insert(
+		std::pair(
+			ChunkKey::Material::BASIC_MATERIAL,
+			basicMat));
 }
 
 void ResourceManager::DeleteAll()
@@ -77,6 +92,8 @@ void ResourceManager::DeleteAll()
 	ClearMap<FTPremade>(mMapPremades);
 	ClearMap<FTSpriteAnimation>(mMapSpriteAnimation);
 	ClearMap<FTMeshDataPack>(mMapMeshData);
+	ClearMap<FTMaterial>(mMapMaterials);
+
 	mMapMeshData.clear();
 	mMap2DPrimitives.clear();
 	mMap3DPrimitives.clear();
@@ -135,6 +152,15 @@ FTPremade* ResourceManager::GetLoadedPremade(std::string&& fileName)
 	}
 	printf("Error: ResourceManager::GetLoadedPremade() -> Cannot find FTPremade %s\n", premadeFullName.c_str());
 	return nullptr;
+}
+
+FTMaterial* ResourceManager::GetLoadedMaterial(const UINT key)
+{
+	FTMaterial* material = mMapMaterials.at(key);
+	if (!material)
+		Debug::LogError(__LINE__, __FILE__, "FTMaterial is empty");
+	material->AddRefCount();
+	return material;
 }
 
 FTMeshDataPack* ResourceManager::GetLoadedMeshData(const UINT key)
@@ -207,6 +233,11 @@ std::unordered_map<UINT, FTMeshDataPack*>& ResourceManager::GetMeshDataMap()
 	return mMapMeshData;
 }
 
+std::unordered_map<UINT, FTMaterial*>& ResourceManager::GetMapMaterials()
+{
+	return mMapMaterials;
+}
+
 std::string& ResourceManager::GetPathToAsset()
 {
 	return mPathToAsset;
@@ -261,35 +292,42 @@ void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
 void ResourceManager::ProcessTextures()
 {
 	for (auto& textureItem : mMapTextures)
-		ProcessTexture(textureItem.second);
+		if(textureItem.second)
+			ProcessTexture(textureItem.second);
 }
 
 void ResourceManager::ProcessMeshData()
 {
 	for (auto& meshData : mMapMeshData)
-		ProcessSingleMeshData(meshData.second);
+		if(meshData.second)
+			ProcessSingleMeshData(meshData.second);
 }
 
 void ResourceManager::ProcessPremades()
 {
 	for (auto& premadeItem : mMapPremades)
 	{
-		premadeItem.second->Load();
-		// All loaded premades are included as default.
-		premadeItem.second->AddRefCount();
+		if (premadeItem.second)
+		{
+			premadeItem.second->Load();
+			// All loaded premades are included as default.
+			premadeItem.second->AddRefCount();
+		}
 	}
 }
 
 void ResourceManager::ProcessTileMaps()
 {
 	for (auto& tileMapItem : mMapTileMaps)
-		ProcessTileMap(tileMapItem.second);
+		if (tileMapItem.second)
+			ProcessTileMap(tileMapItem.second);
 }
 
 void ResourceManager::ProcessSpriteAnims()
 {
 	for (auto& animMapItem : mMapSpriteAnimation)
-		ProcessSpriteAnim(animMapItem.second);
+		if (animMapItem.second)
+			ProcessSpriteAnim(animMapItem.second);
 }
 
 ResourceManager::~ResourceManager()

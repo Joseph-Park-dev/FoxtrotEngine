@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -21,14 +21,14 @@
 #include <filesystem>
 
 #ifdef FOXTROT_EDITOR
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
+	#define IMGUI_DEFINE_MATH_OPERATORS
+	#include <imgui.h>
 #endif // FOXTROT_EDITOR
 
 #include "Math/FTMath.h"
 #include "Debugging/DebugMemAlloc.h"
 
-//static std::string ToString(const wchar_t* text)
+// static std::string ToString(const wchar_t* text)
 //{
 //	size_t i = 0;
 //	size_t size = std::wcslen(text);
@@ -37,7 +37,7 @@
 //		wcstombs_s(&i, str, size, text, _TRUNCATE);
 //	}
 //	return str;
-//}
+// }
 
 namespace Debug
 {
@@ -45,7 +45,7 @@ namespace Debug
 	{
 		printf("ERROR at line number %d in file %s : %s\n", line, file, msg);
 	}
-}
+} // namespace Debug
 
 #ifdef FOXTROT_EDITOR
 inline void LogVector2(ImVec2 val)
@@ -125,8 +125,8 @@ inline void LogString(std::string message, std::string val)
 }
 
 static std::wstring ToWString(const std::string& text)
-{   
-	std::wstring wStr;    
+{
+	std::wstring wStr;
 	wStr.assign(text.begin(), text.end());
 	return wStr;
 }
@@ -140,10 +140,10 @@ static std::string ToString(const std::wstring& text)
 
 static char* ToString(const wchar_t* text)
 {
-	size_t i = 0;
+	size_t i	= 0;
 	size_t size = std::wcslen(text);
-	char* str = DBG_NEW char[size];
-	if (0 < size) 
+	char*  str	= DBG_NEW char[size];
+	if (0 < size)
 	{
 		wcstombs_s(&i, str, size, text, _TRUNCATE);
 		return str;
@@ -156,7 +156,7 @@ static const char* ToString(bool boolVal)
 	return boolVal ? "true" : "false";
 }
 
-static const bool StrToBool(std::string& str) 
+static const bool StrToBool(std::string& str)
 {
 	return str == "true" ? true : false;
 }
@@ -164,28 +164,31 @@ static const bool StrToBool(std::string& str)
 inline std::string ExtractFileName(const char* path)
 {
 	std::filesystem::path p(path);
-	std::string str = p.filename().string();
+	std::string			  str = p.filename().string();
 	return str;
 }
 
-inline void LTrim(std::string& str) {
+inline void LTrim(std::string& str)
+{
 	str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](unsigned char ch) {
-		return !(ch == '\t');
-		}));
+				  return !(ch == '\t');
+			  }));
 }
 
-inline std::string ExtractUntil(std::string& line, const char end) {
-	size_t typeBeg = line.find(end);
-	std::string result = line.substr(0, typeBeg);
+inline std::string ExtractUntil(std::string& line, const char end)
+{
+	size_t		typeBeg = line.find(end);
+	std::string result	= line.substr(0, typeBeg);
 
 	// Erase the extracted value from line, including end character.
 	line.erase(0, typeBeg + 1);
 	return result;
 }
 
-inline std::string ExtractUntil(std::string& line, const char* end) {
-	size_t typeBeg = line.find(end);
-	std::string result = line.substr(0, typeBeg);
+inline std::string ExtractUntil(std::string& line, const char* end)
+{
+	size_t		typeBeg = line.find(end);
+	std::string result	= line.substr(0, typeBeg);
 
 	// Erase the extracted value from line, including end character.
 	line.erase(0, typeBeg + 1);
@@ -194,8 +197,7 @@ inline std::string ExtractUntil(std::string& line, const char* end) {
 
 inline bool EndsWith(
 	const std::wstring& fullString,
-	const std::wstring& ending
-)
+	const std::wstring& ending)
 {
 	// Check if the ending string is longer than the full
 	// string
@@ -204,27 +206,27 @@ inline bool EndsWith(
 
 	// Compare the ending of the full string with the target
 	// ending
-	return fullString.compare(fullString.size()
-		- ending.size(),
-		ending.size(), ending)
-		== 0;
+	return fullString.compare(fullString.size() - ending.size(), ending.size(), ending) == 0;
 }
 
-template<typename T>
-size_t GetArrayLength(T arr) {
+template <typename T>
+size_t GetArrayLength(T arr)
+{
 	return sizeof(arr) / sizeof(T);
 }
 
-template<typename T>
-void SafeDeleteArray(T** arr) {
+template <typename T>
+void SafeDeleteArray(T** arr)
+{
 	size_t length = GetArrayLength(arr);
-	for (size_t i = 0; i < length; ++i) {
+	for (size_t i = 0; i < length; ++i)
+	{
 		delete arr[i];
 	}
 	delete[] arr;
 }
 
-template<typename T>
+template <typename T>
 void Safe_Delete_Vector(std::vector<T>& vec)
 {
 	for (int i = 0; i < vec.size(); ++i)
@@ -237,7 +239,7 @@ void Safe_Delete_Vector(std::vector<T>& vec)
 	vec.clear();
 }
 
-template<class TKey, class TVal>
+template <class TKey, class TVal>
 void Safe_Delete_Map(std::unordered_map<TKey, TVal>& map)
 {
 	for (auto i = map.begin(); i != map.end(); i++)
@@ -247,7 +249,8 @@ void Safe_Delete_Map(std::unordered_map<TKey, TVal>& map)
 	map.clear();
 }
 
-inline bool StrContains(const char* str, std::string value) {
+inline bool StrContains(const char* str, std::string value)
+{
 	return std::string(str).find(value) != std::string::npos;
 }
 
@@ -260,13 +263,13 @@ namespace DX
 	class com_exception : public std::exception
 	{
 	public:
-		com_exception(HRESULT hr) : result(hr) {}
+		com_exception(HRESULT hr)
+			: result(hr) {}
 
 		const char* what() const noexcept override
 		{
 			static char s_str[64] = {};
-			sprintf_s(s_str, "Failure with HRESULT of %08X",
-				static_cast<unsigned int>(result));
+			sprintf_s(s_str, "Failure with HRESULT of %08X", static_cast<unsigned int>(result));
 			return s_str;
 		}
 
@@ -283,4 +286,4 @@ namespace DX
 			throw com_exception(hr);
 		}
 	}
-}
+} // namespace DX

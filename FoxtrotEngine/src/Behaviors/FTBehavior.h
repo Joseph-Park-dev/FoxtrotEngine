@@ -28,7 +28,7 @@ public:
     static void AddBehaviorToEditor(const char* key)
     {
         EditorChunkLoader::GetInstance()->GetCompCreateMap().
-            insert(std::make_pair(key, &FTBehavior::Create<CUSTOM_BEHAVIOR>);
+            insert(std::make_pair(key, &FTBehavior::Create<CUSTOM_BEHAVIOR>));
     }
 
 #else
@@ -36,7 +36,7 @@ public:
     static void AddBehaviorToBuild(const char* key)
     {
         ChunkLoader::GetInstance()->GetComponentLoadMap().
-            insert(std::make_pair(key, &FTBehavior::Create<CUSTOM_BEHAVIOR>);
+            insert(std::make_pair(key, &FTBehavior::Create<CUSTOM_BEHAVIOR>));
     }
 #endif
 };

@@ -39,6 +39,7 @@ class FTMeshDataPack;
 class FTTileMap;
 class FTPremade;
 class FTCore;
+class FTMaterial;
 
 enum class ResType
 {
@@ -61,11 +62,12 @@ public:
 	void LoadResources(std::ifstream& ifs, FTCore* ftCoreInst);
 
 public:
-	FTTexture* GetLoadedTexture(const UINT key);
-	FTTexture* GetLoadedTexture(const char* name);
-	FTTileMap* GetLoadedTileMap(const UINT key);
-	FTPremade* GetLoadedPremade(const UINT key);
-	FTPremade* GetLoadedPremade(std::string&& fileName);
+	FTTexture*	GetLoadedTexture(const UINT key);
+	FTTexture*	GetLoadedTexture(const char* name);
+	FTTileMap*	GetLoadedTileMap(const UINT key);
+	FTPremade*	GetLoadedPremade(const UINT key);
+	FTPremade*	GetLoadedPremade(std::string&& fileName);
+	FTMaterial* GetLoadedMaterial(const UINT key);
 
 	FTMeshDataPack* GetLoadedMeshData(const UINT key);
 	FTMeshData&		GetLoaded2DPrimitive(const UINT key);
@@ -80,6 +82,7 @@ public:
 	std::unordered_map<UINT, FTTileMap*>&		  GetTileMapsMap();
 	std::unordered_map<UINT, FTSpriteAnimation*>& GetSpriteAnimMap();
 	std::unordered_map<UINT, FTMeshDataPack*>&	  GetMeshDataMap();
+	std::unordered_map<UINT, FTMaterial*>&		  GetMapMaterials();
 
 	std::string& GetPathToAsset();
 	void		 SetPathToAsset(std::string&& projectPath);
@@ -98,6 +101,8 @@ private:
 	std::unordered_map<UINT, FTMeshDataPack*> mMapMeshData;
 	std::unordered_map<UINT, FTMeshData>	  mMap2DPrimitives;
 	std::unordered_map<UINT, FTMeshData>	  mMap3DPrimitives;
+
+	std::unordered_map<UINT, FTMaterial*> mMapMaterials;
 
 	/// <Chunk IO> -------------------------------------
 	/// Template member functions for saving/loading resources to/from chunk.
@@ -133,8 +138,8 @@ private:
 	template <typename FTRESOURCE>
 	void LoadResource(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
-		FTRESOURCE* resource = DBG_NEW FTRESOURCE;
-		UINT		mItemKey = resource->LoadProperties(ifs);
+		FTRESOURCE* resource					= DBG_NEW FTRESOURCE;
+		UINT						   mItemKey = resource->LoadProperties(ifs);
 
 		if (KeyExists(mItemKey, resMap))
 		{
@@ -258,10 +263,13 @@ private:
 				auto iter = resMap.begin();
 				for (; iter != resMap.end(); ++iter)
 				{
-					if ((*iter).second->GetRelativePath() == path)
+					if ((*iter).second)
 					{
-						printf("Error: ResourceManager::ResourceExists() -> Resource with path %s exists\n", path.c_str());
-						return true;
+						if ((*iter).second->GetRelativePath() == path)
+						{
+							printf("Error: ResourceManager::ResourceExists() -> Resource with path %s exists\n", path.c_str());
+							return true;
+						}
 					}
 				}
 				return false;
@@ -296,9 +304,9 @@ namespace ChunkKey
 	constexpr const char* FTPREMADE_GROUP			= "FTPremade Group";
 	constexpr const char* FT_SPRITE_ANIMATION_GROUP = "FTSpriteAnimation Group";
 
-	constexpr const unsigned int PRIMITIVE_SQUARE_RED	= 0;
-	constexpr const unsigned int PRIMITIVE_SQUARE_GREEN = 1;
-	constexpr const unsigned int PRIMITIVE_SQUARE_BLUE	= 2;
+	constexpr const unsigned int PRIMITIVE_SQUARE_RED	= 1;
+	constexpr const unsigned int PRIMITIVE_SQUARE_GREEN = 2;
+	constexpr const unsigned int PRIMITIVE_SQUARE_BLUE	= 3;
 
 	constexpr const unsigned int PRIMITIVE_BOX		   = 1;
 	constexpr const unsigned int PRIMITIVE_SQUARE_GRID = 2;

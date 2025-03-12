@@ -227,7 +227,7 @@ MeshRenderer::MeshRenderer(Actor* owner, int updateOrder)
 	, mRenderer(nullptr)
 	, mMeshKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	, mTexKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-	, mMaterialKey(ChunkKey::Material::BASIC_MATERIAL)
+	, mMaterialKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 {
 }
 
@@ -298,10 +298,9 @@ void MeshRenderer::EditorUIUpdate()
 			mMaterialKey = key;
 			SetMaterial();
 		}
-		if (mMaterialKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+
+		if (mMaterial)
 			mMaterial->UpdateUI();
-		else
-			mMaterial = nullptr;
 	}
 
 	if (ImGui::Button("Add Cube"))

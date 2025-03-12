@@ -91,9 +91,10 @@ namespace FTEditorUtils
 	}
 
 	template <typename FTRESOURCE>
-	inline UINT DisplayResSelection(
+	inline void DisplayResSelection(
 		const char* label,
 		std::unordered_map<UINT, FTRESOURCE*>& resMap
+		, UINT& currSelection
 	)
 	{
 		if (ImGui::Button(label))
@@ -106,7 +107,6 @@ namespace FTEditorUtils
 			ImGui::OpenPopup(label);
 		}
 
-		UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 		if (ImGui::BeginPopupModal(label, NULL,
 			ImGuiWindowFlags_MenuBar))
 		{
@@ -115,10 +115,20 @@ namespace FTEditorUtils
 				for (auto iter = resMap.begin(); iter != resMap.end();
 					++iter)
 				{
-					if (ImGui::Selectable((*iter).second->GetFileName().c_str()))
+					if ((*iter).second == nullptr)
 					{
-						if ((*iter).first != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-							key = (*iter).first;
+						if (ImGui::Selectable("Not Assigned"))
+						{
+							currSelection = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
+						}
+					}
+					else
+					{
+						if (ImGui::Selectable((*iter).second->GetFileName().c_str()))
+						{
+							if ((*iter).first != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+								currSelection = (*iter).first;
+						}
 					}
 				}
 				ImGui::TreePop();
@@ -127,6 +137,5 @@ namespace FTEditorUtils
 				ImGui::CloseCurrentPopup();
 			ImGui::EndPopup();
 		}
-		return key; // to avoid key = 0, VALUE_NOT_ASSIGNED.
 	}
 }

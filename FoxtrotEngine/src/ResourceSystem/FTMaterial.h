@@ -52,7 +52,7 @@ namespace ChunkKey
 {
 	namespace Material
 	{
-		constexpr const char* TYPE = "Material";
+		constexpr const char* TYPE = "FTMaterial";
 		constexpr const char* NAME = "Name";
 
 		constexpr const char* AMBIENT	= "Ambient";
@@ -61,5 +61,5 @@ namespace ChunkKey
 		constexpr const char* SPECULAR	= "Specular";
 
 		constexpr const unsigned int BASIC_MATERIAL = 1;
-	} // namespace Material
-} // namespace ChunkKey
+	}
+}

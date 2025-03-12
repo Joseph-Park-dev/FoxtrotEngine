@@ -64,6 +64,7 @@ protected:
 	bool		 InitializeMesh(std::vector<FTMeshData>& meshData);
 
 	bool		 SetTexture();
+	bool		 SetMaterial();
 	virtual void UpdateMesh(Transform* transform, Camera* camInst);
 	virtual void UpdateBuffers();
 
@@ -74,14 +75,13 @@ private:
 	// These will be read from .chunk file.
 	UINT mMeshKey;
 	UINT mTexKey;
+	UINT mMaterialKey;
 
 	// These will be set in Initialize() member function.
 	FoxtrotRenderer*  mRenderer;
 	FTBasicMeshGroup* mMeshGroup;
 	FTTexture*		  mTexture;
-
-protected:
-	FTMaterial* mMaterial;
+	FTMaterial*		  mMaterial;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs);
@@ -90,6 +90,7 @@ public:
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void EditorUpdate(float deltaTime) override;
+	virtual void EditorRender(FoxtrotRenderer* renderer) override;
 	virtual void EditorUIUpdate() override;
 
 protected:

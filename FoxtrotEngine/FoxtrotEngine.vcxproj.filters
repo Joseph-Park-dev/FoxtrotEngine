@@ -1637,9 +1637,6 @@
     <ClInclude Include="src\FileSystem\FileTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\FileSystem\MaterialKeys.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\FileSystem\NullKeys.h">
       <Filter>Header Files</Filter>
     </ClInclude>

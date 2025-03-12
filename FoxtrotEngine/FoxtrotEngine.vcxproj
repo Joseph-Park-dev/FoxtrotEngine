@@ -650,7 +650,6 @@
     <ClInclude Include="include\assimp\ZipArchiveIOSystem.h" />
     <ClInclude Include="src\FileSystem\BufferSizes.h" />
     <ClInclude Include="src\FileSystem\FileTypes.h" />
-    <ClInclude Include="src\FileSystem\MaterialKeys.h" />
     <ClInclude Include="src\FileSystem\NullKeys.h" />
     <ClInclude Include="src\ResourceSystem\FTMeshData.h" />
     <ClInclude Include="include\spine\Animation.h" />

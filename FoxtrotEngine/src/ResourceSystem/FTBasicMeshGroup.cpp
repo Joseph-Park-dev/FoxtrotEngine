@@ -41,7 +41,7 @@ void FTBasicMeshGroup::UpdateConstantBuffers(
 	if (mDrawNormal && mValModified)
 	{
 		D3D11Utils::UpdateBuffer(
-			context, mNormalVertexConstData, mNormalLines->VertexConstantBuffer);
+			context, mNormalVertexConstData, mNormalLines->VertexConstantBuffers.at(0));
 		mValModified = false;
 	}
 #endif // FOXTROT_EDITOR
@@ -59,7 +59,8 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture)
 
 	for (const Mesh* mesh : mMeshes)
 	{
-		context->VSSetConstantBuffers(0, 1, mesh->VertexConstantBuffer.GetAddressOf());
+		context->VSSetConstantBuffers(
+			0, mesh->VertexConstantBuffers.size(), mesh->VertexConstantBuffers.data()->GetAddressOf());
 
 		if (mDrawTexture)
 		{
@@ -71,7 +72,8 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture)
 			}
 		}
 		
-		context->PSSetConstantBuffers(0, 1, mesh->PixelConstantBuffer.GetAddressOf());
+		context->PSSetConstantBuffers(
+			0, mesh->PixelConstantBuffers.size(), mesh->PixelConstantBuffers.data()->GetAddressOf());
 
 		context->IASetInputLayout(renderer->GetTextureInputLayout().Get());
 		context->IASetVertexBuffers(0, 1, mesh->VertexBuffer.GetAddressOf(), &stride, &offset);
@@ -84,7 +86,7 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture)
 	{
 		context->VSSetShader(renderer->GetNormalVS().Get(), 0, 0);
 		context->PSSetShader(renderer->GetNormalPS().Get(), 0, 0);
-		ID3D11Buffer* pptr[2] = { mVertexConstBuffer.Get(), mNormalLines->VertexConstantBuffer.Get() };
+		ID3D11Buffer* pptr[2] = { mVertexConstBuffer.Get(), mNormalLines->VertexConstantBuffers.at(0).Get()};
 		context->VSSetConstantBuffers(0, 2, pptr);
 		context->IASetVertexBuffers(0, 1, mNormalLines->VertexBuffer.GetAddressOf(), &stride, &offset);
 		context->IASetIndexBuffer(mNormalLines->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
@@ -103,7 +105,8 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture, int
 	if (mesh)
 	{
 		context->VSSetSamplers(0, 1, mSamplerState.GetAddressOf());
-		context->VSSetConstantBuffers(0, 1, mesh->VertexConstantBuffer.GetAddressOf());
+		context->VSSetConstantBuffers(
+			0, mesh->VertexConstantBuffers.size(), mesh->VertexConstantBuffers.data()->GetAddressOf());
 
 		context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
 
@@ -132,7 +135,8 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture, int
 			context->IASetInputLayout(renderer->GetSolidInputLayout().Get());
 		}
 
-		context->PSSetConstantBuffers(0, 1, mesh->PixelConstantBuffer.GetAddressOf());
+		context->PSSetConstantBuffers(
+			0, mesh->PixelConstantBuffers.size(), mesh->PixelConstantBuffers.data()->GetAddressOf());
 
 		context->IASetVertexBuffers(0, 1, mesh->VertexBuffer.GetAddressOf(), &stride, &offset);
 		context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
@@ -221,10 +225,13 @@ void FTBasicMeshGroup::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
 
 	for (Mesh* mesh : mMeshes)
 	{
-		mesh->VertexConstantBuffer = mVertexConstBuffer;
-		mesh->PixelConstantBuffer  = mPixelConstBuffer;
+		mesh->VertexConstantBuffers.push_back(mVertexConstBuffer);
+		mesh->PixelConstantBuffers.push_back(mPixelConstBuffer);
 	}
-	D3D11Utils::CreateConstantBuffer(device, mNormalVertexConstData, mNormalLines->VertexConstantBuffer);
+
+	ComPtr<ID3D11Buffer> normalConstBuf;
+	D3D11Utils::CreateConstantBuffer(device, mNormalVertexConstData, normalConstBuf);
+	mNormalLines->VertexConstantBuffers.push_back(normalConstBuf);
 }
 
 HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)

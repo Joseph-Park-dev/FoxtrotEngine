@@ -27,8 +27,8 @@ struct Mesh
 	ComPtr<ID3D11Buffer> VertexBuffer;
 	ComPtr<ID3D11Buffer> IndexBuffer;
 
-	ComPtr<ID3D11Buffer> VertexConstantBuffer;
-	ComPtr<ID3D11Buffer> PixelConstantBuffer;
+	std::vector<ComPtr<ID3D11Buffer>> VertexConstantBuffers;
+	std::vector<ComPtr<ID3D11Buffer>> PixelConstantBuffers;
 
 	UINT IndexCount	 = 0;
 	UINT VertexCount = 0;

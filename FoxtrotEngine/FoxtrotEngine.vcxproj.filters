@@ -210,6 +210,9 @@
     <ClCompile Include="src\ResourceSystem\FTShaders\FTShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ResourceSystem\FTShaders\FTVertexShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Actors\Actor.h">
@@ -1686,6 +1689,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ResourceSystem\FTShaders\FTShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceSystem\FTShaders\FTVertexShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

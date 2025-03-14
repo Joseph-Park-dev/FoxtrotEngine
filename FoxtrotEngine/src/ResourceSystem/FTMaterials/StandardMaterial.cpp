@@ -1,30 +1,33 @@
-#include "FTMaterial.h"
+#include "StandardMaterial.h"
 
 #include "FileSystem/FileIOHelper.h"
 #include "FileSystem/BufferSizes.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "CommandHistory.h"
+#include "CommandHistory.h"
 #endif // FOXTROT_EDITOR
 
-void FTMaterial::AssignData(MaterialData& matData)
+template<typename SHADER>
+void StandardMaterial<SHADER>::AssignData(MaterialData& matData)
 {
-	matData.Ambient	  = this->mAmbient;
+	matData.Ambient = this->mAmbient;
 	matData.Shininess = this->mShininess;
-	matData.Diffuse	  = this->mDiffuse;
-	matData.Specular  = this->mSpecular;
+	matData.Diffuse = this->mDiffuse;
+	matData.Specular = this->mSpecular;
 }
 
-void FTMaterial::AssignNull(MaterialData& matData)
+template<typename SHADER>
+void StandardMaterial<SHADER>::AssignNull(MaterialData& matData)
 {
-	matData.Ambient	  = FTVector3::Zero;
+	matData.Ambient = FTVector3::Zero;
 	matData.Shininess = 0.0f;
-	matData.Diffuse	  = FTVector3::Zero;
-	matData.Specular  = FTVector3::Zero;
+	matData.Diffuse = FTVector3::Zero;
+	matData.Specular = FTVector3::Zero;
 };
 
-FTMaterial::FTMaterial()
-	: FTResource()
+template<typename SHADER>
+StandardMaterial<SHADER>::StandardMaterial()
+	: FTMaterial()
 	, mAmbient(FTVector3(0.1f))
 	, mShininess(1.0f)
 	, mDiffuse(FTVector3(0.5f))
@@ -32,7 +35,8 @@ FTMaterial::FTMaterial()
 {
 }
 
-void FTMaterial::SaveProperties(std::ofstream& ofs, UINT key)
+template<typename SHADER>
+void StandardMaterial<SHADER>::SaveProperties(std::ofstream& ofs, UINT key)
 {
 	FileIOHelper::BeginDataPackSave(ofs, FileTypes::MATERIAL);
 
@@ -45,7 +49,8 @@ void FTMaterial::SaveProperties(std::ofstream& ofs, UINT key)
 	FileIOHelper::EndDataPackSave(ofs, FileTypes::MATERIAL);
 }
 
-UINT FTMaterial::LoadProperties(std::ifstream& ifs)
+template<typename SHADER>
+UINT StandardMaterial<SHADER>::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, FileTypes::MATERIAL);
 
@@ -58,16 +63,8 @@ UINT FTMaterial::LoadProperties(std::ifstream& ifs)
 }
 
 #ifdef FOXTROT_EDITOR
-// FTVector3& FTMaterial::GetAmbientRef() { return mAmbient; }
-// float& FTMaterial::GetShininessRef() { return mShininess; }
-// FTVector3& FTMaterial::GetDiffuseRef() { return mDiffuse; }
-// FTVector3& FTMaterial::GetSpecularRef() { return mSpecular; }
-
-void FTMaterial::Save()
-{
-}
-
-void FTMaterial::UpdateUI()
+template<typename SHADER>
+void StandardMaterial<SHADER>::UpdateUI()
 {
 	ImGui::SeparatorText(ChunkKey::Material::TYPE);
 	char name[BufferSize::STRING_BUFFER_SIZE];

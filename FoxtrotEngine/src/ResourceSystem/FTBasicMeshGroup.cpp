@@ -8,7 +8,10 @@
 
 #include "ResourceSystem/FTBasicMeshGroup.h"
 
+#include <vector>
+
 #include "ResourceSystem/GeometryGenerator.h"
+#include "ResourceSystem/FTMaterials/FTMaterial.h"
 #include "Managers/ResourceManager.h"
 #include "Managers/KeyInputManager.h"
 #include "Renderer/Camera.h"
@@ -33,9 +36,15 @@ void FTBasicMeshGroup::UpdateConstantBuffers(
 	D3D11Utils::UpdateBuffer(
 		context, mVertexConstData, mVertexConstBuffer);
 
-	mPixelConstData.UseTexture = mDrawTexture;
-	D3D11Utils::UpdateBuffer(
-		context, mPixelConstData, mPixelConstBuffer);
+	for (Mesh* mesh : mMeshes)
+	{
+		size_t bufferCount = 0;
+		for (FTMaterial* mat : mMaterials)
+		{
+			mat->UpdateBuffer(context, mesh->PixelConstantBuffers.at(bufferCount));
+			++bufferCount;
+		}
+	}
 
 #ifdef FOXTROT_EDITOR
 	if (mDrawNormal && mValModified)
@@ -57,36 +66,37 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture)
 	context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
 	context->PSSetShader(renderer->GetTexturePS().Get(), 0, 0);
 
+	size_t i = 0;
 	for (const Mesh* mesh : mMeshes)
 	{
 		context->VSSetConstantBuffers(
 			0, mesh->VertexConstantBuffers.size(), mesh->VertexConstantBuffers.data()->GetAddressOf());
 
-		if (mDrawTexture)
+		if (texture)
 		{
-			if (texture)
-			{
-				std::vector<ID3D11ShaderResourceView*> resViews;
-				resViews.push_back(texture->GetResourceView().Get());
-				context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
-			}
+			std::vector<ID3D11ShaderResourceView*> resViews;
+			resViews.push_back(texture->GetResourceView().Get());
+			context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
 		}
-		
-		context->PSSetConstantBuffers(
-			0, mesh->PixelConstantBuffers.size(), mesh->PixelConstantBuffers.data()->GetAddressOf());
+		if (!mMaterials.empty())
+		{
+			context->PSSetConstantBuffers(
+				0, mesh->PixelConstantBuffers.size(), mesh->PixelConstantBuffers.data()->GetAddressOf());
+		}
 
 		context->IASetInputLayout(renderer->GetTextureInputLayout().Get());
 		context->IASetVertexBuffers(0, 1, mesh->VertexBuffer.GetAddressOf(), &stride, &offset);
 		context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		context->DrawIndexed(mesh->IndexCount, 0, 0);
+		++i;
 	}
 
 	if (mDrawNormal)
 	{
 		context->VSSetShader(renderer->GetNormalVS().Get(), 0, 0);
 		context->PSSetShader(renderer->GetNormalPS().Get(), 0, 0);
-		ID3D11Buffer* pptr[2] = { mVertexConstBuffer.Get(), mNormalLines->VertexConstantBuffers.at(0).Get()};
+		ID3D11Buffer* pptr[2] = { mVertexConstBuffer.Get(), mNormalLines->VertexConstantBuffers.at(0).Get() };
 		context->VSSetConstantBuffers(0, 2, pptr);
 		context->IASetVertexBuffers(0, 1, mNormalLines->VertexBuffer.GetAddressOf(), &stride, &offset);
 		context->IASetIndexBuffer(mNormalLines->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
@@ -110,30 +120,14 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture, int
 
 		context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
 
-		if (mDrawTexture)
-		{
-			if (texture)
-			{
-				context->VSSetShader(renderer->GetTextureVS().Get(), 0, 0);
-				context->PSSetShader(renderer->GetTexturePS().Get(), 0, 0);
-				context->IASetInputLayout(renderer->GetTextureInputLayout().Get());
+		context->VSSetShader(renderer->GetTextureVS().Get(), 0, 0);
+		context->PSSetShader(renderer->GetTexturePS().Get(), 0, 0);
+		context->IASetInputLayout(renderer->GetTextureInputLayout().Get());
 
-				std::vector<ID3D11ShaderResourceView*> resViews;
-				resViews.push_back(texture->GetResourceView().Get());
-				context->VSSetShaderResources(0, 1, texture->GetResourceView().GetAddressOf());
-				context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
-			}
-			else
-			{
-				Debug::LogError(__LINE__, __FILE__, "Texture is NULL");
-			}
-		}
-		else
-		{
-			context->VSSetShader(renderer->GetSolidVS().Get(), 0, 0);
-			context->PSSetShader(renderer->GetSolidPS().Get(), 0, 0);
-			context->IASetInputLayout(renderer->GetSolidInputLayout().Get());
-		}
+		std::vector<ID3D11ShaderResourceView*> resViews;
+		resViews.push_back(texture->GetResourceView().Get());
+		context->VSSetShaderResources(0, 1, texture->GetResourceView().GetAddressOf());
+		context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
 
 		context->PSSetConstantBuffers(
 			0, mesh->PixelConstantBuffers.size(), mesh->PixelConstantBuffers.data()->GetAddressOf());
@@ -147,6 +141,7 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture, int
 
 void FTBasicMeshGroup::Clear()
 {
+	mMaterials.clear();
 	for (Mesh* mesh : mMeshes)
 	{
 		if (mesh)
@@ -163,13 +158,37 @@ ComPtr<ID3D11SamplerState>& FTBasicMeshGroup::GetSamplerState() { return mSample
 size_t						FTBasicMeshGroup::GetMeshCount() { return mMeshes.size(); }
 std::vector<Mesh*>&			FTBasicMeshGroup::GetMeshes() { return mMeshes; }
 
-BasicVCData& FTBasicMeshGroup::GetVCData() { return mVertexConstData; }
-BasicPCData& FTBasicMeshGroup::GetPCData() { return mPixelConstData; }
+BasicVCData&			  FTBasicMeshGroup::GetVCData() { return mVertexConstData; }
+std::vector<FTMaterial*>& FTBasicMeshGroup::Materials() { return mMaterials; }
 
-bool FTBasicMeshGroup::GetDrawTexture() { return mDrawTexture; }
+void FTBasicMeshGroup::SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Device>& device)
+{
+	mMaterials.clear();
+	for (Mesh* mesh : mMeshes)
+		mesh->PixelConstantBuffers.clear();
+
+	if (matKeys.empty())
+	{
+		Debug::LogError(__LINE__, __FILE__, "Material Key not assigned");
+		return;
+	}
+	for (UINT& key : matKeys)
+		mMaterials.push_back(ResourceManager::GetInstance()->GetLoadedMaterial(key));
+
+	for (Mesh* mesh : mMeshes)
+	{
+		mesh->PixelConstantBuffers.reserve(mMaterials.size());
+		for (FTMaterial* mat : mMaterials)
+		{
+			ComPtr<ID3D11Buffer> pixelConstBuffer;
+			mat->CreatePixelConstBuffer(device, pixelConstBuffer);
+			mesh->PixelConstantBuffers.push_back(pixelConstBuffer);
+		}
+	}
+}
+
 bool FTBasicMeshGroup::GetDrawNormal() { return mDrawNormal; }
 
-void FTBasicMeshGroup::SetDrawTexture(bool drawTexture) { mDrawTexture = drawTexture; }
 void FTBasicMeshGroup::SetDrawNormal(bool drawNormal) { mDrawNormal = drawNormal; }
 
 void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTMeshData>& meshes)
@@ -221,12 +240,17 @@ void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vecto
 void FTBasicMeshGroup::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
 {
 	D3D11Utils::CreateConstantBuffer(device, mVertexConstData, mVertexConstBuffer);
-	D3D11Utils::CreateConstantBuffer(device, mPixelConstData, mPixelConstBuffer);
 
 	for (Mesh* mesh : mMeshes)
 	{
 		mesh->VertexConstantBuffers.push_back(mVertexConstBuffer);
-		mesh->PixelConstantBuffers.push_back(mPixelConstBuffer);
+
+		for (FTMaterial* mat : mMaterials)
+		{
+			ComPtr<ID3D11Buffer> pixelConstBuffer;
+			mat->CreatePixelConstBuffer(device, pixelConstBuffer);
+			mesh->PixelConstantBuffers.push_back(pixelConstBuffer);
+		}
 	}
 
 	ComPtr<ID3D11Buffer> normalConstBuf;
@@ -255,7 +279,6 @@ FTBasicMeshGroup::FTBasicMeshGroup()
 	: FTResource()
 	, mMeshes()
 	, mNormalLines(nullptr)
-	, mDrawTexture(true)
 	, mDrawNormal(false)
 #ifdef FOXTROT_EDITOR
 	, mValModified(false)
@@ -271,7 +294,6 @@ FTBasicMeshGroup::~FTBasicMeshGroup()
 #ifdef FOXTROT_EDITOR
 void FTBasicMeshGroup::UpdateUI()
 {
-	CommandHistory::GetInstance()->UpdateBoolValue("Draw Texture", mDrawTexture);
 	CommandHistory::GetInstance()->UpdateBoolValue("Draw Normal", mDrawNormal);
 
 	if (ImGui::DragFloat("Normal Scale", &mNormalVertexConstData.scale, FLOATMOD_SPEED))

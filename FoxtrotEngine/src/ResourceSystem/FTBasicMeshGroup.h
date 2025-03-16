@@ -18,6 +18,8 @@
 #include "ResourceSystem/MeshConstantData.h"
 #include "ResourceSystem/FTResource.h"
 
+class FTMaterial;
+
 class FTBasicMeshGroup : public FTResource
 {
 public:
@@ -40,12 +42,11 @@ public:
 	std::vector<Mesh*>&			GetMeshes();
 
 	BasicVCData& GetVCData();
-	BasicPCData& GetPCData();
+	std::vector<FTMaterial*>& Materials();
+	void SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Device>& device);
 
-	bool GetDrawTexture();
 	bool GetDrawNormal();
 
-	void SetDrawTexture(bool drawTexture);
 	void SetDrawNormal(bool drawNormal);
 
 public:
@@ -61,15 +62,14 @@ private:
 	std::vector<Mesh*>		   mMeshes;
 	ComPtr<ID3D11SamplerState> mSamplerState;
 
-	ComPtr<ID3D11Buffer> mVertexConstBuffer;
-	ComPtr<ID3D11Buffer> mPixelConstBuffer;
-	BasicVCData			 mVertexConstData;
-	BasicPCData			 mPixelConstData;
+	ComPtr<ID3D11Buffer>	 mVertexConstBuffer;
+	//ComPtr<ID3D11Buffer>	 mPixelConstBuffer;
+	BasicVCData				 mVertexConstData;
+	std::vector<FTMaterial*> mMaterials;
 
 	Mesh*		 mNormalLines;
 	NormalVCData mNormalVertexConstData;
 
-	bool mDrawTexture;
 	bool mDrawNormal;
 
 #ifdef FOXTROT_EDITOR
@@ -85,4 +85,4 @@ namespace ChunkKey
 {
 	constexpr const char* FTMESHGROUP_DRAW_TEXTURE = "Draw Texture";
 	constexpr const char* FTMESHGROUP_DRAW_NORMALS = "Draw Normals";
-}
+} // namespace ChunkKey

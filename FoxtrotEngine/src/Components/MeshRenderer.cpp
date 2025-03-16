@@ -19,6 +19,7 @@
 #include "Renderer/Camera.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "ResourceSystem/GeometryGenerator.h"
+#include "ResourceSystem/FTMaterials/FTMaterial.h"
 #include "Core/TemplateFunctions.h"
 #include "Managers/ResourceManager.h"
 #include "FileSystem/ChunkLoader.h"
@@ -67,7 +68,6 @@ void MeshRenderer::CloneTo(Actor* actor)
 	MeshRenderer* newComp = DBG_NEW MeshRenderer(actor, GetUpdateOrder());
 	newComp->mMeshKey	  = this->mMeshKey;
 	newComp->mTexKey	  = this->mTexKey;
-	newComp->mMeshGroup->SetDrawTexture(this->mMeshGroup->GetDrawTexture());
 	newComp->mMeshGroup->SetDrawNormal(this->mMeshGroup->GetDrawNormal());
 }
 
@@ -143,18 +143,6 @@ bool MeshRenderer::SetTexture()
 	return mTexture != nullptr;
 }
 
-bool MeshRenderer::SetMaterial()
-{
-	if (mMaterialKey == ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-	{
-		Debug::LogError(__LINE__, __FILE__, "Material Key not assigned");
-		return false;
-	}
-	mMaterial = ResourceManager::GetInstance()->GetLoadedMaterial(mMaterialKey);
-	if (!mMaterial)
-		Debug::LogError(__LINE__, __FILE__, "Cannot set Material, returning nullptr.\n");
-	return mMaterial != nullptr;
-}
 
 void MeshRenderer::UpdateMesh(Transform* transform, Camera* camInst)
 {
@@ -181,29 +169,13 @@ void MeshRenderer::UpdateMesh(Transform* transform, Camera* camInst)
 			vcd.projection	 = projMat.Transpose();
 			vcd.invTranspose = std::move(invTransposeMat);
 
-			BasicPCData& pcd = mMeshGroup->GetPCData();
-			pcd.EyeWorld	 = eyeWorld;
-
-			if (mMaterial)
-				mMaterial->AssignData(pcd.MatData);
-			else
-				FTMaterial::AssignNull(pcd.MatData);
-
-			for (size_t i = 0; i < Light::TYPE::END; ++i)
-			{
-				if (LightManager::GetInstance()->GetType(0) == (Light::TYPE)i)
-					pcd.Lights[i] = LightManager::GetInstance()->GetLight(0);
-				else
-					pcd.Lights[i].Strength *= 0.0f;
-			}
+			mMeshGroup->UpdateConstantBuffers(mRenderer->GetDevice(), mRenderer->GetContext());
 		}
 	}
 }
 
 void MeshRenderer::UpdateBuffers()
 {
-	if (mMeshGroup)
-		mMeshGroup->UpdateConstantBuffers(mRenderer->GetDevice(), mRenderer->GetContext());
 }
 
 Matrix MeshRenderer::CalcModelMat(Transform* transform)
@@ -223,11 +195,10 @@ MeshRenderer::MeshRenderer(Actor* owner, int updateOrder)
 	: Component(owner, updateOrder)
 	, mMeshGroup(nullptr)
 	, mTexture(nullptr)
-	, mMaterial(nullptr)
 	, mRenderer(nullptr)
 	, mMeshKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	, mTexKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-	, mMaterialKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	, mMaterialKeys()
 {
 }
 
@@ -238,16 +209,13 @@ MeshRenderer::~MeshRenderer()
 		delete mMeshGroup;
 		mMeshGroup = nullptr;
 	}
-	if (mMaterial)
-	{
-		mMaterial = nullptr;
-	}
+	mMaterialKeys.clear();
 }
 
 void MeshRenderer::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
-	FileIOHelper::SaveBool(ofs, ChunkKey::FTMESHGROUP_DRAW_TEXTURE, mMeshGroup->GetDrawTexture());
+	//FileIOHelper::SaveBool(ofs, ChunkKey::FTMESHGROUP_DRAW_TEXTURE, mMeshGroup->GetDrawTexture());
 	FileIOHelper::SaveBool(ofs, ChunkKey::FTMESHGROUP_DRAW_NORMALS, mMeshGroup->GetDrawNormal());
 
 	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::MESH_KEY, mMeshKey);
@@ -264,7 +232,6 @@ void MeshRenderer::LoadProperties(std::ifstream& ifs)
 	mMeshGroup->SetDrawNormal(drawVal);
 
 	FileIOHelper::LoadBool(ifs, drawVal);
-	mMeshGroup->SetDrawTexture(drawVal);
 
 	Component::LoadProperties(ifs);
 }
@@ -287,20 +254,20 @@ void MeshRenderer::EditorUIUpdate()
 	if (mMeshGroup)
 	{
 		mMeshGroup->UpdateUI();
-		UINT key = mMaterialKey;
+		UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 		FTEditorUtils::DisplayResSelection(
 			"Material", 
 			ResourceManager::GetInstance()->GetMapMaterials(),
 			key
 		);
-		if (mMaterialKey != key)
+		if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		{
-			mMaterialKey = key;
-			SetMaterial();
+			mMaterialKeys.push_back(key);
+			mMeshGroup->SetMaterials(mMaterialKeys, mRenderer->GetDevice());
+			
 		}
-
-		if (mMaterial)
-			mMaterial->UpdateUI();
+		for (FTMaterial* mat : mMeshGroup->Materials())
+			mat->UpdateUI();
 	}
 
 	if (ImGui::Button("Add Cube"))

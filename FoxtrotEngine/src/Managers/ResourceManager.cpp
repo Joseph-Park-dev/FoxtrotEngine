@@ -17,7 +17,9 @@
 #include "ResourceSystem/FTSpriteAnimation.h"
 #include "ResourceSystem/FTMeshDataPack.h"
 #include "ResourceSystem/ModelLoader.h"
-#include "ResourceSystem/FTMaterial.h"
+#include "ResourceSystem/FTShaders/FTVertexShader.h"
+#include "ResourceSystem/FTShaders/FTPixelShader.h"
+#include "ResourceSystem/FTMaterials/StandardMaterial.h"
 #include "Core/FTCore.h"
 #include "Core/TemplateFunctions.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -44,6 +46,9 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 	mMapPremades.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 	mMapSpriteAnimation.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 	mMapMeshData.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
+
+	mMapVertexShaders.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
+	mMapPixelShaders.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 	mMapMaterials.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 
 	// Add primitive geometries as resources
@@ -77,11 +82,11 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 			ChunkKey::PRIMITIVE_SPHERE,
 			GeometryGenerator::MakeSphere(1.0f, 10, 10)));
 
-	FTMaterial* basicMat = DBG_NEW FTMaterial;
+	StandardMaterial* basicMat = DBG_NEW StandardMaterial;
 	basicMat->SetFileName("Basic Material");
 	mMapMaterials.insert(
 		std::pair(
-			ChunkKey::Material::BASIC_MATERIAL,
+			ChunkKey::Material::STANDARD_MATERIAL,
 			basicMat));
 }
 
@@ -152,6 +157,15 @@ FTPremade* ResourceManager::GetLoadedPremade(std::string&& fileName)
 	}
 	printf("Error: ResourceManager::GetLoadedPremade() -> Cannot find FTPremade %s\n", premadeFullName.c_str());
 	return nullptr;
+}
+
+FTPixelShader* ResourceManager::GetLoadedPixelShader(const UINT key)
+{
+	FTPixelShader* shader = mMapPixelShaders.at(key);
+	if (!shader)
+		Debug::LogError(__LINE__, __FILE__, "FTMaterial is empty");
+	shader->AddRefCount();
+	return shader;
 }
 
 FTMaterial* ResourceManager::GetLoadedMaterial(const UINT key)
@@ -233,6 +247,16 @@ std::unordered_map<UINT, FTMeshDataPack*>& ResourceManager::GetMeshDataMap()
 	return mMapMeshData;
 }
 
+std::unordered_map<UINT, FTVertexShader*>& ResourceManager::GetVertexShadersMap()
+{
+	return mMapVertexShaders;
+}
+
+std::unordered_map<UINT, FTPixelShader*>& ResourceManager::GetPixelShadersMap()
+{
+	return mMapPixelShaders;
+}
+
 std::unordered_map<UINT, FTMaterial*>& ResourceManager::GetMapMaterials()
 {
 	return mMapMaterials;
@@ -292,14 +316,14 @@ void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
 void ResourceManager::ProcessTextures()
 {
 	for (auto& textureItem : mMapTextures)
-		if(textureItem.second)
+		if (textureItem.second)
 			ProcessTexture(textureItem.second);
 }
 
 void ResourceManager::ProcessMeshData()
 {
 	for (auto& meshData : mMapMeshData)
-		if(meshData.second)
+		if (meshData.second)
 			ProcessSingleMeshData(meshData.second);
 }
 
@@ -328,6 +352,20 @@ void ResourceManager::ProcessSpriteAnims()
 	for (auto& animMapItem : mMapSpriteAnimation)
 		if (animMapItem.second)
 			ProcessSpriteAnim(animMapItem.second);
+}
+
+void ResourceManager::ProcessVertexShaders()
+{
+	for (auto& shader : mMapVertexShaders)
+		if (shader.second)
+			shader.second->CompileShader(mRenderer);
+}
+
+void ResourceManager::ProcessPixelShaders()
+{
+	for (auto& shader : mMapPixelShaders)
+		if (shader.second)
+			shader.second->CompileShader(mRenderer);
 }
 
 ResourceManager::~ResourceManager()
@@ -366,6 +404,14 @@ void ResourceManager::SaveResources(std::ofstream& ofs)
 	SaveResourceToChunk<FTMeshDataPack>(ofs, mMapMeshData);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTMESH_GROUP);
 
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
+	SaveResourceToChunk<FTVertexShader>(ofs, mMapVertexShaders);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
+
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_PIXEL_SHADER);
+	SaveResourceToChunk<FTPixelShader>(ofs, mMapPixelShaders);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_PIXEL_SHADER);
+
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::RESOURCE_DATA);
 }
 
@@ -374,7 +420,15 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	std::pair<size_t, std::string> resPack	 = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RESOURCE_DATA);
 	size_t						   packCount = resPack.first;
 
-	std::pair<size_t, std::string> desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMESH_GROUP);
+	std::pair<size_t, std::string> desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_PIXEL_SHADER);
+	mMapPixelShaders.reserve(desc.first);
+	LoadResourceFromChunk<FTPixelShader>(ifs, mMapPixelShaders, desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_VERTEX_SHADER);
+	mMapVertexShaders.reserve(desc.first);
+	LoadResourceFromChunk<FTVertexShader>(ifs, mMapVertexShaders, desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMESH_GROUP);
 	mMapMeshData.reserve(desc.first);
 	LoadResourceFromChunk<FTMeshDataPack>(ifs, mMapMeshData, desc.first);
 
@@ -399,6 +453,9 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	ProcessTileMaps();
 	ProcessSpriteAnims();
 	ProcessPremades();
+
+	ProcessVertexShaders();
+	ProcessPixelShaders();
 }
 
 #ifdef FOXTROT_EDITOR
@@ -413,6 +470,9 @@ void ResourceManager::LoadAllResourcesInAsset()
 	ProcessTileMaps();
 	ProcessSpriteAnims();
 	ProcessPremades();
+
+	ProcessVertexShaders();
+	ProcessPixelShaders();
 }
 
 void ResourceManager::LoadResByType(std::string& filePath)
@@ -436,6 +496,10 @@ void ResourceManager::LoadResByType(std::string& filePath)
 		case ResType::FTMESH:
 			LoadResource(filePath, mMapMeshData);
 			break;
+		// case ResType::FT_VERTEX_SHADER:
+		//	LoadResource(filePath, mMapVertexShaders);
+		// case ResType::FT_PIXEL_SHADER:
+		//	LoadResource(filePath, mMapPixelShaders);
 		default:
 			break;
 	}
@@ -452,8 +516,15 @@ ResType ResourceManager::GetResType(std::string& fileName)
 		return ResType::FTPREMADE;
 	else if (StrContains(FileTypes::MESH, format))
 		return ResType::FTMESH;
-	else
-		return ResType::UNSUPPORTED;
+
+	else if (StrContains(FileTypes::SHADER, format))
+
+		if (StrContains(FileTypes::VERTEX_SHADER, fileName))
+			return ResType::FT_VERTEX_SHADER;
+		else if (StrContains(FileTypes::PIXEL_SHADER, fileName))
+			return ResType::FT_PIXEL_SHADER;
+		else
+			return ResType::UNSUPPORTED;
 }
 
 void ResourceManager::UpdateUI()
@@ -552,6 +623,48 @@ void ResourceManager::UpdateUI()
 				if (ImGui::Button("Remove"))
 				{
 					RemoveResource<FTPremade>((*premadeIter).first, mMapPremades);
+					ImGui::EndListBox();
+					break;
+				}
+				ImGui::EndListBox();
+			}
+		}
+		ImGui::TreePop();
+	}
+
+	if (ImGui::TreeNode("Vertex Shaders"))
+	{
+		std::unordered_map<UINT, FTVertexShader*>::const_iterator vsIter;
+		vsIter = mMapVertexShaders.begin();
+		for (; vsIter != mMapVertexShaders.end(); ++vsIter)
+		{
+			if (ImGui::BeginListBox((*vsIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 100)))
+			{
+				(*vsIter).second->UpdateUI();
+				if (ImGui::Button("Remove"))
+				{
+					RemoveResource<FTMaterial>((*vsIter).first, mMapMaterials);
+					ImGui::EndListBox();
+					break;
+				}
+				ImGui::EndListBox();
+			}
+		}
+		ImGui::TreePop();
+	}
+
+	if (ImGui::TreeNode("Materials"))
+	{
+		std::unordered_map<UINT, FTMaterial*>::const_iterator materialIter;
+		materialIter = mMapMaterials.begin();
+		for (; materialIter != mMapMaterials.end(); ++materialIter)
+		{
+			if (ImGui::BeginListBox((*materialIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 100)))
+			{
+				(*materialIter).second->UpdateUI();
+				if (ImGui::Button("Remove"))
+				{
+					RemoveResource<FTMaterial>((*materialIter).first, mMapMaterials);
 					ImGui::EndListBox();
 					break;
 				}

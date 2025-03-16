@@ -15,53 +15,38 @@
 #pragma once
 #include "ResourceSystem/FTResource.h"
 
-#include "Math/FTMath.h"
-#include "Managers/ResourceManager.h"
+#include <d3d11.h>
 
-#ifdef FOXTROT_EDITOR
-	#include "EditorUtils.h"
-#endif
+#include "Math/FTMath.h"
 
 struct MaterialData;
 class FTPixelShader;
 
 class FTMaterial : public FTResource
 {
-private:
-	FTPixelShader* mLinkedShader;
-	UINT		   mShaderKey;
-
 public:
-	virtual void SaveProperties(std::ofstream& ofs, UINT key) = 0;
-	virtual UINT LoadProperties(std::ifstream& ifs)			  = 0;
+	virtual void CreatePixelConstBuffer(
+		ComPtr<ID3D11Device>& device, ComPtr<ID3D11Buffer>& buffer) = 0;
+
+	virtual void UpdateBuffer(
+		ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Buffer>& buffer) = 0;
 
 #ifdef FOXTROT_EDITOR
 public:
-	void UpdateUI() override
-	{
-		UINT key = mShaderKey;
-		FTEditorUtils::DisplayResSelection("Select Shader", ResourceManager::GetInstance()->GetMeshDataMap(), key);
-		if (mShaderKey != key)
-		{
-			mShaderKey	  = key;
-			mLinkedShader = ResourceManager::GetInstance()->GetLoadedShader(mShaderKey);
-		}
+	void UpdateUI() override = 0;
 
-		mLinkedShader->UpdateUI();
-	}
-
-#endif // FOXTROT_EDITOR
+#endif
 };
 
-struct MaterialData
-{
-	FTVector3 Ambient	= FTVector3(0.1f);
-	float	  Shininess = 1.0f;
-	FTVector3 Diffuse	= FTVector3(0.5f);
-	float	  dummy1	= 0.f;
-	FTVector3 Specular	= FTVector3(0.5f);
-	float	  dummy2	= 0.f;
-};
+//// Abstract Material Data as a base.
+//struct MaterialData  
+//{	
+//#ifdef FOXTROT_EDITOR
+//	virtual void UpdateUI() = 0;
+//
+//#endif
+//};
+
 
 namespace ChunkKey
 {
@@ -69,5 +54,7 @@ namespace ChunkKey
 	{
 		constexpr const char* TYPE = "FTMaterial";
 		constexpr const char* NAME = "Name";
+
+		constexpr UINT STANDARD_MATERIAL = 1;
 	} // namespace Material
 } // namespace ChunkKey

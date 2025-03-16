@@ -2,6 +2,8 @@
 
 #include "FileSystem/FileIOHelper.h"
 #include "FileSystem/BufferSizes.h"
+#include "ResourceSystem/FTShaders/FTPixelShader.h"
+#include "ResourceSystem/FTBasicMeshGroup.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"

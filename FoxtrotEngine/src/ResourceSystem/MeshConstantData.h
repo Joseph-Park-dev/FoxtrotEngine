@@ -17,11 +17,12 @@
 
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/Vertex.h"
-#include "ResourceSystem/FTMaterial.h"
+#include "ResourceSystem/FTShaders/StandardPS.h"
 #include "ResourceSystem/Light.h"
 #include "Managers/LightManager.h"
 
 using Microsoft::WRL::ComPtr;
+using namespace DirectX::SimpleMath;
 
 struct BasicVCData
 {
@@ -30,27 +31,14 @@ struct BasicVCData
 	DirectX::SimpleMath::Matrix view		 = DirectX::SimpleMath::Matrix();
 	DirectX::SimpleMath::Matrix projection	 = DirectX::SimpleMath::Matrix();
 };
-static_assert((sizeof(BasicVCData) % 16) == 0,
-	"Constant Buffer size must be 16-byte aligned");
-
-struct BasicPCData
-{
-	DirectX::SimpleMath::Vector3 EyeWorld;
-	uint32_t				     UseTexture;
-	MaterialData				 MatData;
-	Light						 Lights[GameData::MAX_LIGHTS];
-	DirectX::SimpleMath::Vector4 IndexColor;
-};
-static_assert((sizeof(BasicPCData) % 16) == 0,
-	"Constant Buffer size must be 16-byte aligned");
+static_assert((sizeof(BasicVCData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
 
 struct NormalVCData
 {
 	float scale = 0.1f;
 	float dummy[3];
 };
-static_assert((sizeof(NormalVCData) % 16) == 0, 
-	"Constant Buffer size must be 16-byte aligned");
+static_assert((sizeof(NormalVCData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
 
 struct TileMapConstantData
 {
@@ -59,15 +47,12 @@ struct TileMapConstantData
 	float texSizeX;
 	float texSizeY;
 };
-static_assert((sizeof(TileMapConstantData) % 16) == 0, 
-	"Constant Buffer size must be 16-byte aligned");
+static_assert((sizeof(TileMapConstantData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
 
 // Data use for Mouse Picking
 struct IndexPCData
 {
 	DirectX::SimpleMath::Vector4 IndexColor;
-	uint32_t IsActive;
-	uint32_t dummy[3];
+	uint32_t					 IsActive;
+	uint32_t					 dummy[3];
 };
-static_assert((sizeof(BasicPCData) % 16) == 0,
-	"Constant Buffer size must be 16-byte aligned");

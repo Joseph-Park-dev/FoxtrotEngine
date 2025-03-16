@@ -40,6 +40,8 @@ class FTTileMap;
 class FTPremade;
 class FTCore;
 class FTMaterial;
+class FTVertexShader;
+class FTPixelShader;
 
 enum class ResType
 {
@@ -47,7 +49,9 @@ enum class ResType
 	FTTEXTURE,
 	FTTILEMAP,
 	FTPREMADE,
-	FTMESH
+	FTMESH,
+	FT_VERTEX_SHADER,
+	FT_PIXEL_SHADER
 };
 
 class ResourceManager
@@ -67,6 +71,9 @@ public:
 	FTTileMap*	GetLoadedTileMap(const UINT key);
 	FTPremade*	GetLoadedPremade(const UINT key);
 	FTPremade*	GetLoadedPremade(std::string&& fileName);
+
+	FTPixelShader* GetLoadedPixelShader(const UINT key);
+
 	FTMaterial* GetLoadedMaterial(const UINT key);
 
 	FTMeshDataPack* GetLoadedMeshData(const UINT key);
@@ -82,7 +89,11 @@ public:
 	std::unordered_map<UINT, FTTileMap*>&		  GetTileMapsMap();
 	std::unordered_map<UINT, FTSpriteAnimation*>& GetSpriteAnimMap();
 	std::unordered_map<UINT, FTMeshDataPack*>&	  GetMeshDataMap();
-	std::unordered_map<UINT, FTMaterial*>&		  GetMapMaterials();
+
+	std::unordered_map<UINT, FTVertexShader*>& GetVertexShadersMap();
+	std::unordered_map<UINT, FTPixelShader*>&  GetPixelShadersMap();
+
+	std::unordered_map<UINT, FTMaterial*>& GetMapMaterials();
 
 	std::string& GetPathToAsset();
 	void		 SetPathToAsset(std::string&& projectPath);
@@ -102,7 +113,10 @@ private:
 	std::unordered_map<UINT, FTMeshData>	  mMap2DPrimitives;
 	std::unordered_map<UINT, FTMeshData>	  mMap3DPrimitives;
 
-	std::unordered_map<UINT, FTMaterial*> mMapMaterials;
+	std::unordered_map<UINT, FTVertexShader*> mMapVertexShaders;
+	std::unordered_map<UINT, FTPixelShader*>  mMapPixelShaders;
+
+	std::unordered_map<UINT, FTMaterial*>  mMapMaterials;
 
 	/// <Chunk IO> -------------------------------------
 	/// Template member functions for saving/loading resources to/from chunk.
@@ -164,7 +178,7 @@ public:
 
 		if (!ResourceExists<FTRESOURCE*>(pending, filePath, resMap))
 		{
-			printf("Message: Loading FTTexture %s to mItemKey %d. \n", filePath.c_str(), pending);
+			printf("Message: Loading FTResource %s to mItemKey %d. \n", filePath.c_str(), pending);
 			FTRESOURCE* res = DBG_NEW FTRESOURCE;
 			res->SetFileName(fileName);
 			res->SetRelativePath(filePath);
@@ -237,6 +251,9 @@ private:
 	void ProcessPremades();
 	void ProcessTileMaps();
 	void ProcessSpriteAnims();
+
+	void ProcessVertexShaders();
+	void ProcessPixelShaders();
 
 	/// <Validating Resources> -------------------------------------
 	/// Template member functions for validating the keys & resources.

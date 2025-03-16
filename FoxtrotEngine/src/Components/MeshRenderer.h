@@ -21,6 +21,7 @@ class Actor;
 class Camera;
 class Transform;
 class FTTexture;
+class FTMaterial;
 struct Mesh;
 struct FTMeshData;
 
@@ -63,8 +64,8 @@ protected:
 	bool		 InitializeMesh(FTMeshData& meshData);
 	bool		 InitializeMesh(std::vector<FTMeshData>& meshData);
 
-	bool		 SetTexture();
-	bool		 SetMaterial();
+	bool SetTexture();
+
 	virtual void UpdateMesh(Transform* transform, Camera* camInst);
 	virtual void UpdateBuffers();
 
@@ -73,15 +74,14 @@ protected:
 private:
 	// Identifier for the object in the Resource Map from the ResourceManager instance.
 	// These will be read from .chunk file.
-	UINT mMeshKey;
-	UINT mTexKey;
-	UINT mMaterialKey;
+	UINT			  mMeshKey;
+	UINT			  mTexKey;
+	std::vector<UINT> mMaterialKeys;
 
 	// These will be set in Initialize() member function.
-	FoxtrotRenderer*  mRenderer;
-	FTBasicMeshGroup* mMeshGroup;
-	FTTexture*		  mTexture;
-	FTMaterial*		  mMaterial;
+	FoxtrotRenderer*		 mRenderer;
+	FTBasicMeshGroup*		 mMeshGroup;
+	FTTexture*				 mTexture;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs);

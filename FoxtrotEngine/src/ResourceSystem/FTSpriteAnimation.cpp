@@ -10,6 +10,7 @@
 
 #include "FileSystem/FileIOHelper.h"
 #include "Renderer/FoxtrotRenderer.h"
+#include "ResourceSystem/FTMaterials/FTMaterial.h"
 
 void FTSpriteAnimation::Initialize(std::vector<FTMeshData>& meshes, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
@@ -135,8 +136,15 @@ void FTSpriteAnimation::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vect
 		D3D11Utils::CreateIndexBuffer(device, meshData.Indices,
 			newMesh->IndexBuffer);
 
-		D3D11Utils::CreateConstantBuffer(device, GetVCData(), newMesh->VertexConstantBuffer);
-		D3D11Utils::CreateConstantBuffer(device, GetPCData(), newMesh->PixelConstantBuffer);
+		ComPtr<ID3D11Buffer> VCB;
+		ComPtr<ID3D11Buffer> PCB;
+		D3D11Utils::CreateConstantBuffer(device, GetVCData(), VCB);
+
+		for (size_t i =0; i < Materials().size(); ++i)
+			Materials().at(i)->CreatePixelConstBuffer(device, GetMeshes().at(0)->PixelConstantBuffers.at(i));
+
+		newMesh->VertexConstantBuffers.push_back(VCB);
+		newMesh->PixelConstantBuffers.push_back(PCB);
 
 		this->GetMeshes().push_back(newMesh);
 

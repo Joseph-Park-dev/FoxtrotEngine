@@ -68,10 +68,10 @@ void FTShape::Render(FoxtrotRenderer* renderer)
 	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
 
 	context->VSSetShader(renderer->GetSolidVS().Get(), 0, 0);
-	context->VSSetConstantBuffers(0, 1, mMesh->VertexConstantBuffer.GetAddressOf());
+	context->VSSetConstantBuffers(0, 1, mMesh->VertexConstantBuffers.at(0).GetAddressOf());
 
 	context->PSSetShader(renderer->GetSolidPS().Get(), 0, 0);
-	context->PSSetConstantBuffers(0, 1, mMesh->PixelConstantBuffer.GetAddressOf());
+	context->PSSetConstantBuffers(0, 1, mMesh->PixelConstantBuffers.at(0).GetAddressOf());
 
 	context->IASetInputLayout(renderer->GetSolidInputLayout().Get());
 	context->IASetVertexBuffers(0, 1, mMesh->VertexBuffer.GetAddressOf(), &stride, &offset);
@@ -100,10 +100,10 @@ void FTShape::Render(
 
 	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
 	context->VSSetShader(vertexShader.Get(), 0, 0);
-	context->VSSetConstantBuffers(0, 1, mMesh->VertexConstantBuffer.GetAddressOf());
+	context->VSSetConstantBuffers(0, 1, mMesh->VertexConstantBuffers.at(0).GetAddressOf());
 
 	context->PSSetShader(pixelShader.Get(), 0, 0);
-	context->PSSetConstantBuffers(0, 1, mMesh->PixelConstantBuffer.GetAddressOf());
+	context->PSSetConstantBuffers(0, 1, mMesh->PixelConstantBuffers.at(0).GetAddressOf());
 
 	context->IASetInputLayout(inputLayout.Get());
 	context->IASetVertexBuffers(0, 1, mMesh->VertexBuffer.GetAddressOf(), &stride, &offset);
@@ -121,8 +121,8 @@ void FTShape::InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData&& meshData
 	D3D11Utils::CreateVertexBuffer(device, meshData.Vertices, mMesh->VertexBuffer);
 	D3D11Utils::CreateIndexBuffer(device, meshData.Indices, mMesh->IndexBuffer);
 
-	mMesh->VertexConstantBuffer = mVertexConstantBuffer;
-	mMesh->PixelConstantBuffer	= mPixelConstantBuffer;
+	mMesh->VertexConstantBuffers.push_back(mVertexConstantBuffer);
+	mMesh->PixelConstantBuffers.push_back(mPixelConstantBuffer);
 }
 
 // void FTShape::UpdateConstantBufferModel(Transform* transform)

@@ -262,6 +262,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\MonkeySpin.cpp" />
     <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\ResponsiveButton.cpp" />
+    <ClCompile Include="src\ResourceSystem\FTShaders\FTPixelShader.cpp" />
+    <ClCompile Include="src\ResourceSystem\FTShaders\FTVertexShader.cpp" />
+    <ClCompile Include="src\ResourceSystem\FTShaders\FTShader.cpp" />
     <ClCompile Include="src\Managers\DebugShapes.cpp" />
     <ClCompile Include="src\ResourceSystem\FTRectangle.cpp" />
     <ClCompile Include="include\delegates\Delegates.cpp" />
@@ -319,7 +322,7 @@
     <ClCompile Include="src\ResourceSystem\FTTexture.cpp" />
     <ClCompile Include="src\ResourceSystem\FTTileMap.cpp" />
     <ClCompile Include="src\ResourceSystem\GeometryGenerator.cpp" />
-    <ClCompile Include="src\ResourceSystem\FTMaterial.cpp" />
+    <ClCompile Include="src\ResourceSystem\FTMaterials\FTMaterial.cpp" />
     <ClCompile Include="src\ResourceSystem\ModelLoader.cpp" />
     <ClCompile Include="src\ResourceSystem\Tile.cpp" />
     <ClCompile Include="src\Scenes\Scene.cpp" />
@@ -327,8 +330,13 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
       </ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="src\ResourceSystem\FTShaders\StandardPS.cpp" />
+    <ClCompile Include="src\ResourceSystem\FTMaterials\StandardMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ResourceSystem\FTShaders\FTPixelShader.h" />
+    <ClInclude Include="src\ResourceSystem\FTShaders\FTVertexShader.h" />
+    <ClInclude Include="src\ResourceSystem\FTShaders\FTShader.h" />
     <ClInclude Include="include\Tweeny\dispatcher.h" />
     <ClInclude Include="include\Tweeny\easing.h" />
     <ClInclude Include="include\Tweeny\easingresolve.h" />
@@ -811,7 +819,7 @@
     <ClInclude Include="src\ResourceSystem\FTTileMap.h" />
     <ClInclude Include="src\ResourceSystem\GeometryGenerator.h" />
     <ClInclude Include="src\ResourceSystem\Light.h" />
-    <ClInclude Include="src\ResourceSystem\FTMaterial.h" />
+    <ClInclude Include="src\ResourceSystem\FTMaterials\FTMaterial.h" />
     <ClInclude Include="src\ResourceSystem\Mesh.h" />
     <ClInclude Include="src\ResourceSystem\MeshConstantData.h" />
     <ClInclude Include="src\ResourceSystem\ModelLoader.h" />
@@ -823,6 +831,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
       </ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="src\ResourceSystem\FTShaders\StandardPS.h" />
+    <ClInclude Include="src\ResourceSystem\FTMaterials\StandardMaterial.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

@@ -322,7 +322,7 @@
     <ClCompile Include="src\ResourceSystem\FTTexture.cpp" />
     <ClCompile Include="src\ResourceSystem\FTTileMap.cpp" />
     <ClCompile Include="src\ResourceSystem\GeometryGenerator.cpp" />
-    <ClCompile Include="src\ResourceSystem\FTMaterial.cpp" />
+    <ClCompile Include="src\ResourceSystem\FTMaterials\FTMaterial.cpp" />
     <ClCompile Include="src\ResourceSystem\ModelLoader.cpp" />
     <ClCompile Include="src\ResourceSystem\Tile.cpp" />
     <ClCompile Include="src\Scenes\Scene.cpp" />
@@ -330,6 +330,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
       </ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="src\ResourceSystem\FTShaders\StandardPS.cpp" />
+    <ClCompile Include="src\ResourceSystem\FTMaterials\StandardMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ResourceSystem\FTShaders\FTPixelShader.h" />
@@ -817,7 +819,7 @@
     <ClInclude Include="src\ResourceSystem\FTTileMap.h" />
     <ClInclude Include="src\ResourceSystem\GeometryGenerator.h" />
     <ClInclude Include="src\ResourceSystem\Light.h" />
-    <ClInclude Include="src\ResourceSystem\FTMaterial.h" />
+    <ClInclude Include="src\ResourceSystem\FTMaterials\FTMaterial.h" />
     <ClInclude Include="src\ResourceSystem\Mesh.h" />
     <ClInclude Include="src\ResourceSystem\MeshConstantData.h" />
     <ClInclude Include="src\ResourceSystem\ModelLoader.h" />
@@ -829,6 +831,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
       </ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="src\ResourceSystem\FTShaders\StandardPS.h" />
+    <ClInclude Include="src\ResourceSystem\FTMaterials\StandardMaterial.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

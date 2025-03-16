@@ -12,4 +12,26 @@ void FTPixelShader::CompileShader(FoxtrotRenderer* renderer)
 }
 
 ComPtr<ID3D11PixelShader>& FTPixelShader::GetShader() { return mShader; }
-ComPtr<ID3D11Buffer>&	   FTPixelShader::GetEffectsBuffer() { return mEffectsBuffer; }
+
+FTPixelShader::FTPixelShader()
+{
+	SetType(ShaderType::PIXEL_SHADER);
+}
+
+void FTPixelShader::SaveProperties(std::ofstream& ofs, UINT key)
+{
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_PIXEL_SHADER);
+	FTResource::SaveProperties(ofs, key);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_PIXEL_SHADER);
+}
+
+UINT FTPixelShader::LoadProperties(std::ifstream& ifs)
+{
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_PIXEL_SHADER);
+	return FTResource::LoadProperties(ifs);
+}
+
+void FTPixelShader::UpdateUI()
+{
+
+}

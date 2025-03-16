@@ -5,14 +5,29 @@ class FTPixelShader :
 	public FTShader
 {
 public:
+	// You may use this overriden menber function.
 	void CompileShader(FoxtrotRenderer* renderer) override;
 
 public:
 	ComPtr<ID3D11PixelShader>& GetShader();
-	ComPtr<ID3D11Buffer>&	   GetEffectsBuffer();
+
+public:
+	FTPixelShader();
 
 private:
 	ComPtr<ID3D11PixelShader> mShader;
-	// Additional Buffer to create an effect
-	ComPtr<ID3D11Buffer> mEffectsBuffer;
+
+public:
+	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
+	virtual UINT LoadProperties(std::ifstream& ifs) override;
+
+#ifdef FOXTROT_EDITOR
+public:
+	virtual void UpdateUI() override;
+#endif
 };
+
+namespace ChunkKey
+{
+	constexpr const char* FT_PIXEL_SHADER = "FTPixelShader";
+}

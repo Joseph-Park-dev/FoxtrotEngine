@@ -1,81 +1,75 @@
 #include "StandardMaterial.h"
 
-#include "FileSystem/FileIOHelper.h"
-#include "FileSystem/BufferSizes.h"
+#include "Managers/LightManager.h"
+#include "ResourceSystem/Light.h"
+#include "Renderer/D3D11Utils.h"
+#include "Renderer/Camera.h"
+#include "ResourceSystem/Mesh.h"
+#include "ResourceSystem/FTMaterials/StandardMaterial.h"
 
-#ifdef FOXTROT_EDITOR
-#include "CommandHistory.h"
-#endif // FOXTROT_EDITOR
+//void StandardMaterial::AssignData(StandardMatData& standardDest, BlinnPhongData& blinnPhongDest)
+//{
+//	standardDest.EyeWorld	= mData->EyeWorld;
+//	standardDest.UseTexture = mData->UseTexture;
+//
+//	for (size_t i = 0; i < GameData::MAX_LIGHTS; ++i)
+//		standardDest.Lights[i] = mData->mLights[i];
+//
+//	standardDest.IndexColor = mData->mIndexColor;
+//
+//	blinnPhongDest.Ambient	 = mData->mBlinnPhongData.Ambient;
+//	blinnPhongDest.Shininess = mData->mBlinnPhongData.Shininess;
+//	blinnPhongDest.Diffuse	 = mData->mBlinnPhongData.Diffuse;
+//	blinnPhongDest.Specular	 = mData->mBlinnPhongData.Specular;
+//}
 
-template<typename SHADER>
-void StandardMaterial<SHADER>::AssignData(MaterialData& matData)
+void StandardMaterial::CreatePixelConstBuffer(
+	ComPtr<ID3D11Device>& device, ComPtr<ID3D11Buffer>& buffer)
 {
-	matData.Ambient = this->mAmbient;
-	matData.Shininess = this->mShininess;
-	matData.Diffuse = this->mDiffuse;
-	matData.Specular = this->mSpecular;
+	D3D11Utils::CreateConstantBuffer(device, *mData, buffer);
 }
 
-template<typename SHADER>
-void StandardMaterial<SHADER>::AssignNull(MaterialData& matData)
+void StandardMaterial::UpdateBuffer(ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Buffer>& buffer)
 {
-	matData.Ambient = FTVector3::Zero;
-	matData.Shininess = 0.0f;
-	matData.Diffuse = FTVector3::Zero;
-	matData.Specular = FTVector3::Zero;
-};
+	Matrix&& viewMat  = Camera::GetInstance()->GetViewRow();
+	Vector3	 eyeWorld = Vector3::Transform(Vector3(0.0f), viewMat.Invert());
 
-template<typename SHADER>
-StandardMaterial<SHADER>::StandardMaterial()
+	for (size_t i = 0; i < Light::TYPE::END; ++i)
+	{
+		if (LightManager::GetInstance()->GetType(0) == (Light::TYPE)i)
+			mData->Lights[i] = LightManager::GetInstance()->GetLight(0);
+		else
+			mData->Lights[i].Strength *= 0.0f;
+	}
+
+	mData->EyeWorld = eyeWorld;
+	D3D11Utils::UpdateBuffer(context, *mData, buffer);
+}
+
+StandardMaterial::StandardMaterial()
 	: FTMaterial()
-	, mAmbient(FTVector3(0.1f))
-	, mShininess(1.0f)
-	, mDiffuse(FTVector3(0.5f))
-	, mSpecular(FTVector3(0.5f))
+	, mData(new StandardMatData)
 {
 }
 
-template<typename SHADER>
-void StandardMaterial<SHADER>::SaveProperties(std::ofstream& ofs, UINT key)
+StandardMaterial::~StandardMaterial()
 {
-	FileIOHelper::BeginDataPackSave(ofs, FileTypes::MATERIAL);
-
-	FTResource::SaveProperties(ofs, key);
-	FileIOHelper::SaveVector3(ofs, ChunkKey::Material::AMBIENT, this->mAmbient);
-	FileIOHelper::SaveVector3(ofs, ChunkKey::Material::SHININESS, this->mDiffuse);
-	FileIOHelper::SaveVector3(ofs, ChunkKey::Material::DIFFUSE, this->mSpecular);
-	FileIOHelper::SaveFloat(ofs, ChunkKey::Material::SPECULAR, this->mShininess);
-
-	FileIOHelper::EndDataPackSave(ofs, FileTypes::MATERIAL);
-}
-
-template<typename SHADER>
-UINT StandardMaterial<SHADER>::LoadProperties(std::ifstream& ifs)
-{
-	FileIOHelper::BeginDataPackLoad(ifs, FileTypes::MATERIAL);
-
-	FileIOHelper::LoadVector3(ifs, this->mSpecular);
-	FileIOHelper::LoadVector3(ifs, this->mDiffuse);
-	FileIOHelper::LoadFloat(ifs, this->mShininess);
-	FileIOHelper::LoadVector3(ifs, this->mAmbient);
-
-	return FTResource::LoadProperties(ifs);
+	delete mData;
 }
 
 #ifdef FOXTROT_EDITOR
-template<typename SHADER>
-void StandardMaterial<SHADER>::UpdateUI()
+void StandardMaterial::UpdateUI()
 {
-	ImGui::SeparatorText(ChunkKey::Material::TYPE);
-	char name[BufferSize::STRING_BUFFER_SIZE];
-	strcpy_s(name, BufferSize::STRING_BUFFER_SIZE, GetFileName().c_str());
+	ImGui::SeparatorText("Standard Mat Data");
 
-	ImGui::InputText(ChunkKey::Material::NAME, name, BufferSize::STRING_BUFFER_SIZE);
-	SetFileName(name);
-	CommandHistory::GetInstance()->UpdateVector3Value(ChunkKey::Material::AMBIENT, mAmbient);
-	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKey::Material::SHININESS, mShininess);
-	CommandHistory::GetInstance()->UpdateVector3Value(ChunkKey::Material::DIFFUSE, mDiffuse);
-	CommandHistory::GetInstance()->UpdateVector3Value(ChunkKey::Material::SPECULAR, mSpecular);
-	ImGui::Separator();
+	bool useTex = (bool)mData->UseTexture;
+	CommandHistory::GetInstance()->UpdateBoolValue(ChunkKey::USE_TEXTURE, useTex);
+	mData->UseTexture = (uint32_t)useTex;
+
+	ImGui::SeparatorText("BlinnPhong Data");
+	CommandHistory::GetInstance()->UpdateVector3Value(ChunkKey::BlinnPhong::AMBIENT, mData->BlinnPhongData.Ambient);
+	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKey::BlinnPhong::SHININESS, mData->BlinnPhongData.Shininess);
+	CommandHistory::GetInstance()->UpdateVector3Value(ChunkKey::BlinnPhong::DIFFUSE, mData->BlinnPhongData.Diffuse);
+	CommandHistory::GetInstance()->UpdateVector3Value(ChunkKey::BlinnPhong::SPECULAR, mData->BlinnPhongData.Specular);
 }
 #endif

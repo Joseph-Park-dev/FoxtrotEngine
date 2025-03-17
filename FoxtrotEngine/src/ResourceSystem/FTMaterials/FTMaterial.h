@@ -16,11 +16,14 @@
 #include "ResourceSystem/FTResource.h"
 
 #include <d3d11.h>
+#include <wrl.h>
 
 #include "Math/FTMath.h"
 
 struct MaterialData;
 class FTPixelShader;
+
+using namespace Microsoft::WRL;
 
 class FTMaterial : public FTResource
 {

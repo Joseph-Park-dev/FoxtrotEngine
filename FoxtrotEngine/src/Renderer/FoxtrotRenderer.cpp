@@ -97,7 +97,7 @@ ComPtr<ID3D11PixelShader>&	FoxtrotRenderer::GetSolidPS() { return mSolidPS; }
 ComPtr<ID3D11VertexShader>& FoxtrotRenderer::GetTextureVS() { return mTextureVS; }
 ComPtr<ID3D11InputLayout>&	FoxtrotRenderer::GetTextureInputLayout() { return mTextureInputLayout; }
 ComPtr<ID3D11PixelShader>&	FoxtrotRenderer::GetTexturePS() { return mTexturePS; }
-ComPtr<ID3D11PixelShader>&	FoxtrotRenderer::GetBlinnPhongPS() { return mBlinnPhongPS; }
+ComPtr<ID3D11PixelShader>&	FoxtrotRenderer::GetRimTexturePS() { return mRimTexturePS; }
 
 ComPtr<ID3D11VertexShader>& FoxtrotRenderer::GetNormalVS() { return mNormalVS; }
 ComPtr<ID3D11PixelShader>&	FoxtrotRenderer::GetNormalPS() { return mNormalPS; }
@@ -266,6 +266,12 @@ bool FoxtrotRenderer::Initialize(HWND window, int renderWidth, int renderHeight)
 			mDevice,
 			TEXTURE_PS_PATH,
 			mTexturePS));
+
+	DX::ThrowIfFailed(
+		D3D11Utils::CreatePixelShader(
+			mDevice,
+			RIM_TEXTURE_PS_PATH,
+			mRimTexturePS));
 
 	DX::ThrowIfFailed(
 		D3D11Utils::CreateVertexShaderAndInputLayout(

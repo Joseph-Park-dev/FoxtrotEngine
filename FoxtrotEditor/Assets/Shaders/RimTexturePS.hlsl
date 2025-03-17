@@ -7,6 +7,8 @@
 // ----------------------------------------------------------------
 
 #include "Common.hlsli"
+#include "RimEffect.hlsli"
+
 Texture2D g_texture0 : register(t0);
 SamplerState g_sampler : register(s0);
 
@@ -16,6 +18,17 @@ cbuffer PixelConstantBuffer : register(b0)
     bool useTexture;
     Light lights[MAX_LIGHTS];
     BlinnPhongData material;
+};
+
+cbuffer RimConstantBuffer : register(b1)
+{
+    float3 rimColor;
+    float rimPower;
+    float rimStrength;
+    bool useSmoothstep;
+    
+    float dummy1;
+    float dummy2;
 };
 
 float4 main(TexPSInput input) : SV_Target
@@ -43,6 +56,8 @@ float4 main(TexPSInput input) : SV_Target
     {
         color += ComputeSpotLight(lights[i], material, input.posWorld, input.normalWorld, toEye);
     }
+    
+    color += RimEffect(input.normalWorld, toEye, rimPower, rimStrength, rimColor);
     
     return useTexture ? float4(color, 1.0) * g_texture0.Sample(g_sampler, input.texcoord) : float4(color, 1.0);
 }

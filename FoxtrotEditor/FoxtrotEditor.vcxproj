@@ -305,6 +305,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\Common.hlsli" />
+    <None Include="Assets\Shaders\RimEffect.hlsli" />
     <None Include="include\imgui\FileDialog\dirent\ChangeLog" />
     <None Include="include\imgui\FileDialog\dirent\LICENSE" />
     <None Include="include\imgui\FileDialog\dirent\README.md" />
@@ -350,6 +351,9 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|Win32'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Assets\Shaders\RimTexturePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="assets\Shaders\TexturePS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Pixel</ShaderType>

@@ -109,6 +109,7 @@
     <None Include="include\imgui\FileDialog\dirent\README.md" />
     <None Include="vcpkg.json" />
     <None Include="Assets\Shaders\Common.hlsli" />
+    <None Include="Assets\Shaders\RimEffect.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="include\imgui\misc\debuggers\imgui.natvis" />
@@ -126,6 +127,7 @@
     <FxCompile Include="Assets\Shaders\BlinnPhongPS.hlsl" />
     <FxCompile Include="Assets\Shaders\NormalVS.hlsl" />
     <FxCompile Include="Assets\Shaders\NormalPS.hlsl" />
+    <FxCompile Include="Assets\Shaders\RimTexturePS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon1.ico">

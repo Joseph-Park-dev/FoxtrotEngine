@@ -40,7 +40,7 @@ public:
 	void UpdateVector2Value(std::string label, FTVector2& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateVector2Value(std::string label, b2Vec2& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateVector3Value(std::string label, FTVector3& ref, float modSpeed = FLOATMOD_SPEED);
-	void UpdateVector3Value(std::string label, DirectX::SimpleMath::Vector3& ref, float modSpeed);
+	void UpdateVector3Value(std::string label, DirectX::SimpleMath::Vector3& ref, float modSpeed = FLOATMOD_SPEED);
 
 public:
 	void Update();

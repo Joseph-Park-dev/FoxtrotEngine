@@ -64,9 +64,8 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture)
 
 	context->VSSetShader(renderer->GetTextureVS().Get(), 0, 0);
 	context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
-	context->PSSetShader(renderer->GetTexturePS().Get(), 0, 0);
+	context->PSSetShader(renderer->GetRimTexturePS().Get(), 0, 0);
 
-	size_t i = 0;
 	for (const Mesh* mesh : mMeshes)
 	{
 		context->VSSetConstantBuffers(
@@ -89,7 +88,6 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture)
 		context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		context->DrawIndexed(mesh->IndexCount, 0, 0);
-		++i;
 	}
 
 	if (mDrawNormal)

@@ -34,7 +34,7 @@ public:
 public:
 	virtual void SaveToFile() override;
 	
-	void UpdateUI() override;
+	virtual void UpdateUI() override;
 
 #endif
 };
@@ -68,8 +68,8 @@ namespace ChunkKey
 		constexpr const char* SHININESS = "Shininess";
 		constexpr const char* DIFFUSE	= "Diffuse";
 		constexpr const char* SPECULAR	= "Specular";
-	} // namespace BlinnPhong
+	}
 	constexpr const unsigned int BASIC_MATERIAL = 1;
-} // namespace ChunkKey
+}
 
 static_assert((sizeof(StandardMatData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");

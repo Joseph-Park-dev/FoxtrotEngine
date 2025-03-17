@@ -72,6 +72,11 @@ StandardMaterial::StandardMaterial()
 	: FTMaterial()
 	, mData(new StandardMatData)
 {
+	std::string name = std::string("StandardMaterial") + FileTypes::MATERIAL;
+	std::string path = std::string(PATH_PROJECT + "\\Assets\\Materials\\") + name;
+
+	SetFileName(name);
+	SetRelativePath(path);
 }
 
 StandardMaterial::~StandardMaterial()
@@ -95,12 +100,6 @@ UINT StandardMaterial::LoadProperties(std::ifstream& ifs)
 #ifdef FOXTROT_EDITOR
 void StandardMaterial::SaveToFile()
 {
-	std::string name = std::string("StandardMaterial") + FileTypes::MATERIAL;
-	std::string path = std::string (PATH_PROJECT + "\\Assets\\Materials\\") + name;
-
-	SetFileName(name);
-	SetRelativePath(path);
-
 	std::ofstream ofs(GetRelativePath());
 
 	if (ofs)

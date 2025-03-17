@@ -31,30 +31,23 @@ public:
 	virtual void UpdateBuffer(
 		ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Buffer>& buffer) = 0;
 
+	virtual void LoadFromFile() = 0;
+
 #ifdef FOXTROT_EDITOR
 public:
+	virtual void SaveToFile() = 0;
+
 	void UpdateUI() override = 0;
 
 #endif
 };
 
-//// Abstract Material Data as a base.
-//struct MaterialData  
-//{	
-//#ifdef FOXTROT_EDITOR
-//	virtual void UpdateUI() = 0;
-//
-//#endif
-//};
-
-
 namespace ChunkKey
 {
+	constexpr const char* FTMATERIAL = "FTMaterial";
 	namespace Material
 	{
-		constexpr const char* TYPE = "FTMaterial";
 		constexpr const char* NAME = "Name";
-
 		constexpr UINT STANDARD_MATERIAL = 1;
 	} // namespace Material
 } // namespace ChunkKey

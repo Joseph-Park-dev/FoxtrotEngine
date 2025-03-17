@@ -262,6 +262,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\MonkeySpin.cpp" />
     <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\ResponsiveButton.cpp" />
+    <ClCompile Include="src\ResourceSystem\FTMaterials\RimMaterial.cpp" />
     <ClCompile Include="src\ResourceSystem\FTShaders\FTPixelShader.cpp" />
     <ClCompile Include="src\ResourceSystem\FTShaders\FTVertexShader.cpp" />
     <ClCompile Include="src\ResourceSystem\FTShaders\FTShader.cpp" />
@@ -334,6 +335,7 @@
     <ClCompile Include="src\ResourceSystem\FTMaterials\StandardMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ResourceSystem\FTMaterials\RimMaterial.h" />
     <ClInclude Include="src\ResourceSystem\FTShaders\FTPixelShader.h" />
     <ClInclude Include="src\ResourceSystem\FTShaders\FTVertexShader.h" />
     <ClInclude Include="src\ResourceSystem\FTShaders\FTShader.h" />

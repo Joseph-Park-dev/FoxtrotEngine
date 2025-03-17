@@ -69,6 +69,8 @@ public:
 	ImVec2		GetSceneViewportSize()	const { return mSceneViewportSize; }
 	ErrorType	GetErrorType()			const { return mErrorType; }
 
+	ImGuiFileBrowserFlags& GetFileSelectFlag() { return mFileSelectFlag; }
+
 	void		SetInfoType(InfoType type) { mInfoType = type; }
 	void		SetErrorType(ErrorType type) { mErrorType = type; }
 

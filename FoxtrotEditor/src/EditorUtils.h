@@ -13,9 +13,14 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include "imgui/FileDialog/ImGuiFileDialog.h"
+#include "imgui/FileDialog/imfilebrowser.h"
+
+#include <future>
 
 #include "EditorElement.h"
 #include "EditorSceneManager.h"
+#include "EditorLayer.h"
+#include "DirectoryHelper.h"
 #include "FileSystem/FileTypes.h"
 #include "FileSystem/NullKeys.h"
 
@@ -137,5 +142,28 @@ namespace FTEditorUtils
 				ImGui::CloseCurrentPopup();
 			ImGui::EndPopup();
 		}
+	}
+
+	inline std::string GetFilePathFromDialog(const char* key, const char* title, const char* fileTypes)
+	{
+		IGFD::FileDialogConfig config;
+		config.path = ".";
+		config.countSelectionMax = 1;
+
+		ImGuiFileDialog::Instance()->OpenDialog(
+			key, title, fileTypes, config
+		);
+		ImGui::OpenPopup(title);
+		
+		std::string path;
+		if (ImGuiFileDialog::Instance()->Display(title))
+		{
+
+			if (ImGuiFileDialog::Instance()->IsOk())
+				path = ImGuiFileDialog::Instance()->GetFilePathName();
+
+			ImGuiFileDialog::Instance()->Close();
+		}
+		return path;
 	}
 }

@@ -15,7 +15,6 @@ cbuffer PixelConstantBuffer : register(b0)
     float3 eyeWorld;
     bool useTexture;
     Light lights[MAX_LIGHTS];
-    float4 indexColor;
     BlinnPhongData material;
 };
 

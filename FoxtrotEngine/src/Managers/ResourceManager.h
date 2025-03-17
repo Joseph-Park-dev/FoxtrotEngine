@@ -198,7 +198,9 @@ public:
 		}
 	}
 
-	FTMaterial* LoadMaterial(std::string& filePath);
+	// Manually load the required Materials. If it doesn't exist in Asset/material,
+	// this creates a new material.
+	void LoadMaterial();
 
 	// Add newly created resource from components (e.g FTSpriteAnimation)
 	template <typename FTRESOURCE>
@@ -263,6 +265,13 @@ private:
 	void ProcessMaterials();
 	void ProcessVertexShaders();
 	void ProcessPixelShaders();
+
+
+	/// <Loading Materials> -------------------------------------
+	/// Due to the abstract base type, Material loading requires dedicated functions
+	/// </Loading Materials>
+private:
+	void ProcessMaterial(std::string& filePath, std::string& fileName);
 
 	/// <Validating Resources> -------------------------------------
 	/// Template member functions for validating the keys & resources.

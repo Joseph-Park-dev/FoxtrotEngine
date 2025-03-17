@@ -20,6 +20,7 @@
 #include "ResourceSystem/FTShaders/FTVertexShader.h"
 #include "ResourceSystem/FTShaders/FTPixelShader.h"
 #include "ResourceSystem/FTMaterials/StandardMaterial.h"
+#include "ResourceSystem/FTMaterials/RimMaterial.h"
 #include "Core/FTCore.h"
 #include "Core/TemplateFunctions.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -81,13 +82,6 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 		std::pair(
 			ChunkKey::PRIMITIVE_SPHERE,
 			GeometryGenerator::MakeSphere(1.0f, 10, 10)));
-
-	StandardMaterial* basicMat = DBG_NEW StandardMaterial;
-	basicMat->SetFileName("Basic Material");
-	mMapMaterials.insert(
-		std::pair(
-			ChunkKey::Material::STANDARD_MATERIAL,
-			basicMat));
 }
 
 void ResourceManager::DeleteAll()
@@ -286,36 +280,32 @@ void ResourceManager::LoadMaterialsFromChunk(std::ifstream& ifs)
 {
 	FTMaterial* resource = DBG_NEW StandardMaterial;
 	resource->LoadProperties(ifs);
+	mMapMaterials.insert(std::make_pair(mItemKey, resource));
+
+	resource = DBG_NEW RimMaterial;
+	resource->LoadProperties(ifs);
+	mMapMaterials.insert(std::make_pair(mItemKey, resource));
 
 	// Include materials here.
 
-	mMapMaterials.insert(std::make_pair(mItemKey, resource));
 }
 
-FTMaterial* ResourceManager::LoadMaterial(std::string& filePath)
+void ResourceManager::LoadMaterial()
 {
-	// Get Relative path to Assets folder
-	std::string fileName = filePath.substr(filePath.rfind("\\") + 1);
-	UINT		pending = mItemKey + 1;
+	StandardMaterial* standard = new StandardMaterial;
+	std::string path = std::string(".//Assets//Materials//") + ChunkKey::STANDARD_MAT + FileTypes::MATERIAL;
+	if (!std::filesystem::exists(path))
+		standard->SaveToFile();
+	standard->LoadFromFile();
 
-	if (!ResourceExists<FTMaterial*>(pending, filePath, mMapMaterials))
-	{
-		printf("Message: Loading FTResource %s to mItemKey %d. \n", filePath.c_str(), pending);
-		if (fileName == std::string(ChunkKey::STANDARD_MAT) + FileTypes::MATERIAL)
-		{
-			StandardMaterial* res = DBG_NEW StandardMaterial;
-			res->SetFileName(fileName);
-			res->SetRelativePath(filePath);
-			mMapMaterials.insert(std::make_pair(pending, res));
-			mItemKey = pending;
-			return res;
-		}
-	}
-	else
-	{
-		printf("Warning : Resource %s is already loaded to mItemKey %d.\n", filePath.c_str(), pending);
-		return nullptr;
-	}
+	RimMaterial* rim = new RimMaterial;
+	path = std::string(".//Assets//Materials//") + ChunkKey::RIM_MAT + FileTypes::MATERIAL;
+	if (!std::filesystem::exists(path))
+		rim->SaveToFile();
+	rim->LoadFromFile();
+
+	mMapMaterials.insert({ ++mItemKey, standard });
+	mMapMaterials.insert({ ++mItemKey, rim });
 }
 
 void ResourceManager::ProcessTexture(FTTexture* texture)
@@ -498,10 +488,6 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	mMapVertexShaders.reserve(desc.first);
 	LoadResourceFromChunk<FTVertexShader>(ifs, mMapVertexShaders, desc.first);
 
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMATERIAL);
-	mMapMaterials.reserve(desc.first);
-	LoadMaterialsFromChunk(ifs);
-
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMESH_GROUP);
 	mMapMeshData.reserve(desc.first);
 	LoadResourceFromChunk<FTMeshDataPack>(ifs, mMapMeshData, desc.first);
@@ -531,6 +517,8 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	ProcessMaterials();
 	ProcessVertexShaders();
 	ProcessPixelShaders();
+
+	LoadMaterial();
 }
 
 #ifdef FOXTROT_EDITOR
@@ -549,6 +537,8 @@ void ResourceManager::LoadAllResourcesInAsset()
 	ProcessMaterials();
 	ProcessVertexShaders();
 	ProcessPixelShaders();
+
+	LoadMaterial();
 }
 
 void ResourceManager::LoadResByType(std::string& filePath)
@@ -572,9 +562,9 @@ void ResourceManager::LoadResByType(std::string& filePath)
 		case ResType::FTMESH:
 			LoadResource(filePath, mMapMeshData);
 			break;
-		case ResType::FTMATERIAL:
-			LoadMaterial(filePath);
-			break;
+		//case ResType::FTMATERIAL:
+		//	LoadMaterial(filePath);
+		//	break;
 		// case ResType::FT_VERTEX_SHADER:
 		//	LoadResource(filePath, mMapVertexShaders);
 		// case ResType::FT_PIXEL_SHADER:
@@ -596,8 +586,8 @@ ResType ResourceManager::GetResType(std::string& fileName)
 	else if (StrContains(FileTypes::MESH, format))
 		return ResType::FTMESH;
 
-	else if (StrContains(FileTypes::MATERIAL, format))
-		return ResType::FTMATERIAL;
+	//else if (StrContains(FileTypes::MATERIAL, format))
+	//	return ResType::FTMATERIAL;
 
 	else if (StrContains(FileTypes::SHADER, format))
 

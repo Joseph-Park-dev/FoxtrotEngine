@@ -53,8 +53,8 @@ UINT FTTexture::LoadProperties(std::ifstream& ifs)
     FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTEXTURE);
     FileIOHelper::LoadInt(ifs, mTexHeight);
     FileIOHelper::LoadInt(ifs, mTexWidth);
-    UINT key = FTResource::LoadProperties(ifs);
-    return key;
+
+    return FTResource::LoadProperties(ifs);
 }
 
 #ifdef FOXTROT_EDITOR

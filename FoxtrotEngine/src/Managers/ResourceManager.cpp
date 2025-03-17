@@ -272,6 +272,52 @@ void ResourceManager::SetPathToAsset(std::string&& projectPath)
 	mPathToAsset.assign(projectPath + "\\Assets");
 }
 
+void ResourceManager::SaveMaterialsToChunk(std::ofstream& ofs)
+{
+	typename std::unordered_map<UINT, FTMaterial*>::const_iterator iter;
+	for (iter = mMapMaterials.begin(); iter != mMapMaterials.end(); ++iter)
+	{
+		if (0 < (*iter).second->GetRefCount())
+			(*iter).second->SaveProperties(ofs, (*iter).first);
+	}
+}
+
+void ResourceManager::LoadMaterialsFromChunk(std::ifstream& ifs)
+{
+	FTMaterial* resource = DBG_NEW StandardMaterial;
+	resource->LoadProperties(ifs);
+
+	// Include materials here.
+
+	mMapMaterials.insert(std::make_pair(mItemKey, resource));
+}
+
+FTMaterial* ResourceManager::LoadMaterial(std::string& filePath)
+{
+	// Get Relative path to Assets folder
+	std::string fileName = filePath.substr(filePath.rfind("\\") + 1);
+	UINT		pending = mItemKey + 1;
+
+	if (!ResourceExists<FTMaterial*>(pending, filePath, mMapMaterials))
+	{
+		printf("Message: Loading FTResource %s to mItemKey %d. \n", filePath.c_str(), pending);
+		if (fileName == std::string(ChunkKey::STANDARD_MAT) + FileTypes::MATERIAL)
+		{
+			StandardMaterial* res = DBG_NEW StandardMaterial;
+			res->SetFileName(fileName);
+			res->SetRelativePath(filePath);
+			mMapMaterials.insert(std::make_pair(pending, res));
+			mItemKey = pending;
+			return res;
+		}
+	}
+	else
+	{
+		printf("Warning : Resource %s is already loaded to mItemKey %d.\n", filePath.c_str(), pending);
+		return nullptr;
+	}
+}
+
 void ResourceManager::ProcessTexture(FTTexture* texture)
 {
 	if (texture->GetIsProcessed())
@@ -313,6 +359,19 @@ void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
 	spriteAnim->Initialize(meshDataBuf, mRenderer->GetDevice(), mRenderer->GetContext());
 }
 
+void ResourceManager::ProcessMaterial(FTMaterial* material)
+{
+	for (auto& materialItem : mMapMaterials)
+	{
+		if (materialItem.second)
+		{
+			materialItem.second->LoadFromFile();
+			// All loaded premades are included as default.
+			materialItem.second->AddRefCount();
+		}
+	}
+}
+
 void ResourceManager::ProcessTextures()
 {
 	for (auto& textureItem : mMapTextures)
@@ -352,6 +411,13 @@ void ResourceManager::ProcessSpriteAnims()
 	for (auto& animMapItem : mMapSpriteAnimation)
 		if (animMapItem.second)
 			ProcessSpriteAnim(animMapItem.second);
+}
+
+void ResourceManager::ProcessMaterials()
+{
+	for (auto& material : mMapMaterials)
+		if (material.second)
+			ProcessMaterial(material.second);
 }
 
 void ResourceManager::ProcessVertexShaders()
@@ -404,6 +470,10 @@ void ResourceManager::SaveResources(std::ofstream& ofs)
 	SaveResourceToChunk<FTMeshDataPack>(ofs, mMapMeshData);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTMESH_GROUP);
 
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTMATERIAL);
+	SaveMaterialsToChunk(ofs);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTMATERIAL);
+
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
 	SaveResourceToChunk<FTVertexShader>(ofs, mMapVertexShaders);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
@@ -427,6 +497,10 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_VERTEX_SHADER);
 	mMapVertexShaders.reserve(desc.first);
 	LoadResourceFromChunk<FTVertexShader>(ifs, mMapVertexShaders, desc.first);
+
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMATERIAL);
+	mMapMaterials.reserve(desc.first);
+	LoadMaterialsFromChunk(ifs);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMESH_GROUP);
 	mMapMeshData.reserve(desc.first);
@@ -454,6 +528,7 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	ProcessSpriteAnims();
 	ProcessPremades();
 
+	ProcessMaterials();
 	ProcessVertexShaders();
 	ProcessPixelShaders();
 }
@@ -471,6 +546,7 @@ void ResourceManager::LoadAllResourcesInAsset()
 	ProcessSpriteAnims();
 	ProcessPremades();
 
+	ProcessMaterials();
 	ProcessVertexShaders();
 	ProcessPixelShaders();
 }
@@ -496,6 +572,9 @@ void ResourceManager::LoadResByType(std::string& filePath)
 		case ResType::FTMESH:
 			LoadResource(filePath, mMapMeshData);
 			break;
+		case ResType::FTMATERIAL:
+			LoadMaterial(filePath);
+			break;
 		// case ResType::FT_VERTEX_SHADER:
 		//	LoadResource(filePath, mMapVertexShaders);
 		// case ResType::FT_PIXEL_SHADER:
@@ -516,6 +595,9 @@ ResType ResourceManager::GetResType(std::string& fileName)
 		return ResType::FTPREMADE;
 	else if (StrContains(FileTypes::MESH, format))
 		return ResType::FTMESH;
+
+	else if (StrContains(FileTypes::MATERIAL, format))
+		return ResType::FTMATERIAL;
 
 	else if (StrContains(FileTypes::SHADER, format))
 

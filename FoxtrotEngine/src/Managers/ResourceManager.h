@@ -50,6 +50,7 @@ enum class ResType
 	FTTILEMAP,
 	FTPREMADE,
 	FTMESH,
+	FTMATERIAL,
 	FT_VERTEX_SHADER,
 	FT_PIXEL_SHADER
 };
@@ -133,6 +134,8 @@ public:
 		}
 	}
 
+	void SaveMaterialsToChunk(std::ofstream& ofs);
+
 	template <typename FTRESOURCE>
 	void LoadResourceFromChunk(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap, size_t& resCount)
 	{
@@ -148,12 +151,14 @@ public:
 		}
 	}
 
+	void LoadMaterialsFromChunk(std::ifstream& ifs);
+
 private:
 	template <typename FTRESOURCE>
 	void LoadResource(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
-		FTRESOURCE* resource					= DBG_NEW FTRESOURCE;
-		UINT						   mItemKey = resource->LoadProperties(ifs);
+		FTRESOURCE* resource = DBG_NEW FTRESOURCE;
+		UINT		mItemKey = resource->LoadProperties(ifs);
 
 		if (KeyExists(mItemKey, resMap))
 		{
@@ -192,6 +197,8 @@ public:
 			return nullptr;
 		}
 	}
+
+	FTMaterial* LoadMaterial(std::string& filePath);
 
 	// Add newly created resource from components (e.g FTSpriteAnimation)
 	template <typename FTRESOURCE>
@@ -245,6 +252,7 @@ private:
 	void ProcessSingleMeshData(FTMeshDataPack* meshDataPack);
 	void ProcessTileMap(FTTileMap* tileMap);
 	void ProcessSpriteAnim(FTSpriteAnimation* spriteAnim);
+	void ProcessMaterial(FTMaterial* material);
 
 	void ProcessTextures();
 	void ProcessMeshData();
@@ -252,6 +260,7 @@ private:
 	void ProcessTileMaps();
 	void ProcessSpriteAnims();
 
+	void ProcessMaterials();
 	void ProcessVertexShaders();
 	void ProcessPixelShaders();
 

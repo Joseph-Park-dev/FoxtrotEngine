@@ -18,9 +18,8 @@ Command::Command()
 {
 }
 
-void IntEditCommand::Execute()
+void IntEditCommand::Do()
 {
-	mPrevValue = mValue;
 	mValue = mNextValue;
 }
 
@@ -29,48 +28,37 @@ void IntEditCommand::Undo()
 	mValue = mPrevValue;
 }
 
-IntEditCommand::IntEditCommand(int& valRef, int nextVal)
-	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
+void IntEditCommand::SetNextVal(int nextVal)
 {
-}
-
-void IntEditCommandPtr::Execute()
-{
-	mPrevValue = *mValue;
-	*mValue = mNextValue;
-}
-
-void IntEditCommandPtr::Undo()
-{
-	int nextVal = *mValue;
-	*mValue = mPrevValue;
 	mNextValue = nextVal;
 }
 
-IntEditCommandPtr::IntEditCommandPtr(int* valRef, int nextVal)
-	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
+IntEditCommand::IntEditCommand(int& valRef)
+	: mPrevValue(valRef), mValue(valRef), mNextValue(0)
 {
 }
 
-void FloatEditCommand::Execute()
+void FloatEditCommand::Do()
 {
-	mPrevValue = *mValue;
-	*mValue = mNextValue;
+	mValue = mNextValue;
 }
 
 void FloatEditCommand::Undo()
 {
-	float nextVal = *mValue;
-	*mValue = mPrevValue;
+	mValue = mPrevValue;
+}
+
+void FloatEditCommand::SetNextVal(float nextVal)
+{
 	mNextValue = nextVal;
 }
 
-FloatEditCommand::FloatEditCommand(float* valRef, float nextVal)
-	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
+FloatEditCommand::FloatEditCommand(float& valRef)
+	: mPrevValue(valRef), mValue(valRef), mNextValue(0.f)
 {
 }
 
-void Vector2EditCommand::Execute()
+void Vector2EditCommand::Do()
 {
 	mPrevValue = mValue;
 	mValue = mNextValue;
@@ -78,19 +66,21 @@ void Vector2EditCommand::Execute()
 
 void Vector2EditCommand::Undo()
 {
-	FTVector2 nextVal = mValue;
 	mValue = mPrevValue;
+}
+
+void Vector2EditCommand::SetNextVal(FTVector2 nextVal)
+{
 	mNextValue = nextVal;
 }
 
-Vector2EditCommand::Vector2EditCommand(FTVector2& valRef, FTVector2 nextVal)
-	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
+Vector2EditCommand::Vector2EditCommand(FTVector2& valRef)
+	: mPrevValue(valRef), mValue(valRef), mNextValue(FTVector2::Zero)
 {
 }
 
-void WStrEditCommand::Execute()
+void WStrEditCommand::Do()
 {
-	mPrevValue = mValue;
 	mValue = mNextValue;
 }
 
@@ -99,18 +89,22 @@ void WStrEditCommand::Undo()
 	mValue = mPrevValue;
 }
 
-WStrEditCommand::WStrEditCommand(std::wstring& valRef, std::wstring nextVal)
-	: mPrevValue()
+void WStrEditCommand::SetNextVal(std::wstring nextVal)
+{
+	mNextValue.assign(nextVal);
+}
+
+WStrEditCommand::WStrEditCommand(std::wstring& valRef)
+	: mPrevValue(valRef)
 	, mValue	(valRef)
-	, mNextValue(nextVal)
+	, mNextValue()
 {}
 
 WStrEditCommand::~WStrEditCommand()
 {}
 
-void B2Vec2EditCommand::Execute()
+void B2Vec2EditCommand::Do()
 {
-	mPrevValue = mValue;
 	mValue = mNextValue;
 }
 
@@ -119,51 +113,64 @@ void B2Vec2EditCommand::Undo()
 	mValue = mPrevValue;
 }
 
-B2Vec2EditCommand::B2Vec2EditCommand(b2Vec2& valRef, b2Vec2 nextVal)
-	: mPrevValue()
+void B2Vec2EditCommand::SetNextVal(b2Vec2 nextVal)
+{
+	mNextValue = nextVal;
+}
+
+B2Vec2EditCommand::B2Vec2EditCommand(b2Vec2& valRef)
+	: mPrevValue(valRef)
 	, mValue(valRef)
-	, mNextValue(nextVal)
+	, mNextValue(b2Vec2_zero)
 {}
 
-void Vector3EditCommand::Execute()
+void Vector3EditCommand::Do()
 {
-	mPrevValue = mValue;
 	mValue = mNextValue;
 }
 
 void Vector3EditCommand::Undo()
 {
-	FTVector3 nextVal = mValue;
 	mValue = mPrevValue;
+}
+
+FTVector3 Vector3EditCommand::GetPrevVal()
+{
+	return mPrevValue;
+}
+
+void Vector3EditCommand::SetNextVal(FTVector3 nextVal)
+{
 	mNextValue = nextVal;
 }
 
-Vector3EditCommand::Vector3EditCommand(FTVector3& valRef, FTVector3 nextVal)
-	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
+Vector3EditCommand::Vector3EditCommand(FTVector3& valRef)
+	: mPrevValue(valRef), mValue(valRef), mNextValue(FTVector3::Zero)
 {
 }
 
-void DXVector3EditCommand::Execute()
+void DXVector3EditCommand::Do()
 {
-	mPrevValue = mValue;
 	mValue = mNextValue;
 }
 
 void DXVector3EditCommand::Undo()
 {
-	DirectX::SimpleMath::Vector3 nextVal = mValue;
 	mValue = mPrevValue;
+}
+
+void DXVector3EditCommand::SetNextVal(DirectX::SimpleMath::Vector3 nextVal)
+{
 	mNextValue = nextVal;
 }
 
-DXVector3EditCommand::DXVector3EditCommand(DirectX::SimpleMath::Vector3& valRef, DirectX::SimpleMath::Vector3 nextVal)
-	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
+DXVector3EditCommand::DXVector3EditCommand(DirectX::SimpleMath::Vector3& valRef)
+	: mPrevValue(valRef), mValue(valRef), mNextValue(DirectX::SimpleMath::Vector3(0.0f))
 {
 }
 
-void StrEditCommand::Execute()
+void StrEditCommand::Do()
 {
-	mPrevValue = mValue;
 	mValue = mNextValue;
 }
 
@@ -172,34 +179,43 @@ void StrEditCommand::Undo()
 	mValue = mPrevValue;
 }
 
-StrEditCommand::StrEditCommand(std::string& valRef, std::string nextVal)
-	: mPrevValue()
+void StrEditCommand::SetNextVal(std::string nextVal)
+{
+	mNextValue.assign(nextVal);
+}
+
+StrEditCommand::StrEditCommand(std::string& valRef)
+	: mPrevValue(valRef)
 	, mValue(valRef)
-	, mNextValue(nextVal)
+	, mNextValue()
 {}
 
 StrEditCommand::~StrEditCommand()
 {
 }
 
-void StateEditCommand::Execute()
+void ActorStateEditCommand::Do()
 {
-	mPrevValue = mValue;
 	mValue = mNextValue;
 }
 
-void StateEditCommand::Undo()
+void ActorStateEditCommand::Undo()
 {
 	mValue = mPrevValue;
 }
 
-StateEditCommand::StateEditCommand(Actor::State& valRef, Actor::State nextVal)
-	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
+void ActorStateEditCommand::SetNextVal(Actor::State nextVal)
+{
+	mNextValue = nextVal;
+}
+
+ActorStateEditCommand::ActorStateEditCommand(Actor::State& valRef)
+	: mPrevValue(valRef), mValue(valRef), mNextValue(Actor::State::EActive)
 {
 }
 
-BoolEditCommand::BoolEditCommand(bool& valRef, bool nextVal)
-	: mPrevValue(), mValue(valRef), mNextValue(nextVal)
+BoolEditCommand::BoolEditCommand(bool& valRef)
+	: mPrevValue(valRef), mValue(valRef), mNextValue(true)
 {
 }
 
@@ -207,13 +223,37 @@ BoolEditCommand::BoolEditCommand(bool& valRef, bool nextVal)
 BoolEditCommand::~BoolEditCommand()
 {}
 
-void BoolEditCommand::Execute()
+void BoolEditCommand::Do()
 {
-	mPrevValue = mValue;
 	mValue = mNextValue;
 }
 
 void BoolEditCommand::Undo()
 {
 	mValue = mPrevValue;
+}
+
+void BoolEditCommand::SetNextVal(bool nextVal)
+{
+	mNextValue = nextVal;
+}
+
+void ActorGroupEditCommand::Do()
+{
+	mValue = mNextValue;
+}
+
+void ActorGroupEditCommand::Undo()
+{
+	mValue = mPrevValue;
+}
+
+void ActorGroupEditCommand::SetNextVal(ActorGroup nextVal)
+{
+	mNextValue = nextVal;
+}
+
+ActorGroupEditCommand::ActorGroupEditCommand(ActorGroup& valRef)
+	: mPrevValue(valRef), mValue(valRef), mNextValue(ActorGroup::NOT_ASSIGNED)
+{
 }

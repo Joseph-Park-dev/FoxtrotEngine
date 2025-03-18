@@ -237,8 +237,8 @@ void Camera::DisplayCameraMenu()
 	}
 	// FTVector3 pos = ConvertToTopLeft(FTVector3(mPosition));
 	CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", mPosition, LOOKAT_MODSPEED);
-	CommandHistory::GetInstance()->UpdateFloatValue("Look-At Yaw", &mYaw, LOOKAT_MODSPEED);
-	CommandHistory::GetInstance()->UpdateFloatValue("Look-At Pitch", &mPitch, LOOKAT_MODSPEED);
+	CommandHistory::GetInstance()->UpdateFloatValue("Look-At Yaw", mYaw, LOOKAT_MODSPEED);
+	CommandHistory::GetInstance()->UpdateFloatValue("Look-At Pitch", mPitch, LOOKAT_MODSPEED);
 	// mPosition = ConvertToCenter(pos).GetDXVec3();
 
 	//// Updating screen center since the camera position is moved

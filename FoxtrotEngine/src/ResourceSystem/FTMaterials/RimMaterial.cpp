@@ -1,0 +1,97 @@
+#include "RimMaterial.h"
+
+#include <directxtk/SimpleMath.h>
+
+#include "Debugging/DebugMemAlloc.h"
+#include "FileSystem/FileIOHelper.h"
+#include "Core/TemplateFunctions.h"
+#include "Renderer/D3D11Utils.h"
+
+#ifdef FOXTROT_EDITOR
+	#include "DirectoryHelper.h"
+	#include "CommandHistory.h"
+#endif // FOXTROT_EDITOR
+
+void RimMaterial::CreatePixelConstBuffer(ComPtr<ID3D11Device>& device, ComPtr<ID3D11Buffer>& buffer)
+{
+	D3D11Utils::CreateConstantBuffer(device, *mData, buffer);
+}
+
+void RimMaterial::UpdateBuffer(ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Buffer>& buffer)
+{
+	D3D11Utils::UpdateBuffer(context, *mData, buffer);
+}
+
+void RimMaterial::LoadFromFile()
+{
+	std::ifstream ifs(GetRelativePath());
+
+	if (ifs)
+	{
+		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RIM_MAT);
+
+		bool boolVal = false;
+		FileIOHelper::LoadBool(ifs, boolVal);
+		mData->mUseSmoothstep = boolVal;
+
+		FileIOHelper::LoadFloat(ifs, mData->mRimStrength);
+		FileIOHelper::LoadFloat(ifs, mData->mRimPower);
+
+		FTVector3 vec3 = FTVector3::Zero;
+
+		FileIOHelper::LoadVector3(ifs, vec3);
+		mData->mRimColor = vec3.GetDXVec3();
+	}
+	else
+		Debug::LogError(__LINE__, __FILE__, "Failed to load material from file");
+}
+
+RimMaterial::RimMaterial()
+	: FTMaterial()
+	, mData(DBG_NEW RimData)
+{
+	std::string name = std::string(ChunkKey::RIM_MAT) + FileTypes::MATERIAL;
+	std::string path = std::string(PATH_PROJECT + "\\Assets\\Materials\\") + name;
+
+	SetFileName(name);
+	SetRelativePath(path);
+}
+
+RimMaterial::~RimMaterial()
+{
+	delete mData;
+}
+
+#ifdef FOXTROT_EDITOR
+void RimMaterial::SaveToFile()
+{
+	std::ofstream ofs(GetRelativePath());
+
+	if (ofs)
+	{
+		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::RIM_MAT);
+
+		FileIOHelper::SaveVector3(ofs, ChunkKey::Rim::COLOR, mData->mRimColor);
+		FileIOHelper::SaveFloat(ofs, ChunkKey::Rim::POWER, mData->mRimPower);
+		FileIOHelper::SaveFloat(ofs, ChunkKey::Rim::STRENGTH, mData->mRimStrength);
+		FileIOHelper::SaveBool(ofs, ChunkKey::Rim::USE_SMOOTH_STEP, mData->mUseSmoothstep);
+
+		FileIOHelper::EndDataPackSave(ofs, ChunkKey::RIM_MAT);
+		FileIOHelper::SaveBufferToFile(ofs);
+
+		printf("Material %s created to %s\n", GetFileName().c_str(), GetRelativePath().c_str());
+	}
+	else
+		Debug::LogError(__LINE__, __FILE__, "Failed to save material to file");
+}
+
+void RimMaterial::UpdateUI()
+{
+	bool val = (bool)mData->mUseSmoothstep;
+	CommandHistory::GetInstance()->UpdateVector3Value("Rim Color", mData->mRimColor);
+	CommandHistory::GetInstance()->UpdateFloatValue("Rim Power", mData->mRimPower);
+	CommandHistory::GetInstance()->UpdateFloatValue("Rim Strength", mData->mRimStrength);
+	CommandHistory::GetInstance()->UpdateBoolValue("Use Smooth Step", val);
+	mData->mUseSmoothstep = val;
+}
+#endif

@@ -89,10 +89,6 @@ private:
 	void UpdateActorName();
 	void UpdateActorGroup();
 	void UpdateActorState();
-	void UpdateActorWorldPosition();
-	void UpdateActorLocalPosition();
-	void UpdateActorScale();
-	void UpdateActorRotation();
 
 	void UpdateComponents();
 	void DisplayCompSelectionPopup();

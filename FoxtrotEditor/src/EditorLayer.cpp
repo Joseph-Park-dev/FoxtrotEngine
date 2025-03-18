@@ -301,8 +301,12 @@ void EditorLayer::DisplayHierarchyMenu()
 		{
 			if (ImGui::Selectable(actorsRow.at(i)->GetName().c_str(), mActorNameIdx == i))
 			{
+				IntEditCommand* command = DBG_NEW IntEditCommand(mActorNameIdx);
+				command->SetNextVal(i);
+				CommandHistory::GetInstance()->AddCommand(command);
+				
 				mActorNameIdx = i;
-				CommandHistory::GetInstance()->AddCommand(DBG_NEW IntEditCommand(mActorNameIdx, i));
+
 				EditorSceneManager::GetInstance()->GetEditorScene()->UnfocusEditorElements();
 				Actor* actor		  = actorsRow[mActorNameIdx];
 				mFocusedEditorElement = dynamic_cast<EditorElement*>(actor);
@@ -625,8 +629,6 @@ EditorLayer::EditorLayer()
 	, mFileMenuEvent(FileMenuEvents::None)
 	, mErrorType(ErrorType::None)
 {
-	// Initial command stored in front of every following commands
-	CommandHistory::GetInstance()->AddCommand(DBG_NEW IntEditCommand(mActorNameIdx, 0));
 }
 
 EditorLayer::~EditorLayer()

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -18,54 +18,60 @@
 #include "EditorLayer.h"
 #include "Core/TemplateFunctions.h"
 #include "Debugging/DebugMemAlloc.h"
+#include "FileSystem/BufferSizes.h"
 
 void CommandHistory::AddCommand(Command* command)
 {
 	if (mCommandDeq.size() < COMMAND_MAXCOUNT)
 	{
-		command->Execute();
-		LogInt("Executed! : ", mCommandPointer);
-		int endIndex = mCommandDeq.size() - 1;
-		int dstFromEnd = endIndex - mCommandPointer;
-		if (0 < dstFromEnd)
+		if (0 < mCommandDeq.size())
 		{
-			int insertPoint = mCommandPointer + 1;
-			mCommandDeq.insert(mCommandDeq.begin() + insertPoint, command);
-			int popCount = mCommandDeq.size() - 1 - insertPoint;
-			for (int i = 0; i < popCount; ++i)
-				mCommandDeq.pop_back();
+			size_t endIdx = mCommandDeq.size() - 1;
+			if (0 < endIdx)
+			{
+				size_t distFromEnd = endIdx - mCommandPointer;
+				if (0 < distFromEnd)
+				{
+					for (size_t i = 0; i < distFromEnd; ++i)
+					{
+						delete mCommandDeq.back();
+						mCommandDeq.pop_back();
+					}
+				}
+			}
 		}
-		else
-		{
-			mCommandDeq.emplace_back(command);
-		}
+		mCommandDeq.push_back(command);
 		mCommandPointer = mCommandDeq.size() - 1;
 	}
 }
 
 void CommandHistory::UndoCommand()
 {
-	if (0 < mCommandPointer)
+	if (0 <= mCommandPointer)
 	{
-		Command* cmd = QueryCommand();
+		Command* cmd = GetCurrentCommand();
 		if (cmd)
 		{
 			LogInt(mCommandPointer);
 			cmd->Undo();
-			--mCommandPointer;
+			if(0 < mCommandPointer)
+				--mCommandPointer;
 		}
 	}
 }
 
 void CommandHistory::RedoCommand()
 {
-	if (mCommandPointer < mCommandDeq.size() - 1)
+	if (mCommandPointer < mCommandDeq.size())
 	{
-		++mCommandPointer;
-		LogInt(mCommandPointer);
-		Command* cmd = QueryCommand();
+		Command* cmd = GetCurrentCommand();
 		if (cmd)
-			cmd->Execute();
+		{
+			LogInt(mCommandPointer);
+			cmd->Do();
+			if (mCommandPointer < mCommandDeq.size() - 1)
+				++mCommandPointer;
+		}
 	}
 }
 
@@ -73,7 +79,7 @@ void CommandHistory::StartCMDRecord()
 {
 	if (!mIsRecording)
 	{
-		mIsRecording = true;
+		mIsRecording	 = true;
 		mCMDStartPointer = mCommandPointer;
 	}
 }
@@ -82,7 +88,7 @@ void CommandHistory::EndCMDRecord()
 {
 	if (mIsRecording)
 	{
-		mIsRecording = false;
+		mIsRecording   = false;
 		mCMDEndPointer = mCommandPointer;
 		MergeCMDRecord();
 	}
@@ -95,7 +101,7 @@ void CommandHistory::MergeCMDRecord()
 			&& mCommandDeq[mCMDEndPointer] != nullptr)
 		{
 			mCommandDeq[mCMDStartPointer + 1] = mCommandDeq[mCMDEndPointer];
-			int popCount = mCMDEndPointer - mCMDStartPointer - 1;
+			int popCount					  = mCMDEndPointer - mCMDStartPointer - 1;
 			for (size_t i = 0; i < popCount; ++i)
 				mCommandDeq.pop_back();
 		}
@@ -104,218 +110,287 @@ void CommandHistory::MergeCMDRecord()
 void CommandHistory::Update()
 {
 	if (EditorLayer::GetInstance()->GetUndoKeyPressed())
-	{
 		UndoCommand();
-		LogString("undo");
-	}
 	if (EditorLayer::GetInstance()->GetRedoKeyPressed())
-	{
 		RedoCommand();
-		LogString("redo");
-	}
 }
 
 void CommandHistory::UpdateVector2Value(std::string label, FTVector2& ref, float modSpeed)
 {
-	FTVector2 updatedVal = ref;
-	float* vec2 = DBG_NEW float[2];
-	vec2[0] = updatedVal.x;
-	vec2[1] = updatedVal.y;
-	bool isRecording = mIsRecording;
-	if (ImGui::DragFloat2(label.c_str(), vec2, modSpeed)) {
-		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left)) {
-			mIsRecording = true;
-			AddCommand(DBG_NEW Vector2EditCommand(ref, updatedVal));
+	static Vector2EditCommand* command;
+
+	float vec2[2];
+	vec2[0] = ref.x;
+	vec2[1] = ref.y;
+
+	if (ImGui::DragFloat2(label.c_str(), vec2, modSpeed))
+	{
+		if (!mIsRecording)
+		{
+			if (!command)
+			{
+				mIsRecording = true;
+				command = DBG_NEW Vector2EditCommand(ref);
+			}
 		}
-		updatedVal = FTVector2(vec2[0], vec2[1]);
-		ref = updatedVal;
 	}
 	else
 	{
-		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
+		if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
 		{
-			AddCommand(DBG_NEW Vector2EditCommand(ref, updatedVal));
-			mIsRecording = false;
+			if (command)
+			{
+				mIsRecording = false;
+				command->SetNextVal(FTVector2(vec2[0], vec2[1]));
+				AddCommand(command);
+				command = nullptr;
+			}
 		}
 	}
-	delete[] vec2;
+	ref.x = vec2[0];
+	ref.y = vec2[1];
 }
 
 void CommandHistory::UpdateVector2Value(std::string label, b2Vec2& ref, float modSpeed)
 {
-	b2Vec2 updatedVal = ref;
-	float* vec2 = DBG_NEW float[2];
-	vec2[0] = updatedVal.x;
-	vec2[1] = updatedVal.y;
-	bool isRecording = mIsRecording;
-	if (ImGui::DragFloat2(label.c_str(), vec2, modSpeed)) {
-		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left)) {
-			mIsRecording = true;
-			AddCommand(DBG_NEW B2Vec2EditCommand(ref, updatedVal));
+	static B2Vec2EditCommand* command;
+
+	float vec2[2];
+	vec2[0] = ref.x;
+	vec2[1] = ref.y;
+
+	if (ImGui::DragFloat2(label.c_str(), vec2, modSpeed))
+	{
+		if (!mIsRecording)
+		{
+			if (!command)
+			{
+				mIsRecording = true;
+				command = DBG_NEW B2Vec2EditCommand(ref);
+			}
 		}
-		updatedVal.x = vec2[0];
-		updatedVal.y = vec2[1];
-		ref = updatedVal;
 	}
 	else
 	{
-		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
+		if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
 		{
-			AddCommand(DBG_NEW B2Vec2EditCommand(ref, updatedVal));
-			mIsRecording = false;
+			if (command)
+			{
+				mIsRecording = false;
+				b2Vec2 updated = b2Vec2_zero;
+				updated.x = vec2[0];
+				updated.y = vec2[1];
+				command->SetNextVal(updated);
+				AddCommand(command);
+				command = nullptr;
+			}
 		}
 	}
-	delete[] vec2;
+	ref.x = vec2[0];
+	ref.y = vec2[1];
 }
 
 void CommandHistory::UpdateVector3Value(std::string label, FTVector3& ref, float modSpeed)
 {
-	FTVector3 updatedVal = ref;
-	float* vec3 = DBG_NEW float[3];
-	vec3[0] = updatedVal.x;
-	vec3[1] = updatedVal.y;
-	vec3[2] = updatedVal.z;
-	bool isRecording = mIsRecording;
-	if (ImGui::DragFloat3(label.c_str(), vec3, modSpeed)){
-		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left)){
-			mIsRecording = true;
-			AddCommand(DBG_NEW Vector3EditCommand(ref, updatedVal));
-		}
-		updatedVal = FTVector3(vec3[0], vec3[1], vec3[2]);
-		ref = updatedVal;
-	}
-	else
+	static Vector3EditCommand* command;
+
+	float vec3[3];
+	vec3[0] = ref.x;
+	vec3[1] = ref.y;
+	vec3[2] = ref.z;
+
+	if (ImGui::DragFloat3(label.c_str(), vec3, modSpeed))
 	{
-		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
+		if (!mIsRecording)
 		{
-			AddCommand(DBG_NEW Vector3EditCommand(ref, updatedVal));
-			mIsRecording = false;
-			LogInt(mCommandDeq.size());
+			if (!command)
+			{
+				mIsRecording = true;
+				command = DBG_NEW Vector3EditCommand(ref);
+			}
 		}
 	}
-	delete[] vec3;
+
+	if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
+	{
+		if (command)
+		{
+			mIsRecording = false;
+			command->SetNextVal(ref);
+			AddCommand(command);
+			command = nullptr;
+		}
+	}
+
+	ref.x = vec3[0];
+	ref.y = vec3[1];
+	ref.z = vec3[2];
 }
 
 void CommandHistory::UpdateVector3Value(std::string label, DirectX::SimpleMath::Vector3& ref, float modSpeed)
 {
-	DirectX::SimpleMath::Vector3 updatedVal = ref;
-	float* vec3 = DBG_NEW float[3];
-	vec3[0] = updatedVal.x;
-	vec3[1] = updatedVal.y;
-	vec3[2] = updatedVal.z;
-	bool isRecording = mIsRecording;
-	if (ImGui::DragFloat3(label.c_str(), vec3, modSpeed)) {
-		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left)) {
-			mIsRecording = true;
-			AddCommand(DBG_NEW DXVector3EditCommand(ref, updatedVal));
+	static DXVector3EditCommand* command;
+
+	float vec3[3];
+	vec3[0] = ref.x;
+	vec3[1] = ref.y;
+	vec3[2] = ref.z;
+
+	if (ImGui::DragFloat3(label.c_str(), vec3, modSpeed))
+	{
+		if (!mIsRecording)
+		{
+			if (!command)
+			{
+				mIsRecording = true;
+				command = DBG_NEW DXVector3EditCommand(ref);
+			}
 		}
-		updatedVal = DirectX::SimpleMath::Vector3(vec3[0], vec3[1], vec3[2]);
-		ref = updatedVal;
 	}
 	else
 	{
-		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
+		if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
 		{
-			AddCommand(DBG_NEW DXVector3EditCommand(ref, updatedVal));
-			mIsRecording = false;
+			if (command)
+			{
+				mIsRecording = false;
+				command->SetNextVal(ref);
+				AddCommand(command);
+				command = nullptr;
+			}
 		}
 	}
-	delete[] vec3;
+	ref.x = vec3[0];
+	ref.y = vec3[1];
+	ref.z = vec3[2];
 }
 
-void CommandHistory::UpdateFloatValue(std::string label, float* ref, float modSpeed)
+void CommandHistory::UpdateStringValue(std::string label, std::string& ref)
 {
-	float prevFloat = *ref;
-	float* rotationBuf = DBG_NEW float(prevFloat);
-	bool isRecording = mIsRecording;
-	if (ImGui::DragFloat(label.c_str(), rotationBuf, modSpeed))
+	if (ref.capacity() < BufferSize::STRING_BUFFER_SIZE)
+		ref.reserve(BufferSize::STRING_BUFFER_SIZE);
+
+	static StrEditCommand* command;
+	
+	char* updatedName = _strdup(ref.c_str());
+
+	if (ImGui::InputText(label.c_str(), updatedName, ACTORNAME_MAX))
 	{
-		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
+		if (!mIsRecording)
 		{
-			mIsRecording = true;
-			CommandHistory::GetInstance()->
-				AddCommand(DBG_NEW FloatEditCommand(ref, prevFloat));
+			if (!command)
+			{
+				mIsRecording = true;
+				command = DBG_NEW StrEditCommand(ref);
+			}
 		}
-		*ref = *rotationBuf;
 	}
 	else
 	{
-		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
+		if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
 		{
-			CommandHistory::GetInstance()->
-				AddCommand(DBG_NEW FloatEditCommand(ref, prevFloat));
-			mIsRecording = false;
+			if (command)
+			{
+				mIsRecording = false;
+				command->SetNextVal(ref);
+				AddCommand(command);
+				command = nullptr;
+			}
 		}
 	}
-	delete rotationBuf;
+	ref.assign(updatedName);
+}
+
+void CommandHistory::UpdateStateValue(std::string label, Actor::State& state)
+{
+	static ActorStateEditCommand* command = nullptr;
+	
+	bool isActive = false;
+
+	if (ImGui::Checkbox(label.c_str(), &isActive))
+	{
+		command = DBG_NEW ActorStateEditCommand(state);
+		
+		if (isActive)
+			state = Actor::State::EActive;
+		else
+			state = Actor::State::EDead;
+
+		command->SetNextVal(state);
+		CommandHistory::GetInstance()->AddCommand(command);
+	}
 }
 
 void CommandHistory::UpdateFloatValue(std::string label, float& ref, float modSpeed)
 {
-	float prevFloat = ref;
-	float* floatBuf = DBG_NEW float(prevFloat);
-	bool isRecording = mIsRecording;
-	if (ImGui::DragFloat(label.c_str(), floatBuf, modSpeed))
+	static FloatEditCommand* command;
+	
+	if (ImGui::DragFloat(label.c_str(), &ref, modSpeed))
 	{
-		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
+		if (!mIsRecording)
 		{
-			mIsRecording = true;
-			CommandHistory::GetInstance()->
-				AddCommand(DBG_NEW FloatEditCommand(&ref, prevFloat));
+			if (!command)
+			{
+				mIsRecording = true;
+				command = DBG_NEW FloatEditCommand(ref);
+			}
 		}
-		ref = *floatBuf;
 	}
 	else
 	{
-		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
+		if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
 		{
-			CommandHistory::GetInstance()->
-				AddCommand(DBG_NEW FloatEditCommand(&ref, prevFloat));
-			mIsRecording = false;
+			if (command)
+			{
+				mIsRecording = false;
+				command->SetNextVal(ref);
+				AddCommand(command);
+				command = nullptr;
+			}
 		}
 	}
-	delete floatBuf;
 }
 
-void CommandHistory::UpdateIntValue(std::string label, int* ref, int modSpeed)
+void CommandHistory::UpdateIntValue(std::string label, int& ref, int modSpeed)
 {
-	int prevInt = *ref;
-	int* intBuf = DBG_NEW int(prevInt);
-	bool isRecording = mIsRecording;
-	if (ImGui::DragInt(label.c_str(), intBuf, modSpeed))
+	static IntEditCommand* command;
+
+	if (ImGui::DragInt(label.c_str(), &ref, modSpeed))
 	{
-		if (!isRecording && ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
+		if (!mIsRecording)
 		{
-			mIsRecording = true;
-			CommandHistory::GetInstance()->
-				AddCommand(DBG_NEW IntEditCommandPtr(ref, prevInt));
+			if (!command)
+			{
+				mIsRecording = true;
+				command = DBG_NEW IntEditCommand(ref);
+			}
 		}
-		*ref = *intBuf;
 	}
 	else
 	{
-		if (isRecording && !ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Left))
+		if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
 		{
-			CommandHistory::GetInstance()->
-				AddCommand(DBG_NEW IntEditCommandPtr(ref, prevInt));
-			mIsRecording = false;
+			if (command)
+			{
+				mIsRecording = false;
+				command->SetNextVal(ref);
+				AddCommand(command);
+				command = nullptr;
+			}
 		}
 	}
-	delete intBuf;
 }
 
 void CommandHistory::UpdateBoolValue(std::string label, bool& ref)
 {
-	bool valToUpdate = ref;
-	bool isRecording = mIsRecording;
-	if (ImGui::Checkbox(label.c_str(), &valToUpdate))
+	static BoolEditCommand* command = nullptr;
+	bool updated = ref;
+
+	if (ImGui::Checkbox(label.c_str(), &ref))
 	{
-		if (valToUpdate != ref)
-		{
-			CommandHistory::GetInstance()->
-				AddCommand(DBG_NEW BoolEditCommand(ref, valToUpdate));
-			ref = valToUpdate;
-		}
+		command = DBG_NEW BoolEditCommand(updated);
+		command->SetNextVal(ref);
+		CommandHistory::GetInstance()->AddCommand(command);
 	}
 }
 
@@ -327,10 +402,10 @@ void CommandHistory::ShutDown()
 	mCommandDeq.clear();
 }
 
-Command* CommandHistory::QueryCommand()
+Command* CommandHistory::GetCurrentCommand()
 {
-	if(!mCommandDeq.empty())
-		return mCommandDeq[mCommandPointer];
+	if (!mCommandDeq.empty())
+		return mCommandDeq.at(mCommandPointer);
 	return nullptr;
 }
 
@@ -340,7 +415,9 @@ CommandHistory::CommandHistory()
 	, mCMDStartPointer(0)
 	, mCMDEndPointer(0)
 	, mIsRecording(false)
-{}
+{
+}
 
 CommandHistory::~CommandHistory()
-{}
+{
+}

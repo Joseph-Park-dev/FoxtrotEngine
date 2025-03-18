@@ -21,7 +21,7 @@
 #include "Command.h"
 
 #define COMMAND_MAXCOUNT 30
-#define FLOATMOD_SPEED 0.01f
+#define FLOATMOD_SPEED 0.1f
 #define INTMOD_SPEED 1
 
 class CommandHistory
@@ -33,14 +33,16 @@ public:
 	void AddCommand(Command* command);
 
 	// These member functions will be used on Foxtrot Editor when updating values.
-	void UpdateIntValue(std::string label, int* ref, int modSpeed);
-	void UpdateFloatValue(std::string label, float* ref, float modSpeed = FLOATMOD_SPEED);
+	void UpdateIntValue(std::string label, int& ref, int modSpeed);
 	void UpdateFloatValue(std::string label, float& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateBoolValue(std::string label, bool& ref);
 	void UpdateVector2Value(std::string label, FTVector2& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateVector2Value(std::string label, b2Vec2& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateVector3Value(std::string label, FTVector3& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateVector3Value(std::string label, DirectX::SimpleMath::Vector3& ref, float modSpeed = FLOATMOD_SPEED);
+	void UpdateStringValue(std::string label, std::string& ref);
+
+	void UpdateStateValue(std::string label, Actor::State& state);
 
 public:
 	void Update();
@@ -67,7 +69,7 @@ private:
 	void MergeCMDRecord();
 
 	// Get the command located at the pointer position.
-	Command* QueryCommand();
+	Command* GetCurrentCommand();
 
 	// Navigates through the Commands.
 	// This feature is not working properly in the current version.

@@ -39,11 +39,8 @@ void EditorElement::UpdateUI(bool isPremade)
 				UpdateActorName();
 				UpdateActorGroup();
 				UpdateActorState();
-
-				UpdateActorWorldPosition();
-				UpdateActorLocalPosition();
-				UpdateActorScale();
-				UpdateActorRotation();
+				GetTransform()->UpdateUI();
+				
 				ImGui::EndTabItem();
 			}
 			if (ImGui::BeginTabItem("Components"))
@@ -99,16 +96,7 @@ EditorElement::EditorElement(EditorElement* element, EditorScene* scene)
 
 void EditorElement::UpdateActorName()
 {
-	char* updatedName = _strdup(GetName().c_str());
-	if (ImGui::InputText("Name", updatedName, ACTORNAME_MAX))
-	{
-		if (EditorLayer::GetInstance()->GetConfirmKeyPressed())
-		{
-			CommandHistory::GetInstance()->
-				AddCommand(DBG_NEW StrEditCommand(GetNameRef(), updatedName));
-		}
-	}
-	delete updatedName;
+	CommandHistory::GetInstance()->UpdateStringValue("Actor Name", GetNameRef());
 }
 
 void EditorElement::UpdateActorGroup()
@@ -120,9 +108,11 @@ void EditorElement::UpdateActorGroup()
 		{
 			if (ImGui::Selectable(ActorGroupUtil::GetActorGroupStr(n)))
 			{
-				int grpIdx = static_cast<int>(GetActorGroup());
-				CommandHistory::GetInstance()->AddCommand(DBG_NEW IntEditCommand(grpIdx, ++n));
-				grpIdx = n;
+				int grpIdx = ++n;
+				ActorGroupEditCommand* command = DBG_NEW ActorGroupEditCommand(GetActorGroupRef());
+				command->SetNextVal(static_cast<ActorGroup>(grpIdx));
+				CommandHistory::GetInstance()->AddCommand(command);
+
 				SetActorGroup((ActorGroup)grpIdx);
 			}
 		}
@@ -132,64 +122,7 @@ void EditorElement::UpdateActorGroup()
 
 void EditorElement::UpdateActorState()
 {
-	State state = GetState();
-	bool isActive = IsActive();
-	ImGui::Checkbox("Active", &isActive);
-	if (isActive)
-		state = State::EActive;
-	else
-		state = State::EDead;
-
-	if (state != GetState())
-		CommandHistory::GetInstance()->AddCommand(DBG_NEW StateEditCommand(GetStateRef(), state));
-}
-
-void EditorElement::UpdateActorWorldPosition()
-{
-	FTVector3 updatedVal = GetTransform()->GetWorldPosition();
-	CommandHistory::GetInstance()->UpdateVector3Value
-	(
-		"World Position",
-		updatedVal,
-		FLOATMOD_SPEED
-	);
-	GetTransform()->SetWorldPosition(updatedVal);
-}
-
-void EditorElement::UpdateActorLocalPosition()
-{
-	FTVector3 updatedVal = GetTransform()->GetLocalPosition();
-	CommandHistory::GetInstance()->UpdateVector3Value
-	(
-		"Local Position",
-		updatedVal,
-		FLOATMOD_SPEED
-	);
-	GetTransform()->SetLocalPosition(updatedVal);
-}
-
-void EditorElement::UpdateActorScale()
-{
-	FTVector3 updatedVal = GetTransform()->GetScale();
-	CommandHistory::GetInstance()->UpdateVector3Value
-	(
-		"Scale",
-		updatedVal,
-		FLOATMOD_SPEED
-	);
-	GetTransform()->SetScale(updatedVal);
-}
-
-void EditorElement::UpdateActorRotation()
-{
-	FTVector3 degreeRot = Transform::ConvertRadToDegree(GetTransform()->GetRotation());
-	CommandHistory::GetInstance()->UpdateVector3Value
-	(
-		"Rotation",
-		degreeRot,
-		FLOATMOD_SPEED
-	);
-	GetTransform()->SetRotation(Transform::ConvertDegreeToRad(degreeRot));
+	CommandHistory::GetInstance()->UpdateStateValue("Actor State", GetStateRef());
 }
 
 void EditorElement::UpdateComponents()

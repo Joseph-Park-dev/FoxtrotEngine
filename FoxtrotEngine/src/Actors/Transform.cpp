@@ -9,8 +9,11 @@
 #include "Actors/Transform.h"
 
 #include "FileSystem/ChunkLoader.h"
-
 #include "FileSystem/FileIOHelper.h"
+
+#ifdef FOXTROT_EDITOR
+#include "CommandHistory.h"
+#endif
 
 const FTVector3 Transform::GetWorldPosition() const
 {
@@ -79,6 +82,11 @@ void Transform::SetSteering(Steering steering)
 	mSteering->Linear			= steering.Linear;
 	mSteering->JumpTriggered	= steering.JumpTriggered;
 }
+
+FTVector3& Transform::WorldPosition() { return mWorldPosition; }
+FTVector3& Transform::LocalPosition() { return mLocalPosition; }
+FTVector3& Transform::Scale() { return mScale; }
+FTVector3& Transform::Rotation() { return mRotation; }
 
 Transform::Transform()
 	: mWorldPosition		(FTVector3::Zero)

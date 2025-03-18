@@ -18,6 +18,10 @@
 class Transform
 {
 public:
+	///////////////////////////////////////////////////////
+	///// Getter and Setters of each member variables /////
+	///////////////////////////////////////////////////////
+
 	const FTVector3 GetWorldPosition() const;
 	const FTVector3 GetLocalPosition() const;
 	const FTVector3 GetScale() const;
@@ -35,6 +39,15 @@ public:
 
 	static FTVector3 ConvertRadToDegree(FTVector3 radianRot);
 	static FTVector3 ConvertDegreeToRad(FTVector3 degreeRot);
+
+	///////////////////////////////////////////////////////
+	/// Reference to each member variables (Properties) ///
+	///////////////////////////////////////////////////////
+
+	FTVector3& WorldPosition();
+	FTVector3& LocalPosition();
+	FTVector3& Scale();
+	FTVector3& Rotation();
 
 public:
 	Transform();

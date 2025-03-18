@@ -149,3 +149,11 @@ void Transform::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadVector3(ifs, mLocalPosition);
 	FileIOHelper::LoadVector3(ifs, mWorldPosition);
 }
+
+void Transform::UpdateUI()
+{
+	CommandHistory::GetInstance()->UpdateVector3Value("World Position", mWorldPosition);
+	CommandHistory::GetInstance()->UpdateVector3Value("Local Position", mLocalPosition);
+	CommandHistory::GetInstance()->UpdateVector3Value("Scale", mScale);
+	CommandHistory::GetInstance()->UpdateVector3Value("Rotation", mRotation);
+}

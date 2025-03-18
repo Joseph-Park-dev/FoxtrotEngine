@@ -66,6 +66,11 @@ private:
 public:
 	void SaveProperties(std::ofstream& ofs);
 	void LoadProperties(std::ifstream& ofs);
+
+#ifdef FOXTROT_EDITOR
+	void UpdateUI();
+#endif
+
 };
 
 namespace ChunkKey

@@ -89,11 +89,11 @@ struct Light
 	void UpdateUI()
 	{
 		CommandHistory::GetInstance()->UpdateVector3Value(LightKey::STRENGTH, Strength);
-		CommandHistory::GetInstance()->UpdateFloatValue(LightKey::FALLOFF_START, &FallOffStart);
-		CommandHistory::GetInstance()->UpdateFloatValue(LightKey::FALLOFF_END, &FallOffEnd);
+		CommandHistory::GetInstance()->UpdateFloatValue(LightKey::FALLOFF_START, FallOffStart);
+		CommandHistory::GetInstance()->UpdateFloatValue(LightKey::FALLOFF_END, FallOffEnd);
 		CommandHistory::GetInstance()->UpdateVector3Value(LightKey::DIRECTION, Direction);
 		CommandHistory::GetInstance()->UpdateVector3Value(LightKey::POSITION, Position);
-		CommandHistory::GetInstance()->UpdateFloatValue(LightKey::SPOT_POWER, &SpotPower);
+		CommandHistory::GetInstance()->UpdateFloatValue(LightKey::SPOT_POWER, SpotPower);
 	}
 
 #endif

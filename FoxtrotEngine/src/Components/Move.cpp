@@ -136,8 +136,8 @@ void Move::LoadProperties(std::ifstream& ifs)
 #ifdef FOXTROT_EDITOR
 void Move::EditorUIUpdate()
 {
-	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKey::FORWARD_SPEED, &mForwardSpeed, FLOATMOD_SPEED);
-	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKey::JUMP_FORCE, &mJumpForce, FLOATMOD_SPEED);
-	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKey::ANGULAR_SPEED, &mAngularSpeed, FLOATMOD_SPEED);
+	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKey::FORWARD_SPEED, mForwardSpeed, FLOATMOD_SPEED);
+	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKey::JUMP_FORCE, mJumpForce, FLOATMOD_SPEED);
+	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKey::ANGULAR_SPEED, mAngularSpeed, FLOATMOD_SPEED);
 }
 #endif // FOXTROT_EDITOR

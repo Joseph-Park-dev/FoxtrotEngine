@@ -27,6 +27,7 @@ class Scene
 {
 public:
 	void AddActor(Actor* actor, ActorGroup group);
+	void RemoveActor(Actor* actor);
 
 	/// <summary>
 	/// Finds the Actor from current scene by linear-searching the hierarchy.
@@ -84,7 +85,6 @@ public:
 private:
 	void AddPendingActors();
 	void ClearDeadActors();
-	void RemoveActor(Actor* actor);
 	void DeleteGroup(ActorGroup group);
 	void DeletePendingGroup(ActorGroup group);
 

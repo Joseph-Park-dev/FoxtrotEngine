@@ -24,6 +24,8 @@
 #define FLOATMOD_SPEED 0.1f
 #define INTMOD_SPEED 1
 
+class ActorCommand;
+
 class CommandHistory
 {
 	SINGLETON(CommandHistory)
@@ -45,6 +47,13 @@ public:
 	void UpdateStateValue(std::string label, Actor::State& state);
 
 public:
+	void UpdateActorAddition(EditorElement* editorElement);
+
+public:
+	ActorCommand* GetLatestActorCommand();
+	void		  SetLatestActorCommand(ActorCommand* command);
+
+public:
 	void Update();
 	// This will be called when closing a Foxtrot Editor instance.
 	void ShutDown();
@@ -55,6 +64,10 @@ private:
 	size_t				 mCMDStartPointer; // This points to the value from the frame that a value started to be modified.
 	size_t				 mCMDEndPointer;   // When the recording is finished, the intermediate commands from start to this point is deleted.
 	bool				 mIsRecording;	   // A value is being modified on UI.
+
+	// mCommandPointer position of the latest EditorElement
+	// This is used in Actor related Commands
+	ActorCommand* mLatestActorCommand;
 
 private:
 	// When modifying values on UI, CMDRecord is started

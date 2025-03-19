@@ -16,6 +16,7 @@
 
 #include "Command.h"
 #include "EditorLayer.h"
+#include "ActorCommand.h"
 #include "Core/TemplateFunctions.h"
 #include "Debugging/DebugMemAlloc.h"
 #include "FileSystem/BufferSizes.h"
@@ -54,7 +55,7 @@ void CommandHistory::UndoCommand()
 		{
 			LogInt(mCommandPointer);
 			cmd->Undo();
-			if(0 < mCommandPointer)
+			if (0 < mCommandPointer)
 				--mCommandPointer;
 		}
 	}
@@ -130,7 +131,7 @@ void CommandHistory::UpdateVector2Value(std::string label, FTVector2& ref, float
 			if (!command)
 			{
 				mIsRecording = true;
-				command = DBG_NEW Vector2EditCommand(ref);
+				command		 = DBG_NEW Vector2EditCommand(ref);
 			}
 		}
 	}
@@ -166,7 +167,7 @@ void CommandHistory::UpdateVector2Value(std::string label, b2Vec2& ref, float mo
 			if (!command)
 			{
 				mIsRecording = true;
-				command = DBG_NEW B2Vec2EditCommand(ref);
+				command		 = DBG_NEW B2Vec2EditCommand(ref);
 			}
 		}
 	}
@@ -176,10 +177,10 @@ void CommandHistory::UpdateVector2Value(std::string label, b2Vec2& ref, float mo
 		{
 			if (command)
 			{
-				mIsRecording = false;
+				mIsRecording   = false;
 				b2Vec2 updated = b2Vec2_zero;
-				updated.x = vec2[0];
-				updated.y = vec2[1];
+				updated.x	   = vec2[0];
+				updated.y	   = vec2[1];
 				command->SetNextVal(updated);
 				AddCommand(command);
 				command = nullptr;
@@ -206,7 +207,7 @@ void CommandHistory::UpdateVector3Value(std::string label, FTVector3& ref, float
 			if (!command)
 			{
 				mIsRecording = true;
-				command = DBG_NEW Vector3EditCommand(ref);
+				command		 = DBG_NEW Vector3EditCommand(ref);
 			}
 		}
 	}
@@ -243,7 +244,7 @@ void CommandHistory::UpdateVector3Value(std::string label, DirectX::SimpleMath::
 			if (!command)
 			{
 				mIsRecording = true;
-				command = DBG_NEW DXVector3EditCommand(ref);
+				command		 = DBG_NEW DXVector3EditCommand(ref);
 			}
 		}
 	}
@@ -271,7 +272,7 @@ void CommandHistory::UpdateStringValue(std::string label, std::string& ref)
 		ref.reserve(BufferSize::STRING_BUFFER_SIZE);
 
 	static StrEditCommand* command;
-	
+
 	char* updatedName = _strdup(ref.c_str());
 
 	if (ImGui::InputText(label.c_str(), updatedName, ACTORNAME_MAX))
@@ -281,7 +282,7 @@ void CommandHistory::UpdateStringValue(std::string label, std::string& ref)
 			if (!command)
 			{
 				mIsRecording = true;
-				command = DBG_NEW StrEditCommand(ref);
+				command		 = DBG_NEW StrEditCommand(ref);
 			}
 		}
 	}
@@ -304,13 +305,13 @@ void CommandHistory::UpdateStringValue(std::string label, std::string& ref)
 void CommandHistory::UpdateStateValue(std::string label, Actor::State& state)
 {
 	static ActorStateEditCommand* command = nullptr;
-	
+
 	bool isActive = false;
 
 	if (ImGui::Checkbox(label.c_str(), &isActive))
 	{
 		command = DBG_NEW ActorStateEditCommand(state);
-		
+
 		if (isActive)
 			state = Actor::State::EActive;
 		else
@@ -321,10 +322,33 @@ void CommandHistory::UpdateStateValue(std::string label, Actor::State& state)
 	}
 }
 
+void CommandHistory::UpdateActorAddition(EditorElement* editorElement)
+{
+	ActorAdditionCommand* command = nullptr;
+
+	// ActorCommand has been triggered after program initialization.
+	// Thus the latest ActorCommand is not null.
+	if (CommandHistory::GetInstance()->GetLatestActorCommand())
+	{
+		// Set the input as the next value of the latest ActorAddition Command
+		CommandHistory::GetInstance()->GetLatestActorCommand()->SetNextVal(editorElement);
+	}
+	// Set the latest Actor Addition Command
+	command = DBG_NEW ActorAdditionCommand(editorElement);
+	if (command)
+	{
+		CommandHistory::GetInstance()->SetLatestActorCommand(command);
+		CommandHistory::GetInstance()->AddCommand(command);
+	}
+}
+
+ActorCommand* CommandHistory::GetLatestActorCommand() { return mLatestActorCommand; }
+void		  CommandHistory::SetLatestActorCommand(ActorCommand* command) { mLatestActorCommand = command; }
+
 void CommandHistory::UpdateFloatValue(std::string label, float& ref, float modSpeed)
 {
 	static FloatEditCommand* command;
-	
+
 	if (ImGui::DragFloat(label.c_str(), &ref, modSpeed))
 	{
 		if (!mIsRecording)
@@ -332,7 +356,7 @@ void CommandHistory::UpdateFloatValue(std::string label, float& ref, float modSp
 			if (!command)
 			{
 				mIsRecording = true;
-				command = DBG_NEW FloatEditCommand(ref);
+				command		 = DBG_NEW FloatEditCommand(ref);
 			}
 		}
 	}
@@ -362,7 +386,7 @@ void CommandHistory::UpdateIntValue(std::string label, int& ref, int modSpeed)
 			if (!command)
 			{
 				mIsRecording = true;
-				command = DBG_NEW IntEditCommand(ref);
+				command		 = DBG_NEW IntEditCommand(ref);
 			}
 		}
 	}
@@ -384,7 +408,7 @@ void CommandHistory::UpdateIntValue(std::string label, int& ref, int modSpeed)
 void CommandHistory::UpdateBoolValue(std::string label, bool& ref)
 {
 	static BoolEditCommand* command = nullptr;
-	bool updated = ref;
+	bool					updated = ref;
 
 	if (ImGui::Checkbox(label.c_str(), &ref))
 	{
@@ -415,6 +439,7 @@ CommandHistory::CommandHistory()
 	, mCMDStartPointer(0)
 	, mCMDEndPointer(0)
 	, mIsRecording(false)
+	, mLatestActorCommand(nullptr)
 {
 }
 

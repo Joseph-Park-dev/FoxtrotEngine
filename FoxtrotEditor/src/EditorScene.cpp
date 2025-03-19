@@ -18,6 +18,7 @@
 #include "FTCoreEditor.h"
 #include "EditorLayer.h"
 #include "EditorElement.h"
+#include "ActorCommand.h"
 
 void EditorScene::DeleteAll()
 {
@@ -55,9 +56,11 @@ void EditorScene::AddEditorElement()
 {
 	UnfocusEditorElements();
 	EditorElement* editorElement = DBG_NEW EditorElement(this);
-	std::string name = "Game Object " + std::to_string(this->GetActorCount());
+	std::string name = "Empty Actor " + std::to_string(this->GetActorCount());
 	editorElement->SetName(name);
 	editorElement->SetIsFocused(true);
+
+	//CommandHistory::GetInstance()->UpdateActorAddition(editorElement);
 }
 
 void EditorScene::AddEditorElement(Actor* actor)

@@ -49,10 +49,17 @@ void EventManager::Execute(const FTEvent& executedEvent)
 #endif
 	}
 	break;
+
 	case EVENT_TYPE::DESTROY_ACTOR:
 	{
+
+#ifdef FOXTROT_EDITOR
+		EditorElement* created = static_cast<EditorElement*>(executedEvent.eventData.at(0));
+		created->SetState(Actor::State::EDead);
+#else
 		Actor* actorToDestroy = static_cast<Actor*>(executedEvent.eventData.at(0));
 		actorToDestroy->SetState(Actor::State::EDead);
+#endif
 	}
 	break;
 	case EVENT_TYPE::SWITCH_SCENE:

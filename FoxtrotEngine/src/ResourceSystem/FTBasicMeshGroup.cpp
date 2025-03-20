@@ -56,25 +56,25 @@ void FTBasicMeshGroup::UpdateConstantBuffers(
 #endif // FOXTROT_EDITOR
 }
 
-void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture)
+void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer)
 {
 	UINT						 stride	 = sizeof(Vertex);
 	UINT						 offset	 = 0;
 	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
 
-	context->VSSetShader(renderer->GetTextureVS().Get(), 0, 0);
+	context->VSSetShader(mVS.Get(), 0, 0);
 	context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
-	context->PSSetShader(renderer->GetRimTexturePS().Get(), 0, 0);
+	context->PSSetShader(mPS.Get(), 0, 0);
 
 	for (const Mesh* mesh : mMeshes)
 	{
 		context->VSSetConstantBuffers(
 			0, mesh->VertexConstantBuffers.size(), mesh->VertexConstantBuffers.data()->GetAddressOf());
 
-		if (texture)
+		if (mTexture)
 		{
 			std::vector<ID3D11ShaderResourceView*> resViews;
-			resViews.push_back(texture->GetResourceView().Get());
+			resViews.push_back(mTexture->GetResourceView().Get());
 			context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
 		}
 		if (!mMaterials.empty())
@@ -156,6 +156,11 @@ ComPtr<ID3D11SamplerState>& FTBasicMeshGroup::GetSamplerState() { return mSample
 size_t						FTBasicMeshGroup::GetMeshCount() { return mMeshes.size(); }
 std::vector<Mesh*>&			FTBasicMeshGroup::GetMeshes() { return mMeshes; }
 
+const FTTexture* FTBasicMeshGroup::GetTexture() const
+{
+	return mTexture;
+}
+
 BasicVCData&			  FTBasicMeshGroup::GetVCData() { return mVertexConstData; }
 std::vector<FTMaterial*>& FTBasicMeshGroup::Materials() { return mMaterials; }
 
@@ -185,6 +190,18 @@ void FTBasicMeshGroup::SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Dev
 	}
 }
 
+void FTBasicMeshGroup::SetTexture(UINT texKey)
+{
+	if (texKey == ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	{
+		printf("ERROR: MeshRenderer::SetTexture() -> TexKey not assigned.\n");
+		return;
+	}
+	mTexture = ResourceManager::GetInstance()->GetLoadedTexture(texKey);
+	if (!mTexture)
+		printf("ERROR: MeshRenderer::SetTexture() -> Cannot set texture %d, returning nullptr.\n", texKey);
+}
+
 bool FTBasicMeshGroup::GetDrawNormal() { return mDrawNormal; }
 
 void FTBasicMeshGroup::SetDrawNormal(bool drawNormal) { mDrawNormal = drawNormal; }
@@ -206,7 +223,7 @@ void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vecto
 		this->mMeshes.push_back(newMesh);
 	}
 
-	mNormalLines = new Mesh;
+	mNormalLines = DBG_NEW Mesh;
 	std::vector<Vertex>	  normalVertices;
 	std::vector<uint32_t> normalIndices;
 
@@ -274,8 +291,7 @@ HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 }
 
 FTBasicMeshGroup::FTBasicMeshGroup()
-	: FTResource()
-	, mMeshes()
+	: mMeshes()
 	, mNormalLines(nullptr)
 	, mDrawNormal(false)
 #ifdef FOXTROT_EDITOR

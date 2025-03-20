@@ -18,7 +18,7 @@ namespace FileTypes
 
 	// FTResources
 	constexpr const char* PREMADE = ".ftpremade";
-	constexpr const char* TEXTURE = ".png, .jpeg, .jpg";
+	constexpr const char* TEXTURE = ".png, .jpeg, .jpg, .dds";
 	constexpr const char* TILEMAP = ".csv, .txt";
 	constexpr const char* MESH = ".fbx, .stl";
 	constexpr const char* SHADER = ".hlsl";

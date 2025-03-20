@@ -70,7 +70,7 @@ void StandardMaterial::LoadFromFile()
 
 StandardMaterial::StandardMaterial()
 	: FTMaterial()
-	, mData(new StandardMatData)
+	, mData(DBG_NEW StandardMatData)
 {
 	std::string name = std::string("StandardMaterial") + FileTypes::MATERIAL;
 	std::string path = std::string(PATH_PROJECT + "\\Assets\\Materials\\") + name;

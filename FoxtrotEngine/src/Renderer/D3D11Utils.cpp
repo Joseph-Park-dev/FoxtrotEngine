@@ -632,25 +632,17 @@ void D3D11Utils::CreateTextureArray(
 	context->GenerateMips(textureResourceView.Get());
 }
 
-void D3D11Utils::CreateCubemapTexture(
+HRESULT D3D11Utils::CreateCubemapTexture(
 	ComPtr<ID3D11Device>& device, const wchar_t* filename, ComPtr<ID3D11ShaderResourceView>& textureResourceView)
 {
-
 	ComPtr<ID3D11Texture2D> texture;
 
-	// https://github.com/microsoft/DirectXTK/wiki/DDSTextureLoader
-	auto hr = CreateDDSTextureFromFileEx(
-		device.Get(), filename, 0, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0,
-		D3D11_RESOURCE_MISC_TEXTURECUBE, // Å¥ºê¸Ê¿ë ÅØ½ºÃç
-		DDS_LOADER_FLAGS(false),
-		(ID3D11Resource**)texture.GetAddressOf(),
-		textureResourceView.GetAddressOf(),
-		nullptr);
-
-	if (FAILED(hr))
-	{
-		std::cout << "CreateDDSTextureFromFileEx() failed" << std::endl;
-	}
+	return CreateDDSTextureFromFileEx(
+		device.Get(), filename, 0, D3D11_USAGE_DEFAULT,
+		D3D11_BIND_SHADER_RESOURCE, 0,
+		D3D11_RESOURCE_MISC_TEXTURECUBE,
+		DDS_LOADER_FLAGS(false), (ID3D11Resource**)texture.GetAddressOf(),
+		textureResourceView.GetAddressOf(), nullptr);
 }
 
 void D3D11Utils::WriteToFile(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Texture2D>& textureToWrite, const std::string filename)

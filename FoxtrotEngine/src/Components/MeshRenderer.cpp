@@ -38,7 +38,7 @@ void MeshRenderer::Initialize(FTCore* coreInstance)
 	{
 		this->InitializeMesh();
 		if (mTexKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-			SetTexture();
+			mMeshGroup->SetTexture(mTexKey);
 	}
 	// mMeshGroup = DBG_NEW FTBasicMeshGroup;
 	Component::Initialize(coreInstance);
@@ -59,7 +59,7 @@ void MeshRenderer::Render(FoxtrotRenderer* renderer)
 	{
 		renderer->SwitchFillMode();
 		// renderer->SetRenderTargetView();
-		mMeshGroup->Render(renderer, mTexture);
+		mMeshGroup->Render(renderer);
 	}
 }
 
@@ -130,20 +130,6 @@ bool MeshRenderer::InitializeMesh(std::vector<FTMeshData>& meshData)
 	return true;
 }
 
-bool MeshRenderer::SetTexture()
-{
-	if (mTexKey == ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-	{
-		printf("ERROR: MeshRenderer::SetTexture() -> TexKey not assigned.\n");
-		return false;
-	}
-	mTexture = ResourceManager::GetInstance()->GetLoadedTexture(mTexKey);
-	if (!mTexture)
-		printf("ERROR: MeshRenderer::SetTexture() -> Cannot set texture %d, returning nullptr.\n", mTexKey);
-	return mTexture != nullptr;
-}
-
-
 void MeshRenderer::UpdateMesh(Transform* transform, Camera* camInst)
 {
 	if (mMeshGroup)
@@ -194,7 +180,6 @@ Matrix MeshRenderer::CalcModelMat(Transform* transform)
 MeshRenderer::MeshRenderer(Actor* owner, int updateOrder)
 	: Component(owner, updateOrder)
 	, mMeshGroup(nullptr)
-	, mTexture(nullptr)
 	, mRenderer(nullptr)
 	, mMeshKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	, mTexKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
@@ -287,7 +272,7 @@ void MeshRenderer::EditorUIUpdate()
 void MeshRenderer::OnConfirmUpdate()
 {
 	if (ImGui::Button("UpdateSprite"))
-		SetTexture();
+		mMeshGroup->SetTexture(mTexKey);
 }
 
 void MeshRenderer::OnResetTexture()
@@ -306,7 +291,7 @@ void MeshRenderer::UpdateSprite()
 	{
 		currentSprite =
 			"Current sprite : \n" + ResourceManager::GetInstance()->GetLoadedTexture(GetTexKey())->GetRelativePath();
-		if (mMeshGroup && mTexture)
+		if (mMeshGroup && mMeshGroup->GetTexture())
 		{
 			ImVec2 size = ImVec2(100, 100);
 			ImGui::Image((ImTextureID)GetTexture()->GetResourceView().Get(), size);

@@ -300,6 +300,7 @@ void CommandHistory::UpdateStringValue(std::string label, std::string& ref)
 		}
 	}
 	ref.assign(updatedName);
+	delete updatedName;
 }
 
 void CommandHistory::UpdateStateValue(std::string label, Actor::State& state)

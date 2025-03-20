@@ -637,14 +637,12 @@ HRESULT D3D11Utils::CreateCubemapTexture(
 {
 	ComPtr<ID3D11Texture2D> texture;
 
-	HRESULT hr = CreateDDSTextureFromFileEx(
+	return CreateDDSTextureFromFileEx(
 		device.Get(), filename, 0, D3D11_USAGE_DEFAULT,
 		D3D11_BIND_SHADER_RESOURCE, 0,
 		D3D11_RESOURCE_MISC_TEXTURECUBE,
 		DDS_LOADER_FLAGS(false), (ID3D11Resource**)texture.GetAddressOf(),
 		textureResourceView.GetAddressOf(), nullptr);
-
-	return hr;
 }
 
 void D3D11Utils::WriteToFile(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Texture2D>& textureToWrite, const std::string filename)

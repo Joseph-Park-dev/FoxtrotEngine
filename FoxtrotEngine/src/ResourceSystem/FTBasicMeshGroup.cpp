@@ -62,9 +62,9 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer)
 	UINT						 offset	 = 0;
 	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
 
-	context->VSSetShader(vs.Get(), 0, 0);
+	context->VSSetShader(mVS.Get(), 0, 0);
 	context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
-	context->PSSetShader(ps.Get(), 0, 0);
+	context->PSSetShader(mPS.Get(), 0, 0);
 
 	for (const Mesh* mesh : mMeshes)
 	{

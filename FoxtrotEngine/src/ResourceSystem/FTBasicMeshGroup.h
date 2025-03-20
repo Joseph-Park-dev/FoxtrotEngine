@@ -36,15 +36,15 @@ public:
 	virtual void Render(FoxtrotRenderer* renderer);
 	void		 Render(FoxtrotRenderer* renderer, FTTexture* texture, int meshIndex);
 
-	void		 Clear();
+	void Clear();
 
 public:
 	ComPtr<ID3D11SamplerState>& GetSamplerState();
 	size_t						GetMeshCount();
 	std::vector<Mesh*>&			GetMeshes();
 	const FTTexture*			GetTexture() const;
-	BasicVCData& GetVCData();
-	bool GetDrawNormal();
+	BasicVCData&				GetVCData();
+	bool						GetDrawNormal();
 
 	void SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Device>& device);
 	void SetTexture(UINT texKey);
@@ -65,9 +65,11 @@ private:
 	std::vector<Mesh*>		   mMeshes;
 	FTTexture*				   mTexture;
 	ComPtr<ID3D11SamplerState> mSamplerState;
+	ComPtr<ID3D11VertexShader> mVS;
+	ComPtr<ID3D11PixelShader>  mPS;
 
-	ComPtr<ID3D11Buffer>	 mVertexConstBuffer;
-	//ComPtr<ID3D11Buffer>	 mPixelConstBuffer;
+	ComPtr<ID3D11Buffer> mVertexConstBuffer;
+	// ComPtr<ID3D11Buffer>	 mPixelConstBuffer;
 	BasicVCData				 mVertexConstData;
 	std::vector<FTMaterial*> mMaterials;
 

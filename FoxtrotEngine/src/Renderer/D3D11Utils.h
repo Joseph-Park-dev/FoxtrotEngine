@@ -228,7 +228,7 @@ public:
 		ComPtr<ID3D11Texture2D>&		  texture,
 		ComPtr<ID3D11ShaderResourceView>& textureResourceView);
 
-	static void
+	static HRESULT
 	CreateCubemapTexture(
 		ComPtr<ID3D11Device>&			  device,
 		const wchar_t*					  filename,

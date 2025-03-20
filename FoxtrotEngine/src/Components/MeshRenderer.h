@@ -64,8 +64,6 @@ protected:
 	bool		 InitializeMesh(FTMeshData& meshData);
 	bool		 InitializeMesh(std::vector<FTMeshData>& meshData);
 
-	bool SetTexture();
-
 	virtual void UpdateMesh(Transform* transform, Camera* camInst);
 	virtual void UpdateBuffers();
 
@@ -81,7 +79,6 @@ private:
 	// These will be set in Initialize() member function.
 	FoxtrotRenderer*		 mRenderer;
 	FTBasicMeshGroup*		 mMeshGroup;
-	FTTexture*				 mTexture;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs);

@@ -56,11 +56,7 @@ void FTBasicMeshGroup::UpdateConstantBuffers(
 #endif // FOXTROT_EDITOR
 }
 
-void FTBasicMeshGroup::Render(
-	FoxtrotRenderer* renderer, 
-	FTTexture* texture, 
-	ComPtr<ID3D11VertexShader>& vs, 
-	ComPtr<ID3D11PixelShader>& ps)
+void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer)
 {
 	UINT						 stride	 = sizeof(Vertex);
 	UINT						 offset	 = 0;
@@ -75,10 +71,10 @@ void FTBasicMeshGroup::Render(
 		context->VSSetConstantBuffers(
 			0, mesh->VertexConstantBuffers.size(), mesh->VertexConstantBuffers.data()->GetAddressOf());
 
-		if (texture)
+		if (mTexture)
 		{
 			std::vector<ID3D11ShaderResourceView*> resViews;
-			resViews.push_back(texture->GetResourceView().Get());
+			resViews.push_back(mTexture->GetResourceView().Get());
 			context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
 		}
 		if (!mMaterials.empty())
@@ -160,6 +156,11 @@ ComPtr<ID3D11SamplerState>& FTBasicMeshGroup::GetSamplerState() { return mSample
 size_t						FTBasicMeshGroup::GetMeshCount() { return mMeshes.size(); }
 std::vector<Mesh*>&			FTBasicMeshGroup::GetMeshes() { return mMeshes; }
 
+const FTTexture* FTBasicMeshGroup::GetTexture() const
+{
+	return mTexture;
+}
+
 BasicVCData&			  FTBasicMeshGroup::GetVCData() { return mVertexConstData; }
 std::vector<FTMaterial*>& FTBasicMeshGroup::Materials() { return mMaterials; }
 
@@ -187,6 +188,18 @@ void FTBasicMeshGroup::SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Dev
 			mesh->PixelConstantBuffers.push_back(pixelConstBuffer);
 		}
 	}
+}
+
+void FTBasicMeshGroup::SetTexture(UINT texKey)
+{
+	if (texKey == ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	{
+		printf("ERROR: MeshRenderer::SetTexture() -> TexKey not assigned.\n");
+		return;
+	}
+	mTexture = ResourceManager::GetInstance()->GetLoadedTexture(texKey);
+	if (!mTexture)
+		printf("ERROR: MeshRenderer::SetTexture() -> Cannot set texture %d, returning nullptr.\n", texKey);
 }
 
 bool FTBasicMeshGroup::GetDrawNormal() { return mDrawNormal; }

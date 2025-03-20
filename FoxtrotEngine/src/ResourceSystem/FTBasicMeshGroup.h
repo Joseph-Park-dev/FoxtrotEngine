@@ -33,11 +33,7 @@ public:
 		ComPtr<ID3D11Device>&		 device,
 		ComPtr<ID3D11DeviceContext>& context);
 
-	virtual void Render(
-		FoxtrotRenderer* renderer, 
-		FTTexture* texture, 
-		ComPtr<ID3D11VertexShader>& vs,
-		ComPtr<ID3D11VertexShader>& ps);
+	virtual void Render(FoxtrotRenderer* renderer);
 	void		 Render(FoxtrotRenderer* renderer, FTTexture* texture, int meshIndex);
 
 	void		 Clear();
@@ -46,14 +42,15 @@ public:
 	ComPtr<ID3D11SamplerState>& GetSamplerState();
 	size_t						GetMeshCount();
 	std::vector<Mesh*>&			GetMeshes();
-
+	const FTTexture*			GetTexture() const;
 	BasicVCData& GetVCData();
-	std::vector<FTMaterial*>& Materials();
-	void SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Device>& device);
-
 	bool GetDrawNormal();
 
+	void SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Device>& device);
+	void SetTexture(UINT texKey);
 	void SetDrawNormal(bool drawNormal);
+
+	std::vector<FTMaterial*>& Materials();
 
 public:
 	FTBasicMeshGroup();
@@ -66,6 +63,7 @@ protected:
 
 private:
 	std::vector<Mesh*>		   mMeshes;
+	FTTexture*				   mTexture;
 	ComPtr<ID3D11SamplerState> mSamplerState;
 
 	ComPtr<ID3D11Buffer>	 mVertexConstBuffer;

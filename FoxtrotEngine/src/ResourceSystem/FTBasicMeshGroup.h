@@ -32,8 +32,14 @@ public:
 		std::vector<FTMeshData>&	 meshes,
 		ComPtr<ID3D11Device>&		 device,
 		ComPtr<ID3D11DeviceContext>& context);
-	virtual void Render(FoxtrotRenderer* renderer, FTTexture* texture);
+
+	virtual void Render(
+		FoxtrotRenderer* renderer, 
+		FTTexture* texture, 
+		ComPtr<ID3D11VertexShader>& vs,
+		ComPtr<ID3D11VertexShader>& ps);
 	void		 Render(FoxtrotRenderer* renderer, FTTexture* texture, int meshIndex);
+
 	void		 Clear();
 
 public:

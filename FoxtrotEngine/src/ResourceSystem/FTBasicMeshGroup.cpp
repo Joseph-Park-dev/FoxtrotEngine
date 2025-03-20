@@ -56,15 +56,19 @@ void FTBasicMeshGroup::UpdateConstantBuffers(
 #endif // FOXTROT_EDITOR
 }
 
-void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture)
+void FTBasicMeshGroup::Render(
+	FoxtrotRenderer* renderer, 
+	FTTexture* texture, 
+	ComPtr<ID3D11VertexShader>& vs, 
+	ComPtr<ID3D11PixelShader>& ps)
 {
 	UINT						 stride	 = sizeof(Vertex);
 	UINT						 offset	 = 0;
 	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
 
-	context->VSSetShader(renderer->GetTextureVS().Get(), 0, 0);
+	context->VSSetShader(vs.Get(), 0, 0);
 	context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
-	context->PSSetShader(renderer->GetRimTexturePS().Get(), 0, 0);
+	context->PSSetShader(ps.Get(), 0, 0);
 
 	for (const Mesh* mesh : mMeshes)
 	{

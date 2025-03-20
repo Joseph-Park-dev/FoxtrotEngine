@@ -206,7 +206,7 @@ void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vecto
 		this->mMeshes.push_back(newMesh);
 	}
 
-	mNormalLines = new Mesh;
+	mNormalLines = DBG_NEW Mesh;
 	std::vector<Vertex>	  normalVertices;
 	std::vector<uint32_t> normalIndices;
 

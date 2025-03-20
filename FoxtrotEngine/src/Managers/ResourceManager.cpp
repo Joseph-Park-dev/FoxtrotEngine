@@ -292,13 +292,13 @@ void ResourceManager::LoadMaterialsFromChunk(std::ifstream& ifs)
 
 void ResourceManager::LoadMaterial()
 {
-	StandardMaterial* standard = new StandardMaterial;
+	StandardMaterial* standard = DBG_NEW StandardMaterial;
 	std::string path = std::string(".//Assets//Materials//") + ChunkKey::STANDARD_MAT + FileTypes::MATERIAL;
 	if (!std::filesystem::exists(path))
 		standard->SaveToFile();
 	standard->LoadFromFile();
 
-	RimMaterial* rim = new RimMaterial;
+	RimMaterial* rim = DBG_NEW RimMaterial;
 	path = std::string(".//Assets//Materials//") + ChunkKey::RIM_MAT + FileTypes::MATERIAL;
 	if (!std::filesystem::exists(path))
 		rim->SaveToFile();

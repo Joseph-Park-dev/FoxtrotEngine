@@ -20,7 +20,7 @@
 
 class FTMaterial;
 
-class FTBasicMeshGroup : public FTResource
+class FTBasicMeshGroup
 {
 public:
 	void UpdateConstantBuffers(
@@ -54,7 +54,7 @@ public:
 
 public:
 	FTBasicMeshGroup();
-	virtual ~FTBasicMeshGroup() override;
+	virtual ~FTBasicMeshGroup();
 
 protected:
 	virtual HRESULT CreateTextureSampler(ComPtr<ID3D11Device>& device);
@@ -78,7 +78,7 @@ private:
 
 #ifdef FOXTROT_EDITOR
 public:
-	virtual void UpdateUI() override;
+	virtual void UpdateUI();
 
 private:
 	bool mValModified;

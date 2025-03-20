@@ -291,8 +291,7 @@ HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 }
 
 FTBasicMeshGroup::FTBasicMeshGroup()
-	: FTResource()
-	, mMeshes()
+	: mMeshes()
 	, mNormalLines(nullptr)
 	, mDrawNormal(false)
 #ifdef FOXTROT_EDITOR

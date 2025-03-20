@@ -7,6 +7,8 @@ namespace GameData
 	constexpr size_t MAX_LIGHTS = 3;
 }
 
+class FTCubemap;
+
 class LightManager
 {
 	SINGLETON(LightManager)
@@ -18,11 +20,14 @@ public:
 
 public:
 	void Initialize();
+	void Render(FoxtrotRenderer* renderer);
 
 private:
 	Light*		 mLights;
 	Light::TYPE* mTypes;
 	bool*		 mActiveStatus;
+
+	FTCubemap* mCubemap;
 
 public:
 	void SaveProperties(std::ofstream& ofs);

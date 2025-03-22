@@ -46,9 +46,9 @@ public:
 	BasicVCData&				GetVCData();
 	bool						GetDrawNormal();
 
-	void SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Device>& device);
+	void		 SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Device>& device);
 	virtual void SetTexture(UINT texKey);
-	void SetDrawNormal(bool drawNormal);
+	void		 SetDrawNormal(bool drawNormal);
 
 	std::vector<FTMaterial*>& Materials();
 

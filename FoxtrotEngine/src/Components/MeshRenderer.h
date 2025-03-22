@@ -6,17 +6,14 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 /// <summary>
-/// Base  to render sprites, tilemaps, animations as meshes.
+/// Component related to render sprites, tilemaps, animations as meshes.
 /// </summary>
 
 #pragma once
 #include "Components/Component.h"
 
-#include <directxtk/SimpleMath.h>
-
-#include "Core/FTCore.h"
-#include "ResourceSystem/FTBasicMeshGroup.h"
-
+class FTBasicMeshGroup;
+class FTCore;
 class Actor;
 class Camera;
 class Transform;
@@ -32,32 +29,51 @@ struct FTMeshData;
 class MeshRenderer :
 	public Component
 {
+	///////////////////////////
+	// Component information //
+	///////////////////////////
 public:
 	virtual std::string GetName() const override { return "MeshRenderer"; }
 
-public:
-	FoxtrotRenderer*  GetRenderer() { return mRenderer; }
-	FTBasicMeshGroup* GetMeshGroup() { return mMeshGroup; }
-	UINT			  GetMeshKey() { return mMeshKey; }
-	UINT			  GetTexKey() { return mTexKey; }
-	FTTexture*		  GetTexture() { return mTexture; }
-
-	void SetRenderer(FoxtrotRenderer* renderer) { mRenderer = renderer; }
-	void SetMeshGroup(FTBasicMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
-	void SetMeshKey(UINT key) { mMeshKey = key; }
-	void SetTexKey(UINT key) { mTexKey = key; }
-
+	/////////////////////////
+	// Game-loop functions //
+	/////////////////////////
 public:
 	virtual void Initialize(FTCore* coreInstance) override;
 	virtual void Update(float deltaTime) override;
 	virtual void Render(FoxtrotRenderer* renderer) override;
 
-	virtual void CloneTo(Actor* actor) override;
-
+	/////////////////////////////////////
+	// Instantiation-related functions //
+	/////////////////////////////////////
 public:
 	MeshRenderer(Actor* owner, int updateOrder);
 	virtual ~MeshRenderer() override;
+	virtual void CloneTo(Actor* actor) override;
 
+	/////////////////////////////////
+	// Keys to select the elements //
+	/////////////////////////////////
+protected:
+	const UINT GetMeshKey() const;
+	const UINT GetTexKey() const;
+	void	   SetMeshKey(const UINT key);
+	void	   SetTexKey(const UINT key);
+
+	///////////////////////////////////////
+	// Getters & Setters to the elements //
+	///////////////////////////////////////
+protected:
+	FTBasicMeshGroup* GetMeshGroup() const;
+	FTTexture*		  GetTexture() const;
+	FoxtrotRenderer*  GetRenderer() const;
+
+	void SetRenderer(FoxtrotRenderer* renderer);
+	void SetMeshGroup(FTBasicMeshGroup* meshGroup);
+
+	////////////////////////
+	// Element operations //
+	////////////////////////
 protected:
 	virtual bool InitializeMesh();
 	bool		 InitializeMesh(UINT key);
@@ -69,21 +85,34 @@ protected:
 
 	DirectX::SimpleMath::Matrix CalcModelMat(Transform* transform);
 
+	//////////////////////////////////////////
+	// Component elements					//
+	// These will be read from .chunk file. //
+	//////////////////////////////////////////
 private:
-	// Identifier for the object in the Resource Map from the ResourceManager instance.
-	// These will be read from .chunk file.
+	// Identifiers for the object in the Resource Map from the ResourceManager instance.
 	UINT			  mMeshKey;
 	UINT			  mTexKey;
 	std::vector<UINT> mMaterialKeys;
 
-	// These will be set in Initialize() member function.
-	FoxtrotRenderer*		 mRenderer;
-	FTBasicMeshGroup*		 mMeshGroup;
+	////////////////////////////////////////
+	// Component elements				  //
+	// These will be set in Initialize()  //
+	////////////////////////////////////////
+private:
+	FoxtrotRenderer*  mRenderer;
+	FTBasicMeshGroup* mMeshGroup;
 
+	///////////////////////////////////
+	// Save & Load related functions //
+	///////////////////////////////////
 public:
 	virtual void SaveProperties(std::ofstream& ofs);
 	virtual void LoadProperties(std::ifstream& ifs);
 
+	/////////////////////////////////////
+	// FoxtrotEditor related functions //
+	/////////////////////////////////////
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void EditorUpdate(float deltaTime) override;

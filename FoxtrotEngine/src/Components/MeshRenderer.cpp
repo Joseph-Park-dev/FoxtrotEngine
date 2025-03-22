@@ -71,6 +71,17 @@ void MeshRenderer::CloneTo(Actor* actor)
 	newComp->mMeshGroup->SetDrawNormal(this->mMeshGroup->GetDrawNormal());
 }
 
+FoxtrotRenderer*  MeshRenderer::GetRenderer() const { return mRenderer; }
+const UINT		  MeshRenderer::GetMeshKey() const { return mMeshKey; }
+const UINT		  MeshRenderer::GetTexKey() const { return mTexKey; }
+FTBasicMeshGroup* MeshRenderer::GetMeshGroup() const { return mMeshGroup; }
+FTTexture*		  MeshRenderer::GetTexture() const { return mMeshGroup->GetTexture(); }
+
+void MeshRenderer::SetRenderer(FoxtrotRenderer* renderer) { mRenderer = renderer; }
+void MeshRenderer::SetMeshKey(const UINT key) { mMeshKey = key; }
+void MeshRenderer::SetTexKey(const UINT key) { mTexKey = key; }
+void MeshRenderer::SetMeshGroup(FTBasicMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
+
 bool MeshRenderer::InitializeMesh()
 {
 	if (mMeshKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
@@ -200,7 +211,7 @@ MeshRenderer::~MeshRenderer()
 void MeshRenderer::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
-	//FileIOHelper::SaveBool(ofs, ChunkKey::FTMESHGROUP_DRAW_TEXTURE, mMeshGroup->GetDrawTexture());
+	// FileIOHelper::SaveBool(ofs, ChunkKey::FTMESHGROUP_DRAW_TEXTURE, mMeshGroup->GetDrawTexture());
 	FileIOHelper::SaveBool(ofs, ChunkKey::FTMESHGROUP_DRAW_NORMALS, mMeshGroup->GetDrawNormal());
 
 	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::MESH_KEY, mMeshKey);
@@ -241,7 +252,7 @@ void MeshRenderer::EditorUIUpdate()
 		mMeshGroup->UpdateUI();
 		UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 		FTEditorUtils::DisplayResSelection(
-			"Material", 
+			"Material",
 			ResourceManager::GetInstance()->GetMapMaterials(),
 			key);
 		if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)

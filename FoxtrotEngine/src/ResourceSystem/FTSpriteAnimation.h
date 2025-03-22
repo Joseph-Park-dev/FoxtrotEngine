@@ -38,7 +38,7 @@ public:
 		ComPtr<ID3D11Device>&		 device,
 		ComPtr<ID3D11DeviceContext>& context) override;
 	virtual void Update(float deltaTime);
-	virtual void Render(FoxtrotRenderer* renderer, FTTexture* texture) override;
+	virtual void Render(FoxtrotRenderer* rendere) override;
 
 public:
 	std::string&	GetName();
@@ -55,7 +55,7 @@ public:
 	void SetIsFinished(bool val);
 	void SetIsRepeated(bool val);
 
-	void SetTexKey(UINT key);
+	virtual void SetTexture(UINT key) override;
 	void SetTileMapKey(UINT key);
 
 	void IncreaseIdx() { ++mCurrFrame; }

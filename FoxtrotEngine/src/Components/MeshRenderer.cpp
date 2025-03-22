@@ -71,6 +71,17 @@ void MeshRenderer::CloneTo(Actor* actor)
 	newComp->mMeshGroup->SetDrawNormal(this->mMeshGroup->GetDrawNormal());
 }
 
+FoxtrotRenderer*  MeshRenderer::GetRenderer() const { return mRenderer; }
+const UINT		  MeshRenderer::GetMeshKey() const { return mMeshKey; }
+const UINT		  MeshRenderer::GetTexKey() const { return mTexKey; }
+FTBasicMeshGroup* MeshRenderer::GetMeshGroup() const { return mMeshGroup; }
+FTTexture*		  MeshRenderer::GetTexture() const { return mMeshGroup->GetTexture(); }
+
+void MeshRenderer::SetRenderer(FoxtrotRenderer* renderer) { mRenderer = renderer; }
+void MeshRenderer::SetMeshKey(const UINT key) { mMeshKey = key; }
+void MeshRenderer::SetTexKey(const UINT key) { mTexKey = key; }
+void MeshRenderer::SetMeshGroup(FTBasicMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
+
 bool MeshRenderer::InitializeMesh()
 {
 	if (mMeshKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
@@ -200,7 +211,7 @@ MeshRenderer::~MeshRenderer()
 void MeshRenderer::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
-	//FileIOHelper::SaveBool(ofs, ChunkKey::FTMESHGROUP_DRAW_TEXTURE, mMeshGroup->GetDrawTexture());
+	// FileIOHelper::SaveBool(ofs, ChunkKey::FTMESHGROUP_DRAW_TEXTURE, mMeshGroup->GetDrawTexture());
 	FileIOHelper::SaveBool(ofs, ChunkKey::FTMESHGROUP_DRAW_NORMALS, mMeshGroup->GetDrawNormal());
 
 	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::MESH_KEY, mMeshKey);
@@ -241,15 +252,13 @@ void MeshRenderer::EditorUIUpdate()
 		mMeshGroup->UpdateUI();
 		UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 		FTEditorUtils::DisplayResSelection(
-			"Material", 
+			"Material",
 			ResourceManager::GetInstance()->GetMapMaterials(),
-			key
-		);
+			key);
 		if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		{
 			mMaterialKeys.push_back(key);
 			mMeshGroup->SetMaterials(mMaterialKeys, mRenderer->GetDevice());
-			
 		}
 		for (FTMaterial* mat : mMeshGroup->Materials())
 			mat->UpdateUI();
@@ -279,7 +288,7 @@ void MeshRenderer::OnResetTexture()
 {
 	if (ImGui::Button("Reset"))
 	{
-		GetTexture()->ReleaseTexture();
+		mMeshGroup->GetTexture()->ReleaseTexture();
 		SetTexKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED);
 	}
 }
@@ -294,7 +303,7 @@ void MeshRenderer::UpdateSprite()
 		if (mMeshGroup && mMeshGroup->GetTexture())
 		{
 			ImVec2 size = ImVec2(100, 100);
-			ImGui::Image((ImTextureID)GetTexture()->GetResourceView().Get(), size);
+			ImGui::Image((ImTextureID)mMeshGroup->GetTexture()->GetResourceView().Get(), size);
 		}
 	}
 	ImGui::Text(currentSprite.c_str());

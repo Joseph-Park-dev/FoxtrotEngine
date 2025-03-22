@@ -139,8 +139,9 @@ FTPremade* ResourceManager::GetLoadedPremade(const UINT key)
 
 FTPremade* ResourceManager::GetLoadedPremade(std::string&& fileName)
 {
-	std::string									   premadeFullName = fileName + FileTypes::PREMADE;
-	std::unordered_map<UINT, FTPremade*>::iterator iter			   = mMapPremades.begin();
+	std::string premadeFullName = fileName + FileTypes::PREMADE;
+
+	std::unordered_map<UINT, FTPremade*>::iterator iter = mMapPremades.begin();
 	for (; iter != mMapPremades.end(); ++iter)
 	{
 		if ((*iter).second->GetFileName() == premadeFullName)
@@ -287,19 +288,18 @@ void ResourceManager::LoadMaterialsFromChunk(std::ifstream& ifs)
 	mMapMaterials.insert(std::make_pair(mItemKey, resource));
 
 	// Include materials here.
-
 }
 
 void ResourceManager::LoadMaterial()
 {
-	StandardMaterial* standard = DBG_NEW StandardMaterial;
-	std::string path = std::string(".//Assets//Materials//") + ChunkKey::STANDARD_MAT + FileTypes::MATERIAL;
+	StandardMaterial* standard				  = DBG_NEW StandardMaterial;
+	std::string							 path = std::string(".//Assets//Materials//") + ChunkKey::STANDARD_MAT + FileTypes::MATERIAL;
 	if (!std::filesystem::exists(path))
 		standard->SaveToFile();
 	standard->LoadFromFile();
 
 	RimMaterial* rim = DBG_NEW RimMaterial;
-	path = std::string(".//Assets//Materials//") + ChunkKey::RIM_MAT + FileTypes::MATERIAL;
+	path			 = std::string(".//Assets//Materials//") + ChunkKey::RIM_MAT + FileTypes::MATERIAL;
 	if (!std::filesystem::exists(path))
 		rim->SaveToFile();
 	rim->LoadFromFile();
@@ -562,12 +562,12 @@ void ResourceManager::LoadResByType(std::string& filePath)
 		case ResType::FTMESH:
 			LoadResource(filePath, mMapMeshData);
 			break;
-		//case ResType::FTMATERIAL:
+		// case ResType::FTMATERIAL:
 		//	LoadMaterial(filePath);
 		//	break;
-		// case ResType::FT_VERTEX_SHADER:
+		//  case ResType::FT_VERTEX_SHADER:
 		//	LoadResource(filePath, mMapVertexShaders);
-		// case ResType::FT_PIXEL_SHADER:
+		//  case ResType::FT_PIXEL_SHADER:
 		//	LoadResource(filePath, mMapPixelShaders);
 		default:
 			break;
@@ -586,7 +586,7 @@ ResType ResourceManager::GetResType(std::string& fileName)
 	else if (StrContains(FileTypes::MESH, format))
 		return ResType::FTMESH;
 
-	//else if (StrContains(FileTypes::MATERIAL, format))
+	// else if (StrContains(FileTypes::MATERIAL, format))
 	//	return ResType::FTMATERIAL;
 
 	else if (StrContains(FileTypes::SHADER, format))

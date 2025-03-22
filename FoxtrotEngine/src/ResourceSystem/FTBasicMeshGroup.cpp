@@ -62,10 +62,6 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer)
 	UINT						 offset	 = 0;
 	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
 
-	context->VSSetShader(mVS.Get(), 0, 0);
-	context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
-	context->PSSetShader(mPS.Get(), 0, 0);
-
 	for (const Mesh* mesh : mMeshes)
 	{
 		context->VSSetConstantBuffers(
@@ -73,10 +69,23 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer)
 
 		if (mTexture)
 		{
+			mVS = renderer->GetTextureVS();
+			mPS = renderer->GetRimTexturePS();
+
 			std::vector<ID3D11ShaderResourceView*> resViews;
 			resViews.push_back(mTexture->GetResourceView().Get());
 			context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
 		}
+		else
+		{
+			mVS = renderer->GetSolidVS();
+			mPS = renderer->GetSolidPS();
+		}
+
+		context->VSSetShader(mVS.Get(), 0, 0);
+		context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
+		context->PSSetShader(mPS.Get(), 0, 0);
+
 		if (!mMaterials.empty())
 		{
 			context->PSSetConstantBuffers(
@@ -103,7 +112,7 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer)
 	}
 }
 
-void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture, int meshIndex)
+void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, int meshIndex)
 {
 	UINT						 stride	 = sizeof(Vertex);
 	UINT						 offset	 = 0;
@@ -123,8 +132,8 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture, int
 		context->IASetInputLayout(renderer->GetTextureInputLayout().Get());
 
 		std::vector<ID3D11ShaderResourceView*> resViews;
-		resViews.push_back(texture->GetResourceView().Get());
-		context->VSSetShaderResources(0, 1, texture->GetResourceView().GetAddressOf());
+		resViews.push_back(mTexture->GetResourceView().Get());
+		context->VSSetShaderResources(0, 1, mTexture->GetResourceView().GetAddressOf());
 		context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
 
 		context->PSSetConstantBuffers(
@@ -156,7 +165,7 @@ ComPtr<ID3D11SamplerState>& FTBasicMeshGroup::GetSamplerState() { return mSample
 size_t						FTBasicMeshGroup::GetMeshCount() { return mMeshes.size(); }
 std::vector<Mesh*>&			FTBasicMeshGroup::GetMeshes() { return mMeshes; }
 
-const FTTexture* FTBasicMeshGroup::GetTexture() const
+FTTexture* FTBasicMeshGroup::GetTexture() const
 {
 	return mTexture;
 }
@@ -292,6 +301,7 @@ HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 
 FTBasicMeshGroup::FTBasicMeshGroup()
 	: mMeshes()
+	, mTexture(nullptr)
 	, mNormalLines(nullptr)
 	, mDrawNormal(false)
 #ifdef FOXTROT_EDITOR

@@ -20,7 +20,7 @@
 
 class FTMaterial;
 
-class FTBasicMeshGroup
+class FTBasicMeshGroup : public FTResource
 {
 public:
 	void UpdateConstantBuffers(
@@ -34,7 +34,7 @@ public:
 		ComPtr<ID3D11DeviceContext>& context);
 
 	virtual void Render(FoxtrotRenderer* renderer);
-	void		 Render(FoxtrotRenderer* renderer, FTTexture* texture, int meshIndex);
+	void		 Render(FoxtrotRenderer* renderer, int meshIndex);
 
 	void Clear();
 
@@ -42,12 +42,12 @@ public:
 	ComPtr<ID3D11SamplerState>& GetSamplerState();
 	size_t						GetMeshCount();
 	std::vector<Mesh*>&			GetMeshes();
-	const FTTexture*			GetTexture() const;
+	FTTexture*					GetTexture() const;
 	BasicVCData&				GetVCData();
 	bool						GetDrawNormal();
 
 	void SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Device>& device);
-	void SetTexture(UINT texKey);
+	virtual void SetTexture(UINT texKey);
 	void SetDrawNormal(bool drawNormal);
 
 	std::vector<FTMaterial*>& Materials();

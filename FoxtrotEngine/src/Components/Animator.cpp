@@ -60,9 +60,8 @@ void Animator::Play(const UINT key, bool isRepeated)
 	mCurrentAnim = mLoadedAnimations.at(key);
 	if (mCurrentAnim == nullptr)
 		printf("ERROR : Animator::Play()->Animation is null\n");
-	SetMeshGroup(mCurrentAnim);
 	SetTexKey(mCurrentAnim->GetTexKey());
-	SetTexture();
+	SetMeshGroup(mCurrentAnim);
 	mCurrentAnim->SetIsFinished(false);
 	mCurrentAnim->SetIsRepeated(isRepeated);
 }
@@ -78,7 +77,7 @@ FTSpriteAnimation* Animator::CreateAnimationFromTile(std::string&& name, UINT te
 	if (!GetRenderer())
 		printf("ERROR : Animator::CreateAnimationFromTile()-> Renderer is null");
 	if (texKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-		animation->SetTexKey(texKey);
+		animation->SetTexture(texKey);
 	if (tileMapKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		animation->SetTileMapKey(tileMapKey);
 
@@ -113,9 +112,6 @@ void Animator::LoadAnimation(const UINT key)
 		SetMeshGroup(nullptr);
 		mCurrentAnim = mLoadedAnimations.at(0);
 		SetMeshGroup(mCurrentAnim);
-
-		SetTexKey(mCurrentAnim->GetTexKey());
-		SetTexture();
 	}
 }
 
@@ -163,7 +159,7 @@ void Animator::LateUpdate(float deltaTime)
 void Animator::Render(FoxtrotRenderer* renderer)
 {
 	if (mCurrentAnim != nullptr)
-		mCurrentAnim->Render(renderer, GetTexture());
+		mCurrentAnim->Render(renderer);
 }
 
 void Animator::CloneTo(Actor* actor)

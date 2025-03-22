@@ -60,7 +60,7 @@ void SpriteRenderer::Initialize(FTCore* coreInstance)
 	{
 		this->InitializeMesh();
 		if (GetTexKey() != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-			MeshRenderer::SetTexture();
+			GetMeshGroup()->SetTexture(GetTexKey());
 	}
 	Component::Initialize(coreInstance);
 }

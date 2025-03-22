@@ -123,8 +123,8 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, FTTexture* texture, int
 		context->IASetInputLayout(renderer->GetTextureInputLayout().Get());
 
 		std::vector<ID3D11ShaderResourceView*> resViews;
-		resViews.push_back(texture->GetResourceView().Get());
-		context->VSSetShaderResources(0, 1, texture->GetResourceView().GetAddressOf());
+		resViews.push_back(mTexture->GetResourceView().Get());
+		context->VSSetShaderResources(0, 1, mTexture->GetResourceView().GetAddressOf());
 		context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
 
 		context->PSSetConstantBuffers(
@@ -292,6 +292,7 @@ HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 
 FTBasicMeshGroup::FTBasicMeshGroup()
 	: mMeshes()
+	, mTexture(nullptr)
 	, mNormalLines(nullptr)
 	, mDrawNormal(false)
 #ifdef FOXTROT_EDITOR

@@ -46,10 +46,10 @@ void FTSpriteAnimation::Update(float deltaTime)
 	}
 }
 
-void FTSpriteAnimation::Render(FoxtrotRenderer* renderer, FTTexture* texture)
+void FTSpriteAnimation::Render(FoxtrotRenderer* renderer)
 {
 	if (FrameIsWithinIndexRange(mCurrFrame))
-		FTBasicMeshGroup::Render(renderer, texture, mCurrFrame);
+		FTBasicMeshGroup::Render(renderer, mCurrFrame);
 }
 
 std::string& FTSpriteAnimation::GetName()
@@ -112,8 +112,9 @@ void FTSpriteAnimation::SetIsRepeated(bool val)
 	mIsRepeated = val;
 }
 
-void FTSpriteAnimation::SetTexKey(UINT key)
+void FTSpriteAnimation::SetTexture(UINT key)
 {
+	FTBasicMeshGroup::SetTexture(key);
 	mTexKey = key;
 }
 

@@ -243,13 +243,11 @@ void MeshRenderer::EditorUIUpdate()
 		FTEditorUtils::DisplayResSelection(
 			"Material", 
 			ResourceManager::GetInstance()->GetMapMaterials(),
-			key
-		);
+			key);
 		if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		{
 			mMaterialKeys.push_back(key);
 			mMeshGroup->SetMaterials(mMaterialKeys, mRenderer->GetDevice());
-			
 		}
 		for (FTMaterial* mat : mMeshGroup->Materials())
 			mat->UpdateUI();
@@ -279,7 +277,7 @@ void MeshRenderer::OnResetTexture()
 {
 	if (ImGui::Button("Reset"))
 	{
-		GetTexture()->ReleaseTexture();
+		mMeshGroup->GetTexture()->ReleaseTexture();
 		SetTexKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED);
 	}
 }
@@ -294,7 +292,7 @@ void MeshRenderer::UpdateSprite()
 		if (mMeshGroup && mMeshGroup->GetTexture())
 		{
 			ImVec2 size = ImVec2(100, 100);
-			ImGui::Image((ImTextureID)GetTexture()->GetResourceView().Get(), size);
+			ImGui::Image((ImTextureID)mMeshGroup->GetTexture()->GetResourceView().Get(), size);
 		}
 	}
 	ImGui::Text(currentSprite.c_str());

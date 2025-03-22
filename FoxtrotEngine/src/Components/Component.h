@@ -7,6 +7,13 @@
 // ----------------------------------------------------------------
 /// <summary>
 /// Base class for all Components.
+/// 
+/// [Design philosophy]
+/// The Component controls its elements in an upper level,
+/// and the element has the related operation.
+/// 
+/// Means of access to the elements (Getters & Setters) are not to be
+/// exposed. Make them protected, or minimize the cases of them being public.
 /// </summary>
 
 #pragma once
@@ -14,21 +21,12 @@
 
 #include "Debugging/DebugMemAlloc.h"
 
-#ifdef FOXTROT_EDITOR
-	#include "FTCoreEditor.h"
-#endif
-
 class Actor;
 class FoxtrotRenderer;
 class FTCore;
 class KeyInputManager;
 class Camera;
-
-namespace ChunkKey
-{
-	constexpr const char* COMPONENTS   = "Components";
-	constexpr const char* UPDATE_ORDER = "UpdateOrder";
-} // namespace ChunkKey
+class FTVector3;
 
 namespace DefaultVal
 {
@@ -133,3 +131,9 @@ protected:
 	virtual void OnConfirmUpdate();
 #endif // FOXTROT_EDITOR
 };
+
+namespace ChunkKey
+{
+	constexpr const char* COMPONENTS = "Components";
+	constexpr const char* UPDATE_ORDER = "UpdateOrder";
+} // namespace ChunkKey

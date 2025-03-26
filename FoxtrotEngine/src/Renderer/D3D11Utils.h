@@ -61,6 +61,14 @@ public:
 		const UINT&					 renderHeight,
 		UINT&						 numQualityLevel);
 
+	static HRESULT CreateSwapChain(
+		const HWND				window,
+		ComPtr<ID3D11Device>&	device,
+		ComPtr<IDXGISwapChain>& swapChain,
+		int						renderWidth,
+		int						renderHeight,
+		UINT					numQualityLevel);
+
 	static HRESULT
 	CreateDepthBuffer(
 		ComPtr<ID3D11Device>&			device,

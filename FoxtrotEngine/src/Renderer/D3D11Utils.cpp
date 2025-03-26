@@ -148,6 +148,73 @@ HRESULT D3D11Utils::CreateDeviceAndContext(
 	return hr;
 }
 
+HRESULT D3D11Utils::CreateSwapChain(const HWND window, ComPtr<ID3D11Device>& device, ComPtr<IDXGISwapChain>& swapChain, int renderW, int renderH, UINT numQualityLevel)
+{
+	// Get the DXGI factory
+	IDXGIDevice* pDXGIDevice = nullptr;
+	HRESULT		 hr			 = device->QueryInterface(__uuidof(IDXGIDevice), (void**)&pDXGIDevice);
+	if (FAILED(hr))
+	{
+		Debug::LogError(__LINE__, __FILE__, "Failed to retrieve DXGI device");
+		return hr;
+	}
+
+	IDXGIAdapter* pDXGIAdapter = nullptr;
+	hr						   = pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&pDXGIAdapter);
+	pDXGIDevice->Release();
+	if (FAILED(hr))
+	{
+		Debug::LogError(__LINE__, __FILE__, "Failed to retrieve DXGI adapter");
+		return hr;
+	}
+
+	IDXGIFactory* pDXGIFactory = nullptr;
+	hr						   = pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&pDXGIFactory);
+	pDXGIAdapter->Release();
+	if (FAILED(hr))
+	{
+		Debug::LogError(__LINE__, __FILE__, "Failed to retrieve DXGI factory");
+		return hr;
+	}
+
+	// Describe the swap chain
+	DXGI_SWAP_CHAIN_DESC sd;
+	ZeroMemory(&sd, sizeof(sd));
+	sd.BufferDesc.Width					  = renderW;					// set the back buffer width
+	sd.BufferDesc.Height				  = renderH;					// set the back buffer height
+	sd.BufferDesc.Format				  = DXGI_FORMAT_R8G8B8A8_UNORM; // use 32-bit color
+	sd.BufferCount						  = 2;							// Double-buffering
+	sd.BufferDesc.RefreshRate.Numerator	  = 60;
+	sd.BufferDesc.RefreshRate.Denominator = 1;
+
+	sd.BufferUsage	= DXGI_USAGE_SHADER_INPUT | DXGI_USAGE_RENDER_TARGET_OUTPUT; // how swap chain is to be used
+	sd.OutputWindow = window;													 // the window to be used
+	sd.Windowed		= TRUE;														 // windowed/full-screen mode
+	sd.Flags		= DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;					 // allow full-screen switching
+	sd.SwapEffect	= DXGI_SWAP_EFFECT_DISCARD;
+
+	if (numQualityLevel > 0)
+	{
+		sd.SampleDesc.Count	  = 4; // how many multi-samples
+		sd.SampleDesc.Quality = numQualityLevel - 1;
+	}
+	else
+	{
+		sd.SampleDesc.Count	  = 1; // how many multi-samples
+		sd.SampleDesc.Quality = 0;
+	}
+
+	// Create the swap chain
+	hr = pDXGIFactory->CreateSwapChain(device.Get(), &sd, swapChain.GetAddressOf());
+	pDXGIFactory->Release();
+	if (FAILED(hr))
+	{
+		Debug::LogError(__LINE__, __FILE__, "Failed to create swap chain");
+		return hr;
+	}
+	return S_OK;
+}
+
 HRESULT D3D11Utils::CreateDepthBuffer(
 	ComPtr<ID3D11Device>&			device,
 	int								renderWidth,

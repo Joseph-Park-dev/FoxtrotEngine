@@ -14,6 +14,8 @@
 
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/D3D11Utils.h"
+#include "Renderer/FTWindow.h"
+#include "Renderer/FTRectArea.h"
 #include "Core/TemplateFunctions.h"
 #include "Physics/Physics2D.h"
 #include "Managers/DebugShapes.h"
@@ -22,48 +24,56 @@
 #include "EditorSceneManager.h"
 #include "EditorChunkLoader.h"
 
-void ViewportRenderer::InitializeTexture(FoxtrotRenderer* renderer)
+void ViewportRenderer::InitializeTexture(FTWindow* window, FoxtrotRenderer* renderer, UINT width, UINT height)
 {
-	CreateRenderTargetView(renderer);
+	mWidth = width; 
+	mHeight = height;
+	CreateRenderTargetView(window, renderer);
 }
 
-void ViewportRenderer::DrawOnTexture(ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11RenderTargetView>& renderTargetView, ComPtr<ID3D11DepthStencilView>& depthStencilView, FoxtrotRenderer* renderer)
+void ViewportRenderer::DrawOnTexture(FoxtrotRenderer* renderer)
 {
-	float clearColor[4] = { 0.3, 0.3, 0.3, 1.0 };
-	context->ClearRenderTargetView(mViewportRTV.Get(), clearColor);
-	context->ClearRenderTargetView(renderer->GetIndexRenderTargetView().Get(), clearColor);
-	context->ClearDepthStencilView(mViewportDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
-	ID3D11RenderTargetView* targetsPrev[] = { mViewportRTV.Get(),
-											  renderer->GetIndexRenderTargetView().Get() };
-	context->OMSetRenderTargets(2, targetsPrev, mViewportDSV.Get());
+	//ID3D11RenderTargetView* targetsPrev[] = { mViewportRTV.Get(),
+	//										  renderer->GetIndexRenderTargetView().Get() };
+	//context->OMSetRenderTargets(2, targetsPrev, mViewportDSV.Get());
 
 	if (!EditorChunkLoader::GetInstance()->IsLoadingChunk())
 	{
 		EditorSceneManager::GetInstance()->Render(renderer);
 		EditorSceneManager::GetInstance()->EditorRender(renderer);
 		DebugShapes::GetInstance()->Render(renderer);
-		renderer->SampleCursorPosColor();
 	}
 
-	ID3D11RenderTargetView* targetsAfter[] = { renderTargetView.Get() };
-	context->OMSetRenderTargets(1, targetsAfter, depthStencilView.Get());
+	//ID3D11RenderTargetView* targetsAfter[] = { renderTargetView.Get() };
+	//context->OMSetRenderTargets(1, targetsAfter, depthStencilView.Get());
+}
+
+void ViewportRenderer::Resize(FoxtrotRenderer* renderer)
+{
+	Reset();
+	ImVec2 topLeft = EditorLayer::GetInstance()->GetSceneViewportPos();
+	mWidth = static_cast<int>(EditorLayer::GetInstance()->GetSceneViewportSize().x);
+	mHeight = static_cast<int>(EditorLayer::GetInstance()->GetSceneViewportSize().y);
+	//InitializeTexture( renderer, mWidth, mHeight);
 }
 
 void ViewportRenderer::Reset()
 {
-	mViewportTex.Reset();
-	mViewportRTV.Reset();
-	mViewportSRV.Reset();
-	mViewportDSV.Reset();
+	mRenderTexture.Reset();
+	mRTV.Reset();
+	mSRV.Reset();
+	mDSV.Reset();
+
+	mRenderTexture = nullptr;
+	mRTV = nullptr;
+	mSRV = nullptr;
+	mDSV = nullptr;
 }
 
 void ViewportRenderer::CreateRenderTargetView(
-	FoxtrotRenderer* renderer)
+	FTWindow* window, FoxtrotRenderer* renderer)
 {
-	mViewportRTV.Reset();
-	mViewportSRV.Reset();
-	mViewportDSV.Reset();
+	Reset();
 
 	////////////////////////////////////////////
 	////// Creating Viewport RenderTarget //////
@@ -73,8 +83,11 @@ void ViewportRenderer::CreateRenderTargetView(
 	D3D11_TEXTURE2D_DESC textureDesc;
 	ZeroMemory(&textureDesc, sizeof(textureDesc));
 
-	textureDesc.Width			 = renderer->GetRenderWidth();
-	textureDesc.Height			 = renderer->GetRenderHeight();
+	FTRectArea* renderArea = window->GetRenderArea();
+	FTVector2 renderSize = renderArea->GetSize();
+
+	textureDesc.Width			 = renderSize.x;
+	textureDesc.Height			 = renderSize.y;
 	textureDesc.MipLevels		 = 1;
 	textureDesc.ArraySize		 = 1;
 	textureDesc.Format			 = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -84,7 +97,7 @@ void ViewportRenderer::CreateRenderTargetView(
 	textureDesc.CPUAccessFlags	 = 0;
 	textureDesc.MiscFlags		 = 0;
 
-	DX::ThrowIfFailed(renderer->GetDevice()->CreateTexture2D(&textureDesc, NULL, mViewportTex.GetAddressOf()));
+	DX::ThrowIfFailed(renderer->GetDevice()->CreateTexture2D(&textureDesc, NULL, mRenderTexture.GetAddressOf()));
 
 	// Initialize RenderTargetView
 	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
@@ -94,49 +107,22 @@ void ViewportRenderer::CreateRenderTargetView(
 
 	DX::ThrowIfFailed(
 		renderer->GetDevice()->CreateRenderTargetView(
-			mViewportTex.Get(),
+			mRenderTexture.Get(),
 			&renderTargetViewDesc,
-			mViewportRTV.GetAddressOf()));
+			mRTV.GetAddressOf()));
 
 	DX::ThrowIfFailed(
-		D3D11Utils::CreateDepthBuffer(renderer->GetDevice(), renderer->GetRenderWidth(), renderer->GetRenderHeight(), renderer->GetNumQualityLevels(), mViewportDSV));
+		D3D11Utils::CreateDepthBuffer(renderer->GetDevice(), renderSize.x, renderSize.y, renderer->GetNumQualityLevels(), mDSV));
 
-	renderer->GetDevice()->CreateShaderResourceView(mViewportTex.Get(), 0, mViewportSRV.GetAddressOf());
-
-	//////////////////////////////////////////
-	////// Creating Index Render Target //////
-	//////////////////////////////////////////
-
-	textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-
-	renderTargetViewDesc.Format = textureDesc.Format;
-	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-	renderTargetViewDesc.Texture2D.MipSlice = 0;
-
-	DX::ThrowIfFailed(renderer->GetDevice()->CreateTexture2D(&textureDesc, NULL, renderer->GetIndexTempTexture().GetAddressOf()));
-	DX::ThrowIfFailed(renderer->GetDevice()->CreateTexture2D(&textureDesc, NULL, renderer->GetIndexTexture().GetAddressOf()));
-
-	// Creating 1x1 sized staging texture
-	textureDesc.BindFlags	   = 0;
-	textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-	textureDesc.Usage		   = D3D11_USAGE_STAGING;
-	textureDesc.Width		   = 1;
-	textureDesc.Height		   = 1;
-
-	DX::ThrowIfFailed(renderer->GetDevice()->CreateTexture2D(
-		&textureDesc, nullptr, renderer->GetIndexStagingTexture().GetAddressOf()));
-
-	DX::ThrowIfFailed(
-		renderer->GetDevice()->CreateRenderTargetView(
-			renderer->GetIndexTexture().Get(),
-			&renderTargetViewDesc,
-			renderer->GetIndexRenderTargetView().GetAddressOf()));
+	renderer->GetDevice()->CreateShaderResourceView(mRenderTexture.Get(), 0, mSRV.GetAddressOf());
 }
 
 ViewportRenderer::ViewportRenderer()
-	: mViewportTex(nullptr)
-	, mViewportRTV(nullptr)
-	, mViewportSRV(nullptr)
+	: mRenderTexture(nullptr)
+	, mRTV(nullptr)
+	, mSRV(nullptr)
+	, mWidth(0)
+	, mHeight(0)
 {
 }
 

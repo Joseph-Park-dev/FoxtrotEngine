@@ -24,6 +24,7 @@
 #include "Managers/CollisionManager.h"
 #include "Managers/LightManager.h"
 #include "Managers/DebugShapes.h"
+#include "Renderer/FTWindow.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/Camera.h"
 #include "Physics/Physics2D.h"
@@ -65,71 +66,39 @@ void FTCore::LoadGameData()
 
 bool FTCore::Initialize()
 {
-	if (!InitializeWindow())
+	if (mWindow)
+	{
+		delete mWindow;
+		mWindow = nullptr;
+	}
+	mWindow = DBG_NEW FTWindow(mWindowTitle.c_str(), mWindowWidth, mWindowHeight);
+	if (!mWindow->InitializeWindow())
+	{
+		Debug::LogError(__LINE__, __FILE__, "Failed to Initialize FTWindow");
 		return false;
-	if (!InitFoxtrotRenderer_D3D11())
+	}
+
+	if (!InitFoxtrotRenderer_D3D11(mWindow, mWindowWidth, mWindowHeight))
+	{
+		Debug::LogError(__LINE__, __FILE__, "Failed to Initialize FTRenderer");
 		return false;
+	}
+
+	if (!mWindow->InitializeWindowRenderer(GetGameRenderer()))
+	{
+		Debug::LogError(__LINE__, __FILE__, "Failed to Initialize FTWindow Renderer");
+		return false;
+	}
+
 	LoadGameData();
 	InitSingletonManagers();
 	InitTimer();
 	return true;
 }
 
-bool FTCore::InitializeWindow()
+bool FTCore::InitFoxtrotRenderer_D3D11(FTWindow* window, int& width, int& height)
 {
-	WNDCLASSEX wc = {
-		sizeof(WNDCLASSEX),
-		CS_CLASSDC,
-		WndProc,
-		0L,
-		0L,
-		GetModuleHandle(NULL),
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		mWindowTitle.c_str(), // lpszClassName, L-string
-		NULL
-	};
-	if (!RegisterClassEx(&wc))
-	{
-		LogString("RegisterClassEx() failed.");
-		return false;
-	}
-	RECT wr = { 0, 0, mWindowWidth, mWindowHeight };
-
-	// 필요한 윈도우 크기(해상도) 계산
-	// wr의 값이 바뀜
-	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, false);
-
-	mWindow = CreateWindow(
-		wc.lpszClassName,
-		mWindowTitle.c_str(),
-		WS_OVERLAPPEDWINDOW | WS_SYSMENU,
-		100,				// x-coordinate, top left
-		100,				// y-coordinate, top left
-		wr.right - wr.left, // horizontal resolution
-		wr.bottom - wr.top, // vertical resolution
-		NULL,
-		NULL,
-		wc.hInstance,
-		NULL);
-
-	if (!mWindow)
-	{
-		LogString("CreateWindow() failed.");
-		return false;
-	}
-
-	ShowWindow(mWindow, SW_SHOWDEFAULT);
-	SetForegroundWindow(mWindow);
-	UpdateWindow(mWindow);
-	return true;
-}
-
-bool FTCore::InitFoxtrotRenderer_D3D11()
-{
-	mGameRenderer = FoxtrotRenderer::CreateRenderer(mWindow, mWindowWidth, mWindowHeight);
+	mGameRenderer = FoxtrotRenderer::CreateRenderer(window, width, height);
 	if (!mGameRenderer)
 		return false;
 	return true;
@@ -138,14 +107,14 @@ bool FTCore::InitFoxtrotRenderer_D3D11()
 void FTCore::InitSingletonManagers()
 {
 	Physics2D::GetInstance()->Initialize();
-	Camera::GetInstance()->Initialize(mGameRenderer, 64, 1.8f);
+	Camera::GetInstance()->Initialize(mWindow, 64, 1.8f);
 	DebugShapes::GetInstance()->Initialize(mGameRenderer);
 	CollisionManager::GetInstance()->Initialize();
 	ResourceManager::GetInstance()->Initialize(mGameRenderer);
 	UIManager::GetInstance();
 	EventManager::GetInstance();
 	KeyInputManager::GetInstance();
-	LightManager::GetInstance()->Initialize();
+	LightManager::GetInstance()->Initialize(mGameRenderer);
 	SceneManager::GetInstance()->Initialize();
 }
 
@@ -168,16 +137,8 @@ void FTCore::RunLoop()
 
 void FTCore::ProcessInput()
 {
-	MSG msg = {};
-	if (PeekMessage(&msg, GetWindow(), 0, 0, PM_REMOVE))
-	{
-		// EditorCamera2D::GetInstance()->ProcessInput(msg);
-	}
-	KeyInputManager::GetInstance()->DetectKeyInput();
-	KeyInputManager::GetInstance()->DetectMouseInput(msg);
+	mWindow->ProcessInput();
 	SceneManager::GetInstance()->ProcessInput(KeyInputManager::GetInstance());
-	TranslateMessage(&msg);
-	DispatchMessage(&msg);
 }
 
 void FTCore::UpdateGame()
@@ -196,22 +157,15 @@ void FTCore::UpdateGame()
 
 void FTCore::GenerateOutput()
 {
-	mGameRenderer->RenderClear();
-	MSG msg = {};
-	InvalidateRect(mWindow, NULL, true);
-	if (PeekMessage(&msg, mWindow, 0, 0, PM_REMOVE))
-	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-	}
-	UpdateWindow(mWindow);
+	//mGameRenderer->RenderClear(mWindow);
+	mWindow->BeginRender(mGameRenderer);
 
 	SceneManager::GetInstance()->Render(mGameRenderer);
 	ParticleSystem::GetInstance()->Render(mGameRenderer);
-
 	DebugShapes::GetInstance()->Render(mGameRenderer);
-	mGameRenderer->SampleCursorPosColor();
-	mGameRenderer->SwapChainPresent(1, 0);
+
+	mWindow->SamplCursorPosColor(mGameRenderer->GetContext(), mGameRenderer->GetCursorPosColor());
+	mWindow->GetSwapChain()->Present(1, 0);
 }
 
 void FTCore::ProcessEvent()
@@ -234,6 +188,7 @@ FTCore::FTCore()
 
 FTCore::~FTCore()
 {
+	delete mWindow;
 }
 
 void FTCore::ShutDown()
@@ -256,7 +211,6 @@ void FTCore::ShutDown()
 	ParticleSystem::GetInstance()->Destroy();
 	LightManager::GetInstance()->Destroy();
 
-	DestroyWindow(mWindow);
 	PostQuitMessage(0);
 }
 

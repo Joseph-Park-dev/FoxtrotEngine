@@ -11,6 +11,7 @@
 #include "Core/TemplateFunctions.h"
 #include "Core/FTCore.h"
 #include "Renderer/Camera.h"
+#include "Renderer/FTWindow.h"
 
 #ifdef FOXTROT_EDITOR
 #include "EditorLayer.h"
@@ -147,7 +148,7 @@ void KeyInputManager::DetectMouseInput(MSG msg)
 void KeyInputManager::LockCursorInSceneViewport(FTVector2 mousePos)
 {
 	RECT rect;
-	GetClientRect(FTCore::GetInstance()->GetWindow(), &rect);
+	GetClientRect(FTCore::GetInstance()->GetGameWindow()->GetHandle(), &rect);
 
 	POINT ul;
 	ul.x = rect.left;
@@ -157,8 +158,8 @@ void KeyInputManager::LockCursorInSceneViewport(FTVector2 mousePos)
 	lr.x = rect.right;
 	lr.y = rect.bottom;
 
-	MapWindowPoints(FTCore::GetInstance()->GetWindow(), nullptr, &ul, 1);
-	MapWindowPoints(FTCore::GetInstance()->GetWindow(), nullptr, &lr, 1);
+	MapWindowPoints(FTCore::GetInstance()->GetGameWindow()->GetHandle(), nullptr, &ul, 1);
+	MapWindowPoints(FTCore::GetInstance()->GetGameWindow()->GetHandle(), nullptr, &lr, 1);
 
 	rect.left = ul.x;
 	rect.top = ul.y;

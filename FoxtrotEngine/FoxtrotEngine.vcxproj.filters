@@ -228,6 +228,9 @@
     <ClCompile Include="src\ResourceSystem\FTCubemap\FTCubemap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Renderer\FTWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Actors\Actor.h">
@@ -1722,6 +1725,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ResourceSystem\FTCubemap\FTCubemap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\FTWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

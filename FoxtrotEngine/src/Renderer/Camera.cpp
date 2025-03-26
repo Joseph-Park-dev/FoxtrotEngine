@@ -10,6 +10,8 @@
 
 #include "directxtk/SimpleMath.h"
 
+#include "Renderer/FTWindow.h"
+#include "Renderer/FTRectArea.h"
 #include "Core/FTCore.h"
 #include "Managers/KeyInputManager.h"
 #include "Managers/SceneManager.h"
@@ -25,9 +27,11 @@
 	#include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
-void Camera::Initialize(FoxtrotRenderer* renderer, UINT pixels, float unit = 1)
+void Camera::Initialize(FTWindow* renderWindow, UINT pixels, float unit)
 {
-	mRenderer = renderer;
+	assert(!mRenderWindow); // Overlapped assignment must be prevented.
+
+	mRenderWindow = renderWindow;
 	InitializePixelsPerUnit(pixels, unit);
 }
 
@@ -40,7 +44,7 @@ void Camera::ZoomIn()
 }
 
 Camera::Camera()
-	: mRenderer(nullptr)
+	: mRenderWindow(nullptr)
 	, mTarget(nullptr)
 	, mPosition(Vector3(0.0f, 0.0f, 0.0f))
 	, mViewDir(Vector3(0.0f, 0.0f, -1.0f))
@@ -75,12 +79,14 @@ Matrix Camera::GetViewRow()
 
 Matrix Camera::GetProjRow()
 {
-	float unitsPerPixel = 1 / mPixelsPerUnit;
-	float worldWidth	= mRenderer->GetRenderWidth() * unitsPerPixel;
-	float worldHeight	= mRenderer->GetRenderHeight() * unitsPerPixel;
+	float		unitsPerPixel = 1 / mPixelsPerUnit;
+	FTRectArea* renderArea	  = mRenderWindow->GetRenderArea();
+	FTVector2	renderSize	  = renderArea->GetSize();
 
-	mAspect =
-		static_cast<float>(mRenderer->GetRenderWidth()) / static_cast<float>(mRenderer->GetRenderHeight());
+	float worldWidth  = renderSize.x * unitsPerPixel;
+	float worldHeight = renderSize.y * unitsPerPixel;
+
+	mAspect = renderSize.x / renderSize.y;
 
 	return mViewType == Viewtype::Perspective
 		? DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(mProjFOVAngleY), mAspect, mNearZ, mFarZ)
@@ -133,21 +139,21 @@ void Camera::InitializePixelsPerUnit(UINT pixels, float units)
 	mPixelsPerUnit = (float)pixels / units;
 }
 
-FTVector3 Camera::ConvertToCenter(FTVector3 topLeftPos)
+FTVector3 Camera::ConvertToCenter(FTVector3 topLeftPos, FTVector2 renderSize)
 {
 	FTVector3 pos			= topLeftPos * FTVector3(-1.f, 1.f, 1.0f);
 	float	  unitsPerPixel = 1 / mPixelsPerUnit;
-	float	  worldWidth	= mRenderer->GetRenderWidth() * unitsPerPixel;
-	float	  worldHeight	= mRenderer->GetRenderHeight() * unitsPerPixel;
+	float	  worldWidth	= renderSize.x * unitsPerPixel;
+	float	  worldHeight	= renderSize.y * unitsPerPixel;
 	pos += FTVector3(worldWidth / 2, worldHeight / 2, 0.f);
 	return pos;
 }
 
-FTVector3 Camera::ConvertToTopLeft(FTVector3 centerPos)
+FTVector3 Camera::ConvertToTopLeft(FTVector3 centerPos, FTVector2 renderSize)
 {
 	float	  unitsPerPixel = 1 / mPixelsPerUnit;
-	float	  worldWidth	= mRenderer->GetRenderWidth() * unitsPerPixel;
-	float	  worldHeight	= mRenderer->GetRenderHeight() * unitsPerPixel;
+	float	  worldWidth	= renderSize.x * unitsPerPixel;
+	float	  worldHeight	= renderSize.y * unitsPerPixel;
 	FTVector3 pos			= centerPos - FTVector3(worldWidth / 2, worldHeight / 2, 0.f);
 	pos						= pos * FTVector3(-1.f, 1.f, 1.0f);
 	return pos;
@@ -185,8 +191,10 @@ void Camera::LoadProperties(std::ifstream& ifs)
 
 FTVector3 Camera::ConvertScreenPosToWorld(FTVector2 screenPos)
 {
-	float screenWidth  = static_cast<float>(mRenderer->GetRenderWidth());
-	float screenHeight = static_cast<float>(mRenderer->GetRenderHeight());
+	FTRectArea* renderArea	 = mRenderWindow->GetRenderArea();
+	FTVector2	renderSize	 = renderArea->GetSize();
+	float		screenWidth	 = static_cast<float>(renderSize.x);
+	float		screenHeight = static_cast<float>(renderSize.y);
 
 	FTVector2 topLeft	  = FTVector2::Zero;
 	FTVector2 bottomRight = FTVector2(screenWidth - 1, screenHeight - 1);
@@ -205,9 +213,12 @@ FTVector3 Camera::ConvertScreenPosToWorld(FTVector2 screenPos)
 
 FTVector2 Camera::ConvertScreenPosToNDC(FTVector2 screenPos)
 {
+	FTRectArea* renderArea = mRenderWindow->GetRenderArea();
+	FTVector2	renderSize = renderArea->GetSize();
+
 	FTVector2 ndc;
-	ndc.x = screenPos.x / mRenderer->GetRenderWidth() * 2 - 1;
-	ndc.y = screenPos.y / mRenderer->GetRenderHeight() * 2 - 1;
+	ndc.x = screenPos.x / renderSize.x * 2 - 1;
+	ndc.y = screenPos.y / renderSize.y * 2 - 1;
 	return ndc;
 }
 

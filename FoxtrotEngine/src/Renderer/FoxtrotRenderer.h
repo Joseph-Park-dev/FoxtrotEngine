@@ -45,6 +45,7 @@ using namespace DX;
 class Transform;
 class ViewportRenderer;
 class FTVector2;
+class FTWindow;
 
 enum class FillMode
 {
@@ -56,40 +57,20 @@ class FoxtrotRenderer
 {
 public:
 	// Intended to be used during intialization.
-	static FoxtrotRenderer* CreateRenderer(HWND window, int width, int height);
+	static FoxtrotRenderer* CreateRenderer(FTWindow* window, int width, int height);
 	// Intended to be used during shutdown.
 	static void DestroyRenderer(FoxtrotRenderer* renderer);
 
 public:
-	// Changes window resolution.
-	void ResizeWindow(FTVector2& windowRes);
-
-	// Gets the pixel color at the cursor position,
-	// pastes the value to mPickColor
-	void SampleCursorPosColor();
-
-	// Clears the screen with clearColor.
-	void RenderClear();
-
-	// Presents a rendered image to the user
-	// A wrapper to SwapChain->Present(UINT, UINT)
-	void SwapChainPresent(UINT syncInterval, UINT flags);
+	void SetViewport(FTVector2 topLeft, FTVector2 resolution);
+	void SetViewport(FLOAT topLeftX, FLOAT topLeftY, FLOAT resX, FLOAT resY);
+	void Reset();
 
 public:
 	// D3D11 interfaces (Getters).
 	ComPtr<ID3D11Device>&			GetDevice();
 	ComPtr<ID3D11DeviceContext>&	GetContext();
-	ComPtr<IDXGISwapChain>&			GetSwapChain();
-	ComPtr<ID3D11RenderTargetView>& GetRenderTargetView();
-	ComPtr<ID3D11DepthStencilView>& GetDSV();
-	ComPtr<ID3D11Texture2D>&		GetDepthStencilBuffer();
 	ComPtr<ID3D11BlendState>&		GetBlendState();
-
-	ComPtr<ID3D11Texture2D>&		GetIndexTexture();
-	ComPtr<ID3D11Texture2D>&		GetIndexTempTexture();
-	ComPtr<ID3D11Texture2D>&		GetIndexStagingTexture(); // 1x1 sized
-	ComPtr<ID3D11RenderTargetView>& GetIndexRenderTargetView();
-	uint8_t*						GetCursorPosColor();
 
 	ComPtr<ID3D11DepthStencilState>& GetDSS();
 	ComPtr<ID3D11DepthStencilState>& GetDSS2D();
@@ -110,37 +91,29 @@ public:
 	ComPtr<ID3D11PixelShader>&	GetNormalPS();
 
 	// Rendering size related (Getters and Setters).
-	FTVector2 GetRenderResolution();
-	UINT	  GetRenderWidth() const;
-	UINT	  GetRenderHeight() const;
-	void	  SetRenderWidth(const UINT width);
-	void	  SetRenderHeight(const UINT height);
 	UINT	  GetNumQualityLevels();
+	uint8_t*  GetCursorPosColor();
 
 	// FillMode related (Getters and Setters)
 	void	 SwitchFillMode() const;
 	FillMode GetFillMode() const;
 	void	 SetFillMode(const FillMode mode);
 
-private:
-	int mRenderWidth;
-	int mRenderHeight;
-
 	float	 mClearColor[4];
 	UINT	 mNumQualityLevels;
 	FillMode mFillMode;
 
+	// Pixel color (RGBA) at the cursor position.
+	uint8_t mCursorPosColor[4] = {
+		0,
+	};
+
 private:
 	ComPtr<ID3D11Device>		   mDevice;
 	ComPtr<ID3D11DeviceContext>	   mContext;
-	ComPtr<ID3D11RenderTargetView> mRenderTargetView;
-	ComPtr<IDXGISwapChain>		   mSwapChain;
 	ComPtr<ID3D11RasterizerState>  mSolidRasterizerState;
 	ComPtr<ID3D11RasterizerState>  mWireframeRasterizerState;
 
-	// Depth buffer related
-	ComPtr<ID3D11Texture2D>			mDepthStencilBuffer;
-	ComPtr<ID3D11DepthStencilView>	mDepthStencilView;
 	ComPtr<ID3D11DepthStencilState> mDepthStencilState;
 	ComPtr<ID3D11DepthStencilState> mDepthStencilState2D;
 
@@ -165,22 +138,12 @@ private:
 
 	ComPtr<ID3D11BlendState> mBlendState;
 
-	// Indexing related (for mouse picking)
-	ComPtr<ID3D11Texture2D>		   mIndexTexture;
-	ComPtr<ID3D11Texture2D>		   mIndexTempTexture;
-	ComPtr<ID3D11Texture2D>		   mIndexStagingTexture; // 1x1 sized
-	ComPtr<ID3D11RenderTargetView> mIndexRenderTargetView;
-	// Pixel color (RGBA) at the cursor position.
-	uint8_t mCursorPosColor[4] = {
-		0,
-	};
-
 public:
 	FoxtrotRenderer();
 
 private:
 	// Intended to be used during initialization.
-	bool Initialize(HWND window, int renderWidth, int renderHeight);
+	bool Initialize(FTWindow* window, int renderWidth, int renderHeight);
 
 	// ID3D11 Helper functions
 	HRESULT CreateRasterizerState();
@@ -188,20 +151,16 @@ private:
 	HRESULT CreateBlendState();
 	HRESULT CreateTextureSampler();
 
-	void SetViewport(FTVector2 topLeft, FTVector2 resolution);
-	void SetViewport(FLOAT topLeftX, FLOAT topLeftY, FLOAT resX, FLOAT resY);
-
-	bool IsInRenderedArea(FTVector2 pos);
-
 #ifdef FOXTROT_EDITOR
 public:
+	bool InitializeViewport(FTWindow* window, UINT renderWidth, UINT renderHeight);
 	void RenderOnViewport();
 	void SetViewport(const ImVec2& topLeft, const ImVec2& resolution);
 
 public:
-	ViewportRenderer* GetViewportRenderer();
+	ViewportRenderer*				GetViewportRenderer();
 
 private:
-	ViewportRenderer* mViewportRenderer;
+	ViewportRenderer*			   mViewportRenderer;
 #endif // FOXTROT_EDITOR
 };

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -20,25 +20,28 @@
 #include "Debugging/DebugMemAlloc.h"
 
 class FTCoreEditor :
-    public FTCore
+	public FTCore
 {
 	SINGLETON(FTCoreEditor);
 
 public:
-	virtual bool Initialize() override;
-	virtual void ShutDown()	  override;
+	bool		 Initialize() override;
+	virtual void ShutDown() override;
 
 public:
-	LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) override;
+	LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 public:
-	bool GetIsUpdatingGame() const { return mIsUpdatingGame; }
+	bool	  GetIsUpdatingGame() const { return mIsUpdatingGame; }
+	FTWindow* GetEditorWindow() { return mEditorWindow; }
+
 	void SetIsUpdatingGame(bool isUpdating) { mIsUpdatingGame = isUpdating; }
 
 private:
-	bool			 mIsUpdatingGame;
-	bool			 mIsResizingWindow;
-	std::string		 mEditorDataFileName;
+	FTWindow*	mEditorWindow;
+	bool		mIsUpdatingGame;
+	bool		mIsResizingWindow;
+	std::string mEditorDataFileName;
 
 private:
 	// These member functions are to be included in Initialize()
@@ -47,8 +50,8 @@ private:
 
 private:
 	// GameLoop functions
-	void ProcessInput()   override;
-	void UpdateGame()	  override;
+	void ProcessInput() override;
+	void UpdateGame() override;
 	void GenerateOutput() override;
-	void ProcessEvent()	  override;
+	void ProcessEvent() override;
 };

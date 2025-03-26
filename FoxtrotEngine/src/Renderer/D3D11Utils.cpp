@@ -86,7 +86,10 @@ HRESULT D3D11Utils::CreateDeviceAndContext(
 	{
 		LogString("MSAA not supported.");
 	}
+
+#ifdef FOXTROT_EDITOR
 	numQualityLevel = 0; // Disable MSAA;
+#endif
 
 	hr = deviceCache.As(&device);
 	if (FAILED(hr))
@@ -148,6 +151,73 @@ HRESULT D3D11Utils::CreateDeviceAndContext(
 	return hr;
 }
 
+HRESULT D3D11Utils::CreateSwapChain(const HWND window, ComPtr<ID3D11Device>& device, ComPtr<IDXGISwapChain>& swapChain, int renderW, int renderH, UINT numQualityLevel)
+{
+	// Get the DXGI factory
+	IDXGIDevice* pDXGIDevice = nullptr;
+	HRESULT		 hr			 = device->QueryInterface(__uuidof(IDXGIDevice), (void**)&pDXGIDevice);
+	if (FAILED(hr))
+	{
+		Debug::LogError(__LINE__, __FILE__, "Failed to retrieve DXGI device");
+		return hr;
+	}
+
+	IDXGIAdapter* pDXGIAdapter = nullptr;
+	hr						   = pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&pDXGIAdapter);
+	pDXGIDevice->Release();
+	if (FAILED(hr))
+	{
+		Debug::LogError(__LINE__, __FILE__, "Failed to retrieve DXGI adapter");
+		return hr;
+	}
+
+	IDXGIFactory* pDXGIFactory = nullptr;
+	hr						   = pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&pDXGIFactory);
+	pDXGIAdapter->Release();
+	if (FAILED(hr))
+	{
+		Debug::LogError(__LINE__, __FILE__, "Failed to retrieve DXGI factory");
+		return hr;
+	}
+
+	// Describe the swap chain
+	DXGI_SWAP_CHAIN_DESC sd;
+	ZeroMemory(&sd, sizeof(sd));
+	sd.BufferDesc.Width					  = renderW;					// set the back buffer width
+	sd.BufferDesc.Height				  = renderH;					// set the back buffer height
+	sd.BufferDesc.Format				  = DXGI_FORMAT_R8G8B8A8_UNORM; // use 32-bit color
+	sd.BufferCount						  = 2;							// Double-buffering
+	sd.BufferDesc.RefreshRate.Numerator	  = 60;
+	sd.BufferDesc.RefreshRate.Denominator = 1;
+
+	sd.BufferUsage	= DXGI_USAGE_SHADER_INPUT | DXGI_USAGE_RENDER_TARGET_OUTPUT; // how swap chain is to be used
+	sd.OutputWindow = window;													 // the window to be used
+	sd.Windowed		= TRUE;														 // windowed/full-screen mode
+	sd.Flags		= DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;					 // allow full-screen switching
+	sd.SwapEffect	= DXGI_SWAP_EFFECT_DISCARD;
+
+	if (numQualityLevel > 0)
+	{
+		sd.SampleDesc.Count	  = 4; // how many multi-samples
+		sd.SampleDesc.Quality = numQualityLevel - 1;
+	}
+	else
+	{
+		sd.SampleDesc.Count	  = 1; // how many multi-samples
+		sd.SampleDesc.Quality = 0;
+	}
+
+	// Create the swap chain
+	hr = pDXGIFactory->CreateSwapChain(device.Get(), &sd, swapChain.GetAddressOf());
+	pDXGIFactory->Release();
+	if (FAILED(hr))
+	{
+		Debug::LogError(__LINE__, __FILE__, "Failed to create swap chain");
+		return hr;
+	}
+	return S_OK;
+}
+
 HRESULT D3D11Utils::CreateDepthBuffer(
 	ComPtr<ID3D11Device>&			device,
 	int								renderWidth,
@@ -191,6 +261,7 @@ HRESULT D3D11Utils::CreateDepthBuffer(
 		std::cout << "CreateDepthStencilView() failed." << std::endl;
 		return E_FAIL;
 	}
+
 	return S_OK;
 }
 
@@ -245,6 +316,7 @@ HRESULT D3D11Utils::CreateRenderTargetView(
 		resultRTV = device->CreateRenderTargetView(
 			backBuffer.Get(), nullptr, rtv.GetAddressOf());
 
+		backBuffer.Reset();
 		return resultRTV;
 	}
 	else
@@ -256,11 +328,11 @@ HRESULT D3D11Utils::CreateRenderTargetView(
 
 HRESULT D3D11Utils::CreateRenderTargetView(
 	ComPtr<ID3D11RenderTargetView>& RTV,
-	ComPtr<ID3D11Device>& device,
-	ComPtr<IDXGISwapChain>& swapChain,
-	ComPtr<ID3D11Texture2D>& indexTexture,
-	ComPtr<ID3D11Texture2D>& indexTempTexture,
-	ComPtr<ID3D11Texture2D>& indexStagingTexture)
+	ComPtr<ID3D11Device>&			device,
+	ComPtr<IDXGISwapChain>&			swapChain,
+	ComPtr<ID3D11Texture2D>&		indexTexture,
+	ComPtr<ID3D11Texture2D>&		indexTempTexture,
+	ComPtr<ID3D11Texture2D>&		indexStagingTexture)
 {
 	RTV.Reset();
 	ComPtr<ID3D11Texture2D> backBuffer;
@@ -268,37 +340,35 @@ HRESULT D3D11Utils::CreateRenderTargetView(
 	if (backBuffer)
 	{
 		HRESULT resultRTV;
-		resultRTV = device->CreateRenderTargetView(
-			backBuffer.Get(), nullptr, RTV.GetAddressOf());
+		//resultRTV = device->CreateRenderTargetView(
+		//	backBuffer.Get(), nullptr, RTV.GetAddressOf());
 
 		D3D11_TEXTURE2D_DESC desc;
 		backBuffer->GetDesc(&desc);
-		desc.SampleDesc.Count = 1;
+		desc.SampleDesc.Count	= 1;
 		desc.SampleDesc.Quality = 0;
-		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-		desc.MiscFlags = 0;
+		desc.BindFlags			= D3D11_BIND_SHADER_RESOURCE;
+		desc.MiscFlags			= 0;
 
 		device->CreateTexture2D(
 			&desc, nullptr, indexTempTexture.GetAddressOf());
 
 		// Creating 1x1 sized staging texture
-		desc.BindFlags = 0;
+		desc.BindFlags		= 0;
 		desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-		desc.Usage = D3D11_USAGE_STAGING;
-		desc.Width = 1;
-		desc.Height = 1;
+		desc.Usage			= D3D11_USAGE_STAGING;
+		desc.Width			= 1;
+		desc.Height			= 1;
 
 		resultRTV = device->CreateTexture2D(
 			&desc, nullptr, indexStagingTexture.GetAddressOf());
 
 		backBuffer->GetDesc(&desc); // Same desc with "backBuffer"
-		resultRTV = device->CreateTexture2D(&desc, nullptr,
-			indexTexture.GetAddressOf());
+		resultRTV = device->CreateTexture2D(&desc, nullptr, indexTexture.GetAddressOf());
 
 		resultRTV = device->CreateRenderTargetView(
-			indexTexture.Get(), nullptr,
-			RTV.GetAddressOf());
-		
+			indexTexture.Get(), nullptr, RTV.GetAddressOf());
+
 		return resultRTV;
 	}
 	else
@@ -638,11 +708,7 @@ HRESULT D3D11Utils::CreateCubemapTexture(
 	ComPtr<ID3D11Texture2D> texture;
 
 	return CreateDDSTextureFromFileEx(
-		device.Get(), filename, 0, D3D11_USAGE_DEFAULT,
-		D3D11_BIND_SHADER_RESOURCE, 0,
-		D3D11_RESOURCE_MISC_TEXTURECUBE,
-		DDS_LOADER_FLAGS(false), (ID3D11Resource**)texture.GetAddressOf(),
-		textureResourceView.GetAddressOf(), nullptr);
+		device.Get(), filename, 0, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, D3D11_RESOURCE_MISC_TEXTURECUBE, DDS_LOADER_FLAGS(false), (ID3D11Resource**)texture.GetAddressOf(), textureResourceView.GetAddressOf(), nullptr);
 }
 
 void D3D11Utils::WriteToFile(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Texture2D>& textureToWrite, const std::string filename)

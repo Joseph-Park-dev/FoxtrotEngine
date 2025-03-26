@@ -22,6 +22,7 @@
 
 using Matrix  = DirectX::SimpleMath::Matrix;
 using Vector3 = DirectX::SimpleMath::Vector3;
+class FTWindow;
 
 namespace ChunkKey
 {
@@ -62,15 +63,15 @@ public:
 
 public:
 	// "pixels" defines how much of them should fit in a given unit.
-	void		 Initialize(FoxtrotRenderer* renderer, UINT pixels, float unit);
+	void		 Initialize(FTWindow* renderWindow, UINT pixels, float unit);
 	virtual void Update(float deltaTime);
 
 protected:
 	void ZoomIn();
 
 private:
-	FoxtrotRenderer* mRenderer;
-	Actor*			 mTarget;
+	FTWindow* mRenderWindow; // The scene will be rendered on this window.
+	Actor*	  mTarget;
 
 	Vector3 mPosition;
 	Vector3 mViewDir;
@@ -94,8 +95,8 @@ private:
 private:
 	void InitializePixelsPerUnit(UINT pixels, float units = 1.f);
 
-	FTVector3 ConvertToCenter(FTVector3 topLeftPos);
-	FTVector3 ConvertToTopLeft(FTVector3 centerPos);
+	FTVector3 ConvertToCenter(FTVector3 topLeftPos, FTVector2 renderSize);
+	FTVector3 ConvertToTopLeft(FTVector3 centerPos, FTVector2 renderSize);
 
 public:
 	void SaveProperties(std::ofstream& ofs);

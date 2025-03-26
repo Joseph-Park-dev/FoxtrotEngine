@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -12,7 +12,7 @@
 /// </summary>
 
 #pragma once
-#pragma comment(lib,"d3d11.lib")
+#pragma comment(lib, "d3d11.lib")
 #include <vector>
 #include <string>
 #define WIN32_LEAN_AND_MEAN
@@ -20,6 +20,7 @@
 #include "Core/SingletonMacro.h"
 #include "Math/FTMath.h"
 
+class FTWindow;
 class FoxtrotRenderer;
 
 class FTCore
@@ -28,21 +29,17 @@ class FTCore
 
 public:
 	virtual bool Initialize();
-			void RunLoop();
+	void		 RunLoop();
 	virtual void ShutDown();
 
 	// Constantly called in win32 MsgProc() function.
 	virtual LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-private:
-	// Initializes Common functionality.
-	virtual bool InitializeWindow();
-			bool InitFoxtrotRenderer_D3D11();
-			void LoadGameData();
-			void InitTimer();
+public:
+	FTWindow*		 GetGameWindow() { return mWindow; }
+	FoxtrotRenderer* GetGameRenderer() { return mGameRenderer; }
 
-protected:
-	virtual	void InitSingletonManagers();
+	void SetIsRunning(bool isRunning) { mIsRunning = isRunning; }
 
 protected:
 	// Gameloop functions.
@@ -51,26 +48,24 @@ protected:
 	virtual void GenerateOutput();
 	virtual void ProcessEvent();
 
-public:
-	HWND&			 GetWindow()			 { return mWindow; }
-	FoxtrotRenderer* GetGameRenderer()		 { return mGameRenderer; }
-	int				 GetWindowWidth()  const { return mWindowWidth; }
-	int				 GetWindowHeight() const { return mWindowHeight; }
-	std::wstring	 GetWindowTitle()		 { return mWindowTitle; }
-
-	void SetWindowWidth  (int width)		  { mWindowWidth = width; }
-	void SetWindowHeight (int height)		  { mWindowHeight = height; }
-	void SetWindowTitle	 (std::wstring title) { mWindowTitle = title; }
-	void SetIsRunning	 (bool isRunning)	  { mIsRunning = isRunning; }
+protected:
+	virtual bool InitFoxtrotRenderer_D3D11(FTWindow* window, int& width, int& height);
+	virtual void InitSingletonManagers();
 
 private:
-	HWND			 mWindow;
+	FTWindow*		 mWindow;
 	FoxtrotRenderer* mGameRenderer;
 	bool			 mIsRunning;
-	int				 mWindowWidth;
-	int				 mWindowHeight;
-	std::wstring	 mWindowTitle;
+
+	std::wstring mWindowTitle;
+	int			 mWindowWidth;
+	int			 mWindowHeight;
 
 private:
-	std::string		 mGameDataPath;
+	std::string mGameDataPath;
+
+private:
+	// Initializes Common functionality.
+	void LoadGameData();
+	void InitTimer();
 };

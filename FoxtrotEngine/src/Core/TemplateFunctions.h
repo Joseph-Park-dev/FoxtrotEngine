@@ -45,6 +45,13 @@ namespace Debug
 	{
 		printf("ERROR at line number %d in file %s : %s\n", line, file, msg);
 	}
+
+	inline ULONG GetRefCount(IUnknown* obj)
+	{
+		obj->AddRef();
+		ULONG refCount = obj->Release();
+		return refCount;
+	}
 } // namespace Debug
 
 #ifdef FOXTROT_EDITOR

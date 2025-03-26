@@ -90,12 +90,12 @@ public:
 		ComPtr<IDXGISwapChain>&			swapChain);
 
 	static HRESULT CreateRenderTargetView(
-		ComPtr<ID3D11RenderTargetView>& RTV, 
-		ComPtr<ID3D11Device>& device, 
-		ComPtr<IDXGISwapChain>& swapChain, 
-		ComPtr<ID3D11Texture2D>& indexTexture, 
-		ComPtr<ID3D11Texture2D>& indexTempTexture, 
-		ComPtr<ID3D11Texture2D>& indexStagingTexture);
+		ComPtr<ID3D11RenderTargetView>& RTV,
+		ComPtr<ID3D11Device>&			device,
+		ComPtr<IDXGISwapChain>&			swapChain,
+		ComPtr<ID3D11Texture2D>&		indexTexture,
+		ComPtr<ID3D11Texture2D>&		indexTempTexture,
+		ComPtr<ID3D11Texture2D>&		indexStagingTexture);
 
 	static void CreateHullShader(
 		ComPtr<ID3D11Device>&	  device,

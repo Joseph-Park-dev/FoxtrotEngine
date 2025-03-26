@@ -16,6 +16,8 @@
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
 #include "DirectoryHelper.h"
+#include "EditorCamera.h"
+#include "ViewportRenderer.h"
 
 #include "Managers/DebugShapes.h"
 #include "Managers/KeyInputManager.h"
@@ -27,6 +29,8 @@
 #include "Renderer/FoxtrotRenderer.h"
 #include "Core/WindowProcess.h"
 #include "Renderer/Camera.h"
+#include "Renderer/D3D11Utils.h"
+#include "Renderer/FTWindow.h"
 #include "Managers/ResourceManager.h"
 #include "Managers/EventManager.h"
 #include "Managers/SceneManager.h"
@@ -40,17 +44,46 @@ EditorLayer*		EditorLayer::mInstance		  = nullptr;
 EditorSceneManager* EditorSceneManager::mInstance = nullptr;
 EditorChunkLoader*	EditorChunkLoader::mInstance  = nullptr;
 FTCoreEditor*		FTCoreEditor::mInstance		  = nullptr;
+EditorCamera*		EditorCamera::mInstance		  = nullptr;
 
 bool FTCoreEditor::Initialize()
 {
 	if (!FTCore::Initialize())
 	{
-		LogString("ERROR : FTCoreEditor::Initialize()->FTCore initialization failed");
+		Debug::LogError(__LINE__, __FILE__, "FTCoreEditor::Initialize()->FTCore initialization failed");
 		return false;
 	}
+
+	if (mEditorWindow)
+	{
+		delete mEditorWindow;
+		mEditorWindow = nullptr;
+	}
+	mEditorWindow = DBG_NEW FTWindow(L"Foxtrot Editor", 1920, 1080);
+
+	if (!mEditorWindow->InitializeWindow())
+	{
+		Debug::LogError(__LINE__, __FILE__, "Failed to Initialize FTWindow");
+		return false;
+	}
+
+	GetGameRenderer()->InitializeViewport(mEditorWindow, 1280, 720);
+
+	if (!mEditorWindow->CreateSwapChain(GetGameRenderer()))
+	{
+		Debug::LogError(__LINE__, __FILE__, "Failed to Initialize SwapChain");
+		return false;
+	}
+
+	if (!mEditorWindow->InitializeWindowRenderer(GetGameRenderer()))
+	{
+		Debug::LogError(__LINE__, __FILE__, "Failed to Initialize FTWindow Renderer");
+		return false;
+	}
+
 	if (!InitGUI())
 	{
-		LogString("Error : FTCoreEditor - Imgui initialization failed");
+		Debug::LogError(__LINE__, __FILE__, "Failed to Initialize ImGui");
 		return false;
 	}
 	return true;
@@ -72,23 +105,6 @@ void FTCoreEditor::ShutDown()
 	FTCore::ShutDown();
 }
 
-void FTCoreEditor::InitSingletonManagers()
-{
-	Physics2D::GetInstance()->Initialize();
-	Camera::GetInstance()->Initialize(GetGameRenderer(), 64.f, 1.8f);
-	ResourceManager::GetInstance()->Initialize(GetGameRenderer());
-	UIManager::GetInstance();
-	EventManager::GetInstance();
-	KeyInputManager::GetInstance();
-	CollisionManager::GetInstance()->Initialize();
-	LightManager::GetInstance()->Initialize();
-	DebugShapes::GetInstance()->Initialize(GetGameRenderer());
-
-	EditorSceneManager::GetInstance()->Initialize();
-	EditorLayer::GetInstance();
-}
-
-// Imgui forwawrd declaration
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 LRESULT FTCoreEditor::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -103,45 +119,56 @@ LRESULT FTCoreEditor::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			if (!CHUNK_IS_SAVED)
 				EditorLayer::GetInstance()->SetErrorType(ErrorType::ChunkNotSaved);
 			else
-				this->SetIsRunning(false);
+				FTCoreEditor::GetInstance()->SetIsRunning(false);
 			return 0;
 		}
 		case WM_SIZE:
 		{
+
 			// Reset and resize swapchain
 			// std::cout << (UINT)LOWORD(lParam) << " " << (UINT)HIWORD(lParam)
 			//          << std::endl;
-			mIsResizingWindow = true;
-			if (GetGameRenderer())
+			if (mEditorWindow)
 			{
-				SetWindowWidth(UINT(LOWORD(lParam)));
-				SetWindowHeight(UINT(HIWORD(lParam)));
+				mEditorWindow->SetWidth(UINT(LOWORD(lParam)));
+				mEditorWindow->SetHeight(UINT(HIWORD(lParam)));
+				mEditorWindow->ResizeWindow(GetGameRenderer());
 			}
 			break;
 		}
 	}
 	if (mIsResizingWindow && MOUSE_AWAY(MOUSE::MOUSE_LEFT))
 	{
-		FTVector2 res = FTVector2(GetWindowWidth(), GetWindowHeight());
-		GetGameRenderer()->ResizeWindow(res);
+
 		mIsResizingWindow = false;
 	}
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
+void FTCoreEditor::InitSingletonManagers()
+{
+	Physics2D::GetInstance()->Initialize();
+
+	Camera::GetInstance()->Initialize(GetGameWindow(), 64.f, 1.8f);
+	EditorCamera::GetInstance()->Initialize(mEditorWindow, 64.f, 1.8f);
+
+	ResourceManager::GetInstance()->Initialize(GetGameRenderer());
+	UIManager::GetInstance();
+	EventManager::GetInstance();
+	KeyInputManager::GetInstance();
+	CollisionManager::GetInstance()->Initialize();
+	LightManager::GetInstance()->Initialize(GetGameRenderer());
+	DebugShapes::GetInstance()->Initialize(GetGameRenderer());
+
+	EditorSceneManager::GetInstance()->Initialize();
+	EditorLayer::GetInstance();
+}
+
 void FTCoreEditor::ProcessInput()
 {
-	MSG msg = {};
-	if (PeekMessage(&msg, GetWindow(), 0, 0, PM_REMOVE))
-	{
-		// EditorCamera2D::GetInstance()->ProcessInput(msg);
-	}
-	KeyInputManager::GetInstance()->DetectKeyInput();
-	KeyInputManager::GetInstance()->DetectMouseInput(msg);
-	// KeyInputManager::GetInstance()->DetectGamepadInput();
+	FTCore::ProcessInput();
+	mEditorWindow->ProcessInput();
 	EditorSceneManager::GetInstance()->ProcessInput(KeyInputManager::GetInstance());
-	TranslateMessage(&msg);
-	DispatchMessage(&msg);
 }
 
 void FTCoreEditor::UpdateGame()
@@ -160,24 +187,24 @@ void FTCoreEditor::UpdateGame()
 		EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
 	EditorLayer::GetInstance()->Update(deltaTime);
 	Camera::GetInstance()->Update(deltaTime);
+	EditorCamera::GetInstance()->Update(deltaTime);
 	UIManager::GetInstance()->Update(deltaTime);
 }
 
 void FTCoreEditor::GenerateOutput()
 {
-	MSG msg = {};
-	InvalidateRect(GetWindow(), NULL, true);
-	if (PeekMessage(&msg, GetWindow(), 0, 0, PM_REMOVE))
-	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-	}
-	UpdateWindow(GetWindow());
-	GetGameRenderer()->RenderClear();
+	// Renders the gameview window.
+	GetGameWindow()->BeginRender(GetGameRenderer());
+	GetGameWindow()->EndRender(GetGameRenderer());
+
+	// Renders the editor window.
+	mEditorWindow->BeginRender(GetGameRenderer());
 	GetGameRenderer()->RenderOnViewport();
 	EditorLayer::GetInstance()->Render(GetGameRenderer());
+	mEditorWindow->EndRender(GetGameRenderer());
 
-	GetGameRenderer()->SwapChainPresent(1, 0);
+	GetGameWindow()->GetSwapChain()->Present(1, 0);
+	mEditorWindow->GetSwapChain()->Present(1, 0);
 }
 
 void FTCoreEditor::ProcessEvent()
@@ -188,11 +215,11 @@ void FTCoreEditor::ProcessEvent()
 
 FTCoreEditor::FTCoreEditor()
 	: FTCore()
+	, mEditorWindow(nullptr)
 	, mIsUpdatingGame(false)
 	, mIsResizingWindow(false)
 	, mEditorDataFileName()
 {
-	SetWindowTitle(L"Foxtrot Engine (ver.0.1.2)");
 }
 
 FTCoreEditor::~FTCoreEditor() {}
@@ -206,10 +233,10 @@ bool FTCoreEditor::InitGUI()
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	// io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-	io.DisplaySize = ImVec2(float(GetWindowWidth()), float(GetWindowHeight()));
+	io.DisplaySize = ImVec2(float(mEditorWindow->GetWidth()), float(mEditorWindow->GetHeight()));
 
 	ImGui::StyleColorsDark();
-	if (!ImGui_ImplWin32_Init(GetWindow()))
+	if (!ImGui_ImplWin32_Init(mEditorWindow->GetHandle()))
 	{
 		LogString("Imgui Wind32 Init failed");
 		return false;

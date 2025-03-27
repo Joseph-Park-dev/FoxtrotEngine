@@ -30,7 +30,7 @@
 #include "Core/FTCore.h"
 #include "Managers/DebugShapes.h"
 #include "Managers/SceneManager.h"
-#include "Managers/KeyInputManager.h"
+#include "InputSystem/FTInputDevice.h"
 #include "Managers/ResourceManager.h"
 #include "Managers/CollisionManager.h"
 #include "Managers/UIManager.h"
@@ -43,6 +43,8 @@
 #include "Components/UIs/PanelUI.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/Camera.h"
+#include "WindowSystem/FTWindow.h"
+#include "Renderer/FTRectArea.h"
 #include "FileSystem/FileIOHelper.h"
 #include "ResourceSystem/FTPremade.h"
 

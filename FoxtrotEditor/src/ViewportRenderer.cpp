@@ -14,7 +14,7 @@
 
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/D3D11Utils.h"
-#include "Renderer/FTWindow.h"
+#include "WindowSystem/FTWindow.h"
 #include "Renderer/FTRectArea.h"
 #include "Core/TemplateFunctions.h"
 #include "Physics/Physics2D.h"

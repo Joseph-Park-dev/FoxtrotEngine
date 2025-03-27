@@ -16,7 +16,7 @@
 #include "Core/Timer.h"
 #include "Actors/Actor.h"
 #include "Components/SpriteRenderer.h"
-#include "Managers/KeyInputManager.h"
+#include "InputSystem/FTInputDevice.h"
 #include "Managers/SceneManager.h"
 #include "Managers/ResourceManager.h"
 #include "Managers/EventManager.h"
@@ -24,7 +24,7 @@
 #include "Managers/CollisionManager.h"
 #include "Managers/LightManager.h"
 #include "Managers/DebugShapes.h"
-#include "Renderer/FTWindow.h"
+#include "WindowSystem/FTWindow.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/Camera.h"
 #include "Physics/Physics2D.h"
@@ -43,7 +43,6 @@ CollisionManager* CollisionManager::mInstance = nullptr;
 SceneManager*	  SceneManager::mInstance	  = nullptr;
 UIManager*		  UIManager::mInstance		  = nullptr;
 EventManager*	  EventManager::mInstance	  = nullptr;
-KeyInputManager*  KeyInputManager::mInstance  = nullptr;
 ChunkLoader*	  ChunkLoader::mInstance	  = nullptr;
 ParticleSystem*	  ParticleSystem::mInstance	  = nullptr;
 LightManager*	  LightManager::mInstance	  = nullptr;
@@ -113,7 +112,6 @@ void FTCore::InitSingletonManagers()
 	ResourceManager::GetInstance()->Initialize(mGameRenderer);
 	UIManager::GetInstance();
 	EventManager::GetInstance();
-	KeyInputManager::GetInstance();
 	LightManager::GetInstance()->Initialize(mGameRenderer);
 	SceneManager::GetInstance()->Initialize();
 }
@@ -138,7 +136,7 @@ void FTCore::RunLoop()
 void FTCore::ProcessInput()
 {
 	mWindow->ProcessInput();
-	SceneManager::GetInstance()->ProcessInput(KeyInputManager::GetInstance());
+	SceneManager::GetInstance()->ProcessInput(mWindow->GetInputDevice());
 }
 
 void FTCore::UpdateGame()
@@ -151,7 +149,7 @@ void FTCore::UpdateGame()
 	Physics2D::GetInstance()->Update();
 	CollisionManager::GetInstance()->Update();
 	ParticleSystem::GetInstance()->Update(deltaTime);
-	UIManager::GetInstance()->Update(deltaTime);
+	UIManager::GetInstance()->Update(deltaTime, mWindow->GetInputDevice());
 	Camera::GetInstance()->Update(deltaTime);
 }
 
@@ -200,7 +198,6 @@ void FTCore::ShutDown()
 	CollisionManager::GetInstance()->Destroy();
 
 	EventManager::GetInstance()->Destroy();
-	KeyInputManager::GetInstance()->Destroy();
 	ResourceManager::GetInstance()->Destroy();
 	SceneManager::GetInstance()->Destroy();
 	UIManager::GetInstance()->Destroy();

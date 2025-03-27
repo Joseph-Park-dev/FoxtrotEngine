@@ -10,10 +10,10 @@
 
 #include "directxtk/SimpleMath.h"
 
-#include "Renderer/FTWindow.h"
+#include "WindowSystem/FTWindow.h"
 #include "Renderer/FTRectArea.h"
 #include "Core/FTCore.h"
-#include "Managers/KeyInputManager.h"
+#include "InputSystem/FTInputDevice.h"
 #include "Managers/SceneManager.h"
 #include "Scenes/Scene.h"
 #include "Renderer/FoxtrotRenderer.h"

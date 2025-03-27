@@ -16,6 +16,7 @@
 #include "Core/SingletonMacro.h"
 
 class UI;
+class FTInputDevice;
 
 class UIManager
 {
@@ -23,14 +24,14 @@ class UIManager
 
 public:
 	void RegisterUI(UI* UI);
-	void Update(float deltaTime);
+	void Update(float deltaTime, FTInputDevice* inputDevice);
 	//void SetFocusedUI(UI* UI);
 	void Reset();
 
 private:
 	UI* GetFocusedUI();
 	// Returns Overlapped targeted UI within parentUI's area. 
-	UI* GetTargetedUI(UI* parentUI);
+	UI* GetTargetedUI(UI* parentUI, FTInputDevice* inputDevice);
 
 private:
 	UI* mFocusedUI;

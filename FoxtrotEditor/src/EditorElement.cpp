@@ -19,7 +19,7 @@
 #include "CommandHistory.h"
 #include "EditorUtils.h"
 
-#include "Managers/KeyInputManager.h"
+#include "InputSystem/FTInputDevice.h"
 #include "Managers/ResourceManager.h"
 #include "FileSystem/ChunkLoader.h"
 #include "Actors/Transform.h"

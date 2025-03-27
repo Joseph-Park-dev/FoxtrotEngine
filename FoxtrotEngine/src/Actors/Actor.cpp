@@ -12,7 +12,7 @@
 #include <functional>
 
 #include "Scenes/Scene.h"
-#include "Managers/KeyInputManager.h"
+#include "InputSystem/FTInputDevice.h"
 
 #include "Actors/ActorGroup.h"
 #include "Actors/Transform.h"
@@ -146,11 +146,11 @@ void Actor::Setup()
 			comp->Setup();
 }
 
-void Actor::ProcessInput(KeyInputManager* keyInputManager)
+void Actor::ProcessInput(FTInputDevice* inputDevice)
 {
 	if (IsActive())
 		for (auto comp : mComponents)
-			comp->ProcessInput(keyInputManager);
+			comp->ProcessInput(inputDevice);
 }
 
 void Actor::UpdateComponents(float deltaTime)

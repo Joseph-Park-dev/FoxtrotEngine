@@ -21,12 +21,12 @@
 #include "Core/TemplateFunctions.h"
 #include "Actors/Transform.h"
 #include "ResourceSystem/Vertex.h"
-#include "Managers/KeyInputManager.h"
+#include "InputSystem/FTInputDevice.h"
 #include "Managers/SceneManager.h"
 #include "Managers/DebugShapes.h"
 #include "Renderer/D3D11Utils.h"
 #include "Renderer/Camera.h"
-#include "Renderer/FTWindow.h"
+#include "WindowSystem/FTWindow.h"
 
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS

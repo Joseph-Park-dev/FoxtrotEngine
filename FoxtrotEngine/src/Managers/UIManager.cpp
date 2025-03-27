@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -15,41 +15,43 @@
 #include "Managers/SceneManager.h"
 #include "Actors/Actor.h"
 #include "Actors/Transform.h"
-#include "Managers/KeyInputManager.h"
+#include "InputSystem/FTInputDevice.h"
 #include "Components/UIs/UI.h"
 
 #ifdef FOXTROT_EDITOR
-#include "EditorLayer.h"
-#include "EditorSceneManager.h"
+	#include "EditorLayer.h"
+	#include "EditorSceneManager.h"
 #endif // FOXTROT_EDITOR
 
 UIManager::UIManager()
 	: mFocusedUI(nullptr)
-{}
+{
+}
 
 UIManager::~UIManager()
-{}
+{
+}
 
 void UIManager::RegisterUI(UI* UI)
 {
 	UI->SetColorID(
-		Random::GetIntRange(0,255), 
-		Random::GetIntRange(0, 255), 
+		Random::GetIntRange(0, 255),
+		Random::GetIntRange(0, 255),
 		Random::GetIntRange(0, 255));
 	mUIs.push_back(UI);
 }
 
-void UIManager::Update(float deltaTime)
+void UIManager::Update(float deltaTime, FTInputDevice* inputDevice)
 {
 	// 1. Identify Focused UI
-	// 2. 
+	// 2.
 	mFocusedUI = GetFocusedUI();
 	if (!mFocusedUI)
 		return;
-	bool lBtnTap = MOUSE_TAP(MOUSE::MOUSE_LEFT);
-	bool lBtnAway = MOUSE_AWAY(MOUSE::MOUSE_LEFT);
-	
-	//UI* targetUI = GetTargetedUI(mFocusedUI);
+	bool lBtnTap  = inputDevice->MOUSE_TAP(MOUSE::MOUSE_LEFT);
+	bool lBtnAway = inputDevice->MOUSE_AWAY(MOUSE::MOUSE_LEFT);
+
+	// UI* targetUI = GetTargetedUI(mFocusedUI);
 	UI* targetUI = mFocusedUI;
 	if (targetUI != nullptr)
 	{
@@ -74,7 +76,7 @@ void UIManager::Update(float deltaTime)
 
 UI* UIManager::GetFocusedUI()
 {
-	std::list<UI*> hoveredUI;
+	std::list<UI*>			   hoveredUI;
 	std::vector<UI*>::iterator iter = mUIs.begin();
 	for (; iter != mUIs.end(); ++iter)
 	{
@@ -87,13 +89,13 @@ UI* UIManager::GetFocusedUI()
 		return nullptr;
 
 	UI* focusedUI = nullptr;
-	focusedUI = hoveredUI.back();
+	focusedUI	  = hoveredUI.back();
 	hoveredUI.pop_back();
 
-	while(!hoveredUI.empty())
+	while (!hoveredUI.empty())
 	{
-		UI* ui = hoveredUI.back();
-		float depth = ui->GetOwner()->GetTransform()->GetWorldPosition().z;
+		UI*	  ui		= hoveredUI.back();
+		float depth		= ui->GetOwner()->GetTransform()->GetWorldPosition().z;
 		float currDepth = focusedUI->GetOwner()->GetTransform()->GetWorldPosition().z;
 		if (currDepth < depth)
 			focusedUI = ui;
@@ -103,19 +105,19 @@ UI* UIManager::GetFocusedUI()
 	return focusedUI;
 }
 
-UI* UIManager::GetTargetedUI(UI* parentUI)
+UI* UIManager::GetTargetedUI(UI* parentUI, FTInputDevice* inputDevice)
 {
-	bool lBtnAway = MOUSE_AWAY(MOUSE::MOUSE_LEFT);
+	bool lBtnAway = inputDevice->MOUSE_AWAY(MOUSE::MOUSE_LEFT);
 
 	UI* targetUI = nullptr;
 	// 1. Including parent UI, inspect all its child objects
 	//	  (using BFS utilizing queue DS)
-	static std::list<UI*> queue;
+	static std::list<UI*>	queue;
 	static std::vector<UI*> noneTarget;
 
 	queue.clear();
 	noneTarget.clear();
-	
+
 	queue.push_back(parentUI);
 
 	while (!queue.empty())

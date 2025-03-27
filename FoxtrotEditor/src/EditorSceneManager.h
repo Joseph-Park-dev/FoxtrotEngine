@@ -23,7 +23,7 @@ class EditorSceneManager
 
 public:
 	virtual void Initialize();
-	virtual void ProcessInput(class KeyInputManager* keyInputManager);
+	virtual void ProcessInput(class FTInputDevice* inputDevice);
 
 	// Runs on editor when pressing Play button.
 	void Update(float deltaTime);

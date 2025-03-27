@@ -20,7 +20,7 @@
 #include "ViewportRenderer.h"
 
 #include "Managers/DebugShapes.h"
-#include "Managers/KeyInputManager.h"
+#include "InputSystem/FTInputDevice.h"
 #include "Core/FTCore.h"
 #include "Core/Timer.h"
 #include "Physics/Physics2D.h"
@@ -30,7 +30,7 @@
 #include "Core/WindowProcess.h"
 #include "Renderer/Camera.h"
 #include "Renderer/D3D11Utils.h"
-#include "Renderer/FTWindow.h"
+#include "WindowSystem/FTWindow.h"
 #include "Managers/ResourceManager.h"
 #include "Managers/EventManager.h"
 #include "Managers/SceneManager.h"
@@ -130,16 +130,16 @@ LRESULT FTCoreEditor::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			//          << std::endl;
 			if (mEditorWindow)
 			{
+				mIsResizingWindow = true;
 				mEditorWindow->SetWidth(UINT(LOWORD(lParam)));
 				mEditorWindow->SetHeight(UINT(HIWORD(lParam)));
-				mEditorWindow->ResizeWindow(GetGameRenderer());
 			}
 			break;
 		}
 	}
-	if (mIsResizingWindow && MOUSE_AWAY(MOUSE::MOUSE_LEFT))
+	if (mIsResizingWindow && mEditorWindow->MOUSE_AWAY(MOUSE::MOUSE_LEFT))
 	{
-
+		mEditorWindow->ResizeWindow(GetGameRenderer());
 		mIsResizingWindow = false;
 	}
 	return DefWindowProc(hwnd, msg, wParam, lParam);
@@ -155,7 +155,6 @@ void FTCoreEditor::InitSingletonManagers()
 	ResourceManager::GetInstance()->Initialize(GetGameRenderer());
 	UIManager::GetInstance();
 	EventManager::GetInstance();
-	KeyInputManager::GetInstance();
 	CollisionManager::GetInstance()->Initialize();
 	LightManager::GetInstance()->Initialize(GetGameRenderer());
 	DebugShapes::GetInstance()->Initialize(GetGameRenderer());
@@ -168,7 +167,7 @@ void FTCoreEditor::ProcessInput()
 {
 	FTCore::ProcessInput();
 	mEditorWindow->ProcessInput();
-	EditorSceneManager::GetInstance()->ProcessInput(KeyInputManager::GetInstance());
+	EditorSceneManager::GetInstance()->ProcessInput(mEditorWindow->GetInputDevice());
 }
 
 void FTCoreEditor::UpdateGame()
@@ -188,7 +187,7 @@ void FTCoreEditor::UpdateGame()
 	EditorLayer::GetInstance()->Update(deltaTime);
 	Camera::GetInstance()->Update(deltaTime);
 	EditorCamera::GetInstance()->Update(deltaTime);
-	UIManager::GetInstance()->Update(deltaTime);
+	UIManager::GetInstance()->Update(deltaTime, mEditorWindow->GetInputDevice());
 }
 
 void FTCoreEditor::GenerateOutput()
@@ -199,9 +198,12 @@ void FTCoreEditor::GenerateOutput()
 
 	// Renders the editor window.
 	mEditorWindow->BeginRender(GetGameRenderer());
-	GetGameRenderer()->RenderOnViewport();
 	EditorLayer::GetInstance()->Render(GetGameRenderer());
 	mEditorWindow->EndRender(GetGameRenderer());
+
+	GetGameRenderer()->GetViewportRenderer()->BeginRender(GetGameRenderer());
+	GetGameRenderer()->GetViewportRenderer()->DrawOnTexture(GetGameRenderer());
+	GetGameRenderer()->GetViewportRenderer()->EndRender(GetGameRenderer());
 
 	GetGameWindow()->GetSwapChain()->Present(1, 0);
 	mEditorWindow->GetSwapChain()->Present(1, 0);

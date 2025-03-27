@@ -13,7 +13,7 @@
 #include "ResourceSystem/GeometryGenerator.h"
 #include "ResourceSystem/FTMaterials/FTMaterial.h"
 #include "Managers/ResourceManager.h"
-#include "Managers/KeyInputManager.h"
+#include "InputSystem/FTInputDevice.h"
 #include "Renderer/Camera.h"
 #include "Renderer/FoxtrotRenderer.h"
 

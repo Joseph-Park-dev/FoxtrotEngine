@@ -57,9 +57,9 @@ void SceneManager::Initialize()
 	SwitchScene(0);
 }
 
-void SceneManager::ProcessInput(KeyInputManager* keyInputManager)
+void SceneManager::ProcessInput(FTInputDevice* inputDevice)
 {
-	mCurrentScene->ProcessInput(keyInputManager);
+	mCurrentScene->ProcessInput(inputDevice);
 }
 
 void SceneManager::Update(float deltaTime)

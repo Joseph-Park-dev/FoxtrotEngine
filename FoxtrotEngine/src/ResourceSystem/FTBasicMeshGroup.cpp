@@ -67,19 +67,14 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer)
 		context->VSSetConstantBuffers(
 			0, mesh->VertexConstantBuffers.size(), mesh->VertexConstantBuffers.data()->GetAddressOf());
 
+		mVS = renderer->GetTextureVS();
+		mPS = renderer->GetRimTexturePS();
+
 		if (mTexture)
 		{
-			mVS = renderer->GetTextureVS();
-			mPS = renderer->GetRimTexturePS();
-
 			std::vector<ID3D11ShaderResourceView*> resViews;
 			resViews.push_back(mTexture->GetResourceView().Get());
 			context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
-		}
-		else
-		{
-			mVS = renderer->GetSolidVS();
-			mPS = renderer->GetSolidPS();
 		}
 
 		context->VSSetShader(mVS.Get(), 0, 0);

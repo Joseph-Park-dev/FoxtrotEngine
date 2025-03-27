@@ -67,11 +67,11 @@ public:
 	void LoadResources(std::ifstream& ifs, FTCore* ftCoreInst);
 
 public:
-	FTTexture*	GetLoadedTexture(const UINT key);
-	FTTexture*	GetLoadedTexture(const char* name);
-	FTTileMap*	GetLoadedTileMap(const UINT key);
-	FTPremade*	GetLoadedPremade(const UINT key);
-	FTPremade*	GetLoadedPremade(std::string&& fileName);
+	FTTexture* GetLoadedTexture(const UINT key);
+	FTTexture* GetLoadedTexture(const char* name);
+	FTTileMap* GetLoadedTileMap(const UINT key);
+	FTPremade* GetLoadedPremade(const UINT key);
+	FTPremade* GetLoadedPremade(std::string&& fileName);
 
 	FTPixelShader* GetLoadedPixelShader(const UINT key);
 
@@ -80,6 +80,7 @@ public:
 	FTMeshDataPack* GetLoadedMeshData(const UINT key);
 	FTMeshData&		GetLoaded2DPrimitive(const UINT key);
 	FTMeshData&		GetLoaded3DPrimitive(const UINT key);
+	FTMeshData&		GetLoaded3DPrimitive(const UINT key, const float scale);
 
 	void			   RemoveLoadedMeshes(const UINT key);
 	FTSpriteAnimation* GetLoadedSpriteAnim(const UINT key);
@@ -117,7 +118,7 @@ private:
 	std::unordered_map<UINT, FTVertexShader*> mMapVertexShaders;
 	std::unordered_map<UINT, FTPixelShader*>  mMapPixelShaders;
 
-	std::unordered_map<UINT, FTMaterial*>  mMapMaterials;
+	std::unordered_map<UINT, FTMaterial*> mMapMaterials;
 
 	/// <Chunk IO> -------------------------------------
 	/// Template member functions for saving/loading resources to/from chunk.
@@ -157,8 +158,8 @@ private:
 	template <typename FTRESOURCE>
 	void LoadResource(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
-		FTRESOURCE* resource = DBG_NEW FTRESOURCE;
-		UINT		mItemKey = resource->LoadProperties(ifs);
+		FTRESOURCE* resource					= DBG_NEW FTRESOURCE;
+		UINT						   mItemKey = resource->LoadProperties(ifs);
 
 		if (KeyExists(mItemKey, resMap))
 		{
@@ -265,7 +266,6 @@ private:
 	void ProcessMaterials();
 	void ProcessVertexShaders();
 	void ProcessPixelShaders();
-
 
 	/// <Loading Materials> -------------------------------------
 	/// Due to the abstract base type, Material loading requires dedicated functions

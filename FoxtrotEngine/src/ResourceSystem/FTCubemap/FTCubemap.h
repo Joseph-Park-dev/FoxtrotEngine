@@ -7,5 +7,8 @@ class FTCubemap :
 public:
 	void Initialize(
 		ComPtr<ID3D11Device>&		 device,
-		ComPtr<ID3D11DeviceContext>& context);
+		ComPtr<ID3D11DeviceContext>& context,
+		float scale);
+
+	void Update(Camera* camInst);
 };

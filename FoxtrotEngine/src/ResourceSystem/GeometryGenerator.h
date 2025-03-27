@@ -35,6 +35,7 @@ public:
 
 	// Make 3D Models
 	static FTMeshData MakeBox();
+	static FTMeshData MakeBox(float scale);
 	static FTMeshData MakeSquareGrid(const float width, const float height, const int numSlices, const int numStacks);
 	static FTMeshData MakeCylinder(const float bottomRadius, const float topRadius, float height, int sliceCount);
 	static FTMeshData MakeSphere(const float radius, const int numSlices, const int numStacks);

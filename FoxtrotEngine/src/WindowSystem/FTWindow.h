@@ -16,7 +16,7 @@ class FTWindow
 {
 public:
 	// This can be called anytime when you need a plain window.
-	bool InitializeWindow();
+	bool InitializeWindow(WNDPROC wndProc);
 
 	// This should be called after the renderer is initialized.
 	bool InitializeWindowRenderer(FoxtrotRenderer* renderer);

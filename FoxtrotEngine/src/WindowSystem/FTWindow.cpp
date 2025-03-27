@@ -23,7 +23,7 @@
 	#include "ViewportRenderer.h"
 #endif
 
-bool FTWindow::InitializeWindow()
+bool FTWindow::InitializeWindow(WNDPROC wndProc)
 {
 	assert(0 < mWidth || 0 < mHeight);
 	assert(!mTitle.empty());
@@ -31,7 +31,7 @@ bool FTWindow::InitializeWindow()
 	WNDCLASSEX wc = {
 		sizeof(WNDCLASSEX),
 		CS_CLASSDC,
-		WndProc,
+		wndProc,
 		0L,
 		0L,
 		GetModuleHandle(NULL),

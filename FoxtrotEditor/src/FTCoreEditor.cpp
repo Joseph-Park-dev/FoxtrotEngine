@@ -184,26 +184,37 @@ void FTCoreEditor::UpdateGame()
 	}
 	else
 		EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
-	EditorLayer::GetInstance()->Update(deltaTime);
 	Camera::GetInstance()->Update(deltaTime);
 	EditorCamera::GetInstance()->Update(deltaTime);
 	UIManager::GetInstance()->Update(deltaTime, mEditorWindow->GetInputDevice());
+	EditorLayer::GetInstance()->Update(deltaTime);
 }
 
 void FTCoreEditor::GenerateOutput()
 {
+	FoxtrotRenderer* renderer = GetGameRenderer();
+
 	// Renders the gameview window.
-	GetGameWindow()->BeginRender(GetGameRenderer());
-	GetGameWindow()->EndRender(GetGameRenderer());
+	GetGameWindow()->BeginRender(renderer);
+	FTVector2 size = GetGameWindow()->GetRenderArea()->GetSize();
+	renderer->SetViewport(0, 0, size.x, size.y);
+
+	if (!EditorChunkLoader::GetInstance()->IsLoadingChunk())
+	{
+		EditorSceneManager::GetInstance()->Render(renderer);
+		EditorSceneManager::GetInstance()->EditorRender(renderer);
+		DebugShapes::GetInstance()->Render(renderer);
+	}
+	GetGameWindow()->EndRender(renderer);
+
+	GetGameRenderer()->GetViewportRenderer()->BeginRender(renderer);
+	GetGameRenderer()->GetViewportRenderer()->DrawOnTexture(renderer);
+	GetGameRenderer()->GetViewportRenderer()->EndRender(renderer);
 
 	// Renders the editor window.
-	mEditorWindow->BeginRender(GetGameRenderer());
-	EditorLayer::GetInstance()->Render(GetGameRenderer());
-	mEditorWindow->EndRender(GetGameRenderer());
-
-	GetGameRenderer()->GetViewportRenderer()->BeginRender(GetGameRenderer());
-	GetGameRenderer()->GetViewportRenderer()->DrawOnTexture(GetGameRenderer());
-	GetGameRenderer()->GetViewportRenderer()->EndRender(GetGameRenderer());
+	mEditorWindow->BeginRender(renderer);
+	EditorLayer::GetInstance()->Render(renderer);
+	mEditorWindow->EndRender(renderer);
 
 	GetGameWindow()->GetSwapChain()->Present(1, 0);
 	mEditorWindow->GetSwapChain()->Present(1, 0);

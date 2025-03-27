@@ -23,9 +23,11 @@ class ViewportRenderer
 public:
 	void InitializeTexture(FTWindow* window, FoxtrotRenderer* renderer, UINT width, UINT height);
 
+	void BeginRender(FoxtrotRenderer* renderer);
 	// Switches the RenderTarget to this object's, renders the scene,
 	// and switch RenderTarget back to FoxtrotRenderer's (in FTCoreEditor).
 	void DrawOnTexture(FoxtrotRenderer* renderer);
+	void EndRender(FoxtrotRenderer* renderer);
 
 	void Resize(FoxtrotRenderer* renderer);
 	void Reset();

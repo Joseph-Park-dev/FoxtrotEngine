@@ -32,9 +32,21 @@ void FTRectArea::SetPosition(FTVector2 val)
 	mCenter = val;
 }
 
+void FTRectArea::SetSize(UINT width, UINT height)
+{
+	mSize.x = static_cast<float>(width);
+	mSize.y = static_cast<float>(height);
+}
+
 void FTRectArea::SetSize(FTVector2 val)
 {
 	mSize = val;
+}
+
+void FTRectArea::SetSize(ImVec2 val)
+{
+	mSize.x = val.x;
+	mSize.y = val.y;
 }
 
 void FTRectArea::Set(FTVector2 center, FTVector2 dimension)

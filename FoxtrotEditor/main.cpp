@@ -29,5 +29,6 @@ int main(int argc, char* argv[])
 	}
 	FTCoreEditor::GetInstance()->ShutDown();
 	FTCoreEditor::GetInstance()->Destroy();
+	FTCore::GetInstance()->Destroy();
 	return 0;
 }

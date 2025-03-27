@@ -16,7 +16,7 @@
 
 class Scene;
 class FoxtrotRenderer;
-class KeyInputManager;
+class FTInputDevice;
 
 #define FIND_ACTOR(name) SceneManager::GetInstance()->GetCurrentScene()->FindActor(name)
 
@@ -34,7 +34,7 @@ public:
 
 public:
 	virtual void Initialize		();
-	virtual void ProcessInput	(KeyInputManager* keyInputManager);
+	virtual void ProcessInput	(FTInputDevice* inputDevice);
 	virtual void Update			(float deltaTime);
 	virtual void Lateupdate		(float deltaTime);
 	virtual void Render			(FoxtrotRenderer* renderer);

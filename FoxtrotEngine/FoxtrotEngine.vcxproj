@@ -262,7 +262,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\MonkeySpin.cpp" />
     <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\ResponsiveButton.cpp" />
-    <ClCompile Include="src\Renderer\FTWindow.cpp" />
+    <ClCompile Include="src\WindowSystem\FTWindow.cpp" />
     <ClCompile Include="src\ResourceSystem\FTCubemap\FTCubemap.cpp" />
     <ClCompile Include="src\ResourceSystem\FTMaterials\RimMaterial.cpp" />
     <ClCompile Include="src\ResourceSystem\FTShaders\FTPixelShader.cpp" />
@@ -306,7 +306,7 @@
     <ClCompile Include="src\Core\Timer.cpp" />
     <ClCompile Include="src\FileSystem\ChunkLoader.cpp" />
     <ClCompile Include="src\Managers\EventManager.cpp" />
-    <ClCompile Include="src\Managers\KeyInputManager.cpp" />
+    <ClCompile Include="src\InputSystem\FTInputDevice.cpp" />
     <ClCompile Include="src\Managers\ResourceManager.cpp" />
     <ClCompile Include="src\Managers\SceneManager.cpp" />
     <ClCompile Include="src\Managers\UIManager.cpp" />
@@ -337,7 +337,7 @@
     <ClCompile Include="src\ResourceSystem\FTMaterials\StandardMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Renderer\FTWindow.h" />
+    <ClInclude Include="src\WindowSystem\FTWindow.h" />
     <ClInclude Include="src\ResourceSystem\FTCubemap\FTCubemap.h" />
     <ClInclude Include="src\ResourceSystem\FTMaterials\RimMaterial.h" />
     <ClInclude Include="src\ResourceSystem\FTShaders\FTPixelShader.h" />
@@ -803,7 +803,7 @@
     <ClInclude Include="src\FileSystem\ChunkFileKeys.h" />
     <ClInclude Include="src\FileSystem\ChunkLoader.h" />
     <ClInclude Include="src\Managers\EventManager.h" />
-    <ClInclude Include="src\Managers\KeyInputManager.h" />
+    <ClInclude Include="src\InputSystem\FTInputDevice.h" />
     <ClInclude Include="src\Managers\ResourceManager.h" />
     <ClInclude Include="src\Managers\SceneManager.h" />
     <ClInclude Include="src\Managers\UIManager.h" />

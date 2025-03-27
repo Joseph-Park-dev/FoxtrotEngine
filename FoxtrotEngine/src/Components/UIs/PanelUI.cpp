@@ -8,7 +8,7 @@
 
 #include "Components/UIs/PanelUI.h"
 
-#include "Managers/KeyInputManager.h"
+#include "InputSystem/FTInputDevice.h"
 #include "Actors/Transform.h"
 #include "Actors/Actor.h"
 #include "Math/FTMath.h"
@@ -21,11 +21,15 @@ void PanelUI::OnMouseHovering()
 
 void PanelUI::OnMouseLButtonDown()
 {
-	mDragStartPoint = MOUSE_POS;
 }
 
 void PanelUI::OnMouseLButtonUp()
 {}
+
+void PanelUI::ProcessInput(FTInputDevice* inputDevice)
+{
+	mDragStartPoint = inputDevice->GetMousePosition();
+}
 
 void PanelUI::CloneTo(Actor * actor)
 {

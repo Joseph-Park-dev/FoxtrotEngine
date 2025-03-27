@@ -14,7 +14,7 @@
 #include "ResourceSystem/FTRectangle.h"
 #include "Renderer/FTRectArea.h"
 #include "Renderer/Camera.h"
-#include "Managers/KeyInputManager.h"
+#include "InputSystem/FTInputDevice.h"
 #include "Managers/UIManager.h"
 #include "Managers/DebugShapes.h"
 #include "Math/FTMath.h"

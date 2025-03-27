@@ -24,7 +24,7 @@
 class Actor;
 class FoxtrotRenderer;
 class FTCore;
-class KeyInputManager;
+class FTInputDevice;
 class Camera;
 class FTVector3;
 
@@ -43,7 +43,7 @@ public:
 public:
 	virtual void Initialize(FTCore* coreInstance);
 	virtual void Setup();
-	virtual void ProcessInput(KeyInputManager* keyInputManager);
+	virtual void ProcessInput(FTInputDevice* inputDevice);
 	virtual void Update(float deltaTime);
 	virtual void LateUpdate(float deltaTime);
 	virtual void Render(FoxtrotRenderer* renderer);

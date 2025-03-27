@@ -25,7 +25,7 @@ void Component::Setup()
 	mIsSetup = true;
 }
 
-void Component::ProcessInput(KeyInputManager* keyInputManager)
+void Component::ProcessInput(FTInputDevice* inputDevice)
 {
 }
 

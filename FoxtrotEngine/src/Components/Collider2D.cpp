@@ -16,7 +16,7 @@
 #include "Renderer/FoxtrotRenderer.h"
 
 #include "Physics/Physics2D.h"
-#include "Managers/KeyInputManager.h"
+#include "InputSystem/FTInputDevice.h"
 #include "Managers/CollisionManager.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"

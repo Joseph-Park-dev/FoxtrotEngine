@@ -19,7 +19,6 @@
 
 #include <Windows.h>
 
-#include "Core/SingletonMacro.h"
 #include "Math/FTMath.h"
 
 enum class KEY
@@ -69,29 +68,8 @@ struct tKeyInfo
 
 #define MAX_KEYCOUNT 6
 
-#define KEY_HOLD(key) KeyInputManager::GetInstance()->GetKeyState(key) == KEY_STATE::HOLD
-#define KEY_TAP(key) KeyInputManager::GetInstance()->GetKeyState(key) == KEY_STATE::TAP
-#define KEY_AWAY(key) KeyInputManager::GetInstance()->GetKeyState(key) == KEY_STATE::AWAY
-#define KEY_NONE(key) KeyInputManager::GetInstance()->GetKeyState(key) == KEY_STATE::NONE
-
-#define MOUSE_HOLD(key) KeyInputManager::GetInstance()->GetMouseState(key) == KEY_STATE::HOLD
-#define MOUSE_TAP(key) KeyInputManager::GetInstance()->GetMouseState(key) == KEY_STATE::TAP
-#define MOUSE_AWAY(key) KeyInputManager::GetInstance()->GetMouseState(key) == KEY_STATE::AWAY
-#define MOUSE_NONE(key) KeyInputManager::GetInstance()->GetMouseState(key) == KEY_STATE::NONE
-
-#define BUTTON_HOLD(key) KeyInputManager::GetInstance()->GetButtonState(key) == KEY_STATE::HOLD
-#define BUTTON_TAP(key) KeyInputManager::GetInstance()->GetButtonState(key) == KEY_STATE::TAP
-#define BUTTON_AWAY(key) KeyInputManager::GetInstance()->GetButtonState(key) == KEY_STATE::AWAY
-#define BUTTON_NONE(key) KeyInputManager::GetInstance()->GetButtonState(key) == KEY_STATE::NONE
-
-// Returns Mouse World Pos
-#define MOUSE_POS KeyInputManager::GetInstance()->GetMousePosition()
-#define MOUSE_WORLDPOS KeyInputManager::GetInstance()->GetMouseWorldPosition()
-
-class KeyInputManager
+class FTInputDevice
 {
-	SINGLETON(KeyInputManager);
-
 public:
 	void DetectKeyInput();
 	void DetectMouseInput(MSG msg);
@@ -107,8 +85,22 @@ public:
 	FTVector2 GetMousePosition();
 	FTVector2 GetMouseWorldPosition();
 
-	/*SDL_GameController* GetGamepad() { return mGamepad; }
-	void SetGamepad(SDL_GameController* gamepad) { mGamepad = gamepad; }*/
+public:
+	bool KEY_HOLD(KEY key);
+	bool KEY_TAP(KEY key);
+	bool KEY_AWAY(KEY key);
+	bool KEY_NONE(KEY key);
+
+	bool MOUSE_HOLD(MOUSE mouse);
+	bool MOUSE_TAP(MOUSE mouse);
+	bool MOUSE_AWAY(MOUSE mouse);
+	bool MOUSE_NONE(MOUSE mouse);
+
+	FTVector2 MOUSE_POS();
+
+public:
+	FTInputDevice();
+	~FTInputDevice();
 
 private:
 	// Keyboard related data.

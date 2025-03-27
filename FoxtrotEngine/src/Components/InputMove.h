@@ -26,7 +26,7 @@ public:
     }
 
 public:
-            void ProcessInput   (class KeyInputManager* keyInputManager) override;
+            void ProcessInput   (class FTInputDevice* inputDevice) override;
     virtual void CloneTo        (Actor* actor)                           override;
 
 public:

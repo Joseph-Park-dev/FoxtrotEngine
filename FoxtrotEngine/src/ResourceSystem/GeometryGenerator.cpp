@@ -437,12 +437,15 @@ FTMeshData GeometryGenerator::MakeAnimationFrame(Tile tile)
 
 FTMeshData GeometryGenerator::MakeBox()
 {
+	return MakeBox(0.1f);
+}
+
+FTMeshData GeometryGenerator::MakeBox(float scale)
+{
 	std::vector<Vector3> positions;
 	std::vector<Vector3> colors;
 	std::vector<Vector3> normals;
 	std::vector<Vector2> texcoords; // 텍스춰 좌표
-
-	const float scale = 1.0f;
 
 	// 윗면
 	positions.push_back(Vector3(-1.0f, 1.0f, -1.0f) * scale);
@@ -558,7 +561,7 @@ FTMeshData GeometryGenerator::MakeBox()
 		Vertex v;
 		v.position = positions[i];
 		// v.color     = colors[i];
-		v.normal   = normals[i];
+		v.normal = normals[i];
 		v.texcoord = texcoords[i];
 		meshData.Vertices.push_back(v);
 	}

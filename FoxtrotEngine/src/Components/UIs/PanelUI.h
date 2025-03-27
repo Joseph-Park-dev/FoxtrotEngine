@@ -28,6 +28,7 @@ public:
 	virtual void OnMouseLButtonUp()		override;
 
 public:
+	virtual void ProcessInput(FTInputDevice* inputDevice) override;
 	virtual void CloneTo(Actor* actor)	override;
 
 public:

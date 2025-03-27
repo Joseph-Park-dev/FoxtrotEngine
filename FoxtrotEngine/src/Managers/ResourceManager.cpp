@@ -200,6 +200,19 @@ FTMeshData& ResourceManager::GetLoaded3DPrimitive(const UINT key)
 	return primitive;
 }
 
+FTMeshData& ResourceManager::GetLoaded3DPrimitive(const UINT key, const float scale)
+{
+	FTMeshData& primitive = mMap3DPrimitives.at(key);
+
+	// Scale the output (default is 1.0f)
+	for (Vertex& v : primitive.Vertices)
+		v.position *= scale;
+
+	if (primitive.IsEmpty())
+		printf("Error: ResourceManager::GetLoadedPrimitive() -> Primitive is empty %d\n", key);
+	return primitive;
+}
+
 void ResourceManager::RemoveLoadedMeshes(const UINT key)
 {
 	if (KeyExists(key, mMapMeshData))

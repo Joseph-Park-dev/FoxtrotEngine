@@ -10,10 +10,10 @@
 
 #include "directxtk/SimpleMath.h"
 
-#include "Renderer/FTWindow.h"
+#include "WindowSystem/FTWindow.h"
 #include "Renderer/FTRectArea.h"
 #include "Core/FTCore.h"
-#include "Managers/KeyInputManager.h"
+#include "InputSystem/FTInputDevice.h"
 #include "Managers/SceneManager.h"
 #include "Scenes/Scene.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -46,7 +46,7 @@ void Camera::ZoomIn()
 Camera::Camera()
 	: mRenderWindow(nullptr)
 	, mTarget(nullptr)
-	, mPosition(Vector3(0.0f, 0.0f, 0.0f))
+	, mPosition(Vector3(0.0f, 0.0f, -5.0f))
 	, mViewDir(Vector3(0.0f, 0.0f, -1.0f))
 	, mUpDir(Vector3(0.0f, -1.0f, 0.0f))
 	, mRightDir(Vector3(1.0f, 0.0f, 0.0f))
@@ -55,8 +55,7 @@ Camera::Camera()
 	, mProjFOVAngleY(70.f)
 	, mNearZ(0.01f)
 	, mFarZ(100.0f)
-	, mAspect(1920.f / 1080.f)
-	, mScreenCenter(FTVector2(1920.f, 1080.f) * 0.5f)
+	, mAspect(1280.f / 720.f)
 	, mPixelsPerUnit(0.f)
 	, mViewType(Viewtype::Perspective)
 {

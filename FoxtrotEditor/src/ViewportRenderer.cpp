@@ -14,7 +14,7 @@
 
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/D3D11Utils.h"
-#include "Renderer/FTWindow.h"
+#include "WindowSystem/FTWindow.h"
 #include "Renderer/FTRectArea.h"
 #include "Core/TemplateFunctions.h"
 #include "Physics/Physics2D.h"
@@ -26,26 +26,37 @@
 
 void ViewportRenderer::InitializeTexture(FTWindow* window, FoxtrotRenderer* renderer, UINT width, UINT height)
 {
-	mWidth = width; 
-	mHeight = height;
+	window->GetRenderArea()->SetSize(width, height);
 	CreateRenderTargetView(window, renderer);
+}
+
+void ViewportRenderer::BeginRender(FoxtrotRenderer* renderer)
+{
+	float test[4] = { 0.3f,0.3f,0.3f,1.0f };
+	if (mRTV)
+		renderer->GetContext()->ClearRenderTargetView(mRTV.Get(), test);
+	if (mDSV)
+		renderer->GetContext()->ClearDepthStencilView(mDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+	ID3D11RenderTargetView* targetsPrev[] = { mRTV.Get() };
+	renderer->GetContext()->OMSetRenderTargets(1, targetsPrev, mDSV.Get());
 }
 
 void ViewportRenderer::DrawOnTexture(FoxtrotRenderer* renderer)
 {
-	//ID3D11RenderTargetView* targetsPrev[] = { mViewportRTV.Get(),
-	//										  renderer->GetIndexRenderTargetView().Get() };
-	//context->OMSetRenderTargets(2, targetsPrev, mViewportDSV.Get());
-
 	if (!EditorChunkLoader::GetInstance()->IsLoadingChunk())
 	{
 		EditorSceneManager::GetInstance()->Render(renderer);
 		EditorSceneManager::GetInstance()->EditorRender(renderer);
 		DebugShapes::GetInstance()->Render(renderer);
 	}
+}
 
-	//ID3D11RenderTargetView* targetsAfter[] = { renderTargetView.Get() };
-	//context->OMSetRenderTargets(1, targetsAfter, depthStencilView.Get());
+void ViewportRenderer::EndRender(FoxtrotRenderer* renderer)
+{
+	ID3D11RenderTargetView* nullViews[] = { nullptr };
+	renderer->GetContext()->OMSetRenderTargets(1, nullViews, nullptr);
+	renderer->GetContext()->OMSetDepthStencilState(nullptr, 0);
 }
 
 void ViewportRenderer::Resize(FoxtrotRenderer* renderer)
@@ -63,11 +74,6 @@ void ViewportRenderer::Reset()
 	mRTV.Reset();
 	mSRV.Reset();
 	mDSV.Reset();
-
-	mRenderTexture = nullptr;
-	mRTV = nullptr;
-	mSRV = nullptr;
-	mDSV = nullptr;
 }
 
 void ViewportRenderer::CreateRenderTargetView(

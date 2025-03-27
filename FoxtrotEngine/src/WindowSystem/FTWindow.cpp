@@ -5,7 +5,7 @@
 
 #include "Core/TemplateFunctions.h"
 #include "Core/WindowProcess.h"
-#include "Managers/KeyInputManager.h"
+#include "InputSystem/FTInputDevice.h"
 #include "Managers/SceneManager.h"
 #include "Renderer/D3D11Utils.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -23,7 +23,7 @@
 	#include "ViewportRenderer.h"
 #endif
 
-bool FTWindow::InitializeWindow()
+bool FTWindow::InitializeWindow(WNDPROC wndProc)
 {
 	assert(0 < mWidth || 0 < mHeight);
 	assert(!mTitle.empty());
@@ -31,7 +31,7 @@ bool FTWindow::InitializeWindow()
 	WNDCLASSEX wc = {
 		sizeof(WNDCLASSEX),
 		CS_CLASSDC,
-		WndProc,
+		wndProc,
 		0L,
 		0L,
 		GetModuleHandle(NULL),
@@ -107,13 +107,14 @@ void FTWindow::SamplCursorPosColor(ComPtr<ID3D11DeviceContext>& context, uint8_t
 	{
 		context->ResolveSubresource(mIndexTempTexture.Get(), 0, mIndexTexture.Get(), 0, DXGI_FORMAT_R8G8B8A8_UNORM);
 
-		if (IsInRenderedArea(MOUSE_POS))
+		FTVector2 mousePos = mInputDevice->GetMousePosition();
+		if (IsInRenderedArea(mousePos))
 		{
 			D3D11_BOX box;
-			box.left   = MOUSE_POS.x;
-			box.right  = MOUSE_POS.x + 1;
-			box.top	   = MOUSE_POS.y;
-			box.bottom = MOUSE_POS.y + 1;
+			box.left   = mousePos.x;
+			box.right  = mousePos.x + 1;
+			box.top	   = mousePos.y;
+			box.bottom = mousePos.y + 1;
 			box.front  = 0;
 			box.back   = 1;
 			context->CopySubresourceRegion(mIndexStagingTexture.Get(), 0, 0, 0, 0, mIndexTempTexture.Get(), 0, &box);
@@ -215,12 +216,25 @@ ComPtr<ID3D11Texture2D>&		FTWindow::GetIndexTempTexture() { return mIndexTempTex
 ComPtr<ID3D11Texture2D>&		FTWindow::GetIndexStagingTexture() { return mIndexStagingTexture; }
 ComPtr<ID3D11RenderTargetView>& FTWindow::GetIndexRTV() { return mIndexRTV; }
 
-UINT&		FTWindow::GetWidth() { return mWidth; }
-UINT&		FTWindow::GetHeight() { return mHeight; }
-FTRectArea* FTWindow::GetRenderArea() { return mRenderArea; }
+UINT&		   FTWindow::GetWidth() { return mWidth; }
+UINT&		   FTWindow::GetHeight() { return mHeight; }
+FTRectArea*	   FTWindow::GetRenderArea() { return mRenderArea; }
+FTInputDevice* FTWindow::GetInputDevice() { return mInputDevice; }
 
 void FTWindow::SetWidth(UINT width) { mWidth = width; }
 void FTWindow::SetHeight(UINT height) { mHeight = height; }
+
+bool FTWindow::KEY_HOLD(KEY key) { return mInputDevice->GetKeyState(key) == KEY_STATE::HOLD; }
+bool FTWindow::KEY_TAP(KEY key) { return mInputDevice->GetKeyState(key) == KEY_STATE::TAP; }
+bool FTWindow::KEY_AWAY(KEY key) { return mInputDevice->GetKeyState(key) == KEY_STATE::AWAY; }
+bool FTWindow::KEY_NONE(KEY key) { return mInputDevice->GetKeyState(key) == KEY_STATE::NONE; }
+
+bool FTWindow::MOUSE_HOLD(MOUSE mouse) { return mInputDevice->GetMouseState(mouse) == KEY_STATE::HOLD; }
+bool FTWindow::MOUSE_TAP(MOUSE mouse) { return mInputDevice->GetMouseState(mouse) == KEY_STATE::TAP; }
+bool FTWindow::MOUSE_AWAY(MOUSE mouse) { return mInputDevice->GetMouseState(mouse) == KEY_STATE::AWAY; }
+bool FTWindow::MOUSE_NONE(MOUSE mouse) { return mInputDevice->GetMouseState(mouse) == KEY_STATE::NONE; }
+
+FTVector2 FTWindow::MOUSE_POS() { return mInputDevice->GetMousePosition(); }
 
 void FTWindow::ProcessInput()
 {
@@ -229,10 +243,10 @@ void FTWindow::ProcessInput()
 	{
 		// EditorCamera2D::GetInstance()->ProcessInput(msg);
 	}
+	mInputDevice->DetectMouseInput(msg);
+	mInputDevice->DetectKeyInput();
 	TranslateMessage(&msg);
 	DispatchMessage(&msg);
-	KeyInputManager::GetInstance()->DetectMouseInput(msg);
-	KeyInputManager::GetInstance()->DetectKeyInput();
 }
 
 void FTWindow::ResizeWindow(FoxtrotRenderer* renderer)
@@ -245,8 +259,8 @@ void FTWindow::ResizeWindow(FoxtrotRenderer* renderer)
 
 		CreateRTV(renderer->GetDevice());
 		CreateDSV(renderer->GetDevice(), renderer->GetNumQualityLevels());
+		renderer->SetViewport(0, 0, mWidth, mHeight);
 	}
-	renderer->SetViewport(0, 0, mWidth, mHeight);
 }
 
 void FTWindow::Reset(FoxtrotRenderer* renderer)
@@ -297,13 +311,13 @@ void FTWindow::ClearWindow(FoxtrotRenderer* renderer)
 
 bool FTWindow::IsInRenderedArea(FTVector2 pos)
 {
-	return 0 <= pos.x && pos.x <= mWidth - 1 &&
-		0 <= pos.y && pos.y <= mHeight - 1;
+	return mRenderArea->Overlaps(pos);
 }
 
 FTWindow::FTWindow(const wchar_t* title, UINT width, UINT height)
 	: mWinHandle(nullptr)
 	, mRenderArea(DBG_NEW FTRectArea(0.f, 0.f, width, height))
+	, mInputDevice(DBG_NEW FTInputDevice)
 {
 	mTitle	= title;
 	mWidth	= width;
@@ -317,6 +331,7 @@ FTWindow::FTWindow(const wchar_t* title, UINT width, UINT height)
 
 FTWindow::~FTWindow()
 {
-	DestroyWindow(mWinHandle);
+	delete mInputDevice;
 	delete mRenderArea;
+	DestroyWindow(mWinHandle);
 }

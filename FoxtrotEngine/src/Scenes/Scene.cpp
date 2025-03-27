@@ -76,7 +76,7 @@ void Scene::Setup()
 	}
 }
 
-void Scene::ProcessInput(KeyInputManager* keyInputManager)
+void Scene::ProcessInput(FTInputDevice* inputDevice)
 {
 	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
 	{
@@ -84,7 +84,7 @@ void Scene::ProcessInput(KeyInputManager* keyInputManager)
 		{
 			Actor* actor = mActors[i][j];
 			if (actor->IsActive())
-				actor->ProcessInput(keyInputManager);
+				actor->ProcessInput(inputDevice);
 		}
 	}
 }

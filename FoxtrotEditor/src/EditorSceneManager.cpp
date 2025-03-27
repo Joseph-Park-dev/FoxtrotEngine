@@ -13,8 +13,8 @@
 void EditorSceneManager::Initialize()
 {}
 
-void EditorSceneManager::ProcessInput(KeyInputManager* keyInputManager) {
-	mEditorScene->ProcessInput(keyInputManager);
+void EditorSceneManager::ProcessInput(FTInputDevice* inputDevice) {
+	mEditorScene->ProcessInput(inputDevice);
 }
 
 void EditorSceneManager::Update(float deltaTime){

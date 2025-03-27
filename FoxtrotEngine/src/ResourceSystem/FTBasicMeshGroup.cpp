@@ -13,7 +13,7 @@
 #include "ResourceSystem/GeometryGenerator.h"
 #include "ResourceSystem/FTMaterials/FTMaterial.h"
 #include "Managers/ResourceManager.h"
-#include "Managers/KeyInputManager.h"
+#include "InputSystem/FTInputDevice.h"
 #include "Renderer/Camera.h"
 #include "Renderer/FoxtrotRenderer.h"
 
@@ -67,19 +67,14 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer)
 		context->VSSetConstantBuffers(
 			0, mesh->VertexConstantBuffers.size(), mesh->VertexConstantBuffers.data()->GetAddressOf());
 
+		mVS = renderer->GetTextureVS();
+		mPS = renderer->GetRimTexturePS();
+
 		if (mTexture)
 		{
-			mVS = renderer->GetTextureVS();
-			mPS = renderer->GetRimTexturePS();
-
 			std::vector<ID3D11ShaderResourceView*> resViews;
 			resViews.push_back(mTexture->GetResourceView().Get());
 			context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
-		}
-		else
-		{
-			mVS = renderer->GetSolidVS();
-			mPS = renderer->GetSolidPS();
 		}
 
 		context->VSSetShader(mVS.Get(), 0, 0);

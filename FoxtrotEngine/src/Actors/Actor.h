@@ -26,7 +26,7 @@ class EditorElement;
 class Transform;
 class SpriteRenderer;
 class Collider2D;
-class KeyInputManager;
+class FTInputDevice;
 class UIActor;
 class Scene;
 class Component;
@@ -151,7 +151,7 @@ public:
 	virtual void RenderActor(FoxtrotRenderer* renderer) {};
 
 public:
-	void		 ProcessInput(KeyInputManager* keyInputManager);
+	void		 ProcessInput(FTInputDevice* inputDevice);
 	virtual void UpdateComponents(float deltaTime);
 	void		 LateUpdateComponents(float deltaTime);
 	virtual void RenderComponents(FoxtrotRenderer* renderer);

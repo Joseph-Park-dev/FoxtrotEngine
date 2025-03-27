@@ -21,12 +21,12 @@
 #include "Core/TemplateFunctions.h"
 #include "Actors/Transform.h"
 #include "ResourceSystem/Vertex.h"
-#include "Managers/KeyInputManager.h"
+#include "InputSystem/FTInputDevice.h"
 #include "Managers/SceneManager.h"
 #include "Managers/DebugShapes.h"
 #include "Renderer/D3D11Utils.h"
 #include "Renderer/Camera.h"
-#include "Renderer/FTWindow.h"
+#include "WindowSystem/FTWindow.h"
 
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS
@@ -56,7 +56,7 @@ void FoxtrotRenderer::DestroyRenderer(FoxtrotRenderer* renderer)
 	if (renderer->mViewportRenderer)
 	{
 		delete renderer->mViewportRenderer;
-		renderer->mViewportRenderer = 0;
+		renderer->mViewportRenderer = nullptr;
 	}
 #endif // FOXTROT_EDITOR
 
@@ -206,14 +206,6 @@ bool FoxtrotRenderer::Initialize(FTWindow* window, int renderWidth, int renderHe
 
 	mContext->RSSetState(mSolidRasterizerState.Get());
 
-#ifdef FOXTROT_EDITOR
-	
-
-#else
-	ID3D11RenderTargetView* targets[] = { mRenderTargetView.Get(), mIndexRenderTargetView.Get() };
-	mContext->OMSetRenderTargets(2, targets, mDepthStencilView.Get());
-#endif
-
 	return true;
 }
 
@@ -339,15 +331,18 @@ FoxtrotRenderer::FoxtrotRenderer()
 	: mClearColor{ 0.0f, 0.0f, 0.0f, 1.0f }
 	, mFillMode(FillMode::Solid)
 #ifdef FOXTROT_EDITOR
-	, mViewportRenderer(nullptr)
+	, mViewportRenderer(DBG_NEW ViewportRenderer)
 #endif // FOXTROT_EDITOR
+{
+}
+
+FoxtrotRenderer::~FoxtrotRenderer()
 {
 }
 
 #ifdef FOXTROT_EDITOR
 bool FoxtrotRenderer::InitializeViewport(FTWindow* window, UINT renderWidth, UINT renderHeight)
 {
-	mViewportRenderer = DBG_NEW ViewportRenderer;
 	if (!mViewportRenderer)
 	{
 		LogString("Error : FoxtrotRenderer Initialize - CreateRenderTexture failed.");

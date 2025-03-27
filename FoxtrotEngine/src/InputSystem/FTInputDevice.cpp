@@ -6,12 +6,12 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Managers/KeyInputManager.h"
+#include "InputSystem/FTInputDevice.h"
 
 #include "Core/TemplateFunctions.h"
 #include "Core/FTCore.h"
 #include "Renderer/Camera.h"
-#include "Renderer/FTWindow.h"
+#include "WindowSystem/FTWindow.h"
 
 #ifdef FOXTROT_EDITOR
 #include "EditorLayer.h"
@@ -19,17 +19,17 @@
 #include <imgui.h>
 #endif // FOXTROT_EDITOR
 
-KeyInputManager::KeyInputManager()
+FTInputDevice::FTInputDevice()
 	: mMousePosition(FTVector2::Zero)
 	, mMouseState(0)
 {
 	Init();
 }
 
-KeyInputManager::~KeyInputManager()
+FTInputDevice::~FTInputDevice()
 {}
 
-void KeyInputManager::Init()
+void FTInputDevice::Init()
 {
 	mMousePosition = FTVector2::Zero;
 	for (int i = 0; i < (int)KEY::LAST_FLAG; ++i)
@@ -46,32 +46,44 @@ void KeyInputManager::Init()
 	}
 }
 
-KEY_STATE KeyInputManager::GetKeyState(KEY eKey)
+KEY_STATE FTInputDevice::GetKeyState(KEY eKey)
 {
 	return mVecKey[(int)eKey].eKeyState;
 }
 
-KEY_STATE KeyInputManager::GetMouseState(MOUSE eMouse)
+KEY_STATE FTInputDevice::GetMouseState(MOUSE eMouse)
 {
 	return mVecMouse[(int)eMouse].eKeyState;
 }
 
-KEY_STATE KeyInputManager::GetButtonState(GAMEPADBUTTON eButton)
+KEY_STATE FTInputDevice::GetButtonState(GAMEPADBUTTON eButton)
 {
 	return mVecButton[(int)eButton].eKeyState;
 }
 
-FTVector2 KeyInputManager::GetMousePosition()
+FTVector2 FTInputDevice::GetMousePosition()
 {
 	return mMousePosition;
 }
 
-FTVector2 KeyInputManager::GetMouseWorldPosition()
+FTVector2 FTInputDevice::GetMouseWorldPosition()
 {
-	return Camera::GetInstance()->ConvertScreenPosToWorld(MOUSE_POS);
+	return Camera::GetInstance()->ConvertScreenPosToWorld(mMousePosition);
 }
 
-void KeyInputManager::DetectKeyInput()
+bool FTInputDevice::KEY_HOLD(KEY key) { return GetKeyState(key) == KEY_STATE::HOLD; }
+bool FTInputDevice::KEY_TAP(KEY key) { return GetKeyState(key) == KEY_STATE::TAP; }
+bool FTInputDevice::KEY_AWAY(KEY key) { return GetKeyState(key) == KEY_STATE::AWAY; }
+bool FTInputDevice::KEY_NONE(KEY key) { return GetKeyState(key) == KEY_STATE::NONE; }
+
+bool FTInputDevice::MOUSE_HOLD(MOUSE mouse) { return GetMouseState(mouse) == KEY_STATE::HOLD; }
+bool FTInputDevice::MOUSE_TAP(MOUSE mouse) { return GetMouseState(mouse) == KEY_STATE::TAP; }
+bool FTInputDevice::MOUSE_AWAY(MOUSE mouse) { return GetMouseState(mouse) == KEY_STATE::AWAY; }
+bool FTInputDevice::MOUSE_NONE(MOUSE mouse) { return GetMouseState(mouse) == KEY_STATE::NONE; }
+
+FTVector2 FTInputDevice::MOUSE_POS() { return mMousePosition; }
+
+void FTInputDevice::DetectKeyInput()
 {
 	for (int i = 0; i < (int)KEY::LAST_FLAG; ++i)
 	{
@@ -102,7 +114,7 @@ void KeyInputManager::DetectKeyInput()
 	}
 }
 
-void KeyInputManager::DetectMouseInput(MSG msg)
+void FTInputDevice::DetectMouseInput(MSG msg)
 {
 	if (msg.lParam)
 	{
@@ -145,7 +157,7 @@ void KeyInputManager::DetectMouseInput(MSG msg)
 	}
 }
 
-void KeyInputManager::LockCursorInSceneViewport(FTVector2 mousePos)
+void FTInputDevice::LockCursorInSceneViewport(FTVector2 mousePos)
 {
 	RECT rect;
 	GetClientRect(FTCore::GetInstance()->GetGameWindow()->GetHandle(), &rect);
@@ -169,7 +181,7 @@ void KeyInputManager::LockCursorInSceneViewport(FTVector2 mousePos)
 	ClipCursor(&rect);
 }
 
-void KeyInputManager::UnlockCursorOutOfSceneViewport()
+void FTInputDevice::UnlockCursorOutOfSceneViewport()
 {
 	ClipCursor(nullptr);
 }

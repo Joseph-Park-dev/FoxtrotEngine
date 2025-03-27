@@ -42,7 +42,7 @@
     <ClCompile Include="src\Managers\EventManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Managers\KeyInputManager.cpp">
+    <ClCompile Include="src\InputSystem\FTInputDevice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Managers\ResourceManager.cpp">
@@ -228,7 +228,7 @@
     <ClCompile Include="src\ResourceSystem\FTCubemap\FTCubemap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer\FTWindow.cpp">
+    <ClCompile Include="src\WindowSystem\FTWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -284,7 +284,7 @@
     <ClInclude Include="src\Managers\EventManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Managers\KeyInputManager.h">
+    <ClInclude Include="src\InputSystem\FTInputDevice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Managers\ResourceManager.h">
@@ -1727,7 +1727,7 @@
     <ClInclude Include="src\ResourceSystem\FTCubemap\FTCubemap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\FTWindow.h">
+    <ClInclude Include="src\WindowSystem\FTWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -11,7 +11,7 @@
 #include <vector>
 
 #include "Core/FTCore.h"
-#include "Managers/KeyInputManager.h"
+#include "InputSystem/FTInputDevice.h"
 #include "Math/Random.h"
 #include "Physics/Ray.h"
 #include "Core/Timer.h"

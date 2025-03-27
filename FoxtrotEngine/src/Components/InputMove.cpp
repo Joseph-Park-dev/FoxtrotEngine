@@ -8,7 +8,7 @@
 
 #include "Components/InputMove.h"
 
-#include "Managers/KeyInputManager.h"
+#include "InputSystem/FTInputDevice.h"
 #include "Math/FTMath.h"
 #include "Actors/Actor.h"
 #include "Actors/Transform.h"
@@ -18,19 +18,19 @@ InputMove::InputMove(Actor* owner, int updateOrder)
 	: Move(owner, updateOrder)
 {}
 
-void InputMove::ProcessInput(KeyInputManager* keyInputManager)
+void InputMove::ProcessInput(FTInputDevice* inputDevice)
 {
 	Transform* transform = GetOwner()->GetTransform();
 	Steering steering = Steering::Halt();
 	
-	if (KEY_HOLD(KEY::A))
+	if (inputDevice->KEY_HOLD(KEY::A))
 		steering.Linear = FTVector3::NegUnitX;
-	else if (KEY_HOLD(KEY::D))
+	else if (inputDevice->KEY_HOLD(KEY::D))
 		steering.Linear = FTVector3::UnitX;
 	else
 		steering.Linear = FTVector3::Zero;
 
-	if (KEY_TAP(KEY::SPACE))
+	if (inputDevice->KEY_TAP(KEY::SPACE))
 		steering.JumpTriggered = true;
 	GetOwner()->GetTransform()->SetSteering(steering);
 }

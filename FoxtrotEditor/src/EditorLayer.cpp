@@ -30,7 +30,7 @@
 #include "Core/FTCore.h"
 #include "Managers/DebugShapes.h"
 #include "Managers/SceneManager.h"
-#include "Managers/KeyInputManager.h"
+#include "InputSystem/FTInputDevice.h"
 #include "Managers/ResourceManager.h"
 #include "Managers/CollisionManager.h"
 #include "Managers/UIManager.h"
@@ -43,6 +43,8 @@
 #include "Components/UIs/PanelUI.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/Camera.h"
+#include "WindowSystem/FTWindow.h"
+#include "Renderer/FTRectArea.h"
 #include "FileSystem/FileIOHelper.h"
 #include "ResourceSystem/FTPremade.h"
 
@@ -88,23 +90,22 @@ void EditorLayer::DisplayViewport()
 	else
 		mCursorOnViewport = false;
 
-	FoxtrotRenderer* renderer = FTCoreEditor::GetInstance()->GetGameRenderer();
-	mSceneViewportPos		  = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
-	if (MOUSE_HOLD(MOUSE::MOUSE_LEFT) && SceneViewportSizeChanged())
+	FTWindow*		 editorWin = FTCoreEditor::GetInstance()->GetEditorWindow();
+	FoxtrotRenderer* renderer  = FTCoreEditor::GetInstance()->GetGameRenderer();
+	mSceneViewportPos		   = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
+	if (editorWin->MOUSE_HOLD(MOUSE::MOUSE_LEFT) && SceneViewportSizeChanged())
 	{
 		mIsResizingViewport = true;
 	}
-	if (mIsResizingViewport && MOUSE_AWAY(MOUSE::MOUSE_LEFT))
+	if (mIsResizingViewport && editorWin->MOUSE_AWAY(MOUSE::MOUSE_LEFT))
 	{
-		// renderer->ResizeSceneViewport(mSceneViewportSize.x, mSceneViewportSize.y);
-		renderer->SetRenderWidth(mSceneViewportSize.x);
-		renderer->SetRenderHeight(mSceneViewportSize.y);
-		renderer->GetViewportRenderer()->InitializeTexture(renderer);
-		// renderer->UpdateDepthBuffer(mSceneViewportSize.x, mSceneViewportSize.y);
+		editorWin->GetRenderArea()->SetSize(mSceneViewportSize);
+		renderer->InitializeViewport(editorWin, mSceneViewportSize.x, mSceneViewportSize.y);
 		mIsResizingViewport = false;
 	}
+
 	ID3D11ShaderResourceView* viewportTexture = renderer->GetViewportRenderer()->GetViewportSRV().Get();
-	ImVec2					  viewportSize	  = ImVec2(renderer->GetRenderWidth(), renderer->GetRenderHeight());
+	ImVec2					  viewportSize	  = editorWin->GetRenderArea()->GetSize().GetImVec2();
 	ImGui::Image((ImTextureID)viewportTexture, viewportSize);
 
 	ImGui::End();
@@ -304,7 +305,7 @@ void EditorLayer::DisplayHierarchyMenu()
 				IntEditCommand* command = DBG_NEW IntEditCommand(mActorNameIdx);
 				command->SetNextVal(i);
 				CommandHistory::GetInstance()->AddCommand(command);
-				
+
 				mActorNameIdx = i;
 
 				EditorSceneManager::GetInstance()->GetEditorScene()->UnfocusEditorElements();

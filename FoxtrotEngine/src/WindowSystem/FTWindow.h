@@ -8,12 +8,15 @@ using namespace Microsoft::WRL;
 class FoxtrotRenderer;
 class FTVector2;
 class FTRectArea;
+class FTInputDevice;
+enum class KEY;
+enum class MOUSE;
 
 class FTWindow
 {
 public:
 	// This can be called anytime when you need a plain window.
-	bool InitializeWindow();
+	bool InitializeWindow(WNDPROC wndProc);
 
 	// This should be called after the renderer is initialized.
 	bool InitializeWindowRenderer(FoxtrotRenderer* renderer);
@@ -38,8 +41,23 @@ public:
 	UINT&		GetHeight();
 	FTRectArea* GetRenderArea();
 
+	FTInputDevice* GetInputDevice();
+
 	void SetWidth(UINT width);
 	void SetHeight(UINT height);
+
+public:
+	bool KEY_HOLD(KEY key);
+	bool KEY_TAP(KEY key);
+	bool KEY_AWAY(KEY key);
+	bool KEY_NONE(KEY key);
+
+	bool MOUSE_HOLD(MOUSE mouse);
+	bool MOUSE_TAP(MOUSE mouse);
+	bool MOUSE_AWAY(MOUSE mouse);
+	bool MOUSE_NONE(MOUSE mouse);
+
+	FTVector2 MOUSE_POS();
 
 public:
 	void ProcessInput();
@@ -68,6 +86,8 @@ private:
 	std::wstring mTitle;
 	UINT		 mWidth;
 	UINT		 mHeight;
+
+	FTInputDevice* mInputDevice;
 
 	// The scene will be rendered on this portion of window.
 	FTRectArea* mRenderArea;

@@ -19,7 +19,7 @@
 class Actor;
 class FTCore;
 class SpriteRendererComponent;
-class KeyInputManager;
+class FTInputDevice;
 class FoxtrotRenderer;
 
 // Base class that every scene object is derived from
@@ -65,7 +65,7 @@ public:
 
 public:
 	virtual void Setup();
-	virtual void ProcessInput(KeyInputManager* keyInputManager);
+	virtual void ProcessInput(FTInputDevice* inputDevice);
 	virtual void Update(float deltaTime);
 	virtual void LateUpdate(float deltaTime);
 	virtual void Render(FoxtrotRenderer* renderer);

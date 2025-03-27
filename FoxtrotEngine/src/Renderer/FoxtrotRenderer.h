@@ -140,6 +140,7 @@ private:
 
 public:
 	FoxtrotRenderer();
+	~FoxtrotRenderer();
 
 private:
 	// Intended to be used during initialization.

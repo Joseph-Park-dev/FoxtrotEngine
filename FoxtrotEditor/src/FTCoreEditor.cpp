@@ -30,6 +30,7 @@
 #include "Core/WindowProcess.h"
 #include "Renderer/Camera.h"
 #include "Renderer/D3D11Utils.h"
+#include "Renderer/FTRectArea.h"
 #include "WindowSystem/FTWindow.h"
 #include "Managers/ResourceManager.h"
 #include "Managers/EventManager.h"
@@ -61,7 +62,7 @@ bool FTCoreEditor::Initialize()
 	}
 	mEditorWindow = DBG_NEW FTWindow(L"Foxtrot Editor", 1920, 1080);
 
-	if (!mEditorWindow->InitializeWindow())
+	if (!mEditorWindow->InitializeWindow(WndProc_FTEditor))
 	{
 		Debug::LogError(__LINE__, __FILE__, "Failed to Initialize FTWindow");
 		return false;
@@ -96,6 +97,7 @@ void FTCoreEditor::ShutDown()
 	ResourceManager::GetInstance()->DeleteAll();
 	EditorLayer::GetInstance()->ShutDown();
 
+	EditorCamera::GetInstance()->Destroy();
 	CommandHistory::GetInstance()->Destroy();
 	DebugShapes::GetInstance()->Destroy();
 	DirectoryHelper::GetInstance()->Destroy();
@@ -124,10 +126,6 @@ LRESULT FTCoreEditor::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 		case WM_SIZE:
 		{
-
-			// Reset and resize swapchain
-			// std::cout << (UINT)LOWORD(lParam) << " " << (UINT)HIWORD(lParam)
-			//          << std::endl;
 			if (mEditorWindow)
 			{
 				mIsResizingWindow = true;
@@ -235,7 +233,10 @@ FTCoreEditor::FTCoreEditor()
 {
 }
 
-FTCoreEditor::~FTCoreEditor() {}
+FTCoreEditor::~FTCoreEditor() 
+{
+	delete mEditorWindow;
+}
 
 bool FTCoreEditor::InitGUI()
 {

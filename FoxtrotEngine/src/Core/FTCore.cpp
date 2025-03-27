@@ -27,6 +27,7 @@
 #include "WindowSystem/FTWindow.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/Camera.h"
+#include "Renderer/FTRectArea.h"
 #include "Physics/Physics2D.h"
 #include "Physics/ParticleSystem.h"
 #include "FileSystem/ChunkLoader.h"
@@ -71,7 +72,8 @@ bool FTCore::Initialize()
 		mWindow = nullptr;
 	}
 	mWindow = DBG_NEW FTWindow(mWindowTitle.c_str(), mWindowWidth, mWindowHeight);
-	if (!mWindow->InitializeWindow())
+	mWindow->GetRenderArea()->SetSize(mWindowWidth, mWindowHeight);
+	if (!mWindow->InitializeWindow(WndProc))
 	{
 		Debug::LogError(__LINE__, __FILE__, "Failed to Initialize FTWindow");
 		return false;
@@ -158,11 +160,17 @@ void FTCore::GenerateOutput()
 	//mGameRenderer->RenderClear(mWindow);
 	mWindow->BeginRender(mGameRenderer);
 
-	SceneManager::GetInstance()->Render(mGameRenderer);
-	ParticleSystem::GetInstance()->Render(mGameRenderer);
-	DebugShapes::GetInstance()->Render(mGameRenderer);
+	FTVector2 size = GetGameWindow()->GetRenderArea()->GetSize();
+	mGameRenderer->SetViewport(0, 0, size.x, size.y);
 
-	mWindow->SamplCursorPosColor(mGameRenderer->GetContext(), mGameRenderer->GetCursorPosColor());
+	if (!ChunkLoader::GetInstance()->IsLoadingChunk())
+	{
+		SceneManager::GetInstance()->Render(mGameRenderer);
+		ParticleSystem::GetInstance()->Render(mGameRenderer);
+		DebugShapes::GetInstance()->Render(mGameRenderer);
+		mWindow->SamplCursorPosColor(mGameRenderer->GetContext(), mGameRenderer->GetCursorPosColor());
+	}
+
 	mWindow->GetSwapChain()->Present(1, 0);
 }
 

@@ -259,8 +259,8 @@ void FTWindow::ResizeWindow(FoxtrotRenderer* renderer)
 
 		CreateRTV(renderer->GetDevice());
 		CreateDSV(renderer->GetDevice(), renderer->GetNumQualityLevels());
+		renderer->SetViewport(0, 0, mWidth, mHeight);
 	}
-	renderer->SetViewport(0, 0, mWidth, mHeight);
 }
 
 void FTWindow::Reset(FoxtrotRenderer* renderer)
@@ -311,8 +311,7 @@ void FTWindow::ClearWindow(FoxtrotRenderer* renderer)
 
 bool FTWindow::IsInRenderedArea(FTVector2 pos)
 {
-	return 0 <= pos.x && pos.x <= mWidth - 1 &&
-		0 <= pos.y && pos.y <= mHeight - 1;
+	return mRenderArea->Overlaps(pos);
 }
 
 FTWindow::FTWindow(const wchar_t* title, UINT width, UINT height)
@@ -332,6 +331,7 @@ FTWindow::FTWindow(const wchar_t* title, UINT width, UINT height)
 
 FTWindow::~FTWindow()
 {
-	DestroyWindow(mWinHandle);
+	delete mInputDevice;
 	delete mRenderArea;
+	DestroyWindow(mWinHandle);
 }

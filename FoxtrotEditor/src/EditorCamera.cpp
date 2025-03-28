@@ -9,6 +9,7 @@
 #include "EditorCamera.h"
 
 EditorCamera::EditorCamera()
+	: Camera()
 {
 
 }

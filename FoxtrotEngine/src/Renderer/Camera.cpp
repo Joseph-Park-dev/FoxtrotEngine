@@ -73,6 +73,7 @@ Matrix Camera::GetViewRow()
 		mYaw				 = -transform->GetRotation().y;
 		mPitch				 = transform->GetRotation().x;
 	}
+
 	return Matrix::CreateTranslation(-mPosition) * Matrix::CreateRotationY(-mYaw) * Matrix::CreateRotationX(mPitch);
 }
 

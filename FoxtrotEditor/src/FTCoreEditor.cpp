@@ -81,6 +81,7 @@ bool FTCoreEditor::Initialize()
 		Debug::LogError(__LINE__, __FILE__, "Failed to Initialize FTWindow Renderer");
 		return false;
 	}
+	EditorCamera::GetInstance()->Initialize(mEditorWindow, 64.f, 1.8f);
 
 	if (!InitGUI())
 	{
@@ -148,8 +149,6 @@ void FTCoreEditor::InitSingletonManagers()
 	Physics2D::GetInstance()->Initialize();
 
 	Camera::GetInstance()->Initialize(GetGameWindow(), 64.f, 1.8f);
-	EditorCamera::GetInstance()->Initialize(mEditorWindow, 64.f, 1.8f);
-
 	ResourceManager::GetInstance()->Initialize(GetGameRenderer());
 	UIManager::GetInstance();
 	EventManager::GetInstance();
@@ -200,7 +199,7 @@ void FTCoreEditor::GenerateOutput()
 	if (!EditorChunkLoader::GetInstance()->IsLoadingChunk())
 	{
 		EditorSceneManager::GetInstance()->Render(renderer);
-		EditorSceneManager::GetInstance()->EditorRender(renderer);
+		//EditorSceneManager::GetInstance()->EditorRender(renderer);
 		DebugShapes::GetInstance()->Render(renderer);
 	}
 	GetGameWindow()->EndRender(renderer);

@@ -84,6 +84,7 @@ public:
 	KEY_STATE GetButtonState(GAMEPADBUTTON eButton);
 	FTVector2 GetMousePosition();
 	FTVector2 GetMouseWorldPosition();
+	float	  GetMouseWheelDelta();
 
 public:
 	bool KEY_HOLD(KEY key);
@@ -111,6 +112,7 @@ private:
 	// Mouse related data.
 	FTVector2 mMousePosition;
 	int		  mMouseState;
+	float	  mMouseWheelDelta;
 
 private:
 	using KeyboardMap				  = std::unordered_map<unsigned char, tKeyInfo>;

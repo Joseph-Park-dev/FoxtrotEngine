@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -14,20 +14,22 @@
 #include "WindowSystem/FTWindow.h"
 
 #ifdef FOXTROT_EDITOR
-#include "EditorLayer.h"
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
+	#include "EditorLayer.h"
+	#define IMGUI_DEFINE_MATH_OPERATORS
+	#include <imgui.h>
 #endif // FOXTROT_EDITOR
 
 FTInputDevice::FTInputDevice()
 	: mMousePosition(FTVector2::Zero)
 	, mMouseState(0)
+	, mMouseWheelDelta(0.f)
 {
 	Init();
 }
 
 FTInputDevice::~FTInputDevice()
-{}
+{
+}
 
 void FTInputDevice::Init()
 {
@@ -69,6 +71,11 @@ FTVector2 FTInputDevice::GetMousePosition()
 FTVector2 FTInputDevice::GetMouseWorldPosition()
 {
 	return Camera::GetInstance()->ConvertScreenPosToWorld(mMousePosition);
+}
+
+float FTInputDevice::GetMouseWheelDelta()
+{
+	return mMouseWheelDelta;
 }
 
 bool FTInputDevice::KEY_HOLD(KEY key) { return GetKeyState(key) == KEY_STATE::HOLD; }
@@ -118,15 +125,22 @@ void FTInputDevice::DetectMouseInput(MSG msg)
 {
 	if (msg.lParam)
 	{
-		int mouseX = LOWORD(msg.lParam);
-		int mouseY = HIWORD(msg.lParam);
+		int mouseX	   = LOWORD(msg.lParam);
+		int mouseY	   = HIWORD(msg.lParam);
 		mMousePosition = FTVector2((float)mouseX, (float)mouseY);
 
 #ifdef FOXTROT_EDITOR
 		ImVec2 viewportPos = EditorLayer::GetInstance()->GetSceneViewportPos();
 		mMousePosition -= viewportPos;
+
 #endif // FOXTROT_EDITOR
 	}
+
+	if (msg.message == WM_MOUSEWHEEL)
+		mMouseWheelDelta = GET_WHEEL_DELTA_WPARAM(msg.wParam);
+	else
+		mMouseWheelDelta = 0.f;
+
 	for (int mouseButton = 0; mouseButton < (int)MOUSE::LAST_FLAG; ++mouseButton)
 	{
 		if (GetAsyncKeyState(mMouseCode[mouseButton]))
@@ -138,7 +152,6 @@ void FTInputDevice::DetectMouseInput(MSG msg)
 			else
 			{
 				mVecMouse[mouseButton].eKeyState = KEY_STATE::TAP;
-
 			}
 			mVecMouse[mouseButton].isPushedPrevFrame = true;
 		}
@@ -174,9 +187,9 @@ void FTInputDevice::LockCursorInSceneViewport(FTVector2 mousePos)
 	MapWindowPoints(FTCore::GetInstance()->GetGameWindow()->GetHandle(), nullptr, &lr, 1);
 
 	rect.left = ul.x;
-	rect.top = ul.y;
+	rect.top  = ul.y;
 
-	rect.right = lr.x;
+	rect.right	= lr.x;
 	rect.bottom = lr.y;
 	ClipCursor(&rect);
 }

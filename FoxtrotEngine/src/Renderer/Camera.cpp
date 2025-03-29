@@ -39,6 +39,25 @@ void Camera::Update(float deltaTime)
 {
 }
 
+void Camera::UpdateViewDirections()
+{
+	float yaw = Math::ToRadians(mYaw);
+	float pitch = Math::ToRadians(mPitch);
+
+	Matrix rotMatrix = Matrix::CreateFromYawPitchRoll(yaw, pitch, 0.0f).Transpose();
+	mUpDir = Vector3::Transform(mUpDir, rotMatrix);
+	mFrontDir = Vector3::Transform(mFrontDir, rotMatrix);
+
+	mUpDir.Normalize();
+	mFrontDir.Normalize();
+
+	LogVector3(mFrontDir);
+
+	mRightDir = mUpDir.Cross(mFrontDir);
+
+	mRightDir.Normalize();
+}
+
 void Camera::ZoomIn()
 {
 }
@@ -47,7 +66,7 @@ Camera::Camera()
 	: mRenderWindow(nullptr)
 	, mTarget(nullptr)
 	, mPosition(Vector3(0.0f, 0.0f, -5.0f))
-	, mViewDir(Vector3(0.0f, 0.0f, -1.0f))
+	, mFrontDir(Vector3(0.0f, 0.0f, -1.0f))
 	, mUpDir(Vector3(0.0f, -1.0f, 0.0f))
 	, mRightDir(Vector3(1.0f, 0.0f, 0.0f))
 	, mPitch(0.0f)
@@ -73,6 +92,7 @@ Matrix Camera::GetViewRow()
 		mYaw				 = -transform->GetRotation().y;
 		mPitch				 = transform->GetRotation().x;
 	}
+
 	return Matrix::CreateTranslation(-mPosition) * Matrix::CreateRotationY(-mYaw) * Matrix::CreateRotationX(mPitch);
 }
 
@@ -116,6 +136,26 @@ float Camera::GetAspectRatio()
 float Camera::GetPixelsPerUnit()
 {
 	return mPixelsPerUnit;
+}
+
+Vector3& Camera::Position()
+{
+	return mPosition;
+}
+
+Vector3& Camera::FrontDir()
+{
+	return mFrontDir;
+}
+
+Vector3& Camera::UpDir()
+{
+	return mUpDir;
+}
+
+Vector3& Camera::RightDir()
+{
+	return mRightDir;
 }
 
 void Camera::SetTargetActor(Actor* actor)
@@ -225,36 +265,20 @@ FTVector2 Camera::ConvertScreenPosToNDC(FTVector2 screenPos)
 void Camera::DisplayCameraMenu()
 {
 	ImGui::Begin("Main Camera");
-	// Set LookAt Pos
 
-	if (ImGui::IsMouseDragging(ImGuiMouseButton_Middle))
-	{
-		ImVec2 delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Middle) * Drag_MODSPEED;
-		if (mMiddleMouseClickedPos != delta)
-		{
-			mMiddleMouseClickedPos = delta;
-			// mPosition += FTVector3(-delta.x, delta.y, 0.f);
-		}
-	}
-	if (ImGui::IsKeyDown(ImGuiKey_LeftAlt) && ImGui::IsMouseDragging(ImGuiMouseButton_Left))
-	{
-		ImVec2 delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left) * 0.0001;
-		if (mMiddleMouseClickedRot != delta)
-		{
-			mMiddleMouseClickedRot = delta;
-			// mViewEyeRotation -= FTVector3(delta.y, delta.x, 0.f);
-		}
-	}
-	// FTVector3 pos = ConvertToTopLeft(FTVector3(mPosition));
 	CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", mPosition, LOOKAT_MODSPEED);
-	CommandHistory::GetInstance()->UpdateFloatValue("Look-At Yaw", mYaw, LOOKAT_MODSPEED);
-	CommandHistory::GetInstance()->UpdateFloatValue("Look-At Pitch", mPitch, LOOKAT_MODSPEED);
-	// mPosition = ConvertToCenter(pos).GetDXVec3();
 
-	//// Updating screen center since the camera position is moved
-	// FTVector2 diff = updatedLookAtPos - lookAtPos;
-	// FTVector2 screenCenter = Camera2D::GetInstance()->GetScreenCenter();
-	// Camera2D::GetInstance()->SetScreenCenter(screenCenter + diff);
+	/*float yaw	= mYaw;
+	float pitch = mPitch;*/
+
+	//CommandHistory::GetInstance()->UpdateFloatValue("Look-At Yaw", yaw, LOOKAT_MODSPEED);
+	//CommandHistory::GetInstance()->UpdateFloatValue("Look-At Pitch", mPitch, LOOKAT_MODSPEED);
+
+	/*if (yaw != mYaw || pitch != mPitch)
+	{
+		mYaw = yaw; mPitch = pitch;
+		UpdateViewDirections();
+	}*/
 
 	// Set Target
 	EditorScene*		 editorScene = EditorSceneManager::GetInstance()->GetEditorScene();

@@ -21,6 +21,7 @@
 #define Drag_MODSPEED 0.001f
 
 using Matrix  = DirectX::SimpleMath::Matrix;
+using Vector2 = DirectX::SimpleMath::Vector2;
 using Vector3 = DirectX::SimpleMath::Vector3;
 class FTWindow;
 
@@ -61,10 +62,18 @@ public:
 	void SetViewType(Viewtype viewType);
 	void SetOffset(FTVector2 offset);
 
+protected:
+	Vector3& Position();
+	Vector3& FrontDir();
+	Vector3& UpDir();
+	Vector3& RightDir();
+
 public:
 	// "pixels" defines how much of them should fit in a given unit.
 	void		 Initialize(FTWindow* renderWindow, UINT pixels, float unit);
 	virtual void Update(float deltaTime);
+
+	virtual void UpdateViewDirections();
 
 protected:
 	void ZoomIn();
@@ -74,7 +83,7 @@ private:
 	Actor*	  mTarget;
 
 	Vector3 mPosition;
-	Vector3 mViewDir;
+	Vector3 mFrontDir;
 	Vector3 mUpDir;
 	Vector3 mRightDir;
 

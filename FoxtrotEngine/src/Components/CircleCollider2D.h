@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -14,31 +14,29 @@
 #include "Components/Collider2D.h"
 
 class CircleCollider2D :
-    public Collider2D
+	public Collider2D
 {
 public:
 	virtual std::string GetName() const override
 	{
 		return "BoxCollider2D";
 	}
-	const	float		GetRadius() const;
-			void		SetRadius(float radius);
+	const float GetRadius() const;
+	void		SetRadius(float radius);
 
 public:
-	virtual void Initialize	(FTCore* coreInstance)	override;
-
-	virtual void CloneTo	(Actor* actor)			override;
+	virtual void Initialize(FTCore* coreInstance) override;
+	virtual void CloneTo(Actor* actor) override;
 
 public:
 	CircleCollider2D(
 		Actor* owner,
-		
-		int updateOrder = DefaultVal::UPDATE_ORDER
-	);
+
+		int updateOrder = DefaultVal::UPDATE_ORDER);
 
 private:
-	FTVector2	mCenter;
-	float		mRadius;
+	FTVector2 mCenter;
+	float	  mRadius;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
@@ -46,7 +44,7 @@ public:
 
 #ifdef FOXTROT_EDITOR
 public:
-	virtual void EditorUpdate(float deltaTime)			 override;
+	virtual void EditorUpdate(float deltaTime) override;
 	virtual void EditorRender(FoxtrotRenderer* renderer) override;
 
 public:
@@ -56,4 +54,3 @@ private:
 	void UpdateScale();
 #endif // FOXTROT_EDITOR
 };
-

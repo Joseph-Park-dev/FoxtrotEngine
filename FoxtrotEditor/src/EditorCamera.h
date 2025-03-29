@@ -14,8 +14,22 @@
 #include "Renderer/Camera.h"
 
 class EditorCamera :
-    public Camera
+	public Camera
 {
-    SINGLETON(EditorCamera)
-};
+	SINGLETON(EditorCamera)
 
+public:
+	virtual void ProcessInput(FTInputDevice* inputDevice);
+	virtual void Update(float deltaTime) override;
+
+private:
+	bool  mPanKeyPressed;
+	bool  mRotationKeyPressed;
+	float mPanValModSpeed;
+	float mZoomValModSpeed;
+	float mZoomDelta;
+
+private:
+	void PanLocalXY(ImVec2 vec2);
+	void Zoom();
+};

@@ -40,7 +40,6 @@ public:
 	/////////////////////////
 public:
 	virtual void Initialize(FTCore* coreInstance) override;
-	virtual void Update(float deltaTime) override;
 	virtual void Render(FoxtrotRenderer* renderer) override;
 
 	/////////////////////////////////////
@@ -79,9 +78,7 @@ protected:
 	bool		 InitializeMesh(UINT key);
 	bool		 InitializeMesh(FTMeshData& meshData);
 	bool		 InitializeMesh(std::vector<FTMeshData>& meshData);
-
 	virtual void UpdateMesh(Transform* transform, Camera* camInst);
-	virtual void UpdateBuffers();
 
 	DirectX::SimpleMath::Matrix CalcModelMat(Transform* transform);
 
@@ -115,7 +112,6 @@ public:
 	/////////////////////////////////////
 #ifdef FOXTROT_EDITOR
 public:
-	virtual void EditorUpdate(float deltaTime) override;
 	virtual void EditorRender(FoxtrotRenderer* renderer) override;
 	virtual void EditorUIUpdate() override;
 
@@ -124,6 +120,7 @@ protected:
 	void		 OnResetTexture();
 	void		 UpdateSprite();
 	void		 UpdateSprite(UINT& key);
+	void		 UpdateMaterial();
 
 private:
 	void AddModel();

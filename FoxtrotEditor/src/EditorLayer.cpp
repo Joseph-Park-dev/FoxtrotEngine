@@ -26,6 +26,7 @@
 #include "EditorSceneManager.h"
 #include "EditorScene.h"
 #include "DirectoryHelper.h"
+#include "EditorCamera.h"
 
 #include "Core/FTCore.h"
 #include "Managers/DebugShapes.h"
@@ -73,7 +74,7 @@ void EditorLayer::Update(float deltaTime)
 	DisplayResourceMenu();
 	DisplayCollisionMenu();
 	DisplayInspectorMenu();
-	Camera::GetInstance()->DisplayCameraMenu();
+	EditorCamera::GetInstance()->DisplayCameraMenu();
 	LightManager::GetInstance()->DisplayLightMenu();
 	DisplayInfoMessage();
 	DisplayErrorMessage();

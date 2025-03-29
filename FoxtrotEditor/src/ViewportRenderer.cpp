@@ -46,7 +46,7 @@ void ViewportRenderer::DrawOnTexture(FoxtrotRenderer* renderer)
 {
 	if (!EditorChunkLoader::GetInstance()->IsLoadingChunk())
 	{
-		EditorSceneManager::GetInstance()->Render(renderer);
+		//EditorSceneManager::GetInstance()->Render(renderer);
 		EditorSceneManager::GetInstance()->EditorRender(renderer);
 		DebugShapes::GetInstance()->Render(renderer);
 	}

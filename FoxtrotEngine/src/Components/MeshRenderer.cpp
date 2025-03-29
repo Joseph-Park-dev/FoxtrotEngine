@@ -29,6 +29,7 @@
 #ifdef FOXTROT_EDITOR
 	#include "FTCoreEditor.h"
 	#include "EditorUtils.h"
+#include "EditorCamera.h"
 #endif // FOXTROT_EDITOR
 
 void MeshRenderer::Initialize(FTCore* coreInstance)
@@ -44,17 +45,11 @@ void MeshRenderer::Initialize(FTCore* coreInstance)
 	Component::Initialize(coreInstance);
 }
 
-void MeshRenderer::Update(float deltaTime)
-{
-	if (mMeshGroup)
-	{
-		UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
-		UpdateBuffers();
-	}
-}
-
 void MeshRenderer::Render(FoxtrotRenderer* renderer)
 {
+	if (mMeshGroup)
+		UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
+
 	if (mMeshGroup)
 	{
 		renderer->SwitchFillMode();
@@ -171,10 +166,6 @@ void MeshRenderer::UpdateMesh(Transform* transform, Camera* camInst)
 	}
 }
 
-void MeshRenderer::UpdateBuffers()
-{
-}
-
 Matrix MeshRenderer::CalcModelMat(Transform* transform)
 {
 	int		  dir	= (int)transform->GetRightward().x;
@@ -233,14 +224,17 @@ void MeshRenderer::LoadProperties(std::ifstream& ifs)
 }
 
 #ifdef FOXTROT_EDITOR
-void MeshRenderer::EditorUpdate(float deltaTime)
-{
-	Update(deltaTime);
-}
-
 void MeshRenderer::EditorRender(FoxtrotRenderer* renderer)
 {
-	// Render(renderer);
+	if (mMeshGroup)
+		UpdateMesh(GetOwner()->GetTransform(), EditorCamera::GetInstance());
+
+	if (mMeshGroup)
+	{
+		renderer->SwitchFillMode();
+		// renderer->SetRenderTargetView();
+		mMeshGroup->Render(renderer);
+	}
 }
 
 void MeshRenderer::EditorUIUpdate()
@@ -250,18 +244,7 @@ void MeshRenderer::EditorUIUpdate()
 	if (mMeshGroup)
 	{
 		mMeshGroup->UpdateUI();
-		UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
-		FTEditorUtils::DisplayResSelection(
-			"Material",
-			ResourceManager::GetInstance()->GetMapMaterials(),
-			key);
-		if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-		{
-			mMaterialKeys.push_back(key);
-			mMeshGroup->SetMaterials(mMaterialKeys, mRenderer->GetDevice());
-		}
-		for (FTMaterial* mat : mMeshGroup->Materials())
-			mat->UpdateUI();
+		UpdateMaterial();
 	}
 
 	if (ImGui::Button("Add Cube"))
@@ -376,6 +359,22 @@ void MeshRenderer::UpdateSprite(UINT& key)
 		ImGui::EndPopup();
 	}
 }
+void MeshRenderer::UpdateMaterial()
+{
+	UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
+	FTEditorUtils::DisplayResSelection(
+		"Material",
+		ResourceManager::GetInstance()->GetMapMaterials(),
+		key);
+	if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	{
+		mMaterialKeys.push_back(key);
+		mMeshGroup->SetMaterials(mMaterialKeys, mRenderer->GetDevice());
+	}
+	for (FTMaterial* mat : mMeshGroup->Materials())
+		mat->UpdateUI();
+}
+
 void MeshRenderer::AddModel()
 {
 	UINT key = mMeshKey;

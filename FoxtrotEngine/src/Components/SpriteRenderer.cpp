@@ -115,18 +115,13 @@ void SpriteRenderer::LoadProperties(std::ifstream& ifs)
 #ifdef FOXTROT_EDITOR
 void SpriteRenderer::EditorUpdate(float deltaTime)
 {
-	Update(deltaTime);
-}
-
-void SpriteRenderer::EditorRender(FoxtrotRenderer* renderer)
-{
-	//SpriteRenderer::Render(renderer);
 }
 
 void SpriteRenderer::EditorUIUpdate()
 {
 	SetRenderer(FTCoreEditor::GetInstance()->GetGameRenderer());
 	CHECK_RENDERER(GetRenderer());
+	UpdateMaterial();
 	OnConfirmUpdate();
 	UpdateSprite();
 	OnResetTexture();

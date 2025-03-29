@@ -244,18 +244,7 @@ void MeshRenderer::EditorUIUpdate()
 	if (mMeshGroup)
 	{
 		mMeshGroup->UpdateUI();
-		UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
-		FTEditorUtils::DisplayResSelection(
-			"Material",
-			ResourceManager::GetInstance()->GetMapMaterials(),
-			key);
-		if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-		{
-			mMaterialKeys.push_back(key);
-			mMeshGroup->SetMaterials(mMaterialKeys, mRenderer->GetDevice());
-		}
-		for (FTMaterial* mat : mMeshGroup->Materials())
-			mat->UpdateUI();
+		UpdateMaterial();
 	}
 
 	if (ImGui::Button("Add Cube"))
@@ -370,6 +359,22 @@ void MeshRenderer::UpdateSprite(UINT& key)
 		ImGui::EndPopup();
 	}
 }
+void MeshRenderer::UpdateMaterial()
+{
+	UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
+	FTEditorUtils::DisplayResSelection(
+		"Material",
+		ResourceManager::GetInstance()->GetMapMaterials(),
+		key);
+	if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	{
+		mMaterialKeys.push_back(key);
+		mMeshGroup->SetMaterials(mMaterialKeys, mRenderer->GetDevice());
+	}
+	for (FTMaterial* mat : mMeshGroup->Materials())
+		mat->UpdateUI();
+}
+
 void MeshRenderer::AddModel()
 {
 	UINT key = mMeshKey;

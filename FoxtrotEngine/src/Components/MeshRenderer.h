@@ -120,6 +120,7 @@ protected:
 	void		 OnResetTexture();
 	void		 UpdateSprite();
 	void		 UpdateSprite(UINT& key);
+	void		 UpdateMaterial();
 
 private:
 	void AddModel();

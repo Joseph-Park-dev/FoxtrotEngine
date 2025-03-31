@@ -85,6 +85,7 @@ BoxCollider2D::BoxCollider2D(Actor* owner, int updateOrder)
 
 BoxCollider2D::~BoxCollider2D()
 {
+	CollisionManager::GetInstance()->RemoveCollider(GetShapeID().index1);
 	if (b2Shape_IsValid(GetShapeID()))
 		b2DestroyShape(GetShapeID(), true);
 #ifdef FOXTROT_EDITOR

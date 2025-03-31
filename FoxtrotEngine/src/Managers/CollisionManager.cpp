@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -22,11 +22,11 @@
 
 void CollisionManager::MarkGroup(b2ShapeDef& object, ActorGroup objectActorGroup)
 {
-	size_t count = ActorGroupUtil::GetCount();
+	size_t	 count	  = ActorGroupUtil::GetCount();
 	uint64_t maskBits = 0;
 	for (size_t i = 0; i < count; ++i)
 	{
-		if (mCollisionMarks[((size_t)objectActorGroup-1) * count + i])
+		if (mCollisionMarks[((size_t)objectActorGroup - 1) * count + i])
 			maskBits |= (uint64_t)(i + 1);
 	}
 	object.filter.maskBits = maskBits;
@@ -35,24 +35,23 @@ void CollisionManager::MarkGroup(b2ShapeDef& object, ActorGroup objectActorGroup
 void CollisionManager::Reset()
 {
 	memset(
-		mCollisionMarks, 
-		0, 
-		sizeof(bool) * ActorGroupUtil::GetCount() * ActorGroupUtil::GetCount()
-	);
+		mCollisionMarks,
+		0,
+		sizeof(bool) * ActorGroupUtil::GetCount() * ActorGroupUtil::GetCount());
 	mRegColliders.clear();
 }
 
 void CollisionManager::RegisterCollider(int32_t index, Collider2D* collider)
 {
-	mRegColliders.insert({index, collider});
+	mRegColliders.insert({ index, collider });
 }
 
 b2QueryFilter CollisionManager::GetQueryFilter(ActorGroup objectActorGroup)
 {
 	b2QueryFilter filter = b2DefaultQueryFilter();
-	filter.categoryBits = (uint64_t)objectActorGroup;
+	filter.categoryBits	 = (uint64_t)objectActorGroup;
 
-	size_t count = ActorGroupUtil::GetCount();
+	size_t	 count	  = ActorGroupUtil::GetCount();
 	uint64_t maskBits = 0;
 	for (size_t i = 0; i < count; ++i)
 	{
@@ -65,10 +64,23 @@ b2QueryFilter CollisionManager::GetQueryFilter(ActorGroup objectActorGroup)
 	return filter;
 }
 
+void CollisionManager::RemoveCollider(int32_t index)
+{
+	if (0 < mRegColliders.size())
+	{
+		Collider2D* collider = mRegColliders.at(index);
+		if (collider)
+			mRegColliders.erase(index);
+	}
+	else
+		Debug::LogError(__LINE__, __FILE__, "Register Colliders map is empty");
+}
+
 CollisionManager::CollisionManager()
 	: mRegColliders()
 	, mCollisionMarks(new bool[((size_t)ActorGroup::END - 1) * ((size_t)ActorGroup::END - 1)])
-{}
+{
+}
 
 CollisionManager::~CollisionManager()
 {
@@ -82,7 +94,7 @@ void CollisionManager::Update()
 
 void CollisionManager::UpdateCollisionGroup()
 {
-	b2ContactEvents events = b2World_GetContactEvents(Physics2D::GetInstance()->GetCurrentWorldID());
+	b2ContactEvents	 events = b2World_GetContactEvents(Physics2D::GetInstance()->GetCurrentWorldID());
 	static b2ShapeId shapeIdA;
 	static b2ShapeId shapeIdB;
 
@@ -92,20 +104,23 @@ void CollisionManager::UpdateCollisionGroup()
 	for (size_t i = 0; i < events.beginCount; ++i)
 	{
 		b2ContactBeginTouchEvent* ev = events.beginEvents + i;
-		shapeIdA = ev->shapeIdA;
-		shapeIdB = ev->shapeIdB;
+		shapeIdA					 = ev->shapeIdA;
+		shapeIdB					 = ev->shapeIdB;
 
 		colliderA = mRegColliders.at(shapeIdA.index1);
 		colliderB = mRegColliders.at(shapeIdB.index1);
 
-		colliderA->GetCollisionStates().insert({ shapeIdB.index1, CollisionState(CollisionState::ENTER) });
-		colliderB->GetCollisionStates().insert({ shapeIdA.index1, CollisionState(CollisionState::ENTER) });
+		if (colliderA && colliderB)
+		{
+			colliderA->GetCollisionStates().insert({ shapeIdB.index1, CollisionState(CollisionState::ENTER) });
+			colliderB->GetCollisionStates().insert({ shapeIdA.index1, CollisionState(CollisionState::ENTER) });
 
-		colliderA->OnCollisionEnter(colliderB);
-		colliderB->OnCollisionEnter(colliderA);
+			colliderA->OnCollisionEnter(colliderB);
+			colliderB->OnCollisionEnter(colliderA);
 
-		colliderA->GetCollisionStates()[shapeIdB.index1] = CollisionState::STAY;
-		colliderB->GetCollisionStates()[shapeIdA.index1] = CollisionState::STAY;
+			colliderA->GetCollisionStates()[shapeIdB.index1] = CollisionState::STAY;
+			colliderB->GetCollisionStates()[shapeIdA.index1] = CollisionState::STAY;
+		}
 	}
 
 	if (b2Shape_IsValid(shapeIdA) && b2Shape_IsValid(shapeIdB))
@@ -121,8 +136,7 @@ void CollisionManager::UpdateCollisionGroup()
 			colliderA = mRegColliders.at(shapeIdA.index1);
 			colliderB = mRegColliders.at(shapeIdB.index1);
 
-			if (colliderA->GetCollisionStates()[shapeIdB.index1] == CollisionState::STAY
-				&& colliderB->GetCollisionStates()[shapeIdA.index1] == CollisionState::STAY)
+			if (colliderA->GetCollisionStates()[shapeIdB.index1] == CollisionState::STAY && colliderB->GetCollisionStates()[shapeIdA.index1] == CollisionState::STAY)
 			{
 				colliderA->OnCollisionStay(colliderB);
 				colliderB->OnCollisionStay(colliderA);
@@ -133,8 +147,8 @@ void CollisionManager::UpdateCollisionGroup()
 	for (size_t i = 0; i < events.hitCount; ++i)
 	{
 		b2ContactHitEvent* ev = events.hitEvents + i;
-		shapeIdA = ev->shapeIdA;
-		shapeIdB = ev->shapeIdB;
+		shapeIdA			  = ev->shapeIdA;
+		shapeIdB			  = ev->shapeIdB;
 
 		colliderA = mRegColliders.at(shapeIdA.index1);
 		colliderB = mRegColliders.at(shapeIdB.index1);
@@ -146,8 +160,8 @@ void CollisionManager::UpdateCollisionGroup()
 	for (size_t i = 0; i < events.endCount; ++i)
 	{
 		b2ContactEndTouchEvent* ev = events.endEvents + i;
-		shapeIdA = ev->shapeIdA;
-		shapeIdB = ev->shapeIdB;
+		shapeIdA				   = ev->shapeIdA;
+		shapeIdB				   = ev->shapeIdB;
 
 		colliderA = mRegColliders.at(shapeIdA.index1);
 		colliderB = mRegColliders.at(shapeIdB.index1);
@@ -172,10 +186,9 @@ void CollisionManager::SaveCollisionMarks(std::ofstream& ofs)
 		for (size_t col = 0; col < row + 1; ++col)
 		{
 			std::string mark =
-				std::string(ActorGroupUtil::GetActorGroupStr(row)) + '/'
-				+ std::string(ActorGroupUtil::GetActorGroupStr(col));
+				std::string(ActorGroupUtil::GetActorGroupStr(row)) + '/' + std::string(ActorGroupUtil::GetActorGroupStr(col));
 
-			size_t idx = ActorGroupUtil::GetCount() * row + col;
+			size_t idx			= ActorGroupUtil::GetCount() * row + col;
 			size_t reflectedIdx = ActorGroupUtil::GetCount() * col + row;
 			FileIOHelper::SaveBool(ofs, mark, mCollisionMarks[idx]);
 		}
@@ -187,8 +200,8 @@ void CollisionManager::SaveCollisionMarks(std::ofstream& ofs)
 void CollisionManager::LoadCollisionMarks(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COLLISION_MANAGER);
-	std::pair<size_t, std::string> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COLLISION_MARKS);
-	std::vector<bool> marksCache = {};
+	std::pair<size_t, std::string> pack		  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COLLISION_MARKS);
+	std::vector<bool>			   marksCache = {};
 	marksCache.reserve(pack.first);
 
 	for (size_t i = 0; i < pack.first; ++i)
@@ -200,17 +213,17 @@ void CollisionManager::LoadCollisionMarks(std::ifstream& ifs)
 
 	// Linear marks should be reversed because of the order in file.
 	// After reversed, FIRST GROUP / FIRST GROUP combination should come first.
-	//std::reverse(marksCache.begin(), marksCache.end()); 
+	// std::reverse(marksCache.begin(), marksCache.end());
 
 	for (size_t row = 0; row < ActorGroupUtil::GetCount(); ++row)
 	{
 		for (size_t col = 0; col < row + 1; ++col)
 		{
-			size_t idx = ActorGroupUtil::GetCount() * col + row;
+			size_t idx			= ActorGroupUtil::GetCount() * col + row;
 			size_t reflectedIdx = ActorGroupUtil::GetCount() * row + col;
 
-			bool mark = marksCache.back();
-			mCollisionMarks[idx] = mark;
+			bool mark					  = marksCache.back();
+			mCollisionMarks[idx]		  = mark;
 			mCollisionMarks[reflectedIdx] = mark;
 
 			marksCache.pop_back();
@@ -219,7 +232,8 @@ void CollisionManager::LoadCollisionMarks(std::ifstream& ifs)
 }
 
 void CollisionManager::Initialize()
-{}
+{
+}
 
 #ifdef FOXTROT_EDITOR
 void CollisionManager::UpdateUI()
@@ -233,18 +247,17 @@ void CollisionManager::UpdateCollisionMarks()
 	{
 		// Since it is needed to make the count constant,
 		// ActorGroupUtil::GetCount() is not used.
-		const size_t group = (size_t)ActorGroup::END - 1;  
-		static bool marks[(group * (group + 1)) / 2];
+		const size_t group = (size_t)ActorGroup::END - 1;
+		static bool	 marks[(group * (group + 1)) / 2];
 		for (size_t row = 0; row < ActorGroupUtil::GetCount(); ++row)
 		{
 			ImGui::TableNextRow();
-			for (size_t col = 0; col < row+1; ++col)
+			for (size_t col = 0; col < row + 1; ++col)
 			{
 				ImGui::TableSetColumnIndex(col);
 				std::string mark =
-				std::string(ActorGroupUtil::GetActorGroupStr(row)) + '/'
-					+ std::string(ActorGroupUtil::GetActorGroupStr(col));
-				size_t idx = ActorGroupUtil::GetCount() * row + col;
+					std::string(ActorGroupUtil::GetActorGroupStr(row)) + '/' + std::string(ActorGroupUtil::GetActorGroupStr(col));
+				size_t idx			= ActorGroupUtil::GetCount() * row + col;
 				size_t reflectedIdx = ActorGroupUtil::GetCount() * col + row;
 				if (ImGui::Checkbox(mark.c_str(), &mCollisionMarks[idx]))
 				{
@@ -253,15 +266,14 @@ void CollisionManager::UpdateCollisionMarks()
 						LogInt("marked ", idx);
 						mCollisionMarks[reflectedIdx] = true;
 
-						//printf("Marked %s, %s\n",
-							//ActorGroupUtil::GetActorGroupStr(i), ActorGroupUtil::GetActorGroupStr(j));
+						// printf("Marked %s, %s\n",
+						// ActorGroupUtil::GetActorGroupStr(i), ActorGroupUtil::GetActorGroupStr(j));
 					}
 					else
 					{
 						mCollisionMarks[reflectedIdx] = false;
 
-						printf("Un-Marked %s, %s\n",
-							ActorGroupUtil::GetActorGroupStr(row), ActorGroupUtil::GetActorGroupStr(col));
+						printf("Un-Marked %s, %s\n", ActorGroupUtil::GetActorGroupStr(row), ActorGroupUtil::GetActorGroupStr(col));
 					}
 				}
 			}

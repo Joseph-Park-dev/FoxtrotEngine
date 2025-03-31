@@ -164,7 +164,7 @@ void FTCoreEditor::ProcessInput()
 {
 	FTCore::ProcessInput();
 	mEditorWindow->ProcessInput();
-	EditorSceneManager::GetInstance()->ProcessInput(mEditorWindow->GetInputDevice());
+	EditorSceneManager::GetInstance()->ProcessInput(GetGameWindow()->GetInputDevice());
 	EditorCamera::GetInstance()->ProcessInput(mEditorWindow->GetInputDevice());
 }
 

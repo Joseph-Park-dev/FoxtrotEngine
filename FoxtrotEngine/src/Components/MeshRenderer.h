@@ -56,19 +56,22 @@ public:
 protected:
 	const UINT GetMeshKey() const;
 	const UINT GetTexKey() const;
-	void	   SetMeshKey(const UINT key);
-	void	   SetTexKey(const UINT key);
+
+	void SetMeshKey(const UINT key);
+	void SetTexKey(const UINT key);
 
 	///////////////////////////////////////
 	// Getters & Setters to the elements //
 	///////////////////////////////////////
 protected:
-	FTBasicMeshGroup* GetMeshGroup() const;
-	FTTexture*		  GetTexture() const;
-	FoxtrotRenderer*  GetRenderer() const;
+	FTBasicMeshGroup*  GetMeshGroup() const;
+	FTTexture*		   GetTexture() const;
+	FoxtrotRenderer*   GetRenderer() const;
 
 	void SetRenderer(FoxtrotRenderer* renderer);
 	void SetMeshGroup(FTBasicMeshGroup* meshGroup);
+
+	std::vector<UINT>& MaterialKeys();
 
 	////////////////////////
 	// Element operations //
@@ -133,6 +136,8 @@ private:
 
 namespace ChunkKey
 {
-	constexpr const char* MESH_KEY	  = "MeshKey";
-	constexpr const char* TEXTURE_KEY = "TextureKey";
+	constexpr const char* MESH_KEY		 = "Mesh Key";
+	constexpr const char* TEXTURE_KEY	 = "Texture Key";
+	constexpr const char* MATERIAL_KEYS	 = "Material Key";
+	constexpr const char* MATERIAL_COUNT = "Count";
 } // namespace ChunkKey

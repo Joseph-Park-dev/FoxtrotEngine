@@ -29,7 +29,7 @@
 #ifdef FOXTROT_EDITOR
 	#include "FTCoreEditor.h"
 	#include "EditorUtils.h"
-#include "EditorCamera.h"
+	#include "EditorCamera.h"
 #endif // FOXTROT_EDITOR
 
 void MeshRenderer::Initialize(FTCore* coreInstance)
@@ -41,7 +41,10 @@ void MeshRenderer::Initialize(FTCore* coreInstance)
 		if (mTexKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 			mMeshGroup->SetTexture(mTexKey);
 	}
-	// mMeshGroup = DBG_NEW FTBasicMeshGroup;
+
+	if (0 < mMaterialKeys.size())
+		mMeshGroup->SetMaterials(mMaterialKeys, mRenderer->GetDevice());
+
 	Component::Initialize(coreInstance);
 }
 
@@ -63,6 +66,8 @@ void MeshRenderer::CloneTo(Actor* actor)
 	MeshRenderer* newComp = DBG_NEW MeshRenderer(actor, GetUpdateOrder());
 	newComp->mMeshKey	  = this->mMeshKey;
 	newComp->mTexKey	  = this->mTexKey;
+	for (size_t i = 0; i < mMaterialKeys.size(); ++i)
+		newComp->mMaterialKeys.push_back(mMaterialKeys.at(i));
 	newComp->mMeshGroup->SetDrawNormal(this->mMeshGroup->GetDrawNormal());
 }
 
@@ -76,6 +81,8 @@ void MeshRenderer::SetRenderer(FoxtrotRenderer* renderer) { mRenderer = renderer
 void MeshRenderer::SetMeshKey(const UINT key) { mMeshKey = key; }
 void MeshRenderer::SetTexKey(const UINT key) { mTexKey = key; }
 void MeshRenderer::SetMeshGroup(FTBasicMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
+
+std::vector<UINT>& MeshRenderer::MaterialKeys() { return mMaterialKeys; }
 
 bool MeshRenderer::InitializeMesh()
 {
@@ -181,7 +188,7 @@ Matrix MeshRenderer::CalcModelMat(Transform* transform)
 
 MeshRenderer::MeshRenderer(Actor* owner, int updateOrder)
 	: Component(owner, updateOrder)
-	, mMeshGroup(nullptr)
+	, mMeshGroup(DBG_NEW FTBasicMeshGroup)
 	, mRenderer(nullptr)
 	, mMeshKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	, mTexKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
@@ -207,18 +214,39 @@ void MeshRenderer::SaveProperties(std::ofstream& ofs)
 
 	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::MESH_KEY, mMeshKey);
 	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TEXTURE_KEY, mTexKey);
+
+	// Save FTMaterial keys
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::MATERIAL_KEYS);
+
+	for (size_t i = 0; i < mMaterialKeys.size(); ++i)
+		FileIOHelper::SaveUnsignedInt(ofs, std::to_string(i), mMaterialKeys.at(i));
+	FileIOHelper::SaveSize(ofs, ChunkKey::MATERIAL_COUNT, mMaterialKeys.size());
+
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::MATERIAL_KEYS);
 }
 
 void MeshRenderer::LoadProperties(std::ifstream& ifs)
 {
+	// Save FTMaterial keys
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::MATERIAL_KEYS);
+
+	size_t matCount = 0;
+	FileIOHelper::LoadSize(ifs, matCount);
+	for (size_t i = 0; i < matCount; ++i)
+	{
+		UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
+		FileIOHelper::LoadUnsignedInt(ifs, key);
+		mMaterialKeys.push_back(key);
+	}
+
 	FileIOHelper::LoadUnsignedInt(ifs, mTexKey);
+	mMeshGroup->SetTexture(mTexKey);
+
 	FileIOHelper::LoadUnsignedInt(ifs, mMeshKey);
 
 	bool drawVal = false;
 	FileIOHelper::LoadBool(ifs, drawVal);
 	mMeshGroup->SetDrawNormal(drawVal);
-
-	FileIOHelper::LoadBool(ifs, drawVal);
 
 	Component::LoadProperties(ifs);
 }
@@ -298,7 +326,10 @@ void MeshRenderer::UpdateSprite()
 		mTexKey);
 
 	if (key != mTexKey)
-		SetTexKey(mTexKey);
+	{
+		SetTexKey(key);
+		mMeshGroup->SetTexture(mTexKey);
+	}
 }
 
 void MeshRenderer::UpdateSprite(UINT& key)
@@ -361,6 +392,16 @@ void MeshRenderer::UpdateSprite(UINT& key)
 }
 void MeshRenderer::UpdateMaterial()
 {
+	// Display loaded Materials.
+	if (0 < mMaterialKeys.size())
+	{
+		for (UINT key : mMaterialKeys)
+			ResourceManager::GetInstance()->GetMapMaterials().at(key)->UpdateUI();
+	}
+	else
+		ImGui::Text("No Material has been assigned");
+
+	// Select & load Materials.
 	UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 	FTEditorUtils::DisplayResSelection(
 		"Material",
@@ -371,8 +412,6 @@ void MeshRenderer::UpdateMaterial()
 		mMaterialKeys.push_back(key);
 		mMeshGroup->SetMaterials(mMaterialKeys, mRenderer->GetDevice());
 	}
-	for (FTMaterial* mat : mMeshGroup->Materials())
-		mat->UpdateUI();
 }
 
 void MeshRenderer::AddModel()

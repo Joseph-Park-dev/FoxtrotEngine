@@ -130,8 +130,9 @@ public:
 		typename std::unordered_map<UINT, FTRESOURCE*>::const_iterator iter;
 		for (iter = resMap.begin(); iter != resMap.end(); ++iter)
 		{
-			if (0 < (*iter).second->GetRefCount())
-				(*iter).second->SaveProperties(ofs, (*iter).first);
+			if((*iter).second)
+				if (0 < (*iter).second->GetRefCount())
+					(*iter).second->SaveProperties(ofs, (*iter).first);
 		}
 	}
 
@@ -152,7 +153,7 @@ public:
 		}
 	}
 
-	void LoadMaterialsFromChunk(std::ifstream& ifs);
+	//void LoadMaterialsFromChunk(std::ifstream& ifs);
 
 private:
 	template <typename FTRESOURCE>
@@ -255,7 +256,6 @@ private:
 	void ProcessSingleMeshData(FTMeshDataPack* meshDataPack);
 	void ProcessTileMap(FTTileMap* tileMap);
 	void ProcessSpriteAnim(FTSpriteAnimation* spriteAnim);
-	void ProcessMaterial(FTMaterial* material);
 
 	void ProcessTextures();
 	void ProcessMeshData();
@@ -271,7 +271,7 @@ private:
 	/// Due to the abstract base type, Material loading requires dedicated functions
 	/// </Loading Materials>
 private:
-	void ProcessMaterial(std::string& filePath, std::string& fileName);
+	void ProcessMaterial(FTMaterial* material);
 
 	/// <Validating Resources> -------------------------------------
 	/// Template member functions for validating the keys & resources.

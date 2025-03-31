@@ -1,10 +1,10 @@
 #pragma once
 #include "Components/Component.h"
 
+#include "FileSystem/ChunkLoader.h"
+
 #ifdef FOXTROT_EDITOR
 #include "EditorChunkLoader.h"
-#else
-#include "FileSystem/ChunkLoader.h"
 #endif 
 
 class Collider2D;
@@ -29,6 +29,9 @@ public:
     {
         EditorChunkLoader::GetInstance()->GetCompCreateMap().
             insert(std::make_pair(key, &FTBehavior::Create<CUSTOM_BEHAVIOR>));
+
+        ChunkLoader::GetInstance()->GetComponentLoadMap().
+            insert(std::make_pair(key, &FTBehavior::Load<CUSTOM_BEHAVIOR>));
     }
 
 #else

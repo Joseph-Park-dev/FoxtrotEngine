@@ -60,11 +60,11 @@ void FTPremade::Load()
 	mOrigin->LoadProperties(ifs);
 	mOrigin->LoadComponents(ifs);
 
-#ifdef FOXTROT_EDITOR
-	mOrigin->Initialize(FTCoreEditor::GetInstance());
-#else
-	mOrigin->Initialize(FTCore::GetInstance());
-#endif // FOXTROT_EDITOR
+//#ifdef FOXTROT_EDITOR
+//	mOrigin->Initialize(FTCoreEditor::GetInstance());
+//#else
+//	mOrigin->Initialize(FTCore::GetInstance());
+//#endif // FOXTROT_EDITOR
 
 	mIsLoaded = true;
 }
@@ -100,8 +100,8 @@ void FTPremade::Create(EditorElement* ele)
 {
 	assert(!GetRelativePath().empty());
 	SetFileName(ele->GetName());
-	std::string as = GetRelativePath() + GetFileName() + FileTypes::PREMADE;
-	std::ofstream ofs(GetRelativePath() + GetFileName() + FileTypes::PREMADE);
+	std::string fileName = GetRelativePath() + GetFileName() + FileTypes::PREMADE;
+	std::ofstream ofs(fileName);
 	if (ofs)
 	{
 		FileIOHelper::BeginDataPackSave(ofs, GetFileName());

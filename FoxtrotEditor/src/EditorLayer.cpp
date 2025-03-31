@@ -360,22 +360,25 @@ void EditorLayer::DisplayInspectorMenu()
 			}
 		}
 
-		Actor*		   actor = actorsRow[mActorNameIdx];
-		EditorElement* ele	 = dynamic_cast<EditorElement*>(actor);
-		if (ele->GetIsFocused())
+		if (mActorNameIdx < actorsRow.size())
 		{
-			ele->UpdateUI(false);
-			if (mDeleteKeyPressed)
+			Actor* actor = actorsRow[mActorNameIdx];
+			EditorElement* ele = dynamic_cast<EditorElement*>(actor);
+			if (ele->GetIsFocused())
 			{
-				// Delete game object, and erase the pointed from std::vector
-				ActorGroup group = ele->GetActorGroup();
+				ele->UpdateUI(false);
+				if (mDeleteKeyPressed)
+				{
+					// Delete game object, and erase the pointed from std::vector
+					ActorGroup group = ele->GetActorGroup();
 
-				std::vector<Actor*>::iterator iter =
-					std::find(scene->GetActorGroup(group).begin(), scene->GetActorGroup(group).end(), actor);
-				scene->GetActorGroup(group).erase(iter);
-				if (0 < mActorNameIdx)
-					mActorNameIdx = scene->GetActorCount() - 1;
-				delete ele;
+					std::vector<Actor*>::iterator iter =
+						std::find(scene->GetActorGroup(group).begin(), scene->GetActorGroup(group).end(), actor);
+					scene->GetActorGroup(group).erase(iter);
+					if (0 < mActorNameIdx)
+						mActorNameIdx = scene->GetActorCount() - 1;
+					delete ele;
+				}
 			}
 		}
 	}

@@ -260,6 +260,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\Bullet\BulletBehavior.cpp" />
+    <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\GunFiringBehavior.cpp" />
     <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\MonkeySpin.cpp" />
     <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\ResponsiveButton.cpp" />
     <ClCompile Include="src\WindowSystem\FTWindow.cpp" />

@@ -1,13 +1,13 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 /// <summary>
 /// Takes care of all collisions occurring in a Scene during a game
-/// session. All of them are done by box2D library in the current 
+/// session. All of them are done by box2D library in the current
 /// version.
 /// </summary>
 
@@ -41,11 +41,12 @@ public:
 	void Reset();
 
 public:
-	void RegisterCollider(int32_t index, Collider2D* collider);
+	void		  RegisterCollider(int32_t index, Collider2D* collider);
 	b2QueryFilter GetQueryFilter(ActorGroup objectActorGroup);
+	void		  RemoveCollider(int32_t index);
 
 private:
-	bool* mCollisionMarks;
+	bool*									 mCollisionMarks;
 	std::unordered_map<int32_t, Collider2D*> mRegColliders;
 
 public:
@@ -71,5 +72,5 @@ public:
 namespace ChunkKey
 {
 	constexpr const char* COLLISION_MANAGER = "Collision Manager";
-	constexpr const char* COLLISION_MARKS = "Collision Marks";
-}
+	constexpr const char* COLLISION_MARKS	= "Collision Marks";
+} // namespace ChunkKey

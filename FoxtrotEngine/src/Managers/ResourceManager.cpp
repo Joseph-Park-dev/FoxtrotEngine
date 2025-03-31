@@ -285,28 +285,31 @@ void ResourceManager::SaveMaterialsToChunk(std::ofstream& ofs)
 	typename std::unordered_map<UINT, FTMaterial*>::const_iterator iter;
 	for (iter = mMapMaterials.begin(); iter != mMapMaterials.end(); ++iter)
 	{
-		if (0 < (*iter).second->GetRefCount())
-			(*iter).second->SaveProperties(ofs, (*iter).first);
+		if((*iter).second)
+			if (0 < (*iter).second->GetRefCount())
+				(*iter).second->SaveProperties(ofs, (*iter).first);
 	}
 }
 
-void ResourceManager::LoadMaterialsFromChunk(std::ifstream& ifs)
-{
-	FTMaterial* resource = DBG_NEW StandardMaterial;
-	resource->LoadProperties(ifs);
-	mMapMaterials.insert(std::make_pair(mItemKey, resource));
-
-	resource = DBG_NEW RimMaterial;
-	resource->LoadProperties(ifs);
-	mMapMaterials.insert(std::make_pair(mItemKey, resource));
-
-	// Include materials here.
-}
+//void ResourceManager::LoadMaterialsFromChunk(std::ifstream& ifs)
+//{
+//	FTMaterial* resource = DBG_NEW StandardMaterial;
+//	resource->LoadProperties(ifs);
+//	mMapMaterials.insert(std::make_pair(mItemKey, resource));
+//
+//	resource = DBG_NEW RimMaterial;
+//	resource->LoadProperties(ifs);
+//	mMapMaterials.insert(std::make_pair(mItemKey, resource));
+//
+//	// Include materials here.
+//}
 
 void ResourceManager::LoadMaterial()
 {
-	StandardMaterial* standard				  = DBG_NEW StandardMaterial;
-	std::string							 path = std::string(".//Assets//Materials//") + ChunkKey::STANDARD_MAT + FileTypes::MATERIAL;
+	UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
+
+	StandardMaterial* standard = DBG_NEW StandardMaterial;
+	std::string	path = std::string(".//Assets//Materials//") + ChunkKey::STANDARD_MAT + FileTypes::MATERIAL;
 	if (!std::filesystem::exists(path))
 		standard->SaveToFile();
 	standard->LoadFromFile();
@@ -317,8 +320,8 @@ void ResourceManager::LoadMaterial()
 		rim->SaveToFile();
 	rim->LoadFromFile();
 
-	mMapMaterials.insert({ ++mItemKey, standard });
-	mMapMaterials.insert({ ++mItemKey, rim });
+	mMapMaterials.insert({ ++key, standard });
+	mMapMaterials.insert({ ++key, rim });
 }
 
 void ResourceManager::ProcessTexture(FTTexture* texture)
@@ -473,10 +476,6 @@ void ResourceManager::SaveResources(std::ofstream& ofs)
 	SaveResourceToChunk<FTMeshDataPack>(ofs, mMapMeshData);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTMESH_GROUP);
 
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTMATERIAL);
-	SaveMaterialsToChunk(ofs);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTMATERIAL);
-
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
 	SaveResourceToChunk<FTVertexShader>(ofs, mMapVertexShaders);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
@@ -545,13 +544,14 @@ void ResourceManager::LoadAllResourcesInAsset()
 	ProcessMeshData();
 	ProcessTileMaps();
 	ProcessSpriteAnims();
-	ProcessPremades();
 
 	ProcessMaterials();
 	ProcessVertexShaders();
 	ProcessPixelShaders();
 
 	LoadMaterial();
+
+	ProcessPremades();
 }
 
 void ResourceManager::LoadResByType(std::string& filePath)
@@ -660,16 +660,19 @@ void ResourceManager::UpdateUI()
 		texIter = mMapTextures.begin();
 		for (texIter = mMapTextures.begin(); texIter != mMapTextures.end(); ++texIter)
 		{
-			if (ImGui::BeginListBox((*texIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 200)))
+			if ((*texIter).second)
 			{
-				(*texIter).second->UpdateUI();
-				if (ImGui::Button("Remove"))
+				if (ImGui::BeginListBox((*texIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 200)))
 				{
-					RemoveResource<FTTexture>((*texIter).first, mMapTextures);
+					(*texIter).second->UpdateUI();
+					if (ImGui::Button("Remove"))
+					{
+						RemoveResource<FTTexture>((*texIter).first, mMapTextures);
+						ImGui::EndListBox();
+						break;
+					}
 					ImGui::EndListBox();
-					break;
 				}
-				ImGui::EndListBox();
 			}
 		}
 		ImGui::TreePop();
@@ -702,16 +705,19 @@ void ResourceManager::UpdateUI()
 		premadeIter = mMapPremades.begin();
 		for (; premadeIter != mMapPremades.end(); ++premadeIter)
 		{
-			if (ImGui::BeginListBox((*premadeIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 100)))
+			if ((*premadeIter).second)
 			{
-				(*premadeIter).second->UpdateUI();
-				if (ImGui::Button("Remove"))
+				if (ImGui::BeginListBox((*premadeIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 100)))
 				{
-					RemoveResource<FTPremade>((*premadeIter).first, mMapPremades);
+					(*premadeIter).second->UpdateUI();
+					if (ImGui::Button("Remove"))
+					{
+						RemoveResource<FTPremade>((*premadeIter).first, mMapPremades);
+						ImGui::EndListBox();
+						break;
+					}
 					ImGui::EndListBox();
-					break;
 				}
-				ImGui::EndListBox();
 			}
 		}
 		ImGui::TreePop();

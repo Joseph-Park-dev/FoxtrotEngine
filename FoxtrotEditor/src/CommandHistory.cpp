@@ -272,10 +272,10 @@ void CommandHistory::UpdateStringValue(std::string label, std::string& ref)
 		ref.reserve(BufferSize::STRING_BUFFER_SIZE);
 
 	static StrEditCommand* command;
+	char str[BufferSize::STRING_BUFFER_SIZE];
+	strcpy_s(str, ref.c_str());
 
-	char* updatedName = _strdup(ref.c_str());
-
-	if (ImGui::InputText(label.c_str(), updatedName, ACTORNAME_MAX))
+	if (ImGui::InputText(label.c_str(), str, ACTORNAME_MAX))
 	{
 		if (!mIsRecording)
 		{
@@ -285,10 +285,12 @@ void CommandHistory::UpdateStringValue(std::string label, std::string& ref)
 				command		 = DBG_NEW StrEditCommand(ref);
 			}
 		}
+		else if(ImGui::IsItemDeactivatedAfterEdit())
+			ref.assign(str);
 	}
 	else
 	{
-		if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
+		if (mIsRecording)
 		{
 			if (command)
 			{
@@ -299,8 +301,6 @@ void CommandHistory::UpdateStringValue(std::string label, std::string& ref)
 			}
 		}
 	}
-	ref.assign(updatedName);
-	delete updatedName;
 }
 
 void CommandHistory::UpdateStateValue(std::string label, Actor::State& state)

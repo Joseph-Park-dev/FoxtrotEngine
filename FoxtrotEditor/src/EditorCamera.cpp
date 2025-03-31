@@ -35,7 +35,6 @@ void EditorCamera::ProcessInput(FTInputDevice* inputDevice)
 		mZoomDelta = -mZoomValModSpeed;
 	else
 		mZoomDelta = 0.f;
-	LogFloat(mZoomDelta);
 }
 
 void EditorCamera::Update(float deltaTime)

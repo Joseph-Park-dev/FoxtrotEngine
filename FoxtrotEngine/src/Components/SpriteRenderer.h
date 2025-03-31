@@ -47,10 +47,6 @@ private:
 	int		  mChannel;
 	FTVector2 mTexScale;
 
-public:
-	virtual void SaveProperties(std::ofstream& ofs) override;
-	virtual void LoadProperties(std::ifstream& ifs) override;
-
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void EditorUpdate(float deltaTime) override;

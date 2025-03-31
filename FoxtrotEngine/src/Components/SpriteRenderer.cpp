@@ -56,20 +56,19 @@ void SpriteRenderer::Initialize(FTCore* coreInstance)
 	else
 		SetMeshKey(ChunkKey::PRIMITIVE_SQUARE_GREEN);
 
-	if (GetMeshKey() != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-	{
-		this->InitializeMesh();
-		if (GetTexKey() != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-			GetMeshGroup()->SetTexture(GetTexKey());
-	}
-	Component::Initialize(coreInstance);
+	MeshRenderer::Initialize(coreInstance);
 }
 
 void SpriteRenderer::CloneTo(Actor* actor)
 {
 	SpriteRenderer* newComp = DBG_NEW SpriteRenderer(actor, GetUpdateOrder());
-	newComp->SetMeshKey(this->GetMeshKey());
-	newComp->SetTexKey(this->GetTexKey());
+	newComp->SetMeshKey(GetMeshKey());
+	newComp->SetTexKey(GetTexKey());
+
+	for (size_t i = 0; i < MaterialKeys().size(); ++i)
+		newComp->MaterialKeys().push_back(MaterialKeys().at(i));
+
+	newComp->GetMeshGroup()->SetDrawNormal(this->GetMeshGroup()->GetDrawNormal());
 	newComp->mChannel = this->mChannel;
 	newComp->mTexScale = this->mTexScale;
 }
@@ -96,22 +95,6 @@ SpriteRenderer::SpriteRenderer(Actor* owner,int updateOrder)
 	, mTexScale(FTVector2(1.0f,1.0f)) 
 {}
 
-void SpriteRenderer::SaveProperties(std::ofstream& ofs)
-{
-	Component::SaveProperties(ofs);
-	FileIOHelper::SaveVector2(ofs, ChunkKey::TEXTURE_WIDTH, mTexScale);
-	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TEXTURE_KEY, GetTexKey());
-}
-
-void SpriteRenderer::LoadProperties(std::ifstream& ifs)
-{
-	UINT texKey = 0;
-	FileIOHelper::LoadUnsignedInt(ifs, texKey);
-	SetTexKey(texKey);
-	FileIOHelper::LoadVector2(ifs, mTexScale);
-	Component::LoadProperties(ifs);
-}
-
 #ifdef FOXTROT_EDITOR
 void SpriteRenderer::EditorUpdate(float deltaTime)
 {
@@ -119,7 +102,6 @@ void SpriteRenderer::EditorUpdate(float deltaTime)
 
 void SpriteRenderer::EditorUIUpdate()
 {
-	SetRenderer(FTCoreEditor::GetInstance()->GetGameRenderer());
 	CHECK_RENDERER(GetRenderer());
 	UpdateMaterial();
 	OnConfirmUpdate();

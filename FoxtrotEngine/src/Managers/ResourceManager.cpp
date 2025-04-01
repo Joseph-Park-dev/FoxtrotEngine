@@ -684,16 +684,19 @@ void ResourceManager::UpdateUI()
 		tileIter = mMapTileMaps.begin();
 		for (; tileIter != mMapTileMaps.end(); ++tileIter)
 		{
-			if (ImGui::BeginListBox((*tileIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 200)))
+			if ((*tileIter).second)
 			{
-				(*tileIter).second->UpdateUI();
-				if (ImGui::Button("Remove"))
+				if (ImGui::BeginListBox((*tileIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 200)))
 				{
-					RemoveResource<FTTileMap>((*tileIter).first, mMapTileMaps);
+					(*tileIter).second->UpdateUI();
+					if (ImGui::Button("Remove"))
+					{
+						RemoveResource<FTTileMap>((*tileIter).first, mMapTileMaps);
+						ImGui::EndListBox();
+						break;
+					}
 					ImGui::EndListBox();
-					break;
 				}
-				ImGui::EndListBox();
 			}
 		}
 		ImGui::TreePop();

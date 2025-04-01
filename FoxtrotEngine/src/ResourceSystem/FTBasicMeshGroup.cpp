@@ -109,35 +109,53 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer)
 
 void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, int meshIndex)
 {
-	UINT						 stride	 = sizeof(Vertex);
-	UINT						 offset	 = 0;
+	UINT						 stride = sizeof(Vertex);
+	UINT						 offset = 0;
 	Mesh*						 mesh	 = mMeshes.at(meshIndex);
 	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
 
-	if (mesh)
+	if(mesh)
 	{
-		context->VSSetSamplers(0, 1, mSamplerState.GetAddressOf());
 		context->VSSetConstantBuffers(
 			0, mesh->VertexConstantBuffers.size(), mesh->VertexConstantBuffers.data()->GetAddressOf());
 
+		mVS = renderer->GetTextureVS();
+		mPS = renderer->GetRimTexturePS();
+
+		if (mTexture)
+		{
+			std::vector<ID3D11ShaderResourceView*> resViews;
+			resViews.push_back(mTexture->GetResourceView().Get());
+			context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
+		}
+
+		context->VSSetShader(mVS.Get(), 0, 0);
 		context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
+		context->PSSetShader(mPS.Get(), 0, 0);
 
-		context->VSSetShader(renderer->GetTextureVS().Get(), 0, 0);
-		context->PSSetShader(renderer->GetTexturePS().Get(), 0, 0);
+		if (!mMaterials.empty())
+		{
+			context->PSSetConstantBuffers(
+				0, mesh->PixelConstantBuffers.size(), mesh->PixelConstantBuffers.data()->GetAddressOf());
+		}
+
 		context->IASetInputLayout(renderer->GetTextureInputLayout().Get());
-
-		std::vector<ID3D11ShaderResourceView*> resViews;
-		resViews.push_back(mTexture->GetResourceView().Get());
-		context->VSSetShaderResources(0, 1, mTexture->GetResourceView().GetAddressOf());
-		context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
-
-		context->PSSetConstantBuffers(
-			0, mesh->PixelConstantBuffers.size(), mesh->PixelConstantBuffers.data()->GetAddressOf());
-
 		context->IASetVertexBuffers(0, 1, mesh->VertexBuffer.GetAddressOf(), &stride, &offset);
 		context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		context->DrawIndexed(mesh->IndexCount, 0, 0);
+	}
+
+	if (mDrawNormal)
+	{
+		context->VSSetShader(renderer->GetNormalVS().Get(), 0, 0);
+		context->PSSetShader(renderer->GetNormalPS().Get(), 0, 0);
+		ID3D11Buffer* pptr[2] = { mVertexConstBuffer.Get(), mNormalLines->VertexConstantBuffers.at(0).Get() };
+		context->VSSetConstantBuffers(0, 2, pptr);
+		context->IASetVertexBuffers(0, 1, mNormalLines->VertexBuffer.GetAddressOf(), &stride, &offset);
+		context->IASetIndexBuffer(mNormalLines->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+		context->DrawIndexed(mNormalLines->IndexCount, 0, 0);
 	}
 }
 
@@ -215,6 +233,7 @@ void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vecto
 	if (0 < meshes.size())
 		Clear();
 
+	mMeshes.reserve(meshes.size());
 	for (const FTMeshData& meshData : meshes)
 	{
 		Mesh* newMesh		 = DBG_NEW Mesh;
@@ -272,9 +291,12 @@ void FTBasicMeshGroup::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
 		}
 	}
 
-	ComPtr<ID3D11Buffer> normalConstBuf;
-	D3D11Utils::CreateConstantBuffer(device, mNormalVertexConstData, normalConstBuf);
-	mNormalLines->VertexConstantBuffers.push_back(normalConstBuf);
+	if (mNormalLines)
+	{
+		ComPtr<ID3D11Buffer> normalConstBuf;
+		D3D11Utils::CreateConstantBuffer(device, mNormalVertexConstData, normalConstBuf);
+		mNormalLines->VertexConstantBuffers.push_back(normalConstBuf);
+	}
 }
 
 HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)

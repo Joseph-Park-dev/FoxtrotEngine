@@ -373,10 +373,13 @@ void MeshRenderer::UpdateSprite(UINT& key)
 			for (auto iter = texturesMap.begin(); iter != texturesMap.end();
 				 ++iter, ++i)
 			{
-				if (ImGui::Selectable((*iter).second->GetFileName().c_str(), selected == i))
+				if ((*iter).second)
 				{
-					spriteKey = (*iter).first;
-					selected  = i;
+					if (ImGui::Selectable((*iter).second->GetFileName().c_str(), selected == i))
+					{
+						spriteKey = (*iter).first;
+						selected = i;
+					}
 				}
 			}
 			ImGui::TreePop();

@@ -33,10 +33,6 @@ struct AnimationFrame
 class FTSpriteAnimation : public FTBasicMeshGroup
 {
 public:
-	virtual void Initialize(
-		std::vector<FTMeshData>&	 meshes,
-		ComPtr<ID3D11Device>&		 device,
-		ComPtr<ID3D11DeviceContext>& context) override;
 	virtual void Update(float deltaTime);
 	virtual void Render(FoxtrotRenderer* rendere) override;
 

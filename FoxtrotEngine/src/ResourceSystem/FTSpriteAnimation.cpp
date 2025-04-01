@@ -12,13 +12,6 @@
 #include "Renderer/FoxtrotRenderer.h"
 #include "ResourceSystem/FTMaterials/FTMaterial.h"
 
-void FTSpriteAnimation::Initialize(std::vector<FTMeshData>& meshes, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
-{
-	FTBasicMeshGroup::InitializeConstantBuffers(device);
-	this->InitializeMeshes(device, meshes);
-	FTBasicMeshGroup::CreateTextureSampler(device);
-}
-
 void FTSpriteAnimation::Update(float deltaTime)
 {
 	if (mIsFinished)
@@ -125,30 +118,10 @@ void FTSpriteAnimation::SetTileMapKey(UINT key)
 
 void FTSpriteAnimation::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTMeshData>& meshes)
 {
-	GetMeshes().reserve(meshes.size());
-	mReel.reserve(meshes.size());
-	for (FTMeshData& meshData : meshes) {
-		Mesh* newMesh = DBG_NEW Mesh;
-		newMesh->IndexCount = UINT(meshData.Indices.size());
-		newMesh->VertexCount = UINT(meshData.Vertices.size());
+	FTBasicMeshGroup::InitializeMeshes(device, meshes);
 
-		D3D11Utils::CreateVertexBuffer(device, meshData.Vertices,
-			newMesh->VertexBuffer);
-		D3D11Utils::CreateIndexBuffer(device, meshData.Indices,
-			newMesh->IndexBuffer);
-
-		ComPtr<ID3D11Buffer> VCB;
-		ComPtr<ID3D11Buffer> PCB;
-		D3D11Utils::CreateConstantBuffer(device, GetVCData(), VCB);
-
-		for (size_t i =0; i < Materials().size(); ++i)
-			Materials().at(i)->CreatePixelConstBuffer(device, GetMeshes().at(0)->PixelConstantBuffers.at(i));
-
-		newMesh->VertexConstantBuffers.push_back(VCB);
-		newMesh->PixelConstantBuffers.push_back(PCB);
-
-		this->GetMeshes().push_back(newMesh);
-
+	for (size_t i = 0; i < meshes.size(); ++i)
+	{
 		AnimationFrame* frame = DBG_NEW AnimationFrame;
 		frame->Duration = 1 / mAnimFPS;
 		mReel.push_back(frame);

@@ -184,6 +184,8 @@ void Animator::EditorUIUpdate()
 	UpdatePlayAnim();
 	UpdatePlayList();
 	CreateAnimation();
+
+	SpriteRenderer::EditorUIUpdate();
 }
 
 void Animator::UpdatePlayAnim()
@@ -193,16 +195,12 @@ void Animator::UpdatePlayAnim()
 		if (mCurrentAnim->GetIsFinished())
 		{
 			if (ImGui::Button("Stop"))
-			{
 				Stop();
-			}
 		}
 		else
 		{
 			if (ImGui::Button("Play"))
-			{
 				Play(true);
-			}
 		}
 	}
 }

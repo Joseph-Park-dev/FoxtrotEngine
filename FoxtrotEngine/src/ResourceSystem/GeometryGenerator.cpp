@@ -306,7 +306,6 @@ void GeometryGenerator::MakeSpriteAnimation(std::vector<FTMeshData>& animMeshes,
 	{
 		for (size_t c = 0; c < columnCount; ++c)
 		{
-			size_t	   idx		 = columnCount * r + c;
 			FTMeshData animFrame = MakeAnimationFrame(tileMap[columnCount * r + c]);
 			animMeshes.push_back(animFrame);
 		}

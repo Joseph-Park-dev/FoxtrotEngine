@@ -216,11 +216,14 @@ void TileMapRenderer::UpdateCSV(UINT& key)
 			for (auto iter = tileMapsMap.begin(); iter != tileMapsMap.end();
 				++iter, ++i)
 			{
-				if (ImGui::Selectable((*iter).second->GetFileName().c_str(),
-					selected == i))
+				if ((*iter).second)
 				{
-					tileMapKey = (*iter).first;
-					selected = i;
+					if (ImGui::Selectable((*iter).second->GetFileName().c_str(),
+						selected == i))
+					{
+						tileMapKey = (*iter).first;
+						selected = i;
+					}
 				}
 			}
 			ImGui::TreePop();

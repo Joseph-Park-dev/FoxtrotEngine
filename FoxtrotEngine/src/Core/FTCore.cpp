@@ -72,7 +72,7 @@ bool FTCore::Initialize()
 		mWindow = nullptr;
 	}
 	mWindow = DBG_NEW FTWindow(mWindowTitle.c_str(), mWindowWidth, mWindowHeight);
-	mWindow->GetRenderArea()->SetSize(mWindowWidth, mWindowHeight);
+	mWindow->GetRenderArea()->Set(0.f, 0.f, mWindowWidth, mWindowHeight);
 	if (!mWindow->InitializeWindow(WndProc))
 	{
 		Debug::LogError(__LINE__, __FILE__, "Failed to Initialize FTWindow");

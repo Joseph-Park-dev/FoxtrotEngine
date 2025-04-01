@@ -100,7 +100,7 @@ void EditorLayer::DisplayViewport()
 	}
 	if (mIsResizingViewport && editorWin->MOUSE_AWAY(MOUSE::MOUSE_LEFT))
 	{
-		editorWin->GetRenderArea()->SetSize(mSceneViewportSize);
+		editorWin->GetRenderArea()->Set(0.f,0.f, mSceneViewportSize.x, mSceneViewportSize.y);
 		renderer->InitializeViewport(editorWin, mSceneViewportSize.x, mSceneViewportSize.y);
 		mIsResizingViewport = false;
 	}

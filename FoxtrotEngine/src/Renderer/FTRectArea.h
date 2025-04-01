@@ -25,11 +25,6 @@ public:
 	const FTVector2& GetMin() { return mMin; }
 	const FTVector2& GetMax() { return mMax; }
 
-	void SetPosition(FTVector2 val);
-	void SetSize(UINT width, UINT height);
-	void SetSize(FTVector2 val);
-	void SetSize(ImVec2 val);
-
 	// Update FTRectArea values using the new ones.
 	void Set(FTVector2 center, FTVector2 dimension);
 	void Set(float posX, float posY, float width, float height);

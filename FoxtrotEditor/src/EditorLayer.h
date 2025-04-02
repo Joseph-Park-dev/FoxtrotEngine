@@ -53,7 +53,7 @@ enum class FileMenuEvents
 
 class EditorLayer
 {
-	SINGLETON(EditorLayer);
+	SINGLETON(EditorLayer)
 
 public:
 	void Update(float deltaTime);

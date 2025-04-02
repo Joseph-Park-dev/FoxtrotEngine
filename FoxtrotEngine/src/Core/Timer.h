@@ -19,7 +19,8 @@
 
 class Timer
 {
-	SINGLETON(Timer);
+	SINGLETON(Timer)
+
 public:
 	void   Update();
 	float  GetDeltaTime() const { return mDeltaTime; }

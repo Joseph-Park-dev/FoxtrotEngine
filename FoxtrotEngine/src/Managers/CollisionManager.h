@@ -34,7 +34,7 @@ enum class CollisionState
 
 class CollisionManager
 {
-	SINGLETON(CollisionManager);
+	SINGLETON(CollisionManager)
 
 public:
 	void MarkGroup(b2ShapeDef& object, ActorGroup objectActorGroup);

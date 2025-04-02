@@ -57,7 +57,7 @@ enum class ResType
 
 class ResourceManager
 {
-	SINGLETON(ResourceManager);
+	SINGLETON(ResourceManager)
 
 public:
 	void Initialize(FoxtrotRenderer* renderer);

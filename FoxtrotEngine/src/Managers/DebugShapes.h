@@ -18,7 +18,7 @@
 // This provides a context to render shapes as DebugShapes
 class DebugShapes
 {
-	SINGLETON(DebugShapes);
+	SINGLETON(DebugShapes)
 
 public:
 	void Initialize(FoxtrotRenderer* renderer);

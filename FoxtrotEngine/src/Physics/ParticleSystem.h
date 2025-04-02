@@ -44,7 +44,7 @@ struct FTParticleExplosion
 
 class ParticleSystem
 {
-	SINGLETON(ParticleSystem);
+	SINGLETON(ParticleSystem)
 
 public:
 	void CreateExplosion(FTVector2 initPos, float initSpeed, int duration, float gravity, float angle);

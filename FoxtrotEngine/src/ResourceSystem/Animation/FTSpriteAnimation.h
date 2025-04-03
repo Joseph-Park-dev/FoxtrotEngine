@@ -12,7 +12,7 @@
 /// </summary>
 
 #pragma once
-#include "ResourceSystem/FTBasicMeshGroup.h"
+#include "ResourceSystem/Animation/FTAnimation.h"
 
 #include <vector>
 #include <string>
@@ -25,63 +25,24 @@ class Tile;
 class Animator;
 class FTTexture;
 
-struct AnimationFrame
-{
-	float Duration;
-};
-
-class FTSpriteAnimation : public FTBasicMeshGroup
+class FTSpriteAnimation : public FTAnimation
 {
 public:
-	virtual void Update(float deltaTime);
-	virtual void Render(FoxtrotRenderer* rendere) override;
-
-public:
-	std::string&	GetName();
-	AnimationFrame* GetFrame();
-
 	UINT GetTexKey();
 	UINT GetTileMapKey();
-	bool GetIsFinished();
-
-	void SetName(std::string&& name);
-	void SetFrame(int frameNumber);
-	void SetFrameDuration(int frameNum, float duration);
-	void SetAnimator(Animator* animator);
-	void SetIsFinished(bool val);
-	void SetIsRepeated(bool val);
 
 	virtual void SetTexture(UINT key) override;
-	void SetTileMapKey(UINT key);
-
-	void IncreaseIdx() { ++mCurrFrame; }
+	void		 SetTileMapKey(UINT key);
 
 public:
 	FTSpriteAnimation();
 	FTSpriteAnimation(FTSpriteAnimation* other);
 	~FTSpriteAnimation() override;
 
-protected:
-	virtual void InitializeMeshes(
-		ComPtr<ID3D11Device>&	 device,
-		std::vector<FTMeshData>& meshes) override;
-
 private:
 	// These fields need to be loaded from .chunk file
-	std::string mName;
-	float		mAnimFPS;
-	bool		mIsRepeated;
-	int			mMaxFrameIdx;
-
 	UINT mTexKey;
 	UINT mTileMapKey;
-
-	// These fields need to be initialized when the component is added.
-	Animator*					 mAnimator;
-	std::vector<AnimationFrame*> mReel;
-	int							 mCurrFrame;
-	float						 mAccTime;
-	bool						 mIsFinished;
 
 private:
 	bool FrameIsWithinIndexRange(int currentFrame);
@@ -89,19 +50,6 @@ private:
 public:
 	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
 	virtual UINT LoadProperties(std::ifstream& ifs) override;
-
-#ifdef FOXTROT_EDITOR
-public:
-	// Note that this member function is not overriden.
-	// Values can be modified only in Animator Component.
-	void UpdateUI();
-
-private:
-	void UpdateIsRepeated();
-	void OnConfirmUpdate();
-	void UpdateMaxFrame();
-
-#endif // FOXTROT_EDITOR
 };
 
 namespace ChunkKey

@@ -41,16 +41,18 @@ public:
 public:
 	ComPtr<ID3D11SamplerState>& GetSamplerState();
 	size_t						GetMeshCount();
-	std::vector<Mesh*>&			GetMeshes();
 	FTTexture*					GetTexture() const;
 	BasicVCData&				GetVCData();
 	bool						GetDrawNormal();
 
 	void		 SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Device>& device);
 	virtual void SetTexture(UINT texKey);
+	void		 SetNormalLines(Mesh* normalLines);
 	void		 SetDrawNormal(bool drawNormal);
 
+	std::vector<Mesh*>&		  Meshes();
 	std::vector<FTMaterial*>& Materials();
+	Mesh*					  NormalLines();
 
 public:
 	FTBasicMeshGroup();

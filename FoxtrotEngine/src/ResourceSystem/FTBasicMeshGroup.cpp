@@ -109,12 +109,12 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer)
 
 void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, int meshIndex)
 {
-	UINT						 stride = sizeof(Vertex);
-	UINT						 offset = 0;
+	UINT						 stride	 = sizeof(Vertex);
+	UINT						 offset	 = 0;
 	Mesh*						 mesh	 = mMeshes.at(meshIndex);
 	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
 
-	if(mesh)
+	if (mesh)
 	{
 		context->VSSetConstantBuffers(
 			0, mesh->VertexConstantBuffers.size(), mesh->VertexConstantBuffers.data()->GetAddressOf());
@@ -176,15 +176,13 @@ void FTBasicMeshGroup::Clear()
 
 ComPtr<ID3D11SamplerState>& FTBasicMeshGroup::GetSamplerState() { return mSamplerState; }
 size_t						FTBasicMeshGroup::GetMeshCount() { return mMeshes.size(); }
-std::vector<Mesh*>&			FTBasicMeshGroup::GetMeshes() { return mMeshes; }
+FTTexture*					FTBasicMeshGroup::GetTexture() const { return mTexture; }
+BasicVCData&				FTBasicMeshGroup::GetVCData() { return mVertexConstData; }
+bool						FTBasicMeshGroup::GetDrawNormal() { return mDrawNormal; }
 
-FTTexture* FTBasicMeshGroup::GetTexture() const
-{
-	return mTexture;
-}
-
-BasicVCData&			  FTBasicMeshGroup::GetVCData() { return mVertexConstData; }
+std::vector<Mesh*>&		  FTBasicMeshGroup::Meshes() { return mMeshes; }
 std::vector<FTMaterial*>& FTBasicMeshGroup::Materials() { return mMaterials; }
+Mesh*					  FTBasicMeshGroup::NormalLines() { return mNormalLines; }
 
 void FTBasicMeshGroup::SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Device>& device)
 {
@@ -224,8 +222,7 @@ void FTBasicMeshGroup::SetTexture(UINT texKey)
 		printf("ERROR: MeshRenderer::SetTexture() -> Cannot set texture %d, returning nullptr.\n", texKey);
 }
 
-bool FTBasicMeshGroup::GetDrawNormal() { return mDrawNormal; }
-
+void FTBasicMeshGroup::SetNormalLines(Mesh* normalLines) { mNormalLines = normalLines; }
 void FTBasicMeshGroup::SetDrawNormal(bool drawNormal) { mDrawNormal = drawNormal; }
 
 void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTMeshData>& meshes)
@@ -247,8 +244,8 @@ void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vecto
 	}
 
 	mNormalLines = DBG_NEW Mesh;
-	std::vector<Vertex>	  normalVertices;
-	std::vector<uint32_t> normalIndices;
+	std::vector<Vertex>	   normalVertices;
+	std::vector<uint32_t>  normalIndices;
 
 	size_t offset = 0;
 	for (const FTMeshData& meshData : meshes)

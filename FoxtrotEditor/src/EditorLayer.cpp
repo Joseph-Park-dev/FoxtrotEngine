@@ -188,10 +188,11 @@ void EditorLayer::DisplayMainMenuBar()
 			mFileMenuEvent = FileMenuEvents::Open;
 		}
 
+		DisplayManagersMenu();
+
 		if (ImGui::Button("New Game Object"))
-		{
 			EditorSceneManager::GetInstance()->GetEditorScene()->AddEditorElement();
-		}
+
 		if (ImGui::Button("Play"))
 		{
 			if (CHUNK_IS_SAVED)
@@ -276,6 +277,27 @@ void EditorLayer::DisplayMainMenuBar()
 		}
 	}
 	mFileDialog.ClearSelected();
+}
+
+void EditorLayer::DisplayManagersMenu()
+{
+	const size_t maxMenuEle		  = 1;
+	const char*	 menu[maxMenuEle] = { "Animation Manager" };
+	static bool opened[maxMenuEle] = { false };
+
+	if (ImGui::Button("Managers"))
+		ImGui::OpenPopup("ManagerPopUp");
+
+	if (ImGui::BeginPopup("ManagerPopUp"))
+	{
+		for (size_t i = 0; i < maxMenuEle; ++i)
+			if (ImGui::Selectable(menu[i]))
+				opened[i] = true;
+		ImGui::EndPopup();
+	}
+
+	if (opened[0])
+		AnimationManager::GetInstance()->UpdateUI(&opened[0]);
 }
 
 void EditorLayer::DisplayHierarchyMenu()

@@ -189,6 +189,9 @@ private:
 	// & calls the related functions.
 	void DisplayMainMenuBar();
 
+	// Displays menu docked at the top of the screen
+	// & calls the related functions.
+	void DisplayManagersMenu();
 
 	// Displays list of EditorElements in the Scene.
 	// & calls the related functions.

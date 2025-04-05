@@ -64,9 +64,9 @@ protected:
 	// Getters & Setters to the elements //
 	///////////////////////////////////////
 protected:
-	FTBasicMeshGroup*  GetMeshGroup() const;
-	FTTexture*		   GetTexture() const;
-	FoxtrotRenderer*   GetRenderer() const;
+	FTBasicMeshGroup* GetMeshGroup() const;
+	FTTexture*		  GetTexture() const;
+	FoxtrotRenderer*  GetRenderer() const;
 
 	void SetRenderer(FoxtrotRenderer* renderer);
 	void SetMeshGroup(FTBasicMeshGroup* meshGroup);
@@ -79,8 +79,6 @@ protected:
 protected:
 	virtual bool InitializeMesh();
 	bool		 InitializeMesh(UINT key);
-	bool		 InitializeMesh(FTMeshData& meshData);
-	bool		 InitializeMesh(std::vector<FTMeshData>& meshData);
 	virtual void UpdateMesh(Transform* transform, Camera* camInst);
 
 	DirectX::SimpleMath::Matrix CalcModelMat(Transform* transform);
@@ -102,6 +100,7 @@ private:
 private:
 	FoxtrotRenderer*  mRenderer;
 	FTBasicMeshGroup* mMeshGroup;
+	FTBasicMeshGroup* TEST_MESH;
 
 	///////////////////////////////////
 	// Save & Load related functions //
@@ -124,13 +123,7 @@ protected:
 	void		 UpdateSprite();
 	void		 UpdateSprite(UINT& key);
 	void		 UpdateMaterial();
-
-private:
-	void AddModel();
-	void AddCube();
-	void AddPlane();
-	void AddCylinder();
-	void AddSphere();
+	void		 AddModel();
 #endif
 };
 

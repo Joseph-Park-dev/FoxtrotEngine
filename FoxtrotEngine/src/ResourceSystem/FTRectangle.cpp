@@ -16,7 +16,7 @@ FTRectArea* FTRectangle::GetRectArea()
 void FTRectangle::Initialize(FoxtrotRenderer* renderer)
 {
     FTShape::Initialize(renderer);
-    InitializeMesh(renderer->GetDevice(), GeometryGenerator::MakeSquare());
+    //InitializeMesh(renderer->GetDevice(), GeometryGenerator::MakeSquare());
 }
 
 void FTRectangle::Update()

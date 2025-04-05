@@ -27,6 +27,11 @@
 #include "DirectoryHelper.h"
 #endif //FOXTROT_EDITOR
 
+bool FTResource::IsReferenced()
+{
+    return 0 < mRefCount;
+}
+
 FTResource::FTResource()
     : mFileName{}
     , mRelativePath{}

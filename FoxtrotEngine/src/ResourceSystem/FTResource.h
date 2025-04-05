@@ -26,6 +26,7 @@ public:
 	void SetIsReferenced(bool val) { mRefCount = val; }
 	void SetIsProcessed(bool val) { mIsProcessed = val; }
 
+	bool IsReferenced();
 	void AddRefCount() { ++mRefCount; }
 	void SubtractRefCount() { --mRefCount; }
 

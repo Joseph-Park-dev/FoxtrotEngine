@@ -264,6 +264,8 @@
     <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\GunFiringBehavior.cpp" />
     <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\MonkeySpin.cpp" />
     <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\ResponsiveButton.cpp" />
+    <ClCompile Include="src\ResourceSystem\Animation\AnimationFrame.cpp" />
+    <ClCompile Include="src\ResourceSystem\Animation\FTAnimation.cpp" />
     <ClCompile Include="src\Managers\AnimationManager.cpp" />
     <ClCompile Include="src\WindowSystem\FTWindow.cpp" />
     <ClCompile Include="src\ResourceSystem\FTCubemap\FTCubemap.cpp" />
@@ -324,7 +326,7 @@
     <ClCompile Include="src\ResourceSystem\FTBasicMeshGroup.cpp" />
     <ClCompile Include="src\ResourceSystem\FTResource.cpp" />
     <ClCompile Include="src\ResourceSystem\FTShape.cpp" />
-    <ClCompile Include="src\ResourceSystem\FTSpriteAnimation.cpp" />
+    <ClCompile Include="src\ResourceSystem\Animation\FTSpriteAnimation.cpp" />
     <ClCompile Include="src\ResourceSystem\FTTexture.cpp" />
     <ClCompile Include="src\ResourceSystem\FTTileMap.cpp" />
     <ClCompile Include="src\ResourceSystem\GeometryGenerator.cpp" />
@@ -340,6 +342,8 @@
     <ClCompile Include="src\ResourceSystem\FTMaterials\StandardMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ResourceSystem\Animation\AnimationFrame.h" />
+    <ClInclude Include="src\ResourceSystem\Animation\FTAnimation.h" />
     <ClInclude Include="src\Managers\AnimationManager.h" />
     <ClInclude Include="src\WindowSystem\FTWindow.h" />
     <ClInclude Include="src\ResourceSystem\FTCubemap\FTCubemap.h" />
@@ -824,7 +828,7 @@
     <ClInclude Include="src\ResourceSystem\FTBasicMeshGroup.h" />
     <ClInclude Include="src\ResourceSystem\FTResource.h" />
     <ClInclude Include="src\ResourceSystem\FTShape.h" />
-    <ClInclude Include="src\ResourceSystem\FTSpriteAnimation.h" />
+    <ClInclude Include="src\ResourceSystem\Animation\FTSpriteAnimation.h" />
     <ClInclude Include="src\ResourceSystem\FTTexture.h" />
     <ClInclude Include="src\ResourceSystem\FTTileMap.h" />
     <ClInclude Include="src\ResourceSystem\GeometryGenerator.h" />

@@ -14,7 +14,7 @@
 #include "ResourceSystem/FTBasicMeshGroup.h"
 #include "ResourceSystem/FTTileMap.h"
 #include "ResourceSystem/FTPremade.h"
-#include "ResourceSystem/FTSpriteAnimation.h"
+#include "ResourceSystem/Animation/FTSpriteAnimation.h"
 #include "ResourceSystem/FTMeshDataPack.h"
 #include "ResourceSystem/ModelLoader.h"
 #include "ResourceSystem/FTShaders/FTVertexShader.h"
@@ -46,42 +46,78 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 	mMapTileMaps.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 	mMapPremades.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 	mMapSpriteAnimation.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
-	mMapMeshData.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
+	mMapMeshGroups.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 
 	mMapVertexShaders.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 	mMapPixelShaders.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 	mMapMaterials.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 
 	// Add primitive geometries as resources
-	mMap2DPrimitives.insert(
-		std::pair(
+	mMapMeshGroups.insert(
+		{
 			ChunkKey::PRIMITIVE_SQUARE_RED,
-			GeometryGenerator::MakeSquare(FTVector3(1.0f, 0.0f, 0.0f))));
-	mMap2DPrimitives.insert(
-		std::pair(
-			ChunkKey::PRIMITIVE_SQUARE_GREEN,
-			GeometryGenerator::MakeSquare(FTVector3(0.0f, 1.0f, 0.0f))));
-	mMap2DPrimitives.insert(
-		std::pair(
-			ChunkKey::PRIMITIVE_SQUARE_BLUE,
-			GeometryGenerator::MakeSquare(FTVector3(0.0f, 0.0f, 1.0f))));
+			DBG_NEW FTBasicMeshGroup(
+				GeometryGenerator::MakeSquare(FTVector3(1.0f, 0.0f, 0.0f)), mRenderer)
+		}
+	);
 
-	mMap3DPrimitives.insert(
-		std::pair(
+	mMapMeshGroups.insert(
+		{
+			ChunkKey::PRIMITIVE_SQUARE_GREEN,
+			DBG_NEW FTBasicMeshGroup(
+				GeometryGenerator::MakeSquare(FTVector3(0.0f, 1.0f, 0.0f)), mRenderer)
+		}
+	);
+
+	mMapMeshGroups.insert(
+		{
+			ChunkKey::PRIMITIVE_SQUARE_BLUE,
+			DBG_NEW FTBasicMeshGroup(
+				GeometryGenerator::MakeSquare(FTVector3(0.0f, 0.0f, 1.0f)), mRenderer)
+		}
+	);
+
+	mMapMeshGroups.insert(
+		{
 			ChunkKey::PRIMITIVE_BOX,
-			GeometryGenerator::MakeBox()));
-	mMap3DPrimitives.insert(
-		std::pair(
+			DBG_NEW FTBasicMeshGroup(
+				GeometryGenerator::MakeBox(), mRenderer)
+		}
+	);
+
+	mMapMeshGroups.insert(
+		{
 			ChunkKey::PRIMITIVE_SQUARE_GRID,
-			GeometryGenerator::MakeSquareGrid(1.0f, 1.0f, 2, 2)));
-	mMap3DPrimitives.insert(
-		std::pair(
+			DBG_NEW FTBasicMeshGroup(
+				GeometryGenerator::MakeSquareGrid(1.0f, 1.0f, 2, 2), mRenderer)
+		}
+	);
+
+	mMapMeshGroups.insert(
+		{
 			ChunkKey::PRIMITIVE_CYLINDER,
-			GeometryGenerator::MakeCylinder(1.0f, 1.0f, 2, 5)));
-	mMap3DPrimitives.insert(
-		std::pair(
+			DBG_NEW FTBasicMeshGroup(
+				GeometryGenerator::MakeCylinder(1.0f, 1.0f, 2, 5), mRenderer)
+		}
+	);
+
+	mMapMeshGroups.insert(
+		{
 			ChunkKey::PRIMITIVE_SPHERE,
-			GeometryGenerator::MakeSphere(1.0f, 10, 10)));
+			DBG_NEW FTBasicMeshGroup(
+				GeometryGenerator::MakeSphere(1.0f, 10, 10), mRenderer)
+		}
+	);
+
+	mItemKey = mMapMeshGroups.size();
+
+	mMapMeshGroups.at(1)->SetFileName("Primitive Square RED");
+	mMapMeshGroups.at(2)->SetFileName("Primitive Square GREEN");
+	mMapMeshGroups.at(3)->SetFileName("Primitive Square BLUE");
+	mMapMeshGroups.at(4)->SetFileName("Primitive Box");
+	mMapMeshGroups.at(5)->SetFileName("Primitive Sqare Grid");
+	mMapMeshGroups.at(6)->SetFileName("Primitive Cylinder");
+	mMapMeshGroups.at(7)->SetFileName("Primitive Sphere");
 }
 
 void ResourceManager::DeleteAll()
@@ -90,12 +126,8 @@ void ResourceManager::DeleteAll()
 	ClearMap<FTTileMap>(mMapTileMaps);
 	ClearMap<FTPremade>(mMapPremades);
 	ClearMap<FTSpriteAnimation>(mMapSpriteAnimation);
-	ClearMap<FTMeshDataPack>(mMapMeshData);
 	ClearMap<FTMaterial>(mMapMaterials);
-
-	mMapMeshData.clear();
-	mMap2DPrimitives.clear();
-	mMap3DPrimitives.clear();
+	ClearMap<FTBasicMeshGroup>(mMapMeshGroups);
 }
 
 FTTexture* ResourceManager::GetLoadedTexture(const UINT key)
@@ -172,58 +204,16 @@ FTMaterial* ResourceManager::GetLoadedMaterial(const UINT key)
 	return material;
 }
 
-FTMeshDataPack* ResourceManager::GetLoadedMeshData(const UINT key)
+FTBasicMeshGroup* ResourceManager::GetLoadedMesh(const UINT key)
 {
-	FTMeshDataPack* meshes = mMapMeshData.at(key);
-	if (!meshes)
+	FTBasicMeshGroup* meshGrp = mMapMeshGroups.at(key);
+	if (meshGrp)
 	{
-		printf("Error: ResourceManager::GetLoadedMeshes() -> Mesh is empty %d\n", key);
-		return nullptr;
+		mMapMeshGroups.at(key)->AddRefCount();
+		return meshGrp;
 	}
-	meshes->AddRefCount();
-	return meshes;
-}
-
-FTMeshData& ResourceManager::GetLoaded2DPrimitive(const UINT key)
-{
-	FTMeshData& primitive = mMap2DPrimitives.at(key);
-	if (primitive.IsEmpty())
-		printf("Error: ResourceManager::GetLoadedPrimitive() -> Primitive is empty %d\n", key);
-	return primitive;
-}
-
-FTMeshData& ResourceManager::GetLoaded3DPrimitive(const UINT key)
-{
-	FTMeshData& primitive = mMap3DPrimitives.at(key);
-	if (primitive.IsEmpty())
-		printf("Error: ResourceManager::GetLoadedPrimitive() -> Primitive is empty %d\n", key);
-	return primitive;
-}
-
-FTMeshData& ResourceManager::GetLoaded3DPrimitive(const UINT key, const float scale)
-{
-	FTMeshData& primitive = mMap3DPrimitives.at(key);
-
-	// Scale the output (default is 1.0f)
-	for (Vertex& v : primitive.Vertices)
-		v.position *= scale;
-
-	if (primitive.IsEmpty())
-		printf("Error: ResourceManager::GetLoadedPrimitive() -> Primitive is empty %d\n", key);
-	return primitive;
-}
-
-void ResourceManager::RemoveLoadedMeshes(const UINT key)
-{
-	if (KeyExists(key, mMapMeshData))
-	{
-		delete mMapMeshData.at(key);
-		mMapMeshData.erase(key);
-	}
-	else
-	{
-		printf("Error: ResourceManager::RemoveLoadedMeshes() -> Mesh with key %d does not exist\n", key);
-	}
+	printf("Error: ResourceManager::GetLoadedMeshes() -> Mesh is empty %d\n", key);
+	return nullptr;
 }
 
 FTSpriteAnimation* ResourceManager::GetLoadedSpriteAnim(const UINT key)
@@ -250,9 +240,9 @@ std::unordered_map<UINT, FTSpriteAnimation*>& ResourceManager::GetSpriteAnimMap(
 	return mMapSpriteAnimation;
 }
 
-std::unordered_map<UINT, FTMeshDataPack*>& ResourceManager::GetMeshDataMap()
+std::unordered_map<UINT, FTBasicMeshGroup*>& ResourceManager::GetMeshGroupsMap()
 {
-	return mMapMeshData;
+	return mMapMeshGroups;
 }
 
 std::unordered_map<UINT, FTVertexShader*>& ResourceManager::GetVertexShadersMap()
@@ -285,13 +275,13 @@ void ResourceManager::SaveMaterialsToChunk(std::ofstream& ofs)
 	typename std::unordered_map<UINT, FTMaterial*>::const_iterator iter;
 	for (iter = mMapMaterials.begin(); iter != mMapMaterials.end(); ++iter)
 	{
-		if((*iter).second)
+		if ((*iter).second)
 			if (0 < (*iter).second->GetRefCount())
 				(*iter).second->SaveProperties(ofs, (*iter).first);
 	}
 }
 
-//void ResourceManager::LoadMaterialsFromChunk(std::ifstream& ifs)
+// void ResourceManager::LoadMaterialsFromChunk(std::ifstream& ifs)
 //{
 //	FTMaterial* resource = DBG_NEW StandardMaterial;
 //	resource->LoadProperties(ifs);
@@ -302,14 +292,14 @@ void ResourceManager::SaveMaterialsToChunk(std::ofstream& ofs)
 //	mMapMaterials.insert(std::make_pair(mItemKey, resource));
 //
 //	// Include materials here.
-//}
+// }
 
-void ResourceManager::LoadMaterial()
+void ResourceManager::LoadMaterials()
 {
 	UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 
-	StandardMaterial* standard = DBG_NEW StandardMaterial;
-	std::string	path = std::string(".//Assets//Materials//") + ChunkKey::STANDARD_MAT + FileTypes::MATERIAL;
+	StandardMaterial* standard				  = DBG_NEW StandardMaterial;
+	std::string							 path = std::string(".//Assets//Materials//") + ChunkKey::STANDARD_MAT + FileTypes::MATERIAL;
 	if (!std::filesystem::exists(path))
 		standard->SaveToFile();
 	standard->LoadFromFile();
@@ -337,11 +327,15 @@ void ResourceManager::ProcessTexture(FTTexture* texture)
 		texture->SetIsProcessed(true);
 }
 
-void ResourceManager::ProcessSingleMeshData(FTMeshDataPack* meshDataPack)
+void ResourceManager::ProcessSingleMeshGrp(FTBasicMeshGroup* meshGrp)
 {
-	meshDataPack->GetMeshData() =
-		GeometryGenerator::ReadFromFile(meshDataPack->GetRelativePath());
-	printf(meshDataPack->GetRelativePath().c_str());
+	if (meshGrp->GetRelativePath().empty())
+		return;
+	meshGrp->Initialize(
+		GeometryGenerator::ReadFromFile(meshGrp->GetRelativePath()),
+		mRenderer->GetDevice(),
+		mRenderer->GetContext()
+		);
 	printf("\n");
 }
 
@@ -362,7 +356,7 @@ void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
 	std::vector<FTMeshData> meshDataBuf;
 	GeometryGenerator::MakeSpriteAnimation(
 		meshDataBuf, tileMapBuf->GetTiles(), tileMapBuf->GetMaxCountOnMapX(), tileMapBuf->GetMaxCountOnMapY());
-	spriteAnim->Initialize(meshDataBuf, mRenderer->GetDevice(), mRenderer->GetContext());
+	spriteAnim->Initialize(std::move(meshDataBuf), mRenderer->GetDevice(), mRenderer->GetContext());
 }
 
 void ResourceManager::ProcessMaterial(FTMaterial* material)
@@ -385,11 +379,11 @@ void ResourceManager::ProcessTextures()
 			ProcessTexture(textureItem.second);
 }
 
-void ResourceManager::ProcessMeshData()
+void ResourceManager::ProcessMeshGroups()
 {
-	for (auto& meshData : mMapMeshData)
-		if (meshData.second)
-			ProcessSingleMeshData(meshData.second);
+	for (auto& meshGrp : mMapMeshGroups)
+		if (meshGrp.second)
+			ProcessSingleMeshGrp(meshGrp.second);
 }
 
 void ResourceManager::ProcessPremades()
@@ -473,7 +467,7 @@ void ResourceManager::SaveResources(std::ofstream& ofs)
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTMESH_GROUP);
-	SaveResourceToChunk<FTMeshDataPack>(ofs, mMapMeshData);
+	SaveResourceToChunk<FTBasicMeshGroup>(ofs, mMapMeshGroups);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTMESH_GROUP);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
@@ -501,8 +495,8 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	LoadResourceFromChunk<FTVertexShader>(ifs, mMapVertexShaders, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMESH_GROUP);
-	mMapMeshData.reserve(desc.first);
-	LoadResourceFromChunk<FTMeshDataPack>(ifs, mMapMeshData, desc.first);
+	mMapMeshGroups.reserve(mMapMeshGroups.size() + desc.first);
+	LoadResourceFromChunk<FTBasicMeshGroup>(ifs, mMapMeshGroups, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
 	mMapSpriteAnimation.reserve(desc.first);
@@ -521,16 +515,16 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	LoadResourceFromChunk<FTTexture>(ifs, mMapTextures, desc.first);
 
 	ProcessTextures();
-	ProcessMeshData();
+	ProcessMeshGroups();
 	ProcessTileMaps();
 	ProcessSpriteAnims();
-	ProcessPremades();
 
 	ProcessMaterials();
 	ProcessVertexShaders();
 	ProcessPixelShaders();
 
-	LoadMaterial();
+	LoadMaterials();
+	ProcessPremades();
 }
 
 #ifdef FOXTROT_EDITOR
@@ -541,7 +535,7 @@ void ResourceManager::LoadAllResourcesInAsset()
 		mPathToAsset,
 		[&](std::string&& path) { LoadResByType(path); });
 	ProcessTextures();
-	ProcessMeshData();
+	ProcessMeshGroups();
 	ProcessTileMaps();
 	ProcessSpriteAnims();
 
@@ -549,7 +543,7 @@ void ResourceManager::LoadAllResourcesInAsset()
 	ProcessVertexShaders();
 	ProcessPixelShaders();
 
-	LoadMaterial();
+	LoadMaterials();
 
 	ProcessPremades();
 }
@@ -573,7 +567,7 @@ void ResourceManager::LoadResByType(std::string& filePath)
 			LoadResource(filePath, mMapPremades);
 			break;
 		case ResType::FTMESH:
-			LoadResource(filePath, mMapMeshData);
+			LoadResource(filePath, mMapMeshGroups);
 			break;
 		// case ResType::FTMATERIAL:
 		//	LoadMaterial(filePath);

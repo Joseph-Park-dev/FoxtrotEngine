@@ -38,10 +38,6 @@ public:
 	void Stop();
 
 public:
-	FTSpriteAnimation* CreateAnimationFromTile(
-		std::string&& name,
-		UINT		  texKey,
-		UINT		  tileMapKey);
 	void LoadAnimation(const UINT key);
 
 public:
@@ -75,9 +71,7 @@ public:
 private:
 	void UpdatePlayAnim();
 	void UpdatePlayList();
-	void CreateAnimation();
 
-	void TEST_CreateSpine();
 #endif // FOXTROT_EDITOR
 };
 

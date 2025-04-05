@@ -12,9 +12,10 @@
 #include "Actors/Transform.h"
 #include "ResourceSystem/Tile.h"
 #include "ResourceSystem/FTTexture.h"
-#include "ResourceSystem/FTSpriteAnimation.h"
+#include "ResourceSystem/Animation/FTSpriteAnimation.h"
 #include "ResourceSystem/GeometryGenerator.h"
 #include "Managers/ResourceManager.h"
+#include "Managers/AnimationManager.h"
 #include "Core/TemplateFunctions.h"
 #include "Core/FTCore.h"
 #include "FileSystem/ChunkLoader.h"
@@ -60,7 +61,6 @@ void Animator::Play(const UINT key, bool isRepeated)
 	mCurrentAnim = mLoadedAnimations.at(key);
 	if (mCurrentAnim == nullptr)
 		printf("ERROR : Animator::Play()->Animation is null\n");
-	SetTexKey(mCurrentAnim->GetTexKey());
 	SetMeshGroup(mCurrentAnim);
 	mCurrentAnim->SetIsFinished(false);
 	mCurrentAnim->SetIsRepeated(isRepeated);
@@ -71,48 +71,19 @@ void Animator::Stop()
 	mCurrentAnim->SetIsFinished(true);
 }
 
-FTSpriteAnimation* Animator::CreateAnimationFromTile(std::string&& name, UINT texKey, UINT tileMapKey)
-{
-	FTSpriteAnimation* animation = DBG_NEW FTSpriteAnimation;
-	if (!GetRenderer())
-		printf("ERROR : Animator::CreateAnimationFromTile()-> Renderer is null");
-	if (texKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-		animation->SetTexture(texKey);
-	if (tileMapKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-		animation->SetTileMapKey(tileMapKey);
-
-	FTTileMap* tileMapBuf = ResourceManager::GetInstance()->GetLoadedTileMap(tileMapKey);
-	if (tileMapBuf)
-		tileMapBuf->ReadCSV();
-
-	animation->SetFileName(name);
-	animation->SetName(std::move(name));
-	animation->SetAnimator(this);
-	std::vector<FTMeshData> meshDataBuf;
-	GeometryGenerator::MakeSpriteAnimation(
-		meshDataBuf, tileMapBuf->GetTiles(), tileMapBuf->GetMaxCountOnMapX(), tileMapBuf->GetMaxCountOnMapY());
-	animation->Initialize(meshDataBuf, GetRenderer()->GetDevice(), GetRenderer()->GetContext());
-	printf("FTSpriteAnimation created, %s", name.c_str());
-
-	return animation;
-}
-
 void Animator::LoadAnimation(const UINT key)
 {
 	FTSpriteAnimation* anim	  = ResourceManager::GetInstance()->GetLoadedSpriteAnim(key);
-	FTSpriteAnimation* copied = CreateAnimationFromTile(
-		std::move(anim->GetName()),
-		anim->GetTexKey(),
-		anim->GetTileMapKey());
-	mLoadedAnimations.push_back(copied);
+	//FTSpriteAnimation* copied = AnimationManager::GetInstance()->CopyAnimation
+	//mLoadedAnimations.push_back(copied);
 
-	if (mLoadedAnimations.size() == 1)
-	{
-		delete GetMeshGroup();
-		SetMeshGroup(nullptr);
-		mCurrentAnim = mLoadedAnimations.at(0);
-		SetMeshGroup(mCurrentAnim);
-	}
+	//if (mLoadedAnimations.size() == 1)
+	//{
+	//	delete GetMeshGroup();
+	//	SetMeshGroup(nullptr);
+	//	mCurrentAnim = mLoadedAnimations.at(0);
+	//	SetMeshGroup(mCurrentAnim);
+	//}
 }
 
 void Animator::SaveProperties(std::ofstream& ofs)
@@ -183,7 +154,6 @@ void Animator::EditorUIUpdate()
 {
 	UpdatePlayAnim();
 	UpdatePlayList();
-	CreateAnimation();
 
 	SpriteRenderer::EditorUIUpdate();
 }
@@ -225,42 +195,10 @@ void Animator::UpdatePlayList()
 		for (size_t i = 0; i < mLoadedKeys.size(); ++i)
 		{
 			FTSpriteAnimation* anim = ResourceManager::GetInstance()->GetLoadedSpriteAnim(mLoadedKeys.at(i));
-			ImGui::Text(anim->GetName().c_str());
+			ImGui::Text(anim->GetFileName().c_str());
 			ImGui::SameLine();
 			ImGui::Text(std::to_string(mLoadedKeys.at(i)).c_str());
 		}
-	}
-}
-
-void Animator::CreateAnimation()
-{
-	if (ImGui::Button("Create Sprite Animation"))
-	{
-		ImGui::OpenPopup("CreateSpriteAnimation");
-	}
-	if (ImGui::BeginPopupModal("CreateSpriteAnimation"))
-	{
-		static char* name = _strdup("NULL");
-		ImGui::InputText("Name", name, BufferSize::STRING_BUFFER_SIZE);
-
-		static UINT texKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
-		UpdateSprite(texKey);
-
-		static UINT tileMapKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
-		UpdateCSV(tileMapKey);
-
-		if (ImGui::Button("Create"))
-		{
-			FTSpriteAnimation* anim = CreateAnimationFromTile(std::string(name), texKey, tileMapKey);
-			ResourceManager::GetInstance()->LoadResource(
-				anim,
-				ResourceManager::GetInstance()->GetSpriteAnimMap());
-		}
-
-		if (ImGui::Button("Close"))
-			ImGui::CloseCurrentPopup();
-		ImGui::Separator();
-		ImGui::EndPopup();
 	}
 }
 #endif // FOXTROT_EDITOR

@@ -146,7 +146,7 @@ bool FTAnimation::FrameIsWithinIndexRange(int currentFrame)
 
 void FTAnimation::SaveProperties(std::ofstream& ofs, UINT key)
 {
-	FTResource::SaveProperties(ofs, key);
+	FTBasicMeshGroup::SaveProperties(ofs, key);
 	FileIOHelper::SaveInt(ofs, ChunkKey::Animation::TYPE, static_cast<int>(mType));
 	FileIOHelper::SaveFloat(ofs, ChunkKey::Animation::FPS, mAnimFPS);
 	FileIOHelper::SaveBool(ofs, ChunkKey::Animation::IS_REPEATED, mIsRepeated);
@@ -163,7 +163,7 @@ UINT FTAnimation::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadInt(ifs, type);
 	mType = static_cast<AnimationType>(type);
 
-	return FTResource::LoadProperties(ifs);
+	return FTBasicMeshGroup::LoadProperties(ifs);
 }
 
 #ifdef FOXTROT_EDITOR

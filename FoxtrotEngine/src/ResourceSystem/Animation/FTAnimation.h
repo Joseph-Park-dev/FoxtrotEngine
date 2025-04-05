@@ -33,7 +33,7 @@ public:
 
 protected:
 	virtual void InitializeMeshes(
-		ComPtr<ID3D11Device>&	 device,
+		ComPtr<ID3D11Device>& device, 
 		std::vector<FTMeshData>& meshes) override;
 
 	/// Moves onto the next frame as the mAccTime exceeds the frame duration.

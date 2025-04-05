@@ -2,6 +2,8 @@
 
 #include <filesystem>
 
+#include "Debugging/DebugMemAlloc.h"
+
 using namespace DirectX::SimpleMath;
 
 void ModelLoader::Load(std::string resPath) {
@@ -82,12 +84,10 @@ void ModelLoader::ProcessNode(aiNode *node, const aiScene *scene, Matrix tr) {
     for (UINT i = 0; i < node->mNumMeshes; i++) {
 
         aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-        auto newMesh = this->ProcessMesh(mesh, scene);
-
+        FTMeshData newMesh = this->ProcessMesh(mesh, scene);
         for (auto &v : newMesh.Vertices) {
             v.position = DirectX::SimpleMath::Vector3::Transform(v.position, m);
         }
-
         meshes.push_back(newMesh);
     }
 

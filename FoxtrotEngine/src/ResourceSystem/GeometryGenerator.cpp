@@ -436,7 +436,7 @@ FTMeshData GeometryGenerator::MakeAnimationFrame(Tile tile)
 
 FTMeshData GeometryGenerator::MakeBox()
 {
-	return MakeBox(0.1f);
+	return MakeBox(1.f);
 }
 
 FTMeshData GeometryGenerator::MakeBox(float scale)
@@ -663,7 +663,6 @@ FTMeshData GeometryGenerator::MakeCylinder(const float bottomRadius, const float
 	const float dTheta = -XM_2PI / float(sliceCount);
 
 	FTMeshData meshData;
-
 	std::vector<Vertex>& vertices = meshData.Vertices;
 
 	// 옆면의 바닥 버텍스들 (인덱스 0 이상 sliceCount 미만)

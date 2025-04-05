@@ -29,7 +29,7 @@ public:
 
 public:
 	virtual void Initialize(
-		std::vector<FTMeshData>&	 meshes,
+		std::vector<FTMeshData>&&	 meshes,
 		ComPtr<ID3D11Device>&		 device,
 		ComPtr<ID3D11DeviceContext>& context);
 
@@ -45,10 +45,11 @@ public:
 	BasicVCData&				GetVCData();
 	bool						GetDrawNormal();
 
-	void		 SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Device>& device);
-	virtual void SetTexture(UINT texKey);
-	void		 SetNormalLines(Mesh* normalLines);
-	void		 SetDrawNormal(bool drawNormal);
+	void SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Device>& device);
+	void SetTexture();
+	void SetTexture(UINT texKey);
+	void SetNormalLines(Mesh* normalLines);
+	void SetDrawNormal(bool drawNormal);
 
 	std::vector<Mesh*>&		  Meshes();
 	std::vector<FTMaterial*>& Materials();
@@ -56,6 +57,7 @@ public:
 
 public:
 	FTBasicMeshGroup();
+	FTBasicMeshGroup(FTMeshData meshData, FoxtrotRenderer* renderer);
 	virtual ~FTBasicMeshGroup();
 
 protected:
@@ -64,6 +66,8 @@ protected:
 	void			InitializeConstantBuffers(ComPtr<ID3D11Device>& device);
 
 private:
+	UINT mTexKey;
+
 	std::vector<Mesh*>		   mMeshes;
 	FTTexture*				   mTexture;
 	ComPtr<ID3D11SamplerState> mSamplerState;
@@ -77,8 +81,11 @@ private:
 
 	Mesh*		 mNormalLines;
 	NormalVCData mNormalVertexConstData;
+	bool		 mDrawNormal;
 
-	bool mDrawNormal;
+public:
+	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
+	virtual UINT LoadProperties(std::ifstream& ifs) override;
 
 #ifdef FOXTROT_EDITOR
 public:
@@ -91,6 +98,11 @@ private:
 
 namespace ChunkKey
 {
-	constexpr const char* FTMESHGROUP_DRAW_TEXTURE = "Draw Texture";
-	constexpr const char* FTMESHGROUP_DRAW_NORMALS = "Draw Normals";
+	namespace FTMeshGroup
+	{
+		constexpr const char* TEXTURE_KEY = "Texture Key";
+
+		constexpr const char* DRAW_TEXTURE = "Draw Texture";
+		constexpr const char* DRAW_NORMALS = "Draw Normals";
+	}
 } // namespace ChunkKey

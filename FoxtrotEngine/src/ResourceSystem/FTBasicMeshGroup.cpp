@@ -20,7 +20,7 @@
 using Matrix = DirectX::SimpleMath::Matrix;
 
 void FTBasicMeshGroup::Initialize(
-	std::vector<FTMeshData>&	 meshes,
+	std::vector<FTMeshData>&&	 meshes,
 	ComPtr<ID3D11Device>&		 device,
 	ComPtr<ID3D11DeviceContext>& context)
 {
@@ -210,16 +210,22 @@ void FTBasicMeshGroup::SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Dev
 	}
 }
 
-void FTBasicMeshGroup::SetTexture(UINT texKey)
+void FTBasicMeshGroup::SetTexture()
 {
-	if (texKey == ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	if (mTexKey == ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	{
 		printf("ERROR: MeshRenderer::SetTexture() -> TexKey not assigned.\n");
 		return;
 	}
-	mTexture = ResourceManager::GetInstance()->GetLoadedTexture(texKey);
+	mTexture = ResourceManager::GetInstance()->GetLoadedTexture(mTexKey);
 	if (!mTexture)
-		printf("ERROR: MeshRenderer::SetTexture() -> Cannot set texture %d, returning nullptr.\n", texKey);
+		printf("ERROR: MeshRenderer::SetTexture() -> Cannot set texture %d, returning nullptr.\n", mTexKey);
+}
+
+void FTBasicMeshGroup::SetTexture(UINT texKey)
+{
+	mTexKey = texKey;
+	SetTexture();
 }
 
 void FTBasicMeshGroup::SetNormalLines(Mesh* normalLines) { mNormalLines = normalLines; }
@@ -314,7 +320,8 @@ HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 }
 
 FTBasicMeshGroup::FTBasicMeshGroup()
-	: mMeshes()
+	: mTexKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	, mMeshes()
 	, mTexture(nullptr)
 	, mNormalLines(nullptr)
 	, mDrawNormal(false)
@@ -324,9 +331,34 @@ FTBasicMeshGroup::FTBasicMeshGroup()
 {
 }
 
+FTBasicMeshGroup::FTBasicMeshGroup(FTMeshData meshData, FoxtrotRenderer* renderer)
+	: mTexKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	, mMeshes()
+	, mTexture(nullptr)
+	, mNormalLines(nullptr)
+	, mDrawNormal(false)
+#ifdef FOXTROT_EDITOR
+	, mValModified(false)
+#endif // FOXTROT_EDITOR
+{
+	Initialize({ meshData }, renderer->GetDevice(), renderer->GetContext());
+}
+
 FTBasicMeshGroup::~FTBasicMeshGroup()
 {
 	Clear();
+}
+
+void FTBasicMeshGroup::SaveProperties(std::ofstream& ofs, UINT key)
+{
+	FTResource::SaveProperties(ofs, key);
+	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, key);
+}
+
+UINT FTBasicMeshGroup::LoadProperties(std::ifstream& ifs)
+{
+	FileIOHelper::LoadUnsignedInt(ifs, mTexKey);
+	return FTResource::LoadProperties(ifs);
 }
 
 #ifdef FOXTROT_EDITOR

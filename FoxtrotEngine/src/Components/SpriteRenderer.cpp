@@ -73,22 +73,6 @@ void SpriteRenderer::CloneTo(Actor* actor)
 	newComp->mTexScale = this->mTexScale;
 }
 
-bool SpriteRenderer::InitializeMesh()
-{
-	MeshRenderer::InitializeMesh(
-		ResourceManager::GetInstance()->GetLoaded2DPrimitive(
-			GetMeshKey()
-		)
-	);
-	if (!GetMeshGroup())
-	{
-		LogString("ERROR: SpriteRenderer::InitializeMesh() -> Mesh "
-			"Init failed");
-		return false;
-	}
-	return true;
-}
-
 SpriteRenderer::SpriteRenderer(Actor* owner,int updateOrder)
 	: MeshRenderer(owner, updateOrder)
 	, mChannel(4)

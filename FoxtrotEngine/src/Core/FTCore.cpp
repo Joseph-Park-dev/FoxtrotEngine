@@ -24,6 +24,7 @@
 #include "Managers/CollisionManager.h"
 #include "Managers/LightManager.h"
 #include "Managers/DebugShapes.h"
+#include "Managers/AnimationManager.h"
 #include "WindowSystem/FTWindow.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/Camera.h"
@@ -39,6 +40,7 @@
 // FTCore related singleton initializations -> used in the runtimes of the produced games.
 Physics2D*		  Physics2D::mInstance		  = nullptr;
 Camera*			  Camera::mInstance			  = nullptr;
+AnimationManager* AnimationManager::mInstance = nullptr;
 ResourceManager*  ResourceManager::mInstance  = nullptr;
 CollisionManager* CollisionManager::mInstance = nullptr;
 SceneManager*	  SceneManager::mInstance	  = nullptr;
@@ -115,6 +117,7 @@ void FTCore::InitSingletonManagers()
 	UIManager::GetInstance();
 	EventManager::GetInstance();
 	LightManager::GetInstance()->Initialize(mGameRenderer);
+	AnimationManager::GetInstance()->Initialize(mGameRenderer);
 	SceneManager::GetInstance()->Initialize();
 }
 
@@ -215,6 +218,7 @@ void FTCore::ShutDown()
 	Timer::GetInstance()->Destroy();
 	ParticleSystem::GetInstance()->Destroy();
 	LightManager::GetInstance()->Destroy();
+	AnimationManager::GetInstance()->Destroy();
 
 	PostQuitMessage(0);
 }

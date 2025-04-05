@@ -36,6 +36,7 @@
 #include "Managers/EventManager.h"
 #include "Managers/SceneManager.h"
 #include "Managers/CollisionManager.h"
+#include "Managers/AnimationManager.h"
 #include "EditorChunkLoader.h"
 
 // FTCoreEditor related singleton initializations -> used in Foxtrot Editor Runtime
@@ -155,6 +156,7 @@ void FTCoreEditor::InitSingletonManagers()
 	CollisionManager::GetInstance()->Initialize();
 	LightManager::GetInstance()->Initialize(GetGameRenderer());
 	DebugShapes::GetInstance()->Initialize(GetGameRenderer());
+	AnimationManager::GetInstance()->Initialize(GetGameRenderer());
 
 	EditorSceneManager::GetInstance()->Initialize();
 	EditorLayer::GetInstance();

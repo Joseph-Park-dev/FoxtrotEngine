@@ -28,11 +28,9 @@ class FTTexture;
 class FTSpriteAnimation : public FTAnimation
 {
 public:
-	UINT GetTexKey();
 	UINT GetTileMapKey();
 
-	virtual void SetTexture(UINT key) override;
-	void		 SetTileMapKey(UINT key);
+	void SetTileMapKey(UINT key);
 
 public:
 	FTSpriteAnimation();
@@ -41,11 +39,7 @@ public:
 
 private:
 	// These fields need to be loaded from .chunk file
-	UINT mTexKey;
 	UINT mTileMapKey;
-
-private:
-	bool FrameIsWithinIndexRange(int currentFrame);
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
@@ -59,6 +53,5 @@ namespace ChunkKey
 	constexpr const char* ANIM_FPS			   = "FPS";
 	constexpr const char* ANIM_IS_REPEATED	   = "Is Repeated";
 	constexpr const char* ANIM_MAX_FRAME_INDEX = "Max Frame Index";
-	constexpr const char* ANIM_TEXTURE_KEY	   = "Texture Key";
 	constexpr const char* ANIM_TILEMAP_KEY	   = "Tilemap Key";
 } // namespace ChunkKey

@@ -36,6 +36,7 @@
 #include "Managers/CollisionManager.h"
 #include "Managers/UIManager.h"
 #include "Managers/LightManager.h"
+#include "Managers/AnimationManager.h"
 #include "Scenes/Scene.h"
 #include "Actors/Actor.h"
 #include "Actors/ActorGroup.h"
@@ -69,7 +70,7 @@ void EditorLayer::Update(float deltaTime)
 
 	CommandHistory::GetInstance()->Update();
 
-	DisplayFileMenu();
+	DisplayMainMenuBar();
 	DisplayHierarchyMenu();
 	DisplayResourceMenu();
 	DisplayCollisionMenu();
@@ -100,7 +101,7 @@ void EditorLayer::DisplayViewport()
 	}
 	if (mIsResizingViewport && editorWin->MOUSE_AWAY(MOUSE::MOUSE_LEFT))
 	{
-		editorWin->GetRenderArea()->Set(0.f,0.f, mSceneViewportSize.x, mSceneViewportSize.y);
+		editorWin->GetRenderArea()->Set(0.f, 0.f, mSceneViewportSize.x, mSceneViewportSize.y);
 		renderer->InitializeViewport(editorWin, mSceneViewportSize.x, mSceneViewportSize.y);
 		mIsResizingViewport = false;
 	}
@@ -112,7 +113,7 @@ void EditorLayer::DisplayViewport()
 	ImGui::End();
 }
 
-void EditorLayer::DisplayFileMenu()
+void EditorLayer::DisplayMainMenuBar()
 {
 	if (ImGui::BeginMainMenuBar())
 	{
@@ -362,8 +363,8 @@ void EditorLayer::DisplayInspectorMenu()
 
 		if (mActorNameIdx < actorsRow.size())
 		{
-			Actor* actor = actorsRow[mActorNameIdx];
-			EditorElement* ele = dynamic_cast<EditorElement*>(actor);
+			Actor*		   actor = actorsRow[mActorNameIdx];
+			EditorElement* ele	 = dynamic_cast<EditorElement*>(actor);
 			if (ele->GetIsFocused())
 			{
 				ele->UpdateUI(false);

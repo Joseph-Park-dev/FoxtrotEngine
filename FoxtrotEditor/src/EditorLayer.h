@@ -187,7 +187,8 @@ private:
 
 	// Displays menu docked at the top of the screen
 	// & calls the related functions.
-	void DisplayFileMenu();
+	void DisplayMainMenuBar();
+
 
 	// Displays list of EditorElements in the Scene.
 	// & calls the related functions.

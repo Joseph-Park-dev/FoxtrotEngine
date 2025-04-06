@@ -197,10 +197,11 @@ public:
 
 	// Add newly created resource from components (e.g FTSpriteAnimation)
 	template <typename FTRESOURCE>
-	void LoadResource(FTRESOURCE* res, std::unordered_map<UINT, FTRESOURCE*>& resMap)
+	UINT LoadResource(FTRESOURCE* res, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
 		++mItemKey;
 		resMap.insert(std::make_pair(mItemKey, res));
+		return mItemKey;
 	}
 
 	/// <Removing Resources> -------------------------------------

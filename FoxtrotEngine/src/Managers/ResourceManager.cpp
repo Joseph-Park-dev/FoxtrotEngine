@@ -267,7 +267,7 @@ std::string& ResourceManager::GetPathToAsset()
 
 void ResourceManager::SetPathToAsset(std::string&& projectPath)
 {
-	mPathToAsset.assign(projectPath + "\\Assets");
+	mPathToAsset.assign(projectPath + "\\Assets\\");
 }
 
 void ResourceManager::SaveMaterialsToChunk(std::ofstream& ofs)
@@ -602,8 +602,8 @@ ResType ResourceManager::GetResType(std::string& fileName)
 			return ResType::FT_VERTEX_SHADER;
 		else if (StrContains(FileTypes::PIXEL_SHADER, fileName))
 			return ResType::FT_PIXEL_SHADER;
-		else
-			return ResType::UNSUPPORTED;
+	else
+		return ResType::UNSUPPORTED;
 }
 
 void ResourceManager::UpdateUI()

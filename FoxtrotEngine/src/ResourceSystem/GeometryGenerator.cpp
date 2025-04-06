@@ -317,9 +317,8 @@ FTMeshData GeometryGenerator::MakeAnimationFrame(Tile tile)
 	std::vector<Vector3> positions;
 	std::vector<Vector3> colors;
 	std::vector<Vector3> normals;
-	std::vector<Vector2> texcoords; // 텍스춰 좌표
+	std::vector<Vector2> texcoords;
 
-	// 앞면
 	positions.push_back(Vector3(-1.0f, 1.0f, 0.0f));
 	positions.push_back(Vector3(1.0f, 1.0f, 0.0f));
 	positions.push_back(Vector3(1.0f, -1.0f, 0.0f));
@@ -333,8 +332,7 @@ FTMeshData GeometryGenerator::MakeAnimationFrame(Tile tile)
 	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
 	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
 
-	// Texture Coordinates (Direct3D 9)
-	// https://learn.microsoft.com/en-us/windows/win32/direct3d9/texture-coordinates
+	// Texture coordinates used in sampling the TileMap.
 	FTRectArea&		 rectOnMap	 = tile.GetRectOnMap();
 	const FTVector2& mapMin		 = rectOnMap.GetMin();
 	const float		 widthInMap	 = rectOnMap.GetSize().x;

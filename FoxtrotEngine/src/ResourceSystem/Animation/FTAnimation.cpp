@@ -1,16 +1,9 @@
 #include "FTAnimation.h"
 
 #include "ResourceSystem/Animation/AnimationFrame.h"
+#include "Managers/AnimationManager.h"
 
-bool		FTAnimation::GetIsFinished() const { return mIsFinished; }
-int			FTAnimation::GetCurrFrameIdx() const { return mCurrFrameIdx; }
-
-void FTAnimation::SetFrame(int frameNumber)
-{
-	mIsFinished	  = false;
-	mCurrFrameIdx = frameNumber;
-	mAccTime	  = 0.f;
-}
+int	 FTAnimation::GetMaxFrameIdx() const { return mMaxFrameIdx; }
 
 void FTAnimation::SetFrameDuration(int frameNum, float duration)
 {
@@ -20,34 +13,13 @@ void FTAnimation::SetFrameDuration(int frameNum, float duration)
 }
 
 void FTAnimation::SetAnimator(Animator* animator) { mAnimator = animator; }
-void FTAnimation::SetIsFinished(bool val) { mIsFinished = val; }
-void FTAnimation::SetIsRepeated(bool val) { mIsRepeated = val; }
-
-void FTAnimation::IncreaseIdx() { ++mCurrFrameIdx; }
-
-void FTAnimation::Update(float deltaTime)
-{
-	Mesh*			mesh  = Meshes().at(mCurrFrameIdx);
-	AnimationFrame* frame = static_cast<AnimationFrame*>(mesh);
-	UpdateFrame(deltaTime, frame->Duration);
-}
-
-void FTAnimation::Render(FoxtrotRenderer* renderer)
-{
-	if (FrameIsWithinIndexRange(mCurrFrameIdx))
-		FTBasicMeshGroup::Render(renderer, mCurrFrameIdx);
-}
 
 FTAnimation::FTAnimation()
 	: FTBasicMeshGroup()
 	, mType(AnimationType::NOT_ASSIGNED)
 	, mMaxFrameIdx(0)
 	, mAnimFPS(30.0f)
-	, mIsRepeated(false)
 	, mAnimator(nullptr)
-	, mCurrFrameIdx(0)
-	, mAccTime(0.f)
-	, mIsFinished(false)
 {
 }
 
@@ -56,11 +28,7 @@ FTAnimation::FTAnimation(FTAnimation* other)
 	, mType(other->mType)
 	, mMaxFrameIdx(other->mMaxFrameIdx)
 	, mAnimFPS(other->mAnimFPS)
-	, mIsRepeated(other->mIsRepeated)
 	, mAnimator(other->mAnimator)
-	, mCurrFrameIdx(0)
-	, mAccTime(0.f)
-	, mIsFinished(false)
 {
 }
 
@@ -110,38 +78,8 @@ void FTAnimation::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTM
 	NormalLines()->VertexCount = (UINT)normalVertices.size();
 	D3D11Utils::CreateIndexBuffer(device, normalIndices, NormalLines()->IndexBuffer);
 	NormalLines()->IndexCount = (UINT)normalIndices.size();
-}
 
-void FTAnimation::UpdateFrame(float deltaTime, float frameDuration)
-{
-	if (mIsFinished)
-		return;
-	mAccTime += deltaTime;
-	if (frameDuration <= mAccTime)
-	{
-		++mCurrFrameIdx;
-		if (mMaxFrameIdx < mCurrFrameIdx) // if maxIdx is 2, currFrame must be bigger than two
-		{
-			if (!mIsRepeated)
-			{
-				mCurrFrameIdx = 0;
-				mIsFinished	  = true;
-			}
-			else
-			{
-				// Set current frame to the start.
-				// (mMaxFrameIdx starts from 0, so the number of frames should be
-				//  mMaxFrameIdx + 1)
-				mCurrFrameIdx -= (mMaxFrameIdx + 1);
-			}
-		}
-		mAccTime = 0.f;
-	}
-}
-
-bool FTAnimation::FrameIsWithinIndexRange(int currentFrame)
-{
-	return 0 <= currentFrame && currentFrame <= mMaxFrameIdx;
+	mMaxFrameIdx = meshes.size() - 1;
 }
 
 void FTAnimation::SaveProperties(std::ofstream& ofs, UINT key)
@@ -149,16 +87,14 @@ void FTAnimation::SaveProperties(std::ofstream& ofs, UINT key)
 	FTBasicMeshGroup::SaveProperties(ofs, key);
 	FileIOHelper::SaveInt(ofs, ChunkKey::Animation::TYPE, static_cast<int>(mType));
 	FileIOHelper::SaveFloat(ofs, ChunkKey::Animation::FPS, mAnimFPS);
-	FileIOHelper::SaveBool(ofs, ChunkKey::Animation::IS_REPEATED, mIsRepeated);
 	FileIOHelper::SaveInt(ofs, ChunkKey::Animation::MAX_FRAME_IDX, mMaxFrameIdx);
 }
 
 UINT FTAnimation::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::LoadInt(ifs, mMaxFrameIdx);
-	FileIOHelper::LoadBool(ifs, mIsRepeated);
 	FileIOHelper::LoadFloat(ifs, mAnimFPS);
-	
+
 	int type = 0;
 	FileIOHelper::LoadInt(ifs, type);
 	mType = static_cast<AnimationType>(type);
@@ -169,17 +105,6 @@ UINT FTAnimation::LoadProperties(std::ifstream& ifs)
 #ifdef FOXTROT_EDITOR
 void FTAnimation::UpdateUI()
 {
-	UpdateIsRepeated();
-	UpdateMaxFrame();
-}
-
-void FTAnimation::UpdateIsRepeated()
-{
-	ImGui::Checkbox("Is Repeated", &mIsRepeated);
-}
-
-void FTAnimation::UpdateMaxFrame()
-{
-	ImGui::InputInt("Max Frame", &mMaxFrameIdx);
+	CommandHistory::GetInstance()->UpdateIntValue("Max Frame", mMaxFrameIdx);
 }
 #endif // FOXTROT_EDITOR

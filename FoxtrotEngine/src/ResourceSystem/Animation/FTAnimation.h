@@ -13,19 +13,10 @@ public:
 	};
 
 public:
-	bool		GetIsFinished() const;
-	int			GetCurrFrameIdx() const;
+	int	 GetMaxFrameIdx() const;
 
-	void SetFrame(int frameNumber);
 	void SetFrameDuration(int frameNum, float duration);
 	void SetAnimator(Animator* animator);
-	void SetIsFinished(bool val);
-	void SetIsRepeated(bool val);
-	void IncreaseIdx();
-
-public:
-	virtual void Update(float deltaTime);
-	virtual void Render(FoxtrotRenderer* renderer) override;
 
 public:
 	FTAnimation();
@@ -33,27 +24,17 @@ public:
 
 protected:
 	virtual void InitializeMeshes(
-		ComPtr<ID3D11Device>& device, 
+		ComPtr<ID3D11Device>&	 device,
 		std::vector<FTMeshData>& meshes) override;
-
-	/// Moves onto the next frame as the mAccTime exceeds the frame duration.
-	void UpdateFrame(float deltaTime, float frameDuration);
 
 private:
 	// These fields need to be loaded from .chunk file
 	AnimationType mType;
 	float		  mAnimFPS;
-	bool		  mIsRepeated;
 	int			  mMaxFrameIdx;
 
 	// These fields need to be initialized when the component is added.
 	Animator* mAnimator;
-	int		  mCurrFrameIdx;
-	float	  mAccTime;
-	bool	  mIsFinished;
-
-private:
-	bool FrameIsWithinIndexRange(int currentFrame);
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
@@ -64,10 +45,6 @@ public:
 	// Note that this member function is not overriden.
 	// Values can be modified only in Animator Component.
 	void UpdateUI();
-
-private:
-	void UpdateIsRepeated();
-	void UpdateMaxFrame();
 
 #endif // FOXTROT_EDITOR
 };

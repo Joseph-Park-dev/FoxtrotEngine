@@ -51,19 +51,12 @@ void MeshRenderer::Initialize(FTCore* coreInstance)
 void MeshRenderer::Render(FoxtrotRenderer* renderer)
 {
 	if (mMeshGroup)
-		UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
-
-	if (mMeshGroup)
 	{
+		UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
 		renderer->SwitchFillMode();
 		// renderer->SetRenderTargetView();
 		mMeshGroup->Render(renderer);
 	}
-
-	//if (TEST_MESH)
-	//	TEST_UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
-
-	//TEST_MESH->Render(renderer);
 }
 
 void MeshRenderer::CloneTo(Actor* actor)

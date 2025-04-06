@@ -13,6 +13,7 @@
 #include "ResourceSystem/Tile.h"
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/Animation/FTSpriteAnimation.h"
+#include "ResourceSystem/Animation/AnimationFrame.h"
 #include "ResourceSystem/GeometryGenerator.h"
 #include "Managers/ResourceManager.h"
 #include "Managers/AnimationManager.h"
@@ -22,6 +23,7 @@
 #include "FileSystem/FileIOHelper.h"
 #include "FileSystem/BufferSizes.h"
 #include "Renderer/FoxtrotRenderer.h"
+#include "Renderer/Camera.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorUtils.h"
@@ -29,62 +31,58 @@
 
 Animator::Animator(Actor* owner, int updateOrder)
 	: TileMapRenderer(owner)
-	, mCurrentAnim(nullptr)
+	, mLoadedKeys()
+	, mCurrFrameIdx(0)
+	, mAccTime(0.f)
+	, mIsFinished(false)
+	, mIsRepeated(true)
 {
 }
 
 Animator::~Animator()
 {
 	mLoadedKeys.clear();
-	for (size_t i = 0; i < mLoadedAnimations.size(); ++i)
-	{
-		// mCurrentAnim destruction will be taken care of in MeshRenderer
-		if (mCurrentAnim != mLoadedAnimations.at(i))
-		{
-			delete mLoadedAnimations[i];
-			mLoadedAnimations[i] = nullptr;
-		}
-	}
-	mLoadedAnimations.clear();
 }
 
 void Animator::Play(bool isRepeated)
 {
-	if (mCurrentAnim == nullptr)
+	if (GetMeshGroup() == nullptr)
 		printf("ERROR : Animator::Play()->Animation is null\n");
-	mCurrentAnim->SetIsFinished(false);
-	mCurrentAnim->SetIsRepeated(isRepeated);
+	mIsFinished = false;
+	mIsRepeated = isRepeated;
 }
 
 void Animator::Play(const UINT key, bool isRepeated)
 {
-	mCurrentAnim = mLoadedAnimations.at(key);
-	if (mCurrentAnim == nullptr)
+	SetMeshGroup(ResourceManager::GetInstance()->GetLoadedSpriteAnim(key));
+	if (!GetMeshGroup())
 		printf("ERROR : Animator::Play()->Animation is null\n");
-	SetMeshGroup(mCurrentAnim);
-	mCurrentAnim->SetIsFinished(false);
-	mCurrentAnim->SetIsRepeated(isRepeated);
+	mIsFinished = false;
+	mIsRepeated = isRepeated;
 }
 
 void Animator::Stop()
 {
-	mCurrentAnim->SetIsFinished(true);
+	mIsFinished = true;
 }
 
 void Animator::LoadAnimation(const UINT key)
 {
-	FTSpriteAnimation* anim	  = ResourceManager::GetInstance()->GetLoadedSpriteAnim(key);
-	//FTSpriteAnimation* copied = AnimationManager::GetInstance()->CopyAnimation
-	//mLoadedAnimations.push_back(copied);
-
-	//if (mLoadedAnimations.size() == 1)
-	//{
-	//	delete GetMeshGroup();
-	//	SetMeshGroup(nullptr);
-	//	mCurrentAnim = mLoadedAnimations.at(0);
-	//	SetMeshGroup(mCurrentAnim);
-	//}
+	FTSpriteAnimation* anim	= ResourceManager::GetInstance()->GetLoadedSpriteAnim(key);
+	if (mLoadedKeys.size() == 1)
+		SetMeshGroup(anim);
 }
+
+bool Animator::GetIsFinished() const { return mIsFinished; }
+int Animator::GetCurrFrameIdx() const { return mCurrFrameIdx; }
+
+void Animator::SetFrame(int frameNumber)
+{
+	mIsFinished = false;
+	mCurrFrameIdx = frameNumber;
+	mAccTime = 0.f;
+}
+void Animator::SetIsFinished(bool val) { mIsFinished = val; }
 
 void Animator::SaveProperties(std::ofstream& ofs)
 {
@@ -108,6 +106,35 @@ void Animator::LoadProperties(std::ifstream& ifs)
 	Component::LoadProperties(ifs);
 }
 
+void Animator::UpdateFrame(float deltaTime)
+{
+	if (mIsFinished)
+		return;
+	mAccTime += deltaTime;
+	FTSpriteAnimation* anim = static_cast<FTSpriteAnimation*>(GetMeshGroup());
+	AnimationFrame* currFrame = anim->GetFrame(mCurrFrameIdx);
+	if (currFrame->Duration <= mAccTime)
+	{
+		++mCurrFrameIdx;
+		if (anim->GetMaxFrameIdx() < mCurrFrameIdx) // if maxIdx is 2, currFrame must be bigger than two
+		{
+			if (!mIsRepeated)
+			{
+				mCurrFrameIdx = 0;
+				mIsFinished = true;
+			}
+			else
+			{
+				// Set current frame to the start.
+				// (mMaxFrameIdx starts from 0, so the number of frames should be
+				// mMaxFrameIdx + 1)
+				mCurrFrameIdx -= anim->GetMaxFrameIdx();
+			}
+		}
+		mAccTime = 0.f;
+	}
+}
+
 void Animator::Initialize(FTCore* coreInstance)
 {
 	MeshRenderer::Initialize(coreInstance);
@@ -115,23 +142,29 @@ void Animator::Initialize(FTCore* coreInstance)
 		LoadAnimation(mLoadedKeys.at(i));
 }
 
-void Animator::Update(float deltaTime)
-{
-	if (mCurrentAnim != nullptr)
-		TileMapRenderer::Update(deltaTime);
-}
-
 void Animator::LateUpdate(float deltaTime)
 {
-	if (mCurrentAnim != nullptr)
-		mCurrentAnim->Update(deltaTime);
+	if (!GetMeshGroup())
+		return;
+	UpdateFrame(deltaTime);
 }
 
 void Animator::Render(FoxtrotRenderer* renderer)
 {
-	if (mCurrentAnim != nullptr)
-		mCurrentAnim->Render(renderer);
+	if (GetMeshGroup())
+	{
+		UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
+		renderer->SwitchFillMode();
+		// renderer->SetRenderTargetView();
+		GetMeshGroup()->Render(renderer, mCurrFrameIdx);
+	}
 }
+
+//void Animator::Render(FoxtrotRenderer* renderer)
+//{
+//	if (mCurrentAnim != nullptr)
+//		mCurrentAnim->Render(renderer, mCurrFrameIdx);
+//}
 
 void Animator::CloneTo(Actor* actor)
 {
@@ -143,11 +176,7 @@ void Animator::CloneTo(Actor* actor)
 #ifdef FOXTROT_EDITOR
 void Animator::EditorUpdate(float deltaTime)
 {
-	if (mCurrentAnim != nullptr)
-	{
-		Update(deltaTime);
-		mCurrentAnim->Update(deltaTime);
-	}
+	LateUpdate(deltaTime);
 }
 
 void Animator::EditorUIUpdate()
@@ -155,14 +184,21 @@ void Animator::EditorUIUpdate()
 	UpdatePlayAnim();
 	UpdatePlayList();
 
+	CommandHistory::GetInstance()->UpdateBoolValue("Is Repeated", mIsRepeated);
+
 	SpriteRenderer::EditorUIUpdate();
+}
+
+void Animator::EditorRender(FoxtrotRenderer* renderer)
+{
+	Render(renderer);
 }
 
 void Animator::UpdatePlayAnim()
 {
-	if (mCurrentAnim)
+	if (GetMeshGroup())
 	{
-		if (mCurrentAnim->GetIsFinished())
+		if (mIsFinished)
 		{
 			if (ImGui::Button("Stop"))
 				Stop();
@@ -195,9 +231,7 @@ void Animator::UpdatePlayList()
 		for (size_t i = 0; i < mLoadedKeys.size(); ++i)
 		{
 			FTSpriteAnimation* anim = ResourceManager::GetInstance()->GetLoadedSpriteAnim(mLoadedKeys.at(i));
-			ImGui::Text(anim->GetFileName().c_str());
-			ImGui::SameLine();
-			ImGui::Text(std::to_string(mLoadedKeys.at(i)).c_str());
+			anim->UpdateUI();
 		}
 	}
 }

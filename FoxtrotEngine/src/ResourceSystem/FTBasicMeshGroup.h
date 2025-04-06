@@ -33,8 +33,8 @@ public:
 		ComPtr<ID3D11Device>&		 device,
 		ComPtr<ID3D11DeviceContext>& context);
 
-	virtual void Render(FoxtrotRenderer* renderer);
-	void		 Render(FoxtrotRenderer* renderer, int meshIndex);
+	void		 Render(FoxtrotRenderer* renderer);
+	virtual void Render(FoxtrotRenderer* renderer, int meshIndex);
 
 	void Clear();
 
@@ -104,5 +104,5 @@ namespace ChunkKey
 
 		constexpr const char* DRAW_TEXTURE = "Draw Texture";
 		constexpr const char* DRAW_NORMALS = "Draw Normals";
-	}
+	} // namespace FTMeshGroup
 } // namespace ChunkKey

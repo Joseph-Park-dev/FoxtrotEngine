@@ -11,10 +11,17 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "ResourceSystem/FTMaterials/FTMaterial.h"
+#include "ResourceSystem/Animation/AnimationFrame.h"
 
 UINT FTSpriteAnimation::GetTileMapKey()
 {
 	return mTileMapKey;
+}
+
+AnimationFrame* FTSpriteAnimation::GetFrame(int frameIdx)
+{
+	Mesh* mesh = Meshes().at(frameIdx);
+	return static_cast<AnimationFrame*>(mesh);
 }
 
 void FTSpriteAnimation::SetTileMapKey(UINT key)

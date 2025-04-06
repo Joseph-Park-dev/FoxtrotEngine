@@ -24,11 +24,13 @@
 class Tile;
 class Animator;
 class FTTexture;
+struct AnimationFrame;
 
 class FTSpriteAnimation : public FTAnimation
 {
 public:
-	UINT GetTileMapKey();
+	UINT			GetTileMapKey();
+	AnimationFrame* GetFrame(int frameIdx);
 
 	void SetTileMapKey(UINT key);
 

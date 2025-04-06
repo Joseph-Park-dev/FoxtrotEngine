@@ -1,6 +1,8 @@
 #pragma once
 #include "Core/SingletonMacro.h"
 
+#include <queue>
+
 class FTSpriteAnimation;
 class FoxtrotRenderer;
 class FTCore;
@@ -15,13 +17,11 @@ public:
 		UINT		texKey,
 		UINT		tileMapKey);
 
-	FTSpriteAnimation* CopySpriteAnimation(FTSpriteAnimation* spriteAnim);
-
 public:
 	void Initialize(FoxtrotRenderer* renderer);
 
 private:
-	FoxtrotRenderer* mRenderer;
+	FoxtrotRenderer*				   mRenderer;
 
 #ifdef FOXTROT_EDITOR
 public:

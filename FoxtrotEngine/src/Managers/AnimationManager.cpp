@@ -20,9 +20,11 @@ FTSpriteAnimation* AnimationManager::CreateAnimationFromTile(const char* name, U
 	if (!mRenderer)
 		printf("ERROR : Animator::CreateAnimationFromTile()-> Renderer is null");
 
-	FTSpriteAnimation* animation = DBG_NEW FTSpriteAnimation;
-	animation->SetFileName(name);
-	std::string path = ResourceManager::GetInstance()->GetPathToAsset().append(name);
+	FTSpriteAnimation* animation					= DBG_NEW FTSpriteAnimation;
+	std::string							   animName = std::string(name) + FileTypes::SPRITE_ANIMATION;
+	animation->SetFileName(animName);
+
+	std::string path = ResourceManager::GetInstance()->GetPathToAsset().append(animName);
 	animation->SetRelativePath(path);
 
 	if (texKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
@@ -38,38 +40,38 @@ FTSpriteAnimation* AnimationManager::CreateAnimationFromTile(const char* name, U
 	GeometryGenerator::MakeSpriteAnimation(
 		meshDataBuf, tileMapBuf->GetTiles(), tileMapBuf->GetMaxCountOnMapX(), tileMapBuf->GetMaxCountOnMapY());
 	animation->Initialize(std::move(meshDataBuf), mRenderer->GetDevice(), mRenderer->GetContext());
-	printf("FTSpriteAnimation created, %s", name);
+	printf("FTSpriteAnimation created, %s\n", name);
 
 	return animation;
-}
-
-FTSpriteAnimation* AnimationManager::CopySpriteAnimation(FTSpriteAnimation* spriteAnim)
-{
-	//if (!mRenderer)
-	//	printf("ERROR : Animator::CreateAnimationFromTile()-> Renderer is null");
-
-	//FTSpriteAnimation* newAnim = DBG_NEW FTSpriteAnimation(spriteAnim);
-	//newAnim->SetTexture();
-
-	//FTTileMap* tileMapBuf = ResourceManager::GetInstance()->GetLoadedTileMap(tileMapKey);
-	//if (tileMapBuf)
-	//	tileMapBuf->ReadCSV();
-
-	//std::vector<FTMeshData> meshDataBuf;
-	//GeometryGenerator::MakeSpriteAnimation(
-	//	meshDataBuf, tileMapBuf->GetTiles(), tileMapBuf->GetMaxCountOnMapX(), tileMapBuf->GetMaxCountOnMapY());
-	//newAnim->Initialize(meshDataBuf, mRenderer->GetDevice(), mRenderer->GetContext());
-
-	//printf("FTSpriteAnimation created, %s", name);
-
-	//return animation;
-	return nullptr;
 }
 
 void AnimationManager::Initialize(FoxtrotRenderer* renderer)
 {
 	mRenderer = renderer;
 }
+
+// FTSpriteAnimation* AnimationManager::CopySpriteAnimation(FTSpriteAnimation* spriteAnim)
+//{
+//	//if (!mRenderer)
+//	//	printf("ERROR : Animator::CreateAnimationFromTile()-> Renderer is null");
+//
+//	//FTSpriteAnimation* newAnim = DBG_NEW FTSpriteAnimation(spriteAnim);
+//	//newAnim->SetTexture();
+//
+//	//FTTileMap* tileMapBuf = ResourceManager::GetInstance()->GetLoadedTileMap(tileMapKey);
+//	//if (tileMapBuf)
+//	//	tileMapBuf->ReadCSV();
+//
+//	//std::vector<FTMeshData> meshDataBuf;
+//	//GeometryGenerator::MakeSpriteAnimation(
+//	//	meshDataBuf, tileMapBuf->GetTiles(), tileMapBuf->GetMaxCountOnMapX(), tileMapBuf->GetMaxCountOnMapY());
+//	//newAnim->Initialize(meshDataBuf, mRenderer->GetDevice(), mRenderer->GetContext());
+//
+//	//printf("FTSpriteAnimation created, %s", name);
+//
+//	//return animation;
+//	return nullptr;
+// }
 
 AnimationManager::AnimationManager()
 {
@@ -95,38 +97,49 @@ void AnimationManager::UpdateUI(bool* opened)
 
 void AnimationManager::CreateAnimation()
 {
-	//if (ImGui::Button("Create Sprite Animation"))
-	//{
-	//	ImGui::OpenPopup("CreateSpriteAnimation");
-	//}
-	//if (ImGui::BeginPopupModal("CreateSpriteAnimation"))
-	//{
-	//	static char name[BufferSize::STRING_BUFFER_SIZE] = "Empty Value";
-	//	ImGui::InputText("Name", name, BufferSize::STRING_BUFFER_SIZE);
+	if (ImGui::Button("Create Sprite Animation"))
+	{
+		ImGui::OpenPopup("CreateSpriteAnimation");
+	}
+	if (ImGui::BeginPopupModal("CreateSpriteAnimation"))
+	{
+		static char name[BufferSize::STRING_BUFFER_SIZE] = "Empty Value";
+		ImGui::InputText("Name", name, BufferSize::STRING_BUFFER_SIZE);
 
-	//	static UINT texKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
-	//	GetSprite(texKey);
+		const char* text = ChunkKey::NullVal::NULL_OBJ;
 
-	//	static UINT tileMapKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
-	//	GetTileMap(tileMapKey);
+		static UINT texKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
+		GetSprite(texKey);
+		if (texKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+			text = ResourceManager::GetInstance()->GetLoadedTexture(texKey)->GetFileName().c_str();
 
-	//	if (ImGui::Button("Create"))
-	//	{
-	//		FTSpriteAnimation* anim = CreateAnimationFromTile(name, texKey, tileMapKey);
+		ImGui::Text(text);
 
-	//		// Load the created animation to ResourceManager & File.
-	//		// This is called only during the FTEditor Runtime.
-	//		UINT key =
-	//			ResourceManager::GetInstance()->LoadResource(
-	//				anim, ResourceManager::GetInstance()->GetSpriteAnimMap());
-	//		SaveSpriteAnimAsFile(anim, key);
-	//	}
+		text				   = ChunkKey::NullVal::NULL_OBJ;
+		static UINT tileMapKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
+		GetTileMap(tileMapKey);
+		if (tileMapKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+			text = ResourceManager::GetInstance()->GetLoadedTileMap(tileMapKey)->GetFileName().c_str();
 
-	//	if (ImGui::Button("Close"))
-	//		ImGui::CloseCurrentPopup();
-	//	ImGui::Separator();
-	//	ImGui::EndPopup();
-	//}
+		ImGui::Text(text);
+
+		if (ImGui::Button("Create"))
+		{
+			FTSpriteAnimation* anim = CreateAnimationFromTile(name, texKey, tileMapKey);
+
+			// Load the created animation to ResourceManager & File.
+			// This is called only during the FTEditor Runtime.
+			UINT key =
+				ResourceManager::GetInstance()->LoadResource(
+					anim, ResourceManager::GetInstance()->GetSpriteAnimMap());
+			SaveSpriteAnimAsFile(anim, key);
+		}
+
+		if (ImGui::Button("Close"))
+			ImGui::CloseCurrentPopup();
+		ImGui::Separator();
+		ImGui::EndPopup();
+	}
 }
 
 void AnimationManager::GetSprite(UINT& key)
@@ -143,5 +156,6 @@ void AnimationManager::SaveSpriteAnimAsFile(FTSpriteAnimation* animation, UINT k
 {
 	std::ofstream ofs(animation->GetRelativePath());
 	animation->SaveProperties(ofs, key);
+	FileIOHelper::SaveBufferToFile(ofs);
 }
 #endif // FOXTROT_EDITOR

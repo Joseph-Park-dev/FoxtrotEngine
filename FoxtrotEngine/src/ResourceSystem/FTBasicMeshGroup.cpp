@@ -91,6 +91,8 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer)
 		context->IASetVertexBuffers(0, 1, mesh->VertexBuffer.GetAddressOf(), &stride, &offset);
 		context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		context->OMSetBlendState(renderer->GetBlendState().Get(), NULL, D3D11_DEFAULT_SAMPLE_MASK);
+
 		context->DrawIndexed(mesh->IndexCount, 0, 0);
 	}
 
@@ -352,7 +354,7 @@ FTBasicMeshGroup::~FTBasicMeshGroup()
 void FTBasicMeshGroup::SaveProperties(std::ofstream& ofs, UINT key)
 {
 	FTResource::SaveProperties(ofs, key);
-	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, key);
+	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, mTexKey);
 }
 
 UINT FTBasicMeshGroup::LoadProperties(std::ifstream& ifs)

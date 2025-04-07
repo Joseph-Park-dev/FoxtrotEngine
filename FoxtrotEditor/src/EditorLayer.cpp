@@ -37,6 +37,7 @@
 #include "Managers/UIManager.h"
 #include "Managers/LightManager.h"
 #include "Managers/AnimationManager.h"
+#include "Managers/TileMapManager.h"
 #include "Scenes/Scene.h"
 #include "Actors/Actor.h"
 #include "Actors/ActorGroup.h"
@@ -94,7 +95,7 @@ void EditorLayer::DisplayViewport()
 
 	FTWindow*		 editorWin = FTCoreEditor::GetInstance()->GetEditorWindow();
 	FoxtrotRenderer* renderer  = FTCoreEditor::GetInstance()->GetGameRenderer();
-	mSceneViewportPos		   = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
+	mSceneViewportPos		   = ImGui::GetWindowPos();
 	if (editorWin->MOUSE_HOLD(MOUSE::MOUSE_LEFT) && SceneViewportSizeChanged())
 	{
 		mIsResizingViewport = true;
@@ -107,7 +108,7 @@ void EditorLayer::DisplayViewport()
 	}
 
 	ID3D11ShaderResourceView* viewportTexture = renderer->GetViewportRenderer()->GetViewportSRV().Get();
-	ImVec2					  viewportSize	  = editorWin->GetRenderArea()->GetSize().GetImVec2();
+	const ImVec2			  viewportSize	  = editorWin->GetRenderArea()->GetSize().GetImVec2();
 	ImGui::Image((ImTextureID)viewportTexture, viewportSize);
 
 	ImGui::End();
@@ -281,9 +282,9 @@ void EditorLayer::DisplayMainMenuBar()
 
 void EditorLayer::DisplayManagersMenu()
 {
-	const size_t maxMenuEle		  = 1;
-	const char*	 menu[maxMenuEle] = { "Animation Manager" };
-	static bool opened[maxMenuEle] = { false };
+	const size_t maxMenuEle			= 2;
+	const char*	 menu[maxMenuEle]	= { "Animation Manager", "TileMap Manager" };
+	static bool	 opened[maxMenuEle] = { false, false };
 
 	if (ImGui::Button("Managers"))
 		ImGui::OpenPopup("ManagerPopUp");
@@ -298,6 +299,8 @@ void EditorLayer::DisplayManagersMenu()
 
 	if (opened[0])
 		AnimationManager::GetInstance()->UpdateUI(&opened[0]);
+	if (opened[1])
+		TileMapManager::GetInstance()->UpdateUI(&opened[1]);
 }
 
 void EditorLayer::DisplayHierarchyMenu()

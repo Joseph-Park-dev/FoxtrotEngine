@@ -33,9 +33,6 @@
     <ClCompile Include="src\ViewportRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="include\imgui\FileDialog\ImGuiFileDialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\EditorChunkLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -57,6 +54,12 @@
     <ClCompile Include="src\EditorCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="include\FileDialog\ImGuiFileDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\imgui\FileDialog\ImGuiFileDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Command.h">
@@ -75,12 +78,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ViewportRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\imgui\FileDialog\ImGuiFileDialog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\imgui\FileDialog\ImGuiFileDialogConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\EditorChunkLoader.h">
@@ -110,24 +107,56 @@
     <ClInclude Include="src\EditorCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\FileDialog\imfilebrowser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FileDialog\ImGuiFileDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FileDialog\ImGuiFileDialogConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imgui\FileDialog\ImGuiFileDialogConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imgui\FileDialog\imfilebrowser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imgui\FileDialog\ImGuiFileDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vcpkg_installed\x64-windows\include\imgui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vcpkg_installed\x64-windows\include\imgui_impl_dx11.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vcpkg_installed\x64-windows\include\imgui_impl_win32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vcpkg_installed\x64-windows\include\imgui_internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vcpkg_installed\x64-windows\include\imgui_stdlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vcpkg_installed\x64-windows\include\imstb_rectpack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vcpkg_installed\x64-windows\include\imstb_textedit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vcpkg_installed\x64-windows\include\imstb_truetype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vcpkg_installed\x64-windows\include\imconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="include\imgui\misc\debuggers\imgui.gdb" />
-    <None Include="include\imgui\misc\debuggers\imgui.natstepfilter" />
-    <None Include="include\imgui\FileDialog\stb\LICENSE" />
-    <None Include="include\imgui\FileDialog\stb\README.md" />
-    <None Include="include\imgui\FileDialog\dirent\ChangeLog" />
-    <None Include="include\imgui\FileDialog\dirent\LICENSE" />
-    <None Include="include\imgui\FileDialog\dirent\README.md" />
     <None Include="vcpkg.json" />
     <None Include="Assets\Shaders\Common.hlsli" />
     <None Include="Assets\Shaders\RimEffect.hlsli" />
-  </ItemGroup>
-  <ItemGroup>
-    <Natvis Include="include\imgui\misc\debuggers\imgui.natvis" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="include\imgui\misc\debuggers\README.txt" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="assets\Shaders\TexturePS.hlsl" />

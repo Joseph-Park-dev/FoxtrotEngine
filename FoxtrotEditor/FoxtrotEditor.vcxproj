@@ -154,7 +154,7 @@
     <VcpkgInstalledDir>.\vcpkg_installed</VcpkgInstalledDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'" Label="Vcpkg">
-    <VcpkgInstalledDir>.\vcpkg_installed</VcpkgInstalledDir>
+    <VcpkgInstalledDir>.\vcpkg_installed\x64-windows</VcpkgInstalledDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -247,13 +247,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\[2024_01]\Test_Project_FTEngine\Assets\Scripts;..\FoxtrotEngine\include;..\FoxtrotEngine\include\assimp;..\FoxtrotEngine\include\assimp\include;..\FoxtrotEngine\include\assimp\code;..\FoxtrotEngine\src;.\include;.\include\imgui;.\src;..\FoxtrotDS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\[2024_01]\Test_Project_FTEngine\Assets\Scripts;..\FoxtrotEngine\include;..\FoxtrotEngine\include\assimp;..\FoxtrotEngine\include\assimp\include;..\FoxtrotEngine\include\assimp\code;..\FoxtrotEngine\src;.\include;.\include\imgui;.\include\imgui\backends;.\include\imgui\misc\cpp;.\vcpkg_installed\x64-windows\include;.\src;..\FoxtrotDS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>.\lib;.\lib\Box2D;.\lib\FoxtrotEngine;..\FoxtrotEngine\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>FoxtrotEngine.lib;box2dd.lib;DirectXTK.lib;imgui.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FoxtrotEngine.lib;box2dd.lib;DirectXTK.lib;imguid.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -273,12 +273,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\FileDialog\ImGuiFileDialog.cpp" />
+    <ClCompile Include="include\imgui\FileDialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="src\EditorCamera.cpp" />
     <ClCompile Include="src\ActorCommand.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\DirectoryHelper.cpp" />
     <ClCompile Include="src\EditorChunkLoader.cpp" />
-    <ClCompile Include="include\imgui\FileDialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="src\Command.cpp" />
     <ClCompile Include="src\CommandHistory.cpp" />
     <ClCompile Include="src\EditorElement.cpp" />
@@ -289,6 +290,12 @@
     <ClCompile Include="src\ViewportRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\FileDialog\imfilebrowser.h" />
+    <ClInclude Include="include\FileDialog\ImGuiFileDialog.h" />
+    <ClInclude Include="include\FileDialog\ImGuiFileDialogConfig.h" />
+    <ClInclude Include="include\imgui\FileDialog\imfilebrowser.h" />
+    <ClInclude Include="include\imgui\FileDialog\ImGuiFileDialog.h" />
+    <ClInclude Include="include\imgui\FileDialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="src\EditorCamera.h" />
     <ClInclude Include="src\ActorCommand.h" />
     <ClInclude Include="resource.h" />
@@ -296,8 +303,6 @@
     <ClInclude Include="src\DirectoryHelper.h" />
     <ClInclude Include="src\EditorUtils.h" />
     <ClInclude Include="src\EditorChunkLoader.h" />
-    <ClInclude Include="include\imgui\FileDialog\ImGuiFileDialog.h" />
-    <ClInclude Include="include\imgui\FileDialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="src\Command.h" />
     <ClInclude Include="src\CommandHistory.h" />
     <ClInclude Include="src\EditorElement.h" />
@@ -306,24 +311,20 @@
     <ClInclude Include="src\EditorSceneManager.h" />
     <ClInclude Include="src\FTCoreEditor.h" />
     <ClInclude Include="src\ViewportRenderer.h" />
+    <ClInclude Include="vcpkg_installed\x64-windows\include\imconfig.h" />
+    <ClInclude Include="vcpkg_installed\x64-windows\include\imgui.h" />
+    <ClInclude Include="vcpkg_installed\x64-windows\include\imgui_impl_dx11.h" />
+    <ClInclude Include="vcpkg_installed\x64-windows\include\imgui_impl_win32.h" />
+    <ClInclude Include="vcpkg_installed\x64-windows\include\imgui_internal.h" />
+    <ClInclude Include="vcpkg_installed\x64-windows\include\imgui_stdlib.h" />
+    <ClInclude Include="vcpkg_installed\x64-windows\include\imstb_rectpack.h" />
+    <ClInclude Include="vcpkg_installed\x64-windows\include\imstb_textedit.h" />
+    <ClInclude Include="vcpkg_installed\x64-windows\include\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\Common.hlsli" />
     <None Include="Assets\Shaders\RimEffect.hlsli" />
-    <None Include="include\imgui\FileDialog\dirent\ChangeLog" />
-    <None Include="include\imgui\FileDialog\dirent\LICENSE" />
-    <None Include="include\imgui\FileDialog\dirent\README.md" />
-    <None Include="include\imgui\FileDialog\stb\LICENSE" />
-    <None Include="include\imgui\FileDialog\stb\README.md" />
-    <None Include="include\imgui\misc\debuggers\imgui.gdb" />
-    <None Include="include\imgui\misc\debuggers\imgui.natstepfilter" />
     <None Include="vcpkg.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Natvis Include="include\imgui\misc\debuggers\imgui.natvis" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="include\imgui\misc\debuggers\README.txt" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shaders\BlinnPhongPS.hlsl">

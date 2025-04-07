@@ -12,14 +12,11 @@ void FTAnimation::SetFrameDuration(int frameNum, float duration)
 	frame->Duration		  = duration;
 }
 
-void FTAnimation::SetAnimator(Animator* animator) { mAnimator = animator; }
-
 FTAnimation::FTAnimation()
 	: FTBasicMeshGroup()
 	, mType(AnimationType::NOT_ASSIGNED)
 	, mMaxFrameIdx(0)
 	, mAnimFPS(30.0f)
-	, mAnimator(nullptr)
 {
 }
 
@@ -28,7 +25,6 @@ FTAnimation::FTAnimation(FTAnimation* other)
 	, mType(other->mType)
 	, mMaxFrameIdx(other->mMaxFrameIdx)
 	, mAnimFPS(other->mAnimFPS)
-	, mAnimator(other->mAnimator)
 {
 }
 
@@ -87,12 +83,14 @@ void FTAnimation::SaveProperties(std::ofstream& ofs, UINT key)
 	FTBasicMeshGroup::SaveProperties(ofs, key);
 	FileIOHelper::SaveInt(ofs, ChunkKey::Animation::TYPE, static_cast<int>(mType));
 	FileIOHelper::SaveFloat(ofs, ChunkKey::Animation::FPS, mAnimFPS);
+	FileIOHelper::SaveBool(ofs, ChunkKey::Animation::IS_REPEATED, mIsRepeated);
 	FileIOHelper::SaveInt(ofs, ChunkKey::Animation::MAX_FRAME_IDX, mMaxFrameIdx);
 }
 
 UINT FTAnimation::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::LoadInt(ifs, mMaxFrameIdx);
+	FileIOHelper::LoadBool(ifs, mIsRepeated);
 	FileIOHelper::LoadFloat(ifs, mAnimFPS);
 
 	int type = 0;

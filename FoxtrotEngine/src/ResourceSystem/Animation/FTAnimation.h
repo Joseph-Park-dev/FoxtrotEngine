@@ -13,10 +13,9 @@ public:
 	};
 
 public:
-	int	 GetMaxFrameIdx() const;
+	int GetMaxFrameIdx() const;
 
 	void SetFrameDuration(int frameNum, float duration);
-	void SetAnimator(Animator* animator);
 
 public:
 	FTAnimation();
@@ -31,10 +30,8 @@ private:
 	// These fields need to be loaded from .chunk file
 	AnimationType mType;
 	float		  mAnimFPS;
+	bool		  mIsRepeated;
 	int			  mMaxFrameIdx;
-
-	// These fields need to be initialized when the component is added.
-	Animator* mAnimator;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
@@ -53,7 +50,6 @@ namespace ChunkKey
 {
 	namespace Animation
 	{
-		constexpr const char* NAME			= "Name";
 		constexpr const char* TYPE			= "Type";
 		constexpr const char* FPS			= "FPS";
 		constexpr const char* IS_REPEATED	= "Is Repeated";

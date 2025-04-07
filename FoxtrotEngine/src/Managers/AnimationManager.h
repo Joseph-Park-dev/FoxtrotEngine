@@ -21,7 +21,7 @@ public:
 	void Initialize(FoxtrotRenderer* renderer);
 
 private:
-	FoxtrotRenderer*				   mRenderer;
+	FoxtrotRenderer* mRenderer;
 
 #ifdef FOXTROT_EDITOR
 public:

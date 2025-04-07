@@ -20,8 +20,8 @@ FTSpriteAnimation* AnimationManager::CreateAnimationFromTile(const char* name, U
 	if (!mRenderer)
 		printf("ERROR : Animator::CreateAnimationFromTile()-> Renderer is null");
 
-	FTSpriteAnimation* animation					= DBG_NEW FTSpriteAnimation;
-	std::string							   animName = std::string(name) + FileTypes::SPRITE_ANIMATION;
+	FTSpriteAnimation* animation= DBG_NEW FTSpriteAnimation;
+	std::string	animName = std::string(name) + FileTypes::SPRITE_ANIMATION;
 	animation->SetFileName(animName);
 
 	std::string path = ResourceManager::GetInstance()->GetPathToAsset().append(animName);
@@ -33,7 +33,7 @@ FTSpriteAnimation* AnimationManager::CreateAnimationFromTile(const char* name, U
 		animation->SetTileMapKey(tileMapKey);
 
 	FTTileMap* tileMapBuf = ResourceManager::GetInstance()->GetLoadedTileMap(tileMapKey);
-	if (tileMapBuf)
+	if (tileMapBuf->GetTiles() == nullptr)
 		tileMapBuf->ReadCSV();
 
 	std::vector<FTMeshData> meshDataBuf;

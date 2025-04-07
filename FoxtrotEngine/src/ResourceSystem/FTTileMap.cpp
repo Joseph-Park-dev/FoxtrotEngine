@@ -18,6 +18,12 @@
 #include "Core/TemplateFunctions.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
+#include "FileSystem/BufferSizes.h"
+#include "Managers/ResourceManager.h"
+
+#ifdef FOXTROT_EDITOR
+#include "CommandHistory.h"
+#endif // FOXTROT_EDITOR
 
 void FTTileMap::ReadCSV()
 {
@@ -32,9 +38,10 @@ void FTTileMap::ReadCSV()
 
     std::ifstream myFile;
     std::queue<int> result;
-
+    
     // Open an existing file 
-    myFile.open(GetRelativePath(), std::fstream::in);
+    mCSVFilePath = ResourceManager::GetInstance()->GetPathToAsset() + mCSVFilePath;
+    myFile.open(mCSVFilePath, std::fstream::in);
     assert(myFile);
     std::string line;
     int val;
@@ -121,6 +128,11 @@ void FTTileMap::ReadCSV(std::string& str)
     }
 }
 
+std::string& FTTileMap::GetCSVFilePath()
+{
+    return mCSVFilePath;
+}
+
 Tile& FTTileMap::GetTile(size_t row, size_t column)
 {
     return mTileMap[mMaxCountOnScreenX * row + column];
@@ -163,6 +175,7 @@ void FTTileMap::SetMaxCountOnMapY(UINT yCount)
 
 FTTileMap::FTTileMap()
     : FTResource()
+    , mCSVFilePath(ChunkKey::NullVal::NULL_OBJ)
     , mTileWidthOnScreen(0)
     , mTileHeightOnScreen(0)
     , mMaxCountOnMapX(0)
@@ -203,23 +216,25 @@ void FTTileMap::InitializeTile(Tile& tile, UINT column, UINT row, UINT tileNum)
 
 void FTTileMap::SaveProperties(std::ofstream& ofs, UINT key)
 {
-    FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTILEMAP);
+    FileIOHelper::BeginDataPackSave(ofs, ChunkKey::TileMap::FTTILEMAP);
     FTResource::SaveProperties(ofs, key);
-    FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TILEMAP_SCREEN_WIDTH, mTileWidthOnScreen);
-    FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TILEMAP_SCREEN_HEIGHT, mTileHeightOnScreen);
-    FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TILEMAP_MAP_MAX_COUNT_X, mMaxCountOnMapX);
-    FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TILEMAP_MAP_MAX_COUNT_Y, mMaxCountOnMapY);
-    FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTILEMAP);
+    FileIOHelper::SaveString(ofs, ChunkKey::TileMap::CSV_FILE_PATH, mCSVFilePath);
+    FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TileMap::SCREEN_WIDTH, mTileWidthOnScreen);
+    FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TileMap::SCREEN_HEIGHT, mTileHeightOnScreen);
+    FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TileMap::MAP_MAX_COUNT_X, mMaxCountOnMapX);
+    FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TileMap::MAP_MAX_COUNT_Y, mMaxCountOnMapY);
+    FileIOHelper::EndDataPackSave(ofs, ChunkKey::TileMap::FTTILEMAP);
 
 }
 
 UINT FTTileMap::LoadProperties(std::ifstream& ifs)
 {
-    FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTILEMAP);
+    FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::TileMap::FTTILEMAP);
     FileIOHelper::LoadUnsignedInt(ifs, mMaxCountOnMapY);
     FileIOHelper::LoadUnsignedInt(ifs, mMaxCountOnMapX);
     FileIOHelper::LoadUnsignedInt(ifs, mTileHeightOnScreen);
     FileIOHelper::LoadUnsignedInt(ifs, mTileWidthOnScreen);
+    FileIOHelper::LoadBasicString(ifs, mCSVFilePath);
     UINT key = FTResource::LoadProperties(ifs);
     return key;
 }
@@ -227,23 +242,21 @@ UINT FTTileMap::LoadProperties(std::ifstream& ifs)
 #ifdef FOXTROT_EDITOR
 void FTTileMap::UpdateUI()
 {
-    ImGui::Text(GetFileName().c_str());
     ImVec2 previewSize = ImVec2(100, 100);
 
-    //UpdateRelativePath(ChunkKey::TEXTURE_FORMAT_SUPPORTED);
-    std::string currentPath = "No path has been assigned";
-    if (!GetRelativePath().empty())
-        currentPath = "Current path : \n" + GetRelativePath();
+    CommandHistory::GetInstance()->UpdateStringValue("Name", FileName());
+
+    CommandHistory::GetInstance()->UpdateStringValue("CSV Path", mCSVFilePath);
     
     int tileWidthOnScreen = static_cast<int>(mTileWidthOnScreen);
     int tileHeightOnScreen = static_cast<int>(mTileHeightOnScreen);
     int maxCountOnMapX = static_cast<int>(mMaxCountOnMapX);
     int maxCountOnMapY = static_cast<int>(mMaxCountOnMapY);
 
-    ImGui::InputInt("Tile width on screen", &tileWidthOnScreen);
-    ImGui::InputInt("Tile height on screen", &tileHeightOnScreen);
-    ImGui::InputInt("Max count on Map X", &maxCountOnMapX);
-    ImGui::InputInt("Max count on Map Y", &maxCountOnMapY);
+    CommandHistory::GetInstance()->UpdateIntValue("Tile width on screen", tileWidthOnScreen);
+    CommandHistory::GetInstance()->UpdateIntValue("Tile height on screen", tileHeightOnScreen);
+    CommandHistory::GetInstance()->UpdateIntValue("Max count on Map X", maxCountOnMapX);
+    CommandHistory::GetInstance()->UpdateIntValue("Max count on Map Y", maxCountOnMapY);
 
     mTileWidthOnScreen = static_cast<UINT>(tileWidthOnScreen);
     mTileHeightOnScreen = static_cast<UINT>(tileHeightOnScreen);

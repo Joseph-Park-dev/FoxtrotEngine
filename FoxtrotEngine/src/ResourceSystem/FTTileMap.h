@@ -29,12 +29,13 @@ public:
 	void ReadCSV(std::string& str);
 
 public:
-	Tile* GetTiles() { return mTileMap; }
-	Tile& GetTile(size_t row, size_t column);
-	UINT  GetMaxCountOnScreenX() { return mMaxCountOnScreenX; }
-	UINT  GetMaxCountOnScreenY() { return mMaxCountOnScreenY; }
-	UINT  GetMaxCountOnMapX() { return mMaxCountOnMapX; }
-	UINT  GetMaxCountOnMapY() { return mMaxCountOnMapY; }
+	std::string& GetCSVFilePath();
+	Tile*		 GetTiles() { return mTileMap; }
+	Tile&		 GetTile(size_t row, size_t column);
+	UINT		 GetMaxCountOnScreenX() { return mMaxCountOnScreenX; }
+	UINT		 GetMaxCountOnScreenY() { return mMaxCountOnScreenY; }
+	UINT		 GetMaxCountOnMapX() { return mMaxCountOnMapX; }
+	UINT		 GetMaxCountOnMapY() { return mMaxCountOnMapY; }
 
 	void SetTiles(Tile* tiles);
 	void SetTileWidth(UINT width);
@@ -53,10 +54,11 @@ protected:
 
 private:
 	// These fields need to be read from .chunk files or be modified on the editor.
-	UINT mTileWidthOnScreen;
-	UINT mTileHeightOnScreen;
-	UINT mMaxCountOnMapX;
-	UINT mMaxCountOnMapY;
+	std::string mCSVFilePath;
+	UINT		mTileWidthOnScreen;
+	UINT		mTileHeightOnScreen;
+	UINT		mMaxCountOnMapX;
+	UINT		mMaxCountOnMapY;
 
 	// These fields need to be initialized when the tilemap is constructed.
 	Tile* mTileMap;
@@ -75,9 +77,13 @@ public:
 
 namespace ChunkKey
 {
-	constexpr const char* FTTILEMAP				  = "FTTileMap";
-	constexpr const char* TILEMAP_SCREEN_WIDTH	  = "Tile Width On Screen";
-	constexpr const char* TILEMAP_SCREEN_HEIGHT	  = "Tile Height On Screen";
-	constexpr const char* TILEMAP_MAP_MAX_COUNT_X = "Max Count On Map X";
-	constexpr const char* TILEMAP_MAP_MAX_COUNT_Y = "Max Count On Map Y";
+	namespace TileMap
+	{
+		constexpr const char* FTTILEMAP = "FTTileMap";
+		constexpr const char* CSV_FILE_PATH = "CSV File Path";
+		constexpr const char* SCREEN_WIDTH = "Tile Width On Screen";
+		constexpr const char* SCREEN_HEIGHT = "Tile Height On Screen";
+		constexpr const char* MAP_MAX_COUNT_X = "Max Count On Map X";
+		constexpr const char* MAP_MAX_COUNT_Y = "Max Count On Map Y";
+	}
 } // namespace ChunkKey

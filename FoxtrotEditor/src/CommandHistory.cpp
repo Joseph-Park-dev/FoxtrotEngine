@@ -12,6 +12,7 @@
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
+#include <imgui_stdlib.h>
 #include <typeinfo>
 
 #include "Command.h"
@@ -272,25 +273,21 @@ void CommandHistory::UpdateStringValue(std::string label, std::string& ref)
 		ref.reserve(BufferSize::STRING_BUFFER_SIZE);
 
 	static StrEditCommand* command;
-	char str[BufferSize::STRING_BUFFER_SIZE];
-	strcpy_s(str, ref.c_str());
 
-	if (ImGui::InputText(label.c_str(), str, ACTORNAME_MAX))
+	if (ImGui::InputText(label.c_str(), &ref))
 	{
 		if (!mIsRecording)
 		{
 			if (!command)
 			{
 				mIsRecording = true;
-				command		 = DBG_NEW StrEditCommand(ref);
+				command = DBG_NEW StrEditCommand(ref);
 			}
 		}
-		else if(ImGui::IsItemDeactivatedAfterEdit())
-			ref.assign(str);
 	}
 	else
 	{
-		if (mIsRecording)
+		if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
 		{
 			if (command)
 			{

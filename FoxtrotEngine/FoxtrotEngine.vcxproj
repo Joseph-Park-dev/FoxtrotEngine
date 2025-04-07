@@ -141,13 +141,14 @@
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
-    <VcpkgEnabled>false</VcpkgEnabled>
+    <VcpkgEnabled>true</VcpkgEnabled>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <VcpkgInstalledDir>.\vcpkg_installed</VcpkgInstalledDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'" Label="Vcpkg">
-    <VcpkgInstalledDir>.\vcpkg_installed</VcpkgInstalledDir>
+    <VcpkgInstalledDir>
+    </VcpkgInstalledDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -340,6 +341,7 @@
     </ClCompile>
     <ClCompile Include="src\ResourceSystem\FTShaders\StandardPS.cpp" />
     <ClCompile Include="src\ResourceSystem\FTMaterials\StandardMaterial.cpp" />
+    <ClCompile Include="src\Managers\TileMapManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ResourceSystem\Animation\AnimationFrame.h" />
@@ -847,6 +849,7 @@
     </ClInclude>
     <ClInclude Include="src\ResourceSystem\FTShaders\StandardPS.h" />
     <ClInclude Include="src\ResourceSystem\FTMaterials\StandardMaterial.h" />
+    <ClInclude Include="src\Managers\TileMapManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

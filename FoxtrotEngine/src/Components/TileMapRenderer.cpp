@@ -79,7 +79,11 @@ void TileMapRenderer::InitializeTileMap() {
 			mTileMap->ReadCSV();
 			SetMeshKey(ChunkKey::PRIMITIVE_SQUARE_BLUE);
 			std::vector<FTMeshData> meshData = GeometryGenerator::MakeTileMapGrid(mTileMap);
-			MeshRenderer::InitializeMesh(meshData);
+
+
+			// Need to Implement here
+
+			//MeshRenderer::InitializeMesh(meshData);
 		}
 	}
 }

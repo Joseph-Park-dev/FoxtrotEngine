@@ -334,7 +334,7 @@ void MeshRenderer::UpdateSprite()
 
 	if (key != mTexKey)
 	{
-		SetTexKey(key);
+		SetTexKey(mTexKey);
 		mMeshGroup->SetTexture(mTexKey);
 	}
 }

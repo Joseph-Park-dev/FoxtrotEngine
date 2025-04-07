@@ -57,7 +57,7 @@ void FTRectangle::UpdateConstantBufferModel()
 
 FTRectangle::FTRectangle()
     : FTShape()
-    , mRectArea(new FTRectArea())
+    , mRectArea(DBG_NEW FTRectArea())
 {
 }
 

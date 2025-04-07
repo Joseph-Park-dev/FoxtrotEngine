@@ -45,17 +45,17 @@ FTSpriteAnimation::~FTSpriteAnimation()
 
 void FTSpriteAnimation::SaveProperties(std::ofstream& ofs, UINT key)
 {
-	FileIOHelper::BeginDataPackSave	(ofs, ChunkKey::FT_SPRITE_ANIMATION);
+	FileIOHelper::BeginDataPackSave	(ofs, ChunkKey::SpriteAnimation::FT_SPRITE_ANIMATION);
 
 	FTAnimation::SaveProperties(ofs, key);
-	FileIOHelper::SaveUnsignedInt	(ofs, ChunkKey::ANIM_TILEMAP_KEY, mTileMapKey);
+	FileIOHelper::SaveUnsignedInt	(ofs, ChunkKey::SpriteAnimation::ANIM_TILEMAP_KEY, mTileMapKey);
 
-	FileIOHelper::EndDataPackSave	(ofs, ChunkKey::FT_SPRITE_ANIMATION);
+	FileIOHelper::EndDataPackSave	(ofs, ChunkKey::SpriteAnimation::FT_SPRITE_ANIMATION);
 }
 
 UINT FTSpriteAnimation::LoadProperties(std::ifstream& ifs)
 {
-	FileIOHelper::BeginDataPackLoad	(ifs, ChunkKey::FT_SPRITE_ANIMATION);
+	FileIOHelper::BeginDataPackLoad	(ifs, ChunkKey::SpriteAnimation::FT_SPRITE_ANIMATION);
 
 	FileIOHelper::LoadUnsignedInt(ifs, mTileMapKey);
 	return FTAnimation::LoadProperties(ifs);

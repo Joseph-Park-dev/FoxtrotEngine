@@ -50,10 +50,9 @@ public:
 
 namespace ChunkKey
 {
-	constexpr const char* FT_SPRITE_ANIMATION  = "FTSpriteAnimation";
-	constexpr const char* ANIM_NAME			   = "Name";
-	constexpr const char* ANIM_FPS			   = "FPS";
-	constexpr const char* ANIM_IS_REPEATED	   = "Is Repeated";
-	constexpr const char* ANIM_MAX_FRAME_INDEX = "Max Frame Index";
-	constexpr const char* ANIM_TILEMAP_KEY	   = "Tilemap Key";
+	namespace SpriteAnimation
+	{
+		constexpr const char* FT_SPRITE_ANIMATION = "FTSpriteAnimation";
+		constexpr const char* ANIM_TILEMAP_KEY	  = "TileMap Key";
+	} // namespace SpriteAnimation
 } // namespace ChunkKey

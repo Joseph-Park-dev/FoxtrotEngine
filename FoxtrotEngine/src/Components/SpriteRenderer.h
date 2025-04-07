@@ -34,9 +34,6 @@ public:
 	virtual void Initialize(FTCore* coreInstance) override;
 	virtual void CloneTo(Actor* actor) override;
 
-protected:
-	virtual bool InitializeMesh() override;
-
 public:
 	SpriteRenderer(
 		Actor* owner,

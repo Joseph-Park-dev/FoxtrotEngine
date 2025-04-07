@@ -24,6 +24,7 @@
 
 #ifdef FOXTROT_EDITOR
 #include "EditorLayer.h"
+#include <imgui.h>
 #endif
 
 bool FTTexture::ReleaseTexture()
@@ -63,7 +64,7 @@ void FTTexture::UpdateUI()
     ImGui::Text(GetFileName().c_str());
     ID3D11ShaderResourceView* viewportTexture = this->mTextureResourceView.Get();
     ImVec2 previewSize = ImVec2(100, 100);
-    ImGui::Image((void*)viewportTexture, previewSize);
+    ImGui::Image((ImTextureID)viewportTexture, previewSize);
 
     std::string currentPath = "No path has been assigned";
     if (!GetRelativePath().empty())

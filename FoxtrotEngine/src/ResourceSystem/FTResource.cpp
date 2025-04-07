@@ -27,6 +27,11 @@
 #include "DirectoryHelper.h"
 #endif //FOXTROT_EDITOR
 
+bool FTResource::IsReferenced()
+{
+    return 0 < mRefCount;
+}
+
 FTResource::FTResource()
     : mFileName{}
     , mRelativePath{}
@@ -66,7 +71,7 @@ UINT FTResource::LoadProperties(std::ifstream& ifs)
 }
 
 #ifdef FOXTROT_EDITOR
-void FTResource::UpdateRelativePath(std::string fileExtension)
+void FTResource::UpdateNameAndPath(std::string fileExtension)
 {
     std::string currentPath = "No path has been assigned";
     mRelativePath.assign(currentPath);
@@ -84,7 +89,10 @@ void FTResource::UpdateRelativePath(std::string fileExtension)
     if (ImGuiFileDialog::Instance()->Display("SelectFile"))
     {
         if (ImGuiFileDialog::Instance()->IsOk())
+        {
             mRelativePath = ImGuiFileDialog::Instance()->GetFilePathName();
+            mFileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
+        }
         ImGuiFileDialog::Instance()->Close();
     }
 }

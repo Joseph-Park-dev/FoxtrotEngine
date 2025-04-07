@@ -20,7 +20,7 @@ class FTInputDevice;
 
 class UIManager
 {
-	SINGLETON(UIManager);
+	SINGLETON(UIManager)
 
 public:
 	void RegisterUI(UI* UI);

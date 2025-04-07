@@ -401,7 +401,6 @@ void D3D11Utils::CreateHullShader(ComPtr<ID3D11Device>& device, const wstring& f
 void D3D11Utils::CreateDomainShader(
 	ComPtr<ID3D11Device>& device, const wstring& filename, ComPtr<ID3D11DomainShader>& domainShader)
 {
-
 	ComPtr<ID3DBlob> shaderBlob;
 	ComPtr<ID3DBlob> errorBlob;
 

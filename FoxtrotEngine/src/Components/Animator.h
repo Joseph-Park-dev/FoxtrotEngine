@@ -38,17 +38,19 @@ public:
 	void Stop();
 
 public:
-	FTSpriteAnimation* CreateAnimationFromTile(
-		std::string&& name,
-		UINT		  texKey,
-		UINT		  tileMapKey);
 	void LoadAnimation(const UINT key);
 
 public:
+	bool GetIsFinished() const;
+	int	 GetCurrFrameIdx() const;
+
+	void SetFrame(int frameNumber);
+	void SetIsFinished(bool val);
+
+public:
 	virtual void Initialize(FTCore* coreInstance) override;
-	void		 Update(float deltaTime) override;
 	void		 LateUpdate(float deltaTime) override;
-	virtual void Render(FoxtrotRenderer* renderer) override;
+	void		 Render(FoxtrotRenderer* renderer) override;
 
 	virtual void CloneTo(Actor* actor) override;
 
@@ -59,25 +61,30 @@ public:
 	~Animator() override;
 
 private:
-	std::vector<UINT>				mLoadedKeys;
-	std::vector<FTSpriteAnimation*> mLoadedAnimations;
-	FTSpriteAnimation*				mCurrentAnim;
+	std::vector<UINT> mLoadedKeys;
+	int				  mCurrFrameIdx;
+	float			  mAccTime;
+	bool			  mIsFinished;
+	bool			  mIsRepeated;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
 	virtual void LoadProperties(std::ifstream& ifs) override;
 
+private:
+	bool FrameIsWithinIndexRange(int currentFrame);
+	void UpdateFrame(float deltaTime);
+
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void EditorUpdate(float deltaTime) override;
 	virtual void EditorUIUpdate() override;
+	void		 EditorRender(FoxtrotRenderer* renderer) override;
 
 private:
 	void UpdatePlayAnim();
 	void UpdatePlayList();
-	void CreateAnimation();
 
-	void TEST_CreateSpine();
 #endif // FOXTROT_EDITOR
 };
 

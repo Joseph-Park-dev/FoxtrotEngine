@@ -27,28 +27,6 @@ bool FTRectArea::Overlaps(const FTRectArea& other)
 	return Overlaps(other.mMin) || Overlaps(other.mMax);
 }
 
-void FTRectArea::SetPosition(FTVector2 val)
-{
-	mCenter = val;
-}
-
-void FTRectArea::SetSize(UINT width, UINT height)
-{
-	mSize.x = static_cast<float>(width);
-	mSize.y = static_cast<float>(height);
-}
-
-void FTRectArea::SetSize(FTVector2 val)
-{
-	mSize = val;
-}
-
-void FTRectArea::SetSize(ImVec2 val)
-{
-	mSize.x = val.x;
-	mSize.y = val.y;
-}
-
 void FTRectArea::Set(FTVector2 center, FTVector2 dimension)
 {
 	mCenter = center;
@@ -61,10 +39,10 @@ void FTRectArea::Set(FTVector2 center, FTVector2 dimension)
 
 void FTRectArea::Set(float posX, float posY, float width, float height)
 {
-	mCenter = FTVector2(posX, posY);
 	mWidth	= width;
 	mHeight = height;
 	mSize	= FTVector2(width, height);
+	mCenter = FTVector2(posX, posY) + mSize * 0.5f;
 	mMin	= mCenter - mSize / 2;
 	mMax	= mCenter + mSize / 2;
 }

@@ -9,13 +9,13 @@ class FTMeshDataPack :
     public FTResource
 {
 public:
-    std::vector<FTMeshData>& GetMeshData();
+    std::vector<FTMeshData*>& GetMeshData();
 
 public:
     FTMeshDataPack();
 
 private:
-    std::vector<FTMeshData> mMeshData;
+    std::vector<FTMeshData*> mMeshData;
 
 public:
     virtual void SaveProperties(std::ofstream& ofs, UINT key) override;

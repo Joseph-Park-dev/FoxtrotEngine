@@ -52,12 +52,13 @@ enum class ResType
 	FTMESH,
 	FTMATERIAL,
 	FT_VERTEX_SHADER,
-	FT_PIXEL_SHADER
+	FT_PIXEL_SHADER,
+	FT_SPRITE_ANIMATION
 };
 
 class ResourceManager
 {
-	SINGLETON(ResourceManager);
+	SINGLETON(ResourceManager)
 
 public:
 	void Initialize(FoxtrotRenderer* renderer);
@@ -67,22 +68,14 @@ public:
 	void LoadResources(std::ifstream& ifs, FTCore* ftCoreInst);
 
 public:
-	FTTexture* GetLoadedTexture(const UINT key);
-	FTTexture* GetLoadedTexture(const char* name);
-	FTTileMap* GetLoadedTileMap(const UINT key);
-	FTPremade* GetLoadedPremade(const UINT key);
-	FTPremade* GetLoadedPremade(std::string&& fileName);
-
-	FTPixelShader* GetLoadedPixelShader(const UINT key);
-
-	FTMaterial* GetLoadedMaterial(const UINT key);
-
-	FTMeshDataPack* GetLoadedMeshData(const UINT key);
-	FTMeshData&		GetLoaded2DPrimitive(const UINT key);
-	FTMeshData&		GetLoaded3DPrimitive(const UINT key);
-	FTMeshData&		GetLoaded3DPrimitive(const UINT key, const float scale);
-
-	void			   RemoveLoadedMeshes(const UINT key);
+	FTTexture*		   GetLoadedTexture(const UINT key);
+	FTTexture*		   GetLoadedTexture(const char* name);
+	FTTileMap*		   GetLoadedTileMap(const UINT key);
+	FTPremade*		   GetLoadedPremade(const UINT key);
+	FTPremade*		   GetLoadedPremade(std::string&& fileName);
+	FTPixelShader*	   GetLoadedPixelShader(const UINT key);
+	FTMaterial*		   GetLoadedMaterial(const UINT key);
+	FTBasicMeshGroup*  GetLoadedMesh(const UINT key);
 	FTSpriteAnimation* GetLoadedSpriteAnim(const UINT key);
 
 public:
@@ -90,7 +83,7 @@ public:
 	// I know the name feels so funny...
 	std::unordered_map<UINT, FTTileMap*>&		  GetTileMapsMap();
 	std::unordered_map<UINT, FTSpriteAnimation*>& GetSpriteAnimMap();
-	std::unordered_map<UINT, FTMeshDataPack*>&	  GetMeshDataMap();
+	std::unordered_map<UINT, FTBasicMeshGroup*>&	  GetMeshGroupsMap();
 
 	std::unordered_map<UINT, FTVertexShader*>& GetVertexShadersMap();
 	std::unordered_map<UINT, FTPixelShader*>&  GetPixelShadersMap();
@@ -111,9 +104,8 @@ private:
 	std::unordered_map<UINT, FTPremade*>		 mMapPremades;
 	std::unordered_map<UINT, FTSpriteAnimation*> mMapSpriteAnimation;
 
-	std::unordered_map<UINT, FTMeshDataPack*> mMapMeshData;
-	std::unordered_map<UINT, FTMeshData>	  mMap2DPrimitives;
-	std::unordered_map<UINT, FTMeshData>	  mMap3DPrimitives;
+	// A mesh group usually represents a 3D model.
+	std::unordered_map<UINT, FTBasicMeshGroup*> mMapMeshGroups;
 
 	std::unordered_map<UINT, FTVertexShader*> mMapVertexShaders;
 	std::unordered_map<UINT, FTPixelShader*>  mMapPixelShaders;
@@ -130,7 +122,7 @@ public:
 		typename std::unordered_map<UINT, FTRESOURCE*>::const_iterator iter;
 		for (iter = resMap.begin(); iter != resMap.end(); ++iter)
 		{
-			if((*iter).second)
+			if ((*iter).second)
 				if (0 < (*iter).second->GetRefCount())
 					(*iter).second->SaveProperties(ofs, (*iter).first);
 		}
@@ -153,14 +145,14 @@ public:
 		}
 	}
 
-	//void LoadMaterialsFromChunk(std::ifstream& ifs);
+	// void LoadMaterialsFromChunk(std::ifstream& ifs);
 
 private:
 	template <typename FTRESOURCE>
 	void LoadResource(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
-		FTRESOURCE* resource					= DBG_NEW FTRESOURCE;
-		UINT						   mItemKey = resource->LoadProperties(ifs);
+		FTRESOURCE* resource = DBG_NEW FTRESOURCE;
+		UINT mItemKey = resource->LoadProperties(ifs);
 
 		if (KeyExists(mItemKey, resMap))
 		{
@@ -181,35 +173,35 @@ public:
 	{
 		// Get Relative path to Assets folder
 		std::string fileName = filePath.substr(filePath.rfind("\\") + 1);
-		UINT		pending	 = mItemKey + 1;
+		UINT		itemKey	 = resMap.size();
 
-		if (!ResourceExists<FTRESOURCE*>(pending, filePath, resMap))
+		if (!ResourceExists<FTRESOURCE*>(itemKey, filePath, resMap))
 		{
-			printf("Message: Loading FTResource %s to mItemKey %d. \n", filePath.c_str(), pending);
+			printf("Message: Loading FTResource %s to mItemKey %d. \n", filePath.c_str(), itemKey);
 			FTRESOURCE* res = DBG_NEW FTRESOURCE;
 			res->SetFileName(fileName);
 			res->SetRelativePath(filePath);
-			resMap.insert(std::make_pair(pending, res));
-			mItemKey = pending;
+			resMap.insert(std::make_pair(itemKey, res));
 			return res;
 		}
 		else
 		{
-			printf("Warning : Resource %s is already loaded to mItemKey %d.\n", filePath.c_str(), pending);
+			printf("Warning : Resource %s is already loaded to mItemKey %d.\n", filePath.c_str(), itemKey);
 			return nullptr;
 		}
 	}
 
 	// Manually load the required Materials. If it doesn't exist in Asset/material,
 	// this creates a new material.
-	void LoadMaterial();
+	void LoadMaterials();
 
 	// Add newly created resource from components (e.g FTSpriteAnimation)
 	template <typename FTRESOURCE>
-	void LoadResource(FTRESOURCE* res, std::unordered_map<UINT, FTRESOURCE*>& resMap)
+	UINT LoadResource(FTRESOURCE* res, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
-		++mItemKey;
-		resMap.insert(std::make_pair(mItemKey, res));
+		UINT key = resMap.size();
+		resMap.insert(std::make_pair(key, res));
+		return key;
 	}
 
 	/// <Removing Resources> -------------------------------------
@@ -222,14 +214,12 @@ public:
 		auto iter = resMap.begin();
 		while (iter != resMap.end())
 		{
-			if ((*iter).second != nullptr)
+			if ((*iter).second)
 			{
 				delete (*iter).second;
 				(*iter).second = nullptr;
-				iter		   = resMap.erase(iter);
 			}
-			else
-				++iter;
+			++iter;
 		}
 		resMap.clear();
 	}
@@ -253,12 +243,12 @@ public:
 	/// </Processing Resources>
 private:
 	void ProcessTexture(FTTexture* texture);
-	void ProcessSingleMeshData(FTMeshDataPack* meshDataPack);
+	void ProcessSingleMeshGrp(FTBasicMeshGroup* meshGrp);
 	void ProcessTileMap(FTTileMap* tileMap);
 	void ProcessSpriteAnim(FTSpriteAnimation* spriteAnim);
 
 	void ProcessTextures();
-	void ProcessMeshData();
+	void ProcessMeshGroups();
 	void ProcessPremades();
 	void ProcessTileMaps();
 	void ProcessSpriteAnims();
@@ -343,8 +333,8 @@ namespace ChunkKey
 	constexpr const unsigned int PRIMITIVE_SQUARE_GREEN = 2;
 	constexpr const unsigned int PRIMITIVE_SQUARE_BLUE	= 3;
 
-	constexpr const unsigned int PRIMITIVE_BOX		   = 1;
-	constexpr const unsigned int PRIMITIVE_SQUARE_GRID = 2;
-	constexpr const unsigned int PRIMITIVE_CYLINDER	   = 3;
-	constexpr const unsigned int PRIMITIVE_SPHERE	   = 4;
+	constexpr const unsigned int PRIMITIVE_BOX		   = 4;
+	constexpr const unsigned int PRIMITIVE_SQUARE_GRID = 5;
+	constexpr const unsigned int PRIMITIVE_CYLINDER	   = 6;
+	constexpr const unsigned int PRIMITIVE_SPHERE	   = 7;
 } // namespace ChunkKey

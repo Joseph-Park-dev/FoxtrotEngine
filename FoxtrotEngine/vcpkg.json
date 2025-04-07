@@ -21,7 +21,6 @@
         "win32-binding"
       ]
     },
-    "stb",
-    "assimp"
+    "stb"
   ]
 }

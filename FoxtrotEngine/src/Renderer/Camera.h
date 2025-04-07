@@ -42,7 +42,7 @@ enum class Viewtype
 
 class Camera
 {
-	SINGLETON_PROTECTED(Camera);
+	SINGLETON_PROTECTED(Camera)
 
 public:
 	FTVector3 ConvertScreenPosToWorld(FTVector2 screenPos);

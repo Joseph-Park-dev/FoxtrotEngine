@@ -40,7 +40,7 @@ public:
 public:
 	virtual void SaveToFile() = 0;
 
-	void UpdateUI() override = 0;
+	virtual void UpdateUI() = 0;
 
 #endif
 };

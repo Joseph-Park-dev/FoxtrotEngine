@@ -84,7 +84,7 @@
     <ClCompile Include="src\ResourceSystem\FTResource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTSpriteAnimation.cpp">
+    <ClCompile Include="src\ResourceSystem\Animation\FTSpriteAnimation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ResourceSystem\FTTexture.cpp">
@@ -237,6 +237,18 @@
     <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\GunFiringBehavior.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Managers\AnimationManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Animation\FTAnimation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Animation\AnimationFrame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Managers\TileMapManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Actors\Actor.h">
@@ -338,7 +350,7 @@
     <ClInclude Include="src\ResourceSystem\FTResource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTSpriteAnimation.h">
+    <ClInclude Include="src\ResourceSystem\Animation\FTSpriteAnimation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ResourceSystem\FTTexture.h">
@@ -1734,6 +1746,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\WindowSystem\FTWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Managers\AnimationManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceSystem\Animation\FTAnimation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceSystem\Animation\AnimationFrame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Managers\TileMapManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

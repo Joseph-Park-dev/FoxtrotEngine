@@ -14,6 +14,7 @@
 #include <functional>
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
+#include <imgui_internal.h>
 #include "imgui/FileDialog/imfilebrowser.h"
 
 #include "Core/SingletonMacro.h"
@@ -53,7 +54,7 @@ enum class FileMenuEvents
 
 class EditorLayer
 {
-	SINGLETON(EditorLayer);
+	SINGLETON(EditorLayer)
 
 public:
 	void Update(float deltaTime);
@@ -187,7 +188,11 @@ private:
 
 	// Displays menu docked at the top of the screen
 	// & calls the related functions.
-	void DisplayFileMenu();
+	void DisplayMainMenuBar();
+
+	// Displays menu docked at the top of the screen
+	// & calls the related functions.
+	void DisplayManagersMenu();
 
 	// Displays list of EditorElements in the Scene.
 	// & calls the related functions.

@@ -26,6 +26,9 @@ public:
 	void SetIsReferenced(bool val) { mRefCount = val; }
 	void SetIsProcessed(bool val) { mIsProcessed = val; }
 
+	std::string& FileName() { return mFileName; }
+
+	bool IsReferenced();
 	void AddRefCount() { ++mRefCount; }
 	void SubtractRefCount() { --mRefCount; }
 
@@ -48,9 +51,7 @@ public:
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void UpdateUI() {};
-
-protected:
-	void UpdateRelativePath(std::string fileExtension);
+	void		 UpdateNameAndPath(std::string fileExtension);
 #endif // FOXTROT_EDITOR
 };
 

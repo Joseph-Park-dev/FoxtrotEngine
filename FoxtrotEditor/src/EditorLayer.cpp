@@ -36,6 +36,8 @@
 #include "Managers/CollisionManager.h"
 #include "Managers/UIManager.h"
 #include "Managers/LightManager.h"
+#include "Managers/AnimationManager.h"
+#include "Managers/TileMapManager.h"
 #include "Scenes/Scene.h"
 #include "Actors/Actor.h"
 #include "Actors/ActorGroup.h"
@@ -69,7 +71,7 @@ void EditorLayer::Update(float deltaTime)
 
 	CommandHistory::GetInstance()->Update();
 
-	DisplayFileMenu();
+	DisplayMainMenuBar();
 	DisplayHierarchyMenu();
 	DisplayResourceMenu();
 	DisplayCollisionMenu();
@@ -93,26 +95,26 @@ void EditorLayer::DisplayViewport()
 
 	FTWindow*		 editorWin = FTCoreEditor::GetInstance()->GetEditorWindow();
 	FoxtrotRenderer* renderer  = FTCoreEditor::GetInstance()->GetGameRenderer();
-	mSceneViewportPos		   = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
+	mSceneViewportPos		   = ImGui::GetWindowPos();
 	if (editorWin->MOUSE_HOLD(MOUSE::MOUSE_LEFT) && SceneViewportSizeChanged())
 	{
 		mIsResizingViewport = true;
 	}
 	if (mIsResizingViewport && editorWin->MOUSE_AWAY(MOUSE::MOUSE_LEFT))
 	{
-		editorWin->GetRenderArea()->SetSize(mSceneViewportSize);
+		editorWin->GetRenderArea()->Set(0.f, 0.f, mSceneViewportSize.x, mSceneViewportSize.y);
 		renderer->InitializeViewport(editorWin, mSceneViewportSize.x, mSceneViewportSize.y);
 		mIsResizingViewport = false;
 	}
 
 	ID3D11ShaderResourceView* viewportTexture = renderer->GetViewportRenderer()->GetViewportSRV().Get();
-	ImVec2					  viewportSize	  = editorWin->GetRenderArea()->GetSize().GetImVec2();
+	const ImVec2			  viewportSize	  = editorWin->GetRenderArea()->GetSize().GetImVec2();
 	ImGui::Image((ImTextureID)viewportTexture, viewportSize);
 
 	ImGui::End();
 }
 
-void EditorLayer::DisplayFileMenu()
+void EditorLayer::DisplayMainMenuBar()
 {
 	if (ImGui::BeginMainMenuBar())
 	{
@@ -187,10 +189,11 @@ void EditorLayer::DisplayFileMenu()
 			mFileMenuEvent = FileMenuEvents::Open;
 		}
 
+		DisplayManagersMenu();
+
 		if (ImGui::Button("New Game Object"))
-		{
 			EditorSceneManager::GetInstance()->GetEditorScene()->AddEditorElement();
-		}
+
 		if (ImGui::Button("Play"))
 		{
 			if (CHUNK_IS_SAVED)
@@ -275,6 +278,29 @@ void EditorLayer::DisplayFileMenu()
 		}
 	}
 	mFileDialog.ClearSelected();
+}
+
+void EditorLayer::DisplayManagersMenu()
+{
+	const size_t maxMenuEle			= 2;
+	const char*	 menu[maxMenuEle]	= { "Animation Manager", "TileMap Manager" };
+	static bool	 opened[maxMenuEle] = { false, false };
+
+	if (ImGui::Button("Managers"))
+		ImGui::OpenPopup("ManagerPopUp");
+
+	if (ImGui::BeginPopup("ManagerPopUp"))
+	{
+		for (size_t i = 0; i < maxMenuEle; ++i)
+			if (ImGui::Selectable(menu[i]))
+				opened[i] = true;
+		ImGui::EndPopup();
+	}
+
+	if (opened[0])
+		AnimationManager::GetInstance()->UpdateUI(&opened[0]);
+	if (opened[1])
+		TileMapManager::GetInstance()->UpdateUI(&opened[1]);
 }
 
 void EditorLayer::DisplayHierarchyMenu()
@@ -362,8 +388,8 @@ void EditorLayer::DisplayInspectorMenu()
 
 		if (mActorNameIdx < actorsRow.size())
 		{
-			Actor* actor = actorsRow[mActorNameIdx];
-			EditorElement* ele = dynamic_cast<EditorElement*>(actor);
+			Actor*		   actor = actorsRow[mActorNameIdx];
+			EditorElement* ele	 = dynamic_cast<EditorElement*>(actor);
 			if (ele->GetIsFocused())
 			{
 				ele->UpdateUI(false);

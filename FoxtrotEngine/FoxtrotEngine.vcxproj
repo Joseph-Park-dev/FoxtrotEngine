@@ -141,13 +141,14 @@
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
-    <VcpkgEnabled>false</VcpkgEnabled>
+    <VcpkgEnabled>true</VcpkgEnabled>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <VcpkgInstalledDir>.\vcpkg_installed</VcpkgInstalledDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'" Label="Vcpkg">
-    <VcpkgInstalledDir>.\vcpkg_installed</VcpkgInstalledDir>
+    <VcpkgInstalledDir>
+    </VcpkgInstalledDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -264,6 +265,9 @@
     <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\GunFiringBehavior.cpp" />
     <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\MonkeySpin.cpp" />
     <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\ResponsiveButton.cpp" />
+    <ClCompile Include="src\ResourceSystem\Animation\AnimationFrame.cpp" />
+    <ClCompile Include="src\ResourceSystem\Animation\FTAnimation.cpp" />
+    <ClCompile Include="src\Managers\AnimationManager.cpp" />
     <ClCompile Include="src\WindowSystem\FTWindow.cpp" />
     <ClCompile Include="src\ResourceSystem\FTCubemap\FTCubemap.cpp" />
     <ClCompile Include="src\ResourceSystem\FTMaterials\RimMaterial.cpp" />
@@ -323,7 +327,7 @@
     <ClCompile Include="src\ResourceSystem\FTBasicMeshGroup.cpp" />
     <ClCompile Include="src\ResourceSystem\FTResource.cpp" />
     <ClCompile Include="src\ResourceSystem\FTShape.cpp" />
-    <ClCompile Include="src\ResourceSystem\FTSpriteAnimation.cpp" />
+    <ClCompile Include="src\ResourceSystem\Animation\FTSpriteAnimation.cpp" />
     <ClCompile Include="src\ResourceSystem\FTTexture.cpp" />
     <ClCompile Include="src\ResourceSystem\FTTileMap.cpp" />
     <ClCompile Include="src\ResourceSystem\GeometryGenerator.cpp" />
@@ -337,8 +341,12 @@
     </ClCompile>
     <ClCompile Include="src\ResourceSystem\FTShaders\StandardPS.cpp" />
     <ClCompile Include="src\ResourceSystem\FTMaterials\StandardMaterial.cpp" />
+    <ClCompile Include="src\Managers\TileMapManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ResourceSystem\Animation\AnimationFrame.h" />
+    <ClInclude Include="src\ResourceSystem\Animation\FTAnimation.h" />
+    <ClInclude Include="src\Managers\AnimationManager.h" />
     <ClInclude Include="src\WindowSystem\FTWindow.h" />
     <ClInclude Include="src\ResourceSystem\FTCubemap\FTCubemap.h" />
     <ClInclude Include="src\ResourceSystem\FTMaterials\RimMaterial.h" />
@@ -822,7 +830,7 @@
     <ClInclude Include="src\ResourceSystem\FTBasicMeshGroup.h" />
     <ClInclude Include="src\ResourceSystem\FTResource.h" />
     <ClInclude Include="src\ResourceSystem\FTShape.h" />
-    <ClInclude Include="src\ResourceSystem\FTSpriteAnimation.h" />
+    <ClInclude Include="src\ResourceSystem\Animation\FTSpriteAnimation.h" />
     <ClInclude Include="src\ResourceSystem\FTTexture.h" />
     <ClInclude Include="src\ResourceSystem\FTTileMap.h" />
     <ClInclude Include="src\ResourceSystem\GeometryGenerator.h" />
@@ -841,6 +849,7 @@
     </ClInclude>
     <ClInclude Include="src\ResourceSystem\FTShaders\StandardPS.h" />
     <ClInclude Include="src\ResourceSystem\FTMaterials\StandardMaterial.h" />
+    <ClInclude Include="src\Managers\TileMapManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

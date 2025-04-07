@@ -129,7 +129,7 @@ bool FoxtrotRenderer::Initialize(FTWindow* window, int renderWidth, int renderHe
 	DX::ThrowIfFailed(CreateDepthStencilState(mDepthStencilState2D, false));
 
 	DX::ThrowIfFailed(CreateBlendState());
-	mContext->OMSetBlendState(mBlendState.Get(), 0, D3D11_DEFAULT_SAMPLE_MASK);
+	mContext->OMSetBlendState(mBlendState.Get(), NULL, D3D11_DEFAULT_SAMPLE_MASK);
 
 	DX::ThrowIfFailed(CreateTextureSampler());
 

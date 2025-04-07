@@ -26,7 +26,8 @@
 
 void ViewportRenderer::InitializeTexture(FTWindow* window, FoxtrotRenderer* renderer, UINT width, UINT height)
 {
-	window->GetRenderArea()->SetSize(width, height);
+	ImVec2 pos = EditorLayer::GetInstance()->GetSceneViewportPos();
+	window->GetRenderArea()->Set(pos.x, pos.y, static_cast<float>(width), static_cast<float>(height));
 	CreateRenderTargetView(window, renderer);
 }
 

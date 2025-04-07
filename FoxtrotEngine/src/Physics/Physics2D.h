@@ -35,7 +35,7 @@ struct PointMass
 
 class Physics2D
 {
-	SINGLETON(Physics2D);
+	SINGLETON(Physics2D)
 
 public:
 	// Raycast wrapper for box2D

@@ -39,6 +39,8 @@ float4 main(TexPSInput input) : SV_Target
     
     int i = 0;
     
+    float alphaThres = 0.05;
+    
     [unroll] // warning X3557: loop only executes for 1 iteration(s), forcing loop to unroll
     for (i = 0; i < NUM_DIR_LIGHTS; ++i)
     {
@@ -59,5 +61,10 @@ float4 main(TexPSInput input) : SV_Target
     
     color += RimEffect(input.normalWorld, toEye, rimPower, rimStrength, rimColor);
     
-    return useTexture ? float4(color, 1.0) * g_texture0.Sample(g_sampler, input.texcoord) : float4(color, 1.0);
+    
+    float4 result = useTexture ? float4(color, 1.0) * g_texture0.Sample(g_sampler, input.texcoord) : float4(color, 1.0);
+    if (result.w < alphaThres)
+        clip(-1); // Discards the pixel
+    
+    return result;
 }

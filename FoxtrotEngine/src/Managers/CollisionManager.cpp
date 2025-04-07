@@ -78,7 +78,7 @@ void CollisionManager::RemoveCollider(int32_t index)
 
 CollisionManager::CollisionManager()
 	: mRegColliders()
-	, mCollisionMarks(new bool[((size_t)ActorGroup::END - 1) * ((size_t)ActorGroup::END - 1)])
+	, mCollisionMarks(DBG_NEW bool[((size_t)ActorGroup::END - 1) * ((size_t)ActorGroup::END - 1)])
 {
 }
 

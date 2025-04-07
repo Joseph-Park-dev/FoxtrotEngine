@@ -24,7 +24,7 @@ struct FTEvent
 
 class EventManager
 {
-	SINGLETON(EventManager);
+	SINGLETON(EventManager)
 
 public:
 	void AddEvent(const FTEvent& addedEvent)

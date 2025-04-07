@@ -51,10 +51,8 @@ void MeshRenderer::Initialize(FTCore* coreInstance)
 void MeshRenderer::Render(FoxtrotRenderer* renderer)
 {
 	if (mMeshGroup)
-		UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
-
-	if (mMeshGroup)
 	{
+		UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
 		renderer->SwitchFillMode();
 		// renderer->SetRenderTargetView();
 		mMeshGroup->Render(renderer);
@@ -86,61 +84,25 @@ std::vector<UINT>& MeshRenderer::MaterialKeys() { return mMaterialKeys; }
 
 bool MeshRenderer::InitializeMesh()
 {
-	if (mMeshKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-	{
-		FTMeshDataPack* meshData = ResourceManager::GetInstance()->GetLoadedMeshData(mMeshKey);
-		if (!mMeshGroup)
-			mMeshGroup = DBG_NEW FTBasicMeshGroup;
-		mMeshGroup->Initialize(meshData->GetMeshData(), mRenderer->GetDevice(), mRenderer->GetContext());
-
-		if (!mMeshGroup)
-		{
-			LogString("ERROR: MeshRenderer::InitializeMesh() -> Mesh Init failed.\n");
-			return false;
-		}
-		return true;
-	}
-	else
+	if (mMeshKey == ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	{
 		LogString("ERROR: MeshRenderer::InitializeMesh() -> Key doesn't exist.\n");
 		return false;
 	}
+	mMeshGroup = ResourceManager::GetInstance()->GetLoadedMesh(mMeshKey);
+	if (!mMeshGroup)
+	{
+		Debug::LogError(__LINE__, __FILE__, "MeshGroup cannot be found");
+		return false;
+	}
+	return true;
 }
 
 bool MeshRenderer::InitializeMesh(UINT key)
 {
 	mMeshKey = key;
-	MeshRenderer::InitializeMesh();
+	mMeshGroup = ResourceManager::GetInstance()->GetLoadedMesh(key);
 	return mMeshGroup != nullptr;
-}
-
-bool MeshRenderer::InitializeMesh(FTMeshData& meshData)
-{
-	if (!mMeshGroup)
-		mMeshGroup = DBG_NEW FTBasicMeshGroup;
-
-	std::vector<FTMeshData> meshes = { meshData };
-	mMeshGroup->Initialize(meshes, mRenderer->GetDevice(), mRenderer->GetContext());
-	if (!mMeshGroup)
-	{
-		LogString("ERROR: MeshRenderer::InitializeMesh() -> Mesh Init failed.\n");
-		return false;
-	}
-	return true;
-}
-
-bool MeshRenderer::InitializeMesh(std::vector<FTMeshData>& meshData)
-{
-	if (!mMeshGroup)
-		mMeshGroup = DBG_NEW FTBasicMeshGroup;
-
-	mMeshGroup->Initialize(meshData, mRenderer->GetDevice(), mRenderer->GetContext());
-	if (!mMeshGroup)
-	{
-		LogString("ERROR: MeshRenderer::InitializeMesh() -> Mesh Init failed.\n");
-		return false;
-	}
-	return true;
 }
 
 void MeshRenderer::UpdateMesh(Transform* transform, Camera* camInst)
@@ -160,7 +122,7 @@ void MeshRenderer::UpdateMesh(Transform* transform, Camera* camInst)
 		// Project Transformation
 		Matrix&& projMat = std::move(camInst->GetProjRow());
 
-		for (Mesh* mesh : mMeshGroup->GetMeshes())
+		for (Mesh* mesh : mMeshGroup->Meshes())
 		{
 			BasicVCData& vcd = mMeshGroup->GetVCData();
 			vcd.model		 = modelMat.Transpose();
@@ -172,6 +134,36 @@ void MeshRenderer::UpdateMesh(Transform* transform, Camera* camInst)
 		}
 	}
 }
+
+//void MeshRenderer::TEST_UpdateMesh(Transform* transform, Camera* camInst)
+//{
+//	if (TEST_MESH)
+//	{
+//		// Model Transformation
+//		Matrix&& modelMat = std::move(TEST_CalcModelMat(transform));
+//		Matrix	 invTransposeMat = modelMat.Transpose();
+//		invTransposeMat.Translation(Vector3(0.0f));
+//		invTransposeMat = invTransposeMat.Transpose().Invert();
+//
+//		// View Transformation
+//		Matrix&& viewMat = camInst->GetViewRow();
+//		Vector3	 eyeWorld = Vector3::Transform(Vector3(0.0f), viewMat.Invert());
+//
+//		// Project Transformation
+//		Matrix&& projMat = std::move(camInst->GetProjRow());
+//
+//		for (Mesh* mesh : TEST_MESH->Meshes())
+//		{
+//			BasicVCData& vcd = TEST_MESH->GetVCData();
+//			vcd.model = modelMat.Transpose();
+//			vcd.view = viewMat.Transpose();
+//			vcd.projection = projMat.Transpose();
+//			vcd.invTranspose = std::move(invTransposeMat);
+//
+//			TEST_MESH->UpdateConstantBuffers(mRenderer->GetDevice(), mRenderer->GetContext());
+//		}
+//	}
+//}
 
 Matrix MeshRenderer::CalcModelMat(Transform* transform)
 {
@@ -186,9 +178,22 @@ Matrix MeshRenderer::CalcModelMat(Transform* transform)
 		Matrix::CreateTranslation(transform->GetWorldPosition().GetDXVec3());
 }
 
+//Matrix MeshRenderer::TEST_CalcModelMat(Transform* transform)
+//{
+//	int		  dir = (int)transform->GetRightward().x;
+//	FTVector3 scale = transform->GetScale();
+//
+//	DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x, scale.y, scale.z);
+//	return Matrix::CreateScale(scaleWithDir) *
+//		Matrix::CreateRotationX(transform->GetRotation().x) *
+//		Matrix::CreateRotationY(transform->GetRotation().y) *
+//		Matrix::CreateRotationZ(transform->GetRotation().z) *
+//		Matrix::CreateTranslation(FTVector3::Zero.GetDXVec3());
+//}
+
 MeshRenderer::MeshRenderer(Actor* owner, int updateOrder)
 	: Component(owner, updateOrder)
-	, mMeshGroup(DBG_NEW FTBasicMeshGroup)
+	, mMeshGroup(nullptr)
 	, mRenderer(nullptr)
 	, mMeshKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	, mTexKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
@@ -199,10 +204,7 @@ MeshRenderer::MeshRenderer(Actor* owner, int updateOrder)
 MeshRenderer::~MeshRenderer()
 {
 	if (mMeshGroup)
-	{
-		delete mMeshGroup;
 		mMeshGroup = nullptr;
-	}
 	mMaterialKeys.clear();
 }
 
@@ -210,7 +212,7 @@ void MeshRenderer::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
 	// FileIOHelper::SaveBool(ofs, ChunkKey::FTMESHGROUP_DRAW_TEXTURE, mMeshGroup->GetDrawTexture());
-	FileIOHelper::SaveBool(ofs, ChunkKey::FTMESHGROUP_DRAW_NORMALS, mMeshGroup->GetDrawNormal());
+	FileIOHelper::SaveBool(ofs, ChunkKey::FTMeshGroup::DRAW_NORMALS, mMeshGroup->GetDrawNormal());
 
 	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::MESH_KEY, mMeshKey);
 	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TEXTURE_KEY, mTexKey);
@@ -240,15 +242,19 @@ void MeshRenderer::LoadProperties(std::ifstream& ifs)
 	}
 
 	FileIOHelper::LoadUnsignedInt(ifs, mTexKey);
-	mMeshGroup->SetTexture(mTexKey);
-
 	FileIOHelper::LoadUnsignedInt(ifs, mMeshKey);
 
 	bool drawVal = false;
 	FileIOHelper::LoadBool(ifs, drawVal);
-	mMeshGroup->SetDrawNormal(drawVal);
 
 	Component::LoadProperties(ifs);
+
+	InitializeMesh(mMeshKey);
+	if (mMeshGroup)
+	{
+		mMeshGroup->SetDrawNormal(drawVal);
+		mMeshGroup->SetTexture(mTexKey);
+	}
 }
 
 #ifdef FOXTROT_EDITOR
@@ -263,6 +269,16 @@ void MeshRenderer::EditorRender(FoxtrotRenderer* renderer)
 		// renderer->SetRenderTargetView();
 		mMeshGroup->Render(renderer);
 	}
+
+	//if (mMeshGroup)
+	//	TEST_UpdateMesh(GetOwner()->GetTransform(), EditorCamera::GetInstance());
+
+	//if (mMeshGroup)
+	//{
+	//	renderer->SwitchFillMode();
+	//	// renderer->SetRenderTargetView();
+	//	TEST_MESH->Render(renderer);
+	//}
 }
 
 void MeshRenderer::EditorUIUpdate()
@@ -274,15 +290,6 @@ void MeshRenderer::EditorUIUpdate()
 		mMeshGroup->UpdateUI();
 		UpdateMaterial();
 	}
-
-	if (ImGui::Button("Add Cube"))
-		AddCube();
-	if (ImGui::Button("Add Plane"))
-		AddPlane();
-	if (ImGui::Button("Add Cylinder"))
-		AddCylinder();
-	if (ImGui::Button("Add Sphere"))
-		AddSphere();
 	AddModel();
 
 	UpdateSprite();
@@ -327,7 +334,7 @@ void MeshRenderer::UpdateSprite()
 
 	if (key != mTexKey)
 	{
-		SetTexKey(key);
+		SetTexKey(mTexKey);
 		mMeshGroup->SetTexture(mTexKey);
 	}
 }
@@ -373,10 +380,13 @@ void MeshRenderer::UpdateSprite(UINT& key)
 			for (auto iter = texturesMap.begin(); iter != texturesMap.end();
 				 ++iter, ++i)
 			{
-				if (ImGui::Selectable((*iter).second->GetFileName().c_str(), selected == i))
+				if ((*iter).second)
 				{
-					spriteKey = (*iter).first;
-					selected  = i;
+					if (ImGui::Selectable((*iter).second->GetFileName().c_str(), selected == i))
+					{
+						spriteKey = (*iter).first;
+						selected = i;
+					}
 				}
 			}
 			ImGui::TreePop();
@@ -418,40 +428,8 @@ void MeshRenderer::AddModel()
 {
 	UINT key = mMeshKey;
 	FTEditorUtils::DisplayResSelection(
-		"Select Mesh", ResourceManager::GetInstance()->GetMeshDataMap(), key);
+		"Select Mesh", ResourceManager::GetInstance()->GetMeshGroupsMap(), key);
 	if (mMeshKey != key)
 		InitializeMesh(key);
-}
-
-void MeshRenderer::AddCube()
-{
-	FTMeshData meshData =
-		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKey::PRIMITIVE_BOX);
-	InitializeMesh(meshData);
-	LogString("Cube added");
-}
-
-void MeshRenderer::AddPlane()
-{
-	FTMeshData meshData =
-		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKey::PRIMITIVE_SQUARE_GRID);
-	InitializeMesh(meshData);
-	LogString("Plane added");
-}
-
-void MeshRenderer::AddCylinder()
-{
-	FTMeshData meshData =
-		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKey::PRIMITIVE_CYLINDER);
-	InitializeMesh(meshData);
-	LogString("Cylinder added");
-}
-
-void MeshRenderer::AddSphere()
-{
-	FTMeshData meshData =
-		ResourceManager::GetInstance()->GetLoaded3DPrimitive(ChunkKey::PRIMITIVE_SPHERE);
-	InitializeMesh(meshData);
-	LogString("Sphere added");
 }
 #endif // FOXTROT_EDITOR

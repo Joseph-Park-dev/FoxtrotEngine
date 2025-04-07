@@ -22,7 +22,7 @@
 class FTCoreEditor :
 	public FTCore
 {
-	SINGLETON(FTCoreEditor);
+	SINGLETON(FTCoreEditor)
 
 public:
 	bool		 Initialize() override;

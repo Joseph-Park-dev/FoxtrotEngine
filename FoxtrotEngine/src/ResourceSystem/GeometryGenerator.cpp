@@ -306,7 +306,6 @@ void GeometryGenerator::MakeSpriteAnimation(std::vector<FTMeshData>& animMeshes,
 	{
 		for (size_t c = 0; c < columnCount; ++c)
 		{
-			size_t	   idx		 = columnCount * r + c;
 			FTMeshData animFrame = MakeAnimationFrame(tileMap[columnCount * r + c]);
 			animMeshes.push_back(animFrame);
 		}
@@ -318,9 +317,8 @@ FTMeshData GeometryGenerator::MakeAnimationFrame(Tile tile)
 	std::vector<Vector3> positions;
 	std::vector<Vector3> colors;
 	std::vector<Vector3> normals;
-	std::vector<Vector2> texcoords; // 텍스춰 좌표
+	std::vector<Vector2> texcoords;
 
-	// 앞면
 	positions.push_back(Vector3(-1.0f, 1.0f, 0.0f));
 	positions.push_back(Vector3(1.0f, 1.0f, 0.0f));
 	positions.push_back(Vector3(1.0f, -1.0f, 0.0f));
@@ -334,8 +332,7 @@ FTMeshData GeometryGenerator::MakeAnimationFrame(Tile tile)
 	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
 	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
 
-	// Texture Coordinates (Direct3D 9)
-	// https://learn.microsoft.com/en-us/windows/win32/direct3d9/texture-coordinates
+	// Texture coordinates used in sampling the TileMap.
 	FTRectArea&		 rectOnMap	 = tile.GetRectOnMap();
 	const FTVector2& mapMin		 = rectOnMap.GetMin();
 	const float		 widthInMap	 = rectOnMap.GetSize().x;
@@ -437,7 +434,7 @@ FTMeshData GeometryGenerator::MakeAnimationFrame(Tile tile)
 
 FTMeshData GeometryGenerator::MakeBox()
 {
-	return MakeBox(0.1f);
+	return MakeBox(1.f);
 }
 
 FTMeshData GeometryGenerator::MakeBox(float scale)
@@ -664,7 +661,6 @@ FTMeshData GeometryGenerator::MakeCylinder(const float bottomRadius, const float
 	const float dTheta = -XM_2PI / float(sliceCount);
 
 	FTMeshData meshData;
-
 	std::vector<Vertex>& vertices = meshData.Vertices;
 
 	// 옆면의 바닥 버텍스들 (인덱스 0 이상 sliceCount 미만)

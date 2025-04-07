@@ -14,8 +14,8 @@
 
 #ifdef FOXTROT_EDITOR
 	#include <imgui.h>
-	#include <imgui_impl_dx11.h>
 	#include <imgui_impl_win32.h>
+	#include <imgui_impl_dx11.h>
 
 	#include "EditorLayer.h"
 	#include "EditorSceneManager.h"

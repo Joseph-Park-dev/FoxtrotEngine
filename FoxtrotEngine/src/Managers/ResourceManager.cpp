@@ -9,6 +9,7 @@
 #include <unordered_map>
 
 #include "Managers/ResourceManager.h"
+#include "Managers/AnimationManager.h"
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/GeometryGenerator.h"
 #include "ResourceSystem/FTBasicMeshGroup.h"
@@ -54,60 +55,39 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 
 	// Add primitive geometries as resources
 	mMapMeshGroups.insert(
-		{
-			ChunkKey::PRIMITIVE_SQUARE_RED,
-			DBG_NEW FTBasicMeshGroup(
-				GeometryGenerator::MakeSquare(FTVector3(1.0f, 0.0f, 0.0f)), mRenderer)
-		}
-	);
+		{ ChunkKey::PRIMITIVE_SQUARE_RED,
+		  DBG_NEW FTBasicMeshGroup(
+			  GeometryGenerator::MakeSquare(FTVector3(1.0f, 0.0f, 0.0f)), mRenderer) });
 
 	mMapMeshGroups.insert(
-		{
-			ChunkKey::PRIMITIVE_SQUARE_GREEN,
-			DBG_NEW FTBasicMeshGroup(
-				GeometryGenerator::MakeSquare(FTVector3(0.0f, 1.0f, 0.0f)), mRenderer)
-		}
-	);
+		{ ChunkKey::PRIMITIVE_SQUARE_GREEN,
+		  DBG_NEW FTBasicMeshGroup(
+			  GeometryGenerator::MakeSquare(FTVector3(0.0f, 1.0f, 0.0f)), mRenderer) });
 
 	mMapMeshGroups.insert(
-		{
-			ChunkKey::PRIMITIVE_SQUARE_BLUE,
-			DBG_NEW FTBasicMeshGroup(
-				GeometryGenerator::MakeSquare(FTVector3(0.0f, 0.0f, 1.0f)), mRenderer)
-		}
-	);
+		{ ChunkKey::PRIMITIVE_SQUARE_BLUE,
+		  DBG_NEW FTBasicMeshGroup(
+			  GeometryGenerator::MakeSquare(FTVector3(0.0f, 0.0f, 1.0f)), mRenderer) });
 
 	mMapMeshGroups.insert(
-		{
-			ChunkKey::PRIMITIVE_BOX,
-			DBG_NEW FTBasicMeshGroup(
-				GeometryGenerator::MakeBox(), mRenderer)
-		}
-	);
+		{ ChunkKey::PRIMITIVE_BOX,
+		  DBG_NEW FTBasicMeshGroup(
+			  GeometryGenerator::MakeBox(), mRenderer) });
 
 	mMapMeshGroups.insert(
-		{
-			ChunkKey::PRIMITIVE_SQUARE_GRID,
-			DBG_NEW FTBasicMeshGroup(
-				GeometryGenerator::MakeSquareGrid(1.0f, 1.0f, 2, 2), mRenderer)
-		}
-	);
+		{ ChunkKey::PRIMITIVE_SQUARE_GRID,
+		  DBG_NEW FTBasicMeshGroup(
+			  GeometryGenerator::MakeSquareGrid(1.0f, 1.0f, 2, 2), mRenderer) });
 
 	mMapMeshGroups.insert(
-		{
-			ChunkKey::PRIMITIVE_CYLINDER,
-			DBG_NEW FTBasicMeshGroup(
-				GeometryGenerator::MakeCylinder(1.0f, 1.0f, 2, 5), mRenderer)
-		}
-	);
+		{ ChunkKey::PRIMITIVE_CYLINDER,
+		  DBG_NEW FTBasicMeshGroup(
+			  GeometryGenerator::MakeCylinder(1.0f, 1.0f, 2, 5), mRenderer) });
 
 	mMapMeshGroups.insert(
-		{
-			ChunkKey::PRIMITIVE_SPHERE,
-			DBG_NEW FTBasicMeshGroup(
-				GeometryGenerator::MakeSphere(1.0f, 10, 10), mRenderer)
-		}
-	);
+		{ ChunkKey::PRIMITIVE_SPHERE,
+		  DBG_NEW FTBasicMeshGroup(
+			  GeometryGenerator::MakeSphere(1.0f, 10, 10), mRenderer) });
 
 	mItemKey = mMapMeshGroups.size();
 
@@ -156,6 +136,7 @@ FTTileMap* ResourceManager::GetLoadedTileMap(const UINT key)
 	FTTileMap* tileMap = mMapTileMaps.at(key);
 	if (!tileMap)
 		printf("Error: ResourceManager::GetLoadedTileMap() -> FTTileMap is empty %d\n", key);
+
 	tileMap->AddRefCount();
 	return tileMap;
 }
@@ -334,29 +315,44 @@ void ResourceManager::ProcessSingleMeshGrp(FTBasicMeshGroup* meshGrp)
 	meshGrp->Initialize(
 		GeometryGenerator::ReadFromFile(meshGrp->GetRelativePath()),
 		mRenderer->GetDevice(),
-		mRenderer->GetContext()
-		);
+		mRenderer->GetContext());
 	printf("\n");
 }
 
 void ResourceManager::ProcessTileMap(FTTileMap* tileMap)
 {
-	/*if (tileMap)
-		tileMap->ReadCSV();
-	else
-		printf("ERROR : ResourceManager::ProcessTexture()->TileMap is null");*/
+	// This if statement will be triggered only on Editor
+	// (When loading all assets from Asset folder)
+	if (tileMap->GetTiles() == nullptr)
+	{
+		std::ifstream ifs(tileMap->GetRelativePath());
+		tileMap->LoadProperties(ifs);
+	}
+
+	if (tileMap->GetCSVFilePath().empty())
+		return;
+	tileMap->ReadCSV();
 }
 
 void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
 {
-	FTTileMap* tileMapBuf = ResourceManager::GetInstance()->GetLoadedTileMap(spriteAnim->GetTileMapKey());
-	if (tileMapBuf)
-		tileMapBuf->ReadCSV();
+	// This if statement will be triggered only on Editor
+	// (When loading all assets from Asset folder)
+	if (spriteAnim->GetTileMapKey() == ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	{
+		std::ifstream ifs(spriteAnim->GetRelativePath());
+		spriteAnim->LoadProperties(ifs);
+	}
+		
+	FTTileMap* tileMap = ResourceManager::GetInstance()->GetLoadedTileMap(spriteAnim->GetTileMapKey());
+	spriteAnim->SetTexture();
 
 	std::vector<FTMeshData> meshDataBuf;
 	GeometryGenerator::MakeSpriteAnimation(
-		meshDataBuf, tileMapBuf->GetTiles(), tileMapBuf->GetMaxCountOnMapX(), tileMapBuf->GetMaxCountOnMapY());
+		meshDataBuf, tileMap->GetTiles(), tileMap->GetMaxCountOnMapX(), tileMap->GetMaxCountOnMapY());
 	spriteAnim->Initialize(std::move(meshDataBuf), mRenderer->GetDevice(), mRenderer->GetContext());
+
+	printf("FTSpriteAnimation created, %s\n", spriteAnim->GetFileName().c_str());
 }
 
 void ResourceManager::ProcessMaterial(FTMaterial* material)
@@ -441,7 +437,7 @@ ResourceManager::~ResourceManager()
 
 ResourceManager::ResourceManager()
 	: mItemKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-	, mPathToAsset("./Assets")
+	, mPathToAsset(".\\Assets\\")
 	, mRenderer(nullptr)
 {
 }
@@ -569,6 +565,9 @@ void ResourceManager::LoadResByType(std::string& filePath)
 		case ResType::FTMESH:
 			LoadResource(filePath, mMapMeshGroups);
 			break;
+		case ResType::FT_SPRITE_ANIMATION:
+			LoadResource(filePath, mMapSpriteAnimation);
+			break;
 		// case ResType::FTMATERIAL:
 		//	LoadMaterial(filePath);
 		//	break;
@@ -593,8 +592,8 @@ ResType ResourceManager::GetResType(std::string& fileName)
 	else if (StrContains(FileTypes::MESH, format))
 		return ResType::FTMESH;
 
-	// else if (StrContains(FileTypes::MATERIAL, format))
-	//	return ResType::FTMATERIAL;
+	else if (StrContains(FileTypes::SPRITE_ANIMATION, format))
+		return ResType::FT_SPRITE_ANIMATION;
 
 	else if (StrContains(FileTypes::SHADER, format))
 
@@ -602,8 +601,8 @@ ResType ResourceManager::GetResType(std::string& fileName)
 			return ResType::FT_VERTEX_SHADER;
 		else if (StrContains(FileTypes::PIXEL_SHADER, fileName))
 			return ResType::FT_PIXEL_SHADER;
-	else
-		return ResType::UNSUPPORTED;
+		else
+			return ResType::UNSUPPORTED;
 }
 
 void ResourceManager::UpdateUI()

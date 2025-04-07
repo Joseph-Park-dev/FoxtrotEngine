@@ -52,7 +52,8 @@ enum class ResType
 	FTMESH,
 	FTMATERIAL,
 	FT_VERTEX_SHADER,
-	FT_PIXEL_SHADER
+	FT_PIXEL_SHADER,
+	FT_SPRITE_ANIMATION
 };
 
 class ResourceManager
@@ -150,8 +151,8 @@ private:
 	template <typename FTRESOURCE>
 	void LoadResource(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
-		FTRESOURCE* resource					= DBG_NEW FTRESOURCE;
-		UINT						   mItemKey = resource->LoadProperties(ifs);
+		FTRESOURCE* resource = DBG_NEW FTRESOURCE;
+		UINT mItemKey = resource->LoadProperties(ifs);
 
 		if (KeyExists(mItemKey, resMap))
 		{
@@ -172,21 +173,20 @@ public:
 	{
 		// Get Relative path to Assets folder
 		std::string fileName = filePath.substr(filePath.rfind("\\") + 1);
-		UINT		pending	 = mItemKey + 1;
+		UINT		itemKey	 = resMap.size();
 
-		if (!ResourceExists<FTRESOURCE*>(pending, filePath, resMap))
+		if (!ResourceExists<FTRESOURCE*>(itemKey, filePath, resMap))
 		{
-			printf("Message: Loading FTResource %s to mItemKey %d. \n", filePath.c_str(), pending);
+			printf("Message: Loading FTResource %s to mItemKey %d. \n", filePath.c_str(), itemKey);
 			FTRESOURCE* res = DBG_NEW FTRESOURCE;
 			res->SetFileName(fileName);
 			res->SetRelativePath(filePath);
-			resMap.insert(std::make_pair(pending, res));
-			mItemKey = pending;
+			resMap.insert(std::make_pair(itemKey, res));
 			return res;
 		}
 		else
 		{
-			printf("Warning : Resource %s is already loaded to mItemKey %d.\n", filePath.c_str(), pending);
+			printf("Warning : Resource %s is already loaded to mItemKey %d.\n", filePath.c_str(), itemKey);
 			return nullptr;
 		}
 	}
@@ -199,9 +199,9 @@ public:
 	template <typename FTRESOURCE>
 	UINT LoadResource(FTRESOURCE* res, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
-		++mItemKey;
-		resMap.insert(std::make_pair(mItemKey, res));
-		return mItemKey;
+		UINT key = resMap.size();
+		resMap.insert(std::make_pair(key, res));
+		return key;
 	}
 
 	/// <Removing Resources> -------------------------------------

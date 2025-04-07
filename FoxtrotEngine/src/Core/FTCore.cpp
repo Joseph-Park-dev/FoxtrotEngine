@@ -25,6 +25,7 @@
 #include "Managers/LightManager.h"
 #include "Managers/DebugShapes.h"
 #include "Managers/AnimationManager.h"
+#include "Managers/TileMapManager.h"
 #include "WindowSystem/FTWindow.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/Camera.h"
@@ -41,6 +42,7 @@
 Physics2D*		  Physics2D::mInstance		  = nullptr;
 Camera*			  Camera::mInstance			  = nullptr;
 AnimationManager* AnimationManager::mInstance = nullptr;
+TileMapManager*	  TileMapManager::mInstance	  = nullptr;
 ResourceManager*  ResourceManager::mInstance  = nullptr;
 CollisionManager* CollisionManager::mInstance = nullptr;
 SceneManager*	  SceneManager::mInstance	  = nullptr;
@@ -118,6 +120,7 @@ void FTCore::InitSingletonManagers()
 	EventManager::GetInstance();
 	LightManager::GetInstance()->Initialize(mGameRenderer);
 	AnimationManager::GetInstance()->Initialize(mGameRenderer);
+	TileMapManager::GetInstance();
 	SceneManager::GetInstance()->Initialize();
 }
 
@@ -160,7 +163,7 @@ void FTCore::UpdateGame()
 
 void FTCore::GenerateOutput()
 {
-	//mGameRenderer->RenderClear(mWindow);
+	// mGameRenderer->RenderClear(mWindow);
 	mWindow->BeginRender(mGameRenderer);
 
 	FTVector2 size = GetGameWindow()->GetRenderArea()->GetSize();
@@ -219,8 +222,9 @@ void FTCore::ShutDown()
 	ParticleSystem::GetInstance()->Destroy();
 	LightManager::GetInstance()->Destroy();
 	AnimationManager::GetInstance()->Destroy();
+	TileMapManager::GetInstance()->Destroy();
 
-	PostQuitMessage(0);
+		PostQuitMessage(0);
 }
 
 LRESULT FTCore::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)

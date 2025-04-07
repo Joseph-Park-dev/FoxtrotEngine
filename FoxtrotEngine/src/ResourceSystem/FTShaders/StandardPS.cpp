@@ -3,7 +3,7 @@
 #include "FileSystem/FileIOHelper.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "imgui.h"
+	#include <imgui.h>
 
 	#include "FileSystem/BufferSizes.h"
 	#include "CommandHistory.h"

@@ -91,6 +91,21 @@ void AnimationManager::UpdateUI(bool* opened)
 	else
 	{
 		CreateAnimation();
+
+		std::unordered_map<UINT, FTSpriteAnimation*>& map = 
+			ResourceManager::GetInstance()->GetSpriteAnimMap();
+		std::unordered_map<UINT, FTSpriteAnimation*>::iterator iter = map.begin();
+
+		for (; iter != map.end(); ++iter)
+		{
+			if ((*iter).second)
+			{
+				(*iter).second->UpdateUI();
+				if (ImGui::Button("Save"))
+					SaveSpriteAnimAsFile((*iter).second, (*iter).first);
+			}
+		}
+
 		ImGui::End();
 	}
 }

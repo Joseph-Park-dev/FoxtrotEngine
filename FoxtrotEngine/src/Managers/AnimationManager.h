@@ -27,11 +27,11 @@ private:
 public:
 	void UpdateUI(bool* opened);
 	void CreateAnimation();
+	void SaveSpriteAnimAsFile(FTSpriteAnimation* animation, UINT key);
 
 private:
 	void GetSprite(UINT& key);
 	void GetTileMap(UINT& key);
 
-	void SaveSpriteAnimAsFile(FTSpriteAnimation* animation, UINT key);
 #endif
 };

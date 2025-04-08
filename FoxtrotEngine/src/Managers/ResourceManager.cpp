@@ -106,8 +106,8 @@ void ResourceManager::DeleteAll()
 	ClearMap<FTTileMap>(mMapTileMaps);
 	ClearMap<FTPremade>(mMapPremades);
 	ClearMap<FTSpriteAnimation>(mMapSpriteAnimation);
-	ClearMap<FTMaterial>(mMapMaterials);
 	ClearMap<FTBasicMeshGroup>(mMapMeshGroups);
+	ClearMap<FTMaterial>(mMapMaterials);
 }
 
 FTTexture* ResourceManager::GetLoadedTexture(const UINT key)
@@ -279,8 +279,8 @@ void ResourceManager::LoadMaterials()
 {
 	UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 
-	StandardMaterial* standard				  = DBG_NEW StandardMaterial;
-	std::string							 path = std::string(".//Assets//Materials//") + ChunkKey::STANDARD_MAT + FileTypes::MATERIAL;
+	StandardMaterial* standard = DBG_NEW StandardMaterial;
+	std::string path = std::string(".//Assets//Materials//") + ChunkKey::STANDARD_MAT + FileTypes::MATERIAL;
 	if (!std::filesystem::exists(path))
 		standard->SaveToFile();
 	standard->LoadFromFile();
@@ -343,7 +343,7 @@ void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
 		std::ifstream ifs(spriteAnim->GetRelativePath());
 		spriteAnim->LoadProperties(ifs);
 	}
-		
+
 	FTTileMap* tileMap = ResourceManager::GetInstance()->GetLoadedTileMap(spriteAnim->GetTileMapKey());
 	spriteAnim->SetTexture();
 
@@ -479,6 +479,8 @@ void ResourceManager::SaveResources(std::ofstream& ofs)
 
 void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 {
+	DeleteAll();
+
 	std::pair<size_t, std::string> resPack	 = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RESOURCE_DATA);
 	size_t						   packCount = resPack.first;
 
@@ -520,6 +522,7 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	ProcessPixelShaders();
 
 	LoadMaterials();
+
 	ProcessPremades();
 }
 

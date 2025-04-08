@@ -223,7 +223,7 @@ public:
 		}
 		resMap.clear();
 	}
-
+	
 	template <typename FTRESOURCE>
 	void RemoveResource(UINT mItemKey, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{

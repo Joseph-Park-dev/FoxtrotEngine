@@ -80,6 +80,11 @@ void MeshRenderer::SetMeshKey(const UINT key) { mMeshKey = key; }
 void MeshRenderer::SetTexKey(const UINT key) { mTexKey = key; }
 void MeshRenderer::SetMeshGroup(FTBasicMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
 
+void MeshRenderer::SetMaterials()
+{
+	GetMeshGroup()->SetMaterials(mMaterialKeys, mRenderer->GetDevice());
+}
+
 std::vector<UINT>& MeshRenderer::MaterialKeys() { return mMaterialKeys; }
 
 bool MeshRenderer::InitializeMesh()

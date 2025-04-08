@@ -17,6 +17,7 @@ FTAnimation::FTAnimation()
 	, mType(AnimationType::NOT_ASSIGNED)
 	, mMaxFrameIdx(0)
 	, mAnimFPS(30.0f)
+	, mIsRepeated(true)
 {
 }
 
@@ -25,6 +26,7 @@ FTAnimation::FTAnimation(FTAnimation* other)
 	, mType(other->mType)
 	, mMaxFrameIdx(other->mMaxFrameIdx)
 	, mAnimFPS(other->mAnimFPS)
+	, mIsRepeated(other->mIsRepeated)
 {
 }
 
@@ -75,7 +77,8 @@ void FTAnimation::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTM
 	D3D11Utils::CreateIndexBuffer(device, normalIndices, NormalLines()->IndexBuffer);
 	NormalLines()->IndexCount = (UINT)normalIndices.size();
 
-	mMaxFrameIdx = meshes.size() - 1;
+	if(mMaxFrameIdx == 0)
+		mMaxFrameIdx = meshes.size() - 1;
 }
 
 void FTAnimation::SaveProperties(std::ofstream& ofs, UINT key)

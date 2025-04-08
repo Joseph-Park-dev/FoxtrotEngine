@@ -13,6 +13,10 @@
 #include "ResourceSystem/FTMaterials/FTMaterial.h"
 #include "ResourceSystem/Animation/AnimationFrame.h"
 
+#ifdef FOXTROT_EDITOR
+#include "Managers/AnimationManager.h"
+#endif
+
 UINT FTSpriteAnimation::GetTileMapKey()
 {
 	return mTileMapKey;

@@ -44,14 +44,6 @@ Animator::~Animator()
 	mLoadedKeys.clear();
 }
 
-void Animator::Play(bool isRepeated)
-{
-	if (GetMeshGroup() == nullptr)
-		printf("ERROR : Animator::Play()->Animation is null\n");
-	mIsFinished = false;
-	mIsRepeated = isRepeated;
-}
-
 void Animator::Play(const UINT key, bool isRepeated)
 {
 	SetMeshGroup(ResourceManager::GetInstance()->GetLoadedSpriteAnim(key));
@@ -66,35 +58,42 @@ void Animator::Stop()
 	mIsFinished = true;
 }
 
-void Animator::LoadAnimation(const UINT key)
-{
-	FTSpriteAnimation* anim	= ResourceManager::GetInstance()->GetLoadedSpriteAnim(key);
-	if (mLoadedKeys.size() == 1)
-		SetMeshGroup(anim);
-}
-
 bool Animator::GetIsFinished() const { return mIsFinished; }
-int Animator::GetCurrFrameIdx() const { return mCurrFrameIdx; }
+int	 Animator::GetCurrFrameIdx() const { return mCurrFrameIdx; }
 
 void Animator::SetFrame(int frameNumber)
 {
-	mIsFinished = false;
+	mIsFinished	  = false;
 	mCurrFrameIdx = frameNumber;
-	mAccTime = 0.f;
+	mAccTime	  = 0.f;
 }
 void Animator::SetIsFinished(bool val) { mIsFinished = val; }
 
 void Animator::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
+
+	// Loop through material keys and save.
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::MATERIAL_KEYS);
+
+	for (size_t i = 0; i < MaterialKeys().size(); ++i)
+		FileIOHelper::SaveUnsignedInt(ofs, std::to_string(i), MaterialKeys().at(i));
+	FileIOHelper::SaveSize(ofs, ChunkKey::MATERIAL_COUNT, MaterialKeys().size());
+
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::MATERIAL_KEYS);
+
+	// Loop through loaded animation keys and save.
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::LOADED_KEYS);
+
 	for (size_t i = 0; i < mLoadedKeys.size(); ++i)
 		FileIOHelper::SaveUnsignedInt(ofs, std::to_string(i), mLoadedKeys.at(i));
+
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::LOADED_KEYS);
 }
 
 void Animator::LoadProperties(std::ifstream& ifs)
 {
+	// Load Animations
 	std::pair<size_t, std::string> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::LOADED_KEYS);
 	mLoadedKeys.reserve(pack.first);
 	for (size_t i = 0; i < pack.first; ++i)
@@ -103,6 +102,18 @@ void Animator::LoadProperties(std::ifstream& ifs)
 		FileIOHelper::LoadUnsignedInt(ifs, key);
 		mLoadedKeys.push_back(key);
 	}
+
+	// Load Materials.
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::MATERIAL_KEYS);
+	size_t matCount = 0;
+	FileIOHelper::LoadSize(ifs, matCount);
+	for (size_t i = 0; i < matCount; ++i)
+	{
+		UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
+		FileIOHelper::LoadUnsignedInt(ifs, key);
+		MaterialKeys().push_back(key);
+	}
+
 	Component::LoadProperties(ifs);
 }
 
@@ -111,8 +122,8 @@ void Animator::UpdateFrame(float deltaTime)
 	if (mIsFinished)
 		return;
 	mAccTime += deltaTime;
-	FTSpriteAnimation* anim = static_cast<FTSpriteAnimation*>(GetMeshGroup());
-	AnimationFrame* currFrame = anim->GetFrame(mCurrFrameIdx);
+	FTSpriteAnimation* anim		 = static_cast<FTSpriteAnimation*>(GetMeshGroup());
+	AnimationFrame*	   currFrame = anim->GetFrame(mCurrFrameIdx);
 	if (currFrame->Duration <= mAccTime)
 	{
 		++mCurrFrameIdx;
@@ -121,7 +132,7 @@ void Animator::UpdateFrame(float deltaTime)
 			if (!mIsRepeated)
 			{
 				mCurrFrameIdx = 0;
-				mIsFinished = true;
+				mIsFinished	  = true;
 			}
 			else
 			{
@@ -137,9 +148,14 @@ void Animator::UpdateFrame(float deltaTime)
 
 void Animator::Initialize(FTCore* coreInstance)
 {
-	MeshRenderer::Initialize(coreInstance);
-	for (size_t i = 0; i < mLoadedKeys.size(); ++i)
-		LoadAnimation(mLoadedKeys.at(i));
+	SetRenderer(coreInstance->GetGameRenderer());
+	if (0 < mLoadedKeys.size())
+		Play(mLoadedKeys.at(0));
+
+	if (0 < MaterialKeys().size())
+		GetMeshGroup()->SetMaterials(MaterialKeys(), GetRenderer()->GetDevice());
+
+	Component::Initialize(coreInstance);
 }
 
 void Animator::LateUpdate(float deltaTime)
@@ -160,17 +176,19 @@ void Animator::Render(FoxtrotRenderer* renderer)
 	}
 }
 
-//void Animator::Render(FoxtrotRenderer* renderer)
+// void Animator::Render(FoxtrotRenderer* renderer)
 //{
 //	if (mCurrentAnim != nullptr)
 //		mCurrentAnim->Render(renderer, mCurrFrameIdx);
-//}
+// }
 
 void Animator::CloneTo(Actor* actor)
 {
 	Animator* newComp = DBG_NEW Animator(actor, GetUpdateOrder());
 	for (size_t i = 0; i < mLoadedKeys.size(); ++i)
 		newComp->mLoadedKeys.push_back(mLoadedKeys.at(i));
+	for (size_t i = 0; i < MaterialKeys().size(); ++i)
+		newComp->MaterialKeys().push_back(MaterialKeys().at(i));
 }
 
 #ifdef FOXTROT_EDITOR
@@ -223,7 +241,8 @@ void Animator::UpdatePlayList()
 	if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	{
 		mLoadedKeys.push_back(key);
-		LoadAnimation(key);
+		if (mLoadedKeys.size() == 1)
+			Play(key);
 	}
 
 	if (0 < mLoadedKeys.size())

@@ -188,7 +188,9 @@ Mesh*					  FTBasicMeshGroup::NormalLines() { return mNormalLines; }
 
 void FTBasicMeshGroup::SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Device>& device)
 {
-	mMaterials.clear();
+	if(0 < mMaterials.size())
+		mMaterials.clear();
+
 	for (Mesh* mesh : mMeshes)
 		mesh->PixelConstantBuffers.clear();
 

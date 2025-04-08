@@ -70,6 +70,7 @@ protected:
 
 	void SetRenderer(FoxtrotRenderer* renderer);
 	void SetMeshGroup(FTBasicMeshGroup* meshGroup);
+	void SetMaterials();
 
 	std::vector<UINT>& MaterialKeys();
 
@@ -100,7 +101,6 @@ private:
 private:
 	FoxtrotRenderer*  mRenderer;
 	FTBasicMeshGroup* mMeshGroup;
-	FTBasicMeshGroup* TEST_MESH;
 
 	///////////////////////////////////
 	// Save & Load related functions //

@@ -33,12 +33,8 @@ public:
 	}
 
 public:
-	void Play(bool isRepeated); // Play current animation
-	void Play(const UINT key, bool isRepeated);
+	void Play(const UINT key, bool isRepeated = true);
 	void Stop();
-
-public:
-	void LoadAnimation(const UINT key);
 
 public:
 	bool GetIsFinished() const;
@@ -62,6 +58,7 @@ public:
 
 private:
 	std::vector<UINT> mLoadedKeys;
+	UINT			  mCurrAnimKey;
 	int				  mCurrFrameIdx;
 	float			  mAccTime;
 	bool			  mIsFinished;
@@ -72,7 +69,6 @@ public:
 	virtual void LoadProperties(std::ifstream& ifs) override;
 
 private:
-	bool FrameIsWithinIndexRange(int currentFrame);
 	void UpdateFrame(float deltaTime);
 
 #ifdef FOXTROT_EDITOR

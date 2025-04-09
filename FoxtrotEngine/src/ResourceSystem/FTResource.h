@@ -27,6 +27,7 @@ public:
 	void SetIsProcessed(bool val) { mIsProcessed = val; }
 
 	std::string& FileName() { return mFileName; }
+	std::string& RelativePath() { return mRelativePath; }
 
 	bool IsReferenced();
 	void AddRefCount() { ++mRefCount; }

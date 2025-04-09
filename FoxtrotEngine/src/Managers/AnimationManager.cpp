@@ -34,7 +34,7 @@ FTSpriteAnimation* AnimationManager::CreateAnimationFromTile(const char* name, U
 
 	FTTileMap* tileMapBuf = ResourceManager::GetInstance()->GetLoadedTileMap(tileMapKey);
 	if (tileMapBuf->GetTiles() == nullptr)
-		tileMapBuf->ReadCSV();
+		tileMapBuf->Initialize();
 
 	std::vector<FTMeshData> meshDataBuf;
 	GeometryGenerator::MakeSpriteAnimation(

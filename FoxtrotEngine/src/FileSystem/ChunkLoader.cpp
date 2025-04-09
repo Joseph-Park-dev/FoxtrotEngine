@@ -94,11 +94,6 @@ void ChunkLoader::LoadChunkData(std::ifstream& ifs)
 	FileIOHelper::LoadSize(ifs, mCurrentChunkData.ActorCount);
 }
 
-std::string ChunkLoader::GetConvertedFileName(std::string curr, std::string prevSuffix, std::string postSuffix)
-{
-	return curr.substr(0, curr.length() - strlen(prevSuffix.c_str())) + postSuffix;
-}
-
 ChunkLoader::ChunkLoader()
 	: mCurrentChunkData{}
 	, mIsLoading(false)

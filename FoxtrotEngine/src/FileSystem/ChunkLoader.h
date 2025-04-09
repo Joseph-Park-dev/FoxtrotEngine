@@ -68,9 +68,6 @@ private:
 	ComponentLoadMap mComponentLoadMap;
 	ChunkData		 mCurrentChunkData;
 	bool			 mIsLoading;
-
-private:
-	std::string GetConvertedFileName(std::string curr, std::string prevSuffix, std::string postSuffix);
 };
 
 namespace ChunkKey

@@ -22,6 +22,7 @@
 #include "ResourceSystem/FTShaders/FTPixelShader.h"
 #include "ResourceSystem/FTMaterials/StandardMaterial.h"
 #include "ResourceSystem/FTMaterials/RimMaterial.h"
+#include "ResourceSystem/GenericData/FTCSV.h"
 #include "Core/FTCore.h"
 #include "Core/TemplateFunctions.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -52,6 +53,7 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 	mMapVertexShaders.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 	mMapPixelShaders.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 	mMapMaterials.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
+	mMapCSVs.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 
 	// Add primitive geometries as resources
 	mMapMeshGroups.insert(
@@ -108,6 +110,7 @@ void ResourceManager::DeleteAll()
 	ClearMap<FTSpriteAnimation>(mMapSpriteAnimation);
 	ClearMap<FTBasicMeshGroup>(mMapMeshGroups);
 	ClearMap<FTMaterial>(mMapMaterials);
+	ClearMap<FTCSV>(mMapCSVs);
 }
 
 FTTexture* ResourceManager::GetLoadedTexture(const UINT key)
@@ -206,6 +209,15 @@ FTSpriteAnimation* ResourceManager::GetLoadedSpriteAnim(const UINT key)
 	return spriteAnim;
 }
 
+FTCSV* ResourceManager::GetLoadedCSV(const UINT key)
+{
+	FTCSV* csv = mMapCSVs.at(key);
+	if (!csv)
+		Debug::LogError(__LINE__, __FILE__, "Failed to load FTCSV");
+	csv->AddRefCount();
+	return csv;
+}
+
 std::unordered_map<UINT, FTTexture*>& ResourceManager::GetTexturesMap()
 {
 	return mMapTextures;
@@ -239,6 +251,11 @@ std::unordered_map<UINT, FTPixelShader*>& ResourceManager::GetPixelShadersMap()
 std::unordered_map<UINT, FTMaterial*>& ResourceManager::GetMapMaterials()
 {
 	return mMapMaterials;
+}
+
+std::unordered_map<UINT, FTCSV*>& ResourceManager::GetMapCSVs()
+{
+	return mMapCSVs;
 }
 
 std::string& ResourceManager::GetPathToAsset()
@@ -279,8 +296,8 @@ void ResourceManager::LoadMaterials()
 {
 	UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 
-	StandardMaterial* standard = DBG_NEW StandardMaterial;
-	std::string path = std::string(".//Assets//Materials//") + ChunkKey::STANDARD_MAT + FileTypes::MATERIAL;
+	StandardMaterial* standard				  = DBG_NEW StandardMaterial;
+	std::string							 path = std::string(".//Assets//Materials//") + ChunkKey::STANDARD_MAT + FileTypes::MATERIAL;
 	if (!std::filesystem::exists(path))
 		standard->SaveToFile();
 	standard->LoadFromFile();
@@ -303,39 +320,48 @@ void ResourceManager::ProcessTexture(FTTexture* texture)
 	D3D11Utils::CreateTexture(mRenderer->GetDevice(), mRenderer->GetContext(), texture);
 
 	if (!texture)
-		printf("ERROR : ResourceManager::ProcessTexture()->CreateTexture() Failed");
+		Debug::LogError(__LINE__, __FILE__, "Failed to process Texture.");
 	else
 		texture->SetIsProcessed(true);
 }
 
 void ResourceManager::ProcessSingleMeshGrp(FTBasicMeshGroup* meshGrp)
 {
+	if (meshGrp->GetIsProcessed())
+		return;
+
 	if (meshGrp->GetRelativePath().empty())
 		return;
 	meshGrp->Initialize(
 		GeometryGenerator::ReadFromFile(meshGrp->GetRelativePath()),
 		mRenderer->GetDevice(),
 		mRenderer->GetContext());
-	printf("\n");
+
+	if (!meshGrp)
+		Debug::LogError(__LINE__, __FILE__, "Failed to process MeshGroup.");
+	else
+		meshGrp->SetIsProcessed(true);
 }
 
 void ResourceManager::ProcessTileMap(FTTileMap* tileMap)
 {
+	if (tileMap->GetIsProcessed())
+		return;
+
 	// This if statement will be triggered only on Editor
 	// (When loading all assets from Asset folder)
-	if (tileMap->GetTiles() == nullptr)
-	{
-		std::ifstream ifs(tileMap->GetRelativePath());
-		tileMap->LoadProperties(ifs);
-	}
+	std::ifstream ifs(tileMap->GetRelativePath());
+	tileMap->LoadProperties(ifs);
 
-	if (tileMap->GetCSVFilePath().empty())
-		return;
-	tileMap->ReadCSV();
+	tileMap->Initialize();
+	tileMap->SetIsProcessed(true);
 }
 
 void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
 {
+	if (spriteAnim->GetIsProcessed())
+		return;
+
 	// This if statement will be triggered only on Editor
 	// (When loading all assets from Asset folder)
 	if (spriteAnim->GetTileMapKey() == ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
@@ -352,7 +378,23 @@ void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
 		meshDataBuf, tileMap->GetTiles(), tileMap->GetMaxCountOnMapX(), tileMap->GetMaxCountOnMapY());
 	spriteAnim->Initialize(std::move(meshDataBuf), mRenderer->GetDevice(), mRenderer->GetContext());
 
-	printf("FTSpriteAnimation created, %s\n", spriteAnim->GetFileName().c_str());
+	if (!spriteAnim)
+		Debug::LogError(__LINE__, __FILE__, "Failed to process SpriteAnimation.");
+	else
+		spriteAnim->SetIsProcessed(true);
+}
+
+void ResourceManager::ProcessCSV(FTCSV* csv)
+{
+	if (csv->GetIsProcessed())
+		return;
+
+	csv->Read();
+
+	if (!csv)
+		Debug::LogError(__LINE__, __FILE__, "Failed to process CSV.");
+	else
+		csv->SetIsProcessed(true);
 }
 
 void ResourceManager::ProcessMaterial(FTMaterial* material)
@@ -361,9 +403,13 @@ void ResourceManager::ProcessMaterial(FTMaterial* material)
 	{
 		if (materialItem.second)
 		{
+			if (materialItem.second->GetIsProcessed())
+				continue;
+
 			materialItem.second->LoadFromFile();
 			// All loaded premades are included as default.
 			materialItem.second->AddRefCount();
+			materialItem.second->SetIsProcessed(true);
 		}
 	}
 }
@@ -407,6 +453,13 @@ void ResourceManager::ProcessSpriteAnims()
 	for (auto& animMapItem : mMapSpriteAnimation)
 		if (animMapItem.second)
 			ProcessSpriteAnim(animMapItem.second);
+}
+
+void ResourceManager::ProcessCSVs()
+{
+	for (auto& csvItem : mMapCSVs)
+		if (csvItem.second)
+			ProcessCSV(csvItem.second);
 }
 
 void ResourceManager::ProcessMaterials()
@@ -474,6 +527,10 @@ void ResourceManager::SaveResources(std::ofstream& ofs)
 	SaveResourceToChunk<FTPixelShader>(ofs, mMapPixelShaders);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_PIXEL_SHADER);
 
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CSV::CSV);
+	SaveResourceToChunk<FTCSV>(ofs, mMapCSVs);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CSV::CSV);
+
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::RESOURCE_DATA);
 }
 
@@ -484,7 +541,11 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	std::pair<size_t, std::string> resPack	 = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RESOURCE_DATA);
 	size_t						   packCount = resPack.first;
 
-	std::pair<size_t, std::string> desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_PIXEL_SHADER);
+	std::pair<size_t, std::string> desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
+	mMapCSVs.reserve(desc.first);
+	LoadResourceFromChunk<FTCSV>(ifs, mMapCSVs, desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_PIXEL_SHADER);
 	mMapPixelShaders.reserve(desc.first);
 	LoadResourceFromChunk<FTPixelShader>(ifs, mMapPixelShaders, desc.first);
 
@@ -512,6 +573,8 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	mMapTextures.reserve(desc.first);
 	LoadResourceFromChunk<FTTexture>(ifs, mMapTextures, desc.first);
 
+	ProcessCSVs();
+
 	ProcessTextures();
 	ProcessMeshGroups();
 	ProcessTileMaps();
@@ -533,6 +596,8 @@ void ResourceManager::LoadAllResourcesInAsset()
 	DirectoryHelper::IterateForFileRecurse(
 		mPathToAsset,
 		[&](std::string&& path) { LoadResByType(path); });
+	ProcessCSVs();
+
 	ProcessTextures();
 	ProcessMeshGroups();
 	ProcessTileMaps();
@@ -571,6 +636,9 @@ void ResourceManager::LoadResByType(std::string& filePath)
 		case ResType::FT_SPRITE_ANIMATION:
 			LoadResource(filePath, mMapSpriteAnimation);
 			break;
+		case ResType::FTCSV:
+			LoadResource(filePath, mMapCSVs);
+			break;
 		// case ResType::FTMATERIAL:
 		//	LoadMaterial(filePath);
 		//	break;
@@ -597,6 +665,9 @@ ResType ResourceManager::GetResType(std::string& fileName)
 
 	else if (StrContains(FileTypes::SPRITE_ANIMATION, format))
 		return ResType::FT_SPRITE_ANIMATION;
+
+	else if (StrContains(FileTypes::CSV, format))
+		return ResType::FTCSV;
 
 	else if (StrContains(FileTypes::SHADER, format))
 

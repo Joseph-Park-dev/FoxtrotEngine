@@ -265,6 +265,7 @@
     <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\GunFiringBehavior.cpp" />
     <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\MonkeySpin.cpp" />
     <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\ResponsiveButton.cpp" />
+    <ClCompile Include="src\ResourceSystem\GenericData\FTCSV.cpp" />
     <ClCompile Include="src\ResourceSystem\Animation\AnimationFrame.cpp" />
     <ClCompile Include="src\ResourceSystem\Animation\FTAnimation.cpp" />
     <ClCompile Include="src\Managers\AnimationManager.cpp" />
@@ -344,6 +345,7 @@
     <ClCompile Include="src\Managers\TileMapManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ResourceSystem\GenericData\FTCSV.h" />
     <ClInclude Include="src\ResourceSystem\Animation\AnimationFrame.h" />
     <ClInclude Include="src\ResourceSystem\Animation\FTAnimation.h" />
     <ClInclude Include="src\Managers\AnimationManager.h" />

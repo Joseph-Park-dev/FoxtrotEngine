@@ -22,6 +22,9 @@
 #include "Core/SingletonMacro.h"
 #include "Debugging/DebugMemAlloc.h"
 #include "Core/TemplateFunctions.h"
+#include "ResourceSystem/FTResource.h"
+#include "FileSystem/NullKeys.h"
+#include "FileSystem/FileTypes.h"
 
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS
@@ -42,6 +45,8 @@ class FTCore;
 class FTMaterial;
 class FTVertexShader;
 class FTPixelShader;
+class FTCSV;
+class FileIOHelper;
 
 enum class ResType
 {
@@ -53,7 +58,8 @@ enum class ResType
 	FTMATERIAL,
 	FT_VERTEX_SHADER,
 	FT_PIXEL_SHADER,
-	FT_SPRITE_ANIMATION
+	FT_SPRITE_ANIMATION,
+	FTCSV
 };
 
 class ResourceManager
@@ -77,18 +83,21 @@ public:
 	FTMaterial*		   GetLoadedMaterial(const UINT key);
 	FTBasicMeshGroup*  GetLoadedMesh(const UINT key);
 	FTSpriteAnimation* GetLoadedSpriteAnim(const UINT key);
+	FTCSV*			   GetLoadedCSV(const UINT key);
 
 public:
 	std::unordered_map<UINT, FTTexture*>& GetTexturesMap();
 	// I know the name feels so funny...
 	std::unordered_map<UINT, FTTileMap*>&		  GetTileMapsMap();
 	std::unordered_map<UINT, FTSpriteAnimation*>& GetSpriteAnimMap();
-	std::unordered_map<UINT, FTBasicMeshGroup*>&	  GetMeshGroupsMap();
+	std::unordered_map<UINT, FTBasicMeshGroup*>&  GetMeshGroupsMap();
 
 	std::unordered_map<UINT, FTVertexShader*>& GetVertexShadersMap();
 	std::unordered_map<UINT, FTPixelShader*>&  GetPixelShadersMap();
 
 	std::unordered_map<UINT, FTMaterial*>& GetMapMaterials();
+
+	std::unordered_map<UINT, FTCSV*>& GetMapCSVs();
 
 	std::string& GetPathToAsset();
 	void		 SetPathToAsset(std::string&& projectPath);
@@ -98,6 +107,9 @@ private:
 	std::string		 mPathToAsset;
 	FoxtrotRenderer* mRenderer; // For Loading FTTextures
 
+	//////////////////////
+	// Foxtrot resources//
+	//////////////////////
 private:
 	std::unordered_map<UINT, FTTexture*>		 mMapTextures;
 	std::unordered_map<UINT, FTTileMap*>		 mMapTileMaps;
@@ -112,6 +124,12 @@ private:
 
 	std::unordered_map<UINT, FTMaterial*> mMapMaterials;
 
+	////////////////////////////
+	// Generic-type resources //
+	////////////////////////////
+private:
+	std::unordered_map<UINT, FTCSV*> mMapCSVs;
+
 	/// <Chunk IO> -------------------------------------
 	/// Template member functions for saving/loading resources to/from chunk.
 	/// </Chunk IO>
@@ -123,8 +141,16 @@ public:
 		for (iter = resMap.begin(); iter != resMap.end(); ++iter)
 		{
 			if ((*iter).second)
+			{
 				if (0 < (*iter).second->GetRefCount())
-					(*iter).second->SaveProperties(ofs, (*iter).first);
+				{
+					FileIOHelper::BeginDataPackSave(ofs, (*iter).second->GetFileName());
+					FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::KEY, (*iter).first);
+					FileIOHelper::SaveString(ofs, ChunkKey::FILE_NAME, (*iter).second->GetFileName());
+					FileIOHelper::SaveString(ofs, ChunkKey::RELATIVE_PATH, (*iter).second->GetRelativePath());
+					FileIOHelper::EndDataPackSave(ofs, (*iter).second->GetFileName());
+				}
+			}
 		}
 	}
 
@@ -133,16 +159,12 @@ public:
 	template <typename FTRESOURCE>
 	void LoadResourceFromChunk(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap, size_t& resCount)
 	{
-		mItemKey += static_cast<UINT>(resCount);
-		if (0 < resCount)
+		while (0 < resCount)
 		{
-			while (0 < resCount)
-			{
-				LoadResource(ifs, resMap);
-				--resCount; // Key of the next resource to be imported.
-			}
-			// Subtract the number of resources loaded.
+			LoadResource(ifs, resMap);
+			--resCount; // Key of the next resource to be imported.
 		}
+		// Subtract the number of resources loaded.
 	}
 
 	// void LoadMaterialsFromChunk(std::ifstream& ifs);
@@ -151,17 +173,22 @@ private:
 	template <typename FTRESOURCE>
 	void LoadResource(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
-		FTRESOURCE* resource = DBG_NEW FTRESOURCE;
-		UINT mItemKey = resource->LoadProperties(ifs);
+		FTRESOURCE* res = DBG_NEW FTRESOURCE;
+		UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 
-		if (KeyExists(mItemKey, resMap))
+		FileIOHelper::BeginDataPackLoad(ifs);
+		FileIOHelper::LoadBasicString(ifs, res->RelativePath());
+		FileIOHelper::LoadBasicString(ifs, res->FileName());
+		FileIOHelper::LoadUnsignedInt(ifs, key);
+
+		if (KeyExists(key, resMap))
 		{
-			FTRESOURCE* deprecated = resMap.at(mItemKey);
+			FTRESOURCE* deprecated = resMap.at(key);
 			delete deprecated;
-			resMap.at(mItemKey) = nullptr;
-			resMap.erase(mItemKey);
+			resMap.at(key) = nullptr;
+			resMap.erase(key);
 		}
-		resMap.insert(std::make_pair(mItemKey, resource));
+		resMap.insert(std::make_pair(key, res));
 	}
 
 	/// <Creating New Resources> -------------------------------------
@@ -223,7 +250,7 @@ public:
 		}
 		resMap.clear();
 	}
-	
+
 	template <typename FTRESOURCE>
 	void RemoveResource(UINT mItemKey, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
@@ -246,12 +273,14 @@ private:
 	void ProcessSingleMeshGrp(FTBasicMeshGroup* meshGrp);
 	void ProcessTileMap(FTTileMap* tileMap);
 	void ProcessSpriteAnim(FTSpriteAnimation* spriteAnim);
+	void ProcessCSV(FTCSV* csv);
 
 	void ProcessTextures();
 	void ProcessMeshGroups();
 	void ProcessPremades();
 	void ProcessTileMaps();
 	void ProcessSpriteAnims();
+	void ProcessCSVs();
 
 	void ProcessMaterials();
 	void ProcessVertexShaders();

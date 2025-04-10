@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -14,12 +14,12 @@
 #include "ResourceSystem/Animation/AnimationFrame.h"
 
 #ifdef FOXTROT_EDITOR
-#include "Managers/AnimationManager.h"
+	#include "Managers/AnimationManager.h"
 #endif
 
-UINT FTSpriteAnimation::GetTileMapKey()
+UINT FTSpriteAnimation::GetTileDataKey()
 {
-	return mTileMapKey;
+	return mTileDataKey;
 }
 
 AnimationFrame* FTSpriteAnimation::GetFrame(int frameIdx)
@@ -28,39 +28,41 @@ AnimationFrame* FTSpriteAnimation::GetFrame(int frameIdx)
 	return static_cast<AnimationFrame*>(mesh);
 }
 
-void FTSpriteAnimation::SetTileMapKey(UINT key)
+void FTSpriteAnimation::SetTileDataKey(UINT key)
 {
-	mTileMapKey = key;
+	mTileDataKey = key;
 }
 
 FTSpriteAnimation::FTSpriteAnimation()
 	: FTAnimation()
-	, mTileMapKey	(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-{}
+	, mTileDataKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+{
+}
 
 FTSpriteAnimation::FTSpriteAnimation(FTSpriteAnimation* other)
 	: FTAnimation()
-	, mTileMapKey	(other->mTileMapKey)
+	, mTileDataKey(other->mTileDataKey)
 {
 }
 
 FTSpriteAnimation::~FTSpriteAnimation()
-{ }
+{
+}
 
 void FTSpriteAnimation::SaveProperties(std::ofstream& ofs, UINT key)
 {
-	FileIOHelper::BeginDataPackSave	(ofs, ChunkKey::SpriteAnimation::FT_SPRITE_ANIMATION);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::SpriteAnimation::FT_SPRITE_ANIMATION);
 
 	FTAnimation::SaveProperties(ofs, key);
-	FileIOHelper::SaveUnsignedInt	(ofs, ChunkKey::SpriteAnimation::ANIM_TILEMAP_KEY, mTileMapKey);
+	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::SpriteAnimation::ANIM_TILEMAP_KEY, mTileDataKey);
 
-	FileIOHelper::EndDataPackSave	(ofs, ChunkKey::SpriteAnimation::FT_SPRITE_ANIMATION);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::SpriteAnimation::FT_SPRITE_ANIMATION);
 }
 
 UINT FTSpriteAnimation::LoadProperties(std::ifstream& ifs)
 {
-	FileIOHelper::BeginDataPackLoad	(ifs, ChunkKey::SpriteAnimation::FT_SPRITE_ANIMATION);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::SpriteAnimation::FT_SPRITE_ANIMATION);
 
-	FileIOHelper::LoadUnsignedInt(ifs, mTileMapKey);
+	FileIOHelper::LoadUnsignedInt(ifs, mTileDataKey);
 	return FTAnimation::LoadProperties(ifs);
 }

@@ -220,7 +220,7 @@ void FTTileMap::UpdateUI()
 {
 	ImVec2 previewSize = ImVec2(100, 100);
 
-	CommandHistory::GetInstance()->UpdateStringValue("Name", FileName());
+	CommandHistory::GetInstance()->UpdateStringValue("TileMap Name", FileName());
 
 	FTEditorUtils::DisplayResSelection(
 		"Select CSV",

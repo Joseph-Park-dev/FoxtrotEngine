@@ -46,7 +46,8 @@ Animator::~Animator()
 
 void Animator::Play(const UINT key, bool isRepeated)
 {
-	SetMeshGroup(ResourceManager::GetInstance()->GetLoadedSpriteAnim(key));
+	UINT mapKey = mLoadedKeys.at(key);
+	SetMeshGroup(ResourceManager::GetInstance()->GetLoadedSpriteAnim(mapKey));
 	if (!GetMeshGroup())
 		printf("ERROR : Animator::Play()->Animation is null\n");
 	mIsFinished = false;

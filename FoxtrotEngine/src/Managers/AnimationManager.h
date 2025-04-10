@@ -12,10 +12,17 @@ class AnimationManager
 	SINGLETON(AnimationManager)
 
 public:
-	FTSpriteAnimation* CreateAnimationFromTile(
-		const char* name,
-		UINT		texKey,
-		UINT		tileMapKey);
+	//FTSpriteAnimation* CreateAnimationFromTileMap(
+	//	const char* name,
+	//	UINT		texKey,
+	//	UINT		tileMapKey);
+
+	FTSpriteAnimation* CreateAnimationFromSpriteSheet(
+		const char* name, 
+		UINT texKey, 
+		UINT spriteSheetKey, 
+		size_t startIndex, 
+		size_t endIndex);
 
 public:
 	void Initialize(FoxtrotRenderer* renderer);
@@ -32,6 +39,6 @@ public:
 private:
 	void GetSprite(UINT& key);
 	void GetTileMap(UINT& key);
-
+	void GetSpriteSheet(UINT& key);
 #endif
 };

@@ -4,6 +4,7 @@
 
 #include "ResourceSystem/Animation/FTSpriteAnimation.h"
 #include "ResourceSystem/FTTileMap.h"
+#include "ResourceSystem/FTSpriteSheet.h"
 #include "ResourceSystem/GeometryGenerator.h"
 #include "Managers/ResourceManager.h"
 #include "Core/FTCore.h"
@@ -14,13 +15,43 @@
 	#include "EditorUtils.h"
 	#include "FileSystem/BufferSizes.h"
 #endif // FOXTROT_EDITOR
+//
+//FTSpriteAnimation* AnimationManager::CreateAnimationFromTileMap(const char* name, UINT texKey, UINT tileMapKey)
+//{
+//	if (!mRenderer)
+//		printf("ERROR : Animator::CreateAnimationFromTile()-> Renderer is null");
+//
+//	FTSpriteAnimation* animation= DBG_NEW FTSpriteAnimation;
+//	std::string	animName = std::string(name) + FileTypes::SPRITE_ANIMATION;
+//	animation->SetFileName(animName);
+//
+//	std::string path = ResourceManager::GetInstance()->GetPathToAsset().append(animName);
+//	animation->SetRelativePath(path);
+//
+//	if (texKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+//		animation->SetTexture(texKey);
+//	if (tileMapKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+//		animation->SetTileDataKey(tileMapKey);
+//
+//	FTTileMap* tileMapBuf = ResourceManager::GetInstance()->GetLoadedTileMap(tileMapKey);
+//	if (tileMapBuf->GetTiles() == nullptr)
+//		tileMapBuf->Initialize();
+//
+//	std::vector<FTMeshData> meshDataBuf;
+//	GeometryGenerator::MakeSpriteAnimation(
+//		meshDataBuf, tileMapBuf->GetTiles(), tileMapBuf->GetMaxCountOnMapX(), tileMapBuf->GetMaxCountOnMapY());
+//	animation->Initialize(std::move(meshDataBuf), mRenderer->GetDevice(), mRenderer->GetContext());
+//	printf("FTSpriteAnimation created, %s\n", name);
+//
+//	return animation;
+//}
 
-FTSpriteAnimation* AnimationManager::CreateAnimationFromTile(const char* name, UINT texKey, UINT tileMapKey)
+FTSpriteAnimation* AnimationManager::CreateAnimationFromSpriteSheet(const char* name, UINT texKey, UINT spriteSheetKey, size_t startIndex, size_t endIndex)
 {
 	if (!mRenderer)
 		printf("ERROR : Animator::CreateAnimationFromTile()-> Renderer is null");
 
-	FTSpriteAnimation* animation= DBG_NEW FTSpriteAnimation;
+	FTSpriteAnimation* animation = DBG_NEW FTSpriteAnimation;
 	std::string	animName = std::string(name) + FileTypes::SPRITE_ANIMATION;
 	animation->SetFileName(animName);
 
@@ -29,16 +60,16 @@ FTSpriteAnimation* AnimationManager::CreateAnimationFromTile(const char* name, U
 
 	if (texKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		animation->SetTexture(texKey);
-	if (tileMapKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-		animation->SetTileMapKey(tileMapKey);
+	if (spriteSheetKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+		animation->SetTileDataKey(spriteSheetKey);
 
-	FTTileMap* tileMapBuf = ResourceManager::GetInstance()->GetLoadedTileMap(tileMapKey);
-	if (tileMapBuf->GetTiles() == nullptr)
-		tileMapBuf->Initialize();
+	FTSpriteSheet* spriteSheetBuf = ResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteSheetKey);
+	if (spriteSheetBuf->GetTiles() == nullptr)
+		spriteSheetBuf->Initialize();
 
 	std::vector<FTMeshData> meshDataBuf;
 	GeometryGenerator::MakeSpriteAnimation(
-		meshDataBuf, tileMapBuf->GetTiles(), tileMapBuf->GetMaxCountOnMapX(), tileMapBuf->GetMaxCountOnMapY());
+		meshDataBuf, spriteSheetBuf->GetTiles(), startIndex, endIndex);
 	animation->Initialize(std::move(meshDataBuf), mRenderer->GetDevice(), mRenderer->GetContext());
 	printf("FTSpriteAnimation created, %s\n", name);
 
@@ -112,11 +143,11 @@ void AnimationManager::UpdateUI(bool* opened)
 
 void AnimationManager::CreateAnimation()
 {
-	if (ImGui::Button("Create Sprite Animation"))
+	if (ImGui::Button("Create Animation from SpriteSheet"))
 	{
-		ImGui::OpenPopup("CreateSpriteAnimation");
+		ImGui::OpenPopup("CreateSpriteSheetAnim");
 	}
-	if (ImGui::BeginPopupModal("CreateSpriteAnimation"))
+	if (ImGui::BeginPopupModal("CreateSpriteSheetAnim"))
 	{
 		static char name[BufferSize::STRING_BUFFER_SIZE] = "Empty Value";
 		ImGui::InputText("Name", name, BufferSize::STRING_BUFFER_SIZE);
@@ -130,17 +161,23 @@ void AnimationManager::CreateAnimation()
 
 		ImGui::Text(text);
 
-		text				   = ChunkKey::NullVal::NULL_OBJ;
-		static UINT tileMapKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
-		GetTileMap(tileMapKey);
-		if (tileMapKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-			text = ResourceManager::GetInstance()->GetLoadedTileMap(tileMapKey)->GetFileName().c_str();
+		text = ChunkKey::NullVal::NULL_OBJ;
+		static UINT spriteSheetKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
+		GetSpriteSheet(spriteSheetKey);
+		if (spriteSheetKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+			text = ResourceManager::GetInstance()->GetLoadedTileMap(spriteSheetKey)->GetFileName().c_str();
+
+		static int startIdx;
+		static int endIdx;
+
+		CommandHistory::GetInstance()->UpdateIntValue("Anim Start Index", startIdx);
+		CommandHistory::GetInstance()->UpdateIntValue("Anim End Index", endIdx);
 
 		ImGui::Text(text);
 
 		if (ImGui::Button("Create"))
 		{
-			FTSpriteAnimation* anim = CreateAnimationFromTile(name, texKey, tileMapKey);
+			FTSpriteAnimation* anim = CreateAnimationFromSpriteSheet(name, texKey, spriteSheetKey, startIdx, endIdx);
 
 			// Load the created animation to ResourceManager & File.
 			// This is called only during the FTEditor Runtime.
@@ -165,6 +202,11 @@ void AnimationManager::GetSprite(UINT& key)
 void AnimationManager::GetTileMap(UINT& key)
 {
 	FTEditorUtils::DisplayResSelection("Select TileMap", ResourceManager::GetInstance()->GetTileMapsMap(), key);
+}
+
+void AnimationManager::GetSpriteSheet(UINT& key)
+{
+	FTEditorUtils::DisplayResSelection("Select SpriteSheet", ResourceManager::GetInstance()->GetSpriteSheetsMap(), key);
 }
 
 void AnimationManager::SaveSpriteAnimAsFile(FTSpriteAnimation* animation, UINT key)

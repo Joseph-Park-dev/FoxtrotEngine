@@ -28,7 +28,8 @@ public:
 	static std::vector<FTMeshData> MakeTileMapGrid(FTTileMap* tileMap);
 
 	static FTMeshData MakeTile(Tile& tile);
-	static void		  MakeSpriteAnimation(std::vector<FTMeshData>& animMeshes, Tile* tileMap, size_t columnCount, size_t rowCount);
+	static void		  MakeSpriteAnimation(std::vector<FTMeshData>& animMeshes, Tile* tileMap, size_t startIdx, size_t endIdx);
+	static void		  MakeSpriteAnimation(std::vector<FTMeshData>& animMeshes, Tile* tileMap, size_t count);
 	static FTMeshData MakeAnimationFrame(Tile tile);
 	// static void MakeSpriteTextGrid(std::vector<FTMeshData>& textMeshes, Tile* tileMap, size_t length, TextAttribute* attribute);
 	// static FTMeshData MakeSpriteText(Tile tile, TextAttribute* attrib, size_t col, size_t row);

@@ -300,15 +300,23 @@ FTMeshData GeometryGenerator::MakeTile(Tile& tile)
 	return meshData;
 }
 
-void GeometryGenerator::MakeSpriteAnimation(std::vector<FTMeshData>& animMeshes, Tile* tileMap, size_t columnCount, size_t rowCount)
+void GeometryGenerator::MakeSpriteAnimation(std::vector<FTMeshData>& animMeshes, Tile* tileMap, size_t startIdx, size_t endIdx)
 {
-	for (size_t r = 0; r < rowCount; ++r)
+	size_t count = endIdx - startIdx + 1;
+	assert(0 < count);
+	for (size_t i = 0; i < count; ++i)
 	{
-		for (size_t c = 0; c < columnCount; ++c)
-		{
-			FTMeshData animFrame = MakeAnimationFrame(tileMap[columnCount * r + c]);
-			animMeshes.push_back(animFrame);
-		}
+		FTMeshData animFrame = MakeAnimationFrame(tileMap[startIdx + i]);
+		animMeshes.push_back(animFrame);
+	}
+}
+
+void GeometryGenerator::MakeSpriteAnimation(std::vector<FTMeshData>& animMeshes, Tile* tileMap, size_t count)
+{
+	for (size_t i = 0; i < count; ++i)
+	{
+		FTMeshData animFrame = MakeAnimationFrame(tileMap[i]);
+		animMeshes.push_back(animFrame);
 	}
 }
 
@@ -558,7 +566,7 @@ FTMeshData GeometryGenerator::MakeBox(float scale)
 		Vertex v;
 		v.position = positions[i];
 		// v.color     = colors[i];
-		v.normal = normals[i];
+		v.normal   = normals[i];
 		v.texcoord = texcoords[i];
 		meshData.Vertices.push_back(v);
 	}
@@ -660,7 +668,7 @@ FTMeshData GeometryGenerator::MakeCylinder(const float bottomRadius, const float
 
 	const float dTheta = -XM_2PI / float(sliceCount);
 
-	FTMeshData meshData;
+	FTMeshData			 meshData;
 	std::vector<Vertex>& vertices = meshData.Vertices;
 
 	// 옆면의 바닥 버텍스들 (인덱스 0 이상 sliceCount 미만)

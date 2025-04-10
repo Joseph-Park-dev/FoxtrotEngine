@@ -11,10 +11,10 @@ class TileMapManager
 
 private:
 	void SaveTileMapAsFile(FTTileMap* tileMap, UINT key);
+	void SaveSpriteSheetAsFile(FTSpriteSheet* tileMap, UINT key);
 
 #ifdef FOXTROT_EDITOR
 public:
 	void UpdateUI(bool* opened);
 #endif
 };
-

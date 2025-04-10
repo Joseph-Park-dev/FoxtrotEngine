@@ -3,6 +3,7 @@
 #include <fstream>
 
 #include "ResourceSystem/FTTileMap.h"
+#include "ResourceSystem/FTSpriteSheet.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Managers/ResourceManager.h"
 
@@ -31,6 +32,19 @@ void TileMapManager::SaveTileMapAsFile(FTTileMap* tileMap, UINT key)
 	FileIOHelper::SaveBufferToFile(ofs);
 }
 
+void TileMapManager::SaveSpriteSheetAsFile(FTSpriteSheet* spriteSheet, UINT key)
+{
+	const std::string& path = spriteSheet->GetRelativePath();
+	spriteSheet->SetFileName(spriteSheet->GetFileName() + FileTypes::SPRITE_SHEET);
+	const std::string& name = spriteSheet->GetFileName();
+	const std::string fullPath = path + name;
+
+	spriteSheet->SetRelativePath(fullPath);
+	std::ofstream ofs(fullPath);
+	spriteSheet->SaveProperties(ofs, key);
+	FileIOHelper::SaveBufferToFile(ofs);
+}
+
 void TileMapManager::UpdateUI(bool* opened)
 {
 	if (!ImGui::Begin("TileMap Manager", opened))
@@ -41,24 +55,53 @@ void TileMapManager::UpdateUI(bool* opened)
 	{
 		ImGui::Text("Loaded TileMaps");
 
-		std::unordered_map<UINT, FTTileMap*>& map = ResourceManager::GetInstance()->GetTileMapsMap();
-		std::unordered_map<UINT, FTTileMap*>::iterator iter = map.begin();
+		std::unordered_map<UINT, FTTileMap*>& mapTileMaps = ResourceManager::GetInstance()->GetTileMapsMap();
+		std::unordered_map<UINT, FTTileMap*>::iterator iterT = mapTileMaps.begin();
 
-		for (; iter != map.end(); ++iter)
+		for (; iterT != mapTileMaps.end(); ++iterT)
 		{
-			if ((*iter).second)
+			if ((*iterT).second)
 			{
-				(*iter).second->UpdateUI();
-				if (ImGui::Button("Save"))
-					SaveTileMapAsFile((*iter).second, (*iter).first);
+				ImGui::PushID((*iterT).second);
+				(*iterT).second->UpdateUI();
+				if (ImGui::Button("Save TileMap"))
+					SaveTileMapAsFile((*iterT).second, (*iterT).first);
+				ImGui::PopID();
 			}
 		}
 
-		if (ImGui::Button("Create"))
+		if (ImGui::Button("Create TileMap"))
 		{
 			FTTileMap* tileMap = DBG_NEW FTTileMap;
 			tileMap->SetRelativePath(ResourceManager::GetInstance()->GetPathToAsset());
-			ResourceManager::GetInstance()->LoadResource(tileMap, map);
+			ResourceManager::GetInstance()->LoadResource(tileMap, mapTileMaps);
+		}
+
+		ImGui::SeparatorText("Loaded SpriteSheets");
+
+		std::unordered_map<UINT, FTSpriteSheet*>& mapSpriteSheets = ResourceManager::GetInstance()->GetSpriteSheetsMap();
+		std::unordered_map<UINT, FTSpriteSheet*>::iterator iterS = mapSpriteSheets.begin();
+
+		for (; iterS != mapSpriteSheets.end(); ++iterS)
+		{
+			if ((*iterS).second)
+			{
+				ImGui::PushID((*iterS).second);
+				(*iterS).second->UpdateUI();
+				if (ImGui::Button("Save SpriteSheet"))
+				{
+					SaveSpriteSheetAsFile((*iterS).second, (*iterS).first);
+					(*iterS).second->Initialize();
+				}
+				ImGui::PopID();
+			}
+		}
+
+		if (ImGui::Button("Create SpriteSheet"))
+		{
+			FTSpriteSheet* spriteSheet = DBG_NEW FTSpriteSheet;
+			spriteSheet->SetRelativePath(ResourceManager::GetInstance()->GetPathToAsset());
+			ResourceManager::GetInstance()->LoadResource(spriteSheet, mapSpriteSheets);
 		}
 
 		ImGui::End();

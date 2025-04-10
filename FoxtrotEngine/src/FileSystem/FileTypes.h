@@ -13,19 +13,21 @@
 namespace FileTypes
 {
 	// Essential Files
-	constexpr const char* CHUNK = ".chunk";
+	constexpr const char* CHUNK	 = ".chunk";
 	constexpr const char* GDPACK = ".gdpack";
 
 	// FTResources
-	constexpr const char* PREMADE = ".ftpremade";
-	constexpr const char* TEXTURE = ".png, .jpeg, .jpg";
-	constexpr const char* TILEMAP = ".fttilemap";
-	constexpr const char* CSV = ".csv";
-	constexpr const char* MESH = ".fbx, .stl";
+	constexpr const char* PREMADE		   = ".ftpremade";
+	constexpr const char* TEXTURE		   = ".png, .jpeg, .jpg";
+	constexpr const char* TILEMAP		   = ".fttilemap";
+	constexpr const char* SPRITE_SHEET	   = ".ftspritesheet";
+	constexpr const char* CSV			   = ".csv";
+	constexpr const char* JSON			   = ".json";
+	constexpr const char* MESH			   = ".fbx, .stl";
 	constexpr const char* SPRITE_ANIMATION = ".ftspriteanim";
-	constexpr const char* SHADER = ".hlsl";
-	constexpr const char* MATERIAL = ".ftmat";
+	constexpr const char* SHADER		   = ".hlsl";
+	constexpr const char* MATERIAL		   = ".ftmat";
 
 	constexpr const char* VERTEX_SHADER = "VS";
-	constexpr const char* PIXEL_SHADER = "PS";
-}
+	constexpr const char* PIXEL_SHADER	= "PS";
+} // namespace FileTypes

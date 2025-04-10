@@ -29,10 +29,10 @@ struct AnimationFrame;
 class FTSpriteAnimation : public FTAnimation
 {
 public:
-	UINT			GetTileMapKey();
+	UINT			GetTileDataKey();
 	AnimationFrame* GetFrame(int frameIdx);
 
-	void SetTileMapKey(UINT key);
+	void SetTileDataKey(UINT key);
 
 public:
 	FTSpriteAnimation();
@@ -40,8 +40,9 @@ public:
 	~FTSpriteAnimation() override;
 
 private:
-	// These fields need to be loaded from .chunk file
-	UINT mTileMapKey;
+	// Key to the FTResource that contains Tile data 
+	// (FTTileMap, FTSpriteSheet)
+	UINT mTileDataKey;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;

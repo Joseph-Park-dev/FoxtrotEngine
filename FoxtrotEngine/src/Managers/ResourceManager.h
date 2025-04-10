@@ -40,12 +40,14 @@ class FTBasicMeshGroup;
 struct FTMeshData;
 class FTMeshDataPack;
 class FTTileMap;
+class FTSpriteSheet;
 class FTPremade;
 class FTCore;
 class FTMaterial;
 class FTVertexShader;
 class FTPixelShader;
 class FTCSV;
+class FTJSON;
 class FileIOHelper;
 
 enum class ResType
@@ -53,13 +55,15 @@ enum class ResType
 	UNSUPPORTED,
 	FTTEXTURE,
 	FTTILEMAP,
+	FTSPRITESHEET,
 	FTPREMADE,
 	FTMESH,
 	FTMATERIAL,
 	FT_VERTEX_SHADER,
 	FT_PIXEL_SHADER,
 	FT_SPRITE_ANIMATION,
-	FTCSV
+	FTCSV,
+	FTJSON
 };
 
 class ResourceManager
@@ -77,6 +81,7 @@ public:
 	FTTexture*		   GetLoadedTexture(const UINT key);
 	FTTexture*		   GetLoadedTexture(const char* name);
 	FTTileMap*		   GetLoadedTileMap(const UINT key);
+	FTSpriteSheet*	   GetLoadedSpriteSheet(const UINT key);
 	FTPremade*		   GetLoadedPremade(const UINT key);
 	FTPremade*		   GetLoadedPremade(std::string&& fileName);
 	FTPixelShader*	   GetLoadedPixelShader(const UINT key);
@@ -84,11 +89,13 @@ public:
 	FTBasicMeshGroup*  GetLoadedMesh(const UINT key);
 	FTSpriteAnimation* GetLoadedSpriteAnim(const UINT key);
 	FTCSV*			   GetLoadedCSV(const UINT key);
+	FTJSON*			   GetLoadedJSON(const UINT key);
 
 public:
 	std::unordered_map<UINT, FTTexture*>& GetTexturesMap();
 	// I know the name feels so funny...
 	std::unordered_map<UINT, FTTileMap*>&		  GetTileMapsMap();
+	std::unordered_map<UINT, FTSpriteSheet*>&	  GetSpriteSheetsMap();
 	std::unordered_map<UINT, FTSpriteAnimation*>& GetSpriteAnimMap();
 	std::unordered_map<UINT, FTBasicMeshGroup*>&  GetMeshGroupsMap();
 
@@ -97,7 +104,8 @@ public:
 
 	std::unordered_map<UINT, FTMaterial*>& GetMapMaterials();
 
-	std::unordered_map<UINT, FTCSV*>& GetMapCSVs();
+	std::unordered_map<UINT, FTCSV*>&  GetMapCSVs();
+	std::unordered_map<UINT, FTJSON*>& GetMapJSONs();
 
 	std::string& GetPathToAsset();
 	void		 SetPathToAsset(std::string&& projectPath);
@@ -113,6 +121,7 @@ private:
 private:
 	std::unordered_map<UINT, FTTexture*>		 mMapTextures;
 	std::unordered_map<UINT, FTTileMap*>		 mMapTileMaps;
+	std::unordered_map<UINT, FTSpriteSheet*>	 mMapSpriteSheets;
 	std::unordered_map<UINT, FTPremade*>		 mMapPremades;
 	std::unordered_map<UINT, FTSpriteAnimation*> mMapSpriteAnimation;
 
@@ -128,7 +137,8 @@ private:
 	// Generic-type resources //
 	////////////////////////////
 private:
-	std::unordered_map<UINT, FTCSV*> mMapCSVs;
+	std::unordered_map<UINT, FTCSV*>  mMapCSVs;
+	std::unordered_map<UINT, FTJSON*> mMapJSONs;
 
 	/// <Chunk IO> -------------------------------------
 	/// Template member functions for saving/loading resources to/from chunk.
@@ -173,8 +183,8 @@ private:
 	template <typename FTRESOURCE>
 	void LoadResource(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap)
 	{
-		FTRESOURCE* res = DBG_NEW FTRESOURCE;
-		UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
+		FTRESOURCE* res				  = DBG_NEW FTRESOURCE;
+		UINT					  key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 
 		FileIOHelper::BeginDataPackLoad(ifs);
 		FileIOHelper::LoadBasicString(ifs, res->RelativePath());
@@ -272,15 +282,19 @@ private:
 	void ProcessTexture(FTTexture* texture);
 	void ProcessSingleMeshGrp(FTBasicMeshGroup* meshGrp);
 	void ProcessTileMap(FTTileMap* tileMap);
+	void ProcessSpriteSheet(FTSpriteSheet* spriteSheet);
 	void ProcessSpriteAnim(FTSpriteAnimation* spriteAnim);
 	void ProcessCSV(FTCSV* csv);
+	void ProcessJSON(FTJSON* json);
 
 	void ProcessTextures();
 	void ProcessMeshGroups();
 	void ProcessPremades();
 	void ProcessTileMaps();
+	void ProcessSpriteSheets();
 	void ProcessSpriteAnims();
 	void ProcessCSVs();
+	void ProcessJSONs();
 
 	void ProcessMaterials();
 	void ProcessVertexShaders();

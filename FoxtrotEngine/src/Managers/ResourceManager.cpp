@@ -14,6 +14,7 @@
 #include "ResourceSystem/GeometryGenerator.h"
 #include "ResourceSystem/FTBasicMeshGroup.h"
 #include "ResourceSystem/FTTileMap.h"
+#include "ResourceSystem/FTSpriteSheet.h"
 #include "ResourceSystem/FTPremade.h"
 #include "ResourceSystem/Animation/FTSpriteAnimation.h"
 #include "ResourceSystem/FTMeshDataPack.h"
@@ -23,6 +24,7 @@
 #include "ResourceSystem/FTMaterials/StandardMaterial.h"
 #include "ResourceSystem/FTMaterials/RimMaterial.h"
 #include "ResourceSystem/GenericData/FTCSV.h"
+#include "ResourceSystem/GenericData/FTJSON.h"
 #include "Core/FTCore.h"
 #include "Core/TemplateFunctions.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -46,6 +48,7 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 
 	mMapTextures.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 	mMapTileMaps.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
+	mMapSpriteSheets.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 	mMapPremades.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 	mMapSpriteAnimation.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 	mMapMeshGroups.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
@@ -54,6 +57,7 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 	mMapPixelShaders.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 	mMapMaterials.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 	mMapCSVs.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
+	mMapJSONs.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 
 	// Add primitive geometries as resources
 	mMapMeshGroups.insert(
@@ -106,11 +110,13 @@ void ResourceManager::DeleteAll()
 {
 	ClearMap<FTTexture>(mMapTextures);
 	ClearMap<FTTileMap>(mMapTileMaps);
+	ClearMap<FTSpriteSheet>(mMapSpriteSheets);
 	ClearMap<FTPremade>(mMapPremades);
 	ClearMap<FTSpriteAnimation>(mMapSpriteAnimation);
 	ClearMap<FTBasicMeshGroup>(mMapMeshGroups);
 	ClearMap<FTMaterial>(mMapMaterials);
 	ClearMap<FTCSV>(mMapCSVs);
+	ClearMap<FTJSON>(mMapJSONs);
 }
 
 FTTexture* ResourceManager::GetLoadedTexture(const UINT key)
@@ -142,6 +148,16 @@ FTTileMap* ResourceManager::GetLoadedTileMap(const UINT key)
 
 	tileMap->AddRefCount();
 	return tileMap;
+}
+
+FTSpriteSheet* ResourceManager::GetLoadedSpriteSheet(const UINT key)
+{
+	FTSpriteSheet* spriteSheet = mMapSpriteSheets.at(key);
+	if (!spriteSheet)
+		printf("Error: ResourceManager::GetLoadedTileMap() -> FTTileMap is empty %d\n", key);
+
+	spriteSheet->AddRefCount();
+	return spriteSheet;
 }
 
 FTPremade* ResourceManager::GetLoadedPremade(const UINT key)
@@ -218,6 +234,15 @@ FTCSV* ResourceManager::GetLoadedCSV(const UINT key)
 	return csv;
 }
 
+FTJSON* ResourceManager::GetLoadedJSON(const UINT key)
+{
+	FTJSON* json = mMapJSONs.at(key);
+	if (!json)
+		Debug::LogError(__LINE__, __FILE__, "Failed to load FTCSV");
+	json->AddRefCount();
+	return json;
+}
+
 std::unordered_map<UINT, FTTexture*>& ResourceManager::GetTexturesMap()
 {
 	return mMapTextures;
@@ -226,6 +251,11 @@ std::unordered_map<UINT, FTTexture*>& ResourceManager::GetTexturesMap()
 std::unordered_map<UINT, FTTileMap*>& ResourceManager::GetTileMapsMap()
 {
 	return mMapTileMaps;
+}
+
+std::unordered_map<UINT, FTSpriteSheet*>& ResourceManager::GetSpriteSheetsMap()
+{
+	return mMapSpriteSheets;
 }
 
 std::unordered_map<UINT, FTSpriteAnimation*>& ResourceManager::GetSpriteAnimMap()
@@ -256,6 +286,11 @@ std::unordered_map<UINT, FTMaterial*>& ResourceManager::GetMapMaterials()
 std::unordered_map<UINT, FTCSV*>& ResourceManager::GetMapCSVs()
 {
 	return mMapCSVs;
+}
+
+std::unordered_map<UINT, FTJSON*>& ResourceManager::GetMapJSONs()
+{
+	return mMapJSONs;
 }
 
 std::string& ResourceManager::GetPathToAsset()
@@ -357,6 +392,20 @@ void ResourceManager::ProcessTileMap(FTTileMap* tileMap)
 	tileMap->SetIsProcessed(true);
 }
 
+void ResourceManager::ProcessSpriteSheet(FTSpriteSheet* spriteSheet)
+{
+	if (spriteSheet->GetIsProcessed())
+		return;
+
+	// This if statement will be triggered only on Editor
+	// (When loading all assets from Asset folder)
+	std::ifstream ifs(spriteSheet->GetRelativePath());
+	spriteSheet->LoadProperties(ifs);
+
+	spriteSheet->Initialize();
+	spriteSheet->SetIsProcessed(true);
+}
+
 void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
 {
 	if (spriteAnim->GetIsProcessed())
@@ -364,18 +413,18 @@ void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
 
 	// This if statement will be triggered only on Editor
 	// (When loading all assets from Asset folder)
-	if (spriteAnim->GetTileMapKey() == ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	if (spriteAnim->GetTileDataKey() == ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	{
 		std::ifstream ifs(spriteAnim->GetRelativePath());
 		spriteAnim->LoadProperties(ifs);
 	}
 
-	FTTileMap* tileMap = ResourceManager::GetInstance()->GetLoadedTileMap(spriteAnim->GetTileMapKey());
+	FTTileMap* tileMap = ResourceManager::GetInstance()->GetLoadedTileMap(spriteAnim->GetTileDataKey());
 	spriteAnim->SetTexture();
 
 	std::vector<FTMeshData> meshDataBuf;
 	GeometryGenerator::MakeSpriteAnimation(
-		meshDataBuf, tileMap->GetTiles(), tileMap->GetMaxCountOnMapX(), tileMap->GetMaxCountOnMapY());
+		meshDataBuf, tileMap->GetTiles(), tileMap->GetMaxCountOnMapX() * tileMap->GetMaxCountOnMapY());
 	spriteAnim->Initialize(std::move(meshDataBuf), mRenderer->GetDevice(), mRenderer->GetContext());
 
 	if (!spriteAnim)
@@ -395,6 +444,19 @@ void ResourceManager::ProcessCSV(FTCSV* csv)
 		Debug::LogError(__LINE__, __FILE__, "Failed to process CSV.");
 	else
 		csv->SetIsProcessed(true);
+}
+
+void ResourceManager::ProcessJSON(FTJSON* json)
+{
+	if (json->GetIsProcessed())
+		return;
+
+	json->Read();
+
+	if (!json)
+		Debug::LogError(__LINE__, __FILE__, "Failed to process CSV.");
+	else
+		json->SetIsProcessed(true);
 }
 
 void ResourceManager::ProcessMaterial(FTMaterial* material)
@@ -448,6 +510,13 @@ void ResourceManager::ProcessTileMaps()
 			ProcessTileMap(tileMapItem.second);
 }
 
+void ResourceManager::ProcessSpriteSheets()
+{
+	for (auto& spriteSheetItem : mMapSpriteSheets)
+		if (spriteSheetItem.second)
+			ProcessSpriteSheet(spriteSheetItem.second);
+}
+
 void ResourceManager::ProcessSpriteAnims()
 {
 	for (auto& animMapItem : mMapSpriteAnimation)
@@ -460,6 +529,13 @@ void ResourceManager::ProcessCSVs()
 	for (auto& csvItem : mMapCSVs)
 		if (csvItem.second)
 			ProcessCSV(csvItem.second);
+}
+
+void ResourceManager::ProcessJSONs()
+{
+	for (auto& jsonItem : mMapJSONs)
+		if (jsonItem.second)
+			ProcessJSON(jsonItem.second);
 }
 
 void ResourceManager::ProcessMaterials()
@@ -527,6 +603,10 @@ void ResourceManager::SaveResources(std::ofstream& ofs)
 	SaveResourceToChunk<FTPixelShader>(ofs, mMapPixelShaders);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_PIXEL_SHADER);
 
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::JSON::JSON);
+	SaveResourceToChunk<FTJSON>(ofs, mMapJSONs);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::JSON::JSON);
+
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CSV::CSV);
 	SaveResourceToChunk<FTCSV>(ofs, mMapCSVs);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CSV::CSV);
@@ -544,6 +624,10 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	std::pair<size_t, std::string> desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
 	mMapCSVs.reserve(desc.first);
 	LoadResourceFromChunk<FTCSV>(ifs, mMapCSVs, desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::JSON::JSON);
+	mMapJSONs.reserve(desc.first);
+	LoadResourceFromChunk<FTJSON>(ifs, mMapJSONs, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_PIXEL_SHADER);
 	mMapPixelShaders.reserve(desc.first);
@@ -574,10 +658,12 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	LoadResourceFromChunk<FTTexture>(ifs, mMapTextures, desc.first);
 
 	ProcessCSVs();
+	ProcessJSONs();
 
 	ProcessTextures();
 	ProcessMeshGroups();
 	ProcessTileMaps();
+	ProcessSpriteSheets();
 	ProcessSpriteAnims();
 
 	ProcessMaterials();
@@ -596,11 +682,14 @@ void ResourceManager::LoadAllResourcesInAsset()
 	DirectoryHelper::IterateForFileRecurse(
 		mPathToAsset,
 		[&](std::string&& path) { LoadResByType(path); });
+
 	ProcessCSVs();
+	ProcessJSONs();
 
 	ProcessTextures();
 	ProcessMeshGroups();
 	ProcessTileMaps();
+	ProcessSpriteSheets();
 	ProcessSpriteAnims();
 
 	ProcessMaterials();
@@ -627,6 +716,9 @@ void ResourceManager::LoadResByType(std::string& filePath)
 		case ResType::FTTILEMAP:
 			LoadResource(filePath, mMapTileMaps);
 			break;
+		case ResType::FTSPRITESHEET:
+			LoadResource(filePath, mMapSpriteSheets);
+			break;
 		case ResType::FTPREMADE:
 			LoadResource(filePath, mMapPremades);
 			break;
@@ -638,6 +730,9 @@ void ResourceManager::LoadResByType(std::string& filePath)
 			break;
 		case ResType::FTCSV:
 			LoadResource(filePath, mMapCSVs);
+			break;
+		case ResType::FTJSON:
+			LoadResource(filePath, mMapJSONs);
 			break;
 		// case ResType::FTMATERIAL:
 		//	LoadMaterial(filePath);
@@ -658,6 +753,8 @@ ResType ResourceManager::GetResType(std::string& fileName)
 		return ResType::FTTEXTURE;
 	else if (StrContains(FileTypes::TILEMAP, format))
 		return ResType::FTTILEMAP;
+	else if (StrContains(FileTypes::SPRITE_SHEET, format))
+		return ResType::FTSPRITESHEET;
 	else if (StrContains(FileTypes::PREMADE, format))
 		return ResType::FTPREMADE;
 	else if (StrContains(FileTypes::MESH, format))
@@ -668,6 +765,9 @@ ResType ResourceManager::GetResType(std::string& fileName)
 
 	else if (StrContains(FileTypes::CSV, format))
 		return ResType::FTCSV;
+
+	else if (StrContains(FileTypes::JSON, format))
+		return ResType::FTJSON;
 
 	else if (StrContains(FileTypes::SHADER, format))
 

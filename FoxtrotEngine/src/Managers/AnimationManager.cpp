@@ -1,6 +1,7 @@
 #include "AnimationManager.h"
 
 #include <Windows.h>
+#include "spine/spine.h"
 
 #include "ResourceSystem/Animation/FTSpriteAnimation.h"
 #include "ResourceSystem/FTTileMap.h"
@@ -76,9 +77,15 @@ FTSpriteAnimation* AnimationManager::CreateAnimationFromSpriteSheet(const char* 
 	return animation;
 }
 
+spine::SkeletonRenderer* AnimationManager::GetSkeletonRenderer()
+{
+	return mSkeletonRenderer;
+}
+
 void AnimationManager::Initialize(FoxtrotRenderer* renderer)
 {
 	mRenderer = renderer;
+	mSkeletonRenderer = new spine::SkeletonRenderer;
 }
 
 // FTSpriteAnimation* AnimationManager::CopySpriteAnimation(FTSpriteAnimation* spriteAnim)
@@ -105,6 +112,8 @@ void AnimationManager::Initialize(FoxtrotRenderer* renderer)
 // }
 
 AnimationManager::AnimationManager()
+	: mRenderer(nullptr)
+	, mSkeletonRenderer(nullptr)
 {
 }
 

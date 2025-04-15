@@ -132,11 +132,16 @@ FTTexture* ResourceManager::GetLoadedTexture(const char* name)
 {
 	auto iter = mMapTextures.begin();
 	for (; iter != mMapTextures.end(); ++iter)
-		if (FTDS::StringEqual((*iter).second->GetFileName().c_str(), name))
+	{
+		if ((*iter).second)
 		{
-			(*iter).second->AddRefCount();
-			return (*iter).second;
+			if (FTDS::StringEqual((*iter).second->GetFileName().c_str(), name))
+			{
+				(*iter).second->AddRefCount();
+				return (*iter).second;
+			}
 		}
+	}
 	return nullptr;
 }
 

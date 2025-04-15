@@ -91,6 +91,18 @@ public:
 	FTCSV*			   GetLoadedCSV(const UINT key);
 	FTJSON*			   GetLoadedJSON(const UINT key);
 
+	template <typename FTRESOURCE>
+	UINT GetKey(FTRESOURCE* res, std::unordered_map<UINT, FTRESOURCE*> resMap)
+	{
+		typename std::unordered_map<UINT, FTRESOURCE*>::iterator iter = resMap.begin();
+		for (; iter != resMap.end(); ++iter)
+		{
+			if ((*iter).second == res)
+				return (*iter).first;
+		}
+		return ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
+	}
+
 public:
 	std::unordered_map<UINT, FTTexture*>& GetTexturesMap();
 	// I know the name feels so funny...

@@ -33,7 +33,7 @@ public:
 		ComPtr<ID3D11Device>&		 device,
 		ComPtr<ID3D11DeviceContext>& context);
 
-	void		 Render(FoxtrotRenderer* renderer);
+	virtual void Render(FoxtrotRenderer* renderer);
 	virtual void Render(FoxtrotRenderer* renderer, int meshIndex);
 
 	void Clear();
@@ -48,6 +48,7 @@ public:
 	void SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Device>& device);
 	void SetTexture();
 	void SetTexture(UINT texKey);
+	void SetTexture(FTTexture* tex);
 	void SetNormalLines(Mesh* normalLines);
 	void SetDrawNormal(bool drawNormal);
 

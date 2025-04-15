@@ -37,6 +37,7 @@ EditorChunkLoader::EditorChunkLoader()
 		{ "TileMapRenderer", &Component::Create<TileMapRenderer> },
 		{ "TextRenderer", &Component::Create<TextRenderer> },
 		{ "MeshRenderer", &Component::Create<MeshRenderer> },
+		{ "SpineAnimator", &Component::Create<SpineAnimator> },
 
 		// UI related
 		{ "ButtonUI", &Component::Create<ButtonUI> },

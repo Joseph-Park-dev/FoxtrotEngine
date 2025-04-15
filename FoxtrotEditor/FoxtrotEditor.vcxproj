@@ -247,7 +247,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\[2024_01]\Test_Project_FTEngine\Assets\Scripts;..\FoxtrotEngine\include;..\FoxtrotEngine\include\assimp;..\FoxtrotEngine\include\assimp\include;..\FoxtrotEngine\include\assimp\code;..\FoxtrotEngine\src;.\include;.\include\imgui;.\include\imgui\backends;.\include\imgui\misc\cpp;.\vcpkg_installed\x64-windows\include;.\src;..\FoxtrotDS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\[2024_01]\Test_Project_FTEngine\Assets\Scripts;..\FoxtrotEngine\include;..\FoxtrotEngine\include\spine-cpp\include\;..\FoxtrotEngine\include\spine-cpp\include\spine;..\FoxtrotEngine\include\assimp;..\FoxtrotEngine\include\assimp\include;..\FoxtrotEngine\include\assimp\code;..\FoxtrotEngine\src;.\include;.\include\imgui;.\include\imgui\backends;.\include\imgui\misc\cpp;.\vcpkg_installed\x64-windows\include;.\src;..\FoxtrotDS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -273,7 +273,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="include\FileDialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="include\imgui\FileDialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="src\EditorCamera.cpp" />
     <ClCompile Include="src\ActorCommand.cpp" />

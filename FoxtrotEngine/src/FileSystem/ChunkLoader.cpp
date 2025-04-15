@@ -109,6 +109,7 @@ ChunkLoader::ChunkLoader()
 		{ "TileMap", &Component::Load<TileMapRenderer> },
 		{ "TextRenderer", &Component::Load<TextRenderer> },
 		{ "MeshRenderer", &Component::Load<MeshRenderer> },
+		{ "SpineAnimator", &Component::Load<SpineAnimator> },
 
 		{ "ButtonUI", &Component::Load<ButtonUI> },
 

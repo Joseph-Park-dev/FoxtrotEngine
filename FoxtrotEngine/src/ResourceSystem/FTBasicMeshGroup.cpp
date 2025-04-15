@@ -232,6 +232,13 @@ void FTBasicMeshGroup::SetTexture(UINT texKey)
 	SetTexture();
 }
 
+void FTBasicMeshGroup::SetTexture(FTTexture* tex)
+{
+	mTexKey = ResourceManager::GetInstance()->GetKey(tex, 
+		ResourceManager::GetInstance()->GetTexturesMap());
+	mTexture = tex;
+}
+
 void FTBasicMeshGroup::SetNormalLines(Mesh* normalLines) { mNormalLines = normalLines; }
 void FTBasicMeshGroup::SetDrawNormal(bool drawNormal) { mDrawNormal = drawNormal; }
 

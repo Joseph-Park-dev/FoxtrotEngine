@@ -38,6 +38,9 @@
 #define NORMAL_VS_PATH L"Assets/Shaders/NormalVS.hlsl"
 #define NORMAL_PS_PATH L"Assets/Shaders/NormalPS.hlsl"
 
+#define CUBEMAP_VS_PATH L"Assets/Shaders/CubeMapVS.hlsl"
+#define CUBEMAP_PS_PATH L"Assets/Shaders/CubeMapPS.hlsl"
+
 using VertexType = DirectX::VertexPositionColor;
 using namespace Microsoft::WRL;
 using namespace DX;
@@ -68,9 +71,9 @@ public:
 
 public:
 	// D3D11 interfaces (Getters).
-	ComPtr<ID3D11Device>&			GetDevice();
-	ComPtr<ID3D11DeviceContext>&	GetContext();
-	ComPtr<ID3D11BlendState>&		GetBlendState();
+	ComPtr<ID3D11Device>&		 GetDevice();
+	ComPtr<ID3D11DeviceContext>& GetContext();
+	ComPtr<ID3D11BlendState>&	 GetBlendState();
 
 	ComPtr<ID3D11DepthStencilState>& GetDSS();
 	ComPtr<ID3D11DepthStencilState>& GetDSS2D();
@@ -90,9 +93,12 @@ public:
 	ComPtr<ID3D11VertexShader>& GetNormalVS();
 	ComPtr<ID3D11PixelShader>&	GetNormalPS();
 
+	ComPtr<ID3D11VertexShader>& GetCubeMapVS();
+	ComPtr<ID3D11PixelShader>&	GetCubeMapPS();
+
 	// Rendering size related (Getters and Setters).
-	UINT	  GetNumQualityLevels();
-	uint8_t*  GetCursorPosColor();
+	UINT	 GetNumQualityLevels();
+	uint8_t* GetCursorPosColor();
 
 	// FillMode related (Getters and Setters)
 	void	 SwitchFillMode() const;
@@ -109,10 +115,10 @@ public:
 	};
 
 private:
-	ComPtr<ID3D11Device>		   mDevice;
-	ComPtr<ID3D11DeviceContext>	   mContext;
-	ComPtr<ID3D11RasterizerState>  mSolidRasterizerState;
-	ComPtr<ID3D11RasterizerState>  mWireframeRasterizerState;
+	ComPtr<ID3D11Device>		  mDevice;
+	ComPtr<ID3D11DeviceContext>	  mContext;
+	ComPtr<ID3D11RasterizerState> mSolidRasterizerState;
+	ComPtr<ID3D11RasterizerState> mWireframeRasterizerState;
 
 	ComPtr<ID3D11DepthStencilState> mDepthStencilState;
 	ComPtr<ID3D11DepthStencilState> mDepthStencilState2D;
@@ -135,6 +141,9 @@ private:
 
 	ComPtr<ID3D11VertexShader> mNormalVS;
 	ComPtr<ID3D11PixelShader>  mNormalPS;
+
+	ComPtr<ID3D11VertexShader> mCubeMapVS;
+	ComPtr<ID3D11PixelShader>  mCubeMapPS;
 
 	ComPtr<ID3D11BlendState> mBlendState;
 
@@ -159,9 +168,9 @@ public:
 	void SetViewport(const ImVec2& topLeft, const ImVec2& resolution);
 
 public:
-	ViewportRenderer*				GetViewportRenderer();
+	ViewportRenderer* GetViewportRenderer();
 
 private:
-	ViewportRenderer*			   mViewportRenderer;
+	ViewportRenderer* mViewportRenderer;
 #endif // FOXTROT_EDITOR
 };

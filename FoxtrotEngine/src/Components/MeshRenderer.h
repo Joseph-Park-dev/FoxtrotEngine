@@ -82,8 +82,6 @@ protected:
 	bool		 InitializeMesh(UINT key);
 	virtual void UpdateMesh(Transform* transform, Camera* camInst);
 
-	DirectX::SimpleMath::Matrix CalcModelMat(Transform* transform);
-
 	//////////////////////////////////////////
 	// Component elements					//
 	// These will be read from .chunk file. //

@@ -96,6 +96,9 @@ ComPtr<ID3D11PixelShader>&	FoxtrotRenderer::GetRimTexturePS() { return mRimTextu
 ComPtr<ID3D11VertexShader>& FoxtrotRenderer::GetNormalVS() { return mNormalVS; }
 ComPtr<ID3D11PixelShader>&	FoxtrotRenderer::GetNormalPS() { return mNormalPS; }
 
+ComPtr<ID3D11VertexShader>& FoxtrotRenderer::GetCubeMapVS() { return mCubeMapVS; }
+ComPtr<ID3D11PixelShader>&	FoxtrotRenderer::GetCubeMapPS() { return mCubeMapPS; }
+
 UINT FoxtrotRenderer::GetNumQualityLevels() { return mNumQualityLevels; }
 
 uint8_t* FoxtrotRenderer::GetCursorPosColor()
@@ -195,6 +198,20 @@ bool FoxtrotRenderer::Initialize(FTWindow* window, int renderWidth, int renderHe
 			mDevice,
 			NORMAL_PS_PATH,
 			mNormalPS));
+
+	DX::ThrowIfFailed(
+		D3D11Utils::CreateVertexShaderAndInputLayout(
+			mDevice,
+			CUBEMAP_VS_PATH,
+			inputElements,
+			mCubeMapVS,
+			mTextureInputLayout));
+
+	DX::ThrowIfFailed(
+		D3D11Utils::CreatePixelShader(
+			mDevice,
+			CUBEMAP_PS_PATH,
+			mCubeMapPS));
 
 	mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
 

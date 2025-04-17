@@ -174,6 +174,7 @@ void FTCore::GenerateOutput()
 		SceneManager::GetInstance()->Render(mGameRenderer);
 		ParticleSystem::GetInstance()->Render(mGameRenderer);
 		DebugShapes::GetInstance()->Render(mGameRenderer);
+		LightManager::GetInstance()->Render(mGameRenderer);
 		mWindow->SamplCursorPosColor(mGameRenderer->GetContext(), mGameRenderer->GetCursorPosColor());
 	}
 

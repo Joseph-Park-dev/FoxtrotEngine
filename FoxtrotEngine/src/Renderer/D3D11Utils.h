@@ -236,11 +236,7 @@ public:
 		ComPtr<ID3D11Texture2D>&		  texture,
 		ComPtr<ID3D11ShaderResourceView>& textureResourceView);
 
-	static HRESULT
-	CreateCubemapTexture(
-		ComPtr<ID3D11Device>&			  device,
-		const wchar_t*					  filename,
-		ComPtr<ID3D11ShaderResourceView>& texResView);
+	static HRESULT CreateCubemapTexture(ComPtr<ID3D11Device>& device, FTTexture* texture);
 
 	// 텍스춰를 이미지 파일로 저장
 	static void WriteToFile(

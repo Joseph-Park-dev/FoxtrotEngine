@@ -204,6 +204,7 @@ void FTCoreEditor::GenerateOutput()
 		EditorSceneManager::GetInstance()->Render(renderer);
 		//EditorSceneManager::GetInstance()->EditorRender(renderer);
 		DebugShapes::GetInstance()->Render(renderer);
+		LightManager::GetInstance()->Render(renderer, Camera::GetInstance());
 	}
 	GetGameWindow()->EndRender(renderer);
 

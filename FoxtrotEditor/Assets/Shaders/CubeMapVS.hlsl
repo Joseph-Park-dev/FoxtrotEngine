@@ -10,8 +10,6 @@ cbuffer BasicVertexConstantBuffer : register(b0)
 
 TexPSInput main(TexVSInput input)
 {
-    // 불필요한 멤버들도 VertexShaderInput을 통일시켰기 때문에 채워줘야 합니다.
-    
     TexPSInput output;
     float4 pos = float4(input.posModel, 1.0f);
 

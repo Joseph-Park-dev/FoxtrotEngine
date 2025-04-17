@@ -1,6 +1,10 @@
 #include "LightManager.h"
 
 #include "Debugging/DebugMemAlloc.h"
+#include "ResourceSystem/FTCubemap/FTCubemap.h"
+#include "ResourceSystem/GeometryGenerator.h"
+#include "Renderer/FoxtrotRenderer.h"
+#include "Renderer/Camera.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorUtils.h"
@@ -10,6 +14,7 @@ LightManager::LightManager()
 	: mLights(DBG_NEW Light[GameData::MAX_LIGHTS])
 	, mTypes(DBG_NEW Light::TYPE[GameData::MAX_LIGHTS])
 	, mActiveStatus(DBG_NEW bool[GameData::MAX_LIGHTS])
+	, mCubemap(nullptr)
 {
 }
 
@@ -18,15 +23,37 @@ LightManager::~LightManager()
 	delete[] mLights;
 	delete[] mTypes;
 	delete[] mActiveStatus;
+	delete mCubemap;
 }
 
 Light&		 LightManager::GetLight(size_t i) const { return mLights[i]; }
 Light::TYPE& LightManager::GetType(size_t i) const { return mTypes[i]; }
 bool&		 LightManager::IsActive(size_t i) const { return mActiveStatus[i]; }
 
-void LightManager::Initialize()
+FTCubemap* LightManager::GetCubeMap() const { return mCubemap; }
+
+void LightManager::Initialize(FoxtrotRenderer* renderer)
 {
 	mTypes[0] = Light::TYPE::DIRECTIONAL;
+}
+
+void LightManager::InitializeCubeMap(FoxtrotRenderer* renderer)
+{
+	if (!mCubemap)
+	{
+		mCubemap = DBG_NEW FTCubemap;
+		mCubemap->Initialize({ GeometryGenerator::MakeBox(20.f) }, renderer->GetDevice(), renderer->GetContext());
+	}
+}
+
+void LightManager::Render(FoxtrotRenderer* renderer, Camera* camInst)
+{
+	if (mCubemap)
+	{
+		mCubemap->CalcVCData(camInst);
+		mCubemap->UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext());
+		mCubemap->Render(renderer);
+	}
 }
 
 void LightManager::SaveProperties(std::ofstream& ofs)
@@ -55,6 +82,9 @@ void LightManager::DisplayLightMenu()
 		ImGui::EndListBox();
 	}
 	mTypes[0] = (Light::TYPE)indices[0];
+
+	if(mCubemap)
+		mCubemap->UpdateUI();
 	ImGui::End();
 }
 #endif // FOXTROT_EDITOR

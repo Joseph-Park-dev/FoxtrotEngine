@@ -54,6 +54,7 @@ enum class ResType
 {
 	UNSUPPORTED,
 	FTTEXTURE,
+	FT_CUBEMAP_TEXTURE,
 	FTTILEMAP,
 	FTSPRITESHEET,
 	FTPREMADE,
@@ -79,6 +80,7 @@ public:
 
 public:
 	FTTexture*		   GetLoadedTexture(const UINT key);
+	FTTexture*		   GetLoadedCubeMapTexture(const UINT key);
 	FTTexture*		   GetLoadedTexture(const char* name);
 	FTTileMap*		   GetLoadedTileMap(const UINT key);
 	FTSpriteSheet*	   GetLoadedSpriteSheet(const UINT key);
@@ -105,6 +107,7 @@ public:
 
 public:
 	std::unordered_map<UINT, FTTexture*>& GetTexturesMap();
+	std::unordered_map<UINT, FTTexture*>& GetCubeMapTexturesMap();
 	// I know the name feels so funny...
 	std::unordered_map<UINT, FTTileMap*>&		  GetTileMapsMap();
 	std::unordered_map<UINT, FTSpriteSheet*>&	  GetSpriteSheetsMap();
@@ -132,6 +135,7 @@ private:
 	//////////////////////
 private:
 	std::unordered_map<UINT, FTTexture*>		 mMapTextures;
+	std::unordered_map<UINT, FTTexture*>		 mMapCubeMapTextures;
 	std::unordered_map<UINT, FTTileMap*>		 mMapTileMaps;
 	std::unordered_map<UINT, FTSpriteSheet*>	 mMapSpriteSheets;
 	std::unordered_map<UINT, FTPremade*>		 mMapPremades;
@@ -292,6 +296,7 @@ public:
 	/// </Processing Resources>
 private:
 	void ProcessTexture(FTTexture* texture);
+	void ProcessCubeMapTexture(FTTexture* texture);
 	void ProcessSingleMeshGrp(FTBasicMeshGroup* meshGrp);
 	void ProcessTileMap(FTTileMap* tileMap);
 	void ProcessSpriteSheet(FTSpriteSheet* spriteSheet);
@@ -300,6 +305,7 @@ private:
 	void ProcessJSON(FTJSON* json);
 
 	void ProcessTextures();
+	void ProcessCubeMapTextures();
 	void ProcessMeshGroups();
 	void ProcessPremades();
 	void ProcessTileMaps();

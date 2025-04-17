@@ -18,9 +18,12 @@ public:
 	Light::TYPE& GetType(size_t i) const;
 	bool&		 IsActive(size_t i) const;
 
+	FTCubemap* GetCubeMap() const;
+
 public:
-	void Initialize();
-	void Render(FoxtrotRenderer* renderer);
+	void Initialize(FoxtrotRenderer* renderer);
+	void InitializeCubeMap(FoxtrotRenderer* renderer);
+	void Render(FoxtrotRenderer* renderer, Camera* camInst);
 
 private:
 	Light*		 mLights;

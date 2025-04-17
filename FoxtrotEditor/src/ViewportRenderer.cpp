@@ -23,6 +23,7 @@
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
 #include "EditorChunkLoader.h"
+#include "EditorCamera.h"
 
 void ViewportRenderer::InitializeTexture(FTWindow* window, FoxtrotRenderer* renderer, UINT width, UINT height)
 {
@@ -47,9 +48,9 @@ void ViewportRenderer::DrawOnTexture(FoxtrotRenderer* renderer)
 {
 	if (!EditorChunkLoader::GetInstance()->IsLoadingChunk())
 	{
-		//EditorSceneManager::GetInstance()->Render(renderer);
 		EditorSceneManager::GetInstance()->EditorRender(renderer);
 		DebugShapes::GetInstance()->Render(renderer);
+		LightManager::GetInstance()->Render(renderer, EditorCamera::GetInstance());
 	}
 }
 

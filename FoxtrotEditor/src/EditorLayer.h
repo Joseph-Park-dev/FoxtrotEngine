@@ -186,6 +186,9 @@ private:
 	/// </summary>
 	void DisplayViewport();
 
+	// Displays current frame rate.
+	void DisplayFrameRate();
+
 	// Displays menu docked at the top of the screen
 	// & calls the related functions.
 	void DisplayMainMenuBar();

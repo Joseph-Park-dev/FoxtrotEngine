@@ -82,6 +82,7 @@ void EditorLayer::Update(float deltaTime)
 	DisplayErrorMessage();
 
 	DisplayViewport();
+	DisplayFrameRate();
 	ImGui::EndFrame();
 }
 
@@ -111,6 +112,16 @@ void EditorLayer::DisplayViewport()
 	const ImVec2			  viewportSize	  = editorWin->GetRenderArea()->GetSize().GetImVec2();
 	ImGui::Image((ImTextureID)viewportTexture, viewportSize);
 
+	ImGui::End();
+}
+
+void EditorLayer::DisplayFrameRate()
+{
+	ImGui::Begin("Frame Rate");
+	// Display current frame rate
+	ImGui::Text("Average %.3f ms/frame (%.1f FPS)",
+		1000.0f / ImGui::GetIO().Framerate,
+		ImGui::GetIO().Framerate);
 	ImGui::End();
 }
 

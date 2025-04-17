@@ -114,29 +114,8 @@ void MeshRenderer::UpdateMesh(Transform* transform, Camera* camInst)
 {
 	if (mMeshGroup)
 	{
-		// Model Transformation
-		Matrix&& modelMat		 = std::move(CalcModelMat(transform));
-		Matrix	 invTransposeMat = modelMat.Transpose();
-		invTransposeMat.Translation(Vector3(0.0f));
-		invTransposeMat = invTransposeMat.Transpose().Invert();
-
-		// View Transformation
-		Matrix&& viewMat  = camInst->GetViewRow();
-		Vector3	 eyeWorld = Vector3::Transform(Vector3(0.0f), viewMat.Invert());
-
-		// Project Transformation
-		Matrix&& projMat = std::move(camInst->GetProjRow());
-
-		for (Mesh* mesh : mMeshGroup->Meshes())
-		{
-			BasicVCData& vcd = mMeshGroup->GetVCData();
-			vcd.model		 = modelMat.Transpose();
-			vcd.view		 = viewMat.Transpose();
-			vcd.projection	 = projMat.Transpose();
-			vcd.invTranspose = std::move(invTransposeMat);
-
-			mMeshGroup->UpdateConstantBuffers(mRenderer->GetDevice(), mRenderer->GetContext());
-		}
+		mMeshGroup->CalcVCData(transform, camInst);
+		mMeshGroup->UpdateConstantBuffers(mRenderer->GetDevice(), mRenderer->GetContext());
 	}
 }
 
@@ -169,19 +148,6 @@ void MeshRenderer::UpdateMesh(Transform* transform, Camera* camInst)
 //		}
 //	}
 //}
-
-Matrix MeshRenderer::CalcModelMat(Transform* transform)
-{
-	int		  dir	= (int)transform->GetRightward().x;
-	FTVector3 scale = transform->GetScale();
-
-	DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x, scale.y, scale.z);
-	return Matrix::CreateScale(scaleWithDir) *
-		Matrix::CreateRotationX(transform->GetRotation().x) *
-		Matrix::CreateRotationY(transform->GetRotation().y) *
-		Matrix::CreateRotationZ(transform->GetRotation().z) *
-		Matrix::CreateTranslation(transform->GetWorldPosition().GetDXVec3());
-}
 
 //Matrix MeshRenderer::TEST_CalcModelMat(Transform* transform)
 //{

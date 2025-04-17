@@ -23,6 +23,8 @@ class FTMaterial;
 class FTBasicMeshGroup : public FTResource
 {
 public:
+	virtual void CalcVCData(Transform* transform, Camera* camInst);
+
 	void UpdateConstantBuffers(
 		ComPtr<ID3D11Device>&		 device,
 		ComPtr<ID3D11DeviceContext>& context);
@@ -45,12 +47,12 @@ public:
 	BasicVCData&				GetVCData();
 	bool						GetDrawNormal();
 
-	void SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Device>& device);
-	void SetTexture();
-	void SetTexture(UINT texKey);
-	void SetTexture(FTTexture* tex);
-	void SetNormalLines(Mesh* normalLines);
-	void SetDrawNormal(bool drawNormal);
+	void		 SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Device>& device);
+	virtual void SetTexture();
+	virtual void SetTexture(UINT texKey);
+	void		 SetTexture(FTTexture* tex);
+	void		 SetNormalLines(Mesh* normalLines);
+	void		 SetDrawNormal(bool drawNormal);
 
 	std::vector<Mesh*>&		  Meshes();
 	std::vector<FTMaterial*>& Materials();
@@ -65,6 +67,24 @@ protected:
 	virtual HRESULT CreateTextureSampler(ComPtr<ID3D11Device>& device);
 	virtual void	InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTMeshData>& meshes);
 	void			InitializeConstantBuffers(ComPtr<ID3D11Device>& device);
+
+protected:
+	void SetTexKey(UINT texKey);
+
+	ComPtr<ID3D11VertexShader>& GetVertexShader();
+	ComPtr<ID3D11PixelShader>&	GetPixelShader();
+
+	void SetVertexShader(ComPtr<ID3D11VertexShader>& vs);
+	void SetPixelShader(ComPtr<ID3D11PixelShader>& ps);
+
+	// Since the texture type is diverged into FTTexture & FTCUBEMAP_TEXTURE,
+	// the TEXTURE_MAP needs to be specified.
+	template <typename TEXTURE_MAP>
+	void SetTexture(UINT key, TEXTURE_MAP& map)
+	{
+		mTexKey	 = key;
+		mTexture = map.at(key);
+	}
 
 private:
 	UINT mTexKey;
@@ -83,6 +103,9 @@ private:
 	Mesh*		 mNormalLines;
 	NormalVCData mNormalVertexConstData;
 	bool		 mDrawNormal;
+
+private:
+	void CalcModelMat(Matrix& matrix, Transform* transform);
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;

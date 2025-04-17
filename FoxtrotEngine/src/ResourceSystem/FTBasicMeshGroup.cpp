@@ -29,6 +29,31 @@ void FTBasicMeshGroup::Initialize(
 	InitializeConstantBuffers(device);
 }
 
+void FTBasicMeshGroup::CalcVCData(Transform* transform, Camera* camInst)
+{
+	// Model Transformation
+	Matrix modelMat = Matrix();
+	CalcModelMat(modelMat, transform);
+	Matrix invTransposeMat = modelMat.Transpose();
+	invTransposeMat.Translation(Vector3(0.0f));
+	invTransposeMat = invTransposeMat.Transpose().Invert();
+
+	// View Transformation
+	Matrix&& viewMat  = camInst->GetViewRow();
+	Vector3	 eyeWorld = Vector3::Transform(Vector3(0.0f), viewMat.Invert());
+
+	// Project Transformation
+	Matrix&& projMat = std::move(camInst->GetProjRow());
+
+	for (Mesh* mesh : mMeshes)
+	{
+		mVertexConstData.model		  = modelMat.Transpose();
+		mVertexConstData.view		  = viewMat.Transpose();
+		mVertexConstData.projection	  = projMat.Transpose();
+		mVertexConstData.invTranspose = std::move(invTransposeMat);
+	}
+}
+
 void FTBasicMeshGroup::UpdateConstantBuffers(
 	ComPtr<ID3D11Device>&		 device,
 	ComPtr<ID3D11DeviceContext>& context)
@@ -39,10 +64,13 @@ void FTBasicMeshGroup::UpdateConstantBuffers(
 	for (Mesh* mesh : mMeshes)
 	{
 		size_t bufferCount = 0;
-		for (FTMaterial* mat : mMaterials)
+		if (!mMaterials.empty())
 		{
-			mat->UpdateBuffer(context, mesh->PixelConstantBuffers.at(bufferCount));
-			++bufferCount;
+			for (FTMaterial* mat : mMaterials)
+			{
+				mat->UpdateBuffer(context, mesh->PixelConstantBuffers.at(bufferCount));
+				++bufferCount;
+			}
 		}
 	}
 
@@ -188,7 +216,7 @@ Mesh*					  FTBasicMeshGroup::NormalLines() { return mNormalLines; }
 
 void FTBasicMeshGroup::SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Device>& device)
 {
-	if(0 < mMaterials.size())
+	if (0 < mMaterials.size())
 		mMaterials.clear();
 
 	for (Mesh* mesh : mMeshes)
@@ -234,8 +262,7 @@ void FTBasicMeshGroup::SetTexture(UINT texKey)
 
 void FTBasicMeshGroup::SetTexture(FTTexture* tex)
 {
-	mTexKey = ResourceManager::GetInstance()->GetKey(tex, 
-		ResourceManager::GetInstance()->GetTexturesMap());
+	mTexKey	 = ResourceManager::GetInstance()->GetKey(tex, ResourceManager::GetInstance()->GetTexturesMap());
 	mTexture = tex;
 }
 
@@ -313,6 +340,13 @@ void FTBasicMeshGroup::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
 	}
 }
 
+void						FTBasicMeshGroup::SetTexKey(UINT texKey) { mTexKey = texKey; }
+ComPtr<ID3D11VertexShader>& FTBasicMeshGroup::GetVertexShader() { return mVS; }
+ComPtr<ID3D11PixelShader>&	FTBasicMeshGroup::GetPixelShader() { return mPS; }
+
+void FTBasicMeshGroup::SetVertexShader(ComPtr<ID3D11VertexShader>& vs) { mVS = vs; }
+void FTBasicMeshGroup::SetPixelShader(ComPtr<ID3D11PixelShader>& ps) { mPS = ps; }
+
 HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 {
 	// FTTexture sampler ¸¸µé±â
@@ -358,6 +392,20 @@ FTBasicMeshGroup::FTBasicMeshGroup(FTMeshData meshData, FoxtrotRenderer* rendere
 FTBasicMeshGroup::~FTBasicMeshGroup()
 {
 	Clear();
+}
+
+void FTBasicMeshGroup::CalcModelMat(Matrix& matrix, Transform* transform)
+{
+	int				  dir		   = (int)transform->GetRightward().x;
+	FTVector3		  scale		   = transform->GetScale();
+	DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x, scale.y, scale.z);
+
+	matrix =
+		Matrix::CreateScale(scaleWithDir) *
+		Matrix::CreateRotationX(transform->GetRotation().x) *
+		Matrix::CreateRotationY(transform->GetRotation().y) *
+		Matrix::CreateRotationZ(transform->GetRotation().z) *
+		Matrix::CreateTranslation(transform->GetWorldPosition().GetDXVec3());
 }
 
 void FTBasicMeshGroup::SaveProperties(std::ofstream& ofs, UINT key)

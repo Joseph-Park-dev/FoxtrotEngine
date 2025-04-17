@@ -5,10 +5,25 @@ class FTCubemap :
 	public FTBasicMeshGroup
 {
 public:
-	void Initialize(
-		ComPtr<ID3D11Device>&		 device,
-		ComPtr<ID3D11DeviceContext>& context,
-		float scale);
+	virtual void CalcVCData(Camera* camInst);
+	void SetTexture(UINT texKey) override;
 
-	void Update(Camera* camInst);
+public:
+	virtual void Initialize(
+		std::vector<FTMeshData>&& meshes,
+		ComPtr<ID3D11Device>& device,
+		ComPtr<ID3D11DeviceContext>& context) override;
+
+	virtual void Render(FoxtrotRenderer* renderer) override;
+
+protected:
+	virtual void InitializeMeshes(
+		ComPtr<ID3D11Device>& device, 
+		std::vector<FTMeshData>& meshes) override;
+
+public:
+#ifdef FOXTROT_EDITOR
+	void UpdateUI();
+#endif // FOXTROT_EDITOR
+
 };

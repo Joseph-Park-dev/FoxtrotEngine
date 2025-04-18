@@ -175,6 +175,13 @@ inline std::string ExtractFileName(const char* path)
 	return str;
 }
 
+inline std::string ExtractFileType(const char* path)
+{
+	std::filesystem::path p(path);
+	std::string			  str = p.extension().string();
+	return str;
+}
+
 inline void LTrim(std::string& str)
 {
 	str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](unsigned char ch) {

@@ -69,7 +69,7 @@ namespace ChunkKey
 		constexpr const char* DIFFUSE	= "Diffuse";
 		constexpr const char* SPECULAR	= "Specular";
 	}
-	constexpr const unsigned int BASIC_MATERIAL = 1;
+	constexpr const unsigned int STANDARD_MATERIAL = 1;
 }
 
 static_assert((sizeof(StandardMatData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");

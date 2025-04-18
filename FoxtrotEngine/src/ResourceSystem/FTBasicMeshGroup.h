@@ -43,6 +43,7 @@ public:
 public:
 	ComPtr<ID3D11SamplerState>& GetSamplerState();
 	size_t						GetMeshCount();
+	UINT						GetTexKey() const;
 	FTTexture*					GetTexture() const;
 	BasicVCData&				GetVCData();
 	bool						GetDrawNormal();

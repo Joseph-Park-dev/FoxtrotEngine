@@ -206,6 +206,7 @@ void FTBasicMeshGroup::Clear()
 
 ComPtr<ID3D11SamplerState>& FTBasicMeshGroup::GetSamplerState() { return mSamplerState; }
 size_t						FTBasicMeshGroup::GetMeshCount() { return mMeshes.size(); }
+UINT						FTBasicMeshGroup::GetTexKey() const { return mTexKey; }
 FTTexture*					FTBasicMeshGroup::GetTexture() const { return mTexture; }
 BasicVCData&				FTBasicMeshGroup::GetVCData() { return mVertexConstData; }
 bool						FTBasicMeshGroup::GetDrawNormal() { return mDrawNormal; }
@@ -227,8 +228,11 @@ void FTBasicMeshGroup::SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Dev
 		Debug::LogError(__LINE__, __FILE__, "Material Key not assigned");
 		return;
 	}
-	for (UINT& key : matKeys)
-		mMaterials.push_back(ResourceManager::GetInstance()->GetLoadedMaterial(key));
+	if (1 < ResourceManager::GetInstance()->GetMapMaterials().size())
+	{
+		for (UINT& key : matKeys)
+			mMaterials.push_back(ResourceManager::GetInstance()->GetLoadedMaterial(key));
+	}
 
 	for (Mesh* mesh : mMeshes)
 	{

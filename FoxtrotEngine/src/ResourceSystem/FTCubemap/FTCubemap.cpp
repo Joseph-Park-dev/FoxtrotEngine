@@ -31,28 +31,16 @@ void FTCubemap::CalcVCData(Camera* camInst)
 	}
 }
 
-void FTCubemap::SetTexture(UINT texKey)
-{
-	if (texKey == ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-	{
-		printf("ERROR: MeshRenderer::SetTexture() -> TexKey not assigned.\n");
-		return;
-	}
-	FTBasicMeshGroup::SetTexture(texKey, ResourceManager::GetInstance()->GetCubeMapTexturesMap());
-
-	if (!GetTexture())
-		printf("ERROR: MeshRenderer::SetTexture() -> Cannot set texture %d, returning nullptr.\n", texKey);
-}
-
 void FTCubemap::Initialize(std::vector<FTMeshData>&& meshes, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
 	// Rendered face should be headed inward.
 	for (FTMeshData& meshData : meshes)
 		std::reverse(meshData.Indices.begin(), meshData.Indices.end());
 
-	StandardMaterial* mat = static_cast<StandardMaterial*>(ResourceManager::GetInstance()->GetLoadedMaterial(1));
-	Materials().push_back(mat);
 	FTBasicMeshGroup::Initialize(std::move(meshes), device, context);
+
+	std::vector<UINT> matKey = { ChunkKey::STANDARD_MATERIAL };
+	SetMaterials(matKey, device);
 }
 
 void FTCubemap::Render(FoxtrotRenderer* renderer)
@@ -112,11 +100,24 @@ void FTCubemap::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTMes
 	}
 }
 
+void FTCubemap::SaveProperties(std::ofstream& ofs, UINT key)
+{
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CubeMap::FTCubeMap);
+	FTBasicMeshGroup::SaveProperties(ofs, key);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CubeMap::FTCubeMap);
+}
+
+UINT FTCubemap::LoadProperties(std::ifstream& ifs)
+{
+	FileIOHelper::BeginDataPackLoad(ifs);
+	return FTBasicMeshGroup::LoadProperties(ifs);
+}
+
 #ifdef FOXTROT_EDITOR
 void FTCubemap::UpdateUI()
 {
 	static UINT key;
-	FTEditorUtils::DisplayResSelection("Select Texture", ResourceManager::GetInstance()->GetCubeMapTexturesMap(), key);
+	FTEditorUtils::DisplayResSelection("Select Texture", ResourceManager::GetInstance()->GetTexturesMap(), key);
 	if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		this->SetTexture(key);
 }

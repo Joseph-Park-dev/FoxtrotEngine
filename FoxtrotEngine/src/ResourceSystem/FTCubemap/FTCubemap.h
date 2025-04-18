@@ -6,7 +6,6 @@ class FTCubemap :
 {
 public:
 	virtual void CalcVCData(Camera* camInst);
-	void SetTexture(UINT texKey) override;
 
 public:
 	virtual void Initialize(
@@ -22,8 +21,19 @@ protected:
 		std::vector<FTMeshData>& meshes) override;
 
 public:
+	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
+	virtual UINT LoadProperties(std::ifstream& ifs) override;
+
+public:
 #ifdef FOXTROT_EDITOR
 	void UpdateUI();
 #endif // FOXTROT_EDITOR
-
 };
+
+namespace ChunkKey
+{
+	namespace CubeMap
+	{
+		constexpr const char* FTCubeMap = "FTCubeMap";
+	}
+}

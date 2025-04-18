@@ -119,6 +119,7 @@ AnimationManager::AnimationManager()
 
 AnimationManager::~AnimationManager()
 {
+	delete mSkeletonRenderer;
 }
 
 #ifdef FOXTROT_EDITOR

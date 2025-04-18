@@ -47,7 +47,6 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 	mRenderer = renderer;
 
 	mMapTextures.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
-	mMapCubeMapTextures.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 	mMapTileMaps.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 	mMapSpriteSheets.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
 	mMapPremades.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
@@ -110,7 +109,6 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 void ResourceManager::DeleteAll()
 {
 	ClearMap<FTTexture>(mMapTextures);
-	ClearMap<FTTexture>(mMapCubeMapTextures);
 	ClearMap<FTTileMap>(mMapTileMaps);
 	ClearMap<FTSpriteSheet>(mMapSpriteSheets);
 	ClearMap<FTPremade>(mMapPremades);
@@ -124,15 +122,6 @@ void ResourceManager::DeleteAll()
 FTTexture* ResourceManager::GetLoadedTexture(const UINT key)
 {
 	FTTexture* ptTex = mMapTextures.at(key);
-	if (!ptTex)
-		printf("Error: Unable to find FTTexture with key; %d\n", key);
-	ptTex->AddRefCount();
-	return ptTex;
-}
-
-FTTexture* ResourceManager::GetLoadedCubeMapTexture(const UINT key)
-{
-	FTTexture* ptTex = mMapCubeMapTextures.at(key);
 	if (!ptTex)
 		printf("Error: Unable to find FTTexture with key; %d\n", key);
 	ptTex->AddRefCount();
@@ -264,11 +253,6 @@ std::unordered_map<UINT, FTTexture*>& ResourceManager::GetTexturesMap()
 	return mMapTextures;
 }
 
-std::unordered_map<UINT, FTTexture*>& ResourceManager::GetCubeMapTexturesMap()
-{
-	return mMapCubeMapTextures;
-}
-
 std::unordered_map<UINT, FTTileMap*>& ResourceManager::GetTileMapsMap()
 {
 	return mMapTileMaps;
@@ -373,20 +357,13 @@ void ResourceManager::ProcessTexture(FTTexture* texture)
 	if (texture->GetIsProcessed())
 		return;
 
-	D3D11Utils::CreateTexture(mRenderer->GetDevice(), mRenderer->GetContext(), texture);
+	std::string path = texture->GetRelativePath();
+	std::string type = ExtractFileType(path.c_str());
 
-	if (!texture)
-		Debug::LogError(__LINE__, __FILE__, "Failed to process Texture.");
+	if(type == FileTypes::DDS_TEXTURE)
+		DX::ThrowIfFailed(D3D11Utils::CreateCubemapTexture(mRenderer->GetDevice(), texture));
 	else
-		texture->SetIsProcessed(true);
-}
-
-void ResourceManager::ProcessCubeMapTexture(FTTexture* texture)
-{
-	if (texture->GetIsProcessed())
-		return;
-
-	DX::ThrowIfFailed(D3D11Utils::CreateCubemapTexture(mRenderer->GetDevice(), texture));
+		D3D11Utils::CreateTexture(mRenderer->GetDevice(), mRenderer->GetContext(), texture);
 
 	if (!texture)
 		Debug::LogError(__LINE__, __FILE__, "Failed to process Texture.");
@@ -515,13 +492,6 @@ void ResourceManager::ProcessTextures()
 	for (auto& textureItem : mMapTextures)
 		if (textureItem.second)
 			ProcessTexture(textureItem.second);
-}
-
-void ResourceManager::ProcessCubeMapTextures()
-{
-	for (auto& textureItem : mMapCubeMapTextures)
-		if (textureItem.second)
-			ProcessCubeMapTexture(textureItem.second);
 }
 
 void ResourceManager::ProcessMeshGroups()
@@ -702,7 +672,6 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	ProcessJSONs();
 
 	ProcessTextures();
-	ProcessCubeMapTextures();
 	ProcessMeshGroups();
 	ProcessTileMaps();
 	ProcessSpriteSheets();
@@ -713,7 +682,6 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	ProcessPixelShaders();
 
 	LoadMaterials();
-	LightManager::GetInstance()->InitializeCubeMap(mRenderer);
 
 	ProcessPremades();
 }
@@ -730,7 +698,6 @@ void ResourceManager::LoadAllResourcesInAsset()
 	ProcessJSONs();
 
 	ProcessTextures();
-	ProcessCubeMapTextures();
 	ProcessMeshGroups();
 	ProcessTileMaps();
 	ProcessSpriteSheets();
@@ -741,7 +708,6 @@ void ResourceManager::LoadAllResourcesInAsset()
 	ProcessPixelShaders();
 
 	LoadMaterials();
-	LightManager::GetInstance()->InitializeCubeMap(mRenderer);
 
 	ProcessPremades();
 }
@@ -757,9 +723,6 @@ void ResourceManager::LoadResByType(std::string& filePath)
 			break;
 		case ResType::FTTEXTURE:
 			LoadResource(filePath, mMapTextures);
-			break;
-		case ResType::FT_CUBEMAP_TEXTURE:
-			LoadResource(filePath, mMapCubeMapTextures);
 			break;
 		case ResType::FTTILEMAP:
 			LoadResource(filePath, mMapTileMaps);
@@ -799,8 +762,6 @@ ResType ResourceManager::GetResType(std::string& fileName)
 	std::string format = fileName.substr(fileName.rfind("."));
 	if (StrContains(FileTypes::TEXTURE, format))
 		return ResType::FTTEXTURE;
-	if (StrContains(FileTypes::CUBEMAP_TEXTURE, format))
-		return ResType::FT_CUBEMAP_TEXTURE;
 	else if (StrContains(FileTypes::TILEMAP, format))
 		return ResType::FTTILEMAP;
 	else if (StrContains(FileTypes::SPRITE_SHEET, format))

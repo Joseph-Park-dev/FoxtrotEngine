@@ -60,6 +60,7 @@ void EditorChunkLoader::SaveChunk(const std::string fileName)
 	SaveActorsData(ofs);
 	ResourceManager::GetInstance()->SaveResources(ofs);
 	CollisionManager::GetInstance()->SaveCollisionMarks(ofs);
+	LightManager::GetInstance()->SaveProperties(ofs);
 	SaveChunkData(ofs);
 	//FileIOHelper::SaveBufferToFile(ofs);
 	FileIOHelper::SaveBufferToFile(ofs);
@@ -71,6 +72,7 @@ void EditorChunkLoader::LoadChunk(const std::string fileName)
 	Lock();
 	std::ifstream ifs(fileName);
 	LoadChunkData(ifs);
+	LightManager::GetInstance()->LoadProperties(ifs);
 	CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
 	ResourceManager::GetInstance()->LoadResources(ifs, FTCoreEditor::GetInstance());
 	LoadActorsData(ifs);

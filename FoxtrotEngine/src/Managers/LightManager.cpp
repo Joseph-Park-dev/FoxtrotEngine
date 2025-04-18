@@ -35,6 +35,7 @@ FTCubemap* LightManager::GetCubeMap() const { return mCubemap; }
 void LightManager::Initialize(FoxtrotRenderer* renderer)
 {
 	mTypes[0] = Light::TYPE::DIRECTIONAL;
+	InitializeCubeMap(renderer);
 }
 
 void LightManager::InitializeCubeMap(FoxtrotRenderer* renderer)
@@ -56,14 +57,27 @@ void LightManager::Render(FoxtrotRenderer* renderer, Camera* camInst)
 	}
 }
 
+void LightManager::Reset(FoxtrotRenderer* renderer)
+{
+	UINT texKey = mCubemap->GetTexKey();
+
+	delete mCubemap;
+	mCubemap = nullptr;
+
+	InitializeCubeMap(renderer);
+	mCubemap->SetTexture(texKey);
+}
+
 void LightManager::SaveProperties(std::ofstream& ofs)
 {
 	for (size_t i = 0; i < GameData::MAX_LIGHTS; ++i)
 		mLights[i].SaveProperties(ofs, mTypes[i], mActiveStatus[i]);
+	mCubemap->SaveProperties(ofs, ChunkKey::NullVal::VALUE_NOT_ASSIGNED);
 }
 
 void LightManager::LoadProperties(std::ifstream& ifs)
 {
+	mCubemap->LoadProperties(ifs);
 	for (size_t i = 0; i < GameData::MAX_LIGHTS; ++i)
 		mLights[i].LoadProperties(ifs, mTypes[i], mActiveStatus[i]);
 }

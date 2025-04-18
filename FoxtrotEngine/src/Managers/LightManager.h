@@ -25,6 +25,8 @@ public:
 	void InitializeCubeMap(FoxtrotRenderer* renderer);
 	void Render(FoxtrotRenderer* renderer, Camera* camInst);
 
+	void Reset(FoxtrotRenderer* renderer);
+
 private:
 	Light*		 mLights;
 	Light::TYPE* mTypes;

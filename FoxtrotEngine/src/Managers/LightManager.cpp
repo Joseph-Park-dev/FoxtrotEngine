@@ -32,6 +32,16 @@ bool&		 LightManager::IsActive(size_t i) const { return mActiveStatus[i]; }
 
 FTCubemap* LightManager::GetCubeMap() const { return mCubemap; }
 
+ComPtr<ID3D11ShaderResourceView> LightManager::GetCubeMapDiffuse()
+{
+	return mCubemap->GetDiffuseResView();
+}
+
+ComPtr<ID3D11ShaderResourceView> LightManager::GetCubeMapSpecular()
+{
+	return mCubemap->GetDiffuseResView();
+}
+
 void LightManager::Initialize(FoxtrotRenderer* renderer)
 {
 	mTypes[0] = Light::TYPE::DIRECTIONAL;

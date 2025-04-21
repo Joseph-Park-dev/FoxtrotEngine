@@ -19,6 +19,8 @@ public:
 	bool&		 IsActive(size_t i) const;
 
 	FTCubemap* GetCubeMap() const;
+	ComPtr<ID3D11ShaderResourceView> GetCubeMapDiffuse();
+	ComPtr<ID3D11ShaderResourceView> GetCubeMapSpecular();
 
 public:
 	void Initialize(FoxtrotRenderer* renderer);

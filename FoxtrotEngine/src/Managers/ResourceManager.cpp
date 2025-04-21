@@ -93,7 +93,7 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 	mMapMeshGroups.insert(
 		{ ChunkKey::PRIMITIVE_SPHERE,
 		  DBG_NEW FTBasicMeshGroup(
-			  GeometryGenerator::MakeSphere(1.0f, 10, 10), mRenderer) });
+			  GeometryGenerator::MakeSphere(1.0f, 50, 50), mRenderer) });
 
 	mItemKey = mMapMeshGroups.size();
 

@@ -57,11 +57,13 @@ void FTCubemap::Render(FoxtrotRenderer* renderer)
 		SetVertexShader(renderer->GetCubeMapVS());
 		SetPixelShader(renderer->GetCubeMapPS());
 
-		if (GetTexture())
+		if (mDiffuseResView && mSpecularResView)
 		{
-			std::vector<ID3D11ShaderResourceView*> resViews;
-			resViews.push_back(GetTexture()->GetResourceView().Get());
-			context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
+			ID3D11ShaderResourceView* resViews[2] = { 
+				mDiffuseResView.Get(),
+				mSpecularResView.Get() 
+			};
+			context->PSSetShaderResources(0, 2, resViews);
 		}
 
 		context->VSSetShader(GetVertexShader().Get(), 0, 0);
@@ -82,6 +84,21 @@ void FTCubemap::Render(FoxtrotRenderer* renderer)
 
 		context->DrawIndexed(mesh->IndexCount, 0, 0);
 	}
+}
+
+ComPtr<ID3D11ShaderResourceView>& FTCubemap::GetDiffuseResView() { return mDiffuseResView; }
+ComPtr<ID3D11ShaderResourceView>& FTCubemap::GetSpecularResView() { return mSpecularResView; }
+
+void FTCubemap::SetDiffuseTexture(UINT key)
+{
+	FTTexture* tex = ResourceManager::GetInstance()->GetLoadedTexture(key);
+	mDiffuseResView = tex->GetResourceView();
+}
+
+void FTCubemap::SetSpecularTexture(UINT key)
+{
+	FTTexture* tex = ResourceManager::GetInstance()->GetLoadedTexture(key);
+	mSpecularResView = tex->GetResourceView();
 }
 
 void FTCubemap::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTMeshData>& meshes)
@@ -116,9 +133,14 @@ UINT FTCubemap::LoadProperties(std::ifstream& ifs)
 #ifdef FOXTROT_EDITOR
 void FTCubemap::UpdateUI()
 {
-	static UINT key;
-	FTEditorUtils::DisplayResSelection("Select Texture", ResourceManager::GetInstance()->GetTexturesMap(), key);
-	if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-		this->SetTexture(key);
+	static UINT diffuseKey;
+	FTEditorUtils::DisplayResSelection("Select Diffuse Texture", ResourceManager::GetInstance()->GetTexturesMap(), diffuseKey);
+	if (diffuseKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+		this->SetDiffuseTexture(diffuseKey);
+
+	static UINT specularKey;
+	FTEditorUtils::DisplayResSelection("Select Specular Texture", ResourceManager::GetInstance()->GetTexturesMap(), specularKey);
+	if (specularKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+		this->SetSpecularTexture(specularKey);
 }
 #endif // FOXTROT_EDITOR

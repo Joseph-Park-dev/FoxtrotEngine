@@ -15,10 +15,21 @@ public:
 
 	virtual void Render(FoxtrotRenderer* renderer) override;
 
+public:
+	ComPtr<ID3D11ShaderResourceView>& GetDiffuseResView();
+	ComPtr<ID3D11ShaderResourceView>& GetSpecularResView();
+
+	void SetDiffuseTexture(UINT key);
+	void SetSpecularTexture(UINT key);
+
 protected:
 	virtual void InitializeMeshes(
 		ComPtr<ID3D11Device>& device, 
 		std::vector<FTMeshData>& meshes) override;
+
+private:
+	ComPtr<ID3D11ShaderResourceView> mDiffuseResView;
+	ComPtr<ID3D11ShaderResourceView> mSpecularResView;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;

@@ -360,7 +360,7 @@ void ResourceManager::ProcessTexture(FTTexture* texture)
 	std::string path = texture->GetRelativePath();
 	std::string type = ExtractFileType(path.c_str());
 
-	if(type == FileTypes::DDS_TEXTURE)
+	if (type == FileTypes::DDS_TEXTURE)
 		DX::ThrowIfFailed(D3D11Utils::CreateCubemapTexture(mRenderer->GetDevice(), texture));
 	else
 		D3D11Utils::CreateTexture(mRenderer->GetDevice(), mRenderer->GetContext(), texture);
@@ -430,12 +430,12 @@ void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
 		spriteAnim->LoadProperties(ifs);
 	}
 
-	FTTileMap* tileMap = ResourceManager::GetInstance()->GetLoadedTileMap(spriteAnim->GetTileDataKey());
+	FTSpriteSheet* spriteSheet = ResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteAnim->GetTileDataKey());
 	spriteAnim->SetTexture();
 
 	std::vector<FTMeshData> meshDataBuf;
 	GeometryGenerator::MakeSpriteAnimation(
-		meshDataBuf, tileMap->GetTiles(), tileMap->GetMaxCountOnMapX() * tileMap->GetMaxCountOnMapY());
+		meshDataBuf, spriteSheet->GetTiles(), spriteAnim->GetMinFrameIdx(), spriteAnim->GetMaxFrameIdx());
 	spriteAnim->Initialize(std::move(meshDataBuf), mRenderer->GetDevice(), mRenderer->GetContext());
 
 	if (!spriteAnim)
@@ -594,6 +594,10 @@ void ResourceManager::SaveResources(std::ofstream& ofs)
 	SaveResourceToChunk<FTTileMap>(ofs, mMapTileMaps);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTILEMAP_GROUP);
 
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSPRITESHEET_GROUP);
+	SaveResourceToChunk<FTSpriteSheet>(ofs, mMapSpriteSheets);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSPRITESHEET_GROUP);
+
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTPREMADE_GROUP);
 	SaveResourceToChunk<FTPremade>(ofs, mMapPremades);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTPREMADE_GROUP);
@@ -659,6 +663,10 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPREMADE_GROUP);
 	mMapPremades.reserve(desc.first);
 	LoadResourceFromChunk<FTPremade>(ifs, mMapPremades, desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSPRITESHEET_GROUP);
+	mMapSpriteSheets.reserve(desc.first);
+	LoadResourceFromChunk<FTSpriteSheet>(ifs, mMapSpriteSheets, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTILEMAP_GROUP);
 	mMapTileMaps.reserve(desc.first);
@@ -745,13 +753,12 @@ void ResourceManager::LoadResByType(std::string& filePath)
 		case ResType::FTJSON:
 			LoadResource(filePath, mMapJSONs);
 			break;
-		// case ResType::FTMATERIAL:
-		//	LoadMaterial(filePath);
-		//	break;
-		//  case ResType::FT_VERTEX_SHADER:
-		//	LoadResource(filePath, mMapVertexShaders);
-		//  case ResType::FT_PIXEL_SHADER:
-		//	LoadResource(filePath, mMapPixelShaders);
+		case ResType::FT_VERTEX_SHADER:
+			LoadResource(filePath, mMapVertexShaders);
+			break;
+		case ResType::FT_PIXEL_SHADER:
+			LoadResource(filePath, mMapPixelShaders);
+			break;
 		default:
 			break;
 	}

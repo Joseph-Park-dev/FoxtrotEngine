@@ -3,7 +3,8 @@
 #include "ResourceSystem/Animation/AnimationFrame.h"
 #include "Managers/AnimationManager.h"
 
-int	 FTAnimation::GetMaxFrameIdx() const { return mMaxFrameIdx; }
+int FTAnimation::GetMaxFrameIdx() const { return mMaxFrameIdx; }
+int FTAnimation::GetMinFrameIdx() const { return mMinFrameIdx; }
 
 void FTAnimation::SetFrameDuration(int frameNum, float duration)
 {
@@ -15,6 +16,7 @@ void FTAnimation::SetFrameDuration(int frameNum, float duration)
 FTAnimation::FTAnimation()
 	: FTBasicMeshGroup()
 	, mType(AnimationType::NOT_ASSIGNED)
+	, mMinFrameIdx(0)
 	, mMaxFrameIdx(0)
 	, mAnimFPS(30.0f)
 	, mIsRepeated(true)
@@ -24,6 +26,7 @@ FTAnimation::FTAnimation()
 FTAnimation::FTAnimation(FTAnimation* other)
 	: FTBasicMeshGroup()
 	, mType(other->mType)
+	, mMinFrameIdx(other->mMinFrameIdx)
 	, mMaxFrameIdx(other->mMaxFrameIdx)
 	, mAnimFPS(other->mAnimFPS)
 	, mIsRepeated(other->mIsRepeated)
@@ -77,7 +80,7 @@ void FTAnimation::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTM
 	D3D11Utils::CreateIndexBuffer(device, normalIndices, NormalLines()->IndexBuffer);
 	NormalLines()->IndexCount = (UINT)normalIndices.size();
 
-	if(mMaxFrameIdx == 0)
+	if (mMaxFrameIdx == 0)
 		mMaxFrameIdx = meshes.size() - 1;
 }
 
@@ -88,10 +91,12 @@ void FTAnimation::SaveProperties(std::ofstream& ofs, UINT key)
 	FileIOHelper::SaveFloat(ofs, ChunkKey::Animation::FPS, mAnimFPS);
 	FileIOHelper::SaveBool(ofs, ChunkKey::Animation::IS_REPEATED, mIsRepeated);
 	FileIOHelper::SaveInt(ofs, ChunkKey::Animation::MAX_FRAME_IDX, mMaxFrameIdx);
+	FileIOHelper::SaveInt(ofs, ChunkKey::Animation::MIN_FRAME_IDX, mMinFrameIdx);
 }
 
 UINT FTAnimation::LoadProperties(std::ifstream& ifs)
 {
+	FileIOHelper::LoadInt(ifs, mMinFrameIdx);
 	FileIOHelper::LoadInt(ifs, mMaxFrameIdx);
 	FileIOHelper::LoadBool(ifs, mIsRepeated);
 	FileIOHelper::LoadFloat(ifs, mAnimFPS);
@@ -106,6 +111,7 @@ UINT FTAnimation::LoadProperties(std::ifstream& ifs)
 #ifdef FOXTROT_EDITOR
 void FTAnimation::UpdateUI()
 {
+	CommandHistory::GetInstance()->UpdateIntValue("Min Frame", mMinFrameIdx);
 	CommandHistory::GetInstance()->UpdateIntValue("Max Frame", mMaxFrameIdx);
 }
 #endif // FOXTROT_EDITOR

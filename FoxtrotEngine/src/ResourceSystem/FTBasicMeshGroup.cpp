@@ -150,7 +150,7 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, int meshIndex)
 			0, mesh->VertexConstantBuffers.size(), mesh->VertexConstantBuffers.data()->GetAddressOf());
 
 		mVS = renderer->GetTextureVS();
-		mPS = renderer->GetRimTexturePS();
+		mPS = renderer->GetTexture2DPS();
 
 		if (mTexture)
 		{

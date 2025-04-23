@@ -33,6 +33,7 @@
 #define SOLID_PS_PATH L"Assets/Shaders/SolidPS.hlsl"
 #define TEXTURE_VS_PATH L"Assets/Shaders/TextureVS.hlsl"
 #define TEXTURE_PS_PATH L"Assets/Shaders/TexturePS.hlsl"
+#define TEXTURE_PS_2D_PATH L"Assets/Shaders/2D/Texture2DPS.hlsl"
 #define RIM_TEXTURE_PS_PATH L"Assets/Shaders/RimTexturePS.hlsl"
 
 #define NORMAL_VS_PATH L"Assets/Shaders/NormalVS.hlsl"
@@ -87,6 +88,7 @@ public:
 	ComPtr<ID3D11VertexShader>& GetTextureVS();
 	ComPtr<ID3D11InputLayout>&	GetTextureInputLayout();
 	ComPtr<ID3D11PixelShader>&	GetTexturePS();
+	ComPtr<ID3D11PixelShader>&	GetTexture2DPS();
 	ComPtr<ID3D11PixelShader>&	GetRimTexturePS();
 
 	// Shaders that render normal lines (Getters).
@@ -136,6 +138,7 @@ private:
 
 	ComPtr<ID3D11VertexShader> mTextureVS;
 	ComPtr<ID3D11PixelShader>  mTexturePS;
+	ComPtr<ID3D11PixelShader>  mTexture2DPS;
 	ComPtr<ID3D11PixelShader>  mRimTexturePS;
 	ComPtr<ID3D11InputLayout>  mTextureInputLayout;
 

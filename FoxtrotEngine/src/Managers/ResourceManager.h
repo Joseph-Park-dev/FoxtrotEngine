@@ -80,7 +80,6 @@ public:
 
 public:
 	FTTexture*		   GetLoadedTexture(const UINT key);
-	FTTexture*		   GetLoadedCubeMapTexture(const UINT key);
 	FTTexture*		   GetLoadedTexture(const char* name);
 	FTTileMap*		   GetLoadedTileMap(const UINT key);
 	FTSpriteSheet*	   GetLoadedSpriteSheet(const UINT key);
@@ -207,10 +206,10 @@ private:
 
 		if (KeyExists(key, resMap))
 		{
-			FTRESOURCE* deprecated = resMap.at(key);
-			delete deprecated;
-			resMap.at(key) = nullptr;
+			// Move the unused resource to the back of the map.
+			FTRESOURCE* unused = resMap.at(key);
 			resMap.erase(key);
+			resMap.insert({ resMap.size(), unused });
 		}
 		resMap.insert(std::make_pair(key, res));
 	}
@@ -383,6 +382,7 @@ namespace ChunkKey
 	constexpr const char* FTTEXTURE_GROUP			= "FTTexture Group";
 	constexpr const char* FTMESH_GROUP				= "FTMesh Group";
 	constexpr const char* FTTILEMAP_GROUP			= "FTTileMap Group";
+	constexpr const char* FTSPRITESHEET_GROUP		= "FTSpriteSheet Group";
 	constexpr const char* FTPREMADE_GROUP			= "FTPremade Group";
 	constexpr const char* FT_SPRITE_ANIMATION_GROUP = "FTSpriteAnimation Group";
 

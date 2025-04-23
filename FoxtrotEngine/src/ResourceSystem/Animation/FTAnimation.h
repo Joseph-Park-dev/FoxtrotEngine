@@ -14,6 +14,7 @@ public:
 
 public:
 	int GetMaxFrameIdx() const;
+	int GetMinFrameIdx() const;
 
 	void SetFrameDuration(int frameNum, float duration);
 
@@ -31,6 +32,7 @@ private:
 	AnimationType mType;
 	float		  mAnimFPS;
 	bool		  mIsRepeated;
+	int			  mMinFrameIdx;
 	int			  mMaxFrameIdx;
 
 public:
@@ -54,6 +56,7 @@ namespace ChunkKey
 		constexpr const char* FPS			= "FPS";
 		constexpr const char* IS_REPEATED	= "Is Repeated";
 		constexpr const char* MAX_FRAME_IDX = "Max Frame Index";
+		constexpr const char* MIN_FRAME_IDX = "Min Frame Index";
 
 	} // namespace Animation
 } // namespace ChunkKey

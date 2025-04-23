@@ -46,8 +46,7 @@ Animator::~Animator()
 
 void Animator::Play(const UINT key, bool isRepeated)
 {
-	UINT mapKey = mLoadedKeys.at(key);
-	SetMeshGroup(ResourceManager::GetInstance()->GetLoadedSpriteAnim(mapKey));
+	SetMeshGroup(ResourceManager::GetInstance()->GetLoadedSpriteAnim(key));
 	if (!GetMeshGroup())
 		printf("ERROR : Animator::Play()->Animation is null\n");
 	mIsFinished = false;
@@ -128,7 +127,7 @@ void Animator::UpdateFrame(float deltaTime)
 	if (currFrame->Duration <= mAccTime)
 	{
 		++mCurrFrameIdx;
-		if (anim->GetMaxFrameIdx() < mCurrFrameIdx) // if maxIdx is 2, currFrame must be bigger than two
+		if (IndexOutOfRange(anim->GetMinFrameIdx(), anim->GetMaxFrameIdx()))
 		{
 			if (!mIsRepeated)
 			{
@@ -140,11 +139,17 @@ void Animator::UpdateFrame(float deltaTime)
 				// Set current frame to the start.
 				// (mMaxFrameIdx starts from 0, so the number of frames should be
 				// mMaxFrameIdx + 1)
-				mCurrFrameIdx -= anim->GetMaxFrameIdx();
+				int length = anim->GetMaxFrameIdx() - anim->GetMinFrameIdx();
+				mCurrFrameIdx -= length;
 			}
 		}
 		mAccTime = 0.f;
 	}
+}
+
+bool Animator::IndexOutOfRange(int minIdx, int maxIdx)
+{
+	return (maxIdx - minIdx) < mCurrFrameIdx;
 }
 
 void Animator::Initialize(FTCore* coreInstance)
@@ -225,7 +230,7 @@ void Animator::UpdatePlayAnim()
 		else
 		{
 			if (ImGui::Button("Play"))
-				Play(true);
+				Play(mCurrAnimKey);
 		}
 	}
 }
@@ -243,7 +248,10 @@ void Animator::UpdatePlayList()
 	{
 		mLoadedKeys.push_back(key);
 		if (mLoadedKeys.size() == 1)
-			Play(key);
+		{
+			mCurrAnimKey = 0;
+			Play(mCurrAnimKey);
+		}
 	}
 
 	if (0 < mLoadedKeys.size())

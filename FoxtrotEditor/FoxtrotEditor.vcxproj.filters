@@ -168,6 +168,7 @@
     <FxCompile Include="Assets\Shaders\RimTexturePS.hlsl" />
     <FxCompile Include="Assets\Shaders\CubeMapPS.hlsl" />
     <FxCompile Include="Assets\Shaders\CubeMapVS.hlsl" />
+    <FxCompile Include="Assets\Shaders\2D\Texture2DPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon1.ico">

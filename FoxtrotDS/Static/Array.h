@@ -1,7 +1,8 @@
 #pragma once
-#include <cassert>
 #include <memory>
+#include <cassert>
 
+#include "Iterator/FTIterator.h"
 #include "Debugging/DebugMemAlloc.h"
 
 namespace FTDS
@@ -13,8 +14,31 @@ namespace FTDS
 	/// Clear() or the destructor won't free those objects automatically.
 	/// </Note_on_deallocation>
 	template <typename TYPE>
-	class ArrayDS
+	class Array : public FTDS::FTIterator<TYPE>
 	{
+	public:
+		TYPE& operator*() override { return *mPtr; }
+		TYPE* operator++() override
+		{
+			++mPtr;
+			return mPtr;
+		}
+		TYPE* operator++(int) override
+		{
+			TYPE tmp = (*mPtr);
+			++mPtr;
+			return &tmp;
+		}
+
+		bool  operator==(Array&& rhs) { return mPtr == rhs.mPtr; }
+		bool  operator!=(Array&& rhs) { return mPtr != rhs.mPtr; }
+		TYPE& operator[](int idx) { return mData[idx]; }
+
+	public:
+		TYPE* Begin() { return &mData[0]; }
+		TYPE* End() { return &mData[mCapacity]; }
+		size_t IterPos() { return mPtr - Begin(); }
+
 	public:
 		void Reserve(size_t newCapacity)
 		{
@@ -27,48 +51,49 @@ namespace FTDS
 		virtual void Clear()
 		{
 			if (mData)
-			{
 				memset(mData, NULL, sizeof(mData));
-				mSize = 0;
-			}
 		}
-
-	public:
-		virtual bool IsEmpty() { return mSize == 0; }
-		virtual bool IsFull() { return mCapacity <= mSize; }
 
 	public:
 		// Gets the array which stores the data of the stack.
 		// This can be used when freeing memory.
-		TYPE*  Data() { return mData; }
-		size_t Size() { return mSize; }
+		// TYPE*	Data() { return mData; }
+
+		TYPE& At(int idx)
+		{
+			assert(mData[idx]);
+			return mData[idx];
+		}
+
 		size_t Capacity() { return mCapacity; }
 
 	public:
-		ArrayDS()
+		Array()
 			: mData(nullptr)
-			, mSize(0)
 			, mCapacity(0)
+			, mPtr(nullptr)
 		{
 		}
 
-		ArrayDS(size_t capacity)
+		Array(size_t capacity)
 			: mData(nullptr)
-			, mSize(0)
 			, mCapacity(0)
+			, mPtr(nullptr)
 		{
 			Reserve(capacity);
 		}
 
-		virtual ~ArrayDS()
+		virtual ~Array()
 		{
 			delete[] mData;
 		}
 
 	protected:
 		TYPE*  mData;
-		size_t mSize;
 		size_t mCapacity;
+
+	private:
+		TYPE* mPtr;
 
 	private:
 		// Re-allocate memory space when new capacity is bigger than current capacity
@@ -78,10 +103,12 @@ namespace FTDS
 				return;
 
 			// Create an array with renewed capacity.
-			TYPE* newArr = new TYPE[newCap];
+			TYPE* newArr = DBG_NEW TYPE[newCap];
+			for (size_t i = 0; i < newCap; ++i)
+				newArr[i] = NULL;
 
 			// Copy previous data.
-			memcpy_s(newArr, sizeof(newArr), mData, sizeof(TYPE) * mSize);
+			memcpy_s(newArr, sizeof(newArr), mData, sizeof(TYPE) * mCapacity);
 			delete[] mData;
 
 			// Set new array as current data.

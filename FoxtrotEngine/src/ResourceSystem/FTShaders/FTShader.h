@@ -32,6 +32,7 @@ private:
 
 #ifdef FOXTROT_EDITOR
 public:
+	void			 SaveMetaFile();
 	FoxtrotRenderer* GetRenderer();
 
 public:
@@ -50,5 +51,5 @@ namespace ChunkKey
 	{
 		constexpr const char* FTSHADER = "FTShader";
 		constexpr const char* NAME	   = "Name";
-	}
-} 
+	} // namespace Shader
+} // namespace ChunkKey

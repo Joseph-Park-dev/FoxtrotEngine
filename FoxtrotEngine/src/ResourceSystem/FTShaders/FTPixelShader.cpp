@@ -31,7 +31,9 @@ UINT FTPixelShader::LoadProperties(std::ifstream& ifs)
 	return FTResource::LoadProperties(ifs);
 }
 
+#ifdef FOXTROT_EDITOR
 void FTPixelShader::UpdateUI()
 {
 
 }
+#endif

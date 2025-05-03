@@ -68,6 +68,8 @@ FTCSV::~FTCSV()
 	mData.clear();
 }
 
+#ifdef FOXTROT_EDITOR
 void FTCSV::UpdateUI()
 {
 }
+#endif // FOXTROT_EDITOR

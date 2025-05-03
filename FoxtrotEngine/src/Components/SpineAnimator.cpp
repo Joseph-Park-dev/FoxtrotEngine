@@ -11,6 +11,7 @@
 #include "ResourceSystem/FTBasicMeshGroup.h"
 #include "ResourceSystem/FTMeshDataPack.h"
 #include "Renderer/FoxtrotRenderer.h"
+#include "Core/FTCore.h"
 
 void SpineAnimator::Initialize(FTCore* coreInst)
 {
@@ -43,11 +44,11 @@ void SpineAnimator::Initialize(FTCore* coreInst)
 	{
 		if (!loadedTex)
 		{
-			texKey = ResourceManager::GetInstance()->GetKey(
-				(FTTexture*)command->texture,
-				ResourceManager::GetInstance()->GetTexturesMap());
-			SetTexKey(texKey);
-			loadedTex = true;
+			//texKey = ResourceManager::GetInstance()->GetKey(
+			//	(FTTexture*)command->texture,
+			//	ResourceManager::GetInstance()->GetTexturesMap());
+			//SetTexKey(texKey);
+			//loadedTex = true;
 		}
 
 		FTMeshData meshData;
@@ -75,6 +76,7 @@ void SpineAnimator::Initialize(FTCore* coreInst)
 
 	// Create the renderer and set the viewport size to match the window size. This sets up a
 	// pixel perfect orthogonal projection for 2D rendering.
+	delete atlas;
 }
 
 void SpineAnimator::Update(float deltaTime)
@@ -119,6 +121,8 @@ SpineAnimator::SpineAnimator(Actor* owner, int updateOrder)
 
 SpineAnimator::~SpineAnimator()
 {
+	delete mSkeleton;
+	delete mState;
 }
 
 void SpineAnimator::CloneTo(Actor* actor)
@@ -155,7 +159,9 @@ void SpineAnimator::InitMeshData(FTMeshData& meshData, spine::RenderCommand* com
 	//std::reverse(meshData.Indices.begin(), meshData.Indices.end());
 }
 
+#ifdef FOXTROT_EDITOR
 void SpineAnimator::EditorUpdate(float deltaTime)
 {
 	Update(deltaTime);
 }
+#endif

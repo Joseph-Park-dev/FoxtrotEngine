@@ -33,6 +33,7 @@
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
 
+#include "Static/Array.h"
 #include "Compare/StringEqual.h"
 
 #ifdef FOXTROT_EDITOR
@@ -40,262 +41,27 @@
 	#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
 
 	#include "DirectoryHelper.h"
+	#include "EditorResourceManager.h"
 #endif // FOXTROT_EDITOR
 
 void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 {
 	mRenderer = renderer;
-
-	mMapTextures.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
-	mMapTileMaps.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
-	mMapSpriteSheets.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
-	mMapPremades.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
-	mMapSpriteAnimation.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
-	mMapMeshGroups.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
-
-	mMapVertexShaders.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
-	mMapPixelShaders.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
-	mMapMaterials.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
-	mMapCSVs.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
-	mMapJSONs.insert({ (UINT)ChunkKey::NullVal::VALUE_NOT_ASSIGNED, nullptr });
-
-	// Add primitive geometries as resources
-	mMapMeshGroups.insert(
-		{ ChunkKey::PRIMITIVE_SQUARE_RED,
-		  DBG_NEW FTBasicMeshGroup(
-			  GeometryGenerator::MakeSquare(FTVector3(1.0f, 0.0f, 0.0f)), mRenderer) });
-
-	mMapMeshGroups.insert(
-		{ ChunkKey::PRIMITIVE_SQUARE_GREEN,
-		  DBG_NEW FTBasicMeshGroup(
-			  GeometryGenerator::MakeSquare(FTVector3(0.0f, 1.0f, 0.0f)), mRenderer) });
-
-	mMapMeshGroups.insert(
-		{ ChunkKey::PRIMITIVE_SQUARE_BLUE,
-		  DBG_NEW FTBasicMeshGroup(
-			  GeometryGenerator::MakeSquare(FTVector3(0.0f, 0.0f, 1.0f)), mRenderer) });
-
-	mMapMeshGroups.insert(
-		{ ChunkKey::PRIMITIVE_BOX,
-		  DBG_NEW FTBasicMeshGroup(
-			  GeometryGenerator::MakeBox(), mRenderer) });
-
-	mMapMeshGroups.insert(
-		{ ChunkKey::PRIMITIVE_SQUARE_GRID,
-		  DBG_NEW FTBasicMeshGroup(
-			  GeometryGenerator::MakeSquareGrid(1.0f, 1.0f, 2, 2), mRenderer) });
-
-	mMapMeshGroups.insert(
-		{ ChunkKey::PRIMITIVE_CYLINDER,
-		  DBG_NEW FTBasicMeshGroup(
-			  GeometryGenerator::MakeCylinder(1.0f, 1.0f, 2, 5), mRenderer) });
-
-	mMapMeshGroups.insert(
-		{ ChunkKey::PRIMITIVE_SPHERE,
-		  DBG_NEW FTBasicMeshGroup(
-			  GeometryGenerator::MakeSphere(1.0f, 50, 50), mRenderer) });
-
-	mItemKey = mMapMeshGroups.size();
-
-	mMapMeshGroups.at(1)->SetFileName("Primitive Square RED");
-	mMapMeshGroups.at(2)->SetFileName("Primitive Square GREEN");
-	mMapMeshGroups.at(3)->SetFileName("Primitive Square BLUE");
-	mMapMeshGroups.at(4)->SetFileName("Primitive Box");
-	mMapMeshGroups.at(5)->SetFileName("Primitive Sqare Grid");
-	mMapMeshGroups.at(6)->SetFileName("Primitive Cylinder");
-	mMapMeshGroups.at(7)->SetFileName("Primitive Sphere");
 }
 
 void ResourceManager::DeleteAll()
 {
-	ClearMap<FTTexture>(mMapTextures);
-	ClearMap<FTTileMap>(mMapTileMaps);
-	ClearMap<FTSpriteSheet>(mMapSpriteSheets);
-	ClearMap<FTPremade>(mMapPremades);
-	ClearMap<FTSpriteAnimation>(mMapSpriteAnimation);
-	ClearMap<FTBasicMeshGroup>(mMapMeshGroups);
-	ClearMap<FTMaterial>(mMapMaterials);
-	ClearMap<FTCSV>(mMapCSVs);
-	ClearMap<FTJSON>(mMapJSONs);
-}
-
-FTTexture* ResourceManager::GetLoadedTexture(const UINT key)
-{
-	FTTexture* ptTex = mMapTextures.at(key);
-	if (!ptTex)
-		printf("Error: Unable to find FTTexture with key; %d\n", key);
-	ptTex->AddRefCount();
-	return ptTex;
-}
-
-FTTexture* ResourceManager::GetLoadedTexture(const char* name)
-{
-	auto iter = mMapTextures.begin();
-	for (; iter != mMapTextures.end(); ++iter)
-	{
-		if ((*iter).second)
-		{
-			if (FTDS::StringEqual((*iter).second->GetFileName().c_str(), name))
-			{
-				(*iter).second->AddRefCount();
-				return (*iter).second;
-			}
-		}
-	}
-	return nullptr;
-}
-
-FTTileMap* ResourceManager::GetLoadedTileMap(const UINT key)
-{
-	FTTileMap* tileMap = mMapTileMaps.at(key);
-	if (!tileMap)
-		printf("Error: ResourceManager::GetLoadedTileMap() -> FTTileMap is empty %d\n", key);
-
-	tileMap->AddRefCount();
-	return tileMap;
-}
-
-FTSpriteSheet* ResourceManager::GetLoadedSpriteSheet(const UINT key)
-{
-	FTSpriteSheet* spriteSheet = mMapSpriteSheets.at(key);
-	if (!spriteSheet)
-		printf("Error: ResourceManager::GetLoadedTileMap() -> FTTileMap is empty %d\n", key);
-
-	spriteSheet->AddRefCount();
-	return spriteSheet;
-}
-
-FTPremade* ResourceManager::GetLoadedPremade(const UINT key)
-{
-	FTPremade* premade = mMapPremades.at(key);
-	if (!premade)
-		printf("Error: ResourceManager::GetLoadedPremade() -> FTPremade is empty %d\n", key);
-	premade->AddRefCount();
-	return premade;
-}
-
-FTPremade* ResourceManager::GetLoadedPremade(std::string&& fileName)
-{
-	std::string premadeFullName = fileName + FileTypes::PREMADE;
-
-	std::unordered_map<UINT, FTPremade*>::iterator iter = mMapPremades.begin();
-	for (; iter != mMapPremades.end(); ++iter)
-	{
-		if ((*iter).second->GetFileName() == premadeFullName)
-		{
-			(*iter).second->AddRefCount();
-			return (*iter).second;
-		}
-	}
-	printf("Error: ResourceManager::GetLoadedPremade() -> Cannot find FTPremade %s\n", premadeFullName.c_str());
-	return nullptr;
-}
-
-FTPixelShader* ResourceManager::GetLoadedPixelShader(const UINT key)
-{
-	FTPixelShader* shader = mMapPixelShaders.at(key);
-	if (!shader)
-		Debug::LogError(__LINE__, __FILE__, "FTMaterial is empty");
-	shader->AddRefCount();
-	return shader;
-}
-
-FTMaterial* ResourceManager::GetLoadedMaterial(const UINT key)
-{
-	FTMaterial* material = mMapMaterials.at(key);
-	if (!material)
-		Debug::LogError(__LINE__, __FILE__, "FTMaterial is empty");
-	material->AddRefCount();
-	return material;
-}
-
-FTBasicMeshGroup* ResourceManager::GetLoadedMesh(const UINT key)
-{
-	FTBasicMeshGroup* meshGrp = mMapMeshGroups.at(key);
-	if (meshGrp)
-	{
-		mMapMeshGroups.at(key)->AddRefCount();
-		return meshGrp;
-	}
-	printf("Error: ResourceManager::GetLoadedMeshes() -> Mesh is empty %d\n", key);
-	return nullptr;
-}
-
-FTSpriteAnimation* ResourceManager::GetLoadedSpriteAnim(const UINT key)
-{
-	FTSpriteAnimation* spriteAnim = mMapSpriteAnimation.at(key);
-	if (!spriteAnim)
-		printf("Error: ResourceManager::GetLoadedSpriteAnim() -> FTSpriteAnimation is empty %d\n", key);
-	spriteAnim->AddRefCount();
-	return spriteAnim;
-}
-
-FTCSV* ResourceManager::GetLoadedCSV(const UINT key)
-{
-	FTCSV* csv = mMapCSVs.at(key);
-	if (!csv)
-		Debug::LogError(__LINE__, __FILE__, "Failed to load FTCSV");
-	csv->AddRefCount();
-	return csv;
-}
-
-FTJSON* ResourceManager::GetLoadedJSON(const UINT key)
-{
-	FTJSON* json = mMapJSONs.at(key);
-	if (!json)
-		Debug::LogError(__LINE__, __FILE__, "Failed to load FTCSV");
-	json->AddRefCount();
-	return json;
-}
-
-std::unordered_map<UINT, FTTexture*>& ResourceManager::GetTexturesMap()
-{
-	return mMapTextures;
-}
-
-std::unordered_map<UINT, FTTileMap*>& ResourceManager::GetTileMapsMap()
-{
-	return mMapTileMaps;
-}
-
-std::unordered_map<UINT, FTSpriteSheet*>& ResourceManager::GetSpriteSheetsMap()
-{
-	return mMapSpriteSheets;
-}
-
-std::unordered_map<UINT, FTSpriteAnimation*>& ResourceManager::GetSpriteAnimMap()
-{
-	return mMapSpriteAnimation;
-}
-
-std::unordered_map<UINT, FTBasicMeshGroup*>& ResourceManager::GetMeshGroupsMap()
-{
-	return mMapMeshGroups;
-}
-
-std::unordered_map<UINT, FTVertexShader*>& ResourceManager::GetVertexShadersMap()
-{
-	return mMapVertexShaders;
-}
-
-std::unordered_map<UINT, FTPixelShader*>& ResourceManager::GetPixelShadersMap()
-{
-	return mMapPixelShaders;
-}
-
-std::unordered_map<UINT, FTMaterial*>& ResourceManager::GetMapMaterials()
-{
-	return mMapMaterials;
-}
-
-std::unordered_map<UINT, FTCSV*>& ResourceManager::GetMapCSVs()
-{
-	return mMapCSVs;
-}
-
-std::unordered_map<UINT, FTJSON*>& ResourceManager::GetMapJSONs()
-{
-	return mMapJSONs;
+	ClearResArray(mTextures);
+	ClearResArray(mTileMaps);
+	ClearResArray(mSpriteSheets);
+	ClearResArray(mPremades);
+	ClearResArray(mSpriteAnimations);
+	ClearResArray(mMeshGroups);
+	ClearResArray(mVertexShaders);
+	ClearResArray(mPixelShaders);
+	ClearResArray(mMaterials);
+	ClearResArray(mCSVs);
+	ClearResArray(mJSONs);
 }
 
 std::string& ResourceManager::GetPathToAsset()
@@ -310,46 +76,39 @@ void ResourceManager::SetPathToAsset(std::string&& projectPath)
 
 void ResourceManager::SaveMaterialsToChunk(std::ofstream& ofs)
 {
-	typename std::unordered_map<UINT, FTMaterial*>::const_iterator iter;
-	for (iter = mMapMaterials.begin(); iter != mMapMaterials.end(); ++iter)
+	for (auto iter = mMaterials.Begin(); iter != mMaterials.End(); ++iter)
 	{
-		if ((*iter).second)
-			if (0 < (*iter).second->GetRefCount())
-				(*iter).second->SaveProperties(ofs, (*iter).first);
+		if (iter)
+			if (0 < (*iter)->GetRefCount())
+				(*iter)->SaveProperties(ofs, mMaterials.IterPos());
 	}
 }
-
-// void ResourceManager::LoadMaterialsFromChunk(std::ifstream& ifs)
-//{
-//	FTMaterial* resource = DBG_NEW StandardMaterial;
-//	resource->LoadProperties(ifs);
-//	mMapMaterials.insert(std::make_pair(mItemKey, resource));
-//
-//	resource = DBG_NEW RimMaterial;
-//	resource->LoadProperties(ifs);
-//	mMapMaterials.insert(std::make_pair(mItemKey, resource));
-//
-//	// Include materials here.
-// }
 
 void ResourceManager::LoadMaterials()
 {
 	UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
+	size_t size = 3;
 
-	StandardMaterial* standard				  = DBG_NEW StandardMaterial;
+	StandardMaterial* standard = DBG_NEW StandardMaterial;
 	std::string							 path = std::string(".//Assets//Materials//") + ChunkKey::STANDARD_MAT + FileTypes::MATERIAL;
 	if (!std::filesystem::exists(path))
 		standard->SaveToFile();
 	standard->LoadFromFile();
 
 	RimMaterial* rim = DBG_NEW RimMaterial;
-	path			 = std::string(".//Assets//Materials//") + ChunkKey::RIM_MAT + FileTypes::MATERIAL;
+	path = std::string(".//Assets//Materials//") + ChunkKey::RIM_MAT + FileTypes::MATERIAL;
 	if (!std::filesystem::exists(path))
 		rim->SaveToFile();
 	rim->LoadFromFile();
 
-	mMapMaterials.insert({ ++key, standard });
-	mMapMaterials.insert({ ++key, rim });
+	mMaterials.Reserve(size);
+	mMaterials[0] = standard;
+	mMaterials[1] = rim;
+}
+
+FoxtrotRenderer* ResourceManager::GetRenderer()
+{
+	return mRenderer;
 }
 
 void ResourceManager::ProcessTexture(FTTexture* texture)
@@ -430,7 +189,12 @@ void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
 		spriteAnim->LoadProperties(ifs);
 	}
 
+#ifdef FOXTROT_EDITOR
+	FTSpriteSheet* spriteSheet = EditorResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteAnim->GetTileDataKey());
+#else
 	FTSpriteSheet* spriteSheet = ResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteAnim->GetTileDataKey());
+#endif // FOXTROT_EDITOR
+	
 	spriteAnim->SetTexture();
 
 	std::vector<FTMeshData> meshDataBuf;
@@ -472,102 +236,101 @@ void ResourceManager::ProcessJSON(FTJSON* json)
 
 void ResourceManager::ProcessMaterial(FTMaterial* material)
 {
-	for (auto& materialItem : mMapMaterials)
+	auto iter = mMaterials.Begin();
+	for (; iter != mMaterials.End(); ++iter)
 	{
-		if (materialItem.second)
+		if (iter)
 		{
-			if (materialItem.second->GetIsProcessed())
+			if ((*iter)->GetIsProcessed())
 				continue;
 
-			materialItem.second->LoadFromFile();
+			(*iter)->LoadFromFile();
 			// All loaded premades are included as default.
-			materialItem.second->AddRefCount();
-			materialItem.second->SetIsProcessed(true);
+			(*iter)->AddRefCount();
+			(*iter)->SetIsProcessed(true);
 		}
 	}
 }
 
 void ResourceManager::ProcessTextures()
 {
-	for (auto& textureItem : mMapTextures)
-		if (textureItem.second)
-			ProcessTexture(textureItem.second);
+	for(auto iter = mTextures.Begin(); iter !=mTextures.End(); ++iter)
+		if (iter)
+			ProcessTexture(*iter);
 }
 
 void ResourceManager::ProcessMeshGroups()
 {
-	for (auto& meshGrp : mMapMeshGroups)
-		if (meshGrp.second)
-			ProcessSingleMeshGrp(meshGrp.second);
+	for (auto iter = mMeshGroups.Begin(); iter != mMeshGroups.End(); ++iter)
+		if (iter)
+			ProcessSingleMeshGrp(*iter);
 }
 
 void ResourceManager::ProcessPremades()
 {
-	for (auto& premadeItem : mMapPremades)
-	{
-		if (premadeItem.second)
+	for (auto iter = mPremades.Begin(); iter != mPremades.End(); ++iter)
+		if (iter)
 		{
-			premadeItem.second->Load();
+			(*iter)->Load();
 			// All loaded premades are included as default.
-			premadeItem.second->AddRefCount();
+			(*iter)->AddRefCount();
 		}
-	}
 }
 
 void ResourceManager::ProcessTileMaps()
 {
-	for (auto& tileMapItem : mMapTileMaps)
-		if (tileMapItem.second)
-			ProcessTileMap(tileMapItem.second);
+	for (auto iter = mTileMaps.Begin(); iter != mTileMaps.End(); ++iter)
+		if (iter)
+			ProcessTileMap(*iter);
 }
 
 void ResourceManager::ProcessSpriteSheets()
 {
-	for (auto& spriteSheetItem : mMapSpriteSheets)
-		if (spriteSheetItem.second)
-			ProcessSpriteSheet(spriteSheetItem.second);
+	for (auto iter = mSpriteSheets.Begin(); iter != mSpriteSheets.End(); ++iter)
+		if (iter)
+			ProcessSpriteSheet(*iter);
 }
 
 void ResourceManager::ProcessSpriteAnims()
 {
-	for (auto& animMapItem : mMapSpriteAnimation)
-		if (animMapItem.second)
-			ProcessSpriteAnim(animMapItem.second);
+	for (auto iter = mSpriteAnimations.Begin(); iter != mSpriteAnimations.End(); ++iter)
+		if (iter)
+			ProcessSpriteAnim(*iter);
 }
 
 void ResourceManager::ProcessCSVs()
 {
-	for (auto& csvItem : mMapCSVs)
-		if (csvItem.second)
-			ProcessCSV(csvItem.second);
+	for (auto iter = mCSVs.Begin(); iter != mCSVs.End(); ++iter)
+		if (iter)
+			ProcessCSV(*iter);
 }
 
 void ResourceManager::ProcessJSONs()
 {
-	for (auto& jsonItem : mMapJSONs)
-		if (jsonItem.second)
-			ProcessJSON(jsonItem.second);
+	for (auto iter = mJSONs.Begin(); iter != mJSONs.End(); ++iter)
+		if (iter)
+			ProcessJSON(*iter);
 }
 
 void ResourceManager::ProcessMaterials()
 {
-	for (auto& material : mMapMaterials)
-		if (material.second)
-			ProcessMaterial(material.second);
+	for (auto iter = mMaterials.Begin(); iter != mMaterials.End(); ++iter)
+		if (iter)
+			ProcessMaterial(*iter);
 }
 
 void ResourceManager::ProcessVertexShaders()
 {
-	for (auto& shader : mMapVertexShaders)
-		if (shader.second)
-			shader.second->CompileShader(mRenderer);
+	for (auto iter = mVertexShaders.Begin(); iter != mVertexShaders.End(); ++iter)
+		if (iter)
+			(*iter)->CompileShader(mRenderer);
 }
 
 void ResourceManager::ProcessPixelShaders()
 {
-	for (auto& shader : mMapPixelShaders)
-		if (shader.second)
-			shader.second->CompileShader(mRenderer);
+	for (auto iter = mPixelShaders.Begin(); iter != mPixelShaders.End(); ++iter)
+		if (iter)
+			(*iter)->CompileShader(mRenderer);
 }
 
 ResourceManager::~ResourceManager()
@@ -587,43 +350,43 @@ void ResourceManager::SaveResources(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::RESOURCE_DATA);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTEXTURE_GROUP);
-	SaveResourceToChunk<FTTexture>(ofs, mMapTextures);
+	SaveResourceToChunk<FTTexture*>(ofs, mTextures);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTEXTURE_GROUP);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTILEMAP_GROUP);
-	SaveResourceToChunk<FTTileMap>(ofs, mMapTileMaps);
+	SaveResourceToChunk<FTTileMap*>(ofs, mTileMaps);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTILEMAP_GROUP);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSPRITESHEET_GROUP);
-	SaveResourceToChunk<FTSpriteSheet>(ofs, mMapSpriteSheets);
+	SaveResourceToChunk<FTSpriteSheet*>(ofs, mSpriteSheets);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSPRITESHEET_GROUP);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTPREMADE_GROUP);
-	SaveResourceToChunk<FTPremade>(ofs, mMapPremades);
+	SaveResourceToChunk<FTPremade*>(ofs, mPremades);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTPREMADE_GROUP);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
-	SaveResourceToChunk<FTSpriteAnimation>(ofs, mMapSpriteAnimation);
+	SaveResourceToChunk<FTSpriteAnimation*>(ofs, mSpriteAnimations);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTMESH_GROUP);
-	SaveResourceToChunk<FTBasicMeshGroup>(ofs, mMapMeshGroups);
+	SaveResourceToChunk<FTBasicMeshGroup*>(ofs, mMeshGroups);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTMESH_GROUP);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
-	SaveResourceToChunk<FTVertexShader>(ofs, mMapVertexShaders);
+	SaveResourceToChunk<FTVertexShader*>(ofs, mVertexShaders);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_PIXEL_SHADER);
-	SaveResourceToChunk<FTPixelShader>(ofs, mMapPixelShaders);
+	SaveResourceToChunk<FTPixelShader*>(ofs, mPixelShaders);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_PIXEL_SHADER);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::JSON::JSON);
-	SaveResourceToChunk<FTJSON>(ofs, mMapJSONs);
+	SaveResourceToChunk<FTJSON*>(ofs, mJSONs);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::JSON::JSON);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CSV::CSV);
-	SaveResourceToChunk<FTCSV>(ofs, mMapCSVs);
+	SaveResourceToChunk<FTCSV*>(ofs, mCSVs);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CSV::CSV);
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::RESOURCE_DATA);
@@ -637,44 +400,44 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	size_t						   packCount = resPack.first;
 
 	std::pair<size_t, std::string> desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
-	mMapCSVs.reserve(desc.first);
-	LoadResourceFromChunk<FTCSV>(ifs, mMapCSVs, desc.first);
+	mCSVs.Reserve(desc.first);
+	LoadResourceFromChunk<FTCSV>(ifs, mCSVs, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::JSON::JSON);
-	mMapJSONs.reserve(desc.first);
-	LoadResourceFromChunk<FTJSON>(ifs, mMapJSONs, desc.first);
+	mJSONs.Reserve(desc.first);
+	LoadResourceFromChunk<FTJSON>(ifs, mJSONs, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_PIXEL_SHADER);
-	mMapPixelShaders.reserve(desc.first);
-	LoadResourceFromChunk<FTPixelShader>(ifs, mMapPixelShaders, desc.first);
+	mPixelShaders.Reserve(desc.first);
+	LoadResourceFromChunk<FTPixelShader>(ifs, mPixelShaders, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_VERTEX_SHADER);
-	mMapVertexShaders.reserve(desc.first);
-	LoadResourceFromChunk<FTVertexShader>(ifs, mMapVertexShaders, desc.first);
+	mVertexShaders.Reserve(desc.first);
+	LoadResourceFromChunk<FTVertexShader>(ifs, mVertexShaders, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMESH_GROUP);
-	mMapMeshGroups.reserve(mMapMeshGroups.size() + desc.first);
-	LoadResourceFromChunk<FTBasicMeshGroup>(ifs, mMapMeshGroups, desc.first);
+	mMeshGroups.Reserve(desc.first);
+	LoadResourceFromChunk<FTBasicMeshGroup>(ifs, mMeshGroups, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
-	mMapSpriteAnimation.reserve(desc.first);
-	LoadResourceFromChunk<FTSpriteAnimation>(ifs, mMapSpriteAnimation, desc.first);
+	mSpriteAnimations.Reserve(desc.first);
+	LoadResourceFromChunk<FTSpriteAnimation>(ifs, mSpriteAnimations, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPREMADE_GROUP);
-	mMapPremades.reserve(desc.first);
-	LoadResourceFromChunk<FTPremade>(ifs, mMapPremades, desc.first);
+	mPremades.Reserve(desc.first);
+	LoadResourceFromChunk<FTPremade>(ifs, mPremades, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSPRITESHEET_GROUP);
-	mMapSpriteSheets.reserve(desc.first);
-	LoadResourceFromChunk<FTSpriteSheet>(ifs, mMapSpriteSheets, desc.first);
+	mSpriteSheets.Reserve(desc.first);
+	LoadResourceFromChunk<FTSpriteSheet>(ifs, mSpriteSheets, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTILEMAP_GROUP);
-	mMapTileMaps.reserve(desc.first);
-	LoadResourceFromChunk<FTTileMap>(ifs, mMapTileMaps, desc.first);
+	mTileMaps.Reserve(desc.first);
+	LoadResourceFromChunk<FTTileMap>(ifs, mTileMaps, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTEXTURE_GROUP);
-	mMapTextures.reserve(desc.first);
-	LoadResourceFromChunk<FTTexture>(ifs, mMapTextures, desc.first);
+	mTextures.Reserve(desc.first);
+	LoadResourceFromChunk<FTTexture>(ifs, mTextures, desc.first);
 
 	ProcessCSVs();
 	ProcessJSONs();
@@ -694,263 +457,104 @@ void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
 	ProcessPremades();
 }
 
-#ifdef FOXTROT_EDITOR
-void ResourceManager::LoadAllResourcesInAsset()
+FTTexture* ResourceManager::GetLoadedTexture(const UINT key)
 {
-	mItemKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
-	DirectoryHelper::IterateForFileRecurse(
-		mPathToAsset,
-		[&](std::string&& path) { LoadResByType(path); });
-
-	ProcessCSVs();
-	ProcessJSONs();
-
-	ProcessTextures();
-	ProcessMeshGroups();
-	ProcessTileMaps();
-	ProcessSpriteSheets();
-	ProcessSpriteAnims();
-
-	ProcessMaterials();
-	ProcessVertexShaders();
-	ProcessPixelShaders();
-
-	LoadMaterials();
-
-	ProcessPremades();
+	FTTexture* tex = mTextures.At(key);
+	if (!tex)
+		Debug::LogError(__LINE__, __FILE__, "FTTexture is NULL");
+	return tex;
 }
 
-void ResourceManager::LoadResByType(std::string& filePath)
+FTTexture* ResourceManager::GetLoadedTexture(const char* fileName)
 {
-	ResType type = GetResType(filePath);
-	printf("Loading file... %s\n", filePath.c_str());
-	switch (type)
-	{
-		case ResType::UNSUPPORTED:
-			printf("File %s is unsupported\n", filePath.c_str());
-			break;
-		case ResType::FTTEXTURE:
-			LoadResource(filePath, mMapTextures);
-			break;
-		case ResType::FTTILEMAP:
-			LoadResource(filePath, mMapTileMaps);
-			break;
-		case ResType::FTSPRITESHEET:
-			LoadResource(filePath, mMapSpriteSheets);
-			break;
-		case ResType::FTPREMADE:
-			LoadResource(filePath, mMapPremades);
-			break;
-		case ResType::FTMESH:
-			LoadResource(filePath, mMapMeshGroups);
-			break;
-		case ResType::FT_SPRITE_ANIMATION:
-			LoadResource(filePath, mMapSpriteAnimation);
-			break;
-		case ResType::FTCSV:
-			LoadResource(filePath, mMapCSVs);
-			break;
-		case ResType::FTJSON:
-			LoadResource(filePath, mMapJSONs);
-			break;
-		case ResType::FT_VERTEX_SHADER:
-			LoadResource(filePath, mMapVertexShaders);
-			break;
-		case ResType::FT_PIXEL_SHADER:
-			LoadResource(filePath, mMapPixelShaders);
-			break;
-		default:
-			break;
-	}
+	for (auto iter = mTextures.Begin(); iter != mTextures.End(); ++iter)
+		if ((*iter)->GetFileName() == fileName)
+			return *iter;
+
+	std::string errMsg = std::string("Cannot find FTTexture with ", fileName);
+	Debug::LogError(__LINE__, __FILE__, errMsg.c_str());
+	return nullptr;
 }
 
-ResType ResourceManager::GetResType(std::string& fileName)
+FTTileMap* ResourceManager::GetLoadedTileMap(const UINT key)
 {
-	std::string format = fileName.substr(fileName.rfind("."));
-	if (StrContains(FileTypes::TEXTURE, format))
-		return ResType::FTTEXTURE;
-	else if (StrContains(FileTypes::TILEMAP, format))
-		return ResType::FTTILEMAP;
-	else if (StrContains(FileTypes::SPRITE_SHEET, format))
-		return ResType::FTSPRITESHEET;
-	else if (StrContains(FileTypes::PREMADE, format))
-		return ResType::FTPREMADE;
-	else if (StrContains(FileTypes::MESH, format))
-		return ResType::FTMESH;
-
-	else if (StrContains(FileTypes::SPRITE_ANIMATION, format))
-		return ResType::FT_SPRITE_ANIMATION;
-
-	else if (StrContains(FileTypes::CSV, format))
-		return ResType::FTCSV;
-
-	else if (StrContains(FileTypes::JSON, format))
-		return ResType::FTJSON;
-
-	else if (StrContains(FileTypes::SHADER, format))
-
-		if (StrContains(FileTypes::VERTEX_SHADER, fileName))
-			return ResType::FT_VERTEX_SHADER;
-		else if (StrContains(FileTypes::PIXEL_SHADER, fileName))
-			return ResType::FT_PIXEL_SHADER;
-		else
-			return ResType::UNSUPPORTED;
+	FTTileMap* tileMap = mTileMaps.At(key);
+	if (!tileMap)
+		Debug::LogError(__LINE__, __FILE__, "FTTileMap is NULL");
+	return tileMap;
 }
 
-void ResourceManager::UpdateUI()
+FTSpriteSheet* ResourceManager::GetLoadedSpriteSheet(const UINT key)
 {
-	if (ImGui::Button("Import"))
-	{
-		IGFD::FileDialogConfig config;
-		config.path				 = ".";
-		config.countSelectionMax = 1;
-
-		std::string supportedFormat =
-			FileTypes::TEXTURE + std::string(", ") + FileTypes::TILEMAP + std::string(", ") + FileTypes::PREMADE;
-
-		ImGuiFileDialog::Instance()->OpenDialog("SelectFile", "Select File", supportedFormat.c_str(), config);
-		ImGui::OpenPopup("Select File");
-	}
-	if (ImGuiFileDialog::Instance()->Display("SelectFile"))
-	{
-		if (ImGuiFileDialog::Instance()->IsOk())
-		{
-			std::string path	  = ImGuiFileDialog::Instance()->GetFilePathName();
-			std::string extension = path.substr(path.rfind("."));
-
-			if (StrContains(FileTypes::TEXTURE, extension))
-			{
-				std::string relativePath = path.substr(path.rfind("Assets"));
-				FTTexture*	texture		 = LoadResource<FTTexture>(relativePath, mMapTextures);
-				ProcessTexture(texture);
-			}
-			else if (StrContains(FileTypes::TILEMAP, extension))
-			{
-				std::string relativePath = path.substr(path.rfind("Assets"));
-				FTTileMap*	tileMap		 = LoadResource<FTTileMap>(relativePath, mMapTileMaps);
-			}
-			else if (StrContains(FileTypes::PREMADE, extension))
-			{
-				std::string relativePath = path.substr(path.rfind("Assets"));
-				FTPremade*	premade		 = LoadResource<FTPremade>(relativePath, mMapPremades);
-				premade->Load();
-			}
-		}
-		ImGuiFileDialog::Instance()->Close();
-	}
-
-	if (ImGui::TreeNode("Textures"))
-	{
-		std::unordered_map<UINT, FTTexture*>::const_iterator texIter;
-		texIter = mMapTextures.begin();
-		for (texIter = mMapTextures.begin(); texIter != mMapTextures.end(); ++texIter)
-		{
-			if ((*texIter).second)
-			{
-				if (ImGui::BeginListBox((*texIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 200)))
-				{
-					(*texIter).second->UpdateUI();
-					if (ImGui::Button("Remove"))
-					{
-						RemoveResource<FTTexture>((*texIter).first, mMapTextures);
-						ImGui::EndListBox();
-						break;
-					}
-					ImGui::EndListBox();
-				}
-			}
-		}
-		ImGui::TreePop();
-	}
-
-	if (ImGui::TreeNode("TileMaps"))
-	{
-		std::unordered_map<UINT, FTTileMap*>::const_iterator tileIter;
-		tileIter = mMapTileMaps.begin();
-		for (; tileIter != mMapTileMaps.end(); ++tileIter)
-		{
-			if ((*tileIter).second)
-			{
-				if (ImGui::BeginListBox((*tileIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 200)))
-				{
-					(*tileIter).second->UpdateUI();
-					if (ImGui::Button("Remove"))
-					{
-						RemoveResource<FTTileMap>((*tileIter).first, mMapTileMaps);
-						ImGui::EndListBox();
-						break;
-					}
-					ImGui::EndListBox();
-				}
-			}
-		}
-		ImGui::TreePop();
-	}
-
-	if (ImGui::TreeNode("Premades"))
-	{
-		std::unordered_map<UINT, FTPremade*>::const_iterator premadeIter;
-		premadeIter = mMapPremades.begin();
-		for (; premadeIter != mMapPremades.end(); ++premadeIter)
-		{
-			if ((*premadeIter).second)
-			{
-				if (ImGui::BeginListBox((*premadeIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 100)))
-				{
-					(*premadeIter).second->UpdateUI();
-					if (ImGui::Button("Remove"))
-					{
-						RemoveResource<FTPremade>((*premadeIter).first, mMapPremades);
-						ImGui::EndListBox();
-						break;
-					}
-					ImGui::EndListBox();
-				}
-			}
-		}
-		ImGui::TreePop();
-	}
-
-	if (ImGui::TreeNode("Vertex Shaders"))
-	{
-		std::unordered_map<UINT, FTVertexShader*>::const_iterator vsIter;
-		vsIter = mMapVertexShaders.begin();
-		for (; vsIter != mMapVertexShaders.end(); ++vsIter)
-		{
-			if (ImGui::BeginListBox((*vsIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 100)))
-			{
-				(*vsIter).second->UpdateUI();
-				if (ImGui::Button("Remove"))
-				{
-					RemoveResource<FTMaterial>((*vsIter).first, mMapMaterials);
-					ImGui::EndListBox();
-					break;
-				}
-				ImGui::EndListBox();
-			}
-		}
-		ImGui::TreePop();
-	}
-
-	if (ImGui::TreeNode("Materials"))
-	{
-		std::unordered_map<UINT, FTMaterial*>::const_iterator materialIter;
-		materialIter = mMapMaterials.begin();
-		for (; materialIter != mMapMaterials.end(); ++materialIter)
-		{
-			if (ImGui::BeginListBox((*materialIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 100)))
-			{
-				(*materialIter).second->UpdateUI();
-				if (ImGui::Button("Remove"))
-				{
-					RemoveResource<FTMaterial>((*materialIter).first, mMapMaterials);
-					ImGui::EndListBox();
-					break;
-				}
-				ImGui::EndListBox();
-			}
-		}
-		ImGui::TreePop();
-	}
+	FTSpriteSheet* spriteSheet = mSpriteSheets.At(key);
+	if (!spriteSheet)
+		Debug::LogError(__LINE__, __FILE__, "FTSpriteSheet is NULL");
+	return spriteSheet;
 }
-#endif // FOXTROT_EDITOR
+
+FTPremade* ResourceManager::GetLoadedPremade(const UINT key)
+{
+	FTPremade* premade = mPremades.At(key);
+	if (!premade)
+		Debug::LogError(__LINE__, __FILE__, "FTPremade is NULL");
+	return premade;
+}
+
+FTPremade* ResourceManager::GetLoadedPremade(const char* fileName)
+{
+	for (auto iter = mPremades.Begin(); iter != mPremades.End(); ++iter)
+		if ((*iter)->GetFileName() == fileName)
+			return *iter;
+
+	std::string errMsg = std::string("Cannot find FTPremade with ", fileName);
+	Debug::LogError(__LINE__, __FILE__, errMsg.c_str());
+	return nullptr;
+}
+
+FTPixelShader* ResourceManager::GetLoadedPixelShader(const UINT key)
+{
+	FTPixelShader* ps = mPixelShaders.At(key);
+	if (!ps)
+		Debug::LogError(__LINE__, __FILE__, "PixelShader is NULL");
+	return ps;
+}
+
+FTMaterial* ResourceManager::GetLoadedMaterial(const UINT key)
+{
+	FTMaterial* mat = mMaterials.At(key);
+	if (!mat)
+		Debug::LogError(__LINE__, __FILE__, "FTMaterial is NULL");
+	return mat;
+}
+
+FTBasicMeshGroup* ResourceManager::GetLoadedMesh(const UINT key)
+{
+	FTBasicMeshGroup* meshGrp = mMeshGroups.At(key);
+	if (!meshGrp)
+		Debug::LogError(__LINE__, __FILE__, "FTMeshGroup is NULL");
+	return meshGrp;
+}
+
+FTSpriteAnimation* ResourceManager::GetLoadedSpriteAnim(const UINT key)
+{
+	FTSpriteAnimation* spriteAnim = mSpriteAnimations.At(key);
+	if (!spriteAnim)
+		Debug::LogError(__LINE__, __FILE__, "FTSpirteAnimation is NULL");
+	return spriteAnim;
+}
+
+FTCSV* ResourceManager::GetLoadedCSV(const UINT key)
+{
+	FTCSV* ftCSV = mCSVs.At(key);
+	if (!ftCSV)
+		Debug::LogError(__LINE__, __FILE__, "FTCSV is NULL");
+	return ftCSV;
+}
+
+FTJSON* ResourceManager::GetLoadedJSON(const UINT key)
+{
+	FTJSON* ftJSON = mJSONs.At(key);
+	if (!ftJSON)
+		Debug::LogError(__LINE__, __FILE__, "FTJSON is NULL");
+	return ftJSON;
+}

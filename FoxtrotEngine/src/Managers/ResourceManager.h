@@ -26,6 +26,8 @@
 #include "FileSystem/NullKeys.h"
 #include "FileSystem/FileTypes.h"
 
+#include "Static/Array.h"
+
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS
 	#include "imgui/FileDialog/ImGuiFileDialog.h"
@@ -69,34 +71,34 @@ enum class ResType
 
 class ResourceManager
 {
-	SINGLETON(ResourceManager)
+	SINGLETON_PROTECTED(ResourceManager)
 
 public:
-	void Initialize(FoxtrotRenderer* renderer);
-	void DeleteAll();
+	virtual void Initialize(FoxtrotRenderer* renderer);
+	virtual void DeleteAll();
 
 	void SaveResources(std::ofstream& ofs);
 	void LoadResources(std::ifstream& ifs, FTCore* ftCoreInst);
 
 public:
-	FTTexture*		   GetLoadedTexture(const UINT key);
-	FTTexture*		   GetLoadedTexture(const char* name);
-	FTTileMap*		   GetLoadedTileMap(const UINT key);
-	FTSpriteSheet*	   GetLoadedSpriteSheet(const UINT key);
-	FTPremade*		   GetLoadedPremade(const UINT key);
-	FTPremade*		   GetLoadedPremade(std::string&& fileName);
-	FTPixelShader*	   GetLoadedPixelShader(const UINT key);
-	FTMaterial*		   GetLoadedMaterial(const UINT key);
-	FTBasicMeshGroup*  GetLoadedMesh(const UINT key);
-	FTSpriteAnimation* GetLoadedSpriteAnim(const UINT key);
-	FTCSV*			   GetLoadedCSV(const UINT key);
-	FTJSON*			   GetLoadedJSON(const UINT key);
+	virtual FTTexture*		   GetLoadedTexture(const UINT key);
+	virtual FTTexture*		   GetLoadedTexture(const char* fileName);
+	virtual FTTileMap*		   GetLoadedTileMap(const UINT key);
+	virtual FTSpriteSheet*	   GetLoadedSpriteSheet(const UINT key);
+	virtual FTPremade*		   GetLoadedPremade(const UINT key);
+	virtual FTPremade*		   GetLoadedPremade(const char* fileName);
+	virtual FTPixelShader*	   GetLoadedPixelShader(const UINT key);
+	virtual FTMaterial*		   GetLoadedMaterial(const UINT key);
+	virtual FTBasicMeshGroup*  GetLoadedMesh(const UINT key);
+	virtual FTSpriteAnimation* GetLoadedSpriteAnim(const UINT key);
+	virtual FTCSV*			   GetLoadedCSV(const UINT key);
+	virtual FTJSON*			   GetLoadedJSON(const UINT key);
 
 	template <typename FTRESOURCE>
-	UINT GetKey(FTRESOURCE* res, std::unordered_map<UINT, FTRESOURCE*> resMap)
+	UINT GetKey(FTRESOURCE* res, std::unordered_map<UINT, FTRESOURCE*> resArr)
 	{
-		typename std::unordered_map<UINT, FTRESOURCE*>::iterator iter = resMap.begin();
-		for (; iter != resMap.end(); ++iter)
+		typename std::unordered_map<UINT, FTRESOURCE*>::iterator iter = resArr.begin();
+		for (; iter != resArr.end(); ++iter)
 		{
 			if ((*iter).second == res)
 				return (*iter).first;
@@ -104,24 +106,81 @@ public:
 		return ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 	}
 
-public:
-	std::unordered_map<UINT, FTTexture*>& GetTexturesMap();
-	// I know the name feels so funny...
-	std::unordered_map<UINT, FTTileMap*>&		  GetTileMapsMap();
-	std::unordered_map<UINT, FTSpriteSheet*>&	  GetSpriteSheetsMap();
-	std::unordered_map<UINT, FTSpriteAnimation*>& GetSpriteAnimMap();
-	std::unordered_map<UINT, FTBasicMeshGroup*>&  GetMeshGroupsMap();
-
-	std::unordered_map<UINT, FTVertexShader*>& GetVertexShadersMap();
-	std::unordered_map<UINT, FTPixelShader*>&  GetPixelShadersMap();
-
-	std::unordered_map<UINT, FTMaterial*>& GetMapMaterials();
-
-	std::unordered_map<UINT, FTCSV*>&  GetMapCSVs();
-	std::unordered_map<UINT, FTJSON*>& GetMapJSONs();
-
 	std::string& GetPathToAsset();
 	void		 SetPathToAsset(std::string&& projectPath);
+
+	///////////////////////////
+	// Save | Load resources //
+	///////////////////////////
+public:
+	template <typename FTRESOURCE>
+	void SaveResourceToChunk(std::ofstream& ofs, FTDS::Array<FTRESOURCE>& resArr)
+	{
+		for (FTRESOURCE* iter = resArr.Begin(); iter != resArr.End(); ++iter)
+		{
+			if (*iter)
+			{
+				if (0 < (*iter)->GetRefCount())
+				{
+					FileIOHelper::BeginDataPackSave(ofs, (*iter)->GetFileName());
+					FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::KEY, resArr.IterPos());
+					FileIOHelper::SaveString(ofs, ChunkKey::FILE_NAME, (*iter)->GetFileName());
+					FileIOHelper::SaveString(ofs, ChunkKey::RELATIVE_PATH, (*iter)->GetRelativePath());
+					FileIOHelper::EndDataPackSave(ofs, (*iter)->GetFileName());
+				}
+			}
+		}
+	}
+
+	void SaveMaterialsToChunk(std::ofstream& ofs);
+
+	template <typename FTRESOURCE>
+	void LoadResourceFromChunk(std::ifstream& ifs, FTDS::Array<FTRESOURCE*>& resArr, size_t& resCount)
+	{
+		resArr.Reserve(resCount);
+		while (0 < resCount)
+		{
+			LoadResource(ifs, resArr);
+			--resCount; // Key of the next resource to be imported.
+		}
+		// Subtract the number of resources loaded.
+	}
+
+protected:
+	// Manually load the required Materials. If it doesn't exist in Asset/material,
+	// this creates a new material.
+	virtual void LoadMaterials();
+
+	//////////////////////////
+	// Processing Resources //
+	//////////////////////////
+	/// Member functions for processing newly loaded resources.
+protected:
+	FoxtrotRenderer* GetRenderer();
+
+	void ProcessTexture(FTTexture* texture);
+	void ProcessSingleMeshGrp(FTBasicMeshGroup* meshGrp);
+	void ProcessTileMap(FTTileMap* tileMap);
+	void ProcessSpriteSheet(FTSpriteSheet* spriteSheet);
+	void ProcessSpriteAnim(FTSpriteAnimation* spriteAnim);
+	void ProcessCSV(FTCSV* csv);
+	void ProcessJSON(FTJSON* json);
+
+	virtual void ProcessTextures();
+	virtual void ProcessMeshGroups();
+	virtual void ProcessPremades();
+	virtual void ProcessTileMaps();
+	virtual void ProcessSpriteSheets();
+	virtual void ProcessSpriteAnims();
+	virtual void ProcessCSVs();
+	virtual void ProcessJSONs();
+
+	virtual void ProcessMaterials();
+	virtual void ProcessVertexShaders();
+	virtual void ProcessPixelShaders();
+
+	/// Due to the abstract base type, Material loading requires dedicated functions
+	void ProcessMaterial(FTMaterial* material);
 
 private:
 	UINT			 mItemKey;
@@ -132,249 +191,55 @@ private:
 	// Foxtrot resources//
 	//////////////////////
 private:
-	std::unordered_map<UINT, FTTexture*>		 mMapTextures;
-	std::unordered_map<UINT, FTTileMap*>		 mMapTileMaps;
-	std::unordered_map<UINT, FTSpriteSheet*>	 mMapSpriteSheets;
-	std::unordered_map<UINT, FTPremade*>		 mMapPremades;
-	std::unordered_map<UINT, FTSpriteAnimation*> mMapSpriteAnimation;
+	FTDS::Array<FTTexture*>			mTextures;
+	FTDS::Array<FTTileMap*>			mTileMaps;
+	FTDS::Array<FTSpriteSheet*>		mSpriteSheets;
+	FTDS::Array<FTPremade*>			mPremades;
+	FTDS::Array<FTSpriteAnimation*> mSpriteAnimations;
 
 	// A mesh group usually represents a 3D model.
-	std::unordered_map<UINT, FTBasicMeshGroup*> mMapMeshGroups;
+	FTDS::Array<FTBasicMeshGroup*> mMeshGroups;
 
-	std::unordered_map<UINT, FTVertexShader*> mMapVertexShaders;
-	std::unordered_map<UINT, FTPixelShader*>  mMapPixelShaders;
+	FTDS::Array<FTVertexShader*> mVertexShaders;
+	FTDS::Array<FTPixelShader*>	 mPixelShaders;
 
-	std::unordered_map<UINT, FTMaterial*> mMapMaterials;
+	FTDS::Array<FTMaterial*> mMaterials;
 
 	////////////////////////////
 	// Generic-type resources //
 	////////////////////////////
 private:
-	std::unordered_map<UINT, FTCSV*>  mMapCSVs;
-	std::unordered_map<UINT, FTJSON*> mMapJSONs;
-
-	/// <Chunk IO> -------------------------------------
-	/// Template member functions for saving/loading resources to/from chunk.
-	/// </Chunk IO>
-public:
-	template <typename FTRESOURCE>
-	void SaveResourceToChunk(std::ofstream& ofs, std::unordered_map<UINT, FTRESOURCE*>& resMap)
-	{
-		typename std::unordered_map<UINT, FTRESOURCE*>::const_iterator iter;
-		for (iter = resMap.begin(); iter != resMap.end(); ++iter)
-		{
-			if ((*iter).second)
-			{
-				if (0 < (*iter).second->GetRefCount())
-				{
-					FileIOHelper::BeginDataPackSave(ofs, (*iter).second->GetFileName());
-					FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::KEY, (*iter).first);
-					FileIOHelper::SaveString(ofs, ChunkKey::FILE_NAME, (*iter).second->GetFileName());
-					FileIOHelper::SaveString(ofs, ChunkKey::RELATIVE_PATH, (*iter).second->GetRelativePath());
-					FileIOHelper::EndDataPackSave(ofs, (*iter).second->GetFileName());
-				}
-			}
-		}
-	}
-
-	void SaveMaterialsToChunk(std::ofstream& ofs);
-
-	template <typename FTRESOURCE>
-	void LoadResourceFromChunk(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap, size_t& resCount)
-	{
-		while (0 < resCount)
-		{
-			LoadResource(ifs, resMap);
-			--resCount; // Key of the next resource to be imported.
-		}
-		// Subtract the number of resources loaded.
-	}
-
-	// void LoadMaterialsFromChunk(std::ifstream& ifs);
+	FTDS::Array<FTCSV*>	 mCSVs;
+	FTDS::Array<FTJSON*> mJSONs;
 
 private:
 	template <typename FTRESOURCE>
-	void LoadResource(std::ifstream& ifs, std::unordered_map<UINT, FTRESOURCE*>& resMap)
+	void LoadResource(std::ifstream& ifs, FTDS::Array<FTRESOURCE*>& resArr)
 	{
-		FTRESOURCE* res				  = DBG_NEW FTRESOURCE;
-		UINT					  key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
+		FTRESOURCE* res	= DBG_NEW FTRESOURCE;
+		UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 
 		FileIOHelper::BeginDataPackLoad(ifs);
 		FileIOHelper::LoadBasicString(ifs, res->RelativePath());
 		FileIOHelper::LoadBasicString(ifs, res->FileName());
 		FileIOHelper::LoadUnsignedInt(ifs, key);
 
-		if (KeyExists(key, resMap))
-		{
-			// Move the unused resource to the back of the map.
-			FTRESOURCE* unused = resMap.at(key);
-			resMap.erase(key);
-			resMap.insert({ resMap.size(), unused });
-		}
-		resMap.insert(std::make_pair(key, res));
+		// assertion when key collision is detected.
+		assert(!resArr.At(key));
+		resArr[key] = res;
 	}
 
-	/// <Creating New Resources> -------------------------------------
-	/// Template member functions for creating new resources & adding to resource map.
-	/// </Creating New Resources>
-public:
+	//////////////////////////
+	// Validating Resources //
+	//////////////////////////
 	template <typename FTRESOURCE>
-	FTRESOURCE* LoadResource(std::string& filePath, std::unordered_map<UINT, FTRESOURCE*>& resMap)
+	void ClearResArray(FTDS::Array<FTRESOURCE>& resArr)
 	{
-		// Get Relative path to Assets folder
-		std::string fileName = filePath.substr(filePath.rfind("\\") + 1);
-		UINT		itemKey	 = resMap.size();
-
-		if (!ResourceExists<FTRESOURCE*>(itemKey, filePath, resMap))
-		{
-			printf("Message: Loading FTResource %s to mItemKey %d. \n", filePath.c_str(), itemKey);
-			FTRESOURCE* res = DBG_NEW FTRESOURCE;
-			res->SetFileName(fileName);
-			res->SetRelativePath(filePath);
-			resMap.insert(std::make_pair(itemKey, res));
-			return res;
-		}
-		else
-		{
-			printf("Warning : Resource %s is already loaded to mItemKey %d.\n", filePath.c_str(), itemKey);
-			return nullptr;
-		}
+		for (auto iter = resArr.Begin(); iter != resArr.End(); ++iter)
+			if (iter)
+				delete (*iter);
+		resArr.Clear();
 	}
-
-	// Manually load the required Materials. If it doesn't exist in Asset/material,
-	// this creates a new material.
-	void LoadMaterials();
-
-	// Add newly created resource from components (e.g FTSpriteAnimation)
-	template <typename FTRESOURCE>
-	UINT LoadResource(FTRESOURCE* res, std::unordered_map<UINT, FTRESOURCE*>& resMap)
-	{
-		UINT key = resMap.size();
-		resMap.insert(std::make_pair(key, res));
-		return key;
-	}
-
-	/// <Removing Resources> -------------------------------------
-	/// Template member functions for removing the loaded resources.
-	/// </Removing Resources>
-public:
-	template <typename FTRESOURCE>
-	void ClearMap(std::unordered_map<UINT, FTRESOURCE*>& resMap)
-	{
-		auto iter = resMap.begin();
-		while (iter != resMap.end())
-		{
-			if ((*iter).second)
-			{
-				delete (*iter).second;
-				(*iter).second = nullptr;
-			}
-			++iter;
-		}
-		resMap.clear();
-	}
-
-	template <typename FTRESOURCE>
-	void RemoveResource(UINT mItemKey, std::unordered_map<UINT, FTRESOURCE*>& resMap)
-	{
-		FTRESOURCE* resource = resMap.at(mItemKey);
-		if (resource)
-		{
-			delete resource;
-			resource = nullptr;
-			resMap.erase(mItemKey);
-		}
-		else
-			printf("ERROR: ResourceManager::RemoveResource()->mItemKey %d does not exist", mItemKey);
-	}
-
-	/// <Processing Resources> -------------------------------------
-	/// Template member functions for processing newly loaded resources.
-	/// </Processing Resources>
-private:
-	void ProcessTexture(FTTexture* texture);
-	void ProcessSingleMeshGrp(FTBasicMeshGroup* meshGrp);
-	void ProcessTileMap(FTTileMap* tileMap);
-	void ProcessSpriteSheet(FTSpriteSheet* spriteSheet);
-	void ProcessSpriteAnim(FTSpriteAnimation* spriteAnim);
-	void ProcessCSV(FTCSV* csv);
-	void ProcessJSON(FTJSON* json);
-
-	void ProcessTextures();
-	void ProcessMeshGroups();
-	void ProcessPremades();
-	void ProcessTileMaps();
-	void ProcessSpriteSheets();
-	void ProcessSpriteAnims();
-	void ProcessCSVs();
-	void ProcessJSONs();
-
-	void ProcessMaterials();
-	void ProcessVertexShaders();
-	void ProcessPixelShaders();
-
-	/// <Loading Materials> -------------------------------------
-	/// Due to the abstract base type, Material loading requires dedicated functions
-	/// </Loading Materials>
-private:
-	void ProcessMaterial(FTMaterial* material);
-
-	/// <Validating Resources> -------------------------------------
-	/// Template member functions for validating the keys & resources.
-	/// </Validating Resources>
-private:
-	template <typename FTRESOURCE>
-	bool KeyExists(const UINT mItemKey, const std::unordered_map<UINT, FTRESOURCE>& resMap)
-	{
-		if (resMap.find(mItemKey) != resMap.end())
-		{
-			printf("Error: ResourceManager::ResourceExists() -> Resource with mItemKey %d exists\n", mItemKey);
-			return true;
-		}
-		return false;
-	}
-
-	template <typename FTRESOURCE>
-	bool ResourceExists(const UINT mItemKey, const std::string path, const std::unordered_map<UINT, FTRESOURCE>& resMap)
-	{
-		if (0 < resMap.size())
-		{
-			if (!KeyExists(mItemKey, resMap))
-			{
-				auto iter = resMap.begin();
-				for (; iter != resMap.end(); ++iter)
-				{
-					if ((*iter).second)
-					{
-						if ((*iter).second->GetRelativePath() == path)
-						{
-							printf("Error: ResourceManager::ResourceExists() -> Resource with path %s exists\n", path.c_str());
-							return true;
-						}
-					}
-				}
-				return false;
-			}
-			return false;
-		}
-		return false;
-	}
-
-/// <Editor Related Features> -------------------------------------
-/// This part will be filtered in game, only running on Foxtrot Editor.
-/// </Editor Related Features>
-#ifdef FOXTROT_EDITOR
-public:
-	void LoadAllResourcesInAsset();
-	void LoadResByType(std::string& fileName);
-
-public:
-	void UpdateUI();
-
-private:
-	ResType GetResType(std::string& fileName);
-
-#endif // FOXTROT_EDITOR
 };
 
 namespace ChunkKey

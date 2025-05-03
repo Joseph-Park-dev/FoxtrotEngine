@@ -765,3 +765,23 @@ void D3D11Utils::WriteToFile(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceCo
 
 	cout << filename << endl;
 }
+
+UINT D3D11Utils::GetShaderType(ComPtr<ID3DBlob>& shaderBlob)
+{
+	ID3D11ShaderReflection* shaderReflection = nullptr;
+	D3DReflect(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&shaderReflection);
+	// Query shader type
+	D3D11_SHADER_DESC shaderDesc;
+	shaderReflection->GetDesc(&shaderDesc);
+	UINT version = shaderDesc.Version;
+
+	UINT programType = (version & 0xFFFF0000) >> 16; // Shader type
+	UINT majorVersion = (version & 0x000000F0) >> 4; // Major version
+	UINT minorVersion = (version & 0x0000000F);      // Minor version
+
+	std::cout << "Program Type: " << programType << std::endl;
+	std::cout << "Major Version: " << majorVersion << std::endl;
+	std::cout << "Minor Version: " << minorVersion << std::endl;
+
+	return programType;
+}

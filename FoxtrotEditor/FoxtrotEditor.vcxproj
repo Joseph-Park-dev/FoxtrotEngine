@@ -145,7 +145,7 @@
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
-    <VcpkgEnabled>false</VcpkgEnabled>
+    <VcpkgEnabled>true</VcpkgEnabled>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <VcpkgInstalledDir>.\vcpkg_installed</VcpkgInstalledDir>
@@ -247,13 +247,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\[2024_01]\Test_Project_FTEngine\Assets\Scripts;..\FoxtrotEngine\include;..\FoxtrotEngine\include\spine-cpp\include\;..\FoxtrotEngine\include\spine-cpp\include\spine;..\FoxtrotEngine\include\assimp;..\FoxtrotEngine\include\assimp\include;..\FoxtrotEngine\include\assimp\code;..\FoxtrotEngine\src;.\include;.\include\imgui;.\include\imgui\backends;.\include\imgui\misc\cpp;.\vcpkg_installed\x64-windows\include;.\src;..\FoxtrotDS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts;..\FoxtrotEngine\include;..\FoxtrotEngine\include\spine-cpp\include\;..\FoxtrotEngine\include\spine-cpp\include\spine;..\FoxtrotEngine\include\assimp;..\FoxtrotEngine\include\assimp\include;..\FoxtrotEngine\include\assimp\code;..\FoxtrotEngine\src;.\include;.\include\imgui;.\include\imgui\backends;.\include\imgui\misc\cpp;.\vcpkg_installed\x64-windows\include;.\src;..\FoxtrotDS;..\FoxtrotMath\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\lib;.\lib\Box2D;.\lib\FoxtrotEngine;..\FoxtrotEngine\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>FoxtrotEngine.lib;box2dd.lib;DirectXTK.lib;imguid.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>.\lib;.\lib\Box2D;..\FoxtrotMath\Builds;..\FoxtrotEngine\Builds;..\FoxtrotEngine\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>FoxtrotEngine.lib;FoxtrotMath.lib;box2dd.lib;DirectXTK.lib;imguid.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -273,6 +273,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\EditorResourceManager.cpp" />
     <ClCompile Include="include\imgui\FileDialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="src\EditorCamera.cpp" />
     <ClCompile Include="src\ActorCommand.cpp" />
@@ -289,6 +290,7 @@
     <ClCompile Include="src\ViewportRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\EditorResourceManager.h" />
     <ClInclude Include="include\FileDialog\imfilebrowser.h" />
     <ClInclude Include="include\FileDialog\ImGuiFileDialog.h" />
     <ClInclude Include="include\FileDialog\ImGuiFileDialogConfig.h" />
@@ -438,9 +440,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FoxtrotEditor.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="lib\FoxtrotEngine\FoxtrotEngine.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

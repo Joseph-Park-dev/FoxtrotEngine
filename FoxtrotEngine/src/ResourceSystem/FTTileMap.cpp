@@ -25,13 +25,19 @@
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
 #include "EditorUtils.h"
+#include "EditorResourceManager.h"
 #endif // FOXTROT_EDITOR
 
 void FTTileMap::Initialize()
 {
 	if (mCSVKey == ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		return;
+
+#ifdef FOXTROT_EDITOR
+	FTCSV* csv = EditorResourceManager::GetInstance()->GetLoadedCSV(mCSVKey);
+#else
 	FTCSV* csv = ResourceManager::GetInstance()->GetLoadedCSV(mCSVKey);
+#endif // FOXTROT_EDITOR
 
 	// These values cannot be 0;
 	assert(mTileWidthOnScreen != 0);
@@ -224,7 +230,7 @@ void FTTileMap::UpdateUI()
 
 	FTEditorUtils::DisplayResSelection(
 		"Select CSV",
-		ResourceManager::GetInstance()->GetMapCSVs(),
+		EditorResourceManager::GetInstance()->GetMapCSVs(),
 		mCSVKey);
 
 	int tileWidthOnScreen  = static_cast<int>(mTileWidthOnScreen);

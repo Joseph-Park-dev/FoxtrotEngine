@@ -73,7 +73,13 @@ StandardMaterial::StandardMaterial()
 	, mData(DBG_NEW StandardMatData)
 {
 	std::string name = std::string("StandardMaterial") + FileTypes::MATERIAL;
+
+#ifdef FOXTROT_EDITOR
 	std::string path = std::string(PATH_PROJECT + "\\Assets\\Materials\\") + name;
+#else
+	std::string path = std::string(".\\Assets\\Materials\\") + name;
+#endif // FOXTROT_EDITOR
+
 
 	SetFileName(name);
 	SetRelativePath(path);
@@ -97,7 +103,6 @@ UINT StandardMaterial::LoadProperties(std::ifstream& ifs)
 	return FTResource::LoadProperties(ifs);
 }
 
-#ifdef FOXTROT_EDITOR
 void StandardMaterial::SaveToFile()
 {
 	std::ofstream ofs(GetRelativePath());
@@ -120,6 +125,7 @@ void StandardMaterial::SaveToFile()
 		Debug::LogError(__LINE__, __FILE__, "Failed to save material to file");
 }
 
+#ifdef FOXTROT_EDITOR
 void StandardMaterial::UpdateUI()
 {
 	ImGui::SeparatorText("Standard Mat Data");

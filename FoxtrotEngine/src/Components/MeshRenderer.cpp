@@ -30,6 +30,7 @@
 	#include "FTCoreEditor.h"
 	#include "EditorUtils.h"
 	#include "EditorCamera.h"
+	#include "EditorResourceManager.h"
 #endif // FOXTROT_EDITOR
 
 void MeshRenderer::Initialize(FTCore* coreInstance)
@@ -288,7 +289,7 @@ void MeshRenderer::UpdateSprite()
 	if (mTexKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	{
 		currentSprite =
-			"Current sprite : \n" + ResourceManager::GetInstance()->GetLoadedTexture(GetTexKey())->GetRelativePath();
+			"Current sprite : \n" + EditorResourceManager::GetInstance()->GetLoadedTexture(GetTexKey())->GetRelativePath();
 		if (mMeshGroup && mMeshGroup->GetTexture())
 		{
 			ImVec2 size = ImVec2(100, 100);
@@ -300,7 +301,7 @@ void MeshRenderer::UpdateSprite()
 	UINT key = mTexKey;
 	FTEditorUtils::DisplayResSelection<FTTexture>(
 		"Select Sprite",
-		ResourceManager::GetInstance()->GetTexturesMap(),
+		EditorResourceManager::GetInstance()->GetTexturesMap(),
 		mTexKey);
 
 	if (key != mTexKey)
@@ -315,7 +316,7 @@ void MeshRenderer::UpdateSprite(UINT& key)
 	std::string currentSprite = {};
 	if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	{
-		FTTexture* sprite = ResourceManager::GetInstance()->GetLoadedTexture(key);
+		FTTexture* sprite = EditorResourceManager::GetInstance()->GetLoadedTexture(key);
 		currentSprite =
 			"Current sprite : \n" + sprite->GetRelativePath();
 		if (sprite)
@@ -342,7 +343,7 @@ void MeshRenderer::UpdateSprite(UINT& key)
 	if (ImGui::BeginPopupModal("Select Sprite", NULL, ImGuiWindowFlags_MenuBar))
 	{
 		std::unordered_map<UINT, FTTexture*>& texturesMap =
-			ResourceManager::GetInstance()->GetTexturesMap();
+			EditorResourceManager::GetInstance()->GetTexturesMap();
 		if (ImGui::TreeNode("Selection State: Single Selection"))
 		{
 			UINT	   spriteKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
@@ -377,7 +378,7 @@ void MeshRenderer::UpdateMaterial()
 	if (0 < mMaterialKeys.size())
 	{
 		for (UINT key : mMaterialKeys)
-			ResourceManager::GetInstance()->GetMapMaterials().at(key)->UpdateUI();
+			EditorResourceManager::GetInstance()->GetMapMaterials().at(key)->UpdateUI();
 	}
 	else
 		ImGui::Text("No Material has been assigned");
@@ -386,7 +387,7 @@ void MeshRenderer::UpdateMaterial()
 	UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 	FTEditorUtils::DisplayResSelection(
 		"Material",
-		ResourceManager::GetInstance()->GetMapMaterials(),
+		EditorResourceManager::GetInstance()->GetMapMaterials(),
 		key);
 	if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 	{
@@ -399,7 +400,7 @@ void MeshRenderer::AddModel()
 {
 	UINT key = mMeshKey;
 	FTEditorUtils::DisplayResSelection(
-		"Select Mesh", ResourceManager::GetInstance()->GetMeshGroupsMap(), key);
+		"Select Mesh", EditorResourceManager::GetInstance()->GetMeshGroupsMap(), key);
 	if (mMeshKey != key)
 		InitializeMesh(key);
 }

@@ -154,7 +154,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\FoxtrotEngine\include;..\FoxtrotEngine\src;.\Compare;.\Dynamic;.\Search;.\Sort;.\Static;.\Utils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Compare;.\Dynamic;.\Search;.\Sort;.\Static;.\Utils;.\Iterator;..\FoxtrotEngine\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -183,8 +183,9 @@
     <ClInclude Include="Dynamic\LinkedQueue.h" />
     <ClInclude Include="Dynamic\LinkedStack.h" />
     <ClInclude Include="Dynamic\BinaryNode.h" />
+    <ClInclude Include="Iterator\FTIterator.h" />
     <ClInclude Include="Search\DepthFirstSearch.h" />
-    <ClInclude Include="Static\ArrayDS.h" />
+    <ClInclude Include="Static\Array.h" />
     <ClInclude Include="Static\ArrayList.h" />
     <ClInclude Include="Static\ArrayStack.h" />
     <ClInclude Include="Static\CircularQueue.h" />
@@ -198,7 +199,9 @@
     <ClInclude Include="TestHeaderBatch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

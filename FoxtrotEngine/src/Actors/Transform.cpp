@@ -15,7 +15,7 @@
 #include "CommandHistory.h"
 #endif
 
-const FTVector3 Transform::GetWorldPosition() const
+FTVector3 Transform::GetWorldPosition() const
 {
 	return mWorldPosition;
 }
@@ -48,6 +48,11 @@ const FTVector3 Transform::GetRightward() const
 const Steering* Transform::GetSteering() const
 {
 	return mSteering;
+}
+
+const bool Transform::IsHalting() const
+{
+	return mSteering->Linear == FTVector3::Zero && !mSteering->JumpTriggered;
 }
 
 void Transform::SetWorldPosition(const FTVector3 pos)
@@ -150,6 +155,7 @@ void Transform::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadVector3(ifs, mWorldPosition);
 }
 
+#ifdef FOXTROT_EDITOR
 void Transform::UpdateUI()
 {
 	CommandHistory::GetInstance()->UpdateVector3Value("World Position", mWorldPosition);
@@ -157,3 +163,4 @@ void Transform::UpdateUI()
 	CommandHistory::GetInstance()->UpdateVector3Value("Scale", mScale);
 	CommandHistory::GetInstance()->UpdateVector3Value("Rotation", mRotation);
 }
+#endif // FOXTROT_EDITOR

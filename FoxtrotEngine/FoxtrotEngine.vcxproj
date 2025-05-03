@@ -131,7 +131,7 @@
     <PublicIncludeDirectories>..\FoxtrotEditor\include;..\FoxtrotEditor\src;$(ProjectDir)src;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
-    <OutDir>..\FoxtrotEditor\lib\FoxtrotEngine</OutDir>
+    <OutDir>$(ProjectDir)Builds</OutDir>
     <TargetExt>.lib</TargetExt>
     <PublicIncludeDirectories>..\FoxtrotEditor\include;..\FoxtrotEditor\src;$(ProjectDir)include;$(ProjectDir)src;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
@@ -223,11 +223,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>.\include;.\include\spine-cpp\include;.\src;..\FoxtrotEditor\include;..\FoxtrotEditor\src;..\FoxtrotDS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\include;.\include\spine-cpp\include;.\src;..\FoxtrotEditor\include;..\FoxtrotEditor\src;..\FoxtrotDS;..\FoxtrotMath\src;D:\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\FoxtrotMath\Builds;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>FoxtrotMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">
@@ -237,7 +239,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>.\include;.\src;..\FoxtrotDS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\include;.\include\spine-cpp\include;.\src;..\FoxtrotDS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -261,10 +263,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\Bullet\BulletBehavior.cpp" />
-    <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\GunFiringBehavior.cpp" />
-    <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\MonkeySpin.cpp" />
-    <ClCompile Include="..\..\Test_Project_FTEngine\Assets\Scripts\ResponsiveButton.cpp" />
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\HenryPrototype.cpp" />
     <ClCompile Include="include\spine-cpp\src\spine\Animation.cpp" />
     <ClCompile Include="include\spine-cpp\src\spine\AnimationState.cpp" />
     <ClCompile Include="include\spine-cpp\src\spine\AnimationStateData.cpp" />
@@ -389,8 +388,6 @@
     <ClCompile Include="src\Managers\ResourceManager.cpp" />
     <ClCompile Include="src\Managers\SceneManager.cpp" />
     <ClCompile Include="src\Managers\UIManager.cpp" />
-    <ClCompile Include="src\Math\FTMath.cpp" />
-    <ClCompile Include="src\Math\Random.cpp" />
     <ClCompile Include="src\Physics\ParticleSystem.cpp" />
     <ClCompile Include="src\Physics\Physics2D.cpp" />
     <ClCompile Include="src\Renderer\Camera.cpp" />
@@ -1078,8 +1075,6 @@
     <ClInclude Include="src\Managers\ResourceManager.h" />
     <ClInclude Include="src\Managers\SceneManager.h" />
     <ClInclude Include="src\Managers\UIManager.h" />
-    <ClInclude Include="src\Math\FTMath.h" />
-    <ClInclude Include="src\Math\Random.h" />
     <ClInclude Include="src\Physics\ParticleSystem.h" />
     <ClInclude Include="src\Physics\Physics2D.h" />
     <ClInclude Include="src\Physics\Ray.h" />

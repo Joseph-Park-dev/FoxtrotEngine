@@ -11,6 +11,7 @@
 
 #ifdef FOXTROT_EDITOR
 #include "EditorUtils.h"
+#include "EditorResourceManager.h"
 #endif // FOXTROT_EDITOR
 
 
@@ -18,7 +19,12 @@ void FTSpriteSheet::Initialize()
 {
 	if (mJSONKey == ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		return;
+
+#ifdef FOXTROT_EDITOR
+	FTJSON* json = EditorResourceManager::GetInstance()->GetLoadedJSON(mJSONKey);
+#else
 	FTJSON* json = ResourceManager::GetInstance()->GetLoadedJSON(mJSONKey);
+#endif // FOXTROT_EDITOR
 
 	InitializeProperties(json->Data().at(SpriteSheetKeys::PROPERTIES));
 
@@ -97,6 +103,7 @@ void FTSpriteSheet::InitializeRectOnScreen(Tile& tile, float posOnMapX, float po
 	FTRectArea& rectOnScreen = tile.GetRectOnScreen();
 }
 
+#ifdef FOXTROT_EDITOR
 void FTSpriteSheet::UpdateUI()
 {
 	ImVec2 previewSize = ImVec2(100, 100);
@@ -105,7 +112,7 @@ void FTSpriteSheet::UpdateUI()
 
 	FTEditorUtils::DisplayResSelection(
 		"Select JSON",
-		ResourceManager::GetInstance()->GetMapJSONs(),
+		EditorResourceManager::GetInstance()->GetMapJSONs(),
 		mJSONKey);
 
 	std::string text = { "Sheet size : " };
@@ -113,3 +120,4 @@ void FTSpriteSheet::UpdateUI()
 	text += std::to_string(mSheetSize.y);
 	ImGui::Text(text.c_str());
 }
+#endif // FOXTROT_EDITOR

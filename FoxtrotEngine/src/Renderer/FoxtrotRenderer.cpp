@@ -286,8 +286,6 @@ void FoxtrotRenderer::SetViewport(FLOAT topLeftX, FLOAT topLeftY, FLOAT resX, FL
 
 void FoxtrotRenderer::Reset()
 {
-	mViewportRenderer->Reset();
-
 	mSolidRasterizerState.Reset();
 	mWireframeRasterizerState.Reset();
 	mDepthStencilState.Reset();
@@ -304,6 +302,10 @@ void FoxtrotRenderer::Reset()
 	mNormalPS.Reset();
 	mBlendState.Reset();
 	mContext->ClearState();
+
+#ifdef FOXTROT_EDITOR
+	mViewportRenderer->Reset();
+#endif // FOXTROT_EDITOR
 }
 
 HRESULT FoxtrotRenderer::CreateDepthStencilState(ComPtr<ID3D11DepthStencilState>& dss, bool depthEnabled)

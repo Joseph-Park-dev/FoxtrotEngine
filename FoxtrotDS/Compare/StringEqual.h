@@ -3,7 +3,7 @@
 
 namespace FTDS
 {
-	bool StringEqual(const char* left, const char* right) 
+	inline bool StringEqual(const char* left, const char* right) 
 	{
 		size_t length = strlen(left);
 		// The size of two strings are not equal.

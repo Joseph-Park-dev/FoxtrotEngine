@@ -27,6 +27,7 @@
 #include "EditorScene.h"
 #include "DirectoryHelper.h"
 #include "EditorCamera.h"
+#include "EditorResourceManager.h"
 
 #include "Core/FTCore.h"
 #include "Managers/DebugShapes.h"
@@ -213,12 +214,12 @@ void EditorLayer::DisplayMainMenuBar()
 				{
 					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
 					DebugShapes::GetInstance()->DeleteAll();
-					ResourceManager::GetInstance()->DeleteAll();
+					EditorResourceManager::GetInstance()->DeleteAll();
 					UIManager::GetInstance()->Reset();
 					CollisionManager::GetInstance()->Reset();
 					LightManager::GetInstance()->Reset(FTCoreEditor::GetInstance()->GetGameRenderer());
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
-					ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+					EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(true);
 				}
@@ -236,11 +237,11 @@ void EditorLayer::DisplayMainMenuBar()
 				{
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(false);
 					DebugShapes::GetInstance()->DeleteAll();
-					ResourceManager::GetInstance()->DeleteAll();
+					EditorResourceManager::GetInstance()->DeleteAll();
 					CollisionManager::GetInstance()->Reset();
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
-					ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
-					ResourceManager::GetInstance()->LoadAllResourcesInAsset();
+					EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+					EditorResourceManager::GetInstance()->LoadAllResourcesInAsset();
 					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
 				}
 			}
@@ -365,7 +366,7 @@ void EditorLayer::DisplayResourceMenu()
 {
 	std::string menuID = "Resource Manager";
 	ImGui::Begin(menuID.c_str());
-	ResourceManager::GetInstance()->UpdateUI();
+	EditorResourceManager::GetInstance()->UpdateUI();
 	ImGui::End();
 }
 
@@ -590,7 +591,7 @@ void EditorLayer::CreateNewProject(std::filesystem::path& path)
 		else if (!pathIsEmpty)
 			mErrorType = ErrorType::ProjectPathNotEmpty;
 	}
-	ResourceManager::GetInstance()->DeleteAll();
+	EditorResourceManager::GetInstance()->DeleteAll();
 }
 
 void EditorLayer::OpenProject(std::filesystem::path& path)
@@ -599,11 +600,11 @@ void EditorLayer::OpenProject(std::filesystem::path& path)
 	{
 		EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 		DebugShapes::GetInstance()->DeleteAll();
-		ResourceManager::GetInstance()->DeleteAll();
+		EditorResourceManager::GetInstance()->DeleteAll();
 		PATH_PROJECT.assign(path.string());
-		ResourceManager::GetInstance()->SetPathToAsset(std::move(PATH_PROJECT));
-		ResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
-		ResourceManager::GetInstance()->LoadAllResourcesInAsset();
+		EditorResourceManager::GetInstance()->SetPathToAsset(std::move(PATH_PROJECT));
+		EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+		EditorResourceManager::GetInstance()->LoadAllResourcesInAsset();
 	}
 	else
 	{

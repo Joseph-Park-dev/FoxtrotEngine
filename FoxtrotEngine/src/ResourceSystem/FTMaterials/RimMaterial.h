@@ -11,6 +11,7 @@ public:
 	virtual void CreatePixelConstBuffer(ComPtr<ID3D11Device>& device, ComPtr<ID3D11Buffer>& buffer) override;
 	virtual void UpdateBuffer(ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Buffer>& buffer) override;
 
+	virtual void SaveToFile() override;
 	virtual void LoadFromFile() override;
 
 public:
@@ -22,8 +23,6 @@ private:
 
 #ifdef FOXTROT_EDITOR
 public:
-	virtual void SaveToFile() override;
-
 	void UpdateUI() override;
 
 #endif

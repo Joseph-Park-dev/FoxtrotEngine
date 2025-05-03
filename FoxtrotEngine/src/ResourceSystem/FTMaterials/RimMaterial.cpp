@@ -51,7 +51,11 @@ RimMaterial::RimMaterial()
 	, mData(DBG_NEW RimData)
 {
 	std::string name = std::string(ChunkKey::RIM_MAT) + FileTypes::MATERIAL;
+#ifdef FOXTROT_EDITOR
 	std::string path = std::string(PATH_PROJECT + "\\Assets\\Materials\\") + name;
+#else
+	std::string path = std::string(".\\Assets\\Materials\\") + name;
+#endif // FOXTROT_EDITOR
 
 	SetFileName(name);
 	SetRelativePath(path);
@@ -62,7 +66,6 @@ RimMaterial::~RimMaterial()
 	delete mData;
 }
 
-#ifdef FOXTROT_EDITOR
 void RimMaterial::SaveToFile()
 {
 	std::ofstream ofs(GetRelativePath());
@@ -85,6 +88,7 @@ void RimMaterial::SaveToFile()
 		Debug::LogError(__LINE__, __FILE__, "Failed to save material to file");
 }
 
+#ifdef FOXTROT_EDITOR
 void RimMaterial::UpdateUI()
 {
 	bool val = (bool)mData->mUseSmoothstep;

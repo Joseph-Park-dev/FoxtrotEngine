@@ -10,6 +10,7 @@
 #ifdef FOXTROT_EDITOR
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
+#include "EditorResourceManager.h"
 #endif // FOXTROT_EDITOR
 
 TileMapManager::TileMapManager()
@@ -45,6 +46,7 @@ void TileMapManager::SaveSpriteSheetAsFile(FTSpriteSheet* spriteSheet, UINT key)
 	FileIOHelper::SaveBufferToFile(ofs);
 }
 
+#ifdef FOXTROT_EDITOR
 void TileMapManager::UpdateUI(bool* opened)
 {
 	if (!ImGui::Begin("TileMap Manager", opened))
@@ -55,7 +57,7 @@ void TileMapManager::UpdateUI(bool* opened)
 	{
 		ImGui::Text("Loaded TileMaps");
 
-		std::unordered_map<UINT, FTTileMap*>& mapTileMaps = ResourceManager::GetInstance()->GetTileMapsMap();
+		std::unordered_map<UINT, FTTileMap*>& mapTileMaps = EditorResourceManager::GetInstance()->GetTileMapsMap();
 		std::unordered_map<UINT, FTTileMap*>::iterator iterT = mapTileMaps.begin();
 
 		for (; iterT != mapTileMaps.end(); ++iterT)
@@ -73,13 +75,13 @@ void TileMapManager::UpdateUI(bool* opened)
 		if (ImGui::Button("Create TileMap"))
 		{
 			FTTileMap* tileMap = DBG_NEW FTTileMap;
-			tileMap->SetRelativePath(ResourceManager::GetInstance()->GetPathToAsset());
-			ResourceManager::GetInstance()->LoadResource(tileMap, mapTileMaps);
+			tileMap->SetRelativePath(EditorResourceManager::GetInstance()->GetPathToAsset());
+			EditorResourceManager::GetInstance()->LoadResource(tileMap, mapTileMaps);
 		}
 
 		ImGui::SeparatorText("Loaded SpriteSheets");
 
-		std::unordered_map<UINT, FTSpriteSheet*>& mapSpriteSheets = ResourceManager::GetInstance()->GetSpriteSheetsMap();
+		std::unordered_map<UINT, FTSpriteSheet*>& mapSpriteSheets = EditorResourceManager::GetInstance()->GetSpriteSheetsMap();
 		std::unordered_map<UINT, FTSpriteSheet*>::iterator iterS = mapSpriteSheets.begin();
 
 		for (; iterS != mapSpriteSheets.end(); ++iterS)
@@ -100,10 +102,11 @@ void TileMapManager::UpdateUI(bool* opened)
 		if (ImGui::Button("Create SpriteSheet"))
 		{
 			FTSpriteSheet* spriteSheet = DBG_NEW FTSpriteSheet;
-			spriteSheet->SetRelativePath(ResourceManager::GetInstance()->GetPathToAsset());
-			ResourceManager::GetInstance()->LoadResource(spriteSheet, mapSpriteSheets);
+			spriteSheet->SetRelativePath(EditorResourceManager::GetInstance()->GetPathToAsset());
+			EditorResourceManager::GetInstance()->LoadResource(spriteSheet, mapSpriteSheets);
 		}
 
 		ImGui::End();
 	}
 }
+#endif // FOXTROT_EDITOR

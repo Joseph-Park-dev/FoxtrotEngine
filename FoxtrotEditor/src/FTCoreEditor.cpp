@@ -18,6 +18,8 @@
 #include "DirectoryHelper.h"
 #include "EditorCamera.h"
 #include "ViewportRenderer.h"
+#include "EditorChunkLoader.h"
+#include "EditorResourceManager.h"
 
 #include "Managers/DebugShapes.h"
 #include "InputSystem/FTInputDevice.h"
@@ -37,16 +39,16 @@
 #include "Managers/SceneManager.h"
 #include "Managers/CollisionManager.h"
 #include "Managers/AnimationManager.h"
-#include "EditorChunkLoader.h"
 
 // FTCoreEditor related singleton initializations -> used in Foxtrot Editor Runtime
-CommandHistory*		CommandHistory::mInstance	  = nullptr;
-DirectoryHelper*	DirectoryHelper::mInstance	  = nullptr;
-EditorLayer*		EditorLayer::mInstance		  = nullptr;
-EditorSceneManager* EditorSceneManager::mInstance = nullptr;
-EditorChunkLoader*	EditorChunkLoader::mInstance  = nullptr;
-FTCoreEditor*		FTCoreEditor::mInstance		  = nullptr;
-EditorCamera*		EditorCamera::mInstance		  = nullptr;
+CommandHistory*		   CommandHistory::mInstance		= nullptr;
+DirectoryHelper*	   DirectoryHelper::mInstance		= nullptr;
+EditorLayer*		   EditorLayer::mInstance			= nullptr;
+EditorSceneManager*	   EditorSceneManager::mInstance	= nullptr;
+EditorChunkLoader*	   EditorChunkLoader::mInstance		= nullptr;
+FTCoreEditor*		   FTCoreEditor::mInstance			= nullptr;
+EditorCamera*		   EditorCamera::mInstance			= nullptr;
+EditorResourceManager* EditorResourceManager::mInstance = nullptr;
 
 bool FTCoreEditor::Initialize()
 {
@@ -96,7 +98,7 @@ void FTCoreEditor::ShutDown()
 {
 	CommandHistory::GetInstance()->ShutDown();
 	EditorSceneManager::GetInstance()->DeleteAll();
-	ResourceManager::GetInstance()->DeleteAll();
+	EditorResourceManager::GetInstance()->DeleteAll();
 	EditorLayer::GetInstance()->ShutDown();
 
 	EditorCamera::GetInstance()->Destroy();
@@ -106,6 +108,7 @@ void FTCoreEditor::ShutDown()
 	EditorLayer::GetInstance()->Destroy();
 	EditorSceneManager::GetInstance()->Destroy();
 	EditorChunkLoader::GetInstance()->Destroy();
+	EditorResourceManager::GetInstance()->Destroy();
 	FTCore::ShutDown();
 }
 
@@ -150,7 +153,7 @@ void FTCoreEditor::InitSingletonManagers()
 	Physics2D::GetInstance()->Initialize();
 
 	Camera::GetInstance()->Initialize(GetGameWindow(), 64.f, 1.8f);
-	ResourceManager::GetInstance()->Initialize(GetGameRenderer());
+	EditorResourceManager::GetInstance()->Initialize(GetGameRenderer());
 	UIManager::GetInstance();
 	EventManager::GetInstance();
 	CollisionManager::GetInstance()->Initialize();
@@ -166,7 +169,10 @@ void FTCoreEditor::ProcessInput()
 {
 	FTCore::ProcessInput();
 	mEditorWindow->ProcessInput();
-	EditorSceneManager::GetInstance()->ProcessInput(GetGameWindow()->GetInputDevice());
+
+	if (mIsUpdatingGame)
+		EditorSceneManager::GetInstance()->ProcessInput(GetGameWindow()->GetInputDevice());
+
 	EditorCamera::GetInstance()->ProcessInput(mEditorWindow->GetInputDevice());
 }
 
@@ -202,7 +208,7 @@ void FTCoreEditor::GenerateOutput()
 	if (!EditorChunkLoader::GetInstance()->IsLoadingChunk())
 	{
 		EditorSceneManager::GetInstance()->Render(renderer);
-		//EditorSceneManager::GetInstance()->EditorRender(renderer);
+		// EditorSceneManager::GetInstance()->EditorRender(renderer);
 		DebugShapes::GetInstance()->Render(renderer);
 		LightManager::GetInstance()->Render(renderer, Camera::GetInstance());
 	}
@@ -236,7 +242,7 @@ FTCoreEditor::FTCoreEditor()
 {
 }
 
-FTCoreEditor::~FTCoreEditor() 
+FTCoreEditor::~FTCoreEditor()
 {
 	delete mEditorWindow;
 }

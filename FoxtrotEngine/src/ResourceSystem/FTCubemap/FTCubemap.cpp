@@ -9,6 +9,7 @@
 
 #ifdef FOXTROT_EDITOR
 #include "EditorUtils.h"
+#include "EditorResourceManager.h"
 #endif
 
 void FTCubemap::CalcVCData(Camera* camInst)
@@ -134,12 +135,12 @@ UINT FTCubemap::LoadProperties(std::ifstream& ifs)
 void FTCubemap::UpdateUI()
 {
 	static UINT diffuseKey;
-	FTEditorUtils::DisplayResSelection("Select Diffuse Texture", ResourceManager::GetInstance()->GetTexturesMap(), diffuseKey);
+	FTEditorUtils::DisplayResSelection("Select Diffuse Texture", EditorResourceManager::GetInstance()->GetTexturesMap(), diffuseKey);
 	if (diffuseKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		this->SetDiffuseTexture(diffuseKey);
 
 	static UINT specularKey;
-	FTEditorUtils::DisplayResSelection("Select Specular Texture", ResourceManager::GetInstance()->GetTexturesMap(), specularKey);
+	FTEditorUtils::DisplayResSelection("Select Specular Texture", EditorResourceManager::GetInstance()->GetTexturesMap(), specularKey);
 	if (specularKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		this->SetSpecularTexture(specularKey);
 }

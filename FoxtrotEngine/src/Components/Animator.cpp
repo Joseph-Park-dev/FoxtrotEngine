@@ -27,6 +27,7 @@
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorUtils.h"
+	#include "EditorResourceManager.h"
 #endif // FOXTROT_EDITOR
 
 Animator::Animator(Actor* owner, int updateOrder)
@@ -46,7 +47,14 @@ Animator::~Animator()
 
 void Animator::Play(const UINT key, bool isRepeated)
 {
-	SetMeshGroup(ResourceManager::GetInstance()->GetLoadedSpriteAnim(key));
+	UINT resKey = mLoadedKeys.at(key);
+
+#ifdef FOXTROT_EDITOR
+	SetMeshGroup(EditorResourceManager::GetInstance()->GetLoadedSpriteAnim(resKey));
+#else
+	SetMeshGroup(ResourceManager::GetInstance()->GetLoadedSpriteAnim(resKey));
+#endif // FOXTROT_EDITOR
+
 	if (!GetMeshGroup())
 		printf("ERROR : Animator::Play()->Animation is null\n");
 	mIsFinished = false;
@@ -241,7 +249,7 @@ void Animator::UpdatePlayList()
 	UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 	FTEditorUtils::DisplayResSelection<FTSpriteAnimation>(
 		"Load Animation",
-		ResourceManager::GetInstance()->GetSpriteAnimMap(),
+		EditorResourceManager::GetInstance()->GetSpriteAnimMap(),
 		key);
 
 	if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
@@ -258,7 +266,8 @@ void Animator::UpdatePlayList()
 	{
 		for (size_t i = 0; i < mLoadedKeys.size(); ++i)
 		{
-			FTSpriteAnimation* anim = ResourceManager::GetInstance()->GetLoadedSpriteAnim(mLoadedKeys.at(i));
+			FTSpriteAnimation* anim = EditorResourceManager::GetInstance()->GetLoadedSpriteAnim(mLoadedKeys.at(i));
+			ImGui::Text(anim->GetFileName().c_str());
 			anim->UpdateUI();
 		}
 	}

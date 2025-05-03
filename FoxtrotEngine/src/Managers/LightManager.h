@@ -8,6 +8,7 @@ namespace GameData
 }
 
 class FTCubemap;
+class Camera;
 
 class LightManager
 {

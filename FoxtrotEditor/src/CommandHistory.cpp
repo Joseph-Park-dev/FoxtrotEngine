@@ -377,7 +377,8 @@ void CommandHistory::UpdateIntValue(std::string label, int& ref, int modSpeed)
 {
 	static IntEditCommand* command;
 
-	if (ImGui::DragInt(label.c_str(), &ref, modSpeed))
+	std::string newLabel = "##" + label;
+	if (ImGui::DragInt(newLabel.c_str(), &ref, modSpeed))
 	{
 		if (!mIsRecording)
 		{

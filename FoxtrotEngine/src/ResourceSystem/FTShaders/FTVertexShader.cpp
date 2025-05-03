@@ -24,7 +24,9 @@ void FTVertexShader::RegisterInputElementDesc(const char* semanticName, D3D11_IN
 
 FTVertexShader::FTVertexShader()
 	: FTShader()
+#ifdef FOXTROT_EDITOR
 	, mSemanticsInclusion{ false, false, false, false }
+#endif // FOXTROT_EDITOR
 {
 	SetType(ShaderType::VERTEX_SHADER);
 }

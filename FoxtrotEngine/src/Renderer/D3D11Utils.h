@@ -244,4 +244,6 @@ public:
 		ComPtr<ID3D11DeviceContext>& context,
 		ComPtr<ID3D11Texture2D>&	 textureToWrite,
 		const std::string			 filename);
+
+	static UINT GetShaderType(ComPtr<ID3DBlob>& shaderBlob);
 };

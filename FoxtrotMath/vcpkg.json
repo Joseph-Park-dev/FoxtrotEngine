@@ -1,7 +1,6 @@
 {
-  "name": "foxtrot-editor",
+  "name": "foxtrot-math",
   "dependencies": [
-    "directxtex",
     "directxtk",
     {
       "name": "imgui",
@@ -20,8 +19,6 @@
       "features": [
         "win32-binding"
       ]
-    },
-    "stb",
-    "nlohmann-json"
+    }
   ]
 }

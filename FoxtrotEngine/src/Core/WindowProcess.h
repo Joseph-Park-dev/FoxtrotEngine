@@ -12,19 +12,24 @@
 #pragma once
 #include <Windows.h>
 
-#include "FTCore.h"
-#include "FTCoreEditor.h"
-
 #ifndef WINDOW_PROC
 #define WINDOW_PROC
-inline LRESULT WINAPI WndProc_FTEditor(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-	return FTCoreEditor::GetInstance()->MsgProc(hWnd, msg, wParam, lParam);
-}
+
+#include "FTCore.h"
 
 inline LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	//return FTCoreEditor::GetInstance()->MsgProc(hWnd, msg, wParam, lParam);
 	return FTCore::GetInstance()->MsgProc(hWnd, msg, wParam, lParam);
 }
+
+#ifdef FOXTROT_EDITOR
+#include "FTCoreEditor.h"
+
+inline LRESULT WINAPI WndProc_FTEditor(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	return FTCoreEditor::GetInstance()->MsgProc(hWnd, msg, wParam, lParam);
+}
+#endif // FOXTROT_ENGINE
+
 #endif // !WINDOW_PROC

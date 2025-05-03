@@ -34,12 +34,11 @@ public:
 	virtual void UpdateBuffer(
 		ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Buffer>& buffer) = 0;
 
+	virtual void SaveToFile() = 0;
 	virtual void LoadFromFile() = 0;
 
 #ifdef FOXTROT_EDITOR
 public:
-	virtual void SaveToFile() = 0;
-
 	virtual void UpdateUI() = 0;
 
 #endif

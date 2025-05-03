@@ -1,17 +1,34 @@
 #include "FTShader.h"
 
-void FTShader::CompileShader(FoxtrotRenderer* renderer)
-{
-}
+#include <fstream>
+
+#include "FileSystem/FileIOHelper.h"
+#include "Core/TemplateFunctions.h"
 
 const ShaderType& FTShader::GetType() const { return mType; }
 void FTShader::SetType(ShaderType type) { mType = type; }
 
 FTShader::FTShader()
+#ifdef DEBUG
+	: mRenderer(nullptr)
+#endif // DEBUG
 {
 }
 
 #ifdef FOXTROT_EDITOR
+void FTShader::SaveMetaFile()
+{
+	std::ofstream ofs(GetRelativePath());
+
+	if (ofs)
+	{
+		SaveProperties(ofs, ChunkKey::NullVal::VALUE_NOT_ASSIGNED);
+		FileIOHelper::SaveBufferToFile(ofs);
+	}
+	else
+		Debug::LogError(__LINE__, __FILE__, "Failed to save shader meta file");
+}
+
 FoxtrotRenderer* FTShader::GetRenderer()
 {
 	return mRenderer;

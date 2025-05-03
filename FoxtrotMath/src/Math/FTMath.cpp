@@ -1,19 +1,19 @@
 // ----------------------------------------------------------------
 // From Game Programming in C++ by Sanjay Madhav
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-// 
+//
 // Released under the BSD License
 // https://github.com/gameprogcpp/code
 // ----------------------------------------------------------------
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
-
-#include "Math/FTMath.h"
+#include "pch.h"
+#include "FTMath.h"
 
 const FTVector2 FTVector2::Zero(0.0f, 0.0f);
 const FTVector2 FTVector2::UnitX(1.0f, 0.0f);
@@ -31,16 +31,14 @@ const FTVector3 FTVector3::NegUnitZ(0.0f, 0.0f, -1.0f);
 const FTVector3 FTVector3::Infinity(Math::Infinity, Math::Infinity, Math::Infinity);
 const FTVector3 FTVector3::NegInfinity(Math::NegInfinity, Math::NegInfinity, Math::NegInfinity);
 
-static float m3Ident[3][3] =
-{
+static float m3Ident[3][3] = {
 	{ 1.0f, 0.0f, 0.0f },
 	{ 0.0f, 1.0f, 0.0f },
 	{ 0.0f, 0.0f, 1.0f }
 };
 const Matrix3 Matrix3::Identity(m3Ident);
 
-static float m4Ident[4][4] =
-{
+static float m4Ident[4][4] = {
 	{ 1.0f, 0.0f, 0.0f, 0.0f },
 	{ 0.0f, 1.0f, 0.0f, 0.0f },
 	{ 0.0f, 0.0f, 1.0f, 0.0f },
@@ -56,69 +54,109 @@ FTVector2 FTVector2::Transform(const FTVector2& vec, const Matrix3& mat, float w
 	FTVector2 retVal;
 	retVal.x = vec.x * mat.mat[0][0] + vec.y * mat.mat[1][0] + w * mat.mat[2][0];
 	retVal.y = vec.x * mat.mat[0][1] + vec.y * mat.mat[1][1] + w * mat.mat[2][1];
-	//ignore w since we aren't returning a DBG_NEW value for it...
+	// ignore w since we aren't returning a DBG_NEW value for it...
 	return retVal;
+}
+
+FTVector3::FTVector3()
+	: x(0.0f)
+	, y(0.0f)
+	, z(0.0f)
+{
+}
+
+FTVector3::FTVector3(float in)
+	: x(in)
+	, y(in)
+	, z(in)
+{
+}
+
+FTVector3::FTVector3(float inX, float inY, float inZ)
+	: x(inX)
+	, y(inY)
+	, z(inZ)
+{
 }
 
 FTVector3::FTVector3(FTVector2 vec2)
 	: x(vec2.x)
 	, y(vec2.y)
 	, z(0.0f)
-{}
+{
+}
 
 FTVector3::FTVector3(b2Vec2 vec2)
 	: x(vec2.x)
 	, y(vec2.y)
 	, z(0.0f)
-{}
+{
+}
 
 FTVector3::FTVector3(DirectX::SimpleMath::Vector3 vec3)
 	: x(vec3.x)
 	, y(vec3.y)
 	, z(vec3.z)
-{}
-
-FTVector3 FTVector3::Transform(const FTVector3& vec, const Matrix4& mat, float w /*= 1.0f*/)
 {
-	FTVector3 retVal;
-	retVal.x = vec.x * mat.mat[0][0] + vec.y * mat.mat[1][0] +
-		vec.z * mat.mat[2][0] + w * mat.mat[3][0];
-	retVal.y = vec.x * mat.mat[0][1] + vec.y * mat.mat[1][1] +
-		vec.z * mat.mat[2][1] + w * mat.mat[3][1];
-	retVal.z = vec.x * mat.mat[0][2] + vec.y * mat.mat[1][2] +
-		vec.z * mat.mat[2][2] + w * mat.mat[3][2];
-	//ignore w since we aren't returning a DBG_NEW value for it...
-	return retVal;
 }
 
-// This will transform the vector and renormalize the w component
-FTVector3 FTVector3::TransformWithPerspDiv(const FTVector3& vec, const Matrix4& mat, float w /*= 1.0f*/)
+b2Vec2 FTVector3::GetB2Vec2()
 {
-	FTVector3 retVal;
-	retVal.x = vec.x * mat.mat[0][0] + vec.y * mat.mat[1][0] +
-		vec.z * mat.mat[2][0] + w * mat.mat[3][0];
-	retVal.y = vec.x * mat.mat[0][1] + vec.y * mat.mat[1][1] +
-		vec.z * mat.mat[2][1] + w * mat.mat[3][1];
-	retVal.z = vec.x * mat.mat[0][2] + vec.y * mat.mat[1][2] +
-		vec.z * mat.mat[2][2] + w * mat.mat[3][2];
-	float transformedW = vec.x * mat.mat[0][3] + vec.y * mat.mat[1][3] +
-		vec.z * mat.mat[2][3] + w * mat.mat[3][3];
-	if (!Math::NearZero(Math::Abs(transformedW)))
-	{
-		transformedW = 1.0f / transformedW;
-		retVal *= transformedW;
-	}
-	return retVal;
+	return b2Vec2{ this->x, this->y };
 }
 
-// Transform a FTVector3 by a quaternion
-FTVector3 FTVector3::Transform(const FTVector3& v, const FTQuaternion& q)
+const DirectX::XMFLOAT3 FTVector3::GetDXVec3()
 {
-	// v + 2.0*cross(q.xyz, cross(q.xyz,v) + q.w*v);
-	FTVector3 qv(q.x, q.y, q.z);
-	FTVector3 retVal = v;
-	retVal += 2.0f * FTVector3::Cross(qv, FTVector3::Cross(qv, v) + q.w * v);
-	return retVal;
+	return DirectX::XMFLOAT3(this->x, this->y, this->z);
+}
+
+float FTVector3::LengthSq()
+{
+	return (x * x + y * y + z * z);
+}
+
+float FTVector3::Length()
+{
+	return (Math::Sqrt(LengthSq()));
+}
+
+void FTVector3::Normalize()
+{
+	float length = Length();
+	x /= length;
+	y /= length;
+	z /= length;
+}
+
+FTVector3 FTVector3::Normalize(const FTVector3& vec)
+{
+	FTVector3 temp = vec;
+	temp.Normalize();
+	return temp;
+}
+
+float FTVector3::Dot(const FTVector3& a, const FTVector3& b)
+{
+	return (a.x * b.x + a.y * b.y + a.z * b.z);
+}
+
+FTVector3 FTVector3::Cross(const FTVector3& a, const FTVector3& b)
+{
+	FTVector3 temp;
+	temp.x = a.y * b.z - a.z * b.y;
+	temp.y = a.z * b.x - a.x * b.z;
+	temp.z = a.x * b.y - a.y * b.x;
+	return temp;
+}
+
+FTVector3 FTVector3::Lerp(const FTVector3& a, const FTVector3& b, float f)
+{
+	return FTVector3(a + f * (b - a));
+}
+
+FTVector3 FTVector3::Reflect(const FTVector3& v, const FTVector3& n)
+{
+	return v - 2.0f * FTVector3::Dot(v, n) * n;
 }
 
 void Matrix4::Invert()
@@ -168,7 +206,7 @@ void Matrix4::Invert()
 	tmp[9] = src[10] * src[12];
 	tmp[10] = src[8] * src[13];
 	tmp[11] = src[9] * src[12];
-	
+
 	dst[0] = tmp[0] * src[5] + tmp[3] * src[6] + tmp[4] * src[7];
 	dst[0] -= tmp[1] * src[5] + tmp[2] * src[6] + tmp[5] * src[7];
 	dst[1] = tmp[1] * src[4] + tmp[6] * src[6] + tmp[9] * src[7];
@@ -185,7 +223,7 @@ void Matrix4::Invert()
 	dst[6] -= tmp[2] * src[0] + tmp[7] * src[1] + tmp[10] * src[3];
 	dst[7] = tmp[4] * src[0] + tmp[9] * src[1] + tmp[10] * src[2];
 	dst[7] -= tmp[5] * src[0] + tmp[8] * src[1] + tmp[11] * src[2];
-	
+
 	tmp[0] = src[2] * src[7];
 	tmp[1] = src[3] * src[6];
 	tmp[2] = src[1] * src[7];
@@ -198,7 +236,7 @@ void Matrix4::Invert()
 	tmp[9] = src[2] * src[4];
 	tmp[10] = src[0] * src[5];
 	tmp[11] = src[1] * src[4];
-	
+
 	dst[8] = tmp[0] * src[13] + tmp[3] * src[14] + tmp[4] * src[15];
 	dst[8] -= tmp[1] * src[13] + tmp[2] * src[14] + tmp[5] * src[15];
 	dst[9] = tmp[1] * src[12] + tmp[6] * src[14] + tmp[9] * src[15];
@@ -215,10 +253,10 @@ void Matrix4::Invert()
 	dst[14] -= tmp[10] * src[11] + tmp[2] * src[8] + tmp[7] * src[9];
 	dst[15] = tmp[10] * src[10] + tmp[4] * src[8] + tmp[9] * src[9];
 	dst[15] -= tmp[8] * src[9] + tmp[11] * src[10] + tmp[5] * src[8];
-	
+
 	// Calculate determinant
 	det = src[0] * dst[0] + src[1] * dst[1] + src[2] * dst[2] + src[3] * dst[3];
-	
+
 	// Inverse of matrix is divided by determinant
 	det = 1 / det;
 	for (int j = 0; j < 16; j++)
@@ -239,7 +277,7 @@ void Matrix4::Invert()
 Matrix4 Matrix4::CreateFromQuaternion(const class FTQuaternion& q)
 {
 	float mat[4][4];
-	
+
 	mat[0][0] = 1.0f - 2.0f * q.y * q.y - 2.0f * q.z * q.z;
 	mat[0][1] = 2.0f * q.x * q.y + 2.0f * q.w * q.z;
 	mat[0][2] = 2.0f * q.x * q.z - 2.0f * q.w * q.y;

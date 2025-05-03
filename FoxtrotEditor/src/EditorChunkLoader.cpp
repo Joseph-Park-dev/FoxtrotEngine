@@ -20,6 +20,7 @@
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
+#include "EditorResourceManager.h"
 
 EditorChunkLoader::EditorChunkLoader()
 	: ChunkLoader()
@@ -58,7 +59,7 @@ void EditorChunkLoader::SaveChunk(const std::string fileName)
 	// Save -> ActorData comes first, // Load -> ChunkData comes first
 	Camera::GetInstance()->SaveProperties(ofs);
 	SaveActorsData(ofs);
-	ResourceManager::GetInstance()->SaveResources(ofs);
+	EditorResourceManager::GetInstance()->SaveResources(ofs);
 	CollisionManager::GetInstance()->SaveCollisionMarks(ofs);
 	LightManager::GetInstance()->SaveProperties(ofs);
 	SaveChunkData(ofs);
@@ -74,7 +75,7 @@ void EditorChunkLoader::LoadChunk(const std::string fileName)
 	LoadChunkData(ifs);
 	LightManager::GetInstance()->LoadProperties(ifs);
 	CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
-	ResourceManager::GetInstance()->LoadResources(ifs, FTCoreEditor::GetInstance());
+	EditorResourceManager::GetInstance()->LoadResources(ifs, FTCoreEditor::GetInstance());
 	LoadActorsData(ifs);
 	Camera::GetInstance()->LoadProperties(ifs);
 	Unlock();

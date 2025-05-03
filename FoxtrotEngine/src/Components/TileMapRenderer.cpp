@@ -33,6 +33,8 @@
 
 #ifdef FOXTROT_EDITOR
 #include "CommandHistory.h"
+#include "EditorResourceManager.h"
+
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include "imgui/FileDialog/ImGuiFileDialog.h"
@@ -142,7 +144,7 @@ void TileMapRenderer::UpdateCSV() {
 	std::string currentCSV = "No .csv has been assigned";
 	if (mTileMapKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		currentCSV =
-		"Current sprite : \n" + ResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey)->GetRelativePath();
+		"Current sprite : \n" + EditorResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey)->GetRelativePath();
 	ImGui::Text(currentCSV.c_str());
 
 	if (ImGui::Button("Select .CSV"))
@@ -159,7 +161,7 @@ void TileMapRenderer::UpdateCSV() {
 		ImGuiWindowFlags_MenuBar))
 	{
 		std::unordered_map<UINT, FTTileMap*>& tileMapsMap =
-			ResourceManager::GetInstance()->GetTileMapsMap();
+			EditorResourceManager::GetInstance()->GetTileMapsMap();
 		if (ImGui::TreeNode("Selection State: Single Selection"))
 		{
 			UINT	   tileMapKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
@@ -192,7 +194,7 @@ void TileMapRenderer::UpdateCSV(UINT& key)
 	std::string currentCSV = {};
 	if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		currentCSV =
-		"Current sprite : \n" + ResourceManager::GetInstance()->GetLoadedTileMap(key)->GetRelativePath();
+		"Current sprite : \n" + EditorResourceManager::GetInstance()->GetLoadedTileMap(key)->GetRelativePath();
 	else
 		currentCSV = "No .csv has been assigned";
 	ImGui::Text(currentCSV.c_str());
@@ -211,7 +213,7 @@ void TileMapRenderer::UpdateCSV(UINT& key)
 		ImGuiWindowFlags_MenuBar))
 	{
 		std::unordered_map<UINT, FTTileMap*>& tileMapsMap =
-			ResourceManager::GetInstance()->GetTileMapsMap();
+			EditorResourceManager::GetInstance()->GetTileMapsMap();
 		if (ImGui::TreeNode("Selection State: Single Selection"))
 		{
 			UINT	   tileMapKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;

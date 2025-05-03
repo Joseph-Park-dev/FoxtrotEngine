@@ -22,13 +22,15 @@ public:
 	///// Getter and Setters of each member variables /////
 	///////////////////////////////////////////////////////
 
-	const FTVector3 GetWorldPosition() const;
+	FTVector3		GetWorldPosition() const;
 	const FTVector3 GetLocalPosition() const;
 	const FTVector3 GetScale() const;
 	const FTVector3 GetRotation() const;
 	const FTVector3 GetRotationDegree() const;
 	const FTVector3 GetRightward() const;
 	const Steering* GetSteering() const;
+
+	const bool IsHalting() const;
 
 	void SetWorldPosition(const FTVector3 pos);
 	void SetLocalPosition(const FTVector3 pos);
@@ -70,7 +72,6 @@ public:
 #ifdef FOXTROT_EDITOR
 	void UpdateUI();
 #endif
-
 };
 
 namespace ChunkKey

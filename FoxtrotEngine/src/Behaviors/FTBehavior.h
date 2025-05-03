@@ -39,7 +39,7 @@ public:
     static void AddBehaviorToBuild(const char* key)
     {
         ChunkLoader::GetInstance()->GetComponentLoadMap().
-            insert(std::make_pair(key, &FTBehavior::Create<CUSTOM_BEHAVIOR>));
+            insert(std::make_pair(key, &FTBehavior::Load<CUSTOM_BEHAVIOR>));
     }
 #endif
 };

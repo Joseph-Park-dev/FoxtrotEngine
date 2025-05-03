@@ -18,6 +18,12 @@
 
 #pragma once
 
+#ifdef DLL_EXPORT
+#define FOXTROT_API __declspec(dllexport)
+#else
+#define FOXTROT_API __declspec(dllimport)
+#endif
+
 #include <cmath>
 #include <memory.h>
 #include <limits>
@@ -26,7 +32,7 @@
 #include <fstream>
 #include <string>
 
-#include "box2d\box2d.h"
+#include "box2d/box2d.h"
 #include "directxtk/SimpleMath.h"
 
 #ifdef FOXTROT_EDITOR
@@ -34,135 +40,103 @@
 	#include <imgui.h>
 #endif // FOXTROT_EDITOR
 
-namespace Math
+extern "C"
 {
-	const float Pi			= 3.1415926535f;
-	const float TwoPi		= Pi * 2.0f;
-	const float PiOver2		= Pi / 2.0f;
-	const float Infinity	= std::numeric_limits<float>::infinity();
-	const float NegInfinity = -std::numeric_limits<float>::infinity();
-
-	inline float ToRadians(float degrees)
+	namespace Math
 	{
-		return degrees * Pi / 180.0f;
-	}
+		const float Pi(3.1415926535f);
+		const float TwoPi(Math::Pi * 2.0f);
+		const float PiOver2(Math::Pi / 2.0f);
+		const float Infinity(std::numeric_limits<float>::infinity());
+		const float NegInfinity(-std::numeric_limits<float>::infinity());
 
-	inline float ToDegrees(float radians)
-	{
-		return radians * 180.0f / Pi;
-	}
-
-	inline bool NearZero(float val, float epsilon = 0.001f)
-	{
-		if (fabs(val) <= epsilon)
+		inline float ToRadians(float degrees)
 		{
-			return true;
+			return degrees * Pi / 180.0f;
 		}
-		else
+
+		inline float ToDegrees(float radians)
 		{
-			return false;
+			return radians * 180.0f / Pi;
 		}
-	}
 
-	template <typename T>
-	T Max(const T& a, const T& b)
-	{
-		return (a < b ? b : a);
-	}
+		inline bool NearZero(float val, float epsilon = 0.001f)
+		{
+			if (fabs(val) <= epsilon)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 
-	template <typename T>
-	T Min(const T& a, const T& b)
-	{
-		return (a < b ? a : b);
-	}
+		inline float Abs(float value)
+		{
+			return fabs(value);
+		}
 
-	template <typename T>
-	T Clamp(const T& value, const T& lower, const T& upper)
-	{
-		return Min(upper, Max(lower, value));
-	}
+		inline float Cos(float angle)
+		{
+			return cosf(angle);
+		}
 
-	inline float Abs(float value)
-	{
-		return fabs(value);
-	}
+		inline float Sin(float angle)
+		{
+			return sinf(angle);
+		}
 
-	inline float Cos(float angle)
-	{
-		return cosf(angle);
-	}
+		inline float Tan(float angle)
+		{
+			return tanf(angle);
+		}
 
-	inline float Sin(float angle)
-	{
-		return sinf(angle);
-	}
+		inline float Acos(float value)
+		{
+			return acosf(value);
+		}
 
-	inline float Tan(float angle)
-	{
-		return tanf(angle);
-	}
+		inline float Atan2(float y, float x)
+		{
+			return atan2f(y, x);
+		}
 
-	inline float Acos(float value)
-	{
-		return acosf(value);
-	}
+		inline float Cot(float angle)
+		{
+			return 1.0f / Tan(angle);
+		}
 
-	inline float Atan2(float y, float x)
-	{
-		return atan2f(y, x);
-	}
+		inline float Lerp(float a, float b, float f)
+		{
+			return a + f * (b - a);
+		}
 
-	inline float Cot(float angle)
-	{
-		return 1.0f / Tan(angle);
-	}
+		inline float Sqrt(float value)
+		{
+			return sqrtf(value);
+		}
 
-	inline float Lerp(float a, float b, float f)
-	{
-		return a + f * (b - a);
-	}
-
-	inline float Sqrt(float value)
-	{
-		return sqrtf(value);
-	}
-
-	inline float Fmod(float numer, float denom)
-	{
-		return fmod(numer, denom);
-	}
-} // namespace Math
+		inline float Fmod(float numer, float denom)
+		{
+			return fmod(numer, denom);
+		}
+	} // namespace Math
+}
 
 class FTVector2;
 
 // 3D Vector
-class FTVector3
+class FOXTROT_API FTVector3
 {
 public:
 	float x;
 	float y;
 	float z;
 
-	FTVector3()
-		: x(0.0f)
-		, y(0.0f)
-		, z(0.0f)
-	{
-	}
-
-	explicit FTVector3(float in)
-		: x(in)
-		, y(in)
-		, z(in)
-	{
-	}
-
-	explicit FTVector3(float inX, float inY, float inZ)
-		: x(inX)
-		, y(inY)
-		, z(inZ)
-	{
-	}
+	FTVector3();
+	explicit FTVector3(float in);
+	explicit FTVector3(float inX, float inY, float inZ);
 
 	FTVector3(FTVector2 vec2);
 	FTVector3(b2Vec2 vec2);
@@ -172,36 +146,6 @@ public:
 	{
 		ofs << "(" << std::to_string(vec3.x) << "," << std::to_string(vec3.y) << "," << std::to_string(vec3.z) << ")";
 		return ofs;
-	}
-
-	const b2Vec2 GetB2Vec2() const
-	{
-		return b2Vec2{ this->x, this->y };
-	}
-
-	const DirectX::XMFLOAT3 GetDXVec3() const
-	{
-		return DirectX::XMFLOAT3(this->x, this->y, this->z);
-	}
-
-	// Cast to a const float pointer
-	const float* GetAsFloatPtr() const
-	{
-		return reinterpret_cast<const float*>(&x);
-	}
-
-	// float* Data()
-	//{
-	//	float floatArr[3] = { this->x, this->y, this->z };
-	//	return floatArr;
-	// }
-
-	// Set all three components in one line
-	void Set(float inX, float inY, float inZ)
-	{
-		x = inX;
-		y = inY;
-		z = inZ;
 	}
 
 	// Vector addition (a + b)
@@ -238,6 +182,11 @@ public:
 	{
 		assert(scalar != 0);
 		return FTVector3(vec.x / scalar, vec.y / scalar, vec.z / scalar);
+	}
+
+	bool operator==(const FTVector3& right)
+	{
+		return (this->x == right.x) && (this->y == right.y) && (this->z == right.z);
 	}
 
 	bool operator!=(const FTVector3& right)
@@ -281,69 +230,32 @@ public:
 		return *this;
 	}
 
+	b2Vec2			  GetB2Vec2();
+	const DirectX::XMFLOAT3 GetDXVec3();
+
 	// Length squared of vector
-	float LengthSq() const
-	{
-		return (x * x + y * y + z * z);
-	}
+	float LengthSq();
 
 	// Length of vector
-	float Length() const
-	{
-		return (Math::Sqrt(LengthSq()));
-	}
+	float Length();
 
 	// Normalize this vector
-	void Normalize()
-	{
-		float length = Length();
-		x /= length;
-		y /= length;
-		z /= length;
-	}
+	void Normalize();
 
 	// Normalize the provided vector
-	static FTVector3 Normalize(const FTVector3& vec)
-	{
-		FTVector3 temp = vec;
-		temp.Normalize();
-		return temp;
-	}
+	static FTVector3 Normalize(const FTVector3& vec);
 
 	// Dot product between two vectors (a dot b)
-	static float Dot(const FTVector3& a, const FTVector3& b)
-	{
-		return (a.x * b.x + a.y * b.y + a.z * b.z);
-	}
+	static float Dot(const FTVector3& a, const FTVector3& b);
 
 	// Cross product between two vectors (a cross b)
-	static FTVector3 Cross(const FTVector3& a, const FTVector3& b)
-	{
-		FTVector3 temp;
-		temp.x = a.y * b.z - a.z * b.y;
-		temp.y = a.z * b.x - a.x * b.z;
-		temp.z = a.x * b.y - a.y * b.x;
-		return temp;
-	}
+	static FTVector3 Cross(const FTVector3& a, const FTVector3& b);
 
 	// Lerp from A to B by f
-	static FTVector3 Lerp(const FTVector3& a, const FTVector3& b, float f)
-	{
-		return FTVector3(a + f * (b - a));
-	}
+	static FTVector3 Lerp(const FTVector3& a, const FTVector3& b, float f);
 
 	// Reflect V about (normalized) N
-	static FTVector3 Reflect(const FTVector3& v, const FTVector3& n)
-	{
-		return v - 2.0f * FTVector3::Dot(v, n) * n;
-	}
-
-	static FTVector3 Transform(const FTVector3& vec, const class Matrix4& mat, float w = 1.0f);
-	// This will transform the vector and renormalize the w component
-	static FTVector3 TransformWithPerspDiv(const FTVector3& vec, const class Matrix4& mat, float w = 1.0f);
-
-	// Transform a FTVector3 by a quaternion
-	static FTVector3 Transform(const FTVector3& v, const class FTQuaternion& q);
+	static FTVector3 Reflect(const FTVector3& v, const FTVector3& n);
 
 	static const FTVector3 Zero;
 	static const FTVector3 UnitX;
@@ -357,7 +269,7 @@ public:
 };
 
 // 2D Vector
-class FTVector2
+class FOXTROT_API FTVector2
 {
 public:
 	float x;
@@ -1006,10 +918,10 @@ public:
 	explicit FTQuaternion(const FTVector3& axis, float angle)
 	{
 		float scalar = Math::Sin(angle / 2.0f);
-		x			 = axis.x * scalar;
-		y			 = axis.y * scalar;
-		z			 = axis.z * scalar;
-		w			 = Math::Cos(angle / 2.0f);
+		x = axis.x * scalar;
+		y = axis.y * scalar;
+		z = axis.z * scalar;
+		w = Math::Cos(angle / 2.0f);
 	}
 
 	// Directly set the internal components
@@ -1087,10 +999,10 @@ public:
 
 		if (cosom < 0.9999f)
 		{
-			const float omega  = Math::Acos(cosom);
+			const float omega = Math::Acos(cosom);
 			const float invSin = 1.f / Math::Sin(omega);
-			scale0			   = Math::Sin((1.f - f) * omega) * invSin;
-			scale1			   = Math::Sin(f * omega) * invSin;
+			scale0 = Math::Sin((1.f - f) * omega) * invSin;
+			scale1 = Math::Sin(f * omega) * invSin;
 		}
 		else
 		{
@@ -1125,9 +1037,9 @@ public:
 		FTVector3 qv(q.x, q.y, q.z);
 		FTVector3 pv(p.x, p.y, p.z);
 		FTVector3 newVec = p.w * qv + q.w * pv + FTVector3::Cross(pv, qv);
-		retVal.x		 = newVec.x;
-		retVal.y		 = newVec.y;
-		retVal.z		 = newVec.z;
+		retVal.x = newVec.x;
+		retVal.y = newVec.y;
+		retVal.z = newVec.z;
 
 		// Scalar component is:
 		// ps * qs - pv . qv

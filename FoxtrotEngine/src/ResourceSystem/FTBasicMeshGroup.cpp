@@ -17,6 +17,11 @@
 #include "Renderer/Camera.h"
 #include "Renderer/FoxtrotRenderer.h"
 
+#ifdef FOXTROT_EDITOR
+#include "EditorResourceManager.h"
+#endif // FOXTROT_EDITOR
+
+
 using Matrix = DirectX::SimpleMath::Matrix;
 
 void FTBasicMeshGroup::Initialize(
@@ -228,11 +233,16 @@ void FTBasicMeshGroup::SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Dev
 		Debug::LogError(__LINE__, __FILE__, "Material Key not assigned");
 		return;
 	}
-	if (1 < ResourceManager::GetInstance()->GetMapMaterials().size())
-	{
+
+#ifdef FOXTROT_EDITOR
+	if (1 < EditorResourceManager::GetInstance()->GetMapMaterials().size())
+		for (UINT& key : matKeys)
+			mMaterials.push_back(EditorResourceManager::GetInstance()->GetLoadedMaterial(key));
+#else
+	if (ResourceManager::GetInstance()->GetLoadedMaterial(ChunkKey::Material::STANDARD_MATERIAL))
 		for (UINT& key : matKeys)
 			mMaterials.push_back(ResourceManager::GetInstance()->GetLoadedMaterial(key));
-	}
+#endif // FOXTROT_EDITOR
 
 	for (Mesh* mesh : mMeshes)
 	{
@@ -253,7 +263,13 @@ void FTBasicMeshGroup::SetTexture()
 		printf("ERROR: MeshRenderer::SetTexture() -> TexKey not assigned.\n");
 		return;
 	}
+
+#ifdef FOXTROT_EDITOR
+	mTexture = EditorResourceManager::GetInstance()->GetLoadedTexture(mTexKey);
+#else
 	mTexture = ResourceManager::GetInstance()->GetLoadedTexture(mTexKey);
+#endif
+
 	if (!mTexture)
 		printf("ERROR: MeshRenderer::SetTexture() -> Cannot set texture %d, returning nullptr.\n", mTexKey);
 }
@@ -266,7 +282,7 @@ void FTBasicMeshGroup::SetTexture(UINT texKey)
 
 void FTBasicMeshGroup::SetTexture(FTTexture* tex)
 {
-	mTexKey	 = ResourceManager::GetInstance()->GetKey(tex, ResourceManager::GetInstance()->GetTexturesMap());
+	//mTexKey	 = ResourceManager::GetInstance()->GetKey(tex, ResourceManager::GetInstance()->GetTexturesMap());
 	mTexture = tex;
 }
 

@@ -7,7 +7,7 @@
     <ClInclude Include="Dynamic\LinkedQueue.h" />
     <ClInclude Include="Dynamic\LinkedStack.h" />
     <ClInclude Include="Dynamic\BinaryNode.h" />
-    <ClInclude Include="Static\ArrayDS.h" />
+    <ClInclude Include="Static\Array.h" />
     <ClInclude Include="Static\ArrayStack.h" />
     <ClInclude Include="Static\CircularQueue.h" />
     <ClInclude Include="Compare\StringEqual.h" />
@@ -22,6 +22,7 @@
     <ClInclude Include="Search\DepthFirstSearch.h" />
     <ClInclude Include="Dynamic\BinTree.h" />
     <ClInclude Include="Static\ArrayList.h" />
+    <ClInclude Include="Iterator\FTIterator.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

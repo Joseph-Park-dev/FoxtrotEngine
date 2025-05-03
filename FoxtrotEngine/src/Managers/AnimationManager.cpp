@@ -15,9 +15,10 @@
 #ifdef FOXTROT_EDITOR
 	#include "EditorUtils.h"
 	#include "FileSystem/BufferSizes.h"
+	#include "EditorResourceManager.h"
 #endif // FOXTROT_EDITOR
 //
-//FTSpriteAnimation* AnimationManager::CreateAnimationFromTileMap(const char* name, UINT texKey, UINT tileMapKey)
+// FTSpriteAnimation* AnimationManager::CreateAnimationFromTileMap(const char* name, UINT texKey, UINT tileMapKey)
 //{
 //	if (!mRenderer)
 //		printf("ERROR : Animator::CreateAnimationFromTile()-> Renderer is null");
@@ -84,7 +85,7 @@ spine::SkeletonRenderer* AnimationManager::GetSkeletonRenderer()
 
 void AnimationManager::Initialize(FoxtrotRenderer* renderer)
 {
-	mRenderer = renderer;
+	mRenderer		  = renderer;
 	mSkeletonRenderer = new spine::SkeletonRenderer;
 }
 
@@ -133,18 +134,28 @@ void AnimationManager::UpdateUI(bool* opened)
 	{
 		CreateAnimation();
 
-		std::unordered_map<UINT, FTSpriteAnimation*>& map = 
-			ResourceManager::GetInstance()->GetSpriteAnimMap();
+		std::unordered_map<UINT, FTSpriteAnimation*>& map =
+			EditorResourceManager::GetInstance()->GetSpriteAnimMap();
 		std::unordered_map<UINT, FTSpriteAnimation*>::iterator iter = map.begin();
 
-		for (; iter != map.end(); ++iter)
+		if (ImGui::TreeNode("Loaded Animations"))
 		{
-			if ((*iter).second)
+			for (; iter != map.end(); ++iter)
 			{
-				(*iter).second->UpdateUI();
-				if (ImGui::Button("Save"))
-					SaveSpriteAnimAsFile((*iter).second, (*iter).first);
+				if ((*iter).second)
+				{
+					if (ImGui::BeginListBox((*iter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 100)))
+					{
+						ImGui::Text((*iter).second->GetFileName().c_str());
+						(*iter).second->UpdateUI();
+						if (ImGui::Button("Save"))
+							SaveSpriteAnimAsFile((*iter).second, (*iter).first);
+
+						ImGui::EndListBox();
+					}
+				}
 			}
+			ImGui::TreePop();
 		}
 
 		ImGui::End();
@@ -167,15 +178,15 @@ void AnimationManager::CreateAnimation()
 		static UINT texKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 		GetSprite(texKey);
 		if (texKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-			text = ResourceManager::GetInstance()->GetLoadedTexture(texKey)->GetFileName().c_str();
+			text = EditorResourceManager::GetInstance()->GetLoadedTexture(texKey)->GetFileName().c_str();
 
 		ImGui::Text(text);
 
-		text = ChunkKey::NullVal::NULL_OBJ;
+		text					   = ChunkKey::NullVal::NULL_OBJ;
 		static UINT spriteSheetKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 		GetSpriteSheet(spriteSheetKey);
 		if (spriteSheetKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-			text = ResourceManager::GetInstance()->GetLoadedTileMap(spriteSheetKey)->GetFileName().c_str();
+			text = EditorResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteSheetKey)->GetFileName().c_str();
 
 		static int startIdx;
 		static int endIdx;
@@ -192,8 +203,8 @@ void AnimationManager::CreateAnimation()
 			// Load the created animation to ResourceManager & File.
 			// This is called only during the FTEditor Runtime.
 			UINT key =
-				ResourceManager::GetInstance()->LoadResource(
-					anim, ResourceManager::GetInstance()->GetSpriteAnimMap());
+				EditorResourceManager::GetInstance()->LoadResource(
+					anim, EditorResourceManager::GetInstance()->GetSpriteAnimMap());
 			SaveSpriteAnimAsFile(anim, key);
 		}
 
@@ -206,17 +217,17 @@ void AnimationManager::CreateAnimation()
 
 void AnimationManager::GetSprite(UINT& key)
 {
-	FTEditorUtils::DisplayResSelection("Select Sprite", ResourceManager::GetInstance()->GetTexturesMap(), key);
+	FTEditorUtils::DisplayResSelection("Select Sprite", EditorResourceManager::GetInstance()->GetTexturesMap(), key);
 }
 
 void AnimationManager::GetTileMap(UINT& key)
 {
-	FTEditorUtils::DisplayResSelection("Select TileMap", ResourceManager::GetInstance()->GetTileMapsMap(), key);
+	FTEditorUtils::DisplayResSelection("Select TileMap", EditorResourceManager::GetInstance()->GetTileMapsMap(), key);
 }
 
 void AnimationManager::GetSpriteSheet(UINT& key)
 {
-	FTEditorUtils::DisplayResSelection("Select SpriteSheet", ResourceManager::GetInstance()->GetSpriteSheetsMap(), key);
+	FTEditorUtils::DisplayResSelection("Select SpriteSheet", EditorResourceManager::GetInstance()->GetSpriteSheetsMap(), key);
 }
 
 void AnimationManager::SaveSpriteAnimAsFile(FTSpriteAnimation* animation, UINT key)

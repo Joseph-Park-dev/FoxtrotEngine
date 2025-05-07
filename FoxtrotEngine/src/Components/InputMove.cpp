@@ -33,7 +33,7 @@ void InputMove::ProcessInput(FTInputDevice* inputDevice)
 
 	if (inputDevice->KEY_TAP(KEY::SPACE))
 		steering.JumpTriggered = true;
-	GetOwner()->GetTransform()->SetSteering(steering);
+	transform->SetSteering(steering);
 }
 
 void InputMove::CloneTo(Actor* actor)

@@ -106,7 +106,7 @@ void Move::LateUpdate(float deltaTime)
 			Jump(vel, steering);
 
 		SetIsGrounded();
-		GetOwner()->GetTransform()->SetSteering(Steering::Halt());
+		//GetOwner()->GetTransform()->SetSteering(Steering::Halt());
 	}
 }
 

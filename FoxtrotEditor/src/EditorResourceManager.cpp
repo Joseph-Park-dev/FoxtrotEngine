@@ -108,8 +108,6 @@ void EditorResourceManager::LoadMaterials()
 
 void EditorResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)
 {
-	DeleteAll();
-
 	std::pair<size_t, std::string> resPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RESOURCE_DATA);
 	size_t						   packCount = resPack.first;
 
@@ -217,6 +215,9 @@ FTTileMap* EditorResourceManager::GetLoadedTileMap(const UINT key)
 
 FTSpriteSheet* EditorResourceManager::GetLoadedSpriteSheet(const UINT key)
 {
+	if(mMapSpriteSheets.find(key) == mMapSpriteSheets.end())
+		return nullptr;
+
 	FTSpriteSheet* spriteSheet = mMapSpriteSheets.at(key);
 	if (!spriteSheet)
 	{
@@ -285,6 +286,9 @@ FTBasicMeshGroup* EditorResourceManager::GetLoadedMesh(const UINT key)
 
 FTSpriteAnimation* EditorResourceManager::GetLoadedSpriteAnim(const UINT key)
 {
+	if (mMapSpriteAnimation.find(key) == mMapSpriteAnimation.end())
+		return nullptr;
+
 	FTSpriteAnimation* spriteAnim = mMapSpriteAnimation.at(key);
 	if (!spriteAnim)
 		printf("Error: EditorResourceManager::GetLoadedSpriteAnim() -> FTSpriteAnimation is empty %d\n", key);

@@ -66,6 +66,17 @@ void FTSpriteSheet::InitializeTile(Tile& tile, nlohmann::json& json)
 	float height	= json[SpriteSheetKeys::FRAME][SpriteSheetKeys::H] / mSheetSize.y;
 
 	InitializeRectOnMap(tile, posOnMapX, posOnMapY, width, height);
+
+	float posOnScreenX = 0.0f;
+	float posOnScreenY = 0.0f;
+
+	float srcWidth = json[SpriteSheetKeys::FRAME][SpriteSheetKeys::W];
+	float srcHeight = json[SpriteSheetKeys::FRAME][SpriteSheetKeys::H];
+
+	float heightOnScreen = 1.0f;
+	float widthOnScreen = srcWidth / srcHeight;
+
+	InitializeRectOnScreen(tile, posOnScreenX, posOnScreenY, widthOnScreen, heightOnScreen);
 }
 
 void FTSpriteSheet::SaveProperties(std::ofstream& ofs, UINT key)
@@ -98,9 +109,10 @@ void FTSpriteSheet::InitializeRectOnMap(Tile& tile, float posX, float posY, floa
 	tile.GetRectOnMap().Set(posX, posY, width, height);
 }
 
-void FTSpriteSheet::InitializeRectOnScreen(Tile& tile, float posOnMapX, float posOnMapY, float widthOnMap, float heightOnMap)
+void FTSpriteSheet::InitializeRectOnScreen(Tile& tile, float posX, float posY, float width, float height)
 {
 	FTRectArea& rectOnScreen = tile.GetRectOnScreen();
+	tile.GetRectOnScreen().Set(posX, posY, width, height);
 }
 
 #ifdef FOXTROT_EDITOR

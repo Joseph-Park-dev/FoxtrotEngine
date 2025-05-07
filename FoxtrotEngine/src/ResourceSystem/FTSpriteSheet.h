@@ -29,6 +29,7 @@ private:
 
 	FTVector2 mSheetSize;
 
+
 public:
 	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
 	virtual UINT LoadProperties(std::ifstream& ifs) override;

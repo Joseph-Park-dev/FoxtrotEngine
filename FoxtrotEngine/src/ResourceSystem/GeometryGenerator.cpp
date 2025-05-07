@@ -327,10 +327,12 @@ FTMeshData GeometryGenerator::MakeAnimationFrame(Tile tile)
 	std::vector<Vector3> normals;
 	std::vector<Vector2> texcoords;
 
-	positions.push_back(Vector3(-1.0f, 1.0f, 0.0f));
-	positions.push_back(Vector3(1.0f, 1.0f, 0.0f));
-	positions.push_back(Vector3(1.0f, -1.0f, 0.0f));
-	positions.push_back(Vector3(-1.0f, -1.0f, 0.0f));
+	FTVector2 size = tile.GetRectOnScreen().GetSize();
+
+	positions.push_back(Vector3(-size.x/2.f, size.y / 2.f, 0.0f));
+	positions.push_back(Vector3(size.x / 2.f, size.y / 2.f, 0.0f));
+	positions.push_back(Vector3(size.x / 2.f, -size.y / 2.f, 0.0f));
+	positions.push_back(Vector3(-size.x / 2.f, -size.y / 2.f, 0.0f));
 	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
 	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
 	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));

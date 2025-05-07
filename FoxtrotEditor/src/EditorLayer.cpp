@@ -214,7 +214,7 @@ void EditorLayer::DisplayMainMenuBar()
 				{
 					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
 					DebugShapes::GetInstance()->DeleteAll();
-					EditorResourceManager::GetInstance()->DeleteAll();
+					//EditorResourceManager::GetInstance()->DeleteAll();
 					UIManager::GetInstance()->Reset();
 					CollisionManager::GetInstance()->Reset();
 					LightManager::GetInstance()->Reset(FTCoreEditor::GetInstance()->GetGameRenderer());
@@ -237,11 +237,11 @@ void EditorLayer::DisplayMainMenuBar()
 				{
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(false);
 					DebugShapes::GetInstance()->DeleteAll();
-					EditorResourceManager::GetInstance()->DeleteAll();
+					//EditorResourceManager::GetInstance()->DeleteAll();
 					CollisionManager::GetInstance()->Reset();
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
-					EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
-					EditorResourceManager::GetInstance()->LoadAllResourcesInAsset();
+					//EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+					//EditorResourceManager::GetInstance()->LoadAllResourcesInAsset();
 					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
 				}
 			}

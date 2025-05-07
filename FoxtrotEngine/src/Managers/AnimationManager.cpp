@@ -65,7 +65,12 @@ FTSpriteAnimation* AnimationManager::CreateAnimationFromSpriteSheet(const char* 
 	if (spriteSheetKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
 		animation->SetTileDataKey(spriteSheetKey);
 
+#ifdef FOXTROT_EDITOR
+	FTSpriteSheet* spriteSheetBuf = EditorResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteSheetKey);
+#else
 	FTSpriteSheet* spriteSheetBuf = ResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteSheetKey);
+#endif // FOXTROT_EDITOR
+
 	if (spriteSheetBuf->GetTiles() == nullptr)
 		spriteSheetBuf->Initialize();
 
@@ -232,7 +237,8 @@ void AnimationManager::GetSpriteSheet(UINT& key)
 
 void AnimationManager::SaveSpriteAnimAsFile(FTSpriteAnimation* animation, UINT key)
 {
-	std::ofstream ofs(animation->GetRelativePath());
+	std::string path = EditorResourceManager::GetInstance()->GetPathToAsset() + animation->GetFileName();
+	std::ofstream ofs(path);
 	animation->SaveProperties(ofs, key);
 	FileIOHelper::SaveBufferToFile(ofs);
 }

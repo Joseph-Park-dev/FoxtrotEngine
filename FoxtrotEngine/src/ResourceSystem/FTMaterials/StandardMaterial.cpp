@@ -75,7 +75,7 @@ StandardMaterial::StandardMaterial()
 	std::string name = std::string("StandardMaterial") + FileTypes::MATERIAL;
 
 #ifdef FOXTROT_EDITOR
-	std::string path = std::string(PATH_PROJECT + "\\Assets\\Materials\\") + name;
+	std::string path = std::string(PATH_PROJECT + "Assets\\Materials\\") + name;
 #else
 	std::string path = std::string(".\\Assets\\Materials\\") + name;
 #endif // FOXTROT_EDITOR

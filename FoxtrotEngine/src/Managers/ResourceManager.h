@@ -78,7 +78,7 @@ public:
 	virtual void DeleteAll();
 
 	void SaveResources(std::ofstream& ofs);
-	void LoadResources(std::ifstream& ifs, FTCore* ftCoreInst);
+	void LoadResources(std::ifstream& ifs);
 
 public:
 	virtual FTTexture*		   GetLoadedTexture(const UINT key);
@@ -216,8 +216,8 @@ private:
 	template <typename FTRESOURCE>
 	void LoadResource(std::ifstream& ifs, FTDS::Array<FTRESOURCE*>& resArr)
 	{
-		FTRESOURCE* res	= DBG_NEW FTRESOURCE;
-		UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
+		FTRESOURCE* res				  = DBG_NEW FTRESOURCE;
+		UINT					  key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
 
 		FileIOHelper::BeginDataPackLoad(ifs);
 		FileIOHelper::LoadBasicString(ifs, res->RelativePath());

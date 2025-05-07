@@ -42,7 +42,11 @@ namespace FTDS
 	public:
 		void Reserve(size_t newCapacity)
 		{
-			assert(0 < newCapacity); // Input capacity must be bigger than Zero.
+			if (newCapacity < 1) // Input capacity must be bigger than Zero.
+			{
+				Debug::LogError(__LINE__, __FILE__, "New capacity is 0!");
+				return; 
+			}
 			// When the current capacity is zero; initialization phase.
 			AllocateMem(newCapacity);
 		}

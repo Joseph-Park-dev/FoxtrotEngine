@@ -40,7 +40,7 @@ void ChunkLoader::LoadChunk(const std::string fileName)
 	std::ifstream ifs(fileName);
 	LoadChunkData(ifs);
 	CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
-	ResourceManager::GetInstance()->LoadResources(ifs, FTCore::GetInstance());
+	ResourceManager::GetInstance()->LoadResources(ifs);
 	LightManager::GetInstance()->LoadProperties(ifs);
 	LoadActorsData(ifs);
 	Camera::GetInstance()->LoadProperties(ifs);

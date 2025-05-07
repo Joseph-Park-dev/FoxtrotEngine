@@ -47,16 +47,13 @@ Animator::~Animator()
 
 void Animator::Play(const UINT key, bool isRepeated)
 {
-	UINT resKey = mLoadedKeys.at(key);
+	UINT loadedKey = mLoadedKeys.at(key);
 
 #ifdef FOXTROT_EDITOR
-	SetMeshGroup(EditorResourceManager::GetInstance()->GetLoadedSpriteAnim(resKey));
+	SetMeshGroup(EditorResourceManager::GetInstance()->GetLoadedSpriteAnim(loadedKey));
 #else
-	SetMeshGroup(ResourceManager::GetInstance()->GetLoadedSpriteAnim(resKey));
+	SetMeshGroup(ResourceManager::GetInstance()->GetLoadedSpriteAnim(loadedKey));
 #endif // FOXTROT_EDITOR
-
-	if (!GetMeshGroup())
-		printf("ERROR : Animator::Play()->Animation is null\n");
 	mIsFinished = false;
 	mIsRepeated = isRepeated;
 }
@@ -110,6 +107,8 @@ void Animator::LoadProperties(std::ifstream& ifs)
 		FileIOHelper::LoadUnsignedInt(ifs, key);
 		mLoadedKeys.push_back(key);
 	}
+	
+	std::reverse(mLoadedKeys.begin(), mLoadedKeys.end());
 
 	// Load Materials.
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::MATERIAL_KEYS);
@@ -132,26 +131,19 @@ void Animator::UpdateFrame(float deltaTime)
 	mAccTime += deltaTime;
 	FTSpriteAnimation* anim		 = static_cast<FTSpriteAnimation*>(GetMeshGroup());
 	AnimationFrame*	   currFrame = anim->GetFrame(mCurrFrameIdx);
-	if (currFrame->Duration <= mAccTime)
+	if (currFrame)
 	{
-		++mCurrFrameIdx;
-		if (IndexOutOfRange(anim->GetMinFrameIdx(), anim->GetMaxFrameIdx()))
+		if (currFrame->Duration <= mAccTime)
 		{
-			if (!mIsRepeated)
-			{
-				mCurrFrameIdx = 0;
-				mIsFinished	  = true;
-			}
-			else
-			{
-				// Set current frame to the start.
-				// (mMaxFrameIdx starts from 0, so the number of frames should be
-				// mMaxFrameIdx + 1)
-				int length = anim->GetMaxFrameIdx() - anim->GetMinFrameIdx();
-				mCurrFrameIdx -= length;
-			}
+			++mCurrFrameIdx;
+			mAccTime = 0.f;
 		}
-		mAccTime = 0.f;
+	}
+	if (IndexOutOfRange(anim->GetMinFrameIdx(), anim->GetMaxFrameIdx()))
+	{
+		if (!mIsRepeated)
+			mIsFinished = true;
+		mCurrFrameIdx = 0;
 	}
 }
 
@@ -163,11 +155,32 @@ bool Animator::IndexOutOfRange(int minIdx, int maxIdx)
 void Animator::Initialize(FTCore* coreInstance)
 {
 	SetRenderer(coreInstance->GetGameRenderer());
-	if (0 < mLoadedKeys.size())
-		Play(mLoadedKeys.at(0));
 
-	if (0 < MaterialKeys().size())
-		GetMeshGroup()->SetMaterials(MaterialKeys(), GetRenderer()->GetDevice());
+#ifdef FOXTROT_EDITOR
+
+	std::vector<UINT>::iterator iter = mLoadedKeys.begin();
+	auto& animMap = EditorResourceManager::GetInstance()->GetSpriteAnimMap();
+
+	for (; iter != mLoadedKeys.end(); ++iter)
+	{
+		if (animMap.find(*iter) == animMap.end())
+		{
+			std::iter_swap(iter, mLoadedKeys.end()-1);
+			mLoadedKeys.pop_back();
+		}
+	}
+	//std::sort(mLoadedKeys.begin(), mLoadedKeys.end());
+
+#endif // FOXTROT_EDITOR
+	
+	if (0 < mLoadedKeys.size())
+		Play(0);
+
+	if (GetMeshGroup())
+	{
+		if (0 < MaterialKeys().size())
+			GetMeshGroup()->SetMaterials(MaterialKeys(), GetRenderer()->GetDevice());
+	}
 
 	Component::Initialize(coreInstance);
 }
@@ -267,8 +280,17 @@ void Animator::UpdatePlayList()
 		for (size_t i = 0; i < mLoadedKeys.size(); ++i)
 		{
 			FTSpriteAnimation* anim = EditorResourceManager::GetInstance()->GetLoadedSpriteAnim(mLoadedKeys.at(i));
+
+			ImGui::PushID(anim->GetFileName().c_str());
 			ImGui::Text(anim->GetFileName().c_str());
 			anim->UpdateUI();
+
+			if (ImGui::ArrowButton("##Up", ImGuiDir::ImGuiDir_Up))
+				std::iter_swap(mLoadedKeys.begin() + i - 1, mLoadedKeys.begin() + i);
+			ImGui::SameLine();
+			if (ImGui::ArrowButton("##Down", ImGuiDir::ImGuiDir_Down))
+				std::iter_swap(mLoadedKeys.begin() + i + 1, mLoadedKeys.begin() + i);
+			ImGui::PopID();
 		}
 	}
 }

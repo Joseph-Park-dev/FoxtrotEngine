@@ -24,8 +24,12 @@ UINT FTSpriteAnimation::GetTileDataKey()
 
 AnimationFrame* FTSpriteAnimation::GetFrame(int frameIdx)
 {
-	Mesh* mesh = Meshes().at(frameIdx);
-	return static_cast<AnimationFrame*>(mesh);
+	if (frameIdx < Meshes().size())
+	{
+		Mesh* mesh = Meshes().at(frameIdx);
+		return static_cast<AnimationFrame*>(mesh);
+	}
+	return nullptr;
 }
 
 void FTSpriteAnimation::SetTileDataKey(UINT key)

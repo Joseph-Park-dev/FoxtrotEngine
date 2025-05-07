@@ -11,6 +11,8 @@ public:
 	void LoadResByType(std::string& fileName);
 	void LoadMaterials() override;
 
+	void PassLoadResourceInChunk(std::ifstream& ifs);
+
 public:
 	std::unordered_map<UINT, FTTexture*>& GetTexturesMap();
 	// I know the name feels so funny...

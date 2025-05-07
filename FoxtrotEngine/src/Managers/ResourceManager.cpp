@@ -194,6 +194,12 @@ void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
 #else
 	FTSpriteSheet* spriteSheet = ResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteAnim->GetTileDataKey());
 #endif // FOXTROT_EDITOR
+
+	if (!spriteSheet)
+	{
+		Debug::LogError(__LINE__, __FILE__, "Failed to load spritesheet");
+		return;
+	}
 	
 	spriteAnim->SetTexture();
 
@@ -392,7 +398,7 @@ void ResourceManager::SaveResources(std::ofstream& ofs)
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::RESOURCE_DATA);
 }
 
-void ResourceManager::LoadResources(std::ifstream& ifs, FTCore* ftCoreInst)
+void ResourceManager::LoadResources(std::ifstream& ifs)
 {
 	DeleteAll();
 

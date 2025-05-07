@@ -75,7 +75,7 @@ void EditorChunkLoader::LoadChunk(const std::string fileName)
 	LoadChunkData(ifs);
 	LightManager::GetInstance()->LoadProperties(ifs);
 	CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
-	EditorResourceManager::GetInstance()->LoadResources(ifs, FTCoreEditor::GetInstance());
+	EditorResourceManager::GetInstance()->PassLoadResourceInChunk(ifs);
 	LoadActorsData(ifs);
 	Camera::GetInstance()->LoadProperties(ifs);
 	Unlock();

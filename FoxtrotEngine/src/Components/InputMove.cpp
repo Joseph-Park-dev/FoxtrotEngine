@@ -27,7 +27,8 @@ void InputMove::ProcessInput(FTInputDevice* inputDevice)
 		steering.Linear = FTVector3::NegUnitX;
 	else if (inputDevice->KEY_HOLD(KEY::D))
 		steering.Linear = FTVector3::UnitX;
-	else
+	
+	if(inputDevice->KEY_NONE(KEY::A) && inputDevice->KEY_NONE(KEY::D))
 		steering.Linear = FTVector3::Zero;
 
 	if (inputDevice->KEY_TAP(KEY::SPACE))

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -20,22 +20,21 @@
 #include "Physics/Physics2D.h"
 
 #ifdef FOXTROT_EDITOR
-#include "CommandHistory.h"
+	#include "CommandHistory.h"
 #endif // FOXTROT_EDITOR
 
 Move::Move(Actor* owner, int updateorder)
-	: Component(owner , updateorder)
-	, mRigidbody		(nullptr)
-	, mGroundFilter		(b2DefaultQueryFilter())
-	, mForwardSpeed		(0.f)
-	, mJumpForce		(0.f)
-	, mAngularSpeed		(0.f)
-	, mIsControllable	(Controllable::YES)
-	, mIsGrounded		(false)
+	: Component(owner, updateorder)
+	, mRigidbody(nullptr)
+	, mGroundFilter(b2DefaultQueryFilter())
+	, mForwardSpeed(0.f)
+	, mJumpForce(0.f)
+	, mAngularSpeed(0.f)
+	, mIsControllable(Controllable::YES)
+	, mIsGrounded(false)
 {
 	mGroundFilter = CollisionManager::GetInstance()->GetQueryFilter(
-		GetOwner()->GetActorGroup()
-	);
+		GetOwner()->GetActorGroup());
 }
 
 void Move::Accelerate(b2Vec2 currVel, const Steering* steering)
@@ -47,6 +46,8 @@ void Move::Accelerate(b2Vec2 currVel, const Steering* steering)
 		else
 			currVel.x = (mForwardSpeed * steering->Linear.x);
 	}
+	else
+		currVel.x = 0.f;
 
 	if (0 < Math::Abs(steering->Linear.y))
 	{
@@ -55,6 +56,9 @@ void Move::Accelerate(b2Vec2 currVel, const Steering* steering)
 		else
 			currVel.y = (mForwardSpeed * steering->Linear.y);
 	}
+	else
+		currVel.y = 0.f;
+
 	b2Body_SetLinearVelocity(mRigidbody->GetBodyID(), currVel);
 }
 
@@ -63,7 +67,7 @@ void Move::Jump(b2Vec2 currVel, const Steering* steering)
 	if (mIsGrounded)
 	{
 		b2Vec2 vel = b2Vec2_zero;
-		vel.y = currVel.y + mJumpForce;
+		vel.y	   = currVel.y + mJumpForce;
 		b2Body_ApplyLinearImpulseToCenter(mRigidbody->GetBodyID(), vel, true);
 	}
 }
@@ -71,17 +75,16 @@ void Move::Jump(b2Vec2 currVel, const Steering* steering)
 void Move::SetIsGrounded()
 {
 	b2RayCastInput rcInput = b2RayCastInput();
-	b2AABB aaBB = b2Body_ComputeAABB(mRigidbody->GetBodyID());
-	b2Vec2 center = b2AABB_Center(aaBB);
-	b2Vec2 extent = b2AABB_Extents(aaBB);
-	b2Vec2 length = b2Vec2_zero;
-	length.y = -0.5f - extent.y;
-	b2RayResult result = b2World_CastRayClosest(
+	b2AABB		   aaBB	   = b2Body_ComputeAABB(mRigidbody->GetBodyID());
+	b2Vec2		   center  = b2AABB_Center(aaBB);
+	b2Vec2		   extent  = b2AABB_Extents(aaBB);
+	b2Vec2		   length  = b2Vec2_zero;
+	length.y			   = -0.5f - extent.y;
+	b2RayResult result	   = b2World_CastRayClosest(
 		Physics2D::GetInstance()->GetCurrentWorldID(),
 		center,
 		length,
-		mGroundFilter
-	);
+		mGroundFilter);
 	mIsGrounded = result.hit;
 }
 
@@ -97,13 +100,11 @@ void Move::LateUpdate(float deltaTime)
 	if (mIsControllable)
 	{
 		const Steering* steering = GetOwner()->GetTransform()->GetSteering();
-		if (*steering != Steering::Halt())
-		{
-			b2Vec2 vel = b2Body_GetLinearVelocity(mRigidbody->GetBodyID());
-			Accelerate(vel, steering);
-			if (steering->JumpTriggered)
-				Jump(vel, steering);
-		}
+		b2Vec2			vel		 = b2Body_GetLinearVelocity(mRigidbody->GetBodyID());
+		Accelerate(vel, steering);
+		if (steering->JumpTriggered)
+			Jump(vel, steering);
+
 		SetIsGrounded();
 		GetOwner()->GetTransform()->SetSteering(Steering::Halt());
 	}
@@ -111,25 +112,25 @@ void Move::LateUpdate(float deltaTime)
 
 void Move::CloneTo(Actor* actor)
 {
-	Move* newComp = DBG_NEW Move(actor, GetUpdateOrder());
+	Move* newComp		   = DBG_NEW Move(actor, GetUpdateOrder());
 	newComp->mForwardSpeed = this->mForwardSpeed;
-	newComp->mJumpForce = this->mJumpForce;
+	newComp->mJumpForce	   = this->mJumpForce;
 	newComp->mAngularSpeed = this->mAngularSpeed;
 }
 
 void Move::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
-	FileIOHelper::SaveFloat(ofs, ChunkKey::FORWARD_SPEED,	mForwardSpeed);
-	FileIOHelper::SaveFloat(ofs, ChunkKey::JUMP_FORCE,		mJumpForce);
-	FileIOHelper::SaveFloat(ofs, ChunkKey::ANGULAR_SPEED,	mAngularSpeed);
+	FileIOHelper::SaveFloat(ofs, ChunkKey::FORWARD_SPEED, mForwardSpeed);
+	FileIOHelper::SaveFloat(ofs, ChunkKey::JUMP_FORCE, mJumpForce);
+	FileIOHelper::SaveFloat(ofs, ChunkKey::ANGULAR_SPEED, mAngularSpeed);
 }
 
 void Move::LoadProperties(std::ifstream& ifs)
 {
-	FileIOHelper::LoadFloat(ifs, mForwardSpeed);
-	FileIOHelper::LoadFloat(ifs, mJumpForce);
 	FileIOHelper::LoadFloat(ifs, mAngularSpeed);
+	FileIOHelper::LoadFloat(ifs, mJumpForce);
+	FileIOHelper::LoadFloat(ifs, mForwardSpeed);
 	Component::LoadProperties(ifs);
 }
 

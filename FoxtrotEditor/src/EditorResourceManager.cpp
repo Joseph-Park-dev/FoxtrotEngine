@@ -15,6 +15,7 @@
 #include "ResourceSystem/FTMaterials/StandardMaterial.h"
 #include "ResourceSystem/FTMaterials/RimMaterial.h"
 
+#include "EditorChunkLoader.h"
 #include "DirectoryHelper.h"
 
 void EditorResourceManager::LoadAllResourcesInAsset()
@@ -103,6 +104,25 @@ void EditorResourceManager::LoadMaterials()
 
 	mMapMaterials.insert({ ++key, standard });
 	mMapMaterials.insert({ ++key, rim });
+}
+
+void EditorResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)
+{
+	DeleteAll();
+
+	std::pair<size_t, std::string> resPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RESOURCE_DATA);
+	size_t						   packCount = resPack.first;
+
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::JSON::JSON);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_PIXEL_SHADER);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_VERTEX_SHADER);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMESH_GROUP);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPREMADE_GROUP);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSPRITESHEET_GROUP);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTILEMAP_GROUP);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTEXTURE_GROUP);
 }
 
 

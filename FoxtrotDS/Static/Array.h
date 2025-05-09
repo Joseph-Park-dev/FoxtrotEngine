@@ -4,6 +4,7 @@
 
 #include "Iterator/FTIterator.h"
 #include "Debugging/DebugMemAlloc.h"
+#include "Debugging/DebugFuncs.h"
 
 namespace FTDS
 {
@@ -91,6 +92,9 @@ namespace FTDS
 		{
 			delete[] mData;
 		}
+
+	public:
+		TYPE* Data() { return mData; }
 
 	protected:
 		TYPE*  mData;

@@ -23,6 +23,9 @@
     <ClInclude Include="Dynamic\BinTree.h" />
     <ClInclude Include="Static\ArrayList.h" />
     <ClInclude Include="Iterator\FTIterator.h" />
+    <ClInclude Include="Static\Record.h" />
+    <ClInclude Include="Dynamic\RecordNode.h" />
+    <ClInclude Include="Static\HashChainMap.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

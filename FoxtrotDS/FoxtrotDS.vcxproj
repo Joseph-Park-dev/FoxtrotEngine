@@ -183,7 +183,10 @@
     <ClInclude Include="Dynamic\LinkedQueue.h" />
     <ClInclude Include="Dynamic\LinkedStack.h" />
     <ClInclude Include="Dynamic\BinaryNode.h" />
+    <ClInclude Include="Dynamic\RecordNode.h" />
     <ClInclude Include="Iterator\FTIterator.h" />
+    <ClInclude Include="Static\HashChainMap.h" />
+    <ClInclude Include="Static\Record.h" />
     <ClInclude Include="Search\DepthFirstSearch.h" />
     <ClInclude Include="Static\Array.h" />
     <ClInclude Include="Static\ArrayList.h" />

@@ -332,6 +332,7 @@
     <ClCompile Include="include\spine-cpp\src\spine\Updatable.cpp" />
     <ClCompile Include="include\spine-cpp\src\spine\VertexAttachment.cpp" />
     <ClCompile Include="src\Components\SpineAnimator.cpp" />
+    <ClCompile Include="src\Debugging\DebugFuncs.h" />
     <ClCompile Include="src\Managers\FTSpineLoader.cpp" />
     <ClCompile Include="src\ResourceSystem\Animation\FTSpineAnimation.cpp" />
     <ClCompile Include="src\ResourceSystem\FTSpriteSheet.cpp" />

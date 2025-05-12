@@ -34,26 +34,24 @@ namespace FTDS
 			// whereas the linked list inside a slot will be. 
 			assert(0 < mDataArray->Capacity());
 
-			// Create new node
-			RecordNode<TYPE>* node = DBG_NEW RecordNode<TYPE>(key, value);
-
 			// Get Hash Value from HashFuntion()
-			size_t hashVal = FTDS::HashFunction(node->Key(), mDataArray->Capacity());
+			size_t hashVal = FTDS::HashFunction(key, mDataArray->Capacity());
 
 			// Traverse throught the linked list inside a slot.
 			for (RecordNode<TYPE>* p = mDataArray->Data()[hashVal]; p != nullptr; p = p->GetLink())
 			{
 				// Is there any nodes with the same key?
-				if (p->Equal(node->Key()))
+				if (p->Equal(key))
 				{
 					// Abort insertion.
-					delete node;
-					Debug::LogError(__LINE__, __FILE__, "Duplicated key");
+					std::string msg = std::string("Duplicated key") + key;
+					Debug::LogError(__LINE__, __FILE__, msg);
 					return;
 				}
 			}
 
 			// Place the node as the 1st in the row.
+			RecordNode<TYPE>* node = DBG_NEW RecordNode<TYPE>(key, value);
 			node->SetLink(mDataArray->Data()[hashVal]);
 			mDataArray->Data()[hashVal] = node;
 		}

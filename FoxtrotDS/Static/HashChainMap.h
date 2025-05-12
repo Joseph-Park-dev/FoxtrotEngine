@@ -3,8 +3,25 @@
 #include "Array.h"
 #include "Debugging/DebugFuncs.h"
 
+#include <stdint.h>
+#include <string.h>
+
 namespace FTDS
 {
+	uint64_t GenerateHash_fnv1a_64(const char* str) {
+		const uint64_t FNV_PRIME = 0x100000001b3;
+		const uint64_t OFFSET_BASIS = 0xcbf29ce484222325;
+
+		uint64_t hash = OFFSET_BASIS;
+
+		while (*str) {
+			hash ^= (uint8_t)*str++;
+			hash *= FNV_PRIME;
+		}
+
+		return hash;
+	}
+
 	// Sum the ASCII code numbers from the alphabets of the key.
 	inline size_t Transform(const char* key)
 	{
@@ -17,7 +34,7 @@ namespace FTDS
 	// Simple HashFunction using modular operator.
 	inline size_t HashFunction(const char* key, size_t arrSize)
 	{
-		return Transform(key) % arrSize;
+		return GenerateHash_fnv1a_64(key) % arrSize;
 	}
 }
 

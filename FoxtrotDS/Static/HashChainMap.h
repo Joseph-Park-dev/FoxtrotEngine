@@ -22,6 +22,12 @@ namespace FTDS
 		return hash;
 	}
 
+	// Simple HashFunction using modular operator.
+	inline size_t HashFunction(const char* key, size_t arrSize)
+	{
+		return GenerateHash_fnv1a_64(key) % arrSize;
+	}
+
 	// Sum the ASCII code numbers from the alphabets of the key.
 	inline size_t Transform(const char* key)
 	{
@@ -30,18 +36,13 @@ namespace FTDS
 			number += (*key++);
 		return number;
 	}
-
-	// Simple HashFunction using modular operator.
-	inline size_t HashFunction(const char* key, size_t arrSize)
-	{
-		return GenerateHash_fnv1a_64(key) % arrSize;
-	}
 }
 
 namespace FTDS
 {
 	template <typename TYPE>
 	class HashChainMap
+		: public FTDS::Array<FTDS::RecordNode<TYPE>*>
 	{
 	public:
 		void Insert(const char* key, TYPE value)
@@ -49,13 +50,13 @@ namespace FTDS
 			// HashChainMap uses FTDS::Array,
 			// the number of slots will not be dynamic, 
 			// whereas the linked list inside a slot will be. 
-			assert(0 < mDataArray->Capacity());
+			assert(0 < this->Capacity());
 
 			// Get Hash Value from HashFuntion()
-			size_t hashVal = FTDS::HashFunction(key, mDataArray->Capacity());
+			size_t hashVal = FTDS::HashFunction(key, this->Capacity());
 
 			// Traverse throught the linked list inside a slot.
-			for (RecordNode<TYPE>* p = mDataArray->Data()[hashVal]; p != nullptr; p = p->GetLink())
+			for (RecordNode<TYPE>* p = this->mData[hashVal]; p != nullptr; p = p->GetLink())
 			{
 				// Is there any nodes with the same key?
 				if (p->Equal(key))
@@ -69,17 +70,17 @@ namespace FTDS
 
 			// Place the node as the 1st in the row.
 			RecordNode<TYPE>* node = DBG_NEW RecordNode<TYPE>(key, value);
-			node->SetLink(mDataArray->Data()[hashVal]);
-			mDataArray->Data()[hashVal] = node;
+			node->SetLink(this->mData[hashVal]);
+			this->mData[hashVal] = node;
 		}
 
 		TYPE At(const char* key)
 		{
 			// Get Hash Value from HashFuntion()
-			size_t hashVal = FTDS::HashFunction(key, mDataArray->Capacity());
+			size_t hashVal = FTDS::HashFunction(key, this->Capacity());
 
 			// Traverse throught the linked list inside a slot.
-			for (RecordNode<TYPE>* p = mDataArray->Data()[hashVal]; p != nullptr; p = p->GetLink())
+			for (RecordNode<TYPE>* p = this->mData[hashVal]; p != nullptr; p = p->GetLink())
 			{
 				// Is there any nodes with the same key?
 				if (p->Equal(key))
@@ -92,23 +93,23 @@ namespace FTDS
 
 	public:
 		HashChainMap()
-			: mDataArray(DBG_NEW FTDS::Array<RecordNode<TYPE>*>)
+			: FTDS::Array()
 		{
 		}
 
 		HashChainMap(size_t capacity)
-			: mDataArray(DBG_NEW FTDS::Array<RecordNode<TYPE>*>(capacity))
+			: FTDS::Array<RecordNode<TYPE>*>(capacity)
 		{
 		}
 
 		// Auto deletion of the RecordNodes inside each slot.
 		~HashChainMap()
 		{
-			for (size_t i=0; i < mDataArray->Capacity(); ++i)
+			for (size_t i=0; i < this->Capacity(); ++i)
 			{
-				if (mDataArray->Data()[i])
+				if (this->mData[i])
 				{
-					RecordNode<TYPE>* p = mDataArray->Data()[i];
+					RecordNode<TYPE>* p = this->mData[i];
 					while (p != nullptr)
 					{
 						RecordNode<TYPE>* temp = p;
@@ -118,10 +119,6 @@ namespace FTDS
 					}
 				}
 			}
-			delete mDataArray;
 		}
-
-	private:
-		FTDS::Array<RecordNode<TYPE>*>* mDataArray;
 	};
 } // namespace FTDS

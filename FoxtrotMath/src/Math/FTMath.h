@@ -121,6 +121,16 @@ extern "C"
 		{
 			return fmod(numer, denom);
 		}
+
+		inline void Clamp(int& val, int min, int max)
+		{
+			if (val < min)
+				val = min;
+			else if (max < val)
+				val = max;
+			else if (val == min && val == max)
+				val = min;
+		}
 	} // namespace Math
 }
 

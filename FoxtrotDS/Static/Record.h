@@ -1,5 +1,5 @@
 #pragma once
-#include "StringEqual.h"
+#include "Compare/StringEqual.h"
 
 namespace FTDS
 {
@@ -11,7 +11,7 @@ namespace FTDS
 
 	public:
 		const char* Key() { return mKey; }
-		TYPE		Value() { return mValue; }
+		TYPE&		Value() { return mValue; }
 
 	public:
 		Record(const char* key, TYPE value)

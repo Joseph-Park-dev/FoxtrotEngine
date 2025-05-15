@@ -14,7 +14,6 @@ namespace ChunkKey
 {
 	namespace NullVal
 	{
-		constexpr const int	  VALUE_NOT_ASSIGNED = 0;
-		constexpr const char* NULL_OBJ			 = "Null";
+		constexpr const char* NULL_OBJECT = "NULL OBJECT";
 	} // namespace NullVal
 } // namespace ChunkKey

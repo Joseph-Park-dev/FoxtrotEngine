@@ -39,21 +39,6 @@
 //	return str;
 // }
 
-namespace Debug
-{
-	inline void LogError(const int line, const char* file, const char* msg)
-	{
-		printf("ERROR at line number %d in file %s : %s\n", line, file, msg);
-	}
-
-	inline ULONG GetRefCount(IUnknown* obj)
-	{
-		obj->AddRef();
-		ULONG refCount = obj->Release();
-		return refCount;
-	}
-} // namespace Debug
-
 #ifdef FOXTROT_EDITOR
 inline void LogVector2(ImVec2 val)
 {

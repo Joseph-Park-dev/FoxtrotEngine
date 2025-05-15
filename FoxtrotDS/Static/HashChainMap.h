@@ -1,5 +1,5 @@
 #pragma once
-#include "RecordNode.h"
+#include "Dynamic/RecordNode.h"
 #include "Array.h"
 #include "Debugging/DebugFuncs.h"
 
@@ -8,7 +8,7 @@
 
 namespace FTDS
 {
-	uint64_t GenerateHash_fnv1a_64(const char* str) {
+	inline uint64_t GenerateHash_fnv1a_64(const char* str) {
 		const uint64_t FNV_PRIME = 0x100000001b3;
 		const uint64_t OFFSET_BASIS = 0xcbf29ce484222325;
 
@@ -93,7 +93,7 @@ namespace FTDS
 
 	public:
 		HashChainMap()
-			: FTDS::Array()
+			: FTDS::Array<RecordNode<TYPE>*>()
 		{
 		}
 

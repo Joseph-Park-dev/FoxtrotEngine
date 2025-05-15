@@ -57,7 +57,7 @@ public:
 	~Animator() override;
 
 private:
-	std::vector<UINT> mLoadedKeys;
+	std::vector<const char*> mLoadedKeys;
 	UINT			  mCurrAnimKey;
 	int				  mCurrFrameIdx;
 	float			  mAccTime;

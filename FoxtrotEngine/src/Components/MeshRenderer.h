@@ -54,11 +54,11 @@ public:
 	// Keys to select the elements //
 	/////////////////////////////////
 protected:
-	const UINT GetMeshKey() const;
-	const UINT GetTexKey() const;
+	const char* GetMeshKey() const;
+	const char* GetTexKey() const;
 
-	void SetMeshKey(const UINT key);
-	void SetTexKey(const UINT key);
+	void SetMeshKey(const char* key);
+	void SetTexKey(const char* key);
 
 	///////////////////////////////////////
 	// Getters & Setters to the elements //
@@ -72,14 +72,14 @@ protected:
 	void SetMeshGroup(FTBasicMeshGroup* meshGroup);
 	void SetMaterials();
 
-	std::vector<UINT>& MaterialKeys();
+	std::vector<const char*>& MaterialKeys();
 
 	////////////////////////
 	// Element operations //
 	////////////////////////
 protected:
 	virtual bool InitializeMesh();
-	bool		 InitializeMesh(UINT key);
+	bool		 InitializeMesh(const char* key);
 	virtual void UpdateMesh(Transform* transform, Camera* camInst);
 
 	//////////////////////////////////////////
@@ -88,9 +88,9 @@ protected:
 	//////////////////////////////////////////
 private:
 	// Identifiers for the object in the Resource Map from the ResourceManager instance.
-	UINT			  mMeshKey;
-	UINT			  mTexKey;
-	std::vector<UINT> mMaterialKeys;
+	const char*			  mMeshKey;
+	const char*			  mTexKey;
+	std::vector<const char*> mMaterialKeys;
 
 	////////////////////////////////////////
 	// Component elements				  //
@@ -119,7 +119,7 @@ protected:
 	virtual void OnConfirmUpdate() override;
 	void		 OnResetTexture();
 	void		 UpdateSprite();
-	void		 UpdateSprite(UINT& key);
+	void		 UpdateSprite(const char* key);
 	void		 UpdateMaterial();
 	void		 AddModel();
 #endif

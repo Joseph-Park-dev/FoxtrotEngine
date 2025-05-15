@@ -69,7 +69,7 @@ void LightManager::Render(FoxtrotRenderer* renderer, Camera* camInst)
 
 void LightManager::Reset(FoxtrotRenderer* renderer)
 {
-	UINT texKey = mCubemap->GetTexKey();
+	const char* texKey = mCubemap->GetTexKey();
 
 	delete mCubemap;
 	mCubemap = nullptr;
@@ -82,7 +82,7 @@ void LightManager::SaveProperties(std::ofstream& ofs)
 {
 	for (size_t i = 0; i < GameData::MAX_LIGHTS; ++i)
 		mLights[i].SaveProperties(ofs, mTypes[i], mActiveStatus[i]);
-	mCubemap->SaveProperties(ofs, ChunkKey::NullVal::VALUE_NOT_ASSIGNED);
+	mCubemap->SaveProperties(ofs);
 }
 
 void LightManager::LoadProperties(std::ifstream& ifs)

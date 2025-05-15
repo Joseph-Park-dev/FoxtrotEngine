@@ -47,7 +47,7 @@ Animator::~Animator()
 
 void Animator::Play(const UINT key, bool isRepeated)
 {
-	UINT loadedKey = mLoadedKeys.at(key);
+	const char* loadedKey = mLoadedKeys.at(key);
 
 #ifdef FOXTROT_EDITOR
 	SetMeshGroup(EditorResourceManager::GetInstance()->GetLoadedSpriteAnim(loadedKey));
@@ -82,7 +82,7 @@ void Animator::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::MATERIAL_KEYS);
 
 	for (size_t i = 0; i < MaterialKeys().size(); ++i)
-		FileIOHelper::SaveUnsignedInt(ofs, std::to_string(i), MaterialKeys().at(i));
+		FileIOHelper::SaveString(ofs, std::to_string(i), MaterialKeys().at(i));
 	FileIOHelper::SaveSize(ofs, ChunkKey::MATERIAL_COUNT, MaterialKeys().size());
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::MATERIAL_KEYS);
@@ -91,7 +91,7 @@ void Animator::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::LOADED_KEYS);
 
 	for (size_t i = 0; i < mLoadedKeys.size(); ++i)
-		FileIOHelper::SaveUnsignedInt(ofs, std::to_string(i), mLoadedKeys.at(i));
+		FileIOHelper::SaveString(ofs, std::to_string(i), mLoadedKeys.at(i));
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::LOADED_KEYS);
 }
@@ -103,8 +103,8 @@ void Animator::LoadProperties(std::ifstream& ifs)
 	mLoadedKeys.reserve(pack.first);
 	for (size_t i = 0; i < pack.first; ++i)
 	{
-		UINT key = 0;
-		FileIOHelper::LoadUnsignedInt(ifs, key);
+		const char* key = 0;
+		FileIOHelper::LoadBasicString(ifs, key);
 		mLoadedKeys.push_back(key);
 	}
 	
@@ -116,8 +116,8 @@ void Animator::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadSize(ifs, matCount);
 	for (size_t i = 0; i < matCount; ++i)
 	{
-		UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
-		FileIOHelper::LoadUnsignedInt(ifs, key);
+		const char* key = ChunkKey::NullVal::NULL_OBJECT;
+		FileIOHelper::LoadBasicString(ifs, key);
 		MaterialKeys().push_back(key);
 	}
 
@@ -155,23 +155,6 @@ bool Animator::IndexOutOfRange(int minIdx, int maxIdx)
 void Animator::Initialize(FTCore* coreInstance)
 {
 	SetRenderer(coreInstance->GetGameRenderer());
-
-#ifdef FOXTROT_EDITOR
-
-	std::vector<UINT>::iterator iter = mLoadedKeys.begin();
-	auto& animMap = EditorResourceManager::GetInstance()->GetSpriteAnimMap();
-
-	for (; iter != mLoadedKeys.end(); ++iter)
-	{
-		if (animMap.find(*iter) == animMap.end())
-		{
-			std::iter_swap(iter, mLoadedKeys.end()-1);
-			mLoadedKeys.pop_back();
-		}
-	}
-	//std::sort(mLoadedKeys.begin(), mLoadedKeys.end());
-
-#endif // FOXTROT_EDITOR
 	
 	if (0 < mLoadedKeys.size())
 		Play(0);
@@ -259,13 +242,13 @@ void Animator::UpdatePlayAnim()
 void Animator::UpdatePlayList()
 {
 	ImGui::Text("Play List");
-	UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
+	const char* key = ChunkKey::NullVal::NULL_OBJECT;
 	FTEditorUtils::DisplayResSelection<FTSpriteAnimation>(
 		"Load Animation",
 		EditorResourceManager::GetInstance()->GetSpriteAnimMap(),
 		key);
 
-	if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	if (!FTDS::StringEqual(key, ChunkKey::NullVal::NULL_OBJECT))
 	{
 		mLoadedKeys.push_back(key);
 		if (mLoadedKeys.size() == 1)

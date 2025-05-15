@@ -84,9 +84,9 @@ void FTAnimation::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTM
 		mMaxFrameIdx = meshes.size() - 1;
 }
 
-void FTAnimation::SaveProperties(std::ofstream& ofs, UINT key)
+void FTAnimation::SaveProperties(std::ofstream& ofs)
 {
-	FTBasicMeshGroup::SaveProperties(ofs, key);
+	FTBasicMeshGroup::SaveProperties(ofs);
 	FileIOHelper::SaveInt(ofs, ChunkKey::Animation::TYPE, static_cast<int>(mType));
 	FileIOHelper::SaveFloat(ofs, ChunkKey::Animation::FPS, mAnimFPS);
 	FileIOHelper::SaveBool(ofs, ChunkKey::Animation::IS_REPEATED, mIsRepeated);
@@ -94,7 +94,7 @@ void FTAnimation::SaveProperties(std::ofstream& ofs, UINT key)
 	FileIOHelper::SaveInt(ofs, ChunkKey::Animation::MIN_FRAME_IDX, mMinFrameIdx);
 }
 
-UINT FTAnimation::LoadProperties(std::ifstream& ifs)
+void FTAnimation::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::LoadInt(ifs, mMinFrameIdx);
 	FileIOHelper::LoadInt(ifs, mMaxFrameIdx);
@@ -105,7 +105,7 @@ UINT FTAnimation::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadInt(ifs, type);
 	mType = static_cast<AnimationType>(type);
 
-	return FTBasicMeshGroup::LoadProperties(ifs);
+	FTBasicMeshGroup::LoadProperties(ifs);
 }
 
 #ifdef FOXTROT_EDITOR

@@ -30,9 +30,9 @@
 //	std::string path = ResourceManager::GetInstance()->GetPathToAsset().append(animName);
 //	animation->SetRelativePath(path);
 //
-//	if (texKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+//	if (texKey != ChunkKey::NullVal::NULL_OBJECT)
 //		animation->SetTexture(texKey);
-//	if (tileMapKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+//	if (tileMapKey != ChunkKey::NullVal::NULL_OBJECT)
 //		animation->SetTileDataKey(tileMapKey);
 //
 //	FTTileMap* tileMapBuf = ResourceManager::GetInstance()->GetLoadedTileMap(tileMapKey);
@@ -48,21 +48,21 @@
 //	return animation;
 //}
 
-FTSpriteAnimation* AnimationManager::CreateAnimationFromSpriteSheet(const char* name, UINT texKey, UINT spriteSheetKey, size_t startIndex, size_t endIndex)
+FTSpriteAnimation* AnimationManager::CreateAnimationFromSpriteSheet(const char* name, const char* texKey, const char* spriteSheetKey, size_t startIndex, size_t endIndex)
 {
 	if (!mRenderer)
 		printf("ERROR : Animator::CreateAnimationFromTile()-> Renderer is null");
 
-	FTSpriteAnimation* animation = DBG_NEW FTSpriteAnimation;
-	std::string	animName = std::string(name) + FileTypes::SPRITE_ANIMATION;
+	FTSpriteAnimation* animation					= DBG_NEW FTSpriteAnimation;
+	std::string							   animName = std::string(name) + FileTypes::SPRITE_ANIMATION;
 	animation->SetFileName(animName);
 
 	std::string path = ResourceManager::GetInstance()->GetPathToAsset().append(animName);
 	animation->SetRelativePath(path);
 
-	if (texKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	if (!FTDS::StringEqual(texKey, ChunkKey::NullVal::NULL_OBJECT))
 		animation->SetTexture(texKey);
-	if (spriteSheetKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	if (!FTDS::StringEqual(spriteSheetKey, ChunkKey::NullVal::NULL_OBJECT))
 		animation->SetTileDataKey(spriteSheetKey);
 
 #ifdef FOXTROT_EDITOR
@@ -78,6 +78,15 @@ FTSpriteAnimation* AnimationManager::CreateAnimationFromSpriteSheet(const char* 
 	GeometryGenerator::MakeSpriteAnimation(
 		meshDataBuf, spriteSheetBuf->GetTiles(), startIndex, endIndex);
 	animation->Initialize(std::move(meshDataBuf), mRenderer->GetDevice(), mRenderer->GetContext());
+
+#ifdef FOXTROT_EDITOR
+	EditorResourceManager::GetInstance()->LoadResource(
+		animation, EditorResourceManager::GetInstance()->GetSpriteAnimMap());
+#else
+	ResourceManager::GetInstance()->LoadResource(
+		animation, EditorResourceManager::GetInstance()->GetSpriteAnimMap());
+#endif // FOXTROT_EDITOR
+
 	printf("FTSpriteAnimation created, %s\n", name);
 
 	return animation;
@@ -139,9 +148,9 @@ void AnimationManager::UpdateUI(bool* opened)
 	{
 		CreateAnimation();
 
-		std::unordered_map<UINT, FTSpriteAnimation*>& map =
+		std::unordered_map<const char*, FTSpriteAnimation*>& map =
 			EditorResourceManager::GetInstance()->GetSpriteAnimMap();
-		std::unordered_map<UINT, FTSpriteAnimation*>::iterator iter = map.begin();
+		std::unordered_map<const char*, FTSpriteAnimation*>::iterator iter = map.begin();
 
 		if (ImGui::TreeNode("Loaded Animations"))
 		{
@@ -154,7 +163,7 @@ void AnimationManager::UpdateUI(bool* opened)
 						ImGui::Text((*iter).second->GetFileName().c_str());
 						(*iter).second->UpdateUI();
 						if (ImGui::Button("Save"))
-							SaveSpriteAnimAsFile((*iter).second, (*iter).first);
+							SaveSpriteAnimAsFile((*iter).second);
 
 						ImGui::EndListBox();
 					}
@@ -178,26 +187,34 @@ void AnimationManager::CreateAnimation()
 		static char name[BufferSize::STRING_BUFFER_SIZE] = "Empty Value";
 		ImGui::InputText("Name", name, BufferSize::STRING_BUFFER_SIZE);
 
-		const char* text = ChunkKey::NullVal::NULL_OBJ;
+		const char* text = ChunkKey::NullVal::NULL_OBJECT;
 
-		static UINT texKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
+		static const char* texKey = ChunkKey::NullVal::NULL_OBJECT;
 		GetSprite(texKey);
-		if (texKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+		if (!FTDS::StringEqual(texKey, ChunkKey::NullVal::NULL_OBJECT))
 			text = EditorResourceManager::GetInstance()->GetLoadedTexture(texKey)->GetFileName().c_str();
 
 		ImGui::Text(text);
 
-		text					   = ChunkKey::NullVal::NULL_OBJ;
-		static UINT spriteSheetKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
+		text							  = ChunkKey::NullVal::NULL_OBJECT;
+		static const char* spriteSheetKey = ChunkKey::NullVal::NULL_OBJECT;
 		GetSpriteSheet(spriteSheetKey);
-		if (spriteSheetKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-			text = EditorResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteSheetKey)->GetFileName().c_str();
-
+		FTSpriteSheet* spriteSheet = nullptr;
+		int			   maxIdx	   = 0;
+		if (!FTDS::StringEqual(spriteSheetKey, ChunkKey::NullVal::NULL_OBJECT))
+		{
+			text		= EditorResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteSheetKey)->GetFileName().c_str();
+			spriteSheet = EditorResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteSheetKey);
+			maxIdx		= static_cast<int>(spriteSheet->GetTilesCount()) - 1;
+		}
 		static int startIdx;
 		static int endIdx;
 
-		CommandHistory::GetInstance()->UpdateIntValue("Anim Start Index", startIdx);
-		CommandHistory::GetInstance()->UpdateIntValue("Anim End Index", endIdx);
+		CommandHistory::GetInstance()->UpdateIntValue("Anim Start Index", startIdx, -maxIdx, maxIdx);
+		CommandHistory::GetInstance()->UpdateIntValue("Anim End Index", endIdx, -maxIdx, maxIdx);
+		if (ImGui::Button("Auto Detect"))
+			startIdx = 0;
+		endIdx = maxIdx;
 
 		ImGui::Text(text);
 
@@ -207,10 +224,7 @@ void AnimationManager::CreateAnimation()
 
 			// Load the created animation to ResourceManager & File.
 			// This is called only during the FTEditor Runtime.
-			UINT key =
-				EditorResourceManager::GetInstance()->LoadResource(
-					anim, EditorResourceManager::GetInstance()->GetSpriteAnimMap());
-			SaveSpriteAnimAsFile(anim, key);
+			SaveSpriteAnimAsFile(anim);
 		}
 
 		if (ImGui::Button("Close"))
@@ -220,26 +234,26 @@ void AnimationManager::CreateAnimation()
 	}
 }
 
-void AnimationManager::GetSprite(UINT& key)
+void AnimationManager::GetSprite(const char*& key)
 {
 	FTEditorUtils::DisplayResSelection("Select Sprite", EditorResourceManager::GetInstance()->GetTexturesMap(), key);
 }
 
-void AnimationManager::GetTileMap(UINT& key)
+void AnimationManager::GetTileMap(const char*& key)
 {
 	FTEditorUtils::DisplayResSelection("Select TileMap", EditorResourceManager::GetInstance()->GetTileMapsMap(), key);
 }
 
-void AnimationManager::GetSpriteSheet(UINT& key)
+void AnimationManager::GetSpriteSheet(const char*& key)
 {
 	FTEditorUtils::DisplayResSelection("Select SpriteSheet", EditorResourceManager::GetInstance()->GetSpriteSheetsMap(), key);
 }
 
-void AnimationManager::SaveSpriteAnimAsFile(FTSpriteAnimation* animation, UINT key)
+void AnimationManager::SaveSpriteAnimAsFile(FTSpriteAnimation* animation)
 {
-	std::string path = EditorResourceManager::GetInstance()->GetPathToAsset() + animation->GetFileName();
+	std::string	  path = EditorResourceManager::GetInstance()->GetPathToAsset() + animation->GetFileName();
 	std::ofstream ofs(path);
-	animation->SaveProperties(ofs, key);
+	animation->SaveProperties(ofs);
 	FileIOHelper::SaveBufferToFile(ofs);
 }
 #endif // FOXTROT_EDITOR

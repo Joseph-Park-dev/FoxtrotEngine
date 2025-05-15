@@ -30,7 +30,7 @@
 
 void FTTileMap::Initialize()
 {
-	if (mCSVKey == ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	if (FTDS::StringEqual(mCSVKey, ChunkKey::NullVal::NULL_OBJECT))
 		return;
 
 #ifdef FOXTROT_EDITOR
@@ -158,7 +158,7 @@ void FTTileMap::SetMaxCountOnMapY(UINT yCount)
 
 FTTileMap::FTTileMap()
 	: FTResource()
-	, mCSVKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	, mCSVKey(ChunkKey::NullVal::NULL_OBJECT)
 	, mTileWidthOnScreen(0)
 	, mTileHeightOnScreen(0)
 	, mMaxCountOnMapX(0)
@@ -197,11 +197,11 @@ void FTTileMap::InitializeTile(Tile& tile, UINT column, UINT row, UINT tileNum)
 		static_cast<float>(mTileHeightOnScreen));
 }
 
-void FTTileMap::SaveProperties(std::ofstream& ofs, UINT key)
+void FTTileMap::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::TileMap::FTTILEMAP);
-	FTResource::SaveProperties(ofs, key);
-	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TileMap::CSV_KEY, mCSVKey);
+	FTResource::SaveProperties(ofs);
+	FileIOHelper::SaveString(ofs, ChunkKey::TileMap::CSV_KEY, mCSVKey);
 	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TileMap::SCREEN_WIDTH, mTileWidthOnScreen);
 	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TileMap::SCREEN_HEIGHT, mTileHeightOnScreen);
 	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TileMap::MAP_MAX_COUNT_X, mMaxCountOnMapX);
@@ -209,16 +209,15 @@ void FTTileMap::SaveProperties(std::ofstream& ofs, UINT key)
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::TileMap::FTTILEMAP);
 }
 
-UINT FTTileMap::LoadProperties(std::ifstream& ifs)
+void FTTileMap::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::TileMap::FTTILEMAP);
 	FileIOHelper::LoadUnsignedInt(ifs, mMaxCountOnMapY);
 	FileIOHelper::LoadUnsignedInt(ifs, mMaxCountOnMapX);
 	FileIOHelper::LoadUnsignedInt(ifs, mTileHeightOnScreen);
 	FileIOHelper::LoadUnsignedInt(ifs, mTileWidthOnScreen);
-	FileIOHelper::LoadUnsignedInt(ifs, mCSVKey);
-	UINT key = FTResource::LoadProperties(ifs);
-	return key;
+	FileIOHelper::LoadBasicString(ifs, mCSVKey);
+	FTResource::LoadProperties(ifs);
 }
 
 #ifdef FOXTROT_EDITOR

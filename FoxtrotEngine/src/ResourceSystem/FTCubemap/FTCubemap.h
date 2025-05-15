@@ -19,8 +19,8 @@ public:
 	ComPtr<ID3D11ShaderResourceView>& GetDiffuseResView();
 	ComPtr<ID3D11ShaderResourceView>& GetSpecularResView();
 
-	void SetDiffuseTexture(UINT key);
-	void SetSpecularTexture(UINT key);
+	void SetDiffuseTexture(const char* key);
+	void SetSpecularTexture(const char* key);
 
 protected:
 	virtual void InitializeMeshes(
@@ -32,8 +32,8 @@ private:
 	ComPtr<ID3D11ShaderResourceView> mSpecularResView;
 
 public:
-	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
-	virtual UINT LoadProperties(std::ifstream& ifs) override;
+	virtual void SaveProperties(std::ofstream& ofs) override;
+	virtual void LoadProperties(std::ifstream& ifs) override;
 
 public:
 #ifdef FOXTROT_EDITOR

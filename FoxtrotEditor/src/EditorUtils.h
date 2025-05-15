@@ -98,8 +98,8 @@ namespace FTEditorUtils
 	template <typename FTRESOURCE>
 	inline void DisplayResSelection(
 		const char* label,
-		std::unordered_map<UINT, FTRESOURCE*>& resMap
-		, UINT& currSelection
+		std::unordered_map<const char*, FTRESOURCE*>& resMap
+		, const char*& currSelection
 	)
 	{
 		if (ImGui::Button(label))
@@ -123,15 +123,13 @@ namespace FTEditorUtils
 					if ((*iter).second == nullptr)
 					{
 						if (ImGui::Selectable("Not Assigned"))
-						{
-							currSelection = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
-						}
+							currSelection = ChunkKey::NullVal::NULL_OBJECT;
 					}
 					else
 					{
 						if (ImGui::Selectable((*iter).second->GetFileName().c_str()))
 						{
-							if ((*iter).first != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+							if (!FTDS::StringEqual((*iter).first, ChunkKey::NullVal::NULL_OBJECT))
 								currSelection = (*iter).first;
 						}
 					}

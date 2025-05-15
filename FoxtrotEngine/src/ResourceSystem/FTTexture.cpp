@@ -40,22 +40,22 @@ bool FTTexture::ReleaseTexture()
     return true;
 }
 
-void FTTexture::SaveProperties(std::ofstream& ofs, UINT key)
+void FTTexture::SaveProperties(std::ofstream& ofs)
 {
     FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTEXTURE);
-    FTResource::SaveProperties(ofs, key);
+    FTResource::SaveProperties(ofs);
     FileIOHelper::SaveInt(ofs, ChunkKey::TEXTURE_WIDTH, mTexWidth);
     FileIOHelper::SaveInt(ofs, ChunkKey::TEXTURE_HEIGHT, mTexHeight);
     FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTEXTURE);
 }
 
-UINT FTTexture::LoadProperties(std::ifstream& ifs)
+void FTTexture::LoadProperties(std::ifstream& ifs)
 {
     FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTEXTURE);
     FileIOHelper::LoadInt(ifs, mTexHeight);
     FileIOHelper::LoadInt(ifs, mTexWidth);
 
-    return FTResource::LoadProperties(ifs);
+    FTResource::LoadProperties(ifs);
 }
 
 #ifdef FOXTROT_EDITOR

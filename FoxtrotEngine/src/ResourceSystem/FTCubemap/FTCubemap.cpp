@@ -40,7 +40,7 @@ void FTCubemap::Initialize(std::vector<FTMeshData>&& meshes, ComPtr<ID3D11Device
 
 	FTBasicMeshGroup::Initialize(std::move(meshes), device, context);
 
-	std::vector<UINT> matKey = { ChunkKey::STANDARD_MATERIAL };
+	std::vector<const char*> matKey = { ChunkKey::STANDARD_MAT };
 	SetMaterials(matKey, device);
 }
 
@@ -90,13 +90,13 @@ void FTCubemap::Render(FoxtrotRenderer* renderer)
 ComPtr<ID3D11ShaderResourceView>& FTCubemap::GetDiffuseResView() { return mDiffuseResView; }
 ComPtr<ID3D11ShaderResourceView>& FTCubemap::GetSpecularResView() { return mSpecularResView; }
 
-void FTCubemap::SetDiffuseTexture(UINT key)
+void FTCubemap::SetDiffuseTexture(const char* key)
 {
 	FTTexture* tex = ResourceManager::GetInstance()->GetLoadedTexture(key);
 	mDiffuseResView = tex->GetResourceView();
 }
 
-void FTCubemap::SetSpecularTexture(UINT key)
+void FTCubemap::SetSpecularTexture(const char* key)
 {
 	FTTexture* tex = ResourceManager::GetInstance()->GetLoadedTexture(key);
 	mSpecularResView = tex->GetResourceView();
@@ -118,30 +118,30 @@ void FTCubemap::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTMes
 	}
 }
 
-void FTCubemap::SaveProperties(std::ofstream& ofs, UINT key)
+void FTCubemap::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CubeMap::FTCubeMap);
-	FTBasicMeshGroup::SaveProperties(ofs, key);
+	FTBasicMeshGroup::SaveProperties(ofs);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CubeMap::FTCubeMap);
 }
 
-UINT FTCubemap::LoadProperties(std::ifstream& ifs)
+void FTCubemap::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs);
-	return FTBasicMeshGroup::LoadProperties(ifs);
+	FTBasicMeshGroup::LoadProperties(ifs);
 }
 
 #ifdef FOXTROT_EDITOR
 void FTCubemap::UpdateUI()
 {
-	static UINT diffuseKey;
+	/*static const char* diffuseKey;
 	FTEditorUtils::DisplayResSelection("Select Diffuse Texture", EditorResourceManager::GetInstance()->GetTexturesMap(), diffuseKey);
-	if (diffuseKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	if (diffuseKey != ChunkKey::NullVal::NULL_OBJECT)
 		this->SetDiffuseTexture(diffuseKey);
 
-	static UINT specularKey;
+	static const char* specularKey;
 	FTEditorUtils::DisplayResSelection("Select Specular Texture", EditorResourceManager::GetInstance()->GetTexturesMap(), specularKey);
-	if (specularKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-		this->SetSpecularTexture(specularKey);
+	if (specularKey != ChunkKey::NullVal::NULL_OBJECT)
+		this->SetSpecularTexture(specularKey);*/
 }
 #endif // FOXTROT_EDITOR

@@ -14,7 +14,8 @@ public:
 	void Initialize();
 
 public:
-	Tile* GetTiles();
+	Tile*  GetTiles();
+	size_t& GetTilesCount();
 
 public:
 	FTSpriteSheet();
@@ -24,15 +25,15 @@ protected:
 	void InitializeTile(Tile& tile, nlohmann::json& json);
 
 private:
-	UINT  mJSONKey;
-	Tile* mTiles;
+	const char* mJSONKey;
+	Tile*		mTiles;
+	size_t		mTilesCount;
 
 	FTVector2 mSheetSize;
 
-
 public:
-	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
-	virtual UINT LoadProperties(std::ifstream& ifs) override;
+	virtual void SaveProperties(std::ofstream& ofs) override;
+	virtual void LoadProperties(std::ifstream& ifs) override;
 
 private:
 	void InitializeProperties(nlohmann::json& json);

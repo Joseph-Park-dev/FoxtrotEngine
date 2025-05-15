@@ -18,11 +18,11 @@ StandardPS::StandardPS()
 {
 }
 //
-//void StandardPS::SaveProperties(std::ofstream& ofs, UINT key)
+//void StandardPS::SaveProperties(std::ofstream& ofs)
 //{
 //	FileIOHelper::BeginDataPackSave(ofs, FileTypes::MATERIAL);
 //
-//	FTResource::SaveProperties(ofs, key);
+//	FTResource::SaveProperties(ofs);
 //	FileIOHelper::SaveVector3(ofs, ChunkKey::Shader::AMBIENT, this->mAmbient);
 //	FileIOHelper::SaveVector3(ofs, ChunkKey::Shader::SHININESS, this->mDiffuse);
 //	FileIOHelper::SaveVector3(ofs, ChunkKey::Shader::DIFFUSE, this->mSpecular);
@@ -40,5 +40,5 @@ StandardPS::StandardPS()
 //	FileIOHelper::LoadFloat(ifs, this->mShininess);
 //	FileIOHelper::LoadVector3(ifs, this->mAmbient);
 //
-//	return FTResource::LoadProperties(ifs);
+//	FTResource::LoadProperties(ifs);
 //}

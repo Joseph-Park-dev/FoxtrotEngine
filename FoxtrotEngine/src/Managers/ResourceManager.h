@@ -26,7 +26,7 @@
 #include "FileSystem/NullKeys.h"
 #include "FileSystem/FileTypes.h"
 
-#include "Static/Array.h"
+#include "Static/HashChainMap.h"
 
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS
@@ -81,30 +81,16 @@ public:
 	void LoadResources(std::ifstream& ifs);
 
 public:
-	virtual FTTexture*		   GetLoadedTexture(const UINT key);
-	virtual FTTexture*		   GetLoadedTexture(const char* fileName);
-	virtual FTTileMap*		   GetLoadedTileMap(const UINT key);
-	virtual FTSpriteSheet*	   GetLoadedSpriteSheet(const UINT key);
-	virtual FTPremade*		   GetLoadedPremade(const UINT key);
-	virtual FTPremade*		   GetLoadedPremade(const char* fileName);
-	virtual FTPixelShader*	   GetLoadedPixelShader(const UINT key);
-	virtual FTMaterial*		   GetLoadedMaterial(const UINT key);
-	virtual FTBasicMeshGroup*  GetLoadedMesh(const UINT key);
-	virtual FTSpriteAnimation* GetLoadedSpriteAnim(const UINT key);
-	virtual FTCSV*			   GetLoadedCSV(const UINT key);
-	virtual FTJSON*			   GetLoadedJSON(const UINT key);
-
-	template <typename FTRESOURCE>
-	UINT GetKey(FTRESOURCE* res, std::unordered_map<UINT, FTRESOURCE*> resArr)
-	{
-		typename std::unordered_map<UINT, FTRESOURCE*>::iterator iter = resArr.begin();
-		for (; iter != resArr.end(); ++iter)
-		{
-			if ((*iter).second == res)
-				return (*iter).first;
-		}
-		return ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
-	}
+	virtual FTTexture*		   GetLoadedTexture(const char* key);
+	virtual FTTileMap*		   GetLoadedTileMap(const char* key);
+	virtual FTSpriteSheet*	   GetLoadedSpriteSheet(const char* key);
+	virtual FTPremade*		   GetLoadedPremade(const char* key);
+	virtual FTPixelShader*	   GetLoadedPixelShader(const char* key);
+	virtual FTMaterial*		   GetLoadedMaterial(const char* key);
+	virtual FTBasicMeshGroup*  GetLoadedMesh(const char* key);
+	virtual FTSpriteAnimation* GetLoadedSpriteAnim(const char* key);
+	virtual FTCSV*			   GetLoadedCSV(const char* key);
+	virtual FTJSON*			   GetLoadedJSON(const char* key);
 
 	std::string& GetPathToAsset();
 	void		 SetPathToAsset(std::string&& projectPath);
@@ -114,19 +100,19 @@ public:
 	///////////////////////////
 public:
 	template <typename FTRESOURCE>
-	void SaveResourceToChunk(std::ofstream& ofs, FTDS::Array<FTRESOURCE>& resArr)
+	void SaveResourceToChunk(std::ofstream& ofs, FTDS::HashChainMap<FTRESOURCE*>* resArr)
 	{
-		for (FTRESOURCE* iter = resArr.Begin(); iter != resArr.End(); ++iter)
+		for (auto iter = resArr->Begin(); iter != resArr->End(); ++iter)
 		{
 			if (*iter)
 			{
-				if (0 < (*iter)->GetRefCount())
+				FTRESOURCE* res = (*iter)->Value();
+				if (0 < res->GetRefCount())
 				{
-					FileIOHelper::BeginDataPackSave(ofs, (*iter)->GetFileName());
-					FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::KEY, resArr.IterPos());
-					FileIOHelper::SaveString(ofs, ChunkKey::FILE_NAME, (*iter)->GetFileName());
-					FileIOHelper::SaveString(ofs, ChunkKey::RELATIVE_PATH, (*iter)->GetRelativePath());
-					FileIOHelper::EndDataPackSave(ofs, (*iter)->GetFileName());
+					FileIOHelper::BeginDataPackSave(ofs, res->GetFileName());
+					FileIOHelper::SaveString(ofs, ChunkKey::FILE_NAME, res->GetFileName());
+					FileIOHelper::SaveString(ofs, ChunkKey::RELATIVE_PATH, res->GetRelativePath());
+					FileIOHelper::EndDataPackSave(ofs, res->GetFileName());
 				}
 			}
 		}
@@ -135,9 +121,9 @@ public:
 	void SaveMaterialsToChunk(std::ofstream& ofs);
 
 	template <typename FTRESOURCE>
-	void LoadResourceFromChunk(std::ifstream& ifs, FTDS::Array<FTRESOURCE*>& resArr, size_t& resCount)
+	void LoadResourceFromChunk(std::ifstream& ifs, FTDS::HashChainMap<FTRESOURCE*>* resArr, size_t& resCount)
 	{
-		resArr.Reserve(resCount);
+		resArr->Reserve(resCount);
 		while (0 < resCount)
 		{
 			LoadResource(ifs, resArr);
@@ -160,6 +146,7 @@ protected:
 
 	void ProcessTexture(FTTexture* texture);
 	void ProcessSingleMeshGrp(FTBasicMeshGroup* meshGrp);
+	void ProcessPremade(FTPremade* premade);
 	void ProcessTileMap(FTTileMap* tileMap);
 	void ProcessSpriteSheet(FTSpriteSheet* spriteSheet);
 	void ProcessSpriteAnim(FTSpriteAnimation* spriteAnim);
@@ -183,7 +170,6 @@ protected:
 	void ProcessMaterial(FTMaterial* material);
 
 private:
-	UINT			 mItemKey;
 	std::string		 mPathToAsset;
 	FoxtrotRenderer* mRenderer; // For Loading FTTextures
 
@@ -191,54 +177,51 @@ private:
 	// Foxtrot resources//
 	//////////////////////
 private:
-	FTDS::Array<FTTexture*>			mTextures;
-	FTDS::Array<FTTileMap*>			mTileMaps;
-	FTDS::Array<FTSpriteSheet*>		mSpriteSheets;
-	FTDS::Array<FTPremade*>			mPremades;
-	FTDS::Array<FTSpriteAnimation*> mSpriteAnimations;
+	FTDS::HashChainMap<FTTexture*>*			mTextures;
+	FTDS::HashChainMap<FTTileMap*>*			mTileMaps;
+	FTDS::HashChainMap<FTSpriteSheet*>*		mSpriteSheets;
+	FTDS::HashChainMap<FTPremade*>*			mPremades;
+	FTDS::HashChainMap<FTSpriteAnimation*>* mSpriteAnimations;
 
 	// A mesh group usually represents a 3D model.
-	FTDS::Array<FTBasicMeshGroup*> mMeshGroups;
+	FTDS::HashChainMap<FTBasicMeshGroup*>* mMeshGroups;
 
-	FTDS::Array<FTVertexShader*> mVertexShaders;
-	FTDS::Array<FTPixelShader*>	 mPixelShaders;
+	FTDS::HashChainMap<FTVertexShader*>* mVertexShaders;
+	FTDS::HashChainMap<FTPixelShader*>*	 mPixelShaders;
 
-	FTDS::Array<FTMaterial*> mMaterials;
+	FTDS::HashChainMap<FTMaterial*>* mMaterials;
 
 	////////////////////////////
 	// Generic-type resources //
 	////////////////////////////
 private:
-	FTDS::Array<FTCSV*>	 mCSVs;
-	FTDS::Array<FTJSON*> mJSONs;
+	FTDS::HashChainMap<FTCSV*>*	 mCSVs;
+	FTDS::HashChainMap<FTJSON*>* mJSONs;
 
 private:
 	template <typename FTRESOURCE>
-	void LoadResource(std::ifstream& ifs, FTDS::Array<FTRESOURCE*>& resArr)
+	void LoadResource(std::ifstream& ifs, FTDS::HashChainMap<FTRESOURCE*>* resMap)
 	{
-		FTRESOURCE* res				  = DBG_NEW FTRESOURCE;
-		UINT					  key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
-
+		FTRESOURCE* res = DBG_NEW FTRESOURCE;
 		FileIOHelper::BeginDataPackLoad(ifs);
 		FileIOHelper::LoadBasicString(ifs, res->RelativePath());
 		FileIOHelper::LoadBasicString(ifs, res->FileName());
-		FileIOHelper::LoadUnsignedInt(ifs, key);
 
-		// assertion when key collision is detected.
-		assert(!resArr.At(key));
-		resArr[key] = res;
+		assert(0 < resMap->Capacity());
+		resMap->Insert(res->FileName().c_str(), res);
 	}
 
-	//////////////////////////
-	// Validating Resources //
-	//////////////////////////
 	template <typename FTRESOURCE>
-	void ClearResArray(FTDS::Array<FTRESOURCE>& resArr)
+	void ClearResArray(FTDS::HashChainMap<FTRESOURCE*>* resMap)
 	{
-		for (auto iter = resArr.Begin(); iter != resArr.End(); ++iter)
-			if (iter)
-				delete (*iter);
-		resArr.Clear();
+		if (resMap)
+		{
+			for (auto iter = resMap->Begin(); iter != resMap->End(); ++iter)
+				if ((*iter)->Value())
+					delete ((*iter)->Value());
+			resMap->Clear();
+			resMap = nullptr;
+		}
 	}
 };
 
@@ -251,12 +234,12 @@ namespace ChunkKey
 	constexpr const char* FTPREMADE_GROUP			= "FTPremade Group";
 	constexpr const char* FT_SPRITE_ANIMATION_GROUP = "FTSpriteAnimation Group";
 
-	constexpr const unsigned int PRIMITIVE_SQUARE_RED	= 1;
-	constexpr const unsigned int PRIMITIVE_SQUARE_GREEN = 2;
-	constexpr const unsigned int PRIMITIVE_SQUARE_BLUE	= 3;
+	constexpr const char* PRIMITIVE_SQUARE_RED	 = "Primitive Square Red";
+	constexpr const char* PRIMITIVE_SQUARE_GREEN = "Primitive Square Green";
+	constexpr const char* PRIMITIVE_SQUARE_BLUE	 = "Primitive Square Blue";
 
-	constexpr const unsigned int PRIMITIVE_BOX		   = 4;
-	constexpr const unsigned int PRIMITIVE_SQUARE_GRID = 5;
-	constexpr const unsigned int PRIMITIVE_CYLINDER	   = 6;
-	constexpr const unsigned int PRIMITIVE_SPHERE	   = 7;
+	constexpr const char* PRIMITIVE_BOX			= "Primitive Square Box";
+	constexpr const char* PRIMITIVE_SQUARE_GRID = "Primitive Square Grid";
+	constexpr const char* PRIMITIVE_CYLINDER	= "Primitive Cylinder";
+	constexpr const char* PRIMITIVE_SPHERE		= "Primitive Sphere";
 } // namespace ChunkKey

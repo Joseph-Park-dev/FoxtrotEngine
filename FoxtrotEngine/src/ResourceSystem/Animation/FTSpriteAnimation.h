@@ -29,10 +29,10 @@ struct AnimationFrame;
 class FTSpriteAnimation : public FTAnimation
 {
 public:
-	UINT			GetTileDataKey();
+	const char*		GetTileDataKey();
 	AnimationFrame* GetFrame(int frameIdx);
 
-	void SetTileDataKey(UINT key);
+	void SetTileDataKey(const char* key);
 
 public:
 	FTSpriteAnimation();
@@ -40,13 +40,13 @@ public:
 	~FTSpriteAnimation() override;
 
 private:
-	// Key to the FTResource that contains Tile data 
+	// Key to the FTResource that contains Tile data
 	// (FTTileMap, FTSpriteSheet)
-	UINT mTileDataKey;
+	const char* mTileDataKey;
 
 public:
-	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
-	virtual UINT LoadProperties(std::ifstream& ifs) override;
+	virtual void SaveProperties(std::ofstream& ofs) override;
+	virtual void LoadProperties(std::ifstream& ifs) override;
 };
 
 namespace ChunkKey

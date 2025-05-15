@@ -39,7 +39,7 @@ FTResource::FTResource()
     , mIsProcessed(false)
 {}
 
-void FTResource::SaveProperties(std::ofstream& ofs, UINT key)
+void FTResource::SaveProperties(std::ofstream& ofs)
 {
     // Makes file path relative to the project dir.
     std::string buf = {};
@@ -47,27 +47,22 @@ void FTResource::SaveProperties(std::ofstream& ofs, UINT key)
     ExtractUntil(buf, "\\Assets\\");
     buf = ".\\" + buf;
 
-    FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::KEY, key);
     FileIOHelper::SaveString(ofs, ChunkKey::FILE_NAME, mFileName);
     FileIOHelper::SaveString(ofs, ChunkKey::RELATIVE_PATH, buf);
 }
 
 // When loading properties, invert the order of the member variables
 // (Due to the loading order)
-UINT FTResource::LoadProperties(std::ifstream& ifs)
+void FTResource::LoadProperties(std::ifstream& ifs)
 {
     FileIOHelper::LoadBasicString(ifs, mRelativePath);
     FileIOHelper::LoadBasicString(ifs, mFileName);
-    UINT key = 0;
-    FileIOHelper::LoadUnsignedInt(ifs, key);
 
 #ifdef FOXTROT_EDITOR
     // Removes the dot in the front.
     ExtractUntil(mRelativePath, '.');
     mRelativePath = PATH_PROJECT + mRelativePath;
 #endif
-
-    return key;
 }
 
 #ifdef FOXTROT_EDITOR

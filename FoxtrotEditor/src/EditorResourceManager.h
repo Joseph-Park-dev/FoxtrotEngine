@@ -1,8 +1,9 @@
 #pragma once
 #include "Managers/ResourceManager.h"
 
-class EditorResourceManager 
-	: public ResourceManager
+#include "Utils/StrAssign.h"
+
+class EditorResourceManager : public ResourceManager
 {
 	SINGLETON(EditorResourceManager)
 
@@ -14,34 +15,32 @@ public:
 	void PassLoadResourceInChunk(std::ifstream& ifs);
 
 public:
-	std::unordered_map<UINT, FTTexture*>& GetTexturesMap();
+	std::unordered_map<const char*, FTTexture*>& GetTexturesMap();
 	// I know the name feels so funny...
-	std::unordered_map<UINT, FTTileMap*>&		  GetTileMapsMap();
-	std::unordered_map<UINT, FTSpriteSheet*>&	  GetSpriteSheetsMap();
-	std::unordered_map<UINT, FTSpriteAnimation*>& GetSpriteAnimMap();
-	std::unordered_map<UINT, FTBasicMeshGroup*>&  GetMeshGroupsMap();
+	std::unordered_map<const char*, FTTileMap*>&		 GetTileMapsMap();
+	std::unordered_map<const char*, FTSpriteSheet*>&	 GetSpriteSheetsMap();
+	std::unordered_map<const char*, FTSpriteAnimation*>& GetSpriteAnimMap();
+	std::unordered_map<const char*, FTBasicMeshGroup*>&	 GetMeshGroupsMap();
 
-	std::unordered_map<UINT, FTVertexShader*>& GetVertexShadersMap();
-	std::unordered_map<UINT, FTPixelShader*>&  GetPixelShadersMap();
+	std::unordered_map<const char*, FTVertexShader*>& GetVertexShadersMap();
+	std::unordered_map<const char*, FTPixelShader*>&  GetPixelShadersMap();
 
-	std::unordered_map<UINT, FTMaterial*>& GetMapMaterials();
+	std::unordered_map<const char*, FTMaterial*>& GetMapMaterials();
 
-	std::unordered_map<UINT, FTCSV*>&  GetMapCSVs();
-	std::unordered_map<UINT, FTJSON*>& GetMapJSONs();
+	std::unordered_map<const char*, FTCSV*>&  GetMapCSVs();
+	std::unordered_map<const char*, FTJSON*>& GetMapJSONs();
 
 public:
-	FTTexture*		   GetLoadedTexture(const UINT key) override;
-	FTTexture*		   GetLoadedTexture(const char* name) override;
-	FTTileMap*		   GetLoadedTileMap(const UINT key) override;
-	FTSpriteSheet*	   GetLoadedSpriteSheet(const UINT key) override;
-	FTPremade*		   GetLoadedPremade(const UINT key) override;
-	FTPremade*		   GetLoadedPremade(const char* fileName) override;
-	FTPixelShader*	   GetLoadedPixelShader(const UINT key) override;
-	FTMaterial*		   GetLoadedMaterial(const UINT key) override;
-	FTBasicMeshGroup*  GetLoadedMesh(const UINT key) override;
-	FTSpriteAnimation* GetLoadedSpriteAnim(const UINT key) override;
-	FTCSV*			   GetLoadedCSV(const UINT key) override;
-	FTJSON*			   GetLoadedJSON(const UINT key) override;
+	FTTexture*		   GetLoadedTexture(const char* key) override;
+	FTTileMap*		   GetLoadedTileMap(const char* key) override;
+	FTSpriteSheet*	   GetLoadedSpriteSheet(const char* key) override;
+	FTPremade*		   GetLoadedPremade(const char* key) override;
+	FTPixelShader*	   GetLoadedPixelShader(const char* key) override;
+	FTMaterial*		   GetLoadedMaterial(const char* key) override;
+	FTBasicMeshGroup*  GetLoadedMesh(const char* key) override;
+	FTSpriteAnimation* GetLoadedSpriteAnim(const char* key) override;
+	FTCSV*			   GetLoadedCSV(const char* key) override;
+	FTJSON*			   GetLoadedJSON(const char* key) override;
 
 public:
 	void Initialize(FoxtrotRenderer* renderer) override;
@@ -68,25 +67,25 @@ public:
 	// Foxtrot resources//
 	//////////////////////
 private:
-	std::unordered_map<UINT, FTTexture*>		 mMapTextures;
-	std::unordered_map<UINT, FTTileMap*>		 mMapTileMaps;
-	std::unordered_map<UINT, FTSpriteSheet*>	 mMapSpriteSheets;
-	std::unordered_map<UINT, FTPremade*>		 mMapPremades;
-	std::unordered_map<UINT, FTSpriteAnimation*> mMapSpriteAnimation;
+	std::unordered_map<const char*, FTTexture*>			mMapTextures;
+	std::unordered_map<const char*, FTTileMap*>			mMapTileMaps;
+	std::unordered_map<const char*, FTSpriteSheet*>		mMapSpriteSheets;
+	std::unordered_map<const char*, FTPremade*>			mMapPremades;
+	std::unordered_map<const char*, FTSpriteAnimation*> mMapSpriteAnimation;
 
 	// A mesh group usually represents a 3D model.
-	std::unordered_map<UINT, FTBasicMeshGroup*> mMapMeshGroups;
+	std::unordered_map<const char*, FTBasicMeshGroup*> mMapMeshGroups;
 
-	std::unordered_map<UINT, FTVertexShader*> mMapVertexShaders;
-	std::unordered_map<UINT, FTPixelShader*>  mMapPixelShaders;
+	std::unordered_map<const char*, FTVertexShader*> mMapVertexShaders;
+	std::unordered_map<const char*, FTPixelShader*>	 mMapPixelShaders;
 
-	std::unordered_map<UINT, FTMaterial*> mMapMaterials;
+	std::unordered_map<const char*, FTMaterial*> mMapMaterials;
 
 	////////////////////////////
 	// Generic-type resources //
 	////////////////////////////
-	std::unordered_map<UINT, FTCSV*>  mMapCSVs;
-	std::unordered_map<UINT, FTJSON*> mMapJSONs;
+	std::unordered_map<const char*, FTCSV*>	 mMapCSVs;
+	std::unordered_map<const char*, FTJSON*> mMapJSONs;
 
 private:
 	ResType GetResType(std::string& fileName);
@@ -94,35 +93,36 @@ private:
 public:
 	/// Template member functions for creating new resources & adding to resource map.
 	template <typename FTRESOURCE>
-	FTRESOURCE* LoadResource(std::string& filePath, std::unordered_map<UINT, FTRESOURCE*>& resMap)
+	FTRESOURCE* LoadResource(std::string& filePath, std::unordered_map<const char*, FTRESOURCE*>& resMap)
 	{
 		// Get Relative path to Assets folder
 		std::string fileName = filePath.substr(filePath.rfind("\\") + 1);
-		UINT		itemKey	 = resMap.size();
 
-		if (!ResourceExists<FTRESOURCE*>(itemKey, filePath, resMap))
+		if (!ResourceExists<FTRESOURCE*>(fileName.c_str(), filePath, resMap))
 		{
-			printf("Message: Loading FTResource %s to mItemKey %d. \n", filePath.c_str(), itemKey);
+			printf("Message: Loading FTResource %s to key %s. \n", filePath.c_str(), fileName.c_str());
+
+			const char* key = FTDS::MakeHeapStr(fileName.c_str());
+
 			FTRESOURCE* res = DBG_NEW FTRESOURCE;
 			res->SetFileName(fileName);
 			res->SetRelativePath(filePath);
-			resMap.insert(std::make_pair(itemKey, res));
+
+			resMap.insert(std::make_pair(key, res));
 			return res;
 		}
 		else
 		{
-			printf("Warning : Resource %s is already loaded to mItemKey %d.\n", filePath.c_str(), itemKey);
+			printf("Warning : Resource %s is already loaded to key %s.\n", filePath.c_str(), fileName.c_str());
 			return nullptr;
 		}
 	}
 
 	// Add newly created resource from components (e.g FTSpriteAnimation)
 	template <typename FTRESOURCE>
-	UINT LoadResource(FTRESOURCE* res, std::unordered_map<UINT, FTRESOURCE*>& resMap)
+	void LoadResource(FTRESOURCE* res, std::unordered_map<const char*, FTRESOURCE*>& resMap)
 	{
-		UINT key = resMap.size();
-		resMap.insert(std::make_pair(key, res));
-		return key;
+		resMap.insert(std::make_pair(res->GetFileName().c_str(), res));
 	}
 
 	////////////////////////
@@ -130,14 +130,17 @@ public:
 	////////////////////////
 private:
 	template <typename FTRESOURCE>
-	void ClearMap(std::unordered_map<UINT, FTRESOURCE*>& resMap)
+	void ClearMap(std::unordered_map<const char*, FTRESOURCE*>& resMap)
 	{
 		auto iter = resMap.begin();
 		while (iter != resMap.end())
 		{
 			if ((*iter).second)
 			{
-				delete (*iter).second;
+				const char* key = (*iter).first;
+				delete[] key;
+
+				delete (*iter).second;	// De-allocate value
 				(*iter).second = nullptr;
 			}
 			++iter;
@@ -146,17 +149,17 @@ private:
 	}
 
 	template <typename FTRESOURCE>
-	void RemoveResource(UINT mItemKey, std::unordered_map<UINT, FTRESOURCE*>& resMap)
+	void RemoveResource(const char* key, std::unordered_map<const char*, FTRESOURCE*>& resMap)
 	{
-		FTRESOURCE* resource = resMap.at(mItemKey);
+		FTRESOURCE* resource = resMap.at(key);
 		if (resource)
 		{
 			delete resource;
 			resource = nullptr;
-			resMap.erase(mItemKey);
+			resMap.erase(key);
 		}
 		else
-			printf("ERROR: ResourceManager::RemoveResource()->mItemKey %d does not exist", mItemKey);
+			printf("ERROR: ResourceManager::RemoveResource()->key %s does not exist", key);
 	}
 
 	//////////////////////////
@@ -164,22 +167,22 @@ private:
 	//////////////////////////
 private:
 	template <typename FTRESOURCE>
-	bool KeyExists(const UINT mItemKey, const std::unordered_map<UINT, FTRESOURCE>& resMap)
+	bool KeyExists(const char* key, const std::unordered_map<const char*, FTRESOURCE>& resMap)
 	{
-		if (resMap.find(mItemKey) != resMap.end())
+		if (resMap.find(key) != resMap.end())
 		{
-			printf("Error: ResourceManager::ResourceExists() -> Resource with mItemKey %d exists\n", mItemKey);
+			printf("Error: ResourceManager::ResourceExists() -> Resource with key %s exists\n", key);
 			return true;
 		}
 		return false;
 	}
 
 	template <typename FTRESOURCE>
-	bool ResourceExists(const UINT mItemKey, const std::string path, const std::unordered_map<UINT, FTRESOURCE>& resMap)
+	bool ResourceExists(const const char* key, const std::string path, const std::unordered_map<const char*, FTRESOURCE>& resMap)
 	{
 		if (0 < resMap.size())
 		{
-			if (!KeyExists(mItemKey, resMap))
+			if (!KeyExists(key, resMap))
 			{
 				auto iter = resMap.begin();
 				for (; iter != resMap.end(); ++iter)
@@ -198,18 +201,5 @@ private:
 			return false;
 		}
 		return false;
-	}
-
-	template <typename FTRESOURCE>
-	UINT GetMaxKey(const std::unordered_map<UINT, FTRESOURCE>& resMap)
-	{
-		UINT result = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
-		auto iter = resMap.begin();
-		for (; iter != resMap.end(); ++iter)
-		{
-			if (result < (*iter).first)
-				result = (*iter).first;
-		}
-		return result;
 	}
 };

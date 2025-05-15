@@ -10,15 +10,15 @@ FTMeshDataPack::FTMeshDataPack()
 {
 }
 
-void FTMeshDataPack::SaveProperties(std::ofstream& ofs, UINT key)
+void FTMeshDataPack::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_MESH);
-	FTResource::SaveProperties(ofs, key);
+	FTResource::SaveProperties(ofs);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_MESH);
 }
 
-UINT FTMeshDataPack::LoadProperties(std::ifstream& ifs)
+void FTMeshDataPack::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_MESH);
-	return FTResource::LoadProperties(ifs);
+	FTResource::LoadProperties(ifs);
 }

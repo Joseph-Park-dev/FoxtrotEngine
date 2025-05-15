@@ -36,6 +36,7 @@ public:
 
 	// These member functions will be used on Foxtrot Editor when updating values.
 	void UpdateIntValue(std::string label, int& ref, int modSpeed = INTMOD_SPEED);
+	void UpdateIntValue(std::string label, int& ref, int min, int max, int modSpeed = INTMOD_SPEED);
 	void UpdateFloatValue(std::string label, float& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateBoolValue(std::string label, bool& ref);
 	void UpdateVector2Value(std::string label, FTVector2& ref, float modSpeed = FLOATMOD_SPEED);

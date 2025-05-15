@@ -36,8 +36,8 @@ namespace FTDS
 		TYPE& operator[](int idx) { return mData[idx]; }
 
 	public:
-		TYPE* Begin() { return &mData[0]; }
-		TYPE* End() { return &mData[mCapacity]; }
+		TYPE*  Begin() { return &mData[0]; }
+		TYPE*  End() { return &mData[mCapacity]; }
 		size_t IterPos() { return mPtr - Begin(); }
 
 	public:
@@ -46,7 +46,7 @@ namespace FTDS
 			if (newCapacity < 1) // Input capacity must be bigger than Zero.
 			{
 				Debug::LogError(__LINE__, __FILE__, "New capacity is 0!");
-				return; 
+				return;
 			}
 			// When the current capacity is zero; initialization phase.
 			AllocateMem(newCapacity);

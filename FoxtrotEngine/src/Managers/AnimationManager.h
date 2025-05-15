@@ -20,8 +20,8 @@ public:
 
 	FTSpriteAnimation* CreateAnimationFromSpriteSheet(
 		const char* name,
-		UINT		texKey,
-		UINT		spriteSheetKey,
+		const char* texKey,
+		const char* spriteSheetKey,
 		size_t		startIndex,
 		size_t		endIndex);
 
@@ -39,11 +39,11 @@ private:
 public:
 	void UpdateUI(bool* opened);
 	void CreateAnimation();
-	void SaveSpriteAnimAsFile(FTSpriteAnimation* animation, UINT key);
+	void SaveSpriteAnimAsFile(FTSpriteAnimation* animation);
 
 private:
-	void GetSprite(UINT& key);
-	void GetTileMap(UINT& key);
-	void GetSpriteSheet(UINT& key);
+	void GetSprite(const char*& key);
+	void GetTileMap(const char*& key);
+	void GetSpriteSheet(const char*& key);
 #endif
 };

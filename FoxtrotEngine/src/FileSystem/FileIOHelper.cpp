@@ -50,7 +50,7 @@ std::pair<size_t, std::string> FileIOHelper::BeginDataPackLoad(std::ifstream& if
 
 	if (name != dataPackKey)
 	{
-		printf("name mismatch!");
+		printf("name mismatch!\n");
 	}
 
 	assert(name == dataPackKey);
@@ -136,6 +136,23 @@ void FileIOHelper::LoadBool(std::ifstream& ifs, bool& boolVal)
 	// Parse the actual data.
 	std::getline(ifs, line, '\n');
 	ParseBool(line, boolVal);
+}
+
+void FileIOHelper::LoadBasicString(std::ifstream& ifs, const char* strVal)
+{
+	// Parse data information.
+	std::string line;
+	std::getline(ifs, line, '\n');
+
+	std::string name = ExtractUntil(line, '[');
+	std::string typeNameStr = GetBracketedVal(line, '[', ']');
+	line.clear();
+
+	// Parse the actual data.
+	std::getline(ifs, line, '\n');
+	std::string result = {};
+	ParseString(line, result);
+	strVal = result.c_str();
 }
 
 void FileIOHelper::LoadBasicString(std::ifstream& ifs, std::string& strVal)

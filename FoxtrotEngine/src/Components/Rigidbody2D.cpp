@@ -77,7 +77,7 @@ void Rigidbody2D::LoadProperties(std::ifstream& ifs)
 
 	b2BodyDef bodyDef = b2DefaultBodyDef();
 
-	int bodyTypeInt = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
+	int bodyTypeInt = NULL;
 	FileIOHelper::LoadInt(ifs, bodyTypeInt);
 	bodyDef.type = static_cast<b2BodyType>(bodyTypeInt);
 
@@ -178,7 +178,7 @@ void Rigidbody2D::EditorUIUpdate()
 void Rigidbody2D::UpdateBodyType()
 {
 	const char* items[]		= { "Static", "Kinematic", "Dynamic" };
-	static int	currentItem = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
+	static int	currentItem = NULL;
 
 	switch (mBodyDefCache.type)
 	{

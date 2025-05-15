@@ -81,18 +81,17 @@ Actor* FTPremade::GetOrigin()
 	return mOrigin;
 }
 
-void FTPremade::SaveProperties(std::ofstream& ofs, UINT key)
+void FTPremade::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTPREMADE);
-	FTResource::SaveProperties(ofs, key);
+	FTResource::SaveProperties(ofs);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTPREMADE);
 }
 
-UINT FTPremade::LoadProperties(std::ifstream& ifs)
+void FTPremade::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPREMADE);
-	UINT key = FTResource::LoadProperties(ifs);
-	return key;
+	FTResource::LoadProperties(ifs);
 }
 
 #ifdef FOXTROT_EDITOR

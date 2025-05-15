@@ -53,11 +53,11 @@ protected:
 
 private:
 	// These fields need to be read from .chunk files or be modified on the editor.
-	UINT mCSVKey;
-	UINT mTileWidthOnScreen;
-	UINT mTileHeightOnScreen;
-	UINT mMaxCountOnMapX;
-	UINT mMaxCountOnMapY;
+	const char* mCSVKey;
+	UINT		mTileWidthOnScreen;
+	UINT		mTileHeightOnScreen;
+	UINT		mMaxCountOnMapX;
+	UINT		mMaxCountOnMapY;
 
 	// These fields need to be initialized when the tilemap is constructed.
 	Tile* mTileMap;
@@ -65,8 +65,8 @@ private:
 	UINT  mMaxCountOnScreenY;
 
 public:
-	virtual void SaveProperties(std::ofstream& ofs, UINT key) override;
-	virtual UINT LoadProperties(std::ifstream& ifs) override;
+	virtual void SaveProperties(std::ofstream& ofs) override;
+	virtual void LoadProperties(std::ifstream& ifs) override;
 
 #ifdef FOXTROT_EDITOR
 public:

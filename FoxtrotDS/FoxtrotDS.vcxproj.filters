@@ -26,6 +26,7 @@
     <ClInclude Include="Static\Record.h" />
     <ClInclude Include="Dynamic\RecordNode.h" />
     <ClInclude Include="Static\HashChainMap.h" />
+    <ClInclude Include="Utils\StrAssign.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

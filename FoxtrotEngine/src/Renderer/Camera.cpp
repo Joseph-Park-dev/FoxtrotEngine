@@ -20,6 +20,8 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Actors/Transform.h"
 
+#include "Compare/StringEqual.h"
+
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
 	#include "EditorLayer.h"
@@ -204,7 +206,7 @@ void Camera::SaveProperties(std::ofstream& ofs)
 	if (mTarget)
 		FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, mTarget->GetName());
 	else
-		FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, ChunkKey::NullVal::NULL_OBJ);
+		FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, ChunkKey::NullVal::NULL_OBJECT);
 	FileIOHelper::SaveVector3(ofs, ChunkKey::CAM_POSITION, mPosition);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CAMERA_DATA);
 }
@@ -220,8 +222,8 @@ void Camera::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadBasicString(ifs, targetActor);
 
 #ifdef FOXTROT_EDITOR
-	if (targetActor != ChunkKey::NullVal::NULL_OBJ)
-		mTarget = EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(targetActor);
+	if (!FTDS::StringEqual(targetActor.c_str(), ChunkKey::NullVal::NULL_OBJECT));
+		mTarget = EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(targetActor.c_str());
 #else
 	if (targetActor != ChunkKey::NullVal::NULL_OBJ)
 		mTarget = SceneManager::GetInstance()->GetCurrentScene()->FindActor(targetActor);

@@ -10,8 +10,8 @@ class TileMapManager
 	SINGLETON(TileMapManager)
 
 private:
-	void SaveTileMapAsFile(FTTileMap* tileMap, UINT key);
-	void SaveSpriteSheetAsFile(FTSpriteSheet* tileMap, UINT key);
+	void SaveTileMapAsFile(FTTileMap* tileMap);
+	void SaveSpriteSheetAsFile(FTSpriteSheet* tileMap);
 
 #ifdef FOXTROT_EDITOR
 public:

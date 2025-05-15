@@ -385,7 +385,7 @@ void CommandHistory::UpdateIntValue(std::string label, int& ref, int modSpeed)
 			if (!command)
 			{
 				mIsRecording = true;
-				command		 = DBG_NEW IntEditCommand(ref);
+				command = DBG_NEW IntEditCommand(ref);
 			}
 		}
 	}
@@ -402,6 +402,12 @@ void CommandHistory::UpdateIntValue(std::string label, int& ref, int modSpeed)
 			}
 		}
 	}
+}
+
+void CommandHistory::UpdateIntValue(std::string label, int& ref, int min, int max, int modSpeed)
+{
+	Math::Clamp(ref, min, max);
+	UpdateIntValue(label, ref, modSpeed);
 }
 
 void CommandHistory::UpdateBoolValue(std::string label, bool& ref)

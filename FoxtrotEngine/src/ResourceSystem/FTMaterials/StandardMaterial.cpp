@@ -6,6 +6,7 @@
 #include "Renderer/Camera.h"
 #include "ResourceSystem/Mesh.h"
 #include "ResourceSystem/FTMaterials/StandardMaterial.h"
+#include "Debugging/DebugFuncs.h"
 
 #ifdef FOXTROT_EDITOR
 #include "EditorUtils.h"
@@ -90,17 +91,17 @@ StandardMaterial::~StandardMaterial()
 	delete mData;
 }
 
-void StandardMaterial::SaveProperties(std::ofstream& ofs, UINT key)
+void StandardMaterial::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::STANDARD_MAT);
-	FTResource::SaveProperties(ofs, key);
+	FTResource::SaveProperties(ofs);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::STANDARD_MAT);
 }
 
-UINT StandardMaterial::LoadProperties(std::ifstream& ifs)
+void StandardMaterial::LoadProperties(std::ifstream& ifs)
 {
 	std::pair<size_t, std::string> pack = FileIOHelper::BeginDataPackLoad(ifs);
-	return FTResource::LoadProperties(ifs);
+	FTResource::LoadProperties(ifs);
 }
 
 void StandardMaterial::SaveToFile()

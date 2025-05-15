@@ -33,7 +33,7 @@
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
 
-#include "Static/Array.h"
+#include "Static/HashChainMap.h"
 #include "Compare/StringEqual.h"
 
 #ifdef FOXTROT_EDITOR
@@ -47,6 +47,18 @@
 void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 {
 	mRenderer = renderer;
+
+	mTextures		  = DBG_NEW			FTDS::HashChainMap<FTTexture*>;
+	mTileMaps		  = DBG_NEW			FTDS::HashChainMap<FTTileMap*>;
+	mSpriteSheets	  = DBG_NEW		FTDS::HashChainMap<FTSpriteSheet*>;
+	mPremades		  = DBG_NEW			FTDS::HashChainMap<FTPremade*>;
+	mSpriteAnimations = DBG_NEW FTDS::HashChainMap<FTSpriteAnimation*>;
+	mMeshGroups		  = DBG_NEW		  FTDS::HashChainMap<FTBasicMeshGroup*>;
+	mVertexShaders	  = DBG_NEW	   FTDS::HashChainMap<FTVertexShader*>;
+	mPixelShaders	  = DBG_NEW		FTDS::HashChainMap<FTPixelShader*>;
+	mMaterials		  = DBG_NEW		   FTDS::HashChainMap<FTMaterial*>;
+	mCSVs			  = DBG_NEW				FTDS::HashChainMap<FTCSV*>;
+	mJSONs			  = DBG_NEW			   FTDS::HashChainMap<FTJSON*>;
 }
 
 void ResourceManager::DeleteAll()
@@ -76,34 +88,37 @@ void ResourceManager::SetPathToAsset(std::string&& projectPath)
 
 void ResourceManager::SaveMaterialsToChunk(std::ofstream& ofs)
 {
-	for (auto iter = mMaterials.Begin(); iter != mMaterials.End(); ++iter)
+	for (auto iter = mMaterials->Begin(); iter != mMaterials->End(); ++iter)
 	{
 		if (iter)
-			if (0 < (*iter)->GetRefCount())
-				(*iter)->SaveProperties(ofs, mMaterials.IterPos());
+		{
+			FTMaterial* mat = (*iter)->Value();
+			if (0 < mat->GetRefCount())
+				mat->SaveProperties(ofs);
+		}
 	}
 }
 
 void ResourceManager::LoadMaterials()
 {
-	UINT key = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
-	size_t size = 3;
+	const char* key	 = ChunkKey::NullVal::NULL_OBJECT;
+	size_t		size = 3;
 
-	StandardMaterial* standard = DBG_NEW StandardMaterial;
+	StandardMaterial* standard				  = DBG_NEW StandardMaterial;
 	std::string							 path = std::string(".//Assets//Materials//") + ChunkKey::STANDARD_MAT + FileTypes::MATERIAL;
 	if (!std::filesystem::exists(path))
 		standard->SaveToFile();
 	standard->LoadFromFile();
 
 	RimMaterial* rim = DBG_NEW RimMaterial;
-	path = std::string(".//Assets//Materials//") + ChunkKey::RIM_MAT + FileTypes::MATERIAL;
+	path			 = std::string(".//Assets//Materials//") + ChunkKey::RIM_MAT + FileTypes::MATERIAL;
 	if (!std::filesystem::exists(path))
 		rim->SaveToFile();
 	rim->LoadFromFile();
 
-	mMaterials.Reserve(size);
-	mMaterials[0] = standard;
-	mMaterials[1] = rim;
+	mMaterials->Reserve(size);
+	mMaterials->Insert(ChunkKey::STANDARD_MAT, standard);
+	mMaterials->Insert(ChunkKey::RIM_MAT, rim);
 }
 
 FoxtrotRenderer* ResourceManager::GetRenderer()
@@ -148,6 +163,21 @@ void ResourceManager::ProcessSingleMeshGrp(FTBasicMeshGroup* meshGrp)
 		meshGrp->SetIsProcessed(true);
 }
 
+void ResourceManager::ProcessPremade(FTPremade* premade)
+{
+	if (premade->GetIsProcessed())
+		return;
+
+	premade->Load();
+	// All loaded premades are included as default.
+	premade->AddRefCount();
+
+	if (!premade)
+		Debug::LogError(__LINE__, __FILE__, "Failed to process Premade.");
+	else
+		premade->SetIsProcessed(true);
+}
+
 void ResourceManager::ProcessTileMap(FTTileMap* tileMap)
 {
 	if (tileMap->GetIsProcessed())
@@ -183,7 +213,7 @@ void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
 
 	// This if statement will be triggered only on Editor
 	// (When loading all assets from Asset folder)
-	if (spriteAnim->GetTileDataKey() == ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	if (FTDS::StringEqual(spriteAnim->GetTileDataKey(), ChunkKey::NullVal::NULL_OBJECT))
 	{
 		std::ifstream ifs(spriteAnim->GetRelativePath());
 		spriteAnim->LoadProperties(ifs);
@@ -200,7 +230,7 @@ void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
 		Debug::LogError(__LINE__, __FILE__, "Failed to load spritesheet");
 		return;
 	}
-	
+
 	spriteAnim->SetTexture();
 
 	std::vector<FTMeshData> meshDataBuf;
@@ -242,112 +272,123 @@ void ResourceManager::ProcessJSON(FTJSON* json)
 
 void ResourceManager::ProcessMaterial(FTMaterial* material)
 {
-	auto iter = mMaterials.Begin();
-	for (; iter != mMaterials.End(); ++iter)
-	{
-		if (iter)
-		{
-			if ((*iter)->GetIsProcessed())
-				continue;
+	if (material->GetIsProcessed())
+		return;
 
-			(*iter)->LoadFromFile();
-			// All loaded premades are included as default.
-			(*iter)->AddRefCount();
-			(*iter)->SetIsProcessed(true);
-		}
-	}
+	material->LoadFromFile();
+	// All loaded premades are included as default.
+	material->AddRefCount();
+	material->SetIsProcessed(true);
 }
 
 void ResourceManager::ProcessTextures()
 {
-	for(auto iter = mTextures.Begin(); iter !=mTextures.End(); ++iter)
+	for (auto iter = mTextures->Begin(); iter != mTextures->End(); ++iter)
 		if (iter)
-			ProcessTexture(*iter);
+			ProcessTexture((*iter)->Value());
 }
 
 void ResourceManager::ProcessMeshGroups()
 {
-	for (auto iter = mMeshGroups.Begin(); iter != mMeshGroups.End(); ++iter)
+	for (auto iter = mMeshGroups->Begin(); iter != mMeshGroups->End(); ++iter)
 		if (iter)
-			ProcessSingleMeshGrp(*iter);
+			ProcessSingleMeshGrp((*iter)->Value());
 }
 
 void ResourceManager::ProcessPremades()
 {
-	for (auto iter = mPremades.Begin(); iter != mPremades.End(); ++iter)
+	for (auto iter = mPremades->Begin(); iter != mPremades->End(); ++iter)
 		if (iter)
-		{
-			(*iter)->Load();
-			// All loaded premades are included as default.
-			(*iter)->AddRefCount();
-		}
+			ProcessPremade((*iter)->Value());
 }
 
 void ResourceManager::ProcessTileMaps()
 {
-	for (auto iter = mTileMaps.Begin(); iter != mTileMaps.End(); ++iter)
+	for (auto iter = mTileMaps->Begin(); iter != mTileMaps->End(); ++iter)
 		if (iter)
-			ProcessTileMap(*iter);
+			ProcessTileMap((*iter)->Value());
 }
 
 void ResourceManager::ProcessSpriteSheets()
 {
-	for (auto iter = mSpriteSheets.Begin(); iter != mSpriteSheets.End(); ++iter)
+	for (auto iter = mSpriteSheets->Begin(); iter != mSpriteSheets->End(); ++iter)
 		if (iter)
-			ProcessSpriteSheet(*iter);
+			ProcessSpriteSheet((*iter)->Value());
 }
 
 void ResourceManager::ProcessSpriteAnims()
 {
-	for (auto iter = mSpriteAnimations.Begin(); iter != mSpriteAnimations.End(); ++iter)
+	for (auto iter = mSpriteAnimations->Begin(); iter != mSpriteAnimations->End(); ++iter)
 		if (iter)
-			ProcessSpriteAnim(*iter);
+			ProcessSpriteAnim((*iter)->Value());
 }
 
 void ResourceManager::ProcessCSVs()
 {
-	for (auto iter = mCSVs.Begin(); iter != mCSVs.End(); ++iter)
+	for (auto iter = mCSVs->Begin(); iter != mCSVs->End(); ++iter)
 		if (iter)
-			ProcessCSV(*iter);
+			ProcessCSV((*iter)->Value());
 }
 
 void ResourceManager::ProcessJSONs()
 {
-	for (auto iter = mJSONs.Begin(); iter != mJSONs.End(); ++iter)
+	for (auto iter = mJSONs->Begin(); iter != mJSONs->End(); ++iter)
 		if (iter)
-			ProcessJSON(*iter);
+			ProcessJSON((*iter)->Value());
 }
 
 void ResourceManager::ProcessMaterials()
 {
-	for (auto iter = mMaterials.Begin(); iter != mMaterials.End(); ++iter)
+	for (auto iter = mMaterials->Begin(); iter != mMaterials->End(); ++iter)
 		if (iter)
-			ProcessMaterial(*iter);
+			ProcessMaterial((*iter)->Value());
 }
 
 void ResourceManager::ProcessVertexShaders()
 {
-	for (auto iter = mVertexShaders.Begin(); iter != mVertexShaders.End(); ++iter)
+	for (auto iter = mVertexShaders->Begin(); iter != mVertexShaders->End(); ++iter)
 		if (iter)
-			(*iter)->CompileShader(mRenderer);
+			((*iter)->Value())->CompileShader(mRenderer);
 }
 
 void ResourceManager::ProcessPixelShaders()
 {
-	for (auto iter = mPixelShaders.Begin(); iter != mPixelShaders.End(); ++iter)
+	for (auto iter = mPixelShaders->Begin(); iter != mPixelShaders->End(); ++iter)
 		if (iter)
-			(*iter)->CompileShader(mRenderer);
+			((*iter)->Value())->CompileShader(mRenderer);
 }
 
 ResourceManager::~ResourceManager()
 {
 	DeleteAll();
+
+	delete mTextures;
+	delete mTileMaps;
+	delete mSpriteSheets;
+	delete mPremades;
+	delete mSpriteAnimations;
+	delete mMeshGroups;
+	delete mVertexShaders;
+	delete mPixelShaders;
+	delete mMaterials;
+	delete mCSVs;
+	delete mJSONs;
 }
 
 ResourceManager::ResourceManager()
-	: mItemKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
-	, mPathToAsset(".\\Assets\\")
+	: mPathToAsset(".\\Assets\\")
 	, mRenderer(nullptr)
+	, mTextures(nullptr)
+	, mTileMaps(nullptr)
+	, mSpriteSheets(nullptr)
+	, mPremades(nullptr)
+	, mSpriteAnimations(nullptr)
+	, mMeshGroups(nullptr)
+	, mVertexShaders(nullptr)
+	, mPixelShaders(nullptr)
+	, mMaterials(nullptr)
+	, mCSVs(nullptr)
+	, mJSONs(nullptr)
 {
 }
 
@@ -356,43 +397,43 @@ void ResourceManager::SaveResources(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::RESOURCE_DATA);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTEXTURE_GROUP);
-	SaveResourceToChunk<FTTexture*>(ofs, mTextures);
+	SaveResourceToChunk<FTTexture>(ofs, mTextures);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTEXTURE_GROUP);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTILEMAP_GROUP);
-	SaveResourceToChunk<FTTileMap*>(ofs, mTileMaps);
+	SaveResourceToChunk<FTTileMap>(ofs, mTileMaps);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTILEMAP_GROUP);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSPRITESHEET_GROUP);
-	SaveResourceToChunk<FTSpriteSheet*>(ofs, mSpriteSheets);
+	SaveResourceToChunk<FTSpriteSheet>(ofs, mSpriteSheets);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSPRITESHEET_GROUP);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTPREMADE_GROUP);
-	SaveResourceToChunk<FTPremade*>(ofs, mPremades);
+	SaveResourceToChunk<FTPremade>(ofs, mPremades);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTPREMADE_GROUP);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
-	SaveResourceToChunk<FTSpriteAnimation*>(ofs, mSpriteAnimations);
+	SaveResourceToChunk<FTSpriteAnimation>(ofs, mSpriteAnimations);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTMESH_GROUP);
-	SaveResourceToChunk<FTBasicMeshGroup*>(ofs, mMeshGroups);
+	SaveResourceToChunk<FTBasicMeshGroup>(ofs, mMeshGroups);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTMESH_GROUP);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
-	SaveResourceToChunk<FTVertexShader*>(ofs, mVertexShaders);
+	SaveResourceToChunk<FTVertexShader>(ofs, mVertexShaders);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_PIXEL_SHADER);
-	SaveResourceToChunk<FTPixelShader*>(ofs, mPixelShaders);
+	SaveResourceToChunk<FTPixelShader>(ofs, mPixelShaders);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_PIXEL_SHADER);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::JSON::JSON);
-	SaveResourceToChunk<FTJSON*>(ofs, mJSONs);
+	SaveResourceToChunk<FTJSON>(ofs, mJSONs);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::JSON::JSON);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CSV::CSV);
-	SaveResourceToChunk<FTCSV*>(ofs, mCSVs);
+	SaveResourceToChunk<FTCSV>(ofs, mCSVs);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CSV::CSV);
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::RESOURCE_DATA);
@@ -406,43 +447,43 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 	size_t						   packCount = resPack.first;
 
 	std::pair<size_t, std::string> desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
-	mCSVs.Reserve(desc.first);
+	mCSVs->Reserve(desc.first);
 	LoadResourceFromChunk<FTCSV>(ifs, mCSVs, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::JSON::JSON);
-	mJSONs.Reserve(desc.first);
+	mJSONs->Reserve(desc.first);
 	LoadResourceFromChunk<FTJSON>(ifs, mJSONs, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_PIXEL_SHADER);
-	mPixelShaders.Reserve(desc.first);
+	mPixelShaders->Reserve(desc.first);
 	LoadResourceFromChunk<FTPixelShader>(ifs, mPixelShaders, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_VERTEX_SHADER);
-	mVertexShaders.Reserve(desc.first);
+	mVertexShaders->Reserve(desc.first);
 	LoadResourceFromChunk<FTVertexShader>(ifs, mVertexShaders, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMESH_GROUP);
-	mMeshGroups.Reserve(desc.first);
+	mMeshGroups->Reserve(desc.first);
 	LoadResourceFromChunk<FTBasicMeshGroup>(ifs, mMeshGroups, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
-	mSpriteAnimations.Reserve(desc.first);
+	mSpriteAnimations->Reserve(desc.first);
 	LoadResourceFromChunk<FTSpriteAnimation>(ifs, mSpriteAnimations, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPREMADE_GROUP);
-	mPremades.Reserve(desc.first);
+	mPremades->Reserve(desc.first);
 	LoadResourceFromChunk<FTPremade>(ifs, mPremades, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSPRITESHEET_GROUP);
-	mSpriteSheets.Reserve(desc.first);
+	mSpriteSheets->Reserve(desc.first);
 	LoadResourceFromChunk<FTSpriteSheet>(ifs, mSpriteSheets, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTILEMAP_GROUP);
-	mTileMaps.Reserve(desc.first);
+	mTileMaps->Reserve(desc.first);
 	LoadResourceFromChunk<FTTileMap>(ifs, mTileMaps, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTEXTURE_GROUP);
-	mTextures.Reserve(desc.first);
+	mTextures->Reserve(desc.first);
 	LoadResourceFromChunk<FTTexture>(ifs, mTextures, desc.first);
 
 	ProcessCSVs();
@@ -463,103 +504,81 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 	ProcessPremades();
 }
 
-FTTexture* ResourceManager::GetLoadedTexture(const UINT key)
+FTTexture* ResourceManager::GetLoadedTexture(const char* key)
 {
-	FTTexture* tex = mTextures.At(key);
-	if (!tex)
-		Debug::LogError(__LINE__, __FILE__, "FTTexture is NULL");
-	return tex;
-}
-
-FTTexture* ResourceManager::GetLoadedTexture(const char* fileName)
-{
-	for (auto iter = mTextures.Begin(); iter != mTextures.End(); ++iter)
-		if ((*iter)->GetFileName() == fileName)
-			return *iter;
-
-	std::string errMsg = std::string("Cannot find FTTexture with ", fileName);
-	Debug::LogError(__LINE__, __FILE__, errMsg.c_str());
-	return nullptr;
-}
-
-FTTileMap* ResourceManager::GetLoadedTileMap(const UINT key)
-{
-	FTTileMap* tileMap = mTileMaps.At(key);
+	FTTexture* tileMap = mTextures->At(key);
 	if (!tileMap)
 		Debug::LogError(__LINE__, __FILE__, "FTTileMap is NULL");
 	return tileMap;
 }
 
-FTSpriteSheet* ResourceManager::GetLoadedSpriteSheet(const UINT key)
+FTTileMap* ResourceManager::GetLoadedTileMap(const char* key)
 {
-	FTSpriteSheet* spriteSheet = mSpriteSheets.At(key);
+	FTTileMap* tileMap = mTileMaps->At(key);
+	if (!tileMap)
+		Debug::LogError(__LINE__, __FILE__, "FTTileMap is NULL");
+	return tileMap;
+}
+
+FTSpriteSheet* ResourceManager::GetLoadedSpriteSheet(const char* key)
+{
+	FTSpriteSheet* spriteSheet = mSpriteSheets->At(key);
 	if (!spriteSheet)
 		Debug::LogError(__LINE__, __FILE__, "FTSpriteSheet is NULL");
 	return spriteSheet;
 }
 
-FTPremade* ResourceManager::GetLoadedPremade(const UINT key)
+FTPremade* ResourceManager::GetLoadedPremade(const char* key)
 {
-	FTPremade* premade = mPremades.At(key);
+	FTPremade* premade = mPremades->At(key);
 	if (!premade)
 		Debug::LogError(__LINE__, __FILE__, "FTPremade is NULL");
 	return premade;
 }
 
-FTPremade* ResourceManager::GetLoadedPremade(const char* fileName)
+FTPixelShader* ResourceManager::GetLoadedPixelShader(const char* key)
 {
-	for (auto iter = mPremades.Begin(); iter != mPremades.End(); ++iter)
-		if ((*iter)->GetFileName() == fileName)
-			return *iter;
-
-	std::string errMsg = std::string("Cannot find FTPremade with ", fileName);
-	Debug::LogError(__LINE__, __FILE__, errMsg.c_str());
-	return nullptr;
-}
-
-FTPixelShader* ResourceManager::GetLoadedPixelShader(const UINT key)
-{
-	FTPixelShader* ps = mPixelShaders.At(key);
+	FTPixelShader* ps = mPixelShaders->At(key);
 	if (!ps)
 		Debug::LogError(__LINE__, __FILE__, "PixelShader is NULL");
 	return ps;
 }
 
-FTMaterial* ResourceManager::GetLoadedMaterial(const UINT key)
+FTMaterial* ResourceManager::GetLoadedMaterial(const char* key)
 {
-	FTMaterial* mat = mMaterials.At(key);
+	FTMaterial* mat = mMaterials->At(key);
 	if (!mat)
 		Debug::LogError(__LINE__, __FILE__, "FTMaterial is NULL");
 	return mat;
 }
 
-FTBasicMeshGroup* ResourceManager::GetLoadedMesh(const UINT key)
+FTBasicMeshGroup* ResourceManager::GetLoadedMesh(const char* key)
 {
-	FTBasicMeshGroup* meshGrp = mMeshGroups.At(key);
+	FTBasicMeshGroup* meshGrp = mMeshGroups->At(key);
 	if (!meshGrp)
 		Debug::LogError(__LINE__, __FILE__, "FTMeshGroup is NULL");
 	return meshGrp;
 }
 
-FTSpriteAnimation* ResourceManager::GetLoadedSpriteAnim(const UINT key)
+FTSpriteAnimation* ResourceManager::GetLoadedSpriteAnim(const char* key)
 {
-	FTSpriteAnimation* spriteAnim = mSpriteAnimations.At(key);
+	FTSpriteAnimation* spriteAnim = mSpriteAnimations->At(key);
 	if (!spriteAnim)
 		Debug::LogError(__LINE__, __FILE__, "FTSpirteAnimation is NULL");
 	return spriteAnim;
 }
 
-FTCSV* ResourceManager::GetLoadedCSV(const UINT key)
+FTCSV* ResourceManager::GetLoadedCSV(const char* key)
 {
-	FTCSV* ftCSV = mCSVs.At(key);
+	FTCSV* ftCSV = mCSVs->At(key);
 	if (!ftCSV)
 		Debug::LogError(__LINE__, __FILE__, "FTCSV is NULL");
 	return ftCSV;
 }
 
-FTJSON* ResourceManager::GetLoadedJSON(const UINT key)
+FTJSON* ResourceManager::GetLoadedJSON(const char* key)
 {
-	FTJSON* ftJSON = mJSONs.At(key);
+	FTJSON* ftJSON = mJSONs->At(key);
 	if (!ftJSON)
 		Debug::LogError(__LINE__, __FILE__, "FTJSON is NULL");
 	return ftJSON;

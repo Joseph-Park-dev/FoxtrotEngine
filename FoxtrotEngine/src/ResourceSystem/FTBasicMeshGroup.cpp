@@ -18,9 +18,8 @@
 #include "Renderer/FoxtrotRenderer.h"
 
 #ifdef FOXTROT_EDITOR
-#include "EditorResourceManager.h"
+	#include "EditorResourceManager.h"
 #endif // FOXTROT_EDITOR
-
 
 using Matrix = DirectX::SimpleMath::Matrix;
 
@@ -211,7 +210,7 @@ void FTBasicMeshGroup::Clear()
 
 ComPtr<ID3D11SamplerState>& FTBasicMeshGroup::GetSamplerState() { return mSamplerState; }
 size_t						FTBasicMeshGroup::GetMeshCount() { return mMeshes.size(); }
-UINT						FTBasicMeshGroup::GetTexKey() const { return mTexKey; }
+const char*					FTBasicMeshGroup::GetTexKey() const { return mTexKey; }
 FTTexture*					FTBasicMeshGroup::GetTexture() const { return mTexture; }
 BasicVCData&				FTBasicMeshGroup::GetVCData() { return mVertexConstData; }
 bool						FTBasicMeshGroup::GetDrawNormal() { return mDrawNormal; }
@@ -220,7 +219,7 @@ std::vector<Mesh*>&		  FTBasicMeshGroup::Meshes() { return mMeshes; }
 std::vector<FTMaterial*>& FTBasicMeshGroup::Materials() { return mMaterials; }
 Mesh*					  FTBasicMeshGroup::NormalLines() { return mNormalLines; }
 
-void FTBasicMeshGroup::SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Device>& device)
+void FTBasicMeshGroup::SetMaterials(std::vector<const char*>& matKeys, ComPtr<ID3D11Device>& device)
 {
 	if (0 < mMaterials.size())
 		mMaterials.clear();
@@ -236,11 +235,11 @@ void FTBasicMeshGroup::SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Dev
 
 #ifdef FOXTROT_EDITOR
 	if (1 < EditorResourceManager::GetInstance()->GetMapMaterials().size())
-		for (UINT& key : matKeys)
+		for (const char*& key : matKeys)
 			mMaterials.push_back(EditorResourceManager::GetInstance()->GetLoadedMaterial(key));
 #else
 	if (ResourceManager::GetInstance()->GetLoadedMaterial(ChunkKey::Material::STANDARD_MATERIAL))
-		for (UINT& key : matKeys)
+		for (const char*& key : matKeys)
 			mMaterials.push_back(ResourceManager::GetInstance()->GetLoadedMaterial(key));
 #endif // FOXTROT_EDITOR
 
@@ -258,7 +257,7 @@ void FTBasicMeshGroup::SetMaterials(std::vector<UINT>& matKeys, ComPtr<ID3D11Dev
 
 void FTBasicMeshGroup::SetTexture()
 {
-	if (mTexKey == ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	if (FTDS::StringEqual(mTexKey, ChunkKey::NullVal::NULL_OBJECT))
 	{
 		printf("ERROR: MeshRenderer::SetTexture() -> TexKey not assigned.\n");
 		return;
@@ -271,10 +270,10 @@ void FTBasicMeshGroup::SetTexture()
 #endif
 
 	if (!mTexture)
-		printf("ERROR: MeshRenderer::SetTexture() -> Cannot set texture %d, returning nullptr.\n", mTexKey);
+		printf("ERROR: MeshRenderer::SetTexture() -> Cannot set texture %s, returning nullptr.\n", mTexKey);
 }
 
-void FTBasicMeshGroup::SetTexture(UINT texKey)
+void FTBasicMeshGroup::SetTexture(const char* texKey)
 {
 	mTexKey = texKey;
 	SetTexture();
@@ -282,7 +281,7 @@ void FTBasicMeshGroup::SetTexture(UINT texKey)
 
 void FTBasicMeshGroup::SetTexture(FTTexture* tex)
 {
-	//mTexKey	 = ResourceManager::GetInstance()->GetKey(tex, ResourceManager::GetInstance()->GetTexturesMap());
+	// mTexKey	 = ResourceManager::GetInstance()->GetKey(tex, ResourceManager::GetInstance()->GetTexturesMap());
 	mTexture = tex;
 }
 
@@ -360,7 +359,7 @@ void FTBasicMeshGroup::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
 	}
 }
 
-void						FTBasicMeshGroup::SetTexKey(UINT texKey) { mTexKey = texKey; }
+void						FTBasicMeshGroup::SetTexKey(const char* texKey) { mTexKey = texKey; }
 ComPtr<ID3D11VertexShader>& FTBasicMeshGroup::GetVertexShader() { return mVS; }
 ComPtr<ID3D11PixelShader>&	FTBasicMeshGroup::GetPixelShader() { return mPS; }
 
@@ -385,7 +384,7 @@ HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 }
 
 FTBasicMeshGroup::FTBasicMeshGroup()
-	: mTexKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	: mTexKey(ChunkKey::NullVal::NULL_OBJECT)
 	, mMeshes()
 	, mTexture(nullptr)
 	, mNormalLines(nullptr)
@@ -397,7 +396,7 @@ FTBasicMeshGroup::FTBasicMeshGroup()
 }
 
 FTBasicMeshGroup::FTBasicMeshGroup(FTMeshData meshData, FoxtrotRenderer* renderer)
-	: mTexKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	: mTexKey(ChunkKey::NullVal::NULL_OBJECT)
 	, mMeshes()
 	, mTexture(nullptr)
 	, mNormalLines(nullptr)
@@ -416,9 +415,13 @@ FTBasicMeshGroup::~FTBasicMeshGroup()
 
 void FTBasicMeshGroup::CalcModelMat(Matrix& matrix, Transform* transform)
 {
-	int				  dir		   = (int)transform->GetRightward().x;
+	int dir = 0;
+	0 <= transform->GetSteering()->Linear.x ? dir = 1 : dir = -1;
+
+	LogFloat(transform->GetSteering()->Linear.x);
+
 	FTVector3		  scale		   = transform->GetScale();
-	DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x, scale.y, scale.z);
+	DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x * dir, scale.y, scale.z);
 
 	matrix =
 		Matrix::CreateScale(scaleWithDir) *
@@ -428,16 +431,16 @@ void FTBasicMeshGroup::CalcModelMat(Matrix& matrix, Transform* transform)
 		Matrix::CreateTranslation(transform->GetWorldPosition().GetDXVec3());
 }
 
-void FTBasicMeshGroup::SaveProperties(std::ofstream& ofs, UINT key)
+void FTBasicMeshGroup::SaveProperties(std::ofstream& ofs)
 {
-	FTResource::SaveProperties(ofs, key);
-	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, mTexKey);
+	FTResource::SaveProperties(ofs);
+	FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, mTexKey);
 }
 
-UINT FTBasicMeshGroup::LoadProperties(std::ifstream& ifs)
+void FTBasicMeshGroup::LoadProperties(std::ifstream& ifs)
 {
-	FileIOHelper::LoadUnsignedInt(ifs, mTexKey);
-	return FTResource::LoadProperties(ifs);
+	FileIOHelper::LoadBasicString(ifs, mTexKey);
+	FTResource::LoadProperties(ifs);
 }
 
 #ifdef FOXTROT_EDITOR

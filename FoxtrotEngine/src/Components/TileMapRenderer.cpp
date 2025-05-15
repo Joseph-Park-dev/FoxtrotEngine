@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -32,18 +32,18 @@
 #include "FileSystem/FileIOHelper.h"
 
 #ifdef FOXTROT_EDITOR
-#include "CommandHistory.h"
-#include "EditorResourceManager.h"
+	#include "CommandHistory.h"
+	#include "EditorResourceManager.h"
 
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
-#include "imgui/FileDialog/ImGuiFileDialog.h"
-#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
-#endif 
+	#define IMGUI_DEFINE_MATH_OPERATORS
+	#include <imgui.h>
+	#include "imgui/FileDialog/ImGuiFileDialog.h"
+	#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
+#endif
 
 #define DEFAULT_TILE_POS 0
 
-UINT TileMapRenderer::GetTileMapKey() const
+const char* TileMapRenderer::GetTileMapKey() const
 {
 	return mTileMapKey;
 }
@@ -53,7 +53,7 @@ FTTileMap* TileMapRenderer::GetTileMap() const
 	return mTileMap;
 }
 
-void TileMapRenderer::SetTileMapKey(UINT key)
+void TileMapRenderer::SetTileMapKey(const char* key)
 {
 	mTileMapKey = key;
 }
@@ -65,27 +65,28 @@ void TileMapRenderer::SetTileMap(FTTileMap* tileMap)
 
 void TileMapRenderer::Initialize(FTCore* coreInstance)
 {
-    MeshRenderer::Initialize(coreInstance);
-	if (GetTexKey() != ChunkKey::NullVal::VALUE_NOT_ASSIGNED && mTileMapKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	MeshRenderer::Initialize(coreInstance);
+	if (!FTDS::StringEqual(GetTexKey(), ChunkKey::NullVal::NULL_OBJECT) 
+		&& !FTDS::StringEqual(mTileMapKey, ChunkKey::NullVal::NULL_OBJECT))
 		this->InitializeTileMap();
 }
 
-void TileMapRenderer::InitializeTileMap() {
-	if (GetTileMapKey() != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+void TileMapRenderer::InitializeTileMap()
+{
+	if (!FTDS::StringEqual(GetTileMapKey(), ChunkKey::NullVal::NULL_OBJECT))
 	{
 		mTileMap = ResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey);
 		if (mTileMap)
 		{
-			if (GetTexKey() != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+			if (!FTDS::StringEqual(GetTexKey(), ChunkKey::NullVal::NULL_OBJECT))
 				GetMeshGroup()->SetTexture(GetTexKey());
 			mTileMap->Initialize();
 			SetMeshKey(ChunkKey::PRIMITIVE_SQUARE_BLUE);
 			std::vector<FTMeshData> meshData = GeometryGenerator::MakeTileMapGrid(mTileMap);
 
-
 			// Need to Implement here
 
-			//MeshRenderer::InitializeMesh(meshData);
+			// MeshRenderer::InitializeMesh(meshData);
 		}
 	}
 }
@@ -93,95 +94,95 @@ void TileMapRenderer::InitializeTileMap() {
 void TileMapRenderer::CloneTo(Actor* actor)
 {
 	TileMapRenderer* newComp = DBG_NEW TileMapRenderer(actor, GetUpdateOrder());
-	newComp->mTileMapKey = this->mTileMapKey;
+	newComp->mTileMapKey	 = this->mTileMapKey;
 }
 
 TileMapRenderer::TileMapRenderer(Actor* owner, int updateOrder)
-    : SpriteRenderer(owner, updateOrder)
-    , mTileMap(nullptr)
-    , mTileMapKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	: SpriteRenderer(owner, updateOrder)
+	, mTileMap(nullptr)
+	, mTileMapKey(ChunkKey::NullVal::NULL_OBJECT)
 
-{}
+{
+}
 
 TileMapRenderer::~TileMapRenderer()
 {
-    //ResourceManager::GetInstance()->RemoveLoadedMeshes(GetMeshKey());
+	// ResourceManager::GetInstance()->RemoveLoadedMeshes(GetMeshKey());
 	mTileMap = nullptr;
 }
 
 void TileMapRenderer::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
-    FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TILEMAP_KEY, mTileMapKey);
-	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::MESH_KEY, GetTexKey());
+	FileIOHelper::SaveString(ofs, ChunkKey::TILEMAP_KEY, mTileMapKey);
+	FileIOHelper::SaveString(ofs, ChunkKey::MESH_KEY, GetTexKey());
 }
 
 void TileMapRenderer::LoadProperties(std::ifstream& ifs)
 {
-	UINT texKey = 0;
-	FileIOHelper::LoadUnsignedInt(ifs, texKey);
+	const char* texKey = 0;
+	FileIOHelper::LoadBasicString(ifs, texKey);
 	SetTexKey(texKey);
-    FileIOHelper::LoadUnsignedInt(ifs, mTileMapKey);
+	FileIOHelper::LoadBasicString(ifs, mTileMapKey);
 	Component::LoadProperties(ifs);
 }
 
 #ifdef FOXTROT_EDITOR
 void TileMapRenderer::EditorUIUpdate()
 {
-    CHECK_RENDERER(GetRenderer());
-    UpdateSprite();
-    UpdateCSV();
-    OnConfirmUpdate();
+	CHECK_RENDERER(GetRenderer());
+	UpdateSprite();
+	UpdateCSV();
+	OnConfirmUpdate();
 }
 
 void TileMapRenderer::OnConfirmUpdate()
 {
-    if (ImGui::Button("Update"))
-        this->InitializeTileMap();
+	if (ImGui::Button("Update"))
+		this->InitializeTileMap();
 }
 
-void TileMapRenderer::UpdateCSV() {
+void TileMapRenderer::UpdateCSV()
+{
 	std::string currentCSV = "No .csv has been assigned";
-	if (mTileMapKey != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	if (FTDS::StringEqual(mTileMapKey, ChunkKey::NullVal::NULL_OBJECT))
 		currentCSV =
-		"Current sprite : \n" + EditorResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey)->GetRelativePath();
+			"Current sprite : \n" + EditorResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey)->GetRelativePath();
 	ImGui::Text(currentCSV.c_str());
 
 	if (ImGui::Button("Select .CSV"))
 	{
 		IGFD::FileDialogConfig config;
-		config.path = ".";
+		config.path				 = ".";
 		config.countSelectionMax = 1;
 		ImGuiFileDialog::Instance()->OpenDialog(
 			"SelectCSV", "Select .CSV", FileTypes::TEXTURE, config);
 		ImGui::OpenPopup("Select .CSV");
 	}
 
-	if (ImGui::BeginPopupModal("Select .CSV", NULL,
-		ImGuiWindowFlags_MenuBar))
+	if (ImGui::BeginPopupModal("Select .CSV", NULL, ImGuiWindowFlags_MenuBar))
 	{
-		std::unordered_map<UINT, FTTileMap*>& tileMapsMap =
+		std::unordered_map<const char*, FTTileMap*>& tileMapsMap =
 			EditorResourceManager::GetInstance()->GetTileMapsMap();
 		if (ImGui::TreeNode("Selection State: Single Selection"))
 		{
-			UINT	   tileMapKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
-			static int selected = -1;
-			int		   i = 0;
+			const char* tileMapKey = ChunkKey::NullVal::NULL_OBJECT;
+			static int	selected   = -1;
+			int			i		   = 0;
 			for (auto iter = tileMapsMap.begin(); iter != tileMapsMap.end();
-				++iter, ++i)
+				 ++iter, ++i)
 			{
-				if (ImGui::Selectable((*iter).second->GetFileName().c_str(),
-					selected == i))
+				if (ImGui::Selectable((*iter).second->GetFileName().c_str(), selected == i))
 				{
 					tileMapKey = (*iter).first;
-					selected = i;
+					selected   = i;
 				}
 			}
 			ImGui::TreePop();
 			if (selected != -1)
 			{
 				mTileMapKey = tileMapKey;
-				//SetTexture();
+				// SetTexture();
 			}
 		}
 		if (ImGui::Button("Close"))
@@ -189,12 +190,12 @@ void TileMapRenderer::UpdateCSV() {
 		ImGui::EndPopup();
 	}
 }
-void TileMapRenderer::UpdateCSV(UINT& key)
+void TileMapRenderer::UpdateCSV(const char* key)
 {
 	std::string currentCSV = {};
-	if (key != ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	if (FTDS::StringEqual(key, ChunkKey::NullVal::NULL_OBJECT))
 		currentCSV =
-		"Current sprite : \n" + EditorResourceManager::GetInstance()->GetLoadedTileMap(key)->GetRelativePath();
+			"Current sprite : \n" + EditorResourceManager::GetInstance()->GetLoadedTileMap(key)->GetRelativePath();
 	else
 		currentCSV = "No .csv has been assigned";
 	ImGui::Text(currentCSV.c_str());
@@ -202,33 +203,31 @@ void TileMapRenderer::UpdateCSV(UINT& key)
 	if (ImGui::Button("Select .CSV"))
 	{
 		IGFD::FileDialogConfig config;
-		config.path = ".";
+		config.path				 = ".";
 		config.countSelectionMax = 1;
 		ImGuiFileDialog::Instance()->OpenDialog(
 			"SelectCSV", "Select .CSV", FileTypes::TEXTURE, config);
 		ImGui::OpenPopup("Select .CSV");
 	}
 
-	if (ImGui::BeginPopupModal("Select .CSV", NULL,
-		ImGuiWindowFlags_MenuBar))
+	if (ImGui::BeginPopupModal("Select .CSV", NULL, ImGuiWindowFlags_MenuBar))
 	{
-		std::unordered_map<UINT, FTTileMap*>& tileMapsMap =
+		std::unordered_map<const char*, FTTileMap*>& tileMapsMap =
 			EditorResourceManager::GetInstance()->GetTileMapsMap();
 		if (ImGui::TreeNode("Selection State: Single Selection"))
 		{
-			UINT	   tileMapKey = ChunkKey::NullVal::VALUE_NOT_ASSIGNED;
-			static int selected = -1;
-			int		   i = 0;
+			const char* tileMapKey = ChunkKey::NullVal::NULL_OBJECT;
+			static int	selected   = -1;
+			int			i		   = 0;
 			for (auto iter = tileMapsMap.begin(); iter != tileMapsMap.end();
-				++iter, ++i)
+				 ++iter, ++i)
 			{
 				if ((*iter).second)
 				{
-					if (ImGui::Selectable((*iter).second->GetFileName().c_str(),
-						selected == i))
+					if (ImGui::Selectable((*iter).second->GetFileName().c_str(), selected == i))
 					{
 						tileMapKey = (*iter).first;
-						selected = i;
+						selected   = i;
 					}
 				}
 			}
@@ -236,7 +235,7 @@ void TileMapRenderer::UpdateCSV(UINT& key)
 			if (selected != -1)
 			{
 				key = tileMapKey;
-				//SetTexture();
+				// SetTexture();
 			}
 		}
 		if (ImGui::Button("Close"))

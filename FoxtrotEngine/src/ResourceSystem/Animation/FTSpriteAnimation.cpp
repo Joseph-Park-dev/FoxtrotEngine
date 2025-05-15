@@ -17,7 +17,7 @@
 	#include "Managers/AnimationManager.h"
 #endif
 
-UINT FTSpriteAnimation::GetTileDataKey()
+const char* FTSpriteAnimation::GetTileDataKey()
 {
 	return mTileDataKey;
 }
@@ -32,14 +32,14 @@ AnimationFrame* FTSpriteAnimation::GetFrame(int frameIdx)
 	return nullptr;
 }
 
-void FTSpriteAnimation::SetTileDataKey(UINT key)
+void FTSpriteAnimation::SetTileDataKey(const char* key)
 {
 	mTileDataKey = key;
 }
 
 FTSpriteAnimation::FTSpriteAnimation()
 	: FTAnimation()
-	, mTileDataKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	, mTileDataKey(ChunkKey::NullVal::NULL_OBJECT)
 {
 }
 
@@ -53,20 +53,20 @@ FTSpriteAnimation::~FTSpriteAnimation()
 {
 }
 
-void FTSpriteAnimation::SaveProperties(std::ofstream& ofs, UINT key)
+void FTSpriteAnimation::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::SpriteAnimation::FT_SPRITE_ANIMATION);
 
-	FTAnimation::SaveProperties(ofs, key);
-	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::SpriteAnimation::ANIM_TILEMAP_KEY, mTileDataKey);
+	FTAnimation::SaveProperties(ofs);
+	FileIOHelper::SaveString(ofs, ChunkKey::SpriteAnimation::ANIM_TILEMAP_KEY, mTileDataKey);
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::SpriteAnimation::FT_SPRITE_ANIMATION);
 }
 
-UINT FTSpriteAnimation::LoadProperties(std::ifstream& ifs)
+void FTSpriteAnimation::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::SpriteAnimation::FT_SPRITE_ANIMATION);
 
-	FileIOHelper::LoadUnsignedInt(ifs, mTileDataKey);
-	return FTAnimation::LoadProperties(ifs);
+	FileIOHelper::LoadBasicString(ifs, mTileDataKey);
+	FTAnimation::LoadProperties(ifs);
 }

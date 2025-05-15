@@ -28,8 +28,8 @@ private:
 	StandardMatData* mData;
 
 public:
-	virtual void SaveProperties(std::ofstream& ofs, UINT key);
-	virtual UINT LoadProperties(std::ifstream& ifs);
+	virtual void SaveProperties(std::ofstream& ofs);
+	virtual void LoadProperties(std::ifstream& ifs);
 
 #ifdef FOXTROT_EDITOR
 public:
@@ -68,7 +68,6 @@ namespace ChunkKey
 		constexpr const char* DIFFUSE	= "Diffuse";
 		constexpr const char* SPECULAR	= "Specular";
 	}
-	constexpr const unsigned int STANDARD_MATERIAL = 1;
 }
 
 static_assert((sizeof(StandardMatData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");

@@ -17,8 +17,10 @@
 
 void FTSpriteSheet::Initialize()
 {
-	if (mJSONKey == ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	if (FTDS::StringEqual(mJSONKey, ChunkKey::NullVal::NULL_OBJECT))
 		return;
+
+	mTilesCount = 0;
 
 #ifdef FOXTROT_EDITOR
 	FTJSON* json = EditorResourceManager::GetInstance()->GetLoadedJSON(mJSONKey);
@@ -37,6 +39,7 @@ void FTSpriteSheet::Initialize()
 		if (item.is_null())
 			return;
 		InitializeTile(mTiles[i], item);
+		++mTilesCount;
 		++i;
 	}
 }
@@ -46,10 +49,16 @@ Tile* FTSpriteSheet::GetTiles()
 	return mTiles;
 }
 
+size_t& FTSpriteSheet::GetTilesCount()
+{
+	return mTilesCount;
+}
+
 FTSpriteSheet::FTSpriteSheet()
-	: mJSONKey(ChunkKey::NullVal::VALUE_NOT_ASSIGNED)
+	: mJSONKey(ChunkKey::NullVal::NULL_OBJECT)
 	, mTiles(nullptr)
 	, mSheetSize(FTVector2::Zero)
+	, mTilesCount(0)
 {
 }
 
@@ -79,21 +88,21 @@ void FTSpriteSheet::InitializeTile(Tile& tile, nlohmann::json& json)
 	InitializeRectOnScreen(tile, posOnScreenX, posOnScreenY, widthOnScreen, heightOnScreen);
 }
 
-void FTSpriteSheet::SaveProperties(std::ofstream& ofs, UINT key)
+void FTSpriteSheet::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::SpriteSheet::SPRITE_SHEET);
-	FTResource::SaveProperties(ofs, key);
-	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::SpriteSheet::JSON_KEY, mJSONKey);
+	FTResource::SaveProperties(ofs);
+	FileIOHelper::SaveString(ofs, ChunkKey::SpriteSheet::JSON_KEY, mJSONKey);
 	FileIOHelper::SaveVector2(ofs, ChunkKey::SpriteSheet::SHEET_SIZE, mSheetSize);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::SpriteSheet::SPRITE_SHEET);
 }
 
-UINT FTSpriteSheet::LoadProperties(std::ifstream& ifs)
+void FTSpriteSheet::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::SpriteSheet::SPRITE_SHEET);
 	FileIOHelper::LoadVector2(ifs, mSheetSize);
-	FileIOHelper::LoadUnsignedInt(ifs, mJSONKey);
-	return FTResource::LoadProperties(ifs);
+	FileIOHelper::LoadBasicString(ifs, mJSONKey);
+	FTResource::LoadProperties(ifs);
 }
 
 void FTSpriteSheet::InitializeProperties(nlohmann::json& json)

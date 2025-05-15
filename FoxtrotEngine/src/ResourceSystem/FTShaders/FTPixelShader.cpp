@@ -18,17 +18,17 @@ FTPixelShader::FTPixelShader()
 	SetType(ShaderType::PIXEL_SHADER);
 }
 
-void FTPixelShader::SaveProperties(std::ofstream& ofs, UINT key)
+void FTPixelShader::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_PIXEL_SHADER);
-	FTResource::SaveProperties(ofs, key);
+	FTResource::SaveProperties(ofs);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_PIXEL_SHADER);
 }
 
-UINT FTPixelShader::LoadProperties(std::ifstream& ifs)
+void FTPixelShader::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_PIXEL_SHADER);
-	return FTResource::LoadProperties(ifs);
+	FTResource::LoadProperties(ifs);
 }
 
 #ifdef FOXTROT_EDITOR

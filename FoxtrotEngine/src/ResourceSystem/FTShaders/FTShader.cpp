@@ -3,7 +3,7 @@
 #include <fstream>
 
 #include "FileSystem/FileIOHelper.h"
-#include "Core/TemplateFunctions.h"
+#include "Debugging/DebugFuncs.h"
 
 const ShaderType& FTShader::GetType() const { return mType; }
 void FTShader::SetType(ShaderType type) { mType = type; }
@@ -22,7 +22,7 @@ void FTShader::SaveMetaFile()
 
 	if (ofs)
 	{
-		SaveProperties(ofs, ChunkKey::NullVal::VALUE_NOT_ASSIGNED);
+		SaveProperties(ofs);
 		FileIOHelper::SaveBufferToFile(ofs);
 	}
 	else

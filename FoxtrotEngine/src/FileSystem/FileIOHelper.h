@@ -33,6 +33,7 @@ public:
 	static void LoadSize(std::ifstream& ifs, size_t& sizeVal);
 	static void LoadFloat(std::ifstream& ifs, float& floatVal);
 	static void LoadBool(std::ifstream& ifs, bool& boolVal);
+	static void LoadBasicString(std::ifstream& ifs, const char* strVal);
 	static void LoadBasicString(std::ifstream& ifs, std::string& strVal);
 
 	static void LoadVector2(std::ifstream& ifs, FTVector2& vec2);

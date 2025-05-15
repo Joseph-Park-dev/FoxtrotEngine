@@ -46,8 +46,8 @@ private:
 	bool mIsProcessed;
 
 public:
-	virtual void SaveProperties(std::ofstream& ofs, UINT key);
-	virtual UINT LoadProperties(std::ifstream& ifs);
+	virtual void SaveProperties(std::ofstream& ofs);
+	virtual void LoadProperties(std::ifstream& ifs);
 
 #ifdef FOXTROT_EDITOR
 public:
@@ -58,7 +58,6 @@ public:
 
 namespace ChunkKey
 {
-	constexpr const char* KEY			= "Key";
 	constexpr const char* FILE_NAME		= "FileName";
 	constexpr const char* RELATIVE_PATH = "RelativePath";
 } // namespace ChunkKey

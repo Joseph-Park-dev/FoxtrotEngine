@@ -20,7 +20,7 @@ TileMapManager::~TileMapManager()
 {
 }
 
-void TileMapManager::SaveTileMapAsFile(FTTileMap* tileMap, UINT key)
+void TileMapManager::SaveTileMapAsFile(FTTileMap* tileMap)
 {
 	const std::string& path = tileMap->GetRelativePath();
 	tileMap->SetFileName(tileMap->GetFileName() + FileTypes::TILEMAP);
@@ -29,11 +29,11 @@ void TileMapManager::SaveTileMapAsFile(FTTileMap* tileMap, UINT key)
 
 	tileMap->SetRelativePath(fullPath);
 	std::ofstream ofs(fullPath);
-	tileMap->SaveProperties(ofs, key);
+	tileMap->SaveProperties(ofs);
 	FileIOHelper::SaveBufferToFile(ofs);
 }
 
-void TileMapManager::SaveSpriteSheetAsFile(FTSpriteSheet* spriteSheet, UINT key)
+void TileMapManager::SaveSpriteSheetAsFile(FTSpriteSheet* spriteSheet)
 {
 	const std::string& path = spriteSheet->GetRelativePath();
 	spriteSheet->SetFileName(spriteSheet->GetFileName() + FileTypes::SPRITE_SHEET);
@@ -42,7 +42,7 @@ void TileMapManager::SaveSpriteSheetAsFile(FTSpriteSheet* spriteSheet, UINT key)
 
 	spriteSheet->SetRelativePath(fullPath);
 	std::ofstream ofs(fullPath);
-	spriteSheet->SaveProperties(ofs, key);
+	spriteSheet->SaveProperties(ofs);
 	FileIOHelper::SaveBufferToFile(ofs);
 }
 
@@ -57,8 +57,8 @@ void TileMapManager::UpdateUI(bool* opened)
 	{
 		ImGui::Text("Loaded TileMaps");
 
-		std::unordered_map<UINT, FTTileMap*>& mapTileMaps = EditorResourceManager::GetInstance()->GetTileMapsMap();
-		std::unordered_map<UINT, FTTileMap*>::iterator iterT = mapTileMaps.begin();
+		std::unordered_map<const char*, FTTileMap*>& mapTileMaps = EditorResourceManager::GetInstance()->GetTileMapsMap();
+		std::unordered_map<const char*, FTTileMap*>::iterator iterT = mapTileMaps.begin();
 
 		for (; iterT != mapTileMaps.end(); ++iterT)
 		{
@@ -67,7 +67,7 @@ void TileMapManager::UpdateUI(bool* opened)
 				ImGui::PushID((*iterT).second);
 				(*iterT).second->UpdateUI();
 				if (ImGui::Button("Save TileMap"))
-					SaveTileMapAsFile((*iterT).second, (*iterT).first);
+					SaveTileMapAsFile((*iterT).second);
 				ImGui::PopID();
 			}
 		}
@@ -81,8 +81,8 @@ void TileMapManager::UpdateUI(bool* opened)
 
 		ImGui::SeparatorText("Loaded SpriteSheets");
 
-		std::unordered_map<UINT, FTSpriteSheet*>& mapSpriteSheets = EditorResourceManager::GetInstance()->GetSpriteSheetsMap();
-		std::unordered_map<UINT, FTSpriteSheet*>::iterator iterS = mapSpriteSheets.begin();
+		std::unordered_map<const char*, FTSpriteSheet*>& mapSpriteSheets = EditorResourceManager::GetInstance()->GetSpriteSheetsMap();
+		std::unordered_map<const char*, FTSpriteSheet*>::iterator iterS = mapSpriteSheets.begin();
 
 		for (; iterS != mapSpriteSheets.end(); ++iterS)
 		{
@@ -92,7 +92,7 @@ void TileMapManager::UpdateUI(bool* opened)
 				(*iterS).second->UpdateUI();
 				if (ImGui::Button("Save SpriteSheet"))
 				{
-					SaveSpriteSheetAsFile((*iterS).second, (*iterS).first);
+					SaveSpriteSheetAsFile((*iterS).second);
 					(*iterS).second->Initialize();
 				}
 				ImGui::PopID();

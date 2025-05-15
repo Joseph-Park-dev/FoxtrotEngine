@@ -28,10 +28,10 @@ public:
 	{
 		return "TileMap";
 	}
-	UINT	   GetTileMapKey() const;
-	FTTileMap* GetTileMap() const;
+	const char* GetTileMapKey() const;
+	FTTileMap*	GetTileMap() const;
 
-	void SetTileMapKey(UINT key);
+	void SetTileMapKey(const char* key);
 	void SetTileMap(FTTileMap* tileMap);
 
 public:
@@ -48,8 +48,8 @@ protected:
 	virtual void InitializeTileMap();
 
 private:
-	FTTileMap* mTileMap;
-	UINT	   mTileMapKey;
+	FTTileMap*	mTileMap;
+	const char* mTileMapKey;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
@@ -62,7 +62,7 @@ public:
 
 protected:
 	void UpdateCSV();
-	void UpdateCSV(UINT& key);
+	void UpdateCSV(const char* key);
 #endif
 };
 

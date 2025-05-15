@@ -31,10 +31,10 @@ FTVertexShader::FTVertexShader()
 	SetType(ShaderType::VERTEX_SHADER);
 }
 
-void FTVertexShader::SaveProperties(std::ofstream& ofs, UINT key)
+void FTVertexShader::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
-	FTResource::SaveProperties(ofs, key);
+	FTResource::SaveProperties(ofs);
 
 	for (size_t i = 0; i < mSemanticNames.size(); ++i)
 		FileIOHelper::SaveString(ofs, ChunkKey::INPUT_ELEMENTS + i, mSemanticNames.at(i));
@@ -44,7 +44,7 @@ void FTVertexShader::SaveProperties(std::ofstream& ofs, UINT key)
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
 }
 
-UINT FTVertexShader::LoadProperties(std::ifstream& ifs)
+void FTVertexShader::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_VERTEX_SHADER);
 

@@ -63,27 +63,82 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 
 void ResourceManager::DeleteAll()
 {
-	ClearResArray(mTextures);
-	ClearResArray(mTileMaps);
-	ClearResArray(mSpriteSheets);
-	ClearResArray(mPremades);
-	ClearResArray(mSpriteAnimations);
-	ClearResArray(mMeshGroups);
-	ClearResArray(mVertexShaders);
-	ClearResArray(mPixelShaders);
-	ClearResArray(mMaterials);
-	ClearResArray(mCSVs);
-	ClearResArray(mJSONs);
+	ClearMap(mTextures);
+	ClearMap(mTileMaps);
+	ClearMap(mSpriteSheets);
+	ClearMap(mPremades);
+	ClearMap(mSpriteAnimations);
+	ClearMap(mMeshGroups);
+	ClearMap(mVertexShaders);
+	ClearMap(mPixelShaders);
+	ClearMap(mMaterials);
+	ClearMap(mCSVs);
+	ClearMap(mJSONs);
 }
 
-std::string& ResourceManager::GetPathToAsset()
+FTDS::String& ResourceManager::GetPathToAsset()
 {
 	return mPathToAsset;
 }
 
-void ResourceManager::SetPathToAsset(std::string&& projectPath)
+void ResourceManager::SetPathToAsset(FTDS::String&& projectPath)
 {
-	mPathToAsset.assign(projectPath + "\\Assets\\");
+	mPathToAsset.Append(projectPath + "\\Assets\\");
+}
+
+FTDS::HashChainMap<FTTexture*>* ResourceManager::GetTextures()
+{
+	return mTextures;
+}
+
+FTDS::HashChainMap<FTTileMap*>* ResourceManager::GetTileMaps()
+{
+	return mTileMaps;
+}
+
+FTDS::HashChainMap<FTSpriteSheet*>* ResourceManager::GetSpriteSheets()
+{
+	return mSpriteSheets;
+}
+
+FTDS::HashChainMap<FTPremade*>* ResourceManager::GetPremades()
+{
+	return mPremades;
+}
+
+FTDS::HashChainMap<FTVertexShader*>* ResourceManager::GetVertexShaders()
+{
+	return mVertexShaders;
+}
+
+FTDS::HashChainMap<FTPixelShader*>* ResourceManager::GetPixelShaders()
+{
+	return mPixelShaders;
+}
+
+FTDS::HashChainMap<FTMaterial*>* ResourceManager::GetMaterials()
+{
+	return mMaterials;
+}
+
+FTDS::HashChainMap<FTBasicMeshGroup*>* ResourceManager::GetMeshGroups()
+{
+	return mMeshGroups;
+}
+
+FTDS::HashChainMap<FTSpriteAnimation*>* ResourceManager::GetSpriteAnimations()
+{
+	return mSpriteAnimations;
+}
+
+FTDS::HashChainMap<FTCSV*>* ResourceManager::GetCSVs()
+{
+	return mCSVs;
+}
+
+FTDS::HashChainMap<FTJSON*>* ResourceManager::GetJSONs()
+{
+	return mJSONs;
 }
 
 void ResourceManager::SaveMaterialsToChunk(std::ofstream& ofs)
@@ -131,10 +186,10 @@ void ResourceManager::ProcessTexture(FTTexture* texture)
 	if (texture->GetIsProcessed())
 		return;
 
-	std::string path = texture->GetRelativePath();
-	std::string type = ExtractFileType(path.c_str());
+	FTDS::String path = texture->GetRelativePath();
+	FTDS::String type = ExtractFileType(path.C_Str());
 
-	if (type == FileTypes::DDS_TEXTURE)
+	if (FTDS::StringEqual(type, FileTypes::DDS_TEXTURE))
 		DX::ThrowIfFailed(D3D11Utils::CreateCubemapTexture(mRenderer->GetDevice(), texture));
 	else
 		D3D11Utils::CreateTexture(mRenderer->GetDevice(), mRenderer->GetContext(), texture);
@@ -150,7 +205,7 @@ void ResourceManager::ProcessSingleMeshGrp(FTBasicMeshGroup* meshGrp)
 	if (meshGrp->GetIsProcessed())
 		return;
 
-	if (meshGrp->GetRelativePath().empty())
+	if (meshGrp->GetRelativePath().IsEmpty())
 		return;
 	meshGrp->Initialize(
 		GeometryGenerator::ReadFromFile(meshGrp->GetRelativePath()),
@@ -504,6 +559,94 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 	ProcessPremades();
 }
 
+FTTexture* ResourceManager::GetLoadedTexture(FTDS::String key)
+{
+	FTTexture* tileMap = mTextures->At(key.C_Str());
+	if (!tileMap)
+		Debug::LogError(__LINE__, __FILE__, "FTTileMap is NULL");
+	return tileMap;
+}
+
+FTTileMap* ResourceManager::GetLoadedTileMap(FTDS::String key)
+{
+	FTTileMap* tileMap = mTileMaps->At(key.C_Str());
+	if (!tileMap)
+		Debug::LogError(__LINE__, __FILE__, "FTTileMap is NULL");
+	return tileMap;
+}
+
+FTSpriteSheet* ResourceManager::GetLoadedSpriteSheet(FTDS::String key)
+{
+	FTSpriteSheet* spriteSheet = mSpriteSheets->At(key.C_Str());
+	if (!spriteSheet)
+		Debug::LogError(__LINE__, __FILE__, "FTSpriteSheet is NULL");
+	return spriteSheet;
+}
+
+FTPremade* ResourceManager::GetLoadedPremade(FTDS::String key)
+{
+	FTPremade* premade = mPremades->At(key.C_Str());
+	if (!premade)
+		Debug::LogError(__LINE__, __FILE__, "FTPremade is NULL");
+	return premade;
+}
+
+FTVertexShader* ResourceManager::GetLoadedVertexShader(FTDS::String key)
+{
+	FTVertexShader* vs = mVertexShaders->At(key.C_Str());
+	if (!vs)
+		Debug::LogError(__LINE__, __FILE__, "VertexShader is NULL");
+	return vs;
+}
+
+FTPixelShader* ResourceManager::GetLoadedPixelShader(FTDS::String key)
+{
+	FTPixelShader* ps = mPixelShaders->At(key.C_Str());
+	if (!ps)
+		Debug::LogError(__LINE__, __FILE__, "PixelShader is NULL");
+	return ps;
+}
+
+FTMaterial* ResourceManager::GetLoadedMaterial(FTDS::String key)
+{
+	FTMaterial* mat = mMaterials->At(key.C_Str());
+	if (!mat)
+		Debug::LogError(__LINE__, __FILE__, "FTMaterial is NULL");
+	return mat;
+}
+
+FTBasicMeshGroup* ResourceManager::GetLoadedMesh(FTDS::String key)
+{
+	FTBasicMeshGroup* meshGrp = mMeshGroups->At(key.C_Str());
+	if (!meshGrp)
+		Debug::LogError(__LINE__, __FILE__, "FTMeshGroup is NULL");
+	return meshGrp;
+}
+
+FTSpriteAnimation* ResourceManager::GetLoadedSpriteAnim(FTDS::String key)
+{
+	FTSpriteAnimation* spriteAnim = mSpriteAnimations->At(key.C_Str());
+	if (!spriteAnim)
+		Debug::LogError(__LINE__, __FILE__, "FTSpirteAnimation is NULL");
+	return spriteAnim;
+}
+
+FTCSV* ResourceManager::GetLoadedCSV(FTDS::String key)
+{
+	FTCSV* ftCSV = mCSVs->At(key.C_Str());
+	if (!ftCSV)
+		Debug::LogError(__LINE__, __FILE__, "FTCSV is NULL");
+	return ftCSV;
+}
+
+FTJSON* ResourceManager::GetLoadedJSON(FTDS::String key)
+{
+	FTJSON* ftJSON = mJSONs->At(key.C_Str());
+	if (!ftJSON)
+		Debug::LogError(__LINE__, __FILE__, "FTJSON is NULL");
+	return ftJSON;
+}
+
 FTTexture* ResourceManager::GetLoadedTexture(const char* key)
 {
 	FTTexture* tileMap = mTextures->At(key);
@@ -534,6 +677,14 @@ FTPremade* ResourceManager::GetLoadedPremade(const char* key)
 	if (!premade)
 		Debug::LogError(__LINE__, __FILE__, "FTPremade is NULL");
 	return premade;
+}
+
+FTVertexShader* ResourceManager::GetLoadedVertexShader(const char* key)
+{
+	FTVertexShader* vs = mVertexShaders->At(key);
+	if (!vs)
+		Debug::LogError(__LINE__, __FILE__, "VertexShader is NULL");
+	return vs;
 }
 
 FTPixelShader* ResourceManager::GetLoadedPixelShader(const char* key)

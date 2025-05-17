@@ -629,7 +629,7 @@ namespace Catch {
         {}
 
         StringRef( std::string const& stdString ) noexcept
-        :   m_start( stdString.c_str() ),
+        :   m_start( stdString.C_Str() ),
             m_size( stdString.size() )
         {}
 
@@ -658,7 +658,7 @@ namespace Catch {
 
         // Returns the current start pointer. If the StringRef is not
         // null-terminated, throws std::domain_exception
-        auto c_str() const -> char const*;
+        auto C_Str() const -> char const*;
 
     public: // substrings and searches
         // Returns a substring of [start, start + length).
@@ -4895,7 +4895,7 @@ namespace Catch {
         inline std::string getAnnotation(   Class cls,
                                             std::string const& annotationName,
                                             std::string const& testCaseName ) {
-            NSString* selStr = [[NSString alloc] initWithFormat:@"Catch_%s_%s", annotationName.c_str(), testCaseName.c_str()];
+            NSString* selStr = [[NSString alloc] initWithFormat:@"Catch_%s_%s", annotationName.C_Str(), testCaseName.C_Str()];
             SEL sel = NSSelectorFromString( selStr );
             arcSafeRelease( selStr );
             id value = performOptionalSelector( cls, sel );
@@ -4926,7 +4926,7 @@ namespace Catch {
                         std::string desc = Detail::getAnnotation( cls, "Description", testCaseName );
                         const char* className = class_getName( cls );
 
-                        getMutableRegistryHub().registerTest( makeTestCase( new OcMethod( cls, selector ), className, NameAndTags( name.c_str(), desc.c_str() ), SourceLineInfo("",0) ) );
+                        getMutableRegistryHub().registerTest( makeTestCase( new OcMethod( cls, selector ), className, NameAndTags( name.C_Str(), desc.C_Str() ), SourceLineInfo("",0) ) );
                         noTestMethods++;
                     }
                 }
@@ -9738,7 +9738,7 @@ namespace Catch {
                 return ParserResult::ok( ParseResultType::Matched );
             };
         auto const loadTestNamesFromFile = [&]( std::string const& filename ) {
-                std::ifstream f( filename.c_str() );
+                std::ifstream f( filename.C_Str() );
                 if( !f.is_open() )
                     return ParserResult::runtimeError( "Unable to load input file: '" + filename + "'" );
 
@@ -10357,7 +10357,7 @@ namespace Catch {
 
     namespace Catch {
         void writeToDebugConsole( std::string const& text ) {
-            __android_log_write( ANDROID_LOG_DEBUG, "Catch", text.c_str() );
+            __android_log_write( ANDROID_LOG_DEBUG, "Catch", text.C_Str() );
         }
     }
 
@@ -10365,7 +10365,7 @@ namespace Catch {
 
     namespace Catch {
         void writeToDebugConsole( std::string const& text ) {
-            ::OutputDebugStringA( text.c_str() );
+            ::OutputDebugStringA( text.C_Str() );
         }
     }
 
@@ -13590,7 +13590,7 @@ namespace Catch {
             mutable std::ofstream m_ofs;
         public:
             FileStream( StringRef filename ) {
-                m_ofs.open( filename.c_str() );
+                m_ofs.open( filename.C_Str() );
                 CATCH_ENFORCE( !m_ofs.fail(), "Unable to open file: '" << filename << "'" );
             }
             ~FileStream() override = default;
@@ -13810,8 +13810,8 @@ namespace Catch {
     : StringRef( rawChars, static_cast<StringRef::size_type>(std::strlen(rawChars) ) )
     {}
 
-    auto StringRef::c_str() const -> char const* {
-        CATCH_ENFORCE(isNullTerminated(), "Called StringRef::c_str() on a non-null-terminated instance");
+    auto StringRef::C_Str() const -> char const* {
+        CATCH_ENFORCE(isNullTerminated(), "Called StringRef::C_Str() on a non-null-terminated instance");
         return m_start;
     }
     auto StringRef::data() const noexcept -> char const* {

@@ -40,7 +40,7 @@ void FTCubemap::Initialize(std::vector<FTMeshData>&& meshes, ComPtr<ID3D11Device
 
 	FTBasicMeshGroup::Initialize(std::move(meshes), device, context);
 
-	std::vector<const char*> matKey = { ChunkKey::STANDARD_MAT };
+	std::vector<FTDS::String> matKey = { ChunkKey::STANDARD_MAT };
 	SetMaterials(matKey, device);
 }
 

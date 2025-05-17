@@ -75,7 +75,7 @@ bool FTCore::Initialize()
 		delete mWindow;
 		mWindow = nullptr;
 	}
-	mWindow = DBG_NEW FTWindow(mWindowTitle.c_str(), mWindowWidth, mWindowHeight);
+	mWindow = DBG_NEW FTWindow(mWindowTitle.C_Str(), mWindowWidth, mWindowHeight);
 	mWindow->GetRenderArea()->Set(0.f, 0.f, mWindowWidth, mWindowHeight);
 	if (!mWindow->InitializeWindow(WndProc))
 	{

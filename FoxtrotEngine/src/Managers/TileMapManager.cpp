@@ -23,8 +23,8 @@ TileMapManager::~TileMapManager()
 void TileMapManager::SaveTileMapAsFile(FTTileMap* tileMap)
 {
 	const std::string& path = tileMap->GetRelativePath();
-	tileMap->SetFileName(tileMap->GetFileName() + FileTypes::TILEMAP);
-	const std::string& name = tileMap->GetFileName();
+	tileMap->SetFileName(tileMap->FileName() + FileTypes::TILEMAP);
+	const std::string& name = tileMap->FileName();
 	const std::string fullPath = path + name;
 
 	tileMap->SetRelativePath(fullPath);
@@ -36,8 +36,8 @@ void TileMapManager::SaveTileMapAsFile(FTTileMap* tileMap)
 void TileMapManager::SaveSpriteSheetAsFile(FTSpriteSheet* spriteSheet)
 {
 	const std::string& path = spriteSheet->GetRelativePath();
-	spriteSheet->SetFileName(spriteSheet->GetFileName() + FileTypes::SPRITE_SHEET);
-	const std::string& name = spriteSheet->GetFileName();
+	spriteSheet->SetFileName(spriteSheet->FileName() + FileTypes::SPRITE_SHEET);
+	const std::string& name = spriteSheet->FileName();
 	const std::string fullPath = path + name;
 
 	spriteSheet->SetRelativePath(fullPath);
@@ -57,8 +57,8 @@ void TileMapManager::UpdateUI(bool* opened)
 	{
 		ImGui::Text("Loaded TileMaps");
 
-		std::unordered_map<const char*, FTTileMap*>& mapTileMaps = EditorResourceManager::GetInstance()->GetTileMapsMap();
-		std::unordered_map<const char*, FTTileMap*>::iterator iterT = mapTileMaps.begin();
+		FTDS::HashChainMap<FTDS::String, FTTileMap*>& mapTileMaps = EditorResourceManager::GetInstance()->GetTileMapsMap();
+		FTDS::HashChainMap<FTDS::String, FTTileMap*>::iterator iterT = mapTileMaps.begin();
 
 		for (; iterT != mapTileMaps.end(); ++iterT)
 		{
@@ -81,8 +81,8 @@ void TileMapManager::UpdateUI(bool* opened)
 
 		ImGui::SeparatorText("Loaded SpriteSheets");
 
-		std::unordered_map<const char*, FTSpriteSheet*>& mapSpriteSheets = EditorResourceManager::GetInstance()->GetSpriteSheetsMap();
-		std::unordered_map<const char*, FTSpriteSheet*>::iterator iterS = mapSpriteSheets.begin();
+		FTDS::HashChainMap<FTDS::String, FTSpriteSheet*>& mapSpriteSheets = EditorResourceManager::GetInstance()->GetSpriteSheetsMap();
+		FTDS::HashChainMap<FTDS::String, FTSpriteSheet*>::iterator iterS = mapSpriteSheets.begin();
 
 		for (; iterS != mapSpriteSheets.end(); ++iterS)
 		{
@@ -92,8 +92,8 @@ void TileMapManager::UpdateUI(bool* opened)
 				(*iterS).second->UpdateUI();
 				if (ImGui::Button("Save SpriteSheet"))
 				{
-					SaveSpriteSheetAsFile((*iterS).second);
 					(*iterS).second->Initialize();
+					SaveSpriteSheetAsFile((*iterS).second);
 				}
 				ImGui::PopID();
 			}

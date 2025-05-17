@@ -9,6 +9,8 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Managers/ResourceManager.h"
 
+#include "Static/FTString.h"
+
 #ifdef FOXTROT_EDITOR
 #include "EditorUtils.h"
 #include "EditorResourceManager.h"
@@ -17,13 +19,14 @@
 
 void FTSpriteSheet::Initialize()
 {
-	if (FTDS::StringEqual(mJSONKey, ChunkKey::NullVal::NULL_OBJECT))
+	if (FTDS::StringEqual(mJSONKey.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
 		return;
 
 	mTilesCount = 0;
 
 #ifdef FOXTROT_EDITOR
-	FTJSON* json = EditorResourceManager::GetInstance()->GetLoadedJSON(mJSONKey);
+	const char* key = mJSONKey.C_Str();
+	FTJSON* json = EditorResourceManager::GetInstance()->GetLoadedJSON(key);
 #else
 	FTJSON* json = ResourceManager::GetInstance()->GetLoadedJSON(mJSONKey);
 #endif // FOXTROT_EDITOR
@@ -92,7 +95,7 @@ void FTSpriteSheet::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::SpriteSheet::SPRITE_SHEET);
 	FTResource::SaveProperties(ofs);
-	FileIOHelper::SaveString(ofs, ChunkKey::SpriteSheet::JSON_KEY, mJSONKey);
+	FileIOHelper::SaveString(ofs, ChunkKey::SpriteSheet::JSON_KEY, mJSONKey.C_Str());
 	FileIOHelper::SaveVector2(ofs, ChunkKey::SpriteSheet::SHEET_SIZE, mSheetSize);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::SpriteSheet::SPRITE_SHEET);
 }
@@ -133,12 +136,12 @@ void FTSpriteSheet::UpdateUI()
 
 	FTEditorUtils::DisplayResSelection(
 		"Select JSON",
-		EditorResourceManager::GetInstance()->GetMapJSONs(),
+		EditorResourceManager::GetInstance()->GetJSONs(),
 		mJSONKey);
 
 	std::string text = { "Sheet size : " };
 	text += std::to_string(mSheetSize.x) + " ,";
 	text += std::to_string(mSheetSize.y);
-	ImGui::Text(text.c_str());
+	ImGui::Text(text.C_Str());
 }
 #endif // FOXTROT_EDITOR

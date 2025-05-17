@@ -98,8 +98,8 @@ namespace FTEditorUtils
 	template <typename FTRESOURCE>
 	inline void DisplayResSelection(
 		const char* label,
-		std::unordered_map<const char*, FTRESOURCE*>& resMap
-		, const char*& currSelection
+		FTDS::HashChainMap<FTRESOURCE*>* resMap
+		, FTDS::String& currSelection
 	)
 	{
 		if (ImGui::Button(label))

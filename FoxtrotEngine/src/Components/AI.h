@@ -42,6 +42,6 @@ public:
 	virtual ~AI() override;
 
 private:
-	std::unordered_map<AISTATE_TYPE, class AIState*> mStateMap;
+	FTDS::HashChainMap<AISTATE_TYPE, class AIState*> mStateMap;
 	class AIState*									 mCurrentState;
 };

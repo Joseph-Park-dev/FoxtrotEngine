@@ -9,24 +9,31 @@ constexpr size_t LEVEL_ORDER_Q_SIZE = 100;
 
 namespace FTDS
 {
-	template <typename TYPE, typename CALLBACK>
+	template <typename TYPE>
 	class BinTree
 	{
 	public:
 		// Traversal Algorithms
-		void InOrder	(CALLBACK func)
+		template <typename CALLBACK>
+		void InOrder(CALLBACK func)
 		{
 			InOrder(mRoot, func);
 		}
-		void PreOrder	(CALLBACK func)
+
+		template <typename CALLBACK>
+		void PreOrder(CALLBACK func)
 		{
 			PreOrder(mRoot, func);
 		}
-		void PostOrder	(CALLBACK func)
+
+		template <typename CALLBACK>
+		void PostOrder(CALLBACK func)
 		{
 			PostOrder(mRoot, func);
 		}
-		void LevelOrder	(CALLBACK func)
+
+		template <typename CALLBACK>
+		void LevelOrder(CALLBACK func)
 		{
 			if (!IsEmpty())
 			{
@@ -44,23 +51,24 @@ namespace FTDS
 						queue.Enqueue(n->Right);
 					}
 				}
-				
 			}
 		}
 
 	public:
 		BinaryNode<TYPE>* GetRoot() { return mRoot; }
-		void		SetRoot(BinaryNode<TYPE>* node) { mRoot = node; }
+		void			  SetRoot(BinaryNode<TYPE>* node) { mRoot = node; }
 
-		bool		IsEmpty() { return mRoot == nullptr; }
+		bool IsEmpty() { return mRoot == nullptr; }
 
 	public:
-		BinTree() : mRoot(nullptr) {}
+		BinTree()
+			: mRoot(nullptr) {}
 
 	protected:
 		BinaryNode<TYPE>* mRoot;
 
 	private:
+		template <typename CALLBACK>
 		void InOrder(BinaryNode<TYPE>* node, CALLBACK f)
 		{
 			if (node)
@@ -70,7 +78,9 @@ namespace FTDS
 				InOrder(node->Right, f);
 			}
 		}
-		void PreOrder	(BinaryNode<TYPE>* node, CALLBACK f)
+
+		template <typename CALLBACK>
+		void PreOrder(BinaryNode<TYPE>* node, CALLBACK f)
 		{
 			if (node)
 			{
@@ -79,6 +89,8 @@ namespace FTDS
 				PreOrder(node->Right, f);
 			}
 		}
+
+		template <typename CALLBACK>
 		void PostOrder(BinaryNode<TYPE>* node, CALLBACK f)
 		{
 			if (node)
@@ -89,4 +101,4 @@ namespace FTDS
 			}
 		}
 	};
-}
+} // namespace FTDS

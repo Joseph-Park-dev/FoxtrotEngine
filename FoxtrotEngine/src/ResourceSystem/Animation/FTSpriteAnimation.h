@@ -29,10 +29,10 @@ struct AnimationFrame;
 class FTSpriteAnimation : public FTAnimation
 {
 public:
-	const char*		GetTileDataKey();
+	FTDS::String&	GetTileDataKey();
 	AnimationFrame* GetFrame(int frameIdx);
 
-	void SetTileDataKey(const char* key);
+	void SetTileDataKey(FTDS::String& key);
 
 public:
 	FTSpriteAnimation();
@@ -42,7 +42,7 @@ public:
 private:
 	// Key to the FTResource that contains Tile data
 	// (FTTileMap, FTSpriteSheet)
-	const char* mTileDataKey;
+	FTDS::String mTileDataKey;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;

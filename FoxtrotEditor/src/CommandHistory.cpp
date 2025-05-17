@@ -12,7 +12,7 @@
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
-#include <imgui_stdlib.h>
+//#include <imgui_stdlib.h>
 #include <typeinfo>
 
 #include "Command.h"
@@ -275,6 +275,40 @@ void CommandHistory::UpdateStringValue(std::string label, std::string& ref)
 	static StrEditCommand* command;
 
 	if (ImGui::InputText(label.c_str(), &ref))
+	{
+		if (!mIsRecording)
+		{
+			if (!command)
+			{
+				mIsRecording = true;
+				command = DBG_NEW StrEditCommand(ref);
+			}
+		}
+	}
+	else
+	{
+		if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
+		{
+			if (command)
+			{
+				mIsRecording = false;
+				command->SetNextVal(ref);
+				AddCommand(command);
+				command = nullptr;
+			}
+		}
+	}
+}
+
+void CommandHistory::UpdateStringValue(const char* label, FTDS::String& ref)
+{
+	if (ref.Capacity() < BufferSize::STRING_BUFFER_SIZE)
+		ref.Reserve(BufferSize::STRING_BUFFER_SIZE);
+
+	static StrEditCommand* command;
+
+	char* strVal = (char*)ref.C_Str();
+	if (ImGui::InputText(label, strVal, BufferSize::STRING_BUFFER_SIZE))
 	{
 		if (!mIsRecording)
 		{

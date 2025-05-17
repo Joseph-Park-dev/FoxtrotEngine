@@ -28,10 +28,10 @@ public:
 	{
 		return "TileMap";
 	}
-	const char* GetTileMapKey() const;
-	FTTileMap*	GetTileMap() const;
+	FTDS::String& GetTileMapKey();
+	FTTileMap*	  GetTileMap() const;
 
-	void SetTileMapKey(const char* key);
+	void SetTileMapKey(FTDS::String& key);
 	void SetTileMap(FTTileMap* tileMap);
 
 public:
@@ -48,8 +48,8 @@ protected:
 	virtual void InitializeTileMap();
 
 private:
-	FTTileMap*	mTileMap;
-	const char* mTileMapKey;
+	FTTileMap*	 mTileMap;
+	FTDS::String mTileMapKey;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
@@ -62,7 +62,7 @@ public:
 
 protected:
 	void UpdateCSV();
-	void UpdateCSV(const char* key);
+	void UpdateCSV(FTDS::String& key);
 #endif
 };
 

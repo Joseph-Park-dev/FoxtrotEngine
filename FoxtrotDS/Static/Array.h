@@ -90,7 +90,11 @@ namespace FTDS
 
 		virtual ~Array()
 		{
-			delete[] mData;
+			if (mData)
+			{
+				delete[] mData;
+				mData = nullptr;
+			}
 		}
 
 	public:
@@ -115,9 +119,12 @@ namespace FTDS
 			for (size_t i = 0; i < newCap; ++i)
 				newArr[i] = NULL;
 
-			// Copy previous data.
-			memcpy_s(newArr, sizeof(newArr), mData, sizeof(TYPE) * mCapacity);
-			delete[] mData;
+			if (mData)
+			{
+				// Copy previous data.
+				memcpy_s(newArr, sizeof(newArr), mData, sizeof(mData));
+				delete[] mData;
+			}
 
 			// Set new array as current data.
 			mData = newArr;

@@ -17,6 +17,7 @@
 
 #include "FileSystem/FileTypes.h"
 #include "FileSystem/NullKeys.h"
+#include "Static/FTString.h"
 
 class FTVector2;
 class FTVector3;
@@ -33,8 +34,9 @@ public:
 	static void LoadSize(std::ifstream& ifs, size_t& sizeVal);
 	static void LoadFloat(std::ifstream& ifs, float& floatVal);
 	static void LoadBool(std::ifstream& ifs, bool& boolVal);
-	static void LoadBasicString(std::ifstream& ifs, const char* strVal);
+	static void LoadBasicString(std::ifstream& ifs, FTDS::String& strVal);
 	static void LoadBasicString(std::ifstream& ifs, std::string& strVal);
+	static void LoadBasicString(std::ifstream& ifs, const char* strVal);
 
 	static void LoadVector2(std::ifstream& ifs, FTVector2& vec2);
 	static void LoadVector2(std::ifstream& ifs, b2Vec2& vec2);
@@ -72,7 +74,8 @@ public:
 	static void SaveUnsignedInt(std::ofstream& ofs, const std::string valName, const unsigned int& intVal);
 	static void SaveSize(std::ofstream& ofs, const std::string valName, const size_t& sizeVal);
 	static void SaveFloat(std::ofstream& ofs, const std::string valName, const float& floatVal);
-	static void SaveString(std::ofstream& ofs, const std::string valName, const std::string& strVal);
+	static void SaveString(std::ofstream& ofs, std::string valName, const std::string& strVal);
+	static void SaveString(std::ofstream& ofs, const char* valName, FTDS::String& strVal);
 	static void SaveBool(std::ofstream& ofs, const std::string valName, const bool& boolVal);
 
 private:

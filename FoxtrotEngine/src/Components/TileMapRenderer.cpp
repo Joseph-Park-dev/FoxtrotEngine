@@ -43,7 +43,7 @@
 
 #define DEFAULT_TILE_POS 0
 
-const char* TileMapRenderer::GetTileMapKey() const
+FTDS::String& TileMapRenderer::GetTileMapKey()
 {
 	return mTileMapKey;
 }
@@ -53,7 +53,7 @@ FTTileMap* TileMapRenderer::GetTileMap() const
 	return mTileMap;
 }
 
-void TileMapRenderer::SetTileMapKey(const char* key)
+void TileMapRenderer::SetTileMapKey(FTDS::String& key)
 {
 	mTileMapKey = key;
 }
@@ -66,19 +66,19 @@ void TileMapRenderer::SetTileMap(FTTileMap* tileMap)
 void TileMapRenderer::Initialize(FTCore* coreInstance)
 {
 	MeshRenderer::Initialize(coreInstance);
-	if (!FTDS::StringEqual(GetTexKey(), ChunkKey::NullVal::NULL_OBJECT) 
-		&& !FTDS::StringEqual(mTileMapKey, ChunkKey::NullVal::NULL_OBJECT))
+	if (GetTexKey().NotEqual(ChunkKey::NullVal::NULL_OBJECT)
+		&& mTileMapKey.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 		this->InitializeTileMap();
 }
 
 void TileMapRenderer::InitializeTileMap()
 {
-	if (!FTDS::StringEqual(GetTileMapKey(), ChunkKey::NullVal::NULL_OBJECT))
+	if (GetTileMapKey().NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 	{
 		mTileMap = ResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey);
 		if (mTileMap)
 		{
-			if (!FTDS::StringEqual(GetTexKey(), ChunkKey::NullVal::NULL_OBJECT))
+			if (GetTexKey().NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 				GetMeshGroup()->SetTexture(GetTexKey());
 			mTileMap->Initialize();
 			SetMeshKey(ChunkKey::PRIMITIVE_SQUARE_BLUE);
@@ -120,7 +120,7 @@ void TileMapRenderer::SaveProperties(std::ofstream& ofs)
 
 void TileMapRenderer::LoadProperties(std::ifstream& ifs)
 {
-	const char* texKey = 0;
+	FTDS::String texKey = 0;
 	FileIOHelper::LoadBasicString(ifs, texKey);
 	SetTexKey(texKey);
 	FileIOHelper::LoadBasicString(ifs, mTileMapKey);
@@ -144,11 +144,14 @@ void TileMapRenderer::OnConfirmUpdate()
 
 void TileMapRenderer::UpdateCSV()
 {
-	std::string currentCSV = "No .csv has been assigned";
-	if (FTDS::StringEqual(mTileMapKey, ChunkKey::NullVal::NULL_OBJECT))
-		currentCSV =
-			"Current sprite : \n" + EditorResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey)->GetRelativePath();
-	ImGui::Text(currentCSV.c_str());
+	FTDS::String currentCSV = "No .csv has been assigned";
+	if (mTileMapKey.Equal(ChunkKey::NullVal::NULL_OBJECT))
+	{
+		currentCSV.Assign("Current sprite : \n");
+		currentCSV.Append(EditorResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey)->RelativePath());
+	}
+			 
+	ImGui::Text(currentCSV.C_Str());
 
 	if (ImGui::Button("Select .CSV"))
 	{
@@ -162,17 +165,17 @@ void TileMapRenderer::UpdateCSV()
 
 	if (ImGui::BeginPopupModal("Select .CSV", NULL, ImGuiWindowFlags_MenuBar))
 	{
-		std::unordered_map<const char*, FTTileMap*>& tileMapsMap =
-			EditorResourceManager::GetInstance()->GetTileMapsMap();
+		FTDS::HashChainMap<FTTileMap*>* tileMapsMap =
+			EditorResourceManager::GetInstance()->GetTileMaps();
 		if (ImGui::TreeNode("Selection State: Single Selection"))
 		{
-			const char* tileMapKey = ChunkKey::NullVal::NULL_OBJECT;
+			FTDS::String tileMapKey = ChunkKey::NullVal::NULL_OBJECT;
 			static int	selected   = -1;
 			int			i		   = 0;
-			for (auto iter = tileMapsMap.begin(); iter != tileMapsMap.end();
+			for (auto iter = tileMapsMap->Begin(); iter != tileMapsMap->End();
 				 ++iter, ++i)
 			{
-				if (ImGui::Selectable((*iter).second->GetFileName().c_str(), selected == i))
+				if (ImGui::Selectable((*iter).second->FileName().C_Str(), selected == i))
 				{
 					tileMapKey = (*iter).first;
 					selected   = i;
@@ -190,15 +193,15 @@ void TileMapRenderer::UpdateCSV()
 		ImGui::EndPopup();
 	}
 }
-void TileMapRenderer::UpdateCSV(const char* key)
+void TileMapRenderer::UpdateCSV(FTDS::String& key)
 {
 	std::string currentCSV = {};
-	if (FTDS::StringEqual(key, ChunkKey::NullVal::NULL_OBJECT))
+	if (key.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 		currentCSV =
-			"Current sprite : \n" + EditorResourceManager::GetInstance()->GetLoadedTileMap(key)->GetRelativePath();
+			"Current sprite : \n" + EditorResourceManager::GetInstance()->GetLoadedTileMap(key)->RelativePath();
 	else
 		currentCSV = "No .csv has been assigned";
-	ImGui::Text(currentCSV.c_str());
+	ImGui::Text(currentCSV.C_Str());
 
 	if (ImGui::Button("Select .CSV"))
 	{
@@ -212,21 +215,21 @@ void TileMapRenderer::UpdateCSV(const char* key)
 
 	if (ImGui::BeginPopupModal("Select .CSV", NULL, ImGuiWindowFlags_MenuBar))
 	{
-		std::unordered_map<const char*, FTTileMap*>& tileMapsMap =
-			EditorResourceManager::GetInstance()->GetTileMapsMap();
+		FTDS::HashChainMap<FTTileMap*>* tileMapsMap =
+			EditorResourceManager::GetInstance()->GetTileMaps();
 		if (ImGui::TreeNode("Selection State: Single Selection"))
 		{
-			const char* tileMapKey = ChunkKey::NullVal::NULL_OBJECT;
+			FTDS::String tileMapKey = ChunkKey::NullVal::NULL_OBJECT;
 			static int	selected   = -1;
 			int			i		   = 0;
-			for (auto iter = tileMapsMap.begin(); iter != tileMapsMap.end();
+			for (auto iter = tileMapsMap->Begin(); iter != tileMapsMap->End();
 				 ++iter, ++i)
 			{
-				if ((*iter).second)
+				if ((*iter)->Value())
 				{
-					if (ImGui::Selectable((*iter).second->GetFileName().c_str(), selected == i))
+					if (ImGui::Selectable((*iter)->Value()->FileName().C_Str(), selected == i))
 					{
-						tileMapKey = (*iter).first;
+						tileMapKey = (*iter)->Value();
 						selected   = i;
 					}
 				}

@@ -228,7 +228,7 @@ bool Actor::HasName(std::string& name)
 
 bool Actor::HasName(const char* name)
 {
-	return FTDS::StringEqual(mName.c_str(), name);
+	return FTDS::StringEqual(mName.C_Str(), name);
 }
 
 void Actor::SaveProperties(std::ofstream& ofs)

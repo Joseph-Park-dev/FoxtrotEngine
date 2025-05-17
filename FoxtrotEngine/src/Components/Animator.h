@@ -57,12 +57,12 @@ public:
 	~Animator() override;
 
 private:
-	std::vector<const char*> mLoadedKeys;
-	UINT			  mCurrAnimKey;
-	int				  mCurrFrameIdx;
-	float			  mAccTime;
-	bool			  mIsFinished;
-	bool			  mIsRepeated;
+	std::vector<FTDS::String> mLoadedKeys;
+	UINT					  mCurrAnimKey;
+	int						  mCurrFrameIdx;
+	float					  mAccTime;
+	bool					  mIsFinished;
+	bool					  mIsRepeated;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;

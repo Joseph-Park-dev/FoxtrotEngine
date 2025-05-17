@@ -39,7 +39,7 @@ bool FTWindow::InitializeWindow(WNDPROC wndProc)
 		NULL,
 		NULL,
 		NULL,
-		mTitle.c_str(), // lpszClassName, L-string
+		mTitle.C_Str(), // lpszClassName, L-string
 		NULL
 	};
 	if (!RegisterClassEx(&wc))
@@ -55,7 +55,7 @@ bool FTWindow::InitializeWindow(WNDPROC wndProc)
 
 	mWinHandle = CreateWindow(
 		wc.lpszClassName,
-		mTitle.c_str(),
+		mTitle.C_Str(),
 		WS_OVERLAPPEDWINDOW | WS_SYSMENU,
 		100,				// x-coordinate, top left
 		100,				// y-coordinate, top left

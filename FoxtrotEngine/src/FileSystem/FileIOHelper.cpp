@@ -138,7 +138,7 @@ void FileIOHelper::LoadBool(std::ifstream& ifs, bool& boolVal)
 	ParseBool(line, boolVal);
 }
 
-void FileIOHelper::LoadBasicString(std::ifstream& ifs, const char* strVal)
+void FileIOHelper::LoadBasicString(std::ifstream& ifs, FTDS::String& strVal)
 {
 	// Parse data information.
 	std::string line;
@@ -152,7 +152,8 @@ void FileIOHelper::LoadBasicString(std::ifstream& ifs, const char* strVal)
 	std::getline(ifs, line, '\n');
 	std::string result = {};
 	ParseString(line, result);
-	strVal = result.c_str();
+
+	strVal.Assign(result.C_Str());
 }
 
 void FileIOHelper::LoadBasicString(std::ifstream& ifs, std::string& strVal)
@@ -168,6 +169,22 @@ void FileIOHelper::LoadBasicString(std::ifstream& ifs, std::string& strVal)
 	// Parse the actual data.
 	std::getline(ifs, line, '\n');
 	ParseString(line, strVal);
+}
+
+void FileIOHelper::LoadBasicString(std::ifstream& ifs, const char* strVal)
+{
+	// Parse data information.
+	std::string line;
+	std::getline(ifs, line, '\n');
+
+	std::string name = ExtractUntil(line, '[');
+	std::string typeNameStr = GetBracketedVal(line, '[', ']');
+	line.clear();
+
+	std::getline(ifs, line, '\n');
+	std::string result = {};
+	ParseString(line, result);
+	strVal = result.C_Str();
 }
 
 void FileIOHelper::LoadVector2(std::ifstream& ifs, FTVector2& vec2)
@@ -448,10 +465,18 @@ void FileIOHelper::SaveFloat(std::ofstream& ofs, const std::string valName, cons
 	++mItemCounts.back();
 }
 
-void FileIOHelper::SaveString(std::ofstream& ofs, const std::string valName, const std::string& strVal)
+void FileIOHelper::SaveString(std::ofstream& ofs, std::string valName, const std::string& strVal)
 {
 	std::string itemTitle = mItemIdent + valName + "[string]" + '\n';
 	std::string item	  = mItemIdent + strVal;
+	mDataBuffer.push_back(itemTitle + item);
+	++mItemCounts.back();
+}
+
+void FileIOHelper::SaveString(std::ofstream& ofs, const char* valName, FTDS::String& strVal)
+{
+	std::string itemTitle = mItemIdent + valName + "[string]" + '\n';
+	std::string item = mItemIdent + strVal.C_Str();
 	mDataBuffer.push_back(itemTitle + item);
 	++mItemCounts.back();
 }

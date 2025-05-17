@@ -61,7 +61,7 @@ void FTTexture::LoadProperties(std::ifstream& ifs)
 #ifdef FOXTROT_EDITOR
 void FTTexture::UpdateUI()
 {
-    ImGui::Text(GetFileName().c_str());
+    ImGui::Text(FileName().C_Str());
     ID3D11ShaderResourceView* viewportTexture = this->mTextureResourceView.Get();
     ImVec2 previewSize = ImVec2(100, 100);
     ImGui::Image((ImTextureID)viewportTexture, previewSize);

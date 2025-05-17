@@ -11,7 +11,7 @@ void FTCSV::Read()
 		mData.clear();
 
 	std::ifstream ifs;
-	ifs.open(GetRelativePath(), std::fstream::in);
+	ifs.open(RelativePath().C_Str(), std::fstream::in);
 	assert(ifs);
 
 	std::string line;

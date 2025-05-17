@@ -12,6 +12,8 @@
 #include "FileSystem/NullKeys.h"
 #include "Renderer/FoxtrotRenderer.h"
 
+#include "Static/FTString.h"
+
 #ifdef FOXTROT_EDITOR
 	#include "EditorUtils.h"
 	#include "FileSystem/BufferSizes.h"
@@ -48,21 +50,22 @@
 //	return animation;
 //}
 
-FTSpriteAnimation* AnimationManager::CreateAnimationFromSpriteSheet(const char* name, const char* texKey, const char* spriteSheetKey, size_t startIndex, size_t endIndex)
+FTSpriteAnimation* AnimationManager::CreateAnimationFromSpriteSheet(const char* name, FTDS::String& texKey, FTDS::String& spriteSheetKey, size_t startIndex, size_t endIndex)
 {
 	if (!mRenderer)
 		printf("ERROR : Animator::CreateAnimationFromTile()-> Renderer is null");
 
 	FTSpriteAnimation* animation					= DBG_NEW FTSpriteAnimation;
-	std::string							   animName = std::string(name) + FileTypes::SPRITE_ANIMATION;
+	FTDS::String						   animName = FTDS::String(name) + FileTypes::SPRITE_ANIMATION;
 	animation->SetFileName(animName);
 
-	std::string path = ResourceManager::GetInstance()->GetPathToAsset().append(animName);
+	FTDS::String path = ResourceManager::GetInstance()->GetPathToAsset();
+	path.Append(animName);
 	animation->SetRelativePath(path);
 
-	if (!FTDS::StringEqual(texKey, ChunkKey::NullVal::NULL_OBJECT))
+	if (texKey.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 		animation->SetTexture(texKey);
-	if (!FTDS::StringEqual(spriteSheetKey, ChunkKey::NullVal::NULL_OBJECT))
+	if (spriteSheetKey.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 		animation->SetTileDataKey(spriteSheetKey);
 
 #ifdef FOXTROT_EDITOR
@@ -81,10 +84,10 @@ FTSpriteAnimation* AnimationManager::CreateAnimationFromSpriteSheet(const char* 
 
 #ifdef FOXTROT_EDITOR
 	EditorResourceManager::GetInstance()->LoadResource(
-		animation, EditorResourceManager::GetInstance()->GetSpriteAnimMap());
+		animation, EditorResourceManager::GetInstance()->GetSpriteAnimations());
 #else
 	ResourceManager::GetInstance()->LoadResource(
-		animation, EditorResourceManager::GetInstance()->GetSpriteAnimMap());
+		animation, EditorResourceManager::GetInstance()->GetSpriteAnimations());
 #endif // FOXTROT_EDITOR
 
 	printf("FTSpriteAnimation created, %s\n", name);
@@ -148,19 +151,19 @@ void AnimationManager::UpdateUI(bool* opened)
 	{
 		CreateAnimation();
 
-		std::unordered_map<const char*, FTSpriteAnimation*>& map =
-			EditorResourceManager::GetInstance()->GetSpriteAnimMap();
-		std::unordered_map<const char*, FTSpriteAnimation*>::iterator iter = map.begin();
+		FTDS::HashChainMap<FTSpriteAnimation*>* map =
+			EditorResourceManager::GetInstance()->GetSpriteAnimations();
+		auto iter = map->Begin();
 
 		if (ImGui::TreeNode("Loaded Animations"))
 		{
-			for (; iter != map.end(); ++iter)
+			for (; iter != map->End(); ++iter)
 			{
 				if ((*iter).second)
 				{
-					if (ImGui::BeginListBox((*iter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 100)))
+					if (ImGui::BeginListBox((*iter).second->FileName().C_Str(), ImVec2(-FLT_MIN, 100)))
 					{
-						ImGui::Text((*iter).second->GetFileName().c_str());
+						ImGui::Text((*iter).second->FileName().C_Str());
 						(*iter).second->UpdateUI();
 						if (ImGui::Button("Save"))
 							SaveSpriteAnimAsFile((*iter).second);
@@ -189,22 +192,22 @@ void AnimationManager::CreateAnimation()
 
 		const char* text = ChunkKey::NullVal::NULL_OBJECT;
 
-		static const char* texKey = ChunkKey::NullVal::NULL_OBJECT;
+		static FTDS::String texKey = ChunkKey::NullVal::NULL_OBJECT;
 		GetSprite(texKey);
-		if (!FTDS::StringEqual(texKey, ChunkKey::NullVal::NULL_OBJECT))
-			text = EditorResourceManager::GetInstance()->GetLoadedTexture(texKey)->GetFileName().c_str();
+		if (!FTDS::StringEqual(texKey.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
+			text = EditorResourceManager::GetInstance()->GetLoadedTexture(texKey.C_Str())->FileName().C_Str();
 
 		ImGui::Text(text);
 
-		text							  = ChunkKey::NullVal::NULL_OBJECT;
-		static const char* spriteSheetKey = ChunkKey::NullVal::NULL_OBJECT;
+		text							   = ChunkKey::NullVal::NULL_OBJECT;
+		static FTDS::String spriteSheetKey = ChunkKey::NullVal::NULL_OBJECT;
 		GetSpriteSheet(spriteSheetKey);
 		FTSpriteSheet* spriteSheet = nullptr;
 		int			   maxIdx	   = 0;
-		if (!FTDS::StringEqual(spriteSheetKey, ChunkKey::NullVal::NULL_OBJECT))
+		if (!FTDS::StringEqual(spriteSheetKey.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
 		{
-			text		= EditorResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteSheetKey)->GetFileName().c_str();
-			spriteSheet = EditorResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteSheetKey);
+			text		= EditorResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteSheetKey.C_Str())->FileName().C_Str();
+			spriteSheet = EditorResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteSheetKey.C_Str());
 			maxIdx		= static_cast<int>(spriteSheet->GetTilesCount()) - 1;
 		}
 		static int startIdx;
@@ -213,8 +216,10 @@ void AnimationManager::CreateAnimation()
 		CommandHistory::GetInstance()->UpdateIntValue("Anim Start Index", startIdx, -maxIdx, maxIdx);
 		CommandHistory::GetInstance()->UpdateIntValue("Anim End Index", endIdx, -maxIdx, maxIdx);
 		if (ImGui::Button("Auto Detect"))
+		{
 			startIdx = 0;
-		endIdx = maxIdx;
+			endIdx	 = maxIdx;
+		}
 
 		ImGui::Text(text);
 
@@ -234,24 +239,24 @@ void AnimationManager::CreateAnimation()
 	}
 }
 
-void AnimationManager::GetSprite(const char*& key)
+void AnimationManager::GetSprite(FTDS::String& key)
 {
 	FTEditorUtils::DisplayResSelection("Select Sprite", EditorResourceManager::GetInstance()->GetTexturesMap(), key);
 }
 
-void AnimationManager::GetTileMap(const char*& key)
+void AnimationManager::GetTileMap(FTDS::String& key)
 {
 	FTEditorUtils::DisplayResSelection("Select TileMap", EditorResourceManager::GetInstance()->GetTileMapsMap(), key);
 }
 
-void AnimationManager::GetSpriteSheet(const char*& key)
+void AnimationManager::GetSpriteSheet(FTDS::String& key)
 {
 	FTEditorUtils::DisplayResSelection("Select SpriteSheet", EditorResourceManager::GetInstance()->GetSpriteSheetsMap(), key);
 }
 
 void AnimationManager::SaveSpriteAnimAsFile(FTSpriteAnimation* animation)
 {
-	std::string	  path = EditorResourceManager::GetInstance()->GetPathToAsset() + animation->GetFileName();
+	std::string	  path = EditorResourceManager::GetInstance()->GetPathToAsset() + animation->FileName();
 	std::ofstream ofs(path);
 	animation->SaveProperties(ofs);
 	FileIOHelper::SaveBufferToFile(ofs);

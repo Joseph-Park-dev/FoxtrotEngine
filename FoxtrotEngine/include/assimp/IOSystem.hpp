@@ -247,7 +247,7 @@ AI_FORCE_INLINE IOStream* IOSystem::Open(const std::string& pFile, const std::st
     // NOTE:
     // For compatibility, interface was changed to const char* to
     // avoid crashes between binary incompatible STL versions
-    return Open(pFile.c_str(),pMode.c_str());
+    return Open(pFile.C_Str(),pMode.C_Str());
 }
 
 // ----------------------------------------------------------------------------
@@ -255,7 +255,7 @@ AI_FORCE_INLINE bool IOSystem::Exists( const std::string& pFile) const {
     // NOTE:
     // For compatibility, interface was changed to const char* to
     // avoid crashes between binary incompatible STL versions
-    return Exists(pFile.c_str());
+    return Exists(pFile.C_Str());
 }
 
 // ----------------------------------------------------------------------------
@@ -263,7 +263,7 @@ AI_FORCE_INLINE bool IOSystem::ComparePaths(const std::string& one, const std::s
     // NOTE:
     // For compatibility, interface was changed to const char* to
     // avoid crashes between binary incompatible STL versions
-    return ComparePaths(one.c_str(),second.c_str());
+    return ComparePaths(one.C_Str(),second.C_Str());
 }
 
 // ----------------------------------------------------------------------------
@@ -300,9 +300,9 @@ AI_FORCE_INLINE bool IOSystem::CreateDirectory( const std::string &path ) {
     }
 
 #ifdef _WIN32
-    return 0 != ::_mkdir( path.c_str() );
+    return 0 != ::_mkdir( path.C_Str() );
 #else
-    return 0 != ::mkdir( path.c_str(), 0777 );
+    return 0 != ::mkdir( path.C_Str(), 0777 );
 #endif // _WIN32
 }
 
@@ -313,9 +313,9 @@ AI_FORCE_INLINE bool IOSystem::ChangeDirectory( const std::string &path ) {
     }
 
 #ifdef _WIN32
-    return 0 != ::_chdir( path.c_str() );
+    return 0 != ::_chdir( path.C_Str() );
 #else
-    return 0 != ::chdir( path.c_str() );
+    return 0 != ::chdir( path.C_Str() );
 #endif // _WIN32
 }
 
@@ -325,7 +325,7 @@ AI_FORCE_INLINE bool IOSystem::DeleteFile( const std::string &file ) {
     if ( file.empty() ) {
         return false;
     }
-    const int retCode( ::remove( file.c_str() ) );
+    const int retCode( ::remove( file.C_Str() ) );
     return ( 0 == retCode );
 }
 } //!ns Assimp

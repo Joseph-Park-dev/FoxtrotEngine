@@ -59,13 +59,13 @@ void FTVertexShader::LoadProperties(std::ifstream& ifs)
 		D3D11_INPUT_ELEMENT_DESC desc;
 		if (semanticN == "TEXCOORD")
 		{
-			desc = { semanticN.c_str(), 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 * (UINT)i, D3D11_INPUT_PER_VERTEX_DATA, 0 };
+			desc = { semanticN.C_Str(), 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 * (UINT)i, D3D11_INPUT_PER_VERTEX_DATA, 0 };
 		}
 		else
 		{
-			desc = { semanticN.c_str(), 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3 * (UINT)i, D3D11_INPUT_PER_VERTEX_DATA, 0 };
+			desc = { semanticN.C_Str(), 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3 * (UINT)i, D3D11_INPUT_PER_VERTEX_DATA, 0 };
 		}
-		RegisterInputElementDesc(semanticN.c_str(), desc);
+		RegisterInputElementDesc(semanticN.C_Str(), desc);
 	}
 	return LoadProperties(ifs);
 }

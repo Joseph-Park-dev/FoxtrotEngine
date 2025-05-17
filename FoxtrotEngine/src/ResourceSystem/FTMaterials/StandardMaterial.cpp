@@ -120,7 +120,7 @@ void StandardMaterial::SaveToFile()
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::STANDARD_MAT);
 		FileIOHelper::SaveBufferToFile(ofs);
 
-		printf("Material %s created to %s\n", GetFileName().c_str(), GetRelativePath().c_str());
+		printf("Material %s created to %s\n", FileName().C_Str(), GetRelativePath().C_Str());
 	}
 	else
 		Debug::LogError(__LINE__, __FILE__, "Failed to save material to file");

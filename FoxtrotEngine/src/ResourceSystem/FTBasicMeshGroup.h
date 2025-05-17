@@ -43,14 +43,14 @@ public:
 public:
 	ComPtr<ID3D11SamplerState>& GetSamplerState();
 	size_t						GetMeshCount();
-	const char*						GetTexKey() const;
+	FTDS::String&				GetTexKey();
 	FTTexture*					GetTexture() const;
 	BasicVCData&				GetVCData();
 	bool						GetDrawNormal();
 
-	void		 SetMaterials(std::vector<const char*>& matKeys, ComPtr<ID3D11Device>& device);
+	void		 SetMaterials(std::vector<FTDS::String>& matKeys, ComPtr<ID3D11Device>& device);
 	virtual void SetTexture();
-	virtual void SetTexture(const char* texKey);
+	virtual void SetTexture(FTDS::String& texKey);
 	void		 SetTexture(FTTexture* tex);
 	void		 SetNormalLines(Mesh* normalLines);
 	void		 SetDrawNormal(bool drawNormal);
@@ -70,7 +70,7 @@ protected:
 	void			InitializeConstantBuffers(ComPtr<ID3D11Device>& device);
 
 protected:
-	void SetTexKey(const char* texKey);
+	void SetTexKey(FTDS::String& texKey);
 
 	ComPtr<ID3D11VertexShader>& GetVertexShader();
 	ComPtr<ID3D11PixelShader>&	GetPixelShader();
@@ -81,14 +81,14 @@ protected:
 	// Since the texture type is diverged into FTTexture & FTCUBEMAP_TEXTURE,
 	// the TEXTURE_MAP needs to be specified.
 	template <typename TEXTURE_MAP>
-	void SetTexture(const char* key, TEXTURE_MAP& map)
+	void SetTexture(FTDS::String& key, TEXTURE_MAP& map)
 	{
 		mTexKey	 = key;
 		mTexture = map.at(key);
 	}
 
 private:
-	const char* mTexKey;
+	FTDS::String mTexKey;
 
 	std::vector<Mesh*>		   mMeshes;
 	FTTexture*				   mTexture;

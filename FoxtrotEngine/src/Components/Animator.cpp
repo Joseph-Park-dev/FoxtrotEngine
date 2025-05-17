@@ -47,12 +47,12 @@ Animator::~Animator()
 
 void Animator::Play(const UINT key, bool isRepeated)
 {
-	const char* loadedKey = mLoadedKeys.at(key);
+	FTDS::String loadedKey = mLoadedKeys.at(key);
 
 #ifdef FOXTROT_EDITOR
-	SetMeshGroup(EditorResourceManager::GetInstance()->GetLoadedSpriteAnim(loadedKey));
+	SetMeshGroup(EditorResourceManager::GetInstance()->GetLoadedSpriteAnim(loadedKey.C_Str()));
 #else
-	SetMeshGroup(ResourceManager::GetInstance()->GetLoadedSpriteAnim(loadedKey));
+	SetMeshGroup(ResourceManager::GetInstance()->GetLoadedSpriteAnim(loadedKey.C_Str()));
 #endif // FOXTROT_EDITOR
 	mIsFinished = false;
 	mIsRepeated = isRepeated;
@@ -82,7 +82,7 @@ void Animator::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::MATERIAL_KEYS);
 
 	for (size_t i = 0; i < MaterialKeys().size(); ++i)
-		FileIOHelper::SaveString(ofs, std::to_string(i), MaterialKeys().at(i));
+		FileIOHelper::SaveString(ofs, std::to_string(i).C_Str(), MaterialKeys().at(i));
 	FileIOHelper::SaveSize(ofs, ChunkKey::MATERIAL_COUNT, MaterialKeys().size());
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::MATERIAL_KEYS);
@@ -91,7 +91,7 @@ void Animator::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::LOADED_KEYS);
 
 	for (size_t i = 0; i < mLoadedKeys.size(); ++i)
-		FileIOHelper::SaveString(ofs, std::to_string(i), mLoadedKeys.at(i));
+		FileIOHelper::SaveString(ofs, std::to_string(i), mLoadedKeys.at(i).C_Str());
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::LOADED_KEYS);
 }
@@ -242,13 +242,13 @@ void Animator::UpdatePlayAnim()
 void Animator::UpdatePlayList()
 {
 	ImGui::Text("Play List");
-	const char* key = ChunkKey::NullVal::NULL_OBJECT;
+	FTDS::String key = ChunkKey::NullVal::NULL_OBJECT;
 	FTEditorUtils::DisplayResSelection<FTSpriteAnimation>(
 		"Load Animation",
-		EditorResourceManager::GetInstance()->GetSpriteAnimMap(),
+		EditorResourceManager::GetInstance()->GetSpriteAnimations(),
 		key);
 
-	if (!FTDS::StringEqual(key, ChunkKey::NullVal::NULL_OBJECT))
+	if (!FTDS::StringEqual(key.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
 	{
 		mLoadedKeys.push_back(key);
 		if (mLoadedKeys.size() == 1)
@@ -264,8 +264,8 @@ void Animator::UpdatePlayList()
 		{
 			FTSpriteAnimation* anim = EditorResourceManager::GetInstance()->GetLoadedSpriteAnim(mLoadedKeys.at(i));
 
-			ImGui::PushID(anim->GetFileName().c_str());
-			ImGui::Text(anim->GetFileName().c_str());
+			ImGui::PushID(anim->FileName().C_Str());
+			ImGui::Text(anim->FileName().C_Str());
 			anim->UpdateUI();
 
 			if (ImGui::ArrowButton("##Up", ImGuiDir::ImGuiDir_Up))

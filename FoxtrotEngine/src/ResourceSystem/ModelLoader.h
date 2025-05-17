@@ -8,16 +8,17 @@
 #include "assimp/postprocess.h"
 #include "assimp/scene.h"
 #include <iostream>
-#include <string>
 #include <vector>
 
 #include "FTMeshData.h"
 #include "Vertex.h"
 
+#include "Static/FTString.h"
+
 class ModelLoader {
   public:
-      void Load(std::string resPath);
-      void Load(std::string basePath, std::string filename);
+      void Load(FTDS::String& resPath);
+      void Load(FTDS::String& basePath, FTDS::String& filename);
 
     void ProcessNode(aiNode *node, const aiScene *scene,
                      DirectX::SimpleMath::Matrix tr);
@@ -25,6 +26,6 @@ class ModelLoader {
     FTMeshData ProcessMesh(aiMesh *mesh, const aiScene *scene);
 
   public:
-    std::string basePath;
+    FTDS::String basePath;
     std::vector<FTMeshData> meshes;
 };

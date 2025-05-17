@@ -259,7 +259,7 @@ void CollisionManager::UpdateCollisionMarks()
 					std::string(ActorGroupUtil::GetActorGroupStr(row)) + '/' + std::string(ActorGroupUtil::GetActorGroupStr(col));
 				size_t idx			= ActorGroupUtil::GetCount() * row + col;
 				size_t reflectedIdx = ActorGroupUtil::GetCount() * col + row;
-				if (ImGui::Checkbox(mark.c_str(), &mCollisionMarks[idx]))
+				if (ImGui::Checkbox(mark.C_Str(), &mCollisionMarks[idx]))
 				{
 					if (mCollisionMarks[idx]) // if not marked;
 					{

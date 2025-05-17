@@ -665,7 +665,7 @@ protected:
 
 // ----------------------------------------------------------------------------
 AI_FORCE_INLINE const aiScene *Importer::ReadFile(const std::string &pFile, unsigned int pFlags) {
-    return ReadFile(pFile.c_str(), pFlags);
+    return ReadFile(pFile.C_Str(), pFlags);
 }
 // ----------------------------------------------------------------------------
 AI_FORCE_INLINE void Importer::GetExtensionList(std::string &szOut) const {
@@ -675,7 +675,7 @@ AI_FORCE_INLINE void Importer::GetExtensionList(std::string &szOut) const {
 }
 // ----------------------------------------------------------------------------
 AI_FORCE_INLINE bool Importer::IsExtensionSupported(const std::string &szExtension) const {
-    return IsExtensionSupported(szExtension.c_str());
+    return IsExtensionSupported(szExtension.C_Str());
 }
 
 } // namespace Assimp

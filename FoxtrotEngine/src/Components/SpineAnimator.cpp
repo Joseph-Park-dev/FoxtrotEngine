@@ -21,9 +21,9 @@ void SpineAnimator::Initialize(FTCore* coreInst)
 
 	std::string	  path		= "E:\\OneDrive\\[02_Programming]\\SpineRuntimeImp\\export\\TEST.json";
 	std::string	  atlasPath = "E:\\OneDrive\\[02_Programming]\\SpineRuntimeImp\\export\\TEST.atlas";
-	spine::Atlas* atlas		= new spine::Atlas(atlasPath.c_str(), &loader);
+	spine::Atlas* atlas		= new spine::Atlas(atlasPath.C_Str(), &loader);
 
-	spine::SkeletonData* skeletonData = loader.ReadSkeletonJsonData(path.c_str(), atlas, 1.0f);
+	spine::SkeletonData* skeletonData = loader.ReadSkeletonJsonData(path.C_Str(), atlas, 1.0f);
 
 	spine::SkeletonRenderer* skeletonRenderer =
 		AnimationManager::GetInstance()->GetSkeletonRenderer();
@@ -37,7 +37,7 @@ void SpineAnimator::Initialize(FTCore* coreInst)
 
 	std::vector<FTMeshData> meshDataVec;
 	size_t					i = 0;
-	UINT texKey = 0;
+	FTDS::String texKey = ChunkKey::NullVal::NULL_OBJECT;
 
 	bool loadedTex = false;
 	while (command)

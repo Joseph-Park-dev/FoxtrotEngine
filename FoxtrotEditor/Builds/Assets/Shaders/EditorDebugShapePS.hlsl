@@ -6,14 +6,20 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-struct PixelShaderInput
+#include "Common.hlsli"
+cbuffer PixelConstantBuffer : register(b0)
 {
-    float4 pos : SV_POSITION;
-    float3 color : COLOR;
+    float4 indexColor;
+    bool isActive;
+    bool3 dummy;
 };
 
 // SV_Target -> 결과가 render target 에 저장
-float4 main(PixelShaderInput input) : SV_TARGET
+IndexPSOutput main(SolidPSInput input)
 {
-    return float4(input.color, 0.5);
+    IndexPSOutput output;
+    output.pixelColor = isActive ? input.color : float4(0.0,0.0,0.0,0.0);
+    output.indexColor = indexColor;
+    
+    return output;
 }

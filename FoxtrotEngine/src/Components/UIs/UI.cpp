@@ -101,17 +101,17 @@ void UI::OnMouseHovering()
 
 void UI::OnMouseLButtonDown()
 {
-	printf("%s", GetName().c_str());
+	printf("%s", GetName().C_Str());
 }
 
 void UI::OnMouseLButtonUp()
 {
-	// SDL_Log("%ls", GetName().c_str());
+	// SDL_Log("%ls", GetName().C_Str());
 }
 
 void UI::OnMouseLButtonClicked()
 {
-	// SDL_Log("%ls", GetName().c_str());
+	// SDL_Log("%ls", GetName().C_Str());
 }
 
 void UI::Initialize(FTCore* ftCoreInst)

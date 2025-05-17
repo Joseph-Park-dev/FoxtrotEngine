@@ -91,6 +91,13 @@ namespace FTDS
 			return NULL;
 		}
 
+		void Erase(const char* key)
+		{
+			RecordNode<TYPE>* node = At(key);
+			delete node;
+			node = nullptr;
+		}
+
 	public:
 		HashChainMap()
 			: FTDS::Array<RecordNode<TYPE>*>()

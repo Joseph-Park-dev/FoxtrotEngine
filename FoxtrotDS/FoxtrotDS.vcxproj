@@ -154,7 +154,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>.\Compare;.\Dynamic;.\Search;.\Sort;.\Static;.\Utils;.\Iterator;..\FoxtrotEngine\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Compare;.\Dynamic;.\Search;.\Sort;.\Static;.\Utils;.\Iterator;..\FoxtrotEngine\src;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -185,6 +185,7 @@
     <ClInclude Include="Dynamic\BinaryNode.h" />
     <ClInclude Include="Dynamic\RecordNode.h" />
     <ClInclude Include="Iterator\FTIterator.h" />
+    <ClInclude Include="Static\FTString.h" />
     <ClInclude Include="Static\HashChainMap.h" />
     <ClInclude Include="Static\Record.h" />
     <ClInclude Include="Search\DepthFirstSearch.h" />
@@ -206,6 +207,7 @@
     <ClCompile Include="main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Static\FTString.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

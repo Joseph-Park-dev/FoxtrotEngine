@@ -288,7 +288,7 @@ struct aiString {
     explicit aiString(const std::string &pString) :
             length((ai_uint32)pString.length()), data{'\0'} {
         length = length >= AI_MAXLEN ? AI_MAXLEN - 1 : length;
-        memcpy(data, pString.c_str(), length);
+        memcpy(data, pString.C_Str(), length);
         data[length] = '\0';
     }
 
@@ -298,7 +298,7 @@ struct aiString {
             return;
         }
         length = (ai_uint32)pString.length();
-        memcpy(data, pString.c_str(), length);
+        memcpy(data, pString.C_Str(), length);
         data[length] = 0;
     }
 

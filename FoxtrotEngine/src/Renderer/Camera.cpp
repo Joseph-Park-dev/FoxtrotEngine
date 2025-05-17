@@ -222,8 +222,8 @@ void Camera::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadBasicString(ifs, targetActor);
 
 #ifdef FOXTROT_EDITOR
-	if (!FTDS::StringEqual(targetActor.c_str(), ChunkKey::NullVal::NULL_OBJECT));
-		mTarget = EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(targetActor.c_str());
+	if (!FTDS::StringEqual(targetActor.C_Str(), ChunkKey::NullVal::NULL_OBJECT));
+		mTarget = EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(targetActor.C_Str());
 #else
 	if (targetActor != ChunkKey::NullVal::NULL_OBJ)
 		mTarget = SceneManager::GetInstance()->GetCurrentScene()->FindActor(targetActor);
@@ -301,12 +301,12 @@ void Camera::DisplayCameraMenu()
 			}
 		}
 	}
-	const char* comboPreview = actorNames[currIdx].c_str();
+	const char* comboPreview = actorNames[currIdx].C_Str();
 	if (ImGui::BeginCombo(ChunkKey::TARGET_ACTOR, comboPreview))
 	{
 		for (size_t i = 0; i < idx; ++i)
 		{
-			if (ImGui::Selectable(actorNames[i].c_str()))
+			if (ImGui::Selectable(actorNames[i].C_Str()))
 			{
 				currIdx = i;
 				if (currIdx == 0)

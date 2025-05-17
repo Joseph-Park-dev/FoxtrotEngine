@@ -284,7 +284,7 @@ HRESULT D3D11Utils::CreateVertexShaderAndInputLayout(
 	// 쉐이더의 시작점의 이름이 "main"인 함수로 지정
 	// D3D_COMPILE_STANDARD_FILE_INCLUDE 추가: 쉐이더에서 include 사용
 	HRESULT hr = D3DCompileFromFile(
-		filename.c_str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", compileFlags, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
+		filename.C_Str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", compileFlags, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
 
 	CheckResult(hr, errorBlob.Get());
 
@@ -391,7 +391,7 @@ void D3D11Utils::CreateHullShader(ComPtr<ID3D11Device>& device, const wstring& f
 	// 쉐이더의 시작점의 이름이 "main"인 함수로 지정
 	// D3D_COMPILE_STANDARD_FILE_INCLUDE 추가: 쉐이더에서 include 사용
 	HRESULT hr = D3DCompileFromFile(
-		filename.c_str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "hs_5_0", compileFlags, 0, &shaderBlob, &errorBlob);
+		filename.C_Str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "hs_5_0", compileFlags, 0, &shaderBlob, &errorBlob);
 
 	CheckResult(hr, errorBlob.Get());
 
@@ -412,7 +412,7 @@ void D3D11Utils::CreateDomainShader(
 	// 쉐이더의 시작점의 이름이 "main"인 함수로 지정
 	// D3D_COMPILE_STANDARD_FILE_INCLUDE 추가: 쉐이더에서 include 사용
 	HRESULT hr = D3DCompileFromFile(
-		filename.c_str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ds_5_0", compileFlags, 0, &shaderBlob, &errorBlob);
+		filename.C_Str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ds_5_0", compileFlags, 0, &shaderBlob, &errorBlob);
 
 	CheckResult(hr, errorBlob.Get());
 
@@ -432,7 +432,7 @@ HRESULT D3D11Utils::CreatePixelShader(ComPtr<ID3D11Device>& device, const wstrin
 	// 쉐이더의 시작점의 이름이 "main"인 함수로 지정
 	// D3D_COMPILE_STANDARD_FILE_INCLUDE 추가: 쉐이더에서 include 사용
 	HRESULT hr = D3DCompileFromFile(
-		filename.c_str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", compileFlags, 0, &shaderBlob, &errorBlob);
+		filename.C_Str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", compileFlags, 0, &shaderBlob, &errorBlob);
 
 	CheckResult(hr, errorBlob.Get());
 
@@ -486,7 +486,7 @@ void D3D11Utils::CreateGeometryShader(
 	// 쉐이더의 시작점의 이름이 "main"인 함수로 지정
 	// D3D_COMPILE_STANDARD_FILE_INCLUDE 추가: 쉐이더에서 include 사용
 	HRESULT hr = D3DCompileFromFile(
-		filename.c_str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "gs_5_0", compileFlags, 0, &shaderBlob, &errorBlob);
+		filename.C_Str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "gs_5_0", compileFlags, 0, &shaderBlob, &errorBlob);
 
 	// CheckResult(hr, errorBlob.Get());
 
@@ -499,7 +499,7 @@ void ReadImage(const std::string filename, std::vector<uint8_t>& image, int& wid
 	int channels;
 
 	unsigned char* img =
-		stbi_load(filename.c_str(), &width, &height, &channels, 0);
+		stbi_load(filename.C_Str(), &width, &height, &channels, 0);
 
 	// assert(channels == 4);
 
@@ -709,7 +709,7 @@ HRESULT D3D11Utils::CreateCubemapTexture(
 	std::wstring path = {};
 	path.assign(texture->GetRelativePath().begin(), texture->GetRelativePath().end());
 	return CreateDDSTextureFromFileEx(
-		device.Get(), path.c_str(), 0, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, D3D11_RESOURCE_MISC_TEXTURECUBE, DDS_LOADER_FLAGS(false), (ID3D11Resource**)textureBuf.GetAddressOf(), texture->GetResourceView().GetAddressOf(), nullptr);
+		device.Get(), path.C_Str(), 0, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, D3D11_RESOURCE_MISC_TEXTURECUBE, DDS_LOADER_FLAGS(false), (ID3D11Resource**)textureBuf.GetAddressOf(), texture->GetResourceView().GetAddressOf(), nullptr);
 }
 
 void D3D11Utils::WriteToFile(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Texture2D>& textureToWrite, const std::string filename)
@@ -761,7 +761,7 @@ void D3D11Utils::WriteToFile(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceCo
 
 	context->Unmap(stagingTexture.Get(), NULL);
 
-	stbi_write_png(filename.c_str(), desc.Width, desc.Height, 4, pixels.data(), desc.Width * 4);
+	stbi_write_png(filename.C_Str(), desc.Width, desc.Height, 4, pixels.data(), desc.Width * 4);
 
 	cout << filename << endl;
 }

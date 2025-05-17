@@ -210,7 +210,7 @@ void FTBasicMeshGroup::Clear()
 
 ComPtr<ID3D11SamplerState>& FTBasicMeshGroup::GetSamplerState() { return mSamplerState; }
 size_t						FTBasicMeshGroup::GetMeshCount() { return mMeshes.size(); }
-const char*					FTBasicMeshGroup::GetTexKey() const { return mTexKey; }
+FTDS::String&				FTBasicMeshGroup::GetTexKey() { return mTexKey; }
 FTTexture*					FTBasicMeshGroup::GetTexture() const { return mTexture; }
 BasicVCData&				FTBasicMeshGroup::GetVCData() { return mVertexConstData; }
 bool						FTBasicMeshGroup::GetDrawNormal() { return mDrawNormal; }
@@ -219,7 +219,7 @@ std::vector<Mesh*>&		  FTBasicMeshGroup::Meshes() { return mMeshes; }
 std::vector<FTMaterial*>& FTBasicMeshGroup::Materials() { return mMaterials; }
 Mesh*					  FTBasicMeshGroup::NormalLines() { return mNormalLines; }
 
-void FTBasicMeshGroup::SetMaterials(std::vector<const char*>& matKeys, ComPtr<ID3D11Device>& device)
+void FTBasicMeshGroup::SetMaterials(std::vector<FTDS::String>& matKeys, ComPtr<ID3D11Device>& device)
 {
 	if (0 < mMaterials.size())
 		mMaterials.clear();
@@ -235,11 +235,11 @@ void FTBasicMeshGroup::SetMaterials(std::vector<const char*>& matKeys, ComPtr<ID
 
 #ifdef FOXTROT_EDITOR
 	if (1 < EditorResourceManager::GetInstance()->GetMapMaterials().size())
-		for (const char*& key : matKeys)
+		for (FTDS::String& key : matKeys)
 			mMaterials.push_back(EditorResourceManager::GetInstance()->GetLoadedMaterial(key));
 #else
 	if (ResourceManager::GetInstance()->GetLoadedMaterial(ChunkKey::Material::STANDARD_MATERIAL))
-		for (const char*& key : matKeys)
+		for (FTDS::String& key : matKeys)
 			mMaterials.push_back(ResourceManager::GetInstance()->GetLoadedMaterial(key));
 #endif // FOXTROT_EDITOR
 
@@ -273,7 +273,7 @@ void FTBasicMeshGroup::SetTexture()
 		printf("ERROR: MeshRenderer::SetTexture() -> Cannot set texture %s, returning nullptr.\n", mTexKey);
 }
 
-void FTBasicMeshGroup::SetTexture(const char* texKey)
+void FTBasicMeshGroup::SetTexture(FTDS::String& texKey)
 {
 	mTexKey = texKey;
 	SetTexture();
@@ -359,7 +359,7 @@ void FTBasicMeshGroup::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
 	}
 }
 
-void						FTBasicMeshGroup::SetTexKey(const char* texKey) { mTexKey = texKey; }
+void						FTBasicMeshGroup::SetTexKey(FTDS::String& texKey) { mTexKey = texKey; }
 ComPtr<ID3D11VertexShader>& FTBasicMeshGroup::GetVertexShader() { return mVS; }
 ComPtr<ID3D11PixelShader>&	FTBasicMeshGroup::GetPixelShader() { return mPS; }
 

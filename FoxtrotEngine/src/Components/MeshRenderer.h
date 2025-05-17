@@ -12,6 +12,8 @@
 #pragma once
 #include "Components/Component.h"
 
+#include "Static/FTString.h"
+
 class FTBasicMeshGroup;
 class FTCore;
 class Actor;
@@ -54,10 +56,12 @@ public:
 	// Keys to select the elements //
 	/////////////////////////////////
 protected:
-	const char* GetMeshKey() const;
-	const char* GetTexKey() const;
+	FTDS::String& GetMeshKey();
+	FTDS::String& GetTexKey();
 
+	void SetMeshKey(FTDS::String& key);
 	void SetMeshKey(const char* key);
+	void SetTexKey(FTDS::String& key);
 	void SetTexKey(const char* key);
 
 	///////////////////////////////////////
@@ -72,14 +76,14 @@ protected:
 	void SetMeshGroup(FTBasicMeshGroup* meshGroup);
 	void SetMaterials();
 
-	std::vector<const char*>& MaterialKeys();
+	std::vector<FTDS::String>& MaterialKeys();
 
 	////////////////////////
 	// Element operations //
 	////////////////////////
 protected:
 	virtual bool InitializeMesh();
-	bool		 InitializeMesh(const char* key);
+	bool		 InitializeMesh(FTDS::String& key);
 	virtual void UpdateMesh(Transform* transform, Camera* camInst);
 
 	//////////////////////////////////////////
@@ -88,9 +92,9 @@ protected:
 	//////////////////////////////////////////
 private:
 	// Identifiers for the object in the Resource Map from the ResourceManager instance.
-	const char*			  mMeshKey;
-	const char*			  mTexKey;
-	std::vector<const char*> mMaterialKeys;
+	FTDS::String			 mMeshKey;
+	FTDS::String			 mTexKey;
+	std::vector<FTDS::String> mMaterialKeys;
 
 	////////////////////////////////////////
 	// Component elements				  //
@@ -119,7 +123,7 @@ protected:
 	virtual void OnConfirmUpdate() override;
 	void		 OnResetTexture();
 	void		 UpdateSprite();
-	void		 UpdateSprite(const char* key);
+	void		 UpdateSprite(FTDS::String& key);
 	void		 UpdateMaterial();
 	void		 AddModel();
 #endif

@@ -53,11 +53,11 @@ protected:
 
 private:
 	// These fields need to be read from .chunk files or be modified on the editor.
-	const char* mCSVKey;
-	UINT		mTileWidthOnScreen;
-	UINT		mTileHeightOnScreen;
-	UINT		mMaxCountOnMapX;
-	UINT		mMaxCountOnMapY;
+	FTDS::String mCSVKey;
+	UINT		 mTileWidthOnScreen;
+	UINT		 mTileHeightOnScreen;
+	UINT		 mMaxCountOnMapX;
+	UINT		 mMaxCountOnMapY;
 
 	// These fields need to be initialized when the tilemap is constructed.
 	Tile* mTileMap;

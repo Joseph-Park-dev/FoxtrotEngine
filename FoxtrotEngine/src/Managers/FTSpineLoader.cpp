@@ -21,8 +21,8 @@ spine::SkeletonData* spine::FTSpineLoader::ReadSkeletonJsonData(const spine::Str
 void spine::FTSpineLoader::load(AtlasPage& page, const String& path)
 {
 	FTTexture*	texture	 = nullptr;
-	std::string fileName = ExtractFileName(path.buffer());
-	texture				 = ResourceManager::GetInstance()->GetLoadedTexture(fileName.c_str());
+	FTDS::String fileName = ExtractFileName(path.buffer());
+	texture				 = ResourceManager::GetInstance()->GetLoadedTexture(fileName.C_Str());
 
 	if (!texture)
 		return;

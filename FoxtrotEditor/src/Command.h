@@ -17,6 +17,8 @@
 #include "Math/FTMath.h"
 #include "Actors/Actor.h"
 
+#include "Static/FTString.h"
+
 class Command
 {
 public:
@@ -164,16 +166,16 @@ public:
 	void Undo() override;
 
 public:
-	void SetNextVal(std::string nextVal);
+	void SetNextVal(FTDS::String nextVal);
 
 public:
-	StrEditCommand(std::string& valRef);
+	StrEditCommand(FTDS::String& valRef);
 	~StrEditCommand();
 
 private:
-	std::string& mValue;
-	std::string	 mPrevValue;
-	std::string	 mNextValue;
+	FTDS::String& mValue;
+	FTDS::String	 mPrevValue;
+	FTDS::String	 mNextValue;
 };
 
 class WStrEditCommand : public Command

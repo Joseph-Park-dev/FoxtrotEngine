@@ -17,7 +17,7 @@ class CircleCollider2D :
 	public Collider2D
 {
 public:
-	virtual std::string GetName() const override
+	virtual FTDS::String GetName() const override
 	{
 		return "BoxCollider2D";
 	}

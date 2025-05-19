@@ -6,7 +6,7 @@
 #include "EditorUtils.h"
 #endif
 
-std::string Flee::GetName() const
+FTDS::String Flee::GetName() const
 {
     return "Flee";
 }

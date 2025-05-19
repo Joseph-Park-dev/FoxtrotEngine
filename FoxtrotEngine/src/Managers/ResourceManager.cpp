@@ -160,14 +160,14 @@ void ResourceManager::LoadMaterials()
 	size_t		size = 3;
 
 	StandardMaterial* standard				  = DBG_NEW StandardMaterial;
-	std::string							 path = std::string(".//Assets//Materials//") + ChunkKey::STANDARD_MAT + FileTypes::MATERIAL;
-	if (!std::filesystem::exists(path))
+	FTDS::String							 path = FTDS::String(".//Assets//Materials//") + ChunkKey::STANDARD_MAT + FileTypes::MATERIAL;
+	if (!std::filesystem::exists(path.C_Str()))
 		standard->SaveToFile();
 	standard->LoadFromFile();
 
 	RimMaterial* rim = DBG_NEW RimMaterial;
-	path			 = std::string(".//Assets//Materials//") + ChunkKey::RIM_MAT + FileTypes::MATERIAL;
-	if (!std::filesystem::exists(path))
+	path			 = FTDS::String(".//Assets//Materials//") + ChunkKey::RIM_MAT + FileTypes::MATERIAL;
+	if (!std::filesystem::exists(path.C_Str()))
 		rim->SaveToFile();
 	rim->LoadFromFile();
 
@@ -186,10 +186,10 @@ void ResourceManager::ProcessTexture(FTTexture* texture)
 	if (texture->GetIsProcessed())
 		return;
 
-	FTDS::String path = texture->GetRelativePath();
+	FTDS::String path = texture->RelativePath().C_Str();
 	FTDS::String type = ExtractFileType(path.C_Str());
 
-	if (FTDS::StringEqual(type, FileTypes::DDS_TEXTURE))
+	if ((type.Equal(FileTypes::DDS_TEXTURE)))
 		DX::ThrowIfFailed(D3D11Utils::CreateCubemapTexture(mRenderer->GetDevice(), texture));
 	else
 		D3D11Utils::CreateTexture(mRenderer->GetDevice(), mRenderer->GetContext(), texture);
@@ -205,10 +205,10 @@ void ResourceManager::ProcessSingleMeshGrp(FTBasicMeshGroup* meshGrp)
 	if (meshGrp->GetIsProcessed())
 		return;
 
-	if (meshGrp->GetRelativePath().IsEmpty())
+	if (meshGrp->RelativePath().IsEmpty())
 		return;
 	meshGrp->Initialize(
-		GeometryGenerator::ReadFromFile(meshGrp->GetRelativePath()),
+		GeometryGenerator::ReadFromFile(meshGrp->RelativePath()),
 		mRenderer->GetDevice(),
 		mRenderer->GetContext());
 
@@ -240,7 +240,7 @@ void ResourceManager::ProcessTileMap(FTTileMap* tileMap)
 
 	// This if statement will be triggered only on Editor
 	// (When loading all assets from Asset folder)
-	std::ifstream ifs(tileMap->GetRelativePath());
+	std::ifstream ifs(tileMap->RelativePath().C_Str());
 	tileMap->LoadProperties(ifs);
 
 	tileMap->Initialize();
@@ -254,7 +254,7 @@ void ResourceManager::ProcessSpriteSheet(FTSpriteSheet* spriteSheet)
 
 	// This if statement will be triggered only on Editor
 	// (When loading all assets from Asset folder)
-	std::ifstream ifs(spriteSheet->GetRelativePath());
+	std::ifstream ifs(spriteSheet->RelativePath().C_Str());
 	spriteSheet->LoadProperties(ifs);
 
 	spriteSheet->Initialize();
@@ -268,9 +268,9 @@ void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
 
 	// This if statement will be triggered only on Editor
 	// (When loading all assets from Asset folder)
-	if (FTDS::StringEqual(spriteAnim->GetTileDataKey(), ChunkKey::NullVal::NULL_OBJECT))
+	if (spriteAnim->GetTileDataKey().Equal(ChunkKey::NullVal::NULL_OBJECT))
 	{
-		std::ifstream ifs(spriteAnim->GetRelativePath());
+		std::ifstream ifs(spriteAnim->RelativePath().C_Str());
 		spriteAnim->LoadProperties(ifs);
 	}
 
@@ -498,10 +498,10 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 {
 	DeleteAll();
 
-	std::pair<size_t, std::string> resPack	 = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RESOURCE_DATA);
+	std::pair<size_t, FTDS::String> resPack	 = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RESOURCE_DATA);
 	size_t						   packCount = resPack.first;
 
-	std::pair<size_t, std::string> desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
+	std::pair<size_t, FTDS::String> desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
 	mCSVs->Reserve(desc.first);
 	LoadResourceFromChunk<FTCSV>(ifs, mCSVs, desc.first);
 

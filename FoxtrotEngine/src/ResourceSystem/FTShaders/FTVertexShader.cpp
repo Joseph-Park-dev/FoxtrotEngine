@@ -5,13 +5,15 @@
 
 void FTVertexShader::CompileShader(FoxtrotRenderer* renderer)
 {
+	const wchar_t* fileName = RelativePath().WC_Str();
 	D3D11Utils::CreateVertexShaderAndInputLayout(
 		renderer->GetDevice(),
-		ToWString(GetRelativePath()),
+		RelativePath().WC_Str(),
 		mInputElements,
 		mShader,
 		mInputLayout
 	);
+	delete[] fileName;
 }
 
 ComPtr<ID3D11VertexShader>& FTVertexShader::GetShader() { return mShader; }
@@ -53,11 +55,11 @@ void FTVertexShader::LoadProperties(std::ifstream& ifs)
 
 	for (size_t i = 0; i < count; ++i)
 	{
-		std::string semanticN = {};
+		FTDS::String semanticN = {};
 		FileIOHelper::LoadBasicString(ifs, semanticN);
 
 		D3D11_INPUT_ELEMENT_DESC desc;
-		if (semanticN == "TEXCOORD")
+		if (semanticN.Equal("TEXCOORD"))
 		{
 			desc = { semanticN.C_Str(), 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 * (UINT)i, D3D11_INPUT_PER_VERTEX_DATA, 0 };
 		}

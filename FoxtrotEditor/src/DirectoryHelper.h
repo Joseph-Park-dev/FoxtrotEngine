@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -33,33 +33,32 @@ class DirectoryHelper
 	SINGLETON(DirectoryHelper)
 
 public:
-	// Iterate all files in a folder, 
+	// Iterate all files in a folder,
 	// takes the folder path & executes unaryOp (Functor).
 	template <class UnaryOperation>
 	static void IterateForFileRecurse(
-		std::string& dir,
-		UnaryOperation&& unaryOp
-	)
+		FTDS::String&	 dir,
+		UnaryOperation&& unaryOp)
 	{
 		for (const std::filesystem::directory_entry& dirEntry :
-			std::filesystem::recursive_directory_iterator(dir))
+			 std::filesystem::recursive_directory_iterator(dir))
 		{
-			if(dirEntry.is_regular_file())
+			if (dirEntry.is_regular_file())
 				unaryOp(std::move(dirEntry.path().string()));
 		}
 	}
 
 public:
-	std::string& GetProjectPath();
-	std::string& GetChunkPath();
-	bool		 GetCurrChunkSaved() const;
+	FTDS::String& GetProjectPath();
+	FTDS::String& GetChunkPath();
+	bool		  GetCurrChunkSaved() const;
 
-	void		 SetProjPath		(std::string&& path);
-	void		 SetChunkPath		(std::string&& path);
-	void		 SetCurrChunkSaved	(bool val);
+	void SetProjPath(FTDS::String&& path);
+	void SetChunkPath(FTDS::String&& path);
+	void SetCurrChunkSaved(bool val);
 
 private:
-	std::string  mCurrProjectPath;
-	std::string  mCurrChunkPath;
+	FTDS::String mCurrProjectPath;
+	FTDS::String mCurrChunkPath;
 	bool		 mCurrChunkSaved;
 };

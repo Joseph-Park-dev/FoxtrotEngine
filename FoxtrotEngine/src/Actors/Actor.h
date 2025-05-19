@@ -106,10 +106,10 @@ public:
 	ActorGroup				 GetActorGroup() const { return mActorGroup; }
 	ActorGroup&				 GetActorGroupRef() { return mActorGroup; }
 	ActorGroup*				 GetActorGroupPtr() { return &mActorGroup; }
-	std::string				 GetName() const { return mName; }
-	std::string&			 GetNameRef() { return mName; }
+	FTDS::String			 GetName() const { return mName; }
+	FTDS::String&			 GetNameRef() { return mName; }
 	State					 GetState() const { return mState; }
-	std::string				 GetStateStr() const;
+	FTDS::String			 GetStateStr() const;
 	State&					 GetStateRef() { return mState; }
 	bool					 IsActive() const { return mState == State::EActive; }
 	bool					 IsDead() const { return mState == State::EDead; }
@@ -118,16 +118,16 @@ public:
 	std::vector<Component*>& GetComponents() { return mComponents; }
 	std::vector<Actor*>&	 GetChildActors() { return mChild; }
 
-	void SetName(std::string name) { mName = name; }
+	void SetName(FTDS::String name) { mName = name; }
 	void SetState(State state) { mState = state; }
-	void SetState(std::string state);
+	void SetState(FTDS::String state);
 	void SetActorGroup(ActorGroup group) { mActorGroup = group; }
 	void SetParent(Actor* parent) { mParent = parent; }
 	void SetTransform(Transform* transform) { mTransform = transform; }
 	void SetComponents(std::vector<Component*>& components) { mComponents = components; }
 	void SetChildActors(std::vector<Actor*>& children) { mChild = children; }
 
-	bool HasName(std::string& name);
+	bool HasName(FTDS::String& name);
 	bool HasName(const char* name);
 
 	template <class T>
@@ -157,7 +157,7 @@ public:
 	virtual void RenderComponents(FoxtrotRenderer* renderer);
 
 private:
-	std::string				mName;
+	FTDS::String			mName;
 	ActorGroup				mActorGroup;
 	State					mState;
 	Transform*				mTransform;

@@ -232,7 +232,7 @@ public:
 	CreateTextureArray(
 		ComPtr<ID3D11Device>&			  device,
 		ComPtr<ID3D11DeviceContext>&	  context,
-		const std::vector<std::string>	  filenames,
+		const std::vector<FTDS::String>	  filenames,
 		ComPtr<ID3D11Texture2D>&		  texture,
 		ComPtr<ID3D11ShaderResourceView>& textureResourceView);
 
@@ -243,7 +243,7 @@ public:
 		ComPtr<ID3D11Device>&		 device,
 		ComPtr<ID3D11DeviceContext>& context,
 		ComPtr<ID3D11Texture2D>&	 textureToWrite,
-		const std::string			 filename);
+		FTDS::String&				 filename);
 
 	static UINT GetShaderType(ComPtr<ID3DBlob>& shaderBlob);
 };

@@ -95,7 +95,7 @@ void FTSpriteSheet::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::SpriteSheet::SPRITE_SHEET);
 	FTResource::SaveProperties(ofs);
-	FileIOHelper::SaveString(ofs, ChunkKey::SpriteSheet::JSON_KEY, mJSONKey.C_Str());
+	FileIOHelper::SaveString(ofs, ChunkKey::SpriteSheet::JSON_KEY, mJSONKey);
 	FileIOHelper::SaveVector2(ofs, ChunkKey::SpriteSheet::SHEET_SIZE, mSheetSize);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::SpriteSheet::SPRITE_SHEET);
 }
@@ -139,9 +139,9 @@ void FTSpriteSheet::UpdateUI()
 		EditorResourceManager::GetInstance()->GetJSONs(),
 		mJSONKey);
 
-	std::string text = { "Sheet size : " };
-	text += std::to_string(mSheetSize.x) + " ,";
-	text += std::to_string(mSheetSize.y);
+	FTDS::String text = { "Sheet size : " };
+	text += (std::to_string(mSheetSize.x) + " ,").c_str();
+	text += std::to_string(mSheetSize.y).c_str();
 	ImGui::Text(text.C_Str());
 }
 #endif // FOXTROT_EDITOR

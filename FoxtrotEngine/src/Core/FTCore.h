@@ -19,6 +19,7 @@
 
 #include "Core/SingletonMacro.h"
 #include "Math/FTMath.h"
+#include "Static/FTString.h"
 
 class FTWindow;
 class FoxtrotRenderer;
@@ -57,12 +58,12 @@ private:
 	FoxtrotRenderer* mGameRenderer;
 	bool			 mIsRunning;
 
-	std::wstring mWindowTitle;
+	FTDS::String mWindowTitle;
 	int			 mWindowWidth;
 	int			 mWindowHeight;
 
 private:
-	std::string mGameDataPath;
+	FTDS::String mGameDataPath;
 
 private:
 	// Initializes Common functionality.

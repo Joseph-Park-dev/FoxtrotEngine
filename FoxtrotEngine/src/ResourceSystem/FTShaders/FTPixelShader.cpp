@@ -5,10 +5,12 @@
 
 void FTPixelShader::CompileShader(FoxtrotRenderer* renderer)
 {
+	const wchar_t* fileName = RelativePath().WC_Str();
 	D3D11Utils::CreatePixelShader(
 		renderer->GetDevice(),
-		ToWString(GetRelativePath()),
+		fileName,
 		mShader);
+	delete[] fileName;
 }
 
 ComPtr<ID3D11PixelShader>& FTPixelShader::GetShader() { return mShader; }

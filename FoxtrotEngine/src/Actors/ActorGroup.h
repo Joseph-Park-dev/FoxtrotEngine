@@ -51,7 +51,7 @@ struct ActorGroupUtil
 		return static_cast<ActorGroup>(index);
 	}
 
-	static ActorGroup GetActorGroup(std::string str)
+	static ActorGroup GetActorGroup(FTDS::String str)
 	{
 		auto it = std::find(ActorGroupString.begin(), ActorGroupString.end(), str);
 		if (it != ActorGroupString.end())

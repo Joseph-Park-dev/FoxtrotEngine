@@ -185,8 +185,8 @@ void CollisionManager::SaveCollisionMarks(std::ofstream& ofs)
 	{
 		for (size_t col = 0; col < row + 1; ++col)
 		{
-			std::string mark =
-				std::string(ActorGroupUtil::GetActorGroupStr(row)) + '/' + std::string(ActorGroupUtil::GetActorGroupStr(col));
+			FTDS::String mark =
+				FTDS::String(ActorGroupUtil::GetActorGroupStr(row)) + "/" + FTDS::String(ActorGroupUtil::GetActorGroupStr(col));
 
 			size_t idx			= ActorGroupUtil::GetCount() * row + col;
 			size_t reflectedIdx = ActorGroupUtil::GetCount() * col + row;
@@ -200,7 +200,7 @@ void CollisionManager::SaveCollisionMarks(std::ofstream& ofs)
 void CollisionManager::LoadCollisionMarks(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COLLISION_MANAGER);
-	std::pair<size_t, std::string> pack		  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COLLISION_MARKS);
+	std::pair<size_t, FTDS::String> pack		  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COLLISION_MARKS);
 	std::vector<bool>			   marksCache = {};
 	marksCache.reserve(pack.first);
 
@@ -255,8 +255,8 @@ void CollisionManager::UpdateCollisionMarks()
 			for (size_t col = 0; col < row + 1; ++col)
 			{
 				ImGui::TableSetColumnIndex(col);
-				std::string mark =
-					std::string(ActorGroupUtil::GetActorGroupStr(row)) + '/' + std::string(ActorGroupUtil::GetActorGroupStr(col));
+				FTDS::String mark =
+					FTDS::String(ActorGroupUtil::GetActorGroupStr(row)) + "/" + FTDS::String(ActorGroupUtil::GetActorGroupStr(col));
 				size_t idx			= ActorGroupUtil::GetCount() * row + col;
 				size_t reflectedIdx = ActorGroupUtil::GetCount() * col + row;
 				if (ImGui::Checkbox(mark.C_Str(), &mCollisionMarks[idx]))

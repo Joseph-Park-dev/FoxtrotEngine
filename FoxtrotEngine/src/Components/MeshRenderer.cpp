@@ -195,7 +195,7 @@ void MeshRenderer::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::MATERIAL_KEYS);
 
 	for (size_t i = 0; i < mMaterialKeys.size(); ++i)
-		FileIOHelper::SaveString(ofs, std::to_string(i).C_Str(), mMaterialKeys.at(i));
+		FileIOHelper::SaveString(ofs, std::to_string(i).c_str(), mMaterialKeys.at(i));
 	FileIOHelper::SaveSize(ofs, ChunkKey::MATERIAL_COUNT, mMaterialKeys.size());
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::MATERIAL_KEYS);
@@ -291,7 +291,7 @@ void MeshRenderer::UpdateSprite()
 	if (!FTDS::StringEqual(mTexKey.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
 	{
 		currentSprite =
-			FTDS::String("Current sprite : \n") + EditorResourceManager::GetInstance()->GetLoadedTexture(GetTexKey())->GetRelativePath();
+			FTDS::String("Current sprite : \n") + EditorResourceManager::GetInstance()->GetLoadedTexture(GetTexKey())->RelativePath().C_Str();
 		if (mMeshGroup && mMeshGroup->GetTexture())
 		{
 			ImVec2 size = ImVec2(100, 100);
@@ -316,12 +316,12 @@ void MeshRenderer::UpdateSprite()
 
 void MeshRenderer::UpdateSprite(FTDS::String& key)
 {
-	std::string currentSprite = {};
-	if (!FTDS::StringEqual(key, ChunkKey::NullVal::NULL_OBJECT))
+	FTDS::String currentSprite = {};
+	if (!key.Equal(ChunkKey::NullVal::NULL_OBJECT))
 	{
 		FTTexture* sprite = EditorResourceManager::GetInstance()->GetLoadedTexture(key);
 		currentSprite =
-			"Current sprite : \n" + sprite->GetRelativePath();
+			FTDS::String("Current sprite : \n") + sprite->RelativePath().C_Str();
 		if (sprite)
 		{
 			ImVec2 size = ImVec2(100, 100);
@@ -357,9 +357,9 @@ void MeshRenderer::UpdateSprite(FTDS::String& key)
 			{
 				if ((*iter)->Value())
 				{
-					if (ImGui::Selectable((*iter).second->FileName().C_Str(), selected == i))
+					if (ImGui::Selectable((*iter)->Value()->FileName().C_Str(), selected == i))
 					{
-						spriteKey = (*iter).first;
+						spriteKey = (*iter)->Value()->FileName();
 						selected  = i;
 					}
 				}
@@ -392,7 +392,7 @@ void MeshRenderer::UpdateMaterial()
 		"Material",
 		EditorResourceManager::GetInstance()->GetMaterials(),
 		key);
-	if (!FTDS::StringEqual(key, ChunkKey::NullVal::NULL_OBJECT))
+	if (!key.Equal(ChunkKey::NullVal::NULL_OBJECT))
 	{
 		mMaterialKeys.push_back(key);
 		if (mMeshGroup)

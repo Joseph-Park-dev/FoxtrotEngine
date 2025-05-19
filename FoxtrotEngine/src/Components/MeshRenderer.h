@@ -35,7 +35,7 @@ class MeshRenderer :
 	// Component information //
 	///////////////////////////
 public:
-	virtual std::string GetName() const override { return "MeshRenderer"; }
+	virtual FTDS::String GetName() const override { return "MeshRenderer"; }
 
 	/////////////////////////
 	// Game-loop functions //

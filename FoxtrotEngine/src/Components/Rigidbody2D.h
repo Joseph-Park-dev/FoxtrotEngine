@@ -20,7 +20,7 @@ class Actor;
 class Rigidbody2D : public Component
 {
 public:
-	std::string GetName() const override
+	FTDS::String GetName() const override
 	{
 		return "Rigidbody2D";
 	}

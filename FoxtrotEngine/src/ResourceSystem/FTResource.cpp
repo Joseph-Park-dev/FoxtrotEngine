@@ -42,10 +42,11 @@ FTResource::FTResource()
 void FTResource::SaveProperties(std::ofstream& ofs)
 {
     // Makes file path relative to the project dir.
-    FTDS::String buf;
-    buf.Assign(mRelativePath);
-    ExtractUntil(buf, "\\Assets\\");
-    buf = ".\\" + buf;
+    FTDS::String path = mRelativePath;
+    ExtractUntil(path, "\\Assets\\");
+
+    FTDS::String buf (".\\");
+    buf.Append(path);
 
     FileIOHelper::SaveString(ofs, ChunkKey::FILE_NAME, mFileName);
     FileIOHelper::SaveString(ofs, ChunkKey::RELATIVE_PATH, buf);
@@ -60,7 +61,7 @@ void FTResource::LoadProperties(std::ifstream& ifs)
 
 #ifdef FOXTROT_EDITOR
     // Removes the dot in the front.
-    ExtractUntil(mRelativePath, '.');
+    ExtractUntil(mRelativePath, ".");
     mRelativePath = PATH_PROJECT + mRelativePath;
 #endif
 }
@@ -69,9 +70,12 @@ void FTResource::LoadProperties(std::ifstream& ifs)
 void FTResource::UpdateNameAndPath(FTDS::String fileExtension)
 {
     FTDS::String currentPath = "No path has been assigned";
-    mRelativePath.assign(currentPath);
-    if (!mRelativePath.empty())
-        currentPath = "Current path : \n" + mRelativePath;
+    mRelativePath.Assign(currentPath);
+    if (!mRelativePath.IsEmpty())
+    {
+        currentPath.Assign("Current path : \n");
+        currentPath.Append(mRelativePath);
+    }
 
     if (ImGui::Button("Select File")) {
         IGFD::FileDialogConfig config;
@@ -85,8 +89,8 @@ void FTResource::UpdateNameAndPath(FTDS::String fileExtension)
     {
         if (ImGuiFileDialog::Instance()->IsOk())
         {
-            mRelativePath = ImGuiFileDialog::Instance()->GetFilePathName();
-            mFileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
+            mRelativePath.Assign(ImGuiFileDialog::Instance()->GetFilePathName().c_str());
+            mFileName.Assign(ImGuiFileDialog::Instance()->GetCurrentFileName().c_str());
         }
         ImGuiFileDialog::Instance()->Close();
     }

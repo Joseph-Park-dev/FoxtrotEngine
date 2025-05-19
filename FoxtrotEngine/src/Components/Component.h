@@ -33,12 +33,17 @@ namespace DefaultVal
 	constexpr int UPDATE_ORDER = 100;
 }
 
+namespace FTDS
+{
+	class String;
+}
+
 class Component
 {
 #define CLONE_TO_NOT_IMPLEMENTED printf("ERROR: CloneTo of %s is not implemented.", typeid(this).name());
 
 public:
-	virtual std::string GetName() const = 0;
+	virtual FTDS::String GetName() const = 0;
 
 public:
 	virtual void Initialize(FTCore* coreInstance);

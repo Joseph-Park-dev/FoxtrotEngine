@@ -98,7 +98,7 @@ void LightManager::DisplayLightMenu()
 	ImGui::Begin("Lights");
 	const char* lightTypesStr[3] = { "DIRECTIONAL", "POINT", "SPOT" };
 	static int	indices[3];
-	if (ImGui::BeginListBox(std::string("Light " + std::to_string(0)).C_Str(), ImVec2(-FLT_MIN, 200)))
+	if (ImGui::BeginListBox(("Light " + std::to_string(0)).c_str(), ImVec2(-FLT_MIN, 200)))
 	{
 		ImGui::Checkbox(LightKey::IS_ACTIVE, &mActiveStatus[0]);
 		FTEditorUtils::DisplayArrayAsCombo(LightKey::TYPE, lightTypesStr, Light::TYPE::END, indices[0]);

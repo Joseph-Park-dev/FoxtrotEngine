@@ -66,9 +66,13 @@ void FTTexture::UpdateUI()
     ImVec2 previewSize = ImVec2(100, 100);
     ImGui::Image((ImTextureID)viewportTexture, previewSize);
 
-    std::string currentPath = "No path has been assigned";
-    if (!GetRelativePath().empty())
-        currentPath = "Current path : \n" + GetRelativePath();
+    FTDS::String currentPath = "No path has been assigned";
+    if (!RelativePath().IsEmpty())
+    {
+        currentPath.Assign("Current path : \n");
+        currentPath.Append(RelativePath().C_Str());
+    }
+
     ImGui::InputInt("Width", &mTexWidth);
     ImGui::InputInt("Height", &mTexHeight);
 }

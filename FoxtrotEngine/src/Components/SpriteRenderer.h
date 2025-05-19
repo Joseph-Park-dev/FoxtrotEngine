@@ -24,7 +24,7 @@ struct Mesh;
 class SpriteRenderer : public MeshRenderer
 {
 public:
-	virtual std::string GetName() const override { return "SpriteRenderer"; }
+	virtual FTDS::String GetName() const override { return "SpriteRenderer"; }
 
 public:
 	int GetTexWidth();

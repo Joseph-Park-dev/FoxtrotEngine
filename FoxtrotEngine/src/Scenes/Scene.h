@@ -35,7 +35,7 @@ public:
 	/// <param name="group : ">ActorGroup this Actor is assigned to.</param>
 	/// <param name="name : ">Actor's name</param>
 	/// <returns></returns>
-	Actor* FindActor(std::string& name);
+	Actor* FindActor(FTDS::String& name);
 	Actor* FindActor(const char* name);
 
 public:

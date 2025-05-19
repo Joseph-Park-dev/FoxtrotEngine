@@ -27,7 +27,7 @@ class Animator :
 	public TileMapRenderer
 {
 public:
-	virtual std::string GetName() const override
+	virtual FTDS::String GetName() const override
 	{
 		return "Animator";
 	}

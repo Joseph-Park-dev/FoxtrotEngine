@@ -160,16 +160,15 @@ void Rigidbody2D::EditorUIUpdate()
 
 	ImGui::SeparatorText("Body Info");
 	mBodyDefCache.position = GetOwner()->GetTransform()->GetWorldPosition().GetB2Vec2();
-	std::string pos		   = {
-		   "x : " + std::to_string(mBodyDefCache.position.x) + "  " +
-		   "y : " + std::to_string(mBodyDefCache.position.y)
-	};
+	FTDS::String pos =
+		FTDS::String("x : ") + std::to_string(mBodyDefCache.position.x).c_str() + "  " +
+		"y : " + std::to_string(mBodyDefCache.position.y).c_str();
+
 	ImGui::TextColored(ImVec4(0.f, 200.f, 0.f, 255), pos.C_Str());
 
 	mBodyDefCache.rotation = b2MakeRot(GetOwner()->GetTransform()->GetRotation().z);
-	std::string rot		   = {
-		   "Rotation : " + std::to_string(b2Rot_GetAngle(mBodyDefCache.rotation))
-	};
+	FTDS::String rot =
+		FTDS::String("Rotation : ") + std::to_string(b2Rot_GetAngle(mBodyDefCache.rotation)).c_str();
 	ImGui::TextColored(ImVec4(0.f, 200.f, 0.f, 255), rot.C_Str());
 
 	ImGui::Separator();

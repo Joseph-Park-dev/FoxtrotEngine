@@ -24,6 +24,8 @@
 #include "FileSystem/FileTypes.h"
 #include "FileSystem/NullKeys.h"
 
+#include "static/HashChainMap.h"
+
 namespace FTEditorUtils
 {
 	inline bool ButtonCenteredOnLine(const char* label, float alignment = 0.5f)
@@ -40,14 +42,14 @@ namespace FTEditorUtils
 		return ImGui::Button(label);
 	}
 
-	inline void DisplayArrayAsCombo(const char* label, std::string* array, size_t arraySize, int& targetIdx)
+	inline void DisplayArrayAsCombo(const char* label, FTDS::String* array, size_t arraySize, int& targetIdx)
 	{
-		const char* comboPreview = array[targetIdx].c_str();
+		const char* comboPreview = array[targetIdx].C_Str();
 		if (ImGui::BeginCombo(label, comboPreview))
 		{
 			for (size_t i = 0; i < arraySize; ++i)
 			{
-				if (ImGui::Selectable(array[i].c_str()))
+				if (ImGui::Selectable(array[i].C_Str()))
 					targetIdx = i;
 			}
 			ImGui::EndCombo();
@@ -72,7 +74,7 @@ namespace FTEditorUtils
 	{
 		EditorScene* editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
 		std::vector<Actor*>* editorElems = editorScene->GetActors();
-		std::string* actorNames = DBG_NEW std::string[editorScene->GetActorCount() + 1];
+		FTDS::String* actorNames = DBG_NEW FTDS::String[editorScene->GetActorCount() + 1];
 		actorNames[0] = "None";
 		size_t idx = 1;
 		for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
@@ -98,8 +100,8 @@ namespace FTEditorUtils
 	template <typename FTRESOURCE>
 	inline void DisplayResSelection(
 		const char* label,
-		FTDS::HashChainMap<FTRESOURCE*>* resMap
-		, FTDS::String& currSelection
+		FTDS::HashChainMap<FTRESOURCE*>* resMap,
+		FTDS::String& currSelection
 	)
 	{
 		if (ImGui::Button(label))

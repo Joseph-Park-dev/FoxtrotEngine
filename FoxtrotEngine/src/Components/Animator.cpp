@@ -82,7 +82,7 @@ void Animator::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::MATERIAL_KEYS);
 
 	for (size_t i = 0; i < MaterialKeys().size(); ++i)
-		FileIOHelper::SaveString(ofs, std::to_string(i).C_Str(), MaterialKeys().at(i));
+		FileIOHelper::SaveString(ofs, std::to_string(i).c_str(), MaterialKeys().at(i));
 	FileIOHelper::SaveSize(ofs, ChunkKey::MATERIAL_COUNT, MaterialKeys().size());
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::MATERIAL_KEYS);
@@ -91,7 +91,7 @@ void Animator::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::LOADED_KEYS);
 
 	for (size_t i = 0; i < mLoadedKeys.size(); ++i)
-		FileIOHelper::SaveString(ofs, std::to_string(i), mLoadedKeys.at(i).C_Str());
+		FileIOHelper::SaveString(ofs, std::to_string(i).c_str(), mLoadedKeys.at(i));
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::LOADED_KEYS);
 }
@@ -99,11 +99,11 @@ void Animator::SaveProperties(std::ofstream& ofs)
 void Animator::LoadProperties(std::ifstream& ifs)
 {
 	// Load Animations
-	std::pair<size_t, std::string> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::LOADED_KEYS);
+	std::pair<size_t, FTDS::String> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::LOADED_KEYS);
 	mLoadedKeys.reserve(pack.first);
 	for (size_t i = 0; i < pack.first; ++i)
 	{
-		const char* key = 0;
+		FTDS::String key;
 		FileIOHelper::LoadBasicString(ifs, key);
 		mLoadedKeys.push_back(key);
 	}
@@ -116,7 +116,7 @@ void Animator::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadSize(ifs, matCount);
 	for (size_t i = 0; i < matCount; ++i)
 	{
-		const char* key = ChunkKey::NullVal::NULL_OBJECT;
+		FTDS::String key = ChunkKey::NullVal::NULL_OBJECT;
 		FileIOHelper::LoadBasicString(ifs, key);
 		MaterialKeys().push_back(key);
 	}

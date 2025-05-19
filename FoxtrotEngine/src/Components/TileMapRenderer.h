@@ -24,7 +24,7 @@ class TileMapRenderer :
 	public SpriteRenderer
 {
 public:
-	std::string GetName() const override
+	FTDS::String GetName() const override
 	{
 		return "TileMap";
 	}

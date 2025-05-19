@@ -137,7 +137,7 @@ public:
 				{
 					FileIOHelper::BeginDataPackSave(ofs, res->FileName());
 					FileIOHelper::SaveString(ofs, ChunkKey::FILE_NAME, res->FileName());
-					FileIOHelper::SaveString(ofs, ChunkKey::RELATIVE_PATH, res->GetRelativePath());
+					FileIOHelper::SaveString(ofs, ChunkKey::RELATIVE_PATH, res->RelativePath().C_Str());
 					FileIOHelper::EndDataPackSave(ofs, res->FileName());
 				}
 			}
@@ -230,7 +230,7 @@ private:
 	{
 		FTRESOURCE* res = DBG_NEW FTRESOURCE;
 		FileIOHelper::BeginDataPackLoad(ifs);
-		FileIOHelper::LoadBasicString(ifs, res->RelativePath());
+		FileIOHelper::LoadBasicString(ifs, res->RelativePath().C_Str());
 		FileIOHelper::LoadBasicString(ifs, res->FileName());
 
 		assert(0 < resMap->Capacity());

@@ -33,7 +33,7 @@ void SceneManager::SwitchScene(size_t index)
 {
 	CollisionManager::GetInstance()->Reset();
 	mCurrentScene->DeleteAll();
-	ChunkLoader::GetInstance()->LoadChunk(std::string(".\\Chunks\\") + mChunkList.at(index));
+	ChunkLoader::GetInstance()->LoadChunk((FTDS::String(".\\Chunks\\") + mChunkList.at(index)).C_Str());
 	mCurrentScene->Setup();
 }
 
@@ -42,14 +42,14 @@ Scene* SceneManager::GetCurrentScene()
 	return mCurrentScene;
 }
 
-std::vector<std::string>& SceneManager::GetChunkList()
+std::vector<FTDS::String>& SceneManager::GetChunkList()
 {
 	return mChunkList;
 }
 
-void SceneManager::SetChunkListPath(std::string&& path)
+void SceneManager::SetChunkListPath(FTDS::String&& path)
 {
-	mChunkListPath.assign(path);
+	mChunkListPath.Assign(path);
 }
 
 void SceneManager::Initialize()

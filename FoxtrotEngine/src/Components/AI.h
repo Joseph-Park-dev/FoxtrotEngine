@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -25,23 +25,23 @@ class AI :
 	public Component
 {
 public:
-	virtual std::string GetName() const override { return "AI"; }
+	virtual FTDS::String GetName() const override { return "AI"; }
 
 public:
 	void ChangeState(AISTATE_TYPE name);
 	void RegisterState(class AIState* state);
 
 public:
-	virtual void Initialize	(FTCore* coreInstance)	override;
-			void Update		(float deltaTime)		override;
+	virtual void Initialize(FTCore* coreInstance) override;
+	void		 Update(float deltaTime) override;
 
-	virtual void CloneTo	(Actor* actor)			override;
+	virtual void CloneTo(Actor* actor) override;
 
 public:
 	AI(class Actor* owner, int updateOrder = DefaultVal::UPDATE_ORDER);
 	virtual ~AI() override;
 
 private:
-	FTDS::HashChainMap<AISTATE_TYPE, class AIState*> mStateMap;
-	class AIState*									 mCurrentState;
+	std::unordered_map<AISTATE_TYPE, AIState*> mStateMap;
+	class AIState*							   mCurrentState;
 };

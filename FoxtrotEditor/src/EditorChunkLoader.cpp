@@ -52,7 +52,7 @@ EditorChunkLoader::EditorChunkLoader()
 
 EditorChunkLoader::~EditorChunkLoader() {}
 
-void EditorChunkLoader::SaveChunk(const std::string fileName)
+void EditorChunkLoader::SaveChunk(const char* fileName)
 {
 	Lock();
 	std::ofstream ofs(fileName);
@@ -68,7 +68,7 @@ void EditorChunkLoader::SaveChunk(const std::string fileName)
 	Unlock();
 }
 
-void EditorChunkLoader::LoadChunk(const std::string fileName)
+void EditorChunkLoader::LoadChunk(const char* fileName)
 {
 	Lock();
 	std::ifstream ifs(fileName);
@@ -105,10 +105,10 @@ void EditorChunkLoader::SaveActorsData(std::ofstream& ofs)
 void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
 {
 	EditorScene*					 scene = EditorSceneManager::GetInstance()->GetEditorScene();
-	std::pair<size_t, std::string>&& pack  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
+	std::pair<size_t, FTDS::String>&& pack  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
 	for (size_t i = 0; i < pack.first; ++i)
 	{
-		std::pair<size_t, std::string>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
+		std::pair<size_t, FTDS::String>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
 		Actor							 actor	   = Actor();
 		actor.LoadProperties(ifs);
 		actor.LoadComponents(ifs);

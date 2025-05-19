@@ -141,9 +141,9 @@ FTMeshData ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene) {
             aiString filepath;
             material->GetTexture(aiTextureType_DIFFUSE, 0, &filepath);
 
-            //std::string fullPath =
+            //FTDS::String fullPath =
             //    this->basePath +
-            //    std::string(std::filesystem::path(filepath.C_Str())
+            //    FTDS::String(std::filesystem::path(filepath.C_Str())
             //                    .filename()
             //                    .string());
 

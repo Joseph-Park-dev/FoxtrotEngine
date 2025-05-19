@@ -29,13 +29,13 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Components/BatchHeaders.h"
 
-void ChunkLoader::SaveChunk(const std::string fileName)
+void ChunkLoader::SaveChunk(const char* fileName)
 {
 	std::ofstream ofs(fileName);
 	SaveChunkData(ofs);
 }
 
-void ChunkLoader::LoadChunk(const std::string fileName)
+void ChunkLoader::LoadChunk(const char* fileName)
 {
 	std::ifstream ifs(fileName);
 	LoadChunkData(ifs);
@@ -76,10 +76,10 @@ void ChunkLoader::SaveActorsData(std::ofstream& out)
 void ChunkLoader::LoadActorsData(std::ifstream& ifs)
 {
 	Scene*							 scene = SceneManager::GetInstance()->GetCurrentScene();
-	std::pair<size_t, std::string>&& pack  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
+	std::pair<size_t, FTDS::String>&& pack  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
 	for (size_t i = 0; i < pack.first; ++i)
 	{
-		std::pair<size_t, std::string>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
+		std::pair<size_t, FTDS::String>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
 		Actor* actor							   = DBG_NEW Actor(scene);
 		actor->LoadProperties(ifs);
 		actor->LoadComponents(ifs);

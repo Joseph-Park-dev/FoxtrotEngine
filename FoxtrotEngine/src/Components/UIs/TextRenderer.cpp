@@ -15,7 +15,7 @@
 
 using DirectX::DX11::SpriteSortMode;
 
-std::string TextRenderer::GetName() const
+FTDS::String TextRenderer::GetName() const
 {
 	return "TextRenderer";
 }
@@ -106,10 +106,10 @@ void TextRenderer::EditorUIUpdate()
 void TextRenderer::UpdateText()
 {
     char str[BufferSize::MAX_CHAR_COUNT];
-    strcpy_s(str, mText.size()+1, mText.C_Str());
+    //strcpy_s(str, mText.size()+1, mText.C_Str());
     ImGui::InputText(ChunkKey::TEXT, str, BufferSize::MAX_CHAR_COUNT);
-    if (mText != str)
-        mText = str;
+    //if (mText != str)
+       // mText = str;
 }
 
 void TextRenderer::UpdateTextAttribute()

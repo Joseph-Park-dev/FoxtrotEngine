@@ -10,7 +10,7 @@ class TextRenderer :
 	public Component
 {
 public:
-	virtual std::string GetName() const override;
+	virtual FTDS::String GetName() const override;
 
 public:
 	virtual void Initialize(FTCore* coreInstance) override;
@@ -24,7 +24,7 @@ public:
 	virtual void CloneTo(Actor* actor) override;
 
 private:
-	std::string	   mText;
+	FTDS::String	   mText;
 	TextAttribute* mTextAttribute;
 
 	DirectX::SpriteBatch* spriteBatch;

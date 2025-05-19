@@ -30,7 +30,7 @@
 #include "Math/FTMath.h"
 #include "Debugging/DebugMemAlloc.h"
 
-// static std::string ToString(const wchar_t* text)
+// static FTDS::String ToString(const wchar_t* text)
 //{
 //	size_t i = 0;
 //	size_t size = std::wcslen(text);
@@ -115,19 +115,19 @@ inline void LogString(FTDS::String message, FTDS::String val)
 	printf("%s\n", message.C_Str());
 }
 
-//static std::wstring ToWString(const FTDS::String& text)
+// static std::wstring ToWString(const FTDS::String& text)
 //{
 //	std::wstring wStr;
 //	wStr.assign(text.begin(), text.end());
 //	return wStr;
-//}
+// }
 //
-//static FTDS::String ToString(const std::wstring& text)
+// static FTDS::String ToString(const std::wstring& text)
 //{
 //	FTDS::String str;
 //	str.assign(text.begin(), text.end());
 //	return str;
-//}
+// }
 
 static char* ToString(const wchar_t* text)
 {
@@ -155,51 +155,29 @@ static const bool StrToBool(FTDS::String& str)
 inline FTDS::String ExtractFileName(const char* path)
 {
 	std::filesystem::path p(path);
-	const char* nameStr = p.filename().string().c_str();
-	FTDS::String		  str = FTDS::String(nameStr);
+	const char*			  nameStr = p.filename().string().c_str();
+	FTDS::String		  str	  = FTDS::String(nameStr);
 	return str;
 }
 
 inline FTDS::String ExtractFileType(const char* path)
 {
 	std::filesystem::path p(path);
-	const char* nameStr = p.filename().string().c_str();
-	FTDS::String		  str = FTDS::String(nameStr);
+	const char*			  nameStr = p.filename().string().c_str();
+	FTDS::String		  str	  = FTDS::String(nameStr);
 	return str;
 }
 
-inline void LTrim(std::string& str)
+inline void ExtractUntil(FTDS::String& line, const char* end)
 {
-	str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](unsigned char ch) {
-				  return !(ch == '\t');
-			  }));
+	int typeBeg = line.LFind(end);
+	line.SubStr(0, typeBeg);
 }
 
-inline std::string ExtractUntil(std::string& line, const char end)
+inline void RemoveSuffix(FTDS::String& line, const char* start)
 {
-	size_t		typeBeg = line.find(end);
-	std::string result	= line.substr(0, typeBeg);
-
-	// Erase the extracted value from line, including end character.
-	line.erase(0, typeBeg + 1);
-	return result;
-}
-
-inline std::string ExtractUntil(std::string& line, const char* end)
-{
-	size_t		typeBeg = line.find(end);
-	std::string result	= line.substr(0, typeBeg);
-
-	// Erase the extracted value from line, including end character.
-	line.erase(0, typeBeg + 1);
-	return result;
-}
-
-inline std::string RemoveSuffix(std::string& line, const char* start)
-{
-	size_t		typeBegin = line.rfind(start);
-	std::string result	  = line.substr(0, typeBegin);
-	return result;
+	size_t typeBegin = line.RFind(start);
+	line.SubStr(0, typeBegin);
 }
 
 inline bool EndsWith(
@@ -216,9 +194,10 @@ inline bool EndsWith(
 	return fullString.compare(fullString.size() - ending.size(), ending.size(), ending) == 0;
 }
 
-inline std::string ReplaceSuffix(std::string curr, std::string prevSuffix, std::string postSuffix)
+inline void ReplaceSuffix(FTDS::String& curr, FTDS::String prevSuffix, FTDS::String postSuffix)
 {
-	return curr.substr(0, curr.length() - strlen(prevSuffix.C_Str())) + postSuffix;
+	curr.SubStr(0, curr.Length() - prevSuffix.Length());
+	curr.Append(postSuffix);
 }
 
 template <typename T>

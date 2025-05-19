@@ -25,7 +25,7 @@ void EditorResourceManager::LoadAllResourcesInAsset()
 {
 	DirectoryHelper::IterateForFileRecurse(
 		GetPathToAsset(),
-		[&](FTDS::String&& path) { LoadResByType(path); });
+		[&](std::string&& path) { LoadResByType(path.c_str()); });
 
 	ProcessCSVs();
 	ProcessJSONs();
@@ -45,44 +45,45 @@ void EditorResourceManager::LoadAllResourcesInAsset()
 	ProcessPremades();
 }
 
-void EditorResourceManager::LoadResByType(FTDS::String& filePath)
+void EditorResourceManager::LoadResByType(const char* filePath)
 {
-	ResType type = GetResType(filePath);
-	printf("Loading file... %s\n", filePath.c_str());
+	FTDS::String path(filePath);
+	ResType		 type = GetResType(path);
+	printf("Loading file... %s\n", filePath);
 	switch (type)
 	{
 		case ResType::UNSUPPORTED:
-			printf("File %s is unsupported\n", filePath.c_str());
+			printf("File %s is unsupported\n", filePath);
 			break;
 		case ResType::FTTEXTURE:
-			LoadResource(filePath, GetTextures());
+			LoadResource(path, GetTextures());
 			break;
 		case ResType::FTTILEMAP:
-			LoadResource(filePath, GetTileMaps());
+			LoadResource(path, GetTileMaps());
 			break;
 		case ResType::FTSPRITESHEET:
-			LoadResource(filePath, GetSpriteSheets());
+			LoadResource(path, GetSpriteSheets());
 			break;
 		case ResType::FTPREMADE:
-			LoadResource(filePath, GetPremades());
+			LoadResource(path, GetPremades());
 			break;
 		case ResType::FTMESH:
-			LoadResource(filePath, GetMeshGroups());
+			LoadResource(path, GetMeshGroups());
 			break;
 		case ResType::FT_SPRITE_ANIMATION:
-			LoadResource(filePath, GetSpriteAnimations());
+			LoadResource(path, GetSpriteAnimations());
 			break;
 		case ResType::FTCSV:
-			LoadResource(filePath, GetCSVs());
+			LoadResource(path, GetCSVs());
 			break;
 		case ResType::FTJSON:
-			LoadResource(filePath, GetJSONs());
+			LoadResource(path, GetJSONs());
 			break;
 		case ResType::FT_VERTEX_SHADER:
-			LoadResource(filePath, GetVertexShaders());
+			LoadResource(path, GetVertexShaders());
 			break;
 		case ResType::FT_PIXEL_SHADER:
-			LoadResource(filePath, GetPixelShaders());
+			LoadResource(path, GetPixelShaders());
 			break;
 		default:
 			break;
@@ -110,7 +111,7 @@ void EditorResourceManager::LoadMaterials()
 
 void EditorResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)
 {
-	std::pair<size_t, std::string> resPack	  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RESOURCE_DATA);
+	std::pair<size_t, FTDS::String> resPack	  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RESOURCE_DATA);
 	size_t							packCount = resPack.first;
 
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
@@ -450,7 +451,7 @@ void EditorResourceManager::UpdateUI()
 		if (ImGuiFileDialog::Instance()->IsOk())
 		{
 			FTDS::String path	   = ImGuiFileDialog::Instance()->GetFilePathName().c_str();
-			size_t pos = path.RFind(".");
+			size_t		 pos	   = path.RFind(".");
 			FTDS::String extension = path.SubStr(pos, path.Length() - pos);
 
 			if (StrContains(FileTypes::TEXTURE, extension))

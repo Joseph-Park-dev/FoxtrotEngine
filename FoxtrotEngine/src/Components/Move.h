@@ -30,7 +30,7 @@ class Move :
 	public Component
 {
 public:
-	virtual std::string GetName() const override
+	virtual FTDS::String GetName() const override
 	{
 		return "Move";
 	}

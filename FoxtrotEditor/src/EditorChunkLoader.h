@@ -23,7 +23,7 @@
 using ComponentCreateFunc = std::function<void(Actor*, FTCore*)>;
 
 // You must list all Components to be used during runtime to this map instance.
-using ComponentCreateMap = std::unordered_map<std::string, ComponentCreateFunc>;
+using ComponentCreateMap = std::unordered_map<FTDS::String, ComponentCreateFunc>;
 
 class EditorChunkLoader :
     public ChunkLoader
@@ -32,9 +32,9 @@ class EditorChunkLoader :
 
 public:
 	// Saves the current scene on Foxtrot Editor into .Chunk file.
-	virtual void SaveChunk(const std::string fileName) override;
+	virtual void SaveChunk(const char* fileName) override;
 	// Loads the a .Chunk file into the current scene on Foxtrot Editor.
-	virtual void LoadChunk(const std::string fileName) override;
+	virtual void LoadChunk(const char* fileName) override;
 
 public:
 	ComponentCreateMap& GetCompCreateMap() { return mComponentCreateMap; }

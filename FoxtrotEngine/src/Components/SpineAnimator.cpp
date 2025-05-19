@@ -19,8 +19,8 @@ void SpineAnimator::Initialize(FTCore* coreInst)
 
 	spine::FTSpineLoader loader;
 
-	std::string	  path		= "E:\\OneDrive\\[02_Programming]\\SpineRuntimeImp\\export\\TEST.json";
-	std::string	  atlasPath = "E:\\OneDrive\\[02_Programming]\\SpineRuntimeImp\\export\\TEST.atlas";
+	FTDS::String	  path		= "E:\\OneDrive\\[02_Programming]\\SpineRuntimeImp\\export\\TEST.json";
+	FTDS::String	  atlasPath = "E:\\OneDrive\\[02_Programming]\\SpineRuntimeImp\\export\\TEST.atlas";
 	spine::Atlas* atlas		= new spine::Atlas(atlasPath.C_Str(), &loader);
 
 	spine::SkeletonData* skeletonData = loader.ReadSkeletonJsonData(path.C_Str(), atlas, 1.0f);

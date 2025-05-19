@@ -29,8 +29,8 @@ public:
 			Scene*	GetCurrentScene();
 
 public:
-	std::vector<std::string>& GetChunkList();
-	void					  SetChunkListPath(std::string&& path);
+	std::vector<FTDS::String>& GetChunkList();
+	void					  SetChunkListPath(FTDS::String&& path);
 
 public:
 	virtual void Initialize		();
@@ -44,8 +44,8 @@ public:
 			void SaveSceneList(std::ofstream& ofs);
 
 private:
-	std::string				 mChunkListPath;
+	FTDS::String				 mChunkListPath;
 	
 	Scene*					 mCurrentScene;
-	std::vector<std::string> mChunkList; // List, and order of .chunks
+	std::vector<FTDS::String> mChunkList; // List, and order of .chunks
 };

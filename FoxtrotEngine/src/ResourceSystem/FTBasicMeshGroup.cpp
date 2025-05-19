@@ -234,7 +234,7 @@ void FTBasicMeshGroup::SetMaterials(std::vector<FTDS::String>& matKeys, ComPtr<I
 	}
 
 #ifdef FOXTROT_EDITOR
-	if (1 < EditorResourceManager::GetInstance()->GetMapMaterials().size())
+	if (1 < EditorResourceManager::GetInstance()->GetMaterials()->GetSize())
 		for (FTDS::String& key : matKeys)
 			mMaterials.push_back(EditorResourceManager::GetInstance()->GetLoadedMaterial(key));
 #else
@@ -257,7 +257,7 @@ void FTBasicMeshGroup::SetMaterials(std::vector<FTDS::String>& matKeys, ComPtr<I
 
 void FTBasicMeshGroup::SetTexture()
 {
-	if (FTDS::StringEqual(mTexKey, ChunkKey::NullVal::NULL_OBJECT))
+	if (mTexKey.Equal(ChunkKey::NullVal::NULL_OBJECT))
 	{
 		printf("ERROR: MeshRenderer::SetTexture() -> TexKey not assigned.\n");
 		return;

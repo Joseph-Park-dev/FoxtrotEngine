@@ -9,7 +9,7 @@ class EditorResourceManager : public ResourceManager
 
 public:
 	void LoadAllResourcesInAsset();
-	void LoadResByType(FTDS::String& fileName);
+	void LoadResByType(const char* fileName);
 	void LoadMaterials() override;
 
 	void PassLoadResourceInChunk(std::ifstream& ifs);

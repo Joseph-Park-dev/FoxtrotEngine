@@ -201,9 +201,9 @@ void Actor::RemoveAllComponents()
 	mComponents.clear();
 }
 
-std::string Actor::GetStateStr() const
+FTDS::String Actor::GetStateStr() const
 {
-	std::string state = "active";
+	FTDS::String state = "active";
 	if (mState == EPaused)
 		state = "paused";
 	else if (mState == EDead)
@@ -211,7 +211,7 @@ std::string Actor::GetStateStr() const
 	return state;
 }
 
-void Actor::SetState(std::string state)
+void Actor::SetState(FTDS::String state)
 {
 	if (state == "paused")
 		mState = EPaused;
@@ -221,7 +221,7 @@ void Actor::SetState(std::string state)
 		mState = EActive;
 }
 
-bool Actor::HasName(std::string& name)
+bool Actor::HasName(FTDS::String& name)
 {
 	return this->GetName() == name;
 }
@@ -234,11 +234,11 @@ bool Actor::HasName(const char* name)
 void Actor::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::ACTOR_PROPERTIES);
-	FileIOHelper::SaveString		(ofs, ChunkKey::NAME, GetName());
+	FileIOHelper::SaveString		(ofs, ChunkKey::NAME, GetNameRef());
 	FileIOHelper::SaveString		(ofs, ChunkKey::ACTOR_GROUP, ActorGroupUtil::GetActorGroupStr(mActorGroup));
-	FileIOHelper::SaveString		(ofs, ChunkKey::STATE, GetStateStr());
+	FileIOHelper::SaveString		(ofs, ChunkKey::STATE, GetNameRef());
 	if (mParent)
-		FileIOHelper::SaveString	(ofs, ChunkKey::PARENT, mParent->GetName());
+		FileIOHelper::SaveString	(ofs, ChunkKey::PARENT, mParent->GetNameRef());
 	else
 		FileIOHelper::SaveString	(ofs, ChunkKey::PARENT, "nullptr");
 
@@ -267,15 +267,15 @@ void Actor::LoadProperties(std::ifstream& ifs)
 	// Nested .chunk DataPack has unknown problem.
 	mTransform->LoadProperties(ifs);
 
-	std::string parentName;
+	FTDS::String parentName;
 	FileIOHelper::LoadBasicString(ifs, parentName);
 	// <Parent finding feature here!>
 
-	std::string stateStr;
+	FTDS::String stateStr;
 	FileIOHelper::LoadBasicString(ifs, stateStr);
 	SetState(stateStr);
 
-	std::string actorGroupStr;
+	FTDS::String actorGroupStr;
 	FileIOHelper::LoadBasicString(ifs, actorGroupStr);
 	mActorGroup = ActorGroupUtil::GetActorGroup(actorGroupStr);
 
@@ -284,10 +284,10 @@ void Actor::LoadProperties(std::ifstream& ifs)
 
 void Actor::LoadComponents(std::ifstream& ifs)
 {
-	std::pair<int, std::string>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COMPONENTS);
+	std::pair<int, FTDS::String>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COMPONENTS);
 	mComponents.reserve(pack.first);
 	for (size_t i = 0; i < pack.first; ++i) {
-		std::pair<size_t, std::string> compPack = FileIOHelper::BeginDataPackLoad(ifs);
+		std::pair<size_t, FTDS::String> compPack = FileIOHelper::BeginDataPackLoad(ifs);
 		ChunkLoader::GetInstance()->GetComponentLoadMap().at(compPack.second)(this, ifs);
 	}
 }

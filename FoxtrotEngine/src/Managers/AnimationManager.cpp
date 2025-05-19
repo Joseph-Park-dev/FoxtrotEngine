@@ -26,10 +26,10 @@
 //		printf("ERROR : Animator::CreateAnimationFromTile()-> Renderer is null");
 //
 //	FTSpriteAnimation* animation= DBG_NEW FTSpriteAnimation;
-//	std::string	animName = std::string(name) + FileTypes::SPRITE_ANIMATION;
+//	FTDS::String	animName = FTDS::String(name) + FileTypes::SPRITE_ANIMATION;
 //	animation->SetFileName(animName);
 //
-//	std::string path = ResourceManager::GetInstance()->GetPathToAsset().append(animName);
+//	FTDS::String path = ResourceManager::GetInstance()->GetPathToAsset().append(animName);
 //	animation->SetRelativePath(path);
 //
 //	if (texKey != ChunkKey::NullVal::NULL_OBJECT)
@@ -159,14 +159,14 @@ void AnimationManager::UpdateUI(bool* opened)
 		{
 			for (; iter != map->End(); ++iter)
 			{
-				if ((*iter).second)
+				if ((*iter)->Value())
 				{
-					if (ImGui::BeginListBox((*iter).second->FileName().C_Str(), ImVec2(-FLT_MIN, 100)))
+					if (ImGui::BeginListBox((*iter)->Value()->FileName().C_Str(), ImVec2(-FLT_MIN, 100)))
 					{
-						ImGui::Text((*iter).second->FileName().C_Str());
-						(*iter).second->UpdateUI();
+						ImGui::Text((*iter)->Value()->FileName().C_Str());
+						(*iter)->Value()->UpdateUI();
 						if (ImGui::Button("Save"))
-							SaveSpriteAnimAsFile((*iter).second);
+							SaveSpriteAnimAsFile((*iter)->Value());
 
 						ImGui::EndListBox();
 					}
@@ -241,23 +241,23 @@ void AnimationManager::CreateAnimation()
 
 void AnimationManager::GetSprite(FTDS::String& key)
 {
-	FTEditorUtils::DisplayResSelection("Select Sprite", EditorResourceManager::GetInstance()->GetTexturesMap(), key);
+	FTEditorUtils::DisplayResSelection("Select Sprite", EditorResourceManager::GetInstance()->GetTextures(), key);
 }
 
 void AnimationManager::GetTileMap(FTDS::String& key)
 {
-	FTEditorUtils::DisplayResSelection("Select TileMap", EditorResourceManager::GetInstance()->GetTileMapsMap(), key);
+	FTEditorUtils::DisplayResSelection("Select TileMap", EditorResourceManager::GetInstance()->GetTileMaps(), key);
 }
 
 void AnimationManager::GetSpriteSheet(FTDS::String& key)
 {
-	FTEditorUtils::DisplayResSelection("Select SpriteSheet", EditorResourceManager::GetInstance()->GetSpriteSheetsMap(), key);
+	FTEditorUtils::DisplayResSelection("Select SpriteSheet", EditorResourceManager::GetInstance()->GetSpriteSheets(), key);
 }
 
 void AnimationManager::SaveSpriteAnimAsFile(FTSpriteAnimation* animation)
 {
-	std::string	  path = EditorResourceManager::GetInstance()->GetPathToAsset() + animation->FileName();
-	std::ofstream ofs(path);
+	FTDS::String  path = EditorResourceManager::GetInstance()->GetPathToAsset() + animation->FileName();
+	std::ofstream ofs(path.C_Str());
 	animation->SaveProperties(ofs);
 	FileIOHelper::SaveBufferToFile(ofs);
 }

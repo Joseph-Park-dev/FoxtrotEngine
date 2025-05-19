@@ -22,7 +22,7 @@ private:
 	ComPtr<ID3D11InputLayout>			  mInputLayout;
 
 	std::vector<D3D11_INPUT_ELEMENT_DESC> mInputElements;
-	std::vector<const char*>			  mSemanticNames;
+	std::vector<FTDS::String>			  mSemanticNames;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;

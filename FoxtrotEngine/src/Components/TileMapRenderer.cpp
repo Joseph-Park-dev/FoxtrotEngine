@@ -120,7 +120,7 @@ void TileMapRenderer::SaveProperties(std::ofstream& ofs)
 
 void TileMapRenderer::LoadProperties(std::ifstream& ifs)
 {
-	FTDS::String texKey = 0;
+	FTDS::String texKey;
 	FileIOHelper::LoadBasicString(ifs, texKey);
 	SetTexKey(texKey);
 	FileIOHelper::LoadBasicString(ifs, mTileMapKey);
@@ -148,7 +148,7 @@ void TileMapRenderer::UpdateCSV()
 	if (mTileMapKey.Equal(ChunkKey::NullVal::NULL_OBJECT))
 	{
 		currentCSV.Assign("Current sprite : \n");
-		currentCSV.Append(EditorResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey)->RelativePath());
+		currentCSV.Append(EditorResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey)->RelativePath().C_Str());
 	}
 			 
 	ImGui::Text(currentCSV.C_Str());
@@ -175,9 +175,9 @@ void TileMapRenderer::UpdateCSV()
 			for (auto iter = tileMapsMap->Begin(); iter != tileMapsMap->End();
 				 ++iter, ++i)
 			{
-				if (ImGui::Selectable((*iter).second->FileName().C_Str(), selected == i))
+				if (ImGui::Selectable((*iter)->Value()->FileName().C_Str(), selected == i))
 				{
-					tileMapKey = (*iter).first;
+					tileMapKey = (*iter)->Value()->FileName();
 					selected   = i;
 				}
 			}
@@ -195,10 +195,10 @@ void TileMapRenderer::UpdateCSV()
 }
 void TileMapRenderer::UpdateCSV(FTDS::String& key)
 {
-	std::string currentCSV = {};
+	FTDS::String currentCSV = {};
 	if (key.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 		currentCSV =
-			"Current sprite : \n" + EditorResourceManager::GetInstance()->GetLoadedTileMap(key)->RelativePath();
+			FTDS::String("Current sprite : \n") + EditorResourceManager::GetInstance()->GetLoadedTileMap(key)->RelativePath().C_Str();
 	else
 		currentCSV = "No .csv has been assigned";
 	ImGui::Text(currentCSV.C_Str());
@@ -229,7 +229,7 @@ void TileMapRenderer::UpdateCSV(FTDS::String& key)
 				{
 					if (ImGui::Selectable((*iter)->Value()->FileName().C_Str(), selected == i))
 					{
-						tileMapKey = (*iter)->Value();
+						tileMapKey = (*iter)->Value()->FileName();
 						selected   = i;
 					}
 				}

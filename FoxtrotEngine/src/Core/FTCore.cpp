@@ -35,8 +35,9 @@
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Scenes/Scene.h"
-
 #include "Debugging/DebugMemAlloc.h"
+
+#include "Static/FTString.h"
 
 // FTCore related singleton initializations -> used in the runtimes of the produced games.
 Physics2D*		  Physics2D::mInstance		  = nullptr;
@@ -57,12 +58,12 @@ FTCore*			  FTCore::mInstance			  = nullptr;
 
 void FTCore::LoadGameData()
 {
-	std::ifstream ifs(mGameDataPath);
+	std::ifstream ifs(mGameDataPath.C_Str());
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::GAME_DATA);
-	std::pair<size_t, std::string> chunkListPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CHUNK_LIST);
+	std::pair<size_t, FTDS::String> chunkListPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CHUNK_LIST);
 	for (size_t i = 0; i < chunkListPack.first; ++i)
 	{
-		std::string chunkTitle = {};
+		FTDS::String chunkTitle = {};
 		FileIOHelper::LoadBasicString(ifs, chunkTitle);
 		SceneManager::GetInstance()->GetChunkList().push_back(chunkTitle);
 	}
@@ -193,9 +194,9 @@ FTCore::FTCore()
 	, mIsRunning(true)
 	, mWindowWidth(1280)
 	, mWindowHeight(720)
-	, mWindowTitle(L"Foxtrot Engine Showcase (ver.0.1.2)")
+	, mWindowTitle("Foxtrot Engine Showcase (ver.0.1.2)")
 	, mGameDataPath(
-		  std::string("./") + std::string(ChunkKey::GAME_DATA) + std::string(FileTypes::GDPACK))
+		  FTDS::String("./") + FTDS::String(ChunkKey::GAME_DATA) + FTDS::String(FileTypes::GDPACK))
 {
 }
 

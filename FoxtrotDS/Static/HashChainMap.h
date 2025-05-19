@@ -62,8 +62,9 @@ namespace FTDS
 				if (p->Equal(key))
 				{
 					// Abort insertion.
-					std::string msg = std::string("Duplicated key") + key;
-					Debug::LogError(__LINE__, __FILE__, msg);
+					FTDS::String msg("Duplicated key");
+					msg.Append(key);
+					Debug::LogError(__LINE__, __FILE__, msg.C_Str());
 					return;
 				}
 			}
@@ -72,6 +73,7 @@ namespace FTDS
 			RecordNode<TYPE>* node = DBG_NEW RecordNode<TYPE>(key, value);
 			node->SetLink(this->mData[hashVal]);
 			this->mData[hashVal] = node;
+			++mSize;
 		}
 
 		TYPE At(const char* key)
@@ -87,7 +89,7 @@ namespace FTDS
 					return p->Value();
 			}
 
-			Debug::LogError(__LINE__, __FILE__, std::string("Search Failed for key: ") + key);
+			Debug::LogError(__LINE__, __FILE__, (FTDS::String("Search Failed for key: ") + key).C_Str());
 			return NULL;
 		}
 
@@ -96,16 +98,22 @@ namespace FTDS
 			RecordNode<TYPE>* node = At(key);
 			delete node;
 			node = nullptr;
+			--mSize;
 		}
+
+	public:
+		const size_t& GetSize() { return mSize; }
 
 	public:
 		HashChainMap()
 			: FTDS::Array<RecordNode<TYPE>*>()
+			, mSize(0)
 		{
 		}
 
 		HashChainMap(size_t capacity)
 			: FTDS::Array<RecordNode<TYPE>*>(capacity)
+			, mSize(0)
 		{
 		}
 
@@ -127,5 +135,7 @@ namespace FTDS
 				}
 			}
 		}
+	private:
+		size_t mSize;
 	};
 } // namespace FTDS

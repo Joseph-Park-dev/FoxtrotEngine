@@ -38,8 +38,7 @@ std::pair<size_t, FTDS::String> FileIOHelper::BeginDataPackLoad(std::ifstream& i
 	// std::cout << "Parsing data pack : " << name << '\n';
 	// std::cout << name << '\n';
 
-	std::pair<size_t, FTDS::String> result{ count, name };
-	return result;
+	return std::make_pair( count, name );
 }
 
 std::pair<size_t, FTDS::String> FileIOHelper::BeginDataPackLoad(std::ifstream& ifs, FTDS::String dataPackKey)
@@ -49,12 +48,12 @@ std::pair<size_t, FTDS::String> FileIOHelper::BeginDataPackLoad(std::ifstream& i
 
 	// Parse data pack key
 	FTDS::String name;
-	loadedDataPackKey.ExtractUntilLast(name, "<");
+	loadedDataPackKey.ExtractUntilFirst(name, "<");
 
 	// Parse data pack name
 	FTDS::String countStr;
 	loadedDataPackKey.ExtractBracketedVal(countStr, "<", ">");
-	size_t count = std::stoi(loadedDataPackKey.C_Str());
+	size_t count = std::stoi(countStr.C_Str());
 
 	if (name != dataPackKey)
 	{
@@ -66,8 +65,7 @@ std::pair<size_t, FTDS::String> FileIOHelper::BeginDataPackLoad(std::ifstream& i
 	// std::cout << "Parsing data pack : " << name << '\n';
 	// std::cout << name << '\n';
 
-	std::pair<size_t, FTDS::String> result{ count, name };
-	return result;
+	return std::make_pair(count, name);
 }
 
 void FileIOHelper::LoadInt(std::ifstream& ifs, int& intVal)
@@ -587,6 +585,7 @@ bool FileIOHelper::GetLine(std::ifstream& ifs, FTDS::String& str, char delimiter
 	}
 	int capacity = static_cast<size_t>(length + 1);
 	str.Reserve(capacity);
+	str.SetLength(length);
 	ifs.seekg(-capacity - 1, std::ios_base::cur);
 
 	// Read characters one by one.

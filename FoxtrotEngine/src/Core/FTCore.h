@@ -52,6 +52,7 @@ protected:
 protected:
 	virtual bool InitFoxtrotRenderer_D3D11(FTWindow* window, int& width, int& height);
 	virtual void InitSingletonManagers();
+	virtual void LoadGameData();
 
 private:
 	FTWindow*		 mWindow;
@@ -67,6 +68,5 @@ private:
 
 private:
 	// Initializes Common functionality.
-	void LoadGameData();
 	void InitTimer();
 };

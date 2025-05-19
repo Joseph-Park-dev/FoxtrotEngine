@@ -37,7 +37,7 @@ public:
 	// takes the folder path & executes unaryOp (Functor).
 	template <class UnaryOperation>
 	static void IterateForFileRecurse(
-		FTDS::String&	 dir,
+		const char*		 dir,
 		UnaryOperation&& unaryOp)
 	{
 		for (const std::filesystem::directory_entry& dirEntry :

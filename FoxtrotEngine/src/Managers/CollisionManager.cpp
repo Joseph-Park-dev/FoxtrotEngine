@@ -256,7 +256,9 @@ void CollisionManager::UpdateCollisionMarks()
 			{
 				ImGui::TableSetColumnIndex(col);
 				FTDS::String mark =
-					FTDS::String(ActorGroupUtil::GetActorGroupStr(row)) + "/" + FTDS::String(ActorGroupUtil::GetActorGroupStr(col));
+					FTDS::String(ActorGroupUtil::GetActorGroupStr(row)) + "/";
+				mark.Append(FTDS::String(ActorGroupUtil::GetActorGroupStr(col)));
+
 				size_t idx			= ActorGroupUtil::GetCount() * row + col;
 				size_t reflectedIdx = ActorGroupUtil::GetCount() * col + row;
 				if (ImGui::Checkbox(mark.C_Str(), &mCollisionMarks[idx]))

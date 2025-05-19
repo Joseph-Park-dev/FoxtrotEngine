@@ -56,7 +56,8 @@ void EditorScene::AddEditorElement()
 {
 	UnfocusEditorElements();
 	EditorElement* editorElement = DBG_NEW EditorElement(this);
-	std::string name = "Empty Actor " + std::to_string(this->GetActorCount());
+	FTDS::String name("Empty Actor ");
+	name.Append(std::to_string(this->GetActorCount()).c_str());
 	editorElement->SetName(name);
 	editorElement->SetIsFocused(true);
 

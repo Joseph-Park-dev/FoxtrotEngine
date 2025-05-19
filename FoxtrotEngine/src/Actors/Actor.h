@@ -106,7 +106,7 @@ public:
 	ActorGroup				 GetActorGroup() const { return mActorGroup; }
 	ActorGroup&				 GetActorGroupRef() { return mActorGroup; }
 	ActorGroup*				 GetActorGroupPtr() { return &mActorGroup; }
-	FTDS::String			 GetName() const { return mName; }
+	FTDS::String			 GetName() { return mName; }
 	FTDS::String&			 GetNameRef() { return mName; }
 	State					 GetState() const { return mState; }
 	FTDS::String			 GetStateStr() const;

@@ -12,7 +12,11 @@ FTBehavior::~FTBehavior()
 
 void FTBehavior::OnCollisionEnter(Collider2D* other)
 {
-	LogString(GetOwner()->GetName() + " : Collision Enter with " + other->GetOwner()->GetName());
+	FTDS::String msg;
+	msg.Assign(GetOwner()->GetNameRef());
+	msg.Append(" : Collision Entered with ");
+	msg.Append(other->GetOwner()->GetName());
+	LogString(msg);
 }
 
 void FTBehavior::OnCollisionStay(Collider2D* other)
@@ -21,5 +25,9 @@ void FTBehavior::OnCollisionStay(Collider2D* other)
 
 void FTBehavior::OnCollisionExit(Collider2D* other)
 {
-	LogString(GetOwner()->GetName() + " : Collision Exit with " + other->GetOwner()->GetName());
+	FTDS::String msg;
+	msg.Assign(GetOwner()->GetNameRef());
+	msg.Append(" : Collision Exited with ");
+	msg.Append(other->GetOwner()->GetName());
+	LogString(msg);
 }

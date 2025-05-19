@@ -37,7 +37,7 @@ namespace FTDS
 
 	public:
 		TYPE*  Begin() { return &mData[0]; }
-		TYPE*  End() { return &mData[mCapacity]; }
+		TYPE*  End() { return &mData[mCapacity-1]; }
 		size_t IterPos() { return mPtr - Begin(); }
 
 	public:
@@ -122,7 +122,7 @@ namespace FTDS
 			if (mData)
 			{
 				// Copy previous data.
-				memcpy_s(newArr, sizeof(newArr), mData, sizeof(mData));
+				memcpy_s(newArr, sizeof(char) * newCap, mData, sizeof(char) * Capacity());
 				delete[] mData;
 			}
 

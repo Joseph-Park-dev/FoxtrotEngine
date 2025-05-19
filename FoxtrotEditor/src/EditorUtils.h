@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -32,7 +32,7 @@ namespace FTEditorUtils
 	{
 		ImGuiStyle& style = ImGui::GetStyle();
 
-		float size = ImGui::CalcTextSize(label).x + style.FramePadding.x * 2.0f;
+		float size	= ImGui::CalcTextSize(label).x + style.FramePadding.x * 2.0f;
 		float avail = ImGui::GetContentRegionAvail().x;
 
 		float off = (avail - size) * alignment;
@@ -72,11 +72,11 @@ namespace FTEditorUtils
 
 	inline void DisplayActorSelection(const char* label, Actor* selected)
 	{
-		EditorScene* editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
+		EditorScene*		 editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
 		std::vector<Actor*>* editorElems = editorScene->GetActors();
-		FTDS::String* actorNames = DBG_NEW FTDS::String[editorScene->GetActorCount() + 1];
-		actorNames[0] = "None";
-		size_t idx = 1;
+		FTDS::String* actorNames		 = DBG_NEW FTDS::String[editorScene->GetActorCount() + 1];
+		actorNames[0]					 = "None";
+		size_t idx						 = 1;
 		for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
 		{
 			if (0 < editorElems[i].size())
@@ -99,40 +99,38 @@ namespace FTEditorUtils
 
 	template <typename FTRESOURCE>
 	inline void DisplayResSelection(
-		const char* label,
+		const char*						 label,
 		FTDS::HashChainMap<FTRESOURCE*>* resMap,
-		FTDS::String& currSelection
-	)
+		FTDS::String&					 currSelection)
 	{
 		if (ImGui::Button(label))
 		{
 			IGFD::FileDialogConfig config;
-			config.path = ".";
+			config.path				 = ".";
 			config.countSelectionMax = 1;
 			ImGuiFileDialog::Instance()->OpenDialog(
 				"Dialog", label, FileTypes::TEXTURE, config);
 			ImGui::OpenPopup(label);
 		}
 
-		if (ImGui::BeginPopupModal(label, NULL,
-			ImGuiWindowFlags_MenuBar))
+		if (ImGui::BeginPopupModal(label, NULL, ImGuiWindowFlags_MenuBar))
 		{
 			if (ImGui::TreeNode("Selection State: Single Selection"))
 			{
-				for (auto iter = resMap.begin(); iter != resMap.end();
-					++iter)
+				for (auto iter = resMap->Begin(); iter != resMap->End();
+					 ++iter)
 				{
-					if ((*iter).second == nullptr)
+					if ((*iter))
 					{
 						if (ImGui::Selectable("Not Assigned"))
-							currSelection = ChunkKey::NullVal::NULL_OBJECT;
+							currSelection.Assign(ChunkKey::NullVal::NULL_OBJECT);
 					}
 					else
 					{
-						if (ImGui::Selectable((*iter).second->GetFileName().c_str()))
+						if (ImGui::Selectable((*iter)->Value()->FileName().C_Str()))
 						{
-							if (!FTDS::StringEqual((*iter).first, ChunkKey::NullVal::NULL_OBJECT))
-								currSelection = (*iter).first;
+							if (!FTDS::StringEqual((*iter)->Key(), ChunkKey::NullVal::NULL_OBJECT))
+								currSelection = (*iter)->Key();
 						}
 					}
 				}
@@ -147,14 +145,13 @@ namespace FTEditorUtils
 	inline std::string GetFilePathFromDialog(const char* key, const char* title, const char* fileTypes)
 	{
 		IGFD::FileDialogConfig config;
-		config.path = ".";
+		config.path				 = ".";
 		config.countSelectionMax = 1;
 
 		ImGuiFileDialog::Instance()->OpenDialog(
-			key, title, fileTypes, config
-		);
+			key, title, fileTypes, config);
 		ImGui::OpenPopup(title);
-		
+
 		std::string path;
 		if (ImGuiFileDialog::Instance()->Display(title))
 		{
@@ -166,4 +163,4 @@ namespace FTEditorUtils
 		}
 		return path;
 	}
-}
+} // namespace FTEditorUtils

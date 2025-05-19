@@ -23,7 +23,7 @@
 using ComponentCreateFunc = std::function<void(Actor*, FTCore*)>;
 
 // You must list all Components to be used during runtime to this map instance.
-using ComponentCreateMap = std::unordered_map<FTDS::String, ComponentCreateFunc>;
+using ComponentCreateMap = std::unordered_map<const char*, ComponentCreateFunc>;
 
 class EditorChunkLoader :
     public ChunkLoader

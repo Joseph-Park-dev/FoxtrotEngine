@@ -76,7 +76,7 @@ StandardMaterial::StandardMaterial()
 	FTDS::String name = FTDS::String("StandardMaterial") + FileTypes::MATERIAL;
 
 #ifdef FOXTROT_EDITOR
-	FTDS::String path = FTDS::String(PATH_PROJECT + "Assets\\Materials\\") + name;
+	FTDS::String path = PATH_PROJECT + "Assets\\Materials\\" + name;
 #else
 	FTDS::String path = FTDS::String(".\\Assets\\Materials\\") + name;
 #endif // FOXTROT_EDITOR

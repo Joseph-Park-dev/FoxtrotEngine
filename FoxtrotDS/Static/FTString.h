@@ -1,0 +1,357 @@
+#pragma once
+#include "Array.h"
+
+namespace FTDS
+{
+	char*  StrCat(const char* str1, const char* str2);
+	size_t StrLen(const char* val);
+	bool   StringEqual(const char* left, const char* right);
+
+#define STRING_INPUT std::enable_if<std::is_same<T, const char*>::value, void>::type
+
+	class String : public FTDS::Array<char>
+	{
+		////////////////////////////////
+		/// String utility functions ///
+		////////////////////////////////
+	public:
+		int RFind(const char* target)
+		{
+			size_t targetLen = FTDS::StrLen(target);
+			if (!target || this->mLength < 1 || this->mLength < targetLen)
+			{
+				return -1; // Handle edge cases
+			}
+
+			for (int i = mLength - targetLen; 0 <= i; --i) // Start from end
+			{
+				FTDS::String query;
+				this->SubStr(query, i, targetLen);
+				if (FTDS::StringEqual(query.C_Str(), target))
+				{
+					return i; // Found last occurrence
+				}
+			}
+			return -1; // Not found
+		}
+
+		int LFind(const char* target)
+		{
+			size_t targetLen = FTDS::StrLen(target);
+			if (!target || this->mLength < 1 || this->mLength < targetLen)
+			{
+				return -1; // Handle edge cases
+			}
+
+			for (int i = 0; i < mLength - targetLen; ++i) // Start from the Beginning
+			{
+				FTDS::String query;
+				this->SubStr(query, i, targetLen);
+				if (query.Equal(target))
+					return i; // Found last occurrence
+			}
+			return -1; // Not found
+		}
+
+		void Append(const char* val)
+		{
+			size_t inputLength = FTDS::StrLen(val);
+			char*  str		   = FTDS::StrCat(mData, val);
+			this->Assign(str);
+			delete[] str;
+		}
+
+		void Append(FTDS::String& val)
+		{
+			size_t inputLength = FTDS::StrLen(val.C_Str());
+			char*  str		   = FTDS::StrCat(mData, val.C_Str());
+			this->Assign(str);
+			delete[] str;
+		}
+
+		void Append(const FTDS::String& val)
+		{
+			size_t inputLength = FTDS::StrLen(val.mData);
+			char*  str		   = FTDS::StrCat(mData, val.mData);
+			this->Assign(str);
+			delete[] str;
+		}
+
+		void SubStr(FTDS::String& result, size_t start, size_t length)
+		{
+			if (start >= mLength)
+				return;
+
+			char* str = DBG_NEW char[length + 1];
+			for (size_t i = 0; i < length; ++i)
+			{
+				str[i] = this->mData[start + i];
+			}
+			str[length] = '\0';
+			result.Assign(str);
+			result.SetLength(length);
+			delete[] str;
+		}
+
+		void SubStr(size_t start, size_t length)
+		{
+			if (start >= mLength)
+				return;
+
+			char* str = DBG_NEW char[length + 1];
+			for (size_t i = 0; i < length; ++i)
+			{
+				str[i] = this->mData[start + i];
+			}
+			str[length] = '\0';
+			this->Assign(str);
+			mLength = length;
+			delete[] str;
+		}
+
+		void Assign(const char* val)
+		{
+			size_t inputLen = StrLen(val);
+			mLength			= inputLen;
+			this->Reserve(inputLen + 1);
+
+			while (0 < inputLen)
+			{
+				--inputLen;
+				this->mData[inputLen] = val[inputLen];
+			}
+			this->mData[mLength] = '\0';
+		}
+
+		void Assign(FTDS::String& val)
+		{
+			Assign(val.C_Str());
+		}
+
+		template <typename T, typename... Args>
+		typename STRING_INPUT Assign(T first, Args... rest)
+		{
+			this->Assign(first);
+			((this->Append(rest), ...));
+		}
+
+		void ExtractUntilFirst(FTDS::String& result, const char* ch)
+		{
+			size_t end = LFind(ch);
+			SubStr(result, 0, end);
+		}
+
+		void ExtractUntilLast(FTDS::String& result, const char* ch)
+		{
+			size_t end = RFind(ch);
+			SubStr(result, 0, end);
+		}
+
+		void ExtractBracketedVal(FTDS::String& result, const char* left, const char* right)
+		{
+			size_t begin = LFind(left);
+			size_t end	 = RFind(right);
+			SubStr(result, begin + 1, end - begin - 1);
+		}
+
+		bool Equal(const char* right) const
+		{
+			return StringEqual(this->C_Str(), right);
+		}
+
+		bool NotEqual(const char* right) const 
+		{
+			return !StringEqual(this->C_Str(), right);
+		}
+
+		bool StrContains(FTDS::String& value)
+		{
+			return RFind(value.C_Str());
+		}
+
+		/////////////////////////
+		/// String Properties ///
+		/////////////////////////
+	public:
+		const char* C_Str() const
+		{
+			return this->mData;
+		}
+
+		wchar_t* WC_Str()
+		{
+			int		 size_needed = MultiByteToWideChar(CP_UTF8, 0, mData, -1, nullptr, 0);
+			wchar_t* wstr		 = DBG_NEW wchar_t[size_needed];
+			MultiByteToWideChar(CP_UTF8, 0, mData, -1, wstr, size_needed);
+			return wstr; // Remember to delete[] wstr after use
+		}
+
+		const size_t Length() const { return mLength; }
+		void SetLength(size_t len) { mLength = len; }
+
+		bool IsEmpty() { return mLength == 0 || !mData; }
+
+		//////////////////////////
+		/// Operator Overloads ///
+		//////////////////////////
+		void operator=(const char* val)
+		{
+			Assign(val);
+		}
+
+		void operator=(const FTDS::String& str)
+		{
+			this->Assign(str.C_Str());
+		}
+
+		FTDS::String operator+(const char* str)
+		{
+			FTDS::String result(mData);
+			result.Append(str);
+			return result;
+		}
+
+		FTDS::String operator+(const FTDS::String& str)
+		{
+			FTDS::String result(mData);
+			result.Append(str);
+			return result;
+		}
+
+		FTDS::String operator+=(const FTDS::String& str)
+		{
+			FTDS::String result(mData);
+			result.Append(str);
+			return result;
+		}
+
+	public:
+		String()
+			: FTDS::Array<char>()
+			, mLength(0)
+		{
+		}
+
+		String(char* val)
+			: FTDS::Array<char>()
+			, mLength(0)
+		{
+			Assign(val);
+		}
+
+		String(const char* val)
+			: FTDS::Array<char>()
+			, mLength(0)
+		{
+			Assign(val);
+		}
+
+		String(FTDS::String& val)
+			: FTDS::Array<char>()
+			, mLength(val.Length())
+		{
+			Assign(val.C_Str());
+		}
+
+		String(const FTDS::String& val)
+			: FTDS::Array<char>()
+			, mLength(val.Length())
+		{
+			Assign(val.C_Str());
+		}
+
+		String(size_t num, char val)
+			: FTDS::Array<char>()
+			, mLength(num)
+		{
+			Reserve(num + 1);
+			for (size_t i = 0; i < this->mCapacity; ++i)
+				this->mData[i] = val;
+		}
+
+	private:
+		size_t mLength;
+	};
+
+	inline bool StrContains(const char* str, const char* val)
+	{
+		return FTDS::String(str).RFind(val);
+	}
+
+	inline bool StrContains(const char* str, FTDS::String val)
+	{
+		return FTDS::String(str).RFind(val.C_Str());
+	}
+
+	inline size_t StrLen(const char* str)
+	{
+		size_t length = 0;
+		while (str[length] != '\0')
+		{
+			++length;
+		}
+		return length;
+	}
+
+	inline bool StringEqual(const char* left, const char* right)
+	{
+		size_t length = FTDS::StrLen(left);
+		// The size of two strings are not equal.
+		if (length != FTDS::StrLen(right))
+			return false;
+		for (size_t i = 0; i < length; ++i)
+			if (left[i] != right[i])
+				return false;
+		return true;
+	}
+
+	inline char* StrCat(const char* str1, const char* str2)
+	{
+		if (!str1 || !str2)
+			return nullptr; // Handle null pointers
+
+		// Calculate lengths
+		size_t len1 = 0, len2 = 0;
+		len1 = FTDS::StrLen(str1);
+		len2 = FTDS::StrLen(str2);
+
+		// Allocate memory for the concatenated string (+1 for null terminator)
+		char* result = DBG_NEW char[len1 + len2 + 1];
+
+		// Copy str1 into result
+		for (size_t i = 0; i < len1; ++i)
+		{
+			result[i] = str1[i];
+		}
+
+		// Append str2 to result
+		for (size_t i = 0; i < len2; ++i)
+		{
+			result[len1 + i] = str2[i];
+		}
+
+		result[len1 + len2] = '\0'; // Null-terminate the new string
+
+		return result;
+	}
+
+	inline bool operator==(const FTDS::String& lhs, const char* rhs)
+	{
+		return lhs.Equal(rhs);
+	}
+
+	inline bool operator==(const char* lhs, const FTDS::String& rhs)
+	{
+		return rhs.Equal(lhs);
+	}
+
+	inline bool operator==(const FTDS::String lhs, const FTDS::String& rhs)
+	{
+		return lhs.Equal(rhs.C_Str());
+	}
+
+	inline bool operator!=(const FTDS::String lhs, const FTDS::String& rhs)
+	{
+		return lhs.NotEqual(rhs.C_Str());
+	}
+} // namespace FTDS

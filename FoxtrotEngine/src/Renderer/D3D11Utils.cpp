@@ -643,7 +643,6 @@ void D3D11Utils::CreateTextureArray(
 		std::vector<uint8_t> image;
 
 		ReadImage(f, image, width, height);
-
 		imageArray.push_back(image);
 	}
 

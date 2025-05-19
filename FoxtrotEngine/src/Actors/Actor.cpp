@@ -55,7 +55,7 @@ Actor::Actor(Scene* scene)
 }
 
 Actor::Actor(Actor* actor)
-	: mName(actor->GetName())
+	: mName()
 	, mActorGroup(actor->mActorGroup)
 	, mState(EActive)
 	, mTransform(DBG_NEW Transform)
@@ -63,13 +63,15 @@ Actor::Actor(Actor* actor)
 	, mParent(actor->mParent)
 	, mChild{}
 {
+	mName.Assign(actor->GetNameRef());
+
 	CopyTransformFrom(actor);
 	CopyComponentsFrom(actor);
 	CopyChildObjectFrom(actor);
 }
 
 Actor::Actor(Actor* actor, Scene* scene)
-	: mName			(actor->GetName())
+	: mName			()
 	, mActorGroup	(actor->mActorGroup)
 	, mState		(actor->mState)
 	, mTransform	(DBG_NEW Transform)
@@ -77,6 +79,8 @@ Actor::Actor(Actor* actor, Scene* scene)
 	, mParent		(nullptr)
 	, mChild		()
 {
+	mName.Assign(actor->GetNameRef());
+
 	CopyTransformFrom(actor);
 	CopyComponentsFrom(actor);
 	CopyChildObjectFrom(actor);
@@ -284,10 +288,10 @@ void Actor::LoadProperties(std::ifstream& ifs)
 
 void Actor::LoadComponents(std::ifstream& ifs)
 {
-	std::pair<int, FTDS::String>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COMPONENTS);
+	std::pair<size_t, FTDS::String>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COMPONENTS);
 	mComponents.reserve(pack.first);
 	for (size_t i = 0; i < pack.first; ++i) {
 		std::pair<size_t, FTDS::String> compPack = FileIOHelper::BeginDataPackLoad(ifs);
-		ChunkLoader::GetInstance()->GetComponentLoadMap().at(compPack.second)(this, ifs);
+		ChunkLoader::GetInstance()->GetComponentLoadMap().at(compPack.second.C_Str())(this, ifs);
 	}
 }

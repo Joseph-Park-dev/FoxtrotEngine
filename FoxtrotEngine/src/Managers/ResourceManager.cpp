@@ -83,7 +83,8 @@ FTDS::String& ResourceManager::GetPathToAsset()
 
 void ResourceManager::SetPathToAsset(FTDS::String&& projectPath)
 {
-	mPathToAsset.Append(projectPath + "\\Assets\\");
+	mPathToAsset.Assign(projectPath);
+	mPathToAsset.Append("\\Assets\\");
 }
 
 FTDS::HashChainMap<FTTexture*>* ResourceManager::GetTextures()
@@ -339,77 +340,77 @@ void ResourceManager::ProcessMaterial(FTMaterial* material)
 void ResourceManager::ProcessTextures()
 {
 	for (auto iter = mTextures->Begin(); iter != mTextures->End(); ++iter)
-		if (iter)
+		if (*iter)
 			ProcessTexture((*iter)->Value());
 }
 
 void ResourceManager::ProcessMeshGroups()
 {
 	for (auto iter = mMeshGroups->Begin(); iter != mMeshGroups->End(); ++iter)
-		if (iter)
+		if (*iter)
 			ProcessSingleMeshGrp((*iter)->Value());
 }
 
 void ResourceManager::ProcessPremades()
 {
 	for (auto iter = mPremades->Begin(); iter != mPremades->End(); ++iter)
-		if (iter)
+		if (*iter)
 			ProcessPremade((*iter)->Value());
 }
 
 void ResourceManager::ProcessTileMaps()
 {
 	for (auto iter = mTileMaps->Begin(); iter != mTileMaps->End(); ++iter)
-		if (iter)
+		if (*iter)
 			ProcessTileMap((*iter)->Value());
 }
 
 void ResourceManager::ProcessSpriteSheets()
 {
 	for (auto iter = mSpriteSheets->Begin(); iter != mSpriteSheets->End(); ++iter)
-		if (iter)
+		if (*iter)
 			ProcessSpriteSheet((*iter)->Value());
 }
 
 void ResourceManager::ProcessSpriteAnims()
 {
 	for (auto iter = mSpriteAnimations->Begin(); iter != mSpriteAnimations->End(); ++iter)
-		if (iter)
+		if (*iter)
 			ProcessSpriteAnim((*iter)->Value());
 }
 
 void ResourceManager::ProcessCSVs()
 {
 	for (auto iter = mCSVs->Begin(); iter != mCSVs->End(); ++iter)
-		if (iter)
+		if (*iter)
 			ProcessCSV((*iter)->Value());
 }
 
 void ResourceManager::ProcessJSONs()
 {
 	for (auto iter = mJSONs->Begin(); iter != mJSONs->End(); ++iter)
-		if (iter)
+		if (*iter)
 			ProcessJSON((*iter)->Value());
 }
 
 void ResourceManager::ProcessMaterials()
 {
 	for (auto iter = mMaterials->Begin(); iter != mMaterials->End(); ++iter)
-		if (iter)
+		if (*iter)
 			ProcessMaterial((*iter)->Value());
 }
 
 void ResourceManager::ProcessVertexShaders()
 {
 	for (auto iter = mVertexShaders->Begin(); iter != mVertexShaders->End(); ++iter)
-		if (iter)
+		if (*iter)
 			((*iter)->Value())->CompileShader(mRenderer);
 }
 
 void ResourceManager::ProcessPixelShaders()
 {
 	for (auto iter = mPixelShaders->Begin(); iter != mPixelShaders->End(); ++iter)
-		if (iter)
+		if (*iter)
 			((*iter)->Value())->CompileShader(mRenderer);
 }
 

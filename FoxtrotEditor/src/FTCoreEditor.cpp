@@ -63,7 +63,7 @@ bool FTCoreEditor::Initialize()
 		delete mEditorWindow;
 		mEditorWindow = nullptr;
 	}
-	mEditorWindow = DBG_NEW FTWindow(L"Foxtrot Editor", 1920, 1080);
+	mEditorWindow = DBG_NEW FTWindow("Foxtrot Editor", 1920, 1080);
 
 	if (!mEditorWindow->InitializeWindow(WndProc_FTEditor))
 	{
@@ -163,6 +163,11 @@ void FTCoreEditor::InitSingletonManagers()
 
 	EditorSceneManager::GetInstance()->Initialize();
 	EditorLayer::GetInstance();
+}
+
+void FTCoreEditor::LoadGameData()
+{
+	LogString("Initializing FTEditor. GameData will not be loaded.");
 }
 
 void FTCoreEditor::ProcessInput()

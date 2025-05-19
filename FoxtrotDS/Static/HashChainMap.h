@@ -103,6 +103,7 @@ namespace FTDS
 
 	public:
 		const size_t& GetSize() { return mSize; }
+		bool IsEmpty() const { return mSize == 0; }
 
 	public:
 		HashChainMap()

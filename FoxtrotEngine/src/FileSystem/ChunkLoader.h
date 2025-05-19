@@ -32,7 +32,7 @@ class Component;
 class Scene;
 
 using ComponentLoadFunc = std::function<void(Actor*, std::ifstream&)>;
-using ComponentLoadMap	= std::unordered_map<FTDS::String, ComponentLoadFunc>;
+using ComponentLoadMap	= std::unordered_map<const char*, ComponentLoadFunc>;
 
 struct ChunkData
 {

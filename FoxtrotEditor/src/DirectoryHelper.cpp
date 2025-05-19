@@ -36,12 +36,12 @@ bool DirectoryHelper::GetCurrChunkSaved() const
 
 void DirectoryHelper::SetProjPath(FTDS::String&& path)
 {
-	mCurrProjectPath.assign(path);
+	mCurrProjectPath.Assign(path);
 }
 
 void DirectoryHelper::SetChunkPath(FTDS::String&& path)
 {
-	mCurrChunkPath.assign(path);
+	mCurrChunkPath.Assign(path);
 }
 
 void DirectoryHelper::SetCurrChunkSaved(bool saved)

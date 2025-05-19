@@ -1,6 +1,5 @@
 #include "EditorResourceManager.h"
 
-#include "Compare/StringEqual.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "ResourceSystem/GeometryGenerator.h"
 #include "ResourceSystem/FTBasicMeshGroup.h"
@@ -23,9 +22,33 @@
 
 void EditorResourceManager::LoadAllResourcesInAsset()
 {
+	ResourceManager::GetTextures()->Reserve(10);
+	ResourceManager::GetTileMaps()->Reserve(10);
+	ResourceManager::GetSpriteSheets()->Reserve(10);
+	ResourceManager::GetPremades()->Reserve(10);
+	ResourceManager::GetSpriteAnimations()->Reserve(10);
+	ResourceManager::GetMeshGroups()->Reserve(10);
+	ResourceManager::GetVertexShaders()->Reserve(10);
+	ResourceManager::GetPixelShaders()->Reserve(10);
+	ResourceManager::GetMaterials()->Reserve(10);
+	ResourceManager::GetCSVs()->Reserve(10);
+	ResourceManager::GetJSONs()->Reserve(10);
+
 	DirectoryHelper::IterateForFileRecurse(
-		GetPathToAsset(),
+		GetPathToAsset().C_Str(),
 		[&](std::string&& path) { LoadResByType(path.c_str()); });
+
+	//ResourceManager::GetTextures()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	//ResourceManager::GetTileMaps()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	//ResourceManager::GetSpriteSheets()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	//ResourceManager::GetPremades()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	//ResourceManager::GetSpriteAnimations()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	//ResourceManager::GetMeshGroups()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	//ResourceManager::GetVertexShaders()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	//ResourceManager::GetPixelShaders()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	//ResourceManager::GetMaterials()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	//ResourceManager::GetCSVs()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	//ResourceManager::GetJSONs()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
 
 	ProcessCSVs();
 	ProcessJSONs();
@@ -286,19 +309,6 @@ void EditorResourceManager::Initialize(FoxtrotRenderer* renderer)
 {
 	ResourceManager::Initialize(renderer);
 
-	mMapTextures.insert({ ChunkKey::NullVal::NULL_OBJECT, nullptr });
-	mMapTileMaps.insert({ ChunkKey::NullVal::NULL_OBJECT, nullptr });
-	mMapSpriteSheets.insert({ ChunkKey::NullVal::NULL_OBJECT, nullptr });
-	mMapPremades.insert({ ChunkKey::NullVal::NULL_OBJECT, nullptr });
-	mMapSpriteAnimation.insert({ ChunkKey::NullVal::NULL_OBJECT, nullptr });
-	mMapMeshGroups.insert({ ChunkKey::NullVal::NULL_OBJECT, nullptr });
-
-	mMapVertexShaders.insert({ ChunkKey::NullVal::NULL_OBJECT, nullptr });
-	mMapPixelShaders.insert({ ChunkKey::NullVal::NULL_OBJECT, nullptr });
-	mMapMaterials.insert({ ChunkKey::NullVal::NULL_OBJECT, nullptr });
-	mMapCSVs.insert({ ChunkKey::NullVal::NULL_OBJECT, nullptr });
-	mMapJSONs.insert({ ChunkKey::NullVal::NULL_OBJECT, nullptr });
-
 	//// Add primitive geometries as resources
 	// mMapMeshGroups.insert(
 	//	{ FTDS::MakeHeapStr(ChunkKey::PRIMITIVE_SQUARE_RED),
@@ -434,7 +444,7 @@ void EditorResourceManager::Initialize(FoxtrotRenderer* renderer)
 
 void EditorResourceManager::UpdateUI()
 {
-	if (ImGui::Button("Import"))
+	/*if (ImGui::Button("Import"))
 	{
 		IGFD::FileDialogConfig config;
 		config.path				 = ".";
@@ -452,11 +462,12 @@ void EditorResourceManager::UpdateUI()
 		{
 			FTDS::String path	   = ImGuiFileDialog::Instance()->GetFilePathName().c_str();
 			size_t		 pos	   = path.RFind(".");
-			FTDS::String extension = path.SubStr(pos, path.Length() - pos);
+			path.SubStr(pos, path.Length() - pos);
 
-			if (StrContains(FileTypes::TEXTURE, extension))
+			if (StrContains(FileTypes::TEXTURE, path))
 			{
-				FTDS::String relativePath = path.substr(path.rfind("Assets"));
+				FTDS::String relativePath;
+				path.SubStr(path.RFind("Assets"));
 				FTTexture*	 texture	  = LoadResource<FTTexture>(relativePath, mMapTextures);
 				ProcessTexture(texture);
 			}
@@ -483,7 +494,7 @@ void EditorResourceManager::UpdateUI()
 		{
 			if ((*texIter).second)
 			{
-				if (ImGui::BeginListBox((*texIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 200)))
+				if (ImGui::BeginListBox((*texIter).second->FileName().c_str(), ImVec2(-FLT_MIN, 200)))
 				{
 					(*texIter).second->UpdateUI();
 					if (ImGui::Button("Remove"))
@@ -507,7 +518,7 @@ void EditorResourceManager::UpdateUI()
 		{
 			if ((*tileIter).second)
 			{
-				if (ImGui::BeginListBox((*tileIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 200)))
+				if (ImGui::BeginListBox((*tileIter).second->FileName().c_str(), ImVec2(-FLT_MIN, 200)))
 				{
 					(*tileIter).second->UpdateUI();
 					if (ImGui::Button("Remove"))
@@ -531,7 +542,7 @@ void EditorResourceManager::UpdateUI()
 		{
 			if ((*premadeIter).second)
 			{
-				if (ImGui::BeginListBox((*premadeIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 100)))
+				if (ImGui::BeginListBox((*premadeIter).second->FileName().c_str(), ImVec2(-FLT_MIN, 100)))
 				{
 					(*premadeIter).second->UpdateUI();
 					if (ImGui::Button("Remove"))
@@ -553,7 +564,7 @@ void EditorResourceManager::UpdateUI()
 		vsIter = mMapVertexShaders.begin();
 		for (; vsIter != mMapVertexShaders.end(); ++vsIter)
 		{
-			if (ImGui::BeginListBox((*vsIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 100)))
+			if (ImGui::BeginListBox((*vsIter).second->FileName().c_str(), ImVec2(-FLT_MIN, 100)))
 			{
 				(*vsIter).second->UpdateUI();
 				if (ImGui::Button("Remove"))
@@ -574,7 +585,7 @@ void EditorResourceManager::UpdateUI()
 		materialIter = mMapMaterials.begin();
 		for (; materialIter != mMapMaterials.end(); ++materialIter)
 		{
-			if (ImGui::BeginListBox((*materialIter).second->GetFileName().c_str(), ImVec2(-FLT_MIN, 100)))
+			if (ImGui::BeginListBox((*materialIter).second->FileName().c_str(), ImVec2(-FLT_MIN, 100)))
 			{
 				(*materialIter).second->UpdateUI();
 				if (ImGui::Button("Remove"))
@@ -587,12 +598,19 @@ void EditorResourceManager::UpdateUI()
 			}
 		}
 		ImGui::TreePop();
-	}
+	}*/
 }
 
 ResType EditorResourceManager::GetResType(FTDS::String& fileName)
 {
-	FTDS::String format = fileName.substr(fileName.rfind("."));
+	size_t length = 0;
+	if (fileName.RFind(".") < 0)
+		return ResType::UNSUPPORTED;
+	length = fileName.Length() - static_cast<size_t>(fileName.RFind("."));
+
+	FTDS::String format = fileName;
+	format.SubStr(fileName.RFind("."), length);
+
 	if (StrContains(FileTypes::TEXTURE, format))
 		return ResType::FTTEXTURE;
 	else if (StrContains(FileTypes::TILEMAP, format))

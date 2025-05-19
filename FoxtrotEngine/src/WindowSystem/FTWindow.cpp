@@ -323,7 +323,7 @@ FTWindow::FTWindow(const char* title, UINT width, UINT height)
 	, mRenderArea(DBG_NEW FTRectArea(0.f, 0.f, width, height))
 	, mInputDevice(DBG_NEW FTInputDevice)
 {
-	mTitle	= title;
+	mTitle.Assign(title);
 	mWidth	= width;
 	mHeight = height;
 

@@ -46,6 +46,7 @@ private:
 private:
 	// These member functions are to be included in Initialize()
 	void InitSingletonManagers() override;
+	void LoadGameData() override;
 	bool InitGUI();
 
 private:

@@ -27,11 +27,13 @@
 #include "Renderer/FoxtrotRenderer.h"
 #include "Components/Component.h"
 
+#include "Static/FTString.h"
+
 void EditorElement::UpdateUI(bool isPremade)
 {
 	if (mIsFocused)
 	{
-		ImGui::BeginChild(GetName().c_str());
+		ImGui::BeginChild(GetName().C_Str());
 		if (ImGui::BeginTabBar("MyTabBar", ImGuiTabBarFlags_None))
 		{
 			if (ImGui::BeginTabItem("Basic Data"))
@@ -127,13 +129,16 @@ void EditorElement::UpdateActorState()
 
 void EditorElement::UpdateComponents()
 {
-	if (ImGui::BeginChild(GetName().c_str()))
+	if (ImGui::BeginChild(GetName().C_Str()))
 	{
 		size_t count = 0;
 		for (Component* comp : GetComponents())
 		{
-			std::string name = std::to_string(count) + " " + comp->GetName();
-			if (ImGui::TreeNode(name.c_str()))
+			FTDS::String name(std::to_string(count).c_str());
+			name.Append(" ");
+			name.Append(GetName());
+
+			if (ImGui::TreeNode(name.C_Str()))
 			{
 				int updateOrder = comp->GetUpdateOrder();
 				ImGui::InputInt(ChunkKey::UPDATE_ORDER, &updateOrder);
@@ -161,7 +166,7 @@ void EditorElement::DisplayCompSelectionPopup()
 		ImGui::SeparatorText("Add Components");
 		ComponentCreateMap::iterator iter = EditorChunkLoader::GetInstance()->GetCompCreateMap().begin();
 		for (; iter != EditorChunkLoader::GetInstance()->GetCompCreateMap().end(); ++iter)
-			if (ImGui::Selectable((*iter).first.c_str()))
+			if (ImGui::Selectable((*iter).first))
 				(*iter).second(this, FTCoreEditor::GetInstance());
 		ImGui::EndPopup();
 	}

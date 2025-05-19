@@ -22,7 +22,7 @@ TileMapManager::~TileMapManager()
 
 void TileMapManager::SaveTileMapAsFile(FTTileMap* tileMap)
 {
-	const FTDS::String& path = tileMap->RelativePath().C_Str();
+	const char* path = tileMap->RelativePath().C_Str();
 	tileMap->FileName().Assign(tileMap->FileName());
 	tileMap->FileName().Assign(FileTypes::TILEMAP);
 	FTDS::String fullPath = FTDS::String(path) + tileMap->FileName();
@@ -35,7 +35,7 @@ void TileMapManager::SaveTileMapAsFile(FTTileMap* tileMap)
 
 void TileMapManager::SaveSpriteSheetAsFile(FTSpriteSheet* spriteSheet)
 {
-	const FTDS::String& path = spriteSheet->RelativePath().C_Str();
+	const char* path = spriteSheet->RelativePath().C_Str();
 	spriteSheet->FileName().Assign(spriteSheet->FileName());
 	spriteSheet->FileName().Assign(FileTypes::TILEMAP);
 	FTDS::String fullPath = FTDS::String(path) + spriteSheet->FileName();

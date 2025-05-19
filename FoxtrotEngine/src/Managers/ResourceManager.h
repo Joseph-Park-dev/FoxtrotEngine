@@ -230,7 +230,7 @@ private:
 	{
 		FTRESOURCE* res = DBG_NEW FTRESOURCE;
 		FileIOHelper::BeginDataPackLoad(ifs);
-		FileIOHelper::LoadBasicString(ifs, res->RelativePath().C_Str());
+		FileIOHelper::LoadBasicString(ifs, res->RelativePath());
 		FileIOHelper::LoadBasicString(ifs, res->FileName());
 
 		assert(0 < resMap->Capacity());
@@ -242,8 +242,10 @@ private:
 	{
 		if (resMap)
 		{
+			if (resMap->IsEmpty())
+				return;
 			for (auto iter = resMap->Begin(); iter != resMap->End(); ++iter)
-				if ((*iter)->Value())
+				if (*iter)
 					delete ((*iter)->Value());
 			resMap->Clear();
 			resMap = nullptr;

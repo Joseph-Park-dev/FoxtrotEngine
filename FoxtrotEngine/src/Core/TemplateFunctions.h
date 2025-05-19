@@ -103,6 +103,11 @@ inline void LogString(FTDS::String val)
 	printf("%s\n", val.C_Str());
 }
 
+inline void LogString(const char* val)
+{
+	printf("%s\n", val);
+}
+
 inline void LogString(std::wstring message, std::wstring val)
 {
 	printf("%ls\n", (message + L" :" + val).c_str());

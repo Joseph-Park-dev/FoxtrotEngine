@@ -145,7 +145,7 @@ filter)
 - multi layer extentions like : .a.b.c .json.cpp .vcxproj.filters etc..
 - advanced behavior regarding asterisk based filter. like : .* .*.* .vcx.* .*.filters .vcs*.filt.* etc.. (internally
 regex is used)
-- result modes GetFilePathName, GetFileName and GetSelection (overwrite file ext, keep file, add ext if no user ext
+- result modes GetFilePathName, FileName and GetSelection (overwrite file ext, keep file, add ext if no user ext
 exist)
 
 ################################################################
@@ -935,7 +935,7 @@ you can specify a result mode to thoses function :
 
 ```cpp
 GetFilePathName(IGFD_ResultMode = IGFD_ResultMode_AddIfNoFileExt)
-GetFileName(IGFD_ResultMode = IGFD_ResultMode_AddIfNoFileExt)
+FileName(IGFD_ResultMode = IGFD_ResultMode_AddIfNoFileExt)
 GetFileSelection(IGFD_ResultMode = IGFD_ResultMode_KeepInputFile)
 ```
 You can see these function who their default modes.

@@ -292,6 +292,6 @@ void Actor::LoadComponents(std::ifstream& ifs)
 	mComponents.reserve(pack.first);
 	for (size_t i = 0; i < pack.first; ++i) {
 		std::pair<size_t, FTDS::String> compPack = FileIOHelper::BeginDataPackLoad(ifs);
-		ChunkLoader::GetInstance()->GetComponentLoadMap().at(compPack.second.C_Str())(this, ifs);
+		ChunkLoader::GetInstance()->GetComponentLoadMap().At(compPack.second)->Value()(this, ifs);
 	}
 }

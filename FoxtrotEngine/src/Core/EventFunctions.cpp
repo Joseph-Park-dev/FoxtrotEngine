@@ -28,11 +28,11 @@ void Instantiate(Actor* actor, ActorGroup actorGroup)
 	EventManager::GetInstance()->AddEvent(addedEvent);
 }
 
-Actor* Instantiate(const char* premadeName)
+Actor* Instantiate(FTDS::String& premadeName)
 {
 	FTEvent addedEvent = {};
 	addedEvent.incident = EVENT_TYPE::CREATE_ACTOR;
-	FTPremade* premade = ResourceManager::GetInstance()->GetLoadedPremade(std::move(premadeName));
+	FTPremade* premade = ResourceManager::GetInstance()->GetLoadedPremade(premadeName);
 	Actor* origin = premade->GetOrigin();
 
 #ifdef FOXTROT_EDITOR

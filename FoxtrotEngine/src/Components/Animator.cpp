@@ -50,7 +50,8 @@ void Animator::Play(const UINT key, bool isRepeated)
 	FTDS::String loadedKey = mLoadedKeys.at(key);
 
 #ifdef FOXTROT_EDITOR
-	SetMeshGroup(EditorResourceManager::GetInstance()->GetLoadedSpriteAnim(loadedKey.C_Str()));
+	FTSpriteAnimation* anim = EditorResourceManager::GetInstance()->GetLoadedSpriteAnim(loadedKey);
+	SetMeshGroup(anim);
 #else
 	SetMeshGroup(ResourceManager::GetInstance()->GetLoadedSpriteAnim(loadedKey.C_Str()));
 #endif // FOXTROT_EDITOR
@@ -209,12 +210,13 @@ void Animator::EditorUpdate(float deltaTime)
 
 void Animator::EditorUIUpdate()
 {
+	CHECK_RENDERER(GetRenderer());
+
 	UpdatePlayAnim();
 	UpdatePlayList();
 
 	CommandHistory::GetInstance()->UpdateBoolValue("Is Repeated", mIsRepeated);
-
-	SpriteRenderer::EditorUIUpdate();
+	UpdateMaterial();
 }
 
 void Animator::EditorRender(FoxtrotRenderer* renderer)
@@ -234,7 +236,7 @@ void Animator::UpdatePlayAnim()
 		else
 		{
 			if (ImGui::Button("Play"))
-				Play(mCurrAnimKey);
+				Play(0);
 		}
 	}
 }

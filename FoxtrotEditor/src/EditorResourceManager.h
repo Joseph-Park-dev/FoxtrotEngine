@@ -98,7 +98,7 @@ public:
 		// Get Relative path to Assets folder
 		FTDS::String fileName = ExtractFileName(filePath.C_Str());
 
-		if (!KeyExists<FTRESOURCE>(fileName.C_Str(), resMap))
+		if (!KeyExists<FTRESOURCE*>(fileName, resMap))
 		{
 			printf("Message: Loading FTResource %s to key %s. \n", filePath.C_Str(), fileName.C_Str());
 
@@ -106,7 +106,7 @@ public:
 			res->SetFileName(fileName);
 			res->SetRelativePath(filePath);
 
-			resMap->Insert(fileName.C_Str(), res);
+			resMap->Insert(fileName, res);
 			return res;
 		}
 		else
@@ -120,7 +120,7 @@ public:
 	template <typename FTRESOURCE>
 	void LoadResource(FTRESOURCE* res, FTDS::HashChainMap<FTRESOURCE*>* resMap)
 	{
-		resMap->Insert(res->FileName().C_Str(), res);
+		resMap->Insert(res->FileName(), res);
 	}
 
 	////////////////////////
@@ -155,14 +155,11 @@ private:
 	//////////////////////////
 private:
 	template <typename FTRESOURCE>
-	bool KeyExists(FTDS::String key, FTDS::HashChainMap<FTRESOURCE*>* resMap)
+	bool KeyExists(FTDS::String key, FTDS::HashChainMap<FTRESOURCE>* resMap)
 	{
-		if (resMap->At(key.C_Str()));
-		{
-			printf("Error: ResourceManager::ResourceExists() -> Resource with key %s exists\n", key.C_Str());
-			return true;
-		}
-		return false;
+		FTDS::RecordNode<FTRESOURCE>* res = nullptr;
+		res = resMap->At(key);
+		return res;
 	}
 
 	/*template <typename FTRESOURCE>

@@ -29,6 +29,7 @@ std::pair<size_t, FTDS::String> FileIOHelper::BeginDataPackLoad(std::ifstream& i
 	// Parse data pack key
 	FTDS::String name;
 	loadedDataPackKey.ExtractUntilLast(name, "<");
+	name.ExtractFromLast("\t");
 
 	// Parse data pack name
 	FTDS::String countStr;
@@ -49,6 +50,7 @@ std::pair<size_t, FTDS::String> FileIOHelper::BeginDataPackLoad(std::ifstream& i
 	// Parse data pack key
 	FTDS::String name;
 	loadedDataPackKey.ExtractUntilFirst(name, "<");
+	name.ExtractFromLast("\t");
 
 	// Parse data pack name
 	FTDS::String countStr;
@@ -174,6 +176,8 @@ void FileIOHelper::LoadBasicString(std::ifstream& ifs, FTDS::String& strVal)
 	// Parse the actual data.
 	GetLine(ifs, line, '\n');
 	ParseString(line, strVal);
+
+	strVal.ExtractFromLast("\t");
 }
 
 void FileIOHelper::LoadVector2(std::ifstream& ifs, FTVector2& vec2)
@@ -291,10 +295,9 @@ void FileIOHelper::ParseVector2(FTDS::String& line, FTVector2& arg)
 
 	FTDS::String xStr;
 	FTDS::String yStr;
-	FTDS::String zStr;
 
 	line.ExtractUntilFirst(xStr, ",");
-	line.ExtractBracketedVal(yStr, ",", ",");
+	line.ExtractUntilLast(yStr, ",");
 
 	float x = std::stof(xStr.C_Str());
 	float y = std::stof(yStr.C_Str());
@@ -308,10 +311,9 @@ void FileIOHelper::ParseVector2(FTDS::String& line, b2Vec2& arg)
 
 	FTDS::String xStr;
 	FTDS::String yStr;
-	FTDS::String zStr;
 
 	line.ExtractUntilFirst(xStr, ",");
-	line.ExtractBracketedVal(yStr, ",", ",");
+	line.ExtractUntilLast(yStr, ",");
 
 	float x = std::stof(xStr.C_Str());
 	float y = std::stof(yStr.C_Str());
@@ -325,10 +327,9 @@ void FileIOHelper::ParseVector2(FTDS::String& line, DirectX::XMFLOAT2& arg)
 
 	FTDS::String xStr;
 	FTDS::String yStr;
-	FTDS::String zStr;
 
 	line.ExtractUntilFirst(xStr, ",");
-	line.ExtractBracketedVal(yStr, ",", ",");
+	line.ExtractUntilLast(yStr, ",");
 
 	float x = std::stof(xStr.C_Str());
 	float y = std::stof(yStr.C_Str());
@@ -573,6 +574,9 @@ void FileIOHelper::SaveBool(std::ofstream& ofs, const FTDS::String& valName, con
 
 bool FileIOHelper::GetLine(std::ifstream& ifs, FTDS::String& str, char delimiter)
 {
+	if (ifs.fail())
+		return false;
+
 	char   ch	  = NULL;
 	size_t length = 0;
 
@@ -595,5 +599,6 @@ bool FileIOHelper::GetLine(std::ifstream& ifs, FTDS::String& str, char delimiter
 		str.Data()[i] = ch;
 	}
 	str.Data()[length] = '\0';
+	ifs.seekg(2, std::ios_base::cur); // Skip the "\n" at the end of the line.
 	return str.Data() && 0 < length;
 }

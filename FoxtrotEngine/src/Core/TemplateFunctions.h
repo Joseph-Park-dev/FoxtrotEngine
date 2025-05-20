@@ -160,17 +160,19 @@ static const bool StrToBool(FTDS::String& str)
 inline FTDS::String ExtractFileName(const char* path)
 {
 	std::filesystem::path p(path);
-	const char*			  nameStr = p.filename().string().c_str();
-	FTDS::String		  str	  = FTDS::String(nameStr);
-	return str;
+	FTDS::String		  pathStr = FTDS::String(p.string().c_str());
+	int idx = pathStr.RFind("\\");
+	pathStr.SubStr(idx + 1, pathStr.Length() - idx); // 1 -> "\\" should be omitted.
+	return pathStr;
 }
 
 inline FTDS::String ExtractFileType(const char* path)
 {
 	std::filesystem::path p(path);
-	const char*			  nameStr = p.filename().string().c_str();
-	FTDS::String		  str	  = FTDS::String(nameStr);
-	return str;
+	FTDS::String		  pathStr = FTDS::String(p.string().c_str());
+	int idx = pathStr.RFind(".");
+	pathStr.SubStr(idx, pathStr.Length() - idx);
+	return pathStr;
 }
 
 inline void ExtractUntil(FTDS::String& line, const char* end)

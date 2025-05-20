@@ -137,20 +137,32 @@ namespace FTDS
 
 		void ExtractUntilFirst(FTDS::String& result, const char* ch)
 		{
-			size_t end = LFind(ch);
+			int end = LFind(ch);
 			SubStr(result, 0, end);
 		}
 
 		void ExtractUntilLast(FTDS::String& result, const char* ch)
 		{
-			size_t end = RFind(ch);
+			int end = RFind(ch);
 			SubStr(result, 0, end);
+		}
+
+		void ExtractFromLast(FTDS::String& result, const char* ch)
+		{
+			int end = RFind(ch);
+			SubStr(result, end + 1, mLength);
+		}
+
+		void ExtractFromLast(const char* ch)
+		{
+			int end = RFind(ch);
+			SubStr(end + 1, mLength);
 		}
 
 		void ExtractBracketedVal(FTDS::String& result, const char* left, const char* right)
 		{
-			size_t begin = LFind(left);
-			size_t end	 = RFind(right);
+			int begin = LFind(left);
+			int end	  = RFind(right);
 			SubStr(result, begin + 1, end - begin - 1);
 		}
 
@@ -159,14 +171,14 @@ namespace FTDS
 			return StringEqual(this->C_Str(), right);
 		}
 
-		bool NotEqual(const char* right) const 
+		bool NotEqual(const char* right) const
 		{
 			return !StringEqual(this->C_Str(), right);
 		}
 
 		bool StrContains(FTDS::String& value)
 		{
-			return RFind(value.C_Str());
+			return -1 < RFind(value.C_Str());
 		}
 
 		/////////////////////////
@@ -187,7 +199,7 @@ namespace FTDS
 		}
 
 		const size_t Length() const { return mLength; }
-		void SetLength(size_t len) { mLength = len; }
+		void		 SetLength(size_t len) { mLength = len; }
 
 		bool IsEmpty() { return mLength == 0 || !mData; }
 
@@ -265,8 +277,9 @@ namespace FTDS
 			, mLength(num)
 		{
 			Reserve(num + 1);
-			for (size_t i = 0; i < this->mCapacity; ++i)
+			for (size_t i = 0; i < this->mLength; ++i)
 				this->mData[i] = val;
+			this->mData[mLength] = '\0';
 		}
 
 	private:
@@ -275,12 +288,13 @@ namespace FTDS
 
 	inline bool StrContains(const char* str, const char* val)
 	{
-		return FTDS::String(str).RFind(val);
+		return -1 < FTDS::String(str).RFind(val);
 	}
 
-	inline bool StrContains(const char* str, FTDS::String val)
+	inline bool StrContains(const char* str, FTDS::String& val)
 	{
-		return FTDS::String(str).RFind(val.C_Str());
+		int idx = FTDS::String(str).RFind(val.C_Str());
+		return -1 < idx;
 	}
 
 	inline size_t StrLen(const char* str)

@@ -61,9 +61,9 @@ void EditorChunkLoader::SaveChunk(const char* fileName)
 	SaveActorsData(ofs);
 	EditorResourceManager::GetInstance()->SaveResources(ofs);
 	CollisionManager::GetInstance()->SaveCollisionMarks(ofs);
-	LightManager::GetInstance()->SaveProperties(ofs);
+	// LightManager::GetInstance()->SaveProperties(ofs);
 	SaveChunkData(ofs);
-	//FileIOHelper::SaveBufferToFile(ofs);
+	// FileIOHelper::SaveBufferToFile(ofs);
 	FileIOHelper::SaveBufferToFile(ofs);
 	Unlock();
 }
@@ -73,7 +73,7 @@ void EditorChunkLoader::LoadChunk(const char* fileName)
 	Lock();
 	std::ifstream ifs(fileName);
 	LoadChunkData(ifs);
-	LightManager::GetInstance()->LoadProperties(ifs);
+	// LightManager::GetInstance()->LoadProperties(ifs);
 	CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
 	EditorResourceManager::GetInstance()->PassLoadResourceInChunk(ifs);
 	LoadActorsData(ifs);
@@ -104,12 +104,12 @@ void EditorChunkLoader::SaveActorsData(std::ofstream& ofs)
 
 void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
 {
-	EditorScene*					 scene = EditorSceneManager::GetInstance()->GetEditorScene();
-	std::pair<size_t, FTDS::String>&& pack  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
+	EditorScene*					  scene = EditorSceneManager::GetInstance()->GetEditorScene();
+	std::pair<size_t, FTDS::String>&& pack	= FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
 	for (size_t i = 0; i < pack.first; ++i)
 	{
 		std::pair<size_t, FTDS::String>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
-		Actor							 actor	   = Actor();
+		Actor							  actor		= Actor();
 		actor.LoadProperties(ifs);
 		actor.LoadComponents(ifs);
 

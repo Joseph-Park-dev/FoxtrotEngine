@@ -45,7 +45,7 @@ namespace FTDS
 		: public FTDS::Array<FTDS::RecordNode<TYPE>*>
 	{
 	public:
-		void Insert(const char* key, TYPE value)
+		void Insert(FTDS::String key, TYPE value)
 		{
 			// HashChainMap uses FTDS::Array,
 			// the number of slots will not be dynamic, 
@@ -53,7 +53,7 @@ namespace FTDS
 			assert(0 < this->Capacity());
 
 			// Get Hash Value from HashFuntion()
-			size_t hashVal = FTDS::HashFunction(key, this->Capacity());
+			size_t hashVal = FTDS::HashFunction(key.C_Str(), this->Capacity());
 
 			// Traverse throught the linked list inside a slot.
 			for (RecordNode<TYPE>* p = this->mData[hashVal]; p != nullptr; p = p->GetLink())
@@ -62,7 +62,7 @@ namespace FTDS
 				if (p->Equal(key))
 				{
 					// Abort insertion.
-					FTDS::String msg("Duplicated key");
+					FTDS::String msg("Duplicated key: ");
 					msg.Append(key);
 					Debug::LogError(__LINE__, __FILE__, msg.C_Str());
 					return;
@@ -76,21 +76,21 @@ namespace FTDS
 			++mSize;
 		}
 
-		TYPE At(const char* key)
+		FTDS::RecordNode<TYPE>* At(FTDS::String& key)
 		{
 			// Get Hash Value from HashFuntion()
-			size_t hashVal = FTDS::HashFunction(key, this->Capacity());
+			size_t hashVal = FTDS::HashFunction(key.C_Str(), this->Capacity());
 
 			// Traverse throught the linked list inside a slot.
 			for (RecordNode<TYPE>* p = this->mData[hashVal]; p != nullptr; p = p->GetLink())
 			{
 				// Is there any nodes with the same key?
 				if (p->Equal(key))
-					return p->Value();
+					return p;
 			}
 
 			Debug::LogError(__LINE__, __FILE__, (FTDS::String("Search Failed for key: ") + key).C_Str());
-			return NULL;
+			return nullptr;
 		}
 
 		void Erase(const char* key)

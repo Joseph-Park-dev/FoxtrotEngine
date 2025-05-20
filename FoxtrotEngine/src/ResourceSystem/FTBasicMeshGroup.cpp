@@ -418,8 +418,6 @@ void FTBasicMeshGroup::CalcModelMat(Matrix& matrix, Transform* transform)
 	int dir = 0;
 	0 <= transform->GetSteering()->Linear.x ? dir = 1 : dir = -1;
 
-	LogFloat(transform->GetSteering()->Linear.x);
-
 	FTVector3		  scale		   = transform->GetScale();
 	DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x * dir, scale.y, scale.z);
 

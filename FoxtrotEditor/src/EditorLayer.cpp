@@ -217,7 +217,7 @@ void EditorLayer::DisplayMainMenuBar()
 					//EditorResourceManager::GetInstance()->DeleteAll();
 					UIManager::GetInstance()->Reset();
 					CollisionManager::GetInstance()->Reset();
-					LightManager::GetInstance()->Reset(FTCoreEditor::GetInstance()->GetGameRenderer());
+					//LightManager::GetInstance()->Reset(FTCoreEditor::GetInstance()->GetGameRenderer());
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 					EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK.C_Str());
@@ -648,7 +648,7 @@ void EditorLayer::Open(std::filesystem::path& path)
 	EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 	PATH_CHUNK.Assign(path.string().c_str());
 	EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK.C_Str());
-	LightManager::GetInstance()->Reset(FTCoreEditor::GetInstance()->GetGameRenderer());
+	//LightManager::GetInstance()->Reset(FTCoreEditor::GetInstance()->GetGameRenderer());
 	SET_CHUNK_IS_SAVED(true)
 }
 

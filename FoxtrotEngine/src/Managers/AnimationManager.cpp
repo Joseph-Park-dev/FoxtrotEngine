@@ -159,7 +159,7 @@ void AnimationManager::UpdateUI(bool* opened)
 		{
 			for (; iter != map->End(); ++iter)
 			{
-				if ((*iter)->Value())
+				if (*iter)
 				{
 					if (ImGui::BeginListBox((*iter)->Value()->FileName().C_Str(), ImVec2(-FLT_MIN, 100)))
 					{
@@ -194,9 +194,8 @@ void AnimationManager::CreateAnimation()
 
 		static FTDS::String texKey = ChunkKey::NullVal::NULL_OBJECT;
 		GetSprite(texKey);
-		if (!FTDS::StringEqual(texKey.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
-			text = EditorResourceManager::GetInstance()->GetLoadedTexture(texKey.C_Str())->FileName().C_Str();
-
+		if (texKey.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
+			text = EditorResourceManager::GetInstance()->GetLoadedTexture(texKey)->FileName().C_Str();
 		ImGui::Text(text);
 
 		text							   = ChunkKey::NullVal::NULL_OBJECT;
@@ -204,10 +203,10 @@ void AnimationManager::CreateAnimation()
 		GetSpriteSheet(spriteSheetKey);
 		FTSpriteSheet* spriteSheet = nullptr;
 		int			   maxIdx	   = 0;
-		if (!FTDS::StringEqual(spriteSheetKey.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
+		if (spriteSheetKey.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 		{
-			text		= EditorResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteSheetKey.C_Str())->FileName().C_Str();
-			spriteSheet = EditorResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteSheetKey.C_Str());
+			text		= EditorResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteSheetKey)->FileName().C_Str();
+			spriteSheet = EditorResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteSheetKey);
 			maxIdx		= static_cast<int>(spriteSheet->GetTilesCount()) - 1;
 		}
 		static int startIdx;

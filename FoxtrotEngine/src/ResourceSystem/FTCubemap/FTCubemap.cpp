@@ -90,13 +90,13 @@ void FTCubemap::Render(FoxtrotRenderer* renderer)
 ComPtr<ID3D11ShaderResourceView>& FTCubemap::GetDiffuseResView() { return mDiffuseResView; }
 ComPtr<ID3D11ShaderResourceView>& FTCubemap::GetSpecularResView() { return mSpecularResView; }
 
-void FTCubemap::SetDiffuseTexture(const char* key)
+void FTCubemap::SetDiffuseTexture(FTDS::String& key)
 {
 	FTTexture* tex = ResourceManager::GetInstance()->GetLoadedTexture(key);
 	mDiffuseResView = tex->GetResourceView();
 }
 
-void FTCubemap::SetSpecularTexture(const char* key)
+void FTCubemap::SetSpecularTexture(FTDS::String& key)
 {
 	FTTexture* tex = ResourceManager::GetInstance()->GetLoadedTexture(key);
 	mSpecularResView = tex->GetResourceView();

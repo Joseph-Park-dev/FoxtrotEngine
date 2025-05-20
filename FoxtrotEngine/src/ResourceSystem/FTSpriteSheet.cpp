@@ -19,14 +19,13 @@
 
 void FTSpriteSheet::Initialize()
 {
-	if (FTDS::StringEqual(mJSONKey.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
+	if (mJSONKey.Equal(ChunkKey::NullVal::NULL_OBJECT))
 		return;
 
 	mTilesCount = 0;
 
 #ifdef FOXTROT_EDITOR
-	const char* key = mJSONKey.C_Str();
-	FTJSON* json = EditorResourceManager::GetInstance()->GetLoadedJSON(key);
+	FTJSON* json = EditorResourceManager::GetInstance()->GetLoadedJSON(mJSONKey);
 #else
 	FTJSON* json = ResourceManager::GetInstance()->GetLoadedJSON(mJSONKey);
 #endif // FOXTROT_EDITOR

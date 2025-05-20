@@ -22,7 +22,7 @@ void spine::FTSpineLoader::load(AtlasPage& page, const String& path)
 {
 	FTTexture*	texture	 = nullptr;
 	FTDS::String fileName = ExtractFileName(path.buffer());
-	texture				 = ResourceManager::GetInstance()->GetLoadedTexture(fileName.C_Str());
+	texture				 = ResourceManager::GetInstance()->GetLoadedTexture(fileName);
 
 	if (!texture)
 		return;

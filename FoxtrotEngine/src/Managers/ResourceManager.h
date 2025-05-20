@@ -81,29 +81,17 @@ public:
 	void LoadResources(std::ifstream& ifs);
 
 public:
-	FTTexture*		   GetLoadedTexture(FTDS::String key);
-	FTTileMap*		   GetLoadedTileMap(FTDS::String key);
-	FTSpriteSheet*	   GetLoadedSpriteSheet(FTDS::String key);
-	FTPremade*		   GetLoadedPremade(FTDS::String key);
-	FTVertexShader*	   GetLoadedVertexShader(FTDS::String key);
-	FTPixelShader*	   GetLoadedPixelShader(FTDS::String key);
-	FTMaterial*		   GetLoadedMaterial(FTDS::String key);
-	FTBasicMeshGroup*  GetLoadedMesh(FTDS::String key);
-	FTSpriteAnimation* GetLoadedSpriteAnim(FTDS::String key);
-	FTCSV*			   GetLoadedCSV(FTDS::String key);
-	FTJSON*			   GetLoadedJSON(FTDS::String key);
-
-	FTTexture*		   GetLoadedTexture(const char* key);
-	FTTileMap*		   GetLoadedTileMap(const char* key);
-	FTSpriteSheet*	   GetLoadedSpriteSheet(const char* key);
-	FTPremade*		   GetLoadedPremade(const char* key);
-	FTVertexShader*	   GetLoadedVertexShader(const char* key);
-	FTPixelShader*	   GetLoadedPixelShader(const char* key);
-	FTMaterial*		   GetLoadedMaterial(const char* key);
-	FTBasicMeshGroup*  GetLoadedMesh(const char* key);
-	FTSpriteAnimation* GetLoadedSpriteAnim(const char* key);
-	FTCSV*			   GetLoadedCSV(const char* key);
-	FTJSON*			   GetLoadedJSON(const char* key);
+	FTTexture*		   GetLoadedTexture(FTDS::String& key);
+	FTTileMap*		   GetLoadedTileMap(FTDS::String& key);
+	FTSpriteSheet*	   GetLoadedSpriteSheet(FTDS::String& key);
+	FTPremade*		   GetLoadedPremade(FTDS::String& key);
+	FTVertexShader*	   GetLoadedVertexShader(FTDS::String& key);
+	FTPixelShader*	   GetLoadedPixelShader(FTDS::String& key);
+	FTMaterial*		   GetLoadedMaterial(FTDS::String& key);
+	FTBasicMeshGroup*  GetLoadedMesh(FTDS::String& key);
+	FTSpriteAnimation* GetLoadedSpriteAnim(FTDS::String& key);
+	FTCSV*			   GetLoadedCSV(FTDS::String& key);
+	FTJSON*			   GetLoadedJSON(FTDS::String& key);
 
 	FTDS::String& GetPathToAsset();
 	void		  SetPathToAsset(FTDS::String&& projectPath);
@@ -234,7 +222,7 @@ private:
 		FileIOHelper::LoadBasicString(ifs, res->FileName());
 
 		assert(0 < resMap->Capacity());
-		resMap->Insert(res->FileName().C_Str(), res);
+		resMap->Insert(res->FileName(), res);
 	}
 
 	template <typename FTRESOURCE>
@@ -250,6 +238,13 @@ private:
 			resMap->Clear();
 			resMap = nullptr;
 		}
+	}
+	
+private:
+	void AddFileExtensionIfNone(FTDS::String& key, const char* fileType)
+	{
+		if (key.RFind(fileType) < 0)
+			key.Append(fileType);
 	}
 };
 

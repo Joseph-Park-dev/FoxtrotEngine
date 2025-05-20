@@ -36,9 +36,7 @@ void TileMapManager::SaveTileMapAsFile(FTTileMap* tileMap)
 void TileMapManager::SaveSpriteSheetAsFile(FTSpriteSheet* spriteSheet)
 {
 	const char* path = spriteSheet->RelativePath().C_Str();
-	spriteSheet->FileName().Assign(spriteSheet->FileName());
-	spriteSheet->FileName().Assign(FileTypes::TILEMAP);
-	FTDS::String fullPath = FTDS::String(path) + spriteSheet->FileName();
+	FTDS::String fullPath = FTDS::String(path) + spriteSheet->FileName() + FileTypes::SPRITE_SHEET;
 
 	spriteSheet->SetRelativePath(fullPath);
 	std::ofstream ofs(fullPath.C_Str());
@@ -62,7 +60,7 @@ void TileMapManager::UpdateUI(bool* opened)
 
 		for (; iterT != mapTileMaps->End(); ++iterT)
 		{
-			if ((*iterT)->Value())
+			if (*iterT)
 			{
 				ImGui::PushID((*iterT)->Value());
 				(*iterT)->Value()->UpdateUI();
@@ -86,7 +84,7 @@ void TileMapManager::UpdateUI(bool* opened)
 
 		for (; iterS != mapSpriteSheets->End(); ++iterS)
 		{
-			if ((*iterS)->Value())
+			if (*iterS)
 			{
 				ImGui::PushID((*iterS)->Value());
 				(*iterS)->Value()->UpdateUI();
@@ -102,6 +100,7 @@ void TileMapManager::UpdateUI(bool* opened)
 		if (ImGui::Button("Create SpriteSheet"))
 		{
 			FTSpriteSheet* spriteSheet = DBG_NEW FTSpriteSheet;
+			spriteSheet->SetFileName("New SpriteSheet");
 			spriteSheet->SetRelativePath(EditorResourceManager::GetInstance()->GetPathToAsset());
 			EditorResourceManager::GetInstance()->LoadResource(spriteSheet, mapSpriteSheets);
 		}

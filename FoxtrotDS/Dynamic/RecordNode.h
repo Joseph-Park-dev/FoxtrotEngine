@@ -1,5 +1,5 @@
 #pragma once
-#include "Record.h"
+#include "Static/Record.h"
 
 namespace FTDS
 {
@@ -11,7 +11,7 @@ namespace FTDS
 		void		SetLink(RecordNode* next) { mLink = next; }
 
 	public:
-		RecordNode(const char* key, TYPE val)
+		RecordNode(FTDS::String key, TYPE val)
 			: Record<TYPE>(key, val)
 			, mLink(nullptr)
 		{

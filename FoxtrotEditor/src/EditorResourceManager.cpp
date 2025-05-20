@@ -128,8 +128,8 @@ void EditorResourceManager::LoadMaterials()
 		rim->SaveToFile();
 	rim->LoadFromFile();
 
-	GetMaterials()->Insert(ChunkKey::STANDARD_MAT, standard);
-	GetMaterials()->Insert(ChunkKey::RIM_MAT, rim);
+	GetMaterials()->Insert(standard->FileName(), standard);
+	GetMaterials()->Insert(rim->FileName(), rim);
 }
 
 void EditorResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)

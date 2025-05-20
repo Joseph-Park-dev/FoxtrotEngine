@@ -7,21 +7,21 @@ namespace FTDS
 	class Record
 	{
 	public:
-		bool Equal(const char* key) { return StringEqual(key, mKey); }
+		bool Equal(FTDS::String& key) { return key.Equal(mKey.C_Str()); }
 
 	public:
-		const char* Key() { return mKey; }
-		TYPE&		Value() { return mValue; }
+		FTDS::String& Key() { return mKey; }
+		TYPE		  Value() { return mValue; }
 
 	public:
-		Record(const char* key, TYPE value)
+		Record(FTDS::String key, TYPE value)
 		{
 			mKey   = key;
 			mValue = value;
 		}
 
 	private:
-		const char* mKey;
-		TYPE		mValue;
+		FTDS::String mKey;
+		TYPE		 mValue;
 	};
 } // namespace FTDS

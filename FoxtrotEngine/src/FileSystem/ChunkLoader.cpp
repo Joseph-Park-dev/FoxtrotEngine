@@ -99,7 +99,7 @@ ChunkLoader::ChunkLoader()
 	: mCurrentChunkData{}
 	, mIsLoading(false)
 {
-	mComponentLoadMap = {
+	/*mComponentLoadMap = {
 		{ "AI", &Component::Load<AI> },
 		{ "Animator", &Component::Load<Animator> },
 		{ "BoxCollider2D", &Component::Load<BoxCollider2D> },
@@ -116,7 +116,23 @@ ChunkLoader::ChunkLoader()
 
 		{ "Seek", &Component::Load<Seek> },
 		{ "Flee", &Component::Load<Flee> },
-	};
+	};*/
+
+	mComponentLoadMap.Reserve(13);
+	mComponentLoadMap.Insert("AI", &Component::Load<AI>);
+	mComponentLoadMap.Insert("Animator", &Component::Load<Animator>);
+	mComponentLoadMap.Insert("BoxCollider2D", &Component::Load<BoxCollider2D>);
+	mComponentLoadMap.Insert("InputMove", &Component::Load<InputMove>);
+	mComponentLoadMap.Insert("Move", &Component::Load<Move>);
+	mComponentLoadMap.Insert("Rigidbody2D", &Component::Load<Rigidbody2D>);
+	mComponentLoadMap.Insert("SpriteRenderer", &Component::Load<SpriteRenderer>);
+	mComponentLoadMap.Insert("TileMap", &Component::Load<TileMapRenderer>);
+	mComponentLoadMap.Insert("TextRenderer", &Component::Load<TextRenderer>);
+	mComponentLoadMap.Insert("MeshRenderer", &Component::Load<MeshRenderer>);
+	mComponentLoadMap.Insert("SpineAnimator", &Component::Load<SpineAnimator>);
+	mComponentLoadMap.Insert("ButtonUI", &Component::Load<ButtonUI>);
+	mComponentLoadMap.Insert("Seek", &Component::Load<Seek> );
+	mComponentLoadMap.Insert("Flee", &Component::Load<Flee> );
 };
 
 ChunkLoader::~ChunkLoader() {}

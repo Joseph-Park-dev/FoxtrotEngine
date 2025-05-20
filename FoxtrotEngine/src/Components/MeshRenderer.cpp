@@ -36,10 +36,10 @@
 void MeshRenderer::Initialize(FTCore* coreInstance)
 {
 	mRenderer = coreInstance->GetGameRenderer();
-	if (!FTDS::StringEqual(mMeshKey.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
+	if (mMeshKey.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 	{
 		this->InitializeMesh();
-		if (!FTDS::StringEqual(mTexKey.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
+		if (mTexKey.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 			mMeshGroup->SetTexture(mTexKey);
 	}
 
@@ -63,8 +63,8 @@ void MeshRenderer::Render(FoxtrotRenderer* renderer)
 void MeshRenderer::CloneTo(Actor* actor)
 {
 	MeshRenderer* newComp = DBG_NEW MeshRenderer(actor, GetUpdateOrder());
-	newComp->mMeshKey	  = this->mMeshKey;
-	newComp->mTexKey	  = this->mTexKey;
+	newComp->mMeshKey.Assign(mMeshKey);
+	newComp->mTexKey.Assign(mTexKey);
 	for (size_t i = 0; i < mMaterialKeys.size(); ++i)
 		newComp->mMaterialKeys.push_back(mMaterialKeys.at(i));
 	newComp->mMeshGroup->SetDrawNormal(this->mMeshGroup->GetDrawNormal());
@@ -288,10 +288,10 @@ void MeshRenderer::OnResetTexture()
 void MeshRenderer::UpdateSprite()
 {
 	FTDS::String currentSprite = "No sprite has been assigned";
-	if (!FTDS::StringEqual(mTexKey.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
+	if (mTexKey.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 	{
 		currentSprite =
-			FTDS::String("Current sprite : \n") + EditorResourceManager::GetInstance()->GetLoadedTexture(GetTexKey())->RelativePath().C_Str();
+			FTDS::String("Current sprite : \n") + EditorResourceManager::GetInstance()->GetLoadedTexture(mTexKey)->RelativePath().C_Str();
 		if (mMeshGroup && mMeshGroup->GetTexture())
 		{
 			ImVec2 size = ImVec2(100, 100);
@@ -350,8 +350,8 @@ void MeshRenderer::UpdateSprite(FTDS::String& key)
 		if (ImGui::TreeNode("Selection State: Single Selection"))
 		{
 			FTDS::String spriteKey = ChunkKey::NullVal::NULL_OBJECT;
-			static int	selected  = -1;
-			int			i		  = 0;
+			static int	 selected  = -1;
+			int			 i		   = 0;
 			for (auto iter = texturesMap->Begin(); iter != texturesMap->End();
 				 ++iter, ++i)
 			{
@@ -381,7 +381,7 @@ void MeshRenderer::UpdateMaterial()
 	if (0 < mMaterialKeys.size())
 	{
 		for (FTDS::String key : mMaterialKeys)
-			ResourceManager::GetInstance()->GetMaterials()->At(key.C_Str())->UpdateUI();
+			EditorResourceManager::GetInstance()->GetMaterials()->At(key)->Value()->UpdateUI();
 	}
 	else
 		ImGui::Text("No Material has been assigned");

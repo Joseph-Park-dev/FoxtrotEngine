@@ -136,7 +136,7 @@ void EditorElement::UpdateComponents()
 		{
 			FTDS::String name(std::to_string(count).c_str());
 			name.Append(" ");
-			name.Append(GetName());
+			name.Append(comp->GetName());
 
 			if (ImGui::TreeNode(name.C_Str()))
 			{

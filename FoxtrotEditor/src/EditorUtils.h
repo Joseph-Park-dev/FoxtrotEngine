@@ -120,18 +120,18 @@ namespace FTEditorUtils
 				for (auto iter = resMap->Begin(); iter != resMap->End();
 					 ++iter)
 				{
-					if ((*iter))
-					{
-						if (ImGui::Selectable("Not Assigned"))
-							currSelection.Assign(ChunkKey::NullVal::NULL_OBJECT);
-					}
-					else
+					if (*iter)
 					{
 						if (ImGui::Selectable((*iter)->Value()->FileName().C_Str()))
 						{
-							if (!FTDS::StringEqual((*iter)->Key(), ChunkKey::NullVal::NULL_OBJECT))
-								currSelection = (*iter)->Key();
+							if ((*iter)->Key().NotEqual(ChunkKey::NullVal::NULL_OBJECT))
+								currSelection = (*iter)->Value()->FileName();
 						}
+					}
+					else
+					{
+						if (ImGui::Selectable("Not Assigned"))
+							currSelection.Assign(ChunkKey::NullVal::NULL_OBJECT);
 					}
 				}
 				ImGui::TreePop();

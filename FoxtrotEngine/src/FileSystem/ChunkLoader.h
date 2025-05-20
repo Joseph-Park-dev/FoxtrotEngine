@@ -26,13 +26,15 @@
 #include "Math/FTMath.h"
 #include "Core/FTCore.h"
 
+#include "Static/HashChainMap.h"
+
 class Transform;
 class Actor;
 class Component;
 class Scene;
 
 using ComponentLoadFunc = std::function<void(Actor*, std::ifstream&)>;
-using ComponentLoadMap	= std::unordered_map<const char*, ComponentLoadFunc>;
+using ComponentLoadMap	= FTDS::HashChainMap<ComponentLoadFunc>;
 
 struct ChunkData
 {

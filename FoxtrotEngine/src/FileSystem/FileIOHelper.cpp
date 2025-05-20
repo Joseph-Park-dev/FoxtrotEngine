@@ -280,7 +280,7 @@ void FileIOHelper::ParseVector3(FTDS::String& line, FTVector3& arg)
 
 	line.ExtractUntilFirst(xStr, ",");
 	line.ExtractBracketedVal(yStr, ",", ",");
-	line.ExtractUntilLast(zStr, ",");
+	line.ExtractFromLast(zStr, ",");
 
 	float x = std::stof(xStr.C_Str());
 	float y = std::stof(yStr.C_Str());
@@ -404,9 +404,7 @@ void FileIOHelper::ParseFloat(FTDS::String& line, float& arg)
 void FileIOHelper::ParseBool(FTDS::String& line, bool& arg)
 {
 	// Remove tab identation.
-	size_t tabEnd = line.RFind("\t");
-	line.SubStr(tabEnd, line.Length());
-
+	line.ExtractFromLast("\t");
 	arg = StrToBool(line);
 }
 

@@ -51,8 +51,9 @@ void Rigidbody2D::LateUpdate(float deltaTime)
 {
 	b2Vec2 position = b2Body_GetPosition(mBodyID);
 	b2Rot  rotation = b2Body_GetRotation(mBodyID);
+	float z = GetOwner()->GetTransform()->GetWorldPosition().z;
 
-	GetOwner()->GetTransform()->SetWorldPosition(FTVector2(position.x, position.y));
+	GetOwner()->GetTransform()->SetWorldPosition(FTVector3(position.x, position.y, z));
 	float	  rotZ		 = b2Rot_GetAngle(rotation);
 	FTVector3 prevRot	 = GetOwner()->GetTransform()->GetRotation();
 	FTVector3 updatedRot = FTVector3(prevRot.x, prevRot.y, -rotZ);

@@ -219,7 +219,7 @@ void EditorLayer::DisplayMainMenuBar()
 					CollisionManager::GetInstance()->Reset();
 					//LightManager::GetInstance()->Reset(FTCoreEditor::GetInstance()->GetGameRenderer());
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
-					EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+					//EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK.C_Str());
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(true);
 				}

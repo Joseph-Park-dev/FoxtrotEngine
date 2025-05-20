@@ -63,7 +63,6 @@ void EditorChunkLoader::SaveChunk(const char* fileName)
 	CollisionManager::GetInstance()->SaveCollisionMarks(ofs);
 	// LightManager::GetInstance()->SaveProperties(ofs);
 	SaveChunkData(ofs);
-	// FileIOHelper::SaveBufferToFile(ofs);
 	FileIOHelper::SaveBufferToFile(ofs);
 	Unlock();
 }

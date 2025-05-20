@@ -82,7 +82,7 @@ FTVector3::FTVector3(float inX, float inY, float inZ)
 FTVector3::FTVector3(FTVector2 vec2)
 	: x(vec2.x)
 	, y(vec2.y)
-	, z(0.0f)
+	, z(0.f)
 {
 }
 

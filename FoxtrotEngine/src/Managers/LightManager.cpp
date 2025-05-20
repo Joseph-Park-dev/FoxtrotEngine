@@ -82,12 +82,12 @@ void LightManager::SaveProperties(std::ofstream& ofs)
 {
 	for (size_t i = 0; i < GameData::MAX_LIGHTS; ++i)
 		mLights[i].SaveProperties(ofs, mTypes[i], mActiveStatus[i]);
-	mCubemap->SaveProperties(ofs);
+	//mCubemap->SaveProperties(ofs);
 }
 
 void LightManager::LoadProperties(std::ifstream& ifs)
 {
-	mCubemap->LoadProperties(ifs);
+	//mCubemap->LoadProperties(ifs);
 	for (size_t i = 0; i < GameData::MAX_LIGHTS; ++i)
 		mLights[i].LoadProperties(ifs, mTypes[i], mActiveStatus[i]);
 }

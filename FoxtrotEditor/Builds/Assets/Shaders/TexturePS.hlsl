@@ -14,12 +14,11 @@ cbuffer PixelConstantBuffer : register(b0)
 {
     float3 eyeWorld;
     bool useTexture;
-    Material material;
     Light lights[MAX_LIGHTS];
-    float4 indexColor;
+    BlinnPhongData material;
 };
 
-TexPSOutput main(TexPSInput input)
+float4 main(TexPSInput input) : SV_Target
 {
     float3 toEye = normalize(eyeWorld - input.posWorld);
 
@@ -44,9 +43,6 @@ TexPSOutput main(TexPSInput input)
     {
         color += ComputeSpotLight(lights[i], material, input.posWorld, input.normalWorld, toEye);
     }
-
-    TexPSOutput output;
-    output.pixelColor = useTexture ? float4(color, 1.0) * g_texture0.Sample(g_sampler, input.texcoord) : float4(color, 1.0);
-    output.indexColor = indexColor; //TODO:
-    return output;
+    
+    return useTexture ? float4(color, 1.0) * g_texture0.Sample(g_sampler, input.texcoord) : float4(color, 1.0);
 }

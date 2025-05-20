@@ -8,6 +8,8 @@
 
 #include "DirectoryHelper.h"
 
+#include "Static/FTString.h"
+
 DirectoryHelper::DirectoryHelper()
 	: mCurrProjectPath()
 	, mCurrChunkPath()
@@ -17,12 +19,12 @@ DirectoryHelper::DirectoryHelper()
 DirectoryHelper::~DirectoryHelper()
 {}
 
-std::string& DirectoryHelper::GetProjectPath()
+FTDS::String& DirectoryHelper::GetProjectPath()
 {
 	return mCurrProjectPath;
 }
 
-std::string& DirectoryHelper::GetChunkPath()
+FTDS::String& DirectoryHelper::GetChunkPath()
 {
 	return mCurrChunkPath;
 }
@@ -32,14 +34,14 @@ bool DirectoryHelper::GetCurrChunkSaved() const
 	return mCurrChunkSaved;
 }
 
-void DirectoryHelper::SetProjPath(std::string&& path)
+void DirectoryHelper::SetProjPath(FTDS::String&& path)
 {
-	mCurrProjectPath.assign(path);
+	mCurrProjectPath.Assign(path);
 }
 
-void DirectoryHelper::SetChunkPath(std::string&& path)
+void DirectoryHelper::SetChunkPath(FTDS::String&& path)
 {
-	mCurrChunkPath.assign(path);
+	mCurrChunkPath.Assign(path);
 }
 
 void DirectoryHelper::SetCurrChunkSaved(bool saved)

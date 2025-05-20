@@ -24,7 +24,7 @@ void RimMaterial::UpdateBuffer(ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D
 
 void RimMaterial::LoadFromFile()
 {
-	std::ifstream ifs(GetRelativePath());
+	std::ifstream ifs(RelativePath().C_Str());
 
 	if (ifs)
 	{
@@ -50,11 +50,11 @@ RimMaterial::RimMaterial()
 	: FTMaterial()
 	, mData(DBG_NEW RimData)
 {
-	std::string name = std::string(ChunkKey::RIM_MAT) + FileTypes::MATERIAL;
+	FTDS::String name = FTDS::String(ChunkKey::RIM_MAT) + FileTypes::MATERIAL;
 #ifdef FOXTROT_EDITOR
-	std::string path = std::string(PATH_PROJECT + "\\Assets\\Materials\\") + name;
+	FTDS::String path = PATH_PROJECT +"\\Assets\\Materials\\" + name;
 #else
-	std::string path = std::string(".\\Assets\\Materials\\") + name;
+	FTDS::String path = FTDS::String(".\\Assets\\Materials\\") + name;
 #endif // FOXTROT_EDITOR
 
 	SetFileName(name);
@@ -68,7 +68,7 @@ RimMaterial::~RimMaterial()
 
 void RimMaterial::SaveToFile()
 {
-	std::ofstream ofs(GetRelativePath());
+	std::ofstream ofs(RelativePath().C_Str());
 
 	if (ofs)
 	{
@@ -82,7 +82,7 @@ void RimMaterial::SaveToFile()
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::RIM_MAT);
 		FileIOHelper::SaveBufferToFile(ofs);
 
-		printf("Material %s created to %s\n", GetFileName().c_str(), GetRelativePath().c_str());
+		printf("Material %s created to %s\n", FileName().C_Str(), RelativePath().C_Str());
 	}
 	else
 		Debug::LogError(__LINE__, __FILE__, "Failed to save material to file");

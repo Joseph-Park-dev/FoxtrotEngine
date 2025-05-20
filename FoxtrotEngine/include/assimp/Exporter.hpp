@@ -493,14 +493,14 @@ public:
 // ----------------------------------------------------------------------------------
 inline const aiExportDataBlob *Exporter::ExportToBlob(const aiScene *pScene, const std::string &pFormatId,
         unsigned int pPreprocessing, const ExportProperties *pProperties) {
-    return ExportToBlob(pScene, pFormatId.c_str(), pPreprocessing, pProperties);
+    return ExportToBlob(pScene, pFormatId.C_Str(), pPreprocessing, pProperties);
 }
 
 // ----------------------------------------------------------------------------------
 inline aiReturn Exporter ::Export(const aiScene *pScene, const std::string &pFormatId,
         const std::string &pPath, unsigned int pPreprocessing,
         const ExportProperties *pProperties) {
-    return Export(pScene, pFormatId.c_str(), pPath.c_str(), pPreprocessing, pProperties);
+    return Export(pScene, pFormatId.C_Str(), pPath.C_Str(), pPreprocessing, pProperties);
 }
 
 } // namespace Assimp

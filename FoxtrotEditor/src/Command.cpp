@@ -179,12 +179,12 @@ void StrEditCommand::Undo()
 	mValue = mPrevValue;
 }
 
-void StrEditCommand::SetNextVal(std::string nextVal)
+void StrEditCommand::SetNextVal(FTDS::String nextVal)
 {
-	mNextValue.assign(nextVal);
+	mNextValue.Assign(nextVal);
 }
 
-StrEditCommand::StrEditCommand(std::string& valRef)
+StrEditCommand::StrEditCommand(FTDS::String& valRef)
 	: mPrevValue(valRef)
 	, mValue(valRef)
 	, mNextValue()

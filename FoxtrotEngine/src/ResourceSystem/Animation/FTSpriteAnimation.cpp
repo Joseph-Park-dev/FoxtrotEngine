@@ -17,7 +17,7 @@
 	#include "Managers/AnimationManager.h"
 #endif
 
-const char* FTSpriteAnimation::GetTileDataKey()
+FTDS::String& FTSpriteAnimation::GetTileDataKey()
 {
 	return mTileDataKey;
 }
@@ -32,7 +32,7 @@ AnimationFrame* FTSpriteAnimation::GetFrame(int frameIdx)
 	return nullptr;
 }
 
-void FTSpriteAnimation::SetTileDataKey(const char* key)
+void FTSpriteAnimation::SetTileDataKey(FTDS::String& key)
 {
 	mTileDataKey = key;
 }

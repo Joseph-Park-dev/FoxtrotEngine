@@ -36,10 +36,10 @@
 void MeshRenderer::Initialize(FTCore* coreInstance)
 {
 	mRenderer = coreInstance->GetGameRenderer();
-	if (!FTDS::StringEqual(mMeshKey, ChunkKey::NullVal::NULL_OBJECT))
+	if (mMeshKey.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 	{
 		this->InitializeMesh();
-		if (!FTDS::StringEqual(mTexKey, ChunkKey::NullVal::NULL_OBJECT))
+		if (mTexKey.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 			mMeshGroup->SetTexture(mTexKey);
 	}
 
@@ -63,22 +63,24 @@ void MeshRenderer::Render(FoxtrotRenderer* renderer)
 void MeshRenderer::CloneTo(Actor* actor)
 {
 	MeshRenderer* newComp = DBG_NEW MeshRenderer(actor, GetUpdateOrder());
-	newComp->mMeshKey	  = this->mMeshKey;
-	newComp->mTexKey	  = this->mTexKey;
+	newComp->mMeshKey.Assign(mMeshKey);
+	newComp->mTexKey.Assign(mTexKey);
 	for (size_t i = 0; i < mMaterialKeys.size(); ++i)
 		newComp->mMaterialKeys.push_back(mMaterialKeys.at(i));
 	newComp->mMeshGroup->SetDrawNormal(this->mMeshGroup->GetDrawNormal());
 }
 
 FoxtrotRenderer*  MeshRenderer::GetRenderer() const { return mRenderer; }
-const char*		  MeshRenderer::GetMeshKey() const { return mMeshKey; }
-const char*		  MeshRenderer::GetTexKey() const { return mTexKey; }
+FTDS::String&	  MeshRenderer::GetMeshKey() { return mMeshKey; }
+FTDS::String&	  MeshRenderer::GetTexKey() { return mTexKey; }
 FTBasicMeshGroup* MeshRenderer::GetMeshGroup() const { return mMeshGroup; }
 FTTexture*		  MeshRenderer::GetTexture() const { return mMeshGroup->GetTexture(); }
 
 void MeshRenderer::SetRenderer(FoxtrotRenderer* renderer) { mRenderer = renderer; }
-void MeshRenderer::SetMeshKey(const char* key) { mMeshKey = key; }
-void MeshRenderer::SetTexKey(const char* key) { mTexKey = key; }
+void MeshRenderer::SetMeshKey(FTDS::String& key) { mMeshKey = key; }
+void MeshRenderer::SetMeshKey(const char* key) { mMeshKey.Assign(key); }
+void MeshRenderer::SetTexKey(FTDS::String& key) { mTexKey = key; }
+void MeshRenderer::SetTexKey(const char* key) { mTexKey.Assign(key); }
 void MeshRenderer::SetMeshGroup(FTBasicMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
 
 void MeshRenderer::SetMaterials()
@@ -86,11 +88,11 @@ void MeshRenderer::SetMaterials()
 	GetMeshGroup()->SetMaterials(mMaterialKeys, mRenderer->GetDevice());
 }
 
-std::vector<const char*>& MeshRenderer::MaterialKeys() { return mMaterialKeys; }
+std::vector<FTDS::String>& MeshRenderer::MaterialKeys() { return mMaterialKeys; }
 
 bool MeshRenderer::InitializeMesh()
 {
-	if (FTDS::StringEqual(mMeshKey, ChunkKey::NullVal::NULL_OBJECT))
+	if (FTDS::StringEqual(mMeshKey.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
 	{
 		LogString("ERROR: MeshRenderer::InitializeMesh() -> Key doesn't exist.\n");
 		return false;
@@ -104,7 +106,7 @@ bool MeshRenderer::InitializeMesh()
 	return true;
 }
 
-bool MeshRenderer::InitializeMesh(const char* key)
+bool MeshRenderer::InitializeMesh(FTDS::String& key)
 {
 	mMeshKey   = key;
 	mMeshGroup = ResourceManager::GetInstance()->GetLoadedMesh(key);
@@ -186,14 +188,14 @@ void MeshRenderer::SaveProperties(std::ofstream& ofs)
 	// FileIOHelper::SaveBool(ofs, ChunkKey::FTMESHGROUP_DRAW_TEXTURE, mMeshGroup->GetDrawTexture());
 	FileIOHelper::SaveBool(ofs, ChunkKey::FTMeshGroup::DRAW_NORMALS, mMeshGroup->GetDrawNormal());
 
-	FileIOHelper::SaveString(ofs, ChunkKey::MESH_KEY, mMeshKey);
-	FileIOHelper::SaveString(ofs, ChunkKey::TEXTURE_KEY, mTexKey);
+	FileIOHelper::SaveString(ofs, ChunkKey::MESH_KEY, mMeshKey.C_Str());
+	FileIOHelper::SaveString(ofs, ChunkKey::TEXTURE_KEY, mTexKey.C_Str());
 
 	// Save FTMaterial keys
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::MATERIAL_KEYS);
 
 	for (size_t i = 0; i < mMaterialKeys.size(); ++i)
-		FileIOHelper::SaveString(ofs, std::to_string(i), mMaterialKeys.at(i));
+		FileIOHelper::SaveString(ofs, std::to_string(i).c_str(), mMaterialKeys.at(i));
 	FileIOHelper::SaveSize(ofs, ChunkKey::MATERIAL_COUNT, mMaterialKeys.size());
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::MATERIAL_KEYS);
@@ -208,7 +210,7 @@ void MeshRenderer::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadSize(ifs, matCount);
 	for (size_t i = 0; i < matCount; ++i)
 	{
-		const char* key = ChunkKey::NullVal::NULL_OBJECT;
+		FTDS::String key = ChunkKey::NullVal::NULL_OBJECT;
 		FileIOHelper::LoadBasicString(ifs, key);
 		mMaterialKeys.push_back(key);
 	}
@@ -285,41 +287,41 @@ void MeshRenderer::OnResetTexture()
 
 void MeshRenderer::UpdateSprite()
 {
-	std::string currentSprite = "No sprite has been assigned";
-	if (!FTDS::StringEqual(mTexKey,ChunkKey::NullVal::NULL_OBJECT))
+	FTDS::String currentSprite = "No sprite has been assigned";
+	if (mTexKey.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 	{
 		currentSprite =
-			"Current sprite : \n" + EditorResourceManager::GetInstance()->GetLoadedTexture(GetTexKey())->GetRelativePath();
+			FTDS::String("Current sprite : \n") + EditorResourceManager::GetInstance()->GetLoadedTexture(mTexKey)->RelativePath().C_Str();
 		if (mMeshGroup && mMeshGroup->GetTexture())
 		{
 			ImVec2 size = ImVec2(100, 100);
 			ImGui::Image((ImTextureID)mMeshGroup->GetTexture()->GetResourceView().Get(), size);
 		}
 	}
-	ImGui::Text(currentSprite.c_str());
+	ImGui::Text(currentSprite.C_Str());
 
-	const char* key = mTexKey;
+	FTDS::String key = mTexKey;
 	FTEditorUtils::DisplayResSelection<FTTexture>(
 		"Select Sprite",
-		EditorResourceManager::GetInstance()->GetTexturesMap(),
+		EditorResourceManager::GetInstance()->GetTextures(),
 		mTexKey);
 
-	if (FTDS::StringEqual(key, mTexKey))
+	if (FTDS::StringEqual(key.C_Str(), mTexKey.C_Str()))
 	{
 		SetTexKey(mTexKey);
-		if(mMeshGroup)
+		if (mMeshGroup)
 			mMeshGroup->SetTexture(mTexKey);
 	}
 }
 
-void MeshRenderer::UpdateSprite(const char* key)
+void MeshRenderer::UpdateSprite(FTDS::String& key)
 {
-	std::string currentSprite = {};
-	if (!FTDS::StringEqual(key, ChunkKey::NullVal::NULL_OBJECT))
+	FTDS::String currentSprite = {};
+	if (!key.Equal(ChunkKey::NullVal::NULL_OBJECT))
 	{
 		FTTexture* sprite = EditorResourceManager::GetInstance()->GetLoadedTexture(key);
 		currentSprite =
-			"Current sprite : \n" + sprite->GetRelativePath();
+			FTDS::String("Current sprite : \n") + sprite->RelativePath().C_Str();
 		if (sprite)
 		{
 			ImVec2 size = ImVec2(100, 100);
@@ -329,7 +331,7 @@ void MeshRenderer::UpdateSprite(const char* key)
 	else
 		currentSprite = "No sprite has been assigned";
 
-	ImGui::Text(currentSprite.c_str());
+	ImGui::Text(currentSprite.C_Str());
 
 	if (ImGui::Button("Select Sprite"))
 	{
@@ -343,21 +345,21 @@ void MeshRenderer::UpdateSprite(const char* key)
 
 	if (ImGui::BeginPopupModal("Select Sprite", NULL, ImGuiWindowFlags_MenuBar))
 	{
-		std::unordered_map<const char*, FTTexture*>& texturesMap =
-			EditorResourceManager::GetInstance()->GetTexturesMap();
+		FTDS::HashChainMap<FTTexture*>* texturesMap =
+			EditorResourceManager::GetInstance()->GetTextures();
 		if (ImGui::TreeNode("Selection State: Single Selection"))
 		{
-			const char* spriteKey = ChunkKey::NullVal::NULL_OBJECT;
-			static int	selected  = -1;
-			int			i		  = 0;
-			for (auto iter = texturesMap.begin(); iter != texturesMap.end();
+			FTDS::String spriteKey = ChunkKey::NullVal::NULL_OBJECT;
+			static int	 selected  = -1;
+			int			 i		   = 0;
+			for (auto iter = texturesMap->Begin(); iter != texturesMap->End();
 				 ++iter, ++i)
 			{
-				if ((*iter).second)
+				if ((*iter)->Value())
 				{
-					if (ImGui::Selectable((*iter).second->GetFileName().c_str(), selected == i))
+					if (ImGui::Selectable((*iter)->Value()->FileName().C_Str(), selected == i))
 					{
-						spriteKey = (*iter).first;
+						spriteKey = (*iter)->Value()->FileName();
 						selected  = i;
 					}
 				}
@@ -378,31 +380,31 @@ void MeshRenderer::UpdateMaterial()
 	// Display loaded Materials.
 	if (0 < mMaterialKeys.size())
 	{
-		for (const char* key : mMaterialKeys)
-			EditorResourceManager::GetInstance()->GetMapMaterials().at(key)->UpdateUI();
+		for (FTDS::String key : mMaterialKeys)
+			EditorResourceManager::GetInstance()->GetMaterials()->At(key)->Value()->UpdateUI();
 	}
 	else
 		ImGui::Text("No Material has been assigned");
 
 	// Select & load Materials.
-	const char* key = ChunkKey::NullVal::NULL_OBJECT;
+	FTDS::String key = ChunkKey::NullVal::NULL_OBJECT;
 	FTEditorUtils::DisplayResSelection(
 		"Material",
-		EditorResourceManager::GetInstance()->GetMapMaterials(),
+		EditorResourceManager::GetInstance()->GetMaterials(),
 		key);
-	if (!FTDS::StringEqual(key, ChunkKey::NullVal::NULL_OBJECT))
+	if (!key.Equal(ChunkKey::NullVal::NULL_OBJECT))
 	{
 		mMaterialKeys.push_back(key);
-		if(mMeshGroup)
+		if (mMeshGroup)
 			mMeshGroup->SetMaterials(mMaterialKeys, mRenderer->GetDevice());
 	}
 }
 
 void MeshRenderer::AddModel()
 {
-	const char* key = mMeshKey;
+	FTDS::String key = mMeshKey;
 	FTEditorUtils::DisplayResSelection(
-		"Select Mesh", EditorResourceManager::GetInstance()->GetMeshGroupsMap(), key);
+		"Select Mesh", EditorResourceManager::GetInstance()->GetMeshGroups(), key);
 	if (mMeshKey != key)
 		InitializeMesh(key);
 }

@@ -155,7 +155,7 @@ AI_FORCE_INLINE LineSplitter::LineSplitter(StreamReaderLE& stream, bool skip_emp
         mSkip_empty_lines(skip_empty_lines),
         mTrim(trim) {
     mCur.reserve(1024);
-    mEnd = mCur.c_str() + 1024;
+    mEnd = mCur.C_Str() + 1024;
     operator++();
     mIdx = 0;
 }
@@ -205,7 +205,7 @@ AI_FORCE_INLINE LineSplitter &LineSplitter::operator++(int) {
 }
 
 AI_FORCE_INLINE const char *LineSplitter::operator[] (size_t idx) const {
-    const char* s = operator->()->c_str();
+    const char* s = operator->()->C_Str();
 
     SkipSpaces(&s, mEnd);
     for (size_t i = 0; i < idx; ++i) {
@@ -221,7 +221,7 @@ AI_FORCE_INLINE const char *LineSplitter::operator[] (size_t idx) const {
 
 template <size_t N>
 AI_FORCE_INLINE void LineSplitter::get_tokens(const char* (&tokens)[N]) const {
-    const char* s = operator->()->c_str();
+    const char* s = operator->()->C_Str();
 
     SkipSpaces(&s, mEnd);
     for (size_t i = 0; i < N; ++i) {

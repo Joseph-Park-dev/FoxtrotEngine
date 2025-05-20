@@ -8,7 +8,7 @@
 #include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
-std::string Seek::GetName() const
+FTDS::String Seek::GetName() const
 {
     return "Seek";
 }

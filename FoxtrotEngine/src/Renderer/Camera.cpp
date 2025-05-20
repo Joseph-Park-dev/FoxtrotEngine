@@ -204,7 +204,7 @@ void Camera::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CAMERA_DATA);
 	if (mTarget)
-		FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, mTarget->GetName());
+		FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, mTarget->GetNameRef());
 	else
 		FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, ChunkKey::NullVal::NULL_OBJECT);
 	FileIOHelper::SaveVector3(ofs, ChunkKey::CAM_POSITION, mPosition);
@@ -218,12 +218,12 @@ void Camera::LoadProperties(std::ifstream& ifs)
 	FTVector3 pos = FTVector3::Zero;
 	FileIOHelper::LoadVector3(ifs, pos);
 	mPosition				= pos.GetDXVec3();
-	std::string targetActor = {};
+	FTDS::String targetActor = {};
 	FileIOHelper::LoadBasicString(ifs, targetActor);
 
 #ifdef FOXTROT_EDITOR
-	if (!FTDS::StringEqual(targetActor.c_str(), ChunkKey::NullVal::NULL_OBJECT));
-		mTarget = EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(targetActor.c_str());
+	if (!FTDS::StringEqual(targetActor.C_Str(), ChunkKey::NullVal::NULL_OBJECT));
+		mTarget = EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(targetActor.C_Str());
 #else
 	if (targetActor != ChunkKey::NullVal::NULL_OBJ)
 		mTarget = SceneManager::GetInstance()->GetCurrentScene()->FindActor(targetActor);
@@ -285,7 +285,7 @@ void Camera::DisplayCameraMenu()
 	// Set Target
 	EditorScene*		 editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
 	std::vector<Actor*>* editorElems = editorScene->GetActors();
-	std::string* actorNames			 = DBG_NEW std::string[editorScene->GetActorCount() + 1];
+	FTDS::String* actorNames			 = DBG_NEW FTDS::String[editorScene->GetActorCount() + 1];
 	actorNames[0]					 = "None";
 	size_t		  idx				 = 1;
 	static size_t currIdx;
@@ -301,12 +301,12 @@ void Camera::DisplayCameraMenu()
 			}
 		}
 	}
-	const char* comboPreview = actorNames[currIdx].c_str();
+	const char* comboPreview = actorNames[currIdx].C_Str();
 	if (ImGui::BeginCombo(ChunkKey::TARGET_ACTOR, comboPreview))
 	{
 		for (size_t i = 0; i < idx; ++i)
 		{
-			if (ImGui::Selectable(actorNames[i].c_str()))
+			if (ImGui::Selectable(actorNames[i].C_Str()))
 			{
 				currIdx = i;
 				if (currIdx == 0)

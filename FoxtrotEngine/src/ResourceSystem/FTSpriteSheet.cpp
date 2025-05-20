@@ -9,6 +9,8 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Managers/ResourceManager.h"
 
+#include "Static/FTString.h"
+
 #ifdef FOXTROT_EDITOR
 #include "EditorUtils.h"
 #include "EditorResourceManager.h"
@@ -17,7 +19,7 @@
 
 void FTSpriteSheet::Initialize()
 {
-	if (FTDS::StringEqual(mJSONKey, ChunkKey::NullVal::NULL_OBJECT))
+	if (mJSONKey.Equal(ChunkKey::NullVal::NULL_OBJECT))
 		return;
 
 	mTilesCount = 0;
@@ -133,12 +135,12 @@ void FTSpriteSheet::UpdateUI()
 
 	FTEditorUtils::DisplayResSelection(
 		"Select JSON",
-		EditorResourceManager::GetInstance()->GetMapJSONs(),
+		EditorResourceManager::GetInstance()->GetJSONs(),
 		mJSONKey);
 
-	std::string text = { "Sheet size : " };
-	text += std::to_string(mSheetSize.x) + " ,";
-	text += std::to_string(mSheetSize.y);
-	ImGui::Text(text.c_str());
+	FTDS::String text = { "Sheet size : " };
+	text += (std::to_string(mSheetSize.x) + " ,").c_str();
+	text += std::to_string(mSheetSize.y).c_str();
+	ImGui::Text(text.C_Str());
 }
 #endif // FOXTROT_EDITOR

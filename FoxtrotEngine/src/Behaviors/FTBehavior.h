@@ -31,7 +31,7 @@ public:
             insert(std::make_pair(key, &FTBehavior::Create<CUSTOM_BEHAVIOR>));
 
         ChunkLoader::GetInstance()->GetComponentLoadMap().
-            insert(std::make_pair(key, &FTBehavior::Load<CUSTOM_BEHAVIOR>));
+            Insert(key, &FTBehavior::Load<CUSTOM_BEHAVIOR>);
     }
 
 #else

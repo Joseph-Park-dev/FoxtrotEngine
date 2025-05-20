@@ -9,9 +9,13 @@
 #include "Actors/Transform.h"
 #include "FileSystem/BufferSizes.h"
 
+#ifdef FOXTROT_EDITOR
+#include "DirectoryHelper.h"
+#endif
+
 using DirectX::DX11::SpriteSortMode;
 
-std::string TextRenderer::GetName() const
+FTDS::String TextRenderer::GetName() const
 {
 	return "TextRenderer";
 }
@@ -19,10 +23,10 @@ std::string TextRenderer::GetName() const
 void TextRenderer::Initialize(FTCore* coreInstance)
 {
     FoxtrotRenderer* renderer = coreInstance->GetGameRenderer();
-    spriteBatch = new DirectX::SpriteBatch(renderer->GetContext().Get());
-    spriteFont = new DirectX::SpriteFont(
+    spriteBatch = DBG_NEW DirectX::SpriteBatch(renderer->GetContext().Get());
+    spriteFont = DBG_NEW DirectX::SpriteFont(
         renderer->GetDevice().Get(),
-        L"./Assets/Nanum.spritefont"
+        L"/Nanum.spritefont"
     );
 }
 
@@ -33,7 +37,7 @@ void TextRenderer::Render(FoxtrotRenderer* renderer)
     renderer->GetContext()->OMSetDepthStencilState(renderer->GetDSS2D().Get(), 0);
     spriteBatch->Begin(SpriteSortMode::SpriteSortMode_Deferred, renderer->GetBlendState().Get());
     spriteFont->DrawString(
-        spriteBatch, mText.c_str(),
+        spriteBatch, mText.C_Str(),
         pos.GetD3Vec2() + mTextAttribute->Offset,
         mTextAttribute->Color,
         mTextAttribute->Rotation,
@@ -102,10 +106,10 @@ void TextRenderer::EditorUIUpdate()
 void TextRenderer::UpdateText()
 {
     char str[BufferSize::MAX_CHAR_COUNT];
-    strcpy_s(str, mText.size()+1, mText.c_str());
+    //strcpy_s(str, mText.size()+1, mText.C_Str());
     ImGui::InputText(ChunkKey::TEXT, str, BufferSize::MAX_CHAR_COUNT);
-    if (mText != str)
-        mText = str;
+    //if (mText != str)
+       // mText = str;
 }
 
 void TextRenderer::UpdateTextAttribute()

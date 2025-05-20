@@ -20,7 +20,7 @@ class InputMove :
     public Move
 {
 public:
-    std::string GetName() const override
+    FTDS::String GetName() const override
     {
         return "InputMove";
     }

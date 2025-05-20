@@ -18,7 +18,7 @@ FTShader::FTShader()
 #ifdef FOXTROT_EDITOR
 void FTShader::SaveMetaFile()
 {
-	std::ofstream ofs(GetRelativePath());
+	std::ofstream ofs(RelativePath().C_Str());
 
 	if (ofs)
 	{

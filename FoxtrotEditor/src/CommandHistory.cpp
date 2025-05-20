@@ -12,7 +12,7 @@
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
-#include <imgui_stdlib.h>
+//#include <imgui_stdlib.h>
 #include <typeinfo>
 
 #include "Command.h"
@@ -117,7 +117,7 @@ void CommandHistory::Update()
 		RedoCommand();
 }
 
-void CommandHistory::UpdateVector2Value(std::string label, FTVector2& ref, float modSpeed)
+void CommandHistory::UpdateVector2Value(const char* label, FTVector2& ref, float modSpeed)
 {
 	static Vector2EditCommand* command;
 
@@ -125,7 +125,7 @@ void CommandHistory::UpdateVector2Value(std::string label, FTVector2& ref, float
 	vec2[0] = ref.x;
 	vec2[1] = ref.y;
 
-	if (ImGui::DragFloat2(label.c_str(), vec2, modSpeed))
+	if (ImGui::DragFloat2(label, vec2, modSpeed))
 	{
 		if (!mIsRecording)
 		{
@@ -153,7 +153,7 @@ void CommandHistory::UpdateVector2Value(std::string label, FTVector2& ref, float
 	ref.y = vec2[1];
 }
 
-void CommandHistory::UpdateVector2Value(std::string label, b2Vec2& ref, float modSpeed)
+void CommandHistory::UpdateVector2Value(const char* label, b2Vec2& ref, float modSpeed)
 {
 	static B2Vec2EditCommand* command;
 
@@ -161,7 +161,7 @@ void CommandHistory::UpdateVector2Value(std::string label, b2Vec2& ref, float mo
 	vec2[0] = ref.x;
 	vec2[1] = ref.y;
 
-	if (ImGui::DragFloat2(label.c_str(), vec2, modSpeed))
+	if (ImGui::DragFloat2(label, vec2, modSpeed))
 	{
 		if (!mIsRecording)
 		{
@@ -192,7 +192,7 @@ void CommandHistory::UpdateVector2Value(std::string label, b2Vec2& ref, float mo
 	ref.y = vec2[1];
 }
 
-void CommandHistory::UpdateVector3Value(std::string label, FTVector3& ref, float modSpeed)
+void CommandHistory::UpdateVector3Value(const char* label, FTVector3& ref, float modSpeed)
 {
 	static Vector3EditCommand* command;
 
@@ -201,7 +201,7 @@ void CommandHistory::UpdateVector3Value(std::string label, FTVector3& ref, float
 	vec3[1] = ref.y;
 	vec3[2] = ref.z;
 
-	if (ImGui::DragFloat3(label.c_str(), vec3, modSpeed))
+	if (ImGui::DragFloat3(label, vec3, modSpeed))
 	{
 		if (!mIsRecording)
 		{
@@ -229,7 +229,7 @@ void CommandHistory::UpdateVector3Value(std::string label, FTVector3& ref, float
 	ref.z = vec3[2];
 }
 
-void CommandHistory::UpdateVector3Value(std::string label, DirectX::SimpleMath::Vector3& ref, float modSpeed)
+void CommandHistory::UpdateVector3Value(const char* label, DirectX::SimpleMath::Vector3& ref, float modSpeed)
 {
 	static DXVector3EditCommand* command;
 
@@ -238,7 +238,7 @@ void CommandHistory::UpdateVector3Value(std::string label, DirectX::SimpleMath::
 	vec3[1] = ref.y;
 	vec3[2] = ref.z;
 
-	if (ImGui::DragFloat3(label.c_str(), vec3, modSpeed))
+	if (ImGui::DragFloat3(label, vec3, modSpeed))
 	{
 		if (!mIsRecording)
 		{
@@ -267,14 +267,15 @@ void CommandHistory::UpdateVector3Value(std::string label, DirectX::SimpleMath::
 	ref.z = vec3[2];
 }
 
-void CommandHistory::UpdateStringValue(std::string label, std::string& ref)
+void CommandHistory::UpdateStringValue(const char* label, FTDS::String& ref)
 {
-	if (ref.capacity() < BufferSize::STRING_BUFFER_SIZE)
-		ref.reserve(BufferSize::STRING_BUFFER_SIZE);
+	if (ref.Capacity() < BufferSize::STRING_BUFFER_SIZE)
+		ref.Reserve(BufferSize::STRING_BUFFER_SIZE);
 
 	static StrEditCommand* command;
 
-	if (ImGui::InputText(label.c_str(), &ref))
+	char* strVal = (char*)ref.C_Str();
+	if (ImGui::InputText(label, strVal, BufferSize::STRING_BUFFER_SIZE))
 	{
 		if (!mIsRecording)
 		{
@@ -300,13 +301,13 @@ void CommandHistory::UpdateStringValue(std::string label, std::string& ref)
 	}
 }
 
-void CommandHistory::UpdateStateValue(std::string label, Actor::State& state)
+void CommandHistory::UpdateStateValue(const char* label, Actor::State& state)
 {
 	static ActorStateEditCommand* command = nullptr;
 
 	bool isActive = false;
 
-	if (ImGui::Checkbox(label.c_str(), &isActive))
+	if (ImGui::Checkbox(label, &isActive))
 	{
 		command = DBG_NEW ActorStateEditCommand(state);
 
@@ -343,11 +344,11 @@ void CommandHistory::UpdateActorAddition(EditorElement* editorElement)
 ActorCommand* CommandHistory::GetLatestActorCommand() { return mLatestActorCommand; }
 void		  CommandHistory::SetLatestActorCommand(ActorCommand* command) { mLatestActorCommand = command; }
 
-void CommandHistory::UpdateFloatValue(std::string label, float& ref, float modSpeed)
+void CommandHistory::UpdateFloatValue(const char* label, float& ref, float modSpeed)
 {
 	static FloatEditCommand* command;
 
-	if (ImGui::DragFloat(label.c_str(), &ref, modSpeed))
+	if (ImGui::DragFloat(label, &ref, modSpeed))
 	{
 		if (!mIsRecording)
 		{
@@ -373,12 +374,11 @@ void CommandHistory::UpdateFloatValue(std::string label, float& ref, float modSp
 	}
 }
 
-void CommandHistory::UpdateIntValue(std::string label, int& ref, int modSpeed)
+void CommandHistory::UpdateIntValue(const char* label, int& ref, int modSpeed)
 {
 	static IntEditCommand* command;
 
-	std::string newLabel = "##" + label;
-	if (ImGui::DragInt(newLabel.c_str(), &ref, modSpeed))
+	if (ImGui::DragInt(label, &ref, modSpeed))
 	{
 		if (!mIsRecording)
 		{
@@ -404,18 +404,18 @@ void CommandHistory::UpdateIntValue(std::string label, int& ref, int modSpeed)
 	}
 }
 
-void CommandHistory::UpdateIntValue(std::string label, int& ref, int min, int max, int modSpeed)
+void CommandHistory::UpdateIntValue(const char* label, int& ref, int min, int max, int modSpeed)
 {
 	Math::Clamp(ref, min, max);
 	UpdateIntValue(label, ref, modSpeed);
 }
 
-void CommandHistory::UpdateBoolValue(std::string label, bool& ref)
+void CommandHistory::UpdateBoolValue(const char* label, bool& ref)
 {
 	static BoolEditCommand* command = nullptr;
 	bool					updated = ref;
 
-	if (ImGui::Checkbox(label.c_str(), &ref))
+	if (ImGui::Checkbox(label, &ref))
 	{
 		command = DBG_NEW BoolEditCommand(updated);
 		command->SetNextVal(ref);

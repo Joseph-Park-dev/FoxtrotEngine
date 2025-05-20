@@ -30,7 +30,7 @@
 
 void FTTileMap::Initialize()
 {
-	if (FTDS::StringEqual(mCSVKey, ChunkKey::NullVal::NULL_OBJECT))
+	if (mCSVKey.Equal(ChunkKey::NullVal::NULL_OBJECT))
 		return;
 
 #ifdef FOXTROT_EDITOR
@@ -66,7 +66,7 @@ void FTTileMap::Initialize()
 	}
 }
 
-void FTTileMap::ReadCSV(std::string& str)
+void FTTileMap::ReadCSV(FTDS::String& str)
 {
 	// These values cannot be 0;
 	assert(mTileWidthOnScreen != 0);
@@ -81,7 +81,7 @@ void FTTileMap::ReadCSV(std::string& str)
 	std::queue<int> result;
 
 	// Open an existing file
-	myFile.open(GetRelativePath(), std::fstream::in);
+	myFile.open(RelativePath().C_Str(), std::fstream::in);
 	assert(myFile);
 	std::string line;
 	int			val;
@@ -108,10 +108,10 @@ void FTTileMap::ReadCSV(std::string& str)
 	mMaxCountOnScreenX = column;
 	mMaxCountOnScreenY = row;
 
-	mTileMap = DBG_NEW Tile[str.size()];
-	for (UINT i = 0; i < (UINT)str.size(); ++i)
+	mTileMap = DBG_NEW Tile[str.Length()];
+	for (UINT i = 0; i < (UINT)str.Length(); ++i)
 	{
-		UINT idx = str.at(i) - WSTRING_OFFSET;
+		UINT idx = str.At(i) - WSTRING_OFFSET;
 		InitializeTile(mTileMap[i], i, 0, idx);
 	}
 }
@@ -229,7 +229,7 @@ void FTTileMap::UpdateUI()
 
 	FTEditorUtils::DisplayResSelection(
 		"Select CSV",
-		EditorResourceManager::GetInstance()->GetMapCSVs(),
+		EditorResourceManager::GetInstance()->GetCSVs(),
 		mCSVKey);
 
 	int tileWidthOnScreen  = static_cast<int>(mTileWidthOnScreen);

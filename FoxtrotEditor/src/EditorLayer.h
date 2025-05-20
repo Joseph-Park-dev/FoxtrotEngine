@@ -217,6 +217,7 @@ private:
 	bool SceneViewportSizeChanged();
 
 	// Does Foxtrot Project exists in projDir?
+	// std::string is used exceptionally because of readability issue.
 	bool ProjectExists(std::string projDir);
 
 	void DisplayInfoMessage();

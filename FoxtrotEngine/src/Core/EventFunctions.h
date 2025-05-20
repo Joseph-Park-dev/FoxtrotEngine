@@ -17,5 +17,5 @@
 
 // Object Spawning & Destroying
 void	Instantiate(Actor* actor, ActorGroup actorGroup);
-Actor*	Instantiate(const char* premadeName);
+Actor*	Instantiate(FTDS::String& premadeName);
 void	Destroy(Actor* actor);

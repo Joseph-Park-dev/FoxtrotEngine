@@ -12,10 +12,10 @@ public:
 
 protected:
 	Actor*		 GetTarget();
-	std::string& GetTargetName();
+	FTDS::String& GetTargetName();
 
 	void SetTarget(Actor* target);
-	void SetTargetName(std::string& targetName);
+	void SetTargetName(FTDS::String& targetName);
 
 public:
 	void Initialize(FTCore* ftCoreInstance) override;
@@ -28,7 +28,7 @@ public:
 
 private:
 	Actor*		mTarget;
-	std::string mTargetName;
+	FTDS::String mTargetName;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;

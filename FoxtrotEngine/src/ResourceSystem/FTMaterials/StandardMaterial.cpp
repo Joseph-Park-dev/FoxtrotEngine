@@ -54,7 +54,7 @@ void StandardMaterial::UpdateBuffer(ComPtr<ID3D11DeviceContext>& context, ComPtr
 
 void StandardMaterial::LoadFromFile()
 {
-	std::ifstream ifs(GetRelativePath());
+	std::ifstream ifs(RelativePath().C_Str());
 
 	if (ifs)
 	{
@@ -73,12 +73,12 @@ StandardMaterial::StandardMaterial()
 	: FTMaterial()
 	, mData(DBG_NEW StandardMatData)
 {
-	std::string name = std::string("StandardMaterial") + FileTypes::MATERIAL;
+	FTDS::String name = FTDS::String("StandardMaterial") + FileTypes::MATERIAL;
 
 #ifdef FOXTROT_EDITOR
-	std::string path = std::string(PATH_PROJECT + "Assets\\Materials\\") + name;
+	FTDS::String path = PATH_PROJECT + "Assets\\Materials\\" + name;
 #else
-	std::string path = std::string(".\\Assets\\Materials\\") + name;
+	FTDS::String path = FTDS::String(".\\Assets\\Materials\\") + name;
 #endif // FOXTROT_EDITOR
 
 
@@ -100,13 +100,13 @@ void StandardMaterial::SaveProperties(std::ofstream& ofs)
 
 void StandardMaterial::LoadProperties(std::ifstream& ifs)
 {
-	std::pair<size_t, std::string> pack = FileIOHelper::BeginDataPackLoad(ifs);
+	std::pair<size_t, FTDS::String> pack = FileIOHelper::BeginDataPackLoad(ifs);
 	FTResource::LoadProperties(ifs);
 }
 
 void StandardMaterial::SaveToFile()
 {
-	std::ofstream ofs(GetRelativePath());
+	std::ofstream ofs(RelativePath().C_Str());
 
 	if (ofs)
 	{
@@ -120,7 +120,7 @@ void StandardMaterial::SaveToFile()
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::STANDARD_MAT);
 		FileIOHelper::SaveBufferToFile(ofs);
 
-		printf("Material %s created to %s\n", GetFileName().c_str(), GetRelativePath().c_str());
+		printf("Material %s created to %s\n", FileName().C_Str(), RelativePath().C_Str());
 	}
 	else
 		Debug::LogError(__LINE__, __FILE__, "Failed to save material to file");

@@ -4,6 +4,8 @@
 #include <queue>
 #include "spine/spine.h"
 
+#include "Static/FTString.h"
+
 class FTSpriteAnimation;
 class FoxtrotRenderer;
 class FTCore;
@@ -19,11 +21,11 @@ public:
 	//	UINT		tileMapKey);
 
 	FTSpriteAnimation* CreateAnimationFromSpriteSheet(
-		const char* name,
-		const char* texKey,
-		const char* spriteSheetKey,
-		size_t		startIndex,
-		size_t		endIndex);
+		const char*	  name,
+		FTDS::String& texKey,
+		FTDS::String& spriteSheetKey,
+		size_t		  startIndex,
+		size_t		  endIndex);
 
 public:
 	spine::SkeletonRenderer* GetSkeletonRenderer();
@@ -42,8 +44,8 @@ public:
 	void SaveSpriteAnimAsFile(FTSpriteAnimation* animation);
 
 private:
-	void GetSprite(const char*& key);
-	void GetTileMap(const char*& key);
-	void GetSpriteSheet(const char*& key);
+	void GetSprite(FTDS::String& key);
+	void GetTileMap(FTDS::String& key);
+	void GetSpriteSheet(FTDS::String& key);
 #endif
 };

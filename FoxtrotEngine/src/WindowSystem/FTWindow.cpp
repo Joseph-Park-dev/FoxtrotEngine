@@ -26,7 +26,9 @@
 bool FTWindow::InitializeWindow(WNDPROC wndProc)
 {
 	assert(0 < mWidth || 0 < mHeight);
-	assert(!mTitle.empty());
+	assert(!mTitle.IsEmpty());
+
+	wchar_t* title = mTitle.WC_Str();
 
 	WNDCLASSEX wc = {
 		sizeof(WNDCLASSEX),
@@ -39,7 +41,7 @@ bool FTWindow::InitializeWindow(WNDPROC wndProc)
 		NULL,
 		NULL,
 		NULL,
-		mTitle.c_str(), // lpszClassName, L-string
+		title, // lpszClassName, L-string
 		NULL
 	};
 	if (!RegisterClassEx(&wc))
@@ -55,7 +57,7 @@ bool FTWindow::InitializeWindow(WNDPROC wndProc)
 
 	mWinHandle = CreateWindow(
 		wc.lpszClassName,
-		mTitle.c_str(),
+		title,
 		WS_OVERLAPPEDWINDOW | WS_SYSMENU,
 		100,				// x-coordinate, top left
 		100,				// y-coordinate, top left
@@ -75,6 +77,8 @@ bool FTWindow::InitializeWindow(WNDPROC wndProc)
 	ShowWindow(mWinHandle, SW_SHOWDEFAULT);
 	SetForegroundWindow(mWinHandle);
 	UpdateWindow(mWinHandle);
+
+	delete[] title;
 	return true;
 }
 
@@ -314,12 +318,12 @@ bool FTWindow::IsInRenderedArea(FTVector2 pos)
 	return mRenderArea->Overlaps(pos);
 }
 
-FTWindow::FTWindow(const wchar_t* title, UINT width, UINT height)
+FTWindow::FTWindow(const char* title, UINT width, UINT height)
 	: mWinHandle(nullptr)
 	, mRenderArea(DBG_NEW FTRectArea(0.f, 0.f, width, height))
 	, mInputDevice(DBG_NEW FTInputDevice)
 {
-	mTitle	= title;
+	mTitle.Assign(title);
 	mWidth	= width;
 	mHeight = height;
 

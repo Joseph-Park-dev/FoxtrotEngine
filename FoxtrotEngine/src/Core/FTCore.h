@@ -19,6 +19,7 @@
 
 #include "Core/SingletonMacro.h"
 #include "Math/FTMath.h"
+#include "Static/FTString.h"
 
 class FTWindow;
 class FoxtrotRenderer;
@@ -51,21 +52,21 @@ protected:
 protected:
 	virtual bool InitFoxtrotRenderer_D3D11(FTWindow* window, int& width, int& height);
 	virtual void InitSingletonManagers();
+	virtual void LoadGameData();
 
 private:
 	FTWindow*		 mWindow;
 	FoxtrotRenderer* mGameRenderer;
 	bool			 mIsRunning;
 
-	std::wstring mWindowTitle;
+	FTDS::String mWindowTitle;
 	int			 mWindowWidth;
 	int			 mWindowHeight;
 
 private:
-	std::string mGameDataPath;
+	FTDS::String mGameDataPath;
 
 private:
 	// Initializes Common functionality.
-	void LoadGameData();
 	void InitTimer();
 };

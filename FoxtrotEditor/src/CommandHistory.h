@@ -35,17 +35,17 @@ public:
 	void AddCommand(Command* command);
 
 	// These member functions will be used on Foxtrot Editor when updating values.
-	void UpdateIntValue(std::string label, int& ref, int modSpeed = INTMOD_SPEED);
-	void UpdateIntValue(std::string label, int& ref, int min, int max, int modSpeed = INTMOD_SPEED);
-	void UpdateFloatValue(std::string label, float& ref, float modSpeed = FLOATMOD_SPEED);
-	void UpdateBoolValue(std::string label, bool& ref);
-	void UpdateVector2Value(std::string label, FTVector2& ref, float modSpeed = FLOATMOD_SPEED);
-	void UpdateVector2Value(std::string label, b2Vec2& ref, float modSpeed = FLOATMOD_SPEED);
-	void UpdateVector3Value(std::string label, FTVector3& ref, float modSpeed = FLOATMOD_SPEED);
-	void UpdateVector3Value(std::string label, DirectX::SimpleMath::Vector3& ref, float modSpeed = FLOATMOD_SPEED);
-	void UpdateStringValue(std::string label, std::string& ref);
+	void UpdateIntValue(const char* label, int& ref, int modSpeed = INTMOD_SPEED);
+	void UpdateIntValue(const char* label, int& ref, int min, int max, int modSpeed = INTMOD_SPEED);
+	void UpdateFloatValue(const char* label, float& ref, float modSpeed = FLOATMOD_SPEED);
+	void UpdateBoolValue(const char* label, bool& ref);
+	void UpdateVector2Value(const char* label, FTVector2& ref, float modSpeed = FLOATMOD_SPEED);
+	void UpdateVector2Value(const char* label, b2Vec2& ref, float modSpeed = FLOATMOD_SPEED);
+	void UpdateVector3Value(const char* label, FTVector3& ref, float modSpeed = FLOATMOD_SPEED);
+	void UpdateVector3Value(const char* label, DirectX::SimpleMath::Vector3& ref, float modSpeed = FLOATMOD_SPEED);
+	void UpdateStringValue(const char* label, FTDS::String& ref);
 
-	void UpdateStateValue(std::string label, Actor::State& state);
+	void UpdateStateValue(const char* label, Actor::State& state);
 
 public:
 	void UpdateActorAddition(EditorElement* editorElement);

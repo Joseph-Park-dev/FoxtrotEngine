@@ -19,8 +19,8 @@ public:
 	ComPtr<ID3D11ShaderResourceView>& GetDiffuseResView();
 	ComPtr<ID3D11ShaderResourceView>& GetSpecularResView();
 
-	void SetDiffuseTexture(const char* key);
-	void SetSpecularTexture(const char* key);
+	void SetDiffuseTexture(FTDS::String& key);
+	void SetSpecularTexture(FTDS::String& key);
 
 protected:
 	virtual void InitializeMeshes(

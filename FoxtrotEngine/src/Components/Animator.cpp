@@ -47,12 +47,13 @@ Animator::~Animator()
 
 void Animator::Play(const UINT key, bool isRepeated)
 {
-	const char* loadedKey = mLoadedKeys.at(key);
+	FTDS::String loadedKey = mLoadedKeys.at(key);
 
 #ifdef FOXTROT_EDITOR
-	SetMeshGroup(EditorResourceManager::GetInstance()->GetLoadedSpriteAnim(loadedKey));
+	FTSpriteAnimation* anim = EditorResourceManager::GetInstance()->GetLoadedSpriteAnim(loadedKey);
+	SetMeshGroup(anim);
 #else
-	SetMeshGroup(ResourceManager::GetInstance()->GetLoadedSpriteAnim(loadedKey));
+	SetMeshGroup(ResourceManager::GetInstance()->GetLoadedSpriteAnim(loadedKey.C_Str()));
 #endif // FOXTROT_EDITOR
 	mIsFinished = false;
 	mIsRepeated = isRepeated;
@@ -82,7 +83,7 @@ void Animator::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::MATERIAL_KEYS);
 
 	for (size_t i = 0; i < MaterialKeys().size(); ++i)
-		FileIOHelper::SaveString(ofs, std::to_string(i), MaterialKeys().at(i));
+		FileIOHelper::SaveString(ofs, std::to_string(i).c_str(), MaterialKeys().at(i));
 	FileIOHelper::SaveSize(ofs, ChunkKey::MATERIAL_COUNT, MaterialKeys().size());
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::MATERIAL_KEYS);
@@ -91,7 +92,7 @@ void Animator::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::LOADED_KEYS);
 
 	for (size_t i = 0; i < mLoadedKeys.size(); ++i)
-		FileIOHelper::SaveString(ofs, std::to_string(i), mLoadedKeys.at(i));
+		FileIOHelper::SaveString(ofs, std::to_string(i).c_str(), mLoadedKeys.at(i));
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::LOADED_KEYS);
 }
@@ -99,11 +100,11 @@ void Animator::SaveProperties(std::ofstream& ofs)
 void Animator::LoadProperties(std::ifstream& ifs)
 {
 	// Load Animations
-	std::pair<size_t, std::string> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::LOADED_KEYS);
+	std::pair<size_t, FTDS::String> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::LOADED_KEYS);
 	mLoadedKeys.reserve(pack.first);
 	for (size_t i = 0; i < pack.first; ++i)
 	{
-		const char* key = 0;
+		FTDS::String key;
 		FileIOHelper::LoadBasicString(ifs, key);
 		mLoadedKeys.push_back(key);
 	}
@@ -116,7 +117,7 @@ void Animator::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadSize(ifs, matCount);
 	for (size_t i = 0; i < matCount; ++i)
 	{
-		const char* key = ChunkKey::NullVal::NULL_OBJECT;
+		FTDS::String key = ChunkKey::NullVal::NULL_OBJECT;
 		FileIOHelper::LoadBasicString(ifs, key);
 		MaterialKeys().push_back(key);
 	}
@@ -209,12 +210,13 @@ void Animator::EditorUpdate(float deltaTime)
 
 void Animator::EditorUIUpdate()
 {
+	CHECK_RENDERER(GetRenderer());
+
 	UpdatePlayAnim();
 	UpdatePlayList();
 
 	CommandHistory::GetInstance()->UpdateBoolValue("Is Repeated", mIsRepeated);
-
-	SpriteRenderer::EditorUIUpdate();
+	UpdateMaterial();
 }
 
 void Animator::EditorRender(FoxtrotRenderer* renderer)
@@ -234,7 +236,7 @@ void Animator::UpdatePlayAnim()
 		else
 		{
 			if (ImGui::Button("Play"))
-				Play(mCurrAnimKey);
+				Play(0);
 		}
 	}
 }
@@ -242,13 +244,13 @@ void Animator::UpdatePlayAnim()
 void Animator::UpdatePlayList()
 {
 	ImGui::Text("Play List");
-	const char* key = ChunkKey::NullVal::NULL_OBJECT;
+	FTDS::String key = ChunkKey::NullVal::NULL_OBJECT;
 	FTEditorUtils::DisplayResSelection<FTSpriteAnimation>(
 		"Load Animation",
-		EditorResourceManager::GetInstance()->GetSpriteAnimMap(),
+		EditorResourceManager::GetInstance()->GetSpriteAnimations(),
 		key);
 
-	if (!FTDS::StringEqual(key, ChunkKey::NullVal::NULL_OBJECT))
+	if (!FTDS::StringEqual(key.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
 	{
 		mLoadedKeys.push_back(key);
 		if (mLoadedKeys.size() == 1)
@@ -264,8 +266,8 @@ void Animator::UpdatePlayList()
 		{
 			FTSpriteAnimation* anim = EditorResourceManager::GetInstance()->GetLoadedSpriteAnim(mLoadedKeys.at(i));
 
-			ImGui::PushID(anim->GetFileName().c_str());
-			ImGui::Text(anim->GetFileName().c_str());
+			ImGui::PushID(anim->FileName().C_Str());
+			ImGui::Text(anim->FileName().C_Str());
 			anim->UpdateUI();
 
 			if (ImGui::ArrowButton("##Up", ImGuiDir::ImGuiDir_Up))

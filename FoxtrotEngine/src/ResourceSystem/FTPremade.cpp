@@ -38,9 +38,9 @@ FTPremade::FTPremade()
 
 {
 #ifdef FOXTROT_EDITOR
-	std::string path = PATH_PROJECT + "\\Assets\\Premades\\";
+	FTDS::String path = PATH_PROJECT + "\\Assets\\Premades\\";
 #else
-	std::string path = ".\\Assets\\Premades\\";
+	FTDS::String path = ".\\Assets\\Premades\\";
 #endif // FOXTROT_EDITOR
 	SetRelativePath(path);
 }
@@ -55,8 +55,8 @@ void FTPremade::Load()
 {
 	if (!mOrigin)
 		mOrigin = DBG_NEW Actor();
-	std::ifstream ifs(GetRelativePath());
-	std::pair<size_t, std::string> pack = FileIOHelper::BeginDataPackLoad(ifs);
+	std::ifstream ifs(RelativePath().C_Str());
+	std::pair<size_t, FTDS::String> pack = FileIOHelper::BeginDataPackLoad(ifs);
 	mOrigin->LoadProperties(ifs);
 	mOrigin->LoadComponents(ifs);
 
@@ -97,19 +97,19 @@ void FTPremade::LoadProperties(std::ifstream& ifs)
 #ifdef FOXTROT_EDITOR
 void FTPremade::Create(EditorElement* ele)
 {
-	assert(!GetRelativePath().empty());
-	SetFileName(ele->GetName());
-	std::string fileName = GetRelativePath() + GetFileName() + FileTypes::PREMADE;
-	std::ofstream ofs(fileName);
+	assert(!RelativePath().IsEmpty());
+	SetFileName(ele->GetName().C_Str());
+	FTDS::String fileName = RelativePath() + FileName() + FileTypes::PREMADE;
+	std::ofstream ofs(fileName.C_Str());
 	if (ofs)
 	{
-		FileIOHelper::BeginDataPackSave(ofs, GetFileName());
+		FileIOHelper::BeginDataPackSave(ofs, FileName());
 		ele->SaveComponents(ofs);
 		ele->SaveProperties(ofs);
-		FileIOHelper::EndDataPackSave(ofs, GetFileName());
+		FileIOHelper::EndDataPackSave(ofs, FileName());
 		FileIOHelper::SaveBufferToFile(ofs);
 
-		printf("Premade %s created to %s\n", GetFileName().c_str(), GetRelativePath().c_str());
+		printf("Premade %s created to %s\n", FileName().C_Str(), RelativePath().C_Str());
 	}
 	else
 		printf("ERROR: FTPremade::Create -> Failed to open file\n");
@@ -117,18 +117,18 @@ void FTPremade::Create(EditorElement* ele)
 
 void FTPremade::Save(EditorElement* ele)
 {
-	assert(!GetRelativePath().empty());
-	LogString(GetRelativePath());
-	std::ofstream ofs(GetRelativePath());
+	assert(!RelativePath().IsEmpty());
+	LogString(RelativePath().C_Str());
+	std::ofstream ofs(RelativePath().C_Str());
 	if (ofs)
 	{
-		FileIOHelper::BeginDataPackSave(ofs, GetFileName());
+		FileIOHelper::BeginDataPackSave(ofs, FileName());
 		ele->SaveComponents(ofs);
 		ele->SaveProperties(ofs);
-		FileIOHelper::EndDataPackSave(ofs, GetFileName());
+		FileIOHelper::EndDataPackSave(ofs, FileName());
 		FileIOHelper::SaveBufferToFile(ofs);
 
-		printf("Premade saved to %s\n", GetRelativePath().c_str());
+		printf("Premade saved to %s\n", RelativePath().C_Str());
 	}
 	else
 		printf("ERROR: FTPremade::Create -> Failed to open file\n");
@@ -136,7 +136,7 @@ void FTPremade::Save(EditorElement* ele)
 
 void FTPremade::UpdateUI()
 {
-	ImGui::Text(GetFileName().c_str());
+	ImGui::Text(FileName().C_Str());
 	ImGui::Separator();
 	if (FTEditorUtils::ButtonCenteredOnLine("Edit Premade"))
 	{

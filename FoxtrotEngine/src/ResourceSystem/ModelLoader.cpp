@@ -6,26 +6,27 @@
 
 using namespace DirectX::SimpleMath;
 
-void ModelLoader::Load(std::string resPath) {
+void ModelLoader::Load(FTDS::String& resPath) {
     this->basePath = basePath;
 
     Assimp::Importer importer;
 
     const aiScene* pScene = importer.ReadFile(
-        resPath,
+        resPath.C_Str(),
         aiProcess_Triangulate | aiProcess_ConvertToLeftHanded);
 
     Matrix tr; // Initial transformation
     ProcessNode(pScene->mRootNode, pScene, tr);
 }
 
-void ModelLoader::Load(std::string basePath, std::string filename) {
+void ModelLoader::Load(FTDS::String& basePath, FTDS::String& filename) {
     this->basePath = basePath;
 
     Assimp::Importer importer;
 
+    this->basePath.Append(filename.C_Str());
     const aiScene *pScene = importer.ReadFile(
-        this->basePath + filename,
+        this->basePath.C_Str(),
         aiProcess_Triangulate | aiProcess_ConvertToLeftHanded);
 
     Matrix tr; // Initial transformation
@@ -140,9 +141,9 @@ FTMeshData ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene) {
             aiString filepath;
             material->GetTexture(aiTextureType_DIFFUSE, 0, &filepath);
 
-            //std::string fullPath =
+            //FTDS::String fullPath =
             //    this->basePath +
-            //    std::string(std::filesystem::path(filepath.C_Str())
+            //    FTDS::String(std::filesystem::path(filepath.C_Str())
             //                    .filename()
             //                    .string());
 

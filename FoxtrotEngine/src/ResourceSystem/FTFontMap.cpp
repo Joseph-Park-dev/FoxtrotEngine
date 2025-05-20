@@ -18,7 +18,7 @@
 //    std::queue<wchar_t> result;
 //
 //    // Open an existing file 
-//    myFile.open(GetRelativePath(), std::fstream::in);
+//    myFile.open(RelativePath().C_Str(), std::fstream::in);
 //    assert(myFile);
 //    std::wstring line;
 //    wchar_t val;

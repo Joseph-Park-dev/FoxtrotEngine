@@ -221,7 +221,7 @@ public:
 public:
     // -------------------------------------------------------------------
     const char *GetMagicFileName() const {
-        return baseName.c_str();
+        return baseName.C_Str();
     }
 
     // -------------------------------------------------------------------

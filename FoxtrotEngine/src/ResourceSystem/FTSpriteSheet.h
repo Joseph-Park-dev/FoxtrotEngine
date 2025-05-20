@@ -14,7 +14,7 @@ public:
 	void Initialize();
 
 public:
-	Tile*  GetTiles();
+	Tile*	GetTiles();
 	size_t& GetTilesCount();
 
 public:
@@ -25,9 +25,9 @@ protected:
 	void InitializeTile(Tile& tile, nlohmann::json& json);
 
 private:
-	const char* mJSONKey;
-	Tile*		mTiles;
-	size_t		mTilesCount;
+	FTDS::String mJSONKey;
+	Tile*		 mTiles;
+	size_t		 mTilesCount;
 
 	FTVector2 mSheetSize;
 

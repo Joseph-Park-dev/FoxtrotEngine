@@ -232,7 +232,7 @@ public:
             buffer.resize(cursor + s.size());
         }
         void* dest = &buffer[cursor];
-        ::memcpy(dest, s.c_str(), s.size());
+        ::memcpy(dest, s.C_Str(), s.size());
         cursor += s.size();
     }
 

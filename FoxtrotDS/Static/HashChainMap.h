@@ -45,7 +45,7 @@ namespace FTDS
 		: public FTDS::Array<FTDS::RecordNode<TYPE>*>
 	{
 	public:
-		void Insert(const char* key, TYPE value)
+		void Insert(FTDS::String key, TYPE value)
 		{
 			// HashChainMap uses FTDS::Array,
 			// the number of slots will not be dynamic, 
@@ -53,7 +53,7 @@ namespace FTDS
 			assert(0 < this->Capacity());
 
 			// Get Hash Value from HashFuntion()
-			size_t hashVal = FTDS::HashFunction(key, this->Capacity());
+			size_t hashVal = FTDS::HashFunction(key.C_Str(), this->Capacity());
 
 			// Traverse throught the linked list inside a slot.
 			for (RecordNode<TYPE>* p = this->mData[hashVal]; p != nullptr; p = p->GetLink())
@@ -62,8 +62,9 @@ namespace FTDS
 				if (p->Equal(key))
 				{
 					// Abort insertion.
-					std::string msg = std::string("Duplicated key") + key;
-					Debug::LogError(__LINE__, __FILE__, msg);
+					FTDS::String msg("Duplicated key: ");
+					msg.Append(key);
+					Debug::LogError(__LINE__, __FILE__, msg.C_Str());
 					return;
 				}
 			}
@@ -72,33 +73,48 @@ namespace FTDS
 			RecordNode<TYPE>* node = DBG_NEW RecordNode<TYPE>(key, value);
 			node->SetLink(this->mData[hashVal]);
 			this->mData[hashVal] = node;
+			++mSize;
 		}
 
-		TYPE At(const char* key)
+		FTDS::RecordNode<TYPE>* At(FTDS::String& key)
 		{
 			// Get Hash Value from HashFuntion()
-			size_t hashVal = FTDS::HashFunction(key, this->Capacity());
+			size_t hashVal = FTDS::HashFunction(key.C_Str(), this->Capacity());
 
 			// Traverse throught the linked list inside a slot.
 			for (RecordNode<TYPE>* p = this->mData[hashVal]; p != nullptr; p = p->GetLink())
 			{
 				// Is there any nodes with the same key?
 				if (p->Equal(key))
-					return p->Value();
+					return p;
 			}
 
-			Debug::LogError(__LINE__, __FILE__, std::string("Search Failed for key: ") + key);
-			return NULL;
+			Debug::LogError(__LINE__, __FILE__, (FTDS::String("Search Failed for key: ") + key).C_Str());
+			return nullptr;
 		}
+
+		void Erase(const char* key)
+		{
+			RecordNode<TYPE>* node = At(key);
+			delete node;
+			node = nullptr;
+			--mSize;
+		}
+
+	public:
+		const size_t& GetSize() { return mSize; }
+		bool IsEmpty() const { return mSize == 0; }
 
 	public:
 		HashChainMap()
 			: FTDS::Array<RecordNode<TYPE>*>()
+			, mSize(0)
 		{
 		}
 
 		HashChainMap(size_t capacity)
 			: FTDS::Array<RecordNode<TYPE>*>(capacity)
+			, mSize(0)
 		{
 		}
 
@@ -120,5 +136,7 @@ namespace FTDS
 				}
 			}
 		}
+	private:
+		size_t mSize;
 	};
 } // namespace FTDS

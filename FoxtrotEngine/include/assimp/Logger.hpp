@@ -103,7 +103,7 @@ public:
 
     template<typename... T>
     void debug(T&&... args) {
-        debug(formatMessage(std::forward<T>(args)...).c_str());
+        debug(formatMessage(std::forward<T>(args)...).C_Str());
     }
 
     // ----------------------------------------------------------------------
@@ -113,7 +113,7 @@ public:
 
     template<typename... T>
     void verboseDebug(T&&... args) {
-        verboseDebug(formatMessage(std::forward<T>(args)...).c_str());
+        verboseDebug(formatMessage(std::forward<T>(args)...).C_Str());
     }
 
     // ----------------------------------------------------------------------
@@ -123,7 +123,7 @@ public:
 
     template<typename... T>
     void info(T&&... args) {
-        info(formatMessage(std::forward<T>(args)...).c_str());
+        info(formatMessage(std::forward<T>(args)...).C_Str());
     }
 
     // ----------------------------------------------------------------------
@@ -133,7 +133,7 @@ public:
 
     template<typename... T>
     void warn(T&&... args) {
-        warn(formatMessage(std::forward<T>(args)...).c_str());
+        warn(formatMessage(std::forward<T>(args)...).C_Str());
     }
 
     // ----------------------------------------------------------------------
@@ -143,7 +143,7 @@ public:
 
     template<typename... T>
     void error(T&&... args) {
-        error(formatMessage(std::forward<T>(args)...).c_str());
+        error(formatMessage(std::forward<T>(args)...).C_Str());
     }
 
     // ----------------------------------------------------------------------

@@ -23,7 +23,7 @@ Actor* AgentBehavior::GetTarget()
 	return mTarget;
 }
 
-std::string& AgentBehavior::GetTargetName()
+FTDS::String& AgentBehavior::GetTargetName()
 {
 	return mTargetName;
 }
@@ -33,9 +33,9 @@ void AgentBehavior::SetTarget(Actor* target)
 	mTarget = target;
 }
 
-void AgentBehavior::SetTargetName(std::string& targetName)
+void AgentBehavior::SetTargetName(FTDS::String& targetName)
 {
-	mTargetName.assign(targetName);
+	mTargetName.Assign(targetName);
 }
 
 void AgentBehavior::Initialize(FTCore* coreInstance)
@@ -46,10 +46,10 @@ void AgentBehavior::Initialize(FTCore* coreInstance)
 void AgentBehavior::Setup()
 {
 #ifdef FOXTROT_EDITOR
-	if(!FTDS::StringEqual(mTargetName.c_str(), ChunkKey::NullVal::NULL_OBJECT))
+	if(!FTDS::StringEqual(mTargetName.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
 		mTarget = FIND_EDITOR_ELEMENT(mTargetName);
 #else
-	if (!FTDS::StringEqual(mTargetName.c_str(), ChunkKey::NullVal::NULL_OBJECT))
+	if (!FTDS::StringEqual(mTargetName.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
 		mTarget = FIND_ACTOR(mTargetName);
 #endif // FOXTROT_EDITOR
 	Component::Setup();

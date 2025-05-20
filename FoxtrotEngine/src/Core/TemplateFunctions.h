@@ -20,6 +20,8 @@
 #include <directxtk/SimpleMath.h>
 #include <filesystem>
 
+#include "Static/FTString.h"
+
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS
 	#include <imgui.h>
@@ -28,7 +30,7 @@
 #include "Math/FTMath.h"
 #include "Debugging/DebugMemAlloc.h"
 
-// static std::string ToString(const wchar_t* text)
+// static FTDS::String ToString(const wchar_t* text)
 //{
 //	size_t i = 0;
 //	size_t size = std::wcslen(text);
@@ -51,10 +53,10 @@ inline void LogInt(int val)
 	printf("int : %d\n", val);
 }
 
-inline void LogInt(std::string message, int val)
+inline void LogInt(FTDS::String message, int val)
 {
-	std::string msg = message + std::to_string(val) + "\n";
-	printf(msg.c_str());
+	FTDS::String msg = message + std::to_string(val).c_str() + "\n";
+	printf(msg.C_Str());
 }
 
 inline void LogFloat(float val)
@@ -62,10 +64,10 @@ inline void LogFloat(float val)
 	printf("float : %f\n", val);
 }
 
-inline void LogFloat(std::string message, float val)
+inline void LogFloat(FTDS::String message, float val)
 {
-	std::string msg = message + std::to_string(val) + "\n";
-	printf(msg.c_str());
+	FTDS::String msg = message + std::to_string(val).c_str() + "\n";
+	printf(msg.C_Str());
 }
 
 inline void LogVector2(FTVector2 val)
@@ -78,14 +80,14 @@ inline void LogVector3(DirectX::SimpleMath::Vector3 val)
 	printf("X : %f Y : %f Z : %f\n", val.x, val.y, val.z);
 }
 
-inline void LogVector2(std::string message, FTVector2 val)
+inline void LogVector2(FTDS::String message, FTVector2 val)
 {
-	printf("%s, X : %f Y : %f\n", message.c_str(), val.x, val.y);
+	printf("%s, X : %f Y : %f\n", message.C_Str(), val.x, val.y);
 }
 
-inline void LogVector3(std::string message, FTVector3 val)
+inline void LogVector3(FTDS::String message, FTVector3 val)
 {
-	printf("%s, X : %f Y : %f Z : %f\n", message.c_str(), val.x, val.y, val.z);
+	printf("%s, X : %f Y : %f Z : %f\n", message.C_Str(), val.x, val.y, val.z);
 }
 
 inline void LogBool(bool val)
@@ -96,14 +98,14 @@ inline void LogBool(bool val)
 		printf("Bool Log : False\n");
 }
 
-inline void LogString(std::wstring val)
+inline void LogString(FTDS::String val)
 {
-	printf("%ls\n", val.c_str());
+	printf("%s\n", val.C_Str());
 }
 
-inline void LogString(std::string val)
+inline void LogString(const char* val)
 {
-	printf("%s\n", val.c_str());
+	printf("%s\n", val);
 }
 
 inline void LogString(std::wstring message, std::wstring val)
@@ -111,24 +113,26 @@ inline void LogString(std::wstring message, std::wstring val)
 	printf("%ls\n", (message + L" :" + val).c_str());
 }
 
-inline void LogString(std::string message, std::string val)
+inline void LogString(FTDS::String message, FTDS::String val)
 {
-	printf("%s\n", (message + " :" + val).c_str());
+	message.Append(" :");
+	message.Append(val);
+	printf("%s\n", message.C_Str());
 }
 
-static std::wstring ToWString(const std::string& text)
-{
-	std::wstring wStr;
-	wStr.assign(text.begin(), text.end());
-	return wStr;
-}
-
-static std::string ToString(const std::wstring& text)
-{
-	std::string str;
-	str.assign(text.begin(), text.end());
-	return str;
-}
+// static std::wstring ToWString(const FTDS::String& text)
+//{
+//	std::wstring wStr;
+//	wStr.assign(text.begin(), text.end());
+//	return wStr;
+// }
+//
+// static FTDS::String ToString(const std::wstring& text)
+//{
+//	FTDS::String str;
+//	str.assign(text.begin(), text.end());
+//	return str;
+// }
 
 static char* ToString(const wchar_t* text)
 {
@@ -148,57 +152,39 @@ static const char* ToString(bool boolVal)
 	return boolVal ? "true" : "false";
 }
 
-static const bool StrToBool(std::string& str)
+static const bool StrToBool(FTDS::String& str)
 {
-	return str == "true" ? true : false;
+	return str.Equal("true") ? true : false;
 }
 
-inline std::string ExtractFileName(const char* path)
+inline FTDS::String ExtractFileName(const char* path)
 {
 	std::filesystem::path p(path);
-	std::string			  str = p.filename().string();
-	return str;
+	FTDS::String		  pathStr = FTDS::String(p.string().c_str());
+	int idx = pathStr.RFind("\\");
+	pathStr.SubStr(idx + 1, pathStr.Length() - idx); // 1 -> "\\" should be omitted.
+	return pathStr;
 }
 
-inline std::string ExtractFileType(const char* path)
+inline FTDS::String ExtractFileType(const char* path)
 {
 	std::filesystem::path p(path);
-	std::string			  str = p.extension().string();
-	return str;
+	FTDS::String		  pathStr = FTDS::String(p.string().c_str());
+	int idx = pathStr.RFind(".");
+	pathStr.SubStr(idx, pathStr.Length() - idx);
+	return pathStr;
 }
 
-inline void LTrim(std::string& str)
+inline void ExtractUntil(FTDS::String& line, const char* end)
 {
-	str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](unsigned char ch) {
-				  return !(ch == '\t');
-			  }));
+	int typeBeg = line.LFind(end);
+	line.SubStr(0, typeBeg);
 }
 
-inline std::string ExtractUntil(std::string& line, const char end)
+inline void RemoveSuffix(FTDS::String& line, const char* start)
 {
-	size_t		typeBeg = line.find(end);
-	std::string result	= line.substr(0, typeBeg);
-
-	// Erase the extracted value from line, including end character.
-	line.erase(0, typeBeg + 1);
-	return result;
-}
-
-inline std::string ExtractUntil(std::string& line, const char* end)
-{
-	size_t		typeBeg = line.find(end);
-	std::string result	= line.substr(0, typeBeg);
-
-	// Erase the extracted value from line, including end character.
-	line.erase(0, typeBeg + 1);
-	return result;
-}
-
-inline std::string RemoveSuffix(std::string& line, const char* start)
-{
-	size_t		typeBegin = line.rfind(start);
-	std::string result = line.substr(0, typeBegin);
-	return result;
+	size_t typeBegin = line.RFind(start);
+	line.SubStr(0, typeBegin);
 }
 
 inline bool EndsWith(
@@ -215,9 +201,10 @@ inline bool EndsWith(
 	return fullString.compare(fullString.size() - ending.size(), ending.size(), ending) == 0;
 }
 
-inline std::string ReplaceSuffix(std::string curr, std::string prevSuffix, std::string postSuffix)
+inline void ReplaceSuffix(FTDS::String& curr, FTDS::String prevSuffix, FTDS::String postSuffix)
 {
-	return curr.substr(0, curr.length() - strlen(prevSuffix.c_str())) + postSuffix;
+	curr.SubStr(0, curr.Length() - prevSuffix.Length());
+	curr.Append(postSuffix);
 }
 
 template <typename T>
@@ -258,11 +245,6 @@ void Safe_Delete_Map(std::unordered_map<TKey, TVal>& map)
 		delete i->second;
 	}
 	map.clear();
-}
-
-inline bool StrContains(const char* str, std::string value)
-{
-	return std::string(str).find(value) != std::string::npos;
 }
 
 #include <exception>

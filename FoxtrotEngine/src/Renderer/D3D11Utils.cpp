@@ -493,18 +493,12 @@ void D3D11Utils::CreateGeometryShader(
 	device->CreateGeometryShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), NULL, &geometryShader);
 }
 
-void ReadImage(const std::string filename, std::vector<uint8_t>& image, int& width, int& height)
+void ReadImage(FTDS::String filename, std::vector<uint8_t>& image, int& width, int& height)
 {
-
 	int channels;
 
 	unsigned char* img =
-		stbi_load(filename.c_str(), &width, &height, &channels, 0);
-
-	// assert(channels == 4);
-
-	cout << filename << " " << width << " " << height << " " << channels
-		 << endl;
+		stbi_load(filename.C_Str(), &width, &height, &channels, 0);
 
 	// 4채널로 만들어서 복사
 	image.resize(width * height * 4);
@@ -588,7 +582,7 @@ void D3D11Utils::CreateTexture(
 {
 	int					 width, height;
 	std::vector<uint8_t> image;
-	ReadImage(texture->GetRelativePath(), image, width, height);
+	ReadImage(texture->RelativePath().C_Str(), image, width, height);
 
 	texture->SetTexWidth(width);
 	texture->SetTexHeight(height);
@@ -631,7 +625,7 @@ void D3D11Utils::CreateTexture(
 }
 
 void D3D11Utils::CreateTextureArray(
-	ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, const std::vector<std::string> filenames, ComPtr<ID3D11Texture2D>& texture, ComPtr<ID3D11ShaderResourceView>& textureResourceView)
+	ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, const std::vector<FTDS::String> filenames, ComPtr<ID3D11Texture2D>& texture, ComPtr<ID3D11ShaderResourceView>& textureResourceView)
 {
 
 	using namespace std;
@@ -646,13 +640,9 @@ void D3D11Utils::CreateTextureArray(
 	vector<vector<uint8_t>> imageArray;
 	for (const auto& f : filenames)
 	{
-
-		cout << f << endl;
-
 		std::vector<uint8_t> image;
 
 		ReadImage(f, image, width, height);
-
 		imageArray.push_back(image);
 	}
 
@@ -706,15 +696,15 @@ HRESULT D3D11Utils::CreateCubemapTexture(
 {
 	ComPtr<ID3D11Texture2D> textureBuf;
 
-	std::wstring path = {};
-	path.assign(texture->GetRelativePath().begin(), texture->GetRelativePath().end());
-	return CreateDDSTextureFromFileEx(
-		device.Get(), path.c_str(), 0, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, D3D11_RESOURCE_MISC_TEXTURECUBE, DDS_LOADER_FLAGS(false), (ID3D11Resource**)textureBuf.GetAddressOf(), texture->GetResourceView().GetAddressOf(), nullptr);
+	wchar_t* path = texture->RelativePath().WC_Str();
+	HRESULT result = CreateDDSTextureFromFileEx(
+		device.Get(), path, 0, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, D3D11_RESOURCE_MISC_TEXTURECUBE, DDS_LOADER_FLAGS(false), (ID3D11Resource**)textureBuf.GetAddressOf(), texture->GetResourceView().GetAddressOf(), nullptr);
+	delete[] path;
+	return result;
 }
 
-void D3D11Utils::WriteToFile(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Texture2D>& textureToWrite, const std::string filename)
+void D3D11Utils::WriteToFile(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Texture2D>& textureToWrite, FTDS::String& filename)
 {
-
 	D3D11_TEXTURE2D_DESC desc;
 	textureToWrite->GetDesc(&desc);
 	desc.SampleDesc.Count	= 1;
@@ -761,9 +751,7 @@ void D3D11Utils::WriteToFile(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceCo
 
 	context->Unmap(stagingTexture.Get(), NULL);
 
-	stbi_write_png(filename.c_str(), desc.Width, desc.Height, 4, pixels.data(), desc.Width * 4);
-
-	cout << filename << endl;
+	stbi_write_png(filename.C_Str(), desc.Width, desc.Height, 4, pixels.data(), desc.Width * 4);
 }
 
 UINT D3D11Utils::GetShaderType(ComPtr<ID3DBlob>& shaderBlob)

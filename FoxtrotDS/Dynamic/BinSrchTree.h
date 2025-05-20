@@ -4,44 +4,44 @@
 
 namespace FTDS
 {
-	template <typename TYPE, typename CALLBACK>
-	class BinSrchTree : public FTDS::BinTree<TYPE, CALLBACK>
+	template <typename TYPE>
+	class BinSrchTree : public FTDS::BinTree<TYPE>
 	{
-		using BinTree<TYPE, CALLBACK>::mRoot;
+		using BinTree<TYPE>::mRoot;
 
 	public:
 		void InsertNode(int key, TYPE val)
 		{
 			if (mRoot == nullptr)
 			{
-				mRoot = new BinaryNode<TYPE>(key, val);
+				mRoot = DBG_NEW BinaryNode<TYPE>(key, val);
 				return;
 			}
 			InsertNode(mRoot, key, val);
 		}
 
-		BinaryNode<TYPE>* FindNode(BinaryNode<TYPE>* current, TYPE target)
+		TYPE Find(BinaryNode<TYPE>* current, int targetKey)
 		{
 			if (!current)
 				return nullptr;
-			if (current->Value == target)
+			if (current->Key == targetKey)
 				return current;
-			if (Leftward(current, target))
-				return FindNode(current->Left, target);
-			if (Rightward(current, target))
-				return FindNode(current->Right, target);
+			if (Leftward(current, targetKey))
+				return FindNode(current->Left, targetKey);
+			if (Rightward(current, targetKey))
+				return FindNode(current->Right, targetKey);
 			return nullptr;
 		}
 
 	private:
-		bool Leftward(BinaryNode<TYPE>* curr, TYPE t)
+		bool Leftward(BinaryNode<TYPE>* curr, int tKey)
 		{
-			return t < curr->Value && curr->Left != nullptr;
+			return tKey < curr->Key && curr->Left != nullptr;
 		}
 
-		bool Rightward(BinaryNode<TYPE>* curr, TYPE t)
+		bool Rightward(BinaryNode<TYPE>* curr, int tKey)
 		{
-			return curr->Value < t && curr->Right != nullptr;
+			return curr->Key < tKey && curr->Right != nullptr;
 		}
 
 		void InsertNode(BinaryNode<TYPE>* current, int key, TYPE val)
@@ -51,14 +51,14 @@ namespace FTDS
 				if (current->Left != nullptr)
 					InsertNode(current->Left, key, val);
 				else
-					current->Left = new BinaryNode<TYPE>(key, val);
+					current->Left = DBG_NEW BinaryNode<TYPE>(key, val);
 			}
 			else if (current->Key < key)
 			{
 				if (current->Right != nullptr)
 					InsertNode(current->Right, key, val);
 				else
-					current->Right = new BinaryNode<TYPE>(key, val);
+					current->Right = DBG_NEW BinaryNode<TYPE>(key, val);
 			}
 			else // current->Value == val
 				return;

@@ -2,9 +2,11 @@
 
 #include <fstream>
 
+#include "Static/FTString.h"
+
 void FTJSON::Read()
 {
-	std::ifstream ifs(GetRelativePath());
+	std::ifstream ifs(RelativePath().C_Str());
 	mData = nlohmann::json::parse(ifs);
 }
 

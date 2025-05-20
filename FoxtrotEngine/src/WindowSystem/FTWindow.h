@@ -68,7 +68,7 @@ public:
 	void Reset(FoxtrotRenderer* renderer);
 
 public:
-	FTWindow(const wchar_t* title, UINT width, UINT height);
+	FTWindow(const char* title, UINT width, UINT height);
 	~FTWindow();
 
 private:
@@ -83,7 +83,7 @@ private:
 	ComPtr<ID3D11Texture2D>		   mIndexStagingTexture; // 1x1 sized
 	ComPtr<ID3D11RenderTargetView> mIndexRTV;
 
-	std::wstring mTitle;
+	FTDS::String mTitle;
 	UINT		 mWidth;
 	UINT		 mHeight;
 

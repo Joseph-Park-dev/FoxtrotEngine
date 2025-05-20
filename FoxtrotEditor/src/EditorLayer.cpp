@@ -163,10 +163,10 @@ void EditorLayer::DisplayMainMenuBar()
 		{
 			if (CHUNK_IS_SAVED)
 			{
-				if (!PATH_PROJECT.empty())
+				if (!PATH_PROJECT.IsEmpty())
 				{
-					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
-					printf("Chunk saved to %s", PATH_CHUNK.c_str());
+					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK.C_Str());
+					printf("Chunk saved to %s", PATH_CHUNK.C_Str());
 					mInfoType = InfoType::ChunkIsSaved;
 				}
 				else
@@ -177,7 +177,7 @@ void EditorLayer::DisplayMainMenuBar()
 				mFileDialog = ImGui::FileBrowser(mFileSelectFlag);
 				mFileDialog.SetTitle("Save");
 				mFileDialog.SetTypeFilters({ FileTypes::CHUNK });
-				mFileDialog.SetDirectory(PATH_PROJECT);
+				mFileDialog.SetDirectory(PATH_PROJECT.C_Str());
 				mFileDialog.Open();
 				mFileMenuEvent = FileMenuEvents::Save;
 			}
@@ -187,7 +187,7 @@ void EditorLayer::DisplayMainMenuBar()
 			mFileDialog = ImGui::FileBrowser(mFileSelectFlag);
 			mFileDialog.SetTitle("Save As");
 			mFileDialog.SetTypeFilters({ FileTypes::CHUNK });
-			mFileDialog.SetDirectory(PATH_PROJECT);
+			mFileDialog.SetDirectory(PATH_PROJECT.C_Str());
 			mFileDialog.Open();
 			mFileMenuEvent = FileMenuEvents::SaveAs;
 		}
@@ -196,7 +196,7 @@ void EditorLayer::DisplayMainMenuBar()
 			mFileDialog = ImGui::FileBrowser(mFileSelectFlag);
 			mFileDialog.SetTitle("Open Chunk");
 			mFileDialog.SetTypeFilters({ FileTypes::CHUNK });
-			mFileDialog.SetDirectory(PATH_PROJECT);
+			mFileDialog.SetDirectory(PATH_PROJECT.C_Str());
 			mFileDialog.Open();
 			mFileMenuEvent = FileMenuEvents::Open;
 		}
@@ -210,17 +210,17 @@ void EditorLayer::DisplayMainMenuBar()
 		{
 			if (CHUNK_IS_SAVED)
 			{
-				if (!PATH_CHUNK.empty())
+				if (!PATH_CHUNK.IsEmpty())
 				{
-					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
+					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK.C_Str());
 					DebugShapes::GetInstance()->DeleteAll();
 					//EditorResourceManager::GetInstance()->DeleteAll();
 					UIManager::GetInstance()->Reset();
 					CollisionManager::GetInstance()->Reset();
-					LightManager::GetInstance()->Reset(FTCoreEditor::GetInstance()->GetGameRenderer());
+					//LightManager::GetInstance()->Reset(FTCoreEditor::GetInstance()->GetGameRenderer());
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
-					EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
-					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
+					//EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK.C_Str());
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(true);
 				}
 				else
@@ -233,7 +233,7 @@ void EditorLayer::DisplayMainMenuBar()
 		{
 			if (CHUNK_IS_SAVED)
 			{
-				if (!PATH_CHUNK.empty())
+				if (!PATH_CHUNK.IsEmpty())
 				{
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(false);
 					DebugShapes::GetInstance()->DeleteAll();
@@ -242,7 +242,7 @@ void EditorLayer::DisplayMainMenuBar()
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 					//EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 					//EditorResourceManager::GetInstance()->LoadAllResourcesInAsset();
-					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
+					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK.C_Str());
 				}
 			}
 		}
@@ -340,7 +340,7 @@ void EditorLayer::DisplayHierarchyMenu()
 
 		for (size_t i = 0; i < eleSize; ++i)
 		{
-			if (ImGui::Selectable(actorsRow.at(i)->GetName().c_str(), mActorNameIdx == i))
+			if (ImGui::Selectable(actorsRow.at(i)->GetName().C_Str(), mActorNameIdx == i))
 			{
 				IntEditCommand* command = DBG_NEW IntEditCommand(mActorNameIdx);
 				command->SetNextVal(i);
@@ -458,8 +458,9 @@ void EditorLayer::DisplayInfoMessage()
 			};
 			if (mFocusedEditorElement)
 			{
-				std::string msg = "Create Premade with name : " + mFocusedEditorElement->GetName() + "?";
-				PopUpInfo("Create Premade", msg.c_str(), onConfirm);
+				FTDS::String msg;
+				msg.Assign("Create Premade with name : ",  mFocusedEditorElement->GetName().C_Str(), "?");
+				PopUpInfo("Create Premade", msg.C_Str(), onConfirm);
 			}
 		}
 		break;
@@ -567,17 +568,31 @@ void EditorLayer::PopUpError(const char* title, const char* msg)
 
 void EditorLayer::CreateNewProject(std::filesystem::path& path)
 {
-	bool projExists	 = ProjectExists(path.string());
+	bool projExists	 = ProjectExists(path.string().c_str());
 	bool pathIsEmpty = std::filesystem::is_empty(path);
 
 	if (!projExists && pathIsEmpty)
 	{
-		PATH_PROJECT.assign(path.string());
-		std::filesystem::create_directory(PATH_PROJECT + "\\Assets");
-		std::filesystem::create_directory(PATH_PROJECT + "\\Builds");
-		std::filesystem::create_directory(PATH_PROJECT + "\\Chunks");
-		std::filesystem::create_directory(PATH_PROJECT + "\\FoxtrotEngine");
-		std::ofstream ofs(PATH_PROJECT + "\\FoxtrotEngine" + "\\GameData" + FileTypes::GDPACK);
+		PATH_PROJECT.Assign(path.string().c_str());
+
+		FTDS::String&& assetDir(std::move(PATH_PROJECT));
+		FTDS::String&& buildDir(std::move(PATH_PROJECT));
+		FTDS::String&& chunkDir(std::move(PATH_PROJECT));
+		FTDS::String&& engineDir(std::move(PATH_PROJECT));
+		FTDS::String&& gameDataDir("");
+
+		assetDir.Append("\\Assets");
+		buildDir.Append("\\Builds");
+		chunkDir.Append("\\Chunks");
+		engineDir.Append("\\FoxtrotEngine");
+		gameDataDir.Assign(engineDir.C_Str(), "\\GameData", FileTypes::GDPACK);
+
+		std::filesystem::create_directory(assetDir.C_Str());
+		std::filesystem::create_directory(buildDir.C_Str());
+		std::filesystem::create_directory(chunkDir.C_Str());
+		std::filesystem::create_directory(engineDir.C_Str());
+
+		std::ofstream ofs(engineDir.C_Str());
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::GAME_DATA);
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CHUNK_LIST);
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::CHUNK_LIST);
@@ -601,7 +616,7 @@ void EditorLayer::OpenProject(std::filesystem::path& path)
 		EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 		DebugShapes::GetInstance()->DeleteAll();
 		EditorResourceManager::GetInstance()->DeleteAll();
-		PATH_PROJECT.assign(path.string());
+		PATH_PROJECT.Assign(path.string().c_str());
 		EditorResourceManager::GetInstance()->SetPathToAsset(std::move(PATH_PROJECT));
 		EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 		EditorResourceManager::GetInstance()->LoadAllResourcesInAsset();
@@ -614,16 +629,16 @@ void EditorLayer::OpenProject(std::filesystem::path& path)
 
 void EditorLayer::Save(std::filesystem::path& path)
 {
-	PATH_CHUNK.assign(path.string());
-	EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
+	PATH_CHUNK.Assign(path.string().c_str());
+	EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK.C_Str());
 	mInfoType = InfoType::ChunkIsSaved;
 	SET_CHUNK_IS_SAVED(true)
 }
 
 void EditorLayer::SaveAs(std::filesystem::path& path)
 {
-	PATH_CHUNK.assign(path.string());
-	EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
+	PATH_CHUNK.Assign(path.string().c_str());
+	EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK.C_Str());
 	mInfoType = InfoType::ChunkIsSaved;
 	SET_CHUNK_IS_SAVED(true)
 }
@@ -631,9 +646,9 @@ void EditorLayer::SaveAs(std::filesystem::path& path)
 void EditorLayer::Open(std::filesystem::path& path)
 {
 	EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
-	PATH_CHUNK.assign(path.string());
-	EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
-	LightManager::GetInstance()->Reset(FTCoreEditor::GetInstance()->GetGameRenderer());
+	PATH_CHUNK.Assign(path.string().c_str());
+	EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK.C_Str());
+	//LightManager::GetInstance()->Reset(FTCoreEditor::GetInstance()->GetGameRenderer());
 	SET_CHUNK_IS_SAVED(true)
 }
 

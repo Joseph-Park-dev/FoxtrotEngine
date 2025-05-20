@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -27,7 +27,7 @@
 #include "Compare/StringEqual.h"
 
 #ifdef FOXTROT_EDITOR
-#include "EditorElement.h"
+	#include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
 Actor::Actor()
@@ -55,7 +55,7 @@ Actor::Actor(Scene* scene)
 }
 
 Actor::Actor(Actor* actor)
-	: mName(actor->GetName())
+	: mName()
 	, mActorGroup(actor->mActorGroup)
 	, mState(EActive)
 	, mTransform(DBG_NEW Transform)
@@ -63,20 +63,24 @@ Actor::Actor(Actor* actor)
 	, mParent(actor->mParent)
 	, mChild{}
 {
+	mName.Assign(actor->GetNameRef());
+
 	CopyTransformFrom(actor);
 	CopyComponentsFrom(actor);
 	CopyChildObjectFrom(actor);
 }
 
 Actor::Actor(Actor* actor, Scene* scene)
-	: mName			(actor->GetName())
-	, mActorGroup	(actor->mActorGroup)
-	, mState		(actor->mState)
-	, mTransform	(DBG_NEW Transform)
-	, mComponents	()
-	, mParent		(nullptr)
-	, mChild		()
+	: mName()
+	, mActorGroup(actor->mActorGroup)
+	, mState(actor->mState)
+	, mTransform(DBG_NEW Transform)
+	, mComponents()
+	, mParent(nullptr)
+	, mChild()
 {
+	mName.Assign(actor->GetNameRef());
+
 	CopyTransformFrom(actor);
 	CopyComponentsFrom(actor);
 	CopyChildObjectFrom(actor);
@@ -103,7 +107,7 @@ Actor::~Actor()
 	mComponents.clear();
 
 	for (size_t i = 0; i < mChild.size(); ++i)
-		mChild.clear();	
+		mChild.clear();
 }
 
 void Actor::CopyTransformFrom(Actor* actor)
@@ -111,7 +115,7 @@ void Actor::CopyTransformFrom(Actor* actor)
 	Transform* originTransf = actor->GetTransform();
 	mTransform->SetWorldPosition(originTransf->GetWorldPosition());
 	mTransform->SetLocalPosition(originTransf->GetLocalPosition());
-	//copied->SetScreenPosition(originTransf->GetScreenPosition());
+	// copied->SetScreenPosition(originTransf->GetScreenPosition());
 	mTransform->SetScale(originTransf->GetScale());
 	mTransform->SetRotation(originTransf->GetRotation());
 }
@@ -127,8 +131,8 @@ void Actor::CopyComponentsFrom(Actor* actor)
 
 void Actor::CopyChildObjectFrom(Actor* actor)
 {
-	//std::vector<Actor*>& childObjects = actor->GetChildActors();
-	//for (size_t i = 0; i < childObjects.size(); ++i)
+	// std::vector<Actor*>& childObjects = actor->GetChildActors();
+	// for (size_t i = 0; i < childObjects.size(); ++i)
 	//	this->AddChild(DBG_NEW Actor(childObjects[i]));
 }
 
@@ -174,9 +178,9 @@ void Actor::RenderComponents(FoxtrotRenderer* renderer)
 
 void Actor::AddComponent(Component* component)
 {
-	int updateOrder = component->GetUpdateOrder();
-	auto iter = mComponents.begin();
-	for (;iter != mComponents.end();++iter)
+	int	 updateOrder = component->GetUpdateOrder();
+	auto iter		 = mComponents.begin();
+	for (; iter != mComponents.end(); ++iter)
 	{
 		if (updateOrder < (*iter)->GetUpdateOrder())
 			break;
@@ -201,9 +205,9 @@ void Actor::RemoveAllComponents()
 	mComponents.clear();
 }
 
-std::string Actor::GetStateStr() const
+FTDS::String Actor::GetStateStr() const
 {
-	std::string state = "active";
+	FTDS::String state = "active";
 	if (mState == EPaused)
 		state = "paused";
 	else if (mState == EDead)
@@ -211,7 +215,7 @@ std::string Actor::GetStateStr() const
 	return state;
 }
 
-void Actor::SetState(std::string state)
+void Actor::SetState(FTDS::String state)
 {
 	if (state == "paused")
 		mState = EPaused;
@@ -221,38 +225,39 @@ void Actor::SetState(std::string state)
 		mState = EActive;
 }
 
-bool Actor::HasName(std::string& name)
+bool Actor::HasName(FTDS::String& name)
 {
 	return this->GetName() == name;
 }
 
 bool Actor::HasName(const char* name)
 {
-	return FTDS::StringEqual(mName.c_str(), name);
+	return FTDS::StringEqual(mName.C_Str(), name);
 }
 
 void Actor::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::ACTOR_PROPERTIES);
-	FileIOHelper::SaveString		(ofs, ChunkKey::NAME, GetName());
-	FileIOHelper::SaveString		(ofs, ChunkKey::ACTOR_GROUP, ActorGroupUtil::GetActorGroupStr(mActorGroup));
-	FileIOHelper::SaveString		(ofs, ChunkKey::STATE, GetStateStr());
+	FileIOHelper::SaveString(ofs, ChunkKey::NAME, GetNameRef());
+	FileIOHelper::SaveString(ofs, ChunkKey::ACTOR_GROUP, ActorGroupUtil::GetActorGroupStr(mActorGroup));
+	FileIOHelper::SaveString(ofs, ChunkKey::STATE, GetNameRef());
 	if (mParent)
-		FileIOHelper::SaveString	(ofs, ChunkKey::PARENT, mParent->GetName());
+		FileIOHelper::SaveString(ofs, ChunkKey::PARENT, mParent->GetNameRef());
 	else
-		FileIOHelper::SaveString	(ofs, ChunkKey::PARENT, "nullptr");
+		FileIOHelper::SaveString(ofs, ChunkKey::PARENT, "nullptr");
 
 	// Changing the call location of Transform is NOT recommended
 	// Nested .chunk DataPack has unknown problem.
-	mTransform->SaveProperties		(ofs);
-	FileIOHelper::EndDataPackSave	(ofs, ChunkKey::ACTOR_PROPERTIES);
+	mTransform->SaveProperties(ofs);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::ACTOR_PROPERTIES);
 }
 
 void Actor::SaveComponents(std::ofstream& ofs)
 {
 	size_t count = mComponents.size();
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::COMPONENTS);
-	for (size_t i = 0; i < count; ++i) {
+	for (size_t i = 0; i < count; ++i)
+	{
 		FileIOHelper::BeginDataPackSave(ofs, mComponents[i]->GetName());
 		mComponents[i]->SaveProperties(ofs);
 		FileIOHelper::EndDataPackSave(ofs, mComponents[i]->GetName());
@@ -267,15 +272,15 @@ void Actor::LoadProperties(std::ifstream& ifs)
 	// Nested .chunk DataPack has unknown problem.
 	mTransform->LoadProperties(ifs);
 
-	std::string parentName;
+	FTDS::String parentName;
 	FileIOHelper::LoadBasicString(ifs, parentName);
 	// <Parent finding feature here!>
 
-	std::string stateStr;
+	FTDS::String stateStr;
 	FileIOHelper::LoadBasicString(ifs, stateStr);
 	SetState(stateStr);
 
-	std::string actorGroupStr;
+	FTDS::String actorGroupStr;
 	FileIOHelper::LoadBasicString(ifs, actorGroupStr);
 	mActorGroup = ActorGroupUtil::GetActorGroup(actorGroupStr);
 
@@ -284,10 +289,11 @@ void Actor::LoadProperties(std::ifstream& ifs)
 
 void Actor::LoadComponents(std::ifstream& ifs)
 {
-	std::pair<int, std::string>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COMPONENTS);
+	std::pair<size_t, FTDS::String>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COMPONENTS);
 	mComponents.reserve(pack.first);
-	for (size_t i = 0; i < pack.first; ++i) {
-		std::pair<size_t, std::string> compPack = FileIOHelper::BeginDataPackLoad(ifs);
-		ChunkLoader::GetInstance()->GetComponentLoadMap().at(compPack.second)(this, ifs);
+	for (size_t i = 0; i < pack.first; ++i)
+	{
+		std::pair<size_t, FTDS::String> compPack = FileIOHelper::BeginDataPackLoad(ifs);
+		ChunkLoader::GetInstance()->GetComponentLoadMap().At(compPack.second)->Value()(this, ifs);
 	}
 }

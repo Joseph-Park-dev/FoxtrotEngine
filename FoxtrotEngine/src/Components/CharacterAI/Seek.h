@@ -5,7 +5,7 @@ class Seek :
     public AgentBehavior
 {
 public:
-    virtual std::string GetName() const override;
+    virtual FTDS::String GetName() const override;
     virtual Steering CreateSteering() override;
 
 public:

@@ -29,13 +29,13 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Components/BatchHeaders.h"
 
-void ChunkLoader::SaveChunk(const std::string fileName)
+void ChunkLoader::SaveChunk(const char* fileName)
 {
 	std::ofstream ofs(fileName);
 	SaveChunkData(ofs);
 }
 
-void ChunkLoader::LoadChunk(const std::string fileName)
+void ChunkLoader::LoadChunk(const char* fileName)
 {
 	std::ifstream ifs(fileName);
 	LoadChunkData(ifs);
@@ -76,10 +76,10 @@ void ChunkLoader::SaveActorsData(std::ofstream& out)
 void ChunkLoader::LoadActorsData(std::ifstream& ifs)
 {
 	Scene*							 scene = SceneManager::GetInstance()->GetCurrentScene();
-	std::pair<size_t, std::string>&& pack  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
+	std::pair<size_t, FTDS::String>&& pack  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
 	for (size_t i = 0; i < pack.first; ++i)
 	{
-		std::pair<size_t, std::string>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
+		std::pair<size_t, FTDS::String>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
 		Actor* actor							   = DBG_NEW Actor(scene);
 		actor->LoadProperties(ifs);
 		actor->LoadComponents(ifs);
@@ -99,7 +99,7 @@ ChunkLoader::ChunkLoader()
 	: mCurrentChunkData{}
 	, mIsLoading(false)
 {
-	mComponentLoadMap = {
+	/*mComponentLoadMap = {
 		{ "AI", &Component::Load<AI> },
 		{ "Animator", &Component::Load<Animator> },
 		{ "BoxCollider2D", &Component::Load<BoxCollider2D> },
@@ -116,7 +116,23 @@ ChunkLoader::ChunkLoader()
 
 		{ "Seek", &Component::Load<Seek> },
 		{ "Flee", &Component::Load<Flee> },
-	};
+	};*/
+
+	mComponentLoadMap.Reserve(13);
+	mComponentLoadMap.Insert("AI", &Component::Load<AI>);
+	mComponentLoadMap.Insert("Animator", &Component::Load<Animator>);
+	mComponentLoadMap.Insert("BoxCollider2D", &Component::Load<BoxCollider2D>);
+	mComponentLoadMap.Insert("InputMove", &Component::Load<InputMove>);
+	mComponentLoadMap.Insert("Move", &Component::Load<Move>);
+	mComponentLoadMap.Insert("Rigidbody2D", &Component::Load<Rigidbody2D>);
+	mComponentLoadMap.Insert("SpriteRenderer", &Component::Load<SpriteRenderer>);
+	mComponentLoadMap.Insert("TileMap", &Component::Load<TileMapRenderer>);
+	mComponentLoadMap.Insert("TextRenderer", &Component::Load<TextRenderer>);
+	mComponentLoadMap.Insert("MeshRenderer", &Component::Load<MeshRenderer>);
+	mComponentLoadMap.Insert("SpineAnimator", &Component::Load<SpineAnimator>);
+	mComponentLoadMap.Insert("ButtonUI", &Component::Load<ButtonUI>);
+	mComponentLoadMap.Insert("Seek", &Component::Load<Seek> );
+	mComponentLoadMap.Insert("Flee", &Component::Load<Flee> );
 };
 
 ChunkLoader::~ChunkLoader() {}

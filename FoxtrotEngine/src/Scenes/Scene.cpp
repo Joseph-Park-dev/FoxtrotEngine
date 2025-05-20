@@ -33,7 +33,7 @@ Scene::~Scene()
 	DeleteAll();
 }
 
-Actor* Scene::FindActor(std::string& name)
+Actor* Scene::FindActor(FTDS::String& name)
 {
 	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
 	{

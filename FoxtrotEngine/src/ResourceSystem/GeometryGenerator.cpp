@@ -21,6 +21,8 @@
 #include "ResourceSystem/TextAttribute.h"
 #include "ResourceSystem/ModelLoader.h"
 
+#include "Static/FTString.h"
+
 // #include "ModelLoader.h"
 // using namespace DirectX;
 // using namespace DirectX::SimpleMath;
@@ -773,7 +775,7 @@ FTMeshData GeometryGenerator::MakeSphere(const float radius, const int numSlices
 	return meshData;
 }
 
-std::vector<FTMeshData> GeometryGenerator::ReadFromFile(std::string resPath)
+std::vector<FTMeshData> GeometryGenerator::ReadFromFile(FTDS::String& resPath)
 {
 	using namespace DirectX;
 
@@ -815,7 +817,7 @@ std::vector<FTMeshData> GeometryGenerator::ReadFromFile(std::string resPath)
 	return meshes;
 }
 
-std::vector<FTMeshData> GeometryGenerator::ReadFromFile(std::string basePath, std::string filename)
+std::vector<FTMeshData> GeometryGenerator::ReadFromFile(FTDS::String& basePath, FTDS::String& filename)
 {
 	using namespace DirectX;
 

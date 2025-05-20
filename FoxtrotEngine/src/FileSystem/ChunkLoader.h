@@ -26,13 +26,15 @@
 #include "Math/FTMath.h"
 #include "Core/FTCore.h"
 
+#include "Static/HashChainMap.h"
+
 class Transform;
 class Actor;
 class Component;
 class Scene;
 
 using ComponentLoadFunc = std::function<void(Actor*, std::ifstream&)>;
-using ComponentLoadMap	= std::unordered_map<std::string, ComponentLoadFunc>;
+using ComponentLoadMap	= FTDS::HashChainMap<ComponentLoadFunc>;
 
 struct ChunkData
 {
@@ -45,15 +47,15 @@ class ChunkLoader
 
 	// Member Functions for editor level to generate chunk.json files
 public:
-	virtual void SaveChunk(const std::string fileName);
-	virtual void LoadChunk(const std::string fileName);
+	virtual void SaveChunk(const char* fileName);
+	virtual void LoadChunk(const char* fileName);
 
 public:
 	ComponentLoadMap& GetComponentLoadMap() { return mComponentLoadMap; }
 
 	const bool IsLoadingChunk() const;
-	void Lock();
-	void Unlock();
+	void	   Lock();
+	void	   Unlock();
 
 protected:
 	// Save .Chunk for the editor

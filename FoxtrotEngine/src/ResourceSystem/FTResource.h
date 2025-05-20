@@ -16,18 +16,18 @@
 class FTResource
 {
 public:
-	const std::string& GetFileName() { return mFileName; }
-	const std::string& GetRelativePath() { return mRelativePath; }
-	UINT			   GetRefCount() { return mRefCount; }
-	bool			   GetIsProcessed() { return mIsProcessed; }
+	UINT GetRefCount() { return mRefCount; }
+	bool GetIsProcessed() { return mIsProcessed; }
 
-	void SetFileName(const std::string name) { mFileName.assign(name); }
-	void SetRelativePath(const std::string _strPath) { mRelativePath.assign(_strPath); }
+	void SetFileName(FTDS::String& name) { mFileName.Assign(name); }
+	void SetFileName(const char* name) { mFileName.Assign(name); }
+	void SetRelativePath(FTDS::String& _strPath) { mRelativePath.Assign(_strPath); }
+	void SetRelativePath(const char* _strPath) { mRelativePath.Assign(_strPath); }
 	void SetIsReferenced(bool val) { mRefCount = val; }
 	void SetIsProcessed(bool val) { mIsProcessed = val; }
 
-	std::string& FileName() { return mFileName; }
-	std::string& RelativePath() { return mRelativePath; }
+	FTDS::String& FileName() { return mFileName; }
+	FTDS::String& RelativePath() { return mRelativePath; }
 
 	bool IsReferenced();
 	void AddRefCount() { ++mRefCount; }
@@ -38,8 +38,8 @@ public:
 	virtual ~FTResource() {}
 
 private:
-	std::string mFileName;
-	std::string mRelativePath;
+	FTDS::String mFileName;
+	FTDS::String mRelativePath;
 
 	// The resource is used in somewhere.
 	UINT mRefCount;
@@ -52,7 +52,7 @@ public:
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void UpdateUI() {};
-	void		 UpdateNameAndPath(std::string fileExtension);
+	void		 UpdateNameAndPath(FTDS::String fileExtension);
 #endif // FOXTROT_EDITOR
 };
 

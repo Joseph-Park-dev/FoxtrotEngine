@@ -81,19 +81,33 @@ public:
 	void LoadResources(std::ifstream& ifs);
 
 public:
-	virtual FTTexture*		   GetLoadedTexture(const char* key);
-	virtual FTTileMap*		   GetLoadedTileMap(const char* key);
-	virtual FTSpriteSheet*	   GetLoadedSpriteSheet(const char* key);
-	virtual FTPremade*		   GetLoadedPremade(const char* key);
-	virtual FTPixelShader*	   GetLoadedPixelShader(const char* key);
-	virtual FTMaterial*		   GetLoadedMaterial(const char* key);
-	virtual FTBasicMeshGroup*  GetLoadedMesh(const char* key);
-	virtual FTSpriteAnimation* GetLoadedSpriteAnim(const char* key);
-	virtual FTCSV*			   GetLoadedCSV(const char* key);
-	virtual FTJSON*			   GetLoadedJSON(const char* key);
+	FTTexture*		   GetLoadedTexture(FTDS::String& key);
+	FTTileMap*		   GetLoadedTileMap(FTDS::String& key);
+	FTSpriteSheet*	   GetLoadedSpriteSheet(FTDS::String& key);
+	FTPremade*		   GetLoadedPremade(FTDS::String& key);
+	FTVertexShader*	   GetLoadedVertexShader(FTDS::String& key);
+	FTPixelShader*	   GetLoadedPixelShader(FTDS::String& key);
+	FTMaterial*		   GetLoadedMaterial(FTDS::String& key);
+	FTBasicMeshGroup*  GetLoadedMesh(FTDS::String& key);
+	FTSpriteAnimation* GetLoadedSpriteAnim(FTDS::String& key);
+	FTCSV*			   GetLoadedCSV(FTDS::String& key);
+	FTJSON*			   GetLoadedJSON(FTDS::String& key);
 
-	std::string& GetPathToAsset();
-	void		 SetPathToAsset(std::string&& projectPath);
+	FTDS::String& GetPathToAsset();
+	void		  SetPathToAsset(FTDS::String&& projectPath);
+
+public:
+	FTDS::HashChainMap<FTTexture*>*			GetTextures();
+	FTDS::HashChainMap<FTTileMap*>*			GetTileMaps();
+	FTDS::HashChainMap<FTSpriteSheet*>*		GetSpriteSheets();
+	FTDS::HashChainMap<FTPremade*>*			GetPremades();
+	FTDS::HashChainMap<FTVertexShader*>*	GetVertexShaders();
+	FTDS::HashChainMap<FTPixelShader*>*		GetPixelShaders();
+	FTDS::HashChainMap<FTMaterial*>*		GetMaterials();
+	FTDS::HashChainMap<FTBasicMeshGroup*>*	GetMeshGroups();
+	FTDS::HashChainMap<FTSpriteAnimation*>* GetSpriteAnimations();
+	FTDS::HashChainMap<FTCSV*>*				GetCSVs();
+	FTDS::HashChainMap<FTJSON*>*			GetJSONs();
 
 	///////////////////////////
 	// Save | Load resources //
@@ -109,10 +123,10 @@ public:
 				FTRESOURCE* res = (*iter)->Value();
 				if (0 < res->GetRefCount())
 				{
-					FileIOHelper::BeginDataPackSave(ofs, res->GetFileName());
-					FileIOHelper::SaveString(ofs, ChunkKey::FILE_NAME, res->GetFileName());
-					FileIOHelper::SaveString(ofs, ChunkKey::RELATIVE_PATH, res->GetRelativePath());
-					FileIOHelper::EndDataPackSave(ofs, res->GetFileName());
+					FileIOHelper::BeginDataPackSave(ofs, res->FileName());
+					FileIOHelper::SaveString(ofs, ChunkKey::FILE_NAME, res->FileName());
+					FileIOHelper::SaveString(ofs, ChunkKey::RELATIVE_PATH, res->RelativePath().C_Str());
+					FileIOHelper::EndDataPackSave(ofs, res->FileName());
 				}
 			}
 		}
@@ -170,7 +184,7 @@ protected:
 	void ProcessMaterial(FTMaterial* material);
 
 private:
-	std::string		 mPathToAsset;
+	FTDS::String	 mPathToAsset;
 	FoxtrotRenderer* mRenderer; // For Loading FTTextures
 
 	//////////////////////
@@ -208,20 +222,29 @@ private:
 		FileIOHelper::LoadBasicString(ifs, res->FileName());
 
 		assert(0 < resMap->Capacity());
-		resMap->Insert(res->FileName().c_str(), res);
+		resMap->Insert(res->FileName(), res);
 	}
 
 	template <typename FTRESOURCE>
-	void ClearResArray(FTDS::HashChainMap<FTRESOURCE*>* resMap)
+	void ClearMap(FTDS::HashChainMap<FTRESOURCE*>* resMap)
 	{
 		if (resMap)
 		{
+			if (resMap->IsEmpty())
+				return;
 			for (auto iter = resMap->Begin(); iter != resMap->End(); ++iter)
-				if ((*iter)->Value())
+				if (*iter)
 					delete ((*iter)->Value());
 			resMap->Clear();
 			resMap = nullptr;
 		}
+	}
+	
+private:
+	void AddFileExtensionIfNone(FTDS::String& key, const char* fileType)
+	{
+		if (key.RFind(fileType) < 0)
+			key.Append(fileType);
 	}
 };
 

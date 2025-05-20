@@ -137,7 +137,7 @@ float ai_strtof(const char *begin, const char *end) {
     } else {
         std::string::size_type len(end - begin);
         std::string token(begin, len);
-        val = static_cast<float>(::atof(token.c_str()));
+        val = static_cast<float>(::atof(token.C_Str()));
     }
 
     return val;

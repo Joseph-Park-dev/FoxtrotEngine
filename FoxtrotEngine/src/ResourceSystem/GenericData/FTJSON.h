@@ -14,6 +14,9 @@ public:
 
 private:
 	nlohmann::json mData;
+
+public:
+	virtual void Process(FTCore* coreInst) override;
 };
 
 namespace ChunkKey

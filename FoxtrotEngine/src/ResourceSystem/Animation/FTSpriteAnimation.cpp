@@ -12,9 +12,13 @@
 #include "Renderer/FoxtrotRenderer.h"
 #include "ResourceSystem/FTMaterials/FTMaterial.h"
 #include "ResourceSystem/Animation/AnimationFrame.h"
+#include "ResourceSystem/FTSpriteSheet.h"
+#include "ResourceSystem/GeometryGenerator.h"
+#include "Managers/ResourceManager.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "Managers/AnimationManager.h"
+	#include "EditorResourceManager.h"
 #endif
 
 FTDS::String& FTSpriteAnimation::GetTileDataKey()
@@ -69,4 +73,40 @@ void FTSpriteAnimation::LoadProperties(std::ifstream& ifs)
 
 	FileIOHelper::LoadBasicString(ifs, mTileDataKey);
 	FTAnimation::LoadProperties(ifs);
+}
+
+void FTSpriteAnimation::Process(FTCore* coreInst)
+{
+	if (this->GetIsProcessed())
+		return;
+
+	// This if statement will be triggered only on Editor
+	// (When loading all assets from Asset folder)
+	if (this->GetTileDataKey().Equal(ChunkKey::NullVal::NULL_OBJECT))
+	{
+		std::ifstream ifs(this->RelativePath().C_Str());
+		this->LoadProperties(ifs);
+	}
+
+#ifdef FOXTROT_EDITOR
+	FTSpriteSheet* spriteSheet = EditorResourceManager::GetInstance()->GetLoadedSpriteSheet(this->GetTileDataKey());
+#else
+	FTSpriteSheet* spriteSheet = ResourceManager::GetInstance()->GetLoadedSpriteSheet(this->GetTileDataKey());
+#endif // FOXTROT_EDITOR
+
+	if (!spriteSheet)
+	{
+		Debug::LogError(__LINE__, __FILE__, "Failed to load spritesheet");
+		return;
+	}
+
+	this->SetTexture();
+
+	FoxtrotRenderer* renderer = coreInst->GetGameRenderer();
+	std::vector<FTMeshData> meshDataBuf;
+	GeometryGenerator::MakeSpriteAnimation(
+		meshDataBuf, spriteSheet->GetTiles(), this->GetMinFrameIdx(), this->GetMaxFrameIdx());
+	this->Initialize(std::move(meshDataBuf), renderer->GetDevice(), renderer->GetContext());
+
+	this->SetIsProcessed(true);
 }

@@ -37,6 +37,8 @@ public:
 	virtual void SaveToFile() = 0;
 	virtual void LoadFromFile() = 0;
 
+	virtual void Process(FTCore* coreInst) override;
+
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void UpdateUI() = 0;

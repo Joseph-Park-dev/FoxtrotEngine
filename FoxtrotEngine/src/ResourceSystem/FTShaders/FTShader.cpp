@@ -4,6 +4,7 @@
 
 #include "FileSystem/FileIOHelper.h"
 #include "Debugging/DebugFuncs.h"
+#include "Core/FTCore.h"
 
 const ShaderType& FTShader::GetType() const { return mType; }
 void FTShader::SetType(ShaderType type) { mType = type; }
@@ -13,6 +14,11 @@ FTShader::FTShader()
 	: mRenderer(nullptr)
 #endif // DEBUG
 {
+}
+
+void FTShader::Process(FTCore* coreInst)
+{
+	CompileShader(coreInst->GetGameRenderer());
 }
 
 #ifdef FOXTROT_EDITOR

@@ -441,6 +441,23 @@ void FTBasicMeshGroup::LoadProperties(std::ifstream& ifs)
 	FTResource::LoadProperties(ifs);
 }
 
+void FTBasicMeshGroup::Process(FTCore* coreInst)
+{
+	if (this->GetIsProcessed())
+		return;
+
+	if (this->RelativePath().IsEmpty())
+		return;
+
+	FoxtrotRenderer* renderer = coreInst->GetGameRenderer();
+	this->Initialize(
+		GeometryGenerator::ReadFromFile(this->RelativePath()),
+		renderer->GetDevice(),
+		renderer->GetContext());
+
+	this->SetIsProcessed(true);
+}
+
 #ifdef FOXTROT_EDITOR
 void FTBasicMeshGroup::UpdateUI()
 {

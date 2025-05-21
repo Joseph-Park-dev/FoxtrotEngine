@@ -13,6 +13,8 @@
 #include <string>
 #include <Windows.h>
 
+class FTCore;
+
 class FTResource
 {
 public:
@@ -32,6 +34,9 @@ public:
 	bool IsReferenced();
 	void AddRefCount() { ++mRefCount; }
 	void SubtractRefCount() { --mRefCount; }
+
+public:
+	virtual void Process(FTCore* coreInst) = 0;
 
 public:
 	FTResource();

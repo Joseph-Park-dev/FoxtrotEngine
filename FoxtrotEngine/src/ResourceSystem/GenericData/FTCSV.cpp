@@ -14,12 +14,12 @@ void FTCSV::Read()
 	ifs.open(RelativePath().C_Str(), std::fstream::in);
 	assert(ifs);
 
-	std::string line;
-	int			val;
+	std::string		line;
+	int				val;
 	std::queue<int> resultBuf;
 
-	UINT		column = 0;
-	UINT		row	   = 0;
+	UINT column = 0;
+	UINT row	= 0;
 	while (std::getline(ifs, line))
 	{
 		std::stringstream ss(line);
@@ -39,10 +39,10 @@ void FTCSV::Read()
 
 	mColumnCount = column;
 	mRowCount	 = row;
-	
+
 	mData.reserve(resultBuf.size());
-	
-	while(!resultBuf.empty())
+
+	while (!resultBuf.empty())
 	{
 		mData.push_back(resultBuf.front());
 		resultBuf.pop();
@@ -66,6 +66,15 @@ FTCSV::FTCSV()
 FTCSV::~FTCSV()
 {
 	mData.clear();
+}
+
+void FTCSV::Process(FTCore* coreInst)
+{
+	if (this->GetIsProcessed())
+		return;
+
+	this->Read();
+	this->SetIsProcessed(true);
 }
 
 #ifdef FOXTROT_EDITOR

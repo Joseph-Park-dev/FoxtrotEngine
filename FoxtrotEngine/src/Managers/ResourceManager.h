@@ -158,31 +158,6 @@ protected:
 protected:
 	FoxtrotRenderer* GetRenderer();
 
-	void ProcessTexture(FTTexture* texture);
-	void ProcessSingleMeshGrp(FTBasicMeshGroup* meshGrp);
-	void ProcessPremade(FTPremade* premade);
-	void ProcessTileMap(FTTileMap* tileMap);
-	void ProcessSpriteSheet(FTSpriteSheet* spriteSheet);
-	void ProcessSpriteAnim(FTSpriteAnimation* spriteAnim);
-	void ProcessCSV(FTCSV* csv);
-	void ProcessJSON(FTJSON* json);
-
-	virtual void ProcessTextures();
-	virtual void ProcessMeshGroups();
-	virtual void ProcessPremades();
-	virtual void ProcessTileMaps();
-	virtual void ProcessSpriteSheets();
-	virtual void ProcessSpriteAnims();
-	virtual void ProcessCSVs();
-	virtual void ProcessJSONs();
-
-	virtual void ProcessMaterials();
-	virtual void ProcessVertexShaders();
-	virtual void ProcessPixelShaders();
-
-	/// Due to the abstract base type, Material loading requires dedicated functions
-	void ProcessMaterial(FTMaterial* material);
-
 private:
 	FTDS::String	 mPathToAsset;
 	FoxtrotRenderer* mRenderer; // For Loading FTTextures
@@ -238,6 +213,15 @@ private:
 			resMap->Clear();
 			resMap = nullptr;
 		}
+	}
+
+protected:
+	template<typename FTRESOURCE>
+	void ProcessResources(FTCore* coreInstance, FTDS::HashChainMap<FTRESOURCE*>* resMap)
+	{
+		resMap->IterateAllValues(
+			[&](FTRESOURCE* res) { res->Process(coreInstance); }
+		);
 	}
 	
 private:

@@ -25,6 +25,9 @@ private:
 	UINT			 mColumnCount;
 	UINT			 mRowCount;
 
+public:
+	virtual void Process(FTCore* coreInst) override;
+
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void UpdateUI() override;

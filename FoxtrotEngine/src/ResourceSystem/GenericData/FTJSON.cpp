@@ -2,6 +2,7 @@
 
 #include <fstream>
 
+#include "Core/FTCore.h"
 #include "Static/FTString.h"
 
 void FTJSON::Read()
@@ -11,3 +12,13 @@ void FTJSON::Read()
 }
 
 nlohmann::json& FTJSON::Data() { return mData; }
+
+void FTJSON::Process(FTCore* coreInst)
+{
+	if (this->GetIsProcessed())
+		return;
+
+	this->Read();
+
+	this->SetIsProcessed(true);
+}

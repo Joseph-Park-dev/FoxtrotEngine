@@ -220,6 +220,20 @@ void FTTileMap::LoadProperties(std::ifstream& ifs)
 	FTResource::LoadProperties(ifs);
 }
 
+void FTTileMap::Process(FTCore* coreInst)
+{
+	if (this->GetIsProcessed())
+		return;
+
+	// This if statement will be triggered only on Editor
+	// (When loading all assets from Asset folder)
+	std::ifstream ifs(this->RelativePath().C_Str());
+	this->LoadProperties(ifs);
+
+	this->Initialize();
+	this->SetIsProcessed(true);
+}
+
 #ifdef FOXTROT_EDITOR
 void FTTileMap::UpdateUI()
 {

@@ -32,8 +32,8 @@ void FTSpriteSheet::Initialize()
 
 	InitializeProperties(json->Data().at(SpriteSheetKeys::PROPERTIES));
 
-	size_t tileCount = json->Data().at(SpriteSheetKeys::BASE).size();
-	mTiles = DBG_NEW Tile[tileCount];
+	mTilesCount = json->Data().at(SpriteSheetKeys::BASE).size();
+	mTiles = DBG_NEW Tile[mTilesCount];
 
 	size_t i = 0;
 	for (auto& item : json->Data().at(SpriteSheetKeys::BASE))
@@ -41,7 +41,6 @@ void FTSpriteSheet::Initialize()
 		if (item.is_null())
 			return;
 		InitializeTile(mTiles[i], item);
-		++mTilesCount;
 		++i;
 	}
 }
@@ -105,6 +104,20 @@ void FTSpriteSheet::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadVector2(ifs, mSheetSize);
 	FileIOHelper::LoadBasicString(ifs, mJSONKey);
 	FTResource::LoadProperties(ifs);
+}
+
+void FTSpriteSheet::Process(FTCore* coreInst)
+{
+	if (this->GetIsProcessed())
+		return;
+
+	// This if statement will be triggered only on Editor
+	// (When loading all assets from Asset folder)
+	std::ifstream ifs(this->RelativePath().C_Str());
+	this->LoadProperties(ifs);
+
+	this->Initialize();
+	this->SetIsProcessed(true);
 }
 
 void FTSpriteSheet::InitializeProperties(nlohmann::json& json)

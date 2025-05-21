@@ -86,14 +86,18 @@ void TileMapManager::UpdateUI(bool* opened)
 		{
 			if (*iterS)
 			{
-				ImGui::PushID((*iterS)->Value());
-				(*iterS)->Value()->UpdateUI();
-				if (ImGui::Button("Save SpriteSheet"))
+				for (auto elem = *iterS; elem != nullptr; elem = elem->GetLink())
 				{
-					(*iterS)->Value()->Initialize();
-					SaveSpriteSheetAsFile((*iterS)->Value());
+					ImGui::PushID(elem->Value());
+					elem->Value()->UpdateUI();
+					if (ImGui::Button("Save SpriteSheet"))
+					{
+						elem->Value()->Initialize();
+						SaveSpriteSheetAsFile(elem->Value());
+					}
+					ImGui::Separator();
+					ImGui::PopID();
 				}
-				ImGui::PopID();
 			}
 		}
 

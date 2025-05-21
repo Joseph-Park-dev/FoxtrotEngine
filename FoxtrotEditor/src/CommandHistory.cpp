@@ -285,29 +285,6 @@ void CommandHistory::UpdateStringValue(const char* label, FTDS::String& ref)
 		AddCommand(command);
 		command = nullptr;
 	}
-
-		/*if (!mIsRecording)
-		{
-			if (!command)
-			{
-				mIsRecording = true;
-				command = DBG_NEW StrEditCommand(ref);
-			}
-		}
-	}
-	else
-	{
-		if (mIsRecording)
-		{
-			if (command && ImGui::IsItemDeactivatedAfterEdit())
-			{
-				mIsRecording = false;
-				command->SetNextVal(ref);
-				AddCommand(command);
-				command = nullptr;
-			}
-		}
-	}*/
 }
 
 void CommandHistory::UpdateStateValue(const char* label, Actor::State& state)

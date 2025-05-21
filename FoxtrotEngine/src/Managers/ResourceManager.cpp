@@ -183,238 +183,6 @@ FoxtrotRenderer* ResourceManager::GetRenderer()
 	return mRenderer;
 }
 
-void ResourceManager::ProcessTexture(FTTexture* texture)
-{
-	if (texture->GetIsProcessed())
-		return;
-
-	FTDS::String path = texture->RelativePath().C_Str();
-	FTDS::String type = ExtractFileType(path.C_Str());
-
-	if ((type.Equal(FileTypes::DDS_TEXTURE)))
-		DX::ThrowIfFailed(D3D11Utils::CreateCubemapTexture(mRenderer->GetDevice(), texture));
-	else
-		D3D11Utils::CreateTexture(mRenderer->GetDevice(), mRenderer->GetContext(), texture);
-
-	if (!texture)
-		Debug::LogError(__LINE__, __FILE__, "Failed to process Texture.");
-	else
-		texture->SetIsProcessed(true);
-}
-
-void ResourceManager::ProcessSingleMeshGrp(FTBasicMeshGroup* meshGrp)
-{
-	if (meshGrp->GetIsProcessed())
-		return;
-
-	if (meshGrp->RelativePath().IsEmpty())
-		return;
-	meshGrp->Initialize(
-		GeometryGenerator::ReadFromFile(meshGrp->RelativePath()),
-		mRenderer->GetDevice(),
-		mRenderer->GetContext());
-
-	if (!meshGrp)
-		Debug::LogError(__LINE__, __FILE__, "Failed to process MeshGroup.");
-	else
-		meshGrp->SetIsProcessed(true);
-}
-
-void ResourceManager::ProcessPremade(FTPremade* premade)
-{
-	if (premade->GetIsProcessed())
-		return;
-
-	premade->Load();
-	// All loaded premades are included as default.
-	premade->AddRefCount();
-
-	if (!premade)
-		Debug::LogError(__LINE__, __FILE__, "Failed to process Premade.");
-	else
-		premade->SetIsProcessed(true);
-}
-
-void ResourceManager::ProcessTileMap(FTTileMap* tileMap)
-{
-	if (tileMap->GetIsProcessed())
-		return;
-
-	// This if statement will be triggered only on Editor
-	// (When loading all assets from Asset folder)
-	std::ifstream ifs(tileMap->RelativePath().C_Str());
-	tileMap->LoadProperties(ifs);
-
-	tileMap->Initialize();
-	tileMap->SetIsProcessed(true);
-}
-
-void ResourceManager::ProcessSpriteSheet(FTSpriteSheet* spriteSheet)
-{
-	if (spriteSheet->GetIsProcessed())
-		return;
-
-	// This if statement will be triggered only on Editor
-	// (When loading all assets from Asset folder)
-	std::ifstream ifs(spriteSheet->RelativePath().C_Str());
-	spriteSheet->LoadProperties(ifs);
-
-	spriteSheet->Initialize();
-	spriteSheet->SetIsProcessed(true);
-}
-
-void ResourceManager::ProcessSpriteAnim(FTSpriteAnimation* spriteAnim)
-{
-	if (spriteAnim->GetIsProcessed())
-		return;
-
-	// This if statement will be triggered only on Editor
-	// (When loading all assets from Asset folder)
-	if (spriteAnim->GetTileDataKey().Equal(ChunkKey::NullVal::NULL_OBJECT))
-	{
-		std::ifstream ifs(spriteAnim->RelativePath().C_Str());
-		spriteAnim->LoadProperties(ifs);
-	}
-
-#ifdef FOXTROT_EDITOR
-	FTSpriteSheet* spriteSheet = EditorResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteAnim->GetTileDataKey());
-#else
-	FTSpriteSheet* spriteSheet = ResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteAnim->GetTileDataKey());
-#endif // FOXTROT_EDITOR
-
-	if (!spriteSheet)
-	{
-		Debug::LogError(__LINE__, __FILE__, "Failed to load spritesheet");
-		return;
-	}
-
-	spriteAnim->SetTexture();
-
-	std::vector<FTMeshData> meshDataBuf;
-	GeometryGenerator::MakeSpriteAnimation(
-		meshDataBuf, spriteSheet->GetTiles(), spriteAnim->GetMinFrameIdx(), spriteAnim->GetMaxFrameIdx());
-	spriteAnim->Initialize(std::move(meshDataBuf), mRenderer->GetDevice(), mRenderer->GetContext());
-
-	if (!spriteAnim)
-		Debug::LogError(__LINE__, __FILE__, "Failed to process SpriteAnimation.");
-	else
-		spriteAnim->SetIsProcessed(true);
-}
-
-void ResourceManager::ProcessCSV(FTCSV* csv)
-{
-	if (csv->GetIsProcessed())
-		return;
-
-	csv->Read();
-
-	if (!csv)
-		Debug::LogError(__LINE__, __FILE__, "Failed to process CSV.");
-	else
-		csv->SetIsProcessed(true);
-}
-
-void ResourceManager::ProcessJSON(FTJSON* json)
-{
-	if (json->GetIsProcessed())
-		return;
-
-	json->Read();
-
-	if (!json)
-		Debug::LogError(__LINE__, __FILE__, "Failed to process CSV.");
-	else
-		json->SetIsProcessed(true);
-}
-
-void ResourceManager::ProcessMaterial(FTMaterial* material)
-{
-	if (material->GetIsProcessed())
-		return;
-
-	material->LoadFromFile();
-	// All loaded premades are included as default.
-	material->AddRefCount();
-	material->SetIsProcessed(true);
-}
-
-void ResourceManager::ProcessTextures()
-{
-	for (auto iter = mTextures->Begin(); iter != mTextures->End(); ++iter)
-		if (*iter)
-			ProcessTexture((*iter)->Value());
-}
-
-void ResourceManager::ProcessMeshGroups()
-{
-	for (auto iter = mMeshGroups->Begin(); iter != mMeshGroups->End(); ++iter)
-		if (*iter)
-			ProcessSingleMeshGrp((*iter)->Value());
-}
-
-void ResourceManager::ProcessPremades()
-{
-	for (auto iter = mPremades->Begin(); iter != mPremades->End(); ++iter)
-		if (*iter)
-			ProcessPremade((*iter)->Value());
-}
-
-void ResourceManager::ProcessTileMaps()
-{
-	for (auto iter = mTileMaps->Begin(); iter != mTileMaps->End(); ++iter)
-		if (*iter)
-			ProcessTileMap((*iter)->Value());
-}
-
-void ResourceManager::ProcessSpriteSheets()
-{
-	for (auto iter = mSpriteSheets->Begin(); iter != mSpriteSheets->End(); ++iter)
-		if (*iter)
-			ProcessSpriteSheet((*iter)->Value());
-}
-
-void ResourceManager::ProcessSpriteAnims()
-{
-	for (auto iter = mSpriteAnimations->Begin(); iter != mSpriteAnimations->End(); ++iter)
-		if (*iter)
-			ProcessSpriteAnim((*iter)->Value());
-}
-
-void ResourceManager::ProcessCSVs()
-{
-	for (auto iter = mCSVs->Begin(); iter != mCSVs->End(); ++iter)
-		if (*iter)
-			ProcessCSV((*iter)->Value());
-}
-
-void ResourceManager::ProcessJSONs()
-{
-	for (auto iter = mJSONs->Begin(); iter != mJSONs->End(); ++iter)
-		if (*iter)
-			ProcessJSON((*iter)->Value());
-}
-
-void ResourceManager::ProcessMaterials()
-{
-	for (auto iter = mMaterials->Begin(); iter != mMaterials->End(); ++iter)
-		if (*iter)
-			ProcessMaterial((*iter)->Value());
-}
-
-void ResourceManager::ProcessVertexShaders()
-{
-	for (auto iter = mVertexShaders->Begin(); iter != mVertexShaders->End(); ++iter)
-		if (*iter)
-			((*iter)->Value())->CompileShader(mRenderer);
-}
-
-void ResourceManager::ProcessPixelShaders()
-{
-	for (auto iter = mPixelShaders->Begin(); iter != mPixelShaders->End(); ++iter)
-		if (*iter)
-			((*iter)->Value())->CompileShader(mRenderer);
-}
-
 ResourceManager::~ResourceManager()
 {
 	DeleteAll();
@@ -543,22 +311,20 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 	mTextures->Reserve(desc.first);
 	LoadResourceFromChunk<FTTexture>(ifs, mTextures, desc.first);
 
-	ProcessCSVs();
-	ProcessJSONs();
-
-	ProcessTextures();
-	ProcessMeshGroups();
-	ProcessTileMaps();
-	ProcessSpriteSheets();
-	ProcessSpriteAnims();
-
-	ProcessMaterials();
-	ProcessVertexShaders();
-	ProcessPixelShaders();
+	ProcessResources(FTCore::GetInstance(), mCSVs);
+	ProcessResources(FTCore::GetInstance(), mJSONs);
+	ProcessResources(FTCore::GetInstance(), mTextures);
+	ProcessResources(FTCore::GetInstance(), mMeshGroups);
+	ProcessResources(FTCore::GetInstance(), mTileMaps);
+	ProcessResources(FTCore::GetInstance(), mSpriteSheets);
+	ProcessResources(FTCore::GetInstance(), mSpriteAnimations);
+	ProcessResources(FTCore::GetInstance(), mMaterials);
+	ProcessResources(FTCore::GetInstance(), mVertexShaders);
+	ProcessResources(FTCore::GetInstance(), mPixelShaders);
 
 	LoadMaterials();
 
-	ProcessPremades();
+	ProcessResources(FTCore::GetInstance(), mPremades);
 }
 
 FTTexture* ResourceManager::GetLoadedTexture(FTDS::String& key)

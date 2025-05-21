@@ -20,6 +20,7 @@
 #include "Math/FTMath.h"
 
 class FoxtrotRenderer;
+class FTCore;
 
 class FTTexture :
 	public FTResource
@@ -45,6 +46,9 @@ public:
 
 	int& GetTexWidthRef() { return mTexWidth; }
 	int& GetTexHeightRef() { return mTexHeight; }
+
+public:
+	virtual void Process(FTCore* coreInst) override;
 
 public:
 	FTTexture()

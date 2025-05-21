@@ -30,6 +30,9 @@ public:
 private:
 	ShaderType mType;
 
+public:
+	virtual void Process(FTCore* coreInst) override;
+
 #ifdef FOXTROT_EDITOR
 public:
 	void			 SaveMetaFile();

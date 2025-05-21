@@ -5,6 +5,7 @@
 
 #include <stdint.h>
 #include <string.h>
+#include <delegates/Delegates.h>
 
 namespace FTDS
 {
@@ -99,6 +100,21 @@ namespace FTDS
 			delete node;
 			node = nullptr;
 			--mSize;
+		}
+
+	public:
+		template <class UnaryOperation>
+		void IterateAllValues(
+			UnaryOperation&& unaryOp)
+		{
+			for (auto iter = this->Begin(); iter != this->End(); ++iter)
+			{
+				if (*iter)
+				{
+					for (auto elem = *iter; elem != nullptr; elem = elem->GetLink())
+						unaryOp(elem->Value());
+				}
+			}
 		}
 
 	public:

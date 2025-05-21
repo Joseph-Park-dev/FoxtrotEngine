@@ -122,10 +122,13 @@ namespace FTEditorUtils
 				{
 					if (*iter)
 					{
-						if (ImGui::Selectable((*iter)->Value()->FileName().C_Str()))
+						for (auto elem = *iter; elem != nullptr; elem = elem->GetLink())
 						{
-							if ((*iter)->Key().NotEqual(ChunkKey::NullVal::NULL_OBJECT))
-								currSelection = (*iter)->Value()->FileName();
+							if (ImGui::Selectable(elem->Value()->FileName().C_Str()))
+							{
+								if (elem->Key().NotEqual(ChunkKey::NullVal::NULL_OBJECT))
+									currSelection = elem->Value()->FileName();
+							}
 						}
 					}
 					else

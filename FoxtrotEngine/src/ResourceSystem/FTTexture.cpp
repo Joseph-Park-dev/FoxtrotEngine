@@ -21,6 +21,7 @@
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Managers/ResourceManager.h"
+#include "Renderer/D3D11Utils.h"
 
 #ifdef FOXTROT_EDITOR
 #include "EditorLayer.h"
@@ -38,6 +39,26 @@ bool FTTexture::ReleaseTexture()
         return false;
     }
     return true;
+}
+
+void FTTexture::Process(FTCore* coreInst)
+{
+    if (this->GetIsProcessed())
+        return;
+
+    FTDS::String path = this->RelativePath().C_Str();
+    FTDS::String type = ExtractFileType(path.C_Str());
+    FoxtrotRenderer* renderer = coreInst->GetGameRenderer();
+
+    if ((type.Equal(FileTypes::DDS_TEXTURE)))
+        DX::ThrowIfFailed(D3D11Utils::CreateCubemapTexture(renderer->GetDevice(), this));
+    else
+        D3D11Utils::CreateTexture(renderer->GetDevice(), renderer->GetContext(), this);
+
+    if (!this)
+        Debug::LogError(__LINE__, __FILE__, "Failed to process Texture.");
+    else
+        this->SetIsProcessed(true);
 }
 
 void FTTexture::SaveProperties(std::ofstream& ofs)

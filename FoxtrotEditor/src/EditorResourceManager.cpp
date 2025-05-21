@@ -50,22 +50,20 @@ void EditorResourceManager::LoadAllResourcesInAsset()
 	//ResourceManager::GetCSVs()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
 	//ResourceManager::GetJSONs()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
 
-	ProcessCSVs();
-	ProcessJSONs();
-
-	ProcessTextures();
-	ProcessMeshGroups();
-	ProcessTileMaps();
-	ProcessSpriteSheets();
-	ProcessSpriteAnims();
-
-	ProcessMaterials();
-	ProcessVertexShaders();
-	ProcessPixelShaders();
+	ProcessResources(FTCoreEditor::GetInstance(), GetCSVs());
+	ProcessResources(FTCoreEditor::GetInstance(), GetJSONs());
+	ProcessResources(FTCoreEditor::GetInstance(), GetTextures());
+	ProcessResources(FTCoreEditor::GetInstance(), GetMeshGroups());
+	ProcessResources(FTCoreEditor::GetInstance(), GetTileMaps());
+	ProcessResources(FTCoreEditor::GetInstance(), GetSpriteSheets());
+	ProcessResources(FTCoreEditor::GetInstance(), GetSpriteAnimations());
+	ProcessResources(FTCoreEditor::GetInstance(), GetMaterials());
+	ProcessResources(FTCoreEditor::GetInstance(), GetVertexShaders());
+	ProcessResources(FTCoreEditor::GetInstance(), GetPixelShaders());
 
 	LoadMaterials();
 
-	ProcessPremades();
+	ProcessResources(FTCoreEditor::GetInstance(), GetPremades());
 }
 
 void EditorResourceManager::LoadResByType(const char* filePath)

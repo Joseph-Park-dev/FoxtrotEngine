@@ -272,12 +272,21 @@ void CommandHistory::UpdateStringValue(const char* label, FTDS::String& ref)
 	if (ref.Capacity() < BufferSize::STRING_BUFFER_SIZE)
 		ref.Reserve(BufferSize::STRING_BUFFER_SIZE);
 
-	static StrEditCommand* command;
+	//static StrEditCommand* command;
 
-	char* strVal = (char*)ref.C_Str();
-	if (ImGui::InputText(label, strVal, BufferSize::STRING_BUFFER_SIZE))
+	static char strVal[BufferSize::STRING_BUFFER_SIZE];
+	strcpy_s(strVal, ref.C_Str());
+
+	if (ImGui::InputText(label, strVal, BufferSize::STRING_BUFFER_SIZE, ImGuiInputTextFlags_::ImGuiInputTextFlags_EnterReturnsTrue))
 	{
-		if (!mIsRecording)
+		StrEditCommand* command = DBG_NEW StrEditCommand(ref);
+		ref.Assign(strVal);
+		command->SetNextVal(ref);
+		AddCommand(command);
+		command = nullptr;
+	}
+
+		/*if (!mIsRecording)
 		{
 			if (!command)
 			{
@@ -288,9 +297,9 @@ void CommandHistory::UpdateStringValue(const char* label, FTDS::String& ref)
 	}
 	else
 	{
-		if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
+		if (mIsRecording)
 		{
-			if (command)
+			if (command && ImGui::IsItemDeactivatedAfterEdit())
 			{
 				mIsRecording = false;
 				command->SetNextVal(ref);
@@ -298,7 +307,7 @@ void CommandHistory::UpdateStringValue(const char* label, FTDS::String& ref)
 				command = nullptr;
 			}
 		}
-	}
+	}*/
 }
 
 void CommandHistory::UpdateStateValue(const char* label, Actor::State& state)

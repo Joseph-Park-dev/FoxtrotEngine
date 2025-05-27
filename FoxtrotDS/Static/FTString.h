@@ -176,9 +176,14 @@ namespace FTDS
 			return !StringEqual(this->C_Str(), right);
 		}
 
-		bool StrContains(FTDS::String& value)
+		bool Contains(FTDS::String& value)
 		{
 			return -1 < RFind(value.C_Str());
+		}
+
+		bool Contains(const char* value)
+		{
+			return -1 < RFind(value);
 		}
 
 		/////////////////////////

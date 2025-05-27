@@ -25,6 +25,9 @@
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/Camera.h"
 
+#include "ResourceSystem/FTShaders/FTVertexShader.h"
+#include "ResourceSystem/FTShaders/FTPixelShader.h"
+
 #ifdef FOXTROT_EDITOR
 	#include "EditorUtils.h"
 	#include "EditorResourceManager.h"
@@ -95,10 +98,29 @@ void Animator::SaveProperties(std::ofstream& ofs)
 		FileIOHelper::SaveString(ofs, std::to_string(i).c_str(), mLoadedKeys.at(i));
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::LOADED_KEYS);
+
+	//Save Shader keys.
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::SHADER_KEYS);
+
+	FileIOHelper::SaveString(ofs, ChunkKey::FT_VERTEX_SHADER, VSKey());
+	FileIOHelper::SaveString(ofs, ChunkKey::FT_PIXEL_SHADER, PSKey());
+
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::SHADER_KEYS);
 }
 
 void Animator::LoadProperties(std::ifstream& ifs)
 {
+	// Load Shader keys.
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::SHADER_KEYS);
+
+	FTDS::String shaderKey;
+	FileIOHelper::LoadBasicString(ifs, shaderKey);
+	PSKey().Assign(shaderKey);
+
+	shaderKey.Clear();
+	FileIOHelper::LoadBasicString(ifs, shaderKey);
+	VSKey().Assign(shaderKey);
+
 	// Load Animations
 	std::pair<size_t, FTDS::String> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::LOADED_KEYS);
 	mLoadedKeys.reserve(pack.first);
@@ -164,6 +186,8 @@ void Animator::Initialize(FTCore* coreInstance)
 	{
 		if (0 < MaterialKeys().size())
 			GetMeshGroup()->SetMaterials(MaterialKeys(), GetRenderer()->GetDevice());
+		GetMeshGroup()->SetVertexShader(VSKey());
+		GetMeshGroup()->SetPixelShader(PSKey());
 	}
 
 	Component::Initialize(coreInstance);
@@ -200,6 +224,9 @@ void Animator::CloneTo(Actor* actor)
 		newComp->mLoadedKeys.push_back(mLoadedKeys.at(i));
 	for (size_t i = 0; i < MaterialKeys().size(); ++i)
 		newComp->MaterialKeys().push_back(MaterialKeys().at(i));
+
+	newComp->VSKey().Assign(VSKey());
+	newComp->PSKey().Assign(PSKey());
 }
 
 #ifdef FOXTROT_EDITOR
@@ -216,7 +243,16 @@ void Animator::EditorUIUpdate()
 	UpdatePlayList();
 
 	CommandHistory::GetInstance()->UpdateBoolValue("Is Repeated", mIsRepeated);
-	UpdateMaterial();
+
+	if (GetMeshGroup())
+	{
+		ImGui::SeparatorText("Material");
+		UpdateMaterial();
+
+		ImGui::SeparatorText("Shaders");
+		UpdateVS();
+		UpdatePS();
+	}
 }
 
 void Animator::EditorRender(FoxtrotRenderer* renderer)

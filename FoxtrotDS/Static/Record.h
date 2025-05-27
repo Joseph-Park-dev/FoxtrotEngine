@@ -11,7 +11,7 @@ namespace FTDS
 
 	public:
 		FTDS::String& Key() { return mKey; }
-		TYPE		  Value() { return mValue; }
+		TYPE&		  Value() { return mValue; }
 
 	public:
 		Record(FTDS::String key, TYPE value)

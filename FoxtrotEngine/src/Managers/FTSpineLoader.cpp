@@ -6,6 +6,11 @@
 #include "Managers/ResourceManager.h"
 #include "FTSpineLoader.h"
 
+#ifdef FOXTROT_EDITOR
+#include "EditorResourceManager.h"
+#endif // FOXTROT_EDITOR
+
+
 spine::SkeletonData* spine::FTSpineLoader::ReadSkeletonJsonData(const spine::String& filename, spine::Atlas* atlas, float scale)
 {
 	spine::SkeletonJson json(atlas);
@@ -22,7 +27,8 @@ void spine::FTSpineLoader::load(AtlasPage& page, const String& path)
 {
 	FTTexture*	texture	 = nullptr;
 	FTDS::String fileName = ExtractFileName(path.buffer());
-	texture				 = ResourceManager::GetInstance()->GetLoadedTexture(fileName);
+	fileName.ExtractFromLast("/");
+	texture				 = EditorResourceManager::GetInstance()->GetLoadedTexture(fileName);
 
 	if (!texture)
 		return;

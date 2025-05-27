@@ -52,6 +52,8 @@ public:
 	virtual void SetTexture();
 	virtual void SetTexture(FTDS::String& texKey);
 	void		 SetTexture(FTTexture* tex);
+	void		 SetVertexShader(FTDS::String& vsKey);
+	void		 SetPixelShader(FTDS::String& psKey);
 	void		 SetNormalLines(Mesh* normalLines);
 	void		 SetDrawNormal(bool drawNormal);
 
@@ -75,9 +77,6 @@ protected:
 	ComPtr<ID3D11VertexShader>& GetVertexShader();
 	ComPtr<ID3D11PixelShader>&	GetPixelShader();
 
-	void SetVertexShader(ComPtr<ID3D11VertexShader>& vs);
-	void SetPixelShader(ComPtr<ID3D11PixelShader>& ps);
-
 	// Since the texture type is diverged into FTTexture & FTCUBEMAP_TEXTURE,
 	// the TEXTURE_MAP needs to be specified.
 	template <typename TEXTURE_MAP>
@@ -93,8 +92,8 @@ private:
 	std::vector<Mesh*>		   mMeshes;
 	FTTexture*				   mTexture;
 	ComPtr<ID3D11SamplerState> mSamplerState;
-	ComPtr<ID3D11VertexShader> mVS;
-	ComPtr<ID3D11PixelShader>  mPS;
+	FTVertexShader* mVS;
+	FTPixelShader*  mPS;
 
 	ComPtr<ID3D11Buffer> mVertexConstBuffer;
 	// ComPtr<ID3D11Buffer>	 mPixelConstBuffer;

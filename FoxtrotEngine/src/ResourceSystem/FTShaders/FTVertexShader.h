@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include "Static/HashChainMap.h"
+
 class FTVertexShader : public FTShader
 {
 public:
@@ -11,18 +13,20 @@ public:
 
 public:
 	ComPtr<ID3D11VertexShader>& GetShader();
+	ComPtr<ID3D11InputLayout>&	GetInputLayout();
 
-	void RegisterInputElementDesc(const char* semanticName, D3D11_INPUT_ELEMENT_DESC& desc);
+	void RegisterInputElementDesc(const char* semanticName, UINT& offset);
 
 public:
 	FTVertexShader();
+	~FTVertexShader();
 
 private:
-	ComPtr<ID3D11VertexShader>			  mShader;
-	ComPtr<ID3D11InputLayout>			  mInputLayout;
+	ComPtr<ID3D11VertexShader> mShader;
+	ComPtr<ID3D11InputLayout>  mInputLayout;
 
 	std::vector<D3D11_INPUT_ELEMENT_DESC> mInputElements;
-	std::vector<FTDS::String>			  mSemanticNames;
+	std::vector<FTDS::String>			  mSemanticsName;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
@@ -33,13 +37,13 @@ public:
 	void UpdateUI() override;
 
 private:
-	bool mSemanticsInclusion[4];
+	FTDS::HashChainMap<bool>* mSemanticsInclusion;
 #endif
 };
 
 namespace ChunkKey
 {
-	constexpr const char* FT_VERTEX_SHADER	= "FTVertexShader";
+	constexpr const char* FT_VERTEX_SHADER	   = "FTVertexShader";
 	constexpr const char* INPUT_ELEMENTS_COUNT = "Input Elements Count";
-	constexpr const char* INPUT_ELEMENTS = "Input Elements";
+	constexpr const char* INPUT_ELEMENTS	   = "Input Elements";
 } // namespace ChunkKey

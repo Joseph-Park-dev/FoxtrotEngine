@@ -38,17 +38,17 @@ void EditorResourceManager::LoadAllResourcesInAsset()
 		GetPathToAsset().C_Str(),
 		[&](std::string&& path) { LoadResByType(path.c_str()); });
 
-	//ResourceManager::GetTextures()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
-	//ResourceManager::GetTileMaps()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
-	//ResourceManager::GetSpriteSheets()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
-	//ResourceManager::GetPremades()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
-	//ResourceManager::GetSpriteAnimations()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
-	//ResourceManager::GetMeshGroups()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
-	//ResourceManager::GetVertexShaders()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
-	//ResourceManager::GetPixelShaders()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
-	//ResourceManager::GetMaterials()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
-	//ResourceManager::GetCSVs()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
-	//ResourceManager::GetJSONs()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	// ResourceManager::GetTextures()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	// ResourceManager::GetTileMaps()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	// ResourceManager::GetSpriteSheets()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	// ResourceManager::GetPremades()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	// ResourceManager::GetSpriteAnimations()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	// ResourceManager::GetMeshGroups()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	// ResourceManager::GetVertexShaders()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	// ResourceManager::GetPixelShaders()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	// ResourceManager::GetMaterials()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	// ResourceManager::GetCSVs()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	// ResourceManager::GetJSONs()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
 
 	ProcessResources(FTCoreEditor::GetInstance(), GetCSVs());
 	ProcessResources(FTCoreEditor::GetInstance(), GetJSONs());
@@ -556,27 +556,6 @@ void EditorResourceManager::UpdateUI()
 		ImGui::TreePop();
 	}
 
-	if (ImGui::TreeNode("Vertex Shaders"))
-	{
-		std::unordered_map<FTDS::String, FTVertexShader*>::const_iterator vsIter;
-		vsIter = mMapVertexShaders.begin();
-		for (; vsIter != mMapVertexShaders.end(); ++vsIter)
-		{
-			if (ImGui::BeginListBox((*vsIter).second->FileName().c_str(), ImVec2(-FLT_MIN, 100)))
-			{
-				(*vsIter).second->UpdateUI();
-				if (ImGui::Button("Remove"))
-				{
-					RemoveResource<FTMaterial>((*vsIter).first, mMapMaterials);
-					ImGui::EndListBox();
-					break;
-				}
-				ImGui::EndListBox();
-			}
-		}
-		ImGui::TreePop();
-	}
-
 	if (ImGui::TreeNode("Materials"))
 	{
 		std::unordered_map<FTDS::String, FTMaterial*>::const_iterator materialIter;
@@ -597,6 +576,19 @@ void EditorResourceManager::UpdateUI()
 		}
 		ImGui::TreePop();
 	}*/
+
+	if (ImGui::TreeNode("Vertex Shaders"))
+	{
+		GetVertexShaders()->IterateAllValues(
+			[&](FTVertexShader* res) {
+				if (ImGui::BeginListBox(res->FileName().C_Str()))
+				{
+					res->UpdateUI();
+					ImGui::EndListBox();
+				}
+			});
+		ImGui::TreePop();
+	}
 }
 
 ResType EditorResourceManager::GetResType(FTDS::String& fileName)
@@ -631,9 +623,9 @@ ResType EditorResourceManager::GetResType(FTDS::String& fileName)
 
 	else if (StrContains(FileTypes::SHADER, format))
 
-		if (StrContains(FileTypes::VERTEX_SHADER, fileName))
+		if (fileName.Contains(FileTypes::VERTEX_SHADER))
 			return ResType::FT_VERTEX_SHADER;
-		else if (StrContains(FileTypes::PIXEL_SHADER, fileName))
+		else if (fileName.Contains(FileTypes::PIXEL_SHADER))
 			return ResType::FT_PIXEL_SHADER;
 		else
 			return ResType::UNSUPPORTED;

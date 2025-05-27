@@ -32,6 +32,7 @@ private:
 
 public:
 	virtual void Process(FTCore* coreInst) override;
+	void		 LoadMetaFile();
 
 #ifdef FOXTROT_EDITOR
 public:

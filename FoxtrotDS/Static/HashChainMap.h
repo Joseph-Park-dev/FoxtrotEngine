@@ -5,17 +5,18 @@
 
 #include <stdint.h>
 #include <string.h>
-#include <delegates/Delegates.h>
 
 namespace FTDS
 {
-	inline uint64_t GenerateHash_fnv1a_64(const char* str) {
-		const uint64_t FNV_PRIME = 0x100000001b3;
+	inline uint64_t GenerateHash_fnv1a_64(const char* str)
+	{
+		const uint64_t FNV_PRIME	= 0x100000001b3;
 		const uint64_t OFFSET_BASIS = 0xcbf29ce484222325;
 
 		uint64_t hash = OFFSET_BASIS;
 
-		while (*str) {
+		while (*str)
+		{
 			hash ^= (uint8_t)*str++;
 			hash *= FNV_PRIME;
 		}
@@ -37,20 +38,19 @@ namespace FTDS
 			number += (*key++);
 		return number;
 	}
-}
+} // namespace FTDS
 
 namespace FTDS
 {
 	template <typename TYPE>
-	class HashChainMap
-		: public FTDS::Array<FTDS::RecordNode<TYPE>*>
+	class HashChainMap : public FTDS::Array<FTDS::RecordNode<TYPE>*>
 	{
 	public:
 		void Insert(FTDS::String key, TYPE value)
 		{
 			// HashChainMap uses FTDS::Array,
-			// the number of slots will not be dynamic, 
-			// whereas the linked list inside a slot will be. 
+			// the number of slots will not be dynamic,
+			// whereas the linked list inside a slot will be.
 			assert(0 < this->Capacity());
 
 			// Get Hash Value from HashFuntion()
@@ -102,24 +102,69 @@ namespace FTDS
 			--mSize;
 		}
 
+		virtual void Clear() override
+		{
+			// Clear the linked nodes inside the array data.
+			for (size_t i = 0; i < this->Capacity(); ++i)
+			{
+				if (this->mData[i])
+				{
+					RecordNode<TYPE>* node = this->mData[i];
+					while (node)
+					{
+						RecordNode<TYPE>* temp = node;
+						node				   = node->GetLink();
+						delete temp;
+						temp = nullptr;
+					}
+				}
+			}
+
+			// De-allocate the array.
+			delete this->mData;
+			this->mData = nullptr;
+		}
+
 	public:
+		template <class UnaryOperation>
+		void IterateAllNodes(
+			UnaryOperation&& unaryOp)
+		{
+			for (size_t i = 0; i < this->Capacity(); ++i)
+			{
+				if (this->mData[i])
+				{
+					RecordNode<TYPE>* node = this->mData[i];
+					while (node)
+					{
+						unaryOp(node);
+						node = node->GetLink();
+					}
+				}
+			}
+		}
+
 		template <class UnaryOperation>
 		void IterateAllValues(
 			UnaryOperation&& unaryOp)
 		{
-			for (auto iter = this->Begin(); iter != this->End(); ++iter)
+			for (size_t i = 0; i < this->Capacity(); ++i)
 			{
-				if (*iter)
+				if (this->mData[i])
 				{
-					for (auto elem = *iter; elem != nullptr; elem = elem->GetLink())
-						unaryOp(elem->Value());
+					RecordNode<TYPE>* node = this->mData[i];
+					while (node != nullptr)
+					{
+						unaryOp(node->Value());
+						node = node->GetLink();
+					}
 				}
 			}
 		}
 
 	public:
 		const size_t& GetSize() { return mSize; }
-		bool IsEmpty() const { return mSize == 0; }
+		bool		  IsEmpty() const { return mSize == 0; }
 
 	public:
 		HashChainMap()
@@ -135,23 +180,11 @@ namespace FTDS
 		}
 
 		// Auto deletion of the RecordNodes inside each slot.
-		~HashChainMap()
+		~HashChainMap() override
 		{
-			for (size_t i=0; i < this->Capacity(); ++i)
-			{
-				if (this->mData[i])
-				{
-					RecordNode<TYPE>* p = this->mData[i];
-					while (p != nullptr)
-					{
-						RecordNode<TYPE>* temp = p;
-						p = p->GetLink();
-						delete temp;
-						temp = nullptr;
-					}
-				}
-			}
+			Clear();
 		}
+
 	private:
 		size_t mSize;
 	};

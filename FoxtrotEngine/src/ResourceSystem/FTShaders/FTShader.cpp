@@ -5,12 +5,13 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Debugging/DebugFuncs.h"
 #include "Core/FTCore.h"
+#include "Core/TemplateFunctions.h"
 
 const ShaderType& FTShader::GetType() const { return mType; }
 void FTShader::SetType(ShaderType type) { mType = type; }
 
 FTShader::FTShader()
-#ifdef DEBUG
+#ifdef FOXTROT_EDITOR
 	: mRenderer(nullptr)
 #endif // DEBUG
 {
@@ -18,13 +19,34 @@ FTShader::FTShader()
 
 void FTShader::Process(FTCore* coreInst)
 {
+	LoadMetaFile();
 	CompileShader(coreInst->GetGameRenderer());
+
+#ifdef FOXTROT_EDITOR
+	mRenderer = coreInst->GetGameRenderer();
+#endif // FOXTROT_EDITOR
+}
+
+void FTShader::LoadMetaFile()
+{
+	FTDS::String metaPath;
+	metaPath.Assign(RelativePath());
+	ReplaceSuffix(metaPath, FileTypes::SHADER, FileTypes::SHADER_META);
+	std::ifstream ifs(metaPath.C_Str());
+
+	if (ifs.good())
+		LoadProperties(ifs);
+	else
+		Debug::LogError(__LINE__, __FILE__, "Failed to load shader meta file");
 }
 
 #ifdef FOXTROT_EDITOR
 void FTShader::SaveMetaFile()
 {
-	std::ofstream ofs(RelativePath().C_Str());
+	FTDS::String metaPath;
+	metaPath.Assign(RelativePath());
+	ReplaceSuffix(metaPath, FileTypes::SHADER, FileTypes::SHADER_META);
+	std::ofstream ofs(metaPath.C_Str());
 
 	if (ofs)
 	{

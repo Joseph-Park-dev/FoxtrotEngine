@@ -122,7 +122,7 @@ namespace FTDS
 			if (mData)
 			{
 				// Copy previous data.
-				memcpy_s(newArr, sizeof(char) * newCap, mData, sizeof(char) * Capacity());
+				memcpy_s(newArr, sizeof(TYPE) * newCap, mData, sizeof(TYPE) * Capacity());
 				delete[] mData;
 			}
 

@@ -113,6 +113,7 @@ void FTSpriteSheet::Process(FTCore* coreInst)
 
 	// This if statement will be triggered only on Editor
 	// (When loading all assets from Asset folder)
+	FTDS::String& a = this->RelativePath();
 	std::ifstream ifs(this->RelativePath().C_Str());
 	this->LoadProperties(ifs);
 

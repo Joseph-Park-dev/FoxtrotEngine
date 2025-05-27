@@ -20,6 +20,8 @@
 #include "Renderer/FoxtrotRenderer.h"
 #include "ResourceSystem/GeometryGenerator.h"
 #include "ResourceSystem/FTMaterials/FTMaterial.h"
+#include "ResourceSystem/FTShaders/FTVertexShader.h"
+#include "ResourceSystem/FTShaders/FTPixelShader.h"
 #include "Core/TemplateFunctions.h"
 #include "Managers/ResourceManager.h"
 #include "FileSystem/ChunkLoader.h"
@@ -70,17 +72,21 @@ void MeshRenderer::CloneTo(Actor* actor)
 	newComp->mMeshGroup->SetDrawNormal(this->mMeshGroup->GetDrawNormal());
 }
 
-FoxtrotRenderer*  MeshRenderer::GetRenderer() const { return mRenderer; }
-FTDS::String&	  MeshRenderer::GetMeshKey() { return mMeshKey; }
-FTDS::String&	  MeshRenderer::GetTexKey() { return mTexKey; }
+FoxtrotRenderer* MeshRenderer::GetRenderer() const { return mRenderer; }
+FTDS::String&	 MeshRenderer::GetMeshKey() { return mMeshKey; }
+FTDS::String&	 MeshRenderer::GetTexKey() { return mTexKey; }
+
 FTBasicMeshGroup* MeshRenderer::GetMeshGroup() const { return mMeshGroup; }
 FTTexture*		  MeshRenderer::GetTexture() const { return mMeshGroup->GetTexture(); }
 
-void MeshRenderer::SetRenderer(FoxtrotRenderer* renderer) { mRenderer = renderer; }
-void MeshRenderer::SetMeshKey(FTDS::String& key) { mMeshKey = key; }
-void MeshRenderer::SetMeshKey(const char* key) { mMeshKey.Assign(key); }
-void MeshRenderer::SetTexKey(FTDS::String& key) { mTexKey = key; }
-void MeshRenderer::SetTexKey(const char* key) { mTexKey.Assign(key); }
+void		  MeshRenderer::SetRenderer(FoxtrotRenderer* renderer) { mRenderer = renderer; }
+void		  MeshRenderer::SetMeshKey(FTDS::String& key) { mMeshKey = key; }
+void		  MeshRenderer::SetMeshKey(const char* key) { mMeshKey.Assign(key); }
+void		  MeshRenderer::SetTexKey(FTDS::String& key) { mTexKey = key; }
+void		  MeshRenderer::SetTexKey(const char* key) { mTexKey.Assign(key); }
+FTDS::String& MeshRenderer::VSKey() { return mVSKey; }
+FTDS::String& MeshRenderer::PSKey() { return mPSKey; }
+
 void MeshRenderer::SetMeshGroup(FTBasicMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
 
 void MeshRenderer::SetMaterials()
@@ -171,6 +177,8 @@ MeshRenderer::MeshRenderer(Actor* owner, int updateOrder)
 	, mRenderer(nullptr)
 	, mMeshKey(ChunkKey::NullVal::NULL_OBJECT)
 	, mTexKey(ChunkKey::NullVal::NULL_OBJECT)
+	, mVSKey(ChunkKey::NullVal::NULL_OBJECT)
+	, mPSKey(ChunkKey::NullVal::NULL_OBJECT)
 	, mMaterialKeys()
 {
 }
@@ -199,10 +207,24 @@ void MeshRenderer::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::SaveSize(ofs, ChunkKey::MATERIAL_COUNT, mMaterialKeys.size());
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::MATERIAL_KEYS);
+
+	// Save Shader keys.
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::SHADER_KEYS);
+
+	FileIOHelper::SaveString(ofs, ChunkKey::FT_VERTEX_SHADER, mVSKey);
+	FileIOHelper::SaveString(ofs, ChunkKey::FT_PIXEL_SHADER, mPSKey);
+
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::SHADER_KEYS);
 }
 
 void MeshRenderer::LoadProperties(std::ifstream& ifs)
 {
+	// Load Shader keys.
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::SHADER_KEYS);
+
+	FileIOHelper::LoadBasicString(ifs, mPSKey);
+	FileIOHelper::LoadBasicString(ifs, mVSKey);
+
 	// Save FTMaterial keys
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::MATERIAL_KEYS);
 
@@ -228,6 +250,8 @@ void MeshRenderer::LoadProperties(std::ifstream& ifs)
 	{
 		mMeshGroup->SetDrawNormal(drawVal);
 		mMeshGroup->SetTexture(mTexKey);
+		mMeshGroup->SetVertexShader(mVSKey);
+		mMeshGroup->SetPixelShader(mPSKey);
 	}
 }
 
@@ -261,8 +285,13 @@ void MeshRenderer::EditorUIUpdate()
 
 	if (mMeshGroup)
 	{
+		ImGui::SeparatorText("Material");
 		mMeshGroup->UpdateUI();
 		UpdateMaterial();
+
+		ImGui::SeparatorText("Shaders");
+		UpdateVS();
+		UpdatePS();
 	}
 	AddModel();
 
@@ -397,6 +426,32 @@ void MeshRenderer::UpdateMaterial()
 		mMaterialKeys.push_back(key);
 		if (mMeshGroup)
 			mMeshGroup->SetMaterials(mMaterialKeys, mRenderer->GetDevice());
+	}
+}
+
+void MeshRenderer::UpdateVS()
+{
+	FTDS::String vsKey = mVSKey;
+	FTEditorUtils::DisplayResSelection("Vertex Shader", 
+		EditorResourceManager::GetInstance()->GetVertexShaders(), vsKey);
+
+	if (mVSKey.NotEqual(vsKey.C_Str()))
+	{
+		mVSKey.Assign(vsKey);
+		GetMeshGroup()->SetVertexShader(mVSKey);
+	}
+}
+
+void MeshRenderer::UpdatePS()
+{
+	FTDS::String psKey = mPSKey;
+	FTEditorUtils::DisplayResSelection("Pixel Shader", 
+		EditorResourceManager::GetInstance()->GetPixelShaders(), psKey);
+	
+	if (mPSKey.NotEqual(psKey.C_Str()))
+	{
+		mPSKey.Assign(psKey);
+		GetMeshGroup()->SetPixelShader(mPSKey);
 	}
 }
 

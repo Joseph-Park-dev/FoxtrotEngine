@@ -3,6 +3,8 @@
 
 #include "spine/spine.h"
 
+class FTSpineAnimation;
+
 class SpineAnimator :
 	public MeshRenderer
 {
@@ -17,17 +19,13 @@ public:
 	virtual void CloneTo(Actor* actor) override;
 
 private:
-	spine::Skeleton* mSkeleton;
-	spine::AnimationState* mState;
-	float				   mTimeScale;
-	spine::Physics		   mUsePhysics;
-
-private:
-	void InitMeshData(FTMeshData& meshData, spine::RenderCommand* command);
+	FTSpineAnimation* mAnim;
+	spine::Atlas*	  mAtlas;
+	float			  mTimeScale;
+	spine::Physics	  mUsePhysics;
 
 #ifdef FOXTROT_EDITOR
 	virtual void EditorUpdate(float deltaTime) override;
 
 #endif // FOXTROT_EDITOR
-
 };

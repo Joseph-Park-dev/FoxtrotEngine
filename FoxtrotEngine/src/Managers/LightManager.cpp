@@ -59,12 +59,12 @@ void LightManager::InitializeCubeMap(FoxtrotRenderer* renderer)
 
 void LightManager::Render(FoxtrotRenderer* renderer, Camera* camInst)
 {
-	if (mCubemap)
+	/*if (mCubemap)
 	{
 		mCubemap->CalcVCData(camInst);
 		mCubemap->UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext());
 		mCubemap->Render(renderer);
-	}
+	}*/
 }
 
 void LightManager::Reset(FoxtrotRenderer* renderer)

@@ -55,8 +55,8 @@ void FTCubemap::Render(FoxtrotRenderer* renderer)
 		context->VSSetConstantBuffers(
 			0, mesh->VertexConstantBuffers.size(), mesh->VertexConstantBuffers.data()->GetAddressOf());
 
-		SetVertexShader(renderer->GetCubeMapVS());
-		SetPixelShader(renderer->GetCubeMapPS());
+		/*SetVertexShader(renderer->GetCubeMapVS());
+		SetPixelShader(renderer->GetCubeMapPS());*/
 
 		if (mDiffuseResView && mSpecularResView)
 		{

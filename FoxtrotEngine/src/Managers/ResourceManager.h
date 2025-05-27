@@ -66,7 +66,8 @@ enum class ResType
 	FT_PIXEL_SHADER,
 	FT_SPRITE_ANIMATION,
 	FTCSV,
-	FTJSON
+	FTJSON,
+	FT_SHADER_META
 };
 
 class ResourceManager
@@ -201,29 +202,32 @@ private:
 	}
 
 	template <typename FTRESOURCE>
-	void ClearMap(FTDS::HashChainMap<FTRESOURCE*>* resMap)
+	void ClearMap(FTDS::HashChainMap<FTRESOURCE>* resMap)
 	{
 		if (resMap)
 		{
-			if (resMap->IsEmpty())
+			if (resMap->GetSize() < 1)
 				return;
-			for (auto iter = resMap->Begin(); iter != resMap->End(); ++iter)
-				if (*iter)
-					delete ((*iter)->Value());
-			resMap->Clear();
-			resMap = nullptr;
+
+			resMap->IterateAllValues(
+				[&](FTRESOURCE res) { 
+					if (res)
+					{
+						delete res;
+						res = nullptr;
+					}
+				});
 		}
 	}
 
 protected:
-	template<typename FTRESOURCE>
+	template <typename FTRESOURCE>
 	void ProcessResources(FTCore* coreInstance, FTDS::HashChainMap<FTRESOURCE*>* resMap)
 	{
 		resMap->IterateAllValues(
-			[&](FTRESOURCE* res) { res->Process(coreInstance); }
-		);
+			[&](FTRESOURCE* res) { res->Process(coreInstance); });
 	}
-	
+
 private:
 	void AddFileExtensionIfNone(FTDS::String& key, const char* fileType)
 	{

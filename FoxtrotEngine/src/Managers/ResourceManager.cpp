@@ -74,6 +74,18 @@ void ResourceManager::DeleteAll()
 	ClearMap(mMaterials);
 	ClearMap(mCSVs);
 	ClearMap(mJSONs);
+
+	delete mTextures;
+	delete mTileMaps;
+	delete mSpriteSheets;
+	delete mPremades;
+	delete mSpriteAnimations;
+	delete mMeshGroups;
+	delete mVertexShaders;
+	delete mPixelShaders;
+	delete mMaterials;
+	delete mCSVs;
+	delete mJSONs;
 }
 
 FTDS::String& ResourceManager::GetPathToAsset()
@@ -186,18 +198,6 @@ FoxtrotRenderer* ResourceManager::GetRenderer()
 ResourceManager::~ResourceManager()
 {
 	DeleteAll();
-
-	delete mTextures;
-	delete mTileMaps;
-	delete mSpriteSheets;
-	delete mPremades;
-	delete mSpriteAnimations;
-	delete mMeshGroups;
-	delete mVertexShaders;
-	delete mPixelShaders;
-	delete mMaterials;
-	delete mCSVs;
-	delete mJSONs;
 }
 
 ResourceManager::ResourceManager()

@@ -64,6 +64,9 @@ protected:
 	void SetTexKey(FTDS::String& key);
 	void SetTexKey(const char* key);
 
+	FTDS::String& VSKey();
+	FTDS::String& PSKey();
+
 	///////////////////////////////////////
 	// Getters & Setters to the elements //
 	///////////////////////////////////////
@@ -92,8 +95,10 @@ protected:
 	//////////////////////////////////////////
 private:
 	// Identifiers for the object in the Resource Map from the ResourceManager instance.
-	FTDS::String			 mMeshKey;
-	FTDS::String			 mTexKey;
+	FTDS::String			  mMeshKey;
+	FTDS::String			  mTexKey;
+	FTDS::String			  mVSKey;
+	FTDS::String			  mPSKey;
 	std::vector<FTDS::String> mMaterialKeys;
 
 	////////////////////////////////////////
@@ -125,6 +130,8 @@ protected:
 	void		 UpdateSprite();
 	void		 UpdateSprite(FTDS::String& key);
 	void		 UpdateMaterial();
+	void		 UpdateVS();
+	void		 UpdatePS();
 	void		 AddModel();
 #endif
 };
@@ -134,5 +141,6 @@ namespace ChunkKey
 	constexpr const char* MESH_KEY		 = "Mesh Key";
 	constexpr const char* TEXTURE_KEY	 = "Texture Key";
 	constexpr const char* MATERIAL_KEYS	 = "Material Key";
+	constexpr const char* SHADER_KEYS	 = "Shader Key";
 	constexpr const char* MATERIAL_COUNT = "Count";
 } // namespace ChunkKey

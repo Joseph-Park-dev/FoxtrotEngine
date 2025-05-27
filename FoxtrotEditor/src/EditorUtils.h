@@ -70,7 +70,7 @@ namespace FTEditorUtils
 		}
 	}
 
-	inline void DisplayActorSelection(const char* label, Actor* selected)
+	inline void DisplayActorSelection(const char* label, Actor*& selected)
 	{
 		EditorScene*		 editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
 		std::vector<Actor*>* editorElems = editorScene->GetActors();

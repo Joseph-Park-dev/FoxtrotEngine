@@ -46,7 +46,7 @@ void AgentBehavior::Initialize(FTCore* coreInstance)
 void AgentBehavior::Setup()
 {
 #ifdef FOXTROT_EDITOR
-	if(!FTDS::StringEqual(mTargetName.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
+	if(mTargetName.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 		mTarget = FIND_EDITOR_ELEMENT(mTargetName);
 #else
 	if (!FTDS::StringEqual(mTargetName.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
@@ -72,10 +72,7 @@ AgentBehavior::~AgentBehavior()
 void AgentBehavior::SaveProperties(std::ofstream & ofs)
 {
 	Component::SaveProperties(ofs);
-	if(mTarget)
-		FileIOHelper::SaveString(ofs, ChunkKey::TARGET_NAME, mTargetName);
-	else
-		FileIOHelper::SaveString(ofs, ChunkKey::TARGET_NAME, ChunkKey::NullVal::NULL_OBJECT);
+	FileIOHelper::SaveString(ofs, ChunkKey::TARGET_NAME, mTargetName);
 }
 
 void AgentBehavior::LoadProperties(std::ifstream& ifs)

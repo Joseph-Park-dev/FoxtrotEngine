@@ -7,17 +7,25 @@ class FTSpineAnimation :
 	public FTAnimation
 {
 public:
-	virtual void Render(FoxtrotRenderer* renderer) override;
+	void		 Initialize(spine::SkeletonData* skel, spine::AnimationStateData* stateData = 0);
+	virtual void Update(float deltaTime, spine::Physics physics);
+	void		 Render(FoxtrotRenderer* renderer, Transform* transform, Camera* camInst);
+
+public:
+	spine::Skeleton*	   GetSkeleton();
+	spine::AnimationState* GetAnimState();
+	float				   GetTimeScale();
+
+	void SetTimeScale(float val);
 
 public:
 	FTSpineAnimation();
 	~FTSpineAnimation() override;
 
-protected:
-	virtual void InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTMeshData>& meshes);
-
 private:
 	spine::Skeleton*	   mSkeleton;
 	spine::AnimationState* mState;
 	float				   mTimeScale;
+	size_t				   mMaxVertexCount;
+	size_t				   mMaxIndexCount;
 };

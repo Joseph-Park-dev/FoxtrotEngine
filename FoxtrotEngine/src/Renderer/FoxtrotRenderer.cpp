@@ -152,7 +152,7 @@ bool FoxtrotRenderer::Initialize(FTWindow* window, int renderWidth, int renderHe
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 + 4 * 3 + 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
-	DX::ThrowIfFailed(
+	/*DX::ThrowIfFailed(
 		D3D11Utils::CreateVertexShaderAndInputLayout(
 			mDevice,
 			SOLID_VS_PATH,
@@ -218,7 +218,7 @@ bool FoxtrotRenderer::Initialize(FTWindow* window, int renderWidth, int renderHe
 		D3D11Utils::CreatePixelShader(
 			mDevice,
 			CUBEMAP_PS_PATH,
-			mCubeMapPS));
+			mCubeMapPS));*/
 
 	mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
 

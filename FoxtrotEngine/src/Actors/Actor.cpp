@@ -227,7 +227,7 @@ void Actor::SetState(FTDS::String state)
 
 bool Actor::HasName(FTDS::String& name)
 {
-	return this->GetName() == name;
+	return mName.Equal(name.C_Str());
 }
 
 bool Actor::HasName(const char* name)

@@ -44,7 +44,7 @@ void FTResource::SaveProperties(std::ofstream& ofs)
 {
     // Makes file path relative to the project dir.
     FTDS::String path = mRelativePath;
-    ExtractUntil(path, "\\Assets\\");
+    path.ExtractFromLast("\\Assets\\");
 
     FTDS::String buf (".\\");
     buf.Append(path);
@@ -57,7 +57,12 @@ void FTResource::SaveProperties(std::ofstream& ofs)
 // (Due to the loading order)
 void FTResource::LoadProperties(std::ifstream& ifs)
 {
+    if (!mRelativePath.IsEmpty())
+        return;
     FileIOHelper::LoadBasicString(ifs, mRelativePath);
+
+    if (!mFileName.IsEmpty())
+        return;
     FileIOHelper::LoadBasicString(ifs, mFileName);
 
 #ifdef FOXTROT_EDITOR

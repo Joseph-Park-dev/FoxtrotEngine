@@ -73,6 +73,7 @@ class FTInputDevice
 public:
 	void DetectKeyInput();
 	void DetectMouseInput(MSG msg);
+	void DetectMouseDrag(FTVector3& delta);
 	void LockCursorInSceneViewport(FTVector2 mousePos);
 	void UnlockCursorOutOfSceneViewport();
 	// void DetectGamepadInput();
@@ -113,6 +114,7 @@ private:
 	FTVector2 mMousePosition;
 	int		  mMouseState;
 	float	  mMouseWheelDelta;
+	bool	  mIsDragging;
 
 private:
 	using KeyboardMap				  = std::unordered_map<unsigned char, tKeyInfo>;

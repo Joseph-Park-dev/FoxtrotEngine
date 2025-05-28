@@ -23,6 +23,7 @@ FTInputDevice::FTInputDevice()
 	: mMousePosition(FTVector2::Zero)
 	, mMouseState(0)
 	, mMouseWheelDelta(0.f)
+	, mIsDragging(false)
 {
 	Init();
 }
@@ -168,6 +169,29 @@ void FTInputDevice::DetectMouseInput(MSG msg)
 			mVecMouse[mouseButton].isPushedPrevFrame = false;
 		}
 	}
+}
+
+void FTInputDevice::DetectMouseDrag(FTVector3& delta)
+{
+	static FTVector3 prevPos;
+	if (MOUSE_TAP(MOUSE::MOUSE_LEFT) && !mIsDragging)
+	{
+		mIsDragging = true;
+		prevPos		= mMousePosition;
+	}
+
+	if (MOUSE_HOLD(MOUSE::MOUSE_LEFT) && mIsDragging)
+	{
+		FTVector3 currentPos = mMousePosition;
+		if ((currentPos - prevPos).Length() > 1e-3)
+		{
+			delta = currentPos - prevPos;
+			printf("%f %f %f \n", currentPos.x, currentPos.y, currentPos.z);
+		}
+	}
+
+	if (MOUSE_AWAY(MOUSE::MOUSE_LEFT) && mIsDragging)
+		mIsDragging = false;
 }
 
 void FTInputDevice::LockCursorInSceneViewport(FTVector2 mousePos)

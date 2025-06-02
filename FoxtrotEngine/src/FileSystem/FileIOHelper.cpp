@@ -297,7 +297,7 @@ void FileIOHelper::ParseVector2(FTDS::String& line, FTVector2& arg)
 	FTDS::String yStr;
 
 	line.ExtractUntilFirst(xStr, ",");
-	line.ExtractUntilLast(yStr, ",");
+	line.ExtractFromLast(yStr, ",");
 
 	float x = std::stof(xStr.C_Str());
 	float y = std::stof(yStr.C_Str());

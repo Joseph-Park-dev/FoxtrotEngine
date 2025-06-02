@@ -175,6 +175,8 @@
     <FxCompile Include="Assets\Shaders\CubeMapPS.hlsl" />
     <FxCompile Include="Assets\Shaders\CubeMapVS.hlsl" />
     <FxCompile Include="Assets\Shaders\2D\Texture2DPS.hlsl" />
+    <FxCompile Include="Assets\Shaders\DebugShapePS.hlsl" />
+    <FxCompile Include="Assets\Shaders\DebugShapeVS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon1.ico">
@@ -206,8 +208,5 @@
     <ResourceCompile Include="FoxtrotEditor.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="lib\FoxtrotEngine\FoxtrotEngine.lib" />
   </ItemGroup>
 </Project>

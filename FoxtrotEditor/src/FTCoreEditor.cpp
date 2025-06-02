@@ -233,7 +233,6 @@ void FTCoreEditor::GenerateOutput()
 
 void FTCoreEditor::ProcessEvent()
 {
-	EditorSceneManager::GetInstance()->ProcessEvent();
 	EventManager::GetInstance()->ProcessEvent();
 }
 

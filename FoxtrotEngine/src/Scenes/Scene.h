@@ -35,8 +35,8 @@ public:
 	/// <param name="group : ">ActorGroup this Actor is assigned to.</param>
 	/// <param name="name : ">Actor's name</param>
 	/// <returns></returns>
-	Actor* FindActor(FTDS::String& name);
-	Actor* FindActor(const char* name);
+	Actor* FindActor(FTDS::String& name, Actor* filter = nullptr);
+	Actor* FindActor(const char* name, Actor* filter = nullptr);
 
 public:
 	const std::wstring&  GetName() { return mSceneName; }
@@ -64,6 +64,7 @@ public:
 	void SetIsUpdatingActors(bool value){ mIsUpdatingActors = value; }
 
 public:
+	void Initialize(FTCore* coreInst);
 	virtual void Setup();
 	virtual void ProcessInput(FTInputDevice* inputDevice);
 	virtual void Update(float deltaTime);

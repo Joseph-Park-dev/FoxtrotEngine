@@ -47,7 +47,7 @@ void AgentBehavior::Setup()
 {
 #ifdef FOXTROT_EDITOR
 	if(mTargetName.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
-		mTarget = FIND_EDITOR_ELEMENT(mTargetName);
+		mTarget = FIND_ACTOR(mTargetName, nullptr);
 #else
 	if (!FTDS::StringEqual(mTargetName.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
 		mTarget = FIND_ACTOR(mTargetName);

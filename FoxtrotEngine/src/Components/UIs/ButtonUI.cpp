@@ -42,7 +42,6 @@ void ButtonUI::OnMouseLButtonClicked()
 void ButtonUI::CloneTo(Actor* actor)
 {
 	ButtonUI* newComp = DBG_NEW ButtonUI(actor, GetUpdateOrder());
-	GetInputArea()->GetRectArea()->CloneTo(newComp->GetInputArea()->GetRectArea());
 }
 
 ButtonUI::ButtonUI(Actor* owner, int updateOrder)

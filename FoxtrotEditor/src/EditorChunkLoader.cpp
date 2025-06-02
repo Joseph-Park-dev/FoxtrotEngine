@@ -82,21 +82,15 @@ void EditorChunkLoader::LoadChunk(const char* fileName)
 
 void EditorChunkLoader::SaveActorsData(std::ofstream& ofs)
 {
-	EditorScene*		 scene	= EditorSceneManager::GetInstance()->GetEditorScene();
-	std::vector<Actor*>* actors = scene->GetActors();
+	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::ACTOR_DATA);
 
-	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
+	for (EditorElement* element : scene->GetEditorElements())
 	{
-		for (size_t j = 0; j < actors[i].size(); ++j)
-		{
-			EditorElement* element = dynamic_cast<EditorElement*>(actors[i][j]);
-			size_t		   index   = (size_t)ActorGroup::END * i + j;
-			FileIOHelper::BeginDataPackSave(ofs, element->GetName());
-			element->SaveComponents(ofs);
-			element->SaveProperties(ofs);
-			FileIOHelper::EndDataPackSave(ofs, element->GetName());
-		}
+		FileIOHelper::BeginDataPackSave(ofs, element->GetName());
+		element->SaveComponents(ofs);
+		element->SaveProperties(ofs);
+		FileIOHelper::EndDataPackSave(ofs, element->GetName());
 	}
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::ACTOR_DATA);
 }
@@ -111,9 +105,18 @@ void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
 		Actor							  actor		= Actor();
 		actor.LoadProperties(ifs);
 		actor.LoadComponents(ifs);
+		// AddEditorElement() will be called internally.
+		EditorElement element = EditorElement(&actor, scene);
 
-		EditorElement* element = DBG_NEW EditorElement(&actor, scene);
-		element->Initialize(FTCoreEditor::GetInstance());
+		if (0 < actor.GetChildActors().size())
+		{
+			for (Actor* child : actor.GetChildActors())
+			{
+				delete child;
+				child = nullptr;
+			}
+		}
 	}
+	EditorSceneManager::GetInstance()->GetEditorScene()->Initialize(FTCoreEditor::GetInstance());
 	EditorSceneManager::GetInstance()->GetEditorScene()->Setup();
 }

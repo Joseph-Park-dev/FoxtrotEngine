@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -20,35 +20,82 @@
 #include "EditorElement.h"
 #include "ActorCommand.h"
 
+void EditorScene::Initialize(FTCore* coreInst)
+{
+	for (EditorElement* ele : mEditorElements)
+		ele->Initialize(coreInst);
+}
+
+void EditorScene::Setup()
+{
+	for (EditorElement* ele : mEditorElements)
+		if (ele->IsActive())
+			ele->Setup();
+}
+
+void EditorScene::ProcessInput(FTInputDevice* inputDevice)
+{
+	for (EditorElement* ele : mEditorElements)
+		if (ele->IsActive())
+			ele->ProcessInput(inputDevice);
+}
+
+void EditorScene::Update(float deltaTime)
+{
+	for (EditorElement* ele : mEditorElements)
+	{
+		if (ele->IsActive())
+		{
+			// The order of the Update functions should not be revised.
+			ele->UpdateComponents(deltaTime);
+			ele->UpdateActor(deltaTime);
+		}
+	}
+}
+
+void EditorScene::LateUpdate(float deltaTime)
+{
+	for (EditorElement* ele : mEditorElements)
+	{
+		if (ele->IsActive())
+		{
+			// The order of the Update functions should not be revised.
+			ele->LateUpdateComponents(deltaTime);
+			ele->LateUpdateActor(deltaTime);
+		}
+	}
+}
+
+void EditorScene::Render(FoxtrotRenderer* renderer)
+{
+	for (EditorElement* ele : mEditorElements)
+	{
+		if (ele->IsActive())
+		{
+			ele->RenderComponents(renderer);
+			ele->RenderActor(renderer);
+		}
+	}
+}
+
 void EditorScene::DeleteAll()
 {
-;	std::vector<Actor*>* actors = GetActors();
 	UnfocusEditorElements();
 
-	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
+	for (EditorElement* ele : mEditorElements)
 	{
-		for (size_t j = 0; j < actors[i].size(); ++j)
-		{
-			EditorElement* ele = dynamic_cast<EditorElement*>(actors[i][j]);
-			delete ele;
-		}
-		actors[i].clear();
+		delete ele;
+		ele = nullptr;
 	}
-	actors->clear();
-	Scene::DeleteAll();
+	mEditorElements.clear();
 }
 
 void EditorScene::UnfocusEditorElements()
 {
-	std::vector<Actor*>* actors = GetActors();
-	size_t rowSize = GetArrayLength(actors);
-	for (size_t i = 0; i < rowSize; ++i) {
-		auto iter = actors->begin();
-		for (; iter != GetActors()[i].end(); ++iter) {
-			EditorElement* ele = dynamic_cast<EditorElement*>(*iter);
-			if (ele->GetIsFocused())
-				ele->SetIsFocused(false);
-		}
+	for (EditorElement* ele : mEditorElements)
+	{
+		if (ele->GetIsFocused())
+			ele->SetIsFocused(false);
 	}
 }
 
@@ -56,69 +103,70 @@ void EditorScene::AddEditorElement()
 {
 	UnfocusEditorElements();
 	EditorElement* editorElement = DBG_NEW EditorElement(this);
-	FTDS::String name("Empty Actor ");
-	name.Append(std::to_string(this->GetActorCount()).c_str());
+	FTDS::String						   name("Empty Actor ");
+	name.Append(std::to_string(mEditorElements.size()).c_str());
 	editorElement->SetName(name);
 	editorElement->SetIsFocused(true);
 
-	//CommandHistory::GetInstance()->UpdateActorAddition(editorElement);
+	// CommandHistory::GetInstance()->UpdateActorAddition(editorElement);
 }
 
 void EditorScene::AddEditorElement(Actor* actor)
 {
 	UnfocusEditorElements();
-	//// Finds the actor with the same name and adds numbered suffix.
-	//std::string name = actor->GetName();
-	//std::vector<Actor*>* actors = GetActors();
-	//int count = 0;
-	//for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
-	//{
-	//	for (size_t j = 0; j < actors[i].size(); ++j)
-	//	{
-	//		std::string buf = actors[i][j]->GetName();
-	//		name = ExtractUntil(name, '(');
-	//		buf = ExtractUntil(buf, '(');
-	//		if (name == buf)
-	//			++count;
-	//	}
-	//}
-	//if (0 < count)
-	//	actor->SetName(actor->GetName() + "(" + std::to_string(count) + ")");
-	this->AddActor(actor, actor->GetActorGroup());
+	EditorElement* element = DBG_NEW EditorElement(actor);
+	mEditorElements.emplace_back(element);
+}
+
+EditorElement* EditorScene::FindEditorElement(FTDS::String& name, Actor* filter)
+{
+	auto func = [&](Actor* actor) {
+		if (filter)
+			return actor->HasName(name) && actor != filter;
+		else
+			return actor->HasName(name);
+	};
+
+	auto iter = std::find_if(mEditorElements.begin(), mEditorElements.end(), func);
+	if (iter != mEditorElements.end())
+		return *iter;
+	return nullptr;
+}
+
+EditorElement* EditorScene::FindEditorElement(const char* name, Actor* filter)
+{
+	FTDS::String str(name);
+	return FindEditorElement(str, filter);
+}
+
+std::vector<EditorElement*>& EditorScene::GetEditorElements()
+{
+	return mEditorElements;
 }
 
 void EditorScene::EditorUpdate(float deltaTime)
 {
 	mIsUpdatingActors = true;
-	std::vector<Actor*>* actors = GetActors();
-	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
-	{
-		for (size_t j = 0; j < actors[i].size(); ++j)
-		{
-			EditorElement* ele = dynamic_cast<EditorElement*>(actors[i][j]);
-			ele->EditorUpdate(deltaTime);
-		}
-	}
+	for (EditorElement* ele : mEditorElements)
+		ele->EditorUpdate(deltaTime);
 	mIsUpdatingActors = false;
 }
 
 void EditorScene::EditorRender(FoxtrotRenderer* renderer)
 {
 	mIsUpdatingActors = true;
-	std::vector<Actor*>* actors = GetActors();
-	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
-	{
-		for (size_t j = 0; j < actors[i].size(); ++j)
-		{
-			EditorElement* ele = dynamic_cast<EditorElement*>(actors[i][j]);
-			ele->EditorRender(renderer);
-		}
-	}
+	for (EditorElement* ele : mEditorElements)
+		ele->EditorRender(renderer);
 	mIsUpdatingActors = false;
 }
 
 EditorScene::EditorScene()
-	: Scene()
-	, mIsUpdatingActors(false)
+	: mIsUpdatingActors(false)
+	, mEditorElements()
 {
+}
+
+EditorScene::~EditorScene()
+{
+	DeleteAll();
 }

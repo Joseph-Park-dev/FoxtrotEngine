@@ -15,24 +15,21 @@ cbuffer ModelViewProjectionConstantBuffer : register(b0)
     matrix projection;
 };
 
-SolidPSInput main(SolidVSInput input)
+DebugPSInput main(DebugVSInput input)
 {
-    SolidPSInput output;
+    DebugPSInput output;
     
     float4 pos = float4(input.posModel, 1.0);
     pos = mul(pos, model);
     
-    output.posWorld = pos.xyz;
+    //output.posWorld = pos.xyz;
     
     pos = mul(pos, view);
     pos = mul(pos, projection);
-    output.posProj = pos;
+    //output.posProj = pos;
+    output.pos = pos;
     
-    float4 normal = float4(input.normalModel, 0.0f);
-    output.normalWorld = mul(normal, invTranspose);
-    output.normalWorld = normalize(output.normalWorld);
-    
-    output.color = input.color;
+    output.color = float4(input.color, 1.0);
     
     return output;
 }

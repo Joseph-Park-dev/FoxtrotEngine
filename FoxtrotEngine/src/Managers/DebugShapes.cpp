@@ -11,8 +11,8 @@
 #include "Renderer/D3D11Utils.h"
 
 DebugShapes::DebugShapes()
-	: mVertexShaderPath(L"./Assets/Shaders/EditorDebugShapeVS.hlsl")
-	, mPixelShaderPath(L"./Assets/Shaders/EditorDebugShapePS.hlsl")
+	: mVertexShaderPath(L"./Assets/Shaders/DebugShapeVS.hlsl")
+	, mPixelShaderPath(L"./Assets/Shaders/DebugShapePS.hlsl")
 {
 }
 
@@ -71,8 +71,7 @@ void DebugShapes::CreateShaders(ComPtr<ID3D11Device>& device)
 {
 	std::vector<D3D11_INPUT_ELEMENT_DESC> basicInputElements = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 + 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
 	D3D11Utils::CreateVertexShaderAndInputLayout(

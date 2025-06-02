@@ -93,7 +93,7 @@ public:
 
 protected:
 	virtual void ToggleDebugShape();
-	bool		 IsShowingDebugShape();
+	bool&		 IsShowingDebugShape();
 
 private:
 	bool mShowDebugShape;

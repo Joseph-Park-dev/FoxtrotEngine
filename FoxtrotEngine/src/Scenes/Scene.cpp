@@ -33,12 +33,19 @@ Scene::~Scene()
 	DeleteAll();
 }
 
-Actor* Scene::FindActor(FTDS::String& name)
+Actor* Scene::FindActor(FTDS::String& name, Actor* filter)
 {
 	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
 	{
 		std::vector<Actor*>& actors = GetActorGroup(i);
-		auto func = [&](Actor* actor) { return actor->HasName(name); };
+		auto func = [&](Actor* actor)
+			{
+				if (filter)
+					return actor->HasName(name) && actor != filter;
+				else
+					return actor->HasName(name);
+			};
+
 		auto iter = std::find_if(actors.begin(), actors.end(), func);
 		if (iter != actors.end())
 			return *iter;
@@ -48,19 +55,22 @@ Actor* Scene::FindActor(FTDS::String& name)
 	return nullptr;
 }
 
-Actor* Scene::FindActor(const char* name)
+Actor* Scene::FindActor(const char* name, Actor* filter)
 {
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	FTDS::String str(name);
+	return FindActor(str, filter);
+}
+
+void Scene::Initialize(FTCore* coreInst)
+{
+	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
 	{
-		std::vector<Actor*>& actors = GetActorGroup(i);
-		auto func = [&](Actor* actor) { return actor->HasName(name); };
-		auto iter = std::find_if(actors.begin(), actors.end(), func);
-		if (iter != actors.end())
-			return *iter;
-		else
-			continue;
+		for (size_t j = 0; j < mActors[i].size(); ++j)
+		{
+			Actor* actor = mActors[i][j];
+			actor->Initialize(coreInst);
+		}
 	}
-	return nullptr;
 }
 
 void Scene::Setup()

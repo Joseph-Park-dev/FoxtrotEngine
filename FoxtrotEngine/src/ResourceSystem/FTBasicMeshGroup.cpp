@@ -468,15 +468,10 @@ void FTBasicMeshGroup::CalcModelMat(Matrix& matrix, Transform* transform)
 	int dir = 0;
 	0 <= transform->GetSteering()->Linear.x ? dir = 1 : dir = -1;
 
-	FTVector3		  scale		   = transform->GetScale();
-	DirectX::XMFLOAT3 scaleWithDir = DirectX::XMFLOAT3(scale.x * dir, scale.y, scale.z);
-
-	matrix =
-		Matrix::CreateScale(scaleWithDir) *
-		Matrix::CreateRotationX(transform->GetRotation().x) *
-		Matrix::CreateRotationY(transform->GetRotation().y) *
-		Matrix::CreateRotationZ(transform->GetRotation().z) *
-		Matrix::CreateTranslation(transform->GetWorldPosition().GetDXVec3());
+	FTVector3		  scale		   = transform->GetWorldScale();
+	FTVector3 scaleWithDir = FTVector3(scale.x * dir, scale.y, scale.z);
+	transform->SetWorldScale(scaleWithDir);
+	matrix = transform->GetMatrixWorld();
 }
 
 void FTBasicMeshGroup::SaveProperties(std::ofstream& ofs)

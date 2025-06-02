@@ -131,17 +131,13 @@ FTMeshData GeometryGenerator::MakeSquare(float scale)
 	return meshData;
 }
 
-FTMeshData GeometryGenerator::MakeSquare(FTVector3 color)
+FTDebugMeshData GeometryGenerator::MakeDebugSquare(FTVector3 color)
 {
 	std::vector<Vector3> positions;
 	std::vector<Vector3> colors;
-	std::vector<Vector3> normals;
-	std::vector<Vector2> texcoords;
 
 	positions.reserve(4);
 	colors.reserve(4);
-	normals.reserve(4);
-	texcoords.reserve(4);
 
 	positions.push_back(Vector3(-0.5f, 0.5f, 0.0f));
 	positions.push_back(Vector3(0.5f, 0.5f, 0.0f));
@@ -153,24 +149,12 @@ FTMeshData GeometryGenerator::MakeSquare(FTVector3 color)
 	colors.push_back(Vector3(color.GetDXVec3()));
 	colors.push_back(Vector3(color.GetDXVec3()));
 
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-
-	texcoords.push_back(Vector2(0.0f, 0.0f));
-	texcoords.push_back(Vector2(1.0f, 0.0f));
-	texcoords.push_back(Vector2(1.0f, 1.0f));
-	texcoords.push_back(Vector2(0.0f, 1.0f));
-
-	FTMeshData meshData;
-	for (size_t i = 0; i < positions.size(); i++)
+	FTDebugMeshData meshData;
+	for (size_t i = 0; i < positions.size(); ++i)
 	{
-		Vertex v;
+		DebugVertex v;
 		v.position = positions[i];
-		// v.color = colors[i];
-		v.normal   = normals[i];
-		v.texcoord = texcoords[i];
+		v.color = colors[i];
 		meshData.Vertices.push_back(v);
 	}
 	meshData.Indices = {

@@ -15,55 +15,77 @@
 
 #include "Components/CharacterAI/Steering.h"
 
+class Actor;
+
 class Transform
 {
 public:
-	///////////////////////////////////////////////////////
-	///// Getter and Setters of each member variables /////
-	///////////////////////////////////////////////////////
+	//////////////////////////////
+	///// Getter and Setters /////
+	//////////////////////////////
 
-	FTVector3		GetWorldPosition() const;
-	const FTVector3 GetLocalPosition() const;
-	const FTVector3 GetScale() const;
-	const FTVector3 GetRotation() const;
-	const FTVector3 GetRotationDegree() const;
-	const FTVector3 GetRightward() const;
-	const Steering* GetSteering() const;
+	// Local Transformation
+	const FTVector3& GetLocalPosition() const;
+	const FTVector3& GetLocalScale() const;
+	const FTVector3& GetLocalRotation() const;
+
+	// World Transformation
+	const FTVector3&				   GetWorldPosition() const;
+	const FTVector3&				   GetWorldScale() const;
+	const FTVector3&				   GetWorldRotation() const;
+	const DirectX::SimpleMath::Matrix& GetMatrixWorld() const;
+
+	const FTVector3& GetRotationDegree() const;
+
+	const FTVector3& GetRightward() const;
+	const Steering*	 GetSteering() const;
 
 	const bool IsHalting() const;
 
-	void SetWorldPosition(const FTVector3 pos);
-	void SetLocalPosition(const FTVector3 pos);
-	void SetScale(const FTVector3 scale);
-	void SetRotation(const FTVector3 rotation);
+	// Local Transformation
+	void SetLocalPosition(const FTVector3 val);
+	void SetLocalScale(const FTVector3 val);
+	void SetLocalRotation(const FTVector3 val);
+
+	// World Transformation
+	void SetWorldPosition(const FTVector3 worldPos);
+	void SetWorldScale(const FTVector3 worldScale);
+	void SetWorldRotation(const FTVector3 worldRot);
+
 	void SetRightward(const FTVector3 dir);
 	void SetSteering(const Steering steering);
+
+	void SetOwner(Actor* actor);
 
 	static FTVector3 ConvertRadToDegree(FTVector3 radianRot);
 	static FTVector3 ConvertDegreeToRad(FTVector3 degreeRot);
 
-	///////////////////////////////////////////////////////
-	/// Reference to each member variables (Properties) ///
-	///////////////////////////////////////////////////////
-
-	FTVector3& WorldPosition();
-	FTVector3& LocalPosition();
-	FTVector3& Scale();
-	FTVector3& Rotation();
+public:
+	void Update();
+	void CloneTo(Transform* target);
 
 public:
-	Transform();
-	Transform(Transform& origin);
+	Transform(Actor* owner);
+	Transform(Actor* owner, Transform& origin);
 	virtual ~Transform();
 
 private:
+	// Local Transformation.
+	FTVector3					mLocalPosition;
+	FTVector3					mLocalScale;
+	FTVector3					mLocalRotation;
+	DirectX::SimpleMath::Matrix mMatrixLocal;
+
+	// World Transformation.
+	FTVector3					mWorldPosition;
+	FTVector3					mWorldScale;
+	FTVector3					mWorldRotation;
+	DirectX::SimpleMath::Matrix mMatrixWorld;
+
+	FTVector3 mRightward; // A local rightward direction
 	Steering* mSteering;
 
-	FTVector3 mWorldPosition;
-	FTVector3 mLocalPosition;
-	FTVector3 mScale;
-	FTVector3 mRotation;
-	FTVector3 mRightward; // A local rightward direction
+	Actor* mOwner;
 
 public:
 	void SaveProperties(std::ofstream& ofs);
@@ -76,9 +98,11 @@ public:
 
 namespace ChunkKey
 {
-	constexpr const char* WORLD_POS = "World Position";
-	constexpr const char* LOCAL_POS = "Local Position";
-	constexpr const char* SCALE		= "Scale";
-	constexpr const char* ROTATION	= "Rotation";
-	constexpr const char* OFFSET	= "Rotation";
+	constexpr const char* LOCAL_POS		 = "Local Position";
+	constexpr const char* LOCAL_SCALE	 = "Local Scale";
+	constexpr const char* LOCAL_ROTATION = "Local Rotation";
+
+	constexpr const char* WORLD_POS		 = "World Position";
+	constexpr const char* WORLD_SCALE	 = "World Scale";
+	constexpr const char* WORLD_ROTATION = "World Rotation";
 } // namespace ChunkKey

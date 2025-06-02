@@ -49,15 +49,20 @@ void Rigidbody2D::Initialize(FTCore* coreInstance)
 
 void Rigidbody2D::LateUpdate(float deltaTime)
 {
+	// Apply Position
 	b2Vec2 position = b2Body_GetPosition(mBodyID);
-	b2Rot  rotation = b2Body_GetRotation(mBodyID);
-	float z = GetOwner()->GetTransform()->GetWorldPosition().z;
+	float  z		= GetOwner()->GetTransform()->GetWorldPosition().z;
 
-	GetOwner()->GetTransform()->SetWorldPosition(FTVector3(position.x, position.y, z));
-	float	  rotZ		 = b2Rot_GetAngle(rotation);
-	FTVector3 prevRot	 = GetOwner()->GetTransform()->GetRotation();
-	FTVector3 updatedRot = FTVector3(prevRot.x, prevRot.y, -rotZ);
-	GetOwner()->GetTransform()->SetRotation(updatedRot);
+	FTVector3 updatedPos = FTVector3(position.x, position.y, z);
+	GetOwner()->GetTransform()->SetWorldPosition(updatedPos);
+
+	// Apply rotation.
+	b2Rot	  rotation = b2Body_GetRotation(mBodyID);
+	float	  rotZ	   = b2Rot_GetAngle(rotation);
+	FTVector3 prevRot  = GetOwner()->GetTransform()->GetWorldRotation();
+
+	FTVector3 updatedRot = FTVector3(prevRot.x, prevRot.y, rotZ);
+	GetOwner()->GetTransform()->SetWorldRotation(updatedRot);
 }
 
 void Rigidbody2D::CloneTo(Actor* actor)
@@ -97,7 +102,7 @@ void Rigidbody2D::LoadProperties(std::ifstream& ifs)
 
 	// Initialize transform-related body definitions
 	bodyDef.position = GetOwner()->GetTransform()->GetWorldPosition().GetB2Vec2();
-	bodyDef.rotation = b2MakeRot(-GetOwner()->GetTransform()->GetRotation().z);
+	bodyDef.rotation = b2MakeRot(GetOwner()->GetTransform()->GetWorldRotation().z);
 
 	mBodyID = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &bodyDef);
 
@@ -167,7 +172,7 @@ void Rigidbody2D::EditorUIUpdate()
 
 	ImGui::TextColored(ImVec4(0.f, 200.f, 0.f, 255), pos.C_Str());
 
-	mBodyDefCache.rotation = b2MakeRot(GetOwner()->GetTransform()->GetRotation().z);
+	mBodyDefCache.rotation = b2MakeRot(GetOwner()->GetTransform()->GetWorldRotation().z);
 	FTDS::String rot =
 		FTDS::String("Rotation : ") + std::to_string(b2Rot_GetAngle(mBodyDefCache.rotation)).c_str();
 	ImGui::TextColored(ImVec4(0.f, 200.f, 0.f, 255), rot.C_Str());

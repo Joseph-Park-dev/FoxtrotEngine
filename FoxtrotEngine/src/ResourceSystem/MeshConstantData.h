@@ -56,3 +56,9 @@ struct IndexPCData
 	uint32_t					 IsActive;
 	uint32_t					 dummy[3];
 };
+
+struct DebugPCData
+{
+	uint32_t					 IsActive;
+	uint32_t					 dummy[3];
+};

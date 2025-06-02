@@ -23,18 +23,21 @@
 #include "Core/FTCore.h"
 #include "Debugging/DebugMemAlloc.h"
 #include "ResourceSystem/FTPremade.h"
+#include "Managers/SceneManager.h"
+#include "FileSystem/BufferSizes.h"
 
 #include "Compare/StringEqual.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorElement.h"
+	#include "EditorSceneManager.h"
 #endif // FOXTROT_EDITOR
 
 Actor::Actor()
 	: mName("New Empty Actor")
 	, mActorGroup(ActorGroup::DEFAULT)
 	, mState(State::EActive)
-	, mTransform(DBG_NEW Transform)
+	, mTransform(DBG_NEW Transform(this))
 	, mComponents()
 	, mParent(nullptr)
 	, mChild()
@@ -46,7 +49,7 @@ Actor::Actor(Scene* scene)
 	: mName("New Empty Actor")
 	, mActorGroup(ActorGroup::DEFAULT)
 	, mState(EActive)
-	, mTransform(DBG_NEW Transform)
+	, mTransform(DBG_NEW Transform(this))
 	, mComponents()
 	, mParent(nullptr)
 	, mChild{}
@@ -55,10 +58,10 @@ Actor::Actor(Scene* scene)
 }
 
 Actor::Actor(Actor* actor)
-	: mName()
+	: mName("New Copied Actor")
 	, mActorGroup(actor->mActorGroup)
 	, mState(EActive)
-	, mTransform(DBG_NEW Transform)
+	, mTransform(DBG_NEW Transform(this))
 	, mComponents()
 	, mParent(actor->mParent)
 	, mChild{}
@@ -71,20 +74,8 @@ Actor::Actor(Actor* actor)
 }
 
 Actor::Actor(Actor* actor, Scene* scene)
-	: mName()
-	, mActorGroup(actor->mActorGroup)
-	, mState(actor->mState)
-	, mTransform(DBG_NEW Transform)
-	, mComponents()
-	, mParent(nullptr)
-	, mChild()
+	: Actor(actor)
 {
-	mName.Assign(actor->GetNameRef());
-
-	CopyTransformFrom(actor);
-	CopyComponentsFrom(actor);
-	CopyChildObjectFrom(actor);
-
 	scene->AddActor(this, mActorGroup);
 }
 
@@ -108,16 +99,14 @@ Actor::~Actor()
 
 	for (size_t i = 0; i < mChild.size(); ++i)
 		mChild.clear();
+
+	mParent = nullptr;
 }
 
 void Actor::CopyTransformFrom(Actor* actor)
 {
 	Transform* originTransf = actor->GetTransform();
-	mTransform->SetWorldPosition(originTransf->GetWorldPosition());
-	mTransform->SetLocalPosition(originTransf->GetLocalPosition());
-	// copied->SetScreenPosition(originTransf->GetScreenPosition());
-	mTransform->SetScale(originTransf->GetScale());
-	mTransform->SetRotation(originTransf->GetRotation());
+	actor->GetTransform()->CloneTo(mTransform);
 }
 
 void Actor::CopyComponentsFrom(Actor* actor)
@@ -131,13 +120,40 @@ void Actor::CopyComponentsFrom(Actor* actor)
 
 void Actor::CopyChildObjectFrom(Actor* actor)
 {
-	// std::vector<Actor*>& childObjects = actor->GetChildActors();
-	// for (size_t i = 0; i < childObjects.size(); ++i)
-	//	this->AddChild(DBG_NEW Actor(childObjects[i]));
+	for (Actor* child : actor->GetChildActors())
+		this->AddChild(DBG_NEW Actor(child));
+}
+
+void Actor::RefChildObjectFrom(Actor* actor)
+{
+	for (Actor* child : actor->GetChildActors())
+		this->AddChild(child);
 }
 
 void Actor::Initialize(FTCore* coreInst)
 {
+	for (Actor* pending : mChild)
+	{
+		Actor* child = FIND_ACTOR(pending->GetNameRef(), pending);
+
+		// Distinguish if the Actor is a valid pointer.
+		RemoveChild(pending);
+		delete pending;
+		this->AddChild(child);
+	}
+
+	if (mParent)
+	{
+		Actor* parent = FIND_ACTOR(mParent->GetNameRef(), mParent);
+
+		// Distinguish if the Actor is a valid pointer.
+		delete mParent;
+		mParent = nullptr;
+		mParent = parent;
+	}
+
+	mTransform->SetOwner(this);
+
 	for (size_t i = 0; i < mComponents.size(); ++i)
 		if (!mComponents[i]->GetIsInitialized())
 			mComponents[i]->Initialize(coreInst);
@@ -174,6 +190,23 @@ void Actor::RenderComponents(FoxtrotRenderer* renderer)
 {
 	for (auto comp : mComponents)
 		comp->Render(renderer);
+}
+
+void Actor::AddChild(Actor* child)
+{
+	child->SetParent(this);
+	mChild.emplace_back(child);
+}
+
+void Actor::RemoveChild(Actor* child)
+{
+	auto iter = std::find(mChild.begin(), mChild.end(), child);
+	if (iter != mChild.end())
+	{
+		std::iter_swap(iter, mChild.end() - 1);
+		mChild.pop_back();
+	}
+	child->SetParent(nullptr);
 }
 
 void Actor::AddComponent(Component* component)
@@ -240,11 +273,17 @@ void Actor::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::ACTOR_PROPERTIES);
 	FileIOHelper::SaveString(ofs, ChunkKey::NAME, GetNameRef());
 	FileIOHelper::SaveString(ofs, ChunkKey::ACTOR_GROUP, ActorGroupUtil::GetActorGroupStr(mActorGroup));
-	FileIOHelper::SaveString(ofs, ChunkKey::STATE, GetNameRef());
+	FileIOHelper::SaveInt(ofs, ChunkKey::STATE, mState);
+
 	if (mParent)
 		FileIOHelper::SaveString(ofs, ChunkKey::PARENT, mParent->GetNameRef());
 	else
-		FileIOHelper::SaveString(ofs, ChunkKey::PARENT, "nullptr");
+		FileIOHelper::SaveString(ofs, ChunkKey::PARENT, ChunkKey::NullVal::NULL_OBJECT);
+
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CHILD);
+	for (size_t i = 0; i < mChild.size(); ++i)
+		FileIOHelper::SaveString(ofs, std::to_string(i).c_str(), mChild.at(i)->GetNameRef());
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CHILD);
 
 	// Changing the call location of Transform is NOT recommended
 	// Nested .chunk DataPack has unknown problem.
@@ -272,13 +311,29 @@ void Actor::LoadProperties(std::ifstream& ifs)
 	// Nested .chunk DataPack has unknown problem.
 	mTransform->LoadProperties(ifs);
 
+	size_t childCount = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CHILD).first;
+	for (size_t i = 0; i < childCount; ++i)
+	{
+		FTDS::String name;
+		FileIOHelper::LoadBasicString(ifs, name);
+		Actor* pending = DBG_NEW Actor;
+		pending->SetName(name);
+		mChild.push_back(pending);
+	}
+
 	FTDS::String parentName;
 	FileIOHelper::LoadBasicString(ifs, parentName);
-	// <Parent finding feature here!>
+	if (parentName.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
+	{
+		Actor* pending = DBG_NEW Actor;
+		pending->SetName(parentName);
+		mParent = pending;
+	}
 
-	FTDS::String stateStr;
-	FileIOHelper::LoadBasicString(ifs, stateStr);
-	SetState(stateStr);
+	int stateInt = 0;
+	;
+	FileIOHelper::LoadInt(ifs, stateInt);
+	SetState(static_cast<State>(stateInt));
 
 	FTDS::String actorGroupStr;
 	FileIOHelper::LoadBasicString(ifs, actorGroupStr);
@@ -297,3 +352,41 @@ void Actor::LoadComponents(std::ifstream& ifs)
 		ChunkLoader::GetInstance()->GetComponentLoadMap().At(compPack.second)->Value()(this, ifs);
 	}
 }
+
+#ifdef FOXTROT_EDITOR
+Actor::Actor(EditorScene* scene)
+	: mName("New Empty Actor")
+	, mActorGroup(ActorGroup::DEFAULT)
+	, mState(EActive)
+	, mTransform(DBG_NEW Transform(this))
+	, mComponents()
+	, mParent(nullptr)
+	, mChild{}
+{
+	scene->AddEditorElement(this);
+}
+
+Actor::Actor(Actor* actor, EditorScene* scene)
+	: mName()
+	, mActorGroup(actor->mActorGroup)
+	, mState(actor->mState)
+	, mTransform(DBG_NEW Transform(this))
+	, mComponents()
+	, mParent(actor->mParent)
+	, mChild()
+{
+	mName.Assign(actor->GetNameRef());
+
+	CopyTransformFrom(actor);
+	CopyComponentsFrom(actor);
+	RefChildObjectFrom(actor);
+
+	scene->AddEditorElement(this);
+}
+
+Actor::Actor(FTPremade* premade, EditorScene* scene)
+	: Actor(premade->GetOrigin(), scene)
+{
+	this->mName += " Copy";
+}
+#endif // FOXTROT_EDITOR

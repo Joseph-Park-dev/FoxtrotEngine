@@ -145,3 +145,15 @@ struct IndexPSOutput
     float4 pixelColor : SV_Target0;
     float4 indexColor : SV_Target1;
 };
+
+struct DebugVSInput
+{
+    float3 posModel : POSITION0;
+    float3 color : COLOR0;
+};
+
+struct DebugPSInput
+{
+    float4 pos      : SV_POSITION;
+    float4 color    : COLOR;
+};

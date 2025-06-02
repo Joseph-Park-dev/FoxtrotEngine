@@ -42,13 +42,28 @@ FTShape::~FTShape()
 }
 
 BasicVCData& FTShape::GetVertexConstantData() { return mVertexConstantData; }
-IndexPCData& FTShape::GetPixelConstantData() { return mPixelConstantData; }
+DebugPCData& FTShape::GetPixelConstantData() { return mPixelConstantData; }
 Mesh*		 FTShape::GetMesh() { return mMesh; }
 
 void FTShape::Initialize(FoxtrotRenderer* renderer)
 {
 	InitializeConstantBuffer(renderer->GetDevice());
 	DebugShapes::GetInstance()->AddShape(this);
+}
+
+void FTShape::UpdateVC(FTVector3 pos, FTVector3 rot, FTVector3 size, Camera* camInst)
+{
+	if (!mMesh)
+		return;
+
+	UpdateModelMatrix(pos, rot, size);
+	UpdateViewMatrix(camInst);
+	UpdateProjectionMatrix(camInst);
+}
+
+void FTShape::UpdatePC()
+{
+	mPixelConstantData.IsActive = mIsActive;
 }
 
 void FTShape::Render(FoxtrotRenderer* renderer)
@@ -93,7 +108,7 @@ void FTShape::Render(
 	if (!mPixelConstantBuffer.Get())
 		return;
 
-	UINT stride = sizeof(Vertex);
+	UINT stride = sizeof(DebugVertex);
 	UINT offset = 0;
 
 	UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext());
@@ -112,7 +127,7 @@ void FTShape::Render(
 	context->DrawIndexed(mMesh->IndexCount, 0, 0);
 }
 
-void FTShape::InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData&& meshData)
+void FTShape::InitializeMesh(ComPtr<ID3D11Device>& device, FTDebugMeshData&& meshData)
 {
 	mMesh			   = DBG_NEW Mesh;
 	mMesh->IndexCount  = UINT(meshData.Indices.size());
@@ -145,21 +160,35 @@ void FTShape::InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData&& meshData
 //     mVertexConstantData.model = model.Transpose();
 // }
 
-void FTShape::UpdateConstantBufferView(Camera* camInst)
+void FTShape::UpdateModelMatrix(FTVector3 pos, FTVector3 rot, FTVector3 size)
+{
+	Matrix model =
+		Matrix::CreateScale(size.GetDXVec3()) *
+		Matrix::CreateRotationY(rot.y) *
+		Matrix::CreateRotationX(rot.x) *
+		Matrix::CreateRotationZ(rot.z) *
+		Matrix::CreateTranslation(pos.GetDXVec3());
+	mVertexConstantData.model = model.Transpose();
+}
+
+void FTShape::UpdateViewMatrix(Camera* camInst)
 {
 	mVertexConstantData.view = camInst->GetViewRow().Transpose();
 }
 
-void FTShape::UpdateConstantBufferProjection(Camera* camInst)
+void FTShape::UpdateProjectionMatrix(Camera* camInst)
 {
 	mVertexConstantData.projection = camInst->GetProjRow().Transpose();
 }
 
 void FTShape::InitializeConstantBuffer(ComPtr<ID3D11Device>& device)
 {
-	mVertexConstantData.model	   = DirectX::SimpleMath::Matrix();
-	mVertexConstantData.view	   = DirectX::SimpleMath::Matrix();
-	mVertexConstantData.projection = DirectX::SimpleMath::Matrix();
+	mVertexConstantData.model		 = DirectX::SimpleMath::Matrix();
+	mVertexConstantData.invTranspose = DirectX::SimpleMath::Matrix();
+	mVertexConstantData.view		 = DirectX::SimpleMath::Matrix();
+	mVertexConstantData.projection	 = DirectX::SimpleMath::Matrix();
+
+	mPixelConstantData.IsActive = true;
 
 	D3D11Utils::CreateConstantBuffer(device, mVertexConstantData, mVertexConstantBuffer);
 	D3D11Utils::CreateConstantBuffer(device, mPixelConstantData, mPixelConstantBuffer);

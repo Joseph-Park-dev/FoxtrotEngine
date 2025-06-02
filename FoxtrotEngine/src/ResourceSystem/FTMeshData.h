@@ -24,3 +24,11 @@ struct FTMeshData
 	std::vector<Vertex>	  Vertices;
 	std::vector<uint32_t> Indices;
 };
+
+struct FTDebugMeshData
+{
+	bool IsEmpty() const;
+
+	std::vector<DebugVertex> Vertices;
+	std::vector<uint32_t>	 Indices;
+};

@@ -72,26 +72,21 @@ namespace FTEditorUtils
 
 	inline void DisplayActorSelection(const char* label, Actor*& selected)
 	{
-		EditorScene*		 editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
-		std::vector<Actor*>* editorElems = editorScene->GetActors();
-		FTDS::String* actorNames		 = DBG_NEW FTDS::String[editorScene->GetActorCount() + 1];
-		actorNames[0]					 = "None";
-		size_t idx						 = 1;
-		for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+		EditorScene*				 editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
+		std::vector<EditorElement*>& editorElems = editorScene->GetEditorElements();
+		FTDS::String* actorNames				 = DBG_NEW FTDS::String[editorElems.size() + 1];
+
+		size_t idx = 1;
+		for (EditorElement* ele : editorElems)
 		{
-			if (0 < editorElems[i].size())
-			{
-				for (size_t j = 0; j < editorElems[i].size(); ++j)
-				{
-					actorNames[idx] = (editorElems[i][j])->GetName();
-					++idx;
-				}
-			}
+			actorNames[idx] = ele->GetName();
+			++idx;
 		}
+
 		static int currIdx;
 		DisplayArrayAsCombo(label, actorNames, idx, currIdx);
 		if (0 < currIdx)
-			selected = FIND_EDITOR_ELEMENT(actorNames[currIdx]);
+			selected = FIND_ACTOR(actorNames[currIdx], nullptr);
 		else
 			selected = nullptr;
 		delete[] actorNames;

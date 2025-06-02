@@ -21,6 +21,7 @@
 
 #ifdef FOXTROT_EDITOR
 class EditorElement;
+class EditorScene;
 #endif // FOXTROT_EDITOR
 
 class Transform;
@@ -81,11 +82,8 @@ public:
 	};
 
 public:
-	void AddChild(Actor* actor)
-	{
-		actor->SetParent(this);
-		mChild.emplace_back(actor);
-	}
+	void AddChild(Actor* actor);
+	void RemoveChild(Actor* actor);
 	void AddComponent(Component* component);
 	void RemoveComponent(Component* component);
 	void RemoveAllComponents();
@@ -97,9 +95,11 @@ public:
 	// Creates new Component with values from another Actor.
 	void CopyComponentsFrom(Actor* actor);
 
-	// This method has problems in the current version
-	// : recursive calling
+	// Deep copies all child Actors
 	void CopyChildObjectFrom(Actor* actor);
+
+	// Shallow copies all child Actors.
+	void RefChildObjectFrom(Actor* actor);
 
 public:
 	// Getters/Setters
@@ -171,6 +171,15 @@ public:
 
 	void LoadProperties(std::ifstream& ifs);
 	void LoadComponents(std::ifstream& ifs);
+
+#ifdef FOXTROT_EDITOR
+
+	Actor(EditorScene* scene);
+	Actor(Actor* actor, EditorScene* scene);
+	Actor(FTPremade* premade, EditorScene* scene);
+
+#endif // FOXTROT_EDITOR
+
 };
 
 namespace ChunkKey

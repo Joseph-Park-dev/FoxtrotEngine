@@ -201,6 +201,9 @@ private:
 	// & calls the related functions.
 	void DisplayHierarchyMenu();
 
+	// Displays a single selection in the hierarchy.
+	void DisplaySelection(EditorElement* actor, size_t& index, std::vector<EditorElement*>& actors);
+
 	// Displays FTResources loaded to current project.
 	// & calls the related functions.
 	void DisplayResourceMenu();

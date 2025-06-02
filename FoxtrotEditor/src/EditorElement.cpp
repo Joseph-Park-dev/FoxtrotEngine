@@ -47,7 +47,7 @@ void EditorElement::UpdateUI(bool isPremade)
 			}
 			if (ImGui::BeginTabItem("Components"))
 			{
-				UpdateComponents();
+				UpdateComponentsUI();
 				ImGui::EndTabItem();
 			}
 			if(!isPremade)
@@ -56,6 +56,42 @@ void EditorElement::UpdateUI(bool isPremade)
 		}
 		ImGui::EndChild();
 	}
+}
+
+const bool EditorElement::GetIsFocused() const 
+{
+	return mIsFocused;
+}
+
+const size_t EditorElement::GetHierarchyLevel() const 
+{
+	return mHierarchyLevel;
+}
+
+void EditorElement::SetIsFocused(bool isFocused)
+{
+	mIsFocused = isFocused;
+}
+
+void EditorElement::SetHierarchyLevel(size_t lv)
+{
+	mHierarchyLevel = lv;
+}
+
+void EditorElement::Initialize(FTCore* coreInst)
+{
+	Actor::Initialize(coreInst);
+
+	EditorElement* buf = this;
+	size_t level = 0;
+	while (buf)
+	{
+		if (!buf->GetParent()) // No parent Actors.
+			break;
+		buf = dynamic_cast<EditorElement*>(buf->GetParent());
+		++level;
+	}
+	mHierarchyLevel = level;
 }
 
 void EditorElement::EditorUpdate(float deltaTime)
@@ -70,29 +106,34 @@ void EditorElement::EditorRender(FoxtrotRenderer* renderer)
 		comp->EditorRender(renderer);
 }
 
-EditorElement::EditorElement(EditorScene* scene)
-	: Actor (scene)
-	, mIsFocused(false)
-{}
-
 EditorElement::EditorElement(Actor* actor)
 	: Actor(actor)
 	, mIsFocused(false)
+	, mHierarchyLevel(0)
+{}
+
+EditorElement::EditorElement(EditorScene* scene)
+	: Actor (scene)
+	, mIsFocused(false)
+	, mHierarchyLevel(0)
 {}
 
 EditorElement::EditorElement(Actor* actor, EditorScene* scene)
 	: Actor(actor, scene)
 	, mIsFocused(false)
+	, mHierarchyLevel(0)
 {}
 
 EditorElement::EditorElement(FTPremade* premade, EditorScene* scene)
 	: Actor(premade, scene)
 	, mIsFocused(false)
+	, mHierarchyLevel(0)
 {}
 
 EditorElement::EditorElement(EditorElement* element, EditorScene* scene)
 	: Actor(element, scene)
 	, mIsFocused(false)
+	, mHierarchyLevel(0)
 {
 }
 
@@ -127,7 +168,7 @@ void EditorElement::UpdateActorState()
 	CommandHistory::GetInstance()->UpdateStateValue("Actor State", GetStateRef());
 }
 
-void EditorElement::UpdateComponents()
+void EditorElement::UpdateComponentsUI()
 {
 	if (ImGui::BeginChild(GetName().C_Str()))
 	{

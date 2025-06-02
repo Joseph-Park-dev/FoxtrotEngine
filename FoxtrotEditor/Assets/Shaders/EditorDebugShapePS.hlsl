@@ -15,7 +15,7 @@ cbuffer PixelConstantBuffer : register(b0)
 };
 
 // SV_Target -> 결과가 render target 에 저장
-IndexPSOutput main(SolidPSInput input)
+IndexPSOutput main(DebugPSInput input)
 {
     IndexPSOutput output;
     output.pixelColor = isActive ? input.color : float4(0.0,0.0,0.0,0.0);

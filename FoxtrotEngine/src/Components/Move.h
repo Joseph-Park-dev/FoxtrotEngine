@@ -19,6 +19,7 @@ class FTVector2;
 class Rigidbody2D;
 struct Steering;
 struct b2Vec2;
+struct b2QueryFilter;
 
 enum Controllable
 {
@@ -39,6 +40,7 @@ public:
 	float		 GetForwardSpeed() const { return mForwardSpeed; }
 	float		 GetAngularSpeed() const { return mAngularSpeed; }
 	float		 GetJumpForce() const { return mJumpForce; }
+	bool		 GetIsGrounded() const { return mIsGrounded; }
 	Controllable IsControllable() const { return mIsControllable; }
 
 	void SetForwardSpeed(float speed) { mForwardSpeed = speed; }

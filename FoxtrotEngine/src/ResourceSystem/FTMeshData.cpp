@@ -4,3 +4,8 @@ bool FTMeshData::IsEmpty() const
 {
 	return Vertices.empty() || Indices.empty();
 }
+
+bool FTDebugMeshData::IsEmpty() const
+{
+	return Vertices.empty() || Indices.empty();
+}

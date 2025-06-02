@@ -81,8 +81,8 @@ void UI::SetColorID(uint8_t r, uint8_t g, uint8_t b)
 	mColorID[1] = g;
 	mColorID[2] = b;
 	mColorID[3] = 255.0f;
-	mInputArea->GetPixelConstantData().IndexColor =
-		DirectX::SimpleMath::Vector4((float)r / 255, (float)g / 255, (float)b / 255, 1.0);
+	//mInputArea->GetPixelConstantData().IndexColor =
+	//	DirectX::SimpleMath::Vector4((float)r / 255, (float)g / 255, (float)b / 255, 1.0);
 }
 
 void UI::CheckMouseHover()
@@ -124,10 +124,10 @@ void UI::Initialize(FTCore* ftCoreInst)
 void UI::Update(float deltaTime)
 {
 	Transform* transform = GetOwner()->GetTransform();
-	mInputArea->Update(
+	mInputArea->UpdateVC(
 		transform->GetWorldPosition(),
-		transform->GetRotation(),
-		transform->GetScale(),
+		transform->GetWorldRotation(),
+		transform->GetWorldScale(),
 		Camera::GetInstance());
 }
 

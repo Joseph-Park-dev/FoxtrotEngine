@@ -138,11 +138,13 @@ void Collider2D::OnCollisionExit(Collider2D* other)
 void Collider2D::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
-	FileIOHelper::SaveVector2(ofs, ChunkKey::OFFSET, mOffset);
+	FileIOHelper::SaveVector2(ofs, ChunkKey::OFFSET_POS, mOffset);
+	FileIOHelper::SaveBool(ofs, ChunkKey::SHOW_DEBUG_SHAPE, mShowDebugShape);
 }
 
 void Collider2D::LoadProperties(std::ifstream& ifs)
 {
+	FileIOHelper::LoadBool(ifs, mShowDebugShape);
 	FileIOHelper::LoadVector2(ifs, mOffset);
 	Component::LoadProperties(ifs);
 }
@@ -172,12 +174,10 @@ void Collider2D::UpdateOffsetPos()
 
 void Collider2D::ToggleDebugShape()
 {
-	static bool showDebugShape;
-	ImGui::Checkbox("Show Debug Shape", &showDebugShape);
-	mShowDebugShape = showDebugShape;
+	CommandHistory::GetInstance()->UpdateBoolValue("Show Debug Shape", mShowDebugShape);
 }
 
-bool Collider2D::IsShowingDebugShape()
+bool& Collider2D::IsShowingDebugShape()
 {
 	return mShowDebugShape;
 }

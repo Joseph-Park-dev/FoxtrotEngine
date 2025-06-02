@@ -19,9 +19,9 @@
 #pragma once
 
 #ifdef DLL_EXPORT
-#define FOXTROT_API __declspec(dllexport)
+	#define FOXTROT_API __declspec(dllexport)
 #else
-#define FOXTROT_API __declspec(dllimport)
+	#define FOXTROT_API __declspec(dllimport)
 #endif
 
 #include <cmath>
@@ -131,6 +131,30 @@ extern "C"
 			else if (val == min && val == max)
 				val = min;
 		}
+
+		inline DirectX::SimpleMath::Vector3 QuaternionToEuler(const DirectX::SimpleMath::Quaternion& q)
+		{
+			// Roll (x-axis rotation)
+			float sinr_cosp = 2.f * (q.w * q.x + q.y * q.z);
+			float cosr_cosp = 1.f - 2.f * (q.x * q.x + q.y * q.y);
+			float roll = std::atan2(sinr_cosp, cosr_cosp);
+
+			// Pitch (y-axis rotation)
+			float sinp = 2.f * (q.w * q.y - q.z * q.x);
+			float pitch;
+			// Clamp sinp to the range [-1, 1] to account for numerical errors that might push it out of range.
+			if (std::fabs(sinp) >= 1.f)
+				pitch = std::copysign((float)DirectX::XM_PI / 2.f, sinp);
+			else
+				pitch = std::asin(sinp);
+
+			// Yaw (z-axis rotation)
+			float siny_cosp = 2.f * (q.w * q.z + q.x * q.y);
+			float cosy_cosp = 1.f - 2.f * (q.y * q.y + q.z * q.z);
+			float yaw = std::atan2(siny_cosp, cosy_cosp);
+
+			return DirectX::SimpleMath::Vector3(roll, pitch, yaw);
+		}
 	} // namespace Math
 }
 
@@ -151,6 +175,8 @@ public:
 	FTVector3(FTVector2 vec2);
 	FTVector3(b2Vec2 vec2);
 	FTVector3(DirectX::SimpleMath::Vector3 vec3);
+
+	static void DecomposeMatrix(FTVector3& scale, FTVector3& rot, FTVector3& pos, DirectX::SimpleMath::Matrix& matrix);
 
 	friend std::ofstream& operator<<(std::ofstream& ofs, const FTVector3& vec3)
 	{
@@ -240,8 +266,8 @@ public:
 		return *this;
 	}
 
-	b2Vec2			  GetB2Vec2();
-	const DirectX::XMFLOAT3 GetDXVec3();
+	const b2Vec2			GetB2Vec2() const;
+	const DirectX::XMFLOAT3 GetDXVec3() const;
 
 	// Length squared of vector
 	float LengthSq();

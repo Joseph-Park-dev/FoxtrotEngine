@@ -15,6 +15,10 @@
 #include "pch.h"
 #include "FTMath.h"
 
+using Matrix = DirectX::SimpleMath::Matrix;
+using Vector2 = DirectX::SimpleMath::Vector2;
+using Vector3 = DirectX::SimpleMath::Vector3;
+
 const FTVector2 FTVector2::Zero(0.0f, 0.0f);
 const FTVector2 FTVector2::UnitX(1.0f, 0.0f);
 const FTVector2 FTVector2::UnitY(0.0f, 1.0f);
@@ -100,12 +104,24 @@ FTVector3::FTVector3(DirectX::SimpleMath::Vector3 vec3)
 {
 }
 
-b2Vec2 FTVector3::GetB2Vec2()
+void FTVector3::DecomposeMatrix(
+	FTVector3& scale, FTVector3& rot, FTVector3& pos, DirectX::SimpleMath::Matrix& matrix)
+{
+	DirectX::SimpleMath::Quaternion quat;
+	DirectX::SimpleMath::Vector3 dxScale, dxPosition;
+	matrix.Decompose(dxScale, quat, dxPosition);
+
+	scale = dxScale;
+	rot = Math::QuaternionToEuler(quat);
+	pos = dxPosition;
+}
+
+const b2Vec2 FTVector3::GetB2Vec2() const
 {
 	return b2Vec2{ this->x, this->y };
 }
 
-const DirectX::XMFLOAT3 FTVector3::GetDXVec3()
+const DirectX::XMFLOAT3 FTVector3::GetDXVec3() const
 {
 	return DirectX::XMFLOAT3(this->x, this->y, this->z);
 }

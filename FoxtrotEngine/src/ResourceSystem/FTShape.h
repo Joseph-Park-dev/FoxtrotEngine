@@ -22,13 +22,15 @@ class FoxtrotRenderer;
 class Transform;
 class Camera;
 class FTRectArea;
+struct FTDebugMeshData;
+
 using namespace Microsoft::WRL;
 
 class FTShape
 {
 public:
 	BasicVCData& GetVertexConstantData();
-	IndexPCData& GetPixelConstantData();
+	DebugPCData& GetPixelConstantData();
 	Mesh*		 GetMesh();
 	bool		 GetIsActive() { return mIsActive; }
 
@@ -37,8 +39,8 @@ public:
 public:
 	virtual void Initialize(FoxtrotRenderer* renderer);
 
-	// This should be included in components to EditorUpdate(float)
-	virtual void Update() = 0;
+	virtual void UpdateVC(FTVector3 pos, FTVector3 rot, FTVector3 size, Camera* camInst);
+	virtual void UpdatePC();
 
 	// This is for ShapeActors (e.g. SquareActor)
 	void Render(FoxtrotRenderer* renderer);
@@ -55,12 +57,7 @@ public:
 	virtual ~FTShape();
 
 protected:
-	void InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData&& meshData);
-
-protected:
-	virtual void UpdateConstantBufferModel() = 0;
-	void		 UpdateConstantBufferView(Camera* camInst);
-	void		 UpdateConstantBufferProjection(Camera* camInst);
+	void InitializeMesh(ComPtr<ID3D11Device>& device, FTDebugMeshData&& meshData);
 
 private:
 	Mesh* mMesh;
@@ -68,7 +65,7 @@ private:
 
 private:
 	BasicVCData mVertexConstantData;
-	IndexPCData mPixelConstantData;
+	DebugPCData mPixelConstantData;
 
 	ComPtr<ID3D11Buffer> mVertexConstantBuffer;
 	ComPtr<ID3D11Buffer> mPixelConstantBuffer;
@@ -78,6 +75,10 @@ private:
 	void UpdateConstantBuffers(
 		ComPtr<ID3D11Device>&		 device,
 		ComPtr<ID3D11DeviceContext>& context);
+
+	void UpdateModelMatrix(FTVector3 pos, FTVector3 rot, FTVector3 size);
+	void UpdateViewMatrix(Camera* camInst);
+	void UpdateProjectionMatrix(Camera* camInst);
 };
 
 namespace ChunkKey

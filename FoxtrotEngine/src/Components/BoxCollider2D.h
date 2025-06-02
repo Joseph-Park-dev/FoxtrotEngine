@@ -26,23 +26,22 @@ public:
 	{
 		return "BoxCollider2D";
 	}
-	const FTVector2 GetScale() const;
-	void			SetScale(FTVector2 scale);
+	const FTVector2 GetSize() const;
+	void			SetSize(FTVector2 size);
 
 public:
 	virtual void Initialize(FTCore* coreInstance) override;
 	virtual void Setup() override;
-
-	virtual void CloneTo(Actor* actor) override;
 
 public:
 	BoxCollider2D(
 		Actor* owner,
 		int	   updateOrder = DefaultVal::UPDATE_ORDER);
 	~BoxCollider2D() override;
+	virtual void CloneTo(Actor* actor) override;
 
 private:
-	FTVector2 mScale;
+	FTVector2 mSize;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
@@ -55,12 +54,6 @@ public:
 
 public:
 	void EditorUIUpdate() override;
-	void ToggleDebugShape() override;
-	void UpdateDebugShapes(
-		FTVector3 pos,
-		FTVector3 rot,
-		FTVector3 scale,
-		Camera*	  cameraInst) override;
 
 private:
 	FTRectangle* mDebugRect;

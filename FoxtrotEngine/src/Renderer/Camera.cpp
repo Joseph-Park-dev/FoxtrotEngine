@@ -43,12 +43,12 @@ void Camera::Update(float deltaTime)
 
 void Camera::UpdateViewDirections()
 {
-	float yaw = Math::ToRadians(mYaw);
+	float yaw	= Math::ToRadians(mYaw);
 	float pitch = Math::ToRadians(mPitch);
 
 	Matrix rotMatrix = Matrix::CreateFromYawPitchRoll(yaw, pitch, 0.0f).Transpose();
-	mUpDir = Vector3::Transform(mUpDir, rotMatrix);
-	mFrontDir = Vector3::Transform(mFrontDir, rotMatrix);
+	mUpDir			 = Vector3::Transform(mUpDir, rotMatrix);
+	mFrontDir		 = Vector3::Transform(mFrontDir, rotMatrix);
 
 	mUpDir.Normalize();
 	mFrontDir.Normalize();
@@ -91,8 +91,8 @@ Matrix Camera::GetViewRow()
 	{
 		Transform* transform = mTarget->GetTransform();
 		mPosition			 = (transform->GetWorldPosition() + mOffset).GetDXVec3();
-		mYaw				 = -transform->GetRotation().y;
-		mPitch				 = transform->GetRotation().x;
+		mYaw				 = -transform->GetWorldRotation().y;
+		mPitch				 = transform->GetWorldRotation().x;
 	}
 
 	return Matrix::CreateTranslation(-mPosition) * Matrix::CreateRotationY(-mYaw) * Matrix::CreateRotationX(mPitch);
@@ -217,13 +217,13 @@ void Camera::LoadProperties(std::ifstream& ifs)
 
 	FTVector3 pos = FTVector3::Zero;
 	FileIOHelper::LoadVector3(ifs, pos);
-	mPosition				= pos.GetDXVec3();
+	mPosition				 = pos.GetDXVec3();
 	FTDS::String targetActor = {};
 	FileIOHelper::LoadBasicString(ifs, targetActor);
 
 #ifdef FOXTROT_EDITOR
-	if (!FTDS::StringEqual(targetActor.C_Str(), ChunkKey::NullVal::NULL_OBJECT));
-		mTarget = EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(targetActor.C_Str());
+	if (targetActor.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
+		mTarget = EditorSceneManager::GetInstance()->GetEditorScene()->FindEditorElement(targetActor, nullptr);
 #else
 	if (targetActor != ChunkKey::NullVal::NULL_OBJ)
 		mTarget = SceneManager::GetInstance()->GetCurrentScene()->FindActor(targetActor);
@@ -273,8 +273,8 @@ void Camera::DisplayCameraMenu()
 	/*float yaw	= mYaw;
 	float pitch = mPitch;*/
 
-	//CommandHistory::GetInstance()->UpdateFloatValue("Look-At Yaw", yaw, LOOKAT_MODSPEED);
-	//CommandHistory::GetInstance()->UpdateFloatValue("Look-At Pitch", mPitch, LOOKAT_MODSPEED);
+	// CommandHistory::GetInstance()->UpdateFloatValue("Look-At Yaw", yaw, LOOKAT_MODSPEED);
+	// CommandHistory::GetInstance()->UpdateFloatValue("Look-At Pitch", mPitch, LOOKAT_MODSPEED);
 
 	/*if (yaw != mYaw || pitch != mPitch)
 	{
@@ -283,24 +283,17 @@ void Camera::DisplayCameraMenu()
 	}*/
 
 	// Set Target
-	EditorScene*		 editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
-	std::vector<Actor*>* editorElems = editorScene->GetActors();
-	FTDS::String* actorNames			 = DBG_NEW FTDS::String[editorScene->GetActorCount() + 1];
-	actorNames[0]					 = "None";
-	size_t		  idx				 = 1;
+	EditorScene*				editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
+	std::vector<EditorElement*> editorElems;
+	editorElems = EditorSceneManager::GetInstance()->GetEditorScene()->GetEditorElements();
+	FTDS::String* actorNames = DBG_NEW FTDS::String[editorElems.size() + 1];
+	actorNames[0]			 = "None";
+	size_t		  idx		 = 1;
 	static size_t currIdx;
 
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
-	{
-		if (0 < editorElems[i].size())
-		{
-			for (size_t j = 0; j < editorElems[i].size(); ++j)
-			{
-				actorNames[idx] = dynamic_cast<EditorElement*>(editorElems[i][j])->GetName();
-				++idx;
-			}
-		}
-	}
+	for (size_t i = 0; i < editorElems.size(); ++i)
+		actorNames[i] = editorElems.at(i)->GetName();
+
 	const char* comboPreview = actorNames[currIdx].C_Str();
 	if (ImGui::BeginCombo(ChunkKey::TARGET_ACTOR, comboPreview))
 	{
@@ -312,7 +305,7 @@ void Camera::DisplayCameraMenu()
 				if (currIdx == 0)
 					mTarget = nullptr;
 				else
-					mTarget = editorScene->FindActor(actorNames[currIdx]);
+					mTarget = editorScene->FindEditorElement(actorNames[currIdx], nullptr);
 			}
 		}
 		ImGui::EndCombo();

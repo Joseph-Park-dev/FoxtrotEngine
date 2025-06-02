@@ -120,9 +120,7 @@ void EditorLayer::DisplayFrameRate()
 {
 	ImGui::Begin("Frame Rate");
 	// Display current frame rate
-	ImGui::Text("Average %.3f ms/frame (%.1f FPS)",
-		1000.0f / ImGui::GetIO().Framerate,
-		ImGui::GetIO().Framerate);
+	ImGui::Text("Average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	ImGui::End();
 }
 
@@ -203,7 +201,7 @@ void EditorLayer::DisplayMainMenuBar()
 
 		DisplayManagersMenu();
 
-		if (ImGui::Button("New Game Object"))
+		if (ImGui::Button("New Empty Actor"))
 			EditorSceneManager::GetInstance()->GetEditorScene()->AddEditorElement();
 
 		if (ImGui::Button("Play"))
@@ -214,12 +212,12 @@ void EditorLayer::DisplayMainMenuBar()
 				{
 					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK.C_Str());
 					DebugShapes::GetInstance()->DeleteAll();
-					//EditorResourceManager::GetInstance()->DeleteAll();
+					// EditorResourceManager::GetInstance()->DeleteAll();
 					UIManager::GetInstance()->Reset();
 					CollisionManager::GetInstance()->Reset();
-					//LightManager::GetInstance()->Reset(FTCoreEditor::GetInstance()->GetGameRenderer());
+					// LightManager::GetInstance()->Reset(FTCoreEditor::GetInstance()->GetGameRenderer());
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
-					//EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+					// EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK.C_Str());
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(true);
 				}
@@ -237,11 +235,11 @@ void EditorLayer::DisplayMainMenuBar()
 				{
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(false);
 					DebugShapes::GetInstance()->DeleteAll();
-					//EditorResourceManager::GetInstance()->DeleteAll();
+					// EditorResourceManager::GetInstance()->DeleteAll();
 					CollisionManager::GetInstance()->Reset();
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
-					//EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
-					//EditorResourceManager::GetInstance()->LoadAllResourcesInAsset();
+					// EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+					// EditorResourceManager::GetInstance()->LoadAllResourcesInAsset();
 					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK.C_Str());
 				}
 			}
@@ -322,44 +320,87 @@ void EditorLayer::DisplayHierarchyMenu()
 	ImGui::Begin(menuID.c_str());
 	if (ImGui::BeginListBox("Hierarchy", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
 	{
-		EditorScene* scene	 = EditorSceneManager::GetInstance()->GetEditorScene();
-		size_t		 eleSize = scene->GetActorCount();
-
-		std::vector<Actor*> actorsRow;
-		actorsRow.reserve(eleSize);
-
-		for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
+		std::vector<EditorElement*>& actorsRow = 
+			EditorSceneManager::GetInstance()->GetEditorScene()->GetEditorElements();
+		if (0 < actorsRow.size())
 		{
-			size_t size = scene->GetActorGroup(i).size();
-			if (0 < size)
+			EditorSceneManager::GetInstance()->SortEditorElements(actorsRow);
+
+			// Display EditorElements as a list of selections.
+			size_t index = 0;
+			while (index < actorsRow.size())
 			{
-				for (int j = 0; j < size; ++j)
-					actorsRow.push_back(scene->GetActorGroup(i)[j]);
+				EditorElement* selection = actorsRow.at(index);
+				DisplaySelection(selection, index, actorsRow);
+				++index;
 			}
 		}
 
-		for (size_t i = 0; i < eleSize; ++i)
-		{
-			if (ImGui::Selectable(actorsRow.at(i)->GetName().C_Str(), mActorNameIdx == i))
-			{
-				IntEditCommand* command = DBG_NEW IntEditCommand(mActorNameIdx);
-				command->SetNextVal(i);
-				CommandHistory::GetInstance()->AddCommand(command);
-
-				mActorNameIdx = i;
-
-				EditorSceneManager::GetInstance()->GetEditorScene()->UnfocusEditorElements();
-				Actor* actor		  = actorsRow[mActorNameIdx];
-				mFocusedEditorElement = dynamic_cast<EditorElement*>(actor);
-				mFocusedEditorElement->SetIsFocused(true);
-			}
-		}
 		ImGui::EndListBox();
 	}
 
 	if (mDuplicateKeyPressed)
 		EditorSceneManager::GetInstance()->GetEditorScene()->AddEditorElement(mFocusedEditorElement);
 	ImGui::End();
+}
+
+void EditorLayer::DisplaySelection(EditorElement* element, size_t& index, std::vector<EditorElement*>& actors)
+{
+	FTDS::String indentedName = FTDS::String(element->GetHierarchyLevel(), '\t');
+	indentedName.Append(element->GetName());
+
+	if (ImGui::Selectable(indentedName.C_Str(), mActorNameIdx == index))
+	{
+		mActorNameIdx = index;
+
+		IntEditCommand* command = DBG_NEW IntEditCommand(mActorNameIdx);
+		command->SetNextVal(mActorNameIdx);
+		CommandHistory::GetInstance()->AddCommand(command);
+
+		EditorSceneManager::GetInstance()->GetEditorScene()->UnfocusEditorElements();
+		mFocusedEditorElement = element;
+		mFocusedEditorElement->SetIsFocused(true);
+	}
+
+	if (ImGui::BeginDragDropSource())
+	{
+		ImGui::SetDragDropPayload("DND_DEMO_CELL", &index, sizeof(size_t));
+		ImGui::EndDragDropSource();
+	}
+
+	// Assign the actor as a child to an another.
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_CELL"))
+		{
+			IM_ASSERT(payload->DataSize == sizeof(size_t));
+			size_t payload_n = *(const size_t*)payload->Data;
+
+			EditorElement* child = actors.at(payload_n);
+			if (child->GetParent() == element)
+			{
+				element->RemoveChild(child);
+				child->SetHierarchyLevel(element->GetHierarchyLevel());
+			}
+			else
+			{
+				element->AddChild(child);
+				child->SetHierarchyLevel(element->GetHierarchyLevel() + 1);
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	// Recurse to display child Actors in the list.
+	if (0 < element->GetChildActors().size())
+	{
+		for (Actor* child : element->GetChildActors())
+		{
+			EditorElement* childElem = static_cast<EditorElement*>(child);
+			++index; // Addition for the actor itself.
+			DisplaySelection(childElem, index, actors);
+		}
+	}
 }
 
 void EditorLayer::DisplayResourceMenu()
@@ -383,41 +424,24 @@ void EditorLayer::DisplayInspectorMenu()
 	std::string menuID = "Inspector";
 	ImGui::Begin(menuID.c_str());
 	EditorScene* scene	 = EditorSceneManager::GetInstance()->GetEditorScene();
-	size_t		 eleSize = scene->GetActorCount();
-	if (0 < eleSize)
+	if (0 < scene->GetEditorElements().size())
 	{
-		std::vector<Actor*> actorsRow;
-		actorsRow.reserve(eleSize);
-
-		for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
+		if (mFocusedEditorElement)
 		{
-			size_t size = scene->GetActorGroup(i).size();
-			if (0 < size)
+			mFocusedEditorElement->UpdateUI(false);
+			if (mDeleteKeyPressed)
 			{
-				for (int j = 0; j < size; ++j)
-					actorsRow.push_back(scene->GetActorGroup(i)[j]);
-			}
-		}
+				// Delete game object, and erase the pointed from std::vector
+				ActorGroup group = mFocusedEditorElement->GetActorGroup();
 
-		if (mActorNameIdx < actorsRow.size())
-		{
-			Actor*		   actor = actorsRow[mActorNameIdx];
-			EditorElement* ele	 = dynamic_cast<EditorElement*>(actor);
-			if (ele->GetIsFocused())
-			{
-				ele->UpdateUI(false);
-				if (mDeleteKeyPressed)
-				{
-					// Delete game object, and erase the pointed from std::vector
-					ActorGroup group = ele->GetActorGroup();
-
-					std::vector<Actor*>::iterator iter =
-						std::find(scene->GetActorGroup(group).begin(), scene->GetActorGroup(group).end(), actor);
-					scene->GetActorGroup(group).erase(iter);
-					if (0 < mActorNameIdx)
-						mActorNameIdx = scene->GetActorCount() - 1;
-					delete ele;
-				}
+				std::vector<EditorElement*>::iterator iter =
+					std::find(
+						scene->GetEditorElements().begin(),
+						scene->GetEditorElements().end(),
+						mFocusedEditorElement);
+				scene->GetEditorElements().erase(iter);
+				if (0 < mActorNameIdx)
+					mActorNameIdx = scene->GetEditorElements().size() - 1;
 			}
 		}
 	}
@@ -459,7 +483,7 @@ void EditorLayer::DisplayInfoMessage()
 			if (mFocusedEditorElement)
 			{
 				FTDS::String msg;
-				msg.Assign("Create Premade with name : ",  mFocusedEditorElement->GetName().C_Str(), "?");
+				msg.Assign("Create Premade with name : ", mFocusedEditorElement->GetName().C_Str(), "?");
 				PopUpInfo("Create Premade", msg.C_Str(), onConfirm);
 			}
 		}
@@ -648,7 +672,7 @@ void EditorLayer::Open(std::filesystem::path& path)
 	EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 	PATH_CHUNK.Assign(path.string().c_str());
 	EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK.C_Str());
-	//LightManager::GetInstance()->Reset(FTCoreEditor::GetInstance()->GetGameRenderer());
+	// LightManager::GetInstance()->Reset(FTCoreEditor::GetInstance()->GetGameRenderer());
 	SET_CHUNK_IS_SAVED(true)
 }
 

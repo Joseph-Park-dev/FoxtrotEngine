@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -9,7 +9,7 @@
 /// A holder object that has the values of an Actor.
 /// This will be on Foxtrot Editor, and the user can modify its values.
 /// Values of EditorElements will be saved as an ActorData in .Chunk file,
-/// and will be used to create Actors in the produced game. 
+/// and will be used to create Actors in the produced game.
 /// </summary>
 
 #pragma once
@@ -27,13 +27,17 @@ class FTPremade;
 #define ACTORNAME_MAX 100
 
 class EditorElement :
-    public Actor
+	public Actor
 {
 public:
-	bool GetIsFocused() { return mIsFocused; }
-	void SetIsFocused(bool isFocused) { mIsFocused = isFocused; }
+	const bool	 GetIsFocused() const;
+	const size_t GetHierarchyLevel() const;
+
+	void SetIsFocused(bool isFocused);
+	void SetHierarchyLevel(size_t lv);
 
 public:
+	void Initialize(FTCore* coreInst) override;
 	// Updates editor specific features -> this will be omitted from the produced game.
 	void EditorUpdate(float deltaTime);
 
@@ -83,14 +87,15 @@ public:
 	EditorElement(EditorElement* element, EditorScene* scene);
 
 private:
-	bool mIsFocused;  // Is this item clicked on Foxtrot Editor's hierarchy menu?
+	bool   mIsFocused;		// Is this item clicked on Foxtrot Editor's hierarchy menu?
+	size_t mHierarchyLevel; // How many parent Actors are there for this object?
 
 private:
 	void UpdateActorName();
 	void UpdateActorGroup();
 	void UpdateActorState();
 
-	void UpdateComponents();
+	void UpdateComponentsUI();
 	void DisplayCompSelectionPopup();
 
 	void UpdateMakePrefabBtn();

@@ -15,7 +15,9 @@
 
 #include "EditorScene.h"
 
-#define FIND_EDITOR_ELEMENT(name) EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(name)
+#ifdef FOXTROT_EDITOR
+#define FIND_ACTOR(name, filter) EditorSceneManager::GetInstance()->GetEditorScene()->FindEditorElement(name, filter)
+#endif
 
 class EditorSceneManager
 {
@@ -37,14 +39,19 @@ public:
 	// Additional editor features especially for debugging purpose.
 	void EditorRender(FoxtrotRenderer* renderer);
 
-	void ProcessEvent();
-
 	// Deletes all objects in a Scene.
 	void DeleteAll();
+
+	// Sort the vector of EditorElements.
+	// Low hierarchy level first.
+	void SortEditorElements(std::vector<EditorElement*>& elements);
 
 public:
 	EditorScene* GetEditorScene();
 
 private:
 	EditorScene* mEditorScene;
+
+private:
+	void PushRowOfChildActors(EditorElement* actor, std::vector<EditorElement*>& dest);
 };

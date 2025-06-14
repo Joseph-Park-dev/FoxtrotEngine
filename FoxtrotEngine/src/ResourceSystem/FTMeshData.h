@@ -30,5 +30,5 @@ struct FTDebugMeshData
 	bool IsEmpty() const;
 
 	std::vector<DebugVertex> Vertices;
-	std::vector<uint32_t>	 Indices;
+	//std::vector<uint32_t>	 Indices;
 };

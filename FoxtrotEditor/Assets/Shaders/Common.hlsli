@@ -152,8 +152,14 @@ struct DebugVSInput
     float3 color : COLOR0;
 };
 
+struct DebugGSIN
+{
+    float4 pos : SV_POSITION;
+    float4 color : COLOR;
+};
+
 struct DebugPSInput
 {
-    float4 pos      : SV_POSITION;
-    float4 color    : COLOR;
+    float4 pos : SV_POSITION;
+    float4 color : COLOR;
 };

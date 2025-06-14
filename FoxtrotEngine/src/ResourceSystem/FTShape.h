@@ -23,16 +23,18 @@ class Transform;
 class Camera;
 class FTRectArea;
 struct FTDebugMeshData;
+struct GSCBufferData;
 
 using namespace Microsoft::WRL;
 
 class FTShape
 {
 public:
-	BasicVCData& GetVertexConstantData();
-	DebugPCData& GetPixelConstantData();
-	Mesh*		 GetMesh();
-	bool		 GetIsActive() { return mIsActive; }
+	BasicVCData&   GetVertexConstantData();
+	GSCBufferData& GetGSCData();
+	DebugPCData&   GetPixelConstantData();
+	Mesh*		   GetMesh();
+	bool		   GetIsActive() { return mIsActive; }
 
 	void SetIsActive(bool val) { mIsActive = val; }
 
@@ -64,10 +66,12 @@ private:
 	bool  mIsActive;
 
 private:
-	BasicVCData mVertexConstantData;
-	DebugPCData mPixelConstantData;
+	BasicVCData	  mVertexConstantData;
+	GSCBufferData mGSCData;
+	DebugPCData	  mPixelConstantData;
 
 	ComPtr<ID3D11Buffer> mVertexConstantBuffer;
+	ComPtr<ID3D11Buffer> mGSCBuffer;
 	ComPtr<ID3D11Buffer> mPixelConstantBuffer;
 
 private:

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -21,13 +21,6 @@ class DebugShapes
 	SINGLETON(DebugShapes)
 
 public:
-	void Initialize(FoxtrotRenderer* renderer);
-
-	// Batch renders shapes. 
-	// It is not necessary to render shapes manually from the Components
-	void Render(FoxtrotRenderer* renderer);
-
-public:
 	// Adds the created shape to the std::vector.
 	void AddShape(FTShape* shape);
 
@@ -39,16 +32,31 @@ public:
 	// Do not delete debug shapes manually in Components.
 	void DeleteAll();
 
-private:
-	std::vector<FTShape*>	mShapes;
+public:
+	ComPtr<ID3D11VertexShader>&	  GetVS();
+	ComPtr<ID3D11GeometryShader>& GetGSSquare();
+	ComPtr<ID3D11PixelShader>&	  GetPS();
+	ComPtr<ID3D11InputLayout>&	  GetInputLayout();
 
-	std::wstring			mVertexShaderPath;
-	std::wstring			mPixelShaderPath;
+public:
+	void Initialize(FoxtrotRenderer* renderer);
+
+	// Batch renders shapes.
+	// It is not necessary to render shapes manually from the Components
+	void Render(FoxtrotRenderer* renderer);
 
 private:
-	ComPtr<ID3D11VertexShader>	mVertexShader;
-	ComPtr<ID3D11PixelShader>	mPixelShader;
-	ComPtr<ID3D11InputLayout>	mInputLayout;
+	std::vector<FTShape*> mShapes;
+
+	std::wstring mVSPath;
+	std::wstring mGSPath;
+	std::wstring mPSPath;
+
+private:
+	ComPtr<ID3D11VertexShader>	 mVS;
+	ComPtr<ID3D11GeometryShader> mGSSquare;
+	ComPtr<ID3D11PixelShader>	 mPS;
+	ComPtr<ID3D11InputLayout>	 mInputLayout;
 
 private:
 	void CreateShaders(ComPtr<ID3D11Device>& device);

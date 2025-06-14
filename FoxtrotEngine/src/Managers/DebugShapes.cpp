@@ -11,8 +11,9 @@
 #include "Renderer/D3D11Utils.h"
 
 DebugShapes::DebugShapes()
-	: mVertexShaderPath(L"./Assets/Shaders/DebugShapeVS.hlsl")
-	, mPixelShaderPath(L"./Assets/Shaders/DebugShapePS.hlsl")
+	: mVSPath(L"./Assets/Shaders/DebugShapeVS.hlsl")
+	, mGSPath(L"./Assets/Shaders/DebugShapeGS.hlsl")
+	, mPSPath(L"./Assets/Shaders/DebugShapePS.hlsl")
 {
 }
 
@@ -34,13 +35,7 @@ void DebugShapes::Render(FoxtrotRenderer* renderer)
 	if (mShapes.size() < 1)
 		return;
 	for (FTShape* shape : mShapes)
-	{
-		shape->Render(
-			renderer,
-			mVertexShader,
-			mPixelShader,
-			mInputLayout);
-	}
+		shape->Render(renderer);
 }
 
 void DebugShapes::AddShape(FTShape* shape)
@@ -67,6 +62,11 @@ void DebugShapes::DeleteAll()
 	mShapes.clear();
 }
 
+ComPtr<ID3D11VertexShader>&	  DebugShapes::GetVS() { return mVS; }
+ComPtr<ID3D11GeometryShader>& DebugShapes::GetGSSquare() { return mGSSquare; }
+ComPtr<ID3D11PixelShader>&	  DebugShapes::GetPS() { return mPS; }
+ComPtr<ID3D11InputLayout>&	  DebugShapes::GetInputLayout() { return mInputLayout; }
+
 void DebugShapes::CreateShaders(ComPtr<ID3D11Device>& device)
 {
 	std::vector<D3D11_INPUT_ELEMENT_DESC> basicInputElements = {
@@ -75,8 +75,11 @@ void DebugShapes::CreateShaders(ComPtr<ID3D11Device>& device)
 	};
 
 	D3D11Utils::CreateVertexShaderAndInputLayout(
-		device, mVertexShaderPath, basicInputElements, mVertexShader, mInputLayout);
+		device, mVSPath, basicInputElements, mVS, mInputLayout);
+
+	D3D11Utils::CreateGeometryShader(
+		device, mGSPath, mGSSquare);
 
 	D3D11Utils::CreatePixelShader(
-		device, mPixelShaderPath, mPixelShader);
+		device, mPSPath, mPS);
 }

@@ -11,7 +11,7 @@ using Matrix = DirectX::SimpleMath::Matrix;
 void FTRectangle::Initialize(FoxtrotRenderer* renderer)
 {
     FTShape::Initialize(renderer);
-    InitializeMesh(renderer->GetDevice(), GeometryGenerator::MakeDebugSquare(FTVector3(1.f,0.f,0.f)));
+    InitializeMesh(renderer->GetDevice(), GeometryGenerator::MakeDebugPoint(FTVector3(1.f,0.f,0.f)));
 }
 
 FTRectangle::FTRectangle()

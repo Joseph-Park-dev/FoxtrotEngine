@@ -7,5 +7,5 @@ bool FTMeshData::IsEmpty() const
 
 bool FTDebugMeshData::IsEmpty() const
 {
-	return Vertices.empty() || Indices.empty();
+	return Vertices.empty(); // || Indices.empty();
 }

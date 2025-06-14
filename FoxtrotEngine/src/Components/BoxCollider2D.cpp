@@ -59,7 +59,6 @@ void BoxCollider2D::Setup()
 
 			FTVector2 polygonScale = mSize * FTVector2(GetOwner()->GetTransform()->GetWorldScale());
 			b2Polygon polygon	   = b2MakeBox(polygonScale.x / 2, polygonScale.y / 2);
-
 			GetShapeID() = b2CreatePolygonShape(rb->GetBodyID(), &polygonShapeDef, &polygon);
 			CollisionManager::GetInstance()->RegisterCollider(GetShapeID().index1, this);
 		}
@@ -126,6 +125,8 @@ void BoxCollider2D::EditorUpdate(float deltaTime)
 			transform->GetWorldScale().y * mSize.y,
 			1.f);
 		mDebugRect->UpdateVC(pos, rot, size, EditorCamera::GetInstance());
+		mDebugRect->GetGSCData().size.x = size.x;
+		mDebugRect->GetGSCData().size.y = size.y;
 	}
 	mDebugRect->UpdatePC();
 }

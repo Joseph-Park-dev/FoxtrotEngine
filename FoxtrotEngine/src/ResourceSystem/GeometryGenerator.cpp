@@ -131,35 +131,15 @@ FTMeshData GeometryGenerator::MakeSquare(float scale)
 	return meshData;
 }
 
-FTDebugMeshData GeometryGenerator::MakeDebugSquare(FTVector3 color)
+FTDebugMeshData GeometryGenerator::MakeDebugPoint(FTVector3 color)
 {
-	std::vector<Vector3> positions;
-	std::vector<Vector3> colors;
-
-	positions.reserve(4);
-	colors.reserve(4);
-
-	positions.push_back(Vector3(-0.5f, 0.5f, 0.0f));
-	positions.push_back(Vector3(0.5f, 0.5f, 0.0f));
-	positions.push_back(Vector3(0.5f, -0.5f, 0.0f));
-	positions.push_back(Vector3(-0.5f, -0.5f, 0.0f));
-
-	colors.push_back(Vector3(color.GetDXVec3()));
-	colors.push_back(Vector3(color.GetDXVec3()));
-	colors.push_back(Vector3(color.GetDXVec3()));
-	colors.push_back(Vector3(color.GetDXVec3()));
-
 	FTDebugMeshData meshData;
-	for (size_t i = 0; i < positions.size(); ++i)
-	{
-		DebugVertex v;
-		v.position = positions[i];
-		v.color = colors[i];
-		meshData.Vertices.push_back(v);
-	}
-	meshData.Indices = {
-		0, 1, 2, 0, 2, 3, // 앞면
-	};
+
+	DebugVertex vertex;
+	vertex.position = Vector3::Zero;
+	vertex.color = color.GetDXVec3();
+
+	meshData.Vertices.push_back(vertex);
 
 	return meshData;
 }

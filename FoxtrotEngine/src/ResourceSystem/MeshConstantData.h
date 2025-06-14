@@ -33,6 +33,13 @@ struct BasicVCData
 };
 static_assert((sizeof(BasicVCData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
 
+struct SpineMeshVCData
+{
+	std::vector<DirectX::SimpleMath::Matrix> transformation;
+};
+
+static_assert((sizeof(SpineMeshVCData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
+
 struct GSCBufferData
 {
 	Vector2 size;

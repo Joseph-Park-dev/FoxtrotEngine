@@ -25,6 +25,14 @@ struct FTMeshData
 	std::vector<uint32_t> Indices;
 };
 
+struct FTIndexedMeshData
+{
+	bool IsEmpty() const;
+
+	std::vector<IndexedVertex> Vertices;
+	std::vector<uint32_t>	   Indices;
+};
+
 struct FTDebugMeshData
 {
 	bool IsEmpty() const;

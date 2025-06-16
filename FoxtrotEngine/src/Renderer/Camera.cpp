@@ -120,6 +120,11 @@ Vector3 Camera::GetEyePos()
 	return mPosition;
 }
 
+FTVector2& Camera::GetResolution() const
+{
+	return mRenderWindow->GetRenderArea()->GetSize();
+}
+
 Viewtype Camera::GetViewType()
 {
 	return mViewType;

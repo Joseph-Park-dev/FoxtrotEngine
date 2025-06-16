@@ -52,6 +52,7 @@ public:
 	Matrix	GetViewRow();
 	Matrix	GetProjRow();
 	Vector3 GetEyePos();
+	FTVector2& GetResolution() const;
 
 	Viewtype GetViewType();
 	float	 GetProjFOVAngleY();
@@ -97,6 +98,7 @@ private:
 	float mProjFOVAngleY;
 	float mNearZ, mFarZ;
 	float mAspect;
+	FTVector2 mResolution;
 	float mPixelsPerUnit; // Used for pixel-perfect calculation.
 
 	Viewtype mViewType;

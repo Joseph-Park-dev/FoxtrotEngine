@@ -4,6 +4,7 @@
 class FTRectangle : public FTShape
 {
 public:
+	// Don't forget to DebugShape::AddShape() after this!
 	virtual void Initialize(FoxtrotRenderer* renderer) override;
 
 public:

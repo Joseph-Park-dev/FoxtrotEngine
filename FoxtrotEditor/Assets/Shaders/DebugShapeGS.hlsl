@@ -13,40 +13,6 @@ cbuffer ShapeConst : register(b1)
     float2 dummy;
 }
 
-//struct Line
-//{
-//    float2 pos0;
-//    float2 pos1;
-//};
-
-//struct WeightedLine
-//{
-//    Line upper;
-//    Line lower;
-//};
-
-//WeightedLine GetWeightedLine(float4 pos0, float4 pos1)
-//{
-//    float2 direction = normalize(pos1.xy - pos0.xy);
-//    float2 perp = float2(-direction.y, direction.x) * (lineWidth * 0.5);
-    
-//    WeightedLine lineSeg;
-    
-//    lineSeg.upper.pos0 = pos0;
-//    lineSeg.upper.pos1 = pos1;
-    
-//    lineSeg.lower.pos0 = pos0;
-//    lineSeg.lower.pos1 = pos1;
-
-//    lineSeg.upper.pos0 -= perp;
-//    lineSeg.upper.pos1 -= perp;
-
-//    lineSeg.lower.pos0 += perp;
-//    lineSeg.lower.pos1 += perp;
-    
-//    return lineSeg;
-//}
-
 [maxvertexcount(5)]
 void main(
 	point DebugGSIN input[1] : SV_POSITION,

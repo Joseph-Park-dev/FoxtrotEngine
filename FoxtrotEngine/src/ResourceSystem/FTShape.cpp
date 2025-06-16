@@ -52,14 +52,11 @@ void FTShape::Initialize(FoxtrotRenderer* renderer)
 	InitializeConstantBuffer(renderer->GetDevice());
 }
 
-void FTShape::UpdateVC(Transform* transform, Camera* camInst)
+void FTShape::UpdateVC(Matrix& model, Camera* camInst)
 {
 	if (!mMesh)
 		return;
-
-	Matrix&& modelMat = Matrix();
-	modelMat		  = transform->GetMatrixWorld();
-	mVSCData.model	  = modelMat.Transpose();
+	mVSCData.model = model.Transpose();
 }
 
 void FTShape::UpdateGC(Camera* camInst)

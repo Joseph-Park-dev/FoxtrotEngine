@@ -40,7 +40,7 @@ public:
 
 public:
 	virtual void Initialize(FoxtrotRenderer* renderer);
-	void		 UpdateVC(Transform* transform, Camera* camInst);
+	void		 UpdateVC(Matrix& model, Camera* camInst);
 	void		 UpdateGC(Camera* camInst);
 	virtual void UpdatePC();
 

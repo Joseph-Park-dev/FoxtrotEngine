@@ -50,10 +50,11 @@ void Rigidbody2D::Initialize(FTCore* coreInstance)
 void Rigidbody2D::LateUpdate(float deltaTime)
 {
 	// Apply Position
-	b2Vec2 position = b2Body_GetPosition(mBodyID);
-	float  z		= GetOwner()->GetTransform()->GetWorldPosition().z;
+	FTVector3 worldPos = GetOwner()->GetTransform()->GetWorldPosition();
+	b2Vec2	  bodyPos  = b2Body_GetPosition(mBodyID);
+	float	  z		   = worldPos.z;
 
-	FTVector3 updatedPos = FTVector3(position.x, position.y, z);
+	FTVector3 updatedPos = FTVector3(bodyPos.x, bodyPos.y, z);
 	GetOwner()->GetTransform()->SetWorldPosition(updatedPos);
 
 	// Apply rotation.

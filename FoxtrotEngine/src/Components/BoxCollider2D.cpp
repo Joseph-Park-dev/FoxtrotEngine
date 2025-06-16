@@ -38,6 +38,7 @@ void BoxCollider2D::Initialize(FTCore* coreInstance)
 #ifdef FOXTROT_EDITOR
 	mDebugRect = DBG_NEW FTRectangle;
 	mDebugRect->Initialize(coreInstance->GetGameRenderer());
+	DebugShapes::GetInstance()->AddShape(mDebugRect);
 	if (!IsShowingDebugShape())
 		mDebugRect->SetIsActive(false);
 #endif // FOXTROT_EDITOR
@@ -117,16 +118,11 @@ void BoxCollider2D::EditorUpdate(float deltaTime)
 	if (IsShowingDebugShape())
 	{
 		Transform* transform = GetOwner()->GetTransform();
-		FTVector3  pos		 = transform->GetWorldPosition();
-		// pos					 = pos * FTVector3(1.f, -1.f, 1.f);
-		FTVector3 rot  = transform->GetWorldRotation();
-		FTVector3 size = FTVector3(
-			transform->GetWorldScale().x * mSize.x,
-			transform->GetWorldScale().y * mSize.y,
-			1.f);
-		mDebugRect->UpdateVC(pos, rot, size, EditorCamera::GetInstance());
-		mDebugRect->GetGSCData().size.x = size.x;
-		mDebugRect->GetGSCData().size.y = size.y;
+
+		mDebugRect->UpdateVC(transform, Camera::GetInstance());
+		mDebugRect->UpdateGC(Camera::GetInstance());
+		mDebugRect->GetGSCData().size.x = mSize.x;
+		mDebugRect->GetGSCData().size.y = mSize.y;
 	}
 	mDebugRect->UpdatePC();
 }

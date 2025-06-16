@@ -19,6 +19,9 @@ class EditorCamera :
 	SINGLETON(EditorCamera)
 
 public:
+	FTRectangle* GetDebugRect();
+
+public:
 	virtual void ProcessInput(FTInputDevice* inputDevice);
 	virtual void Update(float deltaTime) override;
 
@@ -28,6 +31,8 @@ private:
 	float mPanValModSpeed;
 	float mZoomValModSpeed;
 	float mZoomDelta;
+
+	FTRectangle* mDebugRect;
 
 private:
 	void PanLocalXY(ImVec2 vec2);

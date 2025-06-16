@@ -125,8 +125,9 @@ void UI::Initialize(FTCore* ftCoreInst)
 void UI::Update(float deltaTime)
 {
 	Transform* transform = GetOwner()->GetTransform();
+	Matrix mat = transform->GetMatrixWorld();
 	mInputArea->UpdateVC(
-		transform,
+		mat,
 		Camera::GetInstance());
 }
 

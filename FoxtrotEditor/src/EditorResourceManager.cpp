@@ -63,6 +63,13 @@ void EditorResourceManager::LoadAllResourcesInAsset()
 
 	LoadMaterials();
 
+	FTBasicMeshGroup* meshGroup = DBG_NEW FTBasicMeshGroup;
+	meshGroup->Initialize(
+		{ GeometryGenerator::MakeSquare(1.0f, FTVector3(0.f, 0.f, 1.f)) },
+		GetRenderer()->GetDevice(), 
+		GetRenderer()->GetContext());
+	GetMeshGroups()->Insert(ChunkKey::PRIMITIVE_SQUARE_BLUE, meshGroup);
+
 	ProcessResources(FTCoreEditor::GetInstance(), GetPremades());
 }
 

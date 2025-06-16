@@ -49,19 +49,16 @@ void FTBasicMeshGroup::CalcVCData(Transform* transform, Camera* camInst)
 	invTransposeMat = invTransposeMat.Transpose().Invert();
 
 	// View Transformation
-	Matrix&& viewMat  = camInst->GetViewRow();
+	Matrix&& viewMat = camInst->GetViewRow();
 	Vector3	 eyeWorld = Vector3::Transform(Vector3(0.0f), viewMat.Invert());
 
 	// Project Transformation
 	Matrix&& projMat = std::move(camInst->GetProjRow());
 
-	for (Mesh* mesh : mMeshes)
-	{
-		mVertexConstData.model		  = modelMat.Transpose();
-		mVertexConstData.view		  = viewMat.Transpose();
-		mVertexConstData.projection	  = projMat.Transpose();
-		mVertexConstData.invTranspose = std::move(invTransposeMat);
-	}
+	mVertexConstData.model = modelMat.Transpose();
+	mVertexConstData.view = viewMat.Transpose();
+	mVertexConstData.projection = projMat.Transpose();
+	mVertexConstData.invTranspose = std::move(invTransposeMat);
 }
 
 void FTBasicMeshGroup::UpdateConstantBuffers(
@@ -125,12 +122,10 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer)
 				0, mesh->PixelConstantBuffers.size(), mesh->PixelConstantBuffers.data()->GetAddressOf());
 		}
 
-		context->IASetInputLayout(renderer->GetTextureInputLayout().Get());
+		context->IASetInputLayout(mVS->GetInputLayout().Get());
 		context->IASetVertexBuffers(0, 1, mesh->VertexBuffer.GetAddressOf(), &stride, &offset);
 		context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		context->OMSetBlendState(renderer->GetBlendState().Get(), NULL, D3D11_DEFAULT_SAMPLE_MASK);
-
 		context->DrawIndexed(mesh->IndexCount, 0, 0);
 	}
 
@@ -365,9 +360,9 @@ void FTBasicMeshGroup::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
 	}
 }
 
-void						FTBasicMeshGroup::SetTexKey(FTDS::String& texKey) { mTexKey = texKey; }
-ComPtr<ID3D11VertexShader>& FTBasicMeshGroup::GetVertexShader() { return mVS->GetShader(); }
-ComPtr<ID3D11PixelShader>&	FTBasicMeshGroup::GetPixelShader() { return mPS->GetShader(); }
+void			FTBasicMeshGroup::SetTexKey(FTDS::String& texKey) { mTexKey = texKey; }
+FTVertexShader* FTBasicMeshGroup::GetVertexShader() { return mVS; }
+FTPixelShader*	FTBasicMeshGroup::GetPixelShader() { return mPS; }
 
 void FTBasicMeshGroup::SetVertexShader(FTDS::String& vsKey)
 {
@@ -468,7 +463,7 @@ void FTBasicMeshGroup::CalcModelMat(Matrix& matrix, Transform* transform)
 	int dir = 0;
 	0 <= transform->GetSteering()->Linear.x ? dir = 1 : dir = -1;
 
-	FTVector3		  scale		   = transform->GetWorldScale();
+	FTVector3 scale		   = transform->GetWorldScale();
 	FTVector3 scaleWithDir = FTVector3(scale.x * dir, scale.y, scale.z);
 	transform->SetWorldScale(scaleWithDir);
 	matrix = transform->GetMatrixWorld();

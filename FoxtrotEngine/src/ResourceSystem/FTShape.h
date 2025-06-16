@@ -23,25 +23,25 @@ class Transform;
 class Camera;
 class FTRectArea;
 struct FTDebugMeshData;
-struct GSCBufferData;
+struct DebugGCData;
 
 using namespace Microsoft::WRL;
 
 class FTShape
 {
 public:
-	BasicVCData&   GetVertexConstantData();
-	GSCBufferData& GetGSCData();
-	DebugPCData&   GetPixelConstantData();
-	Mesh*		   GetMesh();
-	bool		   GetIsActive() { return mIsActive; }
+	DebugVCData& GetVCData();
+	DebugGCData& GetGSCData();
+	DebugPCData& GetPixelConstantData();
+	Mesh*		 GetMesh();
+	bool		 GetIsActive() { return mIsActive; }
 
 	void SetIsActive(bool val) { mIsActive = val; }
 
 public:
 	virtual void Initialize(FoxtrotRenderer* renderer);
-
-	virtual void UpdateVC(FTVector3 pos, FTVector3 rot, FTVector3 size, Camera* camInst);
+	void		 UpdateVC(Transform* transform, Camera* camInst);
+	void		 UpdateGC(Camera* camInst);
 	virtual void UpdatePC();
 
 	// This is for ShapeActors (e.g. SquareActor)
@@ -66,9 +66,9 @@ private:
 	bool  mIsActive;
 
 private:
-	BasicVCData	  mVertexConstantData;
-	GSCBufferData mGSCData;
-	DebugPCData	  mPixelConstantData;
+	DebugVCData mVSCData;
+	DebugGCData mGSCData;
+	DebugPCData mPSCData;
 
 	ComPtr<ID3D11Buffer> mVertexConstantBuffer;
 	ComPtr<ID3D11Buffer> mGSCBuffer;

@@ -87,7 +87,10 @@ protected:
 protected:
 	virtual bool InitializeMesh();
 	bool		 InitializeMesh(FTDS::String& key);
-	virtual void UpdateMesh(Transform* transform, Camera* camInst);
+	virtual void UpdateMesh(
+		Transform* transform,
+		Camera* camInst,
+		FoxtrotRenderer* renderer);
 
 	//////////////////////////////////////////
 	// Component elements					//

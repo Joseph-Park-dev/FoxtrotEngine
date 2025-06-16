@@ -68,9 +68,6 @@ void BoxCollider2D::Setup()
 				b2Rot_identity
 			);
 
-			// Set Rigidbody offset
-			rb->SetOffset(GetOffsetPos());
-
 			GetShapeID() = b2CreatePolygonShape(rb->GetBodyID(), &polygonShapeDef, &polygon);
 			CollisionManager::GetInstance()->RegisterCollider(GetShapeID().index1, this);
 		}

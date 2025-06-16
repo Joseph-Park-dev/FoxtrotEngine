@@ -13,12 +13,12 @@
 #include <directxtk/SimpleMath.h>
 
 #include "Renderer/D3D11Utils.h"
-#include "ResourceSystem/FTMeshData.h"
 #include "ResourceSystem/Mesh.h"
 #include "ResourceSystem/MeshConstantData.h"
 #include "ResourceSystem/FTResource.h"
 
 class FTMaterial;
+class FTVertexShader;
 
 class FTBasicMeshGroup : public FTResource
 {
@@ -74,8 +74,8 @@ protected:
 protected:
 	void SetTexKey(FTDS::String& texKey);
 
-	ComPtr<ID3D11VertexShader>& GetVertexShader();
-	ComPtr<ID3D11PixelShader>&	GetPixelShader();
+	FTVertexShader* GetVertexShader();
+	FTPixelShader*	GetPixelShader();
 
 	// Since the texture type is diverged into FTTexture & FTCUBEMAP_TEXTURE,
 	// the TEXTURE_MAP needs to be specified.
@@ -92,8 +92,8 @@ private:
 	std::vector<Mesh*>		   mMeshes;
 	FTTexture*				   mTexture;
 	ComPtr<ID3D11SamplerState> mSamplerState;
-	FTVertexShader* mVS;
-	FTPixelShader*  mPS;
+	FTVertexShader*			   mVS;
+	FTPixelShader*			   mPS;
 
 	ComPtr<ID3D11Buffer> mVertexConstBuffer;
 	// ComPtr<ID3D11Buffer>	 mPixelConstBuffer;

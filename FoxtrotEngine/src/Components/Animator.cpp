@@ -31,11 +31,13 @@
 #ifdef FOXTROT_EDITOR
 	#include "EditorUtils.h"
 	#include "EditorResourceManager.h"
+	#include "EditorCamera.h"
 #endif // FOXTROT_EDITOR
 
 Animator::Animator(Actor* owner, int updateOrder)
 	: TileMapRenderer(owner)
-	, mLoadedKeys()
+	, mLoadedAnim()
+	, mCurrAnim(nullptr)
 	, mCurrFrameIdx(0)
 	, mAccTime(0.f)
 	, mIsFinished(false)
@@ -45,19 +47,15 @@ Animator::Animator(Actor* owner, int updateOrder)
 
 Animator::~Animator()
 {
-	mLoadedKeys.clear();
+	mLoadedAnim.clear();
 }
 
 void Animator::Play(const UINT key, bool isRepeated)
 {
-	FTDS::String loadedKey = mLoadedKeys.at(key);
+	FTSpriteAnimation* anim = mLoadedAnim.at(key);
+	mCurrAnim = anim;
+	SetMeshGroup(mCurrAnim);
 
-#ifdef FOXTROT_EDITOR
-	FTSpriteAnimation* anim = EditorResourceManager::GetInstance()->GetLoadedSpriteAnim(loadedKey);
-	SetMeshGroup(anim);
-#else
-	SetMeshGroup(ResourceManager::GetInstance()->GetLoadedSpriteAnim(loadedKey.C_Str()));
-#endif // FOXTROT_EDITOR
 	mIsFinished = false;
 	mIsRepeated = isRepeated;
 }
@@ -94,12 +92,16 @@ void Animator::SaveProperties(std::ofstream& ofs)
 	// Loop through loaded animation keys and save.
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::LOADED_KEYS);
 
-	for (size_t i = 0; i < mLoadedKeys.size(); ++i)
-		FileIOHelper::SaveString(ofs, std::to_string(i).c_str(), mLoadedKeys.at(i));
+	size_t i = 0;
+	for (FTSpriteAnimation* anim : mLoadedAnim)
+	{
+		FileIOHelper::SaveString(ofs, std::to_string(i).c_str(), mLoadedAnim.at(i)->FileName());
+		++i;
+	}
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::LOADED_KEYS);
 
-	//Save Shader keys.
+	// Save Shader keys.
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::SHADER_KEYS);
 
 	FileIOHelper::SaveString(ofs, ChunkKey::FT_VERTEX_SHADER, VSKey());
@@ -123,15 +125,21 @@ void Animator::LoadProperties(std::ifstream& ifs)
 
 	// Load Animations
 	std::pair<size_t, FTDS::String> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::LOADED_KEYS);
-	mLoadedKeys.reserve(pack.first);
+	mLoadedAnim.reserve(pack.first);
 	for (size_t i = 0; i < pack.first; ++i)
 	{
 		FTDS::String key;
 		FileIOHelper::LoadBasicString(ifs, key);
-		mLoadedKeys.push_back(key);
+
+#ifdef FOXTROT_EDITOR
+		FTSpriteAnimation* anim = EditorResourceManager::GetInstance()->GetLoadedSpriteAnim(key);
+#else
+		FTSpriteAnimation* anim = ResourceManager::GetInstance()->GetLoadedSpriteAnim(key);
+#endif // FOXTROT_EDITOR
+
+		mLoadedAnim.push_back(anim);
 	}
-	
-	std::reverse(mLoadedKeys.begin(), mLoadedKeys.end());
+	std::reverse(mLoadedAnim.begin(), mLoadedAnim.end());
 
 	// Load Materials.
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::MATERIAL_KEYS);
@@ -178,16 +186,18 @@ bool Animator::IndexOutOfRange(int minIdx, int maxIdx)
 void Animator::Initialize(FTCore* coreInstance)
 {
 	SetRenderer(coreInstance->GetGameRenderer());
-	
-	if (0 < mLoadedKeys.size())
+
+	if (0 < mLoadedAnim.size())
 		Play(0);
 
-	if (GetMeshGroup())
+	for (FTSpriteAnimation* anim : mLoadedAnim)
 	{
-		if (0 < MaterialKeys().size())
-			GetMeshGroup()->SetMaterials(MaterialKeys(), GetRenderer()->GetDevice());
-		GetMeshGroup()->SetVertexShader(VSKey());
-		GetMeshGroup()->SetPixelShader(PSKey());
+		if (anim)
+		{
+			anim->SetMaterials(MaterialKeys(), GetRenderer()->GetDevice());
+			anim->SetVertexShader(VSKey());
+			anim->SetPixelShader(PSKey());
+		}		  
 	}
 
 	Component::Initialize(coreInstance);
@@ -204,7 +214,7 @@ void Animator::Render(FoxtrotRenderer* renderer)
 {
 	if (GetMeshGroup())
 	{
-		UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
+		UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance(), renderer);
 		renderer->SwitchFillMode();
 		// renderer->SetRenderTargetView();
 		GetMeshGroup()->Render(renderer, mCurrFrameIdx);
@@ -220,8 +230,9 @@ void Animator::Render(FoxtrotRenderer* renderer)
 void Animator::CloneTo(Actor* actor)
 {
 	Animator* newComp = DBG_NEW Animator(actor, GetUpdateOrder());
-	for (size_t i = 0; i < mLoadedKeys.size(); ++i)
-		newComp->mLoadedKeys.push_back(mLoadedKeys.at(i));
+
+	newComp->mLoadedAnim.assign(mLoadedAnim.begin(), mLoadedAnim.end());
+
 	for (size_t i = 0; i < MaterialKeys().size(); ++i)
 		newComp->MaterialKeys().push_back(MaterialKeys().at(i));
 
@@ -257,7 +268,13 @@ void Animator::EditorUIUpdate()
 
 void Animator::EditorRender(FoxtrotRenderer* renderer)
 {
-	Render(renderer);
+	if (GetMeshGroup())
+	{
+		UpdateMesh(GetOwner()->GetTransform(), EditorCamera::GetInstance(), renderer);
+		renderer->SwitchFillMode();
+		// renderer->SetRenderTargetView();
+		GetMeshGroup()->Render(renderer, mCurrFrameIdx);
+	}
 }
 
 void Animator::UpdatePlayAnim()
@@ -286,32 +303,36 @@ void Animator::UpdatePlayList()
 		EditorResourceManager::GetInstance()->GetSpriteAnimations(),
 		key);
 
-	if (!FTDS::StringEqual(key.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
+	if (key.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 	{
-		mLoadedKeys.push_back(key);
-		if (mLoadedKeys.size() == 1)
+		FTSpriteAnimation* anim = EditorResourceManager::GetInstance()->GetLoadedSpriteAnim(key);
+		mLoadedAnim.push_back(anim);
+		if (mLoadedAnim.size() == 1)
 		{
-			mCurrAnimKey = 0;
-			Play(mCurrAnimKey);
+			mCurrAnim = anim;
+			SetMeshGroup(mCurrAnim);
 		}
 	}
 
-	if (0 < mLoadedKeys.size())
+	if (0 < mLoadedAnim.size())
 	{
-		for (size_t i = 0; i < mLoadedKeys.size(); ++i)
+		size_t i = 0;
+		for (FTSpriteAnimation* anim : mLoadedAnim)
 		{
-			FTSpriteAnimation* anim = EditorResourceManager::GetInstance()->GetLoadedSpriteAnim(mLoadedKeys.at(i));
-
 			ImGui::PushID(anim->FileName().C_Str());
 			ImGui::Text(anim->FileName().C_Str());
 			anim->UpdateUI();
 
 			if (ImGui::ArrowButton("##Up", ImGuiDir::ImGuiDir_Up))
-				std::iter_swap(mLoadedKeys.begin() + i - 1, mLoadedKeys.begin() + i);
+				std::iter_swap(mLoadedAnim.begin() + i - 1, mLoadedAnim.begin() + i);
 			ImGui::SameLine();
 			if (ImGui::ArrowButton("##Down", ImGuiDir::ImGuiDir_Down))
-				std::iter_swap(mLoadedKeys.begin() + i + 1, mLoadedKeys.begin() + i);
+				std::iter_swap(mLoadedAnim.begin() + i + 1, mLoadedAnim.begin() + i);
+
+			if (ImGui::Button("Delete"))
+				mLoadedAnim.erase(mLoadedAnim.begin() + i);
 			ImGui::PopID();
+			++i;
 		}
 	}
 }

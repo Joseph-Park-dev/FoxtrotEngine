@@ -33,21 +33,32 @@ struct BasicVCData
 };
 static_assert((sizeof(BasicVCData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
 
+// Debug shape only takes a point in VS, 
+// and utilizes that in GS to form a geometry
+struct DebugVCData
+{
+	DirectX::SimpleMath::Matrix model = DirectX::SimpleMath::Matrix();
+};
+
+static_assert((sizeof(DebugVCData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
+
+struct DebugGCData
+{
+	DirectX::SimpleMath::Matrix view = DirectX::SimpleMath::Matrix();
+	DirectX::SimpleMath::Matrix projection = DirectX::SimpleMath::Matrix();
+
+	Vector2 size;
+	Vector2 dummy;
+};
+
+static_assert((sizeof(DebugGCData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
+
 struct SpineMeshVCData
 {
 	std::vector<DirectX::SimpleMath::Matrix> transformation;
 };
 
 static_assert((sizeof(SpineMeshVCData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
-
-struct GSCBufferData
-{
-	Vector2 size;
-	float outlineWidth;
-	float dummy;
-};
-
-static_assert((sizeof(GSCBufferData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
 
 struct NormalVCData
 {

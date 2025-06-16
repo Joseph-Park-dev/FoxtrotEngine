@@ -22,9 +22,9 @@ using Matrix = DirectX::SimpleMath::Matrix;
 
 FTShape::FTShape()
 	: mMesh(nullptr)
-	, mVertexConstantData()
+	, mVSCData()
 	, mGSCData()
-	, mPixelConstantData()
+	, mPSCData()
 	, mIsActive(false)
 {
 }
@@ -42,30 +42,37 @@ FTShape::~FTShape()
 		mPixelConstantBuffer.Reset();
 }
 
-BasicVCData&   FTShape::GetVertexConstantData() { return mVertexConstantData; }
-GSCBufferData& FTShape::GetGSCData() { return mGSCData; }
-DebugPCData&   FTShape::GetPixelConstantData() { return mPixelConstantData; }
-Mesh*		   FTShape::GetMesh() { return mMesh; }
+DebugVCData& FTShape::GetVCData() { return mVSCData; }
+DebugGCData& FTShape::GetGSCData() { return mGSCData; }
+DebugPCData& FTShape::GetPixelConstantData() { return mPSCData; }
+Mesh*		 FTShape::GetMesh() { return mMesh; }
 
 void FTShape::Initialize(FoxtrotRenderer* renderer)
 {
 	InitializeConstantBuffer(renderer->GetDevice());
-	DebugShapes::GetInstance()->AddShape(this);
 }
 
-void FTShape::UpdateVC(FTVector3 pos, FTVector3 rot, FTVector3 size, Camera* camInst)
+void FTShape::UpdateVC(Transform* transform, Camera* camInst)
 {
 	if (!mMesh)
 		return;
 
-	UpdateModelMatrix(pos, rot, size);
-	UpdateViewMatrix(camInst);
-	UpdateProjectionMatrix(camInst);
+	Matrix&& modelMat = Matrix();
+	modelMat		  = transform->GetMatrixWorld();
+	mVSCData.model	  = modelMat.Transpose();
+}
+
+void FTShape::UpdateGC(Camera* camInst)
+{
+	Matrix&& viewMat	= camInst->GetViewRow();
+	Matrix&& projMat	= camInst->GetProjRow();
+	mGSCData.view		= viewMat.Transpose();
+	mGSCData.projection = projMat.Transpose();
 }
 
 void FTShape::UpdatePC()
 {
-	mPixelConstantData.IsActive = mIsActive;
+	mPSCData.IsActive = mIsActive;
 }
 
 void FTShape::Render(FoxtrotRenderer* renderer)
@@ -167,51 +174,49 @@ void FTShape::InitializeMesh(ComPtr<ID3D11Device>& device, FTDebugMeshData&& mes
 //         Matrix::CreateRotationX(transform->GetRotation().x) *
 //         Matrix::CreateRotationZ(transform->GetRotation().z) *
 //         Matrix::CreateTranslation(worldPos.GetDXVec3());
-//     mVertexConstantData.model = model.Transpose();
+//     mVSCData.model = model.Transpose();
 // }
 
 void FTShape::UpdateModelMatrix(FTVector3 pos, FTVector3 rot, FTVector3 size)
 {
 	Matrix model =
-		Matrix::CreateScale(size.GetDXVec3()) *
+		// Matrix::CreateScale(size.GetDXVec3()) *
 		Matrix::CreateRotationY(rot.y) *
 		Matrix::CreateRotationX(rot.x) *
 		Matrix::CreateRotationZ(rot.z) *
 		Matrix::CreateTranslation(pos.GetDXVec3());
-	mVertexConstantData.model = model.Transpose();
+	mVSCData.model = model.Transpose();
 }
 
 void FTShape::UpdateViewMatrix(Camera* camInst)
 {
-	mVertexConstantData.view = camInst->GetViewRow().Transpose();
+	mGSCData.view = camInst->GetViewRow().Transpose();
 }
 
 void FTShape::UpdateProjectionMatrix(Camera* camInst)
 {
-	mVertexConstantData.projection = camInst->GetProjRow().Transpose();
+	mGSCData.projection = camInst->GetProjRow().Transpose();
 }
 
 void FTShape::InitializeConstantBuffer(ComPtr<ID3D11Device>& device)
 {
-	mVertexConstantData.model		 = DirectX::SimpleMath::Matrix();
-	mVertexConstantData.invTranspose = DirectX::SimpleMath::Matrix();
-	mVertexConstantData.view		 = DirectX::SimpleMath::Matrix();
-	mVertexConstantData.projection	 = DirectX::SimpleMath::Matrix();
+	mVSCData.model = DirectX::SimpleMath::Matrix();
 
-	mGSCData.size = Vector2::Zero;
-	mGSCData.outlineWidth = 0.3f;
+	mGSCData.view		= DirectX::SimpleMath::Matrix();
+	mGSCData.projection = DirectX::SimpleMath::Matrix();
 
-	mPixelConstantData.IsActive = true;
+	mGSCData.size	  = Vector2::Zero;
+	mPSCData.IsActive = true;
 
-	D3D11Utils::CreateConstantBuffer(device, mVertexConstantData, mVertexConstantBuffer);
+	D3D11Utils::CreateConstantBuffer(device, mVSCData, mVertexConstantBuffer);
 	D3D11Utils::CreateConstantBuffer(device, mGSCData, mGSCBuffer);
-	D3D11Utils::CreateConstantBuffer(device, mPixelConstantData, mPixelConstantBuffer);
+	D3D11Utils::CreateConstantBuffer(device, mPSCData, mPixelConstantBuffer);
 }
 
 void FTShape::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
 	if (mVertexConstantBuffer)
-		D3D11Utils::UpdateBuffer(context, mVertexConstantData, mVertexConstantBuffer);
+		D3D11Utils::UpdateBuffer(context, mVSCData, mVertexConstantBuffer);
 	else
 		printf("ERROR : FTShape::UpdateConstantBuffers() -> Vertex Constant Buffer is null");
 
@@ -221,7 +226,7 @@ void FTShape::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11D
 		Debug::LogError(__LINE__, __FILE__, "GSC Buffer is null");
 
 	if (mPixelConstantBuffer)
-		D3D11Utils::UpdateBuffer(context, mPixelConstantData, mPixelConstantBuffer);
+		D3D11Utils::UpdateBuffer(context, mPSCData, mPixelConstantBuffer);
 	else
 		printf("ERROR : FTShape::UpdateConstantBuffers() -> Pixel Constant Buffer is null");
 }

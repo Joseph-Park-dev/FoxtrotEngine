@@ -39,6 +39,7 @@
 #include "Managers/SceneManager.h"
 #include "Managers/CollisionManager.h"
 #include "Managers/AnimationManager.h"
+#include "ResourceSystem/FTRectangle.h"
 
 // FTCoreEditor related singleton initializations -> used in Foxtrot Editor Runtime
 CommandHistory*		   CommandHistory::mInstance		= nullptr;
@@ -85,6 +86,8 @@ bool FTCoreEditor::Initialize()
 		return false;
 	}
 	EditorCamera::GetInstance()->Initialize(mEditorWindow, 64.f, 1.8f);
+	EditorCamera::GetInstance()->GetDebugRect()->Initialize(GetGameRenderer());
+	DebugShapes::GetInstance()->SetCameraRect(EditorCamera::GetInstance()->GetDebugRect());
 
 	if (!InitGUI())
 	{

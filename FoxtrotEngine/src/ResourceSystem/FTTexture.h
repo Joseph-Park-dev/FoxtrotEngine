@@ -37,7 +37,7 @@ public:
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>& GetTexture() { return mTexture; }
 
-	const FTVector2 GetTexScale() const { return FTVector2(mTexWidth, mTexHeight); }
+	const FTVector2 GetTexSize() const { return FTVector2(mTexWidth, mTexHeight); }
 	int				GetTexWidth() const { return mTexWidth; }
 	int				GetTexHeight() const { return mTexHeight; }
 

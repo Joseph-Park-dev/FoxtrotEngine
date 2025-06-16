@@ -50,6 +50,7 @@ void ViewportRenderer::DrawOnTexture(FoxtrotRenderer* renderer)
 	{
 		EditorSceneManager::GetInstance()->EditorRender(renderer);
 		DebugShapes::GetInstance()->Render(renderer);
+		DebugShapes::GetInstance()->RenderCamRect(renderer);
 		LightManager::GetInstance()->Render(renderer, EditorCamera::GetInstance());
 	}
 }

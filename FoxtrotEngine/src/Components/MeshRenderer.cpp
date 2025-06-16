@@ -55,9 +55,10 @@ void MeshRenderer::Render(FoxtrotRenderer* renderer)
 {
 	if (mMeshGroup)
 	{
-		UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance());
+		UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance(), renderer);
 		renderer->SwitchFillMode();
 		// renderer->SetRenderTargetView();
+		mMeshGroup->SetTexture();
 		mMeshGroup->Render(renderer);
 	}
 }
@@ -98,12 +99,18 @@ std::vector<FTDS::String>& MeshRenderer::MaterialKeys() { return mMaterialKeys; 
 
 bool MeshRenderer::InitializeMesh()
 {
-	if (FTDS::StringEqual(mMeshKey.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
+	if (mMeshKey.Equal(ChunkKey::NullVal::NULL_OBJECT))
 	{
 		LogString("ERROR: MeshRenderer::InitializeMesh() -> Key doesn't exist.\n");
 		return false;
 	}
+
+#ifdef FOXTROT_EDITOR
+	mMeshGroup = EditorResourceManager::GetInstance()->GetLoadedMesh(mMeshKey);
+#else
 	mMeshGroup = ResourceManager::GetInstance()->GetLoadedMesh(mMeshKey);
+#endif // FOXTROT_EDITOR
+
 	if (!mMeshGroup)
 	{
 		Debug::LogError(__LINE__, __FILE__, "MeshGroup cannot be found");
@@ -115,16 +122,22 @@ bool MeshRenderer::InitializeMesh()
 bool MeshRenderer::InitializeMesh(FTDS::String& key)
 {
 	mMeshKey   = key;
+
+#ifdef FOXTROT_EDITOR
+	mMeshGroup = EditorResourceManager::GetInstance()->GetLoadedMesh(key);
+#else
 	mMeshGroup = ResourceManager::GetInstance()->GetLoadedMesh(key);
+#endif // FOXTROT_EDITOR
+
 	return mMeshGroup != nullptr;
 }
 
-void MeshRenderer::UpdateMesh(Transform* transform, Camera* camInst)
+void MeshRenderer::UpdateMesh(Transform* transform, Camera* camInst, FoxtrotRenderer* renderer)
 {
 	if (mMeshGroup)
 	{
 		mMeshGroup->CalcVCData(transform, camInst);
-		mMeshGroup->UpdateConstantBuffers(mRenderer->GetDevice(), mRenderer->GetContext());
+		mMeshGroup->UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext());
 	}
 }
 
@@ -259,7 +272,7 @@ void MeshRenderer::LoadProperties(std::ifstream& ifs)
 void MeshRenderer::EditorRender(FoxtrotRenderer* renderer)
 {
 	if (mMeshGroup)
-		UpdateMesh(GetOwner()->GetTransform(), EditorCamera::GetInstance());
+		UpdateMesh(GetOwner()->GetTransform(), EditorCamera::GetInstance(), renderer);
 
 	if (mMeshGroup)
 	{
@@ -283,16 +296,16 @@ void MeshRenderer::EditorUIUpdate()
 {
 	CHECK_RENDERER(GetRenderer());
 
-	if (mMeshGroup)
-	{
-		ImGui::SeparatorText("Material");
-		mMeshGroup->UpdateUI();
-		UpdateMaterial();
+	if (!mMeshGroup)
+		return;
 
-		ImGui::SeparatorText("Shaders");
-		UpdateVS();
-		UpdatePS();
-	}
+	ImGui::SeparatorText("Material");
+	mMeshGroup->UpdateUI();
+	UpdateMaterial();
+
+	ImGui::SeparatorText("Shaders");
+	UpdateVS();
+	UpdatePS();
 	AddModel();
 
 	UpdateSprite();
@@ -333,11 +346,11 @@ void MeshRenderer::UpdateSprite()
 	FTEditorUtils::DisplayResSelection<FTTexture>(
 		"Select Sprite",
 		EditorResourceManager::GetInstance()->GetTextures(),
-		mTexKey);
+		key);
 
-	if (FTDS::StringEqual(key.C_Str(), mTexKey.C_Str()))
+	if (key.NotEqual(mTexKey.C_Str()))
 	{
-		SetTexKey(mTexKey);
+		SetTexKey(key);
 		if (mMeshGroup)
 			mMeshGroup->SetTexture(mTexKey);
 	}
@@ -406,34 +419,31 @@ void MeshRenderer::UpdateSprite(FTDS::String& key)
 }
 void MeshRenderer::UpdateMaterial()
 {
-	// Display loaded Materials.
-	if (0 < mMaterialKeys.size())
-	{
-		for (FTDS::String key : mMaterialKeys)
-			EditorResourceManager::GetInstance()->GetMaterials()->At(key)->Value()->UpdateUI();
-	}
-	else
-		ImGui::Text("No Material has been assigned");
-
 	// Select & load Materials.
 	FTDS::String key = ChunkKey::NullVal::NULL_OBJECT;
 	FTEditorUtils::DisplayResSelection(
 		"Material",
 		EditorResourceManager::GetInstance()->GetMaterials(),
 		key);
-	if (!key.Equal(ChunkKey::NullVal::NULL_OBJECT))
+	if (key.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 	{
 		mMaterialKeys.push_back(key);
 		if (mMeshGroup)
 			mMeshGroup->SetMaterials(mMaterialKeys, mRenderer->GetDevice());
+	}
+
+	// Display loaded Materials.
+	if (!mMeshGroup->Materials().empty())
+	{
+		for (FTMaterial* mat : mMeshGroup->Materials())
+			mat->UpdateUI();
 	}
 }
 
 void MeshRenderer::UpdateVS()
 {
 	FTDS::String vsKey = mVSKey;
-	FTEditorUtils::DisplayResSelection("Vertex Shader", 
-		EditorResourceManager::GetInstance()->GetVertexShaders(), vsKey);
+	FTEditorUtils::DisplayResSelection("Vertex Shader", EditorResourceManager::GetInstance()->GetVertexShaders(), vsKey);
 
 	if (mVSKey.NotEqual(vsKey.C_Str()))
 	{
@@ -445,9 +455,8 @@ void MeshRenderer::UpdateVS()
 void MeshRenderer::UpdatePS()
 {
 	FTDS::String psKey = mPSKey;
-	FTEditorUtils::DisplayResSelection("Pixel Shader", 
-		EditorResourceManager::GetInstance()->GetPixelShaders(), psKey);
-	
+	FTEditorUtils::DisplayResSelection("Pixel Shader", EditorResourceManager::GetInstance()->GetPixelShaders(), psKey);
+
 	if (mPSKey.NotEqual(psKey.C_Str()))
 	{
 		mPSKey.Assign(psKey);

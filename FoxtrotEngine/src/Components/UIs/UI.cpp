@@ -119,15 +119,14 @@ void UI::Initialize(FTCore* ftCoreInst)
 	UIManager::GetInstance()->RegisterUI(this);
 	mRenderer = ftCoreInst->GetGameRenderer();
 	mInputArea->Initialize(ftCoreInst->GetGameRenderer());
+	DebugShapes::GetInstance()->AddShape(mInputArea);
 }
 
 void UI::Update(float deltaTime)
 {
 	Transform* transform = GetOwner()->GetTransform();
 	mInputArea->UpdateVC(
-		transform->GetWorldPosition(),
-		transform->GetWorldRotation(),
-		transform->GetWorldScale(),
+		transform,
 		Camera::GetInstance());
 }
 

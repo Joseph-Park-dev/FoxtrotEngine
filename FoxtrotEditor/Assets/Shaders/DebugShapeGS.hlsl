@@ -1,19 +1,17 @@
 #include "Common.hlsli"
 
-cbuffer MatrixConst : register(b0)
+cbuffer ModelConst : register(b0)
 {
     matrix model;
-    matrix invTranspose;
-    matrix view;
-    matrix proj;
 }
 
 cbuffer ShapeConst : register(b1)
 {
+    matrix view;
+    matrix proj;
     float2 size;
-    float lineWidth;
-    float dummy;
-};
+    float2 dummy;
+}
 
 //struct Line
 //{
@@ -55,30 +53,27 @@ void main(
 	inout LineStream<DebugPSInput> outStream
 )
 {
-    float2 hw = size * 0.5;
+    float2 sizeVec = size * 0.5;
+    float4 right = input[0].right;
+    float4 up = float4(-right.y, right.x, 0.0, 0.0);
     
-    float4 topLeft = input[0].pos + float4(-hw.x, hw.y, 0.0, 0.0);
-    float4 topRight = input[0].pos + float4(hw.x, hw.y, 0.0, 0.0);
-    float4 bottomLeft = input[0].pos + float4(-hw.x, -hw.y, 0.0, 0.0);
-    float4 bottomRight = input[0].pos + float4(hw.x, -hw.y, 0.0, 0.0);
+    float4 topLeft = input[0].pos - sizeVec.x * right + sizeVec.y * up;
+    float4 topRight = input[0].pos + sizeVec.x * right + sizeVec.y * up;
+    float4 bottomLeft = input[0].pos - sizeVec.x * right - sizeVec.y * up;
+    float4 bottomRight = input[0].pos + sizeVec.x * right - sizeVec.y * up;
     
-    topLeft = mul(topLeft, model);
     topLeft = mul(topLeft, view);
     topLeft = mul(topLeft, proj);
     
-    topRight = mul(topRight, model);
     topRight = mul(topRight, view);
     topRight = mul(topRight, proj);
     
-    bottomLeft = mul(bottomLeft, model);
     bottomLeft = mul(bottomLeft, view);
     bottomLeft = mul(bottomLeft, proj);
     
-    bottomRight = mul(bottomRight, model);
     bottomRight = mul(bottomRight, view);
     bottomRight = mul(bottomRight, proj);
     
-   // WeightedLine lineSeg = GetWeightedLine(topLeft, topRight);
     DebugPSInput output;
     output.color = input[0].color;
     output.pos = topLeft;
@@ -95,41 +90,4 @@ void main(
     
     output.pos = topLeft;
     outStream.Append(output);
-    
-    //output.pos = float4(lineSeg.upper.pos0.xy, 0.0, 0.0);
-    //outStream.Append(output);
-    //output.pos = float4(lineSeg.upper.pos1.xy, 0.0, 0.0);
-    //outStream.Append(output);
-    
-    //output.pos = float4(lineSeg.lower.pos0.xy, 0.0, 0.0);
-    //outStream.Append(output);
-    //output.pos = float4(lineSeg.lower.pos1.xy, 0.0, 0.0);
-    //outStream.Append(output);
-
-    //lineSeg = GetWeightedLine(topRight, bottomRight);
-    //output.pos0 = float4(lineSeg.upper.pos0.xy, 0.0, 0.0);
-    //output.pos1 = float4(lineSeg.upper.pos1.xy, 0.0, 0.0);
-    //outStream.Append(output);
-    
-    //output.pos0 = float4(lineSeg.lower.pos0.xy, 0.0, 0.0);
-    //output.pos1 = float4(lineSeg.lower.pos1.xy, 0.0, 0.0);
-    //outStream.Append(output);
-    
-    //lineSeg = GetWeightedLine(bottomRight, bottomLeft);
-    //output.pos0 = float4(lineSeg.upper.pos0.xy, 0.0, 0.0);
-    //output.pos1 = float4(lineSeg.upper.pos1.xy, 0.0, 0.0);
-    //outStream.Append(output);
-    
-    //output.pos0 = float4(lineSeg.lower.pos0.xy, 0.0, 0.0);
-    //output.pos1 = float4(lineSeg.lower.pos1.xy, 0.0, 0.0);
-    //outStream.Append(output);
-    
-    //lineSeg = GetWeightedLine(bottomLeft, topLeft);
-    //output.pos0 = float4(lineSeg.upper.pos0.xy, 0.0, 0.0);
-    //output.pos1 = float4(lineSeg.upper.pos1.xy, 0.0, 0.0);
-    //outStream.Append(output);
-    
-    //output.pos0 = float4(lineSeg.lower.pos0.xy, 0.0, 0.0);
-    //output.pos1 = float4(lineSeg.lower.pos1.xy, 0.0, 0.0);
-    //outStream.Append(output);
 }

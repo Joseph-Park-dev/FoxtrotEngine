@@ -58,8 +58,19 @@ void BoxCollider2D::Setup()
 			polygonShapeDef.filter.categoryBits = uint64_t(GetOwner()->GetActorGroup());
 			CollisionManager::GetInstance()->MarkGroup(polygonShapeDef, GetOwner()->GetActorGroup());
 
+			FTVector3 rot = GetOwner()->GetTransform()->GetWorldRotation();
+			float rotZ = Transform::ConvertDegreeToRad(rot).z;
 			FTVector2 polygonScale = mSize * FTVector2(GetOwner()->GetTransform()->GetWorldScale());
-			b2Polygon polygon	   = b2MakeBox(polygonScale.x / 2, polygonScale.y / 2);
+			b2Polygon polygon	   = b2MakeOffsetBox(
+				polygonScale.x / 2,
+				polygonScale.y / 2, 
+				GetOffsetPos().GetB2Vec2(),
+				b2Rot_identity
+			);
+
+			// Set Rigidbody offset
+			rb->SetOffset(GetOffsetPos());
+
 			GetShapeID() = b2CreatePolygonShape(rb->GetBodyID(), &polygonShapeDef, &polygon);
 			CollisionManager::GetInstance()->RegisterCollider(GetShapeID().index1, this);
 		}
@@ -118,8 +129,11 @@ void BoxCollider2D::EditorUpdate(float deltaTime)
 	if (IsShowingDebugShape())
 	{
 		Transform* transform = GetOwner()->GetTransform();
+		FTVector2 offset = GetOffsetPos();
+		Matrix translationMat = Matrix::CreateTranslation(offset.x, offset.y, transform->GetWorldPosition().z); // Rotate around Y-axis
+		Matrix modelMat = translationMat * transform->GetMatrixWorld();
 
-		mDebugRect->UpdateVC(transform, Camera::GetInstance());
+		mDebugRect->UpdateVC(modelMat, Camera::GetInstance());
 		mDebugRect->UpdateGC(Camera::GetInstance());
 		mDebugRect->GetGSCData().size.x = mSize.x;
 		mDebugRect->GetGSCData().size.y = mSize.y;
@@ -147,9 +161,15 @@ void BoxCollider2D::UpdateScale()
 		if (mSize.x <= 0 || mSize.y <= 0)
 			return;
 
+		float rot = GetOwner()->GetTransform()->GetWorldRotation().z;
 		FTVector2  resultantScale  = mSize * FTVector2(GetOwner()->GetTransform()->GetWorldScale());
 		b2ShapeDef polygonShapeDef = b2DefaultShapeDef();
-		b2Polygon  polygon		   = b2MakeBox(resultantScale.x / 2, resultantScale.y / 2);
+		b2Polygon polygon = b2MakeOffsetBox(
+			resultantScale.x / 2,
+			resultantScale.y / 2,
+			GetOffsetPos().GetB2Vec2(),
+			b2Rot_identity
+		);
 		if (b2Shape_IsValid(GetShapeID()))
 		{
 			// b2DestroyShape(GetShapeID(), true);

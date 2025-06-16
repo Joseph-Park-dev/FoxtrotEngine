@@ -37,7 +37,7 @@ public:
 	virtual ~Rigidbody2D() override;
 
 private:
-	b2BodyId mBodyID;
+	b2BodyId  mBodyID;
 
 public:
 	virtual void LoadProperties(std::ifstream& ifs) override;

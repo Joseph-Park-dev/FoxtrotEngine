@@ -58,7 +58,7 @@ public:
 
 protected:
 	void Accelerate(b2Vec2 currVel, const Steering* steering);
-	void Jump(b2Vec2 currVel, const Steering* steering);
+	void Jump(b2Vec2 currVel);
 	void SetIsGrounded();
 
 private:

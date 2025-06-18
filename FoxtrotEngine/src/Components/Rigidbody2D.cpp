@@ -37,6 +37,17 @@ Rigidbody2D::~Rigidbody2D()
 		b2DestroyBody(mBodyID);
 }
 
+void Rigidbody2D::AddImpulseToCenter(FTVector3 dir, float force)
+{
+	if (b2Body_IsValid(mBodyID))
+	{
+		b2Vec2 vel = b2Body_GetLinearVelocity(mBodyID);
+		b2Vec2 imp = (dir * force).GetB2Vec2();
+		vel += imp;
+		b2Body_ApplyLinearImpulseToCenter(mBodyID, vel, true);
+	}
+}
+
 b2BodyId& Rigidbody2D::GetBodyID()
 {
 	return mBodyID;

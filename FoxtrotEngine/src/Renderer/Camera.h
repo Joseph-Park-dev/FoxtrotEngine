@@ -49,15 +49,18 @@ public:
 	FTVector2 ConvertScreenPosToNDC(FTVector2 screenPos);
 
 public:
-	Matrix	GetViewRow();
-	Matrix	GetProjRow();
-	Vector3 GetEyePos();
+	FTWindow*  GetRenderWindow() const;
+	Matrix	   GetViewRow();
+	Matrix	   GetProjRow();
+	Vector3	   GetEyePos();
 	FTVector2& GetResolution() const;
 
 	Viewtype GetViewType();
 	float	 GetProjFOVAngleY();
 	float	 GetAspectRatio();
 	float	 GetPixelsPerUnit();
+	float	 GetNearZ();
+	float	 GetFarZ();
 
 	void SetTargetActor(Actor* actor);
 	void SetViewType(Viewtype viewType);
@@ -94,12 +97,12 @@ private:
 
 	// roll, pitch, yaw
 	// https://en.wikipedia.org/wiki/Aircraft_principal_axes
-	float mPitch, mYaw;
-	float mProjFOVAngleY;
-	float mNearZ, mFarZ;
-	float mAspect;
+	float	  mPitch, mYaw;
+	float	  mProjFOVAngleY;
+	float	  mNearZ, mFarZ;
+	float	  mAspect;
 	FTVector2 mResolution;
-	float mPixelsPerUnit; // Used for pixel-perfect calculation.
+	float	  mPixelsPerUnit; // Used for pixel-perfect calculation.
 
 	Viewtype mViewType;
 

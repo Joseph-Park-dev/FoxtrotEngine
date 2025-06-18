@@ -99,6 +99,7 @@ public:
 	bool MOUSE_NONE(MOUSE mouse);
 
 	FTVector2 MOUSE_POS();
+	FTVector3 MOUSE_WORLDPOS(Camera* camInst);
 
 public:
 	FTInputDevice();

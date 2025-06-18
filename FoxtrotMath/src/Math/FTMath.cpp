@@ -147,3 +147,15 @@ FTVector3 FTVector3::Reflect(const FTVector3& v, const FTVector3& n)
 {
 	return v - 2.0f * FTVector3::Dot(v, n) * n;
 }
+
+FTVector2 FTVector2::CubicBezierVelocity2D(const FTVector2& P0, const FTVector2& P1, const FTVector2& P2, const FTVector2& P3, double t)
+{
+	double u = 1.0 - t;
+	double u2 = u * u;
+	double t2 = t * t;
+
+	FTVector2 velocity;
+	velocity.x = 3 * u2 * (P1.x - P0.x) + 6 * u * t * (P2.x - P1.x) + 3 * t2 * (P3.x - P2.x);
+	velocity.y = 3 * u2 * (P1.y - P0.y) + 6 * u * t * (P2.y - P1.y) + 3 * t2 * (P3.y - P2.y);
+	return velocity;
+}

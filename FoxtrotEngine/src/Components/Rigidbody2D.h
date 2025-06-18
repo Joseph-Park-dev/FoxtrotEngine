@@ -20,6 +20,9 @@ class Actor;
 class Rigidbody2D : public Component
 {
 public:
+	void AddImpulseToCenter(FTVector3 dir, float force);
+
+public:
 	FTDS::String GetName() const override
 	{
 		return "Rigidbody2D";

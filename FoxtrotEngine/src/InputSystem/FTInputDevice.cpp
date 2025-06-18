@@ -90,6 +90,7 @@ bool FTInputDevice::MOUSE_AWAY(MOUSE mouse) { return GetMouseState(mouse) == KEY
 bool FTInputDevice::MOUSE_NONE(MOUSE mouse) { return GetMouseState(mouse) == KEY_STATE::NONE; }
 
 FTVector2 FTInputDevice::MOUSE_POS() { return mMousePosition; }
+FTVector3 FTInputDevice::MOUSE_WORLDPOS(Camera* camInst) { return camInst->ConvertScreenPosToWorld(mMousePosition); }
 
 void FTInputDevice::DetectKeyInput()
 {
@@ -130,11 +131,11 @@ void FTInputDevice::DetectMouseInput(MSG msg)
 		int mouseY	   = HIWORD(msg.lParam);
 		mMousePosition = FTVector2((float)mouseX, (float)mouseY);
 
-#ifdef FOXTROT_EDITOR
-		ImVec2 viewportPos = EditorLayer::GetInstance()->GetSceneViewportPos();
-		mMousePosition -= viewportPos;
-
-#endif // FOXTROT_EDITOR
+//#ifdef FOXTROT_EDITOR
+//		ImVec2 viewportPos = EditorLayer::GetInstance()->GetSceneViewportPos();
+//		mMousePosition -= viewportPos;
+//
+//#endif // FOXTROT_EDITOR
 	}
 
 	if (msg.message == WM_MOUSEWHEEL)

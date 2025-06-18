@@ -62,7 +62,7 @@ void Move::Accelerate(b2Vec2 currVel, const Steering* steering)
 	b2Body_SetLinearVelocity(mRigidbody->GetBodyID(), currVel);
 }
 
-void Move::Jump(b2Vec2 currVel, const Steering* steering)
+void Move::Jump(b2Vec2 currVel)
 {
 	if (mIsGrounded)
 	{
@@ -103,7 +103,7 @@ void Move::LateUpdate(float deltaTime)
 		b2Vec2			vel		 = b2Body_GetLinearVelocity(mRigidbody->GetBodyID());
 		Accelerate(vel, steering);
 		if (steering->JumpTriggered)
-			Jump(vel, steering);
+			Jump(vel);
 
 		SetIsGrounded();
 		//GetOwner()->GetTransform()->SetSteering(Steering::Halt());

@@ -84,6 +84,11 @@ Camera::Camera()
 
 Camera::~Camera() {}
 
+FTWindow* Camera::GetRenderWindow() const
+{
+	return mRenderWindow;
+}
+
 Matrix Camera::GetViewRow()
 {
 	float unitsPerPixel = 1 / mPixelsPerUnit;
@@ -143,6 +148,16 @@ float Camera::GetAspectRatio()
 float Camera::GetPixelsPerUnit()
 {
 	return mPixelsPerUnit;
+}
+
+float Camera::GetNearZ()
+{
+	return mNearZ;
+}
+
+float Camera::GetFarZ()
+{
+	return mFarZ;
 }
 
 Vector3& Camera::Position()
@@ -237,24 +252,23 @@ void Camera::LoadProperties(std::ifstream& ifs)
 
 FTVector3 Camera::ConvertScreenPosToWorld(FTVector2 screenPos)
 {
-	FTRectArea* renderArea	 = mRenderWindow->GetRenderArea();
-	FTVector2	renderSize	 = renderArea->GetSize();
-	float		screenWidth	 = static_cast<float>(renderSize.x);
-	float		screenHeight = static_cast<float>(renderSize.y);
+	FTVector2 ndc = ConvertScreenPosToNDC(screenPos);
 
-	FTVector2 topLeft	  = FTVector2::Zero;
-	FTVector2 bottomRight = FTVector2(screenWidth - 1, screenHeight - 1);
+	DirectX::XMVECTOR clipSpacePos	= DirectX::XMVectorSet(ndc.x, ndc.y, 0.0f, 1.0f);
+	DirectX::XMVECTOR viewSpacePos	= DirectX::XMVector4Transform(
+		clipSpacePos, 
+		DirectX::XMMatrixInverse(nullptr, GetProjRow().Transpose())
+	);
+	DirectX::XMVECTOR worldSpacePos = DirectX::XMVector4Transform(
+		viewSpacePos, 
+		DirectX::XMMatrixInverse(nullptr, GetViewRow().Transpose())
+	);
 
-	float nx = (screenPos.x / screenWidth) * 2.f - 1.f;
-	float ny = 1 - (screenPos.y / screenHeight) * 2.f;
-	float z	 = 0.0f;
+	float worldX = DirectX::XMVectorGetX(worldSpacePos);
+	float worldY = DirectX::XMVectorGetY(worldSpacePos);
+	float worldZ = DirectX::XMVectorGetZ(worldSpacePos);
 
-	DirectX::XMVECTOR ndcPos		  = DirectX::XMVectorSet(nx, ny, z, 1.0f);
-	DirectX::XMMATRIX inverseViewProj = DirectX::XMMatrixInverse(nullptr, (GetViewRow() * GetProjRow()));
-	DirectX::XMVECTOR worldPos		  = DirectX::XMVector4Transform(ndcPos, inverseViewProj);
-
-	DirectX::SimpleMath::Vector3 vec3(worldPos);
-	return FTVector3(vec3.x, vec3.y, vec3.z);
+	return FTVector3(worldX, worldX, worldZ);
 }
 
 FTVector2 Camera::ConvertScreenPosToNDC(FTVector2 screenPos)
@@ -263,8 +277,8 @@ FTVector2 Camera::ConvertScreenPosToNDC(FTVector2 screenPos)
 	FTVector2	renderSize = renderArea->GetSize();
 
 	FTVector2 ndc;
-	ndc.x = screenPos.x / renderSize.x * 2 - 1;
-	ndc.y = screenPos.y / renderSize.y * 2 - 1;
+	ndc.x = (screenPos.x / renderSize.x) * 2.f - 1.0f;
+	ndc.y = 1.0f - (screenPos.y / renderSize.y) * 2.f;
 	return ndc;
 }
 
@@ -290,7 +304,7 @@ void Camera::DisplayCameraMenu()
 	// Set Target
 	EditorScene*				editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
 	std::vector<EditorElement*> editorElems;
-	editorElems = EditorSceneManager::GetInstance()->GetEditorScene()->GetEditorElements();
+	editorElems				 = EditorSceneManager::GetInstance()->GetEditorScene()->GetEditorElements();
 	FTDS::String* actorNames = DBG_NEW FTDS::String[editorElems.size() + 1];
 	actorNames[0]			 = "None";
 	size_t		  idx		 = 1;

@@ -12,8 +12,13 @@
 
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
+#include "ResourceSystem/vertex.h"
+#include "Renderer/Camera.h"
+#include "Renderer/FTRectArea.h"
+#include "WindowSystem/FTWindow.h"
 
 using Vector3 = DirectX::SimpleMath::Vector3;
+using Vector4 = DirectX::SimpleMath::Vector4;
 using Matrix  = DirectX::SimpleMath::Matrix;
 
 #ifdef FOXTROT_EDITOR
@@ -28,6 +33,40 @@ const FTVector3&				   Transform::GetWorldPosition() const { return mWorldPositi
 const FTVector3&				   Transform::GetWorldScale() const { return mWorldScale; }
 const FTVector3&				   Transform::GetWorldRotation() const { return mWorldRotation; }
 const DirectX::SimpleMath::Matrix& Transform::GetMatrixWorld() const { return mMatrixWorld; }
+
+const FTVector2 Transform::GetScreenPosition(Camera* camInst) const
+{
+	FTWindow*	window	   = camInst->GetRenderWindow();
+	FTRectArea* renderArea = window->GetRenderArea();
+	FTVector2	renderSize = renderArea->GetSize();
+	FTVector3	worldPos   = GetWorldPosition();
+
+	DirectX::XMVECTOR worldPosDX = DirectX::XMVectorSet(worldPos.x, worldPos.y, worldPos.z, 1.0f);
+	DirectX::XMVECTOR screenPos	 = DirectX::XMVector3Project(
+		 worldPosDX,
+		 0.0f,
+		 0.0f,
+		 renderSize.x,
+		 renderSize.y,
+		 camInst->GetNearZ(),
+		 camInst->GetFarZ(),
+		 camInst->GetProjRow(),
+		 camInst->GetViewRow(),
+		 mMatrixWorld);
+
+	float screenX = DirectX::XMVectorGetX(screenPos);
+	float screenY = DirectX::XMVectorGetY(screenPos);
+	
+	// Without this, the upper left cannot be Vector2::Zero.
+	FTVector2 half = renderSize * 0.5f;
+	FTVector2 pos = FTVector2(screenX, screenY);
+
+	float propX = (pos.x - half.x) / renderSize.x;
+	float propY = (pos.y - half.y) / renderSize.y;
+	FTVector2 relativeAdd = half * FTVector2(propX, propY);
+
+	return FTVector2(screenX, screenY) - relativeAdd;
+}
 
 const FTVector3& Transform::GetRotationDegree() const
 {
@@ -70,14 +109,14 @@ void Transform::SetLocalRotation(const FTVector3 localRot)
 void Transform::SetWorldPosition(const FTVector3 worldPos)
 {
 	mWorldPosition = worldPos;
-	Actor* parent = mOwner->GetParent();
+	Actor* parent  = mOwner->GetParent();
 	if (!parent)
 		SetLocalPosition(worldPos);
 }
 
 void Transform::SetWorldScale(const FTVector3 worldScale)
 {
-	mWorldScale = worldScale;
+	mWorldScale	  = worldScale;
 	Actor* parent = mOwner->GetParent();
 	if (!parent)
 		SetLocalScale(worldScale);
@@ -86,7 +125,7 @@ void Transform::SetWorldScale(const FTVector3 worldScale)
 void Transform::SetWorldRotation(const FTVector3 worldRot)
 {
 	mWorldRotation = worldRot;
-	Actor* parent = mOwner->GetParent();
+	Actor* parent  = mOwner->GetParent();
 	if (!parent)
 		SetLocalRotation(worldRot);
 }
@@ -190,7 +229,7 @@ void Transform::Update()
 
 	for (const Actor* child : mOwner->GetChildActors())
 		child->GetTransform()->Update();
-	//FTVector3::DecomposeMatrix(mWorldScale, mWorldRotation, mWorldPosition, mMatrixWorld);
+	// FTVector3::DecomposeMatrix(mWorldScale, mWorldRotation, mWorldPosition, mMatrixWorld);
 }
 
 void Transform::CloneTo(Transform* target)
@@ -241,23 +280,31 @@ void Transform::UpdateUI()
 {
 	if (!mOwner->GetParent()) // The owner does not have parent Actor.
 	{
-		CommandHistory::GetInstance()->UpdateVector3Value("World Position", mWorldPosition);
-		CommandHistory::GetInstance()->UpdateVector3Value("World Scale", mWorldScale);
-		CommandHistory::GetInstance()->UpdateVector3Value("World Rotation", mWorldRotation);
+		FTVector3 worldPos = mWorldPosition;
+		FTVector3 worldScale = mWorldScale;
+		FTVector3 worldRot = mWorldRotation;
 
-		SetWorldPosition(mWorldPosition);
-		SetWorldScale(mWorldScale);
-		SetWorldRotation(mWorldRotation);
+		CommandHistory::GetInstance()->UpdateVector3Value("World Position", worldPos);
+		CommandHistory::GetInstance()->UpdateVector3Value("World Scale", worldScale);
+		CommandHistory::GetInstance()->UpdateVector3Value("World Rotation", worldRot);
+
+		SetWorldPosition(worldPos);
+		SetWorldScale(worldScale);
+		SetWorldRotation(worldRot);
 	}
 	else
 	{
-		CommandHistory::GetInstance()->UpdateVector3Value("Local Position", mLocalPosition);
-		CommandHistory::GetInstance()->UpdateVector3Value("Local Scale", mLocalScale);
-		CommandHistory::GetInstance()->UpdateVector3Value("Local Rotation", mLocalRotation);
+		FTVector3 localPos = mLocalPosition;
+		FTVector3 localScale = mLocalScale;
+		FTVector3 localRot = mLocalRotation;
 
-		SetLocalPosition(mLocalPosition);
-		SetLocalScale(mLocalScale);
-		SetLocalRotation(mLocalRotation);
+		CommandHistory::GetInstance()->UpdateVector3Value("Local Position", localPos);
+		CommandHistory::GetInstance()->UpdateVector3Value("Local Scale", localScale);
+		CommandHistory::GetInstance()->UpdateVector3Value("Local Rotation", localRot);
+
+		SetLocalPosition(localPos);
+		SetLocalScale(localScale);
+		SetLocalRotation(localRot);
 	}
 }
 #endif // FOXTROT_EDITOR

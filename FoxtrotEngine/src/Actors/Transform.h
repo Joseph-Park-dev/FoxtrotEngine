@@ -13,9 +13,13 @@
 #pragma once
 #include "Math/FTMath.h"
 
+#include <directxtk/SimpleMath.h>
+
 #include "Components/CharacterAI/Steering.h"
 
 class Actor;
+class Vertex;
+class Camera;
 
 class Transform
 {
@@ -34,6 +38,9 @@ public:
 	const FTVector3&				   GetWorldScale() const;
 	const FTVector3&				   GetWorldRotation() const;
 	const DirectX::SimpleMath::Matrix& GetMatrixWorld() const;
+
+	// Screen Position
+	const FTVector2 GetScreenPosition(Camera* camInst) const;
 
 	const FTVector3& GetRotationDegree() const;
 

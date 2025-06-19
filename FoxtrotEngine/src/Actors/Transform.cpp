@@ -41,31 +41,20 @@ const FTVector2 Transform::GetScreenPosition(Camera* camInst) const
 	FTVector2	renderSize = renderArea->GetSize();
 	FTVector3	worldPos   = GetWorldPosition();
 
-	DirectX::XMVECTOR worldPosDX = DirectX::XMVectorSet(worldPos.x, worldPos.y, worldPos.z, 1.0f);
-	DirectX::XMVECTOR screenPos	 = DirectX::XMVector3Project(
-		 worldPosDX,
-		 0.0f,
-		 0.0f,
-		 renderSize.x,
-		 renderSize.y,
-		 camInst->GetNearZ(),
-		 camInst->GetFarZ(),
-		 camInst->GetProjRow(),
-		 camInst->GetViewRow(),
-		 mMatrixWorld);
+	Vector4 origin = Vector4::Zero;
+	origin.w	   = 1.0f;
+	origin		   = Vector4::Transform(origin, mMatrixWorld);
+	origin		   = Vector4::Transform(origin, camInst->GetViewRow());
+	origin		   = Vector4::Transform(origin, camInst->GetProjRow());
 
-	float screenX = DirectX::XMVectorGetX(screenPos);
-	float screenY = DirectX::XMVectorGetY(screenPos);
-	
-	// Without this, the upper left cannot be Vector2::Zero.
-	FTVector2 half = renderSize * 0.5f;
-	FTVector2 pos = FTVector2(screenX, screenY);
+	origin.x /= origin.w;
+	origin.y /= origin.w;
+	origin.z /= origin.w;
 
-	float propX = (pos.x - half.x) / renderSize.x;
-	float propY = (pos.y - half.y) / renderSize.y;
-	FTVector2 relativeAdd = half * FTVector2(propX, propY);
+	float screenX = (origin.x + 1) * 0.5 * renderSize.x;
+	float screenY = (1 - origin.y) * 0.5 * renderSize.y;
 
-	return FTVector2(screenX, screenY) - relativeAdd;
+	return FTVector2(screenX, screenY);
 }
 
 const FTVector3& Transform::GetRotationDegree() const

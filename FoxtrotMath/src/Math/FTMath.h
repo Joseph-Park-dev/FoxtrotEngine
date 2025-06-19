@@ -206,7 +206,7 @@ public:
 		return FTVector3(vec.x * scalar, vec.y * scalar, vec.z * scalar);
 	}
 
-	friend FTVector3 operator/(float scalar, const FTVector3& vec)
+	friend FTVector3 operator/(const FTVector3& vec, float scalar)
 	{
 		assert(scalar != 0);
 		return FTVector3(vec.x / scalar, vec.y / scalar, vec.z / scalar);

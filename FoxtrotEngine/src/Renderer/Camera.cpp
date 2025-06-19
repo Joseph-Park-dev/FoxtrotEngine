@@ -68,7 +68,7 @@ Camera::Camera()
 	: mRenderWindow(nullptr)
 	, mTarget(nullptr)
 	, mPosition(Vector3(0.0f, 0.0f, -5.0f))
-	, mFrontDir(Vector3(0.0f, 0.0f, -1.0f))
+	, mFrontDir(Vector3(0.0f, 0.0f, 1.0f))
 	, mUpDir(Vector3(0.0f, -1.0f, 0.0f))
 	, mRightDir(Vector3(1.0f, 0.0f, 0.0f))
 	, mPitch(0.0f)
@@ -91,7 +91,6 @@ FTWindow* Camera::GetRenderWindow() const
 
 Matrix Camera::GetViewRow()
 {
-	float unitsPerPixel = 1 / mPixelsPerUnit;
 	if (mTarget)
 	{
 		Transform* transform = mTarget->GetTransform();
@@ -120,12 +119,12 @@ Matrix Camera::GetProjRow()
 			  0.0f, worldWidth, worldHeight, 0.0f, mNearZ, mFarZ);
 }
 
-Vector3 Camera::GetEyePos()
+const FTVector3& Camera::GetPosition() const
 {
 	return mPosition;
 }
 
-FTVector2& Camera::GetResolution() const
+const FTVector2& Camera::GetResolution() const
 {
 	return mRenderWindow->GetRenderArea()->GetSize();
 }
@@ -160,6 +159,11 @@ float Camera::GetFarZ()
 	return mFarZ;
 }
 
+const FTVector3& Camera::GetOffSet() const
+{
+	return mOffset;
+}
+
 Vector3& Camera::Position()
 {
 	return mPosition;
@@ -180,6 +184,11 @@ Vector3& Camera::RightDir()
 	return mRightDir;
 }
 
+void Camera::SetPosition(FTVector3 pos)
+{
+	mPosition = pos.GetDXVec3();
+}
+
 void Camera::SetTargetActor(Actor* actor)
 {
 	mTarget = actor;
@@ -190,7 +199,7 @@ void Camera::SetViewType(Viewtype viewType)
 	mViewType = viewType;
 }
 
-void Camera::SetOffset(FTVector2 offset)
+void Camera::SetOffset(FTVector3 offset)
 {
 	mOffset = offset;
 }
@@ -281,72 +290,3 @@ FTVector2 Camera::ConvertScreenPosToNDC(FTVector2 screenPos)
 	ndc.y = 1.0f - (screenPos.y / renderSize.y) * 2.f;
 	return ndc;
 }
-
-#ifdef FOXTROT_EDITOR
-void Camera::DisplayCameraMenu()
-{
-	ImGui::Begin("Main Camera");
-
-	CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", mPosition, LOOKAT_MODSPEED);
-
-	/*float yaw	= mYaw;
-	float pitch = mPitch;*/
-
-	// CommandHistory::GetInstance()->UpdateFloatValue("Look-At Yaw", yaw, LOOKAT_MODSPEED);
-	// CommandHistory::GetInstance()->UpdateFloatValue("Look-At Pitch", mPitch, LOOKAT_MODSPEED);
-
-	/*if (yaw != mYaw || pitch != mPitch)
-	{
-		mYaw = yaw; mPitch = pitch;
-		UpdateViewDirections();
-	}*/
-
-	// Set Target
-	EditorScene*				editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
-	std::vector<EditorElement*> editorElems;
-	editorElems				 = EditorSceneManager::GetInstance()->GetEditorScene()->GetEditorElements();
-	FTDS::String* actorNames = DBG_NEW FTDS::String[editorElems.size() + 1];
-	actorNames[0]			 = "None";
-	size_t		  idx		 = 1;
-	static size_t currIdx;
-
-	for (size_t i = 0; i < editorElems.size(); ++i)
-		actorNames[i] = editorElems.at(i)->GetName();
-
-	const char* comboPreview = actorNames[currIdx].C_Str();
-	if (ImGui::BeginCombo(ChunkKey::TARGET_ACTOR, comboPreview))
-	{
-		for (size_t i = 0; i < idx; ++i)
-		{
-			if (ImGui::Selectable(actorNames[i].C_Str()))
-			{
-				currIdx = i;
-				if (currIdx == 0)
-					mTarget = nullptr;
-				else
-					mTarget = editorScene->FindEditorElement(actorNames[currIdx], nullptr);
-			}
-		}
-		ImGui::EndCombo();
-	}
-	delete[] actorNames;
-	CommandHistory::GetInstance()->UpdateVector3Value("Offset from target", mOffset, LOOKAT_MODSPEED);
-
-	if (ImGui::Button("2D"))
-	{
-		FoxtrotRenderer* renderer = FTCoreEditor::GetInstance()->GetGameRenderer();
-		if (GetViewType() == Viewtype::Perspective)
-		{
-			SetViewType(Viewtype::Orthographic);
-			LogString("Orthographic");
-		}
-		else if (GetViewType() == Viewtype::Orthographic)
-		{
-			SetViewType(Viewtype::Perspective);
-			LogString("Perspective");
-		}
-	}
-
-	ImGui::End();
-}
-#endif // FOXTROT_EDITOR

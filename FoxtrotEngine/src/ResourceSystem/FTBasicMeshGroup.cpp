@@ -155,7 +155,7 @@ void FTBasicMeshGroup::Render(FoxtrotRenderer* renderer, int meshIndex)
 	if (mesh)
 	{
 		context->VSSetConstantBuffers(
-			0, mesh->VertexConstantBuffers.size(), mesh->VertexConstantBuffers.data()->GetAddressOf());
+			0, 1, mVertexConstBuffer.GetAddressOf());
 
 		if (mTexture)
 		{

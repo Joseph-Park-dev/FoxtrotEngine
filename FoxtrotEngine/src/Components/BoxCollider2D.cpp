@@ -77,6 +77,11 @@ void BoxCollider2D::Setup()
 	Component::Setup();
 }
 
+void BoxCollider2D::Render(FoxtrotRenderer* renderer)
+{
+	UpdateDebugShape(Camera::GetInstance());
+}
+
 void BoxCollider2D::CloneTo(Actor* actor)
 {
 	BoxCollider2D* newComp = DBG_NEW BoxCollider2D(actor, GetUpdateOrder());
@@ -105,6 +110,26 @@ BoxCollider2D::~BoxCollider2D()
 #endif
 }
 
+void BoxCollider2D::UpdateDebugShape(Camera* camInst)
+{
+	if (mDebugRect)
+		mDebugRect->SetIsActive(IsShowingDebugShape());
+
+	if (IsShowingDebugShape())
+	{
+		Transform* transform = GetOwner()->GetTransform();
+		FTVector2 offset = GetOffsetPos();
+		Matrix translationMat = Matrix::CreateTranslation(offset.x, offset.y, 0.0f);
+		Matrix modelMat = translationMat * transform->GetMatrixWorld();
+
+		mDebugRect->UpdateVC(modelMat, camInst);
+		mDebugRect->UpdateGC(camInst);
+		mDebugRect->GetGSCData().size.x = mSize.x;
+		mDebugRect->GetGSCData().size.y = mSize.y;
+	}
+	mDebugRect->UpdatePC();
+}
+
 void BoxCollider2D::SaveProperties(std::ofstream& ofs)
 {
 	Collider2D::SaveProperties(ofs);
@@ -120,26 +145,11 @@ void BoxCollider2D::LoadProperties(std::ifstream& ifs)
 #ifdef FOXTROT_EDITOR
 void BoxCollider2D::EditorUpdate(float deltaTime)
 {
-	if (mDebugRect)
-		mDebugRect->SetIsActive(IsShowingDebugShape());
-
-	if (IsShowingDebugShape())
-	{
-		Transform* transform = GetOwner()->GetTransform();
-		FTVector2 offset = GetOffsetPos();
-		Matrix translationMat = Matrix::CreateTranslation(offset.x, offset.y, transform->GetWorldPosition().z); // Rotate around Y-axis
-		Matrix modelMat = translationMat * transform->GetMatrixWorld();
-
-		mDebugRect->UpdateVC(modelMat, Camera::GetInstance());
-		mDebugRect->UpdateGC(Camera::GetInstance());
-		mDebugRect->GetGSCData().size.x = mSize.x;
-		mDebugRect->GetGSCData().size.y = mSize.y;
-	}
-	mDebugRect->UpdatePC();
 }
 
 void BoxCollider2D::EditorRender(FoxtrotRenderer* renderer)
 {
+	UpdateDebugShape(EditorCamera::GetInstance());
 }
 
 void BoxCollider2D::EditorUIUpdate()

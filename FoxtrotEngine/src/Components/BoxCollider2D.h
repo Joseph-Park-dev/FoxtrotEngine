@@ -32,6 +32,7 @@ public:
 public:
 	virtual void Initialize(FTCore* coreInstance) override;
 	virtual void Setup() override;
+	virtual void Render(FoxtrotRenderer* renderer) override;
 
 public:
 	BoxCollider2D(
@@ -42,6 +43,9 @@ public:
 
 private:
 	FTVector2 mSize;
+
+private:
+	void UpdateDebugShape(Camera* camInst) override;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;

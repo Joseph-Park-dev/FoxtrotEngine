@@ -10,9 +10,11 @@
 
 #include <directxtk/SimpleMath.h>
 
-#include "InputSystem/FTInputDevice.h"
-#include "EditorLayer.h"
-#include "ResourceSystem/FTRectangle.h"
+#include <InputSystem/FTInputDevice.h>
+#include <ResourceSystem/FTRectangle.h>
+
+#include <EditorLayer.h>
+#include <EditorSceneManager.h>
 
 EditorCamera::EditorCamera()
 	: Camera()
@@ -50,7 +52,7 @@ void EditorCamera::Update(float deltaTime)
 {
 	Camera::Update(deltaTime);
 
-	mPanKeyPressed = ImGui::IsKeyDown(ImGuiMod_Shift) && ImGui::IsMouseDragging(ImGuiMouseButton_Middle);
+	mPanKeyPressed		= ImGui::IsKeyDown(ImGuiMod_Shift) && ImGui::IsMouseDragging(ImGuiMouseButton_Middle);
 	mRotationKeyPressed = ImGui::IsMouseDragging(ImGuiMouseButton_Middle);
 
 	if (mRotationKeyPressed)
@@ -73,9 +75,9 @@ void EditorCamera::Update(float deltaTime)
 
 	/*Camera* cam = Camera::GetInstance();
 	mDebugRect->UpdateVC(
-		cam->GetEyePos(), 
-		FTVector3::Zero, 
-		FTVector3(1.0f, 1.0f, 1.0f), 
+		cam->GetEyePos(),
+		FTVector3::Zero,
+		FTVector3(1.0f, 1.0f, 1.0f),
 		this);
 
 	FTVector2 resRatio = FTVector2(cam->GetAspectRatio(), 1.f);
@@ -93,4 +95,93 @@ void EditorCamera::PanLocalXY(ImVec2 vec2)
 void EditorCamera::Zoom()
 {
 	Position().z += mZoomDelta;
+}
+
+void EditorCamera::DisplayMainCameraMenu()
+{
+	ImVec2 area = ImVec2(ImGui::GetContentRegionAvail().x, 150.f);
+	ImGui::BeginChild("Main Camera", area);
+	ImGui::SeparatorText("Main Camera");
+
+	FTVector3 pos = Camera::GetInstance()->GetPosition();
+	CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", pos, LOOKAT_MODSPEED);
+	Camera::GetInstance()->SetPosition(pos);
+
+	/*float yaw	= mYaw;
+	float pitch = mPitch;*/
+
+	// CommandHistory::GetInstance()->UpdateFloatValue("Look-At Yaw", yaw, LOOKAT_MODSPEED);
+	// CommandHistory::GetInstance()->UpdateFloatValue("Look-At Pitch", mPitch, LOOKAT_MODSPEED);
+
+	/*if (yaw != mYaw || pitch != mPitch)
+	{
+		mYaw = yaw; mPitch = pitch;
+		UpdateViewDirections();
+	}*/
+
+	// Set Target
+	EditorScene*				editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
+	std::vector<EditorElement*> editorElems;
+	editorElems				 = EditorSceneManager::GetInstance()->GetEditorScene()->GetEditorElements();
+	FTDS::String* actorNames = DBG_NEW FTDS::String[editorElems.size() + 1];
+	actorNames[0]			 = "None";
+	size_t		  idx		 = 1;
+	static size_t currIdx;
+
+	for (size_t i = 0; i < editorElems.size(); ++i)
+		actorNames[i] = editorElems.at(i)->GetName();
+
+	const char* comboPreview = actorNames[currIdx].C_Str();
+	if (ImGui::BeginCombo(ChunkKey::TARGET_ACTOR, comboPreview))
+	{
+		for (size_t i = 0; i < idx; ++i)
+		{
+			if (ImGui::Selectable(actorNames[i].C_Str()))
+			{
+				currIdx = i;
+				if (currIdx == 0)
+					SetTargetActor(nullptr);
+				else
+				{
+					EditorElement* actor = editorScene->FindEditorElement(actorNames[currIdx], nullptr);
+					SetTargetActor(actor);
+				}
+			}
+		}
+		ImGui::EndCombo();
+	}
+	delete[] actorNames;
+
+	FTVector3 offset = Camera::GetInstance()->GetOffSet();
+	CommandHistory::GetInstance()->UpdateVector3Value("Offset from target", offset, LOOKAT_MODSPEED);
+	Camera::GetInstance()->SetOffset(offset);
+
+	if (ImGui::Button("2D"))
+	{
+		FoxtrotRenderer* renderer = FTCoreEditor::GetInstance()->GetGameRenderer();
+		if (GetViewType() == Viewtype::Perspective)
+		{
+			SetViewType(Viewtype::Orthographic);
+			LogString("Orthographic");
+		}
+		else if (GetViewType() == Viewtype::Orthographic)
+		{
+			SetViewType(Viewtype::Perspective);
+			LogString("Perspective");
+		}
+	}
+
+	ImGui::EndChild();
+}
+
+void EditorCamera::DisplayEditorCameraMenu()
+{
+	ImGui::BeginChild("Editor Camera");
+	ImGui::SeparatorText("Editor Camera");
+
+	FTVector3 pos = this->GetPosition();
+	CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", pos, LOOKAT_MODSPEED);
+	this->SetPosition(pos);
+
+	ImGui::EndChild();
 }

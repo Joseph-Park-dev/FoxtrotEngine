@@ -48,12 +48,13 @@ public:
 	FTVector3 ConvertScreenPosToWorld(FTVector2 screenPos);
 	FTVector2 ConvertScreenPosToNDC(FTVector2 screenPos);
 
+	FTVector3 ConvertToCenter(FTVector3 topLeftPos, FTVector2 renderSize);
+	FTVector3 ConvertToTopLeft(FTVector3 centerPos, FTVector2 renderSize);
+
 public:
-	FTWindow*  GetRenderWindow() const;
-	Matrix	   GetViewRow();
-	Matrix	   GetProjRow();
-	Vector3	   GetEyePos();
-	FTVector2& GetResolution() const;
+	FTWindow* GetRenderWindow() const;
+	Matrix	  GetViewRow();
+	Matrix	  GetProjRow();
 
 	Viewtype GetViewType();
 	float	 GetProjFOVAngleY();
@@ -62,9 +63,14 @@ public:
 	float	 GetNearZ();
 	float	 GetFarZ();
 
-	void SetTargetActor(Actor* actor);
+	const FTVector3& GetPosition() const;
+	const FTVector2& GetResolution() const;
+	const FTVector3& GetOffSet() const;
+
+	void SetPosition(FTVector3 pos);
 	void SetViewType(Viewtype viewType);
-	void SetOffset(FTVector2 offset);
+	void SetTargetActor(Actor* actor);
+	void SetOffset(FTVector3 offset);
 
 protected:
 	Vector3& Position();
@@ -109,9 +115,6 @@ private:
 private:
 	void InitializePixelsPerUnit(UINT pixels, float units = 1.f);
 
-	FTVector3 ConvertToCenter(FTVector3 topLeftPos, FTVector2 renderSize);
-	FTVector3 ConvertToTopLeft(FTVector3 centerPos, FTVector2 renderSize);
-
 public:
 	void SaveProperties(std::ofstream& ofs);
 	void LoadProperties(std::ifstream& ifs);
@@ -120,8 +123,5 @@ public:
 private:
 	ImVec2 mMiddleMouseClickedPos;
 	ImVec2 mMiddleMouseClickedRot;
-
-public:
-	void DisplayCameraMenu();
 #endif // FOXTROT_EDITOR
 };

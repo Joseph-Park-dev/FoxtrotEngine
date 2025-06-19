@@ -19,6 +19,10 @@ class EditorCamera :
 	SINGLETON(EditorCamera)
 
 public:
+	void DisplayMainCameraMenu();
+	void DisplayEditorCameraMenu();
+
+public:
 	FTRectangle* GetDebugRect();
 
 public:

@@ -15,6 +15,8 @@
 #include "ResourceSystem/FTShape.h"
 #include "Renderer/FoxtrotRenderer.h"
 
+class FTRectangle;
+
 // This provides a context to render shapes as DebugShapes
 class DebugShapes
 {

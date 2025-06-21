@@ -32,9 +32,11 @@ class EditorElement :
 public:
 	const bool	 GetIsFocused() const;
 	const size_t GetHierarchyLevel() const;
+	const bool GetIsDisplayed() const;
 
 	void SetIsFocused(bool isFocused);
 	void SetHierarchyLevel(size_t lv);
+	void SetIsDisplayed(bool isDisplayed);
 
 public:
 	void Initialize(FTCore* coreInst) override;
@@ -53,10 +55,9 @@ public:
 
 public:
 	/// <summary>
-	/// Constructor that adds an Empty EditorElement to the scene.
-	/// </summary>
-	/// <param name="scene : ">A scene object which this EditorElement is loaded to.</param>
-	EditorElement(EditorScene* scene);
+	/// Constructor that creates empty EditorElement.
+	/// It should be added to the EditorScene manually.
+	EditorElement();
 
 	/// <summary>
 	/// Constructor that deep-copies an Actor object.
@@ -65,34 +66,21 @@ public:
 	EditorElement(Actor* actor);
 
 	/// <summary>
-	/// Constructor that deep-copies an Actor object.
-	/// </summary>
-	/// <param name="origin : ">An Actor object to deep-copy values from.</param>
-	/// <param name="scene : ">A scene object which this EditorElement is loaded to.</param>
-	EditorElement(Actor* actor, EditorScene* scene);
-
-	/// <summary>
 	/// Constructor that is used for FTPremade origin.
-	/// This Fetches the FTPremade origin, makes EditorElement and adds itself to EditorScene.
+	/// This Fetches the FTPremade origin, makes EditorElement.
 	/// Not recommended to use outside of FTPremade
-	/// </summary>
-	/// <param name="origin : ">Actor nested inside of Premade to copy values from. </param>
-	EditorElement(FTPremade* premade, EditorScene* scene);
-
-	/// <summary>
-	/// Constructor that adds a deep-copied EditorElement to the Scene.
-	/// </summary>
-	/// <param name="element : ">An EditorElement to deep-copy values from.</param>
-	/// <param name="scene : ">A scene object which this EditorElement is loaded to.</param>
-	EditorElement(EditorElement* element, EditorScene* scene);
+	EditorElement(FTPremade* premade);
 
 private:
-	bool   mIsFocused;		// Is this item clicked on Foxtrot Editor's hierarchy menu?
+	bool   mIsFocused;		// Is this item clicked on Foxtrot Editor's Hierarchy menu?
 	size_t mHierarchyLevel; // How many parent Actors are there for this object?
+
+	bool mIsDisplayed;  // Is this item displayed on Hierarchy menu during this frame?
 
 private:
 	void UpdateActorName();
 	void UpdateActorGroup();
+	void UpdateDrawOrder();
 	void UpdateActorState();
 
 	void UpdateComponentsUI();

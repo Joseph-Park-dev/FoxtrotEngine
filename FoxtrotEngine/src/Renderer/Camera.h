@@ -32,6 +32,7 @@ namespace ChunkKey
 	constexpr const char* RENDER_RESOLUTION	  = "Render Resolution";
 	constexpr const char* RENDER_SCREENCENTER = "Screen Center";
 	constexpr const char* CAM_POSITION		  = "Position";
+	constexpr const char* CAM_OFFSET		  = "Offset";
 } // namespace ChunkKey
 
 enum class Viewtype

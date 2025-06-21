@@ -411,6 +411,8 @@ void EditorLayer::ProcessDropEvent(EditorElement* target)
 			if (child->GetParent() == target)
 			{
 				target->RemoveChild(child);
+				if (target->GetParent())
+					target->GetParent()->AddChild(child);
 				child->SetHierarchyLevel(target->GetHierarchyLevel());
 				SetHierarchyLvRecurse(child, -1);
 			}

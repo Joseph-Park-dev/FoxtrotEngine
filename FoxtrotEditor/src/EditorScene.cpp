@@ -115,8 +115,16 @@ void EditorScene::AddEditorElement()
 void EditorScene::AddEditorElement(Actor* actor)
 {
 	UnfocusEditorElements();
+
 	EditorElement* element = DBG_NEW EditorElement(actor);
-	mEditorElements.emplace_back(element);
+	int	 drawOrder = element->GetDrawOrder();
+	auto iter	   = mEditorElements.begin();
+	for (; iter != mEditorElements.end(); ++iter)
+	{
+		if (drawOrder < (*iter)->GetDrawOrder())
+			break;
+	}
+	mEditorElements.insert(iter, element);
 }
 
 EditorElement* EditorScene::FindEditorElement(FTDS::String& name, Actor* filter)

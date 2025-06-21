@@ -75,16 +75,19 @@ void ChunkLoader::SaveActorsData(std::ofstream& out)
 
 void ChunkLoader::LoadActorsData(std::ifstream& ifs)
 {
-	Scene*							 scene = SceneManager::GetInstance()->GetCurrentScene();
-	std::pair<size_t, FTDS::String>&& pack  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
+	std::pair<size_t, FTDS::String>&& pack	= FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
 	for (size_t i = 0; i < pack.first; ++i)
 	{
 		std::pair<size_t, FTDS::String>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
-		Actor* actor							   = DBG_NEW Actor(scene);
+
+		Actor* actor = DBG_NEW Actor();
 		actor->LoadProperties(ifs);
 		actor->LoadComponents(ifs);
 		actor->Initialize(FTCore::GetInstance());
 		actor->Setup();
+
+		Scene* scene = SceneManager::GetInstance()->GetCurrentScene();
+		scene->AddActor(actor, actor->GetActorGroup());
 	}
 }
 
@@ -131,8 +134,8 @@ ChunkLoader::ChunkLoader()
 	mComponentLoadMap.Insert("MeshRenderer", &Component::Load<MeshRenderer>);
 	mComponentLoadMap.Insert("SpineAnimator", &Component::Load<SpineAnimator>);
 	mComponentLoadMap.Insert("ButtonUI", &Component::Load<ButtonUI>);
-	mComponentLoadMap.Insert("Seek", &Component::Load<Seek> );
-	mComponentLoadMap.Insert("Flee", &Component::Load<Flee> );
+	mComponentLoadMap.Insert("Seek", &Component::Load<Seek>);
+	mComponentLoadMap.Insert("Flee", &Component::Load<Flee>);
 };
 
 ChunkLoader::~ChunkLoader() {}

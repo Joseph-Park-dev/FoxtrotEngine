@@ -132,6 +132,14 @@ EditorElement::EditorElement(Actor* actor)
 {
 }
 
+EditorElement::EditorElement(Actor* actor, bool deepCpyChild)
+	: Actor(actor, deepCpyChild)
+	, mIsFocused(false)
+	, mHierarchyLevel(0)
+	, mIsDisplayed(false)
+{
+}
+
 EditorElement::EditorElement(FTPremade* premade)
 	: Actor(premade)
 	, mIsFocused(false)

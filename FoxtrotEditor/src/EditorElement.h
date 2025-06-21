@@ -66,6 +66,13 @@ public:
 	EditorElement(Actor* actor);
 
 	/// <summary>
+	/// Copy constructors controlling if the object is deep copied.
+	/// </summary>
+	/// <param name="actor">Actor being copied.</param>
+	/// <param name="deepCpy">Perform deep copy through child Actors?</param>
+	EditorElement(Actor* actor, bool deepCpyChild);
+
+	/// <summary>
 	/// Constructor that is used for FTPremade origin.
 	/// This Fetches the FTPremade origin, makes EditorElement.
 	/// Not recommended to use outside of FTPremade

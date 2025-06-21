@@ -105,28 +105,26 @@ void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
 	for (size_t i = 0; i < pack.first; ++i)
 	{
 		std::pair<size_t, FTDS::String>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
-		Actor* actor								= DBG_NEW Actor();
-		actor->LoadProperties(ifs);
-		actor->LoadComponents(ifs);
-		// AddEditorElement() will be called internally.
-		//if (0 < actor->GetChildActors().size())
-		//{
-		//	for (Actor* child : actor->GetChildActors())
-		//	{
-		//		delete child;
-		//		child = nullptr;
-		//	}
-		//}
-		actorBuf.push_back(actor);
+		Actor							  actor		= Actor();
+		actor.LoadProperties(ifs);
+		actor.LoadComponents(ifs);
+		scene->AddEditorElement(&actor);
+
+		if (actor.GetParent())
+		{
+			delete actor.GetParent();
+			actor.SetParent(nullptr);
+		}
+
+		if (0 < actor.GetChildActors().size())
+		{
+			for (Actor* child : actor.GetChildActors())
+			{
+				delete child;
+				child = nullptr;
+			}
+		}
 	}
-
-	for (Actor* actor : actorBuf)
-		scene->AddEditorElement(actor);
-
-	std::vector<EditorElement*> elements = EditorSceneManager::GetInstance()->GetEditorScene()->GetEditorElements();
-
-	for (Actor* actor : actorBuf)
-		delete actor;
 
 	EditorSceneManager::GetInstance()->GetEditorScene()->Initialize(FTCoreEditor::GetInstance());
 	EditorSceneManager::GetInstance()->GetEditorScene()->Setup();

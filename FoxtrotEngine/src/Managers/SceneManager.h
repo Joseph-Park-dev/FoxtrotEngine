@@ -1,12 +1,12 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 /// <summary>
-/// A singleton manager that holds a Scene instance, switches a Scene, 
+/// A singleton manager that holds a Scene instance, switches a Scene,
 /// and runs the Scene as a part of the game loop.
 /// </summary>
 
@@ -19,36 +19,35 @@ class FoxtrotRenderer;
 class FTInputDevice;
 
 #ifndef FOXTROT_EDITOR // If it's not on Editor.
-#define FIND_ACTOR(name) SceneManager::GetInstance()->GetCurrentScene()->FindActor(name)
+	#define FIND_ACTOR(name) SceneManager::GetInstance()->GetCurrentScene()->FindActor(name)
 #endif // FOXTROT_EDITOR
-
 
 class SceneManager
 {
 	SINGLETON(SceneManager)
 
 public:
-			void	SwitchScene(size_t index);
-			Scene*	GetCurrentScene();
+	void   SwitchScene(size_t index);
+	Scene* GetCurrentScene();
 
 public:
 	std::vector<FTDS::String>& GetChunkList();
-	void					  SetChunkListPath(FTDS::String&& path);
+	void					   SetChunkListPath(FTDS::String&& path);
 
 public:
-	virtual void Initialize		();
-	virtual void ProcessInput	(FTInputDevice* inputDevice);
-	virtual void Update			(float deltaTime);
-	virtual void Lateupdate		(float deltaTime);
-	virtual void Render			(FoxtrotRenderer* renderer);
-	virtual void ProcessEvent	();
+	virtual void Initialize();
+	virtual void ProcessInput(FTInputDevice* inputDevice);
+	virtual void Update(float deltaTime);
+	virtual void Lateupdate(float deltaTime);
+	virtual void Render(FoxtrotRenderer* renderer);
+	virtual void ProcessEvent();
 
 public:
-			void SaveSceneList(std::ofstream& ofs);
+	void SaveSceneList(std::ofstream& ofs);
 
 private:
-	FTDS::String				 mChunkListPath;
-	
-	Scene*					 mCurrentScene;
+	FTDS::String mChunkListPath;
+
+	Scene*					  mCurrentScene;
 	std::vector<FTDS::String> mChunkList; // List, and order of .chunks
 };

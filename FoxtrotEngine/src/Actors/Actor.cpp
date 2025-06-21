@@ -63,6 +63,27 @@ Actor::Actor(Actor* actor)
 	CopyComponentsFrom(actor);
 }
 
+Actor::Actor(Actor* actor, bool deepCpyChild)
+	: mName("New Copied Actor")
+	, mActorGroup(actor->mActorGroup)
+	, mState(EActive)
+	, mTransform(DBG_NEW Transform(this))
+	, mComponents()
+	, mParent(actor->mParent)
+	, mChild{}
+	, mDrawOrder(actor->mDrawOrder)
+{
+	mName.Assign(actor->GetNameRef());
+
+	if (deepCpyChild)
+		CopyChildObjectFrom(actor);
+	else
+		RefChildObjectFrom(actor);
+
+	CopyTransformFrom(actor);
+	CopyComponentsFrom(actor);
+}
+
 Actor::Actor(FTPremade* premade)
 	: Actor(premade->GetOrigin())
 {
@@ -81,9 +102,7 @@ Actor::~Actor()
 		delete mComponents[i];
 	mComponents.clear();
 
-	for (size_t i = 0; i < mChild.size(); ++i)
-		mChild.clear();
-
+	mChild.clear();
 	mParent = nullptr;
 }
 
@@ -287,11 +306,14 @@ void Actor::LoadProperties(std::ifstream& ifs)
 	size_t childCount = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CHILD).first;
 	for (size_t i = 0; i < childCount; ++i)
 	{
-		FTDS::String name;
-		FileIOHelper::LoadBasicString(ifs, name);
-		Actor* pending = DBG_NEW Actor;
-		pending->SetName(name);
-		mChild.push_back(pending);
+		FTDS::String childName;
+		FileIOHelper::LoadBasicString(ifs, childName);
+		if (childName.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
+		{
+			Actor* pending = DBG_NEW Actor;
+			pending->SetName(childName);
+			AddChild(pending);
+		}
 	}
 
 	FTDS::String parentName;
@@ -300,11 +322,10 @@ void Actor::LoadProperties(std::ifstream& ifs)
 	{
 		Actor* pending = DBG_NEW Actor;
 		pending->SetName(parentName);
-		mParent = pending;
+		SetParent(pending);
 	}
 
 	int stateInt = 0;
-	;
 	FileIOHelper::LoadInt(ifs, stateInt);
 	SetState(static_cast<State>(stateInt));
 

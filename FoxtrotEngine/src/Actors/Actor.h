@@ -50,6 +50,13 @@ public:
 	Actor(Actor* actor);
 
 	/// <summary>
+	/// Copy constructors controlling if the object is deep copied.
+	/// </summary>
+	/// <param name="actor">Actor being copied.</param>
+	/// <param name="deepCpy">Perform deep copy through child Actors?</param>
+	Actor(Actor* actor, bool deepCpyChild);
+
+	/// <summary>
 	/// Copies the origin from the FTPremade into this object, adding it to the scene
 	/// </summary>
 	/// <param name="premade : ">Premade to copy origin from.</param>

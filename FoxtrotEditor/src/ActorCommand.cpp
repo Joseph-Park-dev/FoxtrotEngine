@@ -9,7 +9,7 @@ void ActorAdditionCommand::Do()
 	ActorCommand::Do();
 
 	EditorScene*   scene   = EditorSceneManager::GetInstance()->GetEditorScene();
-	EditorElement* element = DBG_NEW EditorElement(GetVal(), scene);
+	EditorElement* element = DBG_NEW EditorElement(GetVal());
 }
 
 void ActorAdditionCommand::Undo()

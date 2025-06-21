@@ -40,8 +40,8 @@ public:
 
 struct BlinnPhongData
 {
-	FTVector3 Ambient	= FTVector3(0.5f);
-	float	  Shininess = 0.5f;
+	FTVector3 Ambient	= FTVector3::Zero;
+	float	  Shininess = 0.0f;
 	FTVector3 Diffuse	= FTVector3(0.5f);
 	float	  dummy1;
 	FTVector3 Specular = FTVector3(0.5f);

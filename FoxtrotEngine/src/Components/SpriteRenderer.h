@@ -32,12 +32,19 @@ public:
 
 public:
 	virtual void Initialize(FTCore* coreInstance) override;
+	virtual void Render(FoxtrotRenderer* renderer) override;
 	virtual void CloneTo(Actor* actor) override;
 
 public:
 	SpriteRenderer(
 		Actor* owner,
 		int	   updateOrder = DefaultVal::UPDATE_ORDER);
+
+protected:
+	virtual void UpdateMesh(
+		Transform* transform, 
+		Camera* camInst, 
+		FoxtrotRenderer* renderer) override;
 
 private:
 	// These fields need to be loaded from .chunk file.
@@ -47,6 +54,7 @@ private:
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void EditorUpdate(float deltaTime) override;
+	virtual void EditorRender(FoxtrotRenderer* renderer) override;
 
 public:
 	virtual void EditorUIUpdate() override;

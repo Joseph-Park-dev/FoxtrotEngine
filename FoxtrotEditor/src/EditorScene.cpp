@@ -102,13 +102,14 @@ void EditorScene::UnfocusEditorElements()
 void EditorScene::AddEditorElement()
 {
 	UnfocusEditorElements();
-	EditorElement* editorElement = DBG_NEW EditorElement(this);
-	FTDS::String						   name("Empty Actor ");
+	EditorElement* editorElement = DBG_NEW EditorElement();
+
+	FTDS::String& name = editorElement->GetNameRef();
 	name.Append(std::to_string(mEditorElements.size()).c_str());
-	editorElement->SetName(name);
+
 	editorElement->SetIsFocused(true);
 
-	// CommandHistory::GetInstance()->UpdateActorAddition(editorElement);
+	mEditorElements.emplace_back(editorElement);
 }
 
 void EditorScene::AddEditorElement(Actor* actor)
@@ -120,7 +121,7 @@ void EditorScene::AddEditorElement(Actor* actor)
 
 EditorElement* EditorScene::FindEditorElement(FTDS::String& name, Actor* filter)
 {
-	auto func = [&](Actor* actor) {
+	auto func = [&](EditorElement* actor) {
 		if (filter)
 			return actor->HasName(name) && actor != filter;
 		else

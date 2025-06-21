@@ -49,9 +49,19 @@ void EditorSceneManager::DeleteAll()
 	mEditorScene = nullptr;
 }
 
-void EditorSceneManager::SortEditorElements(std::vector<EditorElement*>& elements)
+void EditorSceneManager::GetLowests(std::vector<EditorElement*>& elements)
 {
-	std::sort(elements.begin(), elements.end(), 
+	for (EditorElement* ele : mEditorScene->GetEditorElements())
+	{
+		ele->SetIsDisplayed(false);
+		if (ele->GetHierarchyLevel() < 1)
+			elements.push_back(ele);
+	}
+}
+
+void EditorSceneManager::SortByHierarchyLv(std::vector<EditorElement*>& elements)
+{
+	std::sort(elements.begin(), elements.end(),
 		[](const EditorElement* lhs, const EditorElement* rhs)
 		{
 			return lhs->GetHierarchyLevel() < rhs->GetHierarchyLevel();

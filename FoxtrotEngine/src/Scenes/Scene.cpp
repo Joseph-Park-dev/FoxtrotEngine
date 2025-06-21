@@ -155,7 +155,16 @@ void Scene::AddActor(Actor* actor, ActorGroup group)
 	if (mIsUpdatingActors)
 		mPendingActors[(UINT)group].emplace_back(actor);
 	else
-		mActors[(UINT)group].emplace_back(actor);
+	{
+		int	 drawOrder = actor->GetDrawOrder();
+		auto iter	   = mActors[(UINT)group].begin();
+		for (; iter != mActors[(UINT)group].end(); ++iter)
+		{
+			if (drawOrder < (*iter)->GetDrawOrder())
+				break;
+		}
+		mActors[(UINT)group].insert(iter, actor);
+	}
 }
 
 void Scene::ProcessEvent()

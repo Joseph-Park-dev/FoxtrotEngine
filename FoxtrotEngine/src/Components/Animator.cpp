@@ -214,7 +214,7 @@ void Animator::Render(FoxtrotRenderer* renderer)
 {
 	if (GetMeshGroup())
 	{
-		UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance(), renderer);
+		MeshRenderer::UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance(), renderer);
 		renderer->SwitchFillMode();
 		// renderer->SetRenderTargetView();
 		GetMeshGroup()->Render(renderer, mCurrFrameIdx);
@@ -270,7 +270,7 @@ void Animator::EditorRender(FoxtrotRenderer* renderer)
 {
 	if (GetMeshGroup())
 	{
-		UpdateMesh(GetOwner()->GetTransform(), EditorCamera::GetInstance(), renderer);
+		MeshRenderer::UpdateMesh(GetOwner()->GetTransform(), EditorCamera::GetInstance(), renderer);
 		renderer->SwitchFillMode();
 		// renderer->SetRenderTargetView();
 		GetMeshGroup()->Render(renderer, mCurrFrameIdx);

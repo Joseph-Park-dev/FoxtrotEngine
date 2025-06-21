@@ -39,6 +39,7 @@ void EditorElement::UpdateUI(bool isPremade)
 			if (ImGui::BeginTabItem("Basic Data"))
 			{
 				UpdateActorName();
+				UpdateDrawOrder();
 				UpdateActorGroup();
 				UpdateActorState();
 				GetTransform()->UpdateUI();
@@ -68,6 +69,11 @@ const size_t EditorElement::GetHierarchyLevel() const
 	return mHierarchyLevel;
 }
 
+const bool EditorElement::GetIsDisplayed() const
+{
+	return mIsDisplayed;
+}
+
 void EditorElement::SetIsFocused(bool isFocused)
 {
 	mIsFocused = isFocused;
@@ -76,6 +82,11 @@ void EditorElement::SetIsFocused(bool isFocused)
 void EditorElement::SetHierarchyLevel(size_t lv)
 {
 	mHierarchyLevel = lv;
+}
+
+void EditorElement::SetIsDisplayed(bool isDisplayed)
+{
+	mIsDisplayed = isDisplayed;
 }
 
 void EditorElement::Initialize(FTCore* coreInst)
@@ -106,34 +117,26 @@ void EditorElement::EditorRender(FoxtrotRenderer* renderer)
 		comp->EditorRender(renderer);
 }
 
+EditorElement::EditorElement()
+	: Actor ()
+	, mIsFocused(false)
+	, mHierarchyLevel(0)
+	, mIsDisplayed(false)
+{}
+
 EditorElement::EditorElement(Actor* actor)
 	: Actor(actor)
 	, mIsFocused(false)
 	, mHierarchyLevel(0)
-{}
+	, mIsDisplayed(false)
+{
+}
 
-EditorElement::EditorElement(EditorScene* scene)
-	: Actor (scene)
+EditorElement::EditorElement(FTPremade* premade)
+	: Actor(premade)
 	, mIsFocused(false)
 	, mHierarchyLevel(0)
-{}
-
-EditorElement::EditorElement(Actor* actor, EditorScene* scene)
-	: Actor(actor, scene)
-	, mIsFocused(false)
-	, mHierarchyLevel(0)
-{}
-
-EditorElement::EditorElement(FTPremade* premade, EditorScene* scene)
-	: Actor(premade, scene)
-	, mIsFocused(false)
-	, mHierarchyLevel(0)
-{}
-
-EditorElement::EditorElement(EditorElement* element, EditorScene* scene)
-	: Actor(element, scene)
-	, mIsFocused(false)
-	, mHierarchyLevel(0)
+	, mIsDisplayed(false)
 {
 }
 
@@ -161,6 +164,13 @@ void EditorElement::UpdateActorGroup()
 		}
 		ImGui::EndCombo();
 	}
+}
+
+void EditorElement::UpdateDrawOrder()
+{
+	int i = GetDrawOrder();
+	ImGui::InputInt("Draw Order", &i);
+	SetDrawOrder(i);
 }
 
 void EditorElement::UpdateActorState()

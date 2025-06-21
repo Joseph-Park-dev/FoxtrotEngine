@@ -31,7 +31,6 @@ public:
 
 private:
 	bool  mPanKeyPressed;
-	bool  mRotationKeyPressed;
 	float mPanValModSpeed;
 	float mZoomValModSpeed;
 	float mZoomDelta;

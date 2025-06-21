@@ -272,10 +272,8 @@ void MeshRenderer::LoadProperties(std::ifstream& ifs)
 void MeshRenderer::EditorRender(FoxtrotRenderer* renderer)
 {
 	if (mMeshGroup)
-		UpdateMesh(GetOwner()->GetTransform(), EditorCamera::GetInstance(), renderer);
-
-	if (mMeshGroup)
 	{
+		UpdateMesh(GetOwner()->GetTransform(), EditorCamera::GetInstance(), renderer);
 		renderer->SwitchFillMode();
 		// renderer->SetRenderTargetView();
 		mMeshGroup->Render(renderer);

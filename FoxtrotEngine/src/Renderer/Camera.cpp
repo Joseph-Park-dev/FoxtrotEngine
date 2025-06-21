@@ -94,9 +94,12 @@ Matrix Camera::GetViewRow()
 	if (mTarget)
 	{
 		Transform* transform = mTarget->GetTransform();
-		mPosition			 = (transform->GetWorldPosition() + mOffset).GetDXVec3();
-		mYaw				 = -transform->GetWorldRotation().y;
-		mPitch				 = transform->GetWorldRotation().x;
+		FTVector3  targetPos = transform->GetWorldPosition();
+		// Z axis transformation is controlled independently
+		FTVector3 camPos = FTVector3(targetPos.x, targetPos.y, mPosition.z);
+		mPosition		 = (camPos + mOffset).GetDXVec3();
+		mYaw			 = -transform->GetWorldRotation().y;
+		mPitch			 = transform->GetWorldRotation().x;
 	}
 
 	return Matrix::CreateTranslation(-mPosition) * Matrix::CreateRotationY(-mYaw) * Matrix::CreateRotationX(mPitch);
@@ -237,12 +240,14 @@ void Camera::SaveProperties(std::ofstream& ofs)
 	else
 		FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, ChunkKey::NullVal::NULL_OBJECT);
 	FileIOHelper::SaveVector3(ofs, ChunkKey::CAM_POSITION, mPosition);
+	FileIOHelper::SaveVector3(ofs, ChunkKey::CAM_OFFSET, mOffset);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CAMERA_DATA);
 }
 
 void Camera::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CAMERA_DATA);
+	FileIOHelper::LoadVector3(ifs, mOffset);
 
 	FTVector3 pos = FTVector3::Zero;
 	FileIOHelper::LoadVector3(ifs, pos);
@@ -263,15 +268,13 @@ FTVector3 Camera::ConvertScreenPosToWorld(FTVector2 screenPos)
 {
 	FTVector2 ndc = ConvertScreenPosToNDC(screenPos);
 
-	DirectX::XMVECTOR clipSpacePos	= DirectX::XMVectorSet(ndc.x, ndc.y, 0.0f, 1.0f);
-	DirectX::XMVECTOR viewSpacePos	= DirectX::XMVector4Transform(
-		clipSpacePos, 
-		DirectX::XMMatrixInverse(nullptr, GetProjRow().Transpose())
-	);
+	DirectX::XMVECTOR clipSpacePos = DirectX::XMVectorSet(ndc.x, ndc.y, 0.0f, 1.0f);
+	DirectX::XMVECTOR viewSpacePos = DirectX::XMVector4Transform(
+		clipSpacePos,
+		DirectX::XMMatrixInverse(nullptr, GetProjRow().Transpose()));
 	DirectX::XMVECTOR worldSpacePos = DirectX::XMVector4Transform(
-		viewSpacePos, 
-		DirectX::XMMatrixInverse(nullptr, GetViewRow().Transpose())
-	);
+		viewSpacePos,
+		DirectX::XMMatrixInverse(nullptr, GetViewRow().Transpose()));
 
 	float worldX = DirectX::XMVectorGetX(worldSpacePos);
 	float worldY = DirectX::XMVectorGetY(worldSpacePos);

@@ -76,6 +76,8 @@ void EditorChunkLoader::LoadChunk(const char* fileName)
 	CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
 	EditorResourceManager::GetInstance()->PassLoadResourceInChunk(ifs);
 	LoadActorsData(ifs);
+
+	std::vector<EditorElement*>& elements = EditorSceneManager::GetInstance()->GetEditorScene()->GetEditorElements();
 	Camera::GetInstance()->LoadProperties(ifs);
 	Unlock();
 }
@@ -99,24 +101,33 @@ void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
 {
 	EditorScene*					  scene = EditorSceneManager::GetInstance()->GetEditorScene();
 	std::pair<size_t, FTDS::String>&& pack	= FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
+	std::vector<Actor*>				  actorBuf;
 	for (size_t i = 0; i < pack.first; ++i)
 	{
 		std::pair<size_t, FTDS::String>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
-		Actor							  actor		= Actor();
-		actor.LoadProperties(ifs);
-		actor.LoadComponents(ifs);
+		Actor* actor								= DBG_NEW Actor();
+		actor->LoadProperties(ifs);
+		actor->LoadComponents(ifs);
 		// AddEditorElement() will be called internally.
-		EditorElement element = EditorElement(&actor, scene);
-
-		if (0 < actor.GetChildActors().size())
-		{
-			for (Actor* child : actor.GetChildActors())
-			{
-				delete child;
-				child = nullptr;
-			}
-		}
+		//if (0 < actor->GetChildActors().size())
+		//{
+		//	for (Actor* child : actor->GetChildActors())
+		//	{
+		//		delete child;
+		//		child = nullptr;
+		//	}
+		//}
+		actorBuf.push_back(actor);
 	}
+
+	for (Actor* actor : actorBuf)
+		scene->AddEditorElement(actor);
+
+	std::vector<EditorElement*> elements = EditorSceneManager::GetInstance()->GetEditorScene()->GetEditorElements();
+
+	for (Actor* actor : actorBuf)
+		delete actor;
+
 	EditorSceneManager::GetInstance()->GetEditorScene()->Initialize(FTCoreEditor::GetInstance());
 	EditorSceneManager::GetInstance()->GetEditorScene()->Setup();
 }

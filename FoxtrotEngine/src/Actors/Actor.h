@@ -44,32 +44,17 @@ public:
 	Actor();
 
 	/// <summary>
-	/// Constructor that adds an Actor to scene during initialization phase.
-	/// (When a .chunk is being loaded)
-	/// </summary>
-	/// <param name="scene : "> A scene object which this Actor is loaded to.</param>
-	Actor(Scene* scene);
-
-	/// <summary>
-	/// Creates an deep-copied Actor from another Actor Obj, or an Origin from Premade.
-	/// This doesn't add the created Actor to the scene, but stores the initialized one.
-	/// </summary>
-	/// <param name="actor : "> Actor being copied.</param>
-	Actor(Actor* actor);
-
-	/// <summary>
 	/// Copy constructors that adds a deep-copied Actor to the scene.
 	/// </summary>
 	/// <param name="actor : "> Actor being copied.</param>
-	/// <param name="scene : "> A scene object which this Actor is loaded to.</param>
-	Actor(Actor* actor, Scene* scene);
+	Actor(Actor* actor);
 
 	/// <summary>
 	/// Copies the origin from the FTPremade into this object, adding it to the scene
 	/// </summary>
 	/// <param name="premade : ">Premade to copy origin from.</param>
 	/// <param name="scene : ">A scene object to add this object to.</param>
-	Actor(FTPremade* premade, Scene* scene);
+	Actor(FTPremade* premade);
 
 	virtual ~Actor();
 
@@ -117,6 +102,7 @@ public:
 	Actor*					 GetParent() const { return mParent; }
 	std::vector<Component*>& GetComponents() { return mComponents; }
 	std::vector<Actor*>&	 GetChildActors() { return mChild; }
+	const int&				 GetDrawOrder() const { return mDrawOrder; }
 
 	void SetName(FTDS::String name) { mName = name; }
 	void SetState(State state) { mState = state; }
@@ -126,6 +112,7 @@ public:
 	void SetTransform(Transform* transform) { mTransform = transform; }
 	void SetComponents(std::vector<Component*>& components) { mComponents = components; }
 	void SetChildActors(std::vector<Actor*>& children) { mChild = children; }
+	void SetDrawOrder(int order) { mDrawOrder = order; }
 
 	bool HasName(FTDS::String& name);
 	bool HasName(const char* name);
@@ -164,6 +151,7 @@ private:
 	std::vector<Component*> mComponents;
 	Actor*					mParent;
 	std::vector<Actor*>		mChild;
+	int						mDrawOrder;
 
 public:
 	void SaveProperties(std::ofstream& ofs);
@@ -171,21 +159,13 @@ public:
 
 	void LoadProperties(std::ifstream& ifs);
 	void LoadComponents(std::ifstream& ifs);
-
-#ifdef FOXTROT_EDITOR
-
-	Actor(EditorScene* scene);
-	Actor(Actor* actor, EditorScene* scene);
-	Actor(FTPremade* premade, EditorScene* scene);
-
-#endif // FOXTROT_EDITOR
-
 };
 
 namespace ChunkKey
 {
-	constexpr const char* NAME	 = "Name";
-	constexpr const char* STATE	 = "State";
-	constexpr const char* PARENT = "Parent";
-	constexpr const char* CHILD	 = "Child";
+	constexpr const char* NAME		 = "Name";
+	constexpr const char* DRAW_ORDER = "Draw Order";
+	constexpr const char* STATE		 = "State";
+	constexpr const char* PARENT	 = "Parent";
+	constexpr const char* CHILD		 = "Child";
 } // namespace ChunkKey

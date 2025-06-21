@@ -52,12 +52,7 @@ void EditorCamera::Update(float deltaTime)
 {
 	Camera::Update(deltaTime);
 
-	mPanKeyPressed		= ImGui::IsKeyDown(ImGuiMod_Shift) && ImGui::IsMouseDragging(ImGuiMouseButton_Middle);
-	mRotationKeyPressed = ImGui::IsMouseDragging(ImGuiMouseButton_Middle);
-
-	if (mRotationKeyPressed)
-	{
-	}
+	mPanKeyPressed = ImGui::IsMouseDragging(ImGuiMouseButton_Middle);
 
 	ImVec2 viewportMin = EditorLayer::GetInstance()->GetSceneViewportPos();
 	ImVec2 viewportMax = viewportMin + EditorLayer::GetInstance()->GetSceneViewportSize();
@@ -125,7 +120,6 @@ void EditorCamera::DisplayMainCameraMenu()
 	editorElems				 = EditorSceneManager::GetInstance()->GetEditorScene()->GetEditorElements();
 	FTDS::String* actorNames = DBG_NEW FTDS::String[editorElems.size() + 1];
 	actorNames[0]			 = "None";
-	size_t		  idx		 = 1;
 	static size_t currIdx;
 
 	for (size_t i = 0; i < editorElems.size(); ++i)
@@ -134,17 +128,17 @@ void EditorCamera::DisplayMainCameraMenu()
 	const char* comboPreview = actorNames[currIdx].C_Str();
 	if (ImGui::BeginCombo(ChunkKey::TARGET_ACTOR, comboPreview))
 	{
-		for (size_t i = 0; i < idx; ++i)
+		for (size_t i = 0; i < editorElems.size(); ++i)
 		{
 			if (ImGui::Selectable(actorNames[i].C_Str()))
 			{
 				currIdx = i;
 				if (currIdx == 0)
-					SetTargetActor(nullptr);
+				Camera::GetInstance()->SetTargetActor(nullptr);
 				else
 				{
 					EditorElement* actor = editorScene->FindEditorElement(actorNames[currIdx], nullptr);
-					SetTargetActor(actor);
+					Camera::GetInstance()->SetTargetActor(actor);
 				}
 			}
 		}

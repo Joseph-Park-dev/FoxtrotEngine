@@ -42,9 +42,11 @@ public:
 	// Deletes all objects in a Scene.
 	void DeleteAll();
 
-	// Sort the vector of EditorElements.
-	// Low hierarchy level first.
-	void SortEditorElements(std::vector<EditorElement*>& elements);
+	// Get the EditorElements with the lowest hierarchyLevel.
+	void GetLowests(std::vector<EditorElement*>& elements);
+
+	// EditorElements with lower hierarchyLevel comes first.
+	void SortByHierarchyLv(std::vector<EditorElement*>& elements);
 
 public:
 	EditorScene* GetEditorScene();

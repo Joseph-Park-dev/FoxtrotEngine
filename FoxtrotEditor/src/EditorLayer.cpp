@@ -329,7 +329,7 @@ void EditorLayer::DisplayHierarchyMenu()
 {
 	std::string menuID = "Hierarchy Menu";
 	ImGui::Begin(menuID.c_str());
-	if (ImGui::BeginListBox("Hierarchy", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
+	if (ImGui::BeginListBox("Hierarchy", ImVec2(-FLT_MIN, ImGui::GetContentRegionMax().y)))
 	{
 		std::vector<EditorElement*> lowest;
 		EditorSceneManager::GetInstance()->GetLowests(lowest);

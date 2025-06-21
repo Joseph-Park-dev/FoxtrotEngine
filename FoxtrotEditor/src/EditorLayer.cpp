@@ -51,6 +51,7 @@
 #include "Renderer/FTRectArea.h"
 #include "FileSystem/FileIOHelper.h"
 #include "ResourceSystem/FTPremade.h"
+#include "ResourceSystem/FTRectangle.h"
 
 #include "Core/EventFunctions.h"
 
@@ -77,7 +78,12 @@ void EditorLayer::Update(float deltaTime)
 	DisplayResourceMenu();
 	DisplayCollisionMenu();
 	DisplayInspectorMenu();
-	EditorCamera::GetInstance()->DisplayCameraMenu();
+
+	ImGui::Begin("Camera Menu");
+	EditorCamera::GetInstance()->DisplayMainCameraMenu();
+	EditorCamera::GetInstance()->DisplayEditorCameraMenu();
+	ImGui::End();
+
 	LightManager::GetInstance()->DisplayLightMenu();
 	DisplayInfoMessage();
 	DisplayErrorMessage();
@@ -191,12 +197,15 @@ void EditorLayer::DisplayMainMenuBar()
 		}
 		else if (selection == fileMenu[4] || mOpenKeyPressed)
 		{
-			mFileDialog = ImGui::FileBrowser(mFileSelectFlag);
-			mFileDialog.SetTitle("Open Chunk");
-			mFileDialog.SetTypeFilters({ FileTypes::CHUNK });
-			mFileDialog.SetDirectory(PATH_PROJECT.C_Str());
-			mFileDialog.Open();
-			mFileMenuEvent = FileMenuEvents::Open;
+			if (!PATH_PROJECT.IsEmpty())
+			{
+				mFileDialog = ImGui::FileBrowser(mFileSelectFlag);
+				mFileDialog.SetTitle("Open Chunk");
+				mFileDialog.SetTypeFilters({ FileTypes::CHUNK });
+				mFileDialog.SetDirectory(PATH_PROJECT.C_Str());
+				mFileDialog.Open();
+				mFileMenuEvent = FileMenuEvents::Open;
+			}
 		}
 
 		DisplayManagersMenu();
@@ -210,6 +219,7 @@ void EditorLayer::DisplayMainMenuBar()
 			{
 				if (!PATH_CHUNK.IsEmpty())
 				{
+					mFocusedEditorElement = nullptr;
 					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK.C_Str());
 					DebugShapes::GetInstance()->DeleteAll();
 					// EditorResourceManager::GetInstance()->DeleteAll();
@@ -233,6 +243,7 @@ void EditorLayer::DisplayMainMenuBar()
 			{
 				if (!PATH_CHUNK.IsEmpty())
 				{
+					mFocusedEditorElement = nullptr;
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(false);
 					DebugShapes::GetInstance()->DeleteAll();
 					// EditorResourceManager::GetInstance()->DeleteAll();
@@ -320,23 +331,21 @@ void EditorLayer::DisplayHierarchyMenu()
 	ImGui::Begin(menuID.c_str());
 	if (ImGui::BeginListBox("Hierarchy", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
 	{
-		std::vector<EditorElement*>& actorsRow = 
-			EditorSceneManager::GetInstance()->GetEditorScene()->GetEditorElements();
-		if (0 < actorsRow.size())
+		std::vector<EditorElement*> lowest;
+		EditorSceneManager::GetInstance()->GetLowests(lowest);
+
+		if (0 < lowest.size())
 		{
-			EditorSceneManager::GetInstance()->SortEditorElements(actorsRow);
-
 			// Display EditorElements as a list of selections.
-			size_t index = 0;
-			while (index < actorsRow.size())
-			{
-				EditorElement* selection = actorsRow.at(index);
-				DisplaySelection(selection, index, actorsRow);
-				++index;
-			}
+			size_t idx = 0;
+			for (EditorElement* ele : lowest)
+				DisplaySelection(ele, idx);
 		}
-
 		ImGui::EndListBox();
+
+		for (EditorElement* ele :
+			 EditorSceneManager::GetInstance()->GetEditorScene()->GetEditorElements())
+			ele->SetIsDisplayed(false);
 	}
 
 	if (mDuplicateKeyPressed)
@@ -344,7 +353,7 @@ void EditorLayer::DisplayHierarchyMenu()
 	ImGui::End();
 }
 
-void EditorLayer::DisplaySelection(EditorElement* element, size_t& index, std::vector<EditorElement*>& actors)
+void EditorLayer::DisplaySelection(EditorElement* element, size_t& index)
 {
 	FTDS::String indentedName = FTDS::String(element->GetHierarchyLevel(), '\t');
 	indentedName.Append(element->GetName());
@@ -362,34 +371,9 @@ void EditorLayer::DisplaySelection(EditorElement* element, size_t& index, std::v
 		mFocusedEditorElement->SetIsFocused(true);
 	}
 
-	if (ImGui::BeginDragDropSource())
-	{
-		ImGui::SetDragDropPayload("DND_DEMO_CELL", &index, sizeof(size_t));
-		ImGui::EndDragDropSource();
-	}
-
-	// Assign the actor as a child to an another.
-	if (ImGui::BeginDragDropTarget())
-	{
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_CELL"))
-		{
-			IM_ASSERT(payload->DataSize == sizeof(size_t));
-			size_t payload_n = *(const size_t*)payload->Data;
-
-			EditorElement* child = actors.at(payload_n);
-			if (child->GetParent() == element)
-			{
-				element->RemoveChild(child);
-				child->SetHierarchyLevel(element->GetHierarchyLevel());
-			}
-			else
-			{
-				element->AddChild(child);
-				child->SetHierarchyLevel(element->GetHierarchyLevel() + 1);
-			}
-		}
-		ImGui::EndDragDropTarget();
-	}
+	ProcessDragEvent(element);
+	ProcessDropEvent(element);
+	++index;
 
 	// Recurse to display child Actors in the list.
 	if (0 < element->GetChildActors().size())
@@ -397,9 +381,88 @@ void EditorLayer::DisplaySelection(EditorElement* element, size_t& index, std::v
 		for (Actor* child : element->GetChildActors())
 		{
 			EditorElement* childElem = static_cast<EditorElement*>(child);
-			++index; // Addition for the actor itself.
-			DisplaySelection(childElem, index, actors);
+			DisplaySelection(childElem, index);
 		}
+	}
+}
+
+void EditorLayer::ProcessDragEvent(EditorElement* from)
+{
+	if (ImGui::BeginDragDropSource())
+	{
+		mDraggedEditorElement = static_cast<void*>(from);
+		ImGui::SetDragDropPayload("DND_DEMO_CELL", mDraggedEditorElement, sizeof(EditorElement*));
+		ImGui::EndDragDropSource();
+	}
+}
+
+void EditorLayer::ProcessDropEvent(EditorElement* target)
+{
+	// Assign the actor as a child to an another.
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_CELL"))
+		{
+			IM_ASSERT(payload->DataSize == sizeof(EditorElement*));
+			std::vector<EditorElement*>& elements =
+				EditorSceneManager::GetInstance()->GetEditorScene()->GetEditorElements();
+
+			EditorElement* child = static_cast<EditorElement*>(mDraggedEditorElement);
+			if (child->GetParent() == target)
+			{
+				target->RemoveChild(child);
+				child->SetHierarchyLevel(target->GetHierarchyLevel());
+				SetHierarchyLvRecurse(child, -1);
+			}
+			else
+			{
+				if (child->GetParent())
+				{
+					std::vector<Actor*>& children = child->GetParent()->GetChildActors();
+					auto iter = std::find(children.begin(), children.end(), child);
+					children.erase(iter);
+					child->SetParent(nullptr);
+				}
+				target->AddChild(child);
+				child->SetHierarchyLevel(target->GetHierarchyLevel() + 1);
+				SetHierarchyLvRecurse(child, 1);
+
+				//// Move "child" actor to the back of its parent.
+				// elements.erase(elements.begin() + payload_n);
+
+				//// iter = the location of parent element.
+				// auto iter = std::find(elements.begin(), elements.end(), target);
+				//++iter;
+				// elements.insert(iter, child);
+
+				// iter		  = std::find(elements.begin(), elements.end(), target);
+				// size_t offset = iter - elements.begin();
+				//// Iterate over the children of "child" Actor.
+				// for (size_t i = 0; i < child->GetChildActors().size(); ++i)
+				//{
+				//	EditorElement* subChild = static_cast<EditorElement*>(child->GetChildActors().at(i));
+				//	subChild->SetHierarchyLevel(child->GetHierarchyLevel() + 1);
+
+				//	// Find the location of subChild in the vector.
+				//	auto subIter = std::find(elements.begin(), elements.end(), subChild);
+				//	elements.erase(subIter);
+
+				//	// Insert the subChild at the back of "child"
+				//	elements.insert(elements.begin() + offset, subChild);
+				//}
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+}
+
+void EditorLayer::SetHierarchyLvRecurse(EditorElement* element, int val)
+{
+	for (Actor* actor : element->GetChildActors())
+	{
+		EditorElement* subChild = static_cast<EditorElement*>(actor);
+		subChild->SetHierarchyLevel(subChild->GetHierarchyLevel() + val);
+		SetHierarchyLvRecurse(subChild, val);
 	}
 }
 
@@ -423,7 +486,7 @@ void EditorLayer::DisplayInspectorMenu()
 {
 	std::string menuID = "Inspector";
 	ImGui::Begin(menuID.c_str());
-	EditorScene* scene	 = EditorSceneManager::GetInstance()->GetEditorScene();
+	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
 	if (0 < scene->GetEditorElements().size())
 	{
 		if (mFocusedEditorElement)
@@ -669,6 +732,7 @@ void EditorLayer::SaveAs(std::filesystem::path& path)
 
 void EditorLayer::Open(std::filesystem::path& path)
 {
+	mFocusedEditorElement = nullptr;
 	EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 	PATH_CHUNK.Assign(path.string().c_str());
 	EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK.C_Str());
@@ -695,8 +759,7 @@ bool EditorLayer::CursorOnViewport() const
 }
 
 EditorLayer::EditorLayer()
-	: mHierarchyIdx(0)
-	, mActorNameIdx(0)
+	: mActorNameIdx(0)
 	, mSaveKeyPressed(false)
 	, mSaveAsKeyPressed(false)
 	, mOpenKeyPressed(false)
@@ -708,6 +771,7 @@ EditorLayer::EditorLayer()
 	, mIsResizingViewport(false)
 	, mCursorOnViewport(false)
 	, mFocusedEditorElement(nullptr)
+	, mDraggedEditorElement(nullptr)
 	, mSceneViewportSize(ImVec2(1920.f, 1080.f))
 	, mInfoType(InfoType::None)
 	, mFileMenuEvent(FileMenuEvents::None)

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -62,21 +62,21 @@ public:
 	void ShutDown();
 
 public:
-	int&		GetActorNameIdx()			  { return mActorNameIdx; }
-	bool		GetUndoKeyPressed()		const { return mUndoKeyPressed; }
-	bool		GetRedoKeyPressed()		const { return mRedoKeyPressed; }
-	bool		GetConfirmKeyPressed()	const { return mConfirmKeyPressed; }
-	ImVec2		GetSceneViewportPos()	const { return mSceneViewportPos; }
-	ImVec2		GetSceneViewportSize()	const { return mSceneViewportSize; }
-	ErrorType	GetErrorType()			const { return mErrorType; }
+	int&	  GetActorNameIdx() { return mActorNameIdx; }
+	bool	  GetUndoKeyPressed() const { return mUndoKeyPressed; }
+	bool	  GetRedoKeyPressed() const { return mRedoKeyPressed; }
+	bool	  GetConfirmKeyPressed() const { return mConfirmKeyPressed; }
+	ImVec2	  GetSceneViewportPos() const { return mSceneViewportPos; }
+	ImVec2	  GetSceneViewportSize() const { return mSceneViewportSize; }
+	ErrorType GetErrorType() const { return mErrorType; }
 
 	ImGuiFileBrowserFlags& GetFileSelectFlag() { return mFileSelectFlag; }
 
-	void		SetInfoType(InfoType type) { mInfoType = type; }
-	void		SetErrorType(ErrorType type) { mErrorType = type; }
+	void SetInfoType(InfoType type) { mInfoType = type; }
+	void SetErrorType(ErrorType type) { mErrorType = type; }
 
 	// Is the cursor on the viewport area?
-	bool		CursorOnViewport() const; 
+	bool CursorOnViewport() const;
 
 public:
 	// Pops up a message box with confirm button only.
@@ -101,7 +101,7 @@ public:
 				mInfoType = InfoType::None;
 			}
 			if (ImGui::Button("Cancel", ImVec2(120, 0)))
-			{ 
+			{
 				ImGui::CloseCurrentPopup();
 				mInfoType = InfoType::None;
 			}
@@ -135,53 +135,44 @@ public:
 	}
 
 private:
-	int			mHierarchyIdx;
-	int			mActorNameIdx;
+	int mActorNameIdx;
 
-	bool		mSaveKeyPressed;
-	bool		mSaveAsKeyPressed;
-	bool		mOpenKeyPressed;
-	bool		mConfirmKeyPressed;
+	bool mSaveKeyPressed;
+	bool mSaveAsKeyPressed;
+	bool mOpenKeyPressed;
+	bool mConfirmKeyPressed;
 
-	bool		mUndoKeyPressed;
-	bool		mRedoKeyPressed;
-	bool		mDeleteKeyPressed;
-	bool		mDuplicateKeyPressed;
+	bool mUndoKeyPressed;
+	bool mRedoKeyPressed;
+	bool mDeleteKeyPressed;
+	bool mDuplicateKeyPressed;
 
 	// Copy+Paste related
-	EditorElement*	mFocusedEditorElement;
+	EditorElement* mFocusedEditorElement;
+	void*		   mDraggedEditorElement;
 
 	// Viewport related
-	ImVec2			mSceneViewportPos;
-	ImVec2			mSceneViewportSize;
-	bool			mIsResizingViewport;
-	bool			mCursorOnViewport;
+	ImVec2 mSceneViewportPos;
+	ImVec2 mSceneViewportSize;
+	bool   mIsResizingViewport;
+	bool   mCursorOnViewport;
 
 	// UI event types
-	InfoType		mInfoType;
-	ErrorType		mErrorType;
-	FileMenuEvents	mFileMenuEvent;
+	InfoType	   mInfoType;
+	ErrorType	   mErrorType;
+	FileMenuEvents mFileMenuEvent;
 
-	ImGui::FileBrowser mFileDialog;
+	ImGui::FileBrowser	  mFileDialog;
 	ImGuiFileBrowserFlags mDirSelectFlag =
-		ImGuiFileBrowserFlags_SelectDirectory |
-		ImGuiFileBrowserFlags_HideRegularFiles |
-		ImGuiFileBrowserFlags_ConfirmOnEnter |
-		ImGuiFileBrowserFlags_CloseOnEsc |
-		ImGuiFileBrowserFlags_CreateNewDir |
-		ImGuiFileBrowserFlags_EditPathString;
+		ImGuiFileBrowserFlags_SelectDirectory | ImGuiFileBrowserFlags_HideRegularFiles | ImGuiFileBrowserFlags_ConfirmOnEnter | ImGuiFileBrowserFlags_CloseOnEsc | ImGuiFileBrowserFlags_CreateNewDir | ImGuiFileBrowserFlags_EditPathString;
 
 	ImGuiFileBrowserFlags mFileSelectFlag =
-		ImGuiFileBrowserFlags_EnterNewFilename |
-		ImGuiFileBrowserFlags_ConfirmOnEnter |
-		ImGuiFileBrowserFlags_CloseOnEsc |
-		ImGuiFileBrowserFlags_CreateNewDir |
-		ImGuiFileBrowserFlags_EditPathString;
+		ImGuiFileBrowserFlags_EnterNewFilename | ImGuiFileBrowserFlags_ConfirmOnEnter | ImGuiFileBrowserFlags_CloseOnEsc | ImGuiFileBrowserFlags_CreateNewDir | ImGuiFileBrowserFlags_EditPathString;
 
 private:
 	/// <summary>
-	//  Renders viewport. 
-	//  This is execptionally placed in Update() due to its requirement 
+	//  Renders viewport.
+	//  This is execptionally placed in Update() due to its requirement
 	//  to be nested in ImGUi's Frame.
 	/// </summary>
 	void DisplayViewport();
@@ -202,7 +193,14 @@ private:
 	void DisplayHierarchyMenu();
 
 	// Displays a single selection in the hierarchy.
-	void DisplaySelection(EditorElement* actor, size_t& index, std::vector<EditorElement*>& actors);
+	void DisplaySelection(EditorElement* actor, size_t& index);
+
+	void ProcessDragEvent(EditorElement* from);
+	void ProcessDropEvent(EditorElement* target);
+
+	// Recurse through the children of an element, add "val"
+	// to the hierarchy levels.
+	void SetHierarchyLvRecurse(EditorElement* element, int val);
 
 	// Displays FTResources loaded to current project.
 	// & calls the related functions.
@@ -230,9 +228,9 @@ private:
 	void PopUpError(const char* title, const char* msg);
 
 	// Called according to FileMenuEvents.
-	void CreateNewProject	(std::filesystem::path& path);
-	void OpenProject		(std::filesystem::path& path);
-	void Save				(std::filesystem::path& path);
-	void SaveAs				(std::filesystem::path& path);
-	void Open				(std::filesystem::path& path);
+	void CreateNewProject(std::filesystem::path& path);
+	void OpenProject(std::filesystem::path& path);
+	void Save(std::filesystem::path& path);
+	void SaveAs(std::filesystem::path& path);
+	void Open(std::filesystem::path& path);
 };

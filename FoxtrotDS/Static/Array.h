@@ -37,12 +37,16 @@ namespace FTDS
 
 	public:
 		TYPE*  Begin() { return &mData[0]; }
-		TYPE*  End() { return &mData[mCapacity-1]; }
+		TYPE*  End() { return &mData[mCapacity - 1]; }
 		size_t IterPos() { return mPtr - Begin(); }
 
 	public:
+		// Re-allocate memory space when new capacity is bigger than current capacity
 		void Reserve(size_t newCapacity)
 		{
+			if (newCapacity <= mCapacity)
+				return;
+
 			if (newCapacity < 1) // Input capacity must be bigger than Zero.
 			{
 				Debug::LogError(__LINE__, __FILE__, "New capacity is 0!");
@@ -101,19 +105,8 @@ namespace FTDS
 		TYPE* Data() { return mData; }
 
 	protected:
-		TYPE*  mData;
-		size_t mCapacity;
-
-	private:
-		TYPE* mPtr;
-
-	private:
-		// Re-allocate memory space when new capacity is bigger than current capacity
 		void AllocateMem(size_t newCap)
 		{
-			if (newCap < mCapacity)
-				return;
-
 			// Create an array with renewed capacity.
 			TYPE* newArr = DBG_NEW TYPE[newCap];
 			for (size_t i = 0; i < newCap; ++i)
@@ -121,8 +114,15 @@ namespace FTDS
 
 			if (mData)
 			{
+				// Calculate memory size to be copied.
+				size_t copiedSize = 0;
+				if (mCapacity < newCap)
+					copiedSize = sizeof(TYPE) * mCapacity;
+				else
+					copiedSize = sizeof(TYPE) * newCap;
+
 				// Copy previous data.
-				memcpy_s(newArr, sizeof(TYPE) * newCap, mData, sizeof(TYPE) * Capacity());
+				memcpy_s(newArr, copiedSize, mData, copiedSize);
 				delete[] mData;
 			}
 
@@ -131,5 +131,12 @@ namespace FTDS
 			// Set new capacity.
 			mCapacity = newCap;
 		}
+
+	protected:
+		TYPE*  mData;
+		size_t mCapacity;
+
+	private:
+		TYPE* mPtr;
 	};
 } // namespace FTDS

@@ -179,6 +179,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Dynamic\DynamicArray.h" />
     <ClInclude Include="Dynamic\BinSrchTree.h" />
     <ClInclude Include="Dynamic\BinTree.h" />
     <ClInclude Include="Dynamic\LinkedQueue.h" />
@@ -188,6 +189,7 @@
     <ClInclude Include="Iterator\FTIterator.h" />
     <ClInclude Include="Static\FTString.h" />
     <ClInclude Include="Static\HashChainMap.h" />
+    <ClInclude Include="Static\Queue.h" />
     <ClInclude Include="Static\Record.h" />
     <ClInclude Include="Search\DepthFirstSearch.h" />
     <ClInclude Include="Static\Array.h" />

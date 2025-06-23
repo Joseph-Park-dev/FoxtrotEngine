@@ -29,6 +29,8 @@
     <ClInclude Include="Static\HashChainMap.h" />
     <ClInclude Include="Utils\StrAssign.h" />
     <ClInclude Include="Static\FTString.h" />
+    <ClInclude Include="Static\Queue.h" />
+    <ClInclude Include="Dynamic\DynamicArray.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

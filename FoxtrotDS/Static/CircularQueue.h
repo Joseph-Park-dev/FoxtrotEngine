@@ -1,7 +1,7 @@
 #pragma once
 #include <cassert>
 
-#include "ArrayDS.h"
+#include <Static/Array.h>
 
 namespace FTDS
 {

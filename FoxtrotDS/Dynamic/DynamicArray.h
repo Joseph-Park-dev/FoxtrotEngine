@@ -50,7 +50,7 @@ namespace FTDS
 			--mSize;
 
 			// Pull the values one index forward.
-			if (mSize < (this->mCapacity / 2))
+			if (mSize <= (this->mCapacity / 2))
 				this->AllocateMem(this->mCapacity / 2, pos, 0, 1);
 			else
 			{
@@ -107,13 +107,17 @@ namespace FTDS
 		{
 			// Create an array with renewed capacity.
 			TYPE* newArr = DBG_NEW TYPE[newCap];
-			memset(newArr, NULL, newCap);
+
+			// Copy the data in front of the pos,
+			// which is not included in the copied size.
+			size_t initSize = sizeof(TYPE) * pos;
+			memcpy_s(newArr, initSize, this->mData, initSize);
 
 			// Set new capacity.
 			this->mCapacity = newCap;
 
 			assert(this->mData);
-			assert(pos < this->mCapacity);
+			assert(pos <= this->mCapacity);
 
 			// Calculate memory size to be copied.
 			size_t copiedSize = sizeof(TYPE) * (mSize - pos);

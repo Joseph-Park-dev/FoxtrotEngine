@@ -111,10 +111,8 @@ namespace FTDS
 			TYPE* newArr = DBG_NEW TYPE[newCap];
 			memset(newArr, NULL, newCap);
 
-			mCapacity = newCap;
-
 			// Calculate memory size to be copied.
-			size_t copiedSize = sizeof(TYPE) * (newCap);
+			size_t copiedSize = sizeof(TYPE) * Min(newCap, mCapacity);
 
 			// Copy previous data.
 			if (mData)
@@ -126,6 +124,7 @@ namespace FTDS
 			// Set new array as current data.
 			mData = newArr;
 			// Set new capacity.
+			mCapacity = newCap;
 		}
 
 	protected:
@@ -134,5 +133,11 @@ namespace FTDS
 
 	private:
 		TYPE* mPtr;
+
+	private:
+		size_t Min(size_t a, size_t b)
+		{
+			return a > b ? b : a;
+		}
 	};
 } // namespace FTDS

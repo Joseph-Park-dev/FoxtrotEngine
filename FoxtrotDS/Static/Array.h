@@ -70,7 +70,7 @@ namespace FTDS
 
 		TYPE& At(int idx)
 		{
-			assert(mData[idx]);
+			// assert(mData[idx]);
 			return mData[idx];
 		}
 
@@ -109,19 +109,16 @@ namespace FTDS
 		{
 			// Create an array with renewed capacity.
 			TYPE* newArr = DBG_NEW TYPE[newCap];
-			for (size_t i = 0; i < newCap; ++i)
-				newArr[i] = NULL;
+			memset(newArr, NULL, newCap);
 
+			mCapacity = newCap;
+
+			// Calculate memory size to be copied.
+			size_t copiedSize = sizeof(TYPE) * (newCap);
+
+			// Copy previous data.
 			if (mData)
 			{
-				// Calculate memory size to be copied.
-				size_t copiedSize = 0;
-				if (mCapacity < newCap)
-					copiedSize = sizeof(TYPE) * mCapacity;
-				else
-					copiedSize = sizeof(TYPE) * newCap;
-
-				// Copy previous data.
 				memcpy_s(newArr, copiedSize, mData, copiedSize);
 				delete[] mData;
 			}
@@ -129,7 +126,6 @@ namespace FTDS
 			// Set new array as current data.
 			mData = newArr;
 			// Set new capacity.
-			mCapacity = newCap;
 		}
 
 	protected:

@@ -109,7 +109,7 @@ namespace FTDS
 		{
 			// Create an array with renewed capacity.
 			TYPE* newArr = DBG_NEW TYPE[newCap];
-			memset(newArr, NULL, newCap);
+			memset(newArr, NULL, sizeof(TYPE) * newCap);
 
 			// Calculate memory size to be copied.
 			size_t copiedSize = sizeof(TYPE) * Min(newCap, mCapacity);

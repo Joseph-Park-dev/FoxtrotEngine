@@ -13,6 +13,7 @@
 #include "ResourceSystem/FTMaterials/FTMaterial.h"
 #include "ResourceSystem/FTMaterials/StandardMaterial.h"
 #include "ResourceSystem/FTMaterials/RimMaterial.h"
+#include "ResourceSystem/Sound/Sound.h"
 
 #include "EditorChunkLoader.h"
 #include "DirectoryHelper.h"
@@ -31,6 +32,7 @@ void EditorResourceManager::LoadAllResourcesInAsset()
 	ResourceManager::GetVertexShaders()->Reserve(10);
 	ResourceManager::GetPixelShaders()->Reserve(10);
 	ResourceManager::GetMaterials()->Reserve(10);
+	ResourceManager::GetSounds()->Reserve(10);
 	ResourceManager::GetCSVs()->Reserve(10);
 	ResourceManager::GetJSONs()->Reserve(10);
 
@@ -144,6 +146,7 @@ void EditorResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)
 
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::JSON::JSON);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::SOUND);
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_PIXEL_SHADER);
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_VERTEX_SHADER);
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMESH_GROUP);

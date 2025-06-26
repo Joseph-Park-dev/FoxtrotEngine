@@ -169,8 +169,8 @@ void EditorLayer::DisplayMainMenuBar()
 			{
 				if (!PATH_PROJECT.IsEmpty())
 				{
-					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK.C_Str());
-					printf("Chunk saved to %s", PATH_CHUNK.C_Str());
+					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
+					printf("Chunk saved to %s", PATH_CHUNK);
 					mInfoType = InfoType::ChunkIsSaved;
 				}
 				else
@@ -219,16 +219,22 @@ void EditorLayer::DisplayMainMenuBar()
 			{
 				if (!PATH_CHUNK.IsEmpty())
 				{
+					// Clear up the scene to load the current chunk file.
 					mFocusedEditorElement = nullptr;
-					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK.C_Str());
+					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
 					DebugShapes::GetInstance()->DeleteAll();
-					// EditorResourceManager::GetInstance()->DeleteAll();
 					UIManager::GetInstance()->Reset();
 					CollisionManager::GetInstance()->Reset();
-					// LightManager::GetInstance()->Reset(FTCoreEditor::GetInstance()->GetGameRenderer());
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
-					// EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
-					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK.C_Str());
+
+					// Copy the chunk file.
+					EditorChunkLoader::GetInstance()->CopyChunk(PATH_CHUNK);
+					FTDS::String& copiedPath = EditorChunkLoader::GetInstance()->CurrentChunk();
+
+					// Load the copied chunk file.
+					EditorChunkLoader::GetInstance()->LoadChunk(copiedPath);
+
+					// Start updating the game.
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(true);
 				}
 				else
@@ -243,15 +249,18 @@ void EditorLayer::DisplayMainMenuBar()
 			{
 				if (!PATH_CHUNK.IsEmpty())
 				{
+					// Delete the created copy.
+					EditorChunkLoader::GetInstance()->DeleteCopiedChunk();
+
+					// Clear up the scene to load the current chunk file.
 					mFocusedEditorElement = nullptr;
 					FTCoreEditor::GetInstance()->SetIsUpdatingGame(false);
 					DebugShapes::GetInstance()->DeleteAll();
-					// EditorResourceManager::GetInstance()->DeleteAll();
 					CollisionManager::GetInstance()->Reset();
 					EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
-					// EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
-					// EditorResourceManager::GetInstance()->LoadAllResourcesInAsset();
-					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK.C_Str());
+
+					// Reload current scene again.
+					EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
 				}
 			}
 		}
@@ -719,7 +728,7 @@ void EditorLayer::OpenProject(std::filesystem::path& path)
 void EditorLayer::Save(std::filesystem::path& path)
 {
 	PATH_CHUNK.Assign(path.string().c_str());
-	EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK.C_Str());
+	EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
 	mInfoType = InfoType::ChunkIsSaved;
 	SET_CHUNK_IS_SAVED(true)
 }
@@ -727,7 +736,7 @@ void EditorLayer::Save(std::filesystem::path& path)
 void EditorLayer::SaveAs(std::filesystem::path& path)
 {
 	PATH_CHUNK.Assign(path.string().c_str());
-	EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK.C_Str());
+	EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
 	mInfoType = InfoType::ChunkIsSaved;
 	SET_CHUNK_IS_SAVED(true)
 }
@@ -737,7 +746,7 @@ void EditorLayer::Open(std::filesystem::path& path)
 	mFocusedEditorElement = nullptr;
 	EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 	PATH_CHUNK.Assign(path.string().c_str());
-	EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK.C_Str());
+	EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
 	// LightManager::GetInstance()->Reset(FTCoreEditor::GetInstance()->GetGameRenderer());
 	SET_CHUNK_IS_SAVED(true)
 }

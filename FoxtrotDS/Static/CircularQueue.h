@@ -6,11 +6,11 @@
 namespace FTDS
 {
 	template <class TYPE>
-	class CircularQueue : public FTDS::ArrayDS<TYPE>
+	class CircularQueue : public FTDS::Array<TYPE>
 	{
-		using FTDS::ArrayDS<TYPE>::mData;
-		using FTDS::ArrayDS<TYPE>::mCapacity;
-		using FTDS::ArrayDS<TYPE>::mSize;
+		using FTDS::Array<TYPE>::mData;
+		using FTDS::Array<TYPE>::mCapacity;
+		using FTDS::Array<TYPE>::mSize;
 
 	public:
 		void Enqueue(TYPE value)
@@ -37,7 +37,7 @@ namespace FTDS
 
 	public:
 		CircularQueue()
-			: ArrayDS<TYPE>()
+			: Array<TYPE>()
 			, mFront(0)
 			, mRear(-1)
 		{}

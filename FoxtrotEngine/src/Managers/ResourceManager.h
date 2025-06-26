@@ -48,6 +48,7 @@ class FTCore;
 class FTMaterial;
 class FTVertexShader;
 class FTPixelShader;
+class Sound;
 class FTCSV;
 class FTJSON;
 class FileIOHelper;
@@ -91,6 +92,7 @@ public:
 	FTMaterial*		   GetLoadedMaterial(FTDS::String& key);
 	FTBasicMeshGroup*  GetLoadedMesh(FTDS::String& key);
 	FTSpriteAnimation* GetLoadedSpriteAnim(FTDS::String& key);
+	Sound*			   GetLoadedSound(FTDS::String& key);
 	FTCSV*			   GetLoadedCSV(FTDS::String& key);
 	FTJSON*			   GetLoadedJSON(FTDS::String& key);
 
@@ -107,6 +109,7 @@ public:
 	FTDS::HashChainMap<FTMaterial*>*		GetMaterials();
 	FTDS::HashChainMap<FTBasicMeshGroup*>*	GetMeshGroups();
 	FTDS::HashChainMap<FTSpriteAnimation*>* GetSpriteAnimations();
+	FTDS::HashChainMap<Sound*>*				GetSounds();
 	FTDS::HashChainMap<FTCSV*>*				GetCSVs();
 	FTDS::HashChainMap<FTJSON*>*			GetJSONs();
 
@@ -178,8 +181,9 @@ private:
 
 	FTDS::HashChainMap<FTVertexShader*>* mVertexShaders;
 	FTDS::HashChainMap<FTPixelShader*>*	 mPixelShaders;
+	FTDS::HashChainMap<FTMaterial*>*	 mMaterials;
 
-	FTDS::HashChainMap<FTMaterial*>* mMaterials;
+	FTDS::HashChainMap<Sound*>* mSounds;
 
 	////////////////////////////
 	// Generic-type resources //
@@ -210,7 +214,7 @@ private:
 				return;
 
 			resMap->IterateAllValues(
-				[&](FTRESOURCE res) { 
+				[&](FTRESOURCE res) {
 					if (res)
 					{
 						delete res;

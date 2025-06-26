@@ -33,7 +33,8 @@ void SceneManager::SwitchScene(size_t index)
 {
 	CollisionManager::GetInstance()->Reset();
 	mCurrentScene->DeleteAll();
-	ChunkLoader::GetInstance()->LoadChunk((FTDS::String(".\\Chunks\\") + mChunkList.at(index)).C_Str());
+	FTDS::String path = FTDS::String(".\\Chunks\\") + mChunkList.at(index);
+	ChunkLoader::GetInstance()->LoadChunk(path);
 	mCurrentScene->Setup();
 }
 

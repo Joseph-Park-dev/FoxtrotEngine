@@ -52,10 +52,10 @@ EditorChunkLoader::EditorChunkLoader()
 
 EditorChunkLoader::~EditorChunkLoader() {}
 
-void EditorChunkLoader::SaveChunk(const char* fileName)
+void EditorChunkLoader::SaveChunk(FTDS::String& fileName)
 {
 	Lock();
-	std::ofstream ofs(fileName);
+	std::ofstream ofs(fileName.C_Str());
 	// Save -> ActorData comes first, // Load -> ChunkData comes first
 	Camera::GetInstance()->SaveProperties(ofs);
 	SaveActorsData(ofs);
@@ -67,10 +67,10 @@ void EditorChunkLoader::SaveChunk(const char* fileName)
 	Unlock();
 }
 
-void EditorChunkLoader::LoadChunk(const char* fileName)
+void EditorChunkLoader::LoadChunk(FTDS::String& fileName)
 {
 	Lock();
-	std::ifstream ifs(fileName);
+	std::ifstream ifs(fileName.C_Str());
 	LoadChunkData(ifs);
 	// LightManager::GetInstance()->LoadProperties(ifs);
 	CollisionManager::GetInstance()->LoadCollisionMarks(ifs);

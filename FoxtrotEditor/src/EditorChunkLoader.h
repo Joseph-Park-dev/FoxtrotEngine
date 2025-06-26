@@ -32,9 +32,9 @@ class EditorChunkLoader :
 
 public:
 	// Saves the current scene on Foxtrot Editor into .Chunk file.
-	virtual void SaveChunk(const char* fileName) override;
+	virtual void SaveChunk(FTDS::String& fileName) override;
 	// Loads the a .Chunk file into the current scene on Foxtrot Editor.
-	virtual void LoadChunk(const char* fileName) override;
+	virtual void LoadChunk(FTDS::String& fileName) override;
 
 public:
 	ComponentCreateMap& GetCompCreateMap() { return mComponentCreateMap; }

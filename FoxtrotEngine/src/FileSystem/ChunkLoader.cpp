@@ -29,26 +29,21 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Components/BatchHeaders.h"
 
-void ChunkLoader::SaveChunk(const char* fileName)
+void ChunkLoader::SaveChunk(FTDS::String& fileName)
 {
-	std::ofstream ofs(fileName);
+	std::ofstream ofs(fileName.C_Str());
 	SaveChunkData(ofs);
 }
 
-void ChunkLoader::LoadChunk(const char* fileName)
+void ChunkLoader::LoadChunk(FTDS::String& fileName)
 {
-	std::ifstream ifs(fileName);
+	std::ifstream ifs(fileName.C_Str());
 	LoadChunkData(ifs);
 	CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
 	ResourceManager::GetInstance()->LoadResources(ifs);
 	LightManager::GetInstance()->LoadProperties(ifs);
 	LoadActorsData(ifs);
 	Camera::GetInstance()->LoadProperties(ifs);
-}
-
-const bool ChunkLoader::IsLoadingChunk() const
-{
-	return mIsLoading;
 }
 
 void ChunkLoader::Lock()
@@ -59,6 +54,54 @@ void ChunkLoader::Lock()
 void ChunkLoader::Unlock()
 {
 	mIsLoading = false;
+}
+
+void ChunkLoader::CopyChunk(FTDS::String& path)
+{
+	// Get the original file name.
+	std::filesystem::path original = path.C_Str();
+
+	// Get the copied file name.
+	FTDS::String copiedPath;
+	path.ExtractUntilLast(copiedPath, "\\");
+	copiedPath.Append("\\");
+
+	// Get the full copied file path.
+	FTDS::String copiedName = ExtractFileName(path.C_Str());
+	copiedName.ExtractUntilFirst(copiedName, ".");
+	copiedName.Append(" Copy.chunk");
+	copiedPath.Append(copiedName);
+
+	std::filesystem::path copied = copiedPath.C_Str();
+
+	// Copy the selected .chunk file to load into the game.
+	std::filesystem::copy_file(
+		original, 
+		copied, 
+		std::filesystem::copy_options::overwrite_existing
+	);
+
+	// Assign the copied file name as current.
+	mCurrentChunkCopy.Assign(copiedPath);
+}
+
+void ChunkLoader::DeleteCopiedChunk()
+{
+	if (!mCurrentChunkCopy.IsEmpty())
+	{
+		std::filesystem::remove(mCurrentChunkCopy.C_Str());
+		mCurrentChunkCopy.Clear();
+	}
+}
+
+const bool ChunkLoader::IsLoadingChunk() const
+{
+	return mIsLoading;
+}
+
+FTDS::String& ChunkLoader::CurrentChunk()
+{
+	return mCurrentChunkCopy;
 }
 
 void ChunkLoader::SaveChunkData(std::ofstream& out)
@@ -75,7 +118,7 @@ void ChunkLoader::SaveActorsData(std::ofstream& out)
 
 void ChunkLoader::LoadActorsData(std::ifstream& ifs)
 {
-	std::pair<size_t, FTDS::String>&& pack	= FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
+	std::pair<size_t, FTDS::String>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
 	for (size_t i = 0; i < pack.first; ++i)
 	{
 		std::pair<size_t, FTDS::String>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
@@ -101,6 +144,7 @@ void ChunkLoader::LoadChunkData(std::ifstream& ifs)
 ChunkLoader::ChunkLoader()
 	: mCurrentChunkData{}
 	, mIsLoading(false)
+	, mCurrentChunkCopy()
 {
 	/*mComponentLoadMap = {
 		{ "AI", &Component::Load<AI> },
@@ -138,4 +182,7 @@ ChunkLoader::ChunkLoader()
 	mComponentLoadMap.Insert("Flee", &Component::Load<Flee>);
 };
 
-ChunkLoader::~ChunkLoader() {}
+ChunkLoader::~ChunkLoader()
+{
+	DeleteCopiedChunk();
+}

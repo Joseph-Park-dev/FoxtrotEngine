@@ -12,6 +12,7 @@
 
 #include <InputSystem/FTInputDevice.h>
 #include <ResourceSystem/FTRectangle.h>
+#include <Dynamic/DynamicArray.h>
 
 #include <EditorLayer.h>
 #include <EditorSceneManager.h>
@@ -123,12 +124,12 @@ void EditorCamera::DisplayMainCameraMenu()
 	static size_t currIdx;
 
 	for (size_t i = 0; i < editorElems.size(); ++i)
-		actorNames[i] = editorElems.at(i)->GetName();
+		actorNames[i + 1] = editorElems.at(i)->GetName();
 
 	const char* comboPreview = actorNames[currIdx].C_Str();
 	if (ImGui::BeginCombo(ChunkKey::TARGET_ACTOR, comboPreview))
 	{
-		for (size_t i = 0; i < editorElems.size(); ++i)
+		for (size_t i = 0; i < editorElems.size() + 1; ++i)
 		{
 			if (ImGui::Selectable(actorNames[i].C_Str()))
 			{

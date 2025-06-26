@@ -23,6 +23,7 @@
 #include "ResourceSystem/FTShaders/FTPixelShader.h"
 #include "ResourceSystem/FTMaterials/StandardMaterial.h"
 #include "ResourceSystem/FTMaterials/RimMaterial.h"
+#include "ResourceSystem/Sound/Sound.h"
 #include "ResourceSystem/GenericData/FTCSV.h"
 #include "ResourceSystem/GenericData/FTJSON.h"
 #include "Core/FTCore.h"
@@ -57,6 +58,7 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 	mVertexShaders	  = DBG_NEW	   FTDS::HashChainMap<FTVertexShader*>;
 	mPixelShaders	  = DBG_NEW		FTDS::HashChainMap<FTPixelShader*>;
 	mMaterials		  = DBG_NEW		   FTDS::HashChainMap<FTMaterial*>;
+	mSounds			  = DBG_NEW			  FTDS::HashChainMap<Sound*>;
 	mCSVs			  = DBG_NEW				FTDS::HashChainMap<FTCSV*>;
 	mJSONs			  = DBG_NEW			   FTDS::HashChainMap<FTJSON*>;
 }
@@ -72,6 +74,7 @@ void ResourceManager::DeleteAll()
 	ClearMap(mVertexShaders);
 	ClearMap(mPixelShaders);
 	ClearMap(mMaterials);
+	ClearMap(mSounds);
 	ClearMap(mCSVs);
 	ClearMap(mJSONs);
 
@@ -84,6 +87,7 @@ void ResourceManager::DeleteAll()
 	delete mVertexShaders;
 	delete mPixelShaders;
 	delete mMaterials;
+	delete mSounds;
 	delete mCSVs;
 	delete mJSONs;
 }
@@ -142,6 +146,11 @@ FTDS::HashChainMap<FTBasicMeshGroup*>* ResourceManager::GetMeshGroups()
 FTDS::HashChainMap<FTSpriteAnimation*>* ResourceManager::GetSpriteAnimations()
 {
 	return mSpriteAnimations;
+}
+
+FTDS::HashChainMap<Sound*>* ResourceManager::GetSounds()
+{
+	return mSounds;
 }
 
 FTDS::HashChainMap<FTCSV*>* ResourceManager::GetCSVs()
@@ -212,6 +221,7 @@ ResourceManager::ResourceManager()
 	, mVertexShaders(nullptr)
 	, mPixelShaders(nullptr)
 	, mMaterials(nullptr)
+	, mSounds(nullptr)
 	, mCSVs(nullptr)
 	, mJSONs(nullptr)
 {
@@ -253,6 +263,10 @@ void ResourceManager::SaveResources(std::ofstream& ofs)
 	SaveResourceToChunk<FTPixelShader>(ofs, mPixelShaders);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_PIXEL_SHADER);
 
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::SOUND);
+	SaveResourceToChunk<Sound>(ofs, mSounds);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::SOUND);
+
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::JSON::JSON);
 	SaveResourceToChunk<FTJSON>(ofs, mJSONs);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::JSON::JSON);
@@ -278,6 +292,10 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::JSON::JSON);
 	mJSONs->Reserve(desc.first);
 	LoadResourceFromChunk<FTJSON>(ifs, mJSONs, desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::SOUND);
+	mSounds->Reserve(desc.first);
+	LoadResourceFromChunk<Sound>(ifs, mSounds, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_PIXEL_SHADER);
 	mPixelShaders->Reserve(desc.first);
@@ -321,6 +339,8 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 	ProcessResources(FTCore::GetInstance(), mMaterials);
 	ProcessResources(FTCore::GetInstance(), mVertexShaders);
 	ProcessResources(FTCore::GetInstance(), mPixelShaders);
+
+	ProcessResources(FTCore::GetInstance(), mSounds);
 
 	LoadMaterials();
 
@@ -407,6 +427,16 @@ FTSpriteAnimation* ResourceManager::GetLoadedSpriteAnim(FTDS::String& key)
 	if (!spriteAnim)
 		Debug::LogError(__LINE__, __FILE__, "FTSpirteAnimation is NULL");
 	return spriteAnim;
+}
+
+Sound* ResourceManager::GetLoadedSound(FTDS::String& key)
+{
+	AddFileExtensionIfNone(key, FileTypes::Sound::WAV);
+
+	Sound* sound = mSounds->At(key)->Value();
+	if (!sound)
+		Debug::LogError(__LINE__, __FILE__, "Sound is NULL");
+	return sound;
 }
 
 FTCSV* ResourceManager::GetLoadedCSV(FTDS::String& key)

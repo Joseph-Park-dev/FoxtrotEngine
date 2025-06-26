@@ -26,10 +26,15 @@ namespace FileTypes
 	constexpr const char* JSON			   = ".json";
 	constexpr const char* MESH			   = ".fbx, .stl";
 	constexpr const char* SPRITE_ANIMATION = ".ftspriteanim";
-	constexpr const char* SHADER		   = ".hlsl";
-	constexpr const char* MATERIAL		   = ".ftmat";
-	constexpr const char* SHADER_META	   = ".shadermeta";
+	constexpr const char* SHADER	  = ".hlsl";
+	constexpr const char* MATERIAL	  = ".ftmat";
+	constexpr const char* SHADER_META = ".shadermeta";
 
 	constexpr const char* VERTEX_SHADER = "VS";
 	constexpr const char* PIXEL_SHADER	= "PS";
+
+	namespace Sound
+	{
+		constexpr const char* WAV = ".wav";
+	}
 } // namespace FileTypes

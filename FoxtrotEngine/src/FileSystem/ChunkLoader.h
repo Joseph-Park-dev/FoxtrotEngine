@@ -47,15 +47,21 @@ class ChunkLoader
 
 	// Member Functions for editor level to generate chunk.json files
 public:
-	virtual void SaveChunk(const char* fileName);
-	virtual void LoadChunk(const char* fileName);
+	virtual void SaveChunk(FTDS::String& fileName);
+	virtual void LoadChunk(FTDS::String& fileName);
+
+	void Lock();
+	void Unlock();
+
+	void CopyChunk(FTDS::String& path);
+	void DeleteCopiedChunk();
 
 public:
 	ComponentLoadMap& GetComponentLoadMap() { return mComponentLoadMap; }
 
 	const bool IsLoadingChunk() const;
-	void	   Lock();
-	void	   Unlock();
+
+	FTDS::String& CurrentChunk();
 
 protected:
 	// Save .Chunk for the editor
@@ -70,6 +76,9 @@ private:
 	ComponentLoadMap mComponentLoadMap;
 	ChunkData		 mCurrentChunkData;
 	bool			 mIsLoading;
+
+	// Name of the copied .chunk file.
+	FTDS::String	 mCurrentChunkCopy;
 };
 
 namespace ChunkKey

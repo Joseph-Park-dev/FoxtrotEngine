@@ -76,6 +76,11 @@ extern "C"
 		{
 			return fabs(value);
 		}
+		
+		inline size_t Min(size_t a, size_t b)
+		{
+			return a > b ? b : a;
+		}
 
 		inline float Cos(float angle)
 		{
@@ -551,6 +556,7 @@ public:
 	static FTVector2 Transform(const FTVector2& vec, const class Matrix3& mat, float w = 1.0f);
 
 	static FTVector2 CubicBezierVelocity2D(const FTVector2& P0, const FTVector2& P1, const FTVector2& P2, const FTVector2& P3, double t);
+	static FTVector2 PlotCircularFall(float angle, float dist);
 
 	static const FTVector2 Zero;
 	static const FTVector2 UnitX;

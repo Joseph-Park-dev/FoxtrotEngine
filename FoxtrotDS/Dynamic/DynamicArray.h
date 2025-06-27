@@ -46,7 +46,7 @@ namespace FTDS
 			// Note that condition differs from Insert(size_t, TYPE)
 			assert(pos < this->mSize);
 
-			this->mData[pos] = NULL;
+			this->mData[pos] = TYPE();
 			--mSize;
 
 			// Pull the values one index forward.
@@ -62,11 +62,22 @@ namespace FTDS
 
 		void PopBack()
 		{
-			this->mData[mSize - 1] = NULL;
+			this->mData[mSize - 1] = TYPE();
 			--mSize;
 
 			if (mSize < (this->mCapacity / 2))
 				FTDS::Array<TYPE>::AllocateMem(this->mCapacity / 2);
+		}
+
+		int Find(TYPE val)
+		{
+			for (int pos = 0; pos < (int)mSize; ++pos)
+			{
+				if (this->mData[pos] == val)
+					return pos;
+				++pos;
+			}
+			return -1;
 		}
 
 	public:

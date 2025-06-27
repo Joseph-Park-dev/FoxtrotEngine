@@ -159,3 +159,8 @@ FTVector2 FTVector2::CubicBezierVelocity2D(const FTVector2& P0, const FTVector2&
 	velocity.y = 3 * u2 * (P1.y - P0.y) + 6 * u * t * (P2.y - P1.y) + 3 * t2 * (P3.y - P2.y);
 	return velocity;
 }
+
+FTVector2 FTVector2::PlotCircularFall(float angle, float dist)
+{
+	return FTVector2(dist * Math::Cos(angle), dist * Math::Sin(angle));
+}

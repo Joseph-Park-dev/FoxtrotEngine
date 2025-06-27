@@ -56,8 +56,6 @@ void Move::Accelerate(b2Vec2 currVel, const Steering* steering)
 		else
 			currVel.y = (mForwardSpeed * steering->Linear.y);
 	}
-	else
-		currVel.y = 0.f;
 
 	b2Body_SetLinearVelocity(mRigidbody->GetBodyID(), currVel);
 }

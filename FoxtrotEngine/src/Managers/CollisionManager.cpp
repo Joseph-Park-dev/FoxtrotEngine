@@ -41,6 +41,11 @@ void CollisionManager::Reset()
 	mRegColliders.clear();
 }
 
+const std::unordered_map<int32_t, Collider2D*>& CollisionManager::GetRegColliders() const
+{
+	return mRegColliders;
+}
+
 void CollisionManager::RegisterCollider(int32_t index, Collider2D* collider)
 {
 	mRegColliders.insert({ index, collider });

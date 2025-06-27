@@ -39,6 +39,7 @@ class CollisionManager
 public:
 	void MarkGroup(b2ShapeDef& object, ActorGroup objectActorGroup);
 	void Reset();
+	const std::unordered_map<int32_t, Collider2D*>& GetRegColliders() const;
 
 public:
 	void		  RegisterCollider(int32_t index, Collider2D* collider);

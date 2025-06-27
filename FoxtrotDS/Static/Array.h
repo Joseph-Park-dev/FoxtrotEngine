@@ -26,9 +26,9 @@ namespace FTDS
 		}
 		TYPE* operator++(int) override
 		{
-			TYPE tmp = (*mPtr);
+			TYPE* tmp = mPtr;
 			++mPtr;
-			return &tmp;
+			return tmp;
 		}
 
 		bool  operator==(Array&& rhs) { return mPtr == rhs.mPtr; }

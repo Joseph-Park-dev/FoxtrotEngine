@@ -135,10 +135,11 @@ void EditorCamera::DisplayMainCameraMenu()
 			{
 				currIdx = i;
 				if (currIdx == 0)
-				Camera::GetInstance()->SetTargetActor(nullptr);
+					Camera::GetInstance()->SetTargetActor(nullptr);
 				else
 				{
-					EditorElement* actor = editorScene->FindEditorElement(actorNames[currIdx], nullptr);
+					EditorElement* actor =
+						editorScene->FindEditorElement(actorNames[currIdx], nullptr);
 					Camera::GetInstance()->SetTargetActor(actor);
 				}
 			}

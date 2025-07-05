@@ -30,12 +30,17 @@ void FTVertexShader::RegisterInputElementDesc(const char* semanticName, UINT& of
 	if (FTDS::StringEqual(semanticName, "TEXCOORD"))
 	{
 		desc = { semanticName, 0, DXGI_FORMAT_R32G32_FLOAT, 0, offset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-		offset += 4 * 2;
+		//offset += 4 * 2;
+	}
+	else if (FTDS::StringEqual(semanticName, "POSITION 2D"))
+	{
+		desc = { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, offset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
+		//offset += 4 * 2;
 	}
 	else
 	{
 		desc = { semanticName, 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-		offset += 4 * 3;
+		//offset += 4 * 3;
 	}
 
 	mInputElements.push_back(desc);
@@ -43,7 +48,7 @@ void FTVertexShader::RegisterInputElementDesc(const char* semanticName, UINT& of
 
 FTVertexShader::FTVertexShader()
 	: FTShader()
-	, mSemanticsInclusion(DBG_NEW FTDS::HashChainMap<bool>(4))
+	, mSemanticsInclusion(DBG_NEW FTDS::HashChainMap<bool>(5))
 {
 	SetType(ShaderType::VERTEX_SHADER);
 }
@@ -86,17 +91,20 @@ void FTVertexShader::LoadProperties(std::ifstream& ifs)
 	}
 	std::reverse(mSemanticsName.begin(), mSemanticsName.end());
 	
-	static UINT offset = 0;
+	UINT offset = 0;
 	for (FTDS::String& str : mSemanticsName)
 		RegisterInputElementDesc(str.C_Str(), offset);
 
+	for (size_t i = 0; i < mInputElements.size(); ++i)
+		mInputElements.at(i).InputSlot = i;
+
 #ifdef FOXTROT_EDITOR
-	FTDS::String semantics[4] = { "POSITION", "NORMAL", "COLOR", "TEXCOORD" };
+	FTDS::String semantics[5] = { "POSITION", "POSITION 2D", "NORMAL", "COLOR", "TEXCOORD" };
 
 	for (FTDS::String& semanticN : mSemanticsName)
 		mSemanticsInclusion->Insert(semanticN, true);
 
-	for (size_t i = 0; i < 4; ++i)
+	for (size_t i = 0; i < 5; ++i)
 	{
 		if (!mSemanticsInclusion->At(semantics[i]))
 			mSemanticsInclusion->Insert(semantics[i], false);
@@ -110,9 +118,9 @@ void FTVertexShader::LoadProperties(std::ifstream& ifs)
 void FTVertexShader::UpdateUI()
 {
 	ImGui::SeparatorText("Input Elements");
-	FTDS::String semantics[4] = { "POSITION", "NORMAL", "COLOR", "TEXCOORD" };
+	FTDS::String semantics[5] = { "POSITION", "POSITION 2D", "NORMAL", "COLOR", "TEXCOORD" };
 
-	for (size_t i = 0; i < 4; ++i)
+	for (size_t i = 0; i < 5; ++i)
 	{
 		if (!mSemanticsInclusion->At(semantics[i]))
 			mSemanticsInclusion->Insert(semantics[i], false);
@@ -127,7 +135,7 @@ void FTVertexShader::UpdateUI()
 		mSemanticsName.clear();
 		mInputElements.clear();
 
-		for (size_t i = 0; i < 4; ++i)
+		for (size_t i = 0; i < 5; ++i)
 		{
 			FTDS::String& key = semantics[i];
 			if (mSemanticsInclusion->At(key)->Value())
@@ -137,6 +145,9 @@ void FTVertexShader::UpdateUI()
 		static UINT offset = 0;
 		for (FTDS::String& str : mSemanticsName)
 			RegisterInputElementDesc(str.C_Str(), offset);
+
+		for (size_t i = 0; i < mInputElements.size(); ++i)
+			mInputElements.at(i).InputSlot = i;
 
 		SaveMetaFile();
 		CompileShader(GetRenderer());

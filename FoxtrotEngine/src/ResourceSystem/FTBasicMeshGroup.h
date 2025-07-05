@@ -23,9 +23,9 @@ class FTVertexShader;
 class FTBasicMeshGroup : public FTResource
 {
 public:
-	virtual void CalcVCData(Transform* transform, Camera* camInst);
+	void CalcVCData(Transform* transform, Camera* camInst);
 
-	void UpdateConstantBuffers(
+	virtual void UpdateConstantBuffers(
 		ComPtr<ID3D11Device>&		 device,
 		ComPtr<ID3D11DeviceContext>& context);
 
@@ -48,7 +48,7 @@ public:
 	BasicVCData&				GetVCData();
 	bool						GetDrawNormal();
 
-	void		 SetMaterials(std::vector<FTDS::String>& matKeys, ComPtr<ID3D11Device>& device);
+	virtual void SetMaterials(std::vector<FTDS::String>& matKeys, ComPtr<ID3D11Device>& device);
 	virtual void SetTexture();
 	virtual void SetTexture(FTDS::String& texKey);
 	void		 SetTexture(FTTexture* tex);
@@ -69,7 +69,7 @@ public:
 protected:
 	virtual HRESULT CreateTextureSampler(ComPtr<ID3D11Device>& device);
 	virtual void	InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTMeshData>& meshes);
-	void			InitializeConstantBuffers(ComPtr<ID3D11Device>& device);
+	virtual void	InitializeConstantBuffers(ComPtr<ID3D11Device>& device);
 
 protected:
 	void SetTexKey(FTDS::String& texKey);

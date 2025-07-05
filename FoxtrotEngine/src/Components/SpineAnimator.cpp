@@ -33,7 +33,7 @@ void SpineAnimator::Initialize(FTCore* coreInst)
 	stateData.setMix("jump", "run", 0.2f);*/
 
 	mAnim = DBG_NEW FTSpineAnimation;
-	mAnim->Initialize(skeletonData, &stateData);
+	mAnim->Initialize(GetRenderer()->GetDevice(), skeletonData, &stateData);
 	mAnim->SetTimeScale(1);
 	//drawable.setUsePremultipliedAlpha(true);
 
@@ -43,7 +43,11 @@ void SpineAnimator::Initialize(FTCore* coreInst)
 	skeleton->setPosition(0.f, 0.f);
 	skeleton->updateWorldTransform(spine::Physics_None);
 
-	mAnim->GetAnimState()->addAnimation(0, "animation", true, 0);
+	mAnim->GetAnimState()->addAnimation(0, "IDLE", true, 0);
+
+	SetMeshGroup(mAnim);
+	mAnim->SetFileName("Hello");
+	Component::Initialize(coreInst);
 }
 
 void SpineAnimator::Update(float deltaTime)
@@ -53,7 +57,13 @@ void SpineAnimator::Update(float deltaTime)
 
 void SpineAnimator::Render(FoxtrotRenderer* renderer)
 {
-	mAnim->Render(renderer, GetOwner()->GetTransform(), Camera::GetInstance());
+	if (mAnim)
+	{
+		this->UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance(), renderer);
+		renderer->SwitchFillMode();
+		// renderer->SetRenderTargetView();
+		mAnim->Render(renderer);
+	}
 }
 
 SpineAnimator::SpineAnimator(Actor* owner, int updateOrder)
@@ -74,11 +84,42 @@ SpineAnimator::~SpineAnimator()
 void SpineAnimator::CloneTo(Actor* actor)
 {
 	SpineAnimator* newComp = DBG_NEW SpineAnimator(actor, GetUpdateOrder());
+	for (size_t i = 0; i < MaterialKeys().size(); ++i)
+		newComp->MaterialKeys().push_back(MaterialKeys().at(i));
+}
+
+void SpineAnimator::UpdateMesh(Transform* transform, Camera* camInst, FoxtrotRenderer* renderer)
+{
+	if (mAnim)
+	{
+		mAnim->CalcVCData(transform, camInst);
+		mAnim->UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext());
+	}
 }
 
 #ifdef FOXTROT_EDITOR
 void SpineAnimator::EditorUpdate(float deltaTime)
 {
-	Update(deltaTime);
+	this->Update(deltaTime);
+}
+
+void SpineAnimator::EditorRender(FoxtrotRenderer* renderer)
+{
+	this->Render(renderer);
+}
+
+void SpineAnimator::EditorUIUpdate()
+{
+	FTSpineAnimation* anim = static_cast<FTSpineAnimation*>(GetMeshGroup());
+	if (GetMeshGroup())
+	{
+		ImGui::SeparatorText("Material");
+		anim->UpdateUI();
+		UpdateMaterial();
+
+		ImGui::SeparatorText("Shaders");
+		UpdateVS();
+		UpdatePS();
+	}
 }
 #endif

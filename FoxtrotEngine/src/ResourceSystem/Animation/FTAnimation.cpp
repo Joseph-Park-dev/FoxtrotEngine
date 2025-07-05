@@ -2,6 +2,7 @@
 
 #include "ResourceSystem/Animation/AnimationFrame.h"
 #include "Managers/AnimationManager.h"
+#include "ResourceSystem/FTMeshData.h"
 
 int FTAnimation::GetMaxFrameIdx() const { return mMaxFrameIdx; }
 int FTAnimation::GetMinFrameIdx() const { return mMinFrameIdx; }

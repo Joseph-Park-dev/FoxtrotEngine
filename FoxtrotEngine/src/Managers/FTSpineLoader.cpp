@@ -7,16 +7,16 @@
 #include "FTSpineLoader.h"
 
 #ifdef FOXTROT_EDITOR
-#include "EditorResourceManager.h"
+	#include "EditorResourceManager.h"
 #endif // FOXTROT_EDITOR
-
 
 spine::SkeletonData* spine::FTSpineLoader::ReadSkeletonJsonData(const spine::String& filename, spine::Atlas* atlas, float scale)
 {
 	spine::SkeletonJson json(atlas);
 	json.setScale(scale);
 	spine::SkeletonData* skeletonData = json.readSkeletonDataFile(filename);
-	if (!skeletonData) {
+	if (!skeletonData)
+	{
 		printf("%s\n", json.getError().buffer());
 		exit(0);
 	}
@@ -25,10 +25,10 @@ spine::SkeletonData* spine::FTSpineLoader::ReadSkeletonJsonData(const spine::Str
 
 void spine::FTSpineLoader::load(AtlasPage& page, const String& path)
 {
-	FTTexture*	texture	 = nullptr;
+	FTTexture*	 texture  = nullptr;
 	FTDS::String fileName = ExtractFileName(path.buffer());
 	fileName.ExtractFromLast("/");
-	texture				 = EditorResourceManager::GetInstance()->GetLoadedTexture(fileName);
+	texture = EditorResourceManager::GetInstance()->GetLoadedTexture(fileName);
 
 	if (!texture)
 		return;
@@ -37,8 +37,6 @@ void spine::FTSpineLoader::load(AtlasPage& page, const String& path)
 	if (page.uWrap == TextureWrap_Repeat && page.vWrap == TextureWrap_Repeat) texture->setRepeated(true);*/
 
 	page.texture = texture;
-	page.width	 = texture->GetTexWidth();
-	page.height	 = texture->GetTexWidth();
 }
 
 void spine::FTSpineLoader::unload(void* texture)
@@ -46,6 +44,7 @@ void spine::FTSpineLoader::unload(void* texture)
 	texture = nullptr;
 }
 
-spine::SpineExtension* spine::getDefaultExtension() {
+spine::SpineExtension* spine::getDefaultExtension()
+{
 	return new DefaultSpineExtension();
 }

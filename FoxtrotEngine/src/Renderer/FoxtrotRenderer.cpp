@@ -139,87 +139,6 @@ bool FoxtrotRenderer::Initialize(FTWindow* window, int renderWidth, int renderHe
 
 	DX::ThrowIfFailed(CoInitializeEx(nullptr, COINIT_MULTITHREADED));
 
-	std::vector<D3D11_INPUT_ELEMENT_DESC> inputElements = {
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 + 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-	};
-
-	std::vector<D3D11_INPUT_ELEMENT_DESC> inputElementsSolid = {
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3 + 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3 + 4 * 3 + 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-	};
-
-	/*DX::ThrowIfFailed(
-		D3D11Utils::CreateVertexShaderAndInputLayout(
-			mDevice,
-			SOLID_VS_PATH,
-			inputElementsSolid,
-			mSolidVS,
-			mSolidInputLayout));
-
-	DX::ThrowIfFailed(
-		D3D11Utils::CreatePixelShader(
-			mDevice,
-			SOLID_PS_PATH,
-			mSolidPS));
-
-	DX::ThrowIfFailed(
-		D3D11Utils::CreateVertexShaderAndInputLayout(
-			mDevice,
-			TEXTURE_VS_PATH,
-			inputElements,
-			mTextureVS,
-			mTextureInputLayout));
-
-	DX::ThrowIfFailed(
-		D3D11Utils::CreatePixelShader(
-			mDevice,
-			TEXTURE_PS_PATH,
-			mTexturePS));
-
-	DX::ThrowIfFailed(
-		D3D11Utils::CreatePixelShader(
-			mDevice,
-			RIM_TEXTURE_PS_PATH,
-			mRimTexturePS));
-
-	DX::ThrowIfFailed(
-		D3D11Utils::CreatePixelShader(
-			mDevice,
-			TEXTURE_PS_2D_PATH,
-			mTexture2DPS));
-
-	DX::ThrowIfFailed(
-		D3D11Utils::CreateVertexShaderAndInputLayout(
-			mDevice,
-			NORMAL_VS_PATH,
-			inputElements,
-			mNormalVS,
-			mTextureInputLayout));
-
-	DX::ThrowIfFailed(
-		D3D11Utils::CreatePixelShader(
-			mDevice,
-			NORMAL_PS_PATH,
-			mNormalPS));
-
-	DX::ThrowIfFailed(
-		D3D11Utils::CreateVertexShaderAndInputLayout(
-			mDevice,
-			CUBEMAP_VS_PATH,
-			inputElements,
-			mCubeMapVS,
-			mTextureInputLayout));
-
-	DX::ThrowIfFailed(
-		D3D11Utils::CreatePixelShader(
-			mDevice,
-			CUBEMAP_PS_PATH,
-			mCubeMapPS));*/
-
 	mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
 
 	mContext->VSSetShader(mSolidVS.Get(), 0, 0);
@@ -342,9 +261,9 @@ HRESULT FoxtrotRenderer::CreateTextureSampler()
 	D3D11_SAMPLER_DESC sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
 	sampDesc.Filter			= D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	sampDesc.AddressU		= D3D11_TEXTURE_ADDRESS_CLAMP;
-	sampDesc.AddressV		= D3D11_TEXTURE_ADDRESS_CLAMP;
-	sampDesc.AddressW		= D3D11_TEXTURE_ADDRESS_CLAMP;
+	sampDesc.AddressU		= D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV		= D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW		= D3D11_TEXTURE_ADDRESS_WRAP;
 	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 	sampDesc.MinLOD			= 0;
 	sampDesc.MaxLOD			= D3D11_FLOAT32_MAX;

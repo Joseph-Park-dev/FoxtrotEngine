@@ -98,11 +98,6 @@ void UI::CheckMouseHover(FTVector2 mousePos)
 		// mousePos = Camera2D::GetInstance()->ConvertScreenPosToWorld(mousePos);
 	}
 	mMouseHovering = mRectArea->Overlaps(mousePos);
-
-	static int a = 0;
-	if (mMouseHovering)
-		LogVector2("Hver!", mousePos);
-	// mMouseHovering = CompareColorIDs(mRenderer->GetCursorPosColor());
 }
 
 void UI::OnMouseHovering()

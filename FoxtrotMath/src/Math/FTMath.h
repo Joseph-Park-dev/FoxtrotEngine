@@ -432,10 +432,11 @@ public:
 		return FTVector2(x / scalar, y / scalar);
 	}
 
-	FTVector2 operator/=(float scalar)
+	void operator/=(float scalar)
 	{
 		assert(!(scalar == 0.f));
-		return FTVector2(x / scalar, y / scalar);
+		this->x /= scalar;
+		this->y /= scalar;
 	}
 
 	FTVector2 operator=(FTVector3& vec3)
@@ -564,3 +565,22 @@ public:
 	static const FTVector2 NegUnitX;
 	static const FTVector2 NegUnitY;
 };
+
+extern "C"
+{
+	namespace Math
+	{
+		inline bool PointInRectangle(FTVector2 point, FTVector2 v0, FTVector2 v1, FTVector2 v2, FTVector2 v3)
+		{
+			FTVector2 AB = v1 - v0;
+			FTVector2 AM = point - v0;
+			FTVector2 BC = v2 - v1;
+			FTVector2 BM = point - v1;
+			float	  dotABAM = FTVector2::Dot(AB, AM);
+			float	  dotABAB = FTVector2::Dot(AB, AB);
+			float	  dotBCBM = FTVector2::Dot(BC, BM);
+			float	  dotBCBC = FTVector2::Dot(BC, BC);
+			return 0 <= dotABAM && dotABAM <= dotABAB && 0 <= dotBCBM && dotBCBM <= dotBCBC;
+		}
+	} // namespace Math
+}

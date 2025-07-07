@@ -21,8 +21,9 @@
 #include "Actors/Actor.h"
 
 #ifdef FOXTROT_EDITOR
-#include "ResourceSystem/FTShape.h"
-#include "CommandHistory.h"
+	#include "ResourceSystem/FTShape.h"
+	#include "CommandHistory.h"
+	#include "EditorCamera.h"
 #endif // DEBUG
 
 bool UI::IsMouseHovering()
@@ -50,9 +51,9 @@ bool UI::GetIsAffectedByCamera()
 	return mIsAffectedByCamera;
 }
 
-FTRectangle* UI::GetInputArea()
+FTRectangle* UI::GetDebugShape() const
 {
-	return mInputArea;
+	return mDBGShape;
 }
 
 void UI::SetIsFocused(bool isFocused)
@@ -70,29 +71,33 @@ void UI::SetMouseHovering(bool hovering)
 	mMouseHovering = hovering;
 }
 
-void UI::SetInputArea(FTRectangle* area)
+void UI::SetDebugShape(FTRectangle* area)
 {
-	mInputArea = area;
+	mDBGShape = area;
 }
 
-void UI::SetColorID(uint8_t r, uint8_t g, uint8_t b)
+FTRectArea* UI::RectArea()
 {
-	mColorID[0] = r;
-	mColorID[1] = g;
-	mColorID[2] = b;
-	mColorID[3] = 255.0f;
-	//mInputArea->GetPixelConstantData().IndexColor =
-	//	DirectX::SimpleMath::Vector4((float)r / 255, (float)g / 255, (float)b / 255, 1.0);
+	return mRectArea;
 }
 
-void UI::CheckMouseHover()
+// void UI::SetColorID(uint8_t r, uint8_t g, uint8_t b)
+//{
+//	mColorID[0] = r;
+//	mColorID[1] = g;
+//	mColorID[2] = b;
+//	mColorID[3] = 255.0f;
+//	//mInputArea->GetPixelConstantData().IndexColor =
+//	//	DirectX::SimpleMath::Vector4((float)r / 255, (float)g / 255, (float)b / 255, 1.0);
+// }
+
+void UI::CheckMouseHover(FTVector2 mousePos)
 {
 	if (mIsAffectedByCamera)
 	{
 		// mousePos = Camera2D::GetInstance()->ConvertScreenPosToWorld(mousePos);
 	}
-
-	mMouseHovering = CompareColorIDs(mRenderer->GetCursorPosColor());
+	mMouseHovering = mRectArea->Overlaps(mousePos);
 }
 
 void UI::OnMouseHovering()
@@ -118,26 +123,29 @@ void UI::Initialize(FTCore* ftCoreInst)
 {
 	UIManager::GetInstance()->RegisterUI(this);
 	mRenderer = ftCoreInst->GetGameRenderer();
-	mInputArea->Initialize(ftCoreInst->GetGameRenderer());
-	DebugShapes::GetInstance()->AddShape(mInputArea);
+	mDBGShape->Initialize(mRenderer);
+	DebugShapes::GetInstance()->AddShape(mDBGShape);
+}
+
+void UI::ProcessInput(FTInputDevice* inputDevice)
+{
+	CheckMouseHover(inputDevice->MOUSE_POS());
 }
 
 void UI::Update(float deltaTime)
 {
 	Transform* transform = GetOwner()->GetTransform();
-	Matrix mat = transform->GetMatrixWorld();
-	mInputArea->UpdateVC(
+	Matrix	   mat		 = transform->GetMatrixWorld();
+	mDBGShape->UpdateVC(
 		mat,
 		Camera::GetInstance());
 }
 
-void UI::LateUpdate(float deltaTime)
-{
-	CheckMouseHover();
-}
-
 void UI::Render(FoxtrotRenderer* renderer)
 {
+	Camera::GetInstance()->SetViewType(Viewtype::Orthographic);
+	UpdateDebugShape(Camera::GetInstance());
+	Camera::GetInstance()->SetViewType(Viewtype::Perspective);
 }
 
 UI::UI(Actor* owner, int updateOrder)
@@ -147,34 +155,60 @@ UI::UI(Actor* owner, int updateOrder)
 	, mLBtnDown(false)
 	, mLBtnClicked(false)
 	, mIsFocused(false)
-	, mInputArea(DBG_NEW FTRectangle)
+	, mDBGShape(DBG_NEW FTRectangle)
+	, mRectArea(DBG_NEW FTRectArea)
 	, mRenderer(nullptr)
-	, mColorID()
+//, mColorID()
 {
 }
 
 UI::~UI()
 {
-	DebugShapes::GetInstance()->RemoveShape(mInputArea);
+	DebugShapes::GetInstance()->RemoveShape(mDBGShape);
+	delete mRectArea;
 }
 
-bool UI::CompareColorIDs(uint8_t* cursorPosCol)
+// bool UI::CompareColorIDs(uint8_t* cursorPosCol)
+//{
+//	return mColorID[0] == cursorPosCol[0] &&
+//		mColorID[1] == cursorPosCol[1] &&
+//		mColorID[2] == cursorPosCol[2] &&
+//		mColorID[3] == cursorPosCol[3];
+// }
+
+void UI::UpdateDebugShape(Camera* camInst)
 {
-	return mColorID[0] == cursorPosCol[0] &&
-		mColorID[1] == cursorPosCol[1] &&
-		mColorID[2] == cursorPosCol[2] &&
-		mColorID[3] == cursorPosCol[3];
+	if (!mDBGShape)
+		return;
+
+	if (!mDBGShape->GetIsActive())
+		return;
+
+	Transform* transform = GetOwner()->GetTransform();
+	FTVector2  center	 = mRectArea->GetCenter();
+	center /= static_cast<float>(camInst->GetPixelsPerUnit());
+	Matrix translationMat = Matrix::CreateTranslation(center.x, center.y, 0.0f);
+	Matrix modelMat		  = translationMat * transform->GetMatrixWorld();
+
+	mDBGShape->UpdateVC(modelMat, camInst);
+	mDBGShape->UpdateGC(camInst);
+	mDBGShape->GetGSCData().size.x = mRectArea->GetSize().x / camInst->GetPixelsPerUnit();
+	mDBGShape->GetGSCData().size.y = mRectArea->GetSize().y / camInst->GetPixelsPerUnit();
+
+	mDBGShape->UpdatePC();
 }
 
 void UI::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
-	mInputArea->SaveProperties(ofs);
+	mRectArea->SaveProperties(ofs);
+	mDBGShape->SaveProperties(ofs);
 }
 
 void UI::LoadProperties(std::ifstream& ifs)
 {
-	mInputArea->LoadProperties(ifs);
+	mDBGShape->LoadProperties(ifs);
+	mRectArea->LoadProperties(ifs);
 	Component::LoadProperties(ifs);
 }
 
@@ -186,11 +220,12 @@ void UI::EditorUpdate(float deltaTime)
 
 void UI::EditorRender(FoxtrotRenderer* renderer)
 {
-	//mInputArea->Render(renderer);
+	Render(renderer);
 }
 
 void UI::EditorUIUpdate()
 {
-	mInputArea->UpdateUI();
+	mDBGShape->UpdateUI();
+	mRectArea->UpdateUI();
 }
 #endif // FOXTROT_EDITOR

@@ -34,10 +34,10 @@ UIManager::~UIManager()
 
 void UIManager::RegisterUI(UI* UI)
 {
-	UI->SetColorID(
+	/*UI->SetColorID(
 		Random::GetIntRange(0, 255),
 		Random::GetIntRange(0, 255),
-		Random::GetIntRange(0, 255));
+		Random::GetIntRange(0, 255));*/
 	mUIs.push_back(UI);
 }
 

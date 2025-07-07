@@ -17,6 +17,7 @@
 
 class FoxtrotRenderer;
 class FTRectangle;
+class FTRectArea;
 
 class UI :
 	public Component
@@ -27,16 +28,18 @@ public:
 	bool		 LeftButtonIsClicked();
 	bool		 GetIsFocused();
 	bool		 GetIsAffectedByCamera();
-	FTRectangle* GetInputArea();
+	FTRectangle* GetDebugShape() const;
 
 	void SetIsFocused(bool isFocused);
 	void SetIsAffectedByCamera(bool affected);
 	void SetMouseHovering(bool hovering);
-	void SetInputArea(FTRectangle* rect);
-	void SetColorID(uint8_t r, uint8_t g, uint8_t b);
+	void SetDebugShape(FTRectangle* rect);
+	// void SetColorID(uint8_t r, uint8_t g, uint8_t b);
+
+	FTRectArea* RectArea();
 
 public:
-	virtual void CheckMouseHover();
+	virtual void CheckMouseHover(FTVector2 mousePos);
 	virtual void OnMouseHovering();
 	virtual void OnMouseLButtonDown();
 	virtual void OnMouseLButtonUp();
@@ -44,8 +47,8 @@ public:
 
 public:
 	virtual void Initialize(FTCore* ftCoreInst) override;
+	virtual void ProcessInput(FTInputDevice* inputDevice) override;
 	virtual void Update(float deltaTime) override;
-	virtual void LateUpdate(float deltaTime) override;
 	virtual void Render(FoxtrotRenderer* renderer) override;
 
 public:
@@ -62,14 +65,16 @@ private:
 
 	// Needed to get Render Width & Render Height
 	FoxtrotRenderer* mRenderer;
-	uint8_t			 mColorID[4];
-	// An area this UI can receive input from.
-	FTRectangle* mInputArea;
+	FTRectArea*		 mRectArea;
+	FTRectangle*	 mDBGShape;
+
+	// uint8_t			 mColorID[4];
+	//  An area this UI can receive input from.
 
 	friend class UIManager;
 
 private:
-	bool CompareColorIDs(uint8_t* cursorPosCol);
+	void UpdateDebugShape(Camera* camInst);
 
 public:
 	void SaveProperties(std::ofstream& ifs) override;
@@ -82,3 +87,8 @@ public:
 	virtual void EditorUIUpdate() override;
 #endif
 };
+
+namespace ChunkKey
+{
+	constexpr const char* UI_SHOW_DEBUG_SHAPE = "Show Debug Shape";
+}

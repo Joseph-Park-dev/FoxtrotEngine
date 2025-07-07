@@ -17,17 +17,29 @@ const FTRectArea FTRectArea::Zero(0.0f, 0.0f, 0.0f, 0.0f);
 
 bool FTRectArea::Overlaps(const FTVector2& point)
 {
-	return mMin.x <= point.x && point.x <= mMax.x && mMin.y <= point.y && point.y <= mMax.y;
+	FTVector2 v1 = FTVector2(Math::Cos(mRotAngle), Math::Sin(mRotAngle));
+	FTVector2 v2 = FTVector2(-v1.y, v1.x); // Rotate by 90
+
+   // scale them appropriately by the dimensions
+	v1 *= mWidth / 2;
+	v2 *= mHeight / 2;
+
+	FTVector2 p0 = mCenter + v1 + v2;
+	FTVector2 p1 = mCenter - v1 + v2;
+	FTVector2 p2 = mCenter - v1 - v2;
+	FTVector2 p3 = mCenter + v1 - v2;
+
+	return Math::PointInRectangle(point, p0, p1, p2, p3);
 }
 
-bool FTRectArea::Overlaps(const FTRectArea& other)
-{
-	FTVector2 rightMin = other.mMin;
-	FTVector2 rightMax = other.mMax;
-	return Overlaps(other.mMin) || Overlaps(other.mMax);
-}
+//bool FTRectArea::Overlaps(const FTRectArea& other)
+//{
+//	FTVector2 rightMin = other.mMin;
+//	FTVector2 rightMax = other.mMax;
+//	return Overlaps(other.mMin) || Overlaps(other.mMax);
+//}
 
-void FTRectArea::Set(FTVector2 center, FTVector2 dimension)
+void FTRectArea::Set(FTVector2 center, FTVector2 dimension, float rotAngle)
 {
 	mCenter = center;
 	mSize	= dimension;
@@ -35,9 +47,10 @@ void FTRectArea::Set(FTVector2 center, FTVector2 dimension)
 	mHeight = dimension.y;
 	mMin	= mCenter - mSize / 2;
 	mMax	= mCenter + mSize / 2;
+	mRotAngle = rotAngle;
 }
 
-void FTRectArea::Set(float posX, float posY, float width, float height)
+void FTRectArea::Set(float posX, float posY, float width, float height, float rotAngle)
 {
 	mWidth	= width;
 	mHeight = height;
@@ -45,6 +58,7 @@ void FTRectArea::Set(float posX, float posY, float width, float height)
 	mCenter = FTVector2(posX, posY) + mSize * 0.5f;
 	mMin	= mCenter - mSize / 2;
 	mMax	= mCenter + mSize / 2;
+	mRotAngle = rotAngle;
 }
 
 void FTRectArea::CloneTo(FTRectArea* rect)
@@ -62,15 +76,17 @@ void FTRectArea::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTRectArea);
 	FileIOHelper::SaveVector2(ofs, ChunkKey::FTRectArea_CENTER, mCenter);
 	FileIOHelper::SaveVector2(ofs, ChunkKey::FTRectArea_SIZE, mSize);
+	FileIOHelper::SaveFloat(ofs, ChunkKey::FTRectArea_ROTANGLE, mRotAngle);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTRectArea);
 }
 
 void FTRectArea::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs);
+	FileIOHelper::LoadFloat(ifs, mRotAngle);
 	FileIOHelper::LoadVector2(ifs, mSize);
 	FileIOHelper::LoadVector2(ifs, mCenter);
-	Set(mCenter, mSize);
+	Set(mCenter, mSize, mRotAngle);
 }
 
 #ifdef FOXTROT_EDITOR
@@ -78,6 +94,7 @@ void FTRectArea::UpdateUI()
 {
 	CommandHistory::GetInstance()->UpdateVector2Value("Center", mCenter);
 	CommandHistory::GetInstance()->UpdateVector2Value("Size", mSize);
-	Set(mCenter, mSize);
+	CommandHistory::GetInstance()->UpdateFloatValue("Rot Angle", mRotAngle);
+	Set(mCenter, mSize, mRotAngle);
 }
 #endif

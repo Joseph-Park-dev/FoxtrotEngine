@@ -194,12 +194,12 @@ void FTCoreEditor::UpdateGame()
 		EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
 		Physics2D::GetInstance()->Update();
 		CollisionManager::GetInstance()->Update();
+		UIManager::GetInstance()->Update(deltaTime, mEditorWindow->GetInputDevice());
 	}
 	else
 		EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
 	Camera::GetInstance()->Update(deltaTime);
 	EditorCamera::GetInstance()->Update(deltaTime);
-	UIManager::GetInstance()->Update(deltaTime, mEditorWindow->GetInputDevice());
 	EditorLayer::GetInstance()->Update(deltaTime);
 }
 

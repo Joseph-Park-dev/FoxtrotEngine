@@ -137,7 +137,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">
     <IncludePath>.\include;.\src;$(IncludePath)</IncludePath>
-    <OutDir>D:\[2024_01]\Test_Project_FTEngine\FoxtrotEngine</OutDir>
+    <OutDir>..\..\..\[2025_01]\[GooCat Studio] VampiCat\FoxtrotEngine</OutDir>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
@@ -209,7 +209,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>..\FoxtrotEditor\include;..\FoxtrotEditor\src;.\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\FoxtrotEditor\include;..\FoxtrotEditor\src;.\src;D:\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -220,10 +220,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;FOXTROT_EDITOR;WITH_WINMM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>.\include;.\include\spine-cpp\include;.\src;..\FoxtrotEditor\include;..\FoxtrotEditor\src;..\FoxtrotDS;..\FoxtrotMath\src;D:\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\include;.\include\SoLoud\include;.\include\spine-cpp\include;.\src;..\FoxtrotEditor\include;..\FoxtrotEditor\src;..\FoxtrotDS;..\FoxtrotMath\src;D:\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -239,7 +239,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>.\include;.\include\spine-cpp\include;.\src;..\FoxtrotDS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\include;.\include\SoLoud\include;.\include\spine-cpp\include;.\src;..\FoxtrotDS;..\FoxtrotMath\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -263,7 +263,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\HenryPrototype.cpp" />
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\ButtonClick.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\Damage.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\HenryPrototype.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\Punch.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\PunchDamage.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="include\spine-cpp\src\spine\Animation.cpp" />
     <ClCompile Include="include\spine-cpp\src\spine\AnimationState.cpp" />
     <ClCompile Include="include\spine-cpp\src\spine\AnimationStateData.cpp" />
@@ -331,6 +350,10 @@
     <ClCompile Include="include\spine-cpp\src\spine\Triangulator.cpp" />
     <ClCompile Include="include\spine-cpp\src\spine\Updatable.cpp" />
     <ClCompile Include="include\spine-cpp\src\spine\VertexAttachment.cpp" />
+    <ClCompile Include="include\stb_vorbis.c" />
+    <ClCompile Include="src\ResourceSystem\Sound\SoundInstance.cpp" />
+    <ClCompile Include="src\ResourceSystem\Sound\Sound.cpp" />
+    <ClCompile Include="src\Managers\SoundManager.cpp" />
     <ClCompile Include="src\Components\SpineAnimator.cpp" />
     <ClCompile Include="src\Debugging\DebugFuncs.h" />
     <ClCompile Include="src\Managers\FTSpineLoader.cpp" />
@@ -415,6 +438,116 @@
     <ClCompile Include="src\Managers\TileMapManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\ButtonClick.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\Damage.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\HenryPrototype.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\Punch.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\PunchDamage.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="include\assimp\res\assimp\revision.h" />
+    <ClInclude Include="include\box2d\base.h" />
+    <ClInclude Include="include\box2d\box2d.h" />
+    <ClInclude Include="include\box2d\collision.h" />
+    <ClInclude Include="include\box2d\id.h" />
+    <ClInclude Include="include\box2d\math_functions.h" />
+    <ClInclude Include="include\box2d\types.h" />
+    <ClInclude Include="include\directxmath\DirectXCollision.h" />
+    <ClInclude Include="include\directxmath\DirectXColors.h" />
+    <ClInclude Include="include\directxmath\DirectXMath.h" />
+    <ClInclude Include="include\directxmath\DirectXPackedVector.h" />
+    <ClInclude Include="include\DirectXTex.h" />
+    <ClInclude Include="include\directxtk\BufferHelpers.h" />
+    <ClInclude Include="include\directxtk\CommonStates.h" />
+    <ClInclude Include="include\directxtk\DDSTextureLoader.h" />
+    <ClInclude Include="include\directxtk\DirectXHelpers.h" />
+    <ClInclude Include="include\directxtk\Effects.h" />
+    <ClInclude Include="include\directxtk\GamePad.h" />
+    <ClInclude Include="include\directxtk\GeometricPrimitive.h" />
+    <ClInclude Include="include\directxtk\GraphicsMemory.h" />
+    <ClInclude Include="include\directxtk\Keyboard.h" />
+    <ClInclude Include="include\directxtk\Model.h" />
+    <ClInclude Include="include\directxtk\Mouse.h" />
+    <ClInclude Include="include\directxtk\PostProcess.h" />
+    <ClInclude Include="include\directxtk\PrimitiveBatch.h" />
+    <ClInclude Include="include\directxtk\ScreenGrab.h" />
+    <ClInclude Include="include\directxtk\SimpleMath.h" />
+    <ClInclude Include="include\directxtk\SpriteBatch.h" />
+    <ClInclude Include="include\directxtk\SpriteFont.h" />
+    <ClInclude Include="include\directxtk\VertexTypes.h" />
+    <ClInclude Include="include\directxtk\WICTextureLoader.h" />
+    <ClInclude Include="include\SoLoud\include\soloud.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_audiosource.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_bassboostfilter.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_biquadresonantfilter.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_bus.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_c.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_dcremovalfilter.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_echofilter.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_error.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_fader.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_fft.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_fftfilter.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_file.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_file_hack_off.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_file_hack_on.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_filter.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_flangerfilter.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_freeverbfilter.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_internal.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_lofifilter.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_misc.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_monotone.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_noise.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_openmpt.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_queue.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_robotizefilter.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_sfxr.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_speech.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_tedsid.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_thread.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_vic.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_vizsn.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_wav.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_waveshaperfilter.h" />
+    <ClInclude Include="include\SoLoud\include\soloud_wavstream.h" />
+    <ClInclude Include="include\stb_connected_components.h" />
+    <ClInclude Include="include\stb_c_lexer.h" />
+    <ClInclude Include="include\stb_divide.h" />
+    <ClInclude Include="include\stb_ds.h" />
+    <ClInclude Include="include\stb_dxt.h" />
+    <ClInclude Include="include\stb_easy_font.h" />
+    <ClInclude Include="include\stb_herringbone_wang_tile.h" />
+    <ClInclude Include="include\stb_hexwave.h" />
+    <ClInclude Include="include\stb_image.h" />
+    <ClInclude Include="include\stb_image_resize2.h" />
+    <ClInclude Include="include\stb_image_write.h" />
+    <ClInclude Include="include\stb_include.h" />
+    <ClInclude Include="include\stb_leakcheck.h" />
+    <ClInclude Include="include\stb_perlin.h" />
+    <ClInclude Include="include\stb_rect_pack.h" />
+    <ClInclude Include="include\stb_sprintf.h" />
+    <ClInclude Include="include\stb_textedit.h" />
+    <ClInclude Include="include\stb_tilemap_editor.h" />
+    <ClInclude Include="include\stb_truetype.h" />
+    <ClInclude Include="include\stb_voxel_render.h" />
+    <ClInclude Include="include\Tweeny\tweeny-3.2.0.h" />
+    <ClInclude Include="src\ResourceSystem\Sound\SoundInstance.h" />
+    <ClInclude Include="src\ResourceSystem\Sound\Sound.h" />
+    <ClInclude Include="src\Managers\SoundManager.h" />
     <ClInclude Include="src\Components\SpineAnimator.h" />
     <ClInclude Include="src\Managers\FTSpineLoader.h" />
     <ClInclude Include="include\spine-cpp\include\spine\Animation.h" />
@@ -1124,6 +1257,14 @@
     <None Include="include\assimp\SmoothingGroups.inl" />
     <None Include="include\assimp\vector2.inl" />
     <None Include="include\assimp\vector3.inl" />
+    <None Include="include\directxmath\DirectXCollision.inl" />
+    <None Include="include\directxmath\DirectXMathConvert.inl" />
+    <None Include="include\directxmath\DirectXMathMatrix.inl" />
+    <None Include="include\directxmath\DirectXMathMisc.inl" />
+    <None Include="include\directxmath\DirectXMathVector.inl" />
+    <None Include="include\directxmath\DirectXPackedVector.inl" />
+    <None Include="include\DirectXTex.inl" />
+    <None Include="include\directxtk\SimpleMath.inl" />
     <None Include="include\Tweeny\tween.tcc" />
     <None Include="include\Tweeny\tweenone.tcc" />
     <None Include="include\Tweeny\tweenpoint.tcc" />

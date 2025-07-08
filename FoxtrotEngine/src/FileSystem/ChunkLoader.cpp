@@ -41,7 +41,7 @@ void ChunkLoader::LoadChunk(FTDS::String& fileName)
 	LoadChunkData(ifs);
 	CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
 	ResourceManager::GetInstance()->LoadResources(ifs);
-	LightManager::GetInstance()->LoadProperties(ifs);
+	//LightManager::GetInstance()->LoadProperties(ifs);
 	LoadActorsData(ifs);
 	Camera::GetInstance()->LoadProperties(ifs);
 }

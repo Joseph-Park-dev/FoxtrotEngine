@@ -27,16 +27,8 @@ void ButtonUI::OnMouseLButtonUp()
 
 void ButtonUI::OnMouseLButtonClicked()
 {
-	if (mFunc != nullptr)
-	{
-		mFunc(mParam1, mParam2);
-	}
-	if (mSceneInstance && mSceneFunc)
-	{
-		((*mSceneInstance).*mSceneFunc)();
-	}
-
-	OnMouseLeftBTNClicked.Broadcast();
+	OnMouseLeftBTNClicked->Broadcast();
+	LogString("clicked!");
 }
 
 void ButtonUI::CloneTo(Actor* actor)
@@ -48,14 +40,11 @@ void ButtonUI::CloneTo(Actor* actor)
 
 ButtonUI::ButtonUI(Actor* owner, int updateOrder)
 	: UI		(owner, updateOrder)
-	, mFunc				(nullptr)
-	, mParam1			(0)
-	, mParam2			(0)
-	, mSceneInstance	(nullptr)
-	, mSceneFunc		(nullptr)
+	, OnMouseLeftBTNClicked(DBG_NEW MulticastDelegate())
 {}
 
 ButtonUI::~ButtonUI()
 {
-	OnMouseLeftBTNClicked.Clear();
+	delete OnMouseLeftBTNClicked;
+	OnMouseLeftBTNClicked = nullptr;
 }

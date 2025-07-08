@@ -23,7 +23,11 @@
 void EditorScene::Initialize(FTCore* coreInst)
 {
 	for (EditorElement* ele : mEditorElements)
+	{
 		ele->Initialize(coreInst);
+		for (Component* comp : ele->GetComponents())
+			comp->AddResRefCount();
+	}
 }
 
 void EditorScene::Setup()

@@ -3,6 +3,8 @@
 #include "ResourceSystem/GeometryGenerator.h"
 #include "ResourceSystem/Mesh.h"
 #include "ResourceSystem/FTMaterials/StandardMaterial.h"
+#include "ResourceSystem/FTShaders/FTVertexShader.h"
+#include "ResourceSystem/FTShaders/FTPixelShader.h"
 #include "Managers/ResourceManager.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/Camera.h"
@@ -26,9 +28,9 @@ void FTCubemap::CalcVCData(Camera* camInst)
 
 	for (Mesh* mesh : Meshes())
 	{
-		GetVCData().model = modelMat.Transpose();
-		GetVCData().view = viewMat.Transpose();
-		GetVCData().projection = projMat.Transpose();
+		//GetVCData().model = modelMat.Transpose();
+		//GetVCData().view = viewMat.Transpose();
+		//GetVCData().projection = projMat.Transpose();
 	}
 }
 
@@ -38,7 +40,7 @@ void FTCubemap::Initialize(std::vector<FTMeshData>&& meshes, ComPtr<ID3D11Device
 	for (FTMeshData& meshData : meshes)
 		std::reverse(meshData.Indices.begin(), meshData.Indices.end());
 
-	FTBasicMeshGroup::Initialize(std::move(meshes), device, context);
+	//FTBasicMeshGroup::Initialize(std::move(meshes), device, context);
 
 	std::vector<FTDS::String> matKey = { ChunkKey::STANDARD_MAT };
 	SetMaterials(matKey, device);
@@ -67,9 +69,9 @@ void FTCubemap::Render(FoxtrotRenderer* renderer)
 			context->PSSetShaderResources(0, 2, resViews);
 		}
 
-		context->VSSetShader(GetVertexShader().Get(), 0, 0);
+		context->VSSetShader(GetVertexShader()->GetShader().Get(), 0, 0);
 		context->PSSetSamplers(0, 1, GetSamplerState().GetAddressOf());
-		context->PSSetShader(GetPixelShader().Get(), 0, 0);
+		context->PSSetShader(GetPixelShader()->GetShader().Get(), 0, 0);
 
 		if (!Materials().empty())
 		{

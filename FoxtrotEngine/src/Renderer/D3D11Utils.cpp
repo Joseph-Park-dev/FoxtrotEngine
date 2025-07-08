@@ -87,9 +87,7 @@ HRESULT D3D11Utils::CreateDeviceAndContext(
 		LogString("MSAA not supported.");
 	}
 
-#ifdef FOXTROT_EDITOR
 	numQualityLevel = 0; // Disable MSAA;
-#endif
 
 	hr = deviceCache.As(&device);
 	if (FAILED(hr))

@@ -138,32 +138,37 @@ namespace FTDS
 		void ExtractUntilFirst(FTDS::String& result, const char* ch)
 		{
 			int end = LFind(ch);
-			SubStr(result, 0, end);
+			if (end != -1)
+				SubStr(result, 0, end);
 		}
 
 		void ExtractUntilLast(FTDS::String& result, const char* ch)
 		{
 			int end = RFind(ch);
-			SubStr(result, 0, end);
+			if(end != -1)
+				SubStr(result, 0, end);
 		}
 
 		void ExtractFromLast(FTDS::String& result, const char* ch)
 		{
 			int end = RFind(ch);
-			SubStr(result, end + 1, mLength);
+			if (end != -1)
+				SubStr(result, end + 1, mLength);
 		}
 
 		void ExtractFromLast(const char* ch)
 		{
 			int end = RFind(ch);
-			SubStr(end + 1, mLength);
+			if (end != -1)
+				SubStr(end + 1, mLength);
 		}
 
 		void ExtractBracketedVal(FTDS::String& result, const char* left, const char* right)
 		{
 			int begin = LFind(left);
 			int end	  = RFind(right);
-			SubStr(result, begin + 1, end - begin - 1);
+			if (begin != -1 && end != -1)
+				SubStr(result, begin + 1, end - begin - 1);
 		}
 
 		bool Equal(const char* right) const

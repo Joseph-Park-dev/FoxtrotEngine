@@ -36,13 +36,7 @@ public:
 	virtual void OnMouseLButtonUp() override;
 	virtual void OnMouseLButtonClicked() override;
 
-	void SetClickedCallBack(Scene* scene, SCENE_MEMFUNC sceneFunc)
-	{
-		mSceneInstance = scene;
-		mSceneFunc = sceneFunc;
-	}
-
-	MulticastDelegate<> OnMouseLeftBTNClicked;
+	MulticastDelegate<>* OnMouseLeftBTNClicked;
 
 public:
 	virtual void CloneTo(Actor* actor) override;
@@ -53,12 +47,4 @@ public:
 		int updateOrder = DefaultVal::UPDATE_ORDER
 	 );
 	~ButtonUI() override;
-
-private:
-	BTN_FUNC	  mFunc;
-	int			  mParam1;
-	int			  mParam2;
-
-	SCENE_MEMFUNC mSceneFunc;
-	Scene*		  mSceneInstance;
 };

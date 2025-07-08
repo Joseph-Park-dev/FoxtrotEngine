@@ -135,6 +135,11 @@ void Collider2D::OnCollisionExit(Collider2D* other)
 	}
 }
 
+bool& Collider2D::IsShowingDebugShape()
+{
+	return mShowDebugShape;
+}
+
 void Collider2D::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
@@ -175,10 +180,5 @@ void Collider2D::UpdateOffsetPos()
 void Collider2D::ToggleDebugShape()
 {
 	CommandHistory::GetInstance()->UpdateBoolValue("Show Debug Shape", mShowDebugShape);
-}
-
-bool& Collider2D::IsShowingDebugShape()
-{
-	return mShowDebugShape;
 }
 #endif

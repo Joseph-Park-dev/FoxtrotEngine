@@ -135,7 +135,7 @@ void FTSpineAnimation::SetMaterials(std::vector<FTDS::String>& matKeys, ComPtr<I
 		for (FTDS::String& key : matKeys)
 			Materials().push_back(EditorResourceManager::GetInstance()->GetLoadedMaterial(key));
 #else
-	if (ResourceManager::GetInstance()->GetLoadedMaterial(ChunkKey::Material::STANDARD_MATERIAL))
+	if (1 < ResourceManager::GetInstance()->GetMaterials()->GetSize())
 		for (FTDS::String& key : matKeys)
 			Materials().push_back(ResourceManager::GetInstance()->GetLoadedMaterial(key));
 #endif // FOXTROT_EDITOR

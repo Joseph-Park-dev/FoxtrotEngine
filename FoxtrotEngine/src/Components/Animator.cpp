@@ -32,6 +32,7 @@
 	#include "EditorUtils.h"
 	#include "EditorResourceManager.h"
 	#include "EditorCamera.h"
+	#include "ResourceSystem/FTMaterials/FTMaterial.h"
 #endif // FOXTROT_EDITOR
 
 Animator::Animator(Actor* owner, int updateOrder)
@@ -53,7 +54,7 @@ Animator::~Animator()
 void Animator::Play(const UINT key, bool isRepeated)
 {
 	FTSpriteAnimation* anim = mLoadedAnim.at(key);
-	mCurrAnim = anim;
+	mCurrAnim				= anim;
 	SetMeshGroup(mCurrAnim);
 
 	mIsFinished = false;
@@ -197,7 +198,7 @@ void Animator::Initialize(FTCore* coreInstance)
 			anim->SetMaterials(MaterialKeys(), GetRenderer()->GetDevice());
 			anim->SetVertexShader(VSKey());
 			anim->SetPixelShader(PSKey());
-		}		  
+		}
 	}
 
 	Component::Initialize(coreInstance);
@@ -277,6 +278,12 @@ void Animator::EditorRender(FoxtrotRenderer* renderer)
 	}
 }
 
+void Animator::AddResRefCount()
+{
+	for (FTSpriteAnimation* anim : mLoadedAnim)
+		anim->AddRefCount();
+}
+
 void Animator::UpdatePlayAnim()
 {
 	if (GetMeshGroup())
@@ -306,12 +313,12 @@ void Animator::UpdatePlayList()
 	if (key.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 	{
 		FTSpriteAnimation* anim = EditorResourceManager::GetInstance()->GetLoadedSpriteAnim(key);
-		mLoadedAnim.push_back(anim);
 		if (mLoadedAnim.size() == 1)
 		{
 			mCurrAnim = anim;
 			SetMeshGroup(mCurrAnim);
 		}
+		mLoadedAnim.push_back(anim);
 	}
 
 	if (0 < mLoadedAnim.size())
@@ -330,7 +337,9 @@ void Animator::UpdatePlayList()
 				std::iter_swap(mLoadedAnim.begin() + i + 1, mLoadedAnim.begin() + i);
 
 			if (ImGui::Button("Delete"))
+			{
 				mLoadedAnim.erase(mLoadedAnim.begin() + i);
+			}
 			ImGui::PopID();
 			++i;
 		}

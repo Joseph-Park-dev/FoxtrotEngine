@@ -60,7 +60,7 @@ void TileMapManager::UpdateUI(bool* opened)
 
 		for (; iterT != mapTileMaps->End(); ++iterT)
 		{
-			if (*iterT)
+			if (iterT)
 			{
 				ImGui::PushID((*iterT)->Value());
 				(*iterT)->Value()->UpdateUI();
@@ -73,6 +73,7 @@ void TileMapManager::UpdateUI(bool* opened)
 		if (ImGui::Button("Create TileMap"))
 		{
 			FTTileMap* tileMap = DBG_NEW FTTileMap;
+			tileMap->SetFileName("New TileMap");
 			tileMap->SetRelativePath(EditorResourceManager::GetInstance()->GetPathToAsset());
 			EditorResourceManager::GetInstance()->LoadResource(tileMap, mapTileMaps);
 		}

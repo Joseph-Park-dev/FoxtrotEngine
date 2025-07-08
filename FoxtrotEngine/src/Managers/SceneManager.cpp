@@ -17,6 +17,7 @@
 #include "FileSystem/FileIOHelper.h"
 #include "FileSystem/ChunkLoader.h"
 #include "Managers/CollisionManager.h"
+#include "Managers/UIManager.h"
 
 SceneManager::SceneManager()
 	: mChunkList()
@@ -32,6 +33,7 @@ SceneManager::~SceneManager()
 void SceneManager::SwitchScene(size_t index)
 {
 	CollisionManager::GetInstance()->Reset();
+	UIManager::GetInstance()->Reset();
 	mCurrentScene->DeleteAll();
 	FTDS::String path = FTDS::String(".\\Chunks\\") + mChunkList.at(index);
 	ChunkLoader::GetInstance()->LoadChunk(path);

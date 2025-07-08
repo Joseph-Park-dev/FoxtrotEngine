@@ -67,6 +67,8 @@ void FTCore::LoadGameData()
 		FileIOHelper::LoadBasicString(ifs, chunkTitle);
 		SceneManager::GetInstance()->GetChunkList().push_back(chunkTitle);
 	}
+	std::filesystem::path assetPath = std::filesystem::absolute("./");
+	ResourceManager::GetInstance()->SetPathToAsset(assetPath.string().c_str());
 }
 
 bool FTCore::Initialize()

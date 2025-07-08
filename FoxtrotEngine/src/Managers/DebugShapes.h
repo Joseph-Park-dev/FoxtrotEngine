@@ -26,8 +26,6 @@ public:
 	// Adds the created shape to the std::vector.
 	void AddShape(FTShape* shape);
 
-	void SetCameraRect(FTRectangle* rect);
-
 	// To delete an individual shape, this member function can be called.
 	// Do not delete debug shapes manually in Components.
 	void RemoveShape(FTShape* shape);
@@ -66,6 +64,7 @@ private:
 
 #ifdef FOXTROT_EDITOR
 public:
+	void SetCameraRect(FTRectangle* rect);
 	void RenderCamRect(FoxtrotRenderer* renderer);
 private:
 	FTRectangle* mCamRect;

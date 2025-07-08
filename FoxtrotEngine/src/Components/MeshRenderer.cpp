@@ -88,7 +88,10 @@ void		  MeshRenderer::SetTexKey(const char* key) { mTexKey.Assign(key); }
 FTDS::String& MeshRenderer::VSKey() { return mVSKey; }
 FTDS::String& MeshRenderer::PSKey() { return mPSKey; }
 
-void MeshRenderer::SetMeshGroup(FTBasicMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
+void MeshRenderer::SetMeshGroup(FTBasicMeshGroup* meshGroup) 
+{ 
+	mMeshGroup = meshGroup; 
+}
 
 void MeshRenderer::SetMaterials()
 {
@@ -122,14 +125,7 @@ bool MeshRenderer::InitializeMesh()
 bool MeshRenderer::InitializeMesh(FTDS::String& key)
 {
 	mMeshKey   = key;
-
-#ifdef FOXTROT_EDITOR
-	mMeshGroup = EditorResourceManager::GetInstance()->GetLoadedMesh(key);
-#else
-	mMeshGroup = ResourceManager::GetInstance()->GetLoadedMesh(key);
-#endif // FOXTROT_EDITOR
-
-	return mMeshGroup != nullptr;
+	return InitializeMesh();
 }
 
 void MeshRenderer::UpdateMesh(Transform* transform, Camera* camInst, FoxtrotRenderer* renderer)

@@ -9,6 +9,5 @@ void FTMaterial::Process(FTCore* coreInst)
 
 	this->LoadFromFile();
 	// All loaded premades are included as default.
-	this->AddRefCount();
 	this->SetIsProcessed(true);
 }

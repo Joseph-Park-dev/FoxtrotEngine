@@ -78,6 +78,9 @@ public:
 	virtual void EditorUIUpdate() override;
 	void		 EditorRender(FoxtrotRenderer* renderer) override;
 
+public:
+	virtual void AddResRefCount() override;
+
 private:
 	void UpdatePlayAnim();
 	void UpdatePlayList();

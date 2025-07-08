@@ -51,7 +51,7 @@ struct BlinnPhongData
 struct StandardMatData
 {
 	Vector3		   EyeWorld;
-	uint32_t	   UseTexture;
+	uint32_t	   UseTexture = 1;
 	Light		   Lights[GameData::MAX_LIGHTS];
 	BlinnPhongData BlinnPhongData;
 };

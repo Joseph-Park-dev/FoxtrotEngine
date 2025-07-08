@@ -42,7 +42,6 @@ public:
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void UpdateUI() = 0;
-
 #endif
 };
 

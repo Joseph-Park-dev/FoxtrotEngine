@@ -78,9 +78,11 @@ private:
 	FTVector2 mFinalPosition;
 
 	CollisionStatesMap mCollisionStates;
+	bool			   mShowDebugShape;
 
 protected:
 	virtual void UpdateDebugShape(Camera* camInst) = 0;
+	bool&		 IsShowingDebugShape();
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
@@ -96,10 +98,6 @@ public:
 
 protected:
 	virtual void ToggleDebugShape();
-	bool&		 IsShowingDebugShape();
-
-private:
-	bool mShowDebugShape;
 
 private:
 	void UpdateOffsetPos();

@@ -1,6 +1,7 @@
 #pragma once
 #include "Dynamic/RecordNode.h"
 #include "Array.h"
+#include "Dynamic/DynamicArray.h"
 #include "Debugging/DebugFuncs.h"
 
 #include <stdint.h>
@@ -102,29 +103,6 @@ namespace FTDS
 			--mSize;
 		}
 
-		virtual void Clear() override
-		{
-			// Clear the linked nodes inside the array data.
-			for (size_t i = 0; i < this->Capacity(); ++i)
-			{
-				if (this->mData[i])
-				{
-					RecordNode<TYPE>* node = this->mData[i];
-					while (node)
-					{
-						RecordNode<TYPE>* temp = node;
-						node				   = node->GetLink();
-						delete temp;
-						temp = nullptr;
-					}
-				}
-			}
-
-			// De-allocate the array.
-			delete this->mData;
-			this->mData = nullptr;
-		}
-
 	public:
 		template <class UnaryOperation>
 		void IterateAllNodes(
@@ -148,9 +126,12 @@ namespace FTDS
 		void IterateAllValues(
 			UnaryOperation&& unaryOp)
 		{
+			if (this->mSize < 1)
+				return;
+
 			for (size_t i = 0; i < this->Capacity(); ++i)
 			{
-				if (this->mData[i])
+				if (this->mData)
 				{
 					RecordNode<TYPE>* node = this->mData[i];
 					while (node != nullptr)
@@ -160,6 +141,35 @@ namespace FTDS
 					}
 				}
 			}
+		}
+
+		// Clear the linked nodes inside the array data.
+		void Clear() override
+		{
+			if (mSize < 1)
+				return;
+
+			// Gather up all nodes which are not null.
+			DynamicArray<RecordNode<TYPE>*> nodes;
+			nodes.Reserve(mSize);
+
+			// Iterate through all nodes, making them null.
+			for (size_t i = 0; i < this->Capacity(); ++i)
+			{
+				if (this->mData[i])
+				{
+					RecordNode<TYPE>* node = this->mData[i];
+					while (node)
+					{
+						RecordNode<TYPE>* curr = node;
+						node = node->GetLink();
+						delete curr;
+						curr = nullptr;
+					}
+					this->mData[i] = nullptr;
+				}
+			}
+			mSize = 0;
 		}
 
 	public:

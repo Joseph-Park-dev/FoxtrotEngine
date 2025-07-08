@@ -23,6 +23,12 @@ class UI :
 	public Component
 {
 public:
+	virtual FTDS::String GetName() const override
+	{
+		return "UI";
+	}
+
+public:
 	bool		 IsMouseHovering();
 	bool		 LeftButtonIsDown();
 	bool		 LeftButtonIsClicked();

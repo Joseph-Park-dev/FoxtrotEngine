@@ -100,7 +100,6 @@ void FTPremade::Process(FTCore* coreInst)
 
 	this->Load();
 	// All loaded premades are included as default.
-	this->AddRefCount();
 
 	this->SetIsProcessed(true);
 }

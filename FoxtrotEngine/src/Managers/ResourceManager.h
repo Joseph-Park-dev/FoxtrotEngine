@@ -14,7 +14,6 @@
 /// </summary>
 
 #pragma once
-#include <string>
 #include <unordered_map>
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
@@ -27,6 +26,7 @@
 #include "FileSystem/FileTypes.h"
 
 #include "Static/HashChainMap.h"
+#include "Static/FTString.h"
 
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS
@@ -79,7 +79,6 @@ public:
 	virtual void Initialize(FoxtrotRenderer* renderer);
 	virtual void DeleteAll();
 
-	void SaveResources(std::ofstream& ofs);
 	void LoadResources(std::ifstream& ifs);
 
 public:
@@ -99,6 +98,9 @@ public:
 	FTDS::String& GetPathToAsset();
 	void		  SetPathToAsset(FTDS::String&& projectPath);
 
+	void AbsoluteToRelativePath(FTResource* res);
+	void RelativeToAbsolutePath(FTResource* res);
+
 public:
 	FTDS::HashChainMap<FTTexture*>*			GetTextures();
 	FTDS::HashChainMap<FTTileMap*>*			GetTileMaps();
@@ -117,37 +119,20 @@ public:
 	// Save | Load resources //
 	///////////////////////////
 public:
-	template <typename FTRESOURCE>
-	void SaveResourceToChunk(std::ofstream& ofs, FTDS::HashChainMap<FTRESOURCE*>* resArr)
-	{
-		for (auto iter = resArr->Begin(); iter != resArr->End(); ++iter)
-		{
-			if (*iter)
-			{
-				FTRESOURCE* res = (*iter)->Value();
-				if (0 < res->GetRefCount())
-				{
-					FileIOHelper::BeginDataPackSave(ofs, res->FileName());
-					FileIOHelper::SaveString(ofs, ChunkKey::FILE_NAME, res->FileName());
-					FileIOHelper::SaveString(ofs, ChunkKey::RELATIVE_PATH, res->RelativePath().C_Str());
-					FileIOHelper::EndDataPackSave(ofs, res->FileName());
-				}
-			}
-		}
-	}
-
 	void SaveMaterialsToChunk(std::ofstream& ofs);
 
 	template <typename FTRESOURCE>
 	void LoadResourceFromChunk(std::ifstream& ifs, FTDS::HashChainMap<FTRESOURCE*>* resArr, size_t& resCount)
 	{
+		if (resCount < 1)
+			return;
+
 		resArr->Reserve(resCount);
 		while (0 < resCount)
 		{
 			LoadResource(ifs, resArr);
 			--resCount; // Key of the next resource to be imported.
 		}
-		// Subtract the number of resources loaded.
 	}
 
 protected:
@@ -221,6 +206,7 @@ private:
 						res = nullptr;
 					}
 				});
+			resMap->Clear();
 		}
 	}
 
@@ -229,7 +215,11 @@ protected:
 	void ProcessResources(FTCore* coreInstance, FTDS::HashChainMap<FTRESOURCE*>* resMap)
 	{
 		resMap->IterateAllValues(
-			[&](FTRESOURCE* res) { res->Process(coreInstance); });
+			[&](FTRESOURCE* res) 
+			{
+				RelativeToAbsolutePath(res);
+				if(res) res->Process(coreInstance); 
+			});
 	}
 
 private:

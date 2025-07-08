@@ -81,7 +81,6 @@ StandardMaterial::StandardMaterial()
 	FTDS::String path = FTDS::String(".\\Assets\\Materials\\") + name;
 #endif // FOXTROT_EDITOR
 
-
 	SetFileName(name);
 	SetRelativePath(path);
 }

@@ -29,6 +29,8 @@ std::pair<size_t, FTDS::String> FileIOHelper::BeginDataPackLoad(std::ifstream& i
 	// Parse data pack key
 	FTDS::String name;
 	loadedDataPackKey.ExtractUntilLast(name, "<");
+	if (name.IsEmpty())
+		return std::make_pair(0, ChunkKey::NullVal::NULL_OBJECT);
 	name.ExtractFromLast("\t");
 
 	// Parse data pack name

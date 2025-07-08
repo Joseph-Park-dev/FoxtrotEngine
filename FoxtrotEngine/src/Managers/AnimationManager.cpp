@@ -19,36 +19,6 @@
 	#include "FileSystem/BufferSizes.h"
 	#include "EditorResourceManager.h"
 #endif // FOXTROT_EDITOR
-//
-// FTSpriteAnimation* AnimationManager::CreateAnimationFromTileMap(const char* name, UINT texKey, UINT tileMapKey)
-//{
-//	if (!mRenderer)
-//		printf("ERROR : Animator::CreateAnimationFromTile()-> Renderer is null");
-//
-//	FTSpriteAnimation* animation= DBG_NEW FTSpriteAnimation;
-//	FTDS::String	animName = FTDS::String(name) + FileTypes::SPRITE_ANIMATION;
-//	animation->SetFileName(animName);
-//
-//	FTDS::String path = ResourceManager::GetInstance()->GetPathToAsset().append(animName);
-//	animation->SetRelativePath(path);
-//
-//	if (texKey != ChunkKey::NullVal::NULL_OBJECT)
-//		animation->SetTexture(texKey);
-//	if (tileMapKey != ChunkKey::NullVal::NULL_OBJECT)
-//		animation->SetTileDataKey(tileMapKey);
-//
-//	FTTileMap* tileMapBuf = ResourceManager::GetInstance()->GetLoadedTileMap(tileMapKey);
-//	if (tileMapBuf->GetTiles() == nullptr)
-//		tileMapBuf->Initialize();
-//
-//	std::vector<FTMeshData> meshDataBuf;
-//	GeometryGenerator::MakeSpriteAnimation(
-//		meshDataBuf, tileMapBuf->GetTiles(), tileMapBuf->GetMaxCountOnMapX(), tileMapBuf->GetMaxCountOnMapY());
-//	animation->Initialize(std::move(meshDataBuf), mRenderer->GetDevice(), mRenderer->GetContext());
-//	printf("FTSpriteAnimation created, %s\n", name);
-//
-//	return animation;
-//}
 
 FTSpriteAnimation* AnimationManager::CreateAnimationFromSpriteSheet(const char* name, FTDS::String& texKey, FTDS::String& spriteSheetKey, size_t startIndex, size_t endIndex)
 {
@@ -86,8 +56,7 @@ FTSpriteAnimation* AnimationManager::CreateAnimationFromSpriteSheet(const char* 
 	EditorResourceManager::GetInstance()->LoadResource(
 		animation, EditorResourceManager::GetInstance()->GetSpriteAnimations());
 #else
-	ResourceManager::GetInstance()->LoadResource(
-		animation, EditorResourceManager::GetInstance()->GetSpriteAnimations());
+	ResourceManager::GetInstance()->GetSpriteAnimations()->Insert(animation->FileName(), animation);
 #endif // FOXTROT_EDITOR
 
 	printf("FTSpriteAnimation created, %s\n", name);
@@ -157,21 +126,22 @@ void AnimationManager::UpdateUI(bool* opened)
 
 		if (ImGui::TreeNode("Loaded Animations"))
 		{
-			for (; iter != map->End(); ++iter)
+			map->IterateAllValues([&](FTSpriteAnimation* anim)
 			{
-				if (*iter)
+				if (anim)
 				{
-					if (ImGui::BeginListBox((*iter)->Value()->FileName().C_Str(), ImVec2(-FLT_MIN, 100)))
+					ImGui::PushID(anim->FileName().C_Str());
+					if (ImGui::BeginListBox(anim->FileName().C_Str(), ImVec2(-FLT_MIN, 100)))
 					{
-						ImGui::Text((*iter)->Value()->FileName().C_Str());
-						(*iter)->Value()->UpdateUI();
+						ImGui::Text(anim->FileName().C_Str());
+						anim->UpdateUI();
 						if (ImGui::Button("Save"))
-							SaveSpriteAnimAsFile((*iter)->Value());
-
+							SaveSpriteAnimAsFile(anim);
 						ImGui::EndListBox();
 					}
+					ImGui::PopID();
 				}
-			}
+			});
 			ImGui::TreePop();
 		}
 

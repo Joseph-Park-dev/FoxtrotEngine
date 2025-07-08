@@ -42,7 +42,8 @@ public:
 	virtual void CloneTo(Actor* actor) override;
 
 private:
-	FTVector2 mSize;
+	FTVector2	 mSize;
+	FTRectangle* mDebugRect;
 
 private:
 	void UpdateDebugShape(Camera* camInst) override;
@@ -58,9 +59,6 @@ public:
 
 public:
 	void EditorUIUpdate() override;
-
-private:
-	FTRectangle* mDebugRect;
 
 private:
 	void UpdateScale();

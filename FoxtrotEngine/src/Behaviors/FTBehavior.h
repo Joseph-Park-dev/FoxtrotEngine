@@ -22,8 +22,8 @@ protected:
     virtual void OnCollisionExit(Collider2D* other);
     friend class Collider2D;
 
-#ifdef FOXTROT_EDITOR
 public:
+#ifdef FOXTROT_EDITOR
     template <typename CUSTOM_BEHAVIOR>
     static void AddBehaviorToEditor(const char* key)
     {
@@ -39,7 +39,7 @@ public:
     static void AddBehaviorToBuild(const char* key)
     {
         ChunkLoader::GetInstance()->GetComponentLoadMap().
-            insert(std::make_pair(key, &FTBehavior::Load<CUSTOM_BEHAVIOR>));
+            Insert(key, &FTBehavior::Load<CUSTOM_BEHAVIOR>);
     }
 #endif
 };

@@ -19,6 +19,7 @@
 #ifdef FOXTROT_EDITOR
 	#include "Managers/AnimationManager.h"
 	#include "EditorResourceManager.h"
+	#include "ResourceSystem/FTShaders/FTVertexShader.h"
 #endif
 
 FTDS::String& FTSpriteAnimation::GetTileDataKey()
@@ -102,7 +103,7 @@ void FTSpriteAnimation::Process(FTCore* coreInst)
 
 	this->SetTexture();
 
-	FoxtrotRenderer* renderer = coreInst->GetGameRenderer();
+	FoxtrotRenderer*		renderer = coreInst->GetGameRenderer();
 	std::vector<FTMeshData> meshDataBuf;
 	GeometryGenerator::MakeSpriteAnimation(
 		meshDataBuf, spriteSheet->GetTiles(), this->GetMinFrameIdx(), this->GetMaxFrameIdx());
@@ -110,3 +111,41 @@ void FTSpriteAnimation::Process(FTCore* coreInst)
 
 	this->SetIsProcessed(true);
 }
+
+#ifdef FOXTROT_EDITOR
+void FTSpriteAnimation::AddRefCount()
+{
+	if (GetTexture())
+		GetTexture()->AddRefCount();
+	for (FTMaterial* mat : Materials())
+		mat->AddRefCount();
+	
+	if (GetVertexShader())
+		GetVertexShader()->AddRefCount();
+	if (GetPixelShader())
+		GetPixelShader()->AddRefCount();
+
+	FTSpriteSheet* sheet =  EditorResourceManager::GetInstance()->GetLoadedSpriteSheet(this->GetTileDataKey());
+	if (sheet)
+		sheet->AddRefCount();
+
+	FTResource::AddRefCount();
+}
+
+//void FTSpriteAnimation::SubtractRefCount()
+//{
+//	if (GetTexture())
+//		GetTexture()->SubtractRefCount();
+//	for (FTMaterial* mat : Materials())
+//		mat->SubtractRefCount();
+//
+//	if (GetVertexShader())
+//		GetVertexShader()->SubtractRefCount();
+//	if (GetPixelShader())
+//		GetPixelShader()->SubtractRefCount();
+//
+//	FTSpriteSheet* sheet = EditorResourceManager::GetInstance()->GetLoadedSpriteSheet(this->GetTileDataKey());
+//	if (sheet)
+//		sheet->SubtractRefCount();
+//}
+#endif

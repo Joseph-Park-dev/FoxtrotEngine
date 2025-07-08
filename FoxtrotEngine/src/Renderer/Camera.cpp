@@ -259,7 +259,7 @@ void Camera::LoadProperties(std::ifstream& ifs)
 	if (targetActor.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 		mTarget = EditorSceneManager::GetInstance()->GetEditorScene()->FindEditorElement(targetActor, nullptr);
 #else
-	if (targetActor != ChunkKey::NullVal::NULL_OBJ)
+	if (targetActor != ChunkKey::NullVal::NULL_OBJECT)
 		mTarget = SceneManager::GetInstance()->GetCurrentScene()->FindActor(targetActor);
 #endif // FOXTROT_EDITOR
 }

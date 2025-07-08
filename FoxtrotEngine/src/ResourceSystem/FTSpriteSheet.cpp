@@ -157,4 +157,11 @@ void FTSpriteSheet::UpdateUI()
 	text += std::to_string(mSheetSize.y).c_str();
 	ImGui::Text(text.C_Str());
 }
+void FTSpriteSheet::AddRefCount()
+{
+	FTJSON* json = EditorResourceManager::GetInstance()->GetLoadedJSON(mJSONKey);
+	json->AddRefCount();
+
+	FTResource::AddRefCount();
+}
 #endif // FOXTROT_EDITOR

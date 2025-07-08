@@ -44,6 +44,8 @@ private:
 #ifdef FOXTROT_EDITOR
 public:
 	void UpdateUI() override;
+
+	virtual void AddRefCount() override;
 #endif // FOXTROT_EDITOR
 };
 

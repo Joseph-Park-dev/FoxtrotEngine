@@ -18,6 +18,7 @@
 #include "InputSystem/FTInputDevice.h"
 #include "Renderer/Camera.h"
 #include "Renderer/FoxtrotRenderer.h"
+#include "Actors/Transform.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorUtils.h"
@@ -239,7 +240,7 @@ void FTBasicMeshGroup::SetMaterials(std::vector<FTDS::String>& matKeys, ComPtr<I
 		for (FTDS::String& key : matKeys)
 			mMaterials.push_back(EditorResourceManager::GetInstance()->GetLoadedMaterial(key));
 #else
-	if (ResourceManager::GetInstance()->GetLoadedMaterial(ChunkKey::Material::STANDARD_MATERIAL))
+	if (1 < ResourceManager::GetInstance()->GetMaterials()->GetSize())
 		for (FTDS::String& key : matKeys)
 			mMaterials.push_back(ResourceManager::GetInstance()->GetLoadedMaterial(key));
 #endif // FOXTROT_EDITOR
@@ -269,7 +270,6 @@ void FTBasicMeshGroup::SetTexture()
 #else
 	mTexture = ResourceManager::GetInstance()->GetLoadedTexture(mTexKey);
 #endif
-
 	if (!mTexture)
 		printf("ERROR: MeshRenderer::SetTexture() -> Cannot set texture %s, returning nullptr.\n", mTexKey);
 }

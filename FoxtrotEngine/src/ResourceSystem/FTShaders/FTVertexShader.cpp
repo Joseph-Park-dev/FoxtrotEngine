@@ -22,7 +22,7 @@ void FTVertexShader::CompileShader(FoxtrotRenderer* renderer)
 }
 
 ComPtr<ID3D11VertexShader>& FTVertexShader::GetShader() { return mShader; }
-ComPtr<ID3D11InputLayout>& FTVertexShader::GetInputLayout() { return mInputLayout; }
+ComPtr<ID3D11InputLayout>&	FTVertexShader::GetInputLayout() { return mInputLayout; }
 
 void FTVertexShader::RegisterInputElementDesc(const char* semanticName, UINT& offset)
 {
@@ -30,17 +30,17 @@ void FTVertexShader::RegisterInputElementDesc(const char* semanticName, UINT& of
 	if (FTDS::StringEqual(semanticName, "TEXCOORD"))
 	{
 		desc = { semanticName, 0, DXGI_FORMAT_R32G32_FLOAT, 0, offset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-		//offset += 4 * 2;
+		offset += 4 * 2;
 	}
 	else if (FTDS::StringEqual(semanticName, "POSITION 2D"))
 	{
 		desc = { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, offset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-		//offset += 4 * 2;
+		offset += 4 * 2;
 	}
 	else
 	{
 		desc = { semanticName, 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-		//offset += 4 * 3;
+		offset += 4 * 3;
 	}
 
 	mInputElements.push_back(desc);
@@ -48,14 +48,18 @@ void FTVertexShader::RegisterInputElementDesc(const char* semanticName, UINT& of
 
 FTVertexShader::FTVertexShader()
 	: FTShader()
+#ifdef FOXTROT_EDITOR
 	, mSemanticsInclusion(DBG_NEW FTDS::HashChainMap<bool>(5))
+#endif // FOXTROT_EDITOR
 {
 	SetType(ShaderType::VERTEX_SHADER);
 }
 
 FTVertexShader::~FTVertexShader()
 {
+#ifdef FOXTROT_EDITOR
 	delete mSemanticsInclusion;
+#endif
 }
 
 void FTVertexShader::SaveProperties(std::ofstream& ofs)
@@ -95,10 +99,10 @@ void FTVertexShader::LoadProperties(std::ifstream& ifs)
 	for (FTDS::String& str : mSemanticsName)
 		RegisterInputElementDesc(str.C_Str(), offset);
 
-	for (size_t i = 0; i < mInputElements.size(); ++i)
-		mInputElements.at(i).InputSlot = i;
+	/*for (size_t i = 0; i < mInputElements.size(); ++i)
+		mInputElements.at(i).InputSlot = i;*/
 
-#ifdef FOXTROT_EDITOR
+	#ifdef FOXTROT_EDITOR
 	FTDS::String semantics[5] = { "POSITION", "POSITION 2D", "NORMAL", "COLOR", "TEXCOORD" };
 
 	for (FTDS::String& semanticN : mSemanticsName)
@@ -109,12 +113,12 @@ void FTVertexShader::LoadProperties(std::ifstream& ifs)
 		if (!mSemanticsInclusion->At(semantics[i]))
 			mSemanticsInclusion->Insert(semantics[i], false);
 	}
-#endif // FOXTROT_EDITOR
+	#endif // FOXTROT_EDITOR
 
 	return FTResource::LoadProperties(ifs);
 }
 
-#ifdef FOXTROT_EDITOR
+	#ifdef FOXTROT_EDITOR
 void FTVertexShader::UpdateUI()
 {
 	ImGui::SeparatorText("Input Elements");
@@ -146,11 +150,11 @@ void FTVertexShader::UpdateUI()
 		for (FTDS::String& str : mSemanticsName)
 			RegisterInputElementDesc(str.C_Str(), offset);
 
-		for (size_t i = 0; i < mInputElements.size(); ++i)
-			mInputElements.at(i).InputSlot = i;
+		/*for (size_t i = 0; i < mInputElements.size(); ++i)
+			mInputElements.at(i).InputSlot = i;*/
 
 		SaveMetaFile();
 		CompileShader(GetRenderer());
 	}
 }
-#endif
+	#endif

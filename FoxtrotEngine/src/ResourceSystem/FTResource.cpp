@@ -28,11 +28,6 @@
 #include "DirectoryHelper.h"
 #endif //FOXTROT_EDITOR
 
-bool FTResource::IsReferenced()
-{
-    return 0 < mRefCount;
-}
-
 FTResource::FTResource()
     : mFileName{}
     , mRelativePath{}
@@ -100,5 +95,10 @@ void FTResource::UpdateNameAndPath(FTDS::String fileExtension)
         }
         ImGuiFileDialog::Instance()->Close();
     }
+}
+
+bool FTResource::IsReferenced()
+{
+	return 0 < mRefCount;
 }
 #endif // FOXTROT_EDITOR

@@ -10,8 +10,9 @@
 /// </summary>
 
 #pragma once
-#include <string>
 #include <Windows.h>
+
+#include <Static/FTString.h>
 
 class FTCore;
 
@@ -25,22 +26,17 @@ public:
 	void SetFileName(const char* name) { mFileName.Assign(name); }
 	void SetRelativePath(FTDS::String& _strPath) { mRelativePath.Assign(_strPath); }
 	void SetRelativePath(const char* _strPath) { mRelativePath.Assign(_strPath); }
-	void SetIsReferenced(bool val) { mRefCount = val; }
 	void SetIsProcessed(bool val) { mIsProcessed = val; }
 
 	FTDS::String& FileName() { return mFileName; }
 	FTDS::String& RelativePath() { return mRelativePath; }
-
-	bool IsReferenced();
-	void AddRefCount() { ++mRefCount; }
-	void SubtractRefCount() { --mRefCount; }
 
 public:
 	virtual void Process(FTCore* coreInst) = 0;
 
 public:
 	FTResource();
-	virtual ~FTResource() {}
+	virtual ~FTResource() { mRefCount = 0; }
 
 private:
 	FTDS::String mFileName;
@@ -58,6 +54,10 @@ public:
 public:
 	virtual void UpdateUI() {};
 	void		 UpdateNameAndPath(FTDS::String fileExtension);
+
+public:
+	bool		 IsReferenced();
+	virtual void AddRefCount() { ++mRefCount; }
 #endif // FOXTROT_EDITOR
 };
 

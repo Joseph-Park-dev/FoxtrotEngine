@@ -11,7 +11,9 @@
 #include "Renderer/D3D11Utils.h"
 #include "ResourceSystem/FTRectangle.h"
 
-#include "EditorCamera.h"
+#ifdef FOXTROT_EDITOR
+	#include "EditorCamera.h"
+#endif // FOXTROT_EDITOR
 
 DebugShapes::DebugShapes()
 	: mVSPath(L"./Assets/Shaders/DebugShapeVS.hlsl")
@@ -25,7 +27,9 @@ DebugShapes::~DebugShapes()
 	if (0 < mShapes.size())
 		mShapes.clear();
 
+#ifdef FOXTROT_EDITOR
 	mCamRect = nullptr;
+#endif // FOXTROT_EDITOR
 }
 
 void DebugShapes::Initialize(FoxtrotRenderer* renderer)
@@ -46,11 +50,6 @@ void DebugShapes::Render(FoxtrotRenderer* renderer)
 void DebugShapes::AddShape(FTShape* shape)
 {
 	mShapes.push_back(shape);
-}
-
-void DebugShapes::SetCameraRect(FTRectangle* rect)
-{
-	mCamRect = rect;
 }
 
 void DebugShapes::RemoveShape(FTShape* shape)
@@ -96,6 +95,11 @@ void DebugShapes::CreateShaders(ComPtr<ID3D11Device>& device)
 }
 
 #ifdef FOXTROT_EDITOR
+void DebugShapes::SetCameraRect(FTRectangle* rect)
+{
+	mCamRect = rect;
+}
+
 void DebugShapes::RenderCamRect(FoxtrotRenderer* renderer)
 {
 	mCamRect->Render(renderer);

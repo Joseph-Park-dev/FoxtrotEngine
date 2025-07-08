@@ -107,6 +107,10 @@ void Component::SetUpdateOrder(int updateOrder)
 	mUpdateOrder = updateOrder;
 }
 
+void Component::AddResRefCount()
+{
+}
+
 void Component::OnConfirmUpdate()
 {
 }

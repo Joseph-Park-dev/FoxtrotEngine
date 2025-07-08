@@ -7,11 +7,11 @@
 // ----------------------------------------------------------------
 /// <summary>
 /// Base class for all Components.
-/// 
+///
 /// [Design philosophy]
 /// The Component controls its elements in an upper level,
 /// and the element has the related operation.
-/// 
+///
 /// Means of access to the elements (Getters & Setters) are not to be
 /// exposed. Make them protected, or minimize the cases of them being public.
 /// </summary>
@@ -132,6 +132,9 @@ public:
 		t->Initialize(coreInst);
 	}
 
+public:
+	virtual void AddResRefCount();
+
 protected:
 	virtual void OnConfirmUpdate();
 #endif // FOXTROT_EDITOR
@@ -139,6 +142,6 @@ protected:
 
 namespace ChunkKey
 {
-	constexpr const char* COMPONENTS = "Components";
+	constexpr const char* COMPONENTS   = "Components";
 	constexpr const char* UPDATE_ORDER = "UpdateOrder";
 } // namespace ChunkKey

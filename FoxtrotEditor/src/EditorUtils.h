@@ -112,26 +112,18 @@ namespace FTEditorUtils
 		{
 			if (ImGui::TreeNode("Selection State: Single Selection"))
 			{
-				for (auto iter = resMap->Begin(); iter != resMap->End();
-					 ++iter)
+				if (ImGui::Selectable("Not Assigned"))
+					currSelection.Assign(ChunkKey::NullVal::NULL_OBJECT);
+
+				resMap->IterateAllNodes([&](FTDS::RecordNode<FTRESOURCE*>* node)
 				{
-					if (*iter)
+					if (ImGui::Selectable(node->Key().C_Str()))
 					{
-						for (auto elem = *iter; elem != nullptr; elem = elem->GetLink())
-						{
-							if (ImGui::Selectable(elem->Value()->FileName().C_Str()))
-							{
-								if (elem->Key().NotEqual(ChunkKey::NullVal::NULL_OBJECT))
-									currSelection = elem->Value()->FileName();
-							}
-						}
+						if (node->Key().NotEqual(ChunkKey::NullVal::NULL_OBJECT))
+							currSelection = node->Key();
 					}
-					else
-					{
-						if (ImGui::Selectable("Not Assigned"))
-							currSelection.Assign(ChunkKey::NullVal::NULL_OBJECT);
-					}
-				}
+				});
+
 				ImGui::TreePop();
 			}
 			if (ImGui::Button("Close"))

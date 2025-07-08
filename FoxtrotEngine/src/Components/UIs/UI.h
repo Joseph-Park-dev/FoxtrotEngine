@@ -54,7 +54,6 @@ public:
 public:
 	virtual void Initialize(FTCore* ftCoreInst) override;
 	virtual void ProcessInput(FTInputDevice* inputDevice) override;
-	virtual void Update(float deltaTime) override;
 	virtual void Render(FoxtrotRenderer* renderer) override;
 
 public:
@@ -88,7 +87,6 @@ public:
 
 #ifdef FOXTROT_EDITOR
 public:
-	virtual void EditorUpdate(float deltaTime) override;
 	virtual void EditorRender(FoxtrotRenderer* renderer) override;
 	virtual void EditorUIUpdate() override;
 #endif

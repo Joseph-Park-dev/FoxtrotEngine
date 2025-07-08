@@ -132,15 +132,6 @@ void UI::ProcessInput(FTInputDevice* inputDevice)
 	CheckMouseHover(inputDevice->MOUSE_POS());
 }
 
-void UI::Update(float deltaTime)
-{
-	Transform* transform = GetOwner()->GetTransform();
-	Matrix	   mat		 = transform->GetMatrixWorld();
-	mDBGShape->UpdateVC(
-		mat,
-		Camera::GetInstance());
-}
-
 void UI::Render(FoxtrotRenderer* renderer)
 {
 	Camera::GetInstance()->SetViewType(Viewtype::Orthographic);
@@ -191,9 +182,10 @@ void UI::UpdateDebugShape(Camera* camInst)
 	Matrix modelMat		  = translationMat * transform->GetMatrixWorld();
 
 	mDBGShape->UpdateVC(modelMat, camInst);
-	mDBGShape->UpdateGC(camInst);
+
 	mDBGShape->GetGSCData().size.x = mRectArea->GetSize().x / camInst->GetPixelsPerUnit();
 	mDBGShape->GetGSCData().size.y = mRectArea->GetSize().y / camInst->GetPixelsPerUnit();
+	mDBGShape->UpdateGC(camInst);
 
 	mDBGShape->UpdatePC();
 }
@@ -210,17 +202,18 @@ void UI::LoadProperties(std::ifstream& ifs)
 	mDBGShape->LoadProperties(ifs);
 	mRectArea->LoadProperties(ifs);
 	Component::LoadProperties(ifs);
+
+	Transform* transform = GetOwner()->GetTransform();
+	FTVector2  a		 = transform->GetScreenPosition(Camera::GetInstance());
+	mRectArea->Set(transform->GetScreenPosition(Camera::GetInstance()), mRectArea->GetSize());
 }
 
 #ifdef FOXTROT_EDITOR
-void UI::EditorUpdate(float deltaTime)
-{
-	this->Update(deltaTime);
-}
-
 void UI::EditorRender(FoxtrotRenderer* renderer)
 {
-	Render(renderer);
+	Camera::GetInstance()->SetViewType(Viewtype::Orthographic);
+	//UpdateDebugShape(Camera::GetInstance());
+	Camera::GetInstance()->SetViewType(Viewtype::Perspective);
 }
 
 void UI::EditorUIUpdate()

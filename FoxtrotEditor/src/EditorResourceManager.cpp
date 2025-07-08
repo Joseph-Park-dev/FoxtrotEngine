@@ -21,6 +21,57 @@
 #include "Utils/StrAssign.h"
 #include "Static/FTString.h"
 
+void EditorResourceManager::SaveResources(std::ofstream& ofs)
+{
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::RESOURCE_DATA);
+
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTEXTURE_GROUP);
+	SaveResourceToChunk<FTTexture>(ofs, GetTextures());
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTEXTURE_GROUP);
+
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTILEMAP_GROUP);
+	SaveResourceToChunk<FTTileMap>(ofs, GetTileMaps());
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTILEMAP_GROUP);
+
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSPRITESHEET_GROUP);
+	SaveResourceToChunk<FTSpriteSheet>(ofs, GetSpriteSheets());
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSPRITESHEET_GROUP);
+
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTPREMADE_GROUP);
+	SaveResourceToChunk<FTPremade>(ofs, GetPremades());
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTPREMADE_GROUP);
+
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
+	SaveResourceToChunk<FTSpriteAnimation>(ofs, GetSpriteAnimations());
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
+
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTMESH_GROUP);
+	SaveResourceToChunk<FTBasicMeshGroup>(ofs, GetMeshGroups());
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTMESH_GROUP);
+
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
+	SaveResourceToChunk<FTVertexShader>(ofs, GetVertexShaders());
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
+
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_PIXEL_SHADER);
+	SaveResourceToChunk<FTPixelShader>(ofs, GetPixelShaders());
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_PIXEL_SHADER);
+
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::SOUND);
+	SaveResourceToChunk<Sound>(ofs, GetSounds());
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::SOUND);
+
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::JSON::JSON);
+	SaveResourceToChunk<FTJSON>(ofs, GetJSONs());
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::JSON::JSON);
+
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CSV::CSV);
+	SaveResourceToChunk<FTCSV>(ofs, GetCSVs());
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CSV::CSV);
+
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::RESOURCE_DATA);
+}
+
 void EditorResourceManager::LoadAllResourcesInAsset()
 {
 	ResourceManager::GetTextures()->Reserve(10);
@@ -144,17 +195,38 @@ void EditorResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)
 	std::pair<size_t, FTDS::String> resPack	  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RESOURCE_DATA);
 	size_t							packCount = resPack.first;
 
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::JSON::JSON);
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::SOUND);
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_PIXEL_SHADER);
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_VERTEX_SHADER);
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMESH_GROUP);
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPREMADE_GROUP);
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSPRITESHEET_GROUP);
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTILEMAP_GROUP);
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTEXTURE_GROUP);
+	std::pair<size_t, FTDS::String> desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
+	LoadDummyResource<FTCSV>(ifs, GetCSVs(), desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::JSON::JSON);
+	LoadDummyResource<FTJSON>(ifs, GetJSONs(), desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::SOUND);
+	LoadDummyResource<Sound>(ifs, GetSounds(), desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_PIXEL_SHADER);
+	LoadDummyResource<FTPixelShader>(ifs, GetPixelShaders(), desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_VERTEX_SHADER);
+	LoadDummyResource<FTVertexShader>(ifs, GetVertexShaders(), desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMESH_GROUP);
+	LoadDummyResource<FTBasicMeshGroup>(ifs, GetMeshGroups(), desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
+	LoadDummyResource<FTSpriteAnimation>(ifs, GetSpriteAnimations(), desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPREMADE_GROUP);
+	LoadDummyResource<FTPremade>(ifs, GetPremades(), desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSPRITESHEET_GROUP);
+	LoadDummyResource<FTSpriteSheet>(ifs, GetSpriteSheets(), desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTILEMAP_GROUP);
+	LoadDummyResource<FTTileMap>(ifs, GetTileMaps(), desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTEXTURE_GROUP);
+	LoadDummyResource<FTTexture>(ifs, GetTextures(), desc.first);
 }
 
 // std::unordered_map<FTDS::String, FTTexture*>& EditorResourceManager::GetTexturesMap()
@@ -311,143 +383,6 @@ void EditorResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)
 //		Debug::LogError(__LINE__, __FILE__, "Failed to load FTJSON");
 //	json->AddRefCount();
 //	return json;
-// }
-
-void EditorResourceManager::Initialize(FoxtrotRenderer* renderer)
-{
-	ResourceManager::Initialize(renderer);
-
-	//// Add primitive geometries as resources
-	// mMapMeshGroups.insert(
-	//	{ FTDS::MakeHeapStr(ChunkKey::PRIMITIVE_SQUARE_RED),
-	//	  DBG_NEW FTBasicMeshGroup(
-	//		  GeometryGenerator::MakeSquare(FTVector3(1.0f, 0.0f, 0.0f)), renderer) });
-
-	// mMapMeshGroups.insert(
-	//	{ FTDS::MakeHeapStr(ChunkKey::PRIMITIVE_SQUARE_GREEN),
-	//	  DBG_NEW FTBasicMeshGroup(
-	//		  GeometryGenerator::MakeSquare(FTVector3(0.0f, 1.0f, 0.0f)), renderer) });
-
-	// mMapMeshGroups.insert(
-	//	{ FTDS::MakeHeapStr(ChunkKey::PRIMITIVE_SQUARE_BLUE),
-	//	  DBG_NEW FTBasicMeshGroup(
-	//		  GeometryGenerator::MakeSquare(FTVector3(0.0f, 0.0f, 1.0f)), renderer) });
-
-	// mMapMeshGroups.insert(
-	//	{ FTDS::MakeHeapStr(ChunkKey::PRIMITIVE_BOX),
-	//	  DBG_NEW FTBasicMeshGroup(
-	//		  GeometryGenerator::MakeBox(), renderer) });
-
-	// mMapMeshGroups.insert(
-	//	{ FTDS::MakeHeapStr(ChunkKey::PRIMITIVE_SQUARE_GRID),
-	//	  DBG_NEW FTBasicMeshGroup(
-	//		  GeometryGenerator::MakeSquareGrid(1.0f, 1.0f, 2, 2), renderer) });
-
-	// mMapMeshGroups.insert(
-	//	{ FTDS::MakeHeapStr(ChunkKey::PRIMITIVE_CYLINDER),
-	//	  DBG_NEW FTBasicMeshGroup(
-	//		  GeometryGenerator::MakeCylinder(1.0f, 1.0f, 2, 5), renderer) });
-
-	// mMapMeshGroups.insert(
-	//	{ FTDS::MakeHeapStr(ChunkKey::PRIMITIVE_SPHERE),
-	//	  DBG_NEW FTBasicMeshGroup(
-	//		  GeometryGenerator::MakeSphere(1.0f, 50, 50), renderer) });
-}
-
-// void EditorResourceManager::DeleteAll()
-//{
-//	ClearMap<FTTexture>(mMapTextures);
-//	ClearMap<FTTileMap>(mMapTileMaps);
-//	ClearMap<FTSpriteSheet>(mMapSpriteSheets);
-//	ClearMap<FTPremade>(mMapPremades);
-//	ClearMap<FTSpriteAnimation>(mMapSpriteAnimation);
-//	ClearMap<FTBasicMeshGroup>(mMapMeshGroups);
-//	ClearMap<FTMaterial>(mMapMaterials);
-//	ClearMap<FTCSV>(mMapCSVs);
-//	ClearMap<FTJSON>(mMapJSONs);
-// }
-
-// void EditorResourceManager::ProcessTextures()
-//{
-//	for (auto& textureItem : mMapTextures)
-//		if (textureItem.second)
-//			ProcessTexture(textureItem.second);
-// }
-//
-// void EditorResourceManager::ProcessMeshGroups()
-//{
-//	for (auto& meshGrp : mMapMeshGroups)
-//		if (meshGrp.second)
-//			ProcessSingleMeshGrp(meshGrp.second);
-// }
-//
-// void EditorResourceManager::ProcessPremades()
-//{
-//	for (auto& premadeItem : mMapPremades)
-//	{
-//		if (premadeItem.second)
-//		{
-//			premadeItem.second->Load();
-//			// All loaded premades are included as default.
-//			premadeItem.second->AddRefCount();
-//		}
-//	}
-// }
-//
-// void EditorResourceManager::ProcessTileMaps()
-//{
-//	for (auto& tileMapItem : mMapTileMaps)
-//		if (tileMapItem.second)
-//			ProcessTileMap(tileMapItem.second);
-// }
-//
-// void EditorResourceManager::ProcessSpriteSheets()
-//{
-//	for (auto& spriteSheetItem : mMapSpriteSheets)
-//		if (spriteSheetItem.second)
-//			ProcessSpriteSheet(spriteSheetItem.second);
-// }
-//
-// void EditorResourceManager::ProcessSpriteAnims()
-//{
-//	for (auto& animMapItem : mMapSpriteAnimation)
-//		if (animMapItem.second)
-//			ProcessSpriteAnim(animMapItem.second);
-// }
-//
-// void EditorResourceManager::ProcessCSVs()
-//{
-//	for (auto& csvItem : mMapCSVs)
-//		if (csvItem.second)
-//			ProcessCSV(csvItem.second);
-// }
-//
-// void EditorResourceManager::ProcessJSONs()
-//{
-//	for (auto& jsonItem : mMapJSONs)
-//		if (jsonItem.second)
-//			ProcessJSON(jsonItem.second);
-// }
-//
-// void EditorResourceManager::ProcessMaterials()
-//{
-//	for (auto& material : mMapMaterials)
-//		if (material.second)
-//			ProcessMaterial(material.second);
-// }
-//
-// void EditorResourceManager::ProcessVertexShaders()
-//{
-//	for (auto& shader : mMapVertexShaders)
-//		if (shader.second)
-//			shader.second->CompileShader(GetRenderer());
-// }
-//
-// void EditorResourceManager::ProcessPixelShaders()
-//{
-//	for (auto& shader : mMapPixelShaders)
-//		if (shader.second)
-//			shader.second->CompileShader(GetRenderer());
 // }
 
 void EditorResourceManager::UpdateUI()

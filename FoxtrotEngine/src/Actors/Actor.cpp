@@ -262,7 +262,9 @@ bool Actor::HasName(const char* name)
 void Actor::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::ACTOR_PROPERTIES);
+
 	FileIOHelper::SaveString(ofs, ChunkKey::NAME, GetNameRef());
+	mTransform->SaveProperties(ofs);
 	FileIOHelper::SaveInt(ofs, ChunkKey::DRAW_ORDER, mDrawOrder);
 	FileIOHelper::SaveString(ofs, ChunkKey::ACTOR_GROUP, ActorGroupUtil::GetActorGroupStr(mActorGroup));
 	FileIOHelper::SaveInt(ofs, ChunkKey::STATE, mState);
@@ -279,7 +281,6 @@ void Actor::SaveProperties(std::ofstream& ofs)
 
 	// Changing the call location of Transform is NOT recommended
 	// Nested .chunk DataPack has unknown problem.
-	mTransform->SaveProperties(ofs);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::ACTOR_PROPERTIES);
 }
 
@@ -299,10 +300,8 @@ void Actor::SaveComponents(std::ofstream& ofs)
 void Actor::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_PROPERTIES);
-	// Changing the call location of Transform is NOT recommended
-	// Nested .chunk DataPack has unknown problem.
-	mTransform->LoadProperties(ifs);
 
+	// Load dummy child Actors which only stores their names.
 	size_t childCount = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CHILD).first;
 	for (size_t i = 0; i < childCount; ++i)
 	{
@@ -316,6 +315,7 @@ void Actor::LoadProperties(std::ifstream& ifs)
 		}
 	}
 
+	// Load dummmy parent Actors which only stores their names.
 	FTDS::String parentName;
 	FileIOHelper::LoadBasicString(ifs, parentName);
 	if (parentName.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
@@ -325,15 +325,23 @@ void Actor::LoadProperties(std::ifstream& ifs)
 		SetParent(pending);
 	}
 
+	// Load Actor state
 	int stateInt = 0;
 	FileIOHelper::LoadInt(ifs, stateInt);
 	SetState(static_cast<State>(stateInt));
 
+	// Load Actor group
 	FTDS::String actorGroupStr;
 	FileIOHelper::LoadBasicString(ifs, actorGroupStr);
 	mActorGroup = ActorGroupUtil::GetActorGroup(actorGroupStr);
 
+	// Load Actor draw order
 	FileIOHelper::LoadInt(ifs, mDrawOrder);
+
+	// Load Transform
+	mTransform->LoadProperties(ifs);
+
+	// Load Actor name
 	FileIOHelper::LoadBasicString(ifs, mName);
 }
 

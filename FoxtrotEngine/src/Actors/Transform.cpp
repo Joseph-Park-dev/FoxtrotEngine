@@ -262,6 +262,10 @@ void Transform::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadVector3(ifs, mWorldPosition);
 	FileIOHelper::LoadVector3(ifs, mWorldScale);
 	FileIOHelper::LoadVector3(ifs, mWorldRotation);
+
+	SetWorldPosition(mWorldPosition);
+	SetWorldScale(mWorldScale);
+	SetWorldRotation(mWorldRotation);
 }
 
 #ifdef FOXTROT_EDITOR

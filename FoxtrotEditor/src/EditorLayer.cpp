@@ -716,7 +716,7 @@ void EditorLayer::OpenProject(std::filesystem::path& path)
 		EditorResourceManager::GetInstance()->DeleteAll();
 		PATH_PROJECT.Assign(path.string().c_str());
 		EditorResourceManager::GetInstance()->SetPathToAsset(std::move(PATH_PROJECT));
-		EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+		//EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 		EditorResourceManager::GetInstance()->LoadAllResourcesInAsset();
 	}
 	else

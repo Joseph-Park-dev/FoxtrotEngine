@@ -77,19 +77,6 @@ void ResourceManager::DeleteAll()
 	ClearMap(mSounds);
 	ClearMap(mCSVs);
 	ClearMap(mJSONs);
-
-	delete mTextures;
-	delete mTileMaps;
-	delete mSpriteSheets;
-	delete mPremades;
-	delete mSpriteAnimations;
-	delete mMeshGroups;
-	delete mVertexShaders;
-	delete mPixelShaders;
-	delete mMaterials;
-	delete mSounds;
-	delete mCSVs;
-	delete mJSONs;
 }
 
 FTDS::String& ResourceManager::GetPathToAsset()
@@ -101,6 +88,41 @@ void ResourceManager::SetPathToAsset(FTDS::String&& projectPath)
 {
 	mPathToAsset.Assign(projectPath);
 	mPathToAsset.Append("\\Assets\\");
+}
+
+void ResourceManager::AbsoluteToRelativePath(FTResource* res)
+{
+	FTDS::String path		= res->RelativePath();
+	FTDS::String folderName = "\\Assets\\";
+
+	// Check if the path is relative.
+	if (path.LFind("./") == 0)
+		return;
+
+	int index = path.LFind(mPathToAsset.C_Str());
+	if (index == -1)
+		return;
+
+	int cutIndex = mPathToAsset.RFind(folderName.C_Str());
+	path.SubStr(cutIndex, path.Length());
+
+	FTDS::String result = ".\"";
+	result.Append(path);
+
+	res->SetRelativePath(result);
+}
+
+void ResourceManager::RelativeToAbsolutePath(FTResource* res)
+{
+	FTDS::String path		= res->RelativePath();
+	FTDS::String folderName = ".\\Assets\\";
+	path.SubStr(folderName.Length(), path.Length());
+
+	FTDS::String result = mPathToAsset;
+	result.Append("\\");
+	result.Append(path);
+
+	res->SetRelativePath(result);
 }
 
 FTDS::HashChainMap<FTTexture*>* ResourceManager::GetTextures()
@@ -207,6 +229,32 @@ FoxtrotRenderer* ResourceManager::GetRenderer()
 ResourceManager::~ResourceManager()
 {
 	DeleteAll();
+
+	delete mTextures;
+	delete mTileMaps;
+	delete mSpriteSheets;
+	delete mPremades;
+	delete mSpriteAnimations;
+	delete mMeshGroups;
+	delete mVertexShaders;
+	delete mPixelShaders;
+	delete mMaterials;
+	delete mSounds;
+	delete mCSVs;
+	delete mJSONs;
+
+	mTextures		  = nullptr;
+	mTileMaps		  = nullptr;
+	mSpriteSheets	  = nullptr;
+	mPremades		  = nullptr;
+	mSpriteAnimations = nullptr;
+	mMeshGroups		  = nullptr;
+	mVertexShaders	  = nullptr;
+	mPixelShaders	  = nullptr;
+	mMaterials		  = nullptr;
+	mSounds			  = nullptr;
+	mCSVs			  = nullptr;
+	mJSONs			  = nullptr;
 }
 
 ResourceManager::ResourceManager()
@@ -227,57 +275,6 @@ ResourceManager::ResourceManager()
 {
 }
 
-void ResourceManager::SaveResources(std::ofstream& ofs)
-{
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::RESOURCE_DATA);
-
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTEXTURE_GROUP);
-	SaveResourceToChunk<FTTexture>(ofs, mTextures);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTEXTURE_GROUP);
-
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTILEMAP_GROUP);
-	SaveResourceToChunk<FTTileMap>(ofs, mTileMaps);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTILEMAP_GROUP);
-
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSPRITESHEET_GROUP);
-	SaveResourceToChunk<FTSpriteSheet>(ofs, mSpriteSheets);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSPRITESHEET_GROUP);
-
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTPREMADE_GROUP);
-	SaveResourceToChunk<FTPremade>(ofs, mPremades);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTPREMADE_GROUP);
-
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
-	SaveResourceToChunk<FTSpriteAnimation>(ofs, mSpriteAnimations);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
-
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTMESH_GROUP);
-	SaveResourceToChunk<FTBasicMeshGroup>(ofs, mMeshGroups);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTMESH_GROUP);
-
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
-	SaveResourceToChunk<FTVertexShader>(ofs, mVertexShaders);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
-
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_PIXEL_SHADER);
-	SaveResourceToChunk<FTPixelShader>(ofs, mPixelShaders);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_PIXEL_SHADER);
-
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::SOUND);
-	SaveResourceToChunk<Sound>(ofs, mSounds);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::SOUND);
-
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::JSON::JSON);
-	SaveResourceToChunk<FTJSON>(ofs, mJSONs);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::JSON::JSON);
-
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CSV::CSV);
-	SaveResourceToChunk<FTCSV>(ofs, mCSVs);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CSV::CSV);
-
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::RESOURCE_DATA);
-}
-
 void ResourceManager::LoadResources(std::ifstream& ifs)
 {
 	DeleteAll();
@@ -286,47 +283,36 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 	size_t							packCount = resPack.first;
 
 	std::pair<size_t, FTDS::String> desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
-	mCSVs->Reserve(desc.first);
 	LoadResourceFromChunk<FTCSV>(ifs, mCSVs, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::JSON::JSON);
-	mJSONs->Reserve(desc.first);
 	LoadResourceFromChunk<FTJSON>(ifs, mJSONs, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::SOUND);
-	mSounds->Reserve(desc.first);
 	LoadResourceFromChunk<Sound>(ifs, mSounds, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_PIXEL_SHADER);
-	mPixelShaders->Reserve(desc.first);
 	LoadResourceFromChunk<FTPixelShader>(ifs, mPixelShaders, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_VERTEX_SHADER);
-	mVertexShaders->Reserve(desc.first);
 	LoadResourceFromChunk<FTVertexShader>(ifs, mVertexShaders, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMESH_GROUP);
-	mMeshGroups->Reserve(desc.first);
 	LoadResourceFromChunk<FTBasicMeshGroup>(ifs, mMeshGroups, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
-	mSpriteAnimations->Reserve(desc.first);
 	LoadResourceFromChunk<FTSpriteAnimation>(ifs, mSpriteAnimations, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPREMADE_GROUP);
-	mPremades->Reserve(desc.first);
 	LoadResourceFromChunk<FTPremade>(ifs, mPremades, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSPRITESHEET_GROUP);
-	mSpriteSheets->Reserve(desc.first);
 	LoadResourceFromChunk<FTSpriteSheet>(ifs, mSpriteSheets, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTILEMAP_GROUP);
-	mTileMaps->Reserve(desc.first);
 	LoadResourceFromChunk<FTTileMap>(ifs, mTileMaps, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTEXTURE_GROUP);
-	mTextures->Reserve(desc.first);
 	LoadResourceFromChunk<FTTexture>(ifs, mTextures, desc.first);
 
 	ProcessResources(FTCore::GetInstance(), mCSVs);
@@ -336,7 +322,7 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 	ProcessResources(FTCore::GetInstance(), mTileMaps);
 	ProcessResources(FTCore::GetInstance(), mSpriteSheets);
 	ProcessResources(FTCore::GetInstance(), mSpriteAnimations);
-	ProcessResources(FTCore::GetInstance(), mMaterials);
+	// ProcessResources(FTCore::GetInstance(), mMaterials);
 	ProcessResources(FTCore::GetInstance(), mVertexShaders);
 	ProcessResources(FTCore::GetInstance(), mPixelShaders);
 

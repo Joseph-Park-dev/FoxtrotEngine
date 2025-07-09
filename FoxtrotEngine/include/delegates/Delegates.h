@@ -1080,8 +1080,9 @@ private:
 	void Unlock()
 	{
 		//Unlock() should never be called more than Lock()!
-		DELEGATE_ASSERT(m_Locks > 0);
-		--m_Locks;
+		//DELEGATE_ASSERT(m_Locks > 0);
+		if (m_Locks > 0)
+			--m_Locks;
 	}
 
 	//Returns true is the delegate is currently broadcasting

@@ -1,6 +1,8 @@
 #pragma once
 #include "spine/spine.h"
 
+static spine::SpineExtension* gSpineExtension = NULL;
+
 namespace spine
 {
 	class FTSpineLoader : public TextureLoader
@@ -12,6 +14,5 @@ namespace spine
 	public:
 		virtual void load(AtlasPage& page, const String& path);
 		virtual void unload(void* texture);
-
 	};
 } // namespace spine

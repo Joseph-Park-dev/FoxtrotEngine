@@ -91,7 +91,7 @@ void Animator::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::MATERIAL_KEYS);
 
 	// Loop through loaded animation keys and save.
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::LOADED_KEYS);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Animation::LOADED_KEYS);
 
 	size_t i = 0;
 	for (FTSpriteAnimation* anim : mLoadedAnim)
@@ -100,7 +100,7 @@ void Animator::SaveProperties(std::ofstream& ofs)
 		++i;
 	}
 
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::LOADED_KEYS);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::Animation::LOADED_KEYS);
 
 	// Save Shader keys.
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::SHADER_KEYS);
@@ -125,7 +125,7 @@ void Animator::LoadProperties(std::ifstream& ifs)
 	VSKey().Assign(shaderKey);
 
 	// Load Animations
-	std::pair<size_t, FTDS::String> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::LOADED_KEYS);
+	std::pair<size_t, FTDS::String> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Animation::LOADED_KEYS);
 	mLoadedAnim.reserve(pack.first);
 	for (size_t i = 0; i < pack.first; ++i)
 	{

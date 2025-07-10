@@ -17,6 +17,7 @@
 #include "ResourceSystem/FTSpriteSheet.h"
 #include "ResourceSystem/FTPremade.h"
 #include "ResourceSystem/Animation/FTSpriteAnimation.h"
+#include "ResourceSystem/Animation/FTSpineAnimation.h"
 #include "ResourceSystem/FTMeshDataPack.h"
 #include "ResourceSystem/ModelLoader.h"
 #include "ResourceSystem/FTShaders/FTVertexShader.h"
@@ -26,6 +27,7 @@
 #include "ResourceSystem/Sound/Sound.h"
 #include "ResourceSystem/GenericData/FTCSV.h"
 #include "ResourceSystem/GenericData/FTJSON.h"
+#include "ResourceSystem/GenericData/FTText.h"
 #include "Core/FTCore.h"
 #include "Core/TemplateFunctions.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -54,6 +56,7 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 	mSpriteSheets	  = DBG_NEW		FTDS::HashChainMap<FTSpriteSheet*>;
 	mPremades		  = DBG_NEW			FTDS::HashChainMap<FTPremade*>;
 	mSpriteAnimations = DBG_NEW FTDS::HashChainMap<FTSpriteAnimation*>;
+	mSpineAnimations  = DBG_NEW	 FTDS::HashChainMap<FTSpineAnimation*>;
 	mMeshGroups		  = DBG_NEW		  FTDS::HashChainMap<FTBasicMeshGroup*>;
 	mVertexShaders	  = DBG_NEW	   FTDS::HashChainMap<FTVertexShader*>;
 	mPixelShaders	  = DBG_NEW		FTDS::HashChainMap<FTPixelShader*>;
@@ -61,6 +64,7 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 	mSounds			  = DBG_NEW			  FTDS::HashChainMap<Sound*>;
 	mCSVs			  = DBG_NEW				FTDS::HashChainMap<FTCSV*>;
 	mJSONs			  = DBG_NEW			   FTDS::HashChainMap<FTJSON*>;
+	mTexts			  = DBG_NEW			   FTDS::HashChainMap<FTText*>;
 }
 
 void ResourceManager::DeleteAll()
@@ -70,6 +74,7 @@ void ResourceManager::DeleteAll()
 	ClearMap(mSpriteSheets);
 	ClearMap(mPremades);
 	ClearMap(mSpriteAnimations);
+	ClearMap(mSpineAnimations);
 	ClearMap(mMeshGroups);
 	ClearMap(mVertexShaders);
 	ClearMap(mPixelShaders);
@@ -77,6 +82,7 @@ void ResourceManager::DeleteAll()
 	ClearMap(mSounds);
 	ClearMap(mCSVs);
 	ClearMap(mJSONs);
+	ClearMap(mTexts);
 }
 
 FTDS::String& ResourceManager::GetPathToAsset()
@@ -96,17 +102,17 @@ void ResourceManager::AbsoluteToRelativePath(FTResource* res)
 	FTDS::String folderName = "\\Assets\\";
 
 	// Check if the path is relative.
-	if (path.LFind("./") == 0)
+	if (path.LFind(".\\") == 0)
 		return;
 
 	int index = path.LFind(mPathToAsset.C_Str());
 	if (index == -1)
 		return;
 
-	int cutIndex = mPathToAsset.RFind(folderName.C_Str());
+	int cutIndex = path.RFind(folderName.C_Str());
 	path.SubStr(cutIndex, path.Length());
 
-	FTDS::String result = ".\"";
+	FTDS::String result = ".";
 	result.Append(path);
 
 	res->SetRelativePath(result);
@@ -119,7 +125,7 @@ void ResourceManager::RelativeToAbsolutePath(FTResource* res)
 	path.SubStr(folderName.Length(), path.Length());
 
 	FTDS::String result = mPathToAsset;
-	result.Append("\\");
+	// result.Append("\\");
 	result.Append(path);
 
 	res->SetRelativePath(result);
@@ -170,6 +176,11 @@ FTDS::HashChainMap<FTSpriteAnimation*>* ResourceManager::GetSpriteAnimations()
 	return mSpriteAnimations;
 }
 
+FTDS::HashChainMap<FTSpineAnimation*>* ResourceManager::GetSpineAnimations()
+{
+	return mSpineAnimations;
+}
+
 FTDS::HashChainMap<Sound*>* ResourceManager::GetSounds()
 {
 	return mSounds;
@@ -183,6 +194,11 @@ FTDS::HashChainMap<FTCSV*>* ResourceManager::GetCSVs()
 FTDS::HashChainMap<FTJSON*>* ResourceManager::GetJSONs()
 {
 	return mJSONs;
+}
+
+FTDS::HashChainMap<FTText*>* ResourceManager::GetTexts()
+{
+	return mTexts;
 }
 
 void ResourceManager::SaveMaterialsToChunk(std::ofstream& ofs)
@@ -235,6 +251,7 @@ ResourceManager::~ResourceManager()
 	delete mSpriteSheets;
 	delete mPremades;
 	delete mSpriteAnimations;
+	delete mSpineAnimations;
 	delete mMeshGroups;
 	delete mVertexShaders;
 	delete mPixelShaders;
@@ -242,12 +259,14 @@ ResourceManager::~ResourceManager()
 	delete mSounds;
 	delete mCSVs;
 	delete mJSONs;
+	delete mTexts;
 
 	mTextures		  = nullptr;
 	mTileMaps		  = nullptr;
 	mSpriteSheets	  = nullptr;
 	mPremades		  = nullptr;
 	mSpriteAnimations = nullptr;
+	mSpineAnimations  = nullptr;
 	mMeshGroups		  = nullptr;
 	mVertexShaders	  = nullptr;
 	mPixelShaders	  = nullptr;
@@ -255,6 +274,7 @@ ResourceManager::~ResourceManager()
 	mSounds			  = nullptr;
 	mCSVs			  = nullptr;
 	mJSONs			  = nullptr;
+	mTexts			  = nullptr;
 }
 
 ResourceManager::ResourceManager()
@@ -265,6 +285,7 @@ ResourceManager::ResourceManager()
 	, mSpriteSheets(nullptr)
 	, mPremades(nullptr)
 	, mSpriteAnimations(nullptr)
+	, mSpineAnimations(nullptr)
 	, mMeshGroups(nullptr)
 	, mVertexShaders(nullptr)
 	, mPixelShaders(nullptr)
@@ -272,6 +293,7 @@ ResourceManager::ResourceManager()
 	, mSounds(nullptr)
 	, mCSVs(nullptr)
 	, mJSONs(nullptr)
+	, mTexts(nullptr)
 {
 }
 
@@ -303,6 +325,9 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
 	LoadResourceFromChunk<FTSpriteAnimation>(ifs, mSpriteAnimations, desc.first);
 
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_SPINE_ANIMATION_GROUP);
+	LoadResourceFromChunk<FTSpineAnimation>(ifs, mSpineAnimations, desc.first);
+
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPREMADE_GROUP);
 	LoadResourceFromChunk<FTPremade>(ifs, mPremades, desc.first);
 
@@ -317,11 +342,13 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 
 	ProcessResources(FTCore::GetInstance(), mCSVs);
 	ProcessResources(FTCore::GetInstance(), mJSONs);
+	ProcessResources(FTCore::GetInstance(), mTexts);
 	ProcessResources(FTCore::GetInstance(), mTextures);
 	ProcessResources(FTCore::GetInstance(), mMeshGroups);
 	ProcessResources(FTCore::GetInstance(), mTileMaps);
 	ProcessResources(FTCore::GetInstance(), mSpriteSheets);
 	ProcessResources(FTCore::GetInstance(), mSpriteAnimations);
+	ProcessResources(FTCore::GetInstance(), mSpineAnimations);
 	// ProcessResources(FTCore::GetInstance(), mMaterials);
 	ProcessResources(FTCore::GetInstance(), mVertexShaders);
 	ProcessResources(FTCore::GetInstance(), mPixelShaders);
@@ -415,6 +442,14 @@ FTSpriteAnimation* ResourceManager::GetLoadedSpriteAnim(FTDS::String& key)
 	return spriteAnim;
 }
 
+FTSpineAnimation* ResourceManager::GetLoadedSpineAnim(FTDS::String& key)
+{
+	FTSpineAnimation* spineAnim = mSpineAnimations->At(key)->Value();
+	if (!spineAnim)
+		Debug::LogError(__LINE__, __FILE__, "FTSpirteAnimation is NULL");
+	return spineAnim;
+}
+
 Sound* ResourceManager::GetLoadedSound(FTDS::String& key)
 {
 	AddFileExtensionIfNone(key, FileTypes::Sound::WAV);
@@ -443,4 +478,12 @@ FTJSON* ResourceManager::GetLoadedJSON(FTDS::String& key)
 	if (!ftJSON)
 		Debug::LogError(__LINE__, __FILE__, "FTJSON is NULL");
 	return ftJSON;
+}
+
+FTText* ResourceManager::GetLoadedText(FTDS::String& key)
+{
+	FTText* text = mTexts->At(key)->Value();
+	if (!text)
+		Debug::LogError(__LINE__, __FILE__, "FTText is NULL");
+	return text;
 }

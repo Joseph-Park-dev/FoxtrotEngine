@@ -87,8 +87,3 @@ private:
 
 #endif // FOXTROT_EDITOR
 };
-
-namespace ChunkKey
-{
-	constexpr const char* LOADED_KEYS = "Loaded Keys";
-}

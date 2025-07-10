@@ -94,11 +94,8 @@ namespace FTDS
 
 		virtual ~Array()
 		{
-			if (mData)
-			{
-				delete[] mData;
-				mData = nullptr;
-			}
+			delete[] mData;
+			mData = nullptr;
 		}
 
 	public:

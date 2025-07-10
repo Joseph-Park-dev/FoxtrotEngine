@@ -30,17 +30,17 @@ void FTVertexShader::RegisterInputElementDesc(const char* semanticName, UINT& of
 	if (FTDS::StringEqual(semanticName, "TEXCOORD"))
 	{
 		desc = { semanticName, 0, DXGI_FORMAT_R32G32_FLOAT, 0, offset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-		offset += 4 * 2;
+		//offset += 4 * 2;
 	}
 	else if (FTDS::StringEqual(semanticName, "POSITION 2D"))
 	{
 		desc = { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, offset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-		offset += 4 * 2;
+		//offset += 4 * 2;
 	}
 	else
 	{
 		desc = { semanticName, 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-		offset += 4 * 3;
+		//offset += 4 * 3;
 	}
 
 	mInputElements.push_back(desc);
@@ -99,8 +99,8 @@ void FTVertexShader::LoadProperties(std::ifstream& ifs)
 	for (FTDS::String& str : mSemanticsName)
 		RegisterInputElementDesc(str.C_Str(), offset);
 
-	/*for (size_t i = 0; i < mInputElements.size(); ++i)
-		mInputElements.at(i).InputSlot = i;*/
+	for (size_t i = 0; i < mInputElements.size(); ++i)
+		mInputElements.at(i).InputSlot = i;
 
 	#ifdef FOXTROT_EDITOR
 	FTDS::String semantics[5] = { "POSITION", "POSITION 2D", "NORMAL", "COLOR", "TEXCOORD" };
@@ -150,8 +150,8 @@ void FTVertexShader::UpdateUI()
 		for (FTDS::String& str : mSemanticsName)
 			RegisterInputElementDesc(str.C_Str(), offset);
 
-		/*for (size_t i = 0; i < mInputElements.size(); ++i)
-			mInputElements.at(i).InputSlot = i;*/
+		for (size_t i = 0; i < mInputElements.size(); ++i)
+			mInputElements.at(i).InputSlot = i;
 
 		SaveMetaFile();
 		CompileShader(GetRenderer());

@@ -4,22 +4,52 @@
 #include <queue>
 #include "spine/spine.h"
 
+#include "Managers/FTSpineLoader.h"
 #include "Static/FTString.h"
 
 class FTSpriteAnimation;
 class FoxtrotRenderer;
 class FTCore;
 
+#ifdef FOXTROT_EDITOR
+	#include "EditorResourceManager.h"
+#endif // FOXTROT_EDITOR
+
 class AnimationManager
 {
 	SINGLETON(AnimationManager)
 
 public:
-	// FTSpriteAnimation* CreateAnimationFromTileMap(
-	//	const char* name,
-	//	UINT		texKey,
-	//	UINT		tileMapKey);
+	spine::FTSpineLoader* GetSpineLoader();
 
+public:
+	void Initialize(FoxtrotRenderer* renderer);
+
+private:
+	FoxtrotRenderer*	  mRenderer;
+	spine::FTSpineLoader* mSpineLoader;
+
+#ifdef FOXTROT_EDITOR
+public:
+	void UpdateUI(bool* opened);
+	void CreateAnimation();
+
+	template <typename ANIMATION>
+	void SaveAnimationAsFile(ANIMATION* animation, FTDS::String format)
+	{
+		FTDS::String  path = EditorResourceManager::GetInstance()->GetPathToAsset() + animation->FileName() + format;
+		std::ofstream ofs(path.C_Str());
+		animation->SetRelativePath(path);
+		animation->SaveProperties(ofs);
+		FileIOHelper::SaveBufferToFile(ofs);
+	}
+
+private:
+	void GetSprite(FTDS::String& key);
+	void GetTileMap(FTDS::String& key);
+	void GetSpriteSheet(FTDS::String& key);
+
+private:
 	FTSpriteAnimation* CreateAnimationFromSpriteSheet(
 		const char*	  name,
 		FTDS::String& texKey,
@@ -27,25 +57,9 @@ public:
 		size_t		  startIndex,
 		size_t		  endIndex);
 
-public:
-	spine::SkeletonRenderer* GetSkeletonRenderer();
-
-public:
-	void Initialize(FoxtrotRenderer* renderer);
-
-private:
-	FoxtrotRenderer*		 mRenderer;
-	spine::SkeletonRenderer* mSkeletonRenderer;
-
-#ifdef FOXTROT_EDITOR
-public:
-	void UpdateUI(bool* opened);
-	void CreateAnimation();
-	void SaveSpriteAnimAsFile(FTSpriteAnimation* animation);
-
-private:
-	void GetSprite(FTDS::String& key);
-	void GetTileMap(FTDS::String& key);
-	void GetSpriteSheet(FTDS::String& key);
+	FTSpineAnimation* CreateAnimationFromSpine(
+		const char*	  name,
+		FTDS::String& jsonKey,
+		FTDS::String& atlasKey);
 #endif
 };

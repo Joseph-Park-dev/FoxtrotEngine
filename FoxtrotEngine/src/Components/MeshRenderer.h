@@ -12,6 +12,8 @@
 #pragma once
 #include "Components/Component.h"
 
+#include <vector>
+
 #include "Static/FTString.h"
 
 class FTBasicMeshGroup;

@@ -204,8 +204,8 @@ void UI::LoadProperties(std::ifstream& ifs)
 	Component::LoadProperties(ifs);
 
 	Transform* transform = GetOwner()->GetTransform();
-	FTVector2  a		 = transform->GetScreenPosition(Camera::GetInstance());
-	mRectArea->Set(transform->GetScreenPosition(Camera::GetInstance()), mRectArea->GetSize());
+	FTVector2  screenPos = transform->GetScreenPosition(Camera::GetInstance());
+	mRectArea->Set(screenPos, mRectArea->GetSize());
 }
 
 #ifdef FOXTROT_EDITOR

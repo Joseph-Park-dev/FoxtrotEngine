@@ -58,5 +58,6 @@ namespace ChunkKey
 		constexpr const char* MAX_FRAME_IDX = "Max Frame Index";
 		constexpr const char* MIN_FRAME_IDX = "Min Frame Index";
 
+		constexpr const char* LOADED_KEYS = "Loaded Keys";
 	} // namespace Animation
 } // namespace ChunkKey

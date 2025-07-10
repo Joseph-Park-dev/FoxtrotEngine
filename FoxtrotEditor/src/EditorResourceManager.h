@@ -2,6 +2,9 @@
 #include "Managers/ResourceManager.h"
 
 #include "Utils/StrAssign.h"
+#include "ResourceSystem/GenericData/FTText.h"
+#include "ResourceSystem/GenericData/FTJSON.h"
+#include "ResourceSystem/Animation/FTSpineAnimation.h"
 
 class EditorResourceManager : public ResourceManager
 {

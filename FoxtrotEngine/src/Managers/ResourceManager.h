@@ -22,8 +22,10 @@
 #include "Debugging/DebugMemAlloc.h"
 #include "Core/TemplateFunctions.h"
 #include "ResourceSystem/FTResource.h"
+#include "ResourceSystem/GenericData/FTJSON.h"
 #include "FileSystem/NullKeys.h"
 #include "FileSystem/FileTypes.h"
+#include "FileSystem/FileIOHelper.h"
 
 #include "Static/HashChainMap.h"
 #include "Static/FTString.h"
@@ -34,10 +36,12 @@
 	#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
 	#include <imgui.h>
 #endif // FOXTROT_EDITOR
+#include <Components/SpineAnimator.h>
 
 class FoxtrotRenderer;
 class FTTexture;
 class FTSpriteAnimation;
+class FTSpineAnimation;
 class FTBasicMeshGroup;
 struct FTMeshData;
 class FTMeshDataPack;
@@ -51,6 +55,7 @@ class FTPixelShader;
 class Sound;
 class FTCSV;
 class FTJSON;
+class FTText;
 class FileIOHelper;
 
 enum class ResType
@@ -66,8 +71,10 @@ enum class ResType
 	FT_VERTEX_SHADER,
 	FT_PIXEL_SHADER,
 	FT_SPRITE_ANIMATION,
+	FT_SPINE_ANIMATION,
 	FTCSV,
 	FTJSON,
+	FTTEXT,
 	FT_SHADER_META
 };
 
@@ -91,9 +98,11 @@ public:
 	FTMaterial*		   GetLoadedMaterial(FTDS::String& key);
 	FTBasicMeshGroup*  GetLoadedMesh(FTDS::String& key);
 	FTSpriteAnimation* GetLoadedSpriteAnim(FTDS::String& key);
+	FTSpineAnimation*  GetLoadedSpineAnim(FTDS::String& key);
 	Sound*			   GetLoadedSound(FTDS::String& key);
 	FTCSV*			   GetLoadedCSV(FTDS::String& key);
 	FTJSON*			   GetLoadedJSON(FTDS::String& key);
+	FTText*			   GetLoadedText(FTDS::String& key);
 
 	FTDS::String& GetPathToAsset();
 	void		  SetPathToAsset(FTDS::String&& projectPath);
@@ -111,9 +120,11 @@ public:
 	FTDS::HashChainMap<FTMaterial*>*		GetMaterials();
 	FTDS::HashChainMap<FTBasicMeshGroup*>*	GetMeshGroups();
 	FTDS::HashChainMap<FTSpriteAnimation*>* GetSpriteAnimations();
+	FTDS::HashChainMap<FTSpineAnimation*>*	GetSpineAnimations();
 	FTDS::HashChainMap<Sound*>*				GetSounds();
 	FTDS::HashChainMap<FTCSV*>*				GetCSVs();
 	FTDS::HashChainMap<FTJSON*>*			GetJSONs();
+	FTDS::HashChainMap<FTText*>*			GetTexts();
 
 	///////////////////////////
 	// Save | Load resources //
@@ -160,6 +171,7 @@ private:
 	FTDS::HashChainMap<FTSpriteSheet*>*		mSpriteSheets;
 	FTDS::HashChainMap<FTPremade*>*			mPremades;
 	FTDS::HashChainMap<FTSpriteAnimation*>* mSpriteAnimations;
+	FTDS::HashChainMap<FTSpineAnimation*>*	mSpineAnimations;
 
 	// A mesh group usually represents a 3D model.
 	FTDS::HashChainMap<FTBasicMeshGroup*>* mMeshGroups;
@@ -176,6 +188,7 @@ private:
 private:
 	FTDS::HashChainMap<FTCSV*>*	 mCSVs;
 	FTDS::HashChainMap<FTJSON*>* mJSONs;
+	FTDS::HashChainMap<FTText*>* mTexts;
 
 private:
 	template <typename FTRESOURCE>
@@ -215,10 +228,10 @@ protected:
 	void ProcessResources(FTCore* coreInstance, FTDS::HashChainMap<FTRESOURCE*>* resMap)
 	{
 		resMap->IterateAllValues(
-			[&](FTRESOURCE* res) 
-			{
+			[&](FTRESOURCE* res) {
 				RelativeToAbsolutePath(res);
-				if(res) res->Process(coreInstance); 
+				if (res)
+					res->Process(coreInstance);
 			});
 	}
 
@@ -238,6 +251,7 @@ namespace ChunkKey
 	constexpr const char* FTSPRITESHEET_GROUP		= "FTSpriteSheet Group";
 	constexpr const char* FTPREMADE_GROUP			= "FTPremade Group";
 	constexpr const char* FT_SPRITE_ANIMATION_GROUP = "FTSpriteAnimation Group";
+	constexpr const char* FT_SPINE_ANIMATION_GROUP	= "FTSpineAnimation Group";
 
 	constexpr const char* PRIMITIVE_SQUARE_RED	 = "Primitive Square Red";
 	constexpr const char* PRIMITIVE_SQUARE_GREEN = "Primitive Square Green";

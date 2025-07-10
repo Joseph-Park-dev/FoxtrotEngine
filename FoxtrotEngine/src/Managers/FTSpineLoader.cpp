@@ -51,5 +51,7 @@ void spine::FTSpineLoader::unload(void* texture)
 
 spine::SpineExtension* spine::getDefaultExtension()
 {
-	return new DefaultSpineExtension();
+	if (!gSpineExtension)
+		gSpineExtension = DBG_NEW DefaultSpineExtension();
+	return gSpineExtension;
 }

@@ -24,11 +24,13 @@ namespace FileTypes
 	constexpr const char* SPRITE_SHEET	   = ".ftspritesheet";
 	constexpr const char* CSV			   = ".csv";
 	constexpr const char* JSON			   = ".json";
+	constexpr const char* TEXT			   = ".txt, .atlas";
 	constexpr const char* MESH			   = ".fbx, .stl";
 	constexpr const char* SPRITE_ANIMATION = ".ftspriteanim";
-	constexpr const char* SHADER	  = ".hlsl";
-	constexpr const char* MATERIAL	  = ".ftmat";
-	constexpr const char* SHADER_META = ".shadermeta";
+	constexpr const char* SPINE_ANIMATION  = ".ftspineanim";
+	constexpr const char* SHADER		   = ".hlsl";
+	constexpr const char* MATERIAL		   = ".ftmat";
+	constexpr const char* SHADER_META	   = ".shadermeta";
 
 	constexpr const char* VERTEX_SHADER = "VS";
 	constexpr const char* PIXEL_SHADER	= "PS";

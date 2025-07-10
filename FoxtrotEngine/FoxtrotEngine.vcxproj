@@ -283,6 +283,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="src\Components\SpineAnimator.cpp" />
+    <ClCompile Include="src\ResourceSystem\GenericData\FTText.cpp" />
     <ClCompile Include="include\spine-cpp\src\spine\Animation.cpp" />
     <ClCompile Include="include\spine-cpp\src\spine\AnimationState.cpp" />
     <ClCompile Include="include\spine-cpp\src\spine\AnimationStateData.cpp" />
@@ -354,7 +356,6 @@
     <ClCompile Include="src\ResourceSystem\Sound\SoundInstance.cpp" />
     <ClCompile Include="src\ResourceSystem\Sound\Sound.cpp" />
     <ClCompile Include="src\Managers\SoundManager.cpp" />
-    <ClCompile Include="src\Components\SpineAnimator.cpp" />
     <ClCompile Include="src\Debugging\DebugFuncs.h" />
     <ClCompile Include="src\Managers\FTSpineLoader.cpp" />
     <ClCompile Include="src\ResourceSystem\Animation\FTSpineAnimation.cpp" />
@@ -458,6 +459,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="src\Components\SpineAnimator.h" />
+    <ClInclude Include="src\ResourceSystem\GenericData\FTText.h" />
     <ClInclude Include="include\assimp\res\assimp\revision.h" />
     <ClInclude Include="include\box2d\base.h" />
     <ClInclude Include="include\box2d\box2d.h" />
@@ -548,7 +551,6 @@
     <ClInclude Include="src\ResourceSystem\Sound\SoundInstance.h" />
     <ClInclude Include="src\ResourceSystem\Sound\Sound.h" />
     <ClInclude Include="src\Managers\SoundManager.h" />
-    <ClInclude Include="src\Components\SpineAnimator.h" />
     <ClInclude Include="src\Managers\FTSpineLoader.h" />
     <ClInclude Include="include\spine-cpp\include\spine\Animation.h" />
     <ClInclude Include="include\spine-cpp\include\spine\AnimationState.h" />

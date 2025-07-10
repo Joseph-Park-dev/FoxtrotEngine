@@ -246,9 +246,6 @@
     <ClCompile Include="src\Managers\FTSpineLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Components\SpineAnimator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="include\spine-cpp\src\spine\Animation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -478,6 +475,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\ButtonClick.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\GenericData\FTText.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Components\SpineAnimator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2546,9 +2549,6 @@
     <ClInclude Include="src\Managers\FTSpineLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Components\SpineAnimator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Managers\SoundManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2832,6 +2832,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\ButtonClick.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceSystem\GenericData\FTText.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\SpineAnimator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

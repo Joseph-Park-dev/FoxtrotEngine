@@ -41,6 +41,10 @@ void EditorResourceManager::SaveResources(std::ofstream& ofs)
 	SaveResourceToChunk<FTPremade>(ofs, GetPremades());
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTPREMADE_GROUP);
 
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_SPINE_ANIMATION_GROUP);
+	SaveResourceToChunk<FTSpineAnimation>(ofs, GetSpineAnimations());
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_SPINE_ANIMATION_GROUP);
+
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
 	SaveResourceToChunk<FTSpriteAnimation>(ofs, GetSpriteAnimations());
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
@@ -79,6 +83,7 @@ void EditorResourceManager::LoadAllResourcesInAsset()
 	ResourceManager::GetSpriteSheets()->Reserve(10);
 	ResourceManager::GetPremades()->Reserve(10);
 	ResourceManager::GetSpriteAnimations()->Reserve(10);
+	ResourceManager::GetSpineAnimations()->Reserve(10);
 	ResourceManager::GetMeshGroups()->Reserve(10);
 	ResourceManager::GetVertexShaders()->Reserve(10);
 	ResourceManager::GetPixelShaders()->Reserve(10);
@@ -86,6 +91,7 @@ void EditorResourceManager::LoadAllResourcesInAsset()
 	ResourceManager::GetSounds()->Reserve(10);
 	ResourceManager::GetCSVs()->Reserve(10);
 	ResourceManager::GetJSONs()->Reserve(10);
+	ResourceManager::GetTexts()->Reserve(10);
 
 	DirectoryHelper::IterateForFileRecurse(
 		GetPathToAsset().C_Str(),
@@ -110,6 +116,7 @@ void EditorResourceManager::LoadAllResourcesInAsset()
 	ProcessResources(FTCoreEditor::GetInstance(), GetTileMaps());
 	ProcessResources(FTCoreEditor::GetInstance(), GetSpriteSheets());
 	ProcessResources(FTCoreEditor::GetInstance(), GetSpriteAnimations());
+	ProcessResources(FTCoreEditor::GetInstance(), GetSpineAnimations());
 	ProcessResources(FTCoreEditor::GetInstance(), GetMaterials());
 	ProcessResources(FTCoreEditor::GetInstance(), GetVertexShaders());
 	ProcessResources(FTCoreEditor::GetInstance(), GetPixelShaders());
@@ -119,7 +126,7 @@ void EditorResourceManager::LoadAllResourcesInAsset()
 	FTBasicMeshGroup* meshGroup = DBG_NEW FTBasicMeshGroup;
 	meshGroup->Initialize(
 		{ GeometryGenerator::MakeSquare(1.0f, FTVector3(0.f, 0.f, 1.f)) },
-		GetRenderer()->GetDevice(), 
+		GetRenderer()->GetDevice(),
 		GetRenderer()->GetContext());
 	GetMeshGroups()->Insert(ChunkKey::PRIMITIVE_SQUARE_BLUE, meshGroup);
 
@@ -154,11 +161,17 @@ void EditorResourceManager::LoadResByType(const char* filePath)
 		case ResType::FT_SPRITE_ANIMATION:
 			LoadResource(path, GetSpriteAnimations());
 			break;
+		case ResType::FT_SPINE_ANIMATION:
+			LoadResource(path, GetSpineAnimations());
+			break;
 		case ResType::FTCSV:
 			LoadResource(path, GetCSVs());
 			break;
 		case ResType::FTJSON:
 			LoadResource(path, GetJSONs());
+			break;
+		case ResType::FTTEXT:
+			LoadResource(path, GetTexts());
 			break;
 		case ResType::FT_VERTEX_SHADER:
 			LoadResource(path, GetVertexShaders());
@@ -215,6 +228,9 @@ void EditorResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
 	LoadDummyResource<FTSpriteAnimation>(ifs, GetSpriteAnimations(), desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_SPINE_ANIMATION_GROUP);
+	LoadDummyResource<FTSpineAnimation>(ifs, GetSpineAnimations(), desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPREMADE_GROUP);
 	LoadDummyResource<FTPremade>(ifs, GetPremades(), desc.first);
@@ -559,12 +575,17 @@ ResType EditorResourceManager::GetResType(FTDS::String& fileName)
 
 	else if (StrContains(FileTypes::SPRITE_ANIMATION, format))
 		return ResType::FT_SPRITE_ANIMATION;
+	else if (StrContains(FileTypes::SPINE_ANIMATION, format))
+		return ResType::FT_SPINE_ANIMATION;
 
 	else if (StrContains(FileTypes::CSV, format))
 		return ResType::FTCSV;
 
 	else if (StrContains(FileTypes::JSON, format))
 		return ResType::FTJSON;
+
+	else if (StrContains(FileTypes::TEXT, format))
+		return ResType::FTTEXT;
 
 	else if (StrContains(FileTypes::SHADER, format))
 

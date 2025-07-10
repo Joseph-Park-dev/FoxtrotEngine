@@ -215,6 +215,10 @@ void FTCore::ShutDown()
 	FoxtrotRenderer::DestroyRenderer(mGameRenderer);
 	CollisionManager::GetInstance()->Destroy();
 
+	
+	AnimationManager::GetInstance()->Destroy();
+	delete gSpineExtension;
+	gSpineExtension = nullptr;
 	EventManager::GetInstance()->Destroy();
 	ResourceManager::GetInstance()->Destroy();
 	SceneManager::GetInstance()->Destroy();
@@ -225,7 +229,6 @@ void FTCore::ShutDown()
 	Timer::GetInstance()->Destroy();
 	ParticleSystem::GetInstance()->Destroy();
 	LightManager::GetInstance()->Destroy();
-	AnimationManager::GetInstance()->Destroy();
 	TileMapManager::GetInstance()->Destroy();
 
 		PostQuitMessage(0);

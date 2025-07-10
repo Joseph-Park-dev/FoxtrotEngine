@@ -13,7 +13,7 @@
 #include "Debugging/DebugMemAlloc.h"
 
 // Makes a classe into singleton.
-// Don't forget to call Destory() to delete mObject!
+// Don't forget to call Destroy() to delete mObject!
 #define SINGLETON(TYPE) public:\
 							static TYPE* GetInstance() \
 								{ \

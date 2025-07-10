@@ -149,10 +149,6 @@ namespace FTDS
 			if (mSize < 1)
 				return;
 
-			// Gather up all nodes which are not null.
-			DynamicArray<RecordNode<TYPE>*> nodes;
-			nodes.Reserve(mSize);
-
 			// Iterate through all nodes, making them null.
 			for (size_t i = 0; i < this->Capacity(); ++i)
 			{

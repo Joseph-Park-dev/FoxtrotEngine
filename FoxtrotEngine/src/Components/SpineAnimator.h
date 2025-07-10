@@ -28,10 +28,13 @@ protected:
 		FoxtrotRenderer* renderer) override;
 
 private:
-	FTSpineAnimation* mAnim;
-	spine::Atlas*	  mAtlas;
-	float			  mTimeScale;
-	spine::Physics	  mUsePhysics;
+	std::vector<FTSpineAnimation*> mLoadedAnim;
+	float						   mTimeScale;
+	spine::Physics				   mUsePhysics;
+
+public:
+	virtual void SaveProperties(std::ofstream& ofs) override;
+	virtual void LoadProperties(std::ifstream& ifs) override;
 
 #ifdef FOXTROT_EDITOR
 	virtual void EditorUpdate(float deltaTime) override;

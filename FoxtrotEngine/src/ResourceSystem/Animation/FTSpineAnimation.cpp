@@ -1,18 +1,20 @@
-#include "FTSpineAnimation.h"
+#include "ResourceSystem/Animation/FTSpineAnimation.h"
 
 #include "Managers/AnimationManager.h"
 #include "Managers/ResourceManager.h"
+#include "Managers/FTSpineLoader.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/Camera.h"
 #include "ResourceSystem/FTMaterials/FTMaterial.h"
 #include "ResourceSystem/FTMeshData.h"
 #include "ResourceSystem/FTShaders/FTVertexShader.h"
+#include "ResourceSystem/GenericData/FTJSON.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorResourceManager.h"
 #endif // FOXTROT_EDITOR
 
-void FTSpineAnimation::Initialize(ComPtr<ID3D11Device>& device, spine::SkeletonData* skel, spine::AnimationStateData* stateData)
+void FTSpineAnimation::InitializeSpinAnim(ComPtr<ID3D11Device>& device, spine::SkeletonData* skel)
 {
 	if (0 < mMeshes.size())
 	{
@@ -27,7 +29,9 @@ void FTSpineAnimation::Initialize(ComPtr<ID3D11Device>& device, spine::SkeletonD
 		mMeshes.clear();
 	}
 
-	mSkeleton = new spine::Skeleton(skel);
+	mSkeleton							= new spine::Skeleton(skel);
+	spine::AnimationStateData stateData = spine::AnimationStateData(skel);
+	mState								= new spine::AnimationState(&stateData);
 
 	auto drawOrder = mSkeleton->getDrawOrder();
 	for (size_t i = 0; i < drawOrder.size(); ++i)
@@ -45,18 +49,21 @@ void FTSpineAnimation::Initialize(ComPtr<ID3D11Device>& device, spine::SkeletonD
 			InitializeMeshes(device, i, attachment, SpineMesh::SPINE_ATTACHMENT_TYPE::SPINE_MESH_REGION);
 		}
 	}
-
 	spine::Bone::setYDown(false);
-	mSkeleton = new (__FILE__, __LINE__) spine::Skeleton(skel);
-	stateData = new (__FILE__, __LINE__) spine::AnimationStateData(skel);
-	mState	  = new (__FILE__, __LINE__) spine::AnimationState(stateData);
 
 	CreateTextureSampler(device);
 	InitializeConstantBuffers(device);
+
+	//// Registers the clip inside of the Spine Animation.
+	spine::Vector<spine::Animation*> clips = skel->getAnimations();
+	mLoadedClips.addAll(clips);
 }
 
 void FTSpineAnimation::Update(float deltaTime, spine::Physics physics)
 {
+	if (!mState || !mSkeleton)
+		return;
+
 	mState->update(deltaTime * mTimeScale);
 	mState->apply(*mSkeleton);
 	mSkeleton->update(deltaTime * mTimeScale);
@@ -97,6 +104,16 @@ void FTSpineAnimation::Render(FoxtrotRenderer* renderer)
 		context->IASetInputLayout(GetVertexShader()->GetInputLayout().Get());
 		mesh->Draw(context);
 	}
+}
+
+void FTSpineAnimation::SetJSONKey(FTDS::String& key)
+{
+	mJSONKey.Assign(key);
+}
+
+void FTSpineAnimation::SetAtlasKey(FTDS::String& key)
+{
+	mAtlasKey.Assign(key);
 }
 
 spine::Skeleton* FTSpineAnimation::GetSkeleton()
@@ -151,9 +168,23 @@ void FTSpineAnimation::SetMaterials(std::vector<FTDS::String>& matKeys, ComPtr<I
 	}
 }
 
+void FTSpineAnimation::SetAnimation(size_t idx, bool loop)
+{
+	mState->setAnimation(0, mLoadedClips[idx], loop);
+}
+
+spine::Vector<spine::Animation*>& FTSpineAnimation::LoadedClips()
+{
+	return mLoadedClips;
+}
+
 FTSpineAnimation::FTSpineAnimation()
 	: FTAnimation()
+	, mJSONKey()
+	, mAtlasKey()
+	, mSkeletonData(nullptr)
 	, mSkeleton(nullptr)
+	, mAtlas(nullptr)
 	, mState(nullptr)
 	, mTimeScale(1.f)
 {
@@ -162,7 +193,24 @@ FTSpineAnimation::FTSpineAnimation()
 FTSpineAnimation::~FTSpineAnimation()
 {
 	delete mState;
+	delete mSkeletonData;
 	delete mSkeleton;
+	delete mAtlas;
+
+	mState		  = nullptr;
+	mSkeletonData = nullptr;
+	mSkeleton	  = nullptr;
+	mAtlas		  = nullptr;
+
+	for (SpineMesh* mesh : mMeshes)
+	{
+		delete mesh;
+		mesh = nullptr;
+	}
+
+	// for (size_t i = 0; i < mLoadedClips.size(); ++i)
+	//	delete mLoadedClips[i];
+	// mLoadedClips.clear();
 }
 
 void FTSpineAnimation::InitializeMeshes(
@@ -227,6 +275,9 @@ void FTSpineAnimation::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPt
 
 void FTSpineAnimation::UpdateBuffers(ComPtr<ID3D11DeviceContext>& context)
 {
+	if (!mSkeleton)
+		return;
+
 	for (SpineMesh* mesh : mMeshes)
 	{
 		spine::Slot*	   slot		  = mSkeleton->getDrawOrder()[mesh->DrawOrder];
@@ -240,8 +291,8 @@ void FTSpineAnimation::UpdateBuffers(ComPtr<ID3D11DeviceContext>& context)
 			if (!texRegion)
 				continue;
 
-			auto* atlasRegion = reinterpret_cast<spine::AtlasRegion*>(texRegion);
-			auto* texture	  = reinterpret_cast<FTTexture*>(atlasRegion->page->texture);
+			auto*	   atlasRegion = reinterpret_cast<spine::AtlasRegion*>(texRegion);
+			FTTexture* texture	   = static_cast<FTTexture*>(atlasRegion->page->texture);
 			if (!texture)
 				continue;
 			SetTexture(texture);
@@ -269,13 +320,9 @@ void FTSpineAnimation::UpdateBuffers(ComPtr<ID3D11DeviceContext>& context)
 				{
 					memcpy(mapped.pData, uvs, sizeof(float) * eleCount);
 
-					//memcpy_s(&mapped.pData, sizeof(float) * eleCount, uvs, sizeof(float) * eleCount);
+					// memcpy_s(&mapped.pData, sizeof(float) * eleCount, uvs, sizeof(float) * eleCount);
 					context->Unmap(mesh->TexcoordBuf.Get(), 0);
 				}
-
-				// 데이터 확인용 출력 코드
-				for (size_t i = 0; i < eleCount; ++i)
-					printf("%f \n", ((float*)mapped.pData)[i]);
 			}
 			// index buffer
 			{
@@ -352,4 +399,50 @@ void FTSpineAnimation::UpdateBuffers(ComPtr<ID3D11DeviceContext>& context)
 			}
 		}
 	}
+}
+
+void FTSpineAnimation::SaveProperties(std::ofstream& ofs)
+{
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_SPINE_ANIMATION_GROUP);
+	FTAnimation::SaveProperties(ofs);
+	FileIOHelper::SaveString(ofs, ChunkKey::JSON_KEY, mJSONKey);
+	FileIOHelper::SaveString(ofs, ChunkKey::ATLAS_KEY, mAtlasKey);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_SPINE_ANIMATION_GROUP);
+}
+
+void FTSpineAnimation::LoadProperties(std::ifstream& ifs)
+{
+	FileIOHelper::BeginDataPackLoad(ifs);
+	FileIOHelper::LoadBasicString(ifs, mAtlasKey);
+	FileIOHelper::LoadBasicString(ifs, mJSONKey);
+	FTAnimation::LoadProperties(ifs);
+}
+
+void FTSpineAnimation::Process(FTCore* coreInst)
+{
+	if (this->GetIsProcessed())
+		return;
+
+	std::ifstream ifs(this->RelativePath().C_Str());
+	this->LoadProperties(ifs);
+
+	FTJSON* json = nullptr;
+	FTText* text = nullptr;
+
+#ifdef FOXTROT_EDITOR
+	json = EditorResourceManager::GetInstance()->GetLoadedJSON(mJSONKey);
+	text = EditorResourceManager::GetInstance()->GetLoadedText(mAtlasKey);
+	EditorResourceManager::GetInstance()->RelativeToAbsolutePath(text);
+#else
+	json = ResourceManager::GetInstance()->GetLoadedJSON(mJSONKey);
+	text = ResourceManager::GetInstance()->GetLoadedText(mAtlasKey);
+	ResourceManager::GetInstance()->RelativeToAbsolutePath(text);
+#endif // FOXTROT_EDITOR
+
+	spine::FTSpineLoader* spineLoader = AnimationManager::GetInstance()->GetSpineLoader();
+	mAtlas							  = new spine::Atlas(text->RelativePath().C_Str(), spineLoader);
+	mSkeletonData					  = spineLoader->ReadSkeletonJsonData(json->RelativePath().C_Str(), mAtlas, 1.0f);
+	InitializeSpinAnim(coreInst->GetGameRenderer()->GetDevice(), mSkeletonData);
+
+	this->SetIsProcessed(true);
 }

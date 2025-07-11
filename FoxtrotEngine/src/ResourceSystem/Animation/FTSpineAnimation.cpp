@@ -1,5 +1,7 @@
 #include "ResourceSystem/Animation/FTSpineAnimation.h"
 
+#include <spine/spine.h>
+
 #include "Managers/AnimationManager.h"
 #include "Managers/ResourceManager.h"
 #include "Managers/FTSpineLoader.h"
@@ -12,6 +14,7 @@
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorResourceManager.h"
+	#include <bitset>
 #endif // FOXTROT_EDITOR
 
 void FTSpineAnimation::InitializeSpinAnim(ComPtr<ID3D11Device>& device, spine::SkeletonData* skel)
@@ -29,11 +32,17 @@ void FTSpineAnimation::InitializeSpinAnim(ComPtr<ID3D11Device>& device, spine::S
 		mMeshes.clear();
 	}
 
-	mSkeleton							= new spine::Skeleton(skel);
-	spine::AnimationStateData stateData = spine::AnimationStateData(skel);
-	mState								= new spine::AnimationState(&stateData);
+	mSkeleton = new spine::Skeleton(skel);
+	mStateData = new spine::AnimationStateData(skel);
+	mState	   = new spine::AnimationState(mStateData);
+
+	//// Registers the clip inside of the Spine Animation.
+	mLoadedClips.addAll(skel->getAnimations());
+	mSkins.addAll(mSkeletonData->getSkins());
+	SetSkin();
 
 	auto drawOrder = mSkeleton->getDrawOrder();
+	mMeshes.reserve(drawOrder.size());
 	for (size_t i = 0; i < drawOrder.size(); ++i)
 	{
 		spine::Slot*	   slot		  = drawOrder[i];
@@ -49,14 +58,12 @@ void FTSpineAnimation::InitializeSpinAnim(ComPtr<ID3D11Device>& device, spine::S
 			InitializeMeshes(device, i, attachment, SpineMesh::SPINE_ATTACHMENT_TYPE::SPINE_MESH_REGION);
 		}
 	}
+	std::reverse(mMeshes.begin(), mMeshes.end());
+
 	spine::Bone::setYDown(false);
 
 	CreateTextureSampler(device);
 	InitializeConstantBuffers(device);
-
-	//// Registers the clip inside of the Spine Animation.
-	spine::Vector<spine::Animation*> clips = skel->getAnimations();
-	mLoadedClips.addAll(clips);
 }
 
 void FTSpineAnimation::Update(float deltaTime, spine::Physics physics)
@@ -183,7 +190,9 @@ FTSpineAnimation::FTSpineAnimation()
 	, mJSONKey()
 	, mAtlasKey()
 	, mSkeletonData(nullptr)
+	, mStateData(nullptr)
 	, mSkeleton(nullptr)
+	, mSkinCombination(0x0)
 	, mAtlas(nullptr)
 	, mState(nullptr)
 	, mTimeScale(1.f)
@@ -192,11 +201,14 @@ FTSpineAnimation::FTSpineAnimation()
 
 FTSpineAnimation::~FTSpineAnimation()
 {
+	delete mStateData;
 	delete mState;
 	delete mSkeletonData;
+	delete mSkeleton->getSkin();
 	delete mSkeleton;
 	delete mAtlas;
 
+	mStateData	  = nullptr;
 	mState		  = nullptr;
 	mSkeletonData = nullptr;
 	mSkeleton	  = nullptr;
@@ -207,10 +219,6 @@ FTSpineAnimation::~FTSpineAnimation()
 		delete mesh;
 		mesh = nullptr;
 	}
-
-	// for (size_t i = 0; i < mLoadedClips.size(); ++i)
-	//	delete mLoadedClips[i];
-	// mLoadedClips.clear();
 }
 
 void FTSpineAnimation::InitializeMeshes(
@@ -231,7 +239,7 @@ void FTSpineAnimation::InitializeMeshes(
 	else if (SPINE_ATTACHMENT_TYPE::SPINE_MESH_REGION == attachmentType)
 	{
 		vertexCount = 4;
-		indexCount	= 0;
+		indexCount	= 6;
 	}
 
 	SpineMesh* mesh = DBG_NEW SpineMesh;
@@ -354,25 +362,6 @@ void FTSpineAnimation::UpdateBuffers(ComPtr<ID3D11DeviceContext>& context)
 			if (!texSRV)
 				continue;
 
-			// 색상 계산
-			spine::Color c = mSkeleton->getColor();
-			c.a *= slot->getColor().a;
-			c.r *= slot->getColor().r;
-			c.g *= slot->getColor().g;
-			c.b *= slot->getColor().b;
-
-			spine::Color rColor = region->getColor();
-			c.a *= rColor.a;
-			c.r *= rColor.r;
-			c.g *= rColor.g;
-			c.b *= rColor.b;
-
-			uint32_t rgba =
-				(uint32_t(c.a * 255) << 24) |
-				(uint32_t(c.r * 255) << 16) |
-				(uint32_t(c.g * 255) << 8) |
-				(uint32_t(c.b * 255) << 0);
-
 			// 8. 렌더링 정점 복사
 			// 위치 변환 및 복사
 			{
@@ -385,20 +374,64 @@ void FTSpineAnimation::UpdateBuffers(ComPtr<ID3D11DeviceContext>& context)
 					context->Unmap(mesh->PositionBuf.Get(), 0);
 				}
 			}
-			// 텍스처 좌표 복사
+
+			// Copy Texture Coordinates
 			{
+				const float* uvs	  = region->getUVs().buffer(); // 총 x, y 요소를 담은 배열
+				auto		 eleCount = region->getUVs().size();   // 총 x, y 요소의 개수
+
+				// 버퍼로 데이터를 복사합니다.
 				D3D11_MAPPED_SUBRESOURCE mapped = {};
-				const float*			 uvs	= region->getUVs().buffer();
-				auto					 uvSize = region->getUVs().size();
 				if (SUCCEEDED(context->Map(mesh->TexcoordBuf.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
 				{
-					float* ptr = (float*)mapped.pData;
-					memcpy(mapped.pData, uvs, sizeof(float) * uvSize);
+					memcpy(mapped.pData, uvs, sizeof(float) * eleCount);
+
+					// memcpy_s(&mapped.pData, sizeof(float) * eleCount, uvs, sizeof(float) * eleCount);
 					context->Unmap(mesh->TexcoordBuf.Get(), 0);
+				}
+			}
+
+			// index buffer
+			{
+				const uint16_t indices[6] = {
+					0, 1, 2, 0, 2, 3, // 앞면
+				};
+				UINT					 indexCount = 6;
+				D3D11_MAPPED_SUBRESOURCE mapped		= {};
+				if (SUCCEEDED(context->Map(mesh->IndexBuf.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+				{
+					memcpy(mapped.pData, indices, sizeof(uint16_t) * indexCount);
+					context->Unmap(mesh->IndexBuf.Get(), 0);
 				}
 			}
 		}
 	}
+}
+
+void FTSpineAnimation::SetSkin()
+{
+	spine::Skin* prev = mSkeleton->getSkin();
+	spine::Skin* skin = new spine::Skin("Skin");
+
+	// Loop through bitmask, marking if 1.
+	int bitCount = sizeof(mSkinCombination) * 8; // Total number of bits in the integer
+	for (int i = bitCount - 1; i >= 0; --i)
+	{
+		unsigned int mask = 1U << i; // Create a mask with a single bit at position 'i'
+		if (mSkinCombination & mask)
+		{ // Check if the bit at position 'i' is set
+			skin->addSkin(mSkins[i]);
+		}
+	}
+	mSkeleton->setSkin(skin);
+	mSkeleton->setSlotsToSetupPose();
+
+	delete prev;
+}
+
+void FTSpineAnimation::ToggleSkin(size_t idx)
+{
+	mSkinCombination ^= (1 << idx);
 }
 
 void FTSpineAnimation::SaveProperties(std::ofstream& ofs)
@@ -407,15 +440,21 @@ void FTSpineAnimation::SaveProperties(std::ofstream& ofs)
 	FTAnimation::SaveProperties(ofs);
 	FileIOHelper::SaveString(ofs, ChunkKey::JSON_KEY, mJSONKey);
 	FileIOHelper::SaveString(ofs, ChunkKey::ATLAS_KEY, mAtlasKey);
+	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::SKIN_COMBINATION, mSkinCombination);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_SPINE_ANIMATION_GROUP);
 }
 
 void FTSpineAnimation::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs);
+	UINT skinCombi = 0;
+	FileIOHelper::LoadUnsignedInt(ifs, skinCombi);
 	FileIOHelper::LoadBasicString(ifs, mAtlasKey);
 	FileIOHelper::LoadBasicString(ifs, mJSONKey);
 	FTAnimation::LoadProperties(ifs);
+
+	mSkinCombination = static_cast<unsigned char>(skinCombi);
+	std::bitset<8> bit(mSkinCombination);
 }
 
 void FTSpineAnimation::Process(FTCore* coreInst)
@@ -446,3 +485,21 @@ void FTSpineAnimation::Process(FTCore* coreInst)
 
 	this->SetIsProcessed(true);
 }
+
+#ifdef FOXTROT_EDITOR
+void FTSpineAnimation::UpdateUI()
+{
+	static bool val[MAX_SKIN_COUNT];
+	for (size_t i = 0; i < mSkins.size(); ++i)
+	{
+		CommandHistory::GetInstance()->UpdateBoolValue(mSkins[i]->getName().buffer(), val[i]);
+		if (val[i])
+			mSkinCombination |= (1 << i);
+		else
+			mSkinCombination &= ~(1 << i);
+	}
+
+	if (ImGui::Button("UpdateSkin"))
+		SetSkin();
+}
+#endif // FOXTROT_EDITOR

@@ -25,6 +25,7 @@ public:
 	void SetTimeScale(float val);
 	void SetMaterials(std::vector<FTDS::String>& matKeys, ComPtr<ID3D11Device>& device) override;
 	void SetAnimation(size_t idx, bool loop);
+	void ToggleSkin(size_t idx);
 
 	spine::Vector<spine::Animation*>& LoadedClips();
 
@@ -40,14 +41,17 @@ private:
 	FTDS::String					 mJSONKey;
 	FTDS::String					 mAtlasKey;
 	spine::Vector<spine::Animation*> mLoadedClips;
+	spine::Vector<spine::Skin*>		 mSkins;
+	unsigned char					 mSkinCombination;
 
-	spine::SkeletonData*	mSkeletonData;
-	spine::Skeleton*		mSkeleton;
-	spine::Atlas*			mAtlas;
-	spine::AnimationState*	mState;
-	float					mTimeScale;
-	std::vector<SpineMesh*> mMeshes;
-	std::vector<Mesh*>&		Meshes() = delete;
+	spine::SkeletonData*	   mSkeletonData;
+	spine::AnimationStateData* mStateData;
+	spine::Skeleton*		   mSkeleton;
+	spine::Atlas*			   mAtlas;
+	spine::AnimationState*	   mState;
+	float					   mTimeScale;
+	std::vector<SpineMesh*>	   mMeshes;
+	std::vector<Mesh*>&		   Meshes() = delete;
 
 private:
 	void InitializeMeshes(
@@ -58,15 +62,24 @@ private:
 
 	void InitializeConstantBuffers(ComPtr<ID3D11Device>& device) override;
 	void UpdateBuffers(ComPtr<ID3D11DeviceContext>& context);
+	void SetSkin();
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
 	virtual void LoadProperties(std::ifstream& ifs) override;
 	virtual void Process(FTCore* coreInst) override;
+
+#ifdef FOXTROT_EDITOR
+public:
+	void UpdateUI();
+#endif // FOXTROT_EDITOR
 };
+
+constexpr size_t MAX_SKIN_COUNT = 20;
 
 namespace ChunkKey
 {
-	constexpr const char* JSON_KEY	= "JSON Key";
-	constexpr const char* ATLAS_KEY = "Atlas Key";
+	constexpr const char* JSON_KEY		   = "JSON Key";
+	constexpr const char* ATLAS_KEY		   = "Atlas Key";
+	constexpr const char* SKIN_COMBINATION = "Skin Combination";
 } // namespace ChunkKey

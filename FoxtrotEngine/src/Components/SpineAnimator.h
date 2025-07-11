@@ -37,9 +37,9 @@ public:
 	virtual void LoadProperties(std::ifstream& ifs) override;
 
 #ifdef FOXTROT_EDITOR
+public:
 	virtual void EditorUpdate(float deltaTime) override;
 	virtual void EditorRender(FoxtrotRenderer* renderer) override;
 	virtual void EditorUIUpdate() override;
-
 #endif // FOXTROT_EDITOR
 };

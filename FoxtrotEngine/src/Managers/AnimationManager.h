@@ -37,7 +37,9 @@ public:
 	template <typename ANIMATION>
 	void SaveAnimationAsFile(ANIMATION* animation, FTDS::String format)
 	{
-		FTDS::String  path = EditorResourceManager::GetInstance()->GetPathToAsset() + animation->FileName() + format;
+		FTDS::String path = EditorResourceManager::GetInstance()->GetPathToAsset() + animation->FileName();
+		if (animation->FileName().RFind(format.C_Str()) == -1)
+			path += format;
 		std::ofstream ofs(path.C_Str());
 		animation->SetRelativePath(path);
 		animation->SaveProperties(ofs);

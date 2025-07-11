@@ -61,7 +61,7 @@ void AnimationManager::UpdateUI(bool* opened)
 			EditorResourceManager::GetInstance()->GetSpriteAnimations();
 		auto iter = map->Begin();
 
-		if (ImGui::TreeNode("Loaded Animations"))
+		if (ImGui::TreeNode("Loaded Sprite Animations"))
 		{
 			map->IterateAllValues([&](FTSpriteAnimation* anim) {
 				if (anim)
@@ -73,6 +73,29 @@ void AnimationManager::UpdateUI(bool* opened)
 						anim->UpdateUI();
 						if (ImGui::Button("Save"))
 							SaveAnimationAsFile(anim, FileTypes::SPRITE_ANIMATION);
+						ImGui::EndListBox();
+					}
+					ImGui::PopID();
+				}
+			});
+			ImGui::TreePop();
+		}
+
+		FTDS::HashChainMap<FTSpineAnimation*>* spineAnimMap =
+			EditorResourceManager::GetInstance()->GetSpineAnimations();
+
+		if (ImGui::TreeNode("Loaded Spine Animations"))
+		{
+			spineAnimMap->IterateAllValues([&](FTSpineAnimation* anim) {
+				if (anim)
+				{
+					ImGui::PushID(anim->FileName().C_Str());
+					if (ImGui::BeginListBox(anim->FileName().C_Str(), ImVec2(-FLT_MIN, 100)))
+					{
+						ImGui::Text(anim->FileName().C_Str());
+						anim->UpdateUI();
+						if (ImGui::Button("Save"))
+							SaveAnimationAsFile(anim, FileTypes::SPINE_ANIMATION);
 						ImGui::EndListBox();
 					}
 					ImGui::PopID();

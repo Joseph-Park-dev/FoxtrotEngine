@@ -60,7 +60,7 @@ namespace FTDS
 		virtual void Clear()
 		{
 			if (mData)
-				memset(mData, NULL, sizeof(mData));
+				memset(mData, NULL, mCapacity * sizeof(*mData));
 		}
 
 	public:
@@ -94,8 +94,11 @@ namespace FTDS
 
 		virtual ~Array()
 		{
-			delete[] mData;
-			mData = nullptr;
+			if (mData)
+			{
+				delete[] mData;
+				mData = nullptr;
+			}
 		}
 
 	public:
@@ -109,14 +112,12 @@ namespace FTDS
 			memset(newArr, NULL, sizeof(TYPE) * newCap);
 
 			// Calculate memory size to be copied.
+			size_t destSize	  = sizeof(TYPE) * newCap;
 			size_t copiedSize = sizeof(TYPE) * Min(newCap, mCapacity);
 
 			// Copy previous data.
-			if (mData)
-			{
-				memcpy_s(newArr, copiedSize, mData, copiedSize);
-				delete[] mData;
-			}
+			memcpy_s(newArr, sizeof(TYPE) * newCap, mData, copiedSize);
+			delete[] mData;
 
 			// Set new array as current data.
 			mData = newArr;

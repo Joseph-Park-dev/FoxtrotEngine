@@ -118,6 +118,13 @@ namespace FTDS
 		{
 			Assign(val.C_Str());
 		}
+		
+		template <typename T, typename... Args>
+		typename STRING_INPUT Assign(T first, Args... rest)
+		{
+			this->Assign(first);
+			((this->Append(rest), ...));
+		}
 
 		int ExtractUntilFirst(FTDS::String& result, const char* ch, bool trim = false)
 		{

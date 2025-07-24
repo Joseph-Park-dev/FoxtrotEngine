@@ -10,15 +10,15 @@ namespace FTDS
 	public:
 		void PushBack(TYPE value)
 		{
+			++mSize;
 			if (this->mCapacity <= mSize)
 			{
 				// Grow the array by double.
-				FTDS::Array<TYPE>::AllocateMem(this->mCapacity * 2);
+				FTDS::Array<TYPE>::AllocateMem(mSize * 2);
 			}
 
 			// Assign the value.
-			this->mData[mSize] = value;
-			++mSize;
+			this->mData[mSize - 1] = value;
 		}
 
 		void Insert(size_t pos, TYPE value)
@@ -89,16 +89,11 @@ namespace FTDS
 			: FTDS::Array<TYPE>()
 			, mSize(0)
 		{
-			this->Reserve(1);
 		}
 
 		DynamicArray(size_t capacity)
 			: FTDS::Array<TYPE>(capacity)
 			, mSize(0)
-		{
-		}
-
-		virtual ~DynamicArray()
 		{
 		}
 

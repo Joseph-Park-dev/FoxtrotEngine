@@ -1,5 +1,5 @@
 #pragma once
-#include "Array.h"
+#include <Dynamic/DynamicArray.h>
 
 namespace FTDS
 {
@@ -9,7 +9,7 @@ namespace FTDS
 
 #define STRING_INPUT std::enable_if<std::is_same<T, const char*>::value, void>::type
 
-	class String : public FTDS::Array<char>
+	class String : public FTDS::DynamicArray<char>
 	{
 		////////////////////////////////
 		/// String utility functions ///
@@ -56,25 +56,21 @@ namespace FTDS
 		void Append(const char* val)
 		{
 			size_t inputLength = FTDS::StrLen(val);
-			char*  str		   = FTDS::StrCat(mData, val);
-			this->Assign(str);
-			delete[] str;
+			size_t newCapacity = this->mLength + inputLength + 1;
+
+			this->Reserve(newCapacity);
+			strcpy_s(&this->mData[mLength], sizeof(char) * inputLength + 1, val);
+			this->mLength += inputLength;
 		}
 
 		void Append(FTDS::String& val)
 		{
-			size_t inputLength = FTDS::StrLen(val.C_Str());
-			char*  str		   = FTDS::StrCat(mData, val.C_Str());
-			this->Assign(str);
-			delete[] str;
+			this->Append(val.C_Str());
 		}
 
 		void Append(const FTDS::String& val)
 		{
-			size_t inputLength = FTDS::StrLen(val.mData);
-			char*  str		   = FTDS::StrCat(mData, val.mData);
-			this->Assign(str);
-			delete[] str;
+			this->Append(val.C_Str());
 		}
 
 		void SubStr(FTDS::String& result, size_t start, size_t length)
@@ -111,16 +107,11 @@ namespace FTDS
 
 		void Assign(const char* val)
 		{
-			size_t inputLen = StrLen(val);
-			mLength			= inputLen;
-			this->Reserve(inputLen + 1);
+			size_t inputLength = StrLen(val);
+			this->Reserve(inputLength + 1);
 
-			while (0 < inputLen)
-			{
-				--inputLen;
-				this->mData[inputLen] = val[inputLen];
-			}
-			this->mData[mLength] = '\0';
+			strcpy_s(this->mData, sizeof(char) * inputLength + 1, val);
+			this->mLength = inputLength;
 		}
 
 		void Assign(FTDS::String& val)
@@ -128,39 +119,40 @@ namespace FTDS
 			Assign(val.C_Str());
 		}
 
-		template <typename T, typename... Args>
-		typename STRING_INPUT Assign(T first, Args... rest)
-		{
-			this->Assign(first);
-			((this->Append(rest), ...));
-		}
-
-		void ExtractUntilFirst(FTDS::String& result, const char* ch)
+		int ExtractUntilFirst(FTDS::String& result, const char* ch, bool trim = false)
 		{
 			int end = LFind(ch);
-			if (end != -1)
-				SubStr(result, 0, end);
+			if (end == -1)
+				return end;
+			SubStr(result, 0, end);
+
+			if (trim)
+				SubStr(result.Length(), this->Length());
+			return end;
 		}
 
 		void ExtractUntilLast(FTDS::String& result, const char* ch)
 		{
 			int end = RFind(ch);
-			if(end != -1)
-				SubStr(result, 0, end);
+			if (end == -1)
+				return;
+			SubStr(result, 0, end);
 		}
 
 		void ExtractFromLast(FTDS::String& result, const char* ch)
 		{
 			int end = RFind(ch);
-			if (end != -1)
-				SubStr(result, end + 1, mLength);
+			if (end == -1)
+				return;
+			SubStr(result, end + 1, mLength);
 		}
 
 		void ExtractFromLast(const char* ch)
 		{
 			int end = RFind(ch);
-			if (end != -1)
-				SubStr(end + 1, mLength);
+			if (end == -1)
+				return;
+			SubStr(end + 1, mLength);
 		}
 
 		void ExtractBracketedVal(FTDS::String& result, const char* left, const char* right)
@@ -191,6 +183,15 @@ namespace FTDS
 			return -1 < RFind(value);
 		}
 
+		void Split(const char* splitVal, FTDS::DynamicArray<FTDS::String*>& result)
+		{
+			FTDS::DynamicArray<FTDS::String> bufArr;
+			FTDS::String					 bufStr;
+
+			while (-1 < ExtractUntilFirst(bufStr, splitVal, true))
+				bufArr.PushBack(bufStr);
+		}
+
 		/////////////////////////
 		/// String Properties ///
 		/////////////////////////
@@ -208,6 +209,11 @@ namespace FTDS
 			return wstr; // Remember to delete[] wstr after use
 		}
 
+		void AssignToWStr(wchar_t* wstr, size_t length)
+		{
+			MultiByteToWideChar(CP_UTF8, 0, mData, -1, wstr, length);
+		}
+
 		const size_t Length() const { return mLength; }
 		void		 SetLength(size_t len) { mLength = len; }
 
@@ -216,16 +222,6 @@ namespace FTDS
 		//////////////////////////
 		/// Operator Overloads ///
 		//////////////////////////
-		void operator=(const char* val)
-		{
-			Assign(val);
-		}
-
-		void operator=(const FTDS::String& str)
-		{
-			this->Assign(str.C_Str());
-		}
-
 		FTDS::String operator+(const char* str)
 		{
 			FTDS::String result(mData);
@@ -249,41 +245,41 @@ namespace FTDS
 
 	public:
 		String()
-			: FTDS::Array<char>()
+			: FTDS::DynamicArray<char>()
 			, mLength(0)
 		{
 		}
 
 		String(char* val)
-			: FTDS::Array<char>()
+			: FTDS::DynamicArray<char>()
 			, mLength(0)
 		{
 			Assign(val);
 		}
 
 		String(const char* val)
-			: FTDS::Array<char>()
+			: FTDS::DynamicArray<char>()
 			, mLength(0)
 		{
 			Assign(val);
 		}
 
 		String(FTDS::String& val)
-			: FTDS::Array<char>()
+			: FTDS::DynamicArray<char>()
 			, mLength(val.Length())
 		{
 			Assign(val.C_Str());
 		}
 
 		String(const FTDS::String& val)
-			: FTDS::Array<char>()
+			: FTDS::DynamicArray<char>()
 			, mLength(val.Length())
 		{
 			Assign(val.C_Str());
 		}
 
 		String(size_t num, char val)
-			: FTDS::Array<char>()
+			: FTDS::DynamicArray<char>()
 			, mLength(num)
 		{
 			Reserve(num + 1);
@@ -311,9 +307,7 @@ namespace FTDS
 	{
 		size_t length = 0;
 		while (str[length] != '\0')
-		{
 			++length;
-		}
 		return length;
 	}
 

@@ -17,6 +17,7 @@
 
 #include "EditorChunkLoader.h"
 #include "DirectoryHelper.h"
+#include "EditorUtils.h"
 
 #include "Utils/StrAssign.h"
 #include "Static/FTString.h"
@@ -245,311 +246,31 @@ void EditorResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)
 	LoadDummyResource<FTTexture>(ifs, GetTextures(), desc.first);
 }
 
-// std::unordered_map<FTDS::String, FTTexture*>& EditorResourceManager::GetTexturesMap()
-//{
-//	return mMapTextures;
-// }
-//
-// std::unordered_map<FTDS::String, FTTileMap*>& EditorResourceManager::GetTileMapsMap()
-//{
-//	return mMapTileMaps;
-// }
-//
-// std::unordered_map<FTDS::String, FTSpriteSheet*>& EditorResourceManager::GetSpriteSheetsMap()
-//{
-//	return mMapSpriteSheets;
-// }
-//
-// std::unordered_map<FTDS::String, FTSpriteAnimation*>& EditorResourceManager::GetSpriteAnimMap()
-//{
-//	return mMapSpriteAnimation;
-// }
-//
-// std::unordered_map<FTDS::String, FTBasicMeshGroup*>& EditorResourceManager::GetMeshGroupsMap()
-//{
-//	return mMapMeshGroups;
-// }
-//
-// std::unordered_map<FTDS::String, FTVertexShader*>& EditorResourceManager::GetVertexShadersMap()
-//{
-//	return mMapVertexShaders;
-// }
-//
-// std::unordered_map<FTDS::String, FTPixelShader*>& EditorResourceManager::GetPixelShadersMap()
-//{
-//	return mMapPixelShaders;
-// }
-//
-// std::unordered_map<FTDS::String, FTMaterial*>& EditorResourceManager::GetMapMaterials()
-//{
-//	return mMapMaterials;
-// }
-//
-// std::unordered_map<FTDS::String, FTCSV*>& EditorResourceManager::GetMapCSVs()
-//{
-//	return mMapCSVs;
-// }
-//
-// std::unordered_map<FTDS::String, FTJSON*>& EditorResourceManager::GetMapJSONs()
-//{
-//	return mMapJSONs;
-// }
-//
-// FTTexture* EditorResourceManager::GetLoadedTexture(FTDS::String key)
-//{
-//	FTTexture* ptTex = mMapTextures.at(key);
-//	if (!ptTex)
-//		printf("Error: Unable to find FTTexture with key; %s\n", key);
-//	ptTex->AddRefCount();
-//	return ptTex;
-// }
-//
-// FTTileMap* EditorResourceManager::GetLoadedTileMap(FTDS::String key)
-//{
-//	FTTileMap* tileMap = mMapTileMaps.at(key);
-//	if (!tileMap)
-//	{
-//		printf("Error: EditorResourceManager::GetLoadedTileMap() -> FTTileMap is empty %s\n", key);
-//		return nullptr;
-//	}
-//
-//	tileMap->AddRefCount();
-//	return tileMap;
-// }
-//
-// FTSpriteSheet* EditorResourceManager::GetLoadedSpriteSheet(FTDS::String key)
-//{
-//	if(mMapSpriteSheets.find(key) == mMapSpriteSheets.end())
-//		return nullptr;
-//
-//	FTSpriteSheet* spriteSheet = mMapSpriteSheets.at(key);
-//	if (!spriteSheet)
-//	{
-//		printf("Error: EditorResourceManager::GetLoadedTileMap() -> FTSpriteSheet is empty %s\n", key);
-//		return nullptr;
-//	}
-//	spriteSheet->AddRefCount();
-//	return spriteSheet;
-// }
-//
-// FTPremade* EditorResourceManager::GetLoadedPremade(FTDS::String key)
-//{
-//	FTPremade* premade = mMapPremades.at(key);
-//	if (!premade)
-//		printf("Error: EditorResourceManager::GetLoadedPremade() -> FTPremade is empty %s\n", key);
-//	premade->AddRefCount();
-//	return premade;
-// }
-//
-// FTPixelShader* EditorResourceManager::GetLoadedPixelShader(FTDS::String key)
-//{
-//	FTPixelShader* shader = mMapPixelShaders.at(key);
-//	if (!shader)
-//		Debug::LogError(__LINE__, __FILE__, "FTMaterial is empty");
-//	shader->AddRefCount();
-//	return shader;
-// }
-//
-// FTMaterial* EditorResourceManager::GetLoadedMaterial(FTDS::String key)
-//{
-//	FTMaterial* material = mMapMaterials.at(key);
-//	if (!material)
-//		Debug::LogError(__LINE__, __FILE__, "FTMaterial is empty");
-//	material->AddRefCount();
-//	return material;
-// }
-//
-// FTBasicMeshGroup* EditorResourceManager::GetLoadedMesh(FTDS::String key)
-//{
-//	FTBasicMeshGroup* meshGrp = mMapMeshGroups.at(key);
-//	if (meshGrp)
-//	{
-//		mMapMeshGroups.at(key)->AddRefCount();
-//		return meshGrp;
-//	}
-//	printf("Error: EditorResourceManager::GetLoadedMeshes() -> Mesh is empty %s\n", key);
-//	return nullptr;
-// }
-//
-// FTSpriteAnimation* EditorResourceManager::GetLoadedSpriteAnim(FTDS::String key)
-//{
-//	FTSpriteAnimation* spriteAnim = mMapSpriteAnimation.at(key);
-//	if (spriteAnim)
-//	{
-//		spriteAnim->AddRefCount();
-//		return spriteAnim;
-//	}
-//	Debug::LogError(__LINE__, __FILE__, "Null animation");
-//	return nullptr;
-// }
-//
-// FTCSV* EditorResourceManager::GetLoadedCSV(FTDS::String key)
-//{
-//	FTCSV* csv = mMapCSVs.at(key);
-//	if (!csv)
-//		Debug::LogError(__LINE__, __FILE__, "Failed to load FTCSV");
-//	csv->AddRefCount();
-//	return csv;
-// }
-//
-// FTJSON* EditorResourceManager::GetLoadedJSON(FTDS::String key)
-//{
-//	FTJSON* json = mMapJSONs.at(key);
-//	if (!json)
-//		Debug::LogError(__LINE__, __FILE__, "Failed to load FTJSON");
-//	json->AddRefCount();
-//	return json;
-// }
-
 void EditorResourceManager::UpdateUI()
 {
-	/*if (ImGui::Button("Import"))
+	if (ImGui::Button("Import"))
 	{
-		IGFD::FileDialogConfig config;
-		config.path				 = ".";
-		config.countSelectionMax = 1;
+		FTDS::DynamicArray<FTDS::String*> importedFileNames;
+		FTEditorUtils::DisplayOpenFileDialog(*mFileTypeSpecs->Data(), &importedFileNames);
 
-		FTDS::String supportedFormat =
-			FileTypes::TEXTURE + FTDS::String(", ") + FileTypes::TILEMAP + FTDS::String(", ") + FileTypes::PREMADE;
-
-		ImGuiFileDialog::Instance()->OpenDialog("SelectFile", "Select File", supportedFormat.c_str(), config);
-		ImGui::OpenPopup("Select File");
-	}
-	if (ImGuiFileDialog::Instance()->Display("SelectFile"))
-	{
-		if (ImGuiFileDialog::Instance()->IsOk())
-		{
-			FTDS::String path	   = ImGuiFileDialog::Instance()->GetFilePathName().c_str();
-			size_t		 pos	   = path.RFind(".");
-			path.SubStr(pos, path.Length() - pos);
-
-			if (StrContains(FileTypes::TEXTURE, path))
-			{
-				FTDS::String relativePath;
-				path.SubStr(path.RFind("Assets"));
-				FTTexture*	 texture	  = LoadResource<FTTexture>(relativePath, mMapTextures);
-				ProcessTexture(texture);
-			}
-			else if (StrContains(FileTypes::TILEMAP, extension))
-			{
-				FTDS::String relativePath = path.substr(path.rfind("Assets"));
-				FTTileMap*	 tileMap	  = LoadResource<FTTileMap>(relativePath, mMapTileMaps);
-			}
-			else if (StrContains(FileTypes::PREMADE, extension))
-			{
-				FTDS::String relativePath = path.substr(path.rfind("Assets"));
-				FTPremade*	 premade	  = LoadResource<FTPremade>(relativePath, mMapPremades);
-				premade->Load();
-			}
-		}
-		ImGuiFileDialog::Instance()->Close();
+		for (size_t i = 0; i < importedFileNames.GetSize(); ++i)
+			LoadResByType((*importedFileNames.At(i)).C_Str());
 	}
 
-	if (ImGui::TreeNode("Textures"))
-	{
-		std::unordered_map<FTDS::String, FTTexture*>::const_iterator texIter;
-		texIter = mMapTextures.begin();
-		for (texIter = mMapTextures.begin(); texIter != mMapTextures.end(); ++texIter)
-		{
-			if ((*texIter).second)
-			{
-				if (ImGui::BeginListBox((*texIter).second->FileName().c_str(), ImVec2(-FLT_MIN, 200)))
-				{
-					(*texIter).second->UpdateUI();
-					if (ImGui::Button("Remove"))
-					{
-						RemoveResource<FTTexture>((*texIter).first, mMapTextures);
-						ImGui::EndListBox();
-						break;
-					}
-					ImGui::EndListBox();
-				}
-			}
-		}
-		ImGui::TreePop();
-	}
-
-	if (ImGui::TreeNode("TileMaps"))
-	{
-		std::unordered_map<FTDS::String, FTTileMap*>::const_iterator tileIter;
-		tileIter = mMapTileMaps.begin();
-		for (; tileIter != mMapTileMaps.end(); ++tileIter)
-		{
-			if ((*tileIter).second)
-			{
-				if (ImGui::BeginListBox((*tileIter).second->FileName().c_str(), ImVec2(-FLT_MIN, 200)))
-				{
-					(*tileIter).second->UpdateUI();
-					if (ImGui::Button("Remove"))
-					{
-						RemoveResource<FTTileMap>((*tileIter).first, mMapTileMaps);
-						ImGui::EndListBox();
-						break;
-					}
-					ImGui::EndListBox();
-				}
-			}
-		}
-		ImGui::TreePop();
-	}
-
-	if (ImGui::TreeNode("Premades"))
-	{
-		std::unordered_map<FTDS::String, FTPremade*>::const_iterator premadeIter;
-		premadeIter = mMapPremades.begin();
-		for (; premadeIter != mMapPremades.end(); ++premadeIter)
-		{
-			if ((*premadeIter).second)
-			{
-				if (ImGui::BeginListBox((*premadeIter).second->FileName().c_str(), ImVec2(-FLT_MIN, 100)))
-				{
-					(*premadeIter).second->UpdateUI();
-					if (ImGui::Button("Remove"))
-					{
-						RemoveResource<FTPremade>((*premadeIter).first, mMapPremades);
-						ImGui::EndListBox();
-						break;
-					}
-					ImGui::EndListBox();
-				}
-			}
-		}
-		ImGui::TreePop();
-	}
-
-	if (ImGui::TreeNode("Materials"))
-	{
-		std::unordered_map<FTDS::String, FTMaterial*>::const_iterator materialIter;
-		materialIter = mMapMaterials.begin();
-		for (; materialIter != mMapMaterials.end(); ++materialIter)
-		{
-			if (ImGui::BeginListBox((*materialIter).second->FileName().c_str(), ImVec2(-FLT_MIN, 100)))
-			{
-				(*materialIter).second->UpdateUI();
-				if (ImGui::Button("Remove"))
-				{
-					RemoveResource<FTMaterial>((*materialIter).first, mMapMaterials);
-					ImGui::EndListBox();
-					break;
-				}
-				ImGui::EndListBox();
-			}
-		}
-		ImGui::TreePop();
-	}*/
-
-	if (ImGui::TreeNode("Vertex Shaders"))
-	{
-		GetVertexShaders()->IterateAllValues(
-			[&](FTVertexShader* res) {
-				if (ImGui::BeginListBox(res->FileName().C_Str()))
-				{
-					res->UpdateUI();
-					ImGui::EndListBox();
-				}
-			});
-		ImGui::TreePop();
-	}
+	DisplayLoadedResources<FTTexture>("Textures", GetTextures());
+	DisplayLoadedResources<FTTileMap>("Tilemaps", GetTileMaps());
+	DisplayLoadedResources<FTSpriteSheet>("SpriteSheets", GetSpriteSheets());
+	DisplayLoadedResources<FTPremade>("Premades", GetPremades());
+	DisplayLoadedResources<FTVertexShader>("Vertex Shaders", GetVertexShaders());
+	DisplayLoadedResources<FTPixelShader>("Pixel Shaders", GetPixelShaders());
+	DisplayLoadedResources<FTMaterial>("Materials", GetMaterials());
+	DisplayLoadedResources<FTBasicMeshGroup>("MeshGroups", GetMeshGroups());
+	DisplayLoadedResources<FTSpriteAnimation>("Sprite Animations", GetSpriteAnimations());
+	DisplayLoadedResources<FTSpineAnimation>("Spine Animations", GetSpineAnimations());
+	DisplayLoadedResources<Sound>("Sounds", GetSounds());
+	DisplayLoadedResources<FTCSV>("CSVs", GetCSVs());
+	DisplayLoadedResources<FTJSON>("JSONs", GetJSONs());
+	DisplayLoadedResources<FTText>("Texts", GetTexts());
 }
 
 ResType EditorResourceManager::GetResType(FTDS::String& fileName)
@@ -598,9 +319,32 @@ ResType EditorResourceManager::GetResType(FTDS::String& fileName)
 }
 
 EditorResourceManager::EditorResourceManager()
+	: mFileTypeSpecs(nullptr)
 {
+	mFileTypeSpecs = DBG_NEW FTDS::DynamicArray<COMDLG_FILTERSPEC*>;
+	mFileTypeSpecs->Reserve(FileTypes::MAX_RES_TYPE_COUNT);
+
+	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Premades", FileTypes::PREMADE);
+	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Textures", FileTypes::TEXTURE);
+	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"DDS Textures", FileTypes::DDS_TEXTURE);
+	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Tilemaps", FileTypes::TILEMAP);
+	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"SpriteSheets", FileTypes::SPRITE_SHEET);
+	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"CSVs", FileTypes::CSV);
+	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"JSONs", FileTypes::JSON);
+	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Texts", FileTypes::TEXT);
+	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Meshes", FileTypes::MESH);
+	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Sprite Animation", FileTypes::SPRITE_ANIMATION);
+	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Spine Animation", FileTypes::SPINE_ANIMATION);
+	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Vertex Shaders", FileTypes::VERTEX_SHADER);
+	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Pixel Shaders", FileTypes::PIXEL_SHADER);
+	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Materials", FileTypes::MATERIAL);
 }
 
 EditorResourceManager::~EditorResourceManager()
 {
+	//mFileTypeSpecs->ClearDynamicMem();
+	for (size_t i = 0; i < mFileTypeSpecs->GetSize(); ++i)
+		delete mFileTypeSpecs->At(i);
+
+	delete mFileTypeSpecs;
 }

@@ -22,7 +22,7 @@ public:
 
 public:
 	template <typename FTRESOURCE>
-	void SaveResourceToChunk(std::ofstream& ofs, FTDS::HashChainMap<FTRESOURCE*>* resArr)
+	void SaveResourceToChunk(std::ofstream& ofs, FTDS::HashMap<FTRESOURCE*>* resArr)
 	{
 		resArr->IterateAllValues([&](FTRESOURCE* res) {
 			if (res->IsReferenced())
@@ -45,7 +45,7 @@ private:
 public:
 	/// Template member functions for creating new resources & adding to resource map.
 	template <typename FTRESOURCE>
-	FTRESOURCE* LoadResource(FTDS::String& filePath, FTDS::HashChainMap<FTRESOURCE*>* resMap)
+	FTRESOURCE* LoadResource(FTDS::String& filePath, FTDS::HashMap<FTRESOURCE*>* resMap)
 	{
 		// Get Relative path to Assets folder
 		FTDS::String fileName = ExtractFileName(filePath.C_Str());
@@ -72,7 +72,7 @@ public:
 
 	// This is used to avoid additional resource loading in PassLoadResourceInChunk(ifs)
 	template <typename FTRESOURCE>
-	void LoadDummyResource(std::ifstream& ifs, FTDS::HashChainMap<FTRESOURCE*>* resMap, size_t& resCount)
+	void LoadDummyResource(std::ifstream& ifs, FTDS::HashMap<FTRESOURCE*>* resMap, size_t& resCount)
 	{
 		if (resCount < 1)
 			return;
@@ -86,7 +86,7 @@ public:
 			FileIOHelper::LoadBasicString(ifs, res->FileName());
 
 			assert(0 < resMap->Capacity());
-			resMap->Insert(res->FileName(), res);
+			//resMap->Insert(res->FileName(), res);
 			delete res;
 			--resCount; // Key of the next resource to be imported.
 		}
@@ -94,10 +94,13 @@ public:
 
 	// Add newly created resource from components (e.g FTSpriteAnimation)
 	template <typename FTRESOURCE>
-	void LoadResource(FTRESOURCE* res, FTDS::HashChainMap<FTRESOURCE*>* resMap)
+	void LoadResource(FTRESOURCE* res, FTDS::HashMap<FTRESOURCE*>* resMap)
 	{
 		resMap->Insert(res->FileName(), res);
 	}
+
+private:
+	FTDS::DynamicArray<COMDLG_FILTERSPEC*>* mFileTypeSpecs;
 
 	////////////////////////
 	// Removing resources //
@@ -120,7 +123,7 @@ private:
 	// }
 
 	template <typename FTRESOURCE>
-	void RemoveResource(FTDS::String key, FTDS::HashChainMap<FTRESOURCE*>* resMap)
+	void RemoveResource(FTDS::String key, FTDS::HashMap<FTRESOURCE*>* resMap)
 	{
 		resMap->Erase(key);
 		// printf("ERROR: ResourceManager::RemoveResource()->key %s does not exist", key);
@@ -131,36 +134,27 @@ private:
 	//////////////////////////
 private:
 	template <typename FTRESOURCE>
-	bool KeyExists(FTDS::String key, FTDS::HashChainMap<FTRESOURCE>* resMap)
+	bool KeyExists(FTDS::String key, FTDS::HashMap<FTRESOURCE>* resMap)
 	{
-		FTDS::RecordNode<FTRESOURCE>* res = nullptr;
+		FTDS::Record<FTRESOURCE>* res = nullptr;
 		res								  = resMap->At(key);
 		return res;
 	}
 
-	/*template <typename FTRESOURCE>
-	bool ResourceExists(const FTDS::String key, const FTDS::String path, const std::unordered_map<FTDS::String, FTRESOURCE>& resMap)
+	template <typename FTRESOURCE>
+	void DisplayLoadedResources(const char* label, FTDS::HashMap<FTRESOURCE*>* resMap)
 	{
-		if (0 < resMap.size())
+		if (ImGui::TreeNode(label))
 		{
-			if (!KeyExists(key, resMap))
-			{
-				auto iter = resMap.begin();
-				for (; iter != resMap.end(); ++iter)
-				{
-					if ((*iter).second)
+			resMap->IterateAllValues(
+				[&](FTRESOURCE* res) {
+					if (ImGui::TreeNode(res->FileName().C_Str()))
 					{
-						if ((*iter).second->GetRelativePath() == path)
-						{
-							printf("Error: ResourceManager::ResourceExists() -> Resource with path %s exists\n", path.c_str());
-							return true;
-						}
+						res->UpdateUI();
+						ImGui::TreePop();
 					}
-				}
-				return false;
-			}
-			return false;
+				});
+			ImGui::TreePop();
 		}
-		return false;
-	}*/
+	}
 };

@@ -239,7 +239,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>.\include;.\include\SoLoud\include;.\include\spine-cpp\include;.\src;..\FoxtrotDS;..\FoxtrotMath\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\include;.\include\SoLoud\include;.\include\spine-cpp\include\spine;.\src;..\FoxtrotDS;..\FoxtrotMath\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -462,12 +462,7 @@
     <ClInclude Include="src\Components\SpineAnimator.h" />
     <ClInclude Include="src\ResourceSystem\GenericData\FTText.h" />
     <ClInclude Include="include\assimp\res\assimp\revision.h" />
-    <ClInclude Include="include\box2d\base.h" />
     <ClInclude Include="include\box2d\box2d.h" />
-    <ClInclude Include="include\box2d\collision.h" />
-    <ClInclude Include="include\box2d\id.h" />
-    <ClInclude Include="include\box2d\math_functions.h" />
-    <ClInclude Include="include\box2d\types.h" />
     <ClInclude Include="include\directxmath\DirectXCollision.h" />
     <ClInclude Include="include\directxmath\DirectXColors.h" />
     <ClInclude Include="include\directxmath\DirectXMath.h" />

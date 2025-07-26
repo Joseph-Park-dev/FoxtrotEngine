@@ -7,7 +7,8 @@ namespace FTDS
 	class Record
 	{
 	public:
-		bool Equal(FTDS::String& key) { return key.Equal(mKey.C_Str()); }
+		bool Equal(FTDS::String&& key) { return mKey.Equal(key.C_Str()); }
+		bool Equal(const char* key) { return mKey.Equal(std::move(key)); }
 
 	public:
 		FTDS::String& Key() { return mKey; }

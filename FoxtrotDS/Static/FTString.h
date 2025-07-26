@@ -47,7 +47,7 @@ namespace FTDS
 			{
 				FTDS::String query;
 				this->SubStr(query, i, targetLen);
-				if (query.Equal(target))
+				if (query.Equal(std::move(target)))
 					return i; // Found last occurrence
 			}
 			return -1; // Not found
@@ -59,7 +59,7 @@ namespace FTDS
 			size_t newCapacity = this->mLength + inputLength + 1;
 
 			this->Reserve(newCapacity);
-			strcpy_s(&this->mData[mLength], sizeof(char) * inputLength + 1, val);
+			memcpy_s(&this->mData[mLength], sizeof(char) * inputLength + 1, val, sizeof(char) * inputLength + 1);
 			this->mLength += inputLength;
 		}
 
@@ -118,7 +118,7 @@ namespace FTDS
 		{
 			Assign(val.C_Str());
 		}
-		
+
 		template <typename T, typename... Args>
 		typename STRING_INPUT Assign(T first, Args... rest)
 		{
@@ -134,7 +134,10 @@ namespace FTDS
 			SubStr(result, 0, end);
 
 			if (trim)
-				SubStr(result.Length(), this->Length());
+			{
+				size_t start = result.Length() + StrLen(ch);
+				SubStr(*this, start, this->Length() - start);
+			}
 			return end;
 		}
 
@@ -190,13 +193,14 @@ namespace FTDS
 			return -1 < RFind(value);
 		}
 
-		void Split(const char* splitVal, FTDS::DynamicArray<FTDS::String*>& result)
+		inline void Split(const char* splitVal, FTDS::DynamicArray<FTDS::String>& result)
 		{
-			FTDS::DynamicArray<FTDS::String> bufArr;
-			FTDS::String					 bufStr;
-
+			FTDS::String bufStr;
 			while (-1 < ExtractUntilFirst(bufStr, splitVal, true))
-				bufArr.PushBack(bufStr);
+			{
+				result.PushBack(bufStr.C_Str());
+				bufStr.Clear();
+			}
 		}
 
 		/////////////////////////
@@ -226,9 +230,25 @@ namespace FTDS
 
 		bool IsEmpty() { return mLength == 0 || !mData; }
 
+		// Print this string on CMD.
+		void CMDPrint()
+		{
+			printf("%s \n", this->mData);
+		}
+
 		//////////////////////////
 		/// Operator Overloads ///
 		//////////////////////////
+		void operator=(const char* str)
+		{
+			this->Assign(str);
+		}
+
+		void operator=(const FTDS::String& str)
+		{
+			this->Assign(str.C_Str());
+		}
+
 		FTDS::String operator+(const char* str)
 		{
 			FTDS::String result(mData);
@@ -273,14 +293,14 @@ namespace FTDS
 
 		String(FTDS::String& val)
 			: FTDS::DynamicArray<char>()
-			, mLength(val.Length())
+			, mLength(0)
 		{
 			Assign(val.C_Str());
 		}
 
 		String(const FTDS::String& val)
 			: FTDS::DynamicArray<char>()
-			, mLength(val.Length())
+			, mLength(0)
 		{
 			Assign(val.C_Str());
 		}
@@ -295,9 +315,53 @@ namespace FTDS
 			this->mData[mLength] = '\0';
 		}
 
+		void Clear() override
+		{
+			FTDS::Array<char>::Clear();
+			mLength = 0;
+		}
+
 	private:
 		size_t mLength;
 	};
+
+	template <>
+	inline void FTDS::Array<FTDS::String>::AllocateMem(size_t newCap)
+	{
+		// Create an array with renewed capacity.
+		FTDS::String* newArr = DBG_NEW FTDS::String[newCap];
+		// memset(newArr, NULL, sizeof(FTDS::String) * newCap);
+
+		// Calculate memory size to be copied.
+		// size_t destSize	   = sizeof(FTDS::String) * newCap;
+		// size_t copiedSize  = sizeof(FTDS::String) * copiedCount;
+
+		// Copy previous data.
+		for (size_t i = 0; i < mCapacity; ++i)
+			if (!this->mData[i].IsEmpty())
+				newArr[i].Assign(this->mData[i]);
+
+		delete[] mData;
+
+		// Set new array as current data.
+		mData = newArr;
+		// Set new capacity.
+		mCapacity = newCap;
+	}
+
+	template <>
+	inline void FTDS::DynamicArray<const char*>::PushBack(const char* value)
+	{
+		++mSize;
+		if (this->mCapacity <= mSize)
+		{
+			// Grow the array by double.
+			FTDS::Array<const char*>::AllocateMem(mSize * 2);
+		}
+
+		// Assign the value.
+		this->At(mSize - 1) = value;
+	}
 
 	inline bool StrContains(const char* str, const char* val)
 	{
@@ -320,14 +384,15 @@ namespace FTDS
 
 	inline bool StringEqual(const char* left, const char* right)
 	{
-		size_t length = FTDS::StrLen(left);
 		// The size of two strings are not equal.
-		if (length != FTDS::StrLen(right))
-			return false;
-		for (size_t i = 0; i < length; ++i)
+		size_t i = 0;
+		while (left[i] != '\0')
+		{
 			if (left[i] != right[i])
-				return false;
-		return true;
+				break;
+			++i;
+		}
+		return right[i] == '\0';
 	}
 
 	inline char* StrCat(const char* str1, const char* str2)
@@ -362,12 +427,12 @@ namespace FTDS
 
 	inline bool operator==(const FTDS::String& lhs, const char* rhs)
 	{
-		return lhs.Equal(rhs);
+		return lhs.Equal(std::move(rhs));
 	}
 
 	inline bool operator==(const char* lhs, const FTDS::String& rhs)
 	{
-		return rhs.Equal(lhs);
+		return rhs.Equal(std::move(lhs));
 	}
 
 	inline bool operator==(const FTDS::String lhs, const FTDS::String& rhs)

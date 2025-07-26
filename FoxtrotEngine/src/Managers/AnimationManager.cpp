@@ -57,7 +57,7 @@ void AnimationManager::UpdateUI(bool* opened)
 	{
 		CreateAnimation();
 
-		FTDS::HashChainMap<FTSpriteAnimation*>* map =
+		FTDS::HashMap<FTSpriteAnimation*>* map =
 			EditorResourceManager::GetInstance()->GetSpriteAnimations();
 		auto iter = map->Begin();
 
@@ -81,7 +81,7 @@ void AnimationManager::UpdateUI(bool* opened)
 			ImGui::TreePop();
 		}
 
-		FTDS::HashChainMap<FTSpineAnimation*>* spineAnimMap =
+		FTDS::HashMap<FTSpineAnimation*>* spineAnimMap =
 			EditorResourceManager::GetInstance()->GetSpineAnimations();
 
 		if (ImGui::TreeNode("Loaded Spine Animations"))

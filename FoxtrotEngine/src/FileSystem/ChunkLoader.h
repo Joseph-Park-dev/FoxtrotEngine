@@ -26,7 +26,7 @@
 #include "Math/FTMath.h"
 #include "Core/FTCore.h"
 
-#include "Static/HashChainMap.h"
+#include "Static/HashMap.h"
 
 class Transform;
 class Actor;
@@ -34,7 +34,7 @@ class Component;
 class Scene;
 
 using ComponentLoadFunc = std::function<void(Actor*, std::ifstream&)>;
-using ComponentLoadMap	= FTDS::HashChainMap<ComponentLoadFunc>;
+using ComponentLoadMap	= FTDS::HashMap<ComponentLoadFunc>;
 
 struct ChunkData
 {

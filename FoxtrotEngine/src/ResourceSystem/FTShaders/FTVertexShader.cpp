@@ -49,7 +49,7 @@ void FTVertexShader::RegisterInputElementDesc(const char* semanticName, UINT& of
 FTVertexShader::FTVertexShader()
 	: FTShader()
 #ifdef FOXTROT_EDITOR
-	, mSemanticsInclusion(DBG_NEW FTDS::HashChainMap<bool>(5))
+	, mSemanticsInclusion(DBG_NEW FTDS::HashMap<bool>(5))
 #endif // FOXTROT_EDITOR
 {
 	SetType(ShaderType::VERTEX_SHADER);

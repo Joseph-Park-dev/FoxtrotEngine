@@ -160,6 +160,19 @@ extern "C"
 
 			return DirectX::SimpleMath::Vector3(roll, pitch, yaw);
 		}
+
+		inline size_t NextPowerOf2(int m)
+		{
+			m--;
+			m |= m >> 1;
+			m |= m >> 2;
+			m |= m >> 4;
+			m |= m >> 8;
+			m |= m >> 16;
+			m |= m >> 32;
+			m++;
+			return m;
+		}
 	} // namespace Math
 }
 
@@ -391,6 +404,12 @@ public:
 
 	// Vector addition (a + b)
 	friend FTVector2 operator+(const FTVector2& a, const FTVector2& b)
+	{
+		return FTVector2(a.x + b.x, a.y + b.y);
+	}
+
+	// Vector addition (a + b)
+	friend FTVector2 operator+(const FTVector2& a, const FTVector3& b)
 	{
 		return FTVector2(a.x + b.x, a.y + b.y);
 	}

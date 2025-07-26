@@ -84,6 +84,8 @@ namespace FTDS
 		const size_t& GetSize() const { return mSize; }
 		bool		  IsEmpty() { return mSize == 0; }
 
+		size_t& Size() { return mSize; }
+
 	public:
 		DynamicArray()
 			: FTDS::Array<TYPE>()

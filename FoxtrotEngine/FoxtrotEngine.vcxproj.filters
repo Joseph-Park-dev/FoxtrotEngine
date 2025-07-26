@@ -2666,22 +2666,7 @@
     <ClInclude Include="include\assimp\res\assimp\revision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\box2d\base.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\box2d\box2d.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\box2d\collision.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\box2d\id.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\box2d\math_functions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\box2d\types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\directxmath\DirectXCollision.h">

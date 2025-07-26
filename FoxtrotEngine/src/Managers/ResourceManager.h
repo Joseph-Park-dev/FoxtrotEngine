@@ -27,7 +27,7 @@
 #include "FileSystem/FileTypes.h"
 #include "FileSystem/FileIOHelper.h"
 
-#include "Static/HashChainMap.h"
+#include "Static/HashMap.h"
 #include "Static/FTString.h"
 
 #ifdef FOXTROT_EDITOR
@@ -111,20 +111,20 @@ public:
 	void RelativeToAbsolutePath(FTResource* res);
 
 public:
-	FTDS::HashChainMap<FTTexture*>*			GetTextures();
-	FTDS::HashChainMap<FTTileMap*>*			GetTileMaps();
-	FTDS::HashChainMap<FTSpriteSheet*>*		GetSpriteSheets();
-	FTDS::HashChainMap<FTPremade*>*			GetPremades();
-	FTDS::HashChainMap<FTVertexShader*>*	GetVertexShaders();
-	FTDS::HashChainMap<FTPixelShader*>*		GetPixelShaders();
-	FTDS::HashChainMap<FTMaterial*>*		GetMaterials();
-	FTDS::HashChainMap<FTBasicMeshGroup*>*	GetMeshGroups();
-	FTDS::HashChainMap<FTSpriteAnimation*>* GetSpriteAnimations();
-	FTDS::HashChainMap<FTSpineAnimation*>*	GetSpineAnimations();
-	FTDS::HashChainMap<Sound*>*				GetSounds();
-	FTDS::HashChainMap<FTCSV*>*				GetCSVs();
-	FTDS::HashChainMap<FTJSON*>*			GetJSONs();
-	FTDS::HashChainMap<FTText*>*			GetTexts();
+	FTDS::HashMap<FTTexture*>*			GetTextures();
+	FTDS::HashMap<FTTileMap*>*			GetTileMaps();
+	FTDS::HashMap<FTSpriteSheet*>*		GetSpriteSheets();
+	FTDS::HashMap<FTPremade*>*			GetPremades();
+	FTDS::HashMap<FTVertexShader*>*	GetVertexShaders();
+	FTDS::HashMap<FTPixelShader*>*		GetPixelShaders();
+	FTDS::HashMap<FTMaterial*>*		GetMaterials();
+	FTDS::HashMap<FTBasicMeshGroup*>*	GetMeshGroups();
+	FTDS::HashMap<FTSpriteAnimation*>* GetSpriteAnimations();
+	FTDS::HashMap<FTSpineAnimation*>*	GetSpineAnimations();
+	FTDS::HashMap<Sound*>*				GetSounds();
+	FTDS::HashMap<FTCSV*>*				GetCSVs();
+	FTDS::HashMap<FTJSON*>*			GetJSONs();
+	FTDS::HashMap<FTText*>*			GetTexts();
 
 	///////////////////////////
 	// Save | Load resources //
@@ -133,7 +133,7 @@ public:
 	void SaveMaterialsToChunk(std::ofstream& ofs);
 
 	template <typename FTRESOURCE>
-	void LoadResourceFromChunk(std::ifstream& ifs, FTDS::HashChainMap<FTRESOURCE*>* resArr, size_t& resCount)
+	void LoadResourceFromChunk(std::ifstream& ifs, FTDS::HashMap<FTRESOURCE*>* resArr, size_t& resCount)
 	{
 		if (resCount < 1)
 			return;
@@ -166,33 +166,33 @@ private:
 	// Foxtrot resources//
 	//////////////////////
 private:
-	FTDS::HashChainMap<FTTexture*>*			mTextures;
-	FTDS::HashChainMap<FTTileMap*>*			mTileMaps;
-	FTDS::HashChainMap<FTSpriteSheet*>*		mSpriteSheets;
-	FTDS::HashChainMap<FTPremade*>*			mPremades;
-	FTDS::HashChainMap<FTSpriteAnimation*>* mSpriteAnimations;
-	FTDS::HashChainMap<FTSpineAnimation*>*	mSpineAnimations;
+	FTDS::HashMap<FTTexture*>*			mTextures;
+	FTDS::HashMap<FTTileMap*>*			mTileMaps;
+	FTDS::HashMap<FTSpriteSheet*>*		mSpriteSheets;
+	FTDS::HashMap<FTPremade*>*			mPremades;
+	FTDS::HashMap<FTSpriteAnimation*>* mSpriteAnimations;
+	FTDS::HashMap<FTSpineAnimation*>*	mSpineAnimations;
 
 	// A mesh group usually represents a 3D model.
-	FTDS::HashChainMap<FTBasicMeshGroup*>* mMeshGroups;
+	FTDS::HashMap<FTBasicMeshGroup*>* mMeshGroups;
 
-	FTDS::HashChainMap<FTVertexShader*>* mVertexShaders;
-	FTDS::HashChainMap<FTPixelShader*>*	 mPixelShaders;
-	FTDS::HashChainMap<FTMaterial*>*	 mMaterials;
+	FTDS::HashMap<FTVertexShader*>* mVertexShaders;
+	FTDS::HashMap<FTPixelShader*>*	 mPixelShaders;
+	FTDS::HashMap<FTMaterial*>*	 mMaterials;
 
-	FTDS::HashChainMap<Sound*>* mSounds;
+	FTDS::HashMap<Sound*>* mSounds;
 
 	////////////////////////////
 	// Generic-type resources //
 	////////////////////////////
 private:
-	FTDS::HashChainMap<FTCSV*>*	 mCSVs;
-	FTDS::HashChainMap<FTJSON*>* mJSONs;
-	FTDS::HashChainMap<FTText*>* mTexts;
+	FTDS::HashMap<FTCSV*>*	 mCSVs;
+	FTDS::HashMap<FTJSON*>* mJSONs;
+	FTDS::HashMap<FTText*>* mTexts;
 
 private:
 	template <typename FTRESOURCE>
-	void LoadResource(std::ifstream& ifs, FTDS::HashChainMap<FTRESOURCE*>* resMap)
+	void LoadResource(std::ifstream& ifs, FTDS::HashMap<FTRESOURCE*>* resMap)
 	{
 		FTRESOURCE* res = DBG_NEW FTRESOURCE;
 		FileIOHelper::BeginDataPackLoad(ifs);
@@ -204,7 +204,7 @@ private:
 	}
 
 	template <typename FTRESOURCE>
-	void ClearMap(FTDS::HashChainMap<FTRESOURCE>* resMap)
+	void ClearMap(FTDS::HashMap<FTRESOURCE>* resMap)
 	{
 		if (resMap)
 		{
@@ -219,13 +219,12 @@ private:
 						res = nullptr;
 					}
 				});
-			resMap->Clear();
 		}
 	}
 
 protected:
 	template <typename FTRESOURCE>
-	void ProcessResources(FTCore* coreInstance, FTDS::HashChainMap<FTRESOURCE*>* resMap)
+	void ProcessResources(FTCore* coreInstance, FTDS::HashMap<FTRESOURCE*>* resMap)
 	{
 		resMap->IterateAllValues(
 			[&](FTRESOURCE* res) {

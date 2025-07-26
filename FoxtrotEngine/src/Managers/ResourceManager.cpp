@@ -36,7 +36,7 @@
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
 
-#include "Static/HashChainMap.h"
+#include "Static/HashMap.h"
 #include "Compare/StringEqual.h"
 
 #ifdef FOXTROT_EDITOR
@@ -51,20 +51,20 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 {
 	mRenderer = renderer;
 
-	mTextures		  = DBG_NEW			FTDS::HashChainMap<FTTexture*>;
-	mTileMaps		  = DBG_NEW			FTDS::HashChainMap<FTTileMap*>;
-	mSpriteSheets	  = DBG_NEW		FTDS::HashChainMap<FTSpriteSheet*>;
-	mPremades		  = DBG_NEW			FTDS::HashChainMap<FTPremade*>;
-	mSpriteAnimations = DBG_NEW FTDS::HashChainMap<FTSpriteAnimation*>;
-	mSpineAnimations  = DBG_NEW	 FTDS::HashChainMap<FTSpineAnimation*>;
-	mMeshGroups		  = DBG_NEW		  FTDS::HashChainMap<FTBasicMeshGroup*>;
-	mVertexShaders	  = DBG_NEW	   FTDS::HashChainMap<FTVertexShader*>;
-	mPixelShaders	  = DBG_NEW		FTDS::HashChainMap<FTPixelShader*>;
-	mMaterials		  = DBG_NEW		   FTDS::HashChainMap<FTMaterial*>;
-	mSounds			  = DBG_NEW			  FTDS::HashChainMap<Sound*>;
-	mCSVs			  = DBG_NEW				FTDS::HashChainMap<FTCSV*>;
-	mJSONs			  = DBG_NEW			   FTDS::HashChainMap<FTJSON*>;
-	mTexts			  = DBG_NEW			   FTDS::HashChainMap<FTText*>;
+	mTextures		  = DBG_NEW			FTDS::HashMap<FTTexture*>;
+	mTileMaps		  = DBG_NEW			FTDS::HashMap<FTTileMap*>;
+	mSpriteSheets	  = DBG_NEW		FTDS::HashMap<FTSpriteSheet*>;
+	mPremades		  = DBG_NEW			FTDS::HashMap<FTPremade*>;
+	mSpriteAnimations = DBG_NEW FTDS::HashMap<FTSpriteAnimation*>;
+	mSpineAnimations  = DBG_NEW	 FTDS::HashMap<FTSpineAnimation*>;
+	mMeshGroups		  = DBG_NEW		  FTDS::HashMap<FTBasicMeshGroup*>;
+	mVertexShaders	  = DBG_NEW	   FTDS::HashMap<FTVertexShader*>;
+	mPixelShaders	  = DBG_NEW		FTDS::HashMap<FTPixelShader*>;
+	mMaterials		  = DBG_NEW		   FTDS::HashMap<FTMaterial*>;
+	mSounds			  = DBG_NEW			  FTDS::HashMap<Sound*>;
+	mCSVs			  = DBG_NEW				FTDS::HashMap<FTCSV*>;
+	mJSONs			  = DBG_NEW			   FTDS::HashMap<FTJSON*>;
+	mTexts			  = DBG_NEW			   FTDS::HashMap<FTText*>;
 }
 
 void ResourceManager::DeleteAll()
@@ -131,72 +131,72 @@ void ResourceManager::RelativeToAbsolutePath(FTResource* res)
 	res->SetRelativePath(result);
 }
 
-FTDS::HashChainMap<FTTexture*>* ResourceManager::GetTextures()
+FTDS::HashMap<FTTexture*>* ResourceManager::GetTextures()
 {
 	return mTextures;
 }
 
-FTDS::HashChainMap<FTTileMap*>* ResourceManager::GetTileMaps()
+FTDS::HashMap<FTTileMap*>* ResourceManager::GetTileMaps()
 {
 	return mTileMaps;
 }
 
-FTDS::HashChainMap<FTSpriteSheet*>* ResourceManager::GetSpriteSheets()
+FTDS::HashMap<FTSpriteSheet*>* ResourceManager::GetSpriteSheets()
 {
 	return mSpriteSheets;
 }
 
-FTDS::HashChainMap<FTPremade*>* ResourceManager::GetPremades()
+FTDS::HashMap<FTPremade*>* ResourceManager::GetPremades()
 {
 	return mPremades;
 }
 
-FTDS::HashChainMap<FTVertexShader*>* ResourceManager::GetVertexShaders()
+FTDS::HashMap<FTVertexShader*>* ResourceManager::GetVertexShaders()
 {
 	return mVertexShaders;
 }
 
-FTDS::HashChainMap<FTPixelShader*>* ResourceManager::GetPixelShaders()
+FTDS::HashMap<FTPixelShader*>* ResourceManager::GetPixelShaders()
 {
 	return mPixelShaders;
 }
 
-FTDS::HashChainMap<FTMaterial*>* ResourceManager::GetMaterials()
+FTDS::HashMap<FTMaterial*>* ResourceManager::GetMaterials()
 {
 	return mMaterials;
 }
 
-FTDS::HashChainMap<FTBasicMeshGroup*>* ResourceManager::GetMeshGroups()
+FTDS::HashMap<FTBasicMeshGroup*>* ResourceManager::GetMeshGroups()
 {
 	return mMeshGroups;
 }
 
-FTDS::HashChainMap<FTSpriteAnimation*>* ResourceManager::GetSpriteAnimations()
+FTDS::HashMap<FTSpriteAnimation*>* ResourceManager::GetSpriteAnimations()
 {
 	return mSpriteAnimations;
 }
 
-FTDS::HashChainMap<FTSpineAnimation*>* ResourceManager::GetSpineAnimations()
+FTDS::HashMap<FTSpineAnimation*>* ResourceManager::GetSpineAnimations()
 {
 	return mSpineAnimations;
 }
 
-FTDS::HashChainMap<Sound*>* ResourceManager::GetSounds()
+FTDS::HashMap<Sound*>* ResourceManager::GetSounds()
 {
 	return mSounds;
 }
 
-FTDS::HashChainMap<FTCSV*>* ResourceManager::GetCSVs()
+FTDS::HashMap<FTCSV*>* ResourceManager::GetCSVs()
 {
 	return mCSVs;
 }
 
-FTDS::HashChainMap<FTJSON*>* ResourceManager::GetJSONs()
+FTDS::HashMap<FTJSON*>* ResourceManager::GetJSONs()
 {
 	return mJSONs;
 }
 
-FTDS::HashChainMap<FTText*>* ResourceManager::GetTexts()
+FTDS::HashMap<FTText*>* ResourceManager::GetTexts()
 {
 	return mTexts;
 }

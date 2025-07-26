@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "Static/HashChainMap.h"
+#include "Static/HashMap.h"
 
 class FTVertexShader : public FTShader
 {
@@ -37,7 +37,7 @@ public:
 	void UpdateUI() override;
 
 private:
-	FTDS::HashChainMap<bool>* mSemanticsInclusion;
+	FTDS::HashMap<bool>* mSemanticsInclusion;
 #endif
 };
 

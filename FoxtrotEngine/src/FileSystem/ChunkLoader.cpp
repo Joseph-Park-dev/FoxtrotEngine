@@ -165,7 +165,7 @@ ChunkLoader::ChunkLoader()
 		{ "Flee", &Component::Load<Flee> },
 	};*/
 
-	mComponentLoadMap.Reserve(13);
+	mComponentLoadMap.Reserve(17);
 	mComponentLoadMap.Insert("AI", &Component::Load<AI>);
 	mComponentLoadMap.Insert("Animator", &Component::Load<Animator>);
 	mComponentLoadMap.Insert("BoxCollider2D", &Component::Load<BoxCollider2D>);

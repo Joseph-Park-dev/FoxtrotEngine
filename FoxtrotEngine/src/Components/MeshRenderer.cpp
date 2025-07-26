@@ -381,7 +381,7 @@ void MeshRenderer::UpdateSprite(FTDS::String& key)
 
 	if (ImGui::BeginPopupModal("Select Sprite", NULL, ImGuiWindowFlags_MenuBar))
 	{
-		FTDS::HashChainMap<FTTexture*>* texturesMap =
+		FTDS::HashMap<FTTexture*>* texturesMap =
 			EditorResourceManager::GetInstance()->GetTextures();
 		if (ImGui::TreeNode("Selection State: Single Selection"))
 		{

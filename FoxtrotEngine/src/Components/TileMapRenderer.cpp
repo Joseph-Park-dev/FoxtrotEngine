@@ -165,7 +165,7 @@ void TileMapRenderer::UpdateCSV()
 
 	if (ImGui::BeginPopupModal("Select .CSV", NULL, ImGuiWindowFlags_MenuBar))
 	{
-		FTDS::HashChainMap<FTTileMap*>* tileMapsMap =
+		FTDS::HashMap<FTTileMap*>* tileMapsMap =
 			EditorResourceManager::GetInstance()->GetTileMaps();
 		if (ImGui::TreeNode("Selection State: Single Selection"))
 		{
@@ -215,7 +215,7 @@ void TileMapRenderer::UpdateCSV(FTDS::String& key)
 
 	if (ImGui::BeginPopupModal("Select .CSV", NULL, ImGuiWindowFlags_MenuBar))
 	{
-		FTDS::HashChainMap<FTTileMap*>* tileMapsMap =
+		FTDS::HashMap<FTTileMap*>* tileMapsMap =
 			EditorResourceManager::GetInstance()->GetTileMaps();
 		if (ImGui::TreeNode("Selection State: Single Selection"))
 		{

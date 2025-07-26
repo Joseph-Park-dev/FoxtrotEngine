@@ -15,7 +15,9 @@
 #include "imgui/FileDialog/ImGuiFileDialog.h"
 #include "imgui/FileDialog/imfilebrowser.h"
 
-#include <future>
+#include <Windows.h>
+#include <shobjidl.h> // For IFileOpenDialog
+#include <ShellScalingApi.h>
 
 #include "EditorElement.h"
 #include "EditorSceneManager.h"
@@ -24,10 +26,66 @@
 #include "FileSystem/FileTypes.h"
 #include "FileSystem/NullKeys.h"
 
-#include "static/HashChainMap.h"
+#include "Dynamic/DynamicArray.h"
+#include "static/HashMap.h"
 
 namespace FTEditorUtils
 {
+	inline bool InitWinFileDialog()
+	{
+		SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+	}
+
+	inline void DisplayOpenFileDialog(const COMDLG_FILTERSPEC* fileTypes, FTDS::DynamicArray<FTDS::String*>* openFileNames)
+	{
+		IShellItemArray* pResults;
+		IFileOpenDialog* pFileOpen = nullptr;
+
+		// Create the FileOpenDialog object
+		HRESULT hr = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pFileOpen));
+		pFileOpen->SetFileTypes(GetArrayLength(fileTypes), fileTypes);
+
+		if (SUCCEEDED(hr))
+		{
+			// Set options: allow multi-select, forcing file system items, etc.
+			DWORD options;
+			pFileOpen->GetOptions(&options);
+			pFileOpen->SetOptions(options | FOS_PATHMUSTEXIST | FOS_FILEMUSTEXIST | FOS_ALLOWMULTISELECT);
+
+			// Show the dialog
+			hr = pFileOpen->Show(nullptr);
+			if (SUCCEEDED(hr))
+			{
+				hr = pFileOpen->GetResults(&pResults);
+				if (SUCCEEDED(hr))
+				{
+					DWORD count = 0;
+					pResults->GetCount(&count);
+
+					for (DWORD i = 0; i < count; ++i)
+					{
+						IShellItem* pItem;
+						hr = pResults->GetItemAt(i, &pItem);
+						if (SUCCEEDED(hr) && pItem)
+						{
+							// Retrieve the file system path
+							PWSTR pszFilePath = nullptr;
+							hr				  = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+							if (SUCCEEDED(hr) && pszFilePath)
+							{
+								// Use the selected file path
+								openFileNames->PushBack(DBG_NEW FTDS::String(ToString(pszFilePath)));
+								CoTaskMemFree(pszFilePath);
+							}
+						}
+						pItem->Release();
+					}
+				}
+			}
+			pFileOpen->Release();
+		}
+	}
+
 	inline bool ButtonCenteredOnLine(const char* label, float alignment = 0.5f)
 	{
 		ImGuiStyle& style = ImGui::GetStyle();
@@ -94,9 +152,9 @@ namespace FTEditorUtils
 
 	template <typename FTRESOURCE>
 	inline void DisplayResSelection(
-		const char*						 label,
-		FTDS::HashChainMap<FTRESOURCE*>* resMap,
-		FTDS::String&					 currSelection)
+		const char*					label,
+		FTDS::HashMap<FTRESOURCE*>* resMap,
+		FTDS::String&				currSelection)
 	{
 		if (ImGui::Button(label))
 		{
@@ -115,8 +173,7 @@ namespace FTEditorUtils
 				if (ImGui::Selectable("Not Assigned"))
 					currSelection.Assign(ChunkKey::NullVal::NULL_OBJECT);
 
-				resMap->IterateAllNodes([&](FTDS::RecordNode<FTRESOURCE*>* node)
-				{
+				resMap->IterateAllNodes([&](FTDS::Record<FTRESOURCE*>* node) {
 					if (ImGui::Selectable(node->Key().C_Str()))
 					{
 						if (node->Key().NotEqual(ChunkKey::NullVal::NULL_OBJECT))

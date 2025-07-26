@@ -9,6 +9,10 @@
 /// File types (extensions) that are used in Foxtrot Engine.
 /// </summary>
 
+#include <ShellScalingApi.h>
+
+#include <Dynamic/DynamicArray.h>
+
 #pragma once
 namespace FileTypes
 {
@@ -38,5 +42,40 @@ namespace FileTypes
 	namespace Sound
 	{
 		constexpr const char* WAV = ".wav";
+	}
+
+	constexpr const size_t MAX_RES_TYPE_COUNT = 17;
+	constexpr const size_t MAX_SPEC_LENGTH = 50;
+
+	inline void GetFileTypesSpec(
+		FTDS::DynamicArray<COMDLG_FILTERSPEC*>* specArr, 
+		const wchar_t* label, const char* fileTypes)
+	{
+		COMDLG_FILTERSPEC* spec = DBG_NEW COMDLG_FILTERSPEC();
+		FTDS::String	  types = fileTypes;
+
+		FTDS::DynamicArray<FTDS::String> splitted;
+
+		FTDS::String buf = FTDS::String(fileTypes);
+		types.Split(", ", splitted);
+		if (splitted.IsEmpty())
+			splitted.PushBack(types.C_Str());
+
+		for (size_t i = 0; i < splitted.GetSize(); ++i)
+		{
+			FTDS::String val = "*";
+			val.Append(splitted.At(i));
+			if (i < splitted.GetSize() - 1)
+				val.Append(";");
+
+			types.Append(val);
+		}
+
+		wchar_t wStrSpec[MAX_SPEC_LENGTH];
+		types.AssignToWStr(wStrSpec, MAX_SPEC_LENGTH);
+		spec->pszName = label;
+		spec->pszSpec = wStrSpec;
+
+		specArr->PushBack(spec);
 	}
 } // namespace FileTypes

@@ -26,7 +26,7 @@
     <ClInclude Include="Iterator\FTIterator.h" />
     <ClInclude Include="Static\Record.h" />
     <ClInclude Include="Dynamic\RecordNode.h" />
-    <ClInclude Include="Static\HashChainMap.h" />
+    <ClInclude Include="Static\HashMap.h" />
     <ClInclude Include="Utils\StrAssign.h" />
     <ClInclude Include="Static\FTString.h" />
     <ClInclude Include="Static\Queue.h" />

@@ -156,7 +156,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>.\Compare;.\Dynamic;.\Search;.\Sort;.\Static;.\Utils;.\Iterator;..\FoxtrotEngine\src;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Compare;.\Dynamic;.\Search;.\Sort;.\Static;.\Utils;.\Iterator;.\;..\FoxtrotEngine\src;..\FoxtrotEngine\include;..\FoxtrotMath\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -190,7 +190,7 @@
     <ClInclude Include="Dynamic\RecordNode.h" />
     <ClInclude Include="Iterator\FTIterator.h" />
     <ClInclude Include="Static\FTString.h" />
-    <ClInclude Include="Static\HashChainMap.h" />
+    <ClInclude Include="Static\HashMap.h" />
     <ClInclude Include="Static\Queue.h" />
     <ClInclude Include="Static\Record.h" />
     <ClInclude Include="Search\DepthFirstSearch.h" />

@@ -120,7 +120,7 @@ void EditorCamera::DisplayMainCameraMenu()
 	std::vector<EditorElement*> editorElems;
 	editorElems				 = EditorSceneManager::GetInstance()->GetEditorScene()->GetEditorElements();
 	FTDS::String* actorNames = DBG_NEW FTDS::String[editorElems.size() + 1];
-	actorNames[0]			 = "None";
+	actorNames[0].Assign("None");
 	static size_t currIdx;
 
 	for (size_t i = 0; i < editorElems.size(); ++i)

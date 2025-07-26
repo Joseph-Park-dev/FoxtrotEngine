@@ -59,8 +59,15 @@ namespace FTDS
 		// Clears the data, leaving the capacity unchanged.
 		virtual void Clear()
 		{
-			if (mData)
-				memset(mData, NULL, mCapacity * sizeof(*mData));
+			if (0 < mCapacity)
+			{
+				size_t newCap = mCapacity;
+				mCapacity	  = 0;
+
+				delete[] mData;
+				mData = nullptr;
+				AllocateMem(newCap);
+			}
 		}
 
 	public:
@@ -105,7 +112,7 @@ namespace FTDS
 		TYPE* Data() { return mData; }
 
 	protected:
-		void AllocateMem(size_t newCap)
+		virtual void AllocateMem(size_t newCap)
 		{
 			// Create an array with renewed capacity.
 			TYPE* newArr = DBG_NEW TYPE[newCap];
@@ -113,10 +120,10 @@ namespace FTDS
 
 			// Calculate memory size to be copied.
 			size_t destSize	  = sizeof(TYPE) * newCap;
-			size_t copiedSize = sizeof(TYPE) * Min(newCap, mCapacity);
+			size_t copiedSize = sizeof(TYPE) * mCapacity;
 
 			// Copy previous data.
-			memcpy_s(newArr, sizeof(TYPE) * newCap, mData, copiedSize);
+			memcpy_s(newArr, destSize, mData, copiedSize);
 			delete[] mData;
 
 			// Set new array as current data.
@@ -125,17 +132,16 @@ namespace FTDS
 			mCapacity = newCap;
 		}
 
+		size_t Min(size_t a, size_t b)
+		{
+			return a > b ? b : a;
+		}
+
 	protected:
 		TYPE*  mData;
 		size_t mCapacity;
 
 	private:
 		TYPE* mPtr;
-
-	private:
-		size_t Min(size_t a, size_t b)
-		{
-			return a > b ? b : a;
-		}
 	};
 } // namespace FTDS

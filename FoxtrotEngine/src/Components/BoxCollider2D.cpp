@@ -58,15 +58,14 @@ void BoxCollider2D::Setup()
 			polygonShapeDef.filter.categoryBits = uint64_t(GetOwner()->GetActorGroup());
 			CollisionManager::GetInstance()->MarkGroup(polygonShapeDef, GetOwner()->GetActorGroup());
 
-			FTVector3 rot = GetOwner()->GetTransform()->GetWorldRotation();
-			float rotZ = Transform::ConvertDegreeToRad(rot).z;
-			FTVector2 polygonScale = mSize * FTVector2(GetOwner()->GetTransform()->GetWorldScale());
-			b2Polygon polygon	   = b2MakeOffsetBox(
-				polygonScale.x / 2,
-				polygonScale.y / 2, 
-				GetOffsetPos().GetB2Vec2(),
-				b2Rot_identity
-			);
+			FTVector3 pos	  = GetOffsetPos();
+			FTVector3 rot	  = GetOwner()->GetTransform()->GetWorldRotation();
+			float	  rotZ	  = Transform::ConvertDegreeToRad(rot).z;
+			b2Polygon polygon = b2MakeOffsetBox(
+				mSize.x / 2,
+				mSize.y / 2,
+				pos.GetB2Vec2(),
+				b2Rot_identity);
 
 			GetShapeID() = b2CreatePolygonShape(rb->GetBodyID(), &polygonShapeDef, &polygon);
 			CollisionManager::GetInstance()->RegisterCollider(GetShapeID().index1, this);
@@ -117,10 +116,10 @@ void BoxCollider2D::UpdateDebugShape(Camera* camInst)
 
 	if (IsShowingDebugShape())
 	{
-		Transform* transform = GetOwner()->GetTransform();
-		FTVector2 offset = GetOffsetPos();
-		Matrix translationMat = Matrix::CreateTranslation(offset.x, offset.y, 0.0f);
-		Matrix modelMat = translationMat * transform->GetMatrixWorld();
+		Transform* transform	  = GetOwner()->GetTransform();
+		FTVector2  offset		  = GetOffsetPos();
+		Matrix	   translationMat = Matrix::CreateTranslation(offset.x, offset.y, 0.0f);
+		Matrix	   modelMat		  = transform->GetMatrixWorld() * translationMat;
 
 		mDebugRect->UpdateVC(modelMat, camInst);
 		mDebugRect->UpdateGC(camInst);
@@ -167,21 +166,6 @@ void BoxCollider2D::UpdateScale()
 		mSize = updatedVal;
 		if (mSize.x <= 0 || mSize.y <= 0)
 			return;
-
-		float rot = GetOwner()->GetTransform()->GetWorldRotation().z;
-		FTVector2  resultantScale  = mSize * FTVector2(GetOwner()->GetTransform()->GetWorldScale());
-		b2ShapeDef polygonShapeDef = b2DefaultShapeDef();
-		b2Polygon polygon = b2MakeOffsetBox(
-			resultantScale.x / 2,
-			resultantScale.y / 2,
-			GetOffsetPos().GetB2Vec2(),
-			b2Rot_identity
-		);
-		if (b2Shape_IsValid(GetShapeID()))
-		{
-			// b2DestroyShape(GetShapeID(), true);
-			b2Shape_SetPolygon(GetShapeID(), &polygon);
-		}
 	}
 }
 #endif // FOXTROT_EDITOR

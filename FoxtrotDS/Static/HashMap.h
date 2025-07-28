@@ -162,7 +162,7 @@ namespace FTDS
 				if (this->mData)
 				{
 					if (this->mData[i])
-					unaryOp(this->mData[i]->Value());
+						unaryOp(this->mData[i]->Value());
 				}
 			}
 		}
@@ -186,6 +186,7 @@ namespace FTDS
 	public:
 		const size_t& GetSize() { return mSize; }
 		bool		  IsEmpty() const { return mSize == 0; }
+		bool		  IsFull() const { return this->mCapacity <= mSize; }
 
 	public:
 		HashMap()

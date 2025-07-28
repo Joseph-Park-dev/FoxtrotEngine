@@ -121,6 +121,7 @@ void EditorResourceManager::LoadAllResourcesInAsset()
 	ProcessResources(FTCoreEditor::GetInstance(), GetMaterials());
 	ProcessResources(FTCoreEditor::GetInstance(), GetVertexShaders());
 	ProcessResources(FTCoreEditor::GetInstance(), GetPixelShaders());
+	ProcessResources(FTCoreEditor::GetInstance(), GetSounds());
 
 	LoadMaterials();
 
@@ -179,6 +180,9 @@ void EditorResourceManager::LoadResByType(const char* filePath)
 			break;
 		case ResType::FT_PIXEL_SHADER:
 			LoadResource(path, GetPixelShaders());
+			break;
+		case ResType::FTSOUND:
+			LoadResource(path, GetSounds());
 			break;
 		default:
 			break;
@@ -316,6 +320,8 @@ ResType EditorResourceManager::GetResType(FTDS::String& fileName)
 			return ResType::FT_PIXEL_SHADER;
 		else
 			return ResType::UNSUPPORTED;
+	else if (StrContains(FileTypes::Sound::WAV, format))
+		return ResType::FTSOUND;
 }
 
 EditorResourceManager::EditorResourceManager()

@@ -161,6 +161,7 @@ namespace FTDS
 			{
 				if (this->mData)
 				{
+					if (this->mData[i])
 					unaryOp(this->mData[i]->Value());
 				}
 			}

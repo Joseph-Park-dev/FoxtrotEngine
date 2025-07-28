@@ -49,25 +49,18 @@ public:
 	{
 		// Get Relative path to Assets folder
 		FTDS::String fileName = ExtractFileName(filePath.C_Str());
+		printf("Message: Loading FTResource %s to key %s. \n", filePath.C_Str(), fileName.C_Str());
 
-		if (!KeyExists<FTRESOURCE*>(fileName, resMap))
-		{
-			printf("Message: Loading FTResource %s to key %s. \n", filePath.C_Str(), fileName.C_Str());
+		FTRESOURCE* res = DBG_NEW FTRESOURCE;
+		res->SetFileName(fileName);
 
-			FTRESOURCE* res = DBG_NEW FTRESOURCE;
-			res->SetFileName(fileName);
+		res->SetRelativePath(filePath);
+		AbsoluteToRelativePath(res);
 
-			res->SetRelativePath(filePath);
-			AbsoluteToRelativePath(res);
-
-			resMap->Insert(fileName, res);
-			return res;
-		}
-		else
-		{
-			printf("Warning : Resource %s is already loaded to key %s.\n", filePath.C_Str(), fileName.C_Str());
-			return nullptr;
-		}
+		if (resMap->IsFull())
+			resMap->Reserve(resMap->GetSize() + 5);
+		resMap->Insert(fileName, res);
+		return res;
 	}
 
 	// This is used to avoid additional resource loading in PassLoadResourceInChunk(ifs)

@@ -158,11 +158,13 @@ void EditorCamera::DisplayMainCameraMenu()
 		if (GetViewType() == Viewtype::Perspective)
 		{
 			SetViewType(Viewtype::Orthographic);
+			Camera::GetInstance()->SetViewType(Viewtype::Orthographic);
 			LogString("Orthographic");
 		}
 		else if (GetViewType() == Viewtype::Orthographic)
 		{
 			SetViewType(Viewtype::Perspective);
+			Camera::GetInstance()->SetViewType(Viewtype::Perspective);
 			LogString("Perspective");
 		}
 	}

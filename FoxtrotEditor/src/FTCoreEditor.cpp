@@ -20,6 +20,7 @@
 #include "ViewportRenderer.h"
 #include "EditorChunkLoader.h"
 #include "EditorResourceManager.h"
+#include "EditorUtils.h"
 
 #include "Managers/DebugShapes.h"
 #include "InputSystem/FTInputDevice.h"

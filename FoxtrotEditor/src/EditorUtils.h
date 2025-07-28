@@ -31,13 +31,10 @@
 
 namespace FTEditorUtils
 {
-	inline bool InitWinFileDialog()
-	{
-		SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-	}
-
 	inline void DisplayOpenFileDialog(const COMDLG_FILTERSPEC* fileTypes, FTDS::DynamicArray<FTDS::String*>* openFileNames)
 	{
+		SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+
 		IShellItemArray* pResults;
 		IFileOpenDialog* pFileOpen = nullptr;
 

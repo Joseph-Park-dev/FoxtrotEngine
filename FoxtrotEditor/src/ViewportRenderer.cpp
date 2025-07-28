@@ -34,9 +34,9 @@ void ViewportRenderer::InitializeTexture(FTWindow* window, FoxtrotRenderer* rend
 
 void ViewportRenderer::BeginRender(FoxtrotRenderer* renderer)
 {
-	float test[4] = { 0.3f,0.3f,0.3f,1.0f };
 	if (mRTV)
-		renderer->GetContext()->ClearRenderTargetView(mRTV.Get(), test);
+		renderer->GetContext()
+			->ClearRenderTargetView(mRTV.Get(), renderer->GetClearColor());
 	if (mDSV)
 		renderer->GetContext()->ClearDepthStencilView(mDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -66,9 +66,9 @@ void ViewportRenderer::Resize(FoxtrotRenderer* renderer)
 {
 	Reset();
 	ImVec2 topLeft = EditorLayer::GetInstance()->GetSceneViewportPos();
-	mWidth = static_cast<int>(EditorLayer::GetInstance()->GetSceneViewportSize().x);
-	mHeight = static_cast<int>(EditorLayer::GetInstance()->GetSceneViewportSize().y);
-	//InitializeTexture( renderer, mWidth, mHeight);
+	mWidth		   = static_cast<int>(EditorLayer::GetInstance()->GetSceneViewportSize().x);
+	mHeight		   = static_cast<int>(EditorLayer::GetInstance()->GetSceneViewportSize().y);
+	// InitializeTexture( renderer, mWidth, mHeight);
 }
 
 void ViewportRenderer::Reset()
@@ -93,7 +93,7 @@ void ViewportRenderer::CreateRenderTargetView(
 	ZeroMemory(&textureDesc, sizeof(textureDesc));
 
 	FTRectArea* renderArea = window->GetRenderArea();
-	FTVector2 renderSize = renderArea->GetSize();
+	FTVector2	renderSize = renderArea->GetSize();
 
 	textureDesc.Width			 = renderSize.x;
 	textureDesc.Height			 = renderSize.y;

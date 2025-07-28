@@ -100,6 +100,11 @@ ComPtr<ID3D11PixelShader>&	FoxtrotRenderer::GetNormalPS() { return mNormalPS; }
 ComPtr<ID3D11VertexShader>& FoxtrotRenderer::GetCubeMapVS() { return mCubeMapVS; }
 ComPtr<ID3D11PixelShader>&	FoxtrotRenderer::GetCubeMapPS() { return mCubeMapPS; }
 
+const float* FoxtrotRenderer::GetClearColor() const
+{
+	return mClearColor;
+}
+
 UINT FoxtrotRenderer::GetNumQualityLevels() { return mNumQualityLevels; }
 
 uint8_t* FoxtrotRenderer::GetCursorPosColor()
@@ -133,7 +138,8 @@ bool FoxtrotRenderer::Initialize(FTWindow* window, int renderWidth, int renderHe
 	DX::ThrowIfFailed(CreateDepthStencilState(mDepthStencilState2D, false));
 
 	DX::ThrowIfFailed(CreateBlendState());
-	mContext->OMSetBlendState(mBlendState.Get(), NULL, D3D11_DEFAULT_SAMPLE_MASK);
+	FLOAT blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
+	mContext->OMSetBlendState(mBlendState.Get(), blendFactor, D3D11_DEFAULT_SAMPLE_MASK);
 
 	DX::ThrowIfFailed(CreateTextureSampler());
 
@@ -240,19 +246,22 @@ HRESULT FoxtrotRenderer::CreateDepthStencilState(ComPtr<ID3D11DepthStencilState>
 
 HRESULT FoxtrotRenderer::CreateBlendState()
 {
-	D3D11_BLEND_DESC omDesc;
-	ZeroMemory(&omDesc, sizeof(D3D11_BLEND_DESC));
-	omDesc.RenderTarget[0].BlendEnable	  = true;
-	omDesc.RenderTarget[0].SrcBlend		  = D3D11_BLEND_SRC_ALPHA;
-	omDesc.RenderTarget[0].DestBlend	  = D3D11_BLEND_INV_SRC_ALPHA;
-	omDesc.RenderTarget[0].BlendOp		  = D3D11_BLEND_OP_ADD;
-	omDesc.RenderTarget[0].SrcBlendAlpha  = D3D11_BLEND_ONE;
-	omDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	omDesc.RenderTarget[0].BlendOpAlpha	  = D3D11_BLEND_OP_ADD;
-	omDesc.RenderTarget[0].RenderTargetWriteMask =
-		D3D11_COLOR_WRITE_ENABLE_RED | D3D11_COLOR_WRITE_ENABLE_GREEN | D3D11_COLOR_WRITE_ENABLE_BLUE;
+	D3D11_BLEND_DESC blendDesc		 = {};
+	ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
+	blendDesc.AlphaToCoverageEnable	 = FALSE;
+	blendDesc.IndependentBlendEnable = FALSE;
 
-	return mDevice->CreateBlendState(&omDesc, mBlendState.GetAddressOf());
+	D3D11_RENDER_TARGET_BLEND_DESC& rtBlendDesc = blendDesc.RenderTarget[0];
+	rtBlendDesc.BlendEnable						= TRUE;
+	rtBlendDesc.SrcBlend						= D3D11_BLEND_ONE;
+	rtBlendDesc.DestBlend						= D3D11_BLEND_INV_SRC_ALPHA;
+	rtBlendDesc.BlendOp							= D3D11_BLEND_OP_ADD;
+	rtBlendDesc.SrcBlendAlpha					= D3D11_BLEND_ONE;
+	rtBlendDesc.DestBlendAlpha					= D3D11_BLEND_INV_SRC_ALPHA;
+	rtBlendDesc.BlendOpAlpha					= D3D11_BLEND_OP_ADD;
+	rtBlendDesc.RenderTargetWriteMask			= D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	return mDevice->CreateBlendState(&blendDesc, mBlendState.GetAddressOf());
 }
 
 HRESULT FoxtrotRenderer::CreateTextureSampler()
@@ -273,7 +282,7 @@ HRESULT FoxtrotRenderer::CreateTextureSampler()
 }
 
 FoxtrotRenderer::FoxtrotRenderer()
-	: mClearColor{ 0.0f, 0.0f, 0.0f, 1.0f }
+	: mClearColor{ 0.3f, 0.3f, 0.3f, 1.0f }
 	, mFillMode(FillMode::Solid)
 #ifdef FOXTROT_EDITOR
 	, mViewportRenderer(DBG_NEW ViewportRenderer)

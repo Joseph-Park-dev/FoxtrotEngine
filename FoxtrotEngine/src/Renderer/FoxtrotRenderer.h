@@ -98,15 +98,16 @@ public:
 	ComPtr<ID3D11VertexShader>& GetCubeMapVS();
 	ComPtr<ID3D11PixelShader>&	GetCubeMapPS();
 
-	// Rendering size related (Getters and Setters).
-	UINT	 GetNumQualityLevels();
-	uint8_t* GetCursorPosColor();
+	const float* GetClearColor() const;
+	UINT		 GetNumQualityLevels();
+	uint8_t*	 GetCursorPosColor();
 
 	// FillMode related (Getters and Setters)
 	void	 SwitchFillMode() const;
 	FillMode GetFillMode() const;
 	void	 SetFillMode(const FillMode mode);
 
+private:
 	float	 mClearColor[4];
 	UINT	 mNumQualityLevels;
 	FillMode mFillMode;

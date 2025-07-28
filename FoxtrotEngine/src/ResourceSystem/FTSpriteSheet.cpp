@@ -143,8 +143,6 @@ void FTSpriteSheet::InitializeRectOnScreen(Tile& tile, float posX, float posY, f
 #ifdef FOXTROT_EDITOR
 void FTSpriteSheet::UpdateUI()
 {
-	ImVec2 previewSize = ImVec2(100, 100);
-
 	CommandHistory::GetInstance()->UpdateStringValue("Sheet Name", FileName());
 
 	FTEditorUtils::DisplayResSelection(

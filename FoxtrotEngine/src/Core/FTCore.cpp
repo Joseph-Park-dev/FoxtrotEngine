@@ -26,6 +26,7 @@
 #include "Managers/DebugShapes.h"
 #include "Managers/AnimationManager.h"
 #include "Managers/TileMapManager.h"
+#include "Managers/SoundManager.h"
 #include "WindowSystem/FTWindow.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/Camera.h"
@@ -40,6 +41,7 @@
 #include "Static/FTString.h"
 
 // FTCore related singleton initializations -> used in the runtimes of the produced games.
+SoundManager*	  SoundManager::mInstance	  = nullptr;
 Physics2D*		  Physics2D::mInstance		  = nullptr;
 Camera*			  Camera::mInstance			  = nullptr;
 AnimationManager* AnimationManager::mInstance = nullptr;
@@ -125,6 +127,7 @@ void FTCore::InitSingletonManagers()
 	AnimationManager::GetInstance()->Initialize(mGameRenderer);
 	TileMapManager::GetInstance();
 	SceneManager::GetInstance()->Initialize();
+	SoundManager::GetInstance()->Initialize();
 }
 
 void FTCore::InitTimer()
@@ -162,6 +165,8 @@ void FTCore::UpdateGame()
 	ParticleSystem::GetInstance()->Update(deltaTime);
 	UIManager::GetInstance()->Update(deltaTime, mWindow->GetInputDevice());
 	Camera::GetInstance()->Update(deltaTime);
+
+	SoundManager::GetInstance()->LateUpdate();
 }
 
 void FTCore::GenerateOutput()
@@ -215,7 +220,7 @@ void FTCore::ShutDown()
 	FoxtrotRenderer::DestroyRenderer(mGameRenderer);
 	CollisionManager::GetInstance()->Destroy();
 
-	
+	SoundManager::GetInstance()->Destroy();
 	AnimationManager::GetInstance()->Destroy();
 	delete gSpineExtension;
 	gSpineExtension = nullptr;
@@ -231,7 +236,7 @@ void FTCore::ShutDown()
 	LightManager::GetInstance()->Destroy();
 	TileMapManager::GetInstance()->Destroy();
 
-		PostQuitMessage(0);
+	PostQuitMessage(0);
 }
 
 LRESULT FTCore::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)

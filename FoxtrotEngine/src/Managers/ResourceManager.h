@@ -75,7 +75,8 @@ enum class ResType
 	FTCSV,
 	FTJSON,
 	FTTEXT,
-	FT_SHADER_META
+	FT_SHADER_META,
+	FTSOUND
 };
 
 class ResourceManager

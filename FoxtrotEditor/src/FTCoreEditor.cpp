@@ -40,6 +40,7 @@
 #include "Managers/SceneManager.h"
 #include "Managers/CollisionManager.h"
 #include "Managers/AnimationManager.h"
+#include "Managers/SoundManager.h"
 #include "ResourceSystem/FTRectangle.h"
 
 // FTCoreEditor related singleton initializations -> used in Foxtrot Editor Runtime
@@ -154,7 +155,7 @@ LRESULT FTCoreEditor::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 void FTCoreEditor::InitSingletonManagers()
 {
 	Physics2D::GetInstance()->Initialize();
-
+	SoundManager::GetInstance()->Initialize();
 	Camera::GetInstance()->Initialize(GetGameWindow(), 64.f, 1.8f);
 	EditorResourceManager::GetInstance()->Initialize(GetGameRenderer());
 	UIManager::GetInstance();
@@ -196,6 +197,7 @@ void FTCoreEditor::UpdateGame()
 		Physics2D::GetInstance()->Update();
 		CollisionManager::GetInstance()->Update();
 		UIManager::GetInstance()->Update(deltaTime, mEditorWindow->GetInputDevice());
+		SoundManager::GetInstance()->LateUpdate();
 	}
 	else
 		EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);

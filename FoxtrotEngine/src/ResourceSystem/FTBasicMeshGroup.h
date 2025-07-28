@@ -88,6 +88,7 @@ protected:
 
 private:
 	FTDS::String mTexKey;
+	int			 mDirection;
 
 	std::vector<Mesh*>		   mMeshes;
 	FTTexture*				   mTexture;

@@ -426,6 +426,7 @@ HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 
 FTBasicMeshGroup::FTBasicMeshGroup()
 	: mTexKey(ChunkKey::NullVal::NULL_OBJECT)
+	, mDirection(1)
 	, mMeshes()
 	, mTexture(nullptr)
 	, mNormalLines(nullptr)
@@ -440,6 +441,7 @@ FTBasicMeshGroup::FTBasicMeshGroup()
 
 FTBasicMeshGroup::FTBasicMeshGroup(FTMeshData meshData, FoxtrotRenderer* renderer)
 	: mTexKey(ChunkKey::NullVal::NULL_OBJECT)
+	, mDirection(0)
 	, mMeshes()
 	, mTexture(nullptr)
 	, mNormalLines(nullptr)
@@ -460,12 +462,12 @@ FTBasicMeshGroup::~FTBasicMeshGroup()
 
 void FTBasicMeshGroup::CalcModelMat(Matrix& matrix, Transform* transform)
 {
-	int dir = 0;
-	0 <= transform->GetSteering()->Linear.x ? dir = 1 : dir = -1;
+	mDirection += transform->GetSteering()->Linear.x;
+	Math::Clamp(mDirection, -1, 1);
 
 	FTVector3 scale		   = transform->GetWorldScale();
-	FTVector3 scaleWithDir = FTVector3(scale.x * dir, scale.y, scale.z);
-	transform->SetWorldScale(scaleWithDir);
+	FTVector3 scaleWithDir = FTVector3(scale.x * mDirection, scale.y, scale.z);
+	transform->SetLocalScale(scaleWithDir);
 	matrix = transform->GetMatrixWorld();
 }
 

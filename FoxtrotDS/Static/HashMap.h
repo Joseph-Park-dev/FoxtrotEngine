@@ -104,12 +104,13 @@ namespace FTDS
 			size_t hashVal = FTDS::HashFunction(key, this->Capacity());
 
 			FTDS::Record<TYPE>* rec = this->mData[hashVal];
-			if (rec->Equal(key))
-				return rec;
+			if (rec)
+				if (rec->Equal(key))
+					return rec;
 
 			size_t pow2 = Math::NextPowerOf2(static_cast<int>(this->Capacity()));
 			// Perform Quadratic probing
-			for (size_t i = 1; i <= pow2; ++i)
+			for (int i = 1; i <= pow2; ++i)
 			{
 				size_t qIndex = (hashVal + (i + i * i) / 2) % pow2;
 
@@ -117,10 +118,10 @@ namespace FTDS
 					continue;
 
 				rec = this->mData[qIndex];
+				if (rec)
+					if (rec->Equal(key))
+						return rec;
 			}
-			if (rec->Equal(key))
-				return rec;
-
 			return nullptr;
 		}
 

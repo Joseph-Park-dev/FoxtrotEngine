@@ -1,7 +1,7 @@
 #pragma once
 #include "Components/MeshRenderer.h"
 
-#include "spine/spine.h"
+#include <spine/spine.h>
 
 class FTSpineAnimation;
 
@@ -10,6 +10,9 @@ class SpineAnimator :
 {
 public:
 	virtual FTDS::String GetName() const override { return "SpineAnimator"; }
+
+public:
+	const std::vector<FTSpineAnimation*>& GetLoadedAnim() const;
 
 public:
 	void		 Initialize(FTCore* coreInst) override;

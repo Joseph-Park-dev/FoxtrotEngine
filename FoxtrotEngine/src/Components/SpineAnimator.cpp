@@ -20,7 +20,13 @@
 
 #ifdef FOXTROT_EDITOR
 #include "EditorUtils.h"
+#include "EditorCamera.h"
 #endif // FOXTROT_EDITOR
+
+const std::vector<FTSpineAnimation*>& SpineAnimator::GetLoadedAnim() const
+{
+	return mLoadedAnim;
+}
 
 void SpineAnimator::Initialize(FTCore* coreInst)
 {
@@ -185,7 +191,13 @@ void SpineAnimator::EditorUpdate(float deltaTime)
 
 void SpineAnimator::EditorRender(FoxtrotRenderer* renderer)
 {
-	this->Render(renderer);
+	if (GetMeshGroup())
+	{
+		this->UpdateMesh(GetOwner()->GetTransform(), EditorCamera::GetInstance(), renderer);
+		renderer->SwitchFillMode();
+		// renderer->SetRenderTargetView();
+		static_cast<FTSpineAnimation*>(GetMeshGroup())->Render(renderer);
+	}
 }
 
 void SpineAnimator::EditorUIUpdate()

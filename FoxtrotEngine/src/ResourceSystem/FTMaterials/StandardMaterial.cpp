@@ -130,9 +130,7 @@ void StandardMaterial::UpdateUI()
 {
 	ImGui::SeparatorText("Standard Mat Data");
 
-	bool useTex = (bool)mData->UseTexture;
-	CommandHistory::GetInstance()->UpdateBoolValue(ChunkKey::USE_TEXTURE, useTex);
-	mData->UseTexture = (uint32_t)useTex;
+	CommandHistory::GetInstance()->UpdateBoolValue(ChunkKey::USE_TEXTURE, mData->UseTexture);
 
 	ImGui::SeparatorText("BlinnPhong Data");
 	CommandHistory::GetInstance()->UpdateVector3Value(ChunkKey::BlinnPhong::AMBIENT, mData->BlinnPhongData.Ambient);

@@ -51,7 +51,7 @@ struct BlinnPhongData
 struct StandardMatData
 {
 	Vector3		   EyeWorld;
-	uint32_t	   UseTexture = 1;
+	bool		   UseTexture = 1;
 	Light		   Lights[GameData::MAX_LIGHTS];
 	BlinnPhongData BlinnPhongData;
 };
@@ -59,7 +59,7 @@ struct StandardMatData
 namespace ChunkKey
 {
 	constexpr const char* STANDARD_MAT = "StandardMaterial";
-	constexpr const char* USE_TEXTURE = "Use Texture";
+	constexpr const char* USE_TEXTURE  = "Use Texture";
 
 	namespace BlinnPhong
 	{
@@ -67,7 +67,7 @@ namespace ChunkKey
 		constexpr const char* SHININESS = "Shininess";
 		constexpr const char* DIFFUSE	= "Diffuse";
 		constexpr const char* SPECULAR	= "Specular";
-	}
-}
+	} // namespace BlinnPhong
+} // namespace ChunkKey
 
 static_assert((sizeof(StandardMatData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");

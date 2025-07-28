@@ -69,7 +69,7 @@ Camera::Camera()
 	, mTarget(nullptr)
 	, mPosition(Vector3(0.0f, 0.0f, -5.0f))
 	, mFrontDir(Vector3(0.0f, 0.0f, 1.0f))
-	, mUpDir(Vector3(0.0f, -1.0f, 0.0f))
+	, mUpDir(Vector3(0.0f, 1.0f, 0.0f))
 	, mRightDir(Vector3(1.0f, 0.0f, 0.0f))
 	, mPitch(0.0f)
 	, mYaw(0.0f)
@@ -78,7 +78,7 @@ Camera::Camera()
 	, mFarZ(100.0f)
 	, mAspect(1280.f / 720.f)
 	, mPixelsPerUnit(0.f)
-	, mViewType(Viewtype::Perspective)
+	, mViewType(Viewtype::Orthographic)
 {
 }
 
@@ -119,7 +119,7 @@ Matrix Camera::GetProjRow()
 	return mViewType == Viewtype::Perspective
 		? DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(mProjFOVAngleY), mAspect, mNearZ, mFarZ)
 		: DirectX::XMMatrixOrthographicOffCenterLH(
-			  0.0f, worldWidth, worldHeight, 0.0f, mNearZ, mFarZ);
+			  0.0f, worldWidth, 0.0f, worldHeight, mNearZ, mFarZ);
 }
 
 const FTVector3& Camera::GetPosition() const

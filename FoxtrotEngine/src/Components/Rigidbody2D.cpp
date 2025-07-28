@@ -8,7 +8,7 @@
 
 #include "Components/Rigidbody2D.h"
 
-#include "box2d/box2d.h"
+#include <box2d/Box2D.h>
 
 #include "Physics/Physics2D.h"
 #include "Actors/Actor.h"

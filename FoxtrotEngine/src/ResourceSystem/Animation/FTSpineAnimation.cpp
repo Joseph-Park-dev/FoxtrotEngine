@@ -32,13 +32,16 @@ void FTSpineAnimation::InitializeSpinAnim(ComPtr<ID3D11Device>& device, spine::S
 		mMeshes.clear();
 	}
 
-	mSkeleton = new spine::Skeleton(skel);
+	mSkeleton  = new spine::Skeleton(skel);
 	mStateData = new spine::AnimationStateData(skel);
 	mState	   = new spine::AnimationState(mStateData);
 
 	//// Registers the clip inside of the Spine Animation.
 	mLoadedClips.addAll(skel->getAnimations());
-	mSkins.addAll(mSkeletonData->getSkins());
+
+	if (mSkeletonData)
+		if (0 < mSkeletonData->getSkins().size())
+			mSkins.addAll(mSkeletonData->getSkins());
 	SetSkin();
 
 	auto drawOrder = mSkeleton->getDrawOrder();
@@ -108,6 +111,9 @@ void FTSpineAnimation::Render(FoxtrotRenderer* renderer)
 				0, 1, mesh->PCBuf.GetAddressOf());
 		}
 
+		FLOAT blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
+		context->OMSetBlendState(renderer->GetBlendState().Get(), blendFactor, D3D11_DEFAULT_SAMPLE_MASK);
+
 		context->IASetInputLayout(GetVertexShader()->GetInputLayout().Get());
 		mesh->Draw(context);
 	}
@@ -175,9 +181,12 @@ void FTSpineAnimation::SetMaterials(std::vector<FTDS::String>& matKeys, ComPtr<I
 	}
 }
 
-void FTSpineAnimation::SetAnimation(size_t idx, bool loop)
+void FTSpineAnimation::SetAnimation(int idx, bool loop)
 {
+	if (mCurrAnimIdx == idx)
+		return;
 	mState->setAnimation(0, mLoadedClips[idx], loop);
+	mCurrAnimIdx = idx;
 }
 
 spine::Vector<spine::Animation*>& FTSpineAnimation::LoadedClips()
@@ -193,6 +202,7 @@ FTSpineAnimation::FTSpineAnimation()
 	, mStateData(nullptr)
 	, mSkeleton(nullptr)
 	, mSkinCombination(0x0)
+	, mCurrAnimIdx(-1)
 	, mAtlas(nullptr)
 	, mState(nullptr)
 	, mTimeScale(1.f)

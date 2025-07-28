@@ -1,7 +1,7 @@
 #pragma once
 #include "ResourceSystem/Animation/FTAnimation.h"
 
-#include "spine/spine.h"
+#include <spine/spine.h>
 
 class FTSpineAnimation :
 	public FTAnimation
@@ -24,7 +24,7 @@ public:
 	void SetAtlasKey(FTDS::String& key);
 	void SetTimeScale(float val);
 	void SetMaterials(std::vector<FTDS::String>& matKeys, ComPtr<ID3D11Device>& device) override;
-	void SetAnimation(size_t idx, bool loop);
+	void SetAnimation(int idx, bool loop);
 	void ToggleSkin(size_t idx);
 
 	spine::Vector<spine::Animation*>& LoadedClips();
@@ -43,6 +43,7 @@ private:
 	spine::Vector<spine::Animation*> mLoadedClips;
 	spine::Vector<spine::Skin*>		 mSkins;
 	unsigned char					 mSkinCombination;
+	int								 mCurrAnimIdx;
 
 	spine::SkeletonData*	   mSkeletonData;
 	spine::AnimationStateData* mStateData;

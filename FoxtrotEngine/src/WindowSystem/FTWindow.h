@@ -15,6 +15,7 @@ enum class MOUSE;
 class FTWindow
 {
 public:
+	bool InitializeWindow(WNDPROC wndProc, int windowMode);
 	// This can be called anytime when you need a plain window.
 	bool InitializeWindow(WNDPROC wndProc);
 
@@ -91,7 +92,6 @@ private:
 
 	// The scene will be rendered on this portion of window.
 	FTRectArea* mRenderArea;
-	float		mClearColor[4];
 
 private:
 	void ClearWindow(FoxtrotRenderer* renderer);

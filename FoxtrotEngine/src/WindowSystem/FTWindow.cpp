@@ -23,7 +23,7 @@
 	#include "ViewportRenderer.h"
 #endif
 
-bool FTWindow::InitializeWindow(WNDPROC wndProc)
+bool FTWindow::InitializeWindow(WNDPROC wndProc, int windowMode)
 {
 	assert(0 < mWidth || 0 < mHeight);
 	assert(!mTitle.IsEmpty());
@@ -74,12 +74,17 @@ bool FTWindow::InitializeWindow(WNDPROC wndProc)
 		return false;
 	}
 
-	ShowWindow(mWinHandle, SW_SHOWDEFAULT);
+	ShowWindow(mWinHandle, windowMode);
 	SetForegroundWindow(mWinHandle);
 	UpdateWindow(mWinHandle);
 
 	delete[] title;
 	return true;
+}
+
+bool FTWindow::InitializeWindow(WNDPROC wndProc)
+{
+	return InitializeWindow(wndProc, SW_SHOWDEFAULT);
 }
 
 bool FTWindow::InitializeWindowRenderer(FoxtrotRenderer* renderer)
@@ -306,9 +311,9 @@ void FTWindow::EndRender(FoxtrotRenderer* renderer)
 void FTWindow::ClearWindow(FoxtrotRenderer* renderer)
 {
 	if (mRTV)
-		renderer->GetContext()->ClearRenderTargetView(mRTV.Get(), mClearColor);
+		renderer->GetContext()->ClearRenderTargetView(mRTV.Get(), renderer->GetClearColor());
 	if (mIndexRTV)
-		renderer->GetContext()->ClearRenderTargetView(mIndexRTV.Get(), mClearColor);
+		renderer->GetContext()->ClearRenderTargetView(mIndexRTV.Get(), renderer->GetClearColor());
 	if (mDSV)
 		renderer->GetContext()->ClearDepthStencilView(mDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
@@ -326,11 +331,6 @@ FTWindow::FTWindow(const char* title, UINT width, UINT height)
 	mTitle.Assign(title);
 	mWidth	= width;
 	mHeight = height;
-
-	mClearColor[0] = 0.3f;
-	mClearColor[1] = 0.3f;
-	mClearColor[2] = 0.3f;
-	mClearColor[3] = 1.0f;
 }
 
 FTWindow::~FTWindow()

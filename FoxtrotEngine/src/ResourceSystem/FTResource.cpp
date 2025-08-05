@@ -21,8 +21,7 @@
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
 
-#include "imgui/FileDialog/ImGuiFileDialog.h"
-#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
+#include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
 
 #include "EditorLayer.h"
 #include "DirectoryHelper.h"

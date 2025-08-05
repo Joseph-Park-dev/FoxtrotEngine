@@ -16,8 +16,7 @@
 
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS
-	#include "imgui/FileDialog/ImGuiFileDialog.h"
-	#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
+	#include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
 	#include <imgui.h>
 
 	#include "EditorUtils.h"

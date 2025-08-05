@@ -5,6 +5,7 @@
 #include "ResourceSystem/GenericData/FTText.h"
 #include "ResourceSystem/GenericData/FTJSON.h"
 #include "ResourceSystem/Animation/FTSpineAnimation.h"
+#include <FTCoreEditor.h>
 
 class EditorResourceManager : public ResourceManager
 {
@@ -53,8 +54,8 @@ public:
 
 		FTRESOURCE* res = DBG_NEW FTRESOURCE;
 		res->SetFileName(fileName);
-
 		res->SetRelativePath(filePath);
+
 		AbsoluteToRelativePath(res);
 
 		if (resMap->IsFull())
@@ -79,7 +80,7 @@ public:
 			FileIOHelper::LoadBasicString(ifs, res->FileName());
 
 			assert(0 < resMap->Capacity());
-			//resMap->Insert(res->FileName(), res);
+			// resMap->Insert(res->FileName(), res);
 			delete res;
 			--resCount; // Key of the next resource to be imported.
 		}
@@ -91,9 +92,6 @@ public:
 	{
 		resMap->Insert(res->FileName(), res);
 	}
-
-private:
-	FTDS::DynamicArray<COMDLG_FILTERSPEC*>* mFileTypeSpecs;
 
 	////////////////////////
 	// Removing resources //
@@ -130,7 +128,7 @@ private:
 	bool KeyExists(FTDS::String key, FTDS::HashMap<FTRESOURCE>* resMap)
 	{
 		FTDS::Record<FTRESOURCE>* res = nullptr;
-		res								  = resMap->At(key);
+		res							  = resMap->At(key);
 		return res;
 	}
 

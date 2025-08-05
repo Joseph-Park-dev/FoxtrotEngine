@@ -15,7 +15,7 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include <imgui_internal.h>
-#include "imgui/FileDialog/imfilebrowser.h"
+#include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
 
 #include "Core/SingletonMacro.h"
 #include "EditorElement.h"
@@ -70,7 +70,7 @@ public:
 	ImVec2	  GetSceneViewportSize() const { return mSceneViewportSize; }
 	ErrorType GetErrorType() const { return mErrorType; }
 
-	ImGuiFileBrowserFlags& GetFileSelectFlag() { return mFileSelectFlag; }
+	//ImGuiFileDialogFlags& GetFileSelectFlag() { return mFileSelectFlag; }
 
 	void SetInfoType(InfoType type) { mInfoType = type; }
 	void SetErrorType(ErrorType type) { mErrorType = type; }
@@ -162,13 +162,6 @@ private:
 	ErrorType	   mErrorType;
 	FileMenuEvents mFileMenuEvent;
 
-	ImGui::FileBrowser	  mFileDialog;
-	ImGuiFileBrowserFlags mDirSelectFlag =
-		ImGuiFileBrowserFlags_SelectDirectory | ImGuiFileBrowserFlags_HideRegularFiles | ImGuiFileBrowserFlags_ConfirmOnEnter | ImGuiFileBrowserFlags_CloseOnEsc | ImGuiFileBrowserFlags_CreateNewDir | ImGuiFileBrowserFlags_EditPathString;
-
-	ImGuiFileBrowserFlags mFileSelectFlag =
-		ImGuiFileBrowserFlags_EnterNewFilename | ImGuiFileBrowserFlags_ConfirmOnEnter | ImGuiFileBrowserFlags_CloseOnEsc | ImGuiFileBrowserFlags_CreateNewDir | ImGuiFileBrowserFlags_EditPathString;
-
 private:
 	/// <summary>
 	//  Renders viewport.
@@ -228,9 +221,9 @@ private:
 	void PopUpError(const char* title, const char* msg);
 
 	// Called according to FileMenuEvents.
-	void CreateNewProject(std::filesystem::path& path);
-	void OpenProject(std::filesystem::path& path);
-	void Save(std::filesystem::path& path);
-	void SaveAs(std::filesystem::path& path);
-	void Open(std::filesystem::path& path);
+	void CreateNewProject(std::string& path);
+	void OpenProject(std::string& path);
+	void Save(std::string& path);
+	void SaveAs(std::string& path);
+	void Open(std::string& path);
 };

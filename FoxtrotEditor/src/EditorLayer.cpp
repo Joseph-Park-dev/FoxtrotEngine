@@ -14,7 +14,7 @@
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
 #include <imgui_internal.h>
-#include "imgui/FileDialog/imfilebrowser.h"
+#include <ImGuiFileDialog/ImGuiFileDialog.h>
 #include <d3d11.h>
 
 #include "EditorElement.h"
@@ -39,6 +39,7 @@
 #include "Managers/LightManager.h"
 #include "Managers/AnimationManager.h"
 #include "Managers/TileMapManager.h"
+#include "Managers/SoundManager.h"
 #include "Scenes/Scene.h"
 #include "Actors/Actor.h"
 #include "Actors/ActorGroup.h"
@@ -117,7 +118,7 @@ void EditorLayer::DisplayViewport()
 
 	ID3D11ShaderResourceView* viewportTexture = renderer->GetViewportRenderer()->GetViewportSRV().Get();
 	const ImVec2			  viewportSize	  = editorWin->GetRenderArea()->GetSize().GetImVec2();
-	ImGui::Image((ImTextureID)viewportTexture, viewportSize);
+	ImGui::Image((ImTextureID)(intptr_t)viewportTexture, viewportSize);
 
 	ImGui::End();
 }
@@ -132,11 +133,14 @@ void EditorLayer::DisplayFrameRate()
 
 void EditorLayer::DisplayMainMenuBar()
 {
+	const size_t	  maxMenuEle		   = 5;
+	const std::string fileMenu[maxMenuEle] = { "New Project", "Open Project", "Save", "Save As", "Open" };
+
+	IGFD::FileDialogConfig config;
+	config.flags = ImGuiFileDialogFlags_Modal;
+
 	if (ImGui::BeginMainMenuBar())
 	{
-		const size_t	  maxMenuEle		   = 5;
-		const std::string fileMenu[maxMenuEle] = { "New Project", "Open Project", "Save", "Save As", "Open" };
-
 		std::string selection = {};
 		if (ImGui::Button("File"))
 			ImGui::OpenPopup("FilePopUp");
@@ -151,16 +155,12 @@ void EditorLayer::DisplayMainMenuBar()
 
 		if (selection == fileMenu[0])
 		{
-			mFileDialog = ImGui::FileBrowser(mDirSelectFlag);
-			mFileDialog.SetTitle("New Project");
-			mFileDialog.Open();
+			ImGuiFileDialog::Instance()->OpenDialog(fileMenu[0], "Choose Directory", nullptr, config);
 			mFileMenuEvent = FileMenuEvents::NewProject;
 		}
 		else if (selection == fileMenu[1])
 		{
-			mFileDialog = ImGui::FileBrowser(mDirSelectFlag);
-			mFileDialog.SetTitle("Open Project");
-			mFileDialog.Open();
+			ImGuiFileDialog::Instance()->OpenDialog(fileMenu[1], "Choose Directory", nullptr, config);
 			mFileMenuEvent = FileMenuEvents::OpenProject;
 		}
 		else if (selection == fileMenu[2] || mSaveKeyPressed)
@@ -178,32 +178,26 @@ void EditorLayer::DisplayMainMenuBar()
 			}
 			else
 			{
-				mFileDialog = ImGui::FileBrowser(mFileSelectFlag);
-				mFileDialog.SetTitle("Save");
-				mFileDialog.SetTypeFilters({ FileTypes::CHUNK });
-				mFileDialog.SetDirectory(PATH_PROJECT.C_Str());
-				mFileDialog.Open();
+				IGFD::FileDialogConfig config;
+				config.path = PATH_PROJECT.C_Str();
+				ImGuiFileDialog::Instance()->OpenDialog(fileMenu[2], "Choose Directory", FileTypes::CHUNK, config);
 				mFileMenuEvent = FileMenuEvents::Save;
 			}
 		}
 		else if (selection == fileMenu[3] || mSaveAsKeyPressed)
 		{
-			mFileDialog = ImGui::FileBrowser(mFileSelectFlag);
-			mFileDialog.SetTitle("Save As");
-			mFileDialog.SetTypeFilters({ FileTypes::CHUNK });
-			mFileDialog.SetDirectory(PATH_PROJECT.C_Str());
-			mFileDialog.Open();
+			IGFD::FileDialogConfig config;
+			config.path = PATH_PROJECT.C_Str();
+			ImGuiFileDialog::Instance()->OpenDialog(fileMenu[3], "Choose Directory", FileTypes::CHUNK, config);
 			mFileMenuEvent = FileMenuEvents::SaveAs;
 		}
 		else if (selection == fileMenu[4] || mOpenKeyPressed)
 		{
 			if (!PATH_PROJECT.IsEmpty())
 			{
-				mFileDialog = ImGui::FileBrowser(mFileSelectFlag);
-				mFileDialog.SetTitle("Open Chunk");
-				mFileDialog.SetTypeFilters({ FileTypes::CHUNK });
-				mFileDialog.SetDirectory(PATH_PROJECT.C_Str());
-				mFileDialog.Open();
+				IGFD::FileDialogConfig config;
+				config.path = PATH_PROJECT.C_Str();
+				ImGuiFileDialog::Instance()->OpenDialog(fileMenu[4], "Choose File", FileTypes::CHUNK, config);
 				mFileMenuEvent = FileMenuEvents::Open;
 			}
 		}
@@ -274,47 +268,88 @@ void EditorLayer::DisplayMainMenuBar()
 		}
 		ImGui::EndMainMenuBar();
 	}
-	mFileDialog.Display();
 
-	if (mFileDialog.HasSelected())
+	switch (mFileMenuEvent)
 	{
-		std::filesystem::path path = mFileDialog.GetSelected();
-		switch (mFileMenuEvent)
+		case FileMenuEvents::None:
+			ImGuiFileDialog::Instance()->Close();
+			break;
+
+		case FileMenuEvents::NewProject:
 		{
-			case FileMenuEvents::None:
-				break;
-
-			case FileMenuEvents::NewProject:
-				CreateNewProject(path);
-				break;
-
-			case FileMenuEvents::OpenProject:
-				OpenProject(path);
-				break;
-
-			case FileMenuEvents::Save:
-				Save(path);
-				break;
-
-			case FileMenuEvents::SaveAs:
-				SaveAs(path);
-				break;
-
-			case FileMenuEvents::Open:
-				Open(path);
-				break;
-
-			default:
-				break;
+			if (ImGuiFileDialog::Instance()->Display(fileMenu[0]))
+			{
+				if (ImGuiFileDialog::Instance()->IsOk())
+				{
+					std::string path = ImGuiFileDialog::Instance()->GetCurrentPath();
+					CreateNewProject(path);
+				}
+				mFileMenuEvent = FileMenuEvents::None;
+			}
+			break;
 		}
+
+		case FileMenuEvents::OpenProject:
+		{
+			if (ImGuiFileDialog::Instance()->Display(fileMenu[1]))
+			{
+				if (ImGuiFileDialog::Instance()->IsOk())
+				{
+					std::string path = ImGuiFileDialog::Instance()->GetCurrentPath();
+					OpenProject(path);
+				}
+				mFileMenuEvent = FileMenuEvents::None;
+			}
+			break;
+		}
+		case FileMenuEvents::Save:
+		{
+			if (ImGuiFileDialog::Instance()->Display(fileMenu[2]))
+			{
+				if (ImGuiFileDialog::Instance()->IsOk())
+				{
+					std::string path = ImGuiFileDialog::Instance()->GetFilePathName();
+					Save(path);
+				}
+				mFileMenuEvent = FileMenuEvents::None;
+			}
+			break;
+		}
+		case FileMenuEvents::SaveAs:
+		{
+			if (ImGuiFileDialog::Instance()->Display(fileMenu[3]))
+			{
+				if (ImGuiFileDialog::Instance()->IsOk())
+				{
+					std::string path = ImGuiFileDialog::Instance()->GetFilePathName();
+					SaveAs(path);
+				}
+				mFileMenuEvent = FileMenuEvents::None;
+			}
+			break;
+		}
+		case FileMenuEvents::Open:
+		{
+			if (ImGuiFileDialog::Instance()->Display(fileMenu[4]))
+			{
+				if (ImGuiFileDialog::Instance()->IsOk())
+				{
+					std::string path = ImGuiFileDialog::Instance()->GetFilePathName();
+					Open(path);
+				}
+				mFileMenuEvent = FileMenuEvents::None;
+			}
+			break;
+		}
+		default:
+			break;
 	}
-	mFileDialog.ClearSelected();
 }
 
 void EditorLayer::DisplayManagersMenu()
 {
-	const size_t maxMenuEle			= 2;
-	const char*	 menu[maxMenuEle]	= { "Animation Manager", "TileMap Manager" };
+	const size_t maxMenuEle			= 3;
+	const char*	 menu[maxMenuEle]	= { "Animation Manager", "TileMap Manager", "Sound Manager" };
 	static bool	 opened[maxMenuEle] = { false, false };
 
 	if (ImGui::Button("Managers"))
@@ -332,6 +367,8 @@ void EditorLayer::DisplayManagersMenu()
 		AnimationManager::GetInstance()->UpdateUI(&opened[0]);
 	if (opened[1])
 		TileMapManager::GetInstance()->UpdateUI(&opened[1]);
+	if (opened[2])
+		SoundManager::GetInstance()->UpdateUI(&opened[2]);
 }
 
 void EditorLayer::DisplayHierarchyMenu()
@@ -430,7 +467,7 @@ void EditorLayer::ProcessDropEvent(EditorElement* target)
 				if (child->GetParent())
 				{
 					std::vector<Actor*>& children = child->GetParent()->GetChildActors();
-					auto iter = std::find(children.begin(), children.end(), child);
+					auto				 iter	  = std::find(children.begin(), children.end(), child);
 					children.erase(iter);
 					child->SetParent(nullptr);
 				}
@@ -664,14 +701,14 @@ void EditorLayer::PopUpError(const char* title, const char* msg)
 	}
 }
 
-void EditorLayer::CreateNewProject(std::filesystem::path& path)
+void EditorLayer::CreateNewProject(std::string& path)
 {
-	bool projExists	 = ProjectExists(path.string().c_str());
+	bool projExists	 = ProjectExists(path.c_str());
 	bool pathIsEmpty = std::filesystem::is_empty(path);
 
 	if (!projExists && pathIsEmpty)
 	{
-		PATH_PROJECT.Assign(path.string().c_str());
+		PATH_PROJECT.Assign(path.c_str());
 
 		FTDS::String&& assetDir(std::move(PATH_PROJECT));
 		FTDS::String&& buildDir(std::move(PATH_PROJECT));
@@ -707,45 +744,43 @@ void EditorLayer::CreateNewProject(std::filesystem::path& path)
 	EditorResourceManager::GetInstance()->DeleteAll();
 }
 
-void EditorLayer::OpenProject(std::filesystem::path& path)
+void EditorLayer::OpenProject(std::string& path)
 {
-	if (ProjectExists(path.string()))
+	if (ProjectExists(path))
 	{
 		EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 		DebugShapes::GetInstance()->DeleteAll();
 		EditorResourceManager::GetInstance()->DeleteAll();
-		PATH_PROJECT.Assign(path.string().c_str());
+		PATH_PROJECT.Assign(path.c_str());
 		EditorResourceManager::GetInstance()->SetPathToAsset(std::move(PATH_PROJECT));
-		//EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 		EditorResourceManager::GetInstance()->LoadAllResourcesInAsset();
+		// EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 	}
 	else
-	{
 		mErrorType = ErrorType::ProjectNotValid;
-	}
 }
 
-void EditorLayer::Save(std::filesystem::path& path)
+void EditorLayer::Save(std::string& path)
 {
-	PATH_CHUNK.Assign(path.string().c_str());
+	PATH_CHUNK.Assign(path.c_str());
 	EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
 	mInfoType = InfoType::ChunkIsSaved;
 	SET_CHUNK_IS_SAVED(true)
 }
 
-void EditorLayer::SaveAs(std::filesystem::path& path)
+void EditorLayer::SaveAs(std::string& path)
 {
-	PATH_CHUNK.Assign(path.string().c_str());
+	PATH_CHUNK.Assign(path.c_str());
 	EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
 	mInfoType = InfoType::ChunkIsSaved;
 	SET_CHUNK_IS_SAVED(true)
 }
 
-void EditorLayer::Open(std::filesystem::path& path)
+void EditorLayer::Open(std::string& path)
 {
 	mFocusedEditorElement = nullptr;
 	EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
-	PATH_CHUNK.Assign(path.string().c_str());
+	PATH_CHUNK.Assign(path.c_str());
 	EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
 	// LightManager::GetInstance()->Reset(FTCoreEditor::GetInstance()->GetGameRenderer());
 	SET_CHUNK_IS_SAVED(true)

@@ -66,7 +66,7 @@ bool FTCoreEditor::Initialize()
 		delete mEditorWindow;
 		mEditorWindow = nullptr;
 	}
-	mEditorWindow = DBG_NEW FTWindow("Foxtrot Editor", 1920, 1080);
+	mEditorWindow = DBG_NEW FTWindow("Foxtrot Editor", 3840, 2160);
 
 	if (!mEditorWindow->InitializeWindow(WndProc_FTEditor))
 	{
@@ -155,9 +155,9 @@ LRESULT FTCoreEditor::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 void FTCoreEditor::InitSingletonManagers()
 {
 	Physics2D::GetInstance()->Initialize();
-	SoundManager::GetInstance()->Initialize();
 	Camera::GetInstance()->Initialize(GetGameWindow(), 64.f, 1.8f);
 	EditorResourceManager::GetInstance()->Initialize(GetGameRenderer());
+	SoundManager::GetInstance()->Initialize();
 	UIManager::GetInstance();
 	EventManager::GetInstance();
 	CollisionManager::GetInstance()->Initialize();
@@ -222,6 +222,7 @@ void FTCoreEditor::GenerateOutput()
 		DebugShapes::GetInstance()->Render(renderer);
 		LightManager::GetInstance()->Render(renderer, Camera::GetInstance());
 	}
+
 	GetGameWindow()->EndRender(renderer);
 
 	GetGameRenderer()->GetViewportRenderer()->BeginRender(renderer);
@@ -265,7 +266,13 @@ bool FTCoreEditor::InitGUI()
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	// io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-	io.DisplaySize = ImVec2(float(mEditorWindow->GetWidth()), float(mEditorWindow->GetHeight()));
+	io.DisplaySize			   = ImVec2(float(mEditorWindow->GetWidth()), float(mEditorWindow->GetHeight()));
+	io.ConfigDpiScaleFonts	   = true;
+	io.ConfigDpiScaleViewports = true;
+	io.FontGlobalScale		   = 1.5f;
+
+	ImGuiStyle& style = ImGui::GetStyle();
+	style.ScaleAllSizes(2.0f);
 
 	ImGui::StyleColorsDark();
 	if (!ImGui_ImplWin32_Init(mEditorWindow->GetHandle()))

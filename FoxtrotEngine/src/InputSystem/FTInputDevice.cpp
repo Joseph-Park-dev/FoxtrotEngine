@@ -91,6 +91,11 @@ bool FTInputDevice::MOUSE_NONE(MOUSE mouse) { return GetMouseState(mouse) == KEY
 
 FTVector2 FTInputDevice::MOUSE_POS() { return mMousePosition; }
 FTVector3 FTInputDevice::MOUSE_WORLDPOS(Camera* camInst) { return camInst->ConvertScreenPosToWorld(mMousePosition); }
+FTVector2 FTInputDevice::MOUSE_WORLDPOS_2D(Camera* camInst) 
+{ 
+	FTVector3 pos = camInst->ConvertScreenPosToWorld(mMousePosition);
+	return FTVector2(pos.x, pos.y);
+}
 
 void FTInputDevice::DetectKeyInput()
 {

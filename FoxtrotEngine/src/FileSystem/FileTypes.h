@@ -20,6 +20,20 @@ namespace FileTypes
 	constexpr const char* CHUNK	 = ".chunk";
 	constexpr const char* GDPACK = ".gdpack";
 
+	constexpr const char* ALL_FILE_FORMATS = ".ftpremade" ","
+											 ".png, .jpeg, .jpg, .dds" ","
+											 ".dds" ","
+											 ".fttilemap" ","
+											 ".ftspritesheet" ","
+											 ".csv" ","
+											 ".json" ","
+											 ".txt, .atlas" ","
+											 ".fbx, .stl" ","
+											 ".ftspriteanim" ","
+											 ".ftspineanim" ","
+											 ".hlsl" ","
+											 ".ftmat" ","
+											 ".shadermeta";
 	// FTResources
 	constexpr const char* PREMADE		   = ".ftpremade";
 	constexpr const char* TEXTURE		   = ".png, .jpeg, .jpg, .dds";

@@ -16,6 +16,6 @@
 #include "Actors/ActorGroup.h"
 
 // Object Spawning & Destroying
-void	Instantiate(Actor* actor, ActorGroup actorGroup);
+Actor*	Instantiate(Actor* actor, ActorGroup actorGroup, FTVector3 pos = FTVector3::Zero);
 Actor*	Instantiate(FTDS::String& premadeName);
 void	Destroy(Actor* actor);

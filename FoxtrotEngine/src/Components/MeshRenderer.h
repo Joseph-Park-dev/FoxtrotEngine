@@ -130,7 +130,6 @@ public:
 	virtual void EditorUIUpdate() override;
 
 protected:
-	virtual void OnConfirmUpdate() override;
 	void		 OnResetTexture();
 	void		 UpdateSprite();
 	void		 UpdateSprite(FTDS::String& key);

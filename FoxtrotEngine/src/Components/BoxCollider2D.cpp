@@ -111,6 +111,9 @@ BoxCollider2D::~BoxCollider2D()
 
 void BoxCollider2D::UpdateDebugShape(Camera* camInst)
 {
+	if (!mDebugRect)
+		return;
+
 	if (mDebugRect)
 		mDebugRect->SetIsActive(IsShowingDebugShape());
 

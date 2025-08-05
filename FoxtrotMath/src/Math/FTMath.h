@@ -37,7 +37,7 @@
 
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS
-	#include <imgui.h>
+	#include <imgui/imgui.h>
 #endif // FOXTROT_EDITOR
 
 extern "C"

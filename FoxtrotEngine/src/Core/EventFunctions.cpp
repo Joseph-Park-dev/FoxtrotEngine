@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -14,29 +14,46 @@
 #include "ResourceSystem/FTPremade.h"
 
 #ifdef FOXTROT_EDITOR
-#include "FTCoreEditor.h"
-#include "EditorSceneManager.h"
-#include "EditorElement.h"
+	#include "FTCoreEditor.h"
+	#include "EditorSceneManager.h"
+	#include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
-void Instantiate(Actor* actor, ActorGroup actorGroup)
+Actor* Instantiate(Actor* actor, ActorGroup actorGroup, FTVector3 pos)
 {
-	FTEvent addedEvent = {};
+	FTEvent addedEvent	= {};
 	addedEvent.incident = EVENT_TYPE::CREATE_ACTOR;
 	actor->SetActorGroup(actorGroup);
-	addedEvent.eventData.push_back(actor);
-	EventManager::GetInstance()->AddEvent(addedEvent);
+
+	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+	actor->GetTransform()->SetWorldPosition(pos);
+	EditorElement* editorElement = DBG_NEW EditorElement(actor);
+	editorElement->Initialize(FTCoreEditor::GetInstance());
+	editorElement->Setup();
+
+	if (editorElement)
+	{
+		addedEvent.eventData.push_back(editorElement);
+		addedEvent.eventData.push_back(nullptr);
+		EventManager::GetInstance()->AddEvent(addedEvent);
+		return editorElement;
+	}
+	else
+	{
+		printf("ERROR : Instantiate() -> Premade not loaded, %s\n", actor->GetName().C_Str());
+		return nullptr;
+	}
 }
 
 Actor* Instantiate(FTDS::String& premadeName)
 {
-	FTEvent addedEvent = {};
+	FTEvent addedEvent	= {};
 	addedEvent.incident = EVENT_TYPE::CREATE_ACTOR;
-	FTPremade* premade = ResourceManager::GetInstance()->GetLoadedPremade(premadeName);
-	Actor* origin = premade->GetOrigin();
+	FTPremade* premade	= ResourceManager::GetInstance()->GetLoadedPremade(premadeName);
+	Actor*	   origin	= premade->GetOrigin();
 
 #ifdef FOXTROT_EDITOR
-	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+	EditorScene*   scene		 = EditorSceneManager::GetInstance()->GetEditorScene();
 	EditorElement* editorElement = DBG_NEW EditorElement(origin);
 	editorElement->Initialize(FTCoreEditor::GetInstance());
 	editorElement->Setup();
@@ -74,7 +91,7 @@ Actor* Instantiate(FTDS::String& premadeName)
 
 void Destroy(Actor* actor)
 {
-	FTEvent addedEvent = {};
+	FTEvent addedEvent	= {};
 	addedEvent.incident = EVENT_TYPE::DESTROY_ACTOR;
 	addedEvent.eventData.push_back(actor);
 	EventManager::GetInstance()->AddEvent(addedEvent);

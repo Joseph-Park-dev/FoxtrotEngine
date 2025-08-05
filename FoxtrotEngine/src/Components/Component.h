@@ -114,11 +114,6 @@ public:
 
 public:
 	virtual void EditorUIUpdate();
-	virtual void UpdateDebugShapes(
-		FTVector3 pos,
-		FTVector3 rot,
-		FTVector3 scale,
-		Camera*	  cameraInst);
 
 	void SetUpdateOrder(int updateOrder);
 
@@ -132,11 +127,6 @@ public:
 		t->Initialize(coreInst);
 	}
 
-public:
-	virtual void AddResRefCount();
-
-protected:
-	virtual void OnConfirmUpdate();
 #endif // FOXTROT_EDITOR
 };
 

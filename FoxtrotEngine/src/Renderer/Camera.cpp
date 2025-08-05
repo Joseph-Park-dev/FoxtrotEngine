@@ -1,4 +1,4 @@
-// ----------------------------------------------------------------
+﻿// ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
 //
@@ -118,8 +118,8 @@ Matrix Camera::GetProjRow()
 
 	return mViewType == Viewtype::Perspective
 		? DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(mProjFOVAngleY), mAspect, mNearZ, mFarZ)
-		: DirectX::XMMatrixOrthographicOffCenterLH(
-			  0.0f, worldWidth, 0.0f, worldHeight, mNearZ, mFarZ);
+		: DirectX::XMMatrixOrthographicLH(
+			  worldWidth, worldHeight, mNearZ, mFarZ);
 }
 
 const FTVector3& Camera::GetPosition() const
@@ -268,19 +268,19 @@ FTVector3 Camera::ConvertScreenPosToWorld(FTVector2 screenPos)
 {
 	FTVector2 ndc = ConvertScreenPosToNDC(screenPos);
 
-	DirectX::XMVECTOR clipSpacePos = DirectX::XMVectorSet(ndc.x, ndc.y, 0.0f, 1.0f);
-	DirectX::XMVECTOR viewSpacePos = DirectX::XMVector4Transform(
+	Vector4 clipSpacePos = Vector4(ndc.x, ndc.y, 0.0f, 1.0f);
+
+	Vector4 viewSpacePos = Vector4::Transform(
 		clipSpacePos,
-		DirectX::XMMatrixInverse(nullptr, GetProjRow().Transpose()));
-	DirectX::XMVECTOR worldSpacePos = DirectX::XMVector4Transform(
+		GetProjRow().Invert());
+
+	viewSpacePos /= viewSpacePos.w;
+
+	Vector4 worldSpacePos = Vector4::Transform(
 		viewSpacePos,
-		DirectX::XMMatrixInverse(nullptr, GetViewRow().Transpose()));
+		GetViewRow().Invert());
 
-	float worldX = DirectX::XMVectorGetX(worldSpacePos);
-	float worldY = DirectX::XMVectorGetY(worldSpacePos);
-	float worldZ = DirectX::XMVectorGetZ(worldSpacePos);
-
-	return FTVector3(worldX, worldX, worldZ);
+	return FTVector3(worldSpacePos.x, worldSpacePos.y, worldSpacePos.z);
 }
 
 FTVector2 Camera::ConvertScreenPosToNDC(FTVector2 screenPos)

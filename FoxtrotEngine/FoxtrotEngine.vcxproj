@@ -223,7 +223,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;FOXTROT_EDITOR;WITH_WINMM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>.\include;.\include\SoLoud\include;.\include\spine-cpp\include;.\src;..\FoxtrotEditor\include;..\FoxtrotEditor\src;..\FoxtrotDS;..\FoxtrotMath\src;D:\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\include;.\include\SoLoud\include;.\include\spine-cpp\include;.\src;..\FoxtrotEditor\include\imgui\backends;..\FoxtrotEditor\include\imgui;..\FoxtrotEditor\include;..\FoxtrotEditor\src;..\FoxtrotDS;..\FoxtrotMath\src;D:\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -267,6 +267,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\Bullet.cpp" />
     <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\Damage.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>

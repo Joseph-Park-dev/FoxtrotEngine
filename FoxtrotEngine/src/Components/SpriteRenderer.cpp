@@ -31,9 +31,8 @@
 	#include <EditorCamera.h>
 
 	#define IMGUI_DEFINE_MATH_OPERATORS
-	#include "imgui/FileDialog/ImGuiFileDialog.h"
-	#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
 	#include <imgui.h>
+	#include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
 #endif // FOXTROT_EDITOR
 
 int SpriteRenderer::GetTexWidth()
@@ -125,7 +124,6 @@ void SpriteRenderer::EditorUIUpdate()
 		return;
 
 	UpdateMaterial();
-	OnConfirmUpdate();
 	UpdateSprite();
 	OnResetTexture();
 

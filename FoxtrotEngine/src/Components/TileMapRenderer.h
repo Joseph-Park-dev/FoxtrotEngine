@@ -58,7 +58,7 @@ public:
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void EditorUIUpdate() override;
-	virtual void OnConfirmUpdate() override;
+	void		 OnConfirmUpdate();
 
 protected:
 	void UpdateCSV();

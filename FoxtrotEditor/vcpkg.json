@@ -3,24 +3,6 @@
   "dependencies": [
     "directxtex",
     "directxtk",
-    {
-      "name": "imgui",
-      "features": [
-        "docking-experimental"
-      ]
-    },
-    {
-      "name": "imgui",
-      "features": [
-        "dx11-binding"
-      ]
-    },
-    {
-      "name": "imgui",
-      "features": [
-        "win32-binding"
-      ]
-    },
     "stb",
     "nlohmann-json"
   ]

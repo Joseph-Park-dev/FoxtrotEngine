@@ -37,8 +37,21 @@ namespace FTDS
 
 	public:
 		TYPE*  Begin() { return &mData[0]; }
-		TYPE*  End() { return &mData[mCapacity - 1]; }
+		TYPE*  End() { return &mData[mCapacity]; }
 		size_t IterPos() { return mPtr - Begin(); }
+
+		template <class UnaryOperation>
+		void IterateArray(
+			UnaryOperation&& unaryOp)
+		{
+			mPtr = Begin();
+			while (mPtr != End())
+			{
+				if (*mPtr)
+					unaryOp(*mPtr);
+				++mPtr;
+			}
+		}
 
 	public:
 		// Re-allocate memory space when new capacity is bigger than current capacity
@@ -130,6 +143,8 @@ namespace FTDS
 			mData = newArr;
 			// Set new capacity.
 			mCapacity = newCap;
+
+			mPtr = Begin();
 		}
 
 		size_t Min(size_t a, size_t b)

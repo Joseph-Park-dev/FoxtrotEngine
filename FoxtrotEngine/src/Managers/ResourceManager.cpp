@@ -40,8 +40,7 @@
 #include "Compare/StringEqual.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "imgui/FileDialog/ImGuiFileDialog.h"
-	#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
+	#include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
 
 	#include "DirectoryHelper.h"
 	#include "EditorResourceManager.h"

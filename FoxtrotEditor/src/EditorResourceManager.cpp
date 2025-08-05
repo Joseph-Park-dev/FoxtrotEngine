@@ -254,11 +254,22 @@ void EditorResourceManager::UpdateUI()
 {
 	if (ImGui::Button("Import"))
 	{
-		FTDS::DynamicArray<FTDS::String*> importedFileNames;
-		FTEditorUtils::DisplayOpenFileDialog(*mFileTypeSpecs->Data(), &importedFileNames);
+		IGFD::FileDialogConfig config;
+		config.countSelectionMax = 0;
+		config.path				 = GetPathToAsset().C_Str();
 
-		for (size_t i = 0; i < importedFileNames.GetSize(); ++i)
-			LoadResByType((*importedFileNames.At(i)).C_Str());
+		ImGuiFileDialog::Instance()->OpenDialog("ImportRes", "Choose Files", FileTypes::ALL_FILE_FORMATS, config);
+	}
+
+	if (ImGuiFileDialog::Instance()->Display("ImportRes"))
+	{
+		if (ImGuiFileDialog::Instance()->IsOk())
+		{
+			std::map<std::string, std::string> selection = ImGuiFileDialog::Instance()->GetSelection();
+			for (auto iter = selection.begin(); iter != selection.end(); ++iter)
+				LoadResByType((*iter).second.c_str());
+		}
+		ImGuiFileDialog::Instance()->Close();
 	}
 
 	DisplayLoadedResources<FTTexture>("Textures", GetTextures());
@@ -325,9 +336,8 @@ ResType EditorResourceManager::GetResType(FTDS::String& fileName)
 }
 
 EditorResourceManager::EditorResourceManager()
-	: mFileTypeSpecs(nullptr)
 {
-	mFileTypeSpecs = DBG_NEW FTDS::DynamicArray<COMDLG_FILTERSPEC*>;
+	/*mFileTypeSpecs = DBG_NEW FTDS::DynamicArray<COMDLG_FILTERSPEC*>;
 	mFileTypeSpecs->Reserve(FileTypes::MAX_RES_TYPE_COUNT);
 
 	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Premades", FileTypes::PREMADE);
@@ -343,14 +353,14 @@ EditorResourceManager::EditorResourceManager()
 	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Spine Animation", FileTypes::SPINE_ANIMATION);
 	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Vertex Shaders", FileTypes::VERTEX_SHADER);
 	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Pixel Shaders", FileTypes::PIXEL_SHADER);
-	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Materials", FileTypes::MATERIAL);
+	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Materials", FileTypes::MATERIAL);*/
 }
 
 EditorResourceManager::~EditorResourceManager()
 {
-	//mFileTypeSpecs->ClearDynamicMem();
-	for (size_t i = 0; i < mFileTypeSpecs->GetSize(); ++i)
-		delete mFileTypeSpecs->At(i);
+	////mFileTypeSpecs->ClearDynamicMem();
+	// for (size_t i = 0; i < mFileTypeSpecs->GetSize(); ++i)
+	//	delete mFileTypeSpecs->At(i);
 
-	delete mFileTypeSpecs;
+	// delete mFileTypeSpecs;
 }

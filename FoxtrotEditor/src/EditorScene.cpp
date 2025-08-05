@@ -23,11 +23,7 @@
 void EditorScene::Initialize(FTCore* coreInst)
 {
 	for (EditorElement* ele : mEditorElements)
-	{
 		ele->Initialize(coreInst);
-		for (Component* comp : ele->GetComponents())
-			comp->AddResRefCount();
-	}
 }
 
 void EditorScene::Setup()
@@ -121,6 +117,11 @@ void EditorScene::AddEditorElement(Actor* actor)
 	UnfocusEditorElements();
 
 	EditorElement* element = DBG_NEW EditorElement(actor);
+	AddEditorElement(element);
+}
+
+void EditorScene::AddEditorElement(EditorElement* element)
+{
 	int	 drawOrder = element->GetDrawOrder();
 	auto iter	   = mEditorElements.begin();
 	for (; iter != mEditorElements.end(); ++iter)
@@ -150,6 +151,16 @@ EditorElement* EditorScene::FindEditorElement(const char* name, Actor* filter)
 {
 	FTDS::String str(name);
 	return FindEditorElement(str, filter);
+}
+
+void EditorScene::RemoveEditorElement(EditorElement* element)
+{
+	auto iter = std::find(mEditorElements.begin(), mEditorElements.end(), element);
+	if (iter != mEditorElements.end())
+	{
+		delete *iter;
+		mEditorElements.erase(iter);
+	}
 }
 
 std::vector<EditorElement*>& EditorScene::GetEditorElements()

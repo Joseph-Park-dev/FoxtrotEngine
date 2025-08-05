@@ -278,12 +278,6 @@ void Animator::EditorRender(FoxtrotRenderer* renderer)
 	}
 }
 
-void Animator::AddResRefCount()
-{
-	for (FTSpriteAnimation* anim : mLoadedAnim)
-		anim->AddRefCount();
-}
-
 void Animator::UpdatePlayAnim()
 {
 	if (GetMeshGroup())

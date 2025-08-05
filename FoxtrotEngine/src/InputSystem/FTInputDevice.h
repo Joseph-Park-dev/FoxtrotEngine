@@ -100,6 +100,7 @@ public:
 
 	FTVector2 MOUSE_POS();
 	FTVector3 MOUSE_WORLDPOS(Camera* camInst);
+	FTVector2 MOUSE_WORLDPOS_2D(Camera* camInst);
 
 public:
 	FTInputDevice();

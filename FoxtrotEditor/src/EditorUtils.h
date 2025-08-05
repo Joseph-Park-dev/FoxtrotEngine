@@ -12,8 +12,7 @@
 #pragma once
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
-#include "imgui/FileDialog/ImGuiFileDialog.h"
-#include "imgui/FileDialog/imfilebrowser.h"
+#include "imgui/ImGuiFileDialog/ImGuiFileDialog.h"
 
 #include <Windows.h>
 #include <shobjidl.h> // For IFileOpenDialog
@@ -33,8 +32,6 @@ namespace FTEditorUtils
 {
 	inline void DisplayOpenFileDialog(const COMDLG_FILTERSPEC* fileTypes, FTDS::DynamicArray<FTDS::String*>* openFileNames)
 	{
-		SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-
 		IShellItemArray* pResults;
 		IFileOpenDialog* pFileOpen = nullptr;
 
@@ -159,7 +156,7 @@ namespace FTEditorUtils
 			config.path				 = ".";
 			config.countSelectionMax = 1;
 			ImGuiFileDialog::Instance()->OpenDialog(
-				"Dialog", label, FileTypes::TEXTURE, config);
+				"Dialog", label, nullptr, config);
 			ImGui::OpenPopup(label);
 		}
 
@@ -175,6 +172,42 @@ namespace FTEditorUtils
 					{
 						if (node->Key().NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 							currSelection = node->Key();
+					}
+				});
+
+				ImGui::TreePop();
+			}
+			if (ImGui::Button("Close"))
+				ImGui::CloseCurrentPopup();
+			ImGui::EndPopup();
+		}
+	}
+
+	template <typename FTRESOURCE>
+	inline void DisplayResSelection(
+		const char*					label,
+		FTDS::HashMap<FTRESOURCE*>* resMap,
+		FTRESOURCE*&				selectedRes
+	)
+	{
+		if (ImGui::Button(label))
+			ImGui::OpenPopup(label);
+
+		if (ImGui::BeginPopupModal(label, NULL, ImGuiWindowFlags_MenuBar))
+		{
+			if (ImGui::TreeNode("Selection State: Single Selection"))
+			{
+				resMap->IterateAllNodes([&](FTDS::Record<FTRESOURCE*>* node) {
+					if (ImGui::Selectable(node->Key().C_Str()))
+					{
+						if (node->Key().NotEqual(ChunkKey::NullVal::NULL_OBJECT))
+						{
+							if (selectedRes)
+								selectedRes->SubtractRefCount();
+
+							selectedRes = node->Value();
+							selectedRes->AddRefCount();
+						}
 					}
 				});
 

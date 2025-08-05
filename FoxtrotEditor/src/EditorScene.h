@@ -33,9 +33,12 @@ public:
 	/// </summary>
 	/// <param name="actor : ">Actor to copy values from.</param>
 	void AddEditorElement(Actor* actor);
+	void AddEditorElement(EditorElement* element);
 
 	EditorElement* FindEditorElement(FTDS::String& name, Actor* filter);
 	EditorElement* FindEditorElement(const char* name, Actor* filter);
+
+	void RemoveEditorElement(EditorElement* element);
 
 public:
 	std::vector<EditorElement*>& GetEditorElements();

@@ -54,8 +54,9 @@ void EventManager::Execute(const FTEvent& executedEvent)
 	{
 
 #ifdef FOXTROT_EDITOR
-		EditorElement* created = static_cast<EditorElement*>(executedEvent.eventData.at(0));
-		created->SetState(Actor::State::EDead);
+		EditorElement* element = static_cast<EditorElement*>(executedEvent.eventData.at(0));
+		EditorScene*   scene   = EditorSceneManager::GetInstance()->GetEditorScene();
+		scene->RemoveEditorElement(element);
 #else
 		Actor* actorToDestroy = static_cast<Actor*>(executedEvent.eventData.at(0));
 		actorToDestroy->SetState(Actor::State::EDead);

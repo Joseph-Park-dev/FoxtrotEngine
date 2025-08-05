@@ -37,8 +37,7 @@
 
 	#define IMGUI_DEFINE_MATH_OPERATORS
 	#include <imgui.h>
-	#include "imgui/FileDialog/ImGuiFileDialog.h"
-	#include "imgui/FileDialog/ImGuiFileDialogConfig.h"
+	#include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
 #endif
 
 #define DEFAULT_TILE_POS 0

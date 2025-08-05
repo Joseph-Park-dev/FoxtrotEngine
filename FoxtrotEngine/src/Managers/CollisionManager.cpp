@@ -135,6 +135,11 @@ void CollisionManager::UpdateCollisionGroup()
 
 		if (b2Shape_IsValid(data.shapeIdA) && b2Shape_IsValid(data.shapeIdB))
 		{
+			if (mRegColliders.empty())
+				return;
+			if (mRegColliders.size() % 2 != 0)
+				return;
+
 			shapeIdA = data.shapeIdA;
 			shapeIdB = data.shapeIdB;
 
@@ -205,8 +210,8 @@ void CollisionManager::SaveCollisionMarks(std::ofstream& ofs)
 void CollisionManager::LoadCollisionMarks(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COLLISION_MANAGER);
-	std::pair<size_t, FTDS::String> pack		  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COLLISION_MARKS);
-	std::vector<bool>			   marksCache = {};
+	std::pair<size_t, FTDS::String> pack	   = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COLLISION_MARKS);
+	std::vector<bool>				marksCache = {};
 	marksCache.reserve(pack.first);
 
 	for (size_t i = 0; i < pack.first; ++i)

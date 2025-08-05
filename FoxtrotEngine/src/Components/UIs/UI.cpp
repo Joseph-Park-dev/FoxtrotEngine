@@ -136,7 +136,7 @@ void UI::Render(FoxtrotRenderer* renderer)
 {
 	Camera::GetInstance()->SetViewType(Viewtype::Orthographic);
 	UpdateDebugShape(Camera::GetInstance());
-	Camera::GetInstance()->SetViewType(Viewtype::Perspective);
+	//Camera::GetInstance()->SetViewType(Viewtype::Perspective);
 }
 
 UI::UI(Actor* owner, int updateOrder)
@@ -213,7 +213,7 @@ void UI::EditorRender(FoxtrotRenderer* renderer)
 {
 	Camera::GetInstance()->SetViewType(Viewtype::Orthographic);
 	//UpdateDebugShape(Camera::GetInstance());
-	Camera::GetInstance()->SetViewType(Viewtype::Perspective);
+	//Camera::GetInstance()->SetViewType(Viewtype::Perspective);
 }
 
 void UI::EditorUIUpdate()

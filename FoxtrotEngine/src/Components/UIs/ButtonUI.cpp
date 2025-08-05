@@ -28,7 +28,6 @@ void ButtonUI::OnMouseLButtonUp()
 void ButtonUI::OnMouseLButtonClicked()
 {
 	OnMouseLeftBTNClicked->Broadcast();
-	LogString("clicked!");
 }
 
 void ButtonUI::CloneTo(Actor* actor)

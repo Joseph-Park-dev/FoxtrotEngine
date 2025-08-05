@@ -13,6 +13,7 @@
 #include "Managers/ResourceManager.h"
 #include "Managers/SceneManager.h"
 #include "Managers/CollisionManager.h"
+#include "Managers/SoundManager.h"
 #include "Math/FTMath.h"
 #include "Components/BatchHeaders.h"
 #include "FileSystem/FileIOHelper.h"
@@ -59,6 +60,7 @@ void EditorChunkLoader::SaveChunk(FTDS::String& fileName)
 	// Save -> ActorData comes first, // Load -> ChunkData comes first
 	Camera::GetInstance()->SaveProperties(ofs);
 	SaveActorsData(ofs);
+	SoundManager::GetInstance()->SaveProperties(ofs);
 	EditorResourceManager::GetInstance()->SaveResources(ofs);
 	CollisionManager::GetInstance()->SaveCollisionMarks(ofs);
 	// LightManager::GetInstance()->SaveProperties(ofs);
@@ -75,6 +77,7 @@ void EditorChunkLoader::LoadChunk(FTDS::String& fileName)
 	// LightManager::GetInstance()->LoadProperties(ifs);
 	CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
 	EditorResourceManager::GetInstance()->PassLoadResourceInChunk(ifs);
+	SoundManager::GetInstance()->LoadProperties(ifs);
 	LoadActorsData(ifs);
 
 	std::vector<EditorElement*>& elements = EditorSceneManager::GetInstance()->GetEditorScene()->GetEditorElements();

@@ -25,7 +25,6 @@ EditorCamera::EditorCamera()
 	, mZoomDelta(0.f)
 	, mDebugRect(DBG_NEW FTRectangle)
 {
-	Position() = Vector3(0.0f, 0.0f, 5.0f);
 }
 
 EditorCamera::~EditorCamera()

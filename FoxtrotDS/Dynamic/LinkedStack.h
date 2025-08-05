@@ -35,7 +35,7 @@ namespace FTDS
             }
         }
 
-        TYPE Peek() { return mHead->Value; }
+        TYPE& Peek() { return mHead->Value; }
 
     public:
         LinkedStack()

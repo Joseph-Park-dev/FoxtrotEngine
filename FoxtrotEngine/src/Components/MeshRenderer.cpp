@@ -303,13 +303,6 @@ void MeshRenderer::EditorUIUpdate()
 	AddModel();
 
 	UpdateSprite();
-	OnConfirmUpdate();
-}
-
-void MeshRenderer::OnConfirmUpdate()
-{
-	if (ImGui::Button("UpdateSprite"))
-		mMeshGroup->SetTexture(mTexKey);
 }
 
 void MeshRenderer::OnResetTexture()

@@ -17,6 +17,7 @@
 #include "FileSystem/ChunkLoader.h"
 #include "Components/BoxCollider2D.h"
 #include "FileSystem/FileIOHelper.h"
+#include "Renderer/Camera.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
@@ -63,7 +64,7 @@ void Rigidbody2D::LateUpdate(float deltaTime)
 	// Apply Position
 	FTVector3 worldPos = GetOwner()->GetTransform()->GetWorldPosition();
 	b2Vec2	  bodyPos  = b2Body_GetPosition(mBodyID);
-	float	  z		   = worldPos.z;
+	float	  z		   = 0.0f;
 
 	FTVector3 updatedPos = FTVector3(bodyPos.x, bodyPos.y, z);
 	GetOwner()->GetTransform()->SetWorldPosition(updatedPos);
@@ -82,7 +83,12 @@ void Rigidbody2D::CloneTo(Actor* actor)
 	Rigidbody2D* newComp = DBG_NEW Rigidbody2D(actor, GetUpdateOrder());
 #ifdef FOXTROT_EDITOR
 	newComp->mBodyDefCache = this->mBodyDefCache;
-	newComp->mBodyID	   = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &mBodyDefCache);
+
+	// Initialize transform-related body definitions
+	newComp->mBodyDefCache.position = actor->GetTransform()->GetWorldPosition().GetB2Vec2();
+	newComp->mBodyDefCache.rotation = b2MakeRot(actor->GetTransform()->GetWorldRotation().z);
+
+	newComp->mBodyID = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &newComp->mBodyDefCache);
 #else
 	Debug::LogError(__LINE__, __FILE__, "CloneTo() is not implemented");
 #endif // FOXTROT_EDITOR

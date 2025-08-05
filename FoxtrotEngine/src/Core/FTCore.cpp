@@ -214,12 +214,14 @@ FTCore::~FTCore()
 
 void FTCore::ShutDown()
 {
+	DebugShapes::GetInstance()->DeleteAll();
 	SceneManager::GetInstance()->GetCurrentScene()->DeleteAll();
 	ResourceManager::GetInstance()->DeleteAll();
 	Physics2D::GetInstance()->ShutDown();
 	FoxtrotRenderer::DestroyRenderer(mGameRenderer);
 	CollisionManager::GetInstance()->Destroy();
 
+	DebugShapes::GetInstance()->Destroy();
 	SoundManager::GetInstance()->Destroy();
 	AnimationManager::GetInstance()->Destroy();
 	delete gSpineExtension;

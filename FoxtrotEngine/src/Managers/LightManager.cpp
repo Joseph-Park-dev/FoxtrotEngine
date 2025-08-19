@@ -45,7 +45,7 @@ ComPtr<ID3D11ShaderResourceView> LightManager::GetCubeMapSpecular()
 void LightManager::Initialize(FoxtrotRenderer* renderer)
 {
 	mTypes[0] = Light::TYPE::DIRECTIONAL;
-	InitializeCubeMap(renderer);
+	//InitializeCubeMap(renderer);
 }
 
 void LightManager::InitializeCubeMap(FoxtrotRenderer* renderer)
@@ -53,7 +53,7 @@ void LightManager::InitializeCubeMap(FoxtrotRenderer* renderer)
 	if (!mCubemap)
 	{
 		mCubemap = DBG_NEW FTCubemap;
-		mCubemap->Initialize({ GeometryGenerator::MakeBox(20.f) }, renderer->GetDevice(), renderer->GetContext());
+		//mCubemap->Initialize({ GeometryGenerator::MakeBox(20.f) }, renderer->GetDevice(), renderer->GetContext());
 	}
 }
 
@@ -69,13 +69,11 @@ void LightManager::Render(FoxtrotRenderer* renderer, Camera* camInst)
 
 void LightManager::Reset(FoxtrotRenderer* renderer)
 {
-	FTDS::String& texKey = mCubemap->GetTexKey();
-
-	delete mCubemap;
+	/*delete mCubemap;
 	mCubemap = nullptr;
 
 	InitializeCubeMap(renderer);
-	mCubemap->SetTexture(texKey);
+	mCubemap->SetTexture(texKey);*/
 }
 
 void LightManager::SaveProperties(std::ofstream& ofs)

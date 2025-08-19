@@ -90,6 +90,7 @@ CollisionManager::CollisionManager()
 CollisionManager::~CollisionManager()
 {
 	delete[] mCollisionMarks;
+	mCollisionMarks = nullptr;
 }
 
 void CollisionManager::Update()

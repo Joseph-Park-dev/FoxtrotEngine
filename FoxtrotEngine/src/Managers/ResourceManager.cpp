@@ -121,6 +121,10 @@ void ResourceManager::RelativeToAbsolutePath(FTResource* res)
 {
 	FTDS::String path		= res->RelativePath();
 	FTDS::String folderName = ".\\Assets\\";
+
+	if (path.LFind(".\\") != 0)
+		return;
+
 	path.SubStr(folderName.Length(), path.Length());
 
 	FTDS::String result = mPathToAsset;
@@ -277,7 +281,7 @@ ResourceManager::~ResourceManager()
 }
 
 ResourceManager::ResourceManager()
-	: mPathToAsset(".\\Assets\\")
+	: mPathToAsset()
 	, mRenderer(nullptr)
 	, mTextures(nullptr)
 	, mTileMaps(nullptr)
@@ -339,6 +343,24 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTEXTURE_GROUP);
 	LoadResourceFromChunk<FTTexture>(ifs, mTextures, desc.first);
 
+	LoadMaterials();
+
+	LoadDefaultResources();
+}
+
+void ResourceManager::LoadDefaultResources()
+{
+	FTBasicMeshGroup* meshGroup = DBG_NEW FTBasicMeshGroup;
+	meshGroup->Initialize(
+		GeometryGenerator::MakeSquare(1.0f, FTVector3(0.f, 0.f, 1.f)),
+		GetRenderer()->GetDevice(),
+		GetRenderer()->GetContext());
+	meshGroup->SetFileName(ChunkKey::PRIMITIVE_SQUARE_BLUE);
+	GetMeshGroups()->Insert(ChunkKey::PRIMITIVE_SQUARE_BLUE, meshGroup);
+}
+
+void ResourceManager::ProcessResources()
+{
 	ProcessResources(FTCore::GetInstance(), mCSVs);
 	ProcessResources(FTCore::GetInstance(), mJSONs);
 	ProcessResources(FTCore::GetInstance(), mTexts);
@@ -348,19 +370,18 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 	ProcessResources(FTCore::GetInstance(), mSpriteSheets);
 	ProcessResources(FTCore::GetInstance(), mSpriteAnimations);
 	ProcessResources(FTCore::GetInstance(), mSpineAnimations);
-	// ProcessResources(FTCore::GetInstance(), mMaterials);
+	ProcessResources(FTCore::GetInstance(), mMaterials);
 	ProcessResources(FTCore::GetInstance(), mVertexShaders);
 	ProcessResources(FTCore::GetInstance(), mPixelShaders);
-
 	ProcessResources(FTCore::GetInstance(), mSounds);
-
-	LoadMaterials();
-
 	ProcessResources(FTCore::GetInstance(), mPremades);
 }
 
 FTTexture* ResourceManager::GetLoadedTexture(FTDS::String& key)
 {
+	if (key.Equal(ChunkKey::NullVal::NULL_OBJECT))
+		return nullptr;
+
 	FTTexture* texture = mTextures->At(key)->Value();
 	if (!texture)
 		Debug::LogError(__LINE__, __FILE__, "FTTileMap is NULL");
@@ -415,6 +436,9 @@ FTPixelShader* ResourceManager::GetLoadedPixelShader(FTDS::String& key)
 
 FTMaterial* ResourceManager::GetLoadedMaterial(FTDS::String& key)
 {
+	if (key.Equal(ChunkKey::NullVal::NULL_OBJECT))
+		return nullptr;
+
 	AddFileExtensionIfNone(key, FileTypes::MATERIAL);
 
 	FTMaterial* mat = mMaterials->At(key)->Value();
@@ -425,7 +449,14 @@ FTMaterial* ResourceManager::GetLoadedMaterial(FTDS::String& key)
 
 FTBasicMeshGroup* ResourceManager::GetLoadedMesh(FTDS::String& key)
 {
-	FTBasicMeshGroup* meshGrp = mMeshGroups->At(key)->Value();
+	if (key.Equal(ChunkKey::NullVal::NULL_OBJECT))
+		return nullptr;
+
+	FTDS::Record<FTBasicMeshGroup*>* node = mMeshGroups->At(key);
+	if (!node)
+		return nullptr;
+
+	FTBasicMeshGroup* meshGrp = node->Value();
 	if (!meshGrp)
 		Debug::LogError(__LINE__, __FILE__, "FTMeshGroup is NULL");
 	return meshGrp;

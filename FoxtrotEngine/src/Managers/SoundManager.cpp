@@ -26,14 +26,7 @@ void SoundManager::Play(size_t index, bool isRepeated)
 
 void SoundManager::LoadSoundFromChunk(FTDS::String& key)
 {
-	Sound* sound = nullptr;
-
-#ifdef FOXTROT_EDITOR
-	sound = EditorResourceManager::GetInstance()->GetLoadedSound(key);
-#else
-	sound = ResourceManager::GetInstance()->GetLoadedSound(key);
-#endif // FOXTROT_EDITOR
-
+	Sound* sound = ResourceManager::GetInstance()->GetLoadedSound(key);
 	mLoaded->PushBack(sound);
 }
 

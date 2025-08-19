@@ -29,12 +29,7 @@ void spine::FTSpineLoader::load(AtlasPage& page, const String& path)
 	FTDS::String fileName = ExtractFileName(path.buffer());
 	fileName.ExtractFromLast("/");
 
-#ifdef FOXTROT_EDITOR
-	texture = EditorResourceManager::GetInstance()->GetLoadedTexture(fileName);
-#else
 	texture = ResourceManager::GetInstance()->GetLoadedTexture(fileName);
-#endif // FOXTROT_EDITOR
-
 	if (!texture)
 		return;
 

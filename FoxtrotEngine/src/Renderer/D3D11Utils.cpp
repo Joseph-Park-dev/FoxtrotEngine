@@ -20,6 +20,7 @@
 #include "ResourceSystem/Mesh.h"
 #include "Actors/Transform.h"
 #include "Core/TemplateFunctions.h"
+#include <Dynamic/DynamicArray.h>
 
 using namespace std;
 using namespace DirectX;
@@ -451,6 +452,24 @@ void D3D11Utils::CreateIndexBuffer(ComPtr<ID3D11Device>& device, const std::vect
 
 	D3D11_SUBRESOURCE_DATA indexBufferData = { 0 };
 	indexBufferData.pSysMem				   = indices.data();
+	indexBufferData.SysMemPitch			   = 0;
+	indexBufferData.SysMemSlicePitch	   = 0;
+
+	DX::ThrowIfFailed(device->CreateBuffer(&bufferDesc, &indexBufferData, indexBuffer.GetAddressOf()));
+}
+
+void D3D11Utils::CreateIndexBuffer(ComPtr<ID3D11Device>& device, FTDS::DynamicArray<uint32_t>& indices, ComPtr<ID3D11Buffer>& indexBuffer)
+{
+	D3D11_BUFFER_DESC bufferDesc = {};
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+	bufferDesc.Usage			   = D3D11_USAGE_DYNAMIC; // 초기화 후 변경X
+	bufferDesc.ByteWidth		   = UINT(sizeof(uint32_t) * indices.GetSize());
+	bufferDesc.BindFlags		   = D3D11_BIND_INDEX_BUFFER;
+	bufferDesc.CPUAccessFlags	   = D3D11_CPU_ACCESS_WRITE; // 0 if no CPU access is necessary.
+	bufferDesc.StructureByteStride = sizeof(uint32_t);
+
+	D3D11_SUBRESOURCE_DATA indexBufferData = { 0 };
+	indexBufferData.pSysMem				   = indices.Data();
 	indexBufferData.SysMemPitch			   = 0;
 	indexBufferData.SysMemSlicePitch	   = 0;
 

@@ -64,7 +64,7 @@ void FTCore::LoadGameData()
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::GAME_DATA);
 	std::pair<size_t, FTDS::String> chunkListPack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CHUNK_LIST);
 	for (size_t i = 0; i < chunkListPack.first; ++i)
-	{
+	{ 
 		FTDS::String chunkTitle = {};
 		FileIOHelper::LoadBasicString(ifs, chunkTitle);
 		SceneManager::GetInstance()->GetChunkList().push_back(chunkTitle);
@@ -216,19 +216,18 @@ void FTCore::ShutDown()
 {
 	DebugShapes::GetInstance()->DeleteAll();
 	SceneManager::GetInstance()->GetCurrentScene()->DeleteAll();
-	ResourceManager::GetInstance()->DeleteAll();
 	Physics2D::GetInstance()->ShutDown();
 	FoxtrotRenderer::DestroyRenderer(mGameRenderer);
-	CollisionManager::GetInstance()->Destroy();
 
+	SceneManager::GetInstance()->Destroy();
+	ResourceManager::GetInstance()->Destroy();
+	CollisionManager::GetInstance()->Destroy();
 	DebugShapes::GetInstance()->Destroy();
 	SoundManager::GetInstance()->Destroy();
+	EventManager::GetInstance()->Destroy();
 	AnimationManager::GetInstance()->Destroy();
 	delete gSpineExtension;
 	gSpineExtension = nullptr;
-	EventManager::GetInstance()->Destroy();
-	ResourceManager::GetInstance()->Destroy();
-	SceneManager::GetInstance()->Destroy();
 	UIManager::GetInstance()->Destroy();
 	Physics2D::GetInstance()->Destroy();
 	ChunkLoader::GetInstance()->Destroy();

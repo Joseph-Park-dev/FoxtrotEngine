@@ -25,6 +25,7 @@ Actor* Instantiate(Actor* actor, ActorGroup actorGroup, FTVector3 pos)
 	addedEvent.incident = EVENT_TYPE::CREATE_ACTOR;
 	actor->SetActorGroup(actorGroup);
 
+#ifdef FOXTROT_EDITOR
 	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
 	actor->GetTransform()->SetWorldPosition(pos);
 	EditorElement* editorElement = DBG_NEW EditorElement(actor);
@@ -43,6 +44,24 @@ Actor* Instantiate(Actor* actor, ActorGroup actorGroup, FTVector3 pos)
 		printf("ERROR : Instantiate() -> Premade not loaded, %s\n", actor->GetName().C_Str());
 		return nullptr;
 	}
+#else
+	if (actor)
+	{
+		actor->Initialize(FTCore::GetInstance());
+		actor->Setup();
+
+		addedEvent.eventData.push_back(actor);
+		addedEvent.eventData.push_back(nullptr);
+		EventManager::GetInstance()->AddEvent(addedEvent);
+		return actor;
+	}
+	else
+	{
+		printf("ERROR : Instantiate() -> Premade not loaded, %s\n", actor->GetName().C_Str());
+		return nullptr;
+	}
+
+#endif
 }
 
 Actor* Instantiate(FTDS::String& premadeName)

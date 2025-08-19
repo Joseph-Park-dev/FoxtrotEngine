@@ -25,9 +25,9 @@ protected:
 	void InitializeTile(Tile& tile, nlohmann::json& json);
 
 private:
-	FTDS::String mJSONKey;
-	Tile*		 mTiles;
-	size_t		 mTilesCount;
+	FTJSON* mJSON;
+	Tile*	mTiles;
+	size_t	mTilesCount;
 
 	FTVector2 mSheetSize;
 
@@ -45,7 +45,9 @@ private:
 public:
 	void UpdateUI() override;
 
+public:
 	virtual void AddRefCount() override;
+	virtual void SubtractRefCount() override;
 #endif // FOXTROT_EDITOR
 };
 

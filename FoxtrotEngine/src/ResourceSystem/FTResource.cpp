@@ -100,4 +100,14 @@ bool FTResource::IsReferenced()
 {
 	return 0 < mRefCount;
 }
+
+void FTResource::AddRefCount()
+{
+	++mRefCount;
+}
+
+void FTResource::SubtractRefCount()
+{
+	--mRefCount;
+}
 #endif // FOXTROT_EDITOR

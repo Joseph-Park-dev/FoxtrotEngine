@@ -153,7 +153,7 @@ void AnimationManager::CreateAnimation()
 
 		if (ImGui::Button("Create"))
 		{
-			FTSpriteAnimation* anim = CreateAnimationFromSpriteSheet(name, texKey, spriteSheetKey, startIdx, endIdx);
+			FTSpriteAnimation* anim = CreateAnimationFromSpriteSheet(name, spriteSheetKey, startIdx, endIdx);
 
 			// Load the created animation to ResourceManager & File.
 			// This is called only during the FTEditor Runtime.
@@ -209,7 +209,7 @@ void AnimationManager::GetSpriteSheet(FTDS::String& key)
 	FTEditorUtils::DisplayResSelection("Select SpriteSheet", EditorResourceManager::GetInstance()->GetSpriteSheets(), key);
 }
 
-FTSpriteAnimation* AnimationManager::CreateAnimationFromSpriteSheet(const char* name, FTDS::String& texKey, FTDS::String& spriteSheetKey, size_t startIndex, size_t endIndex)
+FTSpriteAnimation* AnimationManager::CreateAnimationFromSpriteSheet(const char* name, FTDS::String& spriteSheetKey, size_t startIndex, size_t endIndex)
 {
 	if (!mRenderer)
 		printf("ERROR : Animator::CreateAnimationFromTile()-> Renderer is null");
@@ -223,11 +223,6 @@ FTSpriteAnimation* AnimationManager::CreateAnimationFromSpriteSheet(const char* 
 	path.Append(animName);
 	animation->SetRelativePath(path);
 
-	if (texKey.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
-		animation->SetTexture(texKey);
-	if (spriteSheetKey.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
-		animation->SetTileDataKey(spriteSheetKey);
-
 	#ifdef FOXTROT_EDITOR
 	FTSpriteSheet* spriteSheetBuf = EditorResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteSheetKey);
 	#else
@@ -237,7 +232,7 @@ FTSpriteAnimation* AnimationManager::CreateAnimationFromSpriteSheet(const char* 
 	if (spriteSheetBuf->GetTiles() == nullptr)
 		spriteSheetBuf->Initialize();
 
-	std::vector<FTMeshData> meshDataBuf;
+	FTDS::DynamicArray<FTMeshData> meshDataBuf;
 	GeometryGenerator::MakeSpriteAnimation(
 		meshDataBuf, spriteSheetBuf->GetTiles(), startIndex, endIndex);
 	animation->Initialize(std::move(meshDataBuf), mRenderer->GetDevice(), mRenderer->GetContext());
@@ -257,46 +252,24 @@ FTSpriteAnimation* AnimationManager::CreateAnimationFromSpriteSheet(const char* 
 FTSpineAnimation* AnimationManager::CreateAnimationFromSpine(const char* name, FTDS::String& jsonKey, FTDS::String& atlasKey)
 {
 	FTSpineAnimation* anim = DBG_NEW FTSpineAnimation;
-	anim->SetJSONKey(jsonKey);
-	anim->SetAtlasKey(atlasKey);
 
-	FTJSON* json = EditorResourceManager::GetInstance()->GetLoadedJSON(jsonKey);
-	FTText* text = EditorResourceManager::GetInstance()->GetLoadedText(atlasKey);
-	EditorResourceManager::GetInstance()->RelativeToAbsolutePath(text);
+	FTJSON* json = ResourceManager::GetInstance()->GetLoadedJSON(jsonKey);
+	FTText* text = ResourceManager::GetInstance()->GetLoadedText(atlasKey);
+	ResourceManager::GetInstance()->RelativeToAbsolutePath(text);
 
-	spine::Atlas		 atlas		  = spine::Atlas(text->RelativePath().C_Str(), mSpineLoader);
-	spine::SkeletonData* skeletonData = mSpineLoader->ReadSkeletonJsonData(json->RelativePath().C_Str(), &atlas, 1.0f);
-
-	// Configure mixing.
-	// spine::AnimationStateData stateData(skeletonData);
-	/*stateData.setMix("walk", "jump", 0.2f);
-	stateData.setMix("jump", "run", 0.2f);*/
-
-	anim->InitializeSpinAnim(mRenderer->GetDevice(), skeletonData);
-	anim->SetTimeScale(1);
-	// drawable.setUsePremultipliedAlpha(true);
-
-	spine::Skeleton* skeleton = anim->GetSkeleton();
-	skeleton->setToSetupPose();
-
-	skeleton->setPosition(0.f, 0.f);
-	skeleton->updateWorldTransform(spine::Physics_None);
-
-	/*spine::Vector<spine::Animation*>& clips = skeletonData->getAnimations();
-	for (size_t i = 0; i < clips.size(); ++i)
-		anim->LoadedClips().add(clips[i]);*/
-
-	anim->SetTexture((FTTexture*)atlas.getPages()[0]->texture);
+	anim->SetJSON(json);
+	anim->SetAtlasTxt(text);
 	anim->SetFileName(name);
 
-	#ifdef FOXTROT_EDITOR
-	EditorResourceManager::GetInstance()->LoadResource(
-		anim, EditorResourceManager::GetInstance()->GetSpineAnimations());
-	#else
-	ResourceManager::GetInstance()->GetSpineAnimations()->Insert(anim->FileName(), animation);
-	#endif // FOXTROT_EDITOR
+	anim->InitializeSpinAnim(mRenderer->GetDevice());
 
-	delete skeletonData;
+	//#ifdef FOXTROT_EDITOR
+	//EditorResourceManager::GetInstance()->LoadResource(
+	//	anim, EditorResourceManager::GetInstance()->GetSpineAnimations());
+	//#else
+	//#endif // FOXTROT_EDITOR
+
+	ResourceManager::GetInstance()->GetSpineAnimations()->Insert(anim->FileName(), anim);
 	return anim;
 }
 #endif // FOXTROT_EDITOR

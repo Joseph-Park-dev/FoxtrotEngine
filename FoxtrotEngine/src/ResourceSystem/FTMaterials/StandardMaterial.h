@@ -14,8 +14,8 @@ class StandardMaterial :
 {
 public:
 	// void AssignData(StandardMatData& standardDest, BlinnPhongData& blinnPhongDest);
-	virtual void CreatePixelConstBuffer(ComPtr<ID3D11Device>& device, ComPtr<ID3D11Buffer>& buffer) override;
-	virtual void UpdateBuffer(ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Buffer>& buffer) override;
+	virtual void CreatePixelConstBuffer(ComPtr<ID3D11Device>& device) override;
+	virtual void UpdateBuffer(ComPtr<ID3D11DeviceContext>& context) override;
 
 	virtual void SaveToFile() override;
 	virtual void LoadFromFile() override;

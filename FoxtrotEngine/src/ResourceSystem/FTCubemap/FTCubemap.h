@@ -7,13 +7,13 @@ class FTCubemap :
 public:
 	virtual void CalcVCData(Camera* camInst);
 
-public:
-	virtual void Initialize(
-		std::vector<FTMeshData>&& meshes,
-		ComPtr<ID3D11Device>& device,
-		ComPtr<ID3D11DeviceContext>& context) override;
-
-	virtual void Render(FoxtrotRenderer* renderer) override;
+//public:
+//	virtual void Initialize(
+//		std::vector<FTMeshData>&& meshes,
+//		ComPtr<ID3D11Device>& device,
+//		ComPtr<ID3D11DeviceContext>& context) override;
+//
+//	virtual void Render(FoxtrotRenderer* renderer) override;
 
 public:
 	ComPtr<ID3D11ShaderResourceView>& GetDiffuseResView();
@@ -22,10 +22,10 @@ public:
 	void SetDiffuseTexture(FTDS::String& key);
 	void SetSpecularTexture(FTDS::String& key);
 
-protected:
-	virtual void InitializeMeshes(
-		ComPtr<ID3D11Device>& device, 
-		std::vector<FTMeshData>& meshes) override;
+//protected:
+//	virtual void InitializeMeshes(
+//		ComPtr<ID3D11Device>& device, 
+//		std::vector<FTMeshData>& meshes) override;
 
 private:
 	ComPtr<ID3D11ShaderResourceView> mDiffuseResView;

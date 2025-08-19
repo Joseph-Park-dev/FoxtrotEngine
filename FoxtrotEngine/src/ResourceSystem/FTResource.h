@@ -57,8 +57,8 @@ public:
 
 public:
 	bool		 IsReferenced();
-	virtual void AddRefCount() { ++mRefCount; }
-	virtual void SubtractRefCount() { --mRefCount; }
+	virtual void AddRefCount();
+	virtual void SubtractRefCount();
 #endif // FOXTROT_EDITOR
 };
 

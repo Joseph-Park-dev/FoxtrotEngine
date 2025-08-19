@@ -22,6 +22,11 @@
 #include "Utils/StrAssign.h"
 #include "Static/FTString.h"
 
+void EditorResourceManager::Initialize(FoxtrotRenderer* renderer)
+{
+	ResourceManager::GetInstance()->Initialize(renderer);
+}
+
 void EditorResourceManager::SaveResources(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::RESOURCE_DATA);
@@ -79,60 +84,44 @@ void EditorResourceManager::SaveResources(std::ofstream& ofs)
 
 void EditorResourceManager::LoadAllResourcesInAsset()
 {
-	ResourceManager::GetTextures()->Reserve(10);
-	ResourceManager::GetTileMaps()->Reserve(10);
-	ResourceManager::GetSpriteSheets()->Reserve(10);
-	ResourceManager::GetPremades()->Reserve(10);
-	ResourceManager::GetSpriteAnimations()->Reserve(10);
-	ResourceManager::GetSpineAnimations()->Reserve(10);
-	ResourceManager::GetMeshGroups()->Reserve(10);
-	ResourceManager::GetVertexShaders()->Reserve(10);
-	ResourceManager::GetPixelShaders()->Reserve(10);
-	ResourceManager::GetMaterials()->Reserve(10);
-	ResourceManager::GetSounds()->Reserve(10);
-	ResourceManager::GetCSVs()->Reserve(10);
-	ResourceManager::GetJSONs()->Reserve(10);
-	ResourceManager::GetTexts()->Reserve(10);
+	GetTextures()->Reserve(10);
+	GetTileMaps()->Reserve(10);
+	GetSpriteSheets()->Reserve(10);
+	GetPremades()->Reserve(10);
+	GetSpriteAnimations()->Reserve(10);
+	GetSpineAnimations()->Reserve(10);
+	GetMeshGroups()->Reserve(10);
+	GetVertexShaders()->Reserve(10);
+	GetPixelShaders()->Reserve(10);
+	GetMaterials()->Reserve(10);
+	GetSounds()->Reserve(10);
+	GetCSVs()->Reserve(10);
+	GetJSONs()->Reserve(10);
+	GetTexts()->Reserve(10);
+
+	const char* pathToAsset = ResourceManager::GetInstance()->GetPathToAsset().C_Str();
 
 	DirectoryHelper::IterateForFileRecurse(
-		GetPathToAsset().C_Str(),
+		pathToAsset,
 		[&](std::string&& path) { LoadResByType(path.c_str()); });
 
-	// ResourceManager::GetTextures()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
-	// ResourceManager::GetTileMaps()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
-	// ResourceManager::GetSpriteSheets()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
-	// ResourceManager::GetPremades()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
-	// ResourceManager::GetSpriteAnimations()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
-	// ResourceManager::GetMeshGroups()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
-	// ResourceManager::GetVertexShaders()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
-	// ResourceManager::GetPixelShaders()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
-	// ResourceManager::GetMaterials()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
-	// ResourceManager::GetCSVs()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
-	// ResourceManager::GetJSONs()->Insert(ChunkKey::NullVal::NULL_OBJECT, nullptr);
+	ResourceManager::GetInstance()->LoadMaterials();
 
-	ProcessResources(FTCoreEditor::GetInstance(), GetCSVs());
-	ProcessResources(FTCoreEditor::GetInstance(), GetJSONs());
-	ProcessResources(FTCoreEditor::GetInstance(), GetTextures());
-	ProcessResources(FTCoreEditor::GetInstance(), GetMeshGroups());
-	ProcessResources(FTCoreEditor::GetInstance(), GetTileMaps());
-	ProcessResources(FTCoreEditor::GetInstance(), GetSpriteSheets());
-	ProcessResources(FTCoreEditor::GetInstance(), GetSpriteAnimations());
-	ProcessResources(FTCoreEditor::GetInstance(), GetSpineAnimations());
-	ProcessResources(FTCoreEditor::GetInstance(), GetMaterials());
-	ProcessResources(FTCoreEditor::GetInstance(), GetVertexShaders());
-	ProcessResources(FTCoreEditor::GetInstance(), GetPixelShaders());
-	ProcessResources(FTCoreEditor::GetInstance(), GetSounds());
+	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetCSVs());
+	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetJSONs());
+	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetTextures());
+	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetMeshGroups());
+	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetTileMaps());
+	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetSpriteSheets());
+	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetSpriteAnimations());
+	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetSpineAnimations());
+	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetMaterials());
+	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetVertexShaders());
+	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetPixelShaders());
+	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetSounds());
+	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetPremades());
 
-	LoadMaterials();
-
-	FTBasicMeshGroup* meshGroup = DBG_NEW FTBasicMeshGroup;
-	meshGroup->Initialize(
-		{ GeometryGenerator::MakeSquare(1.0f, FTVector3(0.f, 0.f, 1.f)) },
-		GetRenderer()->GetDevice(),
-		GetRenderer()->GetContext());
-	GetMeshGroups()->Insert(ChunkKey::PRIMITIVE_SQUARE_BLUE, meshGroup);
-
-	ProcessResources(FTCoreEditor::GetInstance(), GetPremades());
+	ResourceManager::GetInstance()->LoadDefaultResources();
 }
 
 void EditorResourceManager::LoadResByType(const char* filePath)
@@ -189,25 +178,6 @@ void EditorResourceManager::LoadResByType(const char* filePath)
 	}
 }
 
-void EditorResourceManager::LoadMaterials()
-{
-	StandardMaterial* standard = DBG_NEW StandardMaterial;
-	RimMaterial* rim		   = DBG_NEW RimMaterial;
-
-	FTDS::String path = FTDS::String(".//Assets//Materials//") + ChunkKey::STANDARD_MAT + FileTypes::MATERIAL;
-	if (!std::filesystem::exists(path.C_Str()))
-		standard->SaveToFile();
-	standard->LoadFromFile();
-
-	path = FTDS::String(".//Assets//Materials//") + ChunkKey::RIM_MAT + FileTypes::MATERIAL;
-	if (!std::filesystem::exists(path.C_Str()))
-		rim->SaveToFile();
-	rim->LoadFromFile();
-
-	GetMaterials()->Insert(standard->FileName(), standard);
-	GetMaterials()->Insert(rim->FileName(), rim);
-}
-
 void EditorResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)
 {
 	std::pair<size_t, FTDS::String> resPack	  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RESOURCE_DATA);
@@ -248,6 +218,76 @@ void EditorResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTEXTURE_GROUP);
 	LoadDummyResource<FTTexture>(ifs, GetTextures(), desc.first);
+}
+
+FTDS::HashMap<FTTexture*>* EditorResourceManager::GetTextures()
+{
+	return ResourceManager::GetInstance()->GetTextures();
+}
+
+FTDS::HashMap<FTTileMap*>* EditorResourceManager::GetTileMaps()
+{
+	return ResourceManager::GetInstance()->GetTileMaps();
+}
+
+FTDS::HashMap<FTSpriteSheet*>* EditorResourceManager::GetSpriteSheets()
+{
+	return ResourceManager::GetInstance()->GetSpriteSheets();
+}
+
+FTDS::HashMap<FTPremade*>* EditorResourceManager::GetPremades()
+{
+	return ResourceManager::GetInstance()->GetPremades();
+}
+
+FTDS::HashMap<FTVertexShader*>* EditorResourceManager::GetVertexShaders()
+{
+	return ResourceManager::GetInstance()->GetVertexShaders();
+}
+
+FTDS::HashMap<FTPixelShader*>* EditorResourceManager::GetPixelShaders()
+{
+	return ResourceManager::GetInstance()->GetPixelShaders();
+}
+
+FTDS::HashMap<FTMaterial*>* EditorResourceManager::GetMaterials()
+{
+	return ResourceManager::GetInstance()->GetMaterials();
+}
+
+FTDS::HashMap<FTBasicMeshGroup*>* EditorResourceManager::GetMeshGroups()
+{
+	return ResourceManager::GetInstance()->GetMeshGroups();
+}
+
+FTDS::HashMap<FTSpriteAnimation*>* EditorResourceManager::GetSpriteAnimations()
+{
+	return ResourceManager::GetInstance()->GetSpriteAnimations();
+}
+
+FTDS::HashMap<FTSpineAnimation*>* EditorResourceManager::GetSpineAnimations()
+{
+	return ResourceManager::GetInstance()->GetSpineAnimations();
+}
+
+FTDS::HashMap<Sound*>* EditorResourceManager::GetSounds()
+{
+	return ResourceManager::GetInstance()->GetSounds();
+}
+
+FTDS::HashMap<FTCSV*>* EditorResourceManager::GetCSVs()
+{
+	return ResourceManager::GetInstance()->GetCSVs();
+}
+
+FTDS::HashMap<FTJSON*>* EditorResourceManager::GetJSONs()
+{
+	return ResourceManager::GetInstance()->GetJSONs();
+}
+
+FTDS::HashMap<FTText*>* EditorResourceManager::GetTexts()
+{
+	return ResourceManager::GetInstance()->GetTexts();
 }
 
 void EditorResourceManager::UpdateUI()
@@ -337,30 +377,8 @@ ResType EditorResourceManager::GetResType(FTDS::String& fileName)
 
 EditorResourceManager::EditorResourceManager()
 {
-	/*mFileTypeSpecs = DBG_NEW FTDS::DynamicArray<COMDLG_FILTERSPEC*>;
-	mFileTypeSpecs->Reserve(FileTypes::MAX_RES_TYPE_COUNT);
-
-	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Premades", FileTypes::PREMADE);
-	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Textures", FileTypes::TEXTURE);
-	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"DDS Textures", FileTypes::DDS_TEXTURE);
-	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Tilemaps", FileTypes::TILEMAP);
-	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"SpriteSheets", FileTypes::SPRITE_SHEET);
-	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"CSVs", FileTypes::CSV);
-	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"JSONs", FileTypes::JSON);
-	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Texts", FileTypes::TEXT);
-	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Meshes", FileTypes::MESH);
-	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Sprite Animation", FileTypes::SPRITE_ANIMATION);
-	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Spine Animation", FileTypes::SPINE_ANIMATION);
-	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Vertex Shaders", FileTypes::VERTEX_SHADER);
-	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Pixel Shaders", FileTypes::PIXEL_SHADER);
-	FileTypes::GetFileTypesSpec(mFileTypeSpecs, L"Materials", FileTypes::MATERIAL);*/
 }
 
 EditorResourceManager::~EditorResourceManager()
 {
-	////mFileTypeSpecs->ClearDynamicMem();
-	// for (size_t i = 0; i < mFileTypeSpecs->GetSize(); ++i)
-	//	delete mFileTypeSpecs->At(i);
-
-	// delete mFileTypeSpecs;
 }

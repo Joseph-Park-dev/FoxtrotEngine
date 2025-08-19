@@ -4,6 +4,7 @@
 
 #include "Core/FTCore.h"
 #include "Static/FTString.h"
+#include "FileSystem/FileIOHelper.h"
 
 void FTJSON::Read()
 {
@@ -12,6 +13,19 @@ void FTJSON::Read()
 }
 
 nlohmann::json& FTJSON::Data() { return mData; }
+
+void FTJSON::SaveProperties(std::ofstream& ofs)
+{
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::JSON::JSON);
+	FTResource::SaveProperties(ofs);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::JSON::JSON);
+}
+
+void FTJSON::LoadProperties(std::ifstream& ifs)
+{
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::JSON::JSON);
+	FTResource::LoadProperties(ifs);
+}
 
 void FTJSON::Process(FTCore* coreInst)
 {

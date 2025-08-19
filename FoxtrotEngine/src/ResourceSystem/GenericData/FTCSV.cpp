@@ -68,6 +68,19 @@ FTCSV::~FTCSV()
 	mData.clear();
 }
 
+void FTCSV::SaveProperties(std::ofstream& ofs)
+{
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CSV::CSV);
+	FTResource::SaveProperties(ofs);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CSV::CSV);
+}
+
+void FTCSV::LoadProperties(std::ifstream& ifs)
+{
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
+	FTResource::LoadProperties(ifs);
+}
+
 void FTCSV::Process(FTCore* coreInst)
 {
 	if (this->GetIsProcessed())

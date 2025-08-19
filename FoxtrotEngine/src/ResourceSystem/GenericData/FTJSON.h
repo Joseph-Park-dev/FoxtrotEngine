@@ -4,10 +4,10 @@
 #include <nlohmann/json.hpp>
 
 class FTJSON :
-    public FTResource
+	public FTResource
 {
 public:
-    void Read();
+	void Read();
 
 public:
 	nlohmann::json& Data();
@@ -16,6 +16,8 @@ private:
 	nlohmann::json mData;
 
 public:
+	virtual void SaveProperties(std::ofstream& ofs) override;
+	virtual void LoadProperties(std::ifstream& ifs) override;
 	virtual void Process(FTCore* coreInst) override;
 };
 

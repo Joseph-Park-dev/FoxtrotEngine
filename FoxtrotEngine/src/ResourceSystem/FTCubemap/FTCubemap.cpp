@@ -25,69 +25,61 @@ void FTCubemap::CalcVCData(Camera* camInst)
 
 	// Project Transformation
 	Matrix&& projMat = std::move(camInst->GetProjRow());
-
-	for (Mesh* mesh : Meshes())
-	{
-		//GetVCData().model = modelMat.Transpose();
-		//GetVCData().view = viewMat.Transpose();
-		//GetVCData().projection = projMat.Transpose();
-	}
 }
 
-void FTCubemap::Initialize(std::vector<FTMeshData>&& meshes, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
-{
-	// Rendered face should be headed inward.
-	for (FTMeshData& meshData : meshes)
-		std::reverse(meshData.Indices.begin(), meshData.Indices.end());
+//void FTCubemap::Initialize(std::vector<FTMeshData>&& meshes, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
+//{
+//	// Rendered face should be headed inward.
+//	for (FTMeshData& meshData : meshes)
+//		std::reverse(meshData.Indices.begin(), meshData.Indices.end());
+//
+//	//FTBasicMeshGroup::Initialize(std::move(meshes), device, context);
+//
+//	std::vector<FTDS::String> matKey = { ChunkKey::STANDARD_MAT };
+//}
 
-	//FTBasicMeshGroup::Initialize(std::move(meshes), device, context);
+//void FTCubemap::Render(FoxtrotRenderer* renderer)
+//{
+//	UINT						 stride	 = sizeof(Vertex);
+//	UINT						 offset	 = 0;
+//	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
 
-	std::vector<FTDS::String> matKey = { ChunkKey::STANDARD_MAT };
-	SetMaterials(matKey, device);
-}
+	//for (const Mesh* mesh : Meshes())
+	//{
+	//	context->VSSetConstantBuffers(
+	//		0, mesh->VertexConstantBuffers.size(), mesh->VertexConstantBuffers.data()->GetAddressOf());
 
-void FTCubemap::Render(FoxtrotRenderer* renderer)
-{
-	UINT						 stride	 = sizeof(Vertex);
-	UINT						 offset	 = 0;
-	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
+	//	/*SetVertexShader(renderer->GetCubeMapVS());
+	//	SetPixelShader(renderer->GetCubeMapPS());*/
 
-	for (const Mesh* mesh : Meshes())
-	{
-		context->VSSetConstantBuffers(
-			0, mesh->VertexConstantBuffers.size(), mesh->VertexConstantBuffers.data()->GetAddressOf());
+	//	if (mDiffuseResView && mSpecularResView)
+	//	{
+	//		ID3D11ShaderResourceView* resViews[2] = { 
+	//			mDiffuseResView.Get(),
+	//			mSpecularResView.Get() 
+	//		};
+	//		context->PSSetShaderResources(0, 2, resViews);
+	//	}
 
-		/*SetVertexShader(renderer->GetCubeMapVS());
-		SetPixelShader(renderer->GetCubeMapPS());*/
+	//	context->VSSetShader(GetVertexShader()->GetShader().Get(), 0, 0);
+	//	context->PSSetSamplers(0, 1, GetSamplerState().GetAddressOf());
+	//	context->PSSetShader(GetPixelShader()->GetShader().Get(), 0, 0);
 
-		if (mDiffuseResView && mSpecularResView)
-		{
-			ID3D11ShaderResourceView* resViews[2] = { 
-				mDiffuseResView.Get(),
-				mSpecularResView.Get() 
-			};
-			context->PSSetShaderResources(0, 2, resViews);
-		}
+	//	if (!Materials().empty())
+	//	{
+	//		context->PSSetConstantBuffers(
+	//			0, mesh->PixelConstantBuffers.size(), mesh->PixelConstantBuffers.data()->GetAddressOf());
+	//	}
 
-		context->VSSetShader(GetVertexShader()->GetShader().Get(), 0, 0);
-		context->PSSetSamplers(0, 1, GetSamplerState().GetAddressOf());
-		context->PSSetShader(GetPixelShader()->GetShader().Get(), 0, 0);
+	//	context->IASetInputLayout(renderer->GetTextureInputLayout().Get());
+	//	context->IASetVertexBuffers(0, 1, mesh->VertexBuffer.GetAddressOf(), &stride, &offset);
+	//	context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	//	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//	context->OMSetBlendState(renderer->GetBlendState().Get(), NULL, D3D11_DEFAULT_SAMPLE_MASK);
 
-		if (!Materials().empty())
-		{
-			context->PSSetConstantBuffers(
-				0, mesh->PixelConstantBuffers.size(), mesh->PixelConstantBuffers.data()->GetAddressOf());
-		}
-
-		context->IASetInputLayout(renderer->GetTextureInputLayout().Get());
-		context->IASetVertexBuffers(0, 1, mesh->VertexBuffer.GetAddressOf(), &stride, &offset);
-		context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		context->OMSetBlendState(renderer->GetBlendState().Get(), NULL, D3D11_DEFAULT_SAMPLE_MASK);
-
-		context->DrawIndexed(mesh->IndexCount, 0, 0);
-	}
-}
+	//	context->DrawIndexed(mesh->IndexCount, 0, 0);
+	//}
+//}
 
 ComPtr<ID3D11ShaderResourceView>& FTCubemap::GetDiffuseResView() { return mDiffuseResView; }
 ComPtr<ID3D11ShaderResourceView>& FTCubemap::GetSpecularResView() { return mSpecularResView; }
@@ -104,21 +96,21 @@ void FTCubemap::SetSpecularTexture(FTDS::String& key)
 	mSpecularResView = tex->GetResourceView();
 }
 
-void FTCubemap::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTMeshData>& meshes)
-{
-	Meshes().reserve(meshes.size());
-	for (const FTMeshData& meshData : meshes)
-	{
-		Mesh* newMesh = DBG_NEW Mesh;
-		newMesh->VertexCount = UINT(meshData.Vertices.size());
-		newMesh->IndexCount = UINT(meshData.Indices.size());
-
-		D3D11Utils::CreateVertexBuffer(device, meshData.Vertices, newMesh->VertexBuffer);
-		D3D11Utils::CreateIndexBuffer(device, meshData.Indices, newMesh->IndexBuffer);
-
-		this->Meshes().push_back(newMesh);
-	}
-}
+//void FTCubemap::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTMeshData>& meshes)
+//{
+//	//Meshes().reserve(meshes.size());
+//	for (const FTMeshData& meshData : meshes)
+//	{
+//		Mesh* newMesh = DBG_NEW Mesh;
+//		newMesh->VertexCount = UINT(meshData.Vertices.size());
+//		newMesh->IndexCount = UINT(meshData.Indices.size());
+//
+//		D3D11Utils::CreateVertexBuffer(device, meshData.Vertices, newMesh->VertexBuffer);
+//		D3D11Utils::CreateIndexBuffer(device, meshData.Indices, newMesh->IndexBuffer);
+//
+//		//this->Meshes().push_back(newMesh);
+//	}
+//}
 
 void FTCubemap::SaveProperties(std::ofstream& ofs)
 {

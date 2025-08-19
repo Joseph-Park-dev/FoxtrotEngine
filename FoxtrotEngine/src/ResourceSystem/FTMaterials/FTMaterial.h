@@ -28,16 +28,19 @@ using namespace Microsoft::WRL;
 class FTMaterial : public FTResource
 {
 public:
-	virtual void CreatePixelConstBuffer(
-		ComPtr<ID3D11Device>& device, ComPtr<ID3D11Buffer>& buffer) = 0;
+	virtual void CreatePixelConstBuffer(ComPtr<ID3D11Device>& device) = 0;
+	virtual void UpdateBuffer(ComPtr<ID3D11DeviceContext>& context)	  = 0;
 
-	virtual void UpdateBuffer(
-		ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Buffer>& buffer) = 0;
-
-	virtual void SaveToFile() = 0;
+	virtual void SaveToFile()	= 0;
 	virtual void LoadFromFile() = 0;
 
-	virtual void Process(FTCore* coreInst) override;
+	void Process(FTCore* coreInst) override;
+
+public:
+	ComPtr<ID3D11Buffer>& GetPCBuf();
+
+private:
+	ComPtr<ID3D11Buffer> mPCBuf;
 
 #ifdef FOXTROT_EDITOR
 public:
@@ -50,7 +53,7 @@ namespace ChunkKey
 	constexpr const char* FTMATERIAL = "FTMaterial";
 	namespace Material
 	{
-		constexpr const char* NAME = "Name";
-		constexpr UINT STANDARD_MATERIAL = 1;
+		constexpr const char* NAME				= "Name";
+		constexpr UINT		  STANDARD_MATERIAL = 1;
 	} // namespace Material
 } // namespace ChunkKey

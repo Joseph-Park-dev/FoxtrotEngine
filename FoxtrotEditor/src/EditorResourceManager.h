@@ -12,14 +12,32 @@ class EditorResourceManager : public ResourceManager
 	SINGLETON(EditorResourceManager)
 
 public:
+	void Initialize(FoxtrotRenderer* renderer) override;
+
+public:
 	void SaveResources(std::ofstream& ofs);
 
 	void LoadAllResourcesInAsset();
 	void LoadResByType(const char* fileName);
-	void LoadMaterials() override;
 
 	// On Editor, loading resource from .chunk is not necessary, thus skip the process.
 	void PassLoadResourceInChunk(std::ifstream& ifs);
+
+public:
+	FTDS::HashMap<FTTexture*>*		   GetTextures() override;
+	FTDS::HashMap<FTTileMap*>*		   GetTileMaps() override;
+	FTDS::HashMap<FTSpriteSheet*>*	   GetSpriteSheets() override;
+	FTDS::HashMap<FTPremade*>*		   GetPremades() override;
+	FTDS::HashMap<FTVertexShader*>*	   GetVertexShaders() override;
+	FTDS::HashMap<FTPixelShader*>*	   GetPixelShaders() override;
+	FTDS::HashMap<FTMaterial*>*		   GetMaterials() override;
+	FTDS::HashMap<FTBasicMeshGroup*>*  GetMeshGroups() override;
+	FTDS::HashMap<FTSpriteAnimation*>* GetSpriteAnimations() override;
+	FTDS::HashMap<FTSpineAnimation*>*  GetSpineAnimations() override;
+	FTDS::HashMap<Sound*>*			   GetSounds() override;
+	FTDS::HashMap<FTCSV*>*			   GetCSVs() override;
+	FTDS::HashMap<FTJSON*>*			   GetJSONs() override;
+	FTDS::HashMap<FTText*>*			   GetTexts() override;
 
 public:
 	template <typename FTRESOURCE>
@@ -28,7 +46,7 @@ public:
 		resArr->IterateAllValues([&](FTRESOURCE* res) {
 			if (res->IsReferenced())
 			{
-				AbsoluteToRelativePath(res);
+				ResourceManager::GetInstance()->AbsoluteToRelativePath(res);
 				FileIOHelper::BeginDataPackSave(ofs, res->FileName());
 				FileIOHelper::SaveString(ofs, ChunkKey::FILE_NAME, res->FileName());
 				FileIOHelper::SaveString(ofs, ChunkKey::RELATIVE_PATH, res->RelativePath().C_Str());
@@ -56,7 +74,7 @@ public:
 		res->SetFileName(fileName);
 		res->SetRelativePath(filePath);
 
-		AbsoluteToRelativePath(res);
+		ResourceManager::GetInstance()->AbsoluteToRelativePath(res);
 
 		if (resMap->IsFull())
 			resMap->Reserve(resMap->GetSize() + 5);
@@ -74,14 +92,13 @@ public:
 		resMap->Reserve(resCount);
 		while (0 < resCount)
 		{
-			FTRESOURCE* res = DBG_NEW FTRESOURCE;
+			FTRESOURCE res;
 			FileIOHelper::BeginDataPackLoad(ifs);
-			FileIOHelper::LoadBasicString(ifs, res->RelativePath());
-			FileIOHelper::LoadBasicString(ifs, res->FileName());
+			FileIOHelper::LoadBasicString(ifs, res.RelativePath());
+			FileIOHelper::LoadBasicString(ifs, res.FileName());
 
 			assert(0 < resMap->Capacity());
 			// resMap->Insert(res->FileName(), res);
-			delete res;
 			--resCount; // Key of the next resource to be imported.
 		}
 	}

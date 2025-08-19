@@ -35,6 +35,15 @@ struct Vertex
 	// DirectX::SimpleMath::Vector3 color;
 	DirectX::SimpleMath::Vector3 normal;
 	DirectX::SimpleMath::Vector2 texcoord;
+
+	Vertex operator=(Vertex& v)
+	{
+		position = v.position;
+		normal	 = v.normal;
+		texcoord = v.texcoord;
+
+		return *this;
+	}
 };
 
 struct DebugVertex

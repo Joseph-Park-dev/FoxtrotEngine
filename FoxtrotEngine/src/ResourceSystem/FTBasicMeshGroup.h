@@ -19,6 +19,10 @@
 
 class FTMaterial;
 class FTVertexShader;
+class FTMeshData;
+
+// Number of pixel shader constant buffers
+constexpr size_t MAX_PS_BUFFER_COUNT = 20;
 
 class FTBasicMeshGroup : public FTResource
 {
@@ -26,107 +30,80 @@ public:
 	void CalcVCData(Transform* transform, Camera* camInst);
 
 	virtual void UpdateConstantBuffers(
-		ComPtr<ID3D11Device>&		 device,
-		ComPtr<ID3D11DeviceContext>& context);
+		ComPtr<ID3D11Device>&			 device,
+		ComPtr<ID3D11DeviceContext>&	 context,
+		FTMaterial* mat);
 
 public:
-	virtual void Initialize(
-		std::vector<FTMeshData>&&	 meshes,
+	void Initialize(
+		FTMeshData&&				 meshData,
 		ComPtr<ID3D11Device>&		 device,
 		ComPtr<ID3D11DeviceContext>& context);
 
-	virtual void Render(FoxtrotRenderer* renderer);
-	virtual void Render(FoxtrotRenderer* renderer, int meshIndex);
+	virtual void Initialize(
+		FTDS::DynamicArray<FTMeshData>&& meshData,
+		ComPtr<ID3D11Device>&			 device,
+		ComPtr<ID3D11DeviceContext>&	 context);
+
+	virtual void Render(
+		FoxtrotRenderer* renderer,
+		FTTexture*		 tex,
+		FTVertexShader*	 vs,
+		FTPixelShader*	 ps,
+		FTMaterial*		 mat);
+	virtual void Render(
+		int				 meshIndex,
+		FoxtrotRenderer* renderer,
+		FTTexture*		 tex,
+		FTVertexShader*	 vs,
+		FTPixelShader*	 ps,
+		FTMaterial*		 mat);
 
 	void Clear();
 
 public:
 	ComPtr<ID3D11SamplerState>& GetSamplerState();
-	size_t						GetMeshCount();
-	FTDS::String&				GetTexKey();
-	FTTexture*					GetTexture() const;
 	BasicVCData&				GetVCData();
-	bool						GetDrawNormal();
+	ComPtr<ID3D11Buffer>&		GetVCBuf();
 
-	virtual void SetMaterials(std::vector<FTDS::String>& matKeys, ComPtr<ID3D11Device>& device);
-	virtual void SetTexture();
-	virtual void SetTexture(FTDS::String& texKey);
-	void		 SetTexture(FTTexture* tex);
-	void		 SetVertexShader(FTDS::String& vsKey);
-	void		 SetPixelShader(FTDS::String& psKey);
-	void		 SetNormalLines(Mesh* normalLines);
-	void		 SetDrawNormal(bool drawNormal);
-
-	std::vector<Mesh*>&		  Meshes();
-	std::vector<FTMaterial*>& Materials();
-	Mesh*					  NormalLines();
+	FTDS::DynamicArray<Mesh*>* Meshes();
 
 public:
 	FTBasicMeshGroup();
-	FTBasicMeshGroup(FTMeshData meshData, FoxtrotRenderer* renderer);
 	virtual ~FTBasicMeshGroup();
 
 protected:
 	virtual HRESULT CreateTextureSampler(ComPtr<ID3D11Device>& device);
-	virtual void	InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTMeshData>& meshes);
+	virtual void	InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData&& meshData);
+	virtual void	InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicArray<FTMeshData>&& meshDataArr);
 	virtual void	InitializeConstantBuffers(ComPtr<ID3D11Device>& device);
 
-protected:
-	void SetTexKey(FTDS::String& texKey);
-
-	FTVertexShader* GetVertexShader();
-	FTPixelShader*	GetPixelShader();
-
-	// Since the texture type is diverged into FTTexture & FTCUBEMAP_TEXTURE,
-	// the TEXTURE_MAP needs to be specified.
-	template <typename TEXTURE_MAP>
-	void SetTexture(FTDS::String& key, TEXTURE_MAP& map)
-	{
-		mTexKey	 = key;
-		mTexture = map.at(key);
-	}
-
 private:
-	FTDS::String mTexKey;
-	int			 mDirection;
+	int mDirection;
 
-	std::vector<Mesh*>		   mMeshes;
-	FTTexture*				   mTexture;
+	FTDS::DynamicArray<Mesh*>* mMeshes;
 	ComPtr<ID3D11SamplerState> mSamplerState;
-	FTVertexShader*			   mVS;
-	FTPixelShader*			   mPS;
 
 	ComPtr<ID3D11Buffer> mVertexConstBuffer;
-	// ComPtr<ID3D11Buffer>	 mPixelConstBuffer;
-	BasicVCData				 mVertexConstData;
-	std::vector<FTMaterial*> mMaterials;
-
-	Mesh*		 mNormalLines;
-	NormalVCData mNormalVertexConstData;
-	bool		 mDrawNormal;
+	BasicVCData			 mVertexConstData;
 
 private:
 	void CalcModelMat(Matrix& matrix, Transform* transform);
 
 public:
-	virtual void SaveProperties(std::ofstream& ofs) override;
-	virtual void LoadProperties(std::ifstream& ifs) override;
 	virtual void Process(FTCore* coreInst) override;
-
-#ifdef FOXTROT_EDITOR
-public:
-	virtual void UpdateUI();
-
-private:
-	bool mValModified;
-#endif
 };
 
 namespace ChunkKey
 {
 	namespace FTMeshGroup
 	{
+		constexpr const char* MESH_KEY	  = "Mesh Key";
 		constexpr const char* TEXTURE_KEY = "Texture Key";
+		constexpr const char* SHADER_KEY  = "Shader Key";
+		constexpr const char* VS_KEY	  = "Vertex Shader Key";
+		constexpr const char* PS_KEY	  = "Pixel Shader Key";
+		constexpr const char* MAT_KEY	  = "Material Key";
 
 		constexpr const char* DRAW_TEXTURE = "Draw Texture";
 		constexpr const char* DRAW_NORMALS = "Draw Normals";

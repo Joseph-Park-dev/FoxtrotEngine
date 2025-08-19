@@ -21,14 +21,32 @@ struct FTMeshData
 {
 	bool IsEmpty() const;
 
-	std::vector<Vertex>	  Vertices;
-	std::vector<uint32_t> Indices;
+	FTDS::DynamicArray<Vertex>	 Vertices;
+	FTDS::DynamicArray<uint32_t> Indices;
+
+	FTMeshData operator=(FTMeshData& data)
+	{
+		size_t i = 0;
+		Vertices.IterateArray([&](Vertex& v) {
+			v = data.Vertices.At(i);
+			++i;
+		});
+
+		i = 0;
+		Indices.IterateArray([&](uint32_t idx) {
+			idx = data.Indices.At(i);
+			++i;
+		});
+		return *this;
+	}
 };
+
+
 
 struct FTDebugMeshData
 {
 	bool IsEmpty() const;
 
 	std::vector<DebugVertex> Vertices;
-	//std::vector<uint32_t>	 Indices;
+	// std::vector<uint32_t>	 Indices;
 };

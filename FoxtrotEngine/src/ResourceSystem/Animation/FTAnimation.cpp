@@ -9,7 +9,7 @@ int FTAnimation::GetMinFrameIdx() const { return mMinFrameIdx; }
 
 void FTAnimation::SetFrameDuration(int frameNum, float duration)
 {
-	Mesh*			mesh  = Meshes().at(frameNum);
+	Mesh*			mesh  = Meshes()->At(frameNum);
 	AnimationFrame* frame = static_cast<AnimationFrame*>(mesh);
 	frame->Duration		  = duration;
 }
@@ -34,55 +34,30 @@ FTAnimation::FTAnimation(FTAnimation* other)
 {
 }
 
-void FTAnimation::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTMeshData>& meshes)
+void FTAnimation::Initialize(FTDS::DynamicArray<FTMeshData>&& meshData, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
-	if (0 < meshes.size())
+	if (0 < Meshes()->GetSize())
 		Clear();
 
-	Meshes().reserve(meshes.size());
-	for (const FTMeshData& meshData : meshes)
-	{
-		AnimationFrame* newFrame = DBG_NEW AnimationFrame;
-		newFrame->VertexCount	 = UINT(meshData.Vertices.size());
-		newFrame->IndexCount	 = UINT(meshData.Indices.size());
+	Meshes()->Reserve(meshData.GetSize());
+	meshData.IterateArray([&](FTMeshData& meshD) {
 
-		D3D11Utils::CreateVertexBuffer(device, meshData.Vertices, newFrame->VertexBuffer);
-		D3D11Utils::CreateIndexBuffer(device, meshData.Indices, newFrame->IndexBuffer);
-
-		newFrame->Duration = 1 / mAnimFPS;
-		this->Meshes().push_back(newFrame);
-	}
-
-	SetNormalLines(DBG_NEW Mesh);
-	std::vector<Vertex>	  normalVertices;
-	std::vector<uint32_t> normalIndices;
-
-	size_t offset = 0;
-	for (const FTMeshData& meshData : meshes)
-	{
-		for (size_t i = 0; i < meshData.Vertices.size(); ++i)
+		if (!meshD.Vertices.IsEmpty() && !meshD.Indices.IsEmpty())
 		{
-			Vertex v = meshData.Vertices.at(i);
+			AnimationFrame* newFrame = DBG_NEW AnimationFrame;
+			newFrame->VertexCount	 = UINT(meshD.Vertices.GetSize());
+			newFrame->IndexCount	 = UINT(meshD.Indices.GetSize());
 
-			v.texcoord.x = 0.0f; // start point
-			normalVertices.push_back(v);
+			D3D11Utils::CreateVertexBuffer(device, meshD.Vertices, newFrame->VertexBuffer);
+			D3D11Utils::CreateIndexBuffer(device, meshD.Indices, newFrame->IndexBuffer);
 
-			v.texcoord.x = 1.0f; // end point
-			normalVertices.push_back(v);
-
-			normalIndices.push_back(uint32_t(2 * (i + offset)));
-			normalIndices.push_back(uint32_t(2 * (i + offset) + 1));
+			newFrame->Duration = 1 / mAnimFPS;
+			Meshes()->PushBack(newFrame);
 		}
-		offset = meshData.Vertices.size();
-	}
-
-	D3D11Utils::CreateVertexBuffer<Vertex>(device, normalVertices, NormalLines()->VertexBuffer);
-	NormalLines()->VertexCount = (UINT)normalVertices.size();
-	D3D11Utils::CreateIndexBuffer(device, normalIndices, NormalLines()->IndexBuffer);
-	NormalLines()->IndexCount = (UINT)normalIndices.size();
+	});
 
 	if (mMaxFrameIdx == 0)
-		mMaxFrameIdx = meshes.size() - 1;
+		mMaxFrameIdx = meshData.GetSize() - 1;
 }
 
 void FTAnimation::SaveProperties(std::ofstream& ofs)

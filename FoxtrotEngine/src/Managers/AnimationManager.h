@@ -54,7 +54,6 @@ private:
 private:
 	FTSpriteAnimation* CreateAnimationFromSpriteSheet(
 		const char*	  name,
-		FTDS::String& texKey,
 		FTDS::String& spriteSheetKey,
 		size_t		  startIndex,
 		size_t		  endIndex);

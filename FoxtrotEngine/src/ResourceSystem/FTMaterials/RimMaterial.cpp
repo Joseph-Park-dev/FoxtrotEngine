@@ -12,14 +12,14 @@
 	#include "CommandHistory.h"
 #endif // FOXTROT_EDITOR
 
-void RimMaterial::CreatePixelConstBuffer(ComPtr<ID3D11Device>& device, ComPtr<ID3D11Buffer>& buffer)
+void RimMaterial::CreatePixelConstBuffer(ComPtr<ID3D11Device>& device)
 {
-	D3D11Utils::CreateConstantBuffer(device, *mData, buffer);
+	D3D11Utils::CreateConstantBuffer(device, *mData, GetPCBuf());
 }
 
-void RimMaterial::UpdateBuffer(ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Buffer>& buffer)
+void RimMaterial::UpdateBuffer(ComPtr<ID3D11DeviceContext>& context)
 {
-	D3D11Utils::UpdateBuffer(context, *mData, buffer);
+	D3D11Utils::UpdateBuffer(context, *mData, GetPCBuf());
 }
 
 void RimMaterial::LoadFromFile()

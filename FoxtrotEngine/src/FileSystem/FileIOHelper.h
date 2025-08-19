@@ -18,6 +18,7 @@
 #include "FileSystem/FileTypes.h"
 #include "FileSystem/NullKeys.h"
 #include "Static/FTString.h"
+#include <Static/HashMap.h>
 
 class FTVector2;
 class FTVector3;
@@ -41,6 +42,17 @@ public:
 	static void LoadVector2(std::ifstream& ifs, DirectX::XMFLOAT2& vec2);
 	static void LoadVector3(std::ifstream& ifs, FTVector3& vec3);
 	static void LoadVector4(std::ifstream& ifs, DirectX::XMFLOAT4& vec4);
+
+	template <typename RESOURCE>
+	static void LoadResource(std::ifstream& ifs, RESOURCE*& res, FTDS::HashMap<RESOURCE*>* map)
+	{
+		FTDS::String key;
+		LoadBasicString(ifs, key);
+		if (key.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
+			res = map->At(key)->Value();
+		else
+			res = nullptr;
+	}
 
 	static void ParseVector3(FTDS::String& line, FTVector3& arg);
 	static void ParseVector2(FTDS::String& line, FTVector2& arg);

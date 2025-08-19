@@ -46,7 +46,11 @@
 								} \
 							static void Destroy() \
 								{ \
-									delete mInstance; \
+									if (mInstance)                  \
+									{                               \
+										delete mInstance;           \
+										mInstance = nullptr;        \
+									} \
 								} \
 							TYPE(const TYPE& obj) = delete; \
 						protected:\

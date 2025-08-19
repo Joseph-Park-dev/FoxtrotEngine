@@ -24,15 +24,17 @@ public:
 	bool		 GetIsPlaying() const;
 
 public:
-	void Process(FTCore* coreInst) override;
-
-public:
 	Sound();
 	~Sound() override;
 
 private:
 	SoLoud::Wav* mWav;
 	bool		 mIsPlaying;
+
+public:
+	virtual void SaveProperties(std::ofstream& ofs) override;
+	virtual void LoadProperties(std::ifstream& ifs) override;
+	void		 Process(FTCore* coreInst) override;
 };
 
 namespace ChunkKey

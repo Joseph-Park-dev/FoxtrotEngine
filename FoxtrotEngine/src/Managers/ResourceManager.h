@@ -88,43 +88,48 @@ public:
 
 	void LoadResources(std::ifstream& ifs);
 
+	// Manually load the required Materials. If it doesn't exist in Asset/material,
+	// this creates a new material.
+	virtual void LoadMaterials();
+	void		 LoadDefaultResources();
+
 public:
-	FTTexture*		   GetLoadedTexture(FTDS::String& key);
-	FTTileMap*		   GetLoadedTileMap(FTDS::String& key);
-	FTSpriteSheet*	   GetLoadedSpriteSheet(FTDS::String& key);
-	FTPremade*		   GetLoadedPremade(FTDS::String& key);
-	FTVertexShader*	   GetLoadedVertexShader(FTDS::String& key);
-	FTPixelShader*	   GetLoadedPixelShader(FTDS::String& key);
-	FTMaterial*		   GetLoadedMaterial(FTDS::String& key);
-	FTBasicMeshGroup*  GetLoadedMesh(FTDS::String& key);
-	FTSpriteAnimation* GetLoadedSpriteAnim(FTDS::String& key);
-	FTSpineAnimation*  GetLoadedSpineAnim(FTDS::String& key);
-	Sound*			   GetLoadedSound(FTDS::String& key);
-	FTCSV*			   GetLoadedCSV(FTDS::String& key);
-	FTJSON*			   GetLoadedJSON(FTDS::String& key);
-	FTText*			   GetLoadedText(FTDS::String& key);
+	virtual FTTexture*		   GetLoadedTexture(FTDS::String& key);
+	virtual FTTileMap*		   GetLoadedTileMap(FTDS::String& key);
+	virtual FTSpriteSheet*	   GetLoadedSpriteSheet(FTDS::String& key);
+	virtual FTPremade*		   GetLoadedPremade(FTDS::String& key);
+	virtual FTVertexShader*	   GetLoadedVertexShader(FTDS::String& key);
+	virtual FTPixelShader*	   GetLoadedPixelShader(FTDS::String& key);
+	virtual FTMaterial*		   GetLoadedMaterial(FTDS::String& key);
+	virtual FTBasicMeshGroup*  GetLoadedMesh(FTDS::String& key);
+	virtual FTSpriteAnimation* GetLoadedSpriteAnim(FTDS::String& key);
+	virtual FTSpineAnimation*  GetLoadedSpineAnim(FTDS::String& key);
+	virtual Sound*			   GetLoadedSound(FTDS::String& key);
+	virtual FTCSV*			   GetLoadedCSV(FTDS::String& key);
+	virtual FTJSON*			   GetLoadedJSON(FTDS::String& key);
+	virtual FTText*			   GetLoadedText(FTDS::String& key);
 
 	FTDS::String& GetPathToAsset();
-	void		  SetPathToAsset(FTDS::String&& projectPath);
+	virtual void  SetPathToAsset(FTDS::String&& projectPath);
 
 	void AbsoluteToRelativePath(FTResource* res);
 	void RelativeToAbsolutePath(FTResource* res);
 
 public:
-	FTDS::HashMap<FTTexture*>*			GetTextures();
-	FTDS::HashMap<FTTileMap*>*			GetTileMaps();
-	FTDS::HashMap<FTSpriteSheet*>*		GetSpriteSheets();
-	FTDS::HashMap<FTPremade*>*			GetPremades();
-	FTDS::HashMap<FTVertexShader*>*	GetVertexShaders();
-	FTDS::HashMap<FTPixelShader*>*		GetPixelShaders();
-	FTDS::HashMap<FTMaterial*>*		GetMaterials();
-	FTDS::HashMap<FTBasicMeshGroup*>*	GetMeshGroups();
-	FTDS::HashMap<FTSpriteAnimation*>* GetSpriteAnimations();
-	FTDS::HashMap<FTSpineAnimation*>*	GetSpineAnimations();
-	FTDS::HashMap<Sound*>*				GetSounds();
-	FTDS::HashMap<FTCSV*>*				GetCSVs();
-	FTDS::HashMap<FTJSON*>*			GetJSONs();
-	FTDS::HashMap<FTText*>*			GetTexts();
+	virtual FTDS::HashMap<FTTexture*>*		   GetTextures();
+	virtual FTDS::HashMap<FTTileMap*>*		   GetTileMaps();
+	virtual FTDS::HashMap<FTSpriteSheet*>*	   GetSpriteSheets();
+	virtual FTDS::HashMap<FTPremade*>*		   GetPremades();
+	virtual FTDS::HashMap<FTVertexShader*>*	   GetVertexShaders();
+	virtual FTDS::HashMap<FTPixelShader*>*	   GetPixelShaders();
+	virtual FTDS::HashMap<FTMaterial*>*		   GetMaterials();
+	virtual FTDS::HashMap<FTBasicMeshGroup*>*  GetMeshGroups();
+	virtual FTDS::HashMap<FTSpriteAnimation*>* GetSpriteAnimations();
+	virtual FTDS::HashMap<FTSpineAnimation*>*  GetSpineAnimations();
+	virtual FTDS::HashMap<Sound*>*			   GetSounds();
+	virtual FTDS::HashMap<FTCSV*>*			   GetCSVs();
+	virtual FTDS::HashMap<FTJSON*>*			   GetJSONs();
+	virtual FTDS::HashMap<FTText*>*			   GetTexts();
 
 	///////////////////////////
 	// Save | Load resources //
@@ -146,15 +151,24 @@ public:
 		}
 	}
 
-protected:
-	// Manually load the required Materials. If it doesn't exist in Asset/material,
-	// this creates a new material.
-	virtual void LoadMaterials();
+	template <typename FTRESOURCE>
+	void ProcessResources(FTCore* coreInstance, FTDS::HashMap<FTRESOURCE*>* resMap)
+	{
+		resMap->IterateAllValues(
+			[&](FTRESOURCE* res) {
+				this->RelativeToAbsolutePath(res);
+				if (res)
+					res->Process(coreInstance);
+			});
+	}
 
+protected:
 	//////////////////////////
 	// Processing Resources //
 	//////////////////////////
 	/// Member functions for processing newly loaded resources.
+	void ProcessResources();
+
 protected:
 	FoxtrotRenderer* GetRenderer();
 
@@ -166,19 +180,19 @@ private:
 	// Foxtrot resources//
 	//////////////////////
 private:
-	FTDS::HashMap<FTTexture*>*			mTextures;
-	FTDS::HashMap<FTTileMap*>*			mTileMaps;
-	FTDS::HashMap<FTSpriteSheet*>*		mSpriteSheets;
-	FTDS::HashMap<FTPremade*>*			mPremades;
+	FTDS::HashMap<FTTexture*>*		   mTextures;
+	FTDS::HashMap<FTTileMap*>*		   mTileMaps;
+	FTDS::HashMap<FTSpriteSheet*>*	   mSpriteSheets;
+	FTDS::HashMap<FTPremade*>*		   mPremades;
 	FTDS::HashMap<FTSpriteAnimation*>* mSpriteAnimations;
-	FTDS::HashMap<FTSpineAnimation*>*	mSpineAnimations;
+	FTDS::HashMap<FTSpineAnimation*>*  mSpineAnimations;
 
 	// A mesh group usually represents a 3D model.
 	FTDS::HashMap<FTBasicMeshGroup*>* mMeshGroups;
 
 	FTDS::HashMap<FTVertexShader*>* mVertexShaders;
-	FTDS::HashMap<FTPixelShader*>*	 mPixelShaders;
-	FTDS::HashMap<FTMaterial*>*	 mMaterials;
+	FTDS::HashMap<FTPixelShader*>*	mPixelShaders;
+	FTDS::HashMap<FTMaterial*>*		mMaterials;
 
 	FTDS::HashMap<Sound*>* mSounds;
 
@@ -186,7 +200,7 @@ private:
 	// Generic-type resources //
 	////////////////////////////
 private:
-	FTDS::HashMap<FTCSV*>*	 mCSVs;
+	FTDS::HashMap<FTCSV*>*	mCSVs;
 	FTDS::HashMap<FTJSON*>* mJSONs;
 	FTDS::HashMap<FTText*>* mTexts;
 
@@ -220,18 +234,6 @@ private:
 					}
 				});
 		}
-	}
-
-protected:
-	template <typename FTRESOURCE>
-	void ProcessResources(FTCore* coreInstance, FTDS::HashMap<FTRESOURCE*>* resMap)
-	{
-		resMap->IterateAllValues(
-			[&](FTRESOURCE* res) {
-				RelativeToAbsolutePath(res);
-				if (res)
-					res->Process(coreInstance);
-			});
 	}
 
 private:

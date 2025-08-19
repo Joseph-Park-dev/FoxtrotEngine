@@ -18,8 +18,8 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include "Core/SingletonMacro.h"
-#include "Math/FTMath.h"
-#include "Static/FTString.h"
+#include <Math/FTMath.h>
+#include <Static/FTString.h>
 
 class FTWindow;
 class FoxtrotRenderer;

@@ -596,9 +596,9 @@ bool FileIOHelper::GetLine(std::ifstream& ifs, FTDS::String& str, char delimiter
 	for (size_t i = 0; i < length; ++i)
 	{
 		ifs.get(ch);
-		str.Data()[i] = ch;
+		str.At(i) = ch;
 	}
-	str.Data()[length] = '\0';
+	str.At(length) = '\0';
 	ifs.seekg(2, std::ios_base::cur); // Skip the "\n" at the end of the line.
 	return str.Data() && 0 < length;
 }

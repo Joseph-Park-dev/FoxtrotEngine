@@ -7,8 +7,8 @@ namespace FTDS
 	class RecordNode : public FTDS::Record<TYPE>
 	{
 	public:
-		RecordNode* GetLink() { return mLink; }
-		void		SetLink(RecordNode* next) { mLink = next; }
+		RecordNode*& GetLink() { return mLink; }
+		void		 SetLink(RecordNode* next) { mLink = next; }
 
 	public:
 		RecordNode(FTDS::String key, TYPE val)

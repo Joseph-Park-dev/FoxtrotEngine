@@ -47,30 +47,13 @@ int SpriteRenderer::GetTexHeight()
 
 void SpriteRenderer::Initialize(FTCore* coreInstance)
 {
-	SetRenderer(coreInstance->GetGameRenderer());
-	SetMeshKey(ChunkKey::PRIMITIVE_SQUARE_BLUE);
 	MeshRenderer::Initialize(coreInstance);
-}
-
-void SpriteRenderer::Render(FoxtrotRenderer* renderer)
-{
-	if (GetMeshGroup())
-	{
-		this->UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance(), renderer);
-		renderer->SwitchFillMode();
-		// renderer->SetRenderTargetView();
-		GetMeshGroup()->Render(renderer);
-	}
+	
 }
 
 void SpriteRenderer::CloneTo(Actor* actor)
 {
 	SpriteRenderer* newComp = DBG_NEW SpriteRenderer(actor, GetUpdateOrder());
-	newComp->SetMeshKey(GetMeshKey());
-	newComp->SetTexKey(GetTexKey());
-
-	for (size_t i = 0; i < MaterialKeys().size(); ++i)
-		newComp->MaterialKeys().push_back(MaterialKeys().at(i));
 
 	// newComp->GetMeshGroup()->SetDrawNormal(this->GetMeshGroup()->GetDrawNormal());
 	newComp->mChannel  = this->mChannel;
@@ -95,39 +78,6 @@ void SpriteRenderer::UpdateMesh(Transform* transform, Camera* camInst, FoxtrotRe
 			Vector3	  scale	  = Vector3(texSize.x / texSize.y, 1.0f, 1.0f);
 			GetMeshGroup()->GetVCData().model *= Matrix::CreateScale(scale);
 		}
-		GetMeshGroup()->UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext());
+		GetMeshGroup()->UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), GetMaterial());
 	}
 }
-
-#ifdef FOXTROT_EDITOR
-void SpriteRenderer::EditorUpdate(float deltaTime)
-{
-}
-
-void SpriteRenderer::EditorRender(FoxtrotRenderer* renderer)
-{
-	if (GetMeshGroup())
-	{
-		this->UpdateMesh(GetOwner()->GetTransform(), EditorCamera::GetInstance(), renderer);
-		renderer->SwitchFillMode();
-		// renderer->SetRenderTargetView();
-		GetMeshGroup()->SetTexture();
-		GetMeshGroup()->Render(renderer);
-	}
-}
-
-void SpriteRenderer::EditorUIUpdate()
-{
-	CHECK_RENDERER(GetRenderer());
-
-	if (!GetMeshGroup())
-		return;
-
-	UpdateMaterial();
-	UpdateSprite();
-	OnResetTexture();
-
-	UpdateVS();
-	UpdatePS();
-}
-#endif // FOXTROT_EDITOR

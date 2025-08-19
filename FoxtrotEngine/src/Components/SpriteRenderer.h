@@ -32,7 +32,6 @@ public:
 
 public:
 	virtual void Initialize(FTCore* coreInstance) override;
-	virtual void Render(FoxtrotRenderer* renderer) override;
 	virtual void CloneTo(Actor* actor) override;
 
 public:
@@ -50,15 +49,6 @@ private:
 	// These fields need to be loaded from .chunk file.
 	int		  mChannel;
 	FTVector2 mTexScale;
-
-#ifdef FOXTROT_EDITOR
-public:
-	virtual void EditorUpdate(float deltaTime) override;
-	virtual void EditorRender(FoxtrotRenderer* renderer) override;
-
-public:
-	virtual void EditorUIUpdate() override;
-#endif // FOXTROT_EDITOR
 };
 
 namespace ChunkKey

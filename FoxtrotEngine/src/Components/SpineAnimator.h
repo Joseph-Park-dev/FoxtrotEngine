@@ -12,16 +12,12 @@ public:
 	virtual FTDS::String GetName() const override { return "SpineAnimator"; }
 
 public:
-	const std::vector<FTSpineAnimation*>& GetLoadedAnim() const;
-
-public:
 	void		 Initialize(FTCore* coreInst) override;
 	virtual void Update(float deltaTime) override;
 	void		 Render(FoxtrotRenderer* renderer) override;
 
 public:
 	SpineAnimator(Actor* owner, int updateOrder = DefaultVal::UPDATE_ORDER);
-	~SpineAnimator() override;
 	virtual void CloneTo(Actor* actor) override;
 
 protected:
@@ -31,9 +27,8 @@ protected:
 		FoxtrotRenderer* renderer) override;
 
 private:
-	std::vector<FTSpineAnimation*> mLoadedAnim;
-	float						   mTimeScale;
-	spine::Physics				   mUsePhysics;
+	float		   mTimeScale;
+	spine::Physics mUsePhysics;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
@@ -46,3 +41,11 @@ public:
 	virtual void EditorUIUpdate() override;
 #endif // FOXTROT_EDITOR
 };
+
+namespace ChunkKey
+{
+	namespace SpineAnimator
+	{
+		constexpr const char* LOADED_ANIM = "Loaded Anim";
+	}
+} // namespace ChunkKey

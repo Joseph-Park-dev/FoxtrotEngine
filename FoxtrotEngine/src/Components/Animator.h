@@ -57,12 +57,12 @@ public:
 	~Animator() override;
 
 private:
-	std::vector<FTSpriteAnimation*> mLoadedAnim;
-	FTSpriteAnimation*				mCurrAnim;
-	int								mCurrFrameIdx;
-	float							mAccTime;
-	bool							mIsFinished;
-	bool							mIsRepeated;
+	FTDS::DynamicArray<FTSpriteAnimation*>* mLoadedAnim;
+	FTSpriteAnimation*						mCurrAnim;
+	int										mCurrFrameIdx;
+	float									mAccTime;
+	bool									mIsFinished;
+	bool									mIsRepeated;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;

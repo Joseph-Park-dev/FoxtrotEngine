@@ -12,8 +12,6 @@
 #pragma once
 #include "Components/Component.h"
 
-#include <vector>
-
 #include "Static/FTString.h"
 
 class FTBasicMeshGroup;
@@ -22,6 +20,8 @@ class Actor;
 class Camera;
 class Transform;
 class FTTexture;
+class FTVertexShader;
+class FTPixelShader;
 class FTMaterial;
 struct Mesh;
 struct FTMeshData;
@@ -54,21 +54,6 @@ public:
 	virtual ~MeshRenderer() override;
 	virtual void CloneTo(Actor* actor) override;
 
-	/////////////////////////////////
-	// Keys to select the elements //
-	/////////////////////////////////
-protected:
-	FTDS::String& GetMeshKey();
-	FTDS::String& GetTexKey();
-
-	void SetMeshKey(FTDS::String& key);
-	void SetMeshKey(const char* key);
-	void SetTexKey(FTDS::String& key);
-	void SetTexKey(const char* key);
-
-	FTDS::String& VSKey();
-	FTDS::String& PSKey();
-
 	///////////////////////////////////////
 	// Getters & Setters to the elements //
 	///////////////////////////////////////
@@ -76,35 +61,26 @@ protected:
 	FTBasicMeshGroup* GetMeshGroup() const;
 	FTTexture*		  GetTexture() const;
 	FoxtrotRenderer*  GetRenderer() const;
+	FTVertexShader*	  GetVS() const;
+	FTPixelShader*	  GetPS() const;
+
+	FTMaterial* GetMaterial() const;
 
 	void SetRenderer(FoxtrotRenderer* renderer);
 	void SetMeshGroup(FTBasicMeshGroup* meshGroup);
-	void SetMaterials();
-
-	std::vector<FTDS::String>& MaterialKeys();
+	void SetTexture(FTTexture* tex);
+	void SetVS(FTVertexShader* vs);
+	void SetPS(FTPixelShader* ps);
+	void SetMaterial(FTMaterial* mat);
 
 	////////////////////////
 	// Element operations //
 	////////////////////////
 protected:
-	virtual bool InitializeMesh();
-	bool		 InitializeMesh(FTDS::String& key);
 	virtual void UpdateMesh(
-		Transform* transform,
-		Camera* camInst,
+		Transform*		 transform,
+		Camera*			 camInst,
 		FoxtrotRenderer* renderer);
-
-	//////////////////////////////////////////
-	// Component elements					//
-	// These will be read from .chunk file. //
-	//////////////////////////////////////////
-private:
-	// Identifiers for the object in the Resource Map from the ResourceManager instance.
-	FTDS::String			  mMeshKey;
-	FTDS::String			  mTexKey;
-	FTDS::String			  mVSKey;
-	FTDS::String			  mPSKey;
-	std::vector<FTDS::String> mMaterialKeys;
 
 	////////////////////////////////////////
 	// Component elements				  //
@@ -113,6 +89,10 @@ private:
 private:
 	FoxtrotRenderer*  mRenderer;
 	FTBasicMeshGroup* mMeshGroup;
+	FTTexture*		  mTexture;
+	FTVertexShader*	  mVS;
+	FTPixelShader*	  mPS;
+	FTMaterial*		  mMaterial;
 
 	///////////////////////////////////
 	// Save & Load related functions //
@@ -128,23 +108,5 @@ public:
 public:
 	virtual void EditorRender(FoxtrotRenderer* renderer) override;
 	virtual void EditorUIUpdate() override;
-
-protected:
-	void		 OnResetTexture();
-	void		 UpdateSprite();
-	void		 UpdateSprite(FTDS::String& key);
-	void		 UpdateMaterial();
-	void		 UpdateVS();
-	void		 UpdatePS();
-	void		 AddModel();
 #endif
 };
-
-namespace ChunkKey
-{
-	constexpr const char* MESH_KEY		 = "Mesh Key";
-	constexpr const char* TEXTURE_KEY	 = "Texture Key";
-	constexpr const char* MATERIAL_KEYS	 = "Material Key";
-	constexpr const char* SHADER_KEYS	 = "Shader Key";
-	constexpr const char* MATERIAL_COUNT = "Count";
-} // namespace ChunkKey

@@ -65,9 +65,7 @@ void TileMapRenderer::SetTileMap(FTTileMap* tileMap)
 void TileMapRenderer::Initialize(FTCore* coreInstance)
 {
 	MeshRenderer::Initialize(coreInstance);
-	if (GetTexKey().NotEqual(ChunkKey::NullVal::NULL_OBJECT)
-		&& mTileMapKey.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
-		this->InitializeTileMap();
+	this->InitializeTileMap();
 }
 
 void TileMapRenderer::InitializeTileMap()
@@ -77,10 +75,7 @@ void TileMapRenderer::InitializeTileMap()
 		mTileMap = ResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey);
 		if (mTileMap)
 		{
-			if (GetTexKey().NotEqual(ChunkKey::NullVal::NULL_OBJECT))
-				GetMeshGroup()->SetTexture(GetTexKey());
 			mTileMap->Initialize();
-			SetMeshKey(ChunkKey::PRIMITIVE_SQUARE_BLUE);
 			std::vector<FTMeshData> meshData = GeometryGenerator::MakeTileMapGrid(mTileMap);
 
 			// Need to Implement here
@@ -113,15 +108,14 @@ TileMapRenderer::~TileMapRenderer()
 void TileMapRenderer::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
-	FileIOHelper::SaveString(ofs, ChunkKey::TILEMAP_KEY, mTileMapKey);
-	FileIOHelper::SaveString(ofs, ChunkKey::MESH_KEY, GetTexKey());
+	FileIOHelper::SaveString(ofs, ChunkKey::TILEMAP_KEY, mTileMap->FileName());
 }
 
 void TileMapRenderer::LoadProperties(std::ifstream& ifs)
 {
 	FTDS::String texKey;
 	FileIOHelper::LoadBasicString(ifs, texKey);
-	SetTexKey(texKey);
+	//SetTexKey(texKey);
 	FileIOHelper::LoadBasicString(ifs, mTileMapKey);
 	Component::LoadProperties(ifs);
 }
@@ -130,7 +124,7 @@ void TileMapRenderer::LoadProperties(std::ifstream& ifs)
 void TileMapRenderer::EditorUIUpdate()
 {
 	CHECK_RENDERER(GetRenderer());
-	UpdateSprite();
+	//UpdateSprite();
 	UpdateCSV();
 	OnConfirmUpdate();
 }

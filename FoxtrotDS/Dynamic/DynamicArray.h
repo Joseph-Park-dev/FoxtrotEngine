@@ -11,7 +11,7 @@ namespace FTDS
 		void PushBack(TYPE value)
 		{
 			++mSize;
-			if (this->mCapacity <= mSize)
+			if (this->mCapacity < mSize)
 			{
 				// Grow the array by double.
 				FTDS::Array<TYPE>::AllocateMem(mSize * 2);
@@ -80,9 +80,19 @@ namespace FTDS
 			return -1;
 		}
 
+		void Assign(DynamicArray<TYPE>* other)
+		{
+			this->Reserve(other->GetSize());
+			size_t i = 0;
+			other->IterateArray([&](TYPE t) {
+				this->At(i) = t;
+				++i;
+			});
+		}
+
 	public:
 		const size_t& GetSize() const { return mSize; }
-		bool		  IsEmpty() { return mSize == 0; }
+		const bool	  IsEmpty() const { return mSize == 0; }
 
 		size_t& Size() { return mSize; }
 

@@ -752,7 +752,7 @@ void EditorLayer::OpenProject(std::string& path)
 		DebugShapes::GetInstance()->DeleteAll();
 		EditorResourceManager::GetInstance()->DeleteAll();
 		PATH_PROJECT.Assign(path.c_str());
-		EditorResourceManager::GetInstance()->SetPathToAsset(std::move(PATH_PROJECT));
+		ResourceManager::GetInstance()->SetPathToAsset(std::move(PATH_PROJECT));
 		EditorResourceManager::GetInstance()->LoadAllResourcesInAsset();
 		// EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 	}

@@ -173,4 +173,14 @@ void FTPremade::UpdateUI()
 		ImGui::EndPopup();
 	}
 }
+
+void FTPremade::AddRefCount()
+{
+	FTResource::AddRefCount();
+}
+
+void FTPremade::SubtractRefCount()
+{
+	FTResource::SubtractRefCount();
+}
 #endif

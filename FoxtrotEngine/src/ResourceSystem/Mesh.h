@@ -10,15 +10,14 @@
 /// </summary>
 
 #pragma once
-
 #include <d3d11.h>
 #include <wrl.h> // ComPtr
-#include <vector>
 
 // #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/Vertex.h"
 #include "ResourceSystem/MeshConstantData.h"
+#include <Dynamic/DynamicArray.h>
 
 using DirectX::XMFLOAT2;
 using DirectX::XMFLOAT3;
@@ -28,9 +27,6 @@ struct Mesh
 {
 	ComPtr<ID3D11Buffer> VertexBuffer;
 	ComPtr<ID3D11Buffer> IndexBuffer;
-
-	std::vector<ComPtr<ID3D11Buffer>> VertexConstantBuffers;
-	std::vector<ComPtr<ID3D11Buffer>> PixelConstantBuffers;
 
 	UINT IndexCount	 = 0;
 	UINT VertexCount = 0;
@@ -55,8 +51,6 @@ struct SpineMesh
 	ComPtr<ID3D11Buffer>   PositionBuf;
 	ComPtr<ID3D11Buffer>   TexcoordBuf;
 	ComPtr<ID3D11Buffer>   IndexBuf;
-	ComPtr<ID3D11Buffer>   VCBuf;
-	ComPtr<ID3D11Buffer>   PCBuf;
 	UINT				   VertexCount;
 	UINT				   IndexCount;
 	D3D_PRIMITIVE_TOPOLOGY Primitve{ D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP };
@@ -93,17 +87,17 @@ struct SpineMesh
 			// position
 			D3D11_BUFFER_DESC ibDesc = {};
 			ZeroMemory(&ibDesc, sizeof(ibDesc));
-			ibDesc.Usage			 = D3D11_USAGE_DYNAMIC;
-			ibDesc.ByteWidth		 = vertexCount * sizeof(XMFLOAT2);
-			ibDesc.BindFlags		 = D3D11_BIND_VERTEX_BUFFER;
-			ibDesc.CPUAccessFlags	 = D3D11_CPU_ACCESS_WRITE;
-			hr						 = device->CreateBuffer(&ibDesc, nullptr, PositionBuf.GetAddressOf());
+			ibDesc.Usage		  = D3D11_USAGE_DYNAMIC;
+			ibDesc.ByteWidth	  = vertexCount * sizeof(XMFLOAT2);
+			ibDesc.BindFlags	  = D3D11_BIND_VERTEX_BUFFER;
+			ibDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+			hr					  = device->CreateBuffer(&ibDesc, nullptr, PositionBuf.GetAddressOf());
 			if (FAILED(hr))
 				return hr;
 
-		// texture coord
+			// texture coord
 			ibDesc.ByteWidth = vertexCount * sizeof(XMFLOAT2);
-			hr = device->CreateBuffer(&ibDesc, nullptr, TexcoordBuf.GetAddressOf());
+			hr				 = device->CreateBuffer(&ibDesc, nullptr, TexcoordBuf.GetAddressOf());
 			if (FAILED(hr))
 				return hr;
 		}

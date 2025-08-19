@@ -36,10 +36,12 @@ FTShape::~FTShape()
 		delete mMesh;
 		mMesh = nullptr;
 	}
-	if (mVertexConstantBuffer.Get())
-		mVertexConstantBuffer.Reset();
-	if (mPixelConstantBuffer.Get())
-		mPixelConstantBuffer.Reset();
+	if (mVSCBuf.Get())
+		mVSCBuf.Reset();
+	if (mGSCBuf.Get())
+		mGSCBuf.Reset();
+	if (mPSCBuf.Get())
+		mPSCBuf.Reset();
 }
 
 DebugVCData& FTShape::GetVCData() { return mVSCData; }
@@ -76,9 +78,9 @@ void FTShape::Render(FoxtrotRenderer* renderer)
 {
 	if (!mMesh)
 		return;
-	if (!mVertexConstantBuffer.Get())
+	if (!mVSCBuf.Get())
 		return;
-	if (!mPixelConstantBuffer.Get())
+	if (!mPSCBuf.Get())
 		return;
 
 	UINT stride = sizeof(Vertex);
@@ -90,17 +92,17 @@ void FTShape::Render(FoxtrotRenderer* renderer)
 
 	DebugShapes* dbgShapes = DebugShapes::GetInstance();
 	context->VSSetShader(dbgShapes->GetVS().Get(), 0, 0);
-	context->VSSetConstantBuffers(0, 1, mMesh->VertexConstantBuffers.at(0).GetAddressOf());
+	context->VSSetConstantBuffers(0, 1, mVSCBuf.GetAddressOf());
 
 	context->GSSetShader(dbgShapes->GetGSSquare().Get(), 0, 0);
 	ComPtr<ID3D11Buffer> GSCBuffers[2] = {
-		mVertexConstantBuffer,
-		mGSCBuffer
+		mVSCBuf,
+		mGSCBuf
 	};
 	context->GSSetConstantBuffers(0, 2, GSCBuffers->GetAddressOf());
 
 	context->PSSetShader(dbgShapes->GetPS().Get(), 0, 0);
-	context->PSSetConstantBuffers(0, 1, mMesh->PixelConstantBuffers.at(0).GetAddressOf());
+	context->PSSetConstantBuffers(0, 1, mPSCBuf.GetAddressOf());
 
 	context->IASetInputLayout(dbgShapes->GetInputLayout().Get());
 	context->IASetVertexBuffers(0, 1, mMesh->VertexBuffer.GetAddressOf(), &stride, &offset);
@@ -119,9 +121,9 @@ void FTShape::Render(
 {
 	if (!mMesh)
 		return;
-	if (!mVertexConstantBuffer.Get())
+	if (!mVSCBuf.Get())
 		return;
-	if (!mPixelConstantBuffer.Get())
+	if (!mPSCBuf.Get())
 		return;
 
 	UINT stride = sizeof(DebugVertex);
@@ -131,10 +133,10 @@ void FTShape::Render(
 
 	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
 	context->VSSetShader(vertexShader.Get(), 0, 0);
-	context->VSSetConstantBuffers(0, 1, mMesh->VertexConstantBuffers.at(0).GetAddressOf());
+	context->VSSetConstantBuffers(0, 1, mVSCBuf.GetAddressOf());
 
 	context->PSSetShader(pixelShader.Get(), 0, 0);
-	context->PSSetConstantBuffers(0, 1, mMesh->PixelConstantBuffers.at(0).GetAddressOf());
+	context->PSSetConstantBuffers(0, 1, mPSCBuf.GetAddressOf());
 
 	context->IASetInputLayout(inputLayout.Get());
 	context->IASetVertexBuffers(0, 1, mMesh->VertexBuffer.GetAddressOf(), &stride, &offset);
@@ -149,9 +151,6 @@ void FTShape::InitializeMesh(ComPtr<ID3D11Device>& device, FTDebugMeshData&& mes
 	mMesh->VertexCount = UINT(meshData.Vertices.size());
 
 	D3D11Utils::CreateVertexBuffer(device, meshData.Vertices, mMesh->VertexBuffer);
-
-	mMesh->VertexConstantBuffers.push_back(mVertexConstantBuffer);
-	mMesh->PixelConstantBuffers.push_back(mPixelConstantBuffer);
 }
 
 // void FTShape::UpdateConstantBufferModel(Transform* transform)
@@ -205,25 +204,25 @@ void FTShape::InitializeConstantBuffer(ComPtr<ID3D11Device>& device)
 	mGSCData.size	  = Vector2::Zero;
 	mPSCData.IsActive = true;
 
-	D3D11Utils::CreateConstantBuffer(device, mVSCData, mVertexConstantBuffer);
-	D3D11Utils::CreateConstantBuffer(device, mGSCData, mGSCBuffer);
-	D3D11Utils::CreateConstantBuffer(device, mPSCData, mPixelConstantBuffer);
+	D3D11Utils::CreateConstantBuffer(device, mVSCData, mVSCBuf);
+	D3D11Utils::CreateConstantBuffer(device, mGSCData, mGSCBuf);
+	D3D11Utils::CreateConstantBuffer(device, mPSCData, mPSCBuf);
 }
 
 void FTShape::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
-	if (mVertexConstantBuffer)
-		D3D11Utils::UpdateBuffer(context, mVSCData, mVertexConstantBuffer);
+	if (mVSCBuf)
+		D3D11Utils::UpdateBuffer(context, mVSCData, mVSCBuf);
 	else
 		printf("ERROR : FTShape::UpdateConstantBuffers() -> Vertex Constant Buffer is null");
 
-	if (mGSCBuffer)
-		D3D11Utils::UpdateBuffer(context, mGSCData, mGSCBuffer);
+	if (mGSCBuf)
+		D3D11Utils::UpdateBuffer(context, mGSCData, mGSCBuf);
 	else
 		Debug::LogError(__LINE__, __FILE__, "GSC Buffer is null");
 
-	if (mPixelConstantBuffer)
-		D3D11Utils::UpdateBuffer(context, mPSCData, mPixelConstantBuffer);
+	if (mPSCBuf)
+		D3D11Utils::UpdateBuffer(context, mPSCData, mPSCBuf);
 	else
 		printf("ERROR : FTShape::UpdateConstantBuffers() -> Pixel Constant Buffer is null");
 }

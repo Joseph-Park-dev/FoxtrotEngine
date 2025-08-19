@@ -97,4 +97,14 @@ void FTTexture::UpdateUI()
     ImGui::InputInt("Width", &mTexWidth);
     ImGui::InputInt("Height", &mTexHeight);
 }
+
+void FTTexture::AddRefCount()
+{
+	FTResource::AddRefCount();
+}
+
+void FTTexture::SubtractRefCount()
+{
+	FTResource::SubtractRefCount();
+}
 #endif // FOXTROT_EDITOR

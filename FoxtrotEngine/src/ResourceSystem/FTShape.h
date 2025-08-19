@@ -70,9 +70,9 @@ private:
 	DebugGCData mGSCData;
 	DebugPCData mPSCData;
 
-	ComPtr<ID3D11Buffer> mVertexConstantBuffer;
-	ComPtr<ID3D11Buffer> mGSCBuffer;
-	ComPtr<ID3D11Buffer> mPixelConstantBuffer;
+	ComPtr<ID3D11Buffer> mVSCBuf;
+	ComPtr<ID3D11Buffer> mGSCBuf;
+	ComPtr<ID3D11Buffer> mPSCBuf;
 
 private:
 	void InitializeConstantBuffer(ComPtr<ID3D11Device>& device);

@@ -3,56 +3,63 @@
 
 #include <spine/spine.h>
 
+#include <Dynamic/DynamicArray.h>
+
 class FTSpineAnimation :
 	public FTAnimation
 {
 public:
-	void InitializeSpinAnim(
-		ComPtr<ID3D11Device>& device,
-		spine::SkeletonData*  skel);
+	void InitializeSpinAnim(ComPtr<ID3D11Device>& device);
 
-	void UpdateConstantBuffers(
+	virtual void UpdateConstantBuffers(
 		ComPtr<ID3D11Device>&		 device,
-		ComPtr<ID3D11DeviceContext>& context) override;
+		ComPtr<ID3D11DeviceContext>& context,
+		FTMaterial*					 mat);
 
 public:
-	spine::Skeleton*	   GetSkeleton();
-	spine::AnimationState* GetAnimState();
+	spine::Skeleton*	   GetSkeleton() const;
+	spine::AnimationState* GetAnimState() const;
 	float				   GetTimeScale();
 
-	void SetJSONKey(FTDS::String& key);
-	void SetAtlasKey(FTDS::String& key);
 	void SetTimeScale(float val);
-	void SetMaterials(std::vector<FTDS::String>& matKeys, ComPtr<ID3D11Device>& device) override;
 	void SetAnimation(int idx, bool loop);
 	void ToggleSkin(size_t idx);
 
+	void SetJSON(FTJSON* json);
+	void SetAtlasTxt(FTText* txt);
+
 	spine::Vector<spine::Animation*>& LoadedClips();
+	FTDS::DynamicArray<Mesh*>*		  Meshes() = delete;
 
 public:
-	virtual void Update(float deltaTime, spine::Physics physics);
-	void		 Render(FoxtrotRenderer* renderer) override;
+	void Update(float deltaTime, spine::Physics physics);
+	void Render(
+		FoxtrotRenderer* renderer,
+		FTTexture*		 tex,
+		FTVertexShader*	 vs,
+		FTPixelShader*	 ps,
+		FTMaterial*		 mat) override;
 
 public:
 	FTSpineAnimation();
 	~FTSpineAnimation() override;
 
 private:
-	FTDS::String					 mJSONKey;
-	FTDS::String					 mAtlasKey;
+	FTJSON*							 mJSON;
+	FTText*							 mAtlasTxt;
+	float							 mTimeScale;
 	spine::Vector<spine::Animation*> mLoadedClips;
 	spine::Vector<spine::Skin*>		 mSkins;
 	unsigned char					 mSkinCombination;
 	int								 mCurrAnimIdx;
 
-	spine::SkeletonData*	   mSkeletonData;
-	spine::AnimationStateData* mStateData;
-	spine::Skeleton*		   mSkeleton;
 	spine::Atlas*			   mAtlas;
+	spine::SkeletonData*	   mSkeletonData;
+	spine::Skeleton*		   mSkeleton;
+	spine::AnimationStateData* mStateData;
 	spine::AnimationState*	   mState;
-	float					   mTimeScale;
-	std::vector<SpineMesh*>	   mMeshes;
-	std::vector<Mesh*>&		   Meshes() = delete;
+
+	FTDS::DynamicArray<SpineMesh*>* mMeshes;
 
 private:
 	void InitializeMeshes(
@@ -61,7 +68,6 @@ private:
 		void*							 attachment,
 		SpineMesh::SPINE_ATTACHMENT_TYPE attachmentType);
 
-	void InitializeConstantBuffers(ComPtr<ID3D11Device>& device) override;
 	void UpdateBuffers(ComPtr<ID3D11DeviceContext>& context);
 	void SetSkin();
 
@@ -73,6 +79,10 @@ public:
 #ifdef FOXTROT_EDITOR
 public:
 	void UpdateUI();
+
+public:
+	virtual void AddRefCount() override;
+	virtual void SubtractRefCount() override;
 #endif // FOXTROT_EDITOR
 };
 

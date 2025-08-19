@@ -2,6 +2,8 @@
 
 #include <assert.h>
 
+#include <FileSystem/FileIOHelper.h>
+
 SoLoud::Wav* Sound::GetWav() const
 {
 	return mWav;
@@ -10,6 +12,19 @@ SoLoud::Wav* Sound::GetWav() const
 bool Sound::GetIsPlaying() const
 {
 	return mIsPlaying;
+}
+
+void Sound::SaveProperties(std::ofstream& ofs)
+{
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::SOUND);
+	FTResource::SaveProperties(ofs);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::SOUND);
+}
+
+void Sound::LoadProperties(std::ifstream& ifs)
+{
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::SOUND);
+	FTResource::LoadProperties(ifs);
 }
 
 void Sound::Process(FTCore* coreInst)

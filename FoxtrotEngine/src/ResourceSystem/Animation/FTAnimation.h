@@ -19,13 +19,14 @@ public:
 	void SetFrameDuration(int frameNum, float duration);
 
 public:
+	virtual void Initialize(
+		FTDS::DynamicArray<FTMeshData>&& meshData,
+		ComPtr<ID3D11Device>&			 device,
+		ComPtr<ID3D11DeviceContext>&	 context) override;
+
+public:
 	FTAnimation();
 	FTAnimation(FTAnimation* other);
-
-protected:
-	virtual void InitializeMeshes(
-		ComPtr<ID3D11Device>&	 device,
-		std::vector<FTMeshData>& meshes) override;
 
 private:
 	// These fields need to be loaded from .chunk file

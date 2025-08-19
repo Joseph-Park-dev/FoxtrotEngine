@@ -30,14 +30,8 @@
 
 void FTTileMap::Initialize()
 {
-	if (mCSVKey.Equal(ChunkKey::NullVal::NULL_OBJECT))
+	if (!mCSV)
 		return;
-
-#ifdef FOXTROT_EDITOR
-	FTCSV* csv = EditorResourceManager::GetInstance()->GetLoadedCSV(mCSVKey);
-#else
-	FTCSV* csv = ResourceManager::GetInstance()->GetLoadedCSV(mCSVKey);
-#endif // FOXTROT_EDITOR
 
 	// These values cannot be 0;
 	assert(mTileWidthOnScreen != 0);
@@ -48,8 +42,8 @@ void FTTileMap::Initialize()
 	if (mTileMap)
 		delete[] mTileMap;
 
-	UINT column		   = csv->GetColumnCount();
-	UINT row		   = csv->GetRowCount();
+	UINT column		   = mCSV->GetColumnCount();
+	UINT row		   = mCSV->GetRowCount();
 	mMaxCountOnScreenX = column;
 	mMaxCountOnScreenY = row;
 
@@ -60,8 +54,8 @@ void FTTileMap::Initialize()
 		for (int c = 0; c < column; ++c)
 		{
 			int idx = column * r + c;
-			if (csv->Data().at(idx))
-				InitializeTile(mTileMap[idx], c, r, csv->Data().at(idx));
+			if (mCSV->Data().at(idx))
+				InitializeTile(mTileMap[idx], c, r, mCSV->Data().at(idx));
 		}
 	}
 }
@@ -158,7 +152,6 @@ void FTTileMap::SetMaxCountOnMapY(UINT yCount)
 
 FTTileMap::FTTileMap()
 	: FTResource()
-	, mCSVKey(ChunkKey::NullVal::NULL_OBJECT)
 	, mTileWidthOnScreen(0)
 	, mTileHeightOnScreen(0)
 	, mMaxCountOnMapX(0)
@@ -201,7 +194,7 @@ void FTTileMap::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::TileMap::FTTILEMAP);
 	FTResource::SaveProperties(ofs);
-	FileIOHelper::SaveString(ofs, ChunkKey::TileMap::CSV_KEY, mCSVKey);
+	FileIOHelper::SaveString(ofs, ChunkKey::TileMap::CSV_KEY, mCSV->FileName());
 	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TileMap::SCREEN_WIDTH, mTileWidthOnScreen);
 	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TileMap::SCREEN_HEIGHT, mTileHeightOnScreen);
 	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TileMap::MAP_MAX_COUNT_X, mMaxCountOnMapX);
@@ -216,7 +209,7 @@ void FTTileMap::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadUnsignedInt(ifs, mMaxCountOnMapX);
 	FileIOHelper::LoadUnsignedInt(ifs, mTileHeightOnScreen);
 	FileIOHelper::LoadUnsignedInt(ifs, mTileWidthOnScreen);
-	FileIOHelper::LoadBasicString(ifs, mCSVKey);
+	FileIOHelper::LoadResource(ifs, mCSV, ResourceManager::GetInstance()->GetCSVs());
 	FTResource::LoadProperties(ifs);
 }
 
@@ -244,7 +237,7 @@ void FTTileMap::UpdateUI()
 	FTEditorUtils::DisplayResSelection(
 		"Select CSV",
 		EditorResourceManager::GetInstance()->GetCSVs(),
-		mCSVKey);
+		mCSV);
 
 	int tileWidthOnScreen  = static_cast<int>(mTileWidthOnScreen);
 	int tileHeightOnScreen = static_cast<int>(mTileHeightOnScreen);
@@ -260,5 +253,19 @@ void FTTileMap::UpdateUI()
 	mTileHeightOnScreen = static_cast<UINT>(tileHeightOnScreen);
 	mMaxCountOnMapX		= static_cast<UINT>(maxCountOnMapX);
 	mMaxCountOnMapY		= static_cast<UINT>(maxCountOnMapY);
+}
+
+void FTTileMap::AddRefCount()
+{
+	if (mCSV)
+		mCSV->AddRefCount();
+	FTResource::AddRefCount();
+}
+
+void FTTileMap::SubtractRefCount()
+{
+	if (mCSV)
+		mCSV->SubtractRefCount();
+	FTResource::SubtractRefCount();
 }
 #endif

@@ -55,6 +55,10 @@ public:
 
 	virtual void UpdateUI() override;
 
+public:
+	virtual void AddRefCount() override;
+	virtual void SubtractRefCount() override;
+
 private:
 	EditorElement* mDummyForUI;
 #endif // FOXTROT_EDITOR

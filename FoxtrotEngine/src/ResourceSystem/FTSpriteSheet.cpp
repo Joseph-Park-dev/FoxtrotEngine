@@ -19,24 +19,18 @@
 
 void FTSpriteSheet::Initialize()
 {
-	if (mJSONKey.Equal(ChunkKey::NullVal::NULL_OBJECT))
+	if (!mJSON)
 		return;
 
-	mTilesCount = 0;
+	mTilesCount = 0; // Reset the number of tiles
 
-#ifdef FOXTROT_EDITOR
-	FTJSON* json = EditorResourceManager::GetInstance()->GetLoadedJSON(mJSONKey);
-#else
-	FTJSON* json = ResourceManager::GetInstance()->GetLoadedJSON(mJSONKey);
-#endif // FOXTROT_EDITOR
+	InitializeProperties(mJSON->Data().at(SpriteSheetKeys::PROPERTIES));
 
-	InitializeProperties(json->Data().at(SpriteSheetKeys::PROPERTIES));
-
-	mTilesCount = json->Data().at(SpriteSheetKeys::BASE).size();
+	mTilesCount = mJSON->Data().at(SpriteSheetKeys::BASE).size();
 	mTiles = DBG_NEW Tile[mTilesCount];
 
 	size_t i = 0;
-	for (auto& item : json->Data().at(SpriteSheetKeys::BASE))
+	for (auto& item : mJSON->Data().at(SpriteSheetKeys::BASE))
 	{
 		if (item.is_null())
 			return;
@@ -56,7 +50,7 @@ size_t& FTSpriteSheet::GetTilesCount()
 }
 
 FTSpriteSheet::FTSpriteSheet()
-	: mJSONKey(ChunkKey::NullVal::NULL_OBJECT)
+	: mJSON(nullptr)
 	, mTiles(nullptr)
 	, mSheetSize(FTVector2::Zero)
 	, mTilesCount(0)
@@ -93,7 +87,7 @@ void FTSpriteSheet::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::SpriteSheet::SPRITE_SHEET);
 	FTResource::SaveProperties(ofs);
-	FileIOHelper::SaveString(ofs, ChunkKey::SpriteSheet::JSON_KEY, mJSONKey);
+	FileIOHelper::SaveString(ofs, ChunkKey::SpriteSheet::JSON_KEY, mJSON->FileName());
 	FileIOHelper::SaveVector2(ofs, ChunkKey::SpriteSheet::SHEET_SIZE, mSheetSize);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::SpriteSheet::SPRITE_SHEET);
 }
@@ -102,7 +96,7 @@ void FTSpriteSheet::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::SpriteSheet::SPRITE_SHEET);
 	FileIOHelper::LoadVector2(ifs, mSheetSize);
-	FileIOHelper::LoadBasicString(ifs, mJSONKey);
+	FileIOHelper::LoadResource<FTJSON>(ifs, mJSON, ResourceManager::GetInstance()->GetJSONs());
 	FTResource::LoadProperties(ifs);
 }
 
@@ -148,7 +142,7 @@ void FTSpriteSheet::UpdateUI()
 	FTEditorUtils::DisplayResSelection(
 		"Select JSON",
 		EditorResourceManager::GetInstance()->GetJSONs(),
-		mJSONKey);
+		mJSON);
 
 	FTDS::String text = { "Sheet size : " };
 	text += (std::to_string(mSheetSize.x) + " ,").c_str();
@@ -157,9 +151,17 @@ void FTSpriteSheet::UpdateUI()
 }
 void FTSpriteSheet::AddRefCount()
 {
-	FTJSON* json = EditorResourceManager::GetInstance()->GetLoadedJSON(mJSONKey);
-	json->AddRefCount();
+	if (mJSON)
+		mJSON->AddRefCount();
 
 	FTResource::AddRefCount();
+}
+
+void FTSpriteSheet::SubtractRefCount()
+{
+	if (mJSON)
+		mJSON->SubtractRefCount();
+
+	FTResource::SubtractRefCount();
 }
 #endif // FOXTROT_EDITOR

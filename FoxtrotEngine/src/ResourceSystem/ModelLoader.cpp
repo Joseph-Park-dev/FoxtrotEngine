@@ -86,9 +86,10 @@ void ModelLoader::ProcessNode(aiNode *node, const aiScene *scene, Matrix tr) {
 
         aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
         FTMeshData newMesh = this->ProcessMesh(mesh, scene);
-        for (auto &v : newMesh.Vertices) {
-            v.position = DirectX::SimpleMath::Vector3::Transform(v.position, m);
-        }
+
+        newMesh.Vertices.IterateArray([&](Vertex& v) {
+			v.position = DirectX::SimpleMath::Vector3::Transform(v.position, m);
+		});
         meshes.push_back(newMesh);
     }
 
@@ -130,8 +131,14 @@ FTMeshData ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene) {
     }
 
     FTMeshData newMesh;
-    newMesh.Vertices = vertices;
-    newMesh.Indices = indices;
+
+    newMesh.Vertices.Reserve(vertices.size());
+	newMesh.Indices.Reserve(indices.size());
+
+    for (Vertex& v : vertices)
+		newMesh.Vertices.PushBack(v);
+	for (uint32_t i : indices)
+		newMesh.Indices.PushBack(i);
 
     // http://assimp.sourceforge.net/lib_html/materials.html
     if (mesh->mMaterialIndex >= 0) {

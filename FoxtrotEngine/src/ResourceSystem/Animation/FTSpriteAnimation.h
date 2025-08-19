@@ -29,10 +29,7 @@ struct AnimationFrame;
 class FTSpriteAnimation : public FTAnimation
 {
 public:
-	FTDS::String&	GetTileDataKey();
 	AnimationFrame* GetFrame(int frameIdx);
-
-	void SetTileDataKey(FTDS::String& key);
 
 public:
 	FTSpriteAnimation();
@@ -40,9 +37,7 @@ public:
 	~FTSpriteAnimation() override;
 
 private:
-	// Key to the FTResource that contains Tile data
-	// (FTTileMap, FTSpriteSheet)
-	FTDS::String mTileDataKey;
+	FTSpriteSheet* mSpriteSheet;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
@@ -52,7 +47,7 @@ public:
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void AddRefCount() override;
-	//virtual void SubtractRefCount() override;
+	virtual void SubtractRefCount() override;
 #endif
 };
 

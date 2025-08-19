@@ -53,11 +53,11 @@ protected:
 
 private:
 	// These fields need to be read from .chunk files or be modified on the editor.
-	FTDS::String mCSVKey;
-	UINT		 mTileWidthOnScreen;
-	UINT		 mTileHeightOnScreen;
-	UINT		 mMaxCountOnMapX;
-	UINT		 mMaxCountOnMapY;
+	FTCSV* mCSV;
+	UINT   mTileWidthOnScreen;
+	UINT   mTileHeightOnScreen;
+	UINT   mMaxCountOnMapX;
+	UINT   mMaxCountOnMapY;
 
 	// These fields need to be initialized when the tilemap is constructed.
 	Tile* mTileMap;
@@ -72,6 +72,10 @@ public:
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void UpdateUI() override;
+
+public:
+	virtual void AddRefCount() override;
+	virtual void SubtractRefCount() override;
 #endif // FOXTROT_EDITOR
 };
 

@@ -79,6 +79,10 @@ public:
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void UpdateUI() override;
+
+public:
+	virtual void AddRefCount() override;
+	virtual void SubtractRefCount() override;
 #endif // FOXTROT_EDITOR
 };
 

@@ -40,6 +40,7 @@ namespace FTDS
 		TYPE*  End() { return &mData[mCapacity]; }
 		size_t IterPos() { return mPtr - Begin(); }
 
+		// It is recommended to put null check to mPtr.
 		template <class UnaryOperation>
 		void IterateArray(
 			UnaryOperation&& unaryOp)
@@ -47,10 +48,24 @@ namespace FTDS
 			mPtr = Begin();
 			while (mPtr != End())
 			{
-				if (*mPtr)
-					unaryOp(*mPtr);
+				unaryOp(*mPtr);
 				++mPtr;
 			}
+		}
+
+		void Swap(size_t posLeft, size_t posRight)
+		{
+			TYPE cache = this->mData[posLeft];
+			// Replace the front value with back.
+			this->mData[posLeft] = this->mData[posRight];
+			// Replace the back value with front.
+			this->mData[posRight] = cache;
+		}
+
+		void Reverse()
+		{
+			for (size_t i = 0; i < this->mCapacity / 2; ++i)
+				Swap(i, this->mCapacity - 1 - i);
 		}
 
 	public:
@@ -122,7 +137,7 @@ namespace FTDS
 		}
 
 	public:
-		TYPE* Data() { return mData; }
+		const TYPE* Data() const { return mData; }
 
 	protected:
 		virtual void AllocateMem(size_t newCap)

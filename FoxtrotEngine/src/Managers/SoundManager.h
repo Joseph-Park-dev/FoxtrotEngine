@@ -17,7 +17,7 @@ public:
 
 public:
 	void Initialize();
-	void LateUpdate();
+	void Update();
 
 private:
 	SoLoud::Soloud* mSoloud;

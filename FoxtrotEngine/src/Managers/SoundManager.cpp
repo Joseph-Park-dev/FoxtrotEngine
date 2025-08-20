@@ -30,7 +30,7 @@ void SoundManager::LoadSoundFromChunk(FTDS::String& key)
 	mLoaded->PushBack(sound);
 }
 
-void SoundManager::LateUpdate()
+void SoundManager::Update()
 {
 	while (!mPending->IsEmpty())
 	{
@@ -79,19 +79,25 @@ void SoundManager::SaveProperties(std::ofstream& ofs)
 	// Save the loaded sound titles.
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::SoundManager::LOADED);
 	size_t idx = 0;
-	mLoaded->IterateArray([&](Sound* sound) {
-		FileIOHelper::SaveString(ofs, std::to_string(idx).c_str(), sound->FileName().C_Str());
-		++idx;
-	});
+	if (!mLoaded->IsEmpty())
+	{
+		mLoaded->IterateArray([&](Sound* sound) {
+			FileIOHelper::SaveString(ofs, std::to_string(idx).c_str(), sound->FileName().C_Str());
+			++idx;
+		});
+	}
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::SoundManager::LOADED);
 
 	// Save the indices for repeated sounds.
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::SoundManager::REPEATED);
 	idx = 0;
-	mRepeated->IterateArray([&](size_t soundIdx) {
-		FileIOHelper::SaveSize(ofs, std::to_string(idx).c_str(), soundIdx);
-		++idx;
-	});
+	if (!mRepeated->IsEmpty())
+	{
+		mRepeated->IterateArray([&](size_t soundIdx) {
+			FileIOHelper::SaveSize(ofs, std::to_string(idx).c_str(), soundIdx);
+			++idx;
+		});
+	}
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::SoundManager::REPEATED);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::SoundManager::SOUND_MANAGER);
 }
@@ -134,7 +140,8 @@ void SoundManager::UpdateUI(bool* opened)
 	{
 		ImGui::Text("Loaded Sounds");
 		mLoaded->IterateArray([&](Sound* sound) {
-			ImGui::Text(sound->FileName().C_Str());
+			if (sound)
+				ImGui::Text(sound->FileName().C_Str());
 		});
 
 		LoadSoundFromEditior();

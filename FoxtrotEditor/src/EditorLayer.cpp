@@ -104,7 +104,7 @@ void EditorLayer::DisplayViewport()
 
 	ImVec2 windowPos  = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
 	ImVec2 contentReg = ImGui::GetContentRegionAvail();
-
+		
 	FTWindow*		 editorWin = FTCoreEditor::GetInstance()->GetEditorWindow();
 	FoxtrotRenderer* renderer  = FTCoreEditor::GetInstance()->GetGameRenderer();
 
@@ -115,9 +115,8 @@ void EditorLayer::DisplayViewport()
 	}
 	if (mIsResizingViewport && editorWin->MOUSE_AWAY(MOUSE::MOUSE_LEFT))
 	{
-		//editorWin->GetRenderArea()->Set(0.f, 0.f, contentReg.x, contentReg.y);
+		editorWin->GetRenderArea()->Set(0.f, 0.f, contentReg.x, contentReg.y);
 		renderer->GetViewportRenderer()->InitializeTexture(renderer, contentReg);
-		//renderer->SetViewport(0.f, 0.f, contentReg.x, contentReg.y);
 		mIsResizingViewport = false;
 	}
 

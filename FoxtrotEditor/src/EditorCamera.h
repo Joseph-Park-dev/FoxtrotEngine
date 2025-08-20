@@ -36,11 +36,9 @@ private:
 	bool  mPanKeyPressed;
 	float mPanValModSpeed;
 	float mZoomValModSpeed;
-	float mZoomDelta;
 
 	FTRectangle* mDebugRect;
 
 private:
 	void PanLocalXY(ImVec2 vec2);
-	void Zoom();
 };

@@ -79,6 +79,8 @@ protected:
 	Vector3& UpDir();
 	Vector3& RightDir();
 
+	float& ZoomDelta();
+
 public:
 	// "pixels" defines how much of them should fit in a given unit.
 	virtual void Initialize(FTWindow* renderWindow, UINT pixels, float unit);
@@ -87,7 +89,7 @@ public:
 	virtual void UpdateViewDirections();
 
 protected:
-	void ZoomIn();
+	virtual void Zoom();
 
 private:
 	FTWindow* mRenderWindow; // The scene will be rendered on this window.
@@ -110,6 +112,9 @@ private:
 	float mNearZ, mFarZ;
 	float mAspect;
 	float mPixelsPerUnit; // Used for pixel-perfect calculation.
+
+	float mZoomFactor;
+	float mZoomDelta;
 
 	Viewtype mViewType;
 

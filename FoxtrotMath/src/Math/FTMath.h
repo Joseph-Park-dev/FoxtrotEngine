@@ -76,7 +76,7 @@ extern "C"
 		{
 			return fabs(value);
 		}
-		
+
 		inline size_t Min(size_t a, size_t b)
 		{
 			return a > b ? b : a;
@@ -128,6 +128,16 @@ extern "C"
 		}
 
 		inline void Clamp(int& val, int min, int max)
+		{
+			if (val < min)
+				val = min;
+			else if (max < val)
+				val = max;
+			else if (val == min && val == max)
+				val = min;
+		}
+
+		inline void Clampf(float& val, float min, float max)
 		{
 			if (val < min)
 				val = min;

@@ -39,6 +39,7 @@ void Camera::Initialize(FTWindow* renderWindow, UINT pixels, float unit)
 
 void Camera::Update(float deltaTime)
 {
+	Zoom();
 }
 
 void Camera::UpdateViewDirections()
@@ -60,8 +61,11 @@ void Camera::UpdateViewDirections()
 	mRightDir.Normalize();
 }
 
-void Camera::ZoomIn()
+void Camera::Zoom()
 {
+	Math::Clampf(mZoomFactor, 0.01f, 3.0f);
+	mZoomFactor += mZoomDelta;
+	LogFloat(mZoomFactor);
 }
 
 Camera::Camera()
@@ -80,6 +84,8 @@ Camera::Camera()
 	, mAspect(mResolution.x / mResolution.y)
 	, mPixelsPerUnit(0.f)
 	, mViewType(Viewtype::Orthographic)
+	, mZoomDelta(0.f)
+	, mZoomFactor(1.0f)
 {
 }
 
@@ -114,6 +120,9 @@ Matrix Camera::GetProjRow()
 
 	float worldWidth  = renderSize.x * unitsPerPixel;
 	float worldHeight = renderSize.y * unitsPerPixel;
+
+	worldWidth /= mZoomFactor;
+	worldHeight /= mZoomFactor;
 
 	mAspect = renderSize.x / renderSize.y;
 
@@ -186,6 +195,11 @@ Vector3& Camera::UpDir()
 Vector3& Camera::RightDir()
 {
 	return mRightDir;
+}
+
+float& Camera::ZoomDelta()
+{
+	return mZoomDelta;
 }
 
 void Camera::SetPosition(FTVector3 pos)

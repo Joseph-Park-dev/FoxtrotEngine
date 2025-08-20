@@ -25,7 +25,6 @@ EditorCamera::EditorCamera()
 	, mPanKeyPressed(false)
 	, mPanValModSpeed(0.01f)
 	, mZoomValModSpeed(0.1f)
-	, mZoomDelta(0.f)
 	, mDebugRect(DBG_NEW FTRectangle)
 {
 }
@@ -50,11 +49,11 @@ void EditorCamera::Initialize(FTWindow* renderWindow, UINT pixels, float unit)
 void EditorCamera::ProcessInput(FTInputDevice* inputDevice)
 {
 	if (0 < inputDevice->GetMouseWheelDelta())
-		mZoomDelta = mZoomValModSpeed;
+		ZoomDelta() = mZoomValModSpeed;
 	else if (inputDevice->GetMouseWheelDelta() < 0)
-		mZoomDelta = -mZoomValModSpeed;
+		ZoomDelta() = -mZoomValModSpeed;
 	else
-		mZoomDelta = 0.f;
+		ZoomDelta() = 0.f;
 }
 
 void EditorCamera::Update(float deltaTime)
@@ -71,7 +70,6 @@ void EditorCamera::Update(float deltaTime)
 			PanLocalXY(delta);
 			ImGui::ResetMouseDragDelta(ImGuiMouseButton_Middle);
 		}
-		Zoom();
 	}
 
 	/*Camera* cam = Camera::GetInstance();
@@ -99,11 +97,6 @@ void EditorCamera::PanLocalXY(ImVec2 vec2)
 {
 	Position().x += vec2.x;
 	Position().y += vec2.y;
-}
-
-void EditorCamera::Zoom()
-{
-	Position().z += mZoomDelta;
 }
 
 void EditorCamera::DisplayMainCameraMenu()

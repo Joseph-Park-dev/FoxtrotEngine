@@ -95,6 +95,11 @@ void DebugShapes::CreateShaders(ComPtr<ID3D11Device>& device)
 }
 
 #ifdef FOXTROT_EDITOR
+FTRectangle* DebugShapes::GetCameraRect()
+{
+	return mCamRect;
+}
+
 void DebugShapes::SetCameraRect(FTRectangle* rect)
 {
 	mCamRect = rect;

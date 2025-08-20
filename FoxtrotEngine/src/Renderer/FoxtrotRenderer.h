@@ -167,7 +167,7 @@ private:
 
 #ifdef FOXTROT_EDITOR
 public:
-	bool InitializeViewport(FTWindow* window, UINT renderWidth, UINT renderHeight);
+	bool InitializeViewport(FTWindow* window, UINT posX, UINT posY, UINT width, UINT height);
 	void RenderOnViewport();
 	void SetViewport(const ImVec2& topLeft, const ImVec2& resolution);
 

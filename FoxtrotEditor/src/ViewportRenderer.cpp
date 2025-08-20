@@ -25,11 +25,9 @@
 #include "EditorChunkLoader.h"
 #include "EditorCamera.h"
 
-void ViewportRenderer::InitializeTexture(FTWindow* window, FoxtrotRenderer* renderer, UINT width, UINT height)
+void ViewportRenderer::InitializeTexture(FoxtrotRenderer* renderer, ImVec2 size)
 {
-	ImVec2 pos = EditorLayer::GetInstance()->GetSceneViewportPos();
-	window->GetRenderArea()->Set(pos.x, pos.y, static_cast<float>(width), static_cast<float>(height));
-	CreateRenderTargetView(window, renderer);
+	CreateRenderTargetView(renderer, size.x, size.y);
 }
 
 void ViewportRenderer::BeginRender(FoxtrotRenderer* renderer)
@@ -62,15 +60,6 @@ void ViewportRenderer::EndRender(FoxtrotRenderer* renderer)
 	renderer->GetContext()->OMSetDepthStencilState(nullptr, 0);
 }
 
-void ViewportRenderer::Resize(FoxtrotRenderer* renderer)
-{
-	Reset();
-	ImVec2 topLeft = EditorLayer::GetInstance()->GetSceneViewportPos();
-	mWidth		   = static_cast<int>(EditorLayer::GetInstance()->GetSceneViewportSize().x);
-	mHeight		   = static_cast<int>(EditorLayer::GetInstance()->GetSceneViewportSize().y);
-	// InitializeTexture( renderer, mWidth, mHeight);
-}
-
 void ViewportRenderer::Reset()
 {
 	mRenderTexture.Reset();
@@ -79,8 +68,7 @@ void ViewportRenderer::Reset()
 	mDSV.Reset();
 }
 
-void ViewportRenderer::CreateRenderTargetView(
-	FTWindow* window, FoxtrotRenderer* renderer)
+void ViewportRenderer::CreateRenderTargetView(FoxtrotRenderer* renderer, UINT width, UINT height)
 {
 	Reset();
 
@@ -92,11 +80,8 @@ void ViewportRenderer::CreateRenderTargetView(
 	D3D11_TEXTURE2D_DESC textureDesc;
 	ZeroMemory(&textureDesc, sizeof(textureDesc));
 
-	FTRectArea* renderArea = window->GetRenderArea();
-	FTVector2	renderSize = renderArea->GetSize();
-
-	textureDesc.Width			 = renderSize.x;
-	textureDesc.Height			 = renderSize.y;
+	textureDesc.Width			 = width;
+	textureDesc.Height			 = height;
 	textureDesc.MipLevels		 = 1;
 	textureDesc.ArraySize		 = 1;
 	textureDesc.Format			 = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -121,7 +106,7 @@ void ViewportRenderer::CreateRenderTargetView(
 			mRTV.GetAddressOf()));
 
 	DX::ThrowIfFailed(
-		D3D11Utils::CreateDepthBuffer(renderer->GetDevice(), renderSize.x, renderSize.y, renderer->GetNumQualityLevels(), mDSV));
+		D3D11Utils::CreateDepthBuffer(renderer->GetDevice(), width, height, renderer->GetNumQualityLevels(), mDSV));
 
 	renderer->GetDevice()->CreateShaderResourceView(mRenderTexture.Get(), 0, mSRV.GetAddressOf());
 }
@@ -130,8 +115,6 @@ ViewportRenderer::ViewportRenderer()
 	: mRenderTexture(nullptr)
 	, mRTV(nullptr)
 	, mSRV(nullptr)
-	, mWidth(0)
-	, mHeight(0)
 {
 }
 

@@ -80,8 +80,9 @@ bool FTCore::Initialize()
 		delete mWindow;
 		mWindow = nullptr;
 	}
-	mWindow = DBG_NEW FTWindow(mWindowTitle.C_Str(), mWindowWidth, mWindowHeight);
-	mWindow->GetRenderArea()->Set(0.f, 0.f, mWindowWidth, mWindowHeight);
+	FTRectArea* rndArea = DBG_NEW FTRectArea(0.f, 0.f, 1280.f, 720.f);
+	mWindow = DBG_NEW FTWindow(mWindowTitle.C_Str(), mWindowWidth, mWindowHeight, rndArea);
+
 	if (!mWindow->InitializeWindow(WndProc))
 	{
 		Debug::LogError(__LINE__, __FILE__, "Failed to Initialize FTWindow");
@@ -160,13 +161,12 @@ void FTCore::UpdateGame()
 
 	SceneManager::GetInstance()->Update(deltaTime);
 	SceneManager::GetInstance()->Lateupdate(deltaTime);
+	SoundManager::GetInstance()->Update();
 	Physics2D::GetInstance()->Update();
 	CollisionManager::GetInstance()->Update();
 	ParticleSystem::GetInstance()->Update(deltaTime);
 	UIManager::GetInstance()->Update(deltaTime, mWindow->GetInputDevice());
 	Camera::GetInstance()->Update(deltaTime);
-
-	SoundManager::GetInstance()->LateUpdate();
 }
 
 void FTCore::GenerateOutput()

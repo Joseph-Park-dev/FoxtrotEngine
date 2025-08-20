@@ -65,7 +65,7 @@ public:
 	float	 GetFarZ();
 
 	const FTVector3& GetPosition() const;
-	const FTVector2& GetResolution() const;
+	FTVector2&		 GetResolution() const;
 	const FTVector3& GetOffSet() const;
 
 	void SetPosition(FTVector3 pos);
@@ -81,7 +81,7 @@ protected:
 
 public:
 	// "pixels" defines how much of them should fit in a given unit.
-	void		 Initialize(FTWindow* renderWindow, UINT pixels, float unit);
+	virtual void Initialize(FTWindow* renderWindow, UINT pixels, float unit);
 	virtual void Update(float deltaTime);
 
 	virtual void UpdateViewDirections();
@@ -98,18 +98,18 @@ private:
 	Vector3 mUpDir;
 	Vector3 mRightDir;
 
+	FTVector2 mResolution;
 	FTVector2 mDiff;
 	FTVector2 mScreenCenter;
 	FTVector3 mOffset;
 
 	// roll, pitch, yaw
 	// https://en.wikipedia.org/wiki/Aircraft_principal_axes
-	float	  mPitch, mYaw;
-	float	  mProjFOVAngleY;
-	float	  mNearZ, mFarZ;
-	float	  mAspect;
-	FTVector2 mResolution;
-	float	  mPixelsPerUnit; // Used for pixel-perfect calculation.
+	float mPitch, mYaw;
+	float mProjFOVAngleY;
+	float mNearZ, mFarZ;
+	float mAspect;
+	float mPixelsPerUnit; // Used for pixel-perfect calculation.
 
 	Viewtype mViewType;
 

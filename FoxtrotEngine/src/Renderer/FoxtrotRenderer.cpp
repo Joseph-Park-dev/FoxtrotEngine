@@ -26,6 +26,7 @@
 #include "Managers/DebugShapes.h"
 #include "Renderer/D3D11Utils.h"
 #include "Renderer/Camera.h"
+#include "Renderer/FTRectArea.h"
 #include "WindowSystem/FTWindow.h"
 
 #ifdef FOXTROT_EDITOR
@@ -246,7 +247,7 @@ HRESULT FoxtrotRenderer::CreateDepthStencilState(ComPtr<ID3D11DepthStencilState>
 
 HRESULT FoxtrotRenderer::CreateBlendState()
 {
-	D3D11_BLEND_DESC blendDesc		 = {};
+	D3D11_BLEND_DESC blendDesc = {};
 	ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
 	blendDesc.AlphaToCoverageEnable	 = FALSE;
 	blendDesc.IndependentBlendEnable = FALSE;
@@ -295,14 +296,21 @@ FoxtrotRenderer::~FoxtrotRenderer()
 }
 
 #ifdef FOXTROT_EDITOR
-bool FoxtrotRenderer::InitializeViewport(FTWindow* window, UINT renderWidth, UINT renderHeight)
+bool FoxtrotRenderer::InitializeViewport(FTWindow* window, UINT posX, UINT posY, UINT width, UINT height)
 {
 	if (!mViewportRenderer)
 	{
 		LogString("Error : FoxtrotRenderer Initialize - CreateRenderTexture failed.");
 		return false;
 	}
-	mViewportRenderer->InitializeTexture(window, this, renderWidth, renderHeight);
+	ImVec2 pos;
+	pos.x = posX;
+	pos.y = posY;
+
+	ImVec2 size;
+	size.x = width;
+	size.y = height;
+	mViewportRenderer->InitializeTexture(this, size);
 }
 
 void FoxtrotRenderer::RenderOnViewport()

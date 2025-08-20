@@ -76,7 +76,8 @@ Camera::Camera()
 	, mProjFOVAngleY(70.f)
 	, mNearZ(0.01f)
 	, mFarZ(100.0f)
-	, mAspect(1280.f / 720.f)
+	, mResolution(1280.f, 720.f)
+	, mAspect(mResolution.x / mResolution.y)
 	, mPixelsPerUnit(0.f)
 	, mViewType(Viewtype::Orthographic)
 {
@@ -127,7 +128,7 @@ const FTVector3& Camera::GetPosition() const
 	return mPosition;
 }
 
-const FTVector2& Camera::GetResolution() const
+FTVector2& Camera::GetResolution() const
 {
 	return mRenderWindow->GetRenderArea()->GetSize();
 }

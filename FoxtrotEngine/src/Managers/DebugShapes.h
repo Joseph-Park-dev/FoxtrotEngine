@@ -64,8 +64,10 @@ private:
 
 #ifdef FOXTROT_EDITOR
 public:
-	void SetCameraRect(FTRectangle* rect);
-	void RenderCamRect(FoxtrotRenderer* renderer);
+	FTRectangle* GetCameraRect();
+	void		 SetCameraRect(FTRectangle* rect);
+	void		 RenderCamRect(FoxtrotRenderer* renderer);
+
 private:
 	FTRectangle* mCamRect;
 #endif // FOXTROT_EDITOR

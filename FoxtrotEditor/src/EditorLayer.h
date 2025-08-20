@@ -66,8 +66,6 @@ public:
 	bool	  GetUndoKeyPressed() const { return mUndoKeyPressed; }
 	bool	  GetRedoKeyPressed() const { return mRedoKeyPressed; }
 	bool	  GetConfirmKeyPressed() const { return mConfirmKeyPressed; }
-	ImVec2	  GetSceneViewportPos() const { return mSceneViewportPos; }
-	ImVec2	  GetSceneViewportSize() const { return mSceneViewportSize; }
 	ErrorType GetErrorType() const { return mErrorType; }
 
 	//ImGuiFileDialogFlags& GetFileSelectFlag() { return mFileSelectFlag; }
@@ -152,8 +150,6 @@ private:
 	void*		   mDraggedEditorElement;
 
 	// Viewport related
-	ImVec2 mSceneViewportPos;
-	ImVec2 mSceneViewportSize;
 	bool   mIsResizingViewport;
 	bool   mCursorOnViewport;
 
@@ -208,7 +204,7 @@ private:
 	void DisplayInspectorMenu();
 
 	// Viewport size is changed by dragging.
-	bool SceneViewportSizeChanged();
+	bool SceneViewportSizeChanged(ImVec2 size);
 
 	// Does Foxtrot Project exists in projDir?
 	// std::string is used exceptionally because of readability issue.

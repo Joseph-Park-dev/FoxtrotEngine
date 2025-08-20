@@ -38,8 +38,8 @@ public:
 	ComPtr<ID3D11Texture2D>&		GetIndexStagingTexture();
 	ComPtr<ID3D11RenderTargetView>& GetIndexRTV();
 
-	UINT&		GetWidth();
-	UINT&		GetHeight();
+	UINT		GetWidth();
+	UINT		GetHeight();
 	FTRectArea* GetRenderArea();
 
 	FTInputDevice* GetInputDevice();
@@ -69,7 +69,7 @@ public:
 	void Reset(FoxtrotRenderer* renderer);
 
 public:
-	FTWindow(const char* title, UINT width, UINT height);
+	FTWindow(const char* title, UINT width, UINT height, FTRectArea* rndArea);
 	~FTWindow();
 
 private:
@@ -85,7 +85,10 @@ private:
 	ComPtr<ID3D11RenderTargetView> mIndexRTV;
 
 	FTDS::String mTitle;
+
+	// Window width, NOT render area width.
 	UINT		 mWidth;
+	// Window height, NOT render area height.
 	UINT		 mHeight;
 
 	FTInputDevice* mInputDevice;

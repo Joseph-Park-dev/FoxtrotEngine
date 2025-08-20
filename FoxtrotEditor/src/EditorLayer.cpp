@@ -102,23 +102,27 @@ void EditorLayer::DisplayViewport()
 	else
 		mCursorOnViewport = false;
 
+	ImVec2 windowPos  = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
+	ImVec2 contentReg = ImGui::GetContentRegionAvail();
+
 	FTWindow*		 editorWin = FTCoreEditor::GetInstance()->GetEditorWindow();
 	FoxtrotRenderer* renderer  = FTCoreEditor::GetInstance()->GetGameRenderer();
-	mSceneViewportPos		   = ImGui::GetWindowPos();
-	if (editorWin->MOUSE_HOLD(MOUSE::MOUSE_LEFT) && SceneViewportSizeChanged())
+
+	if (editorWin->MOUSE_HOLD(MOUSE::MOUSE_LEFT) && 
+		SceneViewportSizeChanged(editorWin->GetRenderArea()->GetSize().GetImVec2()))
 	{
 		mIsResizingViewport = true;
 	}
 	if (mIsResizingViewport && editorWin->MOUSE_AWAY(MOUSE::MOUSE_LEFT))
 	{
-		editorWin->GetRenderArea()->Set(0.f, 0.f, mSceneViewportSize.x, mSceneViewportSize.y);
-		renderer->InitializeViewport(editorWin, mSceneViewportSize.x, mSceneViewportSize.y);
+		//editorWin->GetRenderArea()->Set(0.f, 0.f, contentReg.x, contentReg.y);
+		renderer->GetViewportRenderer()->InitializeTexture(renderer, contentReg);
+		//renderer->SetViewport(0.f, 0.f, contentReg.x, contentReg.y);
 		mIsResizingViewport = false;
 	}
 
 	ID3D11ShaderResourceView* viewportTexture = renderer->GetViewportRenderer()->GetViewportSRV().Get();
-	const ImVec2			  viewportSize	  = editorWin->GetRenderArea()->GetSize().GetImVec2();
-	ImGui::Image((ImTextureID)(intptr_t)viewportTexture, viewportSize);
+	ImGui::Image((ImTextureID)(intptr_t)viewportTexture, contentReg);
 
 	ImGui::End();
 }
@@ -560,14 +564,9 @@ void EditorLayer::DisplayInspectorMenu()
 	ImGui::End();
 }
 
-bool EditorLayer::SceneViewportSizeChanged()
+bool EditorLayer::SceneViewportSizeChanged(ImVec2 size)
 {
-	if (mSceneViewportSize != ImGui::GetContentRegionAvail())
-	{
-		mSceneViewportSize = ImGui::GetContentRegionAvail();
-		return true;
-	}
-	return false;
+	return size != ImGui::GetContentRegionAvail();
 }
 
 bool EditorLayer::ProjectExists(std::string projDir)
@@ -818,7 +817,6 @@ EditorLayer::EditorLayer()
 	, mCursorOnViewport(false)
 	, mFocusedEditorElement(nullptr)
 	, mDraggedEditorElement(nullptr)
-	, mSceneViewportSize(ImVec2(1920.f, 1080.f))
 	, mInfoType(InfoType::None)
 	, mFileMenuEvent(FileMenuEvents::None)
 	, mErrorType(ErrorType::None)

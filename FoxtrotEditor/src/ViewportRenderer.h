@@ -17,11 +17,12 @@ using namespace Microsoft::WRL;
 
 class FTWindow;
 class FoxtrotRenderer;
+class FTRectArea;
 
 class ViewportRenderer
 {
 public:
-	void InitializeTexture(FTWindow* window, FoxtrotRenderer* renderer, UINT width, UINT height);
+	void InitializeTexture(FoxtrotRenderer* renderer, ImVec2 size);
 
 	void BeginRender(FoxtrotRenderer* renderer);
 	// Switches the RenderTarget to this object's, renders the scene,
@@ -29,7 +30,6 @@ public:
 	void DrawOnTexture(FoxtrotRenderer* renderer);
 	void EndRender(FoxtrotRenderer* renderer);
 
-	void Resize(FoxtrotRenderer* renderer);
 	void Reset();
 
 public:
@@ -46,9 +46,6 @@ private:
 	ComPtr<ID3D11ShaderResourceView> mSRV;
 	ComPtr<ID3D11DepthStencilView>	 mDSV;
 
-	UINT mWidth;
-	UINT mHeight;
-
 private:
-	void CreateRenderTargetView(FTWindow* window, FoxtrotRenderer* renderer);
+	void CreateRenderTargetView(FoxtrotRenderer* renderer, UINT width, UINT height);
 };

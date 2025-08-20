@@ -12,7 +12,10 @@
 
 #include <InputSystem/FTInputDevice.h>
 #include <ResourceSystem/FTRectangle.h>
+#include <Renderer/FTRectArea.h>
 #include <Dynamic/DynamicArray.h>
+#include <Managers/DebugShapes.h>
+#include <WindowSystem/FTWindow.h>
 
 #include <EditorLayer.h>
 #include <EditorSceneManager.h>
@@ -38,6 +41,12 @@ FTRectangle* EditorCamera::GetDebugRect()
 	return mDebugRect;
 }
 
+void EditorCamera::Initialize(FTWindow* renderWindow, UINT pixels, float unit)
+{
+	Camera::Initialize(renderWindow, pixels, unit);
+	DebugShapes::GetInstance()->SetCameraRect(mDebugRect);
+}
+
 void EditorCamera::ProcessInput(FTInputDevice* inputDevice)
 {
 	if (0 < inputDevice->GetMouseWheelDelta())
@@ -53,9 +62,6 @@ void EditorCamera::Update(float deltaTime)
 	Camera::Update(deltaTime);
 
 	mPanKeyPressed = ImGui::IsMouseDragging(ImGuiMouseButton_Middle);
-
-	ImVec2 viewportMin = EditorLayer::GetInstance()->GetSceneViewportPos();
-	ImVec2 viewportMax = viewportMin + EditorLayer::GetInstance()->GetSceneViewportSize();
 	if (EditorLayer::GetInstance()->CursorOnViewport())
 	{
 		if (mPanKeyPressed)
@@ -79,6 +85,14 @@ void EditorCamera::Update(float deltaTime)
 	resRatio *= cam->GetPixelsPerUnit();
 	mDebugRect->GetGSCData().size = resRatio.GetD3Vec2();
 	mDebugRect->GetPixelConstantData().IsActive = true;*/
+
+	Matrix translationMat = Matrix::CreateTranslation(Camera::GetInstance()->GetPosition().GetDXVec3());
+	mDebugRect->UpdateVC(translationMat, this);
+
+	mDebugRect->UpdateGC(this);
+	mDebugRect->GetGSCData().size = Camera::GetInstance()->GetResolution().GetD3Vec2();
+	mDebugRect->SetIsActive(true);
+	mDebugRect->UpdatePC();
 }
 
 void EditorCamera::PanLocalXY(ImVec2 vec2)

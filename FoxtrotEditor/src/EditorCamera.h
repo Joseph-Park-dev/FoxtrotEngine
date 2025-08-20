@@ -13,6 +13,8 @@
 #pragma once
 #include "Renderer/Camera.h"
 
+class FTRectangle;
+
 class EditorCamera :
 	public Camera
 {
@@ -26,6 +28,7 @@ public:
 	FTRectangle* GetDebugRect();
 
 public:
+	void		 Initialize(FTWindow* renderWindow, UINT pixels, float unit) override;
 	virtual void ProcessInput(FTInputDevice* inputDevice);
 	virtual void Update(float deltaTime) override;
 

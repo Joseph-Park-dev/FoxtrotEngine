@@ -226,10 +226,11 @@ ComPtr<ID3D11Texture2D>&		FTWindow::GetIndexTempTexture() { return mIndexTempTex
 ComPtr<ID3D11Texture2D>&		FTWindow::GetIndexStagingTexture() { return mIndexStagingTexture; }
 ComPtr<ID3D11RenderTargetView>& FTWindow::GetIndexRTV() { return mIndexRTV; }
 
-UINT&		   FTWindow::GetWidth() { return mWidth; }
-UINT&		   FTWindow::GetHeight() { return mHeight; }
 FTRectArea*	   FTWindow::GetRenderArea() { return mRenderArea; }
 FTInputDevice* FTWindow::GetInputDevice() { return mInputDevice; }
+
+UINT FTWindow::GetWidth() { return mWidth; }
+UINT FTWindow::GetHeight() { return mHeight; }
 
 void FTWindow::SetWidth(UINT width) { mWidth = width; }
 void FTWindow::SetHeight(UINT height) { mHeight = height; }
@@ -269,7 +270,7 @@ void FTWindow::ResizeWindow(FoxtrotRenderer* renderer)
 
 		CreateRTV(renderer->GetDevice());
 		CreateDSV(renderer->GetDevice(), renderer->GetNumQualityLevels());
-		renderer->SetViewport(0, 0, mWidth, mHeight);
+		// renderer->SetViewport(0, 0, width, height);
 	}
 }
 
@@ -300,6 +301,7 @@ void FTWindow::BeginRender(FoxtrotRenderer* renderer)
 		DispatchMessage(&msg);
 	}
 	UpdateWindow(mWinHandle);
+	renderer->SetViewport(0.f, 0.f, mRenderArea->GetSize().x, mRenderArea->GetSize().y);
 }
 
 void FTWindow::EndRender(FoxtrotRenderer* renderer)
@@ -324,14 +326,14 @@ bool FTWindow::IsInRenderedArea(FTVector2 pos)
 	return mRenderArea->Overlaps(pos);
 }
 
-FTWindow::FTWindow(const char* title, UINT width, UINT height)
+FTWindow::FTWindow(const char* title, UINT width, UINT height, FTRectArea* rndArea)
 	: mWinHandle(nullptr)
-	, mRenderArea(DBG_NEW FTRectArea(0.f, 0.f, width, height))
+	, mWidth(width)
+	, mHeight(height)
+	, mRenderArea(rndArea)
 	, mInputDevice(DBG_NEW FTInputDevice)
 {
 	mTitle.Assign(title);
-	mWidth	= width;
-	mHeight = height;
 }
 
 FTWindow::~FTWindow()

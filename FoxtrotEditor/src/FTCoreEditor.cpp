@@ -66,7 +66,9 @@ bool FTCoreEditor::Initialize()
 		delete mEditorWindow;
 		mEditorWindow = nullptr;
 	}
-	mEditorWindow = DBG_NEW FTWindow("Foxtrot Editor", 3840, 2160);
+
+	FTRectArea* rndArea = DBG_NEW FTRectArea(500.f, 500.f, 1280.f, 720.f);
+	mEditorWindow = DBG_NEW FTWindow("Foxtrot Editor", 3840, 2160, rndArea);
 
 	if (!mEditorWindow->InitializeWindow(WndProc_FTEditor))
 	{
@@ -74,7 +76,7 @@ bool FTCoreEditor::Initialize()
 		return false;
 	}
 
-	GetGameRenderer()->InitializeViewport(mEditorWindow, 1280, 720);
+	GetGameRenderer()->InitializeViewport(mEditorWindow, 500, 500, 1920, 1080);
 
 	if (!mEditorWindow->CreateSwapChain(GetGameRenderer()))
 	{
@@ -87,9 +89,10 @@ bool FTCoreEditor::Initialize()
 		Debug::LogError(__LINE__, __FILE__, "Failed to Initialize FTWindow Renderer");
 		return false;
 	}
+
+	Camera::GetInstance()->Initialize(GetGameWindow(), 64.f, 1.8f);
 	EditorCamera::GetInstance()->Initialize(mEditorWindow, 64.f, 1.8f);
-	EditorCamera::GetInstance()->GetDebugRect()->Initialize(GetGameRenderer());
-	DebugShapes::GetInstance()->SetCameraRect(EditorCamera::GetInstance()->GetDebugRect());
+	DebugShapes::GetInstance()->GetCameraRect()->Initialize(GetGameRenderer());
 
 	if (!InitGUI())
 	{
@@ -155,7 +158,6 @@ LRESULT FTCoreEditor::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 void FTCoreEditor::InitSingletonManagers()
 {
 	Physics2D::GetInstance()->Initialize();
-	Camera::GetInstance()->Initialize(GetGameWindow(), 64.f, 1.8f);
 	EditorResourceManager::GetInstance()->Initialize(GetGameRenderer());
 	SoundManager::GetInstance()->Initialize();
 	UIManager::GetInstance();
@@ -194,10 +196,10 @@ void FTCoreEditor::UpdateGame()
 	{
 		EditorSceneManager::GetInstance()->Update(deltaTime);
 		EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
+		SoundManager::GetInstance()->Update();
 		Physics2D::GetInstance()->Update();
 		CollisionManager::GetInstance()->Update();
 		UIManager::GetInstance()->Update(deltaTime, mEditorWindow->GetInputDevice());
-		SoundManager::GetInstance()->LateUpdate();
 	}
 	else
 		EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
@@ -212,8 +214,6 @@ void FTCoreEditor::GenerateOutput()
 
 	// Renders the gameview window.
 	GetGameWindow()->BeginRender(renderer);
-	FTVector2 size = GetGameWindow()->GetRenderArea()->GetSize();
-	renderer->SetViewport(0, 0, size.x, size.y);
 
 	if (!EditorChunkLoader::GetInstance()->IsLoadingChunk())
 	{
@@ -222,19 +222,18 @@ void FTCoreEditor::GenerateOutput()
 		DebugShapes::GetInstance()->Render(renderer);
 		LightManager::GetInstance()->Render(renderer, Camera::GetInstance());
 	}
-
 	GetGameWindow()->EndRender(renderer);
-
-	GetGameRenderer()->GetViewportRenderer()->BeginRender(renderer);
-	GetGameRenderer()->GetViewportRenderer()->DrawOnTexture(renderer);
-	GetGameRenderer()->GetViewportRenderer()->EndRender(renderer);
+	GetGameWindow()->GetSwapChain()->Present(1, 0);
 
 	// Renders the editor window.
 	mEditorWindow->BeginRender(renderer);
 	EditorLayer::GetInstance()->Render(renderer);
 	mEditorWindow->EndRender(renderer);
 
-	GetGameWindow()->GetSwapChain()->Present(1, 0);
+	GetGameRenderer()->GetViewportRenderer()->BeginRender(renderer);
+	GetGameRenderer()->GetViewportRenderer()->DrawOnTexture(renderer);
+	GetGameRenderer()->GetViewportRenderer()->EndRender(renderer);
+
 	mEditorWindow->GetSwapChain()->Present(1, 0);
 }
 
@@ -271,8 +270,8 @@ bool FTCoreEditor::InitGUI()
 	io.ConfigDpiScaleViewports = true;
 	io.FontGlobalScale		   = 1.5f;
 
-	ImGuiStyle& style = ImGui::GetStyle();
-	style.ScaleAllSizes(2.0f);
+	// ImGuiStyle& style = ImGui::GetStyle();
+	// style.ScaleAllSizes(2.0f);
 
 	ImGui::StyleColorsDark();
 	if (!ImGui_ImplWin32_Init(mEditorWindow->GetHandle()))

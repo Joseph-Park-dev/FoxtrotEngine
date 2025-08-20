@@ -92,6 +92,9 @@ MeshRenderer::MeshRenderer(Actor* owner, int updateOrder)
 	: Component(owner, updateOrder)
 	, mMeshGroup(nullptr)
 	, mRenderer(nullptr)
+	, mTexture(nullptr)
+	, mVS(nullptr)
+	, mPS(nullptr)
 	, mMaterial(nullptr)
 {
 }

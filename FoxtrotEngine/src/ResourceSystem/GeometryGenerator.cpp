@@ -156,7 +156,7 @@ FTDebugMeshData GeometryGenerator::MakeDebugPoint(FTVector3 color)
 	return meshData;
 }
 
-FTMeshData GeometryGenerator::MakeSquare(float scale, FTVector3 color)
+FTMeshData* GeometryGenerator::MakeSquare(float scale, FTVector3 color)
 {
 	std::vector<Vector3> positions;
 	std::vector<Vector3> colors;
@@ -188,7 +188,7 @@ FTMeshData GeometryGenerator::MakeSquare(float scale, FTVector3 color)
 	texcoords.push_back(Vector2(1.0f, 1.0f));
 	texcoords.push_back(Vector2(0.0f, 1.0f));
 
-	FTMeshData meshData;
+	FTMeshData* meshData = DBG_NEW FTMeshData;
 	for (size_t i = 0; i < positions.size(); i++)
 	{
 		Vertex v;
@@ -196,17 +196,17 @@ FTMeshData GeometryGenerator::MakeSquare(float scale, FTVector3 color)
 		// v.color = colors[i];
 		v.normal   = normals[i];
 		v.texcoord = texcoords[i];
-		meshData.Vertices.PushBack(v);
+		meshData->Vertices.PushBack(v);
 	}
 
-	meshData.Indices.Reserve(6);
+	meshData->Indices.Reserve(6);
 
-	meshData.Indices.PushBack(0);
-	meshData.Indices.PushBack(1);
-	meshData.Indices.PushBack(2);
-	meshData.Indices.PushBack(0);
-	meshData.Indices.PushBack(2);
-	meshData.Indices.PushBack(3);
+	meshData->Indices.PushBack(0);
+	meshData->Indices.PushBack(1);
+	meshData->Indices.PushBack(2);
+	meshData->Indices.PushBack(0);
+	meshData->Indices.PushBack(2);
+	meshData->Indices.PushBack(3);
 
 	return meshData;
 }
@@ -290,29 +290,29 @@ FTMeshData GeometryGenerator::MakeTile(Tile& tile)
 	return meshData;
 }
 
-void GeometryGenerator::MakeSpriteAnimation(FTDS::DynamicArray<FTMeshData>& animMeshes, Tile* tileMap, size_t startIdx, size_t endIdx)
+void GeometryGenerator::MakeSpriteAnimation(FTDS::DynamicArray<FTMeshData*>& animMeshes, Tile* tileMap, size_t startIdx, size_t endIdx)
 {
 	size_t count = endIdx - startIdx + 1;
 	assert(0 < count);
 	animMeshes.Reserve(count);
 	for (size_t i = 0; i < count; ++i)
 	{
-		FTMeshData&& animFrame = MakeAnimationFrame(tileMap[startIdx + i]);
+		FTMeshData* animFrame = MakeAnimationFrame(tileMap[startIdx + i]);
 		animMeshes.PushBack(animFrame);
 	}
 }
 
-void GeometryGenerator::MakeSpriteAnimation(FTDS::DynamicArray<FTMeshData>& animMeshes, Tile* tileMap, size_t count)
+void GeometryGenerator::MakeSpriteAnimation(FTDS::DynamicArray<FTMeshData*>& animMeshes, Tile* tileMap, size_t count)
 {
 	animMeshes.Reserve(count);
 	for (size_t i = 0; i < count; ++i)
 	{
-		FTMeshData&& animFrame = MakeAnimationFrame(tileMap[i]);
+		FTMeshData* animFrame = MakeAnimationFrame(tileMap[i]);
 		animMeshes.PushBack(animFrame);
 	}
 }
 
-FTMeshData&& GeometryGenerator::MakeAnimationFrame(Tile tile)
+FTMeshData* GeometryGenerator::MakeAnimationFrame(Tile tile)
 {
 	std::vector<Vector3> positions;
 	std::vector<Vector3> colors;
@@ -345,7 +345,7 @@ FTMeshData&& GeometryGenerator::MakeAnimationFrame(Tile tile)
 	texcoords.push_back(Vector2(mapMin.x + widthInMap, mapMin.y + heightInMap));
 	texcoords.push_back(Vector2(mapMin.x, mapMin.y + heightInMap));
 
-	FTMeshData meshData;
+	FTMeshData* meshData = DBG_NEW FTMeshData;
 	for (size_t i = 0; i < positions.size(); i++)
 	{
 		Vertex v;
@@ -353,19 +353,19 @@ FTMeshData&& GeometryGenerator::MakeAnimationFrame(Tile tile)
 		// v.color = colors[i];
 		v.normal   = normals[i];
 		v.texcoord = texcoords[i];
-		meshData.Vertices.PushBack(v);
+		meshData->Vertices.PushBack(v);
 	}
 
-	meshData.Indices.Reserve(6);
+	meshData->Indices.Reserve(6);
 
-	meshData.Indices.PushBack(0);
-	meshData.Indices.PushBack(1);
-	meshData.Indices.PushBack(2);
-	meshData.Indices.PushBack(0);
-	meshData.Indices.PushBack(2);
-	meshData.Indices.PushBack(3);
+	meshData->Indices.PushBack(0);
+	meshData->Indices.PushBack(1);
+	meshData->Indices.PushBack(2);
+	meshData->Indices.PushBack(0);
+	meshData->Indices.PushBack(2);
+	meshData->Indices.PushBack(3);
 
-	return std::move(meshData);
+	return meshData;
 }
 
 // void GeometryGenerator::MakeSpriteTextGrid(std::vector<FTMeshData>& textMeshes, Tile* tileMap, size_t length, TextAttribute* attribute)
@@ -771,7 +771,7 @@ FTMeshData&& GeometryGenerator::MakeAnimationFrame(Tile tile)
 //	return meshData;
 // }
 
-FTDS::DynamicArray<FTMeshData> GeometryGenerator::ReadFromFile(FTDS::String& resPath)
+FTDS::DynamicArray<FTMeshData*> GeometryGenerator::ReadFromFile(FTDS::String& resPath)
 {
 	using namespace DirectX;
 
@@ -808,11 +808,11 @@ FTDS::DynamicArray<FTMeshData> GeometryGenerator::ReadFromFile(FTDS::String& res
 		});
 	}
 
-	FTDS::DynamicArray<FTMeshData> meshData;
+	FTDS::DynamicArray<FTMeshData*> meshData;
 	meshData.Reserve(meshes.size());
 
 	for (FTMeshData meshD : meshes)
-		meshData.PushBack(meshD);
+		meshData.PushBack(&meshD);
 
 	return meshData;
 }

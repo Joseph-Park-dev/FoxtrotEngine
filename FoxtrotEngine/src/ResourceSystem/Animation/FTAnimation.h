@@ -20,9 +20,9 @@ public:
 
 public:
 	virtual void Initialize(
-		FTDS::DynamicArray<FTMeshData>&& meshData,
-		ComPtr<ID3D11Device>&			 device,
-		ComPtr<ID3D11DeviceContext>&	 context) override;
+		FTDS::DynamicArray<FTMeshData*>&& meshData,
+		ComPtr<ID3D11Device>&			  device,
+		ComPtr<ID3D11DeviceContext>&	  context) override;
 
 public:
 	FTAnimation();

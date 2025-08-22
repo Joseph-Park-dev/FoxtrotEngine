@@ -84,20 +84,20 @@ void EditorResourceManager::SaveResources(std::ofstream& ofs)
 
 void EditorResourceManager::LoadAllResourcesInAsset()
 {
-	GetTextures()->Reserve(10);
-	GetTileMaps()->Reserve(10);
-	GetSpriteSheets()->Reserve(10);
-	GetPremades()->Reserve(10);
-	GetSpriteAnimations()->Reserve(10);
-	GetSpineAnimations()->Reserve(10);
-	GetMeshGroups()->Reserve(10);
-	GetVertexShaders()->Reserve(10);
-	GetPixelShaders()->Reserve(10);
-	GetMaterials()->Reserve(10);
-	GetSounds()->Reserve(10);
-	GetCSVs()->Reserve(10);
-	GetJSONs()->Reserve(10);
-	GetTexts()->Reserve(10);
+	GetTextures()->Reserve(20);
+	GetTileMaps()->Reserve(20);
+	GetSpriteSheets()->Reserve(20);
+	GetPremades()->Reserve(20);
+	GetSpriteAnimations()->Reserve(20);
+	GetSpineAnimations()->Reserve(20);
+	GetMeshGroups()->Reserve(20);
+	GetVertexShaders()->Reserve(20);
+	GetPixelShaders()->Reserve(20);
+	GetMaterials()->Reserve(20);
+	GetSounds()->Reserve(20);
+	GetCSVs()->Reserve(20);
+	GetJSONs()->Reserve(20);
+	GetTexts()->Reserve(20);
 
 	const char* pathToAsset = ResourceManager::GetInstance()->GetPathToAsset().C_Str();
 
@@ -296,7 +296,7 @@ void EditorResourceManager::UpdateUI()
 	{
 		IGFD::FileDialogConfig config;
 		config.countSelectionMax = 0;
-		config.path				 = GetPathToAsset().C_Str();
+		config.path				 = ResourceManager::GetInstance()->GetPathToAsset().C_Str();
 
 		ImGuiFileDialog::Instance()->OpenDialog("ImportRes", "Choose Files", FileTypes::ALL_FILE_FORMATS, config);
 	}

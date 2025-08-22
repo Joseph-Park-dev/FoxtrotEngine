@@ -28,19 +28,19 @@
 using Matrix = DirectX::SimpleMath::Matrix;
 
 void FTBasicMeshGroup::Initialize(
-	FTMeshData&&				 mesh,
+	FTMeshData*					 mesh,
 	ComPtr<ID3D11Device>&		 device,
 	ComPtr<ID3D11DeviceContext>& context)
 {
 	CreateTextureSampler(device);
-	InitializeMesh(device, std::move(mesh));
+	InitializeMesh(device, mesh);
 	InitializeConstantBuffers(device);
 }
 
 void FTBasicMeshGroup::Initialize(
-	FTDS::DynamicArray<FTMeshData>&& meshes,
-	ComPtr<ID3D11Device>&			 device,
-	ComPtr<ID3D11DeviceContext>&	 context)
+	FTDS::DynamicArray<FTMeshData*>&& meshes,
+	ComPtr<ID3D11Device>&			  device,
+	ComPtr<ID3D11DeviceContext>&	  context)
 {
 	CreateTextureSampler(device);
 	InitializeMeshes(device, std::move(meshes));
@@ -162,9 +162,8 @@ void FTBasicMeshGroup::UpdateConstantBuffers(
 	D3D11Utils::UpdateBuffer(
 		context, mVertexConstData, mVertexConstBuffer);
 
-	mMeshes->IterateArray([&](Mesh* mesh) {
+	if (mat)
 		mat->UpdateBuffer(context);
-	});
 }
 
 void FTBasicMeshGroup::Clear()
@@ -184,26 +183,27 @@ BasicVCData&				FTBasicMeshGroup::GetVCData() { return mVertexConstData; }
 ComPtr<ID3D11Buffer>&		FTBasicMeshGroup::GetVCBuf() { return mVertexConstBuffer; }
 FTDS::DynamicArray<Mesh*>*	FTBasicMeshGroup::Meshes() { return mMeshes; };
 
-void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicArray<FTMeshData>&& meshDataArr)
+void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicArray<FTMeshData*>&& meshDataArr)
 {
 	if (0 < meshDataArr.GetSize())
 		Clear();
 
 	mMeshes->Reserve(meshDataArr.GetSize());
 
-	meshDataArr.IterateArray([&](FTMeshData meshData) {
-		this->InitializeMesh(device, std::move(meshData));
+	meshDataArr.IterateArray([&](FTMeshData* meshData) {
+		this->InitializeMesh(device, meshData);
+		delete meshData;
 	});
 }
 
-void FTBasicMeshGroup::InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData&& meshData)
+void FTBasicMeshGroup::InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData* meshData)
 {
 	Mesh* newMesh		 = DBG_NEW Mesh;
-	newMesh->VertexCount = UINT(meshData.Vertices.GetSize());
-	newMesh->IndexCount	 = UINT(meshData.Indices.GetSize());
+	newMesh->VertexCount = UINT(meshData->Vertices.GetSize());
+	newMesh->IndexCount	 = UINT(meshData->Indices.GetSize());
 
-	D3D11Utils::CreateVertexBuffer(device, meshData.Vertices, newMesh->VertexBuffer);
-	D3D11Utils::CreateIndexBuffer(device, meshData.Indices, newMesh->IndexBuffer);
+	D3D11Utils::CreateVertexBuffer(device, meshData->Vertices, newMesh->VertexBuffer);
+	D3D11Utils::CreateIndexBuffer(device, meshData->Indices, newMesh->IndexBuffer);
 
 	mMeshes->PushBack(newMesh);
 }

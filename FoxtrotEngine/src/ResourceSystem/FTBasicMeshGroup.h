@@ -30,20 +30,20 @@ public:
 	void CalcVCData(Transform* transform, Camera* camInst);
 
 	virtual void UpdateConstantBuffers(
-		ComPtr<ID3D11Device>&			 device,
-		ComPtr<ID3D11DeviceContext>&	 context,
-		FTMaterial* mat);
+		ComPtr<ID3D11Device>&		 device,
+		ComPtr<ID3D11DeviceContext>& context,
+		FTMaterial*					 mat);
 
 public:
 	void Initialize(
-		FTMeshData&&				 meshData,
+		FTMeshData*					 meshData,
 		ComPtr<ID3D11Device>&		 device,
 		ComPtr<ID3D11DeviceContext>& context);
 
 	virtual void Initialize(
-		FTDS::DynamicArray<FTMeshData>&& meshData,
-		ComPtr<ID3D11Device>&			 device,
-		ComPtr<ID3D11DeviceContext>&	 context);
+		FTDS::DynamicArray<FTMeshData*>&& meshData,
+		ComPtr<ID3D11Device>&			  device,
+		ComPtr<ID3D11DeviceContext>&	  context);
 
 	virtual void Render(
 		FoxtrotRenderer* renderer,
@@ -74,8 +74,8 @@ public:
 
 protected:
 	virtual HRESULT CreateTextureSampler(ComPtr<ID3D11Device>& device);
-	virtual void	InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData&& meshData);
-	virtual void	InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicArray<FTMeshData>&& meshDataArr);
+	virtual void	InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData* meshData);
+	virtual void	InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicArray<FTMeshData*>&& meshDataArr);
 	virtual void	InitializeConstantBuffers(ComPtr<ID3D11Device>& device);
 
 private:

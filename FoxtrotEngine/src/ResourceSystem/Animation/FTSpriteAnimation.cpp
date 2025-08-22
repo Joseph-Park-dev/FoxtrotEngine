@@ -32,6 +32,11 @@ AnimationFrame* FTSpriteAnimation::GetFrame(int frameIdx)
 	return nullptr;
 }
 
+void FTSpriteAnimation::SetSpriteSheet(FTSpriteSheet* sheet)
+{
+	mSpriteSheet = sheet;
+}
+
 FTSpriteAnimation::FTSpriteAnimation()
 	: FTAnimation()
 	, mSpriteSheet(nullptr)
@@ -81,7 +86,7 @@ void FTSpriteAnimation::Process(FTCore* coreInst)
 	}
 
 	FoxtrotRenderer*		renderer = coreInst->GetGameRenderer();
-	FTDS::DynamicArray<FTMeshData> meshDataBuf;
+	FTDS::DynamicArray<FTMeshData*> meshDataBuf;
 	GeometryGenerator::MakeSpriteAnimation(
 		meshDataBuf, mSpriteSheet->GetTiles(), this->GetMinFrameIdx(), this->GetMaxFrameIdx());
 	this->Initialize(std::move(meshDataBuf), renderer->GetDevice(), renderer->GetContext());

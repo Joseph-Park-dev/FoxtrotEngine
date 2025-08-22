@@ -27,6 +27,7 @@ private:
 
 	std::vector<D3D11_INPUT_ELEMENT_DESC> mInputElements;
 	std::vector<FTDS::String>			  mSemanticsName;
+	bool								  mIsSpine;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
@@ -46,4 +47,5 @@ namespace ChunkKey
 	constexpr const char* FT_VERTEX_SHADER	   = "FTVertexShader";
 	constexpr const char* INPUT_ELEMENTS_COUNT = "Input Elements Count";
 	constexpr const char* INPUT_ELEMENTS	   = "Input Elements";
+	constexpr const char* IS_SPINE_SHADER	   = "Is Spine Shader";
 } // namespace ChunkKey

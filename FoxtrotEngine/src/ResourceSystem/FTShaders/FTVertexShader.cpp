@@ -30,17 +30,20 @@ void FTVertexShader::RegisterInputElementDesc(const char* semanticName, UINT& of
 	if (FTDS::StringEqual(semanticName, "TEXCOORD"))
 	{
 		desc = { semanticName, 0, DXGI_FORMAT_R32G32_FLOAT, 0, offset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-		//offset += 4 * 2;
+		if (!mIsSpine)
+			offset += 4 * 2;
 	}
 	else if (FTDS::StringEqual(semanticName, "POSITION 2D"))
 	{
 		desc = { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, offset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-		//offset += 4 * 2;
+		if (!mIsSpine)
+			offset += 4 * 2;
 	}
 	else
 	{
 		desc = { semanticName, 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-		//offset += 4 * 3;
+		if (!mIsSpine)
+			offset += 4 * 3;
 	}
 
 	mInputElements.push_back(desc);
@@ -48,6 +51,7 @@ void FTVertexShader::RegisterInputElementDesc(const char* semanticName, UINT& of
 
 FTVertexShader::FTVertexShader()
 	: FTShader()
+	, mIsSpine(false)
 #ifdef FOXTROT_EDITOR
 	, mSemanticsInclusion(DBG_NEW FTDS::HashMap<bool>(5))
 #endif // FOXTROT_EDITOR
@@ -77,12 +81,16 @@ void FTVertexShader::SaveProperties(std::ofstream& ofs)
 
 	FileIOHelper::SaveSize(ofs, ChunkKey::INPUT_ELEMENTS_COUNT, mSemanticsName.size());
 
+	FileIOHelper::SaveBool(ofs, ChunkKey::IS_SPINE_SHADER, mIsSpine);
+
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
 }
 
 void FTVertexShader::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_VERTEX_SHADER);
+
+	FileIOHelper::LoadBool(ifs, mIsSpine);
 
 	size_t count = 0;
 	FileIOHelper::LoadSize(ifs, count);
@@ -99,8 +107,11 @@ void FTVertexShader::LoadProperties(std::ifstream& ifs)
 	for (FTDS::String& str : mSemanticsName)
 		RegisterInputElementDesc(str.C_Str(), offset);
 
-	for (size_t i = 0; i < mInputElements.size(); ++i)
-		mInputElements.at(i).InputSlot = i;
+	if (mIsSpine)
+	{
+		for (size_t i = 0; i < mInputElements.size(); ++i)
+			mInputElements.at(i).InputSlot = i;
+	}
 
 	#ifdef FOXTROT_EDITOR
 	FTDS::String semantics[5] = { "POSITION", "POSITION 2D", "NORMAL", "COLOR", "TEXCOORD" };
@@ -134,6 +145,8 @@ void FTVertexShader::UpdateUI()
 		mSemanticsInclusion->At(semantics[i])->Value() = val;
 	}
 
+	ImGui::Checkbox("Is Spine shader", &mIsSpine);
+
 	if (ImGui::Button("Update Input Elements"))
 	{
 		mSemanticsName.clear();
@@ -150,8 +163,11 @@ void FTVertexShader::UpdateUI()
 		for (FTDS::String& str : mSemanticsName)
 			RegisterInputElementDesc(str.C_Str(), offset);
 
-		for (size_t i = 0; i < mInputElements.size(); ++i)
-			mInputElements.at(i).InputSlot = i;
+		if (mIsSpine)
+		{
+			for (size_t i = 0; i < mInputElements.size(); ++i)
+				mInputElements.at(i).InputSlot = i;
+		}
 
 		SaveMetaFile();
 		CompileShader(GetRenderer());

@@ -169,6 +169,8 @@ void MeshRenderer::EditorRender(FoxtrotRenderer* renderer)
 
 void MeshRenderer::EditorUIUpdate()
 {
+	Component::EditorUIUpdate();
+
 	CHECK_RENDERER(GetRenderer());
 
 	if (!mMeshGroup)

@@ -164,26 +164,30 @@ void Actor::ProcessInput(FTInputDevice* inputDevice)
 {
 	if (IsActive())
 		for (auto comp : mComponents)
-			comp->ProcessInput(inputDevice);
+			if (comp->GetIsActive())
+				comp->ProcessInput(inputDevice);
 }
 
 void Actor::UpdateComponents(float deltaTime)
 {
 	if (IsActive())
 		for (auto comp : mComponents)
-			comp->Update(deltaTime);
+			if (comp->GetIsActive())
+				comp->Update(deltaTime);
 }
 
 void Actor::LateUpdateComponents(float deltaTime)
 {
 	for (auto comp : mComponents)
-		comp->LateUpdate(deltaTime);
+		if (comp->GetIsActive())
+			comp->LateUpdate(deltaTime);
 }
 
 void Actor::RenderComponents(FoxtrotRenderer* renderer)
 {
 	for (auto comp : mComponents)
-		comp->Render(renderer);
+		if (comp->GetIsActive())
+			comp->Render(renderer);
 }
 
 void Actor::AddChild(Actor* child)

@@ -108,13 +108,15 @@ void EditorElement::Initialize(FTCore* coreInst)
 void EditorElement::EditorUpdate(float deltaTime)
 {
 	for (auto comp : GetComponents()) 
-		comp->EditorUpdate(deltaTime);
+		if (comp->GetIsActive())
+			comp->EditorUpdate(deltaTime);
 }
 
 void EditorElement::EditorRender(FoxtrotRenderer* renderer)
 {
 	for (auto comp : GetComponents())
-		comp->EditorRender(renderer);
+		if (comp->GetIsActive())
+			comp->EditorRender(renderer);
 }
 
 EditorElement::EditorElement()

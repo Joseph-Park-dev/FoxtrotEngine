@@ -60,6 +60,9 @@ public:
 	const int  GetUpdateOrder() const;
 	const bool GetIsInitialized() const;
 	const bool GetIsSetup() const;
+	const bool GetIsActive() const;
+
+	void SetIsActive(bool isActive);
 
 public:
 	/// <summary>
@@ -85,6 +88,9 @@ private:
 	bool mIsInitialized;
 	// This is turned as true as the Setup() is executed.
 	bool mIsSetup;
+	// The component is alive in the game loop
+	// (During ProcessInput, Update, LateUpdate and Render)
+	bool mIsActive;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs);
@@ -134,4 +140,5 @@ namespace ChunkKey
 {
 	constexpr const char* COMPONENTS   = "Components";
 	constexpr const char* UPDATE_ORDER = "UpdateOrder";
+	constexpr const char* IS_ACTIVE	   = "Is Active";
 } // namespace ChunkKey

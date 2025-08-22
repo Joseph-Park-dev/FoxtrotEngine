@@ -33,7 +33,7 @@ public:
 	}
 
 public:
-	void Play(const UINT key, bool isRepeated = true);
+	void Play(const UINT idx, bool isRepeated = true);
 	void Stop();
 
 public:
@@ -58,7 +58,6 @@ public:
 
 private:
 	FTDS::DynamicArray<FTSpriteAnimation*>* mLoadedAnim;
-	FTSpriteAnimation*						mCurrAnim;
 	int										mCurrFrameIdx;
 	float									mAccTime;
 	bool									mIsFinished;

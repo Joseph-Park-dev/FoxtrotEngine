@@ -38,7 +38,6 @@
 Animator::Animator(Actor* owner, int updateOrder)
 	: TileMapRenderer(owner)
 	, mLoadedAnim(DBG_NEW FTDS::DynamicArray<FTSpriteAnimation*>)
-	, mCurrAnim(nullptr)
 	, mCurrFrameIdx(0)
 	, mAccTime(0.f)
 	, mIsFinished(false)
@@ -52,11 +51,10 @@ Animator::~Animator()
 	delete mLoadedAnim;
 }
 
-void Animator::Play(const UINT key, bool isRepeated)
+void Animator::Play(const UINT idx, bool isRepeated)
 {
-	FTSpriteAnimation* anim = mLoadedAnim->At(key);
-	mCurrAnim				= anim;
-	SetMeshGroup(mCurrAnim);
+	FTSpriteAnimation* anim = mLoadedAnim->At(idx);
+	SetMeshGroup(anim);
 
 	mIsFinished = false;
 	mIsRepeated = isRepeated;
@@ -86,7 +84,8 @@ void Animator::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Animation::LOADED_KEYS);
 	size_t i = 0;
 	mLoadedAnim->IterateArray([&](FTSpriteAnimation* anim) {
-		FileIOHelper::SaveString(ofs, std::to_string(i).c_str(), anim->FileName());
+		if (anim)
+			FileIOHelper::SaveString(ofs, std::to_string(i).c_str(), anim->FileName());
 		++i;
 	});
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::Animation::LOADED_KEYS);
@@ -102,17 +101,14 @@ void Animator::LoadProperties(std::ifstream& ifs)
 		FTDS::String key;
 		FileIOHelper::LoadBasicString(ifs, key);
 
-#ifdef FOXTROT_EDITOR
-		FTSpriteAnimation* anim = EditorResourceManager::GetInstance()->GetLoadedSpriteAnim(key);
-#else
 		FTSpriteAnimation* anim = ResourceManager::GetInstance()->GetLoadedSpriteAnim(key);
-#endif // FOXTROT_EDITOR
-
 		mLoadedAnim->PushBack(anim);
 	}
 	mLoadedAnim->Reverse();
-
 	MeshRenderer::LoadProperties(ifs);
+
+	if (0 < mLoadedAnim->GetSize())
+		Play(0);
 }
 
 void Animator::UpdateFrame(float deltaTime)
@@ -244,21 +240,17 @@ void Animator::UpdatePlayAnim()
 void Animator::UpdatePlayList()
 {
 	ImGui::Text("Play List");
-	FTDS::String key = ChunkKey::NullVal::NULL_OBJECT;
+	FTSpriteAnimation* anim = nullptr;
 	FTEditorUtils::DisplayResSelection<FTSpriteAnimation>(
 		"Load Animation",
 		ResourceManager::GetInstance()->GetSpriteAnimations(),
-		key);
+		anim);
 
-	if (key.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
+	if (anim)
 	{
-		FTSpriteAnimation* anim = ResourceManager::GetInstance()->GetLoadedSpriteAnim(key);
-		if (mLoadedAnim->GetSize() == 1)
-		{
-			mCurrAnim = anim;
-			SetMeshGroup(mCurrAnim);
-		}
 		mLoadedAnim->PushBack(anim);
+		if (mLoadedAnim->GetSize() == 1)
+			SetMeshGroup(anim);
 	}
 
 	if (0 < mLoadedAnim->GetSize())
@@ -266,21 +258,28 @@ void Animator::UpdatePlayList()
 		size_t i = 0;
 
 		mLoadedAnim->IterateArray([&](FTSpriteAnimation* anim) {
-			ImGui::PushID(anim->FileName().C_Str());
-			ImGui::Text(anim->FileName().C_Str());
-			anim->UpdateUI();
+			if (anim)
+			{
+				ImGui::PushID(anim->FileName().C_Str());
+				ImGui::Text(anim->FileName().C_Str());
+				anim->UpdateUI();
 
-			if (ImGui::ArrowButton("##Up", ImGuiDir::ImGuiDir_Up))
-				mLoadedAnim->Swap(i - 1, i);
-			ImGui::SameLine();
-			if (ImGui::ArrowButton("##Down", ImGuiDir::ImGuiDir_Down))
-				mLoadedAnim->Swap(i + 1, i);
+				if (ImGui::ArrowButton("##Up", ImGuiDir::ImGuiDir_Up))
+					mLoadedAnim->Swap(i - 1, i);
+				ImGui::SameLine();
+				if (ImGui::ArrowButton("##Down", ImGuiDir::ImGuiDir_Down))
+					mLoadedAnim->Swap(i + 1, i);
 
-			if (ImGui::Button("Delete"))
-				mLoadedAnim->Erase(i);
+				if (ImGui::Button("Delete"))
+				{
+					mLoadedAnim->Erase(i);
+					ImGui::PopID();
+					return;
+				}
 
-			ImGui::PopID();
-			++i;
+				ImGui::PopID();
+				++i;
+			}
 		});
 	}
 }

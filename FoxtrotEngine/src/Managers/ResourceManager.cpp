@@ -351,12 +351,14 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 void ResourceManager::LoadDefaultResources()
 {
 	FTBasicMeshGroup* meshGroup = DBG_NEW FTBasicMeshGroup;
+	FTMeshData* meshData = GeometryGenerator::MakeSquare(1.0f, FTVector3(0.f, 0.f, 1.f));
 	meshGroup->Initialize(
-		GeometryGenerator::MakeSquare(1.0f, FTVector3(0.f, 0.f, 1.f)),
+		meshData,
 		GetRenderer()->GetDevice(),
 		GetRenderer()->GetContext());
 	meshGroup->SetFileName(ChunkKey::PRIMITIVE_SQUARE_BLUE);
 	GetMeshGroups()->Insert(ChunkKey::PRIMITIVE_SQUARE_BLUE, meshGroup);
+	delete meshData;
 }
 
 void ResourceManager::ProcessResources()

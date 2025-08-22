@@ -113,7 +113,10 @@ void MeshRenderer::SaveProperties(std::ofstream& ofs)
 	Component::SaveProperties(ofs);
 
 	FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MESH_KEY, mMeshGroup->FileName());
-	FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, mTexture->FileName());
+	if (mTexture)
+		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, mTexture->FileName());
+	else
+		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, ChunkKey::NullVal::NULL_OBJECT);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTMeshGroup::SHADER_KEY);
 	FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::VS_KEY, mVS->FileName());
@@ -171,6 +174,8 @@ void MeshRenderer::EditorUIUpdate()
 	if (!mMeshGroup)
 		return;
 
+	if (mTexture)
+		mTexture->UpdateUI();
 	FTEditorUtils::DisplayResSelection(
 		"Select Texture",
 		ResourceManager::GetInstance()->GetTextures(),
@@ -186,6 +191,8 @@ void MeshRenderer::EditorUIUpdate()
 		ResourceManager::GetInstance()->GetPixelShaders(),
 		mPS);
 
+	if (mMaterial)
+		mMaterial->UpdateUI();
 	FTEditorUtils::DisplayResSelection(
 		"Select Material",
 		ResourceManager::GetInstance()->GetMaterials(),

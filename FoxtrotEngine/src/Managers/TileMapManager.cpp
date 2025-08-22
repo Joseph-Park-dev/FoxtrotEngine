@@ -56,19 +56,17 @@ void TileMapManager::UpdateUI(bool* opened)
 		ImGui::Text("Loaded TileMaps");
 
 		FTDS::HashMap<FTTileMap*>* mapTileMaps = EditorResourceManager::GetInstance()->GetTileMaps();
-		auto iterT = mapTileMaps->Begin();
 
-		for (; iterT != mapTileMaps->End(); ++iterT)
-		{
-			if (iterT)
+		mapTileMaps->IterateAllValues([&](FTTileMap* tileMap) {
+			if (tileMap)
 			{
-				ImGui::PushID((*iterT)->Value());
-				(*iterT)->Value()->UpdateUI();
+				ImGui::PushID(tileMap);
+				tileMap->UpdateUI();
 				if (ImGui::Button("Save TileMap"))
-					SaveTileMapAsFile((*iterT)->Value());
+					SaveTileMapAsFile(tileMap);
 				ImGui::PopID();
 			}
-		}
+		});
 
 		if (ImGui::Button("Create TileMap"))
 		{
@@ -103,7 +101,7 @@ void TileMapManager::UpdateUI(bool* opened)
 		{
 			FTSpriteSheet* spriteSheet = DBG_NEW FTSpriteSheet;
 			spriteSheet->SetFileName("New SpriteSheet");
-			spriteSheet->SetRelativePath(EditorResourceManager::GetInstance()->GetPathToAsset());
+			spriteSheet->SetRelativePath(ResourceManager::GetInstance()->GetPathToAsset());
 			EditorResourceManager::GetInstance()->LoadResource(spriteSheet, mapSpriteSheets);
 		}
 

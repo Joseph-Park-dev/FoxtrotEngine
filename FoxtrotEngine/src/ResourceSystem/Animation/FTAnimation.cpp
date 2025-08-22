@@ -34,30 +34,34 @@ FTAnimation::FTAnimation(FTAnimation* other)
 {
 }
 
-void FTAnimation::Initialize(FTDS::DynamicArray<FTMeshData>&& meshData, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
+void FTAnimation::Initialize(FTDS::DynamicArray<FTMeshData*>&& meshData, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
 	if (0 < Meshes()->GetSize())
 		Clear();
 
 	Meshes()->Reserve(meshData.GetSize());
-	meshData.IterateArray([&](FTMeshData& meshD) {
+	meshData.IterateArray([&](FTMeshData* meshD) {
 
-		if (!meshD.Vertices.IsEmpty() && !meshD.Indices.IsEmpty())
+		if (!meshD->Vertices.IsEmpty() && !meshD->Indices.IsEmpty())
 		{
 			AnimationFrame* newFrame = DBG_NEW AnimationFrame;
-			newFrame->VertexCount	 = UINT(meshD.Vertices.GetSize());
-			newFrame->IndexCount	 = UINT(meshD.Indices.GetSize());
+			newFrame->VertexCount	 = UINT(meshD->Vertices.GetSize());
+			newFrame->IndexCount	 = UINT(meshD->Indices.GetSize());
 
-			D3D11Utils::CreateVertexBuffer(device, meshD.Vertices, newFrame->VertexBuffer);
-			D3D11Utils::CreateIndexBuffer(device, meshD.Indices, newFrame->IndexBuffer);
+			D3D11Utils::CreateVertexBuffer(device, meshD->Vertices, newFrame->VertexBuffer);
+			D3D11Utils::CreateIndexBuffer(device, meshD->Indices, newFrame->IndexBuffer);
 
 			newFrame->Duration = 1 / mAnimFPS;
 			Meshes()->PushBack(newFrame);
+			delete meshD;
 		}
 	});
 
 	if (mMaxFrameIdx == 0)
 		mMaxFrameIdx = meshData.GetSize() - 1;
+
+	CreateTextureSampler(device);
+	InitializeConstantBuffers(device);
 }
 
 void FTAnimation::SaveProperties(std::ofstream& ofs)

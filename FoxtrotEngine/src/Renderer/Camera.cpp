@@ -65,7 +65,6 @@ void Camera::Zoom()
 {
 	Math::Clampf(mZoomFactor, 0.01f, 3.0f);
 	mZoomFactor += mZoomDelta;
-	LogFloat(mZoomFactor);
 }
 
 Camera::Camera()

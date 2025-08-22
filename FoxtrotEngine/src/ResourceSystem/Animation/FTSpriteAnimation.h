@@ -30,6 +30,7 @@ class FTSpriteAnimation : public FTAnimation
 {
 public:
 	AnimationFrame* GetFrame(int frameIdx);
+	void			SetSpriteSheet(FTSpriteSheet* sheet);
 
 public:
 	FTSpriteAnimation();

@@ -61,11 +61,22 @@ const bool Component::GetIsSetup() const
 	return mIsSetup;
 }
 
+const bool Component::GetIsActive() const
+{
+	return mIsActive;
+}
+
+void Component::SetIsActive(bool isActive)
+{
+	mIsActive = isActive;
+}
+
 Component::Component(Actor* owner, int updateOrder)
 	: mOwner(owner)
 	, mUpdateOrder(updateOrder)
 	, mIsInitialized(false)
 	, mIsSetup(false)
+	, mIsActive(true)
 {
 	mOwner->AddComponent(this);
 }
@@ -75,6 +86,7 @@ Component::Component(const Component* origin)
 	, mUpdateOrder(origin->mUpdateOrder)
 	, mIsInitialized(false)
 	, mIsSetup(false)
+	, mIsActive(origin->mIsActive)
 {
 	mOwner->AddComponent(this);
 }
@@ -85,17 +97,20 @@ Component::~Component()
 
 void Component::SaveProperties(std::ofstream& ofs)
 {
+	FileIOHelper::SaveBool(ofs, ChunkKey::IS_ACTIVE, mIsActive);
 	FileIOHelper::SaveInt(ofs, ChunkKey::UPDATE_ORDER, mUpdateOrder);
 }
 
 void Component::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::LoadInt(ifs, mUpdateOrder);
+	FileIOHelper::LoadBool(ifs, mIsActive);
 }
 
 #ifdef FOXTROT_EDITOR
 void Component::EditorUIUpdate()
 {
+	CommandHistory::GetInstance()->UpdateBoolValue("Is Active", mIsActive);
 }
 
 void Component::SetUpdateOrder(int updateOrder)

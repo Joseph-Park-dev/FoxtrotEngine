@@ -73,8 +73,7 @@ void CollisionManager::RemoveCollider(int32_t index)
 {
 	if (0 < mRegColliders.size())
 	{
-		Collider2D* collider = mRegColliders.at(index);
-		if (collider)
+		if (mRegColliders.find(index) != mRegColliders.end())
 			mRegColliders.erase(index);
 	}
 	else

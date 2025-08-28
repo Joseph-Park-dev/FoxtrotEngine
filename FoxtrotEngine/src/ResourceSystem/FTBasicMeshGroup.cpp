@@ -61,10 +61,7 @@ void FTBasicMeshGroup::Render(
 	UINT						 offset	 = 0;
 	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
 
-	Mesh** iter = mMeshes->Begin();
-	for (; iter != mMeshes->End(); ++iter)
-	{
-		Mesh* mesh = *iter;
+	mMeshes->IterateArray([&](Mesh* mesh) {
 		context->VSSetConstantBuffers(0, 1, mVertexConstBuffer.GetAddressOf());
 
 		if (tex)
@@ -86,7 +83,7 @@ void FTBasicMeshGroup::Render(
 		context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		context->DrawIndexed(mesh->IndexCount, 0, 0);
-	}
+	});
 }
 
 void FTBasicMeshGroup::Render(

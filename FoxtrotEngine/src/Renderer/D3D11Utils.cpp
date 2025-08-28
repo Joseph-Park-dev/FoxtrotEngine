@@ -637,8 +637,6 @@ void D3D11Utils::CreateTexture(
 
 	// ÇØ»óµµ¸¦ ³·Ãç°¡¸ç ¹Ó¸Ê »ý¼º
 	context->GenerateMips(texture->GetResourceView().Get());
-
-	// HLSL ½¦ÀÌ´õ ¾È¿¡¼­´Â SampleLevel() »ç¿ë
 }
 
 void D3D11Utils::CreateTextureArray(

@@ -13,19 +13,23 @@
 #pragma once
 #include "Components/Collider2D.h"
 
+class FTRectangle;
+
 class CircleCollider2D :
 	public Collider2D
 {
 public:
 	virtual FTDS::String GetName() const override
 	{
-		return "BoxCollider2D";
+		return "CircleCollider2D";
 	}
 	const float GetRadius() const;
 	void		SetRadius(float radius);
 
 public:
 	virtual void Initialize(FTCore* coreInstance) override;
+	virtual void Setup() override;
+	virtual void Render(FoxtrotRenderer* renderer) override;
 	virtual void CloneTo(Actor* actor) override;
 
 public:
@@ -37,6 +41,11 @@ public:
 private:
 	FTVector2 mCenter;
 	float	  mRadius;
+
+	FTRectangle* mDebugRect;
+
+private:
+	void UpdateDebugShape(Camera* camInst) override;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
@@ -54,3 +63,8 @@ private:
 	void UpdateScale();
 #endif // FOXTROT_EDITOR
 };
+
+namespace ChunkKey
+{
+	constexpr const char* COLLIDER_RADIUS = "Radius";
+}

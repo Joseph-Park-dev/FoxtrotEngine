@@ -15,6 +15,7 @@
 #include "Components/Animator.h"
 #include "Components/Collider2D.h"
 #include "Components/BoxCollider2D.h"
+#include "Components/CircleCollider2D.h"
 #include "Components/InputMove.h"
 #include "Components/Move.h"
 #include "Components/Rigidbody2D.h"

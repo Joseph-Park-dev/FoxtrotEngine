@@ -49,6 +49,15 @@ private:
 	// These fields need to be loaded from .chunk file.
 	int		  mChannel;
 	FTVector2 mTexScale;
+
+public:
+	virtual void SaveProperties(std::ofstream& ofs) override;
+	virtual void LoadProperties(std::ifstream& ifs) override;
+
+#ifdef FOXTROT_EDITOR
+public:
+	virtual void EditorUIUpdate() override;
+#endif
 };
 
 namespace ChunkKey

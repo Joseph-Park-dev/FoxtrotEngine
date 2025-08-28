@@ -258,6 +258,9 @@ void FTSpineAnimation::UpdateBuffers(ComPtr<ID3D11DeviceContext>& context)
 		return;
 
 	mMeshes->IterateArray([&](SpineMesh* mesh) {
+		if (!mesh)
+			return;
+
 		spine::Slot*	   slot		  = mSkeleton->getDrawOrder()[mesh->DrawOrder];
 		spine::Attachment* attachment = slot->getAttachment();
 		if (mesh->MeshType == SpineMesh::SPINE_ATTACHMENT_TYPE::SPINE_MESH_ATTACH)

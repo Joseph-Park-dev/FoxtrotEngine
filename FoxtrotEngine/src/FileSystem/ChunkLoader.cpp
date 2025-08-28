@@ -165,10 +165,11 @@ ChunkLoader::ChunkLoader()
 		{ "Flee", &Component::Load<Flee> },
 	};*/
 
-	mComponentLoadMap.Reserve(17);
+	mComponentLoadMap.Reserve(25);
 	mComponentLoadMap.Insert("AI", &Component::Load<AI>);
 	mComponentLoadMap.Insert("Animator", &Component::Load<Animator>);
 	mComponentLoadMap.Insert("BoxCollider2D", &Component::Load<BoxCollider2D>);
+	mComponentLoadMap.Insert("CircleCollider2D", &Component::Load<CircleCollider2D>);
 	mComponentLoadMap.Insert("InputMove", &Component::Load<InputMove>);
 	mComponentLoadMap.Insert("Move", &Component::Load<Move>);
 	mComponentLoadMap.Insert("Rigidbody2D", &Component::Load<Rigidbody2D>);

@@ -48,12 +48,20 @@ int SpriteRenderer::GetTexHeight()
 void SpriteRenderer::Initialize(FTCore* coreInstance)
 {
 	MeshRenderer::Initialize(coreInstance);
-	
+	FTDS::String	  key	 = ChunkKey::PRIMITIVE_SQUARE_BLUE;
+	FTBasicMeshGroup* square = ResourceManager::GetInstance()->GetLoadedMesh(key);
+	SetMeshGroup(square);
 }
 
 void SpriteRenderer::CloneTo(Actor* actor)
 {
 	SpriteRenderer* newComp = DBG_NEW SpriteRenderer(actor, GetUpdateOrder());
+	newComp->SetRenderer(this->GetRenderer());
+	newComp->SetMeshGroup(this->GetMeshGroup());
+	newComp->SetTexture(this->GetTexture());
+	newComp->SetVS(this->GetVS());
+	newComp->SetPS(this->GetPS());
+	newComp->SetMaterial(this->GetMaterial());
 
 	// newComp->GetMeshGroup()->SetDrawNormal(this->GetMeshGroup()->GetDrawNormal());
 	newComp->mChannel  = this->mChannel;
@@ -75,9 +83,29 @@ void SpriteRenderer::UpdateMesh(Transform* transform, Camera* camInst, FoxtrotRe
 		if (GetTexture())
 		{
 			FTVector2 texSize = GetTexture()->GetTexSize();
-			Vector3	  scale	  = Vector3(texSize.x / texSize.y, 1.0f, 1.0f);
-			GetMeshGroup()->GetVCData().model *= Matrix::CreateScale(scale);
+			Vector3	  size	  = Vector3(texSize.x / texSize.y, 1.0f, 1.0f);
+			Vector3	  scale	  = Vector3(mTexScale.x, mTexScale.y, 1.0f);
+			GetMeshGroup()->GetVCData().model *= 
+				Matrix::CreateScale(size) * Matrix::CreateScale(scale);
 		}
 		GetMeshGroup()->UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), GetMaterial());
 	}
+}
+
+void SpriteRenderer::SaveProperties(std::ofstream& ofs)
+{
+	MeshRenderer::SaveProperties(ofs);
+	FileIOHelper::SaveVector2(ofs, ChunkKey::SPRITE_SCALE, mTexScale);
+}
+
+void SpriteRenderer::LoadProperties(std::ifstream& ifs)
+{
+	FileIOHelper::LoadVector2(ifs, mTexScale);
+	MeshRenderer::LoadProperties(ifs);
+}
+
+void SpriteRenderer::EditorUIUpdate()
+{
+	MeshRenderer::EditorUIUpdate();
+	CommandHistory::GetInstance()->UpdateVector2Value("TexScale", mTexScale);
 }

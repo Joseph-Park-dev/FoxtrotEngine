@@ -71,6 +71,8 @@ private:
 
 	Controllable mIsControllable;
 	bool		 mIsGrounded;
+	size_t		 mAvailJump;
+	size_t		 mJumpCount;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;

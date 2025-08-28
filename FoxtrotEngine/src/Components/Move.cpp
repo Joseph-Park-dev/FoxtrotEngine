@@ -32,6 +32,8 @@ Move::Move(Actor* owner, int updateorder)
 	, mAngularSpeed(0.f)
 	, mIsControllable(Controllable::YES)
 	, mIsGrounded(false)
+	, mJumpCount(2)
+	, mAvailJump(mJumpCount)
 {
 	mGroundFilter = CollisionManager::GetInstance()->GetQueryFilter(
 		GetOwner()->GetActorGroup());
@@ -62,11 +64,12 @@ void Move::Accelerate(b2Vec2 currVel, const Steering* steering)
 
 void Move::Jump(b2Vec2 currVel)
 {
-	if (mIsGrounded)
+	if (0 < mAvailJump)
 	{
 		b2Vec2 vel = b2Vec2_zero;
 		vel.y	   = currVel.y + mJumpForce;
 		b2Body_ApplyLinearImpulseToCenter(mRigidbody->GetBodyID(), vel, true);
+		--mAvailJump;
 	}
 }
 
@@ -104,7 +107,8 @@ void Move::LateUpdate(float deltaTime)
 			Jump(vel);
 
 		SetIsGrounded();
-		//GetOwner()->GetTransform()->SetSteering(Steering::Halt());
+		if (mIsGrounded)
+			mAvailJump = mJumpCount;
 	}
 }
 

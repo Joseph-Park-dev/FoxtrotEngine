@@ -32,6 +32,7 @@ EditorChunkLoader::EditorChunkLoader()
 		{ "AI", &Component::Create<AI> },
 		{ "Animator", &Component::Create<Animator> },
 		{ "BoxCollider2D", &Component::Create<BoxCollider2D> },
+		{ "CircleCollider2D", &Component::Create<CircleCollider2D> },
 		{ "InputMove", &Component::Create<InputMove> },
 		{ "Move", &Component::Create<Move> },
 		{ "Rigidbody2D", &Component::Create<Rigidbody2D> },

@@ -486,6 +486,12 @@
     <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\Bullet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\BarrelSpawner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\HenryBehavior.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Actors\Actor.h">

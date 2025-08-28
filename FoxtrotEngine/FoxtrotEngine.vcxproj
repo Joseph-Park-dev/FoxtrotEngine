@@ -263,10 +263,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\BarrelSpawner.cpp" />
     <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\ButtonClick.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\HenryBehavior.cpp" />
     <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\Bullet.cpp" />
     <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\Damage.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>

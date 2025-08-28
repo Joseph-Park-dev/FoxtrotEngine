@@ -112,7 +112,11 @@ void MeshRenderer::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
 
-	FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MESH_KEY, mMeshGroup->FileName());
+	if (mMeshGroup)
+		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MESH_KEY, mMeshGroup->FileName());
+	else
+		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MESH_KEY, ChunkKey::NullVal::NULL_OBJECT);
+
 	if (mTexture)
 		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, mTexture->FileName());
 	else

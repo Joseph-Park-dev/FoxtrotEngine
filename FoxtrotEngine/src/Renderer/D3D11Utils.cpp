@@ -510,7 +510,7 @@ void D3D11Utils::CreateGeometryShader(
 	device->CreateGeometryShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), NULL, &geometryShader);
 }
 
-void ReadImage(FTDS::String filename, std::vector<uint8_t>& image, int& width, int& height)
+void D3D11Utils::ReadImage(FTDS::String filename, std::vector<uint8_t>& image, int& width, int& height)
 {
 	int channels;
 
@@ -560,10 +560,9 @@ void ReadImage(FTDS::String filename, std::vector<uint8_t>& image, int& width, i
 }
 
 ComPtr<ID3D11Texture2D>
-CreateStagingTexture(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, const int width, const int height, const std::vector<uint8_t>& image, const int mipLevels = 1, const int arraySize = 1)
+D3D11Utils::CreateStagingTexture(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, const int width, const int height, const std::vector<uint8_t>& image, const int mipLevels = 1, const int arraySize = 1)
 {
-
-	// 스테이징 텍스춰 만들기
+	// Create a staging texture.
 	D3D11_TEXTURE2D_DESC txtDesc;
 	ZeroMemory(&txtDesc, sizeof(txtDesc));
 	txtDesc.Width			 = width;
@@ -581,62 +580,18 @@ CreateStagingTexture(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& 
 		cout << "Failed()" << endl;
 	}
 
-	// CPU에서 이미지 데이터 복사
+	// Copy 2D image from CPU.
 	D3D11_MAPPED_SUBRESOURCE ms;
 	context->Map(stagingTexture.Get(), NULL, D3D11_MAP_WRITE, NULL, &ms);
 	uint8_t* pData = (uint8_t*)ms.pData;
+
+	// Copy image data line by line.
 	for (UINT h = 0; h < UINT(height); h++)
-	{ // 가로줄 한 줄씩 복사
 		memcpy(&pData[h * ms.RowPitch], &image[h * width * 4], width * sizeof(uint8_t) * 4);
-	}
+
 	context->Unmap(stagingTexture.Get(), NULL);
 
 	return stagingTexture;
-}
-
-void D3D11Utils::CreateTexture(
-	ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, FTTexture* texture)
-{
-	int					 width, height;
-	std::vector<uint8_t> image;
-	ReadImage(texture->RelativePath().C_Str(), image, width, height);
-
-	texture->SetTexWidth(width);
-	texture->SetTexHeight(height);
-
-	// 스테이징 텍스춰 만들고 CPU에서 이미지를 복사합니다.
-	ComPtr<ID3D11Texture2D> stagingTexture =
-		CreateStagingTexture(device, context, width, height, image);
-
-	// 실제로 사용할 텍스춰 설정
-	D3D11_TEXTURE2D_DESC txtDesc;
-	ZeroMemory(&txtDesc, sizeof(txtDesc));
-	txtDesc.Width			 = width;
-	txtDesc.Height			 = height;
-	txtDesc.MipLevels		 = 0; // 밉맵 레벨 최대
-	txtDesc.ArraySize		 = 1;
-	txtDesc.Format			 = DXGI_FORMAT_R8G8B8A8_UNORM;
-	txtDesc.SampleDesc.Count = 1;
-	txtDesc.Usage			 = D3D11_USAGE_DEFAULT; // 스테이징 텍스춰로부터 복사 가능
-	txtDesc.BindFlags		 = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
-	txtDesc.MiscFlags		 = D3D11_RESOURCE_MISC_GENERATE_MIPS; // 밉맵 사용
-	txtDesc.CPUAccessFlags	 = 0;
-
-	// 초기 데이터 없이 텍스춰 생성 (전부 검은색)
-	device->CreateTexture2D(&txtDesc, nullptr, texture->GetTexture().GetAddressOf());
-
-	// 실제로 생성된 MipLevels를 확인해보고 싶을 경우
-	// texture->GetDesc(&txtDesc);
-	// cout << txtDesc.MipLevels << endl;
-
-	// 스테이징 텍스춰로부터 가장 해상도가 높은 이미지 복사
-	context->CopySubresourceRegion(texture->GetTexture().Get(), 0, 0, 0, 0, stagingTexture.Get(), 0, nullptr);
-
-	// ResourceView 만들기
-	device->CreateShaderResourceView(texture->GetTexture().Get(), 0, texture->GetResourceView().GetAddressOf());
-
-	// 해상도를 낮춰가며 밉맵 생성
-	context->GenerateMips(texture->GetResourceView().Get());
 }
 
 void D3D11Utils::CreateTextureArray(
@@ -706,17 +661,17 @@ void D3D11Utils::CreateTextureArray(
 	context->GenerateMips(textureResourceView.Get());
 }
 
-HRESULT D3D11Utils::CreateCubemapTexture(
-	ComPtr<ID3D11Device>& device, FTTexture* texture)
-{
-	ComPtr<ID3D11Texture2D> textureBuf;
-
-	wchar_t* path = texture->RelativePath().WC_Str();
-	HRESULT result = CreateDDSTextureFromFileEx(
-		device.Get(), path, 0, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, D3D11_RESOURCE_MISC_TEXTURECUBE, DDS_LOADER_FLAGS(false), (ID3D11Resource**)textureBuf.GetAddressOf(), texture->GetResourceView().GetAddressOf(), nullptr);
-	delete[] path;
-	return result;
-}
+//HRESULT D3D11Utils::CreateCubemapTexture(
+//	ComPtr<ID3D11Device>& device, FTTexture* texture)
+//{
+//	ComPtr<ID3D11Texture2D> textureBuf;
+//
+//	wchar_t* path = texture->RelativePath().WC_Str();
+//	HRESULT result = CreateDDSTextureFromFileEx(
+//		device.Get(), path, 0, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, D3D11_RESOURCE_MISC_TEXTURECUBE, DDS_LOADER_FLAGS(false), (ID3D11Resource**)textureBuf.GetAddressOf(), texture->GetResourceView().GetAddressOf(), nullptr);
+//	delete[] path;
+//	return result;
+//}
 
 void D3D11Utils::WriteToFile(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Texture2D>& textureToWrite, FTDS::String& filename)
 {

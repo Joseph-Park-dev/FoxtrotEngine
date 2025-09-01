@@ -8,9 +8,6 @@
 #pragma once
 #include <ResourceSystem/FTResource.h>
 
-#include <wrl.h> // ComPtr
-#include <DirectXTex.h>
-
 #include <Math/FTMath.h>
 
 class FoxtrotRenderer;

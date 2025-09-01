@@ -20,19 +20,33 @@
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
-
 #include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
 
 #include "EditorLayer.h"
 #include "DirectoryHelper.h"
 #endif //FOXTROT_EDITOR
 
-FTResource::FTResource()
-    : mFileName{}
-    , mRelativePath{}
-    , mRefCount(0)
-    , mIsProcessed(false)
-{}
+void FTResource::Process()
+{
+	mIsProcessed = true;
+}
+
+void FTResource::Process(FoxtrotRenderer* renderer)
+{
+	mIsProcessed = true;
+}
+
+FTResource::FTResource(FTResourceDef& resDef)
+	: mFileName(resDef.FileName)
+	, mRelativePath(resDef.RelativePath)
+	, mRefCount(0)
+	, mIsProcessed(false)
+{
+}
+
+FTResource::~FTResource()
+{
+}
 
 void FTResource::SaveProperties(std::ofstream& ofs)
 {
@@ -43,8 +57,8 @@ void FTResource::SaveProperties(std::ofstream& ofs)
     FTDS::String buf (".\\");
     buf.Append(path);
 
-    FileIOHelper::SaveString(ofs, ChunkKey::FILE_NAME, mFileName);
-    FileIOHelper::SaveString(ofs, ChunkKey::RELATIVE_PATH, buf);
+    FileIOHelper::SaveString(ofs, ChunkKey::FTResource::FILE_NAME, mFileName);
+    FileIOHelper::SaveString(ofs, ChunkKey::FTResource::RELATIVE_PATH, buf);
 }
 
 // When loading properties, invert the order of the member variables
@@ -67,36 +81,7 @@ void FTResource::LoadProperties(std::ifstream& ifs)
 }
 
 #ifdef FOXTROT_EDITOR
-void FTResource::UpdateNameAndPath(FTDS::String fileExtension)
-{
-    FTDS::String currentPath = "No path has been assigned";
-    mRelativePath.Assign(currentPath);
-    if (!mRelativePath.IsEmpty())
-    {
-        currentPath.Assign("Current path : \n");
-        currentPath.Append(mRelativePath);
-    }
-
-    if (ImGui::Button("Select File")) {
-        IGFD::FileDialogConfig config;
-        config.path = ".";
-        config.countSelectionMax = 1;
-        ImGuiFileDialog::Instance()->OpenDialog("SelectFile", "Select File", fileExtension.C_Str(), config);
-        ImGui::OpenPopup("Select File");
-    }
-
-    if (ImGuiFileDialog::Instance()->Display("SelectFile"))
-    {
-        if (ImGuiFileDialog::Instance()->IsOk())
-        {
-            mRelativePath.Assign(ImGuiFileDialog::Instance()->GetFilePathName().c_str());
-            mFileName.Assign(ImGuiFileDialog::Instance()->GetCurrentFileName().c_str());
-        }
-        ImGuiFileDialog::Instance()->Close();
-    }
-}
-
-bool FTResource::IsReferenced()
+bool FTResource::IsReferenced() const
 {
 	return 0 < mRefCount;
 }

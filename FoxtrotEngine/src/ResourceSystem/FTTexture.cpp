@@ -1,12 +1,12 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "ResourceSystem/FTTexture.h"
+#include "FTTexture.h"
 
 #include <string>
 #include <stdlib.h>
@@ -24,87 +24,136 @@
 #include "Renderer/D3D11Utils.h"
 
 #ifdef FOXTROT_EDITOR
-#include "EditorLayer.h"
-#include <imgui.h>
+	#include "EditorLayer.h"
+	#include <imgui.h>
 #endif
 
-bool FTTexture::ReleaseTexture()
+using Microsoft::WRL::ComPtr;
+
+const UINT FTTexture::GetWidth() const
 {
-    mTextureResourceView.Reset();
-    mTexture.Reset();
-    mSamplerState.Reset();
-    if (mTextureResourceView.Get() || mTexture.Get() || mSamplerState.Get())
-    {
-        LogString("FTTexture()::ReleaseTexture() -> Release Texture Failed");
-        return false;
-    }
-    return true;
+	return mWidth;
 }
 
-void FTTexture::Process(FTCore* coreInst)
+const UINT FTTexture::GetHeight() const
 {
-    if (this->GetIsProcessed())
-        return;
+	return mHeight;
+}
 
-    FTDS::String path = this->RelativePath().C_Str();
-    FTDS::String type = ExtractFileType(path.C_Str());
-    FoxtrotRenderer* renderer = coreInst->GetGameRenderer();
-
-    if ((type.Equal(FileTypes::DDS_TEXTURE)))
-        DX::ThrowIfFailed(D3D11Utils::CreateCubemapTexture(renderer->GetDevice(), this));
-    else
-        D3D11Utils::CreateTexture(renderer->GetDevice(), renderer->GetContext(), this);
-
-    if (!this)
-        Debug::LogError(__LINE__, __FILE__, "Failed to process Texture.");
-    else
-        this->SetIsProcessed(true);
+const ComPtr<ID3D11ShaderResourceView>& FTTexture::GetSRV() const
+{
+	return mSRV;
 }
 
 void FTTexture::SaveProperties(std::ofstream& ofs)
 {
-    FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTEXTURE);
-    FTResource::SaveProperties(ofs);
-    FileIOHelper::SaveInt(ofs, ChunkKey::TEXTURE_WIDTH, mTexWidth);
-    FileIOHelper::SaveInt(ofs, ChunkKey::TEXTURE_HEIGHT, mTexHeight);
-    FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTEXTURE);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTexture::FT_TEXTURE);
+	FTResource::SaveProperties(ofs);
+	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTTexture::WIDTH, mWidth);
+	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTTexture::HEIGHT, mHeight);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTexture::FT_TEXTURE);
 }
 
 void FTTexture::LoadProperties(std::ifstream& ifs)
 {
-    FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTEXTURE);
-    FileIOHelper::LoadInt(ifs, mTexHeight);
-    FileIOHelper::LoadInt(ifs, mTexWidth);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTexture::FT_TEXTURE);
+	FileIOHelper::LoadUnsignedInt(ifs, mHeight);
+	FileIOHelper::LoadUnsignedInt(ifs, mWidth);
 
-    FTResource::LoadProperties(ifs);
+	FTResource::LoadProperties(ifs);
+}
+
+FTTexture::FTTexture(FTResourceDef& resDef, FoxtrotRenderer* renderer)
+	: FTResource(resDef)
+	, mWidth(0)
+	, mHeight(0)
+{
+	Process(renderer);
+}
+
+FTTexture::~FTTexture()
+{
+	mSRV.Reset();
+	if (mSRV.Get())
+		LogString("FTTexture()::ReleaseTexture() -> Release Texture Failed");
+}
+
+void FTTexture::Process(FoxtrotRenderer* renderer)
+{
+	// Returns early if the resource is processed.
+	if (IsProcessed())
+		return;
+
+	// Creates texture
+	std::vector<uint8_t> image;
+	int					 width	= 0;
+	int					 height = 0;
+	D3D11Utils::ReadImage(GetRelativePath().C_Str(), image, width, height);
+
+	mWidth	= static_cast<UINT>(width);
+	mHeight = static_cast<UINT>(height);
+
+	// Copy image data from CPU into staging texture.
+	ComPtr<ID3D11Texture2D> stagingTexture =
+		D3D11Utils::CreateStagingTexture(renderer->GetDevice(), renderer->GetContext(), width, height, image);
+
+	// Description for the result texture that will be used.
+	D3D11_TEXTURE2D_DESC txtDesc;
+	ZeroMemory(&txtDesc, sizeof(txtDesc));
+	txtDesc.Width			 = width;
+	txtDesc.Height			 = height;
+	txtDesc.MipLevels		 = 0; // ¹Ó¸Ê ·¹º§ ÃÖ´ë
+	txtDesc.ArraySize		 = 1;
+	txtDesc.Format			 = DXGI_FORMAT_R8G8B8A8_UNORM;
+	txtDesc.SampleDesc.Count = 1;
+	txtDesc.Usage			 = D3D11_USAGE_DEFAULT; // ½ºÅ×ÀÌÂ¡ ÅØ½ºÃç·ÎºÎÅÍ º¹»ç °¡´É
+	txtDesc.BindFlags		 = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+	txtDesc.MiscFlags		 = D3D11_RESOURCE_MISC_GENERATE_MIPS; // ¹Ó¸Ê »ç¿ë
+	txtDesc.CPUAccessFlags	 = 0;
+
+	ComPtr<ID3D11Texture2D> resultTex;
+
+	// Create blank texture (all-black).
+	renderer->GetDevice()->CreateTexture2D(&txtDesc, nullptr, resultTex.GetAddressOf());
+
+	// Copy staging texture data to the result.
+	renderer->GetContext()->CopySubresourceRegion(resultTex.Get(), 0, 0, 0, 0, stagingTexture.Get(), 0, nullptr);
+
+	// Create SRV from the resultTex.
+	renderer->GetDevice()->CreateShaderResourceView(resultTex.Get(), 0, mSRV.GetAddressOf());
+
+	// Create MipMaps.
+	// context->GenerateMips(texture->GetResourceView().Get());
+
+	FTResource::Process(renderer);
 }
 
 #ifdef FOXTROT_EDITOR
 void FTTexture::UpdateUI()
 {
-    ImGui::Text(FileName().C_Str());
-    ID3D11ShaderResourceView* viewportTexture = this->mTextureResourceView.Get();
-    ImVec2 previewSize = ImVec2(100, 100);
-    ImGui::Image((ImTextureID)viewportTexture, previewSize);
+	// Display texture name.
+	ImGui::Text(GetFileName().C_Str());
 
-    FTDS::String currentPath = "No path has been assigned";
-    if (!RelativePath().IsEmpty())
-    {
-        currentPath.Assign("Current path : \n");
-        currentPath.Append(RelativePath().C_Str());
-    }
+	// Display texture preview.
+	ID3D11ShaderResourceView* viewportTexture = this->mSRV.Get();
+	ImVec2					  previewSize	  = ImVec2(100, 100);
+	ImGui::Image((ImTextureID)viewportTexture, previewSize);
 
-    ImGui::InputInt("Width", &mTexWidth);
-    ImGui::InputInt("Height", &mTexHeight);
-}
+	// Diplay texture path.
+	FTDS::String currentPath = "No path has been assigned";
+	if (!GetRelativePath().IsEmpty())
+	{
+		currentPath.Assign("Current path : \n");
+		currentPath.Append(GetRelativePath().C_Str());
+	}
 
-void FTTexture::AddRefCount()
-{
-	FTResource::AddRefCount();
-}
+	// Update texture size.
+	int size[2] = { static_cast<int>(mWidth), static_cast<int>(mHeight) };
+	Math::Clamp(size[0], 0, INT_MAX);
+	Math::Clamp(size[1], 0, INT_MAX);
 
-void FTTexture::SubtractRefCount()
-{
-	FTResource::SubtractRefCount();
+	ImGui::InputInt2("Tex size", size);
+	mWidth	= static_cast<UINT>(size[0]);
+	mHeight = static_cast<UINT>(size[1]);
 }
 #endif // FOXTROT_EDITOR

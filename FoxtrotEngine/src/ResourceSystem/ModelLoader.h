@@ -17,8 +17,8 @@
 
 class ModelLoader {
   public:
-      void Load(FTDS::String& resPath);
-      void Load(FTDS::String& basePath, FTDS::String& filename);
+      void Load(const FTDS::String& resPath);
+      void Load(const FTDS::String& basePath, const FTDS::String& filename);
 
     void ProcessNode(aiNode *node, const aiScene *scene,
                      DirectX::SimpleMath::Matrix tr);

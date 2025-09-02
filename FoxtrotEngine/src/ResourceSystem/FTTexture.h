@@ -5,90 +5,70 @@
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
-/// <summary>
-/// A class that holds the image data to be used as a sprite.
-/// This can be used as a single sprite, a texture pack for a tilemap
-/// and an animation, etc.
-/// </summary>
-
 #pragma once
-#include "ResourceSystem/FTResource.h"
+#include <ResourceSystem/FTResource.h>
 
-#include <wrl.h> // ComPtr
-#include <DirectXTex.h>
-
-#include "Math/FTMath.h"
+#include <Math/FTMath.h>
 
 class FoxtrotRenderer;
 class FTCore;
 
+/// @brief A class that holds the image data.
+/// This can be used as a single sprite, a texture pack for a tilemap, and
+/// a spritesheet for an animation, etc.
 class FTTexture :
 	public FTResource
 {
 public:
-	bool ReleaseTexture();
+	/// @brief Get original pixel-width of the image. This shall not be edited after the FTTexture is created.
+	const UINT GetWidth() const;
+
+	/// @brief Get original pixel-height of the image. This shall not be edited after the FTTexture is created.
+	const UINT GetHeight() const;
+
+	/// @brief Get ShaderResourceView for the texture. This shall not be edited after the FTTexture is created.
+	const ComPtr<ID3D11ShaderResourceView>& GetSRV() const;
 
 public:
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetResourceView() { return mTextureResourceView; }
-	void											  SetResourceView(Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResView)
-	{
-		mTextureResourceView = shaderResView;
-	}
+	/// @brief Saves resource properties into a file.
+	/// @param ofs A stream to a .chunk file
+	virtual void SaveProperties(std::ofstream& ofs) override;
 
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>& GetTexture() { return mTexture; }
-
-	const FTVector2 GetTexSize() const { return FTVector2(mTexWidth, mTexHeight); }
-	int				GetTexWidth() const { return mTexWidth; }
-	int				GetTexHeight() const { return mTexHeight; }
-
-	void SetTexWidth(int texWidth) { mTexWidth = texWidth; }
-	void SetTexHeight(int texHeight) { mTexHeight = texHeight; }
-
-	int& GetTexWidthRef() { return mTexWidth; }
-	int& GetTexHeightRef() { return mTexHeight; }
+	/// @brief Loads resource properties into an instance.
+	/// @param ifs A stream from a .chunk file
+	virtual void LoadProperties(std::ifstream& ifs) override;
 
 public:
-	virtual void Process(FTCore* coreInst) override;
+	/// @brief FTTexture is a graphics resource, so it needs a FTRenderer instance for initialization.
+	/// @param renderer This is usually a game renderer.
+	FTTexture(FTResourceDef& resDef, FoxtrotRenderer* renderer);
+	~FTTexture();
 
-public:
-	FTTexture()
-		: FTResource()
-		, mTexWidth(0)
-		, mTexHeight(0)
-	{
-	}
-	virtual ~FTTexture() override
-	{
-		ReleaseTexture();
-	}
+protected:
+	/// @brief The graphics resource must be processed with renderer before used during runtime.
+	/// Example of the process includes initializing meshes, creating textures, etc.
+	/// @param renderer Renderer object used for processing graphics resources.
+	virtual void Process(FoxtrotRenderer* renderer) override;
 
 private:
-	Microsoft::WRL::ComPtr<ID3D11Texture2D>			 mTexture;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mTextureResourceView;
-	Microsoft::WRL::ComPtr<ID3D11SamplerState>		 mSamplerState;
-
-	int mTexWidth;
-	int mTexHeight;
-
-	friend class ResourceManager;
-
-public:
-	virtual void SaveProperties(std::ofstream& ofs) override;
-	virtual void LoadProperties(std::ifstream& ifs) override;
+	UINT							 mWidth;
+	UINT							 mHeight;
+	ComPtr<ID3D11ShaderResourceView> mSRV;
 
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void UpdateUI() override;
 
-public:
-	virtual void AddRefCount() override;
-	virtual void SubtractRefCount() override;
-#endif // FOXTROT_EDITOR
+#endif
 };
 
 namespace ChunkKey
 {
-	constexpr const char* FTTEXTURE		 = "FTTexture";
-	constexpr const char* TEXTURE_WIDTH	 = "Texture Width";
-	constexpr const char* TEXTURE_HEIGHT = "Texture Height";
+	namespace FTTexture
+	{
+		constexpr const char* FT_TEXTURE = "FTTexture";
+		constexpr const char* WIDTH		 = "Width";
+		constexpr const char* HEIGHT	 = "Height";
+
+	} // namespace FTTexture
 } // namespace ChunkKey

@@ -124,9 +124,9 @@ public:
 		ComPtr<ID3D11Buffer>&	indexBuffer);
 
 	static void CreateIndexBuffer(
-		ComPtr<ID3D11Device>&	device,
+		ComPtr<ID3D11Device>&		  device,
 		FTDS::DynamicArray<uint32_t>& indices,
-		ComPtr<ID3D11Buffer>&	indexBuffer);
+		ComPtr<ID3D11Buffer>&		  indexBuffer);
 
 	static void CreateIndexBuffer(
 		ComPtr<ID3D11Device>& device,
@@ -163,9 +163,9 @@ public:
 
 	template <typename T_VERTEX>
 	static void CreateVertexBuffer(
-		ComPtr<ID3D11Device>&	device,
+		ComPtr<ID3D11Device>&				device,
 		const FTDS::DynamicArray<T_VERTEX>& vertices,
-		ComPtr<ID3D11Buffer>&	vertexBuffer)
+		ComPtr<ID3D11Buffer>&				vertexBuffer)
 	{
 		// D3D11_USAGE enumeration (d3d11.h)
 		// https://learn.microsoft.com/en-us/windows/win32/api/d3d11/ne-d3d11-d3d11_usage
@@ -197,7 +197,7 @@ public:
 	{
 		D3D11_BUFFER_DESC vertexBufferDesc;
 		ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
-		vertexBufferDesc.Usage			= D3D11_USAGE_DYNAMIC;		  // Use DYNAMIC to allow CPU writes
+		vertexBufferDesc.Usage			= D3D11_USAGE_DYNAMIC;			  // Use DYNAMIC to allow CPU writes
 		vertexBufferDesc.ByteWidth		= sizeof(T_VERTEX) * numVertices; // Corrected calculation
 		vertexBufferDesc.BindFlags		= D3D11_BIND_VERTEX_BUFFER;
 		vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -254,11 +254,16 @@ public:
 		context->Unmap(buffer.Get(), NULL);
 	}
 
-	static void
-	CreateTexture(
+	static void ReadImage(FTDS::String filename, std::vector<uint8_t>& image, int& width, int& height);
+
+	static ComPtr<ID3D11Texture2D> CreateStagingTexture(
 		ComPtr<ID3D11Device>&		 device,
 		ComPtr<ID3D11DeviceContext>& context,
-		FTTexture*					 texture);
+		const int					 width,
+		const int					 height,
+		const std::vector<uint8_t>&	 image,
+		const int					 mipLevels = 1,
+		const int					 arraySize = 1);
 
 	static void
 	CreateTextureArray(
@@ -268,7 +273,7 @@ public:
 		ComPtr<ID3D11Texture2D>&		  texture,
 		ComPtr<ID3D11ShaderResourceView>& textureResourceView);
 
-	static HRESULT CreateCubemapTexture(ComPtr<ID3D11Device>& device, FTTexture* texture);
+	// static HRESULT CreateCubemapTexture(ComPtr<ID3D11Device>& device, FTTexture* texture);
 
 	// 텍스춰를 이미지 파일로 저장
 	static void WriteToFile(

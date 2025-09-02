@@ -5,65 +5,91 @@
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
-/// <summary>
-/// Base class that wraps the resources used in the game.
-/// </summary>
-
 #pragma once
-#include <Windows.h>
-
 #include <Static/FTString.h>
 
 class FTCore;
+class FoxtrotRenderer;
 
+/// @brief Resource definition used for initialization.
+struct FTResourceDef
+{
+	const char* FileName;
+	const char* RelativePath;
+};
+
+/// @brief Base class that wraps the resources used in the game.
 class FTResource
 {
 public:
-	UINT GetRefCount() { return mRefCount; }
-	bool GetIsProcessed() { return mIsProcessed; }
+	/// @brief Saves resource properties into a file.
+	/// @param ofs This should either be a stream to a .chunk file, or to a dedicated resource file
+	/// like FTSpriteAnimation, FTPremade, etc.
+	virtual void SaveProperties(std::ofstream& ofs);
 
-	void SetFileName(FTDS::String& name) { mFileName.Assign(name); }
-	void SetFileName(const char* name) { mFileName.Assign(name); }
-	void SetRelativePath(FTDS::String& _strPath) { mRelativePath.Assign(_strPath); }
-	void SetRelativePath(const char* _strPath) { mRelativePath.Assign(_strPath); }
-	void SetIsProcessed(bool val) { mIsProcessed = val; }
-
-	FTDS::String& FileName() { return mFileName; }
-	FTDS::String& RelativePath() { return mRelativePath; }
+	/// @brief Loads resource properties into an instance.
+	/// @param ifs This should either be a stream from a .chunk file, or from a dedicated resource file
+	/// like FTSpriteAnimation, FTPremade, etc.
+	virtual void LoadProperties(std::ifstream& ifs);
 
 public:
-	virtual void Process(FTCore* coreInst) = 0;
+	const FTDS::String& GetFileName() const;
+	const FTDS::String& GetRelativePath() const;
 
 public:
-	FTResource();
-	virtual ~FTResource() { mRefCount = 0; }
+	FTResource(FTResourceDef& resDef);
+	~FTResource();
+
+protected:
+	/// @brief A resource must be processed before used during runtime.
+	/// Example of the process includes initializing meshes, creating textures, etc.
+	virtual void Process();
+
+	/// @brief A graphics resource must be processed with renderer before used during runtime.
+	/// Example of the process includes initializing meshes, creating textures, etc.
+	/// @param renderer Renderer object used for processing graphics resources.
+	virtual void Process(FoxtrotRenderer* renderer);
+
+	/// @brief Is this resource processed and can be used during runtime?
+	const bool IsProcessed() const;
 
 private:
-	FTDS::String mFileName;
-	FTDS::String mRelativePath;
+	/// @brief Name of the resource.
+	FTDS::String* mFileName;
 
-	// The resource is used in somewhere.
-	UINT mRefCount;
+	/// @brief Resource path relative to the directory containing .exe.
+	FTDS::String* mRelativePath;
+
+	/// @brief If 0 < mRefCount, the resource is used somewhere in the .chunk, so it will be saved to the file.
+	/// This cannot be smaller than zero.
+	int mRefCount;
+
+	/// @brief The resource is processed and ready to be used.
 	bool mIsProcessed;
-
-public:
-	virtual void SaveProperties(std::ofstream& ofs);
-	virtual void LoadProperties(std::ifstream& ifs);
 
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void UpdateUI() {};
-	void		 UpdateNameAndPath(FTDS::String fileExtension);
 
 public:
-	bool		 IsReferenced();
+	/// @brief Is this resource referenced by any of the Components in the .chunk?
+	/// @return if 0 < mRefCount, true.
+	bool IsReferenced() const;
+
+	/// @brief Adds mRefCount if the resource is referenced by any of the Components in a .chunk.
 	virtual void AddRefCount();
+
+	/// @brief Subtracts mRefCount if the resource is taken away from a Component in a .chunk.
 	virtual void SubtractRefCount();
-#endif // FOXTROT_EDITOR
+#endif
 };
 
+/// @brief String literal keys used for saving resource properties.
 namespace ChunkKey
 {
-	constexpr const char* FILE_NAME		= "FileName";
-	constexpr const char* RELATIVE_PATH = "RelativePath";
+	namespace FTResource
+	{
+		constexpr const char* FILE_NAME		= "FileName";
+		constexpr const char* RELATIVE_PATH = "RelativePath";
+	} // namespace FTResource
 } // namespace ChunkKey

@@ -5,6 +5,7 @@
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
+
 #pragma once
 #include "ResourceSystem/FTResource.h"
 
@@ -20,7 +21,7 @@ class FTMaterial :
 	public FTResource
 {
 public:
-	/// @brief Updates mPCBuf with the material values.
+	/// @brief Updates mPCBuf with material values.
 	virtual void UpdateBuffer(ComPtr<ID3D11DeviceContext>& context) = 0;
 
 	/// @brief See FTResource::SaveProperties();
@@ -30,7 +31,7 @@ public:
 	virtual void LoadProperties(std::ifstream& ifs) override;
 
 public:
-	/// @brief Gets the pixel constant buffer with the material values applied.
+	/// @brief Gets the pixel constant buffer with material values applied.
 	ComPtr<ID3D11Buffer>& GetPCBuf();
 
 public:
@@ -42,7 +43,7 @@ protected:
 	virtual void CreatePixelConstBuffer(ComPtr<ID3D11Device>& device) = 0;
 
 private:
-	/// @brief Pixel constant buffer to which the material values are applied.
+	/// @brief Pixel constant buffer to which material values are applied.
 	ComPtr<ID3D11Buffer> mPCBuf;
 
 private:

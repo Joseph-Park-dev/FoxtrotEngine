@@ -20,9 +20,6 @@ class FTMaterial :
 	public FTResource
 {
 public:
-	/// @brief Creates a pixel constant buffer using the material data.
-	virtual void CreatePixelConstBuffer(ComPtr<ID3D11Device>& device) = 0;
-
 	/// @brief Updates mPCBuf with the material values.
 	virtual void UpdateBuffer(ComPtr<ID3D11DeviceContext>& context) = 0;
 
@@ -39,6 +36,10 @@ public:
 public:
 	/// @brief Relative path is used for importing material data.
 	FTMaterial(FTResourceDef& resDef, FoxtrotRenderer* renderer);
+
+protected:
+	/// @brief Creates a pixel constant buffer using the material data.
+	virtual void CreatePixelConstBuffer(ComPtr<ID3D11Device>& device) = 0;
 
 private:
 	/// @brief Pixel constant buffer to which the material values are applied.

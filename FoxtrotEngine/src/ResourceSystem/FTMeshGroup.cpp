@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "ResourceSystem/FTBasicMeshGroup.h"
+#include "ResourceSystem/FTMeshGroup.h"
 
 #include "ResourceSystem/GeometryGenerator.h"
 #include "ResourceSystem/FTMaterials/FTMaterial.h"
@@ -27,7 +27,7 @@
 
 using Matrix = DirectX::SimpleMath::Matrix;
 
-void FTBasicMeshGroup::Initialize(
+void FTMeshGroup::Initialize(
 	FTMeshData*					 mesh,
 	ComPtr<ID3D11Device>&		 device,
 	ComPtr<ID3D11DeviceContext>& context)
@@ -37,7 +37,7 @@ void FTBasicMeshGroup::Initialize(
 	InitializeConstantBuffers(device);
 }
 
-void FTBasicMeshGroup::Initialize(
+void FTMeshGroup::Initialize(
 	FTDS::DynamicArray<FTMeshData*>&& meshes,
 	ComPtr<ID3D11Device>&			  device,
 	ComPtr<ID3D11DeviceContext>&	  context)
@@ -47,7 +47,7 @@ void FTBasicMeshGroup::Initialize(
 	InitializeConstantBuffers(device);
 }
 
-void FTBasicMeshGroup::Render(
+void FTMeshGroup::Render(
 	FoxtrotRenderer* renderer,
 	FTTexture*		 tex,
 	FTVertexShader*	 vs,
@@ -62,12 +62,12 @@ void FTBasicMeshGroup::Render(
 	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
 
 	mMeshes->IterateArray([&](Mesh* mesh) {
-		context->VSSetConstantBuffers(0, 1, mVertexConstBuffer.GetAddressOf());
+		context->VSSetConstantBuffers(0, 1, mVCBuf.GetAddressOf());
 
 		if (tex)
 		{
 			std::vector<ID3D11ShaderResourceView*> resViews;
-			resViews.push_back(tex->GetResourceView().Get());
+			resViews.push_back(tex->GetSRV().Get());
 			context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
 		}
 
@@ -86,7 +86,7 @@ void FTBasicMeshGroup::Render(
 	});
 }
 
-void FTBasicMeshGroup::Render(
+void FTMeshGroup::Render(
 	int				 meshIndex,
 	FoxtrotRenderer* renderer,
 	FTTexture*		 tex,
@@ -105,12 +105,12 @@ void FTBasicMeshGroup::Render(
 	if (mesh)
 	{
 		context->VSSetConstantBuffers(
-			0, 1, mVertexConstBuffer.GetAddressOf());
+			0, 1, mVCBuf.GetAddressOf());
 
 		if (tex)
 		{
 			std::vector<ID3D11ShaderResourceView*> resViews;
-			resViews.push_back(tex->GetResourceView().Get());
+			resViews.push_back(tex->GetSRV().Get());
 			context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
 		}
 
@@ -129,41 +129,7 @@ void FTBasicMeshGroup::Render(
 	}
 }
 
-void FTBasicMeshGroup::CalcVCData(Transform* transform, Camera* camInst)
-{
-	// Model Transformation
-	Matrix modelMat = Matrix();
-	CalcModelMat(modelMat, transform);
-	Matrix invTransposeMat = modelMat.Transpose();
-	invTransposeMat.Translation(Vector3(0.0f));
-	invTransposeMat = invTransposeMat.Transpose().Invert();
-
-	// View Transformation
-	Matrix&& viewMat  = camInst->GetViewRow();
-	Vector3	 eyeWorld = Vector3::Transform(Vector3(0.0f), viewMat.Invert());
-
-	// Project Transformation
-	Matrix&& projMat = std::move(camInst->GetProjRow());
-
-	mVertexConstData.model		  = modelMat.Transpose();
-	mVertexConstData.view		  = viewMat.Transpose();
-	mVertexConstData.projection	  = projMat.Transpose();
-	mVertexConstData.invTranspose = std::move(invTransposeMat);
-}
-
-void FTBasicMeshGroup::UpdateConstantBuffers(
-	ComPtr<ID3D11Device>&		 device,
-	ComPtr<ID3D11DeviceContext>& context,
-	FTMaterial*					 mat)
-{
-	D3D11Utils::UpdateBuffer(
-		context, mVertexConstData, mVertexConstBuffer);
-
-	if (mat)
-		mat->UpdateBuffer(context);
-}
-
-void FTBasicMeshGroup::Clear()
+void FTMeshGroup::Clear()
 {
 	mMeshes->IterateArray([&](Mesh* mesh) {
 		if (mesh)
@@ -175,12 +141,11 @@ void FTBasicMeshGroup::Clear()
 	mMeshes->Clear();
 }
 
-ComPtr<ID3D11SamplerState>& FTBasicMeshGroup::GetSamplerState() { return mSamplerState; }
-BasicVCData&				FTBasicMeshGroup::GetVCData() { return mVertexConstData; }
-ComPtr<ID3D11Buffer>&		FTBasicMeshGroup::GetVCBuf() { return mVertexConstBuffer; }
-FTDS::DynamicArray<Mesh*>*	FTBasicMeshGroup::Meshes() { return mMeshes; };
+FTDS::DynamicArray<Mesh*>*	FTMeshGroup::Meshes() { return mMeshes; };
+ComPtr<ID3D11SamplerState>& FTMeshGroup::GetSamplerState() { return mSamplerState; }
+ComPtr<ID3D11Buffer>&		FTMeshGroup::GetVCBuf() { return mVCBuf; }
 
-void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicArray<FTMeshData*>&& meshDataArr)
+void FTMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicArray<FTMeshData*>&& meshDataArr)
 {
 	if (0 < meshDataArr.GetSize())
 		Clear();
@@ -193,7 +158,7 @@ void FTBasicMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::Dyna
 	});
 }
 
-void FTBasicMeshGroup::InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData* meshData)
+void FTMeshGroup::InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData* meshData)
 {
 	Mesh* newMesh		 = DBG_NEW Mesh;
 	newMesh->VertexCount = UINT(meshData->Vertices.GetSize());
@@ -205,12 +170,26 @@ void FTBasicMeshGroup::InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData* 
 	mMeshes->PushBack(newMesh);
 }
 
-void FTBasicMeshGroup::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
+void FTMeshGroup::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
 {
-	D3D11Utils::CreateConstantBuffer(device, mVertexConstData, mVertexConstBuffer);
+	D3D11Utils::CreateConstantBuffer(device, mVCData, mVCBuf);
 }
 
-HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
+void FTMeshGroup::Process(FoxtrotRenderer* renderer)
+{
+	if (this->IsProcessed())
+		return;
+
+	if (this->GetRelativePath().IsEmpty())
+		return;
+
+	Initialize(
+		GeometryGenerator::ReadFromFile(this->GetRelativePath()), renderer->GetDevice(), renderer->GetContext());
+
+	FTResource::Process(renderer);
+}
+
+HRESULT FTMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 {
 	// FTTexture sampler ¸¸µé±â
 	D3D11_SAMPLER_DESC sampDesc;
@@ -227,39 +206,53 @@ HRESULT FTBasicMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 	return device->CreateSamplerState(&sampDesc, mSamplerState.GetAddressOf());
 }
 
-FTBasicMeshGroup::FTBasicMeshGroup()
-	: mDirection(1)
+FTMeshGroup::FTMeshGroup(FTResourceDef& resDef)
+	: FTResource(resDef)
+	, mDirection(1)
 	, mMeshes(DBG_NEW FTDS::DynamicArray<Mesh*>)
 {
 }
 
-FTBasicMeshGroup::~FTBasicMeshGroup()
+FTMeshGroup::~FTMeshGroup()
 {
 	Clear();
 	delete mMeshes;
 }
 
-void FTBasicMeshGroup::CalcModelMat(Matrix& matrix, Transform* transform)
+void FTMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, Transform* transform, Camera* camInst, FTMaterial* mat)
 {
+	// Model Transformation
+	Matrix modelMat = Matrix();
+
 	mDirection += transform->GetSteering()->Linear.x;
 	Math::Clamp(mDirection, -1, 1);
 
 	FTVector3 scale		   = transform->GetWorldScale();
 	FTVector3 scaleWithDir = FTVector3(scale.x * mDirection, scale.y, scale.z);
 	transform->SetLocalScale(scaleWithDir);
-	matrix = transform->GetMatrixWorld();
-}
+	modelMat = transform->GetMatrixWorld();
 
-void FTBasicMeshGroup::Process(FTCore* coreInst)
-{
-	if (this->GetIsProcessed())
-		return;
+	// Inverse transpose matrix calculation
+	// Consider removing this part if the engine is for 2D games.
+	Matrix invTransposeMat = modelMat.Transpose();
+	invTransposeMat.Translation(Vector3(0.0f));
+	invTransposeMat = invTransposeMat.Transpose().Invert();
 
-	if (this->RelativePath().IsEmpty())
-		return;
+	// View Transformation
+	Matrix&& viewMat  = camInst->GetViewRow();
+	Vector3	 eyeWorld = Vector3::Transform(Vector3(0.0f), viewMat.Invert());
 
-	FoxtrotRenderer* rnd = coreInst->GetGameRenderer();
-	Initialize(GeometryGenerator::ReadFromFile(RelativePath()), rnd->GetDevice(), rnd->GetContext());
+	// Project Transformation
+	Matrix&& projMat = std::move(camInst->GetProjRow());
 
-	this->SetIsProcessed(true);
+	mVCData.model		  = modelMat.Transpose();
+	mVCData.view		  = viewMat.Transpose();
+	mVCData.projection	  = projMat.Transpose();
+	mVCData.invTranspose = std::move(invTransposeMat);
+
+	D3D11Utils::UpdateBuffer(
+		context, mVCData, mVCBuf);
+
+	if (mat)
+		mat->UpdateBuffer(context);
 }

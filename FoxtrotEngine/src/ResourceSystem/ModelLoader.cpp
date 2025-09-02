@@ -6,7 +6,7 @@
 
 using namespace DirectX::SimpleMath;
 
-void ModelLoader::Load(FTDS::String& resPath) {
+void ModelLoader::Load(const FTDS::String& resPath) {
     this->basePath = basePath;
 
     Assimp::Importer importer;
@@ -19,7 +19,7 @@ void ModelLoader::Load(FTDS::String& resPath) {
     ProcessNode(pScene->mRootNode, pScene, tr);
 }
 
-void ModelLoader::Load(FTDS::String& basePath, FTDS::String& filename) {
+void ModelLoader::Load(const FTDS::String& basePath, const FTDS::String& filename) {
     this->basePath = basePath;
 
     Assimp::Importer importer;

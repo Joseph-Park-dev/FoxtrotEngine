@@ -8,17 +8,11 @@
 
 #include "FTMaterial.h"
 
+#include <wrl.h>
+
 #include "Core/FTCore.h"
 #include <Renderer/D3D11Utils.h>
 #include <Renderer/FoxtrotRenderer.h>
-
-void FTMaterial::SaveProperties(std::ofstream& ofs)
-{
-}
-
-void FTMaterial::LoadProperties(std::ifstream& ifs)
-{
-}
 
 ComPtr<ID3D11Buffer>& FTMaterial::GetPCBuf()
 {

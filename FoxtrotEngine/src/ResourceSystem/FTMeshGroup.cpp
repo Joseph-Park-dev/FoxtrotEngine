@@ -186,7 +186,7 @@ void FTMeshGroup::Process(FoxtrotRenderer* renderer)
 	Initialize(
 		GeometryGenerator::ReadFromFile(this->GetRelativePath()), renderer->GetDevice(), renderer->GetContext());
 
-	FTResource::Process(renderer);
+	FTResource::Process();
 }
 
 HRESULT FTMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)

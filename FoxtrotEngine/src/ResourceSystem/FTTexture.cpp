@@ -5,7 +5,7 @@
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
-
+#pragma once
 #include "FTTexture.h"
 
 #include <string>
@@ -125,7 +125,7 @@ void FTTexture::Process(FoxtrotRenderer* renderer)
 	// Create MipMaps.
 	// context->GenerateMips(texture->GetResourceView().Get());
 
-	FTResource::Process(renderer);
+	FTResource::Process();
 }
 
 #ifdef FOXTROT_EDITOR

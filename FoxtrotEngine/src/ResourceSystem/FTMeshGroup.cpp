@@ -206,11 +206,12 @@ HRESULT FTMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 	return device->CreateSamplerState(&sampDesc, mSamplerState.GetAddressOf());
 }
 
-FTMeshGroup::FTMeshGroup(FTResourceDef& resDef)
+FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer)
 	: FTResource(resDef)
 	, mDirection(1)
 	, mMeshes(DBG_NEW FTDS::DynamicArray<Mesh*>)
 {
+	Process(renderer);
 }
 
 FTMeshGroup::~FTMeshGroup()
@@ -245,9 +246,9 @@ void FTMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3
 	// Project Transformation
 	Matrix&& projMat = std::move(camInst->GetProjRow());
 
-	mVCData.model		  = modelMat.Transpose();
-	mVCData.view		  = viewMat.Transpose();
-	mVCData.projection	  = projMat.Transpose();
+	mVCData.model		 = modelMat.Transpose();
+	mVCData.view		 = viewMat.Transpose();
+	mVCData.projection	 = projMat.Transpose();
 	mVCData.invTranspose = std::move(invTransposeMat);
 
 	D3D11Utils::UpdateBuffer(

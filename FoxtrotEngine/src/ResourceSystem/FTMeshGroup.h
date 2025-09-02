@@ -5,10 +5,6 @@
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
-/// <summary>
-///
-/// </summary>
-
 #pragma once
 #include <directxtk/SimpleMath.h>
 
@@ -62,19 +58,20 @@ public:
 		FTMaterial*		 mat);
 
 public:
-	FTMeshGroup(FTResourceDef& resDef);
+	/// @brief Relative path is used for importing 3D files.
+	FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer);
 	virtual ~FTMeshGroup();
 
 protected:
 	/// @brief Creates a mesh from a single meshData.
-	virtual void	InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData* meshData);
+	virtual void InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData* meshData);
 
 	/// @brief Creates the meshes from the array of meshData.
 	/// This is usually called when importing a 3D model file.
-	virtual void	InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicArray<FTMeshData*>&& meshDataArr);
+	virtual void InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicArray<FTMeshData*>&& meshDataArr);
 
 	/// @brief Creates constant buffers such as Vertex Constant Buffers.
-	virtual void	InitializeConstantBuffers(ComPtr<ID3D11Device>& device);
+	virtual void InitializeConstantBuffers(ComPtr<ID3D11Device>& device);
 
 	/// @brief Create texture sampler.
 	/// @todo Consider moving this to D3D11Utils class.
@@ -93,7 +90,7 @@ protected:
 	ComPtr<ID3D11SamplerState>& GetSamplerState();
 
 	/// @brief Get vertex constant buffer.
-	ComPtr<ID3D11Buffer>&		GetVCBuf();
+	ComPtr<ID3D11Buffer>& GetVCBuf();
 
 private:
 	/// @brief Horizontal direction this mesh is pointing to.
@@ -108,7 +105,7 @@ private:
 	ComPtr<ID3D11Buffer> mVCBuf;
 
 	/// @brief Vertex constant data.
-	BasicVCData			 mVCData;
+	BasicVCData mVCData;
 
 private:
 	/// @brief Updates the constant buffers right before rendering.

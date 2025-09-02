@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "ResourceSystem/FTResource.h"
+#include "FTResource.h"
 
 #include <fstream>
 
@@ -26,6 +26,65 @@
 #include "DirectoryHelper.h"
 #endif //FOXTROT_EDITOR
 
+void FTResource::SaveProperties(std::ofstream& ofs)
+{
+	// Makes file path relative to the project dir.
+	FTDS::String path = *mRelativePath;
+	path.ExtractFromLast("\\Assets\\");
+
+	FTDS::String buf(".\\");
+	buf.Append(path);
+
+	FileIOHelper::SaveString(ofs, ChunkKey::FTResource::FILE_NAME, *mFileName);
+	FileIOHelper::SaveString(ofs, ChunkKey::FTResource::RELATIVE_PATH, buf);
+}
+
+// When loading properties, invert the order of the member variables
+// (Due to the loading order)
+void FTResource::LoadProperties(std::ifstream& ifs)
+{
+	if (!mRelativePath->IsEmpty())
+		return;
+	FileIOHelper::LoadBasicString(ifs, *mRelativePath);
+
+	if (!mFileName->IsEmpty())
+		return;
+	FileIOHelper::LoadBasicString(ifs, *mFileName);
+
+#ifdef FOXTROT_EDITOR
+	// Removes the dot in the front.
+	ExtractUntil(*mRelativePath, ".");
+	mRelativePath->Assign(PATH_PROJECT);
+	mRelativePath->Assign(*mRelativePath);
+#endif
+}
+
+const FTDS::String& FTResource::GetFileName() const
+{
+	return *mFileName;
+}
+
+const FTDS::String& FTResource::GetRelativePath() const
+{
+	return *mRelativePath;
+}
+
+FTResource::FTResource(FTResourceDef& resDef)
+	: mFileName(DBG_NEW FTDS::String(resDef.FileName))
+	, mRelativePath(DBG_NEW FTDS::String(resDef.RelativePath))
+	, mRefCount(0)
+	, mIsProcessed(false)
+{
+}
+
+FTResource::~FTResource()
+{
+	delete mFileName;
+	delete mRelativePath;
+	mRefCount = 0;
+	mIsProcessed = false;
+}
+
 void FTResource::Process()
 {
 	mIsProcessed = true;
@@ -36,48 +95,9 @@ void FTResource::Process(FoxtrotRenderer* renderer)
 	mIsProcessed = true;
 }
 
-FTResource::FTResource(FTResourceDef& resDef)
-	: mFileName(resDef.FileName)
-	, mRelativePath(resDef.RelativePath)
-	, mRefCount(0)
-	, mIsProcessed(false)
+const bool FTResource::IsProcessed() const
 {
-}
-
-FTResource::~FTResource()
-{
-}
-
-void FTResource::SaveProperties(std::ofstream& ofs)
-{
-    // Makes file path relative to the project dir.
-    FTDS::String path = mRelativePath;
-    path.ExtractFromLast("\\Assets\\");
-
-    FTDS::String buf (".\\");
-    buf.Append(path);
-
-    FileIOHelper::SaveString(ofs, ChunkKey::FTResource::FILE_NAME, mFileName);
-    FileIOHelper::SaveString(ofs, ChunkKey::FTResource::RELATIVE_PATH, buf);
-}
-
-// When loading properties, invert the order of the member variables
-// (Due to the loading order)
-void FTResource::LoadProperties(std::ifstream& ifs)
-{
-    if (!mRelativePath.IsEmpty())
-        return;
-    FileIOHelper::LoadBasicString(ifs, mRelativePath);
-
-    if (!mFileName.IsEmpty())
-        return;
-    FileIOHelper::LoadBasicString(ifs, mFileName);
-
-#ifdef FOXTROT_EDITOR
-    // Removes the dot in the front.
-    ExtractUntil(mRelativePath, ".");
-    mRelativePath = PATH_PROJECT + mRelativePath;
-#endif
+	return mIsProcessed;
 }
 
 #ifdef FOXTROT_EDITOR

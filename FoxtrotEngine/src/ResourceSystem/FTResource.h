@@ -22,16 +22,6 @@ struct FTResourceDef
 class FTResource
 {
 public:
-	/// @brief The resource must be processed before used during runtime.
-	/// Example of the process includes initializing meshes, creating textures, etc.
-	virtual void Process();
-
-	/// @brief The resource must be processed before used during runtime.
-	/// Example of the process includes initializing meshes, creating textures, etc.
-	/// @param renderer Renderer object used for processing graphics resources.
-	virtual void Process(FoxtrotRenderer* renderer);
-
-public:
 	/// @brief Saves resource properties into a file.
 	/// @param ofs This should either be a stream to a .chunk file, or to a dedicated resource file
 	/// like FTSpriteAnimation, FTPremade, etc.
@@ -43,15 +33,32 @@ public:
 	virtual void LoadProperties(std::ifstream& ifs);
 
 public:
+	const FTDS::String& GetFileName() const;
+	const FTDS::String& GetRelativePath() const;
+
+public:
 	FTResource(FTResourceDef& resDef);
-	virtual ~FTResource();
+	~FTResource();
+
+protected:
+	/// @brief A resource must be processed before used during runtime.
+	/// Example of the process includes initializing meshes, creating textures, etc.
+	virtual void Process();
+
+	/// @brief A graphics resource must be processed with renderer before used during runtime.
+	/// Example of the process includes initializing meshes, creating textures, etc.
+	/// @param renderer Renderer object used for processing graphics resources.
+	virtual void Process(FoxtrotRenderer* renderer);
+
+	/// @brief Is this resource processed and can be used during runtime?
+	const bool IsProcessed() const;
 
 private:
 	/// @brief Name of the resource.
-	FTDS::String mFileName;
+	FTDS::String* mFileName;
 
 	/// @brief Resource path relative to the directory containing .exe.
-	FTDS::String mRelativePath;
+	FTDS::String* mRelativePath;
 
 	/// @brief If 0 < mRefCount, the resource is used somewhere in the .chunk, so it will be saved to the file.
 	/// This cannot be smaller than zero.
@@ -84,5 +91,5 @@ namespace ChunkKey
 	{
 		constexpr const char* FILE_NAME		= "FileName";
 		constexpr const char* RELATIVE_PATH = "RelativePath";
-	}
-}
+	} // namespace FTResource
+} // namespace ChunkKey

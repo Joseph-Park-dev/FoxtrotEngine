@@ -27,26 +27,6 @@
 
 using Matrix = DirectX::SimpleMath::Matrix;
 
-void FTMeshGroup::Initialize(
-	FTMeshData*					 mesh,
-	ComPtr<ID3D11Device>&		 device,
-	ComPtr<ID3D11DeviceContext>& context)
-{
-	CreateTextureSampler(device);
-	InitializeMesh(device, mesh);
-	InitializeConstantBuffers(device);
-}
-
-void FTMeshGroup::Initialize(
-	FTDS::DynamicArray<FTMeshData*>&& meshes,
-	ComPtr<ID3D11Device>&			  device,
-	ComPtr<ID3D11DeviceContext>&	  context)
-{
-	CreateTextureSampler(device);
-	InitializeMeshes(device, std::move(meshes));
-	InitializeConstantBuffers(device);
-}
-
 void FTMeshGroup::Render(
 	FoxtrotRenderer* renderer,
 	FTTexture*		 tex,
@@ -145,17 +125,24 @@ FTDS::DynamicArray<Mesh*>*	FTMeshGroup::Meshes() { return mMeshes; };
 ComPtr<ID3D11SamplerState>& FTMeshGroup::GetSamplerState() { return mSamplerState; }
 ComPtr<ID3D11Buffer>&		FTMeshGroup::GetVCBuf() { return mVCBuf; }
 
-void FTMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicArray<FTMeshData*>&& meshDataArr)
+void FTMeshGroup::Initialize(
+	FTMeshData*					 mesh,
+	ComPtr<ID3D11Device>&		 device,
+	ComPtr<ID3D11DeviceContext>& context)
 {
-	if (0 < meshDataArr.GetSize())
-		Clear();
+	CreateTextureSampler(device);
+	InitializeMesh(device, mesh);
+	InitializeConstantBuffers(device);
+}
 
-	mMeshes->Reserve(meshDataArr.GetSize());
-
-	meshDataArr.IterateArray([&](FTMeshData* meshData) {
-		this->InitializeMesh(device, meshData);
-		delete meshData;
-	});
+void FTMeshGroup::Initialize(
+	FTDS::DynamicArray<FTMeshData*>&& meshes,
+	ComPtr<ID3D11Device>&			  device,
+	ComPtr<ID3D11DeviceContext>&	  context)
+{
+	CreateTextureSampler(device);
+	InitializeMeshes(device, std::move(meshes));
+	InitializeConstantBuffers(device);
 }
 
 void FTMeshGroup::InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData* meshData)
@@ -168,6 +155,19 @@ void FTMeshGroup::InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData* meshD
 	D3D11Utils::CreateIndexBuffer(device, meshData->Indices, newMesh->IndexBuffer);
 
 	mMeshes->PushBack(newMesh);
+}
+
+void FTMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicArray<FTMeshData*>&& meshDataArr)
+{
+	if (0 < meshDataArr.GetSize())
+		Clear();
+
+	mMeshes->Reserve(meshDataArr.GetSize());
+
+	meshDataArr.IterateArray([&](FTMeshData* meshData) {
+		this->InitializeMesh(device, meshData);
+		delete meshData;
+	});
 }
 
 void FTMeshGroup::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
@@ -185,6 +185,19 @@ void FTMeshGroup::Process(FoxtrotRenderer* renderer)
 
 	Initialize(
 		GeometryGenerator::ReadFromFile(this->GetRelativePath()), renderer->GetDevice(), renderer->GetContext());
+
+	FTResource::Process();
+}
+
+void FTMeshGroup::Process(FoxtrotRenderer* renderer, FTMeshData* meshData)
+{
+	if (this->IsProcessed())
+		return;
+
+	if (this->GetRelativePath().IsEmpty())
+		return;
+
+	Initialize(meshData, renderer->GetDevice(), renderer->GetContext());
 
 	FTResource::Process();
 }
@@ -212,6 +225,12 @@ FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer)
 	, mMeshes(DBG_NEW FTDS::DynamicArray<Mesh*>)
 {
 	Process(renderer);
+}
+
+FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTMeshData* meshData)
+	: FTResource(resDef)
+{
+	Process(renderer, meshData);
 }
 
 FTMeshGroup::~FTMeshGroup()

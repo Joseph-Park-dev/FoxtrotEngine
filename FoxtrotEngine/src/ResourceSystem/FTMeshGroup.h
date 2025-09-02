@@ -25,21 +25,6 @@ class FTMeshData;
 class FTMeshGroup : public FTResource
 {
 public:
-	/// @brief Receives meshData and creates the mesh ready for rendering.
-	/// @param meshData A single meshData generated from GeometryGenerator.
-	void Initialize(
-		FTMeshData*					 meshData,
-		ComPtr<ID3D11Device>&		 device,
-		ComPtr<ID3D11DeviceContext>& context);
-
-	/// @brief Receives meshData and creates the mesh ready for rendering.
-	/// @param meshData An array of meshData mostly read from a supported 3D file such as .fbx
-	/// @see GeometryGenerator::ReadFile()
-	void Initialize(
-		FTDS::DynamicArray<FTMeshData*>&& meshData,
-		ComPtr<ID3D11Device>&			  device,
-		ComPtr<ID3D11DeviceContext>&	  context);
-
 	/// @brief Renders the entire meshes created, as a full model.
 	virtual void Render(
 		FoxtrotRenderer* renderer,
@@ -61,24 +46,11 @@ public:
 public:
 	/// @brief Relative path is used for importing 3D files.
 	FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer);
+	FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTMeshData* meshData);
 	virtual ~FTMeshGroup();
 
 protected:
-	/// @brief Creates a mesh from a single meshData.
-	virtual void InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData* meshData);
-
-	/// @brief Creates the meshes from the array of meshData.
-	/// This is usually called when importing a 3D model file.
-	virtual void InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicArray<FTMeshData*>&& meshDataArr);
-
-	/// @brief Creates constant buffers such as Vertex Constant Buffers.
-	virtual void InitializeConstantBuffers(ComPtr<ID3D11Device>& device);
-
-	/// @brief Create texture sampler.
-	/// @todo Consider moving this to D3D11Utils class.
-	virtual HRESULT CreateTextureSampler(ComPtr<ID3D11Device>& device);
-
-	/// @brief Reads a file, takes the FTMeshData, creates the meshes.
+	/// @brief Reads a file which returns the FTMeshData, and creates the meshes.
 	virtual void Process(FoxtrotRenderer* renderer) override;
 
 	/// @brief Delete all created meshes.
@@ -109,6 +81,38 @@ private:
 	BasicVCData mVCData;
 
 private:
+	/// @brief Takes a FTMeshData (usually from GeometryGenerator), and creates the meshes.
+	void Process(FoxtrotRenderer* renderer, FTMeshData* meshData);
+
+	/// @brief Receives a meshData and creates the mesh ready for rendering.
+	/// @param meshData A single meshData generated from GeometryGenerator.
+	void Initialize(
+		FTMeshData*					 meshData,
+		ComPtr<ID3D11Device>&		 device,
+		ComPtr<ID3D11DeviceContext>& context);
+
+	/// @brief Receives an array of meshData and creates the mesh ready for rendering.
+	/// @param meshData An array of meshData mostly read from a supported 3D file such as .fbx
+	/// @see GeometryGenerator::ReadFile()
+	void Initialize(
+		FTDS::DynamicArray<FTMeshData*>&& meshData,
+		ComPtr<ID3D11Device>&			  device,
+		ComPtr<ID3D11DeviceContext>&	  context);
+
+	/// @brief Creates a mesh from a single meshData.
+	void InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData* meshData);
+
+	/// @brief Creates the meshes from the array of meshData.
+	/// This is usually called when importing a 3D model file.
+	void InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicArray<FTMeshData*>&& meshDataArr);
+
+	/// @brief Creates constant buffers such as Vertex Constant Buffers.
+	void InitializeConstantBuffers(ComPtr<ID3D11Device>& device);
+
+	/// @brief Create texture sampler.
+	/// @todo Consider moving this to D3D11Utils class.
+	HRESULT CreateTextureSampler(ComPtr<ID3D11Device>& device);
+
 	/// @brief Updates the constant buffers right before rendering.
 	/// @param transform Transformation of the mesh, usually of the Actor.
 	/// @param camInst Any camera instance in the .chunk.

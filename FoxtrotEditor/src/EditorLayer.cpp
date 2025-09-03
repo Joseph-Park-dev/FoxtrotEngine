@@ -582,7 +582,16 @@ void EditorLayer::DisplayInfoMessage()
 		{
 			auto onConfirm = [this]()
 				-> void {
-				FTPremade* newPremade = DBG_NEW FTPremade();
+
+				FTDS::String name = mFocusedEditorElement->GetName();
+				name.Append(FileTypes::PREMADE);
+
+				FTResourceDef resDef{
+					name.C_Str(), 
+					ResourceManager::GetInstance()->GetPathToAsset().C_Str() 
+				};
+
+				FTPremade* newPremade = DBG_NEW FTPremade(resDef);
 				newPremade->Create(mFocusedEditorElement);
 				ImGui::CloseCurrentPopup();
 				mInfoType = InfoType::None;

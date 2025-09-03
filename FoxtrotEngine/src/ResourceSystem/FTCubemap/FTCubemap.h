@@ -1,8 +1,8 @@
 #pragma once
-#include "ResourceSystem/FTBasicMeshGroup.h"
+#include "ResourceSystem/FTMeshGroup.h"
 
 class FTCubemap :
-	public FTBasicMeshGroup
+	public FTMeshGroup
 {
 public:
 	virtual void CalcVCData(Camera* camInst);

@@ -1,24 +1,48 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+//
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #pragma once
 #include "ResourceSystem/FTResource.h"
 
 #include <nlohmann/json.hpp>
 
+/// @brief A wrapper class to store JSON data.
+/// Currently using nlohmann JSON library.
+/// @note https://github.com/nlohmann/json
 class FTJSON :
 	public FTResource
 {
 public:
-	void Read();
+	/// @see FTResource::SaveProperties()
+	virtual void SaveProperties(std::ofstream& ofs) override;
+
+	/// @see FTResource::LoadProperties()
+	virtual void LoadProperties(std::ifstream& ifs) override;
 
 public:
-	nlohmann::json& Data();
+	/// @brief Returns the JSON data as nlohmann::json.
+	const nlohmann::json& Data() const;
+
+public:
+	/// @see FTResource::FTResource
+	FTJSON(FTResourceDef& resDef);
+
+protected:
+	/// @brief Reads the JSON data.
+	virtual void Process() override;
 
 private:
+	/// @brief .json data.
 	nlohmann::json mData;
 
-public:
-	virtual void SaveProperties(std::ofstream& ofs) override;
-	virtual void LoadProperties(std::ifstream& ifs) override;
-	virtual void Process(FTCore* coreInst) override;
+private:
+	/// @brief Parses the JSON data.
+	void Read();
 };
 
 namespace ChunkKey

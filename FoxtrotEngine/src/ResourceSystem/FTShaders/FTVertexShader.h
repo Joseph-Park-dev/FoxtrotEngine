@@ -11,7 +11,7 @@
 
 #include <vector>
 
-#include "Static/HashMap.h"
+#include <Static/HashMap.h>
 
 /// @brief A wrapper for HLSL vertex Shaders.
 class FTVertexShader : public FTShader

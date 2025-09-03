@@ -12,7 +12,7 @@
 class FTCore;
 class FoxtrotRenderer;
 
-/// @brief Resource definition used for initialization.
+/// @brief Initialization struct for FTResources
 struct FTResourceDef
 {
 	const char* FileName;
@@ -49,6 +49,7 @@ protected:
 	/// @brief A graphics resource must be processed with renderer before used during runtime.
 	/// Example of the process includes initializing meshes, creating textures, etc.
 	/// @param renderer Renderer object used for processing graphics resources.
+	/// @todo Is this member function necessary?
 	virtual void Process(FoxtrotRenderer* renderer);
 
 	/// @brief Is this resource processed and can be used during runtime?
@@ -70,6 +71,7 @@ private:
 
 #ifdef FOXTROT_EDITOR
 public:
+	/// @brief Displays GUI to modify the data on Foxtrot Editor.
 	virtual void UpdateUI() {};
 
 public:

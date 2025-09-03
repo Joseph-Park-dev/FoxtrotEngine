@@ -119,6 +119,35 @@ void FTMeshGroup::Render(
 	}
 }
 
+void FTMeshGroup::SetSizeScale(const FTVector3 scale)
+{
+	mSizeScale = scale;
+}
+
+FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer)
+	: FTResource(resDef)
+	, mDirection(1)
+	, mSizeScale(FTVector3(1.0f, 1.0f, 1.0f))
+	, mMeshes(DBG_NEW FTDS::DynamicArray<Mesh*>)
+{
+	Process(renderer);
+}
+
+FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTMeshData* meshData)
+	: FTResource(resDef)
+	, mDirection(1)
+	, mSizeScale(FTVector3(1.0f, 1.0f, 1.0f))
+	, mMeshes(DBG_NEW FTDS::DynamicArray<Mesh*>)
+{
+	Process(renderer, meshData);
+}
+
+FTMeshGroup::~FTMeshGroup()
+{
+	Clear();
+	delete mMeshes;
+}
+
 void FTMeshGroup::Process(FoxtrotRenderer* renderer)
 {
 	if (this->IsProcessed())
@@ -131,6 +160,16 @@ void FTMeshGroup::Process(FoxtrotRenderer* renderer)
 		GeometryGenerator::ReadFromFile(this->GetRelativePath()), renderer->GetDevice(), renderer->GetContext());
 
 	FTResource::Process();
+}
+
+void FTMeshGroup::Initialize(
+	FTDS::DynamicArray<FTMeshData*>&& meshes,
+	ComPtr<ID3D11Device>&			  device,
+	ComPtr<ID3D11DeviceContext>&	  context)
+{
+	CreateTextureSampler(device);
+	InitializeMeshes(device, std::move(meshes));
+	InitializeConstantBuffers(device);
 }
 
 void FTMeshGroup::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
@@ -165,6 +204,7 @@ void FTMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3
 
 	FTVector3 scale		   = transform->GetWorldScale();
 	FTVector3 scaleWithDir = FTVector3(scale.x * mDirection, scale.y, scale.z);
+	scaleWithDir *= mSizeScale;
 	transform->SetLocalScale(scaleWithDir);
 	modelMat = transform->GetMatrixWorld();
 
@@ -232,16 +272,6 @@ void FTMeshGroup::Initialize(
 	InitializeConstantBuffers(device);
 }
 
-void FTMeshGroup::Initialize(
-	FTDS::DynamicArray<FTMeshData*>&& meshes,
-	ComPtr<ID3D11Device>&			  device,
-	ComPtr<ID3D11DeviceContext>&	  context)
-{
-	CreateTextureSampler(device);
-	InitializeMeshes(device, std::move(meshes));
-	InitializeConstantBuffers(device);
-}
-
 void FTMeshGroup::InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData* meshData)
 {
 	Mesh* newMesh		 = DBG_NEW Mesh;
@@ -267,22 +297,10 @@ void FTMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicAr
 	});
 }
 
-FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer)
-	: FTResource(resDef)
-	, mDirection(1)
-	, mMeshes(DBG_NEW FTDS::DynamicArray<Mesh*>)
+#ifdef FOXTROT_EDITOR
+void FTMeshGroup::UpdateUI()
 {
-	Process(renderer);
+	CommandHistory::GetInstance()->UpdateVector3Value("Scale size", mSizeScale);
 }
 
-FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTMeshData* meshData)
-	: FTResource(resDef)
-{
-	Process(renderer, meshData);
-}
-
-FTMeshGroup::~FTMeshGroup()
-{
-	Clear();
-	delete mMeshes;
-}
+#endif // FOXTROT_EDITOR

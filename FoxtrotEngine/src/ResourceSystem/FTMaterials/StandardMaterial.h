@@ -11,7 +11,7 @@
 
 struct Light;
 struct StandardMatData;
-class FTBasicMeshGroup;
+class FTMeshGroup;
 
 /// @brief The value of the material data are to be applied to Pixel Constant Buffers.
 struct BlinnPhongData

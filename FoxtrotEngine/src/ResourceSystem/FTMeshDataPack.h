@@ -1,12 +1,9 @@
 #pragma once
-#include "ResourceSystem/FTResource.h"
-
 #include <vector>
 
 #include "FTMeshData.h"
 
-class FTMeshDataPack :
-    public FTResource
+class FTMeshDataPack
 {
 public:
     std::vector<FTMeshData*>& GetMeshData();
@@ -16,10 +13,6 @@ public:
 
 private:
     std::vector<FTMeshData*> mMeshData;
-
-public:
-    virtual void SaveProperties(std::ofstream& ofs) override;
-    virtual void LoadProperties(std::ifstream& ifs) override;
 };
 
 namespace ChunkKey

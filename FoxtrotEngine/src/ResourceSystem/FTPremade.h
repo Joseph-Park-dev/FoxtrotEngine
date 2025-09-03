@@ -28,8 +28,8 @@ class FTPremade :
 	public FTResource
 {
 public:
-	FTPremade();
-	~FTPremade() override;
+	FTPremade(FTResourceDef& resDef);
+	~FTPremade();
 
 public:
 	void Load();
@@ -46,7 +46,9 @@ private:
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
 	virtual void LoadProperties(std::ifstream& ifs) override;
-	virtual void Process(FTCore* coreInst) override;
+
+protected:
+	virtual void Process() override;
 
 #ifdef FOXTROT_EDITOR
 public:
@@ -66,5 +68,9 @@ private:
 
 namespace ChunkKey
 {
-	constexpr const char* FTPREMADE = "FTPremade";
-}
+	namespace FTPremade
+	{
+		constexpr const char* FT_PREMADE = "FTPremade";
+
+	}
+} // namespace ChunkKey

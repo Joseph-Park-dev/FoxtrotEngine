@@ -4,10 +4,15 @@
 #include "Utils/StrAssign.h"
 #include "ResourceSystem/GenericData/FTText.h"
 #include "ResourceSystem/GenericData/FTJSON.h"
+#include "ResourceSystem/FTTileMap.h"
 #include "ResourceSystem/Animation/FTSpineAnimation.h"
+#include "ResourceSystem/Animation/FTSpriteAnimation.h"
+#include "ResourceSystem/FTPremade.h"
+
 #include <FTCoreEditor.h>
 
-class EditorResourceManager : public ResourceManager
+class EditorResourceManager 
+	: public ResourceManager
 {
 	SINGLETON(EditorResourceManager)
 
@@ -26,12 +31,12 @@ public:
 public:
 	FTDS::HashMap<FTTexture*>*		   GetTextures() override;
 	FTDS::HashMap<FTTileMap*>*		   GetTileMaps() override;
-	FTDS::HashMap<FTSpriteSheet*>*	   GetSpriteSheets() override;
+	// FTDS::HashMap<FTSpriteSheet*>*	   GetSpriteSheets() override;
 	FTDS::HashMap<FTPremade*>*		   GetPremades() override;
 	FTDS::HashMap<FTVertexShader*>*	   GetVertexShaders() override;
 	FTDS::HashMap<FTPixelShader*>*	   GetPixelShaders() override;
 	FTDS::HashMap<FTMaterial*>*		   GetMaterials() override;
-	FTDS::HashMap<FTBasicMeshGroup*>*  GetMeshGroups() override;
+	FTDS::HashMap<FTMeshGroup*>*	   GetMeshGroups() override;
 	FTDS::HashMap<FTSpriteAnimation*>* GetSpriteAnimations() override;
 	FTDS::HashMap<FTSpineAnimation*>*  GetSpineAnimations() override;
 	FTDS::HashMap<Sound*>*			   GetSounds() override;
@@ -46,11 +51,11 @@ public:
 		resArr->IterateAllValues([&](FTRESOURCE* res) {
 			if (res->IsReferenced())
 			{
-				ResourceManager::GetInstance()->AbsoluteToRelativePath(res);
-				FileIOHelper::BeginDataPackSave(ofs, res->FileName());
-				FileIOHelper::SaveString(ofs, ChunkKey::FILE_NAME, res->FileName());
-				FileIOHelper::SaveString(ofs, ChunkKey::RELATIVE_PATH, res->RelativePath().C_Str());
-				FileIOHelper::EndDataPackSave(ofs, res->FileName());
+				//ResourceManager::GetInstance()->AbsoluteToRelativePath(res);
+				FileIOHelper::BeginDataPackSave(ofs, res->GetFileName());
+				FileIOHelper::SaveString(ofs, ChunkKey::FTResource::FILE_NAME, res->GetFileName());
+				FileIOHelper::SaveString(ofs, ChunkKey::FTResource::RELATIVE_PATH, res->GetRelativePath().C_Str());
+				FileIOHelper::EndDataPackSave(ofs, res->GetFileName());
 			}
 		});
 	}
@@ -62,7 +67,8 @@ private:
 	ResType GetResType(FTDS::String& fileName);
 
 public:
-	/// Template member functions for creating new resources & adding to resource map.
+	/// @brief Creates new resources & adding to resource map.
+	/// @tparam FTRESOURCE Non-graphics resource type.
 	template <typename FTRESOURCE>
 	FTRESOURCE* LoadResource(FTDS::String& filePath, FTDS::HashMap<FTRESOURCE*>* resMap)
 	{
@@ -70,11 +76,33 @@ public:
 		FTDS::String fileName = ExtractFileName(filePath.C_Str());
 		printf("Message: Loading FTResource %s to key %s. \n", filePath.C_Str(), fileName.C_Str());
 
-		FTRESOURCE* res = DBG_NEW FTRESOURCE;
-		res->SetFileName(fileName);
-		res->SetRelativePath(filePath);
+		FTResourceDef resDef{ filePath, fileName };
+		FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef);
 
-		ResourceManager::GetInstance()->AbsoluteToRelativePath(res);
+		//ResourceManager::GetInstance()->AbsoluteToRelativePath(res);
+
+		if (resMap->IsFull())
+			resMap->Reserve(resMap->GetSize() + 5);
+		resMap->Insert(fileName, res);
+		return res;
+	}
+
+	/// @brief Creates new resources & adding to resource map.
+	/// @tparam FTRESOURCE Graphics resource type.
+	/// @param renderer Graphics resource requires renderer instance for initialization.
+	template <typename FTRESOURCE>
+	FTRESOURCE* LoadResource(FTDS::String& filePath, FTDS::HashMap<FTRESOURCE*>* resMap, FoxtrotRenderer* renderer)
+	{
+		assert(renderer);
+
+		// Get Relative path to Assets folder
+		FTDS::String fileName = ExtractFileName(filePath.C_Str());
+		printf("Message: Loading FTResource %s to key %s. \n", filePath.C_Str(), fileName.C_Str());
+
+		FTResourceDef resDef{ filePath, fileName };
+		FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef, renderer);
+
+		// ResourceManager::GetInstance()->AbsoluteToRelativePath(res);
 
 		if (resMap->IsFull())
 			resMap->Reserve(resMap->GetSize() + 5);
@@ -92,10 +120,10 @@ public:
 		resMap->Reserve(resCount);
 		while (0 < resCount)
 		{
-			FTRESOURCE res;
+			FTDS::String dummyStr;
 			FileIOHelper::BeginDataPackLoad(ifs);
-			FileIOHelper::LoadBasicString(ifs, res.RelativePath());
-			FileIOHelper::LoadBasicString(ifs, res.FileName());
+			FileIOHelper::LoadBasicString(ifs, dummyStr);
+			FileIOHelper::LoadBasicString(ifs, dummyStr);
 
 			assert(0 < resMap->Capacity());
 			// resMap->Insert(res->FileName(), res);
@@ -156,7 +184,7 @@ private:
 		{
 			resMap->IterateAllValues(
 				[&](FTRESOURCE* res) {
-					if (ImGui::TreeNode(res->FileName().C_Str()))
+					if (ImGui::TreeNode(res->GetFileName().C_Str()))
 					{
 						res->UpdateUI();
 						ImGui::TreePop();

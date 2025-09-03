@@ -351,8 +351,8 @@ void EditorLayer::DisplayMainMenuBar()
 
 void EditorLayer::DisplayManagersMenu()
 {
-	const size_t maxMenuEle			= 3;
-	const char*	 menu[maxMenuEle]	= { "Animation Manager", "TileMap Manager", "Sound Manager" };
+	const size_t maxMenuEle			= 2;
+	const char*	 menu[maxMenuEle]	= { "Animation Manager", "Sound Manager" };
 	static bool	 opened[maxMenuEle] = { false, false };
 
 	if (ImGui::Button("Managers"))
@@ -369,8 +369,6 @@ void EditorLayer::DisplayManagersMenu()
 	if (opened[0])
 		AnimationManager::GetInstance()->UpdateUI(&opened[0]);
 	if (opened[1])
-		TileMapManager::GetInstance()->UpdateUI(&opened[1]);
-	if (opened[2])
 		SoundManager::GetInstance()->UpdateUI(&opened[2]);
 }
 

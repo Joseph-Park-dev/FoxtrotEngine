@@ -53,7 +53,7 @@ protected:
 	virtual void Process() override;
 
 private:
-	/// @brief Stores the integer values inside of CSV to result.
+	/// @brief Parses .csv, sand stores the integer values to mData.
 	void Read();
 };
 

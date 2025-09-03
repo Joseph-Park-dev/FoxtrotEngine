@@ -20,34 +20,35 @@ namespace FileTypes
 	constexpr const char* CHUNK	 = ".chunk";
 	constexpr const char* GDPACK = ".gdpack";
 
-	constexpr const char* ALL_FILE_FORMATS = ".ftpremade" ","
+	constexpr const char* ALL_FILE_FORMATS = ".premade" ","
 											 ".png, .jpeg, .jpg, .dds" ","
 											 ".dds" ","
-											 ".fttilemap" ","
-											 ".ftspritesheet" ","
+											 ".tilemap" ","
+											 ".spritesheet" ","
 											 ".csv" ","
 											 ".json" ","
 											 ".txt, .atlas" ","
 											 ".fbx, .stl" ","
-											 ".ftspriteanim" ","
-											 ".ftspineanim" ","
+											 ".spriteanim" ","
+											 ".spineanim" ","
 											 ".hlsl" ","
-											 ".ftmat" ","
+											 ".mat" ","
 											 ".shadermeta";
 	// FTResources
-	constexpr const char* PREMADE		   = ".ftpremade";
+	constexpr const char* PREMADE		   = ".premade";
 	constexpr const char* TEXTURE		   = ".png, .jpeg, .jpg, .dds";
 	constexpr const char* DDS_TEXTURE	   = ".dds";
-	constexpr const char* TILEMAP		   = ".fttilemap";
-	constexpr const char* SPRITE_SHEET	   = ".ftspritesheet";
+	constexpr const char* TILEMAP		   = ".tilemap";
+	constexpr const char* JSON_SHEET	   = ".jsonsheet";
+	constexpr const char* ATLAS_SHEET	   = ".atlassheet";
 	constexpr const char* CSV			   = ".csv";
 	constexpr const char* JSON			   = ".json";
 	constexpr const char* TEXT			   = ".txt, .atlas";
 	constexpr const char* MESH			   = ".fbx, .stl";
-	constexpr const char* SPRITE_ANIMATION = ".ftspriteanim";
-	constexpr const char* SPINE_ANIMATION  = ".ftspineanim";
+	constexpr const char* SPRITE_ANIMATION = ".spriteanim";
+	constexpr const char* SPINE_ANIMATION  = ".spineanim";
 	constexpr const char* SHADER		   = ".hlsl";
-	constexpr const char* MATERIAL		   = ".ftmat";
+	constexpr const char* MATERIAL		   = ".mat";
 	constexpr const char* SHADER_META	   = ".shadermeta";
 
 	constexpr const char* VERTEX_SHADER = "VS";

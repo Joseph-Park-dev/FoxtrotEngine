@@ -6,7 +6,7 @@
 #include "Static/FTString.h"
 #include "FileSystem/FileIOHelper.h"
 
-nlohmann::json& FTJSON::Data() { return mData; }
+const nlohmann::json& FTJSON::Data() const { return mData; }
 
 void FTJSON::SaveProperties(std::ofstream& ofs)
 {

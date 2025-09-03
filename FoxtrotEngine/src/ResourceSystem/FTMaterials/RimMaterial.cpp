@@ -22,7 +22,8 @@ void RimMaterial::UpdateBuffer(ComPtr<ID3D11DeviceContext>& context)
 	D3D11Utils::UpdateBuffer(context, *mData, GetPCBuf());
 }
 
-void RimMaterial::LoadFromFile()
+
+void RimMaterial::LoadProperties(std::ifstream& ifs)
 {
 	std::ifstream ifs(RelativePath().C_Str());
 
@@ -66,7 +67,7 @@ RimMaterial::~RimMaterial()
 	delete mData;
 }
 
-void RimMaterial::SaveToFile()
+void RimMaterial::SaveProperties(std::ofstream& ofs)
 {
 	std::ofstream ofs(RelativePath().C_Str());
 

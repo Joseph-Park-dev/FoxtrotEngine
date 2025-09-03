@@ -339,7 +339,7 @@ HRESULT D3D11Utils::CreateRenderTargetView(
 	if (backBuffer)
 	{
 		HRESULT resultRTV;
-		//resultRTV = device->CreateRenderTargetView(
+		// resultRTV = device->CreateRenderTargetView(
 		//	backBuffer.Get(), nullptr, RTV.GetAddressOf());
 
 		D3D11_TEXTURE2D_DESC desc;
@@ -560,7 +560,14 @@ void D3D11Utils::ReadImage(FTDS::String filename, std::vector<uint8_t>& image, i
 }
 
 ComPtr<ID3D11Texture2D>
-D3D11Utils::CreateStagingTexture(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, const int width, const int height, const std::vector<uint8_t>& image, const int mipLevels = 1, const int arraySize = 1)
+D3D11Utils::CreateStagingTexture(
+	ComPtr<ID3D11Device>&		 device,
+	ComPtr<ID3D11DeviceContext>& context,
+	const int					 width,
+	const int					 height,
+	const std::vector<uint8_t>&	 image,
+	const int					 mipLevels,
+	const int					 arraySize)
 {
 	// Create a staging texture.
 	D3D11_TEXTURE2D_DESC txtDesc;
@@ -661,7 +668,7 @@ void D3D11Utils::CreateTextureArray(
 	context->GenerateMips(textureResourceView.Get());
 }
 
-//HRESULT D3D11Utils::CreateCubemapTexture(
+// HRESULT D3D11Utils::CreateCubemapTexture(
 //	ComPtr<ID3D11Device>& device, FTTexture* texture)
 //{
 //	ComPtr<ID3D11Texture2D> textureBuf;
@@ -671,7 +678,7 @@ void D3D11Utils::CreateTextureArray(
 //		device.Get(), path, 0, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, D3D11_RESOURCE_MISC_TEXTURECUBE, DDS_LOADER_FLAGS(false), (ID3D11Resource**)textureBuf.GetAddressOf(), texture->GetResourceView().GetAddressOf(), nullptr);
 //	delete[] path;
 //	return result;
-//}
+// }
 
 void D3D11Utils::WriteToFile(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Texture2D>& textureToWrite, FTDS::String& filename)
 {
@@ -733,9 +740,9 @@ UINT D3D11Utils::GetShaderType(ComPtr<ID3DBlob>& shaderBlob)
 	shaderReflection->GetDesc(&shaderDesc);
 	UINT version = shaderDesc.Version;
 
-	UINT programType = (version & 0xFFFF0000) >> 16; // Shader type
-	UINT majorVersion = (version & 0x000000F0) >> 4; // Major version
-	UINT minorVersion = (version & 0x0000000F);      // Minor version
+	UINT programType  = (version & 0xFFFF0000) >> 16; // Shader type
+	UINT majorVersion = (version & 0x000000F0) >> 4;  // Major version
+	UINT minorVersion = (version & 0x0000000F);		  // Minor version
 
 	std::cout << "Program Type: " << programType << std::endl;
 	std::cout << "Major Version: " << majorVersion << std::endl;

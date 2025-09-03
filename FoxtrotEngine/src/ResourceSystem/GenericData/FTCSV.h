@@ -1,39 +1,60 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+//
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #pragma once
 #include "ResourceSystem/FTResource.h"
 
 #include <queue>
 
+/// @brief A wrapper class to store CSV data.
 class FTCSV :
 	public FTResource
 {
 public:
-	// Stores the integer values inside of CSV to result.
-	void Read();
+	/// @see FTResource::SaveProperties()
+	virtual void SaveProperties(std::ofstream& ofs) override;
+
+	/// @see FTResource::LoadProperties()
+	virtual void LoadProperties(std::ifstream& ifs) override;
 
 public:
+	/// @brief Returns column(horizontal) count.
 	UINT GetColumnCount() const;
+
+	/// @brief Returns row(vertical) count.
 	UINT GetRowCount() const;
 
-	std::vector<int>& Data();
+	/// @brief Returns the .csv data stored in vector.
+	/// @todo Replace std::vector to FTDS::DynamicArray.
+	const std::vector<int>& Data() const;
 
 public:
-	FTCSV();
-	~FTCSV() override;
+	/// @see FTResource::FTResource
+	FTCSV(FTResourceDef& resDef);
+	~FTCSV();
 
 private:
+	/// @brief .csv integer data. Useful for making a tiled object.
 	std::vector<int> mData;
-	UINT			 mColumnCount;
-	UINT			 mRowCount;
 
-public:
-	virtual void SaveProperties(std::ofstream& ofs) override;
-	virtual void LoadProperties(std::ifstream& ifs) override;
-	virtual void Process(FTCore* coreInst) override;
+	/// @brief Column(horizontal) count.
+	UINT mColumnCount;
 
-#ifdef FOXTROT_EDITOR
-public:
-	virtual void UpdateUI() override;
-#endif // FOXTROT_EDITOR
+	/// @brief Row(vertical) count.
+	UINT mRowCount;
+
+protected:
+	/// @brief Reads the .csv data and store them into mData.
+	virtual void Process() override;
+
+private:
+	/// @brief Stores the integer values inside of CSV to result.
+	void Read();
 };
 
 namespace ChunkKey

@@ -277,6 +277,15 @@ public:
 		return left;
 	}
 
+	// Vector *=
+	friend FTVector3 operator*=(FTVector3& left, const FTVector3& right)
+	{
+		left.x *= right.x;
+		left.y *= right.y;
+		left.z *= right.z;
+		return left;
+	}
+
 	// Vector /=
 	friend FTVector3 operator/=(FTVector3& left, const float& right)
 	{

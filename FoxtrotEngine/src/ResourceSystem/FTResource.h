@@ -17,6 +17,18 @@ struct FTResourceDef
 {
 	const char* FileName;
 	const char* RelativePath;
+
+	FTResourceDef(const char* fileName, const char* relPath)
+		: FileName(fileName)
+		, RelativePath(relPath)
+	{
+	}
+
+	FTResourceDef(const FTDS::String& fileName, const FTDS::String& relPath)
+		: FileName(fileName.C_Str())
+		, RelativePath(relPath.C_Str())
+	{
+	}
 };
 
 /// @brief Base class that wraps the resources used in the game.

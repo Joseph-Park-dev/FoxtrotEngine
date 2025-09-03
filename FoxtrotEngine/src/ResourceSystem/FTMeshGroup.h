@@ -49,6 +49,10 @@ public:
 		FTMaterial*		 mat);
 
 public:
+	/// @brief Set scale value to be multiplied with the scale (3D transformation).
+	void SetSizeScale(const FTVector3 scale);
+
+public:
 	/// @brief Relative path is used for importing 3D files.
 	FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer);
 	FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTMeshData* meshData);
@@ -57,6 +61,14 @@ public:
 protected:
 	/// @brief Reads a file which returns the FTMeshData, and creates the meshes.
 	virtual void Process(FoxtrotRenderer* renderer) override;
+
+	/// @brief Receives an array of meshData and creates the mesh ready for rendering.
+	/// @param meshData An array of meshData mostly read from a supported 3D file such as .fbx, or animation meshes
+	/// @see GeometryGenerator::ReadFile()
+	void Initialize(
+		FTDS::DynamicArray<FTMeshData*>&& meshData,
+		ComPtr<ID3D11Device>&			  device,
+		ComPtr<ID3D11DeviceContext>&	  context);
 
 	/// @brief Creates constant buffers such as Vertex Constant Buffers.
 	void InitializeConstantBuffers(ComPtr<ID3D11Device>& device);
@@ -94,6 +106,10 @@ private:
 	/// This is used to flip sprites when changing their direction.
 	int mDirection;
 
+	/// @brief X, Y, Z value that will be multiplied to the scale(3D transformation).
+	/// Default is (1, 1, 1)
+	FTVector3 mSizeScale;
+
 	/// @brief Meshes created from FTMeshData, ready to be rendered.
 	FTDS::DynamicArray<Mesh*>* mMeshes;
 	ComPtr<ID3D11SamplerState> mSamplerState;
@@ -115,20 +131,18 @@ private:
 		ComPtr<ID3D11Device>&		 device,
 		ComPtr<ID3D11DeviceContext>& context);
 
-	/// @brief Receives an array of meshData and creates the mesh ready for rendering.
-	/// @param meshData An array of meshData mostly read from a supported 3D file such as .fbx
-	/// @see GeometryGenerator::ReadFile()
-	void Initialize(
-		FTDS::DynamicArray<FTMeshData*>&& meshData,
-		ComPtr<ID3D11Device>&			  device,
-		ComPtr<ID3D11DeviceContext>&	  context);
-
 	/// @brief Creates a mesh from a single meshData.
 	void InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData* meshData);
 
 	/// @brief Creates the meshes from the array of meshData.
 	/// This is usually called when importing a 3D model file.
 	void InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicArray<FTMeshData*>&& meshDataArr);
+
+#ifdef FOXTROT_EDITOR
+public:
+	void UpdateUI();
+
+#endif // FOXTROT_EDITOR
 };
 
 namespace ChunkKey

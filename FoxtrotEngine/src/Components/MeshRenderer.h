@@ -58,11 +58,11 @@ public:
 	// Getters & Setters to the elements //
 	///////////////////////////////////////
 protected:
-	FTMeshGroup* GetMeshGroup() const;
-	FTTexture*		  GetTexture() const;
-	FoxtrotRenderer*  GetRenderer() const;
-	FTVertexShader*	  GetVS() const;
-	FTPixelShader*	  GetPS() const;
+	FTMeshGroup*	 GetMeshGroup() const;
+	FTTexture*		 GetTexture() const;
+	FoxtrotRenderer* GetRenderer() const;
+	FTVertexShader*	 GetVS() const;
+	FTPixelShader*	 GetPS() const;
 
 	FTMaterial* GetMaterial() const;
 
@@ -73,26 +73,17 @@ protected:
 	void SetPS(FTPixelShader* ps);
 	void SetMaterial(FTMaterial* mat);
 
-	////////////////////////
-	// Element operations //
-	////////////////////////
-protected:
-	virtual void UpdateMesh(
-		Transform*		 transform,
-		Camera*			 camInst,
-		FoxtrotRenderer* renderer);
-
 	////////////////////////////////////////
 	// Component elements				  //
 	// These will be set in Initialize()  //
 	////////////////////////////////////////
 private:
-	FoxtrotRenderer*  mRenderer;
-	FTMeshGroup* mMeshGroup;
-	FTTexture*		  mTexture;
-	FTVertexShader*	  mVS;
-	FTPixelShader*	  mPS;
-	FTMaterial*		  mMaterial;
+	FoxtrotRenderer* mRenderer;
+	FTMeshGroup*	 mMeshGroup;
+	FTTexture*		 mTexture;
+	FTVertexShader*	 mVS;
+	FTPixelShader*	 mPS;
+	FTMaterial*		 mMaterial;
 
 	///////////////////////////////////
 	// Save & Load related functions //

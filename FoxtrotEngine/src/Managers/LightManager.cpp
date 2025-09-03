@@ -52,7 +52,7 @@ void LightManager::InitializeCubeMap(FoxtrotRenderer* renderer)
 {
 	if (!mCubemap)
 	{
-		mCubemap = DBG_NEW FTCubemap;
+		//mCubemap = DBG_NEW FTCubemap;
 		//mCubemap->Initialize({ GeometryGenerator::MakeBox(20.f) }, renderer->GetDevice(), renderer->GetContext());
 	}
 }

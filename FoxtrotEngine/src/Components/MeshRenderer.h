@@ -14,7 +14,7 @@
 
 #include "Static/FTString.h"
 
-class FTBasicMeshGroup;
+class FTMeshGroup;
 class FTCore;
 class Actor;
 class Camera;
@@ -58,41 +58,32 @@ public:
 	// Getters & Setters to the elements //
 	///////////////////////////////////////
 protected:
-	FTBasicMeshGroup* GetMeshGroup() const;
-	FTTexture*		  GetTexture() const;
-	FoxtrotRenderer*  GetRenderer() const;
-	FTVertexShader*	  GetVS() const;
-	FTPixelShader*	  GetPS() const;
+	FTMeshGroup*	 GetMeshGroup() const;
+	FTTexture*		 GetTexture() const;
+	FoxtrotRenderer* GetRenderer() const;
+	FTVertexShader*	 GetVS() const;
+	FTPixelShader*	 GetPS() const;
 
 	FTMaterial* GetMaterial() const;
 
 	void SetRenderer(FoxtrotRenderer* renderer);
-	void SetMeshGroup(FTBasicMeshGroup* meshGroup);
+	void SetMeshGroup(FTMeshGroup* meshGroup);
 	void SetTexture(FTTexture* tex);
 	void SetVS(FTVertexShader* vs);
 	void SetPS(FTPixelShader* ps);
 	void SetMaterial(FTMaterial* mat);
-
-	////////////////////////
-	// Element operations //
-	////////////////////////
-protected:
-	virtual void UpdateMesh(
-		Transform*		 transform,
-		Camera*			 camInst,
-		FoxtrotRenderer* renderer);
 
 	////////////////////////////////////////
 	// Component elements				  //
 	// These will be set in Initialize()  //
 	////////////////////////////////////////
 private:
-	FoxtrotRenderer*  mRenderer;
-	FTBasicMeshGroup* mMeshGroup;
-	FTTexture*		  mTexture;
-	FTVertexShader*	  mVS;
-	FTPixelShader*	  mPS;
-	FTMaterial*		  mMaterial;
+	FoxtrotRenderer* mRenderer;
+	FTMeshGroup*	 mMeshGroup;
+	FTTexture*		 mTexture;
+	FTVertexShader*	 mVS;
+	FTPixelShader*	 mPS;
+	FTMaterial*		 mMaterial;
 
 	///////////////////////////////////
 	// Save & Load related functions //

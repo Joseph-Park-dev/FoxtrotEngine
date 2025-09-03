@@ -98,7 +98,7 @@ namespace FTDS
 
 	public:
 		DynamicArray()
-			: FTDS::Array<TYPE>()
+			: FTDS::Array<TYPE>(1)
 			, mSize(0)
 		{
 		}

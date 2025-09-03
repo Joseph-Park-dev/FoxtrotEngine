@@ -548,7 +548,7 @@ void FileIOHelper::SaveString(std::ofstream& ofs, FTDS::String& valName, const F
 	++mItemCounts.back();
 }
 
-void FileIOHelper::SaveString(std::ofstream& ofs, const char* valName, FTDS::String& strVal)
+void FileIOHelper::SaveString(std::ofstream& ofs, const char* valName, const FTDS::String& strVal)
 {
 	FTDS::String itemTitle = mItemIdent + valName + "[string]" + "\n";
 	FTDS::String item	   = mItemIdent + strVal.C_Str();

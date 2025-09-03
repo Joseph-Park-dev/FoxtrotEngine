@@ -1,12 +1,15 @@
-#pragma once
-#include "ResourceSystem/FTResource.h"
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+//
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
 
-#include <wrl.h>
-#include <d3d11.h>
+#pragma once
+#include <ResourceSystem/FTResource.h>
 
 class FoxtrotRenderer;
-
-using namespace Microsoft::WRL;
 
 enum class ShaderType
 {
@@ -14,38 +17,37 @@ enum class ShaderType
 	PIXEL_SHADER
 };
 
+/// @brief A base abstract wrapper for HLSL Shaders.
 class FTShader :
 	public FTResource
 {
 public:
-	virtual void CompileShader(FoxtrotRenderer* renderer) = 0;
-
-public:
-	const ShaderType& GetType() const;
-	void			  SetType(ShaderType type);
-
-public:
-	FTShader();
+	/// @brief Loads the meta data and compiles the shader.
+	FTShader(FTResourceDef& resDef, FoxtrotRenderer* renderer);
 
 private:
+	/// @brief Type of the shader (e.g vertex shader)
 	ShaderType mType;
 
-public:
-	virtual void Process(FTCore* coreInst) override;
-	void		 LoadMetaFile();
+protected:
+	/// @brief Loads meta data, and compiles the shader.
+	void Process(FoxtrotRenderer* renderer) override;
+
+	/// @brief Compiles shader base on its type.
+	virtual void CompileShader(FoxtrotRenderer* renderer) = 0;
+
+	/// @brief Set current shader type during initialization.
+	void SetType(ShaderType&& shaderType);
+
+private:
+	/// @brief Loads the meta data for this wrapper.
+	void LoadMetaData();
 
 #ifdef FOXTROT_EDITOR
 public:
-	void			 SaveMetaFile();
-	FoxtrotRenderer* GetRenderer();
+	/// @brief Saves meta data for this wrapper.
+	void SaveMetaData();
 
-public:
-	FTShader(FoxtrotRenderer* renderer);
-
-private:
-	// Currently used in FTVertexShader::UpdateUI()
-	// (Not necessary in Game)
-	FoxtrotRenderer* mRenderer;
 #endif
 };
 

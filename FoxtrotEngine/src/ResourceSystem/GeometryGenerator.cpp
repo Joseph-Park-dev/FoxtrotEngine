@@ -290,7 +290,7 @@ FTMeshData GeometryGenerator::MakeTile(Tile& tile)
 	return meshData;
 }
 
-void GeometryGenerator::MakeSpriteAnimation(FTDS::DynamicArray<FTMeshData*>& animMeshes, Tile* tileMap, size_t startIdx, size_t endIdx)
+void GeometryGenerator::MakeSpriteAnimation(FTDS::DynamicArray<FTMeshData*>& animMeshes, const Tile* tileMap, size_t startIdx, size_t endIdx)
 {
 	size_t count = endIdx - startIdx + 1;
 	assert(0 < count);
@@ -302,7 +302,7 @@ void GeometryGenerator::MakeSpriteAnimation(FTDS::DynamicArray<FTMeshData*>& ani
 	}
 }
 
-void GeometryGenerator::MakeSpriteAnimation(FTDS::DynamicArray<FTMeshData*>& animMeshes, Tile* tileMap, size_t count)
+void GeometryGenerator::MakeSpriteAnimation(FTDS::DynamicArray<FTMeshData*>& animMeshes, const Tile* tileMap, size_t count)
 {
 	animMeshes.Reserve(count);
 	for (size_t i = 0; i < count; ++i)
@@ -771,7 +771,7 @@ FTMeshData* GeometryGenerator::MakeAnimationFrame(Tile tile)
 //	return meshData;
 // }
 
-FTDS::DynamicArray<FTMeshData*> GeometryGenerator::ReadFromFile(FTDS::String& resPath)
+FTDS::DynamicArray<FTMeshData*> GeometryGenerator::ReadFromFile(const FTDS::String& resPath)
 {
 	using namespace DirectX;
 
@@ -817,7 +817,7 @@ FTDS::DynamicArray<FTMeshData*> GeometryGenerator::ReadFromFile(FTDS::String& re
 	return meshData;
 }
 
-//std::vector<FTMeshData> GeometryGenerator::ReadFromFile(FTDS::String& basePath, FTDS::String& filename)
+// std::vector<FTMeshData> GeometryGenerator::ReadFromFile(FTDS::String& basePath, FTDS::String& filename)
 //{
 //	using namespace DirectX;
 //
@@ -857,4 +857,4 @@ FTDS::DynamicArray<FTMeshData*> GeometryGenerator::ReadFromFile(FTDS::String& re
 //	}
 //
 //	return meshes;
-//}
+// }

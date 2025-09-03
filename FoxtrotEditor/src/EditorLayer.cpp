@@ -351,8 +351,8 @@ void EditorLayer::DisplayMainMenuBar()
 
 void EditorLayer::DisplayManagersMenu()
 {
-	const size_t maxMenuEle			= 3;
-	const char*	 menu[maxMenuEle]	= { "Animation Manager", "TileMap Manager", "Sound Manager" };
+	const size_t maxMenuEle			= 2;
+	const char*	 menu[maxMenuEle]	= { "Animation Manager", "Sound Manager" };
 	static bool	 opened[maxMenuEle] = { false, false };
 
 	if (ImGui::Button("Managers"))
@@ -369,8 +369,6 @@ void EditorLayer::DisplayManagersMenu()
 	if (opened[0])
 		AnimationManager::GetInstance()->UpdateUI(&opened[0]);
 	if (opened[1])
-		TileMapManager::GetInstance()->UpdateUI(&opened[1]);
-	if (opened[2])
 		SoundManager::GetInstance()->UpdateUI(&opened[2]);
 }
 
@@ -584,7 +582,16 @@ void EditorLayer::DisplayInfoMessage()
 		{
 			auto onConfirm = [this]()
 				-> void {
-				FTPremade* newPremade = DBG_NEW FTPremade();
+
+				FTDS::String name = mFocusedEditorElement->GetName();
+				name.Append(FileTypes::PREMADE);
+
+				FTResourceDef resDef{
+					name.C_Str(), 
+					ResourceManager::GetInstance()->GetPathToAsset().C_Str() 
+				};
+
+				FTPremade* newPremade = DBG_NEW FTPremade(resDef);
 				newPremade->Create(mFocusedEditorElement);
 				ImGui::CloseCurrentPopup();
 				mInfoType = InfoType::None;

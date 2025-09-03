@@ -5,6 +5,7 @@
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
+
 #pragma once
 #include <ResourceSystem/FTResource.h>
 
@@ -27,7 +28,7 @@ public:
 	const UINT GetHeight() const;
 
 	/// @brief Get ShaderResourceView for the texture. This shall not be edited after the FTTexture is created.
-	const ComPtr<ID3D11ShaderResourceView>& GetSRV() const;
+	const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetSRV() const;
 
 public:
 	/// @brief Saves resource properties into a file.
@@ -53,7 +54,7 @@ protected:
 private:
 	UINT							 mWidth;
 	UINT							 mHeight;
-	ComPtr<ID3D11ShaderResourceView> mSRV;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mSRV;
 
 #ifdef FOXTROT_EDITOR
 public:

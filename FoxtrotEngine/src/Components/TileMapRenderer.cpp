@@ -22,7 +22,7 @@
 #include "Actors/Transform.h"
 #include "Core/FTCore.h"
 #include "ResourceSystem/Mesh.h"
-#include "ResourceSystem/FTBasicMeshGroup.h"
+#include "ResourceSystem/FTMeshGroup.h"
 #include "ResourceSystem/GeometryGenerator.h"
 #include "Renderer/Camera.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -108,7 +108,7 @@ TileMapRenderer::~TileMapRenderer()
 void TileMapRenderer::SaveProperties(std::ofstream& ofs)
 {
 	Component::SaveProperties(ofs);
-	FileIOHelper::SaveString(ofs, ChunkKey::TILEMAP_KEY, mTileMap->FileName());
+	FileIOHelper::SaveString(ofs, ChunkKey::TILEMAP_KEY, mTileMap->GetFileName());
 }
 
 void TileMapRenderer::LoadProperties(std::ifstream& ifs)
@@ -141,7 +141,7 @@ void TileMapRenderer::UpdateCSV()
 	if (mTileMapKey.Equal(ChunkKey::NullVal::NULL_OBJECT))
 	{
 		currentCSV.Assign("Current sprite : \n");
-		currentCSV.Append(EditorResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey)->RelativePath().C_Str());
+		currentCSV.Append(EditorResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey)->GetRelativePath().C_Str());
 	}
 			 
 	ImGui::Text(currentCSV.C_Str());
@@ -168,9 +168,9 @@ void TileMapRenderer::UpdateCSV()
 			for (auto iter = tileMapsMap->Begin(); iter != tileMapsMap->End();
 				 ++iter, ++i)
 			{
-				if (ImGui::Selectable((*iter)->Value()->FileName().C_Str(), selected == i))
+				if (ImGui::Selectable((*iter)->Value()->GetFileName().C_Str(), selected == i))
 				{
-					tileMapKey = (*iter)->Value()->FileName();
+					tileMapKey = (*iter)->Value()->GetFileName();
 					selected   = i;
 				}
 			}
@@ -191,7 +191,7 @@ void TileMapRenderer::UpdateCSV(FTDS::String& key)
 	FTDS::String currentCSV = {};
 	if (key.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 		currentCSV =
-			FTDS::String("Current sprite : \n") + EditorResourceManager::GetInstance()->GetLoadedTileMap(key)->RelativePath().C_Str();
+			FTDS::String("Current sprite : \n") + EditorResourceManager::GetInstance()->GetLoadedTileMap(key)->GetRelativePath().C_Str();
 	else
 		currentCSV = "No .csv has been assigned";
 	ImGui::Text(currentCSV.C_Str());
@@ -220,9 +220,9 @@ void TileMapRenderer::UpdateCSV(FTDS::String& key)
 			{
 				if ((*iter)->Value())
 				{
-					if (ImGui::Selectable((*iter)->Value()->FileName().C_Str(), selected == i))
+					if (ImGui::Selectable((*iter)->Value()->GetFileName().C_Str(), selected == i))
 					{
-						tileMapKey = (*iter)->Value()->FileName();
+						tileMapKey = (*iter)->Value()->GetFileName();
 						selected   = i;
 					}
 				}

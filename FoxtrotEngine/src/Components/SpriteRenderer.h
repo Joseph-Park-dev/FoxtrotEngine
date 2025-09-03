@@ -27,10 +27,6 @@ public:
 	virtual FTDS::String GetName() const override { return "SpriteRenderer"; }
 
 public:
-	int GetTexWidth();
-	int GetTexHeight();
-
-public:
 	virtual void Initialize(FTCore* coreInstance) override;
 	virtual void CloneTo(Actor* actor) override;
 
@@ -39,16 +35,9 @@ public:
 		Actor* owner,
 		int	   updateOrder = DefaultVal::UPDATE_ORDER);
 
-protected:
-	virtual void UpdateMesh(
-		Transform* transform, 
-		Camera* camInst, 
-		FoxtrotRenderer* renderer) override;
-
 private:
 	// These fields need to be loaded from .chunk file.
 	int		  mChannel;
-	FTVector2 mTexScale;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;

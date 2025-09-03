@@ -33,7 +33,7 @@ void FTCubemap::CalcVCData(Camera* camInst)
 //	for (FTMeshData& meshData : meshes)
 //		std::reverse(meshData.Indices.begin(), meshData.Indices.end());
 //
-//	//FTBasicMeshGroup::Initialize(std::move(meshes), device, context);
+//	//FTMeshGroup::Initialize(std::move(meshes), device, context);
 //
 //	std::vector<FTDS::String> matKey = { ChunkKey::STANDARD_MAT };
 //}
@@ -87,13 +87,13 @@ ComPtr<ID3D11ShaderResourceView>& FTCubemap::GetSpecularResView() { return mSpec
 void FTCubemap::SetDiffuseTexture(FTDS::String& key)
 {
 	FTTexture* tex = ResourceManager::GetInstance()->GetLoadedTexture(key);
-	mDiffuseResView = tex->GetResourceView();
+	mDiffuseResView = tex->GetSRV();
 }
 
 void FTCubemap::SetSpecularTexture(FTDS::String& key)
 {
 	FTTexture* tex = ResourceManager::GetInstance()->GetLoadedTexture(key);
-	mSpecularResView = tex->GetResourceView();
+	mSpecularResView = tex->GetSRV();
 }
 
 //void FTCubemap::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTMeshData>& meshes)
@@ -115,14 +115,14 @@ void FTCubemap::SetSpecularTexture(FTDS::String& key)
 void FTCubemap::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CubeMap::FTCubeMap);
-	FTBasicMeshGroup::SaveProperties(ofs);
+	FTMeshGroup::SaveProperties(ofs);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CubeMap::FTCubeMap);
 }
 
 void FTCubemap::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs);
-	FTBasicMeshGroup::LoadProperties(ifs);
+	FTMeshGroup::LoadProperties(ifs);
 }
 
 #ifdef FOXTROT_EDITOR

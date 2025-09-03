@@ -18,7 +18,7 @@
 #include "Renderer/Camera.h"
 #include "Renderer/D3D11Utils.h"
 #include "Renderer/FoxtrotRenderer.h"
-#include "ResourceSystem/FTBasicMeshGroup.h"
+#include "ResourceSystem/FTMeshGroup.h"
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/GeometryGenerator.h"
 #include "ResourceSystem/Mesh.h"
@@ -35,21 +35,11 @@
 	#include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
 #endif // FOXTROT_EDITOR
 
-int SpriteRenderer::GetTexWidth()
-{
-	return GetTexture()->GetTexWidth() * static_cast<int>(mTexScale.x);
-}
-
-int SpriteRenderer::GetTexHeight()
-{
-	return GetTexture()->GetTexHeight() * static_cast<int>(mTexScale.y);
-}
-
 void SpriteRenderer::Initialize(FTCore* coreInstance)
 {
 	MeshRenderer::Initialize(coreInstance);
 	FTDS::String	  key	 = ChunkKey::PRIMITIVE_SQUARE_BLUE;
-	FTBasicMeshGroup* square = ResourceManager::GetInstance()->GetLoadedMesh(key);
+	FTMeshGroup* square = ResourceManager::GetInstance()->GetLoadedMesh(key);
 	SetMeshGroup(square);
 }
 
@@ -65,47 +55,25 @@ void SpriteRenderer::CloneTo(Actor* actor)
 
 	// newComp->GetMeshGroup()->SetDrawNormal(this->GetMeshGroup()->GetDrawNormal());
 	newComp->mChannel  = this->mChannel;
-	newComp->mTexScale = this->mTexScale;
 }
 
 SpriteRenderer::SpriteRenderer(Actor* owner, int updateOrder)
 	: MeshRenderer(owner, updateOrder)
 	, mChannel(4)
-	, mTexScale(FTVector2(1.0f, 1.0f))
 {
-}
-
-void SpriteRenderer::UpdateMesh(Transform* transform, Camera* camInst, FoxtrotRenderer* renderer)
-{
-	if (GetMeshGroup())
-	{
-		GetMeshGroup()->CalcVCData(transform, camInst);
-		if (GetTexture())
-		{
-			FTVector2 texSize = GetTexture()->GetTexSize();
-			Vector3	  size	  = Vector3(texSize.x / texSize.y, 1.0f, 1.0f);
-			Vector3	  scale	  = Vector3(mTexScale.x, mTexScale.y, 1.0f);
-			GetMeshGroup()->GetVCData().model *= 
-				Matrix::CreateScale(size) * Matrix::CreateScale(scale);
-		}
-		GetMeshGroup()->UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), GetMaterial());
-	}
 }
 
 void SpriteRenderer::SaveProperties(std::ofstream& ofs)
 {
 	MeshRenderer::SaveProperties(ofs);
-	FileIOHelper::SaveVector2(ofs, ChunkKey::SPRITE_SCALE, mTexScale);
 }
 
 void SpriteRenderer::LoadProperties(std::ifstream& ifs)
 {
-	FileIOHelper::LoadVector2(ifs, mTexScale);
 	MeshRenderer::LoadProperties(ifs);
 }
 
 void SpriteRenderer::EditorUIUpdate()
 {
 	MeshRenderer::EditorUIUpdate();
-	CommandHistory::GetInstance()->UpdateVector2Value("TexScale", mTexScale);
 }

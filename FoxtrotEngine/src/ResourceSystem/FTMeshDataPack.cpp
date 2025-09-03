@@ -6,19 +6,5 @@
 std::vector<FTMeshData*>& FTMeshDataPack::GetMeshData() { return mMeshData; }
 
 FTMeshDataPack::FTMeshDataPack()
-	: FTResource()
 {
-}
-
-void FTMeshDataPack::SaveProperties(std::ofstream& ofs)
-{
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_MESH);
-	FTResource::SaveProperties(ofs);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_MESH);
-}
-
-void FTMeshDataPack::LoadProperties(std::ifstream& ifs)
-{
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_MESH);
-	FTResource::LoadProperties(ifs);
 }

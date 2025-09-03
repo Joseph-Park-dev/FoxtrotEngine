@@ -6,13 +6,7 @@
 #include "Static/FTString.h"
 #include "FileSystem/FileIOHelper.h"
 
-void FTJSON::Read()
-{
-	std::ifstream ifs(RelativePath().C_Str());
-	mData = nlohmann::json::parse(ifs);
-}
-
-nlohmann::json& FTJSON::Data() { return mData; }
+const nlohmann::json& FTJSON::Data() const { return mData; }
 
 void FTJSON::SaveProperties(std::ofstream& ofs)
 {
@@ -27,12 +21,24 @@ void FTJSON::LoadProperties(std::ifstream& ifs)
 	FTResource::LoadProperties(ifs);
 }
 
-void FTJSON::Process(FTCore* coreInst)
+FTJSON::FTJSON(FTResourceDef& resDef)
+	: FTResource(resDef)
 {
-	if (this->GetIsProcessed())
+	Process();
+}
+
+void FTJSON::Process()
+{
+	if (IsProcessed())
 		return;
 
 	this->Read();
 
-	this->SetIsProcessed(true);
+	FTResource::Process();
+}
+
+void FTJSON::Read()
+{
+	std::ifstream ifs(GetRelativePath().C_Str());
+	mData = nlohmann::json::parse(ifs);
 }

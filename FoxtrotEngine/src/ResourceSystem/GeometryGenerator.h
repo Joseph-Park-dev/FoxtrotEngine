@@ -28,8 +28,8 @@ public:
 	static std::vector<FTMeshData> MakeTileMapGrid(FTTileMap* tileMap);
 
 	static FTMeshData  MakeTile(Tile& tile);
-	static void		   MakeSpriteAnimation(FTDS::DynamicArray<FTMeshData*>& animMeshes, Tile* tileMap, size_t startIdx, size_t endIdx);
-	static void		   MakeSpriteAnimation(FTDS::DynamicArray<FTMeshData*>& animMeshes, Tile* tileMap, size_t count);
+	static void		   MakeSpriteAnimation(FTDS::DynamicArray<FTMeshData*>& animMeshes, const Tile* tileMap, size_t startIdx, size_t endIdx);
+	static void		   MakeSpriteAnimation(FTDS::DynamicArray<FTMeshData*>& animMeshes, const Tile* tileMap, size_t count);
 	static FTMeshData* MakeAnimationFrame(Tile tile);
 	// static void MakeSpriteTextGrid(std::vector<FTMeshData>& textMeshes, Tile* tileMap, size_t length, TextAttribute* attribute);
 	// static FTMeshData MakeSpriteText(Tile tile, TextAttribute* attrib, size_t col, size_t row);
@@ -41,6 +41,6 @@ public:
 	// static FTMeshData MakeCylinder(const float bottomRadius, const float topRadius, float height, int sliceCount);
 	// static FTMeshData MakeSphere(const float radius, const int numSlices, const int numStacks);
 
-	static FTDS::DynamicArray<FTMeshData*> ReadFromFile(FTDS::String& resPath);
+	static FTDS::DynamicArray<FTMeshData*> ReadFromFile(const FTDS::String& resPath);
 	// static std::vector<FTMeshData> ReadFromFile(FTDS::String& basePath, FTDS::String& filename);
 };

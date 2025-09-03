@@ -5,17 +5,30 @@
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
+
 #pragma once
 #include <Static/FTString.h>
 
 class FTCore;
 class FoxtrotRenderer;
 
-/// @brief Resource definition used for initialization.
+/// @brief Initialization struct for FTResources
 struct FTResourceDef
 {
 	const char* FileName;
 	const char* RelativePath;
+
+	FTResourceDef(const char* fileName, const char* relPath)
+		: FileName(fileName)
+		, RelativePath(relPath)
+	{
+	}
+
+	FTResourceDef(const FTDS::String& fileName, const FTDS::String& relPath)
+		: FileName(fileName.C_Str())
+		, RelativePath(relPath.C_Str())
+	{
+	}
 };
 
 /// @brief Base class that wraps the resources used in the game.
@@ -48,6 +61,7 @@ protected:
 	/// @brief A graphics resource must be processed with renderer before used during runtime.
 	/// Example of the process includes initializing meshes, creating textures, etc.
 	/// @param renderer Renderer object used for processing graphics resources.
+	/// @todo Is this member function necessary?
 	virtual void Process(FoxtrotRenderer* renderer);
 
 	/// @brief Is this resource processed and can be used during runtime?
@@ -69,6 +83,7 @@ private:
 
 #ifdef FOXTROT_EDITOR
 public:
+	/// @brief Displays GUI to modify the data on Foxtrot Editor.
 	virtual void UpdateUI() {};
 
 public:

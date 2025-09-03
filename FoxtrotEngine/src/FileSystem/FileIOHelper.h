@@ -86,7 +86,7 @@ public:
 	static void SaveFloat(std::ofstream& ofs, const FTDS::String& valName, const float& floatVal);
 	static void SaveString(std::ofstream& ofs, FTDS::String& valName, const FTDS::String strVal);
 	static void SaveString(std::ofstream& ofs, FTDS::String& valName, const FTDS::String& strVal);
-	static void SaveString(std::ofstream& ofs, const char* valName, FTDS::String& strVal);
+	static void SaveString(std::ofstream& ofs, const char* valName, const FTDS::String& strVal);
 	static void SaveString(std::ofstream& ofs, const char* valName, const char* strVal);
 	static void SaveBool(std::ofstream& ofs, const FTDS::String& valName, const bool& boolVal);
 

@@ -15,7 +15,7 @@
 #include "Actors/Actor.h"
 #include "ResourceSystem/Mesh.h"
 #include "ResourceSystem/FTMeshDataPack.h"
-#include "ResourceSystem/FTBasicMeshGroup.h"
+#include "ResourceSystem/FTMeshGroup.h"
 #include "Renderer/Camera.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "ResourceSystem/GeometryGenerator.h"
@@ -45,9 +45,9 @@ void MeshRenderer::Render(FoxtrotRenderer* renderer)
 {
 	if (mMeshGroup)
 	{
-		UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance(), renderer);
 		renderer->SwitchFillMode();
-		mMeshGroup->Render(renderer, mTexture, mVS, mPS, mMaterial);
+		Transform* transform = GetOwner()->GetTransform();
+		mMeshGroup->Render(renderer, transform, Camera::GetInstance(), mTexture, mVS, mPS, mMaterial);
 	}
 }
 
@@ -62,31 +62,19 @@ void MeshRenderer::CloneTo(Actor* actor)
 	newComp->mMaterial	  = this->mMaterial;
 }
 
-FoxtrotRenderer*  MeshRenderer::GetRenderer() const { return mRenderer; }
-FTBasicMeshGroup* MeshRenderer::GetMeshGroup() const { return mMeshGroup; }
-FTTexture*		  MeshRenderer::GetTexture() const { return mTexture; }
-FTVertexShader*	  MeshRenderer::GetVS() const { return mVS; }
-FTPixelShader*	  MeshRenderer::GetPS() const { return mPS; }
-FTMaterial*		  MeshRenderer::GetMaterial() const { return mMaterial; }
+FoxtrotRenderer* MeshRenderer::GetRenderer() const { return mRenderer; }
+FTMeshGroup*	 MeshRenderer::GetMeshGroup() const { return mMeshGroup; }
+FTTexture*		 MeshRenderer::GetTexture() const { return mTexture; }
+FTVertexShader*	 MeshRenderer::GetVS() const { return mVS; }
+FTPixelShader*	 MeshRenderer::GetPS() const { return mPS; }
+FTMaterial*		 MeshRenderer::GetMaterial() const { return mMaterial; }
 
 void MeshRenderer::SetRenderer(FoxtrotRenderer* renderer) { mRenderer = renderer; }
-void MeshRenderer::SetMeshGroup(FTBasicMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
+void MeshRenderer::SetMeshGroup(FTMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
 void MeshRenderer::SetTexture(FTTexture* tex) { mTexture = tex; }
 void MeshRenderer::SetVS(FTVertexShader* vs) { mVS = vs; }
 void MeshRenderer::SetPS(FTPixelShader* ps) { mPS = ps; }
 void MeshRenderer::SetMaterial(FTMaterial* mat) { mMaterial = mat; }
-
-void MeshRenderer::UpdateMesh(Transform* transform, Camera* camInst, FoxtrotRenderer* renderer)
-{
-	if (mMeshGroup)
-	{
-		mMeshGroup->CalcVCData(transform, camInst);
-		mMeshGroup->UpdateConstantBuffers(
-			renderer->GetDevice(),
-			renderer->GetContext(),
-			mMaterial);
-	}
-}
 
 MeshRenderer::MeshRenderer(Actor* owner, int updateOrder)
 	: Component(owner, updateOrder)
@@ -113,21 +101,21 @@ void MeshRenderer::SaveProperties(std::ofstream& ofs)
 	Component::SaveProperties(ofs);
 
 	if (mMeshGroup)
-		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MESH_KEY, mMeshGroup->FileName());
+		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MESH_KEY, mMeshGroup->GetFileName());
 	else
 		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MESH_KEY, ChunkKey::NullVal::NULL_OBJECT);
 
 	if (mTexture)
-		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, mTexture->FileName());
+		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, mTexture->GetFileName());
 	else
 		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, ChunkKey::NullVal::NULL_OBJECT);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTMeshGroup::SHADER_KEY);
-	FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::VS_KEY, mVS->FileName());
-	FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::PS_KEY, mPS->FileName());
+	FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::VS_KEY, mVS->GetFileName());
+	FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::PS_KEY, mPS->GetFileName());
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTMeshGroup::SHADER_KEY);
 
-	FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MAT_KEY, mMaterial->FileName());
+	FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MAT_KEY, mMaterial->GetFileName());
 }
 
 void MeshRenderer::LoadProperties(std::ifstream& ifs)
@@ -164,10 +152,10 @@ void MeshRenderer::EditorRender(FoxtrotRenderer* renderer)
 {
 	if (mMeshGroup)
 	{
-		UpdateMesh(GetOwner()->GetTransform(), EditorCamera::GetInstance(), renderer);
 		renderer->SwitchFillMode();
-		// renderer->SetRenderTargetView();
-		mMeshGroup->Render(renderer, mTexture, mVS, mPS, mMaterial);
+
+		Transform* transform = GetOwner()->GetTransform();
+		mMeshGroup->Render(renderer, transform, EditorCamera::GetInstance(), mTexture, mVS, mPS, mMaterial);
 	}
 }
 
@@ -179,6 +167,8 @@ void MeshRenderer::EditorUIUpdate()
 
 	if (!mMeshGroup)
 		return;
+
+	mMeshGroup->UpdateUI();
 
 	if (mTexture)
 		mTexture->UpdateUI();

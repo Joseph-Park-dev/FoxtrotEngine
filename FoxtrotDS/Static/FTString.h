@@ -114,7 +114,7 @@ namespace FTDS
 			this->mLength = inputLength;
 		}
 
-		void Assign(FTDS::String& val)
+		void Assign(const FTDS::String& val)
 		{
 			Assign(val.C_Str());
 		}
@@ -212,7 +212,7 @@ namespace FTDS
 			return this->mData;
 		}
 
-		wchar_t* WC_Str()
+		const wchar_t* WC_Str() const
 		{
 			int		 size_needed = MultiByteToWideChar(CP_UTF8, 0, mData, -1, nullptr, 0);
 			wchar_t* wstr		 = DBG_NEW wchar_t[size_needed];
@@ -228,7 +228,7 @@ namespace FTDS
 		const size_t Length() const { return mLength; }
 		void		 SetLength(size_t len) { mLength = len; }
 
-		bool IsEmpty() { return mLength == 0 || !mData; }
+		const bool IsEmpty() const { return mLength == 0 || !mData; }
 
 		// Print this string on CMD.
 		void CMDPrint()

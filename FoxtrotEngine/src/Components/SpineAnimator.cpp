@@ -9,7 +9,7 @@
 #include "ResourceSystem/Vertex.h"
 #include "ResourceSystem/Mesh.h"
 #include "ResourceSystem/FTTexture.h"
-#include "ResourceSystem/FTBasicMeshGroup.h"
+#include "ResourceSystem/FTMeshGroup.h"
 #include "ResourceSystem/FTMeshDataPack.h"
 #include "ResourceSystem/Animation/FTSpineAnimation.h"
 #include "ResourceSystem/FTShaders/FTVertexShader.h"
@@ -35,7 +35,8 @@ void SpineAnimator::Update(float deltaTime)
 	if (GetMeshGroup())
 	{
 		static_cast<FTSpineAnimation*>(
-			GetMeshGroup())->Update(deltaTime, mUsePhysics);
+			GetMeshGroup())
+			->Update(deltaTime, mUsePhysics);
 	}
 }
 
@@ -43,10 +44,12 @@ void SpineAnimator::Render(FoxtrotRenderer* renderer)
 {
 	if (GetMeshGroup())
 	{
-		this->UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance(), renderer);
 		renderer->SwitchFillMode();
-		// renderer->SetRenderTargetView();
-		static_cast<FTSpineAnimation*>(GetMeshGroup())->Render(GetRenderer(), GetTexture(), GetVS(), GetPS(), GetMaterial());
+
+		Transform* transform = GetOwner()->GetTransform();
+		static_cast<FTSpineAnimation*>(
+			GetMeshGroup())
+			->Render(GetRenderer(), transform, Camera::GetInstance(), GetTexture(), GetVS(), GetPS(), GetMaterial());
 	}
 }
 
@@ -68,23 +71,10 @@ void SpineAnimator::CloneTo(Actor* actor)
 	newComp->SetMaterial(this->GetMaterial());
 }
 
-void SpineAnimator::UpdateMesh(Transform* transform, Camera* camInst, FoxtrotRenderer* renderer)
-{
-	if (GetMeshGroup())
-	{
-		FTSpineAnimation* anim = static_cast<FTSpineAnimation*>(GetMeshGroup());
-		anim->CalcVCData(transform, camInst);
-		anim->UpdateConstantBuffers(
-			renderer->GetDevice(),
-			renderer->GetContext(),
-			GetMaterial());
-	}
-}
-
 void SpineAnimator::SaveProperties(std::ofstream& ofs)
 {
 	MeshRenderer::SaveProperties(ofs);
-	FTDS::String& fn = static_cast<FTSpineAnimation*>(GetMeshGroup())->FileName();
+	const FTDS::String& fn = static_cast<FTSpineAnimation*>(GetMeshGroup())->GetFileName();
 	FileIOHelper::SaveString(ofs, ChunkKey::SpineAnimator::LOADED_ANIM, fn);
 }
 
@@ -110,10 +100,12 @@ void SpineAnimator::EditorRender(FoxtrotRenderer* renderer)
 {
 	if (GetMeshGroup())
 	{
-		this->UpdateMesh(GetOwner()->GetTransform(), EditorCamera::GetInstance(), renderer);
 		renderer->SwitchFillMode();
-		// renderer->SetRenderTargetView();
-		static_cast<FTSpineAnimation*>(GetMeshGroup())->Render(renderer, GetTexture(), GetVS(), GetPS(), GetMaterial());
+
+		Transform* transform = GetOwner()->GetTransform();
+		static_cast<FTSpineAnimation*>(
+			GetMeshGroup())
+			->Render(GetRenderer(), transform, EditorCamera::GetInstance(), GetTexture(), GetVS(), GetPS(), GetMaterial());
 	}
 }
 

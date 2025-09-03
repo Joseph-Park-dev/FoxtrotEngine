@@ -45,7 +45,6 @@ SoundManager*	  SoundManager::mInstance	  = nullptr;
 Physics2D*		  Physics2D::mInstance		  = nullptr;
 Camera*			  Camera::mInstance			  = nullptr;
 AnimationManager* AnimationManager::mInstance = nullptr;
-TileMapManager*	  TileMapManager::mInstance	  = nullptr;
 ResourceManager*  ResourceManager::mInstance  = nullptr;
 CollisionManager* CollisionManager::mInstance = nullptr;
 SceneManager*	  SceneManager::mInstance	  = nullptr;
@@ -126,7 +125,6 @@ void FTCore::InitSingletonManagers()
 	EventManager::GetInstance();
 	LightManager::GetInstance()->Initialize(mGameRenderer);
 	AnimationManager::GetInstance()->Initialize(mGameRenderer);
-	TileMapManager::GetInstance();
 	SceneManager::GetInstance()->Initialize();
 	SoundManager::GetInstance()->Initialize();
 }
@@ -235,7 +233,6 @@ void FTCore::ShutDown()
 	Timer::GetInstance()->Destroy();
 	ParticleSystem::GetInstance()->Destroy();
 	LightManager::GetInstance()->Destroy();
-	TileMapManager::GetInstance()->Destroy();
 
 	PostQuitMessage(0);
 }

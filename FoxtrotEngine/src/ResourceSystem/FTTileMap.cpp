@@ -24,8 +24,8 @@
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
-#include "EditorUtils.h"
-#include "EditorResourceManager.h"
+	#include "EditorUtils.h"
+	#include "EditorResourceManager.h"
 #endif // FOXTROT_EDITOR
 
 void FTTileMap::Initialize()
@@ -75,7 +75,7 @@ void FTTileMap::ReadCSV(FTDS::String& str)
 	std::queue<int> result;
 
 	// Open an existing file
-	myFile.open(RelativePath().C_Str(), std::fstream::in);
+	myFile.open(GetRelativePath().C_Str(), std::fstream::in);
 	assert(myFile);
 	std::string line;
 	int			val;
@@ -150,8 +150,8 @@ void FTTileMap::SetMaxCountOnMapY(UINT yCount)
 	mMaxCountOnMapY = yCount;
 }
 
-FTTileMap::FTTileMap()
-	: FTResource()
+FTTileMap::FTTileMap(FTResourceDef& resDef)
+	: FTResource(resDef)
 	, mTileWidthOnScreen(0)
 	, mTileHeightOnScreen(0)
 	, mMaxCountOnMapX(0)
@@ -192,19 +192,19 @@ void FTTileMap::InitializeTile(Tile& tile, UINT column, UINT row, UINT tileNum)
 
 void FTTileMap::SaveProperties(std::ofstream& ofs)
 {
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::TileMap::FTTILEMAP);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTileMap::FT_TILEMAP);
 	FTResource::SaveProperties(ofs);
-	FileIOHelper::SaveString(ofs, ChunkKey::TileMap::CSV_KEY, mCSV->FileName());
-	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TileMap::SCREEN_WIDTH, mTileWidthOnScreen);
-	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TileMap::SCREEN_HEIGHT, mTileHeightOnScreen);
-	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TileMap::MAP_MAX_COUNT_X, mMaxCountOnMapX);
-	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::TileMap::MAP_MAX_COUNT_Y, mMaxCountOnMapY);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::TileMap::FTTILEMAP);
+	FileIOHelper::SaveString(ofs, ChunkKey::FTTileMap::CSV_KEY, mCSV->GetFileName());
+	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTTileMap::SCREEN_WIDTH, mTileWidthOnScreen);
+	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTTileMap::SCREEN_HEIGHT, mTileHeightOnScreen);
+	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTTileMap::MAP_MAX_COUNT_X, mMaxCountOnMapX);
+	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTTileMap::MAP_MAX_COUNT_Y, mMaxCountOnMapY);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTileMap::FT_TILEMAP);
 }
 
 void FTTileMap::LoadProperties(std::ifstream& ifs)
 {
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::TileMap::FTTILEMAP);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTileMap::FT_TILEMAP);
 	FileIOHelper::LoadUnsignedInt(ifs, mMaxCountOnMapY);
 	FileIOHelper::LoadUnsignedInt(ifs, mMaxCountOnMapX);
 	FileIOHelper::LoadUnsignedInt(ifs, mTileHeightOnScreen);
@@ -213,26 +213,24 @@ void FTTileMap::LoadProperties(std::ifstream& ifs)
 	FTResource::LoadProperties(ifs);
 }
 
-void FTTileMap::Process(FTCore* coreInst)
+void FTTileMap::Process()
 {
-	if (this->GetIsProcessed())
+	if (IsProcessed())
 		return;
 
 	// This if statement will be triggered only on Editor
 	// (When loading all assets from Asset folder)
-	std::ifstream ifs(this->RelativePath().C_Str());
+	std::ifstream ifs(this->GetRelativePath().C_Str());
 	this->LoadProperties(ifs);
 
 	this->Initialize();
-	this->SetIsProcessed(true);
+	FTResource::Process();
 }
 
 #ifdef FOXTROT_EDITOR
 void FTTileMap::UpdateUI()
 {
 	ImVec2 previewSize = ImVec2(100, 100);
-
-	CommandHistory::GetInstance()->UpdateStringValue("TileMap Name", FileName());
 
 	FTEditorUtils::DisplayResSelection(
 		"Select CSV",

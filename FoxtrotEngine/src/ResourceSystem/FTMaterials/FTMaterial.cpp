@@ -1,16 +1,18 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+//
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "FTMaterial.h"
+
+#include <wrl.h>
 
 #include "Core/FTCore.h"
 #include <Renderer/D3D11Utils.h>
 #include <Renderer/FoxtrotRenderer.h>
-
-void FTMaterial::SaveProperties(std::ofstream& ofs)
-{
-}
-
-void FTMaterial::LoadProperties(std::ifstream& ifs)
-{
-}
 
 ComPtr<ID3D11Buffer>& FTMaterial::GetPCBuf()
 {

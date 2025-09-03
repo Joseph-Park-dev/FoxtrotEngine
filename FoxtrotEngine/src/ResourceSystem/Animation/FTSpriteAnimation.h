@@ -5,14 +5,9 @@
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
-/// <summary>
-/// A class that holds the Sprite Animation.
-/// This will be registered to the Animator Component assigned to
-/// an Actor.
-/// </summary>
 
 #pragma once
-#include "ResourceSystem/Animation/FTAnimation.h"
+#include <ResourceSystem/FTMeshGroup.h>
 
 #include <vector>
 #include <string>
@@ -26,37 +21,79 @@ class Animator;
 class FTTexture;
 struct AnimationFrame;
 
-class FTSpriteAnimation : public FTAnimation
+/// @brief A FTResource that holds a Sprite Animation.
+/// This will be registered to a SpriteAnimator Component instance.
+class FTSpriteAnimation : public FTMeshGroup
 {
 public:
-	AnimationFrame* GetFrame(int frameIdx);
-	void			SetSpriteSheet(FTSpriteSheet* sheet);
+	/// @brief Takes tiles array and generate sprite animation base on its data.
+	/// Creates one Mesh object per every sprite frame, adding it to the MeshGroup.
+	/// @param tiles Tile data consists of Rect area on sprite sheet & game screen.
+	void Initialize(
+		const Tile*					 tiles,
+		ComPtr<ID3D11Device>&		 device,
+		ComPtr<ID3D11DeviceContext>& context);
+
+	/// @see FTResource::SaveProperties()
+	virtual void SaveProperties(std::ofstream& ofs) override;
+
+	/// @see FTResource::LoadProperties()
+	virtual void LoadProperties(std::ifstream& ifs) override;
 
 public:
-	FTSpriteAnimation();
-	FTSpriteAnimation(FTSpriteAnimation* other);
-	~FTSpriteAnimation() override;
+	/// @brief Returns Frames per second
+	const int GetFPS() const;
+
+	/// @brief Returns the last frame index.
+	const int GetMaxFrameIdx() const;
+
+	/// @brief Returns the first frame index.
+	const int GetMinFrameIdx() const;
+
+public:
+	/// @brief Relative path is used for importing .spriteanim file.
+	FTSpriteAnimation(FTResourceDef& resDef, FoxtrotRenderer* renderer);
+	~FTSpriteAnimation();
+
+protected:
+	/// @brief Takes an array of Tiles, initializes a sprite animation.
+	virtual void Process(FoxtrotRenderer* renderer) override;
 
 private:
-	FTSpriteSheet* mSpriteSheet;
+	/// @brief A text file that holds the rect data on a spritesheet.
+	FTText* mAtlas;
 
-public:
-	virtual void SaveProperties(std::ofstream& ofs) override;
-	virtual void LoadProperties(std::ifstream& ifs) override;
-	virtual void Process(FTCore* coreInst) override;
+	/// @brief Frames-per-second for this animation.
+	int mFPS;
+
+	/// @brief Should this animation be looped?
+	bool mIsRepeated;
+
+	/// @brief the first frame index.
+	int mMinFrameIdx;
+
+	/// @brief the last frame index.
+	int mMaxFrameIdx;
 
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void AddRefCount() override;
 	virtual void SubtractRefCount() override;
+
 #endif
 };
 
 namespace ChunkKey
 {
-	namespace SpriteAnimation
+	namespace FTSpriteAnimation
 	{
 		constexpr const char* FT_SPRITE_ANIMATION = "FTSpriteAnimation";
 		constexpr const char* ANIM_TILEMAP_KEY	  = "TileMap Key";
-	} // namespace SpriteAnimation
+
+		constexpr const char* FPS			= "FPS";
+		constexpr const char* IS_REPEATED	= "Is Repeated";
+		constexpr const char* MAX_FRAME_IDX = "Max Frame Index";
+		constexpr const char* MIN_FRAME_IDX = "Min Frame Index";
+
+	} // namespace FTSpriteAnimation
 } // namespace ChunkKey

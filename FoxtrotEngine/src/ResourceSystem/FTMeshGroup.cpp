@@ -27,33 +27,18 @@
 
 using Matrix = DirectX::SimpleMath::Matrix;
 
-void FTMeshGroup::Initialize(
-	FTMeshData*					 mesh,
-	ComPtr<ID3D11Device>&		 device,
-	ComPtr<ID3D11DeviceContext>& context)
-{
-	CreateTextureSampler(device);
-	InitializeMesh(device, mesh);
-	InitializeConstantBuffers(device);
-}
-
-void FTMeshGroup::Initialize(
-	FTDS::DynamicArray<FTMeshData*>&& meshes,
-	ComPtr<ID3D11Device>&			  device,
-	ComPtr<ID3D11DeviceContext>&	  context)
-{
-	CreateTextureSampler(device);
-	InitializeMeshes(device, std::move(meshes));
-	InitializeConstantBuffers(device);
-}
-
 void FTMeshGroup::Render(
 	FoxtrotRenderer* renderer,
+	Transform*		 transform,
+	Camera*			 camInst,
 	FTTexture*		 tex,
 	FTVertexShader*	 vs,
 	FTPixelShader*	 ps,
 	FTMaterial*		 mat)
 {
+	// This enables the resource reusable throughout the Component instances.
+	UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat);
+
 	if (!vs || !ps) // Vertex Shader is always required when drawing.
 		return;
 
@@ -89,11 +74,16 @@ void FTMeshGroup::Render(
 void FTMeshGroup::Render(
 	int				 meshIndex,
 	FoxtrotRenderer* renderer,
+	Transform*		 transform,
+	Camera*			 camInst,
 	FTTexture*		 tex,
 	FTVertexShader*	 vs,
 	FTPixelShader*	 ps,
 	FTMaterial*		 mat)
 {
+	// This enables the resource reusable throughout the Component instances.
+	UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat);
+
 	if (!vs || !ps) // Vertex Shader is always required when drawing.
 		return;
 
@@ -129,50 +119,33 @@ void FTMeshGroup::Render(
 	}
 }
 
-void FTMeshGroup::Clear()
+void FTMeshGroup::SetSizeScale(const FTVector3 scale)
 {
-	mMeshes->IterateArray([&](Mesh* mesh) {
-		if (mesh)
-		{
-			delete mesh;
-			mesh = nullptr;
-		}
-	});
-	mMeshes->Clear();
+	mSizeScale = scale;
 }
 
-FTDS::DynamicArray<Mesh*>*	FTMeshGroup::Meshes() { return mMeshes; };
-ComPtr<ID3D11SamplerState>& FTMeshGroup::GetSamplerState() { return mSamplerState; }
-ComPtr<ID3D11Buffer>&		FTMeshGroup::GetVCBuf() { return mVCBuf; }
-
-void FTMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicArray<FTMeshData*>&& meshDataArr)
+FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer)
+	: FTResource(resDef)
+	, mDirection(1)
+	, mSizeScale(FTVector3(1.0f, 1.0f, 1.0f))
+	, mMeshes(DBG_NEW FTDS::DynamicArray<Mesh*>)
 {
-	if (0 < meshDataArr.GetSize())
-		Clear();
-
-	mMeshes->Reserve(meshDataArr.GetSize());
-
-	meshDataArr.IterateArray([&](FTMeshData* meshData) {
-		this->InitializeMesh(device, meshData);
-		delete meshData;
-	});
+	Process(renderer);
 }
 
-void FTMeshGroup::InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData* meshData)
+FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTMeshData* meshData)
+	: FTResource(resDef)
+	, mDirection(1)
+	, mSizeScale(FTVector3(1.0f, 1.0f, 1.0f))
+	, mMeshes(DBG_NEW FTDS::DynamicArray<Mesh*>)
 {
-	Mesh* newMesh		 = DBG_NEW Mesh;
-	newMesh->VertexCount = UINT(meshData->Vertices.GetSize());
-	newMesh->IndexCount	 = UINT(meshData->Indices.GetSize());
-
-	D3D11Utils::CreateVertexBuffer(device, meshData->Vertices, newMesh->VertexBuffer);
-	D3D11Utils::CreateIndexBuffer(device, meshData->Indices, newMesh->IndexBuffer);
-
-	mMeshes->PushBack(newMesh);
+	Process(renderer, meshData);
 }
 
-void FTMeshGroup::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
+FTMeshGroup::~FTMeshGroup()
 {
-	D3D11Utils::CreateConstantBuffer(device, mVCData, mVCBuf);
+	Clear();
+	delete mMeshes;
 }
 
 void FTMeshGroup::Process(FoxtrotRenderer* renderer)
@@ -187,6 +160,21 @@ void FTMeshGroup::Process(FoxtrotRenderer* renderer)
 		GeometryGenerator::ReadFromFile(this->GetRelativePath()), renderer->GetDevice(), renderer->GetContext());
 
 	FTResource::Process();
+}
+
+void FTMeshGroup::Initialize(
+	FTDS::DynamicArray<FTMeshData*>&& meshes,
+	ComPtr<ID3D11Device>&			  device,
+	ComPtr<ID3D11DeviceContext>&	  context)
+{
+	CreateTextureSampler(device);
+	InitializeMeshes(device, std::move(meshes));
+	InitializeConstantBuffers(device);
+}
+
+void FTMeshGroup::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
+{
+	D3D11Utils::CreateConstantBuffer(device, mVCData, mVCBuf);
 }
 
 HRESULT FTMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
@@ -206,20 +194,6 @@ HRESULT FTMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 	return device->CreateSamplerState(&sampDesc, mSamplerState.GetAddressOf());
 }
 
-FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer)
-	: FTResource(resDef)
-	, mDirection(1)
-	, mMeshes(DBG_NEW FTDS::DynamicArray<Mesh*>)
-{
-	Process(renderer);
-}
-
-FTMeshGroup::~FTMeshGroup()
-{
-	Clear();
-	delete mMeshes;
-}
-
 void FTMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, Transform* transform, Camera* camInst, FTMaterial* mat)
 {
 	// Model Transformation
@@ -230,6 +204,7 @@ void FTMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3
 
 	FTVector3 scale		   = transform->GetWorldScale();
 	FTVector3 scaleWithDir = FTVector3(scale.x * mDirection, scale.y, scale.z);
+	scaleWithDir *= mSizeScale;
 	transform->SetLocalScale(scaleWithDir);
 	modelMat = transform->GetMatrixWorld();
 
@@ -257,3 +232,75 @@ void FTMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3
 	if (mat)
 		mat->UpdateBuffer(context);
 }
+
+void FTMeshGroup::Clear()
+{
+	mMeshes->IterateArray([&](Mesh* mesh) {
+		if (mesh)
+		{
+			delete mesh;
+			mesh = nullptr;
+		}
+	});
+	mMeshes->Clear();
+}
+
+FTDS::DynamicArray<Mesh*>*	FTMeshGroup::Meshes() { return mMeshes; };
+ComPtr<ID3D11SamplerState>& FTMeshGroup::GetSamplerState() { return mSamplerState; }
+ComPtr<ID3D11Buffer>&		FTMeshGroup::GetVCBuf() { return mVCBuf; }
+
+void FTMeshGroup::Process(FoxtrotRenderer* renderer, FTMeshData* meshData)
+{
+	if (this->IsProcessed())
+		return;
+
+	if (this->GetRelativePath().IsEmpty())
+		return;
+
+	Initialize(meshData, renderer->GetDevice(), renderer->GetContext());
+
+	FTResource::Process();
+}
+
+void FTMeshGroup::Initialize(
+	FTMeshData*					 mesh,
+	ComPtr<ID3D11Device>&		 device,
+	ComPtr<ID3D11DeviceContext>& context)
+{
+	CreateTextureSampler(device);
+	InitializeMesh(device, mesh);
+	InitializeConstantBuffers(device);
+}
+
+void FTMeshGroup::InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData* meshData)
+{
+	Mesh* newMesh		 = DBG_NEW Mesh;
+	newMesh->VertexCount = UINT(meshData->Vertices.GetSize());
+	newMesh->IndexCount	 = UINT(meshData->Indices.GetSize());
+
+	D3D11Utils::CreateVertexBuffer(device, meshData->Vertices, newMesh->VertexBuffer);
+	D3D11Utils::CreateIndexBuffer(device, meshData->Indices, newMesh->IndexBuffer);
+
+	mMeshes->PushBack(newMesh);
+}
+
+void FTMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicArray<FTMeshData*>&& meshDataArr)
+{
+	if (0 < meshDataArr.GetSize())
+		Clear();
+
+	mMeshes->Reserve(meshDataArr.GetSize());
+
+	meshDataArr.IterateArray([&](FTMeshData* meshData) {
+		this->InitializeMesh(device, meshData);
+		delete meshData;
+	});
+}
+
+#ifdef FOXTROT_EDITOR
+void FTMeshGroup::UpdateUI()
+{
+	CommandHistory::GetInstance()->UpdateVector3Value("Scale size", mSizeScale);
+}
+
+#endif // FOXTROT_EDITOR

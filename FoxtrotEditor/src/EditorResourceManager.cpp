@@ -2,10 +2,11 @@
 
 #include "Renderer/FoxtrotRenderer.h"
 #include "ResourceSystem/GeometryGenerator.h"
-#include "ResourceSystem/FTBasicMeshGroup.h"
+#include <ResourceSystem/FTMeshGroup.h>
 #include "ResourceSystem/FTPremade.h"
-#include "ResourceSystem/FTSpriteSheet.h"
+#include "ResourceSystem/FTTileMap.h"
 #include "ResourceSystem/Animation/FTSpriteAnimation.h"
+#include "ResourceSystem/Animation/FTSpineAnimation.h"
 #include "ResourceSystem/GenericData/FTCSV.h"
 #include "ResourceSystem/GenericData/FTJSON.h"
 #include "ResourceSystem/FTShaders/FTVertexShader.h"
@@ -31,45 +32,41 @@ void EditorResourceManager::SaveResources(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::RESOURCE_DATA);
 
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTEXTURE_GROUP);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTexture::FT_TEXTURE);
 	SaveResourceToChunk<FTTexture>(ofs, GetTextures());
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTEXTURE_GROUP);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTexture::FT_TEXTURE);
 
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTILEMAP_GROUP);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTileMap::FT_TILEMAP);
 	SaveResourceToChunk<FTTileMap>(ofs, GetTileMaps());
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTILEMAP_GROUP);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTileMap::FT_TILEMAP);
 
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSPRITESHEET_GROUP);
-	SaveResourceToChunk<FTSpriteSheet>(ofs, GetSpriteSheets());
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSPRITESHEET_GROUP);
-
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTPREMADE_GROUP);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTPremade::FT_PREMADE);
 	SaveResourceToChunk<FTPremade>(ofs, GetPremades());
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTPREMADE_GROUP);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTPremade::FT_PREMADE);
 
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_SPINE_ANIMATION_GROUP);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
 	SaveResourceToChunk<FTSpineAnimation>(ofs, GetSpineAnimations());
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_SPINE_ANIMATION_GROUP);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
 
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
 	SaveResourceToChunk<FTSpriteAnimation>(ofs, GetSpriteAnimations());
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
 
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTMESH_GROUP);
-	SaveResourceToChunk<FTBasicMeshGroup>(ofs, GetMeshGroups());
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTMESH_GROUP);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTMeshGroup::FT_MESH_GROUP);
+	SaveResourceToChunk<FTMeshGroup>(ofs, GetMeshGroups());
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTMeshGroup::FT_MESH_GROUP);
 
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTVertexShader::FT_VERTEX_SHADER);
 	SaveResourceToChunk<FTVertexShader>(ofs, GetVertexShaders());
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTVertexShader::FT_VERTEX_SHADER);
 
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_PIXEL_SHADER);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTPixelShader::FT_PIXEL_SHADER);
 	SaveResourceToChunk<FTPixelShader>(ofs, GetPixelShaders());
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_PIXEL_SHADER);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTPixelShader::FT_PIXEL_SHADER);
 
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::SOUND);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Sound::SOUND);
 	SaveResourceToChunk<Sound>(ofs, GetSounds());
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::SOUND);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::Sound::SOUND);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::JSON::JSON);
 	SaveResourceToChunk<FTJSON>(ofs, GetJSONs());
@@ -86,7 +83,6 @@ void EditorResourceManager::LoadAllResourcesInAsset()
 {
 	GetTextures()->Reserve(20);
 	GetTileMaps()->Reserve(20);
-	GetSpriteSheets()->Reserve(20);
 	GetPremades()->Reserve(20);
 	GetSpriteAnimations()->Reserve(20);
 	GetSpineAnimations()->Reserve(20);
@@ -106,21 +102,6 @@ void EditorResourceManager::LoadAllResourcesInAsset()
 		[&](std::string&& path) { LoadResByType(path.c_str()); });
 
 	ResourceManager::GetInstance()->LoadMaterials();
-
-	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetCSVs());
-	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetJSONs());
-	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetTextures());
-	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetMeshGroups());
-	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetTileMaps());
-	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetSpriteSheets());
-	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetSpriteAnimations());
-	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetSpineAnimations());
-	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetMaterials());
-	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetVertexShaders());
-	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetPixelShaders());
-	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetSounds());
-	ResourceManager::GetInstance()->ProcessResources(FTCoreEditor::GetInstance(), GetPremades());
-
 	ResourceManager::GetInstance()->LoadDefaultResources();
 }
 
@@ -131,29 +112,29 @@ void EditorResourceManager::LoadResByType(const char* filePath)
 	printf("Loading file... %s\n", filePath);
 	switch (type)
 	{
-		case ResType::UNSUPPORTED:
-			printf("File %s is unsupported\n", filePath);
-			break;
+		// Loads Graphics resource.
 		case ResType::FTTEXTURE:
-			LoadResource(path, GetTextures());
-			break;
-		case ResType::FTTILEMAP:
-			LoadResource(path, GetTileMaps());
-			break;
-		case ResType::FTSPRITESHEET:
-			LoadResource(path, GetSpriteSheets());
-			break;
-		case ResType::FTPREMADE:
-			LoadResource(path, GetPremades());
-			break;
-		case ResType::FTMESH:
-			LoadResource(path, GetMeshGroups());
+			LoadResource(path, GetTextures(), GetRenderer());
 			break;
 		case ResType::FT_SPRITE_ANIMATION:
-			LoadResource(path, GetSpriteAnimations());
+			LoadResource(path, GetSpriteAnimations(), GetRenderer());
 			break;
 		case ResType::FT_SPINE_ANIMATION:
-			LoadResource(path, GetSpineAnimations());
+			LoadResource(path, GetSpineAnimations(), GetRenderer());
+			break;
+		case ResType::FT_VERTEX_SHADER:
+			LoadResource(path, GetVertexShaders(), GetRenderer());
+			break;
+		case ResType::FT_PIXEL_SHADER:
+			LoadResource(path, GetPixelShaders(), GetRenderer());
+			break;
+		case ResType::FTMESH:
+			LoadResource(path, GetMeshGroups(), GetRenderer());
+			break;
+
+		// Loads non-Graphics resource.
+		case ResType::FTPREMADE:
+			LoadResource(path, GetPremades());
 			break;
 		case ResType::FTCSV:
 			LoadResource(path, GetCSVs());
@@ -164,14 +145,14 @@ void EditorResourceManager::LoadResByType(const char* filePath)
 		case ResType::FTTEXT:
 			LoadResource(path, GetTexts());
 			break;
-		case ResType::FT_VERTEX_SHADER:
-			LoadResource(path, GetVertexShaders());
-			break;
-		case ResType::FT_PIXEL_SHADER:
-			LoadResource(path, GetPixelShaders());
-			break;
 		case ResType::FTSOUND:
 			LoadResource(path, GetSounds());
+			break;
+		case ResType::FTTILEMAP:
+			LoadResource(path, GetTileMaps());
+			break;
+		case ResType::UNSUPPORTED:
+			printf("File %s is unsupported\n", filePath);
 			break;
 		default:
 			break;
@@ -189,34 +170,31 @@ void EditorResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::JSON::JSON);
 	LoadDummyResource<FTJSON>(ifs, GetJSONs(), desc.first);
 
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::SOUND);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Sound::SOUND);
 	LoadDummyResource<Sound>(ifs, GetSounds(), desc.first);
 
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_PIXEL_SHADER);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPixelShader::FT_PIXEL_SHADER);
 	LoadDummyResource<FTPixelShader>(ifs, GetPixelShaders(), desc.first);
 
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_VERTEX_SHADER);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTVertexShader::FT_VERTEX_SHADER);
 	LoadDummyResource<FTVertexShader>(ifs, GetVertexShaders(), desc.first);
 
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMESH_GROUP);
-	LoadDummyResource<FTBasicMeshGroup>(ifs, GetMeshGroups(), desc.first);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMeshGroup::FT_MESH_GROUP);
+	LoadDummyResource<FTMeshGroup>(ifs, GetMeshGroups(), desc.first);
 
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
 	LoadDummyResource<FTSpriteAnimation>(ifs, GetSpriteAnimations(), desc.first);
 
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_SPINE_ANIMATION_GROUP);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
 	LoadDummyResource<FTSpineAnimation>(ifs, GetSpineAnimations(), desc.first);
 
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPREMADE_GROUP);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPremade::FT_PREMADE);
 	LoadDummyResource<FTPremade>(ifs, GetPremades(), desc.first);
 
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSPRITESHEET_GROUP);
-	LoadDummyResource<FTSpriteSheet>(ifs, GetSpriteSheets(), desc.first);
-
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTILEMAP_GROUP);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTileMap::FT_TILEMAP);
 	LoadDummyResource<FTTileMap>(ifs, GetTileMaps(), desc.first);
 
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTEXTURE_GROUP);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTexture::FT_TEXTURE);
 	LoadDummyResource<FTTexture>(ifs, GetTextures(), desc.first);
 }
 
@@ -228,11 +206,6 @@ FTDS::HashMap<FTTexture*>* EditorResourceManager::GetTextures()
 FTDS::HashMap<FTTileMap*>* EditorResourceManager::GetTileMaps()
 {
 	return ResourceManager::GetInstance()->GetTileMaps();
-}
-
-FTDS::HashMap<FTSpriteSheet*>* EditorResourceManager::GetSpriteSheets()
-{
-	return ResourceManager::GetInstance()->GetSpriteSheets();
 }
 
 FTDS::HashMap<FTPremade*>* EditorResourceManager::GetPremades()
@@ -255,7 +228,7 @@ FTDS::HashMap<FTMaterial*>* EditorResourceManager::GetMaterials()
 	return ResourceManager::GetInstance()->GetMaterials();
 }
 
-FTDS::HashMap<FTBasicMeshGroup*>* EditorResourceManager::GetMeshGroups()
+FTDS::HashMap<FTMeshGroup*>* EditorResourceManager::GetMeshGroups()
 {
 	return ResourceManager::GetInstance()->GetMeshGroups();
 }
@@ -314,12 +287,11 @@ void EditorResourceManager::UpdateUI()
 
 	DisplayLoadedResources<FTTexture>("Textures", GetTextures());
 	DisplayLoadedResources<FTTileMap>("Tilemaps", GetTileMaps());
-	DisplayLoadedResources<FTSpriteSheet>("SpriteSheets", GetSpriteSheets());
 	DisplayLoadedResources<FTPremade>("Premades", GetPremades());
 	DisplayLoadedResources<FTVertexShader>("Vertex Shaders", GetVertexShaders());
 	DisplayLoadedResources<FTPixelShader>("Pixel Shaders", GetPixelShaders());
 	DisplayLoadedResources<FTMaterial>("Materials", GetMaterials());
-	DisplayLoadedResources<FTBasicMeshGroup>("MeshGroups", GetMeshGroups());
+	DisplayLoadedResources<FTMeshGroup>("MeshGroups", GetMeshGroups());
 	DisplayLoadedResources<FTSpriteAnimation>("Sprite Animations", GetSpriteAnimations());
 	DisplayLoadedResources<FTSpineAnimation>("Spine Animations", GetSpineAnimations());
 	DisplayLoadedResources<Sound>("Sounds", GetSounds());
@@ -342,9 +314,7 @@ ResType EditorResourceManager::GetResType(FTDS::String& fileName)
 		return ResType::FTTEXTURE;
 	else if (StrContains(FileTypes::TILEMAP, format))
 		return ResType::FTTILEMAP;
-	else if (StrContains(FileTypes::SPRITE_SHEET, format))
-		return ResType::FTSPRITESHEET;
-	else if (StrContains(FileTypes::PREMADE, format))
+	else if (StrContains(FileTypes::JSON_SHEET, format))
 		return ResType::FTPREMADE;
 	else if (StrContains(FileTypes::MESH, format))
 		return ResType::FTMESH;

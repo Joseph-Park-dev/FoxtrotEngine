@@ -12,9 +12,8 @@
 #include "Managers/AnimationManager.h"
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/GeometryGenerator.h"
-#include "ResourceSystem/FTBasicMeshGroup.h"
+#include "ResourceSystem/FTMeshGroup.h"
 #include "ResourceSystem/FTTileMap.h"
-#include "ResourceSystem/FTSpriteSheet.h"
 #include "ResourceSystem/FTPremade.h"
 #include "ResourceSystem/Animation/FTSpriteAnimation.h"
 #include "ResourceSystem/Animation/FTSpineAnimation.h"
@@ -52,11 +51,10 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 
 	mTextures		  = DBG_NEW			FTDS::HashMap<FTTexture*>;
 	mTileMaps		  = DBG_NEW			FTDS::HashMap<FTTileMap*>;
-	mSpriteSheets	  = DBG_NEW		FTDS::HashMap<FTSpriteSheet*>;
 	mPremades		  = DBG_NEW			FTDS::HashMap<FTPremade*>;
 	mSpriteAnimations = DBG_NEW FTDS::HashMap<FTSpriteAnimation*>;
 	mSpineAnimations  = DBG_NEW	 FTDS::HashMap<FTSpineAnimation*>;
-	mMeshGroups		  = DBG_NEW		  FTDS::HashMap<FTBasicMeshGroup*>;
+	mMeshGroups		  = DBG_NEW		  FTDS::HashMap<FTMeshGroup*>;
 	mVertexShaders	  = DBG_NEW	   FTDS::HashMap<FTVertexShader*>;
 	mPixelShaders	  = DBG_NEW		FTDS::HashMap<FTPixelShader*>;
 	mMaterials		  = DBG_NEW		   FTDS::HashMap<FTMaterial*>;
@@ -70,7 +68,6 @@ void ResourceManager::DeleteAll()
 {
 	ClearMap(mTextures);
 	ClearMap(mTileMaps);
-	ClearMap(mSpriteSheets);
 	ClearMap(mPremades);
 	ClearMap(mSpriteAnimations);
 	ClearMap(mSpineAnimations);
@@ -95,9 +92,9 @@ void ResourceManager::SetPathToAsset(FTDS::String&& projectPath)
 	mPathToAsset.Append("\\Assets\\");
 }
 
-void ResourceManager::AbsoluteToRelativePath(FTResource* res)
+void ResourceManager::AbsoluteToRelativePath(FTDS::String& absPath)
 {
-	FTDS::String path		= res->RelativePath();
+	FTDS::String path		= absPath;
 	FTDS::String folderName = "\\Assets\\";
 
 	// Check if the path is relative.
@@ -114,12 +111,12 @@ void ResourceManager::AbsoluteToRelativePath(FTResource* res)
 	FTDS::String result = ".";
 	result.Append(path);
 
-	res->SetRelativePath(result);
+	absPath = result;
 }
 
-void ResourceManager::RelativeToAbsolutePath(FTResource* res)
+void ResourceManager::RelativeToAbsolutePath(FTDS::String& relPath)
 {
-	FTDS::String path		= res->RelativePath();
+	FTDS::String path		= relPath;
 	FTDS::String folderName = ".\\Assets\\";
 
 	if (path.LFind(".\\") != 0)
@@ -131,7 +128,7 @@ void ResourceManager::RelativeToAbsolutePath(FTResource* res)
 	// result.Append("\\");
 	result.Append(path);
 
-	res->SetRelativePath(result);
+	relPath = result;
 }
 
 FTDS::HashMap<FTTexture*>* ResourceManager::GetTextures()
@@ -142,11 +139,6 @@ FTDS::HashMap<FTTexture*>* ResourceManager::GetTextures()
 FTDS::HashMap<FTTileMap*>* ResourceManager::GetTileMaps()
 {
 	return mTileMaps;
-}
-
-FTDS::HashMap<FTSpriteSheet*>* ResourceManager::GetSpriteSheets()
-{
-	return mSpriteSheets;
 }
 
 FTDS::HashMap<FTPremade*>* ResourceManager::GetPremades()
@@ -169,7 +161,7 @@ FTDS::HashMap<FTMaterial*>* ResourceManager::GetMaterials()
 	return mMaterials;
 }
 
-FTDS::HashMap<FTBasicMeshGroup*>* ResourceManager::GetMeshGroups()
+FTDS::HashMap<FTMeshGroup*>* ResourceManager::GetMeshGroups()
 {
 	return mMeshGroups;
 }
@@ -211,7 +203,7 @@ void ResourceManager::SaveMaterialsToChunk(std::ofstream& ofs)
 		if (iter)
 		{
 			FTMaterial* mat = (*iter)->Value();
-			if (0 < mat->GetRefCount())
+			if (mat->IsReferenced())
 				mat->SaveProperties(ofs);
 		}
 	}
@@ -220,24 +212,28 @@ void ResourceManager::SaveMaterialsToChunk(std::ofstream& ofs)
 void ResourceManager::LoadMaterials()
 {
 	const char* key	 = ChunkKey::NullVal::NULL_OBJECT;
-	size_t		size = 3;
+	size_t		size = 2;
 
-	StandardMaterial* standard				  = DBG_NEW StandardMaterial;
-	FTDS::String						 path = FTDS::String(".//Assets//Materials//") + ChunkKey::STANDARD_MAT + FileTypes::MATERIAL;
+	FTDS::String fileName = ChunkKey::StandardMat::STANDARD_MAT;
+	fileName.Append(+FileTypes::MATERIAL);
+
+	FTDS::String  path = FTDS::String(".//Assets//Materials//") + fileName;
+	FTResourceDef resDef{ fileName, path };
+
+	StandardMaterial* standard = DBG_NEW StandardMaterial(resDef, mRenderer);
+
 	if (!std::filesystem::exists(path.C_Str()))
-		standard->SaveToFile();
-	standard->LoadFromFile();
+	{
+		std::ofstream ofs(path.C_Str());
+		standard->SaveProperties(ofs);
+	}
+	else
+	{
+		std::ifstream ifs(path.C_Str());
+		standard->LoadProperties(ifs);
+	}
 
-	RimMaterial* rim = DBG_NEW RimMaterial;
-	path			 = FTDS::String(".//Assets//Materials//") + ChunkKey::RIM_MAT + FileTypes::MATERIAL;
-	if (!std::filesystem::exists(path.C_Str()))
-		rim->SaveToFile();
-	rim->LoadFromFile();
-
-	mMaterials->Reserve(size);
-
-	mMaterials->Insert(standard->FileName(), standard);
-	mMaterials->Insert(rim->FileName(), rim);
+	mMaterials->Insert(standard->GetFileName(), standard);
 }
 
 FoxtrotRenderer* ResourceManager::GetRenderer()
@@ -251,7 +247,6 @@ ResourceManager::~ResourceManager()
 
 	delete mTextures;
 	delete mTileMaps;
-	delete mSpriteSheets;
 	delete mPremades;
 	delete mSpriteAnimations;
 	delete mSpineAnimations;
@@ -266,7 +261,6 @@ ResourceManager::~ResourceManager()
 
 	mTextures		  = nullptr;
 	mTileMaps		  = nullptr;
-	mSpriteSheets	  = nullptr;
 	mPremades		  = nullptr;
 	mSpriteAnimations = nullptr;
 	mSpineAnimations  = nullptr;
@@ -285,7 +279,6 @@ ResourceManager::ResourceManager()
 	, mRenderer(nullptr)
 	, mTextures(nullptr)
 	, mTileMaps(nullptr)
-	, mSpriteSheets(nullptr)
 	, mPremades(nullptr)
 	, mSpriteAnimations(nullptr)
 	, mSpineAnimations(nullptr)
@@ -313,35 +306,32 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::JSON::JSON);
 	LoadResourceFromChunk<FTJSON>(ifs, mJSONs, desc.first);
 
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::SOUND);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Sound::SOUND);
 	LoadResourceFromChunk<Sound>(ifs, mSounds, desc.first);
 
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_PIXEL_SHADER);
-	LoadResourceFromChunk<FTPixelShader>(ifs, mPixelShaders, desc.first);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPixelShader::FT_PIXEL_SHADER);
+	LoadGraphicsResourceFromChunk<FTPixelShader>(ifs, mPixelShaders, desc.first, mRenderer);
 
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_VERTEX_SHADER);
-	LoadResourceFromChunk<FTVertexShader>(ifs, mVertexShaders, desc.first);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTVertexShader::FT_VERTEX_SHADER);
+	LoadGraphicsResourceFromChunk<FTVertexShader>(ifs, mVertexShaders, desc.first, mRenderer);
 
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMESH_GROUP);
-	LoadResourceFromChunk<FTBasicMeshGroup>(ifs, mMeshGroups, desc.first);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMeshGroup::FT_MESH_GROUP);
+	LoadGraphicsResourceFromChunk<FTMeshGroup>(ifs, mMeshGroups, desc.first, mRenderer);
 
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_SPRITE_ANIMATION_GROUP);
-	LoadResourceFromChunk<FTSpriteAnimation>(ifs, mSpriteAnimations, desc.first);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
+	LoadGraphicsResourceFromChunk<FTSpriteAnimation>(ifs, mSpriteAnimations, desc.first, mRenderer);
 
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_SPINE_ANIMATION_GROUP);
-	LoadResourceFromChunk<FTSpineAnimation>(ifs, mSpineAnimations, desc.first);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
+	LoadGraphicsResourceFromChunk<FTSpineAnimation>(ifs, mSpineAnimations, desc.first, mRenderer);
 
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPREMADE_GROUP);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPremade::FT_PREMADE);
 	LoadResourceFromChunk<FTPremade>(ifs, mPremades, desc.first);
 
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSPRITESHEET_GROUP);
-	LoadResourceFromChunk<FTSpriteSheet>(ifs, mSpriteSheets, desc.first);
-
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTILEMAP_GROUP);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTileMap::FT_TILEMAP);
 	LoadResourceFromChunk<FTTileMap>(ifs, mTileMaps, desc.first);
 
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTEXTURE_GROUP);
-	LoadResourceFromChunk<FTTexture>(ifs, mTextures, desc.first);
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTexture::FT_TEXTURE);
+	LoadGraphicsResourceFromChunk<FTTexture>(ifs, mTextures, desc.first, mRenderer);
 
 	LoadMaterials();
 
@@ -350,33 +340,20 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 
 void ResourceManager::LoadDefaultResources()
 {
-	FTBasicMeshGroup* meshGroup = DBG_NEW FTBasicMeshGroup;
-	FTMeshData* meshData = GeometryGenerator::MakeSquare(1.0f, FTVector3(0.f, 0.f, 1.f));
-	meshGroup->Initialize(
-		meshData,
-		GetRenderer()->GetDevice(),
-		GetRenderer()->GetContext());
-	meshGroup->SetFileName(ChunkKey::PRIMITIVE_SQUARE_BLUE);
-	GetMeshGroups()->Insert(ChunkKey::PRIMITIVE_SQUARE_BLUE, meshGroup);
-	delete meshData;
-}
+	// Defualt resources don't require file name & relative path, since they are generated from code.
+	FTResourceDef resDef{
+		ChunkKey::PRIMITIVE_SQUARE_SPRITE, ChunkKey::NullVal::NULL_OBJECT
+	};
 
-void ResourceManager::ProcessResources()
-{
-	ProcessResources(FTCore::GetInstance(), mCSVs);
-	ProcessResources(FTCore::GetInstance(), mJSONs);
-	ProcessResources(FTCore::GetInstance(), mTexts);
-	ProcessResources(FTCore::GetInstance(), mTextures);
-	ProcessResources(FTCore::GetInstance(), mMeshGroups);
-	ProcessResources(FTCore::GetInstance(), mTileMaps);
-	ProcessResources(FTCore::GetInstance(), mSpriteSheets);
-	ProcessResources(FTCore::GetInstance(), mSpriteAnimations);
-	ProcessResources(FTCore::GetInstance(), mSpineAnimations);
-	ProcessResources(FTCore::GetInstance(), mMaterials);
-	ProcessResources(FTCore::GetInstance(), mVertexShaders);
-	ProcessResources(FTCore::GetInstance(), mPixelShaders);
-	ProcessResources(FTCore::GetInstance(), mSounds);
-	ProcessResources(FTCore::GetInstance(), mPremades);
+	FTMeshData* meshData = GeometryGenerator::MakeSquare(1.0f, FTVector3(0.f, 0.f, 1.f));
+	
+	FTMeshGroup* meshGroup = DBG_NEW FTMeshGroup(
+		resDef,
+		mRenderer,
+		meshData);
+	mMeshGroups->Insert(ChunkKey::PRIMITIVE_SQUARE_SPRITE, meshGroup);
+
+	delete meshData;
 }
 
 FTTexture* ResourceManager::GetLoadedTexture(FTDS::String& key)
@@ -398,16 +375,6 @@ FTTileMap* ResourceManager::GetLoadedTileMap(FTDS::String& key)
 	if (!tileMap)
 		Debug::LogError(__LINE__, __FILE__, "FTTileMap is NULL");
 	return tileMap;
-}
-
-FTSpriteSheet* ResourceManager::GetLoadedSpriteSheet(FTDS::String& key)
-{
-	AddFileExtensionIfNone(key, FileTypes::SPRITE_SHEET);
-
-	FTSpriteSheet* spriteSheet = mSpriteSheets->At(key)->Value();
-	if (!spriteSheet)
-		Debug::LogError(__LINE__, __FILE__, "FTSpriteSheet is NULL");
-	return spriteSheet;
 }
 
 FTPremade* ResourceManager::GetLoadedPremade(FTDS::String& key)
@@ -449,16 +416,16 @@ FTMaterial* ResourceManager::GetLoadedMaterial(FTDS::String& key)
 	return mat;
 }
 
-FTBasicMeshGroup* ResourceManager::GetLoadedMesh(FTDS::String& key)
+FTMeshGroup* ResourceManager::GetLoadedMesh(FTDS::String& key)
 {
 	if (key.Equal(ChunkKey::NullVal::NULL_OBJECT))
 		return nullptr;
 
-	FTDS::Record<FTBasicMeshGroup*>* node = mMeshGroups->At(key);
+	FTDS::Record<FTMeshGroup*>* node = mMeshGroups->At(key);
 	if (!node)
 		return nullptr;
 
-	FTBasicMeshGroup* meshGrp = node->Value();
+	FTMeshGroup* meshGrp = node->Value();
 	if (!meshGrp)
 		Debug::LogError(__LINE__, __FILE__, "FTMeshGroup is NULL");
 	return meshGrp;

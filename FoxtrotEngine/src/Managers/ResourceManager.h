@@ -5,13 +5,6 @@
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
-/// <summary>
-/// A manager that saves/loads FTResources referred in a .Chunk file.
-///
-/// In the Foxtrot Editor, this loads all supported resources in the
-/// "Asset" folder, and saves the FTResources that are referred in a
-/// .Chunk file or used in a Scene.
-/// </summary>
 
 #pragma once
 #include <unordered_map>
@@ -26,6 +19,7 @@
 #include "FileSystem/NullKeys.h"
 #include "FileSystem/FileTypes.h"
 #include "FileSystem/FileIOHelper.h"
+#include "ResourceSystem/FTShaders/FTPixelShader.h"
 
 #include "Static/HashMap.h"
 #include "Static/FTString.h"
@@ -41,11 +35,10 @@ class FoxtrotRenderer;
 class FTTexture;
 class FTSpriteAnimation;
 class FTSpineAnimation;
-class FTBasicMeshGroup;
+class FTMeshGroup;
 struct FTMeshData;
 class FTMeshDataPack;
 class FTTileMap;
-class FTSpriteSheet;
 class FTPremade;
 class FTCore;
 class FTMaterial;
@@ -63,7 +56,6 @@ enum class ResType
 	FTTEXTURE,
 	FT_CUBEMAP_TEXTURE,
 	FTTILEMAP,
-	FTSPRITESHEET,
 	FTPREMADE,
 	FTMESH,
 	FTMATERIAL,
@@ -78,6 +70,9 @@ enum class ResType
 	FTSOUND
 };
 
+/// @brief /// A manager that saves/loads FTResources referred in a .Chunk file.
+/// On Foxtrot Editor, this loads all supported resources in the
+/// "Asset" folder, and saves the FTResources that are referred in a .Chunk file or used in a Scene.
 class ResourceManager
 {
 	SINGLETON_PROTECTED(ResourceManager)
@@ -96,12 +91,11 @@ public:
 public:
 	virtual FTTexture*		   GetLoadedTexture(FTDS::String& key);
 	virtual FTTileMap*		   GetLoadedTileMap(FTDS::String& key);
-	virtual FTSpriteSheet*	   GetLoadedSpriteSheet(FTDS::String& key);
 	virtual FTPremade*		   GetLoadedPremade(FTDS::String& key);
 	virtual FTVertexShader*	   GetLoadedVertexShader(FTDS::String& key);
 	virtual FTPixelShader*	   GetLoadedPixelShader(FTDS::String& key);
 	virtual FTMaterial*		   GetLoadedMaterial(FTDS::String& key);
-	virtual FTBasicMeshGroup*  GetLoadedMesh(FTDS::String& key);
+	virtual FTMeshGroup*	   GetLoadedMesh(FTDS::String& key);
 	virtual FTSpriteAnimation* GetLoadedSpriteAnim(FTDS::String& key);
 	virtual FTSpineAnimation*  GetLoadedSpineAnim(FTDS::String& key);
 	virtual Sound*			   GetLoadedSound(FTDS::String& key);
@@ -112,18 +106,17 @@ public:
 	FTDS::String& GetPathToAsset();
 	virtual void  SetPathToAsset(FTDS::String&& projectPath);
 
-	void AbsoluteToRelativePath(FTResource* res);
-	void RelativeToAbsolutePath(FTResource* res);
+	void AbsoluteToRelativePath(FTDS::String& absPath);
+	void RelativeToAbsolutePath(FTDS::String& relPath);
 
 public:
 	virtual FTDS::HashMap<FTTexture*>*		   GetTextures();
 	virtual FTDS::HashMap<FTTileMap*>*		   GetTileMaps();
-	virtual FTDS::HashMap<FTSpriteSheet*>*	   GetSpriteSheets();
 	virtual FTDS::HashMap<FTPremade*>*		   GetPremades();
 	virtual FTDS::HashMap<FTVertexShader*>*	   GetVertexShaders();
 	virtual FTDS::HashMap<FTPixelShader*>*	   GetPixelShaders();
 	virtual FTDS::HashMap<FTMaterial*>*		   GetMaterials();
-	virtual FTDS::HashMap<FTBasicMeshGroup*>*  GetMeshGroups();
+	virtual FTDS::HashMap<FTMeshGroup*>*	   GetMeshGroups();
 	virtual FTDS::HashMap<FTSpriteAnimation*>* GetSpriteAnimations();
 	virtual FTDS::HashMap<FTSpineAnimation*>*  GetSpineAnimations();
 	virtual FTDS::HashMap<Sound*>*			   GetSounds();
@@ -152,22 +145,18 @@ public:
 	}
 
 	template <typename FTRESOURCE>
-	void ProcessResources(FTCore* coreInstance, FTDS::HashMap<FTRESOURCE*>* resMap)
+	void LoadGraphicsResourceFromChunk(std::ifstream& ifs, FTDS::HashMap<FTRESOURCE*>* resArr, size_t& resCount, FoxtrotRenderer* renderer)
 	{
-		resMap->IterateAllValues(
-			[&](FTRESOURCE* res) {
-				this->RelativeToAbsolutePath(res);
-				if (res)
-					res->Process(coreInstance);
-			});
-	}
+		if (resCount < 1)
+			return;
 
-protected:
-	//////////////////////////
-	// Processing Resources //
-	//////////////////////////
-	/// Member functions for processing newly loaded resources.
-	void ProcessResources();
+		resArr->Reserve(resCount);
+		while (0 < resCount)
+		{
+			LoadResource(ifs, resArr, renderer);
+			--resCount; // Key of the next resource to be imported.
+		}
+	}
 
 protected:
 	FoxtrotRenderer* GetRenderer();
@@ -182,13 +171,12 @@ private:
 private:
 	FTDS::HashMap<FTTexture*>*		   mTextures;
 	FTDS::HashMap<FTTileMap*>*		   mTileMaps;
-	FTDS::HashMap<FTSpriteSheet*>*	   mSpriteSheets;
 	FTDS::HashMap<FTPremade*>*		   mPremades;
 	FTDS::HashMap<FTSpriteAnimation*>* mSpriteAnimations;
 	FTDS::HashMap<FTSpineAnimation*>*  mSpineAnimations;
 
 	// A mesh group usually represents a 3D model.
-	FTDS::HashMap<FTBasicMeshGroup*>* mMeshGroups;
+	FTDS::HashMap<FTMeshGroup*>* mMeshGroups;
 
 	FTDS::HashMap<FTVertexShader*>* mVertexShaders;
 	FTDS::HashMap<FTPixelShader*>*	mPixelShaders;
@@ -208,13 +196,37 @@ private:
 	template <typename FTRESOURCE>
 	void LoadResource(std::ifstream& ifs, FTDS::HashMap<FTRESOURCE*>* resMap)
 	{
-		FTRESOURCE* res = DBG_NEW FTRESOURCE;
 		FileIOHelper::BeginDataPackLoad(ifs);
-		FileIOHelper::LoadBasicString(ifs, res->RelativePath());
-		FileIOHelper::LoadBasicString(ifs, res->FileName());
+
+		FTDS::String relPath;
+		FTDS::String fileName;
+		FileIOHelper::LoadBasicString(ifs, relPath);
+		FileIOHelper::LoadBasicString(ifs, fileName);
+
+		FTResourceDef resDef{ fileName, relPath };
+		FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef);
 
 		assert(0 < resMap->Capacity());
-		resMap->Insert(res->FileName(), res);
+		resMap->Insert(res->GetFileName(), res);
+	}
+
+	template <typename FTRESOURCE>
+	void LoadResource(std::ifstream& ifs, FTDS::HashMap<FTRESOURCE*>* resMap, FoxtrotRenderer* renderer)
+	{
+		assert(renderer);
+
+		FileIOHelper::BeginDataPackLoad(ifs);
+
+		FTDS::String relPath;
+		FTDS::String fileName;
+		FileIOHelper::LoadBasicString(ifs, relPath);
+		FileIOHelper::LoadBasicString(ifs, fileName);
+
+		FTResourceDef resDef{ fileName, relPath };
+		FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef, renderer);
+
+		assert(0 < resMap->Capacity());
+		resMap->Insert(res->GetFileName(), res);
 	}
 
 	template <typename FTRESOURCE>
@@ -246,13 +258,7 @@ private:
 
 namespace ChunkKey
 {
-	constexpr const char* FTTEXTURE_GROUP			= "FTTexture Group";
-	constexpr const char* FTMESH_GROUP				= "FTMesh Group";
-	constexpr const char* FTTILEMAP_GROUP			= "FTTileMap Group";
-	constexpr const char* FTSPRITESHEET_GROUP		= "FTSpriteSheet Group";
-	constexpr const char* FTPREMADE_GROUP			= "FTPremade Group";
-	constexpr const char* FT_SPRITE_ANIMATION_GROUP = "FTSpriteAnimation Group";
-	constexpr const char* FT_SPINE_ANIMATION_GROUP	= "FTSpineAnimation Group";
+	constexpr const char* PRIMITIVE_SQUARE_SPRITE = "Primitive Square Sprite";
 
 	constexpr const char* PRIMITIVE_SQUARE_RED	 = "Primitive Square Red";
 	constexpr const char* PRIMITIVE_SQUARE_GREEN = "Primitive Square Green";

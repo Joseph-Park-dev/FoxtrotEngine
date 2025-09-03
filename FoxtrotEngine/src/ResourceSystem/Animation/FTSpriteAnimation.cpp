@@ -12,7 +12,6 @@
 #include "Renderer/FoxtrotRenderer.h"
 #include "ResourceSystem/FTMaterials/FTMaterial.h"
 #include "ResourceSystem/Animation/AnimationFrame.h"
-#include "ResourceSystem/FTSpriteSheet.h"
 #include "ResourceSystem/GeometryGenerator.h"
 #include "Managers/ResourceManager.h"
 
@@ -22,30 +21,57 @@
 	#include "ResourceSystem/FTShaders/FTVertexShader.h"
 #endif
 
-AnimationFrame* FTSpriteAnimation::GetFrame(int frameIdx)
+void FTSpriteAnimation::Initialize(const Tile* tiles, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
-	if (frameIdx < Meshes()->GetSize())
-	{
-		Mesh* mesh = Meshes()->At(frameIdx);
-		return static_cast<AnimationFrame*>(mesh);
-	}
-	return nullptr;
+	FTDS::DynamicArray<FTMeshData*> meshDataBuf;
+	GeometryGenerator::MakeSpriteAnimation(
+		meshDataBuf, tiles, mMinFrameIdx, mMaxFrameIdx);
+	FTMeshGroup::Initialize(std::move(meshDataBuf), device, context);
 }
 
-void FTSpriteAnimation::SetSpriteSheet(FTSpriteSheet* sheet)
+void FTSpriteAnimation::SaveProperties(std::ofstream& ofs)
 {
-	mSpriteSheet = sheet;
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
+
+	FTMeshGroup::SaveProperties(ofs);
+	FileIOHelper::SaveFloat(ofs, ChunkKey::FTSpriteAnimation::FPS, mFPS);
+	FileIOHelper::SaveBool(ofs, ChunkKey::FTSpriteAnimation::IS_REPEATED, mIsRepeated);
+	FileIOHelper::SaveInt(ofs, ChunkKey::FTSpriteAnimation::MAX_FRAME_IDX, mMaxFrameIdx);
+	FileIOHelper::SaveInt(ofs, ChunkKey::FTSpriteAnimation::MIN_FRAME_IDX, mMinFrameIdx);
+	FileIOHelper::SaveString(ofs, ChunkKey::FTSpriteAnimation::ANIM_TILEMAP_KEY, mAtlas->GetFileName());
+
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
 }
 
-FTSpriteAnimation::FTSpriteAnimation()
-	: FTAnimation()
-	, mSpriteSheet(nullptr)
+void FTSpriteAnimation::LoadProperties(std::ifstream& ifs)
 {
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
+
+	FTDS::String atlasKey;
+	FileIOHelper::LoadBasicString(ifs, atlasKey);
+	FileIOHelper::LoadInt(ifs, mMinFrameIdx);
+	FileIOHelper::LoadInt(ifs, mMaxFrameIdx);
+	FileIOHelper::LoadBool(ifs, mIsRepeated);
+	FileIOHelper::LoadInt(ifs, mFPS);
+	FTMeshGroup::LoadProperties(ifs);
+
+	mAtlas =  ResourceManager::GetInstance()->GetLoadedText(atlasKey);
 }
 
-FTSpriteAnimation::FTSpriteAnimation(FTSpriteAnimation* other)
-	: FTAnimation()
-	, mSpriteSheet(other->mSpriteSheet)
+const int FTSpriteAnimation::GetFPS() const
+{
+	return mFPS;
+}
+
+const int FTSpriteAnimation::GetMaxFrameIdx() const { return mMaxFrameIdx; }
+const int FTSpriteAnimation::GetMinFrameIdx() const { return mMinFrameIdx; }
+
+FTSpriteAnimation::FTSpriteAnimation(FTResourceDef& resDef, FoxtrotRenderer* renderer)
+	: FTMeshGroup(resDef, renderer)
+	, mMinFrameIdx(0)
+	, mMaxFrameIdx(0)
+	, mFPS(30)
+	, mIsRepeated(true)
 {
 }
 
@@ -53,76 +79,29 @@ FTSpriteAnimation::~FTSpriteAnimation()
 {
 }
 
-void FTSpriteAnimation::SaveProperties(std::ofstream& ofs)
+void FTSpriteAnimation::Process(FoxtrotRenderer* renderer)
 {
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::SpriteAnimation::FT_SPRITE_ANIMATION);
-
-	FTAnimation::SaveProperties(ofs);
-	FileIOHelper::SaveString(ofs, ChunkKey::SpriteAnimation::ANIM_TILEMAP_KEY, mSpriteSheet->FileName());
-
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::SpriteAnimation::FT_SPRITE_ANIMATION);
-}
-
-void FTSpriteAnimation::LoadProperties(std::ifstream& ifs)
-{
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::SpriteAnimation::FT_SPRITE_ANIMATION);
-
-	FileIOHelper::LoadResource(ifs, mSpriteSheet, ResourceManager::GetInstance()->GetSpriteSheets());
-	FTAnimation::LoadProperties(ifs);
-}
-
-void FTSpriteAnimation::Process(FTCore* coreInst)
-{
-	if (this->GetIsProcessed())
+	if (IsProcessed())
 		return;
 
-	std::ifstream ifs(this->RelativePath().C_Str());
+	std::ifstream ifs(GetRelativePath().C_Str());
 	this->LoadProperties(ifs);
 
-	if (!mSpriteSheet)
-	{
-		Debug::LogError(__LINE__, __FILE__, "Failed to load spritesheet");
-		return;
-	}
+	//Tile generate code here;
 
-	FoxtrotRenderer*		renderer = coreInst->GetGameRenderer();
-	FTDS::DynamicArray<FTMeshData*> meshDataBuf;
-	GeometryGenerator::MakeSpriteAnimation(
-		meshDataBuf, mSpriteSheet->GetTiles(), this->GetMinFrameIdx(), this->GetMaxFrameIdx());
-	this->Initialize(std::move(meshDataBuf), renderer->GetDevice(), renderer->GetContext());
-
-	this->SetIsProcessed(true);
+	FTResource::Process();
 }
 
 #ifdef FOXTROT_EDITOR
 void FTSpriteAnimation::AddRefCount()
 {
-	if (mSpriteSheet)
-		mSpriteSheet->AddRefCount();
-	FTBasicMeshGroup::AddRefCount();
+	mAtlas->AddRefCount();
+	FTMeshGroup::AddRefCount();
 }
 
 void FTSpriteAnimation::SubtractRefCount()
 {
-	if (mSpriteSheet)
-		mSpriteSheet->SubtractRefCount();
-	FTBasicMeshGroup::SubtractRefCount();
+	mAtlas->SubtractRefCount();
+	FTMeshGroup::SubtractRefCount();
 }
-
-// void FTSpriteAnimation::SubtractRefCount()
-//{
-//	if (GetTexture())
-//		GetTexture()->SubtractRefCount();
-//	for (FTMaterial* mat : Materials())
-//		mat->SubtractRefCount();
-//
-//	if (GetVertexShader())
-//		GetVertexShader()->SubtractRefCount();
-//	if (GetPixelShader())
-//		GetPixelShader()->SubtractRefCount();
-//
-//	FTSpriteSheet* sheet = EditorResourceManager::GetInstance()->GetLoadedSpriteSheet(this->GetTileDataKey());
-//	if (sheet)
-//		sheet->SubtractRefCount();
-// }
 #endif

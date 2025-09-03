@@ -5,6 +5,7 @@
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
+
 #pragma once
 #include "ResourceSystem/FTResource.h"
 
@@ -20,17 +21,11 @@ class FTMaterial :
 	public FTResource
 {
 public:
-	/// @brief Updates mPCBuf with the material values.
+	/// @brief Updates pixel constant buffer with material data.
 	virtual void UpdateBuffer(ComPtr<ID3D11DeviceContext>& context) = 0;
 
-	/// @brief See FTResource::SaveProperties();
-	virtual void SaveProperties(std::ofstream& ofs) override;
-
-	/// @brief See FTResource::LoadProperties();
-	virtual void LoadProperties(std::ifstream& ifs) override;
-
 public:
-	/// @brief Gets the pixel constant buffer with the material values applied.
+	/// @brief Gets the pixel constant buffer with material data applied.
 	ComPtr<ID3D11Buffer>& GetPCBuf();
 
 public:
@@ -42,15 +37,16 @@ protected:
 	virtual void CreatePixelConstBuffer(ComPtr<ID3D11Device>& device) = 0;
 
 private:
-	/// @brief Pixel constant buffer to which the material values are applied.
+	/// @brief Pixel constant buffer to which material data are applied.
 	ComPtr<ID3D11Buffer> mPCBuf;
 
 private:
+	/// @see FTResource::Process()
 	void Process(FoxtrotRenderer* renderer) override;
 
 #ifdef FOXTROT_EDITOR
 public:
-	/// @brief GUI update for modifying the material values.
+	/// @brief GUI update function for modifying the material data.
 	virtual void UpdateUI() = 0;
 
 #endif

@@ -82,7 +82,7 @@ void SoundManager::SaveProperties(std::ofstream& ofs)
 	if (!mLoaded->IsEmpty())
 	{
 		mLoaded->IterateArray([&](Sound* sound) {
-			FileIOHelper::SaveString(ofs, std::to_string(idx).c_str(), sound->FileName().C_Str());
+			FileIOHelper::SaveString(ofs, std::to_string(idx).c_str(), sound->GetFileName().C_Str());
 			++idx;
 		});
 	}
@@ -141,7 +141,7 @@ void SoundManager::UpdateUI(bool* opened)
 		ImGui::Text("Loaded Sounds");
 		mLoaded->IterateArray([&](Sound* sound) {
 			if (sound)
-				ImGui::Text(sound->FileName().C_Str());
+				ImGui::Text(sound->GetFileName().C_Str());
 		});
 
 		LoadSoundFromEditior();
@@ -154,7 +154,7 @@ void SoundManager::LoadSoundFromEditior()
 	Sound* sound = nullptr;
 	FTEditorUtils::DisplayResSelection("Load Sound", EditorResourceManager::GetInstance()->GetSounds(), sound);
 	if (sound)
-		if (sound->GetRefCount() <= 0)
+		if (sound->IsReferenced())
 		{
 			mLoaded->PushBack(sound);
 			sound->AddRefCount();

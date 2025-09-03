@@ -81,20 +81,20 @@ void Animator::SaveProperties(std::ofstream& ofs)
 	MeshRenderer::SaveProperties(ofs);
 
 	// Loop through loaded animation keys and save.
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Animation::LOADED_KEYS);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSpriteAnimator::LOADED_KEYS);
 	size_t i = 0;
 	mLoadedAnim->IterateArray([&](FTSpriteAnimation* anim) {
 		if (anim)
-			FileIOHelper::SaveString(ofs, std::to_string(i).c_str(), anim->FileName());
+			FileIOHelper::SaveString(ofs, std::to_string(i).c_str(), anim->GetFileName());
 		++i;
 	});
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::Animation::LOADED_KEYS);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSpriteAnimator::LOADED_KEYS);
 }
 
 void Animator::LoadProperties(std::ifstream& ifs)
 {
 	// Load Animations
-	std::pair<size_t, FTDS::String> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Animation::LOADED_KEYS);
+	std::pair<size_t, FTDS::String> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpriteAnimator::LOADED_KEYS);
 	mLoadedAnim->Reserve(pack.first);
 	for (size_t i = 0; i < pack.first; ++i)
 	{
@@ -116,15 +116,13 @@ void Animator::UpdateFrame(float deltaTime)
 	if (mIsFinished)
 		return;
 	mAccTime += deltaTime;
-	FTSpriteAnimation* anim		 = static_cast<FTSpriteAnimation*>(GetMeshGroup());
-	AnimationFrame*	   currFrame = anim->GetFrame(mCurrFrameIdx);
-	if (currFrame)
+	FTSpriteAnimation* anim				= static_cast<FTSpriteAnimation*>(GetMeshGroup());
+	static float	   durationPerFrame = 1 / anim->GetFPS();
+
+	if (durationPerFrame <= mAccTime)
 	{
-		if (currFrame->Duration <= mAccTime)
-		{
-			++mCurrFrameIdx;
-			mAccTime = 0.f;
-		}
+		++mCurrFrameIdx;
+		mAccTime = 0.f;
 	}
 	if (IndexOutOfRange(anim->GetMinFrameIdx(), anim->GetMaxFrameIdx()))
 	{
@@ -160,10 +158,18 @@ void Animator::Render(FoxtrotRenderer* renderer)
 {
 	if (GetMeshGroup())
 	{
-		MeshRenderer::UpdateMesh(GetOwner()->GetTransform(), Camera::GetInstance(), renderer);
 		renderer->SwitchFillMode();
-		// renderer->SetRenderTargetView();
-		GetMeshGroup()->Render(mCurrFrameIdx, renderer, GetTexture(), GetVS(), GetPS(), GetMaterial());
+
+		Transform* transform = GetOwner()->GetTransform();
+		GetMeshGroup()->Render(
+			mCurrFrameIdx,
+			renderer,
+			transform,
+			Camera::GetInstance(),
+			GetTexture(),
+			GetVS(),
+			GetPS(),
+			GetMaterial());
 	}
 }
 
@@ -207,12 +213,14 @@ void Animator::EditorRender(FoxtrotRenderer* renderer)
 {
 	if (GetMeshGroup())
 	{
-		MeshRenderer::UpdateMesh(GetOwner()->GetTransform(), EditorCamera::GetInstance(), renderer);
 		renderer->SwitchFillMode();
-		// renderer->SetRenderTargetView();
+
+		Transform* transform = GetOwner()->GetTransform();
 		GetMeshGroup()->Render(
 			mCurrFrameIdx,
 			renderer,
+			transform,
+			Camera::GetInstance(),
 			GetTexture(),
 			GetVS(),
 			GetPS(),
@@ -260,8 +268,8 @@ void Animator::UpdatePlayList()
 		mLoadedAnim->IterateArray([&](FTSpriteAnimation* anim) {
 			if (anim)
 			{
-				ImGui::PushID(anim->FileName().C_Str());
-				ImGui::Text(anim->FileName().C_Str());
+				ImGui::PushID(anim->GetFileName().C_Str());
+				ImGui::Text(anim->GetFileName().C_Str());
 				anim->UpdateUI();
 
 				if (ImGui::ArrowButton("##Up", ImGuiDir::ImGuiDir_Up))

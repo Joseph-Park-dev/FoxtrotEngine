@@ -10,7 +10,7 @@ void FTVertexShader::CompileShader(FoxtrotRenderer* renderer)
 		return;
 	mShader.Reset();
 
-	const wchar_t* fileName = RelativePath().WC_Str();
+	const wchar_t* fileName = GetRelativePath().WC_Str();
 	DX::ThrowIfFailed(
 		D3D11Utils::CreateVertexShaderAndInputLayout(
 			renderer->GetDevice(),
@@ -20,9 +20,6 @@ void FTVertexShader::CompileShader(FoxtrotRenderer* renderer)
 			mInputLayout));
 	delete[] fileName;
 }
-
-ComPtr<ID3D11VertexShader>& FTVertexShader::GetShader() { return mShader; }
-ComPtr<ID3D11InputLayout>&	FTVertexShader::GetInputLayout() { return mInputLayout; }
 
 void FTVertexShader::RegisterInputElementDesc(const char* semanticName, UINT& offset)
 {
@@ -49,8 +46,8 @@ void FTVertexShader::RegisterInputElementDesc(const char* semanticName, UINT& of
 	mInputElements.push_back(desc);
 }
 
-FTVertexShader::FTVertexShader()
-	: FTShader()
+FTVertexShader::FTVertexShader(FTResourceDef& resDef, FoxtrotRenderer* renderer)
+	: FTShader(resDef, renderer)
 	, mIsSpine(false)
 #ifdef FOXTROT_EDITOR
 	, mSemanticsInclusion(DBG_NEW FTDS::HashMap<bool>(5))
@@ -68,27 +65,27 @@ FTVertexShader::~FTVertexShader()
 
 void FTVertexShader::SaveProperties(std::ofstream& ofs)
 {
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTVertexShader::FT_VERTEX_SHADER);
 	FTResource::SaveProperties(ofs);
 
 	for (size_t i = 0; i < mSemanticsName.size(); ++i)
 	{
-		FTDS::String key = FTDS::String(ChunkKey::INPUT_ELEMENTS);
+		FTDS::String key = FTDS::String(ChunkKey::FTVertexShader::INPUT_ELEMENTS);
 		key.Append(" ");
 		key.Append(std::to_string(i).c_str());
 		FileIOHelper::SaveString(ofs, key.C_Str(), mSemanticsName.at(i));
 	}
 
-	FileIOHelper::SaveSize(ofs, ChunkKey::INPUT_ELEMENTS_COUNT, mSemanticsName.size());
+	FileIOHelper::SaveSize(ofs, ChunkKey::FTVertexShader::INPUT_ELEMENTS_COUNT, mSemanticsName.size());
 
-	FileIOHelper::SaveBool(ofs, ChunkKey::IS_SPINE_SHADER, mIsSpine);
+	FileIOHelper::SaveBool(ofs, ChunkKey::FTVertexShader::IS_SPINE_SHADER, mIsSpine);
 
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FT_VERTEX_SHADER);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTVertexShader::FT_VERTEX_SHADER);
 }
 
 void FTVertexShader::LoadProperties(std::ifstream& ifs)
 {
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FT_VERTEX_SHADER);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTVertexShader::FT_VERTEX_SHADER);
 
 	FileIOHelper::LoadBool(ifs, mIsSpine);
 
@@ -102,7 +99,7 @@ void FTVertexShader::LoadProperties(std::ifstream& ifs)
 		mSemanticsName.push_back(semanticN);
 	}
 	std::reverse(mSemanticsName.begin(), mSemanticsName.end());
-	
+
 	UINT offset = 0;
 	for (FTDS::String& str : mSemanticsName)
 		RegisterInputElementDesc(str.C_Str(), offset);
@@ -113,7 +110,7 @@ void FTVertexShader::LoadProperties(std::ifstream& ifs)
 			mInputElements.at(i).InputSlot = i;
 	}
 
-	#ifdef FOXTROT_EDITOR
+#ifdef FOXTROT_EDITOR
 	FTDS::String semantics[5] = { "POSITION", "POSITION 2D", "NORMAL", "COLOR", "TEXCOORD" };
 
 	for (FTDS::String& semanticN : mSemanticsName)
@@ -124,12 +121,15 @@ void FTVertexShader::LoadProperties(std::ifstream& ifs)
 		if (!mSemanticsInclusion->At(semantics[i]))
 			mSemanticsInclusion->Insert(semantics[i], false);
 	}
-	#endif // FOXTROT_EDITOR
+#endif // FOXTROT_EDITOR
 
 	return FTResource::LoadProperties(ifs);
 }
 
-	#ifdef FOXTROT_EDITOR
+ComPtr<ID3D11VertexShader>& FTVertexShader::GetShader() { return mShader; }
+ComPtr<ID3D11InputLayout>&	FTVertexShader::GetInputLayout() { return mInputLayout; }
+
+#ifdef FOXTROT_EDITOR
 void FTVertexShader::UpdateUI()
 {
 	ImGui::SeparatorText("Input Elements");
@@ -169,8 +169,7 @@ void FTVertexShader::UpdateUI()
 				mInputElements.at(i).InputSlot = i;
 		}
 
-		SaveMetaFile();
-		CompileShader(GetRenderer());
+		SaveMetaData();
 	}
 }
-	#endif
+#endif

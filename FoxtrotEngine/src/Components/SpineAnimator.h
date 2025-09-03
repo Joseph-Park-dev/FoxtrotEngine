@@ -20,12 +20,6 @@ public:
 	SpineAnimator(Actor* owner, int updateOrder = DefaultVal::UPDATE_ORDER);
 	virtual void CloneTo(Actor* actor) override;
 
-protected:
-	virtual void UpdateMesh(
-		Transform*		 transform,
-		Camera*			 camInst,
-		FoxtrotRenderer* renderer) override;
-
 private:
 	float		   mTimeScale;
 	spine::Physics mUsePhysics;

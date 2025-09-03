@@ -83,3 +83,12 @@ private:
 
 #endif // FOXTROT_EDITOR
 };
+
+namespace ChunkKey
+{
+	namespace FTSpriteAnimator
+	{
+		constexpr const char* LOADED_KEYS = "Loaded Keys";
+
+	} // namespace FTSpriteAnimator
+} // namespace ChunkKey

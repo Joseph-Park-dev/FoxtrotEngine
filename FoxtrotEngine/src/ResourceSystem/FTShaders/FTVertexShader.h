@@ -13,7 +13,7 @@
 
 #include <Static/HashMap.h>
 
-/// @brief A wrapper for HLSL vertex Shaders.
+/// @brief A wrapper for HLSL vertex shaders.
 class FTVertexShader : public FTShader
 {
 public:
@@ -24,7 +24,7 @@ public:
 	virtual void LoadProperties(std::ifstream& ifs) override;
 
 public:
-	/// @brief Returns compiled HLSL shader object.
+	/// @brief Returns compiled HLSL vertex shader object.
 	ComPtr<ID3D11VertexShader>& GetShader();
 
 	/// @brief Returns the current input layout.

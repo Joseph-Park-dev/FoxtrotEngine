@@ -29,7 +29,7 @@ bool FTWindow::InitializeWindow(WNDPROC wndProc, int windowMode)
 	assert(0 < mWidth || 0 < mHeight);
 	assert(!mTitle.IsEmpty());
 
-	wchar_t* title = mTitle.WC_Str();
+	const wchar_t* title = mTitle.WC_Str();
 
 	WNDCLASSEX wc = {
 		sizeof(WNDCLASSEX),

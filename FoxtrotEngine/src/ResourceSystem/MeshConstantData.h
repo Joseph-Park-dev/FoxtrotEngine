@@ -17,7 +17,6 @@
 
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/Vertex.h"
-#include "ResourceSystem/FTShaders/StandardPS.h"
 #include "ResourceSystem/Light.h"
 #include "Managers/LightManager.h"
 

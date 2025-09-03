@@ -7,30 +7,28 @@
 #include "Core/FTCore.h"
 #include "Core/TemplateFunctions.h"
 
-const ShaderType& FTShader::GetType() const { return mType; }
-void FTShader::SetType(ShaderType type) { mType = type; }
-
-FTShader::FTShader()
-#ifdef FOXTROT_EDITOR
-	: mRenderer(nullptr)
-#endif // DEBUG
+FTShader::FTShader(FTResourceDef& resDef, FoxtrotRenderer* renderer)
+	: FTResource(resDef)
 {
+	Process(renderer);
 }
 
-void FTShader::Process(FTCore* coreInst)
+void FTShader::Process(FoxtrotRenderer* renderer)
 {
-	LoadMetaFile();
-	CompileShader(coreInst->GetGameRenderer());
-
-#ifdef FOXTROT_EDITOR
-	mRenderer = coreInst->GetGameRenderer();
-#endif // FOXTROT_EDITOR
+	LoadMetaData();
+	CompileShader(renderer);
+	FTResource::Process();
 }
 
-void FTShader::LoadMetaFile()
+void FTShader::SetType(ShaderType&& shaderType)
+{
+	mType = shaderType;
+}
+
+void FTShader::LoadMetaData()
 {
 	FTDS::String metaPath;
-	metaPath.Assign(RelativePath());
+	metaPath.Assign(GetRelativePath());
 	ReplaceSuffix(metaPath, FileTypes::SHADER, FileTypes::SHADER_META);
 	std::ifstream ifs(metaPath.C_Str());
 
@@ -41,10 +39,10 @@ void FTShader::LoadMetaFile()
 }
 
 #ifdef FOXTROT_EDITOR
-void FTShader::SaveMetaFile()
+void FTShader::SaveMetaData()
 {
 	FTDS::String metaPath;
-	metaPath.Assign(RelativePath());
+	metaPath.Assign(GetRelativePath());
 	ReplaceSuffix(metaPath, FileTypes::SHADER, FileTypes::SHADER_META);
 	std::ofstream ofs(metaPath.C_Str());
 
@@ -55,15 +53,5 @@ void FTShader::SaveMetaFile()
 	}
 	else
 		Debug::LogError(__LINE__, __FILE__, "Failed to save shader meta file");
-}
-
-FoxtrotRenderer* FTShader::GetRenderer()
-{
-	return mRenderer;
-}
-
-FTShader::FTShader(FoxtrotRenderer* renderer)
-	: mRenderer(renderer)
-{
 }
 #endif // FOXTROT_EDITOR

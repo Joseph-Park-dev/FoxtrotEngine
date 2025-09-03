@@ -14,7 +14,7 @@
 
 #include "Static/FTString.h"
 
-class FTBasicMeshGroup;
+class FTMeshGroup;
 class FTCore;
 class Actor;
 class Camera;
@@ -58,7 +58,7 @@ public:
 	// Getters & Setters to the elements //
 	///////////////////////////////////////
 protected:
-	FTBasicMeshGroup* GetMeshGroup() const;
+	FTMeshGroup* GetMeshGroup() const;
 	FTTexture*		  GetTexture() const;
 	FoxtrotRenderer*  GetRenderer() const;
 	FTVertexShader*	  GetVS() const;
@@ -67,7 +67,7 @@ protected:
 	FTMaterial* GetMaterial() const;
 
 	void SetRenderer(FoxtrotRenderer* renderer);
-	void SetMeshGroup(FTBasicMeshGroup* meshGroup);
+	void SetMeshGroup(FTMeshGroup* meshGroup);
 	void SetTexture(FTTexture* tex);
 	void SetVS(FTVertexShader* vs);
 	void SetPS(FTPixelShader* ps);
@@ -88,7 +88,7 @@ protected:
 	////////////////////////////////////////
 private:
 	FoxtrotRenderer*  mRenderer;
-	FTBasicMeshGroup* mMeshGroup;
+	FTMeshGroup* mMeshGroup;
 	FTTexture*		  mTexture;
 	FTVertexShader*	  mVS;
 	FTPixelShader*	  mPS;

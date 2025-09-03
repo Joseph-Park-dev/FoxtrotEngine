@@ -22,7 +22,7 @@
 #include "Actors/Transform.h"
 #include "Core/FTCore.h"
 #include "ResourceSystem/Mesh.h"
-#include "ResourceSystem/FTBasicMeshGroup.h"
+#include "ResourceSystem/FTMeshGroup.h"
 #include "ResourceSystem/GeometryGenerator.h"
 #include "Renderer/Camera.h"
 #include "Renderer/FoxtrotRenderer.h"

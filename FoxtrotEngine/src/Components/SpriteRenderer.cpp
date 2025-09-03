@@ -18,7 +18,7 @@
 #include "Renderer/Camera.h"
 #include "Renderer/D3D11Utils.h"
 #include "Renderer/FoxtrotRenderer.h"
-#include "ResourceSystem/FTBasicMeshGroup.h"
+#include "ResourceSystem/FTMeshGroup.h"
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/GeometryGenerator.h"
 #include "ResourceSystem/Mesh.h"
@@ -49,7 +49,7 @@ void SpriteRenderer::Initialize(FTCore* coreInstance)
 {
 	MeshRenderer::Initialize(coreInstance);
 	FTDS::String	  key	 = ChunkKey::PRIMITIVE_SQUARE_BLUE;
-	FTBasicMeshGroup* square = ResourceManager::GetInstance()->GetLoadedMesh(key);
+	FTMeshGroup* square = ResourceManager::GetInstance()->GetLoadedMesh(key);
 	SetMeshGroup(square);
 }
 

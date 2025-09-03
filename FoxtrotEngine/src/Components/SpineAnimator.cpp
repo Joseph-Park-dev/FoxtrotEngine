@@ -9,7 +9,7 @@
 #include "ResourceSystem/Vertex.h"
 #include "ResourceSystem/Mesh.h"
 #include "ResourceSystem/FTTexture.h"
-#include "ResourceSystem/FTBasicMeshGroup.h"
+#include "ResourceSystem/FTMeshGroup.h"
 #include "ResourceSystem/FTMeshDataPack.h"
 #include "ResourceSystem/Animation/FTSpineAnimation.h"
 #include "ResourceSystem/FTShaders/FTVertexShader.h"

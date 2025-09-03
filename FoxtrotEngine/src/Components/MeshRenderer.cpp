@@ -15,7 +15,7 @@
 #include "Actors/Actor.h"
 #include "ResourceSystem/Mesh.h"
 #include "ResourceSystem/FTMeshDataPack.h"
-#include "ResourceSystem/FTBasicMeshGroup.h"
+#include "ResourceSystem/FTMeshGroup.h"
 #include "Renderer/Camera.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "ResourceSystem/GeometryGenerator.h"
@@ -63,14 +63,14 @@ void MeshRenderer::CloneTo(Actor* actor)
 }
 
 FoxtrotRenderer*  MeshRenderer::GetRenderer() const { return mRenderer; }
-FTBasicMeshGroup* MeshRenderer::GetMeshGroup() const { return mMeshGroup; }
+FTMeshGroup* MeshRenderer::GetMeshGroup() const { return mMeshGroup; }
 FTTexture*		  MeshRenderer::GetTexture() const { return mTexture; }
 FTVertexShader*	  MeshRenderer::GetVS() const { return mVS; }
 FTPixelShader*	  MeshRenderer::GetPS() const { return mPS; }
 FTMaterial*		  MeshRenderer::GetMaterial() const { return mMaterial; }
 
 void MeshRenderer::SetRenderer(FoxtrotRenderer* renderer) { mRenderer = renderer; }
-void MeshRenderer::SetMeshGroup(FTBasicMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
+void MeshRenderer::SetMeshGroup(FTMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
 void MeshRenderer::SetTexture(FTTexture* tex) { mTexture = tex; }
 void MeshRenderer::SetVS(FTVertexShader* vs) { mVS = vs; }
 void MeshRenderer::SetPS(FTPixelShader* ps) { mPS = ps; }

@@ -24,8 +24,8 @@ public:
 	bool		 GetIsPlaying() const;
 
 public:
-	Sound();
-	~Sound() override;
+	Sound(FTResourceDef& resDef);
+	~Sound();
 
 private:
 	SoLoud::Wav* mWav;
@@ -34,10 +34,16 @@ private:
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
 	virtual void LoadProperties(std::ifstream& ifs) override;
-	void		 Process(FTCore* coreInst) override;
+
+protected:
+	void Process() override;
 };
 
 namespace ChunkKey
 {
-	constexpr const char* SOUND = "Sound";
-}
+	namespace Sound
+	{
+		constexpr const char* SOUND = "Sound";
+
+	}
+} // namespace ChunkKey

@@ -49,17 +49,12 @@ void FTTexture::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTexture::FT_TEXTURE);
 	FTResource::SaveProperties(ofs);
-	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTTexture::WIDTH, mWidth);
-	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTTexture::HEIGHT, mHeight);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTexture::FT_TEXTURE);
 }
 
 void FTTexture::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTexture::FT_TEXTURE);
-	FileIOHelper::LoadUnsignedInt(ifs, mHeight);
-	FileIOHelper::LoadUnsignedInt(ifs, mWidth);
-
 	FTResource::LoadProperties(ifs);
 }
 

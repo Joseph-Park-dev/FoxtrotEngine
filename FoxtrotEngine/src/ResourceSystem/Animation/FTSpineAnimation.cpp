@@ -91,10 +91,10 @@ spine::Vector<spine::Animation*>& FTSpineAnimation::LoadedClips()
 	return mLoadedClips;
 }
 
-FTSpineAnimation::FTSpineAnimation(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTText* atlasTxt, FTJSON* json)
+FTSpineAnimation::FTSpineAnimation(FTResourceDef& resDef, FoxtrotRenderer* renderer)
 	: FTMeshGroup(resDef, renderer)
-	, mJSON(json)
-	, mAtlasTxt(atlasTxt)
+	, mJSON(nullptr)
+	, mAtlasTxt(nullptr)
 	, mTimeScale(1.f)
 	, mSkinCombination(0x0)
 	, mCurrAnimIdx(0)
@@ -169,8 +169,8 @@ void FTSpineAnimation::InitializeSpinAnim(ComPtr<ID3D11Device>& device)
 
 	spine::FTSpineLoader* spineLoader = AnimationManager::GetInstance()->GetSpineLoader();
 
-	ResourceManager::GetInstance()->RelativeToAbsolutePath(mAtlasTxt);
-	ResourceManager::GetInstance()->RelativeToAbsolutePath(mJSON);
+	//ResourceManager::GetInstance()->RelativeToAbsolutePath(mAtlasTxt);
+	//ResourceManager::GetInstance()->RelativeToAbsolutePath(mJSON);
 
 	mAtlas		  = new spine::Atlas(mAtlasTxt->GetRelativePath().C_Str(), spineLoader);
 	mSkeletonData = spineLoader->ReadSkeletonJsonData(mJSON->GetRelativePath().C_Str(), mAtlas, 1.0f);

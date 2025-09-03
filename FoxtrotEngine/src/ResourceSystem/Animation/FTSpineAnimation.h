@@ -60,7 +60,7 @@ public:
 public:
 	/// @brief Creates the spine animation.
 	/// The file paths of the generic data will only be used.
-	FTSpineAnimation(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTText* atlasTxt, FTJSON* json);
+	FTSpineAnimation(FTResourceDef& resDef, FoxtrotRenderer* renderer);
 	~FTSpineAnimation();
 
 private:

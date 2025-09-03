@@ -29,11 +29,16 @@ using Matrix = DirectX::SimpleMath::Matrix;
 
 void FTMeshGroup::Render(
 	FoxtrotRenderer* renderer,
+	Transform*		 transform,
+	Camera*			 camInst,
 	FTTexture*		 tex,
 	FTVertexShader*	 vs,
 	FTPixelShader*	 ps,
 	FTMaterial*		 mat)
 {
+	// This enables the resource reusable throughout the Component instances.
+	UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat);
+
 	if (!vs || !ps) // Vertex Shader is always required when drawing.
 		return;
 
@@ -69,11 +74,16 @@ void FTMeshGroup::Render(
 void FTMeshGroup::Render(
 	int				 meshIndex,
 	FoxtrotRenderer* renderer,
+	Transform*		 transform,
+	Camera*			 camInst,
 	FTTexture*		 tex,
 	FTVertexShader*	 vs,
 	FTPixelShader*	 ps,
 	FTMaterial*		 mat)
 {
+	// This enables the resource reusable throughout the Component instances.
+	UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat);
+
 	if (!vs || !ps) // Vertex Shader is always required when drawing.
 		return;
 
@@ -109,6 +119,80 @@ void FTMeshGroup::Render(
 	}
 }
 
+void FTMeshGroup::Process(FoxtrotRenderer* renderer)
+{
+	if (this->IsProcessed())
+		return;
+
+	if (this->GetRelativePath().IsEmpty())
+		return;
+
+	Initialize(
+		GeometryGenerator::ReadFromFile(this->GetRelativePath()), renderer->GetDevice(), renderer->GetContext());
+
+	FTResource::Process();
+}
+
+void FTMeshGroup::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
+{
+	D3D11Utils::CreateConstantBuffer(device, mVCData, mVCBuf);
+}
+
+HRESULT FTMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
+{
+	// FTTexture sampler 만들기
+	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	sampDesc.Filter			= D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU		= D3D11_TEXTURE_ADDRESS_CLAMP;
+	sampDesc.AddressV		= D3D11_TEXTURE_ADDRESS_CLAMP;
+	sampDesc.AddressW		= D3D11_TEXTURE_ADDRESS_CLAMP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD			= 0;
+	sampDesc.MaxLOD			= D3D11_FLOAT32_MAX;
+
+	// Create the Sample State
+	return device->CreateSamplerState(&sampDesc, mSamplerState.GetAddressOf());
+}
+
+void FTMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, Transform* transform, Camera* camInst, FTMaterial* mat)
+{
+	// Model Transformation
+	Matrix modelMat = Matrix();
+
+	mDirection += transform->GetSteering()->Linear.x;
+	Math::Clamp(mDirection, -1, 1);
+
+	FTVector3 scale		   = transform->GetWorldScale();
+	FTVector3 scaleWithDir = FTVector3(scale.x * mDirection, scale.y, scale.z);
+	transform->SetLocalScale(scaleWithDir);
+	modelMat = transform->GetMatrixWorld();
+
+	// Inverse transpose matrix calculation
+	// Consider removing this part if the engine is for 2D games.
+	Matrix invTransposeMat = modelMat.Transpose();
+	invTransposeMat.Translation(Vector3(0.0f));
+	invTransposeMat = invTransposeMat.Transpose().Invert();
+
+	// View Transformation
+	Matrix&& viewMat  = camInst->GetViewRow();
+	Vector3	 eyeWorld = Vector3::Transform(Vector3(0.0f), viewMat.Invert());
+
+	// Project Transformation
+	Matrix&& projMat = std::move(camInst->GetProjRow());
+
+	mVCData.model		 = modelMat.Transpose();
+	mVCData.view		 = viewMat.Transpose();
+	mVCData.projection	 = projMat.Transpose();
+	mVCData.invTranspose = std::move(invTransposeMat);
+
+	D3D11Utils::UpdateBuffer(
+		context, mVCData, mVCBuf);
+
+	if (mat)
+		mat->UpdateBuffer(context);
+}
+
 void FTMeshGroup::Clear()
 {
 	mMeshes->IterateArray([&](Mesh* mesh) {
@@ -124,6 +208,19 @@ void FTMeshGroup::Clear()
 FTDS::DynamicArray<Mesh*>*	FTMeshGroup::Meshes() { return mMeshes; };
 ComPtr<ID3D11SamplerState>& FTMeshGroup::GetSamplerState() { return mSamplerState; }
 ComPtr<ID3D11Buffer>&		FTMeshGroup::GetVCBuf() { return mVCBuf; }
+
+void FTMeshGroup::Process(FoxtrotRenderer* renderer, FTMeshData* meshData)
+{
+	if (this->IsProcessed())
+		return;
+
+	if (this->GetRelativePath().IsEmpty())
+		return;
+
+	Initialize(meshData, renderer->GetDevice(), renderer->GetContext());
+
+	FTResource::Process();
+}
 
 void FTMeshGroup::Initialize(
 	FTMeshData*					 mesh,
@@ -170,55 +267,6 @@ void FTMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicAr
 	});
 }
 
-void FTMeshGroup::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
-{
-	D3D11Utils::CreateConstantBuffer(device, mVCData, mVCBuf);
-}
-
-void FTMeshGroup::Process(FoxtrotRenderer* renderer)
-{
-	if (this->IsProcessed())
-		return;
-
-	if (this->GetRelativePath().IsEmpty())
-		return;
-
-	Initialize(
-		GeometryGenerator::ReadFromFile(this->GetRelativePath()), renderer->GetDevice(), renderer->GetContext());
-
-	FTResource::Process();
-}
-
-void FTMeshGroup::Process(FoxtrotRenderer* renderer, FTMeshData* meshData)
-{
-	if (this->IsProcessed())
-		return;
-
-	if (this->GetRelativePath().IsEmpty())
-		return;
-
-	Initialize(meshData, renderer->GetDevice(), renderer->GetContext());
-
-	FTResource::Process();
-}
-
-HRESULT FTMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
-{
-	// FTTexture sampler 만들기
-	D3D11_SAMPLER_DESC sampDesc;
-	ZeroMemory(&sampDesc, sizeof(sampDesc));
-	sampDesc.Filter			= D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	sampDesc.AddressU		= D3D11_TEXTURE_ADDRESS_CLAMP;
-	sampDesc.AddressV		= D3D11_TEXTURE_ADDRESS_CLAMP;
-	sampDesc.AddressW		= D3D11_TEXTURE_ADDRESS_CLAMP;
-	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	sampDesc.MinLOD			= 0;
-	sampDesc.MaxLOD			= D3D11_FLOAT32_MAX;
-
-	// Create the Sample State
-	return device->CreateSamplerState(&sampDesc, mSamplerState.GetAddressOf());
-}
-
 FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer)
 	: FTResource(resDef)
 	, mDirection(1)
@@ -237,42 +285,4 @@ FTMeshGroup::~FTMeshGroup()
 {
 	Clear();
 	delete mMeshes;
-}
-
-void FTMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, Transform* transform, Camera* camInst, FTMaterial* mat)
-{
-	// Model Transformation
-	Matrix modelMat = Matrix();
-
-	mDirection += transform->GetSteering()->Linear.x;
-	Math::Clamp(mDirection, -1, 1);
-
-	FTVector3 scale		   = transform->GetWorldScale();
-	FTVector3 scaleWithDir = FTVector3(scale.x * mDirection, scale.y, scale.z);
-	transform->SetLocalScale(scaleWithDir);
-	modelMat = transform->GetMatrixWorld();
-
-	// Inverse transpose matrix calculation
-	// Consider removing this part if the engine is for 2D games.
-	Matrix invTransposeMat = modelMat.Transpose();
-	invTransposeMat.Translation(Vector3(0.0f));
-	invTransposeMat = invTransposeMat.Transpose().Invert();
-
-	// View Transformation
-	Matrix&& viewMat  = camInst->GetViewRow();
-	Vector3	 eyeWorld = Vector3::Transform(Vector3(0.0f), viewMat.Invert());
-
-	// Project Transformation
-	Matrix&& projMat = std::move(camInst->GetProjRow());
-
-	mVCData.model		 = modelMat.Transpose();
-	mVCData.view		 = viewMat.Transpose();
-	mVCData.projection	 = projMat.Transpose();
-	mVCData.invTranspose = std::move(invTransposeMat);
-
-	D3D11Utils::UpdateBuffer(
-		context, mVCData, mVCBuf);
-
-	if (mat)
-		mat->UpdateBuffer(context);
 }

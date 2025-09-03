@@ -22,12 +22,15 @@ class FTMeshData;
 /// This should be used in the MeshRenderer Component, and its derived Components.
 /// Other elements forming a 3D model, such as Material and UV Texture, will be
 /// combined with FTMeshGroup in those components.
-class FTMeshGroup : public FTResource
+class FTMeshGroup :
+	public FTResource
 {
 public:
 	/// @brief Renders the entire meshes created, as a full model.
 	virtual void Render(
 		FoxtrotRenderer* renderer,
+		Transform*		 transform,
+		Camera*			 camInst,
 		FTTexture*		 tex,
 		FTVertexShader*	 vs,
 		FTPixelShader*	 ps,
@@ -38,6 +41,8 @@ public:
 	virtual void Render(
 		int				 meshIndex,
 		FoxtrotRenderer* renderer,
+		Transform*		 transform,
+		Camera*			 camInst,
 		FTTexture*		 tex,
 		FTVertexShader*	 vs,
 		FTPixelShader*	 ps,
@@ -52,6 +57,25 @@ public:
 protected:
 	/// @brief Reads a file which returns the FTMeshData, and creates the meshes.
 	virtual void Process(FoxtrotRenderer* renderer) override;
+
+	/// @brief Creates constant buffers such as Vertex Constant Buffers.
+	void InitializeConstantBuffers(ComPtr<ID3D11Device>& device);
+
+	/// @brief Create texture sampler.
+	/// @todo Consider moving this to D3D11Utils class.
+	HRESULT CreateTextureSampler(ComPtr<ID3D11Device>& device);
+
+	/// @brief Updates the constant buffers right before rendering.
+	/// @param transform Transformation of the mesh, usually of the Actor.
+	/// @param camInst Any camera instance in the .chunk.
+	/// @param mat Material applied to this mesh model.
+	/// @todo If the engine targets for 2D games, remove the inverse transpose calculation.
+	virtual void UpdateConstantBuffers(
+		ComPtr<ID3D11Device>&		 device,
+		ComPtr<ID3D11DeviceContext>& context,
+		Transform*					 transform,
+		Camera*						 camInst,
+		FTMaterial*					 mat);
 
 	/// @brief Delete all created meshes.
 	void Clear();
@@ -105,37 +129,19 @@ private:
 	/// @brief Creates the meshes from the array of meshData.
 	/// This is usually called when importing a 3D model file.
 	void InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicArray<FTMeshData*>&& meshDataArr);
-
-	/// @brief Creates constant buffers such as Vertex Constant Buffers.
-	void InitializeConstantBuffers(ComPtr<ID3D11Device>& device);
-
-	/// @brief Create texture sampler.
-	/// @todo Consider moving this to D3D11Utils class.
-	HRESULT CreateTextureSampler(ComPtr<ID3D11Device>& device);
-
-	/// @brief Updates the constant buffers right before rendering.
-	/// @param transform Transformation of the mesh, usually of the Actor.
-	/// @param camInst Any camera instance in the .chunk.
-	/// @param mat Material applied to this mesh model.
-	/// @todo If the engine targets for 2D games, remove the inverse transpose calculation.
-	virtual void UpdateConstantBuffers(
-		ComPtr<ID3D11Device>&		 device,
-		ComPtr<ID3D11DeviceContext>& context,
-		Transform*					 transform,
-		Camera*						 camInst,
-		FTMaterial*					 mat);
 };
 
 namespace ChunkKey
 {
 	namespace FTMeshGroup
 	{
-		constexpr const char* MESH_KEY	  = "Mesh Key";
-		constexpr const char* TEXTURE_KEY = "Texture Key";
-		constexpr const char* SHADER_KEY  = "Shader Key";
-		constexpr const char* VS_KEY	  = "Vertex Shader Key";
-		constexpr const char* PS_KEY	  = "Pixel Shader Key";
-		constexpr const char* MAT_KEY	  = "Material Key";
+		constexpr const char* FT_MESH_GROUP = "FTMeshGroup";
+		constexpr const char* MESH_KEY		= "Mesh Key";
+		constexpr const char* TEXTURE_KEY	= "Texture Key";
+		constexpr const char* SHADER_KEY	= "Shader Key";
+		constexpr const char* VS_KEY		= "Vertex Shader Key";
+		constexpr const char* PS_KEY		= "Pixel Shader Key";
+		constexpr const char* MAT_KEY		= "Material Key";
 
 		constexpr const char* DRAW_TEXTURE = "Draw Texture";
 		constexpr const char* DRAW_NORMALS = "Draw Normals";

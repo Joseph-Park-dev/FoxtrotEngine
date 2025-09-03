@@ -24,8 +24,8 @@
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
-#include "EditorUtils.h"
-#include "EditorResourceManager.h"
+	#include "EditorUtils.h"
+	#include "EditorResourceManager.h"
 #endif // FOXTROT_EDITOR
 
 void FTTileMap::Initialize()
@@ -150,8 +150,8 @@ void FTTileMap::SetMaxCountOnMapY(UINT yCount)
 	mMaxCountOnMapY = yCount;
 }
 
-FTTileMap::FTTileMap()
-	: FTResource()
+FTTileMap::FTTileMap(FTResourceDef& resDef)
+	: FTResource(resDef)
 	, mTileWidthOnScreen(0)
 	, mTileHeightOnScreen(0)
 	, mMaxCountOnMapX(0)
@@ -213,26 +213,24 @@ void FTTileMap::LoadProperties(std::ifstream& ifs)
 	FTResource::LoadProperties(ifs);
 }
 
-void FTTileMap::Process(FTCore* coreInst)
+void FTTileMap::Process()
 {
-	if (this->GetIsProcessed())
+	if (IsProcessed())
 		return;
 
 	// This if statement will be triggered only on Editor
 	// (When loading all assets from Asset folder)
-	std::ifstream ifs(this->RelativePath().C_Str());
+	std::ifstream ifs(this->GetRelativePath().C_Str());
 	this->LoadProperties(ifs);
 
 	this->Initialize();
-	this->SetIsProcessed(true);
+	FTResource::Process();
 }
 
 #ifdef FOXTROT_EDITOR
 void FTTileMap::UpdateUI()
 {
 	ImVec2 previewSize = ImVec2(100, 100);
-
-	CommandHistory::GetInstance()->UpdateStringValue("TileMap Name", FileName());
 
 	FTEditorUtils::DisplayResSelection(
 		"Select CSV",

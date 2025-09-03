@@ -45,8 +45,8 @@ public:
 	void SetMaxCountOnMapY(UINT yCount);
 
 public:
-	FTTileMap();
-	virtual ~FTTileMap() override;
+	FTTileMap(FTResourceDef& resDef);
+	~FTTileMap();
 
 protected:
 	void InitializeTile(Tile& tile, UINT column, UINT row, UINT tileNum);
@@ -67,7 +67,9 @@ private:
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
 	virtual void LoadProperties(std::ifstream& ifs) override;
-	virtual void Process(FTCore* coreInst) override;
+
+protected:
+	virtual void Process() override;
 
 #ifdef FOXTROT_EDITOR
 public:
@@ -81,9 +83,9 @@ public:
 
 namespace ChunkKey
 {
-	namespace TileMap
+	namespace FTTileMap
 	{
-		constexpr const char* FTTILEMAP		  = "FTTileMap";
+		constexpr const char* FT_TILEMAP		  = "FTTileMap";
 		constexpr const char* CSV_KEY		  = "CSV Key";
 		constexpr const char* SCREEN_WIDTH	  = "Tile Width On Screen";
 		constexpr const char* SCREEN_HEIGHT	  = "Tile Height On Screen";

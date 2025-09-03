@@ -3,6 +3,8 @@
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/D3D11Utils.h"
 
+using namespace Microsoft::WRL;
+
 void FTPixelShader::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTPixelShader::FT_PIXEL_SHADER);
@@ -35,10 +37,3 @@ void FTPixelShader::CompileShader(FoxtrotRenderer* renderer)
 		mShader);
 	delete[] fileName;
 }
-
-#ifdef FOXTROT_EDITOR
-void FTPixelShader::UpdateUI()
-{
-
-}
-#endif

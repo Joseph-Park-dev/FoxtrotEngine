@@ -9,6 +9,8 @@
 #pragma once
 #include <ResourceSystem/FTShaders/FTShader.h>
 
+#include <wrl.h>
+
 /// @brief A wrapper for HLSL pixel shaders.
 class FTPixelShader :
 	public FTShader
@@ -22,7 +24,7 @@ public:
 
 public:
 	/// @brief Returns compiled HLSL pixel shader object.
-	ComPtr<ID3D11PixelShader>& GetShader();
+	Microsoft::WRL::ComPtr<ID3D11PixelShader>& GetShader();
 
 public:
 	/// @see FTShader::FTShader()
@@ -34,12 +36,7 @@ protected:
 
 private:
 	/// @brief The shader should remain compiled after initialization.
-	ComPtr<ID3D11PixelShader> mShader;
-
-#ifdef FOXTROT_EDITOR
-public:
-	virtual void UpdateUI() override;
-#endif
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> mShader;
 };
 
 namespace ChunkKey

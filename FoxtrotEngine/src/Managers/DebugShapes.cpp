@@ -8,6 +8,8 @@
 
 #include "DebugShapes.h"
 
+#include <wrl.h>
+
 #include "Renderer/D3D11Utils.h"
 #include "ResourceSystem/FTRectangle.h"
 

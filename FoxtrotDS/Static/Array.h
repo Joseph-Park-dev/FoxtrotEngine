@@ -45,12 +45,8 @@ namespace FTDS
 		void IterateArray(
 			UnaryOperation&& unaryOp)
 		{
-			mPtr = Begin();
-			while (mPtr != End())
-			{
-				unaryOp(*mPtr);
-				++mPtr;
-			}
+			for (size_t i =0; i < mCapacity; ++i)
+				unaryOp(mData[i]);
 		}
 
 		void Swap(size_t posLeft, size_t posRight)

@@ -15,7 +15,7 @@ namespace FTDS
 		/// String utility functions ///
 		////////////////////////////////
 	public:
-		int RFind(const char* target)
+		const int RFind(const char* target) const
 		{
 			size_t targetLen = FTDS::StrLen(target);
 			if (!target || this->mLength < 1 || this->mLength < targetLen)
@@ -73,7 +73,7 @@ namespace FTDS
 			this->Append(val.C_Str());
 		}
 
-		void SubStr(FTDS::String& result, size_t start, size_t length)
+		void SubStr(FTDS::String& result, size_t start, size_t length) const
 		{
 			if (start >= mLength)
 				return;
@@ -330,11 +330,6 @@ namespace FTDS
 	{
 		// Create an array with renewed capacity.
 		FTDS::String* newArr = DBG_NEW FTDS::String[newCap];
-		// memset(newArr, NULL, sizeof(FTDS::String) * newCap);
-
-		// Calculate memory size to be copied.
-		// size_t destSize	   = sizeof(FTDS::String) * newCap;
-		// size_t copiedSize  = sizeof(FTDS::String) * copiedCount;
 
 		// Copy previous data.
 		for (size_t i = 0; i < mCapacity; ++i)

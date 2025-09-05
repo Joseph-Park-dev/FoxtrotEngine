@@ -217,21 +217,10 @@ void ResourceManager::LoadMaterials()
 	FTDS::String fileName = ChunkKey::StandardMat::STANDARD_MAT;
 	fileName.Append(+FileTypes::MATERIAL);
 
-	FTDS::String  path = FTDS::String(".//Assets//Materials//") + fileName;
+	FTDS::String  path = ResourceManager::GetInstance()->GetPathToAsset() + fileName;
 	FTResourceDef resDef{ fileName, path };
 
 	StandardMaterial* standard = DBG_NEW StandardMaterial(resDef, mRenderer);
-
-	if (!std::filesystem::exists(path.C_Str()))
-	{
-		std::ofstream ofs(path.C_Str());
-		standard->SaveProperties(ofs);
-	}
-	else
-	{
-		std::ifstream ifs(path.C_Str());
-		standard->LoadProperties(ifs);
-	}
 
 	mMaterials->Insert(standard->GetFileName(), standard);
 }

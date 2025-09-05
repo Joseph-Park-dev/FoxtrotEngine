@@ -450,34 +450,10 @@
     <ClCompile Include="include\stb_vorbis.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\Damage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\HenryPrototype.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\Punch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\PunchDamage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\ButtonClick.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\ResourceSystem\GenericData\FTText.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Components\SpineAnimator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\Bullet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\BarrelSpawner.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\HenryBehavior.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ResourceSystem\SpriteSheets\FTAtlasSheet.cpp">
@@ -2804,21 +2780,6 @@
     <ClInclude Include="include\stb_voxel_render.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\Damage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\HenryPrototype.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\Punch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\Henry_Prototype\PunchDamage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts\ButtonClick.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\ResourceSystem\GenericData\FTText.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2919,5 +2880,8 @@
     <ResourceCompile Include="include\assimp\res\assimp.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\FoxtrotDS\FTDS.natvis" />
   </ItemGroup>
 </Project>

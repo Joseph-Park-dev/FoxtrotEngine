@@ -32,16 +32,15 @@ private:
 #ifdef FOXTROT_EDITOR
 public:
 	void UpdateUI(bool* opened);
-	void CreateAnimation();
+	void CreateAnimationGUI();
 
 	template <typename ANIMATION>
 	void SaveAnimationAsFile(ANIMATION* animation, FTDS::String format)
 	{
-		FTDS::String path = ResourceManager::GetInstance()->GetPathToAsset() + animation->FileName();
-		if (animation->FileName().RFind(format.C_Str()) == -1)
+		FTDS::String path = ResourceManager::GetInstance()->GetPathToAsset() + animation->GetFileName();
+		if (animation->GetFileName().RFind(format.C_Str()) == -1)
 			path += format;
 		std::ofstream ofs(path.C_Str());
-		animation->SetRelativePath(path);
 		animation->SaveProperties(ofs);
 		FileIOHelper::SaveBufferToFile(ofs);
 	}
@@ -52,15 +51,15 @@ private:
 	void GetSpriteSheet(FTDS::String& key);
 
 private:
-	FTSpriteAnimation* CreateAnimationFromSpriteSheet(
-		const char*	  name,
-		FTDS::String& spriteSheetKey,
-		size_t		  startIndex,
-		size_t		  endIndex);
+	FTSpriteAnimation* CreateAnimationFromSpineAtlas(
+		const char* name,
+		FTText*		sheet,
+		int			minIdx,
+		int			maxIdx);
 
 	FTSpineAnimation* CreateAnimationFromSpine(
-		const char*	  name,
-		FTDS::String& jsonKey,
-		FTDS::String& atlasKey);
+		const char* name,
+		FTJSON*		json,
+		FTText*		atlas);
 #endif
 };

@@ -755,7 +755,7 @@ void EditorLayer::OpenProject(std::string& path)
 	{
 		EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 		DebugShapes::GetInstance()->DeleteAll();
-		EditorResourceManager::GetInstance()->DeleteAll();
+		ResourceManager::GetInstance()->DeleteAll();
 		PATH_PROJECT.Assign(path.c_str());
 		ResourceManager::GetInstance()->SetPathToAsset(std::move(PATH_PROJECT));
 		EditorResourceManager::GetInstance()->LoadAllResourcesInAsset();

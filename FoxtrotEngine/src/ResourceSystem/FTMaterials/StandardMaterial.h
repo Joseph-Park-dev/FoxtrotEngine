@@ -41,16 +41,10 @@ public:
 	/// @see FTMaterial::UpdateBuffer()
 	virtual void UpdateBuffer(ComPtr<ID3D11DeviceContext>& context) override;
 
-	/// @See FTResource::SaveProperties()
-	virtual void SaveProperties(std::ofstream& ofs) override;
-
-	/// @See FTResource::LoadProperties()
-	virtual void LoadProperties(std::ifstream& ifs) override;
-
 public:
 	/// @brief Relative path is used for importing material data.
 	StandardMaterial(FTResourceDef& resDef, FoxtrotRenderer* renderer);
-	~StandardMaterial();
+	~StandardMaterial() override;
 
 protected:
 	/// @brief Creates a pixel constant buffer using the StandardMatData.
@@ -59,6 +53,13 @@ protected:
 private:
 	/// @brief The values of the data are to be applied to pixel constant buffers.
 	StandardMatData* mData;
+
+private:
+	/// @See FTResource::SaveProperties()
+	virtual void SaveProperties(std::ofstream& ofs) override;
+
+	/// @See FTResource::LoadProperties()
+	virtual void LoadProperties(std::ifstream& ifs) override;
 
 #ifdef FOXTROT_EDITOR
 public:

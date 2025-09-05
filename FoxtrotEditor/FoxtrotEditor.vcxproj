@@ -247,7 +247,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;FOXTROT_EDITOR;IMGUI_DEFINE_MATH_OPERATORS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\[2025_01]\[GooCat Studio] VampiCat\Assets\Scripts;..\FoxtrotEngine\include\SoLoud\include;..\FoxtrotEngine\include;..\FoxtrotEngine\include\spine-cpp\include\;..\FoxtrotEngine\include\spine-cpp\include\spine;..\FoxtrotEngine\include\assimp;..\FoxtrotEngine\include\assimp\include;..\FoxtrotEngine\include\assimp\code;..\FoxtrotEngine\src;.\include;.\include\imgui;.\include\imgui\ImGuiFileDialog;.\include\imgui\backends;.\include\imgui\misc\cpp;.\vcpkg_installed\x64-windows\include;.\src;..\FoxtrotDS;..\FoxtrotMath\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\[2025_01]\[GooCat Studio] VampiCat\Scripts;..\FoxtrotEngine\include\SoLoud\include;..\FoxtrotEngine\include;..\FoxtrotEngine\include\spine-cpp\include\;..\FoxtrotEngine\include\spine-cpp\include\spine;..\FoxtrotEngine\include\assimp;..\FoxtrotEngine\include\assimp\include;..\FoxtrotEngine\include\assimp\code;..\FoxtrotEngine\src;.\include;.\include\imgui;.\include\imgui\ImGuiFileDialog;.\include\imgui\backends;.\include\imgui\misc\cpp;.\vcpkg_installed\x64-windows\include;.\src;..\FoxtrotDS;..\FoxtrotMath\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -591,6 +591,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FoxtrotEditor.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\FoxtrotDS\FTDS.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

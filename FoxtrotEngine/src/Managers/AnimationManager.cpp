@@ -6,7 +6,6 @@
 #include "ResourceSystem/Animation/FTSpriteAnimation.h"
 #include "ResourceSystem/Animation/FTSpineAnimation.h"
 #include "ResourceSystem/FTTileMap.h"
-#include "ResourceSystem/FTSpriteSheet.h"
 #include "ResourceSystem/GeometryGenerator.h"
 #include "ResourceSystem/GenericData/FTText.h"
 #include "ResourceSystem/GenericData/FTJSON.h"
@@ -55,8 +54,9 @@ void AnimationManager::UpdateUI(bool* opened)
 	}
 	else
 	{
-		CreateAnimation();
+		CreateAnimationGUI();
 
+		ImGui::Separator();
 		FTDS::HashMap<FTSpriteAnimation*>* map =
 			ResourceManager::GetInstance()->GetSpriteAnimations();
 		auto iter = map->Begin();
@@ -66,10 +66,10 @@ void AnimationManager::UpdateUI(bool* opened)
 			map->IterateAllValues([&](FTSpriteAnimation* anim) {
 				if (anim)
 				{
-					ImGui::PushID(anim->FileName().C_Str());
-					if (ImGui::BeginListBox(anim->FileName().C_Str(), ImVec2(-FLT_MIN, 100)))
+					ImGui::PushID(anim->GetFileName().C_Str());
+					if (ImGui::BeginListBox(anim->GetFileName().C_Str(), ImVec2(-FLT_MIN, 100)))
 					{
-						ImGui::Text(anim->FileName().C_Str());
+						ImGui::Text(anim->GetFileName().C_Str());
 						anim->UpdateUI();
 						if (ImGui::Button("Save"))
 							SaveAnimationAsFile(anim, FileTypes::SPRITE_ANIMATION);
@@ -89,10 +89,10 @@ void AnimationManager::UpdateUI(bool* opened)
 			spineAnimMap->IterateAllValues([&](FTSpineAnimation* anim) {
 				if (anim)
 				{
-					ImGui::PushID(anim->FileName().C_Str());
-					if (ImGui::BeginListBox(anim->FileName().C_Str(), ImVec2(-FLT_MIN, 100)))
+					ImGui::PushID(anim);
+					if (ImGui::BeginListBox(anim->GetFileName().C_Str(), ImVec2(-FLT_MIN, 100)))
 					{
-						ImGui::Text(anim->FileName().C_Str());
+						ImGui::Text(anim->GetFileName().C_Str());
 						anim->UpdateUI();
 						if (ImGui::Button("Save"))
 							SaveAnimationAsFile(anim, FileTypes::SPINE_ANIMATION);
@@ -103,94 +103,78 @@ void AnimationManager::UpdateUI(bool* opened)
 			});
 			ImGui::TreePop();
 		}
-
 		ImGui::End();
 	}
 }
 
-void AnimationManager::CreateAnimation()
+void AnimationManager::CreateAnimationGUI()
 {
-	if (ImGui::Button("Create Animation from SpriteSheet"))
+	ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
+	if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
 	{
-		ImGui::OpenPopup("CreateSpriteSheetAnim");
-	}
-	if (ImGui::BeginPopupModal("CreateSpriteSheetAnim"))
-	{
-		static char name[BufferSize::STRING_BUFFER_SIZE] = "Empty Value";
-		ImGui::InputText("Name", name, BufferSize::STRING_BUFFER_SIZE);
-
-		const char* text = ChunkKey::NullVal::NULL_OBJECT;
-
-		static FTDS::String texKey = ChunkKey::NullVal::NULL_OBJECT;
-		GetSprite(texKey);
-		if (texKey.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
-			text = ResourceManager::GetInstance()->GetLoadedTexture(texKey)->FileName().C_Str();
-		ImGui::Text(text);
-
-		text							   = ChunkKey::NullVal::NULL_OBJECT;
-		static FTDS::String spriteSheetKey = ChunkKey::NullVal::NULL_OBJECT;
-		GetSpriteSheet(spriteSheetKey);
-		FTSpriteSheet* spriteSheet = nullptr;
-		int			   maxIdx	   = 0;
-		if (spriteSheetKey.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
+		if (ImGui::BeginTabItem("Sprite Anim"))
 		{
-			text		= ResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteSheetKey)->FileName().C_Str();
-			spriteSheet = ResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteSheetKey);
-			maxIdx		= static_cast<int>(spriteSheet->GetTilesCount()) - 1;
-		}
-		static int startIdx;
-		static int endIdx;
+			//static int e = 0;
+			//ImGui::RadioButton("JSON", &e, 0);
+			//ImGui::SameLine();
+			//ImGui::RadioButton("Atlas", &e, 1);
 
-		CommandHistory::GetInstance()->UpdateIntValue("Anim Start Index", startIdx, -maxIdx, maxIdx);
-		CommandHistory::GetInstance()->UpdateIntValue("Anim End Index", endIdx, -maxIdx, maxIdx);
-		if (ImGui::Button("Auto Detect"))
+			//if (e == 0)
+			//{
+			//	static char name[BufferSize::STRING_BUFFER_SIZE] = "Empty Value";
+			//	ImGui::InputText("Name", name, BufferSize::STRING_BUFFER_SIZE);
+
+			//	static FTTexture* texture = nullptr;
+			//	FTEditorUtils::DisplayResSelection("Select Sprite", ResourceManager::GetInstance()->GetTextures(), texture);
+			//	if (texture)
+			//		ImGui::Text(texture->GetFileName().C_Str());
+			//	else
+			//		ImGui::Text("Texture not selected");
+
+			//	static FTJSONSheet* sheet = nullptr;
+			//	FTEditorUtils::DisplayResSelection<FTJSONSheet>("Select JSONSheet", ResourceManager::GetInstance()->GetJSONSheets(), sheet);
+			//	int maxIdx = 0;
+			//	if (sheet)
+			//		maxIdx = static_cast<int>(sheet->GetTilesCount()) - 1;
+
+			//	static int startIdx;
+			//	static int endIdx;
+
+			//	CommandHistory::GetInstance()->UpdateIntValue("Anim Start Index", startIdx, -maxIdx, maxIdx);
+			//	CommandHistory::GetInstance()->UpdateIntValue("Anim End Index", endIdx, -maxIdx, maxIdx);
+			//	if (ImGui::Button("Auto Detect"))
+			//	{
+			//		startIdx = 0;
+			//		endIdx	 = maxIdx;
+			//	}
+
+			//	if (ImGui::Button("Create"))
+			//	{
+			//		FTSpriteAnimation* anim = CreateAnimationFromSpriteSheet(name, sheet, startIdx, endIdx);
+
+			//		// Load the created animation to ResourceManager & File.
+			//		// This is called only during the FTEditor Runtime.
+			//		SaveAnimationAsFile(anim, FileTypes::SPRITE_ANIMATION);
+			//	}
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Spine Anim"))
 		{
-			startIdx = 0;
-			endIdx	 = maxIdx;
+			static char name[BufferSize::STRING_BUFFER_SIZE] = "Empty Value";
+			ImGui::InputText("Name", name, BufferSize::STRING_BUFFER_SIZE);
+
+			static FTJSON* json;
+			FTEditorUtils::DisplayResSelection("Select Skeleton Data", ResourceManager::GetInstance()->GetJSONs(), json);
+
+			static FTText* atlasTxt;
+			FTEditorUtils::DisplayResSelection("Select Spine Atlas", ResourceManager::GetInstance()->GetTexts(), atlasTxt);
+
+			if (ImGui::Button("Create"))
+				CreateAnimationFromSpine(name, json, atlasTxt);
+
+			ImGui::EndTabItem();
 		}
-
-		ImGui::Text(text);
-
-		if (ImGui::Button("Create"))
-		{
-			FTSpriteAnimation* anim = CreateAnimationFromSpriteSheet(name, spriteSheetKey, startIdx, endIdx);
-
-			// Load the created animation to ResourceManager & File.
-			// This is called only during the FTEditor Runtime.
-			SaveAnimationAsFile(anim, FileTypes::SPRITE_ANIMATION);
-		}
-
-		if (ImGui::Button("Close"))
-			ImGui::CloseCurrentPopup();
-		ImGui::Separator();
-		ImGui::EndPopup();
-	}
-
-	if (ImGui::Button("Create Animation from Spine"))
-	{
-		ImGui::OpenPopup("CreateSpineAnim");
-	}
-	if (ImGui::BeginPopupModal("CreateSpineAnim"))
-	{
-		static char name[BufferSize::STRING_BUFFER_SIZE] = "Empty Value";
-		ImGui::InputText("Name", name, BufferSize::STRING_BUFFER_SIZE);
-
-		static FTDS::String jsonKey;
-		FTEditorUtils::DisplayResSelection("Select Skeleton Data", ResourceManager::GetInstance()->GetJSONs(), jsonKey);
-
-		static FTDS::String atlasKey;
-		FTEditorUtils::DisplayResSelection("Select Spine Atlas", ResourceManager::GetInstance()->GetTexts(), atlasKey);
-
-		if (ImGui::Button("Create"))
-		{
-			FTSpineAnimation* anim = CreateAnimationFromSpine(name, jsonKey, atlasKey);
-			SaveAnimationAsFile(anim, FileTypes::SPINE_ANIMATION);
-		}
-
-		if (ImGui::Button("Close"))
-			ImGui::CloseCurrentPopup();
-		ImGui::Separator();
-		ImGui::EndPopup();
+		ImGui::EndTabBar();
 	}
 }
 
@@ -206,66 +190,40 @@ void AnimationManager::GetTileMap(FTDS::String& key)
 
 void AnimationManager::GetSpriteSheet(FTDS::String& key)
 {
-	FTEditorUtils::DisplayResSelection("Select SpriteSheet", EditorResourceManager::GetInstance()->GetSpriteSheets(), key);
+	// FTEditorUtils::DisplayResSelection("Select SpriteSheet", EditorResourceManager::GetInstance()->GetSpriteSheets(), key);
 }
 
-FTSpriteAnimation* AnimationManager::CreateAnimationFromSpriteSheet(const char* name, FTDS::String& spriteSheetKey, size_t startIndex, size_t endIndex)
+FTSpriteAnimation* AnimationManager::CreateAnimationFromSpineAtlas(const char* name, FTText* sheet, int minIdx, int maxIdx)
 {
-	if (!mRenderer)
+	/*if (!mRenderer)
 		printf("ERROR : Animator::CreateAnimationFromTile()-> Renderer is null");
 
 	FTSpriteAnimation* animation = DBG_NEW FTSpriteAnimation;
 
 	FTDS::String animName = FTDS::String(name) + FileTypes::SPRITE_ANIMATION;
 	animation->SetFileName(animName);
+	animation->SetMinFrameIdx(minIdx);
+	animation->SetMaxFrameIdx(maxIdx);
 
 	FTDS::String path = ResourceManager::GetInstance()->GetPathToAsset();
 	path.Append(animName);
 	animation->SetRelativePath(path);
+	animation->Initialize(sheet, mRenderer->GetDevice(), mRenderer->GetContext());
 
-	FTSpriteSheet* spriteSheetBuf = ResourceManager::GetInstance()->GetLoadedSpriteSheet(spriteSheetKey);
-	if (spriteSheetBuf->GetTiles() == nullptr)
-		spriteSheetBuf->Initialize();
-	animation->SetSpriteSheet(spriteSheetBuf);
-
-	FTDS::DynamicArray<FTMeshData*> meshDataBuf;
-	GeometryGenerator::MakeSpriteAnimation(
-		meshDataBuf, spriteSheetBuf->GetTiles(), startIndex, endIndex);
-	animation->Initialize(std::move(meshDataBuf), mRenderer->GetDevice(), mRenderer->GetContext());
-
-	#ifdef FOXTROT_EDITOR
-	EditorResourceManager::GetInstance()->LoadResource(
-		animation, ResourceManager::GetInstance()->GetSpriteAnimations());
-	#else
 	ResourceManager::GetInstance()->GetSpriteAnimations()->Insert(animation->FileName(), animation);
-	#endif // FOXTROT_EDITOR
-
 	printf("FTSpriteAnimation created, %s\n", name);
 
-	return animation;
+	return animation;*/
+	return nullptr;
 }
 
-FTSpineAnimation* AnimationManager::CreateAnimationFromSpine(const char* name, FTDS::String& jsonKey, FTDS::String& atlasKey)
+FTSpineAnimation* AnimationManager::CreateAnimationFromSpine(const char* name, FTJSON* json, FTText* atlas)
 {
-	FTSpineAnimation* anim = DBG_NEW FTSpineAnimation;
+	FTResourceDef	  resDef = { name, ResourceManager::GetInstance()->GetPathToAsset().C_Str() };
+	FTSpineAnimation* anim = DBG_NEW FTSpineAnimation(resDef, mRenderer, json, atlas);
 
-	FTJSON* json = ResourceManager::GetInstance()->GetLoadedJSON(jsonKey);
-	FTText* text = ResourceManager::GetInstance()->GetLoadedText(atlasKey);
-	ResourceManager::GetInstance()->RelativeToAbsolutePath(text);
-
-	anim->SetJSON(json);
-	anim->SetAtlasTxt(text);
-	anim->SetFileName(name);
-
-	anim->InitializeSpinAnim(mRenderer->GetDevice());
-
-	//#ifdef FOXTROT_EDITOR
-	//EditorResourceManager::GetInstance()->LoadResource(
-	//	anim, EditorResourceManager::GetInstance()->GetSpineAnimations());
-	//#else
-	//#endif // FOXTROT_EDITOR
-
-	ResourceManager::GetInstance()->GetSpineAnimations()->Insert(anim->FileName(), anim);
+	SaveAnimationAsFile(anim, FileTypes::SPINE_ANIMATION);
+	ResourceManager::GetInstance()->GetSpineAnimations()->Insert(anim->GetFileName(), anim);
 	return anim;
 }
 #endif // FOXTROT_EDITOR

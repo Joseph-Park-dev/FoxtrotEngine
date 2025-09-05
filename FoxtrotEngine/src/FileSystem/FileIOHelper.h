@@ -20,6 +20,8 @@
 #include "Static/FTString.h"
 #include <Static/HashMap.h>
 
+#include <static/Record.h>
+
 class FTVector2;
 class FTVector3;
 struct b2Vec2;
@@ -49,9 +51,13 @@ public:
 		FTDS::String key;
 		LoadBasicString(ifs, key);
 		if (key.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
-			res = map->At(key)->Value();
-		else
-			res = nullptr;
+		{
+			FTDS::Record<RESOURCE*>* node = map->At(key);
+			if (node)
+				res = node->Value();
+			else
+				res = nullptr;
+		}
 	}
 
 	static void ParseVector3(FTDS::String& line, FTVector3& arg);

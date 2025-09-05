@@ -158,7 +158,7 @@ public:
 		}
 	}
 
-protected:
+public:
 	FoxtrotRenderer* GetRenderer();
 
 private:

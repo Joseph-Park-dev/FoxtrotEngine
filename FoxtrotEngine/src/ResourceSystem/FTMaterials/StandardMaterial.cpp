@@ -37,6 +37,7 @@ StandardMaterial::StandardMaterial(FTResourceDef& resDef, FoxtrotRenderer* rende
 	: FTMaterial(resDef, renderer)
 	, mData(DBG_NEW StandardMatData)
 {
+	Process(renderer);
 }
 
 StandardMaterial::~StandardMaterial()
@@ -59,9 +60,8 @@ void StandardMaterial::SaveProperties(std::ofstream& ofs)
 
 void StandardMaterial::LoadProperties(std::ifstream& ifs)
 {
-	std::pair<size_t, FTDS::String> pack = FileIOHelper::BeginDataPackLoad(ifs);
-
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::StandardMat::STANDARD_MAT);
+
 	FileIOHelper::LoadVector3(ifs, mData->BlinnPhongData.Specular);
 	FileIOHelper::LoadVector3(ifs, mData->BlinnPhongData.Diffuse);
 	FileIOHelper::LoadFloat(ifs, mData->BlinnPhongData.Shininess);

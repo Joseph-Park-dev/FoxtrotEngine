@@ -139,6 +139,12 @@ FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTMes
 	, mSizeScale(FTVector3(1.0f, 1.0f, 1.0f))
 	, mMeshes(DBG_NEW FTDS::DynamicArray<Mesh*>)
 {
+	if (!meshData)
+	{
+		Debug::LogError(__LINE__, __FILE__, 
+			"MeshData is null. If this is called while initializing FTSpineAnimation, it is OK");
+		return;
+	}
 	Process(renderer, meshData);
 }
 

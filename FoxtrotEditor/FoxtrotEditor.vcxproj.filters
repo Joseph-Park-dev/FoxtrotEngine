@@ -642,4 +642,7 @@
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\FoxtrotDS\FTDS.natvis" />
+  </ItemGroup>
 </Project>

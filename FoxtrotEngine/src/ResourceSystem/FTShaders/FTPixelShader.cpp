@@ -24,6 +24,14 @@ FTPixelShader::FTPixelShader(FTResourceDef& resDef, FoxtrotRenderer* renderer)
 	: FTShader(resDef, renderer)
 {
 	SetType(ShaderType::PIXEL_SHADER);
+	Process(renderer);
+}
+
+void FTPixelShader::Process(FoxtrotRenderer* renderer)
+{
+	LoadMetaData();
+	CompileShader(renderer);
+	FTResource::Process();
 }
 
 void FTPixelShader::CompileShader(FoxtrotRenderer* renderer)

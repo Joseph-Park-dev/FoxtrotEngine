@@ -6,6 +6,7 @@ FTText::FTText(FTResourceDef& resDef)
 	: FTResource(resDef)
 	, mData(DBG_NEW FTDS::DynamicArray<FTDS::String*>)
 {
+	Process();
 }
 
 FTText::~FTText()
@@ -35,6 +36,8 @@ void FTText::Process()
 	std::ifstream ifs(GetFileName().C_Str());
 	size_t		  lineCount = GetLineCount(ifs);
 	mData->Reserve(lineCount);
+
+	FTResource::Process();
 }
 
 size_t FTText::GetLineCount(std::ifstream& ifs)

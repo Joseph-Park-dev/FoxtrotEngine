@@ -22,7 +22,6 @@ ComPtr<ID3D11Buffer>& FTMaterial::GetPCBuf()
 FTMaterial::FTMaterial(FTResourceDef& resDef, FoxtrotRenderer* renderer)
 	: FTResource(resDef)
 {
-	Process(renderer);
 }
 
 void FTMaterial::Process(FoxtrotRenderer* renderer)
@@ -31,7 +30,20 @@ void FTMaterial::Process(FoxtrotRenderer* renderer)
 		return;
 
 	std::ifstream ifs(GetRelativePath().C_Str());
-	this->LoadProperties(ifs);
+
+	if (!ifs.good())
+	{
+		std::ofstream ofs(GetRelativePath().C_Str());
+
+		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTMaterial::FT_MATERIAL);
+		SaveProperties(ofs);
+		FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTMaterial::FT_MATERIAL);
+
+		FileIOHelper::SaveBufferToFile(ofs);
+	}
+
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMaterial::FT_MATERIAL);
+	LoadProperties(ifs);
 
 	CreatePixelConstBuffer(renderer->GetDevice());
 	FTResource::Process();

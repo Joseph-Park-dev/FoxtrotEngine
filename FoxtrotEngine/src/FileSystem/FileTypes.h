@@ -48,7 +48,7 @@ namespace FileTypes
 	constexpr const char* SPRITE_ANIMATION = ".spriteanim";
 	constexpr const char* SPINE_ANIMATION  = ".spineanim";
 	constexpr const char* SHADER		   = ".hlsl";
-	constexpr const char* MATERIAL		   = ".mat";
+	constexpr const char* MATERIAL		   = ".ftmat";
 	constexpr const char* SHADER_META	   = ".shadermeta";
 
 	constexpr const char* VERTEX_SHADER = "VS";

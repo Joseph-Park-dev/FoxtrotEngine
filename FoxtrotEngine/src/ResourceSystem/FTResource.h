@@ -49,9 +49,12 @@ public:
 	const FTDS::String& GetFileName() const;
 	const FTDS::String& GetRelativePath() const;
 
+	/// @brief Is this resource processed and can be used during runtime?
+	const bool IsProcessed() const;
+
 public:
 	FTResource(FTResourceDef& resDef);
-	~FTResource();
+	virtual ~FTResource();
 
 protected:
 	/// @brief A resource must be processed before used during runtime.
@@ -63,9 +66,6 @@ protected:
 	/// @param renderer Renderer object used for processing graphics resources.
 	/// @todo Is this member function necessary?
 	virtual void Process(FoxtrotRenderer* renderer);
-
-	/// @brief Is this resource processed and can be used during runtime?
-	const bool IsProcessed() const;
 
 private:
 	/// @brief Name of the resource.

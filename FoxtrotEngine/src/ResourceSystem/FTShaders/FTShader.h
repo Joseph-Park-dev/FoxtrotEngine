@@ -30,18 +30,29 @@ private:
 	ShaderType mType;
 
 protected:
-	/// @brief Loads meta data, and compiles the shader.
-	void Process(FoxtrotRenderer* renderer) override;
-
 	/// @brief Compiles shader base on its type.
 	virtual void CompileShader(FoxtrotRenderer* renderer) = 0;
 
 	/// @brief Set current shader type during initialization.
 	void SetType(ShaderType&& shaderType);
 
-private:
 	/// @brief Loads the meta data for this wrapper.
-	void LoadMetaData();
+	void LoadMetaData()
+	{
+		FTDS::String metaPath;
+		metaPath.Assign(GetRelativePath());
+		ReplaceSuffix(metaPath, FileTypes::SHADER, FileTypes::SHADER_META);
+		if (!std::filesystem::exists(std::filesystem::path(metaPath.C_Str())))
+		{
+			Debug::LogError(__LINE__, __FILE__, "Failed to load shader meta file");
+			std::ofstream ofs(metaPath.C_Str());
+			SaveProperties(ofs);
+			FileIOHelper::SaveBufferToFile(ofs);
+		}
+
+		std::ifstream ifs(metaPath.C_Str());
+		LoadProperties(ifs);
+	}
 
 #ifdef FOXTROT_EDITOR
 public:

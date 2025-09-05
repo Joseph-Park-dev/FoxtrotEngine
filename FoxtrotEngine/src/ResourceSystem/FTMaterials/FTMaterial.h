@@ -33,16 +33,15 @@ public:
 	FTMaterial(FTResourceDef& resDef, FoxtrotRenderer* renderer);
 
 protected:
+	/// @see FTResource::Process()
+	void Process(FoxtrotRenderer* renderer) override;
+
 	/// @brief Creates a pixel constant buffer using the material data.
 	virtual void CreatePixelConstBuffer(ComPtr<ID3D11Device>& device) = 0;
 
 private:
 	/// @brief Pixel constant buffer to which material data are applied.
 	ComPtr<ID3D11Buffer> mPCBuf;
-
-private:
-	/// @see FTResource::Process()
-	void Process(FoxtrotRenderer* renderer) override;
 
 #ifdef FOXTROT_EDITOR
 public:

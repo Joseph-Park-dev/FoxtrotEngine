@@ -31,6 +31,9 @@ public:
 	FTPixelShader(FTResourceDef& resDef, FoxtrotRenderer* renderer);
 
 protected:
+	/// @brief Loads meta data, and compiles the shader.
+	void Process(FoxtrotRenderer* renderer) override;
+
 	/// @see FTShader::CompileShader()
 	void CompileShader(FoxtrotRenderer* renderer) override;
 

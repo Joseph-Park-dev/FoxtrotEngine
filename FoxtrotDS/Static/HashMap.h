@@ -204,13 +204,7 @@ namespace FTDS
 		// Auto deletion of the RecordNodes inside each slot.
 		~HashMap() override
 		{
-			IterateAllNodes([&](FTDS::Record<TYPE>* node) {
-				if (node)
-				{
-					delete node;
-					node = nullptr;
-				}
-			});
+			Clear();
 			delete this->mData;
 			this->mData = nullptr;
 		}

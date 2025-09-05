@@ -15,6 +15,12 @@ namespace FTDS
 		TYPE&		  Value() { return mValue; }
 
 	public:
+		Record(Record* rec)
+		{
+			rec->mKey = this->mKey;
+			rec->mValue = this->mValue;
+		}
+
 		Record(FTDS::String key, TYPE value)
 		{
 			mKey   = key;

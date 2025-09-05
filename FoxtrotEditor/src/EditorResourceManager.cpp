@@ -23,6 +23,9 @@
 #include "Utils/StrAssign.h"
 #include "Static/FTString.h"
 
+// Number of attempts to load resources aborted during the last loading.
+constexpr size_t RESOURCE_IMPORT_ATTEMPT = 3;
+
 void EditorResourceManager::Initialize(FoxtrotRenderer* renderer)
 {
 	ResourceManager::GetInstance()->Initialize(renderer);
@@ -97,65 +100,95 @@ void EditorResourceManager::LoadAllResourcesInAsset()
 
 	const char* pathToAsset = ResourceManager::GetInstance()->GetPathToAsset().C_Str();
 
+	// File paths whose loading was aborted.
+	// Mostly when certain fields are nullptr or not loaded yet.
+	FTDS::DynamicArray<FTDS::String*> aborted;
+
 	DirectoryHelper::IterateForFileRecurse(
 		pathToAsset,
-		[&](std::string&& path) { LoadResByType(path.c_str()); });
+		[&](std::string path) { LoadResByType(path.c_str(), &aborted); });
+
+	for (size_t i = 0; i < RESOURCE_IMPORT_ATTEMPT; ++i)
+	{
+		aborted.IterateArray([&](FTDS::String* path) {
+			if (path)
+				LoadResByType(path->C_Str(), nullptr);
+		});
+	}
 
 	ResourceManager::GetInstance()->LoadMaterials();
 	ResourceManager::GetInstance()->LoadDefaultResources();
+
+	aborted.IterateArray([&](FTDS::String* path) {
+		delete path;
+		path = nullptr;
+	});
 }
 
-void EditorResourceManager::LoadResByType(const char* filePath)
+void EditorResourceManager::LoadResByType(const char* filePath, FTDS::DynamicArray<FTDS::String*>* aborted)
 {
 	FTDS::String path(filePath);
 	ResType		 type = GetResType(path);
+
+	if (aborted)
+		aborted->PushBack(DBG_NEW FTDS::String(path));
+	FTResource* res = nullptr;
 	printf("Loading file... %s\n", filePath);
+
 	switch (type)
 	{
 		// Loads Graphics resource.
 		case ResType::FTTEXTURE:
-			LoadResource(path, GetTextures(), GetRenderer());
+			res = LoadResource(path, GetTextures(), ResourceManager::GetInstance()->GetRenderer());
 			break;
 		case ResType::FT_SPRITE_ANIMATION:
-			LoadResource(path, GetSpriteAnimations(), GetRenderer());
+			res = LoadResource(path, GetSpriteAnimations(), ResourceManager::GetInstance()->GetRenderer());
 			break;
 		case ResType::FT_SPINE_ANIMATION:
-			LoadResource(path, GetSpineAnimations(), GetRenderer());
+			res = LoadResource(path, GetSpineAnimations(), ResourceManager::GetInstance()->GetRenderer());
 			break;
 		case ResType::FT_VERTEX_SHADER:
-			LoadResource(path, GetVertexShaders(), GetRenderer());
+			res = LoadResource(path, GetVertexShaders(), ResourceManager::GetInstance()->GetRenderer());
 			break;
 		case ResType::FT_PIXEL_SHADER:
-			LoadResource(path, GetPixelShaders(), GetRenderer());
+			res = LoadResource(path, GetPixelShaders(), ResourceManager::GetInstance()->GetRenderer());
 			break;
 		case ResType::FTMESH:
-			LoadResource(path, GetMeshGroups(), GetRenderer());
+			res = LoadResource(path, GetMeshGroups(), ResourceManager::GetInstance()->GetRenderer());
 			break;
 
 		// Loads non-Graphics resource.
 		case ResType::FTPREMADE:
-			LoadResource(path, GetPremades());
+			res = LoadResource(path, GetPremades());
 			break;
 		case ResType::FTCSV:
-			LoadResource(path, GetCSVs());
+			res = LoadResource(path, GetCSVs());
 			break;
 		case ResType::FTJSON:
-			LoadResource(path, GetJSONs());
+			res = LoadResource(path, GetJSONs());
 			break;
 		case ResType::FTTEXT:
-			LoadResource(path, GetTexts());
+			res = LoadResource(path, GetTexts());
 			break;
 		case ResType::FTSOUND:
-			LoadResource(path, GetSounds());
+			res = LoadResource(path, GetSounds());
 			break;
 		case ResType::FTTILEMAP:
-			LoadResource(path, GetTileMaps());
+			res = LoadResource(path, GetTileMaps());
 			break;
 		case ResType::UNSUPPORTED:
 			printf("File %s is unsupported\n", filePath);
 			break;
 		default:
 			break;
+	}
+	if (!aborted)
+		return;
+
+	if (res)
+	{
+		delete aborted->At(aborted->GetSize() - 1);
+		aborted->Erase(aborted->GetSize() - 1);
 	}
 }
 
@@ -280,9 +313,15 @@ void EditorResourceManager::UpdateUI()
 		{
 			std::map<std::string, std::string> selection = ImGuiFileDialog::Instance()->GetSelection();
 			for (auto iter = selection.begin(); iter != selection.end(); ++iter)
-				LoadResByType((*iter).second.c_str());
+				LoadResByType((*iter).second.c_str(), nullptr);
 		}
 		ImGuiFileDialog::Instance()->Close();
+	}
+
+	if (ImGui::Button("Refresh"))
+	{
+		ResourceManager::GetInstance()->DeleteAll();
+		LoadAllResourcesInAsset();
 	}
 
 	DisplayLoadedResources<FTTexture>("Textures", GetTextures());
@@ -314,8 +353,6 @@ ResType EditorResourceManager::GetResType(FTDS::String& fileName)
 		return ResType::FTTEXTURE;
 	else if (StrContains(FileTypes::TILEMAP, format))
 		return ResType::FTTILEMAP;
-	else if (StrContains(FileTypes::JSON_SHEET, format))
-		return ResType::FTPREMADE;
 	else if (StrContains(FileTypes::MESH, format))
 		return ResType::FTMESH;
 

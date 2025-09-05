@@ -11,8 +11,8 @@
 
 #include <FTCoreEditor.h>
 
-class EditorResourceManager 
-	: public ResourceManager
+class EditorResourceManager :
+	public ResourceManager
 {
 	SINGLETON(EditorResourceManager)
 
@@ -23,14 +23,18 @@ public:
 	void SaveResources(std::ofstream& ofs);
 
 	void LoadAllResourcesInAsset();
-	void LoadResByType(const char* fileName);
+
+	/// @brief Load a resource with type extracted from filePath.
+	/// @param aborted File paths whose loading was aborted.
+	/// After the first LoadResource() these will be attempted to be loaded again.
+	void LoadResByType(const char* filePath, FTDS::DynamicArray<FTDS::String*>* aborted);
 
 	// On Editor, loading resource from .chunk is not necessary, thus skip the process.
 	void PassLoadResourceInChunk(std::ifstream& ifs);
 
 public:
-	FTDS::HashMap<FTTexture*>*		   GetTextures() override;
-	FTDS::HashMap<FTTileMap*>*		   GetTileMaps() override;
+	FTDS::HashMap<FTTexture*>* GetTextures() override;
+	FTDS::HashMap<FTTileMap*>* GetTileMaps() override;
 	// FTDS::HashMap<FTSpriteSheet*>*	   GetSpriteSheets() override;
 	FTDS::HashMap<FTPremade*>*		   GetPremades() override;
 	FTDS::HashMap<FTVertexShader*>*	   GetVertexShaders() override;
@@ -51,7 +55,7 @@ public:
 		resArr->IterateAllValues([&](FTRESOURCE* res) {
 			if (res->IsReferenced())
 			{
-				//ResourceManager::GetInstance()->AbsoluteToRelativePath(res);
+				// ResourceManager::GetInstance()->AbsoluteToRelativePath(res);
 				FileIOHelper::BeginDataPackSave(ofs, res->GetFileName());
 				FileIOHelper::SaveString(ofs, ChunkKey::FTResource::FILE_NAME, res->GetFileName());
 				FileIOHelper::SaveString(ofs, ChunkKey::FTResource::RELATIVE_PATH, res->GetRelativePath().C_Str());
@@ -76,14 +80,21 @@ public:
 		FTDS::String fileName = ExtractFileName(filePath.C_Str());
 		printf("Message: Loading FTResource %s to key %s. \n", filePath.C_Str(), fileName.C_Str());
 
-		FTResourceDef resDef{ filePath, fileName };
+		FTResourceDef resDef{ fileName, filePath };
 		FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef);
 
-		//ResourceManager::GetInstance()->AbsoluteToRelativePath(res);
+		// ResourceManager::GetInstance()->AbsoluteToRelativePath(res);
 
 		if (resMap->IsFull())
 			resMap->Reserve(resMap->GetSize() + 5);
-		resMap->Insert(fileName, res);
+
+		if (res->IsProcessed())
+			resMap->Insert(fileName, res);
+		else
+		{
+			delete res;
+			res = nullptr;
+		}
 		return res;
 	}
 
@@ -99,14 +110,21 @@ public:
 		FTDS::String fileName = ExtractFileName(filePath.C_Str());
 		printf("Message: Loading FTResource %s to key %s. \n", filePath.C_Str(), fileName.C_Str());
 
-		FTResourceDef resDef{ filePath, fileName };
+		FTResourceDef resDef{ fileName, filePath };
 		FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef, renderer);
 
 		// ResourceManager::GetInstance()->AbsoluteToRelativePath(res);
 
 		if (resMap->IsFull())
 			resMap->Reserve(resMap->GetSize() + 5);
-		resMap->Insert(fileName, res);
+
+		if (res->IsProcessed())
+			resMap->Insert(fileName, res);
+		else
+		{
+			delete res;
+			res = nullptr;
+		}
 		return res;
 	}
 

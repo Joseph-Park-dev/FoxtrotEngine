@@ -76,7 +76,7 @@ private:
 	/// @brief Loaded spine animation clips.
 	spine::Vector<spine::Animation*> mLoadedClips;
 
-	/// @brief Loded spine skins.
+	/// @brief Loaded spine skins.
 	spine::Vector<spine::Skin*> mSkins;
 
 	/// @brief Defines how the skins are combined.
@@ -120,6 +120,9 @@ private:
 	void SetSkin();
 
 #ifdef FOXTROT_EDITOR
+public:
+	FTSpineAnimation(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTJSON* json, FTText* atlas);
+
 public:
 	/// @see FTResource::UpdateUI()
 	void UpdateUI() override;

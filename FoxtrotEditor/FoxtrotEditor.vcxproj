@@ -592,9 +592,6 @@
   <ItemGroup>
     <ResourceCompile Include="FoxtrotEditor.rc" />
   </ItemGroup>
-  <ItemGroup>
-    <Natvis Include="..\FoxtrotDS\FTDS.natvis" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

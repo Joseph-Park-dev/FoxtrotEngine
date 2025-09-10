@@ -21,13 +21,13 @@ void StandardMaterial::UpdateBuffer(ComPtr<ID3D11DeviceContext>& context)
 	Matrix&& viewMat  = Camera::GetInstance()->GetViewRow();
 	Vector3	 eyeWorld = Vector3::Transform(Vector3(0.0f), viewMat.Invert());
 
-	for (size_t i = 0; i < Light::TYPE::END; ++i)
+	/*for (size_t i = 0; i < Light::TYPE::END; ++i)
 	{
 		if (LightManager::GetInstance()->GetType(0) == (Light::TYPE)i)
 			mData->Lights[i] = LightManager::GetInstance()->GetLight(0);
 		else
 			mData->Lights[i].Strength *= 0.0f;
-	}
+	}*/
 
 	mData->EyeWorld = eyeWorld;
 	D3D11Utils::UpdateBuffer(context, *mData, GetPCBuf());
@@ -75,7 +75,11 @@ void StandardMaterial::UpdateUI()
 {
 	ImGui::SeparatorText("Standard Mat Data");
 
-	CommandHistory::GetInstance()->UpdateBoolValue(ChunkKey::StandardMat::USE_TEXTURE, mData->UseTexture);
+	bool useTex = mData->UseTexture;
+	CommandHistory::GetInstance()->UpdateBoolValue(ChunkKey::StandardMat::USE_TEXTURE, useTex);
+	mData->UseTexture = useTex;
+
+	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKey::StandardMat::ALPHA_TRIM, mData->AlphaTrim);
 
 	ImGui::SeparatorText("BlinnPhong Data");
 	CommandHistory::GetInstance()->UpdateVector3Value(ChunkKey::BlinnPhong::AMBIENT, mData->BlinnPhongData.Ambient);

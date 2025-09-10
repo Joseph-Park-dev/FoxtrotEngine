@@ -118,7 +118,7 @@ void FTTexture::Process(FoxtrotRenderer* renderer)
 	renderer->GetDevice()->CreateShaderResourceView(resultTex.Get(), 0, mSRV.GetAddressOf());
 
 	// Create MipMaps.
-	// context->GenerateMips(texture->GetResourceView().Get());
+	renderer->GetContext()->GenerateMips(mSRV.Get());
 
 	FTResource::Process();
 }

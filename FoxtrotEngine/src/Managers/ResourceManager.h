@@ -70,7 +70,7 @@ enum class ResType
 	FTSOUND
 };
 
-/// @brief /// A manager that saves/loads FTResources referred in a .Chunk file.
+/// @brief A manager that saves/loads FTResources referred in a .Chunk file.
 /// On Foxtrot Editor, this loads all supported resources in the
 /// "Asset" folder, and saves the FTResources that are referred in a .Chunk file or used in a Scene.
 class ResourceManager

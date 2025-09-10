@@ -462,10 +462,13 @@ FTJSON* ResourceManager::GetLoadedJSON(FTDS::String& key)
 {
 	AddFileExtensionIfNone(key, FileTypes::JSON);
 
-	FTJSON* ftJSON = mJSONs->At(key)->Value();
-	if (!ftJSON)
+	FTDS::Record<FTJSON*>* rec = mJSONs->At(key);
+	if (!rec)
+	{
 		Debug::LogError(__LINE__, __FILE__, "FTJSON is NULL");
-	return ftJSON;
+		return nullptr;
+	}
+	return rec->Value();
 }
 
 FTText* ResourceManager::GetLoadedText(FTDS::String& key)

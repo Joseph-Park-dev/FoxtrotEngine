@@ -1231,9 +1231,6 @@
   <ItemGroup>
     <ResourceCompile Include="include\assimp\res\assimp.rc" />
   </ItemGroup>
-  <ItemGroup>
-    <Natvis Include="..\FoxtrotDS\FTDS.natvis" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

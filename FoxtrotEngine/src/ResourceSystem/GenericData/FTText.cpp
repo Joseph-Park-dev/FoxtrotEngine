@@ -30,12 +30,17 @@ void FTText::LoadProperties(std::ifstream& ifs)
 	FTResource::LoadProperties(ifs);
 }
 
+FTDS::DynamicArray<FTDS::String*>* FTText::Data() { return mData; }
+FTDS::String*					   FTText::GetLineData(size_t lineNum) { return mData->At(lineNum - 1); }
+
 void FTText::Process()
 {
 	char*		  buf = nullptr;
-	std::ifstream ifs(GetFileName().C_Str());
+	std::ifstream ifs(GetRelativePath().C_Str());
 	size_t		  lineCount = GetLineCount(ifs);
 	mData->Reserve(lineCount);
+
+	Read(ifs, lineCount);
 
 	FTResource::Process();
 }
@@ -54,12 +59,12 @@ size_t FTText::GetLineCount(std::ifstream& ifs)
 	return count;
 }
 
-void FTText::Read(std::ifstream& ifs)
+void FTText::Read(std::ifstream& ifs, size_t count)
 {
-	char line[MAX_CHAR_PER_LINE] = {};
-	while (std::cin.getline(line, MAX_CHAR_PER_LINE, '\n'))
+	for (size_t i = 0; i < count; ++i)
 	{
-		FTDS::String* lineStr = DBG_NEW FTDS::String(line);
-		mData->PushBack(lineStr);
+		FTDS::String* line = DBG_NEW FTDS::String;
+		FileIOHelper::GetLine(ifs, *line);
+		mData->PushBack(line);
 	}
 }

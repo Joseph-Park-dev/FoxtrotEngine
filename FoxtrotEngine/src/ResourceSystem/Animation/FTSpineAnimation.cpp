@@ -34,7 +34,7 @@ void FTSpineAnimation::Render(FoxtrotRenderer* renderer, Transform* transform, C
 	// This enables the resource reusable throughout the Component instances.
 	UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat);
 
-	if (!vs || !ps) // Vertex Shader is always required when drawing.
+	if (!vs || !ps || !mat) // Vertex Shader is always required when drawing.
 		return;
 
 	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
@@ -58,9 +58,6 @@ void FTSpineAnimation::Render(FoxtrotRenderer* renderer, Transform* transform, C
 
 		if (mat)
 			context->PSSetConstantBuffers(0, 1, mat->GetPCBuf().GetAddressOf());
-
-		FLOAT blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
-		context->OMSetBlendState(renderer->GetBlendState().Get(), blendFactor, D3D11_DEFAULT_SAMPLE_MASK);
 
 		context->IASetInputLayout(vs->GetInputLayout().Get());
 		mesh->Draw(context);
@@ -92,12 +89,12 @@ spine::Vector<spine::Animation*>& FTSpineAnimation::LoadedClips()
 }
 
 FTSpineAnimation::FTSpineAnimation(FTResourceDef& resDef, FoxtrotRenderer* renderer)
-	: FTMeshGroup(resDef, renderer)
+	: FTMeshGroup(resDef, renderer, nullptr)
 	, mJSON(nullptr)
 	, mAtlasTxt(nullptr)
 	, mTimeScale(1.f)
 	, mSkinCombination(0x0)
-	, mCurrAnimIdx(0)
+	, mCurrAnimIdx(-1)
 	, mAtlas(nullptr)
 	, mSkeletonData(nullptr)
 	, mSkeleton(nullptr)
@@ -148,6 +145,10 @@ void FTSpineAnimation::Process(FoxtrotRenderer* renderer)
 	std::ifstream ifs(this->GetRelativePath().C_Str());
 	this->LoadProperties(ifs);
 
+	// The game will attempt to reload the resource after this call.
+	if (!mJSON || !mAtlasTxt)
+		return;
+
 	InitializeSpinAnim(renderer->GetDevice());
 
 	FTResource::Process();
@@ -169,8 +170,8 @@ void FTSpineAnimation::InitializeSpinAnim(ComPtr<ID3D11Device>& device)
 
 	spine::FTSpineLoader* spineLoader = AnimationManager::GetInstance()->GetSpineLoader();
 
-	//ResourceManager::GetInstance()->RelativeToAbsolutePath(mAtlasTxt);
-	//ResourceManager::GetInstance()->RelativeToAbsolutePath(mJSON);
+	// ResourceManager::GetInstance()->RelativeToAbsolutePath(mAtlasTxt);
+	// ResourceManager::GetInstance()->RelativeToAbsolutePath(mJSON);
 
 	mAtlas		  = new spine::Atlas(mAtlasTxt->GetRelativePath().C_Str(), spineLoader);
 	mSkeletonData = spineLoader->ReadSkeletonJsonData(mJSON->GetRelativePath().C_Str(), mAtlas, 1.0f);
@@ -382,14 +383,24 @@ void FTSpineAnimation::SetSkin()
 		unsigned int mask = 1U << i; // Creates a mask with a single bit at position 'i'.
 		{
 			// Check if the bit at position 'i' is set.
-			if (mSkinCombination & mask)
-				skin->addSkin(mSkins[i]);
+			if (i < mSkins.size())
+				if (mSkinCombination & mask)
+					skin->addSkin(mSkins[i]);
 		}
 	}
 	mSkeleton->setSkin(skin);
 	mSkeleton->setSlotsToSetupPose();
 
 	delete prev;
+}
+
+FTSpineAnimation::FTSpineAnimation(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTJSON* json, FTText* atlas)
+	: FTMeshGroup(resDef, renderer, nullptr)
+{
+	mJSON	  = json;
+	mAtlasTxt = atlas;
+
+	Process(renderer);
 }
 
 void FTSpineAnimation::SaveProperties(std::ofstream& ofs)
@@ -429,6 +440,8 @@ void FTSpineAnimation::UpdateUI()
 
 	if (ImGui::Button("UpdateSkin"))
 		SetSkin();
+
+	FTMeshGroup::UpdateUI();
 }
 
 void FTSpineAnimation::AddRefCount()

@@ -37,25 +37,14 @@ public:
 	template <typename ANIMATION>
 	void SaveAnimationAsFile(ANIMATION* animation, FTDS::String format)
 	{
-		FTDS::String path = ResourceManager::GetInstance()->GetPathToAsset() + animation->GetFileName();
-		if (animation->GetFileName().RFind(format.C_Str()) == -1)
-			path += format;
-		std::ofstream ofs(path.C_Str());
+		std::ofstream ofs(animation->GetRelativePath().C_Str());
 		animation->SaveProperties(ofs);
 		FileIOHelper::SaveBufferToFile(ofs);
 	}
 
 private:
-	void GetSprite(FTDS::String& key);
-	void GetTileMap(FTDS::String& key);
-	void GetSpriteSheet(FTDS::String& key);
-
-private:
-	FTSpriteAnimation* CreateAnimationFromSpineAtlas(
-		const char* name,
-		FTText*		sheet,
-		int			minIdx,
-		int			maxIdx);
+	FTSpriteAnimation* CreateAnimationFromJSON(
+		FTSpriteAnimationDef& resDef);
 
 	FTSpineAnimation* CreateAnimationFromSpine(
 		const char* name,

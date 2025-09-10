@@ -114,48 +114,66 @@ void AnimationManager::CreateAnimationGUI()
 	{
 		if (ImGui::BeginTabItem("Sprite Anim"))
 		{
-			//static int e = 0;
-			//ImGui::RadioButton("JSON", &e, 0);
-			//ImGui::SameLine();
-			//ImGui::RadioButton("Atlas", &e, 1);
+			FTSpriteAnimationDef resDef;
 
-			//if (e == 0)
-			//{
-			//	static char name[BufferSize::STRING_BUFFER_SIZE] = "Empty Value";
-			//	ImGui::InputText("Name", name, BufferSize::STRING_BUFFER_SIZE);
+			// Update file name of the sprite animation.
+			static FTDS::String name = "Empty Value";
+			CommandHistory::GetInstance()->UpdateStringValue("Name", name);
 
-			//	static FTTexture* texture = nullptr;
-			//	FTEditorUtils::DisplayResSelection("Select Sprite", ResourceManager::GetInstance()->GetTextures(), texture);
-			//	if (texture)
-			//		ImGui::Text(texture->GetFileName().C_Str());
-			//	else
-			//		ImGui::Text("Texture not selected");
+			// Is the sprite animation to be repeated?
+			CommandHistory::GetInstance()->UpdateBoolValue("Is repeated", resDef.IsRepeated);
 
-			//	static FTJSONSheet* sheet = nullptr;
-			//	FTEditorUtils::DisplayResSelection<FTJSONSheet>("Select JSONSheet", ResourceManager::GetInstance()->GetJSONSheets(), sheet);
-			//	int maxIdx = 0;
-			//	if (sheet)
-			//		maxIdx = static_cast<int>(sheet->GetTilesCount()) - 1;
+			// Update texture (sprite sheet) of the sprite animation.
+			static FTTexture* texture;
+			FTEditorUtils::DisplayResSelection("Select Sprite", ResourceManager::GetInstance()->GetTextures(), texture);
+			if (texture)
+				ImGui::Text(texture->GetFileName().C_Str());
+			else
+				ImGui::Text("Texture not selected");
 
-			//	static int startIdx;
-			//	static int endIdx;
+			// Update JSON (spritet sheet data) of the sprite animation.
+			static FTJSON* JSON;
+			FTEditorUtils::DisplayResSelection("Select JSON", ResourceManager::GetInstance()->GetJSONs(), JSON);
+			if (JSON)
+			{
+				ImGui::Text(JSON->GetFileName().C_Str());
+				resDef.MinFrameIdx = 0;
+				resDef.MaxFrameIdx = static_cast<int>(JSON->Data()[SpriteSheetKeys::BASE].size()) - 1;
+			}
+			else
+				ImGui::Text("JSON not selected");
 
-			//	CommandHistory::GetInstance()->UpdateIntValue("Anim Start Index", startIdx, -maxIdx, maxIdx);
-			//	CommandHistory::GetInstance()->UpdateIntValue("Anim End Index", endIdx, -maxIdx, maxIdx);
-			//	if (ImGui::Button("Auto Detect"))
-			//	{
-			//		startIdx = 0;
-			//		endIdx	 = maxIdx;
-			//	}
+			// Update FPS of the sprite animation.
+			CommandHistory::GetInstance()->UpdateIntValue("FPS", resDef.FPS);
 
-			//	if (ImGui::Button("Create"))
-			//	{
-			//		FTSpriteAnimation* anim = CreateAnimationFromSpriteSheet(name, sheet, startIdx, endIdx);
+			CommandHistory::GetInstance()->UpdateIntValue(
+				"Anim Start Index",
+				resDef.MinFrameIdx,
+				-resDef.MaxFrameIdx,
+				resDef.MaxFrameIdx);
 
-			//		// Load the created animation to ResourceManager & File.
-			//		// This is called only during the FTEditor Runtime.
-			//		SaveAnimationAsFile(anim, FileTypes::SPRITE_ANIMATION);
-			//	}
+			CommandHistory::GetInstance()->UpdateIntValue("Anim End Index", resDef.MaxFrameIdx, resDef.MinFrameIdx, resDef.MaxFrameIdx);
+
+			// Save sprite animation into a file.
+			if (ImGui::Button("Create"))
+			{
+				if (!name.Contains(FileTypes::SPRITE_ANIMATION))
+					name.Append(FileTypes::SPRITE_ANIMATION);
+				resDef.FileName = name.C_Str();
+
+				// Update the relative path of the sprite animation.
+				FTDS::String path = ResourceManager::GetInstance()->GetPathToAsset();
+				path.Append(resDef.FileName);
+				resDef.RelativePath = path.C_Str();
+
+				resDef.JSON = JSON;
+
+				FTSpriteAnimation* anim = CreateAnimationFromJSON(resDef);
+
+				// Load the created animation to ResourceManager & File.
+				// This is called only during the FTEditor Runtime.
+				SaveAnimationAsFile(anim, FileTypes::SPRITE_ANIMATION);
+			}
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Spine Anim"))
@@ -178,51 +196,21 @@ void AnimationManager::CreateAnimationGUI()
 	}
 }
 
-void AnimationManager::GetSprite(FTDS::String& key)
+FTSpriteAnimation* AnimationManager::CreateAnimationFromJSON(FTSpriteAnimationDef& resDef)
 {
-	FTEditorUtils::DisplayResSelection("Select Sprite", EditorResourceManager::GetInstance()->GetTextures(), key);
-}
+	FTSpriteAnimation* anim = DBG_NEW FTSpriteAnimation(resDef, mRenderer);
 
-void AnimationManager::GetTileMap(FTDS::String& key)
-{
-	FTEditorUtils::DisplayResSelection("Select TileMap", EditorResourceManager::GetInstance()->GetTileMaps(), key);
-}
-
-void AnimationManager::GetSpriteSheet(FTDS::String& key)
-{
-	// FTEditorUtils::DisplayResSelection("Select SpriteSheet", EditorResourceManager::GetInstance()->GetSpriteSheets(), key);
-}
-
-FTSpriteAnimation* AnimationManager::CreateAnimationFromSpineAtlas(const char* name, FTText* sheet, int minIdx, int maxIdx)
-{
-	/*if (!mRenderer)
-		printf("ERROR : Animator::CreateAnimationFromTile()-> Renderer is null");
-
-	FTSpriteAnimation* animation = DBG_NEW FTSpriteAnimation;
-
-	FTDS::String animName = FTDS::String(name) + FileTypes::SPRITE_ANIMATION;
-	animation->SetFileName(animName);
-	animation->SetMinFrameIdx(minIdx);
-	animation->SetMaxFrameIdx(maxIdx);
-
-	FTDS::String path = ResourceManager::GetInstance()->GetPathToAsset();
-	path.Append(animName);
-	animation->SetRelativePath(path);
-	animation->Initialize(sheet, mRenderer->GetDevice(), mRenderer->GetContext());
-
-	ResourceManager::GetInstance()->GetSpriteAnimations()->Insert(animation->FileName(), animation);
-	printf("FTSpriteAnimation created, %s\n", name);
-
-	return animation;*/
-	return nullptr;
+	SaveAnimationAsFile(anim, FileTypes::SPINE_ANIMATION);
+	ResourceManager::GetInstance()->GetSpriteAnimations()->Insert(anim->GetFileName(), anim);
+	return anim;
 }
 
 FTSpineAnimation* AnimationManager::CreateAnimationFromSpine(const char* name, FTJSON* json, FTText* atlas)
 {
 	FTResourceDef	  resDef = { name, ResourceManager::GetInstance()->GetPathToAsset().C_Str() };
-	FTSpineAnimation* anim = DBG_NEW FTSpineAnimation(resDef, mRenderer, json, atlas);
+	FTSpineAnimation* anim	 = DBG_NEW FTSpineAnimation(resDef, mRenderer, json, atlas);
 
-	SaveAnimationAsFile(anim, FileTypes::SPINE_ANIMATION);
+	SaveAnimationAsFile(anim, FileTypes::SPRITE_ANIMATION);
 	ResourceManager::GetInstance()->GetSpineAnimations()->Insert(anim->GetFileName(), anim);
 	return anim;
 }

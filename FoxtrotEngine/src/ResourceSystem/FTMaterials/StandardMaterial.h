@@ -10,7 +10,6 @@
 #include <ResourceSystem/FTMaterials/FTMaterial.h>
 
 struct Light;
-struct StandardMatData;
 class FTMeshGroup;
 
 /// @brief The value of the material data are to be applied to Pixel Constant Buffers.
@@ -28,8 +27,9 @@ struct BlinnPhongData
 struct StandardMatData
 {
 	Vector3		   EyeWorld;
-	bool		   UseTexture = 1;
-	Light		   Lights[GameData::MAX_LIGHTS];
+	uint32_t	   UseTexture = 1;
+	float		   AlphaTrim  = 0.9f;
+	Vector3		   dummy;
 	BlinnPhongData BlinnPhongData;
 };
 
@@ -75,6 +75,7 @@ namespace ChunkKey
 	{
 		constexpr const char* STANDARD_MAT = "StandardMaterial";
 		constexpr const char* USE_TEXTURE  = "Use Texture";
+		constexpr const char* ALPHA_TRIM   = "Alpha Trim";
 	} // namespace StandardMat
 
 	namespace BlinnPhong

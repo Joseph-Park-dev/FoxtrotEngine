@@ -34,6 +34,10 @@ public:
 	/// The array index equals to line number.
 	FTDS::DynamicArray<FTDS::String*>* Data();
 
+	/// @brief Returns the line string from the data at lineNum.
+	/// @return data at index lineNum-1 
+	FTDS::String* GetLineData(size_t lineNum);
+
 public:
 	/// @see FTResource::FTResource
 	FTText(FTResourceDef& resDef);
@@ -53,7 +57,8 @@ private:
 	size_t GetLineCount(std::ifstream& ifs);
 
 	/// @brief Parses the .txt, and stores the string values to mData.
-	void Read(std::ifstream& ifs);
+	/// @param count Number of lines to be read.
+	void Read(std::ifstream& ifs, size_t count);
 };
 
 namespace ChunkKey

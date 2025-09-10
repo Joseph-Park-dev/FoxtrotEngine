@@ -18,6 +18,12 @@ struct FTResourceDef
 	const char* FileName;
 	const char* RelativePath;
 
+	FTResourceDef()
+		: FileName()
+		, RelativePath()
+	{
+	}
+
 	FTResourceDef(const char* fileName, const char* relPath)
 		: FileName(fileName)
 		, RelativePath(relPath)

@@ -19,21 +19,25 @@
 class Tile;
 class Animator;
 class FTTexture;
+class FTJSON;
 struct AnimationFrame;
+
+#ifdef FOXTROT_EDITOR
+struct FTSpriteAnimationDef : FTResourceDef
+{
+	FTJSON* JSON		= nullptr;
+	bool	IsRepeated	= true;
+	int		FPS			= 24;
+	int		MinFrameIdx = -1;
+	int		MaxFrameIdx = -1;
+};
+#endif
 
 /// @brief A FTResource that holds a Sprite Animation.
 /// This will be registered to a SpriteAnimator Component instance.
 class FTSpriteAnimation : public FTMeshGroup
 {
 public:
-	/// @brief Takes tiles array and generate sprite animation base on its data.
-	/// Creates one Mesh object per every sprite frame, adding it to the MeshGroup.
-	/// @param tiles Tile data consists of Rect area on sprite sheet & game screen.
-	void Initialize(
-		const Tile*					 tiles,
-		ComPtr<ID3D11Device>&		 device,
-		ComPtr<ID3D11DeviceContext>& context);
-
 	/// @see FTResource::SaveProperties()
 	virtual void SaveProperties(std::ofstream& ofs) override;
 
@@ -60,8 +64,8 @@ protected:
 	virtual void Process(FoxtrotRenderer* renderer) override;
 
 private:
-	/// @brief A text file that holds the rect data on a spritesheet.
-	FTText* mAtlas;
+	/// @brief A JSON file that holds the rect data on a spritesheet.
+	FTJSON* mJSON;
 
 	/// @brief Frames-per-second for this animation.
 	int mFPS;
@@ -75,7 +79,18 @@ private:
 	/// @brief the last frame index.
 	int mMaxFrameIdx;
 
+private:
+	/// @brief Takes tiles array and generate sprite animation base on its data.
+	/// Creates one Mesh object per every sprite frame, adding it to the MeshGroup.
+	/// @param tiles Tile data consists of Rect area on sprite sheet & game screen.
+	void Initialize(
+		ComPtr<ID3D11Device>&		 device,
+		ComPtr<ID3D11DeviceContext>& context);
+
 #ifdef FOXTROT_EDITOR
+public:
+	FTSpriteAnimation(FTSpriteAnimationDef& resDef, FoxtrotRenderer* renderer);
+
 public:
 	virtual void AddRefCount() override;
 	virtual void SubtractRefCount() override;
@@ -97,3 +112,19 @@ namespace ChunkKey
 
 	} // namespace FTSpriteAnimation
 } // namespace ChunkKey
+
+namespace SpriteSheetKeys
+{
+	constexpr const char* BASE		 = "frames";
+	constexpr const char* PROPERTIES = "meta";
+	constexpr const char* SIZE		 = "size";
+	constexpr const char* FRAME		 = "frame";
+	constexpr const char* ROTATED	 = "rotated";
+	constexpr const char* TRIMMED	 = "trimmed";
+
+	constexpr const char* X = "x";
+	constexpr const char* Y = "y";
+	constexpr const char* W = "w";
+	constexpr const char* H = "h";
+
+} // namespace SpriteSheetKeys

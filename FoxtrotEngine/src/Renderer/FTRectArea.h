@@ -28,6 +28,10 @@ public:
 
 	// Update FTRectArea values using the new ones.
 	void Set(FTVector2 center, FTVector2 dimension, float rotAngle = 0);
+
+	/// @brief Update FTRectArea values
+	/// @param posX Top left position X
+	/// @param posY Top left position Y
 	void Set(float posX, float posY, float width, float height, float rotAngle = 0);
 
 	static const FTRectArea Zero;

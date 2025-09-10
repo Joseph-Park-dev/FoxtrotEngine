@@ -117,7 +117,7 @@ void Animator::UpdateFrame(float deltaTime)
 		return;
 	mAccTime += deltaTime;
 	FTSpriteAnimation* anim				= static_cast<FTSpriteAnimation*>(GetMeshGroup());
-	static float	   durationPerFrame = 1 / anim->GetFPS();
+	static float	   durationPerFrame = 1 / static_cast<float>(anim->GetFPS());
 
 	if (durationPerFrame <= mAccTime)
 	{
@@ -220,7 +220,7 @@ void Animator::EditorRender(FoxtrotRenderer* renderer)
 			mCurrFrameIdx,
 			renderer,
 			transform,
-			Camera::GetInstance(),
+			EditorCamera::GetInstance(),
 			GetTexture(),
 			GetVS(),
 			GetPS(),

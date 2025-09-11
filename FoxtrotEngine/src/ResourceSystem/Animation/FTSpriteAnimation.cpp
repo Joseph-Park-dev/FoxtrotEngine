@@ -19,7 +19,55 @@
 	#include "Managers/AnimationManager.h"
 	#include "EditorResourceManager.h"
 	#include "ResourceSystem/FTShaders/FTVertexShader.h"
+	#include "EditorUtils.h"
 #endif
+
+void FTSpriteAnimation::Render(
+	int				 meshIndex,
+	FoxtrotRenderer* renderer,
+	Transform*		 transform,
+	Camera*			 camInst,
+	FTVertexShader*	 vs,
+	FTPixelShader*	 ps,
+	FTMaterial*		 mat)
+{
+	// This enables the resource reusable throughout the Component instances.
+	UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat);
+
+	if (!vs || !ps) // Vertex Shader is always required when drawing.
+		return;
+
+	UINT						 stride	 = sizeof(Vertex);
+	UINT						 offset	 = 0;
+	Mesh*						 mesh	 = Meshes()->At(meshIndex);
+	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
+
+	if (mesh)
+	{
+		context->VSSetConstantBuffers(
+			0, 1, GetVCBuf().GetAddressOf());
+
+		if (mSpriteSheet)
+		{
+			std::vector<ID3D11ShaderResourceView*> resViews;
+			resViews.push_back(mSpriteSheet->GetSRV().Get());
+			context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
+		}
+
+		context->VSSetShader(vs->GetShader().Get(), 0, 0);
+		context->PSSetSamplers(0, 1, GetSamplerState().GetAddressOf());
+		context->PSSetShader(ps->GetShader().Get(), 0, 0);
+
+		if (mat)
+			context->PSSetConstantBuffers(0, 1, mat->GetPCBuf().GetAddressOf());
+
+		context->IASetInputLayout(vs->GetInputLayout().Get());
+		context->IASetVertexBuffers(0, 1, mesh->VertexBuffer.GetAddressOf(), &stride, &offset);
+		context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		context->DrawIndexed(mesh->IndexCount, 0, 0);
+	}
+}
 
 void FTSpriteAnimation::SaveProperties(std::ofstream& ofs)
 {
@@ -30,7 +78,9 @@ void FTSpriteAnimation::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::SaveBool(ofs, ChunkKey::FTSpriteAnimation::IS_REPEATED, mIsRepeated);
 	FileIOHelper::SaveInt(ofs, ChunkKey::FTSpriteAnimation::MAX_FRAME_IDX, mMaxFrameIdx);
 	FileIOHelper::SaveInt(ofs, ChunkKey::FTSpriteAnimation::MIN_FRAME_IDX, mMinFrameIdx);
-	FileIOHelper::SaveString(ofs, ChunkKey::FTSpriteAnimation::ANIM_TILEMAP_KEY, mJSON->GetFileName());
+	FileIOHelper::SaveVector3(ofs, ChunkKey::FTSpriteAnimation::SIZE_SCALE, GetSizeScale());
+	FileIOHelper::SaveString(ofs, ChunkKey::FTSpriteAnimation::SPRITE_SHEET, mSpriteSheet->GetFileName());
+	FileIOHelper::SaveString(ofs, ChunkKey::FTSpriteAnimation::JSON, mJSON->GetFileName());
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
 }
@@ -40,7 +90,12 @@ void FTSpriteAnimation::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
 
 	FTDS::String jsonKey;
+	FTDS::String texKey;
+	FTVector3	 sizeScale = FTVector3(1.f, 1.f, 1.f);
+	
 	FileIOHelper::LoadBasicString(ifs, jsonKey);
+	FileIOHelper::LoadBasicString(ifs, texKey);
+	FileIOHelper::LoadVector3(ifs, sizeScale);
 	FileIOHelper::LoadInt(ifs, mMinFrameIdx);
 	FileIOHelper::LoadInt(ifs, mMaxFrameIdx);
 	FileIOHelper::LoadBool(ifs, mIsRepeated);
@@ -48,6 +103,8 @@ void FTSpriteAnimation::LoadProperties(std::ifstream& ifs)
 	FTMeshGroup::LoadProperties(ifs);
 
 	mJSON = ResourceManager::GetInstance()->GetLoadedJSON(jsonKey);
+	mSpriteSheet = ResourceManager::GetInstance()->GetLoadedTexture(texKey);
+	SetSizeScale(sizeScale);
 }
 
 const int FTSpriteAnimation::GetFPS() const
@@ -61,6 +118,7 @@ const int FTSpriteAnimation::GetMinFrameIdx() const { return mMinFrameIdx; }
 FTSpriteAnimation::FTSpriteAnimation(FTResourceDef& resDef, FoxtrotRenderer* renderer)
 	: FTMeshGroup(resDef, renderer, nullptr)
 	, mJSON(nullptr)
+	, mSpriteSheet(nullptr)
 	, mMinFrameIdx(0)
 	, mMaxFrameIdx(0)
 	, mFPS(24)
@@ -123,8 +181,19 @@ void FTSpriteAnimation::Initialize(ComPtr<ID3D11Device>& device, ComPtr<ID3D11De
 		float screenH = frame[SpriteSheetKeys::FRAME][SpriteSheetKeys::H];
 
 		// Adjusted size, considering the original W/H ratio of a sprite.
-		float adjustedW = 1.0f;
-		float adjustedH = screenW / screenH;
+		float adjustedW = 0.f;
+		float adjustedH = 0.f;
+
+		if (screenW <= screenH)
+		{
+			adjustedW = 1.0f;
+			adjustedH = screenH / screenW;
+		}
+		else
+		{
+			adjustedH = 1.0f;
+			adjustedW = screenW / screenH;
+		}
 
 		tiles[i].GetRectOnScreen().Set(screenX, screenY, adjustedW, adjustedH);
 	}
@@ -141,6 +210,7 @@ void FTSpriteAnimation::Initialize(ComPtr<ID3D11Device>& device, ComPtr<ID3D11De
 FTSpriteAnimation::FTSpriteAnimation(FTSpriteAnimationDef& resDef, FoxtrotRenderer* renderer)
 	: FTMeshGroup(resDef, renderer, nullptr)
 	, mJSON(resDef.JSON)
+	, mSpriteSheet(resDef.SpriteSheet)
 	, mMinFrameIdx(resDef.MinFrameIdx)
 	, mMaxFrameIdx(resDef.MaxFrameIdx)
 	, mFPS(resDef.FPS)
@@ -152,12 +222,14 @@ FTSpriteAnimation::FTSpriteAnimation(FTSpriteAnimationDef& resDef, FoxtrotRender
 void FTSpriteAnimation::AddRefCount()
 {
 	mJSON->AddRefCount();
+	mSpriteSheet->AddRefCount();
 	FTMeshGroup::AddRefCount();
 }
 
 void FTSpriteAnimation::SubtractRefCount()
 {
 	mJSON->SubtractRefCount();
+	mSpriteSheet->SubtractRefCount();
 	FTMeshGroup::SubtractRefCount();
 }
 #endif

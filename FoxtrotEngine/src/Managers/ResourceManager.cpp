@@ -347,13 +347,15 @@ void ResourceManager::LoadDefaultResources()
 
 FTTexture* ResourceManager::GetLoadedTexture(FTDS::String& key)
 {
-	if (key.Equal(ChunkKey::NullVal::NULL_OBJECT))
-		return nullptr;
+	AddFileExtensionIfNone(key, FileTypes::JSON);
 
-	FTTexture* texture = mTextures->At(key)->Value();
-	if (!texture)
-		Debug::LogError(__LINE__, __FILE__, "FTTileMap is NULL");
-	return texture;
+	FTDS::Record<FTTexture*>* rec = mTextures->At(key);
+	if (!rec)
+	{
+		Debug::LogError(__LINE__, __FILE__, "FTJSON is NULL");
+		return nullptr;
+	}
+	return rec->Value();
 }
 
 FTTileMap* ResourceManager::GetLoadedTileMap(FTDS::String& key)

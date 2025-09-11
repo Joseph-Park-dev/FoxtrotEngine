@@ -87,6 +87,7 @@ namespace FTDS
 				this->At(i) = t;
 				++i;
 			});
+			this->mSize = other->GetSize();
 		}
 
 	public:

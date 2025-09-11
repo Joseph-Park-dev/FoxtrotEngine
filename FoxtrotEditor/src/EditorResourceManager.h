@@ -55,10 +55,13 @@ public:
 		resArr->IterateAllValues([&](FTRESOURCE* res) {
 			if (res->IsReferenced())
 			{
+				FTDS::String path = res->GetRelativePath();
+				ResourceManager::GetInstance()->AbsoluteToRelativePath(path);
+
 				// ResourceManager::GetInstance()->AbsoluteToRelativePath(res);
 				FileIOHelper::BeginDataPackSave(ofs, res->GetFileName());
 				FileIOHelper::SaveString(ofs, ChunkKey::FTResource::FILE_NAME, res->GetFileName());
-				FileIOHelper::SaveString(ofs, ChunkKey::FTResource::RELATIVE_PATH, res->GetRelativePath().C_Str());
+				FileIOHelper::SaveString(ofs, ChunkKey::FTResource::RELATIVE_PATH, path.C_Str());
 				FileIOHelper::EndDataPackSave(ofs, res->GetFileName());
 			}
 		});

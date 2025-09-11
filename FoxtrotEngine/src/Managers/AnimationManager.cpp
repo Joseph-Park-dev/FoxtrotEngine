@@ -166,7 +166,8 @@ void AnimationManager::CreateAnimationGUI()
 				path.Append(resDef.FileName);
 				resDef.RelativePath = path.C_Str();
 
-				resDef.JSON = JSON;
+				resDef.JSON		   = JSON;
+				resDef.SpriteSheet = texture;
 
 				FTSpriteAnimation* anim = CreateAnimationFromJSON(resDef);
 

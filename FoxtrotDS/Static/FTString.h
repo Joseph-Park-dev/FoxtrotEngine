@@ -358,6 +358,17 @@ namespace FTDS
 		this->At(mSize - 1) = value;
 	}
 
+	template <>
+	inline int FTDS::DynamicArray<FTDS::String*>::Find(FTDS::String* value)
+	{
+		for (int pos = 0; pos < (int)mSize; ++pos)
+		{
+			if (value->Equal(this->mData[pos]->C_Str()))
+				return pos;
+		}
+		return -1;
+	}
+
 	inline bool StrContains(const char* str, const char* val)
 	{
 		return -1 < FTDS::String(str).RFind(val);
@@ -430,12 +441,12 @@ namespace FTDS
 		return rhs.Equal(std::move(lhs));
 	}
 
-	inline bool operator==(const FTDS::String lhs, const FTDS::String& rhs)
+	inline bool operator==(const FTDS::String& lhs, const FTDS::String& rhs)
 	{
 		return lhs.Equal(rhs.C_Str());
 	}
 
-	inline bool operator!=(const FTDS::String lhs, const FTDS::String& rhs)
+	inline bool operator!=(const FTDS::String& lhs, const FTDS::String& rhs)
 	{
 		return lhs.NotEqual(rhs.C_Str());
 	}

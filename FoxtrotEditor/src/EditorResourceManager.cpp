@@ -36,47 +36,47 @@ void EditorResourceManager::SaveResources(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::RESOURCE_DATA);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTexture::FT_TEXTURE);
-	SaveResourceToChunk<FTTexture>(ofs, GetTextures());
+	SaveResourceToChunk<FTTexture>(ofs, ResourceManager::GetInstance()->GetTextures());
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTexture::FT_TEXTURE);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTileMap::FT_TILEMAP);
-	SaveResourceToChunk<FTTileMap>(ofs, GetTileMaps());
+	SaveResourceToChunk<FTTileMap>(ofs, ResourceManager::GetInstance()->GetTileMaps());
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTileMap::FT_TILEMAP);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTPremade::FT_PREMADE);
-	SaveResourceToChunk<FTPremade>(ofs, GetPremades());
+	SaveResourceToChunk<FTPremade>(ofs, ResourceManager::GetInstance()->GetPremades());
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTPremade::FT_PREMADE);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
-	SaveResourceToChunk<FTSpineAnimation>(ofs, GetSpineAnimations());
+	SaveResourceToChunk<FTSpineAnimation>(ofs, ResourceManager::GetInstance()->GetSpineAnimations());
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
-	SaveResourceToChunk<FTSpriteAnimation>(ofs, GetSpriteAnimations());
+	SaveResourceToChunk<FTSpriteAnimation>(ofs, ResourceManager::GetInstance()->GetSpriteAnimations());
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTMeshGroup::FT_MESH_GROUP);
-	SaveResourceToChunk<FTMeshGroup>(ofs, GetMeshGroups());
+	SaveResourceToChunk<FTMeshGroup>(ofs, ResourceManager::GetInstance()->GetMeshGroups());
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTMeshGroup::FT_MESH_GROUP);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTVertexShader::FT_VERTEX_SHADER);
-	SaveResourceToChunk<FTVertexShader>(ofs, GetVertexShaders());
+	SaveResourceToChunk<FTVertexShader>(ofs, ResourceManager::GetInstance()->GetVertexShaders());
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTVertexShader::FT_VERTEX_SHADER);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTPixelShader::FT_PIXEL_SHADER);
-	SaveResourceToChunk<FTPixelShader>(ofs, GetPixelShaders());
+	SaveResourceToChunk<FTPixelShader>(ofs, ResourceManager::GetInstance()->GetPixelShaders());
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTPixelShader::FT_PIXEL_SHADER);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Sound::SOUND);
-	SaveResourceToChunk<Sound>(ofs, GetSounds());
+	SaveResourceToChunk<Sound>(ofs, ResourceManager::GetInstance()->GetSounds());
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::Sound::SOUND);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::JSON::JSON);
-	SaveResourceToChunk<FTJSON>(ofs, GetJSONs());
+	SaveResourceToChunk<FTJSON>(ofs, ResourceManager::GetInstance()->GetJSONs());
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::JSON::JSON);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CSV::CSV);
-	SaveResourceToChunk<FTCSV>(ofs, GetCSVs());
+	SaveResourceToChunk<FTCSV>(ofs, ResourceManager::GetInstance()->GetCSVs());
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CSV::CSV);
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::RESOURCE_DATA);
@@ -185,10 +185,11 @@ void EditorResourceManager::LoadResByType(const char* filePath, FTDS::DynamicArr
 
 	if (res)
 	{
-		if (aborted.Find(&path) != -1)
+		int pos = aborted.Find(&path);
+		if (pos != -1)
 		{
-			delete aborted.At(0);
-			aborted.Erase(0);
+			delete aborted.At(pos);
+			aborted.Erase(pos);
 		}
 	}
 	else

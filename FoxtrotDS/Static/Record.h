@@ -17,13 +17,13 @@ namespace FTDS
 	public:
 		Record(Record* rec)
 		{
-			rec->mKey = this->mKey;
+			rec->mKey	= this->mKey;
 			rec->mValue = this->mValue;
 		}
 
 		Record(FTDS::String key, TYPE value)
 		{
-			mKey   = key;
+			mKey.Assign(key);
 			mValue = value;
 		}
 

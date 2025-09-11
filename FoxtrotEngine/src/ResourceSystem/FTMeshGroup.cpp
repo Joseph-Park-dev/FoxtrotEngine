@@ -71,54 +71,6 @@ void FTMeshGroup::Render(
 	});
 }
 
-void FTMeshGroup::Render(
-	int				 meshIndex,
-	FoxtrotRenderer* renderer,
-	Transform*		 transform,
-	Camera*			 camInst,
-	FTTexture*		 tex,
-	FTVertexShader*	 vs,
-	FTPixelShader*	 ps,
-	FTMaterial*		 mat)
-{
-	// This enables the resource reusable throughout the Component instances.
-	UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat);
-
-	if (!vs || !ps) // Vertex Shader is always required when drawing.
-		return;
-
-	UINT						 stride	 = sizeof(Vertex);
-	UINT						 offset	 = 0;
-	Mesh*						 mesh	 = mMeshes->At(meshIndex);
-	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
-
-	if (mesh)
-	{
-		context->VSSetConstantBuffers(
-			0, 1, mVCBuf.GetAddressOf());
-
-		if (tex)
-		{
-			std::vector<ID3D11ShaderResourceView*> resViews;
-			resViews.push_back(tex->GetSRV().Get());
-			context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
-		}
-
-		context->VSSetShader(vs->GetShader().Get(), 0, 0);
-		context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
-		context->PSSetShader(ps->GetShader().Get(), 0, 0);
-
-		if (mat)
-			context->PSSetConstantBuffers(0, 1, mat->GetPCBuf().GetAddressOf());
-
-		context->IASetInputLayout(vs->GetInputLayout().Get());
-		context->IASetVertexBuffers(0, 1, mesh->VertexBuffer.GetAddressOf(), &stride, &offset);
-		context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		context->DrawIndexed(mesh->IndexCount, 0, 0);
-	}
-}
-
 void FTMeshGroup::SetSizeScale(const FTVector3 scale)
 {
 	mSizeScale = scale;
@@ -210,9 +162,9 @@ void FTMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3
 
 	FTVector3 scale		   = transform->GetWorldScale();
 	FTVector3 scaleWithDir = FTVector3(scale.x * mDirection, scale.y, scale.z);
-	scaleWithDir *= mSizeScale;
-	transform->SetLocalScale(scaleWithDir);
+	transform->SetWorldScale(scaleWithDir);
 	modelMat = transform->GetMatrixWorld();
+	modelMat *= Matrix::CreateScale(mSizeScale.GetDXVec3());
 
 	// Inverse transpose matrix calculation
 	// Consider removing this part if the engine is for 2D games.
@@ -254,6 +206,8 @@ void FTMeshGroup::Clear()
 FTDS::DynamicArray<Mesh*>*	FTMeshGroup::Meshes() { return mMeshes; };
 ComPtr<ID3D11SamplerState>& FTMeshGroup::GetSamplerState() { return mSamplerState; }
 ComPtr<ID3D11Buffer>&		FTMeshGroup::GetVCBuf() { return mVCBuf; }
+
+const FTVector3& FTMeshGroup::GetSizeScale() const { return mSizeScale; }
 
 void FTMeshGroup::Process(FoxtrotRenderer* renderer, FTMeshData* meshData)
 {

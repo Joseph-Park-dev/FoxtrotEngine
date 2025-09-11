@@ -36,18 +36,6 @@ public:
 		FTPixelShader*	 ps,
 		FTMaterial*		 mat);
 
-	/// @brief Renders a single mesh from created meshes. Useful for SpriteAnimation.
-	/// @param meshIndex Index of a mesh to be rendered.
-	virtual void Render(
-		int				 meshIndex,
-		FoxtrotRenderer* renderer,
-		Transform*		 transform,
-		Camera*			 camInst,
-		FTTexture*		 tex,
-		FTVertexShader*	 vs,
-		FTPixelShader*	 ps,
-		FTMaterial*		 mat);
-
 public:
 	/// @brief Set scale value to be multiplied with the scale (3D transformation).
 	void SetSizeScale(const FTVector3 scale);
@@ -93,13 +81,16 @@ protected:
 	void Clear();
 
 protected:
-	/// @brief Get meshes ready to be rendered.
+	/// @brief Returns meshes ready to be rendered.
 	FTDS::DynamicArray<Mesh*>* Meshes();
 
 	ComPtr<ID3D11SamplerState>& GetSamplerState();
 
-	/// @brief Get vertex constant buffer.
+	/// @brief Returns vertex constant buffer.
 	ComPtr<ID3D11Buffer>& GetVCBuf();
+
+	/// @brief Returns the size scale.
+	const FTVector3& GetSizeScale() const;
 
 private:
 	/// @brief Horizontal direction this mesh is pointing to.

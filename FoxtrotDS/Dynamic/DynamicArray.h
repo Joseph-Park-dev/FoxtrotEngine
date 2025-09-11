@@ -46,7 +46,7 @@ namespace FTDS
 			// Note that condition differs from Insert(size_t, TYPE)
 			assert(pos < this->mSize);
 
-			this->mData[pos] = TYPE();
+			this->mData[pos] = NULL;
 			--mSize;
 
 			// Pull the values one index forward.
@@ -62,7 +62,7 @@ namespace FTDS
 
 		void PopBack()
 		{
-			this->mData[mSize - 1] = TYPE();
+			this->mData[mSize - 1] = NULL;
 			--mSize;
 
 			if (mSize < (this->mCapacity / 2))
@@ -75,7 +75,6 @@ namespace FTDS
 			{
 				if (this->mData[pos] == val)
 					return pos;
-				++pos;
 			}
 			return -1;
 		}
@@ -125,6 +124,7 @@ namespace FTDS
 		{
 			// Create an array with renewed capacity.
 			TYPE* newArr = DBG_NEW TYPE[newCap];
+			memset(newArr, NULL, sizeof(TYPE) * newCap);
 
 			// Copy the data in front of the pos,
 			// which is not included in the copied size.

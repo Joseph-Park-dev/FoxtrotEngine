@@ -27,7 +27,7 @@ public:
 	/// @brief Load a resource with type extracted from filePath.
 	/// @param aborted File paths whose loading was aborted.
 	/// After the first LoadResource() these will be attempted to be loaded again.
-	void LoadResByType(const char* filePath, FTDS::DynamicArray<FTDS::String*>* aborted);
+	void LoadResByType(const char* filePath, FTDS::DynamicArray<FTDS::String*>& aborted);
 
 	// On Editor, loading resource from .chunk is not necessary, thus skip the process.
 	void PassLoadResourceInChunk(std::ifstream& ifs);
@@ -112,8 +112,6 @@ public:
 
 		FTResourceDef resDef{ fileName, filePath };
 		FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef, renderer);
-
-		// ResourceManager::GetInstance()->AbsoluteToRelativePath(res);
 
 		if (resMap->IsFull())
 			resMap->Reserve(resMap->GetSize() + 5);

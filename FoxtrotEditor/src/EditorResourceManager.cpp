@@ -106,13 +106,13 @@ void EditorResourceManager::LoadAllResourcesInAsset()
 
 	DirectoryHelper::IterateForFileRecurse(
 		pathToAsset,
-		[&](std::string path) { LoadResByType(path.c_str(), &aborted); });
+		[&](std::string path) { LoadResByType(path.c_str(), aborted); });
 
-	for (size_t i = 0; i < RESOURCE_IMPORT_ATTEMPT; ++i)
+	while (!aborted.IsEmpty())
 	{
 		aborted.IterateArray([&](FTDS::String* path) {
 			if (path)
-				LoadResByType(path->C_Str(), nullptr);
+				LoadResByType(path->C_Str(), aborted);
 		});
 	}
 
@@ -125,13 +125,11 @@ void EditorResourceManager::LoadAllResourcesInAsset()
 	});
 }
 
-void EditorResourceManager::LoadResByType(const char* filePath, FTDS::DynamicArray<FTDS::String*>* aborted)
+void EditorResourceManager::LoadResByType(const char* filePath, FTDS::DynamicArray<FTDS::String*>& aborted)
 {
 	FTDS::String path(filePath);
 	ResType		 type = GetResType(path);
 
-	if (aborted)
-		aborted->PushBack(DBG_NEW FTDS::String(path));
 	FTResource* res = nullptr;
 	printf("Loading file... %s\n", filePath);
 
@@ -176,20 +174,25 @@ void EditorResourceManager::LoadResByType(const char* filePath, FTDS::DynamicArr
 		case ResType::FTTILEMAP:
 			res = LoadResource(path, GetTileMaps());
 			break;
+
+		// Filters out the rest of file types.
 		case ResType::UNSUPPORTED:
 			printf("File %s is unsupported\n", filePath);
-			break;
+			return;
 		default:
-			break;
+			return;
 	}
-	if (!aborted)
-		return;
 
 	if (res)
 	{
-		delete aborted->At(aborted->GetSize() - 1);
-		aborted->Erase(aborted->GetSize() - 1);
+		if (aborted.Find(&path) != -1)
+		{
+			delete aborted.At(0);
+			aborted.Erase(0);
+		}
 	}
+	else
+		aborted.PushBack(DBG_NEW FTDS::String(path));
 }
 
 void EditorResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)
@@ -307,7 +310,7 @@ void EditorResourceManager::UpdateUI()
 		ImGuiFileDialog::Instance()->OpenDialog("ImportRes", "Choose Files", FileTypes::ALL_FILE_FORMATS, config);
 	}
 
-	if (ImGuiFileDialog::Instance()->Display("ImportRes"))
+	/*if (ImGuiFileDialog::Instance()->Display("ImportRes"))
 	{
 		if (ImGuiFileDialog::Instance()->IsOk())
 		{
@@ -316,7 +319,7 @@ void EditorResourceManager::UpdateUI()
 				LoadResByType((*iter).second.c_str(), nullptr);
 		}
 		ImGuiFileDialog::Instance()->Close();
-	}
+	}*/
 
 	if (ImGui::Button("Refresh"))
 	{
@@ -370,6 +373,9 @@ ResType EditorResourceManager::GetResType(FTDS::String& fileName)
 	else if (StrContains(FileTypes::TEXT, format))
 		return ResType::FTTEXT;
 
+	else if (StrContains(FileTypes::SHADER_META, format))
+		return ResType::FT_SHADER_META;
+
 	else if (StrContains(FileTypes::SHADER, format))
 
 		if (fileName.Contains(FileTypes::VERTEX_SHADER))
@@ -380,6 +386,9 @@ ResType EditorResourceManager::GetResType(FTDS::String& fileName)
 			return ResType::UNSUPPORTED;
 	else if (StrContains(FileTypes::Sound::WAV, format))
 		return ResType::FTSOUND;
+
+	else
+		return ResType::UNSUPPORTED;
 }
 
 EditorResourceManager::EditorResourceManager()

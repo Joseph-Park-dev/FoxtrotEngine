@@ -25,19 +25,32 @@ struct AnimationFrame;
 #ifdef FOXTROT_EDITOR
 struct FTSpriteAnimationDef : FTResourceDef
 {
-	FTJSON* JSON		= nullptr;
-	bool	IsRepeated	= true;
-	int		FPS			= 24;
-	int		MinFrameIdx = -1;
-	int		MaxFrameIdx = -1;
+	FTJSON*	   JSON		   = nullptr;
+	FTTexture* SpriteSheet = nullptr;
+	bool	   IsRepeated  = true;
+	int		   FPS		   = 24;
+	int		   MinFrameIdx = -1;
+	int		   MaxFrameIdx = -1;
 };
 #endif
 
 /// @brief A FTResource that holds a Sprite Animation.
-/// This will be registered to a SpriteAnimator Component instance.
+/// This will be registered to a Animator Component instance.
 class FTSpriteAnimation : public FTMeshGroup
 {
 public:
+	/// @brief Renders a single frame of the animation, which is a mesh.
+	/// Note that it's not derived from FTMeshGroup: no FTTexture parameter.
+	/// @param meshIndex Index of a mesh to be rendered.
+	void Render(
+		int				 meshIndex,
+		FoxtrotRenderer* renderer,
+		Transform*		 transform,
+		Camera*			 camInst,
+		FTVertexShader*	 vs,
+		FTPixelShader*	 ps,
+		FTMaterial*		 mat);
+
 	/// @see FTResource::SaveProperties()
 	virtual void SaveProperties(std::ofstream& ofs) override;
 
@@ -66,6 +79,9 @@ protected:
 private:
 	/// @brief A JSON file that holds the rect data on a spritesheet.
 	FTJSON* mJSON;
+
+	/// @brief A texture holding the animation's sprite sheet.
+	FTTexture* mSpriteSheet;
 
 	/// @brief Frames-per-second for this animation.
 	int mFPS;
@@ -103,12 +119,13 @@ namespace ChunkKey
 	namespace FTSpriteAnimation
 	{
 		constexpr const char* FT_SPRITE_ANIMATION = "FTSpriteAnimation";
-		constexpr const char* ANIM_TILEMAP_KEY	  = "TileMap Key";
-
-		constexpr const char* FPS			= "FPS";
-		constexpr const char* IS_REPEATED	= "Is Repeated";
-		constexpr const char* MAX_FRAME_IDX = "Max Frame Index";
-		constexpr const char* MIN_FRAME_IDX = "Min Frame Index";
+		constexpr const char* JSON				  = "JSON";
+		constexpr const char* SPRITE_SHEET		  = "Sprite Sheet";
+		constexpr const char* SIZE_SCALE		  = "Size Scale";
+		constexpr const char* FPS				  = "FPS";
+		constexpr const char* IS_REPEATED		  = "Is Repeated";
+		constexpr const char* MAX_FRAME_IDX		  = "Max Frame Index";
+		constexpr const char* MIN_FRAME_IDX		  = "Min Frame Index";
 
 	} // namespace FTSpriteAnimation
 } // namespace ChunkKey

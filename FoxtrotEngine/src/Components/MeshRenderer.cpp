@@ -168,7 +168,7 @@ void MeshRenderer::EditorUIUpdate()
 	if (!mMeshGroup)
 		return;
 
-	mMeshGroup->UpdateUI();
+	//mMeshGroup->UpdateUI();
 
 	if (mTexture)
 		mTexture->UpdateUI();

@@ -102,6 +102,7 @@ void Animator::LoadProperties(std::ifstream& ifs)
 		FileIOHelper::LoadBasicString(ifs, key);
 
 		FTSpriteAnimation* anim = ResourceManager::GetInstance()->GetLoadedSpriteAnim(key);
+		anim->AddRefCount();
 		mLoadedAnim->PushBack(anim);
 	}
 	mLoadedAnim->Reverse();
@@ -161,15 +162,16 @@ void Animator::Render(FoxtrotRenderer* renderer)
 		renderer->SwitchFillMode();
 
 		Transform* transform = GetOwner()->GetTransform();
-		GetMeshGroup()->Render(
-			mCurrFrameIdx,
-			renderer,
-			transform,
-			Camera::GetInstance(),
-			GetTexture(),
-			GetVS(),
-			GetPS(),
-			GetMaterial());
+
+		static_cast<FTSpriteAnimation*>(GetMeshGroup())
+			->Render(
+				mCurrFrameIdx,
+				renderer,
+				transform,
+				Camera::GetInstance(),
+				GetVS(),
+				GetPS(),
+				GetMaterial());
 	}
 }
 
@@ -214,17 +216,17 @@ void Animator::EditorRender(FoxtrotRenderer* renderer)
 	if (GetMeshGroup())
 	{
 		renderer->SwitchFillMode();
-
 		Transform* transform = GetOwner()->GetTransform();
-		GetMeshGroup()->Render(
-			mCurrFrameIdx,
-			renderer,
-			transform,
-			EditorCamera::GetInstance(),
-			GetTexture(),
-			GetVS(),
-			GetPS(),
-			GetMaterial());
+
+		static_cast<FTSpriteAnimation*>(GetMeshGroup())
+			->Render(
+				mCurrFrameIdx,
+				renderer,
+				transform,
+				EditorCamera::GetInstance(),
+				GetVS(),
+				GetPS(),
+				GetMaterial());
 	}
 }
 
@@ -247,7 +249,6 @@ void Animator::UpdatePlayAnim()
 
 void Animator::UpdatePlayList()
 {
-	ImGui::Text("Play List");
 	FTSpriteAnimation* anim = nullptr;
 	FTEditorUtils::DisplayResSelection<FTSpriteAnimation>(
 		"Load Animation",
@@ -261,6 +262,7 @@ void Animator::UpdatePlayList()
 			SetMeshGroup(anim);
 	}
 
+	ImGui::SeparatorText("Play List");
 	if (0 < mLoadedAnim->GetSize())
 	{
 		size_t i = 0;
@@ -280,6 +282,7 @@ void Animator::UpdatePlayList()
 
 				if (ImGui::Button("Delete"))
 				{
+					anim->SubtractRefCount();
 					mLoadedAnim->Erase(i);
 					ImGui::PopID();
 					return;
@@ -290,5 +293,6 @@ void Animator::UpdatePlayList()
 			}
 		});
 	}
+	ImGui::Separator();
 }
 #endif // FOXTROT_EDITOR

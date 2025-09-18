@@ -155,15 +155,13 @@ HRESULT FTMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 void FTMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, Transform* transform, Camera* camInst, FTMaterial* mat)
 {
 	// Model Transformation
-	Matrix modelMat = Matrix();
-
 	mDirection += transform->GetSteering()->Linear.x;
 	Math::Clamp(mDirection, -1, 1);
 
 	FTVector3 scale		   = transform->GetWorldScale();
 	FTVector3 scaleWithDir = FTVector3(scale.x * mDirection, scale.y, scale.z);
 	transform->SetWorldScale(scaleWithDir);
-	modelMat = transform->GetMatrixWorld();
+	Matrix modelMat = transform->GetMatrixWorld();
 	modelMat *= Matrix::CreateScale(mSizeScale.GetDXVec3());
 
 	// Inverse transpose matrix calculation

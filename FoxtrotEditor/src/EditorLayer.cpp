@@ -104,12 +104,11 @@ void EditorLayer::DisplayViewport()
 
 	ImVec2 windowPos  = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
 	ImVec2 contentReg = ImGui::GetContentRegionAvail();
-		
+
 	FTWindow*		 editorWin = FTCoreEditor::GetInstance()->GetEditorWindow();
 	FoxtrotRenderer* renderer  = FTCoreEditor::GetInstance()->GetGameRenderer();
 
-	if (editorWin->MOUSE_HOLD(MOUSE::MOUSE_LEFT) && 
-		SceneViewportSizeChanged(editorWin->GetRenderArea()->GetSize().GetImVec2()))
+	if (editorWin->MOUSE_HOLD(MOUSE::MOUSE_LEFT) && SceneViewportSizeChanged(editorWin->GetRenderArea()->GetSize().GetImVec2()))
 	{
 		mIsResizingViewport = true;
 	}
@@ -423,11 +422,12 @@ void EditorLayer::DisplaySelection(EditorElement* element, size_t& index)
 	++index;
 
 	// Recurse to display child Actors in the list.
-	if (0 < element->GetChildActors().size())
+	if (0 < element->GetChildActors().GetSize())
 	{
-		for (Actor* child : element->GetChildActors())
+		FTDS::DynamicArray<Actor*>& childActors = element->GetChildActors();
+		for (auto child = childActors.Begin(); child != childActors.End(); ++child)
 		{
-			EditorElement* childElem = static_cast<EditorElement*>(child);
+			EditorElement* childElem = static_cast<EditorElement*>(*child);
 			DisplaySelection(childElem, index);
 		}
 	}
@@ -467,9 +467,11 @@ void EditorLayer::ProcessDropEvent(EditorElement* target)
 			{
 				if (child->GetParent())
 				{
-					std::vector<Actor*>& children = child->GetParent()->GetChildActors();
-					auto				 iter	  = std::find(children.begin(), children.end(), child);
-					children.erase(iter);
+					FTDS::DynamicArray<Actor*>& children = child->GetParent()->GetChildActors();
+
+					int pos = children.Find(child);
+					if (pos != -1)
+						children.Erase(pos);
 					child->SetParent(nullptr);
 				}
 				target->AddChild(child);
@@ -507,9 +509,10 @@ void EditorLayer::ProcessDropEvent(EditorElement* target)
 
 void EditorLayer::SetHierarchyLvRecurse(EditorElement* element, int val)
 {
-	for (Actor* actor : element->GetChildActors())
+	FTDS::DynamicArray<Actor*>& childActors = element->GetChildActors();
+	for (auto child = childActors.Begin(); child != childActors.End(); ++child)
 	{
-		EditorElement* subChild = static_cast<EditorElement*>(actor);
+		EditorElement* subChild = static_cast<EditorElement*>(*child);
 		subChild->SetHierarchyLevel(subChild->GetHierarchyLevel() + val);
 		SetHierarchyLvRecurse(subChild, val);
 	}
@@ -582,13 +585,12 @@ void EditorLayer::DisplayInfoMessage()
 		{
 			auto onConfirm = [this]()
 				-> void {
-
 				FTDS::String name = mFocusedEditorElement->GetName();
 				name.Append(FileTypes::PREMADE);
 
 				FTResourceDef resDef{
-					name.C_Str(), 
-					ResourceManager::GetInstance()->GetPathToAsset().C_Str() 
+					name.C_Str(),
+					ResourceManager::GetInstance()->GetPathToAsset().C_Str()
 				};
 
 				FTPremade* newPremade = DBG_NEW FTPremade(resDef);

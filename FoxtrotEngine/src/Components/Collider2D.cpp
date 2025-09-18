@@ -104,8 +104,8 @@ Collider2D::~Collider2D()
 
 void Collider2D::OnCollisionEnter(Collider2D* other)
 {
-	std::vector<Component*>::iterator iter = GetOwner()->GetComponents().begin();
-	for (; iter != GetOwner()->GetComponents().end(); ++iter)
+	auto iter = GetOwner()->GetComponents().Begin();
+	for (; iter != GetOwner()->GetComponents().End(); ++iter)
 	{
 		FTBehavior* behav = dynamic_cast<FTBehavior*>(*iter);
 		if (behav)
@@ -115,8 +115,8 @@ void Collider2D::OnCollisionEnter(Collider2D* other)
 
 void Collider2D::OnCollisionStay(Collider2D* other)
 {
-	std::vector<Component*>::iterator iter = GetOwner()->GetComponents().begin();
-	for (; iter != GetOwner()->GetComponents().end(); ++iter)
+	auto iter = GetOwner()->GetComponents().Begin();
+	for (; iter != GetOwner()->GetComponents().End(); ++iter)
 	{
 		FTBehavior* behav = dynamic_cast<FTBehavior*>(*iter);
 		if (behav)
@@ -126,8 +126,8 @@ void Collider2D::OnCollisionStay(Collider2D* other)
 
 void Collider2D::OnCollisionExit(Collider2D* other)
 {
-	std::vector<Component*>::iterator iter = GetOwner()->GetComponents().begin();
-	for (; iter != GetOwner()->GetComponents().end(); ++iter)
+	auto iter = GetOwner()->GetComponents().Begin();
+	for (; iter != GetOwner()->GetComponents().End(); ++iter)
 	{
 		FTBehavior* behav = dynamic_cast<FTBehavior*>(*iter);
 		if (behav)

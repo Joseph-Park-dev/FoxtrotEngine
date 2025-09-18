@@ -107,16 +107,16 @@ void EditorElement::Initialize(FTCore* coreInst)
 
 void EditorElement::EditorUpdate(float deltaTime)
 {
-	for (auto comp : GetComponents()) 
-		if (comp->GetIsActive())
-			comp->EditorUpdate(deltaTime);
+	for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
+		if ((*comp)->GetIsActive())
+			(*comp)->EditorUpdate(deltaTime);
 }
 
 void EditorElement::EditorRender(FoxtrotRenderer* renderer)
 {
-	for (auto comp : GetComponents())
-		if (comp->GetIsActive())
-			comp->EditorRender(renderer);
+	for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
+		if ((*comp)->GetIsActive())
+			(*comp)->EditorRender(renderer);
 }
 
 EditorElement::EditorElement()
@@ -193,21 +193,21 @@ void EditorElement::UpdateComponentsUI()
 	if (ImGui::BeginChild(GetName().C_Str()))
 	{
 		size_t count = 0;
-		for (Component* comp : GetComponents())
+		for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
 		{
 			FTDS::String name(std::to_string(count).c_str());
 			name.Append(" ");
-			name.Append(comp->GetName());
+			name.Append((*comp)->GetName());
 
 			if (ImGui::TreeNode(name.C_Str()))
 			{
-				int updateOrder = comp->GetUpdateOrder();
+				int updateOrder = (*comp)->GetUpdateOrder();
 				ImGui::InputInt(ChunkKey::UPDATE_ORDER, &updateOrder);
-				comp->SetUpdateOrder(updateOrder);
+				(*comp)->SetUpdateOrder(updateOrder);
 
-				comp->EditorUIUpdate();
+				(*comp)->EditorUIUpdate();
 				if (ImGui::SmallButton("Delete")) 
-					RemoveComponent(comp);
+					RemoveComponent((*comp));
 				ImGui::TreePop();
 			}
 			++count;

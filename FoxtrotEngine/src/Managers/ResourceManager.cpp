@@ -200,7 +200,7 @@ void ResourceManager::SaveMaterialsToChunk(std::ofstream& ofs)
 {
 	for (auto iter = mMaterials->Begin(); iter != mMaterials->End(); ++iter)
 	{
-		if (iter)
+		if (*iter)
 		{
 			FTMaterial* mat = (*iter)->Value();
 			if (mat->IsReferenced())

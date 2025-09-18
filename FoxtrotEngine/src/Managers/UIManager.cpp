@@ -141,10 +141,10 @@ UI* UIManager::GetTargetedUI(UI* parentUI, FTInputDevice* inputDevice)
 				noneTarget.push_back(ui);
 			}
 
-			std::vector<Actor*>& childActors = ui->GetOwner()->GetChildActors();
-			if (!childActors.empty())
+			FTDS::DynamicArray<Actor*>& childActors = ui->GetOwner()->GetChildActors();
+			if (!childActors.IsEmpty())
 			{
-				for (size_t i = 0; i < childActors.size(); ++i)
+				for (size_t i = 0; i < childActors.GetSize(); ++i)
 				{
 					UI* uiComp = childActors[i]->GetComponent<UI>();
 					if (uiComp)

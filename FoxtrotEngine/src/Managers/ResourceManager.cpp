@@ -196,19 +196,6 @@ FTDS::HashMap<FTText*>* ResourceManager::GetTexts()
 	return mTexts;
 }
 
-void ResourceManager::SaveMaterialsToChunk(std::ofstream& ofs)
-{
-	for (auto iter = mMaterials->Begin(); iter != mMaterials->End(); ++iter)
-	{
-		if (*iter)
-		{
-			FTMaterial* mat = (*iter)->Value();
-			if (mat->IsReferenced())
-				mat->SaveProperties(ofs);
-		}
-	}
-}
-
 void ResourceManager::LoadMaterials()
 {
 	const char* key	 = ChunkKey::NullVal::NULL_OBJECT;

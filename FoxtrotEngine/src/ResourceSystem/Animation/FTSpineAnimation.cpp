@@ -394,15 +394,6 @@ void FTSpineAnimation::SetSkin()
 	delete prev;
 }
 
-FTSpineAnimation::FTSpineAnimation(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTJSON* json, FTText* atlas)
-	: FTMeshGroup(resDef, renderer, nullptr)
-{
-	mJSON	  = json;
-	mAtlasTxt = atlas;
-
-	Process(renderer);
-}
-
 void FTSpineAnimation::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
@@ -426,6 +417,16 @@ void FTSpineAnimation::LoadProperties(std::ifstream& ifs)
 }
 
 #ifdef FOXTROT_EDITOR
+
+FTSpineAnimation::FTSpineAnimation(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTJSON* json, FTText* atlas)
+	: FTMeshGroup(resDef, renderer, nullptr)
+	{
+		mJSON	  = json;
+		mAtlasTxt = atlas;
+
+		Process(renderer);
+	}
+
 void FTSpineAnimation::UpdateUI()
 {
 	static bool val[MAX_SKIN_COUNT];

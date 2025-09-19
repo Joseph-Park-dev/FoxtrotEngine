@@ -93,5 +93,6 @@ private:
 	void UpdateComponentsUI();
 	void DisplayCompSelectionPopup();
 
-	void UpdateMakePrefabBtn();
+	void UpdateMakePremade();
+	void UpdateAddPremade();
 };

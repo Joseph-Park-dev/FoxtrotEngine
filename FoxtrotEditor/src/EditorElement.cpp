@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -26,6 +26,7 @@
 #include "Actors/ActorGroup.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "Components/Component.h"
+#include "ResourceSystem/FTPremade.h"
 
 #include "Static/FTString.h"
 
@@ -43,7 +44,7 @@ void EditorElement::UpdateUI(bool isPremade)
 				UpdateActorGroup();
 				UpdateActorState();
 				GetTransform()->UpdateUI();
-				
+
 				ImGui::EndTabItem();
 			}
 			if (ImGui::BeginTabItem("Components"))
@@ -51,20 +52,22 @@ void EditorElement::UpdateUI(bool isPremade)
 				UpdateComponentsUI();
 				ImGui::EndTabItem();
 			}
-			if(!isPremade)
-				UpdateMakePrefabBtn();
+			if (!isPremade)
+				UpdateMakePremade();
+
+			UpdateAddPremade();
 			ImGui::EndTabBar();
 		}
 		ImGui::EndChild();
 	}
 }
 
-const bool EditorElement::GetIsFocused() const 
+const bool EditorElement::GetIsFocused() const
 {
 	return mIsFocused;
 }
 
-const size_t EditorElement::GetHierarchyLevel() const 
+const size_t EditorElement::GetHierarchyLevel() const
 {
 	return mHierarchyLevel;
 }
@@ -93,8 +96,8 @@ void EditorElement::Initialize(FTCore* coreInst)
 {
 	Actor::Initialize(coreInst);
 
-	EditorElement* buf = this;
-	size_t level = 0;
+	EditorElement* buf	 = this;
+	size_t		   level = 0;
 	while (buf)
 	{
 		if (!buf->GetParent()) // No parent Actors.
@@ -108,19 +111,19 @@ void EditorElement::Initialize(FTCore* coreInst)
 void EditorElement::EditorUpdate(float deltaTime)
 {
 	for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
-		if ((*comp)->GetIsActive())
-			(*comp)->EditorUpdate(deltaTime);
-}
+			if ((*comp)->GetIsActive())
+				(*comp)->EditorUpdate(deltaTime);
+		}
 
 void EditorElement::EditorRender(FoxtrotRenderer* renderer)
 {
 	for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
-		if ((*comp)->GetIsActive())
-			(*comp)->EditorRender(renderer);
-}
+			if ((*comp)->GetIsActive())
+				(*comp)->EditorRender(renderer);
+		}
 
 EditorElement::EditorElement()
-	: Actor ()
+	: Actor()
 	, mIsFocused(false)
 	, mHierarchyLevel(0)
 	, mIsDisplayed(false)
@@ -160,11 +163,11 @@ void EditorElement::UpdateActorGroup()
 	const char* comboPreview = ActorGroupUtil::GetActorGroupStr(GetActorGroup());
 	if (ImGui::BeginCombo("Actor Group", comboPreview))
 	{
-		for (size_t n = 0; n <= ActorGroupUtil::GetCount()-1; ++n)
+		for (size_t n = 0; n <= ActorGroupUtil::GetCount() - 1; ++n)
 		{
 			if (ImGui::Selectable(ActorGroupUtil::GetActorGroupStr(n)))
 			{
-				int grpIdx = ++n;
+				int					   grpIdx  = ++n;
 				ActorGroupEditCommand* command = DBG_NEW ActorGroupEditCommand(GetActorGroupRef());
 				command->SetNextVal(static_cast<ActorGroup>(grpIdx));
 				CommandHistory::GetInstance()->AddCommand(command);
@@ -194,23 +197,24 @@ void EditorElement::UpdateComponentsUI()
 	{
 		size_t count = 0;
 		for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
-		{
-			FTDS::String name(std::to_string(count).c_str());
-			name.Append(" ");
-			name.Append((*comp)->GetName());
-
-			if (ImGui::TreeNode(name.C_Str()))
 			{
-				int updateOrder = (*comp)->GetUpdateOrder();
-				ImGui::InputInt(ChunkKey::UPDATE_ORDER, &updateOrder);
-				(*comp)->SetUpdateOrder(updateOrder);
+				FTDS::String name(std::to_string(count).c_str());
+				name.Append(" ");
+				name.Append((*comp)->GetName());
 
-				(*comp)->EditorUIUpdate();
-				if (ImGui::SmallButton("Delete")) 
-					RemoveComponent((*comp));
-				ImGui::TreePop();
+				if (ImGui::TreeNode(name.C_Str()))
+				{
+					int updateOrder = (*comp)->GetUpdateOrder();
+					ImGui::InputInt(ChunkKey::UPDATE_ORDER, &updateOrder);
+					(*comp)->SetUpdateOrder(updateOrder);
+
+					(*comp)->EditorUIUpdate();
+					if (ImGui::SmallButton("Delete"))
+						RemoveComponent((*comp));
+					ImGui::TreePop();
+				}
+				++count;
 			}
-			++count;
 		}
 		if (FTEditorUtils::ButtonCenteredOnLine("Add Component"))
 			ImGui::OpenPopup("CompSelectPopUp");
@@ -233,11 +237,26 @@ void EditorElement::DisplayCompSelectionPopup()
 	}
 }
 
-void EditorElement::UpdateMakePrefabBtn()
+void EditorElement::UpdateMakePremade()
 {
 	if (FTEditorUtils::ButtonCenteredOnLine("Make Premade"))
 	{
 		bool confirmed = false;
 		EditorLayer::GetInstance()->SetInfoType(InfoType::PremadeIsCreated);
+	}
+}
+
+void EditorElement::UpdateAddPremade()
+{
+	FTPremade* premade = nullptr;
+	FTEditorUtils::DisplayResSelection(
+		"Add Child Premade",
+		ResourceManager::GetInstance()->GetPremades(),
+		premade);
+
+	if (premade)
+	{
+		AddChild(premade->GetOrigin());
+		premade		  = nullptr;
 	}
 }

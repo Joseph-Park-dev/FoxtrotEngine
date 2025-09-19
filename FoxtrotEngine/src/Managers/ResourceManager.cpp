@@ -209,6 +209,7 @@ void ResourceManager::LoadMaterials()
 
 	StandardMaterial* standard = DBG_NEW StandardMaterial(resDef, mRenderer);
 
+	mMaterials->Reserve(1);
 	mMaterials->Insert(standard->GetFileName(), standard);
 }
 
@@ -294,6 +295,12 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMeshGroup::FT_MESH_GROUP);
 	LoadGraphicsResourceFromChunk<FTMeshGroup>(ifs, mMeshGroups, desc.first, mRenderer);
 
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTexture::FT_TEXTURE);
+	LoadGraphicsResourceFromChunk<FTTexture>(ifs, mTextures, desc.first, mRenderer);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTileMap::FT_TILEMAP);
+	LoadResourceFromChunk<FTTileMap>(ifs, mTileMaps, desc.first);
+
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
 	LoadGraphicsResourceFromChunk<FTSpriteAnimation>(ifs, mSpriteAnimations, desc.first, mRenderer);
 
@@ -302,12 +309,6 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPremade::FT_PREMADE);
 	LoadResourceFromChunk<FTPremade>(ifs, mPremades, desc.first);
-
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTileMap::FT_TILEMAP);
-	LoadResourceFromChunk<FTTileMap>(ifs, mTileMaps, desc.first);
-
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTexture::FT_TEXTURE);
-	LoadGraphicsResourceFromChunk<FTTexture>(ifs, mTextures, desc.first, mRenderer);
 
 	LoadMaterials();
 

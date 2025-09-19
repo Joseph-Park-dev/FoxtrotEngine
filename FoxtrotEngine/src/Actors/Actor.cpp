@@ -203,8 +203,11 @@ void Actor::LateUpdateComponents(float deltaTime)
 
 	for (auto comp = mComponents.Begin(); comp != mComponents.End(); ++comp)
 	{
-		if ((*comp)->GetIsActive())
-			(*comp)->LateUpdate(deltaTime);
+		if (*comp)
+		{
+			if ((*comp)->GetIsActive())
+				(*comp)->LateUpdate(deltaTime);
+		}
 	}
 }
 
@@ -215,8 +218,11 @@ void Actor::RenderComponents(FoxtrotRenderer* renderer)
 
 	for (auto comp = mComponents.Begin(); comp != mComponents.End(); ++comp)
 	{
-		if ((*comp)->GetIsActive())
-			(*comp)->Render(renderer);
+		if (*comp)
+		{
+			if ((*comp)->GetIsActive())
+				(*comp)->Render(renderer);
+		}
 	}
 }
 

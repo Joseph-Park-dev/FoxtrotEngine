@@ -196,19 +196,6 @@ FTDS::HashMap<FTText*>* ResourceManager::GetTexts()
 	return mTexts;
 }
 
-void ResourceManager::SaveMaterialsToChunk(std::ofstream& ofs)
-{
-	for (auto iter = mMaterials->Begin(); iter != mMaterials->End(); ++iter)
-	{
-		if (iter)
-		{
-			FTMaterial* mat = (*iter)->Value();
-			if (mat->IsReferenced())
-				mat->SaveProperties(ofs);
-		}
-	}
-}
-
 void ResourceManager::LoadMaterials()
 {
 	const char* key	 = ChunkKey::NullVal::NULL_OBJECT;
@@ -222,6 +209,7 @@ void ResourceManager::LoadMaterials()
 
 	StandardMaterial* standard = DBG_NEW StandardMaterial(resDef, mRenderer);
 
+	mMaterials->Reserve(1);
 	mMaterials->Insert(standard->GetFileName(), standard);
 }
 
@@ -307,6 +295,12 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMeshGroup::FT_MESH_GROUP);
 	LoadGraphicsResourceFromChunk<FTMeshGroup>(ifs, mMeshGroups, desc.first, mRenderer);
 
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTexture::FT_TEXTURE);
+	LoadGraphicsResourceFromChunk<FTTexture>(ifs, mTextures, desc.first, mRenderer);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTileMap::FT_TILEMAP);
+	LoadResourceFromChunk<FTTileMap>(ifs, mTileMaps, desc.first);
+
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
 	LoadGraphicsResourceFromChunk<FTSpriteAnimation>(ifs, mSpriteAnimations, desc.first, mRenderer);
 
@@ -315,12 +309,6 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPremade::FT_PREMADE);
 	LoadResourceFromChunk<FTPremade>(ifs, mPremades, desc.first);
-
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTileMap::FT_TILEMAP);
-	LoadResourceFromChunk<FTTileMap>(ifs, mTileMaps, desc.first);
-
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTexture::FT_TEXTURE);
-	LoadGraphicsResourceFromChunk<FTTexture>(ifs, mTextures, desc.first, mRenderer);
 
 	LoadMaterials();
 
@@ -335,11 +323,13 @@ void ResourceManager::LoadDefaultResources()
 	};
 
 	FTMeshData* meshData = GeometryGenerator::MakeSquare(1.0f, FTVector3(0.f, 0.f, 1.f));
-	
+
 	FTMeshGroup* meshGroup = DBG_NEW FTMeshGroup(
 		resDef,
 		mRenderer,
 		meshData);
+
+	mMeshGroups->Reserve(1);
 	mMeshGroups->Insert(ChunkKey::PRIMITIVE_SQUARE_SPRITE, meshGroup);
 
 	delete meshData;
@@ -352,9 +342,14 @@ FTTexture* ResourceManager::GetLoadedTexture(FTDS::String& key)
 	FTDS::Record<FTTexture*>* rec = mTextures->At(key);
 	if (!rec)
 	{
-		Debug::LogError(__LINE__, __FILE__, "FTJSON is NULL");
+		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
 		return nullptr;
 	}
+
+#ifdef FOXTROT_EDITOR
+	rec->Value()->AddRefCount();
+#endif // FOXTROT_EDITOR
+
 	return rec->Value();
 }
 
@@ -362,36 +357,72 @@ FTTileMap* ResourceManager::GetLoadedTileMap(FTDS::String& key)
 {
 	AddFileExtensionIfNone(key, FileTypes::TILEMAP);
 
-	FTTileMap* tileMap = mTileMaps->At(key)->Value();
-	if (!tileMap)
-		Debug::LogError(__LINE__, __FILE__, "FTTileMap is NULL");
-	return tileMap;
+	FTDS::Record<FTTileMap*>* rec = mTileMaps->At(key);
+	if (!rec)
+	{
+		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
+		return nullptr;
+	}
+
+#ifdef FOXTROT_EDITOR
+	rec->Value()->AddRefCount();
+#endif // FOXTROT_EDITOR
+
+	return rec->Value();
 }
 
 FTPremade* ResourceManager::GetLoadedPremade(FTDS::String& key)
 {
 	AddFileExtensionIfNone(key, FileTypes::PREMADE);
 
-	FTPremade* premade = mPremades->At(key)->Value();
-	if (!premade)
-		Debug::LogError(__LINE__, __FILE__, "FTPremade is NULL");
-	return premade;
+	FTDS::Record<FTPremade*>* rec = mPremades->At(key);
+	if (!rec)
+	{
+		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
+		return nullptr;
+	}
+
+#ifdef FOXTROT_EDITOR
+	rec->Value()->AddRefCount();
+#endif // FOXTROT_EDITOR
+
+	return rec->Value();
 }
 
 FTVertexShader* ResourceManager::GetLoadedVertexShader(FTDS::String& key)
 {
-	FTVertexShader* vs = mVertexShaders->At(key)->Value();
-	if (!vs)
-		Debug::LogError(__LINE__, __FILE__, "VertexShader is NULL");
-	return vs;
+	AddFileExtensionIfNone(key, FileTypes::SHADER);
+
+	FTDS::Record<FTVertexShader*>* rec = mVertexShaders->At(key);
+	if (!rec)
+	{
+		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
+		return nullptr;
+	}
+
+#ifdef FOXTROT_EDITOR
+	rec->Value()->AddRefCount();
+#endif // FOXTROT_EDITOR
+
+	return rec->Value();
 }
 
 FTPixelShader* ResourceManager::GetLoadedPixelShader(FTDS::String& key)
 {
-	FTPixelShader* ps = mPixelShaders->At(key)->Value();
-	if (!ps)
-		Debug::LogError(__LINE__, __FILE__, "PixelShader is NULL");
-	return ps;
+	AddFileExtensionIfNone(key, FileTypes::SHADER);
+
+	FTDS::Record<FTPixelShader*>* rec = mPixelShaders->At(key);
+	if (!rec)
+	{
+		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
+		return nullptr;
+	}
+
+#ifdef FOXTROT_EDITOR
+	rec->Value()->AddRefCount();
+#endif // FOXTROT_EDITOR
+
+	return rec->Value();
 }
 
 FTMaterial* ResourceManager::GetLoadedMaterial(FTDS::String& key)
@@ -401,10 +432,18 @@ FTMaterial* ResourceManager::GetLoadedMaterial(FTDS::String& key)
 
 	AddFileExtensionIfNone(key, FileTypes::MATERIAL);
 
-	FTMaterial* mat = mMaterials->At(key)->Value();
-	if (!mat)
-		Debug::LogError(__LINE__, __FILE__, "FTMaterial is NULL");
-	return mat;
+	FTDS::Record<FTMaterial*>* rec = mMaterials->At(key);
+	if (!rec)
+	{
+		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
+		return nullptr;
+	}
+
+#ifdef FOXTROT_EDITOR
+	rec->Value()->AddRefCount();
+#endif // FOXTROT_EDITOR
+
+	return rec->Value();
 }
 
 FTMeshGroup* ResourceManager::GetLoadedMesh(FTDS::String& key)
@@ -412,52 +451,90 @@ FTMeshGroup* ResourceManager::GetLoadedMesh(FTDS::String& key)
 	if (key.Equal(ChunkKey::NullVal::NULL_OBJECT))
 		return nullptr;
 
-	FTDS::Record<FTMeshGroup*>* node = mMeshGroups->At(key);
-	if (!node)
+	FTDS::Record<FTMeshGroup*>* rec = mMeshGroups->At(key);
+	if (!rec)
+	{
+		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
 		return nullptr;
+	}
 
-	FTMeshGroup* meshGrp = node->Value();
-	if (!meshGrp)
-		Debug::LogError(__LINE__, __FILE__, "FTMeshGroup is NULL");
-	return meshGrp;
+#ifdef FOXTROT_EDITOR
+	rec->Value()->AddRefCount();
+#endif // FOXTROT_EDITOR
+
+	return rec->Value();
 }
 
 FTSpriteAnimation* ResourceManager::GetLoadedSpriteAnim(FTDS::String& key)
 {
 	AddFileExtensionIfNone(key, FileTypes::SPRITE_ANIMATION);
 
-	FTSpriteAnimation* spriteAnim = mSpriteAnimations->At(key)->Value();
-	if (!spriteAnim)
-		Debug::LogError(__LINE__, __FILE__, "FTSpirteAnimation is NULL");
-	return spriteAnim;
+	FTDS::Record<FTSpriteAnimation*>* rec = mSpriteAnimations->At(key);
+	if (!rec)
+	{
+		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
+		return nullptr;
+	}
+
+#ifdef FOXTROT_EDITOR
+	rec->Value()->AddRefCount();
+#endif // FOXTROT_EDITOR
+
+	return rec->Value();
 }
 
 FTSpineAnimation* ResourceManager::GetLoadedSpineAnim(FTDS::String& key)
 {
-	FTSpineAnimation* spineAnim = mSpineAnimations->At(key)->Value();
-	if (!spineAnim)
-		Debug::LogError(__LINE__, __FILE__, "FTSpirteAnimation is NULL");
-	return spineAnim;
+	AddFileExtensionIfNone(key, FileTypes::SPINE_ANIMATION);
+
+	FTDS::Record<FTSpineAnimation*>* rec = mSpineAnimations->At(key);
+	if (!rec)
+	{
+		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
+		return nullptr;
+	}
+
+#ifdef FOXTROT_EDITOR
+	rec->Value()->AddRefCount();
+#endif // FOXTROT_EDITOR
+
+	return rec->Value();
 }
 
 Sound* ResourceManager::GetLoadedSound(FTDS::String& key)
 {
 	AddFileExtensionIfNone(key, FileTypes::Sound::WAV);
 
-	Sound* sound = mSounds->At(key)->Value();
-	if (!sound)
-		Debug::LogError(__LINE__, __FILE__, "Sound is NULL");
-	return sound;
+	FTDS::Record<Sound*>* rec = mSounds->At(key);
+	if (!rec)
+	{
+		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
+		return nullptr;
+	}
+
+#ifdef FOXTROT_EDITOR
+	rec->Value()->AddRefCount();
+#endif // FOXTROT_EDITOR
+
+	return rec->Value();
 }
 
 FTCSV* ResourceManager::GetLoadedCSV(FTDS::String& key)
 {
 	AddFileExtensionIfNone(key, FileTypes::CSV);
 
-	FTCSV* ftCSV = mCSVs->At(key)->Value();
-	if (!ftCSV)
-		Debug::LogError(__LINE__, __FILE__, "FTCSV is NULL");
-	return ftCSV;
+	FTDS::Record<FTCSV*>* rec = mCSVs->At(key);
+	if (!rec)
+	{
+		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
+		return nullptr;
+	}
+
+#ifdef FOXTROT_EDITOR
+	rec->Value()->AddRefCount();
+#endif // FOXTROT_EDITOR
+
+	return rec->Value();
 }
 
 FTJSON* ResourceManager::GetLoadedJSON(FTDS::String& key)
@@ -467,16 +544,29 @@ FTJSON* ResourceManager::GetLoadedJSON(FTDS::String& key)
 	FTDS::Record<FTJSON*>* rec = mJSONs->At(key);
 	if (!rec)
 	{
-		Debug::LogError(__LINE__, __FILE__, "FTJSON is NULL");
+		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
 		return nullptr;
 	}
+
+#ifdef FOXTROT_EDITOR
+	rec->Value()->AddRefCount();
+#endif // FOXTROT_EDITOR
+
 	return rec->Value();
 }
 
 FTText* ResourceManager::GetLoadedText(FTDS::String& key)
 {
-	FTText* text = mTexts->At(key)->Value();
-	if (!text)
-		Debug::LogError(__LINE__, __FILE__, "FTText is NULL");
-	return text;
+	FTDS::Record<FTText*>* rec = mTexts->At(key);
+	if (!rec)
+	{
+		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
+		return nullptr;
+	}
+
+#ifdef FOXTROT_EDITOR
+	rec->Value()->AddRefCount();
+#endif // FOXTROT_EDITOR
+
+	return rec->Value();
 }

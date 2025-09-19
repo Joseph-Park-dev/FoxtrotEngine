@@ -95,21 +95,21 @@ public:
 
 public:
 	// Getters/Setters
-	ActorGroup				 GetActorGroup() const { return mActorGroup; }
-	ActorGroup&				 GetActorGroupRef() { return mActorGroup; }
-	ActorGroup*				 GetActorGroupPtr() { return &mActorGroup; }
-	FTDS::String			 GetName() { return mName; }
-	FTDS::String&			 GetNameRef() { return mName; }
-	State					 GetState() const { return mState; }
-	FTDS::String			 GetStateStr() const;
-	State&					 GetStateRef() { return mState; }
-	bool					 IsActive() const { return mState == State::EActive; }
-	bool					 IsDead() const { return mState == State::EDead; }
-	Transform*				 GetTransform() const { return mTransform; }
-	Actor*					 GetParent() const { return mParent; }
-	std::vector<Component*>& GetComponents() { return mComponents; }
-	std::vector<Actor*>&	 GetChildActors() { return mChild; }
-	const int&				 GetDrawOrder() const { return mDrawOrder; }
+	ActorGroup						GetActorGroup() const { return mActorGroup; }
+	ActorGroup&						GetActorGroupRef() { return mActorGroup; }
+	ActorGroup*						GetActorGroupPtr() { return &mActorGroup; }
+	FTDS::String					GetName() { return mName; }
+	FTDS::String&					GetNameRef() { return mName; }
+	State							GetState() const { return mState; }
+	FTDS::String					GetStateStr() const;
+	State&							GetStateRef() { return mState; }
+	bool							IsActive() const { return mState == State::EActive; }
+	bool							IsDead() const { return mState == State::EDead; }
+	Transform*						GetTransform() const { return mTransform; }
+	Actor*							GetParent() const { return mParent; }
+	FTDS::DynamicArray<Component*>& GetComponents() { return mComponents; }
+	FTDS::DynamicArray<Actor*>&		GetChildActors() { return mChild; }
+	const int&						GetDrawOrder() const { return mDrawOrder; }
 
 	void SetName(FTDS::String name) { mName = name; }
 	void SetState(State state) { mState = state; }
@@ -117,8 +117,8 @@ public:
 	void SetActorGroup(ActorGroup group) { mActorGroup = group; }
 	void SetParent(Actor* parent) { mParent = parent; }
 	void SetTransform(Transform* transform) { mTransform = transform; }
-	void SetComponents(std::vector<Component*>& components) { mComponents = components; }
-	void SetChildActors(std::vector<Actor*>& children) { mChild = children; }
+	void SetComponents(FTDS::DynamicArray<Component*>& components) { mComponents = components; }
+	void SetChildActors(FTDS::DynamicArray<Actor*>& children) { mChild = children; }
 	void SetDrawOrder(int order) { mDrawOrder = order; }
 
 	bool HasName(FTDS::String& name);
@@ -127,11 +127,11 @@ public:
 	template <class T>
 	T* GetComponent()
 	{
-		for (int i = 0; i < mComponents.size(); i++)
+		for (auto iter = mComponents.Begin(); iter != mComponents.End(); ++iter)
 		{
-			if (typeid(*mComponents[i]) == typeid(T))
+			if (typeid(*iter) == typeid(T))
 			{
-				return dynamic_cast<T*>(mComponents[i]);
+				return static_cast<T*>(*iter);
 			}
 		}
 		return nullptr;
@@ -151,14 +151,14 @@ public:
 	virtual void RenderComponents(FoxtrotRenderer* renderer);
 
 private:
-	FTDS::String			mName;
-	ActorGroup				mActorGroup;
-	State					mState;
-	Transform*				mTransform;
-	std::vector<Component*> mComponents;
-	Actor*					mParent;
-	std::vector<Actor*>		mChild;
-	int						mDrawOrder;
+	FTDS::String				   mName;
+	ActorGroup					   mActorGroup;
+	State						   mState;
+	Transform*					   mTransform;
+	FTDS::DynamicArray<Component*> mComponents;
+	Actor*						   mParent;
+	FTDS::DynamicArray<Actor*>	   mChild;
+	int							   mDrawOrder;
 
 public:
 	void SaveProperties(std::ofstream& ofs);

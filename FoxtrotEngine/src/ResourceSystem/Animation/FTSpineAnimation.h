@@ -13,6 +13,11 @@
 
 #include <Dynamic/DynamicArray.h>
 
+class Transform;
+class FTPixelShader;
+class FTJSON;
+class FTText;
+
 /// @brief A FTResource that holds a Spine Animation.
 /// This will be registered to a SpineAnimator Component instance.
 class FTSpineAnimation :

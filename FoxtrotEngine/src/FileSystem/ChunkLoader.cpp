@@ -20,6 +20,7 @@
 #include "Managers/SceneManager.h"
 #include "Managers/ResourceManager.h"
 #include "Managers/CollisionManager.h"
+#include "Managers/SoundManager.h"
 #include "Scenes/Scene.h"
 #include "Actors/ActorGroup.h"
 #include "Actors/Transform.h"
@@ -37,13 +38,17 @@ void ChunkLoader::SaveChunk(FTDS::String& fileName)
 
 void ChunkLoader::LoadChunk(FTDS::String& fileName)
 {
+	Lock();
 	std::ifstream ifs(fileName.C_Str());
 	LoadChunkData(ifs);
+	// LightManager::GetInstance()->LoadProperties(ifs);
 	CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
 	ResourceManager::GetInstance()->LoadResources(ifs);
-	//LightManager::GetInstance()->LoadProperties(ifs);
+	SoundManager::GetInstance()->LoadProperties(ifs);
 	LoadActorsData(ifs);
+
 	Camera::GetInstance()->LoadProperties(ifs);
+	Unlock();
 }
 
 void ChunkLoader::Lock()

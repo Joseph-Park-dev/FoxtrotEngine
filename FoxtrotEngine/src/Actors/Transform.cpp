@@ -216,8 +216,12 @@ void Transform::Update()
 	else
 		mMatrixWorld = mMatrixLocal;
 
-	for (const Actor* child : mOwner->GetChildActors())
-		child->GetTransform()->Update();
+	FTDS::DynamicArray<Actor*>& childActors = mOwner->GetChildActors();
+	if (0 < childActors.GetSize())
+	{
+		for (auto child = childActors.Begin(); child != childActors.End(); ++child)
+			(*child)->GetTransform()->Update();
+	}
 	// FTVector3::DecomposeMatrix(mWorldScale, mWorldRotation, mWorldPosition, mMatrixWorld);
 }
 

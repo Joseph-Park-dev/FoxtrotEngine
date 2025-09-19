@@ -11,6 +11,8 @@
 
 #include "Math/FTMath.h"
 
+#include <wrl.h>
+
 struct MaterialData;
 class FTPixelShader;
 
@@ -22,11 +24,11 @@ class FTMaterial :
 {
 public:
 	/// @brief Updates pixel constant buffer with material data.
-	virtual void UpdateBuffer(ComPtr<ID3D11DeviceContext>& context) = 0;
+	virtual void UpdateBuffer(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context) = 0;
 
 public:
 	/// @brief Gets the pixel constant buffer with material data applied.
-	ComPtr<ID3D11Buffer>& GetPCBuf();
+	Microsoft::WRL::ComPtr<ID3D11Buffer>& GetPCBuf();
 
 public:
 	/// @brief Relative path is used for importing material data.
@@ -37,11 +39,11 @@ protected:
 	void Process(FoxtrotRenderer* renderer) override;
 
 	/// @brief Creates a pixel constant buffer using the material data.
-	virtual void CreatePixelConstBuffer(ComPtr<ID3D11Device>& device) = 0;
+	virtual void CreatePixelConstBuffer(Microsoft::WRL::ComPtr<ID3D11Device>& device) = 0;
 
 private:
 	/// @brief Pixel constant buffer to which material data are applied.
-	ComPtr<ID3D11Buffer> mPCBuf;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> mPCBuf;
 
 #ifdef FOXTROT_EDITOR
 public:

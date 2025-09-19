@@ -128,8 +128,6 @@ public:
 	// Save | Load resources //
 	///////////////////////////
 public:
-	void SaveMaterialsToChunk(std::ofstream& ofs);
-
 	template <typename FTRESOURCE>
 	void LoadResourceFromChunk(std::ifstream& ifs, FTDS::HashMap<FTRESOURCE*>* resArr, size_t& resCount)
 	{

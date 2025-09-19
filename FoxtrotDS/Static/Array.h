@@ -15,37 +15,21 @@ namespace FTDS
 	/// Clear() or the destructor won't free those objects automatically.
 	/// </Note_on_deallocation>
 	template <typename TYPE>
-	class Array : public FTDS::FTIterator<TYPE>
+	class Array
 	{
 	public:
-		TYPE& operator*() override { return *mPtr; }
-		TYPE* operator++() override
-		{
-			++mPtr;
-			return mPtr;
-		}
-		TYPE* operator++(int) override
-		{
-			TYPE* tmp = mPtr;
-			++mPtr;
-			return tmp;
-		}
-
-		bool  operator==(Array&& rhs) { return mPtr == rhs.mPtr; }
-		bool  operator!=(Array&& rhs) { return mPtr != rhs.mPtr; }
 		TYPE& operator[](int idx) { return mData[idx]; }
 
 	public:
-		TYPE*  Begin() { return &mData[0]; }
-		TYPE*  End() { return &mData[mCapacity]; }
-		size_t IterPos() { return mPtr - Begin(); }
+		FTDS::FTIteratorArray<TYPE> Begin() { return FTDS::FTIteratorArray<TYPE>(mData); }
+		FTDS::FTIteratorArray<TYPE> End() { return FTDS::FTIteratorArray<TYPE>(&mData[mCapacity]); }
 
 		// It is recommended to put null check to mPtr.
 		template <class UnaryOperation>
 		void IterateArray(
 			UnaryOperation&& unaryOp)
 		{
-			for (size_t i =0; i < mCapacity; ++i)
+			for (size_t i = 0; i < mCapacity; ++i)
 				unaryOp(mData[i]);
 		}
 
@@ -111,14 +95,12 @@ namespace FTDS
 		Array()
 			: mData(nullptr)
 			, mCapacity(0)
-			, mPtr(nullptr)
 		{
 		}
 
 		Array(size_t capacity)
 			: mData(nullptr)
 			, mCapacity(0)
-			, mPtr(nullptr)
 		{
 			Reserve(capacity);
 		}
@@ -154,8 +136,6 @@ namespace FTDS
 			mData = newArr;
 			// Set new capacity.
 			mCapacity = newCap;
-
-			mPtr = Begin();
 		}
 
 		size_t Min(size_t a, size_t b)
@@ -166,8 +146,5 @@ namespace FTDS
 	protected:
 		TYPE*  mData;
 		size_t mCapacity;
-
-	private:
-		TYPE* mPtr;
 	};
 } // namespace FTDS

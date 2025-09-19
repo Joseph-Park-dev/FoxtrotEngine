@@ -27,6 +27,7 @@
 #include "FileSystem/BufferSizes.h"
 
 #include "Compare/StringEqual.h"
+#include "Dynamic/DynamicArray.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorElement.h"
@@ -98,11 +99,11 @@ Actor::~Actor()
 		mTransform = nullptr;
 	}
 
-	for (size_t i = 0; i < mComponents.size(); ++i)
+	for (size_t i = 0; i < mComponents.Size(); ++i)
 		delete mComponents[i];
-	mComponents.clear();
+	mComponents.Clear();
 
-	mChild.clear();
+	mChild.Clear();
 	mParent = nullptr;
 }
 
@@ -116,121 +117,161 @@ void Actor::CopyComponentsFrom(Actor* actor)
 {
 	this->RemoveAllComponents();
 
-	std::vector<Component*>& compsToCopy = actor->GetComponents();
-	for (size_t i = 0; i < compsToCopy.size(); ++i)
+	FTDS::DynamicArray<Component*>& compsToCopy = actor->GetComponents();
+	for (size_t i = 0; i < compsToCopy.GetSize(); ++i)
 		compsToCopy[i]->CloneTo(this);
 }
 
 void Actor::CopyChildObjectFrom(Actor* actor)
 {
-	for (Actor* child : actor->GetChildActors())
-		this->AddChild(DBG_NEW Actor(child));
+	if (GetChildActors().GetSize() < 1)
+		return;
+
+	actor->GetChildActors().IterateArray([&](Actor* child) {
+		if (child)
+			this->AddChild(DBG_NEW Actor(child));
+	});
 }
 
 void Actor::RefChildObjectFrom(Actor* actor)
 {
-	for (Actor* child : actor->GetChildActors())
+	if (GetChildActors().GetSize() < 1)
+		return;
+
+	actor->GetChildActors().IterateArray([&](Actor* child) {
 		this->AddChild(child);
+	});
 }
 
 void Actor::Initialize(FTCore* coreInst)
 {
-	for (Actor* pending : mChild)
+	for (auto pending = mChild.Begin(); pending != mChild.End(); ++pending)
 	{
-		Actor* child = FIND_ACTOR(pending->GetNameRef(), pending);
+		if (!(*pending))
+			continue;
 
+		Actor* child = FIND_ACTOR((*pending)->GetNameRef(), *pending);
 		// Distinguish if the Actor is a valid pointer.
-		RemoveChild(pending);
-		delete pending;
+		RemoveChild(*pending);
+		delete *pending;
 		pending = nullptr;
-		this->AddChild(child);  // This also adds this object as the parent to child.
+		this->AddChild(child); // This also adds this object as the parent to child.
 	}
 
 	mTransform->SetOwner(this);
 
-	for (size_t i = 0; i < mComponents.size(); ++i)
+	for (size_t i = 0; i < mComponents.GetSize(); ++i)
 		if (!mComponents[i]->GetIsInitialized())
 			mComponents[i]->Initialize(coreInst);
 }
 
 void Actor::Setup()
 {
-	for (auto comp : mComponents)
-		if (!comp->GetIsSetup())
-			comp->Setup();
+	for (auto comp = mComponents.Begin(); comp != mComponents.End(); ++comp)
+		if (!(*comp)->GetIsSetup())
+			(*comp)->Setup();
 }
 
 void Actor::ProcessInput(FTInputDevice* inputDevice)
 {
-	if (IsActive())
-		for (auto comp : mComponents)
-			if (comp->GetIsActive())
-				comp->ProcessInput(inputDevice);
+	if (!IsActive())
+		return;
+
+	for (auto comp = mComponents.Begin(); comp != mComponents.End(); ++comp)
+	{
+		if ((*comp)->GetIsActive())
+			(*comp)->ProcessInput(inputDevice);
+	}
 }
 
 void Actor::UpdateComponents(float deltaTime)
 {
-	if (IsActive())
-		for (auto comp : mComponents)
-			if (comp->GetIsActive())
-				comp->Update(deltaTime);
+	if (!IsActive())
+		return;
+
+	for (auto comp = mComponents.Begin(); comp != mComponents.End(); ++comp)
+	{
+		if ((*comp)->GetIsActive())
+			(*comp)->Update(deltaTime);
+	}
 }
 
 void Actor::LateUpdateComponents(float deltaTime)
 {
-	for (auto comp : mComponents)
-		if (comp->GetIsActive())
-			comp->LateUpdate(deltaTime);
+	if (!IsActive())
+		return;
+
+	for (auto comp = mComponents.Begin(); comp != mComponents.End(); ++comp)
+	{
+		if (*comp)
+		{
+			if ((*comp)->GetIsActive())
+				(*comp)->LateUpdate(deltaTime);
+		}
+	}
 }
 
 void Actor::RenderComponents(FoxtrotRenderer* renderer)
 {
-	for (auto comp : mComponents)
-		if (comp->GetIsActive())
-			comp->Render(renderer);
+	if (!IsActive())
+		return;
+
+	for (auto comp = mComponents.Begin(); comp != mComponents.End(); ++comp)
+	{
+		if (*comp)
+		{
+			if ((*comp)->GetIsActive())
+				(*comp)->Render(renderer);
+		}
+	}
 }
 
 void Actor::AddChild(Actor* child)
 {
 	child->SetParent(this);
-	mChild.emplace_back(child);
+	mChild.PushBack(child);
 }
 
 void Actor::RemoveChild(Actor* child)
 {
-	auto iter = std::find(mChild.begin(), mChild.end(), child);
-	if (iter != mChild.end())
-		mChild.erase(iter);
+	int pos = mChild.Find(child);
+	if (pos == -1)
+		return;
+
+	mChild.Erase(pos);
 	child->SetParent(child->mParent->mParent);
 }
 
 void Actor::AddComponent(Component* component)
 {
-	int	 updateOrder = component->GetUpdateOrder();
-	auto iter		 = mComponents.begin();
-	for (; iter != mComponents.end(); ++iter)
+	int			updateOrder = component->GetUpdateOrder();
+	auto iter		= mComponents.Begin();
+	for (; iter != mComponents.End(); ++iter)
 	{
+		if (!(*iter))
+			break;
+
 		if (updateOrder < (*iter)->GetUpdateOrder())
 			break;
 	}
-	mComponents.insert(iter, component);
+	mComponents.Insert(iter.IterPos(), component);
 }
 
 void Actor::RemoveComponent(Component* component)
 {
-	auto iter = std::find(mComponents.begin(), mComponents.end(), component);
-	if (iter != mComponents.end())
-	{
-		delete component;
-		mComponents.erase(iter);
-	}
+	int pos = mComponents.Find(component);
+	if (pos == -1)
+		return;
+
+	delete component;
+	mComponents.Erase(pos);
 }
 
 void Actor::RemoveAllComponents()
 {
-	for (size_t i = 0; i < mComponents.size(); ++i)
-		delete mComponents[i];
-	mComponents.clear();
+	for (auto comp = mComponents.Begin(); comp != mComponents.End(); ++comp)
+		delete *comp;
+	mComponents.Clear();
 }
 
 FTDS::String Actor::GetStateStr() const
@@ -279,8 +320,8 @@ void Actor::SaveProperties(std::ofstream& ofs)
 		FileIOHelper::SaveString(ofs, ChunkKey::PARENT, ChunkKey::NullVal::NULL_OBJECT);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CHILD);
-	for (size_t i = 0; i < mChild.size(); ++i)
-		FileIOHelper::SaveString(ofs, std::to_string(i).c_str(), mChild.at(i)->GetNameRef());
+	for (size_t i = 0; i < mChild.GetSize(); ++i)
+		FileIOHelper::SaveString(ofs, std::to_string(i).c_str(), mChild.At(i)->GetNameRef());
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CHILD);
 
 	// Changing the call location of Transform is NOT recommended
@@ -290,7 +331,7 @@ void Actor::SaveProperties(std::ofstream& ofs)
 
 void Actor::SaveComponents(std::ofstream& ofs)
 {
-	size_t count = mComponents.size();
+	size_t count = mComponents.GetSize();
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::COMPONENTS);
 	for (size_t i = 0; i < count; ++i)
 	{
@@ -352,7 +393,7 @@ void Actor::LoadProperties(std::ifstream& ifs)
 void Actor::LoadComponents(std::ifstream& ifs)
 {
 	std::pair<size_t, FTDS::String>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COMPONENTS);
-	mComponents.reserve(pack.first);
+	mComponents.Reserve(pack.first);
 	for (size_t i = 0; i < pack.first; ++i)
 	{
 		std::pair<size_t, FTDS::String> compPack = FileIOHelper::BeginDataPackLoad(ifs);

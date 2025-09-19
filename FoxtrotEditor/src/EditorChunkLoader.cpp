@@ -120,12 +120,13 @@ void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
 			actor.SetParent(nullptr);
 		}
 
-		if (0 < actor.GetChildActors().size())
+		if (0 < actor.GetChildActors().GetSize())
 		{
-			for (Actor* child : actor.GetChildActors())
+			FTDS::DynamicArray<Actor*>& childActors = actor.GetChildActors();
+			for (auto child = childActors.Begin(); child != childActors.End(); ++child)
 			{
-				delete child;
-				child = nullptr;
+				delete *child;
+				*child = nullptr;
 			}
 		}
 	}

@@ -77,9 +77,10 @@ EditorScene* EditorSceneManager::GetEditorScene()
 void EditorSceneManager::PushRowOfChildActors(EditorElement* actor, std::vector<EditorElement*>& dest)
 {
 	dest.push_back(actor);
-	for (Actor* child : actor->GetChildActors())
+	FTDS::DynamicArray<Actor*>& childActors = actor->GetChildActors();
+	for (auto child = childActors.Begin(); child != childActors.End(); ++child)
 	{
-		EditorElement* elemChild = static_cast<EditorElement*>(child);
+		EditorElement* elemChild = static_cast<EditorElement*>(*child);
 		PushRowOfChildActors(elemChild, dest);
 	}
 }

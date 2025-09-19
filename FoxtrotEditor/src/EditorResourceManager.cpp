@@ -35,14 +35,6 @@ void EditorResourceManager::SaveResources(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::RESOURCE_DATA);
 
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTexture::FT_TEXTURE);
-	SaveResourceToChunk<FTTexture>(ofs, ResourceManager::GetInstance()->GetTextures());
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTexture::FT_TEXTURE);
-
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTileMap::FT_TILEMAP);
-	SaveResourceToChunk<FTTileMap>(ofs, ResourceManager::GetInstance()->GetTileMaps());
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTileMap::FT_TILEMAP);
-
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTPremade::FT_PREMADE);
 	SaveResourceToChunk<FTPremade>(ofs, ResourceManager::GetInstance()->GetPremades());
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTPremade::FT_PREMADE);
@@ -54,6 +46,14 @@ void EditorResourceManager::SaveResources(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
 	SaveResourceToChunk<FTSpriteAnimation>(ofs, ResourceManager::GetInstance()->GetSpriteAnimations());
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
+
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTileMap::FT_TILEMAP);
+	SaveResourceToChunk<FTTileMap>(ofs, ResourceManager::GetInstance()->GetTileMaps());
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTileMap::FT_TILEMAP);
+
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTexture::FT_TEXTURE);
+	SaveResourceToChunk<FTTexture>(ofs, ResourceManager::GetInstance()->GetTextures());
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTexture::FT_TEXTURE);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTMeshGroup::FT_MESH_GROUP);
 	SaveResourceToChunk<FTMeshGroup>(ofs, ResourceManager::GetInstance()->GetMeshGroups());

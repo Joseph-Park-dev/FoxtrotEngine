@@ -111,23 +111,34 @@ void EditorElement::Initialize(FTCore* coreInst)
 void EditorElement::EditorUpdate(float deltaTime)
 {
 	for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
+	{
+		if (*comp)
+		{
 			if ((*comp)->GetIsActive())
 				(*comp)->EditorUpdate(deltaTime);
 		}
+	}
+}
 
 void EditorElement::EditorRender(FoxtrotRenderer* renderer)
 {
 	for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
+	{
+		if (*comp)
+		{
 			if ((*comp)->GetIsActive())
 				(*comp)->EditorRender(renderer);
 		}
+	}
+}
 
 EditorElement::EditorElement()
 	: Actor()
 	, mIsFocused(false)
 	, mHierarchyLevel(0)
 	, mIsDisplayed(false)
-{}
+{
+}
 
 EditorElement::EditorElement(Actor* actor)
 	: Actor(actor)
@@ -197,6 +208,8 @@ void EditorElement::UpdateComponentsUI()
 	{
 		size_t count = 0;
 		for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
+		{
+			if (*comp)
 			{
 				FTDS::String name(std::to_string(count).c_str());
 				name.Append(" ");

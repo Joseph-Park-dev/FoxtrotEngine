@@ -102,9 +102,9 @@ void Animator::LoadProperties(std::ifstream& ifs)
 		FileIOHelper::LoadBasicString(ifs, key);
 
 		FTSpriteAnimation* anim = ResourceManager::GetInstance()->GetLoadedSpriteAnim(key);
-		anim->AddRefCount();
 		mLoadedAnim->PushBack(anim);
 	}
+
 	mLoadedAnim->Reverse();
 	MeshRenderer::LoadProperties(ifs);
 

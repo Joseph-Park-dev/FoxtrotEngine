@@ -73,7 +73,9 @@ void SpriteRenderer::LoadProperties(std::ifstream& ifs)
 	MeshRenderer::LoadProperties(ifs);
 }
 
+#ifdef FOXTROT_EDITOR
 void SpriteRenderer::EditorUIUpdate()
 {
 	MeshRenderer::EditorUIUpdate();
 }
+#endif // FOXTROT_EDITOR

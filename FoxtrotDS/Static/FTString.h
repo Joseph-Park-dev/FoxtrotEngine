@@ -15,6 +15,14 @@ namespace FTDS
 		/// String utility functions ///
 		////////////////////////////////
 	public:
+		void PushBack(char value) override
+		{
+			FTDS::DynamicArray<char>::PopBack();
+			FTDS::DynamicArray<char>::PushBack(value);
+			FTDS::DynamicArray<char>::PushBack('\0');
+			++mLength;
+		}
+
 		const int RFind(const char* target) const
 		{
 			size_t targetLen = FTDS::StrLen(target);
@@ -203,6 +211,12 @@ namespace FTDS
 			}
 		}
 
+		void Reverse() override
+		{
+			for (size_t i = 0; i < this->mLength / 2; ++i)
+				this->Swap(i, this->mLength - 1 - i);
+		}
+
 		/////////////////////////
 		/// String Properties ///
 		/////////////////////////
@@ -275,6 +289,7 @@ namespace FTDS
 			: FTDS::DynamicArray<char>()
 			, mLength(0)
 		{
+			FTDS::DynamicArray<char>::PushBack('\0');
 		}
 
 		String(char* val)
@@ -319,6 +334,7 @@ namespace FTDS
 		{
 			FTDS::Array<char>::Clear();
 			mLength = 0;
+			FTDS::DynamicArray<char>::PushBack('\0');
 		}
 
 	private:
@@ -429,6 +445,23 @@ namespace FTDS
 		result[len1 + len2] = '\0'; // Null-terminate the new string
 
 		return result;
+	}
+
+	inline void ToString(FTDS::String& str, int val)
+	{
+		if (val == 0)
+		{
+			str.PushBack(static_cast<char>(48));
+			return;
+		}
+
+		while (val > 0)
+		{
+			int digit = val % 10; // Get last digit
+			val /= 10; // Remove last digit
+			str.PushBack(static_cast<char>(digit + 48));
+		}
+		str.Reverse();
 	}
 
 	inline bool operator==(const FTDS::String& lhs, const char* rhs)

@@ -19,6 +19,8 @@
 	#include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
+#include "Utils/UUIDGenerator.h"
+
 Actor* Instantiate(Actor* actor, ActorGroup actorGroup, FTVector3 pos)
 {
 	FTEvent addedEvent	= {};
@@ -28,7 +30,7 @@ Actor* Instantiate(Actor* actor, ActorGroup actorGroup, FTVector3 pos)
 #ifdef FOXTROT_EDITOR
 	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
 	actor->GetTransform()->SetWorldPosition(pos);
-	EditorElement* editorElement = DBG_NEW EditorElement(actor);
+	EditorElement* editorElement = DBG_NEW EditorElement(actor, ChunkKey::ID::CLONE);
 	editorElement->Initialize(FTCoreEditor::GetInstance());
 	editorElement->Setup();
 
@@ -73,7 +75,7 @@ Actor* Instantiate(FTDS::String& premadeName)
 
 #ifdef FOXTROT_EDITOR
 	EditorScene*   scene		 = EditorSceneManager::GetInstance()->GetEditorScene();
-	EditorElement* editorElement = DBG_NEW EditorElement(origin);
+	EditorElement* editorElement = DBG_NEW EditorElement(origin, ChunkKey::ID::CLONE);
 	editorElement->Initialize(FTCoreEditor::GetInstance());
 	editorElement->Setup();
 
@@ -86,7 +88,7 @@ Actor* Instantiate(FTDS::String& premadeName)
 	}
 	else
 	{
-		printf("ERROR : Instantiate() -> Premade not loaded, %s\n", premadeName);
+		printf("ERROR : Instantiate() -> Premade not loaded, %s\n", premadeName.C_Str());
 		return nullptr;
 	}
 #else

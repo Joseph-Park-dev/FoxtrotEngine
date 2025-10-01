@@ -8,6 +8,13 @@ namespace FTDS
 		public FTDS::Array<TYPE>
 	{
 	public:
+		template <class Func>
+		void IterateArray(Func&& unaryOp)
+		{
+			for (size_t i = 0; i < this->mSize; ++i)
+				unaryOp(this->mData[i]);
+		}
+
 		virtual void PushBack(TYPE value)
 		{
 			++mSize;
@@ -46,7 +53,6 @@ namespace FTDS
 			assert(pos < this->mSize);
 
 			this->mData[pos] = NULL;
-			--mSize;
 
 			// Pull the values one index forward.
 			if (mSize < (this->mCapacity / 2))
@@ -56,6 +62,7 @@ namespace FTDS
 			size_t copiedSize  = sizeof(TYPE) * copiedCount;
 			memcpy_s(&this->mData[pos], copiedSize, &this->mData[pos + 1], copiedSize);
 			this->mData[mSize] = NULL;
+			--mSize;
 		}
 
 		void PopBack()

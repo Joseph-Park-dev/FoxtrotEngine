@@ -32,14 +32,14 @@ class EditorElement :
 public:
 	const bool	 GetIsFocused() const;
 	const size_t GetHierarchyLevel() const;
-	const bool GetIsDisplayed() const;
+	const bool	 GetIsDisplayed() const;
 
 	void SetIsFocused(bool isFocused);
 	void SetHierarchyLevel(size_t lv);
 	void SetIsDisplayed(bool isDisplayed);
 
 public:
-	void Initialize(FTCore* coreInst) override;
+	void Setup() override;
 	// Updates editor specific features -> this will be omitted from the produced game.
 	void EditorUpdate(float deltaTime);
 
@@ -57,32 +57,36 @@ public:
 	/// <summary>
 	/// Constructor that creates empty EditorElement.
 	/// It should be added to the EditorScene manually.
-	EditorElement();
+	EditorElement(int id);
 
 	/// <summary>
 	/// Constructor that deep-copies an Actor object.
 	/// </summary>
 	/// <param name="origin : ">An Actor object to deep-copy values from.</param>
-	EditorElement(Actor* actor);
+	EditorElement(Actor* actor, int id);
 
 	/// <summary>
 	/// Copy constructors controlling if the object is deep copied.
 	/// </summary>
 	/// <param name="actor">Actor being copied.</param>
 	/// <param name="deepCpy">Perform deep copy through child Actors?</param>
-	EditorElement(Actor* actor, bool deepCpyChild);
+	EditorElement(Actor* actor, int id, bool deepCpyChild);
 
 	/// <summary>
 	/// Constructor that is used for FTPremade origin.
 	/// This Fetches the FTPremade origin, makes EditorElement.
 	/// Not recommended to use outside of FTPremade
-	EditorElement(FTPremade* premade);
+	EditorElement(FTPremade* premade, int id);
+
+public:
+	// Deep copies all child Actors
+	void CopyChildObjectFrom(Actor* actor) override;
 
 private:
 	bool   mIsFocused;		// Is this item clicked on Foxtrot Editor's Hierarchy menu?
 	size_t mHierarchyLevel; // How many parent Actors are there for this object?
 
-	bool mIsDisplayed;  // Is this item displayed on Hierarchy menu during this frame?
+	bool mIsDisplayed; // Is this item displayed on Hierarchy menu during this frame?
 
 private:
 	void UpdateActorName();
@@ -94,5 +98,4 @@ private:
 	void DisplayCompSelectionPopup();
 
 	void UpdateMakePremade();
-	void UpdateAddPremade();
 };

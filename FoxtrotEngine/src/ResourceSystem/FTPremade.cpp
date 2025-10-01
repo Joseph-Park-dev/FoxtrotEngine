@@ -34,6 +34,7 @@ FTPremade::FTPremade(FTResourceDef& resDef)
 	, mDummyForUI(nullptr)
 #endif // FOXTROT_EDITOR
 {
+	Process();
 }
 
 FTPremade::~FTPremade()
@@ -45,7 +46,7 @@ FTPremade::~FTPremade()
 void FTPremade::Load()
 {
 	if (!mOrigin)
-		mOrigin = DBG_NEW Actor();
+		mOrigin = DBG_NEW Actor(ChunkKey::ID::CLONE);
 
 	std::ifstream					ifs(GetRelativePath().C_Str());
 	std::pair<size_t, FTDS::String> pack = FileIOHelper::BeginDataPackLoad(ifs);
@@ -102,7 +103,10 @@ void FTPremade::Create(EditorElement* ele)
 {
 	assert(!GetRelativePath().IsEmpty());
 
-	std::ofstream ofs(GetRelativePath().C_Str());
+	FTDS::String path = GetRelativePath();
+	path.Append(GetFileName());
+
+	std::ofstream ofs(path.C_Str());
 	if (ofs)
 	{
 		FileIOHelper::BeginDataPackSave(ofs, GetFileName());
@@ -111,10 +115,10 @@ void FTPremade::Create(EditorElement* ele)
 		FileIOHelper::EndDataPackSave(ofs, GetFileName());
 		FileIOHelper::SaveBufferToFile(ofs);
 
-		printf("Premade %s created to %s\n", GetFileName().C_Str(), GetRelativePath().C_Str());
+		printf("Premade %s created to %s\n", GetFileName().C_Str(), path.C_Str());
 	}
 	else
-		printf("ERROR: FTPremade::Create -> Failed to open file\n");
+		printf("ERROR: FTPremade::Create -> Failed to open file %s\n", path.C_Str());
 }
 
 void FTPremade::Save(EditorElement* ele)
@@ -140,11 +144,15 @@ void FTPremade::UpdateUI()
 {
 	ImGui::Text(GetFileName().C_Str());
 	ImGui::Separator();
+
+	if (ImGui::Button("Add to Chunk"))
+		EditorSceneManager::GetInstance()->GetEditorScene()->AddEditorElement(mOrigin);
+
 	if (FTEditorUtils::ButtonCenteredOnLine("Edit Premade"))
 	{
 		if (mOrigin)
 		{
-			mDummyForUI = DBG_NEW EditorElement(mOrigin);
+			mDummyForUI = DBG_NEW EditorElement(mOrigin, ChunkKey::ID::INVALID);
 			ImGui::OpenPopup("EditPremade");
 		}
 	}

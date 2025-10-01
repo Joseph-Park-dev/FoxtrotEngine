@@ -23,6 +23,8 @@
 #include "EditorSceneManager.h"
 #include "EditorResourceManager.h"
 
+#include "Utils/UUIDGenerator.h"
+
 EditorChunkLoader::EditorChunkLoader()
 	: ChunkLoader()
 {
@@ -33,8 +35,6 @@ EditorChunkLoader::EditorChunkLoader()
 		{ "Animator", &Component::Create<Animator> },
 		{ "BoxCollider2D", &Component::Create<BoxCollider2D> },
 		{ "CircleCollider2D", &Component::Create<CircleCollider2D> },
-		{ "InputMove", &Component::Create<InputMove> },
-		{ "Move", &Component::Create<Move> },
 		{ "Rigidbody2D", &Component::Create<Rigidbody2D> },
 		{ "SpriteRenderer", &Component::Create<SpriteRenderer> },
 		{ "TileMapRenderer", &Component::Create<TileMapRenderer> },
@@ -91,6 +91,7 @@ void EditorChunkLoader::SaveActorsData(std::ofstream& ofs)
 	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::ACTOR_DATA);
 
+	// Actor's temp ID to be assigned as parent/Children.
 	for (EditorElement* element : scene->GetEditorElements())
 	{
 		FileIOHelper::BeginDataPackSave(ofs, element->GetName());
@@ -106,31 +107,46 @@ void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
 	EditorScene*					  scene = EditorSceneManager::GetInstance()->GetEditorScene();
 	std::pair<size_t, FTDS::String>&& pack	= FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
 	std::vector<Actor*>				  actorBuf;
+
 	for (size_t i = 0; i < pack.first; ++i)
 	{
 		std::pair<size_t, FTDS::String>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
-		Actor							  actor		= Actor();
+		Actor							  actor		= Actor(ChunkKey::ID::INVALID);
 		actor.LoadProperties(ifs);
 		actor.LoadComponents(ifs);
-		scene->AddEditorElement(&actor);
+		EditorElement* element = scene->AddEditorElement(&actor);
+		element->GetTransform()->SetOwner(element);
+		
+		AddMaxActorID();
+	}
 
-		if (actor.GetParent())
+	FTDS::HashMap<EditorElement*> actorWithIDs;
+	actorWithIDs.Reserve(scene->GetEditorElements().size());
+	for (EditorElement* element : scene->GetEditorElements())
+		actorWithIDs.Insert(element->GetID(), element);
+
+
+	for (EditorElement* element : scene->GetEditorElements())
+	{
+		if (element->GetParent())
 		{
-			delete actor.GetParent();
-			actor.SetParent(nullptr);
+			EditorElement* parent = actorWithIDs.At(element->GetParent()->GetID())->Value();
+			delete element->GetParent();
+			element->SetParent(nullptr);
+			element->SetParent(parent);
 		}
 
-		if (0 < actor.GetChildActors().GetSize())
+		if (0 < element->GetChildActors().GetSize())
 		{
-			FTDS::DynamicArray<Actor*>& childActors = actor.GetChildActors();
-			for (auto child = childActors.Begin(); child != childActors.End(); ++child)
-			{
-				delete *child;
-				*child = nullptr;
-			}
+			element->GetChildActors().IterateArray([&](Actor* c) {
+				Actor* child = actorWithIDs.At(c->GetID())->Value();
+				element->RemoveChild(c);
+				delete c;
+				element->AddChild(child);
+			});
 		}
 	}
 
-	EditorSceneManager::GetInstance()->GetEditorScene()->Initialize(FTCoreEditor::GetInstance());
-	EditorSceneManager::GetInstance()->GetEditorScene()->Setup();
+	scene->Initialize(FTCoreEditor::GetInstance());
+	scene->Setup();
 }

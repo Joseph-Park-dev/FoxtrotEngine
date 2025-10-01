@@ -22,15 +22,27 @@ namespace FTDS
 
 	public:
 		FTDS::FTIteratorArray<TYPE> Begin() { return FTDS::FTIteratorArray<TYPE>(mData); }
-		FTDS::FTIteratorArray<TYPE> End() { return FTDS::FTIteratorArray<TYPE>(&mData[mCapacity - 1]); }
+		FTDS::FTIteratorArray<TYPE> End() { return FTDS::FTIteratorArray<TYPE>(&mData[mCapacity]); }
 
 		// It is recommended to put null check to mPtr.
-		template <class UnaryOperation>
+		template <class Func>
 		void IterateArray(
-			UnaryOperation&& unaryOp)
+			Func&& unaryOp)
 		{
 			for (size_t i = 0; i < mCapacity; ++i)
 				unaryOp(mData[i]);
+		}
+
+		template <class Func>
+		void IterateArray(
+			Func&& unaryOp, size_t& currPos)
+		{
+			currPos = 0;
+			for (size_t i = 0; i < mCapacity; ++i)
+			{
+				unaryOp(mData[i]);
+				currPos = i;
+			}
 		}
 
 		void Swap(size_t posLeft, size_t posRight)
@@ -72,7 +84,7 @@ namespace FTDS
 				size_t newCap = mCapacity;
 				mCapacity	  = 0;
 
-				delete[] mData;
+				free(mData);
 				mData = nullptr;
 				AllocateMem(newCap);
 			}

@@ -120,6 +120,7 @@ namespace FTDS
 
 			strcpy_s(this->mData, sizeof(char) * inputLength + 1, val);
 			this->mLength = inputLength;
+			this->Size()  = inputLength + 1;
 		}
 
 		void Assign(const FTDS::String& val)
@@ -325,6 +326,9 @@ namespace FTDS
 			, mLength(num)
 		{
 			Reserve(num + 1);
+			this->Size() = num + 1;
+			mLength		 = num;
+
 			for (size_t i = 0; i < this->mLength; ++i)
 				this->mData[i] = val;
 			this->mData[mLength] = '\0';
@@ -363,12 +367,32 @@ namespace FTDS
 	template <>
 	inline void FTDS::DynamicArray<const char*>::PushBack(const char* value)
 	{
+		assert(value);
+
 		++mSize;
 		if (this->mCapacity <= mSize)
 		{
 			// Grow the array by double.
-			FTDS::Array<const char*>::AllocateMem(mSize * 2);
+			this->AllocateMem(mSize * 2);
 		}
+
+		// Assign the value.
+		this->At(mSize - 1) = value;
+	}
+
+	template <>
+	inline void FTDS::DynamicArray<FTDS::String*>::PushBack(FTDS::String* value)
+	{
+		assert(value);
+
+		++mSize;
+		if (this->mCapacity <= mSize)
+		{
+			// Grow the array by double.
+			FTDS::DynamicArray<FTDS::String*>::AllocateMem(mSize * 2);
+		}
+
+		this->mData;
 
 		// Assign the value.
 		this->At(mSize - 1) = value;
@@ -377,6 +401,8 @@ namespace FTDS
 	template <>
 	inline int FTDS::DynamicArray<FTDS::String*>::Find(FTDS::String* value)
 	{
+		assert(this->mData);
+
 		for (int pos = 0; pos < (int)mSize; ++pos)
 		{
 			if (value->Equal(this->mData[pos]->C_Str()))
@@ -458,7 +484,7 @@ namespace FTDS
 		while (val > 0)
 		{
 			int digit = val % 10; // Get last digit
-			val /= 10; // Remove last digit
+			val /= 10;			  // Remove last digit
 			str.PushBack(static_cast<char>(digit + 48));
 		}
 		str.Reverse();

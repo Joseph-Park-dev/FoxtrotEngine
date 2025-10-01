@@ -236,13 +236,14 @@ private:
 				return;
 
 			resMap->IterateAllValues(
-				[&](FTRESOURCE res) {
+				[&](FTRESOURCE& res) {
 					if (res)
 					{
 						delete res;
 						res = nullptr;
 					}
 				});
+			resMap->Clear();
 		}
 	}
 

@@ -3,7 +3,6 @@
   "dependencies": [
     "directxtex",
     "directxtk",
-    "stb",
-    "nlohmann-json"
+    "stb"
   ]
 }

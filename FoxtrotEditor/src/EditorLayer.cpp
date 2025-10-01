@@ -510,6 +510,9 @@ void EditorLayer::ProcessDropEvent(EditorElement* target)
 void EditorLayer::SetHierarchyLvRecurse(EditorElement* element, int val)
 {
 	FTDS::DynamicArray<Actor*>& childActors = element->GetChildActors();
+	if (childActors.GetSize() < 1)
+		return;
+
 	for (auto child = childActors.Begin(); child != childActors.End(); ++child)
 	{
 		EditorElement* subChild = static_cast<EditorElement*>(*child);

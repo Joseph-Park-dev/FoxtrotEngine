@@ -79,6 +79,12 @@ public:
 	Component(const Component* comp);
 	virtual ~Component();
 
+protected:
+	/// @brief Deep copies values from this Component. 
+	/// This is useful for CloneTo() function in a Derived Component.
+	/// @param to The Component values will be copied to.
+	virtual void Copy(Component* to);
+
 private:
 	Actor* mOwner;
 	int	   mUpdateOrder;

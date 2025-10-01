@@ -103,7 +103,13 @@ void FTSpriteAnimation::LoadProperties(std::ifstream& ifs)
 	FTMeshGroup::LoadProperties(ifs);
 
 	mJSON = ResourceManager::GetInstance()->GetLoadedJSON(jsonKey);
+	if (!mJSON)
+		return;
+
 	mSpriteSheet = ResourceManager::GetInstance()->GetLoadedTexture(texKey);
+	if (!mSpriteSheet)
+		return;
+
 	SetSizeScale(sizeScale);
 }
 

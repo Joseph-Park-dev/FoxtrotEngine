@@ -219,6 +219,12 @@ void EditorResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMeshGroup::FT_MESH_GROUP);
 	LoadDummyResource<FTMeshGroup>(ifs, GetMeshGroups(), desc.first);
 
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTexture::FT_TEXTURE);
+	LoadDummyResource<FTTexture>(ifs, GetTextures(), desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTileMap::FT_TILEMAP);
+	LoadDummyResource<FTTileMap>(ifs, GetTileMaps(), desc.first);
+
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
 	LoadDummyResource<FTSpriteAnimation>(ifs, GetSpriteAnimations(), desc.first);
 
@@ -227,12 +233,6 @@ void EditorResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPremade::FT_PREMADE);
 	LoadDummyResource<FTPremade>(ifs, GetPremades(), desc.first);
-
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTileMap::FT_TILEMAP);
-	LoadDummyResource<FTTileMap>(ifs, GetTileMaps(), desc.first);
-
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTexture::FT_TEXTURE);
-	LoadDummyResource<FTTexture>(ifs, GetTextures(), desc.first);
 }
 
 FTDS::HashMap<FTTexture*>* EditorResourceManager::GetTextures()
@@ -324,8 +324,11 @@ void EditorResourceManager::UpdateUI()
 
 	if (ImGui::Button("Refresh"))
 	{
+		EditorSceneManager::GetInstance()->DeleteAll();
 		ResourceManager::GetInstance()->DeleteAll();
 		LoadAllResourcesInAsset();
+		FTDS::String currentChunk = EditorChunkLoader::GetInstance()->CurrentChunk();
+		EditorChunkLoader::GetInstance()->LoadChunk(currentChunk);
 	}
 
 	DisplayLoadedResources<FTTexture>("Textures", GetTextures());
@@ -387,6 +390,9 @@ ResType EditorResourceManager::GetResType(FTDS::String& fileName)
 			return ResType::UNSUPPORTED;
 	else if (StrContains(FileTypes::Sound::WAV, format))
 		return ResType::FTSOUND;
+
+	else if (StrContains(FileTypes::PREMADE, format))
+		return ResType::FTPREMADE;
 
 	else
 		return ResType::UNSUPPORTED;

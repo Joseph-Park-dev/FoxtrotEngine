@@ -337,8 +337,6 @@ void ResourceManager::LoadDefaultResources()
 
 FTTexture* ResourceManager::GetLoadedTexture(FTDS::String& key)
 {
-	AddFileExtensionIfNone(key, FileTypes::JSON);
-
 	FTDS::Record<FTTexture*>* rec = mTextures->At(key);
 	if (!rec)
 	{
@@ -540,6 +538,8 @@ FTCSV* ResourceManager::GetLoadedCSV(FTDS::String& key)
 FTJSON* ResourceManager::GetLoadedJSON(FTDS::String& key)
 {
 	AddFileExtensionIfNone(key, FileTypes::JSON);
+	if (mJSONs->GetSize() < 1)
+		return nullptr;
 
 	FTDS::Record<FTJSON*>* rec = mJSONs->At(key);
 	if (!rec)

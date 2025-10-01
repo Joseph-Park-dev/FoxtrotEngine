@@ -46,6 +46,13 @@ namespace FTDS
 	class HashMap : public FTDS::Array<FTDS::Record<TYPE>*>
 	{
 	public:
+		void Insert(int key, TYPE value)
+		{
+			FTDS::String conv;
+			ToString(conv, key);
+			this->Insert(conv, value);
+		}
+
 		void Insert(FTDS::String key, TYPE value)
 		{
 			// HashChainMap uses FTDS::Array,
@@ -61,7 +68,7 @@ namespace FTDS
 			{
 				size_t pow2 = Math::NextPowerOf2(static_cast<int>(this->Capacity()));
 				// Perform Quadratic probing
-				for (int i = 1; i <= pow2; ++i)
+				for (size_t i = 1; i <= pow2; ++i)
 				{
 					size_t qIndex = (hashVal + (i + i * i) / 2) % pow2;
 
@@ -84,6 +91,13 @@ namespace FTDS
 			}
 			this->mData[hashVal] = node;
 			++mSize;
+		}
+
+		FTDS::Record<TYPE>* At(int key)
+		{
+			FTDS::String conv;
+			ToString(conv, key);
+			return this->At(conv);
 		}
 
 		FTDS::Record<TYPE>* At(FTDS::String&& key)
@@ -172,7 +186,7 @@ namespace FTDS
 		{
 			if (mSize < 1)
 				return;
-			IterateAllNodes([&](Record<TYPE>* node) {
+			IterateAllNodes([&](Record<TYPE>*& node) {
 				if (node)
 				{
 					delete node;
@@ -207,28 +221,6 @@ namespace FTDS
 			Clear();
 			delete this->mData;
 			this->mData = nullptr;
-		}
-
-	protected:
-		virtual void AllocateMem(size_t newCap) override
-		{
-			assert(this->mCapacity < newCap);
-			
-			// Create an array with renewed capacity.
-			FTDS::Record<TYPE>** newArr = DBG_NEW FTDS::Record<TYPE>* [newCap] { nullptr };
-
-			// Calculate memory size to be copied.
-			size_t destSize	  = sizeof(FTDS::Record<TYPE>*) * newCap;
-			size_t copiedSize = sizeof(FTDS::Record<TYPE>*) * this->mCapacity;
-
-			// Copy previous data.
-			memcpy_s(newArr, destSize, this->mData, copiedSize);
-			delete[] this->mData;
-
-			// Set new array as current data.
-			this->mData = newArr;
-			// Set new capacity.
-			this->mCapacity = newCap;
 		}
 
 	private:

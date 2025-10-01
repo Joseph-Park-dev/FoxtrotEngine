@@ -109,11 +109,21 @@ FTDS::String& ChunkLoader::CurrentChunk()
 	return mCurrentChunkCopy;
 }
 
+const int ChunkLoader::GetMaxActorID() const
+{
+	return mMaxActorID;
+}
+
+void ChunkLoader::AddMaxActorID()
+{
+	++mMaxActorID;
+}
+
 void ChunkLoader::SaveChunkData(std::ofstream& out)
 {
 	Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
 	FileIOHelper::BeginDataPackSave(out, ChunkKey::CHUNK_DATA);
-	FileIOHelper::SaveSize(out, ChunkKey::ACTOR_COUNT, currScene->GetActorCount());
+	FileIOHelper::SaveInt(out, ChunkKey::ACTOR_COUNT, mMaxActorID);
 	FileIOHelper::EndDataPackSave(out, ChunkKey::CHUNK_DATA);
 }
 
@@ -128,7 +138,7 @@ void ChunkLoader::LoadActorsData(std::ifstream& ifs)
 	{
 		std::pair<size_t, FTDS::String>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
 
-		Actor* actor = DBG_NEW Actor();
+		Actor* actor = DBG_NEW Actor(ChunkKey::ID::INVALID);
 		actor->LoadProperties(ifs);
 		actor->LoadComponents(ifs);
 		actor->Initialize(FTCore::GetInstance());
@@ -141,15 +151,16 @@ void ChunkLoader::LoadActorsData(std::ifstream& ifs)
 
 void ChunkLoader::LoadChunkData(std::ifstream& ifs)
 {
-	int targetActor = 0;
+	int maxActor = 0;
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CHUNK_DATA);
-	FileIOHelper::LoadSize(ifs, mCurrentChunkData.ActorCount);
+	FileIOHelper::LoadInt(ifs, maxActor);
 }
 
 ChunkLoader::ChunkLoader()
 	: mCurrentChunkData{}
 	, mIsLoading(false)
 	, mCurrentChunkCopy()
+	, mMaxActorID(ChunkKey::ID::CLONE)
 {
 	/*mComponentLoadMap = {
 		{ "AI", &Component::Load<AI> },
@@ -175,8 +186,6 @@ ChunkLoader::ChunkLoader()
 	mComponentLoadMap.Insert("Animator", &Component::Load<Animator>);
 	mComponentLoadMap.Insert("BoxCollider2D", &Component::Load<BoxCollider2D>);
 	mComponentLoadMap.Insert("CircleCollider2D", &Component::Load<CircleCollider2D>);
-	mComponentLoadMap.Insert("InputMove", &Component::Load<InputMove>);
-	mComponentLoadMap.Insert("Move", &Component::Load<Move>);
 	mComponentLoadMap.Insert("Rigidbody2D", &Component::Load<Rigidbody2D>);
 	mComponentLoadMap.Insert("SpriteRenderer", &Component::Load<SpriteRenderer>);
 	mComponentLoadMap.Insert("TileMap", &Component::Load<TileMapRenderer>);

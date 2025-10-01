@@ -25,12 +25,24 @@ namespace FTDS
 		FTDS::FTIteratorArray<TYPE> End() { return FTDS::FTIteratorArray<TYPE>(&mData[mCapacity]); }
 
 		// It is recommended to put null check to mPtr.
-		template <class UnaryOperation>
+		template <class Func>
 		void IterateArray(
-			UnaryOperation&& unaryOp)
+			Func&& unaryOp)
 		{
 			for (size_t i = 0; i < mCapacity; ++i)
 				unaryOp(mData[i]);
+		}
+
+		template <class Func>
+		void IterateArray(
+			Func&& unaryOp, size_t& currPos)
+		{
+			currPos = 0;
+			for (size_t i = 0; i < mCapacity; ++i)
+			{
+				unaryOp(mData[i]);
+				currPos = i;
+			}
 		}
 
 		void Swap(size_t posLeft, size_t posRight)
@@ -42,7 +54,7 @@ namespace FTDS
 			this->mData[posRight] = cache;
 		}
 
-		void Reverse()
+		virtual void Reverse()
 		{
 			for (size_t i = 0; i < this->mCapacity / 2; ++i)
 				Swap(i, this->mCapacity - 1 - i);
@@ -72,7 +84,7 @@ namespace FTDS
 				size_t newCap = mCapacity;
 				mCapacity	  = 0;
 
-				delete[] mData;
+				free(mData);
 				mData = nullptr;
 				AllocateMem(newCap);
 			}
@@ -83,9 +95,8 @@ namespace FTDS
 		// This can be used when freeing memory.
 		// TYPE*	Data() { return mData; }
 
-		TYPE& At(int idx)
+		TYPE& At(size_t idx)
 		{
-			// assert(mData[idx]);
 			return mData[idx];
 		}
 
@@ -107,11 +118,8 @@ namespace FTDS
 
 		virtual ~Array()
 		{
-			if (mData)
-			{
-				delete[] mData;
-				mData = nullptr;
-			}
+			free(mData);
+			mData = nullptr;
 		}
 
 	public:
@@ -121,19 +129,8 @@ namespace FTDS
 		virtual void AllocateMem(size_t newCap)
 		{
 			// Create an array with renewed capacity.
-			TYPE* newArr = DBG_NEW TYPE[newCap];
-			memset(newArr, NULL, sizeof(TYPE) * newCap);
-
-			// Calculate memory size to be copied.
-			size_t destSize	  = sizeof(TYPE) * newCap;
-			size_t copiedSize = sizeof(TYPE) * mCapacity;
-
-			// Copy previous data.
-			memcpy_s(newArr, destSize, mData, copiedSize);
-			delete[] mData;
-
-			// Set new array as current data.
-			mData = newArr;
+			mData = static_cast<TYPE*>(realloc(mData, sizeof(TYPE) * newCap));
+			memset(mData, NULL, sizeof(TYPE) * newCap);
 			// Set new capacity.
 			mCapacity = newCap;
 		}

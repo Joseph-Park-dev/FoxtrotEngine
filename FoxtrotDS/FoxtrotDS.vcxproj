@@ -207,6 +207,7 @@
     <ClInclude Include="Sort\InsertionSort.h" />
     <ClInclude Include="TestHeaderBatch.h" />
     <ClInclude Include="Utils\StrAssign.h" />
+    <ClInclude Include="Utils\UUIDGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

@@ -18,7 +18,10 @@
 #include "FTCoreEditor.h"
 #include "EditorLayer.h"
 #include "EditorElement.h"
+#include "EditorChunkLoader.h"
 #include "ActorCommand.h"
+
+#include "Utils/UUIDGenerator.h"
 
 void EditorScene::Initialize(FTCore* coreInst)
 {
@@ -99,10 +102,12 @@ void EditorScene::UnfocusEditorElements()
 	}
 }
 
-void EditorScene::AddEditorElement()
+EditorElement* EditorScene::AddEditorElement()
 {
 	UnfocusEditorElements();
-	EditorElement* editorElement = DBG_NEW EditorElement();
+	EditorChunkLoader::GetInstance()->AddMaxActorID();
+	int			   maxID		 = EditorChunkLoader::GetInstance()->GetMaxActorID();
+	EditorElement* editorElement = DBG_NEW EditorElement(maxID);
 
 	FTDS::String& name = editorElement->GetNameRef();
 	name.Append(std::to_string(mEditorElements.size()).c_str());
@@ -110,17 +115,19 @@ void EditorScene::AddEditorElement()
 	editorElement->SetIsFocused(true);
 
 	mEditorElements.emplace_back(editorElement);
+	return editorElement;
 }
 
-void EditorScene::AddEditorElement(Actor* actor)
+EditorElement* EditorScene::AddEditorElement(Actor* actor)
 {
 	UnfocusEditorElements();
 
-	EditorElement* element = DBG_NEW EditorElement(actor);
+	EditorElement* element = DBG_NEW EditorElement(actor, actor->GetID(), false);
 	AddEditorElement(element);
+	return element;
 }
 
-void EditorScene::AddEditorElement(EditorElement* element)
+EditorElement* EditorScene::AddEditorElement(EditorElement* element)
 {
 	int	 drawOrder = element->GetDrawOrder();
 	auto iter	   = mEditorElements.begin();
@@ -130,6 +137,7 @@ void EditorScene::AddEditorElement(EditorElement* element)
 			break;
 	}
 	mEditorElements.insert(iter, element);
+	return element;
 }
 
 EditorElement* EditorScene::FindEditorElement(FTDS::String& name, Actor* filter)

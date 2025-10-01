@@ -25,15 +25,15 @@ public:
 	void UnfocusEditorElements();
 
 	// Adds an empty EditorElement.
-	void AddEditorElement();
+	EditorElement* AddEditorElement();
 
 	/// <summary>
 	/// Adds an EditorElement with copied values from actor.
 	/// Useful when Stopping a scene on FTEditor.
 	/// </summary>
 	/// <param name="actor : ">Actor to copy values from.</param>
-	void AddEditorElement(Actor* actor);
-	void AddEditorElement(EditorElement* element);
+	EditorElement* AddEditorElement(Actor* actor);
+	EditorElement* AddEditorElement(EditorElement* element);
 
 	EditorElement* FindEditorElement(FTDS::String& name, Actor* filter);
 	EditorElement* FindEditorElement(const char* name, Actor* filter);

@@ -29,6 +29,7 @@
 #include "ResourceSystem/FTPremade.h"
 
 #include "Static/FTString.h"
+#include "Utils/UUIDGenerator.h"
 
 void EditorElement::UpdateUI(bool isPremade)
 {
@@ -55,7 +56,6 @@ void EditorElement::UpdateUI(bool isPremade)
 			if (!isPremade)
 				UpdateMakePremade();
 
-			UpdateAddPremade();
 			ImGui::EndTabBar();
 		}
 		ImGui::EndChild();
@@ -92,10 +92,8 @@ void EditorElement::SetIsDisplayed(bool isDisplayed)
 	mIsDisplayed = isDisplayed;
 }
 
-void EditorElement::Initialize(FTCore* coreInst)
+void EditorElement::Setup()
 {
-	Actor::Initialize(coreInst);
-
 	EditorElement* buf	 = this;
 	size_t		   level = 0;
 	while (buf)
@@ -106,6 +104,8 @@ void EditorElement::Initialize(FTCore* coreInst)
 		++level;
 	}
 	mHierarchyLevel = level;
+
+	Actor::Setup();
 }
 
 void EditorElement::EditorUpdate(float deltaTime)
@@ -132,36 +132,51 @@ void EditorElement::EditorRender(FoxtrotRenderer* renderer)
 	}
 }
 
-EditorElement::EditorElement()
-	: Actor()
+EditorElement::EditorElement(int id)
+	: Actor(id)
 	, mIsFocused(false)
 	, mHierarchyLevel(0)
 	, mIsDisplayed(false)
 {
 }
 
-EditorElement::EditorElement(Actor* actor)
-	: Actor(actor)
+EditorElement::EditorElement(Actor* actor, int id)
+	: Actor(actor, id)
 	, mIsFocused(false)
 	, mHierarchyLevel(0)
 	, mIsDisplayed(false)
 {
 }
 
-EditorElement::EditorElement(Actor* actor, bool deepCpyChild)
-	: Actor(actor, deepCpyChild)
+EditorElement::EditorElement(Actor* actor, int id, bool deepCpyChild)
+	: Actor(actor, id, deepCpyChild)
 	, mIsFocused(false)
 	, mHierarchyLevel(0)
 	, mIsDisplayed(false)
 {
 }
 
-EditorElement::EditorElement(FTPremade* premade)
-	: Actor(premade)
+EditorElement::EditorElement(FTPremade* premade, int id)
+	: Actor(premade, id)
 	, mIsFocused(false)
 	, mHierarchyLevel(0)
 	, mIsDisplayed(false)
 {
+}
+
+void EditorElement::CopyChildObjectFrom(Actor* actor)
+{
+	if (GetChildActors().GetSize() < 1)
+		return;
+
+	actor->GetChildActors().IterateArray([&](Actor* child) {
+		if (child)
+		{
+			EditorChunkLoader::GetInstance()->AddMaxActorID();
+			int maxID = EditorChunkLoader::GetInstance()->GetMaxActorID();
+			this->AddChild(DBG_NEW Actor(child, maxID));
+		}
+	});
 }
 
 void EditorElement::UpdateActorName()
@@ -256,20 +271,5 @@ void EditorElement::UpdateMakePremade()
 	{
 		bool confirmed = false;
 		EditorLayer::GetInstance()->SetInfoType(InfoType::PremadeIsCreated);
-	}
-}
-
-void EditorElement::UpdateAddPremade()
-{
-	FTPremade* premade = nullptr;
-	FTEditorUtils::DisplayResSelection(
-		"Add Child Premade",
-		ResourceManager::GetInstance()->GetPremades(),
-		premade);
-
-	if (premade)
-	{
-		AddChild(premade->GetOrigin());
-		premade		  = nullptr;
 	}
 }

@@ -95,6 +95,12 @@ Component::~Component()
 {
 }
 
+void Component::Copy(Component* to)
+{
+	to->mOwner = this->mOwner;
+	to->mUpdateOrder = this->mUpdateOrder;
+}
+
 void Component::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::SaveBool(ofs, ChunkKey::IS_ACTIVE, mIsActive);

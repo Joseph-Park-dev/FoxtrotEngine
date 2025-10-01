@@ -63,6 +63,10 @@ public:
 
 	FTDS::String& CurrentChunk();
 
+	const int GetMaxActorID() const;
+	// Add actor count by 1.
+	void AddMaxActorID();
+
 protected:
 	// Save .Chunk for the editor
 	void SaveChunkData(std::ofstream& out);
@@ -78,7 +82,8 @@ private:
 	bool			 mIsLoading;
 
 	// Name of the copied .chunk file.
-	FTDS::String	 mCurrentChunkCopy;
+	FTDS::String mCurrentChunkCopy;
+	int			 mMaxActorID;
 };
 
 namespace ChunkKey

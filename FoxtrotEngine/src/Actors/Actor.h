@@ -41,27 +41,27 @@ public:
 	/// <summary>
 	/// Creates an empty Actor with zero-initialized values, but doesn't add it to the Scene.
 	/// </summary>
-	Actor();
+	Actor(int id);
 
 	/// <summary>
 	/// Copy constructors that adds a deep-copied Actor to the scene.
 	/// </summary>
 	/// <param name="actor : "> Actor being copied.</param>
-	Actor(Actor* actor);
+	Actor(Actor* actor, int id);
 
 	/// <summary>
 	/// Copy constructors controlling if the object is deep copied.
 	/// </summary>
 	/// <param name="actor">Actor being copied.</param>
 	/// <param name="deepCpy">Perform deep copy through child Actors?</param>
-	Actor(Actor* actor, bool deepCpyChild);
+	Actor(Actor* actor, int id, bool deepCpyChild);
 
 	/// <summary>
 	/// Copies the origin from the FTPremade into this object, adding it to the scene
 	/// </summary>
 	/// <param name="premade : ">Premade to copy origin from.</param>
 	/// <param name="scene : ">A scene object to add this object to.</param>
-	Actor(FTPremade* premade);
+	Actor(FTPremade* premade, int id);
 
 	virtual ~Actor();
 
@@ -88,7 +88,7 @@ public:
 	void CopyComponentsFrom(Actor* actor);
 
 	// Deep copies all child Actors
-	void CopyChildObjectFrom(Actor* actor);
+	virtual void CopyChildObjectFrom(Actor* actor);
 
 	// Shallow copies all child Actors.
 	void RefChildObjectFrom(Actor* actor);
@@ -100,6 +100,7 @@ public:
 	ActorGroup*						GetActorGroupPtr() { return &mActorGroup; }
 	FTDS::String					GetName() { return mName; }
 	FTDS::String&					GetNameRef() { return mName; }
+	const int						GetID() const { return mID; }
 	State							GetState() const { return mState; }
 	FTDS::String					GetStateStr() const;
 	State&							GetStateRef() { return mState; }
@@ -152,6 +153,7 @@ public:
 
 private:
 	FTDS::String				   mName;
+	int							   mID;
 	ActorGroup					   mActorGroup;
 	State						   mState;
 	Transform*					   mTransform;
@@ -174,5 +176,17 @@ namespace ChunkKey
 	constexpr const char* DRAW_ORDER = "Draw Order";
 	constexpr const char* STATE		 = "State";
 	constexpr const char* PARENT	 = "Parent";
-	constexpr const char* CHILD		 = "Child";
+	constexpr const char* CHILD		 = "Child List";
+
+	namespace ID
+	{
+		// ID for invalid, or temporary object
+		constexpr int INVALID = -1;
+
+		// ID for cloned object (instantiated object)
+		constexpr int CLONE = 0;
+		
+		// ID for chunk title.
+		constexpr const char* ID = "ID";
+	} // namespace ID
 } // namespace ChunkKey

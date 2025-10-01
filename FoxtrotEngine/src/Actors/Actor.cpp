@@ -28,14 +28,17 @@
 
 #include "Compare/StringEqual.h"
 #include "Dynamic/DynamicArray.h"
+#include "Static/FTString.h"
+#include "Utils/UUIDGenerator.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorElement.h"
 	#include "EditorSceneManager.h"
 #endif // FOXTROT_EDITOR
 
-Actor::Actor()
+Actor::Actor(int id)
 	: mName("New Empty Actor")
+	, mID(id)
 	, mActorGroup(ActorGroup::DEFAULT)
 	, mState(State::EActive)
 	, mTransform(DBG_NEW Transform(this))
@@ -44,11 +47,12 @@ Actor::Actor()
 	, mChild()
 	, mDrawOrder(0)
 {
-	// THIS BLOCK SHOULD BE REMAINED EMPTY;
+	// This block should remain as empty.
 }
 
-Actor::Actor(Actor* actor)
+Actor::Actor(Actor* actor, int id)
 	: mName("New Copied Actor")
+	, mID(id)
 	, mActorGroup(actor->mActorGroup)
 	, mState(EActive)
 	, mTransform(DBG_NEW Transform(this))
@@ -60,12 +64,15 @@ Actor::Actor(Actor* actor)
 	mName.Assign(actor->GetNameRef());
 
 	CopyChildObjectFrom(actor);
+	if (actor->mParent)
+		SetParent(actor->mParent);
 	CopyTransformFrom(actor);
 	CopyComponentsFrom(actor);
 }
 
-Actor::Actor(Actor* actor, bool deepCpyChild)
+Actor::Actor(Actor* actor, int id, bool deepCpyChild)
 	: mName("New Copied Actor")
+	, mID(id)
 	, mActorGroup(actor->mActorGroup)
 	, mState(EActive)
 	, mTransform(DBG_NEW Transform(this))
@@ -85,8 +92,8 @@ Actor::Actor(Actor* actor, bool deepCpyChild)
 	CopyComponentsFrom(actor);
 }
 
-Actor::Actor(FTPremade* premade)
-	: Actor(premade->GetOrigin())
+Actor::Actor(FTPremade* premade, int id)
+	: Actor(premade->GetOrigin(), id)
 {
 	this->mName += " Copy";
 }
@@ -129,13 +136,17 @@ void Actor::CopyChildObjectFrom(Actor* actor)
 
 	actor->GetChildActors().IterateArray([&](Actor* child) {
 		if (child)
-			this->AddChild(DBG_NEW Actor(child));
+		{
+			ChunkLoader::GetInstance()->AddMaxActorID();
+			int maxID = ChunkLoader::GetInstance()->GetMaxActorID();
+			this->AddChild(DBG_NEW Actor(child, maxID));
+		}
 	});
 }
 
 void Actor::RefChildObjectFrom(Actor* actor)
 {
-	if (GetChildActors().GetSize() < 1)
+	if (actor->GetChildActors().GetSize() < 1)
 		return;
 
 	actor->GetChildActors().IterateArray([&](Actor* child) {
@@ -145,28 +156,19 @@ void Actor::RefChildObjectFrom(Actor* actor)
 
 void Actor::Initialize(FTCore* coreInst)
 {
-	for (auto pending = mChild.Begin(); pending != mChild.End(); ++pending)
-	{
-		if (!(*pending))
-			continue;
+	if (mComponents.GetSize() < 1)
+		return;
 
-		Actor* child = FIND_ACTOR((*pending)->GetNameRef(), *pending);
-		// Distinguish if the Actor is a valid pointer.
-		RemoveChild(*pending);
-		delete *pending;
-		pending = nullptr;
-		this->AddChild(child); // This also adds this object as the parent to child.
-	}
-
-	mTransform->SetOwner(this);
-
-	for (size_t i = 0; i < mComponents.GetSize(); ++i)
-		if (!mComponents[i]->GetIsInitialized())
-			mComponents[i]->Initialize(coreInst);
+	for (auto comp = mComponents.Begin(); comp != mComponents.End(); ++comp)
+		if (!(*comp)->GetIsSetup())
+			(*comp)->Initialize(coreInst);
 }
 
 void Actor::Setup()
 {
+	if (mComponents.GetSize() < 1)
+		return;
+
 	for (auto comp = mComponents.Begin(); comp != mComponents.End(); ++comp)
 		if (!(*comp)->GetIsSetup())
 			(*comp)->Setup();
@@ -239,13 +241,15 @@ void Actor::RemoveChild(Actor* child)
 		return;
 
 	mChild.Erase(pos);
-	child->SetParent(child->mParent->mParent);
+
+	if (child->mParent->mParent)
+		child->SetParent(child->mParent->mParent);
 }
 
 void Actor::AddComponent(Component* component)
 {
-	int			updateOrder = component->GetUpdateOrder();
-	auto iter		= mComponents.Begin();
+	int	 updateOrder = component->GetUpdateOrder();
+	auto iter		 = mComponents.Begin();
 	for (; iter != mComponents.End(); ++iter)
 	{
 		if (!(*iter))
@@ -254,6 +258,7 @@ void Actor::AddComponent(Component* component)
 		if (updateOrder < (*iter)->GetUpdateOrder())
 			break;
 	}
+	size_t i = iter.IterPos();
 	mComponents.Insert(iter.IterPos(), component);
 }
 
@@ -309,19 +314,25 @@ void Actor::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::ACTOR_PROPERTIES);
 
 	FileIOHelper::SaveString(ofs, ChunkKey::NAME, GetNameRef());
+	FileIOHelper::SaveInt(ofs, ChunkKey::ID::ID, mID);
 	mTransform->SaveProperties(ofs);
 	FileIOHelper::SaveInt(ofs, ChunkKey::DRAW_ORDER, mDrawOrder);
 	FileIOHelper::SaveString(ofs, ChunkKey::ACTOR_GROUP, ActorGroupUtil::GetActorGroupStr(mActorGroup));
 	FileIOHelper::SaveInt(ofs, ChunkKey::STATE, mState);
 
 	if (mParent)
-		FileIOHelper::SaveString(ofs, ChunkKey::PARENT, mParent->GetNameRef());
+		FileIOHelper::SaveInt(ofs, ChunkKey::PARENT, mParent->GetID());
 	else
 		FileIOHelper::SaveString(ofs, ChunkKey::PARENT, ChunkKey::NullVal::NULL_OBJECT);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CHILD);
-	for (size_t i = 0; i < mChild.GetSize(); ++i)
-		FileIOHelper::SaveString(ofs, std::to_string(i).c_str(), mChild.At(i)->GetNameRef());
+
+	if (0 < mChild.GetSize())
+	{
+		for (size_t i = 0; i < mChild.GetSize(); ++i)
+			FileIOHelper::SaveInt(ofs, std::to_string(i).c_str(), mChild.At(i)->GetID());
+	}
+
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CHILD);
 
 	// Changing the call location of Transform is NOT recommended
@@ -348,25 +359,26 @@ void Actor::LoadProperties(std::ifstream& ifs)
 
 	// Load dummy child Actors which only stores their names.
 	size_t childCount = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CHILD).first;
-	for (size_t i = 0; i < childCount; ++i)
+
+	if (0 < childCount)
 	{
-		FTDS::String childName;
-		FileIOHelper::LoadBasicString(ifs, childName);
-		if (childName.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
+		for (size_t i = 0; i < childCount; ++i)
 		{
-			Actor* pending = DBG_NEW Actor;
-			pending->SetName(childName);
+			int id = ChunkKey::ID::INVALID;
+			FileIOHelper::LoadInt(ifs, id);
+
+			Actor* pending = DBG_NEW Actor(id);
 			AddChild(pending);
 		}
 	}
 
 	// Load dummmy parent Actors which only stores their names.
-	FTDS::String parentName;
-	FileIOHelper::LoadBasicString(ifs, parentName);
-	if (parentName.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
+	FTDS::String parentID;
+	FileIOHelper::LoadBasicString(ifs, parentID);
+	if (parentID.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 	{
-		Actor* pending = DBG_NEW Actor;
-		pending->SetName(parentName);
+		int	   id	   = std::stoi(parentID.C_Str());
+		Actor* pending = DBG_NEW Actor(id);
 		SetParent(pending);
 	}
 
@@ -385,6 +397,9 @@ void Actor::LoadProperties(std::ifstream& ifs)
 
 	// Load Transform
 	mTransform->LoadProperties(ifs);
+
+	// Load int
+	FileIOHelper::LoadInt(ifs, mID);
 
 	// Load Actor name
 	FileIOHelper::LoadBasicString(ifs, mName);

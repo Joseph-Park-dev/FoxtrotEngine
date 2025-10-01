@@ -51,14 +51,6 @@ public:
 	std::vector<Actor*>* GetActors() {
 		return mActors;
 	}
-	size_t GetActorCount()
-	{
-		size_t size = 0;
-		for (size_t i = 0; i < size_t(ActorGroup::END); ++i) {
-			size += GetActorGroup(i).size();
-		}
-		return size;
-	};
 
 	void SetName(const std::wstring& name) { mSceneName = name; }
 	void SetIsUpdatingActors(bool value){ mIsUpdatingActors = value; }

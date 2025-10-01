@@ -263,6 +263,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\CharacterMovement\HumanoidMove.cpp" />
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\CharacterMovement\InputMove.cpp" />
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\CharacterMovement\Move.cpp" />
     <ClCompile Include="src\Components\SpineAnimator.cpp" />
     <ClCompile Include="src\ResourceSystem\GenericData\FTText.cpp" />
     <ClCompile Include="include\spine-cpp\src\spine\Animation.cpp" />
@@ -366,9 +369,7 @@
     <ClCompile Include="src\Components\CharacterAI\AgentBehavior.cpp" />
     <ClCompile Include="src\Components\CircleCollider2D.cpp" />
     <ClCompile Include="src\Components\Collider2D.cpp" />
-    <ClCompile Include="src\Components\InputMove.cpp" />
     <ClCompile Include="src\Components\MeshRenderer.cpp" />
-    <ClCompile Include="src\Components\Move.cpp" />
     <ClCompile Include="src\Components\Rigidbody2D.cpp" />
     <ClCompile Include="src\Components\SpriteRenderer.cpp" />
     <ClCompile Include="src\Components\TileMapRenderer.cpp" />
@@ -1126,9 +1127,7 @@
     <ClInclude Include="src\Components\CharacterAI\Steering.h" />
     <ClInclude Include="src\Components\CircleCollider2D.h" />
     <ClInclude Include="src\Components\Collider2D.h" />
-    <ClInclude Include="src\Components\InputMove.h" />
     <ClInclude Include="src\Components\MeshRenderer.h" />
-    <ClInclude Include="src\Components\Move.h" />
     <ClInclude Include="src\Components\Rigidbody2D.h" />
     <ClInclude Include="src\Components\SpriteRenderer.h" />
     <ClInclude Include="src\Components\TileMapRenderer.h" />

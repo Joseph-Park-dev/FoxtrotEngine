@@ -155,8 +155,9 @@ HRESULT FTMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 void FTMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, Transform* transform, Camera* camInst, FTMaterial* mat)
 {
 	// Model Transformation
-	mDirection += transform->GetSteering()->Linear.x;
-	Math::Clamp(mDirection, -1, 1);
+	int dir = transform->GetSteering()->Linear.x;
+	if (dir != 0)
+		mDirection = dir;
 
 	FTVector3 scale		   = transform->GetWorldScale();
 	FTVector3 scaleWithDir = FTVector3(scale.x * mDirection, scale.y, scale.z);

@@ -327,8 +327,7 @@ void EditorResourceManager::UpdateUI()
 		EditorSceneManager::GetInstance()->DeleteAll();
 		ResourceManager::GetInstance()->DeleteAll();
 		LoadAllResourcesInAsset();
-		FTDS::String currentChunk = EditorChunkLoader::GetInstance()->CurrentChunk();
-		EditorChunkLoader::GetInstance()->LoadChunk(currentChunk);
+		EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
 	}
 
 	DisplayLoadedResources<FTTexture>("Textures", GetTextures());

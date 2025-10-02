@@ -107,7 +107,10 @@ Actor::~Actor()
 	}
 
 	for (size_t i = 0; i < mComponents.Size(); ++i)
+	{
 		delete mComponents[i];
+		mComponents[i] = nullptr;
+	}
 	mComponents.Clear();
 
 	mChild.Clear();
@@ -160,7 +163,7 @@ void Actor::Initialize(FTCore* coreInst)
 		return;
 
 	for (auto comp = mComponents.Begin(); comp != mComponents.End(); ++comp)
-		if (!(*comp)->GetIsSetup())
+		if (!(*comp)->GetIsInitialized())
 			(*comp)->Initialize(coreInst);
 }
 
@@ -268,8 +271,9 @@ void Actor::RemoveComponent(Component* component)
 	if (pos == -1)
 		return;
 
-	delete component;
 	mComponents.Erase(pos);
+	delete component;
+	component = nullptr;
 }
 
 void Actor::RemoveAllComponents()

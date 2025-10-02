@@ -125,7 +125,6 @@ void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
 	for (EditorElement* element : scene->GetEditorElements())
 		actorWithIDs.Insert(element->GetID(), element);
 
-
 	for (EditorElement* element : scene->GetEditorElements())
 	{
 		if (element->GetParent())
@@ -138,12 +137,17 @@ void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
 
 		if (0 < element->GetChildActors().GetSize())
 		{
+			FTDS::DynamicArray<Actor*> children;
+
 			element->GetChildActors().IterateArray([&](Actor* c) {
 				Actor* child = actorWithIDs.At(c->GetID())->Value();
 				element->RemoveChild(c);
 				delete c;
-				element->AddChild(child);
+				c = nullptr;
+				children.PushBack(child);
 			});
+			element->GetChildActors().Clear();
+			element->GetChildActors().Copy(children);
 		}
 	}
 

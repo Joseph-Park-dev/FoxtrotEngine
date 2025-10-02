@@ -21,8 +21,8 @@ namespace FTDS
 		TYPE& operator[](int idx) { return mData[idx]; }
 
 	public:
-		FTDS::FTIteratorArray<TYPE> Begin() { return FTDS::FTIteratorArray<TYPE>(mData); }
-		FTDS::FTIteratorArray<TYPE> End() { return FTDS::FTIteratorArray<TYPE>(&mData[mCapacity]); }
+		virtual FTDS::FTIteratorArray<TYPE> Begin() { return FTDS::FTIteratorArray<TYPE>(mData); }
+		virtual FTDS::FTIteratorArray<TYPE> End() { return FTDS::FTIteratorArray<TYPE>(&mData[mCapacity]); }
 
 		// It is recommended to put null check to mPtr.
 		template <class Func>
@@ -84,7 +84,8 @@ namespace FTDS
 				size_t newCap = mCapacity;
 				mCapacity	  = 0;
 
-				free(mData);
+				if (mData)
+					free(mData);
 				mData = nullptr;
 				AllocateMem(newCap);
 			}

@@ -130,10 +130,9 @@ public:
 	{
 		for (auto iter = mComponents.Begin(); iter != mComponents.End(); ++iter)
 		{
-			if (typeid(*iter) == typeid(T))
-			{
-				return static_cast<T*>(*iter);
-			}
+			T* comp = dynamic_cast<T*>(*iter);
+			if (comp)
+				return comp;
 		}
 		return nullptr;
 	};

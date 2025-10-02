@@ -591,9 +591,12 @@ void EditorLayer::DisplayInfoMessage()
 				FTDS::String name = mFocusedEditorElement->GetName();
 				name.Append(FileTypes::PREMADE);
 
+				FTDS::String  path = ResourceManager::GetInstance()->GetPathToAsset().C_Str();
+				path.Append(name);
+
 				FTResourceDef resDef{
 					name.C_Str(),
-					ResourceManager::GetInstance()->GetPathToAsset().C_Str()
+					path.C_Str()
 				};
 
 				FTPremade* newPremade = DBG_NEW FTPremade(resDef);
@@ -604,7 +607,9 @@ void EditorLayer::DisplayInfoMessage()
 			if (mFocusedEditorElement)
 			{
 				FTDS::String msg;
-				msg.Assign("Create Premade with name : ", mFocusedEditorElement->GetName().C_Str(), "?");
+				msg.Assign("Create Premade with name : ");
+				msg.Append(mFocusedEditorElement->GetName().C_Str());
+				msg.Append("?");
 				PopUpInfo("Create Premade", msg.C_Str(), onConfirm);
 			}
 		}

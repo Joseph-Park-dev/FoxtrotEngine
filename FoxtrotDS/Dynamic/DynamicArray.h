@@ -8,6 +8,10 @@ namespace FTDS
 		public FTDS::Array<TYPE>
 	{
 	public:
+		FTDS::FTIteratorArray<TYPE> Begin() override { return FTDS::FTIteratorArray<TYPE>(this->mData); }
+		FTDS::FTIteratorArray<TYPE> End() override { return FTDS::FTIteratorArray<TYPE>(&this->mData[mSize]); }
+
+	public:
 		template <class Func>
 		void IterateArray(Func&& unaryOp)
 		{
@@ -26,6 +30,16 @@ namespace FTDS
 
 			// Assign the value.
 			this->mData[mSize - 1] = value;
+		}
+
+		void Copy(FTDS::DynamicArray<TYPE>& from)
+		{
+			this->Reserve(from.GetSize());
+
+			size_t copySize = sizeof(TYPE) * from.GetSize();
+			memcpy_s(this->mData, copySize, from.mData, copySize);
+
+			this->mSize = from.GetSize();
 		}
 
 		void Insert(size_t pos, TYPE value)
@@ -58,11 +72,11 @@ namespace FTDS
 			if (mSize < (this->mCapacity / 2))
 				this->AllocateMem(this->mCapacity / 2);
 
+			--mSize;
 			size_t copiedCount = mSize - pos;
 			size_t copiedSize  = sizeof(TYPE) * copiedCount;
 			memcpy_s(&this->mData[pos], copiedSize, &this->mData[pos + 1], copiedSize);
 			this->mData[mSize] = NULL;
-			--mSize;
 		}
 
 		void PopBack()

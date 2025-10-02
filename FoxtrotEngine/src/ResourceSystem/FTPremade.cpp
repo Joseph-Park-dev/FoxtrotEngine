@@ -92,9 +92,10 @@ void FTPremade::Process()
 	if (IsProcessed())
 		return;
 
-	this->Load();
-	// All loaded premades are included as default.
+	if (std::filesystem::exists(GetRelativePath().C_Str()))
+		this->Load();
 
+	// All loaded premades are included as default.
 	FTResource::Process();
 }
 
@@ -104,8 +105,6 @@ void FTPremade::Create(EditorElement* ele)
 	assert(!GetRelativePath().IsEmpty());
 
 	FTDS::String path = GetRelativePath();
-	path.Append(GetFileName());
-
 	std::ofstream ofs(path.C_Str());
 	if (ofs)
 	{

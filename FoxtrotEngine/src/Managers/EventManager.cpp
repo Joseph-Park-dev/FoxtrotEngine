@@ -45,7 +45,7 @@ void EventManager::Execute(const FTEvent& executedEvent)
 #else
 		Actor* created = static_cast<Actor*>(executedEvent.eventData.at(0));
 		Scene* scene = SceneManager::GetInstance()->GetCurrentScene();
-		scene->AddActor(created, created->GetActorGroup());
+		scene->AddActor(created);
 #endif
 	}
 	break;

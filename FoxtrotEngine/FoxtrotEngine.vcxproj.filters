@@ -198,9 +198,6 @@
     <ClCompile Include="src\ResourceSystem\FTShaders\FTPixelShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTShaders\StandardPS.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\ResourceSystem\FTMaterials\StandardMaterial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -448,12 +445,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Components\SpineAnimator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\SpriteSheets\FTSpriteSheet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\SpriteSheets\FTSpriteSheet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\CharacterMovement\HumanoidMove.cpp">
@@ -1937,9 +1928,6 @@
     <ClInclude Include="src\ResourceSystem\FTShaders\FTPixelShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTShaders\StandardPS.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\ResourceSystem\FTMaterials\StandardMaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2772,12 +2760,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Components\SpineAnimator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\SpriteSheets\FTSpriteSheet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\SpriteSheets\FTSpriteSheet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\json\include\nlohmann\detail\conversions\from_json.hpp">

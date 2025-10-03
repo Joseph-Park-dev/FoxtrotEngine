@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -26,7 +26,7 @@ class FoxtrotRenderer;
 class Scene
 {
 public:
-	void AddActor(Actor* actor, ActorGroup group);
+	void AddActor(Actor* actor);
 	void RemoveActor(Actor* actor);
 
 	/// <summary>
@@ -39,37 +39,29 @@ public:
 	Actor* FindActor(const char* name, Actor* filter = nullptr);
 
 public:
-	const std::wstring&  GetName() { return mSceneName; }
-	std::vector<Actor*>& GetActorGroup(ActorGroup group)
-	{
-		return mActors[(size_t)group];
-	};
-	std::vector<Actor*>& GetActorGroup(size_t group)
-	{
-		return mActors[group];
-	};
-	std::vector<Actor*>* GetActors() {
-		return mActors;
-	}
+	const std::wstring&				  GetName() { return mSceneName; }
+	const FTDS::DynamicArray<Actor*>* GetActors() const;
 
 	void SetName(const std::wstring& name) { mSceneName = name; }
-	void SetIsUpdatingActors(bool value){ mIsUpdatingActors = value; }
+	void SetIsUpdatingActors(bool value) { mIsUpdatingActors = value; }
+
+	FTDS::DynamicArray<Actor*>*& Actors();
 
 public:
-	void Initialize(FTCore* coreInst);
+	void		 Initialize(FTCore* coreInst);
 	virtual void Setup();
 	virtual void ProcessInput(FTInputDevice* inputDevice);
 	virtual void Update(float deltaTime);
 	virtual void LateUpdate(float deltaTime);
 	virtual void Render(FoxtrotRenderer* renderer);
-			void ProcessEvent();
+	void		 ProcessEvent();
 	virtual void DeleteAll();
 
 private:
-	std::vector<Actor*> mActors[(size_t)ActorGroup::END];
-	std::vector<Actor*> mPendingActors[(size_t)ActorGroup::END];
-	std::wstring		mSceneName;
-	bool				mIsUpdatingActors;
+	FTDS::DynamicArray<Actor*>* mActors;
+	FTDS::DynamicArray<Actor*>* mPendingActors;
+	std::wstring				mSceneName;
+	bool						mIsUpdatingActors;
 
 public:
 	Scene();
@@ -78,8 +70,6 @@ public:
 private:
 	void AddPendingActors();
 	void ClearDeadActors();
-	void DeleteGroup(ActorGroup group);
-	void DeletePendingGroup(ActorGroup group);
 
 	friend class EventManager;
 };

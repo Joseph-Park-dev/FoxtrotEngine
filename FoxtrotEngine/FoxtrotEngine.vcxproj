@@ -262,9 +262,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\CharacterMovement\HumanoidMove.cpp" />
-    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\CharacterMovement\InputMove.cpp" />
-    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\CharacterMovement\Move.cpp" />
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\CharacterMovement\HumanoidMove.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\CharacterMovement\InputMove.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\CharacterMovement\Move.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\Components\SpineAnimator.cpp" />
     <ClCompile Include="src\ResourceSystem\GenericData\FTText.cpp" />
     <ClCompile Include="include\spine-cpp\src\spine\Animation.cpp" />
@@ -345,7 +351,6 @@
     <ClCompile Include="src\ResourceSystem\GenericData\FTCSV.cpp" />
     <ClCompile Include="src\ResourceSystem\Animation\AnimationFrame.cpp" />
     <ClCompile Include="src\Managers\AnimationManager.cpp" />
-    <ClCompile Include="src\ResourceSystem\SpriteSheets\FTSpriteSheet.cpp" />
     <ClCompile Include="src\WindowSystem\FTWindow.cpp" />
     <ClCompile Include="src\ResourceSystem\FTCubemap\FTCubemap.cpp" />
     <ClCompile Include="src\ResourceSystem\FTShaders\FTPixelShader.cpp" />
@@ -412,7 +417,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
       </ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTShaders\StandardPS.cpp" />
     <ClCompile Include="src\ResourceSystem\FTMaterials\StandardMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -737,7 +741,6 @@
     <ClInclude Include="src\ResourceSystem\GenericData\FTCSV.h" />
     <ClInclude Include="src\ResourceSystem\Animation\AnimationFrame.h" />
     <ClInclude Include="src\Managers\AnimationManager.h" />
-    <ClInclude Include="src\ResourceSystem\SpriteSheets\FTSpriteSheet.h" />
     <ClInclude Include="src\WindowSystem\FTWindow.h" />
     <ClInclude Include="src\ResourceSystem\FTCubemap\FTCubemap.h" />
     <ClInclude Include="src\ResourceSystem\FTShaders\FTPixelShader.h" />
@@ -1233,7 +1236,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
       </ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTShaders\StandardPS.h" />
     <ClInclude Include="src\ResourceSystem\FTMaterials\StandardMaterial.h" />
   </ItemGroup>
   <ItemGroup>

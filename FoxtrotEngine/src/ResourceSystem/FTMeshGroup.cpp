@@ -93,8 +93,7 @@ FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTMes
 {
 	if (!meshData)
 	{
-		Debug::LogError(__LINE__, __FILE__, 
-			"MeshData is null. If this is called while initializing FTSpineAnimation, it is OK");
+		Debug::LogError(__LINE__, __FILE__, "MeshData is null. If this is called while initializing FTSpineAnimation, it is OK");
 		return;
 	}
 	Process(renderer, meshData);
@@ -155,12 +154,14 @@ HRESULT FTMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 void FTMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, Transform* transform, Camera* camInst, FTMaterial* mat)
 {
 	// Model Transformation
-	int dir = transform->GetSteering()->Linear.x;
-	if (dir != 0)
-		mDirection = dir;
+	if (transform->GetSteering()->Linear.x != 0)
+		mDirection = transform->GetSteering()->Linear.x;
 
+	// Direction will be multiplied to scale.
+	// When mDirection is minus, such must be done only once as the character switches direction.
 	FTVector3 scale		   = transform->GetWorldScale();
-	FTVector3 scaleWithDir = FTVector3(scale.x * mDirection, scale.y, scale.z);
+	float	  scaleX	   = Math::Abs(scale.x);
+	FTVector3 scaleWithDir = FTVector3(scaleX * mDirection, scale.y, scale.z);
 	transform->SetWorldScale(scaleWithDir);
 	Matrix modelMat = transform->GetMatrixWorld();
 	modelMat *= Matrix::CreateScale(mSizeScale.GetDXVec3());

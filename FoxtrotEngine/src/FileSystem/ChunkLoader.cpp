@@ -81,10 +81,9 @@ void ChunkLoader::CopyChunk(FTDS::String& path)
 
 	// Copy the selected .chunk file to load into the game.
 	std::filesystem::copy_file(
-		original, 
-		copied, 
-		std::filesystem::copy_options::overwrite_existing
-	);
+		original,
+		copied,
+		std::filesystem::copy_options::overwrite_existing);
 
 	// Assign the copied file name as current.
 	mCurrentChunkCopy.Assign(copiedPath);
@@ -133,20 +132,56 @@ void ChunkLoader::SaveActorsData(std::ofstream& out)
 
 void ChunkLoader::LoadActorsData(std::ifstream& ifs)
 {
-	std::pair<size_t, FTDS::String>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
+	Scene*							  scene = SceneManager::GetInstance()->GetCurrentScene();
+	std::pair<size_t, FTDS::String>&& pack	= FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
+	std::vector<Actor*>				  actorBuf;
+
 	for (size_t i = 0; i < pack.first; ++i)
 	{
 		std::pair<size_t, FTDS::String>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
-
-		Actor* actor = DBG_NEW Actor(ChunkKey::ID::INVALID);
+		Actor* actor								= DBG_NEW Actor(ChunkKey::ID::INVALID);
 		actor->LoadProperties(ifs);
 		actor->LoadComponents(ifs);
-		actor->Initialize(FTCore::GetInstance());
-		actor->Setup();
+		scene->AddActor(actor);
 
-		Scene* scene = SceneManager::GetInstance()->GetCurrentScene();
-		scene->AddActor(actor, actor->GetActorGroup());
+		AddMaxActorID();
 	}
+
+	FTDS::HashMap<Actor*> actorWithIDs;
+	actorWithIDs.Reserve(scene->GetActors()->GetSize());
+
+	scene->Actors()->IterateArray([&](Actor* actor) {
+		actorWithIDs.Insert(actor->GetID(), actor);
+	});
+
+	for (auto iter = scene->Actors()->Begin(); iter != scene->Actors()->End(); ++iter)
+	{
+		if ((*iter)->GetParent())
+		{
+			Actor* parent = actorWithIDs.At((*iter)->GetParent()->GetID())->Value();
+			delete (*iter)->GetParent();
+			(*iter)->SetParent(nullptr);
+			(*iter)->SetParent(parent);
+		}
+
+		if (0 < (*iter)->GetChildActors().GetSize())
+		{
+			FTDS::DynamicArray<Actor*> children;
+
+			(*iter)->GetChildActors().IterateArray([&](Actor* c) {
+				Actor* child = actorWithIDs.At(c->GetID())->Value();
+				(*iter)->RemoveChild(c);
+				delete c;
+				c = nullptr;
+				children.PushBack(child);
+			});
+			(*iter)->GetChildActors().Clear();
+			(*iter)->GetChildActors().Copy(children);
+		}
+	}
+
+	scene->Initialize(FTCore::GetInstance());
+	scene->Setup();
 }
 
 void ChunkLoader::LoadChunkData(std::ifstream& ifs)
@@ -154,6 +189,9 @@ void ChunkLoader::LoadChunkData(std::ifstream& ifs)
 	int maxActor = 0;
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CHUNK_DATA);
 	FileIOHelper::LoadInt(ifs, maxActor);
+
+	Scene* scene = SceneManager::GetInstance()->GetCurrentScene();
+	scene->Actors()->Reserve(maxActor);
 }
 
 ChunkLoader::ChunkLoader()

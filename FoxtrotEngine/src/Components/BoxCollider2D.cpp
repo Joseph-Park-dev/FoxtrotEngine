@@ -92,9 +92,7 @@ void BoxCollider2D::CloneTo(Actor* actor)
 BoxCollider2D::BoxCollider2D(Actor* owner, int updateOrder)
 	: Collider2D(owner, updateOrder)
 	, mSize(FTVector2(0.f, 0.f))
-#ifdef FOXTROT_EDITOR
 	, mDebugRect(nullptr)
-#endif
 {
 }
 
@@ -103,10 +101,9 @@ BoxCollider2D::~BoxCollider2D()
 	CollisionManager::GetInstance()->RemoveCollider(GetShapeID().index1);
 	if (b2Shape_IsValid(GetShapeID()))
 		b2DestroyShape(GetShapeID(), true);
-#ifdef FOXTROT_EDITOR
+
 	DebugShapes::GetInstance()->RemoveShape(mDebugRect);
 	mDebugRect = nullptr;
-#endif
 }
 
 void BoxCollider2D::UpdateDebugShape(Camera* camInst)

@@ -81,7 +81,6 @@ void EditorChunkLoader::LoadChunk(FTDS::String& fileName)
 	SoundManager::GetInstance()->LoadProperties(ifs);
 	LoadActorsData(ifs);
 
-	std::vector<EditorElement*>& elements = EditorSceneManager::GetInstance()->GetEditorScene()->GetEditorElements();
 	Camera::GetInstance()->LoadProperties(ifs);
 	Unlock();
 }

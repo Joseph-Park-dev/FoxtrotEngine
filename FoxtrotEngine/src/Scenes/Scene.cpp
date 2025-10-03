@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -21,34 +21,32 @@
 #include "Renderer/FoxtrotRenderer.h"
 
 #ifdef FOXTROT_EDITOR
-#include "EditorLayer.h"
+	#include "EditorLayer.h"
 #endif // FOXTROT_EDITOR
 
 Scene::Scene()
-	:mIsUpdatingActors(false)
-{}
+	: mIsUpdatingActors(false)
+	, mActors(DBG_NEW FTDS::DynamicArray<Actor*>)
+	, mPendingActors(DBG_NEW FTDS::DynamicArray<Actor*>)
+{
+}
 
 Scene::~Scene()
 {
 	DeleteAll();
+	delete mActors;
+	delete mPendingActors;
 }
 
 Actor* Scene::FindActor(FTDS::String& name, Actor* filter)
 {
-	for (size_t i = 0; i < (size_t)ActorGroup::END; ++i)
+	for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
 	{
-		std::vector<Actor*>& actors = GetActorGroup(i);
-		auto func = [&](Actor* actor)
-			{
-				if (filter)
-					return actor->HasName(name) && actor != filter;
-				else
-					return actor->HasName(name);
-			};
-
-		auto iter = std::find_if(actors.begin(), actors.end(), func);
-		if (iter != actors.end())
-			return *iter;
+		if ((*iter)->GetName().Equal(name.C_Str()))
+			if ((*iter) != filter)
+				return (*iter);
+			else
+				continue;
 		else
 			continue;
 	}
@@ -61,58 +59,44 @@ Actor* Scene::FindActor(const char* name, Actor* filter)
 	return FindActor(str, filter);
 }
 
+const FTDS::DynamicArray<Actor*>* Scene::GetActors() const
+{
+	return mActors;
+}
+
+FTDS::DynamicArray<Actor*>*& Scene::Actors()
+{
+	return mActors;
+}
+
 void Scene::Initialize(FTCore* coreInst)
 {
-	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
-	{
-		for (size_t j = 0; j < mActors[i].size(); ++j)
-		{
-			Actor* actor = mActors[i][j];
-			actor->Initialize(coreInst);
-		}
-	}
+	for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
+		(*iter)->Initialize(coreInst);
 }
 
 void Scene::Setup()
 {
-	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
-	{
-		for (size_t j = 0; j < mActors[i].size(); ++j)
-		{
-			Actor* actor = mActors[i][j];
-			if (actor->IsActive())
-				actor->Setup();
-		}
-	}
+	for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
+		(*iter)->Setup();
 }
 
 void Scene::ProcessInput(FTInputDevice* inputDevice)
 {
-	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
-	{
-		for (size_t j = 0; j < mActors[i].size(); ++j)
-		{
-			Actor* actor = mActors[i][j];
-			if (actor->IsActive())
-				actor->ProcessInput(inputDevice);
-		}
-	}
+	for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
+		if ((*iter)->IsActive())
+			(*iter)->ProcessInput(inputDevice);
 }
 
 void Scene::Update(float deltaTime)
 {
 	mIsUpdatingActors = true;
-	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
+	for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
 	{
-		for (size_t j = 0; j < mActors[i].size(); ++j)
+		if ((*iter)->IsActive())
 		{
-			Actor* actor = mActors[i][j];
-			if (actor->IsActive())
-			{
-				// The order of the Update functions should not be revised.
-				actor->UpdateComponents(deltaTime);
-				actor->UpdateActor(deltaTime);
-			}
+			(*iter)->UpdateComponents(deltaTime);
+			(*iter)->UpdateActor(deltaTime);
 		}
 	}
 	mIsUpdatingActors = false;
@@ -120,50 +104,42 @@ void Scene::Update(float deltaTime)
 
 void Scene::LateUpdate(float deltaTime)
 {
-	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
+	for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
 	{
-		for (size_t j = 0; j < mActors[i].size(); ++j)
+		if ((*iter)->IsActive())
 		{
-			Actor* actor = mActors[i][j];
-			if (actor->IsActive())
-			{
-				actor->LateUpdateComponents(deltaTime);
-				actor->LateUpdateActor(deltaTime);
-			}
+			(*iter)->LateUpdateComponents(deltaTime);
+			(*iter)->LateUpdateActor(deltaTime);
 		}
 	}
 }
 
 void Scene::Render(FoxtrotRenderer* renderer)
 {
-	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
+	for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
 	{
-		for (size_t j = 0; j < mActors[i].size(); ++j)
+		if ((*iter)->IsActive())
 		{
-			Actor* actor = mActors[i][j];
-			if (actor->IsActive())
-			{
-				actor->RenderComponents(renderer);
-				actor->RenderActor(renderer);
-			}
+			(*iter)->RenderComponents(renderer);
+			(*iter)->RenderActor(renderer);
 		}
 	}
 }
 
-void Scene::AddActor(Actor* actor, ActorGroup group)
+void Scene::AddActor(Actor* actor)
 {
 	if (mIsUpdatingActors)
-		mPendingActors[(UINT)group].emplace_back(actor);
+		mPendingActors->PushBack(actor);
 	else
 	{
 		int	 drawOrder = actor->GetDrawOrder();
-		auto iter	   = mActors[(UINT)group].begin();
-		for (; iter != mActors[(UINT)group].end(); ++iter)
+		auto iter	   = mActors->Begin();
+		for (; iter != mActors->End(); ++iter)
 		{
 			if (drawOrder < (*iter)->GetDrawOrder())
 				break;
 		}
-		mActors[(UINT)group].insert(iter, actor);
+		mActors->Insert(iter.IterPos(), actor);
 	}
 }
 
@@ -175,74 +151,52 @@ void Scene::ProcessEvent()
 
 void Scene::DeleteAll()
 {
-	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
+	for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
 	{
-		DeleteGroup((ActorGroup)i);
-		DeletePendingGroup((ActorGroup)i);
+		delete (*iter);
+		(*iter) = nullptr;
 	}
-}
 
-void Scene::DeleteGroup(ActorGroup group)
-{
-	for (Actor* actor : mActors[(UINT)group])
-		delete actor;
-	mActors[(UINT)group].clear();
-}
-
-void Scene::DeletePendingGroup(ActorGroup group)
-{
-	for (Actor* pending : mPendingActors[(UINT)group])
-		delete pending;
-	mPendingActors[(UINT)group].clear();
+	for (auto iter = mPendingActors->Begin(); iter != mPendingActors->End(); ++iter)
+	{
+		delete (*iter);
+		(*iter) = nullptr;
+	}
 }
 
 void Scene::AddPendingActors()
 {
-	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
+	for (auto iter = mPendingActors->Begin(); iter != mPendingActors->End(); ++iter)
 	{
-		for (size_t j = 0; j < mActors[i].size(); ++j)
-		{
-			for (auto pending : mPendingActors[i])
-			{
-				mActors[i].emplace_back(pending);
-			}
-			mPendingActors[i].clear();
-		}
+		mActors->PushBack(*iter);
+		mPendingActors->Clear();
 	}
 }
 
 void Scene::ClearDeadActors()
 {
-	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
+	for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
 	{
-		for (size_t j = 0; j < mActors[i].size(); ++j)
-		{
-			if (mActors[i][j]->IsDead())
-			{
-				RemoveActor(mActors[i][j]);
-			}
-		}
+		if ((*iter)->IsDead())
+			RemoveActor((*iter));
 	}
 }
 
 void Scene::RemoveActor(Actor* actor)
 {
-	for (size_t i = 0; i < ActorGroupUtil::GetCount(); ++i)
-	{
-		auto iter = std::find(mPendingActors[i].begin(), mPendingActors[i].end(), actor);
-		if (iter != mPendingActors[i].end())
-		{
-			std::iter_swap(iter, mPendingActors[i].end() - 1);
-			delete mPendingActors[i].back();
-			mPendingActors[i].pop_back();
-		}
+	int pos = -1;
 
-		iter = std::find(mActors[i].begin(), mActors[i].end(), actor);
-		if (iter != mActors[i].end())
-		{
-			std::iter_swap(iter, mActors[i].end() - 1);
-			delete mActors[i].back();
-			mActors[i].pop_back();
-		}
+	pos = mPendingActors->Find(actor);
+	if (pos != -1)
+	{
+		delete mPendingActors->At(pos);
+		mPendingActors->Erase(pos);
+	}
+
+	pos = mActors->Find(actor);
+	if (pos != -1)
+	{
+		delete mActors->At(pos);
+		mActors->Erase(pos);
 	}
 }

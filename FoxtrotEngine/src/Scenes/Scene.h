@@ -40,6 +40,7 @@ public:
 
 public:
 	const std::wstring&				  GetName() { return mSceneName; }
+	const bool						  GetIsUpdatingActors() const;
 	const FTDS::DynamicArray<Actor*>* GetActors() const;
 
 	void SetName(const std::wstring& name) { mSceneName = name; }

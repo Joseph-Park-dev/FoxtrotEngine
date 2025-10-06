@@ -23,80 +23,20 @@
 
 #include "Utils/UUIDGenerator.h"
 
-void EditorScene::Initialize(FTCore* coreInst)
-{
-	for (EditorElement* ele : mEditorElements)
-		ele->Initialize(coreInst);
-}
-
-void EditorScene::Setup()
-{
-	for (EditorElement* ele : mEditorElements)
-		if (ele->IsActive())
-			ele->Setup();
-}
-
-void EditorScene::ProcessInput(FTInputDevice* inputDevice)
-{
-	for (EditorElement* ele : mEditorElements)
-		if (ele->IsActive())
-			ele->ProcessInput(inputDevice);
-}
-
-void EditorScene::Update(float deltaTime)
-{
-	for (EditorElement* ele : mEditorElements)
-	{
-		if (ele->IsActive())
-		{
-			// The order of the Update functions should not be revised.
-			ele->UpdateComponents(deltaTime);
-			ele->UpdateActor(deltaTime);
-		}
-	}
-}
-
-void EditorScene::LateUpdate(float deltaTime)
-{
-	for (EditorElement* ele : mEditorElements)
-	{
-		if (ele->IsActive())
-		{
-			// The order of the Update functions should not be revised.
-			ele->LateUpdateComponents(deltaTime);
-			ele->LateUpdateActor(deltaTime);
-		}
-	}
-}
-
-void EditorScene::Render(FoxtrotRenderer* renderer)
-{
-	for (EditorElement* ele : mEditorElements)
-	{
-		if (ele->IsActive())
-		{
-			ele->RenderComponents(renderer);
-			ele->RenderActor(renderer);
-		}
-	}
-}
-
 void EditorScene::DeleteAll()
 {
 	UnfocusEditorElements();
-
-	for (EditorElement* ele : mEditorElements)
-	{
-		delete ele;
-		ele = nullptr;
-	}
-	mEditorElements.clear();
+	Scene::DeleteAll();
 }
 
 void EditorScene::UnfocusEditorElements()
 {
-	for (EditorElement* ele : mEditorElements)
+	if (!EditorLayer::GetInstance()->FocusedEditorElement())
+		return;
+
+	for (auto iter = Actors()->Begin(); iter != Actors()->End(); ++iter)
 	{
+		EditorElement* ele = static_cast<EditorElement*>((*iter));
 		if (ele->GetIsFocused())
 			ele->SetIsFocused(false);
 	}
@@ -110,11 +50,11 @@ EditorElement* EditorScene::AddEditorElement()
 	EditorElement* editorElement = DBG_NEW EditorElement(maxID);
 
 	FTDS::String& name = editorElement->GetNameRef();
-	name.Append(std::to_string(mEditorElements.size()).c_str());
+	name.Append(std::to_string(Actors()->GetSize()).c_str());
 
 	editorElement->SetIsFocused(true);
 
-	mEditorElements.emplace_back(editorElement);
+	AddActor(editorElement);
 	return editorElement;
 }
 
@@ -123,78 +63,37 @@ EditorElement* EditorScene::AddEditorElement(Actor* actor)
 	UnfocusEditorElements();
 
 	EditorElement* element = DBG_NEW EditorElement(actor, actor->GetID(), false);
-	AddEditorElement(element);
+	AddActor(element);
 	return element;
-}
-
-EditorElement* EditorScene::AddEditorElement(EditorElement* element)
-{
-	int	 drawOrder = element->GetDrawOrder();
-	auto iter	   = mEditorElements.begin();
-	for (; iter != mEditorElements.end(); ++iter)
-	{
-		if (drawOrder < (*iter)->GetDrawOrder())
-			break;
-	}
-	mEditorElements.insert(iter, element);
-	return element;
-}
-
-EditorElement* EditorScene::FindEditorElement(FTDS::String& name, Actor* filter)
-{
-	auto func = [&](EditorElement* actor) {
-		if (filter)
-			return actor->HasName(name) && actor != filter;
-		else
-			return actor->HasName(name);
-	};
-
-	auto iter = std::find_if(mEditorElements.begin(), mEditorElements.end(), func);
-	if (iter != mEditorElements.end())
-		return *iter;
-	return nullptr;
-}
-
-EditorElement* EditorScene::FindEditorElement(const char* name, Actor* filter)
-{
-	FTDS::String str(name);
-	return FindEditorElement(str, filter);
-}
-
-void EditorScene::RemoveEditorElement(EditorElement* element)
-{
-	auto iter = std::find(mEditorElements.begin(), mEditorElements.end(), element);
-	if (iter != mEditorElements.end())
-	{
-		delete *iter;
-		mEditorElements.erase(iter);
-	}
-}
-
-std::vector<EditorElement*>& EditorScene::GetEditorElements()
-{
-	return mEditorElements;
 }
 
 void EditorScene::EditorUpdate(float deltaTime)
 {
-	mIsUpdatingActors = true;
-	for (EditorElement* ele : mEditorElements)
+	SetIsUpdatingActors(true);
+
+	for (auto iter = Actors()->Begin(); iter != Actors()->End(); ++iter)
+	{
+		EditorElement* ele = static_cast<EditorElement*>((*iter));
 		ele->EditorUpdate(deltaTime);
-	mIsUpdatingActors = false;
+	}
+
+	SetIsUpdatingActors(false);
 }
 
 void EditorScene::EditorRender(FoxtrotRenderer* renderer)
 {
-	mIsUpdatingActors = true;
-	for (EditorElement* ele : mEditorElements)
+	SetIsUpdatingActors(true);
+
+	for (auto iter = Actors()->Begin(); iter != Actors()->End(); ++iter)
+	{
+		EditorElement* ele = static_cast<EditorElement*>((*iter));
 		ele->EditorRender(renderer);
-	mIsUpdatingActors = false;
+	}
+
+	SetIsUpdatingActors(false);
 }
 
 EditorScene::EditorScene()
-	: mIsUpdatingActors(false)
-	, mEditorElements()
 {
 }
 

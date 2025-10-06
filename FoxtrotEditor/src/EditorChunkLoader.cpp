@@ -91,8 +91,11 @@ void EditorChunkLoader::SaveActorsData(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::ACTOR_DATA);
 
 	// Actor's temp ID to be assigned as parent/Children.
-	for (EditorElement* element : scene->GetEditorElements())
+
+	FTDS::DynamicArray<Actor*>* actors = scene->Actors();
+	for (auto actor = actors->Begin(); actor != actors->End(); ++actor)
 	{
+		EditorElement* element = static_cast<EditorElement*>(*actor);
 		FileIOHelper::BeginDataPackSave(ofs, element->GetName());
 		element->SaveComponents(ofs);
 		element->SaveProperties(ofs);
@@ -115,38 +118,50 @@ void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
 		actor.LoadComponents(ifs);
 		EditorElement* element = scene->AddEditorElement(&actor);
 		element->GetTransform()->SetOwner(element);
-		
+
 		AddMaxActorID();
 	}
 
 	FTDS::HashMap<EditorElement*> actorWithIDs;
-	actorWithIDs.Reserve(scene->GetEditorElements().size());
-	for (EditorElement* element : scene->GetEditorElements())
-		actorWithIDs.Insert(element->GetID(), element);
+	actorWithIDs.Reserve(scene->Actors()->GetSize());
 
-	for (EditorElement* element : scene->GetEditorElements())
+	FTDS::DynamicArray<Actor*>* actors = scene->Actors();
+	for (auto actor = actors->Begin(); actor != actors->End(); ++actor)
 	{
-		if (element->GetParent())
+		if (*actor)
 		{
-			EditorElement* parent = actorWithIDs.At(element->GetParent()->GetID())->Value();
-			delete element->GetParent();
-			element->SetParent(nullptr);
-			element->SetParent(parent);
+			EditorElement* element = static_cast<EditorElement*>(*actor);
+			actorWithIDs.Insert(element->GetID(), element);
 		}
+	}
 
-		if (0 < element->GetChildActors().GetSize())
+	for (auto actor = actors->Begin(); actor != actors->End(); ++actor)
+	{
+		EditorElement* element = static_cast<EditorElement*>(*actor);
+		if (element)
 		{
-			FTDS::DynamicArray<Actor*> children;
+			if (element->GetParent())
+			{
+				EditorElement* parent = actorWithIDs.At(element->GetParent()->GetID())->Value();
+				delete element->GetParent();
+				element->SetParent(nullptr);
+				element->SetParent(parent);
+			}
 
-			element->GetChildActors().IterateArray([&](Actor* c) {
-				Actor* child = actorWithIDs.At(c->GetID())->Value();
-				element->RemoveChild(c);
-				delete c;
-				c = nullptr;
-				children.PushBack(child);
-			});
-			element->GetChildActors().Clear();
-			element->GetChildActors().Copy(children);
+			if (0 < element->GetChildActors().GetSize())
+			{
+				FTDS::DynamicArray<Actor*> children;
+
+				element->GetChildActors().IterateArray([&](Actor* c) {
+					Actor* child = actorWithIDs.At(c->GetID())->Value();
+					element->RemoveChild(c);
+					delete c;
+					c = nullptr;
+					children.PushBack(child);
+				});
+				element->GetChildActors().Clear();
+				element->GetChildActors().Copy(children);
+			}
 		}
 	}
 

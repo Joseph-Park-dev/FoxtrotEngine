@@ -11,6 +11,8 @@
 
 #include <Math/FTMath.h>
 
+#include <wrl.h>
+
 class FoxtrotRenderer;
 class FTCore;
 
@@ -52,8 +54,8 @@ protected:
 	virtual void Process(FoxtrotRenderer* renderer) override;
 
 private:
-	UINT							 mWidth;
-	UINT							 mHeight;
+	UINT											 mWidth;
+	UINT											 mHeight;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mSRV;
 
 #ifdef FOXTROT_EDITOR

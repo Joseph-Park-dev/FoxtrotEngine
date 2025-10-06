@@ -389,9 +389,11 @@ void EditorLayer::DisplayHierarchyMenu()
 		}
 		ImGui::EndListBox();
 
-		for (EditorElement* ele :
-			 EditorSceneManager::GetInstance()->GetEditorScene()->GetEditorElements())
+		EditorSceneManager::GetInstance()->GetEditorScene()->Actors()->IterateArray([&](Actor* actor) {
+			EditorElement* ele = static_cast<EditorElement*>(actor);
 			ele->SetIsDisplayed(false);
+
+		});
 	}
 
 	if (mDuplicateKeyPressed)
@@ -451,9 +453,6 @@ void EditorLayer::ProcessDropEvent(EditorElement* target)
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_CELL"))
 		{
 			IM_ASSERT(payload->DataSize == sizeof(EditorElement*));
-			std::vector<EditorElement*>& elements =
-				EditorSceneManager::GetInstance()->GetEditorScene()->GetEditorElements();
-
 			EditorElement* child = static_cast<EditorElement*>(mDraggedEditorElement);
 			if (child->GetParent() == target)
 			{
@@ -542,7 +541,7 @@ void EditorLayer::DisplayInspectorMenu()
 	std::string menuID = "Inspector";
 	ImGui::Begin(menuID.c_str());
 	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-	if (0 < scene->GetEditorElements().size())
+	if (0 < scene->GetActors()->GetSize())
 	{
 		if (mFocusedEditorElement)
 		{
@@ -551,15 +550,10 @@ void EditorLayer::DisplayInspectorMenu()
 			{
 				// Delete game object, and erase the pointed from std::vector
 				ActorGroup group = mFocusedEditorElement->GetActorGroup();
-
-				std::vector<EditorElement*>::iterator iter =
-					std::find(
-						scene->GetEditorElements().begin(),
-						scene->GetEditorElements().end(),
-						mFocusedEditorElement);
-				scene->GetEditorElements().erase(iter);
+				int actorPos = scene->Actors()->Find(mFocusedEditorElement);
+				scene->Actors()->Erase(actorPos);
 				if (0 < mActorNameIdx)
-					mActorNameIdx = scene->GetEditorElements().size() - 1;
+					mActorNameIdx = scene->Actors()->GetSize() - 1;
 			}
 		}
 	}

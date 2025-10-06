@@ -51,8 +51,11 @@ void EditorSceneManager::DeleteAll()
 
 void EditorSceneManager::GetLowests(std::vector<EditorElement*>& elements)
 {
-	for (EditorElement* ele : mEditorScene->GetEditorElements())
+	FTDS::DynamicArray<Actor*>* actors = GetEditorScene()->Actors();
+
+	for (auto iter = actors->Begin(); iter != actors->End(); ++iter)
 	{
+		EditorElement* ele = static_cast<EditorElement*>(*iter);
 		ele->SetIsDisplayed(false);
 		if (ele->GetHierarchyLevel() < 1)
 			elements.push_back(ele);
@@ -61,12 +64,9 @@ void EditorSceneManager::GetLowests(std::vector<EditorElement*>& elements)
 
 void EditorSceneManager::SortByHierarchyLv(std::vector<EditorElement*>& elements)
 {
-	std::sort(elements.begin(), elements.end(),
-		[](const EditorElement* lhs, const EditorElement* rhs)
-		{
-			return lhs->GetHierarchyLevel() < rhs->GetHierarchyLevel();
-		}
-	);
+	std::sort(elements.begin(), elements.end(), [](const EditorElement* lhs, const EditorElement* rhs) {
+		return lhs->GetHierarchyLevel() < rhs->GetHierarchyLevel();
+	});
 }
 
 EditorScene* EditorSceneManager::GetEditorScene()

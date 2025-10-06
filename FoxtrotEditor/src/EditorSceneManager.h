@@ -16,7 +16,7 @@
 #include "EditorScene.h"
 
 #ifdef FOXTROT_EDITOR
-#define FIND_ACTOR(name, filter) EditorSceneManager::GetInstance()->GetEditorScene()->FindEditorElement(name, filter)
+#define FIND_ACTOR(name, filter) static_cast<Actor*>(EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(name, filter))
 #endif
 
 class EditorSceneManager

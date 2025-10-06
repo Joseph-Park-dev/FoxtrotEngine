@@ -38,7 +38,7 @@
 void SpriteRenderer::Initialize(FTCore* coreInstance)
 {
 	MeshRenderer::Initialize(coreInstance);
-	FTDS::String	  key	 = ChunkKey::PRIMITIVE_SQUARE_BLUE;
+	FTDS::String key	= ChunkKey::PRIMITIVE_SQUARE_SPRITE;
 	FTMeshGroup* square = ResourceManager::GetInstance()->GetLoadedMesh(key);
 	SetMeshGroup(square);
 }

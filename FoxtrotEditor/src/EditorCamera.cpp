@@ -27,6 +27,9 @@ EditorCamera::EditorCamera()
 	, mZoomValModSpeed(0.1f)
 	, mDebugRect(DBG_NEW FTRectangle)
 {
+	// EditorCamera needs to be behind the Camera
+	// to let debug rect visible.
+	Position().z = Camera::GetInstance()->GetPosition().z - 0.1f;
 }
 
 EditorCamera::~EditorCamera()
@@ -88,7 +91,10 @@ void EditorCamera::Update(float deltaTime)
 	mDebugRect->UpdateVC(translationMat, this);
 
 	mDebugRect->UpdateGC(this);
-	mDebugRect->GetGSCData().size = Camera::GetInstance()->GetResolution().GetD3Vec2();
+	Vector2 size = Camera::GetInstance()->GetResolution().GetD3Vec2();
+	size /= Camera::GetInstance()->GetPixelsPerUnit();
+	size /= Camera::GetInstance()->GetZoomFactor();
+	mDebugRect->GetGSCData().size = size;
 	mDebugRect->SetIsActive(true);
 	mDebugRect->UpdatePC();
 }
@@ -123,19 +129,19 @@ void EditorCamera::DisplayMainCameraMenu()
 
 	// Set Target
 	EditorScene*				editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
-	std::vector<EditorElement*> editorElems;
-	editorElems				 = EditorSceneManager::GetInstance()->GetEditorScene()->GetEditorElements();
-	FTDS::String* actorNames = DBG_NEW FTDS::String[editorElems.size() + 1];
+	FTDS::DynamicArray<Actor*>* editorElems;
+	editorElems				 = EditorSceneManager::GetInstance()->GetEditorScene()->Actors();
+	FTDS::String* actorNames = DBG_NEW FTDS::String[editorElems->GetSize() + 1];
 	actorNames[0].Assign("None");
 	static size_t currIdx;
 
-	for (size_t i = 0; i < editorElems.size(); ++i)
-		actorNames[i + 1] = editorElems.at(i)->GetName();
+	for (size_t i = 0; i < editorElems->GetSize(); ++i)
+		actorNames[i + 1] = editorElems->At(i)->GetName();
 
 	const char* comboPreview = actorNames[currIdx].C_Str();
 	if (ImGui::BeginCombo(ChunkKey::TARGET_ACTOR, comboPreview))
 	{
-		for (size_t i = 0; i < editorElems.size() + 1; ++i)
+		for (size_t i = 0; i < editorElems->GetSize() + 1; ++i)
 		{
 			if (ImGui::Selectable(actorNames[i].C_Str()))
 			{
@@ -144,8 +150,8 @@ void EditorCamera::DisplayMainCameraMenu()
 					Camera::GetInstance()->SetTargetActor(nullptr);
 				else
 				{
-					EditorElement* actor =
-						editorScene->FindEditorElement(actorNames[currIdx], nullptr);
+					Actor* actor =
+						editorScene->FindActor(actorNames[currIdx], nullptr);
 					Camera::GetInstance()->SetTargetActor(actor);
 				}
 			}
@@ -157,6 +163,8 @@ void EditorCamera::DisplayMainCameraMenu()
 	FTVector3 offset = Camera::GetInstance()->GetOffSet();
 	CommandHistory::GetInstance()->UpdateVector3Value("Offset from target", offset, LOOKAT_MODSPEED);
 	Camera::GetInstance()->SetOffset(offset);
+
+	CommandHistory::GetInstance()->UpdateFloatValue("Zoom", Camera::GetInstance()->ZoomFactor());
 
 	if (ImGui::Button("2D"))
 	{

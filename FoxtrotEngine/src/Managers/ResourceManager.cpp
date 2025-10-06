@@ -274,6 +274,8 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 {
 	DeleteAll();
 
+	LoadDefaultResources();
+
 	std::pair<size_t, FTDS::String> resPack	  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RESOURCE_DATA);
 	size_t							packCount = resPack.first;
 
@@ -311,8 +313,6 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 	LoadResourceFromChunk<FTPremade>(ifs, mPremades, desc.first);
 
 	LoadMaterials();
-
-	LoadDefaultResources();
 }
 
 void ResourceManager::LoadDefaultResources()

@@ -110,9 +110,19 @@ void MeshRenderer::SaveProperties(std::ofstream& ofs)
 	else
 		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, ChunkKey::NullVal::NULL_OBJECT);
 
+	// Save shaders.
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTMeshGroup::SHADER_KEY);
-	FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::VS_KEY, mVS->GetFileName());
-	FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::PS_KEY, mPS->GetFileName());
+
+	if (mVS)
+		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::VS_KEY, mVS->GetFileName());
+	else
+		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::VS_KEY, ChunkKey::NullVal::NULL_OBJECT);
+
+	if (mPS)
+		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::PS_KEY, mPS->GetFileName());
+	else
+		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::PS_KEY, ChunkKey::NullVal::NULL_OBJECT);
+
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTMeshGroup::SHADER_KEY);
 
 	FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MAT_KEY, mMaterial->GetFileName());

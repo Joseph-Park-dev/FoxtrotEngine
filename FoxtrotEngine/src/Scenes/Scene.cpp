@@ -59,6 +59,11 @@ Actor* Scene::FindActor(const char* name, Actor* filter)
 	return FindActor(str, filter);
 }
 
+const bool Scene::GetIsUpdatingActors() const
+{
+	return mIsUpdatingActors;
+}
+
 const FTDS::DynamicArray<Actor*>* Scene::GetActors() const
 {
 	return mActors;
@@ -132,14 +137,20 @@ void Scene::AddActor(Actor* actor)
 		mPendingActors->PushBack(actor);
 	else
 	{
-		int	 drawOrder = actor->GetDrawOrder();
-		auto iter	   = mActors->Begin();
-		for (; iter != mActors->End(); ++iter)
+		if (!mActors->IsEmpty())
 		{
-			if (drawOrder < (*iter)->GetDrawOrder())
-				break;
+			int	 drawOrder = actor->GetDrawOrder();
+			auto iter	   = mActors->Begin();
+			for (; iter != mActors->End(); ++iter)
+			{
+				if(*iter)
+					if (drawOrder < (*iter)->GetDrawOrder())
+						break;
+			}
+			mActors->Insert(iter.IterPos(), actor);
 		}
-		mActors->Insert(iter.IterPos(), actor);
+		else
+			mActors->PushBack(actor);
 	}
 }
 
@@ -162,6 +173,8 @@ void Scene::DeleteAll()
 		delete (*iter);
 		(*iter) = nullptr;
 	}
+	mActors->Clear();
+	mPendingActors->Clear();
 }
 
 void Scene::AddPendingActors()

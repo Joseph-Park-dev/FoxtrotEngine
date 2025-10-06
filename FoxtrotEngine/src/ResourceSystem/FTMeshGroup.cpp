@@ -110,7 +110,7 @@ void FTMeshGroup::Process(FoxtrotRenderer* renderer)
 	if (this->IsProcessed())
 		return;
 
-	if (this->GetRelativePath().IsEmpty())
+	if (this->GetRelativePath().Equal(ChunkKey::NullVal::NULL_OBJECT))
 		return;
 
 	Initialize(

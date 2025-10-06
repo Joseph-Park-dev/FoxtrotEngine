@@ -18,7 +18,8 @@
 
 class EditorElement;
 
-class EditorScene
+class EditorScene : 
+	public Scene
 {
 public:
 	// Sets all EditorElements' focused status to false.
@@ -33,29 +34,10 @@ public:
 	/// </summary>
 	/// <param name="actor : ">Actor to copy values from.</param>
 	EditorElement* AddEditorElement(Actor* actor);
-	EditorElement* AddEditorElement(EditorElement* element);
-
-	EditorElement* FindEditorElement(FTDS::String& name, Actor* filter);
-	EditorElement* FindEditorElement(const char* name, Actor* filter);
-
-	void RemoveEditorElement(EditorElement* element);
 
 public:
-	std::vector<EditorElement*>& GetEditorElements();
-
-public:
-	void Initialize(FTCore* coreInst);
-	void Setup();
-
-	void ProcessInput(class FTInputDevice* inputDevice);
-	// Runs on editor when pressing Play button.
-	void Update(float deltaTime);
-	void LateUpdate(float deltaTime);
-	// Runs on editor when pressing Play button.
-	void Render(FoxtrotRenderer* renderer);
-
 	// Deletes all EditorElements & clearing the Scene.
-	void DeleteAll();
+	void DeleteAll() override;
 
 public:
 	// Updates editor specific features -> this will be omitted from the produced game.
@@ -67,8 +49,4 @@ public:
 public:
 	EditorScene();
 	~EditorScene();
-
-private:
-	std::vector<EditorElement*> mEditorElements;
-	bool						mIsUpdatingActors;
 };

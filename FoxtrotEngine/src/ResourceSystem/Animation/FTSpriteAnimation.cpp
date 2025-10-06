@@ -190,16 +190,18 @@ void FTSpriteAnimation::Initialize(ComPtr<ID3D11Device>& device, ComPtr<ID3D11De
 		float adjustedW = 0.f;
 		float adjustedH = 0.f;
 
-		if (screenW <= screenH)
-		{
-			adjustedW = 1.0f;
-			adjustedH = screenH / screenW;
-		}
-		else
-		{
-			adjustedH = 1.0f;
-			adjustedW = screenW / screenH;
-		}
+		adjustedH = 1.0f;
+		adjustedW = screenW / screenH;
+
+		//if (screenW <= screenH)
+		//{
+		//	adjustedW = 1.0f;
+		//	adjustedH = screenH / screenW;
+		//}
+		//else
+		//{
+		//	
+		//}
 
 		tiles[i].GetRectOnScreen().Set(screenX, screenY, adjustedW, adjustedH);
 	}

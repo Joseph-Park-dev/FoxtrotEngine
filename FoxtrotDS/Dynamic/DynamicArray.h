@@ -137,6 +137,12 @@ namespace FTDS
 			this->AllocateMem(capacity);
 		}
 
+		void Clear() override
+		{
+			mSize = 0;
+			FTDS::Array<TYPE>::Clear();
+		}
+
 	protected:
 		virtual void AllocateMem(size_t newCap) override
 		{

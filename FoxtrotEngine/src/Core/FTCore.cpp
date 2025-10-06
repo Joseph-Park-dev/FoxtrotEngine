@@ -79,7 +79,7 @@ bool FTCore::Initialize()
 		delete mWindow;
 		mWindow = nullptr;
 	}
-	FTRectArea* rndArea = DBG_NEW FTRectArea(0.f, 0.f, 1280.f, 720.f);
+	FTRectArea* rndArea = DBG_NEW FTRectArea(0.f, 0.f, 3840.f, 2160.f);
 	mWindow = DBG_NEW FTWindow(mWindowTitle.C_Str(), mWindowWidth, mWindowHeight, rndArea);
 
 	if (!mWindow->InitializeWindow(WndProc))
@@ -197,8 +197,8 @@ FTCore::FTCore()
 	: mWindow(nullptr)
 	, mGameRenderer(nullptr)
 	, mIsRunning(true)
-	, mWindowWidth(1280)
-	, mWindowHeight(720)
+	, mWindowWidth(3840)
+	, mWindowHeight(2160)
 	, mWindowTitle("Foxtrot Engine Showcase (ver.0.1.2)")
 	, mGameDataPath(
 		  FTDS::String("./") + FTDS::String(ChunkKey::GAME_DATA) + FTDS::String(FileTypes::GDPACK))

@@ -70,6 +70,20 @@ enum class ResType
 	FTSOUND
 };
 
+namespace ChunkKey
+{
+	constexpr const char* PRIMITIVE_SQUARE_SPRITE = "Primitive Square Sprite";
+
+	constexpr const char* PRIMITIVE_SQUARE_RED	 = "Primitive Square Red";
+	constexpr const char* PRIMITIVE_SQUARE_GREEN = "Primitive Square Green";
+	constexpr const char* PRIMITIVE_SQUARE_BLUE	 = "Primitive Square Blue";
+
+	constexpr const char* PRIMITIVE_BOX			= "Primitive Square Box";
+	constexpr const char* PRIMITIVE_SQUARE_GRID = "Primitive Square Grid";
+	constexpr const char* PRIMITIVE_CYLINDER	= "Primitive Cylinder";
+	constexpr const char* PRIMITIVE_SPHERE		= "Primitive Sphere";
+} // namespace ChunkKey
+
 /// @brief A manager that saves/loads FTResources referred in a .Chunk file.
 /// On Foxtrot Editor, this loads all supported resources in the
 /// "Asset" folder, and saves the FTResources that are referred in a .Chunk file or used in a Scene.
@@ -223,6 +237,13 @@ private:
 		FTResourceDef resDef{ fileName, relPath };
 		FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef, renderer);
 
+		if (fileName.Equal(ChunkKey::PRIMITIVE_SQUARE_SPRITE))
+		{
+			delete res;
+			res = nullptr;
+			return;
+		}
+
 		assert(0 < resMap->Capacity());
 		resMap->Insert(res->GetFileName(), res);
 	}
@@ -254,17 +275,3 @@ private:
 			key.Append(fileType);
 	}
 };
-
-namespace ChunkKey
-{
-	constexpr const char* PRIMITIVE_SQUARE_SPRITE = "Primitive Square Sprite";
-
-	constexpr const char* PRIMITIVE_SQUARE_RED	 = "Primitive Square Red";
-	constexpr const char* PRIMITIVE_SQUARE_GREEN = "Primitive Square Green";
-	constexpr const char* PRIMITIVE_SQUARE_BLUE	 = "Primitive Square Blue";
-
-	constexpr const char* PRIMITIVE_BOX			= "Primitive Square Box";
-	constexpr const char* PRIMITIVE_SQUARE_GRID = "Primitive Square Grid";
-	constexpr const char* PRIMITIVE_CYLINDER	= "Primitive Cylinder";
-	constexpr const char* PRIMITIVE_SPHERE		= "Primitive Sphere";
-} // namespace ChunkKey

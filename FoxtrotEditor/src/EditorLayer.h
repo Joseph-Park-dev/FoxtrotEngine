@@ -62,13 +62,14 @@ public:
 	void ShutDown();
 
 public:
-	int&	  GetActorNameIdx() { return mActorNameIdx; }
-	bool	  GetUndoKeyPressed() const { return mUndoKeyPressed; }
-	bool	  GetRedoKeyPressed() const { return mRedoKeyPressed; }
-	bool	  GetConfirmKeyPressed() const { return mConfirmKeyPressed; }
-	ErrorType GetErrorType() const { return mErrorType; }
+	EditorElement* FocusedEditorElement() { return mFocusedEditorElement; }
+	int&		   GetActorNameIdx() { return mActorNameIdx; }
+	bool		   GetUndoKeyPressed() const { return mUndoKeyPressed; }
+	bool		   GetRedoKeyPressed() const { return mRedoKeyPressed; }
+	bool		   GetConfirmKeyPressed() const { return mConfirmKeyPressed; }
+	ErrorType	   GetErrorType() const { return mErrorType; }
 
-	//ImGuiFileDialogFlags& GetFileSelectFlag() { return mFileSelectFlag; }
+	// ImGuiFileDialogFlags& GetFileSelectFlag() { return mFileSelectFlag; }
 
 	void SetInfoType(InfoType type) { mInfoType = type; }
 	void SetErrorType(ErrorType type) { mErrorType = type; }
@@ -150,8 +151,8 @@ private:
 	void*		   mDraggedEditorElement;
 
 	// Viewport related
-	bool   mIsResizingViewport;
-	bool   mCursorOnViewport;
+	bool mIsResizingViewport;
+	bool mCursorOnViewport;
 
 	// UI event types
 	InfoType	   mInfoType;

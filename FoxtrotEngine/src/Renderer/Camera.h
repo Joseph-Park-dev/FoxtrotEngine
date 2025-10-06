@@ -33,6 +33,7 @@ namespace ChunkKey
 	constexpr const char* RENDER_SCREENCENTER = "Screen Center";
 	constexpr const char* CAM_POSITION		  = "Position";
 	constexpr const char* CAM_OFFSET		  = "Offset";
+	constexpr const char* CAM_ZOOM			  = "Zoom";
 } // namespace ChunkKey
 
 enum class Viewtype
@@ -67,6 +68,7 @@ public:
 	const FTVector3& GetPosition() const;
 	FTVector2&		 GetResolution() const;
 	const FTVector3& GetOffSet() const;
+	const float		 GetZoomFactor() const;
 
 	void SetPosition(FTVector3 pos);
 	void SetViewType(Viewtype viewType);
@@ -126,6 +128,9 @@ public:
 	void LoadProperties(std::ifstream& ifs);
 
 #ifdef FOXTROT_EDITOR
+public:
+	float& ZoomFactor();
+
 private:
 	ImVec2 mMiddleMouseClickedPos;
 	ImVec2 mMiddleMouseClickedRot;

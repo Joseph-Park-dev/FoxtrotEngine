@@ -63,7 +63,7 @@ void Camera::UpdateViewDirections()
 
 void Camera::Zoom()
 {
-	Math::Clampf(mZoomFactor, 0.01f, 3.0f);
+	Math::Clampf(mZoomFactor, 0.01f, 10.0f);
 	mZoomFactor += mZoomDelta;
 }
 
@@ -79,7 +79,7 @@ Camera::Camera()
 	, mProjFOVAngleY(70.f)
 	, mNearZ(0.01f)
 	, mFarZ(100.0f)
-	, mResolution(1280.f, 720.f)
+	, mResolution(3840.f, 2160.f)
 	, mAspect(mResolution.x / mResolution.y)
 	, mPixelsPerUnit(0.f)
 	, mViewType(Viewtype::Orthographic)
@@ -176,6 +176,11 @@ const FTVector3& Camera::GetOffSet() const
 	return mOffset;
 }
 
+const float Camera::GetZoomFactor() const
+{
+	return mZoomFactor;
+}
+
 Vector3& Camera::Position()
 {
 	return mPosition;
@@ -255,12 +260,14 @@ void Camera::SaveProperties(std::ofstream& ofs)
 		FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, ChunkKey::NullVal::NULL_OBJECT);
 	FileIOHelper::SaveVector3(ofs, ChunkKey::CAM_POSITION, mPosition);
 	FileIOHelper::SaveVector3(ofs, ChunkKey::CAM_OFFSET, mOffset);
+	FileIOHelper::SaveFloat(ofs, ChunkKey::CAM_ZOOM, mZoomFactor);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CAMERA_DATA);
 }
 
 void Camera::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CAMERA_DATA);
+	FileIOHelper::LoadFloat(ifs, mZoomFactor);
 	FileIOHelper::LoadVector3(ifs, mOffset);
 
 	FTVector3 pos = FTVector3::Zero;
@@ -271,7 +278,7 @@ void Camera::LoadProperties(std::ifstream& ifs)
 
 #ifdef FOXTROT_EDITOR
 	if (targetActor.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
-		mTarget = EditorSceneManager::GetInstance()->GetEditorScene()->FindEditorElement(targetActor, nullptr);
+		mTarget = EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(targetActor, nullptr);
 #else
 	if (targetActor != ChunkKey::NullVal::NULL_OBJECT)
 		mTarget = SceneManager::GetInstance()->GetCurrentScene()->FindActor(targetActor);
@@ -307,3 +314,10 @@ FTVector2 Camera::ConvertScreenPosToNDC(FTVector2 screenPos)
 	ndc.y = 1.0f - (screenPos.y / renderSize.y) * 2.f;
 	return ndc;
 }
+
+#ifdef FOXTROT_EDITOR
+float& Camera::ZoomFactor()
+{
+	return mZoomFactor;
+}
+#endif // FOXTROT_EDITOR

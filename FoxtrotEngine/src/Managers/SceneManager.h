@@ -19,12 +19,12 @@ class FoxtrotRenderer;
 class FTInputDevice;
 
 #ifndef FOXTROT_EDITOR // If it's not on Editor.
-	#define FIND_ACTOR(name) SceneManager::GetInstance()->GetCurrentScene()->FindActor(name)
+	#define FIND_ACTOR(name, filter) SceneManager::GetInstance()->GetCurrentScene()->FindActor(name, filter)
 #endif // FOXTROT_EDITOR
 
 class SceneManager
 {
-	SINGLETON(SceneManager)
+	SINGLETON_PROTECTED(SceneManager)
 
 public:
 	void   SwitchScene(size_t index);

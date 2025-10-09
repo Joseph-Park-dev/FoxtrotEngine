@@ -274,7 +274,7 @@ void CommandHistory::UpdateStringValue(const char* label, FTDS::String& ref)
 
 	//static StrEditCommand* command;
 
-	static char strVal[BufferSize::STRING_BUFFER_SIZE];
+	static char strVal[BufferSize::STRING_BUFFER_SIZE] = { 0 };
 	strcpy_s(strVal, ref.C_Str());
 
 	if (ImGui::InputText(label, strVal, BufferSize::STRING_BUFFER_SIZE, ImGuiInputTextFlags_::ImGuiInputTextFlags_EnterReturnsTrue))
@@ -285,6 +285,7 @@ void CommandHistory::UpdateStringValue(const char* label, FTDS::String& ref)
 		AddCommand(command);
 		command = nullptr;
 	}
+	strVal[0] = '\0';
 }
 
 void CommandHistory::UpdateStateValue(const char* label, Actor::State& state)

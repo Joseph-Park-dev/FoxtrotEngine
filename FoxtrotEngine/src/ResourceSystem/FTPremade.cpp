@@ -21,6 +21,7 @@
 
 	#include "EditorUtils.h"
 	#include "EditorSceneManager.h"
+	#include "EditorChunkLoader.h"
 	#include "EditorScene.h"
 	#include "DirectoryHelper.h"
 	#include "EditorElement.h"
@@ -104,7 +105,7 @@ void FTPremade::Create(EditorElement* ele)
 {
 	assert(!GetRelativePath().IsEmpty());
 
-	FTDS::String path = GetRelativePath();
+	FTDS::String  path = GetRelativePath();
 	std::ofstream ofs(path.C_Str());
 	if (ofs)
 	{
@@ -145,7 +146,11 @@ void FTPremade::UpdateUI()
 	ImGui::Separator();
 
 	if (ImGui::Button("Add to Chunk"))
-		EditorSceneManager::GetInstance()->GetEditorScene()->AddEditorElement(mOrigin);
+	{
+		EditorChunkLoader::GetInstance()->AddMaxActorID();
+		int id = EditorChunkLoader::GetInstance()->GetMaxActorID();
+		EditorSceneManager::GetInstance()->GetEditorScene()->AddEditorElement(mOrigin, id);
+	}
 
 	if (FTEditorUtils::ButtonCenteredOnLine("Edit Premade"))
 	{

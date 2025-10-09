@@ -119,7 +119,6 @@ Actor::~Actor()
 
 void Actor::CopyTransformFrom(Actor* actor)
 {
-	Transform* originTransf = actor->GetTransform();
 	actor->GetTransform()->CloneTo(mTransform);
 }
 
@@ -271,9 +270,9 @@ void Actor::RemoveComponent(Component* component)
 	if (pos == -1)
 		return;
 
-	mComponents.Erase(pos);
 	delete component;
 	component = nullptr;
+	mComponents.Erase(pos);
 }
 
 void Actor::RemoveAllComponents()

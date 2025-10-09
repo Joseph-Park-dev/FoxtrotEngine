@@ -385,7 +385,11 @@ void EditorLayer::DisplayHierarchyMenu()
 			// Display EditorElements as a list of selections.
 			size_t idx = 0;
 			for (EditorElement* ele : lowest)
+			{
+				ImGui::PushID(ele->GetID());
 				DisplaySelection(ele, idx);
+				ImGui::PopID();
+			}
 		}
 		ImGui::EndListBox();
 

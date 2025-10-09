@@ -224,6 +224,8 @@ void EditorElement::UpdateComponentsUI()
 		size_t count = 0;
 		for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
 		{
+			if (GetComponents().IsEmpty())
+				break;
 			if (*comp)
 			{
 				FTDS::String name(std::to_string(count).c_str());

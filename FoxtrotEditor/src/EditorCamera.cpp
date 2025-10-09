@@ -52,11 +52,9 @@ void EditorCamera::Initialize(FTWindow* renderWindow, UINT pixels, float unit)
 void EditorCamera::ProcessInput(FTInputDevice* inputDevice)
 {
 	if (0 < inputDevice->GetMouseWheelDelta())
-		ZoomDelta() = mZoomValModSpeed;
+		ZoomFactor() += mZoomValModSpeed;
 	else if (inputDevice->GetMouseWheelDelta() < 0)
-		ZoomDelta() = -mZoomValModSpeed;
-	else
-		ZoomDelta() = 0.f;
+		ZoomFactor() -= mZoomValModSpeed;
 }
 
 void EditorCamera::Update(float deltaTime)

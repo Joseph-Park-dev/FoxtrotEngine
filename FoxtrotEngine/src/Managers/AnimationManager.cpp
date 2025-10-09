@@ -72,7 +72,7 @@ void AnimationManager::UpdateUI(bool* opened)
 						ImGui::Text(anim->GetFileName().C_Str());
 						anim->UpdateUI();
 						if (ImGui::Button("Save"))
-							SaveAnimationAsFile(anim, FileTypes::SPRITE_ANIMATION);
+							SaveAnimationAsFile(anim);
 						ImGui::EndListBox();
 					}
 					ImGui::PopID();
@@ -95,7 +95,7 @@ void AnimationManager::UpdateUI(bool* opened)
 						ImGui::Text(anim->GetFileName().C_Str());
 						anim->UpdateUI();
 						if (ImGui::Button("Save"))
-							SaveAnimationAsFile(anim, FileTypes::SPINE_ANIMATION);
+							SaveAnimationAsFile(anim);
 						ImGui::EndListBox();
 					}
 					ImGui::PopID();
@@ -173,14 +173,16 @@ void AnimationManager::CreateAnimationGUI()
 
 				// Load the created animation to ResourceManager & File.
 				// This is called only during the FTEditor Runtime.
-				SaveAnimationAsFile(anim, FileTypes::SPRITE_ANIMATION);
+				SaveAnimationAsFile(anim);
 			}
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Spine Anim"))
 		{
-			static char name[BufferSize::STRING_BUFFER_SIZE] = "Empty Value";
-			ImGui::InputText("Name", name, BufferSize::STRING_BUFFER_SIZE);
+			FTResourceDef resDef;
+
+			static FTDS::String name = "Empty Value";
+			CommandHistory::GetInstance()->UpdateStringValue("Name", name);
 
 			static FTJSON* json;
 			FTEditorUtils::DisplayResSelection("Select Skeleton Data", ResourceManager::GetInstance()->GetJSONs(), json);
@@ -189,7 +191,18 @@ void AnimationManager::CreateAnimationGUI()
 			FTEditorUtils::DisplayResSelection("Select Spine Atlas", ResourceManager::GetInstance()->GetTexts(), atlasTxt);
 
 			if (ImGui::Button("Create"))
-				CreateAnimationFromSpine(name, json, atlasTxt);
+			{
+				if (!name.Contains(FileTypes::SPINE_ANIMATION))
+					name.Append(FileTypes::SPINE_ANIMATION);
+				resDef.FileName = name.C_Str();
+
+				// Update the relative path of the sprite animation.
+				FTDS::String path = ResourceManager::GetInstance()->GetPathToAsset();
+				path.Append(resDef.FileName);
+				resDef.RelativePath = path.C_Str();
+
+				CreateAnimationFromSpine(resDef, json, atlasTxt);
+			}
 
 			ImGui::EndTabItem();
 		}
@@ -201,17 +214,15 @@ FTSpriteAnimation* AnimationManager::CreateAnimationFromJSON(FTSpriteAnimationDe
 {
 	FTSpriteAnimation* anim = DBG_NEW FTSpriteAnimation(resDef, mRenderer);
 
-	SaveAnimationAsFile(anim, FileTypes::SPINE_ANIMATION);
+	SaveAnimationAsFile(anim);
 	ResourceManager::GetInstance()->GetSpriteAnimations()->Insert(anim->GetFileName(), anim);
 	return anim;
 }
 
-FTSpineAnimation* AnimationManager::CreateAnimationFromSpine(const char* name, FTJSON* json, FTText* atlas)
+FTSpineAnimation* AnimationManager::CreateAnimationFromSpine(FTResourceDef& resDef, FTJSON* json, FTText* atlas)
 {
-	FTResourceDef	  resDef = { name, ResourceManager::GetInstance()->GetPathToAsset().C_Str() };
-	FTSpineAnimation* anim	 = DBG_NEW FTSpineAnimation(resDef, mRenderer, json, atlas);
-
-	SaveAnimationAsFile(anim, FileTypes::SPRITE_ANIMATION);
+	FTSpineAnimation* anim = DBG_NEW FTSpineAnimation(resDef, mRenderer, json, atlas);
+	SaveAnimationAsFile(anim);
 	ResourceManager::GetInstance()->GetSpineAnimations()->Insert(anim->GetFileName(), anim);
 	return anim;
 }

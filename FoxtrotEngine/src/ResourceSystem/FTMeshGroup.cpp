@@ -154,8 +154,12 @@ HRESULT FTMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 void FTMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, Transform* transform, Camera* camInst, FTMaterial* mat)
 {
 	// Model Transformation
-	if (transform->GetSteering()->Linear.x != 0)
-		mDirection = transform->GetSteering()->Linear.x;
+	float linearX = transform->GetSteering()->Linear.x;
+	
+	if (0 < linearX)
+		mDirection = 1;
+	else if (linearX < 0)
+		mDirection = -1;
 
 	// Direction will be multiplied to scale.
 	// When mDirection is minus, such must be done only once as the character switches direction.

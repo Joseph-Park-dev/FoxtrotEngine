@@ -43,6 +43,12 @@ public:
 	virtual void LoadProperties(std::ifstream& ifs) override;
 
 public:
+	/// @brief Gets the skin combination consists of shifted bits.
+	const unsigned char GetSkinCombination() const;
+
+	/// @brief Sets the skin conbination & updates the skin.
+	void SetSkinCombination(const unsigned char skinCombi);
+
 	/// @brief Sets timescale for the loaded clips.
 	/// Useful to control the playback speed.
 	void SetTimeScale(const float val);

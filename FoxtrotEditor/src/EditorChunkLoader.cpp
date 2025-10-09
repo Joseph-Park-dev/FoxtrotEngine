@@ -87,6 +87,7 @@ void EditorChunkLoader::LoadChunk(FTDS::String& fileName)
 
 void EditorChunkLoader::SaveActorsData(std::ofstream& ofs)
 {
+	ResetMaxActorID();
 	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::ACTOR_DATA);
 
@@ -100,6 +101,7 @@ void EditorChunkLoader::SaveActorsData(std::ofstream& ofs)
 		element->SaveComponents(ofs);
 		element->SaveProperties(ofs);
 		FileIOHelper::EndDataPackSave(ofs, element->GetName());
+		AddMaxActorID();
 	}
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::ACTOR_DATA);
 }
@@ -109,6 +111,7 @@ void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
 	EditorScene*					  scene = EditorSceneManager::GetInstance()->GetEditorScene();
 	std::pair<size_t, FTDS::String>&& pack	= FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
 	std::vector<Actor*>				  actorBuf;
+	ResetMaxActorID();
 
 	for (size_t i = 0; i < pack.first; ++i)
 	{

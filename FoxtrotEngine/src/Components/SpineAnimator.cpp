@@ -74,20 +74,35 @@ void SpineAnimator::CloneTo(Actor* actor)
 void SpineAnimator::SaveProperties(std::ofstream& ofs)
 {
 	MeshRenderer::SaveProperties(ofs);
-	const FTDS::String& fn = static_cast<FTSpineAnimation*>(GetMeshGroup())->GetFileName();
-	FileIOHelper::SaveString(ofs, ChunkKey::SpineAnimator::LOADED_ANIM, fn);
+	if (GetMeshGroup())
+	{
+		FTSpineAnimation*	anim = static_cast<FTSpineAnimation*>(GetMeshGroup());
+		const FTDS::String& fn	 = anim->GetFileName();
+		FileIOHelper::SaveString(ofs, ChunkKey::SpineAnimator::LOADED_ANIM, fn);
+		FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTSpineAnimation::SKIN_COMBINATION, anim->GetSkinCombination());
+	}
+	else
+		FileIOHelper::SaveString(ofs, ChunkKey::SpineAnimator::LOADED_ANIM, ChunkKey::NullVal::NULL_OBJECT);
 }
 
 void SpineAnimator::LoadProperties(std::ifstream& ifs)
 {
+	UINT skinCombi = 0;
+	FileIOHelper::LoadUnsignedInt(ifs, skinCombi);
+	unsigned char skinCombination = static_cast<unsigned char>(skinCombi);
+
 	// Load Animation
 	FTDS::String key;
 	FileIOHelper::LoadBasicString(ifs, key);
 	MeshRenderer::LoadProperties(ifs);
 
 	FTSpineAnimation* anim = ResourceManager::GetInstance()->GetLoadedSpineAnim(key);
-	SetMeshGroup(anim);
-	anim->SetAnimation(0, true);
+	if (anim)
+	{
+		SetMeshGroup(anim);
+		anim->SetAnimation(0, true);
+		anim->SetSkinCombination(skinCombination);
+	}
 }
 
 #ifdef FOXTROT_EDITOR
@@ -121,9 +136,13 @@ void SpineAnimator::EditorUIUpdate()
 	if (anim)
 	{
 		SetMeshGroup(anim);
-		anim->SetAnimation(0, true);
+		anim->SetAnimation(1, true);
 	}
 
-	MeshRenderer::EditorUIUpdate();
+	if (GetMeshGroup())
+	{
+		static_cast<FTSpineAnimation*>(GetMeshGroup())->UpdateUI();
+		MeshRenderer::EditorUIUpdate();
+	}
 }
 #endif

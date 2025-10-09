@@ -67,6 +67,8 @@ public:
 	// Add actor count by 1.
 	void AddMaxActorID();
 
+	void ResetMaxActorID();
+
 protected:
 	// Save .Chunk for the editor
 	void SaveChunkData(std::ofstream& out);

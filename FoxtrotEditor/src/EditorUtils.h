@@ -124,23 +124,35 @@ namespace FTEditorUtils
 
 	inline void DisplayActorSelection(const char* label, Actor*& selected)
 	{
-		EditorScene*				 editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
-		std::vector<EditorElement*>& editorElems = editorScene->GetEditorElements();
-		FTDS::String* actorNames				 = DBG_NEW FTDS::String[editorElems.size() + 1];
+		EditorScene*				editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
+		FTDS::DynamicArray<Actor*>* editorElems = editorScene->Actors();
+		FTDS::String* actorNames				= DBG_NEW FTDS::String[editorElems->GetSize() + 1];
+		actorNames[0].Assign("None");
+		static size_t currIdx;
 
-		size_t idx = 1;
-		for (EditorElement* ele : editorElems)
+		for (size_t i = 0; i < editorElems->GetSize(); ++i)
+			actorNames[i + 1] = editorElems->At(i)->GetName();
+
+		const char* comboPreview = actorNames[currIdx].C_Str();
+		if (ImGui::BeginCombo("Actor Selection", comboPreview))
 		{
-			actorNames[idx] = ele->GetName();
-			++idx;
+			for (size_t i = 0; i < editorElems->GetSize() + 1; ++i)
+			{
+				if (ImGui::Selectable(actorNames[i].C_Str()))
+				{
+					currIdx = i;
+					if (currIdx == 0)
+						selected = nullptr;
+					else
+					{
+						Actor* actor =
+							editorScene->FindActor(actorNames[currIdx], nullptr);
+						selected = actor;
+					}
+				}
+			}
+			ImGui::EndCombo();
 		}
-
-		static int currIdx;
-		DisplayArrayAsCombo(label, actorNames, idx, currIdx);
-		if (0 < currIdx)
-			selected = FIND_ACTOR(actorNames[currIdx], nullptr);
-		else
-			selected = nullptr;
 		delete[] actorNames;
 	}
 
@@ -187,8 +199,7 @@ namespace FTEditorUtils
 	inline void DisplayResSelection(
 		const char*					label,
 		FTDS::HashMap<FTRESOURCE*>* resMap,
-		FTRESOURCE*&				selectedRes
-	)
+		FTRESOURCE*&				selectedRes)
 	{
 		if (ImGui::Button(label))
 			ImGui::OpenPopup(label);
@@ -207,6 +218,44 @@ namespace FTEditorUtils
 
 							selectedRes = node->Value();
 							selectedRes->AddRefCount();
+						}
+					}
+				});
+
+				ImGui::TreePop();
+			}
+			if (ImGui::Button("Close"))
+				ImGui::CloseCurrentPopup();
+			ImGui::EndPopup();
+		}
+	}
+
+	template <typename FTRESOURCE, typename FILTER>
+	inline void DisplayResSelection(
+		const char*					label,
+		FTDS::HashMap<FTRESOURCE*>* resMap,
+		FTRESOURCE*&				selectedRes)
+	{
+		if (ImGui::Button(label))
+			ImGui::OpenPopup(label);
+
+		if (ImGui::BeginPopupModal(label, NULL, ImGuiWindowFlags_MenuBar))
+		{
+			if (ImGui::TreeNode("Selection State: Single Selection"))
+			{
+				resMap->IterateAllNodes([&](FTDS::Record<FTRESOURCE*>* node) {
+					if (ImGui::Selectable(node->Key().C_Str()))
+					{
+						if (node->Key().NotEqual(ChunkKey::NullVal::NULL_OBJECT))
+						{
+							if (typeid(node->Value()) == typeid(FILTER))
+							{
+								if (selectedRes)
+									selectedRes->SubtractRefCount();
+
+								selectedRes = node->Value();
+								selectedRes->AddRefCount();
+							}
 						}
 					}
 				});

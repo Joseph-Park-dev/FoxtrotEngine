@@ -35,7 +35,7 @@ public:
 	void CreateAnimationGUI();
 
 	template <typename ANIMATION>
-	void SaveAnimationAsFile(ANIMATION* animation, FTDS::String format)
+	void SaveAnimationAsFile(ANIMATION* animation)
 	{
 		std::ofstream ofs(animation->GetRelativePath().C_Str());
 		animation->SaveProperties(ofs);
@@ -47,8 +47,8 @@ private:
 		FTSpriteAnimationDef& resDef);
 
 	FTSpineAnimation* CreateAnimationFromSpine(
-		const char* name,
-		FTJSON*		json,
-		FTText*		atlas);
+		FTResourceDef& resDef,
+		FTJSON*		   json,
+		FTText*		   atlas);
 #endif
 };

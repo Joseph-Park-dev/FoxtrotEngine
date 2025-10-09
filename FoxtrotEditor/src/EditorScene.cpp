@@ -67,6 +67,15 @@ EditorElement* EditorScene::AddEditorElement(Actor* actor)
 	return element;
 }
 
+EditorElement* EditorScene::AddEditorElement(Actor* actor, int id)
+{
+	UnfocusEditorElements();
+
+	EditorElement* element = DBG_NEW EditorElement(actor, id, false);
+	AddActor(element);
+	return element;
+}
+
 void EditorScene::EditorUpdate(float deltaTime)
 {
 	SetIsUpdatingActors(true);

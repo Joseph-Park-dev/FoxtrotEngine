@@ -35,6 +35,11 @@ public:
 	/// <param name="actor : ">Actor to copy values from.</param>
 	EditorElement* AddEditorElement(Actor* actor);
 
+	/// @brief Adds an EditorElement with new id.
+	/// Useful when making Premade instance.
+	/// @param id This should have new id.
+	EditorElement* AddEditorElement(Actor* actor, int id);
+
 public:
 	// Deletes all EditorElements & clearing the Scene.
 	void DeleteAll() override;

@@ -118,6 +118,11 @@ void ChunkLoader::AddMaxActorID()
 	++mMaxActorID;
 }
 
+void ChunkLoader::ResetMaxActorID()
+{
+	mMaxActorID = 0;
+}
+
 void ChunkLoader::SaveChunkData(std::ofstream& out)
 {
 	Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();

@@ -69,6 +69,7 @@ namespace FTDS
 			this->Reserve(newCapacity);
 			memcpy_s(&this->mData[mLength], sizeof(char) * inputLength + 1, val, sizeof(char) * inputLength + 1);
 			this->mLength += inputLength;
+			this->Size() += inputLength;
 		}
 
 		void Append(FTDS::String& val)

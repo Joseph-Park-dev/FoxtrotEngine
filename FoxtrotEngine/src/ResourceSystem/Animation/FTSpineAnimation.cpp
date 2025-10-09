@@ -143,7 +143,10 @@ void FTSpineAnimation::Process(FoxtrotRenderer* renderer)
 		return;
 
 	std::ifstream ifs(this->GetRelativePath().C_Str());
-	this->LoadProperties(ifs);
+
+	// If the file exists (not being created).
+	if (ifs.good())
+		this->LoadProperties(ifs);
 
 	// The game will attempt to reload the resource after this call.
 	if (!mJSON || !mAtlasTxt)
@@ -205,6 +208,7 @@ void FTSpineAnimation::InitializeSpinAnim(ComPtr<ID3D11Device>& device)
 			InitializeMeshes(device, i, attachment, SpineMesh::SPINE_ATTACHMENT_TYPE::SPINE_MESH_REGION);
 		}
 	}
+
 	mMeshes->Reverse();
 
 	// Set default properties.
@@ -377,15 +381,14 @@ void FTSpineAnimation::SetSkin()
 	spine::Skin* skin = new spine::Skin("Skin");
 
 	// Loop through bitmask, marking if 1.
-	int bitCount = sizeof(mSkinCombination) * 8; // Total number of bits in the integer.
+	int bitCount = sizeof(mSkinCombination) * 8; // Total number of bits in the integer
 	for (int i = bitCount - 1; i >= 0; --i)
 	{
-		unsigned int mask = 1U << i; // Creates a mask with a single bit at position 'i'.
+		unsigned int mask = 1U << i; // Create a mask with a single bit at position 'i'
+		if (mSkinCombination & mask)
 		{
-			// Check if the bit at position 'i' is set.
-			if (i < mSkins.size())
-				if (mSkinCombination & mask)
-					skin->addSkin(mSkins[i]);
+			spine::Skin* s = mSkins[i];
+			skin->addSkin(mSkins[i]);
 		}
 	}
 	mSkeleton->setSkin(skin);
@@ -398,38 +401,59 @@ void FTSpineAnimation::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
 	FTMeshGroup::SaveProperties(ofs);
+	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTSpineAnimation::SKIN_COMBINATION, static_cast<UINT>(mSkinCombination));
 	FileIOHelper::SaveString(ofs, ChunkKey::FTSpineAnimation::JSON_KEY, mJSON->GetFileName());
 	FileIOHelper::SaveString(ofs, ChunkKey::FTSpineAnimation::ATLAS_KEY, mAtlasTxt->GetFileName());
-	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTSpineAnimation::SKIN_COMBINATION, mSkinCombination);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
 }
 
 void FTSpineAnimation::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs);
-	UINT skinCombi = 0;
-	FileIOHelper::LoadUnsignedInt(ifs, skinCombi);
 	FileIOHelper::LoadResource(ifs, mAtlasTxt, ResourceManager::GetInstance()->GetTexts());
 	FileIOHelper::LoadResource(ifs, mJSON, ResourceManager::GetInstance()->GetJSONs());
-	FTMeshGroup::LoadProperties(ifs);
 
+	UINT skinCombi = 0;
+	FileIOHelper::LoadUnsignedInt(ifs, skinCombi);
 	mSkinCombination = static_cast<unsigned char>(skinCombi);
+
+	FTMeshGroup::LoadProperties(ifs);
+}
+
+const unsigned char FTSpineAnimation::GetSkinCombination() const
+{
+	return mSkinCombination;
+}
+
+void FTSpineAnimation::SetSkinCombination(const unsigned char skinCombi)
+{
+	mSkinCombination = skinCombi;
+	SetSkin();
 }
 
 #ifdef FOXTROT_EDITOR
 
 FTSpineAnimation::FTSpineAnimation(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTJSON* json, FTText* atlas)
-	: FTMeshGroup(resDef, renderer, nullptr)
-	{
-		mJSON	  = json;
-		mAtlasTxt = atlas;
+	: FTSpineAnimation(resDef, renderer)
+{
+	mJSON	  = json;
+	mAtlasTxt = atlas;
 
-		Process(renderer);
-	}
+	Process(renderer);
+}
 
 void FTSpineAnimation::UpdateUI()
 {
 	static bool val[MAX_SKIN_COUNT];
+
+	int bitCount = sizeof(mSkinCombination) * 8; // Total number of bits in the integer
+	for (int i = bitCount - 1; i >= 0; --i)
+	{
+		unsigned int mask = 1U << i; // Create a mask with a single bit at position 'i'
+		if (mSkinCombination & mask)
+			val[i] = true;
+	}
+
 	for (size_t i = 0; i < mSkins.size(); ++i)
 	{
 		CommandHistory::GetInstance()->UpdateBoolValue(mSkins[i]->getName().buffer(), val[i]);

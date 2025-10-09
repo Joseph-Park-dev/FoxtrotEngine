@@ -72,11 +72,14 @@ namespace FTDS
 			if (mSize < (this->mCapacity / 2))
 				this->AllocateMem(this->mCapacity / 2);
 
-			--mSize;
-			size_t copiedCount = mSize - pos;
-			size_t copiedSize  = sizeof(TYPE) * copiedCount;
-			memcpy_s(&this->mData[pos], copiedSize, &this->mData[pos + 1], copiedSize);
-			this->mData[mSize] = NULL;
+			if (0 < mSize)
+			{
+				--mSize;
+				size_t copiedCount = mSize - pos;
+				size_t copiedSize  = sizeof(TYPE) * copiedCount;
+				memcpy_s(&this->mData[pos], copiedSize, &this->mData[pos + 1], copiedSize);
+				this->mData[mSize] = NULL;
+			}
 		}
 
 		void PopBack()

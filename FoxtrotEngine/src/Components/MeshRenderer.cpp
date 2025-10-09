@@ -125,7 +125,10 @@ void MeshRenderer::SaveProperties(std::ofstream& ofs)
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTMeshGroup::SHADER_KEY);
 
-	FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MAT_KEY, mMaterial->GetFileName());
+	if (mMaterial)
+		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MAT_KEY, mMaterial->GetFileName());
+	else
+		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MAT_KEY, ChunkKey::NullVal::NULL_OBJECT);
 }
 
 void MeshRenderer::LoadProperties(std::ifstream& ifs)

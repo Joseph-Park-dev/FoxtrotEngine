@@ -39,7 +39,7 @@ void Camera::Initialize(FTWindow* renderWindow, UINT pixels, float unit)
 
 void Camera::Update(float deltaTime)
 {
-	Zoom();
+	//Zoom();
 }
 
 void Camera::UpdateViewDirections()

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -16,7 +16,8 @@
 #include "EditorScene.h"
 
 #ifdef FOXTROT_EDITOR
-#define FIND_ACTOR(name, filter) static_cast<Actor*>(EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(name, filter))
+	#define FIND_ACTOR(name, filter) static_cast<Actor*>(EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(name, filter))
+	#define FIND_ACTOR(id) static_cast<Actor*>(EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(id))
 #endif
 
 class EditorSceneManager
@@ -35,7 +36,7 @@ public:
 
 	// Additional editor features especially for debugging purpose.
 	void EditorUpdate(float deltaTime);
-	
+
 	// Additional editor features especially for debugging purpose.
 	void EditorRender(FoxtrotRenderer* renderer);
 

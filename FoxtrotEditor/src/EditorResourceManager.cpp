@@ -79,6 +79,10 @@ void EditorResourceManager::SaveResources(std::ofstream& ofs)
 	SaveResourceToChunk<FTCSV>(ofs, ResourceManager::GetInstance()->GetCSVs());
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CSV::CSV);
 
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTText::FT_TEXT);
+	SaveResourceToChunk<FTText>(ofs, ResourceManager::GetInstance()->GetTexts());
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTText::FT_TEXT);
+
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::RESOURCE_DATA);
 }
 
@@ -201,7 +205,10 @@ void EditorResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)
 	std::pair<size_t, FTDS::String> resPack	  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RESOURCE_DATA);
 	size_t							packCount = resPack.first;
 
-	std::pair<size_t, FTDS::String> desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
+	std::pair<size_t, FTDS::String> desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTText::FT_TEXT);
+	LoadDummyResource<FTText>(ifs, GetTexts(), desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
 	LoadDummyResource<FTCSV>(ifs, GetCSVs(), desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::JSON::JSON);

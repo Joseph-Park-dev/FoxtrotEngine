@@ -32,7 +32,7 @@ void FTSpriteAnimation::Render(
 	FTMaterial*		 mat)
 {
 	// This enables the resource reusable throughout the Component instances.
-	UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat);
+	UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat, GetFrontDir());
 
 	if (!vs || !ps) // Vertex Shader is always required when drawing.
 		return;
@@ -74,6 +74,7 @@ void FTSpriteAnimation::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
 
 	FTMeshGroup::SaveProperties(ofs);
+	FileIOHelper::SaveInt(ofs, ChunkKey::FTMeshGroup::FRONT_DIR, GetFrontDir());
 	FileIOHelper::SaveFloat(ofs, ChunkKey::FTSpriteAnimation::FPS, mFPS);
 	FileIOHelper::SaveBool(ofs, ChunkKey::FTSpriteAnimation::IS_REPEATED, mIsRepeated);
 	FileIOHelper::SaveInt(ofs, ChunkKey::FTSpriteAnimation::MAX_FRAME_IDX, mMaxFrameIdx);
@@ -92,7 +93,7 @@ void FTSpriteAnimation::LoadProperties(std::ifstream& ifs)
 	FTDS::String jsonKey;
 	FTDS::String texKey;
 	FTVector3	 sizeScale = FTVector3(1.f, 1.f, 1.f);
-	
+
 	FileIOHelper::LoadBasicString(ifs, jsonKey);
 	FileIOHelper::LoadBasicString(ifs, texKey);
 	FileIOHelper::LoadVector3(ifs, sizeScale);
@@ -100,6 +101,8 @@ void FTSpriteAnimation::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadInt(ifs, mMaxFrameIdx);
 	FileIOHelper::LoadBool(ifs, mIsRepeated);
 	FileIOHelper::LoadInt(ifs, mFPS);
+	int frontDir = 1;
+	FileIOHelper::LoadInt(ifs, frontDir);
 	FTMeshGroup::LoadProperties(ifs);
 
 	mJSON = ResourceManager::GetInstance()->GetLoadedJSON(jsonKey);
@@ -111,6 +114,8 @@ void FTSpriteAnimation::LoadProperties(std::ifstream& ifs)
 		return;
 
 	SetSizeScale(sizeScale);
+
+	0 < frontDir ? SetRightIsFront(true) : SetRightIsFront(false);
 }
 
 const int FTSpriteAnimation::GetFPS() const
@@ -193,15 +198,15 @@ void FTSpriteAnimation::Initialize(ComPtr<ID3D11Device>& device, ComPtr<ID3D11De
 		adjustedH = 1.0f;
 		adjustedW = screenW / screenH;
 
-		//if (screenW <= screenH)
+		// if (screenW <= screenH)
 		//{
 		//	adjustedW = 1.0f;
 		//	adjustedH = screenH / screenW;
-		//}
-		//else
+		// }
+		// else
 		//{
-		//	
-		//}
+		//
+		// }
 
 		tiles[i].GetRectOnScreen().Set(screenX, screenY, adjustedW, adjustedH);
 	}

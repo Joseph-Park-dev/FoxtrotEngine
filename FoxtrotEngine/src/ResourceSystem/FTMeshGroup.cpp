@@ -37,7 +37,7 @@ void FTMeshGroup::Render(
 	FTMaterial*		 mat)
 {
 	// This enables the resource reusable throughout the Component instances.
-	UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat);
+	UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat, mFrontDir);
 
 	if (!vs || !ps) // Vertex Shader is always required when drawing.
 		return;
@@ -76,8 +76,19 @@ void FTMeshGroup::SetSizeScale(const FTVector3 scale)
 	mSizeScale = scale;
 }
 
+const int FTMeshGroup::GetFrontDir() const
+{
+	return mFrontDir;
+}
+
+void FTMeshGroup::SetRightIsFront(bool val)
+{
+	val ? mFrontDir = 1 : mFrontDir = -1;
+}
+
 FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer)
 	: FTResource(resDef)
+	, mFrontDir(1)
 	, mDirection(1)
 	, mSizeScale(FTVector3(1.0f, 1.0f, 1.0f))
 	, mMeshes(DBG_NEW FTDS::DynamicArray<Mesh*>)
@@ -87,6 +98,7 @@ FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer)
 
 FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTMeshData* meshData)
 	: FTResource(resDef)
+	, mFrontDir(1)
 	, mDirection(1)
 	, mSizeScale(FTVector3(1.0f, 1.0f, 1.0f))
 	, mMeshes(DBG_NEW FTDS::DynamicArray<Mesh*>)
@@ -151,21 +163,27 @@ HRESULT FTMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 	return device->CreateSamplerState(&sampDesc, mSamplerState.GetAddressOf());
 }
 
-void FTMeshGroup::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, Transform* transform, Camera* camInst, FTMaterial* mat)
+void FTMeshGroup::UpdateConstantBuffers(
+	ComPtr<ID3D11Device>&		 device,
+	ComPtr<ID3D11DeviceContext>& context,
+	Transform*					 transform,
+	Camera*						 camInst,
+	FTMaterial*					 mat,
+	const int					 frontDir)
 {
 	// Model Transformation
-	float linearX = transform->GetSteering()->Linear.x;
-	
-	if (0 < linearX)
-		mDirection = 1;
-	else if (linearX < 0)
-		mDirection = -1;
+	// Front Direction will be multiplied to scale.
+	// When frontDir is minus, multiplication must be done only once as the character switches direction.
 
-	// Direction will be multiplied to scale.
-	// When mDirection is minus, such must be done only once as the character switches direction.
+	float linearX = transform->GetSteering()->Linear.x;
+	if (linearX < 0)
+		mDirection = -1;
+	else if (0 < linearX)
+		mDirection = 1;
+
 	FTVector3 scale		   = transform->GetWorldScale();
 	float	  scaleX	   = Math::Abs(scale.x);
-	FTVector3 scaleWithDir = FTVector3(scaleX * mDirection, scale.y, scale.z);
+	FTVector3 scaleWithDir = FTVector3(scaleX * frontDir * mDirection, scale.y, scale.z);
 	transform->SetWorldScale(scaleWithDir);
 	Matrix modelMat = transform->GetMatrixWorld();
 	modelMat *= Matrix::CreateScale(mSizeScale.GetDXVec3());
@@ -265,6 +283,12 @@ void FTMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicAr
 void FTMeshGroup::UpdateUI()
 {
 	CommandHistory::GetInstance()->UpdateVector3Value("Scale size", mSizeScale);
+
+	bool val = true;
+	0 < mFrontDir ? val = true : val = false;
+
+	CommandHistory::GetInstance()->UpdateBoolValue("Is Facing Right", val);
+	SetRightIsFront(val);
 }
 
 #endif // FOXTROT_EDITOR

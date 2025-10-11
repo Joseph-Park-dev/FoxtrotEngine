@@ -32,7 +32,7 @@ void FTSpineAnimation::Update(float deltaTime, spine::Physics physics)
 void FTSpineAnimation::Render(FoxtrotRenderer* renderer, Transform* transform, Camera* camInst, FTTexture* tex, FTVertexShader* vs, FTPixelShader* ps, FTMaterial* mat)
 {
 	// This enables the resource reusable throughout the Component instances.
-	UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat);
+	UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat, GetFrontDir());
 
 	if (!vs || !ps || !mat) // Vertex Shader is always required when drawing.
 		return;
@@ -209,7 +209,9 @@ void FTSpineAnimation::InitializeSpinAnim(ComPtr<ID3D11Device>& device)
 		}
 	}
 
+#ifdef FOXTROT_EDITOR
 	mMeshes->Reverse();
+#endif // FOXTROT_EDITOR
 
 	// Set default properties.
 	spine::Bone::setYDown(false);
@@ -401,6 +403,7 @@ void FTSpineAnimation::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
 	FTMeshGroup::SaveProperties(ofs);
+	FileIOHelper::SaveInt(ofs, ChunkKey::FTMeshGroup::FRONT_DIR, GetFrontDir());
 	FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTSpineAnimation::SKIN_COMBINATION, static_cast<UINT>(mSkinCombination));
 	FileIOHelper::SaveString(ofs, ChunkKey::FTSpineAnimation::JSON_KEY, mJSON->GetFileName());
 	FileIOHelper::SaveString(ofs, ChunkKey::FTSpineAnimation::ATLAS_KEY, mAtlasTxt->GetFileName());
@@ -409,7 +412,7 @@ void FTSpineAnimation::SaveProperties(std::ofstream& ofs)
 
 void FTSpineAnimation::LoadProperties(std::ifstream& ifs)
 {
-	FileIOHelper::BeginDataPackLoad(ifs);
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
 	FileIOHelper::LoadResource(ifs, mAtlasTxt, ResourceManager::GetInstance()->GetTexts());
 	FileIOHelper::LoadResource(ifs, mJSON, ResourceManager::GetInstance()->GetJSONs());
 
@@ -417,7 +420,12 @@ void FTSpineAnimation::LoadProperties(std::ifstream& ifs)
 	FileIOHelper::LoadUnsignedInt(ifs, skinCombi);
 	mSkinCombination = static_cast<unsigned char>(skinCombi);
 
+	int frontDir = -1;
+	FileIOHelper::LoadInt(ifs, frontDir);
+
 	FTMeshGroup::LoadProperties(ifs);
+
+	0 < frontDir ? SetRightIsFront(true) : SetRightIsFront(false);
 }
 
 const unsigned char FTSpineAnimation::GetSkinCombination() const

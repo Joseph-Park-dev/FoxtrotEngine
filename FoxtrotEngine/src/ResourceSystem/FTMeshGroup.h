@@ -40,6 +40,13 @@ public:
 	/// @brief Set scale value to be multiplied with the scale (3D transformation).
 	void SetSizeScale(const FTVector3 scale);
 
+	/// @brief Returns the initial front horizontal direction.
+	const int GetFrontDir() const;
+
+	/// @brief Set as the model is initially facing the right side of the screen?
+	/// @param val If this is true, it means yes.
+	void SetRightIsFront(bool val);
+
 public:
 	/// @brief Relative path is used for importing 3D files.
 	FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer);
@@ -69,13 +76,15 @@ protected:
 	/// @param transform Transformation of the mesh, usually of the Actor.
 	/// @param camInst Any camera instance in the .chunk.
 	/// @param mat Material applied to this mesh model.
+	/// @param frontDir Initial front direction the model is facing toward.
 	/// @todo If the engine targets for 2D games, remove the inverse transpose calculation.
 	virtual void UpdateConstantBuffers(
 		ComPtr<ID3D11Device>&		 device,
 		ComPtr<ID3D11DeviceContext>& context,
 		Transform*					 transform,
 		Camera*						 camInst,
-		FTMaterial*					 mat);
+		FTMaterial*					 mat,
+		const int					 frontDir = 0);
 
 	/// @brief Delete all created meshes.
 	void Clear();
@@ -93,8 +102,11 @@ protected:
 	const FTVector3& GetSizeScale() const;
 
 private:
-	/// @brief Horizontal direction this mesh is pointing to.
+	/// @brief Initial horizontal direction the mesh is pointing toward.
 	/// This is used to flip sprites when changing their direction.
+	int mFrontDir;
+
+	/// @brief Initial horizontal direction the mesh is pointing to.
 	int mDirection;
 
 	/// @brief X, Y, Z value that will be multiplied to the scale(3D transformation).
@@ -147,6 +159,7 @@ namespace ChunkKey
 		constexpr const char* VS_KEY		= "Vertex Shader Key";
 		constexpr const char* PS_KEY		= "Pixel Shader Key";
 		constexpr const char* MAT_KEY		= "Material Key";
+		constexpr const char* FRONT_DIR		= "Front Direction";
 
 		constexpr const char* DRAW_TEXTURE = "Draw Texture";
 		constexpr const char* DRAW_NORMALS = "Draw Normals";

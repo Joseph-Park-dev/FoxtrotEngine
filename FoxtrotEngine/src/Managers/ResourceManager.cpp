@@ -279,7 +279,10 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 	std::pair<size_t, FTDS::String> resPack	  = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RESOURCE_DATA);
 	size_t							packCount = resPack.first;
 
-	std::pair<size_t, FTDS::String> desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
+	std::pair<size_t, FTDS::String> desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTText::FT_TEXT);
+	LoadResourceFromChunk<FTText>(ifs, mTexts, desc.first);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
 	LoadResourceFromChunk<FTCSV>(ifs, mCSVs, desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::JSON::JSON);

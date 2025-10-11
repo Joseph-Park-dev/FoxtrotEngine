@@ -270,7 +270,7 @@ void Animator::UpdatePlayList()
 		mLoadedAnim->IterateArray([&](FTSpriteAnimation* anim) {
 			if (anim)
 			{
-				ImGui::PushID(anim->GetFileName().C_Str());
+				ImGui::PushID(anim);
 				ImGui::Text(anim->GetFileName().C_Str());
 				anim->UpdateUI();
 
@@ -279,6 +279,9 @@ void Animator::UpdatePlayList()
 				ImGui::SameLine();
 				if (ImGui::ArrowButton("##Down", ImGuiDir::ImGuiDir_Down))
 					mLoadedAnim->Swap(i + 1, i);
+
+				if (ImGui::Button("Update"))
+					AnimationManager::GetInstance()->SaveAnimationAsFile(anim);
 
 				if (ImGui::Button("Delete"))
 				{

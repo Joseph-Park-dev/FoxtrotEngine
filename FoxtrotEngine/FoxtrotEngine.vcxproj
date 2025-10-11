@@ -262,6 +262,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\Background\BackgroundScroller.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\CharacterMovement\HumanoidMove.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -269,6 +273,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\CharacterMovement\Move.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\Enemy\EnemyBehavior.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\HenryBehavior.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\Components\SpineAnimator.cpp" />

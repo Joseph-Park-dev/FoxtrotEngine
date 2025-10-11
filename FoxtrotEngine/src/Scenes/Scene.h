@@ -28,14 +28,12 @@ class Scene
 public:
 	void AddActor(Actor* actor);
 	void RemoveActor(Actor* actor);
-
-	/// <summary>
-	/// Finds the Actor from current scene by linear-searching the hierarchy.
-	/// </summary>
-	/// <param name="group : ">ActorGroup this Actor is assigned to.</param>
-	/// <param name="name : ">Actor's name</param>
-	/// <returns></returns>
+	
+	/// @brief Finds the Actor from current scene by linear-searching the hierarchy for matching ID.
+	Actor* FindActor(int id);
+	/// @brief Finds the Actor from current scene by linear-searching the hierarchy for matching name.
 	Actor* FindActor(FTDS::String& name, Actor* filter = nullptr);
+	/// @brief Finds the Actor from current scene by linear-searching the hierarchy for matching name.
 	Actor* FindActor(const char* name, Actor* filter = nullptr);
 
 public:

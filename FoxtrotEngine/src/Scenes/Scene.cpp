@@ -38,6 +38,18 @@ Scene::~Scene()
 	delete mPendingActors;
 }
 
+Actor* Scene::FindActor(int id)
+{
+	for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
+	{
+		if ((*iter)->GetID() == id)
+			return (*iter);
+		else
+			continue;
+	}
+	return nullptr;
+}
+
 Actor* Scene::FindActor(FTDS::String& name, Actor* filter)
 {
 	for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)

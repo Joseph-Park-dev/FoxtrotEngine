@@ -141,7 +141,10 @@ void SpineAnimator::EditorUIUpdate()
 
 	if (GetMeshGroup())
 	{
-		static_cast<FTSpineAnimation*>(GetMeshGroup())->UpdateUI();
+		FTSpineAnimation* anim = static_cast<FTSpineAnimation*>(GetMeshGroup());
+		anim->UpdateUI();
+		if (ImGui::Button("Update"))
+			AnimationManager::GetInstance()->SaveAnimationAsFile(anim);
 		MeshRenderer::EditorUIUpdate();
 	}
 }

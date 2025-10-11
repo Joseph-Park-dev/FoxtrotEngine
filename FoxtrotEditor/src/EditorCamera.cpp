@@ -127,8 +127,7 @@ void EditorCamera::DisplayMainCameraMenu()
 
 	// Set Target
 	EditorScene*				editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
-	FTDS::DynamicArray<Actor*>* editorElems;
-	editorElems				 = EditorSceneManager::GetInstance()->GetEditorScene()->Actors();
+	FTDS::DynamicArray<Actor*>* editorElems = editorScene->Actors();
 	FTDS::String* actorNames = DBG_NEW FTDS::String[editorElems->GetSize() + 1];
 	actorNames[0].Assign("None");
 	static size_t currIdx;

@@ -133,8 +133,10 @@ namespace FTEditorUtils
 		for (size_t i = 0; i < editorElems->GetSize(); ++i)
 			actorNames[i + 1] = editorElems->At(i)->GetName();
 
-		const char* comboPreview = actorNames[currIdx].C_Str();
-		if (ImGui::BeginCombo("Actor Selection", comboPreview))
+		FTDS::String comboPreview = actorNames[0];
+		if (selected)
+			comboPreview = selected->GetName();
+		if (ImGui::BeginCombo("Actor Selection", comboPreview.C_Str()))
 		{
 			for (size_t i = 0; i < editorElems->GetSize() + 1; ++i)
 			{

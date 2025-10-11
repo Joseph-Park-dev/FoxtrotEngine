@@ -42,6 +42,7 @@ public:
 	/// @brief Renders a single frame of the animation, which is a mesh.
 	/// Note that it's not derived from FTMeshGroup: no FTTexture parameter.
 	/// @param meshIndex Index of a mesh to be rendered.
+	/// @param frontDir Current direction the animation is facing toward.
 	void Render(
 		int				 meshIndex,
 		FoxtrotRenderer* renderer,

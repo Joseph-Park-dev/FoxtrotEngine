@@ -20,6 +20,7 @@ class FTInputDevice;
 
 #ifndef FOXTROT_EDITOR // If it's not on Editor.
 	#define FIND_ACTOR(name, filter) SceneManager::GetInstance()->GetCurrentScene()->FindActor(name, filter)
+	#define FIND_ACTOR(id) SceneManager::GetInstance()->GetCurrentScene()->FindActor(id)
 #endif // FOXTROT_EDITOR
 
 class SceneManager

@@ -14,26 +14,26 @@ namespace FTDS
 	{
 	public:
 		// Traversal Algorithms
-		template <typename CALLBACK>
-		void InOrder(CALLBACK func)
+		template <typename FUNC>
+		void InOrder(FUNC func)
 		{
 			InOrder(mRoot, func);
 		}
 
-		template <typename CALLBACK>
-		void PreOrder(CALLBACK func)
+		template <typename FUNC>
+		void PreOrder(FUNC func)
 		{
 			PreOrder(mRoot, func);
 		}
 
-		template <typename CALLBACK>
-		void PostOrder(CALLBACK func)
+		template <typename FUNC>
+		void PostOrder(FUNC func)
 		{
 			PostOrder(mRoot, func);
 		}
 
-		template <typename CALLBACK>
-		void LevelOrder(CALLBACK func)
+		template <typename FUNC>
+		void LevelOrder(FUNC func)
 		{
 			if (!IsEmpty())
 			{
@@ -64,12 +64,20 @@ namespace FTDS
 		BinTree()
 			: mRoot(nullptr) {}
 
+		~BinTree()
+		{
+			PostOrder([](BinaryNode<TYPE>* node) {
+				delete node;
+				node = nullptr;
+			});
+		}
+
 	protected:
 		BinaryNode<TYPE>* mRoot;
 
 	private:
-		template <typename CALLBACK>
-		void InOrder(BinaryNode<TYPE>* node, CALLBACK f)
+		template <typename FUNC>
+		void InOrder(BinaryNode<TYPE>* node, FUNC f)
 		{
 			if (node)
 			{
@@ -79,8 +87,8 @@ namespace FTDS
 			}
 		}
 
-		template <typename CALLBACK>
-		void PreOrder(BinaryNode<TYPE>* node, CALLBACK f)
+		template <typename FUNC>
+		void PreOrder(BinaryNode<TYPE>* node, FUNC f)
 		{
 			if (node)
 			{
@@ -90,8 +98,8 @@ namespace FTDS
 			}
 		}
 
-		template <typename CALLBACK>
-		void PostOrder(BinaryNode<TYPE>* node, CALLBACK f)
+		template <typename FUNC>
+		void PostOrder(BinaryNode<TYPE>* node, FUNC f)
 		{
 			if (node)
 			{

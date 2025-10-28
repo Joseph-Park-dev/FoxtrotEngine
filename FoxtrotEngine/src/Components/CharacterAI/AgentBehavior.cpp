@@ -50,7 +50,7 @@ void AgentBehavior::Setup()
 		mTarget = FIND_ACTOR(mTargetName, nullptr);
 #else
 	if (!FTDS::StringEqual(mTargetName.C_Str(), ChunkKey::NullVal::NULL_OBJECT))
-		mTarget = FIND_ACTOR(mTargetName);
+		mTarget = FIND_ACTOR(mTargetName, nullptr);
 #endif // FOXTROT_EDITOR
 	Component::Setup();
 }

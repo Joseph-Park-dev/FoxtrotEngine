@@ -84,6 +84,13 @@ public:
 		ComPtr<ID3D11VertexShader>&				vertexShader,
 		ComPtr<ID3D11InputLayout>&				inputLayout);
 
+	static HRESULT CreateVertexShaderAndInputLayout(
+		ComPtr<ID3D11Device>&								device,
+		const wstring&										filename,
+		const FTDS::DynamicArray<D3D11_INPUT_ELEMENT_DESC>& inputElements,
+		ComPtr<ID3D11VertexShader>&							vertexShader,
+		ComPtr<ID3D11InputLayout>&							inputLayout);
+
 	static HRESULT CreateRenderTargetView(
 		ComPtr<ID3D11RenderTargetView>& RTV,
 		ComPtr<ID3D11Device>&			device,
@@ -163,9 +170,37 @@ public:
 
 	template <typename T_VERTEX>
 	static void CreateVertexBuffer(
-		ComPtr<ID3D11Device>&				device,
-		const FTDS::DynamicArray<T_VERTEX>& vertices,
-		ComPtr<ID3D11Buffer>&				vertexBuffer)
+		ComPtr<ID3D11Device>& device,
+		T_VERTEX*			  vertex,
+		ComPtr<ID3D11Buffer>& vertexBuffer)
+	{
+		// D3D11_USAGE enumeration (d3d11.h)
+		// https://learn.microsoft.com/en-us/windows/win32/api/d3d11/ne-d3d11-d3d11_usage
+
+		D3D11_BUFFER_DESC bufferDesc;
+		ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+		bufferDesc.Usage			   = D3D11_USAGE_DYNAMIC;
+		bufferDesc.ByteWidth		   = UINT(sizeof(T_VERTEX));
+		bufferDesc.BindFlags		   = D3D11_BIND_VERTEX_BUFFER;
+		bufferDesc.CPUAccessFlags	   = D3D11_CPU_ACCESS_WRITE; // 0 if no CPU access is necessary.
+		bufferDesc.StructureByteStride = sizeof(T_VERTEX);
+
+		D3D11_SUBRESOURCE_DATA vertexBufferData = {
+			0
+		}; // MS 예제에서 초기화하는 방식
+		vertexBufferData.pSysMem		  = vertex;
+		vertexBufferData.SysMemPitch	  = 0;
+		vertexBufferData.SysMemSlicePitch = 0;
+
+		const HRESULT hr = device->CreateBuffer(&bufferDesc, &vertexBufferData, vertexBuffer.GetAddressOf());
+		DX::ThrowIfFailed(hr);
+	}
+
+	template <typename T_VERTEX>
+	static void CreateVertexBuffer(
+		ComPtr<ID3D11Device>&		  device,
+		FTDS::DynamicArray<T_VERTEX>& vertices,
+		ComPtr<ID3D11Buffer>&		  vertexBuffer)
 	{
 		// D3D11_USAGE enumeration (d3d11.h)
 		// https://learn.microsoft.com/en-us/windows/win32/api/d3d11/ne-d3d11-d3d11_usage

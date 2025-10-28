@@ -54,6 +54,9 @@ namespace FileTypes
 	constexpr const char* VERTEX_SHADER = "VS";
 	constexpr const char* PIXEL_SHADER	= "PS";
 
+	constexpr const char* FONT = ".fnt";
+	constexpr const char* FONT_META = ".fontmeta";
+
 	namespace Sound
 	{
 		constexpr const char* WAV = ".wav";

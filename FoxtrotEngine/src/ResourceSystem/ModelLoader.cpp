@@ -111,10 +111,10 @@ FTMeshData ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene) {
         vertex.position.y = mesh->mVertices[i].y;
         vertex.position.z = mesh->mVertices[i].z;
 
-        vertex.normal.x = mesh->mNormals[i].x;
+        /*vertex.normal.x = mesh->mNormals[i].x;
         vertex.normal.y = mesh->mNormals[i].y;
         vertex.normal.z = mesh->mNormals[i].z;
-        vertex.normal.Normalize();
+        vertex.normal.Normalize();*/
 
         if (mesh->mTextureCoords[0]) {
             vertex.texcoord.x = (float)mesh->mTextureCoords[0][i].x;

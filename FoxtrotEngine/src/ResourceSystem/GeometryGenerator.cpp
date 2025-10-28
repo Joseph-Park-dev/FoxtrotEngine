@@ -20,6 +20,7 @@
 #include "ResourceSystem/Tile.h"
 #include "ResourceSystem/TextAttribute.h"
 #include "ResourceSystem/ModelLoader.h"
+#include "ResourceSystem/FTFont/TextVertex.h"
 
 #include "Static/FTString.h"
 
@@ -70,8 +71,8 @@ FTMeshData GeometryGenerator::MakeSquare()
 	{
 		Vertex v;
 		v.position = positions[i];
-		// v.color = colors[i];
-		v.normal   = normals[i];
+		v.color = colors[i];
+		//v.normal   = normals[i];
 		v.texcoord = texcoords[i];
 		meshData.Vertices.PushBack(v);
 	}
@@ -125,8 +126,8 @@ FTMeshData GeometryGenerator::MakeSquare(float scale)
 	{
 		Vertex v;
 		v.position = positions[i];
-		// v.color = colors[i];
-		v.normal   = normals[i];
+		v.color = colors[i];
+		//v.normal   = normals[i];
 		v.texcoord = texcoords[i];
 		meshData.Vertices.PushBack(v);
 	}
@@ -139,6 +140,20 @@ FTMeshData GeometryGenerator::MakeSquare(float scale)
 	meshData.Indices.PushBack(0);
 	meshData.Indices.PushBack(2);
 	meshData.Indices.PushBack(3);
+
+	return meshData;
+}
+
+FTMeshData GeometryGenerator::MakePoint(FTVector3 color)
+{
+	FTMeshData meshData;
+
+	Vertex vertex;
+	vertex.position = Vector3::Zero;
+	vertex.color	= color.GetDXVec3();
+	vertex.texcoord = Vector2::Zero;
+
+	meshData.Vertices.PushBack(vertex);
 
 	return meshData;
 }
@@ -193,8 +208,8 @@ FTMeshData* GeometryGenerator::MakeSquare(float scale, FTVector3 color)
 	{
 		Vertex v;
 		v.position = positions[i];
-		// v.color = colors[i];
-		v.normal   = normals[i];
+		v.color = colors[i];
+		//v.normal   = normals[i];
 		v.texcoord = texcoords[i];
 		meshData->Vertices.PushBack(v);
 	}
@@ -272,8 +287,8 @@ FTMeshData GeometryGenerator::MakeTile(Tile& tile)
 	{
 		Vertex v;
 		v.position = positions[i];
-		// v.color = colors[i];
-		v.normal   = normals[i];
+		v.color = colors[i];
+		//v.normal   = normals[i];
 		v.texcoord = texcoords[i];
 		meshData.Vertices.PushBack(v);
 	}
@@ -350,8 +365,8 @@ FTMeshData* GeometryGenerator::MakeAnimationFrame(Tile tile)
 	{
 		Vertex v;
 		v.position = positions[i];
-		// v.color = colors[i];
-		v.normal   = normals[i];
+		v.color = colors[i];
+		//v.normal   = normals[i];
 		v.texcoord = texcoords[i];
 		meshData->Vertices.PushBack(v);
 	}

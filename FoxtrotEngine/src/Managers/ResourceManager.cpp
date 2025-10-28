@@ -27,6 +27,7 @@
 #include "ResourceSystem/GenericData/FTCSV.h"
 #include "ResourceSystem/GenericData/FTJSON.h"
 #include "ResourceSystem/GenericData/FTText.h"
+#include "ResourceSystem/FTFont/FTFont.h"
 #include "Core/FTCore.h"
 #include "Core/TemplateFunctions.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -62,6 +63,7 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 	mCSVs			  = DBG_NEW				FTDS::HashMap<FTCSV*>;
 	mJSONs			  = DBG_NEW			   FTDS::HashMap<FTJSON*>;
 	mTexts			  = DBG_NEW			   FTDS::HashMap<FTText*>;
+	mFonts			  = DBG_NEW			   FTDS::HashMap<FTFont*>;
 }
 
 void ResourceManager::DeleteAll()
@@ -79,6 +81,7 @@ void ResourceManager::DeleteAll()
 	ClearMap(mCSVs);
 	ClearMap(mJSONs);
 	ClearMap(mTexts);
+	ClearMap(mFonts);
 }
 
 FTDS::String& ResourceManager::GetPathToAsset()
@@ -196,6 +199,11 @@ FTDS::HashMap<FTText*>* ResourceManager::GetTexts()
 	return mTexts;
 }
 
+FTDS::HashMap<FTFont*>* ResourceManager::GetFonts()
+{
+	return mFonts;
+}
+
 void ResourceManager::LoadMaterials()
 {
 	const char* key	 = ChunkKey::NullVal::NULL_OBJECT;
@@ -235,6 +243,7 @@ ResourceManager::~ResourceManager()
 	delete mCSVs;
 	delete mJSONs;
 	delete mTexts;
+	delete mFonts;
 
 	mTextures		  = nullptr;
 	mTileMaps		  = nullptr;
@@ -249,6 +258,7 @@ ResourceManager::~ResourceManager()
 	mCSVs			  = nullptr;
 	mJSONs			  = nullptr;
 	mTexts			  = nullptr;
+	mFonts			  = nullptr;
 }
 
 ResourceManager::ResourceManager()
@@ -267,6 +277,7 @@ ResourceManager::ResourceManager()
 	, mCSVs(nullptr)
 	, mJSONs(nullptr)
 	, mTexts(nullptr)
+	, mFonts(nullptr)
 {
 }
 
@@ -311,6 +322,9 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
 	LoadGraphicsResourceFromChunk<FTSpineAnimation>(ifs, mSpineAnimations, desc.first, mRenderer);
+
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTFont::FTFONT);
+	LoadGraphicsResourceFromChunk<FTFont>(ifs, mFonts, desc.first, mRenderer);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPremade::FT_PREMADE);
 	LoadResourceFromChunk<FTPremade>(ifs, mPremades, desc.first);
@@ -561,6 +575,22 @@ FTJSON* ResourceManager::GetLoadedJSON(FTDS::String& key)
 FTText* ResourceManager::GetLoadedText(FTDS::String& key)
 {
 	FTDS::Record<FTText*>* rec = mTexts->At(key);
+	if (!rec)
+	{
+		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
+		return nullptr;
+	}
+
+#ifdef FOXTROT_EDITOR
+	rec->Value()->AddRefCount();
+#endif // FOXTROT_EDITOR
+
+	return rec->Value();
+}
+
+FTFont* ResourceManager::GetLoadedFont(FTDS::String& key)
+{
+	FTDS::Record<FTFont*>* rec = mFonts->At(key);
 	if (!rec)
 	{
 		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");

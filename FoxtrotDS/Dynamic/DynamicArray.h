@@ -130,14 +130,14 @@ namespace FTDS
 			: FTDS::Array<TYPE>()
 			, mSize(0)
 		{
-			this->AllocateMem(1);
+			this->Reserve(1);
 		}
 
 		DynamicArray(size_t capacity)
 			: FTDS::Array<TYPE>()
 			, mSize(0)
 		{
-			this->AllocateMem(capacity);
+			this->Reserve(capacity);
 		}
 
 		void Clear() override

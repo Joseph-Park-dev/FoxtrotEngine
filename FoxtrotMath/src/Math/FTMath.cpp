@@ -99,6 +99,13 @@ const DirectX::XMFLOAT3 FTVector3::GetDXVec3() const
 	return DirectX::XMFLOAT3(this->x, this->y, this->z);
 }
 
+void FTVector3::Assign(float arr[3]) const
+{
+	arr[0] = this->x;
+	arr[1] = this->y;
+	arr[2] = this->z;
+}
+
 float FTVector3::LengthSq()
 {
 	return (x * x + y * y + z * z);

@@ -15,6 +15,7 @@
 #include "ResourceSystem/FTMaterials/StandardMaterial.h"
 #include "ResourceSystem/FTMaterials/RimMaterial.h"
 #include "ResourceSystem/Sound/Sound.h"
+#include "ResourceSystem/FTFont/FTFont.h"
 
 #include "EditorChunkLoader.h"
 #include "DirectoryHelper.h"
@@ -24,7 +25,7 @@
 #include "Static/FTString.h"
 
 // Number of attempts to load resources aborted during the last loading.
-constexpr size_t RESOURCE_IMPORT_ATTEMPT = 3;
+constexpr size_t MAX_ABORTED_COUNT = 50;
 
 void EditorResourceManager::Initialize(FoxtrotRenderer* renderer)
 {
@@ -38,6 +39,10 @@ void EditorResourceManager::SaveResources(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTPremade::FT_PREMADE);
 	SaveResourceToChunk<FTPremade>(ofs, ResourceManager::GetInstance()->GetPremades());
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTPremade::FT_PREMADE);
+
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTFont::FTFONT);
+	SaveResourceToChunk<FTFont>(ofs, ResourceManager::GetInstance()->GetFonts());
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTFont::FTFONT);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
 	SaveResourceToChunk<FTSpineAnimation>(ofs, ResourceManager::GetInstance()->GetSpineAnimations());
@@ -101,6 +106,7 @@ void EditorResourceManager::LoadAllResourcesInAsset()
 	GetCSVs()->Reserve(20);
 	GetJSONs()->Reserve(20);
 	GetTexts()->Reserve(20);
+	GetFonts()->Reserve(20);
 
 	const char* pathToAsset = ResourceManager::GetInstance()->GetPathToAsset().C_Str();
 
@@ -157,6 +163,9 @@ void EditorResourceManager::LoadResByType(const char* filePath, FTDS::DynamicArr
 			break;
 		case ResType::FTMESH:
 			res = LoadResource(path, GetMeshGroups(), ResourceManager::GetInstance()->GetRenderer());
+			break;
+		case ResType::FTFONT:
+			res = LoadResource(path, GetFonts(), ResourceManager::GetInstance()->GetRenderer());
 			break;
 
 		// Loads non-Graphics resource.
@@ -238,6 +247,9 @@ void EditorResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
 	LoadDummyResource<FTSpineAnimation>(ifs, GetSpineAnimations(), desc.first);
 
+	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTFont::FTFONT);
+	LoadDummyResource<FTFont>(ifs, GetFonts(), desc.first);
+
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPremade::FT_PREMADE);
 	LoadDummyResource<FTPremade>(ifs, GetPremades(), desc.first);
 }
@@ -305,6 +317,11 @@ FTDS::HashMap<FTJSON*>* EditorResourceManager::GetJSONs()
 FTDS::HashMap<FTText*>* EditorResourceManager::GetTexts()
 {
 	return ResourceManager::GetInstance()->GetTexts();
+}
+
+FTDS::HashMap<FTFont*>* EditorResourceManager::GetFonts()
+{
+	return ResourceManager::GetInstance()->GetFonts();
 }
 
 void EditorResourceManager::UpdateUI()
@@ -399,6 +416,9 @@ ResType EditorResourceManager::GetResType(FTDS::String& fileName)
 
 	else if (StrContains(FileTypes::PREMADE, format))
 		return ResType::FTPREMADE;
+
+	else if (StrContains(FileTypes::FONT, format))
+		return ResType::FTFONT;
 
 	else
 		return ResType::UNSUPPORTED;

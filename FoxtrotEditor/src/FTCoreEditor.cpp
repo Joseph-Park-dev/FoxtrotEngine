@@ -41,6 +41,7 @@
 #include "Managers/CollisionManager.h"
 #include "Managers/AnimationManager.h"
 #include "Managers/SoundManager.h"
+#include "Managers/FontManager.h"
 #include "ResourceSystem/FTRectangle.h"
 
 // FTCoreEditor related singleton initializations -> used in Foxtrot Editor Runtime
@@ -52,6 +53,7 @@ EditorChunkLoader*	   EditorChunkLoader::mInstance		= nullptr;
 FTCoreEditor*		   FTCoreEditor::mInstance			= nullptr;
 EditorCamera*		   EditorCamera::mInstance			= nullptr;
 EditorResourceManager* EditorResourceManager::mInstance = nullptr;
+FontManager*		   FontManager::mInstance			= nullptr;
 
 bool FTCoreEditor::Initialize()
 {
@@ -68,7 +70,7 @@ bool FTCoreEditor::Initialize()
 	}
 
 	FTRectArea* rndArea = DBG_NEW FTRectArea(500.f, 500.f, 1280.f, 720.f);
-	mEditorWindow = DBG_NEW FTWindow("Foxtrot Editor", 3840, 2160, rndArea);
+	mEditorWindow		= DBG_NEW		FTWindow("Foxtrot Editor", 3840, 2160, rndArea);
 
 	if (!mEditorWindow->InitializeWindow(WndProc_FTEditor))
 	{
@@ -108,6 +110,7 @@ void FTCoreEditor::ShutDown()
 	EditorSceneManager::GetInstance()->DeleteAll();
 	EditorLayer::GetInstance()->ShutDown();
 
+	FontManager::GetInstance()->Destroy();
 	EditorCamera::GetInstance()->Destroy();
 	CommandHistory::GetInstance()->Destroy();
 	DebugShapes::GetInstance()->Destroy();

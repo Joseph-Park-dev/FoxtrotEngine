@@ -253,7 +253,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>.\lib;.\lib\Box2D;..\FoxtrotMath\Builds;..\FoxtrotEngine\Builds;..\FoxtrotEngine\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>soloud.lib;soloud_static.lib;FoxtrotMath.lib;FoxtrotEngine.lib;box2dd.lib;DirectXTK.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>soloud.lib;soloud_static.lib;FoxtrotMath.lib;FoxtrotEngine.lib;box2dd.lib;DirectXTK.lib;assimp-vc143-mtd.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -276,7 +276,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="include\imgui\backends\imgui_impl_allegro5.cpp" />
     <ClCompile Include="include\imgui\backends\imgui_impl_android.cpp" />
     <ClCompile Include="include\imgui\backends\imgui_impl_dx10.cpp" />
     <ClCompile Include="include\imgui\backends\imgui_impl_dx11.cpp" />
@@ -288,10 +287,8 @@
     <ClCompile Include="include\imgui\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="include\imgui\backends\imgui_impl_sdl2.cpp" />
     <ClCompile Include="include\imgui\backends\imgui_impl_sdl3.cpp" />
-    <ClCompile Include="include\imgui\backends\imgui_impl_sdlgpu3.cpp" />
     <ClCompile Include="include\imgui\backends\imgui_impl_sdlrenderer2.cpp" />
     <ClCompile Include="include\imgui\backends\imgui_impl_sdlrenderer3.cpp" />
-    <ClCompile Include="include\imgui\backends\imgui_impl_vulkan.cpp" />
     <ClCompile Include="include\imgui\backends\imgui_impl_wgpu.cpp" />
     <ClCompile Include="include\imgui\backends\imgui_impl_win32.cpp" />
     <ClCompile Include="include\imgui\examples\example_allegro5\main.cpp" />
@@ -320,6 +317,7 @@
     <ClCompile Include="include\imgui\examples\libs\usynergy\uSynergy.c" />
     <ClCompile Include="include\imgui\imgui.cpp" />
     <ClCompile Include="include\imgui\ImGuiFileDialog\ImGuiFileDialog.cpp" />
+    <ClCompile Include="include\imgui\ImGuizmo.cpp" />
     <ClCompile Include="include\imgui\imgui_demo.cpp" />
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
     <ClCompile Include="include\imgui\imgui_tables.cpp" />
@@ -369,7 +367,6 @@
     <ClInclude Include="include\directxtk\SpriteFont.h" />
     <ClInclude Include="include\directxtk\VertexTypes.h" />
     <ClInclude Include="include\directxtk\WICTextureLoader.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_allegro5.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_android.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_dx10.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_dx11.h" />
@@ -384,7 +381,6 @@
     <ClInclude Include="include\imgui\backends\imgui_impl_osx.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_sdl2.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_sdl3.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_sdlgpu3.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_sdlgpu3_shaders.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_sdlrenderer2.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_sdlrenderer3.h" />
@@ -404,6 +400,7 @@
     <ClInclude Include="include\imgui\ImGuiFileDialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="include\imgui\ImGuiFileDialog\stb\stb_image.h" />
     <ClInclude Include="include\imgui\ImGuiFileDialog\stb\stb_image_resize2.h" />
+    <ClInclude Include="include\imgui\ImGuizmo.h" />
     <ClInclude Include="include\imgui\imgui_internal.h" />
     <ClInclude Include="include\imgui\imstb_rectpack.h" />
     <ClInclude Include="include\imgui\imstb_textedit.h" />

@@ -21,7 +21,7 @@
 using Matrix = DirectX::SimpleMath::Matrix;
 
 FTShape::FTShape()
-	: mMesh(nullptr)
+	: mMesh(DBG_NEW Mesh)
 	, mVSCData()
 	, mGSCData()
 	, mPSCData()
@@ -47,7 +47,7 @@ FTShape::~FTShape()
 DebugVCData& FTShape::GetVCData() { return mVSCData; }
 DebugGCData& FTShape::GetGSCData() { return mGSCData; }
 DebugPCData& FTShape::GetPixelConstantData() { return mPSCData; }
-Mesh*		 FTShape::GetMesh() { return mMesh; }
+Mesh* FTShape::GetMesh() { return mMesh; }
 
 void FTShape::Initialize(FoxtrotRenderer* renderer)
 {
@@ -147,9 +147,7 @@ void FTShape::Render(
 
 void FTShape::InitializeMesh(ComPtr<ID3D11Device>& device, FTDebugMeshData&& meshData)
 {
-	mMesh			   = DBG_NEW Mesh;
 	mMesh->VertexCount = UINT(meshData.Vertices.size());
-
 	D3D11Utils::CreateVertexBuffer(device, meshData.Vertices, mMesh->VertexBuffer);
 }
 
@@ -214,7 +212,7 @@ void FTShape::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11D
 	if (mVSCBuf)
 		D3D11Utils::UpdateBuffer(context, mVSCData, mVSCBuf);
 	else
-		printf("ERROR : FTShape::UpdateConstantBuffers() -> Vertex Constant Buffer is null");
+		Debug::LogError(__LINE__, __FILE__, "VSC Buffer is null");
 
 	if (mGSCBuf)
 		D3D11Utils::UpdateBuffer(context, mGSCData, mGSCBuf);
@@ -224,5 +222,5 @@ void FTShape::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11D
 	if (mPSCBuf)
 		D3D11Utils::UpdateBuffer(context, mPSCData, mPSCBuf);
 	else
-		printf("ERROR : FTShape::UpdateConstantBuffers() -> Pixel Constant Buffer is null");
+		Debug::LogError(__LINE__, __FILE__, "PSC Buffer is null");
 }

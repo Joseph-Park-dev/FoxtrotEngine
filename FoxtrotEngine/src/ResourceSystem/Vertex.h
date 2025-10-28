@@ -32,14 +32,13 @@ struct Vertex
 #endif // FOXTROT_EDITOR
 
 	DirectX::SimpleMath::Vector3 position;
-	// DirectX::SimpleMath::Vector3 color;
-	DirectX::SimpleMath::Vector3 normal;
+	DirectX::SimpleMath::Vector3 color;
 	DirectX::SimpleMath::Vector2 texcoord;
 
 	Vertex operator=(Vertex& v)
 	{
 		position = v.position;
-		normal	 = v.normal;
+		color	 = v.color;
 		texcoord = v.texcoord;
 
 		return *this;

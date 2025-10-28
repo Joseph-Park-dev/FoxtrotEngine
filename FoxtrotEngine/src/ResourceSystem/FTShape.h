@@ -33,8 +33,9 @@ public:
 	DebugVCData& GetVCData();
 	DebugGCData& GetGSCData();
 	DebugPCData& GetPixelConstantData();
-	Mesh*		 GetMesh();
-	bool		 GetIsActive() { return mIsActive; }
+
+	Mesh* GetMesh();
+	bool  GetIsActive() { return mIsActive; }
 
 	void SetIsActive(bool val) { mIsActive = val; }
 

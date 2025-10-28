@@ -21,6 +21,7 @@ class GeometryGenerator
 public:
 	static FTMeshData	   MakeSquare();
 	static FTMeshData	   MakeSquare(float scale);
+	static FTMeshData	   MakePoint(FTVector3 color);
 	static FTDebugMeshData MakeDebugPoint(FTVector3 color);
 	static FTMeshData*	   MakeSquare(float scale, FTVector3 color);
 

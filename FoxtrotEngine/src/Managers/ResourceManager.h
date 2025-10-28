@@ -48,6 +48,7 @@ class Sound;
 class FTCSV;
 class FTJSON;
 class FTText;
+class FTFont;
 class FileIOHelper;
 
 enum class ResType
@@ -67,7 +68,8 @@ enum class ResType
 	FTJSON,
 	FTTEXT,
 	FT_SHADER_META,
-	FTSOUND
+	FTSOUND,
+	FTFONT
 };
 
 namespace ChunkKey
@@ -116,6 +118,7 @@ public:
 	virtual FTCSV*			   GetLoadedCSV(FTDS::String& key);
 	virtual FTJSON*			   GetLoadedJSON(FTDS::String& key);
 	virtual FTText*			   GetLoadedText(FTDS::String& key);
+	virtual FTFont*			   GetLoadedFont(FTDS::String& key);
 
 	FTDS::String& GetPathToAsset();
 	virtual void  SetPathToAsset(FTDS::String&& projectPath);
@@ -137,6 +140,7 @@ public:
 	virtual FTDS::HashMap<FTCSV*>*			   GetCSVs();
 	virtual FTDS::HashMap<FTJSON*>*			   GetJSONs();
 	virtual FTDS::HashMap<FTText*>*			   GetTexts();
+	virtual FTDS::HashMap<FTFont*>*			   GetFonts();
 
 	///////////////////////////
 	// Save | Load resources //
@@ -194,7 +198,8 @@ private:
 	FTDS::HashMap<FTPixelShader*>*	mPixelShaders;
 	FTDS::HashMap<FTMaterial*>*		mMaterials;
 
-	FTDS::HashMap<Sound*>* mSounds;
+	FTDS::HashMap<FTFont*>* mFonts;
+	FTDS::HashMap<Sound*>*	mSounds;
 
 	////////////////////////////
 	// Generic-type resources //

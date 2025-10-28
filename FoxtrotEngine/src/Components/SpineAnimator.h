@@ -12,6 +12,9 @@ public:
 	virtual FTDS::String GetName() const override { return "SpineAnimator"; }
 
 public:
+	void Play(const int idx, bool isRepeated);
+
+public:
 	void		 Initialize(FTCore* coreInst) override;
 	virtual void Update(float deltaTime) override;
 	void		 Render(FoxtrotRenderer* renderer) override;

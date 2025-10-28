@@ -24,6 +24,11 @@
 	#include "EditorCamera.h"
 #endif // FOXTROT_EDITOR
 
+void SpineAnimator::Play(const int idx, bool isRepeated)
+{
+	static_cast<FTSpineAnimation*>(GetMeshGroup())->SetAnimation(idx, isRepeated);
+}
+
 void SpineAnimator::Initialize(FTCore* coreInst)
 {
 	SetRenderer(coreInst->GetGameRenderer());

@@ -32,7 +32,8 @@
 #include <fstream>
 #include <string>
 
-#include "box2d/box2d.h"
+	#include "box2d/box2d.h"
+
 #include "directxtk/SimpleMath.h"
 
 #ifdef FOXTROT_EDITOR
@@ -201,8 +202,8 @@ public:
 	explicit FTVector3(float inX, float inY, float inZ);
 
 	FTVector3(FTVector2 vec2);
-	FTVector3(b2Vec2 vec2);
 	FTVector3(DirectX::SimpleMath::Vector3 vec3);
+	FTVector3(b2Vec2 vec2);
 
 	// Vector addition (a + b)
 	friend FTVector3 operator+(const FTVector3& a, const FTVector3& b)
@@ -303,8 +304,9 @@ public:
 		return ofs;
 	}
 
-	const b2Vec2			GetB2Vec2() const;
+	const b2Vec2 GetB2Vec2() const;
 	const DirectX::XMFLOAT3 GetDXVec3() const;
+	void Assign(float arr[3]) const;
 
 	// Length squared of vector
 	float LengthSq();
@@ -367,6 +369,12 @@ public:
 	}
 
 	explicit FTVector2(b2Vec2 vec2)
+		: x(static_cast<float>(vec2.x))
+		, y(static_cast<float>(vec2.y))
+	{
+	}
+
+	explicit FTVector2(const b2Vec2& vec2)
 		: x(static_cast<float>(vec2.x))
 		, y(static_cast<float>(vec2.y))
 	{

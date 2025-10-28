@@ -8,6 +8,7 @@
 #include "ResourceSystem/Animation/FTSpineAnimation.h"
 #include "ResourceSystem/Animation/FTSpriteAnimation.h"
 #include "ResourceSystem/FTPremade.h"
+#include "ResourceSystem/FTFont/FTFont.h"
 
 #include <FTCoreEditor.h>
 
@@ -47,6 +48,7 @@ public:
 	FTDS::HashMap<FTCSV*>*			   GetCSVs() override;
 	FTDS::HashMap<FTJSON*>*			   GetJSONs() override;
 	FTDS::HashMap<FTText*>*			   GetTexts() override;
+	FTDS::HashMap<FTFont*>*			   GetFonts() override;
 
 public:
 	template <typename FTRESOURCE>

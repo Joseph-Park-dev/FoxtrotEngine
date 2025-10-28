@@ -84,6 +84,7 @@ private:
 	FTVertexShader*	 mVS;
 	FTPixelShader*	 mPS;
 	FTMaterial*		 mMaterial;
+	int				 mFrontDir;
 
 	///////////////////////////////////
 	// Save & Load related functions //

@@ -6,29 +6,28 @@
 #include "ResourceSystem/FTFontMap.h"
 #include "ResourceSystem/TextAttribute.h"
 
+class FTFont;
+
 class TextRenderer :
-	public Component
+	public MeshRenderer
 {
 public:
 	virtual FTDS::String GetName() const override;
 
 public:
-	virtual void Initialize(FTCore* coreInstance) override;
+	void UpdateText(FTDS::String&& text, FoxtrotRenderer* renderer);
+
+public:
 	virtual void Render(FoxtrotRenderer* renderer) override;
 
 public:
 	TextRenderer(
 		Actor* owner,
 		int	   UpdateOrder);
-	~TextRenderer() override;
 	virtual void CloneTo(Actor* actor) override;
 
 private:
-	FTDS::String	   mText;
-	TextAttribute* mTextAttribute;
-
-	DirectX::SpriteBatch* spriteBatch;
-	DirectX::SpriteFont*  spriteFont;
+	FTDS::String mText;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
@@ -36,10 +35,9 @@ public:
 
 #ifdef FOXTROT_EDITOR
 public:
-	virtual void EditorUIUpdate() override;
-
-	void UpdateText();
-	void UpdateTextAttribute();
+	// void UpdateTextAttribute();
+	void EditorRender(FoxtrotRenderer* renderer) override;
+	void EditorUIUpdate() override;
 #endif // FOXTROT_EDITOR
 };
 
@@ -53,5 +51,5 @@ namespace ChunkKey
 		constexpr const char* TEXT_ORIGIN	= "Origin";
 		constexpr const char* TEXT_SCALE	= "Scale";
 		constexpr const char* TEXT_COLOR	= "Color";
-	}
+	} // namespace TextRenderer
 } // namespace ChunkKey

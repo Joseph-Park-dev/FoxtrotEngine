@@ -2,7 +2,6 @@
   "name": "foxtrot-engine",
   "dependencies": [
     "directxtex",
-    "directxtk",
-    "stb"
+    "directxtk"
   ]
 }

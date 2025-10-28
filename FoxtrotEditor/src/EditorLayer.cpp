@@ -40,6 +40,7 @@
 #include "Managers/AnimationManager.h"
 #include "Managers/TileMapManager.h"
 #include "Managers/SoundManager.h"
+#include "Managers/FontManager.h"
 #include "Scenes/Scene.h"
 #include "Actors/Actor.h"
 #include "Actors/ActorGroup.h"
@@ -350,9 +351,9 @@ void EditorLayer::DisplayMainMenuBar()
 
 void EditorLayer::DisplayManagersMenu()
 {
-	const size_t maxMenuEle			= 2;
-	const char*	 menu[maxMenuEle]	= { "Animation Manager", "Sound Manager" };
-	static bool	 opened[maxMenuEle] = { false, false };
+	const size_t maxMenuEle			= 3;
+	const char*	 menu[maxMenuEle]	= { "Animation Manager", "Sound Manager", "Font Manager" };
+	static bool	 opened[maxMenuEle] = { false, false, false };
 
 	if (ImGui::Button("Managers"))
 		ImGui::OpenPopup("ManagerPopUp");
@@ -368,7 +369,9 @@ void EditorLayer::DisplayManagersMenu()
 	if (opened[0])
 		AnimationManager::GetInstance()->UpdateUI(&opened[0]);
 	if (opened[1])
-		SoundManager::GetInstance()->UpdateUI(&opened[2]);
+		SoundManager::GetInstance()->UpdateUI(&opened[1]);
+	if (opened[2])
+		FontManager::GetInstance()->UpdateUI(&opened[2]);
 }
 
 void EditorLayer::DisplayHierarchyMenu()
@@ -556,6 +559,10 @@ void EditorLayer::DisplayInspectorMenu()
 				ActorGroup group = mFocusedEditorElement->GetActorGroup();
 				int actorPos = scene->Actors()->Find(mFocusedEditorElement);
 				scene->Actors()->Erase(actorPos);
+
+				delete mFocusedEditorElement;
+				mFocusedEditorElement = nullptr;
+
 				if (0 < mActorNameIdx)
 					mActorNameIdx = scene->Actors()->GetSize() - 1;
 			}

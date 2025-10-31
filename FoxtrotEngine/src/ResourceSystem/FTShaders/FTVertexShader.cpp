@@ -13,8 +13,16 @@ void FTVertexShader::Process(FoxtrotRenderer* renderer)
 
 void FTVertexShader::CompileShader(FoxtrotRenderer* renderer)
 {
-	if (mSemanticsName.size() < 1)
+	if (mSemanticItems->IsEmpty())
 		return;
+
+	D3D11_INPUT_ELEMENT_DESC* inputDesc = DBG_NEW D3D11_INPUT_ELEMENT_DESC[mSemanticItems->GetSize()];
+	for (size_t i = 0; i < mSemanticItems->GetSize(); ++i)
+	{
+		inputDesc[i]			  = mSemanticItems->At(i)->Desc;
+		inputDesc[i].SemanticName = mSemanticItems->At(i)->Name.C_Str();
+	}
+
 	mShader.Reset();
 
 	const wchar_t* fileName = GetRelativePath().WC_Str();
@@ -22,55 +30,26 @@ void FTVertexShader::CompileShader(FoxtrotRenderer* renderer)
 		D3D11Utils::CreateVertexShaderAndInputLayout(
 			renderer->GetDevice(),
 			fileName,
-			mInputElements,
+			inputDesc,
+			mSemanticItems->GetSize(),
 			mShader,
 			mInputLayout));
 	delete[] fileName;
+	delete[] inputDesc;
 }
 
-void FTVertexShader::RegisterInputElementDesc(const char* semanticName, UINT& offset)
+void FTVertexShader::RegisterInputElementDesc(const char* semanticName, SemanticItem* item, UINT& offset)
 {
-	D3D11_INPUT_ELEMENT_DESC desc;
-	if (FTDS::StringEqual(semanticName, "TEXCOORD"))
-	{
-		desc = { semanticName, 0, DXGI_FORMAT_R32G32_FLOAT, 0, offset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-		if (!mIsSpine)
-			offset += 4 * 2;
-	}
-	else if (FTDS::StringEqual(semanticName, "POSITION_2D"))
-	{
-		desc = { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, offset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-		if (!mIsSpine)
-			offset += 4 * 2;
-	}
-	else
-	{
-		desc = { semanticName, 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-		if (!mIsSpine)
-			offset += 4 * 3;
-	}
-
-	mInputElements.push_back(desc);
 }
 
 FTVertexShader::FTVertexShader(FTResourceDef& resDef, FoxtrotRenderer* renderer)
 	: FTShader(resDef, renderer)
-	, mIsSpine(false)
+	, mShader(nullptr)
+	, mInputLayout(nullptr)
 #ifdef FOXTROT_EDITOR
-	, mSemanticsInclusion(DBG_NEW FTDS::HashMap<bool>(5))
+	, mSemanticItems(DBG_NEW FTDS::DynamicArray<SemanticItem*>())
 #endif // FOXTROT_EDITOR
 {
-
-#ifdef FOXTROT_EDITOR
-	FTDS::String semantics[5] = { "POSITION", "POSITION_2D", "NORMAL", "COLOR", "TEXCOORD" };
-	for (size_t i = 0; i < 5; ++i)
-	{
-		if (!mSemanticsInclusion->At(semantics[i]))
-			mSemanticsInclusion->Insert(semantics[i], false);
-	}
-
-#endif // FOXTROT_EDITOR
-
 	SetType(ShaderType::VERTEX_SHADER);
 	Process(renderer);
 }
@@ -78,7 +57,12 @@ FTVertexShader::FTVertexShader(FTResourceDef& resDef, FoxtrotRenderer* renderer)
 FTVertexShader::~FTVertexShader()
 {
 #ifdef FOXTROT_EDITOR
-	delete mSemanticsInclusion;
+	mSemanticItems->IterateArray([](SemanticItem* item) {
+		delete item;
+		item = nullptr;
+	});
+
+	delete mSemanticItems;
 #endif
 }
 
@@ -87,17 +71,16 @@ void FTVertexShader::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTVertexShader::FT_VERTEX_SHADER);
 	FTResource::SaveProperties(ofs);
 
-	for (size_t i = 0; i < mSemanticsName.size(); ++i)
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTVertexShader::INPUT_ELEMENTS);
+
+	for (auto iter = mSemanticItems->Begin(); iter != mSemanticItems->End(); ++iter)
 	{
-		FTDS::String key = FTDS::String(ChunkKey::FTVertexShader::INPUT_ELEMENTS);
-		key.Append(" ");
-		key.Append(std::to_string(i).c_str());
-		FileIOHelper::SaveString(ofs, key.C_Str(), mSemanticsName.at(i));
+		FileIOHelper::BeginDataPackSave(ofs, (*iter)->Desc.SemanticName);
+		(*iter)->SaveProperties(ofs);
+		FileIOHelper::EndDataPackSave(ofs, (*iter)->Desc.SemanticName);
 	}
 
-	FileIOHelper::SaveSize(ofs, ChunkKey::FTVertexShader::INPUT_ELEMENTS_COUNT, mSemanticsName.size());
-
-	FileIOHelper::SaveBool(ofs, ChunkKey::FTVertexShader::IS_SPINE_SHADER, mIsSpine);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTVertexShader::INPUT_ELEMENTS);
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTVertexShader::FT_VERTEX_SHADER);
 }
@@ -106,37 +89,20 @@ void FTVertexShader::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTVertexShader::FT_VERTEX_SHADER);
 
-	FileIOHelper::LoadBool(ifs, mIsSpine);
+	size_t count = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTVertexShader::INPUT_ELEMENTS).first;
+	mSemanticItems->Reserve(count);
 
-	size_t count = 0;
-	FileIOHelper::LoadSize(ifs, count);
-
-	for (UINT i = 0; i < count; ++i)
+	for (size_t i = 0; i < count; ++i)
 	{
-		FTDS::String semanticN = {};
-		FileIOHelper::LoadBasicString(ifs, semanticN);
-		mSemanticsName.push_back(semanticN);
-	}
-	std::reverse(mSemanticsName.begin(), mSemanticsName.end());
-
-	UINT offset = 0;
-	for (FTDS::String& str : mSemanticsName)
-	{
-		RegisterInputElementDesc(str.C_Str(), offset);
-
-#ifdef FOXTROT_EDITOR
-		mSemanticsInclusion->At(str)->Value() = true;
-
-#endif // FOXTROT_EDITOR
+		FileIOHelper::BeginDataPackLoad(ifs).first;
+		SemanticItem* item = DBG_NEW SemanticItem;
+		item->LoadProperties(ifs);
+		mSemanticItems->PushBack(item);
 	}
 
-	if (mIsSpine)
-	{
-		for (size_t i = 0; i < mInputElements.size(); ++i)
-			mInputElements.at(i).InputSlot = i;
-	}
+	mSemanticItems->Reverse();
 
-	return FTResource::LoadProperties(ifs);
+	FTResource::LoadProperties(ifs);
 }
 
 ComPtr<ID3D11VertexShader>& FTVertexShader::GetShader() { return mShader; }
@@ -146,50 +112,39 @@ ComPtr<ID3D11InputLayout>&	FTVertexShader::GetInputLayout() { return mInputLayou
 void FTVertexShader::UpdateUI()
 {
 	ImGui::SeparatorText("Input Elements");
-	FTDS::String semantics[5] = { "POSITION", "POSITION_2D", "NORMAL", "COLOR", "TEXCOORD" };
+	if (ImGui::Button("Add Input Desc"))
+		mSemanticItems->PushBack(DBG_NEW SemanticItem);
 
-	for (size_t i = 0; i < 5; ++i)
+	for (size_t i = 0; i < mSemanticItems->GetSize(); ++i)
 	{
-		bool val = mSemanticsInclusion->At(semantics[i])->Value();
-		CommandHistory::GetInstance()->UpdateBoolValue(semantics[i].C_Str(), val);
-		mSemanticsInclusion->At(semantics[i])->Value() = val;
+		ImGui::PushID(mSemanticItems->At(i));
+
+		if (ImGui::CollapsingHeader(mSemanticItems->At(i)->Name.C_Str()))
+			mSemanticItems->At(i)->UpdateUI();
+
+		if (ImGui::ArrowButton("##Up", ImGuiDir::ImGuiDir_Up))
+		{
+			if (0 < i)
+				mSemanticItems->Swap(i - 1, i);
+		}
+		ImGui::SameLine();
+		if (ImGui::ArrowButton("##Down", ImGuiDir::ImGuiDir_Down))
+		{
+			if (i < mSemanticItems->GetSize() - 1)
+				mSemanticItems->Swap(i + 1, i);
+		}
+
+		if (ImGui::Button("Delete"))
+		{
+			delete mSemanticItems->At(i);
+			mSemanticItems->At(i) = nullptr;
+			mSemanticItems->Erase(i);
+		}
+
+		ImGui::PopID();
 	}
 
-	size_t i = 0;
-	printf("--------------------------------\n");
-	mSemanticsInclusion->IterateAllValues([&](bool bl) {
-		printf(semantics[i].C_Str());
-		printf(" ");
-		LogBool(bl);
-		++i;
-	});
-	printf("--------------------------------\n");
-
-	CommandHistory::GetInstance()->UpdateBoolValue("Is Spine shader", mIsSpine);
-
-	if (ImGui::Button("Update Input Elements"))
-	{
-		mSemanticsName.clear();
-		mInputElements.clear();
-
-		for (size_t i = 0; i < 5; ++i)
-		{
-			FTDS::String& key = semantics[i];
-			if (mSemanticsInclusion->At(key)->Value())
-				mSemanticsName.push_back(key);
-		}
-
-		static UINT offset = 0;
-		for (FTDS::String& str : mSemanticsName)
-			RegisterInputElementDesc(str.C_Str(), offset);
-
-		if (mIsSpine)
-		{
-			for (size_t i = 0; i < mInputElements.size(); ++i)
-				mInputElements.at(i).InputSlot = i;
-		}
-
+	if (ImGui::Button("Update"))
 		SaveMetaData();
-	}
 }
 #endif

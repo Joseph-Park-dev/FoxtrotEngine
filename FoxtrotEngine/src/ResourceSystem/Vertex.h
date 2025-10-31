@@ -32,7 +32,7 @@ struct Vertex
 #endif // FOXTROT_EDITOR
 
 	DirectX::SimpleMath::Vector3 position;
-	DirectX::SimpleMath::Vector3 color;
+	DirectX::SimpleMath::Vector4 color;
 	DirectX::SimpleMath::Vector2 texcoord;
 
 	Vertex operator=(Vertex& v)
@@ -64,5 +64,5 @@ struct DebugVertex
 #endif // FOXTROT_EDITOR
 
 	DirectX::SimpleMath::Vector3 position;
-	DirectX::SimpleMath::Vector3 color;
+	DirectX::SimpleMath::Vector4 color;
 };

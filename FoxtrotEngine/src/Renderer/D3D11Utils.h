@@ -77,6 +77,8 @@ public:
 		UINT							numQualityLevels,
 		ComPtr<ID3D11DepthStencilView>& depthStencilView);
 
+	static HRESULT CreateVertexShaderAndInputLayout(ComPtr<ID3D11Device>& device, const wstring& filename, const D3D11_INPUT_ELEMENT_DESC* inputElements, size_t inputElementsSize, ComPtr<ID3D11VertexShader>& vertexShader, ComPtr<ID3D11InputLayout>& inputLayout);
+
 	static HRESULT CreateVertexShaderAndInputLayout(
 		ComPtr<ID3D11Device>&					device,
 		const wstring&							filename,

@@ -265,6 +265,44 @@ HRESULT D3D11Utils::CreateDepthBuffer(
 }
 
 HRESULT D3D11Utils::CreateVertexShaderAndInputLayout(
+	ComPtr<ID3D11Device>&			device,
+	const wstring&					filename,
+	const D3D11_INPUT_ELEMENT_DESC* inputElements,
+	size_t							inputElementsSize,
+	ComPtr<ID3D11VertexShader>&		vertexShader,
+	ComPtr<ID3D11InputLayout>&		inputLayout)
+{
+
+	ComPtr<ID3DBlob> shaderBlob;
+	ComPtr<ID3DBlob> errorBlob;
+
+	UINT compileFlags = 0;
+#if defined(DEBUG) || defined(_DEBUG)
+	compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif
+
+	// 쉐이더의 시작점의 이름이 "main"인 함수로 지정
+	// D3D_COMPILE_STANDARD_FILE_INCLUDE 추가: 쉐이더에서 include 사용
+	HRESULT hr = D3DCompileFromFile(
+		filename.c_str(), 0, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", compileFlags, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
+
+	CheckResult(hr, errorBlob.Get());
+
+	DX::ThrowIfFailed(
+		device->CreateVertexShader(
+			shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), NULL, vertexShader.GetAddressOf()));
+
+	DX::ThrowIfFailed(
+		device->CreateInputLayout(
+			inputElements,
+			UINT(inputElementsSize),
+			shaderBlob->GetBufferPointer(),
+			shaderBlob->GetBufferSize(),
+			inputLayout.GetAddressOf()));
+	return hr;
+}
+
+HRESULT D3D11Utils::CreateVertexShaderAndInputLayout(
 	ComPtr<ID3D11Device>&					device,
 	const wstring&							filename,
 	const vector<D3D11_INPUT_ELEMENT_DESC>& inputElements,
@@ -302,11 +340,11 @@ HRESULT D3D11Utils::CreateVertexShaderAndInputLayout(
 }
 
 HRESULT D3D11Utils::CreateVertexShaderAndInputLayout(
-	ComPtr<ID3D11Device>&					device,
-	const wstring&							filename,
+	ComPtr<ID3D11Device>&								device,
+	const wstring&										filename,
 	const FTDS::DynamicArray<D3D11_INPUT_ELEMENT_DESC>& inputElements,
-	ComPtr<ID3D11VertexShader>&				vertexShader,
-	ComPtr<ID3D11InputLayout>&				inputLayout)
+	ComPtr<ID3D11VertexShader>&							vertexShader,
+	ComPtr<ID3D11InputLayout>&							inputLayout)
 {
 
 	ComPtr<ID3DBlob> shaderBlob;

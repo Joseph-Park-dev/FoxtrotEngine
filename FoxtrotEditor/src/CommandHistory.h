@@ -37,6 +37,7 @@ public:
 	// These member functions will be used on Foxtrot Editor when updating values.
 	void UpdateIntValue(const char* label, int& ref, int modSpeed = INTMOD_SPEED);
 	void UpdateIntValue(const char* label, int& ref, int min, int max, int modSpeed = INTMOD_SPEED);
+	void UpdateUnsignedIntValue(const char* label, UINT& ref, UINT modSpeed = INTMOD_SPEED);
 	void UpdateFloatValue(const char* label, float& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateBoolValue(const char* label, bool& ref);
 	void UpdateVector2Value(const char* label, FTVector2& ref, float modSpeed = FLOATMOD_SPEED);

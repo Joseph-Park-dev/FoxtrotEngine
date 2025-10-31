@@ -34,7 +34,7 @@ void FTSpriteAnimation::Render(
 	// This enables the resource reusable throughout the Component instances.
 	UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat, GetFrontDir());
 
-	if (!vs || !ps) // Vertex Shader is always required when drawing.
+	if (!vs || !ps || !mat) // Vertex Shader is always required when drawing.
 		return;
 
 	UINT						 stride	 = sizeof(Vertex);

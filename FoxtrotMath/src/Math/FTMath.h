@@ -32,7 +32,7 @@
 #include <fstream>
 #include <string>
 
-	#include "box2d/box2d.h"
+#include "box2d/box2d.h"
 
 #include "directxtk/SimpleMath.h"
 
@@ -189,6 +189,20 @@ extern "C"
 
 class FTVector2;
 
+class FOXTROT_API FTVector4
+{
+public:
+	float x;
+	float y;
+	float z;
+	float a;
+
+	explicit FTVector4(float in);
+	explicit FTVector4(float inX, float inY, float inZ, float inA);
+
+	const DirectX::XMFLOAT4 GetDXVec4() const;
+};
+
 // 3D Vector
 class FOXTROT_API FTVector3
 {
@@ -304,9 +318,9 @@ public:
 		return ofs;
 	}
 
-	const b2Vec2 GetB2Vec2() const;
+	const b2Vec2			GetB2Vec2() const;
 	const DirectX::XMFLOAT3 GetDXVec3() const;
-	void Assign(float arr[3]) const;
+	void					Assign(float arr[3]) const;
 
 	// Length squared of vector
 	float LengthSq();

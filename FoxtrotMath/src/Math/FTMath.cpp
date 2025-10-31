@@ -171,3 +171,24 @@ FTVector2 FTVector2::PlotCircularFall(float angle, float dist)
 {
 	return FTVector2(dist * Math::Cos(angle), dist * Math::Sin(angle));
 }
+
+FTVector4::FTVector4(float in)
+{
+	x = in;
+	y = in;
+	z = in;
+	z = in;
+}
+
+FTVector4::FTVector4(float inX, float inY, float inZ, float inA)
+{
+	x = inX;
+	y = inY;
+	z = inZ;
+	a = inA;
+}
+
+const DirectX::XMFLOAT4 FTVector4::GetDXVec4() const
+{
+	return DirectX::XMFLOAT4(x,y,z,a);
+}

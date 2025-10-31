@@ -37,22 +37,7 @@ protected:
 	void SetType(ShaderType&& shaderType);
 
 	/// @brief Loads the meta data for this wrapper.
-	void LoadMetaData()
-	{
-		FTDS::String metaPath;
-		metaPath.Assign(GetRelativePath());
-		ReplaceSuffix(metaPath, FileTypes::SHADER, FileTypes::SHADER_META);
-		if (!std::filesystem::exists(std::filesystem::path(metaPath.C_Str())))
-		{
-			Debug::LogError(__LINE__, __FILE__, "Failed to load shader meta file");
-			std::ofstream ofs(metaPath.C_Str());
-			SaveProperties(ofs);
-			FileIOHelper::SaveBufferToFile(ofs);
-		}
-
-		std::ifstream ifs(metaPath.C_Str());
-		LoadProperties(ifs);
-	}
+	void LoadMetaData();
 
 #ifdef FOXTROT_EDITOR
 public:

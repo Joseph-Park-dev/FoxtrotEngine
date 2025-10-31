@@ -70,7 +70,10 @@ void DebugShapes::DeleteAll()
 	if (mShapes.size() < 1)
 		return;
 	for (FTShape* shape : mShapes)
-		RemoveShape(shape);
+	{
+		delete shape;
+		shape = nullptr;
+	}
 	mShapes.clear();
 }
 

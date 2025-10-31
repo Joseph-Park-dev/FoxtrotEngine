@@ -30,6 +30,7 @@
 // using D3DVec2 = DirectX::SimpleMath::Vector2;
 // using D3DVec3 = DirectX::SimpleMath::Vector3;
 
+using Vector4 = DirectX::SimpleMath::Vector4;
 using Vector3 = DirectX::SimpleMath::Vector3;
 using Vector2 = DirectX::SimpleMath::Vector2;
 using Matrix  = DirectX::SimpleMath::Matrix;
@@ -37,13 +38,11 @@ using Matrix  = DirectX::SimpleMath::Matrix;
 FTMeshData GeometryGenerator::MakeSquare()
 {
 	std::vector<Vector3> positions;
-	std::vector<Vector3> colors;
-	std::vector<Vector3> normals;
+	std::vector<Vector4> colors;
 	std::vector<Vector2> texcoords;
 
 	positions.reserve(4);
 	colors.reserve(4);
-	normals.reserve(4);
 	texcoords.reserve(4);
 
 	positions.push_back(Vector3(-0.5f, 0.5f, 0.0f));
@@ -51,15 +50,10 @@ FTMeshData GeometryGenerator::MakeSquare()
 	positions.push_back(Vector3(0.5f, -0.5f, 0.0f));
 	positions.push_back(Vector3(-0.5f, -0.5f, 0.0f));
 
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+	colors.push_back(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+	colors.push_back(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+	colors.push_back(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+	colors.push_back(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 
 	texcoords.push_back(Vector2(0.0f, 0.0f));
 	texcoords.push_back(Vector2(1.0f, 0.0f));
@@ -71,8 +65,7 @@ FTMeshData GeometryGenerator::MakeSquare()
 	{
 		Vertex v;
 		v.position = positions[i];
-		v.color = colors[i];
-		//v.normal   = normals[i];
+		v.color	   = colors[i];
 		v.texcoord = texcoords[i];
 		meshData.Vertices.PushBack(v);
 	}
@@ -92,13 +85,11 @@ FTMeshData GeometryGenerator::MakeSquare()
 FTMeshData GeometryGenerator::MakeSquare(float scale)
 {
 	std::vector<Vector3> positions;
-	std::vector<Vector3> colors;
-	std::vector<Vector3> normals;
+	std::vector<Vector4> colors;
 	std::vector<Vector2> texcoords;
 
 	positions.reserve(4);
 	colors.reserve(4);
-	normals.reserve(4);
 	texcoords.reserve(4);
 
 	positions.push_back(Vector3(-0.5f, 0.5f, 0.0f) * scale);
@@ -106,15 +97,10 @@ FTMeshData GeometryGenerator::MakeSquare(float scale)
 	positions.push_back(Vector3(0.5f, -0.5f, 0.0f) * scale);
 	positions.push_back(Vector3(-0.5f, -0.5f, 0.0f) * scale);
 
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+	colors.push_back(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+	colors.push_back(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+	colors.push_back(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+	colors.push_back(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 
 	texcoords.push_back(Vector2(0.0f, 0.0f));
 	texcoords.push_back(Vector2(1.0f, 0.0f));
@@ -126,8 +112,7 @@ FTMeshData GeometryGenerator::MakeSquare(float scale)
 	{
 		Vertex v;
 		v.position = positions[i];
-		v.color = colors[i];
-		//v.normal   = normals[i];
+		v.color	   = colors[i];
 		v.texcoord = texcoords[i];
 		meshData.Vertices.PushBack(v);
 	}
@@ -144,13 +129,13 @@ FTMeshData GeometryGenerator::MakeSquare(float scale)
 	return meshData;
 }
 
-FTMeshData GeometryGenerator::MakePoint(FTVector3 color)
+FTMeshData GeometryGenerator::MakePoint(FTVector4 color)
 {
 	FTMeshData meshData;
 
 	Vertex vertex;
 	vertex.position = Vector3::Zero;
-	vertex.color	= color.GetDXVec3();
+	vertex.color	= Vector4(color.x, color.y, color.z, 1.0f);
 	vertex.texcoord = Vector2::Zero;
 
 	meshData.Vertices.PushBack(vertex);
@@ -158,29 +143,27 @@ FTMeshData GeometryGenerator::MakePoint(FTVector3 color)
 	return meshData;
 }
 
-FTDebugMeshData GeometryGenerator::MakeDebugPoint(FTVector3 color)
+FTDebugMeshData GeometryGenerator::MakeDebugPoint(FTVector4 color)
 {
 	FTDebugMeshData meshData;
 
 	DebugVertex vertex;
 	vertex.position = Vector3::Zero;
-	vertex.color	= color.GetDXVec3();
+	vertex.color	= color.GetDXVec4();
 
 	meshData.Vertices.push_back(vertex);
 
 	return meshData;
 }
 
-FTMeshData* GeometryGenerator::MakeSquare(float scale, FTVector3 color)
+FTMeshData* GeometryGenerator::MakeSquare(float scale, FTVector4 color)
 {
 	std::vector<Vector3> positions;
-	std::vector<Vector3> colors;
-	std::vector<Vector3> normals;
+	std::vector<Vector4> colors;
 	std::vector<Vector2> texcoords;
 
 	positions.reserve(4);
 	colors.reserve(4);
-	normals.reserve(4);
 	texcoords.reserve(4);
 
 	positions.push_back(Vector3(-0.5f, 0.5f, 0.0f) * scale);
@@ -188,15 +171,10 @@ FTMeshData* GeometryGenerator::MakeSquare(float scale, FTVector3 color)
 	positions.push_back(Vector3(0.5f, -0.5f, 0.0f) * scale);
 	positions.push_back(Vector3(-0.5f, -0.5f, 0.0f) * scale);
 
-	colors.push_back(color.GetDXVec3());
-	colors.push_back(color.GetDXVec3());
-	colors.push_back(color.GetDXVec3());
-	colors.push_back(color.GetDXVec3());
-
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+	colors.push_back(color.GetDXVec4());
+	colors.push_back(color.GetDXVec4());
+	colors.push_back(color.GetDXVec4());
+	colors.push_back(color.GetDXVec4());
 
 	texcoords.push_back(Vector2(0.0f, 0.0f));
 	texcoords.push_back(Vector2(1.0f, 0.0f));
@@ -208,8 +186,8 @@ FTMeshData* GeometryGenerator::MakeSquare(float scale, FTVector3 color)
 	{
 		Vertex v;
 		v.position = positions[i];
-		v.color = colors[i];
-		//v.normal   = normals[i];
+		v.color	   = colors[i];
+		// v.normal   = normals[i];
 		v.texcoord = texcoords[i];
 		meshData->Vertices.PushBack(v);
 	}
@@ -246,8 +224,7 @@ std::vector<FTMeshData> GeometryGenerator::MakeTileMapGrid(FTTileMap* tileMap)
 FTMeshData GeometryGenerator::MakeTile(Tile& tile)
 {
 	std::vector<Vector3> positions;
-	std::vector<Vector3> colors;
-	std::vector<Vector3> normals;
+	std::vector<Vector4> colors;
 	std::vector<Vector2> texcoords; // 텍스춰 좌표
 
 	FTRectArea& rectOnScreen = tile.GetRectOnScreen();
@@ -262,14 +239,10 @@ FTMeshData GeometryGenerator::MakeTile(Tile& tile)
 	positions.push_back(Vector3(tileMin.x + tileWidth, -tileMin.y, 0.0f));
 	positions.push_back(Vector3(tileMin.x + tileWidth, -tileMin.y - tileHeight, 0.0f));
 	positions.push_back(Vector3(tileMin.x, -tileMin.y - tileHeight, 0.0f));
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+	colors.push_back(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+	colors.push_back(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+	colors.push_back(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+	colors.push_back(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 
 	// Texture Coordinates
 	FTRectArea&		 rectOnMap	 = tile.GetRectOnMap();
@@ -287,8 +260,7 @@ FTMeshData GeometryGenerator::MakeTile(Tile& tile)
 	{
 		Vertex v;
 		v.position = positions[i];
-		v.color = colors[i];
-		//v.normal   = normals[i];
+		v.color	   = colors[i];
 		v.texcoord = texcoords[i];
 		meshData.Vertices.PushBack(v);
 	}
@@ -330,8 +302,7 @@ void GeometryGenerator::MakeSpriteAnimation(FTDS::DynamicArray<FTMeshData*>& ani
 FTMeshData* GeometryGenerator::MakeAnimationFrame(Tile tile)
 {
 	std::vector<Vector3> positions;
-	std::vector<Vector3> colors;
-	std::vector<Vector3> normals;
+	std::vector<Vector4> colors;
 	std::vector<Vector2> texcoords;
 
 	FTVector2 size = tile.GetRectOnScreen().GetSize();
@@ -340,14 +311,10 @@ FTMeshData* GeometryGenerator::MakeAnimationFrame(Tile tile)
 	positions.push_back(Vector3(size.x / 2.f, size.y / 2.f, 0.0f));
 	positions.push_back(Vector3(size.x / 2.f, -size.y / 2.f, 0.0f));
 	positions.push_back(Vector3(-size.x / 2.f, -size.y / 2.f, 0.0f));
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-	colors.push_back(Vector3(0.0f, 0.0f, 1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
-	normals.push_back(Vector3(0.0f, 0.0f, -1.0f));
+	colors.push_back(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+	colors.push_back(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+	colors.push_back(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+	colors.push_back(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 
 	// Texture coordinates used in sampling the TileMap.
 	FTRectArea&		 rectOnMap	 = tile.GetRectOnMap();
@@ -365,8 +332,8 @@ FTMeshData* GeometryGenerator::MakeAnimationFrame(Tile tile)
 	{
 		Vertex v;
 		v.position = positions[i];
-		v.color = colors[i];
-		//v.normal   = normals[i];
+		v.color	   = colors[i];
+		// v.normal   = normals[i];
 		v.texcoord = texcoords[i];
 		meshData->Vertices.PushBack(v);
 	}

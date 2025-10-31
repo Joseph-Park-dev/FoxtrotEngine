@@ -21,9 +21,9 @@ class GeometryGenerator
 public:
 	static FTMeshData	   MakeSquare();
 	static FTMeshData	   MakeSquare(float scale);
-	static FTMeshData	   MakePoint(FTVector3 color);
-	static FTDebugMeshData MakeDebugPoint(FTVector3 color);
-	static FTMeshData*	   MakeSquare(float scale, FTVector3 color);
+	static FTMeshData	   MakePoint(FTVector4 color);
+	static FTDebugMeshData MakeDebugPoint(FTVector4 color);
+	static FTMeshData*	   MakeSquare(float scale, FTVector4 color);
 
 	// MakeSquare() for Making tilemap
 	static std::vector<FTMeshData> MakeTileMapGrid(FTTileMap* tileMap);

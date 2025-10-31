@@ -14,6 +14,7 @@
 #include <imgui_impl_win32.h>
 //#include <imgui_stdlib.h>
 #include <typeinfo>
+#include <limits>
 
 #include "Command.h"
 #include "EditorLayer.h"
@@ -408,6 +409,13 @@ void CommandHistory::UpdateBoolValue(const char* label, bool& ref)
 		command->SetNextVal(ref);
 		CommandHistory::GetInstance()->AddCommand(command);
 	}
+}
+
+void CommandHistory::UpdateUnsignedIntValue(const char* label, UINT& ref, UINT modSpeed)
+{
+	int val = static_cast<int>(ref);
+	UpdateIntValue(label, val);
+	ref = static_cast<UINT>(val);
 }
 
 void CommandHistory::ShutDown()

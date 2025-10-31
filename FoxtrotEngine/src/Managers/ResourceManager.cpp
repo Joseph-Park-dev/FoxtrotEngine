@@ -339,7 +339,7 @@ void ResourceManager::LoadDefaultResources()
 		ChunkKey::PRIMITIVE_SQUARE_SPRITE, ChunkKey::NullVal::NULL_OBJECT
 	};
 
-	FTMeshData* meshData = GeometryGenerator::MakeSquare(1.0f, FTVector3(0.f, 0.f, 1.f));
+	FTMeshData* meshData = GeometryGenerator::MakeSquare(1.0f, FTVector4(0.f, 0.f, 1.f, 1.f));
 
 	FTMeshGroup* meshGroup = DBG_NEW FTMeshGroup(
 		resDef,

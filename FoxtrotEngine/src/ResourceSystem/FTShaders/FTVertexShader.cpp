@@ -38,10 +38,6 @@ void FTVertexShader::CompileShader(FoxtrotRenderer* renderer)
 	delete[] inputDesc;
 }
 
-void FTVertexShader::RegisterInputElementDesc(const char* semanticName, SemanticItem* item, UINT& offset)
-{
-}
-
 FTVertexShader::FTVertexShader(FTResourceDef& resDef, FoxtrotRenderer* renderer)
 	: FTShader(resDef, renderer)
 	, mShader(nullptr)

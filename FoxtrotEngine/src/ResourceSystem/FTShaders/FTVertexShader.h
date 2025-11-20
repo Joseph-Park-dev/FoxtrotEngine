@@ -15,6 +15,11 @@
 #include <Static/HashMap.h>
 #include <FileSystem/FileIOHelper.h>
 
+#ifdef FOXTROT_EDITOR
+#include <magic_enum/include/magic_enum/magic_enum.hpp>
+#endif // FOXTROT_EDITOR
+
+
 struct SemanticItem;
 
 /// @brief A wrapper for HLSL vertex shaders.
@@ -50,10 +55,6 @@ private:
 	/// @brief The shader should remain compiled after initialization.
 	ComPtr<ID3D11VertexShader> mShader;
 	ComPtr<ID3D11InputLayout>  mInputLayout;
-
-private:
-	/// @brief Resgister new D3D11_INPUT_ELEMENT_DESC to mInputElements
-	void RegisterInputElementDesc(const char* semanticName, SemanticItem* item, UINT& offset);
 
 #ifdef FOXTROT_EDITOR
 public:
@@ -134,27 +135,7 @@ struct SemanticItem
 #ifdef FOXTROT_EDITOR
 	void UpdateUI()
 	{
-		static FTDS::String names[5] = { "POSITION", "POSITION_2D", "NORMAL", "COLOR", "TEXCOORD" };
-
-		static FTDS::String formats[19] = { "DXGI_FORMAT_UNKNOWN",
-											"DXGI_FORMAT_R32G32B32A32_TYPELESS",
-											"DXGI_FORMAT_R32G32B32A32_FLOAT",
-											"DXGI_FORMAT_R32G32B32A32_UINT",
-											"DXGI_FORMAT_R32G32B32A32_SINT",
-											"DXGI_FORMAT_R32G32B32_TYPELESS",
-											"DXGI_FORMAT_R32G32B32_FLOAT",
-											"DXGI_FORMAT_R32G32B32_UINT",
-											"DXGI_FORMAT_R32G32B32_SINT",
-											"DXGI_FORMAT_R16G16B16A16_TYPELESS",
-											"DXGI_FORMAT_R16G16B16A16_FLOAT",
-											"DXGI_FORMAT_R16G16B16A16_UNORM",
-											"DXGI_FORMAT_R16G16B16A16_UINT",
-											"DXGI_FORMAT_R16G16B16A16_SNORM",
-											"DXGI_FORMAT_R16G16B16A16_SINT",
-											"DXGI_FORMAT_R32G32_TYPELESS",
-											"DXGI_FORMAT_R32G32_FLOAT",
-											"DXGI_FORMAT_R32G32_UINT",
-											"DXGI_FORMAT_R32G32_SINT" };
+		static FTDS::String names[5] = { "POSITION", "NORMAL", "COLOR", "TEXCOORD", "PSIZE" };
 
 		static FTDS::String classifications[2] = {
 			"D3D11_INPUT_PER_VERTEX_DATA",
@@ -180,19 +161,10 @@ struct SemanticItem
 
 		CommandHistory::GetInstance()->UpdateUnsignedIntValue("Semantic Index", Desc.SemanticIndex);
 
-		if (ImGui::BeginCombo("Format", formats[Desc.Format].C_Str()))
-		{
-			for (size_t n = 0; n < IM_ARRAYSIZE(formats); ++n)
-			{
-				bool isSelected = (Desc.Format == n);
-				if (ImGui::Selectable(formats[n].C_Str(), isSelected))
-					Desc.Format = static_cast<DXGI_FORMAT>(n);
-
-				if (isSelected)
-					ImGui::SetItemDefaultFocus();
-			}
-			ImGui::EndCombo();
-		}
+		UINT format = static_cast<UINT>(Desc.Format);
+		CommandHistory::GetInstance()->UpdateUnsignedIntValue("DXGI_FORMAT", format);
+		Desc.Format = static_cast<DXGI_FORMAT>(format);
+		ImGui::Text("Current format : %s", magic_enum::enum_name(Desc.Format).data());
 
 		CommandHistory::GetInstance()->UpdateUnsignedIntValue("Input Slot", Desc.InputSlot);
 		CommandHistory::GetInstance()->UpdateUnsignedIntValue("Offset", Desc.AlignedByteOffset);

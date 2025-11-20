@@ -22,7 +22,7 @@
 #include "ResourceSystem/FTShaders/FTVertexShader.h"
 #include "ResourceSystem/FTShaders/FTPixelShader.h"
 #include "ResourceSystem/FTMaterials/StandardMaterial.h"
-#include "ResourceSystem/FTMaterials/RimMaterial.h"
+#include "ResourceSystem/FTMaterials/SpriteAnimMat.h"
 #include "ResourceSystem/Sound/Sound.h"
 #include "ResourceSystem/GenericData/FTCSV.h"
 #include "ResourceSystem/GenericData/FTJSON.h"
@@ -217,8 +217,19 @@ void ResourceManager::LoadMaterials()
 
 	StandardMaterial* standard = DBG_NEW StandardMaterial(resDef, mRenderer);
 
-	mMaterials->Reserve(1);
+	fileName.Clear();
+	fileName = ChunkKey::SpriteAnimMat::SPRITE_ANIM_MAT;
+	fileName.Append(+FileTypes::MATERIAL);
+
+	path.Clear();
+	path = ResourceManager::GetInstance()->GetPathToAsset() + fileName;
+	resDef = FTResourceDef{ fileName, path };
+
+	SpriteAnimMat* spriteAnim = DBG_NEW SpriteAnimMat(resDef, mRenderer);
+
+	mMaterials->Reserve(size);
 	mMaterials->Insert(standard->GetFileName(), standard);
+	mMaterials->Insert(spriteAnim->GetFileName(), spriteAnim);
 }
 
 FoxtrotRenderer* ResourceManager::GetRenderer()

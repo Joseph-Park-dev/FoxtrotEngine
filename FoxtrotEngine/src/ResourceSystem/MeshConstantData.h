@@ -23,16 +23,7 @@
 using Microsoft::WRL::ComPtr;
 using namespace DirectX::SimpleMath;
 
-struct BasicVCData
-{
-	DirectX::SimpleMath::Matrix model		 = DirectX::SimpleMath::Matrix();
-	DirectX::SimpleMath::Matrix invTranspose = DirectX::SimpleMath::Matrix();
-	DirectX::SimpleMath::Matrix view		 = DirectX::SimpleMath::Matrix();
-	DirectX::SimpleMath::Matrix projection	 = DirectX::SimpleMath::Matrix();
-};
-static_assert((sizeof(BasicVCData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
-
-// Debug shape only takes a point in VS, 
+// Debug shape only takes a point in VS,
 // and utilizes that in GS to form a geometry
 struct DebugVCData
 {
@@ -43,7 +34,7 @@ static_assert((sizeof(DebugVCData) % 16) == 0, "Constant Buffer size must be 16-
 
 struct DebugGCData
 {
-	DirectX::SimpleMath::Matrix view = DirectX::SimpleMath::Matrix();
+	DirectX::SimpleMath::Matrix view	   = DirectX::SimpleMath::Matrix();
 	DirectX::SimpleMath::Matrix projection = DirectX::SimpleMath::Matrix();
 
 	Vector2 size;
@@ -51,13 +42,6 @@ struct DebugGCData
 };
 
 static_assert((sizeof(DebugGCData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
-
-struct SpineMeshVCData
-{
-	std::vector<DirectX::SimpleMath::Matrix> transformation;
-};
-
-static_assert((sizeof(SpineMeshVCData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
 
 struct NormalVCData
 {
@@ -85,6 +69,39 @@ struct IndexPCData
 
 struct DebugPCData
 {
-	uint32_t					 IsActive;
-	uint32_t					 dummy[3];
+	uint32_t IsActive;
+	uint32_t dummy[3];
 };
+
+//////////////////////////////////////
+//////// Basic Mesh Rendering ////////
+//////////////////////////////////////
+
+struct PointMVP
+{
+	DirectX::SimpleMath::Matrix ModelMat = DirectX::SimpleMath::Matrix();
+	DirectX::SimpleMath::Matrix ViewMat	 = DirectX::SimpleMath::Matrix();
+	DirectX::SimpleMath::Matrix ProjMat	 = DirectX::SimpleMath::Matrix();
+};
+static_assert((sizeof(PointMVP) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
+
+//////////////////////////////////
+//////// Sprite Animation ////////
+//////////////////////////////////
+
+struct AnimGCData
+{
+	Vector2 Size;
+	bool	Rotated;
+	float	Dummy;
+	Vector4 Frame;
+};
+static_assert((sizeof(AnimGCData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
+
+struct AnimPSData
+{
+	Vector4 Color;
+	bool	UseTexture;
+	Vector3 Dummy;
+};
+static_assert((sizeof(AnimPSData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");

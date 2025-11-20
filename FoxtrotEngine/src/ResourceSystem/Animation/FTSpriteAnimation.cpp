@@ -10,6 +10,7 @@
 
 #include "FileSystem/FileIOHelper.h"
 #include "Renderer/FoxtrotRenderer.h"
+#include "Renderer/Camera.h"
 #include "ResourceSystem/FTMaterials/FTMaterial.h"
 #include "ResourceSystem/Animation/AnimationFrame.h"
 #include "ResourceSystem/GeometryGenerator.h"
@@ -37,9 +38,9 @@ void FTSpriteAnimation::Render(
 	if (!vs || !ps || !mat) // Vertex Shader is always required when drawing.
 		return;
 
-	UINT						 stride	 = sizeof(Vertex);
+	UINT						 stride	 = sizeof(SpriteAnimVertex);
 	UINT						 offset	 = 0;
-	Mesh*						 mesh	 = Meshes()->At(meshIndex);
+	Mesh*						 mesh	 = Meshes()->At(0);
 	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
 
 	if (mesh)
@@ -64,8 +65,8 @@ void FTSpriteAnimation::Render(
 		context->IASetInputLayout(vs->GetInputLayout().Get());
 		context->IASetVertexBuffers(0, 1, mesh->VertexBuffer.GetAddressOf(), &stride, &offset);
 		context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		context->DrawIndexed(mesh->IndexCount, 0, 0);
+		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+		context->DrawInstanced(4, 1, 0, meshIndex);
 	}
 }
 
@@ -167,22 +168,25 @@ void FTSpriteAnimation::Initialize(ComPtr<ID3D11Device>& device, ComPtr<ID3D11De
 	float sheetH = sheetSize.at(SpriteSheetKeys::H);
 
 	// Get the number of sprites, create the buffer for the tiles.
-	size_t tileCount = mJSON->Data()[SpriteSheetKeys::BASE].size();
-	Tile* tiles		 = DBG_NEW Tile[tileCount];
+	size_t			  vCount   = mMaxFrameIdx - mMinFrameIdx + 1;
+	SpriteAnimVertex* vertices = DBG_NEW SpriteAnimVertex[vCount];
 
 	// For every sprite data in JSON...
-	for (size_t i = 0; i < tileCount; ++i)
+	for (size_t i = mMinFrameIdx; i <= mMaxFrameIdx; ++i)
 	{
 		// Base array containing sprite data.
 		nlohmann::json frame = mJSON->Data()[SpriteSheetKeys::BASE][i];
 
 		// Initialize tile's rect area on sprite sheet.
-		float mapX = frame[SpriteSheetKeys::FRAME][SpriteSheetKeys::X] / sheetW;
-		float mapY = frame[SpriteSheetKeys::FRAME][SpriteSheetKeys::Y] / sheetH;
+		float frameX  = frame[SpriteSheetKeys::FRAME][SpriteSheetKeys::X];
+		float frameY  = frame[SpriteSheetKeys::FRAME][SpriteSheetKeys::Y];
+		float sourceX = frame[SpriteSheetKeys::SOURCE_SIZE][SpriteSheetKeys::X];
+		float sourceY = frame[SpriteSheetKeys::SOURCE_SIZE][SpriteSheetKeys::Y];
+
+		float mapX = (frameX + sourceX) / sheetW;
+		float mapY = (frameY + sourceY) / sheetH;
 		float mapW = frame[SpriteSheetKeys::FRAME][SpriteSheetKeys::W] / sheetW;
 		float mapH = frame[SpriteSheetKeys::FRAME][SpriteSheetKeys::H] / sheetH;
-
-		tiles[i].GetRectOnMap().Set(mapX, mapY, mapW, mapH);
 
 		// Initialize tile's rect area on game screen.
 		float screenX = 0.0f;
@@ -198,25 +202,21 @@ void FTSpriteAnimation::Initialize(ComPtr<ID3D11Device>& device, ComPtr<ID3D11De
 		adjustedH = 1.0f;
 		adjustedW = screenW / screenH;
 
-		// if (screenW <= screenH)
-		//{
-		//	adjustedW = 1.0f;
-		//	adjustedH = screenH / screenW;
-		// }
-		// else
-		//{
-		//
-		// }
-
-		tiles[i].GetRectOnScreen().Set(screenX, screenY, adjustedW, adjustedH);
+		size_t tileIdx			   = i - mMinFrameIdx;
+		vertices[tileIdx].Position = Vector3(screenX, screenY, 0.0f);
+		//vertices[tileIdx].Size	   = Vector2(adjustedW, adjustedH);
+		//vertices[tileIdx].Texcoord = Vector4(mapX, mapY, mapW, mapH);
 	}
 
-	FTDS::DynamicArray<FTMeshData*> meshDataBuf;
-	GeometryGenerator::MakeSpriteAnimation(
-		meshDataBuf, tiles, mMinFrameIdx, mMaxFrameIdx);
-	FTMeshGroup::Initialize(std::move(meshDataBuf), device, context);
+	Mesh* mesh = DBG_NEW Mesh;
+	D3D11Utils::CreateVertexBuffer(device, vertices, vCount, mesh->VertexBuffer);
+	mesh->VertexCount = vCount;
 
-	delete[] tiles;
+	Meshes()->PushBack(mesh);
+	delete[] vertices;
+
+	CreateTextureSampler(device);
+	InitializeConstantBuffers(device);
 }
 
 #ifdef FOXTROT_EDITOR

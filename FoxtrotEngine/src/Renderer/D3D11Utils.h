@@ -173,7 +173,8 @@ public:
 	template <typename T_VERTEX>
 	static void CreateVertexBuffer(
 		ComPtr<ID3D11Device>& device,
-		T_VERTEX*			  vertex,
+		T_VERTEX*			  vertices,
+		size_t				  vertexCount,
 		ComPtr<ID3D11Buffer>& vertexBuffer)
 	{
 		// D3D11_USAGE enumeration (d3d11.h)
@@ -182,7 +183,7 @@ public:
 		D3D11_BUFFER_DESC bufferDesc;
 		ZeroMemory(&bufferDesc, sizeof(bufferDesc));
 		bufferDesc.Usage			   = D3D11_USAGE_DYNAMIC;
-		bufferDesc.ByteWidth		   = UINT(sizeof(T_VERTEX));
+		bufferDesc.ByteWidth		   = UINT(sizeof(T_VERTEX) * vertexCount);
 		bufferDesc.BindFlags		   = D3D11_BIND_VERTEX_BUFFER;
 		bufferDesc.CPUAccessFlags	   = D3D11_CPU_ACCESS_WRITE; // 0 if no CPU access is necessary.
 		bufferDesc.StructureByteStride = sizeof(T_VERTEX);
@@ -190,7 +191,7 @@ public:
 		D3D11_SUBRESOURCE_DATA vertexBufferData = {
 			0
 		}; // MS 예제에서 초기화하는 방식
-		vertexBufferData.pSysMem		  = vertex;
+		vertexBufferData.pSysMem		  = vertices;
 		vertexBufferData.SysMemPitch	  = 0;
 		vertexBufferData.SysMemSlicePitch = 0;
 

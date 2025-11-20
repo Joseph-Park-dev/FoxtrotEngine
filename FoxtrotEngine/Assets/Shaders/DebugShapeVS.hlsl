@@ -7,28 +7,22 @@
 // ----------------------------------------------------------------
 
 #include "Common.hlsli"
-cbuffer ModelViewProjectionConstantBuffer : register(b0)
+cbuffer DBGShapeVSConst : register(b0)
 {
     matrix model;
-    matrix invTranspose;
-    matrix view;
-    matrix projection;
 };
 
-DebugPSInput main(DebugVSInput input)
+DebugGSIN main(DebugVSInput input)
 {
-    DebugPSInput output;
+    DebugGSIN output;
     
     float4 pos = float4(input.posModel, 1.0);
     pos = mul(pos, model);
-    
-    //output.posWorld = pos.xyz;
-    
-    pos = mul(pos, view);
-    pos = mul(pos, projection);
-    //output.posProj = pos;
     output.pos = pos;
     
+    float4 right = float4(model[0][0], model[1][0], model[2][0], 0.0);
+    output.right = normalize(right);
+    output.right = float4(-output.right.x, output.right.y, output.right.z, output.right.w);
     output.color = float4(input.color, 1.0);
     
     return output;

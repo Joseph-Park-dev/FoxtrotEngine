@@ -13,7 +13,7 @@
 #include "ResourceSystem/FTShaders/FTPixelShader.h"
 #include "ResourceSystem/FTMaterials/FTMaterial.h"
 #include "ResourceSystem/FTMaterials/StandardMaterial.h"
-#include "ResourceSystem/FTMaterials/RimMaterial.h"
+#include "ResourceSystem/FTMaterials/SpriteAnimMat.h"
 #include "ResourceSystem/Sound/Sound.h"
 #include "ResourceSystem/FTFont/FTFont.h"
 

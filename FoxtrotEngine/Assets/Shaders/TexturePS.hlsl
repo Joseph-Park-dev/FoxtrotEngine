@@ -7,8 +7,6 @@
 // ----------------------------------------------------------------
 
 #include "Common.hlsli"
-#include "RimEffect.hlsli"
-
 Texture2D g_texture0 : register(t0);
 TextureCube g_diffuseCube : register(t1);
 TextureCube g_specularCube : register(t2);
@@ -22,26 +20,13 @@ cbuffer PixelConstantBuffer : register(b0)
     BlinnPhongData material;
 };
 
-cbuffer RimConstantBuffer : register(b1)
-{
-    float3 rimColor;
-    float rimPower;
-    float rimStrength;
-    bool useSmoothstep;
-    
-    float dummy1;
-    float dummy2;
-};
-
-float4 main(TexPSInput input) : SV_Target
+float4 main(TexPSInput3D input) : SV_Target
 {
     float3 toEye = normalize(eyeWorld - input.posWorld);
 
     float3 color = float3(0.0, 0.0, 0.0);
     
     int i = 0;
-    
-    float alphaThres = 0.05;
     
     [unroll] // warning X3557: loop only executes for 1 iteration(s), forcing loop to unroll
     for (i = 0; i < NUM_DIR_LIGHTS; ++i)
@@ -61,23 +46,16 @@ float4 main(TexPSInput input) : SV_Target
         color += ComputeSpotLight(lights[i], material, input.posWorld, input.normalWorld, toEye);
     }
     
-    color += RimEffect(input.normalWorld, toEye, rimPower, rimStrength, rimColor);
-    
-        
     float4 diffuse = g_diffuseCube.Sample(g_sampler, input.normalWorld);
     float4 specular = g_specularCube.Sample(g_sampler, reflect(-toEye, input.normalWorld));
     
-    specular *= pow((specular.x, specular.y, specular.z) / 3.0, material.shininess);
+    //specular *= pow((specular.x, specular.y, specular.z) / 3.0, material.shininess);
     
     diffuse.xyz *= material.diffuse;
     specular.xyz *= material.specular;
     
-    if (useTexture)
+    if(useTexture)
         diffuse *= g_texture0.Sample(g_sampler, input.texcoord);
     
-    float4 result = diffuse + specular;
-    //if (result.w < alphaThres)
-    //    clip(-1); // Discards the pixel
-    
-    return result;
+    return diffuse + specular;
 }

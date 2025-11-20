@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -61,7 +61,7 @@ FloatEditCommand::FloatEditCommand(float& valRef)
 void Vector2EditCommand::Do()
 {
 	mPrevValue = mValue;
-	mValue = mNextValue;
+	mValue	   = mNextValue;
 }
 
 void Vector2EditCommand::Undo()
@@ -96,12 +96,14 @@ void WStrEditCommand::SetNextVal(std::wstring nextVal)
 
 WStrEditCommand::WStrEditCommand(std::wstring& valRef)
 	: mPrevValue(valRef)
-	, mValue	(valRef)
+	, mValue(valRef)
 	, mNextValue()
-{}
+{
+}
 
 WStrEditCommand::~WStrEditCommand()
-{}
+{
+}
 
 void B2Vec2EditCommand::Do()
 {
@@ -122,7 +124,8 @@ B2Vec2EditCommand::B2Vec2EditCommand(b2Vec2& valRef)
 	: mPrevValue(valRef)
 	, mValue(valRef)
 	, mNextValue(b2Vec2_zero)
-{}
+{
+}
 
 void Vector3EditCommand::Do()
 {
@@ -188,7 +191,8 @@ StrEditCommand::StrEditCommand(FTDS::String& valRef)
 	: mPrevValue(valRef)
 	, mValue(valRef)
 	, mNextValue()
-{}
+{
+}
 
 StrEditCommand::~StrEditCommand()
 {
@@ -219,9 +223,9 @@ BoolEditCommand::BoolEditCommand(bool& valRef)
 {
 }
 
-
 BoolEditCommand::~BoolEditCommand()
-{}
+{
+}
 
 void BoolEditCommand::Do()
 {
@@ -255,5 +259,25 @@ void ActorGroupEditCommand::SetNextVal(ActorGroup nextVal)
 
 ActorGroupEditCommand::ActorGroupEditCommand(ActorGroup& valRef)
 	: mPrevValue(valRef), mValue(valRef), mNextValue(ActorGroup::NOT_ASSIGNED)
+{
+}
+
+void Vector4EditCommand::Do()
+{
+	mValue = mNextValue;
+}
+
+void Vector4EditCommand::Undo()
+{
+	mValue = mPrevValue;
+}
+
+void Vector4EditCommand::SetNextVal(FTVector4 nextVal)
+{
+	mNextValue = nextVal;
+}
+
+Vector4EditCommand::Vector4EditCommand(FTVector4& valRef)
+	: mPrevValue(valRef), mValue(valRef), mNextValue(FTVector4(0.f, 0.f, 0.f, 0.f))
 {
 }

@@ -44,6 +44,7 @@ public:
 	void UpdateVector2Value(const char* label, b2Vec2& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateVector3Value(const char* label, FTVector3& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateVector3Value(const char* label, DirectX::SimpleMath::Vector3& ref, float modSpeed = FLOATMOD_SPEED);
+	void UpdateVector4Value(const char* label, FTVector4& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateStringValue(const char* label, FTDS::String& ref);
 
 	void UpdateStateValue(const char* label, Actor::State& state);

@@ -125,7 +125,7 @@ void Animator::UpdateFrame(float deltaTime)
 		++mCurrFrameIdx;
 		mAccTime = 0.f;
 	}
-	if (IndexOutOfRange(anim->GetMinFrameIdx(), anim->GetMaxFrameIdx()))
+	if (IndexOutOfRange(anim))
 	{
 		if (!mIsRepeated)
 			mIsFinished = true;
@@ -133,9 +133,9 @@ void Animator::UpdateFrame(float deltaTime)
 	}
 }
 
-bool Animator::IndexOutOfRange(int minIdx, int maxIdx)
+bool Animator::IndexOutOfRange(FTSpriteAnimation* anim)
 {
-	return (maxIdx - minIdx) < mCurrFrameIdx;
+	return (anim->GetMaxFrameIdx() - anim->GetMinFrameIdx()) < mCurrFrameIdx;
 }
 
 void Animator::Initialize(FTCore* coreInstance)

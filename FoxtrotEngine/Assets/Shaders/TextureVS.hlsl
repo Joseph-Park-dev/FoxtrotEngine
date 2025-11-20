@@ -11,7 +11,6 @@
 cbuffer VertexConstantBuffer : register(b0)
 {
     matrix model;
-    matrix invTranspose;
     matrix view;
     matrix projection;
 };
@@ -30,10 +29,10 @@ TexPSInput main(TexVSInput vsInput)
     pos = mul(pos, projection); // Clip space position
     output.posProj = pos;
     
-    // Calculating transformed normal
-    float4 normal = float4(vsInput.normalModel, 0.0f);
-    output.normalWorld = mul(normal, invTranspose).xyz;
-    output.normalWorld = normalize(output.normalWorld);
+    //// Calculating transformed normal
+    //float4 normal = float4(vsInput.normalModel, 0.0f);
+    //output.normalWorld = mul(normal, invTranspose).xyz;
+    //output.normalWorld = normalize(output.normalWorld);
     
     // Assigning texture coordinates
     output.texcoord = vsInput.texcoord;

@@ -254,6 +254,24 @@ void FileIOHelper::LoadVector3(std::ifstream& ifs, FTVector3& vec3)
 	ParseVector3(line, vec3);
 }
 
+void FileIOHelper::LoadVector4(std::ifstream& ifs, FTVector4& vec4)
+{
+	// Parse data information.
+	FTDS::String line;
+	GetLine(ifs, line, '\n');
+
+	FTDS::String name;
+	line.ExtractUntilLast(name, "[");
+
+	FTDS::String typeNameStr;
+	line.ExtractBracketedVal(typeNameStr, "[", "]");
+	line.Clear();
+
+	// Parse the actual data.
+	GetLine(ifs, line, '\n');
+	ParseVector4(line, vec4);
+}
+
 void FileIOHelper::LoadVector4(std::ifstream& ifs, DirectX::XMFLOAT4& vec4)
 {
 	// Parse data information.
@@ -337,6 +355,34 @@ void FileIOHelper::ParseVector2(FTDS::String& line, DirectX::XMFLOAT2& arg)
 	float y = std::stof(yStr.C_Str());
 
 	arg = DirectX::XMFLOAT2(x, y);
+}
+
+void FileIOHelper::ParseVector4(FTDS::String& line, FTVector4& arg)
+{
+	line.ExtractBracketedVal(line, "(", ")");
+
+	// Values at both ends.
+	FTDS::String xStr;
+	FTDS::String wStr;
+
+	line.ExtractUntilFirst(xStr, ",");
+	line.ExtractUntilLast(wStr, ",");
+
+	// Values inbetween others.
+	FTDS::String inBetw;
+	FTDS::String yStr;
+	FTDS::String zStr;
+
+	line.ExtractBracketedVal(inBetw, ",", ",");
+	inBetw.ExtractUntilFirst(yStr, ",");
+	inBetw.ExtractUntilLast(zStr, ",");
+
+	float x = std::stof(xStr.C_Str());
+	float y = std::stof(yStr.C_Str());
+	float z = std::stof(zStr.C_Str());
+	float w = std::stof(zStr.C_Str());
+
+	arg = FTVector4(x, y, z, w);
 }
 
 void FileIOHelper::ParseVector4(FTDS::String& line, DirectX::XMFLOAT4& arg)
@@ -494,6 +540,19 @@ void FileIOHelper::SaveVector2(std::ofstream& ofs, const FTDS::String& valName, 
 	++mItemCounts.back();
 }
 #endif // FOXTROT_EDITOR
+
+void FileIOHelper::SaveVector4(std::ofstream& ofs, const FTDS::String& valName, const FTVector4& vec4)
+{
+	FTDS::String itemTitle = mItemIdent + valName + "[Vector4]" + "\n";
+	FTDS::String item =
+		mItemIdent +
+		"(" +
+		std::to_string(vec4.x).c_str() + "," + std::to_string(vec4.y).c_str() +
+		std::to_string(vec4.z).c_str() + "," + std::to_string(vec4.a).c_str() +
+		")";
+	mDataBuffer.push_back(itemTitle + item);
+	++mItemCounts.back();
+}
 
 void FileIOHelper::SaveVector4(std::ofstream& ofs, const FTDS::String& valName, const DirectX::XMFLOAT4& vec4)
 {

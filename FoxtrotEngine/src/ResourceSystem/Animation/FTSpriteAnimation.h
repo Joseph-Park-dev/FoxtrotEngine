@@ -20,6 +20,7 @@ class Tile;
 class Animator;
 class FTTexture;
 class FTJSON;
+class FTPixelShader;
 struct AnimationFrame;
 
 #ifdef FOXTROT_EDITOR
@@ -84,6 +85,9 @@ private:
 	/// @brief A texture holding the animation's sprite sheet.
 	FTTexture* mSpriteSheet;
 
+	/// @brief DS that holds GS constant data for each frames.
+	FTDS::DynamicArray<AnimGCData>* mFrameGCData;
+
 	/// @brief Frames-per-second for this animation.
 	int mFPS;
 
@@ -133,12 +137,13 @@ namespace ChunkKey
 
 namespace SpriteSheetKeys
 {
-	constexpr const char* BASE		 = "frames";
-	constexpr const char* PROPERTIES = "meta";
-	constexpr const char* SIZE		 = "size";
-	constexpr const char* FRAME		 = "frame";
-	constexpr const char* ROTATED	 = "rotated";
-	constexpr const char* TRIMMED	 = "trimmed";
+	constexpr const char* BASE		  = "frames";
+	constexpr const char* PROPERTIES  = "meta";
+	constexpr const char* SIZE		  = "size";
+	constexpr const char* FRAME		  = "frame";
+	constexpr const char* SOURCE_SIZE = "spriteSourceSize";
+	constexpr const char* ROTATED	  = "rotated";
+	constexpr const char* TRIMMED	  = "trimmed";
 
 	constexpr const char* X = "x";
 	constexpr const char* Y = "y";

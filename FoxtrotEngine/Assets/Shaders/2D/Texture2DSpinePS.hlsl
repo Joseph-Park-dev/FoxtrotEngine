@@ -15,18 +15,17 @@ cbuffer PixelConstantBuffer : register(b0)
 {
     float3 eyeWorld;
     bool useTexture;
-    Light lights[MAX_LIGHTS];
+    float alphaTrim;
+    float3 dummy;
     BlinnPhongData material;
 };
 
 float4 main(TexPSInput input) : SV_Target
 {
-    float3 color = float3(0.0, 0.0, 0.0);
-    float alphaThres = 0.05;
+    float4 result = useTexture ? g_texture0.Sample(g_sampler, input.texcoord) : float4(0.f, 0.f, 0.f, 1.f);
     
-    float4 result = useTexture ? float4(color, 1.0) * g_texture0.Sample(g_sampler, input.texcoord) : float4(color, 1.0);
-    if (result.w < alphaThres)
-        clip(-1); // Discards the pixel
+    if(result.w < alphaTrim)
+        clip(-1);
     
     return result;
 }

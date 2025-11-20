@@ -1,0 +1,5 @@
+FTPixelShader<2>
+	RelativePath[string]
+	.\Assets\Shaders\2D\Texture2DSpinePS.hlsl
+	FileName[string]
+	Texture2DSpinePS.hlsl

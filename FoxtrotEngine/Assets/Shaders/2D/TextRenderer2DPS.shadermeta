@@ -1,0 +1,5 @@
+FTPixelShader<2>
+	RelativePath[string]
+	.\Assets\Shaders\2D\TextRenderer2DPS.hlsl
+	FileName[string]
+	TextRenderer2DPS.hlsl

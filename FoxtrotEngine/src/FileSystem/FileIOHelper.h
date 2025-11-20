@@ -43,6 +43,7 @@ public:
 	static void LoadVector2(std::ifstream& ifs, b2Vec2& vec2);
 	static void LoadVector2(std::ifstream& ifs, DirectX::XMFLOAT2& vec2);
 	static void LoadVector3(std::ifstream& ifs, FTVector3& vec3);
+	static void LoadVector4(std::ifstream& ifs, FTVector4& vec4);
 	static void LoadVector4(std::ifstream& ifs, DirectX::XMFLOAT4& vec4);
 
 	template <typename RESOURCE>
@@ -64,6 +65,7 @@ public:
 	static void ParseVector2(FTDS::String& line, FTVector2& arg);
 	static void ParseVector2(FTDS::String& line, b2Vec2& arg);
 	static void ParseVector2(FTDS::String& line, DirectX::XMFLOAT2& arg);
+	static void ParseVector4(FTDS::String& line, FTVector4& arg);
 	static void ParseVector4(FTDS::String& line, DirectX::XMFLOAT4& arg);
 
 	static void ParseInt(FTDS::String& line, int& arg);
@@ -84,6 +86,7 @@ public:
 	static void SaveVector2(std::ofstream& ofs, const FTDS::String& valName, const DirectX::XMFLOAT2& vec2);
 	static void SaveVector2(std::ofstream& ofs, const FTDS::String& valName, const b2Vec2& vec2);
 
+	static void SaveVector4(std::ofstream& ofs, const FTDS::String& valName, const FTVector4& vec4);
 	static void SaveVector4(std::ofstream& ofs, const FTDS::String& valName, const DirectX::XMFLOAT4& vec4);
 
 	static void SaveInt(std::ofstream& ofs, const FTDS::String& valName, const int& intVal);

@@ -6,18 +6,25 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
+#include "SpriteAnim.hlsli"
+
 Texture2D g_texture0 : register(t0);
 SamplerState g_sampler : register(s0);
 
-struct PixelShaderInput
+cbuffer PSCBuf : register(b0)
 {
-    float4 pos : SV_POSITION;
-    float3 color : COLOR;
-    float3 normal : NORMAL;
-    float2 texcoord : TEXCOORD;
+    float4 color;
+    bool useTexture;
+    bool3 dummy;
 };
 
-float4 main(PixelShaderInput input) : SV_TARGET
+float4 main(PS_IN input) : SV_Target
 {
-    return float4(input.color, 1.0);
+    float alphaThres = 0.05;
+    
+    float4 result = useTexture ? g_texture0.Sample(g_sampler, input.texCoord) * color : color;
+    if (result.w < alphaThres)
+        clip(-1); // Discards the pixel
+    
+    return result;
 }

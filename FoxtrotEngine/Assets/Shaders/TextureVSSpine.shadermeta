@@ -1,0 +1,36 @@
+FTVertexShader<3>
+	Input Elements<2>
+		NULL OBJECT<7>
+			InstanceDataStepRate[unsigned int]
+			0
+			InputSlotClass[int]
+			0
+			AlignedByteOffset[unsigned int]
+			0
+			InputSlot[unsigned int]
+			1
+			Format[int]
+			16
+			SemanticIndex[unsigned int]
+			0
+			SemanticName[string]
+			TEXCOORD
+		NULL OBJECT<7>
+			InstanceDataStepRate[unsigned int]
+			0
+			InputSlotClass[int]
+			0
+			AlignedByteOffset[unsigned int]
+			0
+			InputSlot[unsigned int]
+			0
+			Format[int]
+			16
+			SemanticIndex[unsigned int]
+			0
+			SemanticName[string]
+			POSITION
+	RelativePath[string]
+	.\Assets\Shaders\TextureVSSpine.hlsl
+	FileName[string]
+	TextureVSSpine.hlsl

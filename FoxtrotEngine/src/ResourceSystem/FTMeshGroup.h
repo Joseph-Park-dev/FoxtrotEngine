@@ -101,6 +101,12 @@ protected:
 	/// @brief Returns the size scale.
 	const FTVector3& GetSizeScale() const;
 
+	/// @brief Returns the mesh direction.
+	const int GetDirection() const;
+
+	/// @brief Set the mesh direction.
+	void SetDirection(int dir);
+
 private:
 	/// @brief Initial horizontal direction the mesh is pointing toward.
 	/// This is used to flip sprites when changing their direction.
@@ -121,7 +127,7 @@ private:
 	ComPtr<ID3D11Buffer> mVCBuf;
 
 	/// @brief Vertex constant data.
-	BasicVCData mVCData;
+	PointMVP* mVCData;
 
 private:
 	/// @brief Takes a FTMeshData (usually from GeometryGenerator), and creates the meshes.

@@ -21,6 +21,7 @@ DebugShapes::DebugShapes()
 	: mVSPath(L"./Assets/Shaders/DebugShapeVS.hlsl")
 	, mGSPath(L"./Assets/Shaders/DebugShapeGS.hlsl")
 	, mPSPath(L"./Assets/Shaders/DebugShapePS.hlsl")
+	, mCamRect(nullptr)
 {
 }
 

@@ -268,6 +268,46 @@ void CommandHistory::UpdateVector3Value(const char* label, DirectX::SimpleMath::
 	ref.z = vec3[2];
 }
 
+void CommandHistory::UpdateVector4Value(const char* label, FTVector4& ref, float modSpeed)
+{
+	static Vector4EditCommand* command;
+
+	float vec3[4];
+	vec3[0] = ref.x;
+	vec3[1] = ref.y;
+	vec3[2] = ref.z;
+	vec3[3] = ref.a;
+
+	if (ImGui::DragFloat4(label, vec3, modSpeed))
+	{
+		if (!mIsRecording)
+		{
+			if (!command)
+			{
+				mIsRecording = true;
+				command		 = DBG_NEW Vector4EditCommand(ref);
+			}
+		}
+	}
+	else
+	{
+		if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
+		{
+			if (command)
+			{
+				mIsRecording = false;
+				command->SetNextVal(ref);
+				AddCommand(command);
+				command = nullptr;
+			}
+		}
+	}
+	ref.x = vec3[0];
+	ref.y = vec3[1];
+	ref.z = vec3[2];
+	ref.a = vec3[3];
+}
+
 void CommandHistory::UpdateStringValue(const char* label, FTDS::String& ref)
 {
 	if (ref.Capacity() < BufferSize::STRING_BUFFER_SIZE)

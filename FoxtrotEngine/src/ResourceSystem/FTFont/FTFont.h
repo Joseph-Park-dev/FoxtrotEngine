@@ -74,13 +74,11 @@ private:
 	int							 mNumKernings;	// the number of kernings
 	FTDS::HashMap<FontKerning*>* mKerningsList; // list to hold kerning values
 
-	float mLeftPadding;
-	float mTopPadding;
-	float mRightPadding;
-	float mBottomPadding;
-
-	FTTexture*			 mFontImage;
-	ComPtr<ID3D11Buffer> mInstBuf;
+	float	   mLeftPadding;
+	float	   mTopPadding;
+	float	   mRightPadding;
+	float	   mBottomPadding;
+	FTTexture* mFontImage;
 
 private:
 	void Process(ComPtr<ID3D11Device>& device);

@@ -474,6 +474,9 @@
     <ClCompile Include="src\Managers\FontManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ResourceSystem\FTMaterials\SpriteAnimMat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Actors\Actor.h">
@@ -2933,6 +2936,12 @@
     <ClInclude Include="src\Managers\FontManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ResourceSystem\FTMaterials\SpriteAnimMat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceSystem\DefaultResPath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />
@@ -3007,10 +3016,26 @@
     <None Include="include\DirectXTex.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="Assets\Shaders\2D\SpriteAnim.hlsli" />
+    <None Include="Assets\Shaders\Common.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="include\assimp\res\assimp.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Assets\Shaders\2D\SpriteAnimGS.hlsl" />
+    <FxCompile Include="Assets\Shaders\2D\SpriteAnimPS.hlsl" />
+    <FxCompile Include="Assets\Shaders\2D\SpriteAnimVS.hlsl" />
+    <FxCompile Include="Assets\Shaders\2D\TextRenderer2DPS.hlsl" />
+    <FxCompile Include="Assets\Shaders\2D\TextRenderer2DVS.hlsl" />
+    <FxCompile Include="Assets\Shaders\2D\Texture2DPS.hlsl" />
+    <FxCompile Include="Assets\Shaders\2D\Texture2DSpinePS.hlsl" />
+    <FxCompile Include="Assets\Shaders\DebugShapeGS.hlsl" />
+    <FxCompile Include="Assets\Shaders\DebugShapePS.hlsl" />
+    <FxCompile Include="Assets\Shaders\DebugShapeVS.hlsl" />
+    <FxCompile Include="Assets\Shaders\TextureVS.hlsl" />
+    <FxCompile Include="Assets\Shaders\TextureVSSpine.hlsl" />
   </ItemGroup>
 </Project>

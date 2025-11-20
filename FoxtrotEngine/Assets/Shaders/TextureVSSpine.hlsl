@@ -11,7 +11,6 @@
 cbuffer CBVertex : register(b0)
 {
     matrix model;
-    matrix invTranspose;
     matrix view;
     matrix projection;
 };
@@ -26,7 +25,7 @@ TexPSInput main(SpineVSInput vsInput)
     
     output.posWorld = pos.xyz;
     
-    pos = mul(pos, view);       // Camera space position
+    pos = mul(pos, view); // Camera space position
     pos = mul(pos, projection); // Clip space position
     output.posProj = pos;
     

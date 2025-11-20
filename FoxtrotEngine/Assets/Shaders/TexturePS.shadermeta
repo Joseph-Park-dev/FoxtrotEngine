@@ -1,0 +1,5 @@
+FTPixelShader<2>
+	RelativePath[string]
+	.\Assets\Shaders\TexturePS.hlsl
+	FileName[string]
+	TexturePS.hlsl

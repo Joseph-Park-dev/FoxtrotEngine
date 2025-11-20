@@ -6,18 +6,20 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-Texture2D g_texture0 : register(t0);
-SamplerState g_sampler : register(s0);
+#include "Common.hlsli"
 
-struct PixelShaderInput
+float alphaThres = 0.05;
+
+cbuffer PixelConstantBuffer : register(b0)
 {
-    float4 pos : SV_POSITION;
-    float3 color : COLOR;
-    float3 normal : NORMAL;
-    float2 texcoord : TEXCOORD;
+    bool isActive;
+    bool3 dummy;
 };
 
-float4 main(PixelShaderInput input) : SV_TARGET
+float4 main(DebugPSInput input) : SV_TARGET
 {
-    return float4(input.color, 1.0);
+    float4 result = isActive ? input.color : float4(0.0,0.0,0.0,0.0);
+    if (result.w < alphaThres)
+        clip(-1); // Discards the pixel
+    return result;
 }

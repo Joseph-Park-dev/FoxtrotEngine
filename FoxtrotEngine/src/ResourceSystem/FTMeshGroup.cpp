@@ -92,6 +92,7 @@ FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer)
 	, mDirection(1)
 	, mSizeScale(FTVector3(1.0f, 1.0f, 1.0f))
 	, mMeshes(DBG_NEW FTDS::DynamicArray<Mesh*>)
+	, mVCData(DBG_NEW PointMVP)
 {
 	Process(renderer);
 }
@@ -102,6 +103,7 @@ FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTMes
 	, mDirection(1)
 	, mSizeScale(FTVector3(1.0f, 1.0f, 1.0f))
 	, mMeshes(DBG_NEW FTDS::DynamicArray<Mesh*>)
+	, mVCData(DBG_NEW PointMVP)
 {
 	if (!meshData)
 	{
@@ -115,6 +117,7 @@ FTMeshGroup::~FTMeshGroup()
 {
 	Clear();
 	delete mMeshes;
+	delete mVCData;
 }
 
 void FTMeshGroup::Process(FoxtrotRenderer* renderer)
@@ -143,7 +146,7 @@ void FTMeshGroup::Initialize(
 
 void FTMeshGroup::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
 {
-	D3D11Utils::CreateConstantBuffer(device, mVCData, mVCBuf);
+	D3D11Utils::CreateConstantBuffer(device, *mVCData, mVCBuf);
 }
 
 HRESULT FTMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
@@ -190,9 +193,9 @@ void FTMeshGroup::UpdateConstantBuffers(
 
 	// Inverse transpose matrix calculation
 	// Consider removing this part if the engine is for 2D games.
-	Matrix invTransposeMat = modelMat.Transpose();
-	invTransposeMat.Translation(Vector3(0.0f));
-	invTransposeMat = invTransposeMat.Transpose().Invert();
+	//Matrix invTransposeMat = modelMat.Transpose();
+	//invTransposeMat.Translation(Vector3(0.0f));
+	//invTransposeMat = invTransposeMat.Transpose().Invert();
 
 	// View Transformation
 	Matrix&& viewMat  = camInst->GetViewRow();
@@ -201,10 +204,9 @@ void FTMeshGroup::UpdateConstantBuffers(
 	// Project Transformation
 	Matrix&& projMat = std::move(camInst->GetProjRow());
 
-	mVCData.model		 = modelMat.Transpose();
-	mVCData.view		 = viewMat.Transpose();
-	mVCData.projection	 = projMat.Transpose();
-	mVCData.invTranspose = std::move(invTransposeMat);
+	mVCData->ModelMat = modelMat.Transpose();
+	mVCData->ViewMat  = viewMat.Transpose();
+	mVCData->ProjMat  = projMat.Transpose();
 
 	D3D11Utils::UpdateBuffer(
 		context, mVCData, mVCBuf);
@@ -230,6 +232,16 @@ ComPtr<ID3D11SamplerState>& FTMeshGroup::GetSamplerState() { return mSamplerStat
 ComPtr<ID3D11Buffer>&		FTMeshGroup::GetVCBuf() { return mVCBuf; }
 
 const FTVector3& FTMeshGroup::GetSizeScale() const { return mSizeScale; }
+
+const int FTMeshGroup::GetDirection() const
+{
+	return mDirection;
+}
+
+void FTMeshGroup::SetDirection(int dir)
+{
+	mDirection = dir;
+}
 
 void FTMeshGroup::Process(FoxtrotRenderer* renderer, FTMeshData* meshData)
 {

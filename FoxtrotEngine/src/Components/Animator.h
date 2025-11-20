@@ -69,7 +69,7 @@ public:
 
 private:
 	void UpdateFrame(float deltaTime);
-	bool IndexOutOfRange(int minIdx, int maxIdx);
+	bool IndexOutOfRange(FTSpriteAnimation* anim);
 
 #ifdef FOXTROT_EDITOR
 public:

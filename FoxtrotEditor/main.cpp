@@ -10,17 +10,19 @@
 /// </summary>
 
 #pragma once
-#define _CRTDBG_MAP_ALLOC
+#define _CRTDBG_MAP_ALLOC 
 #include <crtdbg.h>
 
 #include "FTCoreEditor.h"
 #include "IncludedCustomBehaviors.h"
+#include <Managers/SpineExtension.h>
 
 int main(int argc, char* argv[])
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	bool success = FTCoreEditor::GetInstance()->Initialize();
 	IncludeCustomBehaviors();
+
 	if (success)
 		FTCoreEditor::GetInstance()->RunLoop();
 	else {
@@ -30,5 +32,6 @@ int main(int argc, char* argv[])
 	FTCoreEditor::GetInstance()->ShutDown();
 	FTCoreEditor::GetInstance()->Destroy();
 	FTCore::GetInstance()->Destroy();
+
 	return 0;
 }

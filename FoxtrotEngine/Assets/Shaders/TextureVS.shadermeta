@@ -1,0 +1,51 @@
+FTVertexShader<3>
+	Input Elements<3>
+		TEXCOORD<7>
+			InstanceDataStepRate[unsigned int]
+			0
+			InputSlotClass[int]
+			0
+			AlignedByteOffset[unsigned int]
+			28
+			InputSlot[unsigned int]
+			0
+			Format[int]
+			16
+			SemanticIndex[unsigned int]
+			0
+			SemanticName[string]
+			TEXCOORD
+		COLOR<7>
+			InstanceDataStepRate[unsigned int]
+			0
+			InputSlotClass[int]
+			0
+			AlignedByteOffset[unsigned int]
+			12
+			InputSlot[unsigned int]
+			0
+			Format[int]
+			2
+			SemanticIndex[unsigned int]
+			0
+			SemanticName[string]
+			COLOR
+		POSITION<7>
+			InstanceDataStepRate[unsigned int]
+			0
+			InputSlotClass[int]
+			0
+			AlignedByteOffset[unsigned int]
+			0
+			InputSlot[unsigned int]
+			0
+			Format[int]
+			6
+			SemanticIndex[unsigned int]
+			0
+			SemanticName[string]
+			POSITION
+	RelativePath[string]
+	.\Assets\Shaders\TextureVS.hlsl
+	FileName[string]
+	TextureVS.hlsl

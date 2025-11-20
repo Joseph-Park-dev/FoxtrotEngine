@@ -159,6 +159,24 @@ private:
 	DirectX::SimpleMath::Vector3  mNextValue;
 };
 
+class Vector4EditCommand : public Command
+{
+public:
+	void Do() override;
+	void Undo() override;
+
+public:
+	void SetNextVal(FTVector4 nextVal);
+
+public:
+	Vector4EditCommand(FTVector4& valRef);
+
+private:
+	FTVector4& mValue;
+	FTVector4  mPrevValue;
+	FTVector4  mNextValue;
+};
+
 class StrEditCommand : public Command
 {
 public:

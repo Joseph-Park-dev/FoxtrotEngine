@@ -45,6 +45,12 @@ struct Vertex
 	}
 };
 
+struct SpriteAnimVertex
+{
+	// Contains xPos, yPos, width, height on Screen.
+	DirectX::SimpleMath::Vector3 Position;
+};
+
 struct DebugVertex
 {
 	DebugVertex() {}

@@ -1,7 +1,7 @@
 #pragma once
 #include "spine/spine.h"
 
-static spine::SpineExtension* gSpineExtension = NULL;
+extern spine::SpineExtension* gSpineExtension; // defined in FTSpineLoader.cpp
 
 namespace spine
 {

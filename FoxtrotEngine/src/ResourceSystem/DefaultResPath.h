@@ -4,6 +4,6 @@ namespace DefaultPath
 {
 	namespace Resource
 	{
-		constexpr const char* SPRITE_ANIM_VS = ".\\FoxtrotEngine\\Assets\\Shaders\\";
+		constexpr const char* SHADERS = ".\\FoxtrotEngine\\Assets\\Shaders\\";
 	}
-} // namespace DefaultPath
+}

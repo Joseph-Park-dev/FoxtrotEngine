@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Static\FTString.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -32,6 +31,8 @@
     <ClInclude Include="Static\Queue.h" />
     <ClInclude Include="Dynamic\DynamicArray.h" />
     <ClInclude Include="Utils\UUIDGenerator.h" />
+    <ClInclude Include="Static\Heap.h" />
+    <ClInclude Include="Node\HeapNode.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

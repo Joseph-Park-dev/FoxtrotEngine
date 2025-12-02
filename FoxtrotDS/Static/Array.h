@@ -1,11 +1,3 @@
-// ----------------------------------------------------------------
-// Foxtrot Engine 2D
-// Copyright (C) 2025 JungBae Park. All rights reserved.
-//
-// Released under the GNU General Public License v3.0
-// See LICENSE in root directory for full details.
-// ----------------------------------------------------------------
-
 #pragma once
 #include <memory>
 #include <cassert>
@@ -53,53 +45,104 @@ namespace FTDS
 			}
 		}
 
-	public:
-		/**
-		 * @brief Construct an empty heap.
-		 *
-		 * Initializes internal counters and relies on the base `FTDS::Array` constructor
-		 * to set up the underlying storage.
-		 */
-		Heap()
-			: FTDS::Array<FTDS::HeapNode<TYPE>*>()
-			, mSize(0)
-			, mLastIdx(0)
+		void Swap(size_t posLeft, size_t posRight)
 		{
+			TYPE cache = this->mData[posLeft];
+			// Replace the front value with back.
+			this->mData[posLeft] = this->mData[posRight];
+			// Replace the back value with front.
+			this->mData[posRight] = cache;
 		}
 
-		/**
-		 * @brief Destructor - frees owned `HeapNode` pointers.
-		 *
-		 * Iterates through the underlying array up to `mSize + 1` (accounts for 1-based indexing)
-		 * and deletes each non-null pointer. After this destructor runs, no `HeapNode` pointers
-		 * owned by this heap remain allocated.
-		 *
-		 * @note Ensure no other owner will attempt to use or delete the nodes after the heap is destroyed.
-		 */
-		~Heap()
+		virtual void Reverse()
 		{
-			for (size_t i = 0; i < mSize + 1; ++i)
+			for (size_t i = 0; i < this->mCapacity / 2; ++i)
+				Swap(i, this->mCapacity - 1 - i);
+		}
+
+	public:
+		// Re-allocate memory space when new capacity is bigger than current capacity
+		void Reserve(size_t newCapacity)
+		{
+			if (newCapacity <= mCapacity)
+				return;
+
+			if (newCapacity < 1) // Input capacity must be bigger than Zero.
 			{
-				if (this->mData[i])
-					delete this->mData[i];
+				Debug::LogError(__LINE__, __FILE__, "New capacity is 0!");
+				return;
+			}
+			// When the current capacity is zero; initialization phase.
+			AllocateMem(newCapacity);
+		}
+
+		// Clears the data, leaving the capacity unchanged.
+		virtual void Clear()
+		{
+			if (0 < mCapacity)
+			{
+				size_t newCap = mCapacity;
+				mCapacity	  = 0;
+
+				if (mData)
+					free(mData);
+				mData = nullptr;
+				AllocateMem(newCap);
 			}
 		}
 
-	private:
-		/**
-		 * @brief Number of elements currently stored in the heap.
-		 *
-		 * Logical count of elements. For this implementation (1-based indexing), `mSize`
-		 * represents the number of valid heap elements.
-		 */
-		size_t mSize;
+	public:
+		// Gets the array which stores the data of the stack.
+		// This can be used when freeing memory.
+		// TYPE*	Data() { return mData; }
 
-		/**
-		 * @brief Last used index in the underlying array.
-		 *
-		 * Under 1-based indexing, `mLastIdx` points to the index of the most recently inserted element.
-		 * Typically, `mLastIdx == mSize` after an insertion.
-		 */
-		size_t mLastIdx;
+		TYPE& At(size_t idx)
+		{
+			return mData[idx];
+		}
+
+		size_t Capacity() { return mCapacity; }
+
+	public:
+		Array()
+			: mData(nullptr)
+			, mCapacity(0)
+		{
+		}
+
+		Array(size_t capacity)
+			: mData(nullptr)
+			, mCapacity(0)
+		{
+			Reserve(capacity);
+		}
+
+		virtual ~Array()
+		{
+			free(mData);
+			mData = nullptr;
+		}
+
+	public:
+		const TYPE* Data() const { return mData; }
+
+	protected:
+		virtual void AllocateMem(size_t newCap)
+		{
+			// Create an array with renewed capacity.
+			mData = static_cast<TYPE*>(realloc(mData, sizeof(TYPE) * newCap));
+			memset(mData, NULL, sizeof(TYPE) * newCap);
+			// Set new capacity.
+			mCapacity = newCap;
+		}
+
+		size_t Min(size_t a, size_t b)
+		{
+			return a > b ? b : a;
+		}
+
+	protected:
+		TYPE*  mData;
+		size_t mCapacity;
 	};
 } // namespace FTDS

@@ -189,8 +189,10 @@
     <ClInclude Include="Dynamic\BinaryNode.h" />
     <ClInclude Include="Dynamic\RecordNode.h" />
     <ClInclude Include="Iterator\FTIterator.h" />
+    <ClInclude Include="Node\HeapNode.h" />
     <ClInclude Include="Static\FTString.h" />
     <ClInclude Include="Static\HashMap.h" />
+    <ClInclude Include="Static\Heap.h" />
     <ClInclude Include="Static\Queue.h" />
     <ClInclude Include="Static\Record.h" />
     <ClInclude Include="Search\DepthFirstSearch.h" />
@@ -211,7 +213,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Static\FTString.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

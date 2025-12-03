@@ -14,7 +14,8 @@ class FoxtrotRenderer;
 enum class ShaderType
 {
 	VERTEX_SHADER,
-	PIXEL_SHADER
+	PIXEL_SHADER,
+	GEOMETRY_SHADER
 };
 
 /// @brief A base abstract wrapper for HLSL Shaders.

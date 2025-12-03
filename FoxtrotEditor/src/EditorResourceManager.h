@@ -39,6 +39,7 @@ public:
 	// FTDS::HashMap<FTSpriteSheet*>*	   GetSpriteSheets() override;
 	FTDS::HashMap<FTPremade*>*		   GetPremades() override;
 	FTDS::HashMap<FTVertexShader*>*	   GetVertexShaders() override;
+	FTDS::HashMap<FTGeometryShader*>*  GetGeometryShaders() override;
 	FTDS::HashMap<FTPixelShader*>*	   GetPixelShaders() override;
 	FTDS::HashMap<FTMaterial*>*		   GetMaterials() override;
 	FTDS::HashMap<FTMeshGroup*>*	   GetMeshGroups() override;

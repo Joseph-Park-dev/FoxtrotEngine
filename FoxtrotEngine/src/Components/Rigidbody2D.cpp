@@ -101,7 +101,7 @@ void Rigidbody2D::LoadProperties(std::ifstream& ifs)
 
 	b2BodyDef bodyDef = b2DefaultBodyDef();
 
-	int bodyTypeInt = NULL;
+	int bodyTypeInt = 0; // default initialize to a valid non-pointer value
 	FileIOHelper::LoadInt(ifs, bodyTypeInt);
 	bodyDef.type = static_cast<b2BodyType>(bodyTypeInt);
 
@@ -201,7 +201,7 @@ void Rigidbody2D::EditorUIUpdate()
 void Rigidbody2D::UpdateBodyType()
 {
 	const char* items[]		= { "Static", "Kinematic", "Dynamic" };
-	static int	currentItem = NULL;
+	static int	currentItem = 0; // initialize to first item
 
 	switch (mBodyDefCache.type)
 	{

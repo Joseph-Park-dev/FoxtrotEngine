@@ -1,3 +1,11 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+//
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "FTWindow.h"
 
 #include <Windows.h>
@@ -24,6 +32,33 @@
 	#include "ViewportRenderer.h"
 #endif
 
+/*
+PSEUDOCODE PLAN (Documentation added only):
+1. For every public and private method define a Doxygen-style comment summarizing purpose.
+2. Include parameter details, return values, side effects, ownership, performance considerations.
+3. Explain resource lifecycle (Create*, Reset, destructor) and render loop (BeginRender, EndRender).
+4. Add safety notes where assertions or HRESULT checks occur.
+5. Keep original logic unchanged.
+*/
+
+/**
+ * Initializes and registers a Win32 window class, then creates and shows a window.
+ * Preconditions:
+ *  - mWidth and mHeight must be > 0 (asserted).
+ *  - mTitle must be non-empty (asserted).
+ * Parameters:
+ *  - wndProc: Window procedure callback.
+ *  - windowMode: ShowWindow mode flag (e.g., SW_SHOWDEFAULT).
+ * Returns:
+ *  - true on success, false if class registration or window creation fails.
+ * Side Effects:
+ *  - Registers a window class (once per unique class name).
+ *  - Allocates and destroys a window handle stored in mWinHandle.
+ *  - Deletes the wide string buffer returned by mTitle.WC_Str().
+ * Notes:
+ *  - Title conversion assumes WC_Str() returns a heap-allocated buffer the caller must delete[].
+ *  - AdjustWindowRect used to compute outer dimensions for desired client size.
+ */
 bool FTWindow::InitializeWindow(WNDPROC wndProc, int windowMode)
 {
 	assert(0 < mWidth || 0 < mHeight);
@@ -52,8 +87,7 @@ bool FTWindow::InitializeWindow(WNDPROC wndProc, int windowMode)
 	}
 	RECT wr = { 0, 0, mWidth, mHeight };
 
-	// 필요한 윈도우 크기(해상도) 계산
-	// wr의 값이 바뀜
+	// Calculate required outer window rectangle for given client area.
 	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, false);
 
 	mWinHandle = CreateWindow(
@@ -83,11 +117,25 @@ bool FTWindow::InitializeWindow(WNDPROC wndProc, int windowMode)
 	return true;
 }
 
+/**
+ * Convenience overload that uses SW_SHOWDEFAULT for window show mode.
+ */
 bool FTWindow::InitializeWindow(WNDPROC wndProc)
 {
 	return InitializeWindow(wndProc, SW_SHOWDEFAULT);
 }
 
+/**
+ * Initializes Direct3D render targets and depth resources for this window.
+ * Parameters:
+ *  - renderer: Associated renderer providing ID3D11Device and MSAA quality levels.
+ * Returns:
+ *  - true if all required resources (RTV, DSV, Index RTV) are created; false otherwise.
+ * Failure:
+ *  - Logs detailed error via Debug::LogError on each resource creation failure.
+ * Notes:
+ *  - Must be called after swap chain creation.
+ */
 bool FTWindow::InitializeWindowRenderer(FoxtrotRenderer* renderer)
 {
 	if (!CreateRTV(renderer->GetDevice()))
@@ -110,6 +158,23 @@ bool FTWindow::InitializeWindowRenderer(FoxtrotRenderer* renderer)
 	return true;
 }
 
+/**
+ * Samples the color (RGBA8) under the current cursor position from an offscreen index texture.
+ * Parameters:
+ *  - context: Immediate device context used for resolve, copy, and map operations.
+ *  - cursorPosColor: Output array of 4 bytes receiving sampled color (if available).
+ * Behavior:
+ *  - Resolves multisampled (if any) mIndexTexture into mIndexTempTexture.
+ *  - Copies a 1x1 box at mouse position into the 1x1 staging texture.
+ *  - Maps staging texture for CPU read and copies first 4 bytes into cursorPosColor.
+ * Constraints:
+ *  - Performs work only if both mIndexTexture and mIndexTempTexture are valid.
+ *  - Sampling occurs only if mouse lies within the render area (IsInRenderedArea).
+ * Performance:
+ *  - Mapping every frame can be costly; consider batching or asynchronous read-back if profiling indicates overhead.
+ * Safety:
+ *  - Assumes textures created with compatible format DXGI_FORMAT_R8G8B8A8_UNORM.
+ */
 void FTWindow::SamplCursorPosColor(ComPtr<ID3D11DeviceContext>& context, uint8_t cursorPosColor[4])
 {
 	// Copies the back buffer data to temp texture.
@@ -141,6 +206,17 @@ void FTWindow::SamplCursorPosColor(ComPtr<ID3D11DeviceContext>& context, uint8_t
 	}
 }
 
+/**
+ * Creates the primary render target views:
+ *  - Default back-buffer RTV.
+ *  - Index RTV (via helper with additional textures).
+ * Parameters:
+ *  - device: D3D11 device used for resource creation.
+ * Returns:
+ *  - true if both RTVs created successfully; false on any failure.
+ * Notes:
+ *  - Relies on an existing swap chain (mSwapChain).
+ */
 bool FTWindow::CreateRTV(ComPtr<ID3D11Device>& device)
 {
 	HRESULT hr = D3D11Utils::CreateRenderTargetView(mRTV, device, mSwapChain);
@@ -154,6 +230,15 @@ bool FTWindow::CreateRTV(ComPtr<ID3D11Device>& device)
 	return true;
 }
 
+/**
+ * Creates the swap chain for this window.
+ * Parameters:
+ *  - renderer: Provides device and quality levels (MSAA).
+ * Returns:
+ *  - true on success; false if creation fails.
+ * Preconditions:
+ *  - mWinHandle must be a valid window handle.
+ */
 bool FTWindow::CreateSwapChain(FoxtrotRenderer* renderer)
 {
 	HRESULT hr = D3D11Utils::CreateSwapChain(mWinHandle, renderer->GetDevice(), mSwapChain, mWidth, mHeight, renderer->GetNumQualityLevels());
@@ -162,6 +247,14 @@ bool FTWindow::CreateSwapChain(FoxtrotRenderer* renderer)
 	return true;
 }
 
+/**
+ * Creates the depth stencil view (DSV) and associated depth buffer.
+ * Parameters:
+ *  - device: D3D11 device.
+ *  - numQualityLevels: MSAA quality level count used to configure buffer.
+ * Returns:
+ *  - true if depth buffer creation succeeded; false otherwise.
+ */
 bool FTWindow::CreateDSV(ComPtr<ID3D11Device>& device, UINT numQualityLevels)
 {
 	HRESULT hr = D3D11Utils::CreateDepthBuffer(device, mWidth, mHeight, numQualityLevels, mDSV);
@@ -170,6 +263,19 @@ bool FTWindow::CreateDSV(ComPtr<ID3D11Device>& device, UINT numQualityLevels)
 	return true;
 }
 
+/**
+ * Creates textures and RTV specifically used for index/color sampling:
+ *  - mIndexTexture: Primary render target for index/color data.
+ *  - mIndexTempTexture: Resolve target (multisample resolve source/dest).
+ *  - mIndexStagingTexture: 1x1 staging texture for CPU read-back.
+ * Parameters:
+ *  - device: D3D11 device.
+ * Returns:
+ *  - true if all resources created successfully; false otherwise.
+ * Notes:
+ *  - Staging texture reduced to 1x1 to minimize read-back bandwidth.
+ *  - Format: DXGI_FORMAT_R8G8B8A8_UNORM for simplicity and direct byte access.
+ */
 bool FTWindow::CreateIndexRTV(ComPtr<ID3D11Device>& device)
 {
 	D3D11_TEXTURE2D_DESC textureDesc;
@@ -191,7 +297,7 @@ bool FTWindow::CreateIndexRTV(ComPtr<ID3D11Device>& device)
 	if (hr != S_OK)
 		return false;
 
-	// Creating 1x1 sized staging texture
+	// Creating 1x1 sized staging texture for lightweight CPU read-back.
 	textureDesc.BindFlags	   = 0;
 	textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 	textureDesc.Usage		   = D3D11_USAGE_STAGING;
@@ -217,6 +323,8 @@ bool FTWindow::CreateIndexRTV(ComPtr<ID3D11Device>& device)
 	return true;
 }
 
+// Accessors return references to internal COM pointers / window handle.
+// Caller should not release these directly; lifetime managed by FTWindow.
 HWND&							FTWindow::GetHandle() { return mWinHandle; }
 ComPtr<IDXGISwapChain>&			FTWindow::GetSwapChain() { return mSwapChain; }
 ComPtr<ID3D11RenderTargetView>& FTWindow::GetRTV() { return mRTV; }
@@ -247,6 +355,16 @@ bool FTWindow::MOUSE_NONE(MOUSE mouse) { return mInputDevice->GetMouseState(mous
 
 FTVector2 FTWindow::MOUSE_POS() { return mInputDevice->GetMousePosition(); }
 
+/**
+ * Processes window messages and updates input device states.
+ * Flow:
+ *  - PeekMessage fetches pending message (non-blocking).
+ *  - Passes message to mouse/key detectors.
+ *  - Translates and dispatches the message.
+ * Notes:
+ *  - Only retrieves messages for this window handle.
+ *  - Additional camera/editor input can be integrated where commented.
+ */
 void FTWindow::ProcessInput()
 {
 	MSG msg = {};
@@ -260,6 +378,17 @@ void FTWindow::ProcessInput()
 	DispatchMessage(&msg);
 }
 
+/**
+ * Resizes swap chain buffers and recreates dependent render targets and depth resources.
+ * Parameters:
+ *  - renderer: Provides device and MSAA quality information.
+ * Behavior:
+ *  - Releases old resources (Reset).
+ *  - Calls IDXGISwapChain::ResizeBuffers with current mWidth/mHeight.
+ *  - Recreates RTV and DSV.
+ * Notes:
+ *  - Caller must update any viewport/state using new dimensions afterward.
+ */
 void FTWindow::ResizeWindow(FoxtrotRenderer* renderer)
 {
 	Reset(renderer);
@@ -274,6 +403,13 @@ void FTWindow::ResizeWindow(FoxtrotRenderer* renderer)
 	}
 }
 
+/**
+ * Releases COM pointers for render targets and index sampling textures.
+ * Parameters:
+ *  - renderer: Currently unused; present for potential future logic.
+ * Notes:
+ *  - After Reset, resources must be recreated before rendering again.
+ */
 void FTWindow::Reset(FoxtrotRenderer* renderer)
 {
 	mRTV.Reset();
@@ -285,6 +421,18 @@ void FTWindow::Reset(FoxtrotRenderer* renderer)
 	mIndexStagingTexture.Reset();
 }
 
+/**
+ * Begins a frame render:
+ *  - Clears RTVs and depth buffer.
+ *  - Sets dual render targets (main + index).
+ *  - Processes any pending window messages (non-blocking).
+ *  - Updates OS window (InvalidateRect + UpdateWindow).
+ *  - Sets viewport to current render area size.
+ * Parameters:
+ *  - renderer: Provides context, clear color, and viewport setup.
+ * Performance:
+ *  - InvalidateRect + UpdateWindow each frame may incur extra overhead; consider conditional invalidation.
+ */
 void FTWindow::BeginRender(FoxtrotRenderer* renderer)
 {
 	ClearWindow(renderer);
@@ -304,6 +452,14 @@ void FTWindow::BeginRender(FoxtrotRenderer* renderer)
 	renderer->SetViewport(0.f, 0.f, mRenderArea->GetSize().x, mRenderArea->GetSize().y);
 }
 
+/**
+ * Ends a frame render:
+ *  - Unbinds render targets and depth stencil state.
+ * Parameters:
+ *  - renderer: Provides device context.
+ * Notes:
+ *  - Does not present the swap chain; presentation likely handled externally.
+ */
 void FTWindow::EndRender(FoxtrotRenderer* renderer)
 {
 	ID3D11RenderTargetView* nullViews[] = { nullptr };
@@ -311,6 +467,13 @@ void FTWindow::EndRender(FoxtrotRenderer* renderer)
 	renderer->GetContext()->OMSetDepthStencilState(nullptr, 0);
 }
 
+/**
+ * Clears all bound render targets and depth stencil view.
+ * Parameters:
+ *  - renderer: Provides context and clear color.
+ * Notes:
+ *  - Clear order: main RTV, index RTV, depth/stencil.
+ */
 void FTWindow::ClearWindow(FoxtrotRenderer* renderer)
 {
 	if (mRTV)
@@ -321,11 +484,29 @@ void FTWindow::ClearWindow(FoxtrotRenderer* renderer)
 		renderer->GetContext()->ClearDepthStencilView(mDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
+/**
+ * Determines if a given position lies inside the current render area.
+ * Parameters:
+ *  - pos: Position in window/client coordinates.
+ * Returns:
+ *  - true if pos overlaps mRenderArea; false otherwise.
+ */
 bool FTWindow::IsInRenderedArea(FTVector2 pos)
 {
 	return mRenderArea->Overlaps(pos);
 }
 
+/**
+ * Constructor.
+ * Parameters:
+ *  - title: UTF-8 or ANSI string for window title (converted internally).
+ *  - width / height: Desired client dimensions.
+ *  - rndArea: Pointer to render area (ownership transferred; deleted in destructor).
+ * Behavior:
+ *  - Initializes input device.
+ * Ownership:
+ *  - Assumes rndArea allocated with new; destructor deletes it.
+ */
 FTWindow::FTWindow(const char* title, UINT width, UINT height, FTRectArea* rndArea)
 	: mWinHandle(nullptr)
 	, mWidth(width)
@@ -336,6 +517,12 @@ FTWindow::FTWindow(const char* title, UINT width, UINT height, FTRectArea* rndAr
 	mTitle.Assign(title);
 }
 
+/**
+ * Destructor.
+ * - Releases input device and render area (heap-allocated).
+ * - Destroys the native window handle (if valid).
+ * - COM resources should be previously released (Reset or resize path).
+ */
 FTWindow::~FTWindow()
 {
 	delete mInputDevice;

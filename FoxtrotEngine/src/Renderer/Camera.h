@@ -23,7 +23,6 @@
 using Matrix  = DirectX::SimpleMath::Matrix;
 using Vector2 = DirectX::SimpleMath::Vector2;
 using Vector3 = DirectX::SimpleMath::Vector3;
-class FTWindow;
 
 namespace ChunkKey
 {

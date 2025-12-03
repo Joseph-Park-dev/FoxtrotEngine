@@ -7,50 +7,39 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include <unordered_map>
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
 
-#include "Core/SingletonMacro.h"
-#include "Debugging/DebugMemAlloc.h"
-#include "Core/TemplateFunctions.h"
-#include "ResourceSystem/FTResource.h"
-#include "ResourceSystem/GenericData/FTJSON.h"
-#include "FileSystem/NullKeys.h"
-#include "FileSystem/FileTypes.h"
-#include "FileSystem/FileIOHelper.h"
-#include "ResourceSystem/FTShaders/FTPixelShader.h"
+// Core/engine essentials required by this header.
+#include "Core/SingletonMacro.h"	   // Singleton macro for manager lifetime/creation.
+#include "Debugging/DebugMemAlloc.h"   // DBG_NEW tracking.
+#include "ResourceSystem/FTResource.h" // FTResourceDef and base concepts used by templates.
+#include "FileSystem/FileIOHelper.h"   // Static helpers used in header-defined templates.
+#include "Static/HashMap.h"			   // FTDS::HashMap used for all resource tables.
+#include "Static/FTString.h"		   // FTDS::String used as keys and path buffers.
 
-#include "Static/HashMap.h"
-#include "Static/FTString.h"
-
-#ifdef FOXTROT_EDITOR
-	#define IMGUI_DEFINE_MATH_OPERATORS
-	#include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
-	#include <imgui.h>
-#endif // FOXTROT_EDITOR
-#include <Components/SpineAnimator.h>
-
+// Forward declarations to minimize compile-time coupling.
 class FoxtrotRenderer;
+
 class FTTexture;
-class FTSpriteAnimation;
-class FTSpineAnimation;
-class FTMeshGroup;
-struct FTMeshData;
-class FTMeshDataPack;
 class FTTileMap;
 class FTPremade;
-class FTCore;
-class FTMaterial;
+class FTMeshGroup;
 class FTVertexShader;
 class FTPixelShader;
+class FTGeometryShader;
+class FTMaterial;
+
+class FTSpriteAnimation;
+class FTSpineAnimation;
+
 class Sound;
 class FTCSV;
 class FTJSON;
 class FTText;
 class FTFont;
+
 class FileIOHelper;
 
+/// @brief Type discriminator for resources serialized/deserialized from chunk files.
 enum class ResType
 {
 	UNSUPPORTED,
@@ -72,6 +61,7 @@ enum class ResType
 	FTFONT
 };
 
+/// @brief Special keys used by the chunk system to reference built-in/primitive assets.
 namespace ChunkKey
 {
 	constexpr const char* PRIMITIVE_SQUARE_SPRITE = "Primitive Square Sprite";
@@ -86,51 +76,92 @@ namespace ChunkKey
 	constexpr const char* PRIMITIVE_SPHERE		= "Primitive Sphere";
 } // namespace ChunkKey
 
-/// @brief A manager that saves/loads FTResources referred in a .Chunk file.
-/// On Foxtrot Editor, this loads all supported resources in the
-/// "Asset" folder, and saves the FTResources that are referred in a .Chunk file or used in a Scene.
+/// @brief Manages discovery, lifetime, serialization, and lookup of engine resources.
+///
+/// Responsibilities:
+/// - On editor: scans the Asset directory, loads supported resources, and tracks usage by Scene/Chunk.
+/// - On runtime: loads/saves only resources referenced by chunk/scene data.
+/// - Provides typed maps and typed getter utilities.
+/// - Owns resource lifetimes (DeleteAll).
 class ResourceManager
 {
 	SINGLETON_PROTECTED(ResourceManager)
 
 public:
+	/// @brief Initialize the manager and bind the renderer for GPU resource creation.
+	/// @param renderer Non-null renderer used for graphics resources.
 	virtual void Initialize(FoxtrotRenderer* renderer);
+
+	/// @brief Frees all loaded resources and clears internal maps.
 	virtual void DeleteAll();
 
+	/// @brief Load all resources referenced by an open chunk stream.
+	/// Stream must be positioned at the resource section.
 	void LoadResources(std::ifstream& ifs);
 
-	// Manually load the required Materials. If it doesn't exist in Asset/material,
-	// this creates a new material.
+	/// @brief Ensure required materials are present. Creates defaults if missing.
 	virtual void LoadMaterials();
-	void		 LoadDefaultResources();
+
+	/// @brief Load engine default/built-in resources (fonts, primitives, fallback materials, etc.).
+	void LoadDefaultResources();
+
+	// ---------------------------
+	// Typed resource lookup APIs
+	// ---------------------------
 
 public:
-	virtual FTTexture*		   GetLoadedTexture(FTDS::String& key);
-	virtual FTTileMap*		   GetLoadedTileMap(FTDS::String& key);
-	virtual FTPremade*		   GetLoadedPremade(FTDS::String& key);
-	virtual FTVertexShader*	   GetLoadedVertexShader(FTDS::String& key);
-	virtual FTPixelShader*	   GetLoadedPixelShader(FTDS::String& key);
-	virtual FTMaterial*		   GetLoadedMaterial(FTDS::String& key);
-	virtual FTMeshGroup*	   GetLoadedMesh(FTDS::String& key);
+	/// @return Loaded texture by key or nullptr if not present.
+	virtual FTTexture* GetLoadedTexture(FTDS::String& key);
+	/// @return Loaded tilemap by key or nullptr if not present.
+	virtual FTTileMap* GetLoadedTileMap(FTDS::String& key);
+	/// @return Loaded premade by key or nullptr if not present.
+	virtual FTPremade* GetLoadedPremade(FTDS::String& key);
+	/// @return Loaded vertex shader by key or nullptr if not present.
+	virtual FTVertexShader* GetLoadedVertexShader(FTDS::String& key);
+	/// @return Loaded pixel shader by key or nullptr if not present.
+	virtual FTPixelShader* GetLoadedPixelShader(FTDS::String& key);
+	/// @return Loaded material by key or nullptr if not present.
+	virtual FTMaterial* GetLoadedMaterial(FTDS::String& key);
+	/// @return Loaded mesh group (3D model) by key or nullptr if not present.
+	virtual FTMeshGroup* GetLoadedMesh(FTDS::String& key);
+	/// @return Loaded 2D sprite animation by key or nullptr if not present.
 	virtual FTSpriteAnimation* GetLoadedSpriteAnim(FTDS::String& key);
-	virtual FTSpineAnimation*  GetLoadedSpineAnim(FTDS::String& key);
-	virtual Sound*			   GetLoadedSound(FTDS::String& key);
-	virtual FTCSV*			   GetLoadedCSV(FTDS::String& key);
-	virtual FTJSON*			   GetLoadedJSON(FTDS::String& key);
-	virtual FTText*			   GetLoadedText(FTDS::String& key);
-	virtual FTFont*			   GetLoadedFont(FTDS::String& key);
+	/// @return Loaded Spine animation by key or nullptr if not present.
+	virtual FTSpineAnimation* GetLoadedSpineAnim(FTDS::String& key);
+	/// @return Loaded sound by key or nullptr if not present.
+	virtual Sound* GetLoadedSound(FTDS::String& key);
+	/// @return Loaded CSV by key or nullptr if not present.
+	virtual FTCSV* GetLoadedCSV(FTDS::String& key);
+	/// @return Loaded JSON by key or nullptr if not present.
+	virtual FTJSON* GetLoadedJSON(FTDS::String& key);
+	/// @return Loaded raw text by key or nullptr if not present.
+	virtual FTText* GetLoadedText(FTDS::String& key);
+	/// @return Loaded font by key or nullptr if not present.
+	virtual FTFont* GetLoadedFont(FTDS::String& key);
 
+	/// @brief Root absolute path to the project's Asset directory.
+	/// Example: D:/Project/Assets
 	FTDS::String& GetPathToAsset();
-	virtual void  SetPathToAsset(FTDS::String&& projectPath);
 
+	/// @brief Set the absolute Asset directory path.
+	/// @note May normalize/trailing-slash internally as needed.
+	virtual void SetPathToAsset(FTDS::String&& projectPath);
+
+	/// @brief Convert an absolute path under Assets to a relative asset path in-place.
 	void AbsoluteToRelativePath(FTDS::String& absPath);
+	/// @brief Convert a relative asset path to absolute path in-place.
 	void RelativeToAbsolutePath(FTDS::String& relPath);
+
+	// ---------------------------
+	// Direct access to resource maps
+	// ---------------------------
 
 public:
 	virtual FTDS::HashMap<FTTexture*>*		   GetTextures();
 	virtual FTDS::HashMap<FTTileMap*>*		   GetTileMaps();
 	virtual FTDS::HashMap<FTPremade*>*		   GetPremades();
 	virtual FTDS::HashMap<FTVertexShader*>*	   GetVertexShaders();
+	virtual FTDS::HashMap<FTGeometryShader*>*  GetGeometryShaders();
 	virtual FTDS::HashMap<FTPixelShader*>*	   GetPixelShaders();
 	virtual FTDS::HashMap<FTMaterial*>*		   GetMaterials();
 	virtual FTDS::HashMap<FTMeshGroup*>*	   GetMeshGroups();
@@ -145,7 +176,13 @@ public:
 	///////////////////////////
 	// Save | Load resources //
 	///////////////////////////
+
 public:
+	/// @brief Load non-graphics resource entries from a chunk stream into a typed map.
+	/// @tparam FTRESOURCE Resource concrete type (e.g., FTCSV, FTJSON, FTText, etc.).
+	/// @param ifs Stream positioned at the next resource entry.
+	/// @param resArr Target map. Will be reserved to 'resCount'.
+	/// @param resCount Number of entries to read. Decrements to 0 during import.
 	template <typename FTRESOURCE>
 	void LoadResourceFromChunk(std::ifstream& ifs, FTDS::HashMap<FTRESOURCE*>* resArr, size_t& resCount)
 	{
@@ -160,6 +197,9 @@ public:
 		}
 	}
 
+	/// @brief Load graphics resources that require a renderer (textures, shaders, etc.).
+	/// @tparam FTRESOURCE Resource concrete type with ctor(FTResourceDef, FoxtrotRenderer*).
+	/// @param renderer Valid renderer used to initialize GPU-backed resources.
 	template <typename FTRESOURCE>
 	void LoadGraphicsResourceFromChunk(std::ifstream& ifs, FTDS::HashMap<FTRESOURCE*>* resArr, size_t& resCount, FoxtrotRenderer* renderer)
 	{
@@ -175,29 +215,40 @@ public:
 	}
 
 public:
+	/// @brief Currently bound renderer. Not owned.
 	FoxtrotRenderer* GetRenderer();
 
 private:
-	FTDS::String	 mPathToAsset;
-	FoxtrotRenderer* mRenderer; // For Loading FTTextures
+	// ---------------------------
+	// Paths and renderer handle
+	// ---------------------------
+
+	FTDS::String	 mPathToAsset; // Absolute path to the Assets root folder.
+	FoxtrotRenderer* mRenderer;	   // Used for loading GPU-backed resources (textures, shaders, etc.).
 
 	//////////////////////
 	// Foxtrot resources//
 	//////////////////////
 private:
-	FTDS::HashMap<FTTexture*>*		   mTextures;
-	FTDS::HashMap<FTTileMap*>*		   mTileMaps;
-	FTDS::HashMap<FTPremade*>*		   mPremades;
+	// Image/2D resources
+	FTDS::HashMap<FTTexture*>* mTextures;
+	FTDS::HashMap<FTTileMap*>* mTileMaps;
+	FTDS::HashMap<FTPremade*>* mPremades;
+
+	// Animation resources
 	FTDS::HashMap<FTSpriteAnimation*>* mSpriteAnimations;
 	FTDS::HashMap<FTSpineAnimation*>*  mSpineAnimations;
 
-	// A mesh group usually represents a 3D model.
-	FTDS::HashMap<FTMeshGroup*>* mMeshGroups;
+	// Geometry resources
+	FTDS::HashMap<FTMeshGroup*>* mMeshGroups; // A mesh group usually represents a 3D model.
 
-	FTDS::HashMap<FTVertexShader*>* mVertexShaders;
-	FTDS::HashMap<FTPixelShader*>*	mPixelShaders;
-	FTDS::HashMap<FTMaterial*>*		mMaterials;
+	// Shaders/materials
+	FTDS::HashMap<FTVertexShader*>*	  mVertexShaders;
+	FTDS::HashMap<FTGeometryShader*>* mGeometryShaders;
+	FTDS::HashMap<FTPixelShader*>*	  mPixelShaders;
+	FTDS::HashMap<FTMaterial*>*		  mMaterials;
 
+	// Audio/Fonts
 	FTDS::HashMap<FTFont*>* mFonts;
 	FTDS::HashMap<Sound*>*	mSounds;
 
@@ -210,6 +261,9 @@ private:
 	FTDS::HashMap<FTText*>* mTexts;
 
 private:
+	/// @brief Core loader for non-graphics resources (no renderer required).
+	/// Expects two strings in the stream: relative path then file name.
+	/// Constructs FTRESOURCE with FTResourceDef{fileName, relPath} and inserts to map keyed by file name.
 	template <typename FTRESOURCE>
 	void LoadResource(std::ifstream& ifs, FTDS::HashMap<FTRESOURCE*>* resMap)
 	{
@@ -227,6 +281,8 @@ private:
 		resMap->Insert(res->GetFileName(), res);
 	}
 
+	/// @brief Core loader for graphics resources (renderer required).
+	/// Skips certain built-in primitives that should not be re-instantiated from disk.
 	template <typename FTRESOURCE>
 	void LoadResource(std::ifstream& ifs, FTDS::HashMap<FTRESOURCE*>* resMap, FoxtrotRenderer* renderer)
 	{
@@ -253,6 +309,8 @@ private:
 		resMap->Insert(res->GetFileName(), res);
 	}
 
+	/// @brief Utility to delete all values and clear a pointer map (safe if already empty).
+	/// @details Template is intended to be instantiated with pointer types, e.g., ClearMap<FTTexture*>(...).
 	template <typename FTRESOURCE>
 	void ClearMap(FTDS::HashMap<FTRESOURCE>* resMap)
 	{
@@ -274,6 +332,8 @@ private:
 	}
 
 private:
+	/// @brief Appends the given file extension if the key has none.
+	/// @note Mutates the provided string when the suffix is missing.
 	void AddFileExtensionIfNone(FTDS::String& key, const char* fileType)
 	{
 		if (key.RFind(fileType) < 0)

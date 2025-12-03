@@ -477,6 +477,9 @@
     <ClCompile Include="src\ResourceSystem\FTMaterials\SpriteAnimMat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ResourceSystem\FTShaders\FTGeometryShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Actors\Actor.h">
@@ -2939,7 +2942,10 @@
     <ClInclude Include="src\ResourceSystem\FTMaterials\SpriteAnimMat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ResourceSystem\DefaultResPath.h">
+    <ClInclude Include="src\ResourceSystem\ResPath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceSystem\FTShaders\FTGeometryShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

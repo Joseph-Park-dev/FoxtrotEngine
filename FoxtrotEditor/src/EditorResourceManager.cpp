@@ -274,6 +274,11 @@ FTDS::HashMap<FTVertexShader*>* EditorResourceManager::GetVertexShaders()
 	return ResourceManager::GetInstance()->GetVertexShaders();
 }
 
+FTDS::HashMap<FTGeometryShader*>* EditorResourceManager::GetGeometryShaders()
+{
+	return ResourceManager::GetInstance()->GetGeometryShaders();
+}
+
 FTDS::HashMap<FTPixelShader*>* EditorResourceManager::GetPixelShaders()
 {
 	return ResourceManager::GetInstance()->GetPixelShaders();

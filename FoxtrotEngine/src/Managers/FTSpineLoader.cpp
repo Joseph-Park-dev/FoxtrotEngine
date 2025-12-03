@@ -10,6 +10,8 @@
 	#include "EditorResourceManager.h"
 #endif // FOXTROT_EDITOR
 
+spine::SpineExtension* gSpineExtension = nullptr;
+
 spine::SkeletonData* spine::FTSpineLoader::ReadSkeletonJsonData(const spine::String& filename, spine::Atlas* atlas, float scale)
 {
 	spine::SkeletonJson json(atlas);

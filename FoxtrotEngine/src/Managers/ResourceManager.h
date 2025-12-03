@@ -25,6 +25,7 @@ class FTPremade;
 class FTMeshGroup;
 class FTVertexShader;
 class FTPixelShader;
+class FTGeometryShader;
 class FTMaterial;
 
 class FTSpriteAnimation;
@@ -160,6 +161,7 @@ public:
 	virtual FTDS::HashMap<FTTileMap*>*		   GetTileMaps();
 	virtual FTDS::HashMap<FTPremade*>*		   GetPremades();
 	virtual FTDS::HashMap<FTVertexShader*>*	   GetVertexShaders();
+	virtual FTDS::HashMap<FTGeometryShader*>*  GetGeometryShaders();
 	virtual FTDS::HashMap<FTPixelShader*>*	   GetPixelShaders();
 	virtual FTDS::HashMap<FTMaterial*>*		   GetMaterials();
 	virtual FTDS::HashMap<FTMeshGroup*>*	   GetMeshGroups();
@@ -241,9 +243,10 @@ private:
 	FTDS::HashMap<FTMeshGroup*>* mMeshGroups; // A mesh group usually represents a 3D model.
 
 	// Shaders/materials
-	FTDS::HashMap<FTVertexShader*>* mVertexShaders;
-	FTDS::HashMap<FTPixelShader*>*	mPixelShaders;
-	FTDS::HashMap<FTMaterial*>*		mMaterials;
+	FTDS::HashMap<FTVertexShader*>*	  mVertexShaders;
+	FTDS::HashMap<FTGeometryShader*>* mGeometryShaders;
+	FTDS::HashMap<FTPixelShader*>*	  mPixelShaders;
+	FTDS::HashMap<FTMaterial*>*		  mMaterials;
 
 	// Audio/Fonts
 	FTDS::HashMap<FTFont*>* mFonts;

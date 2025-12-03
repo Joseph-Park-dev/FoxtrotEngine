@@ -27,6 +27,7 @@
 
 #include "Managers/ResourceManager.h"
 #include "Managers/AnimationManager.h"
+#include "ResourceSystem/ResPath.h"
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/GeometryGenerator.h"
 #include "ResourceSystem/FTMeshGroup.h"
@@ -37,6 +38,7 @@
 #include "ResourceSystem/FTMeshDataPack.h"
 #include "ResourceSystem/ModelLoader.h"
 #include "ResourceSystem/FTShaders/FTVertexShader.h"
+#include "ResourceSystem/FTShaders/FTGeometryShader.h"
 #include "ResourceSystem/FTShaders/FTPixelShader.h"
 #include "ResourceSystem/FTMaterials/StandardMaterial.h"
 #include "ResourceSystem/FTMaterials/SpriteAnimMat.h"
@@ -87,6 +89,7 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 	mSpineAnimations  = DBG_NEW	 FTDS::HashMap<FTSpineAnimation*>;
 	mMeshGroups		  = DBG_NEW		  FTDS::HashMap<FTMeshGroup*>;
 	mVertexShaders	  = DBG_NEW	   FTDS::HashMap<FTVertexShader*>;
+	mGeometryShaders  = DBG_NEW	 FTDS::HashMap<FTGeometryShader*>;
 	mPixelShaders	  = DBG_NEW		FTDS::HashMap<FTPixelShader*>;
 	mMaterials		  = DBG_NEW		   FTDS::HashMap<FTMaterial*>;
 	mSounds			  = DBG_NEW			  FTDS::HashMap<Sound*>;
@@ -116,6 +119,7 @@ void ResourceManager::DeleteAll()
 	ClearMap(mSpineAnimations);
 	ClearMap(mMeshGroups);
 	ClearMap(mVertexShaders);
+	ClearMap(mGeometryShaders);
 	ClearMap(mPixelShaders);
 	ClearMap(mMaterials);
 	ClearMap(mSounds);
@@ -258,6 +262,16 @@ FTDS::HashMap<FTVertexShader*>* ResourceManager::GetVertexShaders()
 }
 
 /**
+ * @brief Get pointer to the internal geometry shader hash map.
+ *
+ * @return Pointer to FTDS::HashMap containing FTGeometryShader* records.
+ */
+FTDS::HashMap<FTGeometryShader*>* ResourceManager::GetGeometryShaders()
+{
+	return mGeometryShaders;
+}
+
+/**
  * @brief Get pointer to the internal pixel shader hash map.
  *
  * @return Pointer to FTDS::HashMap containing FTPixelShader* records.
@@ -386,7 +400,7 @@ void ResourceManager::LoadMaterials()
 	fileName.Append(+FileTypes::MATERIAL);
 
 	path.Clear();
-	path = ResourceManager::GetInstance()->GetPathToAsset() + fileName;
+	path   = ResourceManager::GetInstance()->GetPathToAsset() + fileName;
 	resDef = FTResourceDef{ fileName, path };
 
 	SpriteAnimMat* spriteAnim = DBG_NEW SpriteAnimMat(resDef, mRenderer);
@@ -423,6 +437,7 @@ ResourceManager::~ResourceManager()
 	delete mSpineAnimations;
 	delete mMeshGroups;
 	delete mVertexShaders;
+	delete mGeometryShaders;
 	delete mPixelShaders;
 	delete mMaterials;
 	delete mSounds;
@@ -438,6 +453,7 @@ ResourceManager::~ResourceManager()
 	mSpineAnimations  = nullptr;
 	mMeshGroups		  = nullptr;
 	mVertexShaders	  = nullptr;
+	mGeometryShaders	  = nullptr;
 	mPixelShaders	  = nullptr;
 	mMaterials		  = nullptr;
 	mSounds			  = nullptr;
@@ -462,6 +478,7 @@ ResourceManager::ResourceManager()
 	, mSpineAnimations(nullptr)
 	, mMeshGroups(nullptr)
 	, mVertexShaders(nullptr)
+	, mGeometryShaders(nullptr)
 	, mPixelShaders(nullptr)
 	, mMaterials(nullptr)
 	, mSounds(nullptr)
@@ -568,6 +585,154 @@ void ResourceManager::LoadDefaultResources()
 	mMeshGroups->Insert(ChunkKey::PRIMITIVE_SQUARE_SPRITE, meshGroup);
 
 	delete meshData;
+
+	///////////////////////////////
+	///// Vertex Shader Setup /////
+	///////////////////////////////
+
+	mVertexShaders->Reserve(5);
+
+	// 2D sprite animation vertex shader
+	FTDS::String vsPath = Path::Resource::SHADERS_2D;
+	resDef.FileName		= "SpriteAnimVS.hlsl";
+	vsPath.Append(resDef.FileName);
+	resDef.RelativePath = vsPath.C_Str();
+
+	mVertexShaders->Insert(
+		resDef.FileName,
+		DBG_NEW FTVertexShader(resDef, mRenderer));
+
+	// 2D text renderer vertex shader
+	vsPath = Path::Resource::SHADERS_2D;
+	resDef.FileName		= "TextRenderer2DVS.hlsl";
+	vsPath.Append(resDef.FileName);
+	resDef.RelativePath = vsPath.C_Str();
+
+	mVertexShaders->Insert(
+		resDef.FileName,
+		DBG_NEW FTVertexShader(resDef, mRenderer));
+
+	// 2D debug shape vertex shader
+	vsPath = Path::Resource::SHADERS;
+	resDef.FileName		= "DebugShapeVS.hlsl";
+	vsPath.Append(resDef.FileName);
+	resDef.RelativePath = vsPath.C_Str();
+
+	mVertexShaders->Insert(
+		resDef.FileName,
+		DBG_NEW FTVertexShader(resDef, mRenderer));
+
+	// 2D texture vertex shader
+	vsPath = Path::Resource::SHADERS;
+	resDef.FileName		= "TextureVS.hlsl";
+	vsPath.Append(resDef.FileName);
+	resDef.RelativePath = vsPath.C_Str();
+
+	mVertexShaders->Insert(
+		resDef.FileName,
+		DBG_NEW FTVertexShader(resDef, mRenderer));
+
+	// 2D spine animation vertex shader
+	vsPath = Path::Resource::SHADERS;
+	resDef.FileName		= "TextureVSSpine.hlsl";
+	vsPath.Append(resDef.FileName);
+	resDef.RelativePath = vsPath.C_Str();
+
+	mVertexShaders->Insert(
+		resDef.FileName,
+		DBG_NEW FTVertexShader(resDef, mRenderer));
+
+	//////////////////////////////
+	///// Pixel Shader Setup /////
+	//////////////////////////////
+
+	mPixelShaders->Reserve(6);
+
+	// 2D sprite animation pixel shader
+	vsPath = Path::Resource::SHADERS_2D;
+	resDef.FileName		= "SpriteAnimPS.hlsl";
+	vsPath.Append(resDef.FileName);
+	resDef.RelativePath = vsPath.C_Str();
+
+	mPixelShaders->Insert(
+		resDef.FileName,
+		DBG_NEW FTPixelShader(resDef, mRenderer));
+
+	// 2D text renderer pixel shader
+	vsPath = Path::Resource::SHADERS_2D;
+	resDef.FileName		= "TextRenderer2DPS.hlsl";
+	vsPath.Append(resDef.FileName);
+	resDef.RelativePath = vsPath.C_Str();
+
+	mPixelShaders->Insert(
+		resDef.FileName,
+		DBG_NEW FTPixelShader(resDef, mRenderer));
+
+	// 2D texture pixel shader
+	vsPath = Path::Resource::SHADERS_2D;
+	resDef.FileName		= "Texture2DPS.hlsl";
+	vsPath.Append(resDef.FileName);
+	resDef.RelativePath = vsPath.C_Str();
+
+	mPixelShaders->Insert(
+		resDef.FileName,
+		DBG_NEW FTPixelShader(resDef, mRenderer));
+
+	// 2D spine animation pixel shader
+	vsPath = Path::Resource::SHADERS_2D;
+	resDef.FileName		= "Texture2DSpinePS.hlsl";
+	vsPath.Append(resDef.FileName);
+	resDef.RelativePath = vsPath.C_Str();
+
+	mPixelShaders->Insert(
+		resDef.FileName,
+		DBG_NEW FTPixelShader(resDef, mRenderer));
+
+	// 2D debug shape pixel shader
+	vsPath = Path::Resource::SHADERS;
+	resDef.FileName		= "DebugShapePS.hlsl";
+	vsPath.Append(resDef.FileName);
+	resDef.RelativePath = vsPath.C_Str();
+
+	mPixelShaders->Insert(
+		resDef.FileName,
+		DBG_NEW FTPixelShader(resDef, mRenderer));
+
+	// 2D texture pixel shader
+	vsPath = Path::Resource::SHADERS;
+	resDef.FileName		= "TexturePS.hlsl";
+	vsPath.Append(resDef.FileName);
+	resDef.RelativePath = vsPath.C_Str();
+
+	mPixelShaders->Insert(
+		resDef.FileName,
+		DBG_NEW FTPixelShader(resDef, mRenderer));
+
+	/////////////////////////////////
+	///// Geometry Shader Setup /////
+	/////////////////////////////////
+
+	mGeometryShaders->Reserve(2);
+
+	// 2D sprite animation geometry shader
+	vsPath = Path::Resource::SHADERS_2D;
+	resDef.FileName		= "SpriteAnimGS.hlsl";
+	vsPath.Append(resDef.FileName);
+	resDef.RelativePath = vsPath.C_Str();
+
+	mGeometryShaders->Insert(
+		resDef.FileName,
+		DBG_NEW FTGeometryShader(resDef, mRenderer));
+
+	// 2D debug shape geometry shader
+	vsPath = Path::Resource::SHADERS;
+	resDef.FileName		= "DebugShapeGS.hlsl";
+	vsPath.Append(resDef.FileName);
+	resDef.RelativePath = vsPath.C_Str();
+
+	mGeometryShaders->Insert(
+		resDef.FileName,
+		DBG_NEW FTGeometryShader(resDef, mRenderer));
 }
 
 /**

@@ -281,6 +281,7 @@
     <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\HenryBehavior.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="src\ResourceSystem\FTShaders\FTGeometryShader.cpp" />
     <ClCompile Include="src\Managers\FontManager.cpp" />
     <ClCompile Include="src\Components\SpineAnimator.cpp" />
     <ClCompile Include="src\ResourceSystem\FTFont\FontChar.cpp" />
@@ -434,6 +435,7 @@
     <ClCompile Include="src\ResourceSystem\FTMaterials\StandardMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ResourceSystem\FTShaders\FTGeometryShader.h" />
     <ClInclude Include="src\Managers\FontManager.h" />
     <ClInclude Include="include\json\include\nlohmann\adl_serializer.hpp" />
     <ClInclude Include="include\json\include\nlohmann\byte_container_with_subtype.hpp" />
@@ -482,7 +484,7 @@
     <ClInclude Include="include\json\include\nlohmann\thirdparty\hedley\hedley.hpp" />
     <ClInclude Include="include\json\include\nlohmann\thirdparty\hedley\hedley_undef.hpp" />
     <ClInclude Include="src\Components\SpineAnimator.h" />
-    <ClInclude Include="src\ResourceSystem\DefaultResPath.h" />
+    <ClInclude Include="src\ResourceSystem\ResPath.h" />
     <ClInclude Include="src\ResourceSystem\FTFont\FTFont.h" />
     <ClInclude Include="src\ResourceSystem\FTFont\FontChar.h" />
     <ClInclude Include="src\ResourceSystem\FTFont\FontKerning.h" />

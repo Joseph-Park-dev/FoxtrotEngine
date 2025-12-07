@@ -92,3 +92,13 @@ namespace ChunkKey
 
 	} // namespace FTSpriteAnimator
 } // namespace ChunkKey
+
+namespace Path
+{
+	namespace FTSpriteAnimator
+	{
+		constexpr const char* VS = "SpriteAnimVS.hlsl";
+		constexpr const char* GS = "SpriteAnimGS.hlsl";
+		constexpr const char* PS = "SpriteAnimPS.hlsl";
+	}
+} // namespace Path

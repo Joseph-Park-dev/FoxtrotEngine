@@ -43,6 +43,18 @@ Animator::Animator(Actor* owner, int updateOrder)
 	, mIsFinished(false)
 	, mIsRepeated(true)
 {
+	FTDS::String	key = Path::FTSpriteAnimator::VS;
+	FTVertexShader* vs = ResourceManager::GetInstance()->GetLoadedVertexShader(key);
+
+	key					 = Path::FTSpriteAnimator::GS;
+	FTGeometryShader* gs  = ResourceManager::GetInstance()->GetLoadedGeometryShader(key);
+
+	key					 = Path::FTSpriteAnimator::PS;
+	FTPixelShader* ps = ResourceManager::GetInstance()->GetLoadedPixelShader(key);
+
+	SetVS(vs);
+	SetGS(gs);
+	SetPS(ps);
 }
 
 Animator::~Animator()
@@ -162,7 +174,6 @@ void Animator::Render(FoxtrotRenderer* renderer)
 		renderer->SwitchFillMode();
 
 		Transform* transform = GetOwner()->GetTransform();
-
 		static_cast<FTSpriteAnimation*>(GetMeshGroup())
 			->Render(
 				mCurrFrameIdx,
@@ -170,16 +181,11 @@ void Animator::Render(FoxtrotRenderer* renderer)
 				transform,
 				Camera::GetInstance(),
 				GetVS(),
+				GetGS(),
 				GetPS(),
 				GetMaterial());
 	}
 }
-
-// void Animator::Render(FoxtrotRenderer* renderer)
-//{
-//	if (mCurrentAnim != nullptr)
-//		mCurrentAnim->Render(renderer, mCurrFrameIdx);
-// }
 
 void Animator::CloneTo(Actor* actor)
 {
@@ -225,6 +231,7 @@ void Animator::EditorRender(FoxtrotRenderer* renderer)
 				transform,
 				EditorCamera::GetInstance(),
 				GetVS(),
+				GetGS(),
 				GetPS(),
 				GetMaterial());
 	}

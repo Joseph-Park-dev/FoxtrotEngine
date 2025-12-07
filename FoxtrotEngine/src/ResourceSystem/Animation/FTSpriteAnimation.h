@@ -45,13 +45,14 @@ public:
 	/// @param meshIndex Index of a mesh to be rendered.
 	/// @param frontDir Current direction the animation is facing toward.
 	void Render(
-		int				 meshIndex,
-		FoxtrotRenderer* renderer,
-		Transform*		 transform,
-		Camera*			 camInst,
-		FTVertexShader*	 vs,
-		FTPixelShader*	 ps,
-		FTMaterial*		 mat);
+		int				  meshIndex,
+		FoxtrotRenderer*  renderer,
+		Transform*		  transform,
+		Camera*			  camInst,
+		FTVertexShader*	  vs,
+		FTGeometryShader* gs,
+		FTPixelShader*	  ps,
+		FTMaterial*		  mat);
 
 	/// @see FTResource::SaveProperties()
 	virtual void SaveProperties(std::ofstream& ofs) override;
@@ -77,6 +78,7 @@ public:
 protected:
 	/// @brief Takes an array of Tiles, initializes a sprite animation.
 	virtual void Process(FoxtrotRenderer* renderer) override;
+	void InitializeConstantBuffers(ComPtr<ID3D11Device>& device) override;
 
 private:
 	/// @brief A JSON file that holds the rect data on a spritesheet.
@@ -85,8 +87,9 @@ private:
 	/// @brief A texture holding the animation's sprite sheet.
 	FTTexture* mSpriteSheet;
 
+	ComPtr<ID3D11Buffer> mGCBuf;
 	/// @brief DS that holds GS constant data for each frames.
-	FTDS::DynamicArray<AnimGCData>* mFrameGCData;
+	FTDS::DynamicArray<AnimGCData*>* mFrameGCData;
 
 	/// @brief Frames-per-second for this animation.
 	int mFPS;

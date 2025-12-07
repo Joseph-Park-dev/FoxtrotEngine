@@ -14,6 +14,8 @@
 #include "ResourceSystem/FTMaterials/FTMaterial.h"
 #include "ResourceSystem/Animation/AnimationFrame.h"
 #include "ResourceSystem/GeometryGenerator.h"
+#include "ResourceSystem/FTShaders/FTPixelShader.h"
+#include "ResourceSystem/FTShaders/FTGeometryShader.h"
 #include "Managers/ResourceManager.h"
 
 #ifdef FOXTROT_EDITOR
@@ -24,18 +26,20 @@
 #endif
 
 void FTSpriteAnimation::Render(
-	int				 meshIndex,
-	FoxtrotRenderer* renderer,
-	Transform*		 transform,
-	Camera*			 camInst,
-	FTVertexShader*	 vs,
-	FTPixelShader*	 ps,
-	FTMaterial*		 mat)
+	int				  meshIndex,
+	FoxtrotRenderer*  renderer,
+	Transform*		  transform,
+	Camera*			  camInst,
+	FTVertexShader*	  vs,
+	FTGeometryShader* gs,
+	FTPixelShader*	  ps,
+	FTMaterial*		  mat)
 {
 	// This enables the resource reusable throughout the Component instances.
 	UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat, GetFrontDir());
+	D3D11Utils::UpdateBuffer(renderer->GetContext(), *mFrameGCData->At(meshIndex), mGCBuf);
 
-	if (!vs || !ps || !mat) // Vertex Shader is always required when drawing.
+	if (!vs || !ps || !gs || !mat) // Vertex Shader is always required when drawing.
 		return;
 
 	UINT						 stride	 = sizeof(SpriteAnimVertex);
@@ -45,9 +49,6 @@ void FTSpriteAnimation::Render(
 
 	if (mesh)
 	{
-		context->VSSetConstantBuffers(
-			0, 1, GetVCBuf().GetAddressOf());
-
 		if (mSpriteSheet)
 		{
 			std::vector<ID3D11ShaderResourceView*> resViews;
@@ -56,17 +57,24 @@ void FTSpriteAnimation::Render(
 		}
 
 		context->VSSetShader(vs->GetShader().Get(), 0, 0);
-		context->PSSetSamplers(0, 1, GetSamplerState().GetAddressOf());
-		context->PSSetShader(ps->GetShader().Get(), 0, 0);
+		context->VSSetConstantBuffers(
+			0, 1, GetVCBuf().GetAddressOf());
 
+		context->GSSetShader(gs->GetShader().Get(), 0, 0);
+		context->GSSetConstantBuffers(0, 1, mGCBuf.GetAddressOf());
+
+		context->PSSetShader(ps->GetShader().Get(), 0, 0);
+		context->PSSetSamplers(0, 1, GetSamplerState().GetAddressOf());
 		if (mat)
 			context->PSSetConstantBuffers(0, 1, mat->GetPCBuf().GetAddressOf());
 
 		context->IASetInputLayout(vs->GetInputLayout().Get());
 		context->IASetVertexBuffers(0, 1, mesh->VertexBuffer.GetAddressOf(), &stride, &offset);
 		context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-		context->DrawInstanced(4, 1, 0, meshIndex);
+		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+		context->Draw(1, 0);
+
+		context->GSSetShader(nullptr, 0, 0);
 	}
 }
 
@@ -131,6 +139,7 @@ FTSpriteAnimation::FTSpriteAnimation(FTResourceDef& resDef, FoxtrotRenderer* ren
 	: FTMeshGroup(resDef, renderer, nullptr)
 	, mJSON(nullptr)
 	, mSpriteSheet(nullptr)
+	, mFrameGCData(DBG_NEW FTDS::DynamicArray<AnimGCData*>)
 	, mMinFrameIdx(0)
 	, mMaxFrameIdx(0)
 	, mFPS(24)
@@ -141,6 +150,12 @@ FTSpriteAnimation::FTSpriteAnimation(FTResourceDef& resDef, FoxtrotRenderer* ren
 
 FTSpriteAnimation::~FTSpriteAnimation()
 {
+	for (auto iter = mFrameGCData->Begin(); iter != mFrameGCData->End(); ++iter)
+	{
+		delete (*iter);
+		(*iter) = nullptr;
+	}
+	delete mFrameGCData;
 }
 
 void FTSpriteAnimation::Process(FoxtrotRenderer* renderer)
@@ -159,6 +174,13 @@ void FTSpriteAnimation::Process(FoxtrotRenderer* renderer)
 	FTResource::Process();
 }
 
+void FTSpriteAnimation::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
+{
+	FTMeshGroup::InitializeConstantBuffers(device);
+	AnimGCData dummy;
+	D3D11Utils::CreateConstantBuffer(device, dummy, mGCBuf);
+}
+
 void FTSpriteAnimation::Initialize(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 {
 	// Get sheet size from JSON.
@@ -171,9 +193,12 @@ void FTSpriteAnimation::Initialize(ComPtr<ID3D11Device>& device, ComPtr<ID3D11De
 	size_t			  vCount   = mMaxFrameIdx - mMinFrameIdx + 1;
 	SpriteAnimVertex* vertices = DBG_NEW SpriteAnimVertex[vCount];
 
+	mFrameGCData->Reserve(mMaxFrameIdx - mMinFrameIdx + 1);
 	// For every sprite data in JSON...
 	for (size_t i = mMinFrameIdx; i <= mMaxFrameIdx; ++i)
 	{
+		AnimGCData* gcData = DBG_NEW AnimGCData;
+
 		// Base array containing sprite data.
 		nlohmann::json frame = mJSON->Data()[SpriteSheetKeys::BASE][i];
 
@@ -204,8 +229,14 @@ void FTSpriteAnimation::Initialize(ComPtr<ID3D11Device>& device, ComPtr<ID3D11De
 
 		size_t tileIdx			   = i - mMinFrameIdx;
 		vertices[tileIdx].Position = Vector3(screenX, screenY, 0.0f);
-		//vertices[tileIdx].Size	   = Vector2(adjustedW, adjustedH);
-		//vertices[tileIdx].Texcoord = Vector4(mapX, mapY, mapW, mapH);
+
+		gcData->Size = Vector2(adjustedW, adjustedH);
+		gcData->Rotated = frame[SpriteSheetKeys::ROTATED];
+		gcData->Frame	= Vector4(mapX, mapY, mapW, mapH);
+
+		mFrameGCData->PushBack(gcData);
+		// vertices[tileIdx].Size	   = Vector2(adjustedW, adjustedH);
+		// vertices[tileIdx].Texcoord = Vector4(mapX, mapY, mapW, mapH);
 	}
 
 	Mesh* mesh = DBG_NEW Mesh;

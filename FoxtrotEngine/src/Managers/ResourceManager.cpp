@@ -836,6 +836,24 @@ FTVertexShader* ResourceManager::GetLoadedVertexShader(FTDS::String& key)
 	return rec->Value();
 }
 
+FTGeometryShader* ResourceManager::GetLoadedGeometryShader(FTDS::String& key)
+{
+	AddFileExtensionIfNone(key, FileTypes::SHADER);
+
+	FTDS::Record<FTGeometryShader*>* rec = mGeometryShaders->At(key);
+	if (!rec)
+	{
+		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
+		return nullptr;
+	}
+
+#ifdef FOXTROT_EDITOR
+	rec->Value()->AddRefCount();
+#endif // FOXTROT_EDITOR
+
+	return rec->Value();
+}
+
 /**
  * @brief Retrieve a loaded pixel shader by key (adds extension if missing).
  *

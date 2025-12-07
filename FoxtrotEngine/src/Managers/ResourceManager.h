@@ -118,6 +118,8 @@ public:
 	virtual FTPremade* GetLoadedPremade(FTDS::String& key);
 	/// @return Loaded vertex shader by key or nullptr if not present.
 	virtual FTVertexShader* GetLoadedVertexShader(FTDS::String& key);
+	/// @return Loaded geometry shader by key or nullptr if not present.
+	virtual FTGeometryShader* GetLoadedGeometryShader(FTDS::String& key);
 	/// @return Loaded pixel shader by key or nullptr if not present.
 	virtual FTPixelShader* GetLoadedPixelShader(FTDS::String& key);
 	/// @return Loaded material by key or nullptr if not present.

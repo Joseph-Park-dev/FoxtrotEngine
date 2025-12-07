@@ -587,22 +587,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="assets\Shaders\TexturePS.hlsl" />
-    <FxCompile Include="assets\Shaders\TextureVS.hlsl" />
-    <FxCompile Include="assets\Shaders\SolidPS.hlsl" />
-    <FxCompile Include="assets\Shaders\SolidVS.hlsl" />
-    <FxCompile Include="Assets\Shaders\BlinnPhongPS.hlsl" />
-    <FxCompile Include="Assets\Shaders\NormalVS.hlsl" />
-    <FxCompile Include="Assets\Shaders\NormalPS.hlsl" />
-    <FxCompile Include="Assets\Shaders\RimTexturePS.hlsl" />
-    <FxCompile Include="Assets\Shaders\CubeMapPS.hlsl" />
-    <FxCompile Include="Assets\Shaders\CubeMapVS.hlsl" />
-    <FxCompile Include="Assets\Shaders\2D\Texture2DPS.hlsl" />
-    <FxCompile Include="Assets\Shaders\DebugShapePS.hlsl" />
-    <FxCompile Include="Assets\Shaders\DebugShapeVS.hlsl" />
-    <FxCompile Include="Assets\Shaders\DebugShapeGS.hlsl" />
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="icon1.ico">
       <Filter>Resource Files</Filter>
     </Image>

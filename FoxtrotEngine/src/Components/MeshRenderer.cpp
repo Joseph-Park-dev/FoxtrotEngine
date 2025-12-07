@@ -62,17 +62,19 @@ void MeshRenderer::CloneTo(Actor* actor)
 	newComp->mMaterial	  = this->mMaterial;
 }
 
-FoxtrotRenderer* MeshRenderer::GetRenderer() const { return mRenderer; }
-FTMeshGroup*	 MeshRenderer::GetMeshGroup() const { return mMeshGroup; }
-FTTexture*		 MeshRenderer::GetTexture() const { return mTexture; }
-FTVertexShader*	 MeshRenderer::GetVS() const { return mVS; }
-FTPixelShader*	 MeshRenderer::GetPS() const { return mPS; }
-FTMaterial*		 MeshRenderer::GetMaterial() const { return mMaterial; }
+FoxtrotRenderer*  MeshRenderer::GetRenderer() const { return mRenderer; }
+FTMeshGroup*	  MeshRenderer::GetMeshGroup() const { return mMeshGroup; }
+FTTexture*		  MeshRenderer::GetTexture() const { return mTexture; }
+FTVertexShader*	  MeshRenderer::GetVS() const { return mVS; }
+FTGeometryShader* MeshRenderer::GetGS() const { return mGS; }
+FTPixelShader*	  MeshRenderer::GetPS() const { return mPS; }
+FTMaterial*		  MeshRenderer::GetMaterial() const { return mMaterial; }
 
 void MeshRenderer::SetRenderer(FoxtrotRenderer* renderer) { mRenderer = renderer; }
 void MeshRenderer::SetMeshGroup(FTMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
 void MeshRenderer::SetTexture(FTTexture* tex) { mTexture = tex; }
 void MeshRenderer::SetVS(FTVertexShader* vs) { mVS = vs; }
+void MeshRenderer::SetGS(FTGeometryShader* gs) { mGS = gs; }
 void MeshRenderer::SetPS(FTPixelShader* ps) { mPS = ps; }
 void MeshRenderer::SetMaterial(FTMaterial* mat) { mMaterial = mat; }
 
@@ -82,6 +84,7 @@ MeshRenderer::MeshRenderer(Actor* owner, int updateOrder)
 	, mRenderer(nullptr)
 	, mTexture(nullptr)
 	, mVS(nullptr)
+	, mGS(nullptr)
 	, mPS(nullptr)
 	, mMaterial(nullptr)
 {
@@ -181,7 +184,7 @@ void MeshRenderer::EditorUIUpdate()
 	if (!mMeshGroup)
 		return;
 
-	//mMeshGroup->UpdateUI();
+	// mMeshGroup->UpdateUI();
 
 	if (mTexture)
 		mTexture->UpdateUI();
@@ -194,6 +197,11 @@ void MeshRenderer::EditorUIUpdate()
 		"Select VS",
 		ResourceManager::GetInstance()->GetVertexShaders(),
 		mVS);
+
+	FTEditorUtils::DisplayResSelection(
+		"Select GS",
+		ResourceManager::GetInstance()->GetGeometryShaders(),
+		mGS);
 
 	FTEditorUtils::DisplayResSelection(
 		"Select PS",

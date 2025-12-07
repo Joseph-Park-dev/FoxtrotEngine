@@ -21,6 +21,7 @@ class Camera;
 class Transform;
 class FTTexture;
 class FTVertexShader;
+class FTGeometryShader;
 class FTPixelShader;
 class FTMaterial;
 struct Mesh;
@@ -58,11 +59,12 @@ public:
 	// Getters & Setters to the elements //
 	///////////////////////////////////////
 protected:
-	FTMeshGroup*	 GetMeshGroup() const;
-	FTTexture*		 GetTexture() const;
-	FoxtrotRenderer* GetRenderer() const;
-	FTVertexShader*	 GetVS() const;
-	FTPixelShader*	 GetPS() const;
+	FTMeshGroup*	  GetMeshGroup() const;
+	FTTexture*		  GetTexture() const;
+	FoxtrotRenderer*  GetRenderer() const;
+	FTVertexShader*	  GetVS() const;
+	FTGeometryShader* GetGS() const;
+	FTPixelShader*	  GetPS() const;
 
 	FTMaterial* GetMaterial() const;
 
@@ -70,6 +72,7 @@ protected:
 	void SetMeshGroup(FTMeshGroup* meshGroup);
 	void SetTexture(FTTexture* tex);
 	void SetVS(FTVertexShader* vs);
+	void SetGS(FTGeometryShader* gs);
 	void SetPS(FTPixelShader* ps);
 	void SetMaterial(FTMaterial* mat);
 
@@ -78,13 +81,14 @@ protected:
 	// These will be set in Initialize()  //
 	////////////////////////////////////////
 private:
-	FoxtrotRenderer* mRenderer;
-	FTMeshGroup*	 mMeshGroup;
-	FTTexture*		 mTexture;
-	FTVertexShader*	 mVS;
-	FTPixelShader*	 mPS;
-	FTMaterial*		 mMaterial;
-	int				 mFrontDir;
+	FoxtrotRenderer*  mRenderer;
+	FTMeshGroup*	  mMeshGroup;
+	FTTexture*		  mTexture;
+	FTVertexShader*	  mVS;
+	FTGeometryShader* mGS;
+	FTPixelShader*	  mPS;
+	FTMaterial*		  mMaterial;
+	int				  mFrontDir;
 
 	///////////////////////////////////
 	// Save & Load related functions //

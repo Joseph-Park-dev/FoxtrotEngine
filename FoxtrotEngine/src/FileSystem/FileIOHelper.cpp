@@ -636,7 +636,7 @@ bool FileIOHelper::GetLine(std::ifstream& ifs, FTDS::String& str, char delimiter
 	if (ifs.fail())
 		return false;
 
-	char   ch	  = NULL;
+	char   ch	  = '\0'; // initialize to null character
 	size_t length = 0;
 
 	// Calculate the number of characters in a line.

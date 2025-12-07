@@ -18,9 +18,9 @@
 #endif // FOXTROT_EDITOR
 
 DebugShapes::DebugShapes()
-	: mVSPath(L"./Assets/Shaders/DebugShapeVS.hlsl")
-	, mGSPath(L"./Assets/Shaders/DebugShapeGS.hlsl")
-	, mPSPath(L"./Assets/Shaders/DebugShapePS.hlsl")
+	: mVSPath(L".\\FoxtrotEngine\\Assets\\Shaders\\DebugShapeVS.hlsl")
+	, mGSPath(L".\\FoxtrotEngine\\Assets\\Shaders\\DebugShapeGS.hlsl")
+	, mPSPath(L".\\FoxtrotEngine\\Assets\\Shaders\\DebugShapePS.hlsl")
 	, mCamRect(nullptr)
 {
 }

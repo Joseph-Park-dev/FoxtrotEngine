@@ -66,7 +66,7 @@ protected:
 		ComPtr<ID3D11DeviceContext>&	  context);
 
 	/// @brief Creates constant buffers such as Vertex Constant Buffers.
-	void InitializeConstantBuffers(ComPtr<ID3D11Device>& device);
+	virtual void InitializeConstantBuffers(ComPtr<ID3D11Device>& device);
 
 	/// @brief Create texture sampler.
 	/// @todo Consider moving this to D3D11Utils class.

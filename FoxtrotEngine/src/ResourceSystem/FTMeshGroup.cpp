@@ -209,7 +209,7 @@ void FTMeshGroup::UpdateConstantBuffers(
 	mVCData->ProjMat  = projMat.Transpose();
 
 	D3D11Utils::UpdateBuffer(
-		context, mVCData, mVCBuf);
+		context, *mVCData, mVCBuf);
 
 	if (mat)
 		mat->UpdateBuffer(context);

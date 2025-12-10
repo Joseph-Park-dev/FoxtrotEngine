@@ -14,7 +14,7 @@ struct VS_IN
 
 struct GS_IN
 {
-    float4 posWorld : SV_POSITION;
+    float4 posProj : SV_POSITION;
     float4 right : POSITION0;
 };
 
@@ -24,21 +24,18 @@ struct PS_IN
     float2 texCoord : TEXCOORD0;
 };
 
-float2 rotateUV(float2 uv, float2 pivot, float rotation)
+float2 RotateUV90(float2 uv)
 {
-    float sine = sin(rotation);
-    float cosine = cos(rotation);
-    
-    // Translate UV coordinates to center the pivot at the origin
-    uv -= pivot;
-    
-    // Apply rotation matrix
-    float2 rotatedUV;
-    rotatedUV.x = uv.x * cosine - uv.y * sine;
-    rotatedUV.y = uv.x * sine + uv.y * cosine;
-    
-    // Translate back to the original coordinate space
-    uv = rotatedUV + pivot;
-    
+    // Shift to center
+    uv -= 0.5;
+
+    // Apply 90¡Æ rotation matrix
+    // [ 0 -1 ]
+    // [ 1  0 ]
+    uv = float2(-uv.y, uv.x);
+
+    // Shift back
+    uv += 0.5;
+
     return uv;
 }

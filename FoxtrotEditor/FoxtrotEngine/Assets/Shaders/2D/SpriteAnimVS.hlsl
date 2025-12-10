@@ -24,12 +24,12 @@ GS_IN main(VS_IN vsInput)
     pos = mul(pos, modelMat);
     pos = mul(pos, viewMat);
     pos = mul(pos, projMat);
-    output.posWorld = pos;
+    output.posProj = pos;
     
     // Calculating right direction 
     float4 right = float4(modelMat[0][0], modelMat[1][0], modelMat[2][0], 0.0);
     output.right = normalize(right);
-    output.right = float4(-output.right.x, output.right.y, output.right.z, output.right.w);
+    //output.right = float4(-output.right.x, output.right.y, output.right.z, output.right.w);
    
     return output;
 }

@@ -16,85 +16,89 @@ cbuffer GSConst : register(b0)
     
 }
 
-[maxvertexcount(5)]
+[maxvertexcount(6)]
 void main(
 	point GS_IN input[1] : SV_POSITION,
-	inout LineStream<PS_IN> outStream
+	inout TriangleStream<PS_IN> outStream
 )
 {
     float2 sizeVec = size * 0.5;
     float4 right = input[0].right;
     float4 up = float4(-right.y, right.x, 0.0, 0.0);
     
-    float4 topLeft = input[0].posWorld - sizeVec.x * right + sizeVec.y * up;
-    float4 topRight = input[0].posWorld + sizeVec.x * right + sizeVec.y * up;
-    float4 bottomLeft = input[0].posWorld - sizeVec.x * right - sizeVec.y * up;
-    float4 bottomRight = input[0].posWorld + sizeVec.x * right - sizeVec.y * up;
-    
+    float4 topLeft = input[0].posProj - sizeVec.x * right + sizeVec.y * up;
+    float4 topRight = input[0].posProj + sizeVec.x * right + sizeVec.y * up;
+    float4 bottomLeft = input[0].posProj - sizeVec.x * right - sizeVec.y * up;
+    float4 bottomRight = input[0].posProj + sizeVec.x * right - sizeVec.y * up;
+
     PS_IN output;
-    
     ////////////////////////////
     //////// Top Left //////////
     ////////////////////////////
-    
-    output.posProj = topLeft;
-    
+    output.posProj = topLeft; 
     if (rotated)
         output.texCoord = frame.xy + frame.w;
     else
         output.texCoord = frame.xy;
+    //output.texCoord = uvs[0];
+    outStream.Append(output);
     
+    ///////////////////////////////
+    //////// Bottom Left //////////
+    ///////////////////////////////
+    output.posProj = bottomLeft; 
+    if (rotated)
+        output.texCoord = frame.xy;
+    else
+        output.texCoord = frame.xy + frame.zw;
+    //output.texCoord = uvs[2];
     outStream.Append(output);
     
     /////////////////////////////
     //////// Top Right //////////
     /////////////////////////////
     
-    output.posProj = topRight;
-    
+    output.posProj = topRight; 
     if (rotated)
         output.texCoord = frame.xy + frame.zw;
     else
         output.texCoord = frame.xy + frame.z;
+    //output.texCoord = uvs[1];
+    outStream.Append(output);
+    
+    ///////////////////////////////
+    //////// Bottom Left //////////
+    ///////////////////////////////
+    output.posProj = bottomLeft; 
+    if (rotated)
+        output.texCoord = frame.xy;
+    else
+        output.texCoord = frame.xy + frame.zw;
+    //output.texCoord = uvs[2];
     
     outStream.Append(output);
     
     ////////////////////////////////
     //////// Bottom Right //////////
     ////////////////////////////////
-    
-    output.posProj = bottomRight;
-
-    if(rotated)
-        output.texCoord = frame.xy + frame.w;
-    else 
-        output.texCoord = frame.xy + frame.zw;
-    
-    outStream.Append(output);
-    
-    ///////////////////////////////
-    //////// Bottom Left //////////
-    ///////////////////////////////
-    
-    output.posProj = bottomLeft;
-    
-   if(rotated)
-        output.texCoord = frame.xy;
-    else
-        output.texCoord = frame.xy + frame.zw;
-    
-    outStream.Append(output);
-    
-    ////////////////////////////
-    //////// Top Left //////////
-    ////////////////////////////
-    
-    output.posProj = topLeft;
-    
+    output.posProj = bottomRight; 
     if (rotated)
         output.texCoord = frame.xy + frame.w;
     else
-        output.texCoord = frame.xy;
+        output.texCoord = frame.xy + frame.zw;
+   // output.texCoord = uvs[3];
+    
+    outStream.Append(output);
+    
+    /////////////////////////////
+    //////// Top Right //////////
+    /////////////////////////////
+    output.posProj = topRight; 
+    if (rotated)
+        output.texCoord = frame.xy + frame.w;
+    else
+        output.texCoord = frame.xy + frame.zw;
+   // output.texCoord = uvs[1];
     
     outStream.Append(output);
 }

@@ -98,6 +98,8 @@ protected:
 	/// @brief Returns vertex constant buffer.
 	ComPtr<ID3D11Buffer>& GetVCBuf();
 
+	PointModelMat* GetVCData();
+
 	/// @brief Returns the size scale.
 	const FTVector3& GetSizeScale() const;
 
@@ -127,7 +129,7 @@ private:
 	ComPtr<ID3D11Buffer> mVCBuf;
 
 	/// @brief Vertex constant data.
-	PointMVP* mVCData;
+	PointModelMat* mVCData;
 
 private:
 	/// @brief Takes a FTMeshData (usually from GeometryGenerator), and creates the meshes.

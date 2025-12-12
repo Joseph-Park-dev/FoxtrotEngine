@@ -76,14 +76,18 @@ struct DebugPCData
 //////////////////////////////////////
 //////// Basic Mesh Rendering ////////
 //////////////////////////////////////
-
-struct PointMVP
+struct PointModelMat
 {
 	DirectX::SimpleMath::Matrix ModelMat = DirectX::SimpleMath::Matrix();
+};
+static_assert((sizeof(PointModelMat) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
+
+struct PointVPMat
+{
 	DirectX::SimpleMath::Matrix ViewMat	 = DirectX::SimpleMath::Matrix();
 	DirectX::SimpleMath::Matrix ProjMat	 = DirectX::SimpleMath::Matrix();
 };
-static_assert((sizeof(PointMVP) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
+static_assert((sizeof(PointVPMat) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
 
 //////////////////////////////////
 //////// Sprite Animation ////////
@@ -92,8 +96,7 @@ static_assert((sizeof(PointMVP) % 16) == 0, "Constant Buffer size must be 16-byt
 struct AnimGCData
 {
 	Vector2 Size;
-	bool	Rotated;
-	float	Dummy;
+	Vector2 Scale;
 	Vector4 Frame;
 };
 static_assert((sizeof(AnimGCData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");

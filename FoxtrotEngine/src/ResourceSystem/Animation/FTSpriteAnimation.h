@@ -78,7 +78,16 @@ public:
 protected:
 	/// @brief Takes an array of Tiles, initializes a sprite animation.
 	virtual void Process(FoxtrotRenderer* renderer) override;
-	void InitializeConstantBuffers(ComPtr<ID3D11Device>& device) override;
+	void		 InitializeConstantBuffers(ComPtr<ID3D11Device>& device) override;
+
+	void UpdateConstantBuffers(
+		int							 meshIndex,
+		ComPtr<ID3D11Device>&		 device,
+		ComPtr<ID3D11DeviceContext>& context,
+		Transform*					 transform,
+		Camera*						 camInst,
+		FTMaterial*					 mat,
+		const int					 frontDir = 0);
 
 private:
 	/// @brief A JSON file that holds the rect data on a spritesheet.
@@ -87,7 +96,9 @@ private:
 	/// @brief A texture holding the animation's sprite sheet.
 	FTTexture* mSpriteSheet;
 
-	ComPtr<ID3D11Buffer> mGCBuf;
+	PointVPMat*			 mGCMatData;
+	ComPtr<ID3D11Buffer> mGCMatBuf;
+	ComPtr<ID3D11Buffer> mGCFrameBuf;
 	/// @brief DS that holds GS constant data for each frames.
 	FTDS::DynamicArray<AnimGCData*>* mFrameGCData;
 

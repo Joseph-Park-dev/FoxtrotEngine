@@ -15,7 +15,7 @@ struct VS_IN
 struct GS_IN
 {
     float4 posWorld : SV_POSITION;
-    float4 right : POSITION0;
+    float4 right : Position;
 };
 
 struct PS_IN
@@ -24,21 +24,12 @@ struct PS_IN
     float2 texCoord : TEXCOORD0;
 };
 
-float2 rotateUV(float2 uv, float2 pivot, float rotation)
+float2 RotateTexCoord(float2 texCoord, float2 center, float angle)
 {
-    float sine = sin(rotation);
-    float cosine = cos(rotation);
-    
-    // Translate UV coordinates to center the pivot at the origin
-    uv -= pivot;
-    
-    // Apply rotation matrix
-    float2 rotatedUV;
-    rotatedUV.x = uv.x * cosine - uv.y * sine;
-    rotatedUV.y = uv.x * sine + uv.y * cosine;
-    
-    // Translate back to the original coordinate space
-    uv = rotatedUV + pivot;
-    
-    return uv;
+    float2 origin = texCoord - center;
+    origin = float2(
+        origin.x * cos(angle) - origin.y * sin(angle),
+        origin.x * sin(angle) + origin.y * cos(angle)
+    );
+    return origin + center;
 }

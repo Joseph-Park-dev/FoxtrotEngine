@@ -92,7 +92,7 @@ FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer)
 	, mDirection(1)
 	, mSizeScale(FTVector3(1.0f, 1.0f, 1.0f))
 	, mMeshes(DBG_NEW FTDS::DynamicArray<Mesh*>)
-	, mVCData(DBG_NEW PointMVP)
+	, mVCData(DBG_NEW PointModelMat)
 {
 	Process(renderer);
 }
@@ -103,7 +103,7 @@ FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTMes
 	, mDirection(1)
 	, mSizeScale(FTVector3(1.0f, 1.0f, 1.0f))
 	, mMeshes(DBG_NEW FTDS::DynamicArray<Mesh*>)
-	, mVCData(DBG_NEW PointMVP)
+	, mVCData(DBG_NEW PointModelMat)
 {
 	if (!meshData)
 	{
@@ -205,8 +205,6 @@ void FTMeshGroup::UpdateConstantBuffers(
 	Matrix&& projMat = std::move(camInst->GetProjRow());
 
 	mVCData->ModelMat = modelMat.Transpose();
-	mVCData->ViewMat  = viewMat.Transpose();
-	mVCData->ProjMat  = projMat.Transpose();
 
 	D3D11Utils::UpdateBuffer(
 		context, *mVCData, mVCBuf);
@@ -230,6 +228,11 @@ void FTMeshGroup::Clear()
 FTDS::DynamicArray<Mesh*>*	FTMeshGroup::Meshes() { return mMeshes; };
 ComPtr<ID3D11SamplerState>& FTMeshGroup::GetSamplerState() { return mSamplerState; }
 ComPtr<ID3D11Buffer>&		FTMeshGroup::GetVCBuf() { return mVCBuf; }
+
+PointModelMat* FTMeshGroup::GetVCData()
+{
+	return mVCData;
+}
 
 const FTVector3& FTMeshGroup::GetSizeScale() const { return mSizeScale; }
 

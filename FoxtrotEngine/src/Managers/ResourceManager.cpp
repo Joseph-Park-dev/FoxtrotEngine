@@ -571,20 +571,26 @@ void ResourceManager::LoadDefaultResources()
 {
 	// Defualt resources don't require file name & relative path, since they are generated from code.
 	FTResourceDef resDef{
-		ChunkKey::PRIMITIVE_SQUARE_SPRITE, ChunkKey::NullVal::NULL_OBJECT
+		ChunkKey::PRIMITIVE_SQUARE_VTX, ChunkKey::NullVal::NULL_OBJECT
 	};
 
-	FTMeshData* meshData = GeometryGenerator::MakeSquare(1.0f, FTVector4(0.f, 0.f, 1.f, 1.f));
+	SpriteVertex* spriteVertex = DBG_NEW SpriteVertex;
+	Mesh* mesh = DBG_NEW Mesh;
+	D3D11Utils::CreateVertexBuffer(mRenderer->GetDevice(), spriteVertex, 1, mesh->VertexBuffer);
+	mesh->VertexCount = 1;
 
 	FTMeshGroup* meshGroup = DBG_NEW FTMeshGroup(
 		resDef,
 		mRenderer,
-		meshData);
+		nullptr);
+
+	meshGroup->Meshes()->Reserve(1);
+	meshGroup->Meshes()->PushBack(mesh);
 
 	mMeshGroups->Reserve(1);
-	mMeshGroups->Insert(ChunkKey::PRIMITIVE_SQUARE_SPRITE, meshGroup);
+	mMeshGroups->Insert(ChunkKey::PRIMITIVE_SQUARE_VTX, meshGroup);
 
-	delete meshData;
+	delete spriteVertex;
 
 	///////////////////////////////
 	///// Vertex Shader Setup /////
@@ -594,7 +600,7 @@ void ResourceManager::LoadDefaultResources()
 
 	// 2D sprite animation vertex shader
 	FTDS::String vsPath = Path::Resource::SHADERS_2D;
-	resDef.FileName		= "SpriteAnimVS.hlsl";
+	resDef.FileName		= "SpriteVS.hlsl";
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
@@ -650,7 +656,7 @@ void ResourceManager::LoadDefaultResources()
 
 	// 2D sprite animation pixel shader
 	vsPath = Path::Resource::SHADERS_2D;
-	resDef.FileName		= "SpriteAnimPS.hlsl";
+	resDef.FileName		= "SpritePS.hlsl";
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
@@ -716,7 +722,7 @@ void ResourceManager::LoadDefaultResources()
 
 	// 2D sprite animation geometry shader
 	vsPath = Path::Resource::SHADERS_2D;
-	resDef.FileName		= "SpriteAnimGS.hlsl";
+	resDef.FileName		= "SpriteGS.hlsl";
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 

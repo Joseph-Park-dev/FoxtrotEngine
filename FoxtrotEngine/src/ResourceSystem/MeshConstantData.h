@@ -98,6 +98,8 @@ struct AnimGCData
 	Vector2 Size;
 	Vector2 Scale;
 	Vector4 Frame;
+	Vector2 Pivot;
+	Vector2 Dummy;
 };
 static_assert((sizeof(AnimGCData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
 

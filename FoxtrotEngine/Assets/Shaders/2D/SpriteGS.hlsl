@@ -1,4 +1,12 @@
-#include "SpriteAnim.hlsli"
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+// 
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
+#include "Sprite.hlsli"
 
 // View, Project const buffer
 cbuffer VPConst : register(b0)
@@ -18,6 +26,8 @@ cbuffer GSConst : register(b1)
     // X ,Y coordinates, and size on Sprite sheet (ranged from 0 to 1).
     float4 frame;
     
+    float2 pivot;
+    float2 dummy;
 }
 
 [maxvertexcount(6)]
@@ -26,19 +36,23 @@ void main(
 	inout TriangleStream<PS_IN> outStream
 )
 {
-    float2 sizeVec = size * 0.5;
-    float4 right = input[0].right;
+    float2 sizeVec = size * scale;
+    float2 halfSize = sizeVec * 0.5;
+    float4 right = float4(1.0, 0.0, 0.0, 0.0);
     float4 up = float4(-right.y, right.x, 0.0, 0.0);
+    float4 pos = input[0].posWorld;
     
-    float4 topLeft = input[0].posWorld - sizeVec.x * right + sizeVec.y * up;
-    float4 topRight = input[0].posWorld + sizeVec.x * right + sizeVec.y * up;
-    float4 bottomLeft = input[0].posWorld - sizeVec.x * right - sizeVec.y * up;
-    float4 bottomRight = input[0].posWorld + sizeVec.x * right - sizeVec.y * up;
+    // Texture Packer's default pivot position as center.
+    float2 pivotPt = pivot;
+    pivotPt -= float2(0.5, 0.5);
+    float2 offset = sizeVec * pivotPt;
+    pos.x = pos.x - offset.x;
+    pos.y = pos.y + offset.y;
     
-    topLeft.xy *= scale;
-    topRight.xy *= scale;
-    bottomLeft.xy *= scale;
-    bottomRight.xy *= scale;
+    float4 topLeft = pos - halfSize.x * right + halfSize.y * up;
+    float4 topRight = pos + halfSize.x * right + halfSize.y * up;
+    float4 bottomLeft = pos - halfSize.x * right - halfSize.y * up;
+    float4 bottomRight = pos + halfSize.x * right - halfSize.y * up;
     
     topLeft = mul(topLeft, viewMat);
     topLeft = mul(topLeft, projMat);

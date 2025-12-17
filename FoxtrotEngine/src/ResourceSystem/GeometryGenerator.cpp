@@ -340,13 +340,13 @@ FTMeshData* GeometryGenerator::MakeAnimationFrame(Tile& tile)
 		meshData->Vertices.PushBack(v);
 	}
 
-	if (tile.GetRotated())
-	{
-		meshData->Vertices.At(0).texcoord = texcoords.at(1);
-		meshData->Vertices.At(1).texcoord = texcoords.at(2);
-		meshData->Vertices.At(2).texcoord = texcoords.at(3);
-		meshData->Vertices.At(3).texcoord = texcoords.at(0);
-	}
+	//if (tile.GetRotated())
+	//{
+	//	meshData->Vertices.At(0).texcoord = texcoords.at(1);
+	//	meshData->Vertices.At(1).texcoord = texcoords.at(2);
+	//	meshData->Vertices.At(2).texcoord = texcoords.at(3);
+	//	meshData->Vertices.At(3).texcoord = texcoords.at(0);
+	//}
 
 	meshData->Indices.Reserve(6);
 

@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "SpriteAnim.hlsli"
+#include "Sprite.hlsli"
 
 cbuffer VSConst : register(b0)
 {
@@ -22,9 +22,5 @@ GS_IN main(VS_IN vsInput)
     pos = mul(pos, modelMat);
     output.posWorld = pos;
     
-    // Calculating right direction 
-    float4 right = float4(modelMat[0][0], modelMat[1][0], modelMat[2][0], 0.0);
-    output.right = normalize(right);
-   
     return output;
 }

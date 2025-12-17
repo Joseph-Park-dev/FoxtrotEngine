@@ -490,8 +490,11 @@
     <ResourceCompile Include="FoxtrotEditor.rc" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="FoxtrotEngine\Assets\Shaders\2D\SpriteAnimGS.hlsl">
+    <FxCompile Include="FoxtrotEngine\Assets\Shaders\2D\SpriteGS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Geometry</ShaderType>
+    </FxCompile>
+    <FxCompile Include="FoxtrotEngine\Assets\Shaders\2D\SpriteVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -41,7 +41,7 @@ void FTSpriteAnimation::Render(
 	if (!vs || !ps || !gs || !mat) // Vertex Shader is always required when drawing.
 		return;
 
-	UINT						 stride	 = sizeof(SpriteAnimVertex);
+	UINT						 stride	 = sizeof(SpriteVertex);
 	UINT						 offset	 = 0;
 	Mesh*						 mesh	 = Meshes()->At(0);
 	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
@@ -200,7 +200,7 @@ void FTSpriteAnimation::UpdateConstantBuffers(int meshIndex, ComPtr<ID3D11Device
 
 	FTVector3 scale		   = transform->GetWorldScale();
 	float	  scaleX	   = Math::Abs(scale.x);
-	FTVector3 scaleWithDir = FTVector3(scaleX * frontDir * GetDirection(), scale.y, scale.z);
+	FTVector3 scaleWithDir = FTVector3(scaleX * frontDir * GetDirection(), scale.y * GetDirection(), scale.z);
 	transform->SetWorldScale(scaleWithDir);
 	Matrix modelMat = transform->GetMatrixWorld();
 
@@ -211,8 +211,7 @@ void FTSpriteAnimation::UpdateConstantBuffers(int meshIndex, ComPtr<ID3D11Device
 	// invTransposeMat = invTransposeMat.Transpose().Invert();
 
 	// View Transformation
-	Matrix&& viewMat  = camInst->GetViewRow();
-	Vector3	 eyeWorld = Vector3::Transform(Vector3(0.0f), viewMat.Invert());
+	Matrix&& viewMat = camInst->GetViewRow();
 
 	// Project Transformation
 	Matrix&& projMat = std::move(camInst->GetProjRow());
@@ -228,6 +227,7 @@ void FTSpriteAnimation::UpdateConstantBuffers(int meshIndex, ComPtr<ID3D11Device
 	AnimGCData* gcData = mFrameGCData->At(meshIndex);
 	Vector2		size   = gcData->Size;
 	gcData->Scale	   = Vector2(GetSizeScale().x * scaleWithDir.x, GetSizeScale().y * scaleWithDir.y);
+
 	D3D11Utils::UpdateBuffer(context, *mFrameGCData->At(meshIndex), mGCFrameBuf);
 
 	if (mat)
@@ -243,8 +243,8 @@ void FTSpriteAnimation::Initialize(ComPtr<ID3D11Device>& device, ComPtr<ID3D11De
 	float sheetH = sheetSize.at(SpriteSheetKeys::H);
 
 	// Get the number of sprites, create the buffer for the tiles.
-	size_t			  vCount   = mMaxFrameIdx - mMinFrameIdx + 1;
-	SpriteAnimVertex* vertices = DBG_NEW SpriteAnimVertex[vCount];
+	size_t		  vCount = mMaxFrameIdx - mMinFrameIdx + 1;
+	SpriteVertex* vertices = DBG_NEW SpriteVertex[vCount];
 
 	mFrameGCData->Reserve(mMaxFrameIdx - mMinFrameIdx + 1);
 	// For every sprite data in JSON...
@@ -256,8 +256,8 @@ void FTSpriteAnimation::Initialize(ComPtr<ID3D11Device>& device, ComPtr<ID3D11De
 		nlohmann::json frame = mJSON->Data()[SpriteSheetKeys::BASE][i];
 
 		// Initialize tile's rect area on sprite sheet.
-		float frameX = frame[SpriteSheetKeys::FRAME][SpriteSheetKeys::X];
-		float frameY = frame[SpriteSheetKeys::FRAME][SpriteSheetKeys::Y];
+		float frameX  = frame[SpriteSheetKeys::FRAME][SpriteSheetKeys::X];
+		float frameY  = frame[SpriteSheetKeys::FRAME][SpriteSheetKeys::Y];
 
 		float mapX = frameX / sheetW;
 		float mapY = frameY / sheetH;
@@ -271,12 +271,16 @@ void FTSpriteAnimation::Initialize(ComPtr<ID3D11Device>& device, ComPtr<ID3D11De
 		float screenW = frame[SpriteSheetKeys::FRAME][SpriteSheetKeys::W];
 		float screenH = frame[SpriteSheetKeys::FRAME][SpriteSheetKeys::H];
 
+		float pivotX = frame[SpriteSheetKeys::PIVOT][SpriteSheetKeys::X];
+		float pivotY = frame[SpriteSheetKeys::PIVOT][SpriteSheetKeys::Y];
+
 		size_t tileIdx			   = i - mMinFrameIdx;
 		vertices[tileIdx].Position = Vector3(screenX, screenY, 0.0f);
 
-		gcData->Size  = Vector2(screenW, screenH);
-		gcData->Scale = Vector2(1.0f);
-		gcData->Frame = Vector4(mapX, mapY, mapW, mapH);
+		gcData->Size	 = Vector2(screenW, screenH);
+		gcData->Scale	 = Vector2(1.0f);
+		gcData->Frame	 = Vector4(mapX, mapY, mapW, mapH);
+		gcData->Pivot	 = Vector2(pivotX, pivotY);
 
 		mFrameGCData->PushBack(gcData);
 		// vertices[tileIdx].Size	   = Vector2(adjustedW, adjustedH);

@@ -158,6 +158,7 @@ namespace SpriteSheetKeys
 	constexpr const char* SOURCE_SIZE = "spriteSourceSize";
 	constexpr const char* ROTATED	  = "rotated";
 	constexpr const char* TRIMMED	  = "trimmed";
+	constexpr const char* PIVOT		  = "pivot";
 
 	constexpr const char* X = "x";
 	constexpr const char* Y = "y";

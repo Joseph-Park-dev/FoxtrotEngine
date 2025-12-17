@@ -64,7 +64,7 @@ enum class ResType
 /// @brief Special keys used by the chunk system to reference built-in/primitive assets.
 namespace ChunkKey
 {
-	constexpr const char* PRIMITIVE_SQUARE_SPRITE = "Primitive Square Sprite";
+	constexpr const char* PRIMITIVE_SQUARE_VTX = "Primitive Square Vertex";
 
 	constexpr const char* PRIMITIVE_SQUARE_RED	 = "Primitive Square Red";
 	constexpr const char* PRIMITIVE_SQUARE_GREEN = "Primitive Square Green";
@@ -300,7 +300,7 @@ private:
 		FTResourceDef resDef{ fileName, relPath };
 		FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef, renderer);
 
-		if (fileName.Equal(ChunkKey::PRIMITIVE_SQUARE_SPRITE))
+		if (fileName.Equal(ChunkKey::PRIMITIVE_SQUARE_VTX))
 		{
 			delete res;
 			res = nullptr;

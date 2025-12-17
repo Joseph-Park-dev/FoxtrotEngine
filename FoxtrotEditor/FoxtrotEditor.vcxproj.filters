@@ -618,6 +618,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="FoxtrotEngine\Assets\Shaders\2D\SpriteAnimGS.hlsl" />
+    <FxCompile Include="FoxtrotEngine\Assets\Shaders\2D\SpriteGS.hlsl" />
+    <FxCompile Include="FoxtrotEngine\Assets\Shaders\2D\SpriteVS.hlsl" />
   </ItemGroup>
 </Project>

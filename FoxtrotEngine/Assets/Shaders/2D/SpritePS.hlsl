@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "SpriteAnim.hlsli"
+#include "Sprite.hlsli"
 
 Texture2D g_texture0 : register(t0);
 SamplerState g_sampler : register(s0);

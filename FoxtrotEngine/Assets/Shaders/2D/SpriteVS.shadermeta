@@ -16,6 +16,6 @@ FTVertexShader<3>
 			SemanticName[string]
 			POSITION
 	RelativePath[string]
-	.\Assets\Shaders\2D\SpriteAnimVS.hlsl
+	.\Assets\Shaders\2D\SpriteVS.hlsl
 	FileName[string]
-	SpriteAnimVS.hlsl
+	SpriteVS.hlsl

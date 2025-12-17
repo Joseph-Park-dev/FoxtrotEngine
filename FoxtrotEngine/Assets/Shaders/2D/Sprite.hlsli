@@ -9,13 +9,12 @@
 struct VS_IN
 {
     // Position in model coordinate.
-    float3 posModel : POSITION;
+    float3 posModel : position0;
 };
 
 struct GS_IN
 {
     float4 posWorld : SV_POSITION;
-    float4 right : Position;
 };
 
 struct PS_IN

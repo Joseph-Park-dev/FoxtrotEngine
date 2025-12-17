@@ -41,8 +41,6 @@ struct FTMeshData
 	}
 };
 
-
-
 struct FTDebugMeshData
 {
 	bool IsEmpty() const;

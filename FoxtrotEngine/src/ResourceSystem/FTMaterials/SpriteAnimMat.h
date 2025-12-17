@@ -4,7 +4,7 @@
 /// @brief The value of the material data are to be applied to Pixel Constant Buffers.
 struct SpriteAnimMatData
 {
-	FTVector4 Color		 = FTVector4(0.f, 0.f, 0.f, 0.f);
+	FTVector4 Color		 = FTVector4(1.f, 1.f, 1.f, 1.f);
 	bool	  UseTexture = true;
 
 	FTVector3 dummy = FTVector3::Zero;

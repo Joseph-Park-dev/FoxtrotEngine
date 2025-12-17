@@ -12,6 +12,7 @@
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
+#include <Windows.h>
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
@@ -55,6 +56,25 @@ EditorCamera*		   EditorCamera::mInstance			= nullptr;
 EditorResourceManager* EditorResourceManager::mInstance = nullptr;
 FontManager*		   FontManager::mInstance			= nullptr;
 
+BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData)
+{
+	MONITORINFOEX mi;
+	mi.cbSize = sizeof(mi);
+	if (GetMonitorInfo(hMonitor, &mi))
+	{
+		if (!(mi.dwFlags & MONITORINFOF_PRIMARY))
+		{
+			// This is a secondary monitor
+			std::wcout << L"Secondary monitor: " << mi.szDevice << std::endl;
+			// Save hMonitor somewhere if needed
+			*(HMONITOR*)dwData = hMonitor;
+			return FALSE; // stop after finding one
+		}
+	}
+	return TRUE; // continue enumeration
+}
+
+
 bool FTCoreEditor::Initialize()
 {
 	if (!FTCore::Initialize())
@@ -69,7 +89,7 @@ bool FTCoreEditor::Initialize()
 		mEditorWindow = nullptr;
 	}
 
-	FTRectArea* rndArea = DBG_NEW FTRectArea(500.f, 500.f, 1280.f, 720.f);
+	FTRectArea* rndArea = DBG_NEW FTRectArea(0.f, 0.f, 1280.f, 720.f);
 	mEditorWindow		= DBG_NEW		FTWindow("Foxtrot Editor", 3840, 2160, rndArea);
 
 	if (!mEditorWindow->InitializeWindow(WndProc_FTEditor))
@@ -101,6 +121,27 @@ bool FTCoreEditor::Initialize()
 		Debug::LogError(__LINE__, __FILE__, "Failed to Initialize ImGui");
 		return false;
 	}
+
+	// Look for secondary window to display editor window.
+	HMONITOR secondaryMon = MonitorFromPoint(POINT{ 0, 0 }, MONITOR_DEFAULTTOPRIMARY);
+	EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, (LPARAM)&secondaryMon);
+
+	MONITORINFO hMonitorInfo;
+	hMonitorInfo.cbSize = sizeof(hMonitorInfo);
+	GetMonitorInfo(secondaryMon, &hMonitorInfo);
+
+	RECT r = hMonitorInfo.rcMonitor;
+
+    SetWindowPos(
+		mEditorWindow->GetHandle(),
+        NULL,
+		r.left,
+        r.top,
+		mEditorWindow->GetWidth(),
+		mEditorWindow->GetHeight(),
+        SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE
+    );
+
 	return true;
 }
 

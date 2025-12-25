@@ -2,7 +2,8 @@
 
 #include "Renderer/FoxtrotRenderer.h"
 #include "ResourceSystem/GeometryGenerator.h"
-#include <ResourceSystem/FTMeshGroup.h>
+#include "ResourceSystem/FTSprite/FTSprite.h"
+#include "ResourceSystem/FTMeshGroup.h"
 #include "ResourceSystem/FTPremade.h"
 #include "ResourceSystem/FTTileMap.h"
 #include "ResourceSystem/Animation/FTSpriteAnimation.h"
@@ -57,7 +58,7 @@ void EditorResourceManager::SaveResources(std::ofstream& ofs)
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTileMap::FT_TILEMAP);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTexture::FT_TEXTURE);
-	SaveResourceToChunk<FTTexture>(ofs, ResourceManager::GetInstance()->GetTextures());
+	SaveResourceToChunk<FTSprite>(ofs, ResourceManager::GetInstance()->GetSprites());
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTexture::FT_TEXTURE);
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTMeshGroup::FT_MESH_GROUP);
@@ -93,7 +94,7 @@ void EditorResourceManager::SaveResources(std::ofstream& ofs)
 
 void EditorResourceManager::LoadAllResourcesInAsset()
 {
-	GetTextures()->Reserve(20);
+	GetSprites()->Reserve(20);
 	GetTileMaps()->Reserve(20);
 	GetPremades()->Reserve(20);
 	GetSpriteAnimations()->Reserve(20);
@@ -147,8 +148,14 @@ void EditorResourceManager::LoadResByType(const char* filePath, FTDS::DynamicArr
 	{
 		// Loads Graphics resource.
 		case ResType::FTTEXTURE:
-			res = LoadResource(path, GetTextures(), ResourceManager::GetInstance()->GetRenderer());
+		{
+			FTDS::String  fileName = ExtractFileName(path.C_Str());
+			FTResourceDef resDef{ fileName, path };
+			FTTexture* tex = DBG_NEW FTTexture(resDef, ResourceManager::GetInstance()->GetRenderer());
+			res = LoadResource(path, GetSprites(), ResourceManager::GetInstance()->GetRenderer());
+			static_cast<FTSprite*>(res)->SetTexture(tex);
 			break;
+		}
 		case ResType::FT_SPRITE_ANIMATION:
 			res = LoadResource(path, GetSpriteAnimations(), ResourceManager::GetInstance()->GetRenderer());
 			break;
@@ -236,7 +243,7 @@ void EditorResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)
 	LoadDummyResource<FTMeshGroup>(ifs, GetMeshGroups(), desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTexture::FT_TEXTURE);
-	LoadDummyResource<FTTexture>(ifs, GetTextures(), desc.first);
+	LoadDummyResource<FTSprite>(ifs, GetSprites(), desc.first);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTileMap::FT_TILEMAP);
 	LoadDummyResource<FTTileMap>(ifs, GetTileMaps(), desc.first);
@@ -254,9 +261,9 @@ void EditorResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)
 	LoadDummyResource<FTPremade>(ifs, GetPremades(), desc.first);
 }
 
-FTDS::HashMap<FTTexture*>* EditorResourceManager::GetTextures()
+FTDS::HashMap<FTSprite*>* EditorResourceManager::GetSprites()
 {
-	return ResourceManager::GetInstance()->GetTextures();
+	return ResourceManager::GetInstance()->GetSprites();
 }
 
 FTDS::HashMap<FTTileMap*>* EditorResourceManager::GetTileMaps()
@@ -359,7 +366,7 @@ void EditorResourceManager::UpdateUI()
 		EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
 	}
 
-	DisplayLoadedResources<FTTexture>("Textures", GetTextures());
+	DisplayLoadedResources<FTSprite>("Sprites", GetSprites());
 	DisplayLoadedResources<FTTileMap>("Tilemaps", GetTileMaps());
 	DisplayLoadedResources<FTPremade>("Premades", GetPremades());
 	DisplayLoadedResources<FTVertexShader>("Vertex Shaders", GetVertexShaders());

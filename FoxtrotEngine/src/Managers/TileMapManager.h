@@ -1,4 +1,4 @@
-//#pragma once
+#pragma once
 //#include "Core/SingletonMacro.h"
 //
 //#include <Windows.h>

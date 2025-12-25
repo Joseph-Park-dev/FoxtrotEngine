@@ -34,9 +34,8 @@ public:
 	void PassLoadResourceInChunk(std::ifstream& ifs);
 
 public:
-	FTDS::HashMap<FTTexture*>* GetTextures() override;
-	FTDS::HashMap<FTTileMap*>* GetTileMaps() override;
-	// FTDS::HashMap<FTSpriteSheet*>*	   GetSpriteSheets() override;
+	FTDS::HashMap<FTSprite*>*		   GetSprites() override;
+	FTDS::HashMap<FTTileMap*>*		   GetTileMaps() override;
 	FTDS::HashMap<FTPremade*>*		   GetPremades() override;
 	FTDS::HashMap<FTVertexShader*>*	   GetVertexShaders() override;
 	FTDS::HashMap<FTGeometryShader*>*  GetGeometryShaders() override;

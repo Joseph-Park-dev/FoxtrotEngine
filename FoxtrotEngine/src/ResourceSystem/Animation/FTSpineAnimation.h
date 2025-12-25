@@ -7,7 +7,7 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include <ResourceSystem/FTMeshGroup.h>
+#include <ResourceSystem/FTSprite/FTSprite.h>
 
 #include <spine/spine.h>
 
@@ -21,20 +21,20 @@ class FTText;
 /// @brief A FTResource that holds a Spine Animation.
 /// This will be registered to a SpineAnimator Component instance.
 class FTSpineAnimation :
-	public FTMeshGroup
+	public FTSprite
 {
 public:
 	void Update(float deltaTime, spine::Physics physics);
 
 	/// @brief Renders the entire meshes created, as a full model.
 	void Render(
-		FoxtrotRenderer* renderer,
-		Transform*		 transform,
-		Camera*			 camInst,
-		FTTexture*		 tex,
-		FTVertexShader*	 vs,
-		FTPixelShader*	 ps,
-		FTMaterial*		 mat) override;
+		FoxtrotRenderer*  renderer,
+		Transform*		  transform,
+		Camera*			  camInst,
+		FTTexture*		  tex,
+		FTVertexShader*	  vs,
+		FTPixelShader*	  ps,
+		FTMaterial*		  mat);
 
 	/// @see FTResource::SaveProperties()
 	virtual void SaveProperties(std::ofstream& ofs) override;

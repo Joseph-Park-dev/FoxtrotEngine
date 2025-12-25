@@ -7,7 +7,7 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include <ResourceSystem/FTMeshGroup.h>
+#include <ResourceSystem/FTSprite/FTSprite.h>
 
 #include <vector>
 #include <string>
@@ -37,7 +37,7 @@ struct FTSpriteAnimationDef : FTResourceDef
 
 /// @brief A FTResource that holds a Sprite Animation.
 /// This will be registered to a Animator Component instance.
-class FTSpriteAnimation : public FTMeshGroup
+class FTSpriteAnimation : public FTSprite
 {
 public:
 	/// @brief Renders a single frame of the animation, which is a mesh.
@@ -78,7 +78,6 @@ public:
 protected:
 	/// @brief Takes an array of Tiles, initializes a sprite animation.
 	virtual void Process(FoxtrotRenderer* renderer) override;
-	void		 InitializeConstantBuffers(ComPtr<ID3D11Device>& device) override;
 
 	void UpdateConstantBuffers(
 		int							 meshIndex,
@@ -92,15 +91,6 @@ protected:
 private:
 	/// @brief A JSON file that holds the rect data on a spritesheet.
 	FTJSON* mJSON;
-
-	/// @brief A texture holding the animation's sprite sheet.
-	FTTexture* mSpriteSheet;
-
-	PointVPMat*			 mGCMatData;
-	ComPtr<ID3D11Buffer> mGCMatBuf;
-	ComPtr<ID3D11Buffer> mGCFrameBuf;
-	/// @brief DS that holds GS constant data for each frames.
-	FTDS::DynamicArray<AnimGCData*>* mFrameGCData;
 
 	/// @brief Frames-per-second for this animation.
 	int mFPS;
@@ -129,6 +119,9 @@ public:
 public:
 	virtual void AddRefCount() override;
 	virtual void SubtractRefCount() override;
+
+public:
+	void UpdateUI();
 
 #endif
 };

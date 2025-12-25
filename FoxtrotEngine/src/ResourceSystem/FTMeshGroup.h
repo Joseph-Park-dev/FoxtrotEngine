@@ -17,6 +17,7 @@
 class FTMaterial;
 class FTVertexShader;
 class FTMeshData;
+class FoxtrotRenderer;
 
 /// @brief A class holding Meshes created from a FTMeshData.
 /// This should be used in the MeshRenderer Component, and its derived Components.
@@ -28,13 +29,14 @@ class FTMeshGroup :
 public:
 	/// @brief Renders the entire meshes created, as a full model.
 	virtual void Render(
-		FoxtrotRenderer* renderer,
-		Transform*		 transform,
-		Camera*			 camInst,
-		FTTexture*		 tex,
-		FTVertexShader*	 vs,
-		FTPixelShader*	 ps,
-		FTMaterial*		 mat);
+		FoxtrotRenderer*  renderer,
+		Transform*		  transform,
+		Camera*			  camInst,
+		FTTexture*		  tex,
+		FTVertexShader*	  vs,
+		FTGeometryShader* gs,
+		FTPixelShader*	  ps,
+		FTMaterial*		  mat);
 
 public:
 	/// @brief Set scale value to be multiplied with the scale (3D transformation).
@@ -47,6 +49,9 @@ public:
 	/// @param val If this is true, it means yes.
 	void SetRightIsFront(bool val);
 
+	/// @brief Returns meshes ready to be rendered.
+	FTDS::DynamicArray<Mesh*>* Meshes();
+
 public:
 	/// @brief Relative path is used for importing 3D files.
 	FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer);
@@ -56,14 +61,6 @@ public:
 protected:
 	/// @brief Reads a file which returns the FTMeshData, and creates the meshes.
 	virtual void Process(FoxtrotRenderer* renderer) override;
-
-	/// @brief Receives an array of meshData and creates the mesh ready for rendering.
-	/// @param meshData An array of meshData mostly read from a supported 3D file such as .fbx, or animation meshes
-	/// @see GeometryGenerator::ReadFile()
-	void Initialize(
-		FTDS::DynamicArray<FTMeshData*>&& meshData,
-		ComPtr<ID3D11Device>&			  device,
-		ComPtr<ID3D11DeviceContext>&	  context);
 
 	/// @brief Creates constant buffers such as Vertex Constant Buffers.
 	virtual void InitializeConstantBuffers(ComPtr<ID3D11Device>& device);
@@ -90,9 +87,6 @@ protected:
 	void Clear();
 
 protected:
-	/// @brief Returns meshes ready to be rendered.
-	FTDS::DynamicArray<Mesh*>* Meshes();
-
 	ComPtr<ID3D11SamplerState>& GetSamplerState();
 
 	/// @brief Returns vertex constant buffer.
@@ -135,13 +129,6 @@ private:
 	/// @brief Takes a FTMeshData (usually from GeometryGenerator), and creates the meshes.
 	void Process(FoxtrotRenderer* renderer, FTMeshData* meshData);
 
-	/// @brief Receives a meshData and creates the mesh ready for rendering.
-	/// @param meshData A single meshData generated from GeometryGenerator.
-	void Initialize(
-		FTMeshData*					 meshData,
-		ComPtr<ID3D11Device>&		 device,
-		ComPtr<ID3D11DeviceContext>& context);
-
 	/// @brief Creates a mesh from a single meshData.
 	void InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData* meshData);
 
@@ -168,6 +155,7 @@ namespace ChunkKey
 		constexpr const char* PS_KEY		= "Pixel Shader Key";
 		constexpr const char* MAT_KEY		= "Material Key";
 		constexpr const char* FRONT_DIR		= "Front Direction";
+		constexpr const char* SIZE_SCALE	= "Size Scale";
 
 		constexpr const char* DRAW_TEXTURE = "Draw Texture";
 		constexpr const char* DRAW_NORMALS = "Draw Normals";

@@ -31,6 +31,7 @@
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/GeometryGenerator.h"
 #include "ResourceSystem/FTMeshGroup.h"
+#include "ResourceSystem/FTSprite/FTSprite.h"
 #include "ResourceSystem/FTTileMap.h"
 #include "ResourceSystem/FTPremade.h"
 #include "ResourceSystem/Animation/FTSpriteAnimation.h"
@@ -82,7 +83,7 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 {
 	mRenderer = renderer;
 
-	mTextures		  = DBG_NEW			FTDS::HashMap<FTTexture*>;
+	mSprites		  = DBG_NEW			 FTDS::HashMap<FTSprite*>;
 	mTileMaps		  = DBG_NEW			FTDS::HashMap<FTTileMap*>;
 	mPremades		  = DBG_NEW			FTDS::HashMap<FTPremade*>;
 	mSpriteAnimations = DBG_NEW FTDS::HashMap<FTSpriteAnimation*>;
@@ -112,7 +113,7 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
  */
 void ResourceManager::DeleteAll()
 {
-	ClearMap(mTextures);
+	ClearMap(mSprites);
 	ClearMap(mTileMaps);
 	ClearMap(mPremades);
 	ClearMap(mSpriteAnimations);
@@ -226,9 +227,9 @@ void ResourceManager::RelativeToAbsolutePath(FTDS::String& relPath)
  *
  * @return Pointer to FTDS::HashMap containing FTTexture* records.
  */
-FTDS::HashMap<FTTexture*>* ResourceManager::GetTextures()
+FTDS::HashMap<FTSprite*>* ResourceManager::GetSprites()
 {
-	return mTextures;
+	return mSprites;
 }
 
 /**
@@ -430,7 +431,7 @@ ResourceManager::~ResourceManager()
 {
 	DeleteAll();
 
-	delete mTextures;
+	delete mSprites;
 	delete mTileMaps;
 	delete mPremades;
 	delete mSpriteAnimations;
@@ -446,14 +447,14 @@ ResourceManager::~ResourceManager()
 	delete mTexts;
 	delete mFonts;
 
-	mTextures		  = nullptr;
+	mSprites		  = nullptr;
 	mTileMaps		  = nullptr;
 	mPremades		  = nullptr;
 	mSpriteAnimations = nullptr;
 	mSpineAnimations  = nullptr;
 	mMeshGroups		  = nullptr;
 	mVertexShaders	  = nullptr;
-	mGeometryShaders	  = nullptr;
+	mGeometryShaders  = nullptr;
 	mPixelShaders	  = nullptr;
 	mMaterials		  = nullptr;
 	mSounds			  = nullptr;
@@ -471,7 +472,7 @@ ResourceManager::~ResourceManager()
 ResourceManager::ResourceManager()
 	: mPathToAsset()
 	, mRenderer(nullptr)
-	, mTextures(nullptr)
+	, mSprites(nullptr)
 	, mTileMaps(nullptr)
 	, mPremades(nullptr)
 	, mSpriteAnimations(nullptr)
@@ -537,7 +538,7 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 	LoadGraphicsResourceFromChunk<FTMeshGroup>(ifs, mMeshGroups, desc.first, mRenderer);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTexture::FT_TEXTURE);
-	LoadGraphicsResourceFromChunk<FTTexture>(ifs, mTextures, desc.first, mRenderer);
+	LoadGraphicsResourceFromChunk<FTSprite>(ifs, mSprites, desc.first, mRenderer);
 
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTileMap::FT_TILEMAP);
 	LoadResourceFromChunk<FTTileMap>(ifs, mTileMaps, desc.first);
@@ -569,28 +570,9 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
  */
 void ResourceManager::LoadDefaultResources()
 {
-	// Defualt resources don't require file name & relative path, since they are generated from code.
 	FTResourceDef resDef{
-		ChunkKey::PRIMITIVE_SQUARE_VTX, ChunkKey::NullVal::NULL_OBJECT
+		ChunkKey::NullVal::NULL_OBJECT, ChunkKey::NullVal::NULL_OBJECT
 	};
-
-	SpriteVertex* spriteVertex = DBG_NEW SpriteVertex;
-	Mesh* mesh = DBG_NEW Mesh;
-	D3D11Utils::CreateVertexBuffer(mRenderer->GetDevice(), spriteVertex, 1, mesh->VertexBuffer);
-	mesh->VertexCount = 1;
-
-	FTMeshGroup* meshGroup = DBG_NEW FTMeshGroup(
-		resDef,
-		mRenderer,
-		nullptr);
-
-	meshGroup->Meshes()->Reserve(1);
-	meshGroup->Meshes()->PushBack(mesh);
-
-	mMeshGroups->Reserve(1);
-	mMeshGroups->Insert(ChunkKey::PRIMITIVE_SQUARE_VTX, meshGroup);
-
-	delete spriteVertex;
 
 	///////////////////////////////
 	///// Vertex Shader Setup /////
@@ -609,8 +591,8 @@ void ResourceManager::LoadDefaultResources()
 		DBG_NEW FTVertexShader(resDef, mRenderer));
 
 	// 2D text renderer vertex shader
-	vsPath = Path::Resource::SHADERS_2D;
-	resDef.FileName		= "TextRenderer2DVS.hlsl";
+	vsPath			= Path::Resource::SHADERS_2D;
+	resDef.FileName = "TextRenderer2DVS.hlsl";
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
@@ -619,8 +601,8 @@ void ResourceManager::LoadDefaultResources()
 		DBG_NEW FTVertexShader(resDef, mRenderer));
 
 	// 2D debug shape vertex shader
-	vsPath = Path::Resource::SHADERS;
-	resDef.FileName		= "DebugShapeVS.hlsl";
+	vsPath			= Path::Resource::SHADERS;
+	resDef.FileName = "DebugShapeVS.hlsl";
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
@@ -629,8 +611,8 @@ void ResourceManager::LoadDefaultResources()
 		DBG_NEW FTVertexShader(resDef, mRenderer));
 
 	// 2D texture vertex shader
-	vsPath = Path::Resource::SHADERS;
-	resDef.FileName		= "TextureVS.hlsl";
+	vsPath			= Path::Resource::SHADERS;
+	resDef.FileName = "TextureVS.hlsl";
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
@@ -639,8 +621,8 @@ void ResourceManager::LoadDefaultResources()
 		DBG_NEW FTVertexShader(resDef, mRenderer));
 
 	// 2D spine animation vertex shader
-	vsPath = Path::Resource::SHADERS;
-	resDef.FileName		= "TextureVSSpine.hlsl";
+	vsPath			= Path::Resource::SHADERS;
+	resDef.FileName = "TextureVSSpine.hlsl";
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
@@ -655,8 +637,8 @@ void ResourceManager::LoadDefaultResources()
 	mPixelShaders->Reserve(6);
 
 	// 2D sprite animation pixel shader
-	vsPath = Path::Resource::SHADERS_2D;
-	resDef.FileName		= "SpritePS.hlsl";
+	vsPath			= Path::Resource::SHADERS_2D;
+	resDef.FileName = "SpritePS.hlsl";
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
@@ -665,8 +647,8 @@ void ResourceManager::LoadDefaultResources()
 		DBG_NEW FTPixelShader(resDef, mRenderer));
 
 	// 2D text renderer pixel shader
-	vsPath = Path::Resource::SHADERS_2D;
-	resDef.FileName		= "TextRenderer2DPS.hlsl";
+	vsPath			= Path::Resource::SHADERS_2D;
+	resDef.FileName = "TextRenderer2DPS.hlsl";
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
@@ -675,8 +657,8 @@ void ResourceManager::LoadDefaultResources()
 		DBG_NEW FTPixelShader(resDef, mRenderer));
 
 	// 2D texture pixel shader
-	vsPath = Path::Resource::SHADERS_2D;
-	resDef.FileName		= "Texture2DPS.hlsl";
+	vsPath			= Path::Resource::SHADERS_2D;
+	resDef.FileName = "Texture2DPS.hlsl";
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
@@ -685,8 +667,8 @@ void ResourceManager::LoadDefaultResources()
 		DBG_NEW FTPixelShader(resDef, mRenderer));
 
 	// 2D spine animation pixel shader
-	vsPath = Path::Resource::SHADERS_2D;
-	resDef.FileName		= "Texture2DSpinePS.hlsl";
+	vsPath			= Path::Resource::SHADERS_2D;
+	resDef.FileName = "Texture2DSpinePS.hlsl";
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
@@ -695,8 +677,8 @@ void ResourceManager::LoadDefaultResources()
 		DBG_NEW FTPixelShader(resDef, mRenderer));
 
 	// 2D debug shape pixel shader
-	vsPath = Path::Resource::SHADERS;
-	resDef.FileName		= "DebugShapePS.hlsl";
+	vsPath			= Path::Resource::SHADERS;
+	resDef.FileName = "DebugShapePS.hlsl";
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
@@ -705,8 +687,8 @@ void ResourceManager::LoadDefaultResources()
 		DBG_NEW FTPixelShader(resDef, mRenderer));
 
 	// 2D texture pixel shader
-	vsPath = Path::Resource::SHADERS;
-	resDef.FileName		= "TexturePS.hlsl";
+	vsPath			= Path::Resource::SHADERS;
+	resDef.FileName = "TexturePS.hlsl";
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
@@ -721,8 +703,8 @@ void ResourceManager::LoadDefaultResources()
 	mGeometryShaders->Reserve(2);
 
 	// 2D sprite animation geometry shader
-	vsPath = Path::Resource::SHADERS_2D;
-	resDef.FileName		= "SpriteGS.hlsl";
+	vsPath			= Path::Resource::SHADERS_2D;
+	resDef.FileName = "SpriteGS.hlsl";
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
@@ -731,8 +713,8 @@ void ResourceManager::LoadDefaultResources()
 		DBG_NEW FTGeometryShader(resDef, mRenderer));
 
 	// 2D debug shape geometry shader
-	vsPath = Path::Resource::SHADERS;
-	resDef.FileName		= "DebugShapeGS.hlsl";
+	vsPath			= Path::Resource::SHADERS;
+	resDef.FileName = "DebugShapeGS.hlsl";
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
@@ -751,9 +733,13 @@ void ResourceManager::LoadDefaultResources()
  * - On failure the function logs an error via Debug::LogError.
  * - In editor builds (FOXTROT_EDITOR) the returned resource's reference count is incremented.
  */
-FTTexture* ResourceManager::GetLoadedTexture(FTDS::String& key)
+
+FTSprite* ResourceManager::GetLoadedSprite(const FTDS::String& key)
 {
-	FTDS::Record<FTTexture*>* rec = mTextures->At(key);
+	if (key.Equal(ChunkKey::NullVal::NULL_OBJECT))
+		return nullptr;
+
+	FTDS::Record<FTSprite*>* rec = mSprites->At(key);
 	if (!rec)
 	{
 		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
@@ -767,6 +753,25 @@ FTTexture* ResourceManager::GetLoadedTexture(FTDS::String& key)
 	return rec->Value();
 }
 
+FTTexture* ResourceManager::GetLoadedTexture(const FTDS::String& key)
+{
+	if (key.Equal(ChunkKey::NullVal::NULL_OBJECT))
+		return nullptr;
+
+	FTDS::Record<FTSprite*>* rec = mSprites->At(key);
+	if (!rec)
+	{
+		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
+		return nullptr;
+	}
+
+#ifdef FOXTROT_EDITOR
+	rec->Value()->AddRefCount();
+#endif // FOXTROT_EDITOR
+
+	return rec->Value()->GetTexture();
+}
+
 /**
  * @brief Retrieve a loaded tile map by key (adds extension if missing).
  *
@@ -776,10 +781,8 @@ FTTexture* ResourceManager::GetLoadedTexture(FTDS::String& key)
  * Side-effects:
  * - Potentially modifies `key` by adding default file extension.
  */
-FTTileMap* ResourceManager::GetLoadedTileMap(FTDS::String& key)
+FTTileMap* ResourceManager::GetLoadedTileMap(const FTDS::String& key)
 {
-	AddFileExtensionIfNone(key, FileTypes::TILEMAP);
-
 	FTDS::Record<FTTileMap*>* rec = mTileMaps->At(key);
 	if (!rec)
 	{
@@ -800,10 +803,8 @@ FTTileMap* ResourceManager::GetLoadedTileMap(FTDS::String& key)
  * @param key Reference to an FTDS::String key identifying the premade asset.
  * @return Pointer to FTPremade if found; otherwise nullptr.
  */
-FTPremade* ResourceManager::GetLoadedPremade(FTDS::String& key)
+FTPremade* ResourceManager::GetLoadedPremade(const FTDS::String& key)
 {
-	AddFileExtensionIfNone(key, FileTypes::PREMADE);
-
 	FTDS::Record<FTPremade*>* rec = mPremades->At(key);
 	if (!rec)
 	{
@@ -824,10 +825,8 @@ FTPremade* ResourceManager::GetLoadedPremade(FTDS::String& key)
  * @param key Reference to an FTDS::String key identifying the vertex shader.
  * @return Pointer to FTVertexShader if found; otherwise nullptr.
  */
-FTVertexShader* ResourceManager::GetLoadedVertexShader(FTDS::String& key)
+FTVertexShader* ResourceManager::GetLoadedVertexShader(const FTDS::String& key)
 {
-	AddFileExtensionIfNone(key, FileTypes::SHADER);
-
 	FTDS::Record<FTVertexShader*>* rec = mVertexShaders->At(key);
 	if (!rec)
 	{
@@ -842,10 +841,8 @@ FTVertexShader* ResourceManager::GetLoadedVertexShader(FTDS::String& key)
 	return rec->Value();
 }
 
-FTGeometryShader* ResourceManager::GetLoadedGeometryShader(FTDS::String& key)
+FTGeometryShader* ResourceManager::GetLoadedGeometryShader(const FTDS::String& key)
 {
-	AddFileExtensionIfNone(key, FileTypes::SHADER);
-
 	FTDS::Record<FTGeometryShader*>* rec = mGeometryShaders->At(key);
 	if (!rec)
 	{
@@ -866,10 +863,8 @@ FTGeometryShader* ResourceManager::GetLoadedGeometryShader(FTDS::String& key)
  * @param key Reference to an FTDS::String key identifying the pixel shader.
  * @return Pointer to FTPixelShader if found; otherwise nullptr.
  */
-FTPixelShader* ResourceManager::GetLoadedPixelShader(FTDS::String& key)
+FTPixelShader* ResourceManager::GetLoadedPixelShader(const FTDS::String& key)
 {
-	AddFileExtensionIfNone(key, FileTypes::SHADER);
-
 	FTDS::Record<FTPixelShader*>* rec = mPixelShaders->At(key);
 	if (!rec)
 	{
@@ -893,12 +888,10 @@ FTPixelShader* ResourceManager::GetLoadedPixelShader(FTDS::String& key)
  * Notes:
  * - If `key` equals ChunkKey::NullVal::NULL_OBJECT, returns nullptr immediately.
  */
-FTMaterial* ResourceManager::GetLoadedMaterial(FTDS::String& key)
+FTMaterial* ResourceManager::GetLoadedMaterial(const FTDS::String& key)
 {
 	if (key.Equal(ChunkKey::NullVal::NULL_OBJECT))
 		return nullptr;
-
-	AddFileExtensionIfNone(key, FileTypes::MATERIAL);
 
 	FTDS::Record<FTMaterial*>* rec = mMaterials->At(key);
 	if (!rec)
@@ -923,7 +916,7 @@ FTMaterial* ResourceManager::GetLoadedMaterial(FTDS::String& key)
  * Notes:
  * - If `key` equals ChunkKey::NullVal::NULL_OBJECT, returns nullptr immediately.
  */
-FTMeshGroup* ResourceManager::GetLoadedMesh(FTDS::String& key)
+FTMeshGroup* ResourceManager::GetLoadedMesh(const FTDS::String& key)
 {
 	if (key.Equal(ChunkKey::NullVal::NULL_OBJECT))
 		return nullptr;
@@ -948,10 +941,8 @@ FTMeshGroup* ResourceManager::GetLoadedMesh(FTDS::String& key)
  * @param key Reference to an FTDS::String key identifying the sprite animation.
  * @return Pointer to FTSpriteAnimation if found; otherwise nullptr.
  */
-FTSpriteAnimation* ResourceManager::GetLoadedSpriteAnim(FTDS::String& key)
+FTSpriteAnimation* ResourceManager::GetLoadedSpriteAnim(const FTDS::String& key)
 {
-	AddFileExtensionIfNone(key, FileTypes::SPRITE_ANIMATION);
-
 	FTDS::Record<FTSpriteAnimation*>* rec = mSpriteAnimations->At(key);
 	if (!rec)
 	{
@@ -972,10 +963,8 @@ FTSpriteAnimation* ResourceManager::GetLoadedSpriteAnim(FTDS::String& key)
  * @param key Reference to an FTDS::String key identifying the spine animation.
  * @return Pointer to FTSpineAnimation if found; otherwise nullptr.
  */
-FTSpineAnimation* ResourceManager::GetLoadedSpineAnim(FTDS::String& key)
+FTSpineAnimation* ResourceManager::GetLoadedSpineAnim(const FTDS::String& key)
 {
-	AddFileExtensionIfNone(key, FileTypes::SPINE_ANIMATION);
-
 	FTDS::Record<FTSpineAnimation*>* rec = mSpineAnimations->At(key);
 	if (!rec)
 	{
@@ -996,10 +985,8 @@ FTSpineAnimation* ResourceManager::GetLoadedSpineAnim(FTDS::String& key)
  * @param key Reference to an FTDS::String key identifying the sound.
  * @return Pointer to Sound if found; otherwise nullptr.
  */
-Sound* ResourceManager::GetLoadedSound(FTDS::String& key)
+Sound* ResourceManager::GetLoadedSound(const FTDS::String& key)
 {
-	AddFileExtensionIfNone(key, FileTypes::Sound::WAV);
-
 	FTDS::Record<Sound*>* rec = mSounds->At(key);
 	if (!rec)
 	{
@@ -1020,10 +1007,8 @@ Sound* ResourceManager::GetLoadedSound(FTDS::String& key)
  * @param key Reference to an FTDS::String key identifying the CSV.
  * @return Pointer to FTCSV if found; otherwise nullptr.
  */
-FTCSV* ResourceManager::GetLoadedCSV(FTDS::String& key)
+FTCSV* ResourceManager::GetLoadedCSV(const FTDS::String& key)
 {
-	AddFileExtensionIfNone(key, FileTypes::CSV);
-
 	FTDS::Record<FTCSV*>* rec = mCSVs->At(key);
 	if (!rec)
 	{
@@ -1047,9 +1032,8 @@ FTCSV* ResourceManager::GetLoadedCSV(FTDS::String& key)
  * Notes:
  * - If the JSON map is empty this returns nullptr (no JSON assets loaded).
  */
-FTJSON* ResourceManager::GetLoadedJSON(FTDS::String& key)
+FTJSON* ResourceManager::GetLoadedJSON(const FTDS::String& key)
 {
-	AddFileExtensionIfNone(key, FileTypes::JSON);
 	if (mJSONs->GetSize() < 1)
 		return nullptr;
 
@@ -1073,7 +1057,7 @@ FTJSON* ResourceManager::GetLoadedJSON(FTDS::String& key)
  * @param key Reference to an FTDS::String key identifying the text asset.
  * @return Pointer to FTText if found; otherwise nullptr.
  */
-FTText* ResourceManager::GetLoadedText(FTDS::String& key)
+FTText* ResourceManager::GetLoadedText(const FTDS::String& key)
 {
 	FTDS::Record<FTText*>* rec = mTexts->At(key);
 	if (!rec)
@@ -1095,7 +1079,7 @@ FTText* ResourceManager::GetLoadedText(FTDS::String& key)
  * @param key Reference to an FTDS::String key identifying the font asset.
  * @return Pointer to FTFont if found; otherwise nullptr.
  */
-FTFont* ResourceManager::GetLoadedFont(FTDS::String& key)
+FTFont* ResourceManager::GetLoadedFont(const FTDS::String& key)
 {
 	FTDS::Record<FTFont*>* rec = mFonts->At(key);
 	if (!rec)

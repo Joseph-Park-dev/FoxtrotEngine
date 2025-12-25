@@ -10,6 +10,7 @@
 #include "ResourceSystem/FTMaterials/FTMaterial.h"
 #include "ResourceSystem/FTMeshData.h"
 #include "ResourceSystem/FTShaders/FTVertexShader.h"
+#include "ResourceSystem/FTShaders/FTPixelShader.h"
 #include "ResourceSystem/GenericData/FTJSON.h"
 #include "ResourceSystem/GenericData/FTText.h"
 
@@ -89,7 +90,7 @@ spine::Vector<spine::Animation*>& FTSpineAnimation::LoadedClips()
 }
 
 FTSpineAnimation::FTSpineAnimation(FTResourceDef& resDef, FoxtrotRenderer* renderer)
-	: FTMeshGroup(resDef, renderer, nullptr)
+	: FTSprite(resDef, renderer)
 	, mJSON(nullptr)
 	, mAtlasTxt(nullptr)
 	, mTimeScale(1.f)

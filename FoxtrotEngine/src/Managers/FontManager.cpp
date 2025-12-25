@@ -2,6 +2,7 @@
 
 #include "Managers/ResourceManager.h"
 #include "ResourceSystem/FTFont/FTFont.h"
+#include "ResourceSystem/FTSprite/FTSprite.h"
 
 #include "EditorUtils.h"
 
@@ -29,10 +30,10 @@ void FontManager::UpdateUI(bool* opened)
 
 void FontManager::CreateFontMetaGUI()
 {
-	static FTTexture* tex;
+	static FTSprite* tex;
 	static FTFont*	  font;
 
-	FTEditorUtils::DisplayResSelection("Select Font Image", ResourceManager::GetInstance()->GetTextures(), tex);
+	FTEditorUtils::DisplayResSelection("Select Font Image", ResourceManager::GetInstance()->GetSprites(), tex);
 	FTEditorUtils::DisplayResSelection("Select Font Instance", ResourceManager::GetInstance()->GetFonts(), font);
 
 	if (tex)
@@ -46,7 +47,7 @@ void FontManager::CreateFontMetaGUI()
 
 	if (ImGui::Button("Save Font Meta"))
 	{
-		font->SetFontImage(tex);
+		font->SetFontImage(tex->GetTexture());
 
 		FTDS::String metaPath = font->GetRelativePath();
 
@@ -57,7 +58,7 @@ void FontManager::CreateFontMetaGUI()
 		font->SaveProperties(ofs);
 		FileIOHelper::SaveBufferToFile(ofs);
 
-		font->LoadFont(tex);
+		font->LoadFont(tex->GetTexture());
 		tex = nullptr;
 		font = nullptr;
 	}

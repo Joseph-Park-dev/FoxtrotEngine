@@ -64,7 +64,7 @@ void TileMapRenderer::SetTileMap(FTTileMap* tileMap)
 
 void TileMapRenderer::Initialize(FTCore* coreInstance)
 {
-	MeshRenderer::Initialize(coreInstance);
+	SpriteRenderer::Initialize(coreInstance);
 	this->InitializeTileMap();
 }
 
@@ -123,7 +123,6 @@ void TileMapRenderer::LoadProperties(std::ifstream& ifs)
 #ifdef FOXTROT_EDITOR
 void TileMapRenderer::EditorUIUpdate()
 {
-	CHECK_RENDERER(GetRenderer());
 	//UpdateSprite();
 	UpdateCSV();
 	OnConfirmUpdate();

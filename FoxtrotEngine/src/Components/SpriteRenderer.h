@@ -12,22 +12,27 @@
 /// </summary>
 
 #pragma once
-#include "Components/MeshRenderer.h"
+#include "Components/Component.h"
 
 #include "Core/TemplateFunctions.h"
 
 class Actor;
-class FTTexture;
+class FTSprite;
+class FTVertexShader;
+class FTPixelShader;
+class FTGeometryShader;
 class FoxtrotRenderer;
+class FTMaterial;
 struct Mesh;
 
-class SpriteRenderer : public MeshRenderer
+class SpriteRenderer : public Component
 {
 public:
 	virtual FTDS::String GetName() const override { return "SpriteRenderer"; }
 
 public:
 	virtual void Initialize(FTCore* coreInstance) override;
+	virtual void Render(FoxtrotRenderer* renderer) override;
 	virtual void CloneTo(Actor* actor) override;
 
 public:
@@ -35,9 +40,26 @@ public:
 		Actor* owner,
 		int	   updateOrder = DefaultVal::UPDATE_ORDER);
 
+protected:
+	FTSprite* GetSprite() const;
+	void	  SetSprite(FTSprite* sprite);
+
+	FTVertexShader*	  GetVS() const;
+	FTGeometryShader* GetGS() const;
+	FTPixelShader*	  GetPS() const;
+	FTMaterial*		  GetMaterial() const;
+
+	void SetVS(FTVertexShader* vs);
+	void SetGS(FTGeometryShader* gs);
+	void SetPS(FTPixelShader* ps);
+	void SetMaterial(FTMaterial* mat);
+
 private:
-	// These fields need to be loaded from .chunk file.
-	int		  mChannel;
+	FTSprite*		  mSprite;
+	FTVertexShader*	  mVS;
+	FTGeometryShader* mGS;
+	FTPixelShader*	  mPS;
+	FTMaterial*		  mMaterial;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
@@ -51,6 +73,21 @@ public:
 
 namespace ChunkKey
 {
-	constexpr const char* CHANNEL	   = "Channel";
-	constexpr const char* SPRITE_SCALE = "Scale";
+	namespace SpriteRenderer
+	{
+		constexpr const char* SPRITE	   = "Sprite";
+		constexpr const char* MATERIAL	   = "Material";
+		constexpr const char* FRONT_DIR	   = "Front Dir";
+		constexpr const char* SPRITE_SCALE = "Scale";
+	} // namespace SpriteRenderer
 } // namespace ChunkKey
+
+namespace Path
+{
+	namespace SpriteRenderer
+	{
+		constexpr const char* VS = "SpriteVS.hlsl";
+		constexpr const char* GS = "SpriteGS.hlsl";
+		constexpr const char* PS = "SpritePS.hlsl";
+	} // namespace SpriteRenderer
+} // namespace Path

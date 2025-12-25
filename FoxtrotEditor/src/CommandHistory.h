@@ -15,6 +15,7 @@
 #pragma once
 #include <deque>
 #include <functional>
+#include <directxtk/SimpleMath.h>
 
 #include "Core/SingletonMacro.h"
 #include "Actors/Transform.h"
@@ -41,6 +42,7 @@ public:
 	void UpdateFloatValue(const char* label, float& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateBoolValue(const char* label, bool& ref);
 	void UpdateVector2Value(const char* label, FTVector2& ref, float modSpeed = FLOATMOD_SPEED);
+	void UpdateVector2Value(const char* label, DirectX::SimpleMath::Vector2& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateVector2Value(const char* label, b2Vec2& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateVector3Value(const char* label, FTVector3& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateVector3Value(const char* label, DirectX::SimpleMath::Vector3& ref, float modSpeed = FLOATMOD_SPEED);

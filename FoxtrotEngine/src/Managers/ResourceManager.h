@@ -28,6 +28,7 @@ class FTPixelShader;
 class FTGeometryShader;
 class FTMaterial;
 
+class FTSprite;
 class FTSpriteAnimation;
 class FTSpineAnimation;
 
@@ -110,36 +111,38 @@ public:
 	// ---------------------------
 
 public:
-	/// @return Loaded texture by key or nullptr if not present.
-	virtual FTTexture* GetLoadedTexture(FTDS::String& key);
+	/// @return Loaded Sprite by key or nullptr if not present.
+	virtual FTSprite* GetLoadedSprite(const FTDS::String& key);
+	/// @return Loaded Sprite by key or nullptr if not present.
+	virtual FTTexture* GetLoadedTexture(const FTDS::String& key);
 	/// @return Loaded tilemap by key or nullptr if not present.
-	virtual FTTileMap* GetLoadedTileMap(FTDS::String& key);
+	virtual FTTileMap* GetLoadedTileMap(const FTDS::String& key);
 	/// @return Loaded premade by key or nullptr if not present.
-	virtual FTPremade* GetLoadedPremade(FTDS::String& key);
+	virtual FTPremade* GetLoadedPremade(const FTDS::String& key);
 	/// @return Loaded vertex shader by key or nullptr if not present.
-	virtual FTVertexShader* GetLoadedVertexShader(FTDS::String& key);
+	virtual FTVertexShader* GetLoadedVertexShader(const FTDS::String& key);
 	/// @return Loaded geometry shader by key or nullptr if not present.
-	virtual FTGeometryShader* GetLoadedGeometryShader(FTDS::String& key);
+	virtual FTGeometryShader* GetLoadedGeometryShader(const FTDS::String& key);
 	/// @return Loaded pixel shader by key or nullptr if not present.
-	virtual FTPixelShader* GetLoadedPixelShader(FTDS::String& key);
+	virtual FTPixelShader* GetLoadedPixelShader(const FTDS::String& key);
 	/// @return Loaded material by key or nullptr if not present.
-	virtual FTMaterial* GetLoadedMaterial(FTDS::String& key);
+	virtual FTMaterial* GetLoadedMaterial(const FTDS::String& key);
 	/// @return Loaded mesh group (3D model) by key or nullptr if not present.
-	virtual FTMeshGroup* GetLoadedMesh(FTDS::String& key);
+	virtual FTMeshGroup* GetLoadedMesh(const FTDS::String& key);
 	/// @return Loaded 2D sprite animation by key or nullptr if not present.
-	virtual FTSpriteAnimation* GetLoadedSpriteAnim(FTDS::String& key);
+	virtual FTSpriteAnimation* GetLoadedSpriteAnim(const FTDS::String& key);
 	/// @return Loaded Spine animation by key or nullptr if not present.
-	virtual FTSpineAnimation* GetLoadedSpineAnim(FTDS::String& key);
+	virtual FTSpineAnimation* GetLoadedSpineAnim(const FTDS::String& key);
 	/// @return Loaded sound by key or nullptr if not present.
-	virtual Sound* GetLoadedSound(FTDS::String& key);
+	virtual Sound* GetLoadedSound(const FTDS::String& key);
 	/// @return Loaded CSV by key or nullptr if not present.
-	virtual FTCSV* GetLoadedCSV(FTDS::String& key);
+	virtual FTCSV* GetLoadedCSV(const FTDS::String& key);
 	/// @return Loaded JSON by key or nullptr if not present.
-	virtual FTJSON* GetLoadedJSON(FTDS::String& key);
+	virtual FTJSON* GetLoadedJSON(const FTDS::String& key);
 	/// @return Loaded raw text by key or nullptr if not present.
-	virtual FTText* GetLoadedText(FTDS::String& key);
+	virtual FTText* GetLoadedText(const FTDS::String& key);
 	/// @return Loaded font by key or nullptr if not present.
-	virtual FTFont* GetLoadedFont(FTDS::String& key);
+	virtual FTFont* GetLoadedFont(const FTDS::String& key);
 
 	/// @brief Root absolute path to the project's Asset directory.
 	/// Example: D:/Project/Assets
@@ -159,7 +162,7 @@ public:
 	// ---------------------------
 
 public:
-	virtual FTDS::HashMap<FTTexture*>*		   GetTextures();
+	virtual FTDS::HashMap<FTSprite*>*		   GetSprites();
 	virtual FTDS::HashMap<FTTileMap*>*		   GetTileMaps();
 	virtual FTDS::HashMap<FTPremade*>*		   GetPremades();
 	virtual FTDS::HashMap<FTVertexShader*>*	   GetVertexShaders();
@@ -233,7 +236,7 @@ private:
 	//////////////////////
 private:
 	// Image/2D resources
-	FTDS::HashMap<FTTexture*>* mTextures;
+	FTDS::HashMap<FTSprite*>*  mSprites; // The Sprites will be added when loading SpriteRenderer Component.
 	FTDS::HashMap<FTTileMap*>* mTileMaps;
 	FTDS::HashMap<FTPremade*>* mPremades;
 

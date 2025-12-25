@@ -93,20 +93,26 @@ static_assert((sizeof(PointVPMat) % 16) == 0, "Constant Buffer size must be 16-b
 //////// Sprite Animation ////////
 //////////////////////////////////
 
-struct AnimGCData
+struct SpriteGCData
 {
-	Vector2 Size;
-	Vector2 Scale;
-	Vector4 Frame;
-	Vector2 Pivot;
+	Vector2 Size  = Vector2(1.f, 1.f);
+	Vector2 Scale = Vector2(1.f, 1.f);
+	Vector4 Frame = Vector4(0.f, 0.f, 1.f, 1.f);
+	Vector2 Pivot = Vector2(0.5f, 0.5f);
 	Vector2 Dummy;
-};
-static_assert((sizeof(AnimGCData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
 
-struct AnimPSData
+	void UpdateUI()
+	{
+		CommandHistory::GetInstance()->UpdateVector2Value("Sprite Size", Size);
+	}
+};
+
+static_assert((sizeof(SpriteGCData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
+
+struct SpritePSData
 {
 	Vector4 Color;
 	bool	UseTexture;
 	Vector3 Dummy;
 };
-static_assert((sizeof(AnimPSData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
+static_assert((sizeof(SpritePSData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");

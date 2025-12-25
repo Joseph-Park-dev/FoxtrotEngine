@@ -480,6 +480,9 @@
     <ClCompile Include="src\ResourceSystem\FTShaders\FTGeometryShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ResourceSystem\FTSprite\FTSprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Actors\Actor.h">
@@ -2946,6 +2949,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ResourceSystem\FTShaders\FTGeometryShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceSystem\FTSprite\FTSprite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

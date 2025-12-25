@@ -47,7 +47,7 @@ void MeshRenderer::Render(FoxtrotRenderer* renderer)
 	{
 		renderer->SwitchFillMode();
 		Transform* transform = GetOwner()->GetTransform();
-		mMeshGroup->Render(renderer, transform, Camera::GetInstance(), mTexture, mVS, mPS, mMaterial);
+		//mMeshGroup->Render(renderer, transform, Camera::GetInstance(), mTexture, mVS, mPS, mMaterial);
 	}
 }
 
@@ -154,7 +154,7 @@ void MeshRenderer::LoadProperties(std::ifstream& ifs)
 
 	// Load Texture.
 	FileIOHelper::LoadBasicString(ifs, keyCache);
-	mTexture = ResourceManager::GetInstance()->GetLoadedTexture(keyCache);
+	//mTexture = ResourceManager::GetInstance()->GetLoadedTexture(keyCache);
 
 	// Load MeshGroup.
 	FileIOHelper::LoadBasicString(ifs, keyCache);
@@ -171,7 +171,7 @@ void MeshRenderer::EditorRender(FoxtrotRenderer* renderer)
 		renderer->SwitchFillMode();
 
 		Transform* transform = GetOwner()->GetTransform();
-		mMeshGroup->Render(renderer, transform, EditorCamera::GetInstance(), mTexture, mVS, mPS, mMaterial);
+		//mMeshGroup->Render(renderer, transform, EditorCamera::GetInstance(), mTexture, mVS, mPS, mMaterial);
 	}
 }
 
@@ -188,10 +188,10 @@ void MeshRenderer::EditorUIUpdate()
 
 	if (mTexture)
 		mTexture->UpdateUI();
-	FTEditorUtils::DisplayResSelection(
-		"Select Texture",
-		ResourceManager::GetInstance()->GetTextures(),
-		mTexture);
+	//FTEditorUtils::DisplayResSelection(
+	//	"Select Texture",
+	//	ResourceManager::GetInstance()->GetSprites(),
+	//	mTexture);
 
 	FTEditorUtils::DisplayResSelection(
 		"Select VS",

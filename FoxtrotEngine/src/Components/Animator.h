@@ -13,7 +13,7 @@
 /// </summary>
 
 #pragma once
-#include "Components/TileMapRenderer.h"
+#include "Components/SpriteRenderer.h"
 
 #include <unordered_map>
 #include <string>
@@ -24,7 +24,7 @@ class FoxtrotRenderer;
 class FTSpriteAnimation;
 
 class Animator :
-	public TileMapRenderer
+	public SpriteRenderer
 {
 public:
 	virtual FTDS::String GetName() const override

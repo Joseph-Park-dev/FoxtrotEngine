@@ -36,7 +36,7 @@
 #endif // FOXTROT_EDITOR
 
 Animator::Animator(Actor* owner, int updateOrder)
-	: TileMapRenderer(owner)
+	: SpriteRenderer(owner)
 	, mLoadedAnim(DBG_NEW FTDS::DynamicArray<FTSpriteAnimation*>)
 	, mCurrFrameIdx(0)
 	, mAccTime(0.f)
@@ -54,7 +54,7 @@ Animator::~Animator()
 void Animator::Play(const UINT idx, bool isRepeated)
 {
 	FTSpriteAnimation* anim = mLoadedAnim->At(idx);
-	SetMeshGroup(anim);
+	SetSprite(anim);
 
 	mIsFinished = false;
 	mIsRepeated = isRepeated;
@@ -78,7 +78,7 @@ void Animator::SetIsFinished(bool val) { mIsFinished = val; }
 
 void Animator::SaveProperties(std::ofstream& ofs)
 {
-	MeshRenderer::SaveProperties(ofs);
+	SpriteRenderer::SaveProperties(ofs);
 
 	// Loop through loaded animation keys and save.
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSpriteAnimator::LOADED_KEYS);
@@ -106,7 +106,7 @@ void Animator::LoadProperties(std::ifstream& ifs)
 	}
 
 	mLoadedAnim->Reverse();
-	MeshRenderer::LoadProperties(ifs);
+	SpriteRenderer::LoadProperties(ifs);
 
 	if (0 < mLoadedAnim->GetSize())
 		Play(0);
@@ -117,7 +117,7 @@ void Animator::UpdateFrame(float deltaTime)
 	if (mIsFinished)
 		return;
 	mAccTime += deltaTime;
-	FTSpriteAnimation* anim				= static_cast<FTSpriteAnimation*>(GetMeshGroup());
+	FTSpriteAnimation* anim				= static_cast<FTSpriteAnimation*>(GetSprite());
 	static float	   durationPerFrame = 1 / static_cast<float>(anim->GetFPS());
 
 	if (durationPerFrame <= mAccTime)
@@ -140,8 +140,6 @@ bool Animator::IndexOutOfRange(FTSpriteAnimation* anim)
 
 void Animator::Initialize(FTCore* coreInstance)
 {
-	SetRenderer(coreInstance->GetGameRenderer());
-
 	if (0 < mLoadedAnim->GetSize())
 		Play(0);
 
@@ -150,19 +148,19 @@ void Animator::Initialize(FTCore* coreInstance)
 
 void Animator::LateUpdate(float deltaTime)
 {
-	if (!GetMeshGroup())
+	if (!GetSprite())
 		return;
 	UpdateFrame(deltaTime);
 }
 
 void Animator::Render(FoxtrotRenderer* renderer)
 {
-	if (GetMeshGroup())
+	if (GetSprite())
 	{
 		renderer->SwitchFillMode();
 
 		Transform* transform = GetOwner()->GetTransform();
-		static_cast<FTSpriteAnimation*>(GetMeshGroup())
+		static_cast<FTSpriteAnimation*>(GetSprite())
 			->Render(
 				mCurrFrameIdx,
 				renderer,
@@ -180,9 +178,7 @@ void Animator::CloneTo(Actor* actor)
 	Animator* newComp = DBG_NEW Animator(actor, GetUpdateOrder());
 
 	newComp->mLoadedAnim->Assign(this->mLoadedAnim);
-	newComp->SetRenderer(this->GetRenderer());
-	newComp->SetMeshGroup(this->GetMeshGroup());
-	newComp->SetTexture(this->GetTexture());
+	newComp->SetSprite(this->GetSprite());
 	newComp->SetVS(this->GetVS());
 	newComp->SetPS(this->GetPS());
 	newComp->SetMaterial(this->GetMaterial());
@@ -196,23 +192,21 @@ void Animator::EditorUpdate(float deltaTime)
 
 void Animator::EditorUIUpdate()
 {
-	CHECK_RENDERER(GetRenderer());
-
 	UpdatePlayAnim();
 	UpdatePlayList();
 
 	CommandHistory::GetInstance()->UpdateBoolValue("Is Repeated", mIsRepeated);
-	MeshRenderer::EditorUIUpdate();
+	SpriteRenderer::EditorUIUpdate();
 }
 
 void Animator::EditorRender(FoxtrotRenderer* renderer)
 {
-	if (GetMeshGroup())
+	if (GetSprite())
 	{
 		renderer->SwitchFillMode();
 		Transform* transform = GetOwner()->GetTransform();
 
-		static_cast<FTSpriteAnimation*>(GetMeshGroup())
+		static_cast<FTSpriteAnimation*>(GetSprite())
 			->Render(
 				mCurrFrameIdx,
 				renderer,
@@ -227,7 +221,7 @@ void Animator::EditorRender(FoxtrotRenderer* renderer)
 
 void Animator::UpdatePlayAnim()
 {
-	if (GetMeshGroup())
+	if (GetSprite())
 	{
 		if (mIsFinished)
 		{
@@ -254,7 +248,7 @@ void Animator::UpdatePlayList()
 	{
 		mLoadedAnim->PushBack(anim);
 		if (mLoadedAnim->GetSize() == 1)
-			SetMeshGroup(anim);
+			SetSprite(anim);
 	}
 
 	ImGui::SeparatorText("Play List");

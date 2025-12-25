@@ -48,11 +48,12 @@ void FTSpriteAnimation::Render(
 
 	if (mesh)
 	{
-		if (mSpriteSheet)
+		if (GetTexture())
 		{
-			std::vector<ID3D11ShaderResourceView*> resViews;
-			resViews.push_back(mSpriteSheet->GetSRV().Get());
-			context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
+			ID3D11ShaderResourceView* const resViews[] = {
+				GetTexture()->GetSRV().Get()
+			};
+			context->PSSetShaderResources(0, 1, resViews);
 		}
 
 		context->VSSetShader(vs->GetShader().Get(), 0, 0);
@@ -62,8 +63,8 @@ void FTSpriteAnimation::Render(
 		context->GSSetShader(gs->GetShader().Get(), 0, 0);
 
 		ID3D11Buffer* const gsCBuffers[] = {
-			mGCMatBuf.Get(),
-			mGCFrameBuf.Get(),
+			GetGCMatBuf().Get(),
+			GetGCSpriteBuf().Get(),
 		};
 		context->GSSetConstantBuffers(0, 2, gsCBuffers);
 
@@ -91,7 +92,7 @@ void FTSpriteAnimation::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::SaveInt(ofs, ChunkKey::FTSpriteAnimation::MAX_FRAME_IDX, mMaxFrameIdx);
 	FileIOHelper::SaveInt(ofs, ChunkKey::FTSpriteAnimation::MIN_FRAME_IDX, mMinFrameIdx);
 	FileIOHelper::SaveVector3(ofs, ChunkKey::FTSpriteAnimation::SIZE_SCALE, GetSizeScale());
-	FileIOHelper::SaveString(ofs, ChunkKey::FTSpriteAnimation::SPRITE_SHEET, mSpriteSheet->GetFileName());
+	FileIOHelper::SaveString(ofs, ChunkKey::FTSpriteAnimation::SPRITE_SHEET, GetTexture()->GetFileName());
 	FileIOHelper::SaveString(ofs, ChunkKey::FTSpriteAnimation::JSON, mJSON->GetFileName());
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
@@ -120,8 +121,8 @@ void FTSpriteAnimation::LoadProperties(std::ifstream& ifs)
 	if (!mJSON)
 		return;
 
-	mSpriteSheet = ResourceManager::GetInstance()->GetLoadedTexture(texKey);
-	if (!mSpriteSheet)
+	SetTexture(ResourceManager::GetInstance()->GetLoadedTexture(texKey));
+	if (!GetTexture())
 		return;
 
 	SetSizeScale(sizeScale);
@@ -138,11 +139,8 @@ const int FTSpriteAnimation::GetMaxFrameIdx() const { return mMaxFrameIdx; }
 const int FTSpriteAnimation::GetMinFrameIdx() const { return mMinFrameIdx; }
 
 FTSpriteAnimation::FTSpriteAnimation(FTResourceDef& resDef, FoxtrotRenderer* renderer)
-	: FTMeshGroup(resDef, renderer, nullptr)
+	: FTSprite(resDef, renderer, true)
 	, mJSON(nullptr)
-	, mSpriteSheet(nullptr)
-	, mGCMatData(DBG_NEW PointVPMat)
-	, mFrameGCData(DBG_NEW FTDS::DynamicArray<AnimGCData*>)
 	, mMinFrameIdx(0)
 	, mMaxFrameIdx(0)
 	, mFPS(24)
@@ -153,13 +151,8 @@ FTSpriteAnimation::FTSpriteAnimation(FTResourceDef& resDef, FoxtrotRenderer* ren
 
 FTSpriteAnimation::~FTSpriteAnimation()
 {
-	for (auto iter = mFrameGCData->Begin(); iter != mFrameGCData->End(); ++iter)
-	{
-		delete (*iter);
-		(*iter) = nullptr;
-	}
-	delete mGCMatData;
-	delete mFrameGCData;
+	// Texture deallocation is handled in FTSprite.
+	SetTexture(nullptr);
 }
 
 void FTSpriteAnimation::Process(FoxtrotRenderer* renderer)
@@ -178,57 +171,11 @@ void FTSpriteAnimation::Process(FoxtrotRenderer* renderer)
 	FTResource::Process();
 }
 
-void FTSpriteAnimation::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
-{
-	FTMeshGroup::InitializeConstantBuffers(device);
-	AnimGCData dummy;
-	D3D11Utils::CreateConstantBuffer(device, dummy, mGCFrameBuf);
-	D3D11Utils::CreateConstantBuffer(device, *mGCMatData, mGCMatBuf);
-}
-
 void FTSpriteAnimation::UpdateConstantBuffers(int meshIndex, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, Transform* transform, Camera* camInst, FTMaterial* mat, const int frontDir)
 {
-	// Model Transformation
-	// Front Direction will be multiplied to scale.
-	// When frontDir is minus, multiplication must be done only once as the character switches direction.
-
-	float linearX = transform->GetSteering()->Linear.x;
-	if (linearX < 0)
-		SetDirection(-1);
-	else if (0 < linearX)
-		SetDirection(1);
-
-	FTVector3 scale		   = transform->GetWorldScale();
-	float	  scaleX	   = Math::Abs(scale.x);
-	FTVector3 scaleWithDir = FTVector3(scaleX * frontDir * GetDirection(), scale.y * GetDirection(), scale.z);
-	transform->SetWorldScale(scaleWithDir);
-	Matrix modelMat = transform->GetMatrixWorld();
-
-	// Inverse transpose matrix calculation
-	// Consider removing this part if the engine is for 2D games.
-	// Matrix invTransposeMat = modelMat.Transpose();
-	// invTransposeMat.Translation(Vector3(0.0f));
-	// invTransposeMat = invTransposeMat.Transpose().Invert();
-
-	// View Transformation
-	Matrix&& viewMat = camInst->GetViewRow();
-
-	// Project Transformation
-	Matrix&& projMat = std::move(camInst->GetProjRow());
-
-	GetVCData()->ModelMat = modelMat.Transpose();
-	D3D11Utils::UpdateBuffer(
-		context, *GetVCData(), GetVCBuf());
-
-	mGCMatData->ViewMat = viewMat.Transpose();
-	mGCMatData->ProjMat = projMat.Transpose();
-	D3D11Utils::UpdateBuffer(context, *mGCMatData, mGCMatBuf);
-
-	AnimGCData* gcData = mFrameGCData->At(meshIndex);
-	Vector2		size   = gcData->Size;
-	gcData->Scale	   = Vector2(GetSizeScale().x * scaleWithDir.x, GetSizeScale().y * scaleWithDir.y);
-
-	D3D11Utils::UpdateBuffer(context, *mFrameGCData->At(meshIndex), mGCFrameBuf);
+	size_t gcDataCount = mMaxFrameIdx - mMinFrameIdx + 1;
+	FTSprite::UpdateConstantBuffers(device, context, transform, camInst, mat, frontDir, gcDataCount);
+	D3D11Utils::UpdateBuffer(context, GetGCSpriteData()[meshIndex], GetGCSpriteBuf());
 
 	if (mat)
 		mat->UpdateBuffer(context);
@@ -243,21 +190,21 @@ void FTSpriteAnimation::Initialize(ComPtr<ID3D11Device>& device, ComPtr<ID3D11De
 	float sheetH = sheetSize.at(SpriteSheetKeys::H);
 
 	// Get the number of sprites, create the buffer for the tiles.
-	size_t		  vCount = mMaxFrameIdx - mMinFrameIdx + 1;
+	size_t vCount = mMaxFrameIdx - mMinFrameIdx + 1;
+	if (GetGCSpriteData())
+		delete[] GetGCSpriteData();
 	SpriteVertex* vertices = DBG_NEW SpriteVertex[vCount];
 
-	mFrameGCData->Reserve(mMaxFrameIdx - mMinFrameIdx + 1);
+	SetGCSpriteData(DBG_NEW SpriteGCData[vCount]);
 	// For every sprite data in JSON...
 	for (size_t i = mMinFrameIdx; i <= mMaxFrameIdx; ++i)
 	{
-		AnimGCData* gcData = DBG_NEW AnimGCData;
-
 		// Base array containing sprite data.
 		nlohmann::json frame = mJSON->Data()[SpriteSheetKeys::BASE][i];
 
 		// Initialize tile's rect area on sprite sheet.
-		float frameX  = frame[SpriteSheetKeys::FRAME][SpriteSheetKeys::X];
-		float frameY  = frame[SpriteSheetKeys::FRAME][SpriteSheetKeys::Y];
+		float frameX = frame[SpriteSheetKeys::FRAME][SpriteSheetKeys::X];
+		float frameY = frame[SpriteSheetKeys::FRAME][SpriteSheetKeys::Y];
 
 		float mapX = frameX / sheetW;
 		float mapY = frameY / sheetH;
@@ -277,14 +224,10 @@ void FTSpriteAnimation::Initialize(ComPtr<ID3D11Device>& device, ComPtr<ID3D11De
 		size_t tileIdx			   = i - mMinFrameIdx;
 		vertices[tileIdx].Position = Vector3(screenX, screenY, 0.0f);
 
-		gcData->Size	 = Vector2(screenW, screenH);
-		gcData->Scale	 = Vector2(1.0f);
-		gcData->Frame	 = Vector4(mapX, mapY, mapW, mapH);
-		gcData->Pivot	 = Vector2(pivotX, pivotY);
-
-		mFrameGCData->PushBack(gcData);
-		// vertices[tileIdx].Size	   = Vector2(adjustedW, adjustedH);
-		// vertices[tileIdx].Texcoord = Vector4(mapX, mapY, mapW, mapH);
+		GetGCSpriteData()[tileIdx].Size	 = Vector2(screenW, screenH);
+		GetGCSpriteData()[tileIdx].Scale = Vector2(1.0f);
+		GetGCSpriteData()[tileIdx].Pivot = Vector2(pivotX, pivotY);
+		GetGCSpriteData()[tileIdx].Frame = Vector4(mapX, mapY, mapW, mapH);
 	}
 
 	Mesh* mesh = DBG_NEW Mesh;
@@ -300,11 +243,8 @@ void FTSpriteAnimation::Initialize(ComPtr<ID3D11Device>& device, ComPtr<ID3D11De
 
 #ifdef FOXTROT_EDITOR
 FTSpriteAnimation::FTSpriteAnimation(FTSpriteAnimationDef& resDef, FoxtrotRenderer* renderer)
-	: FTMeshGroup(resDef, renderer, nullptr)
+	: FTSprite(resDef, renderer, true)
 	, mJSON(resDef.JSON)
-	, mSpriteSheet(resDef.SpriteSheet)
-	, mGCMatData(DBG_NEW PointVPMat)
-	, mFrameGCData(DBG_NEW FTDS::DynamicArray<AnimGCData*>)
 	, mMinFrameIdx(resDef.MinFrameIdx)
 	, mMaxFrameIdx(resDef.MaxFrameIdx)
 	, mFPS(resDef.FPS)
@@ -313,17 +253,35 @@ FTSpriteAnimation::FTSpriteAnimation(FTSpriteAnimationDef& resDef, FoxtrotRender
 	Initialize(renderer->GetDevice(), renderer->GetContext());
 }
 
+void FTSpriteAnimation::UpdateUI()
+{
+	GetTexture()->UpdateUI();
+
+	Vector2 size = GetGCSpriteData()[0].Size;
+	CommandHistory::GetInstance()->UpdateVector2Value("Size", size);
+	for (size_t i = 0; i < mMaxFrameIdx - mMinFrameIdx + 1; ++i)
+		GetGCSpriteData()[i].Size = size;
+
+	FTVector3 scale = GetSizeScale();
+	CommandHistory::GetInstance()->UpdateVector3Value("Scale size", scale);
+	SetSizeScale(scale);
+
+	bool val = true;
+	0 < GetFrontDir() ? val = true : val = false;
+
+	CommandHistory::GetInstance()->UpdateBoolValue("Is Facing Right", val);
+	SetRightIsFront(val);
+}
+
 void FTSpriteAnimation::AddRefCount()
 {
 	mJSON->AddRefCount();
-	mSpriteSheet->AddRefCount();
-	FTMeshGroup::AddRefCount();
+	FTSprite::AddRefCount();
 }
 
 void FTSpriteAnimation::SubtractRefCount()
 {
 	mJSON->SubtractRefCount();
-	mSpriteSheet->SubtractRefCount();
-	FTMeshGroup::SubtractRefCount();
+	FTSprite::SubtractRefCount();
 }
 #endif

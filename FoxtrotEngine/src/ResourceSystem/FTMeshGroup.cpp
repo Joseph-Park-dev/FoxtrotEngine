@@ -28,47 +28,60 @@
 using Matrix = DirectX::SimpleMath::Matrix;
 
 void FTMeshGroup::Render(
-	FoxtrotRenderer* renderer,
-	Transform*		 transform,
-	Camera*			 camInst,
-	FTTexture*		 tex,
-	FTVertexShader*	 vs,
-	FTPixelShader*	 ps,
-	FTMaterial*		 mat)
+	FoxtrotRenderer*  renderer,
+	Transform*		  transform,
+	Camera*			  camInst,
+	FTTexture*		  tex,
+	FTVertexShader*	  vs,
+	FTGeometryShader* gs,
+	FTPixelShader*	  ps,
+	FTMaterial*		  mat)
 {
-	// This enables the resource reusable throughout the Component instances.
-	UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat, mFrontDir);
+	//// This enables the resource reusable throughout the Component instances.
+	//UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat, mFrontDir);
 
-	if (!vs || !ps) // Vertex Shader is always required when drawing.
-		return;
+	//if (!vs || !ps || !gs || !mat) // Shaders are always required when drawing.
+	//	return;
 
-	UINT						 stride	 = sizeof(Vertex);
-	UINT						 offset	 = 0;
-	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
+	//UINT						 stride	 = sizeof(SpriteVertex);
+	//UINT						 offset	 = 0;
+	//ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
+	//Mesh*						 mesh	 = Meshes()->At(0);
 
-	mMeshes->IterateArray([&](Mesh* mesh) {
-		context->VSSetConstantBuffers(0, 1, mVCBuf.GetAddressOf());
+	//if (mesh)
+	//{
+	//	context->VSSetShader(vs->GetShader().Get(), 0, 0);
+	//	context->VSSetConstantBuffers(0, 1, mVCBuf.GetAddressOf());
 
-		if (tex)
-		{
-			std::vector<ID3D11ShaderResourceView*> resViews;
-			resViews.push_back(tex->GetSRV().Get());
-			context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
-		}
+	//	context->GSSetShader(gs->GetShader().Get(), 0, 0);
 
-		context->VSSetShader(vs->GetShader().Get(), 0, 0);
-		context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
-		context->PSSetShader(ps->GetShader().Get(), 0, 0);
+	//	ID3D11Buffer* const gsCBuffers[] = {
+	//		mGCMatBuf.Get(),
+	//		mGCFrameBuf.Get(),
+	//	};
+	//	context->GSSetConstantBuffers(0, 2, gsCBuffers);
+	//}
 
-		if (mat)
-			context->PSSetConstantBuffers(0, 1, mat->GetPCBuf().GetAddressOf());
+	//mMeshes->IterateArray([&](Mesh* mesh) {
+	//	if (tex)
+	//	{
+	//		std::vector<ID3D11ShaderResourceView*> resViews;
+	//		resViews.push_back(tex->GetSRV().Get());
+	//		context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
+	//	}
 
-		context->IASetInputLayout(vs->GetInputLayout().Get());
-		context->IASetVertexBuffers(0, 1, mesh->VertexBuffer.GetAddressOf(), &stride, &offset);
-		context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		context->DrawIndexed(mesh->IndexCount, 0, 0);
-	});
+	//	context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
+	//	context->PSSetShader(ps->GetShader().Get(), 0, 0);
+
+	//	if (mat)
+	//		context->PSSetConstantBuffers(0, 1, mat->GetPCBuf().GetAddressOf());
+
+	//	context->IASetInputLayout(vs->GetInputLayout().Get());
+	//	context->IASetVertexBuffers(0, 1, mesh->VertexBuffer.GetAddressOf(), &stride, &offset);
+	//	context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	//	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//	context->DrawIndexed(mesh->IndexCount, 0, 0);
+	//});
 }
 
 void FTMeshGroup::SetSizeScale(const FTVector3 scale)
@@ -85,6 +98,8 @@ void FTMeshGroup::SetRightIsFront(bool val)
 {
 	val ? mFrontDir = 1 : mFrontDir = -1;
 }
+
+FTDS::DynamicArray<Mesh*>* FTMeshGroup::Meshes() { return mMeshes; };
 
 FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer)
 	: FTResource(resDef)
@@ -107,7 +122,7 @@ FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTMes
 {
 	if (!meshData)
 	{
-		Debug::LogError(__LINE__, __FILE__, "MeshData is null. If this is called while initializing FTSpineAnimation, it is OK");
+		Debug::LogError(__LINE__, __FILE__, "MeshData is null. If this is called while initializing FTSprite or SpineAnim, it is OK");
 		return;
 	}
 	Process(renderer, meshData);
@@ -128,20 +143,11 @@ void FTMeshGroup::Process(FoxtrotRenderer* renderer)
 	if (this->GetRelativePath().Equal(ChunkKey::NullVal::NULL_OBJECT))
 		return;
 
-	Initialize(
-		GeometryGenerator::ReadFromFile(this->GetRelativePath()), renderer->GetDevice(), renderer->GetContext());
+	CreateTextureSampler(renderer->GetDevice());
+	InitializeMeshes(renderer->GetDevice(), std::move(GeometryGenerator::ReadFromFile(this->GetRelativePath())));
+	InitializeConstantBuffers(renderer->GetDevice());
 
 	FTResource::Process();
-}
-
-void FTMeshGroup::Initialize(
-	FTDS::DynamicArray<FTMeshData*>&& meshes,
-	ComPtr<ID3D11Device>&			  device,
-	ComPtr<ID3D11DeviceContext>&	  context)
-{
-	CreateTextureSampler(device);
-	InitializeMeshes(device, std::move(meshes));
-	InitializeConstantBuffers(device);
 }
 
 void FTMeshGroup::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
@@ -193,9 +199,9 @@ void FTMeshGroup::UpdateConstantBuffers(
 
 	// Inverse transpose matrix calculation
 	// Consider removing this part if the engine is for 2D games.
-	//Matrix invTransposeMat = modelMat.Transpose();
-	//invTransposeMat.Translation(Vector3(0.0f));
-	//invTransposeMat = invTransposeMat.Transpose().Invert();
+	// Matrix invTransposeMat = modelMat.Transpose();
+	// invTransposeMat.Translation(Vector3(0.0f));
+	// invTransposeMat = invTransposeMat.Transpose().Invert();
 
 	// View Transformation
 	Matrix&& viewMat  = camInst->GetViewRow();
@@ -225,7 +231,6 @@ void FTMeshGroup::Clear()
 	mMeshes->Clear();
 }
 
-FTDS::DynamicArray<Mesh*>*	FTMeshGroup::Meshes() { return mMeshes; };
 ComPtr<ID3D11SamplerState>& FTMeshGroup::GetSamplerState() { return mSamplerState; }
 ComPtr<ID3D11Buffer>&		FTMeshGroup::GetVCBuf() { return mVCBuf; }
 
@@ -254,19 +259,11 @@ void FTMeshGroup::Process(FoxtrotRenderer* renderer, FTMeshData* meshData)
 	if (this->GetRelativePath().IsEmpty())
 		return;
 
-	Initialize(meshData, renderer->GetDevice(), renderer->GetContext());
+	CreateTextureSampler(renderer->GetDevice());
+	InitializeMesh(renderer->GetDevice(), meshData);
+	InitializeConstantBuffers(renderer->GetDevice());
 
 	FTResource::Process();
-}
-
-void FTMeshGroup::Initialize(
-	FTMeshData*					 mesh,
-	ComPtr<ID3D11Device>&		 device,
-	ComPtr<ID3D11DeviceContext>& context)
-{
-	CreateTextureSampler(device);
-	InitializeMesh(device, mesh);
-	InitializeConstantBuffers(device);
 }
 
 void FTMeshGroup::InitializeMesh(ComPtr<ID3D11Device>& device, FTMeshData* meshData)

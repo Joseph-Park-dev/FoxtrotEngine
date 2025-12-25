@@ -154,6 +154,13 @@ void CommandHistory::UpdateVector2Value(const char* label, FTVector2& ref, float
 	ref.y = vec2[1];
 }
 
+void CommandHistory::UpdateVector2Value(const char* label, Vector2& ref, float modSpeed)
+{
+	FTVector2 vec2 = FTVector2(ref.x, ref.y);
+	UpdateVector2Value(label, vec2);
+	ref = vec2.GetD3Vec2();
+}
+
 void CommandHistory::UpdateVector2Value(const char* label, b2Vec2& ref, float modSpeed)
 {
 	static B2Vec2EditCommand* command;

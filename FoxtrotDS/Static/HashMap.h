@@ -93,19 +93,19 @@ namespace FTDS
 			++mSize;
 		}
 
-		FTDS::Record<TYPE>* At(int key)
+		FTDS::Record<TYPE>* At(const int key)
 		{
 			FTDS::String conv;
 			ToString(conv, key);
 			return this->At(conv);
 		}
 
-		FTDS::Record<TYPE>* At(FTDS::String&& key)
+		FTDS::Record<TYPE>* At(const FTDS::String&& key)
 		{
 			return this->At(key.C_Str());
 		}
 
-		FTDS::Record<TYPE>* At(FTDS::String& key)
+		FTDS::Record<TYPE>* At(const FTDS::String& key)
 		{
 			return this->At(key.C_Str());
 		}

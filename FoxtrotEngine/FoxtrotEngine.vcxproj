@@ -281,6 +281,7 @@
     <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\HenryBehavior.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="src\ResourceSystem\FTSprite\FTSprite.cpp" />
     <ClCompile Include="src\ResourceSystem\FTShaders\FTGeometryShader.cpp" />
     <ClCompile Include="src\Managers\FontManager.cpp" />
     <ClCompile Include="src\Components\SpineAnimator.cpp" />
@@ -435,6 +436,7 @@
     <ClCompile Include="src\ResourceSystem\FTMaterials\StandardMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ResourceSystem\FTSprite\FTSprite.h" />
     <ClInclude Include="src\ResourceSystem\FTShaders\FTGeometryShader.h" />
     <ClInclude Include="src\Managers\FontManager.h" />
     <ClInclude Include="include\json\include\nlohmann\adl_serializer.hpp" />

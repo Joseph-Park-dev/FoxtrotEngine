@@ -68,6 +68,10 @@ public:
 #ifdef FOXTROT_EDITOR
 public:
 	virtual void EditorUIUpdate() override;
+
+public:
+	virtual void EditorRender(FoxtrotRenderer* renderer) override;
+
 #endif
 };
 

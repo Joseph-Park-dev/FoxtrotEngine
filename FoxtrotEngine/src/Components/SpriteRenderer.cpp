@@ -149,4 +149,9 @@ void SpriteRenderer::EditorUIUpdate()
 		ResourceManager::GetInstance()->GetMaterials(),
 		mMaterial);
 }
+void SpriteRenderer::EditorRender(FoxtrotRenderer* renderer)
+{
+	if (mSprite)
+		mSprite->Render(renderer, GetOwner()->GetTransform(), EditorCamera::GetInstance(), mVS, mGS, mPS, mMaterial);
+}
 #endif // FOXTROT_EDITOR

@@ -124,8 +124,8 @@ void AnimationManager::CreateAnimationGUI()
 			CommandHistory::GetInstance()->UpdateBoolValue("Is repeated", resDef.IsRepeated);
 
 			// Update texture (sprite sheet) of the sprite animation.
-			static FTTexture* texture;
-			FTEditorUtils::DisplayResSelection("Select Sprite", ResourceManager::GetInstance()->GetTextures(), texture);
+			static FTSprite* texture;
+			FTEditorUtils::DisplayResSelection("Select Sprite", ResourceManager::GetInstance()->GetSprites(), texture);
 			if (texture)
 				ImGui::Text(texture->GetFileName().C_Str());
 			else
@@ -167,7 +167,7 @@ void AnimationManager::CreateAnimationGUI()
 				resDef.RelativePath = path.C_Str();
 
 				resDef.JSON		   = JSON;
-				resDef.SpriteSheet = texture;
+				resDef.SpriteSheet = texture->GetTexture();
 
 				FTSpriteAnimation* anim = CreateAnimationFromJSON(resDef);
 

@@ -22,7 +22,7 @@ void FTFont::AddText(ComPtr<ID3D11Device>& device, FTDS::String& text)
 	Mesh* mesh = DBG_NEW Mesh;
 	D3D11Utils::CreateVertexBuffer(device, vertices, mesh->VertexBuffer);
 
-	mesh->VertexCount = text.Length();
+	mesh->VertexCount = static_cast<UINT>(text.Length());
 	Meshes()->Reserve(Meshes()->GetSize() + 1);
 	Meshes()->PushBack(mesh);
 }
@@ -71,7 +71,7 @@ void FTFont::Render(FTDS::String& text, FoxtrotRenderer* renderer, Transform* tr
 		// context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-		context->DrawInstanced(4, text.Length(), 0, 0);
+		context->DrawInstanced(4, static_cast<UINT>(text.Length()), 0, 0);
 	});
 }
 
@@ -99,7 +99,7 @@ void FTFont::UpdateTextVertices(FTDS::String& text, FoxtrotRenderer* renderer, F
 
 	for (size_t i = 0; i < text.Length(); ++i)
 	{
-		wchar_t c = text[i];
+		wchar_t c = text.At(i);
 
 		FontChar* fc = this->GetChar(c);
 
@@ -316,7 +316,7 @@ void FTFont::LoadFont(FTTexture* img)
 
 	// get font size
 	fs >> tmp; // size=73
-	startpos	= tmp.find(L"=") + 1;
+	startpos	= static_cast<int>(tmp.find(L"=") + 1);
 	this->mSize = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
 	// bold, italic, charset, unicode, stretchH, smooth, aa, padding, spacing
@@ -325,21 +325,21 @@ void FTFont::LoadFont(FTTexture* img)
 
 	// get padding
 	fs >> tmp; // padding=5,5,5,5
-	startpos = tmp.find(L"=") + 1;
+	startpos = static_cast<int>(tmp.find(L"=") + 1);
 	tmp		 = tmp.substr(startpos, tmp.size() - startpos); // 5,5,5,5
 
 	// get up padding
-	startpos		  = tmp.find(L",") + 1;
+	startpos		  = static_cast<int>(tmp.find(L",") + 1);
 	this->mTopPadding = std::stoi(tmp.substr(0, startpos)) / (float)renderRes.x;
 
 	// get right padding
 	tmp					= tmp.substr(startpos, tmp.size() - startpos);
-	startpos			= tmp.find(L",") + 1;
+	startpos			= static_cast<int>(tmp.find(L",") + 1);
 	this->mRightPadding = std::stoi(tmp.substr(0, startpos)) / (float)renderRes.x;
 
 	// get down padding
 	tmp		 = tmp.substr(startpos, tmp.size() - startpos);
-	startpos = tmp.find(L",") + 1;
+	startpos = static_cast<int>(tmp.find(L",") + 1);
 	this->mBottomPadding =
 		std::stoi(tmp.substr(0, startpos)) / (float)renderRes.x;
 
@@ -354,7 +354,7 @@ void FTFont::LoadFont(FTTexture* img)
 	// get lineheight (how much to move down for each line), and normalize
 	// (between 0.0 and 1.0 based on size of font)
 	fs >> tmp >> tmp; // common lineHeight=95
-	startpos = tmp.find(L"=") + 1;
+	startpos = static_cast<int>(tmp.find(L"=") + 1);
 	this->mLineHeight =
 		(float)std::stoi(tmp.substr(startpos, tmp.size() - startpos)) /
 		(float)renderRes.y;
@@ -362,19 +362,19 @@ void FTFont::LoadFont(FTTexture* img)
 	// get base height (height of all characters), and normalize (between 0.0
 	// and 1.0 based on size of font)
 	fs >> tmp; // base=68
-	startpos = tmp.find(L"=") + 1;
+	startpos = static_cast<int>(tmp.find(L"=") + 1);;
 	this->mBaseHeight =
 		(float)std::stoi(tmp.substr(startpos, tmp.size() - startpos)) /
 		(float)renderRes.y;
 
 	// get texture width
 	fs >> tmp; // scaleW=512
-	startpos = tmp.find(L"=") + 1;
+	startpos = static_cast<int>(tmp.find(L"=") + 1);;
 	// font.textureWidth = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
 	// get texture height
 	fs >> tmp; // scaleH=512
-	startpos = tmp.find(L"=") + 1;
+	startpos = static_cast<int>(tmp.find(L"=") + 1);;
 	// font.textureHeight = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
 	// get pages, packed, page id
@@ -386,12 +386,12 @@ void FTFont::LoadFont(FTTexture* img)
 	// get texture filename
 	std::wstring wtmp;
 	fs >> wtmp; // file="Arial.png"
-	startpos = wtmp.find(L"\"") + 1;
+	startpos = static_cast<int>(wtmp.find(L"\"") + 1);
 	// font.fontImage = wtmp.substr(startpos, wtmp.size() - startpos - 1);
 
 	// get number of characters
 	fs >> tmp >> tmp; // chars count=97
-	startpos			 = tmp.find(L"=") + 1;
+	startpos			 = static_cast<int>(tmp.find(L"=") + 1);
 	this->mNumCharacters = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
 	// initialize the character list
@@ -403,27 +403,27 @@ void FTFont::LoadFont(FTTexture* img)
 
 		// get unicode id
 		fs >> tmp >> tmp; // char id=0
-		startpos = tmp.find(L"=") + 1;
+		startpos = static_cast<int>(tmp.find(L"=") + 1);;
 		fc.ID =
 			std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
 		// get x
 		fs >> tmp; // x=392
-		startpos = tmp.find(L"=") + 1;
+		startpos = static_cast<int>(tmp.find(L"=") + 1);;
 		fc.U =
 			(float)std::stoi(tmp.substr(startpos, tmp.size() - startpos)) /
 			(float)img->GetWidth();
 
 		// get y
 		fs >> tmp; // y=340
-		startpos = tmp.find(L"=") + 1;
+		startpos = static_cast<int>(tmp.find(L"=") + 1);;
 		fc.V =
 			(float)std::stoi(tmp.substr(startpos, tmp.size() - startpos)) /
 			(float)img->GetHeight();
 
 		// get width
 		fs >> tmp; // width=47
-		startpos		 = tmp.find(L"=") + 1;
+		startpos		 = static_cast<int>(tmp.find(L"=") + 1);
 		tmp				 = tmp.substr(startpos, tmp.size() - startpos);
 		fc.WidthOnScreen = (float)std::stoi(tmp) / (float)renderRes.x;
 		fc.WidthOnTex =
@@ -431,7 +431,7 @@ void FTFont::LoadFont(FTTexture* img)
 
 		// get height
 		fs >> tmp; // height=57
-		startpos		  = tmp.find(L"=") + 1;
+		startpos		  = static_cast<int>(tmp.find(L"=") + 1);
 		tmp				  = tmp.substr(startpos, tmp.size() - startpos);
 		fc.HeightOnScreen = (float)std::stoi(tmp) / (float)renderRes.y;
 		fc.HeightOnTex =
@@ -439,21 +439,21 @@ void FTFont::LoadFont(FTTexture* img)
 
 		// get xoffset
 		fs >> tmp; // xoffset=-6
-		startpos = tmp.find(L"=") + 1;
+		startpos = static_cast<int>(tmp.find(L"=") + 1);;
 		fc.OffsetX =
 			(float)std::stoi(tmp.substr(startpos, tmp.size() - startpos)) /
 			(float)renderRes.x;
 
 		// get yoffset
 		fs >> tmp; // yoffset=16
-		startpos = tmp.find(L"=") + 1;
+		startpos = static_cast<int>(tmp.find(L"=") + 1);;
 		fc.OffsetY =
 			(float)std::stoi(tmp.substr(startpos, tmp.size() - startpos)) /
 			(float)renderRes.y;
 
 		// get xadvance
 		fs >> tmp; // xadvance=65
-		startpos = tmp.find(L"=") + 1;
+		startpos = static_cast<int>(tmp.find(L"=") + 1);;
 		fc.AdvanceX =
 			(float)std::stoi(tmp.substr(startpos, tmp.size() - startpos)) /
 			(float)renderRes.x;
@@ -467,7 +467,7 @@ void FTFont::LoadFont(FTTexture* img)
 
 	// get number of kernings
 	fs >> tmp >> tmp; // kernings count=96
-	startpos		   = tmp.find(L"=") + 1;
+	startpos		   = static_cast<int>(tmp.find(L"=") + 1);
 	this->mNumKernings = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
 	// initialize the kernings list
@@ -478,20 +478,20 @@ void FTFont::LoadFont(FTTexture* img)
 		FontKerning* kerning = DBG_NEW FontKerning();
 		// get first character
 		fs >> tmp >> tmp; // kerning first=87
-		startpos = tmp.find(L"=") + 1;
+		startpos = static_cast<int>(tmp.find(L"=") + 1);;
 		kerning->firstid =
 			std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
 		// get second character
 		fs >> tmp; // second=45
-		startpos = tmp.find(L"=") + 1;
+		startpos = static_cast<int>(tmp.find(L"=") + 1);;
 		kerning->secondid =
 			std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
 		// get amount
 		fs >> tmp; // amount=-1
-		startpos		= tmp.find(L"=") + 1;
-		int t			= (float)std::stoi(tmp.substr(startpos, tmp.size() - startpos));
+		startpos		= static_cast<int>(tmp.find(L"=") + 1);
+		int t			= std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 		kerning->amount = (float)t / (float)renderRes.x;
 
 		this->mKerningsList->Insert(k, kerning);

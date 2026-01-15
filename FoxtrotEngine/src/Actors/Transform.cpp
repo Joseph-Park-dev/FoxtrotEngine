@@ -51,13 +51,13 @@ const FTVector2 Transform::GetScreenPosition(Camera* camInst) const
 	origin.y /= origin.w;
 	origin.z /= origin.w;
 
-	float screenX = (origin.x + 1) * 0.5 * renderSize.x;
-	float screenY = (1 - origin.y) * 0.5 * renderSize.y;
+	float screenX = static_cast<float>((origin.x + 1) * 0.5 * renderSize.x);
+	float screenY = static_cast<float>((1 - origin.y) * 0.5 * renderSize.y);
 
 	return FTVector2(screenX, screenY);
 }
 
-const FTVector3& Transform::GetRotationDegree() const
+const FTVector3 Transform::GetRotationDegree() const
 {
 	return ConvertRadToDegree(mWorldRotation);
 }
@@ -277,9 +277,9 @@ void Transform::UpdateUI()
 {
 	if (!mOwner->GetParent()) // The owner does not have parent Actor.
 	{
-		FTVector3 worldPos = mWorldPosition;
+		FTVector3 worldPos	 = mWorldPosition;
 		FTVector3 worldScale = mWorldScale;
-		FTVector3 worldRot = mWorldRotation;
+		FTVector3 worldRot	 = mWorldRotation;
 
 		CommandHistory::GetInstance()->UpdateVector3Value("World Position", worldPos);
 		CommandHistory::GetInstance()->UpdateVector3Value("World Scale", worldScale);
@@ -291,9 +291,9 @@ void Transform::UpdateUI()
 	}
 	else
 	{
-		FTVector3 localPos = mLocalPosition;
+		FTVector3 localPos	 = mLocalPosition;
 		FTVector3 localScale = mLocalScale;
-		FTVector3 localRot = mLocalRotation;
+		FTVector3 localRot	 = mLocalRotation;
 
 		CommandHistory::GetInstance()->UpdateVector3Value("Local Position", localPos);
 		CommandHistory::GetInstance()->UpdateVector3Value("Local Scale", localScale);

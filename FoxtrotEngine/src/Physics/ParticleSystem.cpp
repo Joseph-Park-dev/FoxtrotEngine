@@ -49,11 +49,11 @@ void ParticleSystem::CreateExplosion(FTVector2 initPos, float initSpeed, int dur
 
 void ParticleSystem::Update(float deltaTime)
 {
-	for (UINT i = 0; i < explosions.size(); ++i)
+	for (size_t i = 0; i < explosions.size(); ++i)
 	{
 		if (explosions[i]->isActive)
 		{
-			for (UINT j = 0; j < explosions[i]->activeCount; ++j)
+			for (size_t j = 0; j < explosions[i]->activeCount; ++j)
 			{
 				if (explosions[i]->particles[j].isActive)
 				{
@@ -72,7 +72,7 @@ void ParticleSystem::Update(float deltaTime)
 			}
 		}
 	}
-	for (UINT i = 0; i < explosions.size(); ++i)
+	for (size_t i = 0; i < explosions.size(); ++i)
 	{
 		if (!explosions[i]->isActive)
 		{

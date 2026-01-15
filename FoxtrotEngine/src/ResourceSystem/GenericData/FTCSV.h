@@ -24,10 +24,10 @@ public:
 
 public:
 	/// @brief Returns column(horizontal) count.
-	UINT GetColumnCount() const;
+	size_t GetColumnCount() const;
 
 	/// @brief Returns row(vertical) count.
-	UINT GetRowCount() const;
+	size_t GetRowCount() const;
 
 	/// @brief Returns the .csv data stored in vector.
 	/// @todo Replace std::vector to FTDS::DynamicArray.
@@ -43,10 +43,10 @@ private:
 	std::vector<int> mData;
 
 	/// @brief Column(horizontal) count.
-	UINT mColumnCount;
+	size_t mColumnCount;
 
 	/// @brief Row(vertical) count.
-	UINT mRowCount;
+	size_t mRowCount;
 
 protected:
 	/// @brief Reads the .csv data and store them into mData.

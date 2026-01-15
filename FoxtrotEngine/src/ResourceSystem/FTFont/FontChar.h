@@ -22,7 +22,7 @@ struct FontCharData
 	float AdvanceX; // how far to move to right for next character
 };
 
-class TextVertex;
+struct TextVertex;
 
 class FontChar
 {

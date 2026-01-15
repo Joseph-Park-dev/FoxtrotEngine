@@ -85,7 +85,7 @@ bool FTWindow::InitializeWindow(WNDPROC wndProc, int windowMode)
 		LogString("RegisterClassEx() failed.");
 		return false;
 	}
-	RECT wr = { 0, 0, mWidth, mHeight };
+	RECT wr = { 0, 0, static_cast<LONG>(mWidth), static_cast<LONG>(mHeight) };
 
 	// Calculate required outer window rectangle for given client area.
 	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, false);
@@ -186,10 +186,10 @@ void FTWindow::SamplCursorPosColor(ComPtr<ID3D11DeviceContext>& context, uint8_t
 		if (IsInRenderedArea(mousePos))
 		{
 			D3D11_BOX box;
-			box.left   = mousePos.x;
-			box.right  = mousePos.x + 1;
-			box.top	   = mousePos.y;
-			box.bottom = mousePos.y + 1;
+			box.left   = static_cast<UINT>(mousePos.x);
+			box.right  = static_cast<UINT>(mousePos.x + 1);
+			box.top	   = static_cast<UINT>(mousePos.y);
+			box.bottom = static_cast<UINT>(mousePos.y + 1);
 			box.front  = 0;
 			box.back   = 1;
 			context->CopySubresourceRegion(mIndexStagingTexture.Get(), 0, 0, 0, 0, mIndexTempTexture.Get(), 0, &box);

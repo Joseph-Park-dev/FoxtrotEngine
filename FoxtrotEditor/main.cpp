@@ -15,7 +15,6 @@
 
 #include "FTCoreEditor.h"
 #include "IncludedCustomBehaviors.h"
-#include <Managers/SpineExtension.h>
 
 int main(int argc, char* argv[])
 {

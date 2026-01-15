@@ -16,7 +16,7 @@ Timer::Timer()
     QueryPerformanceCounter((LARGE_INTEGER*)&mLastTicks);
     // 생성자함수는 Update()함수보다 이전에 실행되기 때문에 lastTime에 저장.
 
-    mTimeScale = 1.0 / (float)mFrequencyForASecond;
+    mTimeScale = 1.0f / (float)mFrequencyForASecond;
     // 미리  '1 / 초당진동수'  의 형태로 만들어 놓는다.
     // 컴퓨터는 나눗셈연산보다 곱셈연산이 더 빠르기때문에 매 프레임마다 연산을 해야할경우 
     // 역수로 만들어놓고 실제 계산때 곱셈하게 만들어놓음

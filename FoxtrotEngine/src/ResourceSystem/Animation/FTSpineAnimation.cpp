@@ -202,11 +202,11 @@ void FTSpineAnimation::InitializeSpinAnim(ComPtr<ID3D11Device>& device)
 			continue;
 		if (attachment->getRTTI().isExactly(spine::MeshAttachment::rtti))
 		{
-			InitializeMeshes(device, i, attachment, SpineMesh::SPINE_ATTACHMENT_TYPE::SPINE_MESH_ATTACH);
+			InitializeMeshes(device, static_cast<int>(i), attachment, SpineMesh::SPINE_ATTACHMENT_TYPE::SPINE_MESH_ATTACH);
 		}
 		else if (attachment->getRTTI().isExactly(spine::RegionAttachment::rtti))
 		{
-			InitializeMeshes(device, i, attachment, SpineMesh::SPINE_ATTACHMENT_TYPE::SPINE_MESH_REGION);
+			InitializeMeshes(device, static_cast<int>(i), attachment, SpineMesh::SPINE_ATTACHMENT_TYPE::SPINE_MESH_REGION);
 		}
 	}
 
@@ -235,7 +235,7 @@ void FTSpineAnimation::InitializeMeshes(
 	SpineMesh::SPINE_ATTACHMENT_TYPE attachmentType)
 {
 	size_t vertexCount = 0;
-	UINT   indexCount  = 0;
+	size_t indexCount  = 0;
 
 	if (SPINE_ATTACHMENT_TYPE::SPINE_MESH_ATTACH == attachmentType)
 	{
@@ -308,7 +308,7 @@ void FTSpineAnimation::UpdateBuffers(ComPtr<ID3D11DeviceContext>& context)
 			// Copies indices.
 			{
 				const uint16_t*			 indices	= attm->getTriangles().buffer();
-				UINT					 indexCount = attm->getTriangles().size();
+				UINT					 indexCount = static_cast<UINT>(attm->getTriangles().size());
 				D3D11_MAPPED_SUBRESOURCE mapped		= {};
 				if (SUCCEEDED(context->Map(mesh->IndexBuf.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
 				{

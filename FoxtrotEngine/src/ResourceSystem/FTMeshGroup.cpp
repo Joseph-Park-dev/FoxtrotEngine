@@ -12,6 +12,7 @@
 #include "ResourceSystem/FTMaterials/FTMaterial.h"
 #include "ResourceSystem/FTShaders/FTVertexShader.h"
 #include "ResourceSystem/FTShaders/FTPixelShader.h"
+#include "ResourceSystem/FTShaders/FTGeometryShader.h"
 #include "Managers/ResourceManager.h"
 #include "InputSystem/FTInputDevice.h"
 #include "Renderer/Camera.h"

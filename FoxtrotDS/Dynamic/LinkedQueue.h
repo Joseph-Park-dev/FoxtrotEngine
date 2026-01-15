@@ -45,6 +45,7 @@ namespace FTDS
 		{ 
 			if (mFront) 
 				return mFront->Value; 
+			return NULL;
 		}
 
 		size_t Size() { return mSize; }

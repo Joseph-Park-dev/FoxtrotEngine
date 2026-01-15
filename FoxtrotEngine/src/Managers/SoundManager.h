@@ -5,7 +5,6 @@
 
 #include <Static/Array.h>
 #include <Dynamic/LinkedQueue.h>
-#include <ResourceSystem/Sound/SoundInstance.h>
 
 class SoundManager
 {

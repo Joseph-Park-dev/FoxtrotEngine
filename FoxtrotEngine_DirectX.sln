@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.7.34009.444
+# Visual Studio Version 18
+VisualStudioVersion = 18.2.11408.102 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoxtrotEditor", "FoxtrotEditor\FoxtrotEditor.vcxproj", "{7B2D616C-EF0B-43D4-94A1-640897D09BCC}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -9,20 +9,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoxtrotEditor", "FoxtrotEdi
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoxtrotEngine", "FoxtrotEngine\FoxtrotEngine.vcxproj", "{014CC6A0-8578-4FE6-A16C-C8B45D8A83F9}"
-	ProjectSection(ProjectDependencies) = postProject
-		{21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0} = {21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoxtrotDS", "FoxtrotDS\FoxtrotDS.vcxproj", "{EFDF9DF9-F14D-4F66-8B80-533E3253A60F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VampiCat", "..\..\[2025_01]\[GooCat Studio] VampiCat\VampiCat.vcxproj", "{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}"
 	ProjectSection(ProjectDependencies) = postProject
 		{014CC6A0-8578-4FE6-A16C-C8B45D8A83F9} = {014CC6A0-8578-4FE6-A16C-C8B45D8A83F9}
-		{21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0} = {21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0}
 		{EFDF9DF9-F14D-4F66-8B80-533E3253A60F} = {EFDF9DF9-F14D-4F66-8B80-533E3253A60F}
 	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoxtrotMath", "FoxtrotMath\FoxtrotMath.vcxproj", "{21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -100,22 +94,6 @@ Global
 		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Release|x64.Build.0 = Release|x64
 		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Release|x86.ActiveCfg = Release|Win32
 		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Release|x86.Build.0 = Release|Win32
-		{21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0}.Debug|x64.ActiveCfg = Debug|x64
-		{21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0}.Debug|x64.Build.0 = Debug|x64
-		{21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0}.Debug|x86.ActiveCfg = Debug|Win32
-		{21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0}.Debug|x86.Build.0 = Debug|Win32
-		{21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0}.Foxtrot_Debug|x64.ActiveCfg = Debug|x64
-		{21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0}.Foxtrot_Debug|x64.Build.0 = Debug|x64
-		{21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0}.Foxtrot_Debug|x86.ActiveCfg = Debug|Win32
-		{21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0}.Foxtrot_Debug|x86.Build.0 = Debug|Win32
-		{21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0}.Foxtrot_Editor_Debug|x64.ActiveCfg = Debug|x64
-		{21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0}.Foxtrot_Editor_Debug|x64.Build.0 = Debug|x64
-		{21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0}.Foxtrot_Editor_Debug|x86.ActiveCfg = Debug|Win32
-		{21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0}.Foxtrot_Editor_Debug|x86.Build.0 = Debug|Win32
-		{21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0}.Release|x64.ActiveCfg = Release|x64
-		{21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0}.Release|x64.Build.0 = Release|x64
-		{21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0}.Release|x86.ActiveCfg = Release|Win32
-		{21F5CDE6-7E41-4B5E-9D77-7AA225C8ABC0}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

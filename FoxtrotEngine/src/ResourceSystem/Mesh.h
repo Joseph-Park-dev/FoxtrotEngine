@@ -80,15 +80,15 @@ struct SpineMesh
 
 		this->DrawOrder	  = order;
 		this->MeshType	  = attachmentType;
-		this->VertexCount = vertexCount;
-		this->IndexCount  = indexCount;
+		this->VertexCount = static_cast<UINT>(vertexCount);
+		this->IndexCount  = static_cast<UINT>(indexCount);
 		// vertex buffer
 		{
 			// position
 			D3D11_BUFFER_DESC ibDesc = {};
 			ZeroMemory(&ibDesc, sizeof(ibDesc));
 			ibDesc.Usage		  = D3D11_USAGE_DYNAMIC;
-			ibDesc.ByteWidth	  = vertexCount * sizeof(XMFLOAT2);
+			ibDesc.ByteWidth	  = static_cast<UINT>(vertexCount * sizeof(XMFLOAT2));
 			ibDesc.BindFlags	  = D3D11_BIND_VERTEX_BUFFER;
 			ibDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 			hr					  = device->CreateBuffer(&ibDesc, nullptr, PositionBuf.GetAddressOf());
@@ -96,7 +96,7 @@ struct SpineMesh
 				return hr;
 
 			// texture coord
-			ibDesc.ByteWidth = vertexCount * sizeof(XMFLOAT2);
+			ibDesc.ByteWidth = static_cast<UINT>(vertexCount * sizeof(XMFLOAT2));
 			hr				 = device->CreateBuffer(&ibDesc, nullptr, TexcoordBuf.GetAddressOf());
 			if (FAILED(hr))
 				return hr;
@@ -106,7 +106,7 @@ struct SpineMesh
 		{
 			D3D11_BUFFER_DESC ibDesc = {};
 			ibDesc.Usage			 = D3D11_USAGE_DYNAMIC;
-			ibDesc.ByteWidth		 = indexCount * sizeof(uint16_t);
+			ibDesc.ByteWidth		 = static_cast<UINT>(indexCount * sizeof(uint16_t));
 			ibDesc.BindFlags		 = D3D11_BIND_INDEX_BUFFER;
 			ibDesc.CPUAccessFlags	 = D3D11_CPU_ACCESS_WRITE;
 			hr						 = device->CreateBuffer(&ibDesc, nullptr, &IndexBuf);

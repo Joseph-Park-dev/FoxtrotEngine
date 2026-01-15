@@ -64,7 +64,7 @@ public:
 	float	 GetNearZ();
 	float	 GetFarZ();
 
-	const FTVector3& GetPosition() const;
+	const Vector3&	 GetPosition() const;
 	FTVector2&		 GetResolution() const;
 	const FTVector3& GetOffSet() const;
 	const float		 GetZoomFactor() const;

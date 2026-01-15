@@ -12,7 +12,7 @@
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
-//#include <imgui_stdlib.h>
+// #include <imgui_stdlib.h>
 #include <typeinfo>
 #include <limits>
 
@@ -55,7 +55,6 @@ void CommandHistory::UndoCommand()
 		Command* cmd = GetCurrentCommand();
 		if (cmd)
 		{
-			LogInt(mCommandPointer);
 			cmd->Undo();
 			if (0 < mCommandPointer)
 				--mCommandPointer;
@@ -70,7 +69,6 @@ void CommandHistory::RedoCommand()
 		Command* cmd = GetCurrentCommand();
 		if (cmd)
 		{
-			LogInt(mCommandPointer);
 			cmd->Do();
 			if (mCommandPointer < mCommandDeq.size() - 1)
 				++mCommandPointer;
@@ -104,8 +102,8 @@ void CommandHistory::MergeCMDRecord()
 			&& mCommandDeq[mCMDEndPointer] != nullptr)
 		{
 			mCommandDeq[mCMDStartPointer + 1] = mCommandDeq[mCMDEndPointer];
-			int popCount					  = mCMDEndPointer - mCMDStartPointer - 1;
-			for (size_t i = 0; i < popCount; ++i)
+			int popCount					  = static_cast<int>(mCMDEndPointer - mCMDStartPointer - 1);
+			for (int i = 0; i < popCount; ++i)
 				mCommandDeq.pop_back();
 		}
 }
@@ -154,7 +152,7 @@ void CommandHistory::UpdateVector2Value(const char* label, FTVector2& ref, float
 	ref.y = vec2[1];
 }
 
-void CommandHistory::UpdateVector2Value(const char* label, Vector2& ref, float modSpeed)
+void CommandHistory::UpdateVector2Value(const char* label, DirectX::SimpleMath::Vector2& ref, float modSpeed)
 {
 	FTVector2 vec2 = FTVector2(ref.x, ref.y);
 	UpdateVector2Value(label, vec2);
@@ -320,7 +318,7 @@ void CommandHistory::UpdateStringValue(const char* label, FTDS::String& ref)
 	if (ref.Capacity() < BufferSize::STRING_BUFFER_SIZE)
 		ref.Reserve(BufferSize::STRING_BUFFER_SIZE);
 
-	//static StrEditCommand* command;
+	// static StrEditCommand* command;
 
 	static char strVal[BufferSize::STRING_BUFFER_SIZE] = { 0 };
 	strcpy_s(strVal, ref.C_Str());
@@ -413,14 +411,14 @@ void CommandHistory::UpdateIntValue(const char* label, int& ref, int modSpeed)
 {
 	static IntEditCommand* command;
 
-	if (ImGui::DragInt(label, &ref, modSpeed))
+	if (ImGui::DragInt(label, &ref, static_cast<float>(modSpeed)))
 	{
 		if (!mIsRecording)
 		{
 			if (!command)
 			{
 				mIsRecording = true;
-				command = DBG_NEW IntEditCommand(ref);
+				command		 = DBG_NEW IntEditCommand(ref);
 			}
 		}
 	}

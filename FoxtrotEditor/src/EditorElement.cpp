@@ -29,7 +29,6 @@
 #include "ResourceSystem/FTPremade.h"
 
 #include "Static/FTString.h"
-#include "Utils/UUIDGenerator.h"
 
 void EditorElement::UpdateUI(bool isPremade)
 {
@@ -193,7 +192,7 @@ void EditorElement::UpdateActorGroup()
 		{
 			if (ImGui::Selectable(ActorGroupUtil::GetActorGroupStr(n)))
 			{
-				int					   grpIdx  = ++n;
+				int					   grpIdx  = static_cast<int>(++n);
 				ActorGroupEditCommand* command = DBG_NEW ActorGroupEditCommand(GetActorGroupRef());
 				command->SetNextVal(static_cast<ActorGroup>(grpIdx));
 				CommandHistory::GetInstance()->AddCommand(command);

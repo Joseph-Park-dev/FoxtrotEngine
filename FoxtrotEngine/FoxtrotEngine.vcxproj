@@ -222,7 +222,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;FOXTROT_EDITOR;WITH_WINMM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>.\include;.\include\json\include;.\include\SoLoud\include;.\include\spine-cpp\include;.\src;..\FoxtrotEditor\include\imgui\backends;..\FoxtrotEditor\include\imgui;..\FoxtrotEditor\include;..\FoxtrotEditor\include\magic_enum\include;..\FoxtrotEditor\src;..\FoxtrotDS;..\FoxtrotMath\src;D:\[2025_01]\[GooCat Studio] VampiCat\Scripts;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\include;.\include\soloud\include;.\include\json\include;.\include\spine-cpp\include;.\src;..\FoxtrotEditor\include\imgui\backends;..\FoxtrotEditor\include\imgui;..\FoxtrotEditor\include;..\FoxtrotEditor\include\magic_enum\include;..\FoxtrotEditor\src;..\FoxtrotDS;..\FoxtrotMath\src;D:\[2025_01]\[GooCat Studio] VampiCat\Scripts;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -262,7 +262,75 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\spine\Animation.cpp" />
+    <ClCompile Include="include\spine\AnimationState.cpp" />
+    <ClCompile Include="include\spine\AnimationStateData.cpp" />
+    <ClCompile Include="include\spine\Atlas.cpp" />
+    <ClCompile Include="include\spine\AtlasAttachmentLoader.cpp" />
+    <ClCompile Include="include\spine\Attachment.cpp" />
+    <ClCompile Include="include\spine\AttachmentLoader.cpp" />
+    <ClCompile Include="include\spine\AttachmentTimeline.cpp" />
+    <ClCompile Include="include\spine\Bone.cpp" />
+    <ClCompile Include="include\spine\BoneData.cpp" />
+    <ClCompile Include="include\spine\BoundingBoxAttachment.cpp" />
+    <ClCompile Include="include\spine\ClippingAttachment.cpp" />
+    <ClCompile Include="include\spine\ColorTimeline.cpp" />
+    <ClCompile Include="include\spine\ConstraintData.cpp" />
+    <ClCompile Include="include\spine\CurveTimeline.cpp" />
+    <ClCompile Include="include\spine\DeformTimeline.cpp" />
+    <ClCompile Include="include\spine\DrawOrderTimeline.cpp" />
+    <ClCompile Include="include\spine\Event.cpp" />
+    <ClCompile Include="include\spine\EventData.cpp" />
+    <ClCompile Include="include\spine\EventTimeline.cpp" />
+    <ClCompile Include="include\spine\Extension.cpp" />
+    <ClCompile Include="include\spine\IkConstraint.cpp" />
+    <ClCompile Include="include\spine\IkConstraintData.cpp" />
+    <ClCompile Include="include\spine\IkConstraintTimeline.cpp" />
+    <ClCompile Include="include\spine\InheritTimeline.cpp" />
+    <ClCompile Include="include\spine\Json.cpp" />
+    <ClCompile Include="include\spine\LinkedMesh.cpp" />
+    <ClCompile Include="include\spine\Log.cpp" />
+    <ClCompile Include="include\spine\MathUtil.cpp" />
+    <ClCompile Include="include\spine\MeshAttachment.cpp" />
+    <ClCompile Include="include\spine\PathAttachment.cpp" />
+    <ClCompile Include="include\spine\PathConstraint.cpp" />
+    <ClCompile Include="include\spine\PathConstraintData.cpp" />
+    <ClCompile Include="include\spine\PathConstraintMixTimeline.cpp" />
+    <ClCompile Include="include\spine\PathConstraintPositionTimeline.cpp" />
+    <ClCompile Include="include\spine\PathConstraintSpacingTimeline.cpp" />
+    <ClCompile Include="include\spine\PhysicsConstraint.cpp" />
+    <ClCompile Include="include\spine\PhysicsConstraintData.cpp" />
+    <ClCompile Include="include\spine\PhysicsConstraintTimeline.cpp" />
+    <ClCompile Include="include\spine\PointAttachment.cpp" />
+    <ClCompile Include="include\spine\RegionAttachment.cpp" />
+    <ClCompile Include="include\spine\RotateTimeline.cpp" />
+    <ClCompile Include="include\spine\RTTI.cpp" />
+    <ClCompile Include="include\spine\ScaleTimeline.cpp" />
+    <ClCompile Include="include\spine\Sequence.cpp" />
+    <ClCompile Include="include\spine\SequenceTimeline.cpp" />
+    <ClCompile Include="include\spine\ShearTimeline.cpp" />
+    <ClCompile Include="include\spine\Skeleton.cpp" />
+    <ClCompile Include="include\spine\SkeletonBinary.cpp" />
+    <ClCompile Include="include\spine\SkeletonBounds.cpp" />
+    <ClCompile Include="include\spine\SkeletonClipping.cpp" />
+    <ClCompile Include="include\spine\SkeletonData.cpp" />
+    <ClCompile Include="include\spine\SkeletonJson.cpp" />
+    <ClCompile Include="include\spine\SkeletonRenderer.cpp" />
+    <ClCompile Include="include\spine\Skin.cpp" />
+    <ClCompile Include="include\spine\Slot.cpp" />
+    <ClCompile Include="include\spine\SlotData.cpp" />
+    <ClCompile Include="include\spine\SpineObject.cpp" />
+    <ClCompile Include="include\spine\TextureLoader.cpp" />
+    <ClCompile Include="include\spine\Timeline.cpp" />
+    <ClCompile Include="include\spine\TransformConstraint.cpp" />
+    <ClCompile Include="include\spine\TransformConstraintData.cpp" />
+    <ClCompile Include="include\spine\TransformConstraintTimeline.cpp" />
+    <ClCompile Include="include\spine\TranslateTimeline.cpp" />
+    <ClCompile Include="include\spine\Triangulator.cpp" />
+    <ClCompile Include="include\spine\Updatable.cpp" />
+    <ClCompile Include="include\spine\VertexAttachment.cpp" />
     <ClCompile Include="src\Math\FTMath.cpp" />
+    <ClCompile Include="src\Math\Random.cpp" />
     <ClCompile Include="src\ResourceSystem\FTSprite\FTSprite.cpp" />
     <ClCompile Include="src\ResourceSystem\FTShaders\FTGeometryShader.cpp" />
     <ClCompile Include="src\Managers\FontManager.cpp" />
@@ -351,6 +419,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Math\FTMath.h" />
+    <ClInclude Include="src\Math\Random.h" />
     <ClInclude Include="src\ResourceSystem\FTSprite\FTSprite.h" />
     <ClInclude Include="src\ResourceSystem\FTShaders\FTGeometryShader.h" />
     <ClInclude Include="src\Managers\FontManager.h" />
@@ -434,41 +503,6 @@
     <ClInclude Include="include\directxtk\SpriteFont.h" />
     <ClInclude Include="include\directxtk\VertexTypes.h" />
     <ClInclude Include="include\directxtk\WICTextureLoader.h" />
-    <ClInclude Include="include\SoLoud\include\soloud.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_audiosource.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_bassboostfilter.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_biquadresonantfilter.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_bus.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_c.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_dcremovalfilter.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_echofilter.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_error.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_fader.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_fft.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_fftfilter.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_file.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_file_hack_off.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_file_hack_on.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_filter.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_flangerfilter.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_freeverbfilter.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_internal.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_lofifilter.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_misc.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_monotone.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_noise.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_openmpt.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_queue.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_robotizefilter.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_sfxr.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_speech.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_tedsid.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_thread.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_vic.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_vizsn.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_wav.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_waveshaperfilter.h" />
-    <ClInclude Include="include\SoLoud\include\soloud_wavstream.h" />
     <ClInclude Include="include\stb_connected_components.h" />
     <ClInclude Include="include\stb_c_lexer.h" />
     <ClInclude Include="include\stb_divide.h" />
@@ -1080,6 +1114,10 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Vertex</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\soloud.lib" />
+    <Library Include="lib\soloud_static.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

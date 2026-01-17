@@ -27,7 +27,8 @@
 
 void ViewportRenderer::InitializeTexture(FoxtrotRenderer* renderer, ImVec2 size)
 {
-	CreateRenderTargetView(renderer, size.x, size.y);
+	if (0 < size.x && 0 < size.y)
+		CreateRenderTargetView(renderer, size.x, size.y);
 }
 
 void ViewportRenderer::BeginRender(FoxtrotRenderer* renderer)

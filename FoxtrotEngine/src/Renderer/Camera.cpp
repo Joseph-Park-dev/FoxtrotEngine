@@ -131,7 +131,7 @@ Matrix Camera::GetProjRow()
 			  worldWidth, worldHeight, mNearZ, mFarZ);
 }
 
-const FTVector3& Camera::GetPosition() const
+const Vector3& Camera::GetPosition() const
 {
 	return mPosition;
 }

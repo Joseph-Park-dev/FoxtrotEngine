@@ -2,6 +2,7 @@
 
 #include "Static/CircularQueue.h"
 #include <Managers/ResourceManager.h>
+#include "ResourceSystem/Sound/Sound.h"
 
 #ifdef FOXTROT_EDITOR
 	#include <EditorUtils.h>

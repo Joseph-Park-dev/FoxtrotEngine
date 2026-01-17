@@ -262,7 +262,7 @@ void CollisionManager::UpdateCollisionMarks()
 		for (size_t row = 0; row < ActorGroupUtil::GetCount(); ++row)
 		{
 			ImGui::TableNextRow();
-			for (size_t col = 0; col < row + 1; ++col)
+			for (int col = 0; col < row + 1; ++col)
 			{
 				ImGui::TableSetColumnIndex(col);
 				FTDS::String mark =
@@ -275,11 +275,7 @@ void CollisionManager::UpdateCollisionMarks()
 				{
 					if (mCollisionMarks[idx]) // if not marked;
 					{
-						LogInt("marked ", idx);
 						mCollisionMarks[reflectedIdx] = true;
-
-						// printf("Marked %s, %s\n",
-						// ActorGroupUtil::GetActorGroupStr(i), ActorGroupUtil::GetActorGroupStr(j));
 					}
 					else
 					{

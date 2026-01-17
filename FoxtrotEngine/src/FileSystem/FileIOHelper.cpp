@@ -646,7 +646,7 @@ bool FileIOHelper::GetLine(std::ifstream& ifs, FTDS::String& str, char delimiter
 			break;
 		++length;
 	}
-	int capacity = static_cast<size_t>(length + 1);
+	int capacity = static_cast<int>(length + 1);
 	str.Reserve(capacity);
 	str.SetLength(length);
 	ifs.seekg(-capacity - 1, std::ios_base::cur);

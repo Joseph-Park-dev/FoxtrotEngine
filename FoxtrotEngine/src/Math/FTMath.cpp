@@ -12,7 +12,6 @@
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
-#include "pch.h"
 #include "FTMath.h"
 
 using Matrix = DirectX::SimpleMath::Matrix;
@@ -162,8 +161,8 @@ FTVector2 FTVector2::CubicBezierVelocity2D(const FTVector2& P0, const FTVector2&
 	double t2 = t * t;
 
 	FTVector2 velocity;
-	velocity.x = 3 * u2 * (P1.x - P0.x) + 6 * u * t * (P2.x - P1.x) + 3 * t2 * (P3.x - P2.x);
-	velocity.y = 3 * u2 * (P1.y - P0.y) + 6 * u * t * (P2.y - P1.y) + 3 * t2 * (P3.y - P2.y);
+	velocity.x = static_cast<float>(3 * u2 * (P1.x - P0.x) + 6 * u * t * (P2.x - P1.x) + 3 * t2 * (P3.x - P2.x));
+	velocity.y = static_cast<float>(3 * u2 * (P1.y - P0.y) + 6 * u * t * (P2.y - P1.y) + 3 * t2 * (P3.y - P2.y));
 	return velocity;
 }
 

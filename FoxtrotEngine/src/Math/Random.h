@@ -17,19 +17,12 @@
 /// </summary>
 
 #pragma  once
-
-#ifdef DLL_EXPORT
-#define FOXTROT_API __declspec(dllexport)
-#else
-#define FOXTROT_API __declspec(dllimport)
-#endif
-
 #include <random>
 
 class FTVector2;
 class FTVector3;
 
-class FOXTROT_API Random
+class Random
 {
 public:
 	static void Init();

@@ -42,18 +42,18 @@ void FTTileMap::Initialize()
 	if (mTileMap)
 		delete[] mTileMap;
 
-	UINT column		   = mCSV->GetColumnCount();
-	UINT row		   = mCSV->GetRowCount();
-	mMaxCountOnScreenX = column;
-	mMaxCountOnScreenY = row;
+	size_t column	   = mCSV->GetColumnCount();
+	size_t row		   = mCSV->GetRowCount();
+	mMaxCountOnScreenX = static_cast<UINT>(column);
+	mMaxCountOnScreenY = static_cast<UINT>(row);
 
 	mTileMap = DBG_NEW Tile[column * row];
 
-	for (int r = 0; r < row; ++r)
+	for (size_t r = 0; r < row; ++r)
 	{
-		for (int c = 0; c < column; ++c)
+		for (size_t c = 0; c < column; ++c)
 		{
-			int idx = column * r + c;
+			size_t idx = column * r + c;
 			if (mCSV->Data().at(idx))
 				InitializeTile(mTileMap[idx], c, r, mCSV->Data().at(idx));
 		}
@@ -171,15 +171,15 @@ FTTileMap::~FTTileMap()
 	}
 }
 
-void FTTileMap::InitializeTile(Tile& tile, UINT column, UINT row, UINT tileNum)
+void FTTileMap::InitializeTile(Tile& tile, size_t column, size_t row, size_t tileNum)
 {
 	FTRectArea& rectOnMap = tile.GetRectOnMap();
 	// Individual Tile size on tilemap
 	float tileWidthOnMap  = 1 / static_cast<float>(mMaxCountOnMapX);
 	float tileHeightOnMap = 1 / static_cast<float>(mMaxCountOnMapY);
 
-	int tileIndexX = tileNum % mMaxCountOnMapX;
-	int tileIndexY = tileNum / mMaxCountOnMapX;
+	size_t tileIndexX = tileNum % static_cast<size_t>(mMaxCountOnMapX);
+	size_t tileIndexY = tileNum / static_cast<size_t>(mMaxCountOnMapX);
 	rectOnMap.Set(tileWidthOnMap * tileIndexX, tileHeightOnMap * tileIndexY, tileWidthOnMap, tileHeightOnMap);
 
 	FTRectArea& rectOnScreen = tile.GetRectOnScreen();

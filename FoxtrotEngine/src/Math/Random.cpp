@@ -12,8 +12,6 @@
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
-#include "pch.h"
-
 #include "Random.h"
 #include "FTMath.h"
 

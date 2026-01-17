@@ -16,8 +16,10 @@
 
 class FTMaterial;
 class FTVertexShader;
-class FTMeshData;
+struct FTMeshData;
 class FoxtrotRenderer;
+class FTGeometryShader;
+class FTPixelShader;
 
 /// @brief A class holding Meshes created from a FTMeshData.
 /// This should be used in the MeshRenderer Component, and its derived Components.

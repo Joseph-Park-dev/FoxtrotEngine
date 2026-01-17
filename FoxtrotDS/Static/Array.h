@@ -19,6 +19,7 @@ namespace FTDS
 	{
 	public:
 		TYPE& operator[](int idx) { return mData[idx]; }
+		TYPE& operator[](size_t idx) { return mData[idx]; }
 
 	public:
 		virtual FTDS::FTIteratorArray<TYPE> Begin() { return FTDS::FTIteratorArray<TYPE>(mData); }

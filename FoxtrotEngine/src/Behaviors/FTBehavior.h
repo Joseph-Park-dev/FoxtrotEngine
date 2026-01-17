@@ -1,6 +1,7 @@
 #pragma once
 #include "Components/Component.h"
 
+#include  "FTBehavior.h"
 #include "FileSystem/ChunkLoader.h"
 
 #ifdef FOXTROT_EDITOR

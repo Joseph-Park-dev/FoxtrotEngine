@@ -415,7 +415,7 @@ void EditorLayer::DisplaySelection(EditorElement* element, size_t& index)
 
 	if (ImGui::Selectable(indentedName.C_Str(), mActorNameIdx == index))
 	{
-		mActorNameIdx = index;
+		mActorNameIdx = static_cast<int>(index);
 
 		IntEditCommand* command = DBG_NEW IntEditCommand(mActorNameIdx);
 		command->SetNextVal(mActorNameIdx);

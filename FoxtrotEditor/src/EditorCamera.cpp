@@ -85,7 +85,7 @@ void EditorCamera::Update(float deltaTime)
 	mDebugRect->GetGSCData().size = resRatio.GetD3Vec2();
 	mDebugRect->GetPixelConstantData().IsActive = true;*/
 
-	Matrix translationMat = Matrix::CreateTranslation(Camera::GetInstance()->GetPosition().GetDXVec3());
+	Matrix translationMat = Matrix::CreateTranslation(Camera::GetInstance()->GetPosition());
 	mDebugRect->UpdateVC(translationMat, this);
 
 	mDebugRect->UpdateGC(this);

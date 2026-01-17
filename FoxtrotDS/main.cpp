@@ -19,7 +19,6 @@
 #include <chrono>
 #include <unordered_map>
 
-#include "HashChainMap.h"
 #include "FTString.h"
 
 using namespace FTDS;
@@ -33,8 +32,6 @@ int main(int argc, char* argv[])
 	string.SubStr(result, 1, 3);
 
 	printf("%s\n", result.C_Str());
-	printf("%d\n", result.Length());
-	printf("%d\n", result.Capacity());
 	
 	return 0;
 }

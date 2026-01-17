@@ -13,8 +13,8 @@
 #pragma once
 #include <ResourceSystem/FTResource.h>
 
-#include <SoLoud/include/soloud.h>
-#include <SoLoud/include/soloud_wav.h>
+#include <soloud.h>
+#include <soloud_wav.h>
 
 class Sound :
 	public FTResource

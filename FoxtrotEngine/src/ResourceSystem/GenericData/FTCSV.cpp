@@ -18,8 +18,8 @@ void FTCSV::LoadProperties(std::ifstream& ifs)
 	FTResource::LoadProperties(ifs);
 }
 
-UINT FTCSV::GetColumnCount() const { return mColumnCount; }
-UINT FTCSV::GetRowCount() const { return mRowCount; }
+size_t FTCSV::GetColumnCount() const { return mColumnCount; }
+size_t FTCSV::GetRowCount() const { return mRowCount; }
 
 const std::vector<int>& FTCSV::Data() const { return mData; }
 

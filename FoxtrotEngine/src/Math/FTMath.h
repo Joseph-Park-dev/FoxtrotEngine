@@ -17,13 +17,6 @@
 /// </summary>
 
 #pragma once
-
-#ifdef DLL_EXPORT
-	#define FOXTROT_API __declspec(dllexport)
-#else
-	#define FOXTROT_API __declspec(dllimport)
-#endif
-
 #include <cmath>
 #include <memory.h>
 #include <limits>
@@ -41,155 +34,151 @@
 	#include <../FoxtrotEditor/include/imgui/imgui.h>
 #endif // FOXTROT_EDITOR
 
-extern "C"
+namespace Math
 {
-	namespace Math
+	const float Pi(3.1415926535f);
+	const float TwoPi(Math::Pi * 2.0f);
+	const float PiOver2(Math::Pi / 2.0f);
+	const float Infinity(std::numeric_limits<float>::infinity());
+	const float NegInfinity(-std::numeric_limits<float>::infinity());
+
+	inline float ToRadians(float degrees)
 	{
-		const float Pi(3.1415926535f);
-		const float TwoPi(Math::Pi * 2.0f);
-		const float PiOver2(Math::Pi / 2.0f);
-		const float Infinity(std::numeric_limits<float>::infinity());
-		const float NegInfinity(-std::numeric_limits<float>::infinity());
+		return degrees * Pi / 180.0f;
+	}
 
-		inline float ToRadians(float degrees)
+	inline float ToDegrees(float radians)
+	{
+		return radians * 180.0f / Pi;
+	}
+
+	inline bool NearZero(float val, float epsilon = 0.001f)
+	{
+		if (fabs(val) <= epsilon)
 		{
-			return degrees * Pi / 180.0f;
+			return true;
 		}
-
-		inline float ToDegrees(float radians)
+		else
 		{
-			return radians * 180.0f / Pi;
+			return false;
 		}
+	}
 
-		inline bool NearZero(float val, float epsilon = 0.001f)
-		{
-			if (fabs(val) <= epsilon)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
+	inline float Abs(float value)
+	{
+		return fabs(value);
+	}
 
-		inline float Abs(float value)
-		{
-			return fabs(value);
-		}
+	inline size_t Min(size_t a, size_t b)
+	{
+		return a > b ? b : a;
+	}
 
-		inline size_t Min(size_t a, size_t b)
-		{
-			return a > b ? b : a;
-		}
+	inline float Cos(float angle)
+	{
+		return cosf(angle);
+	}
 
-		inline float Cos(float angle)
-		{
-			return cosf(angle);
-		}
+	inline float Sin(float angle)
+	{
+		return sinf(angle);
+	}
 
-		inline float Sin(float angle)
-		{
-			return sinf(angle);
-		}
+	inline float Tan(float angle)
+	{
+		return tanf(angle);
+	}
 
-		inline float Tan(float angle)
-		{
-			return tanf(angle);
-		}
+	inline float Acos(float value)
+	{
+		return acosf(value);
+	}
 
-		inline float Acos(float value)
-		{
-			return acosf(value);
-		}
+	inline float Atan2(float y, float x)
+	{
+		return atan2f(y, x);
+	}
 
-		inline float Atan2(float y, float x)
-		{
-			return atan2f(y, x);
-		}
+	inline float Cot(float angle)
+	{
+		return 1.0f / Tan(angle);
+	}
 
-		inline float Cot(float angle)
-		{
-			return 1.0f / Tan(angle);
-		}
+	inline float Lerp(float a, float b, float f)
+	{
+		return a + f * (b - a);
+	}
 
-		inline float Lerp(float a, float b, float f)
-		{
-			return a + f * (b - a);
-		}
+	inline float Sqrt(float value)
+	{
+		return sqrtf(value);
+	}
 
-		inline float Sqrt(float value)
-		{
-			return sqrtf(value);
-		}
+	inline float Fmod(float numer, float denom)
+	{
+		return fmod(numer, denom);
+	}
 
-		inline float Fmod(float numer, float denom)
-		{
-			return fmod(numer, denom);
-		}
+	inline void Clamp(int& val, int min, int max)
+	{
+		if (val < min)
+			val = min;
+		else if (max < val)
+			val = max;
+		else if (val == min && val == max)
+			val = min;
+	}
 
-		inline void Clamp(int& val, int min, int max)
-		{
-			if (val < min)
-				val = min;
-			else if (max < val)
-				val = max;
-			else if (val == min && val == max)
-				val = min;
-		}
+	inline void Clampf(float& val, float min, float max)
+	{
+		if (val < min)
+			val = min;
+		else if (max < val)
+			val = max;
+		else if (val == min && val == max)
+			val = min;
+	}
 
-		inline void Clampf(float& val, float min, float max)
-		{
-			if (val < min)
-				val = min;
-			else if (max < val)
-				val = max;
-			else if (val == min && val == max)
-				val = min;
-		}
+	inline DirectX::SimpleMath::Vector3 QuaternionToEuler(const DirectX::SimpleMath::Quaternion& q)
+	{
+		// Roll (x-axis rotation)
+		float sinr_cosp = 2.f * (q.w * q.x + q.y * q.z);
+		float cosr_cosp = 1.f - 2.f * (q.x * q.x + q.y * q.y);
+		float roll		= std::atan2(sinr_cosp, cosr_cosp);
 
-		inline DirectX::SimpleMath::Vector3 QuaternionToEuler(const DirectX::SimpleMath::Quaternion& q)
-		{
-			// Roll (x-axis rotation)
-			float sinr_cosp = 2.f * (q.w * q.x + q.y * q.z);
-			float cosr_cosp = 1.f - 2.f * (q.x * q.x + q.y * q.y);
-			float roll = std::atan2(sinr_cosp, cosr_cosp);
+		// Pitch (y-axis rotation)
+		float sinp = 2.f * (q.w * q.y - q.z * q.x);
+		float pitch;
+		// Clamp sinp to the range [-1, 1] to account for numerical errors that might push it out of range.
+		if (std::fabs(sinp) >= 1.f)
+			pitch = std::copysign((float)DirectX::XM_PI / 2.f, sinp);
+		else
+			pitch = std::asin(sinp);
 
-			// Pitch (y-axis rotation)
-			float sinp = 2.f * (q.w * q.y - q.z * q.x);
-			float pitch;
-			// Clamp sinp to the range [-1, 1] to account for numerical errors that might push it out of range.
-			if (std::fabs(sinp) >= 1.f)
-				pitch = std::copysign((float)DirectX::XM_PI / 2.f, sinp);
-			else
-				pitch = std::asin(sinp);
+		// Yaw (z-axis rotation)
+		float siny_cosp = 2.f * (q.w * q.z + q.x * q.y);
+		float cosy_cosp = 1.f - 2.f * (q.y * q.y + q.z * q.z);
+		float yaw		= std::atan2(siny_cosp, cosy_cosp);
 
-			// Yaw (z-axis rotation)
-			float siny_cosp = 2.f * (q.w * q.z + q.x * q.y);
-			float cosy_cosp = 1.f - 2.f * (q.y * q.y + q.z * q.z);
-			float yaw = std::atan2(siny_cosp, cosy_cosp);
+		return DirectX::SimpleMath::Vector3(roll, pitch, yaw);
+	}
 
-			return DirectX::SimpleMath::Vector3(roll, pitch, yaw);
-		}
-
-		inline size_t NextPowerOf2(int m)
-		{
-			m--;
-			m |= m >> 1;
-			m |= m >> 2;
-			m |= m >> 4;
-			m |= m >> 8;
-			m |= m >> 16;
-			m |= m >> 32;
-			m++;
-			return m;
-		}
-	} // namespace Math
-}
+	inline size_t NextPowerOf2(int m)
+	{
+		m--;
+		m |= m >> 1;
+		m |= m >> 2;
+		m |= m >> 4;
+		m |= m >> 8;
+		m |= m >> 16;
+		m++;
+		return m;
+	}
+} // namespace Math
 
 class FTVector2;
 
-class FOXTROT_API FTVector4
+class FTVector4
 {
 public:
 	float x;
@@ -204,7 +193,7 @@ public:
 };
 
 // 3D Vector
-class FOXTROT_API FTVector3
+class FTVector3
 {
 public:
 	float x;
@@ -358,7 +347,7 @@ public:
 };
 
 // 2D Vector
-class FOXTROT_API FTVector2
+class FTVector2
 {
 public:
 	float x;
@@ -613,9 +602,6 @@ public:
 		return v - 2.0f * FTVector2::Dot(v, n) * n;
 	}
 
-	// Transform vector by matrix
-	static FTVector2 Transform(const FTVector2& vec, const class Matrix3& mat, float w = 1.0f);
-
 	static FTVector2 CubicBezierVelocity2D(const FTVector2& P0, const FTVector2& P1, const FTVector2& P2, const FTVector2& P3, double t);
 	static FTVector2 PlotCircularFall(float angle, float dist);
 
@@ -626,21 +612,18 @@ public:
 	static const FTVector2 NegUnitY;
 };
 
-extern "C"
+namespace Math
 {
-	namespace Math
+	inline bool PointInRectangle(FTVector2 point, FTVector2 v0, FTVector2 v1, FTVector2 v2, FTVector2 v3)
 	{
-		inline bool PointInRectangle(FTVector2 point, FTVector2 v0, FTVector2 v1, FTVector2 v2, FTVector2 v3)
-		{
-			FTVector2 AB = v1 - v0;
-			FTVector2 AM = point - v0;
-			FTVector2 BC = v2 - v1;
-			FTVector2 BM = point - v1;
-			float	  dotABAM = FTVector2::Dot(AB, AM);
-			float	  dotABAB = FTVector2::Dot(AB, AB);
-			float	  dotBCBM = FTVector2::Dot(BC, BM);
-			float	  dotBCBC = FTVector2::Dot(BC, BC);
-			return 0 <= dotABAM && dotABAM <= dotABAB && 0 <= dotBCBM && dotBCBM <= dotBCBC;
-		}
-	} // namespace Math
-}
+		FTVector2 AB	  = v1 - v0;
+		FTVector2 AM	  = point - v0;
+		FTVector2 BC	  = v2 - v1;
+		FTVector2 BM	  = point - v1;
+		float	  dotABAM = FTVector2::Dot(AB, AM);
+		float	  dotABAB = FTVector2::Dot(AB, AB);
+		float	  dotBCBM = FTVector2::Dot(BC, BM);
+		float	  dotBCBC = FTVector2::Dot(BC, BC);
+		return 0 <= dotABAM && dotABAM <= dotABAB && 0 <= dotBCBM && dotBCBM <= dotBCBC;
+	}
+} // namespace Math

@@ -196,7 +196,7 @@ void FTSprite::Process(FoxtrotRenderer* renderer, SpriteVertex* vertices, size_t
 
 	Mesh* mesh = DBG_NEW Mesh;
 	D3D11Utils::CreateVertexBuffer(renderer->GetDevice(), vertices, verticesCount, mesh->VertexBuffer);
-	mesh->VertexCount = verticesCount;
+	mesh->VertexCount = static_cast<UINT> (verticesCount);
 	Meshes()->PushBack(mesh);
 
 	CreateTextureSampler(renderer->GetDevice());

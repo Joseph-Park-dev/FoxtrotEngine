@@ -23,8 +23,6 @@
 #include "EditorSceneManager.h"
 #include "EditorResourceManager.h"
 
-#include "Utils/UUIDGenerator.h"
-
 EditorChunkLoader::EditorChunkLoader()
 	: ChunkLoader()
 {

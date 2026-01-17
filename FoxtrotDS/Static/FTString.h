@@ -31,7 +31,8 @@ namespace FTDS
 				return -1; // Handle edge cases
 			}
 
-			for (int i = mLength - targetLen; 0 <= i; --i) // Start from end
+			int i = static_cast<int>(mLength - targetLen);
+			for (; 0 <= i; --i) // Start from end
 			{
 				FTDS::String query;
 				this->SubStr(query, i, targetLen);
@@ -238,7 +239,7 @@ namespace FTDS
 
 		void AssignToWStr(wchar_t* wstr, size_t length)
 		{
-			MultiByteToWideChar(CP_UTF8, 0, mData, -1, wstr, length);
+			MultiByteToWideChar(CP_UTF8, 0, mData, -1, wstr, static_cast<int>(length));
 		}
 
 		const size_t Length() const { return mLength; }

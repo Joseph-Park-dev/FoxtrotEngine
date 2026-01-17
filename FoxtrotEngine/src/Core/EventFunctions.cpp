@@ -19,8 +19,6 @@
 	#include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
-#include "Utils/UUIDGenerator.h"
-
 Actor* Instantiate(Actor* actor, ActorGroup actorGroup, FTVector3 pos)
 {
 	FTEvent addedEvent	= {};

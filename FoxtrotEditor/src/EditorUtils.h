@@ -37,7 +37,7 @@ namespace FTEditorUtils
 
 		// Create the FileOpenDialog object
 		HRESULT hr = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pFileOpen));
-		pFileOpen->SetFileTypes(GetArrayLength(fileTypes), fileTypes);
+		pFileOpen->SetFileTypes(static_cast<UINT>(GetArrayLength(fileTypes)), fileTypes);
 
 		if (SUCCEEDED(hr))
 		{
@@ -102,7 +102,7 @@ namespace FTEditorUtils
 			for (size_t i = 0; i < arraySize; ++i)
 			{
 				if (ImGui::Selectable(array[i].C_Str()))
-					targetIdx = i;
+					targetIdx = static_cast<int>(i);
 			}
 			ImGui::EndCombo();
 		}
@@ -116,7 +116,7 @@ namespace FTEditorUtils
 			for (size_t i = 0; i < arraySize; ++i)
 			{
 				if (ImGui::Selectable(array[i]))
-					targetIdx = i;
+					targetIdx = static_cast<int>(i);
 			}
 			ImGui::EndCombo();
 		}

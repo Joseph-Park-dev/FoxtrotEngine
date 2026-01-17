@@ -247,13 +247,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;FOXTROT_EDITOR;IMGUI_DEFINE_MATH_OPERATORS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\[2025_01]\[GooCat Studio] VampiCat\Scripts;..\FoxtrotEngine\include\SoLoud\include;..\FoxtrotEngine\include\json\include;..\FoxtrotEngine\include;..\FoxtrotEngine\include\spine-cpp\include\;..\FoxtrotEngine\include\spine-cpp\include\spine;..\FoxtrotEngine\include\assimp;..\FoxtrotEngine\include\assimp\include;..\FoxtrotEngine\include\assimp\code;..\FoxtrotEngine\src;.\include;.\include\imgui;.\include\imgui\ImGuiFileDialog;.\include\imgui\backends;.\include\imgui\misc\cpp;.\vcpkg_installed\x64-windows\include;.\src;..\FoxtrotDS;..\FoxtrotMath\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\[2025_01]\[GooCat Studio] VampiCat\Scripts;..\FoxtrotEngine\include\soloud\include;..\FoxtrotEngine\include\json\include;..\FoxtrotEngine\include;..\FoxtrotEngine\include\assimp;..\FoxtrotEngine\include\assimp\include;..\FoxtrotEngine\include\assimp\code;..\FoxtrotEngine\src;.\include;.\include\imgui;.\include\imgui\ImGuiFileDialog;.\include\imgui\backends;.\include\imgui\misc\cpp;.\vcpkg_installed\x64-windows\include;.\src;..\FoxtrotDS;..\FoxtrotMath\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\lib;.\lib\Box2D;..\FoxtrotMath\Builds;..\FoxtrotEngine\Builds;..\FoxtrotEngine\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>soloud.lib;soloud_static.lib;FoxtrotMath.lib;FoxtrotEngine.lib;box2dd.lib;DirectXTK.lib;assimp-vc143-mtd.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\FoxtrotEngine\lib;..\FoxtrotEngine\Builds;.\lib;.\lib\Box2D;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>FoxtrotEngine.lib;box2dd.lib;DirectXTK.lib;assimp-vc143-mtd.lib;dxguid.lib;soloud.lib;soloud_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -279,57 +279,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="include\imgui\backends\imgui_impl_android.cpp" />
-    <ClCompile Include="include\imgui\backends\imgui_impl_dx10.cpp" />
     <ClCompile Include="include\imgui\backends\imgui_impl_dx11.cpp" />
-    <ClCompile Include="include\imgui\backends\imgui_impl_dx12.cpp" />
-    <ClCompile Include="include\imgui\backends\imgui_impl_dx9.cpp" />
-    <ClCompile Include="include\imgui\backends\imgui_impl_glfw.cpp" />
-    <ClCompile Include="include\imgui\backends\imgui_impl_glut.cpp" />
-    <ClCompile Include="include\imgui\backends\imgui_impl_opengl2.cpp" />
-    <ClCompile Include="include\imgui\backends\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="include\imgui\backends\imgui_impl_sdl2.cpp" />
-    <ClCompile Include="include\imgui\backends\imgui_impl_sdl3.cpp" />
-    <ClCompile Include="include\imgui\backends\imgui_impl_sdlrenderer2.cpp" />
-    <ClCompile Include="include\imgui\backends\imgui_impl_sdlrenderer3.cpp" />
-    <ClCompile Include="include\imgui\backends\imgui_impl_wgpu.cpp" />
     <ClCompile Include="include\imgui\backends\imgui_impl_win32.cpp" />
-    <ClCompile Include="include\imgui\examples\example_allegro5\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_android_opengl3\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_glfw_opengl2\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_glfw_opengl3\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_glfw_vulkan\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_glfw_wgpu\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_glut_opengl2\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_null\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_sdl2_directx11\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_sdl2_opengl2\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_sdl2_opengl3\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_sdl2_sdlrenderer2\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_sdl2_vulkan\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_sdl3_opengl3\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_sdl3_sdlgpu3\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_sdl3_sdlrenderer3\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_sdl3_vulkan\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_win32_directx10\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_win32_directx11\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_win32_directx12\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_win32_directx9\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_win32_opengl3\main.cpp" />
-    <ClCompile Include="include\imgui\examples\example_win32_vulkan\main.cpp" />
-    <ClCompile Include="include\imgui\examples\libs\usynergy\uSynergy.c" />
     <ClCompile Include="include\imgui\imgui.cpp" />
     <ClCompile Include="include\imgui\ImGuiFileDialog\ImGuiFileDialog.cpp" />
-    <ClCompile Include="include\imgui\ImGuizmo.cpp" />
     <ClCompile Include="include\imgui\imgui_demo.cpp" />
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
     <ClCompile Include="include\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="include\imgui\misc\cpp\imgui_stdlib.cpp" />
-    <ClCompile Include="include\imgui\misc\fonts\binary_to_compressed_c.cpp" />
-    <ClCompile Include="include\imgui\misc\freetype\imgui_freetype.cpp" />
     <ClCompile Include="include\stb_vorbis.c" />
-    <ClCompile Include="include\tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="src\EditorResourceManager.cpp" />
     <ClCompile Include="src\EditorCamera.cpp" />
     <ClCompile Include="src\ActorCommand.cpp" />
@@ -370,31 +328,8 @@
     <ClInclude Include="include\directxtk\SpriteFont.h" />
     <ClInclude Include="include\directxtk\VertexTypes.h" />
     <ClInclude Include="include\directxtk\WICTextureLoader.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_android.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_dx10.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_dx11.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_dx12.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_dx9.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_glfw.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_glut.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_metal.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_opengl2.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_opengl3.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_opengl3_loader.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_osx.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_sdl2.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_sdl3.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_sdlgpu3_shaders.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_sdlrenderer2.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_sdlrenderer3.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_vulkan.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_wgpu.h" />
     <ClInclude Include="include\imgui\backends\imgui_impl_win32.h" />
-    <ClInclude Include="include\imgui\examples\example_allegro5\imconfig_allegro5.h" />
-    <ClInclude Include="include\imgui\examples\libs\emscripten\emscripten_mainloop_stub.h" />
-    <ClInclude Include="include\imgui\examples\libs\glfw\include\GLFW\glfw3.h" />
-    <ClInclude Include="include\imgui\examples\libs\glfw\include\GLFW\glfw3native.h" />
-    <ClInclude Include="include\imgui\examples\libs\usynergy\uSynergy.h" />
     <ClInclude Include="include\imgui\FileDialog\dirent\dirent.h" />
     <ClInclude Include="include\imgui\imconfig.h" />
     <ClInclude Include="include\imgui\imgui.h" />

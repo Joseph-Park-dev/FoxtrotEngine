@@ -49,7 +49,7 @@ public:
 	~FTTileMap();
 
 protected:
-	void InitializeTile(Tile& tile, UINT column, UINT row, UINT tileNum);
+	void InitializeTile(Tile& tile, size_t column, size_t row, size_t tileNum);
 
 private:
 	// These fields need to be read from .chunk files or be modified on the editor.

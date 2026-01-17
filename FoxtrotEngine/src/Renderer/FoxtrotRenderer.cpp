@@ -304,13 +304,14 @@ bool FoxtrotRenderer::InitializeViewport(FTWindow* window, UINT posX, UINT posY,
 		return false;
 	}
 	ImVec2 pos;
-	pos.x = posX;
-	pos.y = posY;
+	pos.x = static_cast<float>(posX);
+	pos.y = static_cast<float>(posY);
 
 	ImVec2 size;
-	size.x = width;
-	size.y = height;
+	size.x = static_cast<float>(width);
+	size.y = static_cast<float>(height);
 	mViewportRenderer->InitializeTexture(this, size);
+	return true;
 }
 
 void FoxtrotRenderer::RenderOnViewport()

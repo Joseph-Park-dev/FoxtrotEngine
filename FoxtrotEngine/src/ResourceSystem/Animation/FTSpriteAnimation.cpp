@@ -87,7 +87,7 @@ void FTSpriteAnimation::SaveProperties(std::ofstream& ofs)
 
 	FTMeshGroup::SaveProperties(ofs);
 	FileIOHelper::SaveInt(ofs, ChunkKey::FTMeshGroup::FRONT_DIR, GetFrontDir());
-	FileIOHelper::SaveFloat(ofs, ChunkKey::FTSpriteAnimation::FPS, mFPS);
+	FileIOHelper::SaveInt(ofs, ChunkKey::FTSpriteAnimation::FPS, mFPS);
 	FileIOHelper::SaveBool(ofs, ChunkKey::FTSpriteAnimation::IS_REPEATED, mIsRepeated);
 	FileIOHelper::SaveInt(ofs, ChunkKey::FTSpriteAnimation::MAX_FRAME_IDX, mMaxFrameIdx);
 	FileIOHelper::SaveInt(ofs, ChunkKey::FTSpriteAnimation::MIN_FRAME_IDX, mMinFrameIdx);
@@ -232,7 +232,7 @@ void FTSpriteAnimation::Initialize(ComPtr<ID3D11Device>& device, ComPtr<ID3D11De
 
 	Mesh* mesh = DBG_NEW Mesh;
 	D3D11Utils::CreateVertexBuffer(device, vertices, vCount, mesh->VertexBuffer);
-	mesh->VertexCount = vCount;
+	mesh->VertexCount = static_cast<UINT>(vCount);
 
 	Meshes()->PushBack(mesh);
 	delete[] vertices;

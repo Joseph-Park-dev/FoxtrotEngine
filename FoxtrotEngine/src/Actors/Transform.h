@@ -18,7 +18,7 @@
 #include "Components/CharacterAI/Steering.h"
 
 class Actor;
-class Vertex;
+struct Vertex;
 class Camera;
 
 class Transform
@@ -42,7 +42,7 @@ public:
 	// Screen Position
 	const FTVector2 GetScreenPosition(Camera* camInst) const;
 
-	const FTVector3& GetRotationDegree() const;
+	const FTVector3 GetRotationDegree() const;
 
 	const FTVector3& GetRightward() const;
 	const Steering*	 GetSteering() const;

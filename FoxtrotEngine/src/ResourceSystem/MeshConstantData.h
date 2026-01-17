@@ -84,8 +84,8 @@ static_assert((sizeof(PointModelMat) % 16) == 0, "Constant Buffer size must be 1
 
 struct PointVPMat
 {
-	DirectX::SimpleMath::Matrix ViewMat	 = DirectX::SimpleMath::Matrix();
-	DirectX::SimpleMath::Matrix ProjMat	 = DirectX::SimpleMath::Matrix();
+	DirectX::SimpleMath::Matrix ViewMat = DirectX::SimpleMath::Matrix();
+	DirectX::SimpleMath::Matrix ProjMat = DirectX::SimpleMath::Matrix();
 };
 static_assert((sizeof(PointVPMat) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
 
@@ -101,10 +101,12 @@ struct SpriteGCData
 	Vector2 Pivot = Vector2(0.5f, 0.5f);
 	Vector2 Dummy;
 
+#ifdef FOXTROT_EDITOR
 	void UpdateUI()
 	{
 		CommandHistory::GetInstance()->UpdateVector2Value("Sprite Size", Size);
 	}
+#endif // FOXTROT_EDITOR
 };
 
 static_assert((sizeof(SpriteGCData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");

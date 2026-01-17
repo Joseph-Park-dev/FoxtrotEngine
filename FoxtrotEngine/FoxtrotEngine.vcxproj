@@ -262,6 +262,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\Background\BackgroundScroller.cpp" />
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\CharacterMovement\HumanoidMove.cpp" />
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\CharacterMovement\InputMove.cpp" />
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\CharacterMovement\Move.cpp" />
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\Enemy\EnemyBehavior.cpp" />
+    <ClCompile Include="..\..\..\[2025_01]\[GooCat Studio] VampiCat\Scripts\HenryBehavior.cpp" />
     <ClCompile Include="include\spine\Animation.cpp" />
     <ClCompile Include="include\spine\AnimationState.cpp" />
     <ClCompile Include="include\spine\AnimationStateData.cpp" />

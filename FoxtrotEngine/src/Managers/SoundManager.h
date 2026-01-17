@@ -6,6 +6,8 @@
 #include <Static/Array.h>
 #include <Dynamic/LinkedQueue.h>
 
+class Sound;
+
 class SoundManager
 {
 	SINGLETON(SoundManager)

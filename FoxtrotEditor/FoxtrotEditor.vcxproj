@@ -247,13 +247,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;FOXTROT_EDITOR;IMGUI_DEFINE_MATH_OPERATORS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\[2025_01]\[GooCat Studio] VampiCat\Scripts;..\FoxtrotEngine\include\soloud\include;..\FoxtrotEngine\include\json\include;..\FoxtrotEngine\include;..\FoxtrotEngine\include\assimp;..\FoxtrotEngine\include\assimp\include;..\FoxtrotEngine\include\assimp\code;..\FoxtrotEngine\src;.\include;.\include\imgui;.\include\imgui\ImGuiFileDialog;.\include\imgui\backends;.\include\imgui\misc\cpp;.\vcpkg_installed\x64-windows\include;.\src;..\FoxtrotDS;..\FoxtrotMath\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\[2025_01]\[GooCat Studio] VampiCat\Scripts;..\FoxtrotEngine\include\soloud\include;..\FoxtrotEngine\include\json\include;..\FoxtrotEngine\include;..\FoxtrotEngine\src;.\include;.\include\imgui;.\include\imgui\ImGuiFileDialog;.\include\imgui\backends;.\include\imgui\misc\cpp;.\src;..\FoxtrotDS;..\FoxtrotMath\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\FoxtrotEngine\lib;..\FoxtrotEngine\Builds;.\lib;.\lib\Box2D;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>FoxtrotEngine.lib;box2dd.lib;DirectXTK.lib;assimp-vc143-mtd.lib;dxguid.lib;soloud.lib;soloud_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FoxtrotEngine.lib;box2dd.lib;DirectXTK.lib;dxguid.lib;soloud_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -287,7 +287,6 @@
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
     <ClCompile Include="include\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="include\stb_vorbis.c" />
     <ClCompile Include="src\EditorResourceManager.cpp" />
     <ClCompile Include="src\EditorCamera.cpp" />
     <ClCompile Include="src\ActorCommand.cpp" />

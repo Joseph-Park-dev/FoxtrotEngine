@@ -16,7 +16,6 @@
 
 #include <Windows.h>
 #include <shobjidl.h> // For IFileOpenDialog
-#include <ShellScalingApi.h>
 
 #include "EditorElement.h"
 #include "EditorSceneManager.h"

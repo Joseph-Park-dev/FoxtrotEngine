@@ -9,8 +9,6 @@
 /// File types (extensions) that are used in Foxtrot Engine.
 /// </summary>
 
-#include <ShellScalingApi.h>
-
 #include <Dynamic/DynamicArray.h>
 
 #pragma once
@@ -20,19 +18,32 @@ namespace FileTypes
 	constexpr const char* CHUNK	 = ".chunk";
 	constexpr const char* GDPACK = ".gdpack";
 
-	constexpr const char* ALL_FILE_FORMATS = ".premade" ","
-											 ".png, .jpeg, .jpg, .dds" ","
-											 ".dds" ","
-											 ".tilemap" ","
-											 ".spritesheet" ","
-											 ".csv" ","
-											 ".json" ","
-											 ".txt, .atlas" ","
-											 ".fbx, .stl" ","
-											 ".spriteanim" ","
-											 ".spineanim" ","
-											 ".hlsl" ","
-											 ".mat" ","
+	constexpr const char* ALL_FILE_FORMATS = ".premade"
+											 ","
+											 ".png, .jpeg, .jpg, .dds"
+											 ","
+											 ".dds"
+											 ","
+											 ".tilemap"
+											 ","
+											 ".spritesheet"
+											 ","
+											 ".csv"
+											 ","
+											 ".json"
+											 ","
+											 ".txt, .atlas"
+											 ","
+											 ".fbx, .stl"
+											 ","
+											 ".spriteanim"
+											 ","
+											 ".spineanim"
+											 ","
+											 ".hlsl"
+											 ","
+											 ".mat"
+											 ","
 											 ".shadermeta";
 	// FTResources
 	constexpr const char* PREMADE		   = ".premade";
@@ -54,7 +65,7 @@ namespace FileTypes
 	constexpr const char* VERTEX_SHADER = "VS";
 	constexpr const char* PIXEL_SHADER	= "PS";
 
-	constexpr const char* FONT = ".fnt";
+	constexpr const char* FONT		= ".fnt";
 	constexpr const char* FONT_META = ".fontmeta";
 
 	namespace Sound
@@ -63,14 +74,15 @@ namespace FileTypes
 	}
 
 	constexpr const size_t MAX_RES_TYPE_COUNT = 17;
-	constexpr const size_t MAX_SPEC_LENGTH = 50;
+	constexpr const size_t MAX_SPEC_LENGTH	  = 50;
 
-	inline void GetFileTypesSpec(
-		FTDS::DynamicArray<COMDLG_FILTERSPEC*>* specArr, 
-		const wchar_t* label, const char* fileTypes)
+	/*inline void GetFileTypesSpec(
+		FTDS::DynamicArray<COMDLG_FILTERSPEC*>* specArr,
+		const wchar_t*							label,
+		const char*								fileTypes)
 	{
-		COMDLG_FILTERSPEC* spec = DBG_NEW COMDLG_FILTERSPEC();
-		FTDS::String	  types = fileTypes;
+		COMDLG_FILTERSPEC* spec					= DBG_NEW COMDLG_FILTERSPEC();
+		FTDS::String					  types = fileTypes;
 
 		FTDS::DynamicArray<FTDS::String> splitted;
 
@@ -95,5 +107,5 @@ namespace FileTypes
 		spec->pszSpec = wStrSpec;
 
 		specArr->PushBack(spec);
-	}
+	}*/
 } // namespace FileTypes

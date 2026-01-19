@@ -134,6 +134,18 @@ void EditorLayer::DisplayFrameRate()
 	ImGui::End();
 }
 
+void EditorLayer::AdjustGUI(bool* opened)
+{
+	if (!ImGui::Begin("GUI Preferences", opened))
+		ImGui::End();
+	else
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		CommandHistory::GetInstance()->UpdateFloatValue("Font Scale", io.FontGlobalScale);
+	}
+	ImGui::End();
+}
+
 void EditorLayer::DisplayMainMenuBar()
 {
 	const size_t	  maxMenuEle		   = 5;
@@ -173,7 +185,7 @@ void EditorLayer::DisplayMainMenuBar()
 				if (!PATH_PROJECT.IsEmpty())
 				{
 					EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
-					printf("Chunk saved to %s", PATH_CHUNK);
+					printf("Chunk saved to %s", PATH_CHUNK.C_Str());
 					mInfoType = InfoType::ChunkIsSaved;
 				}
 				else
@@ -205,6 +217,7 @@ void EditorLayer::DisplayMainMenuBar()
 			}
 		}
 
+		DisplayEditMenu();
 		DisplayManagersMenu();
 
 		if (ImGui::Button("New Empty Actor"))
@@ -349,6 +362,26 @@ void EditorLayer::DisplayMainMenuBar()
 	}
 }
 
+void EditorLayer::DisplayEditMenu()
+{
+	const size_t maxMenuEle			= 1;
+	const char*	 menu[maxMenuEle]	= { "Preferences" };
+	static bool	 opened[maxMenuEle] = { false };
+	if (ImGui::Button("Edit"))
+		ImGui::OpenPopup("EditPopUp");
+
+	if (ImGui::BeginPopup("EditPopUp"))
+	{
+		for (size_t i = 0; i < maxMenuEle; ++i)
+			if (ImGui::Selectable(menu[i]))
+				opened[i] = menu[i];
+		ImGui::EndPopup();
+	}
+
+	if (opened[0])
+		AdjustGUI(&opened[0]);
+}
+
 void EditorLayer::DisplayManagersMenu()
 {
 	const size_t maxMenuEle			= 3;
@@ -399,7 +432,6 @@ void EditorLayer::DisplayHierarchyMenu()
 		EditorSceneManager::GetInstance()->GetEditorScene()->Actors()->IterateArray([&](Actor* actor) {
 			EditorElement* ele = static_cast<EditorElement*>(actor);
 			ele->SetIsDisplayed(false);
-
 		});
 	}
 
@@ -556,8 +588,8 @@ void EditorLayer::DisplayInspectorMenu()
 			if (mDeleteKeyPressed)
 			{
 				// Delete game object, and erase the pointed from std::vector
-				ActorGroup group = mFocusedEditorElement->GetActorGroup();
-				int actorPos = scene->Actors()->Find(mFocusedEditorElement);
+				ActorGroup group	= mFocusedEditorElement->GetActorGroup();
+				int		   actorPos = scene->Actors()->Find(mFocusedEditorElement);
 				scene->Actors()->Erase(actorPos);
 
 				delete mFocusedEditorElement;
@@ -596,7 +628,7 @@ void EditorLayer::DisplayInfoMessage()
 				FTDS::String name = mFocusedEditorElement->GetName();
 				name.Append(FileTypes::PREMADE);
 
-				FTDS::String  path = ResourceManager::GetInstance()->GetPathToAsset().C_Str();
+				FTDS::String path = ResourceManager::GetInstance()->GetPathToAsset().C_Str();
 				path.Append(name);
 
 				FTResourceDef resDef{

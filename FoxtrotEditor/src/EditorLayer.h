@@ -170,9 +170,19 @@ private:
 	// Displays current frame rate.
 	void DisplayFrameRate();
 
+	/// <summary>
+	/// Change the GUI values such as font size.
+	/// </summary>
+	void AdjustGUI(bool* opened);
+
 	// Displays menu docked at the top of the screen
 	// & calls the related functions.
 	void DisplayMainMenuBar();
+
+	/// <summary>
+	/// Displays Edit menu for project-wise settings.
+	/// </summary>
+	void DisplayEditMenu();
 
 	// Displays menu docked at the top of the screen
 	// & calls the related functions.

@@ -39,7 +39,7 @@ void Camera::Initialize(FTWindow* renderWindow, UINT pixels, float unit)
 
 void Camera::Update(float deltaTime)
 {
-	//Zoom();
+	// Zoom();
 }
 
 void Camera::UpdateViewDirections()
@@ -116,6 +116,9 @@ Matrix Camera::GetProjRow()
 	float		unitsPerPixel = 1 / mPixelsPerUnit;
 	FTRectArea* renderArea	  = mRenderWindow->GetRenderArea();
 	FTVector2	renderSize	  = renderArea->GetSize();
+
+	if (renderSize.y <= 0)
+		return Matrix::Identity;
 
 	float worldWidth  = renderSize.x * unitsPerPixel;
 	float worldHeight = renderSize.y * unitsPerPixel;

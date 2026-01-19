@@ -74,7 +74,6 @@ BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMoni
 	return TRUE; // continue enumeration
 }
 
-
 bool FTCoreEditor::Initialize()
 {
 	if (!FTCore::Initialize())
@@ -132,15 +131,14 @@ bool FTCoreEditor::Initialize()
 
 	RECT r = hMonitorInfo.rcMonitor;
 
-    SetWindowPos(
+	SetWindowPos(
 		mEditorWindow->GetHandle(),
-        NULL,
+		NULL,
 		r.left,
-        r.top,
+		r.top,
 		mEditorWindow->GetWidth(),
 		mEditorWindow->GetHeight(),
-        SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE
-    );
+		SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
 
 	return true;
 }
@@ -312,7 +310,7 @@ bool FTCoreEditor::InitGUI()
 	io.DisplaySize			   = ImVec2(float(mEditorWindow->GetWidth()), float(mEditorWindow->GetHeight()));
 	io.ConfigDpiScaleFonts	   = true;
 	io.ConfigDpiScaleViewports = true;
-	io.FontGlobalScale		   = 1.5f;
+	// io.FontGlobalScale		   = 1.5f;
 
 	// ImGuiStyle& style = ImGui::GetStyle();
 	// style.ScaleAllSizes(2.0f);

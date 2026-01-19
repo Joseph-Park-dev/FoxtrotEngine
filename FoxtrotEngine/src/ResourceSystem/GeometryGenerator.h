@@ -42,6 +42,6 @@ public:
 	// static FTMeshData MakeCylinder(const float bottomRadius, const float topRadius, float height, int sliceCount);
 	// static FTMeshData MakeSphere(const float radius, const int numSlices, const int numStacks);
 
-	static FTDS::DynamicArray<FTMeshData*> ReadFromFile(const FTDS::String& resPath);
-	// static std::vector<FTMeshData> ReadFromFile(FTDS::String& basePath, FTDS::String& filename);
+	// static FTDS::DynamicArray<FTMeshData*> ReadFromFile(const FTDS::String& resPath);
+	//  static std::vector<FTMeshData> ReadFromFile(FTDS::String& basePath, FTDS::String& filename);
 };

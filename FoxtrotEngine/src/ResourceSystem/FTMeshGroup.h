@@ -56,13 +56,15 @@ public:
 
 public:
 	/// @brief Relative path is used for importing 3D files.
-	FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer);
-	FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTMeshData* meshData);
+	// This is unused until 3D feature is implemented.
+	// FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer);
+	FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTMeshData* meshData = nullptr);
 	virtual ~FTMeshGroup();
 
 protected:
 	/// @brief Reads a file which returns the FTMeshData, and creates the meshes.
-	virtual void Process(FoxtrotRenderer* renderer) override;
+	// This is unused untill 3D feature is implemented.
+	// virtual void Process(FoxtrotRenderer* renderer) override;
 
 	/// @brief Creates constant buffers such as Vertex Constant Buffers.
 	virtual void InitializeConstantBuffers(ComPtr<ID3D11Device>& device);

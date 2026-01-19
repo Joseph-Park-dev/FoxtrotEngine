@@ -39,17 +39,17 @@ void FTMeshGroup::Render(
 	FTMaterial*		  mat)
 {
 	//// This enables the resource reusable throughout the Component instances.
-	//UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat, mFrontDir);
+	// UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat, mFrontDir);
 
-	//if (!vs || !ps || !gs || !mat) // Shaders are always required when drawing.
+	// if (!vs || !ps || !gs || !mat) // Shaders are always required when drawing.
 	//	return;
 
-	//UINT						 stride	 = sizeof(SpriteVertex);
-	//UINT						 offset	 = 0;
-	//ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
-	//Mesh*						 mesh	 = Meshes()->At(0);
+	// UINT						 stride	 = sizeof(SpriteVertex);
+	// UINT						 offset	 = 0;
+	// ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
+	// Mesh*						 mesh	 = Meshes()->At(0);
 
-	//if (mesh)
+	// if (mesh)
 	//{
 	//	context->VSSetShader(vs->GetShader().Get(), 0, 0);
 	//	context->VSSetConstantBuffers(0, 1, mVCBuf.GetAddressOf());
@@ -63,7 +63,7 @@ void FTMeshGroup::Render(
 	//	context->GSSetConstantBuffers(0, 2, gsCBuffers);
 	//}
 
-	//mMeshes->IterateArray([&](Mesh* mesh) {
+	// mMeshes->IterateArray([&](Mesh* mesh) {
 	//	if (tex)
 	//	{
 	//		std::vector<ID3D11ShaderResourceView*> resViews;
@@ -102,16 +102,17 @@ void FTMeshGroup::SetRightIsFront(bool val)
 
 FTDS::DynamicArray<Mesh*>* FTMeshGroup::Meshes() { return mMeshes; };
 
-FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer)
-	: FTResource(resDef)
-	, mFrontDir(1)
-	, mDirection(1)
-	, mSizeScale(FTVector3(1.0f, 1.0f, 1.0f))
-	, mMeshes(DBG_NEW FTDS::DynamicArray<Mesh*>)
-	, mVCData(DBG_NEW PointModelMat)
-{
-	Process(renderer);
-}
+// This is unused until 3D feature is implemented.
+// FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer)
+//	: FTResource(resDef)
+//	, mFrontDir(1)
+//	, mDirection(1)
+//	, mSizeScale(FTVector3(1.0f, 1.0f, 1.0f))
+//	, mMeshes(DBG_NEW FTDS::DynamicArray<Mesh*>)
+//	, mVCData(DBG_NEW PointModelMat)
+//{
+//	Process(renderer);
+// }
 
 FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTMeshData* meshData)
 	: FTResource(resDef)
@@ -136,20 +137,21 @@ FTMeshGroup::~FTMeshGroup()
 	delete mVCData;
 }
 
-void FTMeshGroup::Process(FoxtrotRenderer* renderer)
-{
-	if (this->IsProcessed())
-		return;
-
-	if (this->GetRelativePath().Equal(ChunkKey::NullVal::NULL_OBJECT))
-		return;
-
-	CreateTextureSampler(renderer->GetDevice());
-	InitializeMeshes(renderer->GetDevice(), std::move(GeometryGenerator::ReadFromFile(this->GetRelativePath())));
-	InitializeConstantBuffers(renderer->GetDevice());
-
-	FTResource::Process();
-}
+// This is unused untill 3D feature is implemented.
+// void FTMeshGroup::Process(FoxtrotRenderer* renderer)
+//{
+//	if (this->IsProcessed())
+//		return;
+//
+//	if (this->GetRelativePath().Equal(ChunkKey::NullVal::NULL_OBJECT))
+//		return;
+//
+//	CreateTextureSampler(renderer->GetDevice());
+//	InitializeMeshes(renderer->GetDevice(), std::move(GeometryGenerator::ReadFromFile(this->GetRelativePath())));
+//	InitializeConstantBuffers(renderer->GetDevice());
+//
+//	FTResource::Process();
+// }
 
 void FTMeshGroup::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
 {

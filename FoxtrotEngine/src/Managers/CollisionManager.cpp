@@ -246,9 +246,17 @@ void CollisionManager::Initialize()
 }
 
 #ifdef FOXTROT_EDITOR
-void CollisionManager::UpdateUI()
+void CollisionManager::UpdateUI(bool* opened)
 {
-	UpdateCollisionMarks();
+	if (!ImGui::Begin("Collision Manager", opened))
+	{
+		ImGui::End();
+	}
+	else
+	{
+		UpdateCollisionMarks();
+		ImGui::End();
+	}
 }
 
 void CollisionManager::UpdateCollisionMarks()

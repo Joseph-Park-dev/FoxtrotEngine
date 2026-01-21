@@ -37,8 +37,8 @@ class CollisionManager
 	SINGLETON(CollisionManager)
 
 public:
-	void MarkGroup(b2ShapeDef& object, ActorGroup objectActorGroup);
-	void Reset();
+	void											MarkGroup(b2ShapeDef& object, ActorGroup objectActorGroup);
+	void											Reset();
 	const std::unordered_map<int32_t, Collider2D*>& GetRegColliders() const;
 
 public:
@@ -63,7 +63,7 @@ public:
 
 #ifdef FOXTROT_EDITOR
 public:
-	void UpdateUI();
+	void UpdateUI(bool* opened);
 
 public:
 	void UpdateCollisionMarks();

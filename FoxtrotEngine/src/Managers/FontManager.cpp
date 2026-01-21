@@ -17,7 +17,7 @@ FontManager::~FontManager()
 #ifdef FOXTROT_EDITOR
 void FontManager::UpdateUI(bool* opened)
 {
-	if (!ImGui::Begin("Animation Manager", opened))
+	if (!ImGui::Begin("Font Manager", opened))
 	{
 		ImGui::End();
 	}
@@ -31,7 +31,7 @@ void FontManager::UpdateUI(bool* opened)
 void FontManager::CreateFontMetaGUI()
 {
 	static FTSprite* tex;
-	static FTFont*	  font;
+	static FTFont*	 font;
 
 	FTEditorUtils::DisplayResSelection("Select Font Image", ResourceManager::GetInstance()->GetSprites(), tex);
 	FTEditorUtils::DisplayResSelection("Select Font Instance", ResourceManager::GetInstance()->GetFonts(), font);
@@ -59,7 +59,7 @@ void FontManager::CreateFontMetaGUI()
 		FileIOHelper::SaveBufferToFile(ofs);
 
 		font->LoadFont(tex->GetTexture());
-		tex = nullptr;
+		tex	 = nullptr;
 		font = nullptr;
 	}
 }

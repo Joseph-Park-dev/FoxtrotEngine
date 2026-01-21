@@ -1,41 +1,47 @@
 #pragma once
-#include "ArrayDS.h"
+#include "Static/Array.h"
 
 namespace FTDS
 {
 	template <class TYPE>
-	class ArrayStack : public FTDS::ArrayDS<TYPE>
+	class ArrayStack : public FTDS::Array<TYPE>
 	{
-		using FTDS::ArrayDS<TYPE>::mData;
-		using FTDS::ArrayDS<TYPE>::mCapacity;
-		using FTDS::ArrayDS<TYPE>::mSize;
+		using FTDS::Array<TYPE>::mData;
+		using FTDS::Array<TYPE>::mCapacity;
 
 	public:
 		virtual void Push(TYPE& element)
 		{
 			assert(!this->IsFull()); // Stack must not be full. Use Reserve(size_t).
 			this->mData[++mTop] = element;
-			++mSize;
 		}
 
 		virtual void Push(TYPE&& element)
 		{
 			assert(!this->IsFull()); // Stack must not be full. Use Reserve(size_t).
 			this->mData[++mTop] = element;
-			++mSize;
 		}
 
 		virtual void Pop()
 		{
 			assert(!this->IsEmpty()); // Stack must have somthing to pop in itself.
 			--mTop;
-			--mSize;
 		}
 
 		virtual void Clear() override
 		{
-			FTDS::ArrayDS<TYPE>::Clear();
+			FTDS::Array<TYPE>::Clear();
 			mTop = -1;
+		}
+
+		bool IsEmpty()
+		{
+			return mTop < 0;
+		}
+
+		bool IsFull()
+		{
+			return static_cast<int>(mCapacity) - 1 <= mTop;
 		}
 
 	public:
@@ -45,20 +51,25 @@ namespace FTDS
 			return this->mData[mTop];
 		}
 
+		size_t GetSize()
+		{
+			return this->mTop + 1;
+		}
+
 	public:
 		ArrayStack()
-			: ArrayDS<TYPE>()
+			: Array<TYPE>()
 			, mTop(-1)
 		{
 		}
 
 		ArrayStack(size_t capacity)
-			: ArrayDS<TYPE>(capacity)
+			: Array<TYPE>(capacity)
 			, mTop(-1)
 		{
 		}
 
-	protected:
+	private:
 		int mTop;
 	};
 }; // namespace FTDS

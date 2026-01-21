@@ -120,6 +120,7 @@ bool FTCoreEditor::Initialize()
 		Debug::LogError(__LINE__, __FILE__, "Failed to Initialize ImGui");
 		return false;
 	}
+	EditorLayer::GetInstance()->Initialize();
 
 	// Look for secondary window to display editor window.
 	HMONITOR secondaryMon = MonitorFromPoint(POINT{ 0, 0 }, MONITOR_DEFAULTTOPRIMARY);

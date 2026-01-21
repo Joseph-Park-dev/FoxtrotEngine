@@ -57,6 +57,7 @@ class EditorLayer
 	SINGLETON(EditorLayer)
 
 public:
+	void Initialize();
 	void Update(float deltaTime);
 	void Render(FoxtrotRenderer* renderer);
 	void ShutDown();
@@ -206,10 +207,6 @@ private:
 	// & calls the related functions.
 	void DisplayResourceMenu();
 
-	// Displays & allows modification of collision marks.
-	// & calls the related functions.
-	void DisplayCollisionMenu();
-
 	// Displays the focused EditorElement's info.
 	// & calls the related functions.
 	void DisplayInspectorMenu();
@@ -233,4 +230,14 @@ private:
 	void Save(std::string& path);
 	void SaveAs(std::string& path);
 	void Open(std::string& path);
+
+private:
+	void SaveEditorConfig();
+	void LoadEditorConfig();
 };
+
+namespace ConfigKey
+{
+	constexpr const char* GUI		 = "GUI Config";
+	constexpr const char* FONT_SCALE = "Font Scale";
+} // namespace ConfigKey

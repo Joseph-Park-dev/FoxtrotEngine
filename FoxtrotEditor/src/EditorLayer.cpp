@@ -56,6 +56,12 @@
 #include "ResourceSystem/FTRectangle.h"
 
 #include "Core/EventFunctions.h"
+#include "ResourceSystem/ResPath.h"
+
+void EditorLayer::Initialize()
+{
+	LoadEditorConfig();
+}
 
 void EditorLayer::Update(float deltaTime)
 {
@@ -78,7 +84,6 @@ void EditorLayer::Update(float deltaTime)
 	DisplayMainMenuBar();
 	DisplayHierarchyMenu();
 	DisplayResourceMenu();
-	DisplayCollisionMenu();
 	DisplayInspectorMenu();
 
 	ImGui::Begin("Camera Menu");
@@ -384,9 +389,9 @@ void EditorLayer::DisplayEditMenu()
 
 void EditorLayer::DisplayManagersMenu()
 {
-	const size_t maxMenuEle			= 3;
-	const char*	 menu[maxMenuEle]	= { "Animation Manager", "Sound Manager", "Font Manager" };
-	static bool	 opened[maxMenuEle] = { false, false, false };
+	const size_t maxMenuEle			= 4;
+	const char*	 menu[maxMenuEle]	= { "Animation Manager", "Sound Manager", "Font Manager", "Collision Manager" };
+	static bool	 opened[maxMenuEle] = { false, false, false, false };
 
 	if (ImGui::Button("Managers"))
 		ImGui::OpenPopup("ManagerPopUp");
@@ -405,6 +410,8 @@ void EditorLayer::DisplayManagersMenu()
 		SoundManager::GetInstance()->UpdateUI(&opened[1]);
 	if (opened[2])
 		FontManager::GetInstance()->UpdateUI(&opened[2]);
+	if (opened[3])
+		CollisionManager::GetInstance()->UpdateUI(&opened[3]);
 }
 
 void EditorLayer::DisplayHierarchyMenu()
@@ -567,14 +574,6 @@ void EditorLayer::DisplayResourceMenu()
 	ImGui::End();
 }
 
-void EditorLayer::DisplayCollisionMenu()
-{
-	std::string menuID = "Collision Manager";
-	ImGui::Begin(menuID.c_str());
-	CollisionManager::GetInstance()->UpdateUI();
-	ImGui::End();
-}
-
 void EditorLayer::DisplayInspectorMenu()
 {
 	std::string menuID = "Inspector";
@@ -685,6 +684,7 @@ void EditorLayer::DisplayErrorMessage()
 		{
 			std::function<void()> onConfirm = [this]()
 				-> void {
+				SaveEditorConfig();
 				FTCoreEditor::GetInstance()->SetIsRunning(false);
 				mErrorType = ErrorType::None;
 				ImGui::CloseCurrentPopup();
@@ -836,6 +836,27 @@ void EditorLayer::Open(std::string& path)
 	EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
 	// LightManager::GetInstance()->Reset(FTCoreEditor::GetInstance()->GetGameRenderer());
 	SET_CHUNK_IS_SAVED(true)
+}
+
+void EditorLayer::SaveEditorConfig()
+{
+	ImGuiIO&	  io = ImGui::GetIO();
+	std::ofstream ofs(Path::EDITOR_CONFIG);
+	FileIOHelper::BeginDataPackSave(ofs, ConfigKey::GUI);
+	FileIOHelper::SaveFloat(ofs, ConfigKey::FONT_SCALE, io.FontGlobalScale);
+	FileIOHelper::EndDataPackSave(ofs, ConfigKey::GUI);
+	FileIOHelper::SaveBufferToFile(ofs);
+}
+
+void EditorLayer::LoadEditorConfig()
+{
+	ImGuiIO&	  io = ImGui::GetIO();
+	std::ifstream ifs(Path::EDITOR_CONFIG);
+	if (!ifs.good())
+		SaveEditorConfig();
+
+	FileIOHelper::BeginDataPackLoad(ifs, ConfigKey::GUI);
+	FileIOHelper::LoadFloat(ifs, io.FontGlobalScale);
 }
 
 void EditorLayer::Render(FoxtrotRenderer* renderer)

@@ -15,11 +15,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoxtrotEngine", "FoxtrotEng
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoxtrotDS", "FoxtrotDS\FoxtrotDS.vcxproj", "{EFDF9DF9-F14D-4F66-8B80-533E3253A60F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VampiCat", "..\..\[2025_01]\[GooCat Studio] VampiCat\VampiCat.vcxproj", "{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}"
-	ProjectSection(ProjectDependencies) = postProject
-		{014CC6A0-8578-4FE6-A16C-C8B45D8A83F9} = {014CC6A0-8578-4FE6-A16C-C8B45D8A83F9}
-		{EFDF9DF9-F14D-4F66-8B80-533E3253A60F} = {EFDF9DF9-F14D-4F66-8B80-533E3253A60F}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VampiCat", "..\[GooCat Studio] VampiCat\VampiCat.vcxproj", "{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,12 +83,12 @@ Global
 		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Debug|x86.Build.0 = Debug|Win32
 		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Foxtrot_Debug|x64.ActiveCfg = Foxtrot_Debug|x64
 		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Foxtrot_Debug|x64.Build.0 = Foxtrot_Debug|x64
-		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Foxtrot_Debug|x86.ActiveCfg = Debug|Win32
-		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Foxtrot_Debug|x86.Build.0 = Debug|Win32
+		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Foxtrot_Debug|x86.ActiveCfg = Foxtrot_Debug|Win32
+		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Foxtrot_Debug|x86.Build.0 = Foxtrot_Debug|Win32
 		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Foxtrot_Editor_Debug|x64.ActiveCfg = Foxtrot_Editor_Debug|x64
 		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Foxtrot_Editor_Debug|x64.Build.0 = Foxtrot_Editor_Debug|x64
-		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Foxtrot_Editor_Debug|x86.ActiveCfg = Debug|Win32
-		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Foxtrot_Editor_Debug|x86.Build.0 = Debug|Win32
+		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Foxtrot_Editor_Debug|x86.ActiveCfg = Foxtrot_Editor_Debug|Win32
+		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Foxtrot_Editor_Debug|x86.Build.0 = Foxtrot_Editor_Debug|Win32
 		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Release|x64.ActiveCfg = Release|x64
 		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Release|x64.Build.0 = Release|x64
 		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Release|x86.ActiveCfg = Release|Win32

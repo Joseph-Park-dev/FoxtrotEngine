@@ -32,9 +32,6 @@ class CommandHistory
 	SINGLETON(CommandHistory)
 
 public:
-	// Maually adds command to deque.
-	void AddCommand(Command* command);
-
 	// These member functions will be used on Foxtrot Editor when updating values.
 	void UpdateIntValue(const char* label, int& ref, int modSpeed = INTMOD_SPEED);
 	void UpdateIntValue(const char* label, int& ref, int min, int max, int modSpeed = INTMOD_SPEED);
@@ -71,4 +68,10 @@ private:
 	void UndoCommand();
 	// This feature is not working properly in the current version.
 	void RedoCommand();
+
+	/// <summary>
+	/// Push the current command to the previous,
+	/// Flush out the next commands.
+	/// </summary>
+	void ArrangeCommand();
 };

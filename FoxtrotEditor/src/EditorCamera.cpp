@@ -109,9 +109,8 @@ void EditorCamera::DisplayMainCameraMenu()
 	ImGui::BeginChild("Main Camera", area);
 	ImGui::SeparatorText("Main Camera");
 
-	FTVector3 pos = Camera::GetInstance()->GetPosition();
+	Vector3& pos = Camera::GetInstance()->Position();
 	CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", pos, LOOKAT_MODSPEED);
-	Camera::GetInstance()->SetPosition(pos);
 
 	/*float yaw	= mYaw;
 	float pitch = mPitch;*/
@@ -128,7 +127,7 @@ void EditorCamera::DisplayMainCameraMenu()
 	// Set Target
 	EditorScene*				editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
 	FTDS::DynamicArray<Actor*>* editorElems = editorScene->Actors();
-	FTDS::String* actorNames = DBG_NEW FTDS::String[editorElems->GetSize() + 1];
+	FTDS::String* actorNames				= DBG_NEW FTDS::String[editorElems->GetSize() + 1];
 	actorNames[0].Assign("None");
 	static size_t currIdx;
 
@@ -157,9 +156,8 @@ void EditorCamera::DisplayMainCameraMenu()
 	}
 	delete[] actorNames;
 
-	FTVector3 offset = Camera::GetInstance()->GetOffSet();
+	FTVector3& offset = Camera::GetInstance()->Offset();
 	CommandHistory::GetInstance()->UpdateVector3Value("Offset from target", offset, LOOKAT_MODSPEED);
-	Camera::GetInstance()->SetOffset(offset);
 
 	CommandHistory::GetInstance()->UpdateFloatValue("Zoom", Camera::GetInstance()->ZoomFactor());
 

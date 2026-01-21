@@ -74,8 +74,11 @@ public:
 	void SetTargetActor(Actor* actor);
 	void SetOffset(FTVector3 offset);
 
+public:
+	Vector3&   Position();
+	FTVector3& Offset();
+
 protected:
-	Vector3& Position();
 	Vector3& FrontDir();
 	Vector3& UpDir();
 	Vector3& RightDir();

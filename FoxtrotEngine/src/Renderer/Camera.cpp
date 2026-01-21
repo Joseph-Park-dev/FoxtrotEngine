@@ -204,6 +204,11 @@ Vector3& Camera::RightDir()
 	return mRightDir;
 }
 
+FTVector3& Camera::Offset()
+{
+	return mOffset;
+}
+
 float& Camera::ZoomDelta()
 {
 	return mZoomDelta;

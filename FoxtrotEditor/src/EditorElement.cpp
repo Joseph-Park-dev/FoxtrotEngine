@@ -195,7 +195,7 @@ void EditorElement::UpdateActorGroup()
 				int					   grpIdx  = static_cast<int>(++n);
 				ActorGroupEditCommand* command = DBG_NEW ActorGroupEditCommand(GetActorGroupRef());
 				command->SetNextVal(static_cast<ActorGroup>(grpIdx));
-				CommandHistory::GetInstance()->AddCommand(command);
+				// CommandHistory::GetInstance()->AddCommand(command);
 
 				SetActorGroup((ActorGroup)grpIdx);
 			}

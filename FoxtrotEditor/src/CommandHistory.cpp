@@ -25,87 +25,47 @@
 
 void CommandHistory::AddCommand(Command* command)
 {
-	if (mCommandDeq.size() < COMMAND_MAXCOUNT)
+	if (mCurrent)
+		mPrevious->Push(mCurrent);
+	mCurrent = command;
+	if (!mNext->IsEmpty())
 	{
-		if (0 < mCommandDeq.size())
-		{
-			size_t endIdx = mCommandDeq.size() - 1;
-			if (0 < endIdx)
-			{
-				size_t distFromEnd = endIdx - mCommandPointer;
-				if (0 < distFromEnd)
-				{
-					for (size_t i = 0; i < distFromEnd; ++i)
-					{
-						delete mCommandDeq.back();
-						mCommandDeq.pop_back();
-					}
-				}
-			}
-		}
-		mCommandDeq.push_back(command);
-		mCommandPointer = mCommandDeq.size() - 1;
+		mNext->Clear();
+		mNext->Reserve(COMMAND_MAXCOUNT);
 	}
+	printf("ADD previous %d, next %d\n", mPrevious->GetSize(), mNext->GetSize());
 }
 
 void CommandHistory::UndoCommand()
 {
-	if (0 <= mCommandPointer)
+	if (0 < mPrevious->GetSize())
 	{
-		Command* cmd = GetCurrentCommand();
-		if (cmd)
+		if (mCurrent)
 		{
-			cmd->Undo();
-			if (0 < mCommandPointer)
-				--mCommandPointer;
+			mCurrent->Undo();
+			mNext->Push(mCurrent);
 		}
+		mCurrent = mPrevious->Peek();
+		mPrevious->Pop();
 	}
+
+	printf("UNDO previous %d, next %d\n", mPrevious->GetSize(), mNext->GetSize());
 }
 
 void CommandHistory::RedoCommand()
 {
-	if (mCommandPointer < mCommandDeq.size())
+	if (0 < mNext->GetSize() - 1)
 	{
-		Command* cmd = GetCurrentCommand();
-		if (cmd)
-		{
-			cmd->Do();
-			if (mCommandPointer < mCommandDeq.size() - 1)
-				++mCommandPointer;
-		}
+		mCurrent = mNext->Peek();
+		mNext->Pop();
 	}
-}
 
-void CommandHistory::StartCMDRecord()
-{
-	if (!mIsRecording)
+	if (mCurrent)
 	{
-		mIsRecording	 = true;
-		mCMDStartPointer = mCommandPointer;
+		mCurrent->Do();
+		mPrevious->Push(mCurrent);
 	}
-}
-
-void CommandHistory::EndCMDRecord()
-{
-	if (mIsRecording)
-	{
-		mIsRecording   = false;
-		mCMDEndPointer = mCommandPointer;
-		MergeCMDRecord();
-	}
-}
-
-void CommandHistory::MergeCMDRecord()
-{
-	if (0 < mCMDEndPointer - mCMDStartPointer)
-		if (mCommandDeq[mCMDStartPointer] != nullptr
-			&& mCommandDeq[mCMDEndPointer] != nullptr)
-		{
-			mCommandDeq[mCMDStartPointer + 1] = mCommandDeq[mCMDEndPointer];
-			int popCount					  = static_cast<int>(mCMDEndPointer - mCMDStartPointer - 1);
-			for (int i = 0; i < popCount; ++i)
-				mCommandDeq.pop_back();
-		}
+	printf("Redo previous %d, next %d\n", mPrevious->GetSize(), mNext->GetSize());
 }
 
 void CommandHistory::Update()
@@ -354,29 +314,6 @@ void CommandHistory::UpdateStateValue(const char* label, Actor::State& state)
 	}
 }
 
-void CommandHistory::UpdateActorAddition(EditorElement* editorElement)
-{
-	ActorAdditionCommand* command = nullptr;
-
-	// ActorCommand has been triggered after program initialization.
-	// Thus the latest ActorCommand is not null.
-	if (CommandHistory::GetInstance()->GetLatestActorCommand())
-	{
-		// Set the input as the next value of the latest ActorAddition Command
-		CommandHistory::GetInstance()->GetLatestActorCommand()->SetNextVal(editorElement);
-	}
-	// Set the latest Actor Addition Command
-	command = DBG_NEW ActorAdditionCommand(editorElement);
-	if (command)
-	{
-		CommandHistory::GetInstance()->SetLatestActorCommand(command);
-		CommandHistory::GetInstance()->AddCommand(command);
-	}
-}
-
-ActorCommand* CommandHistory::GetLatestActorCommand() { return mLatestActorCommand; }
-void		  CommandHistory::SetLatestActorCommand(ActorCommand* command) { mLatestActorCommand = command; }
-
 void CommandHistory::UpdateFloatValue(const char* label, float& ref, float modSpeed)
 {
 	static FloatEditCommand* command;
@@ -465,26 +402,21 @@ void CommandHistory::UpdateUnsignedIntValue(const char* label, UINT& ref, UINT m
 
 void CommandHistory::ShutDown()
 {
-	if (!mCommandDeq.empty())
-		for (size_t i = 0; i < mCommandDeq.size(); ++i)
-			delete mCommandDeq.at(i);
-	mCommandDeq.clear();
+	delete mCurrent;
+	delete mPrevious;
+	delete mNext;
 }
 
 Command* CommandHistory::GetCurrentCommand()
 {
-	if (!mCommandDeq.empty())
-		return mCommandDeq.at(mCommandPointer);
-	return nullptr;
+	return mCurrent;
 }
 
 CommandHistory::CommandHistory()
-	: mCommandDeq{}
-	, mCommandPointer(0) // Pointer value becomes 0 when the 1st element is inserted
-	, mCMDStartPointer(0)
-	, mCMDEndPointer(0)
+	: mCurrent(nullptr)
+	, mPrevious(DBG_NEW FTDS::ArrayStack<Command*>(COMMAND_MAXCOUNT))
+	, mNext(DBG_NEW FTDS::ArrayStack<Command*>(COMMAND_MAXCOUNT))
 	, mIsRecording(false)
-	, mLatestActorCommand(nullptr)
 {
 }
 

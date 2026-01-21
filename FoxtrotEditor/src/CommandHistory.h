@@ -13,13 +13,13 @@
 /// </summary>
 
 #pragma once
-#include <deque>
 #include <functional>
 #include <directxtk/SimpleMath.h>
 
 #include "Core/SingletonMacro.h"
 #include "Actors/Transform.h"
 #include "Command.h"
+#include "Static/ArrayStack.h"
 
 #define COMMAND_MAXCOUNT 30
 #define FLOATMOD_SPEED 0.1f
@@ -52,40 +52,17 @@ public:
 	void UpdateStateValue(const char* label, Actor::State& state);
 
 public:
-	void UpdateActorAddition(EditorElement* editorElement);
-
-public:
-	ActorCommand* GetLatestActorCommand();
-	void		  SetLatestActorCommand(ActorCommand* command);
-
-public:
 	void Update();
 	// This will be called when closing a Foxtrot Editor instance.
 	void ShutDown();
 
 private:
-	std::deque<Command*> mCommandDeq;
-	size_t				 mCommandPointer;  // This points to the position of the latest Command created.
-	size_t				 mCMDStartPointer; // This points to the value from the frame that a value started to be modified.
-	size_t				 mCMDEndPointer;   // When the recording is finished, the intermediate commands from start to this point is deleted.
-	bool				 mIsRecording;	   // A value is being modified on UI.
-
-	// mCommandPointer position of the latest EditorElement
-	// This is used in Actor related Commands
-	ActorCommand* mLatestActorCommand;
+	FTDS::ArrayStack<Command*>* mPrevious;
+	FTDS::ArrayStack<Command*>* mNext;
+	Command*					mCurrent;
+	bool						mIsRecording; // A value is being modified on UI.
 
 private:
-	// When modifying values on UI, CMDRecord is started
-	// e.g. dragging a slider.
-	void StartCMDRecord();
-
-	// CMDRecord is ended when the modification is finished
-	// e.g. releasing a slider.
-	void EndCMDRecord();
-
-	// When command pointer is not at the top of the deque
-	void MergeCMDRecord();
-
 	// Get the command located at the pointer position.
 	Command* GetCurrentCommand();
 

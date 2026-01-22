@@ -262,7 +262,7 @@ void Scene::AddActor(Actor* actor)
 			auto iter	   = mActors->Begin();
 			for (; iter != mActors->End(); ++iter)
 			{
-				if(*iter)
+				if (*iter)
 					if (drawOrder < (*iter)->GetDrawOrder())
 						break;
 			}
@@ -331,7 +331,7 @@ void Scene::ClearDeadActors()
 {
 	for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
 	{
-		if ((*iter)->IsDead())
+		if (!(*iter)->GetIsActive())
 			RemoveActor((*iter));
 	}
 }

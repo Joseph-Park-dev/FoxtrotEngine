@@ -92,7 +92,6 @@ private:
 	void UpdateActorName();
 	void UpdateActorGroup();
 	void UpdateDrawOrder();
-	void UpdateActorState();
 
 	void UpdateComponentsUI();
 	void DisplayCompSelectionPopup();

@@ -42,7 +42,7 @@ void EditorElement::UpdateUI(bool isPremade)
 				UpdateActorName();
 				UpdateDrawOrder();
 				UpdateActorGroup();
-				UpdateActorState();
+				CommandHistory::GetInstance()->UpdateBoolValue("Is Active", IsActive());
 				GetTransform()->UpdateUI();
 
 				ImGui::EndTabItem();
@@ -209,11 +209,6 @@ void EditorElement::UpdateDrawOrder()
 	int i = GetDrawOrder();
 	ImGui::InputInt("Draw Order", &i);
 	SetDrawOrder(i);
-}
-
-void EditorElement::UpdateActorState()
-{
-	CommandHistory::GetInstance()->UpdateStateValue("Actor State", GetStateRef());
 }
 
 void EditorElement::UpdateComponentsUI()

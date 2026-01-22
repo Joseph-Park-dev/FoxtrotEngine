@@ -39,7 +39,7 @@ Actor::Actor(int id)
 	: mName("New Empty Actor")
 	, mID(id)
 	, mActorGroup(ActorGroup::DEFAULT)
-	, mState(State::EActive)
+	, mIsActive(true)
 	, mTransform(DBG_NEW Transform(this))
 	, mComponents()
 	, mParent(nullptr)
@@ -53,7 +53,7 @@ Actor::Actor(Actor* actor, int id)
 	: mName("New Copied Actor")
 	, mID(id)
 	, mActorGroup(actor->mActorGroup)
-	, mState(EActive)
+	, mIsActive(true)
 	, mTransform(DBG_NEW Transform(this))
 	, mComponents()
 	, mParent(actor->mParent)
@@ -73,7 +73,7 @@ Actor::Actor(Actor* actor, int id, bool deepCpyChild)
 	: mName("New Copied Actor")
 	, mID(id)
 	, mActorGroup(actor->mActorGroup)
-	, mState(EActive)
+	, mIsActive(true)
 	, mTransform(DBG_NEW Transform(this))
 	, mComponents()
 	, mParent(actor->mParent)
@@ -281,26 +281,6 @@ void Actor::RemoveAllComponents()
 	mComponents.Clear();
 }
 
-FTDS::String Actor::GetStateStr() const
-{
-	FTDS::String state = "active";
-	if (mState == EPaused)
-		state = "paused";
-	else if (mState == EDead)
-		state = "dead";
-	return state;
-}
-
-void Actor::SetState(FTDS::String state)
-{
-	if (state == "paused")
-		mState = EPaused;
-	else if (state == "dead")
-		mState = EDead;
-	else
-		mState = EActive;
-}
-
 bool Actor::HasName(FTDS::String& name)
 {
 	return mName.Equal(name.C_Str());
@@ -309,6 +289,11 @@ bool Actor::HasName(FTDS::String& name)
 bool Actor::HasName(const char* name)
 {
 	return FTDS::StringEqual(mName.C_Str(), name);
+}
+
+bool& Actor::IsActive()
+{
+	return mIsActive;
 }
 
 void Actor::SaveProperties(std::ofstream& ofs)
@@ -320,7 +305,7 @@ void Actor::SaveProperties(std::ofstream& ofs)
 	mTransform->SaveProperties(ofs);
 	FileIOHelper::SaveInt(ofs, ChunkKey::DRAW_ORDER, mDrawOrder);
 	FileIOHelper::SaveString(ofs, ChunkKey::ACTOR_GROUP, ActorGroupUtil::GetActorGroupStr(mActorGroup));
-	FileIOHelper::SaveInt(ofs, ChunkKey::STATE, mState);
+	FileIOHelper::SaveBool(ofs, ChunkKey::STATE, mIsActive);
 
 	if (mParent)
 		FileIOHelper::SaveInt(ofs, ChunkKey::PARENT, mParent->GetID());
@@ -385,9 +370,7 @@ void Actor::LoadProperties(std::ifstream& ifs)
 	}
 
 	// Load Actor state
-	int stateInt = 0;
-	FileIOHelper::LoadInt(ifs, stateInt);
-	SetState(static_cast<State>(stateInt));
+	FileIOHelper::LoadBool(ifs, mIsActive);
 
 	// Load Actor group
 	FTDS::String actorGroupStr;

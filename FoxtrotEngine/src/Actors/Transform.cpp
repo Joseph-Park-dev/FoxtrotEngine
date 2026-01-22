@@ -277,31 +277,23 @@ void Transform::UpdateUI()
 {
 	if (!mOwner->GetParent()) // The owner does not have parent Actor.
 	{
-		FTVector3 worldPos	 = mWorldPosition;
-		FTVector3 worldScale = mWorldScale;
-		FTVector3 worldRot	 = mWorldRotation;
+		CommandHistory::GetInstance()->UpdateVector3Value("World Position", mWorldPosition);
+		CommandHistory::GetInstance()->UpdateVector3Value("World Scale", mWorldScale);
+		CommandHistory::GetInstance()->UpdateVector3Value("World Rotation", mWorldRotation);
 
-		CommandHistory::GetInstance()->UpdateVector3Value("World Position", worldPos);
-		CommandHistory::GetInstance()->UpdateVector3Value("World Scale", worldScale);
-		CommandHistory::GetInstance()->UpdateVector3Value("World Rotation", worldRot);
-
-		SetWorldPosition(worldPos);
-		SetWorldScale(worldScale);
-		SetWorldRotation(worldRot);
+		SetWorldPosition(mWorldPosition);
+		SetWorldScale(mWorldScale);
+		SetWorldRotation(mWorldRotation);
 	}
 	else
 	{
-		FTVector3 localPos	 = mLocalPosition;
-		FTVector3 localScale = mLocalScale;
-		FTVector3 localRot	 = mLocalRotation;
+		CommandHistory::GetInstance()->UpdateVector3Value("Local Position", mLocalPosition);
+		CommandHistory::GetInstance()->UpdateVector3Value("Local Scale", mLocalScale);
+		CommandHistory::GetInstance()->UpdateVector3Value("Local Rotation", mLocalRotation);
 
-		CommandHistory::GetInstance()->UpdateVector3Value("Local Position", localPos);
-		CommandHistory::GetInstance()->UpdateVector3Value("Local Scale", localScale);
-		CommandHistory::GetInstance()->UpdateVector3Value("Local Rotation", localRot);
-
-		SetLocalPosition(localPos);
-		SetLocalScale(localScale);
-		SetLocalRotation(localRot);
+		SetLocalPosition(mLocalPosition);
+		SetLocalScale(mLocalScale);
+		SetLocalRotation(mLocalRotation);
 	}
 }
 #endif // FOXTROT_EDITOR

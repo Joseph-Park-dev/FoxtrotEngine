@@ -32,6 +32,14 @@ class CommandHistory
 	SINGLETON(CommandHistory)
 
 public:
+	/// <summary>
+	/// Push the current command to the previous,
+	/// Flush out the next commands.
+	/// </summary>
+	void ArrangeCommand();
+	void SetCurrent(Command* cmd);
+
+public:
 	// These member functions will be used on Foxtrot Editor when updating values.
 	void UpdateIntValue(const char* label, int& ref, int modSpeed = INTMOD_SPEED);
 	void UpdateIntValue(const char* label, int& ref, int min, int max, int modSpeed = INTMOD_SPEED);
@@ -45,8 +53,6 @@ public:
 	void UpdateVector3Value(const char* label, DirectX::SimpleMath::Vector3& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateVector4Value(const char* label, FTVector4& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateStringValue(const char* label, FTDS::String& ref);
-
-	void UpdateStateValue(const char* label, Actor::State& state);
 
 public:
 	void Update();
@@ -68,10 +74,4 @@ private:
 	void UndoCommand();
 	// This feature is not working properly in the current version.
 	void RedoCommand();
-
-	/// <summary>
-	/// Push the current command to the previous,
-	/// Flush out the next commands.
-	/// </summary>
-	void ArrangeCommand();
 };

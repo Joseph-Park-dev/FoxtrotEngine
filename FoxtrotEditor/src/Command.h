@@ -192,8 +192,8 @@ public:
 
 private:
 	FTDS::String& mValue;
-	FTDS::String	 mPrevValue;
-	FTDS::String	 mNextValue;
+	FTDS::String  mPrevValue;
+	FTDS::String  mNextValue;
 };
 
 class WStrEditCommand : public Command
@@ -215,24 +215,6 @@ private:
 	std::wstring  mNextValue;
 };
 
-class ActorStateEditCommand : public Command
-{
-public:
-	void Do() override;
-	void Undo() override;
-
-public:
-	void SetNextVal(Actor::State nextVal);
-
-public:
-	ActorStateEditCommand(Actor::State& valRef);
-
-private:
-	Actor::State& mValue;
-	Actor::State  mPrevValue;
-	Actor::State  mNextValue;
-};
-
 class BoolEditCommand : public Command
 {
 public:
@@ -240,6 +222,7 @@ public:
 	void Undo() override;
 
 public:
+	void SetPrevVal(bool prevVal);
 	void SetNextVal(bool nextVal);
 
 public:

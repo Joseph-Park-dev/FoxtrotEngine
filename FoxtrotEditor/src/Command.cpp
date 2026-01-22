@@ -198,26 +198,6 @@ StrEditCommand::~StrEditCommand()
 {
 }
 
-void ActorStateEditCommand::Do()
-{
-	mValue = mNextValue;
-}
-
-void ActorStateEditCommand::Undo()
-{
-	mValue = mPrevValue;
-}
-
-void ActorStateEditCommand::SetNextVal(Actor::State nextVal)
-{
-	mNextValue = nextVal;
-}
-
-ActorStateEditCommand::ActorStateEditCommand(Actor::State& valRef)
-	: mPrevValue(valRef), mValue(valRef), mNextValue(Actor::State::EActive)
-{
-}
-
 BoolEditCommand::BoolEditCommand(bool& valRef)
 	: mPrevValue(valRef), mValue(valRef), mNextValue(true)
 {
@@ -235,6 +215,11 @@ void BoolEditCommand::Do()
 void BoolEditCommand::Undo()
 {
 	mValue = mPrevValue;
+}
+
+void BoolEditCommand::SetPrevVal(bool prevVal)
+{
+	mPrevValue = prevVal;
 }
 
 void BoolEditCommand::SetNextVal(bool nextVal)

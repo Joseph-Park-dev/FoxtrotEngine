@@ -456,9 +456,9 @@ void EditorLayer::DisplaySelection(EditorElement* element, size_t& index)
 	{
 		mActorNameIdx = static_cast<int>(index);
 
-		IntEditCommand* command = DBG_NEW IntEditCommand(mActorNameIdx);
-		command->SetNextVal(mActorNameIdx);
-		// CommandHistory::GetInstance()->AddCommand(command);
+		// IntEditCommand* command = DBG_NEW IntEditCommand(mActorNameIdx);
+		// command->SetNextVal(mActorNameIdx);
+		//  CommandHistory::GetInstance()->AddCommand(command);
 
 		EditorSceneManager::GetInstance()->GetEditorScene()->UnfocusEditorElements();
 		mFocusedEditorElement = element;

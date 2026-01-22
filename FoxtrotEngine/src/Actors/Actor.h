@@ -66,14 +66,6 @@ public:
 	virtual ~Actor();
 
 public:
-	enum State
-	{
-		EActive,
-		EPaused,
-		EDead
-	};
-
-public:
 	void AddChild(Actor* actor);
 	void RemoveChild(Actor* actor);
 	void AddComponent(Component* component);
@@ -101,11 +93,7 @@ public:
 	FTDS::String					GetName() { return mName; }
 	FTDS::String&					GetNameRef() { return mName; }
 	const int						GetID() const { return mID; }
-	State							GetState() const { return mState; }
-	FTDS::String					GetStateStr() const;
-	State&							GetStateRef() { return mState; }
-	bool							IsActive() const { return mState == State::EActive; }
-	bool							IsDead() const { return mState == State::EDead; }
+	const bool&						GetIsActive() const { return mIsActive; }
 	Transform*						GetTransform() const { return mTransform; }
 	Actor*							GetParent() const { return mParent; }
 	FTDS::DynamicArray<Component*>& GetComponents() { return mComponents; }
@@ -113,8 +101,7 @@ public:
 	const int&						GetDrawOrder() const { return mDrawOrder; }
 
 	void SetName(FTDS::String name) { mName = name; }
-	void SetState(State state) { mState = state; }
-	void SetState(FTDS::String state);
+	void SetIsActive(bool isActive) { mIsActive = isActive; }
 	void SetActorGroup(ActorGroup group) { mActorGroup = group; }
 	void SetParent(Actor* parent) { mParent = parent; }
 	void SetTransform(Transform* transform) { mTransform = transform; }
@@ -122,8 +109,9 @@ public:
 	void SetChildActors(FTDS::DynamicArray<Actor*>& children) { mChild = children; }
 	void SetDrawOrder(int order) { mDrawOrder = order; }
 
-	bool HasName(FTDS::String& name);
-	bool HasName(const char* name);
+	bool  HasName(FTDS::String& name);
+	bool  HasName(const char* name);
+	bool& IsActive();
 
 	template <class T>
 	T* GetComponent()
@@ -154,7 +142,7 @@ private:
 	FTDS::String				   mName;
 	int							   mID;
 	ActorGroup					   mActorGroup;
-	State						   mState;
+	bool						   mIsActive;
 	Transform*					   mTransform;
 	FTDS::DynamicArray<Component*> mComponents;
 	Actor*						   mParent;
@@ -184,7 +172,7 @@ namespace ChunkKey
 
 		// ID for cloned object (instantiated object)
 		constexpr int CLONE = 0;
-		
+
 		// ID for chunk title.
 		constexpr const char* ID = "ID";
 	} // namespace ID

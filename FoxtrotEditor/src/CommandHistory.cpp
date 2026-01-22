@@ -65,6 +65,11 @@ void CommandHistory::ArrangeCommand()
 	}
 }
 
+void CommandHistory::SetCurrent(Command* cmd)
+{
+	mCurrent = cmd;
+}
+
 void CommandHistory::Update()
 {
 	if (EditorLayer::GetInstance()->GetUndoKeyPressed())
@@ -253,26 +258,10 @@ void CommandHistory::UpdateStringValue(const char* label, FTDS::String& ref)
 	strVal[0] = '\0';
 }
 
-void CommandHistory::UpdateStateValue(const char* label, Actor::State& state)
-{
-	bool isActive = false;
-
-	if (ImGui::Checkbox(label, &isActive))
-	{
-		mCurrent = DBG_NEW ActorStateEditCommand(state);
-
-		if (isActive)
-			state = Actor::State::EActive;
-		else
-			state = Actor::State::EDead;
-
-		static_cast<ActorStateEditCommand*>(mCurrent)->SetNextVal(state);
-	}
-}
-
 void CommandHistory::UpdateFloatValue(const char* label, float& ref, float modSpeed)
 {
-	if (ImGui::DragFloat(label, &ref, modSpeed))
+	float val = ref;
+	if (ImGui::DragFloat(label, &val, modSpeed))
 	{
 		if (!mIsRecording)
 		{
@@ -287,14 +276,16 @@ void CommandHistory::UpdateFloatValue(const char* label, float& ref, float modSp
 		if (mCurrent)
 		{
 			mIsRecording = false;
-			static_cast<FloatEditCommand*>(mCurrent)->SetNextVal(ref);
+			static_cast<FloatEditCommand*>(mCurrent)->SetNextVal(val);
 		}
 	}
+	ref = val;
 }
 
 void CommandHistory::UpdateIntValue(const char* label, int& ref, int modSpeed)
 {
-	if (ImGui::DragInt(label, &ref, modSpeed))
+	int val = ref;
+	if (ImGui::DragInt(label, &val, modSpeed))
 	{
 		if (!mIsRecording)
 		{
@@ -309,9 +300,10 @@ void CommandHistory::UpdateIntValue(const char* label, int& ref, int modSpeed)
 		if (mCurrent)
 		{
 			mIsRecording = false;
-			static_cast<IntEditCommand*>(mCurrent)->SetNextVal(ref);
+			static_cast<IntEditCommand*>(mCurrent)->SetNextVal(val);
 		}
 	}
+	ref = val;
 }
 
 void CommandHistory::UpdateIntValue(const char* label, int& ref, int min, int max, int modSpeed)
@@ -322,11 +314,10 @@ void CommandHistory::UpdateIntValue(const char* label, int& ref, int min, int ma
 
 void CommandHistory::UpdateBoolValue(const char* label, bool& ref)
 {
-	bool updated = ref;
-
 	if (ImGui::Checkbox(label, &ref))
 	{
-		mCurrent = DBG_NEW BoolEditCommand(updated);
+		mCurrent = DBG_NEW BoolEditCommand(ref);
+		static_cast<BoolEditCommand*>(mCurrent)->SetPrevVal(!ref);
 		static_cast<BoolEditCommand*>(mCurrent)->SetNextVal(ref);
 	}
 }
@@ -340,12 +331,17 @@ void CommandHistory::UpdateUnsignedIntValue(const char* label, UINT& ref, UINT m
 
 void CommandHistory::ShutDown()
 {
-	for (auto iter = mPrevious->Begin(); iter != mPrevious->End(); ++iter)
-		delete *iter;
-	for (auto iter = mNext->Begin(); iter != mNext->End(); ++iter)
-		delete *iter;
-	delete mCurrent;
+	auto iter = mPrevious->Begin();
+	for (size_t i = 0; i < mPrevious->GetSize(); ++i, ++iter)
+		if (*iter)
+			delete *iter;
 
+	iter = mNext->Begin();
+	for (size_t i = 0; i < mNext->GetSize(); ++i, ++iter)
+		if (*iter)
+			delete *iter;
+
+	delete mCurrent;
 	delete mPrevious;
 	delete mNext;
 }

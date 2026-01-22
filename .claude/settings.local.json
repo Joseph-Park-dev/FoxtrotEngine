@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git checkout:*)",
+      "Bash(git merge --no-ff feature/do_and_undo -m \"$\\(cat <<''EOF''\nMerge branch ''feature/do_and_undo'' into develop\n\n- Refactor CommandHistory with ArrangeCommand pattern\n- Expose Camera Position and Offset accessors\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)",
+      "Bash(git merge:*)"
+    ]
+  }
+}

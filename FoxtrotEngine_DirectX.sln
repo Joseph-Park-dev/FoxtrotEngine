@@ -15,7 +15,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoxtrotEngine", "FoxtrotEng
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoxtrotDS", "FoxtrotDS\FoxtrotDS.vcxproj", "{EFDF9DF9-F14D-4F66-8B80-533E3253A60F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VampiCat", "..\[GooCat Studio] VampiCat\VampiCat.vcxproj", "{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VampiCat", "..\..\[2025_01]\[GooCat Studio] VampiCat\VampiCat.vcxproj", "{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -41,25 +41,18 @@ public:
 		int	   updateOrder = DefaultVal::UPDATE_ORDER);
 
 protected:
-	FTSprite* GetSprite() const;
-	void	  SetSprite(FTSprite* sprite);
+	FTSprite*	GetSprite() const;
+	FTMaterial* GetMaterial() const;
+	D3D11PSO*	GetPSO() const;
 
-	FTVertexShader*	  GetVS() const;
-	FTGeometryShader* GetGS() const;
-	FTPixelShader*	  GetPS() const;
-	FTMaterial*		  GetMaterial() const;
-
-	void SetVS(FTVertexShader* vs);
-	void SetGS(FTGeometryShader* gs);
-	void SetPS(FTPixelShader* ps);
+	void SetSprite(FTSprite* sprite);
 	void SetMaterial(FTMaterial* mat);
+	void SetPSO(D3D11PSO* pso);
 
 private:
-	FTSprite*		  mSprite;
-	FTVertexShader*	  mVS;
-	FTGeometryShader* mGS;
-	FTPixelShader*	  mPS;
-	FTMaterial*		  mMaterial;
+	FTSprite*	mSprite;
+	D3D11PSO*	mPSO;
+	FTMaterial* mMaterial;
 
 public:
 	virtual void SaveProperties(std::ofstream& ofs) override;
@@ -83,15 +76,6 @@ namespace ChunkKey
 		constexpr const char* MATERIAL	   = "Material";
 		constexpr const char* FRONT_DIR	   = "Front Dir";
 		constexpr const char* SPRITE_SCALE = "Scale";
+		constexpr const char* PSO		   = "SpritePSO";
 	} // namespace SpriteRenderer
 } // namespace ChunkKey
-
-namespace Path
-{
-	namespace SpriteRenderer
-	{
-		constexpr const char* VS = "SpriteVS.hlsl";
-		constexpr const char* GS = "SpriteGS.hlsl";
-		constexpr const char* PS = "SpritePS.hlsl";
-	} // namespace SpriteRenderer
-} // namespace Path

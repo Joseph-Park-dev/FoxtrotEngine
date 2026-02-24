@@ -422,5 +422,6 @@
   <ItemGroup>
     <FxCompile Include="FoxtrotEngine\Assets\Shaders\2D\SpriteGS.hlsl" />
     <FxCompile Include="FoxtrotEngine\Assets\Shaders\2D\SpriteVS.hlsl" />
+    <FxCompile Include="FoxtrotEngine\Assets\Shaders\2D\SpritePS.hlsl" />
   </ItemGroup>
 </Project>

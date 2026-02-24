@@ -1,9 +1,7 @@
 StandardMaterial<4>
-	Specular[Vector3]
-	(0.500000,0.500000,0.500000)
-	Diffuse[Vector3]
-	(0.500000,0.500000,0.500000)
-	Shininess[float]
-	0.500000
-	Ambient[Vector3]
-	(0.100000,0.100000,0.100000)
+	Use Texture[bool]
+	true
+	Alpha Trim[float]
+	0.900000
+	Color[Vector4]
+	(1.00000,1.00000,1.00000)

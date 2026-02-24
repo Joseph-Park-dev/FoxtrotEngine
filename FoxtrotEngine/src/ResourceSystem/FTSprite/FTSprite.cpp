@@ -6,21 +6,59 @@
 #include "ResourceSystem/FTShaders/FTGeometryShader.h"
 #include "ResourceSystem/FTShaders/FTPixelShader.h"
 #include "ResourceSystem/FTMaterials/FTMaterial.h"
+#include "ResourceSystem/D3D11PSO.h"
 #include "Managers/ResourceManager.h"
 
-void FTSprite::Render(
-	FoxtrotRenderer*  renderer,
-	Transform*		  transform,
-	Camera*			  camInst,
-	FTVertexShader*	  vs,
-	FTGeometryShader* gs,
-	FTPixelShader*	  ps,
-	FTMaterial*		  mat)
+void FTSprite::UpdateConstantBuffers(FoxtrotRenderer* renderer, Transform* transform, Camera* camInst, FTMaterial* mat, const size_t gcDataCount, const int meshIndex)
 {
-	// This enables the resource reusable throughout the Component instances.
-	UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat, GetFrontDir());
+	// Model Transformation
+	// Front Direction will be multiplied to scale.
+	// When frontDir is minus, multiplication must be done only once as the character switches direction.
 
-	if (!vs || !ps || !gs || !mat) // Vertex Shader is always required when drawing.
+	float linearX = transform->GetSteering()->Linear.x;
+	if (linearX < 0)
+		SetDirection(-1);
+	else if (0 < linearX)
+		SetDirection(1);
+
+	FTVector3 scale		   = transform->GetWorldScale();
+	float	  scaleX	   = Math::Abs(scale.x);
+	FTVector3 scaleWithDir = FTVector3(scaleX * GetFrontDir() * GetDirection(), scale.y * GetDirection(), scale.z);
+	transform->SetWorldScale(scaleWithDir);
+	Matrix modelMat = transform->GetMatrixWorld();
+
+	// Inverse transpose matrix calculation
+	// Consider removing this part if the engine is for 2D games.
+	// Matrix invTransposeMat = modelMat.Transpose();
+	// invTransposeMat.Translation(Vector3(0.0f));
+	// invTransposeMat = invTransposeMat.Transpose().Invert();
+
+	// View Transformation
+	Matrix&& viewMat = camInst->GetViewRow();
+
+	// Project Transformation
+	Matrix&& projMat = std::move(camInst->GetProjRow());
+
+	GetVCData()->ModelMat = modelMat.Transpose();
+	D3D11Utils::UpdateBuffer(
+		renderer->GetContext(), *GetVCData(), GetVCBuf());
+
+	mGCMatData->ViewMat = viewMat.Transpose();
+	mGCMatData->ProjMat = projMat.Transpose();
+	D3D11Utils::UpdateBuffer(renderer->GetContext(), *mGCMatData, mGCMatBuf);
+
+	for (size_t i = 0; i < gcDataCount; ++i)
+		mGCSpriteData[i].Scale = Vector2(GetSizeScale().x * scaleWithDir.x, GetSizeScale().y * scaleWithDir.y);
+	
+	D3D11Utils::UpdateBuffer(renderer->GetContext(), mGCSpriteData[meshIndex], mGCSpriteBuf);
+
+	if (mat)
+		mat->UpdateBuffer(renderer->GetContext());
+}
+
+void FTSprite::Render(FoxtrotRenderer* renderer, Transform* transform, Camera* camInst, D3D11PSO* pso, FTMaterial* mat)
+{
+	if (!pso->IsValid()) // Vertex Shader is always required when drawing.
 		return;
 
 	UINT						 stride	 = sizeof(SpriteVertex);
@@ -30,6 +68,8 @@ void FTSprite::Render(
 
 	if (mesh)
 	{
+		pso->SetToPipeline(context);
+
 		if (mTexture)
 		{
 			ID3D11ShaderResourceView* const resViews[] = {
@@ -37,12 +77,8 @@ void FTSprite::Render(
 			};
 			context->PSSetShaderResources(0, 1, resViews);
 		}
-
-		context->VSSetShader(vs->GetShader().Get(), 0, 0);
 		context->VSSetConstantBuffers(
 			0, 1, GetVCBuf().GetAddressOf());
-
-		context->GSSetShader(gs->GetShader().Get(), 0, 0);
 
 		ID3D11Buffer* const gsCBuffers[] = {
 			mGCMatBuf.Get(),
@@ -50,15 +86,12 @@ void FTSprite::Render(
 		};
 		context->GSSetConstantBuffers(0, 2, gsCBuffers);
 
-		context->PSSetShader(ps->GetShader().Get(), 0, 0);
 		context->PSSetSamplers(0, 1, GetSamplerState().GetAddressOf());
 		if (mat)
 			context->PSSetConstantBuffers(0, 1, mat->GetPCBuf().GetAddressOf());
 
-		context->IASetInputLayout(vs->GetInputLayout().Get());
 		context->IASetVertexBuffers(0, 1, mesh->VertexBuffer.GetAddressOf(), &stride, &offset);
 		context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 		context->Draw(1, 0);
 	}
 }
@@ -124,54 +157,6 @@ void FTSprite::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
 	FTMeshGroup::InitializeConstantBuffers(device);
 	D3D11Utils::CreateConstantBuffer(device, *mGCMatData, mGCMatBuf);
 	D3D11Utils::CreateConstantBuffer(device, *mGCSpriteData, mGCSpriteBuf);
-}
-
-void FTSprite::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, Transform* transform, Camera* camInst, FTMaterial* mat, const int frontDir, const size_t gcDataCount)
-{
-	// Model Transformation
-	// Front Direction will be multiplied to scale.
-	// When frontDir is minus, multiplication must be done only once as the character switches direction.
-
-	float linearX = transform->GetSteering()->Linear.x;
-	if (linearX < 0)
-		SetDirection(-1);
-	else if (0 < linearX)
-		SetDirection(1);
-
-	FTVector3 scale		   = transform->GetWorldScale();
-	float	  scaleX	   = Math::Abs(scale.x);
-	FTVector3 scaleWithDir = FTVector3(scaleX * frontDir * GetDirection(), scale.y * GetDirection(), scale.z);
-	transform->SetWorldScale(scaleWithDir);
-	Matrix modelMat = transform->GetMatrixWorld();
-
-	// Inverse transpose matrix calculation
-	// Consider removing this part if the engine is for 2D games.
-	// Matrix invTransposeMat = modelMat.Transpose();
-	// invTransposeMat.Translation(Vector3(0.0f));
-	// invTransposeMat = invTransposeMat.Transpose().Invert();
-
-	// View Transformation
-	Matrix&& viewMat = camInst->GetViewRow();
-
-	// Project Transformation
-	Matrix&& projMat = std::move(camInst->GetProjRow());
-
-	GetVCData()->ModelMat = modelMat.Transpose();
-	D3D11Utils::UpdateBuffer(
-		context, *GetVCData(), GetVCBuf());
-
-	mGCMatData->ViewMat = viewMat.Transpose();
-	mGCMatData->ProjMat = projMat.Transpose();
-	D3D11Utils::UpdateBuffer(context, *mGCMatData, mGCMatBuf);
-
-	for (size_t i = 0; i < gcDataCount; ++i)
-	{
-		mGCSpriteData[i].Scale = Vector2(GetSizeScale().x * scaleWithDir.x, GetSizeScale().y * scaleWithDir.y);
-	}
-	D3D11Utils::UpdateBuffer(context, *mGCSpriteData, mGCSpriteBuf);
-
-	if (mat)
-		mat->UpdateBuffer(context);
 }
 
 Microsoft::WRL::ComPtr<ID3D11Buffer>& FTSprite::GetGCMatBuf()

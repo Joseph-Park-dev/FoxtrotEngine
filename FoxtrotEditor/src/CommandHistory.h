@@ -52,6 +52,7 @@ public:
 	void UpdateVector3Value(const char* label, FTVector3& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateVector3Value(const char* label, DirectX::SimpleMath::Vector3& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateVector4Value(const char* label, FTVector4& ref, float modSpeed = FLOATMOD_SPEED);
+	void UpdateVector4Value(const char* label, DirectX::SimpleMath::Vector4& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateStringValue(const char* label, FTDS::String& ref);
 
 public:

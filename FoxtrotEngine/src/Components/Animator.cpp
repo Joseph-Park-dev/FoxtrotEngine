@@ -159,17 +159,22 @@ void Animator::Render(FoxtrotRenderer* renderer)
 	{
 		renderer->SwitchFillMode();
 
-		Transform* transform = GetOwner()->GetTransform();
-		static_cast<FTSpriteAnimation*>(GetSprite())
-			->Render(
-				mCurrFrameIdx,
-				renderer,
-				transform,
-				Camera::GetInstance(),
-				GetVS(),
-				GetGS(),
-				GetPS(),
-				GetMaterial());
+		Transform*		   transform = GetOwner()->GetTransform();
+		FTSpriteAnimation* anim		 = static_cast<FTSpriteAnimation*>(GetSprite());
+		GetSprite()->UpdateConstantBuffers(
+			renderer,
+			transform,
+			Camera::GetInstance(),
+			GetMaterial(),
+			anim->GetFrameCount(),
+			mCurrFrameIdx);
+
+		GetSprite()->Render(
+			renderer,
+			transform,
+			Camera::GetInstance(),
+			GetPSO(),
+			GetMaterial());
 	}
 }
 
@@ -179,8 +184,7 @@ void Animator::CloneTo(Actor* actor)
 
 	newComp->mLoadedAnim->Assign(this->mLoadedAnim);
 	newComp->SetSprite(this->GetSprite());
-	newComp->SetVS(this->GetVS());
-	newComp->SetPS(this->GetPS());
+	newComp->SetPSO(this->GetPSO());
 	newComp->SetMaterial(this->GetMaterial());
 }
 
@@ -204,18 +208,23 @@ void Animator::EditorRender(FoxtrotRenderer* renderer)
 	if (GetSprite())
 	{
 		renderer->SwitchFillMode();
-		Transform* transform = GetOwner()->GetTransform();
 
-		static_cast<FTSpriteAnimation*>(GetSprite())
-			->Render(
-				mCurrFrameIdx,
-				renderer,
-				transform,
-				EditorCamera::GetInstance(),
-				GetVS(),
-				GetGS(),
-				GetPS(),
-				GetMaterial());
+		Transform*		   transform = GetOwner()->GetTransform();
+		FTSpriteAnimation* anim		 = static_cast<FTSpriteAnimation*>(GetSprite());
+		GetSprite()->UpdateConstantBuffers(
+			renderer,
+			transform,
+			EditorCamera::GetInstance(),
+			GetMaterial(),
+			anim->GetFrameCount(),
+			mCurrFrameIdx);
+
+		GetSprite()->Render(
+			renderer,
+			transform,
+			EditorCamera::GetInstance(),
+			GetPSO(),
+			GetMaterial());
 	}
 }
 

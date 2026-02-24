@@ -8,6 +8,9 @@
 
 #pragma once
 
+#include <wrl.h>
+#include <d3d11.h>
+
 // Core/engine essentials required by this header.
 #include "Core/SingletonMacro.h"	   // Singleton macro for manager lifetime/creation.
 #include "Debugging/DebugMemAlloc.h"   // DBG_NEW tracking.
@@ -26,6 +29,7 @@ class FTMeshGroup;
 class FTVertexShader;
 class FTPixelShader;
 class FTGeometryShader;
+class D3D11PSO;
 class FTMaterial;
 
 class FTSprite;
@@ -120,11 +124,7 @@ public:
 	/// @return Loaded premade by key or nullptr if not present.
 	virtual FTPremade* GetLoadedPremade(const FTDS::String& key);
 	/// @return Loaded vertex shader by key or nullptr if not present.
-	virtual FTVertexShader* GetLoadedVertexShader(const FTDS::String& key);
-	/// @return Loaded geometry shader by key or nullptr if not present.
-	virtual FTGeometryShader* GetLoadedGeometryShader(const FTDS::String& key);
-	/// @return Loaded pixel shader by key or nullptr if not present.
-	virtual FTPixelShader* GetLoadedPixelShader(const FTDS::String& key);
+	virtual D3D11PSO* GetLoadedPSO(const FTDS::String& key);
 	/// @return Loaded material by key or nullptr if not present.
 	virtual FTMaterial* GetLoadedMaterial(const FTDS::String& key);
 	/// @return Loaded mesh group (3D model) by key or nullptr if not present.
@@ -162,21 +162,20 @@ public:
 	// ---------------------------
 
 public:
-	virtual FTDS::HashMap<FTSprite*>*		   GetSprites();
-	virtual FTDS::HashMap<FTTileMap*>*		   GetTileMaps();
-	virtual FTDS::HashMap<FTPremade*>*		   GetPremades();
-	virtual FTDS::HashMap<FTVertexShader*>*	   GetVertexShaders();
-	virtual FTDS::HashMap<FTGeometryShader*>*  GetGeometryShaders();
-	virtual FTDS::HashMap<FTPixelShader*>*	   GetPixelShaders();
-	virtual FTDS::HashMap<FTMaterial*>*		   GetMaterials();
-	virtual FTDS::HashMap<FTMeshGroup*>*	   GetMeshGroups();
-	virtual FTDS::HashMap<FTSpriteAnimation*>* GetSpriteAnimations();
-	virtual FTDS::HashMap<FTSpineAnimation*>*  GetSpineAnimations();
-	virtual FTDS::HashMap<Sound*>*			   GetSounds();
-	virtual FTDS::HashMap<FTCSV*>*			   GetCSVs();
-	virtual FTDS::HashMap<FTJSON*>*			   GetJSONs();
-	virtual FTDS::HashMap<FTText*>*			   GetTexts();
-	virtual FTDS::HashMap<FTFont*>*			   GetFonts();
+	virtual FTDS::HashMap<D3D11PSO*>*					GetPSOs();
+	virtual FTDS::HashMap<FTSprite*>*					GetSprites();
+	virtual FTDS::HashMap<FTTileMap*>*					GetTileMaps();
+	virtual FTDS::HashMap<FTPremade*>*					GetPremades();
+	virtual FTDS::HashMap<FTMaterial*>*					GetMaterials();
+	virtual FTDS::HashMap<FTMeshGroup*>*				GetMeshGroups();
+	virtual FTDS::HashMap<FTSpriteAnimation*>*			GetSpriteAnimations();
+	virtual FTDS::HashMap<FTSpineAnimation*>*			GetSpineAnimations();
+	virtual FTDS::HashMap<Sound*>*						GetSounds();
+	virtual FTDS::HashMap<FTCSV*>*						GetCSVs();
+	virtual FTDS::HashMap<FTJSON*>*						GetJSONs();
+	virtual FTDS::HashMap<FTText*>*						GetTexts();
+	virtual FTDS::HashMap<FTFont*>*						GetFonts();
+	virtual FTDS::Array<Microsoft::WRL::ComPtr<ID3D11RasterizerState>>* GetRS();
 
 	///////////////////////////
 	// Save | Load resources //
@@ -247,11 +246,10 @@ private:
 	// Geometry resources
 	FTDS::HashMap<FTMeshGroup*>* mMeshGroups; // A mesh group usually represents a 3D model.
 
-	// Shaders/materials
-	FTDS::HashMap<FTVertexShader*>*	  mVertexShaders;
-	FTDS::HashMap<FTGeometryShader*>* mGeometryShaders;
-	FTDS::HashMap<FTPixelShader*>*	  mPixelShaders;
-	FTDS::HashMap<FTMaterial*>*		  mMaterials;
+	// Rendering
+	FTDS::HashMap<D3D11PSO*>*					mPSOs;
+	FTDS::HashMap<FTMaterial*>*					mMaterials;
+	FTDS::Array<Microsoft::WRL::ComPtr<ID3D11RasterizerState>>* mRS;
 
 	// Audio/Fonts
 	FTDS::HashMap<FTFont*>* mFonts;

@@ -20,18 +20,17 @@ namespace FTDS
 			FTDS::DynamicArray<char>::PopBack();
 			FTDS::DynamicArray<char>::PushBack(value);
 			FTDS::DynamicArray<char>::PushBack('\0');
-			++mLength;
 		}
 
 		const int RFind(const char* target) const
 		{
 			size_t targetLen = FTDS::StrLen(target);
-			if (!target || this->mLength < 1 || this->mLength < targetLen)
+			if (!target || this->GetLength() < 1 || this->GetLength() < targetLen)
 			{
 				return -1; // Handle edge cases
 			}
 
-			int i = static_cast<int>(mLength - targetLen);
+			int i = static_cast<int>(GetLength() - targetLen);
 			for (; 0 <= i; --i) // Start from end
 			{
 				FTDS::String query;
@@ -47,12 +46,12 @@ namespace FTDS
 		int LFind(const char* target)
 		{
 			size_t targetLen = FTDS::StrLen(target);
-			if (!target || this->mLength < 1 || this->mLength < targetLen)
+			if (!target || this->GetLength() < 1 || this->GetLength() < targetLen)
 			{
 				return -1; // Handle edge cases
 			}
 
-			for (int i = 0; i < mLength - targetLen; ++i) // Start from the Beginning
+			for (int i = 0; i < GetLength() - targetLen; ++i) // Start from the Beginning
 			{
 				FTDS::String query;
 				this->SubStr(query, i, targetLen);
@@ -65,11 +64,10 @@ namespace FTDS
 		void Append(const char* val)
 		{
 			size_t inputLength = FTDS::StrLen(val);
-			size_t newCapacity = this->mLength + inputLength + 1;
+			size_t newCapacity = this->GetLength() + inputLength + 1;
 
 			this->Reserve(newCapacity);
-			memcpy_s(&this->mData[mLength], sizeof(char) * inputLength + 1, val, sizeof(char) * inputLength + 1);
-			this->mLength += inputLength;
+			memcpy_s(&this->mData[GetLength()], sizeof(char) * inputLength + 1, val, sizeof(char) * inputLength + 1);
 			this->Size() += inputLength;
 		}
 
@@ -85,7 +83,7 @@ namespace FTDS
 
 		void SubStr(FTDS::String& result, size_t start, size_t length) const
 		{
-			if (start >= mLength)
+			if (start >= GetLength())
 				return;
 
 			char* str = DBG_NEW char[length + 1];
@@ -95,13 +93,12 @@ namespace FTDS
 			}
 			str[length] = '\0';
 			result.Assign(str);
-			result.SetLength(length);
 			delete[] str;
 		}
 
 		void SubStr(size_t start, size_t length)
 		{
-			if (start >= mLength)
+			if (start >= GetLength())
 				return;
 
 			char* str = DBG_NEW char[length + 1];
@@ -111,7 +108,6 @@ namespace FTDS
 			}
 			str[length] = '\0';
 			this->Assign(str);
-			mLength = length;
 			delete[] str;
 		}
 
@@ -121,7 +117,6 @@ namespace FTDS
 			this->Reserve(inputLength + 1);
 
 			strcpy_s(this->mData, sizeof(char) * inputLength + 1, val);
-			this->mLength = inputLength;
 			this->Size()  = inputLength + 1;
 		}
 
@@ -146,8 +141,8 @@ namespace FTDS
 
 			if (trim)
 			{
-				size_t start = result.Length() + StrLen(ch);
-				SubStr(*this, start, this->Length() - start);
+				size_t start = result.GetLength() + StrLen(ch);
+				SubStr(*this, start, this->GetLength() - start);
 			}
 			return end;
 		}
@@ -165,7 +160,7 @@ namespace FTDS
 			int end = RFind(ch);
 			if (end == -1)
 				return;
-			SubStr(result, end + 1, mLength);
+			SubStr(result, end + 1, GetLength());
 		}
 
 		void ExtractFromLast(const char* ch)
@@ -173,7 +168,7 @@ namespace FTDS
 			int end = RFind(ch);
 			if (end == -1)
 				return;
-			SubStr(end + 1, mLength);
+			SubStr(end + 1, GetLength());
 		}
 
 		void ExtractBracketedVal(FTDS::String& result, const char* left, const char* right)
@@ -216,8 +211,8 @@ namespace FTDS
 
 		void Reverse() override
 		{
-			for (size_t i = 0; i < this->mLength / 2; ++i)
-				this->Swap(i, this->mLength - 1 - i);
+			for (size_t i = 0; i < this->GetLength() / 2; ++i)
+				this->Swap(i, this->GetLength() - 1 - i);
 		}
 
 		/////////////////////////
@@ -242,10 +237,9 @@ namespace FTDS
 			MultiByteToWideChar(CP_UTF8, 0, mData, -1, wstr, static_cast<int>(length));
 		}
 
-		const size_t Length() const { return mLength; }
-		void		 SetLength(size_t len) { mLength = len; }
+		const size_t GetLength() const { return this->GetSize() - 1; }
 
-		const bool IsEmpty() const { return mLength == 0 || !mData; }
+		const bool IsEmpty() const { return GetLength() == 0 || !mData; }
 
 		// Print this string on CMD.
 		void CMDPrint()
@@ -290,61 +284,50 @@ namespace FTDS
 	public:
 		String()
 			: FTDS::DynamicArray<char>()
-			, mLength(0)
 		{
 			FTDS::DynamicArray<char>::PushBack('\0');
 		}
 
 		String(char* val)
 			: FTDS::DynamicArray<char>()
-			, mLength(0)
 		{
 			Assign(val);
 		}
 
 		String(const char* val)
 			: FTDS::DynamicArray<char>()
-			, mLength(0)
 		{
 			Assign(val);
 		}
 
 		String(FTDS::String& val)
 			: FTDS::DynamicArray<char>()
-			, mLength(0)
 		{
 			Assign(val.C_Str());
 		}
 
 		String(const FTDS::String& val)
 			: FTDS::DynamicArray<char>()
-			, mLength(0)
 		{
 			Assign(val.C_Str());
 		}
 
 		String(size_t num, char val)
 			: FTDS::DynamicArray<char>()
-			, mLength(num)
 		{
 			Reserve(num + 1);
 			this->Size() = num + 1;
-			mLength		 = num;
 
-			for (size_t i = 0; i < this->mLength; ++i)
+			for (size_t i = 0; i < this->GetLength(); ++i)
 				this->mData[i] = val;
-			this->mData[mLength] = '\0';
+			this->mData[GetLength()] = '\0';
 		}
 
 		void Clear() override
 		{
 			FTDS::Array<char>::Clear();
-			mLength = 0;
 			FTDS::DynamicArray<char>::PushBack('\0');
 		}
-
-	private:
-		size_t mLength;
 	};
 
 	template <>

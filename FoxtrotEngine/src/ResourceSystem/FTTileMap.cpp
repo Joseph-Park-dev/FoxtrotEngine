@@ -102,8 +102,8 @@ void FTTileMap::ReadCSV(FTDS::String& str)
 	mMaxCountOnScreenX = column;
 	mMaxCountOnScreenY = row;
 
-	mTileMap = DBG_NEW Tile[str.Length()];
-	for (UINT i = 0; i < (UINT)str.Length(); ++i)
+	mTileMap = DBG_NEW Tile[str.GetLength()];
+	for (UINT i = 0; i < (UINT)str.GetLength(); ++i)
 	{
 		UINT idx = str.At(i) - WSTRING_OFFSET;
 		InitializeTile(mTileMap[i], i, 0, idx);

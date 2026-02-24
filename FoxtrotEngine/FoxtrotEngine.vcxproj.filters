@@ -465,22 +465,7 @@
     <ClCompile Include="src\Math\Random.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\[GooCat Studio] VampiCat\Scripts\Background\BackgroundScroller.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\[GooCat Studio] VampiCat\Scripts\CharacterMovement\HumanoidMove.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\[GooCat Studio] VampiCat\Scripts\CharacterMovement\InputMove.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\[GooCat Studio] VampiCat\Scripts\CharacterMovement\Move.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\[GooCat Studio] VampiCat\Scripts\Enemy\EnemyBehavior.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\[GooCat Studio] VampiCat\Scripts\HenryBehavior.cpp">
+    <ClCompile Include="src\ResourceSystem\D3D11PSO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2304,6 +2289,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\assimp\ZipArchiveIOSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceSystem\D3D11PSO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

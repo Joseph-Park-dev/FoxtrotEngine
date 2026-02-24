@@ -237,6 +237,13 @@ void CommandHistory::UpdateVector4Value(const char* label, FTVector4& ref, float
 	ref.a = vec4[3];
 }
 
+void CommandHistory::UpdateVector4Value(const char* label, DirectX::SimpleMath::Vector4& ref, float modSpeed)
+{
+	FTVector4 vec4 = FTVector4(ref.x, ref.y, ref.z, ref.w);
+	UpdateVector4Value(label, vec4);
+	ref = vec4.GetDXVec4();
+}
+
 void CommandHistory::UpdateStringValue(const char* label, FTDS::String& ref)
 {
 	if (ref.Capacity() < BufferSize::STRING_BUFFER_SIZE)

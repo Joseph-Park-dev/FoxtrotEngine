@@ -113,21 +113,6 @@ void MeshRenderer::SaveProperties(std::ofstream& ofs)
 	else
 		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, ChunkKey::NullVal::NULL_OBJECT);
 
-	// Save shaders.
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTMeshGroup::SHADER_KEY);
-
-	if (mVS)
-		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::VS_KEY, mVS->GetFileName());
-	else
-		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::VS_KEY, ChunkKey::NullVal::NULL_OBJECT);
-
-	if (mPS)
-		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::PS_KEY, mPS->GetFileName());
-	else
-		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::PS_KEY, ChunkKey::NullVal::NULL_OBJECT);
-
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTMeshGroup::SHADER_KEY);
-
 	if (mMaterial)
 		FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MAT_KEY, mMaterial->GetFileName());
 	else
@@ -143,14 +128,6 @@ void MeshRenderer::LoadProperties(std::ifstream& ifs)
 	mMaterial = ResourceManager::GetInstance()->GetLoadedMaterial(keyCache);
 
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMeshGroup::SHADER_KEY);
-
-	// Load Pixel Shader.
-	FileIOHelper::LoadBasicString(ifs, keyCache);
-	mPS = ResourceManager::GetInstance()->GetLoadedPixelShader(keyCache);
-
-	// Load Vertex Shader.
-	FileIOHelper::LoadBasicString(ifs, keyCache);
-	mVS = ResourceManager::GetInstance()->GetLoadedVertexShader(keyCache);
 
 	// Load Texture.
 	FileIOHelper::LoadBasicString(ifs, keyCache);
@@ -192,21 +169,6 @@ void MeshRenderer::EditorUIUpdate()
 	//	"Select Texture",
 	//	ResourceManager::GetInstance()->GetSprites(),
 	//	mTexture);
-
-	FTEditorUtils::DisplayResSelection(
-		"Select VS",
-		ResourceManager::GetInstance()->GetVertexShaders(),
-		mVS);
-
-	FTEditorUtils::DisplayResSelection(
-		"Select GS",
-		ResourceManager::GetInstance()->GetGeometryShaders(),
-		mGS);
-
-	FTEditorUtils::DisplayResSelection(
-		"Select PS",
-		ResourceManager::GetInstance()->GetPixelShaders(),
-		mPS);
 
 	if (mMaterial)
 		mMaterial->UpdateUI();

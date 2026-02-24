@@ -40,20 +40,6 @@ struct FTSpriteAnimationDef : FTResourceDef
 class FTSpriteAnimation : public FTSprite
 {
 public:
-	/// @brief Renders a single frame of the animation, which is a mesh.
-	/// Note that it's not derived from FTMeshGroup: no FTTexture parameter.
-	/// @param meshIndex Index of a mesh to be rendered.
-	/// @param frontDir Current direction the animation is facing toward.
-	void Render(
-		int				  meshIndex,
-		FoxtrotRenderer*  renderer,
-		Transform*		  transform,
-		Camera*			  camInst,
-		FTVertexShader*	  vs,
-		FTGeometryShader* gs,
-		FTPixelShader*	  ps,
-		FTMaterial*		  mat);
-
 	/// @see FTResource::SaveProperties()
 	virtual void SaveProperties(std::ofstream& ofs) override;
 
@@ -70,6 +56,8 @@ public:
 	/// @brief Returns the first frame index.
 	const int GetMinFrameIdx() const;
 
+	const size_t GetFrameCount() const;
+
 public:
 	/// @brief Relative path is used for importing .spriteanim file.
 	FTSpriteAnimation(FTResourceDef& resDef, FoxtrotRenderer* renderer);
@@ -78,15 +66,6 @@ public:
 protected:
 	/// @brief Takes an array of Tiles, initializes a sprite animation.
 	virtual void Process(FoxtrotRenderer* renderer) override;
-
-	void UpdateConstantBuffers(
-		int							 meshIndex,
-		ComPtr<ID3D11Device>&		 device,
-		ComPtr<ID3D11DeviceContext>& context,
-		Transform*					 transform,
-		Camera*						 camInst,
-		FTMaterial*					 mat,
-		const int					 frontDir = 0);
 
 private:
 	/// @brief A JSON file that holds the rect data on a spritesheet.

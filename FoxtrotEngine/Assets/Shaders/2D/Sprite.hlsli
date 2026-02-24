@@ -32,3 +32,13 @@ float2 RotateTexCoord(float2 texCoord, float2 center, float angle)
     );
     return origin + center;
 }
+
+struct BlinnPhongData
+{
+    float3 ambient;
+    float shininess;
+    float3 diffuse;
+    float dummy1;
+    float3 specular;
+    float dummy2;
+};

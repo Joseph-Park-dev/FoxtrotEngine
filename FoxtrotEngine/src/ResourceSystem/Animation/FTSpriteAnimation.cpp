@@ -25,62 +25,6 @@
 	#include "EditorUtils.h"
 #endif
 
-void FTSpriteAnimation::Render(
-	int				  meshIndex,
-	FoxtrotRenderer*  renderer,
-	Transform*		  transform,
-	Camera*			  camInst,
-	FTVertexShader*	  vs,
-	FTGeometryShader* gs,
-	FTPixelShader*	  ps,
-	FTMaterial*		  mat)
-{
-	// This enables the resource reusable throughout the Component instances.
-	UpdateConstantBuffers(meshIndex, renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat, GetFrontDir());
-
-	if (!vs || !ps || !gs || !mat) // Vertex Shader is always required when drawing.
-		return;
-
-	UINT						 stride	 = sizeof(SpriteVertex);
-	UINT						 offset	 = 0;
-	Mesh*						 mesh	 = Meshes()->At(0);
-	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
-
-	if (mesh)
-	{
-		if (GetTexture())
-		{
-			ID3D11ShaderResourceView* const resViews[] = {
-				GetTexture()->GetSRV().Get()
-			};
-			context->PSSetShaderResources(0, 1, resViews);
-		}
-
-		context->VSSetShader(vs->GetShader().Get(), 0, 0);
-		context->VSSetConstantBuffers(
-			0, 1, GetVCBuf().GetAddressOf());
-
-		context->GSSetShader(gs->GetShader().Get(), 0, 0);
-
-		ID3D11Buffer* const gsCBuffers[] = {
-			GetGCMatBuf().Get(),
-			GetGCSpriteBuf().Get(),
-		};
-		context->GSSetConstantBuffers(0, 2, gsCBuffers);
-
-		context->PSSetShader(ps->GetShader().Get(), 0, 0);
-		context->PSSetSamplers(0, 1, GetSamplerState().GetAddressOf());
-		if (mat)
-			context->PSSetConstantBuffers(0, 1, mat->GetPCBuf().GetAddressOf());
-
-		context->IASetInputLayout(vs->GetInputLayout().Get());
-		context->IASetVertexBuffers(0, 1, mesh->VertexBuffer.GetAddressOf(), &stride, &offset);
-		context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-		context->Draw(1, 0);
-	}
-}
-
 void FTSpriteAnimation::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
@@ -138,6 +82,11 @@ const int FTSpriteAnimation::GetFPS() const
 const int FTSpriteAnimation::GetMaxFrameIdx() const { return mMaxFrameIdx; }
 const int FTSpriteAnimation::GetMinFrameIdx() const { return mMinFrameIdx; }
 
+const size_t FTSpriteAnimation::GetFrameCount() const
+{
+	return static_cast<size_t>(mMaxFrameIdx - mMinFrameIdx + 1);
+}
+
 FTSpriteAnimation::FTSpriteAnimation(FTResourceDef& resDef, FoxtrotRenderer* renderer)
 	: FTSprite(resDef, renderer, true)
 	, mJSON(nullptr)
@@ -169,16 +118,6 @@ void FTSpriteAnimation::Process(FoxtrotRenderer* renderer)
 	Initialize(renderer->GetDevice(), renderer->GetContext());
 
 	FTResource::Process();
-}
-
-void FTSpriteAnimation::UpdateConstantBuffers(int meshIndex, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, Transform* transform, Camera* camInst, FTMaterial* mat, const int frontDir)
-{
-	size_t gcDataCount = mMaxFrameIdx - mMinFrameIdx + 1;
-	FTSprite::UpdateConstantBuffers(device, context, transform, camInst, mat, frontDir, gcDataCount);
-	D3D11Utils::UpdateBuffer(context, GetGCSpriteData()[meshIndex], GetGCSpriteBuf());
-
-	if (mat)
-		mat->UpdateBuffer(context);
 }
 
 void FTSpriteAnimation::Initialize(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)

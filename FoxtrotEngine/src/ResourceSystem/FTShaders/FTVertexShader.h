@@ -17,6 +17,8 @@
 
 #ifdef FOXTROT_EDITOR
 #include <magic_enum/include/magic_enum/magic_enum.hpp>
+
+#include "CommandHistory.h"
 #endif // FOXTROT_EDITOR
 
 
@@ -34,10 +36,10 @@ public:
 
 public:
 	/// @brief Returns compiled HLSL vertex shader object.
-	ComPtr<ID3D11VertexShader>& GetShader();
+	Microsoft::WRL::ComPtr<ID3D11VertexShader>& GetShader();
 
 	/// @brief Returns the current input layout.
-	ComPtr<ID3D11InputLayout>& GetInputLayout();
+	Microsoft::WRL::ComPtr<ID3D11InputLayout>& GetInputLayout();
 
 public:
 	/// @see FTShader::FTShader()
@@ -53,8 +55,8 @@ protected:
 
 private:
 	/// @brief The shader should remain compiled after initialization.
-	ComPtr<ID3D11VertexShader> mShader;
-	ComPtr<ID3D11InputLayout>  mInputLayout;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> mShader;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout>  mInputLayout;
 
 #ifdef FOXTROT_EDITOR
 public:

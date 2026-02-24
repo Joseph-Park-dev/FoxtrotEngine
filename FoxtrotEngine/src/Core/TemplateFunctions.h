@@ -162,7 +162,7 @@ inline FTDS::String ExtractFileName(const char* path)
 	std::filesystem::path p(path);
 	FTDS::String		  pathStr = FTDS::String(p.string().c_str());
 	int idx = pathStr.RFind("\\");
-	pathStr.SubStr(idx + 1, pathStr.Length() - idx); // 1 -> "\\" should be omitted.
+	pathStr.SubStr(idx + 1, pathStr.GetLength() - idx); // 1 -> "\\" should be omitted.
 	return pathStr;
 }
 
@@ -171,7 +171,7 @@ inline FTDS::String ExtractFileType(const char* path)
 	std::filesystem::path p(path);
 	FTDS::String		  pathStr = FTDS::String(p.string().c_str());
 	int idx = pathStr.RFind(".");
-	pathStr.SubStr(idx, pathStr.Length() - idx);
+	pathStr.SubStr(idx, pathStr.GetLength() - idx);
 	return pathStr;
 }
 
@@ -203,7 +203,7 @@ inline bool EndsWith(
 
 inline void ReplaceSuffix(FTDS::String& curr, FTDS::String prevSuffix, FTDS::String postSuffix)
 {
-	curr.SubStr(0, curr.Length() - prevSuffix.Length());
+	curr.SubStr(0, curr.GetLength() - prevSuffix.GetLength());
 	curr.Append(postSuffix);
 }
 

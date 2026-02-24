@@ -7,19 +7,27 @@ struct PointVPMat;
 class FTGeometryShader;
 class FTPixelShader;
 class FoxtrotRenderer;
+class D3D11PSO;
 
 class FTSprite :
 	public FTMeshGroup
 {
 public:
+	/// @param meshIndex Index of an elements from the sliced spritesheet.
+	void UpdateConstantBuffers(
+		FoxtrotRenderer* renderer,
+		Transform*		 transform,
+		Camera*			 camInst,
+		FTMaterial*		 mat,
+		const size_t	 gcDataCount = 1,
+		const int		 meshIndex = 0);
+
 	virtual void Render(
-		FoxtrotRenderer*  renderer,
-		Transform*		  transform,
-		Camera*			  camInst,
-		FTVertexShader*	  vs,
-		FTGeometryShader* gs,
-		FTPixelShader*	  ps,
-		FTMaterial*		  mat);
+		FoxtrotRenderer* renderer,
+		Transform*		 transform,
+		Camera*			 camInst,
+		D3D11PSO*		 pso,
+		FTMaterial*		 mat) override;
 
 public:
 	FTTexture*	  GetTexture() const;
@@ -37,16 +45,6 @@ public:
 
 protected:
 	virtual void InitializeConstantBuffers(ComPtr<ID3D11Device>& device) override;
-
-	/// @param gcDataCount Number of GS constant data in the buffer.
-	void UpdateConstantBuffers(
-		ComPtr<ID3D11Device>&		 device,
-		ComPtr<ID3D11DeviceContext>& context,
-		Transform*					 transform,
-		Camera*						 camInst,
-		FTMaterial*					 mat,
-		const int					 frontDir	 = 0,
-		const size_t				 gcDataCount = 1);
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>& GetGCMatBuf();

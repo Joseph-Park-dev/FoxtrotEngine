@@ -45,16 +45,17 @@ void SpriteRenderer::Initialize(FTCore* coreInstance)
 void SpriteRenderer::Render(FoxtrotRenderer* renderer)
 {
 	if (mSprite)
-		mSprite->Render(renderer, GetOwner()->GetTransform(), Camera::GetInstance(), mVS, mGS, mPS, mMaterial);
+	{
+		mSprite->UpdateConstantBuffers(renderer, GetOwner()->GetTransform(), Camera::GetInstance(), mMaterial);
+		mSprite->Render(renderer, GetOwner()->GetTransform(), Camera::GetInstance(), mPSO, mMaterial);
+	}
 }
 
 void SpriteRenderer::CloneTo(Actor* actor)
 {
 	SpriteRenderer* newComp = DBG_NEW SpriteRenderer(actor, GetUpdateOrder());
 	newComp->mSprite		= this->mSprite;
-	newComp->mVS			= this->mVS;
-	newComp->mGS			= this->mGS;
-	newComp->mPS			= this->mPS;
+	newComp->mPSO			= this->mPSO;
 	newComp->mMaterial		= this->mMaterial;
 }
 
@@ -63,14 +64,7 @@ SpriteRenderer::SpriteRenderer(Actor* owner, int updateOrder)
 	, mSprite(nullptr)
 	, mMaterial(nullptr)
 {
-	FTDS::String key = Path::SpriteRenderer::VS;
-	mVS				 = ResourceManager::GetInstance()->GetLoadedVertexShader(key);
-
-	key = Path::SpriteRenderer::GS;
-	mGS = ResourceManager::GetInstance()->GetLoadedGeometryShader(key);
-
-	key = Path::SpriteRenderer::PS;
-	mPS = ResourceManager::GetInstance()->GetLoadedPixelShader(key);
+	mPSO = ResourceManager::GetInstance()->GetLoadedPSO(ChunkKey::SpriteRenderer::PSO);
 }
 
 FTSprite* SpriteRenderer::GetSprite() const
@@ -78,35 +72,19 @@ FTSprite* SpriteRenderer::GetSprite() const
 	return mSprite;
 }
 
-void SpriteRenderer::SetSprite(FTSprite* sprite)
-{
-	mSprite = sprite;
-}
-
-FTVertexShader* SpriteRenderer::GetVS() const
-{
-	return mVS;
-}
-
-FTGeometryShader* SpriteRenderer::GetGS() const
-{
-	return mGS;
-}
-
-FTPixelShader* SpriteRenderer::GetPS() const
-{
-	return mPS;
-}
-
 FTMaterial* SpriteRenderer::GetMaterial() const
 {
 	return mMaterial;
 }
 
-void SpriteRenderer::SetVS(FTVertexShader* vs) { mVS = vs; }
-void SpriteRenderer::SetGS(FTGeometryShader* gs) { mGS = gs; }
-void SpriteRenderer::SetPS(FTPixelShader* ps) { mPS = ps; }
+D3D11PSO* SpriteRenderer::GetPSO() const
+{
+	return mPSO;
+}
+
+void SpriteRenderer::SetSprite(FTSprite* sprite) { mSprite = sprite; }
 void SpriteRenderer::SetMaterial(FTMaterial* mat) { mMaterial = mat; }
+void SpriteRenderer::SetPSO(D3D11PSO* pso) { mPSO = pso; }
 
 void SpriteRenderer::SaveProperties(std::ofstream& ofs)
 {
@@ -152,6 +130,9 @@ void SpriteRenderer::EditorUIUpdate()
 void SpriteRenderer::EditorRender(FoxtrotRenderer* renderer)
 {
 	if (mSprite)
-		mSprite->Render(renderer, GetOwner()->GetTransform(), EditorCamera::GetInstance(), mVS, mGS, mPS, mMaterial);
+	{
+		mSprite->UpdateConstantBuffers(renderer, GetOwner()->GetTransform(), Camera::GetInstance(), mMaterial);
+		mSprite->Render(renderer, GetOwner()->GetTransform(), EditorCamera::GetInstance(), mPSO, mMaterial);
+	}
 }
 #endif // FOXTROT_EDITOR

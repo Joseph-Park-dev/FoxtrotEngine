@@ -9,6 +9,7 @@
 #include "ResourceSystem/Animation/FTSpriteAnimation.h"
 #include "ResourceSystem/FTPremade.h"
 #include "ResourceSystem/FTFont/FTFont.h"
+#include "ResourceSystem/D3D11PSO.h"
 
 #include <FTCoreEditor.h>
 
@@ -34,12 +35,10 @@ public:
 	void PassLoadResourceInChunk(std::ifstream& ifs);
 
 public:
+	FTDS::HashMap<D3D11PSO*>*		   GetPSOs() override;
 	FTDS::HashMap<FTSprite*>*		   GetSprites() override;
 	FTDS::HashMap<FTTileMap*>*		   GetTileMaps() override;
 	FTDS::HashMap<FTPremade*>*		   GetPremades() override;
-	FTDS::HashMap<FTVertexShader*>*	   GetVertexShaders() override;
-	FTDS::HashMap<FTGeometryShader*>*  GetGeometryShaders() override;
-	FTDS::HashMap<FTPixelShader*>*	   GetPixelShaders() override;
 	FTDS::HashMap<FTMaterial*>*		   GetMaterials() override;
 	FTDS::HashMap<FTMeshGroup*>*	   GetMeshGroups() override;
 	FTDS::HashMap<FTSpriteAnimation*>* GetSpriteAnimations() override;

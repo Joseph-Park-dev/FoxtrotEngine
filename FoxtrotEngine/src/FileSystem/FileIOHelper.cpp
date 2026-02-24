@@ -417,7 +417,7 @@ void FileIOHelper::ParseInt(FTDS::String& line, int& arg)
 {
 	// Remove tab identation.
 	size_t tabEnd = line.RFind("\t");
-	line.SubStr(tabEnd, line.Length());
+	line.SubStr(tabEnd, line.GetLength());
 
 	arg = std::stoi(line.C_Str());
 }
@@ -426,7 +426,7 @@ void FileIOHelper::ParseUnsignedInt(FTDS::String& line, unsigned int& arg)
 {
 	// Remove tab identation.
 	size_t tabEnd = line.RFind("\t");
-	line.SubStr(tabEnd, line.Length());
+	line.SubStr(tabEnd, line.GetLength());
 
 	arg = std::stoul(line.C_Str(), nullptr, 0);
 }
@@ -435,7 +435,7 @@ void FileIOHelper::ParseSize(FTDS::String& line, size_t& arg)
 {
 	// Remove tab identation.
 	size_t tabEnd = line.RFind("\t");
-	line.SubStr(tabEnd, line.Length());
+	line.SubStr(tabEnd, line.GetLength());
 
 	arg = static_cast<size_t>(std::stoul(line.C_Str(), nullptr, 0));
 }
@@ -444,7 +444,7 @@ void FileIOHelper::ParseFloat(FTDS::String& line, float& arg)
 {
 	// Remove tab identation.
 	size_t tabEnd = line.RFind("\t");
-	line.SubStr(tabEnd, line.Length());
+	line.SubStr(tabEnd, line.GetLength());
 
 	arg = std::stof(line.C_Str());
 }
@@ -460,7 +460,7 @@ void FileIOHelper::ParseString(FTDS::String& line, FTDS::String& arg)
 {
 	// Remove tab identation.
 	size_t tabEnd = line.RFind("\t");
-	line.SubStr(tabEnd, line.Length());
+	line.SubStr(tabEnd, line.GetLength());
 
 	arg.Assign(line);
 }
@@ -648,16 +648,15 @@ bool FileIOHelper::GetLine(std::ifstream& ifs, FTDS::String& str, char delimiter
 	}
 	int capacity = static_cast<int>(length + 1);
 	str.Reserve(capacity);
-	str.SetLength(length);
 	ifs.seekg(-capacity - 1, std::ios_base::cur);
 
 	// Read characters one by one.
 	for (size_t i = 0; i < length; ++i)
 	{
 		ifs.get(ch);
-		str.At(i) = ch;
+		str.PushBack(ch);
 	}
-	str.At(length) = '\0';
+	str.PushBack('\0');
 	ifs.seekg(2, std::ios_base::cur); // Skip the "\n" at the end of the line.
 	return str.Data() && 0 < length;
 }

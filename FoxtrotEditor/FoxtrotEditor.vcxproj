@@ -427,6 +427,9 @@
     <FxCompile Include="FoxtrotEngine\Assets\Shaders\2D\SpriteGS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Geometry</ShaderType>
     </FxCompile>
+    <FxCompile Include="FoxtrotEngine\Assets\Shaders\2D\SpritePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Pixel</ShaderType>
+    </FxCompile>
     <FxCompile Include="FoxtrotEngine\Assets\Shaders\2D\SpriteVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">Vertex</ShaderType>
     </FxCompile>

@@ -32,37 +32,37 @@ void FTSpineAnimation::Update(float deltaTime, spine::Physics physics)
 
 void FTSpineAnimation::Render(FoxtrotRenderer* renderer, Transform* transform, Camera* camInst, FTTexture* tex, FTVertexShader* vs, FTPixelShader* ps, FTMaterial* mat)
 {
-	// This enables the resource reusable throughout the Component instances.
-	UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat, GetFrontDir());
+	//// This enables the resource reusable throughout the Component instances.
+	//UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat, GetFrontDir());
 
-	if (!vs || !ps || !mat) // Vertex Shader is always required when drawing.
-		return;
+	//if (!vs || !ps || !mat) // Vertex Shader is always required when drawing.
+	//	return;
 
-	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
-	UpdateBuffers(context);
+	//ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
+	//UpdateBuffers(context);
 
-	mMeshes->IterateArray([&](SpineMesh* mesh) {
-		context->VSSetConstantBuffers(
-			0, 1, GetVCBuf().GetAddressOf());
+	//mMeshes->IterateArray([&](SpineMesh* mesh) {
+	//	context->VSSetConstantBuffers(
+	//		0, 1, GetVCBuf().GetAddressOf());
 
-		if (tex)
-		{
-			std::vector<ID3D11ShaderResourceView*> resViews;
-			resViews.push_back(tex->GetSRV().Get());
-			context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
-		}
+	//	if (tex)
+	//	{
+	//		std::vector<ID3D11ShaderResourceView*> resViews;
+	//		resViews.push_back(tex->GetSRV().Get());
+	//		context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
+	//	}
 
-		context->VSSetShader(vs->GetShader().Get(), 0, 0);
+	//	context->VSSetShader(vs->GetShader().Get(), 0, 0);
 
-		context->PSSetSamplers(0, 1, GetSamplerState().GetAddressOf());
-		context->PSSetShader(ps->GetShader().Get(), 0, 0);
+	//	context->PSSetSamplers(0, 1, GetSamplerState().GetAddressOf());
+	//	context->PSSetShader(ps->GetShader().Get(), 0, 0);
 
-		if (mat)
-			context->PSSetConstantBuffers(0, 1, mat->GetPCBuf().GetAddressOf());
+	//	if (mat)
+	//		context->PSSetConstantBuffers(0, 1, mat->GetPCBuf().GetAddressOf());
 
-		context->IASetInputLayout(vs->GetInputLayout().Get());
-		mesh->Draw(context);
-	});
+	//	context->IASetInputLayout(vs->GetInputLayout().Get());
+	//	mesh->Draw(context);
+	//});
 }
 
 void FTSpineAnimation::SetTimeScale(const float val)

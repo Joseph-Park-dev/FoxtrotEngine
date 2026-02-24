@@ -18,9 +18,6 @@ void StandardMaterial::CreatePixelConstBuffer(ComPtr<ID3D11Device>& device)
 
 void StandardMaterial::UpdateBuffer(ComPtr<ID3D11DeviceContext>& context)
 {
-	Matrix&& viewMat  = Camera::GetInstance()->GetViewRow();
-	Vector3	 eyeWorld = Vector3::Transform(Vector3(0.0f), viewMat.Invert());
-
 	/*for (size_t i = 0; i < Light::TYPE::END; ++i)
 	{
 		if (LightManager::GetInstance()->GetType(0) == (Light::TYPE)i)
@@ -29,7 +26,6 @@ void StandardMaterial::UpdateBuffer(ComPtr<ID3D11DeviceContext>& context)
 			mData->Lights[i].Strength *= 0.0f;
 	}*/
 
-	mData->EyeWorld = eyeWorld;
 	D3D11Utils::UpdateBuffer(context, *mData, GetPCBuf());
 }
 
@@ -50,10 +46,9 @@ void StandardMaterial::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::StandardMat::STANDARD_MAT);
 
 	FTResource::SaveProperties(ofs);
-	FileIOHelper::SaveVector3(ofs, ChunkKey::BlinnPhong::AMBIENT, mData->BlinnPhongData.Ambient);
-	FileIOHelper::SaveFloat(ofs, ChunkKey::BlinnPhong::SHININESS, mData->BlinnPhongData.Shininess);
-	FileIOHelper::SaveVector3(ofs, ChunkKey::BlinnPhong::DIFFUSE, mData->BlinnPhongData.Diffuse);
-	FileIOHelper::SaveVector3(ofs, ChunkKey::BlinnPhong::SPECULAR, mData->BlinnPhongData.Specular);
+	FileIOHelper::SaveBool(ofs, ChunkKey::StandardMat::USE_TEXTURE, mData->UseTexture);
+	FileIOHelper::SaveFloat(ofs, ChunkKey::StandardMat::ALPHA_TRIM, mData->AlphaTrim);
+	FileIOHelper::SaveVector4(ofs, ChunkKey::StandardMat::COLOR, mData->Color);
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::StandardMat::STANDARD_MAT);
 }
@@ -62,12 +57,13 @@ void StandardMaterial::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::StandardMat::STANDARD_MAT);
 
-	FileIOHelper::LoadVector3(ifs, mData->BlinnPhongData.Specular);
-	FileIOHelper::LoadVector3(ifs, mData->BlinnPhongData.Diffuse);
-	FileIOHelper::LoadFloat(ifs, mData->BlinnPhongData.Shininess);
-	FileIOHelper::LoadVector3(ifs, mData->BlinnPhongData.Ambient);
+	bool useTex;
+	FileIOHelper::LoadBool(ifs, useTex);
+	FileIOHelper::LoadFloat(ifs, mData->AlphaTrim);
+	FileIOHelper::LoadVector4(ifs, mData->Color);
 
 	FTResource::LoadProperties(ifs);
+	mData->UseTexture = (uint32_t)useTex;
 }
 
 #ifdef FOXTROT_EDITOR
@@ -80,11 +76,6 @@ void StandardMaterial::UpdateUI()
 	mData->UseTexture = useTex;
 
 	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKey::StandardMat::ALPHA_TRIM, mData->AlphaTrim);
-
-	ImGui::SeparatorText("BlinnPhong Data");
-	CommandHistory::GetInstance()->UpdateVector3Value(ChunkKey::BlinnPhong::AMBIENT, mData->BlinnPhongData.Ambient);
-	CommandHistory::GetInstance()->UpdateFloatValue(ChunkKey::BlinnPhong::SHININESS, mData->BlinnPhongData.Shininess);
-	CommandHistory::GetInstance()->UpdateVector3Value(ChunkKey::BlinnPhong::DIFFUSE, mData->BlinnPhongData.Diffuse);
-	CommandHistory::GetInstance()->UpdateVector3Value(ChunkKey::BlinnPhong::SPECULAR, mData->BlinnPhongData.Specular);
+	CommandHistory::GetInstance()->UpdateVector4Value(ChunkKey::StandardMat::COLOR, mData->Color);
 }
 #endif

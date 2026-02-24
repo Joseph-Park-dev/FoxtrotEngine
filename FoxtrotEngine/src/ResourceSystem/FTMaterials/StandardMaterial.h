@@ -26,11 +26,10 @@ struct BlinnPhongData
 /// @brief The value of the material data are to be applied to Pixel Constant Buffers.
 struct StandardMatData
 {
-	Vector3		   EyeWorld;
-	uint32_t	   UseTexture = 1;
-	float		   AlphaTrim  = 0.9f;
-	Vector3		   dummy;
-	BlinnPhongData BlinnPhongData;
+	uint32_t UseTexture = 1;
+	float	 AlphaTrim	= 0.9f;
+	Vector2	 Dummy		= Vector2(0.f, 0.f);
+	Vector4	 Color		= Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 };
 
 /// @brief The very basic material used for mesh rendering, provided by Foxtrot Engine.
@@ -76,6 +75,7 @@ namespace ChunkKey
 		constexpr const char* STANDARD_MAT = "StandardMaterial";
 		constexpr const char* USE_TEXTURE  = "Use Texture";
 		constexpr const char* ALPHA_TRIM   = "Alpha Trim";
+		constexpr const char* COLOR		   = "Color";
 	} // namespace StandardMat
 
 	namespace BlinnPhong

@@ -31,14 +31,11 @@ class FTMeshGroup :
 public:
 	/// @brief Renders the entire meshes created, as a full model.
 	virtual void Render(
-		FoxtrotRenderer*  renderer,
-		Transform*		  transform,
-		Camera*			  camInst,
-		FTTexture*		  tex,
-		FTVertexShader*	  vs,
-		FTGeometryShader* gs,
-		FTPixelShader*	  ps,
-		FTMaterial*		  mat);
+		FoxtrotRenderer* renderer,
+		Transform*		 transform,
+		Camera*			 camInst,
+		D3D11PSO*		 pso,
+		FTMaterial*		 mat);
 
 public:
 	/// @brief Set scale value to be multiplied with the scale (3D transformation).

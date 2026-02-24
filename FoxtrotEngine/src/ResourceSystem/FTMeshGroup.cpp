@@ -28,61 +28,8 @@
 
 using Matrix = DirectX::SimpleMath::Matrix;
 
-void FTMeshGroup::Render(
-	FoxtrotRenderer*  renderer,
-	Transform*		  transform,
-	Camera*			  camInst,
-	FTTexture*		  tex,
-	FTVertexShader*	  vs,
-	FTGeometryShader* gs,
-	FTPixelShader*	  ps,
-	FTMaterial*		  mat)
+void FTMeshGroup::Render(FoxtrotRenderer* renderer, Transform* transform, Camera* camInst, D3D11PSO* pso, FTMaterial* mat)
 {
-	//// This enables the resource reusable throughout the Component instances.
-	// UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat, mFrontDir);
-
-	// if (!vs || !ps || !gs || !mat) // Shaders are always required when drawing.
-	//	return;
-
-	// UINT						 stride	 = sizeof(SpriteVertex);
-	// UINT						 offset	 = 0;
-	// ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
-	// Mesh*						 mesh	 = Meshes()->At(0);
-
-	// if (mesh)
-	//{
-	//	context->VSSetShader(vs->GetShader().Get(), 0, 0);
-	//	context->VSSetConstantBuffers(0, 1, mVCBuf.GetAddressOf());
-
-	//	context->GSSetShader(gs->GetShader().Get(), 0, 0);
-
-	//	ID3D11Buffer* const gsCBuffers[] = {
-	//		mGCMatBuf.Get(),
-	//		mGCFrameBuf.Get(),
-	//	};
-	//	context->GSSetConstantBuffers(0, 2, gsCBuffers);
-	//}
-
-	// mMeshes->IterateArray([&](Mesh* mesh) {
-	//	if (tex)
-	//	{
-	//		std::vector<ID3D11ShaderResourceView*> resViews;
-	//		resViews.push_back(tex->GetSRV().Get());
-	//		context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
-	//	}
-
-	//	context->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
-	//	context->PSSetShader(ps->GetShader().Get(), 0, 0);
-
-	//	if (mat)
-	//		context->PSSetConstantBuffers(0, 1, mat->GetPCBuf().GetAddressOf());
-
-	//	context->IASetInputLayout(vs->GetInputLayout().Get());
-	//	context->IASetVertexBuffers(0, 1, mesh->VertexBuffer.GetAddressOf(), &stride, &offset);
-	//	context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-	//	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	//	context->DrawIndexed(mesh->IndexCount, 0, 0);
-	//});
 }
 
 void FTMeshGroup::SetSizeScale(const FTVector3 scale)
@@ -160,7 +107,7 @@ void FTMeshGroup::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
 
 HRESULT FTMeshGroup::CreateTextureSampler(ComPtr<ID3D11Device>& device)
 {
-	// FTTexture sampler ¸¸µé±â
+	// FTTexture sampler ï¿½ï¿½ï¿½ï¿½ï¿½
 	D3D11_SAMPLER_DESC sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
 	sampDesc.Filter			= D3D11_FILTER_MIN_MAG_MIP_LINEAR;

@@ -23,8 +23,6 @@
  * engine's rendering and file I/O subsystems.
  */
 
-#include <unordered_map>
-
 #include "Managers/ResourceManager.h"
 #include "Managers/AnimationManager.h"
 #include "ResourceSystem/ResPath.h"
@@ -48,6 +46,7 @@
 #include "ResourceSystem/GenericData/FTJSON.h"
 #include "ResourceSystem/GenericData/FTText.h"
 #include "ResourceSystem/FTFont/FTFont.h"
+#include "ResourceSystem/D3D11PSO.h"
 #include "Core/FTCore.h"
 #include "Core/TemplateFunctions.h"
 #include "Renderer/FoxtrotRenderer.h"
@@ -89,15 +88,15 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 	mSpriteAnimations = DBG_NEW FTDS::HashMap<FTSpriteAnimation*>;
 	mSpineAnimations  = DBG_NEW	 FTDS::HashMap<FTSpineAnimation*>;
 	mMeshGroups		  = DBG_NEW		  FTDS::HashMap<FTMeshGroup*>;
-	mVertexShaders	  = DBG_NEW	   FTDS::HashMap<FTVertexShader*>;
-	mGeometryShaders  = DBG_NEW	 FTDS::HashMap<FTGeometryShader*>;
-	mPixelShaders	  = DBG_NEW		FTDS::HashMap<FTPixelShader*>;
+	mPSOs			  = DBG_NEW				FTDS::HashMap<D3D11PSO*>;
 	mMaterials		  = DBG_NEW		   FTDS::HashMap<FTMaterial*>;
 	mSounds			  = DBG_NEW			  FTDS::HashMap<Sound*>;
 	mCSVs			  = DBG_NEW				FTDS::HashMap<FTCSV*>;
 	mJSONs			  = DBG_NEW			   FTDS::HashMap<FTJSON*>;
 	mTexts			  = DBG_NEW			   FTDS::HashMap<FTText*>;
 	mFonts			  = DBG_NEW			   FTDS::HashMap<FTFont*>;
+
+	mRS = DBG_NEW FTDS::Array<ComPtr<ID3D11RasterizerState>>;
 }
 
 /**
@@ -113,15 +112,14 @@ void ResourceManager::Initialize(FoxtrotRenderer* renderer)
  */
 void ResourceManager::DeleteAll()
 {
+	ClearMap(mPSOs);
 	ClearMap(mSprites);
 	ClearMap(mTileMaps);
 	ClearMap(mPremades);
 	ClearMap(mSpriteAnimations);
 	ClearMap(mSpineAnimations);
 	ClearMap(mMeshGroups);
-	ClearMap(mVertexShaders);
-	ClearMap(mGeometryShaders);
-	ClearMap(mPixelShaders);
+	ClearMap(mPSOs);
 	ClearMap(mMaterials);
 	ClearMap(mSounds);
 	ClearMap(mCSVs);
@@ -187,7 +185,7 @@ void ResourceManager::AbsoluteToRelativePath(FTDS::String& absPath)
 		return;
 
 	int cutIndex = path.RFind(folderName.C_Str());
-	path.SubStr(cutIndex, path.Length());
+	path.SubStr(cutIndex, path.GetLength());
 
 	FTDS::String result = ".";
 	result.Append(path);
@@ -213,13 +211,18 @@ void ResourceManager::RelativeToAbsolutePath(FTDS::String& relPath)
 	if (path.LFind(".\\") != 0)
 		return;
 
-	path.SubStr(folderName.Length(), path.Length());
+	path.SubStr(folderName.GetLength(), path.GetLength());
 
 	FTDS::String result = mPathToAsset;
 	// result.Append("\\");
 	result.Append(path);
 
 	relPath = result;
+}
+
+FTDS::HashMap<D3D11PSO*>* ResourceManager::GetPSOs()
+{
+	return mPSOs;
 }
 
 /**
@@ -250,36 +253,6 @@ FTDS::HashMap<FTTileMap*>* ResourceManager::GetTileMaps()
 FTDS::HashMap<FTPremade*>* ResourceManager::GetPremades()
 {
 	return mPremades;
-}
-
-/**
- * @brief Get pointer to the internal vertex shader hash map.
- *
- * @return Pointer to FTDS::HashMap containing FTVertexShader* records.
- */
-FTDS::HashMap<FTVertexShader*>* ResourceManager::GetVertexShaders()
-{
-	return mVertexShaders;
-}
-
-/**
- * @brief Get pointer to the internal geometry shader hash map.
- *
- * @return Pointer to FTDS::HashMap containing FTGeometryShader* records.
- */
-FTDS::HashMap<FTGeometryShader*>* ResourceManager::GetGeometryShaders()
-{
-	return mGeometryShaders;
-}
-
-/**
- * @brief Get pointer to the internal pixel shader hash map.
- *
- * @return Pointer to FTDS::HashMap containing FTPixelShader* records.
- */
-FTDS::HashMap<FTPixelShader*>* ResourceManager::GetPixelShaders()
-{
-	return mPixelShaders;
 }
 
 /**
@@ -372,6 +345,11 @@ FTDS::HashMap<FTFont*>* ResourceManager::GetFonts()
 	return mFonts;
 }
 
+FTDS::Array<ComPtr<ID3D11RasterizerState>>* ResourceManager::GetRS()
+{
+	return mRS;
+}
+
 /**
  * @brief Load built-in material instances and insert them into the material map.
  *
@@ -431,15 +409,14 @@ ResourceManager::~ResourceManager()
 {
 	DeleteAll();
 
+	delete mPSOs;
 	delete mSprites;
 	delete mTileMaps;
 	delete mPremades;
 	delete mSpriteAnimations;
 	delete mSpineAnimations;
 	delete mMeshGroups;
-	delete mVertexShaders;
-	delete mGeometryShaders;
-	delete mPixelShaders;
+	delete mPSOs;
 	delete mMaterials;
 	delete mSounds;
 	delete mCSVs;
@@ -447,15 +424,15 @@ ResourceManager::~ResourceManager()
 	delete mTexts;
 	delete mFonts;
 
+	mRS				  = nullptr;
+	mPSOs			  = nullptr;
 	mSprites		  = nullptr;
 	mTileMaps		  = nullptr;
 	mPremades		  = nullptr;
 	mSpriteAnimations = nullptr;
 	mSpineAnimations  = nullptr;
 	mMeshGroups		  = nullptr;
-	mVertexShaders	  = nullptr;
-	mGeometryShaders  = nullptr;
-	mPixelShaders	  = nullptr;
+	mPSOs			  = nullptr;
 	mMaterials		  = nullptr;
 	mSounds			  = nullptr;
 	mCSVs			  = nullptr;
@@ -472,15 +449,14 @@ ResourceManager::~ResourceManager()
 ResourceManager::ResourceManager()
 	: mPathToAsset()
 	, mRenderer(nullptr)
+	, mRS(nullptr)
 	, mSprites(nullptr)
 	, mTileMaps(nullptr)
 	, mPremades(nullptr)
 	, mSpriteAnimations(nullptr)
 	, mSpineAnimations(nullptr)
 	, mMeshGroups(nullptr)
-	, mVertexShaders(nullptr)
-	, mGeometryShaders(nullptr)
-	, mPixelShaders(nullptr)
+	, mPSOs(nullptr)
 	, mMaterials(nullptr)
 	, mSounds(nullptr)
 	, mCSVs(nullptr)
@@ -528,12 +504,6 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Sound::SOUND);
 	LoadResourceFromChunk<Sound>(ifs, mSounds, desc.first);
 
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPixelShader::FT_PIXEL_SHADER);
-	LoadGraphicsResourceFromChunk<FTPixelShader>(ifs, mPixelShaders, desc.first, mRenderer);
-
-	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTVertexShader::FT_VERTEX_SHADER);
-	LoadGraphicsResourceFromChunk<FTVertexShader>(ifs, mVertexShaders, desc.first, mRenderer);
-
 	desc = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMeshGroup::FT_MESH_GROUP);
 	LoadGraphicsResourceFromChunk<FTMeshGroup>(ifs, mMeshGroups, desc.first, mRenderer);
 
@@ -570,6 +540,10 @@ void ResourceManager::LoadResources(std::ifstream& ifs)
  */
 void ResourceManager::LoadDefaultResources()
 {
+	FTDS::HashMap<FTVertexShader*>	 VS;
+	FTDS::HashMap<FTGeometryShader*> GS;
+	FTDS::HashMap<FTPixelShader*>	 PS;
+
 	FTResourceDef resDef{
 		ChunkKey::NullVal::NULL_OBJECT, ChunkKey::NullVal::NULL_OBJECT
 	};
@@ -578,7 +552,7 @@ void ResourceManager::LoadDefaultResources()
 	///// Vertex Shader Setup /////
 	///////////////////////////////
 
-	mVertexShaders->Reserve(5);
+	VS.Reserve(5);
 
 	// 2D sprite animation vertex shader
 	FTDS::String vsPath = Path::Resource::SHADERS_2D;
@@ -586,7 +560,7 @@ void ResourceManager::LoadDefaultResources()
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
-	mVertexShaders->Insert(
+	VS.Insert(
 		resDef.FileName,
 		DBG_NEW FTVertexShader(resDef, mRenderer));
 
@@ -596,7 +570,7 @@ void ResourceManager::LoadDefaultResources()
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
-	mVertexShaders->Insert(
+	VS.Insert(
 		resDef.FileName,
 		DBG_NEW FTVertexShader(resDef, mRenderer));
 
@@ -606,7 +580,7 @@ void ResourceManager::LoadDefaultResources()
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
-	mVertexShaders->Insert(
+	VS.Insert(
 		resDef.FileName,
 		DBG_NEW FTVertexShader(resDef, mRenderer));
 
@@ -616,7 +590,7 @@ void ResourceManager::LoadDefaultResources()
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
-	mVertexShaders->Insert(
+	VS.Insert(
 		resDef.FileName,
 		DBG_NEW FTVertexShader(resDef, mRenderer));
 
@@ -626,7 +600,7 @@ void ResourceManager::LoadDefaultResources()
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
-	mVertexShaders->Insert(
+	VS.Insert(
 		resDef.FileName,
 		DBG_NEW FTVertexShader(resDef, mRenderer));
 
@@ -634,7 +608,7 @@ void ResourceManager::LoadDefaultResources()
 	///// Pixel Shader Setup /////
 	//////////////////////////////
 
-	mPixelShaders->Reserve(6);
+	PS.Reserve(6);
 
 	// 2D sprite animation pixel shader
 	vsPath			= Path::Resource::SHADERS_2D;
@@ -642,7 +616,7 @@ void ResourceManager::LoadDefaultResources()
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
-	mPixelShaders->Insert(
+	PS.Insert(
 		resDef.FileName,
 		DBG_NEW FTPixelShader(resDef, mRenderer));
 
@@ -652,7 +626,7 @@ void ResourceManager::LoadDefaultResources()
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
-	mPixelShaders->Insert(
+	PS.Insert(
 		resDef.FileName,
 		DBG_NEW FTPixelShader(resDef, mRenderer));
 
@@ -662,7 +636,7 @@ void ResourceManager::LoadDefaultResources()
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
-	mPixelShaders->Insert(
+	PS.Insert(
 		resDef.FileName,
 		DBG_NEW FTPixelShader(resDef, mRenderer));
 
@@ -672,7 +646,7 @@ void ResourceManager::LoadDefaultResources()
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
-	mPixelShaders->Insert(
+	PS.Insert(
 		resDef.FileName,
 		DBG_NEW FTPixelShader(resDef, mRenderer));
 
@@ -682,7 +656,7 @@ void ResourceManager::LoadDefaultResources()
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
-	mPixelShaders->Insert(
+	PS.Insert(
 		resDef.FileName,
 		DBG_NEW FTPixelShader(resDef, mRenderer));
 
@@ -692,7 +666,7 @@ void ResourceManager::LoadDefaultResources()
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
-	mPixelShaders->Insert(
+	PS.Insert(
 		resDef.FileName,
 		DBG_NEW FTPixelShader(resDef, mRenderer));
 
@@ -700,7 +674,7 @@ void ResourceManager::LoadDefaultResources()
 	///// Geometry Shader Setup /////
 	/////////////////////////////////
 
-	mGeometryShaders->Reserve(2);
+	GS.Reserve(2);
 
 	// 2D sprite animation geometry shader
 	vsPath			= Path::Resource::SHADERS_2D;
@@ -708,7 +682,7 @@ void ResourceManager::LoadDefaultResources()
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
-	mGeometryShaders->Insert(
+	GS.Insert(
 		resDef.FileName,
 		DBG_NEW FTGeometryShader(resDef, mRenderer));
 
@@ -718,9 +692,97 @@ void ResourceManager::LoadDefaultResources()
 	vsPath.Append(resDef.FileName);
 	resDef.RelativePath = vsPath.C_Str();
 
-	mGeometryShaders->Insert(
+	GS.Insert(
 		resDef.FileName,
 		DBG_NEW FTGeometryShader(resDef, mRenderer));
+
+	//////////////////////////////
+	///// PSO Elements Setup /////
+	//////////////////////////////
+
+	ComPtr<ID3D11BlendState> spriteBS;
+
+	D3D11_BLEND_DESC blendDesc = {};
+	ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
+	blendDesc.AlphaToCoverageEnable	 = FALSE;
+	blendDesc.IndependentBlendEnable = FALSE;
+
+	D3D11_RENDER_TARGET_BLEND_DESC& rtBlendDesc = blendDesc.RenderTarget[0];
+	rtBlendDesc.BlendEnable						= TRUE;
+	rtBlendDesc.SrcBlend						= D3D11_BLEND_ONE;
+	rtBlendDesc.DestBlend						= D3D11_BLEND_INV_SRC_ALPHA;
+	rtBlendDesc.BlendOp							= D3D11_BLEND_OP_ADD;
+	rtBlendDesc.SrcBlendAlpha					= D3D11_BLEND_ONE;
+	rtBlendDesc.DestBlendAlpha					= D3D11_BLEND_INV_SRC_ALPHA;
+	rtBlendDesc.BlendOpAlpha					= D3D11_BLEND_OP_ADD;
+	rtBlendDesc.RenderTargetWriteMask			= D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	DX::ThrowIfFailed(mRenderer->GetDevice()->CreateBlendState(&blendDesc, spriteBS.GetAddressOf()));
+
+	ComPtr<ID3D11DepthStencilState> spriteDSS;
+
+	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	depthStencilDesc.DepthEnable	= false; // false
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc		= D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL;
+
+	DX::ThrowIfFailed(mRenderer->GetDevice()->CreateDepthStencilState(&depthStencilDesc, spriteDSS.GetAddressOf()));
+
+	mRS->Reserve(2);
+	ComPtr<ID3D11RasterizerState> SolidRS;
+	ComPtr<ID3D11RasterizerState> WireframeRS;
+
+	D3D11_RASTERIZER_DESC rastDesc;
+	ZeroMemory(&rastDesc, sizeof(D3D11_RASTERIZER_DESC)); // Need this
+	// rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+	rastDesc.FillMode			   = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+	rastDesc.CullMode			   = D3D11_CULL_MODE::D3D11_CULL_NONE;
+	rastDesc.FrontCounterClockwise = false;
+	rastDesc.DepthClipEnable	   = true;
+	rastDesc.MultisampleEnable	   = true;
+
+	DX::ThrowIfFailed(mRenderer->GetDevice()->CreateRasterizerState(&rastDesc, SolidRS.GetAddressOf()));
+
+	rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_WIREFRAME;
+	DX::ThrowIfFailed(mRenderer->GetDevice()->CreateRasterizerState(&rastDesc, WireframeRS.GetAddressOf()));
+
+	mRS->At(0) = SolidRS;
+	mRS->At(1) = WireframeRS;
+
+	///////////////////////////
+	///// Assembling PSOs /////
+	///////////////////////////
+	PSODef psoDef;
+	{
+		psoDef.FileName		= "SpritePSO";
+		psoDef.RelativePath = ChunkKey::NullVal::NULL_OBJECT;
+
+		psoDef.VS			= VS.At("SpriteVS.hlsl")->Value();
+		psoDef.GS			= GS.At("SpriteGS.hlsl")->Value();
+		psoDef.PS			= PS.At("SpritePS.hlsl")->Value();
+		psoDef.BS			= spriteBS;
+		psoDef.DSS			= spriteDSS;
+		psoDef.RS			= SolidRS;
+		psoDef.PrimTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
+
+		mPSOs->Insert(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
+	}
+
+	{
+		psoDef.FileName		= "SpriteAnimPSO";
+		psoDef.RelativePath = ChunkKey::NullVal::NULL_OBJECT;
+
+		psoDef.VS			= VS.At("SpriteVS.hlsl")->Value();
+		psoDef.GS			= GS.At("SpriteGS.hlsl")->Value();
+		psoDef.PS			= PS.At("SpritePS.hlsl")->Value();
+		psoDef.BS			= spriteBS;
+		psoDef.DSS			= spriteDSS;
+		psoDef.RS			= SolidRS;
+		psoDef.PrimTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
+
+		mPSOs->Insert(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
+	}
 }
 
 /**
@@ -819,53 +881,9 @@ FTPremade* ResourceManager::GetLoadedPremade(const FTDS::String& key)
 	return rec->Value();
 }
 
-/**
- * @brief Retrieve a loaded vertex shader by key (adds extension if missing).
- *
- * @param key Reference to an FTDS::String key identifying the vertex shader.
- * @return Pointer to FTVertexShader if found; otherwise nullptr.
- */
-FTVertexShader* ResourceManager::GetLoadedVertexShader(const FTDS::String& key)
+D3D11PSO* ResourceManager::GetLoadedPSO(const FTDS::String& key)
 {
-	FTDS::Record<FTVertexShader*>* rec = mVertexShaders->At(key);
-	if (!rec)
-	{
-		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
-		return nullptr;
-	}
-
-#ifdef FOXTROT_EDITOR
-	rec->Value()->AddRefCount();
-#endif // FOXTROT_EDITOR
-
-	return rec->Value();
-}
-
-FTGeometryShader* ResourceManager::GetLoadedGeometryShader(const FTDS::String& key)
-{
-	FTDS::Record<FTGeometryShader*>* rec = mGeometryShaders->At(key);
-	if (!rec)
-	{
-		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
-		return nullptr;
-	}
-
-#ifdef FOXTROT_EDITOR
-	rec->Value()->AddRefCount();
-#endif // FOXTROT_EDITOR
-
-	return rec->Value();
-}
-
-/**
- * @brief Retrieve a loaded pixel shader by key (adds extension if missing).
- *
- * @param key Reference to an FTDS::String key identifying the pixel shader.
- * @return Pointer to FTPixelShader if found; otherwise nullptr.
- */
-FTPixelShader* ResourceManager::GetLoadedPixelShader(const FTDS::String& key)
-{
-	FTDS::Record<FTPixelShader*>* rec = mPixelShaders->At(key);
+	FTDS::Record<D3D11PSO*>* rec = mPSOs->At(key);
 	if (!rec)
 	{
 		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");

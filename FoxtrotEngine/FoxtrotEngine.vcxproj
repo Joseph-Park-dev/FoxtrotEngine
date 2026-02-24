@@ -262,12 +262,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\[GooCat Studio] VampiCat\Scripts\Background\BackgroundScroller.cpp" />
-    <ClCompile Include="..\..\[GooCat Studio] VampiCat\Scripts\CharacterMovement\HumanoidMove.cpp" />
-    <ClCompile Include="..\..\[GooCat Studio] VampiCat\Scripts\CharacterMovement\InputMove.cpp" />
-    <ClCompile Include="..\..\[GooCat Studio] VampiCat\Scripts\CharacterMovement\Move.cpp" />
-    <ClCompile Include="..\..\[GooCat Studio] VampiCat\Scripts\Enemy\EnemyBehavior.cpp" />
-    <ClCompile Include="..\..\[GooCat Studio] VampiCat\Scripts\HenryBehavior.cpp" />
+    <ClCompile Include="src\ResourceSystem\D3D11PSO.cpp" />
     <ClCompile Include="include\spine\Animation.cpp" />
     <ClCompile Include="include\spine\AnimationState.cpp" />
     <ClCompile Include="include\spine\AnimationStateData.cpp" />
@@ -423,6 +418,7 @@
     <ClCompile Include="src\ResourceSystem\FTMaterials\StandardMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ResourceSystem\D3D11PSO.h" />
     <ClInclude Include="include\assimp\aabb.h" />
     <ClInclude Include="include\assimp\ai_assert.h" />
     <ClInclude Include="include\assimp\anim.h" />

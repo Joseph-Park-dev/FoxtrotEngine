@@ -14,15 +14,15 @@
 void FTFont::AddText(ComPtr<ID3D11Device>& device, FTDS::String& text)
 {
 	FTDS::DynamicArray<TextVertex> vertices;
-	vertices.Reserve(text.Length());
+	vertices.Reserve(text.GetLength());
 
-	for (size_t i = 0; i < text.Length(); ++i)
+	for (size_t i = 0; i < text.GetLength(); ++i)
 		vertices.PushBack(TextVertex(0.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f));
 
 	Mesh* mesh = DBG_NEW Mesh;
 	D3D11Utils::CreateVertexBuffer(device, vertices, mesh->VertexBuffer);
 
-	mesh->VertexCount = static_cast<UINT>(text.Length());
+	mesh->VertexCount = static_cast<UINT>(text.GetLength());
 	Meshes()->Reserve(Meshes()->GetSize() + 1);
 	Meshes()->PushBack(mesh);
 }
@@ -71,7 +71,7 @@ void FTFont::Render(FTDS::String& text, FoxtrotRenderer* renderer, Transform* tr
 		// context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-		context->DrawInstanced(4, static_cast<UINT>(text.Length()), 0, 0);
+		context->DrawInstanced(4, static_cast<UINT>(text.GetLength()), 0, 0);
 	});
 }
 
@@ -97,7 +97,7 @@ void FTFont::UpdateTextVertices(FTDS::String& text, FoxtrotRenderer* renderer, F
 	D3D11_MAPPED_SUBRESOURCE mapped;
 	renderer->GetContext()->Map(Meshes()->At(0)->VertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
 
-	for (size_t i = 0; i < text.Length(); ++i)
+	for (size_t i = 0; i < text.GetLength(); ++i)
 	{
 		wchar_t c = text.At(i);
 

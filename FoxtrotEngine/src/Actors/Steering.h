@@ -17,11 +17,9 @@
 
 namespace Core
 {
-	class FTVector3;
-
 	struct Steering
 	{
-		float			Angular;
+		float	  Angular;
 		FTVector3 Linear; // Normalized direction of movement
 
 		bool JumpTriggered;

@@ -53,7 +53,7 @@ FoxtrotRenderer* FoxtrotRenderer::CreateRenderer(FTWindow* window, int width, in
 void FoxtrotRenderer::DestroyRenderer(FoxtrotRenderer* renderer)
 {
 #ifdef FOXTROT_EDITOR
-	// ·»´õ ÅØ½ºÃÄ °´Ã¼¸¦ ÇØÁ¦ÇÑ´Ù
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½
 	if (renderer->mViewportRenderer)
 	{
 		delete renderer->mViewportRenderer;
@@ -179,61 +179,6 @@ HRESULT FoxtrotRenderer::CreateRasterizerState()
 	return solidResult & wireResult;
 }
 
-void FoxtrotRenderer::SetViewport(FTVector2 topLeft, FTVector2 resolution)
-{
-	// Set the viewport
-	ZeroMemory(&mScreenViewport, sizeof(D3D11_VIEWPORT));
-
-	mScreenViewport.TopLeftX = topLeft.x;
-	mScreenViewport.TopLeftY = topLeft.y;
-	mScreenViewport.Width	 = resolution.x;
-	mScreenViewport.Height	 = resolution.y;
-	// m_screenViewport.Width = static_cast<float>(m_screenHeight);
-	mScreenViewport.MinDepth = 0.0f;
-	mScreenViewport.MaxDepth = 1.0f; // Note: important for depth buffering
-	mContext->RSSetViewports(1, &mScreenViewport);
-}
-
-void FoxtrotRenderer::SetViewport(FLOAT topLeftX, FLOAT topLeftY, FLOAT resX, FLOAT resY)
-{
-	// Set the viewport
-	ZeroMemory(&mScreenViewport, sizeof(D3D11_VIEWPORT));
-
-	mScreenViewport.TopLeftX = topLeftX;
-	mScreenViewport.TopLeftY = topLeftY;
-	mScreenViewport.Width	 = resX;
-	mScreenViewport.Height	 = resY;
-	// m_screenViewport.Width = static_cast<float>(m_screenHeight);
-	mScreenViewport.MinDepth = 0.0f;
-	mScreenViewport.MaxDepth = 1.0f; // Note: important for depth buffering
-	if (mContext)
-		mContext->RSSetViewports(1, &mScreenViewport);
-}
-
-void FoxtrotRenderer::Reset()
-{
-	mSolidRasterizerState.Reset();
-	mWireframeRasterizerState.Reset();
-	mDepthStencilState.Reset();
-	mDepthStencilState2D.Reset();
-	mSamplerState.Reset();
-	mSolidVS.Reset();
-	mSolidPS.Reset();
-	mSolidInputLayout.Reset();
-	mTextureVS.Reset();
-	mTexturePS.Reset();
-	mRimTexturePS.Reset();
-	mTextureInputLayout.Reset();
-	mNormalVS.Reset();
-	mNormalPS.Reset();
-	mBlendState.Reset();
-	mContext->ClearState();
-
-#ifdef FOXTROT_EDITOR
-	mViewportRenderer->Reset();
-#endif // FOXTROT_EDITOR
-}
-
 HRESULT FoxtrotRenderer::CreateDepthStencilState(ComPtr<ID3D11DepthStencilState>& dss, bool depthEnabled)
 {
 	// Create depth stencil state
@@ -267,7 +212,7 @@ HRESULT FoxtrotRenderer::CreateBlendState()
 
 HRESULT FoxtrotRenderer::CreateTextureSampler()
 {
-	// FTTexture sampler ¸¸µé±â
+	// FTTexture sampler ï¿½ï¿½ï¿½ï¿½ï¿½
 	D3D11_SAMPLER_DESC sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
 	sampDesc.Filter			= D3D11_FILTER_MIN_MAG_MIP_LINEAR;

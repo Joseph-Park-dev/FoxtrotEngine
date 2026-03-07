@@ -59,16 +59,11 @@ enum class FillMode
 
 class FoxtrotRenderer
 {
-public:
-	// Intended to be used during intialization.
-	static FoxtrotRenderer* CreateRenderer(FTWindow* window, int width, int height);
-	// Intended to be used during shutdown.
-	static void DestroyRenderer(FoxtrotRenderer* renderer);
-
-public:
-	void SetViewport(FTVector2 topLeft, FTVector2 resolution);
-	void SetViewport(FLOAT topLeftX, FLOAT topLeftY, FLOAT resX, FLOAT resY);
-	void Reset();
+//public:
+//	// Intended to be used during intialization.
+//	static FoxtrotRenderer* CreateRenderer(FTWindow* window, int width, int height);
+//	// Intended to be used during shutdown.
+//	static void DestroyRenderer(FoxtrotRenderer* renderer);
 
 public:
 	// D3D11 interfaces (Getters).

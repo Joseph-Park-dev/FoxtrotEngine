@@ -11,20 +11,15 @@
 /// </summary>
 
 #pragma once
-#include <filesystem>
 #include <list>
-#include <DirectXMath.h>
-
-#include "FileSystem/FileTypes.h"
-#include "FileSystem/NullKeys.h"
-#include "Static/FTString.h"
-#include <Static/HashMap.h>
-
-#include <static/Record.h>
 
 class FTVector2;
 class FTVector3;
 struct b2Vec2;
+namespace FTDS
+{
+	class String;
+}
 
 class FileIOHelper
 {
@@ -40,33 +35,27 @@ public:
 	static void LoadBasicString(std::ifstream& ifs, FTDS::String& strVal);
 
 	static void LoadVector2(std::ifstream& ifs, FTVector2& vec2);
-	static void LoadVector2(std::ifstream& ifs, b2Vec2& vec2);
-	static void LoadVector2(std::ifstream& ifs, DirectX::XMFLOAT2& vec2);
 	static void LoadVector3(std::ifstream& ifs, FTVector3& vec3);
 	static void LoadVector4(std::ifstream& ifs, FTVector4& vec4);
-	static void LoadVector4(std::ifstream& ifs, DirectX::XMFLOAT4& vec4);
 
-	template <typename RESOURCE>
-	static void LoadResource(std::ifstream& ifs, RESOURCE*& res, FTDS::HashMap<RESOURCE*>* map)
-	{
-		FTDS::String key;
-		LoadBasicString(ifs, key);
-		if (key.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
-		{
-			FTDS::Record<RESOURCE*>* node = map->At(key);
-			if (node)
-				res = node->Value();
-			else
-				res = nullptr;
-		}
-	}
+	//template <typename RESOURCE>
+	//static void LoadResource(std::ifstream& ifs, RESOURCE*& res, FTDS::HashMap<RESOURCE*>* map)
+	//{
+	//	FTDS::String key;
+	//	LoadBasicString(ifs, key);
+	//	if (key.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
+	//	{
+	//		FTDS::Record<RESOURCE*>* node = map->At(key);
+	//		if (node)
+	//			res = node->Value();
+	//		else
+	//			res = nullptr;
+	//	}
+	//}
 
 	static void ParseVector3(FTDS::String& line, FTVector3& arg);
 	static void ParseVector2(FTDS::String& line, FTVector2& arg);
-	static void ParseVector2(FTDS::String& line, b2Vec2& arg);
-	static void ParseVector2(FTDS::String& line, DirectX::XMFLOAT2& arg);
 	static void ParseVector4(FTDS::String& line, FTVector4& arg);
-	static void ParseVector4(FTDS::String& line, DirectX::XMFLOAT4& arg);
 
 	static void ParseInt(FTDS::String& line, int& arg);
 	static void ParseUnsignedInt(FTDS::String& line, unsigned int& arg);
@@ -83,17 +72,14 @@ public:
 
 	static void SaveVector3(std::ofstream& ofs, const FTDS::String& valName, const FTVector3& vec3);
 	static void SaveVector2(std::ofstream& ofs, const FTDS::String& valName, const FTVector2& vec2);
-	static void SaveVector2(std::ofstream& ofs, const FTDS::String& valName, const DirectX::XMFLOAT2& vec2);
 	static void SaveVector2(std::ofstream& ofs, const FTDS::String& valName, const b2Vec2& vec2);
 
 	static void SaveVector4(std::ofstream& ofs, const FTDS::String& valName, const FTVector4& vec4);
-	static void SaveVector4(std::ofstream& ofs, const FTDS::String& valName, const DirectX::XMFLOAT4& vec4);
 
 	static void SaveInt(std::ofstream& ofs, const FTDS::String& valName, const int& intVal);
 	static void SaveUnsignedInt(std::ofstream& ofs, const FTDS::String& valName, const unsigned int& intVal);
 	static void SaveSize(std::ofstream& ofs, const FTDS::String& valName, const size_t& sizeVal);
 	static void SaveFloat(std::ofstream& ofs, const FTDS::String& valName, const float& floatVal);
-	static void SaveString(std::ofstream& ofs, FTDS::String& valName, const FTDS::String strVal);
 	static void SaveString(std::ofstream& ofs, FTDS::String& valName, const FTDS::String& strVal);
 	static void SaveString(std::ofstream& ofs, const char* valName, const FTDS::String& strVal);
 	static void SaveString(std::ofstream& ofs, const char* valName, const char* strVal);

@@ -1,6 +1,9 @@
 #include "D3D11Renderer.h"
 
-void D3D11Renderer::SetViewport(FTVector2 topLeft, FTVector2 resolution)
+using namespace Microsoft::WRL;
+using namespace DirectX::SimpleMath;
+
+void D3D11Renderer::SetViewport(Vector2&& topLeft, Vector2&& resolution)
 {
 	// Set the viewport
 	ZeroMemory(&mScreenViewport, sizeof(D3D11_VIEWPORT));
@@ -33,24 +36,18 @@ void D3D11Renderer::SetViewport(FLOAT topLeftX, FLOAT topLeftY, FLOAT resX, FLOA
 
 void D3D11Renderer::Reset()
 {
-	mSolidRasterizerState.Reset();
-	mWireframeRasterizerState.Reset();
-	mDepthStencilState.Reset();
-	mDepthStencilState2D.Reset();
-	mSamplerState.Reset();
-	mSolidVS.Reset();
-	mSolidPS.Reset();
-	mSolidInputLayout.Reset();
-	mTextureVS.Reset();
-	mTexturePS.Reset();
-	mRimTexturePS.Reset();
-	mTextureInputLayout.Reset();
-	mNormalVS.Reset();
-	mNormalPS.Reset();
-	mBlendState.Reset();
 	mContext->ClearState();
 
 #ifdef FOXTROT_EDITOR
 	mViewportRenderer->Reset();
 #endif // FOXTROT_EDITOR
+}
+
+ComPtr<ID3D11Device>&		 D3D11Renderer::GetDevice() { return mDevice; }
+ComPtr<ID3D11DeviceContext>& D3D11Renderer::GetContext() { return mContext; }
+const unsigned int			 D3D11Renderer::GetNumQualityLevels() const { return mNumQualityLevels; }
+
+D3D11Renderer::D3D11Renderer()
+	: mNumQualityLevels(0)
+{
 }

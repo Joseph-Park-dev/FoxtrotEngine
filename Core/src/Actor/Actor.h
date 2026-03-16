@@ -11,29 +11,20 @@
 /// </summary>
 
 #pragma once
-#include <vector>
-#include <string>
-#include <typeinfo>
-
-#include "Core/TemplateFunctions.h"
-#include "Core/FTCore.h"
-#include "Actors/ActorGroup.h"
-
-#ifdef FOXTROT_EDITOR
-class EditorElement;
-class EditorScene;
-#endif // FOXTROT_EDITOR
 
 class Transform;
-class SpriteRenderer;
-class Collider2D;
 class FTInputDevice;
-class UIActor;
 class Scene;
 class Component;
 class FoxtrotRenderer;
 class FTPremade;
 enum class ACTOR_TAG;
+enum class ActorGroup;
+
+#ifdef FOXTROT_EDITOR
+class EditorElement;
+class EditorScene;
+#endif // FOXTROT_EDITOR
 
 class Actor
 {
@@ -96,8 +87,8 @@ public:
 	const bool&						GetIsActive() const { return mIsActive; }
 	Transform*						GetTransform() const { return mTransform; }
 	Actor*							GetParent() const { return mParent; }
-	FTDS::DynamicArray<Component*>& GetComponents() { return mComponents; }
-	FTDS::DynamicArray<Actor*>&		GetChildActors() { return mChild; }
+	FTDS::DynamicArray<Component*>* GetComponents() { return mComponents; }
+	FTDS::DynamicArray<Actor*>*		GetChildActors() { return mChild; }
 	const int&						GetDrawOrder() const { return mDrawOrder; }
 
 	void SetName(FTDS::String name) { mName = name; }
@@ -105,8 +96,8 @@ public:
 	void SetActorGroup(ActorGroup group) { mActorGroup = group; }
 	void SetParent(Actor* parent) { mParent = parent; }
 	void SetTransform(Transform* transform) { mTransform = transform; }
-	void SetComponents(FTDS::DynamicArray<Component*>& components) { mComponents = components; }
-	void SetChildActors(FTDS::DynamicArray<Actor*>& children) { mChild = children; }
+	void SetComponents(FTDS::DynamicArray<Component*>* components) { mComponents = components; }
+	void SetChildActors(FTDS::DynamicArray<Actor*>* children) { mChild = children; }
 	void SetDrawOrder(int order) { mDrawOrder = order; }
 
 	bool  HasName(FTDS::String& name);
@@ -125,29 +116,16 @@ public:
 		return nullptr;
 	};
 
-public:
-	virtual void Initialize(FTCore* coreInst);
-	virtual void Setup();
-	virtual void UpdateActor(float deltaTime) {};
-	virtual void LateUpdateActor(float deltaTime) {};
-	virtual void RenderActor(FoxtrotRenderer* renderer) {};
-
-public:
-	void		 ProcessInput(FTInputDevice* inputDevice);
-	virtual void UpdateComponents(float deltaTime);
-	void		 LateUpdateComponents(float deltaTime);
-	virtual void RenderComponents(FoxtrotRenderer* renderer);
-
 private:
-	FTDS::String				   mName;
-	int							   mID;
-	ActorGroup					   mActorGroup;
-	bool						   mIsActive;
-	Transform*					   mTransform;
-	FTDS::DynamicArray<Component*> mComponents;
-	Actor*						   mParent;
-	FTDS::DynamicArray<Actor*>	   mChild;
-	int							   mDrawOrder;
+	FTDS::String					mName;
+	int								mID;
+	ActorGroup						mActorGroup;
+	bool							mIsActive;
+	Transform*						mTransform;
+	FTDS::DynamicArray<Component*>* mComponents;
+	Actor*							mParent;
+	FTDS::DynamicArray<Actor*>*		mChild;
+	int								mDrawOrder;
 
 public:
 	void SaveProperties(std::ofstream& ofs);

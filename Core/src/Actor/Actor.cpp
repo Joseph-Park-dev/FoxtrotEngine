@@ -6,21 +6,16 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Actors/Actor.h"
+#include "Actor.h"
 
-#include <algorithm>
-#include <functional>
-
-#include "Scenes/Scene.h"
+#include "Scene/Scene.h"
 #include "InputSystem/FTInputDevice.h"
-
-#include "Actors/ActorGroup.h"
-#include "Actors/Transform.h"
+#include "Actor/ActorGroup.h"
+#include "Actor/Transform.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
-#include "Components/Component.h"
-#include "Components/Collider2D.h"
-#include "Core/FTCore.h"
+#include "Component/Component.h"
+#include "FTCore.h"
 #include "Debugging/DebugMemAlloc.h"
 #include "ResourceSystem/FTPremade.h"
 #include "Managers/SceneManager.h"
@@ -41,9 +36,9 @@ Actor::Actor(int id)
 	, mActorGroup(ActorGroup::DEFAULT)
 	, mIsActive(true)
 	, mTransform(DBG_NEW Transform(this))
-	, mComponents()
+	, mComponents(DBG_NEW FTDS::DynamicArray<Component*>())
 	, mParent(nullptr)
-	, mChild()
+	, mChild(DBG_NEW FTDS::DynamicArray<Actor*>())
 	, mDrawOrder(0)
 {
 	// This block should remain as empty.
@@ -55,9 +50,9 @@ Actor::Actor(Actor* actor, int id)
 	, mActorGroup(actor->mActorGroup)
 	, mIsActive(true)
 	, mTransform(DBG_NEW Transform(this))
-	, mComponents()
+	, mComponents(DBG_NEW FTDS::DynamicArray<Component*>())
 	, mParent(actor->mParent)
-	, mChild{}
+	, mChild(DBG_NEW FTDS::DynamicArray<Actor*>())
 	, mDrawOrder(actor->mDrawOrder)
 {
 	mName.Assign(actor->GetNameRef());
@@ -75,9 +70,9 @@ Actor::Actor(Actor* actor, int id, bool deepCpyChild)
 	, mActorGroup(actor->mActorGroup)
 	, mIsActive(true)
 	, mTransform(DBG_NEW Transform(this))
-	, mComponents()
+	, mComponents(DBG_NEW FTDS::DynamicArray<Component*>())
 	, mParent(actor->mParent)
-	, mChild{}
+	, mChild(DBG_NEW FTDS::DynamicArray<Actor*>())
 	, mDrawOrder(actor->mDrawOrder)
 {
 	mName.Assign(actor->GetNameRef());
@@ -105,14 +100,20 @@ Actor::~Actor()
 		mTransform = nullptr;
 	}
 
-	for (size_t i = 0; i < mComponents.Size(); ++i)
+	for (size_t i = 0; i < mComponents->Size(); ++i)
 	{
-		delete mComponents[i];
-		mComponents[i] = nullptr;
+		delete mComponents->At(i);
+		mComponents->At(i) = nullptr;
 	}
-	mComponents.Clear();
+	delete mComponents;
 
-	mChild.Clear();
+	for (size_t i = 0; i < mChild->Size(); ++i)
+	{
+		delete mChild->At(i);
+		mChild->At(i) = nullptr;
+	}
+	delete mChild;
+
 	mParent = nullptr;
 }
 
@@ -125,17 +126,17 @@ void Actor::CopyComponentsFrom(Actor* actor)
 {
 	this->RemoveAllComponents();
 
-	FTDS::DynamicArray<Component*>& compsToCopy = actor->GetComponents();
-	for (size_t i = 0; i < compsToCopy.GetSize(); ++i)
-		compsToCopy[i]->CloneTo(this);
+	FTDS::DynamicArray<Component*>* compsToCopy = actor->GetComponents();
+	for (size_t i = 0; i < compsToCopy->GetSize(); ++i)
+		compsToCopy->At(i)->CloneTo(this);
 }
 
 void Actor::CopyChildObjectFrom(Actor* actor)
 {
-	if (GetChildActors().GetSize() < 1)
+	if (GetChildActors()->GetSize() < 1)
 		return;
 
-	actor->GetChildActors().IterateArray([&](Actor* child) {
+	actor->GetChildActors()->IterateArray([&](Actor* child) {
 		if (child)
 		{
 			ChunkLoader::GetInstance()->AddMaxActorID();
@@ -147,101 +148,27 @@ void Actor::CopyChildObjectFrom(Actor* actor)
 
 void Actor::RefChildObjectFrom(Actor* actor)
 {
-	if (actor->GetChildActors().GetSize() < 1)
+	if (actor->GetChildActors()->GetSize() < 1)
 		return;
 
-	actor->GetChildActors().IterateArray([&](Actor* child) {
+	actor->GetChildActors()->IterateArray([&](Actor* child) {
 		this->AddChild(child);
 	});
-}
-
-void Actor::Initialize(FTCore* coreInst)
-{
-	if (mComponents.GetSize() < 1)
-		return;
-
-	for (auto comp = mComponents.Begin(); comp != mComponents.End(); ++comp)
-		if (!(*comp)->GetIsInitialized())
-			(*comp)->Initialize(coreInst);
-}
-
-void Actor::Setup()
-{
-	if (mComponents.GetSize() < 1)
-		return;
-
-	for (auto comp = mComponents.Begin(); comp != mComponents.End(); ++comp)
-		if (!(*comp)->GetIsSetup())
-			(*comp)->Setup();
-}
-
-void Actor::ProcessInput(FTInputDevice* inputDevice)
-{
-	if (!IsActive())
-		return;
-
-	for (auto comp = mComponents.Begin(); comp != mComponents.End(); ++comp)
-	{
-		if ((*comp)->GetIsActive())
-			(*comp)->ProcessInput(inputDevice);
-	}
-}
-
-void Actor::UpdateComponents(float deltaTime)
-{
-	if (!IsActive())
-		return;
-
-	for (auto comp = mComponents.Begin(); comp != mComponents.End(); ++comp)
-	{
-		if ((*comp)->GetIsActive())
-			(*comp)->Update(deltaTime);
-	}
-}
-
-void Actor::LateUpdateComponents(float deltaTime)
-{
-	if (!IsActive())
-		return;
-
-	for (auto comp = mComponents.Begin(); comp != mComponents.End(); ++comp)
-	{
-		if (*comp)
-		{
-			if ((*comp)->GetIsActive())
-				(*comp)->LateUpdate(deltaTime);
-		}
-	}
-}
-
-void Actor::RenderComponents(FoxtrotRenderer* renderer)
-{
-	if (!IsActive())
-		return;
-
-	for (auto comp = mComponents.Begin(); comp != mComponents.End(); ++comp)
-	{
-		if (*comp)
-		{
-			if ((*comp)->GetIsActive())
-				(*comp)->Render(renderer);
-		}
-	}
 }
 
 void Actor::AddChild(Actor* child)
 {
 	child->SetParent(this);
-	mChild.PushBack(child);
+	mChild->PushBack(child);
 }
 
 void Actor::RemoveChild(Actor* child)
 {
-	int pos = mChild.Find(child);
+	int pos = mChild->Find(child);
 	if (pos == -1)
 		return;
 
-	mChild.Erase(pos);
+	mChild->Erase(pos);
 
 	if (child->mParent->mParent)
 		child->SetParent(child->mParent->mParent);
@@ -250,8 +177,8 @@ void Actor::RemoveChild(Actor* child)
 void Actor::AddComponent(Component* component)
 {
 	int	 updateOrder = component->GetUpdateOrder();
-	auto iter		 = mComponents.Begin();
-	for (; iter != mComponents.End(); ++iter)
+	auto iter		 = mComponents->Begin();
+	for (; iter != mComponents->End(); ++iter)
 	{
 		if (!(*iter))
 			break;
@@ -260,25 +187,25 @@ void Actor::AddComponent(Component* component)
 			break;
 	}
 	size_t i = iter.IterPos();
-	mComponents.Insert(iter.IterPos(), component);
+	mComponents->Insert(iter.IterPos(), component);
 }
 
 void Actor::RemoveComponent(Component* component)
 {
-	int pos = mComponents.Find(component);
+	int pos = mComponents->Find(component);
 	if (pos == -1)
 		return;
 
 	delete component;
 	component = nullptr;
-	mComponents.Erase(pos);
+	mComponents->Erase(pos);
 }
 
 void Actor::RemoveAllComponents()
 {
-	for (auto comp = mComponents.Begin(); comp != mComponents.End(); ++comp)
+	for (auto comp = mComponents->Begin(); comp != mComponents->End(); ++comp)
 		delete *comp;
-	mComponents.Clear();
+	mComponents->Clear();
 }
 
 bool Actor::HasName(FTDS::String& name)
@@ -314,10 +241,10 @@ void Actor::SaveProperties(std::ofstream& ofs)
 
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CHILD);
 
-	if (0 < mChild.GetSize())
+	if (0 < mChild->GetSize())
 	{
-		for (size_t i = 0; i < mChild.GetSize(); ++i)
-			FileIOHelper::SaveInt(ofs, std::to_string(i).c_str(), mChild.At(i)->GetID());
+		for (size_t i = 0; i < mChild->GetSize(); ++i)
+			FileIOHelper::SaveInt(ofs, std::to_string(i).c_str(), mChild->At(i)->GetID());
 	}
 
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CHILD);
@@ -329,13 +256,13 @@ void Actor::SaveProperties(std::ofstream& ofs)
 
 void Actor::SaveComponents(std::ofstream& ofs)
 {
-	size_t count = mComponents.GetSize();
+	size_t count = mComponents->GetSize();
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::COMPONENTS);
 	for (size_t i = 0; i < count; ++i)
 	{
-		FileIOHelper::BeginDataPackSave(ofs, mComponents[i]->GetName());
-		mComponents[i]->SaveProperties(ofs);
-		FileIOHelper::EndDataPackSave(ofs, mComponents[i]->GetName());
+		FileIOHelper::BeginDataPackSave(ofs, mComponents->At(i)->GetName());
+		mComponents->At(i)->SaveProperties(ofs);
+		FileIOHelper::EndDataPackSave(ofs, mComponents->At(i)->GetName());
 	}
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::COMPONENTS);
 }
@@ -393,7 +320,7 @@ void Actor::LoadProperties(std::ifstream& ifs)
 void Actor::LoadComponents(std::ifstream& ifs)
 {
 	std::pair<size_t, FTDS::String>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COMPONENTS);
-	mComponents.Reserve(pack.first);
+	mComponents->Reserve(pack.first);
 	for (size_t i = 0; i < pack.first; ++i)
 	{
 		std::pair<size_t, FTDS::String> compPack = FileIOHelper::BeginDataPackLoad(ifs);

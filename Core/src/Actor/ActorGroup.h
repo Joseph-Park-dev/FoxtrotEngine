@@ -12,7 +12,7 @@
 /// </summary>
 
 #pragma once
-#include "Core/TemplateFunctions.h"
+#include "TemplateFunctions.h"
 
 enum class ActorGroup
 {

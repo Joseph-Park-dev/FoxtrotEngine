@@ -11,15 +11,12 @@
 /// </summary>
 
 #pragma once
-#include "Math/FTMath.h"
-
-#include <directxtk/SimpleMath.h>
-
-#include "Components/CharacterAI/Steering.h"
 
 class Actor;
 struct Vertex;
 class Camera;
+class FTMatrix4;
+struct Steering;
 
 class Transform
 {
@@ -34,16 +31,11 @@ public:
 	const FTVector3& GetLocalRotation() const;
 
 	// World Transformation
-	const FTVector3&				   GetWorldPosition() const;
-	const FTVector3&				   GetWorldScale() const;
-	const FTVector3&				   GetWorldRotation() const;
-	const DirectX::SimpleMath::Matrix& GetMatrixWorld() const;
-
-	// Screen Position
-	const FTVector2 GetScreenPosition(Camera* camInst) const;
-
-	const FTVector3 GetRotationDegree() const;
-
+	const FTVector3& GetWorldPosition() const;
+	const FTVector3& GetWorldScale() const;
+	const FTVector3& GetWorldRotation() const;
+	const FTMatrix4& GetMatrixWorld() const;
+	const FTVector3	 GetRotationDegree() const;
 	const FTVector3& GetRightward() const;
 	const Steering*	 GetSteering() const;
 
@@ -78,16 +70,16 @@ public:
 
 private:
 	// Local Transformation.
-	FTVector3					mLocalPosition;
-	FTVector3					mLocalScale;
-	FTVector3					mLocalRotation;
-	DirectX::SimpleMath::Matrix mMatrixLocal;
+	FTVector3 mLocalPosition;
+	FTVector3 mLocalScale;
+	FTVector3 mLocalRotation;
+	FTMatrix4 mMatrixLocal;
 
 	// World Transformation.
-	FTVector3					mWorldPosition;
-	FTVector3					mWorldScale;
-	FTVector3					mWorldRotation;
-	DirectX::SimpleMath::Matrix mMatrixWorld;
+	FTVector3 mWorldPosition;
+	FTVector3 mWorldScale;
+	FTVector3 mWorldRotation;
+	FTMatrix4 mMatrixWorld;
 
 	FTVector3 mRightward; // A local rightward direction
 	Steering* mSteering;

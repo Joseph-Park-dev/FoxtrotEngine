@@ -6,20 +6,16 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Actors/Transform.h"
+#include "Actor/Transform.h"
 
-#include "directxtk/SimpleMath.h"
-
+#include "Actor/Actor.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
-#include "ResourceSystem/vertex.h"
 #include "Renderer/Camera.h"
 #include "Renderer/FTRectArea.h"
-#include "WindowSystem/FTWindow.h"
-
-using Vector3 = DirectX::SimpleMath::Vector3;
-using Vector4 = DirectX::SimpleMath::Vector4;
-using Matrix  = DirectX::SimpleMath::Matrix;
+#include "Renderer/FTWindow.h"
+#include "Math/FTMath.h"
+#include "Steering.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
@@ -29,33 +25,10 @@ const FTVector3& Transform::GetLocalPosition() const { return mLocalPosition; }
 const FTVector3& Transform::GetLocalScale() const { return mLocalScale; }
 const FTVector3& Transform::GetLocalRotation() const { return mLocalRotation; }
 
-const FTVector3&				   Transform::GetWorldPosition() const { return mWorldPosition; }
-const FTVector3&				   Transform::GetWorldScale() const { return mWorldScale; }
-const FTVector3&				   Transform::GetWorldRotation() const { return mWorldRotation; }
-const DirectX::SimpleMath::Matrix& Transform::GetMatrixWorld() const { return mMatrixWorld; }
-
-const FTVector2 Transform::GetScreenPosition(Camera* camInst) const
-{
-	FTWindow*	window	   = camInst->GetRenderWindow();
-	FTRectArea* renderArea = window->GetRenderArea();
-	FTVector2	renderSize = renderArea->GetSize();
-	FTVector3	worldPos   = GetWorldPosition();
-
-	Vector4 origin = Vector4::Zero;
-	origin.w	   = 1.0f;
-	origin		   = Vector4::Transform(origin, mMatrixWorld);
-	origin		   = Vector4::Transform(origin, camInst->GetViewRow());
-	origin		   = Vector4::Transform(origin, camInst->GetProjRow());
-
-	origin.x /= origin.w;
-	origin.y /= origin.w;
-	origin.z /= origin.w;
-
-	float screenX = static_cast<float>((origin.x + 1) * 0.5 * renderSize.x);
-	float screenY = static_cast<float>((1 - origin.y) * 0.5 * renderSize.y);
-
-	return FTVector2(screenX, screenY);
-}
+const FTVector3& Transform::GetWorldPosition() const { return mWorldPosition; }
+const FTVector3& Transform::GetWorldScale() const { return mWorldScale; }
+const FTVector3& Transform::GetWorldRotation() const { return mWorldRotation; }
+const FTMatrix4& Transform::GetMatrixWorld() const { return mMatrixWorld; }
 
 const FTVector3 Transform::GetRotationDegree() const
 {
@@ -142,8 +115,8 @@ Transform::Transform(Actor* owner)
 	, mLocalScale(FTVector3(1.f, 1.0f, 1.0f))
 	, mLocalRotation(FTVector3::Zero)
 
-	, mMatrixLocal(DirectX::SimpleMath::Matrix::Identity)
-	, mMatrixWorld(DirectX::SimpleMath::Matrix::Identity)
+	, mMatrixLocal(FTMatrix4::Identity)
+	, mMatrixWorld(FTMatrix4::Identity)
 
 	, mWorldPosition(FTVector3::Zero)
 	, mWorldScale(FTVector3(1.0f, 1.0f, 1.0f))
@@ -202,11 +175,11 @@ FTVector3 Transform::ConvertDegreeToRad(FTVector3 degreeRot)
 
 void Transform::Update()
 {
-	Matrix matScale	   = Matrix::CreateScale(mLocalScale.GetDXVec3());
-	Matrix matRotation = Matrix::CreateRotationX(mLocalRotation.x) *
-		Matrix::CreateRotationY(mLocalRotation.y) *
-		Matrix::CreateRotationZ(mLocalRotation.z);
-	Matrix matTranslation = Matrix::CreateTranslation(mLocalPosition.GetDXVec3());
+	FTMatrix4 matScale	  = FTMatrix4::CreateScale(mLocalScale);
+	FTMatrix4 matRotation = FTMatrix4::CreateRotationX(mLocalRotation.x) *
+		FTMatrix4::CreateRotationY(mLocalRotation.y) *
+		FTMatrix4::CreateRotationZ(mLocalRotation.z);
+	FTMatrix4 matTranslation = FTMatrix4::CreateTranslation(mLocalPosition);
 
 	mMatrixLocal = matScale * matRotation * matTranslation;
 
@@ -216,10 +189,10 @@ void Transform::Update()
 	else
 		mMatrixWorld = mMatrixLocal;
 
-	FTDS::DynamicArray<Actor*>& childActors = mOwner->GetChildActors();
-	if (0 < childActors.GetSize())
+	FTDS::DynamicArray<Actor*>* childActors = mOwner->GetChildActors();
+	if (0 < childActors->GetSize())
 	{
-		for (auto child = childActors.Begin(); child != childActors.End(); ++child)
+		for (auto child = childActors->Begin(); child != childActors->End(); ++child)
 			(*child)->GetTransform()->Update();
 	}
 	// FTVector3::DecomposeMatrix(mWorldScale, mWorldRotation, mWorldPosition, mMatrixWorld);

@@ -1,12 +1,5 @@
 #pragma once
-#include "Components/Component.h"
-
-#include  "FTBehavior.h"
-#include "FileSystem/ChunkLoader.h"
-
-#ifdef FOXTROT_EDITOR
-#include "EditorChunkLoader.h"
-#endif 
+#include "Component/Component.h"
 
 class Collider2D;
 
@@ -14,14 +7,8 @@ class FTBehavior :
     public Component
 {
 public:
-    FTBehavior(Actor* owner, int updateOrder);
+	FTBehavior(Plugin* plugin, Actor* owner, int updateOrder = DefaultVal::UPDATE_ORDER);
     virtual ~FTBehavior();
-
-protected:
-    virtual void OnCollisionEnter(Collider2D* other);
-    virtual void OnCollisionStay(Collider2D* other);
-    virtual void OnCollisionExit(Collider2D* other);
-    friend class Collider2D;
 
 public:
 #ifdef FOXTROT_EDITOR

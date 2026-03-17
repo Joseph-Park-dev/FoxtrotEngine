@@ -6,38 +6,37 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Managers/SceneManager.h"
+#include "Manager/SceneManager.h"
 
 #include <fstream>
 #include <string>
 #include <vector>
 
-#include "Scenes/Scene.h"
+#include "Scene/Scene.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "FileSystem/FileIOHelper.h"
 #include "FileSystem/ChunkLoader.h"
-#include "Managers/CollisionManager.h"
-#include "Managers/UIManager.h"
+#include "Static/FTString.h"
+#include "Dynamic/DynamicArray.h"
 
 SceneManager::SceneManager()
-	: mChunkList()
+	: mChunkList(DBG_NEW FTDS::DynamicArray<FTDS::String>())
 	, mCurrentScene(DBG_NEW Scene)
 {}
 
 SceneManager::~SceneManager()
 {
-	mChunkList.clear();
+	mChunkList->Clear();
+
+	delete mChunkList;
 	delete mCurrentScene;
 }
 
 void SceneManager::SwitchScene(size_t index)
 {
-	CollisionManager::GetInstance()->Reset();
-	UIManager::GetInstance()->Reset();
 	mCurrentScene->DeleteAll();
-	FTDS::String path = FTDS::String(".\\Chunks\\") + mChunkList.at(index);
+	FTDS::String path = FTDS::String(".\\Chunks\\") + mChunkList->At(index);
 	ChunkLoader::GetInstance()->LoadChunk(path);
-	mCurrentScene->Setup();
 }
 
 Scene* SceneManager::GetCurrentScene()
@@ -45,7 +44,7 @@ Scene* SceneManager::GetCurrentScene()
 	return mCurrentScene;
 }
 
-std::vector<FTDS::String>& SceneManager::GetChunkList()
+FTDS::DynamicArray<FTDS::String>*& SceneManager::ChunkList()
 {
 	return mChunkList;
 }
@@ -58,26 +57,6 @@ void SceneManager::SetChunkListPath(FTDS::String&& path)
 void SceneManager::Initialize()
 {
 	SwitchScene(0);
-}
-
-void SceneManager::ProcessInput(FTInputDevice* inputDevice)
-{
-	mCurrentScene->ProcessInput(inputDevice);
-}
-
-void SceneManager::Update(float deltaTime)
-{
-	mCurrentScene->Update(deltaTime);
-}
-
-void SceneManager::Lateupdate(float deltaTime)
-{
-	mCurrentScene->LateUpdate(deltaTime);
-}
-
-void SceneManager::Render(FoxtrotRenderer* renderer)
-{
-	mCurrentScene->Render(renderer);
 }
 
 void SceneManager::ProcessEvent()

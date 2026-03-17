@@ -7,42 +7,25 @@
 // ----------------------------------------------------------------
 
 #pragma once
+#include <iosfwd>
+#include <assert.h>
 
-#include <wrl.h>
-#include <d3d11.h>
+#include "SingletonMacro.h"
+#include "Static/FTString.h"
+#include "FileSystem/NullKeys.h"
 
-// Core/engine essentials required by this header.
-#include "Core/SingletonMacro.h"	   // Singleton macro for manager lifetime/creation.
-#include "Debugging/DebugMemAlloc.h"   // DBG_NEW tracking.
-#include "ResourceSystem/FTResource.h" // FTResourceDef and base concepts used by templates.
-#include "FileSystem/FileIOHelper.h"   // Static helpers used in header-defined templates.
-#include "Static/HashMap.h"			   // FTDS::HashMap used for all resource tables.
-#include "Static/FTString.h"		   // FTDS::String used as keys and path buffers.
-
-// Forward declarations to minimize compile-time coupling.
+namespace FTDS
+{
+	template <typename TYPE>
+	class HashMap;
+	template <typename TYPE>
+	class Record;
+	class String;
+} // namespace FTDS
 class FoxtrotRenderer;
-
-class FTTexture;
-class FTTileMap;
 class FTPremade;
-class FTMeshGroup;
-class FTVertexShader;
-class FTPixelShader;
-class FTGeometryShader;
-class D3D11PSO;
-class FTMaterial;
-
-class FTSprite;
-class FTSpriteAnimation;
-class FTSpineAnimation;
-
-class Sound;
-class FTCSV;
-class FTJSON;
-class FTText;
-class FTFont;
-
 class FileIOHelper;
+struct FTResourceDef;
 
 /// @brief Type discriminator for resources serialized/deserialized from chunk files.
 enum class ResType
@@ -102,47 +85,51 @@ public:
 
 	/// @brief Load all resources referenced by an open chunk stream.
 	/// Stream must be positioned at the resource section.
-	void LoadResources(std::ifstream& ifs);
+	// void LoadResources(std::ifstream& ifs);
 
 	/// @brief Ensure required materials are present. Creates defaults if missing.
-	virtual void LoadMaterials();
+	// virtual void LoadMaterials();
 
 	/// @brief Load engine default/built-in resources (fonts, primitives, fallback materials, etc.).
 	void LoadDefaultResources();
 
+public:
+	FTPremade* GetLoadedPremade(const FTDS::String& key);
+
+public:
 	// ---------------------------
 	// Typed resource lookup APIs
 	// ---------------------------
+	FTDS::HashMap<FTPremade*>* GetPremades();
 
-public:
-	/// @return Loaded Sprite by key or nullptr if not present.
-	virtual FTSprite* GetLoadedSprite(const FTDS::String& key);
-	/// @return Loaded Sprite by key or nullptr if not present.
-	virtual FTTexture* GetLoadedTexture(const FTDS::String& key);
-	/// @return Loaded tilemap by key or nullptr if not present.
-	virtual FTTileMap* GetLoadedTileMap(const FTDS::String& key);
-	/// @return Loaded premade by key or nullptr if not present.
-	virtual FTPremade* GetLoadedPremade(const FTDS::String& key);
-	/// @return Loaded vertex shader by key or nullptr if not present.
-	virtual D3D11PSO* GetLoadedPSO(const FTDS::String& key);
-	/// @return Loaded material by key or nullptr if not present.
-	virtual FTMaterial* GetLoadedMaterial(const FTDS::String& key);
-	/// @return Loaded mesh group (3D model) by key or nullptr if not present.
-	virtual FTMeshGroup* GetLoadedMesh(const FTDS::String& key);
-	/// @return Loaded 2D sprite animation by key or nullptr if not present.
-	virtual FTSpriteAnimation* GetLoadedSpriteAnim(const FTDS::String& key);
-	/// @return Loaded Spine animation by key or nullptr if not present.
-	virtual FTSpineAnimation* GetLoadedSpineAnim(const FTDS::String& key);
-	/// @return Loaded sound by key or nullptr if not present.
-	virtual Sound* GetLoadedSound(const FTDS::String& key);
-	/// @return Loaded CSV by key or nullptr if not present.
-	virtual FTCSV* GetLoadedCSV(const FTDS::String& key);
-	/// @return Loaded JSON by key or nullptr if not present.
-	virtual FTJSON* GetLoadedJSON(const FTDS::String& key);
-	/// @return Loaded raw text by key or nullptr if not present.
-	virtual FTText* GetLoadedText(const FTDS::String& key);
-	/// @return Loaded font by key or nullptr if not present.
-	virtual FTFont* GetLoadedFont(const FTDS::String& key);
+	//	/// @return Loaded Sprite by key or nullptr if not present.
+	//	virtual FTSprite* GetLoadedSprite(const FTDS::String& key);
+	//	/// @return Loaded Sprite by key or nullptr if not present.
+	//	virtual FTTexture* GetLoadedTexture(const FTDS::String& key);
+	//	/// @return Loaded tilemap by key or nullptr if not present.
+	//	virtual FTTileMap* GetLoadedTileMap(const FTDS::String& key);
+	//	/// @return Loaded premade by key or nullptr if not present.
+	//	virtual FTPremade* GetLoadedPremade(const FTDS::String& key);
+	//	/// @return Loaded vertex shader by key or nullptr if not present.
+	//	virtual D3D11PSO* GetLoadedPSO(const FTDS::String& key);
+	//	/// @return Loaded material by key or nullptr if not present.
+	//	virtual FTMaterial* GetLoadedMaterial(const FTDS::String& key);
+	//	/// @return Loaded mesh group (3D model) by key or nullptr if not present.
+	//	virtual FTMeshGroup* GetLoadedMesh(const FTDS::String& key);
+	//	/// @return Loaded 2D sprite animation by key or nullptr if not present.
+	//	virtual FTSpriteAnimation* GetLoadedSpriteAnim(const FTDS::String& key);
+	//	/// @return Loaded Spine animation by key or nullptr if not present.
+	//	virtual FTSpineAnimation* GetLoadedSpineAnim(const FTDS::String& key);
+	//	/// @return Loaded sound by key or nullptr if not present.
+	//	virtual Sound* GetLoadedSound(const FTDS::String& key);
+	//	/// @return Loaded CSV by key or nullptr if not present.
+	//	virtual FTCSV* GetLoadedCSV(const FTDS::String& key);
+	//	/// @return Loaded JSON by key or nullptr if not present.
+	//	virtual FTJSON* GetLoadedJSON(const FTDS::String& key);
+	//	/// @return Loaded raw text by key or nullptr if not present.
+	//	virtual FTText* GetLoadedText(const FTDS::String& key);
+	//	/// @return Loaded font by key or nullptr if not present.
+	//	virtual FTFont* GetLoadedFont(const FTDS::String& key);
 
 	/// @brief Root absolute path to the project's Asset directory.
 	/// Example: D:/Project/Assets
@@ -156,26 +143,6 @@ public:
 	void AbsoluteToRelativePath(FTDS::String& absPath);
 	/// @brief Convert a relative asset path to absolute path in-place.
 	void RelativeToAbsolutePath(FTDS::String& relPath);
-
-	// ---------------------------
-	// Direct access to resource maps
-	// ---------------------------
-
-public:
-	virtual FTDS::HashMap<D3D11PSO*>*					GetPSOs();
-	virtual FTDS::HashMap<FTSprite*>*					GetSprites();
-	virtual FTDS::HashMap<FTTileMap*>*					GetTileMaps();
-	virtual FTDS::HashMap<FTPremade*>*					GetPremades();
-	virtual FTDS::HashMap<FTMaterial*>*					GetMaterials();
-	virtual FTDS::HashMap<FTMeshGroup*>*				GetMeshGroups();
-	virtual FTDS::HashMap<FTSpriteAnimation*>*			GetSpriteAnimations();
-	virtual FTDS::HashMap<FTSpineAnimation*>*			GetSpineAnimations();
-	virtual FTDS::HashMap<Sound*>*						GetSounds();
-	virtual FTDS::HashMap<FTCSV*>*						GetCSVs();
-	virtual FTDS::HashMap<FTJSON*>*						GetJSONs();
-	virtual FTDS::HashMap<FTText*>*						GetTexts();
-	virtual FTDS::HashMap<FTFont*>*						GetFonts();
-	virtual FTDS::Array<Microsoft::WRL::ComPtr<ID3D11RasterizerState>>* GetRS();
 
 	///////////////////////////
 	// Save | Load resources //
@@ -230,38 +197,43 @@ private:
 	FTDS::String	 mPathToAsset; // Absolute path to the Assets root folder.
 	FoxtrotRenderer* mRenderer;	   // Used for loading GPU-backed resources (textures, shaders, etc.).
 
+	// ---------------------------
+	// Resource HashMaps
+	// ---------------------------
+	FTDS::HashMap<FTPremade*>* mPremades;
+
 	//////////////////////
 	// Foxtrot resources//
 	//////////////////////
-private:
-	// Image/2D resources
-	FTDS::HashMap<FTSprite*>*  mSprites; // The Sprites will be added when loading SpriteRenderer Component.
-	FTDS::HashMap<FTTileMap*>* mTileMaps;
-	FTDS::HashMap<FTPremade*>* mPremades;
-
-	// Animation resources
-	FTDS::HashMap<FTSpriteAnimation*>* mSpriteAnimations;
-	FTDS::HashMap<FTSpineAnimation*>*  mSpineAnimations;
-
-	// Geometry resources
-	FTDS::HashMap<FTMeshGroup*>* mMeshGroups; // A mesh group usually represents a 3D model.
-
-	// Rendering
-	FTDS::HashMap<D3D11PSO*>*					mPSOs;
-	FTDS::HashMap<FTMaterial*>*					mMaterials;
-	FTDS::Array<Microsoft::WRL::ComPtr<ID3D11RasterizerState>>* mRS;
-
-	// Audio/Fonts
-	FTDS::HashMap<FTFont*>* mFonts;
-	FTDS::HashMap<Sound*>*	mSounds;
-
-	////////////////////////////
-	// Generic-type resources //
-	////////////////////////////
-private:
-	FTDS::HashMap<FTCSV*>*	mCSVs;
-	FTDS::HashMap<FTJSON*>* mJSONs;
-	FTDS::HashMap<FTText*>* mTexts;
+	// private:
+	//	// Image/2D resources
+	//	FTDS::HashMap<FTSprite*>*  mSprites; // The Sprites will be added when loading SpriteRenderer Component.
+	//	FTDS::HashMap<FTTileMap*>* mTileMaps;
+	//	FTDS::HashMap<FTPremade*>* mPremades;
+	//
+	//	// Animation resources
+	//	FTDS::HashMap<FTSpriteAnimation*>* mSpriteAnimations;
+	//	FTDS::HashMap<FTSpineAnimation*>*  mSpineAnimations;
+	//
+	//	// Geometry resources
+	//	FTDS::HashMap<FTMeshGroup*>* mMeshGroups; // A mesh group usually represents a 3D model.
+	//
+	//	// Rendering
+	//	FTDS::HashMap<D3D11PSO*>*					mPSOs;
+	//	FTDS::HashMap<FTMaterial*>*					mMaterials;
+	//	FTDS::Array<Microsoft::WRL::ComPtr<ID3D11RasterizerState>>* mRS;
+	//
+	//	// Audio/Fonts
+	//	FTDS::HashMap<FTFont*>* mFonts;
+	//	FTDS::HashMap<Sound*>*	mSounds;
+	//
+	//	////////////////////////////
+	//	// Generic-type resources //
+	//	////////////////////////////
+	// private:
+	//	FTDS::HashMap<FTCSV*>*	mCSVs;
+	//	FTDS::HashMap<FTJSON*>* mJSONs;
+	//	FTDS::HashMap<FTText*>* mTexts;
 
 private:
 	/// @brief Core loader for non-graphics resources (no renderer required).
@@ -277,7 +249,7 @@ private:
 		FileIOHelper::LoadBasicString(ifs, relPath);
 		FileIOHelper::LoadBasicString(ifs, fileName);
 
-		FTResourceDef resDef{ fileName, relPath };
+		FTResourceDef resDef(fileName, relPath);
 		FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef);
 
 		assert(0 < resMap->Capacity());
@@ -298,7 +270,7 @@ private:
 		FileIOHelper::LoadBasicString(ifs, relPath);
 		FileIOHelper::LoadBasicString(ifs, fileName);
 
-		FTResourceDef resDef{ fileName, relPath };
+		FTResourceDef resDef(fileName, relPath);
 		FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef, renderer);
 
 		if (fileName.Equal(ChunkKey::PRIMITIVE_SQUARE_VTX))
@@ -337,9 +309,5 @@ private:
 private:
 	/// @brief Appends the given file extension if the key has none.
 	/// @note Mutates the provided string when the suffix is missing.
-	void AddFileExtensionIfNone(FTDS::String& key, const char* fileType)
-	{
-		if (key.RFind(fileType) < 0)
-			key.Append(fileType);
-	}
+	void AddFileExtensionIfNone(FTDS::String& key, const char* fileType);
 };

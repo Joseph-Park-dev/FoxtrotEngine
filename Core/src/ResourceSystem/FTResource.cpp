@@ -12,8 +12,8 @@
 
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
-#include "Core/TemplateFunctions.h"
-#include "Core/FTCore.h"
+#include "TemplateFunctions.h"
+#include "FTCore.h"
 
 #ifdef FOXTROT_EDITOR
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -116,3 +116,21 @@ void FTResource::SubtractRefCount()
 	--mRefCount;
 }
 #endif // FOXTROT_EDITOR
+
+FTResourceDef::FTResourceDef()
+	: FileName()
+	, RelativePath()
+{
+}
+
+FTResourceDef::FTResourceDef(const char* fileName, const char* relPath)
+	: FileName(fileName)
+	, RelativePath(relPath)
+{
+}
+
+FTResourceDef::FTResourceDef(const FTDS::String& fileName, const FTDS::String& relPath)
+	: FileName(fileName.C_Str())
+	, RelativePath(relPath.C_Str())
+{
+}

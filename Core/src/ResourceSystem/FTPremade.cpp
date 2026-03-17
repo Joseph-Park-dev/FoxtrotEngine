@@ -8,11 +8,15 @@
 
 #include "ResourceSystem/FTPremade.h"
 
+#include <fstream>
+#include <filesystem>
+
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
-#include "Managers/ResourceManager.h"
-#include "Scenes/Scene.h"
-#include "Actors/Actor.h"
+#include "Manager/ResourceManager.h"
+#include "Scene/Scene.h"
+#include "Actor/Actor.h"
+#include "Static/FTString.h"
 
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS

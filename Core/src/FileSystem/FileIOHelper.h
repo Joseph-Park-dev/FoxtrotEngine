@@ -11,10 +11,12 @@
 /// </summary>
 
 #pragma once
+#include <iosfwd>
 #include <list>
 
 class FTVector2;
 class FTVector3;
+class FTVector4;
 struct b2Vec2;
 namespace FTDS
 {

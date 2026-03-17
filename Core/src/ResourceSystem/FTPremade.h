@@ -15,6 +15,8 @@
 #pragma once
 #include "ResourceSystem/FTResource.h"
 
+#include <iosfwd>
+
 class Actor;
 class FTCore;
 class Scene;

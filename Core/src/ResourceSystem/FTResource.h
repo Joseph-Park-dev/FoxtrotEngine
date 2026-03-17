@@ -7,10 +7,14 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include <Static/FTString.h>
+#include <iosfwd>
 
 class FTCore;
 class FoxtrotRenderer;
+namespace FTDS
+{
+	class String;
+}
 
 /// @brief Initialization struct for FTResources
 struct FTResourceDef
@@ -18,31 +22,9 @@ struct FTResourceDef
 	const char* FileName;
 	const char* RelativePath;
 
-	FTResourceDef()
-		: FileName()
-		, RelativePath()
-	{
-	}
-
-	FTResourceDef(const char* fileName, const char* relPath)
-		: FileName(fileName)
-		, RelativePath(relPath)
-	{
-	}
-
-	FTResourceDef(const FTDS::String& fileName, const FTDS::String& relPath)
-		: FileName(fileName.C_Str())
-		, RelativePath(relPath.C_Str())
-	{
-	}
-
-	FTResourceDef(const FTDS::String& relPath)
-		: RelativePath(relPath.C_Str())
-	{
-		FTDS::String pluginName;
-		ExtractFileName(relPath, pluginName);
-		FileName = pluginName.C_Str();
-	}
+	FTResourceDef();
+	FTResourceDef(const char* fileName, const char* relPath);
+	FTResourceDef(const FTDS::String& fileName, const FTDS::String& relPath);
 };
 
 /// @brief Base class that wraps the resources used in the game.

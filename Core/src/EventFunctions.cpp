@@ -6,12 +6,16 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Core/EventFunctions.h"
+#include "EventFunctions.h"
 
-#include "Core/TypeDefinitions.h"
-#include "Managers/EventManager.h"
-#include "Managers/ResourceManager.h"
+#include "TypeDefinitions.h"
+#include "Manager/EventManager.h"
+#include "Manager/ResourceManager.h"
 #include "ResourceSystem/FTPremade.h"
+#include "Actor/ActorGroup.h"
+#include "Actor/Actor.h"
+#include "Math/FTMath.h"
+#include "EventType.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "FTCoreEditor.h"
@@ -47,11 +51,11 @@ Actor* Instantiate(Actor* actor, ActorGroup actorGroup, FTVector3 pos)
 #else
 	if (actor)
 	{
-		actor->Initialize(FTCore::GetInstance());
-		actor->Setup();
+		//actor->Initialize();
+		//actor->Setup();
 
-		addedEvent.eventData.push_back(actor);
-		addedEvent.eventData.push_back(nullptr);
+		//addedEvent.eventData.push_back(actor);
+		//addedEvent.eventData.push_back(nullptr);
 		EventManager::GetInstance()->AddEvent(addedEvent);
 		return actor;
 	}
@@ -92,17 +96,17 @@ Actor* Instantiate(FTDS::String& premadeName)
 #else
 	if (origin)
 	{
-		origin->Initialize(FTCore::GetInstance());
-		origin->Setup();
+		//origin->Initialize(FTCore::GetInstance());
+		//origin->Setup();
 
-		addedEvent.eventData.push_back(origin);
-		addedEvent.eventData.push_back(nullptr);
+		//addedEvent.eventData.push_back(origin);
+		//addedEvent.eventData.push_back(nullptr);
 		EventManager::GetInstance()->AddEvent(addedEvent);
 		return origin;
 	}
 	else
 	{
-		printf("ERROR : Instantiate() -> Premade not loaded, %s\n", premadeName);
+		printf("ERROR : Instantiate() -> Premade not loaded, %s\n", premadeName.C_Str());
 		return nullptr;
 	}
 #endif
@@ -112,6 +116,6 @@ void Destroy(Actor* actor)
 {
 	FTEvent addedEvent	= {};
 	addedEvent.incident = EVENT_TYPE::DESTROY_ACTOR;
-	addedEvent.eventData.push_back(actor);
+	//addedEvent.eventData.push_back(actor);
 	EventManager::GetInstance()->AddEvent(addedEvent);
 }

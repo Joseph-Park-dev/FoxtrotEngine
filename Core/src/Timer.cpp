@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Core/Timer.h"
+#include "Timer.h"
 
 Timer::Timer()
 {

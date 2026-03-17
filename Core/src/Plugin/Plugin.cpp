@@ -5,6 +5,7 @@
 #include "Debugging/DebugFuncs.h"
 #include "Actor/Actor.h"
 #include "Component/Component.h"
+#include "Static/FTString.h"
 
 void Plugin::Load()
 {
@@ -13,7 +14,7 @@ void Plugin::Load()
 	delete path;
 }
 
-bool Plugin::Initialize()
+void Plugin::Initialize()
 {
 	for (auto iter = mComponents->Begin(); iter != mComponents->End(); ++iter)
 		if (!(*iter)->GetIsInitialized())
@@ -30,29 +31,49 @@ void Plugin::Setup()
 void Plugin::ProcessInput(FTInputDevice* inputDevice)
 {
 	for (auto iter = mComponents->Begin(); iter != mComponents->End(); ++iter)
+	{
+		if (!(*iter)->GetOwner()->IsActive())
+			continue;
+
 		if ((*iter)->GetIsActive())
 			(*iter)->ProcessInput(inputDevice);
+	}
 }
 
 void Plugin::Update(float deltaTime)
 {
 	for (auto iter = mComponents->Begin(); iter != mComponents->End(); ++iter)
+	{
+		if (!(*iter)->GetOwner()->IsActive())
+			continue;
+
 		if ((*iter)->GetIsActive())
 			(*iter)->Update(deltaTime);
+	}
 }
 
 void Plugin::LateUpdate(float deltaTime)
 {
 	for (auto iter = mComponents->Begin(); iter != mComponents->End(); ++iter)
+	{
+		if (!(*iter)->GetOwner()->IsActive())
+			continue;
+
 		if ((*iter)->GetIsActive())
 			(*iter)->LateUpdate(deltaTime);
+	}
 }
 
 void Plugin::Render(FoxtrotRenderer* renderer)
 {
 	for (auto iter = mComponents->Begin(); iter != mComponents->End(); ++iter)
+	{
+		if (!(*iter)->GetOwner()->IsActive())
+			continue;
+
 		if ((*iter)->GetIsActive())
 			(*iter)->Render(renderer);
+	}
 }
 
 void Plugin::Clear()
@@ -66,7 +87,7 @@ void Plugin::Clear()
 	delete mComponents;
 }
 
-Plugin::Plugin(FTResourceDef& resDef, size_t compArrCount, size_t compMapCount)
+Plugin::Plugin(FTResourceDef& resDef, size_t compArrCount)
 	: FTResource(resDef)
 	, mComponents(DBG_NEW FTDS::DynamicArray<Component*>)
 {

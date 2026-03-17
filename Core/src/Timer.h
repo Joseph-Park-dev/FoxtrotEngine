@@ -11,9 +11,9 @@
 /// </summary>
 
 #pragma once
-#include <profileapi.h>
+#include <Windows.h>
 
-#include "Core/SingletonMacro.h"
+#include "SingletonMacro.h"
 
 #define FT_TICKS_PASSED(A, B)  ((__int64)((B) - (A)) <= 0)
 

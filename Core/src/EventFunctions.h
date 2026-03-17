@@ -10,12 +10,15 @@
 /// </summary>
 
 #pragma once
-#include <string>
-
-#include "Actors/Actor.h"
-#include "Actors/ActorGroup.h"
+enum class ActorGroup;
+class Actor;
+class FTVector3;
+namespace FTDS
+{
+	class String;
+}
 
 // Object Spawning & Destroying
-Actor*	Instantiate(Actor* actor, ActorGroup actorGroup, FTVector3 pos = FTVector3::Zero);
+Actor*	Instantiate(Actor* actor, ActorGroup actorGroup, FTVector3 pos);
 Actor*	Instantiate(FTDS::String& premadeName);
 void	Destroy(Actor* actor);

@@ -17,15 +17,15 @@
 /// </summary>
 
 #pragma once
+#include <iosfwd>
+
 #include "SingletonMacro.h"
+#include "static/FTString.h"
 
 class Transform;
 class Actor;
 class Component;
 class Scene;
-
-//using ComponentLoadFunc = std::function<void(Actor*, std::ifstream&)>;
-//using ComponentLoadMap	= FTDS::HashMap<ComponentLoadFunc>;
 
 struct ChunkData
 {

@@ -10,21 +10,21 @@
 
 #include <string>
 #include <fstream>
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
 #include <iostream>
 #include <filesystem>
 
 #include "Math/FTMath.h"
 #include "TemplateFunctions.h"
-#include "Managers/SceneManager.h"
-#include "Managers/ResourceManager.h"
+#include "Manager/SceneManager.h"
+#include "Manager/ResourceManager.h"
 #include "Scene/Scene.h"
 #include "Actor/ActorGroup.h"
 #include "Actor/Transform.h"
 #include "Actor/Actor.h"
 #include "Renderer/Camera.h"
 #include "FileSystem/FileIOHelper.h"
+#include "Static/FTString.h"
+#include "Static/HashMap.h"
 
 void ChunkLoader::SaveChunk(FTDS::String& fileName)
 {
@@ -37,7 +37,7 @@ void ChunkLoader::LoadChunk(FTDS::String& fileName)
 	Lock();
 	std::ifstream ifs(fileName.C_Str());
 	LoadChunkData(ifs);
-	ResourceManager::GetInstance()->LoadResources(ifs);
+	//ResourceManager::GetInstance()->LoadResources(ifs);
 	LoadActorsData(ifs);
 
 	Camera::GetInstance()->LoadProperties(ifs);
@@ -166,7 +166,7 @@ void ChunkLoader::LoadActorsData(std::ifstream& ifs)
 		{
 			FTDS::DynamicArray<Actor*> children;
 
-			(*iter)->GetChildActors().IterateArray([&](Actor* c) {
+			(*iter)->GetChildActors()->IterateArray([&](Actor* c) {
 				Actor* child = actorWithIDs.At(c->GetID())->Value();
 				(*iter)->RemoveChild(c);
 				delete c;
@@ -177,9 +177,6 @@ void ChunkLoader::LoadActorsData(std::ifstream& ifs)
 			(*iter)->GetChildActors()->Copy(children);
 		}
 	}
-
-	scene->Initialize();
-	scene->Setup();
 }
 
 void ChunkLoader::LoadChunkData(std::ifstream& ifs)

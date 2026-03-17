@@ -8,10 +8,12 @@
 
 #include "InputSystem/FTInputDevice.h"
 
-#include "Core/TemplateFunctions.h"
-#include "Core/FTCore.h"
+#include "TemplateFunctions.h"
+#include "FTCore.h"
 #include "Renderer/Camera.h"
-#include "WindowSystem/FTWindow.h"
+#include "Renderer/FTWindow.h"
+#include "Math/FTMath.h"
+#include "Dynamic/DynamicArray.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorLayer.h"
@@ -20,58 +22,119 @@
 #endif // FOXTROT_EDITOR
 
 FTInputDevice::FTInputDevice()
-	: mMousePosition(FTVector2::Zero)
+	: mMousePosX(0)
+	, mMousePosY(0)
 	, mMouseState(0)
 	, mMouseWheelDelta(0.f)
 	, mIsDragging(false)
 {
+	mKeyCode = DBG_NEW int[(int)KEY::LAST_FLAG]{
+		'A',
+		'D',
+		'W',
+		'S',
+		VK_SHIFT,
+		VK_SPACE
+	};
+
+	mMouseCode = DBG_NEW int[(int)MOUSE::LAST_FLAG]{
+		VK_LBUTTON,
+		VK_RBUTTON,
+		VK_MBUTTON
+	};
+
+	mVecKey	   = DBG_NEW	FTDS::DynamicArray<tKeyInfo>();
+	mVecMouse  = DBG_NEW  FTDS::DynamicArray<tKeyInfo>();
+	mVecButton = DBG_NEW FTDS::DynamicArray<tKeyInfo>();
+
 	Init();
 }
 
 FTInputDevice::~FTInputDevice()
 {
+	delete[] mKeyCode;
+	delete[] mMouseCode;
+	delete[] mVecKey;
+	delete[] mVecMouse;
+	delete[] mVecButton;
+}
+
+FTDS::DynamicArray<tKeyInfo>* FTInputDevice::GetKeyArr()
+{
+	return mVecKey;
+}
+
+FTDS::DynamicArray<tKeyInfo>* FTInputDevice::GetMouseArr()
+{
+	return mVecMouse;
+}
+
+FTDS::DynamicArray<tKeyInfo>* FTInputDevice::GetButtonArr()
+{
+	return mVecButton;
+}
+
+int* FTInputDevice::GetKeyCode()
+{
+	return mKeyCode;
+}
+
+int* FTInputDevice::GetMouseCode()
+{
+	return mMouseCode;
+}
+
+void FTInputDevice::SetMousePosition(FTVector2 pos)
+{
+	mMousePosX = static_cast<unsigned int>(pos.x);
+	mMousePosY = static_cast<unsigned int>(pos.y);
+}
+
+void FTInputDevice::SetMousePosition(unsigned int posX, unsigned int posY)
+{
+	mMousePosX = posX;
+	mMousePosY = posY;
+}
+
+void FTInputDevice::SetMouseWheelDelta(float delta)
+{
+	mMouseWheelDelta = delta;
 }
 
 void FTInputDevice::Init()
 {
-	mMousePosition = FTVector2::Zero;
 	for (int i = 0; i < (int)KEY::LAST_FLAG; ++i)
 	{
-		mVecKey.push_back(tKeyInfo{ KEY_STATE::NONE, false });
+		mVecKey->PushBack(tKeyInfo{ KEY_STATE::NONE, false });
 	}
 	for (int i = 0; i < (int)MOUSE::LAST_FLAG; ++i)
 	{
-		mVecMouse.push_back(tKeyInfo{ KEY_STATE::NONE, false });
+		mVecMouse->PushBack(tKeyInfo{ KEY_STATE::NONE, false });
 	}
 	for (int i = 0; i < (int)GAMEPADBUTTON::LAST_FLAG; ++i)
 	{
-		mVecButton.push_back(tKeyInfo{ KEY_STATE::NONE, false });
+		mVecButton->PushBack(tKeyInfo{ KEY_STATE::NONE, false });
 	}
 }
 
 KEY_STATE FTInputDevice::GetKeyState(KEY eKey)
 {
-	return mVecKey[(int)eKey].eKeyState;
+	return mVecKey->At((size_t)eKey).eKeyState;
 }
 
 KEY_STATE FTInputDevice::GetMouseState(MOUSE eMouse)
 {
-	return mVecMouse[(int)eMouse].eKeyState;
+	return mVecMouse->At((size_t)eMouse).eKeyState;
 }
 
 KEY_STATE FTInputDevice::GetButtonState(GAMEPADBUTTON eButton)
 {
-	return mVecButton[(int)eButton].eKeyState;
+	return mVecButton->At((size_t)eButton).eKeyState;
 }
 
 FTVector2 FTInputDevice::GetMousePosition()
 {
-	return mMousePosition;
-}
-
-FTVector2 FTInputDevice::GetMouseWorldPosition()
-{
-	return Camera::GetInstance()->ConvertScreenPosToWorld(mMousePosition);
+	return FTVector2(mMousePosX, mMousePosY);
 }
 
 float FTInputDevice::GetMouseWheelDelta()
@@ -89,142 +152,26 @@ bool FTInputDevice::MOUSE_TAP(MOUSE mouse) { return GetMouseState(mouse) == KEY_
 bool FTInputDevice::MOUSE_AWAY(MOUSE mouse) { return GetMouseState(mouse) == KEY_STATE::AWAY; }
 bool FTInputDevice::MOUSE_NONE(MOUSE mouse) { return GetMouseState(mouse) == KEY_STATE::NONE; }
 
-FTVector2 FTInputDevice::MOUSE_POS() { return mMousePosition; }
-FTVector3 FTInputDevice::MOUSE_WORLDPOS(Camera* camInst) { return camInst->ConvertScreenPosToWorld(mMousePosition); }
-FTVector2 FTInputDevice::MOUSE_WORLDPOS_2D(Camera* camInst) 
-{ 
-	FTVector3 pos = camInst->ConvertScreenPosToWorld(mMousePosition);
-	return FTVector2(pos.x, pos.y);
-}
+FTVector2 FTInputDevice::MOUSE_POS() { return FTVector2(mMousePosX, mMousePosY); }
 
-void FTInputDevice::DetectKeyInput()
+void FTInputDevice::DetectMouseDrag(FTVector2& delta)
 {
-	for (int i = 0; i < (int)KEY::LAST_FLAG; ++i)
-	{
-		if (GetAsyncKeyState(mKeyCode[i]))
-		{
-			if (mVecKey[i].isPushedPrevFrame)
-			{
-				mVecKey[i].eKeyState = KEY_STATE::HOLD;
-			}
-			else
-			{
-				mVecKey[i].eKeyState = KEY_STATE::TAP;
-			}
-			mVecKey[i].isPushedPrevFrame = true;
-		}
-		else
-		{
-			if (mVecKey[i].isPushedPrevFrame)
-			{
-				mVecKey[i].eKeyState = KEY_STATE::AWAY;
-			}
-			else
-			{
-				mVecKey[i].eKeyState = KEY_STATE::NONE;
-			}
-			mVecKey[i].isPushedPrevFrame = false;
-		}
-	}
-}
-
-void FTInputDevice::DetectMouseInput(MSG msg)
-{
-	if (msg.lParam)
-	{
-		int mouseX	   = LOWORD(msg.lParam);
-		int mouseY	   = HIWORD(msg.lParam);
-		mMousePosition = FTVector2((float)mouseX, (float)mouseY);
-
-//#ifdef FOXTROT_EDITOR
-//		ImVec2 viewportPos = EditorLayer::GetInstance()->GetSceneViewportPos();
-//		mMousePosition -= viewportPos;
-//
-//#endif // FOXTROT_EDITOR
-	}
-
-	if (msg.message == WM_MOUSEWHEEL)
-		mMouseWheelDelta = GET_WHEEL_DELTA_WPARAM(msg.wParam);
-	else
-		mMouseWheelDelta = 0.f;
-
-	for (int mouseButton = 0; mouseButton < (int)MOUSE::LAST_FLAG; ++mouseButton)
-	{
-		if (GetAsyncKeyState(mMouseCode[mouseButton]))
-		{
-			if (mVecMouse[mouseButton].isPushedPrevFrame)
-			{
-				mVecMouse[mouseButton].eKeyState = KEY_STATE::HOLD;
-			}
-			else
-			{
-				mVecMouse[mouseButton].eKeyState = KEY_STATE::TAP;
-			}
-			mVecMouse[mouseButton].isPushedPrevFrame = true;
-		}
-		else
-		{
-			if (mVecMouse[mouseButton].isPushedPrevFrame)
-			{
-				mVecMouse[mouseButton].eKeyState = KEY_STATE::AWAY;
-			}
-			else
-			{
-				mVecMouse[mouseButton].eKeyState = KEY_STATE::NONE;
-			}
-			mVecMouse[mouseButton].isPushedPrevFrame = false;
-		}
-	}
-}
-
-void FTInputDevice::DetectMouseDrag(FTVector3& delta)
-{
-	static FTVector3 prevPos;
+	static unsigned int mouseX, mouseY;
 	if (MOUSE_TAP(MOUSE::MOUSE_LEFT) && !mIsDragging)
 	{
 		mIsDragging = true;
-		prevPos		= mMousePosition;
+		mouseX		= mMousePosX;
+		mouseY		= mMousePosY;
 	}
 
 	if (MOUSE_HOLD(MOUSE::MOUSE_LEFT) && mIsDragging)
 	{
-		FTVector3 currentPos = mMousePosition;
+		FTVector2 prevPos	 = FTVector2(mouseX, mouseY);
+		FTVector2 currentPos = FTVector2(mouseX, mouseY);
 		if ((currentPos - prevPos).Length() > 1e-3)
-		{
 			delta = currentPos - prevPos;
-			printf("%f %f %f \n", currentPos.x, currentPos.y, currentPos.z);
-		}
 	}
 
 	if (MOUSE_AWAY(MOUSE::MOUSE_LEFT) && mIsDragging)
 		mIsDragging = false;
-}
-
-void FTInputDevice::LockCursorInSceneViewport(FTVector2 mousePos)
-{
-	RECT rect;
-	GetClientRect(FTCore::GetInstance()->GetGameWindow()->GetHandle(), &rect);
-
-	POINT ul;
-	ul.x = rect.left;
-	ul.y = rect.top;
-
-	POINT lr;
-	lr.x = rect.right;
-	lr.y = rect.bottom;
-
-	MapWindowPoints(FTCore::GetInstance()->GetGameWindow()->GetHandle(), nullptr, &ul, 1);
-	MapWindowPoints(FTCore::GetInstance()->GetGameWindow()->GetHandle(), nullptr, &lr, 1);
-
-	rect.left = ul.x;
-	rect.top  = ul.y;
-
-	rect.right	= lr.x;
-	rect.bottom = lr.y;
-	ClipCursor(&rect);
-}
-
-void FTInputDevice::UnlockCursorOutOfSceneViewport()
-{
-	ClipCursor(nullptr);
 }

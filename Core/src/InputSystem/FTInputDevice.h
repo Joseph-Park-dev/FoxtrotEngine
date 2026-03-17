@@ -13,13 +13,13 @@
 /// </summary>
 
 #pragma once
-#include <unordered_map>
-#include <vector>
-#include <queue>
-
-#include <Windows.h>
-
 #include "Math/FTMath.h"
+
+namespace FTDS
+{
+	template <typename TYPE>
+	class DynamicArray;
+}
 
 enum class KEY
 {
@@ -71,20 +71,13 @@ struct tKeyInfo
 class FTInputDevice
 {
 public:
-	void DetectKeyInput();
-	void DetectMouseInput(MSG msg);
-	void DetectMouseDrag(FTVector3& delta);
-	void LockCursorInSceneViewport(FTVector2 mousePos);
-	void UnlockCursorOutOfSceneViewport();
-	// void DetectGamepadInput();
+	void DetectMouseDrag(FTVector2& delta);
 
-	// SDL_GameController* FindGamepad();
 public:
 	KEY_STATE GetKeyState(KEY eKey);
 	KEY_STATE GetMouseState(MOUSE eMouse);
 	KEY_STATE GetButtonState(GAMEPADBUTTON eButton);
 	FTVector2 GetMousePosition();
-	FTVector2 GetMouseWorldPosition();
 	float	  GetMouseWheelDelta();
 
 public:
@@ -99,41 +92,39 @@ public:
 	bool MOUSE_NONE(MOUSE mouse);
 
 	FTVector2 MOUSE_POS();
-	FTVector3 MOUSE_WORLDPOS(Camera* camInst);
-	FTVector2 MOUSE_WORLDPOS_2D(Camera* camInst);
 
 public:
 	FTInputDevice();
 	~FTInputDevice();
 
+protected:
+	FTDS::DynamicArray<tKeyInfo>* GetKeyArr();
+	FTDS::DynamicArray<tKeyInfo>* GetMouseArr();
+	FTDS::DynamicArray<tKeyInfo>* GetButtonArr();
+
+	int* GetKeyCode();
+	int* GetMouseCode();
+
+	void SetMousePosition(FTVector2 pos);
+	void SetMousePosition(unsigned int posX, unsigned int posY);
+
+	void SetMouseWheelDelta(float delta);
+
 private:
 	// Keyboard related data.
-	std::vector<tKeyInfo> mVecKey;
-	std::vector<tKeyInfo> mVecMouse;
-	std::vector<tKeyInfo> mVecButton;
+	FTDS::DynamicArray<tKeyInfo>* mVecKey;
+	FTDS::DynamicArray<tKeyInfo>* mVecMouse;
+	FTDS::DynamicArray<tKeyInfo>* mVecButton;
 
 	// Mouse related data.
-	FTVector2 mMousePosition;
-	int		  mMouseState;
-	float	  mMouseWheelDelta;
-	bool	  mIsDragging;
+	unsigned int mMousePosX, mMousePosY;
+	int			 mMouseState;
+	float		 mMouseWheelDelta;
+	bool		 mIsDragging;
 
 private:
-	using KeyboardMap				  = std::unordered_map<unsigned char, tKeyInfo>;
-	int mKeyCode[(int)KEY::LAST_FLAG] = {
-		'A',
-		'D',
-		'W',
-		'S',
-		VK_SHIFT,
-		VK_SPACE
-	};
-
-	int mMouseCode[(int)MOUSE::LAST_FLAG] = {
-		VK_LBUTTON,
-		VK_RBUTTON,
-		VK_MBUTTON
-	};
+	int* mKeyCode;
+	int* mMouseCode;
 
 private:
 	void Init();

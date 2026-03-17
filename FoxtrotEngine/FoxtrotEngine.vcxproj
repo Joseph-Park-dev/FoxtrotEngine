@@ -222,7 +222,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;FOXTROT_EDITOR;WITH_WINMM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>.\include;.\include\soloud\include;.\include\json\include;.\include\spine-cpp\include;.\src;..\FoxtrotEditor\include\imgui\backends;..\FoxtrotEditor\include\imgui;..\FoxtrotEditor\include;..\FoxtrotEditor\include\magic_enum\include;..\FoxtrotEditor\src;..\FoxtrotDS;..\FoxtrotMath\src;D:\[2025_01]\[GooCat Studio] VampiCat\Scripts;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\include;.\include\soloud\include;.\include\json\include;.\include\spine-cpp\include;.\src;..\FoxtrotEditor\include\imgui\backends;..\FoxtrotEditor\include\imgui;..\FoxtrotEditor\include;..\FoxtrotEditor\include\magic_enum\include;..\FoxtrotEditor\src;..\FoxtrotDS;..\FoxtrotMath\src;D:\[2025_01]\[GooCat Studio] VampiCat\Scripts;..\Core\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -262,6 +262,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\D3D11Renderer\D3D11InputDevice.cpp" />
     <ClCompile Include="src\D3D11Renderer\D3D11Window.cpp" />
     <ClCompile Include="src\D3D11Renderer\D3D11Renderer.cpp" />
     <ClCompile Include="src\ResourceSystem\D3D11PSO.cpp" />
@@ -378,7 +379,6 @@
     <ClCompile Include="src\Components\UIs\UI.cpp" />
     <ClCompile Include="src\Managers\CollisionManager.cpp" />
     <ClCompile Include="src\Components\AIState.cpp" />
-    <ClCompile Include="src\Managers\EventManager.cpp" />
     <ClCompile Include="src\Managers\UIManager.cpp" />
     <ClCompile Include="src\Physics\ParticleSystem.cpp" />
     <ClCompile Include="src\Physics\Physics2D.cpp" />
@@ -398,6 +398,7 @@
     <ClCompile Include="src\ResourceSystem\FTMaterials\StandardMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\D3D11Renderer\D3D11InputDevice.h" />
     <ClInclude Include="src\D3D11Renderer\D3D11Window.h" />
     <ClInclude Include="src\D3D11Renderer\D3D11Renderer.h" />
     <ClInclude Include="src\D3D11Renderer\WindowProcess.h" />
@@ -955,7 +956,6 @@
     <ClInclude Include="src\Components\AIState.h" />
     <ClInclude Include="src\Components\SpriteComponent.h" />
     <ClInclude Include="src\FileSystem\ChunkFileKeys.h" />
-    <ClInclude Include="src\Managers\EventManager.h" />
     <ClInclude Include="src\Managers\UIManager.h" />
     <ClInclude Include="src\Physics\ParticleSystem.h" />
     <ClInclude Include="src\Physics\Physics2D.h" />

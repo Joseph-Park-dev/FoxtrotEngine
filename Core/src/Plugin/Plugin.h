@@ -12,10 +12,22 @@
 #pragma once
 #include "ResourceSystem/FTResource.h"
 
-#include "Static/HashMap.h"
+#include <assert.h>
+#include <Windows.h>
+
+#include "Debugging/DebugMemAlloc.h"
+#include "Debugging/DebugFuncs.h"
 
 class Actor;
 class Component;
+class FTInputDevice;
+class FoxtrotRenderer;
+namespace FTDS
+{
+	template <typename TYPE>
+	class DynamicArray;
+	class String;
+} // namespace FTDS
 
 using COMP_CONSTRUCTOR = Component* (*)(Actor * actor);
 
@@ -43,7 +55,7 @@ public:
 	void Load();
 
 public:
-	virtual bool Initialize();
+	virtual void Initialize();
 	virtual void Setup();
 
 	// Gameloop functions.
@@ -55,7 +67,7 @@ public:
 	virtual void Clear();
 
 public:
-	Plugin(FTResourceDef& resDef, size_t compArrCount, size_t compCount);
+	Plugin(FTResourceDef& resDef, size_t compArrCount);
 	~Plugin() override;
 
 protected:

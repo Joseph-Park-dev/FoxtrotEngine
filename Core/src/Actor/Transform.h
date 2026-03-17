@@ -11,11 +11,13 @@
 /// </summary>
 
 #pragma once
+#include <iosfwd>
+
+#include "Math/FTMath.h"
 
 class Actor;
 struct Vertex;
 class Camera;
-class FTMatrix4;
 struct Steering;
 
 class Transform

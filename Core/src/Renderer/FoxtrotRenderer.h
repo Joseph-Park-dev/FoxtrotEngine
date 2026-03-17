@@ -16,44 +16,25 @@ class ViewportRenderer;
 class FTVector2;
 class FTWindow;
 
-enum class FillMode
-{
-	WireFrame,
-	Solid
-};
-
 class FoxtrotRenderer
 {
 public:
-	const float* GetClearColor() const;
-
-	// FillMode related (Getters and Setters)
-	void	 SwitchFillMode() const;
-	FillMode GetFillMode() const;
-	void	 SetFillMode(const FillMode mode);
-
-private:
-	float	 mClearColor[4];
-	FillMode mFillMode;
-
-	// Pixel color (RGBA) at the cursor position.
-	uint8_t mCursorPosColor[4] = {
-		0,
-	};
+	static FoxtrotRenderer* Create(FTWindow* window, unsigned int width, unsigned int height);
+	static void				Destroy(FoxtrotRenderer* renderer);
 
 public:
-	FoxtrotRenderer();
+	const float* GetClearColor() const;
+
+private:
+	float mClearColor[4];
+
+public:
+	FoxtrotRenderer(FTWindow* window, unsigned int width, unsigned int height);
 	~FoxtrotRenderer();
 
 private:
 	// Intended to be used during initialization.
-	bool Initialize(FTWindow* window, int renderWidth, int renderHeight);
-
-	// ID3D11 Helper functions
-	HRESULT CreateRasterizerState();
-	HRESULT CreateDepthStencilState(ComPtr<ID3D11DepthStencilState>& dss, bool depthEnabled = true);
-	HRESULT CreateBlendState();
-	HRESULT CreateTextureSampler();
+	bool Initialize(FTWindow* window, unsigned int renderWidth, unsigned int renderHeight);
 
 #ifdef FOXTROT_EDITOR
 public:

@@ -11,16 +11,34 @@
 #include <fstream>
 
 #include "FileSystem/FileIOHelper.h"
-#include "Managers/SceneManager.h"
-#include "Managers/ResourceManager.h"
+#include "FileSystem/ChunkLoader.h"
+#include "FileSystem/FileTypes.h"
+#include "Manager/SceneManager.h"
+#include "Manager/ResourceManager.h"
+#include "Manager/EventManager.h"
 #include "Plugin/Plugin.h"
 #include "TemplateFunctions.h"
+#include "Timer.h"
+#include "Renderer/FTWindow.h"
+#include "Renderer/FTRectArea.h"
+#include "Renderer/FoxtrotRenderer.h"
+#include "Renderer/Camera.h"
+#include "InputSystem/FTInputDevice.h"
+#include "Scene/Scene.h"
+#include "Static/HashMap.h"
+#include "Static/FTString.h"
 
-FTCore* FTCore::mInstance = nullptr;
+FTCore*			 FTCore::mInstance			= nullptr;
+SceneManager*	 SceneManager::mInstance	= nullptr;
+ResourceManager* ResourceManager::mInstance = nullptr;
+ChunkLoader*	 ChunkLoader::mInstance		= nullptr;
+Camera*			 Camera::mInstance			= nullptr;
+Timer*			 Timer::mInstance			= nullptr;
+EventManager*	 EventManager::mInstance	= nullptr;
 
 void FTCore::LoadGameData()
 {
-	std::ifstream ifs(mGameDataPath.C_Str());
+	std::ifstream ifs(mGameDataPath->C_Str());
 	FileIOHelper::BeginDataPackLoad(ifs, GameData::TITLE);
 
 	std::pair<size_t, FTDS::String> chunkListPack = FileIOHelper::BeginDataPackLoad(ifs, GameData::CHUNK_LIST);
@@ -28,19 +46,17 @@ void FTCore::LoadGameData()
 	{
 		FTDS::String chunkTitle = {};
 		FileIOHelper::LoadBasicString(ifs, chunkTitle);
-		SceneManager::GetInstance()->GetChunkList().push_back(chunkTitle);
+		SceneManager::GetInstance()->ChunkList()->PushBack(chunkTitle);
 	}
 
 	std::pair<size_t, FTDS::String> dllPack = FileIOHelper::BeginDataPackLoad(ifs, GameData::DLL_LIST);
-	mPlugins->Reserve(dllPack.first);
+	mLoadedPlugins->Reserve(dllPack.first);
 	for (size_t i = 0; i < dllPack.first; ++i)
 	{
 		FTDS::String chunkTitle = {};
 		FileIOHelper::LoadBasicString(ifs, chunkTitle);
-		SceneManager::GetInstance()->GetChunkList().push_back(chunkTitle);
+		SceneManager::GetInstance()->ChunkList()->PushBack(chunkTitle);
 	}
-
-
 
 	std::filesystem::path assetPath = std::filesystem::absolute("./");
 	ResourceManager::GetInstance()->SetPathToAsset(assetPath.string().c_str());
@@ -50,8 +66,11 @@ bool FTCore::Initialize()
 {
 	LoadGameData();
 
-	for (auto iter = mPlugins->Begin(); iter != mPlugins->End(); ++iter)
-		(*iter)->Initialize();
+	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+		(*iter)->Value()->Initialize();
+
+	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+		(*iter)->Value()->Setup();
 
 	InitSingletonManagers();
 	InitTimer();
@@ -66,8 +85,9 @@ void FTCore::InitSingletonManagers()
 
 void FTCore::LoadDLL(FTDS::String& path)
 {
-	FTResourceDef dllDef(path);
-	mPluginMap
+	FTDS::String name;
+	ExtractFileName(path, name);
+	FTResourceDef dllDef(name, path);
 }
 
 void FTCore::InitTimer()
@@ -89,8 +109,8 @@ void FTCore::RunLoop()
 
 void FTCore::ProcessInput()
 {
-	mWindow->ProcessInput();
-	SceneManager::GetInstance()->ProcessInput(mWindow->GetInputDevice());
+	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+		(*iter)->Value()->ProcessInput(mInputDevice);
 }
 
 void FTCore::UpdateGame()
@@ -98,14 +118,11 @@ void FTCore::UpdateGame()
 	Timer::GetInstance()->Update();
 	float deltaTime = Timer::GetInstance()->GetDeltaTime();
 
-	SceneManager::GetInstance()->Update(deltaTime);
-	SceneManager::GetInstance()->Lateupdate(deltaTime);
-	SoundManager::GetInstance()->Update();
-	Physics2D::GetInstance()->Update();
-	CollisionManager::GetInstance()->Update();
-	ParticleSystem::GetInstance()->Update(deltaTime);
-	UIManager::GetInstance()->Update(deltaTime, mWindow->GetInputDevice());
-	Camera::GetInstance()->Update(deltaTime);
+	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+		(*iter)->Value()->Update(deltaTime);
+
+	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+		(*iter)->Value()->LateUpdate(deltaTime);
 }
 
 void FTCore::GenerateOutput()
@@ -113,19 +130,10 @@ void FTCore::GenerateOutput()
 	// mGameRenderer->RenderClear(mWindow);
 	mWindow->BeginRender(mGameRenderer);
 
-	FTVector2 size = GetGameWindow()->GetRenderArea()->GetSize();
-	mGameRenderer->SetViewport(0, 0, size.x, size.y);
+	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+		(*iter)->Value()->Render(mGameRenderer);
 
-	if (!ChunkLoader::GetInstance()->IsLoadingChunk())
-	{
-		SceneManager::GetInstance()->Render(mGameRenderer);
-		ParticleSystem::GetInstance()->Render(mGameRenderer);
-		DebugShapes::GetInstance()->Render(mGameRenderer);
-		LightManager::GetInstance()->Render(mGameRenderer, Camera::GetInstance());
-		mWindow->SamplCursorPosColor(mGameRenderer->GetContext(), mGameRenderer->GetCursorPosColor());
-	}
-
-	mWindow->GetSwapChain()->Present(1, 0);
+	mWindow->EndRender(mGameRenderer);
 }
 
 void FTCore::ProcessEvent()
@@ -136,63 +144,47 @@ void FTCore::ProcessEvent()
 
 FTCore::FTCore()
 	: mWindow(nullptr)
+	, mInputDevice(nullptr)
 	, mGameRenderer(nullptr)
 	, mIsRunning(true)
 	, mGameDataPath(
-		  FTDS::String("./") + FTDS::String(ChunkKey::GAME_DATA) + FTDS::String(FileTypes::GDPACK))
+		  DBG_NEW FTDS::String("./"))
 {
-	mPluginMap
+	mGameDataPath->Append(ChunkKey::GAME_DATA);
+	mGameDataPath->Append(FileTypes::GDPACK);
+	mLoadedPlugins = DBG_NEW FTDS::HashMap<Plugin*>();
 }
 
 FTCore::~FTCore()
 {
 	delete mWindow;
+	delete mInputDevice;
+	FoxtrotRenderer::Destroy(mGameRenderer);
+	delete mLoadedPlugins;
 }
 
 void FTCore::ShutDown()
 {
-	DebugShapes::GetInstance()->DeleteAll();
-	SceneManager::GetInstance()->GetCurrentScene()->DeleteAll();
-	Physics2D::GetInstance()->ShutDown();
-	FoxtrotRenderer::DestroyRenderer(mGameRenderer);
+	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+	{
+		(*iter)->Value()->Clear();
+		delete (*iter);
+	}
 
+	SceneManager::GetInstance()->GetCurrentScene()->DeleteAll();
 	SceneManager::GetInstance()->Destroy();
 	ResourceManager::GetInstance()->Destroy();
-	CollisionManager::GetInstance()->Destroy();
-	DebugShapes::GetInstance()->Destroy();
-	SoundManager::GetInstance()->Destroy();
 	EventManager::GetInstance()->Destroy();
-	AnimationManager::GetInstance()->Destroy();
-	delete gSpineExtension;
-	gSpineExtension = nullptr;
-	UIManager::GetInstance()->Destroy();
-	Physics2D::GetInstance()->Destroy();
 	ChunkLoader::GetInstance()->Destroy();
-	Camera::GetInstance()->Destroy();
 	Timer::GetInstance()->Destroy();
-	ParticleSystem::GetInstance()->Destroy();
-	LightManager::GetInstance()->Destroy();
 
 	PostQuitMessage(0);
 }
 
-LRESULT FTCore::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-	switch (msg)
-	{
-		case WM_DESTROY:
-		{
-			SetIsRunning(false);
-			return 0;
-		}
-	}
-	return DefWindowProc(hwnd, msg, wParam, lParam);
-}
-
 extern "C"
 {
-	FTCore* Create_Core()
+	void Create_Core()
 	{
-		return new FTCore();
+		FTCore::GetInstance();
 	}
 }

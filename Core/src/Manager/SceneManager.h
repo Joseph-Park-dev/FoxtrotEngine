@@ -11,12 +11,20 @@
 /// </summary>
 
 #pragma once
-#include "Core/SingletonMacro.h"
-#include "Scenes/Scene.h"
+#include "SingletonMacro.h"
+
+#include <iosfwd>
+
+#include "static/FTString.h"
 
 class Scene;
 class FoxtrotRenderer;
 class FTInputDevice;
+namespace FTDS
+{
+	template <typename TYPE>
+	class DynamicArray;
+} // namespace FTDS
 
 #ifndef FOXTROT_EDITOR // If it's not on Editor.
 	#define FIND_ACTOR_FILTER(name, filter) SceneManager::GetInstance()->GetCurrentScene()->FindActor(name, filter)
@@ -32,15 +40,12 @@ public:
 	Scene* GetCurrentScene();
 
 public:
-	std::vector<FTDS::String>& GetChunkList();
-	void					   SetChunkListPath(FTDS::String&& path);
+	void SetChunkListPath(FTDS::String&& path);
+
+	FTDS::DynamicArray<FTDS::String>*& ChunkList();
 
 public:
 	virtual void Initialize();
-	virtual void ProcessInput(FTInputDevice* inputDevice);
-	virtual void Update(float deltaTime);
-	virtual void Lateupdate(float deltaTime);
-	virtual void Render(FoxtrotRenderer* renderer);
 	virtual void ProcessEvent();
 
 public:
@@ -49,6 +54,6 @@ public:
 private:
 	FTDS::String mChunkListPath;
 
-	Scene*					  mCurrentScene;
-	std::vector<FTDS::String> mChunkList; // List, and order of .chunks
+	Scene*							  mCurrentScene;
+	FTDS::DynamicArray<FTDS::String>* mChunkList; // List, and order of .chunks
 };

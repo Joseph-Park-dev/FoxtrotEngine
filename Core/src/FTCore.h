@@ -13,7 +13,8 @@
 
 #pragma once
 #include "SingletonMacro.h"
-#include "Static/FTString.h"
+
+#include "FTDS/Static/FTString.h"
 
 #ifdef CORE_EXPORTS
 	#define CORE_API __declspec(dllexport)
@@ -22,8 +23,14 @@
 #endif
 
 class FTWindow;
+class FTInputDevice;
 class FoxtrotRenderer;
 class Plugin;
+namespace FTDS
+{
+	template <typename TYPE>
+	class HashMap;
+}
 
 class CORE_API FTCore
 {
@@ -33,9 +40,6 @@ public:
 	virtual bool Initialize();
 	void		 RunLoop();
 	virtual void ShutDown();
-
-	// Constantly called in win32 MsgProc() function.
-	virtual LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 public:
 	FTWindow*		 GetGameWindow() { return mWindow; }
@@ -51,17 +55,17 @@ protected:
 	virtual void ProcessEvent();
 
 protected:
-	virtual bool InitFoxtrotRenderer_D3D11(FTWindow* window, int& width, int& height);
 	virtual void InitSingletonManagers();
 	virtual void LoadGameData();
 
 private:
 	FTWindow*		 mWindow;
+	FTInputDevice*	 mInputDevice;
 	FoxtrotRenderer* mGameRenderer;
 	bool			 mIsRunning;
 
 private:
-	FTDS::String			mGameDataPath;
+	FTDS::String*			mGameDataPath;
 	FTDS::HashMap<Plugin*>* mLoadedPlugins;
 
 private:
@@ -71,7 +75,7 @@ private:
 
 extern "C"
 {
-	CORE_API FTCore* Create_Core();
+	CORE_API void Create_Core();
 }
 
 namespace GameData
@@ -81,7 +85,7 @@ namespace GameData
 	constexpr const char* DLL_LIST	 = "DLL List";
 } // namespace GameData
 
-namespace Plugin
+namespace PluginKey
 {
 	namespace FTCore
 	{

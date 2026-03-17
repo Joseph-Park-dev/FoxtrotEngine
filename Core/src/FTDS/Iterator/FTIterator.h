@@ -14,7 +14,6 @@ namespace FTDS
 	public:
 		FTIteratorArray(TYPE* array)
 			: mPtr(array)
-			, mPos(0)
 		{
 		}
 
@@ -22,17 +21,13 @@ namespace FTDS
 		TYPE* operator++() override
 		{
 			++mPtr;
-			++mPos;
 			return mPtr;
 		};
 
 		bool operator==(FTIteratorArray&& rhs) { return mPtr == rhs.mPtr; }
 		bool operator!=(FTIteratorArray&& rhs) { return mPtr != rhs.mPtr; }
 
-		size_t IterPos() { return mPos; }
-
 	private:
 		TYPE* mPtr;
-		size_t mPos;
 	};
 } // namespace FTDS

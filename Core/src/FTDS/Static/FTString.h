@@ -1,5 +1,9 @@
 #pragma once
-#include <Dynamic/DynamicArray.h>
+#include "Dynamic/DynamicArray.h"
+
+#include <Windows.h>
+
+#include "Debugging/DebugMemAlloc.h"
 
 namespace FTDS
 {

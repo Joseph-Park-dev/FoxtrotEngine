@@ -23,12 +23,12 @@ public:
     }
 
 #else
-    template <typename CUSTOM_BEHAVIOR>
-    static void AddBehaviorToBuild(const char* key)
-    {
-        ChunkLoader::GetInstance()->GetComponentLoadMap().
-            Insert(key, &FTBehavior::Load<CUSTOM_BEHAVIOR>);
-    }
+    //template <typename CUSTOM_BEHAVIOR>
+    //static void AddBehaviorToBuild(const char* key)
+    //{
+    //    ChunkLoader::GetInstance()->GetComponentLoadMap().
+    //        Insert(key, &FTBehavior::Load<CUSTOM_BEHAVIOR>);
+    //}
 #endif
 };
 

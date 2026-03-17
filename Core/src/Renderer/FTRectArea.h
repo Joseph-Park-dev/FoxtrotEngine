@@ -11,6 +11,8 @@
 /// </summary>
 
 #pragma once
+#include <iosfwd>
+
 #include "Math/FTMath.h"
 
 class FTRectArea
@@ -43,15 +45,8 @@ public:
 	}
 
 public:
-	FTRectArea()
-	{
-		Set(0.f, 0.f, 0.f, 0.f);
-	}
-
-	FTRectArea(float x, float y, float width, float height, float rotAngle = 0)
-	{
-		Set(x, y, width, height, rotAngle);
-	}
+	FTRectArea();
+	FTRectArea(float x, float y, float width, float height, float rotAngle = 0);
 	void CloneTo(FTRectArea* rect);
 
 private:

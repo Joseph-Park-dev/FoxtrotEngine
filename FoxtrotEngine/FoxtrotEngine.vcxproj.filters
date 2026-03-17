@@ -18,9 +18,6 @@
     <ClCompile Include="src\Components\AIState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Managers\EventManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Managers\UIManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -408,15 +405,15 @@
     <ClCompile Include="src\D3D11Renderer\D3D11Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\D3D11Renderer\D3D11InputDevice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Components\AIState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Components\SpriteComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Managers\EventManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Managers\UIManager.h">
@@ -2145,6 +2142,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\D3D11Renderer\WindowProcess.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\D3D11Renderer\D3D11InputDevice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

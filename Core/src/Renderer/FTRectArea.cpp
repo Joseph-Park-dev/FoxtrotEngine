@@ -7,7 +7,10 @@
 // ----------------------------------------------------------------
 
 #include "Renderer/FTRectArea.h"
+
+#include "Math/FTMath.h"
 #include "FileSystem/FileIOHelper.h"
+#include "Static/FTString.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
@@ -20,7 +23,7 @@ bool FTRectArea::Overlaps(const FTVector2& point)
 	FTVector2 v1 = FTVector2(Math::Cos(mRotAngle), Math::Sin(mRotAngle));
 	FTVector2 v2 = FTVector2(-v1.y, v1.x); // Rotate by 90
 
-   // scale them appropriately by the dimensions
+	// scale them appropriately by the dimensions
 	v1 *= mWidth / 2;
 	v2 *= mHeight / 2;
 
@@ -32,33 +35,43 @@ bool FTRectArea::Overlaps(const FTVector2& point)
 	return Math::PointInRectangle(point, p0, p1, p2, p3);
 }
 
-//bool FTRectArea::Overlaps(const FTRectArea& other)
+// bool FTRectArea::Overlaps(const FTRectArea& other)
 //{
 //	FTVector2 rightMin = other.mMin;
 //	FTVector2 rightMax = other.mMax;
 //	return Overlaps(other.mMin) || Overlaps(other.mMax);
-//}
+// }
 
 void FTRectArea::Set(FTVector2 center, FTVector2 dimension, float rotAngle)
 {
-	mCenter = center;
-	mSize	= dimension;
-	mWidth	= dimension.x;
-	mHeight = dimension.y;
-	mMin	= mCenter - mSize / 2;
-	mMax	= mCenter + mSize / 2;
+	mCenter	  = center;
+	mSize	  = dimension;
+	mWidth	  = dimension.x;
+	mHeight	  = dimension.y;
+	mMin	  = mCenter - mSize / 2;
+	mMax	  = mCenter + mSize / 2;
 	mRotAngle = rotAngle;
 }
 
 void FTRectArea::Set(float posX, float posY, float width, float height, float rotAngle)
 {
-	mWidth	= width;
-	mHeight = height;
-	mSize	= FTVector2(width, height);
-	mCenter = FTVector2(posX, posY) + mSize * 0.5f;
-	mMin	= mCenter - mSize / 2;
-	mMax	= mCenter + mSize / 2;
+	mWidth	  = width;
+	mHeight	  = height;
+	mSize	  = FTVector2(width, height);
+	mCenter	  = FTVector2(posX, posY) + (mSize * 0.5f);
+	mMin	  = mCenter - mSize / 2;
+	mMax	  = mCenter + mSize / 2;
 	mRotAngle = rotAngle;
+}
+
+FTRectArea::FTRectArea()
+{
+	Set(0.f, 0.f, 0.f, 0.f);
+}
+
+FTRectArea::FTRectArea(float x, float y, float width, float height, float rotAngle)
+{
+	Set(x, y, width, height, rotAngle);
 }
 
 void FTRectArea::CloneTo(FTRectArea* rect)

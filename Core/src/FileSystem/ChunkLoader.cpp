@@ -10,25 +10,21 @@
 
 #include <string>
 #include <fstream>
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
 #include <iostream>
 #include <filesystem>
 
 #include "Math/FTMath.h"
-#include "Core/TemplateFunctions.h"
-#include "Managers/SceneManager.h"
-#include "Managers/ResourceManager.h"
-#include "Managers/CollisionManager.h"
-#include "Managers/SoundManager.h"
-#include "Scenes/Scene.h"
-#include "Actors/ActorGroup.h"
-#include "Actors/Transform.h"
-#include "Actors/Actor.h"
+#include "TemplateFunctions.h"
+#include "Manager/SceneManager.h"
+#include "Manager/ResourceManager.h"
+#include "Scene/Scene.h"
+#include "Actor/ActorGroup.h"
+#include "Actor/Transform.h"
+#include "Actor/Actor.h"
 #include "Renderer/Camera.h"
-
 #include "FileSystem/FileIOHelper.h"
-#include "Components/BatchHeaders.h"
+#include "Static/FTString.h"
+#include "Static/HashMap.h"
 
 void ChunkLoader::SaveChunk(FTDS::String& fileName)
 {
@@ -41,10 +37,7 @@ void ChunkLoader::LoadChunk(FTDS::String& fileName)
 	Lock();
 	std::ifstream ifs(fileName.C_Str());
 	LoadChunkData(ifs);
-	// LightManager::GetInstance()->LoadProperties(ifs);
-	CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
-	ResourceManager::GetInstance()->LoadResources(ifs);
-	SoundManager::GetInstance()->LoadProperties(ifs);
+	//ResourceManager::GetInstance()->LoadResources(ifs);
 	LoadActorsData(ifs);
 
 	Camera::GetInstance()->LoadProperties(ifs);
@@ -169,24 +162,21 @@ void ChunkLoader::LoadActorsData(std::ifstream& ifs)
 			(*iter)->SetParent(parent);
 		}
 
-		if (0 < (*iter)->GetChildActors().GetSize())
+		if (0 < (*iter)->GetChildActors()->GetSize())
 		{
 			FTDS::DynamicArray<Actor*> children;
 
-			(*iter)->GetChildActors().IterateArray([&](Actor* c) {
+			(*iter)->GetChildActors()->IterateArray([&](Actor* c) {
 				Actor* child = actorWithIDs.At(c->GetID())->Value();
 				(*iter)->RemoveChild(c);
 				delete c;
 				c = nullptr;
 				children.PushBack(child);
 			});
-			(*iter)->GetChildActors().Clear();
-			(*iter)->GetChildActors().Copy(children);
+			(*iter)->GetChildActors()->Clear();
+			(*iter)->GetChildActors()->Copy(children);
 		}
 	}
-
-	scene->Initialize(FTCore::GetInstance());
-	scene->Setup();
 }
 
 void ChunkLoader::LoadChunkData(std::ifstream& ifs)
@@ -224,20 +214,20 @@ ChunkLoader::ChunkLoader()
 		{ "Flee", &Component::Load<Flee> },
 	};*/
 
-	mComponentLoadMap.Reserve(25);
-	mComponentLoadMap.Insert("AI", &Component::Load<AI>);
-	mComponentLoadMap.Insert("Animator", &Component::Load<Animator>);
-	mComponentLoadMap.Insert("BoxCollider2D", &Component::Load<BoxCollider2D>);
-	mComponentLoadMap.Insert("CircleCollider2D", &Component::Load<CircleCollider2D>);
-	mComponentLoadMap.Insert("Rigidbody2D", &Component::Load<Rigidbody2D>);
-	mComponentLoadMap.Insert("SpriteRenderer", &Component::Load<SpriteRenderer>);
-	mComponentLoadMap.Insert("TileMap", &Component::Load<TileMapRenderer>);
-	mComponentLoadMap.Insert("TextRenderer", &Component::Load<TextRenderer>);
-	mComponentLoadMap.Insert("MeshRenderer", &Component::Load<MeshRenderer>);
-	mComponentLoadMap.Insert("SpineAnimator", &Component::Load<SpineAnimator>);
-	mComponentLoadMap.Insert("ButtonUI", &Component::Load<ButtonUI>);
-	mComponentLoadMap.Insert("Seek", &Component::Load<Seek>);
-	mComponentLoadMap.Insert("Flee", &Component::Load<Flee>);
+	//mComponentLoadMap.Reserve(25);
+	//mComponentLoadMap.Insert("AI", &Component::Load<AI>);
+	//mComponentLoadMap.Insert("Animator", &Component::Load<Animator>);
+	//mComponentLoadMap.Insert("BoxCollider2D", &Component::Load<BoxCollider2D>);
+	//mComponentLoadMap.Insert("CircleCollider2D", &Component::Load<CircleCollider2D>);
+	//mComponentLoadMap.Insert("Rigidbody2D", &Component::Load<Rigidbody2D>);
+	//mComponentLoadMap.Insert("SpriteRenderer", &Component::Load<SpriteRenderer>);
+	//mComponentLoadMap.Insert("TileMap", &Component::Load<TileMapRenderer>);
+	//mComponentLoadMap.Insert("TextRenderer", &Component::Load<TextRenderer>);
+	//mComponentLoadMap.Insert("MeshRenderer", &Component::Load<MeshRenderer>);
+	//mComponentLoadMap.Insert("SpineAnimator", &Component::Load<SpineAnimator>);
+	//mComponentLoadMap.Insert("ButtonUI", &Component::Load<ButtonUI>);
+	//mComponentLoadMap.Insert("Seek", &Component::Load<Seek>);
+	//mComponentLoadMap.Insert("Flee", &Component::Load<Flee>);
 };
 
 ChunkLoader::~ChunkLoader()

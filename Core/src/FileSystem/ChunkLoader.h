@@ -17,15 +17,15 @@
 /// </summary>
 
 #pragma once
+#include <iosfwd>
+
 #include "SingletonMacro.h"
+#include "static/FTString.h"
 
 class Transform;
 class Actor;
 class Component;
 class Scene;
-
-using ComponentLoadFunc = std::function<void(Actor*, std::ifstream&)>;
-using ComponentLoadMap	= FTDS::HashMap<ComponentLoadFunc>;
 
 struct ChunkData
 {
@@ -48,7 +48,7 @@ public:
 	void DeleteCopiedChunk();
 
 public:
-	ComponentLoadMap& GetComponentLoadMap() { return mComponentLoadMap; }
+	//ComponentLoadMap& GetComponentLoadMap() { return mComponentLoadMap; }
 
 	const bool IsLoadingChunk() const;
 
@@ -70,7 +70,6 @@ protected:
 	virtual void LoadActorsData(std::ifstream& ifs);
 
 private:
-	ComponentLoadMap mComponentLoadMap;
 	ChunkData		 mCurrentChunkData;
 	bool			 mIsLoading;
 

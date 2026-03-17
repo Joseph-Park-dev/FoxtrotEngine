@@ -1,7 +1,5 @@
 #pragma once
 #include <iostream>
-#include <Windows.h>
-#include <d3d11.h>
 
 namespace Debug
 {
@@ -10,10 +8,10 @@ namespace Debug
 		printf("ERROR at line number %d in file %s : %s\n", line, file, msg);
 	}
 
-	inline ULONG GetRefCount(IUnknown* obj)
-	{
-		obj->AddRef();
-		ULONG refCount = obj->Release();
-		return refCount;
-	}
+	//inline ULONG GetRefCount(IUnknown* obj)
+	//{
+	//	obj->AddRef();
+	//	ULONG refCount = obj->Release();
+	//	return refCount;
+	//}
 } // namespace Debug

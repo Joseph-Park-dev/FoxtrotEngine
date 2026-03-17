@@ -1,5 +1,5 @@
 #pragma once
-#include "Core/Renderer/FoxtrotRenderer.h"
+#include "Renderer/FoxtrotRenderer.h"
 
 #include <wrl.h>
 #include <windows.h>

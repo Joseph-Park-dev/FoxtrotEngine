@@ -2,8 +2,9 @@
 #include <memory>
 #include <cassert>
 
+#include "Debugging/DebugMemAlloc.h"
+#include "Debugging/DebugFuncs.h"
 #include "Iterator/FTIterator.h"
-#include "DLL_Export_Macro.h"
 
 namespace FTDS
 {
@@ -14,10 +15,11 @@ namespace FTDS
 	/// Clear() or the destructor won't free those objects automatically.
 	/// </Note_on_deallocation>
 	template <typename TYPE>
-	class FTDS_API Array
+	class Array
 	{
 	public:
 		TYPE& operator[](int idx) { return mData[idx]; }
+		TYPE& operator[](size_t idx) { return mData[idx]; }
 
 	public:
 		virtual FTDS::FTIteratorArray<TYPE> Begin() { return FTDS::FTIteratorArray<TYPE>(mData); }
@@ -63,10 +65,14 @@ namespace FTDS
 		// Re-allocate memory space when new capacity is bigger than current capacity
 		void Reserve(size_t newCapacity)
 		{
-			assert(0 < newCapacity && "New capacity cannot be a zero.");
 			if (newCapacity <= mCapacity)
 				return;
 
+			if (newCapacity < 1) // Input capacity must be bigger than Zero.
+			{
+				Debug::LogError(__LINE__, __FILE__, "New capacity is 0!");
+				return;
+			}
 			// When the current capacity is zero; initialization phase.
 			AllocateMem(newCapacity);
 		}

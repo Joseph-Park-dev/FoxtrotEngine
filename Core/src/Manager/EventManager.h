@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -10,16 +10,19 @@
 /// </summary>
 
 #pragma once
-#include <vector>
+#include "SingletonMacro.h"
 
-#include "Core/TypeDefinitions.h"
-#include "Core/SingletonMacro.h"
-#include "Core/EventType.h"
+enum class EVENT_TYPE;
+namespace FTDS
+{
+	template <typename TYPE>
+	class DynamicArray;
+}
 
 struct FTEvent
 {
 	EVENT_TYPE incident;
-	std::vector<void*> eventData;
+	void*	   eventData;
 };
 
 class EventManager
@@ -27,11 +30,10 @@ class EventManager
 	SINGLETON(EventManager)
 
 public:
-	void AddEvent(const FTEvent& addedEvent)
-			{ mEvent.push_back(addedEvent); }
+	void AddEvent(const FTEvent& addedEvent);
 
 private:
-	std::vector<FTEvent> mEvent;
+	FTDS::DynamicArray<FTEvent>* mEvent;
 
 public:
 	void ProcessEvent();
@@ -39,4 +41,3 @@ public:
 private:
 	void Execute(const FTEvent& executedEvent);
 };
-

@@ -17,7 +17,6 @@
 #include <stdlib.h>
 #include <fstream>
 #include <string>
-#include <directxtk/SimpleMath.h>
 #include <filesystem>
 
 #include "Static/FTString.h"
@@ -73,11 +72,6 @@ inline void LogFloat(FTDS::String message, float val)
 inline void LogVector2(FTVector2 val)
 {
 	printf("X : %f Y : %f\n", val.x, val.y);
-}
-
-inline void LogVector3(DirectX::SimpleMath::Vector3 val)
-{
-	printf("X : %f Y : %f Z : %f\n", val.x, val.y, val.z);
 }
 
 inline void LogVector2(FTDS::String message, FTVector2 val)
@@ -174,7 +168,7 @@ inline FTDS::String ExtractFileName(FTDS::String* path, FTDS::String& out)
 	out.SubStr(idx + 1, out.GetLength() - idx); // 1 -> "\\" should be omitted.
 }
 
-inline FTDS::String ExtractFileName(const FTDS::String& path, FTDS::String& out)
+inline void ExtractFileName(const FTDS::String& path, FTDS::String& out)
 {
 	std::filesystem::path p(path.C_Str());
 	out.Assign(path);

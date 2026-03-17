@@ -8,6 +8,8 @@
 
 #include "Actor.h"
 
+#include <fstream>
+
 #include "Scene/Scene.h"
 #include "InputSystem/FTInputDevice.h"
 #include "Actor/ActorGroup.h"
@@ -18,12 +20,12 @@
 #include "FTCore.h"
 #include "Debugging/DebugMemAlloc.h"
 #include "ResourceSystem/FTPremade.h"
-#include "Managers/SceneManager.h"
+#include "Manager/SceneManager.h"
 #include "FileSystem/BufferSizes.h"
+#include "FileSystem/NullKeys.h"
 
 #include "Compare/StringEqual.h"
 #include "Dynamic/DynamicArray.h"
-#include "Static/FTString.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorElement.h"
@@ -34,6 +36,7 @@ Actor::Actor(int id)
 	: mName("New Empty Actor")
 	, mID(id)
 	, mActorGroup(ActorGroup::DEFAULT)
+	, mState(ActorState::ALIVE)
 	, mIsActive(true)
 	, mTransform(DBG_NEW Transform(this))
 	, mComponents(DBG_NEW FTDS::DynamicArray<Component*>())
@@ -48,6 +51,7 @@ Actor::Actor(Actor* actor, int id)
 	: mName("New Copied Actor")
 	, mID(id)
 	, mActorGroup(actor->mActorGroup)
+	, mState(ActorState::ALIVE)
 	, mIsActive(true)
 	, mTransform(DBG_NEW Transform(this))
 	, mComponents(DBG_NEW FTDS::DynamicArray<Component*>())
@@ -58,8 +62,6 @@ Actor::Actor(Actor* actor, int id)
 	mName.Assign(actor->GetNameRef());
 
 	CopyChildObjectFrom(actor);
-	if (actor->mParent)
-		SetParent(actor->mParent);
 	CopyTransformFrom(actor);
 	CopyComponentsFrom(actor);
 }
@@ -68,6 +70,7 @@ Actor::Actor(Actor* actor, int id, bool deepCpyChild)
 	: mName("New Copied Actor")
 	, mID(id)
 	, mActorGroup(actor->mActorGroup)
+	, mState(ActorState::ALIVE)
 	, mIsActive(true)
 	, mTransform(DBG_NEW Transform(this))
 	, mComponents(DBG_NEW FTDS::DynamicArray<Component*>())
@@ -156,9 +159,24 @@ void Actor::RefChildObjectFrom(Actor* actor)
 	});
 }
 
+FTDS::String Actor::GetName()
+{
+	return mName;
+}
+
+FTDS::String& Actor::GetNameRef()
+{
+	return mName;
+}
+
+void Actor::SetName(FTDS::String&& name)
+{
+	mName.Assign(name);
+}
+
 void Actor::AddChild(Actor* child)
 {
-	child->SetParent(this);
+	child->mParent = this;
 	mChild->PushBack(child);
 }
 
@@ -171,13 +189,14 @@ void Actor::RemoveChild(Actor* child)
 	mChild->Erase(pos);
 
 	if (child->mParent->mParent)
-		child->SetParent(child->mParent->mParent);
+		child->mParent = child->mParent->mParent;
 }
 
 void Actor::AddComponent(Component* component)
 {
-	int	 updateOrder = component->GetUpdateOrder();
-	auto iter		 = mComponents->Begin();
+	int	   updateOrder = component->GetUpdateOrder();
+	auto   iter		   = mComponents->Begin();
+	size_t iterPos	   = 0;
 	for (; iter != mComponents->End(); ++iter)
 	{
 		if (!(*iter))
@@ -185,9 +204,9 @@ void Actor::AddComponent(Component* component)
 
 		if (updateOrder < (*iter)->GetUpdateOrder())
 			break;
+		++iterPos;
 	}
-	size_t i = iter.IterPos();
-	mComponents->Insert(iter.IterPos(), component);
+	mComponents->Insert(iterPos, component);
 }
 
 void Actor::RemoveComponent(Component* component)
@@ -208,7 +227,7 @@ void Actor::RemoveAllComponents()
 	mComponents->Clear();
 }
 
-bool Actor::HasName(FTDS::String& name)
+bool Actor::HasName(FTDS::String&& name)
 {
 	return mName.Equal(name.C_Str());
 }
@@ -216,6 +235,11 @@ bool Actor::HasName(FTDS::String& name)
 bool Actor::HasName(const char* name)
 {
 	return FTDS::StringEqual(mName.C_Str(), name);
+}
+
+bool Actor::IsDead()
+{
+	return mState == ActorState::DEAD;
 }
 
 bool& Actor::IsActive()
@@ -324,6 +348,6 @@ void Actor::LoadComponents(std::ifstream& ifs)
 	for (size_t i = 0; i < pack.first; ++i)
 	{
 		std::pair<size_t, FTDS::String> compPack = FileIOHelper::BeginDataPackLoad(ifs);
-		ChunkLoader::GetInstance()->GetComponentLoadMap().At(compPack.second)->Value()(this, ifs);
+		// ChunkLoader::GetInstance()->GetComponentLoadMap().At(compPack.second)->Value()(this, ifs);
 	}
 }

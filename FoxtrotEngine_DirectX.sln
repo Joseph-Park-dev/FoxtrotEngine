@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VampiCat", "..\..\[2025_01]
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Core", "Core\Core.vcxproj", "{CCE9835E-F788-4B51-930B-D7805AC1E2A0}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Main", "Main\Main.vcxproj", "{2B1591E1-1534-4A6C-9F8A-23DAF561104F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -103,14 +105,30 @@ Global
 		{CCE9835E-F788-4B51-930B-D7805AC1E2A0}.Foxtrot_Debug|x64.Build.0 = Release|x64
 		{CCE9835E-F788-4B51-930B-D7805AC1E2A0}.Foxtrot_Debug|x86.ActiveCfg = Release|Win32
 		{CCE9835E-F788-4B51-930B-D7805AC1E2A0}.Foxtrot_Debug|x86.Build.0 = Release|Win32
-		{CCE9835E-F788-4B51-930B-D7805AC1E2A0}.Foxtrot_Editor_Debug|x64.ActiveCfg = Release|x64
-		{CCE9835E-F788-4B51-930B-D7805AC1E2A0}.Foxtrot_Editor_Debug|x64.Build.0 = Release|x64
+		{CCE9835E-F788-4B51-930B-D7805AC1E2A0}.Foxtrot_Editor_Debug|x64.ActiveCfg = Foxtrot_Editor_Debug|x64
+		{CCE9835E-F788-4B51-930B-D7805AC1E2A0}.Foxtrot_Editor_Debug|x64.Build.0 = Foxtrot_Editor_Debug|x64
 		{CCE9835E-F788-4B51-930B-D7805AC1E2A0}.Foxtrot_Editor_Debug|x86.ActiveCfg = Release|Win32
 		{CCE9835E-F788-4B51-930B-D7805AC1E2A0}.Foxtrot_Editor_Debug|x86.Build.0 = Release|Win32
 		{CCE9835E-F788-4B51-930B-D7805AC1E2A0}.Release|x64.ActiveCfg = Release|x64
 		{CCE9835E-F788-4B51-930B-D7805AC1E2A0}.Release|x64.Build.0 = Release|x64
 		{CCE9835E-F788-4B51-930B-D7805AC1E2A0}.Release|x86.ActiveCfg = Release|Win32
 		{CCE9835E-F788-4B51-930B-D7805AC1E2A0}.Release|x86.Build.0 = Release|Win32
+		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Debug|x64.ActiveCfg = Debug|x64
+		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Debug|x64.Build.0 = Debug|x64
+		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Debug|x86.ActiveCfg = Debug|Win32
+		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Debug|x86.Build.0 = Debug|Win32
+		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Foxtrot_Debug|x64.ActiveCfg = Release|x64
+		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Foxtrot_Debug|x64.Build.0 = Release|x64
+		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Foxtrot_Debug|x86.ActiveCfg = Release|Win32
+		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Foxtrot_Debug|x86.Build.0 = Release|Win32
+		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Foxtrot_Editor_Debug|x64.ActiveCfg = Release|x64
+		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Foxtrot_Editor_Debug|x64.Build.0 = Release|x64
+		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Foxtrot_Editor_Debug|x86.ActiveCfg = Release|Win32
+		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Foxtrot_Editor_Debug|x86.Build.0 = Release|Win32
+		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Release|x64.ActiveCfg = Release|x64
+		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Release|x64.Build.0 = Release|x64
+		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Release|x86.ActiveCfg = Release|Win32
+		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

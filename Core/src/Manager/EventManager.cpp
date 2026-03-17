@@ -6,17 +6,15 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Managers/EventManager.h"
+#include "Manager/EventManager.h"
 
-#include "Managers/SceneManager.h"
-#include "Managers/UIManager.h"
-#include "Core/EventType.h"
-#include "Actors/Actor.h"
-#include "Actors/ActorGroup.h"
-#include "Components/AI.h"
-#include "Components/AIState.h"
-#include "Scenes/Scene.h"
+#include "Manager/SceneManager.h"
+#include "EventType.h"
+#include "Actor/Actor.h"
+#include "Actor/ActorGroup.h"
+#include "Scene/Scene.h"
 #include "ResourceSystem/FTPremade.h"
+#include "Dynamic/DynamicArray.h"
 
 #ifdef FOXTROT_EDITOR
 #include "FTCoreEditor.h"
@@ -24,11 +22,16 @@
 #include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
+void EventManager::AddEvent(const FTEvent& addedEvent)
+{
+	mEvent->PushBack(addedEvent);
+}
+
 void EventManager::ProcessEvent()
 {
-	for (size_t i = 0; i < mEvent.size(); ++i)
-		Execute(mEvent[i]);
-	mEvent.clear();
+	for (size_t i = 0; i < mEvent->GetSize(); ++i)
+		Execute(mEvent->At(i));
+	mEvent->Clear();
 }
 
 void EventManager::Execute(const FTEvent& executedEvent)
@@ -43,7 +46,7 @@ void EventManager::Execute(const FTEvent& executedEvent)
 		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
 		scene->AddEditorElement(created);
 #else
-		Actor* created = static_cast<Actor*>(executedEvent.eventData.at(0));
+		Actor* created = static_cast<Actor*>(executedEvent.eventData);
 		Scene* scene = SceneManager::GetInstance()->GetCurrentScene();
 		scene->AddActor(created);
 #endif
@@ -58,15 +61,14 @@ void EventManager::Execute(const FTEvent& executedEvent)
 		EditorScene*   scene   = EditorSceneManager::GetInstance()->GetEditorScene();
 		scene->RemoveActor(element);
 #else
-		Actor* actorToDestroy = static_cast<Actor*>(executedEvent.eventData.at(0));
-		actorToDestroy->SetState(Actor::State::EDead);
+		Actor* actorToDestroy = static_cast<Actor*>(executedEvent.eventData);
+		actorToDestroy->SetState(ActorState::DEAD);
 #endif
 	}
 	break;
 	case EVENT_TYPE::SWITCH_SCENE:
 	{
-		SceneManager::GetInstance()->SwitchScene(*static_cast<size_t*>(executedEvent.eventData.at(0)));
-		UIManager::GetInstance()->Reset();
+		SceneManager::GetInstance()->SwitchScene(*static_cast<size_t*>(executedEvent.eventData));
 	}
 	break;
 	}

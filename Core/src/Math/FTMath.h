@@ -177,6 +177,8 @@ public:
 		: SIMD(m) {}
 };
 
+class FTMatrix4;
+
 // 3D Vector
 class FTVector3
 {
@@ -331,9 +333,16 @@ public:
 		};
 	};
 
+	FTVector2()
+		: x(0.0f), y(0.0f) {}
+
 	// 2 components — z,w lanes set to 0
 	FTVector2(float xIn, float yIn)
 		: x(xIn), y(yIn) {}
+
+	// 2 components — z,w lanes set to 0
+	FTVector2(unsigned int xIn, unsigned int yIn)
+		: x(static_cast<float>(xIn)), y(static_cast<float>(yIn)) {}
 
 	// Splat
 	explicit FTVector2(float s)
@@ -682,7 +691,7 @@ public:
 		return FTMatrix3(temp);
 	}
 
-	static FTMatrix3 CreateScale(const Vector2& scaleVector)
+	static FTMatrix3 CreateScale(const FTVector2& scaleVector)
 	{
 		return CreateScale(scaleVector.x, scaleVector.y);
 	}
@@ -706,7 +715,7 @@ public:
 	}
 
 	// Create a translation matrix (on the xy-plane)
-	static FTMatrix3 CreateTranslation(const Vector2& trans)
+	static FTMatrix3 CreateTranslation(const FTVector2& trans)
 	{
 		float temp[3][3] = {
 			{ 1.0f, 0.0f, 0.0f },

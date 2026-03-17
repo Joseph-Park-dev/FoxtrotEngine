@@ -11,10 +11,13 @@
 /// </summary>
 
 #pragma once
-#include "SingletonMacro.h"
+#include <iosfwd>
 
-class FTVector2;
-class FTVector3;
+#include "SingletonMacro.h"
+#include "Math/FTMath.h"
+
+class FTWindow;
+class Actor;
 
 namespace ChunkKey
 {
@@ -44,7 +47,7 @@ public:
 	FTVector3 ConvertToCenter(FTVector3 topLeftPos, FTVector2 renderSize);
 	FTVector3 ConvertToTopLeft(FTVector3 centerPos, FTVector2 renderSize);
 
-	void ConvertWorldPosToScreen(const FTVector3& worldPos, const Transform* transform, FTVector2& out);
+	//void ConvertWorldPosToScreen(const FTVector3& worldPos, const Transform* transform, FTVector2& out);
 
 public:
 	FTMatrix4 GetViewRow();
@@ -68,19 +71,14 @@ public:
 	void SetOffset(FTVector3 offset);
 
 public:
-	FTVector3& Position();
 	FTVector3& Offset();
 
 protected:
-	FTVector3& FrontDir();
-	FTVector3& UpDir();
-	FTVector3& RightDir();
-
 	float& ZoomDelta();
 
 public:
 	// "pixels" defines how much of them should fit in a given unit.
-	virtual void Initialize(FTWindow* renderWindow, UINT pixels, float unit);
+	virtual void Initialize(FTWindow* renderWindow, unsigned int pixels, float unit);
 	virtual void Update(float deltaTime);
 
 protected:
@@ -103,7 +101,7 @@ private:
 	Viewtype mViewType;
 
 private:
-	void InitializePixelsPerUnit(UINT pixels, float units = 1.f);
+	void InitializePixelsPerUnit(unsigned int pixels, float units = 1.f);
 
 public:
 	void SaveProperties(std::ofstream& ofs);

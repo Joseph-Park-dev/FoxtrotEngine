@@ -8,26 +8,13 @@
 
 #include "Renderer/FoxtrotRenderer.h"
 
-#include <iostream>
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <d3d11.h>
-#include <d3dcompiler.h>
-#include <wrl.h> // ComPtr
-#include <DirectXColors.h>
-#include <directxtk/PrimitiveBatch.h>
-#include <directxtk/VertexTypes.h>
-
-#include "Core/TemplateFunctions.h"
-#include "Actors/Transform.h"
-#include "ResourceSystem/Vertex.h"
+#include "TemplateFunctions.h"
+#include "Actor/Transform.h"
 #include "InputSystem/FTInputDevice.h"
-#include "Managers/SceneManager.h"
-#include "Managers/DebugShapes.h"
-#include "Renderer/D3D11Utils.h"
+#include "Manager/SceneManager.h"
 #include "Renderer/Camera.h"
 #include "Renderer/FTRectArea.h"
-#include "WindowSystem/FTWindow.h"
+#include "Renderer/FTWindow.h"
 
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS
@@ -40,9 +27,9 @@
 	#include "FoxtrotRenderer.h"
 #endif // FOXTROT_EDITOR
 
-FoxtrotRenderer* FoxtrotRenderer::CreateRenderer(FTWindow* window, int width, int height)
+FoxtrotRenderer* FoxtrotRenderer::Create(FTWindow* window, unsigned int width, unsigned int height)
 {
-	FoxtrotRenderer* ftRenderer = DBG_NEW FoxtrotRenderer();
+	FoxtrotRenderer* ftRenderer = DBG_NEW FoxtrotRenderer(window, width, height);
 	if (!ftRenderer->Initialize(window, width, height))
 	{
 		LogString("Failed to Initialize FTRenderer");
@@ -51,7 +38,7 @@ FoxtrotRenderer* FoxtrotRenderer::CreateRenderer(FTWindow* window, int width, in
 	return ftRenderer;
 }
 
-void FoxtrotRenderer::DestroyRenderer(FoxtrotRenderer* renderer)
+void FoxtrotRenderer::Destroy(FoxtrotRenderer* renderer)
 {
 #ifdef FOXTROT_EDITOR
 	// ���� �ؽ��� ��ü�� �����Ѵ�
@@ -84,135 +71,43 @@ const float* FoxtrotRenderer::GetClearColor() const
 	return mClearColor;
 }
 
-const unsigned int FoxtrotRenderer::GetNumQualityLevels() const
+bool FoxtrotRenderer::Initialize(FTWindow* window, unsigned int renderWidth, unsigned int renderHeight)
 {
-	return mNumQualityLevels;
-}
+	// DX::ThrowIfFailed(D3D11Utils::CreateDeviceAndContext(
+	//	window->GetHandle(), mDevice, mContext, window->GetSwapChain(), renderWidth, renderHeight, mNumQualityLevels));
 
-UINT FoxtrotRenderer::GetNumQualityLevels() { return mNumQualityLevels; }
+	///*HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
+	// if (FAILED(hr))
+	//	return false;*/
 
-uint8_t* FoxtrotRenderer::GetCursorPosColor()
-{
-	return mCursorPosColor;
-}
+	// DX::ThrowIfFailed(CreateRasterizerState());
 
-void FoxtrotRenderer::SwitchFillMode() const
-{
-	if (mFillMode == FillMode::WireFrame)
-		mContext->RSSetState(mWireframeRasterizerState.Get());
-	else if (mFillMode == FillMode::Solid)
-		mContext->RSSetState(mSolidRasterizerState.Get());
-}
+	// DX::ThrowIfFailed(CreateDepthStencilState(mDepthStencilState));
+	// DX::ThrowIfFailed(CreateDepthStencilState(mDepthStencilState2D, false));
 
-FillMode FoxtrotRenderer::GetFillMode() const { return mFillMode; }
-void	 FoxtrotRenderer::SetFillMode(const FillMode mode) { mFillMode = mode; }
+	// DX::ThrowIfFailed(CreateBlendState());
+	// FLOAT blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
+	// mContext->OMSetBlendState(mBlendState.Get(), blendFactor, D3D11_DEFAULT_SAMPLE_MASK);
 
-bool FoxtrotRenderer::Initialize(FTWindow* window, int renderWidth, int renderHeight)
-{
-	DX::ThrowIfFailed(D3D11Utils::CreateDeviceAndContext(
-		window->GetHandle(), mDevice, mContext, window->GetSwapChain(), renderWidth, renderHeight, mNumQualityLevels));
+	// DX::ThrowIfFailed(CreateTextureSampler());
 
-	/*HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
-	if (FAILED(hr))
-		return false;*/
+	// DX::ThrowIfFailed(CoInitializeEx(nullptr, COINIT_MULTITHREADED));
 
-	DX::ThrowIfFailed(CreateRasterizerState());
+	// mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
 
-	DX::ThrowIfFailed(CreateDepthStencilState(mDepthStencilState));
-	DX::ThrowIfFailed(CreateDepthStencilState(mDepthStencilState2D, false));
+	// mContext->VSSetShader(mSolidVS.Get(), 0, 0);
 
-	DX::ThrowIfFailed(CreateBlendState());
-	FLOAT blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
-	mContext->OMSetBlendState(mBlendState.Get(), blendFactor, D3D11_DEFAULT_SAMPLE_MASK);
+	// mContext->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
 
-	DX::ThrowIfFailed(CreateTextureSampler());
+	// mContext->PSSetShader(mSolidPS.Get(), 0, 0);
 
-	DX::ThrowIfFailed(CoInitializeEx(nullptr, COINIT_MULTITHREADED));
-
-	mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
-
-	mContext->VSSetShader(mSolidVS.Get(), 0, 0);
-
-	mContext->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
-
-	mContext->PSSetShader(mSolidPS.Get(), 0, 0);
-
-	mContext->RSSetState(mSolidRasterizerState.Get());
+	// mContext->RSSetState(mSolidRasterizerState.Get());
 
 	return true;
 }
 
-HRESULT FoxtrotRenderer::CreateRasterizerState()
-{
-	// Create a rasterizer state
-	D3D11_RASTERIZER_DESC rastDesc;
-	ZeroMemory(&rastDesc, sizeof(D3D11_RASTERIZER_DESC)); // Need this
-	// rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-	rastDesc.FillMode			   = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-	rastDesc.CullMode			   = D3D11_CULL_MODE::D3D11_CULL_NONE;
-	rastDesc.FrontCounterClockwise = false;
-	rastDesc.DepthClipEnable	   = true;
-
-	HRESULT solidResult = mDevice->CreateRasterizerState(&rastDesc, &mSolidRasterizerState);
-
-	rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_WIREFRAME;
-
-	HRESULT wireResult = mDevice->CreateRasterizerState(&rastDesc, &mWireframeRasterizerState);
-
-	return solidResult & wireResult;
-}
-
-HRESULT FoxtrotRenderer::CreateDepthStencilState(ComPtr<ID3D11DepthStencilState>& dss, bool depthEnabled)
-{
-	// Create depth stencil state
-	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
-	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-	depthStencilDesc.DepthEnable	= depthEnabled; // false
-	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ALL;
-	depthStencilDesc.DepthFunc		= D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL;
-	return mDevice->CreateDepthStencilState(&depthStencilDesc, dss.GetAddressOf());
-}
-
-HRESULT FoxtrotRenderer::CreateBlendState()
-{
-	D3D11_BLEND_DESC blendDesc = {};
-	ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
-	blendDesc.AlphaToCoverageEnable	 = FALSE;
-	blendDesc.IndependentBlendEnable = FALSE;
-
-	D3D11_RENDER_TARGET_BLEND_DESC& rtBlendDesc = blendDesc.RenderTarget[0];
-	rtBlendDesc.BlendEnable						= TRUE;
-	rtBlendDesc.SrcBlend						= D3D11_BLEND_ONE;
-	rtBlendDesc.DestBlend						= D3D11_BLEND_INV_SRC_ALPHA;
-	rtBlendDesc.BlendOp							= D3D11_BLEND_OP_ADD;
-	rtBlendDesc.SrcBlendAlpha					= D3D11_BLEND_ONE;
-	rtBlendDesc.DestBlendAlpha					= D3D11_BLEND_INV_SRC_ALPHA;
-	rtBlendDesc.BlendOpAlpha					= D3D11_BLEND_OP_ADD;
-	rtBlendDesc.RenderTargetWriteMask			= D3D11_COLOR_WRITE_ENABLE_ALL;
-
-	return mDevice->CreateBlendState(&blendDesc, mBlendState.GetAddressOf());
-}
-
-HRESULT FoxtrotRenderer::CreateTextureSampler()
-{
-	// FTTexture sampler �����
-	D3D11_SAMPLER_DESC sampDesc;
-	ZeroMemory(&sampDesc, sizeof(sampDesc));
-	sampDesc.Filter			= D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	sampDesc.AddressU		= D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.AddressV		= D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.AddressW		= D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	sampDesc.MinLOD			= 0;
-	sampDesc.MaxLOD			= D3D11_FLOAT32_MAX;
-
-	// Create the Sample State
-	return mDevice->CreateSamplerState(&sampDesc, mSamplerState.GetAddressOf());
-}
-
-FoxtrotRenderer::FoxtrotRenderer()
+FoxtrotRenderer::FoxtrotRenderer(FTWindow* window, unsigned int width, unsigned int height)
 	: mClearColor{ 0.3f, 0.3f, 0.3f, 1.0f }
-	, mFillMode(FillMode::Solid)
 #ifdef FOXTROT_EDITOR
 	, mViewportRenderer(DBG_NEW ViewportRenderer)
 #endif // FOXTROT_EDITOR

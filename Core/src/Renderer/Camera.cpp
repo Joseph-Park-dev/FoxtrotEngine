@@ -12,12 +12,14 @@
 #include "Renderer/FTRectArea.h"
 #include "FTCore.h"
 #include "InputSystem/FTInputDevice.h"
-#include "Managers/SceneManager.h"
+#include "Manager/SceneManager.h"
 #include "Scene/Scene.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Actor/Transform.h"
 #include "Actor/Actor.h"
+#include "FileSystem/NullKeys.h"
+#include "Math/FTMath.h"
 
 #include "Compare/StringEqual.h"
 
@@ -28,7 +30,7 @@
 	#include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
-void Camera::Initialize(FTWindow* renderWindow, UINT pixels, float unit)
+void Camera::Initialize(FTWindow* renderWindow, unsigned int pixels, float unit)
 {
 	assert(!mRenderWindow); // Overlapped assignment must be prevented.
 
@@ -181,7 +183,7 @@ void Camera::SetOffset(FTVector3 offset)
 	mOffset = offset;
 }
 
-void Camera::InitializePixelsPerUnit(UINT pixels, float units)
+void Camera::InitializePixelsPerUnit(unsigned int pixels, float units)
 {
 	mPixelsPerUnit = (float)pixels / units;
 }
@@ -206,21 +208,21 @@ FTVector3 Camera::ConvertToTopLeft(FTVector3 centerPos, FTVector2 renderSize)
 	return pos;
 }
 
-void Camera::ConvertWorldPosToScreen(const FTVector3& worldPos, const Transform* transform, FTVector2& out)
-{
-	// origin			 = FTVector3::Transform(worldPos, transform->GetMatrixWorld());
-	// origin			 = FTVector3::Transform(origin, camInst->GetViewRow());
-	// origin			 = FTVector3::Transform(origin, camInst->GetProjRow());
-
-	// origin.x /= origin.w;
-	// origin.y /= origin.w;
-	// origin.z /= origin.w;
-
-	// float screenX = static_cast<float>((origin.x + 1) * 0.5 * renderSize.x);
-	// float screenY = static_cast<float>((1 - origin.y) * 0.5 * renderSize.y);
-
-	// return FTVector2(screenX, screenY);
-}
+//void Camera::ConvertWorldPosToScreen(const FTVector3& worldPos, const Transform* transform, FTVector2& out)
+//{
+//	// origin			 = FTVector3::Transform(worldPos, transform->GetMatrixWorld());
+//	// origin			 = FTVector3::Transform(origin, camInst->GetViewRow());
+//	// origin			 = FTVector3::Transform(origin, camInst->GetProjRow());
+//
+//	// origin.x /= origin.w;
+//	// origin.y /= origin.w;
+//	// origin.z /= origin.w;
+//
+//	// float screenX = static_cast<float>((origin.x + 1) * 0.5 * renderSize.x);
+//	// float screenY = static_cast<float>((1 - origin.y) * 0.5 * renderSize.y);
+//
+//	// return FTVector2(screenX, screenY);
+//}
 
 void Camera::SaveProperties(std::ofstream& ofs)
 {

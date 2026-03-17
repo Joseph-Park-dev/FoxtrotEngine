@@ -23,18 +23,15 @@
  *   in `mPendingActors` and applied via `ProcessEvent()` -> `AddPendingActors()`.
  */
 
-#include "Scenes/Scene.h"
+#include "Scene/Scene.h"
 
 #include <algorithm>
 
-#include "Actors/Actor.h"
-#include "Actors/ActorGroup.h"
-#include "Components/SpriteRenderer.h"
-#include "Components/UIs/PanelUI.h"
-#include "Managers/EventManager.h"
-#include "Core/TemplateFunctions.h"
-
-#include "Actors/Transform.h"
+#include "Actor/Actor.h"
+#include "Actor/ActorGroup.h"
+#include "Manager/EventManager.h"
+#include "TemplateFunctions.h"
+#include "Actor/Transform.h"
 #include "Renderer/FoxtrotRenderer.h"
 
 #ifdef FOXTROT_EDITOR
@@ -115,6 +112,11 @@ Actor* Scene::FindActor(const char* name, Actor* filter)
 	return FindActor(str, filter);
 }
 
+const FTDS::String& Scene::GetName()
+{
+	return mSceneName;
+}
+
 /**
  * @brief Indicates if the scene is currently iterating/updating actors.
  * @return True if within `Update()` loop; otherwise false.
@@ -135,6 +137,11 @@ const FTDS::DynamicArray<Actor*>* Scene::GetActors() const
 	return mActors;
 }
 
+void Scene::SetName(const FTDS::String&& name)
+{
+	mSceneName.Assign(name);
+}
+
 /**
  * @brief Provides a reference to the active actors container pointer.
  * @return Reference to `FTDS::DynamicArray<Actor*>*` for advanced management.
@@ -144,99 +151,6 @@ const FTDS::DynamicArray<Actor*>* Scene::GetActors() const
 FTDS::DynamicArray<Actor*>*& Scene::Actors()
 {
 	return mActors;
-}
-
-/**
- * @brief Initializes all actors in the scene.
- * @param coreInst Core engine instance passed to actors.
- *
- * Calls each actor's `Initialize()` regardless of activation state.
- */
-void Scene::Initialize(FTCore* coreInst)
-{
-	for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
-		(*iter)->Initialize(coreInst);
-}
-
-/**
- * @brief Performs setup for all actors in the scene.
- *
- * Calls each actor's `Setup()` to finalize construction/configuration.
- */
-void Scene::Setup()
-{
-	for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
-		(*iter)->Setup();
-}
-
-/**
- * @brief Forwards input to active actors.
- * @param inputDevice Input device handle to process.
- *
- * Only active actors receive input events.
- */
-void Scene::ProcessInput(FTInputDevice* inputDevice)
-{
-	for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
-		if ((*iter)->IsActive())
-			(*iter)->ProcessInput(inputDevice);
-}
-
-/**
- * @brief Updates active actors and their components.
- * @param deltaTime Time step in seconds.
- *
- * Sets `mIsUpdatingActors` to guard against concurrent modifications. Actors
- * receive component updates followed by actor logic updates.
- */
-void Scene::Update(float deltaTime)
-{
-	mIsUpdatingActors = true;
-	for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
-	{
-		if ((*iter)->IsActive())
-		{
-			(*iter)->UpdateComponents(deltaTime);
-			(*iter)->UpdateActor(deltaTime);
-		}
-	}
-	mIsUpdatingActors = false;
-}
-
-/**
- * @brief Executes late update pass for active actors and their components.
- * @param deltaTime Time step in seconds.
- *
- * Intended for logic requiring completion of `Update()` (ordering-sensitive).
- */
-void Scene::LateUpdate(float deltaTime)
-{
-	for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
-	{
-		if ((*iter)->IsActive())
-		{
-			(*iter)->LateUpdateComponents(deltaTime);
-			(*iter)->LateUpdateActor(deltaTime);
-		}
-	}
-}
-
-/**
- * @brief Renders active actors and their components.
- * @param renderer Rendering context.
- *
- * Calls component rendering first, then actor-specific rendering.
- */
-void Scene::Render(FoxtrotRenderer* renderer)
-{
-	for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
-	{
-		if ((*iter)->IsActive())
-		{
-			(*iter)->RenderComponents(renderer);
-			(*iter)->RenderActor(renderer);
-		}
-	}
 }
 
 /**
@@ -258,15 +172,17 @@ void Scene::AddActor(Actor* actor)
 	{
 		if (!mActors->IsEmpty())
 		{
-			int	 drawOrder = actor->GetDrawOrder();
-			auto iter	   = mActors->Begin();
+			int	   drawOrder = actor->GetDrawOrder();
+			auto   iter		 = mActors->Begin();
+			size_t iterPos	 = 0;
 			for (; iter != mActors->End(); ++iter)
 			{
 				if (*iter)
 					if (drawOrder < (*iter)->GetDrawOrder())
 						break;
+				++iterPos;
 			}
-			mActors->Insert(iter.IterPos(), actor);
+			mActors->Insert(iterPos, actor);
 		}
 		else
 			mActors->PushBack(actor);
@@ -331,7 +247,7 @@ void Scene::ClearDeadActors()
 {
 	for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
 	{
-		if (!(*iter)->GetIsActive())
+		if ((*iter)->IsDead())
 			RemoveActor((*iter));
 	}
 }

@@ -14,6 +14,7 @@
 #include "FileSystem/FileIOHelper.h"
 #include "TemplateFunctions.h"
 #include "FTCore.h"
+#include "Debugging/DebugMemAlloc.h"
 
 void Component::Initialize()
 {

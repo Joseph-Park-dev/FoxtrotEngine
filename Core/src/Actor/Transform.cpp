@@ -16,6 +16,8 @@
 #include "Renderer/FTWindow.h"
 #include "Math/FTMath.h"
 #include "Steering.h"
+#include "Dynamic/DynamicArray.h"
+#include "Static/FTString.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
@@ -114,13 +116,12 @@ Transform::Transform(Actor* owner)
 	: mLocalPosition(FTVector3::Zero)
 	, mLocalScale(FTVector3(1.f, 1.0f, 1.0f))
 	, mLocalRotation(FTVector3::Zero)
-
 	, mMatrixLocal(FTMatrix4::Identity)
-	, mMatrixWorld(FTMatrix4::Identity)
 
 	, mWorldPosition(FTVector3::Zero)
 	, mWorldScale(FTVector3(1.0f, 1.0f, 1.0f))
 	, mWorldRotation(FTVector3(0.0f, 0.0f, 0.0f))
+	, mMatrixWorld(FTMatrix4::Identity)
 
 	, mRightward(FTVector3(1.0f, 0.0f, 0.0f))
 	, mSteering(Steering::CreateEmptySteering())
@@ -133,13 +134,12 @@ Transform::Transform(Actor* owner, Transform& origin)
 	: mLocalPosition(origin.mLocalPosition)
 	, mLocalScale(origin.mLocalScale)
 	, mLocalRotation(origin.mLocalRotation)
-
 	, mMatrixLocal(origin.mMatrixLocal)
-	, mMatrixWorld(origin.mMatrixWorld)
 
 	, mWorldPosition(origin.mWorldPosition)
 	, mWorldScale(origin.mWorldScale)
 	, mWorldRotation(origin.mWorldRotation)
+	, mMatrixWorld(origin.mMatrixWorld)
 
 	, mRightward(origin.mRightward)
 	, mSteering(Steering::CreateEmptySteering())

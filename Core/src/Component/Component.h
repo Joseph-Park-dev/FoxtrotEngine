@@ -17,6 +17,9 @@
 /// </summary>
 
 #pragma once
+#include <iosfwd>
+
+#include "Debugging/DebugMemAlloc.h"
 
 class Plugin;
 class Actor;
@@ -38,7 +41,7 @@ namespace FTDS
 
 class Component
 {
-#define CLONE_TO_NOT_IMPLEMENTED printf("ERROR: CloneTo of %s is not implemented.", typeid(this).name());
+#define CLONE_TO_NOT_IMPLEMENTED printf("ERROR: CloneTo of %s is not implemented.", typeid(this).name())
 
 public:
 	virtual FTDS::String GetName() const = 0;

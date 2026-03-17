@@ -11,6 +11,9 @@
 /// </summary>
 
 #pragma once
+#include <fstream>
+
+#include "Static/FTString.h"
 
 class Transform;
 class FTInputDevice;
@@ -20,11 +23,23 @@ class FoxtrotRenderer;
 class FTPremade;
 enum class ACTOR_TAG;
 enum class ActorGroup;
+namespace FTDS
+{
+	template <typename TYPE>
+	class DynamicArray;
+	class String;
+}
 
 #ifdef FOXTROT_EDITOR
 class EditorElement;
 class EditorScene;
 #endif // FOXTROT_EDITOR
+
+enum class ActorState
+{
+	ALIVE,
+	DEAD
+};
 
 class Actor
 {
@@ -81,8 +96,8 @@ public:
 	ActorGroup						GetActorGroup() const { return mActorGroup; }
 	ActorGroup&						GetActorGroupRef() { return mActorGroup; }
 	ActorGroup*						GetActorGroupPtr() { return &mActorGroup; }
-	FTDS::String					GetName() { return mName; }
-	FTDS::String&					GetNameRef() { return mName; }
+	FTDS::String					GetName();
+	FTDS::String&					GetNameRef();
 	const int						GetID() const { return mID; }
 	const bool&						GetIsActive() const { return mIsActive; }
 	Transform*						GetTransform() const { return mTransform; }
@@ -91,17 +106,19 @@ public:
 	FTDS::DynamicArray<Actor*>*		GetChildActors() { return mChild; }
 	const int&						GetDrawOrder() const { return mDrawOrder; }
 
-	void SetName(FTDS::String name) { mName = name; }
+	void SetName(FTDS::String&& name);
 	void SetIsActive(bool isActive) { mIsActive = isActive; }
 	void SetActorGroup(ActorGroup group) { mActorGroup = group; }
+	void SetState(ActorState state) { mState = state; }
 	void SetParent(Actor* parent) { mParent = parent; }
 	void SetTransform(Transform* transform) { mTransform = transform; }
 	void SetComponents(FTDS::DynamicArray<Component*>* components) { mComponents = components; }
 	void SetChildActors(FTDS::DynamicArray<Actor*>* children) { mChild = children; }
 	void SetDrawOrder(int order) { mDrawOrder = order; }
 
-	bool  HasName(FTDS::String& name);
+	bool  HasName(FTDS::String&& name);
 	bool  HasName(const char* name);
+	bool  IsDead();
 	bool& IsActive();
 
 	template <class T>
@@ -120,6 +137,7 @@ private:
 	FTDS::String					mName;
 	int								mID;
 	ActorGroup						mActorGroup;
+	ActorState						mState;
 	bool							mIsActive;
 	Transform*						mTransform;
 	FTDS::DynamicArray<Component*>* mComponents;

@@ -27,16 +27,10 @@
     <ClCompile Include="src\Physics\Physics2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\D3D11Renderer\D3D11Utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\ResourceSystem\FTMeshGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ResourceSystem\Animation\FTSpriteAnimation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ResourceSystem\FTTileMap.cpp">
@@ -399,15 +393,6 @@
     <ClCompile Include="src\ResourceSystem\D3D11PSO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\D3D11Renderer\D3D11Renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\D3D11Renderer\D3D11Window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\D3D11Renderer\D3D11InputDevice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Components\AIState.h">
@@ -431,16 +416,10 @@
     <ClInclude Include="src\Physics\RayCastHit2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\D3D11Renderer\D3D11Utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\ResourceSystem\FTMeshGroup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ResourceSystem\Animation\FTSpriteAnimation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ResourceSystem\FTTileMap.h">
@@ -2133,18 +2112,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ResourceSystem\D3D11PSO.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\D3D11Renderer\D3D11Renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\D3D11Renderer\D3D11Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\D3D11Renderer\WindowProcess.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\D3D11Renderer\D3D11InputDevice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -27,40 +27,6 @@
 	#include "FoxtrotRenderer.h"
 #endif // FOXTROT_EDITOR
 
-FoxtrotRenderer* FoxtrotRenderer::Create(FTWindow* window, unsigned int width, unsigned int height)
-{
-	FoxtrotRenderer* ftRenderer = DBG_NEW FoxtrotRenderer(window, width, height);
-	if (!ftRenderer->Initialize(window, width, height))
-	{
-		LogString("Failed to Initialize FTRenderer");
-		return nullptr;
-	}
-	return ftRenderer;
-}
-
-void FoxtrotRenderer::Destroy(FoxtrotRenderer* renderer)
-{
-#ifdef FOXTROT_EDITOR
-	// ���� �ؽ��� ��ü�� �����Ѵ�
-	if (renderer->mViewportRenderer)
-	{
-		delete renderer->mViewportRenderer;
-		renderer->mViewportRenderer = nullptr;
-	}
-#endif // FOXTROT_EDITOR
-
-	if (renderer == nullptr)
-	{
-		LogString("Renderer is already null");
-		return;
-	}
-	else
-	{
-		delete renderer;
-		renderer = nullptr;
-	}
-}
-
 // void FoxtrotRenderer::SwapChainPresent(UINT syncInterval, UINT flags)
 //{
 //	mSwapChain->Present(syncInterval, flags);
@@ -71,47 +37,52 @@ const float* FoxtrotRenderer::GetClearColor() const
 	return mClearColor;
 }
 
-bool FoxtrotRenderer::Initialize(FTWindow* window, unsigned int renderWidth, unsigned int renderHeight)
-{
-	// DX::ThrowIfFailed(D3D11Utils::CreateDeviceAndContext(
-	//	window->GetHandle(), mDevice, mContext, window->GetSwapChain(), renderWidth, renderHeight, mNumQualityLevels));
+//bool FoxtrotRenderer::Initialize()
+//{
+//	// DX::ThrowIfFailed(D3D11Utils::CreateDeviceAndContext(
+//	//	window->GetHandle(), mDevice, mContext, window->GetSwapChain(), renderWidth, renderHeight, mNumQualityLevels));
+//
+//	///*HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
+//	// if (FAILED(hr))
+//	//	return false;*/
+//
+//	// DX::ThrowIfFailed(CreateRasterizerState());
+//
+//	// DX::ThrowIfFailed(CreateDepthStencilState(mDepthStencilState));
+//	// DX::ThrowIfFailed(CreateDepthStencilState(mDepthStencilState2D, false));
+//
+//	// DX::ThrowIfFailed(CreateBlendState());
+//	// FLOAT blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
+//	// mContext->OMSetBlendState(mBlendState.Get(), blendFactor, D3D11_DEFAULT_SAMPLE_MASK);
+//
+//	// DX::ThrowIfFailed(CreateTextureSampler());
+//
+//	// DX::ThrowIfFailed(CoInitializeEx(nullptr, COINIT_MULTITHREADED));
+//
+//	// mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
+//
+//	// mContext->VSSetShader(mSolidVS.Get(), 0, 0);
+//
+//	// mContext->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
+//
+//	// mContext->PSSetShader(mSolidPS.Get(), 0, 0);
+//
+//	// mContext->RSSetState(mSolidRasterizerState.Get());
+//
+//	return true;
+//}
 
-	///*HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
-	// if (FAILED(hr))
-	//	return false;*/
-
-	// DX::ThrowIfFailed(CreateRasterizerState());
-
-	// DX::ThrowIfFailed(CreateDepthStencilState(mDepthStencilState));
-	// DX::ThrowIfFailed(CreateDepthStencilState(mDepthStencilState2D, false));
-
-	// DX::ThrowIfFailed(CreateBlendState());
-	// FLOAT blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
-	// mContext->OMSetBlendState(mBlendState.Get(), blendFactor, D3D11_DEFAULT_SAMPLE_MASK);
-
-	// DX::ThrowIfFailed(CreateTextureSampler());
-
-	// DX::ThrowIfFailed(CoInitializeEx(nullptr, COINIT_MULTITHREADED));
-
-	// mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
-
-	// mContext->VSSetShader(mSolidVS.Get(), 0, 0);
-
-	// mContext->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
-
-	// mContext->PSSetShader(mSolidPS.Get(), 0, 0);
-
-	// mContext->RSSetState(mSolidRasterizerState.Get());
-
-	return true;
-}
-
-FoxtrotRenderer::FoxtrotRenderer(FTWindow* window, unsigned int width, unsigned int height)
+FoxtrotRenderer::FoxtrotRenderer()
 	: mClearColor{ 0.3f, 0.3f, 0.3f, 1.0f }
 #ifdef FOXTROT_EDITOR
 	, mViewportRenderer(DBG_NEW ViewportRenderer)
 #endif // FOXTROT_EDITOR
 {
+	if (!Initialize())
+	{
+		LogString("Failed to Initialize FTRenderer");
+		return;
+	}
 }
 
 FoxtrotRenderer::~FoxtrotRenderer()

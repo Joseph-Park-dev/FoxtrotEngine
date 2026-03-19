@@ -9,6 +9,7 @@
 #include "Timer.h"
 
 Timer::Timer()
+	: mDeltaTime(0.f)
 {
     QueryPerformanceFrequency((LARGE_INTEGER*)&mFrequencyForASecond);
     QueryPerformanceCounter((LARGE_INTEGER*)&mLastTicks);

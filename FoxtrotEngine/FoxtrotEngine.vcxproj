@@ -262,9 +262,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\D3D11Renderer\D3D11InputDevice.cpp" />
-    <ClCompile Include="src\D3D11Renderer\D3D11Window.cpp" />
-    <ClCompile Include="src\D3D11Renderer\D3D11Renderer.cpp" />
     <ClCompile Include="src\ResourceSystem\D3D11PSO.cpp" />
     <ClCompile Include="include\spine\Animation.cpp" />
     <ClCompile Include="include\spine\AnimationState.cpp" />
@@ -382,11 +379,9 @@
     <ClCompile Include="src\Managers\UIManager.cpp" />
     <ClCompile Include="src\Physics\ParticleSystem.cpp" />
     <ClCompile Include="src\Physics\Physics2D.cpp" />
-    <ClCompile Include="src\D3D11Renderer\D3D11Utils.cpp" />
     <ClCompile Include="src\ResourceSystem\FTMeshGroup.cpp" />
     <ClCompile Include="src\ResourceSystem\FTShape.cpp" />
     <ClCompile Include="src\ResourceSystem\Animation\FTSpriteAnimation.cpp" />
-    <ClCompile Include="src\ResourceSystem\FTTexture.cpp" />
     <ClCompile Include="src\ResourceSystem\FTTileMap.cpp" />
     <ClCompile Include="src\ResourceSystem\GeometryGenerator.cpp" />
     <ClCompile Include="src\ResourceSystem\FTMaterials\FTMaterial.cpp" />
@@ -398,10 +393,6 @@
     <ClCompile Include="src\ResourceSystem\FTMaterials\StandardMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\D3D11Renderer\D3D11InputDevice.h" />
-    <ClInclude Include="src\D3D11Renderer\D3D11Window.h" />
-    <ClInclude Include="src\D3D11Renderer\D3D11Renderer.h" />
-    <ClInclude Include="src\D3D11Renderer\WindowProcess.h" />
     <ClInclude Include="src\ResourceSystem\D3D11PSO.h" />
     <ClInclude Include="include\assimp\aabb.h" />
     <ClInclude Include="include\assimp\ai_assert.h" />
@@ -961,11 +952,9 @@
     <ClInclude Include="src\Physics\Physics2D.h" />
     <ClInclude Include="src\Physics\Ray.h" />
     <ClInclude Include="src\Physics\RayCastHit2D.h" />
-    <ClInclude Include="src\D3D11Renderer\D3D11Utils.h" />
     <ClInclude Include="src\ResourceSystem\FTMeshGroup.h" />
     <ClInclude Include="src\ResourceSystem\FTShape.h" />
     <ClInclude Include="src\ResourceSystem\Animation\FTSpriteAnimation.h" />
-    <ClInclude Include="src\ResourceSystem\FTTexture.h" />
     <ClInclude Include="src\ResourceSystem\FTTileMap.h" />
     <ClInclude Include="src\ResourceSystem\GeometryGenerator.h" />
     <ClInclude Include="src\ResourceSystem\Light.h" />

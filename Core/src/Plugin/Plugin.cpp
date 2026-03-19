@@ -6,13 +6,7 @@
 #include "Actor/Actor.h"
 #include "Component/Component.h"
 #include "Static/FTString.h"
-
-void Plugin::Load()
-{
-	const wchar_t* path = GetRelativePath().WC_Str();
-	mModule				= LoadLibrary(path);
-	delete path;
-}
+#include "FileSystem/FileIOHelper.h"
 
 void Plugin::Initialize()
 {
@@ -87,11 +81,10 @@ void Plugin::Clear()
 	delete mComponents;
 }
 
-Plugin::Plugin(FTResourceDef& resDef, size_t compArrCount)
+Plugin::Plugin(FTResourceDef& resDef)
 	: FTResource(resDef)
 	, mComponents(DBG_NEW FTDS::DynamicArray<Component*>)
 {
-	mComponents->Reserve(compArrCount);
 	Load();
 }
 
@@ -100,8 +93,23 @@ Plugin::~Plugin()
 	Clear();
 	FreeLibrary(mModule);
 }
+//
+//void Plugin::SaveProperties(std::ofstream& ofs)
+//{
+//}
+//
+//void Plugin::LoadProperties(std::ifstream& ifs)
+//{
+//}
 
 COMP_CONSTRUCTOR Plugin::GetConstructor(const char* procName)
 {
 	return (COMP_CONSTRUCTOR)(GetProcAddress(mModule, procName));
+}
+
+void Plugin::Load()
+{
+	const wchar_t* path = GetRelativePath().WC_Str();
+	mModule				= LoadLibrary(path);
+	delete path;
 }

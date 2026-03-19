@@ -53,9 +53,14 @@ void FTCore::LoadGameData()
 	mLoadedPlugins->Reserve(dllPack.first);
 	for (size_t i = 0; i < dllPack.first; ++i)
 	{
-		FTDS::String chunkTitle = {};
-		FileIOHelper::LoadBasicString(ifs, chunkTitle);
-		SceneManager::GetInstance()->ChunkList()->PushBack(chunkTitle);
+		FTDS::String fileName = {};
+		FTDS::String relativePath = {};
+		FileIOHelper::LoadBasicString(ifs, fileName);
+		FileIOHelper::LoadBasicString(ifs, relativePath);
+
+		FTResourceDef def(fileName, relativePath);
+		Plugin* plugin = DBG_NEW Plugin(def);
+		mLoadedPlugins->PushBack(plugin);
 	}
 
 	std::filesystem::path assetPath = std::filesystem::absolute("./");
@@ -67,10 +72,10 @@ bool FTCore::Initialize()
 	LoadGameData();
 
 	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
-		(*iter)->Value()->Initialize();
+		(*iter)->Initialize();
 
 	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
-		(*iter)->Value()->Setup();
+		(*iter)->Setup();
 
 	InitSingletonManagers();
 	InitTimer();
@@ -107,10 +112,25 @@ void FTCore::RunLoop()
 	}
 }
 
+void FTCore::SetWindow(FTWindow* window)
+{
+	mWindow = window
+}
+
+void FTCore::SetInputDevice(FTInputDevice* device)
+{
+	mInputDevice = device;
+}
+
+void FTCore::SetRenderer(FoxtrotRenderer* renderer)
+{
+	mGameRenderer = renderer;
+}
+
 void FTCore::ProcessInput()
 {
 	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
-		(*iter)->Value()->ProcessInput(mInputDevice);
+		(*iter)->ProcessInput(mInputDevice);
 }
 
 void FTCore::UpdateGame()
@@ -119,10 +139,10 @@ void FTCore::UpdateGame()
 	float deltaTime = Timer::GetInstance()->GetDeltaTime();
 
 	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
-		(*iter)->Value()->Update(deltaTime);
+		(*iter)->Update(deltaTime);
 
 	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
-		(*iter)->Value()->LateUpdate(deltaTime);
+		(*iter)->LateUpdate(deltaTime);
 }
 
 void FTCore::GenerateOutput()
@@ -131,7 +151,7 @@ void FTCore::GenerateOutput()
 	mWindow->BeginRender(mGameRenderer);
 
 	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
-		(*iter)->Value()->Render(mGameRenderer);
+		(*iter)->Render(mGameRenderer);
 
 	mWindow->EndRender(mGameRenderer);
 }
@@ -149,10 +169,10 @@ FTCore::FTCore()
 	, mIsRunning(true)
 	, mGameDataPath(
 		  DBG_NEW FTDS::String("./"))
+	, mLoadedPlugins(DBG_NEW FTDS::DynamicArray<Plugin*>())
 {
 	mGameDataPath->Append(ChunkKey::GAME_DATA);
 	mGameDataPath->Append(FileTypes::GDPACK);
-	mLoadedPlugins = DBG_NEW FTDS::HashMap<Plugin*>();
 }
 
 FTCore::~FTCore()
@@ -160,6 +180,7 @@ FTCore::~FTCore()
 	delete mWindow;
 	delete mInputDevice;
 	FoxtrotRenderer::Destroy(mGameRenderer);
+	delete mGameDataPath;
 	delete mLoadedPlugins;
 }
 
@@ -167,7 +188,7 @@ void FTCore::ShutDown()
 {
 	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
 	{
-		(*iter)->Value()->Clear();
+		(*iter)->Clear();
 		delete (*iter);
 	}
 
@@ -183,8 +204,13 @@ void FTCore::ShutDown()
 
 extern "C"
 {
-	void Create_Core()
+	FTCore* GetInstanceCore()
 	{
-		FTCore::GetInstance();
+		return FTCore::GetInstance();
+	}
+
+	void DestroyCore()
+	{
+		FTCore::GetInstance()->Destroy();
 	}
 }

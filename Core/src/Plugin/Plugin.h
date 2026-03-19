@@ -18,6 +18,12 @@
 #include "Debugging/DebugMemAlloc.h"
 #include "Debugging/DebugFuncs.h"
 
+#ifdef CORE_EXPORTS
+	#define CORE_API __declspec(dllexport)
+#else
+	#define CORE_API __declspec(dllimport)
+#endif
+
 class Actor;
 class Component;
 class FTInputDevice;
@@ -31,7 +37,7 @@ namespace FTDS
 
 using COMP_CONSTRUCTOR = Component* (*)(Actor * actor);
 
-class Plugin : public FTResource
+class CORE_API Plugin : public FTResource
 {
 public:
 	template <typename COMP>

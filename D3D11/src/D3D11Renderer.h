@@ -9,6 +9,8 @@
 #include <DirectXColors.h>
 #define WIN32_LEAN_AND_MEAN
 
+class D3D11Window;
+
 class D3D11Renderer :
 	public FoxtrotRenderer
 {
@@ -26,11 +28,15 @@ public:
 	const unsigned int							 GetNumQualityLevels() const;
 
 public:
-	D3D11Renderer();
+	D3D11Renderer(D3D11Window* window);
+	~D3D11Renderer();
+
+protected:
+	bool Initialize(D3D11Window* window) override;
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device>		mDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> mContext;
-	D3D11_VIEWPORT								mScreenViewport;
+	D3D11_VIEWPORT*								mViewport;
 	UINT										mNumQualityLevels;
 };

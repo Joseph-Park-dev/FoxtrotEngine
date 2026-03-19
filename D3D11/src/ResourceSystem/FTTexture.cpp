@@ -15,13 +15,13 @@
 #include <d3d11.h>
 #include <wrl.h> // ComPtr
 
-#include "Core/FTCore.h"
-#include "Core/TemplateFunctions.h"
-#include "Renderer/FoxtrotRenderer.h"
+#include "FTCore.h"
+#include "TemplateFunctions.h"
+#include "D3D11Renderer.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
-#include "Managers/ResourceManager.h"
-#include "Renderer/D3D11Utils.h"
+#include "Manager/ResourceManager.h"
+#include "D3D11Utils.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorLayer.h"
@@ -97,13 +97,13 @@ void FTTexture::Process(FoxtrotRenderer* renderer)
 	ZeroMemory(&txtDesc, sizeof(txtDesc));
 	txtDesc.Width			 = width;
 	txtDesc.Height			 = height;
-	txtDesc.MipLevels		 = 0; // ¹Ó¸Ê ·¹º§ ÃÖ´ë
+	txtDesc.MipLevels		 = 0; // ï¿½Ó¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½
 	txtDesc.ArraySize		 = 1;
 	txtDesc.Format			 = DXGI_FORMAT_R8G8B8A8_UNORM;
 	txtDesc.SampleDesc.Count = 1;
-	txtDesc.Usage			 = D3D11_USAGE_DEFAULT; // ½ºÅ×ÀÌÂ¡ ÅØ½ºÃç·ÎºÎÅÍ º¹»ç °¡´É
+	txtDesc.Usage			 = D3D11_USAGE_DEFAULT; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¡ ï¿½Ø½ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	txtDesc.BindFlags		 = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
-	txtDesc.MiscFlags		 = D3D11_RESOURCE_MISC_GENERATE_MIPS; // ¹Ó¸Ê »ç¿ë
+	txtDesc.MiscFlags		 = D3D11_RESOURCE_MISC_GENERATE_MIPS; // ï¿½Ó¸ï¿½ ï¿½ï¿½ï¿½
 	txtDesc.CPUAccessFlags	 = 0;
 
 	ComPtr<ID3D11Texture2D> resultTex;

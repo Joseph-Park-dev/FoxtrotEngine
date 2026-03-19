@@ -2,8 +2,9 @@
 
 #include <Windows.h>
 
-#include "Dynamic/DynamicArray.h"
+#include "FTDS/Dynamic/DynamicArray.h"
 #include "Math/FTMath.h"
+#include "FTCore.h"
 
 void D3D11InputDevice::DetectKeyInput()
 {

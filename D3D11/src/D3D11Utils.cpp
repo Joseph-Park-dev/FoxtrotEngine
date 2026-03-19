@@ -11,16 +11,15 @@
 #include <directxtk/DDSTextureLoader.h> // For reading Cubemaps
 #include <dxgi.h>						// DXGIFactory
 #include <dxgi1_4.h>					// DXGIFactory4
-#include <iostream>
+#include <stdio.h>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image.h>
 #include <stb_image_write.h>
 
-#include "ResourceSystem/Mesh.h"
-#include "Actors/Transform.h"
-#include "Core/TemplateFunctions.h"
-#include <Dynamic/DynamicArray.h>
+#include "FTDS/Dynamic/DynamicArray.h"
+#include "Debugging/DebugFuncs.h"
+#include "DebugFuncs.h"
 
 using namespace std;
 using namespace DirectX;
@@ -66,13 +65,13 @@ HRESULT D3D11Utils::CreateDeviceAndContext(
 	);
 	if (FAILED(hr))
 	{
-		LogString("D3D11CreateDevice() failed.");
+		printf("D3D11CreateDevice() failed.");
 		return hr;
 	}
 
 	if (featureLevel != D3D_FEATURE_LEVEL_11_0)
 	{
-		LogString("D3D Feature Level 11 is unsupported.");
+		printf("D3D Feature Level 11 is unsupported.");
 		return E_FAIL;
 	}
 
@@ -85,7 +84,7 @@ HRESULT D3D11Utils::CreateDeviceAndContext(
 	deviceCache->CheckMultisampleQualityLevels(DXGI_FORMAT_R8G8B8A8_UNORM, 4, &numQualityLevel);
 	if (numQualityLevel <= 0)
 	{
-		LogString("MSAA not supported.");
+		printf("MSAA not supported.");
 	}
 
 	numQualityLevel = 0; // Disable MSAA;
@@ -93,14 +92,14 @@ HRESULT D3D11Utils::CreateDeviceAndContext(
 	hr = deviceCache.As(&device);
 	if (FAILED(hr))
 	{
-		LogString("device.AS() failed.");
+		printf("device.AS() failed.");
 		return hr;
 	}
 
 	hr = contextCache.As(&context);
 	if (FAILED(hr))
 	{
-		LogString("context.As() failed.");
+		printf("context.As() failed.");
 		return hr;
 	}
 
@@ -144,7 +143,7 @@ HRESULT D3D11Utils::CreateDeviceAndContext(
 		context.GetAddressOf());
 	if (FAILED(hr))
 	{
-		LogString("D3D11CreateDeviceAndSwapChain() failed.");
+		printf("D3D11CreateDeviceAndSwapChain() failed.");
 		return hr;
 	}
 	return hr;

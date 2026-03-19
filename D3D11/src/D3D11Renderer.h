@@ -28,11 +28,11 @@ public:
 	const unsigned int							 GetNumQualityLevels() const;
 
 public:
-	D3D11Renderer(D3D11Window* window);
+	D3D11Renderer(FTWindow* window);
 	~D3D11Renderer();
 
 protected:
-	bool Initialize(D3D11Window* window) override;
+	virtual bool Initialize(FTWindow* window) override;
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device>		mDevice;

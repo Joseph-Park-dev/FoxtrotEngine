@@ -53,8 +53,8 @@ ComPtr<ID3D11Device>&		 D3D11Renderer::GetDevice() { return mDevice; }
 ComPtr<ID3D11DeviceContext>& D3D11Renderer::GetContext() { return mContext; }
 const unsigned int			 D3D11Renderer::GetNumQualityLevels() const { return mNumQualityLevels; }
 
-D3D11Renderer::D3D11Renderer(D3D11Window* window)
-	: FoxtrotRenderer()
+D3D11Renderer::D3D11Renderer(FTWindow* window)
+	: FoxtrotRenderer(window)
 	, mNumQualityLevels(0)
 	, mViewport(DBG_NEW D3D11_VIEWPORT)
 {
@@ -66,16 +66,18 @@ D3D11Renderer::~D3D11Renderer()
 	delete mViewport;
 }
 
-bool D3D11Renderer::Initialize(D3D11Window* window)
+bool D3D11Renderer::Initialize(FTWindow* window)
 {
-	UINT renderWidth  = window->GetRenderArea()->GetSize().x;
-	UINT renderHeight = window->GetRenderArea()->GetSize().y;
+	D3D11Window* win		  = static_cast<D3D11Window*>(window);
+	UINT		 renderWidth  = static_cast<UINT>(window->GetRenderArea()->GetSize().x);
+	UINT		 renderHeight = static_cast<UINT>(window->GetRenderArea()->GetSize().y);
 
 	DX::ThrowIfFailed(
 		D3D11Utils::CreateDeviceAndContext(
-			window->GetHandle(), mDevice, mContext, window->GetSwapChain(), renderWidth, renderHeight, mNumQualityLevels));
+			win->GetHandle(), mDevice, mContext, win->GetSwapChain(), renderWidth, renderHeight, mNumQualityLevels));
 
 	HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
 	if (FAILED(hr))
 		return false;
+	return true;
 }

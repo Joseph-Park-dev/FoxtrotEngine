@@ -20,8 +20,10 @@
 #include <windows.h>
 #include <wrl/client.h> // ComPtr
 
-#include <ResourceSystem/FTTexture.h>
-#include "Core/TemplateFunctions.h"
+#include "ResourceSystem/FTTexture.h"
+#include "TemplateFunctions.h"
+#include "FTDS/Static/FTString.h"
+#include "DebugFuncs.h"
 
 class Camera;
 

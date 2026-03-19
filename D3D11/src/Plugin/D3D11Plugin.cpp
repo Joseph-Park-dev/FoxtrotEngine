@@ -5,6 +5,7 @@
 #include "D3D11Window.h"
 #include "FTCore.h"
 #include "FTDS/Dynamic/DynamicArray.h"
+#include "Renderer/FTRectArea.h"
 
 void D3D11Plugin::CreateInputDevice(FTCore* coreInst)
 {
@@ -13,16 +14,16 @@ void D3D11Plugin::CreateInputDevice(FTCore* coreInst)
 	mInputDevices->PushBack(device);
 }
 
-void D3D11Plugin::CreateRenderer(FTCore* coreInst)
+void D3D11Plugin::CreateRenderer(FTCore* coreInst, D3D11Window* window)
 {
-	D3D11Renderer* renderer = DBG_NEW D3D11Renderer;
+	D3D11Renderer* renderer = DBG_NEW D3D11Renderer(window);
 	coreInst->SetRenderer(renderer);
 	mRenderer = renderer;
 }
 
-void D3D11Plugin::CretaeWindow(FTCore* coreInst)
+void D3D11Plugin::CretaeWindow(FTCore* coreInst, const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea)
 {
-	D3D11Window* window = DBG_NEW D3D11Window;
+	D3D11Window* window = DBG_NEW D3D11Window(title, width, height, rndArea);
 	coreInst->SetWindow(window);
 	mWindows->PushBack(window);
 }
@@ -30,7 +31,7 @@ void D3D11Plugin::CretaeWindow(FTCore* coreInst)
 D3D11Plugin::D3D11Plugin(FTResourceDef& resDef)
 	: Plugin(resDef)
 	, mInputDevices(DBG_NEW FTDS::DynamicArray<D3D11InputDevice*>)
-	, mRenderer(DBG_NEW D3D11Renderer)
+	, mRenderer(nullptr)
 	, mWindows(DBG_NEW FTDS::DynamicArray<D3D11Window*>)
 {
 }
@@ -38,6 +39,6 @@ D3D11Plugin::D3D11Plugin(FTResourceDef& resDef)
 D3D11Plugin::~D3D11Plugin()
 {
 	delete mInputDevices;
-	FoxtrotRenderer::Destroy(mRenderer);
+	delete mRenderer;
 	delete mWindows;
 }

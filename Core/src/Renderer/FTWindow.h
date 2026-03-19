@@ -7,7 +7,7 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include "static/FTString.h"
+#include "Static/FTString.h"
 
 class FoxtrotRenderer;
 class FTVector2;
@@ -19,11 +19,10 @@ enum class MOUSE;
 class FTWindow
 {
 public:
-	FTDS::String&  GetTitle();
-	unsigned int   GetWidth();
-	unsigned int   GetHeight();
-	FTRectArea*	   GetRenderArea();
-	FTInputDevice* GetInputDevice();
+	FTDS::String& GetTitle() { return mTitle; }
+	unsigned int  GetWidth() const { return mWidth; };
+	unsigned int  GetHeight() const { return mHeight; }
+	FTRectArea*	  GetRenderArea() const { return mRenderArea; };
 
 	/**
 	 * @brief Sets the window width (does not automatically resize swap chain).
@@ -85,12 +84,9 @@ public:
 private:
 	FTDS::String mTitle; ///< Window title string.
 
-	unsigned int mWidth;  ///< Current window client width (not render area width).
-	unsigned int mHeight; ///< Current window client height (not render area height).
-
-	FTInputDevice* mInputDevice; ///< Associated input device state manager.
-
-	FTRectArea* mRenderArea; ///< Sub-rectangle defining where the scene is drawn.
+	unsigned int mWidth;	  ///< Current window client width (not render area width).
+	unsigned int mHeight;	  ///< Current window client height (not render area height).
+	FTRectArea*	 mRenderArea; ///< Sub-rectangle defining where the scene is drawn.
 
 private:
 	/**

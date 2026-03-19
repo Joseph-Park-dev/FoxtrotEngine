@@ -5,6 +5,7 @@
 #include "FTDS/Dynamic/DynamicArray.h"
 #include "Math/FTMath.h"
 #include "FTCore.h"
+#include "D3D11Window.h"
 
 void D3D11InputDevice::DetectKeyInput()
 {
@@ -84,8 +85,9 @@ void D3D11InputDevice::DetectMouseInput(MSG msg)
 
 void D3D11InputDevice::LockCursorInSceneViewport(FTVector2 mousePos)
 {
-	RECT rect;
-	GetClientRect(FTCore::GetInstance()->GetGameWindow()->GetHandle(), &rect);
+	D3D11Window* win = static_cast<D3D11Window*>(FTCore::GetInstance()->GetGameWindow());
+	RECT		 rect;
+	GetClientRect(win->GetHandle(), &rect);
 
 	POINT ul;
 	ul.x = rect.left;
@@ -95,8 +97,8 @@ void D3D11InputDevice::LockCursorInSceneViewport(FTVector2 mousePos)
 	lr.x = rect.right;
 	lr.y = rect.bottom;
 
-	MapWindowPoints(FTCore::GetInstance()->GetGameWindow()->GetHandle(), nullptr, &ul, 1);
-	MapWindowPoints(FTCore::GetInstance()->GetGameWindow()->GetHandle(), nullptr, &lr, 1);
+	MapWindowPoints(win->GetHandle(), nullptr, &ul, 1);
+	MapWindowPoints(win->GetHandle(), nullptr, &lr, 1);
 
 	rect.left = ul.x;
 	rect.top  = ul.y;

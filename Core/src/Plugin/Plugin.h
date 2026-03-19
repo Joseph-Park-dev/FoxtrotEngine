@@ -46,13 +46,10 @@ public:
 		FTDS::String procName("Create_");
 		procName.Append(COMP::GetName());
 		COMP_CONSTRUCTOR compConstruct = GetConstructor(procName.C_Str());
-		
+
 		assert(compConstruct);
 		mComponents.PushBack(compConstruct(actor));
 	}
-
-public:
-	void Load();
 
 public:
 	virtual void Initialize();
@@ -67,8 +64,12 @@ public:
 	virtual void Clear();
 
 public:
-	Plugin(FTResourceDef& resDef, size_t compArrCount);
+	Plugin(FTResourceDef& resDef);
 	~Plugin() override;
+
+	// public:
+	//	void SaveProperties(std::ofstream& ofs) override;
+	//	void LoadProperties(std::ifstream& ifs) override;
 
 protected:
 	COMP_CONSTRUCTOR GetConstructor(const char* compName);
@@ -77,4 +78,7 @@ private:
 	HMODULE							mModule;
 	FTDS::DynamicArray<Component*>* mComponents;
 	// FTDS::HashMap<Component* (*)(Actor * actor)>* mCompMap;
+
+private:
+	void Load();
 };

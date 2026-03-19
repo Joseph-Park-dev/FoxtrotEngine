@@ -19,14 +19,11 @@ class FTWindow;
 class FoxtrotRenderer
 {
 public:
-	const float* GetClearColor() const;
-
-private:
-	float mClearColor[4];
-
-public:
-	FoxtrotRenderer();
+	FoxtrotRenderer(FTWindow* window);
 	~FoxtrotRenderer();
+
+protected:
+	virtual bool Initialize(FTWindow* window) = 0;
 
 #ifdef FOXTROT_EDITOR
 public:

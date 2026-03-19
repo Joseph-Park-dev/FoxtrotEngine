@@ -32,12 +32,7 @@
 //	mSwapChain->Present(syncInterval, flags);
 // }
 
-const float* FoxtrotRenderer::GetClearColor() const
-{
-	return mClearColor;
-}
-
-//bool FoxtrotRenderer::Initialize()
+// bool FoxtrotRenderer::Initialize()
 //{
 //	// DX::ThrowIfFailed(D3D11Utils::CreateDeviceAndContext(
 //	//	window->GetHandle(), mDevice, mContext, window->GetSwapChain(), renderWidth, renderHeight, mNumQualityLevels));
@@ -70,19 +65,14 @@ const float* FoxtrotRenderer::GetClearColor() const
 //	// mContext->RSSetState(mSolidRasterizerState.Get());
 //
 //	return true;
-//}
+// }
 
-FoxtrotRenderer::FoxtrotRenderer()
+FoxtrotRenderer::FoxtrotRenderer(FTWindow* window)
 	: mClearColor{ 0.3f, 0.3f, 0.3f, 1.0f }
 #ifdef FOXTROT_EDITOR
 	, mViewportRenderer(DBG_NEW ViewportRenderer)
 #endif // FOXTROT_EDITOR
 {
-	if (!Initialize())
-	{
-		LogString("Failed to Initialize FTRenderer");
-		return;
-	}
 }
 
 FoxtrotRenderer::~FoxtrotRenderer()

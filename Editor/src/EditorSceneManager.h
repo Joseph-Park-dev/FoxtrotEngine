@@ -11,9 +11,9 @@
 /// </summary>
 
 #pragma once
-#include "Core/SingletonMacro.h"
+#include "SingletonMacro.h"
 
-#include "EditorScene.h"
+class FoxtrotRenderer;
 
 #ifdef FOXTROT_EDITOR
 	#define FIND_ACTOR_FILTER(name, filter) static_cast<Actor*>(EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(name, filter))

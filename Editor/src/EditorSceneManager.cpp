@@ -8,10 +8,11 @@
 
 #include "EditorSceneManager.h"
 
-#include "Managers/SceneManager.h"
-#include "Actors/Actor.h"
+#include "Manager/SceneManager.h"
+#include "Actor/Actor.h"
 #include "EditorScene.h"
 #include "EditorElement.h"
+#include "FTDS/Dynamic/DynamicArray.h"
 
 void EditorSceneManager::Initialize()
 {

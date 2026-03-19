@@ -13,6 +13,7 @@
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
 #include <Windows.h>
+#include <iostream>
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
@@ -23,27 +24,9 @@
 #include "EditorResourceManager.h"
 #include "EditorUtils.h"
 
-#include "Managers/DebugShapes.h"
-#include "InputSystem/FTInputDevice.h"
-#include "Core/FTCore.h"
-#include "Core/Timer.h"
-#include "Physics/Physics2D.h"
-#include "Physics/ParticleSystem.h"
-#include "Managers/UIManager.h"
-#include "Renderer/FoxtrotRenderer.h"
-#include "Core/WindowProcess.h"
-#include "Renderer/Camera.h"
-#include "Renderer/D3D11Utils.h"
+#include "Debugging/DebugFuncs.h"
 #include "Renderer/FTRectArea.h"
-#include "WindowSystem/FTWindow.h"
-#include "Managers/ResourceManager.h"
-#include "Managers/EventManager.h"
-#include "Managers/SceneManager.h"
-#include "Managers/CollisionManager.h"
-#include "Managers/AnimationManager.h"
-#include "Managers/SoundManager.h"
-#include "Managers/FontManager.h"
-#include "ResourceSystem/FTRectangle.h"
+#include "Renderer/FTWindow.h"
 
 // FTCoreEditor related singleton initializations -> used in Foxtrot Editor Runtime
 CommandHistory*		   CommandHistory::mInstance		= nullptr;
@@ -54,7 +37,6 @@ EditorChunkLoader*	   EditorChunkLoader::mInstance		= nullptr;
 FTCoreEditor*		   FTCoreEditor::mInstance			= nullptr;
 EditorCamera*		   EditorCamera::mInstance			= nullptr;
 EditorResourceManager* EditorResourceManager::mInstance = nullptr;
-FontManager*		   FontManager::mInstance			= nullptr;
 
 BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData)
 {
@@ -290,7 +272,7 @@ FTCoreEditor::FTCoreEditor()
 	, mEditorWindow(nullptr)
 	, mIsUpdatingGame(false)
 	, mIsResizingWindow(false)
-	, mEditorDataFileName()
+	, mEditorDataFileName(DBG_NEW FTDS::String)
 {
 }
 

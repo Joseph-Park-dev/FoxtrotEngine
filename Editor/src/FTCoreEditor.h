@@ -15,9 +15,9 @@
 /// </summary>
 
 #pragma once
-#include "Core/FTCore.h"
+#include "FTCore.h"
 
-#include "Debugging/DebugMemAlloc.h"
+class FTWindow;
 
 class FTCoreEditor :
 	public FTCore
@@ -38,10 +38,10 @@ public:
 	void SetIsUpdatingGame(bool isUpdating) { mIsUpdatingGame = isUpdating; }
 
 private:
-	FTWindow*	mEditorWindow;
-	bool		mIsUpdatingGame;
-	bool		mIsResizingWindow;
-	std::string mEditorDataFileName;
+	FTWindow*	  mEditorWindow;
+	bool		  mIsUpdatingGame;
+	bool		  mIsResizingWindow;
+	FTDS::String* mEditorDataFileName;
 
 private:
 	// These member functions are to be included in Initialize()

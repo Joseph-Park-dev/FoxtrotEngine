@@ -19,22 +19,14 @@ class FTWindow;
 class FoxtrotRenderer
 {
 public:
-	static FoxtrotRenderer* Create(FTWindow* window, unsigned int width, unsigned int height);
-	static void				Destroy(FoxtrotRenderer* renderer);
-
-public:
 	const float* GetClearColor() const;
 
 private:
 	float mClearColor[4];
 
 public:
-	FoxtrotRenderer(FTWindow* window, unsigned int width, unsigned int height);
+	FoxtrotRenderer();
 	~FoxtrotRenderer();
-
-private:
-	// Intended to be used during initialization.
-	bool Initialize(FTWindow* window, unsigned int renderWidth, unsigned int renderHeight);
 
 #ifdef FOXTROT_EDITOR
 public:

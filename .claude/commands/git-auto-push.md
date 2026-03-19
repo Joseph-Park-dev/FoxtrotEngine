@@ -8,6 +8,8 @@ Before committing, check for any of the following patterns:
 
 COMMIT, ADD, REMOVED, or similar developer notes.
 
+Commit classes individually, pairing the header (.h) and source (.cpp) files together.
+
 Group local modifications in categories and create commit for each categories.
 
 Output a short confirmation message indicating success (e.g., “✅ Commit completed — working tree clean.”).
@@ -26,3 +28,5 @@ After merging, push branch "develop".
 If pushing is unsuccessful, output a confirmation message indicating failure, listing the problematic file, and wait for additional command.
 
 If pushing is successful, output a confirmation message indicating success (e.g., “✅ Pushing completed.”).
+
+Don't ask for permission to proceed, unless problem that requires to abort occurs.

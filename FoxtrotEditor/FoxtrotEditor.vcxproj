@@ -287,20 +287,7 @@
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
     <ClCompile Include="include\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="src\EditorResourceManager.cpp" />
-    <ClCompile Include="src\EditorCamera.cpp" />
-    <ClCompile Include="src\ActorCommand.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="src\DirectoryHelper.cpp" />
-    <ClCompile Include="src\EditorChunkLoader.cpp" />
-    <ClCompile Include="src\Command.cpp" />
-    <ClCompile Include="src\CommandHistory.cpp" />
-    <ClCompile Include="src\EditorElement.cpp" />
-    <ClCompile Include="src\EditorLayer.cpp" />
-    <ClCompile Include="src\EditorScene.cpp" />
-    <ClCompile Include="src\EditorSceneManager.cpp" />
-    <ClCompile Include="src\FTCoreEditor.cpp" />
-    <ClCompile Include="src\ViewportRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\directxmath\DirectXCollision.h" />
@@ -366,25 +353,11 @@
     <ClInclude Include="include\stb_truetype.h" />
     <ClInclude Include="include\stb_voxel_render.h" />
     <ClInclude Include="include\tinyxml2\tinyxml2.h" />
-    <ClInclude Include="src\EditorResourceManager.h" />
     <ClInclude Include="include\FileDialog\imfilebrowser.h" />
     <ClInclude Include="include\FileDialog\ImGuiFileDialog.h" />
     <ClInclude Include="include\FileDialog\ImGuiFileDialogConfig.h" />
-    <ClInclude Include="src\EditorCamera.h" />
-    <ClInclude Include="src\ActorCommand.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="resource1.h" />
-    <ClInclude Include="src\DirectoryHelper.h" />
-    <ClInclude Include="src\EditorUtils.h" />
-    <ClInclude Include="src\EditorChunkLoader.h" />
-    <ClInclude Include="src\Command.h" />
-    <ClInclude Include="src\CommandHistory.h" />
-    <ClInclude Include="src\EditorElement.h" />
-    <ClInclude Include="src\EditorLayer.h" />
-    <ClInclude Include="src\EditorScene.h" />
-    <ClInclude Include="src\EditorSceneManager.h" />
-    <ClInclude Include="src\FTCoreEditor.h" />
-    <ClInclude Include="src\ViewportRenderer.h" />
     <ClInclude Include="vcpkg_installed\x64-windows\include\imconfig.h" />
     <ClInclude Include="vcpkg_installed\x64-windows\include\imgui.h" />
     <ClInclude Include="vcpkg_installed\x64-windows\include\imgui_impl_dx11.h" />
@@ -411,10 +384,6 @@
     <None Include="vcpkg.json" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Assets\Icons\FoxtrotEngine_icon.png_x16_2024_12_31_21_18_53.ico" />
-    <Image Include="Assets\Icons\FoxtrotEngine_icon.png_x24_2024_12_31_20_50_30.ico" />
-    <Image Include="Assets\Icons\FoxtrotEngine_icon.png_x32_2024_12_31_20_50_30.ico" />
-    <Image Include="Assets\Icons\FoxtrotEngine_icon.png_x48_2024_12_31_20_50_30.ico" />
     <Image Include="E:\OneDrive\[02_Drawing]\[GameProjects]\Logo\FoxtrotEngine 2D\FoxtrotEngine_icon\FoxtrotEngine_icon.png_x24_2024_12_31_20_50_30.ico" />
     <Image Include="E:\OneDrive\[02_Drawing]\[GameProjects]\Logo\FoxtrotEngine 2D\FoxtrotEngine_icon\FoxtrotEngine_icon.png_x32_2024_12_31_20_50_30.ico" />
     <Image Include="E:\OneDrive\[02_Drawing]\[GameProjects]\Logo\FoxtrotEngine 2D\FoxtrotEngine_icon\FoxtrotEngine_icon.png_x48_2024_12_31_20_50_30.ico" />

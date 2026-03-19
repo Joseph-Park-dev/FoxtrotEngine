@@ -18,6 +18,7 @@ struct PSODef : FTResourceDef
 	Microsoft::WRL::ComPtr<ID3D11BlendState>		BS;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> DSS;
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState>	RS;
+	Microsoft::WRL::ComPtr<ID3D11SamplerState>		SS;
 	// Microsoft::WRL::ComPtr<ID3D11HullShader>		mHullShader;
 	// Microsoft::WRL::ComPtr<ID3D11DomainShader>	mDomainShader;
 

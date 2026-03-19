@@ -4,35 +4,11 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Dynamic\LinkedQueue.h" />
-    <ClInclude Include="Dynamic\LinkedStack.h" />
-    <ClInclude Include="Dynamic\BinaryNode.h" />
-    <ClInclude Include="Static\Array.h" />
-    <ClInclude Include="Static\ArrayStack.h" />
-    <ClInclude Include="Static\CircularQueue.h" />
-    <ClInclude Include="Compare\StringEqual.h" />
-    <ClInclude Include="Static\CircularStack.h" />
-    <ClInclude Include="Utils\DSLogs.h" />
-    <ClInclude Include="Dynamic\LinkedList.h" />
-    <ClInclude Include="Dynamic\Node.h" />
-    <ClInclude Include="Search\BinarySearch.h" />
-    <ClInclude Include="Sort\InsertionSort.h" />
     <ClInclude Include="TestHeaderBatch.h" />
-    <ClInclude Include="Dynamic\BinSrchTree.h" />
-    <ClInclude Include="Search\DepthFirstSearch.h" />
-    <ClInclude Include="Dynamic\BinTree.h" />
     <ClInclude Include="Static\ArrayList.h" />
-    <ClInclude Include="Iterator\FTIterator.h" />
-    <ClInclude Include="Static\Record.h" />
-    <ClInclude Include="Dynamic\RecordNode.h" />
-    <ClInclude Include="Static\HashMap.h" />
-    <ClInclude Include="Utils\StrAssign.h" />
     <ClInclude Include="Static\FTString.h" />
     <ClInclude Include="Static\Queue.h" />
-    <ClInclude Include="Dynamic\DynamicArray.h" />
     <ClInclude Include="Utils\UUIDGenerator.h" />
-    <ClInclude Include="Static\Heap.h" />
-    <ClInclude Include="Node\HeapNode.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

@@ -222,7 +222,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;FOXTROT_EDITOR;WITH_WINMM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>.\include;.\include\soloud\include;.\include\json\include;.\include\spine-cpp\include;.\src;..\FoxtrotEditor\include\imgui\backends;..\FoxtrotEditor\include\imgui;..\FoxtrotEditor\include;..\FoxtrotEditor\include\magic_enum\include;..\FoxtrotEditor\src;..\FoxtrotDS;..\FoxtrotMath\src;D:\[2025_01]\[GooCat Studio] VampiCat\Scripts;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\include;.\include\soloud\include;.\include\json\include;.\include\spine-cpp\include;.\src;..\FoxtrotEditor\include\imgui\backends;..\FoxtrotEditor\include\imgui;..\FoxtrotEditor\include;..\FoxtrotEditor\include\magic_enum\include;..\FoxtrotEditor\src;..\FoxtrotDS;..\FoxtrotMath\src;D:\[2025_01]\[GooCat Studio] VampiCat\Scripts;..\Core\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -330,8 +330,6 @@
     <ClCompile Include="include\spine\Triangulator.cpp" />
     <ClCompile Include="include\spine\Updatable.cpp" />
     <ClCompile Include="include\spine\VertexAttachment.cpp" />
-    <ClCompile Include="src\Math\FTMath.cpp" />
-    <ClCompile Include="src\Math\Random.cpp" />
     <ClCompile Include="src\ResourceSystem\FTSprite\FTSprite.cpp" />
     <ClCompile Include="src\ResourceSystem\FTShaders\FTGeometryShader.cpp" />
     <ClCompile Include="src\Managers\FontManager.cpp" />
@@ -343,14 +341,12 @@
     <ClCompile Include="include\stb_vorbis.c" />
     <ClCompile Include="src\ResourceSystem\Sound\Sound.cpp" />
     <ClCompile Include="src\Managers\SoundManager.cpp" />
-    <ClCompile Include="src\Debugging\DebugFuncs.h" />
     <ClCompile Include="src\Managers\FTSpineLoader.cpp" />
     <ClCompile Include="src\ResourceSystem\Animation\FTSpineAnimation.cpp" />
     <ClCompile Include="src\ResourceSystem\GenericData\FTJSON.cpp" />
     <ClCompile Include="src\ResourceSystem\GenericData\FTCSV.cpp" />
     <ClCompile Include="src\ResourceSystem\Animation\AnimationFrame.cpp" />
     <ClCompile Include="src\Managers\AnimationManager.cpp" />
-    <ClCompile Include="src\WindowSystem\FTWindow.cpp" />
     <ClCompile Include="src\ResourceSystem\FTCubemap\FTCubemap.cpp" />
     <ClCompile Include="src\ResourceSystem\FTShaders\FTPixelShader.cpp" />
     <ClCompile Include="src\ResourceSystem\FTShaders\FTVertexShader.cpp" />
@@ -361,7 +357,6 @@
     <ClCompile Include="src\ResourceSystem\FTMeshDataPack.cpp" />
     <ClCompile Include="src\ResourceSystem\FTMeshData.cpp" />
     <ClCompile Include="src\Managers\LightManager.cpp" />
-    <ClCompile Include="src\Behaviors\FTBehavior.cpp" />
     <ClCompile Include="src\ResourceSystem\FTFontMap.cpp" />
     <ClCompile Include="src\Components\AI.cpp" />
     <ClCompile Include="src\Components\Animator.cpp" />
@@ -379,38 +374,18 @@
     <ClCompile Include="src\Components\UIs\ButtonUI.cpp" />
     <ClCompile Include="src\Components\UIs\PanelUI.cpp" />
     <ClCompile Include="src\Components\UIs\UI.cpp" />
-    <ClCompile Include="src\FileSystem\FileIOHelper.cpp" />
     <ClCompile Include="src\Managers\CollisionManager.cpp" />
-    <ClCompile Include="src\ResourceSystem\FTPremade.cpp" />
-    <ClCompile Include="src\Actors\Actor.cpp" />
-    <ClCompile Include="src\Actors\Transform.cpp" />
     <ClCompile Include="src\Components\AIState.cpp" />
-    <ClCompile Include="src\Components\Component.cpp" />
-    <ClCompile Include="src\Core\EventFunctions.cpp" />
-    <ClCompile Include="src\Core\FTCore.cpp" />
-    <ClCompile Include="src\Core\Timer.cpp" />
-    <ClCompile Include="src\FileSystem\ChunkLoader.cpp" />
-    <ClCompile Include="src\Managers\EventManager.cpp" />
-    <ClCompile Include="src\InputSystem\FTInputDevice.cpp" />
-    <ClCompile Include="src\Managers\ResourceManager.cpp" />
-    <ClCompile Include="src\Managers\SceneManager.cpp" />
     <ClCompile Include="src\Managers\UIManager.cpp" />
     <ClCompile Include="src\Physics\ParticleSystem.cpp" />
     <ClCompile Include="src\Physics\Physics2D.cpp" />
-    <ClCompile Include="src\Renderer\Camera.cpp" />
-    <ClCompile Include="src\Renderer\D3D11Utils.cpp" />
-    <ClCompile Include="src\Renderer\FoxtrotRenderer.cpp" />
-    <ClCompile Include="src\Renderer\FTRectArea.cpp" />
     <ClCompile Include="src\ResourceSystem\FTMeshGroup.cpp" />
-    <ClCompile Include="src\ResourceSystem\FTResource.cpp" />
     <ClCompile Include="src\ResourceSystem\FTShape.cpp" />
     <ClCompile Include="src\ResourceSystem\Animation\FTSpriteAnimation.cpp" />
-    <ClCompile Include="src\ResourceSystem\FTTexture.cpp" />
     <ClCompile Include="src\ResourceSystem\FTTileMap.cpp" />
     <ClCompile Include="src\ResourceSystem\GeometryGenerator.cpp" />
     <ClCompile Include="src\ResourceSystem\FTMaterials\FTMaterial.cpp" />
     <ClCompile Include="src\ResourceSystem\Tile.cpp" />
-    <ClCompile Include="src\Scenes\Scene.cpp" />
     <ClCompile Include="src\Components\UIs\TextRenderer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
       </ExcludedFromBuild>
@@ -505,8 +480,6 @@
     <ClInclude Include="include\assimp\XmlParser.h" />
     <ClInclude Include="include\assimp\XMLTools.h" />
     <ClInclude Include="include\assimp\ZipArchiveIOSystem.h" />
-    <ClInclude Include="src\Math\FTMath.h" />
-    <ClInclude Include="src\Math\Random.h" />
     <ClInclude Include="src\ResourceSystem\FTSprite\FTSprite.h" />
     <ClInclude Include="src\ResourceSystem\FTShaders\FTGeometryShader.h" />
     <ClInclude Include="src\Managers\FontManager.h" />
@@ -619,7 +592,6 @@
     <ClInclude Include="src\ResourceSystem\GenericData\FTCSV.h" />
     <ClInclude Include="src\ResourceSystem\Animation\AnimationFrame.h" />
     <ClInclude Include="src\Managers\AnimationManager.h" />
-    <ClInclude Include="src\WindowSystem\FTWindow.h" />
     <ClInclude Include="src\ResourceSystem\FTCubemap\FTCubemap.h" />
     <ClInclude Include="src\ResourceSystem\FTShaders\FTPixelShader.h" />
     <ClInclude Include="src\ResourceSystem\FTShaders\FTVertexShader.h" />
@@ -859,9 +831,6 @@
     <ClInclude Include="include\assimp\PostProcessing\TextureTransform.h" />
     <ClInclude Include="include\assimp\PostProcessing\TriangulateProcess.h" />
     <ClInclude Include="include\assimp\PostProcessing\ValidateDataStructure.h" />
-    <ClInclude Include="src\FileSystem\BufferSizes.h" />
-    <ClInclude Include="src\FileSystem\FileTypes.h" />
-    <ClInclude Include="src\FileSystem\NullKeys.h" />
     <ClInclude Include="src\ResourceSystem\FTMeshData.h" />
     <ClInclude Include="include\spine\Animation.h" />
     <ClInclude Include="include\spine\AnimationState.h" />
@@ -955,7 +924,6 @@
     <ClInclude Include="include\spine\VertexAttachment.h" />
     <ClInclude Include="include\spine\Vertices.h" />
     <ClInclude Include="src\Managers\LightManager.h" />
-    <ClInclude Include="src\Behaviors\FTBehavior.h" />
     <ClInclude Include="src\FileSystem\MaterialFileKeys.h" />
     <ClInclude Include="src\ResourceSystem\FTFontMap.h" />
     <ClInclude Include="src\Components\AI.h" />
@@ -976,45 +944,18 @@
     <ClInclude Include="src\Components\UIs\ButtonUI.h" />
     <ClInclude Include="src\Components\UIs\PanelUI.h" />
     <ClInclude Include="src\Components\UIs\UI.h" />
-    <ClInclude Include="src\Debugging\DebugMemAlloc.h" />
-    <ClInclude Include="src\FileSystem\FileIOHelper.h" />
     <ClInclude Include="src\Managers\CollisionManager.h" />
-    <ClInclude Include="src\ResourceSystem\FTPremade.h" />
-    <ClInclude Include="src\Actors\Actor.h" />
-    <ClInclude Include="src\Actors\ActorGroup.h" />
-    <ClInclude Include="src\Actors\Transform.h" />
     <ClInclude Include="src\Components\AIState.h" />
-    <ClInclude Include="src\Components\Component.h" />
     <ClInclude Include="src\Components\SpriteComponent.h" />
-    <ClInclude Include="src\Core\EventFunctions.h" />
-    <ClInclude Include="src\Core\EventType.h" />
-    <ClInclude Include="src\Core\FTCore.h" />
-    <ClInclude Include="src\Core\SingletonMacro.h" />
-    <ClInclude Include="src\Core\TemplateFunctions.h" />
-    <ClInclude Include="src\Core\Timer.h" />
-    <ClInclude Include="src\Core\TypeDefinitions.h" />
-    <ClInclude Include="src\Core\UnitDefinitions.h" />
-    <ClInclude Include="src\Core\WindowProcess.h" />
     <ClInclude Include="src\FileSystem\ChunkFileKeys.h" />
-    <ClInclude Include="src\FileSystem\ChunkLoader.h" />
-    <ClInclude Include="src\Managers\EventManager.h" />
-    <ClInclude Include="src\InputSystem\FTInputDevice.h" />
-    <ClInclude Include="src\Managers\ResourceManager.h" />
-    <ClInclude Include="src\Managers\SceneManager.h" />
     <ClInclude Include="src\Managers\UIManager.h" />
     <ClInclude Include="src\Physics\ParticleSystem.h" />
     <ClInclude Include="src\Physics\Physics2D.h" />
     <ClInclude Include="src\Physics\Ray.h" />
     <ClInclude Include="src\Physics\RayCastHit2D.h" />
-    <ClInclude Include="src\Renderer\Camera.h" />
-    <ClInclude Include="src\Renderer\D3D11Utils.h" />
-    <ClInclude Include="src\Renderer\FoxtrotRenderer.h" />
-    <ClInclude Include="src\Renderer\FTRectArea.h" />
     <ClInclude Include="src\ResourceSystem\FTMeshGroup.h" />
-    <ClInclude Include="src\ResourceSystem\FTResource.h" />
     <ClInclude Include="src\ResourceSystem\FTShape.h" />
     <ClInclude Include="src\ResourceSystem\Animation\FTSpriteAnimation.h" />
-    <ClInclude Include="src\ResourceSystem\FTTexture.h" />
     <ClInclude Include="src\ResourceSystem\FTTileMap.h" />
     <ClInclude Include="src\ResourceSystem\GeometryGenerator.h" />
     <ClInclude Include="src\ResourceSystem\Light.h" />
@@ -1024,7 +965,6 @@
     <ClInclude Include="src\ResourceSystem\TextAttribute.h" />
     <ClInclude Include="src\ResourceSystem\Tile.h" />
     <ClInclude Include="src\ResourceSystem\Vertex.h" />
-    <ClInclude Include="src\Scenes\Scene.h" />
     <ClInclude Include="src\Components\UIs\TextRenderer.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
       </ExcludedFromBuild>

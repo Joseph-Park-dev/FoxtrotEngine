@@ -71,7 +71,8 @@ struct tKeyInfo
 class FTInputDevice
 {
 public:
-	void DetectMouseDrag(FTVector2& delta);
+	void		 DetectMouseDrag(FTVector2& delta);
+	virtual void DetectKeyInput() = 0;
 
 public:
 	KEY_STATE GetKeyState(KEY eKey);
@@ -98,33 +99,29 @@ public:
 	~FTInputDevice();
 
 protected:
-	FTDS::DynamicArray<tKeyInfo>* GetKeyArr();
-	FTDS::DynamicArray<tKeyInfo>* GetMouseArr();
-	FTDS::DynamicArray<tKeyInfo>* GetButtonArr();
+	FTDS::DynamicArray<tKeyInfo>* GetKeyArr() { return mVecKey; }
+	FTDS::DynamicArray<tKeyInfo>* GetMouseArr() { return mVecMouse; }
+	FTDS::DynamicArray<tKeyInfo>* GetButtonArr() { return mVecButton; }
 
-	int* GetKeyCode();
-	int* GetMouseCode();
+	int* GetKeyCode() { return mKeyCode; };
+	int* GetMouseCode() { return mMouseCode; };
 
-	void SetMousePosition(FTVector2 pos);
-	void SetMousePosition(unsigned int posX, unsigned int posY);
+	void SetMousePosition(FTVector2 pos)
+	{
+		mMousePosX = static_cast<unsigned int>(pos.x);
+		mMousePosY = static_cast<unsigned int>(pos.y);
+	}
 
-	void SetMouseWheelDelta(float delta);
+	void SetMousePosition(unsigned int posX, unsigned int posY)
+	{
+		mMousePosX = posX;
+		mMousePosY = posY;
+	}
 
-private:
-	// Keyboard related data.
-	FTDS::DynamicArray<tKeyInfo>* mVecKey;
-	FTDS::DynamicArray<tKeyInfo>* mVecMouse;
-	FTDS::DynamicArray<tKeyInfo>* mVecButton;
-
-	// Mouse related data.
-	unsigned int mMousePosX, mMousePosY;
-	int			 mMouseState;
-	float		 mMouseWheelDelta;
-	bool		 mIsDragging;
-
-private:
-	int* mKeyCode;
-	int* mMouseCode;
+	void SetMouseWheelDelta(float delta)
+	{
+		mMouseWheelDelta = delta;
+	}
 
 private:
 	void Init();

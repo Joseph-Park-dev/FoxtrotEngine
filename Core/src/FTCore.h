@@ -38,7 +38,7 @@ class CORE_API FTCore
 
 public:
 	virtual bool Initialize();
-	void		 RunLoop();
+	virtual void RunLoop();
 	virtual void ShutDown();
 
 public:
@@ -46,6 +46,9 @@ public:
 	FoxtrotRenderer* GetGameRenderer() { return mGameRenderer; }
 
 	void SetIsRunning(bool isRunning) { mIsRunning = isRunning; }
+	void SetWindow(FTWindow* window);
+	void SetInputDevice(FTInputDevice* device);
+	void SetRenderer(FoxtrotRenderer* renderer);
 
 protected:
 	// Gameloop functions.
@@ -65,8 +68,8 @@ private:
 	bool			 mIsRunning;
 
 private:
-	FTDS::String*			mGameDataPath;
-	FTDS::HashMap<Plugin*>* mLoadedPlugins;
+	FTDS::String*				 mGameDataPath;
+	FTDS::DynamicArray<Plugin*>* mLoadedPlugins;
 
 private:
 	void LoadDLL(FTDS::String& path);
@@ -75,7 +78,8 @@ private:
 
 extern "C"
 {
-	CORE_API void Create_Core();
+	CORE_API FTCore* GetInstanceCore();
+	CORE_API void	 DestroyCore();
 }
 
 namespace GameData
@@ -89,6 +93,7 @@ namespace PluginKey
 {
 	namespace FTCore
 	{
-		constexpr const char* CREATE = "Create_Core";
-	}
-} // namespace Plugin
+		constexpr const char* GET_INSTANCE = "GetInstanceCore";
+		constexpr const char* DESTROY	   = "DestroyCore";
+	} // namespace FTCore
+} // namespace PluginKey

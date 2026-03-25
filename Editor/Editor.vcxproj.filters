@@ -36,9 +36,6 @@
     <ClInclude Include="src\CommandHistory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DirectoryHelper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\EditorCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -87,9 +84,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\CommandHistory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DirectoryHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\EditorCamera.cpp">

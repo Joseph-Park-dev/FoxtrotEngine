@@ -19,8 +19,7 @@ class FTWindow;
 class FoxtrotRenderer
 {
 public:
-	FoxtrotRenderer(FTWindow* window);
-	~FoxtrotRenderer();
+	FoxtrotRenderer() {};
 
 protected:
 	virtual bool Initialize(FTWindow* window) = 0;

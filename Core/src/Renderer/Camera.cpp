@@ -35,6 +35,7 @@ void Camera::Initialize(FTWindow* renderWindow, unsigned int pixels, float unit)
 	assert(!mRenderWindow); // Overlapped assignment must be prevented.
 
 	mRenderWindow = renderWindow;
+	mAspect		  = GetResolution().x / GetResolution().y;
 	InitializePixelsPerUnit(pixels, unit);
 }
 
@@ -56,12 +57,12 @@ Camera::Camera()
 	, mProjFOVAngleY(70.f)
 	, mNearZ(0.01f)
 	, mFarZ(100.0f)
+	, mAspect(0.f)
 	, mPixelsPerUnit(0.f)
-	, mViewType(Viewtype::Orthographic)
 	, mZoomDelta(0.f)
 	, mZoomFactor(1.0f)
+	, mViewType(Viewtype::Orthographic)
 {
-	mAspect = GetResolution().x / GetResolution().y;
 }
 
 Camera::~Camera() {}

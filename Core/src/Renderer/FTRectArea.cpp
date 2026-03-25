@@ -53,25 +53,9 @@ void FTRectArea::Set(FTVector2 center, FTVector2 dimension, float rotAngle)
 	mRotAngle = rotAngle;
 }
 
-void FTRectArea::Set(float posX, float posY, float width, float height, float rotAngle)
-{
-	mWidth	  = width;
-	mHeight	  = height;
-	mSize	  = FTVector2(width, height);
-	mCenter	  = FTVector2(posX, posY) + (mSize * 0.5f);
-	mMin	  = mCenter - mSize / 2;
-	mMax	  = mCenter + mSize / 2;
-	mRotAngle = rotAngle;
-}
-
 FTRectArea::FTRectArea()
 {
 	Set(0.f, 0.f, 0.f, 0.f);
-}
-
-FTRectArea::FTRectArea(float x, float y, float width, float height, float rotAngle)
-{
-	Set(x, y, width, height, rotAngle);
 }
 
 void FTRectArea::CloneTo(FTRectArea* rect)

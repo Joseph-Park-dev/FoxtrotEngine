@@ -75,6 +75,7 @@ void EventManager::Execute(const FTEvent& executedEvent)
 }
 
 EventManager::EventManager()
+	: mEvent(DBG_NEW FTDS::DynamicArray<FTEvent>(1))
 {
 }
 

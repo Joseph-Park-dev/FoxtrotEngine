@@ -33,13 +33,13 @@ public:
 	const FTVector3& GetLocalRotation() const;
 
 	// World Transformation
-	const FTVector3& GetWorldPosition() const;
-	const FTVector3& GetWorldScale() const;
-	const FTVector3& GetWorldRotation() const;
-	const FTMatrix4& GetMatrixWorld() const;
-	const FTVector3	 GetRotationDegree() const;
-	const FTVector3& GetRightward() const;
-	const Steering*	 GetSteering() const;
+	virtual const FTVector3& GetWorldPosition() const;
+	const FTVector3&		 GetWorldScale() const;
+	const FTVector3&		 GetWorldRotation() const;
+	const FTMatrix4&		 GetMatrixWorld() const;
+	const FTVector3			 GetRotationDegree() const;
+	const FTVector3&		 GetRightward() const;
+	const Steering*			 GetSteering() const;
 
 	const bool IsHalting() const;
 

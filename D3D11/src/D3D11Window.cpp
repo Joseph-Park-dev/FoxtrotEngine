@@ -11,8 +11,9 @@
 #include "Debugging/DebugFuncs.h"
 #include "DebugFuncs.h"
 #include "Plugin/Plugin.h"
+#include "CoreInstance.h"
 
-bool D3D11Window::Initialize(int windowMode)
+bool D3D11Window::Initialize(FTCore* base, int windowMode)
 {
 	assert(!GetTitle().IsEmpty());
 
@@ -53,7 +54,7 @@ bool D3D11Window::Initialize(int windowMode)
 		NULL,
 		NULL,
 		wc.hInstance,
-		this);
+		base);
 
 	if (!mWinHandle)
 	{
@@ -69,9 +70,9 @@ bool D3D11Window::Initialize(int windowMode)
 	return true;
 }
 
-bool D3D11Window::Initialize()
+bool D3D11Window::Initialize(FTCore* base)
 {
-	return Initialize(SW_SHOWDEFAULT);
+	return Initialize(base, SW_SHOWDEFAULT);
 }
 
 bool D3D11Window::InitializeWindowRenderer(D3D11Renderer* renderer)
@@ -168,12 +169,11 @@ ComPtr<ID3D11DepthStencilView>& D3D11Window::GetDSV() { return mDSV; }
 D3D11Window::D3D11Window(Plugin* owner, const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea)
 	: FTWindow(owner, title, width, height, rndArea)
 {
-	this->Initialize();
+	this->Initialize(owner->gBase);
 }
 
 D3D11Window::~D3D11Window()
 {
-	DestroyWindow(mWinHandle);
 }
 
 bool D3D11Window::CreateRTV(Microsoft::WRL::ComPtr<ID3D11Device>& device)
@@ -203,27 +203,25 @@ void D3D11Window::ClearWindow(D3D11Renderer* renderer)
 
 LRESULT D3D11Window::WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	D3D11Window* window = nullptr;
+	FTCore* core = nullptr;
 	if (msg == WM_NCCREATE)
 	{
 		auto* cs = reinterpret_cast<CREATESTRUCT*>(lParam);
-		window	 = static_cast<D3D11Window*>(cs->lpCreateParams);
-		SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(window));
+		core	 = static_cast<FTCore*>(cs->lpCreateParams);
+		SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(core));
 	}
 	else
 	{
 		// Retrieve the pointer on every message
-		window = reinterpret_cast<D3D11Window*>(
+		core = reinterpret_cast<FTCore*>(
 			GetWindowLongPtr(hwnd, GWLP_USERDATA));
 	}
 
-	if (window)
+	if (core)
 	{
 		if (msg == WM_DESTROY)
 		{
-			// Dereference and modify the value the pointer points to
-			delete window;
-			window = nullptr;
+			core->SetIsRunning(false);
 			return 0;
 		}
 	}

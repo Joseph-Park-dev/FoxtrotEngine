@@ -11,7 +11,6 @@
 #include "Actor/Actor.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
-#include "Renderer/Camera.h"
 #include "Renderer/FTRectArea.h"
 #include "Renderer/FTWindow.h"
 #include "Math/FTMath.h"

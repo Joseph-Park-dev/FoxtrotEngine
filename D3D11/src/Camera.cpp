@@ -10,7 +10,6 @@
 
 #include "Renderer/FTWindow.h"
 #include "Renderer/FTRectArea.h"
-#include "FTCore.h"
 #include "InputSystem/FTInputDevice.h"
 #include "Manager/SceneManager.h"
 #include "Scene/Scene.h"
@@ -86,9 +85,8 @@ FTMatrix4 Camera::GetProjRow()
 {
 	float	  unitsPerPixel = 1 / mPixelsPerUnit;
 	FTVector2 renderSize	= GetResolution();
-
-	if (renderSize.y <= 0)
-		return FTMatrix4::Identity;
+	assert(0 < renderSize.x);
+	assert(0 < renderSize.y);
 
 	float worldWidth  = renderSize.x * unitsPerPixel;
 	float worldHeight = renderSize.y * unitsPerPixel;
@@ -238,22 +236,22 @@ void Camera::SaveProperties(std::ofstream& ofs)
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CAMERA_DATA);
 }
 
-void Camera::LoadProperties(std::ifstream& ifs)
+void Camera::LoadProperties(std::ifstream& ifs, SceneManager* manager)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CAMERA_DATA);
 	FileIOHelper::LoadFloat(ifs, mZoomFactor);
 	FileIOHelper::LoadVector3(ifs, mOffset);
 
 	FileIOHelper::LoadVector3(ifs, mPosition);
-	FTDS::String targetActor = {};
-	FileIOHelper::LoadBasicString(ifs, targetActor);
+	FTDS::String targetName = {};
+	FileIOHelper::LoadBasicString(ifs, targetName);
 
 #ifdef FOXTROT_EDITOR
 	if (targetActor.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
 		mTarget = EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(targetActor, nullptr);
 #else
-	if (targetActor != ChunkKey::NullVal::NULL_OBJECT)
-		mTarget = SceneManager::GetInstance()->GetCurrentScene()->FindActor(targetActor);
+	if (targetName.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
+		mTarget = manager->GetCurrentScene()->FindActor(targetName);
 #endif // FOXTROT_EDITOR
 }
 

@@ -28,7 +28,7 @@ namespace FTDS
 	template <typename TYPE>
 	class DynamicArray;
 	class String;
-}
+} // namespace FTDS
 
 #ifdef FOXTROT_EDITOR
 class EditorElement;
@@ -97,7 +97,7 @@ public:
 	ActorGroup&						GetActorGroupRef() { return mActorGroup; }
 	ActorGroup*						GetActorGroupPtr() { return &mActorGroup; }
 	FTDS::String					GetName();
-	FTDS::String&					GetNameRef();
+	virtual FTDS::String&			GetNameRef();
 	const int						GetID() const { return mID; }
 	const bool&						GetIsActive() const { return mIsActive; }
 	Transform*						GetTransform() const { return mTransform; }
@@ -116,22 +116,22 @@ public:
 	void SetChildActors(FTDS::DynamicArray<Actor*>* children) { mChild = children; }
 	void SetDrawOrder(int order) { mDrawOrder = order; }
 
-	bool  HasName(FTDS::String&& name);
-	bool  HasName(const char* name);
-	bool  IsDead();
-	bool& IsActive();
+	bool		  HasName(FTDS::String&& name);
+	bool		  HasName(const char* name);
+	bool		  IsDead();
+	virtual bool& IsActive();
 
-		template <class T>
-		T* GetComponent()
+	template <class T>
+	T* GetComponent()
+	{
+		for (auto iter = mComponents.Begin(); iter != mComponents.End(); ++iter)
 		{
-			for (auto iter = mComponents.Begin(); iter != mComponents.End(); ++iter)
-			{
-				T* comp = dynamic_cast<T*>(*iter);
-				if (comp)
-					return comp;
-			}
-			return nullptr;
-		};
+			T* comp = dynamic_cast<T*>(*iter);
+			if (comp)
+				return comp;
+		}
+		return nullptr;
+	};
 
 private:
 	FTDS::String					mName;

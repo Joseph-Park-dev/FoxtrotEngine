@@ -13,8 +13,8 @@ class D3D11Window :
 	public FTWindow
 {
 public:
-	bool Initialize();
-	bool Initialize(int windowMode);
+	bool Initialize(FTCore* base);
+	bool Initialize(FTCore* base, int windowMode);
 	bool InitializeWindowRenderer(D3D11Renderer* renderer);
 	bool CreateSwapChain(D3D11Renderer* renderer);
 

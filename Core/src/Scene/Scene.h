@@ -32,7 +32,7 @@ public:
 	void RemoveActor(Actor* actor);
 
 	Actor* FindActor(int id);
-	Actor* FindActor(FTDS::String& name, Actor* filter = nullptr);
+	virtual Actor* FindActor(FTDS::String& name, Actor* filter = nullptr);
 	Actor* FindActor(const char* name, Actor* filter = nullptr);
 
 public:

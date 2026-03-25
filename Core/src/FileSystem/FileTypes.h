@@ -17,6 +17,7 @@ namespace FileTypes
 	// Essential Files
 	constexpr const char* CHUNK	 = ".chunk";
 	constexpr const char* GDPACK = ".gdpack";
+	constexpr const char* PLUGIN_DATA = ".plgdat";
 
 	constexpr const char* ALL_FILE_FORMATS = ".premade"
 											 ","

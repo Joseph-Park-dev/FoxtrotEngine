@@ -12,7 +12,6 @@
 #include "Actor/Transform.h"
 #include "InputSystem/FTInputDevice.h"
 #include "Manager/SceneManager.h"
-#include "Renderer/Camera.h"
 #include "Renderer/FTRectArea.h"
 #include "Renderer/FTWindow.h"
 

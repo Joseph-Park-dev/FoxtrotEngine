@@ -57,11 +57,11 @@ public:
 	virtual void CloneTo(Actor* actor) = 0;
 
 public:
-	Actor*	   GetOwner() const;
-	const int  GetUpdateOrder() const;
-	const bool GetIsInitialized() const;
-	const bool GetIsSetup() const;
-	const bool GetIsActive() const;
+	virtual Actor* GetOwner() const;
+	const int	   GetUpdateOrder() const;
+	const bool	   GetIsInitialized() const;
+	const bool	   GetIsSetup() const;
+	const bool	   GetIsActive() const;
 
 	void SetIsActive(bool isActive);
 

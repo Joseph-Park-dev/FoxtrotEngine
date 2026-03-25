@@ -6,30 +6,53 @@
 #include "D3D11Window.h"
 #include "FTDS/Dynamic/DynamicArray.h"
 #include "Renderer/FTRectArea.h"
+#include "Camera.h"
+#include "FileSystem/FileTypes.h"
+#include "FileSystem/FileIOHelper.h"
+#include "Manager/SceneManager.h"
+#include "FTCore.h"
 
 class D3D11InputDevice;
 class D3D11Renderer;
 class D3D11Window;
 class FTRectArea;
 
-#include "Plugin/CoreExports.h"
+Camera* Camera::mInstance = nullptr;
+
+namespace ChunkKey
+{
+	namespace Plugin
+	{
+		constexpr const char* D3D11 = "D3D11";
+	}
+} // namespace ChunkKey
 
 class D3D11Plugin :
 	public Plugin
 {
 public:
-	void CreateInputDevice();
-	void CreateRenderer(D3D11Window* window);
-	void CreateD3D11Window(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea);
+	void		 CreateInputDevice();
+	void		 CreateRenderer(D3D11Window* window);
+	void		 CreateD3D11Window(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea);
+	void		 ProcessInput() override;
+	virtual void Render(FoxtrotRenderer* renderer) override;
 
 public:
-	D3D11Plugin(FTCore* base, const wchar_t* dllPath);
-	~D3D11Plugin();
+	void SaveProperties() override;
+	void LoadProperties(SceneManager* sceneManager);
+
+public:
+	D3D11Plugin(FTCore* base);
+	~D3D11Plugin() override;
 
 private:
 	FTDS::DynamicArray<D3D11InputDevice*>* mInputDevices;
 	D3D11Renderer*						   mRenderer;
 	FTDS::DynamicArray<D3D11Window*>*	   mWindows;
+	Camera*								   mCamera;
+
+private:
+	void LoadProperties() override;
 };
 
 void D3D11Plugin::CreateInputDevice()
@@ -50,14 +73,74 @@ void D3D11Plugin::CreateD3D11Window(const char* title, unsigned int width, unsig
 	mWindows->PushBack(window);
 }
 
-D3D11Plugin::D3D11Plugin(FTCore* base, const wchar_t* dllPath)
-	: Plugin(dllPath)
+void D3D11Plugin::ProcessInput()
+{
+	size_t i = 0;
+	for (auto iter = mWindows->Begin(); iter != mWindows->End(); ++iter)
+	{
+		if (!(*iter))
+			mWindows->Erase(i);
+		++i;
+	}
+
+	for (auto input = mInputDevices->Begin(); input != mInputDevices->End(); ++input)
+	{
+		D3D11InputDevice* inp = static_cast<D3D11InputDevice*>(*input);
+		for (auto iter = mWindows->Begin(); iter != mWindows->End(); ++iter)
+			(*iter)->ProcessInput(inp);
+		Plugin::ProcessInput();
+	}
+}
+
+void D3D11Plugin::Render(FoxtrotRenderer* renderer)
+{
+	for (auto iter = mWindows->Begin(); iter != mWindows->End(); ++iter)
+	{
+		// mGameRenderer->RenderClear(mWindow);
+		(*iter)->BeginRender(renderer);
+		Plugin::Render(renderer);
+		(*iter)->EndRender(renderer);
+	}
+}
+
+void D3D11Plugin::SaveProperties()
+{
+	FTDS::String dataPath = ChunkKey::Plugin::D3D11;
+	dataPath.Append(FileTypes::PLUGIN_DATA);
+	std::ofstream ofs(dataPath.C_Str());
+
+	if (ofs.good())
+	{
+		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::PLUGIN_DATA);
+		mCamera->SaveProperties(ofs);
+		FileIOHelper::EndDataPackSave(ofs, ChunkKey::Plugin::PLUGIN_DATA);
+	}
+}
+
+void D3D11Plugin::LoadProperties(SceneManager* sceneManager)
+{
+	FTDS::String dataPath = ChunkKey::Plugin::D3D11;
+	dataPath.Append(FileTypes::PLUGIN_DATA);
+	std::ifstream ifs(dataPath.C_Str());
+	if (!ifs.good())
+		SaveProperties();
+	else
+	{
+		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::PLUGIN_DATA);
+		mCamera->LoadProperties(ifs, sceneManager);
+	}
+}
+
+D3D11Plugin::D3D11Plugin(FTCore* base)
+	: Plugin(base)
 	, mInputDevices(DBG_NEW FTDS::DynamicArray<D3D11InputDevice*>)
 	, mRenderer(nullptr)
 	, mWindows(DBG_NEW FTDS::DynamicArray<D3D11Window*>)
+	, mCamera(nullptr)
 {
 	FTRectArea* area = DBG_NEW FTRectArea(0.f, 0.f, 500.f, 500.f);
 	CreateD3D11Window("Hello!", 500, 500, area);
+	CreateInputDevice();
 }
 
 D3D11Plugin::~D3D11Plugin()
@@ -67,7 +150,11 @@ D3D11Plugin::~D3D11Plugin()
 	delete mWindows;
 }
 
-extern "C" CORE_API Plugin* CreatePlugin(FTCore* base, const wchar_t* dllPath)
+void D3D11Plugin::LoadProperties()
 {
-	return new D3D11Plugin(base, dllPath);
+}
+
+extern "C" __declspec(dllexport) Plugin* CreatePlugin(FTCore* base)
+{
+	return new D3D11Plugin(base);
 }

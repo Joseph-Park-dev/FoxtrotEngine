@@ -34,7 +34,16 @@ public:
 	/// @brief Update FTRectArea values
 	/// @param posX Top left position X
 	/// @param posY Top left position Y
-	void Set(float posX, float posY, float width, float height, float rotAngle = 0);
+	void Set(float posX, float posY, float width, float height, float rotAngle = 0)
+	{
+		mWidth	  = width;
+		mHeight	  = height;
+		mSize	  = FTVector2(width, height);
+		mCenter	  = FTVector2(posX, posY) + (mSize * 0.5f);
+		mMin	  = mCenter - mSize / 2;
+		mMax	  = mCenter + mSize / 2;
+		mRotAngle = rotAngle;
+	}
 
 	static const FTRectArea Zero;
 
@@ -46,7 +55,10 @@ public:
 
 public:
 	FTRectArea();
-	FTRectArea(float x, float y, float width, float height, float rotAngle = 0);
+	FTRectArea(float x, float y, float width, float height, float rotAngle = 0)
+	{
+		Set(x, y, width, height, rotAngle);
+	}
 	void CloneTo(FTRectArea* rect);
 
 private:

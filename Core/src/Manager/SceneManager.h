@@ -36,8 +36,8 @@ class SceneManager
 	SINGLETON_PROTECTED(SceneManager)
 
 public:
-	void   SwitchScene(size_t index);
-	Scene* GetCurrentScene();
+	void		   SwitchScene(size_t index);
+	virtual Scene* GetCurrentScene();
 
 public:
 	void SetChunkListPath(FTDS::String&& path);

@@ -18,6 +18,7 @@
 
 class FTWindow;
 class Actor;
+class SceneManager;
 
 namespace ChunkKey
 {
@@ -105,7 +106,7 @@ private:
 
 public:
 	void SaveProperties(std::ofstream& ofs);
-	void LoadProperties(std::ifstream& ifs);
+	void LoadProperties(std::ifstream& ifs, SceneManager* targetActor);
 
 #ifdef FOXTROT_EDITOR
 public:

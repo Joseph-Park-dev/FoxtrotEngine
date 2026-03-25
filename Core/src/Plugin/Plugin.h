@@ -10,34 +10,24 @@
 /// </summary>
 
 #pragma once
-#include "ResourceSystem/FTResource.h"
-
 #include <assert.h>
 #include <Windows.h>
 
+#include "Component/Component.h"
 #include "Debugging/DebugMemAlloc.h"
 #include "Debugging/DebugFuncs.h"
+#include "FTDS/Dynamic/DynamicArray.h"
+#include "Actor/Actor.h"
 
-#ifdef CORE_EXPORTS
-	#define CORE_API __declspec(dllexport)
-#else
-	#define CORE_API __declspec(dllimport)
-#endif
+#include "Plugin/CoreExports.h"
 
 class Actor;
-class Component;
 class FTInputDevice;
 class FoxtrotRenderer;
-namespace FTDS
-{
-	template <typename TYPE>
-	class DynamicArray;
-	class String;
-} // namespace FTDS
 
 using COMP_CONSTRUCTOR = Component* (*)(Actor * actor);
 
-class CORE_API Plugin : public FTResource
+class Plugin
 {
 public:
 	template <typename COMP>
@@ -49,42 +39,116 @@ public:
 			return;
 		}
 
-		FTDS::String procName("Create_");
-		procName.Append(COMP::GetName());
-		COMP_CONSTRUCTOR compConstruct = GetConstructor(procName.C_Str());
-
+		COMP_CONSTRUCTOR compConstruct = GetConstructor("Create");
 		assert(compConstruct);
-		mComponents.PushBack(compConstruct(actor));
+		mRegisteredComps.PushBack(compConstruct(actor));
 	}
 
 public:
-	virtual void Initialize();
-	virtual void Setup();
+	void Initialize()
+	{
+		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+			if (!(*iter)->GetIsInitialized())
+				(*iter)->Initialize();
+	}
+
+	void Setup()
+	{
+		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+			if (!(*iter)->GetIsSetup())
+				(*iter)->Setup();
+	}
 
 	// Gameloop functions.
-	virtual void ProcessInput(FTInputDevice* inputDevice);
-	virtual void Update(float deltaTime);
-	virtual void LateUpdate(float deltaTime);
-	virtual void Render(FoxtrotRenderer* renderer);
+	void ProcessInput(FTInputDevice* inputDevice)
+	{
+		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+		{
+			if (!(*iter)->GetOwner()->IsActive())
+				continue;
+			(*iter)->ProcessInput(inputDevice);
+		}
+	}
+	void Update(float deltaTime)
+	{
+		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+		{
+			if (!(*iter)->GetOwner()->IsActive())
+				continue;
+			(*iter)->Update(deltaTime);
+		}
+	}
 
-	virtual void Clear();
+	void LateUpdate(float deltaTime)
+	{
+		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+		{
+			if (!(*iter)->GetOwner()->IsActive())
+				continue;
+			(*iter)->LateUpdate(deltaTime);
+		}
+	}
+	void Render(FoxtrotRenderer* renderer)
+	{
+		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+		{
+			if (!(*iter)->GetOwner()->IsActive())
+				continue;
+			(*iter)->Render(renderer);
+		}
+	}
+
+	void Clear()
+	{
+		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+		{
+			delete (*iter);
+			*iter = nullptr;
+		}
+		mRegisteredComps->Clear();
+		delete mRegisteredComps;
+	}
 
 public:
-	Plugin(FTResourceDef& resDef);
-	~Plugin() override;
+	Plugin(const wchar_t* dllPath)
+		: mRegisteredComps(DBG_NEW FTDS::DynamicArray<Component*>)
+		, mCreateFuncs(DBG_NEW FTDS::DynamicArray<Component* (*)(Actor*)>)
+	{
+		Load(dllPath);
+	}
+
+	virtual ~Plugin()
+	{
+		Clear();
+		Unload();
+	}
 
 	// public:
 	//	void SaveProperties(std::ofstream& ofs) override;
 	//	void LoadProperties(std::ifstream& ifs) override;
 
 protected:
-	COMP_CONSTRUCTOR GetConstructor(const char* compName);
+	const COMP_CONSTRUCTOR GetConstructor(const char* procName) const
+	{
+		return (COMP_CONSTRUCTOR)(GetProcAddress(mModule, procName));
+	}
 
 private:
-	HMODULE							mModule;
-	FTDS::DynamicArray<Component*>* mComponents;
+	HMODULE										mModule;
+	FTDS::DynamicArray<Component*>*				mRegisteredComps;
+	FTDS::DynamicArray<Component* (*)(Actor*)>* mCreateFuncs;
 	// FTDS::HashMap<Component* (*)(Actor * actor)>* mCompMap;
 
 private:
-	void Load();
+	void Load(const wchar_t* dllPath)
+	{
+		mModule = LoadLibrary(dllPath);
+	}
+
+	void Unload() const
+	{
+		FreeLibrary(mModule);
+	}
 };
+
+extern "C" CORE_API Plugin* CreatePlugin(FTCore* base, const wchar_t* dllPath);

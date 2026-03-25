@@ -68,11 +68,11 @@ Actor* Instantiate(Actor* actor, ActorGroup actorGroup, FTVector3 pos)
 #endif
 }
 
-Actor* Instantiate(FTDS::String& premadeName)
+Actor* Instantiate(const char* premadeName)
 {
 	FTEvent addedEvent	= {};
 	addedEvent.incident = EVENT_TYPE::CREATE_ACTOR;
-	FTPremade* premade	= ResourceManager::GetInstance()->GetLoadedPremade(premadeName);
+	FTPremade* premade	= ResourceManager::GetInstance()->GetLoadedPremades(premadeName);
 	Actor*	   origin	= premade->GetOrigin();
 
 #ifdef FOXTROT_EDITOR
@@ -106,7 +106,7 @@ Actor* Instantiate(FTDS::String& premadeName)
 	}
 	else
 	{
-		printf("ERROR : Instantiate() -> Premade not loaded, %s\n", premadeName.C_Str());
+		printf("ERROR : Instantiate() -> Premade not loaded, %s\n", premadeName);
 		return nullptr;
 	}
 #endif

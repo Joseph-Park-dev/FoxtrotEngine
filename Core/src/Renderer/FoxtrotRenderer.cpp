@@ -67,18 +67,6 @@
 //	return true;
 // }
 
-FoxtrotRenderer::FoxtrotRenderer(FTWindow* window)
-	: mClearColor{ 0.3f, 0.3f, 0.3f, 1.0f }
-#ifdef FOXTROT_EDITOR
-	, mViewportRenderer(DBG_NEW ViewportRenderer)
-#endif // FOXTROT_EDITOR
-{
-}
-
-FoxtrotRenderer::~FoxtrotRenderer()
-{
-}
-
 #ifdef FOXTROT_EDITOR
 bool FoxtrotRenderer::InitializeViewport(FTWindow* window, UINT posX, UINT posY, UINT width, UINT height)
 {

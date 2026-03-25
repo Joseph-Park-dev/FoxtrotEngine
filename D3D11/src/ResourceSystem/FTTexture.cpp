@@ -15,7 +15,6 @@
 #include <d3d11.h>
 #include <wrl.h> // ComPtr
 
-#include "FTCore.h"
 #include "TemplateFunctions.h"
 #include "D3D11Renderer.h"
 #include "FileSystem/ChunkLoader.h"
@@ -49,22 +48,21 @@ const ComPtr<ID3D11ShaderResourceView>& FTTexture::GetSRV() const
 void FTTexture::SaveProperties(std::ofstream& ofs)
 {
 	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTexture::FT_TEXTURE);
-	FTResource::SaveProperties(ofs);
+	//FTResource::SaveProperties(ofs);
 	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTexture::FT_TEXTURE);
 }
 
 void FTTexture::LoadProperties(std::ifstream& ifs)
 {
 	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTexture::FT_TEXTURE);
-	FTResource::LoadProperties(ifs);
+	//FTResource::LoadProperties(ifs);
 }
 
 FTTexture::FTTexture(FTResourceDef& resDef, FoxtrotRenderer* renderer)
-	: FTResource(resDef)
-	, mWidth(0)
+	: mWidth(0)
 	, mHeight(0)
 {
-	Process(renderer);
+	Process(resDef, renderer);
 }
 
 FTTexture::~FTTexture()
@@ -74,18 +72,18 @@ FTTexture::~FTTexture()
 		LogString("FTTexture()::ReleaseTexture() -> Release Texture Failed");
 }
 
-void FTTexture::Process(FoxtrotRenderer* renderer)
+void FTTexture::Process(FTResourceDef& resDef, FoxtrotRenderer* renderer)
 {
 	D3D11Renderer* rend = static_cast<D3D11Renderer*>(renderer);
 	// Returns early if the resource is processed.
-	if (IsProcessed())
+	if (mSRV)
 		return;
 
 	// Creates texture
 	std::vector<uint8_t> image;
 	int					 width	= 0;
 	int					 height = 0;
-	D3D11Utils::ReadImage(GetRelativePath().C_Str(), image, width, height);
+	D3D11Utils::ReadImage(resDef.Path, image, width, height);
 
 	mWidth	= static_cast<UINT>(width);
 	mHeight = static_cast<UINT>(height);
@@ -121,8 +119,6 @@ void FTTexture::Process(FoxtrotRenderer* renderer)
 
 	// Create MipMaps.
 	rend->GetContext()->GenerateMips(mSRV.Get());
-
-	FTResource::Process();
 }
 
 #ifdef FOXTROT_EDITOR
@@ -154,3 +150,8 @@ void FTTexture::UpdateUI()
 	mHeight = static_cast<UINT>(size[1]);
 }
 #endif // FOXTROT_EDITOR
+
+extern "C" CORE_API FTResource* CreateResource(FTResourceDef& def, FoxtrotRenderer* rnd)
+{
+	return new FTTexture(def, rnd);
+}

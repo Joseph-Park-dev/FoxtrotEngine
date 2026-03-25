@@ -20,7 +20,7 @@
 #include "Dynamic/DynamicArray.h"
 
 SceneManager::SceneManager()
-	: mChunkList(DBG_NEW FTDS::DynamicArray<FTDS::String>())
+	: mChunkList(DBG_NEW FTDS::DynamicArray<FTDS::String*>())
 	, mCurrentScene(DBG_NEW Scene)
 {}
 
@@ -35,7 +35,7 @@ SceneManager::~SceneManager()
 void SceneManager::SwitchScene(size_t index)
 {
 	mCurrentScene->DeleteAll();
-	FTDS::String path = FTDS::String(".\\Chunks\\") + mChunkList->At(index);
+	FTDS::String path = FTDS::String(".\\Chunks\\") + mChunkList->At(index)->C_Str();
 	ChunkLoader::GetInstance()->LoadChunk(path);
 }
 
@@ -44,7 +44,7 @@ Scene* SceneManager::GetCurrentScene()
 	return mCurrentScene;
 }
 
-FTDS::DynamicArray<FTDS::String>*& SceneManager::ChunkList()
+FTDS::DynamicArray<FTDS::String*>*& SceneManager::ChunkList()
 {
 	return mChunkList;
 }

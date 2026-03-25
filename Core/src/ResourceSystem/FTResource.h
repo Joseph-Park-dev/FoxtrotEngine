@@ -10,79 +10,56 @@
 #include <iosfwd>
 
 #include "Renderer/FoxtrotRenderer.h"
+#include "Debugging/DebugMemAlloc.h"
+#include "FTDS/Static/FTString.h"
 
-#ifdef CORE_EXPORTS
-	#define CORE_API __declspec(dllexport)
-#else
-	#define CORE_API __declspec(dllimport)
-#endif
-
-class FTCore;
-namespace FTDS
-{
-	class String;
-}
+#include "Plugin/CoreExports.h"
 
 /// @brief Initialization struct for FTResources
 struct FTResourceDef
 {
 	const char* FileName;
-	const char* RelativePath;
+	const char* Path;
 
-	FTResourceDef();
-	FTResourceDef(const char* fileName, const char* relPath);
-	FTResourceDef(const FTDS::String& fileName, const FTDS::String& relPath);
+	FTResourceDef()
+		: FileName()
+		, Path()
+	{
+	}
+	FTResourceDef(const char* fileName, const char* path)
+		: FileName(fileName)
+		, Path(path)
+	{
+	}
+
+	FTResourceDef(const FTDS::String& fileName, const FTDS::String& path)
+		: FileName(fileName.C_Str())
+		, Path(path.C_Str())
+	{
+	}
 };
 
 /// @brief Base class that wraps the resources used in the game.
-class CORE_API FTResource
+class FTResource
 {
+public:
+	/// @brief Every active resource must have an ID.
+	/// @return If invalid, returns -1;
+	static int ID() { return -1; };
+
 public:
 	/// @brief Saves resource properties into a file.
 	/// @param ofs This should either be a stream to a .chunk file, or to a dedicated resource file
 	/// like FTSpriteAnimation, FTPremade, etc.
-	virtual void SaveProperties(std::ofstream& ofs);
+	virtual void SaveProperties(std::ofstream& ofs) = 0;
 
 	/// @brief Loads resource properties into an instance.
 	/// @param ifs This should either be a stream from a .chunk file, or from a dedicated resource file
 	/// like FTSpriteAnimation, FTPremade, etc.
-	virtual void LoadProperties(std::ifstream& ifs);
+	virtual void LoadProperties(std::ifstream& ifs) = 0;
 
 public:
-	const FTDS::String& GetFileName() const;
-	const FTDS::String& GetRelativePath() const;
-
-	/// @brief Is this resource processed and can be used during runtime?
-	const bool IsProcessed() const;
-
-public:
-	FTResource(FTResourceDef& resDef);
-	virtual ~FTResource();
-
-protected:
-	/// @brief A resource must be processed before used during runtime.
-	/// Example of the process includes initializing meshes, creating textures, etc.
-	virtual void Process() { mIsProcessed = true; };
-
-	/// @brief A graphics resource must be processed with renderer before used during runtime.
-	/// Example of the process includes initializing meshes, creating textures, etc.
-	/// @param renderer Renderer object used for processing graphics resources.
-	/// @todo Is this member function necessary?
-	virtual void Process(FoxtrotRenderer* renderer) { mIsProcessed = true; }
-
-private:
-	/// @brief Name of the resource.
-	FTDS::String* mFileName;
-
-	/// @brief Resource path relative to the directory containing .exe.
-	FTDS::String* mRelativePath;
-
-	/// @brief If 0 < mRefCount, the resource is used somewhere in the .chunk, so it will be saved to the file.
-	/// This cannot be smaller than zero.
-	int mRefCount;
-
-	/// @brief The resource is processed and ready to be used.
-	bool mIsProcessed;
+	virtual ~FTResource() = default;
 
 #ifdef FOXTROT_EDITOR
 public:
@@ -111,3 +88,5 @@ namespace ChunkKey
 		constexpr const char* RELATIVE_PATH = "RelativePath";
 	} // namespace FTResource
 } // namespace ChunkKey
+
+extern "C" CORE_API FTResource* CreateResource(FTResourceDef& def, FoxtrotRenderer* rnd);

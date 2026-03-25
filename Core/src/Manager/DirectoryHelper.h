@@ -14,8 +14,10 @@
 /// </summary>
 
 #pragma once
+#include <filesystem>
+
 #include "SingletonMacro.h"
-#include <>
+#include "Static/FTString.h"
 
 #define PATH_PROJECT DirectoryHelper::GetInstance()->GetProjectPath()
 #define PATH_CHUNK DirectoryHelper::GetInstance()->GetChunkPath()
@@ -46,16 +48,21 @@ public:
 	void RelativeToAbsolutePath(FTDS::String& relPath);
 
 public:
-	FTDS::String& GetProjectPath();
-	FTDS::String& GetChunkPath();
+	FTDS::String* GetProjectPath();
+	FTDS::String* GetChunkPath();
+	FTDS::String* GetAssetPath();
 	bool		  GetCurrChunkSaved() const;
 
-	void SetProjPath(FTDS::String&& path);
+	void SetProjectPath(FTDS::String&& path);
 	void SetChunkPath(FTDS::String&& path);
 	void SetCurrChunkSaved(bool val);
 
 private:
-	FTDS::String mCurrProjectPath;
-	FTDS::String mCurrChunkPath;
-	bool		 mCurrChunkSaved;
+	FTDS::String* mProjectPath;
+	FTDS::String* mChunkPath;
+	FTDS::String* mAssetPath;
+	bool		  mCurrentChunkSaved;
+
+private:
+	void SetAssetPath();
 };

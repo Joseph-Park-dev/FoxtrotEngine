@@ -20,5 +20,5 @@ namespace FTDS
 
 // Object Spawning & Destroying
 Actor*	Instantiate(Actor* actor, ActorGroup actorGroup, FTVector3 pos);
-Actor*	Instantiate(FTDS::String& premadeName);
+Actor*	Instantiate(const char* premadeName);
 void	Destroy(Actor* actor);

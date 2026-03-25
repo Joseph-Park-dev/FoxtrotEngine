@@ -25,24 +25,9 @@
 
 #include "ResourceManager.h"
 
-#include "FTCore.h"
-#include "TemplateFunctions.h"
-#include "Renderer/FoxtrotRenderer.h"
-#include "Renderer/Camera.h"
-#include "FileSystem/ChunkLoader.h"
-#include "FileSystem/FileIOHelper.h"
 #include "ResourceSystem/FTPremade.h"
-
-#include "Static/HashMap.h"
 #include "Static/FTString.h"
-#include "Compare/StringEqual.h"
-
-#ifdef FOXTROT_EDITOR
-	#include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
-
-	#include "DirectoryHelper.h"
-	#include "EditorResourceManager.h"
-#endif // FOXTROT_EDITOR
+#include "FileSystem/NullKeys.h"
 
 /**
  * @brief Initialize the resource manager with the engine renderer.
@@ -59,136 +44,25 @@
  */
 void ResourceManager::Initialize(FoxtrotRenderer* renderer)
 {
-	mRenderer = renderer;
+	mResources = DBG_NEW FTDS::Array<FTDS::HashMap<FTResource*>*>;
+	mResources->Reserve(ResType::END - 1);
 
-	mPremades = DBG_NEW FTDS::HashMap<FTPremade*>();
+	// FTPremade map
+	mResources->At(0) = DBG_NEW FTDS::HashMap<FTResource*>();
 }
 
-void ResourceManager::DeleteAll()
+FTPremade* ResourceManager::GetLoadedPremades(FTDS::String&& key)
 {
-	mPremades->Clear();
+	if (key.Equal(ChunkKey::NullVal::NULL_OBJECT))
+		return nullptr;
 
-	delete mPremades;
-
-	mPremades = nullptr;
-}
-
-/**
- * @brief Get the base path to the project's Assets folder.
- *
- * The returned string is the internal mPathToAsset reference.
- *
- * @return Reference to the internal FTDS::String containing the path to Assets.
- */
-FTDS::String& ResourceManager::GetPathToAsset()
-{
-	return mPathToAsset;
-}
-
-/**
- * @brief Set the base path to the project and append the Assets folder.
- *
- * Accepts an rvalue `projectPath` and assigns it to the internal path,
- * then appends "\Assets\" so subsequent path operations assume that
- * mPathToAsset ends with the Assets folder.
- *
- * @param projectPath Project base path (moved into internal string).
- *
- * Side-effects:
- * - Changes mPathToAsset to `projectPath + "\Assets\"`.
- */
-void ResourceManager::SetPathToAsset(FTDS::String&& projectPath)
-{
-	mPathToAsset.Assign(projectPath);
-	mPathToAsset.Append("\\Assets\\");
-}
-
-/**
- * @brief Convert an absolute path to a project-relative path that begins with ".\Assets\".
- *
- * If `absPath` is already relative (starts with ".\") the function returns immediately.
- * Otherwise attempts to locate the mPathToAsset prefix inside `absPath` and reconstructs
- * a relative path starting with "." plus the subpath beginning at "\Assets\".
- *
- * @param absPath Reference to a string containing an absolute path; will be replaced
- *                with a relative path on success.
- *
- * Notes:
- * - If the mPathToAsset prefix is not found the function leaves `absPath` unchanged.
- */
-void ResourceManager::AbsoluteToRelativePath(FTDS::String& absPath)
-{
-	FTDS::String path		= absPath;
-	FTDS::String folderName = "\\Assets\\";
-
-	// Check if the path is relative.
-	if (path.LFind(".\\") == 0)
-		return;
-
-	int index = path.LFind(mPathToAsset.C_Str());
-	if (index == -1)
-		return;
-
-	int cutIndex = path.RFind(folderName.C_Str());
-	path.SubStr(cutIndex, path.GetLength());
-
-	FTDS::String result = ".";
-	result.Append(path);
-
-	absPath = result;
-}
-
-/**
- * @brief Convert a project-relative path beginning with ".\Assets\" to an absolute path.
- *
- * If `relPath` does not start with ".\" the function returns immediately.
- * On success the leading ".\Assets\" portion is removed and the remaining path
- * is appended to mPathToAsset to produce an absolute path.
- *
- * @param relPath Reference to a string containing a relative path; will be replaced
- *                with an absolute path on success.
- */
-void ResourceManager::RelativeToAbsolutePath(FTDS::String& relPath)
-{
-	FTDS::String path		= relPath;
-	FTDS::String folderName = ".\\Assets\\";
-
-	if (path.LFind(".\\") != 0)
-		return;
-
-	path.SubStr(folderName.GetLength(), path.GetLength());
-
-	FTDS::String result = mPathToAsset;
-	// result.Append("\\");
-	result.Append(path);
-
-	relPath = result;
-}
-
-/**
- * @brief Get pointer to the internal premade asset hash map.
- *
- * @return Pointer to FTDS::HashMap containing FTPremade* records.
- */
-FTDS::HashMap<FTPremade*>* ResourceManager::GetPremades()
-{
-	return mPremades;
-}
-
-/**
- * @brief Return the renderer associated with the ResourceManager.
- *
- * @return Pointer to FoxtrotRenderer stored in the manager (may be nullptr if not initialized).
- */
-FoxtrotRenderer* ResourceManager::GetRenderer()
-{
-	return mRenderer;
-}
-
-void ResourceManager::AddFileExtensionIfNone(FTDS::String& key, const char* fileType)
-{
-	if (key.RFind(fileType) < 0)
-		key.Append(fileType);
+	FTDS::Record<FTResource*>* rec = mResources->At(FTPremade::ID())->At(key);
+	if (!rec)
+	{
+		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
+		return nullptr;
+	}
+	return static_cast<FTPremade*>(rec->Value());
 }
 
 /**
@@ -199,10 +73,7 @@ void ResourceManager::AddFileExtensionIfNone(FTDS::String& key, const char* file
  */
 ResourceManager::~ResourceManager()
 {
-	DeleteAll();
-
-	delete mPremades;
-	mPremades = nullptr;
+	ResourceManagerBase::DeleteAll(mResources);
 }
 
 /**
@@ -211,9 +82,7 @@ ResourceManager::~ResourceManager()
  * Members are set to null/empty so Initialize can allocate containers when called.
  */
 ResourceManager::ResourceManager()
-	: mPathToAsset()
-	, mRenderer(nullptr)
-	, mPremades(nullptr)
+	: mResources(nullptr)
 {
 }
 
@@ -547,23 +416,4 @@ void ResourceManager::LoadDefaultResources()
 
 	//	mPSOs->Insert(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
 	//}
-}
-
-FTPremade* ResourceManager::GetLoadedPremade(const FTDS::String& key)
-{
-	if (key.Equal(ChunkKey::NullVal::NULL_OBJECT))
-		return nullptr;
-
-	FTDS::Record<FTPremade*>* rec = mPremades->At(key);
-	if (!rec)
-	{
-		Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
-		return nullptr;
-	}
-
-#ifdef FOXTROT_EDITOR
-	rec->Value()->AddRefCount();
-#endif // FOXTROT_EDITOR
-
-	return rec->Value();
 }

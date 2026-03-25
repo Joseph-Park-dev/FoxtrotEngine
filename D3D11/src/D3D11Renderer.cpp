@@ -54,7 +54,7 @@ ComPtr<ID3D11DeviceContext>& D3D11Renderer::GetContext() { return mContext; }
 const unsigned int			 D3D11Renderer::GetNumQualityLevels() const { return mNumQualityLevels; }
 
 D3D11Renderer::D3D11Renderer(FTWindow* window)
-	: FoxtrotRenderer(window)
+	: FoxtrotRenderer()
 	, mNumQualityLevels(0)
 	, mViewport(DBG_NEW D3D11_VIEWPORT)
 {

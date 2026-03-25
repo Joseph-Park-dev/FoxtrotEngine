@@ -14,6 +14,7 @@
 
 #pragma once
 #include "Math/FTMath.h"
+#include "FTDS/Dynamic/DynamicArray.h"
 
 namespace FTDS
 {
@@ -21,18 +22,8 @@ namespace FTDS
 	class DynamicArray;
 }
 
-enum class KEY
-{
-	A,
-	D,
-	W,
-	S,
-	SHIFT,
-	SPACE,
-	LAST_FLAG
-};
 
-enum class KEY_STATE
+enum class BUTTON_STATE
 {
 	NONE,
 	TAP,
@@ -40,30 +31,10 @@ enum class KEY_STATE
 	AWAY
 };
 
-enum class MOUSE
+struct ButtonInput
 {
-	MOUSE_LEFT,
-	MOUSE_RIGHT,
-	MOUSE_MIDDLE,
-
-	LAST_FLAG
-};
-
-enum class GAMEPADBUTTON
-{
-	INVALID,
-	A,
-	B,
-	X,
-	Y,
-
-	LAST_FLAG
-};
-
-struct tKeyInfo
-{
-	KEY_STATE eKeyState;
-	bool	  isPushedPrevFrame;
+	BUTTON_STATE ButtonState;
+	bool		 IsPushedPrevFrame;
 };
 
 #define MAX_KEYCOUNT 6
@@ -71,58 +42,28 @@ struct tKeyInfo
 class FTInputDevice
 {
 public:
-	void		 DetectMouseDrag(FTVector2& delta);
-	virtual void DetectKeyInput() = 0;
-
-public:
-	KEY_STATE GetKeyState(KEY eKey);
-	KEY_STATE GetMouseState(MOUSE eMouse);
-	KEY_STATE GetButtonState(GAMEPADBUTTON eButton);
-	FTVector2 GetMousePosition();
-	float	  GetMouseWheelDelta();
-
-public:
-	bool KEY_HOLD(KEY key);
-	bool KEY_TAP(KEY key);
-	bool KEY_AWAY(KEY key);
-	bool KEY_NONE(KEY key);
-
-	bool MOUSE_HOLD(MOUSE mouse);
-	bool MOUSE_TAP(MOUSE mouse);
-	bool MOUSE_AWAY(MOUSE mouse);
-	bool MOUSE_NONE(MOUSE mouse);
-
-	FTVector2 MOUSE_POS();
-
-public:
-	FTInputDevice();
-	~FTInputDevice();
+	FTInputDevice() {};
 
 protected:
-	FTDS::DynamicArray<tKeyInfo>* GetKeyArr() { return mVecKey; }
-	FTDS::DynamicArray<tKeyInfo>* GetMouseArr() { return mVecMouse; }
-	FTDS::DynamicArray<tKeyInfo>* GetButtonArr() { return mVecButton; }
-
-	int* GetKeyCode() { return mKeyCode; };
-	int* GetMouseCode() { return mMouseCode; };
-
-	void SetMousePosition(FTVector2 pos)
+	template <typename BUTTON_TYPE>
+	ButtonInput& GetButtonInput(FTDS::DynamicArray<ButtonInput>* btnArr, BUTTON_TYPE button)
 	{
-		mMousePosX = static_cast<unsigned int>(pos.x);
-		mMousePosY = static_cast<unsigned int>(pos.y);
+		return btnArr->At((size_t)button);
 	}
 
-	void SetMousePosition(unsigned int posX, unsigned int posY)
+	ButtonInput& GetButtonInput(FTDS::DynamicArray<ButtonInput>* btnArr, size_t buttonIdx)
 	{
-		mMousePosX = posX;
-		mMousePosY = posY;
+		return btnArr->At(buttonIdx);
 	}
 
-	void SetMouseWheelDelta(float delta)
+	template <typename BUTTON_TYPE>
+	BUTTON_STATE& GetButtonState(FTDS::DynamicArray<ButtonInput>* btnArr, BUTTON_TYPE button)
 	{
-		mMouseWheelDelta = delta;
+		return btnArr->At((size_t)button).ButtonState;
 	}
 
-private:
-	void Init();
+	BUTTON_STATE& GetButtonState(FTDS::DynamicArray<ButtonInput>* btnArr, size_t buttonIdx)
+	{
+		return btnArr->At(buttonIdx).ButtonState;
+	}
 };

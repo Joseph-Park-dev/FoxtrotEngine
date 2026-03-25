@@ -10,9 +10,9 @@
 #include "TemplateFunctions.h"
 #include "Debugging/DebugFuncs.h"
 #include "DebugFuncs.h"
-#include "FTCore.h"
+#include "Plugin/Plugin.h"
 
-bool D3D11Window::Initialize(WNDPROC wndProc, int windowMode)
+bool D3D11Window::Initialize(int windowMode)
 {
 	assert(!GetTitle().IsEmpty());
 
@@ -21,7 +21,7 @@ bool D3D11Window::Initialize(WNDPROC wndProc, int windowMode)
 	WNDCLASSEX wc = {
 		sizeof(WNDCLASSEX),
 		CS_CLASSDC,
-		wndProc,
+		D3D11Window::WinProc,
 		0L,
 		0L,
 		GetModuleHandle(NULL),
@@ -53,7 +53,7 @@ bool D3D11Window::Initialize(WNDPROC wndProc, int windowMode)
 		NULL,
 		NULL,
 		wc.hInstance,
-		NULL);
+		this);
 
 	if (!mWinHandle)
 	{
@@ -69,9 +69,9 @@ bool D3D11Window::Initialize(WNDPROC wndProc, int windowMode)
 	return true;
 }
 
-bool D3D11Window::Initialize(WNDPROC wndProc)
+bool D3D11Window::Initialize()
 {
-	return Initialize(wndProc, SW_SHOWDEFAULT);
+	return Initialize(SW_SHOWDEFAULT);
 }
 
 bool D3D11Window::InitializeWindowRenderer(D3D11Renderer* renderer)
@@ -120,7 +120,7 @@ void D3D11Window::ProcessInput(D3D11InputDevice* inputDevice)
 		// EditorCamera2D::GetInstance()->ProcessInput(msg);
 	}
 	inputDevice->DetectMouseInput(msg);
-	inputDevice->DetectKeyInput();
+	inputDevice->DetectKeyboardInput();
 	TranslateMessage(&msg);
 	DispatchMessage(&msg);
 }
@@ -165,10 +165,10 @@ ComPtr<IDXGISwapChain>&			D3D11Window::GetSwapChain() { return mSwapChain; }
 ComPtr<ID3D11RenderTargetView>& D3D11Window::GetRTV() { return mRTV; }
 ComPtr<ID3D11DepthStencilView>& D3D11Window::GetDSV() { return mDSV; }
 
-D3D11Window::D3D11Window(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea)
-	: FTWindow(title, width, height, rndArea)
+D3D11Window::D3D11Window(Plugin* owner, const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea)
+	: FTWindow(owner, title, width, height, rndArea)
 {
-	this->Initialize(WinProc);
+	this->Initialize();
 }
 
 D3D11Window::~D3D11Window()
@@ -194,19 +194,36 @@ bool D3D11Window::CreateDSV(Microsoft::WRL::ComPtr<ID3D11Device>& device, unsign
 
 void D3D11Window::ClearWindow(D3D11Renderer* renderer)
 {
+	FLOAT clearColor[4] = { 0.f, 0.f, 0.f, 0.f };
 	if (mRTV)
-		renderer->GetContext()->ClearRenderTargetView(mRTV.Get(), renderer->GetClearColor());
+		renderer->GetContext()->ClearRenderTargetView(mRTV.Get(), clearColor);
 	if (mDSV)
 		renderer->GetContext()->ClearDepthStencilView(mDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
-LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT D3D11Window::WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	switch (msg)
+	D3D11Window* window = nullptr;
+	if (msg == WM_NCCREATE)
 	{
-		case WM_DESTROY:
+		auto* cs = reinterpret_cast<CREATESTRUCT*>(lParam);
+		window	 = static_cast<D3D11Window*>(cs->lpCreateParams);
+		SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(window));
+	}
+	else
+	{
+		// Retrieve the pointer on every message
+		window = reinterpret_cast<D3D11Window*>(
+			GetWindowLongPtr(hwnd, GWLP_USERDATA));
+	}
+
+	if (window)
+	{
+		if (msg == WM_DESTROY)
 		{
-			FTCore::GetInstance()->SetIsRunning(false);
+			// Dereference and modify the value the pointer points to
+			delete window;
+			window = nullptr;
 			return 0;
 		}
 	}

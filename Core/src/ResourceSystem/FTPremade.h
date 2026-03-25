@@ -30,11 +30,12 @@ class FTPremade :
 	public FTResource
 {
 public:
-	FTPremade(FTResourceDef& resDef);
-	~FTPremade();
+	virtual void SaveProperties(std::ofstream& ofs) override;
+	virtual void LoadProperties(std::ifstream& ifs) override;
 
 public:
-	void Load();
+	FTPremade(FTResourceDef& resDef);
+	~FTPremade();
 
 public:
 	Actor* GetOrigin();
@@ -45,12 +46,8 @@ private:
 	Actor* mOrigin;
 	bool   mIsLoaded;
 
-public:
-	virtual void SaveProperties(std::ofstream& ofs) override;
-	virtual void LoadProperties(std::ifstream& ifs) override;
-
-protected:
-	virtual void Process() override;
+private:
+	void Load(const char* path);
 
 #ifdef FOXTROT_EDITOR
 public:

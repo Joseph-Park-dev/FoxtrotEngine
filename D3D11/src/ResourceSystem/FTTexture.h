@@ -7,7 +7,7 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include <ResourceSystem/FTResource.h>
+#include "ResourceSystem/FTResource.h"
 
 #include <d3d11.h>
 #include <wrl.h>
@@ -21,6 +21,11 @@ class FTCore;
 class FTTexture :
 	public FTResource
 {
+public:
+	/// @brief Every active resource must have an ID.
+	/// @return If invalid, returns -1;
+	static int ID() { return 0; };
+
 public:
 	/// @brief Get original pixel-width of the image. This shall not be edited after the FTTexture is created.
 	const UINT GetWidth() const;
@@ -47,10 +52,7 @@ public:
 	~FTTexture();
 
 protected:
-	/// @brief The graphics resource must be processed with renderer before used during runtime.
-	/// Example of the process includes initializing meshes, creating textures, etc.
-	/// @param renderer Renderer object used for processing graphics resources.
-	virtual void Process(FoxtrotRenderer* renderer) override;
+	virtual void Process(FTResourceDef& resDef, FoxtrotRenderer* renderer);
 
 private:
 	UINT											 mWidth;

@@ -31,40 +31,37 @@
 	#include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
+void FTPremade::SaveProperties(std::ofstream& ofs)
+{
+	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTPremade::FT_PREMADE);
+	//FTResource::SaveProperties(ofs);
+	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTPremade::FT_PREMADE);
+}
+
+void FTPremade::LoadProperties(std::ifstream& ifs)
+{
+	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPremade::FT_PREMADE);
+	//FTResource::LoadProperties(ifs);
+}
+
 FTPremade::FTPremade(FTResourceDef& resDef)
-	: FTResource(resDef)
-	, mOrigin(nullptr)
+	: mOrigin(nullptr)
 	, mIsLoaded(false)
 #ifdef FOXTROT_EDITOR
 	, mDummyForUI(nullptr)
 #endif // FOXTROT_EDITOR
 {
-	Process();
+	if (mOrigin)
+		return;
+
+	if (std::filesystem::exists(resDef.Path))
+		this->Load(resDef.Path);
 }
 
 FTPremade::~FTPremade()
 {
 	delete mOrigin;
 	mOrigin = nullptr;
-}
-
-void FTPremade::Load()
-{
-	if (!mOrigin)
-		mOrigin = DBG_NEW Actor(ChunkKey::ID::CLONE);
-
-	std::ifstream					ifs(GetRelativePath().C_Str());
-	std::pair<size_t, FTDS::String> pack = FileIOHelper::BeginDataPackLoad(ifs);
-	mOrigin->LoadProperties(ifs);
-	mOrigin->LoadComponents(ifs);
-
-	// #ifdef FOXTROT_EDITOR
-	//	mOrigin->Initialize(FTCoreEditor::GetInstance());
-	// #else
-	//	mOrigin->Initialize(FTCore::GetInstance());
-	// #endif // FOXTROT_EDITOR
-
-	mIsLoaded = true;
 }
 
 bool FTPremade::GetIsLoaded()
@@ -79,29 +76,23 @@ Actor* FTPremade::GetOrigin()
 	return mOrigin;
 }
 
-void FTPremade::SaveProperties(std::ofstream& ofs)
+void FTPremade::Load(const char* path)
 {
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTPremade::FT_PREMADE);
-	FTResource::SaveProperties(ofs);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTPremade::FT_PREMADE);
-}
+	if (!mOrigin)
+		mOrigin = DBG_NEW Actor(ChunkKey::ID::CLONE);
 
-void FTPremade::LoadProperties(std::ifstream& ifs)
-{
-	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPremade::FT_PREMADE);
-	FTResource::LoadProperties(ifs);
-}
+	std::ifstream					ifs(path);
+	std::pair<size_t, FTDS::String> pack = FileIOHelper::BeginDataPackLoad(ifs);
+	mOrigin->LoadProperties(ifs);
+	mOrigin->LoadComponents(ifs);
 
-void FTPremade::Process()
-{
-	if (IsProcessed())
-		return;
+	// #ifdef FOXTROT_EDITOR
+	//	mOrigin->Initialize(FTCoreEditor::GetInstance());
+	// #else
+	//	mOrigin->Initialize(FTCore::GetInstance());
+	// #endif // FOXTROT_EDITOR
 
-	if (std::filesystem::exists(GetRelativePath().C_Str()))
-		this->Load();
-
-	// All loaded premades are included as default.
-	FTResource::Process();
+	mIsLoaded = true;
 }
 
 #ifdef FOXTROT_EDITOR

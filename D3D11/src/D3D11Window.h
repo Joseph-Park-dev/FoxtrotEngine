@@ -1,16 +1,21 @@
 #pragma once
 #include "Renderer/FTWindow.h"
 
+#include <Windows.h>
+#include <wrl.h>
+#include <d3d11.h>
+
+class D3D11InputDevice;
+class D3D11Renderer;
+
+inline LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 class D3D11Window :
 	public FTWindow
 {
 public:
-	// Constantly called in win32 MsgProc() function.
-	virtual LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-public:
-	bool InitializeWindow(WNDPROC wndProc, int windowMode);
-	bool InitializeWindow(WNDPROC wndProc);
+	bool Initialize(WNDPROC wndProc, int windowMode);
+	bool Initialize(WNDPROC wndProc);
 	bool InitializeWindowRenderer(D3D11Renderer* renderer);
 	bool CreateSwapChain(D3D11Renderer* renderer);
 
@@ -34,6 +39,7 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>& GetDSV();
 
 public:
+	D3D11Window(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea);
 	~D3D11Window() override;
 
 private:

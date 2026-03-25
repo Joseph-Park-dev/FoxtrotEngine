@@ -59,48 +59,6 @@ FTInputDevice::~FTInputDevice()
 	delete[] mVecButton;
 }
 
-FTDS::DynamicArray<tKeyInfo>* FTInputDevice::GetKeyArr()
-{
-	return mVecKey;
-}
-
-FTDS::DynamicArray<tKeyInfo>* FTInputDevice::GetMouseArr()
-{
-	return mVecMouse;
-}
-
-FTDS::DynamicArray<tKeyInfo>* FTInputDevice::GetButtonArr()
-{
-	return mVecButton;
-}
-
-int* FTInputDevice::GetKeyCode()
-{
-	return mKeyCode;
-}
-
-int* FTInputDevice::GetMouseCode()
-{
-	return mMouseCode;
-}
-
-void FTInputDevice::SetMousePosition(FTVector2 pos)
-{
-	mMousePosX = static_cast<unsigned int>(pos.x);
-	mMousePosY = static_cast<unsigned int>(pos.y);
-}
-
-void FTInputDevice::SetMousePosition(unsigned int posX, unsigned int posY)
-{
-	mMousePosX = posX;
-	mMousePosY = posY;
-}
-
-void FTInputDevice::SetMouseWheelDelta(float delta)
-{
-	mMouseWheelDelta = delta;
-}
-
 void FTInputDevice::Init()
 {
 	for (int i = 0; i < (int)KEY::LAST_FLAG; ++i)

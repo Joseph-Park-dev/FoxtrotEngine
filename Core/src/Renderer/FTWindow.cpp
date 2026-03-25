@@ -28,17 +28,6 @@
 	#include "ViewportRenderer.h"
 #endif
 
-FTRectArea*	   FTWindow::GetRenderArea() { return mRenderArea; }
-FTInputDevice* FTWindow::GetInputDevice() { return mInputDevice; }
-
-FTDS::String& FTWindow::GetTitle()
-{
-	return mTitle;
-}
-
-unsigned int FTWindow::GetWidth() { return mWidth; }
-unsigned int FTWindow::GetHeight() { return mHeight; }
-
 void FTWindow::SetWidth(unsigned int width) { mWidth = width; }
 void FTWindow::SetHeight(unsigned int height) { mHeight = height; }
 
@@ -69,7 +58,6 @@ FTWindow::FTWindow(const char* title, unsigned int width, unsigned int height, F
 	: mWidth(width)
 	, mHeight(height)
 	, mRenderArea(rndArea)
-	, mInputDevice(DBG_NEW FTInputDevice)
 {
 	mTitle.Assign(title);
 }
@@ -82,6 +70,5 @@ FTWindow::FTWindow(const char* title, unsigned int width, unsigned int height, F
  */
 FTWindow::~FTWindow()
 {
-	delete mInputDevice;
 	delete mRenderArea;
 }

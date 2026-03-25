@@ -22,6 +22,7 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Manager/ResourceManager.h"
 #include "D3D11Utils.h"
+#include "FTDS/Static/FTString.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorLayer.h"
@@ -75,6 +76,7 @@ FTTexture::~FTTexture()
 
 void FTTexture::Process(FoxtrotRenderer* renderer)
 {
+	D3D11Renderer* rend = static_cast<D3D11Renderer*>(renderer);
 	// Returns early if the resource is processed.
 	if (IsProcessed())
 		return;
@@ -90,7 +92,7 @@ void FTTexture::Process(FoxtrotRenderer* renderer)
 
 	// Copy image data from CPU into staging texture.
 	ComPtr<ID3D11Texture2D> stagingTexture =
-		D3D11Utils::CreateStagingTexture(renderer->GetDevice(), renderer->GetContext(), width, height, image);
+		D3D11Utils::CreateStagingTexture(rend->GetDevice(), rend->GetContext(), width, height, image);
 
 	// Description for the result texture that will be used.
 	D3D11_TEXTURE2D_DESC txtDesc;
@@ -109,16 +111,16 @@ void FTTexture::Process(FoxtrotRenderer* renderer)
 	ComPtr<ID3D11Texture2D> resultTex;
 
 	// Create blank texture (all-black).
-	renderer->GetDevice()->CreateTexture2D(&txtDesc, nullptr, resultTex.GetAddressOf());
+	rend->GetDevice()->CreateTexture2D(&txtDesc, nullptr, resultTex.GetAddressOf());
 
 	// Copy staging texture data to the result.
-	renderer->GetContext()->CopySubresourceRegion(resultTex.Get(), 0, 0, 0, 0, stagingTexture.Get(), 0, nullptr);
+	rend->GetContext()->CopySubresourceRegion(resultTex.Get(), 0, 0, 0, 0, stagingTexture.Get(), 0, nullptr);
 
 	// Create SRV from the resultTex.
-	renderer->GetDevice()->CreateShaderResourceView(resultTex.Get(), 0, mSRV.GetAddressOf());
+	rend->GetDevice()->CreateShaderResourceView(resultTex.Get(), 0, mSRV.GetAddressOf());
 
 	// Create MipMaps.
-	renderer->GetContext()->GenerateMips(mSRV.Get());
+	rend->GetContext()->GenerateMips(mSRV.Get());
 
 	FTResource::Process();
 }

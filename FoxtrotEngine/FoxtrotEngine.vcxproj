@@ -393,6 +393,7 @@
     <ClCompile Include="src\ResourceSystem\FTMaterials\StandardMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Actors\Steering.h" />
     <ClInclude Include="src\ResourceSystem\D3D11PSO.h" />
     <ClInclude Include="include\assimp\aabb.h" />
     <ClInclude Include="include\assimp\ai_assert.h" />

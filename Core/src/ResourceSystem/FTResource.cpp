@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -16,15 +16,15 @@
 #include "FTCore.h"
 
 #ifdef FOXTROT_EDITOR
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
-#include <imgui_impl_dx11.h>
-#include <imgui_impl_win32.h>
-#include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
+	#define IMGUI_DEFINE_MATH_OPERATORS
+	#include <imgui.h>
+	#include <imgui_impl_dx11.h>
+	#include <imgui_impl_win32.h>
+	#include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
 
-#include "EditorLayer.h"
-#include "DirectoryHelper.h"
-#endif //FOXTROT_EDITOR
+	#include "EditorLayer.h"
+	#include "DirectoryHelper.h"
+#endif // FOXTROT_EDITOR
 
 void FTResource::SaveProperties(std::ofstream& ofs)
 {
@@ -81,18 +81,8 @@ FTResource::~FTResource()
 {
 	delete mFileName;
 	delete mRelativePath;
-	mRefCount = 0;
+	mRefCount	 = 0;
 	mIsProcessed = false;
-}
-
-void FTResource::Process()
-{
-	mIsProcessed = true;
-}
-
-void FTResource::Process(FoxtrotRenderer* renderer)
-{
-	mIsProcessed = true;
 }
 
 const bool FTResource::IsProcessed() const

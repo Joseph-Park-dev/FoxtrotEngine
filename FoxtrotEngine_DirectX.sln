@@ -15,7 +15,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoxtrotEngine", "FoxtrotEng
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoxtrotDS", "FoxtrotDS\FoxtrotDS.vcxproj", "{EFDF9DF9-F14D-4F66-8B80-533E3253A60F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VampiCat", "..\..\[2025_01]\[GooCat Studio] VampiCat\VampiCat.vcxproj", "{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VampiCat", "..\[GooCat Studio] VampiCat\VampiCat.vcxproj", "{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Core", "Core\Core.vcxproj", "{CCE9835E-F788-4B51-930B-D7805AC1E2A0}"
 EndProject
@@ -157,8 +157,8 @@ Global
 		{95944B49-BE89-43DF-BD3F-03D01FA7C284}.Foxtrot_Debug|x64.Build.0 = Release|x64
 		{95944B49-BE89-43DF-BD3F-03D01FA7C284}.Foxtrot_Debug|x86.ActiveCfg = Release|Win32
 		{95944B49-BE89-43DF-BD3F-03D01FA7C284}.Foxtrot_Debug|x86.Build.0 = Release|Win32
-		{95944B49-BE89-43DF-BD3F-03D01FA7C284}.Foxtrot_Editor_Debug|x64.ActiveCfg = Release|x64
-		{95944B49-BE89-43DF-BD3F-03D01FA7C284}.Foxtrot_Editor_Debug|x64.Build.0 = Release|x64
+		{95944B49-BE89-43DF-BD3F-03D01FA7C284}.Foxtrot_Editor_Debug|x64.ActiveCfg = Foxtrot_Editor_Debug|x64
+		{95944B49-BE89-43DF-BD3F-03D01FA7C284}.Foxtrot_Editor_Debug|x64.Build.0 = Foxtrot_Editor_Debug|x64
 		{95944B49-BE89-43DF-BD3F-03D01FA7C284}.Foxtrot_Editor_Debug|x86.ActiveCfg = Release|Win32
 		{95944B49-BE89-43DF-BD3F-03D01FA7C284}.Foxtrot_Editor_Debug|x86.Build.0 = Release|Win32
 		{95944B49-BE89-43DF-BD3F-03D01FA7C284}.Release|x64.ActiveCfg = Release|x64

@@ -53,7 +53,7 @@ void FTCore::LoadGameData()
 	mLoadedPlugins->Reserve(dllPack.first);
 	for (size_t i = 0; i < dllPack.first; ++i)
 	{
-		FTDS::String fileName = {};
+		FTDS::String fileName	  = {};
 		FTDS::String relativePath = {};
 		FileIOHelper::LoadBasicString(ifs, fileName);
 		FileIOHelper::LoadBasicString(ifs, relativePath);
@@ -114,7 +114,7 @@ void FTCore::RunLoop()
 
 void FTCore::SetWindow(FTWindow* window)
 {
-	mWindow = window
+	mWindow = window;
 }
 
 void FTCore::SetInputDevice(FTInputDevice* device)
@@ -179,7 +179,7 @@ FTCore::~FTCore()
 {
 	delete mWindow;
 	delete mInputDevice;
-	FoxtrotRenderer::Destroy(mGameRenderer);
+	delete mGameRenderer;
 	delete mGameDataPath;
 	delete mLoadedPlugins;
 }

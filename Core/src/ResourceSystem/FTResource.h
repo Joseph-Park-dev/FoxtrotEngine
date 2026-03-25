@@ -9,8 +9,15 @@
 #pragma once
 #include <iosfwd>
 
+#include "Renderer/FoxtrotRenderer.h"
+
+#ifdef CORE_EXPORTS
+	#define CORE_API __declspec(dllexport)
+#else
+	#define CORE_API __declspec(dllimport)
+#endif
+
 class FTCore;
-class FoxtrotRenderer;
 namespace FTDS
 {
 	class String;
@@ -28,7 +35,7 @@ struct FTResourceDef
 };
 
 /// @brief Base class that wraps the resources used in the game.
-class FTResource
+class CORE_API FTResource
 {
 public:
 	/// @brief Saves resource properties into a file.
@@ -55,13 +62,13 @@ public:
 protected:
 	/// @brief A resource must be processed before used during runtime.
 	/// Example of the process includes initializing meshes, creating textures, etc.
-	virtual void Process();
+	virtual void Process() { mIsProcessed = true; };
 
 	/// @brief A graphics resource must be processed with renderer before used during runtime.
 	/// Example of the process includes initializing meshes, creating textures, etc.
 	/// @param renderer Renderer object used for processing graphics resources.
 	/// @todo Is this member function necessary?
-	virtual void Process(FoxtrotRenderer* renderer);
+	virtual void Process(FoxtrotRenderer* renderer) { mIsProcessed = true; }
 
 private:
 	/// @brief Name of the resource.

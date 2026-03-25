@@ -21,7 +21,6 @@
 #include "Actor/ActorGroup.h"
 #include "Actor/Transform.h"
 #include "Actor/Actor.h"
-#include "Renderer/Camera.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Static/FTString.h"
 #include "Static/HashMap.h"
@@ -39,8 +38,6 @@ void ChunkLoader::LoadChunk(FTDS::String& fileName)
 	LoadChunkData(ifs);
 	//ResourceManager::GetInstance()->LoadResources(ifs);
 	LoadActorsData(ifs);
-
-	Camera::GetInstance()->LoadProperties(ifs);
 	Unlock();
 }
 

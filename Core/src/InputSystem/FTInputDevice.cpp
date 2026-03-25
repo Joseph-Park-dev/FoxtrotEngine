@@ -10,7 +10,6 @@
 
 #include "TemplateFunctions.h"
 #include "FTCore.h"
-#include "Renderer/Camera.h"
 #include "Renderer/FTWindow.h"
 #include "Math/FTMath.h"
 #include "Dynamic/DynamicArray.h"

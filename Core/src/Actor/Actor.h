@@ -121,17 +121,17 @@ public:
 	bool  IsDead();
 	bool& IsActive();
 
-	template <class T>
-	T* GetComponent()
-	{
-		for (auto iter = mComponents.Begin(); iter != mComponents.End(); ++iter)
+		template <class T>
+		T* GetComponent()
 		{
-			T* comp = dynamic_cast<T*>(*iter);
-			if (comp)
-				return comp;
-		}
-		return nullptr;
-	};
+			for (auto iter = mComponents.Begin(); iter != mComponents.End(); ++iter)
+			{
+				T* comp = dynamic_cast<T*>(*iter);
+				if (comp)
+					return comp;
+			}
+			return nullptr;
+		};
 
 private:
 	FTDS::String					mName;

@@ -16,6 +16,7 @@
 #include "Manager/SceneManager.h"
 #include "Manager/ResourceManager.h"
 #include "Manager/EventManager.h"
+#include "Manager/DirectoryHelper.h"
 #include "Plugin/Plugin.h"
 #include "TemplateFunctions.h"
 #include "Timer.h"
@@ -35,6 +36,7 @@ ChunkLoader*	 ChunkLoader::mInstance		= nullptr;
 Camera*			 Camera::mInstance			= nullptr;
 Timer*			 Timer::mInstance			= nullptr;
 EventManager*	 EventManager::mInstance	= nullptr;
+DirectoryHelper* DirectoryHelper::mInstance = nullptr;
 
 void FTCore::LoadGameData()
 {
@@ -44,8 +46,8 @@ void FTCore::LoadGameData()
 	std::pair<size_t, FTDS::String> chunkListPack = FileIOHelper::BeginDataPackLoad(ifs, GameData::CHUNK_LIST);
 	for (size_t i = 0; i < chunkListPack.first; ++i)
 	{
-		FTDS::String chunkTitle = {};
-		FileIOHelper::LoadBasicString(ifs, chunkTitle);
+		FTDS::String* chunkTitle = DBG_NEW FTDS::String;
+		FileIOHelper::LoadBasicString(ifs, *chunkTitle);
 		SceneManager::GetInstance()->ChunkList()->PushBack(chunkTitle);
 	}
 
@@ -53,18 +55,15 @@ void FTCore::LoadGameData()
 	mLoadedPlugins->Reserve(dllPack.first);
 	for (size_t i = 0; i < dllPack.first; ++i)
 	{
-		FTDS::String fileName	  = {};
-		FTDS::String relativePath = {};
-		FileIOHelper::LoadBasicString(ifs, fileName);
-		FileIOHelper::LoadBasicString(ifs, relativePath);
+		FTDS::String dllPath = {};
+		FileIOHelper::LoadBasicString(ifs, dllPath);
 
-		FTResourceDef def(fileName, relativePath);
-		Plugin* plugin = DBG_NEW Plugin(def);
+		const wchar_t* wideCharPath = dllPath.WC_Str();
+		Plugin* plugin				= DBG_NEW Plugin(wideCharPath);
 		mLoadedPlugins->PushBack(plugin);
+		delete wideCharPath;
 	}
-
-	std::filesystem::path assetPath = std::filesystem::absolute("./");
-	ResourceManager::GetInstance()->SetPathToAsset(assetPath.string().c_str());
+	DirectoryHelper::GetInstance()->SetProjectPath(std::filesystem::absolute("./").string().c_str());
 }
 
 bool FTCore::Initialize()
@@ -84,7 +83,7 @@ bool FTCore::Initialize()
 
 void FTCore::InitSingletonManagers()
 {
-	ResourceManager::GetInstance()->Initialize(mGameRenderer);
+	ResourceManager::GetInstance()->Initialize();
 	SceneManager::GetInstance()->Initialize();
 }
 
@@ -92,7 +91,6 @@ void FTCore::LoadDLL(FTDS::String& path)
 {
 	FTDS::String name;
 	ExtractFileName(path, name);
-	FTResourceDef dllDef(name, path);
 }
 
 void FTCore::InitTimer()

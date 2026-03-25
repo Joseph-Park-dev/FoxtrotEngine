@@ -42,7 +42,7 @@ public:
 public:
 	void SetChunkListPath(FTDS::String&& path);
 
-	FTDS::DynamicArray<FTDS::String>*& ChunkList();
+	FTDS::DynamicArray<FTDS::String*>*& ChunkList();
 
 public:
 	virtual void Initialize();
@@ -54,6 +54,6 @@ public:
 private:
 	FTDS::String mChunkListPath;
 
-	Scene*							  mCurrentScene;
-	FTDS::DynamicArray<FTDS::String>* mChunkList; // List, and order of .chunks
+	Scene*							   mCurrentScene;
+	FTDS::DynamicArray<FTDS::String*>* mChunkList; // List, and order of .chunks
 };

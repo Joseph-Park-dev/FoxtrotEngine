@@ -15,12 +15,7 @@
 #include "SingletonMacro.h"
 
 #include "FTDS/Static/FTString.h"
-
-#ifdef CORE_EXPORTS
-	#define CORE_API __declspec(dllexport)
-#else
-	#define CORE_API __declspec(dllimport)
-#endif
+#include "Plugin/CoreExports.h"
 
 class FTWindow;
 class FTInputDevice;
@@ -45,10 +40,10 @@ public:
 	FTWindow*		 GetGameWindow() { return mWindow; }
 	FoxtrotRenderer* GetGameRenderer() { return mGameRenderer; }
 
-	void SetIsRunning(bool isRunning) { mIsRunning = isRunning; }
-	void SetWindow(FTWindow* window);
-	void SetInputDevice(FTInputDevice* device);
-	void SetRenderer(FoxtrotRenderer* renderer);
+	virtual void SetIsRunning(bool isRunning) { mIsRunning = isRunning; }
+	virtual void SetWindow(FTWindow* window);
+	virtual void SetInputDevice(FTInputDevice* device);
+	virtual void SetRenderer(FoxtrotRenderer* renderer);
 
 protected:
 	// Gameloop functions.

@@ -27,9 +27,6 @@
     <ClInclude Include="src\D3D11InputDevice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Plugin\D3D11Plugin.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\D3D11Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>

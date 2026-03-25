@@ -185,7 +185,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -222,6 +222,8 @@
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Manager\DirectoryHelper.h" />
+    <ClInclude Include="src\Manager\ResourceManager.h" />
     <ClInclude Include="src\Actor\Actor.h" />
     <ClInclude Include="src\Actor\ActorGroup.h" />
     <ClInclude Include="src\Actor\Steering.h" />
@@ -264,10 +266,11 @@
     <ClInclude Include="src\FTDS\Utils\DSLogs.h" />
     <ClInclude Include="src\FTDS\Utils\StrAssign.h" />
     <ClInclude Include="src\Manager\EventManager.h" />
-    <ClInclude Include="src\Manager\ResourceManager.h" />
+    <ClInclude Include="src\Manager\ResourceManagerBase.h" />
     <ClInclude Include="src\Manager\SceneManager.h" />
     <ClInclude Include="src\Math\FTMath.h" />
     <ClInclude Include="src\Math\Random.h" />
+    <ClInclude Include="src\Plugin\CoreExports.h" />
     <ClInclude Include="src\Plugin\Plugin.h" />
     <ClInclude Include="src\Renderer\Camera.h" />
     <ClInclude Include="src\Renderer\FoxtrotRenderer.h" />
@@ -294,12 +297,13 @@
     <ClCompile Include="src\FileSystem\ChunkLoader.cpp" />
     <ClCompile Include="src\FileSystem\FileIOHelper.cpp" />
     <ClCompile Include="src\FTCore.cpp" />
+    <ClCompile Include="src\Manager\DirectoryHelper.cpp" />
     <ClCompile Include="src\Manager\EventManager.cpp" />
     <ClCompile Include="src\Manager\ResourceManager.cpp" />
+    <ClCompile Include="src\Manager\ResourceManagerBase.cpp" />
     <ClCompile Include="src\Manager\SceneManager.cpp" />
     <ClCompile Include="src\Math\FTMath.cpp" />
     <ClCompile Include="src\Math\Random.cpp" />
-    <ClCompile Include="src\Plugin\Plugin.cpp" />
     <ClCompile Include="src\Renderer\Camera.cpp" />
     <ClCompile Include="src\Renderer\FoxtrotRenderer.cpp" />
     <ClCompile Include="src\InputSystem\FTInputDevice.cpp" />

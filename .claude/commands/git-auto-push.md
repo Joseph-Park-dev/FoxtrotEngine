@@ -23,7 +23,7 @@ If conflict is detected, output a confirmation message indicating conflict, and 
 
 If merging is successful, output a confirmation message indicating success (e.g., “✅ Merging completed to branch develop.”).
 
-After merging, push branch "develop".
+After merging, push branch "develop". Create a new commit even if fast-forward is possible.
 
 If pushing is unsuccessful, output a confirmation message indicating failure, listing the problematic file, and wait for additional command.
 

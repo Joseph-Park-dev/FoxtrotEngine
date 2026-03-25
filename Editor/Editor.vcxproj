@@ -161,7 +161,6 @@
     <ClInclude Include="src\ActorCommand.h" />
     <ClInclude Include="src\Command.h" />
     <ClInclude Include="src\CommandHistory.h" />
-    <ClInclude Include="src\DirectoryHelper.h" />
     <ClInclude Include="src\EditorCamera.h" />
     <ClInclude Include="src\EditorChunkLoader.h" />
     <ClInclude Include="src\EditorElement.h" />
@@ -185,7 +184,6 @@
     <ClCompile Include="src\ActorCommand.cpp" />
     <ClCompile Include="src\Command.cpp" />
     <ClCompile Include="src\CommandHistory.cpp" />
-    <ClCompile Include="src\DirectoryHelper.cpp" />
     <ClCompile Include="src\EditorCamera.cpp" />
     <ClCompile Include="src\EditorChunkLoader.cpp" />
     <ClCompile Include="src\EditorElement.cpp" />

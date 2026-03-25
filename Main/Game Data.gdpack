@@ -1,4 +1,7 @@
-Game Data<1>
-	Chunk List<0>
+Game Data<2>
+	Chunk List<1>
 		01[string]
-		ANIMTest.chunk
+		Test.chunk
+	DLL List<1>
+		01[string]
+		D:\2024_01\FoxtrotEngine_DirectX\x64\Foxtrot_Editor_Debug\D3D11Renderer.dll

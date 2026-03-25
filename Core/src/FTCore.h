@@ -29,7 +29,27 @@ namespace FTDS
 
 class CORE_API FTCore
 {
-	SINGLETON_PROTECTED(FTCore)
+public:
+	static FTCore* GetInstance()
+	{
+		if (mInstance == nullptr)
+			mInstance = DBG_NEW FTCore();
+		return mInstance;
+	}
+	static void Destroy()
+	{
+		if (mInstance)
+		{
+			delete mInstance;
+			mInstance = nullptr;
+		}
+	}
+	FTCore(const FTCore& obj) = delete;
+
+
+protected:
+	FTCore();
+	~FTCore();
 
 public:
 	virtual bool Initialize();
@@ -69,6 +89,7 @@ private:
 private:
 	void LoadDLL(FTDS::String& path);
 	void InitTimer();
+	static FTCore* mInstance;
 };
 
 extern "C"
@@ -86,9 +107,22 @@ namespace GameData
 
 namespace PluginKey
 {
+	constexpr const char* CREATE_PLUGIN = "CreatePlugin";
 	namespace FTCore
 	{
 		constexpr const char* GET_INSTANCE = "GetInstanceCore";
 		constexpr const char* DESTROY	   = "DestroyCore";
 	} // namespace FTCore
 } // namespace PluginKey
+
+enum class PluginType
+{
+	D3D11,
+	END
+};
+
+inline PluginType GetPluginType(FTDS::String& name)
+{
+	if (name.Equal("D3D11"))
+		return PluginType::D3D11;
+}

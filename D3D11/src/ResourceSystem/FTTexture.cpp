@@ -151,7 +151,7 @@ void FTTexture::UpdateUI()
 }
 #endif // FOXTROT_EDITOR
 
-extern "C" CORE_API FTResource* CreateResource(FTResourceDef& def, FoxtrotRenderer* rnd)
+extern "C" __declspec(dllexport) FTResource* CreateResource(FTResourceDef& def, FoxtrotRenderer* rnd)
 {
 	return new FTTexture(def, rnd);
 }

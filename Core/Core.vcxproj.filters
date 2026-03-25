@@ -64,9 +64,6 @@
     <ClInclude Include="src\Manager\SceneManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Renderer\FoxtrotRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -246,9 +243,6 @@
     <ClCompile Include="src\Manager\SceneManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer\Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Renderer\FoxtrotRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -289,6 +283,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Manager\DirectoryHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Manager\ResourceManagerBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

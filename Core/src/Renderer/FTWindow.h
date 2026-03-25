@@ -9,16 +9,19 @@
 #pragma once
 #include "Static/FTString.h"
 
+#include "Renderer/FTRectArea.h"
+
 class FoxtrotRenderer;
 class FTVector2;
-class FTRectArea;
 class FTInputDevice;
-enum class KEY;
+class Plugin;
 enum class MOUSE;
 
 class FTWindow
 {
 public:
+	const Plugin* GetOwner() { return mOwner; }
+	const bool	  GetIsActive() { return mIsActive; }
 	FTDS::String& GetTitle() { return mTitle; }
 	unsigned int  GetWidth() const { return mWidth; };
 	unsigned int  GetHeight() const { return mHeight; }
@@ -28,21 +31,17 @@ public:
 	 * @brief Sets the window width (does not automatically resize swap chain).
 	 * @param width New width value.
 	 */
-	void SetWidth(unsigned int width);
+	void SetWidth(unsigned int width) { mWidth = width; }
 
 	/**
 	 * @brief Sets the window height (does not automatically resize swap chain).
 	 * @param height New height value.
 	 */
-	void SetHeight(unsigned int height);
+	void SetHeight(unsigned int height) { mHeight = height; }
+
+	void SetIsActive(bool val) { mIsActive = val; }
 
 public:
-	/**
-	 * @brief Polls and processes input events, updating internal FTInputDevice states.
-	 * @note Should be called once per frame before querying KEY_/MOUSE_ states.
-	 */
-	void ProcessInput();
-
 	/**
 	 * @brief Prepares render targets for a new frame (clears, sets RTV/DSV).
 	 * @param renderer Active renderer instance.
@@ -59,12 +58,7 @@ public:
 	 * @brief Handles window resizing logic including swap chain buffer resizing and RTV/DSV recreation.
 	 * @param renderer Active renderer instance.
 	 */
-	void ResizeWindow(FoxtrotRenderer* renderer);
-
-	/**
-	 * @brief Resets and recreates all D3D dependent resources (useful after device changes).
-	 * @param renderer Active renderer instance.
-	 */
+	virtual void ResizeWindow(FoxtrotRenderer* renderer) = 0;
 
 public:
 	/**
@@ -74,25 +68,30 @@ public:
 	 * @param height Initial window height.
 	 * @param rndArea Pointer to render area definition (may be identical to full window).
 	 */
-	FTWindow(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea);
+	FTWindow(Plugin* owner, const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea)
+		: mOwner(owner)
+		, mWidth(width)
+		, mHeight(height)
+		, mRenderArea(rndArea)
+		, mIsActive(true)
+	{
+		mTitle.Assign(title);
+	}
 
 	/**
 	 * @brief Destructor releases COM resources and associated handles.
 	 */
-	virtual ~FTWindow();
+	virtual ~FTWindow()
+	{
+		delete mRenderArea;
+	};
 
 private:
-	FTDS::String mTitle; ///< Window title string.
+	Plugin* mOwner;
+	bool	mIsActive;
 
+	FTDS::String mTitle;	  ///< Window title string.
 	unsigned int mWidth;	  ///< Current window client width (not render area width).
 	unsigned int mHeight;	  ///< Current window client height (not render area height).
 	FTRectArea*	 mRenderArea; ///< Sub-rectangle defining where the scene is drawn.
-
-private:
-	/**
-	 * @brief Determines if a position lies within the defined render area.
-	 * @param pos Position in window client coordinates.
-	 * @return true if inside render area.
-	 */
-	bool IsInRenderedArea(FTVector2 pos);
 };

@@ -7,15 +7,14 @@
 
 class D3D11InputDevice;
 class D3D11Renderer;
-
-inline LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+class FTCore;
 
 class D3D11Window :
 	public FTWindow
 {
 public:
-	bool Initialize(WNDPROC wndProc, int windowMode);
-	bool Initialize(WNDPROC wndProc);
+	bool Initialize();
+	bool Initialize(int windowMode);
 	bool InitializeWindowRenderer(D3D11Renderer* renderer);
 	bool CreateSwapChain(D3D11Renderer* renderer);
 
@@ -39,7 +38,7 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>& GetDSV();
 
 public:
-	D3D11Window(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea);
+	D3D11Window(Plugin* owner, const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea);
 	~D3D11Window() override;
 
 private:
@@ -67,4 +66,6 @@ private:
 	bool CreateDSV(Microsoft::WRL::ComPtr<ID3D11Device>& device, unsigned int numQualityLevels);
 
 	void ClearWindow(D3D11Renderer* renderer);
+
+	static LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 };

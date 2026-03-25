@@ -45,6 +45,12 @@ public:
 	}
 
 public:
+	virtual void SaveProperties() = 0;
+	virtual void LoadProperties() = 0;
+
+	inline static FTCore* gBase;
+
+public:
 	void Initialize()
 	{
 		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
@@ -60,13 +66,12 @@ public:
 	}
 
 	// Gameloop functions.
-	void ProcessInput(FTInputDevice* inputDevice)
+	virtual void ProcessInput()
 	{
 		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
 		{
 			if (!(*iter)->GetOwner()->IsActive())
 				continue;
-			(*iter)->ProcessInput(inputDevice);
 		}
 	}
 	void Update(float deltaTime)
@@ -88,7 +93,7 @@ public:
 			(*iter)->LateUpdate(deltaTime);
 		}
 	}
-	void Render(FoxtrotRenderer* renderer)
+	virtual void Render(FoxtrotRenderer* renderer)
 	{
 		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
 		{
@@ -100,21 +105,24 @@ public:
 
 	void Clear()
 	{
-		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
-		{
-			delete (*iter);
-			*iter = nullptr;
-		}
-		mRegisteredComps->Clear();
+		if (0 < mRegisteredComps->GetSize())
+			mRegisteredComps->Clear();
 		delete mRegisteredComps;
 	}
 
 public:
-	Plugin(const wchar_t* dllPath)
-		: mRegisteredComps(DBG_NEW FTDS::DynamicArray<Component*>)
+	void SetModule(HMODULE module)
+	{
+		mModule = module;
+	}
+
+public:
+	Plugin(FTCore* base)
+		: mModule(NULL)
+		, mRegisteredComps(DBG_NEW FTDS::DynamicArray<Component*>)
 		, mCreateFuncs(DBG_NEW FTDS::DynamicArray<Component* (*)(Actor*)>)
 	{
-		Load(dllPath);
+		gBase = base;
 	}
 
 	virtual ~Plugin()
@@ -140,15 +148,18 @@ private:
 	// FTDS::HashMap<Component* (*)(Actor * actor)>* mCompMap;
 
 private:
-	void Load(const wchar_t* dllPath)
-	{
-		mModule = LoadLibrary(dllPath);
-	}
-
 	void Unload() const
 	{
 		FreeLibrary(mModule);
 	}
 };
 
-extern "C" CORE_API Plugin* CreatePlugin(FTCore* base, const wchar_t* dllPath);
+namespace ChunkKey
+{
+	namespace Plugin
+	{
+		constexpr const char* PLUGIN_DATA = "Plugin Data";
+	}
+} // namespace ChunkKey
+
+extern "C" __declspec(dllexport) Plugin* CreatePlugin(FTCore* base);

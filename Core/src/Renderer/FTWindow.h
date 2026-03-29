@@ -95,3 +95,13 @@ private:
 	unsigned int mHeight;	  ///< Current window client height (not render area height).
 	FTRectArea*	 mRenderArea; ///< Sub-rectangle defining where the scene is drawn.
 };
+
+namespace ChunkKey
+{
+	namespace FTWindow
+	{
+		constexpr const char* WINDOW_DATA = "Window Data";
+		constexpr const char* WIDTH		  = "Width";
+		constexpr const char* HEIGHT	  = "Height";
+	} // namespace FTWindow
+} // namespace ChunkKey

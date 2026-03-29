@@ -68,24 +68,6 @@ void FTRectArea::CloneTo(FTRectArea* rect)
 	rect->mMax	  = mMax;
 }
 
-void FTRectArea::SaveProperties(std::ofstream& ofs)
-{
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTRectArea);
-	FileIOHelper::SaveVector2(ofs, ChunkKey::FTRectArea_CENTER, mCenter);
-	FileIOHelper::SaveVector2(ofs, ChunkKey::FTRectArea_SIZE, mSize);
-	FileIOHelper::SaveFloat(ofs, ChunkKey::FTRectArea_ROTANGLE, mRotAngle);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTRectArea);
-}
-
-void FTRectArea::LoadProperties(std::ifstream& ifs)
-{
-	FileIOHelper::BeginDataPackLoad(ifs);
-	FileIOHelper::LoadFloat(ifs, mRotAngle);
-	FileIOHelper::LoadVector2(ifs, mSize);
-	FileIOHelper::LoadVector2(ifs, mCenter);
-	Set(mCenter, mSize, mRotAngle);
-}
-
 #ifdef FOXTROT_EDITOR
 void FTRectArea::UpdateUI()
 {
@@ -95,3 +77,30 @@ void FTRectArea::UpdateUI()
 	Set(mCenter, mSize, mRotAngle);
 }
 #endif
+
+FTRectArea* CreateFTRectArea()
+{
+	return DBG_NEW FTRectArea();
+}
+
+void SaveProperties(std::ofstream* ofs, FTRectArea* rectArea)
+{
+	FileIOHelper::BeginDataPackSave(*ofs, ChunkKey::FTRectArea);
+	FileIOHelper::SaveVector2(*ofs, ChunkKey::FTRectArea_CENTER, rectArea->GetCenter());
+	FileIOHelper::SaveVector2(*ofs, ChunkKey::FTRectArea_SIZE, rectArea->GetSize());
+	FileIOHelper::SaveFloat(*ofs, ChunkKey::FTRectArea_ROTANGLE, rectArea->GetRotAngle());
+	FileIOHelper::EndDataPackSave(*ofs, ChunkKey::FTRectArea);
+}
+
+void LoadProperties(std::ifstream* ifs, FTRectArea* rectArea)
+{
+	float	  rotAngle = 0.f;
+	FTVector2 size(0.f);
+	FTVector2 center(0.f);
+
+	FileIOHelper::BeginDataPackLoad(*ifs);
+	FileIOHelper::LoadFloat(*ifs, rotAngle);
+	FileIOHelper::LoadVector2(*ifs, size);
+	FileIOHelper::LoadVector2(*ifs, center);
+	rectArea->Set(center, size, rotAngle);
+}

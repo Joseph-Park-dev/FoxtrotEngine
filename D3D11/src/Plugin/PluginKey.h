@@ -1,0 +1,15 @@
+#pragma once
+using CREATE_D3D11_WINDOW = void (*)(const char*, unsigned int, unsigned int, FTRectArea*);
+
+namespace PluginKey
+{
+	namespace D3D11
+	{
+		constexpr const char* D3D11				  = "D3D11";
+		constexpr const char* CREATE_D3D11_WINDOW = "CreateD3D11Window";
+		constexpr const char* CREATE_FTRECTAREA	  = "CreateFTRectArea";
+		constexpr const char* SAVE_PROPERTIES	  = "SaveProperties";
+		constexpr const char* LOAD_PROPERTIES	  = "LoadProperties";
+
+	} // namespace D3D11
+} // namespace PluginKey

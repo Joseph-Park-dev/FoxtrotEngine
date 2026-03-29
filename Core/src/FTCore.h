@@ -15,6 +15,7 @@
 #include "SingletonMacro.h"
 
 #include "FTDS/Static/FTString.h"
+#include "FTDS/Static/HashMap.h"
 #include "Plugin/CoreExports.h"
 
 class FTWindow;
@@ -46,10 +47,31 @@ public:
 	}
 	FTCore(const FTCore& obj) = delete;
 
-
 protected:
 	FTCore();
 	~FTCore();
+
+public:
+	template <typename FUNC_SIGNATURE>
+	FARPROC GetFunc(const char* moduleName, const char* funcName)
+	{
+		HMODULE& mod = mLoadedPlugins->At(moduleName)->Value()->GetModule();
+		return reinterpret_cast<FUNC_SIGNATURE> (GetProcAddress(mod, funcName));
+	}
+
+	template <typename FUNC_SIGNATURE, typename... ARGS>
+	void CallFunc(const char* moduleName, const char* funcName, ARGS... args)
+	{
+		HMODULE& mod = mLoadedPlugins->At(moduleName)->Value()->GetModule();
+		reinterpret_cast<FUNC_SIGNATURE>(GetProcAddress(mod, funcName))(args...);
+	}
+
+	template <typename FUNC_SIGNATURE, typename RETURN_TYPE, typename... ARGS>
+	RETURN_TYPE CallFunc(const char* moduleName, const char* funcName, ARGS... args)
+	{
+		HMODULE& mod = mLoadedPlugins->At(moduleName)->Value()->GetModule();
+		return reinterpret_cast<FUNC_SIGNATURE>(GetProcAddress(mod, funcName))(args...);
+	}
 
 public:
 	virtual bool Initialize();
@@ -83,12 +105,12 @@ private:
 	bool			 mIsRunning;
 
 private:
-	FTDS::String*				 mGameDataPath;
-	FTDS::DynamicArray<Plugin*>* mLoadedPlugins;
+	FTDS::String*			mGameDataPath;
+	FTDS::HashMap<Plugin*>* mLoadedPlugins;
 
 private:
-	void LoadDLL(FTDS::String& path);
-	void InitTimer();
+	void		   LoadDLL(FTDS::String& path);
+	void		   InitTimer();
 	static FTCore* mInstance;
 };
 

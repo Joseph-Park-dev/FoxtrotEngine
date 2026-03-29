@@ -56,13 +56,16 @@ void FTCore::LoadGameData()
 	for (size_t i = 0; i < dllPack.first; ++i)
 	{
 		FTDS::String dllPath = {};
+		FTDS::String pluginName = {};
 		FileIOHelper::LoadBasicString(ifs, dllPath);
+		ExtractFileName(dllPath, pluginName);
 		const wchar_t* wideCharPath = dllPath.WC_Str();
 
 		HMODULE			 mod	  = LoadLibrary(wideCharPath);
 		PLUGIN_CONSTRUCT plgConst = (PLUGIN_CONSTRUCT)GetProcAddress(mod, PluginKey::CREATE_PLUGIN);
-		mLoadedPlugins->PushBack(plgConst(this));
-		mLoadedPlugins->At(mLoadedPlugins->GetSize() - 1);
+		mLoadedPlugins->Insert(pluginName, plgConst(this));
+		mLoadedPlugins->At((int)mLoadedPlugins->GetSize() - 1);
+
 		delete wideCharPath;
 	}
 	DirectoryHelper::GetInstance()->SetProjectPath(std::filesystem::absolute("./").string().c_str());
@@ -73,10 +76,10 @@ bool FTCore::Initialize()
 	LoadGameData();
 
 	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
-		(*iter)->Initialize();
+		(*iter)->Value()->Initialize();
 
 	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
-		(*iter)->Setup();
+		(*iter)->Value()->Setup();
 
 	InitSingletonManagers();
 	InitTimer();
@@ -130,7 +133,7 @@ void FTCore::SetRenderer(FoxtrotRenderer* renderer)
 void FTCore::ProcessInput()
 {
 	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
-		(*iter)->ProcessInput();
+		(*iter)->Value()->ProcessInput();
 }
 
 void FTCore::UpdateGame()
@@ -139,10 +142,10 @@ void FTCore::UpdateGame()
 	float deltaTime = Timer::GetInstance()->GetDeltaTime();
 
 	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
-		(*iter)->Update(deltaTime);
+		(*iter)->Value()->Update(deltaTime);
 
 	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
-		(*iter)->LateUpdate(deltaTime);
+		(*iter)->Value()->LateUpdate(deltaTime);
 }
 
 void FTCore::GenerateOutput()
@@ -169,7 +172,7 @@ FTCore::FTCore()
 	, mIsRunning(true)
 	, mGameDataPath(
 		  DBG_NEW FTDS::String("./"))
-	, mLoadedPlugins(DBG_NEW FTDS::DynamicArray<Plugin*>(1))
+	, mLoadedPlugins(DBG_NEW FTDS::HashMap<Plugin*>())
 {
 	mGameDataPath->Append(ChunkKey::GAME_DATA);
 	mGameDataPath->Append(FileTypes::GDPACK);

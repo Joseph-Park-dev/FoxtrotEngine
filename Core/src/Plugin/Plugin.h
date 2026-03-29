@@ -51,7 +51,10 @@ public:
 	inline static FTCore* gBase;
 
 public:
-	void Initialize()
+	HMODULE& GetModule() { return mModule; }
+
+public:
+	virtual void Initialize()
 	{
 		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
 			if (!(*iter)->GetIsInitialized())

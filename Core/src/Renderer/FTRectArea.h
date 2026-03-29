@@ -14,6 +14,7 @@
 #include <iosfwd>
 
 #include "Math/FTMath.h"
+#include "Plugin/CoreExports.h"
 
 class FTRectArea
 {
@@ -70,10 +71,6 @@ private:
 	FTVector2 mMax;
 	FTVector2 mMin;
 
-public:
-	void SaveProperties(std::ofstream& ifs);
-	void LoadProperties(std::ifstream& ofs);
-
 #ifdef FOXTROT_EDITOR
 public:
 	void UpdateUI();
@@ -87,3 +84,14 @@ namespace ChunkKey
 	constexpr const char* FTRectArea_SIZE	  = "Size";
 	constexpr const char* FTRectArea_ROTANGLE = "RotAngle";
 } // namespace ChunkKey
+
+using FTRECTAREA_CONSTRUCTOR = FTRectArea* (*)();
+using FTRECTAREA_SAVE		 = void (*)(std::ofstream*, FTRectArea*);
+using FTRECTAREA_LOAD		 = void (*)(std::ifstream*, FTRectArea*);
+
+extern "C"
+{
+	CORE_API FTRectArea* CreateFTRectArea();
+	CORE_API void		 SaveProperties(std::ofstream* ofs, FTRectArea* rectArea);
+	CORE_API void		 LoadProperties(std::ifstream* ifs, FTRectArea* rectArea);
+}

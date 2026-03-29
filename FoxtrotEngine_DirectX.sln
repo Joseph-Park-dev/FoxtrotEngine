@@ -25,6 +25,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Editor", "Editor\Editor.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "D3D11", "D3D11\D3D11.vcxproj", "{95944B49-BE89-43DF-BD3F-03D01FA7C284}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Math", "Math\Math.vcxproj", "{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -101,8 +103,8 @@ Global
 		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Release|x64.Build.0 = Release|x64
 		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Release|x86.ActiveCfg = Release|Win32
 		{8FC0FD6B-53C3-438C-9FE4-C6E2829D2849}.Release|x86.Build.0 = Release|Win32
-		{CCE9835E-F788-4B51-930B-D7805AC1E2A0}.Debug|x64.ActiveCfg = Debug|x64
-		{CCE9835E-F788-4B51-930B-D7805AC1E2A0}.Debug|x64.Build.0 = Debug|x64
+		{CCE9835E-F788-4B51-930B-D7805AC1E2A0}.Debug|x64.ActiveCfg = Foxtrot_Editor_Debug|x64
+		{CCE9835E-F788-4B51-930B-D7805AC1E2A0}.Debug|x64.Build.0 = Foxtrot_Editor_Debug|x64
 		{CCE9835E-F788-4B51-930B-D7805AC1E2A0}.Debug|x86.ActiveCfg = Debug|Win32
 		{CCE9835E-F788-4B51-930B-D7805AC1E2A0}.Debug|x86.Build.0 = Debug|Win32
 		{CCE9835E-F788-4B51-930B-D7805AC1E2A0}.Foxtrot_Debug|x64.ActiveCfg = Release|x64
@@ -149,8 +151,8 @@ Global
 		{30273513-C587-4640-9315-8D7CADE6534A}.Release|x64.Build.0 = Release|x64
 		{30273513-C587-4640-9315-8D7CADE6534A}.Release|x86.ActiveCfg = Release|Win32
 		{30273513-C587-4640-9315-8D7CADE6534A}.Release|x86.Build.0 = Release|Win32
-		{95944B49-BE89-43DF-BD3F-03D01FA7C284}.Debug|x64.ActiveCfg = Debug|x64
-		{95944B49-BE89-43DF-BD3F-03D01FA7C284}.Debug|x64.Build.0 = Debug|x64
+		{95944B49-BE89-43DF-BD3F-03D01FA7C284}.Debug|x64.ActiveCfg = Foxtrot_Editor_Debug|x64
+		{95944B49-BE89-43DF-BD3F-03D01FA7C284}.Debug|x64.Build.0 = Foxtrot_Editor_Debug|x64
 		{95944B49-BE89-43DF-BD3F-03D01FA7C284}.Debug|x86.ActiveCfg = Debug|Win32
 		{95944B49-BE89-43DF-BD3F-03D01FA7C284}.Debug|x86.Build.0 = Debug|Win32
 		{95944B49-BE89-43DF-BD3F-03D01FA7C284}.Foxtrot_Debug|x64.ActiveCfg = Release|x64
@@ -165,6 +167,22 @@ Global
 		{95944B49-BE89-43DF-BD3F-03D01FA7C284}.Release|x64.Build.0 = Release|x64
 		{95944B49-BE89-43DF-BD3F-03D01FA7C284}.Release|x86.ActiveCfg = Release|Win32
 		{95944B49-BE89-43DF-BD3F-03D01FA7C284}.Release|x86.Build.0 = Release|Win32
+		{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}.Debug|x64.ActiveCfg = Foxtrot_Editor_Debug|x64
+		{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}.Debug|x64.Build.0 = Foxtrot_Editor_Debug|x64
+		{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}.Debug|x86.ActiveCfg = Debug|Win32
+		{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}.Debug|x86.Build.0 = Debug|Win32
+		{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}.Foxtrot_Debug|x64.ActiveCfg = Release|x64
+		{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}.Foxtrot_Debug|x64.Build.0 = Release|x64
+		{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}.Foxtrot_Debug|x86.ActiveCfg = Release|Win32
+		{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}.Foxtrot_Debug|x86.Build.0 = Release|Win32
+		{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}.Foxtrot_Editor_Debug|x64.ActiveCfg = Foxtrot_Editor_Debug|x64
+		{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}.Foxtrot_Editor_Debug|x64.Build.0 = Foxtrot_Editor_Debug|x64
+		{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}.Foxtrot_Editor_Debug|x86.ActiveCfg = Release|Win32
+		{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}.Foxtrot_Editor_Debug|x86.Build.0 = Release|Win32
+		{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}.Release|x64.ActiveCfg = Release|x64
+		{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}.Release|x64.Build.0 = Release|x64
+		{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}.Release|x86.ActiveCfg = Release|Win32
+		{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

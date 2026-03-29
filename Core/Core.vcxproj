@@ -190,12 +190,14 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.\src;.\src\FTDS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\src;.\src\FTDS;..\Math\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(SolutionDir)Math\builds;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -222,6 +224,7 @@
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CoreInstance.h" />
     <ClInclude Include="src\Manager\DirectoryHelper.h" />
     <ClInclude Include="src\Manager\ResourceManager.h" />
     <ClInclude Include="src\Actor\Actor.h" />
@@ -268,11 +271,8 @@
     <ClInclude Include="src\Manager\EventManager.h" />
     <ClInclude Include="src\Manager\ResourceManagerBase.h" />
     <ClInclude Include="src\Manager\SceneManager.h" />
-    <ClInclude Include="src\Math\FTMath.h" />
-    <ClInclude Include="src\Math\Random.h" />
     <ClInclude Include="src\Plugin\CoreExports.h" />
     <ClInclude Include="src\Plugin\Plugin.h" />
-    <ClInclude Include="src\Renderer\Camera.h" />
     <ClInclude Include="src\Renderer\FoxtrotRenderer.h" />
     <ClInclude Include="src\InputSystem\FTInputDevice.h" />
     <ClInclude Include="src\Renderer\FTRectArea.h" />
@@ -293,6 +293,7 @@
     <ClCompile Include="src\Actor\Transform.cpp" />
     <ClCompile Include="src\Behavior\FTBehavior.cpp" />
     <ClCompile Include="src\Component\Component.cpp" />
+    <ClCompile Include="src\CoreInstance.cpp" />
     <ClCompile Include="src\EventFunctions.cpp" />
     <ClCompile Include="src\FileSystem\ChunkLoader.cpp" />
     <ClCompile Include="src\FileSystem\FileIOHelper.cpp" />
@@ -302,9 +303,6 @@
     <ClCompile Include="src\Manager\ResourceManager.cpp" />
     <ClCompile Include="src\Manager\ResourceManagerBase.cpp" />
     <ClCompile Include="src\Manager\SceneManager.cpp" />
-    <ClCompile Include="src\Math\FTMath.cpp" />
-    <ClCompile Include="src\Math\Random.cpp" />
-    <ClCompile Include="src\Renderer\Camera.cpp" />
     <ClCompile Include="src\Renderer\FoxtrotRenderer.cpp" />
     <ClCompile Include="src\InputSystem\FTInputDevice.cpp" />
     <ClCompile Include="src\Renderer\FTRectArea.cpp" />

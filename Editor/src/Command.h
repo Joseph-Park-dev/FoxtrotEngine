@@ -15,9 +15,9 @@
 #include "directxtk/SimpleMath.h"
 
 #include "Math/FTMath.h"
-#include "Actors/Actor.h"
+#include "Actor/Actor.h"
 
-#include "Static/FTString.h"
+#include "FTDS/Static/FTString.h"
 
 class Command
 {

@@ -19,7 +19,7 @@
 #include "Command.h"
 #include "EditorLayer.h"
 #include "ActorCommand.h"
-#include "Core/TemplateFunctions.h"
+#include "TemplateFunctions.h"
 #include "Debugging/DebugMemAlloc.h"
 #include "FileSystem/BufferSizes.h"
 

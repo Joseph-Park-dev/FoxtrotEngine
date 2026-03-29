@@ -16,16 +16,15 @@
 #include <functional>
 #include <directxtk/SimpleMath.h>
 
-#include "Core/SingletonMacro.h"
-#include "Actors/Transform.h"
-#include "Command.h"
-#include "Static/ArrayStack.h"
+#include "SingletonMacro.h"
+#include "FTDS/Static/ArrayStack.h"
 
 #define COMMAND_MAXCOUNT 30
 #define FLOATMOD_SPEED 0.1f
 #define INTMOD_SPEED 1
 
 class ActorCommand;
+class Command;
 
 class CommandHistory
 {

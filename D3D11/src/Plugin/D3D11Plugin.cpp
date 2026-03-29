@@ -11,6 +11,7 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Manager/SceneManager.h"
 #include "FTCore.h"
+#include "Plugin/PluginKey.h"
 
 class D3D11InputDevice;
 class D3D11Renderer;
@@ -112,7 +113,20 @@ void D3D11Plugin::SaveProperties()
 	if (ofs.good())
 	{
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::PLUGIN_DATA);
+
 		mCamera->SaveProperties(ofs);
+
+		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTWindow::WINDOW_DATA);
+		for (auto iter = mWindows->Begin(); iter != mWindows->End(); ++iter)
+		{
+			FileIOHelper::BeginDataPackSave(ofs, (*iter)->GetTitle());
+			FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTWindow::WIDTH, (*iter)->GetWidth());
+			FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTWindow::HEIGHT, (*iter)->GetHeight());
+			gBase->CallFunc<FTRECTAREA_SAVE>(PluginKey::D3D11::D3D11, PluginKey::D3D11::SAVE_PROPERTIES, &ofs, (*iter)->GetRenderArea());
+			FileIOHelper::EndDataPackSave(ofs, (*iter)->GetTitle());
+		}
+		FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTWindow::WINDOW_DATA);
+
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::Plugin::PLUGIN_DATA);
 	}
 }
@@ -127,6 +141,24 @@ void D3D11Plugin::LoadProperties(SceneManager* sceneManager)
 	else
 	{
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::PLUGIN_DATA);
+		size_t winCount = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTWindow::WINDOW_DATA).first;
+		for (size_t i = 0; i < winCount; ++i)
+		{
+			FTDS::String winTitle = FileIOHelper::BeginDataPackLoad(ifs).second;
+			FTRectArea*	 rndArea =
+				gBase->CallFunc<FTRECTAREA_CONSTRUCTOR, FTRectArea*>(
+					PluginKey::D3D11::D3D11,
+					PluginKey::D3D11::CREATE_FTRECTAREA);
+
+			unsigned int width	= 0;
+			unsigned int height = 0;
+
+			gBase->CallFunc<FTRECTAREA_LOAD>(PluginKey::D3D11::D3D11, PluginKey::D3D11::LOAD_PROPERTIES, &ifs, rndArea);
+			FileIOHelper::LoadUnsignedInt(ifs, width);
+			FileIOHelper::LoadUnsignedInt(ifs, height);
+			CreateD3D11Window(winTitle.C_Str(), width, height, rndArea);
+		}
+
 		mCamera->LoadProperties(ifs, sceneManager);
 	}
 }

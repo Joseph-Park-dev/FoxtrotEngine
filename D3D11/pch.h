@@ -8,6 +8,7 @@
 #define PCH_H
 
 // add headers that you want to pre-compile here
-#include "framework.h"
+#include <d3d11.h>
+#include <wrl.h>
 
 #endif //PCH_H

@@ -16,54 +16,50 @@
 #include "Math/FTMath.h"
 #include "FTDS/Dynamic/DynamicArray.h"
 
-namespace FTDS
+namespace Core
 {
-	template <typename TYPE>
-	class DynamicArray;
-}
+	enum class BUTTON_STATE
+	{
+		NONE,
+		TAP,
+		HOLD,
+		AWAY
+	};
 
-
-enum class BUTTON_STATE
-{
-	NONE,
-	TAP,
-	HOLD,
-	AWAY
-};
-
-struct ButtonInput
-{
-	BUTTON_STATE ButtonState;
-	bool		 IsPushedPrevFrame;
-};
+	struct ButtonInput
+	{
+		BUTTON_STATE ButtonState;
+		bool		 IsPushedPrevFrame;
+	};
 
 #define MAX_KEYCOUNT 6
 
-class FTInputDevice
-{
-public:
-	FTInputDevice() {};
-
-protected:
-	template <typename BUTTON_TYPE>
-	ButtonInput& GetButtonInput(FTDS::DynamicArray<ButtonInput>* btnArr, BUTTON_TYPE button)
+	class FTInputDevice
 	{
-		return btnArr->At((size_t)button);
-	}
+	public:
+		FTInputDevice() {};
 
-	ButtonInput& GetButtonInput(FTDS::DynamicArray<ButtonInput>* btnArr, size_t buttonIdx)
-	{
-		return btnArr->At(buttonIdx);
-	}
+	protected:
+		template <typename BUTTON_TYPE>
+		ButtonInput& GetButtonInput(FTDS::DynamicArray<ButtonInput>* btnArr, BUTTON_TYPE button)
+		{
+			return btnArr->At((size_t)button);
+		}
 
-	template <typename BUTTON_TYPE>
-	BUTTON_STATE& GetButtonState(FTDS::DynamicArray<ButtonInput>* btnArr, BUTTON_TYPE button)
-	{
-		return btnArr->At((size_t)button).ButtonState;
-	}
+		ButtonInput& GetButtonInput(FTDS::DynamicArray<ButtonInput>* btnArr, size_t buttonIdx)
+		{
+			return btnArr->At(buttonIdx);
+		}
 
-	BUTTON_STATE& GetButtonState(FTDS::DynamicArray<ButtonInput>* btnArr, size_t buttonIdx)
-	{
-		return btnArr->At(buttonIdx).ButtonState;
-	}
-};
+		template <typename BUTTON_TYPE>
+		BUTTON_STATE& GetButtonState(FTDS::DynamicArray<ButtonInput>* btnArr, BUTTON_TYPE button)
+		{
+			return btnArr->At((size_t)button).ButtonState;
+		}
+
+		BUTTON_STATE& GetButtonState(FTDS::DynamicArray<ButtonInput>* btnArr, size_t buttonIdx)
+		{
+			return btnArr->At(buttonIdx).ButtonState;
+		}
+	};
+} // namespace Core

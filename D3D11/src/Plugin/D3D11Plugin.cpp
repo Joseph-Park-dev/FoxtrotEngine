@@ -1,24 +1,22 @@
 #pragma once
 #include "Plugin/Plugin.h"
 
-#include "D3D11InputDevice.h"
-#include "D3D11Renderer.h"
-#include "D3D11Window.h"
+#include "InputSystem/D3D11InputDevice.h"
+#include "Renderer/D3D11Renderer.h"
+#include "Renderer/D3D11Window.h"
+#include "Renderer/Camera.h"
 #include "FTDS/Dynamic/DynamicArray.h"
 #include "Renderer/FTRectArea.h"
-#include "Camera.h"
 #include "FileSystem/FileTypes.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Manager/SceneManager.h"
 #include "FTCore.h"
 #include "Plugin/PluginKey.h"
 
-class D3D11InputDevice;
-class D3D11Renderer;
-class D3D11Window;
-class FTRectArea;
-
-Camera* Camera::mInstance = nullptr;
+namespace D3D11
+{
+	Camera* Camera::mInstance = nullptr;
+}
 
 namespace ChunkKey
 {
@@ -33,7 +31,7 @@ class D3D11Plugin :
 {
 public:
 	void		 CreateInputDevice();
-	void		 CreateRenderer(D3D11Window* window);
+	void		 CreateRenderer(D3D11::D3D11Window* window);
 	void		 CreateD3D11Window(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea);
 	void		 ProcessInput() override;
 	virtual void Render(FoxtrotRenderer* renderer) override;
@@ -47,10 +45,10 @@ public:
 	~D3D11Plugin() override;
 
 private:
-	FTDS::DynamicArray<D3D11InputDevice*>* mInputDevices;
-	D3D11Renderer*						   mRenderer;
-	FTDS::DynamicArray<D3D11Window*>*	   mWindows;
-	Camera*								   mCamera;
+	FTDS::DynamicArray<D3D11::D3D11InputDevice*>* mInputDevices;
+	D3D11::D3D11Renderer*						  mRenderer;
+	FTDS::DynamicArray<D3D11::D3D11Window*>*	  mWindows;
+	D3D11::Camera*								  mCamera;
 
 private:
 	void LoadProperties() override;
@@ -58,19 +56,19 @@ private:
 
 void D3D11Plugin::CreateInputDevice()
 {
-	D3D11InputDevice* device = DBG_NEW D3D11InputDevice;
+	D3D11::D3D11InputDevice* device = DBG_NEW D3D11::D3D11InputDevice;
 	mInputDevices->PushBack(device);
 }
 
-void D3D11Plugin::CreateRenderer(D3D11Window* window)
+void D3D11Plugin::CreateRenderer(D3D11::D3D11Window* window)
 {
-	D3D11Renderer* renderer = DBG_NEW D3D11Renderer(window);
-	mRenderer				= renderer;
+	D3D11::D3D11Renderer* renderer = DBG_NEW D3D11::D3D11Renderer(window);
+	mRenderer					   = renderer;
 }
 
 void D3D11Plugin::CreateD3D11Window(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea)
 {
-	D3D11Window* window = DBG_NEW D3D11Window(this, title, width, height, rndArea);
+	D3D11::D3D11Window* window = DBG_NEW D3D11::D3D11Window(this, title, width, height, rndArea);
 	mWindows->PushBack(window);
 }
 
@@ -86,7 +84,7 @@ void D3D11Plugin::ProcessInput()
 
 	for (auto input = mInputDevices->Begin(); input != mInputDevices->End(); ++input)
 	{
-		D3D11InputDevice* inp = static_cast<D3D11InputDevice*>(*input);
+		D3D11::D3D11InputDevice* inp = static_cast<D3D11::D3D11InputDevice*>(*input);
 		for (auto iter = mWindows->Begin(); iter != mWindows->End(); ++iter)
 			(*iter)->ProcessInput(inp);
 		Plugin::ProcessInput();
@@ -122,7 +120,7 @@ void D3D11Plugin::SaveProperties()
 			FileIOHelper::BeginDataPackSave(ofs, (*iter)->GetTitle());
 			FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTWindow::WIDTH, (*iter)->GetWidth());
 			FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTWindow::HEIGHT, (*iter)->GetHeight());
-			gBase->CallFunc<FTRECTAREA_SAVE>(PluginKey::D3D11::D3D11, PluginKey::D3D11::SAVE_PROPERTIES, &ofs, (*iter)->GetRenderArea());
+			gBase->CallFunc<FTRECTAREA_SAVE>(D3D11::PluginKey::D3D11, D3D11::PluginKey::SAVE_PROPERTIES, &ofs, (*iter)->GetRenderArea());
 			FileIOHelper::EndDataPackSave(ofs, (*iter)->GetTitle());
 		}
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTWindow::WINDOW_DATA);
@@ -147,13 +145,13 @@ void D3D11Plugin::LoadProperties(SceneManager* sceneManager)
 			FTDS::String winTitle = FileIOHelper::BeginDataPackLoad(ifs).second;
 			FTRectArea*	 rndArea =
 				gBase->CallFunc<FTRECTAREA_CONSTRUCTOR, FTRectArea*>(
-					PluginKey::D3D11::D3D11,
-					PluginKey::D3D11::CREATE_FTRECTAREA);
+					D3D11::PluginKey::D3D11,
+					D3D11::PluginKey::CREATE_FTRECTAREA);
 
 			unsigned int width	= 0;
 			unsigned int height = 0;
 
-			gBase->CallFunc<FTRECTAREA_LOAD>(PluginKey::D3D11::D3D11, PluginKey::D3D11::LOAD_PROPERTIES, &ifs, rndArea);
+			gBase->CallFunc<FTRECTAREA_LOAD>(D3D11::PluginKey::D3D11, D3D11::PluginKey::LOAD_PROPERTIES, &ifs, rndArea);
 			FileIOHelper::LoadUnsignedInt(ifs, width);
 			FileIOHelper::LoadUnsignedInt(ifs, height);
 			CreateD3D11Window(winTitle.C_Str(), width, height, rndArea);
@@ -165,9 +163,9 @@ void D3D11Plugin::LoadProperties(SceneManager* sceneManager)
 
 D3D11Plugin::D3D11Plugin(FTCore* base)
 	: Plugin(base)
-	, mInputDevices(DBG_NEW FTDS::DynamicArray<D3D11InputDevice*>)
+	, mInputDevices(DBG_NEW FTDS::DynamicArray<D3D11::D3D11InputDevice*>)
 	, mRenderer(nullptr)
-	, mWindows(DBG_NEW FTDS::DynamicArray<D3D11Window*>)
+	, mWindows(DBG_NEW FTDS::DynamicArray<D3D11::D3D11Window*>)
 	, mCamera(nullptr)
 {
 	FTRectArea* area = DBG_NEW FTRectArea(0.f, 0.f, 500.f, 500.f);

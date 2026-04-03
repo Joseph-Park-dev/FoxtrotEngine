@@ -28,190 +28,192 @@
 #include "Static/HashMap.h"
 #include "Static/FTString.h"
 
-FTCore*			 FTCore::mInstance			= nullptr;
-SceneManager*	 SceneManager::mInstance	= nullptr;
-ResourceManager* ResourceManager::mInstance = nullptr;
-ChunkLoader*	 ChunkLoader::mInstance		= nullptr;
-Timer*			 Timer::mInstance			= nullptr;
-EventManager*	 EventManager::mInstance	= nullptr;
-DirectoryHelper* DirectoryHelper::mInstance = nullptr;
-
-using PLUGIN_CONSTRUCT = Plugin* (*)(FTCore* base);
-
-void FTCore::LoadGameData()
+namespace Core
 {
-	std::ifstream ifs(mGameDataPath->C_Str());
-	FileIOHelper::BeginDataPackLoad(ifs, GameData::TITLE);
+	FTCore*			 FTCore::mInstance			= nullptr;
+	SceneManager*	 SceneManager::mInstance	= nullptr;
+	ResourceManager* ResourceManager::mInstance = nullptr;
+	ChunkLoader*	 ChunkLoader::mInstance		= nullptr;
+	Timer*			 Timer::mInstance			= nullptr;
+	EventManager*	 EventManager::mInstance	= nullptr;
+	DirectoryHelper* DirectoryHelper::mInstance = nullptr;
 
-	std::pair<size_t, FTDS::String> chunkListPack = FileIOHelper::BeginDataPackLoad(ifs, GameData::CHUNK_LIST);
-	for (size_t i = 0; i < chunkListPack.first; ++i)
+	using PLUGIN_CONSTRUCT = Plugin* (*)(FTCore * base);
+
+	void FTCore::LoadGameData()
 	{
-		FTDS::String* chunkTitle = DBG_NEW FTDS::String;
-		FileIOHelper::LoadBasicString(ifs, *chunkTitle);
-		SceneManager::GetInstance()->ChunkList()->PushBack(chunkTitle);
+		std::ifstream ifs(mGameDataPath->C_Str());
+		FileIOHelper::BeginDataPackLoad(ifs, GameData::TITLE);
+
+		std::pair<size_t, FTDS::String> chunkListPack = FileIOHelper::BeginDataPackLoad(ifs, GameData::CHUNK_LIST);
+		for (size_t i = 0; i < chunkListPack.first; ++i)
+		{
+			FTDS::String* chunkTitle = DBG_NEW FTDS::String;
+			FileIOHelper::LoadBasicString(ifs, *chunkTitle);
+			SceneManager::GetInstance()->ChunkList()->PushBack(chunkTitle);
+		}
+
+		std::pair<size_t, FTDS::String> dllPack = FileIOHelper::BeginDataPackLoad(ifs, GameData::DLL_LIST);
+		mLoadedPlugins->Reserve(dllPack.first);
+		for (size_t i = 0; i < dllPack.first; ++i)
+		{
+			FTDS::String dllPath	= {};
+			FTDS::String pluginName = {};
+			FileIOHelper::LoadBasicString(ifs, dllPath);
+			ExtractFileName(dllPath, pluginName);
+			const wchar_t* wideCharPath = dllPath.WC_Str();
+
+			HMODULE			 mod	  = LoadLibrary(wideCharPath);
+			PLUGIN_CONSTRUCT plgConst = (PLUGIN_CONSTRUCT)GetProcAddress(mod, PluginKey::CREATE_PLUGIN);
+			mLoadedPlugins->Insert(pluginName, plgConst(this));
+			mLoadedPlugins->At((int)mLoadedPlugins->GetSize() - 1);
+
+			delete wideCharPath;
+		}
+		DirectoryHelper::GetInstance()->SetProjectPath(std::filesystem::absolute("./").string().c_str());
 	}
 
-	std::pair<size_t, FTDS::String> dllPack = FileIOHelper::BeginDataPackLoad(ifs, GameData::DLL_LIST);
-	mLoadedPlugins->Reserve(dllPack.first);
-	for (size_t i = 0; i < dllPack.first; ++i)
+	bool FTCore::Initialize()
 	{
-		FTDS::String dllPath = {};
-		FTDS::String pluginName = {};
-		FileIOHelper::LoadBasicString(ifs, dllPath);
-		ExtractFileName(dllPath, pluginName);
-		const wchar_t* wideCharPath = dllPath.WC_Str();
+		LoadGameData();
 
-		HMODULE			 mod	  = LoadLibrary(wideCharPath);
-		PLUGIN_CONSTRUCT plgConst = (PLUGIN_CONSTRUCT)GetProcAddress(mod, PluginKey::CREATE_PLUGIN);
-		mLoadedPlugins->Insert(pluginName, plgConst(this));
-		mLoadedPlugins->At((int)mLoadedPlugins->GetSize() - 1);
+		for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+			(*iter)->Value()->Initialize();
 
-		delete wideCharPath;
-	}
-	DirectoryHelper::GetInstance()->SetProjectPath(std::filesystem::absolute("./").string().c_str());
-}
+		for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+			(*iter)->Value()->Setup();
 
-bool FTCore::Initialize()
-{
-	LoadGameData();
-
-	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
-		(*iter)->Value()->Initialize();
-
-	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
-		(*iter)->Value()->Setup();
-
-	InitSingletonManagers();
-	InitTimer();
-	return true;
-}
-
-void FTCore::InitSingletonManagers()
-{
-	ResourceManager::GetInstance()->Initialize();
-	SceneManager::GetInstance()->Initialize();
-}
-
-void FTCore::LoadDLL(FTDS::String& path)
-{
-	FTDS::String name;
-	ExtractFileName(path, name);
-}
-
-void FTCore::InitTimer()
-{
-	Timer::GetInstance();
-}
-
-void FTCore::RunLoop()
-{
-	while (mIsRunning)
-	{
-		ProcessInput();
-		UpdateGame();
-		GenerateOutput();
-
-		ProcessEvent();
-	}
-}
-
-void FTCore::SetWindow(FTWindow* window)
-{
-	mWindow = window;
-}
-
-void FTCore::SetInputDevice(FTInputDevice* device)
-{
-	mInputDevice = device;
-}
-
-void FTCore::SetRenderer(FoxtrotRenderer* renderer)
-{
-	mGameRenderer = renderer;
-}
-
-void FTCore::ProcessInput()
-{
-	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
-		(*iter)->Value()->ProcessInput();
-}
-
-void FTCore::UpdateGame()
-{
-	Timer::GetInstance()->Update();
-	float deltaTime = Timer::GetInstance()->GetDeltaTime();
-
-	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
-		(*iter)->Value()->Update(deltaTime);
-
-	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
-		(*iter)->Value()->LateUpdate(deltaTime);
-}
-
-void FTCore::GenerateOutput()
-{
-	//// mGameRenderer->RenderClear(mWindow);
-	//mWindow->BeginRender(mGameRenderer);
-
-	//for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
-	//	(*iter)->Render(mGameRenderer);
-
-	//mWindow->EndRender(mGameRenderer);
-}
-
-void FTCore::ProcessEvent()
-{
-	SceneManager::GetInstance()->ProcessEvent();
-	EventManager::GetInstance()->ProcessEvent();
-}
-
-FTCore::FTCore()
-	: mWindow(nullptr)
-	, mInputDevice(nullptr)
-	, mGameRenderer(nullptr)
-	, mIsRunning(true)
-	, mGameDataPath(
-		  DBG_NEW FTDS::String("./"))
-	, mLoadedPlugins(DBG_NEW FTDS::HashMap<Plugin*>())
-{
-	mGameDataPath->Append(ChunkKey::GAME_DATA);
-	mGameDataPath->Append(FileTypes::GDPACK);
-}
-
-FTCore::~FTCore()
-{
-	delete mWindow;
-	delete mInputDevice;
-	delete mGameRenderer;
-	delete mGameDataPath;
-	delete mLoadedPlugins;
-}
-
-void FTCore::ShutDown()
-{
-	for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
-		delete (*iter);
-
-	SceneManager::GetInstance()->GetCurrentScene()->DeleteAll();
-	SceneManager::GetInstance()->Destroy();
-	ResourceManager::GetInstance()->Destroy();
-	EventManager::GetInstance()->Destroy();
-	ChunkLoader::GetInstance()->Destroy();
-	Timer::GetInstance()->Destroy();
-
-	PostQuitMessage(0);
-}
-
-extern "C"
-{
-	
-	FTCore* GetInstanceCore()
-	{
-		return FTCore::GetInstance();
+		InitSingletonManagers();
+		InitTimer();
+		return true;
 	}
 
-	void DestroyCore()
+	void FTCore::InitSingletonManagers()
 	{
-		FTCore::GetInstance()->Destroy();
+		SceneManager::GetInstance()->Initialize();
 	}
-}
+
+	void FTCore::LoadDLL(FTDS::String& path)
+	{
+		FTDS::String name;
+		ExtractFileName(path, name);
+	}
+
+	void FTCore::InitTimer()
+	{
+		Timer::GetInstance();
+	}
+
+	void FTCore::RunLoop()
+	{
+		while (mIsRunning)
+		{
+			ProcessInput();
+			UpdateGame();
+			GenerateOutput();
+
+			ProcessEvent();
+		}
+	}
+
+	void FTCore::SetWindow(FTWindow* window)
+	{
+		mWindow = window;
+	}
+
+	void FTCore::SetInputDevice(FTInputDevice* device)
+	{
+		mInputDevice = device;
+	}
+
+	void FTCore::SetRenderer(FoxtrotRenderer* renderer)
+	{
+		mGameRenderer = renderer;
+	}
+
+	void FTCore::ProcessInput()
+	{
+		for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+			(*iter)->Value()->ProcessInput();
+	}
+
+	void FTCore::UpdateGame()
+	{
+		Timer::GetInstance()->Update();
+		float deltaTime = Timer::GetInstance()->GetDeltaTime();
+
+		for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+			(*iter)->Value()->Update(deltaTime);
+
+		for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+			(*iter)->Value()->LateUpdate(deltaTime);
+	}
+
+	void FTCore::GenerateOutput()
+	{
+		//// mGameRenderer->RenderClear(mWindow);
+		// mWindow->BeginRender(mGameRenderer);
+
+		// for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+		//	(*iter)->Render(mGameRenderer);
+
+		// mWindow->EndRender(mGameRenderer);
+	}
+
+	void FTCore::ProcessEvent()
+	{
+		SceneManager::GetInstance()->ProcessEvent();
+		EventManager::GetInstance()->ProcessEvent();
+	}
+
+	FTCore::FTCore()
+		: mWindow(nullptr)
+		, mInputDevice(nullptr)
+		, mGameRenderer(nullptr)
+		, mIsRunning(true)
+		, mGameDataPath(
+			  DBG_NEW FTDS::String("./"))
+		, mLoadedPlugins(DBG_NEW FTDS::HashMap<Plugin*>())
+	{
+		mGameDataPath->Append(ChunkKey::GAME_DATA);
+		mGameDataPath->Append(FileTypes::GDPACK);
+	}
+
+	FTCore::~FTCore()
+	{
+		delete mWindow;
+		delete mInputDevice;
+		delete mGameRenderer;
+		delete mGameDataPath;
+		delete mLoadedPlugins;
+	}
+
+	void FTCore::ShutDown()
+	{
+		for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+			delete (*iter);
+
+		SceneManager::GetInstance()->GetCurrentScene()->DeleteAll();
+		SceneManager::GetInstance()->Destroy();
+		ResourceManager::GetInstance()->Destroy();
+		EventManager::GetInstance()->Destroy();
+		ChunkLoader::GetInstance()->Destroy();
+		Timer::GetInstance()->Destroy();
+
+		PostQuitMessage(0);
+	}
+
+	extern "C"
+	{
+
+		FTCore* GetInstanceCore()
+		{
+			return FTCore::GetInstance();
+		}
+
+		void DestroyCore()
+		{
+			FTCore::GetInstance()->Destroy();
+		}
+	}
+} // namespace Core

@@ -18,133 +18,131 @@
 #include "FTDS/Static/HashMap.h"
 #include "Plugin/CoreExports.h"
 
-class FTWindow;
-class FTInputDevice;
-class FoxtrotRenderer;
-class Plugin;
-namespace FTDS
+namespace Core
 {
-	template <typename TYPE>
-	class HashMap;
-}
+	class FTWindow;
+	class FTInputDevice;
+	class FoxtrotRenderer;
+	class Plugin;
 
-class CORE_API FTCore
-{
-public:
-	static FTCore* GetInstance()
+	class CORE_API FTCore
 	{
-		if (mInstance == nullptr)
-			mInstance = DBG_NEW FTCore();
-		return mInstance;
-	}
-	static void Destroy()
-	{
-		if (mInstance)
+	public:
+		static FTCore* GetInstance()
 		{
-			delete mInstance;
-			mInstance = nullptr;
+			if (mInstance == nullptr)
+				mInstance = DBG_NEW FTCore();
+			return mInstance;
 		}
-	}
-	FTCore(const FTCore& obj) = delete;
+		static void Destroy()
+		{
+			if (mInstance)
+			{
+				delete mInstance;
+				mInstance = nullptr;
+			}
+		}
+		FTCore(const FTCore& obj) = delete;
 
-protected:
-	FTCore();
-	~FTCore();
+	protected:
+		FTCore();
+		~FTCore();
 
-public:
-	template <typename FUNC_SIGNATURE>
-	FARPROC GetFunc(const char* moduleName, const char* funcName)
+	public:
+		template <typename FUNC_SIGNATURE>
+		FARPROC GetFunc(const char* moduleName, const char* funcName)
+		{
+			HMODULE& mod = mLoadedPlugins->At(moduleName)->Value()->GetModule();
+			return reinterpret_cast<FUNC_SIGNATURE>(GetProcAddress(mod, funcName));
+		}
+
+		template <typename FUNC_SIGNATURE, typename... ARGS>
+		void CallFunc(const char* moduleName, const char* funcName, ARGS... args)
+		{
+			HMODULE& mod = mLoadedPlugins->At(moduleName)->Value()->GetModule();
+			reinterpret_cast<FUNC_SIGNATURE>(GetProcAddress(mod, funcName))(args...);
+		}
+
+		template <typename FUNC_SIGNATURE, typename RETURN_TYPE, typename... ARGS>
+		RETURN_TYPE CallFunc(const char* moduleName, const char* funcName, ARGS... args)
+		{
+			HMODULE& mod = mLoadedPlugins->At(moduleName)->Value()->GetModule();
+			return reinterpret_cast<FUNC_SIGNATURE>(GetProcAddress(mod, funcName))(args...);
+		}
+
+	public:
+		virtual bool Initialize();
+		virtual void RunLoop();
+		virtual void ShutDown();
+
+	public:
+		FTWindow*		 GetGameWindow() { return mWindow; }
+		FoxtrotRenderer* GetGameRenderer() { return mGameRenderer; }
+
+		virtual void SetIsRunning(bool isRunning) { mIsRunning = isRunning; }
+		virtual void SetWindow(FTWindow* window);
+		virtual void SetInputDevice(FTInputDevice* device);
+		virtual void SetRenderer(FoxtrotRenderer* renderer);
+
+	protected:
+		// Gameloop functions.
+		virtual void ProcessInput();
+		virtual void UpdateGame();
+		virtual void GenerateOutput();
+		virtual void ProcessEvent();
+
+	protected:
+		virtual void InitSingletonManagers();
+		virtual void LoadGameData();
+
+	private:
+		FTWindow*		 mWindow;
+		FTInputDevice*	 mInputDevice;
+		FoxtrotRenderer* mGameRenderer;
+		bool			 mIsRunning;
+
+	private:
+		FTDS::String*			mGameDataPath;
+		FTDS::HashMap<Plugin*>* mLoadedPlugins;
+
+	private:
+		void		   LoadDLL(FTDS::String& path);
+		void		   InitTimer();
+		static FTCore* mInstance;
+	};
+
+	extern "C"
 	{
-		HMODULE& mod = mLoadedPlugins->At(moduleName)->Value()->GetModule();
-		return reinterpret_cast<FUNC_SIGNATURE> (GetProcAddress(mod, funcName));
+		CORE_API FTCore* GetInstanceCore();
+		CORE_API void	 DestroyCore();
 	}
 
-	template <typename FUNC_SIGNATURE, typename... ARGS>
-	void CallFunc(const char* moduleName, const char* funcName, ARGS... args)
+	namespace GameData
 	{
-		HMODULE& mod = mLoadedPlugins->At(moduleName)->Value()->GetModule();
-		reinterpret_cast<FUNC_SIGNATURE>(GetProcAddress(mod, funcName))(args...);
-	}
+		constexpr const char* TITLE		 = "Game Data";
+		constexpr const char* CHUNK_LIST = "Chunk List";
+		constexpr const char* DLL_LIST	 = "DLL List";
+	} // namespace GameData
 
-	template <typename FUNC_SIGNATURE, typename RETURN_TYPE, typename... ARGS>
-	RETURN_TYPE CallFunc(const char* moduleName, const char* funcName, ARGS... args)
+	namespace PluginKey
 	{
-		HMODULE& mod = mLoadedPlugins->At(moduleName)->Value()->GetModule();
-		return reinterpret_cast<FUNC_SIGNATURE>(GetProcAddress(mod, funcName))(args...);
-	}
+		constexpr const char* CREATE_PLUGIN = "CreatePlugin";
+		namespace FTCore
+		{
+			constexpr const char* GET_INSTANCE = "GetInstanceCore";
+			constexpr const char* DESTROY	   = "DestroyCore";
+		} // namespace FTCore
+	} // namespace PluginKey
 
-public:
-	virtual bool Initialize();
-	virtual void RunLoop();
-	virtual void ShutDown();
-
-public:
-	FTWindow*		 GetGameWindow() { return mWindow; }
-	FoxtrotRenderer* GetGameRenderer() { return mGameRenderer; }
-
-	virtual void SetIsRunning(bool isRunning) { mIsRunning = isRunning; }
-	virtual void SetWindow(FTWindow* window);
-	virtual void SetInputDevice(FTInputDevice* device);
-	virtual void SetRenderer(FoxtrotRenderer* renderer);
-
-protected:
-	// Gameloop functions.
-	virtual void ProcessInput();
-	virtual void UpdateGame();
-	virtual void GenerateOutput();
-	virtual void ProcessEvent();
-
-protected:
-	virtual void InitSingletonManagers();
-	virtual void LoadGameData();
-
-private:
-	FTWindow*		 mWindow;
-	FTInputDevice*	 mInputDevice;
-	FoxtrotRenderer* mGameRenderer;
-	bool			 mIsRunning;
-
-private:
-	FTDS::String*			mGameDataPath;
-	FTDS::HashMap<Plugin*>* mLoadedPlugins;
-
-private:
-	void		   LoadDLL(FTDS::String& path);
-	void		   InitTimer();
-	static FTCore* mInstance;
-};
-
-extern "C"
-{
-	CORE_API FTCore* GetInstanceCore();
-	CORE_API void	 DestroyCore();
-}
-
-namespace GameData
-{
-	constexpr const char* TITLE		 = "Game Data";
-	constexpr const char* CHUNK_LIST = "Chunk List";
-	constexpr const char* DLL_LIST	 = "DLL List";
-} // namespace GameData
-
-namespace PluginKey
-{
-	constexpr const char* CREATE_PLUGIN = "CreatePlugin";
-	namespace FTCore
-	{
-		constexpr const char* GET_INSTANCE = "GetInstanceCore";
-		constexpr const char* DESTROY	   = "DestroyCore";
-	} // namespace FTCore
-} // namespace PluginKey
-
-enum class PluginType
-{
-	D3D11,
-	END
-};
-
-inline PluginType GetPluginType(FTDS::String& name)
-{
-	if (name.Equal("D3D11"))
-		return PluginType::D3D11;
-}
+	// enum class PluginType
+	//{
+	//	D3D11,
+	//	END
+	// };
+	//
+	// inline PluginType GetPluginType(FTDS::String& name)
+	//{
+	//	if (name.Equal("D3D11"))
+	//		return PluginType::D3D11;
+	// }
+} // namespace Core

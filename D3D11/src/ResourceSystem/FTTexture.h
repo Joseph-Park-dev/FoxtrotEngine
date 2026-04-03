@@ -7,72 +7,70 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include "ResourceSystem/FTResource.h"
+#include "ResourceSystem/D3D11Resource.h"
 
-#include <d3d11.h>
 #include <wrl.h>
+#include <d3d11.h>
 
 class FoxtrotRenderer;
 class FTCore;
 
-/// @brief A class that holds the image data.
-/// This can be used as a single sprite, a texture pack for a tilemap, and
-/// a spritesheet for an animation, etc.
-class FTTexture :
-	public FTResource
+namespace D3D11
 {
-public:
-	/// @brief Every active resource must have an ID.
-	/// @return If invalid, returns -1;
-	static int ID() { return 0; };
+	/// @brief A class that holds the image data.
+	/// This can be used as a single sprite, a texture pack for a tilemap, and
+	/// a spritesheet for an animation, etc.
+	class FTTexture :
+		public D3D11Resource
+	{
+	public:
+		/// @brief Get original pixel-width of the image. This shall not be edited after the FTTexture is created.
+		const UINT GetWidth() const;
 
-public:
-	/// @brief Get original pixel-width of the image. This shall not be edited after the FTTexture is created.
-	const UINT GetWidth() const;
+		/// @brief Get original pixel-height of the image. This shall not be edited after the FTTexture is created.
+		const UINT GetHeight() const;
 
-	/// @brief Get original pixel-height of the image. This shall not be edited after the FTTexture is created.
-	const UINT GetHeight() const;
+		/// @brief Get ShaderResourceView for the texture. This shall not be edited after the FTTexture is created.
+		const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetSRV() const;
 
-	/// @brief Get ShaderResourceView for the texture. This shall not be edited after the FTTexture is created.
-	const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetSRV() const;
+	public:
+		/// @brief Saves resource properties into a file.
+		/// @param ofs A stream to a .chunk file
+		virtual void SaveProperties(std::ofstream& ofs) override;
 
-public:
-	/// @brief Saves resource properties into a file.
-	/// @param ofs A stream to a .chunk file
-	virtual void SaveProperties(std::ofstream& ofs) override;
+		/// @brief Loads resource properties into an instance.
+		/// @param ifs A stream from a .chunk file
+		virtual void LoadProperties(std::ifstream& ifs) override;
 
-	/// @brief Loads resource properties into an instance.
-	/// @param ifs A stream from a .chunk file
-	virtual void LoadProperties(std::ifstream& ifs) override;
+	public:
+		/// @brief FTTexture is a graphics resource, so it needs a FTRenderer instance for initialization.
+		/// @param renderer This is usually a game renderer.
+		FTTexture(FTResourceDef& resDef, FoxtrotRenderer* renderer);
+		~FTTexture();
 
-public:
-	/// @brief FTTexture is a graphics resource, so it needs a FTRenderer instance for initialization.
-	/// @param renderer This is usually a game renderer.
-	FTTexture(FTResourceDef& resDef, FoxtrotRenderer* renderer);
-	~FTTexture();
+	protected:
+		virtual void Process(FTResourceDef& resDef, FoxtrotRenderer* renderer);
 
-protected:
-	virtual void Process(FTResourceDef& resDef, FoxtrotRenderer* renderer);
-
-private:
-	UINT											 mWidth;
-	UINT											 mHeight;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mSRV;
+	private:
+		UINT											 mWidth;
+		UINT											 mHeight;
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mSRV;
 
 #ifdef FOXTROT_EDITOR
-public:
-	virtual void UpdateUI() override;
+	public:
+		virtual void UpdateUI() override;
 
 #endif
-};
+	};
 
-namespace ChunkKey
-{
-	namespace FTTexture
+	namespace ChunkKey
 	{
-		constexpr const char* FT_TEXTURE = "FTTexture";
-		constexpr const char* WIDTH		 = "Width";
-		constexpr const char* HEIGHT	 = "Height";
+		namespace FTTexture
+		{
+			constexpr const char* FT_TEXTURE = "FTTexture";
+			constexpr const char* WIDTH		 = "Width";
+			constexpr const char* HEIGHT	 = "Height";
 
-	} // namespace FTTexture
-} // namespace ChunkKey
+		} // namespace FTTexture
+	} // namespace ChunkKey
+} // namespace D3D11

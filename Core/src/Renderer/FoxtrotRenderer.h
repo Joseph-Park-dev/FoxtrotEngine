@@ -11,29 +11,31 @@
 /// </summary>
 
 #pragma once
-class Transform;
-class ViewportRenderer;
-class FTVector2;
-class FTWindow;
-
-class FoxtrotRenderer
+namespace Core
 {
-public:
-	FoxtrotRenderer() {};
+	class Transform;
+	class ViewportRenderer;
+	class FTVector2;
+	class FTWindow;
+	class FoxtrotRenderer
+	{
+	public:
+		FoxtrotRenderer() {};
 
-protected:
-	virtual bool Initialize(FTWindow* window) = 0;
+	protected:
+		virtual bool Initialize(FTWindow* window) = 0;
 
 #ifdef FOXTROT_EDITOR
-public:
-	bool InitializeViewport(FTWindow* window, UINT posX, UINT posY, UINT width, UINT height);
-	void RenderOnViewport();
-	void SetViewport(const ImVec2& topLeft, const ImVec2& resolution);
+	public:
+		bool InitializeViewport(FTWindow* window, UINT posX, UINT posY, UINT width, UINT height);
+		void RenderOnViewport();
+		void SetViewport(const ImVec2& topLeft, const ImVec2& resolution);
 
-public:
-	ViewportRenderer* GetViewportRenderer();
+	public:
+		ViewportRenderer* GetViewportRenderer();
 
-private:
-	ViewportRenderer* mViewportRenderer;
+	private:
+		ViewportRenderer* mViewportRenderer;
 #endif // FOXTROT_EDITOR
-};
+	};
+} // namespace Core

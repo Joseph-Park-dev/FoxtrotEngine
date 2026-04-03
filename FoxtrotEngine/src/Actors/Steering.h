@@ -15,40 +15,37 @@
 #include "Debugging/DebugMemAlloc.h"
 #include "Math/FTMath.h"
 
-namespace Core
+struct Steering
 {
-	struct Steering
+	float	  Angular;
+	FTVector3 Linear; // Normalized direction of movement
+
+	bool JumpTriggered;
+
+	static Steering* CreateEmptySteering()
 	{
-		float	  Angular;
-		FTVector3 Linear; // Normalized direction of movement
+		return DBG_NEW Steering(0.f, FTVector3::Zero);
+	}
 
-		bool JumpTriggered;
+	static Steering Halt()
+	{
+		return Steering(0.f, FTVector3::Zero);
+	}
 
-		static Steering* CreateEmptySteering()
-		{
-			return DBG_NEW Steering(0.f, FTVector3::Zero);
-		}
+	Steering(float angular, FTVector3 linear)
+		: Angular(angular)
+		, Linear(linear)
+		, JumpTriggered(false)
+	{
+	}
 
-		static Steering Halt()
-		{
-			return Steering(0.f, FTVector3::Zero);
-		}
+	friend bool operator==(Steering left, Steering right)
+	{
+		return left.Linear.x == right.Linear.x && left.Linear.y == right.Linear.y && left.Angular == right.Angular && left.JumpTriggered == right.JumpTriggered;
+	}
 
-		Steering(float angular, FTVector3 linear)
-			: Angular(angular)
-			, Linear(linear)
-			, JumpTriggered(false)
-		{
-		}
-
-		friend bool operator==(Steering left, Steering right)
-		{
-			return left.Linear.x == right.Linear.x && left.Linear.y == right.Linear.y && left.Angular == right.Angular && left.JumpTriggered == right.JumpTriggered;
-		}
-
-		friend bool operator!=(Steering left, Steering right)
-		{
-			return left.Linear.x != right.Linear.x || left.Linear.y != right.Linear.y || left.Angular != right.Angular || left.JumpTriggered != right.JumpTriggered;
-		}
-	};
-} // namespace Core
+	friend bool operator!=(Steering left, Steering right)
+	{
+		return left.Linear.x != right.Linear.x || left.Linear.y != right.Linear.y || left.Angular != right.Angular || left.JumpTriggered != right.JumpTriggered;
+	}
+};

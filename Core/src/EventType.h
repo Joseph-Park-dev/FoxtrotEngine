@@ -10,13 +10,15 @@
 /// </summary>
 
 #pragma once
-
-enum class EVENT_TYPE
+namespace Core
 {
-	CREATE_ACTOR,
-	CREATE_CHILD,
-	DESTROY_ACTOR,
-	SWITCH_SCENE,
-	
-	END
-};
+	enum class EVENT_TYPE
+	{
+		CREATE_ACTOR,
+		CREATE_CHILD,
+		DESTROY_ACTOR,
+		SWITCH_SCENE,
+
+		END
+	};
+} // namespace Core

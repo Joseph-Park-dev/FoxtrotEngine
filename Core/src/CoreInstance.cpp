@@ -1,3 +1,3 @@
 #include "CoreInstance.h"
 
-FTCore* Core = FTCore::GetInstance();
+Core::FTCore* CoreInst = Core::FTCore::GetInstance();

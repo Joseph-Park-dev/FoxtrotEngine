@@ -13,63 +13,66 @@
 /// </summary>
 
 #pragma once
-#include "ResourceSystem/FTResource.h"
+#include "ResourceSystem/CoreResource.h"
 
 #include <iosfwd>
 
-class Actor;
-class FTCore;
-class Scene;
+namespace Core
+{
+	class Actor;
+	class FTCore;
+	class Scene;
 
 #ifdef FOXTROT_EDITOR
-class EditorScene;
+	class EditorScene;
 	#include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
-class FTPremade :
-	public FTResource
-{
-public:
-	virtual void SaveProperties(std::ofstream& ofs) override;
-	virtual void LoadProperties(std::ifstream& ifs) override;
+	class FTPremade :
+		public CoreResource
+	{
+		// public:
+		//	virtual void SaveProperties(std::ofstream& ofs) override;
+		//	virtual void LoadProperties(std::ifstream& ifs) override;
 
-public:
-	FTPremade(FTResourceDef& resDef);
-	~FTPremade();
+	public:
+		FTPremade(FTResourceDef& resDef);
+		~FTPremade();
 
-public:
-	Actor* GetOrigin();
-	bool   GetIsLoaded();
+	public:
+		Actor* GetOrigin();
+		bool   GetIsLoaded();
 
-private:
-	// Member variable that holds the actual Actor Data.
-	Actor* mOrigin;
-	bool   mIsLoaded;
+	private:
+		// Member variable that holds the actual Actor Data.
+		Actor* mOrigin;
+		bool   mIsLoaded;
 
-private:
-	void Load(const char* path);
+	private:
+		void Load(const char* path);
 
 #ifdef FOXTROT_EDITOR
-public:
-	void Create(EditorElement* ele);
-	void Save(EditorElement* ele);
+	public:
+		void Create(EditorElement* ele);
+		void Save(EditorElement* ele);
 
-	virtual void UpdateUI() override;
+		virtual void UpdateUI() override;
 
-public:
-	virtual void AddRefCount() override;
-	virtual void SubtractRefCount() override;
+	public:
+		virtual void AddRefCount() override;
+		virtual void SubtractRefCount() override;
 
-private:
-	EditorElement* mDummyForUI;
+	private:
+		EditorElement* mDummyForUI;
 #endif // FOXTROT_EDITOR
-};
+	};
 
-namespace ChunkKey
-{
-	namespace FTPremade
+	namespace ChunkKey
 	{
-		constexpr const char* FT_PREMADE = "FTPremade";
+		namespace FTPremade
+		{
+			constexpr const char* FT_PREMADE = "FTPremade";
 
-	}
-} // namespace ChunkKey
+		}
+	} // namespace ChunkKey
+} // namespace Core

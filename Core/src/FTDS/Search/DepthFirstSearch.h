@@ -5,31 +5,34 @@
 #include "TreeNode.h"
 #include "BinSrchTree.h"
 
-namespace FTDS
+namespace Core
 {
-	using namespace FTDS;
-
-	template <typename TYPE>
-	TreeNode<TYPE>* DFS(BinSrchTree<TYPE>* tree, TYPE val) 
+	namespace FTDS
 	{
-		ArrayStack<TreeNode<TYPE>*> stack;
-		stack.Reserve(7);
-		stack.Push(tree->Root());
+		using namespace FTDS;
 
-		while (!stack.IsEmpty())
+		template <typename TYPE>
+		TreeNode<TYPE>* DFS(BinSrchTree<TYPE>* tree, TYPE val)
 		{
-			TreeNode<int>* current = stack.Peek();
-			if (current->Value == val)
-				return current;
-			stack.Pop();
+			ArrayStack<TreeNode<TYPE>*> stack;
+			stack.Reserve(7);
+			stack.Push(tree->Root());
 
-			printf("%d ", current->Value);
+			while (!stack.IsEmpty())
+			{
+				TreeNode<int>* current = stack.Peek();
+				if (current->Value == val)
+					return current;
+				stack.Pop();
 
-			if (current->Left)
-				stack.Push(current->Left);
-			if (current->Right)
-				stack.Push(current->Right);
+				printf("%d ", current->Value);
+
+				if (current->Left)
+					stack.Push(current->Left);
+				if (current->Right)
+					stack.Push(current->Right);
+			}
+			return nullptr;
 		}
-		return nullptr;
-	}
-}
+	} // namespace FTDS
+} // namespace Core

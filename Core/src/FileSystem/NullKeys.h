@@ -10,10 +10,14 @@
 /// </summary>
 
 #pragma once
-namespace ChunkKey
+namespace Core
 {
-	namespace NullVal
+	namespace ChunkKey
 	{
-		constexpr const char* NULL_OBJECT = "NULL OBJECT";
-	} // namespace NullVal
-} // namespace ChunkKey
+		namespace NullVal
+		{
+			constexpr const char* NULL_OBJECT = "NULL OBJECT";
+			constexpr int		  INVALID_IDX = -1;
+		} // namespace NullVal
+	} // namespace ChunkKey
+} // namespace Core

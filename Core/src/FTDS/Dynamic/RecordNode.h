@@ -1,23 +1,26 @@
 #pragma once
 #include "Static/Record.h"
 
-namespace FTDS
+namespace Core
 {
-	template <typename TYPE>
-	class RecordNode : public FTDS::Record<TYPE>
+	namespace FTDS
 	{
-	public:
-		RecordNode*& GetLink() { return mLink; }
-		void		 SetLink(RecordNode* next) { mLink = next; }
-
-	public:
-		RecordNode(FTDS::String key, TYPE val)
-			: Record<TYPE>(key, val)
-			, mLink(nullptr)
+		template <typename TYPE>
+		class RecordNode : public FTDS::Record<TYPE>
 		{
-		}
+		public:
+			RecordNode*& GetLink() { return mLink; }
+			void		 SetLink(RecordNode* next) { mLink = next; }
 
-	private:
-		RecordNode* mLink;
-	};
-} // namespace FTDS
+		public:
+			RecordNode(FTDS::String key, TYPE val)
+				: Record<TYPE>(key, val)
+				, mLink(nullptr)
+			{
+			}
+
+		private:
+			RecordNode* mLink;
+		};
+	} // namespace FTDS
+} // namespace Core

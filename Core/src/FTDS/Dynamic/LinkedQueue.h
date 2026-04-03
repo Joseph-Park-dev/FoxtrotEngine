@@ -2,92 +2,96 @@
 #include "LinkedStack.h"
 #include "Node.h"
 
-namespace FTDS
+namespace Core
 {
-	template <typename TYPE>
-	class LinkedQueue
+	namespace FTDS
 	{
-	public:
-		void Enqueue(TYPE value)
+		template <typename TYPE>
+		class LinkedQueue
 		{
-			Node<TYPE>* node = new Node<TYPE>(value);
-			if (!mFront)
+		public:
+			void Enqueue(TYPE value)
 			{
-				mFront = node;
-				mRear = node;
+				Node<TYPE>* node = new Node<TYPE>(value);
+				if (!mFront)
+				{
+					mFront = node;
+					mRear  = node;
+				}
+				else
+				{
+					mRear->Next = node;
+					mRear		= node;
+				}
+				++mSize;
 			}
-			else
+
+			void Dequeue()
 			{
-				mRear->Next = node;
-				mRear = node;
+				if (!mFront)
+					return;
+
+				Node<TYPE>* front = mFront;
+				mFront			  = mFront->Next;
+
+				if (!mFront)
+					mRear = nullptr;
+
+				delete front;
+				front = nullptr;
+
+				--mSize;
 			}
-			++mSize;
-		}
 
-		void Dequeue()
-		{
-			if (!mFront)
-				return;
-			
-			Node<TYPE>* front = mFront;
-			mFront = mFront->Next;
+			TYPE Peek()
+			{
+				if (mFront)
+					return mFront->Value;
+				return NULL;
+			}
 
-			if (!mFront)
-				mRear = nullptr;
+			size_t Size() { return mSize; }
+			bool   IsEmpty() { return mSize < 1; }
 
-			delete front;
-			front = nullptr;
+		public:
+			LinkedQueue<TYPE>()
+				: mFront(nullptr)
+				, mRear(nullptr)
+				, mSize(0)
+			{
+			}
 
-			--mSize;
-		}
-
-		TYPE Peek() 
-		{ 
-			if (mFront) 
-				return mFront->Value; 
-			return NULL;
-		}
-
-		size_t Size() { return mSize; }
-		bool IsEmpty() { return mSize < 1; }
-
-	public:
-		LinkedQueue<TYPE>()
-			: mFront(nullptr)
-			, mRear(nullptr)
-			, mSize(0)
-		{}
-
-	private:
-		Node<TYPE>* mFront;
-		Node<TYPE>* mRear;
-		size_t		mSize;
-	};
-}
+		private:
+			Node<TYPE>* mFront;
+			Node<TYPE>* mRear;
+			size_t		mSize;
+		};
+	} // namespace FTDS
 
 #include <stdio.h>
 
-inline void Demonstrate_LinkedQueue()
-{
-	FTDS::LinkedQueue<int*> queue;
-
-	// Pushing into the queue
-	queue.Enqueue(new int(0));
-	queue.Enqueue(new int(1));
-	queue.Enqueue(new int(2));
-	queue.Enqueue(new int(3));
-	queue.Enqueue(new int(4));
-
-	// Getting the size of the queue
-	size_t size = queue.Size();
-	printf("Size : %zu \n", size);
-
-	printf("Elements : \n");
-	// Clearing the queue - memory deallocation
-	while (!queue.IsEmpty())
+	inline void Demonstrate_LinkedQueue()
 	{
-		printf("Popping: %d\n", *queue.Peek());
-		delete queue.Peek();
-		queue.Dequeue();
+		FTDS::LinkedQueue<int*> queue;
+
+		// Pushing into the queue
+		queue.Enqueue(new int(0));
+		queue.Enqueue(new int(1));
+		queue.Enqueue(new int(2));
+		queue.Enqueue(new int(3));
+		queue.Enqueue(new int(4));
+
+		// Getting the size of the queue
+		size_t size = queue.Size();
+		printf("Size : %zu \n", size);
+
+		printf("Elements : \n");
+		// Clearing the queue - memory deallocation
+		while (!queue.IsEmpty())
+		{
+			printf("Popping: %d\n", *queue.Peek());
+			delete queue.Peek();
+			queue.Dequeue();
+		}
 	}
-}
+} // namespace Core

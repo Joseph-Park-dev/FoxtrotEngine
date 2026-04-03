@@ -17,10 +17,12 @@
 #include "ResourceSystem/FTResource.h"
 #include "FileSystem/FileIOHelper.h"
 
+#include "FTDS/Compare/StringEqual.h"
+
 class FoxtrotRenderer;
 
 /// @brief Type discriminator for resources serialized/deserialized from chunk files.
-//enum class ResType
+// enum class ResType
 //{
 //	UNSUPPORTED,
 //	FTTEXTURE,
@@ -39,14 +41,8 @@ class FoxtrotRenderer;
 //	FT_SHADER_META,
 //	FTSOUND,
 //	FTFONT
-//};
+// };
 
-enum ResType
-{
-	UNSUPPORTED,
-	FTPREMADE,
-	END
-};
 /// @brief Special keys used by the chunk system to reference built-in/primitive assets.
 namespace ChunkKey
 {
@@ -72,10 +68,6 @@ namespace ChunkKey
 class ResourceManagerBase
 {
 public:
-	/// @brief Initialize the manager and bind the renderer for GPU resource creation.
-	/// @param renderer Non-null renderer used for graphics resources.
-	virtual void Initialize(FoxtrotRenderer* renderer = nullptr) = 0;
-
 	/// @brief Load all resources referenced by an open chunk stream.
 	/// Stream must be positioned at the resource section.
 	// void LoadResources(std::ifstream& ifs);
@@ -86,29 +78,74 @@ public:
 	/// @brief Load engine default/built-in resources (fonts, primitives, fallback materials, etc.).
 	virtual void LoadDefaultResources() = 0;
 
-	template <typename TYPE>
-	void DeleteAll(FTDS::Array<FTDS::HashMap<TYPE*>*>* resMap)
+	void DeleteAll()
 	{
-		for (auto iter = resMap->Begin(); iter != resMap->End(); ++iter)
+		for (auto iter = mResources->Begin(); iter != mResources->End(); ++iter)
 		{
-			for (auto res = (*iter)->Begin(); res != (*iter)->End(); ++res)
+			for (auto res = (*iter).Begin(); res != (*iter).End(); ++res)
 			{
 				delete (*res)->Value();
 				(*res)->Value() = nullptr;
 			}
-			(*iter)->Clear();
-			delete (*iter);
 		}
-		resMap->Clear();
-		delete resMap;
-		resMap = nullptr;
+		mResources->Clear();
+		delete mResources;
+		mResources = nullptr;
 	}
 
 public:
-	template <typename TYPE>
-	TYPE* GetResMap(FTDS::Array<FTDS::HashMap<FTResource*>*>* res)
+	void InitResMap(size_t resTypeCount)
 	{
-		return res->At(TYPE::ID());
+		mResources = DBG_NEW Core::FTDS::Array<Core::FTDS::HashMap<Core::FTResource*>>;
+		mResources->Reserve(resTypeCount);
+	}
+
+	template <typename TYPE>
+	TYPE* GetResMap(size_t typeIdx)
+	{
+		return mResources->At(typeIdx);
+	}
+
+	template <typename TYPE>
+	TYPE* GetResource(size_t typeIdx, Core::FTDS::String& key)
+	{
+		if (key.Equal(Core::ChunkKey::NullVal::NULL_OBJECT))
+			return nullptr;
+
+		Core::FTDS::Record<Core::FTResource*>* rec = mResources->At(typeIdx).At(key);
+		if (!rec)
+		{
+			Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
+			return nullptr;
+		}
+		return static_cast<TYPE*>(rec->Value());
+	}
+
+	template <typename TYPE>
+	TYPE* GetResource(size_t typeIdx, const char* key)
+	{
+		if (Core::FTDS::StringEqual(key, Core::ChunkKey::NullVal::NULL_OBJECT))
+			return nullptr;
+
+		Core::FTDS::Record<Core::FTResource*>* rec = mResources->At(typeIdx).At(key);
+		if (!rec)
+		{
+			Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
+			return nullptr;
+		}
+		return static_cast<TYPE*>(rec->Value());
+	}
+
+	template <typename TYPE>
+	const Core::FTDS::String GetResName(size_t typeIdx, TYPE* res)
+	{
+		Core::FTDS::HashMap<Core::FTResource*>& resMap = mResources->At(typeIdx);
+		for (auto iter = resMap.Begin(); iter != resMap.End(); ++iter)
+		{
+			if (static_cast<TYPE*>((*iter)->Value()) == res)
+				return (*iter)->Key();
+		}
+		return Core::ChunkKey::NullVal::NULL_OBJECT;
 	}
 
 public:
@@ -155,7 +192,7 @@ public:
 	/// @param resArr Target map. Will be reserved to 'resCount'.
 	/// @param resCount Number of entries to read. Decrements to 0 during import.
 	template <typename FTRESOURCE>
-	void LoadResourceFromChunk(std::ifstream& ifs, FTDS::HashMap<FTRESOURCE*>* resArr, size_t& resCount)
+	void LoadResourceFromChunk(std::ifstream& ifs, Core::FTDS::HashMap<FTRESOURCE*>* resArr, size_t& resCount)
 	{
 		if (resCount < 1)
 			return;
@@ -172,7 +209,7 @@ public:
 	/// @tparam FTRESOURCE Resource concrete type with ctor(FTResourceDef, FoxtrotRenderer*).
 	/// @param renderer Valid renderer used to initialize GPU-backed resources.
 	template <typename FTRESOURCE>
-	void LoadGraphicsResourceFromChunk(std::ifstream& ifs, FTDS::HashMap<FTRESOURCE*>* resArr, size_t& resCount, FoxtrotRenderer* renderer)
+	void LoadGraphicsResourceFromChunk(std::ifstream& ifs, Core::FTDS::HashMap<FTRESOURCE*>* resArr, size_t& resCount, FoxtrotRenderer* renderer)
 	{
 		if (resCount < 1)
 			return;
@@ -186,9 +223,11 @@ public:
 	}
 
 protected:
-	static void AddFileExtensionIfNone(FTDS::String& key, const char* fileType);
+	static void AddFileExtensionIfNone(Core::FTDS::String& key, const char* fileType);
 
 private:
+	Core::FTDS::Array<Core::FTDS::HashMap<Core::FTResource*>>* mResources;
+
 	// FTDS::HashMap<FTPremade*>* mPremades;
 
 	//////////////////////
@@ -229,16 +268,16 @@ private:
 	/// Expects two strings in the stream: relative path then file name.
 	/// Constructs FTRESOURCE with FTResourceDef{fileName, relPath} and inserts to map keyed by file name.
 	template <typename FTRESOURCE>
-	void LoadResource(std::ifstream& ifs, FTDS::HashMap<FTRESOURCE*>* resMap)
+	void LoadResource(std::ifstream& ifs, Core::FTDS::HashMap<FTRESOURCE*>* resMap)
 	{
-		FileIOHelper::BeginDataPackLoad(ifs);
+		Core::FileIOHelper::BeginDataPackLoad(ifs);
 
-		FTDS::String relPath;
-		FTDS::String fileName;
-		FileIOHelper::LoadBasicString(ifs, relPath);
-		FileIOHelper::LoadBasicString(ifs, fileName);
+		Core::FTDS::String relPath;
+		Core::FTDS::String fileName;
+		Core::FileIOHelper::LoadBasicString(ifs, relPath);
+		Core::FileIOHelper::LoadBasicString(ifs, fileName);
 
-		FTResourceDef resDef(fileName, relPath);
+		Core::FTResourceDef resDef(fileName, relPath);
 		FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef);
 
 		assert(0 < resMap->Capacity());
@@ -248,18 +287,18 @@ private:
 	/// @brief Core loader for graphics resources (renderer required).
 	/// Skips certain built-in primitives that should not be re-instantiated from disk.
 	template <typename FTRESOURCE>
-	void LoadResource(std::ifstream& ifs, FTDS::HashMap<FTRESOURCE*>* resMap, FoxtrotRenderer* renderer)
+	void LoadResource(std::ifstream& ifs, Core::FTDS::HashMap<FTRESOURCE*>* resMap, FoxtrotRenderer* renderer)
 	{
 		assert(renderer);
 
-		FileIOHelper::BeginDataPackLoad(ifs);
+		Core::FileIOHelper::BeginDataPackLoad(ifs);
 
-		FTDS::String relPath;
-		FTDS::String fileName;
-		FileIOHelper::LoadBasicString(ifs, relPath);
-		FileIOHelper::LoadBasicString(ifs, fileName);
+		Core::FTDS::String relPath;
+		Core::FTDS::String fileName;
+		Core::FileIOHelper::LoadBasicString(ifs, relPath);
+		Core::FileIOHelper::LoadBasicString(ifs, fileName);
 
-		FTResourceDef resDef(fileName, relPath);
+		Core::FTResourceDef resDef(fileName, relPath);
 		FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef, renderer);
 
 		if (fileName.Equal(ChunkKey::PRIMITIVE_SQUARE_VTX))
@@ -276,7 +315,7 @@ private:
 	/// @brief Utility to delete all values and clear a pointer map (safe if already empty).
 	/// @details Template is intended to be instantiated with pointer types, e.g., ClearMap<FTTexture*>(...).
 	template <typename FTRESOURCE>
-	void ClearMap(FTDS::HashMap<FTRESOURCE>* resMap)
+	void ClearMap(Core::FTDS::HashMap<FTRESOURCE>* resMap)
 	{
 		if (resMap)
 		{

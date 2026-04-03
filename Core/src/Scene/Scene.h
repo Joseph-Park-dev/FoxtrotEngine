@@ -13,73 +13,75 @@
 #pragma once
 #include "static/FTString.h"
 
-class Actor;
-class FTCore;
-class SpriteRendererComponent;
-class FTInputDevice;
-class FoxtrotRenderer;
-namespace FTDS
+namespace Core
 {
-	class String;
-	template <typename TYPE>
-	class DynamicArray;
-}
+	class Actor;
+	class FTCore;
+	class FTInputDevice;
+	class FoxtrotRenderer;
+	namespace FTDS
+	{
+		class String;
+		template <typename TYPE>
+		class DynamicArray;
+	} // namespace FTDS
 
-class Scene
-{
-public:
-	void AddActor(Actor* actor);
-	void RemoveActor(Actor* actor);
+	class Scene
+	{
+	public:
+		void AddActor(Actor* actor);
+		void RemoveActor(Actor* actor);
 
-	Actor* FindActor(int id);
-	virtual Actor* FindActor(FTDS::String& name, Actor* filter = nullptr);
-	Actor* FindActor(const char* name, Actor* filter = nullptr);
+		Actor*		   FindActor(int id);
+		virtual Actor* FindActor(FTDS::String& name, Actor* filter = nullptr);
+		Actor*		   FindActor(const char* name, Actor* filter = nullptr);
 
-public:
-	const FTDS::String&				  GetName();
-	const bool						  GetIsUpdatingActors() const;
-	const FTDS::DynamicArray<Actor*>* GetActors() const;
+	public:
+		const FTDS::String&				  GetName();
+		const bool						  GetIsUpdatingActors() const;
+		const FTDS::DynamicArray<Actor*>* GetActors() const;
 
-	void SetName(const FTDS::String&& name);
-	void SetIsUpdatingActors(bool value) { mIsUpdatingActors = value; }
+		void SetName(const FTDS::String&& name);
+		void SetIsUpdatingActors(bool value) { mIsUpdatingActors = value; }
 
-	FTDS::DynamicArray<Actor*>*& Actors();
+		FTDS::DynamicArray<Actor*>*& Actors();
 
-public:
-	void		 ProcessEvent();
-	virtual void DeleteAll();
+	public:
+		void		 ProcessEvent();
+		virtual void DeleteAll();
 
-private:
-	/// @brief Active actors managed by the scene.
-	FTDS::DynamicArray<Actor*>* mActors;
+	private:
+		/// @brief Active actors managed by the scene.
+		FTDS::DynamicArray<Actor*>* mActors;
 
-	/// @brief Actors pending addition while updates are in progress.
-	FTDS::DynamicArray<Actor*>* mPendingActors;
+		/// @brief Actors pending addition while updates are in progress.
+		FTDS::DynamicArray<Actor*>* mPendingActors;
 
-	/// @brief Human-readable scene name.
-	FTDS::String mSceneName;
+		/// @brief Human-readable scene name.
+		FTDS::String mSceneName;
 
-	/// @brief True while the scene is iterating/updating actors.
-	bool mIsUpdatingActors;
+		/// @brief True while the scene is iterating/updating actors.
+		bool mIsUpdatingActors;
 
-public:
-	/// @brief Constructs an empty scene.
-	Scene();
+	public:
+		/// @brief Constructs an empty scene.
+		Scene();
 
-	/// @brief Destroys the scene and releases owned resources.
-	virtual ~Scene();
+		/// @brief Destroys the scene and releases owned resources.
+		virtual ~Scene();
 
-private:
-	/// @brief Commits pending actors to the active collection.
-	/// @details
-	/// Called after updates when it is safe to mutate actor arrays.
-	void AddPendingActors();
+	private:
+		/// @brief Commits pending actors to the active collection.
+		/// @details
+		/// Called after updates when it is safe to mutate actor arrays.
+		void AddPendingActors();
 
-	/// @brief Removes and cleans up actors marked as dead.
-	/// @details
-	/// Executes after updates to keep collections consistent.
-	void ClearDeadActors();
+		/// @brief Removes and cleans up actors marked as dead.
+		/// @details
+		/// Executes after updates to keep collections consistent.
+		void ClearDeadActors();
 
-	/// @brief Grants `EventManager` access to private event integration.
-	friend class EventManager;
-};
+		/// @brief Grants `EventManager` access to private event integration.
+		friend class EventManager;
+	};
+} // namespace Core

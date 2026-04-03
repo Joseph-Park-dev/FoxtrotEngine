@@ -1,19 +1,23 @@
 #pragma once
 
-namespace FTDS
+namespace Core
 {
-	template <typename TYPE>
-	struct Node
+	namespace FTDS
 	{
-		/// <summary>
-		/// Node template to be used for dynamic data structure.
-		/// </summary>
-		Node(TYPE val)
-			: Value(val)
-			, Next(nullptr)
-		{}
+		template <typename TYPE>
+		struct Node
+		{
+			/// <summary>
+			/// Node template to be used for dynamic data structure.
+			/// </summary>
+			Node(TYPE val)
+				: Value(val)
+				, Next(nullptr)
+			{
+			}
 
-		TYPE	Value;
-		Node*	Next;
-	};
-}
+			TYPE  Value;
+			Node* Next;
+		};
+	} // namespace FTDS
+} // namespace Core

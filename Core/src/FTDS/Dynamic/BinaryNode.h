@@ -1,19 +1,26 @@
 #pragma once
-template <typename TYPE>
-struct BinaryNode
+namespace Core
 {
-	BinaryNode(int key, TYPE val)
-		: Key	(key)
-		, Value	(val)
-		, Left	(nullptr)
-		, Right	(nullptr)
-	{}
+	namespace FTDS
+	{
+		template <typename TYPE>
+		struct BinaryNode
+		{
+			BinaryNode(int key, TYPE val)
+				: Key(key)
+				, Value(val)
+				, Left(nullptr)
+				, Right(nullptr)
+			{
+			}
 
-	bool IsLeaf() { return Left == nullptr && Right == nullptr; }
+			bool IsLeaf() { return Left == nullptr && Right == nullptr; }
 
-	int			Key;
-	TYPE		Value;
+			int	 Key;
+			TYPE Value;
 
-	BinaryNode*	Left;
-	BinaryNode*	Right;
-};
+			BinaryNode* Left;
+			BinaryNode* Right;
+		};
+	} // namespace FTDS
+} // namespace Core

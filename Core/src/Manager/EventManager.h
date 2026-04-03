@@ -12,32 +12,32 @@
 #pragma once
 #include "SingletonMacro.h"
 
-enum class EVENT_TYPE;
-namespace FTDS
+#include "FTDS/Dynamic/DynamicArray.h"
+
+namespace Core
 {
-	template <typename TYPE>
-	class DynamicArray;
-}
+	enum class EVENT_TYPE;
 
-struct FTEvent
-{
-	EVENT_TYPE incident;
-	void*	   eventData;
-};
+	struct FTEvent
+	{
+		EVENT_TYPE incident;
+		void*	   eventData;
+	};
 
-class EventManager
-{
-	SINGLETON(EventManager)
+	class EventManager
+	{
+		SINGLETON(EventManager)
 
-public:
-	void AddEvent(const FTEvent& addedEvent);
+	public:
+		void AddEvent(const FTEvent& addedEvent);
 
-private:
-	FTDS::DynamicArray<FTEvent>* mEvent;
+	private:
+		FTDS::DynamicArray<FTEvent>* mEvent;
 
-public:
-	void ProcessEvent();
+	public:
+		void ProcessEvent();
 
-private:
-	void Execute(const FTEvent& executedEvent);
-};
+	private:
+		void Execute(const FTEvent& executedEvent);
+	};
+} // namespace Core

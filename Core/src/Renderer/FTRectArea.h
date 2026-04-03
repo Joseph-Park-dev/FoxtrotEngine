@@ -12,86 +12,88 @@
 
 #pragma once
 #include <iosfwd>
-
 #include "Math/FTMath.h"
 #include "Plugin/CoreExports.h"
 
-class FTRectArea
+namespace Core
 {
-public:
-	bool Overlaps(const FTVector2& point);
-	// bool Overlaps(const FTRectArea& other);
-
-public:
-	FTVector2&		 GetSize() { return mSize; }
-	const FTVector2& GetCenter() { return mCenter; }
-	const FTVector2& GetMin() { return mMin; }
-	const FTVector2& GetMax() { return mMax; }
-	const float&	 GetRotAngle() { return mRotAngle; }
-
-	// Update FTRectArea values using the new ones.
-	void Set(FTVector2 center, FTVector2 dimension, float rotAngle = 0);
-
-	/// @brief Update FTRectArea values
-	/// @param posX Top left position X
-	/// @param posY Top left position Y
-	void Set(float posX, float posY, float width, float height, float rotAngle = 0)
+	class FTRectArea
 	{
-		mWidth	  = width;
-		mHeight	  = height;
-		mSize	  = FTVector2(width, height);
-		mCenter	  = FTVector2(posX, posY) + (mSize * 0.5f);
-		mMin	  = mCenter - mSize / 2;
-		mMax	  = mCenter + mSize / 2;
-		mRotAngle = rotAngle;
-	}
+	public:
+		bool Overlaps(const FTVector2& point);
+		// bool Overlaps(const FTRectArea& other);
 
-	static const FTRectArea Zero;
+	public:
+		FTVector2&		 GetSize() { return mSize; }
+		const FTVector2& GetCenter() { return mCenter; }
+		const FTVector2& GetMin() { return mMin; }
+		const FTVector2& GetMax() { return mMax; }
+		const float&	 GetRotAngle() { return mRotAngle; }
 
-public:
-	bool operator==(FTRectArea& other)
-	{
-		return this->mMin == other.mMin && this->mMax == other.mMax;
-	}
+		// Update FTRectArea values using the new ones.
+		void Set(FTVector2 center, FTVector2 dimension, float rotAngle = 0);
 
-public:
-	FTRectArea();
-	FTRectArea(float x, float y, float width, float height, float rotAngle = 0)
-	{
-		Set(x, y, width, height, rotAngle);
-	}
-	void CloneTo(FTRectArea* rect);
+		/// @brief Update FTRectArea values
+		/// @param posX Top left position X
+		/// @param posY Top left position Y
+		void Set(float posX, float posY, float width, float height, float rotAngle = 0)
+		{
+			mWidth	  = width;
+			mHeight	  = height;
+			mSize	  = FTVector2(width, height);
+			mCenter	  = FTVector2(posX, posY) + (mSize * 0.5f);
+			mMin	  = mCenter - mSize / 2;
+			mMax	  = mCenter + mSize / 2;
+			mRotAngle = rotAngle;
+		}
 
-private:
-	FTVector2 mCenter;
-	float	  mWidth;
-	float	  mHeight;
-	float	  mRotAngle; // Rotated angle in radian
-	FTVector2 mSize;
-	FTVector2 mMax;
-	FTVector2 mMin;
+		static const FTRectArea Zero;
+
+	public:
+		bool operator==(FTRectArea& other)
+		{
+			return this->mMin == other.mMin && this->mMax == other.mMax;
+		}
+
+	public:
+		FTRectArea();
+		FTRectArea(float x, float y, float width, float height, float rotAngle = 0)
+		{
+			Set(x, y, width, height, rotAngle);
+		}
+		void CloneTo(FTRectArea* rect);
+
+	private:
+		FTVector2 mCenter;
+		float	  mWidth;
+		float	  mHeight;
+		float	  mRotAngle; // Rotated angle in radian
+		FTVector2 mSize;
+		FTVector2 mMax;
+		FTVector2 mMin;
 
 #ifdef FOXTROT_EDITOR
-public:
-	void UpdateUI();
+	public:
+		void UpdateUI();
 #endif
-};
+	};
 
-namespace ChunkKey
-{
-	constexpr const char* FTRectArea		  = "FTRectArea";
-	constexpr const char* FTRectArea_CENTER	  = "Center";
-	constexpr const char* FTRectArea_SIZE	  = "Size";
-	constexpr const char* FTRectArea_ROTANGLE = "RotAngle";
-} // namespace ChunkKey
+	namespace ChunkKey
+	{
+		constexpr const char* FTRectArea		  = "FTRectArea";
+		constexpr const char* FTRectArea_CENTER	  = "Center";
+		constexpr const char* FTRectArea_SIZE	  = "Size";
+		constexpr const char* FTRectArea_ROTANGLE = "RotAngle";
+	} // namespace ChunkKey
 
-using FTRECTAREA_CONSTRUCTOR = FTRectArea* (*)();
-using FTRECTAREA_SAVE		 = void (*)(std::ofstream*, FTRectArea*);
-using FTRECTAREA_LOAD		 = void (*)(std::ifstream*, FTRectArea*);
+	using FTRECTAREA_CONSTRUCTOR = FTRectArea* (*)();
+	using FTRECTAREA_SAVE		 = void (*)(std::ofstream*, FTRectArea*);
+	using FTRECTAREA_LOAD		 = void (*)(std::ifstream*, FTRectArea*);
 
-extern "C"
-{
-	CORE_API FTRectArea* CreateFTRectArea();
-	CORE_API void		 SaveProperties(std::ofstream* ofs, FTRectArea* rectArea);
-	CORE_API void		 LoadProperties(std::ifstream* ifs, FTRectArea* rectArea);
-}
+	extern "C"
+	{
+		CORE_API FTRectArea* CreateFTRectArea();
+		CORE_API void		 SaveProperties(std::ofstream* ofs, FTRectArea* rectArea);
+		CORE_API void		 LoadProperties(std::ifstream* ifs, FTRectArea* rectArea);
+	}
+} // namespace Core

@@ -11,12 +11,9 @@
 #include <string>
 
 #include "Math/FTMath.h"
-#include "Core/TemplateFunctions.h"
-#include "Actors/Actor.h"
-
-Command::Command()
-{
-}
+#include "TemplateFunctions.h"
+#include "Actor/Actor.h"
+#include "Actor/ActorGroup.h"
 
 void IntEditCommand::Do()
 {
@@ -105,28 +102,6 @@ WStrEditCommand::~WStrEditCommand()
 {
 }
 
-void B2Vec2EditCommand::Do()
-{
-	mValue = mNextValue;
-}
-
-void B2Vec2EditCommand::Undo()
-{
-	mValue = mPrevValue;
-}
-
-void B2Vec2EditCommand::SetNextVal(b2Vec2 nextVal)
-{
-	mNextValue = nextVal;
-}
-
-B2Vec2EditCommand::B2Vec2EditCommand(b2Vec2& valRef)
-	: mPrevValue(valRef)
-	, mValue(valRef)
-	, mNextValue(b2Vec2_zero)
-{
-}
-
 void Vector3EditCommand::Do()
 {
 	mValue = mNextValue;
@@ -149,26 +124,6 @@ void Vector3EditCommand::SetNextVal(FTVector3 nextVal)
 
 Vector3EditCommand::Vector3EditCommand(FTVector3& valRef)
 	: mPrevValue(valRef), mValue(valRef), mNextValue(FTVector3::Zero)
-{
-}
-
-void DXVector3EditCommand::Do()
-{
-	mValue = mNextValue;
-}
-
-void DXVector3EditCommand::Undo()
-{
-	mValue = mPrevValue;
-}
-
-void DXVector3EditCommand::SetNextVal(DirectX::SimpleMath::Vector3 nextVal)
-{
-	mNextValue = nextVal;
-}
-
-DXVector3EditCommand::DXVector3EditCommand(DirectX::SimpleMath::Vector3& valRef)
-	: mPrevValue(valRef), mValue(valRef), mNextValue(DirectX::SimpleMath::Vector3(0.0f))
 {
 }
 

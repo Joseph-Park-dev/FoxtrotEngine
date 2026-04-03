@@ -22,76 +22,79 @@
 #include "SingletonMacro.h"
 #include "static/FTString.h"
 
-class Transform;
-class Actor;
-class Component;
-class Scene;
-
-struct ChunkData
+namespace Core
 {
-	size_t ActorCount;
-};
+	class Transform;
+	class Actor;
+	class Component;
+	class Scene;
 
-class ChunkLoader
-{
-	SINGLETON_PROTECTED(ChunkLoader)
+	struct ChunkData
+	{
+		size_t ActorCount;
+	};
 
-	// Member Functions for editor level to generate chunk.json files
-public:
-	virtual void SaveChunk(FTDS::String& fileName);
-	virtual void LoadChunk(FTDS::String& fileName);
+	class ChunkLoader
+	{
+		SINGLETON_PROTECTED(ChunkLoader)
 
-	void Lock();
-	void Unlock();
+		// Member Functions for editor level to generate chunk.json files
+	public:
+		virtual void SaveChunk(FTDS::String& fileName);
+		virtual void LoadChunk(FTDS::String& fileName);
 
-	void CopyChunk(FTDS::String& path);
-	void DeleteCopiedChunk();
+		void Lock();
+		void Unlock();
 
-public:
-	//ComponentLoadMap& GetComponentLoadMap() { return mComponentLoadMap; }
+		void CopyChunk(FTDS::String& path);
+		void DeleteCopiedChunk();
 
-	const bool IsLoadingChunk() const;
+	public:
+		// ComponentLoadMap& GetComponentLoadMap() { return mComponentLoadMap; }
 
-	FTDS::String& CurrentChunk();
+		const bool IsLoadingChunk() const;
 
-	const int GetMaxActorID() const;
-	// Add actor count by 1.
-	void AddMaxActorID();
+		FTDS::String& CurrentChunk();
 
-	void ResetMaxActorID();
+		const int GetMaxActorID() const;
+		// Add actor count by 1.
+		void AddMaxActorID();
 
-protected:
-	// Save .Chunk for the editor
-	void SaveChunkData(std::ofstream& out);
-	void LoadChunkData(std::ifstream& out);
+		void ResetMaxActorID();
 
-protected:
-	virtual void SaveActorsData(std::ofstream& ofs);
-	virtual void LoadActorsData(std::ifstream& ifs);
+	protected:
+		// Save .Chunk for the editor
+		void SaveChunkData(std::ofstream& out);
+		void LoadChunkData(std::ifstream& out);
 
-private:
-	ChunkData		 mCurrentChunkData;
-	bool			 mIsLoading;
+	protected:
+		virtual void SaveActorsData(std::ofstream& ofs);
+		virtual void LoadActorsData(std::ifstream& ifs);
 
-	// Name of the copied .chunk file.
-	FTDS::String mCurrentChunkCopy;
-	int			 mMaxActorID;
-};
+	private:
+		ChunkData mCurrentChunkData;
+		bool	  mIsLoading;
 
-namespace ChunkKey
-{
-	// Data Pack Names
-	constexpr const char* CHUNK_DATA	= "Chunk Data";
-	constexpr const char* ACTOR_DATA	= "Actor Data";
-	constexpr const char* RESOURCE_DATA = "Resource Data";
+		// Name of the copied .chunk file.
+		FTDS::String mCurrentChunkCopy;
+		int			 mMaxActorID;
+	};
 
-	constexpr const char* ACTOR_PROPERTIES = "Actor Properties";
-	constexpr const char* TRANSFORM		   = "Transform";
+	namespace ChunkKey
+	{
+		// Data Pack Names
+		constexpr const char* CHUNK_DATA	= "Chunk Data";
+		constexpr const char* ACTOR_DATA	= "Actor Data";
+		constexpr const char* RESOURCE_DATA = "Resource Data";
 
-	constexpr const char* GAME_DATA		  = "Game Data";
-	constexpr const char* CHUNK_LIST	  = "Chunk List";
-	constexpr const char* CHUNK_LIST_PATH = "Chunk List Path";
+		constexpr const char* ACTOR_PROPERTIES = "Actor Properties";
+		constexpr const char* TRANSFORM		   = "Transform";
 
-	// Actor Related
-	constexpr const char* ACTOR_COUNT = "Actor Count";
-} // namespace ChunkKey
+		constexpr const char* GAME_DATA		  = "Game Data";
+		constexpr const char* CHUNK_LIST	  = "Chunk List";
+		constexpr const char* CHUNK_LIST_PATH = "Chunk List Path";
+
+		// Actor Related
+		constexpr const char* ACTOR_COUNT = "Actor Count";
+	} // namespace ChunkKey
+} // namespace Core

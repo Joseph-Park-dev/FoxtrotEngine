@@ -14,70 +14,73 @@
 #pragma once
 #include "TemplateFunctions.h"
 
-enum class ActorGroup
+namespace Core
 {
-	NOT_ASSIGNED = 0X00000000, // Do not assign this value manually.
-
-	DEFAULT = 0x00000001,
-	PLAYER	= 0x00000002,
-	ENEMY	= 0x00000003,
-	GROUND	= 0x00000004,
-	UI		= 0x00000005,
-
-	END
-};
-
-struct ActorGroupUtil
-{
-	static const size_t GetCount()
+	enum class ActorGroup
 	{
-		return static_cast<size_t>(ActorGroup::END) - 1;
-	}
+		NOT_ASSIGNED = 0X00000000, // Do not assign this value manually.
 
-	static const char* GetActorGroupStr(ActorGroup group)
-	{
-		return ActorGroupString[(size_t)group];
-	}
+		DEFAULT = 0x00000001,
+		PLAYER	= 0x00000002,
+		ENEMY	= 0x00000003,
+		GROUND	= 0x00000004,
+		UI		= 0x00000005,
 
-	static const char* GetActorGroupStr(size_t index)
-	{
-		return ActorGroupString.at(index + 1);
-	}
-
-	// Index does not guarantee to be ranged within the active elements.
-	// For example, index 0 will return NOT_ASSIGNED, which is not used.
-	static ActorGroup GetActorGroup(size_t index)
-	{
-		return static_cast<ActorGroup>(index);
-	}
-
-	static ActorGroup GetActorGroup(FTDS::String str)
-	{
-		auto it = std::find(ActorGroupString.begin(), ActorGroupString.end(), str);
-		if (it != ActorGroupString.end())
-		{
-			auto index = it - ActorGroupString.begin();
-			return (ActorGroup)index;
-		}
-		else
-		{
-			LogString("ERROR : GetActorGroup()-> cannot find the actorgroup");
-			return ActorGroup::DEFAULT;
-		}
-	}
-
-	static inline std::vector<const char*> ActorGroupString = {
-		"NOT_ASSIGNED",
-		"DEFAULT",
-		"PLAYER",
-		"ENEMY",
-		"GROUND",
-		"UI",
-		"END"
+		END
 	};
-};
 
-namespace ChunkKey
-{
-	constexpr const char* ACTOR_GROUP = "Actor Group";
-}
+	struct ActorGroupUtil
+	{
+		static const size_t GetCount()
+		{
+			return static_cast<size_t>(ActorGroup::END) - 1;
+		}
+
+		static const char* GetActorGroupStr(ActorGroup group)
+		{
+			return ActorGroupString[(size_t)group];
+		}
+
+		static const char* GetActorGroupStr(size_t index)
+		{
+			return ActorGroupString.at(index + 1);
+		}
+
+		// Index does not guarantee to be ranged within the active elements.
+		// For example, index 0 will return NOT_ASSIGNED, which is not used.
+		static ActorGroup GetActorGroup(size_t index)
+		{
+			return static_cast<ActorGroup>(index);
+		}
+
+		static ActorGroup GetActorGroup(FTDS::String str)
+		{
+			auto it = std::find(ActorGroupString.begin(), ActorGroupString.end(), str);
+			if (it != ActorGroupString.end())
+			{
+				auto index = it - ActorGroupString.begin();
+				return (ActorGroup)index;
+			}
+			else
+			{
+				LogString("ERROR : GetActorGroup()-> cannot find the actorgroup");
+				return ActorGroup::DEFAULT;
+			}
+		}
+
+		static inline std::vector<const char*> ActorGroupString = {
+			"NOT_ASSIGNED",
+			"DEFAULT",
+			"PLAYER",
+			"ENEMY",
+			"GROUND",
+			"UI",
+			"END"
+		};
+	};
+
+	namespace ChunkKey
+	{
+		constexpr const char* ACTOR_GROUP = "Actor Group";
+	}
+} // namespace Core

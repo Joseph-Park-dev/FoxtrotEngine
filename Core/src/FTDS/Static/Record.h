@@ -1,34 +1,37 @@
 #pragma once
 #include "Compare/StringEqual.h"
 
-namespace FTDS
+namespace Core
 {
-	template <typename TYPE>
-	class Record
+	namespace FTDS
 	{
-	public:
-		bool Equal(FTDS::String&& key) { return mKey.Equal(key.C_Str()); }
-		bool Equal(const char* key) { return mKey.Equal(std::move(key)); }
-
-	public:
-		FTDS::String& Key() { return mKey; }
-		TYPE&		  Value() { return mValue; }
-
-	public:
-		Record(Record* rec)
+		template <typename TYPE>
+		class Record
 		{
-			rec->mKey	= this->mKey;
-			rec->mValue = this->mValue;
-		}
+		public:
+			bool Equal(FTDS::String&& key) { return mKey.Equal(key.C_Str()); }
+			bool Equal(const char* key) { return mKey.Equal(std::move(key)); }
 
-		Record(FTDS::String key, TYPE value)
-		{
-			mKey.Assign(key);
-			mValue = value;
-		}
+		public:
+			FTDS::String& Key() { return mKey; }
+			TYPE&		  Value() { return mValue; }
 
-	private:
-		FTDS::String mKey;
-		TYPE		 mValue;
-	};
-} // namespace FTDS
+		public:
+			Record(Record* rec)
+			{
+				rec->mKey	= this->mKey;
+				rec->mValue = this->mValue;
+			}
+
+			Record(FTDS::String key, TYPE value)
+			{
+				mKey.Assign(key);
+				mValue = value;
+			}
+
+		private:
+			FTDS::String mKey;
+			TYPE		 mValue;
+		};
+	} // namespace FTDS
+} // namespace Core

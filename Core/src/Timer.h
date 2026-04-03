@@ -15,20 +15,23 @@
 
 #include "SingletonMacro.h"
 
-#define FT_TICKS_PASSED(A, B)  ((__int64)((B) - (A)) <= 0)
-
-class Timer
+namespace Core
 {
-	SINGLETON(Timer)
+#define FT_TICKS_PASSED(A, B) ((__int64)((B) - (A)) <= 0)
 
-public:
-	void   Update();
-	float  GetDeltaTime() const { return mDeltaTime; }
+	class Timer
+	{
+		SINGLETON(Timer)
 
-private:
-	__int64			mFrequencyForASecond;
-	LARGE_INTEGER	mLastTicks;
-	float			mTimeScale;
-	
-	float			mDeltaTime;
-};
+	public:
+		void  Update();
+		float GetDeltaTime() const { return mDeltaTime; }
+
+	private:
+		__int64		  mFrequencyForASecond;
+		LARGE_INTEGER mLastTicks;
+		float		  mTimeScale;
+
+		float mDeltaTime;
+	};
+} // namespace Core

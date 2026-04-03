@@ -13,9 +13,6 @@
 /// </summary>
 
 #pragma once
-#include <functional>
-#include <directxtk/SimpleMath.h>
-
 #include "SingletonMacro.h"
 #include "FTDS/Static/ArrayStack.h"
 
@@ -46,12 +43,8 @@ public:
 	void UpdateFloatValue(const char* label, float& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateBoolValue(const char* label, bool& ref);
 	void UpdateVector2Value(const char* label, FTVector2& ref, float modSpeed = FLOATMOD_SPEED);
-	void UpdateVector2Value(const char* label, DirectX::SimpleMath::Vector2& ref, float modSpeed = FLOATMOD_SPEED);
-	void UpdateVector2Value(const char* label, b2Vec2& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateVector3Value(const char* label, FTVector3& ref, float modSpeed = FLOATMOD_SPEED);
-	void UpdateVector3Value(const char* label, DirectX::SimpleMath::Vector3& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateVector4Value(const char* label, FTVector4& ref, float modSpeed = FLOATMOD_SPEED);
-	void UpdateVector4Value(const char* label, DirectX::SimpleMath::Vector4& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateStringValue(const char* label, FTDS::String& ref);
 
 public:

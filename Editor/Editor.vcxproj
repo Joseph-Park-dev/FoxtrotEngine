@@ -143,7 +143,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\Core\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Core\src;..\D3D11\src;..\Math\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -192,6 +192,7 @@
     <ClCompile Include="src\EditorScene.cpp" />
     <ClCompile Include="src\EditorSceneManager.cpp" />
     <ClCompile Include="src\FTCoreEditor.cpp" />
+    <ClCompile Include="src\Plugin\FoxtrotEditor.cpp" />
     <ClCompile Include="src\ViewportRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>

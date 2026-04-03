@@ -21,148 +21,151 @@
 
 #include "Plugin/CoreExports.h"
 
-class Actor;
-class FTInputDevice;
-class FoxtrotRenderer;
-
-using COMP_CONSTRUCTOR = Component* (*)(Actor * actor);
-
-class Plugin
+namespace Core
 {
-public:
-	template <typename COMP>
-	void AssignComponent(Actor* actor)
+	class Actor;
+	class FTInputDevice;
+	class FoxtrotRenderer;
+
+	using COMP_CONSTRUCTOR = Component* (*)(Actor * actor);
+
+	class Plugin
 	{
-		if (!mModule)
+	public:
+		template <typename COMP>
+		void AssignComponent(Actor* actor)
 		{
-			Debug::LogError(__LINE__, __FILE__, "Module is null");
-			return;
+			if (!mModule)
+			{
+				Debug::LogError(__LINE__, __FILE__, "Module is null");
+				return;
+			}
+
+			COMP_CONSTRUCTOR compConstruct = GetConstructor("Create");
+			assert(compConstruct);
+			mRegisteredComps.PushBack(compConstruct(actor));
 		}
 
-		COMP_CONSTRUCTOR compConstruct = GetConstructor("Create");
-		assert(compConstruct);
-		mRegisteredComps.PushBack(compConstruct(actor));
-	}
+	public:
+		virtual void SaveProperties() = 0;
+		virtual void LoadProperties() = 0;
 
-public:
-	virtual void SaveProperties() = 0;
-	virtual void LoadProperties() = 0;
+		inline static FTCore* gBase;
 
-	inline static FTCore* gBase;
+	public:
+		HMODULE& GetModule() { return mModule; }
 
-public:
-	HMODULE& GetModule() { return mModule; }
-
-public:
-	virtual void Initialize()
-	{
-		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
-			if (!(*iter)->GetIsInitialized())
-				(*iter)->Initialize();
-	}
-
-	void Setup()
-	{
-		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
-			if (!(*iter)->GetIsSetup())
-				(*iter)->Setup();
-	}
-
-	// Gameloop functions.
-	virtual void ProcessInput()
-	{
-		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+	public:
+		virtual void Initialize()
 		{
-			if (!(*iter)->GetOwner()->IsActive())
-				continue;
+			for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+				if (!(*iter)->GetIsInitialized())
+					(*iter)->Initialize();
 		}
-	}
-	void Update(float deltaTime)
-	{
-		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+
+		void Setup()
 		{
-			if (!(*iter)->GetOwner()->IsActive())
-				continue;
-			(*iter)->Update(deltaTime);
+			for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+				if (!(*iter)->GetIsSetup())
+					(*iter)->Setup();
 		}
-	}
 
-	void LateUpdate(float deltaTime)
-	{
-		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+		// Gameloop functions.
+		virtual void ProcessInput()
 		{
-			if (!(*iter)->GetOwner()->IsActive())
-				continue;
-			(*iter)->LateUpdate(deltaTime);
+			for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+			{
+				if (!(*iter)->GetOwner()->IsActive())
+					continue;
+			}
 		}
-	}
-	virtual void Render(FoxtrotRenderer* renderer)
-	{
-		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+		void Update(float deltaTime)
 		{
-			if (!(*iter)->GetOwner()->IsActive())
-				continue;
-			(*iter)->Render(renderer);
+			for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+			{
+				if (!(*iter)->GetOwner()->IsActive())
+					continue;
+				(*iter)->Update(deltaTime);
+			}
 		}
-	}
 
-	void Clear()
+		void LateUpdate(float deltaTime)
+		{
+			for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+			{
+				if (!(*iter)->GetOwner()->IsActive())
+					continue;
+				(*iter)->LateUpdate(deltaTime);
+			}
+		}
+		virtual void Render(FoxtrotRenderer* renderer)
+		{
+			for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+			{
+				if (!(*iter)->GetOwner()->IsActive())
+					continue;
+				(*iter)->Render(renderer);
+			}
+		}
+
+		void Clear()
+		{
+			if (0 < mRegisteredComps->GetSize())
+				mRegisteredComps->Clear();
+			delete mRegisteredComps;
+		}
+
+	public:
+		void SetModule(HMODULE module)
+		{
+			mModule = module;
+		}
+
+	public:
+		Plugin(FTCore* base)
+			: mModule(NULL)
+			, mRegisteredComps(DBG_NEW FTDS::DynamicArray<Component*>)
+			, mCreateFuncs(DBG_NEW FTDS::DynamicArray<Component* (*)(Actor*)>)
+		{
+			gBase = base;
+		}
+
+		virtual ~Plugin()
+		{
+			Clear();
+			Unload();
+		}
+
+		// public:
+		//	void SaveProperties(std::ofstream& ofs) override;
+		//	void LoadProperties(std::ifstream& ifs) override;
+
+	protected:
+		const COMP_CONSTRUCTOR GetConstructor(const char* procName) const
+		{
+			return (COMP_CONSTRUCTOR)(GetProcAddress(mModule, procName));
+		}
+
+	private:
+		HMODULE										mModule;
+		FTDS::DynamicArray<Component*>*				mRegisteredComps;
+		FTDS::DynamicArray<Component* (*)(Actor*)>* mCreateFuncs;
+		// FTDS::HashMap<Component* (*)(Actor * actor)>* mCompMap;
+
+	private:
+		void Unload() const
+		{
+			FreeLibrary(mModule);
+		}
+	};
+
+	namespace ChunkKey
 	{
-		if (0 < mRegisteredComps->GetSize())
-			mRegisteredComps->Clear();
-		delete mRegisteredComps;
-	}
+		namespace Plugin
+		{
+			constexpr const char* PLUGIN_DATA = "Plugin Data";
+		}
+	} // namespace ChunkKey
 
-public:
-	void SetModule(HMODULE module)
-	{
-		mModule = module;
-	}
-
-public:
-	Plugin(FTCore* base)
-		: mModule(NULL)
-		, mRegisteredComps(DBG_NEW FTDS::DynamicArray<Component*>)
-		, mCreateFuncs(DBG_NEW FTDS::DynamicArray<Component* (*)(Actor*)>)
-	{
-		gBase = base;
-	}
-
-	virtual ~Plugin()
-	{
-		Clear();
-		Unload();
-	}
-
-	// public:
-	//	void SaveProperties(std::ofstream& ofs) override;
-	//	void LoadProperties(std::ifstream& ifs) override;
-
-protected:
-	const COMP_CONSTRUCTOR GetConstructor(const char* procName) const
-	{
-		return (COMP_CONSTRUCTOR)(GetProcAddress(mModule, procName));
-	}
-
-private:
-	HMODULE										mModule;
-	FTDS::DynamicArray<Component*>*				mRegisteredComps;
-	FTDS::DynamicArray<Component* (*)(Actor*)>* mCreateFuncs;
-	// FTDS::HashMap<Component* (*)(Actor * actor)>* mCompMap;
-
-private:
-	void Unload() const
-	{
-		FreeLibrary(mModule);
-	}
-};
-
-namespace ChunkKey
-{
-	namespace Plugin
-	{
-		constexpr const char* PLUGIN_DATA = "Plugin Data";
-	}
-} // namespace ChunkKey
-
-extern "C" __declspec(dllexport) Plugin* CreatePlugin(FTCore* base);
+	extern "C" __declspec(dllexport) Plugin* CreatePlugin(FTCore* base);
+} // namespace Core

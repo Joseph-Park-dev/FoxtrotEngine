@@ -28,7 +28,7 @@ public:
 	FTRectangle* GetDebugRect();
 
 public:
-	void		 Initialize(FTWindow* renderWindow, UINT pixels, float unit) override;
+	void		 Initialize(FTWindow* renderWindow, unsigned int pixels, float unit) override;
 	virtual void ProcessInput(FTInputDevice* inputDevice);
 	virtual void Update(float deltaTime) override;
 
@@ -40,5 +40,5 @@ private:
 	FTRectangle* mDebugRect;
 
 private:
-	void PanLocalXY(ImVec2 vec2);
+	void PanLocalXY(FTVector2 vec2);
 };

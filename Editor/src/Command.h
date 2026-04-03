@@ -10,13 +10,7 @@
 /// </summary>
 
 #pragma once
-#include <list>
-
-#include "directxtk/SimpleMath.h"
-
 #include "Math/FTMath.h"
-#include "Actor/Actor.h"
-
 #include "FTDS/Static/FTString.h"
 
 class Command
@@ -27,9 +21,6 @@ public:
 
 	/// Set the previous value as the current.
 	virtual void Undo() = 0;
-
-public:
-	Command();
 };
 
 class IntEditCommand : public Command
@@ -104,24 +95,6 @@ private:
 	FTVector2  mNextValue;
 };
 
-class B2Vec2EditCommand : public Command
-{
-public:
-	void Do() override;
-	void Undo() override;
-
-public:
-	void SetNextVal(b2Vec2 nextVal);
-
-public:
-	B2Vec2EditCommand(b2Vec2& valRef);
-
-private:
-	b2Vec2& mValue;
-	b2Vec2	mPrevValue;
-	b2Vec2	mNextValue;
-};
-
 class Vector3EditCommand : public Command
 {
 public:
@@ -139,24 +112,6 @@ private:
 	FTVector3& mValue;
 	FTVector3  mPrevValue;
 	FTVector3  mNextValue;
-};
-
-class DXVector3EditCommand : public Command
-{
-public:
-	void Do() override;
-	void Undo() override;
-
-public:
-	void SetNextVal(DirectX::SimpleMath::Vector3 nextVal);
-
-public:
-	DXVector3EditCommand(DirectX::SimpleMath::Vector3& valRef);
-
-private:
-	DirectX::SimpleMath::Vector3& mValue;
-	DirectX::SimpleMath::Vector3  mPrevValue;
-	DirectX::SimpleMath::Vector3  mNextValue;
 };
 
 class Vector4EditCommand : public Command

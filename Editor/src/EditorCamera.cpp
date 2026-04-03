@@ -8,17 +8,15 @@
 
 #include "EditorCamera.h"
 
-#include <directxtk/SimpleMath.h>
+#include "InputSystem/FTInputDevice.h"
+#include "ResourceSystem/Shape/FTRectangle.h"
+#include "Renderer/FTRectArea.h"
+#include "FTDS/Dynamic/DynamicArray.h"
+#include "Manager/DebugShapes.h"
+#include "Renderer/FTWindow.h"
 
-#include <InputSystem/FTInputDevice.h>
-#include <ResourceSystem/FTRectangle.h>
-#include <Renderer/FTRectArea.h>
-#include <Dynamic/DynamicArray.h>
-#include <Managers/DebugShapes.h>
-#include <WindowSystem/FTWindow.h>
-
-#include <EditorLayer.h>
-#include <EditorSceneManager.h>
+#include "EditorLayer.h"
+#include "EditorSceneManager.h"
 
 EditorCamera::EditorCamera()
 	: Camera()
@@ -29,7 +27,8 @@ EditorCamera::EditorCamera()
 {
 	// EditorCamera needs to be behind the Camera
 	// to let debug rect visible.
-	Position().z = Camera::GetInstance()->GetPosition().z - 0.1f;
+	const FTVector3& camPos = Camera::GetInstance()->GetPosition();
+	SetPosition(camPos.x, camPos.y, camPos.z - 0.1f);
 }
 
 EditorCamera::~EditorCamera()
@@ -43,7 +42,7 @@ FTRectangle* EditorCamera::GetDebugRect()
 	return mDebugRect;
 }
 
-void EditorCamera::Initialize(FTWindow* renderWindow, UINT pixels, float unit)
+void EditorCamera::Initialize(FTWindow* renderWindow, unsigned int pixels, float unit)
 {
 	Camera::Initialize(renderWindow, pixels, unit);
 	DebugShapes::GetInstance()->SetCameraRect(mDebugRect);
@@ -97,7 +96,7 @@ void EditorCamera::Update(float deltaTime)
 	mDebugRect->UpdatePC();
 }
 
-void EditorCamera::PanLocalXY(ImVec2 vec2)
+void EditorCamera::PanLocalXY(FTVector2 vec2)
 {
 	Position().x += vec2.x;
 	Position().y += vec2.y;

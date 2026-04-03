@@ -106,42 +106,6 @@ void CommandHistory::UpdateVector2Value(const char* label, FTVector2& ref, float
 	ref.y = vec2[1];
 }
 
-void CommandHistory::UpdateVector2Value(const char* label, DirectX::SimpleMath::Vector2& ref, float modSpeed)
-{
-	FTVector2 vec2 = FTVector2(ref.x, ref.y);
-	UpdateVector2Value(label, vec2);
-	ref = vec2.GetD3Vec2();
-}
-
-void CommandHistory::UpdateVector2Value(const char* label, b2Vec2& ref, float modSpeed)
-{
-	float vec2[2];
-	vec2[0] = ref.x;
-	vec2[1] = ref.y;
-
-	if (ImGui::DragFloat2(label, vec2, modSpeed))
-	{
-		if (!mIsRecording)
-		{
-			mIsRecording = true;
-			ArrangeCommand();
-			mCurrent = DBG_NEW B2Vec2EditCommand(ref);
-		}
-	}
-
-	if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
-	{
-		if (mCurrent)
-		{
-			mIsRecording = false;
-			static_cast<B2Vec2EditCommand*>(mCurrent)->SetNextVal(ref);
-		}
-	}
-
-	ref.x = vec2[0];
-	ref.y = vec2[1];
-}
-
 void CommandHistory::UpdateVector3Value(const char* label, FTVector3& ref, float modSpeed)
 {
 	float vec3[3];
@@ -165,37 +129,6 @@ void CommandHistory::UpdateVector3Value(const char* label, FTVector3& ref, float
 		{
 			mIsRecording = false;
 			static_cast<Vector3EditCommand*>(mCurrent)->SetNextVal(ref);
-		}
-	}
-
-	ref.x = vec3[0];
-	ref.y = vec3[1];
-	ref.z = vec3[2];
-}
-
-void CommandHistory::UpdateVector3Value(const char* label, DirectX::SimpleMath::Vector3& ref, float modSpeed)
-{
-	float vec3[3];
-	vec3[0] = ref.x;
-	vec3[1] = ref.y;
-	vec3[2] = ref.z;
-
-	if (ImGui::DragFloat3(label, vec3, modSpeed))
-	{
-		if (!mIsRecording)
-		{
-			mIsRecording = true;
-			ArrangeCommand();
-			mCurrent = DBG_NEW DXVector3EditCommand(ref);
-		}
-	}
-
-	if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
-	{
-		if (mCurrent)
-		{
-			mIsRecording = false;
-			static_cast<DXVector3EditCommand*>(mCurrent)->SetNextVal(ref);
 		}
 	}
 
@@ -235,13 +168,6 @@ void CommandHistory::UpdateVector4Value(const char* label, FTVector4& ref, float
 	ref.y = vec4[1];
 	ref.z = vec4[2];
 	ref.a = vec4[3];
-}
-
-void CommandHistory::UpdateVector4Value(const char* label, DirectX::SimpleMath::Vector4& ref, float modSpeed)
-{
-	FTVector4 vec4 = FTVector4(ref.x, ref.y, ref.z, ref.w);
-	UpdateVector4Value(label, vec4);
-	ref = vec4.GetDXVec4();
 }
 
 void CommandHistory::UpdateStringValue(const char* label, FTDS::String& ref)

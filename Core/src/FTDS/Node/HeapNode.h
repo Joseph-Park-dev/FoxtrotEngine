@@ -7,17 +7,21 @@
 // ----------------------------------------------------------------
 
 #pragma once
-namespace FTDS
-{
-	template <typename TYPE>
-	struct HeapNode
-	{
-		HeapNode(size_t key, const TYPE& value)
-			: Key(key), Value(value)
-		{
-		}
 
-		size_t Key;
-		TYPE   Value;
-	};
-} // namespace FTDS
+namespace Core
+{
+	namespace FTDS
+	{
+		template <typename TYPE>
+		struct HeapNode
+		{
+			HeapNode(size_t key, const TYPE& value)
+				: Key(key), Value(value)
+			{
+			}
+
+			size_t Key;
+			TYPE   Value;
+		};
+	} // namespace FTDS
+} // namespace Core

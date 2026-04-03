@@ -3,47 +3,51 @@
 
 #include <Static/Array.h>
 
-namespace FTDS
+namespace Core
 {
-	template <class TYPE>
-	class CircularQueue : public FTDS::Array<TYPE>
+	namespace FTDS
 	{
-		using FTDS::Array<TYPE>::mData;
-		using FTDS::Array<TYPE>::mCapacity;
-		using FTDS::Array<TYPE>::mSize;
-
-	public:
-		void Enqueue(TYPE value)
+		template <class TYPE>
+		class CircularQueue : public FTDS::Array<TYPE>
 		{
-			mRear = (mRear + 1) % mCapacity;
-			mData[mRear] = value;	
+			using FTDS::Array<TYPE>::mData;
+			using FTDS::Array<TYPE>::mCapacity;
+			using FTDS::Array<TYPE>::mSize;
 
-			if (this->IsFull())
-				mFront = (mRear + 1) % mCapacity;
-			else
-				++mSize;
-		}
-		void Dequeue()
-		{
-			assert(!this->IsEmpty());
-			mFront = (mFront + 1) % mCapacity;
-			--mSize;
-		}
-		TYPE Peek()
-		{
-			assert(!this->IsEmpty());
-			return mData[mFront];
-		}
+		public:
+			void Enqueue(TYPE value)
+			{
+				mRear		 = (mRear + 1) % mCapacity;
+				mData[mRear] = value;
 
-	public:
-		CircularQueue()
-			: Array<TYPE>()
-			, mFront(0)
-			, mRear(-1)
-		{}
+				if (this->IsFull())
+					mFront = (mRear + 1) % mCapacity;
+				else
+					++mSize;
+			}
+			void Dequeue()
+			{
+				assert(!this->IsEmpty());
+				mFront = (mFront + 1) % mCapacity;
+				--mSize;
+			}
+			TYPE Peek()
+			{
+				assert(!this->IsEmpty());
+				return mData[mFront];
+			}
 
-	private:
-		size_t	mFront;
-		size_t	mRear;
-	};
-};
+		public:
+			CircularQueue()
+				: Array<TYPE>()
+				, mFront(0)
+				, mRear(-1)
+			{
+			}
+
+		private:
+			size_t mFront;
+			size_t mRear;
+		};
+	}; // namespace FTDS
+} // namespace Core

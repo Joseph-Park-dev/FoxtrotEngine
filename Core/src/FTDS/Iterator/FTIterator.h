@@ -1,33 +1,37 @@
 #pragma once
-namespace FTDS
+
+namespace Core
 {
-	template <typename TYPE>
-	class FTIterator
+	namespace FTDS
 	{
-		virtual TYPE& operator*()	  = 0;
-		virtual TYPE* operator++()	  = 0;
-	};
-
-	template <typename TYPE>
-	class FTIteratorArray : public FTIterator<TYPE>
-	{
-	public:
-		FTIteratorArray(TYPE* array)
-			: mPtr(array)
+		template <typename TYPE>
+		class FTIterator
 		{
-		}
-
-		TYPE& operator*() override { return *mPtr; }
-		TYPE* operator++() override
-		{
-			++mPtr;
-			return mPtr;
+			virtual TYPE& operator*()  = 0;
+			virtual TYPE* operator++() = 0;
 		};
 
-		bool operator==(FTIteratorArray&& rhs) { return mPtr == rhs.mPtr; }
-		bool operator!=(FTIteratorArray&& rhs) { return mPtr != rhs.mPtr; }
+		template <typename TYPE>
+		class FTIteratorArray : public FTIterator<TYPE>
+		{
+		public:
+			FTIteratorArray(TYPE* array)
+				: mPtr(array)
+			{
+			}
 
-	private:
-		TYPE* mPtr;
-	};
-} // namespace FTDS
+			TYPE& operator*() override { return *mPtr; }
+			TYPE* operator++() override
+			{
+				++mPtr;
+				return mPtr;
+			};
+
+			bool operator==(FTIteratorArray&& rhs) { return mPtr == rhs.mPtr; }
+			bool operator!=(FTIteratorArray&& rhs) { return mPtr != rhs.mPtr; }
+
+		private:
+			TYPE* mPtr;
+		};
+	} // namespace FTDS
+} // namespace Core

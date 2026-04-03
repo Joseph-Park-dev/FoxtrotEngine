@@ -10,97 +10,101 @@
 
 #include "Static/FTString.h"
 
-DirectoryHelper::DirectoryHelper()
-	: mProjectPath(DBG_NEW FTDS::String())
-	, mChunkPath(DBG_NEW FTDS::String())
-	, mAssetPath(DBG_NEW FTDS::String())
-	, mCurrentChunkSaved(false)
-{}
-
-DirectoryHelper::~DirectoryHelper()
+namespace Core
 {
-	delete mProjectPath;
-	delete mChunkPath;
-	delete mAssetPath;
-}
+	DirectoryHelper::DirectoryHelper()
+		: mProjectPath(DBG_NEW FTDS::String())
+		, mChunkPath(DBG_NEW FTDS::String())
+		, mAssetPath(DBG_NEW FTDS::String())
+		, mCurrentChunkSaved(false)
+	{
+	}
 
-void DirectoryHelper::AbsoluteToRelativePath(FTDS::String& absPath)
-{
-	FTDS::String path		= absPath;
-	FTDS::String folderName = "\\Assets\\";
+	DirectoryHelper::~DirectoryHelper()
+	{
+		delete mProjectPath;
+		delete mChunkPath;
+		delete mAssetPath;
+	}
 
-	// Check if the path is relative.
-	if (path.LFind(".\\") == 0)
-		return;
+	void DirectoryHelper::AbsoluteToRelativePath(FTDS::String& absPath)
+	{
+		FTDS::String path		= absPath;
+		FTDS::String folderName = "\\Assets\\";
 
-	int index = path.LFind(mAssetPath->C_Str());
-	if (index == -1)
-		return;
+		// Check if the path is relative.
+		if (path.LFind(".\\") == 0)
+			return;
 
-	int cutIndex = path.RFind(folderName.C_Str());
-	path.SubStr(cutIndex, path.GetLength());
+		int index = path.LFind(mAssetPath->C_Str());
+		if (index == -1)
+			return;
 
-	FTDS::String result = ".";
-	result.Append(path);
+		int cutIndex = path.RFind(folderName.C_Str());
+		path.SubStr(cutIndex, path.GetLength());
 
-	absPath = result;
-}
+		FTDS::String result = ".";
+		result.Append(path);
 
-void DirectoryHelper::RelativeToAbsolutePath(FTDS::String& relPath)
-{
-	FTDS::String path		= relPath;
-	FTDS::String folderName = ".\\Assets\\";
+		absPath = result;
+	}
 
-	if (path.LFind(".\\") != 0)
-		return;
+	void DirectoryHelper::RelativeToAbsolutePath(FTDS::String& relPath)
+	{
+		FTDS::String path		= relPath;
+		FTDS::String folderName = ".\\Assets\\";
 
-	path.SubStr(folderName.GetLength(), path.GetLength());
+		if (path.LFind(".\\") != 0)
+			return;
 
-	FTDS::String result = *mAssetPath;
-	// result.Append("\\");
-	result.Append(path);
+		path.SubStr(folderName.GetLength(), path.GetLength());
 
-	relPath = result;
-}
+		FTDS::String result = *mAssetPath;
+		// result.Append("\\");
+		result.Append(path);
 
-FTDS::String* DirectoryHelper::GetProjectPath()
-{
-	return mProjectPath;
-}
+		relPath = result;
+	}
 
-FTDS::String* DirectoryHelper::GetChunkPath()
-{
-	return mChunkPath;
-}
+	FTDS::String* DirectoryHelper::GetProjectPath()
+	{
+		return mProjectPath;
+	}
 
-FTDS::String* DirectoryHelper::GetAssetPath()
-{
-	return mAssetPath;
-}
+	FTDS::String* DirectoryHelper::GetChunkPath()
+	{
+		return mChunkPath;
+	}
 
-bool DirectoryHelper::GetCurrChunkSaved() const
-{
-	return mCurrentChunkSaved;
-}
+	FTDS::String* DirectoryHelper::GetAssetPath()
+	{
+		return mAssetPath;
+	}
 
-void DirectoryHelper::SetProjectPath(FTDS::String&& path)
-{
-	mProjectPath->Assign(path);
-	SetAssetPath();
-}
+	bool DirectoryHelper::GetCurrChunkSaved() const
+	{
+		return mCurrentChunkSaved;
+	}
 
-void DirectoryHelper::SetChunkPath(FTDS::String&& path)
-{
-	mChunkPath->Assign(path);
-}
+	void DirectoryHelper::SetProjectPath(FTDS::String&& path)
+	{
+		mProjectPath->Assign(path);
+		SetAssetPath();
+	}
 
-void DirectoryHelper::SetCurrChunkSaved(bool saved)
-{
-	mCurrentChunkSaved = saved;
-}
+	void DirectoryHelper::SetChunkPath(FTDS::String&& path)
+	{
+		mChunkPath->Assign(path);
+	}
 
-void DirectoryHelper::SetAssetPath()
-{
-	mAssetPath->Assign(*mProjectPath);
-	mAssetPath->Append("\\Assets\\");
-}
+	void DirectoryHelper::SetCurrChunkSaved(bool saved)
+	{
+		mCurrentChunkSaved = saved;
+	}
+
+	void DirectoryHelper::SetAssetPath()
+	{
+		mAssetPath->Assign(*mProjectPath);
+		mAssetPath->Append("\\Assets\\");
+	}
+} // namespace Core

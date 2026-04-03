@@ -22,62 +22,66 @@
 #include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
-void EventManager::AddEvent(const FTEvent& addedEvent)
+namespace Core
 {
-	mEvent->PushBack(addedEvent);
-}
-
-void EventManager::ProcessEvent()
-{
-	for (size_t i = 0; i < mEvent->GetSize(); ++i)
-		Execute(mEvent->At(i));
-	mEvent->Clear();
-}
-
-void EventManager::Execute(const FTEvent& executedEvent)
-{
-	switch (executedEvent.incident)
+	void EventManager::AddEvent(const FTEvent& addedEvent)
 	{
-	case EVENT_TYPE::CREATE_ACTOR:
+		mEvent->PushBack(addedEvent);
+	}
+
+	void EventManager::ProcessEvent()
 	{
+		for (size_t i = 0; i < mEvent->GetSize(); ++i)
+			Execute(mEvent->At(i));
+		mEvent->Clear();
+	}
+
+	void EventManager::Execute(const FTEvent& executedEvent)
+	{
+		switch (executedEvent.incident)
+		{
+			case EVENT_TYPE::CREATE_ACTOR:
+			{
 
 #ifdef FOXTROT_EDITOR
-		EditorElement* created = static_cast<EditorElement*>(executedEvent.eventData.at(0));
-		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-		scene->AddEditorElement(created);
+				EditorElement* created = static_cast<EditorElement*>(executedEvent.eventData.at(0));
+				EditorScene*   scene   = EditorSceneManager::GetInstance()->GetEditorScene();
+				scene->AddEditorElement(created);
 #else
-		Actor* created = static_cast<Actor*>(executedEvent.eventData);
-		Scene* scene = SceneManager::GetInstance()->GetCurrentScene();
-		scene->AddActor(created);
+				Actor* created = static_cast<Actor*>(executedEvent.eventData);
+				Scene* scene   = SceneManager::GetInstance()->GetCurrentScene();
+				scene->AddActor(created);
 #endif
-	}
-	break;
+			}
+			break;
 
-	case EVENT_TYPE::DESTROY_ACTOR:
-	{
+			case EVENT_TYPE::DESTROY_ACTOR:
+			{
 
 #ifdef FOXTROT_EDITOR
-		EditorElement* element = static_cast<EditorElement*>(executedEvent.eventData.at(0));
-		EditorScene*   scene   = EditorSceneManager::GetInstance()->GetEditorScene();
-		scene->RemoveActor(element);
+				EditorElement* element = static_cast<EditorElement*>(executedEvent.eventData.at(0));
+				EditorScene*   scene   = EditorSceneManager::GetInstance()->GetEditorScene();
+				scene->RemoveActor(element);
 #else
-		Actor* actorToDestroy = static_cast<Actor*>(executedEvent.eventData);
-		actorToDestroy->SetState(ActorState::DEAD);
+				Actor* actorToDestroy = static_cast<Actor*>(executedEvent.eventData);
+				actorToDestroy->SetState(ActorState::DEAD);
 #endif
+			}
+			break;
+			case EVENT_TYPE::SWITCH_SCENE:
+			{
+				SceneManager::GetInstance()->SwitchScene(*static_cast<size_t*>(executedEvent.eventData));
+			}
+			break;
+		}
 	}
-	break;
-	case EVENT_TYPE::SWITCH_SCENE:
+
+	EventManager::EventManager()
+		: mEvent(DBG_NEW FTDS::DynamicArray<FTEvent>(1))
 	{
-		SceneManager::GetInstance()->SwitchScene(*static_cast<size_t*>(executedEvent.eventData));
 	}
-	break;
+
+	EventManager::~EventManager()
+	{
 	}
-}
-
-EventManager::EventManager()
-	: mEvent(DBG_NEW FTDS::DynamicArray<FTEvent>(1))
-{
-}
-
-EventManager::~EventManager()
-{}
+} // namespace Core

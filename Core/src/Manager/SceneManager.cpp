@@ -19,51 +19,55 @@
 #include "Static/FTString.h"
 #include "Dynamic/DynamicArray.h"
 
-SceneManager::SceneManager()
-	: mChunkList(DBG_NEW FTDS::DynamicArray<FTDS::String*>())
-	, mCurrentScene(DBG_NEW Scene)
-{}
-
-SceneManager::~SceneManager()
+namespace Core
 {
-	mChunkList->Clear();
+	SceneManager::SceneManager()
+		: mChunkList(DBG_NEW FTDS::DynamicArray<FTDS::String*>())
+		, mCurrentScene(DBG_NEW Scene)
+	{
+	}
 
-	delete mChunkList;
-	delete mCurrentScene;
-}
+	SceneManager::~SceneManager()
+	{
+		mChunkList->Clear();
 
-void SceneManager::SwitchScene(size_t index)
-{
-	mCurrentScene->DeleteAll();
-	FTDS::String path = FTDS::String(".\\Chunks\\") + mChunkList->At(index)->C_Str();
-	ChunkLoader::GetInstance()->LoadChunk(path);
-}
+		delete mChunkList;
+		delete mCurrentScene;
+	}
 
-Scene* SceneManager::GetCurrentScene()
-{
-	return mCurrentScene;
-}
+	void SceneManager::SwitchScene(size_t index)
+	{
+		mCurrentScene->DeleteAll();
+		FTDS::String path = FTDS::String(".\\Chunks\\") + mChunkList->At(index)->C_Str();
+		ChunkLoader::GetInstance()->LoadChunk(path);
+	}
 
-FTDS::DynamicArray<FTDS::String*>*& SceneManager::ChunkList()
-{
-	return mChunkList;
-}
+	Scene* SceneManager::GetCurrentScene()
+	{
+		return mCurrentScene;
+	}
 
-void SceneManager::SetChunkListPath(FTDS::String&& path)
-{
-	mChunkListPath.Assign(path);
-}
+	FTDS::DynamicArray<FTDS::String*>*& SceneManager::ChunkList()
+	{
+		return mChunkList;
+	}
 
-void SceneManager::Initialize()
-{
-	SwitchScene(0);
-}
+	void SceneManager::SetChunkListPath(FTDS::String&& path)
+	{
+		mChunkListPath.Assign(path);
+	}
 
-void SceneManager::ProcessEvent()
-{
-	mCurrentScene->ProcessEvent();
-}
+	void SceneManager::Initialize()
+	{
+		SwitchScene(0);
+	}
 
-void SceneManager::SaveSceneList (std::ofstream& ofs)
-{
-}
+	void SceneManager::ProcessEvent()
+	{
+		mCurrentScene->ProcessEvent();
+	}
+
+	void SceneManager::SaveSceneList(std::ofstream& ofs)
+	{
+	}
+} // namespace Core

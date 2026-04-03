@@ -6,22 +6,16 @@
 
 class FTPremade;
 
-class ResourceManager : public ResourceManagerBase
+namespace Core
 {
-	SINGLETON(ResourceManager)
+	class ResourceManager : public ResourceManagerBase
+	{
+		SINGLETON(ResourceManager)
 
-public:
-	void LoadDefaultResources() override;
+	public:
+		void LoadDefaultResources() override;
+	};
 
-public:
-	void Initialize(FoxtrotRenderer* renderer = nullptr) override;
-
-public:
-	// ---------------------------
-	// Typed resource lookup APIs
-	// ---------------------------
-	FTPremade* GetLoadedPremades(FTDS::String&& key);
-
-private:
-	FTDS::Array<FTDS::HashMap<FTResource*>*>* mResources;
-};
+#define RES_NAME(idx, res) ResourceManager::GetInstance()->GetResName(idx, res)
+#define GET_RES(type, key) ResourceManager::GetInstance()->GetResource<type>(type::Type, key)
+} // namespace Core

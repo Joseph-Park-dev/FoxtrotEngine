@@ -21,7 +21,7 @@
 
 #include "FTMath.h"
 
-namespace Core
+namespace Math
 {
 	class FTVector2;
 	class FTVector3;

@@ -29,6 +29,8 @@
 	#include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
+using namespace Core;
+
 namespace D3D11
 {
 	void Camera::Initialize(FTWindow* renderWindow, unsigned int pixels, float unit)

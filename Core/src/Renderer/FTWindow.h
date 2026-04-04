@@ -14,7 +14,7 @@
 namespace Core
 {
 	class FoxtrotRenderer;
-	class FTVector2;
+	class Math::FTVector2;
 	class FTInputDevice;
 	class Plugin;
 	enum class MOUSE;

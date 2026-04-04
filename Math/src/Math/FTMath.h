@@ -143,10 +143,7 @@ namespace Math
 		m++;
 		return m;
 	}
-} // namespace Math
 
-namespace Core
-{
 	class FTVector2;
 
 	class alignas(16) FTVector4
@@ -1195,11 +1192,7 @@ namespace Core
 
 		static const Quaternion Identity;
 	};
-} // namespace Core
 
-namespace Math
-{
-	using namespace Core;
 	inline bool PointInRectangle(FTVector2 point, FTVector2 v0, FTVector2 v1, FTVector2 v2, FTVector2 v3)
 	{
 		FTVector2 AB	  = v1 - v0;

@@ -10,18 +10,23 @@
 /// </summary>
 
 #pragma once
+namespace Math
+{
+	class FTVector3;
+}
+
 namespace Core
 {
 	enum class ActorGroup;
 	class Actor;
-	class FTVector3;
+
 	namespace FTDS
 	{
 		class String;
 	}
 
 	// Object Spawning & Destroying
-	Actor* Instantiate(Actor* actor, ActorGroup actorGroup, FTVector3 pos);
+	Actor* Instantiate(Actor* actor, ActorGroup actorGroup, Math::FTVector3 pos);
 	Actor* Instantiate(const char* premadeName);
 	void   Destroy(Actor* actor);
 } // namespace Core

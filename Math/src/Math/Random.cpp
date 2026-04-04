@@ -14,7 +14,7 @@
 // ----------------------------------------------------------------
 #include "Random.h"
 
-namespace Core
+namespace Math
 {
 	void Random::Init()
 	{

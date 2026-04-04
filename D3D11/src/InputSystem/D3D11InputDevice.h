@@ -39,7 +39,7 @@ namespace D3D11
 	class D3D11Window;
 
 	class D3D11InputDevice :
-		public FTInputDevice
+		public Core::FTInputDevice
 	{
 
 	public:

@@ -24,21 +24,21 @@
 
 namespace Core
 {
-	const FTVector3& Transform::GetLocalPosition() const { return mLocalPosition; }
-	const FTVector3& Transform::GetLocalScale() const { return mLocalScale; }
-	const FTVector3& Transform::GetLocalRotation() const { return mLocalRotation; }
+	const Math::FTVector3& Transform::GetLocalPosition() const { return mLocalPosition; }
+	const Math::FTVector3& Transform::GetLocalScale() const { return mLocalScale; }
+	const Math::FTVector3& Transform::GetLocalRotation() const { return mLocalRotation; }
 
-	const FTVector3& Transform::GetWorldPosition() const { return mWorldPosition; }
-	const FTVector3& Transform::GetWorldScale() const { return mWorldScale; }
-	const FTVector3& Transform::GetWorldRotation() const { return mWorldRotation; }
-	const FTMatrix4& Transform::GetMatrixWorld() const { return mMatrixWorld; }
+	const Math::FTVector3& Transform::GetWorldPosition() const { return mWorldPosition; }
+	const Math::FTVector3& Transform::GetWorldScale() const { return mWorldScale; }
+	const Math::FTVector3& Transform::GetWorldRotation() const { return mWorldRotation; }
+	const Math::FTMatrix4& Transform::GetMatrixWorld() const { return mMatrixWorld; }
 
-	const FTVector3 Transform::GetRotationDegree() const
+	const Math::FTVector3 Transform::GetRotationDegree() const
 	{
 		return ConvertRadToDegree(mWorldRotation);
 	}
 
-	const FTVector3& Transform::GetRightward() const
+	const Math::FTVector3& Transform::GetRightward() const
 	{
 		return mRightward;
 	}
@@ -50,28 +50,28 @@ namespace Core
 
 	const bool Transform::IsHalting() const
 	{
-		return mSteering->Linear == FTVector3::Zero && !mSteering->JumpTriggered;
+		return mSteering->Linear == Math::FTVector3::Zero && !mSteering->JumpTriggered;
 	}
 
-	void Transform::SetLocalPosition(const FTVector3 localPos)
+	void Transform::SetLocalPosition(const Math::FTVector3 localPos)
 	{
 		mLocalPosition = localPos;
 		Update();
 	}
 
-	void Transform::SetLocalScale(const FTVector3 localScale)
+	void Transform::SetLocalScale(const Math::FTVector3 localScale)
 	{
 		mLocalScale = localScale;
 		Update();
 	}
 
-	void Transform::SetLocalRotation(const FTVector3 localRot)
+	void Transform::SetLocalRotation(const Math::FTVector3 localRot)
 	{
 		mLocalRotation = localRot;
 		Update();
 	}
 
-	void Transform::SetWorldPosition(const FTVector3 worldPos)
+	void Transform::SetWorldPosition(const Math::FTVector3 worldPos)
 	{
 		mWorldPosition = worldPos;
 		Actor* parent  = mOwner->GetParent();
@@ -79,7 +79,7 @@ namespace Core
 			SetLocalPosition(worldPos);
 	}
 
-	void Transform::SetWorldScale(const FTVector3 worldScale)
+	void Transform::SetWorldScale(const Math::FTVector3 worldScale)
 	{
 		mWorldScale	  = worldScale;
 		Actor* parent = mOwner->GetParent();
@@ -87,7 +87,7 @@ namespace Core
 			SetLocalScale(worldScale);
 	}
 
-	void Transform::SetWorldRotation(const FTVector3 worldRot)
+	void Transform::SetWorldRotation(const Math::FTVector3 worldRot)
 	{
 		mWorldRotation = worldRot;
 		Actor* parent  = mOwner->GetParent();
@@ -95,9 +95,9 @@ namespace Core
 			SetLocalRotation(worldRot);
 	}
 
-	void Transform::SetRightward(FTVector3 dir)
+	void Transform::SetRightward(Math::FTVector3 dir)
 	{
-		assert(mRightward != FTVector3::Zero);
+		assert(mRightward != Math::FTVector3::Zero);
 		mRightward = dir;
 	}
 
@@ -114,17 +114,17 @@ namespace Core
 	}
 
 	Transform::Transform(Actor* owner)
-		: mLocalPosition(FTVector3::Zero)
-		, mLocalScale(FTVector3(1.f, 1.0f, 1.0f))
-		, mLocalRotation(FTVector3::Zero)
-		, mMatrixLocal(FTMatrix4::Identity)
+		: mLocalPosition(Math::FTVector3::Zero)
+		, mLocalScale(Math::FTVector3(1.f, 1.0f, 1.0f))
+		, mLocalRotation(Math::FTVector3::Zero)
+		, mMatrixLocal(Math::FTMatrix4::Identity)
 
-		, mWorldPosition(FTVector3::Zero)
-		, mWorldScale(FTVector3(1.0f, 1.0f, 1.0f))
-		, mWorldRotation(FTVector3(0.0f, 0.0f, 0.0f))
-		, mMatrixWorld(FTMatrix4::Identity)
+		, mWorldPosition(Math::FTVector3::Zero)
+		, mWorldScale(Math::FTVector3(1.0f, 1.0f, 1.0f))
+		, mWorldRotation(Math::FTVector3(0.0f, 0.0f, 0.0f))
+		, mMatrixWorld(Math::FTMatrix4::Identity)
 
-		, mRightward(FTVector3(1.0f, 0.0f, 0.0f))
+		, mRightward(Math::FTVector3(1.0f, 0.0f, 0.0f))
 		, mSteering(Steering::CreateEmptySteering())
 
 		, mOwner(owner)
@@ -158,29 +158,29 @@ namespace Core
 		}
 	}
 
-	FTVector3 Transform::ConvertRadToDegree(FTVector3 radianRot)
+	Math::FTVector3 Transform::ConvertRadToDegree(Math::FTVector3 radianRot)
 	{
 		float x = Math::ToDegrees(radianRot.x);
 		float y = Math::ToDegrees(radianRot.y);
 		float z = Math::ToDegrees(radianRot.z);
-		return FTVector3(x, y, z);
+		return Math::FTVector3(x, y, z);
 	}
 
-	FTVector3 Transform::ConvertDegreeToRad(FTVector3 degreeRot)
+	Math::FTVector3 Transform::ConvertDegreeToRad(Math::FTVector3 degreeRot)
 	{
 		float x = Math::ToRadians(degreeRot.x);
 		float y = Math::ToRadians(degreeRot.y);
 		float z = Math::ToRadians(degreeRot.z);
-		return FTVector3(x, y, z);
+		return Math::FTVector3(x, y, z);
 	}
 
 	void Transform::Update()
 	{
-		FTMatrix4 matScale	  = FTMatrix4::CreateScale(mLocalScale);
-		FTMatrix4 matRotation = FTMatrix4::CreateRotationX(mLocalRotation.x) *
-			FTMatrix4::CreateRotationY(mLocalRotation.y) *
-			FTMatrix4::CreateRotationZ(mLocalRotation.z);
-		FTMatrix4 matTranslation = FTMatrix4::CreateTranslation(mLocalPosition);
+		Math::FTMatrix4 matScale	  = Math::FTMatrix4::CreateScale(mLocalScale);
+		Math::FTMatrix4 matRotation = Math::FTMatrix4::CreateRotationX(mLocalRotation.x) *
+			Math::FTMatrix4::CreateRotationY(mLocalRotation.y) *
+			Math::FTMatrix4::CreateRotationZ(mLocalRotation.z);
+		Math::FTMatrix4 matTranslation = Math::FTMatrix4::CreateTranslation(mLocalPosition);
 
 		mMatrixLocal = matScale * matRotation * matTranslation;
 
@@ -196,7 +196,7 @@ namespace Core
 			for (auto child = childActors->Begin(); child != childActors->End(); ++child)
 				(*child)->GetTransform()->Update();
 		}
-		// FTVector3::DecomposeMatrix(mWorldScale, mWorldRotation, mWorldPosition, mMatrixWorld);
+		// Math::FTVector3::DecomposeMatrix(mWorldScale, mWorldRotation, mWorldPosition, mMatrixWorld);
 	}
 
 	void Transform::CloneTo(Transform* target)

@@ -20,18 +20,18 @@ namespace Core
 	class FTRectArea
 	{
 	public:
-		bool Overlaps(const FTVector2& point);
+		bool Overlaps(const Math::FTVector2& point);
 		// bool Overlaps(const FTRectArea& other);
 
 	public:
-		FTVector2&		 GetSize() { return mSize; }
-		const FTVector2& GetCenter() { return mCenter; }
-		const FTVector2& GetMin() { return mMin; }
-		const FTVector2& GetMax() { return mMax; }
-		const float&	 GetRotAngle() { return mRotAngle; }
+		const Math::FTVector2& GetSize() { return mSize; }
+		const Math::FTVector2& GetCenter() { return mCenter; }
+		const Math::FTVector2& GetMin() { return mMin; }
+		const Math::FTVector2& GetMax() { return mMax; }
+		const float&		   GetRotAngle() { return mRotAngle; }
 
 		// Update FTRectArea values using the new ones.
-		void Set(FTVector2 center, FTVector2 dimension, float rotAngle = 0);
+		void Set(Math::FTVector2 center, Math::FTVector2 dimension, float rotAngle = 0);
 
 		/// @brief Update FTRectArea values
 		/// @param posX Top left position X
@@ -40,8 +40,8 @@ namespace Core
 		{
 			mWidth	  = width;
 			mHeight	  = height;
-			mSize	  = FTVector2(width, height);
-			mCenter	  = FTVector2(posX, posY) + (mSize * 0.5f);
+			mSize	  = Math::FTVector2(width, height);
+			mCenter	  = Math::FTVector2(posX, posY) + (mSize * 0.5f);
 			mMin	  = mCenter - mSize / 2;
 			mMax	  = mCenter + mSize / 2;
 			mRotAngle = rotAngle;
@@ -64,13 +64,13 @@ namespace Core
 		void CloneTo(FTRectArea* rect);
 
 	private:
-		FTVector2 mCenter;
-		float	  mWidth;
-		float	  mHeight;
-		float	  mRotAngle; // Rotated angle in radian
-		FTVector2 mSize;
-		FTVector2 mMax;
-		FTVector2 mMin;
+		Math::FTVector2 mCenter;
+		float			mWidth;
+		float			mHeight;
+		float			mRotAngle; // Rotated angle in radian
+		Math::FTVector2 mSize;
+		Math::FTVector2 mMax;
+		Math::FTVector2 mMin;
 
 #ifdef FOXTROT_EDITOR
 	public:

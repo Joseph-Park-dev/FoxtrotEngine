@@ -71,17 +71,17 @@ namespace Core
 		printf(msg.C_Str());
 	}
 
-	inline void LogVector2(FTVector2 val)
+	inline void LogVector2(Math::FTVector2 val)
 	{
 		printf("X : %f Y : %f\n", val.x, val.y);
 	}
 
-	inline void LogVector2(FTDS::String message, FTVector2 val)
+	inline void LogVector2(FTDS::String message, Math::FTVector2 val)
 	{
 		printf("%s, X : %f Y : %f\n", message.C_Str(), val.x, val.y);
 	}
 
-	inline void LogVector3(FTDS::String message, FTVector3 val)
+	inline void LogVector3(FTDS::String message, Math::FTVector3 val)
 	{
 		printf("%s, X : %f Y : %f Z : %f\n", message.C_Str(), val.x, val.y, val.z);
 	}

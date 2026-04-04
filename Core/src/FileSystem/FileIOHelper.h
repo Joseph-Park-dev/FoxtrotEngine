@@ -35,9 +35,9 @@ namespace Core
 		static inline void LoadBool(std::ifstream& ifs, bool& boolVal);
 		static inline void LoadBasicString(std::ifstream& ifs, FTDS::String& strVal);
 
-		static inline void LoadVector2(std::ifstream& ifs, FTVector2& vec2);
-		static inline void LoadVector3(std::ifstream& ifs, FTVector3& vec3);
-		static inline void LoadVector4(std::ifstream& ifs, FTVector4& vec4);
+		static inline void LoadVector2(std::ifstream& ifs, Math::FTVector2& vec2);
+		static inline void LoadVector3(std::ifstream& ifs, Math::FTVector3& vec3);
+		static inline void LoadVector4(std::ifstream& ifs, Math::FTVector4& vec4);
 
 		// template <typename RESOURCE>
 		// static inline void LoadResource(std::ifstream& ifs, RESOURCE*& res, FTDS::HashMap<RESOURCE*>* map)
@@ -54,9 +54,9 @@ namespace Core
 		//	}
 		// }
 
-		static inline void ParseVector3(FTDS::String& line, FTVector3& arg);
-		static inline void ParseVector2(FTDS::String& line, FTVector2& arg);
-		static inline void ParseVector4(FTDS::String& line, FTVector4& arg);
+		static inline void ParseVector3(FTDS::String& line, Math::FTVector3& arg);
+		static inline void ParseVector2(FTDS::String& line, Math::FTVector2& arg);
+		static inline void ParseVector4(FTDS::String& line, Math::FTVector4& arg);
 
 		static inline void ParseInt(FTDS::String& line, int& arg);
 		static inline void ParseUnsignedInt(FTDS::String& line, unsigned int& arg);
@@ -71,9 +71,9 @@ namespace Core
 		static inline void EndDataPackSave(std::ofstream& ofs, FTDS::String dataPackKey);
 		static inline void SaveBufferToFile(std::ofstream& ofs);
 
-		static inline void SaveVector2(std::ofstream& ofs, const FTDS::String& valName, const FTVector2& vec2);
-		static inline void SaveVector3(std::ofstream& ofs, const FTDS::String& valName, const FTVector3& vec3);
-		static inline void SaveVector4(std::ofstream& ofs, const FTDS::String& valName, const FTVector4& vec4);
+		static inline void SaveVector2(std::ofstream& ofs, const FTDS::String& valName, const Math::FTVector2& vec2);
+		static inline void SaveVector3(std::ofstream& ofs, const FTDS::String& valName, const Math::FTVector3& vec3);
+		static inline void SaveVector4(std::ofstream& ofs, const FTDS::String& valName, const Math::FTVector4& vec4);
 
 		static inline void SaveInt(std::ofstream& ofs, const FTDS::String& valName, const int& intVal);
 		static inline void SaveUnsignedInt(std::ofstream& ofs, const FTDS::String& valName, const unsigned int& intVal);
@@ -270,7 +270,7 @@ namespace Core
 		strVal.ExtractFromLast("\t");
 	}
 
-	void FileIOHelper::LoadVector2(std::ifstream& ifs, FTVector2& vec2)
+	void FileIOHelper::LoadVector2(std::ifstream& ifs, Math::FTVector2& vec2)
 	{
 		// Parse data information.
 		FTDS::String line;
@@ -288,7 +288,7 @@ namespace Core
 		ParseVector2(line, vec2);
 	}
 
-	void FileIOHelper::LoadVector3(std::ifstream& ifs, FTVector3& vec3)
+	void FileIOHelper::LoadVector3(std::ifstream& ifs, Math::FTVector3& vec3)
 	{
 		// Parse data information.
 		FTDS::String line;
@@ -306,7 +306,7 @@ namespace Core
 		ParseVector3(line, vec3);
 	}
 
-	void FileIOHelper::LoadVector4(std::ifstream& ifs, FTVector4& vec4)
+	void FileIOHelper::LoadVector4(std::ifstream& ifs, Math::FTVector4& vec4)
 	{
 		// Parse data information.
 		FTDS::String line;
@@ -324,7 +324,7 @@ namespace Core
 		ParseVector4(line, vec4);
 	}
 
-	void FileIOHelper::ParseVector3(FTDS::String& line, FTVector3& arg)
+	void FileIOHelper::ParseVector3(FTDS::String& line, Math::FTVector3& arg)
 	{
 		line.ExtractBracketedVal(line, "(", ")");
 
@@ -340,10 +340,10 @@ namespace Core
 		float y = std::stof(yStr.C_Str());
 		float z = std::stof(zStr.C_Str());
 
-		arg = FTVector3(x, y, z);
+		arg = Math::FTVector3(x, y, z);
 	}
 
-	void FileIOHelper::ParseVector2(FTDS::String& line, FTVector2& arg)
+	void FileIOHelper::ParseVector2(FTDS::String& line, Math::FTVector2& arg)
 	{
 		line.ExtractBracketedVal(line, "(", ")");
 
@@ -356,10 +356,10 @@ namespace Core
 		float x = std::stof(xStr.C_Str());
 		float y = std::stof(yStr.C_Str());
 
-		arg = FTVector2(x, y);
+		arg = Math::FTVector2(x, y);
 	}
 
-	void FileIOHelper::ParseVector4(FTDS::String& line, FTVector4& arg)
+	void FileIOHelper::ParseVector4(FTDS::String& line, Math::FTVector4& arg)
 	{
 		line.ExtractBracketedVal(line, "(", ")");
 
@@ -384,7 +384,7 @@ namespace Core
 		float z = std::stof(zStr.C_Str());
 		float w = std::stof(zStr.C_Str());
 
-		arg = FTVector4(x, y, z, w);
+		arg = Math::FTVector4(x, y, z, w);
 	}
 
 	void FileIOHelper::ParseInt(FTDS::String& line, int& arg)
@@ -480,7 +480,7 @@ namespace Core
 		mDataBuffer.clear();
 	}
 
-	void FileIOHelper::SaveVector3(std::ofstream& ofs, const FTDS::String& valName, const FTVector3& vec3)
+	void FileIOHelper::SaveVector3(std::ofstream& ofs, const FTDS::String& valName, const Math::FTVector3& vec3)
 	{
 		FTDS::String itemTitle = mItemIdent + valName + "[Vector3]" + "\n";
 		FTDS::String item	   = mItemIdent +
@@ -489,7 +489,7 @@ namespace Core
 		++mItemCounts.back();
 	}
 
-	void FileIOHelper::SaveVector2(std::ofstream& ofs, const FTDS::String& valName, const FTVector2& vec2)
+	void FileIOHelper::SaveVector2(std::ofstream& ofs, const FTDS::String& valName, const Math::FTVector2& vec2)
 	{
 		FTDS::String itemTitle = mItemIdent + valName + "[Vector2]" + "\n";
 		FTDS::String item	   = mItemIdent + "(" + std::to_string(vec2.x).c_str() + "," + std::to_string(vec2.y).c_str() + ")";
@@ -507,7 +507,7 @@ namespace Core
 	}
 #endif // FOXTROT_EDITOR
 
-	void FileIOHelper::SaveVector4(std::ofstream& ofs, const FTDS::String& valName, const FTVector4& vec4)
+	void FileIOHelper::SaveVector4(std::ofstream& ofs, const FTDS::String& valName, const Math::FTVector4& vec4)
 	{
 		FTDS::String itemTitle = mItemIdent + valName + "[Vector4]" + "\n";
 		FTDS::String item =

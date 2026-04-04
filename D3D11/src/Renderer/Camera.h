@@ -16,9 +16,12 @@
 #include "SingletonMacro.h"
 #include "Math/FTMath.h"
 
-class FTWindow;
-class Actor;
-class SceneManager;
+namespace Core
+{
+	class FTWindow;
+	class Actor;
+	class SceneManager;
+} // namespace Core
 
 namespace D3D11
 {

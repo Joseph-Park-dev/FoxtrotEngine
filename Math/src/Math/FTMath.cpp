@@ -14,7 +14,7 @@
 // ----------------------------------------------------------------
 #include "FTMath.h"
 
-namespace Core
+namespace Math
 {
 	const FTVector2 FTVector2::Zero(0.0f, 0.0f);
 	const FTVector2 FTVector2::UnitX(1.0f, 0.0f);
@@ -288,4 +288,4 @@ namespace Core
 		result.Transpose();
 		return result;
 	}
-} // namespace Core
+} // namespace Math

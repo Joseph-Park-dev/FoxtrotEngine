@@ -27,24 +27,6 @@
     <ClCompile Include="src\Physics\Physics2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTMeshGroup.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\Animation\FTSpriteAnimation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTTileMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\GeometryGenerator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\Tile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTShape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Managers\CollisionManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -72,9 +54,6 @@
     <ClCompile Include="src\Components\AI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Components\Animator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Components\BoxCollider2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -84,76 +63,13 @@
     <ClCompile Include="src\Components\Collider2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Components\MeshRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Components\Rigidbody2D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Components\SpriteRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Components\TileMapRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Components\UIs\TextRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTFontMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Managers\LightManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTMeshData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTMeshDataPack.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="include\delegates\Delegates.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTRectangle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Managers\DebugShapes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTMaterials\FTMaterial.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTShaders\FTShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTShaders\FTVertexShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTShaders\FTPixelShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTMaterials\StandardMaterial.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTCubemap\FTCubemap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Managers\AnimationManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\Animation\AnimationFrame.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\GenericData\FTCSV.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\GenericData\FTJSON.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\Animation\FTSpineAnimation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Managers\FTSpineLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Managers\SoundManager.cpp">
@@ -162,235 +78,7 @@
     <ClCompile Include="src\ResourceSystem\Sound\Sound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="include\stb_vorbis.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\GenericData\FTText.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Components\SpineAnimator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTFont\FTFont.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTFont\FontChar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Managers\FontManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTMaterials\SpriteAnimMat.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTShaders\FTGeometryShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTSprite\FTSprite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\Animation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\AnimationState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\AnimationStateData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\Atlas.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\AtlasAttachmentLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\Attachment.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\AttachmentLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\AttachmentTimeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\Bone.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\BoneData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\BoundingBoxAttachment.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\ClippingAttachment.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\ColorTimeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\ConstraintData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\CurveTimeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\DeformTimeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\DrawOrderTimeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\Event.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\EventData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\EventTimeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\Extension.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\IkConstraint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\IkConstraintData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\IkConstraintTimeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\InheritTimeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\Json.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\LinkedMesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\Log.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\MathUtil.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\MeshAttachment.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\PathAttachment.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\PathConstraint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\PathConstraintData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\PathConstraintMixTimeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\PathConstraintPositionTimeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\PathConstraintSpacingTimeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\PhysicsConstraint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\PhysicsConstraintData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\PhysicsConstraintTimeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\PointAttachment.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\RegionAttachment.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\RotateTimeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\RTTI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\ScaleTimeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\Sequence.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\SequenceTimeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\ShearTimeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\Skeleton.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\SkeletonBinary.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\SkeletonBounds.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\SkeletonClipping.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\SkeletonData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\SkeletonJson.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\SkeletonRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\Skin.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\Slot.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\SlotData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\SpineObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\TextureLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\Timeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\TransformConstraint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\TransformConstraintData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\TransformConstraintTimeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\TranslateTimeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\Triangulator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\Updatable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\spine\VertexAttachment.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\D3D11PSO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -416,34 +104,7 @@
     <ClInclude Include="src\Physics\RayCastHit2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTMeshGroup.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\Animation\FTSpriteAnimation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTTileMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\GeometryGenerator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\Mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\MeshConstantData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\Tile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\Vertex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\FileSystem\ChunkFileKeys.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Managers\CollisionManager.h">
@@ -476,9 +137,6 @@
     <ClInclude Include="src\Components\AI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Components\Animator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Components\BatchHeaders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -491,313 +149,13 @@
     <ClInclude Include="src\Components\Collider2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Components\MeshRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Components\Rigidbody2D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Components\SpriteRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Components\TileMapRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Components\UIs\TextRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTFontMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\TextAttribute.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\Light.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTMaterials\FTMaterial.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\FileSystem\MaterialFileKeys.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Managers\LightManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Animation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\AnimationState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\AnimationStateData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Atlas.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\AtlasAttachmentLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Attachment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\AttachmentLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\AttachmentTimeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\AttachmentType.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\BlendMode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\BlockAllocator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Bone.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\BoneData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\BoundingBoxAttachment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\ClippingAttachment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Color.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\ColorTimeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\ConstraintData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\ContainerUtil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\CurveTimeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Debug.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\DeformTimeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\dll.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\DrawOrderTimeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Event.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\EventData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\EventTimeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Extension.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\HashMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\HasRendererObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\IkConstraint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\IkConstraintData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\IkConstraintTimeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Inherit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\InheritTimeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Json.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\LinkedMesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Log.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\MathUtil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\MeshAttachment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\MixBlend.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\MixDirection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\PathAttachment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\PathConstraint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\PathConstraintData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\PathConstraintMixTimeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\PathConstraintPositionTimeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\PathConstraintSpacingTimeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Physics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\PhysicsConstraint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\PhysicsConstraintData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\PhysicsConstraintTimeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\PointAttachment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Pool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\PositionMode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Property.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\RegionAttachment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\RotateMode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\RotateTimeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\RTTI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\ScaleTimeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Sequence.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\SequenceTimeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\ShearTimeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Skeleton.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\SkeletonBinary.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\SkeletonBounds.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\SkeletonClipping.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\SkeletonData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\SkeletonJson.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\SkeletonRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Skin.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Slot.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\SlotData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\SpacingMode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\spine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\SpineObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\SpineString.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\TextureLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\TextureRegion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Timeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\TransformConstraint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\TransformConstraintData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\TransformConstraintTimeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\TranslateTimeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Triangulator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Updatable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Vector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Version.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\VertexAttachment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\spine\Vertices.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTMeshData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\assimp\Common\assbin_chunks.h">
@@ -1463,9 +821,6 @@
     <ClInclude Include="include\assimp\PostProcessing\ValidateDataStructure.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTMeshDataPack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Core\FunctionUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1473,12 +828,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\delegates\Delegates.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTRectangle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Managers\DebugShapes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Tweeny\dispatcher.h">
@@ -1503,39 +852,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Tweeny\tweeny.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTShaders\FTShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTShaders\FTVertexShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTShaders\FTPixelShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTMaterials\StandardMaterial.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTCubemap\FTCubemap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Managers\AnimationManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\Animation\AnimationFrame.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\GenericData\FTCSV.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\GenericData\FTJSON.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\Animation\FTSpineAnimation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Managers\FTSpineLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Managers\SoundManager.h">
@@ -1622,238 +938,10 @@
     <ClInclude Include="include\Tweeny\tweeny-3.2.0.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\DirectXTex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_c_lexer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_connected_components.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_divide.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_ds.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_dxt.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_easy_font.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_herringbone_wang_tile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_hexwave.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_image_resize2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_image_write.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_include.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_leakcheck.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_perlin.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_rect_pack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_sprintf.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_textedit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_tilemap_editor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_truetype.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stb_voxel_render.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\GenericData\FTText.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Components\SpineAnimator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\conversions\from_json.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\conversions\to_chars.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\conversions\to_json.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\input\binary_reader.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\input\input_adapters.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\input\json_sax.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\input\lexer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\input\parser.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\input\position_t.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\iterators\internal_iterator.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\iterators\iter_impl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\iterators\iteration_proxy.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\iterators\iterator_traits.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\iterators\json_reverse_iterator.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\iterators\primitive_iterator.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\meta\call_std\begin.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\meta\call_std\end.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\meta\cpp_future.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\meta\detected.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\meta\identity_tag.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\meta\is_sax.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\meta\std_fs.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\meta\type_traits.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\meta\void_t.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\output\binary_writer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\output\output_adapters.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\output\serializer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\abi_macros.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\exceptions.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\hash.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\json_custom_base_class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\json_pointer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\json_ref.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\macro_scope.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\macro_unscope.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\string_concat.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\string_escape.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\string_utils.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\detail\value_t.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\thirdparty\hedley\hedley.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\thirdparty\hedley\hedley_undef.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\adl_serializer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\byte_container_with_subtype.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\json.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\json_fwd.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\json\include\nlohmann\ordered_map.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTFont\FTFont.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTFont\FontChar.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTFont\FontKerning.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTFont\TextVertex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Managers\FontManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTMaterials\SpriteAnimMat.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\ResourceSystem\ResPath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTShaders\FTGeometryShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTSprite\FTSprite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\assimp\Compiler\poppack1.h">
@@ -2111,9 +1199,6 @@
     <ClInclude Include="include\assimp\ZipArchiveIOSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ResourceSystem\D3D11PSO.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Actors\Steering.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2161,9 +1246,6 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="include\directxtk\SimpleMath.inl">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="include\DirectXTex.inl">
       <Filter>Header Files</Filter>
     </None>
     <None Include="Assets\Shaders\2D\SpriteAnim.hlsli" />

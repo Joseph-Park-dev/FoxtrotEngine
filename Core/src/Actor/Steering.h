@@ -17,26 +17,26 @@
 
 namespace Core
 {
-	class FTVector3;
+	class Math::FTVector3;
 
 	struct Steering
 	{
 		float	  Angular;
-		FTVector3 Linear; // Normalized direction of movement
+		Math::FTVector3 Linear; // Normalized direction of movement
 
 		bool JumpTriggered;
 
 		static Steering* CreateEmptySteering()
 		{
-			return DBG_NEW Steering(0.f, FTVector3::Zero);
+			return DBG_NEW Steering(0.f, Math::FTVector3::Zero);
 		}
 
 		static Steering Halt()
 		{
-			return Steering(0.f, FTVector3::Zero);
+			return Steering(0.f, Math::FTVector3::Zero);
 		}
 
-		Steering(float angular, FTVector3 linear)
+		Steering(float angular, Math::FTVector3 linear)
 			: Angular(angular)
 			, Linear(linear)
 			, JumpTriggered(false)

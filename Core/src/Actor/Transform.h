@@ -28,38 +28,38 @@ namespace Core
 		//////////////////////////////
 
 		// Local Transformation
-		const FTVector3& GetLocalPosition() const;
-		const FTVector3& GetLocalScale() const;
-		const FTVector3& GetLocalRotation() const;
+		const Math::FTVector3& GetLocalPosition() const;
+		const Math::FTVector3& GetLocalScale() const;
+		const Math::FTVector3& GetLocalRotation() const;
 
 		// World Transformation
-		virtual const FTVector3& GetWorldPosition() const;
-		const FTVector3&		 GetWorldScale() const;
-		const FTVector3&		 GetWorldRotation() const;
-		const FTMatrix4&		 GetMatrixWorld() const;
-		const FTVector3			 GetRotationDegree() const;
-		const FTVector3&		 GetRightward() const;
+		virtual const Math::FTVector3& GetWorldPosition() const;
+		const Math::FTVector3&		 GetWorldScale() const;
+		const Math::FTVector3&		 GetWorldRotation() const;
+		const Math::FTMatrix4&		 GetMatrixWorld() const;
+		const Math::FTVector3			 GetRotationDegree() const;
+		const Math::FTVector3&		 GetRightward() const;
 		const Steering*			 GetSteering() const;
 
 		const bool IsHalting() const;
 
 		// Local Transformation
-		void SetLocalPosition(const FTVector3 val);
-		void SetLocalScale(const FTVector3 val);
-		void SetLocalRotation(const FTVector3 val);
+		void SetLocalPosition(const Math::FTVector3 val);
+		void SetLocalScale(const Math::FTVector3 val);
+		void SetLocalRotation(const Math::FTVector3 val);
 
 		// World Transformation
-		void SetWorldPosition(const FTVector3 worldPos);
-		void SetWorldScale(const FTVector3 worldScale);
-		void SetWorldRotation(const FTVector3 worldRot);
+		void SetWorldPosition(const Math::FTVector3 worldPos);
+		void SetWorldScale(const Math::FTVector3 worldScale);
+		void SetWorldRotation(const Math::FTVector3 worldRot);
 
-		void SetRightward(const FTVector3 dir);
+		void SetRightward(const Math::FTVector3 dir);
 		void SetSteering(const Steering steering);
 
 		void SetOwner(Actor* actor);
 
-		static FTVector3 ConvertRadToDegree(FTVector3 radianRot);
-		static FTVector3 ConvertDegreeToRad(FTVector3 degreeRot);
+		static Math::FTVector3 ConvertRadToDegree(Math::FTVector3 radianRot);
+		static Math::FTVector3 ConvertDegreeToRad(Math::FTVector3 degreeRot);
 
 	public:
 		void Update();
@@ -72,18 +72,18 @@ namespace Core
 
 	private:
 		// Local Transformation.
-		FTVector3 mLocalPosition;
-		FTVector3 mLocalScale;
-		FTVector3 mLocalRotation;
-		FTMatrix4 mMatrixLocal;
+		Math::FTVector3 mLocalPosition;
+		Math::FTVector3 mLocalScale;
+		Math::FTVector3 mLocalRotation;
+		Math::FTMatrix4 mMatrixLocal;
 
 		// World Transformation.
-		FTVector3 mWorldPosition;
-		FTVector3 mWorldScale;
-		FTVector3 mWorldRotation;
-		FTMatrix4 mMatrixWorld;
+		Math::FTVector3 mWorldPosition;
+		Math::FTVector3 mWorldScale;
+		Math::FTVector3 mWorldRotation;
+		Math::FTMatrix4 mMatrixWorld;
 
-		FTVector3 mRightward; // A local rightward direction
+		Math::FTVector3 mRightward; // A local rightward direction
 		Steering* mSteering;
 
 		Actor* mOwner;

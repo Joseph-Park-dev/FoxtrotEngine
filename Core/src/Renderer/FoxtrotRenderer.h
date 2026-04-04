@@ -11,11 +11,15 @@
 /// </summary>
 
 #pragma once
+namespace Math
+{
+	class FTVector2;
+}
+
 namespace Core
 {
 	class Transform;
 	class ViewportRenderer;
-	class FTVector2;
 	class FTWindow;
 	class FoxtrotRenderer
 	{

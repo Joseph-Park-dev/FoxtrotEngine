@@ -28,7 +28,6 @@ namespace Core
 	class FoxtrotRenderer;
 	class FTCore;
 	class FTInputDevice;
-	class FTVector3;
 
 	namespace DefaultVal
 	{

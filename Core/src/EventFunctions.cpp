@@ -25,7 +25,7 @@
 
 namespace Core
 {
-	Actor* Instantiate(Actor* actor, ActorGroup actorGroup, FTVector3 pos)
+	Actor* Instantiate(Actor* actor, ActorGroup actorGroup, Math::FTVector3 pos)
 	{
 		FTEvent addedEvent	= {};
 		addedEvent.incident = EVENT_TYPE::CREATE_ACTOR;

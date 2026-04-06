@@ -17,7 +17,10 @@
 
 #include "TemplateFunctions.h"
 
-class FoxtrotRenderer;
+namespace Core
+{
+	class FoxtrotRenderer;
+}
 
 namespace D3D11
 {
@@ -27,7 +30,7 @@ namespace D3D11
 		public SpriteRenderer
 	{
 	public:
-		virtual FTDS::String GetName() const override
+		virtual Core::FTDS::String GetName() const override
 		{
 			return "Animator";
 		}
@@ -45,24 +48,26 @@ namespace D3D11
 
 	public:
 		virtual void Initialize() override;
+		virtual void ProcessInput(Core::FTInputDevice* inputDevice) override;
+		virtual void Update(float deltaTime) override;
 		void		 LateUpdate(float deltaTime) override;
-		void		 Render(FoxtrotRenderer* renderer) override;
+		void		 Render(Core::FoxtrotRenderer* renderer) override;
 
-		virtual void CloneTo(Actor* actor) override;
+		virtual void CloneTo(Core::Actor* actor) override;
 
 	public:
 		Animator(
-			Plugin* plugin,
-			Actor*	owner,
-			int		updateOrder = DefaultVal::UPDATE_ORDER);
+			Core::Plugin* plugin,
+			Core::Actor*  owner,
+			int			  updateOrder = Core::DefaultVal::UPDATE_ORDER);
 		~Animator() override;
 
 	private:
-		FTDS::DynamicArray<D3D11::FTSpriteAnimation*>* mLoadedAnim;
-		int											   mCurrFrameIdx;
-		float										   mAccTime;
-		bool										   mIsFinished;
-		bool										   mIsRepeated;
+		Core::FTDS::DynamicArray<D3D11::FTSpriteAnimation*>* mLoadedAnim;
+		int													 mCurrFrameIdx;
+		float												 mAccTime;
+		bool												 mIsFinished;
+		bool												 mIsRepeated;
 
 	public:
 		virtual void SaveProperties(std::ofstream& ofs) override;

@@ -13,19 +13,21 @@ namespace D3D11
 		public MeshRenderer
 	{
 	public:
-		virtual FTDS::String GetName() const override { return "SpineAnimator"; }
+		virtual Core::FTDS::String GetName() const override { return "SpineAnimator"; }
 
 	public:
 		void Play(const int idx, bool isRepeated);
 
 	public:
 		void		 Initialize() override;
+		virtual void ProcessInput(Core::FTInputDevice* inputDevice) override;
 		virtual void Update(float deltaTime) override;
-		void		 Render(FoxtrotRenderer* renderer) override;
+		virtual void LateUpdate(float deltaTime) override;
+		virtual void Render(Core::FoxtrotRenderer* renderer) override;
 
 	public:
-		SpineAnimator(Plugin* plugin, Actor* owner, int updateOrder = DefaultVal::UPDATE_ORDER);
-		virtual void CloneTo(Actor* actor) override;
+		SpineAnimator(Core::Plugin* plugin, Core::Actor* owner, int updateOrder = Core::DefaultVal::UPDATE_ORDER);
+		virtual void CloneTo(Core::Actor* actor) override;
 
 	private:
 		float		   mTimeScale;

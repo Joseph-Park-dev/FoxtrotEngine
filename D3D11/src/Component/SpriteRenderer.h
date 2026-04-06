@@ -12,12 +12,15 @@
 /// </summary>
 
 #pragma once
-#include "Component/Component.h"
+#include "Component/D3D11Component.h"
 
 #include "TemplateFunctions.h"
 
-class Actor;
-class FoxtrotRenderer;
+namespace Core
+{
+	class Actor;
+	class FoxtrotRenderer;
+} // namespace Core
 
 namespace D3D11
 {
@@ -29,21 +32,24 @@ namespace D3D11
 	class D3D11PSO;
 	struct Mesh;
 
-	class SpriteRenderer : public Core::Component
+	class SpriteRenderer : public D3D11Component
 	{
 	public:
 		virtual Core::FTDS::String GetName() const override { return "SpriteRenderer"; }
 
 	public:
 		virtual void Initialize() override;
-		virtual void Render(FoxtrotRenderer* renderer) override;
-		virtual void CloneTo(Actor* actor) override;
+		virtual void ProcessInput(Core::FTInputDevice* inputDevice) override;
+		virtual void Update(float deltaTime) override;
+		virtual void LateUpdate(float deltaTime) override;
+		virtual void Render(Core::FoxtrotRenderer* renderer) override;
+		virtual void CloneTo(Core::Actor* actor) override;
 
 	public:
 		SpriteRenderer(
-			Plugin* plugin,
-			Actor*	owner,
-			int		updateOrder = DefaultVal::UPDATE_ORDER);
+			Core::Plugin* plugin,
+			Core::Actor*  owner,
+			int			  updateOrder = Core::DefaultVal::UPDATE_ORDER);
 
 	protected:
 		FTSprite*	GetSprite() const;

@@ -27,6 +27,8 @@
 
 namespace D3D11
 {
+	using namespace Core;
+
 	void SpineAnimator::Play(const int idx, bool isRepeated)
 	{
 		static_cast<FTSpineAnimation*>(GetMeshGroup())->SetAnimation(idx, isRepeated);
@@ -35,6 +37,10 @@ namespace D3D11
 	void SpineAnimator::Initialize()
 	{
 		MeshRenderer::Initialize();
+	}
+
+	void SpineAnimator::ProcessInput(FTInputDevice* inputDevice)
+	{
 	}
 
 	void SpineAnimator::Update(float deltaTime)
@@ -47,12 +53,16 @@ namespace D3D11
 		}
 	}
 
-	void SpineAnimator::Render(FoxtrotRenderer* renderer)
+	void SpineAnimator::LateUpdate(float deltaTime)
+	{
+	}
+
+	void SpineAnimator::Render(Core::FoxtrotRenderer* renderer)
 	{
 		D3D11Renderer* rend = static_cast<D3D11Renderer*>(renderer);
 		if (GetMeshGroup())
 		{
-			Transform* transform = GetOwner()->GetTransform();
+			Core::Transform* transform = GetOwner()->GetTransform();
 			static_cast<FTSpineAnimation*>(
 				GetMeshGroup())
 				->Render(rend, transform, Camera::GetInstance(), GetTexture(), GetVS(), GetPS(), GetMaterial());
@@ -88,7 +98,7 @@ namespace D3D11
 			FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTSpineAnimation::SKIN_COMBINATION, anim->GetSkinCombination());
 		}
 		else
-			FileIOHelper::SaveString(ofs, ChunkKey::SpineAnimator::LOADED_ANIM, ::ChunkKey::NullVal::NULL_OBJECT);
+			FileIOHelper::SaveString(ofs, ChunkKey::SpineAnimator::LOADED_ANIM, Core::ChunkKey::NullVal::NULL_OBJECT);
 	}
 
 	void SpineAnimator::LoadProperties(std::ifstream& ifs)
@@ -155,4 +165,9 @@ namespace D3D11
 		}
 	}
 #endif
+
+	extern "C" __declspec(dllexport) Component* Create(Core::Plugin* plugin, Core::Actor* actor, int updateOrder)
+	{
+		return DBG_NEW SpineAnimator(plugin, actor, updateOrder);
+	}
 } // namespace D3D11

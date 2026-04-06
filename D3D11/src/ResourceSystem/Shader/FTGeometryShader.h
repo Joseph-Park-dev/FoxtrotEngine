@@ -1,7 +1,8 @@
 #pragma once
 #include "FTShader.h"
 
-class D3D11Renderer;
+#include <wrl.h>
+#include <d3d11.h>
 
 namespace D3D11
 {
@@ -9,16 +10,19 @@ namespace D3D11
 		public FTShader
 	{
 	public:
+		static D3D11::ResType Type;
+
+	public:
 		/// @brief Returns compiled HLSL pixel shader object.
 		Microsoft::WRL::ComPtr<ID3D11GeometryShader>& GetShader();
 
 	public:
 		/// @see FTShader::FTShader()
-		FTGeometryShader(FTResourceDef& resDef, D3D11Renderer* renderer);
+		FTGeometryShader(Core::FTResourceDef& resDef, D3D11Renderer* renderer);
 
 	protected:
 		/// @see FTShader::CompileShader()
-		void CompileShader(FTResourceDef& resDef, D3D11Renderer* renderer) override;
+		void CompileShader(Core::FTResourceDef& resDef, D3D11Renderer* renderer) override;
 
 	private:
 		/// @brief The shader should remain compiled after initialization.

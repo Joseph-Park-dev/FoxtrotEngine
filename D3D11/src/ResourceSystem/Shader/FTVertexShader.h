@@ -17,9 +17,9 @@
 #include "FileSystem/NullKeys.h"
 
 #ifdef FOXTROT_EDITOR
-#include <magic_enum/include/magic_enum/magic_enum.hpp>
+	#include <magic_enum/include/magic_enum/magic_enum.hpp>
 
-#include "CommandHistory.h"
+	#include "CommandHistory.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -30,6 +30,9 @@ namespace D3D11
 	/// @brief A wrapper for HLSL vertex shaders.
 	class FTVertexShader : public FTShader
 	{
+	public:
+		static D3D11::ResType Type;
+
 	public:
 		/// @see FTResource::SaveProperties()
 		virtual void SaveProperties(std::ofstream& ofs) override;
@@ -46,18 +49,18 @@ namespace D3D11
 
 	public:
 		/// @see FTShader::FTShader()
-		FTVertexShader(FTResourceDef& resDef, D3D11Renderer* renderer);
-		~FTVertexShader();
+		FTVertexShader(Core::FTResourceDef& resDef, D3D11Renderer* renderer);
+		~FTVertexShader() override;
 
 	protected:
 		/// @see FTShader::CompileShader()
-		void CompileShader(FTResourceDef& resDef, D3D11Renderer* renderer) override;
+		void CompileShader(Core::FTResourceDef& resDef, D3D11Renderer* renderer) override;
 
 	private:
 		/// @brief The shader should remain compiled after initialization.
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> mShader;
 		Microsoft::WRL::ComPtr<ID3D11InputLayout>  mInputLayout;
-		FTDS::DynamicArray<SemanticItem*>*		   mSemanticItems;
+		Core::FTDS::DynamicArray<SemanticItem*>*   mSemanticItems;
 
 #ifdef FOXTROT_EDITOR
 	public:
@@ -87,14 +90,14 @@ namespace D3D11
 	struct SemanticItem
 	{
 		size_t					 NameIdx;
-		FTDS::String			 Name;
+		Core::FTDS::String		 Name;
 		D3D11_INPUT_ELEMENT_DESC Desc;
 
 		SemanticItem()
 			: NameIdx(0)
 			, Desc()
 		{
-			Desc.SemanticName		  = ::ChunkKey::NullVal::NULL_OBJECT;
+			Desc.SemanticName		  = Core::ChunkKey::NullVal::NULL_OBJECT;
 			Desc.SemanticIndex		  = 0;
 			Desc.InputSlot			  = 0;
 			Desc.AlignedByteOffset	  = 0;

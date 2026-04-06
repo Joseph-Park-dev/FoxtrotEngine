@@ -11,9 +11,7 @@
 
 namespace D3D11
 {
-	FTShader::FTShader(FTResourceDef& resDef, D3D11Renderer* renderer)
-	{
-	}
+	using namespace Core;
 
 	void FTShader::SetType(ShaderType&& shaderType)
 	{

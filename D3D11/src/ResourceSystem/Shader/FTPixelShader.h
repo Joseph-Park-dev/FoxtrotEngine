@@ -9,12 +9,18 @@
 #pragma once
 #include "ResourceSystem/Shader/FTShader.h"
 
+#include <wrl.h>
+#include <d3d11.h>
+
 namespace D3D11
 {
 	/// @brief A wrapper for HLSL pixel shaders.
 	class FTPixelShader :
 		public FTShader
 	{
+	public:
+		static D3D11::ResType Type;
+
 	public:
 		/// @see FTResource::SaveProperties()
 		virtual void SaveProperties(std::ofstream& ofs) override;

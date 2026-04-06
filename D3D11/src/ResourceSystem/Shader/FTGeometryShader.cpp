@@ -6,26 +6,25 @@
 
 namespace D3D11
 {
-	ResType FTGeometryShader::Type = ResType::PIXEL_SHADER;
+	ResType FTGeometryShader::Type = ResType::GEOMETRY_SHADER;
 
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader>& FTGeometryShader::GetShader()
 	{
 		return mShader;
 	}
 
-	FTGeometryShader::FTGeometryShader(FTResourceDef& resDef, D3D11Renderer* renderer)
-		: FTShader(resDef, renderer)
+	FTGeometryShader::FTGeometryShader(Core::FTResourceDef& resDef, D3D11Renderer* renderer)
 	{
 		SetType(ShaderType::GEOMETRY_SHADER);
 		CompileShader(resDef, renderer);
 	}
 
-	void FTGeometryShader::CompileShader(FTResourceDef& resDef, D3D11Renderer* renderer)
+	void FTGeometryShader::CompileShader(Core::FTResourceDef& resDef, D3D11Renderer* renderer)
 	{
 		mShader.Reset();
 
-		FTDS::String   path		 = resDef.Path;
-		const wchar_t* wcharPath = path.WC_Str();
+		Core::FTDS::String path		 = resDef.Path;
+		const wchar_t*	   wcharPath = path.WC_Str();
 		D3D11Utils::CreateGeometryShader(
 			renderer->GetDevice(),
 			wcharPath,

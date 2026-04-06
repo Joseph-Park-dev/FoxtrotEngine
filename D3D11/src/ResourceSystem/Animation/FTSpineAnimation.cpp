@@ -24,6 +24,7 @@
 
 namespace D3D11
 {
+	using namespace Core;
 	using Microsoft::WRL::ComPtr;
 
 	ResType FTSpineAnimation::Type = ResType::SPINE_ANIMATION;
@@ -39,7 +40,7 @@ namespace D3D11
 		mSkeleton->updateWorldTransform(physics);
 	}
 
-	void FTSpineAnimation::Render(D3D11Renderer* renderer, Transform* transform, Camera* camInst, FTTexture* tex, FTVertexShader* vs, FTPixelShader* ps, FTMaterial* mat)
+	void FTSpineAnimation::Render(D3D11Renderer* renderer, Core::Transform* transform, Camera* camInst, FTTexture* tex, FTVertexShader* vs, FTPixelShader* ps, FTMaterial* mat)
 	{
 		// This enables the resource reusable throughout the Component instances.
 		UpdateConstantBuffers(renderer, transform, camInst, mat, GetFrontDir());

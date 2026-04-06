@@ -4,6 +4,7 @@
 
 namespace D3D11
 {
+	using namespace Core;
 	void AnimationFrame::SaveProperties(std::ofstream& ofs)
 	{
 		FileIOHelper::SaveFloat(ofs, ChunkKey::AnimationFrame::DURATION, Duration);

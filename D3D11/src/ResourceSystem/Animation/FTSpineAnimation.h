@@ -12,9 +12,12 @@
 #include <Dynamic/DynamicArray.h>
 #include <spine.h>
 
-class Transform;
-class FTJSON;
-class FTText;
+namespace Core
+{
+	class Transform;
+	class FTJSON;
+	class FTText;
+} // namespace Core
 
 namespace D3D11
 {
@@ -30,17 +33,20 @@ namespace D3D11
 		public FTSprite
 	{
 	public:
+		static D3D11::ResType Type;
+
+	public:
 		void Update(float deltaTime, spine::Physics physics);
 
 		/// @brief Renders the entire meshes created, as a full model.
 		void Render(
-			D3D11Renderer*	renderer,
-			Transform*		transform,
-			Camera*			camInst,
-			FTTexture*		tex,
-			FTVertexShader* vs,
-			FTPixelShader*	ps,
-			FTMaterial*		mat);
+			D3D11Renderer*	 renderer,
+			Core::Transform* transform,
+			Camera*			 camInst,
+			FTTexture*		 tex,
+			FTVertexShader*	 vs,
+			FTPixelShader*	 ps,
+			FTMaterial*		 mat);
 
 		/// @see FTResource::SaveProperties()
 		virtual void SaveProperties(std::ofstream& ofs) override;
@@ -72,20 +78,20 @@ namespace D3D11
 		spine::Vector<spine::Animation*>& LoadedClips();
 
 		/// @brief FTSpineAnimation uses SpineMesh, not Mesh!
-		FTDS::DynamicArray<Mesh*>* Meshes() = delete;
+		Core::FTDS::DynamicArray<Mesh*>* Meshes() = delete;
 
 	public:
 		/// @brief Creates the spine animation.
 		/// The file paths of the generic data will only be used.
-		FTSpineAnimation(FTResourceDef& resDef, D3D11Renderer* renderer);
+		FTSpineAnimation(Core::FTResourceDef& resDef, D3D11Renderer* renderer);
 		~FTSpineAnimation();
 
 	private:
 		/// @brief JSON object holding its file path, which will be use to create spine anim.
-		FTDS::String* mJSONPath;
+		Core::FTDS::String* mJSONPath;
 
 		/// @brief FTText object holding the Atlas file path, which will be use to create spine anim.
-		FTDS::String* mAtlasPath;
+		Core::FTDS::String* mAtlasPath;
 
 		/// @brief Timescale for the loaded clips.
 		float mTimeScale;
@@ -110,7 +116,7 @@ namespace D3D11
 
 		/// @brief FTSpineAnimation uses SpineMesh, not Mesh!
 		/// @see Meshes()
-		FTDS::DynamicArray<SpineMesh*>* mMeshes;
+		Core::FTDS::DynamicArray<SpineMesh*>* mMeshes;
 
 	private:
 		/// @brief Loads Spine Atlas & JSON, and creates a spine animation.
@@ -125,7 +131,7 @@ namespace D3D11
 			Microsoft::WRL::ComPtr<ID3D11Device>& device,
 			int									  order,
 			void*								  attachment,
-			D3D11::SPINE_ATTACHMENT_TYPE				  attachmentType);
+			D3D11::SPINE_ATTACHMENT_TYPE		  attachmentType);
 
 		/// @brief Updates the buffers for each spine meshes according to the vertices data.
 		void UpdateBuffers(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);

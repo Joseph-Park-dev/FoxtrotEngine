@@ -33,10 +33,11 @@
 	#include "EditorUtils.h"
 #endif
 
-using Microsoft::WRL::ComPtr;
-
 namespace D3D11
 {
+	using Microsoft::WRL::ComPtr;
+	using namespace Core;
+	using namespace Math;
 	ResType FTSpriteAnimation::Type = ResType::SPRITE_ANIMATION;
 
 	void FTSpriteAnimation::SaveProperties(std::ofstream& ofs)
@@ -51,7 +52,7 @@ namespace D3D11
 		FileIOHelper::SaveInt(ofs, ChunkKey::FTSpriteAnimation::MIN_FRAME_IDX, mMinFrameIdx);
 		FileIOHelper::SaveVector3(ofs, ChunkKey::FTSpriteAnimation::SIZE_SCALE, GetSizeScale());
 		FileIOHelper::SaveString(ofs, ChunkKey::FTSpriteAnimation::SPRITE_SHEET, D3D11::RES_NAME(FTTexture, GetTexture()));
-		FileIOHelper::SaveString(ofs, ChunkKey::FTSpriteAnimation::JSON, RES_NAME(FTJSON, mJSON));
+		FileIOHelper::SaveString(ofs, ChunkKey::FTSpriteAnimation::JSON, RES_NAME(Core::FTJSON, mJSON));
 
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
 	}
@@ -60,9 +61,9 @@ namespace D3D11
 	{
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
 
-		FTDS::String jsonKey;
-		FTDS::String texKey;
-		FTVector3	 sizeScale = FTVector3(1.f, 1.f, 1.f);
+		FTDS::String	jsonKey;
+		FTDS::String	texKey;
+		Math::FTVector3 sizeScale = Math::FTVector3(1.f, 1.f, 1.f);
 
 		FileIOHelper::LoadBasicString(ifs, jsonKey);
 		FileIOHelper::LoadBasicString(ifs, texKey);
@@ -75,7 +76,7 @@ namespace D3D11
 		FileIOHelper::LoadInt(ifs, frontDir);
 		FTMeshGroup::LoadProperties(ifs);
 
-		mJSON = D3D11::GET_RES(FTJSON, jsonKey);
+		mJSON = GET_RES(Core::FTJSON, jsonKey);
 		if (!mJSON)
 			return;
 
@@ -168,7 +169,7 @@ namespace D3D11
 			float pivotY = frame[SpriteSheetKeys::PIVOT][SpriteSheetKeys::Y];
 
 			size_t tileIdx			   = i - mMinFrameIdx;
-			vertices[tileIdx].Position = FTVector3(screenX, screenY, 0.0f);
+			vertices[tileIdx].Position = Math::FTVector3(screenX, screenY, 0.0f);
 
 			GetGCSpriteData()[tileIdx].Size	 = FTVector2(screenW, screenH);
 			GetGCSpriteData()[tileIdx].Scale = FTVector2(1.0f);
@@ -208,8 +209,8 @@ namespace D3D11
 		for (size_t i = 0; i < mMaxFrameIdx - mMinFrameIdx + 1; ++i)
 			GetGCSpriteData()[i].Size = size;
 
-		FTVector3 scale = GetSizeScale();
-		CommandHistory::GetInstance()->UpdateVector3Value("Scale size", scale);
+		FTVector3		  scale = FTVector3
+						  CommandHistory::GetInstance() -> UpdateVector3Value("Scale size", scale);
 		SetSizeScale(scale);
 
 		bool val = true;

@@ -18,6 +18,9 @@
 
 namespace D3D11
 {
+	using namespace Core;
+	using namespace Math;
+	using namespace Microsoft::WRL;
 	ResType FTSprite::Type = ResType::SPRITE;
 
 	void FTSprite::UpdateConstantBuffers(D3D11Renderer* renderer, Transform* transform, Camera* camInst, FTMaterial* mat, const size_t gcDataCount, const int meshIndex)

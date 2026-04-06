@@ -19,17 +19,24 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
-class Tile;
-class FTCSV;
+namespace Core
+{
+	class FTCSV;
+}
 
 namespace D3D11
 {
+	class Tile;
+
 	class FTTileMap :
 		public D3D11Resource
 	{
 	public:
+		static D3D11::ResType Type;
+
+	public:
 		void Initialize();
-		void ReadCSV(FTResourceDef& resDef, FTDS::String& str);
+		void ReadCSV(Core::FTResourceDef& resDef, Core::FTDS::String& str);
 
 	public:
 		Tile* GetTiles() { return mTileMap; }
@@ -48,7 +55,7 @@ namespace D3D11
 		void SetMaxCountOnMapY(UINT yCount);
 
 	public:
-		FTTileMap(FTResourceDef& resDef);
+		FTTileMap(Core::FTResourceDef& resDef);
 		~FTTileMap();
 
 	protected:
@@ -56,11 +63,11 @@ namespace D3D11
 
 	private:
 		// These fields need to be read from .chunk files or be modified on the editor.
-		FTCSV* mCSV;
-		UINT   mTileWidthOnScreen;
-		UINT   mTileHeightOnScreen;
-		UINT   mMaxCountOnMapX;
-		UINT   mMaxCountOnMapY;
+		Core::FTCSV* mCSV;
+		UINT		 mTileWidthOnScreen;
+		UINT		 mTileHeightOnScreen;
+		UINT		 mMaxCountOnMapX;
+		UINT		 mMaxCountOnMapY;
 
 		// These fields need to be initialized when the tilemap is constructed.
 		Tile* mTileMap;

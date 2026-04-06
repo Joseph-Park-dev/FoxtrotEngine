@@ -17,8 +17,8 @@ namespace D3D11
 	class Tile
 	{
 	public:
-		FTRectArea* GetRectOnMap() { return mRectOnMap; }
-		FTRectArea* GetRectOnScreen() { return mRectOnScreen; }
+		Core::FTRectArea* GetRectOnMap() { return mRectOnMap; }
+		Core::FTRectArea* GetRectOnScreen() { return mRectOnScreen; }
 
 	public:
 		Tile();
@@ -26,8 +26,8 @@ namespace D3D11
 
 	private:
 		// Represents the area on the texture to be sampled.
-		FTRectArea* mRectOnMap;
+		Core::FTRectArea* mRectOnMap;
 		// Represents the area on display screen.
-		FTRectArea* mRectOnScreen;
+		Core::FTRectArea* mRectOnScreen;
 	};
 } // namespace D3D11

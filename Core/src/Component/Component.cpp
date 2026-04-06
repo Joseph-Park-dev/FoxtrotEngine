@@ -18,32 +18,6 @@
 
 namespace Core
 {
-	void Component::Initialize()
-	{
-		mIsInitialized = true;
-	}
-
-	void Component::Setup()
-	{
-		mIsSetup = true;
-	}
-
-	void Component::ProcessInput(FTInputDevice* inputDevice)
-	{
-	}
-
-	void Component::Update(float deltaTime)
-	{
-	}
-
-	void Component::LateUpdate(float deltaTime)
-	{
-	}
-
-	void Component::Render(FoxtrotRenderer* renderer)
-	{
-	}
-
 	Actor* Component::GetOwner() const
 	{
 		return mOwner;
@@ -74,30 +48,16 @@ namespace Core
 		mIsActive = isActive;
 	}
 
-	Component::Component(Plugin* plugin, Actor* owner, int updateOrder)
-		: mPlugin(plugin)
-		, mOwner(owner)
-		, mUpdateOrder(updateOrder)
-		, mIsInitialized(false)
-		, mIsSetup(false)
-		, mIsActive(true)
+	void Component::Copy(const Component* origin)
 	{
-		mOwner->AddComponent(this);
-	}
+		mPlugin		   = origin->mPlugin;
+		mOwner		   = origin->mOwner;
+		mUpdateOrder   = origin->mUpdateOrder;
+		mIsInitialized = false;
+		mIsSetup	   = false;
+		mIsActive	   = false;
 
-	Component::Component(const Component* origin)
-		: mPlugin(nullptr)
-		, mOwner(origin->mOwner)
-		, mUpdateOrder(origin->mUpdateOrder)
-		, mIsInitialized(false)
-		, mIsSetup(false)
-		, mIsActive(origin->mIsActive)
-	{
 		mOwner->AddComponent(this);
-	}
-
-	Component::~Component()
-	{
 	}
 
 	Plugin* Component::GetPlugin()
@@ -109,18 +69,6 @@ namespace Core
 	{
 		to->mOwner		 = this->mOwner;
 		to->mUpdateOrder = this->mUpdateOrder;
-	}
-
-	void Component::SaveProperties(std::ofstream& ofs)
-	{
-		FileIOHelper::SaveBool(ofs, ChunkKey::IS_ACTIVE, mIsActive);
-		FileIOHelper::SaveInt(ofs, ChunkKey::UPDATE_ORDER, mUpdateOrder);
-	}
-
-	void Component::LoadProperties(std::ifstream& ifs)
-	{
-		FileIOHelper::LoadInt(ifs, mUpdateOrder);
-		FileIOHelper::LoadBool(ifs, mIsActive);
 	}
 
 #ifdef FOXTROT_EDITOR

@@ -20,6 +20,8 @@
 #include <iosfwd>
 
 #include "Debugging/DebugMemAlloc.h"
+#include "Actor/Actor.h"
+#include "FileSystem/FileIOHelper.h"
 
 namespace Core
 {
@@ -41,72 +43,65 @@ namespace Core
 
 	class Component
 	{
-#define CLONE_TO_NOT_IMPLEMENTED printf("ERROR: CloneTo of %s is not implemented.", typeid(this).name())
-
 	public:
 		virtual FTDS::String GetName() const = 0;
 
 	public:
 		virtual void Initialize();
 		virtual void Setup();
-		virtual void ProcessInput(FTInputDevice* inputDevice);
-		virtual void Update(float deltaTime);
-		virtual void LateUpdate(float deltaTime);
-		virtual void Render(FoxtrotRenderer* renderer);
-
-		virtual void CloneTo(Actor* actor) = 0;
-
-	public:
-		virtual Actor*	   GetOwner() const;
-		const int		   GetUpdateOrder() const;
-		virtual const bool GetIsInitialized() const;
-		const bool		   GetIsSetup() const;
-		const bool		   GetIsActive() const;
-
-		void SetIsActive(bool isActive);
-
-	public:
-		/// <summary>
-		/// Creates a Component to be assigned to the Actor.
-		/// </summary>
-		Component(
-			Plugin* plugin,
-			Actor*	owner,
-			int		updateOrder = DefaultVal::UPDATE_ORDER);
-
-		/// <summary>
-		/// Deep copies Component from another.
-		/// </summary>
-		/// <param name="comp : "> Component to copy values from.</param>
-		Component(const Component* comp);
-		virtual ~Component();
-
-	protected:
-		/// @brief Deep copies values from this Component.
-		/// This is useful for CloneTo() function in a Derived Component.
-		/// @param to The Component values will be copied to.
-		virtual void Copy(Component* to);
-
-	protected:
-		virtual Plugin* GetPlugin();
-
-	private:
-		Plugin* mPlugin;
-		Actor*	mOwner;
-		int		mUpdateOrder;
-
-	private:
-		// This is turned as true as the Initialize(FTCore*) is executed.
-		bool mIsInitialized;
-		// This is turned as true as the Setup() is executed.
-		bool mIsSetup;
-		// The component is alive in the game loop
-		// (During ProcessInput, Update, LateUpdate and Render)
-		bool mIsActive;
+		virtual void ProcessInput(FTInputDevice* inputDevice) = 0;
+		virtual void Update(float deltaTime)				  = 0;
+		virtual void LateUpdate(float deltaTime)			  = 0;
+		virtual void Render(FoxtrotRenderer* renderer)		  = 0;
+		virtual void CloneTo(Actor* actor)					  = 0;
 
 	public:
 		virtual void SaveProperties(std::ofstream& ofs);
 		virtual void LoadProperties(std::ifstream& ifs);
+
+	public:
+		virtual Core::Actor* GetOwner() const { return mOwner; }
+		const int			 GetUpdateOrder() const;
+		virtual const bool	 GetIsInitialized() const { return mIsInitialized; }
+		const bool			 GetIsSetup() const;
+		const bool			 GetIsActive() const;
+
+		void SetIsActive(bool isActive);
+
+	protected:
+		/// <summary>
+		/// Creates a Component to be assigned to the Actor.
+		/// </summary>
+		void Create(
+			Core::Plugin* plugin,
+			Core::Actor*  owner,
+			int			  updateOrder = Core::DefaultVal::UPDATE_ORDER)
+		{
+			mPlugin		   = plugin;
+			mOwner		   = owner;
+			mUpdateOrder   = updateOrder;
+			mIsInitialized = false;
+			mIsSetup	   = false;
+			mIsActive	   = false;
+
+			mOwner->AddComponent(this);
+		}
+
+		virtual Plugin* GetPlugin();
+
+	private:
+		Core::Plugin* mPlugin	   = nullptr;
+		Core::Actor*  mOwner	   = nullptr;
+		int			  mUpdateOrder = Core::DefaultVal::UPDATE_ORDER;
+
+	private:
+		// This is turned as true as the Initialize(FTCore*) is executed.
+		bool mIsInitialized = false;
+		// This is turned as true as the Setup() is executed.
+		bool mIsSetup = false;
+		// The component is alive in the game loop
+		// (During ProcessInput, Update, LateUpdate and Render)
+		bool mIsActive = true;
 
 	public:
 		template <class T>
@@ -154,4 +149,27 @@ namespace Core
 		constexpr const char* UPDATE_ORDER = "UpdateOrder";
 		constexpr const char* IS_ACTIVE	   = "Is Active";
 	} // namespace ChunkKey
+
+	extern "C" __declspec(dllexport) Component* Create(Plugin* plugin, Actor* actor, int updateOrder);
+
+	void Component::Initialize()
+	{
+		mIsInitialized = true;
+	}
+	void Component::Setup()
+	{
+		mIsSetup = true;
+	}
+
+	void Component::SaveProperties(std::ofstream& ofs)
+	{
+		FileIOHelper::SaveBool(ofs, ChunkKey::IS_ACTIVE, mIsActive);
+		FileIOHelper::SaveInt(ofs, ChunkKey::UPDATE_ORDER, mUpdateOrder);
+	}
+
+	void Component::LoadProperties(std::ifstream& ifs)
+	{
+		FileIOHelper::LoadInt(ifs, mUpdateOrder);
+		FileIOHelper::LoadBool(ifs, mIsActive);
+	}
 } // namespace Core

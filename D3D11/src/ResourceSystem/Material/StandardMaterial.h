@@ -17,21 +17,21 @@ namespace D3D11
 	/// @brief The value of the material data are to be applied to Pixel Constant Buffers.
 	struct BlinnPhongData
 	{
-		FTVector3 Ambient	= FTVector3::Zero;
-		float	  Shininess = 0.0f;
-		FTVector3 Diffuse	= FTVector3(0.5f);
-		float	  dummy1;
-		FTVector3 Specular = FTVector3(0.5f);
-		float	  dummy2;
+		Math::FTVector3 Ambient	  = Math::FTVector3::Zero;
+		float			Shininess = 0.0f;
+		Math::FTVector3 Diffuse	  = Math::FTVector3(0.5f);
+		float			dummy1;
+		Math::FTVector3 Specular = Math::FTVector3(0.5f);
+		float			dummy2;
 	};
 
 	/// @brief The value of the material data are to be applied to Pixel Constant Buffers.
 	struct StandardMatData
 	{
-		uint32_t  UseTexture = 1;
-		float	  AlphaTrim	 = 0.9f;
-		FTVector2 Dummy		 = FTVector2(0.f, 0.f);
-		FTVector4 Color		 = FTVector4(1.0f, 1.0f, 1.0f, 1.0f);
+		uint32_t		UseTexture = 1;
+		float			AlphaTrim  = 0.9f;
+		Math::FTVector2 Dummy	   = Math::FTVector2(0.f, 0.f);
+		Math::FTVector4 Color	   = Math::FTVector4(1.0f, 1.0f, 1.0f, 1.0f);
 	};
 
 	/// @brief The very basic material used for mesh rendering, provided by Foxtrot Engine.
@@ -39,17 +39,20 @@ namespace D3D11
 		public FTMaterial
 	{
 	public:
+		static D3D11::ResType Type;
+
+	public:
 		/// @see FTMaterial::UpdateBuffer()
-		virtual void UpdateBuffer(ComPtr<ID3D11DeviceContext>& context) override;
+		virtual void UpdateBuffer(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context) override;
 
 	public:
 		/// @brief Relative path is used for importing material data.
-		StandardMaterial(FTResourceDef& resDef, D3D11Renderer* renderer);
+		StandardMaterial(Core::FTResourceDef& resDef, D3D11Renderer* renderer);
 		~StandardMaterial() override;
 
 	protected:
 		/// @brief Creates a pixel constant buffer using the StandardMatData.
-		virtual void CreatePixelConstBuffer(ComPtr<ID3D11Device>& device) override;
+		virtual void CreatePixelConstBuffer(Microsoft::WRL::ComPtr<ID3D11Device>& device) override;
 
 	private:
 		/// @brief The values of the data are to be applied to pixel constant buffers.

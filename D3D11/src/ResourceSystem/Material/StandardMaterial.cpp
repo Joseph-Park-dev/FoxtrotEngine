@@ -13,6 +13,7 @@
 
 namespace D3D11
 {
+	using Microsoft::WRL::ComPtr;
 	ResType StandardMaterial::Type = ResType::MATERIAL;
 
 	void StandardMaterial::CreatePixelConstBuffer(ComPtr<ID3D11Device>& device)
@@ -33,7 +34,7 @@ namespace D3D11
 		D3D11Utils::UpdateBuffer(context, *mData, GetPCBuf());
 	}
 
-	StandardMaterial::StandardMaterial(FTResourceDef& resDef, D3D11Renderer* renderer)
+	StandardMaterial::StandardMaterial(Core::FTResourceDef& resDef, D3D11Renderer* renderer)
 		: FTMaterial(resDef, renderer)
 		, mData(DBG_NEW StandardMatData)
 	{
@@ -46,26 +47,27 @@ namespace D3D11
 
 	void StandardMaterial::SaveProperties(std::ofstream& ofs)
 	{
-		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::StandardMat::STANDARD_MAT);
+		Core::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::StandardMat::STANDARD_MAT);
 
-		FTResource::SaveProperties(ofs);
-		FileIOHelper::SaveBool(ofs, ChunkKey::StandardMat::USE_TEXTURE, mData->UseTexture);
-		FileIOHelper::SaveFloat(ofs, ChunkKey::StandardMat::ALPHA_TRIM, mData->AlphaTrim);
-		FileIOHelper::SaveVector4(ofs, ChunkKey::StandardMat::COLOR, mData->Color);
+		Core::FileIOHelper::SaveString(ofs, Core::ChunkKey::FTResource::FILE_NAME, RES_NAME(FTMaterial, this));
+		Core::FileIOHelper::SaveBool(ofs, ChunkKey::StandardMat::USE_TEXTURE, mData->UseTexture);
+		Core::FileIOHelper::SaveFloat(ofs, ChunkKey::StandardMat::ALPHA_TRIM, mData->AlphaTrim);
+		Core::FileIOHelper::SaveVector4(ofs, ChunkKey::StandardMat::COLOR, mData->Color);
 
-		FileIOHelper::EndDataPackSave(ofs, ChunkKey::StandardMat::STANDARD_MAT);
+		Core::FileIOHelper::EndDataPackSave(ofs, ChunkKey::StandardMat::STANDARD_MAT);
 	}
 
 	void StandardMaterial::LoadProperties(std::ifstream& ifs)
 	{
-		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::StandardMat::STANDARD_MAT);
+		Core::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::StandardMat::STANDARD_MAT);
 
+		Core::FTDS::String fileName;
 		bool useTex;
-		FileIOHelper::LoadBool(ifs, useTex);
-		FileIOHelper::LoadFloat(ifs, mData->AlphaTrim);
-		FileIOHelper::LoadVector4(ifs, mData->Color);
+		Core::FileIOHelper::LoadBool(ifs, useTex);
+		Core::FileIOHelper::LoadFloat(ifs, mData->AlphaTrim);
+		Core::FileIOHelper::LoadVector4(ifs, mData->Color);
+		Core::FileIOHelper::LoadBasicString(ifs, fileName);
 
-		FTResource::LoadProperties(ifs);
 		mData->UseTexture = (uint32_t)useTex;
 	}
 

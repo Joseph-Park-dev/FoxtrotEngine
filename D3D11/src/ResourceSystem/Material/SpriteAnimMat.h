@@ -6,24 +6,27 @@ namespace D3D11
 	/// @brief The value of the material data are to be applied to Pixel Constant Buffers.
 	struct SpriteAnimMatData
 	{
-		FTVector4 Color		 = FTVector4(1.f, 1.f, 1.f, 1.f);
-		bool	  UseTexture = true;
+		Math::FTVector4 Color	   = Math::FTVector4(1.f, 1.f, 1.f, 1.f);
+		bool			UseTexture = true;
 
-		FTVector3 dummy = FTVector3::Zero;
+		Math::FTVector3 dummy = Math::FTVector3::Zero;
 	};
 
 	class SpriteAnimMat :
 		public FTMaterial
 	{
 	public:
-		virtual void CreatePixelConstBuffer(ComPtr<ID3D11Device>& device) override;
-		virtual void UpdateBuffer(ComPtr<ID3D11DeviceContext>& context) override;
+		static D3D11::ResType Type;
+
+	public:
+		virtual void CreatePixelConstBuffer(Microsoft::WRL::ComPtr<ID3D11Device>& device) override;
+		virtual void UpdateBuffer(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context) override;
 
 		virtual void SaveProperties(std::ofstream& ofs) override;
 		virtual void LoadProperties(std::ifstream& ifs) override;
 
 	public:
-		SpriteAnimMat(FTResourceDef& resDef, FoxtrotRenderer* renderer);
+		SpriteAnimMat(Core::FTResourceDef& resDef, D3D11Renderer* renderer);
 		~SpriteAnimMat();
 
 	private:

@@ -17,13 +17,14 @@
 
 namespace D3D11
 {
-	ResType				  FTMaterial::Type = ResType::MATERIAL;
+	using namespace Core;
+	using Microsoft::WRL::ComPtr;
 	ComPtr<ID3D11Buffer>& FTMaterial::GetPCBuf()
 	{
 		return mPCBuf;
 	}
 
-	FTMaterial::FTMaterial(FTResourceDef& resDef, D3D11Renderer* renderer)
+	FTMaterial::FTMaterial(Core::FTResourceDef& resDef, D3D11Renderer* renderer)
 	{
 		if (mPCBuf)
 			return;
@@ -35,14 +36,14 @@ namespace D3D11
 			std::ofstream ofs(resDef.Path);
 
 			FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTMaterial::FT_MATERIAL);
-			SaveProperties(ofs);
+			FTMaterial::SaveProperties(ofs);
 			FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTMaterial::FT_MATERIAL);
 
 			FileIOHelper::SaveBufferToFile(ofs);
 		}
 
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMaterial::FT_MATERIAL);
-		LoadProperties(ifs);
+		FTMaterial::LoadProperties(ifs);
 
 		CreatePixelConstBuffer(renderer->GetDevice());
 	}

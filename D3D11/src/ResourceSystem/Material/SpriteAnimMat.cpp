@@ -1,6 +1,5 @@
 #include "SpriteAnimMat.h"
 
-#include <directxtk/SimpleMath.h>
 #include <d3d11.h>
 
 #include "Debugging/DebugMemAlloc.h"
@@ -16,6 +15,8 @@
 
 namespace D3D11
 {
+	using namespace Core;
+	using Microsoft::WRL::ComPtr;
 	ResType SpriteAnimMat::Type = ResType::MATERIAL;
 
 	void SpriteAnimMat::CreatePixelConstBuffer(ComPtr<ID3D11Device>& device)
@@ -34,15 +35,12 @@ namespace D3D11
 
 		FileIOHelper::LoadVector4(ifs, mData->Color);
 		FileIOHelper::LoadBool(ifs, mData->UseTexture);
-
-		FTResource::LoadProperties(ifs);
 	}
 
-	SpriteAnimMat::SpriteAnimMat(FTResourceDef& resDef, FoxtrotRenderer* renderer)
+	SpriteAnimMat::SpriteAnimMat(Core::FTResourceDef& resDef, D3D11Renderer* renderer)
 		: FTMaterial(resDef, renderer)
 		, mData(DBG_NEW SpriteAnimMatData)
 	{
-		Process(renderer);
 	}
 
 	SpriteAnimMat::~SpriteAnimMat()
@@ -57,7 +55,7 @@ namespace D3D11
 		FileIOHelper::SaveBool(ofs, ChunkKey::SpriteAnimMat::USE_TEXTURE, mData->UseTexture);
 		FileIOHelper::SaveVector4(ofs, ChunkKey::SpriteAnimMat::COLOR, mData->Color);
 
-		FTResource::SaveProperties(ofs);
+		FileIOHelper::EndDataPackSave(ofs, ChunkKey::SpriteAnimMat::SPRITE_ANIM_MAT);
 	}
 
 #ifdef FOXTROT_EDITOR

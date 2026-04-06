@@ -26,16 +26,16 @@ namespace D3D11
 	class D3D11Resource : public Core::FTResource
 	{
 	public:
-		static inline ResType Type;
+		inline static ResType Type;
 		/// @brief Saves resource properties into a file.
 		/// @param ofs This should either be a stream to a .chunk file, or to a dedicated resource file
 		/// like FTSpriteAnimation, FTPremade, etc.
-		virtual void SaveProperties(std::ofstream& ofs) override = 0;
+		virtual void SaveProperties(std::ofstream& ofs) override;
 
 		/// @brief Loads resource properties into an instance.
 		/// @param ifs This should either be a stream from a .chunk file, or from a dedicated resource file
 		/// like FTSpriteAnimation, FTPremade, etc.
-		virtual void LoadProperties(std::ifstream& ifs) override = 0;
+		virtual void LoadProperties(std::ifstream& ifs) override;
 
 	public:
 		virtual ~D3D11Resource() = default;

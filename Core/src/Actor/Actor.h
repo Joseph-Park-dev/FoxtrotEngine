@@ -76,7 +76,7 @@ namespace Core
 	public:
 		void AddChild(Actor* actor);
 		void RemoveChild(Actor* actor);
-		void AddComponent(Component* component);
+		virtual void AddComponent(Component* component);
 		void RemoveComponent(Component* component);
 		void RemoveAllComponents();
 

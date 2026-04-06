@@ -25,12 +25,13 @@
 
 namespace D3D11
 {
+	using namespace Core;
 	FTSpineLoader* AnimationManager::GetSpineLoader()
 	{
 		return mSpineLoader;
 	}
 
-	void AnimationManager::Initialize(FoxtrotRenderer* renderer)
+	void AnimationManager::Initialize(Core::FoxtrotRenderer* renderer)
 	{
 		mRenderer = renderer;
 	}

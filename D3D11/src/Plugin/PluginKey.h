@@ -1,7 +1,7 @@
 #pragma once
 namespace D3D11
 {
-	using CREATE_D3D11_WINDOW = void (*)(const char*, unsigned int, unsigned int, FTRectArea*);
+	using CREATE_D3D11_WINDOW = void (*)(const char*, unsigned int, unsigned int, Core::FTRectArea*);
 
 	namespace PluginKey
 	{

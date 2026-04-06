@@ -29,10 +29,10 @@
 	#include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
-using namespace Core;
-
 namespace D3D11
 {
+	using namespace Core;
+	using namespace Math;
 	void Camera::Initialize(FTWindow* renderWindow, unsigned int pixels, float unit)
 	{
 		assert(!mRenderWindow); // Overlapped assignment must be prevented.
@@ -240,7 +240,7 @@ namespace D3D11
 		if (mTarget)
 			FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, mTarget->GetNameRef());
 		else
-			FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, ::ChunkKey::NullVal::NULL_OBJECT);
+			FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, Core::ChunkKey::NullVal::NULL_OBJECT);
 		FileIOHelper::SaveVector3(ofs, ChunkKey::CAM_POSITION, mPosition);
 		FileIOHelper::SaveVector3(ofs, ChunkKey::CAM_OFFSET, mOffset);
 		FileIOHelper::SaveFloat(ofs, ChunkKey::CAM_ZOOM, mZoomFactor);
@@ -261,7 +261,7 @@ namespace D3D11
 		if (targetActor.NotEqual(::ChunkKey::NullVal::NULL_OBJECT))
 			mTarget = EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(targetActor, nullptr);
 #else
-		if (targetName.NotEqual(::ChunkKey::NullVal::NULL_OBJECT))
+		if (targetName.NotEqual(Core::ChunkKey::NullVal::NULL_OBJECT))
 			mTarget = manager->GetCurrentScene()->FindActor(targetName);
 #endif // FOXTROT_EDITOR
 	}

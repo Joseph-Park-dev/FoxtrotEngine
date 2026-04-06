@@ -47,17 +47,17 @@ namespace D3D11
 		SINGLETON_PROTECTED(Camera)
 
 	public:
-		FTVector3 ConvertScreenPosToWorld(FTVector2 screenPos);
-		FTVector2 ConvertScreenPosToNDC(FTVector2 screenPos);
+		Math::FTVector3 ConvertScreenPosToWorld(Math::FTVector2 screenPos);
+		Math::FTVector2 ConvertScreenPosToNDC(Math::FTVector2 screenPos);
 
-		FTVector3 ConvertToCenter(FTVector3 topLeftPos, FTVector2 renderSize);
-		FTVector3 ConvertToTopLeft(FTVector3 centerPos, FTVector2 renderSize);
+		Math::FTVector3 ConvertToCenter(Math::FTVector3 topLeftPos, Math::FTVector2 renderSize);
+		Math::FTVector3 ConvertToTopLeft(Math::FTVector3 centerPos, Math::FTVector2 renderSize);
 
-		// void ConvertWorldPosToScreen(const FTVector3& worldPos, const Transform* transform, FTVector2& out);
+		// void ConvertWorldPosToScreen(const Math::FTVector3& worldPos, const Transform* transform, Math::FTVector2& out);
 
 	public:
-		FTMatrix4 GetViewRow();
-		FTMatrix4 GetProjRow();
+		Math::FTMatrix4 GetViewRow();
+		Math::FTMatrix4 GetProjRow();
 
 		const Viewtype GetViewType();
 		const float	   GetProjFOVAngleY();
@@ -66,36 +66,36 @@ namespace D3D11
 		const float	   GetNearZ();
 		const float	   GetFarZ();
 
-		const FTVector3& GetPosition() const;
-		const FTVector2& GetResolution() const;
-		const FTVector3& GetOffSet() const;
-		const float		 GetZoomFactor() const;
+		const Math::FTVector3& GetPosition() const;
+		const Math::FTVector2& GetResolution() const;
+		const Math::FTVector3& GetOffSet() const;
+		const float			   GetZoomFactor() const;
 
-		void SetPosition(FTVector3 pos);
+		void SetPosition(Math::FTVector3 pos);
 		void SetPosition(float posX, float posY, float posZ);
 		void SetViewType(Viewtype viewType);
-		void SetTargetActor(Actor* actor);
-		void SetOffset(FTVector3 offset);
+		void SetTargetActor(Core::Actor* actor);
+		void SetOffset(Math::FTVector3 offset);
 
 	public:
-		FTVector3& Offset();
+		Math::FTVector3& Offset();
 
 	protected:
 		float& ZoomDelta();
 
 	public:
 		// "pixels" defines how much of them should fit in a given unit.
-		virtual void Initialize(FTWindow* renderWindow, unsigned int pixels, float unit);
+		virtual void Initialize(Core::FTWindow* renderWindow, unsigned int pixels, float unit);
 		virtual void Update(float deltaTime);
 
 	protected:
 		virtual void Zoom();
 
 	private:
-		FTWindow* mRenderWindow;
-		Actor*	  mTarget;
-		FTVector3 mPosition;
-		FTVector3 mOffset;
+		Core::FTWindow* mRenderWindow;
+		Core::Actor*	mTarget;
+		Math::FTVector3 mPosition;
+		Math::FTVector3 mOffset;
 
 		float mProjFOVAngleY;
 		float mNearZ, mFarZ;
@@ -112,7 +112,7 @@ namespace D3D11
 
 	public:
 		void SaveProperties(std::ofstream& ofs);
-		void LoadProperties(std::ifstream& ifs, SceneManager* targetActor);
+		void LoadProperties(std::ifstream& ifs, Core::SceneManager* targetActor);
 
 #ifdef FOXTROT_EDITOR
 	public:

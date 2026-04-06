@@ -6,10 +6,11 @@
 #include "DebugFuncs.h"
 #include "Renderer/FTRectArea.h"
 
-using namespace Microsoft::WRL;
-
 namespace D3D11
 {
+	using namespace Core;
+	using namespace Math;
+	using namespace Microsoft::WRL;
 	void D3D11Renderer::SetViewport(FTVector2&& topLeft, FTVector2&& resolution)
 	{
 		// Set the viewport

@@ -18,21 +18,16 @@
 #include <string>
 #include <vector>
 #include <windows.h>
-#include <wrl/client.h> // ComPtr
+#include <wrl/client.h> // Microsoft::WRL::ComPtr
 
 #include "ResourceSystem/FTTexture.h"
 #include "TemplateFunctions.h"
 #include "FTDS/Static/FTString.h"
 #include "DebugFuncs.h"
 
-class Camera;
-
-using Microsoft::WRL::ComPtr;
-using std::vector;
-using std::wstring;
-
 namespace D3D11
 {
+	class Camera;
 	inline HRESULT CheckResult(HRESULT hr, ID3DBlob* errorBlob)
 	{
 		if (FAILED(hr))
@@ -57,100 +52,106 @@ namespace D3D11
 	{
 	public:
 		static HRESULT CreateDeviceAndContext(
-			const HWND					 window,
-			ComPtr<ID3D11Device>&		 device,
-			ComPtr<ID3D11DeviceContext>& context,
-			ComPtr<IDXGISwapChain>&		 swapChain,
-			const UINT&					 renderWidth,
-			const UINT&					 renderHeight,
-			UINT&						 numQualityLevel);
+			const HWND									 window,
+			Microsoft::WRL::ComPtr<ID3D11Device>&		 device,
+			Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,
+			Microsoft::WRL::ComPtr<IDXGISwapChain>&		 swapChain,
+			const UINT&									 renderWidth,
+			const UINT&									 renderHeight,
+			UINT&										 numQualityLevel);
 
 		static HRESULT CreateSwapChain(
-			const HWND				window,
-			ComPtr<ID3D11Device>&	device,
-			ComPtr<IDXGISwapChain>& swapChain,
-			int						renderWidth,
-			int						renderHeight,
-			UINT					numQualityLevel);
+			const HWND								window,
+			Microsoft::WRL::ComPtr<ID3D11Device>&	device,
+			Microsoft::WRL::ComPtr<IDXGISwapChain>& swapChain,
+			int										renderWidth,
+			int										renderHeight,
+			UINT									numQualityLevel);
 
 		static HRESULT
 		CreateDepthBuffer(
-			ComPtr<ID3D11Device>&			device,
-			int								renderWidth,
-			int								renderHeight,
-			UINT							numQualityLevels,
-			ComPtr<ID3D11DepthStencilView>& depthStencilView);
-
-		static HRESULT CreateVertexShaderAndInputLayout(ComPtr<ID3D11Device>& device, const wstring& filename, const D3D11_INPUT_ELEMENT_DESC* inputElements, size_t inputElementsSize, ComPtr<ID3D11VertexShader>& vertexShader, ComPtr<ID3D11InputLayout>& inputLayout);
+			Microsoft::WRL::ComPtr<ID3D11Device>&			device,
+			int												renderWidth,
+			int												renderHeight,
+			UINT											numQualityLevels,
+			Microsoft::WRL::ComPtr<ID3D11DepthStencilView>& depthStencilView);
 
 		static HRESULT CreateVertexShaderAndInputLayout(
-			ComPtr<ID3D11Device>&					device,
-			const wstring&							filename,
-			const vector<D3D11_INPUT_ELEMENT_DESC>& inputElements,
-			ComPtr<ID3D11VertexShader>&				vertexShader,
-			ComPtr<ID3D11InputLayout>&				inputLayout);
+			Microsoft::WRL::ComPtr<ID3D11Device>&		device,
+			const std::wstring&							filename,
+			const D3D11_INPUT_ELEMENT_DESC*				inputElements,
+			size_t										inputElementsSize,
+			Microsoft::WRL::ComPtr<ID3D11VertexShader>& vertexShader,
+			Microsoft::WRL::ComPtr<ID3D11InputLayout>&	inputLayout);
 
 		static HRESULT CreateVertexShaderAndInputLayout(
-			ComPtr<ID3D11Device>&								device,
-			const wstring&										filename,
-			const FTDS::DynamicArray<D3D11_INPUT_ELEMENT_DESC>& inputElements,
-			ComPtr<ID3D11VertexShader>&							vertexShader,
-			ComPtr<ID3D11InputLayout>&							inputLayout);
+			Microsoft::WRL::ComPtr<ID3D11Device>&		 device,
+			const std::wstring&							 filename,
+			const std::vector<D3D11_INPUT_ELEMENT_DESC>& inputElements,
+			Microsoft::WRL::ComPtr<ID3D11VertexShader>&	 vertexShader,
+			Microsoft::WRL::ComPtr<ID3D11InputLayout>&	 inputLayout);
+
+		static HRESULT CreateVertexShaderAndInputLayout(
+			Microsoft::WRL::ComPtr<ID3D11Device>&					  device,
+			const std::wstring&										  filename,
+			const Core::FTDS::DynamicArray<D3D11_INPUT_ELEMENT_DESC>& inputElements,
+			Microsoft::WRL::ComPtr<ID3D11VertexShader>&				  vertexShader,
+			Microsoft::WRL::ComPtr<ID3D11InputLayout>&				  inputLayout);
 
 		static HRESULT CreateRenderTargetView(
-			ComPtr<ID3D11RenderTargetView>& RTV,
-			ComPtr<ID3D11Device>&			device,
-			ComPtr<IDXGISwapChain>&			swapChain);
+			Microsoft::WRL::ComPtr<ID3D11RenderTargetView>& RTV,
+			Microsoft::WRL::ComPtr<ID3D11Device>&			device,
+			Microsoft::WRL::ComPtr<IDXGISwapChain>&			swapChain);
 
 		static HRESULT CreateRenderTargetView(
-			ComPtr<ID3D11RenderTargetView>& RTV,
-			ComPtr<ID3D11Device>&			device,
-			ComPtr<IDXGISwapChain>&			swapChain,
-			ComPtr<ID3D11Texture2D>&		indexTexture,
-			ComPtr<ID3D11Texture2D>&		indexTempTexture,
-			ComPtr<ID3D11Texture2D>&		indexStagingTexture);
+			Microsoft::WRL::ComPtr<ID3D11RenderTargetView>& RTV,
+			Microsoft::WRL::ComPtr<ID3D11Device>&			device,
+			Microsoft::WRL::ComPtr<IDXGISwapChain>&			swapChain,
+			Microsoft::WRL::ComPtr<ID3D11Texture2D>&		indexTexture,
+			Microsoft::WRL::ComPtr<ID3D11Texture2D>&		indexTempTexture,
+			Microsoft::WRL::ComPtr<ID3D11Texture2D>&		indexStagingTexture);
 
 		static void CreateHullShader(
-			ComPtr<ID3D11Device>&	  device,
-			const wstring&			  filename,
-			ComPtr<ID3D11HullShader>& hullShader);
+			Microsoft::WRL::ComPtr<ID3D11Device>&	  device,
+			const std::wstring&						  filename,
+			Microsoft::WRL::ComPtr<ID3D11HullShader>& hullShader);
 
 		static void CreateDomainShader(
-			ComPtr<ID3D11Device>&		device,
-			const wstring&				filename,
-			ComPtr<ID3D11DomainShader>& domainShader);
+			Microsoft::WRL::ComPtr<ID3D11Device>&		device,
+			const std::wstring&							filename,
+			Microsoft::WRL::ComPtr<ID3D11DomainShader>& domainShader);
 
 		static void
 		CreateGeometryShader(
-			ComPtr<ID3D11Device>&		  device,
-			const wstring&				  filename,
-			ComPtr<ID3D11GeometryShader>& geometryShader);
+			Microsoft::WRL::ComPtr<ID3D11Device>&		  device,
+			const std::wstring&							  filename,
+			Microsoft::WRL::ComPtr<ID3D11GeometryShader>& geometryShader);
 
 		static HRESULT CreatePixelShader(
-			ComPtr<ID3D11Device>&	   device,
-			const wstring&			   filename,
-			ComPtr<ID3D11PixelShader>& pixelShader);
+			Microsoft::WRL::ComPtr<ID3D11Device>&	   device,
+			const std::wstring&						   filename,
+			Microsoft::WRL::ComPtr<ID3D11PixelShader>& pixelShader);
 
 		static void CreateIndexBuffer(
-			ComPtr<ID3D11Device>&	device,
-			const vector<uint32_t>& indices,
-			ComPtr<ID3D11Buffer>&	indexBuffer);
+			Microsoft::WRL::ComPtr<ID3D11Device>& device,
+			const std::vector<uint32_t>&		  indices,
+			Microsoft::WRL::ComPtr<ID3D11Buffer>& indexBuffer);
 
 		static void CreateIndexBuffer(
-			ComPtr<ID3D11Device>&		  device,
-			FTDS::DynamicArray<uint32_t>& indices,
-			ComPtr<ID3D11Buffer>&		  indexBuffer);
+			Microsoft::WRL::ComPtr<ID3D11Device>& device,
+			Core::FTDS::DynamicArray<uint32_t>&	  indices,
+			Microsoft::WRL::ComPtr<ID3D11Buffer>& indexBuffer);
 
 		static void CreateIndexBuffer(
-			ComPtr<ID3D11Device>& device,
-			UINT				  numIndices,
-			ComPtr<ID3D11Buffer>& indexBuffer);
+			Microsoft::WRL::ComPtr<ID3D11Device>& device,
+			UINT								  numIndices,
+			Microsoft::WRL::ComPtr<ID3D11Buffer>& indexBuffer);
 
 		template <typename T_VERTEX>
 		static void CreateVertexBuffer(
-			ComPtr<ID3D11Device>&	device,
-			const vector<T_VERTEX>& vertices,
-			ComPtr<ID3D11Buffer>&	vertexBuffer)
+			Microsoft::WRL::ComPtr<ID3D11Device>& device,
+			const std::vector<T_VERTEX>&		  vertices,
+			Microsoft::WRL::ComPtr<ID3D11Buffer>& vertexBuffer)
 		{
 			// D3D11_USAGE enumeration (d3d11.h)
 			// https://learn.microsoft.com/en-us/windows/win32/api/d3d11/ne-d3d11-d3d11_usage
@@ -176,10 +177,10 @@ namespace D3D11
 
 		template <typename T_VERTEX>
 		static void CreateVertexBuffer(
-			ComPtr<ID3D11Device>& device,
-			T_VERTEX*			  vertices,
-			size_t				  vertexCount,
-			ComPtr<ID3D11Buffer>& vertexBuffer)
+			Microsoft::WRL::ComPtr<ID3D11Device>& device,
+			T_VERTEX*							  vertices,
+			size_t								  vertexCount,
+			Microsoft::WRL::ComPtr<ID3D11Buffer>& vertexBuffer)
 		{
 			// D3D11_USAGE enumeration (d3d11.h)
 			// https://learn.microsoft.com/en-us/windows/win32/api/d3d11/ne-d3d11-d3d11_usage
@@ -205,9 +206,9 @@ namespace D3D11
 
 		template <typename T_VERTEX>
 		static void CreateVertexBuffer(
-			ComPtr<ID3D11Device>&		  device,
-			FTDS::DynamicArray<T_VERTEX>& vertices,
-			ComPtr<ID3D11Buffer>&		  vertexBuffer)
+			Microsoft::WRL::ComPtr<ID3D11Device>& device,
+			Core::FTDS::DynamicArray<T_VERTEX>&	  vertices,
+			Microsoft::WRL::ComPtr<ID3D11Buffer>& vertexBuffer)
 		{
 			// D3D11_USAGE enumeration (d3d11.h)
 			// https://learn.microsoft.com/en-us/windows/win32/api/d3d11/ne-d3d11-d3d11_usage
@@ -233,9 +234,9 @@ namespace D3D11
 
 		template <typename T_VERTEX>
 		static void CreateVertexBuffer(
-			ComPtr<ID3D11Device>& device,
-			UINT				  numVertices,
-			ComPtr<ID3D11Buffer>& vertexBuffer)
+			Microsoft::WRL::ComPtr<ID3D11Device>& device,
+			UINT								  numVertices,
+			Microsoft::WRL::ComPtr<ID3D11Buffer>& vertexBuffer)
 		{
 			D3D11_BUFFER_DESC vertexBufferDesc;
 			ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
@@ -250,9 +251,9 @@ namespace D3D11
 
 		template <typename T_CONSTANT>
 		static void CreateConstantBuffer(
-			ComPtr<ID3D11Device>& device,
-			const T_CONSTANT&	  constantBufferData,
-			ComPtr<ID3D11Buffer>& constantBuffer)
+			Microsoft::WRL::ComPtr<ID3D11Device>& device,
+			const T_CONSTANT&					  constantBufferData,
+			Microsoft::WRL::ComPtr<ID3D11Buffer>& constantBuffer)
 		{
 			// 주의:
 			// For a constant buffer (BindFlags of D3D11_BUFFER_DESC set to
@@ -280,9 +281,9 @@ namespace D3D11
 
 		template <typename T_DATA>
 		static void UpdateBuffer(
-			ComPtr<ID3D11DeviceContext>& context,
-			const T_DATA&				 bufferData,
-			ComPtr<ID3D11Buffer>&		 buffer)
+			Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,
+			const T_DATA&								 bufferData,
+			Microsoft::WRL::ComPtr<ID3D11Buffer>&		 buffer)
 		{
 			if (!buffer)
 			{
@@ -296,34 +297,34 @@ namespace D3D11
 			context->Unmap(buffer.Get(), NULL);
 		}
 
-		static void ReadImage(FTDS::String filename, std::vector<uint8_t>& image, int& width, int& height);
+		static void ReadImage(Core::FTDS::String filename, std::vector<uint8_t>& image, int& width, int& height);
 
-		static ComPtr<ID3D11Texture2D> CreateStagingTexture(
-			ComPtr<ID3D11Device>&		 device,
-			ComPtr<ID3D11DeviceContext>& context,
-			const int					 width,
-			const int					 height,
-			const std::vector<uint8_t>&	 image,
-			const int					 mipLevels = 1,
-			const int					 arraySize = 1);
+		static Microsoft::WRL::ComPtr<ID3D11Texture2D> CreateStagingTexture(
+			Microsoft::WRL::ComPtr<ID3D11Device>&		 device,
+			Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,
+			const int									 width,
+			const int									 height,
+			const std::vector<uint8_t>&					 image,
+			const int									 mipLevels = 1,
+			const int									 arraySize = 1);
 
 		static void
 		CreateTextureArray(
-			ComPtr<ID3D11Device>&			  device,
-			ComPtr<ID3D11DeviceContext>&	  context,
-			const std::vector<FTDS::String>	  filenames,
-			ComPtr<ID3D11Texture2D>&		  texture,
-			ComPtr<ID3D11ShaderResourceView>& textureResourceView);
+			Microsoft::WRL::ComPtr<ID3D11Device>&			  device,
+			Microsoft::WRL::ComPtr<ID3D11DeviceContext>&	  context,
+			const std::vector<Core::FTDS::String>			  filenames,
+			Microsoft::WRL::ComPtr<ID3D11Texture2D>&		  texture,
+			Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& textureResourceView);
 
-		// static HRESULT CreateCubemapTexture(ComPtr<ID3D11Device>& device, FTTexture* texture);
+		// static HRESULT CreateCubemapTexture(Microsoft::WRL::ComPtr<ID3D11Device>& device, FTTexture* texture);
 
 		// 텍스춰를 이미지 파일로 저장
 		static void WriteToFile(
-			ComPtr<ID3D11Device>&		 device,
-			ComPtr<ID3D11DeviceContext>& context,
-			ComPtr<ID3D11Texture2D>&	 textureToWrite,
-			FTDS::String&				 filename);
+			Microsoft::WRL::ComPtr<ID3D11Device>&		 device,
+			Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,
+			Microsoft::WRL::ComPtr<ID3D11Texture2D>&	 textureToWrite,
+			Core::FTDS::String&							 filename);
 
-		static UINT GetShaderType(ComPtr<ID3DBlob>& shaderBlob);
+		static UINT GetShaderType(Microsoft::WRL::ComPtr<ID3DBlob>& shaderBlob);
 	};
 } // namespace D3D11

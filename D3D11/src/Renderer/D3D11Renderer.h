@@ -8,17 +8,17 @@
 #include <DirectXColors.h>
 #define WIN32_LEAN_AND_MEAN
 
-class D3D11Window;
-
 namespace D3D11
 {
+	class D3D11Window;
+
 	class D3D11Renderer :
-		public FoxtrotRenderer
+		public Core::FoxtrotRenderer
 	{
 	public:
 		void SetViewport(
-			FTVector2&& topLeft,
-			FTVector2&& resolution);
+			Math::FTVector2&& topLeft,
+			Math::FTVector2&& resolution);
 		void SetViewport(FLOAT topLeftX, FLOAT topLeftY, FLOAT resX, FLOAT resY);
 		void Reset();
 
@@ -29,11 +29,11 @@ namespace D3D11
 		const unsigned int							 GetNumQualityLevels() const;
 
 	public:
-		D3D11Renderer(FTWindow* window);
+		D3D11Renderer(Core::FTWindow* window);
 		~D3D11Renderer();
 
 	protected:
-		virtual bool Initialize(FTWindow* window) override;
+		virtual bool Initialize(Core::FTWindow* window) override;
 
 	private:
 		Microsoft::WRL::ComPtr<ID3D11Device>		mDevice;

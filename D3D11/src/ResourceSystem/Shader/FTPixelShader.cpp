@@ -14,20 +14,19 @@ namespace D3D11
 	void FTPixelShader::SaveProperties(std::ofstream& ofs)
 	{
 		Core::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTPixelShader::FT_PIXEL_SHADER);
-		FTResource::SaveProperties(ofs);
+		D3D11Resource::SaveProperties(ofs);
 		Core::FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTPixelShader::FT_PIXEL_SHADER);
 	}
 
 	void FTPixelShader::LoadProperties(std::ifstream& ifs)
 	{
 		Core::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPixelShader::FT_PIXEL_SHADER);
-		FTResource::LoadProperties(ifs);
+		D3D11Resource::LoadProperties(ifs);
 	}
 
 	ComPtr<ID3D11PixelShader>& FTPixelShader::GetShader() { return mShader; }
 
 	FTPixelShader::FTPixelShader(Core::FTResourceDef& resDef, D3D11Renderer* renderer)
-		: FTShader(resDef, renderer)
 	{
 		SetType(ShaderType::PIXEL_SHADER);
 		LoadMetaData(resDef);

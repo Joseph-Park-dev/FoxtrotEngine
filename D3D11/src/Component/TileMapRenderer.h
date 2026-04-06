@@ -17,8 +17,6 @@
 
 #include "TemplateFunctions.h"
 
-class FTVector2;
-
 namespace D3D11
 {
 	class FTTileMap;
@@ -27,33 +25,37 @@ namespace D3D11
 		public SpriteRenderer
 	{
 	public:
-		FTDS::String GetName() const override
+		Core::FTDS::String GetName() const override
 		{
 			return "TileMapRenderer";
 		}
-		FTDS::String& GetTileMapKey();
-		FTTileMap*	  GetTileMap() const;
+		Core::FTDS::String& GetTileMapKey();
+		FTTileMap*			GetTileMap() const;
 
-		void SetTileMapKey(FTDS::String& key);
+		void SetTileMapKey(Core::FTDS::String& key);
 		void SetTileMap(FTTileMap* tileMap);
 
 	public:
 		virtual void Initialize() override;
-		virtual void CloneTo(Actor* actor) override;
+		virtual void ProcessInput(Core::FTInputDevice* inputDevice) override;
+		virtual void Update(float deltaTime) override;
+		virtual void LateUpdate(float deltaTime) override;
+		virtual void Render(Core::FoxtrotRenderer* renderer) override;
+		virtual void CloneTo(Core::Actor* actor) override;
 
 	public:
 		TileMapRenderer(
-			Plugin* plugin,
-			Actor*	owner,
-			int		UpdateOrder = DefaultVal::UPDATE_ORDER);
+			Core::Plugin* plugin,
+			Core::Actor*  owner,
+			int			  UpdateOrder = Core::DefaultVal::UPDATE_ORDER);
 		virtual ~TileMapRenderer() override;
 
 	protected:
 		virtual void InitializeTileMap();
 
 	private:
-		FTTileMap*	 mTileMap;
-		FTDS::String mTileMapKey;
+		FTTileMap*		   mTileMap;
+		Core::FTDS::String mTileMapKey;
 
 	public:
 		virtual void SaveProperties(std::ofstream& ofs) override;

@@ -28,10 +28,10 @@
 	#include <imgui.h>
 #endif
 
-using Microsoft::WRL::ComPtr;
-
 namespace D3D11
 {
+	using Microsoft::WRL::ComPtr;
+	using namespace Core;
 	ResType FTTexture::Type = ResType::TEXTURE;
 
 	const UINT FTTexture::GetWidth() const
@@ -62,7 +62,7 @@ namespace D3D11
 		// FTResource::LoadProperties(ifs);
 	}
 
-	FTTexture::FTTexture(FTResourceDef& resDef, FoxtrotRenderer* renderer)
+	FTTexture::FTTexture(FTResourceDef& resDef, Core::FoxtrotRenderer* renderer)
 		: mWidth(0)
 		, mHeight(0)
 	{
@@ -76,7 +76,7 @@ namespace D3D11
 			LogString("FTTexture()::ReleaseTexture() -> Release Texture Failed");
 	}
 
-	void FTTexture::Process(FTResourceDef& resDef, FoxtrotRenderer* renderer)
+	void FTTexture::Process(FTResourceDef& resDef, Core::FoxtrotRenderer* renderer)
 	{
 		D3D11Renderer* rend = static_cast<D3D11Renderer*>(renderer);
 		// Returns early if the resource is processed.
@@ -155,7 +155,7 @@ namespace D3D11
 	}
 #endif // FOXTROT_EDITOR
 
-	extern "C" __declspec(dllexport) FTResource* CreateResource(FTResourceDef& def, FoxtrotRenderer* rnd)
+	extern "C" __declspec(dllexport) FTResource* CreateResource(FTResourceDef& def, Core::FoxtrotRenderer* rnd)
 	{
 		return new FTTexture(def, rnd);
 	}

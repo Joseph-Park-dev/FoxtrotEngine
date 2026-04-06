@@ -22,6 +22,9 @@
 
 namespace D3D11
 {
+	using namespace Core;
+	using namespace Math;
+	
 	FTMeshData GeometryGenerator::MakeSquare()
 	{
 		FTDS::DynamicArray<FTVector3> positions;

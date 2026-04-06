@@ -46,6 +46,7 @@
 
 namespace D3D11
 {
+	using namespace Core;
 	FTDS::String& TileMapRenderer::GetTileMapKey()
 	{
 		return mTileMapKey;
@@ -72,9 +73,25 @@ namespace D3D11
 		this->InitializeTileMap();
 	}
 
+	void TileMapRenderer::ProcessInput(FTInputDevice* inputDevice)
+	{
+	}
+
+	void TileMapRenderer::Update(float deltaTime)
+	{
+	}
+
+	void TileMapRenderer::LateUpdate(float deltaTime)
+	{
+	}
+
+	void TileMapRenderer::Render(Core::FoxtrotRenderer* renderer)
+	{
+	}
+
 	void TileMapRenderer::InitializeTileMap()
 	{
-		if (GetTileMapKey().NotEqual(::ChunkKey::NullVal::NULL_OBJECT))
+		if (GetTileMapKey().NotEqual(Core::ChunkKey::NullVal::NULL_OBJECT))
 		{
 			mTileMap = D3D11::GET_RES(FTTileMap, mTileMapKey);
 			if (mTileMap)
@@ -98,7 +115,7 @@ namespace D3D11
 	TileMapRenderer::TileMapRenderer(Plugin* plugin, Actor* owner, int updateOrder)
 		: SpriteRenderer(plugin, owner, updateOrder)
 		, mTileMap(nullptr)
-		, mTileMapKey(::ChunkKey::NullVal::NULL_OBJECT)
+		, mTileMapKey(Core::ChunkKey::NullVal::NULL_OBJECT)
 
 	{
 	}
@@ -243,4 +260,9 @@ namespace D3D11
 		}
 	}
 #endif
+
+	extern "C" __declspec(dllexport) Component* Create(Core::Plugin* plugin, Core::Actor* actor, int updateOrder)
+	{
+		return DBG_NEW TileMapRenderer(plugin, actor, updateOrder);
+	}
 } // namespace D3D11

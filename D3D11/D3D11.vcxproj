@@ -337,6 +337,7 @@
     <ClInclude Include="include\stb_truetype.h" />
     <ClInclude Include="include\stb_voxel_render.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="src\Component\D3D11Component.h" />
     <ClInclude Include="src\Renderer\Camera.h" />
     <ClInclude Include="src\Component\Animator.h" />
     <ClInclude Include="src\Component\MeshRenderer.h" />
@@ -609,6 +610,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="src\Component\D3D11Component.cpp" />
     <ClCompile Include="src\Renderer\Camera.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -673,6 +675,7 @@
     <ClCompile Include="src\ResourceSystem\D3D11PSO.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\ResourceSystem\D3D11Resource.cpp" />
     <ClCompile Include="src\ResourceSystem\Font\FontChar.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>

@@ -17,10 +17,13 @@ namespace D3D11
 		public FTMeshGroup
 	{
 	public:
+		static D3D11::ResType Type;
+
+	public:
 		/// @param meshIndex Index of an elements from the sliced spritesheet.
 		void UpdateConstantBuffers(
 			D3D11Renderer* renderer,
-			Transform*	   transform,
+			Core::Transform* transform,
 			Camera*		   camInst,
 			FTMaterial*	   mat,
 			const size_t   gcDataCount = 1,
@@ -28,7 +31,7 @@ namespace D3D11
 
 		virtual void Render(
 			D3D11Renderer* renderer,
-			Transform*	   transform,
+			Core::Transform* transform,
 			Camera*		   camInst,
 			D3D11PSO*	   pso,
 			FTMaterial*	   mat) override;
@@ -41,10 +44,10 @@ namespace D3D11
 		void SetGCSpriteData(SpriteGCData* data);
 
 	public:
-		FTSprite(FTResourceDef& resDef, D3D11Renderer* renderer);
+		FTSprite(Core::FTResourceDef& resDef, D3D11Renderer* renderer);
 		/// @brief Constructor skips FTSprite::Process() if isAnim is true.
 		/// @param isAnim Is this constructor called from FTSpriteAnimation?
-		FTSprite(FTResourceDef& resDef, D3D11Renderer* renderer, bool isAnim);
+		FTSprite(Core::FTResourceDef& resDef, D3D11Renderer* renderer, bool isAnim);
 		virtual ~FTSprite();
 
 	protected:

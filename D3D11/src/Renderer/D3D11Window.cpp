@@ -15,7 +15,10 @@
 
 namespace D3D11
 {
-	bool D3D11Window::Initialize(FTCore* base, int windowMode)
+	using namespace Core;
+	using namespace Microsoft::WRL;
+
+	bool D3D11Window::Initialize(Core::FTCore* base, int windowMode)
 	{
 		assert(!GetTitle().IsEmpty());
 
@@ -72,7 +75,7 @@ namespace D3D11
 		return true;
 	}
 
-	bool D3D11Window::Initialize(FTCore* base)
+	bool D3D11Window::Initialize(Core::FTCore* base)
 	{
 		return Initialize(base, SW_SHOWDEFAULT);
 	}
@@ -101,7 +104,7 @@ namespace D3D11
 		return true;
 	}
 
-	void D3D11Window::ResizeWindow(FoxtrotRenderer* renderer)
+	void D3D11Window::ResizeWindow(Core::FoxtrotRenderer* renderer)
 	{
 		D3D11Renderer* rend = static_cast<D3D11Renderer*>(renderer);
 		Reset(rend);
@@ -128,7 +131,7 @@ namespace D3D11
 		DispatchMessage(&msg);
 	}
 
-	void D3D11Window::BeginRender(FoxtrotRenderer* renderer)
+	void D3D11Window::BeginRender(Core::FoxtrotRenderer* renderer)
 	{
 		D3D11Renderer* rend = static_cast<D3D11Renderer*>(renderer);
 		ClearWindow(rend);
@@ -147,7 +150,7 @@ namespace D3D11
 		rend->SetViewport(0.f, 0.f, GetRenderArea()->GetSize().x, GetRenderArea()->GetSize().y);
 	}
 
-	void D3D11Window::EndRender(FoxtrotRenderer* renderer)
+	void D3D11Window::EndRender(Core::FoxtrotRenderer* renderer)
 	{
 		mSwapChain->Present(1, 0);
 
@@ -157,7 +160,7 @@ namespace D3D11
 		rend->GetContext()->OMSetDepthStencilState(nullptr, 0);
 	}
 
-	void D3D11Window::Reset(FoxtrotRenderer* renderer)
+	void D3D11Window::Reset(Core::FoxtrotRenderer* renderer)
 	{
 		mRTV.Reset();
 		mDSV.Reset();
@@ -205,17 +208,17 @@ namespace D3D11
 
 	LRESULT D3D11Window::WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
-		FTCore* core = nullptr;
+		Core::FTCore* core = nullptr;
 		if (msg == WM_NCCREATE)
 		{
 			auto* cs = reinterpret_cast<CREATESTRUCT*>(lParam);
-			core	 = static_cast<FTCore*>(cs->lpCreateParams);
+			core	 = static_cast<Core::FTCore*>(cs->lpCreateParams);
 			SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(core));
 		}
 		else
 		{
 			// Retrieve the pointer on every message
-			core = reinterpret_cast<FTCore*>(
+			core = reinterpret_cast<Core::FTCore*>(
 				GetWindowLongPtr(hwnd, GWLP_USERDATA));
 		}
 

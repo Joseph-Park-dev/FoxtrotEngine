@@ -3,34 +3,44 @@
 
 #include "Static/HashMap.h"
 
-class FTTexture;
-class FTVertexShader;
-class FTPixelShader;
-class FTMaterial;
-class FontChar;
-struct FontKerning;
-
 namespace D3D11
 {
+	class FTTexture;
+	class FTVertexShader;
+	class FTPixelShader;
+	class FTMaterial;
+	class FontChar;
+	struct FontKerning;
+
 	class FTFont :
 		public FTMeshGroup
 	{
 	public:
-		void LoadFont(FTTexture* img, FTResourceDef& resDef);
-		void AddText(Microsoft::WRL::ComPtr<ID3D11Device>& device, FTDS::String& text);
+		static D3D11::ResType Type;
+
+	public:
+		void LoadFont(FTTexture* img, Core::FTResourceDef& resDef);
+		void AddText(Microsoft::WRL::ComPtr<ID3D11Device>& device, Core::FTDS::String& text);
 
 		void Render(
-			FTDS::String&	text,
-			D3D11Renderer*	renderer,
-			Transform*		transform,
-			Camera*			camInst,
-			FTTexture*		tex,
-			FTVertexShader* vs,
-			FTPixelShader*	ps,
-			FTMaterial*		mat);
+			Core::FTDS::String& text,
+			D3D11Renderer*		renderer,
+			Core::Transform*	transform,
+			Camera*				camInst,
+			FTTexture*			tex,
+			FTVertexShader*		vs,
+			FTPixelShader*		ps,
+			FTMaterial*			mat);
 
 		/// @brief Updates the vertices from the text to be rendered.
-		void UpdateTextVertices(FTDS::String& text, D3D11Renderer* renderer, FTVector2 pos, FTVector2 scale, FTVector2 padding, FTVector3 color, float alpha);
+		void UpdateTextVertices(
+			Core::FTDS::String& text,
+			D3D11Renderer*		renderer,
+			Math::FTVector2		pos,
+			Math::FTVector2		scale,
+			Math::FTVector2		padding,
+			Math::FTVector3		color,
+			float				alpha);
 
 	public:
 		const int	GetSize() const;
@@ -50,7 +60,7 @@ namespace D3D11
 		void SetFontImage(FTTexture* fontImage);
 
 	public:
-		FTFont(FTResourceDef& resDef, D3D11Renderer* renderer);
+		FTFont(Core::FTResourceDef& resDef, D3D11Renderer* renderer);
 		~FTFont();
 
 	public:
@@ -67,9 +77,9 @@ namespace D3D11
 		float mBaseHeight;	  // height of all characters, will be normalized
 		int	  mNumCharacters; // number of characters in the font
 
-		FTDS::HashMap<FontChar*>*	 mCharList;		// list of characters
-		int							 mNumKernings;	// the number of kernings
-		FTDS::HashMap<FontKerning*>* mKerningsList; // list to hold kerning values
+		Core::FTDS::HashMap<FontChar*>*	   mCharList;	  // list of characters
+		int								   mNumKernings;  // the number of kernings
+		Core::FTDS::HashMap<FontKerning*>* mKerningsList; // list to hold kerning values
 
 		float	   mLeftPadding;
 		float	   mTopPadding;

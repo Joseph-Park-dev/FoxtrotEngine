@@ -37,7 +37,9 @@
 
 namespace D3D11
 {
-	Animator::Animator(Plugin* plugin, Actor* owner, int updateOrder)
+	using namespace Core;
+
+	Animator::Animator(Core::Plugin* plugin, Core::Actor* owner, int updateOrder)
 		: SpriteRenderer(plugin, owner, updateOrder)
 		, mLoadedAnim(DBG_NEW FTDS::DynamicArray<D3D11::FTSpriteAnimation*>)
 		, mCurrFrameIdx(0)
@@ -148,6 +150,14 @@ namespace D3D11
 		Component::Initialize();
 	}
 
+	void Animator::ProcessInput(FTInputDevice* inputDevice)
+	{
+	}
+
+	void Animator::Update(float deltaTime)
+	{
+	}
+
 	void Animator::LateUpdate(float deltaTime)
 	{
 		if (!GetSprite())
@@ -155,12 +165,12 @@ namespace D3D11
 		UpdateFrame(deltaTime);
 	}
 
-	void Animator::Render(FoxtrotRenderer* renderer)
+	void Animator::Render(Core::FoxtrotRenderer* renderer)
 	{
 		D3D11Renderer* rend = static_cast<D3D11Renderer*>(renderer);
 		if (GetSprite())
 		{
-			Transform*		   transform = GetOwner()->GetTransform();
+			Core::Transform*   transform = GetOwner()->GetTransform();
 			FTSpriteAnimation* anim		 = static_cast<FTSpriteAnimation*>(GetSprite());
 			GetSprite()->UpdateConstantBuffers(
 				rend,
@@ -298,4 +308,9 @@ namespace D3D11
 		ImGui::Separator();
 	}
 #endif // FOXTROT_EDITOR
+
+	extern "C" __declspec(dllexport) Component* Create(Core::Plugin* plugin, Core::Actor* actor, int updateOrder)
+	{
+		return DBG_NEW Animator(plugin, actor, updateOrder);
+	}
 } // namespace D3D11

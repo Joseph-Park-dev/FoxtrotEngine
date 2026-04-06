@@ -12,15 +12,19 @@
 #include "TemplateFunctions.h"
 #include "Math/FTMath.h"
 
-class Tile;
-class Animator;
-class FTTexture;
-class FTJSON;
-class FTPixelShader;
-struct AnimationFrame;
+namespace Core
+{
+	class FTJSON;
+}
 
 namespace D3D11
 {
+	class Tile;
+	class Animator;
+	class FTTexture;
+	class FTPixelShader;
+	struct AnimationFrame;
+
 #ifdef FOXTROT_EDITOR
 	struct FTSpriteAnimationDef : FTResourceDef
 	{
@@ -37,6 +41,9 @@ namespace D3D11
 	/// This will be registered to a Animator Component instance.
 	class FTSpriteAnimation : public D3D11::FTSprite
 	{
+	public:
+		static D3D11::ResType Type;
+
 	public:
 		/// @see FTResource::SaveProperties()
 		virtual void SaveProperties(std::ofstream& ofs) override;
@@ -58,12 +65,12 @@ namespace D3D11
 
 	public:
 		/// @brief Relative path is used for importing .spriteanim file.
-		FTSpriteAnimation(FTResourceDef& resDef, D3D11Renderer* renderer);
+		FTSpriteAnimation(Core::FTResourceDef& resDef, D3D11Renderer* renderer);
 		~FTSpriteAnimation();
 
 	private:
 		/// @brief A JSON file that holds the rect data on a spritesheet.
-		FTJSON* mJSON;
+		Core::FTJSON* mJSON;
 
 		/// @brief Frames-per-second for this animation.
 		int mFPS;

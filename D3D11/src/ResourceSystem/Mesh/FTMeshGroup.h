@@ -14,7 +14,10 @@
 
 #include "Math/FTMath.h"
 
-class Transform;
+namespace Core
+{
+	class Transform;
+}
 
 namespace D3D11
 {
@@ -37,13 +40,16 @@ namespace D3D11
 		public D3D11Resource
 	{
 	public:
+		static D3D11::ResType Type;
+
+	public:
 		/// @brief Renders the entire meshes created, as a full model.
 		virtual void Render(
-			D3D11Renderer* renderer,
-			Transform*	   transform,
-			Camera*		   camInst,
-			D3D11PSO*	   pso,
-			FTMaterial*	   mat);
+			D3D11Renderer*	 renderer,
+			Core::Transform* transform,
+			Camera*			 camInst,
+			D3D11PSO*		 pso,
+			FTMaterial*		 mat);
 
 		/// @see FTResource::SaveProperties()
 		virtual void SaveProperties(std::ofstream& ofs) override {};
@@ -53,7 +59,7 @@ namespace D3D11
 
 	public:
 		/// @brief Set scale value to be multiplied with the scale (3D transformation).
-		void SetSizeScale(const FTVector3 scale);
+		void SetSizeScale(const Math::FTVector3 scale);
 
 		/// @brief Returns the initial front horizontal direction.
 		const int GetFrontDir() const;
@@ -63,13 +69,13 @@ namespace D3D11
 		void SetRightIsFront(bool val);
 
 		/// @brief Returns meshes ready to be rendered.
-		FTDS::DynamicArray<Mesh*>* Meshes();
+		Core::FTDS::DynamicArray<Mesh*>* Meshes();
 
 	public:
 		/// @brief Relative path is used for importing 3D files.
 		// This is unused until 3D feature is implemented.
 		// FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer);
-		FTMeshGroup(FTResourceDef& resDef, D3D11Renderer* renderer, FTMeshData* meshData = nullptr);
+		FTMeshGroup(Core::FTResourceDef& resDef, D3D11Renderer* renderer, FTMeshData* meshData = nullptr);
 		virtual ~FTMeshGroup();
 
 	protected:
@@ -93,7 +99,7 @@ namespace D3D11
 		virtual void UpdateConstantBuffers(
 			Microsoft::WRL::ComPtr<ID3D11Device>&		 device,
 			Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,
-			Transform*									 transform,
+			Core::Transform*							 transform,
 			Camera*										 camInst,
 			FTMaterial*									 mat,
 			const int									 frontDir = 0);
@@ -110,7 +116,7 @@ namespace D3D11
 		PointModelMat* GetVCData();
 
 		/// @brief Returns the size scale.
-		const FTVector3& GetSizeScale() const;
+		const Math::FTVector3& GetSizeScale() const;
 
 		/// @brief Returns the mesh direction.
 		const int GetDirection() const;
@@ -128,10 +134,10 @@ namespace D3D11
 
 		/// @brief X, Y, Z value that will be multiplied to the scale(3D transformation).
 		/// Default is (1, 1, 1)
-		FTVector3 mSizeScale;
+		Math::FTVector3 mSizeScale;
 
 		/// @brief Meshes created from FTMeshData, ready to be rendered.
-		FTDS::DynamicArray<Mesh*>*				   mMeshes;
+		Core::FTDS::DynamicArray<Mesh*>*		   mMeshes;
 		Microsoft::WRL::ComPtr<ID3D11SamplerState> mSamplerState;
 
 		/// @brief Vertex constant buffer which will applied to all meshes.
@@ -149,7 +155,7 @@ namespace D3D11
 
 		/// @brief Creates the meshes from the array of meshData.
 		/// This is usually called when importing a 3D model file.
-		void InitializeMeshes(Microsoft::WRL::ComPtr<ID3D11Device>& device, FTDS::DynamicArray<FTMeshData*>&& meshDataArr);
+		void InitializeMeshes(Microsoft::WRL::ComPtr<ID3D11Device>& device, Core::FTDS::DynamicArray<FTMeshData*>&& meshDataArr);
 
 #ifdef FOXTROT_EDITOR
 	public:

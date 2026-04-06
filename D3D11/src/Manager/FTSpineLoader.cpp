@@ -13,6 +13,7 @@ spine::SpineExtension* gSpineExtension = nullptr;
 
 namespace D3D11
 {
+	using namespace Core;
 	using namespace spine;
 	SkeletonData* FTSpineLoader::ReadSkeletonJsonData(const String& filename, Atlas* atlas, float scale)
 	{

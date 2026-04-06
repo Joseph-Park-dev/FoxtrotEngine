@@ -10,12 +10,16 @@
 /// </summary>
 
 #pragma once
-#include "Component/Component.h"
+#include "Component/D3D11Component.h"
 
 #include "Static/FTString.h"
 
-class Actor;
-class Transform;
+namespace Core
+{
+	class Actor;
+	class Transform;
+	class FoxtrotRenderer;
+} // namespace Core
 
 namespace D3D11
 {
@@ -31,43 +35,46 @@ namespace D3D11
 	class Camera;
 
 	class MeshRenderer :
-		public Component
+		public D3D11Component
 	{
 		///////////////////////////
 		// Component information //
 		///////////////////////////
 	public:
-		virtual FTDS::String GetName() const override { return "MeshRenderer"; }
+		virtual Core::FTDS::String GetName() const override { return "MeshRenderer"; }
 
 		/////////////////////////
 		// Game-loop functions //
 		/////////////////////////
 	public:
 		virtual void Initialize() override;
-		virtual void Render(FoxtrotRenderer* renderer) override;
+		virtual void ProcessInput(Core::FTInputDevice* inputDevice) override;
+		virtual void Update(float deltaTime) override;
+		virtual void LateUpdate(float deltaTime) override;
+		virtual void Render(Core::FoxtrotRenderer* renderer) override;
 
 		/////////////////////////////////////
 		// Instantiation-related functions //
 		/////////////////////////////////////
 	public:
-		MeshRenderer(Plugin* plugin, Actor* owner, int updateOrder);
+		MeshRenderer(Core::Plugin* plugin, Core::Actor* owner, int updateOrder);
 		virtual ~MeshRenderer() override;
-		virtual void CloneTo(Actor* actor) override;
+		virtual void CloneTo(Core::Actor* actor) override;
 
 		///////////////////////////////////////
 		// Getters & Setters to the elements //
 		///////////////////////////////////////
 	protected:
-		FTMeshGroup*	  GetMeshGroup() const;
-		FTTexture*		  GetTexture() const;
-		FoxtrotRenderer*  GetRenderer() const;
-		FTVertexShader*	  GetVS() const;
-		FTGeometryShader* GetGS() const;
-		FTPixelShader*	  GetPS() const;
+		FTMeshGroup*		   GetMeshGroup() const;
+		FTTexture*			   GetTexture() const;
+		Core::FoxtrotRenderer* GetRenderer() const;
+		FTVertexShader*		   GetVS() const;
+		FTGeometryShader*	   GetGS() const;
+		FTPixelShader*		   GetPS() const;
 
 		FTMaterial* GetMaterial() const;
 
-		void SetRenderer(FoxtrotRenderer* renderer);
+		void SetRenderer(Core::FoxtrotRenderer* renderer);
 		void SetMeshGroup(FTMeshGroup* meshGroup);
 		void SetTexture(FTTexture* tex);
 		void SetVS(FTVertexShader* vs);
@@ -80,14 +87,14 @@ namespace D3D11
 		// These will be set in Initialize()  //
 		////////////////////////////////////////
 	private:
-		FoxtrotRenderer*  mRenderer;
-		FTMeshGroup*	  mMeshGroup;
-		FTTexture*		  mTexture;
-		FTVertexShader*	  mVS;
-		FTGeometryShader* mGS;
-		FTPixelShader*	  mPS;
-		FTMaterial*		  mMaterial;
-		int				  mFrontDir;
+		Core::FoxtrotRenderer* mRenderer;
+		FTMeshGroup*		   mMeshGroup;
+		FTTexture*			   mTexture;
+		FTVertexShader*		   mVS;
+		FTGeometryShader*	   mGS;
+		FTPixelShader*		   mPS;
+		FTMaterial*			   mMaterial;
+		int					   mFrontDir;
 
 		///////////////////////////////////
 		// Save & Load related functions //

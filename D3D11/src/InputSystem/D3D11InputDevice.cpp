@@ -8,6 +8,7 @@
 
 namespace D3D11
 {
+	using namespace Core;
 	void D3D11InputDevice::DetectKeyboardInput()
 	{
 		for (size_t i = 0; i < (size_t)KEYBOARD::LAST_FLAG; ++i)
@@ -117,7 +118,7 @@ namespace D3D11
 	unsigned int D3D11InputDevice::MOUSE_X() { return mMousePosX; }
 	unsigned int D3D11InputDevice::MOUSE_Y() { return mMousePosY; }
 
-	void D3D11InputDevice::LockCursorInSceneViewport(D3D11Window* window, FTVector2 mousePos)
+	void D3D11InputDevice::LockCursorInSceneViewport(D3D11Window* window, Math::FTVector2 mousePos)
 	{
 		RECT rect;
 		GetClientRect(window->GetHandle(), &rect);
@@ -161,7 +162,7 @@ namespace D3D11
 		return mMouseWheelDelta;
 	}
 
-	void D3D11InputDevice::SetMousePosition(FTVector2 pos)
+	void D3D11InputDevice::SetMousePosition(Math::FTVector2 pos)
 	{
 		mMousePosX = static_cast<unsigned int>(pos.x);
 		mMousePosY = static_cast<unsigned int>(pos.y);

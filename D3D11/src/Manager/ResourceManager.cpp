@@ -25,7 +25,7 @@
 
 #include "ResourceManager.h"
 
-#include "ResourceSystem/FTPremade.h"
+#include "ResourceSystem/D3D11Resource.h"
 #include "Static/FTString.h"
 #include "FileSystem/NullKeys.h"
 

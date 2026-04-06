@@ -40,12 +40,25 @@
 
 namespace D3D11
 {
+	using namespace Core;
 	void SpriteRenderer::Initialize()
 	{
 		Component::Initialize();
 	}
 
-	void SpriteRenderer::Render(FoxtrotRenderer* renderer)
+	void SpriteRenderer::ProcessInput(FTInputDevice* inputDevice)
+	{
+	}
+
+	void SpriteRenderer::Update(float deltaTime)
+	{
+	}
+
+	void SpriteRenderer::LateUpdate(float deltaTime)
+	{
+	}
+
+	void SpriteRenderer::Render(Core::FoxtrotRenderer* renderer)
 	{
 		D3D11Renderer* rend = static_cast<D3D11Renderer*>(renderer);
 		if (mSprite)
@@ -64,7 +77,7 @@ namespace D3D11
 	}
 
 	SpriteRenderer::SpriteRenderer(Plugin* plugin, Actor* owner, int updateOrder)
-		: Component(plugin, owner, updateOrder)
+		: D3D11Component(plugin, owner, updateOrder)
 		, mSprite(nullptr)
 		, mMaterial(nullptr)
 	{
@@ -140,4 +153,9 @@ namespace D3D11
 		}
 	}
 #endif // FOXTROT_EDITOR
+
+	extern "C" __declspec(dllexport) Component* Create(Core::Plugin* plugin, Core::Actor* actor, int updateOrder)
+	{
+		return DBG_NEW SpriteRenderer(plugin, actor, updateOrder);
+	}
 } // namespace D3D11

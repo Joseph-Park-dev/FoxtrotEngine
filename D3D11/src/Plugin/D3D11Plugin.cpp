@@ -26,6 +26,7 @@ namespace ChunkKey
 	}
 } // namespace ChunkKey
 
+using namespace Core;
 class D3D11Plugin :
 	public Plugin
 {
@@ -41,7 +42,7 @@ public:
 	void LoadProperties(SceneManager* sceneManager);
 
 public:
-	D3D11Plugin(FTCore* base);
+	D3D11Plugin(Core::FTCore* base);
 	~D3D11Plugin() override;
 
 private:
@@ -104,42 +105,42 @@ void D3D11Plugin::Render(FoxtrotRenderer* renderer)
 
 void D3D11Plugin::SaveProperties()
 {
-	FTDS::String dataPath = ChunkKey::Plugin::D3D11;
+	FTDS::String dataPath = D3D11::PluginKey::D3D11;
 	dataPath.Append(FileTypes::PLUGIN_DATA);
 	std::ofstream ofs(dataPath.C_Str());
 
 	if (ofs.good())
 	{
-		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::PLUGIN_DATA);
+		FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::Plugin::PLUGIN_DATA);
 
 		mCamera->SaveProperties(ofs);
 
-		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTWindow::WINDOW_DATA);
+		FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::FTWindow::WINDOW_DATA);
 		for (auto iter = mWindows->Begin(); iter != mWindows->End(); ++iter)
 		{
 			FileIOHelper::BeginDataPackSave(ofs, (*iter)->GetTitle());
-			FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTWindow::WIDTH, (*iter)->GetWidth());
-			FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTWindow::HEIGHT, (*iter)->GetHeight());
+			FileIOHelper::SaveUnsignedInt(ofs, Core::ChunkKey::FTWindow::WIDTH, (*iter)->GetWidth());
+			FileIOHelper::SaveUnsignedInt(ofs, Core::ChunkKey::FTWindow::HEIGHT, (*iter)->GetHeight());
 			gBase->CallFunc<FTRECTAREA_SAVE>(D3D11::PluginKey::D3D11, D3D11::PluginKey::SAVE_PROPERTIES, &ofs, (*iter)->GetRenderArea());
 			FileIOHelper::EndDataPackSave(ofs, (*iter)->GetTitle());
 		}
-		FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTWindow::WINDOW_DATA);
+		FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::FTWindow::WINDOW_DATA);
 
-		FileIOHelper::EndDataPackSave(ofs, ChunkKey::Plugin::PLUGIN_DATA);
+		FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::Plugin::PLUGIN_DATA);
 	}
 }
 
 void D3D11Plugin::LoadProperties(SceneManager* sceneManager)
 {
-	FTDS::String dataPath = ChunkKey::Plugin::D3D11;
+	FTDS::String dataPath = D3D11::PluginKey::D3D11;
 	dataPath.Append(FileTypes::PLUGIN_DATA);
 	std::ifstream ifs(dataPath.C_Str());
 	if (!ifs.good())
 		SaveProperties();
 	else
 	{
-		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::PLUGIN_DATA);
-		size_t winCount = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTWindow::WINDOW_DATA).first;
+		FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::Plugin::PLUGIN_DATA);
+		size_t winCount = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::FTWindow::WINDOW_DATA).first;
 		for (size_t i = 0; i < winCount; ++i)
 		{
 			FTDS::String winTitle = FileIOHelper::BeginDataPackLoad(ifs).second;
@@ -161,7 +162,7 @@ void D3D11Plugin::LoadProperties(SceneManager* sceneManager)
 	}
 }
 
-D3D11Plugin::D3D11Plugin(FTCore* base)
+D3D11Plugin::D3D11Plugin(Core::FTCore* base)
 	: Plugin(base)
 	, mInputDevices(DBG_NEW FTDS::DynamicArray<D3D11::D3D11InputDevice*>)
 	, mRenderer(nullptr)
@@ -184,7 +185,7 @@ void D3D11Plugin::LoadProperties()
 {
 }
 
-extern "C" __declspec(dllexport) Plugin* CreatePlugin(FTCore* base)
+extern "C" __declspec(dllexport) Plugin* CreatePlugin(Core::FTCore* base)
 {
 	return new D3D11Plugin(base);
 }

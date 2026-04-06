@@ -5,18 +5,18 @@ namespace D3D11
 {
 	struct TextAttribute
 	{
-		float	  Rotation;
-		FTVector2 Offset;
-		FTVector2 Origin;
-		FTVector2 Scale;
-		FTVector4 Color;
+		float			Rotation;
+		Math::FTVector2 Offset;
+		Math::FTVector2 Origin;
+		Math::FTVector2 Scale;
+		Math::FTVector4 Color;
 
 		TextAttribute()
 			: Rotation(0.0f)
-			, Offset(FTVector2(0.0f, 0.0f))
-			, Origin(FTVector2(0.0f, 0.0f))
-			, Scale(FTVector2(0.0f, 0.0f))
-			, Color(FTVector4(0.f))
+			, Offset(Math::FTVector2(0.0f, 0.0f))
+			, Origin(Math::FTVector2(0.0f, 0.0f))
+			, Scale(Math::FTVector2(0.0f, 0.0f))
+			, Color(Math::FTVector4(0.f))
 		{
 		}
 
@@ -29,7 +29,5 @@ namespace D3D11
 			this->Scale	   = origin->Scale;
 			return this;
 		}
-
-		
 	};
 } // namespace D3D11

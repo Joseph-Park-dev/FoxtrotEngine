@@ -23,6 +23,7 @@
 #include "ResourceSystem/GenericData/FTCSV.h"
 #include "ResourceSystem/D3D11Resource.h"
 #include "ResourceSystem/FTResource.h"
+#include "..\Manager\ResourceManager.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
@@ -32,9 +33,10 @@
 
 namespace D3D11
 {
+	using namespace Core;
 	ResType FTTileMap::Type = ResType::TILEMAP;
 
-	void	FTTileMap::Initialize()
+	void FTTileMap::Initialize()
 	{
 		if (!mCSV)
 			return;
@@ -207,8 +209,9 @@ namespace D3D11
 	void FTTileMap::SaveProperties(std::ofstream& ofs)
 	{
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTileMap::FT_TILEMAP);
-		FileIOHelper::SaveString(ofs, ::ChunkKey::FTResource::FILE_NAME, D3D11::RES_NAME(FTTileMap, this));
-		FileIOHelper::SaveString(ofs, ChunkKey::FTTileMap::CSV_KEY, ::Core::RES_NAME(FTCSV, mCSV));
+
+
+		FileIOHelper::SaveString(ofs, ChunkKey::FTTileMap::CSV_KEY, Core::RES_NAME(FTCSV, mCSV));
 		FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTTileMap::SCREEN_WIDTH, mTileWidthOnScreen);
 		FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTTileMap::SCREEN_HEIGHT, mTileHeightOnScreen);
 		FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTTileMap::MAP_MAX_COUNT_X, mMaxCountOnMapX);
@@ -226,7 +229,8 @@ namespace D3D11
 		FTDS::String csvKey;
 		FileIOHelper::LoadBasicString(ifs, csvKey);
 		mCSV = GET_RES(FTCSV, csvKey);
-		D3D11Resource::LoadProperties(ifs);
+		// Loading filename
+		FileIOHelper::LoadBasicString(ifs, csvKey);
 	}
 
 #ifdef FOXTROT_EDITOR

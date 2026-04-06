@@ -9,8 +9,8 @@
 #include "D3D11Utils.h"
 
 #include <DDSTextureLoader.h> // For reading Cubemaps
-#include <dxgi.h>						// DXGIFactory
-#include <dxgi1_4.h>					// DXGIFactory4
+#include <dxgi.h>			  // DXGIFactory
+#include <dxgi1_4.h>		  // DXGIFactory4
 #include <stdio.h>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -21,10 +21,13 @@
 #include "Debugging/DebugFuncs.h"
 #include "DebugFuncs.h"
 
-using namespace std;
-
 namespace D3D11
 {
+	using namespace Core;
+	using namespace Math;
+	using namespace std;
+	using Microsoft::WRL::ComPtr;
+
 	HRESULT D3D11Utils::CreateDeviceAndContext(
 		const HWND					 window,
 		ComPtr<ID3D11Device>&		 device,

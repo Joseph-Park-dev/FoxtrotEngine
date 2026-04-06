@@ -9,10 +9,15 @@
 #pragma once
 #include "ResourceSystem/D3D11Resource.h"
 
-class FoxtrotRenderer;
+namespace Core
+{
+	class FoxtrotRenderer;
+}
 
 namespace D3D11
 {
+	class D3D11Renderer;
+
 	enum class ShaderType
 	{
 		VERTEX_SHADER,
@@ -30,10 +35,6 @@ namespace D3D11
 
 		/// @see FTResource::LoadProperties()
 		virtual void LoadProperties(std::ifstream& ifs) override = 0;
-
-	public:
-		/// @brief Loads the meta data and compiles the shader.
-		FTShader(Core::FTResourceDef& resDef, D3D11Renderer* renderer);
 
 	private:
 		/// @brief Type of the shader (e.g vertex shader)

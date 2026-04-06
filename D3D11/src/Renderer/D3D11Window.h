@@ -5,7 +5,10 @@
 #include <wrl.h>
 #include <d3d11.h>
 
-class FTCore;
+namespace Core
+{
+	class FTCore;
+}
 
 namespace D3D11
 {
@@ -13,24 +16,24 @@ namespace D3D11
 	class D3D11Renderer;
 
 	class D3D11Window :
-		public FTWindow
+		public Core::FTWindow
 	{
 	public:
-		bool Initialize(FTCore* base);
-		bool Initialize(FTCore* base, int windowMode);
+		bool Initialize(Core::FTCore* base);
+		bool Initialize(Core::FTCore* base, int windowMode);
 		bool InitializeWindowRenderer(D3D11Renderer* renderer);
 		bool CreateSwapChain(D3D11Renderer* renderer);
 
-		void ResizeWindow(FoxtrotRenderer* renderer);
+		void ResizeWindow(Core::FoxtrotRenderer* renderer);
 
 	public:
 		void ProcessInput(D3D11InputDevice* inputDevice);
 
-		void BeginRender(FoxtrotRenderer* renderer) override;
-		void EndRender(FoxtrotRenderer* renderer) override;
+		void BeginRender(Core::FoxtrotRenderer* renderer) override;
+		void EndRender(Core::FoxtrotRenderer* renderer) override;
 
 	public:
-		void Reset(FoxtrotRenderer* renderer);
+		void Reset(Core::FoxtrotRenderer* renderer);
 
 	public:
 		// Accessors return references to internal COM pointers / window handle.
@@ -41,7 +44,7 @@ namespace D3D11
 		Microsoft::WRL::ComPtr<ID3D11DepthStencilView>& GetDSV();
 
 	public:
-		D3D11Window(Plugin* owner, const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea);
+		D3D11Window(Core::Plugin* owner, const char* title, unsigned int width, unsigned int height, Core::FTRectArea* rndArea);
 		~D3D11Window() override;
 
 	private:
@@ -50,7 +53,7 @@ namespace D3D11
 		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> mRTV;	   ///< Main render target view.
 		Microsoft::WRL::ComPtr<ID3D11DepthStencilView> mDSV;	   ///< Depth-stencil view.
 
-		FTInputDevice* mInputDevice;
+		Core::FTInputDevice* mInputDevice;
 
 	private:
 		/**

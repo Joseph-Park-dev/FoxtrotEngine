@@ -10,10 +10,11 @@
 
 namespace D3D11
 {
+	using namespace Core;
 	void FTRectangle::Initialize(D3D11Renderer* renderer)
 	{
 		FTShape::Initialize(renderer);
-		InitializeMesh(renderer->GetDevice(), GeometryGenerator::MakeDebugPoint(FTVector4(1.f, 0.f, 0.f, 1.f)));
+		InitializeMesh(renderer->GetDevice(), GeometryGenerator::MakeDebugPoint(Math::FTVector4(1.f, 0.f, 0.f, 1.f)));
 	}
 
 	FTRectangle::FTRectangle()

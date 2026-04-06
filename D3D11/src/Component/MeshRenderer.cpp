@@ -33,19 +33,31 @@
 	#include "EditorResourceManager.h"
 #endif // FOXTROT_EDITOR
 
-using namespace D3D11;
 namespace D3D11
 {
+	using namespace Core;
 	void MeshRenderer::Initialize()
 	{
 		Component::Initialize();
 	}
 
-	void MeshRenderer::Render(FoxtrotRenderer* renderer)
+	void MeshRenderer::ProcessInput(FTInputDevice* inputDevice)
+	{
+	}
+
+	void MeshRenderer::Update(float deltaTime)
+	{
+	}
+
+	void MeshRenderer::LateUpdate(float deltaTime)
+	{
+	}
+
+	void MeshRenderer::Render(Core::FoxtrotRenderer* renderer)
 	{
 		if (mMeshGroup)
 		{
-			Transform* transform = GetOwner()->GetTransform();
+			Core::Transform* transform = GetOwner()->GetTransform();
 			// mMeshGroup->Render(renderer, transform, Camera::GetInstance(), mTexture, mVS, mPS, mMaterial);
 		}
 	}
@@ -61,15 +73,15 @@ namespace D3D11
 		newComp->mMaterial	  = this->mMaterial;
 	}
 
-	FoxtrotRenderer*  MeshRenderer::GetRenderer() const { return mRenderer; }
-	FTMeshGroup*	  MeshRenderer::GetMeshGroup() const { return mMeshGroup; }
-	FTTexture*		  MeshRenderer::GetTexture() const { return mTexture; }
-	FTVertexShader*	  MeshRenderer::GetVS() const { return mVS; }
-	FTGeometryShader* MeshRenderer::GetGS() const { return mGS; }
-	FTPixelShader*	  MeshRenderer::GetPS() const { return mPS; }
-	FTMaterial*		  MeshRenderer::GetMaterial() const { return mMaterial; }
+	Core::FoxtrotRenderer* MeshRenderer::GetRenderer() const { return mRenderer; }
+	FTMeshGroup*		   MeshRenderer::GetMeshGroup() const { return mMeshGroup; }
+	FTTexture*			   MeshRenderer::GetTexture() const { return mTexture; }
+	FTVertexShader*		   MeshRenderer::GetVS() const { return mVS; }
+	FTGeometryShader*	   MeshRenderer::GetGS() const { return mGS; }
+	FTPixelShader*		   MeshRenderer::GetPS() const { return mPS; }
+	FTMaterial*			   MeshRenderer::GetMaterial() const { return mMaterial; }
 
-	void MeshRenderer::SetRenderer(FoxtrotRenderer* renderer) { mRenderer = renderer; }
+	void MeshRenderer::SetRenderer(Core::FoxtrotRenderer* renderer) { mRenderer = renderer; }
 	void MeshRenderer::SetMeshGroup(FTMeshGroup* meshGroup) { mMeshGroup = meshGroup; }
 	void MeshRenderer::SetTexture(FTTexture* tex) { mTexture = tex; }
 	void MeshRenderer::SetVS(FTVertexShader* vs) { mVS = vs; }
@@ -78,7 +90,7 @@ namespace D3D11
 	void MeshRenderer::SetMaterial(FTMaterial* mat) { mMaterial = mat; }
 
 	MeshRenderer::MeshRenderer(Plugin* plugin, Actor* owner, int updateOrder)
-		: Component(plugin, owner, updateOrder)
+		: D3D11Component(plugin, owner, updateOrder)
 		, mMeshGroup(nullptr)
 		, mRenderer(nullptr)
 		, mTexture(nullptr)
@@ -106,17 +118,17 @@ namespace D3D11
 		if (mMeshGroup)
 			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MESH_KEY, D3D11::RES_NAME(FTMeshGroup, mMeshGroup));
 		else
-			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MESH_KEY, ::ChunkKey::NullVal::NULL_OBJECT);
+			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MESH_KEY, Core::ChunkKey::NullVal::NULL_OBJECT);
 
 		if (mTexture)
 			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, D3D11::RES_NAME(FTTexture, mTexture));
 		else
-			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, ::ChunkKey::NullVal::NULL_OBJECT);
+			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, Core::ChunkKey::NullVal::NULL_OBJECT);
 
 		if (mMaterial)
 			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MAT_KEY, D3D11::RES_NAME(FTMaterial, mMaterial));
 		else
-			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MAT_KEY, ::ChunkKey::NullVal::NULL_OBJECT);
+			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MAT_KEY, Core::ChunkKey::NullVal::NULL_OBJECT);
 	}
 
 	void MeshRenderer::LoadProperties(std::ifstream& ifs)
@@ -178,4 +190,9 @@ namespace D3D11
 			mMaterial);
 	}
 #endif // FOXTROT_EDITOR
+
+	extern "C" __declspec(dllexport) Component* Create(Core::Plugin* plugin, Core::Actor* actor, int updateOrder)
+	{
+		return DBG_NEW MeshRenderer(plugin, actor, updateOrder);
+	}
 } // namespace D3D11

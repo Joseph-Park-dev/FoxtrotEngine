@@ -50,7 +50,7 @@ namespace Core
 
 		// World Transformation
 		void SetWorldPosition(const Math::FTVector3 worldPos);
-		void SetWorldScale(const Math::FTVector3 worldScale);
+		virtual void SetWorldScale(const Math::FTVector3 worldScale);
 		void SetWorldRotation(const Math::FTVector3 worldRot);
 
 		void SetRightward(const Math::FTVector3 dir);

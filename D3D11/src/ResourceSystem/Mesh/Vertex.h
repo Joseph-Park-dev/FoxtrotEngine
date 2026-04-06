@@ -32,9 +32,9 @@ namespace D3D11
 		}
 #endif // FOXTROT_EDITOR
 
-		FTVector3 position;
-		FTVector4 color;
-		FTVector2 texcoord;
+		Math::FTVector3 position;
+		Math::FTVector4 color;
+		Math::FTVector2 texcoord;
 
 		Vertex operator=(Vertex& v)
 		{
@@ -48,7 +48,7 @@ namespace D3D11
 
 	struct SpriteVertex
 	{
-		FTVector3 Position;
+		Math::FTVector3 Position;
 	};
 
 	struct DebugVertex
@@ -69,7 +69,7 @@ namespace D3D11
 		}
 #endif // FOXTROT_EDITOR
 
-		FTVector3 position;
-		FTVector4 color;
+		Math::FTVector3 position;
+		Math::FTVector4 color;
 	};
 } // namespace D3D11

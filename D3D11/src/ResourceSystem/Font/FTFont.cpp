@@ -22,6 +22,8 @@ using Microsoft::WRL::ComPtr;
 
 namespace D3D11
 {
+	using namespace Core;
+	using namespace Math;
 	ResType FTFont::Type = ResType::FONT;
 
 	void FTFont::AddText(ComPtr<ID3D11Device>& device, FTDS::String& text)
@@ -40,7 +42,7 @@ namespace D3D11
 		Meshes()->PushBack(mesh);
 	}
 
-	void FTFont::Render(FTDS::String& text, D3D11Renderer* renderer, Transform* transform, Camera* camInst, FTTexture* tex, FTVertexShader* vs, FTPixelShader* ps, FTMaterial* mat)
+	void FTFont::Render(FTDS::String& text, D3D11Renderer* renderer, Core::Transform* transform, Camera* camInst, FTTexture* tex, FTVertexShader* vs, FTPixelShader* ps, FTMaterial* mat)
 	{
 		if (!Meshes())
 			return;
@@ -88,7 +90,7 @@ namespace D3D11
 		});
 	}
 
-	void FTFont::UpdateTextVertices(FTDS::String& text, D3D11Renderer* renderer, FTVector2 pos, FTVector2 scale, FTVector2 padding, FTVector3 color, float alpha)
+	void FTFont::UpdateTextVertices(Core::FTDS::String& text, D3D11Renderer* renderer, FTVector2 pos, FTVector2 scale, FTVector2 padding, FTVector3 color, float alpha)
 	{
 		if (text.IsEmpty())
 			return;
@@ -192,7 +194,7 @@ namespace D3D11
 		return (mTopPadding + mBottomPadding) * paddingY;
 	}
 
-	FTFont::FTFont(FTResourceDef& resDef, D3D11Renderer* renderer)
+	FTFont::FTFont(Core::FTResourceDef& resDef, D3D11Renderer* renderer)
 		: FTMeshGroup(resDef, renderer, nullptr)
 		, mSize(0)
 		, mLineHeight(0.f)
@@ -264,7 +266,7 @@ namespace D3D11
 		if (mFontImage)
 			FileIOHelper::SaveString(ofs, ChunkKey::FTFont::FONT_IMAGE, D3D11::RES_NAME(FTFont, mFontImage));
 		else
-			FileIOHelper::SaveString(ofs, ChunkKey::FTFont::FONT_IMAGE, ::ChunkKey::NullVal::NULL_OBJECT);
+			FileIOHelper::SaveString(ofs, ChunkKey::FTFont::FONT_IMAGE, Core::ChunkKey::NullVal::NULL_OBJECT);
 
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTFont::FTFONT);
 	}

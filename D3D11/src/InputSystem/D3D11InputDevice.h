@@ -62,14 +62,14 @@ namespace D3D11
 		unsigned int MOUSE_Y();
 
 	public:
-		void LockCursorInSceneViewport(D3D11Window* window, FTVector2 mousePos);
+		void LockCursorInSceneViewport(D3D11Window* window, Math::FTVector2 mousePos);
 		void UnlockCursorOutOfSceneViewport();
 
 		const unsigned int GetMousePosX() const;
 		const unsigned int GetMousePosY() const;
 		const float		   GetMouseWheelDelta() const;
 
-		void SetMousePosition(FTVector2 pos);
+		void SetMousePosition(Math::FTVector2 pos);
 		void SetMousePosition(unsigned int posX, unsigned int posY);
 		void SetMouseWheelDelta(float delta);
 
@@ -84,10 +84,10 @@ namespace D3D11
 		bool		 mIsDragging;
 
 		int*							 mMouseCode;
-		FTDS::DynamicArray<ButtonInput>* mMouseButtons;
+		Core::FTDS::DynamicArray<Core::ButtonInput>* mMouseButtons;
 
 	private:
 		int*							 mKeyboardCode;
-		FTDS::DynamicArray<ButtonInput>* mKeyboardButtons;
+		Core::FTDS::DynamicArray<Core::ButtonInput>* mKeyboardButtons;
 	};
 } // namespace D3D11

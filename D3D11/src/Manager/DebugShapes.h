@@ -56,10 +56,10 @@ namespace D3D11
 		void Render(D3D11::D3D11Renderer* renderer);
 
 	private:
-		FTDS::DynamicArray<FTShape*>* mShapes;
-		std::wstring				  mVSPath;
-		std::wstring				  mGSPath;
-		std::wstring				  mPSPath;
+		Core::FTDS::DynamicArray<FTShape*>* mShapes;
+		std::wstring						mVSPath;
+		std::wstring						mGSPath;
+		std::wstring						mPSPath;
 
 		FTRectangle* mCamRect;
 

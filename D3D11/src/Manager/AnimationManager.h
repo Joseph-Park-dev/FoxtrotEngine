@@ -4,8 +4,11 @@
 #include "Static/FTString.h"
 #include "Manager/FTSpineLoader.h"
 
-class FoxtrotRenderer;
-class FTCore;
+namespace Core
+{
+	class FoxtrotRenderer;
+	class FTCore;
+} // namespace Core
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorResourceManager.h"
@@ -23,10 +26,10 @@ namespace D3D11
 		FTSpineLoader* GetSpineLoader();
 
 	public:
-		void Initialize(FoxtrotRenderer* renderer);
+		void Initialize(Core::FoxtrotRenderer* renderer);
 
 	private:
-		FoxtrotRenderer* mRenderer;
+		Core::FoxtrotRenderer* mRenderer;
 		FTSpineLoader* mSpineLoader;
 
 #ifdef FOXTROT_EDITOR

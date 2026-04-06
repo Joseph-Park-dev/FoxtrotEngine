@@ -8,9 +8,10 @@
 
 namespace D3D11
 {
+	using namespace Core;
 	ResType FTVertexShader::Type = ResType::VERTEX_SHADER;
 
-	void FTVertexShader::CompileShader(FTResourceDef& resDef, D3D11Renderer* renderer)
+	void FTVertexShader::CompileShader(Core::FTResourceDef& resDef, D3D11Renderer* renderer)
 	{
 		if (mSemanticItems->IsEmpty())
 			return;
@@ -39,8 +40,7 @@ namespace D3D11
 	}
 
 	FTVertexShader::FTVertexShader(FTResourceDef& resDef, D3D11Renderer* renderer)
-		: FTShader(resDef, renderer)
-		, mShader(nullptr)
+		: mShader(nullptr)
 		, mInputLayout(nullptr)
 #ifdef FOXTROT_EDITOR
 		, mSemanticItems(DBG_NEW FTDS::DynamicArray<SemanticItem*>())
@@ -66,7 +66,7 @@ namespace D3D11
 	void FTVertexShader::SaveProperties(std::ofstream& ofs)
 	{
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTVertexShader::FT_VERTEX_SHADER);
-		FTResource::SaveProperties(ofs);
+		D3D11Resource::SaveProperties(ofs);
 
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTVertexShader::INPUT_ELEMENTS);
 
@@ -99,11 +99,11 @@ namespace D3D11
 
 		mSemanticItems->Reverse();
 
-		FTResource::LoadProperties(ifs);
+		D3D11Resource::LoadProperties(ifs);
 	}
 
-	ComPtr<ID3D11VertexShader>& FTVertexShader::GetShader() { return mShader; }
-	ComPtr<ID3D11InputLayout>&	FTVertexShader::GetInputLayout() { return mInputLayout; }
+	Microsoft::WRL::ComPtr<ID3D11VertexShader>& FTVertexShader::GetShader() { return mShader; }
+	Microsoft::WRL::ComPtr<ID3D11InputLayout>&	FTVertexShader::GetInputLayout() { return mInputLayout; }
 
 #ifdef FOXTROT_EDITOR
 	void FTVertexShader::UpdateUI()

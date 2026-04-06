@@ -40,8 +40,7 @@ namespace D3D11
 	/// Change of values after the initialization is NOT recommended.
 	/// </summary>
 	D3D11PSO::D3D11PSO(PSODef& resDef)
-		: FTResource(resDef)
-		, mWireFramed(false)
+		: mWireFramed(false)
 	{
 		mVS	 = resDef.VS;
 		mGS	 = resDef.GS;

@@ -1,6 +1,8 @@
 #pragma once
 #include "ResourceSystem/Shape/FTShape.h"
 
+#include <fstream>
+
 namespace D3D11
 {
 	class FTRectangle : public FTShape

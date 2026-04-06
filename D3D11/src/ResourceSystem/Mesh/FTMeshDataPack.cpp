@@ -5,7 +5,7 @@
 
 namespace D3D11
 {
-	std::vector<FTMeshData*>& FTMeshDataPack::GetMeshData() { return mMeshData; }
+	Core::FTDS::DynamicArray<FTMeshData*>& FTMeshDataPack::GetMeshData() { return mMeshData; }
 
 	FTMeshDataPack::FTMeshDataPack()
 	{

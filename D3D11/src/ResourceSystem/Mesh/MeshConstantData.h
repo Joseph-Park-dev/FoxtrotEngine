@@ -18,18 +18,18 @@ namespace D3D11
 	// and utilizes that in GS to form a geometry
 	struct DebugVCData
 	{
-		FTMatrix4 model = FTMatrix4();
+		Math::FTMatrix4 model = Math::FTMatrix4();
 	};
 
 	static_assert((sizeof(DebugVCData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
 
 	struct DebugGCData
 	{
-		FTMatrix4 view		 = FTMatrix4();
-		FTMatrix4 projection = FTMatrix4();
+		Math::FTMatrix4 view	   = Math::FTMatrix4();
+		Math::FTMatrix4 projection = Math::FTMatrix4();
 
-		FTVector2 size;
-		FTVector2 dummy;
+		Math::FTVector2 size;
+		Math::FTVector2 dummy;
 	};
 
 	static_assert((sizeof(DebugGCData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
@@ -53,9 +53,9 @@ namespace D3D11
 	// Data use for Mouse Picking
 	struct IndexPCData
 	{
-		FTVector4 IndexColor;
-		uint32_t  IsActive;
-		uint32_t  dummy[3];
+		Math::FTVector4 IndexColor;
+		uint32_t		IsActive;
+		uint32_t		dummy[3];
 	};
 
 	struct DebugPCData
@@ -69,14 +69,14 @@ namespace D3D11
 	//////////////////////////////////////
 	struct PointModelMat
 	{
-		FTMatrix4 ModelMat = FTMatrix4();
+		Math::FTMatrix4 ModelMat = Math::FTMatrix4();
 	};
 	static_assert((sizeof(PointModelMat) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
 
 	struct PointVPMat
 	{
-		FTMatrix4 ViewMat = FTMatrix4();
-		FTMatrix4 ProjMat = FTMatrix4();
+		Math::FTMatrix4 ViewMat = Math::FTMatrix4();
+		Math::FTMatrix4 ProjMat = Math::FTMatrix4();
 	};
 	static_assert((sizeof(PointVPMat) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
 
@@ -86,11 +86,11 @@ namespace D3D11
 
 	struct SpriteGCData
 	{
-		FTVector2 Size	= FTVector2(1.f, 1.f);
-		FTVector2 Scale = FTVector2(1.f, 1.f);
-		FTVector4 Frame = FTVector4(0.f, 0.f, 1.f, 1.f);
-		FTVector2 Pivot = FTVector2(0.5f, 0.5f);
-		FTVector2 Dummy;
+		Math::FTVector2 Size  = Math::FTVector2(1.f, 1.f);
+		Math::FTVector2 Scale = Math::FTVector2(1.f, 1.f);
+		Math::FTVector4 Frame = Math::FTVector4(0.f, 0.f, 1.f, 1.f);
+		Math::FTVector2 Pivot = Math::FTVector2(0.5f, 0.5f);
+		Math::FTVector2 Dummy;
 
 #ifdef FOXTROT_EDITOR
 		void UpdateUI()
@@ -104,9 +104,9 @@ namespace D3D11
 
 	struct SpritePSData
 	{
-		FTVector4 Color;
-		bool	  UseTexture;
-		FTVector3 Dummy;
+		Math::FTVector4 Color;
+		bool			UseTexture;
+		Math::FTVector3 Dummy;
 	};
 	static_assert((sizeof(SpritePSData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
 } // namespace D3D11

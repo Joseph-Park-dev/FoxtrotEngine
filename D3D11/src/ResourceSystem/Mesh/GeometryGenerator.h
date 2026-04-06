@@ -25,16 +25,16 @@ namespace D3D11
 	public:
 		static FTMeshData	   MakeSquare();
 		static FTMeshData	   MakeSquare(float scale);
-		static FTMeshData	   MakePoint(FTVector4 color);
-		static FTDebugMeshData MakeDebugPoint(FTVector4 color);
-		static FTMeshData*	   MakeSquare(float scale, FTVector4 color);
+		static FTMeshData	   MakePoint(Math::FTVector4 color);
+		static FTDebugMeshData MakeDebugPoint(Math::FTVector4 color);
+		static FTMeshData*	   MakeSquare(float scale, Math::FTVector4 color);
 
 		// MakeSquare() for Making tilemap
-		static FTDS::DynamicArray<FTMeshData> MakeTileMapGrid(FTTileMap* tileMap);
+		static Core::FTDS::DynamicArray<FTMeshData> MakeTileMapGrid(FTTileMap* tileMap);
 
 		static FTMeshData  MakeTile(Tile& tile);
-		static void		   MakeSpriteAnimation(FTDS::DynamicArray<FTMeshData*>& animMeshes, Tile* tileMap, size_t startIdx, size_t endIdx);
-		static void		   MakeSpriteAnimation(FTDS::DynamicArray<FTMeshData*>& animMeshes, Tile* tileMap, size_t count);
+		static void		   MakeSpriteAnimation(Core::FTDS::DynamicArray<FTMeshData*>& animMeshes, Tile* tileMap, size_t startIdx, size_t endIdx);
+		static void		   MakeSpriteAnimation(Core::FTDS::DynamicArray<FTMeshData*>& animMeshes, Tile* tileMap, size_t count);
 		static FTMeshData* MakeAnimationFrame(Tile& tile);
 		// static void MakeSpriteTextGrid(std::vector<FTMeshData>& textMeshes, Tile* tileMap, size_t length, TextAttribute* attribute);
 		// static FTMeshData MakeSpriteText(Tile tile, TextAttribute* attrib, size_t col, size_t row);

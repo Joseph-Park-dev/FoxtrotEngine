@@ -36,11 +36,11 @@ namespace D3D11
 {
 	ResType FTMeshGroup::Type = ResType::MESH_GROUP;
 
-	void FTMeshGroup::Render(D3D11Renderer* renderer, Transform* transform, Camera* camInst, D3D11PSO* pso, FTMaterial* mat)
+	void FTMeshGroup::Render(D3D11Renderer* renderer, Core::Transform* transform, Camera* camInst, D3D11PSO* pso, FTMaterial* mat)
 	{
 	}
 
-	void FTMeshGroup::SetSizeScale(const FTVector3 scale)
+	void FTMeshGroup::SetSizeScale(const Math::FTVector3 scale)
 	{
 		mSizeScale = scale;
 	}
@@ -55,7 +55,7 @@ namespace D3D11
 		val ? mFrontDir = 1 : mFrontDir = -1;
 	}
 
-	FTDS::DynamicArray<Mesh*>* FTMeshGroup::Meshes() { return mMeshes; };
+	Core::FTDS::DynamicArray<Mesh*>* FTMeshGroup::Meshes() { return mMeshes; };
 
 	// This is unused until 3D feature is implemented.
 	// FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer)
@@ -69,11 +69,11 @@ namespace D3D11
 	//	Process(renderer);
 	// }
 
-	FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, D3D11Renderer* renderer, FTMeshData* meshData)
+	FTMeshGroup::FTMeshGroup(Core::FTResourceDef& resDef, D3D11Renderer* renderer, FTMeshData* meshData)
 		: mFrontDir(1)
 		, mDirection(1)
-		, mSizeScale(FTVector3(1.0f, 1.0f, 1.0f))
-		, mMeshes(DBG_NEW FTDS::DynamicArray<Mesh*>)
+		, mSizeScale(Math::FTVector3(1.0f, 1.0f, 1.0f))
+		, mMeshes(DBG_NEW Core::FTDS::DynamicArray<Mesh*>)
 		, mVCData(DBG_NEW PointModelMat)
 	{
 		if (!meshData)
@@ -132,7 +132,7 @@ namespace D3D11
 	void FTMeshGroup::UpdateConstantBuffers(
 		ComPtr<ID3D11Device>&		 device,
 		ComPtr<ID3D11DeviceContext>& context,
-		Transform*					 transform,
+		Core::Transform*			 transform,
 		Camera*						 camInst,
 		FTMaterial*					 mat,
 		const int					 frontDir)
@@ -196,7 +196,7 @@ namespace D3D11
 		return mVCData;
 	}
 
-	const FTVector3& FTMeshGroup::GetSizeScale() const { return mSizeScale; }
+	const Math::FTVector3& FTMeshGroup::GetSizeScale() const { return mSizeScale; }
 
 	const int FTMeshGroup::GetDirection() const
 	{
@@ -235,7 +235,7 @@ namespace D3D11
 		mMeshes->PushBack(newMesh);
 	}
 
-	void FTMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, FTDS::DynamicArray<FTMeshData*>&& meshDataArr)
+	void FTMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, Core::FTDS::DynamicArray<FTMeshData*>&& meshDataArr)
 	{
 		if (0 < meshDataArr.GetSize())
 			Clear();

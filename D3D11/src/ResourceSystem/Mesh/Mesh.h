@@ -77,7 +77,7 @@ namespace D3D11
 				D3D11_BUFFER_DESC ibDesc = {};
 				ZeroMemory(&ibDesc, sizeof(ibDesc));
 				ibDesc.Usage		  = D3D11_USAGE_DYNAMIC;
-				ibDesc.ByteWidth	  = static_cast<UINT>(vertexCount * sizeof(FTVector2));
+				ibDesc.ByteWidth	  = static_cast<UINT>(vertexCount * sizeof(Math::FTVector2));
 				ibDesc.BindFlags	  = D3D11_BIND_VERTEX_BUFFER;
 				ibDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 				hr					  = device->CreateBuffer(&ibDesc, nullptr, PositionBuf.GetAddressOf());
@@ -85,7 +85,7 @@ namespace D3D11
 					return hr;
 
 				// texture coord
-				ibDesc.ByteWidth = static_cast<UINT>(vertexCount * sizeof(FTVector2));
+				ibDesc.ByteWidth = static_cast<UINT>(vertexCount * sizeof(Math::FTVector2));
 				hr				 = device->CreateBuffer(&ibDesc, nullptr, TexcoordBuf.GetAddressOf());
 				if (FAILED(hr))
 					return hr;

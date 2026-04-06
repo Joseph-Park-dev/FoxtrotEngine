@@ -11,6 +11,6 @@ namespace D3D11
 
 	bool FTDebugMeshData::IsEmpty() const
 	{
-		return Vertices.empty(); // || Indices.empty();
+		return Vertices.IsEmpty(); // || Indices.empty();
 	}
 } // namespace D3D11

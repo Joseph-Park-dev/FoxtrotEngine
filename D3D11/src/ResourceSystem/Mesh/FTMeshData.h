@@ -12,6 +12,7 @@
 
 #pragma once
 #include "ResourceSystem/Mesh/Vertex.h"
+#include "FTDS/Dynamic/DynamicArray.h"
 
 namespace D3D11
 {
@@ -19,8 +20,8 @@ namespace D3D11
 	{
 		bool IsEmpty() const;
 
-		FTDS::DynamicArray<Vertex>	 Vertices;
-		FTDS::DynamicArray<uint32_t> Indices;
+		Core::FTDS::DynamicArray<Vertex>   Vertices;
+		Core::FTDS::DynamicArray<uint32_t> Indices;
 
 		FTMeshData operator=(FTMeshData& data)
 		{
@@ -43,7 +44,7 @@ namespace D3D11
 	{
 		bool IsEmpty() const;
 
-		FTDS::DynamicArray<DebugVertex> Vertices;
+		Core::FTDS::DynamicArray<DebugVertex> Vertices;
 		// std::vector<uint32_t>	 Indices;
 	};
 } // namespace D3D11

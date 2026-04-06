@@ -22,6 +22,10 @@
 
 namespace D3D11
 {
+	using namespace Core;
+	using namespace Math;
+	using Microsoft::WRL::ComPtr;
+
 	FTShape::FTShape()
 		: mMesh(DBG_NEW Mesh)
 		, mVSCData()
@@ -56,7 +60,7 @@ namespace D3D11
 		InitializeConstantBuffer(renderer->GetDevice());
 	}
 
-	void FTShape::UpdateVC(FTMatrix4& model, Camera* camInst)
+	void FTShape::UpdateVC(Math::FTMatrix4& model, Camera* camInst)
 	{
 		if (!mMesh)
 			return;
@@ -65,10 +69,10 @@ namespace D3D11
 
 	void FTShape::UpdateGC(Camera* camInst)
 	{
-		FTMatrix4&& viewMat = camInst->GetViewRow();
-		FTMatrix4&& projMat = camInst->GetProjRow();
-		mGSCData.view		= viewMat.Transposed();
-		mGSCData.projection = projMat.Transposed();
+		Math::FTMatrix4&& viewMat = camInst->GetViewRow();
+		Math::FTMatrix4&& projMat = camInst->GetProjRow();
+		mGSCData.view			  = viewMat.Transposed();
+		mGSCData.projection		  = projMat.Transposed();
 	}
 
 	void FTShape::UpdatePC()
@@ -90,14 +94,14 @@ namespace D3D11
 
 		UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext());
 
-		ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
 
 		DebugShapes* dbgShapes = DebugShapes::GetInstance();
 		context->VSSetShader(dbgShapes->GetVS().Get(), 0, 0);
 		context->VSSetConstantBuffers(0, 1, mVSCBuf.GetAddressOf());
 
 		context->GSSetShader(dbgShapes->GetGSSquare().Get(), 0, 0);
-		ComPtr<ID3D11Buffer> GSCBuffers[2] = {
+		Microsoft::WRL::ComPtr<ID3D11Buffer> GSCBuffers[2] = {
 			mVSCBuf,
 			mGSCBuf
 		};
@@ -116,10 +120,10 @@ namespace D3D11
 	}
 
 	void FTShape::Render(
-		D3D11Renderer*				renderer,
-		ComPtr<ID3D11VertexShader>& vertexShader,
-		ComPtr<ID3D11PixelShader>&	pixelShader,
-		ComPtr<ID3D11InputLayout>&	inputLayout)
+		D3D11Renderer*								renderer,
+		Microsoft::WRL::ComPtr<ID3D11VertexShader>& vertexShader,
+		Microsoft::WRL::ComPtr<ID3D11PixelShader>&	pixelShader,
+		Microsoft::WRL::ComPtr<ID3D11InputLayout>&	inputLayout)
 	{
 		if (!mMesh)
 			return;
@@ -133,7 +137,7 @@ namespace D3D11
 
 		UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext());
 
-		ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
 		context->VSSetShader(vertexShader.Get(), 0, 0);
 		context->VSSetConstantBuffers(0, 1, mVSCBuf.GetAddressOf());
 
@@ -173,9 +177,9 @@ namespace D3D11
 	//     mVSCData.model = model.Transpose();
 	// }
 
-	void FTShape::UpdateModelMatrix(FTVector3 pos, FTVector3 rot, FTVector3 size)
+	void FTShape::UpdateModelMatrix(Math::FTVector3 pos, Math::FTVector3 rot, Math::FTVector3 size)
 	{
-		FTMatrix4 model =
+		Math::FTMatrix4 model =
 			// Matrix::CreateScale(size.GetDXVec3()) *
 			FTMatrix4::CreateRotationY(rot.y) *
 			FTMatrix4::CreateRotationX(rot.x) *
@@ -196,11 +200,11 @@ namespace D3D11
 
 	void FTShape::InitializeConstantBuffer(ComPtr<ID3D11Device>& device)
 	{
-		mVSCData.model		= FTMatrix4();
-		mGSCData.view		= FTMatrix4();
-		mGSCData.projection = FTMatrix4();
+		mVSCData.model		= Math::FTMatrix4();
+		mGSCData.view		= Math::FTMatrix4();
+		mGSCData.projection = Math::FTMatrix4();
 
-		mGSCData.size	  = FTVector2::Zero;
+		mGSCData.size	  = Math::FTVector2::Zero;
 		mPSCData.IsActive = true;
 
 		D3D11Utils::CreateConstantBuffer(device, mVSCData, mVSCBuf);
@@ -208,7 +212,9 @@ namespace D3D11
 		D3D11Utils::CreateConstantBuffer(device, mPSCData, mPSCBuf);
 	}
 
-	void FTShape::UpdateConstantBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
+	void FTShape::UpdateConstantBuffers(
+		Microsoft::WRL::ComPtr<ID3D11Device>&		 device,
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
 	{
 		if (mVSCBuf)
 			D3D11Utils::UpdateBuffer(context, mVSCData, mVSCBuf);

@@ -41,7 +41,7 @@ namespace D3D11
 
 	public:
 		virtual void Initialize(D3D11Renderer* renderer);
-		void		 UpdateVC(FTMatrix4& model, Camera* camInst);
+		void		 UpdateVC(Math::FTMatrix4& model, Camera* camInst);
 		void		 UpdateGC(Camera* camInst);
 		virtual void UpdatePC();
 
@@ -81,7 +81,7 @@ namespace D3D11
 			Microsoft::WRL::ComPtr<ID3D11Device>&		   device,
 			Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
 
-		void UpdateModelMatrix(FTVector3 pos, FTVector3 rot, FTVector3 size);
+		void UpdateModelMatrix(Math::FTVector3 pos, Math::FTVector3 rot, Math::FTVector3 size);
 		void UpdateViewMatrix(Camera* camInst);
 		void UpdateProjectionMatrix(Camera* camInst);
 	};

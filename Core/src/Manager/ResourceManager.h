@@ -16,6 +16,6 @@ namespace Core
 		void LoadDefaultResources() override;
 	};
 
-#define RES_NAME(idx, res) ResourceManager::GetInstance()->GetResName(idx, res)
+#define RES_NAME(type, res) ResourceManager::GetInstance()->GetResName(type::Type, res)
 #define GET_RES(type, key) ResourceManager::GetInstance()->GetResource<type>(type::Type, key)
 } // namespace Core

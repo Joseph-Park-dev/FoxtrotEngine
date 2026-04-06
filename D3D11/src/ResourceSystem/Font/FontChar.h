@@ -1,5 +1,8 @@
 #pragma once
-class FoxtrotRenderer;
+namespace Core
+{
+	class FoxtrotRenderer;
+}
 
 namespace D3D11
 {

@@ -12,8 +12,11 @@
 #include <wrl.h>
 #include <d3d11.h>
 
-class FoxtrotRenderer;
-class FTCore;
+namespace Core
+{
+	class FoxtrotRenderer;
+	class FTCore;
+} // namespace Core
 
 namespace D3D11
 {
@@ -23,6 +26,9 @@ namespace D3D11
 	class FTTexture :
 		public D3D11Resource
 	{
+	public:
+		static D3D11::ResType Type;
+
 	public:
 		/// @brief Get original pixel-width of the image. This shall not be edited after the FTTexture is created.
 		const UINT GetWidth() const;
@@ -45,11 +51,11 @@ namespace D3D11
 	public:
 		/// @brief FTTexture is a graphics resource, so it needs a FTRenderer instance for initialization.
 		/// @param renderer This is usually a game renderer.
-		FTTexture(FTResourceDef& resDef, FoxtrotRenderer* renderer);
+		FTTexture(Core::FTResourceDef& resDef, Core::FoxtrotRenderer* renderer);
 		~FTTexture();
 
 	protected:
-		virtual void Process(FTResourceDef& resDef, FoxtrotRenderer* renderer);
+		virtual void Process(Core::FTResourceDef& resDef, Core::FoxtrotRenderer* renderer);
 
 	private:
 		UINT											 mWidth;

@@ -11,7 +11,7 @@ namespace D3D11
 	class FTGeometryShader;
 	class FTPixelShader;
 
-	struct PSODef : FTResourceDef
+	struct PSODef : Core::FTResourceDef
 	{
 		FTVertexShader*	  VS;
 		FTGeometryShader* GS;
@@ -34,6 +34,9 @@ namespace D3D11
 	class D3D11PSO : public D3D11Resource
 	{
 	public:
+		static D3D11::ResType Type;
+
+	public:
 		// void operator=(const D3D11PSO& pso);
 		bool IsValid();
 
@@ -44,9 +47,9 @@ namespace D3D11
 		D3D11PSO(PSODef& resDef);
 
 	private:
-		FTVertexShader*	  mVS;
-		FTGeometryShader* mGS;
-		FTPixelShader*	  mPS;
+		D3D11::FTVertexShader*	 mVS;
+		D3D11::FTGeometryShader* mGS;
+		D3D11::FTPixelShader*	 mPS;
 
 		Microsoft::WRL::ComPtr<ID3D11BlendState>		mBS;
 		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> mDSS;

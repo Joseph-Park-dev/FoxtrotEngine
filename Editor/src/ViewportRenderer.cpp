@@ -12,113 +12,117 @@
 #include <wrl.h>
 #include <functional>
 
-#include "Renderer/FoxtrotRenderer.h"
+#include "Renderer/D3D11Renderer.h"
 #include "Renderer/D3D11Utils.h"
-#include "WindowSystem/FTWindow.h"
+#include "Renderer/FTWindow.h"
 #include "Renderer/FTRectArea.h"
-#include "Core/TemplateFunctions.h"
-#include "Physics/Physics2D.h"
-#include "Managers/DebugShapes.h"
+#include "TemplateFunctions.h"
+#include "Manager/DebugShapes.h"
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
 #include "EditorChunkLoader.h"
 #include "EditorCamera.h"
 
-void ViewportRenderer::InitializeTexture(FoxtrotRenderer* renderer, ImVec2 size)
+namespace Editor
 {
-	if (0 < size.x && 0 < size.y)
-		CreateRenderTargetView(renderer, size.x, size.y);
-}
-
-void ViewportRenderer::BeginRender(FoxtrotRenderer* renderer)
-{
-	if (mRTV)
-		renderer->GetContext()
-			->ClearRenderTargetView(mRTV.Get(), renderer->GetClearColor());
-	if (mDSV)
-		renderer->GetContext()->ClearDepthStencilView(mDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
-	ID3D11RenderTargetView* targetsPrev[] = { mRTV.Get() };
-	renderer->GetContext()->OMSetRenderTargets(1, targetsPrev, mDSV.Get());
-}
-
-void ViewportRenderer::DrawOnTexture(FoxtrotRenderer* renderer)
-{
-	if (!EditorChunkLoader::GetInstance()->IsLoadingChunk())
+	using namespace D3D11;
+	void ViewportRenderer::InitializeTexture(D3D11Renderer* renderer, ImVec2 size)
 	{
-		EditorSceneManager::GetInstance()->EditorRender(renderer);
-		DebugShapes::GetInstance()->Render(renderer);
-		DebugShapes::GetInstance()->RenderCamRect(renderer);
-		LightManager::GetInstance()->Render(renderer, EditorCamera::GetInstance());
+		if (0 < size.x && 0 < size.y)
+			CreateRenderTargetView(renderer, size.x, size.y);
 	}
-}
 
-void ViewportRenderer::EndRender(FoxtrotRenderer* renderer)
-{
-	ID3D11RenderTargetView* nullViews[] = { nullptr };
-	renderer->GetContext()->OMSetRenderTargets(1, nullViews, nullptr);
-	renderer->GetContext()->OMSetDepthStencilState(nullptr, 0);
-}
+	void ViewportRenderer::BeginRender(D3D11Renderer* renderer)
+	{
+		float clearColor[] = { 0.f, 0.f, 0.f, 0.f };
+		if (mRTV)
+			renderer->GetContext()
+				->ClearRenderTargetView(mRTV.Get(), clearColor);
+		if (mDSV)
+			renderer->GetContext()->ClearDepthStencilView(mDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-void ViewportRenderer::Reset()
-{
-	mRenderTexture.Reset();
-	mRTV.Reset();
-	mSRV.Reset();
-	mDSV.Reset();
-}
+		ID3D11RenderTargetView* targetsPrev[] = { mRTV.Get() };
+		renderer->GetContext()->OMSetRenderTargets(1, targetsPrev, mDSV.Get());
+	}
 
-void ViewportRenderer::CreateRenderTargetView(FoxtrotRenderer* renderer, UINT width, UINT height)
-{
-	Reset();
+	void ViewportRenderer::DrawOnTexture(D3D11Renderer* renderer)
+	{
+		if (!EditorChunkLoader::GetInstance()->IsLoadingChunk())
+		{
+			EditorSceneManager::GetInstance()->EditorRender(renderer);
+			DebugShapes::GetInstance()->Render(renderer);
+			DebugShapes::GetInstance()->RenderCamRect(renderer);
+			LightManager::GetInstance()->Render(renderer, EditorCamera::GetInstance());
+		}
+	}
 
-	////////////////////////////////////////////
-	////// Creating Viewport RenderTarget //////
-	////////////////////////////////////////////
+	void ViewportRenderer::EndRender(D3D11Renderer* renderer)
+	{
+		ID3D11RenderTargetView* nullViews[] = { nullptr };
+		renderer->GetContext()->OMSetRenderTargets(1, nullViews, nullptr);
+		renderer->GetContext()->OMSetDepthStencilState(nullptr, 0);
+	}
 
-	// Initialize Texture2D
-	D3D11_TEXTURE2D_DESC textureDesc;
-	ZeroMemory(&textureDesc, sizeof(textureDesc));
+	void ViewportRenderer::Reset()
+	{
+		mRenderTexture.Reset();
+		mRTV.Reset();
+		mSRV.Reset();
+		mDSV.Reset();
+	}
 
-	textureDesc.Width			 = width;
-	textureDesc.Height			 = height;
-	textureDesc.MipLevels		 = 1;
-	textureDesc.ArraySize		 = 1;
-	textureDesc.Format			 = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	textureDesc.SampleDesc.Count = 1;
-	textureDesc.Usage			 = D3D11_USAGE_DEFAULT;
-	textureDesc.BindFlags		 = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-	textureDesc.CPUAccessFlags	 = 0;
-	textureDesc.MiscFlags		 = 0;
+	void ViewportRenderer::CreateRenderTargetView(D3D11Renderer* renderer, UINT width, UINT height)
+	{
+		Reset();
 
-	DX::ThrowIfFailed(renderer->GetDevice()->CreateTexture2D(&textureDesc, NULL, mRenderTexture.GetAddressOf()));
+		////////////////////////////////////////////
+		////// Creating Viewport RenderTarget //////
+		////////////////////////////////////////////
 
-	// Initialize RenderTargetView
-	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
-	renderTargetViewDesc.Format				= textureDesc.Format;
-	renderTargetViewDesc.ViewDimension		= D3D11_RTV_DIMENSION_TEXTURE2D;
-	renderTargetViewDesc.Texture2D.MipSlice = 0;
+		// Initialize Texture2D
+		D3D11_TEXTURE2D_DESC textureDesc;
+		ZeroMemory(&textureDesc, sizeof(textureDesc));
 
-	DX::ThrowIfFailed(
-		renderer->GetDevice()->CreateRenderTargetView(
-			mRenderTexture.Get(),
-			&renderTargetViewDesc,
-			mRTV.GetAddressOf()));
+		textureDesc.Width			 = width;
+		textureDesc.Height			 = height;
+		textureDesc.MipLevels		 = 1;
+		textureDesc.ArraySize		 = 1;
+		textureDesc.Format			 = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		textureDesc.SampleDesc.Count = 1;
+		textureDesc.Usage			 = D3D11_USAGE_DEFAULT;
+		textureDesc.BindFlags		 = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		textureDesc.CPUAccessFlags	 = 0;
+		textureDesc.MiscFlags		 = 0;
 
-	DX::ThrowIfFailed(
-		D3D11Utils::CreateDepthBuffer(renderer->GetDevice(), width, height, renderer->GetNumQualityLevels(), mDSV));
+		DX::ThrowIfFailed(renderer->GetDevice()->CreateTexture2D(&textureDesc, NULL, mRenderTexture.GetAddressOf()));
 
-	renderer->GetDevice()->CreateShaderResourceView(mRenderTexture.Get(), 0, mSRV.GetAddressOf());
-}
+		// Initialize RenderTargetView
+		D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
+		renderTargetViewDesc.Format				= textureDesc.Format;
+		renderTargetViewDesc.ViewDimension		= D3D11_RTV_DIMENSION_TEXTURE2D;
+		renderTargetViewDesc.Texture2D.MipSlice = 0;
 
-ViewportRenderer::ViewportRenderer()
-	: mRenderTexture(nullptr)
-	, mRTV(nullptr)
-	, mSRV(nullptr)
-{
-}
+		DX::ThrowIfFailed(
+			renderer->GetDevice()->CreateRenderTargetView(
+				mRenderTexture.Get(),
+				&renderTargetViewDesc,
+				mRTV.GetAddressOf()));
 
-ViewportRenderer::~ViewportRenderer()
-{
-}
+		DX::ThrowIfFailed(
+			D3D11Utils::CreateDepthBuffer(renderer->GetDevice(), width, height, renderer->GetNumQualityLevels(), mDSV));
+
+		renderer->GetDevice()->CreateShaderResourceView(mRenderTexture.Get(), 0, mSRV.GetAddressOf());
+	}
+
+	ViewportRenderer::ViewportRenderer()
+		: mRenderTexture(nullptr)
+		, mRTV(nullptr)
+		, mSRV(nullptr)
+	{
+	}
+
+	ViewportRenderer::~ViewportRenderer()
+	{
+	}
+} // namespace Editor

@@ -43,7 +43,12 @@ namespace D3D11
 	using namespace Core;
 	void SpriteRenderer::Initialize()
 	{
-		Component::Initialize();
+		D3D11Component::Initialize();
+	}
+
+	void SpriteRenderer::Setup()
+	{
+		D3D11Component::Setup();
 	}
 
 	void SpriteRenderer::ProcessInput(FTInputDevice* inputDevice)
@@ -153,9 +158,4 @@ namespace D3D11
 		}
 	}
 #endif // FOXTROT_EDITOR
-
-	extern "C" __declspec(dllexport) Component* Create(Core::Plugin* plugin, Core::Actor* actor, int updateOrder)
-	{
-		return DBG_NEW SpriteRenderer(plugin, actor, updateOrder);
-	}
 } // namespace D3D11

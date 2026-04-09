@@ -38,7 +38,12 @@ namespace D3D11
 	using namespace Core;
 	void MeshRenderer::Initialize()
 	{
-		Component::Initialize();
+		D3D11Component::Initialize();
+	}
+
+	void MeshRenderer::Setup()
+	{
+		D3D11Component::Setup();
 	}
 
 	void MeshRenderer::ProcessInput(FTInputDevice* inputDevice)
@@ -190,9 +195,4 @@ namespace D3D11
 			mMaterial);
 	}
 #endif // FOXTROT_EDITOR
-
-	extern "C" __declspec(dllexport) Component* Create(Core::Plugin* plugin, Core::Actor* actor, int updateOrder)
-	{
-		return DBG_NEW MeshRenderer(plugin, actor, updateOrder);
-	}
 } // namespace D3D11

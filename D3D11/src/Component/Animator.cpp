@@ -147,7 +147,7 @@ namespace D3D11
 		if (0 < mLoadedAnim->GetSize())
 			Play(0);
 
-		Component::Initialize();
+		D3D11Component::Initialize();
 	}
 
 	void Animator::ProcessInput(FTInputDevice* inputDevice)
@@ -308,9 +308,4 @@ namespace D3D11
 		ImGui::Separator();
 	}
 #endif // FOXTROT_EDITOR
-
-	extern "C" __declspec(dllexport) Component* Create(Core::Plugin* plugin, Core::Actor* actor, int updateOrder)
-	{
-		return DBG_NEW Animator(plugin, actor, updateOrder);
-	}
 } // namespace D3D11

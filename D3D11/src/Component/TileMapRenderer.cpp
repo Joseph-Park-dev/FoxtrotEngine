@@ -260,9 +260,4 @@ namespace D3D11
 		}
 	}
 #endif
-
-	extern "C" __declspec(dllexport) Component* Create(Core::Plugin* plugin, Core::Actor* actor, int updateOrder)
-	{
-		return DBG_NEW TileMapRenderer(plugin, actor, updateOrder);
-	}
 } // namespace D3D11

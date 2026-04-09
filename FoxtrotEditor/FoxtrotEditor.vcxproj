@@ -279,14 +279,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="include\imgui\backends\imgui_impl_dx11.cpp" />
-    <ClCompile Include="include\imgui\backends\imgui_impl_win32.cpp" />
-    <ClCompile Include="include\imgui\imgui.cpp" />
-    <ClCompile Include="include\imgui\ImGuiFileDialog\ImGuiFileDialog.cpp" />
-    <ClCompile Include="include\imgui\imgui_demo.cpp" />
-    <ClCompile Include="include\imgui\imgui_draw.cpp" />
-    <ClCompile Include="include\imgui\imgui_tables.cpp" />
-    <ClCompile Include="include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -314,21 +306,8 @@
     <ClInclude Include="include\directxtk\SpriteFont.h" />
     <ClInclude Include="include\directxtk\VertexTypes.h" />
     <ClInclude Include="include\directxtk\WICTextureLoader.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_dx11.h" />
-    <ClInclude Include="include\imgui\backends\imgui_impl_win32.h" />
     <ClInclude Include="include\imgui\FileDialog\dirent\dirent.h" />
-    <ClInclude Include="include\imgui\imconfig.h" />
-    <ClInclude Include="include\imgui\imgui.h" />
-    <ClInclude Include="include\imgui\ImGuiFileDialog\dirent\dirent.h" />
-    <ClInclude Include="include\imgui\ImGuiFileDialog\ImGuiFileDialog.h" />
-    <ClInclude Include="include\imgui\ImGuiFileDialog\ImGuiFileDialogConfig.h" />
-    <ClInclude Include="include\imgui\ImGuiFileDialog\stb\stb_image.h" />
-    <ClInclude Include="include\imgui\ImGuiFileDialog\stb\stb_image_resize2.h" />
     <ClInclude Include="include\imgui\ImGuizmo.h" />
-    <ClInclude Include="include\imgui\imgui_internal.h" />
-    <ClInclude Include="include\imgui\imstb_rectpack.h" />
-    <ClInclude Include="include\imgui\imstb_textedit.h" />
-    <ClInclude Include="include\imgui\imstb_truetype.h" />
     <ClInclude Include="include\imgui\misc\cpp\imgui_stdlib.h" />
     <ClInclude Include="include\imgui\misc\freetype\imgui_freetype.h" />
     <ClInclude Include="include\imgui\misc\single_file\imgui_single_file.h" />

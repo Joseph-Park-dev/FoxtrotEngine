@@ -30,9 +30,6 @@ namespace D3D11
 		/// @brief Updates pixel constant buffer with material data.
 		virtual void UpdateBuffer(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context) = 0;
 
-		virtual void SaveProperties(std::ofstream& ofs) override = 0;
-		virtual void LoadProperties(std::ifstream& ifs) override = 0;
-
 	public:
 		/// @brief Gets the pixel constant buffer with material data applied.
 		Microsoft::WRL::ComPtr<ID3D11Buffer>& GetPCBuf();

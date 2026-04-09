@@ -19,7 +19,6 @@ namespace D3D11
 		static D3D11::ResType Type;
 
 	public:
-		virtual void CreatePixelConstBuffer(Microsoft::WRL::ComPtr<ID3D11Device>& device) override;
 		virtual void UpdateBuffer(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context) override;
 
 		virtual void SaveProperties(std::ofstream& ofs) override;
@@ -28,6 +27,9 @@ namespace D3D11
 	public:
 		SpriteAnimMat(Core::FTResourceDef& resDef, D3D11Renderer* renderer);
 		~SpriteAnimMat();
+
+	protected:
+		virtual void CreatePixelConstBuffer(Microsoft::WRL::ComPtr<ID3D11Device>& device) override;
 
 	private:
 		SpriteAnimMatData* mData;

@@ -3,6 +3,7 @@
 #include "Manager/ResourceManager.h"
 #include "ResourceSystem/Light.h"
 #include "Renderer/D3D11Utils.h"
+#include "Renderer/D3D11Renderer.h"
 #include "Renderer/Camera.h"
 #include "ResourceSystem/Mesh/Mesh.h"
 #include "Debugging/DebugFuncs.h"
@@ -38,6 +39,7 @@ namespace D3D11
 		: FTMaterial(resDef, renderer)
 		, mData(DBG_NEW StandardMatData)
 	{
+		CreatePixelConstBuffer(renderer->GetDevice());
 	}
 
 	StandardMaterial::~StandardMaterial()

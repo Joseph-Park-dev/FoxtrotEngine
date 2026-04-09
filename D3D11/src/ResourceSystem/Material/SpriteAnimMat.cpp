@@ -6,6 +6,7 @@
 #include "FileSystem/FileIOHelper.h"
 #include "TemplateFunctions.h"
 #include "Renderer/D3D11Utils.h"
+#include "Renderer/D3D11Renderer.h"
 #include "Manager/ResourceManager.h"
 
 #ifdef FOXTROT_EDITOR
@@ -41,6 +42,7 @@ namespace D3D11
 		: FTMaterial(resDef, renderer)
 		, mData(DBG_NEW SpriteAnimMatData)
 	{
+		CreatePixelConstBuffer(renderer->GetDevice());
 	}
 
 	SpriteAnimMat::~SpriteAnimMat()

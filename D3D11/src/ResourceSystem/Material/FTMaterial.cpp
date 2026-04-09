@@ -44,7 +44,5 @@ namespace D3D11
 
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMaterial::FT_MATERIAL);
 		FTMaterial::LoadProperties(ifs);
-
-		CreatePixelConstBuffer(renderer->GetDevice());
 	}
 } // namespace D3D11

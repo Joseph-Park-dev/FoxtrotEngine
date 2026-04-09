@@ -12,46 +12,49 @@
 /// </summary>
 
 #pragma once
-#include "Scenes/Scene.h"
+#include "Scene/Scene.h"
 
 #include <vector>
 
 class EditorElement;
 
-class EditorScene : 
-	public Scene
+namespace Editor
 {
-public:
-	// Sets all EditorElements' focused status to false.
-	void UnfocusEditorElements();
+	class EditorScene :
+		public Core::Scene
+	{
+	public:
+		// Sets all EditorElements' focused status to false.
+		void UnfocusEditorElements();
 
-	// Adds an empty EditorElement.
-	EditorElement* AddEditorElement();
+		// Adds an empty EditorElement.
+		EditorElement* AddEditorElement();
 
-	/// <summary>
-	/// Adds an EditorElement with copied values from actor.
-	/// Useful when Stopping a scene on FTEditor.
-	/// </summary>
-	/// <param name="actor : ">Actor to copy values from.</param>
-	EditorElement* AddEditorElement(Actor* actor);
+		/// <summary>
+		/// Adds an EditorElement with copied values from actor.
+		/// Useful when Stopping a scene on FTEditor.
+		/// </summary>
+		/// <param name="actor : ">Actor to copy values from.</param>
+		EditorElement* AddEditorElement(Actor* actor);
 
-	/// @brief Adds an EditorElement with new id.
-	/// Useful when making Premade instance.
-	/// @param id This should have new id.
-	EditorElement* AddEditorElement(Actor* actor, int id);
+		/// @brief Adds an EditorElement with new id.
+		/// Useful when making Premade instance.
+		/// @param id This should have new id.
+		EditorElement* AddEditorElement(Actor* actor, int id);
 
-public:
-	// Deletes all EditorElements & clearing the Scene.
-	void DeleteAll() override;
+	public:
+		// Deletes all EditorElements & clearing the Scene.
+		void DeleteAll() override;
 
-public:
-	// Updates editor specific features -> this will be omitted from the produced game.
-	void EditorUpdate(float deltaTime);
+	public:
+		// Updates editor specific features -> this will be omitted from the produced game.
+		void EditorUpdate(float deltaTime);
 
-	// Renders editor specific features -> this will be omitted from the produced game.
-	void EditorRender(FoxtrotRenderer* renderer);
+		// Renders editor specific features -> this will be omitted from the produced game.
+		void EditorRender(FoxtrotRenderer* renderer);
 
-public:
-	EditorScene();
-	~EditorScene();
-};
+	public:
+		EditorScene();
+		~EditorScene();
+	};
+} // namespace Editor

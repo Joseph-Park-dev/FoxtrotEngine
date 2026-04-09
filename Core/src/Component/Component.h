@@ -41,14 +41,21 @@ namespace Core
 		class String;
 	}
 
+	namespace ChunkKey
+	{
+		constexpr const char* COMPONENTS   = "Components";
+		constexpr const char* UPDATE_ORDER = "UpdateOrder";
+		constexpr const char* IS_ACTIVE	   = "Is Active";
+	} // namespace ChunkKey
+
 	class Component
 	{
 	public:
 		virtual FTDS::String GetName() const = 0;
 
 	public:
-		virtual void Initialize();
-		virtual void Setup();
+		virtual void Initialize() { mIsInitialized = true; }
+		virtual void Setup() { mIsSetup = true; };
 		virtual void ProcessInput(FTInputDevice* inputDevice) = 0;
 		virtual void Update(float deltaTime)				  = 0;
 		virtual void LateUpdate(float deltaTime)			  = 0;
@@ -56,12 +63,21 @@ namespace Core
 		virtual void CloneTo(Actor* actor)					  = 0;
 
 	public:
-		virtual void SaveProperties(std::ofstream& ofs);
-		virtual void LoadProperties(std::ifstream& ifs);
+		virtual void SaveProperties(std::ofstream& ofs)
+		{
+			FileIOHelper::SaveBool(ofs, ChunkKey::IS_ACTIVE, mIsActive);
+			FileIOHelper::SaveInt(ofs, ChunkKey::UPDATE_ORDER, mUpdateOrder);
+		}
+
+		virtual void LoadProperties(std::ifstream& ifs)
+		{
+			FileIOHelper::LoadInt(ifs, mUpdateOrder);
+			FileIOHelper::LoadBool(ifs, mIsActive);
+		}
 
 	public:
 		virtual Core::Actor* GetOwner() const { return mOwner; }
-		const int			 GetUpdateOrder() const;
+		virtual const int	 GetUpdateOrder() const { return mUpdateOrder; };
 		virtual const bool	 GetIsInitialized() const { return mIsInitialized; }
 		const bool			 GetIsSetup() const;
 		const bool			 GetIsActive() const;
@@ -87,7 +103,7 @@ namespace Core
 			mOwner->AddComponent(this);
 		}
 
-		virtual Plugin* GetPlugin();
+		virtual Plugin* GetPlugin() { return mPlugin; };
 
 	private:
 		Core::Plugin* mPlugin	   = nullptr;
@@ -132,44 +148,16 @@ namespace Core
 
 	public:
 		template <class T>
-		static void Create(Actor* actor, FTCore* coreInst)
+		static void Create(Actor* actor)
 		{
 			// Dynamically allocate actor of type T
 			T* t = DBG_NEW T(actor, DefaultVal::UPDATE_ORDER);
 			// Call LoadProperties on DBG_NEW actor
-			t->Initialize(coreInst);
+			t->Initialize();
 		}
 
 #endif // FOXTROT_EDITOR
 	};
 
-	namespace ChunkKey
-	{
-		constexpr const char* COMPONENTS   = "Components";
-		constexpr const char* UPDATE_ORDER = "UpdateOrder";
-		constexpr const char* IS_ACTIVE	   = "Is Active";
-	} // namespace ChunkKey
-
 	extern "C" __declspec(dllexport) Component* Create(Plugin* plugin, Actor* actor, int updateOrder);
-
-	void Component::Initialize()
-	{
-		mIsInitialized = true;
-	}
-	void Component::Setup()
-	{
-		mIsSetup = true;
-	}
-
-	void Component::SaveProperties(std::ofstream& ofs)
-	{
-		FileIOHelper::SaveBool(ofs, ChunkKey::IS_ACTIVE, mIsActive);
-		FileIOHelper::SaveInt(ofs, ChunkKey::UPDATE_ORDER, mUpdateOrder);
-	}
-
-	void Component::LoadProperties(std::ifstream& ifs)
-	{
-		FileIOHelper::LoadInt(ifs, mUpdateOrder);
-		FileIOHelper::LoadBool(ifs, mIsActive);
-	}
 } // namespace Core

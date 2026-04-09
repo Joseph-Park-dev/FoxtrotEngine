@@ -185,7 +185,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;CORE_EXPORTS;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -318,6 +318,7 @@
     <ClInclude Include="src\Manager\ResourceManagerBase.h" />
     <ClInclude Include="src\Manager\SceneManager.h" />
     <ClInclude Include="src\Plugin\CoreExports.h" />
+    <ClInclude Include="src\Plugin\ObjectLayout.h" />
     <ClInclude Include="src\Plugin\Plugin.h" />
     <ClInclude Include="src\Renderer\FoxtrotRenderer.h" />
     <ClInclude Include="src\InputSystem\FTInputDevice.h" />

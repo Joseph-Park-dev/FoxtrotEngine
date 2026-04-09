@@ -358,6 +358,9 @@
     <ClInclude Include="src\ResourceSystem\CoreResource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Plugin\ObjectLayout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

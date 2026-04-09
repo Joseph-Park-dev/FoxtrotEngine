@@ -20,12 +20,6 @@
 #include <filesystem>
 
 #include "Static/FTString.h"
-
-#ifdef FOXTROT_EDITOR
-	#define IMGUI_DEFINE_MATH_OPERATORS
-	#include <imgui/imgui.h>
-#endif // FOXTROT_EDITOR
-
 #include "Math/FTMath.h"
 #include "Debugging/DebugMemAlloc.h"
 
@@ -39,13 +33,6 @@
 //	}
 //	return str;
 // }
-
-#ifdef FOXTROT_EDITOR
-inline void LogVector2(ImVec2 val)
-{
-	printf("X : %f Y : %f\n", val.x, val.y);
-}
-#endif // FOXTROT_EDITOR
 
 namespace Core
 {

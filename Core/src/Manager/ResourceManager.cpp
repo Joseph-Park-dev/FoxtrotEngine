@@ -28,6 +28,8 @@
 #include "ResourceSystem/FTPremade.h"
 #include "Static/FTString.h"
 #include "FileSystem/NullKeys.h"
+#include "Plugin/CoreExports.h"
+#include "Plugin/ObjectLayout.h"
 
 namespace Core
 {
@@ -371,5 +373,10 @@ namespace Core
 
 		//	mPSOs->Insert(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
 		//}
+	}
+
+	ResourceManager* Core::GetResManager()
+	{
+		return ResourceManager::GetInstance();
 	}
 } // namespace Core

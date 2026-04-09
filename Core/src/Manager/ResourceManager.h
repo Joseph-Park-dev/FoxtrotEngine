@@ -3,6 +3,8 @@
 
 #include "SingletonMacro.h"
 #include "Static/HashMap.h"
+#include "Plugin/CoreExports.h"
+#include "FTCore.h"
 
 class FTPremade;
 
@@ -15,6 +17,8 @@ namespace Core
 	public:
 		void LoadDefaultResources() override;
 	};
+
+	extern "C" CORE_API ResourceManager* GetResManager();
 
 #define RES_NAME(type, res) ResourceManager::GetInstance()->GetResName(type::Type, res)
 #define GET_RES(type, key) ResourceManager::GetInstance()->GetResource<type>(type::Type, key)

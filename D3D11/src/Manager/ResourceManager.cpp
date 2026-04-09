@@ -25,12 +25,15 @@
 
 #include "ResourceManager.h"
 
+#include "../Manager/ResourceManager.h"
 #include "ResourceSystem/D3D11Resource.h"
 #include "Static/FTString.h"
 #include "FileSystem/NullKeys.h"
 
 namespace D3D11
 {
+	D3D11::ResourceManager* D3D11::ResourceManager::mInstance = nullptr;
+
 	/**
 	 * @brief Destructor - release all resources and free containers.
 	 *

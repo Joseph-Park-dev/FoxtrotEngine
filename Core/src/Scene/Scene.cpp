@@ -34,10 +34,6 @@
 #include "Actor/Transform.h"
 #include "Renderer/FoxtrotRenderer.h"
 
-#ifdef FOXTROT_EDITOR
-	#include "EditorLayer.h"
-#endif // FOXTROT_EDITOR
-
 namespace Core
 {
 	/**

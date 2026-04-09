@@ -20,8 +20,6 @@
 
 namespace Core
 {
-	Core::ResType FTCSV::Type = Core::ResType::CSV;
-
 	size_t FTCSV::GetColumnCount() const { return mColumnCount; }
 	size_t FTCSV::GetRowCount() const { return mRowCount; }
 

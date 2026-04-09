@@ -18,21 +18,6 @@
 
 namespace Core
 {
-	Actor* Component::GetOwner() const
-	{
-		return mOwner;
-	}
-
-	const int Component::GetUpdateOrder() const
-	{
-		return mUpdateOrder;
-	}
-
-	const bool Component::GetIsInitialized() const
-	{
-		return mIsInitialized;
-	}
-
 	const bool Component::GetIsSetup() const
 	{
 		return mIsSetup;
@@ -46,29 +31,6 @@ namespace Core
 	void Component::SetIsActive(bool isActive)
 	{
 		mIsActive = isActive;
-	}
-
-	void Component::Copy(const Component* origin)
-	{
-		mPlugin		   = origin->mPlugin;
-		mOwner		   = origin->mOwner;
-		mUpdateOrder   = origin->mUpdateOrder;
-		mIsInitialized = false;
-		mIsSetup	   = false;
-		mIsActive	   = false;
-
-		mOwner->AddComponent(this);
-	}
-
-	Plugin* Component::GetPlugin()
-	{
-		return mPlugin;
-	}
-
-	void Component::Copy(Component* to)
-	{
-		to->mOwner		 = this->mOwner;
-		to->mUpdateOrder = this->mUpdateOrder;
 	}
 
 #ifdef FOXTROT_EDITOR

@@ -26,6 +26,8 @@
 namespace D3D11
 {
 	using namespace Core;
+	AnimationManager* AnimationManager::mInstance = nullptr;
+
 	FTSpineLoader* AnimationManager::GetSpineLoader()
 	{
 		return mSpineLoader;

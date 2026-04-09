@@ -17,6 +17,7 @@
 #include "ResourceSystem/Shape/FTRectangle.h"
 #include "ResourceSystem/Shape/FTShape.h"
 #include "FileSystem/NullKeys.h"
+#include "FTDS/Dynamic/DynamicArray.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorCamera.h"
@@ -26,6 +27,8 @@ namespace D3D11
 {
 	using namespace Core;
 	using Microsoft::WRL::ComPtr;
+	DebugShapes* DebugShapes::mInstance = nullptr;
+
 	DebugShapes::DebugShapes()
 		: mShapes(DBG_NEW FTDS::DynamicArray<FTShape*>)
 		, mVSPath(L".\\FoxtrotEngine\\Assets\\Shaders\\DebugShapeVS.hlsl")
@@ -115,19 +118,6 @@ namespace D3D11
 	}
 
 #ifdef FOXTROT_EDITOR
-	FTRectangle* DebugShapes::GetCameraRect()
-	{
-		return mCamRect;
-	}
 
-	void DebugShapes::SetCameraRect(FTRectangle* rect)
-	{
-		mCamRect = rect;
-	}
-
-	void DebugShapes::RenderCamRect(FoxtrotRenderer* renderer)
-	{
-		mCamRect->Render(renderer);
-	}
 #endif // FOXTROT_EDITOR
 } // namespace D3D11

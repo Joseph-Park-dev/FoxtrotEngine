@@ -9,9 +9,9 @@
 #include "EditorElement.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
-#include <imgui_impl_dx11.h>
-#include <imgui_impl_win32.h>
+#include <imgui/imgui.h>
+#include <imgui/backends/imgui_impl_dx11.h>
+#include <imgui/backends/imgui_impl_win32.h>
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
@@ -20,252 +20,255 @@
 #include "EditorUtils.h"
 
 #include "InputSystem/FTInputDevice.h"
-#include "Managers/ResourceManager.h"
+#include "Manager/ResourceManager.h"
 #include "FileSystem/ChunkLoader.h"
-#include "Actors/Transform.h"
-#include "Actors/ActorGroup.h"
+#include "Actor/Transform.h"
+#include "Actor/ActorGroup.h"
 #include "Renderer/FoxtrotRenderer.h"
-#include "Components/Component.h"
+#include "Component/Component.h"
 #include "ResourceSystem/FTPremade.h"
 
-#include "Static/FTString.h"
+#include "FTDS/Static/FTString.h"
 
-void EditorElement::UpdateUI(bool isPremade)
+namespace Editor
 {
-	if (mIsFocused)
+	void EditorElement::UpdateUI(bool isPremade)
 	{
-		ImGui::BeginChild(GetName().C_Str());
-		if (ImGui::BeginTabBar("MyTabBar", ImGuiTabBarFlags_None))
+		if (mIsFocused)
 		{
-			if (ImGui::BeginTabItem("Basic Data"))
+			ImGui::BeginChild(GetName().C_Str());
+			if (ImGui::BeginTabBar("MyTabBar", ImGuiTabBarFlags_None))
 			{
-				UpdateActorName();
-				UpdateDrawOrder();
-				UpdateActorGroup();
-				CommandHistory::GetInstance()->UpdateBoolValue("Is Active", IsActive());
-				GetTransform()->UpdateUI();
+				if (ImGui::BeginTabItem("Basic Data"))
+				{
+					UpdateActorName();
+					UpdateDrawOrder();
+					UpdateActorGroup();
+					CommandHistory::GetInstance()->UpdateBoolValue("Is Active", IsActive());
+					GetTransform()->UpdateUI();
 
-				ImGui::EndTabItem();
+					ImGui::EndTabItem();
+				}
+				if (ImGui::BeginTabItem("Components"))
+				{
+					UpdateComponentsUI();
+					ImGui::EndTabItem();
+				}
+				if (!isPremade)
+					UpdateMakePremade();
+
+				ImGui::EndTabBar();
 			}
-			if (ImGui::BeginTabItem("Components"))
-			{
-				UpdateComponentsUI();
-				ImGui::EndTabItem();
-			}
-			if (!isPremade)
-				UpdateMakePremade();
-
-			ImGui::EndTabBar();
+			ImGui::EndChild();
 		}
-		ImGui::EndChild();
 	}
-}
 
-const bool EditorElement::GetIsFocused() const
-{
-	return mIsFocused;
-}
-
-const size_t EditorElement::GetHierarchyLevel() const
-{
-	return mHierarchyLevel;
-}
-
-const bool EditorElement::GetIsDisplayed() const
-{
-	return mIsDisplayed;
-}
-
-void EditorElement::SetIsFocused(bool isFocused)
-{
-	mIsFocused = isFocused;
-}
-
-void EditorElement::SetHierarchyLevel(size_t lv)
-{
-	mHierarchyLevel = lv;
-}
-
-void EditorElement::SetIsDisplayed(bool isDisplayed)
-{
-	mIsDisplayed = isDisplayed;
-}
-
-void EditorElement::Setup()
-{
-	EditorElement* buf	 = this;
-	size_t		   level = 0;
-	while (buf)
+	const bool EditorElement::GetIsFocused() const
 	{
-		if (!buf->GetParent()) // No parent Actors.
-			break;
-		buf = dynamic_cast<EditorElement*>(buf->GetParent());
-		++level;
+		return mIsFocused;
 	}
-	mHierarchyLevel = level;
 
-	Actor::Setup();
-}
-
-void EditorElement::EditorUpdate(float deltaTime)
-{
-	for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
+	const size_t EditorElement::GetHierarchyLevel() const
 	{
-		if (*comp)
+		return mHierarchyLevel;
+	}
+
+	const bool EditorElement::GetIsDisplayed() const
+	{
+		return mIsDisplayed;
+	}
+
+	void EditorElement::SetIsFocused(bool isFocused)
+	{
+		mIsFocused = isFocused;
+	}
+
+	void EditorElement::SetHierarchyLevel(size_t lv)
+	{
+		mHierarchyLevel = lv;
+	}
+
+	void EditorElement::SetIsDisplayed(bool isDisplayed)
+	{
+		mIsDisplayed = isDisplayed;
+	}
+
+	void EditorElement::Initialize()
+	{
+		EditorElement* buf	 = this;
+		size_t		   level = 0;
+		while (buf)
 		{
-			if ((*comp)->GetIsActive())
-				(*comp)->EditorUpdate(deltaTime);
+			if (!buf->GetParent()) // No parent Actors.
+				break;
+			buf = dynamic_cast<EditorElement*>(buf->GetParent());
+			++level;
 		}
+		mHierarchyLevel = level;
+
+		Actor::Setup();
 	}
-}
 
-void EditorElement::EditorRender(FoxtrotRenderer* renderer)
-{
-	for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
+	void EditorElement::EditorUpdate(float deltaTime)
 	{
-		if (*comp)
-		{
-			if ((*comp)->GetIsActive())
-				(*comp)->EditorRender(renderer);
-		}
-	}
-}
-
-EditorElement::EditorElement(int id)
-	: Actor(id)
-	, mIsFocused(false)
-	, mHierarchyLevel(0)
-	, mIsDisplayed(false)
-{
-}
-
-EditorElement::EditorElement(Actor* actor, int id)
-	: Actor(actor, id)
-	, mIsFocused(false)
-	, mHierarchyLevel(0)
-	, mIsDisplayed(false)
-{
-}
-
-EditorElement::EditorElement(Actor* actor, int id, bool deepCpyChild)
-	: Actor(actor, id, deepCpyChild)
-	, mIsFocused(false)
-	, mHierarchyLevel(0)
-	, mIsDisplayed(false)
-{
-}
-
-EditorElement::EditorElement(FTPremade* premade, int id)
-	: Actor(premade, id)
-	, mIsFocused(false)
-	, mHierarchyLevel(0)
-	, mIsDisplayed(false)
-{
-}
-
-void EditorElement::CopyChildObjectFrom(Actor* actor)
-{
-	if (GetChildActors().GetSize() < 1)
-		return;
-
-	actor->GetChildActors().IterateArray([&](Actor* child) {
-		if (child)
-		{
-			EditorChunkLoader::GetInstance()->AddMaxActorID();
-			int maxID = EditorChunkLoader::GetInstance()->GetMaxActorID();
-			this->AddChild(DBG_NEW Actor(child, maxID));
-		}
-	});
-}
-
-void EditorElement::UpdateActorName()
-{
-	CommandHistory::GetInstance()->UpdateStringValue("Actor Name", GetNameRef());
-}
-
-void EditorElement::UpdateActorGroup()
-{
-	const char* comboPreview = ActorGroupUtil::GetActorGroupStr(GetActorGroup());
-	if (ImGui::BeginCombo("Actor Group", comboPreview))
-	{
-		for (size_t n = 0; n <= ActorGroupUtil::GetCount() - 1; ++n)
-		{
-			if (ImGui::Selectable(ActorGroupUtil::GetActorGroupStr(n)))
-			{
-				int					   grpIdx  = static_cast<int>(++n);
-				ActorGroupEditCommand* command = DBG_NEW ActorGroupEditCommand(GetActorGroupRef());
-				command->SetNextVal(static_cast<ActorGroup>(grpIdx));
-				// CommandHistory::GetInstance()->AddCommand(command);
-
-				SetActorGroup((ActorGroup)grpIdx);
-			}
-		}
-		ImGui::EndCombo();
-	}
-}
-
-void EditorElement::UpdateDrawOrder()
-{
-	int i = GetDrawOrder();
-	ImGui::InputInt("Draw Order", &i);
-	SetDrawOrder(i);
-}
-
-void EditorElement::UpdateComponentsUI()
-{
-	if (ImGui::BeginChild(GetName().C_Str()))
-	{
-		size_t count = 0;
 		for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
 		{
-			if (GetComponents().IsEmpty())
-				break;
 			if (*comp)
 			{
-				FTDS::String name(std::to_string(count).c_str());
-				name.Append(" ");
-				name.Append((*comp)->GetName());
-
-				if (ImGui::TreeNode(name.C_Str()))
-				{
-					int updateOrder = (*comp)->GetUpdateOrder();
-					ImGui::InputInt(ChunkKey::UPDATE_ORDER, &updateOrder);
-					(*comp)->SetUpdateOrder(updateOrder);
-
-					(*comp)->EditorUIUpdate();
-					if (ImGui::SmallButton("Delete"))
-						RemoveComponent((*comp));
-					ImGui::TreePop();
-				}
-				++count;
+				if ((*comp)->GetIsActive())
+					(*comp)->EditorUpdate(deltaTime);
 			}
 		}
-		if (FTEditorUtils::ButtonCenteredOnLine("Add Component"))
-			ImGui::OpenPopup("CompSelectPopUp");
-		DisplayCompSelectionPopup();
-
-		ImGui::EndChild();
 	}
-}
 
-void EditorElement::DisplayCompSelectionPopup()
-{
-	if (ImGui::BeginPopup("CompSelectPopUp"))
+	void EditorElement::EditorRender(D3D11Renderer* renderer)
 	{
-		ImGui::SeparatorText("Add Components");
-		ComponentCreateMap::iterator iter = EditorChunkLoader::GetInstance()->GetCompCreateMap().begin();
-		for (; iter != EditorChunkLoader::GetInstance()->GetCompCreateMap().end(); ++iter)
-			if (ImGui::Selectable((*iter).first))
-				(*iter).second(this, FTCoreEditor::GetInstance());
-		ImGui::EndPopup();
+		for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
+		{
+			if (*comp)
+			{
+				if ((*comp)->GetIsActive())
+					(*comp)->EditorRender(renderer);
+			}
+		}
 	}
-}
 
-void EditorElement::UpdateMakePremade()
-{
-	if (FTEditorUtils::ButtonCenteredOnLine("Make Premade"))
+	EditorElement::EditorElement(int id)
+		: Actor(id)
+		, mIsFocused(false)
+		, mHierarchyLevel(0)
+		, mIsDisplayed(false)
 	{
-		bool confirmed = false;
-		EditorLayer::GetInstance()->SetInfoType(InfoType::PremadeIsCreated);
 	}
-}
+
+	EditorElement::EditorElement(Actor* actor, int id)
+		: Actor(actor, id)
+		, mIsFocused(false)
+		, mHierarchyLevel(0)
+		, mIsDisplayed(false)
+	{
+	}
+
+	EditorElement::EditorElement(Actor* actor, int id, bool deepCpyChild)
+		: Actor(actor, id, deepCpyChild)
+		, mIsFocused(false)
+		, mHierarchyLevel(0)
+		, mIsDisplayed(false)
+	{
+	}
+
+	EditorElement::EditorElement(FTPremade* premade, int id)
+		: Actor(premade, id)
+		, mIsFocused(false)
+		, mHierarchyLevel(0)
+		, mIsDisplayed(false)
+	{
+	}
+
+	void EditorElement::CopyChildObjectFrom(Actor* actor)
+	{
+		if (GetChildActors().GetSize() < 1)
+			return;
+
+		actor->GetChildActors().IterateArray([&](Actor* child) {
+			if (child)
+			{
+				EditorChunkLoader::GetInstance()->AddMaxActorID();
+				int maxID = EditorChunkLoader::GetInstance()->GetMaxActorID();
+				this->AddChild(DBG_NEW Actor(child, maxID));
+			}
+		});
+	}
+
+	void EditorElement::UpdateActorName()
+	{
+		CommandHistory::GetInstance()->UpdateStringValue("Actor Name", GetNameRef());
+	}
+
+	void EditorElement::UpdateActorGroup()
+	{
+		const char* comboPreview = ActorGroupUtil::GetActorGroupStr(GetActorGroup());
+		if (ImGui::BeginCombo("Actor Group", comboPreview))
+		{
+			for (size_t n = 0; n <= ActorGroupUtil::GetCount() - 1; ++n)
+			{
+				if (ImGui::Selectable(ActorGroupUtil::GetActorGroupStr(n)))
+				{
+					int					   grpIdx  = static_cast<int>(++n);
+					ActorGroupEditCommand* command = DBG_NEW ActorGroupEditCommand(GetActorGroupRef());
+					command->SetNextVal(static_cast<ActorGroup>(grpIdx));
+					// CommandHistory::GetInstance()->AddCommand(command);
+
+					SetActorGroup((ActorGroup)grpIdx);
+				}
+			}
+			ImGui::EndCombo();
+		}
+	}
+
+	void EditorElement::UpdateDrawOrder()
+	{
+		int i = GetDrawOrder();
+		ImGui::InputInt("Draw Order", &i);
+		SetDrawOrder(i);
+	}
+
+	void EditorElement::UpdateComponentsUI()
+	{
+		if (ImGui::BeginChild(GetName().C_Str()))
+		{
+			size_t count = 0;
+			for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
+			{
+				if (GetComponents().IsEmpty())
+					break;
+				if (*comp)
+				{
+					FTDS::String name(std::to_string(count).c_str());
+					name.Append(" ");
+					name.Append((*comp)->GetName());
+
+					if (ImGui::TreeNode(name.C_Str()))
+					{
+						int updateOrder = (*comp)->GetUpdateOrder();
+						ImGui::InputInt(ChunkKey::UPDATE_ORDER, &updateOrder);
+						(*comp)->SetUpdateOrder(updateOrder);
+
+						(*comp)->EditorUIUpdate();
+						if (ImGui::SmallButton("Delete"))
+							RemoveComponent((*comp));
+						ImGui::TreePop();
+					}
+					++count;
+				}
+			}
+			if (FTEditorUtils::ButtonCenteredOnLine("Add Component"))
+				ImGui::OpenPopup("CompSelectPopUp");
+			DisplayCompSelectionPopup();
+
+			ImGui::EndChild();
+		}
+	}
+
+	void EditorElement::DisplayCompSelectionPopup()
+	{
+		if (ImGui::BeginPopup("CompSelectPopUp"))
+		{
+			ImGui::SeparatorText("Add Components");
+			ComponentCreateMap::iterator iter = EditorChunkLoader::GetInstance()->GetCompCreateMap().begin();
+			for (; iter != EditorChunkLoader::GetInstance()->GetCompCreateMap().end(); ++iter)
+				if (ImGui::Selectable((*iter).first))
+					(*iter).second(this, FTCoreEditor::GetInstance());
+			ImGui::EndPopup();
+		}
+	}
+
+	void EditorElement::UpdateMakePremade()
+	{
+		if (FTEditorUtils::ButtonCenteredOnLine("Make Premade"))
+		{
+			bool confirmed = false;
+			EditorLayer::GetInstance()->SetInfoType(InfoType::PremadeIsCreated);
+		}
+	}
+} // namespace Editor

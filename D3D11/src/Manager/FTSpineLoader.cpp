@@ -9,7 +9,10 @@
 	#include "EditorResourceManager.h"
 #endif // FOXTROT_EDITOR
 
-spine::SpineExtension* gSpineExtension = nullptr;
+spine::SpineExtension* spine::getDefaultExtension()
+{
+	return new spine::DefaultSpineExtension();
+}
 
 namespace D3D11
 {
@@ -53,10 +56,3 @@ namespace D3D11
 		spine::SpineExtension::setInstance(spine::getDefaultExtension());
 	}
 } // namespace spine
-
-spine::SpineExtension* getDefaultExtension()
-{
-	if (!gSpineExtension)
-		gSpineExtension = DBG_NEW spine::DefaultSpineExtension();
-	return gSpineExtension;
-}

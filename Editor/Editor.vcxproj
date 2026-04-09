@@ -141,9 +141,9 @@
       <PreprocessorDefinitions>NDEBUG;EDITOR_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\Core\src;..\D3D11\src;..\Math\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Core\src;..\D3D11\src;..\Math\src;.\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -156,7 +156,22 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Editor.h" />
+    <ClInclude Include="src\Manager\EditorShapes.h" />
+    <ClInclude Include="src\EditorRenderer.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="include\imgui\backends\imgui_impl_dx11.h" />
+    <ClInclude Include="include\imgui\backends\imgui_impl_win32.h" />
+    <ClInclude Include="include\imgui\imconfig.h" />
+    <ClInclude Include="include\imgui\imgui.h" />
+    <ClInclude Include="include\imgui\ImGuiFileDialog\dirent\dirent.h" />
+    <ClInclude Include="include\imgui\ImGuiFileDialog\ImGuiFileDialog.h" />
+    <ClInclude Include="include\imgui\ImGuiFileDialog\ImGuiFileDialogConfig.h" />
+    <ClInclude Include="include\imgui\ImGuiFileDialog\stb\stb_image.h" />
+    <ClInclude Include="include\imgui\ImGuiFileDialog\stb\stb_image_resize2.h" />
+    <ClInclude Include="include\imgui\imgui_internal.h" />
+    <ClInclude Include="include\imgui\imstb_rectpack.h" />
+    <ClInclude Include="include\imgui\imstb_textedit.h" />
+    <ClInclude Include="include\imgui\imstb_truetype.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="src\ActorCommand.h" />
     <ClInclude Include="src\Command.h" />
@@ -175,6 +190,16 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Editor.cpp" />
+    <ClCompile Include="src\Manager\EditorShapes.cpp" />
+    <ClCompile Include="src\EditorRenderer.cpp" />
+    <ClCompile Include="include\imgui\backends\imgui_impl_dx11.cpp" />
+    <ClCompile Include="include\imgui\backends\imgui_impl_win32.cpp" />
+    <ClCompile Include="include\imgui\imgui.cpp" />
+    <ClCompile Include="include\imgui\ImGuiFileDialog\ImGuiFileDialog.cpp" />
+    <ClCompile Include="include\imgui\imgui_demo.cpp" />
+    <ClCompile Include="include\imgui\imgui_draw.cpp" />
+    <ClCompile Include="include\imgui\imgui_tables.cpp" />
+    <ClCompile Include="include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

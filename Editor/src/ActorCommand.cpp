@@ -16,7 +16,7 @@ void ActorAdditionCommand::Undo()
 {
 	ActorCommand::Undo();
 
-	Destroy(GetVal());
+	Core::Destroy(GetVal());
 }
 
 ActorAdditionCommand::ActorAdditionCommand(EditorElement* elem)

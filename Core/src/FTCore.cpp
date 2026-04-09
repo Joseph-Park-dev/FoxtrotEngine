@@ -73,7 +73,7 @@ namespace Core
 		DirectoryHelper::GetInstance()->SetProjectPath(std::filesystem::absolute("./").string().c_str());
 	}
 
-	bool FTCore::Initialize()
+	bool FTCore::Initialize(HMODULE coreMod)
 	{
 		LoadGameData();
 
@@ -167,7 +167,8 @@ namespace Core
 	}
 
 	FTCore::FTCore()
-		: mWindow(nullptr)
+		: mModule()
+		, mWindow(nullptr)
 		, mInputDevice(nullptr)
 		, mGameRenderer(nullptr)
 		, mIsRunning(true)

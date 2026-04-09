@@ -11,6 +11,7 @@
 
 #pragma once
 #include "Debugging/DebugMemAlloc.h"
+#include "FTCore.h"
 
 // Makes a classe into singleton.
 // Don't forget to call Destroy() to delete mObject!
@@ -30,10 +31,13 @@
 									} \
 								} \
 							TYPE(const TYPE& obj) = delete; \
+							Core::FTCore* GetBase() { return mBase; } \
+							void SetBase(Core::FTCore* base) { mBase = base; }\
 						private:\
 							TYPE(); \
 							~TYPE(); \
-							static TYPE* mInstance;
+							static TYPE* mInstance; \
+							Core::FTCore* mBase; \
 
 // Makes a classe into singleton which allows itself to be inherited.
 // Don't forget to call Destory() to delete mObject!
@@ -53,7 +57,10 @@
 									} \
 								} \
 							TYPE(const TYPE& obj) = delete; \
+							Core::FTCore* GetBase() { return mBase; }\
+							void SetBase(Core::FTCore* base) { mBase = base; }\
 						protected:\
 							TYPE(); \
 							~TYPE(); \
-							static TYPE* mInstance;
+							static TYPE* mInstance; \
+							Core::FTCore* mBase;

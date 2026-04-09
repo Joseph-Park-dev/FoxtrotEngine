@@ -9,9 +9,9 @@
 #include "CommandHistory.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
-#include <imgui_impl_dx11.h>
-#include <imgui_impl_win32.h>
+#include <imgui/imgui.h>
+#include <imgui/backends/imgui_impl_dx11.h>
+#include <imgui/backends/imgui_impl_win32.h>
 // #include <imgui_stdlib.h>
 #include <typeinfo>
 #include <limits>
@@ -22,7 +22,11 @@
 #include "TemplateFunctions.h"
 #include "Debugging/DebugMemAlloc.h"
 #include "FileSystem/BufferSizes.h"
+#include "FTDS/Static/ArrayStack.h"
+#include "FTDS/Static/FTString.h"
 
+using namespace Core;
+using namespace Math;
 void CommandHistory::UndoCommand()
 {
 	if (mCurrent)
@@ -143,7 +147,7 @@ void CommandHistory::UpdateVector4Value(const char* label, FTVector4& ref, float
 	vec4[0] = ref.x;
 	vec4[1] = ref.y;
 	vec4[2] = ref.z;
-	vec4[3] = ref.a;
+	vec4[3] = ref.w;
 
 	if (ImGui::DragFloat4(label, vec4, modSpeed))
 	{
@@ -167,10 +171,10 @@ void CommandHistory::UpdateVector4Value(const char* label, FTVector4& ref, float
 	ref.x = vec4[0];
 	ref.y = vec4[1];
 	ref.z = vec4[2];
-	ref.a = vec4[3];
+	ref.w = vec4[3];
 }
 
-void CommandHistory::UpdateStringValue(const char* label, FTDS::String& ref)
+void CommandHistory::UpdateStringValue(const char* label, Core::FTDS::String& ref)
 {
 	if (ref.Capacity() < BufferSize::STRING_BUFFER_SIZE)
 		ref.Reserve(BufferSize::STRING_BUFFER_SIZE);

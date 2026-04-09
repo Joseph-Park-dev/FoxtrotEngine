@@ -70,8 +70,14 @@ namespace Core
 			return reinterpret_cast<FUNC_SIGNATURE>(GetProcAddress(mod, funcName))(args...);
 		}
 
+		template <typename INST>
+		INST* GetSingletonInst(const char* procName)
+		{
+			return reinterpret_cast<INST*>(GetProcAddress(mModule, procName));
+		}
+
 	public:
-		virtual bool Initialize();
+		virtual bool Initialize(HMODULE coreMod);
 		virtual void RunLoop();
 		virtual void ShutDown();
 
@@ -96,6 +102,7 @@ namespace Core
 		virtual void LoadGameData();
 
 	private:
+		HMODULE			 mModule;
 		FTWindow*		 mWindow;
 		FTInputDevice*	 mInputDevice;
 		FoxtrotRenderer* mGameRenderer;

@@ -8,12 +8,9 @@
 
 #include "EditorScene.h"
 
-#include "Managers/ResourceManager.h"
-#include "Managers/SceneManager.h"
+#include "Manager/ResourceManager.h"
+#include "Manager/SceneManager.h"
 #include "Renderer/FoxtrotRenderer.h"
-#include "Components/SpriteRenderer.h"
-#include "Components/TileMapRenderer.h"
-#include "ResourceSystem/GeometryGenerator.h"
 
 #include "FTCoreEditor.h"
 #include "EditorLayer.h"

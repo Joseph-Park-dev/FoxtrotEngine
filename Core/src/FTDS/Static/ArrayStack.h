@@ -8,8 +8,8 @@ namespace Core
 		template <class TYPE>
 		class ArrayStack : public FTDS::Array<TYPE>
 		{
-			using FTDS::Array<TYPE>::mData;
-			using FTDS::Array<TYPE>::mCapacity;
+			using Core::FTDS::Array<TYPE>::mData;
+			using Core::FTDS::Array<TYPE>::mCapacity;
 
 		public:
 			virtual void Push(TYPE& element)

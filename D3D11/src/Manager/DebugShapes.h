@@ -28,7 +28,7 @@ namespace D3D11
 	// This provides a context to render shapes as DebugShapes
 	class DebugShapes
 	{
-		SINGLETON(DebugShapes)
+		SINGLETON_PROTECTED(DebugShapes)
 
 	public:
 		// Adds the created shape to the std::vector.
@@ -61,8 +61,6 @@ namespace D3D11
 		std::wstring						mGSPath;
 		std::wstring						mPSPath;
 
-		FTRectangle* mCamRect;
-
 	private:
 		Microsoft::WRL::ComPtr<ID3D11VertexShader>	 mVS;
 		Microsoft::WRL::ComPtr<ID3D11GeometryShader> mGSSquare;
@@ -71,14 +69,5 @@ namespace D3D11
 
 	private:
 		void CreateShaders(Microsoft::WRL::ComPtr<ID3D11Device>& device);
-
-#ifdef FOXTROT_EDITOR
-	public:
-		FTRectangle* GetCameraRect();
-		void		 SetCameraRect(FTRectangle* rect);
-		void		 RenderCamRect(FoxtrotRenderer* renderer);
-
-	private:
-#endif // FOXTROT_EDITOR
 	};
 } // namespace D3D11

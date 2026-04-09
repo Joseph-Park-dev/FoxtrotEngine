@@ -211,7 +211,7 @@ namespace D3D11
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTileMap::FT_TILEMAP);
 
 
-		FileIOHelper::SaveString(ofs, ChunkKey::FTTileMap::CSV_KEY, Core::RES_NAME(FTCSV, mCSV));
+		FileIOHelper::SaveString(ofs, ChunkKey::FTTileMap::CSV_KEY, CORE_RES_NAME(FTCSV, mCSV));
 		FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTTileMap::SCREEN_WIDTH, mTileWidthOnScreen);
 		FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTTileMap::SCREEN_HEIGHT, mTileHeightOnScreen);
 		FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTTileMap::MAP_MAX_COUNT_X, mMaxCountOnMapX);

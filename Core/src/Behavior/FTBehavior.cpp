@@ -5,8 +5,8 @@
 namespace Core
 {
 	FTBehavior::FTBehavior(Plugin* plugin, Actor* owner, int updateOrder)
-		: Component(plugin, owner, updateOrder)
 	{
+		Create(plugin, owner, updateOrder);
 	}
 
 	FTBehavior::~FTBehavior()

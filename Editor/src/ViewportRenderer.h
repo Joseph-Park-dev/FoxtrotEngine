@@ -12,40 +12,51 @@
 #pragma once
 #include <d3d11.h>
 #include <wrl.h> // ComPtr
+#include <imgui/imgui.h>
 
 using namespace Microsoft::WRL;
 
-class FTWindow;
-class FoxtrotRenderer;
-class FTRectArea;
-
-class ViewportRenderer
+namespace Core
 {
-public:
-	void InitializeTexture(FoxtrotRenderer* renderer, ImVec2 size);
+	class FTWindow;
+	class FTRectArea;
+} // namespace Core
 
-	void BeginRender(FoxtrotRenderer* renderer);
-	// Switches the RenderTarget to this object's, renders the scene,
-	// and switch RenderTarget back to FoxtrotRenderer's (in FTCoreEditor).
-	void DrawOnTexture(FoxtrotRenderer* renderer);
-	void EndRender(FoxtrotRenderer* renderer);
+namespace D3D11
+{
+	class D3D11Renderer;
+}
 
-	void Reset();
+namespace Editor
+{
+	class ViewportRenderer
+	{
+	public:
+		void InitializeTexture(D3D11::D3D11Renderer* renderer, ImVec2 size);
 
-public:
-	ComPtr<ID3D11RenderTargetView>&	  GetViewportRTV() { return mRTV; }
-	ComPtr<ID3D11ShaderResourceView>& GetViewportSRV() { return mSRV; }
+		void BeginRender(D3D11::D3D11Renderer* renderer);
+		// Switches the RenderTarget to this object's, renders the scene,
+		// and switch RenderTarget back to FoxtrotRenderer's (in FTCoreEditor).
+		void DrawOnTexture(D3D11::D3D11Renderer* renderer);
+		void EndRender(D3D11::D3D11Renderer* renderer);
 
-public:
-	ViewportRenderer();
-	~ViewportRenderer();
+		void Reset();
 
-private:
-	ComPtr<ID3D11Texture2D>			 mRenderTexture;
-	ComPtr<ID3D11RenderTargetView>	 mRTV;
-	ComPtr<ID3D11ShaderResourceView> mSRV;
-	ComPtr<ID3D11DepthStencilView>	 mDSV;
+	public:
+		ComPtr<ID3D11RenderTargetView>&	  GetViewportRTV() { return mRTV; }
+		ComPtr<ID3D11ShaderResourceView>& GetViewportSRV() { return mSRV; }
 
-private:
-	void CreateRenderTargetView(FoxtrotRenderer* renderer, UINT width, UINT height);
-};
+	public:
+		ViewportRenderer();
+		~ViewportRenderer();
+
+	private:
+		ComPtr<ID3D11Texture2D>			 mRenderTexture;
+		ComPtr<ID3D11RenderTargetView>	 mRTV;
+		ComPtr<ID3D11ShaderResourceView> mSRV;
+		ComPtr<ID3D11DepthStencilView>	 mDSV;
+
+	private:
+		void CreateRenderTargetView(D3D11::D3D11Renderer* renderer, UINT width, UINT height);
+	};
+} // namespace Editor

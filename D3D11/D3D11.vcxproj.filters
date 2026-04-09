@@ -81,12 +81,6 @@
     <ClInclude Include="src\ResourceSystem\Mesh\FTMeshGroup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ResourceSystem\Shape\FTRectangle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceSystem\Shape\FTShape.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\ResourceSystem\Sprite\FTTileMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -498,9 +492,6 @@
     <ClInclude Include="src\Manager\AnimationManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Manager\DebugShapes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Manager\FTSpineLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -514,6 +505,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Component\D3D11Component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceSystem\Shape\FTRectangle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceSystem\Shape\FTShape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Manager\DebugShapes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -570,12 +570,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ResourceSystem\Mesh\FTMeshGroup.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\Shape\FTRectangle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\Shape\FTShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ResourceSystem\Sprite\FTTileMap.cpp">
@@ -836,9 +830,6 @@
     <ClCompile Include="src\Manager\AnimationManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Manager\DebugShapes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Manager\FTSpineLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -852,6 +843,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ResourceSystem\D3D11Resource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Shape\FTRectangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Shape\FTShape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Manager\DebugShapes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

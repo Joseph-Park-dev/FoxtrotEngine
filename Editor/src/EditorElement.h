@@ -13,88 +13,94 @@
 /// </summary>
 
 #pragma once
-#include "Components/UIs/PanelUI.h"
-#include "Components/Component.h"
+#include "Actor/Actor.h"
+
 #include "CommandHistory.h"
 #include "FTCoreEditor.h"
 
-class Scene;
-class Actor;
-class EditorLayer;
-class EditorScene;
-class FTPremade;
-
-#define ACTORNAME_MAX 100
-
-class EditorElement :
-	public Actor
+namespace Core
 {
-public:
-	const bool	 GetIsFocused() const;
-	const size_t GetHierarchyLevel() const;
-	const bool	 GetIsDisplayed() const;
+	class Scene;
+	class Actor;
+	class FTPremade;
+} // namespace Core
 
-	void SetIsFocused(bool isFocused);
-	void SetHierarchyLevel(size_t lv);
-	void SetIsDisplayed(bool isDisplayed);
+namespace Editor
+{
+#define ACTORNAME_MAX 100
+	class EditorLayer;
+	class EditorScene;
 
-public:
-	void Setup() override;
-	// Updates editor specific features -> this will be omitted from the produced game.
-	void EditorUpdate(float deltaTime);
+	class EditorElement :
+		public Core::Actor
+	{
+	public:
+		const bool	 GetIsFocused() const;
+		const size_t GetHierarchyLevel() const;
+		const bool	 GetIsDisplayed() const;
 
-	// Renders editor specific features -> this will be omitted from the produced game.
-	void EditorRender(FoxtrotRenderer* renderer);
+		void SetIsFocused(bool isFocused);
+		void SetHierarchyLevel(size_t lv);
+		void SetIsDisplayed(bool isDisplayed);
 
-public:
-	/// <summary>
-	/// Updates UIs displayed on Inspector menu.
-	/// </summary>
-	/// <param name="isPremade : ">Is this object premade?</param>
-	void UpdateUI(bool isPremade);
+	public:
+		void Initialize();
+		// Updates editor specific features -> this will be omitted from the produced game.
+		void EditorUpdate(float deltaTime);
 
-public:
-	/// <summary>
-	/// Constructor that creates empty EditorElement.
-	/// It should be added to the EditorScene manually.
-	EditorElement(int id);
+		// Renders editor specific features -> this will be omitted from the produced game.
+		void EditorRender(D3D11::D3D11Renderer* renderer);
 
-	/// <summary>
-	/// Constructor that deep-copies an Actor object.
-	/// </summary>
-	/// <param name="origin : ">An Actor object to deep-copy values from.</param>
-	EditorElement(Actor* actor, int id);
+	public:
+		/// <summary>
+		/// Updates UIs displayed on Inspector menu.
+		/// </summary>
+		/// <param name="isPremade : ">Is this object premade?</param>
+		void UpdateUI(bool isPremade);
 
-	/// <summary>
-	/// Copy constructors controlling if the object is deep copied.
-	/// </summary>
-	/// <param name="actor">Actor being copied.</param>
-	/// <param name="deepCpy">Perform deep copy through child Actors?</param>
-	EditorElement(Actor* actor, int id, bool deepCpyChild);
+	public:
+		/// <summary>
+		/// Constructor that creates empty EditorElement.
+		/// It should be added to the EditorScene manually.
+		EditorElement(int id);
 
-	/// <summary>
-	/// Constructor that is used for FTPremade origin.
-	/// This Fetches the FTPremade origin, makes EditorElement.
-	/// Not recommended to use outside of FTPremade
-	EditorElement(FTPremade* premade, int id);
+		/// <summary>
+		/// Constructor that deep-copies an Actor object.
+		/// </summary>
+		/// <param name="origin : ">An Actor object to deep-copy values from.</param>
+		EditorElement(Actor* actor, int id);
 
-public:
-	// Deep copies all child Actors
-	void CopyChildObjectFrom(Actor* actor) override;
+		/// <summary>
+		/// Copy constructors controlling if the object is deep copied.
+		/// </summary>
+		/// <param name="actor">Actor being copied.</param>
+		/// <param name="deepCpy">Perform deep copy through child Actors?</param>
+		EditorElement(Actor* actor, int id, bool deepCpyChild);
 
-private:
-	bool   mIsFocused;		// Is this item clicked on Foxtrot Editor's Hierarchy menu?
-	size_t mHierarchyLevel; // How many parent Actors are there for this object?
+		/// <summary>
+		/// Constructor that is used for FTPremade origin.
+		/// This Fetches the FTPremade origin, makes EditorElement.
+		/// Not recommended to use outside of FTPremade
+		EditorElement(FTPremade* premade, int id);
 
-	bool mIsDisplayed; // Is this item displayed on Hierarchy menu during this frame?
+	public:
+		// Deep copies all child Actors
+		void CopyChildObjectFrom(Actor* actor) override;
 
-private:
-	void UpdateActorName();
-	void UpdateActorGroup();
-	void UpdateDrawOrder();
+	private:
+		bool   mIsFocused;		// Is this item clicked on Foxtrot Editor's Hierarchy menu?
+		size_t mHierarchyLevel; // How many parent Actors are there for this object?
 
-	void UpdateComponentsUI();
-	void DisplayCompSelectionPopup();
+		bool mIsDisplayed; // Is this item displayed on Hierarchy menu during this frame?
 
-	void UpdateMakePremade();
-};
+	private:
+		void UpdateActorName();
+		void UpdateActorGroup();
+		void UpdateDrawOrder();
+
+		void UpdateComponentsUI();
+		void DisplayCompSelectionPopup();
+
+		void UpdateMakePremade();
+	};
+} // namespace Editor

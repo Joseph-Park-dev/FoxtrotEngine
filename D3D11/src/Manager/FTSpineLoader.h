@@ -1,8 +1,6 @@
 #pragma once
 #include "spine/spine.h"
 
-extern spine::SpineExtension* gSpineExtension; // defined in FTSpineLoader.cpp
-
 namespace D3D11
 {
 	class FTSpineLoader : public spine::TextureLoader

@@ -10,6 +10,7 @@
 #include "FileSystem/FileTypes.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Manager/SceneManager.h"
+#include "Manager/ResourceManager.h"
 #include "FTCore.h"
 #include "Plugin/PluginKey.h"
 
@@ -35,7 +36,7 @@ public:
 	void		 CreateRenderer(D3D11::D3D11Window* window);
 	void		 CreateD3D11Window(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea);
 	void		 ProcessInput() override;
-	virtual void Render(FoxtrotRenderer* renderer) override;
+	virtual void Render(Core::FoxtrotRenderer* renderer) override;
 
 public:
 	void SaveProperties() override;
@@ -92,7 +93,7 @@ void D3D11Plugin::ProcessInput()
 	}
 }
 
-void D3D11Plugin::Render(FoxtrotRenderer* renderer)
+void D3D11Plugin::Render(Core::FoxtrotRenderer* renderer)
 {
 	for (auto iter = mWindows->Begin(); iter != mWindows->End(); ++iter)
 	{
@@ -172,6 +173,8 @@ D3D11Plugin::D3D11Plugin(Core::FTCore* base)
 	FTRectArea* area = DBG_NEW FTRectArea(0.f, 0.f, 500.f, 500.f);
 	CreateD3D11Window("Hello!", 500, 500, area);
 	CreateInputDevice();
+
+	D3D11::ResourceManager::GetInstance()->SetBase(base);
 }
 
 D3D11Plugin::~D3D11Plugin()

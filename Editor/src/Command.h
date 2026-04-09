@@ -12,6 +12,14 @@
 #pragma once
 #include "Math/FTMath.h"
 #include "FTDS/Static/FTString.h"
+#include "Actor/ActorGroup.h"
+
+namespace Math
+{
+	class FTVector2;
+	class FTVector3;
+	class FTVector4;
+} // namespace Math
 
 class Command
 {
@@ -48,15 +56,15 @@ public:
 	void Undo() override;
 
 public:
-	void SetNextVal(ActorGroup nextVal);
+	void SetNextVal(Core::ActorGroup nextVal);
 
 public:
-	ActorGroupEditCommand(ActorGroup& valRef);
+	ActorGroupEditCommand(Core::ActorGroup& valRef);
 
 private:
-	ActorGroup& mValue;
-	ActorGroup	mPrevValue;
-	ActorGroup	mNextValue;
+	Core::ActorGroup& mValue;
+	Core::ActorGroup  mPrevValue;
+	Core::ActorGroup  mNextValue;
 };
 
 class FloatEditCommand : public Command
@@ -84,15 +92,15 @@ public:
 	void Undo() override;
 
 public:
-	void SetNextVal(FTVector2 nextVal);
+	void SetNextVal(Math::FTVector2 nextVal);
 
 public:
-	Vector2EditCommand(FTVector2& valRef);
+	Vector2EditCommand(Math::FTVector2& valRef);
 
 private:
-	FTVector2& mValue;
-	FTVector2  mPrevValue;
-	FTVector2  mNextValue;
+	Math::FTVector2& mValue;
+	Math::FTVector2	 mPrevValue;
+	Math::FTVector2	 mNextValue;
 };
 
 class Vector3EditCommand : public Command
@@ -102,16 +110,16 @@ public:
 	void Undo() override;
 
 public:
-	FTVector3 GetPrevVal();
-	void	  SetNextVal(FTVector3 nextVal);
+	Math::FTVector3 GetPrevVal();
+	void			SetNextVal(Math::FTVector3 nextVal);
 
 public:
-	Vector3EditCommand(FTVector3& valRef);
+	Vector3EditCommand(Math::FTVector3& valRef);
 
 private:
-	FTVector3& mValue;
-	FTVector3  mPrevValue;
-	FTVector3  mNextValue;
+	Math::FTVector3& mValue;
+	Math::FTVector3	 mPrevValue;
+	Math::FTVector3	 mNextValue;
 };
 
 class Vector4EditCommand : public Command
@@ -121,15 +129,15 @@ public:
 	void Undo() override;
 
 public:
-	void SetNextVal(FTVector4 nextVal);
+	void SetNextVal(Math::FTVector4 nextVal);
 
 public:
-	Vector4EditCommand(FTVector4& valRef);
+	Vector4EditCommand(Math::FTVector4& valRef);
 
 private:
-	FTVector4& mValue;
-	FTVector4  mPrevValue;
-	FTVector4  mNextValue;
+	Math::FTVector4& mValue;
+	Math::FTVector4	 mPrevValue;
+	Math::FTVector4	 mNextValue;
 };
 
 class StrEditCommand : public Command
@@ -139,16 +147,16 @@ public:
 	void Undo() override;
 
 public:
-	void SetNextVal(FTDS::String nextVal);
+	void SetNextVal(Core::FTDS::String nextVal);
 
 public:
-	StrEditCommand(FTDS::String& valRef);
+	StrEditCommand(Core::FTDS::String& valRef);
 	~StrEditCommand();
 
 private:
-	FTDS::String& mValue;
-	FTDS::String  mPrevValue;
-	FTDS::String  mNextValue;
+	Core::FTDS::String& mValue;
+	Core::FTDS::String	mPrevValue;
+	Core::FTDS::String	mNextValue;
 };
 
 class WStrEditCommand : public Command

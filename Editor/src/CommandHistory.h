@@ -22,6 +22,12 @@
 
 class ActorCommand;
 class Command;
+namespace Math
+{
+	class FTVector2;
+	class FTVector3;
+	class FTVector4;
+} // namespace Math
 
 class CommandHistory
 {
@@ -42,10 +48,10 @@ public:
 	void UpdateUnsignedIntValue(const char* label, UINT& ref, UINT modSpeed = INTMOD_SPEED);
 	void UpdateFloatValue(const char* label, float& ref, float modSpeed = FLOATMOD_SPEED);
 	void UpdateBoolValue(const char* label, bool& ref);
-	void UpdateVector2Value(const char* label, FTVector2& ref, float modSpeed = FLOATMOD_SPEED);
-	void UpdateVector3Value(const char* label, FTVector3& ref, float modSpeed = FLOATMOD_SPEED);
-	void UpdateVector4Value(const char* label, FTVector4& ref, float modSpeed = FLOATMOD_SPEED);
-	void UpdateStringValue(const char* label, FTDS::String& ref);
+	void UpdateVector2Value(const char* label, Math::FTVector2& ref, float modSpeed = FLOATMOD_SPEED);
+	void UpdateVector3Value(const char* label, Math::FTVector3& ref, float modSpeed = FLOATMOD_SPEED);
+	void UpdateVector4Value(const char* label, Math::FTVector4& ref, float modSpeed = FLOATMOD_SPEED);
+	void UpdateStringValue(const char* label, Core::FTDS::String& ref);
 
 public:
 	void Update();
@@ -53,10 +59,10 @@ public:
 	void ShutDown();
 
 private:
-	FTDS::ArrayStack<Command*>* mPrevious;
-	FTDS::ArrayStack<Command*>* mNext;
-	Command*					mCurrent;
-	bool						mIsRecording; // A value is being modified on UI.
+	Core::FTDS::ArrayStack<Command*>* mPrevious;
+	Core::FTDS::ArrayStack<Command*>* mNext;
+	Command*						  mCurrent;
+	bool							  mIsRecording; // A value is being modified on UI.
 
 private:
 	// Get the command located at the pointer position.

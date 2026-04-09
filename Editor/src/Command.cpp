@@ -8,12 +8,13 @@
 
 #include "Command.h"
 
-#include <string>
-
 #include "Math/FTMath.h"
 #include "TemplateFunctions.h"
 #include "Actor/Actor.h"
 #include "Actor/ActorGroup.h"
+
+using namespace Math;
+using namespace Core;
 
 void IntEditCommand::Do()
 {

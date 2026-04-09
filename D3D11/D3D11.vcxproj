@@ -184,12 +184,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.\src;..\Core\src;..\Core\src\FTDS;..\Math\src;..\D3D11\include;..\D3D11\include\spine;..\D3D11\include\DirectXTK\Inc;..\Core\include\json\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\src;..\Core\include\json\include\nlohmann;..\Core\src;..\Core\src\FTDS;..\Math\src;..\D3D11\include;..\D3D11\include\spine;..\D3D11\include\DirectXTK\Inc;..\Core\include\json\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -338,6 +338,7 @@
     <ClInclude Include="include\stb_voxel_render.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="src\Component\D3D11Component.h" />
+    <ClInclude Include="src\Manager\DebugShapes.h" />
     <ClInclude Include="src\Renderer\Camera.h" />
     <ClInclude Include="src\Component\Animator.h" />
     <ClInclude Include="src\Component\MeshRenderer.h" />
@@ -350,7 +351,6 @@
     <ClInclude Include="src\Renderer\D3D11Utils.h" />
     <ClInclude Include="src\Renderer\D3D11Window.h" />
     <ClInclude Include="src\Manager\AnimationManager.h" />
-    <ClInclude Include="src\Manager\DebugShapes.h" />
     <ClInclude Include="src\Manager\FTSpineLoader.h" />
     <ClInclude Include="src\Manager\LightManager.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
@@ -375,11 +375,11 @@
     <ClInclude Include="src\ResourceSystem\Mesh\FTMeshData.h" />
     <ClInclude Include="src\ResourceSystem\Mesh\FTMeshDataPack.h" />
     <ClInclude Include="src\ResourceSystem\Mesh\FTMeshGroup.h" />
-    <ClInclude Include="src\ResourceSystem\Shape\FTRectangle.h" />
     <ClInclude Include="src\ResourceSystem\Shader\FTGeometryShader.h" />
     <ClInclude Include="src\ResourceSystem\Shader\FTPixelShader.h" />
     <ClInclude Include="src\ResourceSystem\Shader\FTShader.h" />
     <ClInclude Include="src\ResourceSystem\Shader\FTVertexShader.h" />
+    <ClInclude Include="src\ResourceSystem\Shape\FTRectangle.h" />
     <ClInclude Include="src\ResourceSystem\Shape\FTShape.h" />
     <ClInclude Include="src\ResourceSystem\Sprite\FTSprite.h" />
     <ClInclude Include="src\ResourceSystem\FTTexture.h" />
@@ -611,6 +611,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="src\Component\D3D11Component.cpp" />
+    <ClCompile Include="src\Manager\DebugShapes.cpp" />
     <ClCompile Include="src\Renderer\Camera.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -633,9 +634,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Manager\AnimationManager.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\Manager\DebugShapes.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Manager\FTSpineLoader.cpp">
@@ -700,9 +698,6 @@
     <ClCompile Include="src\ResourceSystem\Mesh\FTMeshGroup.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\ResourceSystem\Shape\FTRectangle.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="src\ResourceSystem\Shader\FTGeometryShader.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -715,9 +710,8 @@
     <ClCompile Include="src\ResourceSystem\Shader\FTVertexShader.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\ResourceSystem\Shape\FTShape.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Shape\FTRectangle.cpp" />
+    <ClCompile Include="src\ResourceSystem\Shape\FTShape.cpp" />
     <ClCompile Include="src\ResourceSystem\Sprite\FTSprite.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>

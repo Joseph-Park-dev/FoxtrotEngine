@@ -13,7 +13,7 @@
 #pragma once
 #include <fstream>
 
-#include "Static/FTString.h"
+#include "FTDS/Static/FTString.h"
 
 namespace Core
 {

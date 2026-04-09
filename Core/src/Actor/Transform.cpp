@@ -271,4 +271,24 @@ namespace Core
 		}
 	}
 #endif // FOXTROT_EDITOR
+
+	const MemberDesc MemberLayout[] = {
+		MakeMemberFuncDesc("GetWorldScale", &Transform::GetWorldScale),
+	};
+
+	const ObjectLayout Layout = {
+		"Transform",
+		sizeof(Transform),
+		MemberLayout,
+		sizeof(MemberLayout) / sizeof(MemberLayout[0])
+	};
+
+	CORE_API const ObjectLayout* Plugin_GetLayout() { return &Layout; }
+
+	//static const ObjectLayout g_layout = {
+	//	"Player",
+	//	sizeof(Transform),
+	//	g_memberLayout,
+	//	sizeof(g_memberLayout) / sizeof(g_memberLayout[0])
+	//};
 } // namespace Core

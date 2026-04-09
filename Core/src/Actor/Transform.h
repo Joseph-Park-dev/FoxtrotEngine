@@ -14,6 +14,7 @@
 #include <iosfwd>
 
 #include "Math/FTMath.h"
+#include "Plugin/ObjectLayout.h"
 
 namespace Core
 {
@@ -34,12 +35,12 @@ namespace Core
 
 		// World Transformation
 		virtual const Math::FTVector3& GetWorldPosition() const;
-		const Math::FTVector3&		 GetWorldScale() const;
-		const Math::FTVector3&		 GetWorldRotation() const;
-		const Math::FTMatrix4&		 GetMatrixWorld() const;
-		const Math::FTVector3			 GetRotationDegree() const;
-		const Math::FTVector3&		 GetRightward() const;
-		const Steering*			 GetSteering() const;
+		virtual const Math::FTVector3& GetWorldScale() const;
+		const Math::FTVector3&		   GetWorldRotation() const;
+		virtual const Math::FTMatrix4& GetMatrixWorld() const;
+		const Math::FTVector3		   GetRotationDegree() const;
+		const Math::FTVector3&		   GetRightward() const;
+		virtual const Steering*		   GetSteering() const;
 
 		const bool IsHalting() const;
 
@@ -49,9 +50,9 @@ namespace Core
 		void SetLocalRotation(const Math::FTVector3 val);
 
 		// World Transformation
-		void SetWorldPosition(const Math::FTVector3 worldPos);
+		void		 SetWorldPosition(const Math::FTVector3 worldPos);
 		virtual void SetWorldScale(const Math::FTVector3 worldScale);
-		void SetWorldRotation(const Math::FTVector3 worldRot);
+		void		 SetWorldRotation(const Math::FTVector3 worldRot);
 
 		void SetRightward(const Math::FTVector3 dir);
 		void SetSteering(const Steering steering);
@@ -84,7 +85,7 @@ namespace Core
 		Math::FTMatrix4 mMatrixWorld;
 
 		Math::FTVector3 mRightward; // A local rightward direction
-		Steering* mSteering;
+		Steering*		mSteering;
 
 		Actor* mOwner;
 
@@ -95,6 +96,10 @@ namespace Core
 #ifdef FOXTROT_EDITOR
 		void UpdateUI();
 #endif
+
+	public:
+		static const MemberDesc	  MemberLayout[];
+		static const ObjectLayout Layout;
 	};
 
 	namespace ChunkKey

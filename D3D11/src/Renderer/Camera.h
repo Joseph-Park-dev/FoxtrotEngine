@@ -78,10 +78,12 @@ namespace D3D11
 		void SetOffset(Math::FTVector3 offset);
 
 	public:
+		Math::FTVector3& Position();
 		Math::FTVector3& Offset();
 
 	protected:
 		float& ZoomDelta();
+		float& ZoomFactor();
 
 	public:
 		// "pixels" defines how much of them should fit in a given unit.
@@ -113,14 +115,5 @@ namespace D3D11
 	public:
 		void SaveProperties(std::ofstream& ofs);
 		void LoadProperties(std::ifstream& ifs, Core::SceneManager* targetActor);
-
-#ifdef FOXTROT_EDITOR
-	public:
-		float& ZoomFactor();
-
-	private:
-		ImVec2 mMiddleMouseClickedPos;
-		ImVec2 mMiddleMouseClickedRot;
-#endif // FOXTROT_EDITOR
 	};
 } // namespace D3D11

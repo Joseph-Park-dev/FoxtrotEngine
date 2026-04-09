@@ -27,6 +27,7 @@ namespace D3D11
 		Microsoft::WRL::ComPtr<ID3D11Device>&		 GetDevice();
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& GetContext();
 		const unsigned int							 GetNumQualityLevels() const;
+		D3D11_VIEWPORT*								 GetViewport();
 
 	public:
 		D3D11Renderer(Core::FTWindow* window);

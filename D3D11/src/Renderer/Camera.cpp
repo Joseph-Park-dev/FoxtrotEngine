@@ -166,6 +166,11 @@ namespace D3D11
 		return mZoomDelta;
 	}
 
+	float& Camera::ZoomFactor()
+	{
+		return mZoomFactor;
+	}
+
 	void Camera::SetPosition(FTVector3 pos)
 	{
 		mPosition = pos;
@@ -286,11 +291,4 @@ namespace D3D11
 		ndc.y = 1.0f - (screenPos.y / renderSize.y) * 2.f;
 		return ndc;
 	}
-
-#ifdef FOXTROT_EDITOR
-	float& Camera::ZoomFactor()
-	{
-		return mZoomFactor;
-	}
-#endif // FOXTROT_EDITOR
 } // namespace D3D11

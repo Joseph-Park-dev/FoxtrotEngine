@@ -15,30 +15,36 @@
 
 class FTRectangle;
 
-class EditorCamera :
-	public Camera
+namespace Editor
 {
-	SINGLETON(EditorCamera)
+	class EditorCamera :
+		public D3D11::Camera
+	{
+		SINGLETON(EditorCamera)
 
-public:
-	void DisplayMainCameraMenu();
-	void DisplayEditorCameraMenu();
+	public:
+		void DisplayMainCameraMenu();
+		void DisplayEditorCameraMenu();
 
-public:
-	FTRectangle* GetDebugRect();
+	public:
+		D3D11::FTRectangle* GetDebugRect();
 
-public:
-	void		 Initialize(FTWindow* renderWindow, unsigned int pixels, float unit) override;
-	virtual void ProcessInput(FTInputDevice* inputDevice);
-	virtual void Update(float deltaTime) override;
+	public:
+		void		 Initialize(Core::FTWindow* renderWindow, unsigned int pixels, float unit) override;
+		virtual void ProcessInput(D3D11::D3D11InputDevice* inputDevice);
+		virtual void Update(float deltaTime) override;
 
-private:
-	bool  mPanKeyPressed;
-	float mPanValModSpeed;
-	float mZoomValModSpeed;
+	private:
+		bool  mPanKeyPressed;
+		float mPanValModSpeed;
+		float mZoomValModSpeed;
 
-	FTRectangle* mDebugRect;
+		D3D11::FTRectangle* mDebugRect;
 
-private:
-	void PanLocalXY(FTVector2 vec2);
-};
+		ImVec2 mMiddleMouseClickedPos;
+		ImVec2 mMiddleMouseClickedRot;
+
+	private:
+		void PanLocalXY(Math::FTVector2 vec2);
+	};
+} // namespace Editor

@@ -24,18 +24,18 @@ namespace Core
 		//	/// @see FTResource::LoadProperties()
 		//	virtual void LoadProperties(std::ifstream& ifs) override;
 	public:
-		static Core::ResType Type;
+		static inline Core::ResType Type = Core::ResType::CSV;
 
 	public:
 		/// @brief Returns column(horizontal) count.
-		size_t GetColumnCount() const;
+		virtual size_t GetColumnCount() const;
 
 		/// @brief Returns row(vertical) count.
-		size_t GetRowCount() const;
+		virtual size_t GetRowCount() const;
 
 		/// @brief Returns the .csv data stored in vector.
 		/// @todo Replace std::vector to FTDS::DynamicArray.
-		const std::vector<int>& Data() const;
+		virtual const std::vector<int>& Data() const;
 
 	public:
 		/// @see FTResource::FTResource

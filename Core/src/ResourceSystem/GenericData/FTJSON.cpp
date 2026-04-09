@@ -9,7 +9,6 @@
 
 namespace Core
 {
-	Core::ResType		  FTJSON::Type = Core::ResType::JSON;
 	const nlohmann::json& FTJSON::Data() const { return mData; }
 
 	// void FTJSON::SaveProperties(std::ofstream& ofs)

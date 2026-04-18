@@ -30,13 +30,13 @@
 
 namespace Core
 {
-	FTCore*			 FTCore::mInstance			= nullptr;
-	SceneManager*	 SceneManager::mInstance	= nullptr;
-	ResourceManager* ResourceManager::mInstance = nullptr;
-	ChunkLoader*	 ChunkLoader::mInstance		= nullptr;
-	Timer*			 Timer::mInstance			= nullptr;
-	EventManager*	 EventManager::mInstance	= nullptr;
-	DirectoryHelper* DirectoryHelper::mInstance = nullptr;
+	FTCore* FTCore::mInstance = nullptr;
+	// Timer*			 Timer::mInstance			= nullptr;
+	// SceneManager*	 SceneManager::mInstance	= nullptr;
+	// ResourceManager* ResourceManager::mInstance = nullptr;
+	// EventManager*	 EventManager::mInstance	= nullptr;
+	// DirectoryHelper* DirectoryHelper::mInstance = nullptr;
+	// ChunkLoader*	 ChunkLoader::mInstance		= nullptr;
 
 	using PLUGIN_CONSTRUCT = Plugin* (*)(FTCore * base);
 
@@ -83,14 +83,8 @@ namespace Core
 		for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
 			(*iter)->Value()->Setup();
 
-		InitSingletonManagers();
 		InitTimer();
 		return true;
-	}
-
-	void FTCore::InitSingletonManagers()
-	{
-		SceneManager::GetInstance()->Initialize();
 	}
 
 	void FTCore::LoadDLL(FTDS::String& path)
@@ -102,6 +96,23 @@ namespace Core
 	void FTCore::InitTimer()
 	{
 		Timer::GetInstance();
+	}
+
+	void FTCore::InitEntities()
+	{
+		Timer::Initialize(this);
+		SceneManager::Initialize(this);
+		ResourceManager::Initialize(this);
+		EventManager::Initialize(this);
+		DirectoryHelper::Initialize(this);
+		ChunkLoader::Initialize(this);
+
+		mEntities->Insert("Timer", Timer::GetInstance());
+		mEntities->Insert("SceneManager", SceneManager::GetInstance());
+		mEntities->Insert("CoreResourceManager", ResourceManager::GetInstance());
+		mEntities->Insert("EventManager", EventManager::GetInstance());
+		mEntities->Insert("DirectoryHelper", DirectoryHelper::GetInstance());
+		mEntities->Insert("ChunkLoader", ChunkLoader::GetInstance());
 	}
 
 	void FTCore::RunLoop()
@@ -116,21 +127,6 @@ namespace Core
 		}
 	}
 
-	void FTCore::SetWindow(FTWindow* window)
-	{
-		mWindow = window;
-	}
-
-	void FTCore::SetInputDevice(FTInputDevice* device)
-	{
-		mInputDevice = device;
-	}
-
-	void FTCore::SetRenderer(FoxtrotRenderer* renderer)
-	{
-		mGameRenderer = renderer;
-	}
-
 	void FTCore::ProcessInput()
 	{
 		for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
@@ -142,6 +138,9 @@ namespace Core
 		Timer::GetInstance()->Update();
 		float deltaTime = Timer::GetInstance()->GetDeltaTime();
 
+		if (!mIsUpdating)
+			return;
+
 		for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
 			(*iter)->Value()->Update(deltaTime);
 
@@ -151,13 +150,8 @@ namespace Core
 
 	void FTCore::GenerateOutput()
 	{
-		//// mGameRenderer->RenderClear(mWindow);
-		// mWindow->BeginRender(mGameRenderer);
-
-		// for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
-		//	(*iter)->Render(mGameRenderer);
-
-		// mWindow->EndRender(mGameRenderer);
+		for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+			(*iter)->Value()->Render();
 	}
 
 	void FTCore::ProcessEvent()
@@ -168,13 +162,12 @@ namespace Core
 
 	FTCore::FTCore()
 		: mModule()
-		, mWindow(nullptr)
-		, mInputDevice(nullptr)
-		, mGameRenderer(nullptr)
 		, mIsRunning(true)
+		, mIsUpdating(true)
 		, mGameDataPath(
 			  DBG_NEW FTDS::String("./"))
 		, mLoadedPlugins(DBG_NEW FTDS::HashMap<Plugin*>())
+		, mEntities(DBG_NEW FTDS::HashMap<Entity*>)
 	{
 		mGameDataPath->Append(ChunkKey::GAME_DATA);
 		mGameDataPath->Append(FileTypes::GDPACK);
@@ -182,17 +175,14 @@ namespace Core
 
 	FTCore::~FTCore()
 	{
-		delete mWindow;
-		delete mInputDevice;
-		delete mGameRenderer;
 		delete mGameDataPath;
 		delete mLoadedPlugins;
 	}
 
 	void FTCore::ShutDown()
 	{
-		for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
-			delete (*iter);
+		Safe_Delete_Map(mLoadedPlugins);
+		Safe_Delete_Map(mEntities);
 
 		SceneManager::GetInstance()->GetCurrentScene()->DeleteAll();
 		SceneManager::GetInstance()->Destroy();

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -11,6 +11,8 @@
 /// </summary>
 
 #pragma once
+#include "Entity/Entity.h"
+
 #include <Windows.h>
 
 #include "SingletonMacro.h"
@@ -19,13 +21,17 @@ namespace Core
 {
 #define FT_TICKS_PASSED(A, B) ((__int64)((B) - (A)) <= 0)
 
-	class Timer
+	class Timer :
+		public Core::Entity
 	{
 		SINGLETON(Timer)
 
 	public:
 		void  Update();
 		float GetDeltaTime() const { return mDeltaTime; }
+
+	protected:
+		void RegisterMemberFuncs() override;
 
 	private:
 		__int64		  mFrequencyForASecond;

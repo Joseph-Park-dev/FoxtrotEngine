@@ -497,16 +497,6 @@ namespace Core
 		++mItemCounts.back();
 	}
 
-#ifdef FOXTROT_EDITOR
-	void FileIOHelper::SaveVector2(std::ofstream& ofs, const FTDS::String& valName, const b2Vec2& vec2)
-	{
-		FTDS::String itemTitle = mItemIdent + valName + "[Vector2]" + "\n";
-		FTDS::String item	   = mItemIdent + "(" + std::to_string(vec2.x).c_str() + "," + std::to_string(vec2.y).c_str() + ")";
-		mDataBuffer.push_back(itemTitle + item);
-		++mItemCounts.back();
-	}
-#endif // FOXTROT_EDITOR
-
 	void FileIOHelper::SaveVector4(std::ofstream& ofs, const FTDS::String& valName, const Math::FTVector4& vec4)
 	{
 		FTDS::String itemTitle = mItemIdent + valName + "[Vector4]" + "\n";

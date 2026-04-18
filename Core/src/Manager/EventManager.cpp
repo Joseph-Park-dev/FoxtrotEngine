@@ -36,6 +36,10 @@ namespace Core
 		mEvent->Clear();
 	}
 
+	void EventManager::RegisterMemberFuncs()
+	{
+	}
+
 	void EventManager::Execute(const FTEvent& executedEvent)
 	{
 		switch (executedEvent.incident)

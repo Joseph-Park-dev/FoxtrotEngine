@@ -4,47 +4,50 @@
 #include "EditorSceneManager.h"
 #include "EditorElement.h"
 
-void ActorAdditionCommand::Do()
+namespace Editor
 {
-	ActorCommand::Do();
+	void ActorAdditionCommand::Do()
+	{
+		ActorCommand::Do();
 
-	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-	// EditorElement* element = DBG_NEW EditorElement(GetVal());
-}
+		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+		// EditorElement* element = DBG_NEW EditorElement(GetVal());
+	}
 
-void ActorAdditionCommand::Undo()
-{
-	ActorCommand::Undo();
+	void ActorAdditionCommand::Undo()
+	{
+		ActorCommand::Undo();
 
-	Core::Destroy(GetVal());
-}
+		Core::Destroy(GetVal());
+	}
 
-ActorAdditionCommand::ActorAdditionCommand(EditorElement* elem)
-	: ActorCommand(elem)
-{
-}
+	ActorAdditionCommand::ActorAdditionCommand(EditorElement* elem)
+		: ActorCommand(elem)
+	{
+	}
 
-void ActorCommand::Do()
-{
-	*mValue = mNextValue;
-}
+	void ActorCommand::Do()
+	{
+		*mValue = mNextValue;
+	}
 
-void ActorCommand::Undo()
-{
-	*mValue = mPrevValue;
-}
+	void ActorCommand::Undo()
+	{
+		*mValue = mPrevValue;
+	}
 
-EditorElement* ActorCommand::GetVal()
-{
-	return mValue;
-}
+	EditorElement* ActorCommand::GetVal()
+	{
+		return mValue;
+	}
 
-void ActorCommand::SetNextVal(EditorElement* nextVal)
-{
-	mNextValue = *nextVal;
-}
+	void ActorCommand::SetNextVal(EditorElement* nextVal)
+	{
+		mNextValue = *nextVal;
+	}
 
-ActorCommand::ActorCommand(EditorElement* elem)
-	: mPrevValue(*elem), mValue(elem), mNextValue(*elem)
-{
-}
+	ActorCommand::ActorCommand(EditorElement* elem)
+		: mPrevValue(*elem), mValue(elem), mNextValue(*elem)
+	{
+	}
+} // namespace Editor

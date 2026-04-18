@@ -14,21 +14,37 @@ namespace D3D11
 {
 	class D3D11InputDevice;
 	class D3D11Renderer;
+	class D3D11Window;
+
+	struct WNDPROC_Params
+	{
+		WNDPROC_Params(Core::FTCore* core, D3D11::D3D11Window* win, D3D11::D3D11InputDevice* input, D3D11::D3D11Renderer* rend, bool* isResizing)
+			: Core(core)
+			, Window(win)
+			, InputDevice(input)
+			, Renderer(rend)
+			, IsResizingWin(isResizing) {}
+
+		Core::FTCore*			 Core;
+		D3D11::D3D11Window*		 Window;
+		D3D11::D3D11InputDevice* InputDevice;
+		D3D11::D3D11Renderer*	 Renderer;
+		bool*					 IsResizingWin;
+	};
 
 	class D3D11Window :
 		public Core::FTWindow
 	{
 	public:
-		bool Initialize(Core::FTCore* base);
-		bool Initialize(Core::FTCore* base, int windowMode);
+		bool Initialize(int windowMode);
+		bool Initialize(int windowMode, WNDPROC proc, WNDPROC_Params* params = nullptr);
 		bool InitializeWindowRenderer(D3D11Renderer* renderer);
 		bool CreateSwapChain(D3D11Renderer* renderer);
 
-		void ResizeWindow(Core::FoxtrotRenderer* renderer);
+		void ResizeWindow(Core::FoxtrotRenderer* renderer) override;
 
 	public:
 		void ProcessInput(D3D11InputDevice* inputDevice);
-
 		void BeginRender(Core::FoxtrotRenderer* renderer) override;
 		void EndRender(Core::FoxtrotRenderer* renderer) override;
 
@@ -45,7 +61,11 @@ namespace D3D11
 
 	public:
 		D3D11Window(Core::Plugin* owner, const char* title, unsigned int width, unsigned int height, Core::FTRectArea* rndArea);
+		D3D11Window(Core::Plugin* owner, const char* title, unsigned int width, unsigned int height, Core::FTRectArea* rndArea, WNDPROC proc, WNDPROC_Params* params);
 		~D3D11Window() override;
+
+	protected:
+		void RegisterMemberFuncs() override;
 
 	private:
 		HWND										   mWinHandle; ///< Native window handle.

@@ -14,33 +14,36 @@
 #include "Command.h"
 #include "EditorElement.h"
 
-class ActorCommand :
-	public Command
+namespace Editor
 {
-public:
-	void Do() override;
-	void Undo() override;
+	class ActorCommand :
+		public Command
+	{
+	public:
+		void Do() override;
+		void Undo() override;
 
-public:
-	EditorElement* GetVal();
-	void		   SetNextVal(EditorElement* nextVal);
+	public:
+		EditorElement* GetVal();
+		void		   SetNextVal(EditorElement* nextVal);
 
-public:
-	ActorCommand(EditorElement* elem);
+	public:
+		ActorCommand(EditorElement* elem);
 
-private:
-	EditorElement* mValue;
-	EditorElement  mPrevValue;
-	EditorElement  mNextValue;
-};
+	private:
+		EditorElement* mValue;
+		EditorElement  mPrevValue;
+		EditorElement  mNextValue;
+	};
 
-class ActorAdditionCommand :
-	public ActorCommand
-{
-public:
-	void Do() override;
-	void Undo() override;
+	class ActorAdditionCommand :
+		public ActorCommand
+	{
+	public:
+		void Do() override;
+		void Undo() override;
 
-public:
-	ActorAdditionCommand(EditorElement* elem);
-};
+	public:
+		ActorAdditionCommand(EditorElement* elem);
+	};
+} // namespace Editor

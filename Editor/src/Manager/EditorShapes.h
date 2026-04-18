@@ -6,8 +6,6 @@ namespace Editor
 	class EditorShapes :
 		public D3D11::DebugShapes
 	{
-		SINGLETON(EditorShapes)
-
 	public:
 		D3D11::FTRectangle* GetCameraRect();
 		void				SetCameraRect(D3D11::FTRectangle* rect);

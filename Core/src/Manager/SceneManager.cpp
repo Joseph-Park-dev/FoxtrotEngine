@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -23,7 +23,7 @@ namespace Core
 {
 	SceneManager::SceneManager()
 		: mChunkList(DBG_NEW FTDS::DynamicArray<FTDS::String*>())
-		, mCurrentScene(DBG_NEW Scene)
+		, mCurrentScene(nullptr)
 	{
 	}
 
@@ -33,6 +33,10 @@ namespace Core
 
 		delete mChunkList;
 		delete mCurrentScene;
+	}
+
+	void SceneManager::RegisterMemberFuncs()
+	{
 	}
 
 	void SceneManager::SwitchScene(size_t index)
@@ -57,8 +61,9 @@ namespace Core
 		mChunkListPath.Assign(path);
 	}
 
-	void SceneManager::Initialize()
+	void SceneManager::Initialize(Scene* scene)
 	{
+		mCurrentScene = scene;
 		SwitchScene(0);
 	}
 

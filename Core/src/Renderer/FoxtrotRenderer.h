@@ -11,6 +11,8 @@
 /// </summary>
 
 #pragma once
+#include "Entity/Entity.h"
+
 namespace Math
 {
 	class FTVector2;
@@ -19,7 +21,8 @@ namespace Math
 namespace Core
 {
 	class FTWindow;
-	class FoxtrotRenderer
+	class FoxtrotRenderer :
+		public Core::Entity
 	{
 	protected:
 		virtual bool Initialize(FTWindow* window) = 0;

@@ -1,5 +1,5 @@
 #pragma once
-#include "Core/SingletonMacro.h"
+#include "Core/Singleton.h"
 
 class FoxtrotRenderer;
 

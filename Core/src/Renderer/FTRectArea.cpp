@@ -60,6 +60,11 @@ namespace Core
 		Set(0.f, 0.f, 0.f, 0.f);
 	}
 
+	FTRectArea::FTRectArea(float x, float y, float width, float height, float rotAngle)
+	{
+		Set(x, y, width, height, rotAngle);
+	}
+
 	void FTRectArea::CloneTo(FTRectArea* rect)
 	{
 		rect->mCenter = mCenter;
@@ -73,9 +78,9 @@ namespace Core
 #ifdef FOXTROT_EDITOR
 	void FTRectArea::UpdateUI()
 	{
-		CommandHistory::GetInstance()->UpdateVector2Value("Center", mCenter);
-		CommandHistory::GetInstance()->UpdateVector2Value("Size", mSize);
-		CommandHistory::GetInstance()->UpdateFloatValue("Rot Angle", mRotAngle);
+		Editor::CommandHistory::GetInstance()->UpdateVector2Value("Center", mCenter);
+		Editor::CommandHistory::GetInstance()->UpdateVector2Value("Size", mSize);
+		Editor::CommandHistory::GetInstance()->UpdateFloatValue("Rot Angle", mRotAngle);
 		Set(mCenter, mSize, mRotAngle);
 	}
 #endif
@@ -83,6 +88,11 @@ namespace Core
 	FTRectArea* CreateFTRectArea()
 	{
 		return DBG_NEW FTRectArea();
+	}
+
+	FTRectArea* CreateFTRectArea(float x, float y, float width, float height, float rotAngle)
+	{
+		return DBG_NEW FTRectArea(x, y, width, height, rotAngle);
 	}
 
 	void SaveProperties(std::ofstream* ofs, FTRectArea* rectArea)

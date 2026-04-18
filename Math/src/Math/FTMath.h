@@ -22,11 +22,6 @@
 #include <limits>
 #include <assert.h>
 
-#ifdef FOXTROT_EDITOR
-	#define IMGUI_DEFINE_MATH_OPERATORS
-	#include <../FoxtrotEditor/include/imgui/imgui.h>
-#endif // FOXTROT_EDITOR
-
 namespace Math
 {
 	const float Pi(3.1415926535f);

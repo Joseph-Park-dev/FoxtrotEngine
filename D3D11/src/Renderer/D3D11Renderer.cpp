@@ -60,7 +60,7 @@ namespace D3D11
 		return mViewport;
 	}
 
-	D3D11Renderer::D3D11Renderer(FTWindow* window)
+	D3D11Renderer::D3D11Renderer(D3D11::D3D11Window* window)
 		: mNumQualityLevels(0)
 		, mViewport(DBG_NEW D3D11_VIEWPORT)
 	{
@@ -70,6 +70,10 @@ namespace D3D11
 	D3D11Renderer::~D3D11Renderer()
 	{
 		delete mViewport;
+	}
+
+	void D3D11Renderer::RegisterMemberFuncs()
+	{
 	}
 
 	bool D3D11Renderer::Initialize(FTWindow* window)

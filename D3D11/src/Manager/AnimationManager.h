@@ -1,6 +1,7 @@
 #pragma once
-#include "SingletonMacro.h"
+#include "Entity/Entity.h"
 
+#include "SingletonMacro.h"
 #include "Static/FTString.h"
 #include "Manager/FTSpineLoader.h"
 
@@ -18,7 +19,8 @@ namespace D3D11
 {
 	class FTSpriteAnimation;
 
-	class AnimationManager
+	class AnimationManager :
+		public Core::Entity
 	{
 		SINGLETON(AnimationManager)
 
@@ -28,9 +30,12 @@ namespace D3D11
 	public:
 		void Initialize(Core::FoxtrotRenderer* renderer);
 
+	protected:
+		void RegisterMemberFuncs() override;
+
 	private:
 		Core::FoxtrotRenderer* mRenderer;
-		FTSpineLoader* mSpineLoader;
+		FTSpineLoader*		   mSpineLoader;
 
 #ifdef FOXTROT_EDITOR
 	public:

@@ -19,7 +19,7 @@
 #include <string>
 #include <filesystem>
 
-#include "Static/FTString.h"
+#include "FTDS/Static/FTString.h"
 #include "Math/FTMath.h"
 #include "Debugging/DebugMemAlloc.h"
 

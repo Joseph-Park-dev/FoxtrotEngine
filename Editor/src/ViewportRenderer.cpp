@@ -50,10 +50,10 @@ namespace Editor
 	{
 		if (!EditorChunkLoader::GetInstance()->IsLoadingChunk())
 		{
-			EditorSceneManager::GetInstance()->EditorRender(renderer);
-			DebugShapes::GetInstance()->Render(renderer);
-			DebugShapes::GetInstance()->RenderCamRect(renderer);
-			LightManager::GetInstance()->Render(renderer, EditorCamera::GetInstance());
+			//EditorSceneManager::GetInstance()->EditorRender(renderer);
+			//DebugShapes::GetInstance()->Render(renderer);
+			//DebugShapes::GetInstance()->RenderCamRect(renderer);
+			//LightManager::GetInstance()->Render(renderer, EditorCamera::GetInstance());
 		}
 	}
 

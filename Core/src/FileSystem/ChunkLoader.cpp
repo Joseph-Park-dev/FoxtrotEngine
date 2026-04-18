@@ -178,6 +178,10 @@ namespace Core
 		}
 	}
 
+	void ChunkLoader::RegisterMemberFuncs()
+	{
+	}
+
 	void ChunkLoader::LoadChunkData(std::ifstream& ifs)
 	{
 		int maxActor = 0;

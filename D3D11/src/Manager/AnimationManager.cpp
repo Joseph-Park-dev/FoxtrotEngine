@@ -26,7 +26,6 @@
 namespace D3D11
 {
 	using namespace Core;
-	AnimationManager* AnimationManager::mInstance = nullptr;
 
 	FTSpineLoader* AnimationManager::GetSpineLoader()
 	{
@@ -36,6 +35,10 @@ namespace D3D11
 	void AnimationManager::Initialize(Core::FoxtrotRenderer* renderer)
 	{
 		mRenderer = renderer;
+	}
+
+	void AnimationManager::RegisterMemberFuncs()
+	{
 	}
 
 	AnimationManager::AnimationManager()

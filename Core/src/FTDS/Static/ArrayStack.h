@@ -6,10 +6,10 @@ namespace Core
 	namespace FTDS
 	{
 		template <class TYPE>
-		class ArrayStack : public FTDS::Array<TYPE>
+		class ArrayStack : public Array<TYPE>
 		{
-			using Core::FTDS::Array<TYPE>::mData;
-			using Core::FTDS::Array<TYPE>::mCapacity;
+			using Array<TYPE>::mData;
+			using Array<TYPE>::mCapacity;
 
 		public:
 			virtual void Push(TYPE& element)

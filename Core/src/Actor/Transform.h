@@ -11,17 +11,20 @@
 /// </summary>
 
 #pragma once
+#include "Entity/Entity.h"
+
 #include <iosfwd>
 
 #include "Math/FTMath.h"
-#include "Plugin/ObjectLayout.h"
+#include "Entity/ObjectLayout.h"
 
 namespace Core
 {
 	class Actor;
 	struct Steering;
 
-	class Transform
+	class Transform :
+		Core::Entity
 	{
 	public:
 		//////////////////////////////
@@ -71,6 +74,12 @@ namespace Core
 		Transform(Actor* owner, Transform& origin);
 		virtual ~Transform();
 
+	protected:
+		void RegisterMemberFuncs() override;
+
+	protected:
+		const Actor* GetOwner() const;
+
 	private:
 		// Local Transformation.
 		Math::FTVector3 mLocalPosition;
@@ -92,14 +101,6 @@ namespace Core
 	public:
 		void SaveProperties(std::ofstream& ofs);
 		void LoadProperties(std::ifstream& ofs);
-
-#ifdef FOXTROT_EDITOR
-		void UpdateUI();
-#endif
-
-	public:
-		static const MemberDesc	  MemberLayout[];
-		static const ObjectLayout Layout;
 	};
 
 	namespace ChunkKey

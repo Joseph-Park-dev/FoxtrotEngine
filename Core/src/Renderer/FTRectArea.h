@@ -57,10 +57,7 @@ namespace Core
 
 	public:
 		FTRectArea();
-		FTRectArea(float x, float y, float width, float height, float rotAngle = 0)
-		{
-			Set(x, y, width, height, rotAngle);
-		}
+		FTRectArea(float x, float y, float width, float height, float rotAngle = 0);
 		void CloneTo(FTRectArea* rect);
 
 	private:
@@ -86,13 +83,18 @@ namespace Core
 		constexpr const char* FTRectArea_ROTANGLE = "RotAngle";
 	} // namespace ChunkKey
 
-	using FTRECTAREA_CONSTRUCTOR = FTRectArea* (*)();
+	using FTRECTAREA_CONSTRUCTOR = FTRectArea* (*)(float, float, float, float, float);
 	using FTRECTAREA_SAVE		 = void (*)(std::ofstream*, FTRectArea*);
 	using FTRECTAREA_LOAD		 = void (*)(std::ifstream*, FTRectArea*);
 
+	namespace PluginKey
+	{
+		constexpr const char* CREATE_FTRECTAREA = "CreateFTRectArea";
+	} // namespace PluginKey
+
 	extern "C"
 	{
-		CORE_API FTRectArea* CreateFTRectArea();
+		CORE_API FTRectArea* CreateFTRectArea(float x, float y, float width, float height, float rotAngle = 0);
 		CORE_API void		 SaveProperties(std::ofstream* ofs, FTRectArea* rectArea);
 		CORE_API void		 LoadProperties(std::ifstream* ifs, FTRectArea* rectArea);
 	}

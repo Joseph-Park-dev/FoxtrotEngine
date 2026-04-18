@@ -27,6 +27,11 @@ namespace Core
 		delete mAssetPath;
 	}
 
+	void DirectoryHelper::RegisterMemberFuncs()
+	{
+		//GetMembers()->Insert()
+	}
+
 	void DirectoryHelper::AbsoluteToRelativePath(FTDS::String& absPath)
 	{
 		FTDS::String path		= absPath;

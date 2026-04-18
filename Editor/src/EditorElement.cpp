@@ -17,7 +17,10 @@
 #include "EditorSceneManager.h"
 #include "EditorChunkLoader.h"
 #include "CommandHistory.h"
+#include "Command.h"
 #include "EditorUtils.h"
+#include "Actor/EditorTransform.h"
+#include "Component/EditorComponent.h"
 
 #include "InputSystem/FTInputDevice.h"
 #include "Manager/ResourceManager.h"
@@ -45,7 +48,7 @@ namespace Editor
 					UpdateDrawOrder();
 					UpdateActorGroup();
 					CommandHistory::GetInstance()->UpdateBoolValue("Is Active", IsActive());
-					GetTransform()->UpdateUI();
+					UpdateTransformUI();
 
 					ImGui::EndTabItem();
 				}
@@ -105,33 +108,31 @@ namespace Editor
 			++level;
 		}
 		mHierarchyLevel = level;
-
-		Actor::Setup();
 	}
 
-	void EditorElement::EditorUpdate(float deltaTime)
-	{
-		for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
-		{
-			if (*comp)
-			{
-				if ((*comp)->GetIsActive())
-					(*comp)->EditorUpdate(deltaTime);
-			}
-		}
-	}
+	//void EditorElement::EditorUpdate(float deltaTime)
+	//{
+	//	for (auto comp = GetComponents()->Begin(); comp != GetComponents()->End(); ++comp)
+	//	{
+	//		if (*comp)
+	//		{
+	//			if ((*comp)->GetIsActive())
+	//				(*comp)->EditorUpdate(deltaTime);
+	//		}
+	//	}
+	//}
 
-	void EditorElement::EditorRender(D3D11Renderer* renderer)
-	{
-		for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
-		{
-			if (*comp)
-			{
-				if ((*comp)->GetIsActive())
-					(*comp)->EditorRender(renderer);
-			}
-		}
-	}
+	//void EditorElement::EditorRender(D3D11Renderer* renderer)
+	//{
+	//	for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
+	//	{
+	//		if (*comp)
+	//		{
+	//			if ((*comp)->GetIsActive())
+	//				(*comp)->EditorRender(renderer);
+	//		}
+	//	}
+	//}
 
 	EditorElement::EditorElement(int id)
 		: Actor(id)
@@ -139,6 +140,7 @@ namespace Editor
 		, mHierarchyLevel(0)
 		, mIsDisplayed(false)
 	{
+		SwitchTransformToEditor();
 	}
 
 	EditorElement::EditorElement(Actor* actor, int id)
@@ -147,30 +149,33 @@ namespace Editor
 		, mHierarchyLevel(0)
 		, mIsDisplayed(false)
 	{
+		SwitchTransformToEditor();
 	}
 
-	EditorElement::EditorElement(Actor* actor, int id, bool deepCpyChild)
-		: Actor(actor, id, deepCpyChild)
+	EditorElement::EditorElement(Core::Actor* actor, int id, bool deepCpyChild)
+		: Core::Actor(actor, id, deepCpyChild)
 		, mIsFocused(false)
 		, mHierarchyLevel(0)
 		, mIsDisplayed(false)
 	{
+		SwitchTransformToEditor();
 	}
 
-	EditorElement::EditorElement(FTPremade* premade, int id)
-		: Actor(premade, id)
+	EditorElement::EditorElement(Core::FTPremade* premade, int id)
+		: Core::Actor(premade, id)
 		, mIsFocused(false)
 		, mHierarchyLevel(0)
 		, mIsDisplayed(false)
 	{
+		SwitchTransformToEditor();
 	}
 
 	void EditorElement::CopyChildObjectFrom(Actor* actor)
 	{
-		if (GetChildActors().GetSize() < 1)
+		if (GetChildActors()->GetSize() < 1)
 			return;
 
-		actor->GetChildActors().IterateArray([&](Actor* child) {
+		actor->GetChildActors()->IterateArray([&](Actor* child) {
 			if (child)
 			{
 				EditorChunkLoader::GetInstance()->AddMaxActorID();
@@ -187,19 +192,19 @@ namespace Editor
 
 	void EditorElement::UpdateActorGroup()
 	{
-		const char* comboPreview = ActorGroupUtil::GetActorGroupStr(GetActorGroup());
+		const char* comboPreview = Core::ActorGroupUtil::GetActorGroupStr(GetActorGroup());
 		if (ImGui::BeginCombo("Actor Group", comboPreview))
 		{
-			for (size_t n = 0; n <= ActorGroupUtil::GetCount() - 1; ++n)
+			for (size_t n = 0; n <= Core::ActorGroupUtil::GetCount() - 1; ++n)
 			{
-				if (ImGui::Selectable(ActorGroupUtil::GetActorGroupStr(n)))
+				if (ImGui::Selectable(Core::ActorGroupUtil::GetActorGroupStr(n)))
 				{
 					int					   grpIdx  = static_cast<int>(++n);
-					ActorGroupEditCommand* command = DBG_NEW ActorGroupEditCommand(GetActorGroupRef());
-					command->SetNextVal(static_cast<ActorGroup>(grpIdx));
+					Editor::ActorGroupEditCommand* command = DBG_NEW Editor::ActorGroupEditCommand(GetActorGroupRef());
+					command->SetNextVal(static_cast<Core::ActorGroup>(grpIdx));
 					// CommandHistory::GetInstance()->AddCommand(command);
 
-					SetActorGroup((ActorGroup)grpIdx);
+					SetActorGroup((Core::ActorGroup)grpIdx);
 				}
 			}
 			ImGui::EndCombo();
@@ -213,27 +218,29 @@ namespace Editor
 		SetDrawOrder(i);
 	}
 
+	void EditorElement::UpdateTransformUI()
+	{
+		Core::Transform* transform = GetTransform();
+	}
+
 	void EditorElement::UpdateComponentsUI()
 	{
 		if (ImGui::BeginChild(GetName().C_Str()))
 		{
 			size_t count = 0;
-			for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
+			for (auto comp = GetComponents()->Begin(); comp != GetComponents()->End(); ++comp)
 			{
-				if (GetComponents().IsEmpty())
+				if (GetComponents()->IsEmpty())
 					break;
 				if (*comp)
 				{
-					FTDS::String name(std::to_string(count).c_str());
+					Core::FTDS::String name(std::to_string(count).c_str());
 					name.Append(" ");
 					name.Append((*comp)->GetName());
 
 					if (ImGui::TreeNode(name.C_Str()))
 					{
-						int updateOrder = (*comp)->GetUpdateOrder();
-						ImGui::InputInt(ChunkKey::UPDATE_ORDER, &updateOrder);
-						(*comp)->SetUpdateOrder(updateOrder);
-
+						CommandHistory::GetInstance()->UpdateIntValue(Core::ChunkKey::UPDATE_ORDER, (*comp)->UpdateOrder());
 						(*comp)->EditorUIUpdate();
 						if (ImGui::SmallButton("Delete"))
 							RemoveComponent((*comp));
@@ -258,7 +265,7 @@ namespace Editor
 			ComponentCreateMap::iterator iter = EditorChunkLoader::GetInstance()->GetCompCreateMap().begin();
 			for (; iter != EditorChunkLoader::GetInstance()->GetCompCreateMap().end(); ++iter)
 				if (ImGui::Selectable((*iter).first))
-					(*iter).second(this, FTCoreEditor::GetInstance());
+					(*iter).second(this);
 			ImGui::EndPopup();
 		}
 	}
@@ -270,5 +277,11 @@ namespace Editor
 			bool confirmed = false;
 			EditorLayer::GetInstance()->SetInfoType(InfoType::PremadeIsCreated);
 		}
+	}
+	void EditorElement::SwitchTransformToEditor()
+	{
+		if (GetTransform())
+			delete GetTransform();
+		SetTransform(DBG_NEW EditorTransform(this));
 	}
 } // namespace Editor

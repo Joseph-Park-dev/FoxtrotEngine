@@ -84,6 +84,8 @@ namespace Core
 
 		void SetIsActive(bool isActive);
 
+		int& UpdateOrder() { return mUpdateOrder; }
+
 	protected:
 		/// <summary>
 		/// Creates a Component to be assigned to the Actor.
@@ -145,16 +147,6 @@ namespace Core
 		virtual void EditorUIUpdate();
 
 		void SetUpdateOrder(int updateOrder);
-
-	public:
-		template <class T>
-		static void Create(Actor* actor)
-		{
-			// Dynamically allocate actor of type T
-			T* t = DBG_NEW T(actor, DefaultVal::UPDATE_ORDER);
-			// Call LoadProperties on DBG_NEW actor
-			t->Initialize();
-		}
 
 #endif // FOXTROT_EDITOR
 	};

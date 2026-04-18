@@ -13,7 +13,7 @@
 #pragma once
 #include <vector>
 
-#include "Core/SingletonMacro.h"
+#include "Core/Singleton.h"
 
 class UI;
 class FTInputDevice;

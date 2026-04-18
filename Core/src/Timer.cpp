@@ -33,5 +33,9 @@ namespace Core
 		mLastTicks = currentTicks;
 	}
 
+	void Timer::RegisterMemberFuncs()
+	{
+	}
+
 	Timer::~Timer() {}
 } // namespace Core

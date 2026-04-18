@@ -70,16 +70,10 @@ namespace Core
 					(*iter)->Setup();
 		}
 
-		// Gameloop functions.
-		virtual void ProcessInput()
-		{
-			for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
-			{
-				if (!(*iter)->GetOwner()->IsActive())
-					continue;
-			}
-		}
-		void Update(float deltaTime)
+		virtual void ProcessInput() = 0;
+		virtual void Render()		= 0;
+
+		virtual void Update(float deltaTime)
 		{
 			for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
 			{
@@ -96,15 +90,6 @@ namespace Core
 				if (!(*iter)->GetOwner()->IsActive())
 					continue;
 				(*iter)->LateUpdate(deltaTime);
-			}
-		}
-		virtual void Render(FoxtrotRenderer* renderer)
-		{
-			for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
-			{
-				if (!(*iter)->GetOwner()->IsActive())
-					continue;
-				(*iter)->Render(renderer);
 			}
 		}
 
@@ -144,6 +129,26 @@ namespace Core
 		const COMP_CONSTRUCTOR GetConstructor(const char* procName) const
 		{
 			return (COMP_CONSTRUCTOR)(GetProcAddress(mModule, procName));
+		}
+
+		// Gameloop functions.
+		void ProcessInput(FTInputDevice* inputDevice)
+		{
+			for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+			{
+				if (!(*iter)->GetOwner()->IsActive())
+					continue;
+				(*iter)->ProcessInput(inputDevice);
+			}
+		}
+		void Render(FoxtrotRenderer* renderer)
+		{
+			for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+			{
+				if (!(*iter)->GetOwner()->IsActive())
+					continue;
+				(*iter)->Render(renderer);
+			}
 		}
 
 	private:

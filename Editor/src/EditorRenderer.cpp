@@ -47,4 +47,9 @@ namespace Editor
 	{
 		return mViewportRenderer;
 	}
+
+	EditorRenderer::EditorRenderer(D3D11::D3D11Window* window)
+		: D3D11::D3D11Renderer(window)
+	{
+	}
 } // namespace Editor

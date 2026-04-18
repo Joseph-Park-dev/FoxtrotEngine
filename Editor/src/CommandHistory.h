@@ -13,15 +13,13 @@
 /// </summary>
 
 #pragma once
-#include "SingletonMacro.h"
+#include "Singleton.h"
 #include "FTDS/Static/ArrayStack.h"
 
 #define COMMAND_MAXCOUNT 30
 #define FLOATMOD_SPEED 0.1f
 #define INTMOD_SPEED 1
 
-class ActorCommand;
-class Command;
 namespace Math
 {
 	class FTVector2;
@@ -29,48 +27,52 @@ namespace Math
 	class FTVector4;
 } // namespace Math
 
-class CommandHistory
+namespace Editor
 {
-	SINGLETON(CommandHistory)
+	class ActorCommand;
+	class Command;
+	class CommandHistory :
+		public Core::Singleton<CommandHistory>
+	{
+	public:
+		/// <summary>
+		/// Push the current command to the previous,
+		/// Flush out the next commands.
+		/// </summary>
+		void ArrangeCommand();
+		void SetCurrent(Command* cmd);
 
-public:
-	/// <summary>
-	/// Push the current command to the previous,
-	/// Flush out the next commands.
-	/// </summary>
-	void ArrangeCommand();
-	void SetCurrent(Command* cmd);
+	public:
+		// These member functions will be used on Foxtrot Editor when updating values.
+		void UpdateIntValue(const char* label, int& ref, int modSpeed = INTMOD_SPEED);
+		void UpdateIntValue(const char* label, int& ref, int min, int max, int modSpeed = INTMOD_SPEED);
+		void UpdateUnsignedIntValue(const char* label, UINT& ref, UINT modSpeed = INTMOD_SPEED);
+		void UpdateFloatValue(const char* label, float& ref, float modSpeed = FLOATMOD_SPEED);
+		void UpdateBoolValue(const char* label, bool& ref);
+		void UpdateVector2Value(const char* label, Math::FTVector2& ref, float modSpeed = FLOATMOD_SPEED);
+		void UpdateVector3Value(const char* label, Math::FTVector3& ref, float modSpeed = FLOATMOD_SPEED);
+		void UpdateVector4Value(const char* label, Math::FTVector4& ref, float modSpeed = FLOATMOD_SPEED);
+		void UpdateStringValue(const char* label, Core::FTDS::String& ref);
 
-public:
-	// These member functions will be used on Foxtrot Editor when updating values.
-	void UpdateIntValue(const char* label, int& ref, int modSpeed = INTMOD_SPEED);
-	void UpdateIntValue(const char* label, int& ref, int min, int max, int modSpeed = INTMOD_SPEED);
-	void UpdateUnsignedIntValue(const char* label, UINT& ref, UINT modSpeed = INTMOD_SPEED);
-	void UpdateFloatValue(const char* label, float& ref, float modSpeed = FLOATMOD_SPEED);
-	void UpdateBoolValue(const char* label, bool& ref);
-	void UpdateVector2Value(const char* label, Math::FTVector2& ref, float modSpeed = FLOATMOD_SPEED);
-	void UpdateVector3Value(const char* label, Math::FTVector3& ref, float modSpeed = FLOATMOD_SPEED);
-	void UpdateVector4Value(const char* label, Math::FTVector4& ref, float modSpeed = FLOATMOD_SPEED);
-	void UpdateStringValue(const char* label, Core::FTDS::String& ref);
+	public:
+		void Update();
+		// This will be called when closing a Foxtrot Editor instance.
+		void ShutDown();
 
-public:
-	void Update();
-	// This will be called when closing a Foxtrot Editor instance.
-	void ShutDown();
+	private:
+		Core::FTDS::ArrayStack<Command*>* mPrevious;
+		Core::FTDS::ArrayStack<Command*>* mNext;
+		Command*						  mCurrent;
+		bool							  mIsRecording; // A value is being modified on UI.
 
-private:
-	Core::FTDS::ArrayStack<Command*>* mPrevious;
-	Core::FTDS::ArrayStack<Command*>* mNext;
-	Command*						  mCurrent;
-	bool							  mIsRecording; // A value is being modified on UI.
+	private:
+		// Get the command located at the pointer position.
+		Command* GetCurrentCommand();
 
-private:
-	// Get the command located at the pointer position.
-	Command* GetCurrentCommand();
-
-	// Navigates through the Commands.
-	// This feature is not working properly in the current version.
-	void UndoCommand();
-	// This feature is not working properly in the current version.
-	void RedoCommand();
-};
+		// Navigates through the Commands.
+		// This feature is not working properly in the current version.
+		void UndoCommand();
+		// This feature is not working properly in the current version.
+		void RedoCommand();
+	};
+} // namespace Editor

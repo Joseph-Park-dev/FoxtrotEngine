@@ -7,6 +7,8 @@
 // ----------------------------------------------------------------
 
 #pragma once
+#include "Entity/Entity.h"
+
 #include "FTDS/Static/FTString.h"
 
 #include "Renderer/FTRectArea.h"
@@ -18,7 +20,8 @@ namespace Core
 	class Plugin;
 	enum class MOUSE;
 
-	class FTWindow
+	class FTWindow :
+		public Core::Entity
 	{
 	public:
 		const Plugin* GetOwner() { return mOwner; }

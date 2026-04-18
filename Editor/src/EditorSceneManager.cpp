@@ -8,91 +8,50 @@
 
 #include "EditorSceneManager.h"
 
+#include <algorithm>
+
+#include "InputSystem/D3D11InputDevice.h"
 #include "Manager/SceneManager.h"
 #include "Actor/Actor.h"
 #include "EditorScene.h"
 #include "EditorElement.h"
 #include "FTDS/Dynamic/DynamicArray.h"
 
-void EditorSceneManager::Initialize()
+namespace Editor
 {
-}
-
-void EditorSceneManager::ProcessInput(FTInputDevice* inputDevice)
-{
-	mEditorScene->ProcessInput(inputDevice);
-}
-
-void EditorSceneManager::Update(float deltaTime)
-{
-	mEditorScene->Update(deltaTime);
-	mEditorScene->LateUpdate(deltaTime);
-}
-
-void EditorSceneManager::Render(FoxtrotRenderer* renderer)
-{
-	mEditorScene->Render(renderer);
-}
-
-void EditorSceneManager::EditorUpdate(float deltaTime)
-{
-	mEditorScene->EditorUpdate(deltaTime);
-}
-
-void EditorSceneManager::EditorRender(FoxtrotRenderer* renderer)
-{
-	mEditorScene->EditorRender(renderer);
-}
-
-void EditorSceneManager::DeleteAll()
-{
-	delete mEditorScene;
-	mEditorScene = nullptr;
-}
-
-void EditorSceneManager::GetLowests(std::vector<EditorElement*>& elements)
-{
-	FTDS::DynamicArray<Actor*>* actors = GetEditorScene()->Actors();
-
-	for (auto iter = actors->Begin(); iter != actors->End(); ++iter)
+	void EditorSceneManager::GetLowests(std::vector<EditorElement*>& elements)
 	{
-		EditorElement* ele = static_cast<EditorElement*>(*iter);
-		ele->SetIsDisplayed(false);
-		if (ele->GetHierarchyLevel() < 1)
-			elements.push_back(ele);
+		Core::FTDS::DynamicArray<Core::Actor*>*& actors = Core::SceneManager::GetCurrentScene()->Actors();
+
+		for (auto iter = actors->Begin(); iter != actors->End(); ++iter)
+		{
+			EditorElement* ele = static_cast<EditorElement*>(*iter);
+			ele->SetIsDisplayed(false);
+			if (ele->GetHierarchyLevel() < 1)
+				elements.push_back(ele);
+		}
 	}
-}
 
-void EditorSceneManager::SortByHierarchyLv(std::vector<EditorElement*>& elements)
-{
-	std::sort(elements.begin(), elements.end(), [](const EditorElement* lhs, const EditorElement* rhs) {
-		return lhs->GetHierarchyLevel() < rhs->GetHierarchyLevel();
-	});
-}
-
-EditorScene* EditorSceneManager::GetEditorScene()
-{
-	return mEditorScene;
-}
-
-void EditorSceneManager::PushRowOfChildActors(EditorElement* actor, std::vector<EditorElement*>& dest)
-{
-	dest.push_back(actor);
-	FTDS::DynamicArray<Actor*>& childActors = actor->GetChildActors();
-	for (auto child = childActors.Begin(); child != childActors.End(); ++child)
+	void EditorSceneManager::SortByHierarchyLv(std::vector<EditorElement*>& elements)
 	{
-		EditorElement* elemChild = static_cast<EditorElement*>(*child);
-		PushRowOfChildActors(elemChild, dest);
+		std::sort(elements.begin(), elements.end(), [](const EditorElement* lhs, const EditorElement* rhs) {
+			return lhs->GetHierarchyLevel() < rhs->GetHierarchyLevel();
+		});
 	}
-}
 
-EditorSceneManager::EditorSceneManager()
-	: mEditorScene(DBG_NEW EditorScene)
-{
-}
+	void EditorSceneManager::PushRowOfChildActors(EditorElement* actor, std::vector<EditorElement*>& dest)
+	{
+		dest.push_back(actor);
+		Core::FTDS::DynamicArray<Core::Actor*>* childActors = actor->GetChildActors();
+		for (auto child = childActors->Begin(); child != childActors->End(); ++child)
+		{
+			EditorElement* elemChild = static_cast<EditorElement*>(*child);
+			PushRowOfChildActors(elemChild, dest);
+		}
+	}
 
-EditorSceneManager::~EditorSceneManager()
-{
-	delete mEditorScene;
-	mEditorScene = nullptr;
-}
+	EditorSceneManager::EditorSceneManager()
+		: Core::SceneManager()
+	{
+	}
+} // namespace Editor

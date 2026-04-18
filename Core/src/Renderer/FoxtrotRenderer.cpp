@@ -8,24 +8,6 @@
 
 #include "Renderer/FoxtrotRenderer.h"
 
-#include "TemplateFunctions.h"
-#include "Actor/Transform.h"
-#include "InputSystem/FTInputDevice.h"
-#include "Manager/SceneManager.h"
-#include "Renderer/FTRectArea.h"
-#include "Renderer/FTWindow.h"
-
-#ifdef FOXTROT_EDITOR
-	#define IMGUI_DEFINE_MATH_OPERATORS
-	#include <imgui.h>
-	#include "EditorLayer.h"
-	#include "ViewportRenderer.h"
-
-	#include "EditorChunkLoader.h"
-	#include "EditorSceneManager.h"
-	#include "FoxtrotRenderer.h"
-#endif // FOXTROT_EDITOR
-
 // void FoxtrotRenderer::SwapChainPresent(UINT syncInterval, UINT flags)
 //{
 //	mSwapChain->Present(syncInterval, flags);

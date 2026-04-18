@@ -36,9 +36,6 @@ namespace Core
 
 	class FTInputDevice
 	{
-	public:
-		FTInputDevice() {};
-
 	protected:
 		template <typename BUTTON_TYPE>
 		ButtonInput& GetButtonInput(FTDS::DynamicArray<ButtonInput>* btnArr, BUTTON_TYPE button)

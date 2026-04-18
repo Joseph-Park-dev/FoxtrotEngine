@@ -17,7 +17,7 @@
 
 #include "box2d/box2d.h"
 
-#include "Core/SingletonMacro.h"
+#include "Core/Singleton.h"
 
 struct Ray;
 class Collider2DComponent;

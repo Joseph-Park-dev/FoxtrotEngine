@@ -32,8 +32,6 @@
 
 namespace D3D11
 {
-	D3D11::ResourceManager* D3D11::ResourceManager::mInstance = nullptr;
-
 	/**
 	 * @brief Destructor - release all resources and free containers.
 	 *
@@ -386,4 +384,8 @@ namespace D3D11
 		//	mPSOs->Insert(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
 		//}
 	}
+	void ResourceManager::RegisterMemberFuncs()
+	{
+	}
+
 } // namespace D3D11

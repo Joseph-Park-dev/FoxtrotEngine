@@ -11,12 +11,13 @@
 /// </summary>
 
 #pragma once
-#include "SingletonMacro.h"
+#include "Entity/Entity.h"
 
 #include <string>
 #include <d3d11.h>
 #include <wrl.h>
 
+#include "SingletonMacro.h"
 #include "FTDS/Dynamic/DynamicArray.h"
 
 namespace D3D11
@@ -26,10 +27,10 @@ namespace D3D11
 	class D3D11Renderer;
 
 	// This provides a context to render shapes as DebugShapes
-	class DebugShapes
+	class DebugShapes :
+		public Core::Entity
 	{
-		SINGLETON_PROTECTED(DebugShapes)
-
+		SINGLETON(DebugShapes)
 	public:
 		// Adds the created shape to the std::vector.
 		void AddShape(FTShape* shape);
@@ -54,6 +55,9 @@ namespace D3D11
 		// Batch renders shapes.
 		// It is not necessary to render shapes manually from the Components
 		void Render(D3D11::D3D11Renderer* renderer);
+
+	protected:
+		void RegisterMemberFuncs() override;
 
 	private:
 		Core::FTDS::DynamicArray<FTShape*>* mShapes;

@@ -27,14 +27,12 @@ namespace D3D11
 {
 	using namespace Core;
 	using Microsoft::WRL::ComPtr;
-	DebugShapes* DebugShapes::mInstance = nullptr;
 
 	DebugShapes::DebugShapes()
 		: mShapes(DBG_NEW FTDS::DynamicArray<FTShape*>)
 		, mVSPath(L".\\FoxtrotEngine\\Assets\\Shaders\\DebugShapeVS.hlsl")
 		, mGSPath(L".\\FoxtrotEngine\\Assets\\Shaders\\DebugShapeGS.hlsl")
 		, mPSPath(L".\\FoxtrotEngine\\Assets\\Shaders\\DebugShapePS.hlsl")
-		, mCamRect(nullptr)
 	{
 	}
 
@@ -62,6 +60,10 @@ namespace D3D11
 
 		for (auto iter = mShapes->Begin(); iter != mShapes->End(); ++iter)
 			(*iter)->Render(renderer);
+	}
+
+	void DebugShapes::RegisterMemberFuncs()
+	{
 	}
 
 	void DebugShapes::AddShape(FTShape* shape)

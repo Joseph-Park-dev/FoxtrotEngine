@@ -11,11 +11,12 @@
 /// </summary>
 
 #pragma once
-#include "SingletonMacro.h"
+#include "Entity/Entity.h"
 
 #include <iosfwd>
 
-#include <FTDS/Static/FTString.h>
+#include "SingletonMacro.h"
+#include "FTDS/Static/FTString.h"
 
 namespace Core
 {
@@ -33,9 +34,10 @@ namespace Core
 	#define FIND_ACTOR(id) SceneManager::GetInstance()->GetCurrentScene()->FindActor(id)
 #endif // FOXTROT_EDITOR
 
-	class SceneManager
+	class SceneManager :
+		public Core::Entity
 	{
-		SINGLETON_PROTECTED(SceneManager)
+		SINGLETON(SceneManager)
 
 	public:
 		void		   SwitchScene(size_t index);
@@ -47,15 +49,17 @@ namespace Core
 		FTDS::DynamicArray<FTDS::String*>*& ChunkList();
 
 	public:
-		virtual void Initialize();
+		virtual void Initialize(Scene* scene);
 		virtual void ProcessEvent();
 
 	public:
 		void SaveSceneList(std::ofstream& ofs);
 
-	private:
-		FTDS::String mChunkListPath;
+	protected:
+		void RegisterMemberFuncs() override;
 
+	private:
+		FTDS::String					   mChunkListPath;
 		Scene*							   mCurrentScene;
 		FTDS::DynamicArray<FTDS::String*>* mChunkList; // List, and order of .chunks
 	};

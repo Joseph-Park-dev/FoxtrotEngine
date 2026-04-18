@@ -10,8 +10,9 @@
 /// </summary>
 
 #pragma once
-#include "SingletonMacro.h"
+#include "Entity/Entity.h"
 
+#include "SingletonMacro.h"
 #include "FTDS/Dynamic/DynamicArray.h"
 
 namespace Core
@@ -24,7 +25,8 @@ namespace Core
 		void*	   eventData;
 	};
 
-	class EventManager
+	class EventManager :
+		public Core::Entity
 	{
 		SINGLETON(EventManager)
 
@@ -36,6 +38,9 @@ namespace Core
 
 	public:
 		void ProcessEvent();
+
+	protected:
+		void RegisterMemberFuncs() override;
 
 	private:
 		void Execute(const FTEvent& executedEvent);

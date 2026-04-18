@@ -14,6 +14,8 @@
 /// </summary>
 
 #pragma once
+#include "Entity/Entity.h"
+
 #include <filesystem>
 
 #include "SingletonMacro.h"
@@ -24,9 +26,10 @@ namespace Core
 #define PATH_PROJECT DirectoryHelper::GetInstance()->GetProjectPath()
 #define PATH_CHUNK DirectoryHelper::GetInstance()->GetChunkPath()
 #define CHUNK_IS_SAVED DirectoryHelper::GetInstance()->GetCurrChunkSaved()
-#define SET_CHUNK_IS_SAVED(saved) DirectoryHelper::GetInstance()->SetCurrChunkSaved(saved);
+#define SET_CHUNK_IS_SAVED(saved) DirectoryHelper::GetInstance()->SetCurrChunkSaved(saved)
 
-	class DirectoryHelper
+	class DirectoryHelper :
+		public Core::Entity
 	{
 		SINGLETON(DirectoryHelper)
 
@@ -58,6 +61,9 @@ namespace Core
 		void SetProjectPath(FTDS::String&& path);
 		void SetChunkPath(FTDS::String&& path);
 		void SetCurrChunkSaved(bool val);
+
+	protected:
+		void RegisterMemberFuncs() override;
 
 	private:
 		FTDS::String* mProjectPath;

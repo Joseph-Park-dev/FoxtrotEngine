@@ -25,277 +25,280 @@
 #include "FTDS/Static/ArrayStack.h"
 #include "FTDS/Static/FTString.h"
 
-using namespace Core;
-using namespace Math;
-void CommandHistory::UndoCommand()
+namespace Editor
 {
-	if (mCurrent)
+	using namespace Core;
+	using namespace Math;
+	void CommandHistory::UndoCommand()
 	{
-		mCurrent->Undo();
-		if (0 < mPrevious->GetSize())
+		if (mCurrent)
 		{
-			mNext->Push(mCurrent);
-			mCurrent = mPrevious->Peek();
-			mPrevious->Pop();
+			mCurrent->Undo();
+			if (0 < mPrevious->GetSize())
+			{
+				mNext->Push(mCurrent);
+				mCurrent = mPrevious->Peek();
+				mPrevious->Pop();
+			}
 		}
 	}
-}
 
-void CommandHistory::RedoCommand()
-{
-	if (mCurrent)
+	void CommandHistory::RedoCommand()
 	{
-		mCurrent->Do();
-
-		if (0 < mNext->GetSize())
+		if (mCurrent)
 		{
+			mCurrent->Do();
+
+			if (0 < mNext->GetSize())
+			{
+				mPrevious->Push(mCurrent);
+				mCurrent = mNext->Peek();
+				mNext->Pop();
+			}
+		}
+	}
+
+	void CommandHistory::ArrangeCommand()
+	{
+		if (mCurrent)
 			mPrevious->Push(mCurrent);
-			mCurrent = mNext->Peek();
-			mNext->Pop();
-		}
-	}
-}
-
-void CommandHistory::ArrangeCommand()
-{
-	if (mCurrent)
-		mPrevious->Push(mCurrent);
-	if (!mNext->IsEmpty())
-	{
-		for (auto iter = mNext->Begin(); iter != mNext->End(); ++iter)
-			delete *iter;
-		mNext->Clear();
-		mNext->Reserve(COMMAND_MAXCOUNT);
-	}
-}
-
-void CommandHistory::SetCurrent(Command* cmd)
-{
-	mCurrent = cmd;
-}
-
-void CommandHistory::Update()
-{
-	if (EditorLayer::GetInstance()->GetUndoKeyPressed())
-		UndoCommand();
-	if (EditorLayer::GetInstance()->GetRedoKeyPressed())
-		RedoCommand();
-}
-
-void CommandHistory::UpdateVector2Value(const char* label, FTVector2& ref, float modSpeed)
-{
-	float vec2[2];
-	vec2[0] = ref.x;
-	vec2[1] = ref.y;
-
-	if (ImGui::DragFloat2(label, vec2, modSpeed))
-	{
-		if (!mIsRecording)
+		if (!mNext->IsEmpty())
 		{
-			mIsRecording = true;
-			ArrangeCommand();
-			mCurrent = DBG_NEW Vector2EditCommand(ref);
+			for (auto iter = mNext->Begin(); iter != mNext->End(); ++iter)
+				delete *iter;
+			mNext->Clear();
+			mNext->Reserve(COMMAND_MAXCOUNT);
 		}
 	}
 
-	if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
+	void CommandHistory::SetCurrent(Command* cmd)
 	{
-		if (mCurrent)
+		mCurrent = cmd;
+	}
+
+	void CommandHistory::Update()
+	{
+		if (EditorLayer::GetInstance()->GetUndoKeyPressed())
+			UndoCommand();
+		if (EditorLayer::GetInstance()->GetRedoKeyPressed())
+			RedoCommand();
+	}
+
+	void CommandHistory::UpdateVector2Value(const char* label, FTVector2& ref, float modSpeed)
+	{
+		float vec2[2];
+		vec2[0] = ref.x;
+		vec2[1] = ref.y;
+
+		if (ImGui::DragFloat2(label, vec2, modSpeed))
 		{
-			mIsRecording = false;
-			static_cast<Vector2EditCommand*>(mCurrent)->SetNextVal(ref);
+			if (!mIsRecording)
+			{
+				mIsRecording = true;
+				ArrangeCommand();
+				mCurrent = DBG_NEW Vector2EditCommand(ref);
+			}
 		}
-	}
-	ref.x = vec2[0];
-	ref.y = vec2[1];
-}
 
-void CommandHistory::UpdateVector3Value(const char* label, FTVector3& ref, float modSpeed)
-{
-	float vec3[3];
-	vec3[0] = ref.x;
-	vec3[1] = ref.y;
-	vec3[2] = ref.z;
-
-	if (ImGui::DragFloat3(label, vec3, modSpeed))
-	{
-		if (!mIsRecording)
+		if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
 		{
-			mIsRecording = true;
-			ArrangeCommand();
-			mCurrent = DBG_NEW Vector3EditCommand(ref);
+			if (mCurrent)
+			{
+				mIsRecording = false;
+				static_cast<Vector2EditCommand*>(mCurrent)->SetNextVal(ref);
+			}
 		}
+		ref.x = vec2[0];
+		ref.y = vec2[1];
 	}
 
-	if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
+	void CommandHistory::UpdateVector3Value(const char* label, FTVector3& ref, float modSpeed)
 	{
-		if (mCurrent)
+		float vec3[3];
+		vec3[0] = ref.x;
+		vec3[1] = ref.y;
+		vec3[2] = ref.z;
+
+		if (ImGui::DragFloat3(label, vec3, modSpeed))
 		{
-			mIsRecording = false;
-			static_cast<Vector3EditCommand*>(mCurrent)->SetNextVal(ref);
+			if (!mIsRecording)
+			{
+				mIsRecording = true;
+				ArrangeCommand();
+				mCurrent = DBG_NEW Vector3EditCommand(ref);
+			}
 		}
-	}
 
-	ref.x = vec3[0];
-	ref.y = vec3[1];
-	ref.z = vec3[2];
-}
-
-void CommandHistory::UpdateVector4Value(const char* label, FTVector4& ref, float modSpeed)
-{
-	float vec4[4];
-	vec4[0] = ref.x;
-	vec4[1] = ref.y;
-	vec4[2] = ref.z;
-	vec4[3] = ref.w;
-
-	if (ImGui::DragFloat4(label, vec4, modSpeed))
-	{
-		if (!mIsRecording)
+		if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
 		{
-			mIsRecording = true;
-			ArrangeCommand();
-			mCurrent = DBG_NEW Vector4EditCommand(ref);
+			if (mCurrent)
+			{
+				mIsRecording = false;
+				static_cast<Vector3EditCommand*>(mCurrent)->SetNextVal(ref);
+			}
 		}
+
+		ref.x = vec3[0];
+		ref.y = vec3[1];
+		ref.z = vec3[2];
 	}
 
-	if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
+	void CommandHistory::UpdateVector4Value(const char* label, FTVector4& ref, float modSpeed)
 	{
-		if (mCurrent)
+		float vec4[4];
+		vec4[0] = ref.x;
+		vec4[1] = ref.y;
+		vec4[2] = ref.z;
+		vec4[3] = ref.w;
+
+		if (ImGui::DragFloat4(label, vec4, modSpeed))
 		{
-			mIsRecording = false;
-			static_cast<Vector4EditCommand*>(mCurrent)->SetNextVal(ref);
+			if (!mIsRecording)
+			{
+				mIsRecording = true;
+				ArrangeCommand();
+				mCurrent = DBG_NEW Vector4EditCommand(ref);
+			}
 		}
-	}
 
-	ref.x = vec4[0];
-	ref.y = vec4[1];
-	ref.z = vec4[2];
-	ref.w = vec4[3];
-}
-
-void CommandHistory::UpdateStringValue(const char* label, Core::FTDS::String& ref)
-{
-	if (ref.Capacity() < BufferSize::STRING_BUFFER_SIZE)
-		ref.Reserve(BufferSize::STRING_BUFFER_SIZE);
-
-	// static StrEditCommand* command;
-
-	static char strVal[BufferSize::STRING_BUFFER_SIZE] = { 0 };
-	strcpy_s(strVal, ref.C_Str());
-
-	if (ImGui::InputText(label, strVal, BufferSize::STRING_BUFFER_SIZE, ImGuiInputTextFlags_::ImGuiInputTextFlags_EnterReturnsTrue))
-	{
-		StrEditCommand* command = DBG_NEW StrEditCommand(ref);
-		ref.Assign(strVal);
-		command->SetNextVal(ref);
-
-		command = nullptr;
-	}
-	strVal[0] = '\0';
-}
-
-void CommandHistory::UpdateFloatValue(const char* label, float& ref, float modSpeed)
-{
-	float val = ref;
-	if (ImGui::DragFloat(label, &val, modSpeed))
-	{
-		if (!mIsRecording)
+		if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
 		{
-			mIsRecording = true;
-			ArrangeCommand();
-			mCurrent = DBG_NEW FloatEditCommand(ref);
+			if (mCurrent)
+			{
+				mIsRecording = false;
+				static_cast<Vector4EditCommand*>(mCurrent)->SetNextVal(ref);
+			}
 		}
+
+		ref.x = vec4[0];
+		ref.y = vec4[1];
+		ref.z = vec4[2];
+		ref.w = vec4[3];
 	}
 
-	if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
+	void CommandHistory::UpdateStringValue(const char* label, Core::FTDS::String& ref)
 	{
-		if (mCurrent)
+		if (ref.Capacity() < BufferSize::STRING_BUFFER_SIZE)
+			ref.Reserve(BufferSize::STRING_BUFFER_SIZE);
+
+		// static StrEditCommand* command;
+
+		static char strVal[BufferSize::STRING_BUFFER_SIZE] = { 0 };
+		strcpy_s(strVal, ref.C_Str());
+
+		if (ImGui::InputText(label, strVal, BufferSize::STRING_BUFFER_SIZE, ImGuiInputTextFlags_::ImGuiInputTextFlags_EnterReturnsTrue))
 		{
-			mIsRecording = false;
-			static_cast<FloatEditCommand*>(mCurrent)->SetNextVal(val);
-		}
-	}
-	ref = val;
-}
+			StrEditCommand* command = DBG_NEW StrEditCommand(ref);
+			ref.Assign(strVal);
+			command->SetNextVal(ref);
 
-void CommandHistory::UpdateIntValue(const char* label, int& ref, int modSpeed)
-{
-	int val = ref;
-	if (ImGui::DragInt(label, &val, modSpeed))
+			command = nullptr;
+		}
+		strVal[0] = '\0';
+	}
+
+	void CommandHistory::UpdateFloatValue(const char* label, float& ref, float modSpeed)
 	{
-		if (!mIsRecording)
+		float val = ref;
+		if (ImGui::DragFloat(label, &val, modSpeed))
 		{
-			mIsRecording = true;
-			ArrangeCommand();
-			mCurrent = DBG_NEW IntEditCommand(ref);
+			if (!mIsRecording)
+			{
+				mIsRecording = true;
+				ArrangeCommand();
+				mCurrent = DBG_NEW FloatEditCommand(ref);
+			}
 		}
-	}
 
-	if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
-	{
-		if (mCurrent)
+		if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
 		{
-			mIsRecording = false;
-			static_cast<IntEditCommand*>(mCurrent)->SetNextVal(val);
+			if (mCurrent)
+			{
+				mIsRecording = false;
+				static_cast<FloatEditCommand*>(mCurrent)->SetNextVal(val);
+			}
+		}
+		ref = val;
+	}
+
+	void CommandHistory::UpdateIntValue(const char* label, int& ref, int modSpeed)
+	{
+		int val = ref;
+		if (ImGui::DragInt(label, &val, modSpeed))
+		{
+			if (!mIsRecording)
+			{
+				mIsRecording = true;
+				ArrangeCommand();
+				mCurrent = DBG_NEW IntEditCommand(ref);
+			}
+		}
+
+		if (mIsRecording && ImGui::IsItemDeactivatedAfterEdit())
+		{
+			if (mCurrent)
+			{
+				mIsRecording = false;
+				static_cast<IntEditCommand*>(mCurrent)->SetNextVal(val);
+			}
+		}
+		ref = val;
+	}
+
+	void CommandHistory::UpdateIntValue(const char* label, int& ref, int min, int max, int modSpeed)
+	{
+		Math::Clamp(ref, min, max);
+		UpdateIntValue(label, ref, modSpeed);
+	}
+
+	void CommandHistory::UpdateBoolValue(const char* label, bool& ref)
+	{
+		if (ImGui::Checkbox(label, &ref))
+		{
+			mCurrent = DBG_NEW BoolEditCommand(ref);
+			static_cast<BoolEditCommand*>(mCurrent)->SetPrevVal(!ref);
+			static_cast<BoolEditCommand*>(mCurrent)->SetNextVal(ref);
 		}
 	}
-	ref = val;
-}
 
-void CommandHistory::UpdateIntValue(const char* label, int& ref, int min, int max, int modSpeed)
-{
-	Math::Clamp(ref, min, max);
-	UpdateIntValue(label, ref, modSpeed);
-}
-
-void CommandHistory::UpdateBoolValue(const char* label, bool& ref)
-{
-	if (ImGui::Checkbox(label, &ref))
+	void CommandHistory::UpdateUnsignedIntValue(const char* label, UINT& ref, UINT modSpeed)
 	{
-		mCurrent = DBG_NEW BoolEditCommand(ref);
-		static_cast<BoolEditCommand*>(mCurrent)->SetPrevVal(!ref);
-		static_cast<BoolEditCommand*>(mCurrent)->SetNextVal(ref);
+		int val = static_cast<int>(ref);
+		UpdateIntValue(label, val);
+		ref = static_cast<UINT>(val);
 	}
-}
 
-void CommandHistory::UpdateUnsignedIntValue(const char* label, UINT& ref, UINT modSpeed)
-{
-	int val = static_cast<int>(ref);
-	UpdateIntValue(label, val);
-	ref = static_cast<UINT>(val);
-}
+	void CommandHistory::ShutDown()
+	{
+		auto iter = mPrevious->Begin();
+		for (size_t i = 0; i < mPrevious->GetSize(); ++i, ++iter)
+			if (*iter)
+				delete *iter;
 
-void CommandHistory::ShutDown()
-{
-	auto iter = mPrevious->Begin();
-	for (size_t i = 0; i < mPrevious->GetSize(); ++i, ++iter)
-		if (*iter)
-			delete *iter;
+		iter = mNext->Begin();
+		for (size_t i = 0; i < mNext->GetSize(); ++i, ++iter)
+			if (*iter)
+				delete *iter;
 
-	iter = mNext->Begin();
-	for (size_t i = 0; i < mNext->GetSize(); ++i, ++iter)
-		if (*iter)
-			delete *iter;
+		delete mCurrent;
+		delete mPrevious;
+		delete mNext;
+	}
 
-	delete mCurrent;
-	delete mPrevious;
-	delete mNext;
-}
+	Command* CommandHistory::GetCurrentCommand()
+	{
+		return mCurrent;
+	}
 
-Command* CommandHistory::GetCurrentCommand()
-{
-	return mCurrent;
-}
+	CommandHistory::CommandHistory()
+		: mCurrent(nullptr)
+		, mPrevious(DBG_NEW FTDS::ArrayStack<Command*>(COMMAND_MAXCOUNT))
+		, mNext(DBG_NEW FTDS::ArrayStack<Command*>(COMMAND_MAXCOUNT))
+		, mIsRecording(false)
+	{
+	}
 
-CommandHistory::CommandHistory()
-	: mCurrent(nullptr)
-	, mPrevious(DBG_NEW FTDS::ArrayStack<Command*>(COMMAND_MAXCOUNT))
-	, mNext(DBG_NEW FTDS::ArrayStack<Command*>(COMMAND_MAXCOUNT))
-	, mIsRecording(false)
-{
-}
-
-CommandHistory::~CommandHistory()
-{
-}
+	CommandHistory::~CommandHistory()
+	{
+	}
+} // namespace Editor

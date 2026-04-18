@@ -15,15 +15,17 @@
 #pragma once
 #include "Actor/Actor.h"
 
-#include "CommandHistory.h"
-#include "FTCoreEditor.h"
-
 namespace Core
 {
 	class Scene;
 	class Actor;
 	class FTPremade;
 } // namespace Core
+
+namespace D3D11
+{
+	class D3D11Renderer;
+}
 
 namespace Editor
 {
@@ -45,11 +47,11 @@ namespace Editor
 
 	public:
 		void Initialize();
-		// Updates editor specific features -> this will be omitted from the produced game.
-		void EditorUpdate(float deltaTime);
+		//// Updates editor specific features -> this will be omitted from the produced game.
+		//void EditorUpdate(float deltaTime);
 
-		// Renders editor specific features -> this will be omitted from the produced game.
-		void EditorRender(D3D11::D3D11Renderer* renderer);
+		//// Renders editor specific features -> this will be omitted from the produced game.
+		//void EditorRender(D3D11::D3D11Renderer* renderer);
 
 	public:
 		/// <summary>
@@ -81,7 +83,7 @@ namespace Editor
 		/// Constructor that is used for FTPremade origin.
 		/// This Fetches the FTPremade origin, makes EditorElement.
 		/// Not recommended to use outside of FTPremade
-		EditorElement(FTPremade* premade, int id);
+		EditorElement(Core::FTPremade* premade, int id);
 
 	public:
 		// Deep copies all child Actors
@@ -98,9 +100,12 @@ namespace Editor
 		void UpdateActorGroup();
 		void UpdateDrawOrder();
 
+		void UpdateTransformUI();
+
 		void UpdateComponentsUI();
 		void DisplayCompSelectionPopup();
 
 		void UpdateMakePremade();
+		void SwitchTransformToEditor();
 	};
 } // namespace Editor

@@ -11,7 +11,7 @@
 
 #pragma once
 #define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
+#include <imgui/imgui.h>
 #include "imgui/ImGuiFileDialog/ImGuiFileDialog.h"
 
 #include <Windows.h>
@@ -20,23 +20,24 @@
 #include "EditorElement.h"
 #include "EditorSceneManager.h"
 #include "EditorLayer.h"
+#include "EditorScene.h"
 #include "DirectoryHelper.h"
 #include "FileSystem/FileTypes.h"
 #include "FileSystem/NullKeys.h"
 
-#include "Dynamic/DynamicArray.h"
-#include "static/HashMap.h"
+#include "FTDS/Dynamic/DynamicArray.h"
+#include "FTDS/Static/HashMap.h"
 
-namespace FTEditorUtils
+namespace Editor
 {
-	inline void DisplayOpenFileDialog(const COMDLG_FILTERSPEC* fileTypes, FTDS::DynamicArray<FTDS::String*>* openFileNames)
+	inline void DisplayOpenFileDialog(const COMDLG_FILTERSPEC* fileTypes, Core::FTDS::DynamicArray<Core::FTDS::String*>* openFileNames)
 	{
 		IShellItemArray* pResults;
 		IFileOpenDialog* pFileOpen = nullptr;
 
 		// Create the FileOpenDialog object
 		HRESULT hr = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pFileOpen));
-		pFileOpen->SetFileTypes(static_cast<UINT>(GetArrayLength(fileTypes)), fileTypes);
+		pFileOpen->SetFileTypes(static_cast<UINT>(Core::GetArrayLength(fileTypes)), fileTypes);
 
 		if (SUCCEEDED(hr))
 		{
@@ -67,7 +68,7 @@ namespace FTEditorUtils
 							if (SUCCEEDED(hr) && pszFilePath)
 							{
 								// Use the selected file path
-								openFileNames->PushBack(DBG_NEW FTDS::String(ToString(pszFilePath)));
+								openFileNames->PushBack(DBG_NEW Core::FTDS::String(Core::ToString(pszFilePath)));
 								CoTaskMemFree(pszFilePath);
 							}
 						}
@@ -93,7 +94,7 @@ namespace FTEditorUtils
 		return ImGui::Button(label);
 	}
 
-	inline void DisplayArrayAsCombo(const char* label, FTDS::String* array, size_t arraySize, int& targetIdx)
+	inline void DisplayArrayAsCombo(const char* label, Core::FTDS::String* array, size_t arraySize, int& targetIdx)
 	{
 		const char* comboPreview = array[targetIdx].C_Str();
 		if (ImGui::BeginCombo(label, comboPreview))
@@ -121,18 +122,19 @@ namespace FTEditorUtils
 		}
 	}
 
-	inline void DisplayActorSelection(const char* label, Actor*& selected)
+	inline void DisplayActorSelection(const char* label, Core::Actor*& selected)
 	{
-		EditorScene*				editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
-		FTDS::DynamicArray<Actor*>* editorElems = editorScene->Actors();
-		FTDS::String* actorNames				= DBG_NEW FTDS::String[editorElems->GetSize() + 1];
+		Core::Scene*							scene		= EditorSceneManager::GetInstance()->GetCurrentScene();
+		EditorScene*							editorScene = reinterpret_cast<EditorScene*>(scene);
+		Core::FTDS::DynamicArray<Core::Actor*>* editorElems = editorScene->Actors();
+		Core::FTDS::String* actorNames						= DBG_NEW Core::FTDS::String[editorElems->GetSize() + 1];
 		actorNames[0].Assign("None");
 		static size_t currIdx;
 
 		for (size_t i = 0; i < editorElems->GetSize(); ++i)
 			actorNames[i + 1] = editorElems->At(i)->GetName();
 
-		FTDS::String comboPreview = actorNames[0];
+		Core::FTDS::String comboPreview = actorNames[0];
 		if (selected)
 			comboPreview = selected->GetName();
 		if (ImGui::BeginCombo("Actor Selection", comboPreview.C_Str()))
@@ -146,7 +148,7 @@ namespace FTEditorUtils
 						selected = nullptr;
 					else
 					{
-						Actor* actor =
+						Core::Actor* actor =
 							editorScene->FindActor(actorNames[currIdx], nullptr);
 						selected = actor;
 					}
@@ -159,9 +161,9 @@ namespace FTEditorUtils
 
 	template <typename FTRESOURCE>
 	inline void DisplayResSelection(
-		const char*					label,
-		FTDS::HashMap<FTRESOURCE*>* resMap,
-		FTDS::String&				currSelection)
+		const char*						  label,
+		Core::FTDS::HashMap<FTRESOURCE*>* resMap,
+		Core::FTDS::String&				  currSelection)
 	{
 		if (ImGui::Button(label))
 		{
@@ -198,9 +200,9 @@ namespace FTEditorUtils
 
 	template <typename FTRESOURCE>
 	inline void DisplayResSelection(
-		const char*					label,
-		FTDS::HashMap<FTRESOURCE*>* resMap,
-		FTRESOURCE*&				selectedRes)
+		const char*						  label,
+		Core::FTDS::HashMap<FTRESOURCE*>* resMap,
+		FTRESOURCE*&					  selectedRes)
 	{
 		if (ImGui::Button(label))
 			ImGui::OpenPopup(label);
@@ -233,9 +235,9 @@ namespace FTEditorUtils
 
 	template <typename FTRESOURCE, typename FILTER>
 	inline void DisplayResSelection(
-		const char*					label,
-		FTDS::HashMap<FTRESOURCE*>* resMap,
-		FTRESOURCE*&				selectedRes)
+		const char*						  label,
+		Core::FTDS::HashMap<FTRESOURCE*>* resMap,
+		FTRESOURCE*&					  selectedRes)
 	{
 		if (ImGui::Button(label))
 			ImGui::OpenPopup(label);
@@ -290,4 +292,4 @@ namespace FTEditorUtils
 		}
 		return path;
 	}
-} // namespace FTEditorUtils
+} // namespace Editor

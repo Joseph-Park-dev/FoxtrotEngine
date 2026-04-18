@@ -11,50 +11,36 @@
 /// </summary>
 
 #pragma once
-#include "SingletonMacro.h"
+#include "Singleton.h"
+#include "Manager/SceneManager.h"
 
-class FoxtrotRenderer;
+#include <vector>
 
 #ifdef FOXTROT_EDITOR
 	#define FIND_ACTOR_FILTER(name, filter) static_cast<Actor*>(EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(name, filter))
 	#define FIND_ACTOR(id) static_cast<Actor*>(EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(id))
 #endif
 
-class EditorSceneManager
+namespace D3D11
 {
-	SINGLETON(EditorSceneManager)
+	class D3D11InputDevice;
+}
 
-public:
-	virtual void Initialize();
-	virtual void ProcessInput(class FTInputDevice* inputDevice);
+namespace Editor
+{
+	class EditorElement;
 
-	// Runs on editor when pressing Play button.
-	void Update(float deltaTime);
+	class EditorSceneManager :
+		public Core::SceneManager,
+	{
+	public:
+		// Get the EditorElements with the lowest hierarchyLevel.
+		void GetLowests(std::vector<EditorElement*>& elements);
 
-	// Runs on editor when pressing Play button.
-	void Render(FoxtrotRenderer* renderer);
+		// EditorElements with lower hierarchyLevel comes first.
+		void SortByHierarchyLv(std::vector<EditorElement*>& elements);
 
-	// Additional editor features especially for debugging purpose.
-	void EditorUpdate(float deltaTime);
-
-	// Additional editor features especially for debugging purpose.
-	void EditorRender(FoxtrotRenderer* renderer);
-
-	// Deletes all objects in a Scene.
-	void DeleteAll();
-
-	// Get the EditorElements with the lowest hierarchyLevel.
-	void GetLowests(std::vector<EditorElement*>& elements);
-
-	// EditorElements with lower hierarchyLevel comes first.
-	void SortByHierarchyLv(std::vector<EditorElement*>& elements);
-
-public:
-	EditorScene* GetEditorScene();
-
-private:
-	EditorScene* mEditorScene;
-
-private:
-	void PushRowOfChildActors(EditorElement* actor, std::vector<EditorElement*>& dest);
-};
+	private:
+		void PushRowOfChildActors(EditorElement* actor, std::vector<EditorElement*>& dest);
+	};
+} // namespace Editor

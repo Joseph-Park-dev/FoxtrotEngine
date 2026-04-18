@@ -14,48 +14,57 @@
 /// </summary>
 
 #pragma once
+#include "Entity/Entity.h"
+
 #include "SingletonMacro.h"
-#include <>
+#include "FTDS/Static/FTString.h"
 
 #define PATH_PROJECT DirectoryHelper::GetInstance()->GetProjectPath()
 #define PATH_CHUNK DirectoryHelper::GetInstance()->GetChunkPath()
 #define CHUNK_IS_SAVED DirectoryHelper::GetInstance()->GetCurrChunkSaved()
 #define SET_CHUNK_IS_SAVED(saved) DirectoryHelper::GetInstance()->SetCurrChunkSaved(saved);
 
-class DirectoryHelper
+namespace Core
 {
-	SINGLETON(DirectoryHelper)
-
-public:
-	// Iterate all files in a folder,
-	// takes the folder path & executes unaryOp (Functor).
-	template <class UnaryOperation>
-	static void IterateForFileRecurse(
-		const char*		 dir,
-		UnaryOperation&& unaryOp)
+	class DirectoryHelper :
+		public Core::Entity
 	{
-		for (const std::filesystem::directory_entry& dirEntry :
-			 std::filesystem::recursive_directory_iterator(dir))
+		SINGLETON(DirectoryHelper)
+
+	public:
+		// Iterate all files in a folder,
+		// takes the folder path & executes unaryOp (Functor).
+		template <class UnaryOperation>
+		static void IterateForFileRecurse(
+			const char*		 dir,
+			UnaryOperation&& unaryOp)
 		{
-			if (dirEntry.is_regular_file())
-				unaryOp(std::move(dirEntry.path().string()));
+			for (const std::filesystem::directory_entry& dirEntry :
+				 std::filesystem::recursive_directory_iterator(dir))
+			{
+				if (dirEntry.is_regular_file())
+					unaryOp(std::move(dirEntry.path().string()));
+			}
 		}
-	}
 
-	void AbsoluteToRelativePath(FTDS::String& absPath);
-	void RelativeToAbsolutePath(FTDS::String& relPath);
+		void AbsoluteToRelativePath(Core::FTDS::String& absPath);
+		void RelativeToAbsolutePath(Core::FTDS::String& relPath);
 
-public:
-	FTDS::String& GetProjectPath();
-	FTDS::String& GetChunkPath();
-	bool		  GetCurrChunkSaved() const;
+	public:
+		Core::FTDS::String& GetProjectPath();
+		Core::FTDS::String& GetChunkPath();
+		bool				GetCurrChunkSaved() const;
 
-	void SetProjPath(FTDS::String&& path);
-	void SetChunkPath(FTDS::String&& path);
-	void SetCurrChunkSaved(bool val);
+		void SetProjPath(Core::FTDS::String&& path);
+		void SetChunkPath(Core::FTDS::String&& path);
+		void SetCurrChunkSaved(bool val);
 
-private:
-	FTDS::String mCurrProjectPath;
-	FTDS::String mCurrChunkPath;
-	bool		 mCurrChunkSaved;
-};
+	protected:
+		void RegisterMemberFuncs() override;
+
+	private:
+		Core::FTDS::String mCurrProjectPath;
+		Core::FTDS::String mCurrChunkPath;
+		bool			   mCurrChunkSaved;
+	};
+} // namespace Core

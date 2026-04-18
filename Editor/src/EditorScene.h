@@ -35,12 +35,12 @@ namespace Editor
 		/// Useful when Stopping a scene on FTEditor.
 		/// </summary>
 		/// <param name="actor : ">Actor to copy values from.</param>
-		EditorElement* AddEditorElement(Actor* actor);
+		EditorElement* AddEditorElement(Core::Actor* actor);
 
 		/// @brief Adds an EditorElement with new id.
 		/// Useful when making Premade instance.
 		/// @param id This should have new id.
-		EditorElement* AddEditorElement(Actor* actor, int id);
+		EditorElement* AddEditorElement(Core::Actor* actor, int id);
 
 	public:
 		// Deletes all EditorElements & clearing the Scene.
@@ -51,7 +51,7 @@ namespace Editor
 		void EditorUpdate(float deltaTime);
 
 		// Renders editor specific features -> this will be omitted from the produced game.
-		void EditorRender(FoxtrotRenderer* renderer);
+		void EditorRender(Core::FoxtrotRenderer* renderer);
 
 	public:
 		EditorScene();

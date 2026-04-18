@@ -17,6 +17,9 @@ namespace Editor
 	public:
 		ViewportRenderer* GetViewportRenderer();
 
+	public:
+		EditorRenderer(D3D11::D3D11Window* window);
+
 	private:
 		ViewportRenderer* mViewportRenderer;
 	};

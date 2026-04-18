@@ -12,96 +12,98 @@
 #include "Manager/SceneManager.h"
 #include "Renderer/FoxtrotRenderer.h"
 
-#include "FTCoreEditor.h"
 #include "EditorLayer.h"
 #include "EditorElement.h"
 #include "EditorChunkLoader.h"
 #include "ActorCommand.h"
 
-void EditorScene::DeleteAll()
+namespace Editor
 {
-	UnfocusEditorElements();
-	Scene::DeleteAll();
-}
-
-void EditorScene::UnfocusEditorElements()
-{
-	if (!EditorLayer::GetInstance()->FocusedEditorElement())
-		return;
-
-	for (auto iter = Actors()->Begin(); iter != Actors()->End(); ++iter)
+	void EditorScene::DeleteAll()
 	{
-		EditorElement* ele = static_cast<EditorElement*>((*iter));
-		if (ele->GetIsFocused())
-			ele->SetIsFocused(false);
-	}
-}
-
-EditorElement* EditorScene::AddEditorElement()
-{
-	UnfocusEditorElements();
-	EditorChunkLoader::GetInstance()->AddMaxActorID();
-	int			   maxID		 = EditorChunkLoader::GetInstance()->GetMaxActorID();
-	EditorElement* editorElement = DBG_NEW EditorElement(maxID);
-
-	FTDS::String& name = editorElement->GetNameRef();
-	name.Append(std::to_string(Actors()->GetSize()).c_str());
-
-	editorElement->SetIsFocused(true);
-
-	AddActor(editorElement);
-	return editorElement;
-}
-
-EditorElement* EditorScene::AddEditorElement(Actor* actor)
-{
-	UnfocusEditorElements();
-
-	EditorElement* element = DBG_NEW EditorElement(actor, actor->GetID(), false);
-	AddActor(element);
-	return element;
-}
-
-EditorElement* EditorScene::AddEditorElement(Actor* actor, int id)
-{
-	UnfocusEditorElements();
-
-	EditorElement* element = DBG_NEW EditorElement(actor, id, false);
-	AddActor(element);
-	return element;
-}
-
-void EditorScene::EditorUpdate(float deltaTime)
-{
-	SetIsUpdatingActors(true);
-
-	for (auto iter = Actors()->Begin(); iter != Actors()->End(); ++iter)
-	{
-		EditorElement* ele = static_cast<EditorElement*>((*iter));
-		ele->EditorUpdate(deltaTime);
+		UnfocusEditorElements();
+		Scene::DeleteAll();
 	}
 
-	SetIsUpdatingActors(false);
-}
-
-void EditorScene::EditorRender(FoxtrotRenderer* renderer)
-{
-	SetIsUpdatingActors(true);
-
-	for (auto iter = Actors()->Begin(); iter != Actors()->End(); ++iter)
+	void EditorScene::UnfocusEditorElements()
 	{
-		EditorElement* ele = static_cast<EditorElement*>((*iter));
-		ele->EditorRender(renderer);
+		if (!EditorLayer::GetInstance()->FocusedEditorElement())
+			return;
+
+		for (auto iter = Actors()->Begin(); iter != Actors()->End(); ++iter)
+		{
+			EditorElement* ele = static_cast<EditorElement*>((*iter));
+			if (ele->GetIsFocused())
+				ele->SetIsFocused(false);
+		}
 	}
 
-	SetIsUpdatingActors(false);
-}
+	EditorElement* EditorScene::AddEditorElement()
+	{
+		UnfocusEditorElements();
+		EditorChunkLoader::GetInstance()->AddMaxActorID();
+		int			   maxID		 = EditorChunkLoader::GetInstance()->GetMaxActorID();
+		EditorElement* editorElement = DBG_NEW EditorElement(maxID);
 
-EditorScene::EditorScene()
-{
-}
+		Core::FTDS::String& name = editorElement->GetNameRef();
+		name.Append(std::to_string(Actors()->GetSize()).c_str());
 
-EditorScene::~EditorScene()
-{
-	DeleteAll();
-}
+		editorElement->SetIsFocused(true);
+
+		AddActor(editorElement);
+		return editorElement;
+	}
+
+	EditorElement* EditorScene::AddEditorElement(Core::Actor* actor)
+	{
+		UnfocusEditorElements();
+
+		EditorElement* element = DBG_NEW EditorElement(actor, actor->GetID(), false);
+		AddActor(element);
+		return element;
+	}
+
+	EditorElement* EditorScene::AddEditorElement(Core::Actor* actor, int id)
+	{
+		UnfocusEditorElements();
+
+		EditorElement* element = DBG_NEW EditorElement(actor, id, false);
+		AddActor(element);
+		return element;
+	}
+
+	void EditorScene::EditorUpdate(float deltaTime)
+	{
+		SetIsUpdatingActors(true);
+
+		for (auto iter = Actors()->Begin(); iter != Actors()->End(); ++iter)
+		{
+			EditorElement* ele = static_cast<EditorElement*>((*iter));
+			ele->EditorUpdate(deltaTime);
+		}
+
+		SetIsUpdatingActors(false);
+	}
+
+	void EditorScene::EditorRender(Core::FoxtrotRenderer* renderer)
+	{
+		SetIsUpdatingActors(true);
+
+		for (auto iter = Actors()->Begin(); iter != Actors()->End(); ++iter)
+		{
+			EditorElement* ele = static_cast<EditorElement*>((*iter));
+			ele->EditorRender(renderer);
+		}
+
+		SetIsUpdatingActors(false);
+	}
+
+	EditorScene::EditorScene()
+	{
+	}
+
+	EditorScene::~EditorScene()
+	{
+		DeleteAll();
+	}
+} // namespace Editor

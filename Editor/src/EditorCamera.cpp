@@ -24,6 +24,7 @@ namespace Editor
 {
 	using namespace Core;
 	using namespace D3D11;
+	using namespace Math;
 
 	constexpr float LOOKAT_MODSPEED = 0.01;
 
@@ -133,9 +134,10 @@ namespace Editor
 		}*/
 
 		// Set Target
-		EditorScene*				editorScene = EditorSceneManager::GetInstance()->GetEditorScene();
+		Scene*							  scene		  = EditorSceneManager::GetInstance()->GetCurrentScene();
+		EditorScene*					  editorScene = reinterpret_cast<EditorScene*>(scene);
 		FTDS::DynamicArray<Core::Actor*>* editorElems = editorScene->Actors();
-		FTDS::String* actorNames				= DBG_NEW FTDS::String[editorElems->GetSize() + 1];
+		FTDS::String* actorNames					  = DBG_NEW FTDS::String[editorElems->GetSize() + 1];
 		actorNames[0].Assign("None");
 		static size_t currIdx;
 
@@ -143,7 +145,7 @@ namespace Editor
 			actorNames[i + 1] = editorElems->At(i)->GetName();
 
 		const char* comboPreview = actorNames[currIdx].C_Str();
-		if (ImGui::BeginCombo(ChunkKey::TARGET_ACTOR, comboPreview))
+		if (ImGui::BeginCombo(D3D11::ChunkKey::TARGET_ACTOR, comboPreview))
 		{
 			for (size_t i = 0; i < editorElems->GetSize() + 1; ++i)
 			{
@@ -164,25 +166,22 @@ namespace Editor
 		}
 		delete[] actorNames;
 
-		FTVector3& offset = Camera::GetInstance()->Offset();
-		CommandHistory::GetInstance()->UpdateVector3Value("Offset from target", offset, LOOKAT_MODSPEED);
-
+		CommandHistory::GetInstance()->UpdateVector3Value("Offset from target", Camera::GetInstance()->Offset(), LOOKAT_MODSPEED);
 		CommandHistory::GetInstance()->UpdateFloatValue("Zoom", Camera::GetInstance()->ZoomFactor());
 
 		if (ImGui::Button("2D"))
 		{
-			FoxtrotRenderer* renderer = FTCoreEditor::GetInstance()->GetGameRenderer();
 			if (GetViewType() == Viewtype::Perspective)
 			{
 				SetViewType(Viewtype::Orthographic);
 				Camera::GetInstance()->SetViewType(Viewtype::Orthographic);
-				LogString("Orthographic");
+				printf("Orthographic");
 			}
 			else if (GetViewType() == Viewtype::Orthographic)
 			{
 				SetViewType(Viewtype::Perspective);
 				Camera::GetInstance()->SetViewType(Viewtype::Perspective);
-				LogString("Perspective");
+				printf("Perspective");
 			}
 		}
 

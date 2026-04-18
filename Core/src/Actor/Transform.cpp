@@ -18,10 +18,6 @@
 #include "Dynamic/DynamicArray.h"
 #include "Static/FTString.h"
 
-#ifdef FOXTROT_EDITOR
-	#include "CommandHistory.h"
-#endif
-
 namespace Core
 {
 	const Math::FTVector3& Transform::GetLocalPosition() const { return mLocalPosition; }
@@ -158,6 +154,15 @@ namespace Core
 		}
 	}
 
+	void Transform::RegisterMemberFuncs()
+	{
+	}
+
+	const Actor* Transform::GetOwner() const
+	{
+		return mOwner;
+	}
+
 	Math::FTVector3 Transform::ConvertRadToDegree(Math::FTVector3 radianRot)
 	{
 		float x = Math::ToDegrees(radianRot.x);
@@ -246,44 +251,18 @@ namespace Core
 		SetWorldRotation(mWorldRotation);
 	}
 
-#ifdef FOXTROT_EDITOR
-	void Transform::UpdateUI()
-	{
-		if (!mOwner->GetParent()) // The owner does not have parent Actor.
-		{
-			CommandHistory::GetInstance()->UpdateVector3Value("World Position", mWorldPosition);
-			CommandHistory::GetInstance()->UpdateVector3Value("World Scale", mWorldScale);
-			CommandHistory::GetInstance()->UpdateVector3Value("World Rotation", mWorldRotation);
+	//const MemberDesc MemberLayout[] = {
+	//	MakeMemberFuncDesc("GetWorldScale", &Transform::GetWorldScale),
+	//};
 
-			SetWorldPosition(mWorldPosition);
-			SetWorldScale(mWorldScale);
-			SetWorldRotation(mWorldRotation);
-		}
-		else
-		{
-			CommandHistory::GetInstance()->UpdateVector3Value("Local Position", mLocalPosition);
-			CommandHistory::GetInstance()->UpdateVector3Value("Local Scale", mLocalScale);
-			CommandHistory::GetInstance()->UpdateVector3Value("Local Rotation", mLocalRotation);
+	//const ObjectLayout Layout = {
+	//	"Transform",
+	//	sizeof(Transform),
+	//	MemberLayout,
+	//	sizeof(MemberLayout) / sizeof(MemberLayout[0])
+	//};
 
-			SetLocalPosition(mLocalPosition);
-			SetLocalScale(mLocalScale);
-			SetLocalRotation(mLocalRotation);
-		}
-	}
-#endif // FOXTROT_EDITOR
-
-	const MemberDesc MemberLayout[] = {
-		MakeMemberFuncDesc("GetWorldScale", &Transform::GetWorldScale),
-	};
-
-	const ObjectLayout Layout = {
-		"Transform",
-		sizeof(Transform),
-		MemberLayout,
-		sizeof(MemberLayout) / sizeof(MemberLayout[0])
-	};
-
-	CORE_API const ObjectLayout* Plugin_GetLayout() { return &Layout; }
+	//CORE_API const ObjectLayout* Plugin_GetLayout() { return &Layout; }
 
 	//static const ObjectLayout g_layout = {
 	//	"Player",

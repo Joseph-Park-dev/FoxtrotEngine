@@ -32,11 +32,6 @@ namespace Core
 		class String;
 	} // namespace FTDS
 
-#ifdef FOXTROT_EDITOR
-	class EditorElement;
-	class EditorScene;
-#endif // FOXTROT_EDITOR
-
 	enum class ActorState
 	{
 		ALIVE,

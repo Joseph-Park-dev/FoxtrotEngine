@@ -1,5 +1,5 @@
 #pragma once
-#include "Compare/StringEqual.h"
+#include "FTDS/Static/FTString.h"
 
 namespace Core
 {
@@ -9,12 +9,12 @@ namespace Core
 		class Record
 		{
 		public:
-			bool Equal(FTDS::String&& key) { return mKey.Equal(key.C_Str()); }
+			bool Equal(String&& key) { return mKey.Equal(key.C_Str()); }
 			bool Equal(const char* key) { return mKey.Equal(std::move(key)); }
 
 		public:
-			FTDS::String& Key() { return mKey; }
-			TYPE&		  Value() { return mValue; }
+			String& Key() { return mKey; }
+			TYPE&	Value() { return mValue; }
 
 		public:
 			Record(Record* rec)
@@ -23,15 +23,15 @@ namespace Core
 				rec->mValue = this->mValue;
 			}
 
-			Record(FTDS::String key, TYPE value)
+			Record(String key, TYPE value)
 			{
 				mKey.Assign(key);
 				mValue = value;
 			}
 
 		private:
-			FTDS::String mKey;
-			TYPE		 mValue;
+			String mKey;
+			TYPE   mValue;
 		};
 	} // namespace FTDS
 } // namespace Core

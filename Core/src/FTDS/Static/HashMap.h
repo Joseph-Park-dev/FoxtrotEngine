@@ -1,10 +1,10 @@
 #pragma once
-#include "Static/Array.h"
+#include "FTDS/Static/Array.h"
 
-#include "Static/Record.h"
-#include "Static/FTString.h"
+#include "FTDS/Static/Record.h"
+#include "FTDS/Static/FTString.h"
 #include "Debugging/DebugFuncs.h"
-#include <Math/FTMath.h>
+#include "Math/FTMath.h"
 
 namespace Core
 {
@@ -227,6 +227,17 @@ namespace Core
 		private:
 			size_t mSize;
 		};
+
+		template <class TYPE>
+		void Safe_Delete_Map(FTDS::HashMap<TYPE*>*& map)
+		{
+			for (auto iter = map->Begin(); iter != map->End(); ++iter)
+			{
+				delete (*iter);
+				*iter = nullptr;
+			}
+			delete map;
+		}
 	} // namespace FTDS
 
 	// For making an obsolete HashChainMap

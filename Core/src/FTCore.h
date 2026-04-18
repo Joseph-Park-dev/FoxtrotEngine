@@ -12,8 +12,6 @@
 /// </summary>
 
 #pragma once
-#include "SingletonMacro.h"
-
 #include "FTDS/Static/FTString.h"
 #include "FTDS/Static/HashMap.h"
 #include "Plugin/CoreExports.h"
@@ -24,6 +22,7 @@ namespace Core
 	class FTInputDevice;
 	class FoxtrotRenderer;
 	class Plugin;
+	class Entity;
 
 	class CORE_API FTCore
 	{
@@ -50,7 +49,13 @@ namespace Core
 
 	public:
 		template <typename FUNC_SIGNATURE>
-		FARPROC GetFunc(const char* moduleName, const char* funcName)
+		FUNC_SIGNATURE GetCoreFunc(const char* funcName)
+		{
+			return reinterpret_cast<FUNC_SIGNATURE>(GetProcAddress(mModule, funcName));
+		}
+
+		template <typename FUNC_SIGNATURE>
+		FUNC_SIGNATURE GetFunc(const char* moduleName, const char* funcName)
 		{
 			HMODULE& mod = mLoadedPlugins->At(moduleName)->Value()->GetModule();
 			return reinterpret_cast<FUNC_SIGNATURE>(GetProcAddress(mod, funcName));
@@ -82,13 +87,10 @@ namespace Core
 		virtual void ShutDown();
 
 	public:
-		FTWindow*		 GetGameWindow() { return mWindow; }
-		FoxtrotRenderer* GetGameRenderer() { return mGameRenderer; }
+		FTDS::HashMap<Entity*>* GetEntities() { return mEntities; }
 
 		virtual void SetIsRunning(bool isRunning) { mIsRunning = isRunning; }
-		virtual void SetWindow(FTWindow* window);
-		virtual void SetInputDevice(FTInputDevice* device);
-		virtual void SetRenderer(FoxtrotRenderer* renderer);
+		void		 SetIsUpdating(bool isUpdating) { mIsUpdating = isUpdating; }
 
 	protected:
 		// Gameloop functions.
@@ -98,23 +100,22 @@ namespace Core
 		virtual void ProcessEvent();
 
 	protected:
-		virtual void InitSingletonManagers();
 		virtual void LoadGameData();
 
 	private:
-		HMODULE			 mModule;
-		FTWindow*		 mWindow;
-		FTInputDevice*	 mInputDevice;
-		FoxtrotRenderer* mGameRenderer;
-		bool			 mIsRunning;
+		HMODULE mModule;
+		bool	mIsRunning;
+		bool	mIsUpdating;
 
 	private:
 		FTDS::String*			mGameDataPath;
 		FTDS::HashMap<Plugin*>* mLoadedPlugins;
+		FTDS::HashMap<Entity*>* mEntities;
 
 	private:
 		void		   LoadDLL(FTDS::String& path);
 		void		   InitTimer();
+		void		   InitEntities();
 		static FTCore* mInstance;
 	};
 
@@ -140,16 +141,4 @@ namespace Core
 			constexpr const char* DESTROY	   = "DestroyCore";
 		} // namespace FTCore
 	} // namespace PluginKey
-
-	// enum class PluginType
-	//{
-	//	D3D11,
-	//	END
-	// };
-	//
-	// inline PluginType GetPluginType(FTDS::String& name)
-	//{
-	//	if (name.Equal("D3D11"))
-	//		return PluginType::D3D11;
-	// }
 } // namespace Core

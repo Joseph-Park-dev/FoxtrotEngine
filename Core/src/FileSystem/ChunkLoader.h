@@ -17,6 +17,8 @@
 /// </summary>
 
 #pragma once
+#include "Entity/Entity.h"
+
 #include <iosfwd>
 
 #include "SingletonMacro.h"
@@ -34,10 +36,10 @@ namespace Core
 		size_t ActorCount;
 	};
 
-	class ChunkLoader
+	class ChunkLoader :
+		public Core::Entity
 	{
-		SINGLETON_PROTECTED(ChunkLoader)
-
+		SINGLETON(ChunkLoader)
 		// Member Functions for editor level to generate chunk.json files
 	public:
 		virtual void SaveChunk(FTDS::String& fileName);
@@ -70,6 +72,9 @@ namespace Core
 	protected:
 		virtual void SaveActorsData(std::ofstream& ofs);
 		virtual void LoadActorsData(std::ifstream& ifs);
+
+	protected:
+		void RegisterMemberFuncs() override;
 
 	private:
 		ChunkData mCurrentChunkData;

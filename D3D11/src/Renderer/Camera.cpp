@@ -47,6 +47,10 @@ namespace D3D11
 		// Zoom();
 	}
 
+	void Camera::RegisterMemberFuncs()
+	{
+	}
+
 	void Camera::Zoom()
 	{
 		Math::Clampf(mZoomFactor, 0.01f, 10.0f);

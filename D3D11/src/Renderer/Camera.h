@@ -11,6 +11,8 @@
 /// </summary>
 
 #pragma once
+#include "Entity/Entity.h"
+
 #include <iosfwd>
 
 #include "SingletonMacro.h"
@@ -42,10 +44,10 @@ namespace D3D11
 		Perspective
 	};
 
-	class Camera
+	class Camera :
+		public Core::Entity
 	{
-		SINGLETON_PROTECTED(Camera)
-
+		SINGLETON(Camera)
 	public:
 		Math::FTVector3 ConvertScreenPosToWorld(Math::FTVector2 screenPos);
 		Math::FTVector2 ConvertScreenPosToNDC(Math::FTVector2 screenPos);
@@ -80,15 +82,18 @@ namespace D3D11
 	public:
 		Math::FTVector3& Position();
 		Math::FTVector3& Offset();
+		float&			 ZoomFactor();
 
 	protected:
 		float& ZoomDelta();
-		float& ZoomFactor();
 
 	public:
 		// "pixels" defines how much of them should fit in a given unit.
 		virtual void Initialize(Core::FTWindow* renderWindow, unsigned int pixels, float unit);
 		virtual void Update(float deltaTime);
+
+	protected:
+		void RegisterMemberFuncs() override;
 
 	protected:
 		virtual void Zoom();

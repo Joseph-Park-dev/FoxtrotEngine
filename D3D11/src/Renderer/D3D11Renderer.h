@@ -30,8 +30,11 @@ namespace D3D11
 		D3D11_VIEWPORT*								 GetViewport();
 
 	public:
-		D3D11Renderer(Core::FTWindow* window);
+		D3D11Renderer(D3D11::D3D11Window* window);
 		~D3D11Renderer();
+
+	protected:
+		void RegisterMemberFuncs() override;
 
 	protected:
 		virtual bool Initialize(Core::FTWindow* window) override;

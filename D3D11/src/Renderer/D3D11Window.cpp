@@ -18,7 +18,12 @@ namespace D3D11
 	using namespace Core;
 	using namespace Microsoft::WRL;
 
-	bool D3D11Window::Initialize(Core::FTCore* base, int windowMode)
+	bool D3D11Window::Initialize(int windowMode)
+	{
+		return Initialize(windowMode, D3D11Window::WinProc);
+	}
+
+	bool D3D11Window::Initialize(int windowMode, WNDPROC proc, WNDPROC_Params* params)
 	{
 		assert(!GetTitle().IsEmpty());
 
@@ -27,7 +32,7 @@ namespace D3D11
 		WNDCLASSEX wc = {
 			sizeof(WNDCLASSEX),
 			CS_CLASSDC,
-			D3D11Window::WinProc,
+			proc,
 			0L,
 			0L,
 			GetModuleHandle(NULL),
@@ -59,7 +64,7 @@ namespace D3D11
 			NULL,
 			NULL,
 			wc.hInstance,
-			base);
+			params);
 
 		if (!mWinHandle)
 		{
@@ -73,11 +78,6 @@ namespace D3D11
 
 		delete[] title;
 		return true;
-	}
-
-	bool D3D11Window::Initialize(Core::FTCore* base)
-	{
-		return Initialize(base, SW_SHOWDEFAULT);
 	}
 
 	bool D3D11Window::InitializeWindowRenderer(D3D11Renderer* renderer)
@@ -106,7 +106,7 @@ namespace D3D11
 
 	void D3D11Window::ResizeWindow(Core::FoxtrotRenderer* renderer)
 	{
-		D3D11Renderer* rend = static_cast<D3D11Renderer*>(renderer);
+		D3D11Renderer* rend = reinterpret_cast<D3D11Renderer*>(renderer);
 		Reset(rend);
 		if (mSwapChain)
 		{
@@ -174,10 +174,20 @@ namespace D3D11
 	D3D11Window::D3D11Window(Plugin* owner, const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea)
 		: FTWindow(owner, title, width, height, rndArea)
 	{
-		this->Initialize(owner->gBase);
+		this->Initialize(WS_OVERLAPPED);
+	}
+
+	D3D11Window::D3D11Window(Plugin* owner, const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea, WNDPROC proc, WNDPROC_Params* params)
+		: FTWindow(owner, title, width, height, rndArea)
+	{
+		this->Initialize(WS_OVERLAPPED, proc, params);
 	}
 
 	D3D11Window::~D3D11Window()
+	{
+	}
+
+	void D3D11Window::RegisterMemberFuncs()
 	{
 	}
 

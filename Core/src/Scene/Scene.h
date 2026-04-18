@@ -11,7 +11,8 @@
 /// </summary>
 
 #pragma once
-#include "static/FTString.h"
+#include "FTDS/Static/FTString.h"
+#include "FTDS/Dynamic/DynamicArray.h"
 
 namespace Core
 {
@@ -19,12 +20,6 @@ namespace Core
 	class FTCore;
 	class FTInputDevice;
 	class FoxtrotRenderer;
-	namespace FTDS
-	{
-		class String;
-		template <typename TYPE>
-		class DynamicArray;
-	} // namespace FTDS
 
 	class Scene
 	{

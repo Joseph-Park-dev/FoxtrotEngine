@@ -18,8 +18,6 @@
 #define SINGLETON(TYPE) public:\
 							static TYPE* GetInstance() \
 								{ \
-									if(mInstance == nullptr) \
-										mInstance = DBG_NEW TYPE(); \
 									return mInstance; \
 								} \
 							static void Destroy() \
@@ -30,14 +28,24 @@
 										mInstance = nullptr; \
 									} \
 								} \
+							static void Initialize(Core::FTCore* base) \
+								{\
+									if (mInstance == nullptr)\
+									{\
+										mInstance = DBG_NEW TYPE();\
+										mBase = base;\
+									}\
+								}\
+							static Core::FTCore* GetBase()\
+								{\
+									return mBase;\
+								}\
 							TYPE(const TYPE& obj) = delete; \
-							Core::FTCore* GetBase() { return mBase; } \
-							void SetBase(Core::FTCore* base) { mBase = base; }\
 						private:\
 							TYPE(); \
-							~TYPE(); \
-							static TYPE* mInstance; \
-							Core::FTCore* mBase; \
+							~TYPE() override; \
+							inline static TYPE* mInstance = nullptr; \
+							inline static Core::FTCore* mBase = nullptr;
 
 // Makes a classe into singleton which allows itself to be inherited.
 // Don't forget to call Destory() to delete mObject!
@@ -56,11 +64,21 @@
 										mInstance = nullptr;        \
 									} \
 								} \
+							static void Initialize(Core::FTCore* base) \
+								{                                          \
+									if (mInstance == nullptr)              \
+									{                                      \
+										mInstance = DBG_NEW TYPE();        \
+										mBase	  = base;                  \
+									}                                      \
+								}\
+							static Core::FTCore* GetBase()                  \
+								{                                           \
+									return mBase;                           \
+								}\
 							TYPE(const TYPE& obj) = delete; \
-							Core::FTCore* GetBase() { return mBase; }\
-							void SetBase(Core::FTCore* base) { mBase = base; }\
 						protected:\
-							TYPE(); \
-							~TYPE(); \
-							static TYPE* mInstance; \
-							Core::FTCore* mBase;
+							TYPE(Core::FTCore* base); \
+							~TYPE() override; \
+							inline static TYPE* mInstance = nullptr; \
+							inline static Core::FTCore* mBase = nullptr;

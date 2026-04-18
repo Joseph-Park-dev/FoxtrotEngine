@@ -12,7 +12,7 @@
 /// </summary>
 
 #pragma once
-#include "Core/SingletonMacro.h"
+#include "Core/Singleton.h"
 #include "Physics/RayCastHit2D.h"
 
 class FTVector2;

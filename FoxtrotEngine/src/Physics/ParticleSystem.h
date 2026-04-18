@@ -11,7 +11,7 @@
 /// </summary>
 
 #pragma once
-#include "Core/SingletonMacro.h"
+#include "Core/Singleton.h"
 #include "Math/FTMath.h"
 
 class FoxtrotRenderer;

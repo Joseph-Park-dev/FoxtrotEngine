@@ -331,4 +331,14 @@ namespace Core
 			}
 		}
 	};
+
+	// Exported factory — C linkage, stable ABI
+	extern "C"
+	{
+#ifdef CORE_EXPORTS
+		__declspec(dllexport) Entity* GetResourceManager();
+#else
+		__declspec(dllimport) Entity* GetResourceManager();
+#endif
+	}
 } // namespace Core

@@ -57,7 +57,10 @@ namespace Core
 
 	public:
 		FTRectArea();
-		FTRectArea(float x, float y, float width, float height, float rotAngle = 0);
+		FTRectArea(float x, float y, float width, float height, float rotAngle = 0)
+		{
+			Set(x, y, width, height, rotAngle);
+		}
 		void CloneTo(FTRectArea* rect);
 
 	private:

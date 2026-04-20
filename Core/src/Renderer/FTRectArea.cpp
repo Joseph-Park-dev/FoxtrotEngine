@@ -60,11 +60,6 @@ namespace Core
 		Set(0.f, 0.f, 0.f, 0.f);
 	}
 
-	FTRectArea::FTRectArea(float x, float y, float width, float height, float rotAngle)
-	{
-		Set(x, y, width, height, rotAngle);
-	}
-
 	void FTRectArea::CloneTo(FTRectArea* rect)
 	{
 		rect->mCenter = mCenter;

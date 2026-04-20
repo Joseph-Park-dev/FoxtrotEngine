@@ -53,7 +53,7 @@ namespace D3D11
 		FileIOHelper::SaveInt(ofs, ChunkKey::FTSpriteAnimation::MIN_FRAME_IDX, mMinFrameIdx);
 		FileIOHelper::SaveVector3(ofs, ChunkKey::FTSpriteAnimation::SIZE_SCALE, GetSizeScale());
 		FileIOHelper::SaveString(ofs, ChunkKey::FTSpriteAnimation::SPRITE_SHEET, D3D11::RES_NAME(FTTexture, GetTexture()));
-		FileIOHelper::SaveString(ofs, ChunkKey::FTSpriteAnimation::JSON, CORE_RES_NAME(Core::FTJSON, mJSON));
+		FileIOHelper::SaveString(ofs, ChunkKey::FTSpriteAnimation::JSON, D3D11::CORE_RES_NAME(Core::FTJSON, mJSON));
 
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
 	}

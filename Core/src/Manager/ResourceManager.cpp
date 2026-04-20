@@ -378,4 +378,9 @@ namespace Core
 		//	mPSOs->Insert(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
 		//}
 	}
+
+	extern "C" __declspec(dllexport) Entity* GetResourceManager()
+	{
+		return ResourceManager::GetInstance();
+	}
 } // namespace Core

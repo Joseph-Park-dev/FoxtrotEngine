@@ -25,7 +25,6 @@
 
 #include "ResourceManager.h"
 
-#include "../Manager/ResourceManager.h"
 #include "ResourceSystem/D3D11Resource.h"
 #include "Static/FTString.h"
 #include "FileSystem/NullKeys.h"
@@ -50,6 +49,11 @@ namespace D3D11
 	 */
 	ResourceManager::ResourceManager()
 	{
+		HMODULE coreMod = GetModuleHandleW(Core::DLL);
+		assert(coreMod);
+		mGetCoreResManagerFunc = reinterpret_cast<Core::GET_CORE_RES_MANAGER>(
+			   GetProcAddress(coreMod, Core::PluginKey::GET_RES_MANAGER));
+		
 		InitResMap(ResType::END - 1);
 	}
 
@@ -384,6 +388,12 @@ namespace D3D11
 		//	mPSOs->Insert(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
 		//}
 	}
+
+	Core::ResourceManager* ResourceManager::GetCoreResManager()
+	{
+		return mGetCoreResManagerFunc();
+	}
+
 	void ResourceManager::RegisterMemberFuncs()
 	{
 	}

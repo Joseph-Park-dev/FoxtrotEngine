@@ -358,7 +358,13 @@
     <ClInclude Include="src\ResourceSystem\CoreResource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Plugin\ObjectLayout.h">
+    <ClInclude Include="src\Entity\ObjectLayout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Singleton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Entity\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

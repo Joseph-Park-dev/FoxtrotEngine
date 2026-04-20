@@ -21,9 +21,6 @@
     <ClInclude Include="framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Editor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -60,7 +57,7 @@
     <ClInclude Include="src\EditorUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\FTCoreEditor.h">
+    <ClInclude Include="src\Plugin\FTCoreEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ViewportRenderer.h">
@@ -111,11 +108,14 @@
     <ClInclude Include="src\Manager\EditorShapes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Actor\EditorTransform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Component\EditorComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Editor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -152,13 +152,10 @@
     <ClCompile Include="src\EditorSceneManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\FTCoreEditor.cpp">
+    <ClCompile Include="src\Plugin\D3D11Editor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ViewportRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Plugin\FoxtrotEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="include\imgui\backends\imgui_impl_dx11.cpp">
@@ -189,6 +186,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Manager\EditorShapes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Actor\EditorTransform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\EditorComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

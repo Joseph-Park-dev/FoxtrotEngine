@@ -32,6 +32,11 @@ namespace Editor
 		}
 	}
 
+	EditorScene* EditorSceneManager::GetEditorScene()
+	{
+		return reinterpret_cast<EditorScene*>(GetCurrentScene());
+	}
+
 	void EditorSceneManager::SortByHierarchyLv(std::vector<EditorElement*>& elements)
 	{
 		std::sort(elements.begin(), elements.end(), [](const EditorElement* lhs, const EditorElement* rhs) {
@@ -52,6 +57,10 @@ namespace Editor
 
 	EditorSceneManager::EditorSceneManager()
 		: Core::SceneManager()
+	{
+	}
+
+	EditorSceneManager::~EditorSceneManager()
 	{
 	}
 } // namespace Editor

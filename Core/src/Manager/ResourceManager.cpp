@@ -43,10 +43,6 @@ namespace Core
 		ResourceManagerBase::DeleteAll();
 	}
 
-	void ResourceManager::RegisterMemberFuncs()
-	{
-	}
-
 	/**
 	 * @brief Load resources from a packed data file stream.
 	 *

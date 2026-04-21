@@ -20,6 +20,7 @@ namespace Editor
 	class EditorCamera :
 		public D3D11::Camera
 	{
+		SINGLETON(EditorCamera)
 	public:
 		void DisplayMainCameraMenu();
 		void DisplayEditorCameraMenu();

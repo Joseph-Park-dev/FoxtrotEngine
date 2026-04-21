@@ -31,9 +31,12 @@ namespace Core
 	class FTPremade :
 		public CoreResource
 	{
-		// public:
-		//	virtual void SaveProperties(std::ofstream& ofs) override;
-		//	virtual void LoadProperties(std::ifstream& ifs) override;
+	public:
+		static inline Core::ResType Type = Core::ResType::PREMADE;
+
+	public:
+		void SaveProperties(std::ofstream& ofs) override {};
+		void LoadProperties(std::ifstream& ifs) override {};
 
 	public:
 		FTPremade(FTResourceDef& resDef);
@@ -72,7 +75,6 @@ namespace Core
 		namespace FTPremade
 		{
 			constexpr const char* FT_PREMADE = "FTPremade";
-
 		}
 	} // namespace ChunkKey
 } // namespace Core

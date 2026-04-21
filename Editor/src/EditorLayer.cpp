@@ -26,7 +26,8 @@
 #include "EditorScene.h"
 #include "DirectoryHelper.h"
 #include "EditorCamera.h"
-#include "EditorResourceManager.h"
+#include "Manager/EditorShapes.h"
+#include "Manager/ResourceManager.h"
 
 #include "Renderer/D3D11Window.h"
 #include "InputSystem/D3D11InputDevice.h"
@@ -34,10 +35,17 @@
 #include "EventFunctions.h"
 #include "FileSystem/FileTypes.h"
 
+#include "ResourceSystem/ResPath.h"
+
+#include <Manager/AnimationManager.h>
+
 namespace Editor
 {
-	void EditorLayer::Initialize()
+	using namespace Core;
+
+	void EditorLayer::Initialize(Editor::EditorRenderer* renderer)
 	{
+		mRenderer = renderer;
 		LoadEditorConfig();
 	}
 
@@ -160,12 +168,12 @@ namespace Editor
 			}
 			else if (selection == fileMenu[2] || mSaveKeyPressed)
 			{
-				if (CHUNK_IS_SAVED)
+				if (Core::CHUNK_IS_SAVED)
 				{
-					if (!PATH_PROJECT.IsEmpty())
+					if (!Core::PATH_PROJECT.IsEmpty())
 					{
-						EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
-						printf("Chunk saved to %s", PATH_CHUNK.C_Str());
+						EditorChunkLoader::GetInstance()->SaveChunk(Core::PATH_CHUNK);
+						printf("Chunk saved to %s", Core::PATH_CHUNK.C_Str());
 						mInfoType = InfoType::ChunkIsSaved;
 					}
 					else
@@ -174,7 +182,7 @@ namespace Editor
 				else
 				{
 					IGFD::FileDialogConfig config;
-					config.path = PATH_PROJECT.C_Str();
+					config.path = Core::PATH_PROJECT.C_Str();
 					ImGuiFileDialog::Instance()->OpenDialog(fileMenu[2], "Choose Directory", Core::FileTypes::CHUNK, config);
 					mFileMenuEvent = FileMenuEvents::Save;
 				}
@@ -182,16 +190,16 @@ namespace Editor
 			else if (selection == fileMenu[3] || mSaveAsKeyPressed)
 			{
 				IGFD::FileDialogConfig config;
-				config.path = PATH_PROJECT.C_Str();
+				config.path = Core::PATH_PROJECT.C_Str();
 				ImGuiFileDialog::Instance()->OpenDialog(fileMenu[3], "Choose Directory", Core::FileTypes::CHUNK, config);
 				mFileMenuEvent = FileMenuEvents::SaveAs;
 			}
 			else if (selection == fileMenu[4] || mOpenKeyPressed)
 			{
-				if (!PATH_PROJECT.IsEmpty())
+				if (!Core::PATH_PROJECT.IsEmpty())
 				{
 					IGFD::FileDialogConfig config;
-					config.path = PATH_PROJECT.C_Str();
+					config.path = Core::PATH_PROJECT.C_Str();
 					ImGuiFileDialog::Instance()->OpenDialog(fileMenu[4], "Choose File", Core::FileTypes::CHUNK, config);
 					mFileMenuEvent = FileMenuEvents::Open;
 				}
@@ -206,62 +214,67 @@ namespace Editor
 
 			if (ImGui::Button("Play"))
 			{
-				if (CHUNK_IS_SAVED)
+				if (Core::CHUNK_IS_SAVED)
 				{
-					if (!PATH_CHUNK.IsEmpty())
+					if (!Core::PATH_CHUNK.IsEmpty())
 					{
 						// Clear up the scene to load the current chunk file.
 						mFocusedEditorElement = nullptr;
-						EditorChunkLoader::GetInstance()->SaveChunk(PATH_CHUNK);
+						EditorChunkLoader::GetInstance()->SaveChunk(Core::PATH_CHUNK);
 						//DebugShapes::GetInstance()->DeleteAll();
 						//UIManager::GetInstance()->Reset();
 						//CollisionManager::GetInstance()->Reset();
 						EditorSceneManager::GetInstance()->GetCurrentScene()->DeleteAll();
 
 						// Copy the chunk file.
-						EditorChunkLoader::GetInstance()->CopyChunk(PATH_CHUNK);
+						EditorChunkLoader::GetInstance()->CopyChunk(Core::PATH_CHUNK);
 						Core::FTDS::String& copiedPath = EditorChunkLoader::GetInstance()->CurrentChunk();
 
 						// Load the copied chunk file.
 						EditorChunkLoader::GetInstance()->LoadChunk(copiedPath);
 
 						// Start updating the game.
-						ftcore::GetInstance()->SetIsUpdatingGame(true);
+						mBase->SetIsUpdating(true);
 					}
 					else
-						LogString("Saved file path doesn't exist but trying to access it");
+						printf("Saved file path doesn't exist but trying to access it");
 				}
 				else
-					LogString("Chunk file must be saved before playing");
+					printf("Chunk file must be saved before playing");
 			}
 			if (ImGui::Button("Stop"))
 			{
-				if (CHUNK_IS_SAVED)
+				if (Core::CHUNK_IS_SAVED)
 				{
-					if (!PATH_CHUNK.IsEmpty())
+					if (!Core::PATH_CHUNK.IsEmpty())
 					{
 						// Delete the created copy.
 						EditorChunkLoader::GetInstance()->DeleteCopiedChunk();
 
 						// Clear up the scene to load the current chunk file.
 						mFocusedEditorElement = nullptr;
-						FTCoreEditor::GetInstance()->SetIsUpdatingGame(false);
-						DebugShapes::GetInstance()->DeleteAll();
-						CollisionManager::GetInstance()->Reset();
-						EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
+						mBase->SetIsUpdating(false);
+						EditorShapes::GetInstance()->DeleteAll();
+						//CollisionManager::GetInstance()->Reset();
+						EditorSceneManager::GetInstance()->GetCurrentScene()->DeleteAll();
 
 						// Reload current scene again.
-						EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
+						EditorChunkLoader::GetInstance()->LoadChunk(Core::PATH_CHUNK);
 					}
 				}
 			}
 			if (ImGui::Button("Wireframe"))
 			{
-				FoxtrotRenderer* renderer = FTCoreEditor::GetInstance()->GetGameRenderer();
-				if (renderer->GetFillMode() == FillMode::Solid)
-					renderer->SetFillMode(FillMode::WireFrame);
-				else if (renderer->GetFillMode() == FillMode::WireFrame)
-					renderer->SetFillMode(FillMode::Solid);
+				//if (mRenderer)
+				//{
+				//	if (mRenderer->GetFillMode() == D3D11::FillMode::SOLID)
+				//	{
+				//		mRenderer->SetFillMode(D3D11::FillMode::WIRE_FRAME);
+				//		D3D11::ResourceManager::GetResource(D3D11::D3D11PSO::Type, )
+				//	}
+				//	else if (renderer->GetFillMode() == FillMode::WireFrame)
+				//		renderer->SetFillMode(FillMode::Solid);
+				//}
 			}
 			ImGui::EndMainMenuBar();
 		}
@@ -381,13 +394,13 @@ namespace Editor
 		}
 
 		if (opened[0])
-			AnimationManager::GetInstance()->UpdateUI(&opened[0]);
-		if (opened[1])
-			SoundManager::GetInstance()->UpdateUI(&opened[1]);
-		if (opened[2])
-			FontManager::GetInstance()->UpdateUI(&opened[2]);
-		if (opened[3])
-			CollisionManager::GetInstance()->UpdateUI(&opened[3]);
+			D3D11::AnimationManager::GetInstance()->UpdateUI(&opened[0]);
+		//if (opened[1])
+		//	SoundManager::GetInstance()->UpdateUI(&opened[1]);
+		//if (opened[2])
+		//	FontManager::GetInstance()->UpdateUI(&opened[2]);
+		//if (opened[3])
+		//	CollisionManager::GetInstance()->UpdateUI(&opened[3]);
 	}
 
 	void EditorLayer::DisplayHierarchyMenu()
@@ -412,20 +425,20 @@ namespace Editor
 			}
 			ImGui::EndListBox();
 
-			EditorSceneManager::GetInstance()->GetEditorScene()->Actors()->IterateArray([&](Actor* actor) {
+			EditorSceneManager::GetInstance()->GetCurrentScene()->Actors()->IterateArray([&](Core::Actor* actor) {
 				EditorElement* ele = static_cast<EditorElement*>(actor);
 				ele->SetIsDisplayed(false);
 			});
 		}
 
-		if (mDuplicateKeyPressed)
-			EditorSceneManager::GetInstance()->GetEditorScene()->AddEditorElement(mFocusedEditorElement);
+		//if (mDuplicateKeyPressed)
+		//	EditorSceneManager::GetInstance()->GetEditorScene()->AddEditorElement(mFocusedEditorElement);
 		ImGui::End();
 	}
 
 	void EditorLayer::DisplaySelection(EditorElement* element, size_t& index)
 	{
-		FTDS::String indentedName = FTDS::String(element->GetHierarchyLevel(), '\t');
+		Core::FTDS::String indentedName = Core::FTDS::String(element->GetHierarchyLevel(), '\t');
 		indentedName.Append(element->GetName());
 
 		if (ImGui::Selectable(indentedName.C_Str(), mActorNameIdx == index))
@@ -446,10 +459,10 @@ namespace Editor
 		++index;
 
 		// Recurse to display child Actors in the list.
-		if (0 < element->GetChildActors().GetSize())
+		if (0 < element->GetChildActors()->GetSize())
 		{
-			FTDS::DynamicArray<Actor*>& childActors = element->GetChildActors();
-			for (auto child = childActors.Begin(); child != childActors.End(); ++child)
+			FTDS::DynamicArray<Actor*>* childActors = element->GetChildActors();
+			for (auto child = childActors->Begin(); child != childActors->End(); ++child)
 			{
 				EditorElement* childElem = static_cast<EditorElement*>(*child);
 				DisplaySelection(childElem, index);
@@ -488,11 +501,11 @@ namespace Editor
 				{
 					if (child->GetParent())
 					{
-						FTDS::DynamicArray<Actor*>& children = child->GetParent()->GetChildActors();
+						FTDS::DynamicArray<Actor*>* children = child->GetParent()->GetChildActors();
 
-						int pos = children.Find(child);
+						int pos = children->Find(child);
 						if (pos != -1)
-							children.Erase(pos);
+							children->Erase(pos);
 						child->SetParent(nullptr);
 					}
 					target->AddChild(child);
@@ -530,11 +543,11 @@ namespace Editor
 
 	void EditorLayer::SetHierarchyLvRecurse(EditorElement* element, int val)
 	{
-		FTDS::DynamicArray<Actor*>& childActors = element->GetChildActors();
-		if (childActors.GetSize() < 1)
+		FTDS::DynamicArray<Core::Actor*>* childActors = element->GetChildActors();
+		if (childActors->GetSize() < 1)
 			return;
 
-		for (auto child = childActors.Begin(); child != childActors.End(); ++child)
+		for (auto child = childActors->Begin(); child != childActors->End(); ++child)
 		{
 			EditorElement* subChild = static_cast<EditorElement*>(*child);
 			subChild->SetHierarchyLevel(subChild->GetHierarchyLevel() + val);
@@ -546,7 +559,7 @@ namespace Editor
 	{
 		std::string menuID = "Resource Manager";
 		ImGui::Begin(menuID.c_str());
-		EditorResourceManager::GetInstance()->UpdateUI();
+		Editor::ResourceManager::GetInstance()->UpdateUI();
 		ImGui::End();
 	}
 
@@ -603,7 +616,7 @@ namespace Editor
 					FTDS::String name = mFocusedEditorElement->GetName();
 					name.Append(FileTypes::PREMADE);
 
-					FTDS::String path = ResourceManager::GetInstance()->GetPathToAsset().C_Str();
+					FTDS::String path = DirectoryHelper::GetInstance()->GetAssetPath().C_Str();
 					path.Append(name);
 
 					FTResourceDef resDef{
@@ -611,7 +624,7 @@ namespace Editor
 						path.C_Str()
 					};
 
-					FTPremade* newPremade = DBG_NEW FTPremade(resDef);
+					Core::FTPremade* newPremade = DBG_NEW Core::FTPremade(resDef);
 					newPremade->Create(mFocusedEditorElement);
 					ImGui::CloseCurrentPopup();
 					mInfoType = InfoType::None;
@@ -661,7 +674,7 @@ namespace Editor
 				std::function<void()> onConfirm = [this]()
 					-> void {
 					SaveEditorConfig();
-					FTCoreEditor::GetInstance()->SetIsRunning(false);
+					mBase->SetIsRunning(false);
 					mErrorType = ErrorType::None;
 					ImGui::CloseCurrentPopup();
 				};
@@ -769,7 +782,7 @@ namespace Editor
 			else if (!pathIsEmpty)
 				mErrorType = ErrorType::ProjectPathNotEmpty;
 		}
-		EditorResourceManager::GetInstance()->DeleteAll();
+		Editor::ResourceManager::GetInstance()->DeleteAll();
 	}
 
 	void EditorLayer::OpenProject(std::string& path)
@@ -777,11 +790,10 @@ namespace Editor
 		if (ProjectExists(path))
 		{
 			EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
-			DebugShapes::GetInstance()->DeleteAll();
+			EditorShapes::GetInstance()->DeleteAll();
 			ResourceManager::GetInstance()->DeleteAll();
 			PATH_PROJECT.Assign(path.c_str());
-			ResourceManager::GetInstance()->SetPathToAsset(std::move(PATH_PROJECT));
-			EditorResourceManager::GetInstance()->LoadAllResourcesInAsset();
+			Editor::ResourceManager::GetInstance()->LoadAllResourcesInAsset();
 			// EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 		}
 		else
@@ -817,7 +829,7 @@ namespace Editor
 	void EditorLayer::SaveEditorConfig()
 	{
 		ImGuiIO&	  io = ImGui::GetIO();
-		std::ofstream ofs(Path::EDITOR_CONFIG);
+		std::ofstream ofs(Editor::Path::EDITOR_CONFIG);
 		FileIOHelper::BeginDataPackSave(ofs, ConfigKey::GUI);
 		FileIOHelper::SaveFloat(ofs, ConfigKey::FONT_SCALE, io.FontGlobalScale);
 		FileIOHelper::EndDataPackSave(ofs, ConfigKey::GUI);
@@ -835,7 +847,7 @@ namespace Editor
 		FileIOHelper::LoadFloat(ifs, io.FontGlobalScale);
 	}
 
-	void EditorLayer::Render(FoxtrotRenderer* renderer)
+	void EditorLayer::Render()
 	{
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
@@ -853,8 +865,9 @@ namespace Editor
 		return mCursorOnViewport;
 	}
 
-	EditorLayer::EditorLayer(Core::FTCore* base)
-		: mActorNameIdx(0)
+	EditorLayer::EditorLayer()
+		: mRenderer(nullptr)
+		, mActorNameIdx(0)
 		, mSaveKeyPressed(false)
 		, mSaveAsKeyPressed(false)
 		, mOpenKeyPressed(false)
@@ -871,6 +884,7 @@ namespace Editor
 		, mFileMenuEvent(FileMenuEvents::None)
 		, mErrorType(ErrorType::None)
 	{
+
 	}
 
 	EditorLayer::~EditorLayer()

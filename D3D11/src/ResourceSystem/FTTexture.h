@@ -51,11 +51,11 @@ namespace D3D11
 	public:
 		/// @brief FTTexture is a graphics resource, so it needs a FTRenderer instance for initialization.
 		/// @param renderer This is usually a game renderer.
-		FTTexture(Core::FTResourceDef& resDef, Core::FoxtrotRenderer* renderer);
+		FTTexture(Core::FTResourceDef& resDef, D3D11::D3D11Renderer* renderer);
 		~FTTexture();
 
 	protected:
-		virtual void Process(Core::FTResourceDef& resDef, Core::FoxtrotRenderer* renderer);
+		virtual void Process(Core::FTResourceDef& resDef, D3D11::D3D11Renderer* renderer);
 
 	private:
 		UINT											 mWidth;

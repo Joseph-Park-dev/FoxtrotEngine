@@ -261,7 +261,7 @@ namespace Editor
 		}
 	}
 
-	void CommandHistory::UpdateUnsignedIntValue(const char* label, UINT& ref, UINT modSpeed)
+	void CommandHistory::UpdateUnsignedIntValue(const char* label, unsigned int& ref, unsigned int modSpeed)
 	{
 		int val = static_cast<int>(ref);
 		UpdateIntValue(label, val);

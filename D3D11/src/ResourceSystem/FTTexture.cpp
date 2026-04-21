@@ -62,7 +62,7 @@ namespace D3D11
 		// FTResource::LoadProperties(ifs);
 	}
 
-	FTTexture::FTTexture(FTResourceDef& resDef, Core::FoxtrotRenderer* renderer)
+	FTTexture::FTTexture(FTResourceDef& resDef, D3D11::D3D11Renderer* renderer)
 		: mWidth(0)
 		, mHeight(0)
 	{
@@ -76,9 +76,8 @@ namespace D3D11
 			LogString("FTTexture()::ReleaseTexture() -> Release Texture Failed");
 	}
 
-	void FTTexture::Process(FTResourceDef& resDef, Core::FoxtrotRenderer* renderer)
+	void FTTexture::Process(FTResourceDef& resDef, D3D11::D3D11Renderer* renderer)
 	{
-		D3D11Renderer* rend = static_cast<D3D11Renderer*>(renderer);
 		// Returns early if the resource is processed.
 		if (mSRV)
 			return;
@@ -94,7 +93,7 @@ namespace D3D11
 
 		// Copy image data from CPU into staging texture.
 		ComPtr<ID3D11Texture2D> stagingTexture =
-			D3D11Utils::CreateStagingTexture(rend->GetDevice(), rend->GetContext(), width, height, image);
+			D3D11Utils::CreateStagingTexture(renderer->GetDevice(), renderer->GetContext(), width, height, image);
 
 		// Description for the result texture that will be used.
 		D3D11_TEXTURE2D_DESC txtDesc;
@@ -113,16 +112,16 @@ namespace D3D11
 		ComPtr<ID3D11Texture2D> resultTex;
 
 		// Create blank texture (all-black).
-		rend->GetDevice()->CreateTexture2D(&txtDesc, nullptr, resultTex.GetAddressOf());
+		renderer->GetDevice()->CreateTexture2D(&txtDesc, nullptr, resultTex.GetAddressOf());
 
 		// Copy staging texture data to the result.
-		rend->GetContext()->CopySubresourceRegion(resultTex.Get(), 0, 0, 0, 0, stagingTexture.Get(), 0, nullptr);
+		renderer->GetContext()->CopySubresourceRegion(resultTex.Get(), 0, 0, 0, 0, stagingTexture.Get(), 0, nullptr);
 
 		// Create SRV from the resultTex.
-		rend->GetDevice()->CreateShaderResourceView(resultTex.Get(), 0, mSRV.GetAddressOf());
+		renderer->GetDevice()->CreateShaderResourceView(resultTex.Get(), 0, mSRV.GetAddressOf());
 
 		// Create MipMaps.
-		rend->GetContext()->GenerateMips(mSRV.Get());
+		renderer->GetContext()->GenerateMips(mSRV.Get());
 	}
 
 #ifdef FOXTROT_EDITOR

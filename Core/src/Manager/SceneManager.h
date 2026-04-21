@@ -37,7 +37,7 @@ namespace Core
 	class SceneManager :
 		public Core::Entity
 	{
-		SINGLETON(SceneManager)
+		SINGLETON_PROTECTED(SceneManager)
 
 	public:
 		void		   SwitchScene(size_t index);

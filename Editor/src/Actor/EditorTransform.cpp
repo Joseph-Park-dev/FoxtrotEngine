@@ -36,7 +36,7 @@ namespace Editor
 		return const_cast<Math::FTVector3&>(GetWorldRotation());
 	}
 
-	EditorTransform::EditorTransform(EditorElement* element)
+	EditorTransform::EditorTransform(Editor::EditorElement* element)
 		: Core::Transform(element)
 	{
 	}

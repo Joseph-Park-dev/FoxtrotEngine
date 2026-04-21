@@ -22,7 +22,7 @@ namespace Core
 		void RegisterMemberFuncs() override;
 	};
 
-	// extern "C" CORE_API ResourceManager* GetResManager();
+	using GET_RES_MANAGER_INST = Core::ResourceManager* (*)();
 
 #define RES_NAME(type, res) ResourceManager::GetInstance()->GetResName(type::Type, res)
 #define GET_RES(type, key) ResourceManager::GetInstance()->GetResource<type>(type::Type, key)

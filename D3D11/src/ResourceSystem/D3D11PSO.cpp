@@ -5,6 +5,11 @@
 #include "Shader/FTPixelShader.h"
 #include "Manager/ResourceManager.h"
 
+#ifdef FOXTROT_EDITOR
+#include 
+
+#endif
+
 namespace D3D11
 {
 	ResType D3D11PSO::Type = ResType::D3D11_PSO;

@@ -33,8 +33,6 @@
 
 namespace Core
 {
-	Core::ResType FTPremade::Type = Core::ResType::PREMADE;
-
 	FTPremade::FTPremade(FTResourceDef& resDef)
 		: mOrigin(nullptr)
 		, mIsLoaded(false)
@@ -87,7 +85,7 @@ namespace Core
 	}
 
 #ifdef FOXTROT_EDITOR
-	void FTPremade::Create(EditorElement* ele)
+	void FTPremade::Create(Editor::EditorElement* ele)
 	{
 		assert(!GetRelativePath().IsEmpty());
 

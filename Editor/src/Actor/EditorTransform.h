@@ -3,6 +3,7 @@
 
 namespace Editor
 {
+	class EditorElement;
 	class EditorTransform : public Core::Transform
 	{
 	public:
@@ -19,6 +20,6 @@ namespace Editor
 		Math::FTVector3& WorldRotation() const;
 
 	public:
-		EditorTransform(EditorElement* element);
+		EditorTransform(Editor::EditorElement* element);
 	};
 } // namespace Editor

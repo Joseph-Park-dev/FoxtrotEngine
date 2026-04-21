@@ -78,7 +78,7 @@
 								}\
 							TYPE(const TYPE& obj) = delete; \
 						protected:\
-							TYPE(Core::FTCore* base); \
+							TYPE(); \
 							~TYPE() override; \
 							inline static TYPE* mInstance = nullptr; \
 							inline static Core::FTCore* mBase = nullptr;

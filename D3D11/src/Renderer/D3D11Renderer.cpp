@@ -60,9 +60,20 @@ namespace D3D11
 		return mViewport;
 	}
 
+	const FillMode& D3D11Renderer::GetFillMode()
+	{
+		return mFillMode;
+	}
+
+	void D3D11Renderer::SetFillMode(const FillMode mode)
+	{
+		mFillMode = mode;
+	}
+
 	D3D11Renderer::D3D11Renderer(D3D11::D3D11Window* window)
 		: mNumQualityLevels(0)
 		, mViewport(DBG_NEW D3D11_VIEWPORT)
+		, mFillMode(D3D11::FillMode::SOLID)
 	{
 		Initialize(window);
 	}

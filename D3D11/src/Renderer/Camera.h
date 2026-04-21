@@ -47,7 +47,7 @@ namespace D3D11
 	class Camera :
 		public Core::Entity
 	{
-		SINGLETON(Camera)
+		SINGLETON_PROTECTED(Camera)
 	public:
 		Math::FTVector3 ConvertScreenPosToWorld(Math::FTVector2 screenPos);
 		Math::FTVector2 ConvertScreenPosToNDC(Math::FTVector2 screenPos);

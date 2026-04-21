@@ -13,9 +13,9 @@
 #include <assert.h>
 
 #include "Singleton.h"
-#include "Static/FTString.h"
-#include "Static/HashMap.h"
-#include "Static/Record.h"
+#include "FTDS/Static/FTString.h"
+#include "FTDS/Static/HashMap.h"
+#include "FTDS/Static/Record.h"
 #include "ResourceSystem/FTResource.h"
 #include "FileSystem/FileIOHelper.h"
 
@@ -97,10 +97,12 @@ namespace Core
 			mResources->Reserve(resTypeCount);
 		}
 
-		template <typename TYPE>
-		TYPE* GetResMap(size_t typeIdx)
+		ResArray* GetResArray();
+
+		template <typename FTRESOURCE>
+		Core::FTDS::HashMap<Core::FTResource*>& GetResMap()
 		{
-			return mResources->At(typeIdx);
+			return mResources->At(FTRESOURCE::Type);
 		}
 
 		template <typename TYPE>
@@ -134,7 +136,7 @@ namespace Core
 		}
 
 		template <typename TYPE>
-		const Core::FTDS::String GetResName(size_t typeIdx, TYPE* res)
+		const Core::FTDS::String& GetResName(size_t typeIdx, TYPE* res)
 		{
 			Core::FTDS::HashMap<Core::FTResource*>& resMap = mResources->At(typeIdx);
 			for (auto iter = resMap.Begin(); iter != resMap.End(); ++iter)
@@ -223,7 +225,7 @@ namespace Core
 		static void AddFileExtensionIfNone(Core::FTDS::String& key, const char* fileType);
 
 	private:
-		Core::FTDS::Array<Core::FTDS::HashMap<Core::FTResource*>>* mResources = nullptr;
+		ResArray* mResources = nullptr;
 
 		// FTDS::HashMap<FTPremade*>* mPremades;
 
@@ -331,7 +333,6 @@ namespace Core
 			}
 		}
 	};
-
 	// Exported factory — C linkage, stable ABI
 	extern "C"
 	{
@@ -340,5 +341,7 @@ namespace Core
 #else
 		__declspec(dllimport) Entity* GetResourceManager();
 #endif
+
+		using ResArray = FTDS::Array<FTDS::HashMap<FTResource*>>;
 	}
 } // namespace Core

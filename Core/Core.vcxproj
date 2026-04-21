@@ -321,6 +321,7 @@
     <ClInclude Include="src\Plugin\CoreExports.h" />
     <ClInclude Include="src\Entity\ObjectLayout.h" />
     <ClInclude Include="src\Plugin\Plugin.h" />
+    <ClInclude Include="src\Plugin\PluginKey.h" />
     <ClInclude Include="src\Renderer\FoxtrotRenderer.h" />
     <ClInclude Include="src\InputSystem\FTInputDevice.h" />
     <ClInclude Include="src\Renderer\FTRectArea.h" />

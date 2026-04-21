@@ -143,7 +143,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\Core\src;..\D3D11\src;..\Math\src;.\include;.\include\imgui\ImGuiFileDialog;.\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Core\src;..\D3D11\src;..\Math\src;.\include;.\include\imgui\ImGuiFileDialog;.\include\imgui;.\src;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -181,11 +181,12 @@
     <ClInclude Include="src\EditorChunkLoader.h" />
     <ClInclude Include="src\EditorElement.h" />
     <ClInclude Include="src\EditorLayer.h" />
-    <ClInclude Include="src\EditorResourceManager.h" />
+    <ClInclude Include="src\Manager\ResourceManager.h" />
     <ClInclude Include="src\EditorScene.h" />
     <ClInclude Include="src\EditorSceneManager.h" />
     <ClInclude Include="src\EditorUtils.h" />
     <ClInclude Include="src\Plugin\FTCoreEditor.h" />
+    <ClInclude Include="src\ResourceSystem\SupportedResources.h" />
     <ClInclude Include="src\ViewportRenderer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -215,7 +216,7 @@
     <ClCompile Include="src\EditorChunkLoader.cpp" />
     <ClCompile Include="src\EditorElement.cpp" />
     <ClCompile Include="src\EditorLayer.cpp" />
-    <ClCompile Include="src\EditorResourceManager.cpp" />
+    <ClCompile Include="src\Manager\ResourceManager.cpp" />
     <ClCompile Include="src\EditorScene.cpp" />
     <ClCompile Include="src\EditorSceneManager.cpp" />
     <ClCompile Include="src\Plugin\D3D11Editor.cpp" />

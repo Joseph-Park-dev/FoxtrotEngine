@@ -45,7 +45,7 @@
     <ClInclude Include="src\EditorLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\EditorResourceManager.h">
+    <ClInclude Include="src\Manager\ResourceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\EditorScene.h">
@@ -114,6 +114,9 @@
     <ClInclude Include="src\Component\EditorComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ResourceSystem\SupportedResources.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -143,7 +146,7 @@
     <ClCompile Include="src\EditorLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\EditorResourceManager.cpp">
+    <ClCompile Include="src\Manager\ResourceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\EditorScene.cpp">

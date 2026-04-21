@@ -10,7 +10,7 @@ namespace Editor
 	{
 		ActorCommand::Do();
 
-		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+		//EditorScene* scene = EditorSceneManager::GetInstance()->GetCurrentScene();
 		// EditorElement* element = DBG_NEW EditorElement(GetVal());
 	}
 

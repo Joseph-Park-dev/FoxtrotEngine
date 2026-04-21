@@ -31,7 +31,7 @@ namespace Core
 		//	/// @see FTResource::LoadProperties()
 		//	virtual void LoadProperties(std::ifstream& ifs) override;
 	public:
-		static Core::ResType Type;
+		static inline Core::ResType Type = Core::ResType::TEXT;
 
 	public:
 		/// @brief Returns the text data.

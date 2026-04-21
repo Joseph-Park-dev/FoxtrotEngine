@@ -63,8 +63,9 @@ namespace Core
 		constexpr const char* MATERIAL		   = ".ftmat";
 		constexpr const char* SHADER_META	   = ".shadermeta";
 
-		constexpr const char* VERTEX_SHADER = "VS";
-		constexpr const char* PIXEL_SHADER	= "PS";
+		constexpr const char* VERTEX_SHADER	  = "VS";
+		constexpr const char* GEOMETRY_SHADER = "PS";
+		constexpr const char* PIXEL_SHADER	  = "PS";
 
 		constexpr const char* FONT		= ".fnt";
 		constexpr const char* FONT_META = ".fontmeta";

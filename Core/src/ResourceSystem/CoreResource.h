@@ -18,7 +18,6 @@ namespace Core
 	class CoreResource : public FTResource
 	{
 	public:
-		static ResType Type;
 		/// @brief Saves resource properties into a file.
 		/// @param ofs This should either be a stream to a .chunk file, or to a dedicated resource file
 		/// like FTSpriteAnimation, FTPremade, etc.

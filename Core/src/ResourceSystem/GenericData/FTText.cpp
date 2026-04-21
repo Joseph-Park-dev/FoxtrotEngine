@@ -4,8 +4,6 @@
 
 namespace Core
 {
-	Core::ResType FTText::Type = Core::ResType::TEXT;
-
 	FTText::FTText(Core::FTResourceDef& resDef)
 		: mData(DBG_NEW Core::FTDS::DynamicArray<Core::FTDS::String*>)
 	{

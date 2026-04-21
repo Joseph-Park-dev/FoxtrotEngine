@@ -33,7 +33,7 @@ namespace D3D11
 		public FTSprite
 	{
 	public:
-		static D3D11::ResType Type;
+		static inline D3D11::ResType Type = D3D11::ResType::SPINE_ANIMATION;
 
 	public:
 		void Update(float deltaTime, spine::Physics physics);

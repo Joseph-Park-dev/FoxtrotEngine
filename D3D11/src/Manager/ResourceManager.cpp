@@ -28,6 +28,7 @@
 #include "ResourceSystem/D3D11Resource.h"
 #include "Static/FTString.h"
 #include "FileSystem/NullKeys.h"
+#include "Entity/Entity.h"
 
 namespace D3D11
 {
@@ -51,9 +52,9 @@ namespace D3D11
 	{
 		HMODULE coreMod = GetModuleHandleW(Core::DLL);
 		assert(coreMod);
-		mGetCoreResManagerFunc = reinterpret_cast<Core::GET_CORE_RES_MANAGER>(
-			   GetProcAddress(coreMod, Core::PluginKey::GET_RES_MANAGER));
-		
+		mGetCoreResManagerFunc = reinterpret_cast<Core::GET_RES_MANAGER_INST>(
+			GetProcAddress(coreMod, Core::PluginKey::GET_RES_MANAGER));
+
 		InitResMap(ResType::END - 1);
 	}
 
@@ -396,6 +397,11 @@ namespace D3D11
 
 	void ResourceManager::RegisterMemberFuncs()
 	{
+	}
+
+	extern "C" __declspec(dllexport) Core::Entity* GetResourceManager()
+	{
+		return ResourceManager::GetInstance();
 	}
 
 } // namespace D3D11

@@ -30,7 +30,7 @@ namespace D3D11
 	class DebugShapes :
 		public Core::Entity
 	{
-		SINGLETON(DebugShapes)
+		SINGLETON_PROTECTED(DebugShapes)
 	public:
 		// Adds the created shape to the std::vector.
 		void AddShape(FTShape* shape);

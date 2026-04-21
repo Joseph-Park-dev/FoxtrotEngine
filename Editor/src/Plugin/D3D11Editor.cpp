@@ -21,7 +21,7 @@
 #include "EditorCamera.h"
 #include "ViewportRenderer.h"
 #include "EditorChunkLoader.h"
-#include "EditorResourceManager.h"
+#include "Manager/ResourceManager.h"
 #include "EditorUtils.h"
 #include "EditorRenderer.h"
 
@@ -32,12 +32,6 @@
 #include "Plugin/PluginKey.h"
 
 using namespace Editor;
-
-// FTCoreEditor related singleton initializations -> used in Foxtrot Editor Runtime
-CommandHistory*		   CommandHistory::mInstance		= nullptr;
-DirectoryHelper*	   DirectoryHelper::mInstance		= nullptr;
-EditorLayer*		   EditorLayer::mInstance			= nullptr;
-EditorResourceManager* EditorResourceManager::mInstance = nullptr;
 
 BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData)
 {

@@ -12,7 +12,7 @@
 
 #pragma once
 #include "Singleton.h"
-#include "Manager/SceneManager.h"
+#include <Manager/SceneManager.h>
 
 #include <vector>
 
@@ -31,14 +31,18 @@ namespace Editor
 	class EditorElement;
 
 	class EditorSceneManager :
-		public Core::SceneManager,
+		public Core::SceneManager
 	{
+		SINGLETON(EditorSceneManager)
 	public:
 		// Get the EditorElements with the lowest hierarchyLevel.
 		void GetLowests(std::vector<EditorElement*>& elements);
 
+		EditorScene* GetEditorScene();
+
 		// EditorElements with lower hierarchyLevel comes first.
 		void SortByHierarchyLv(std::vector<EditorElement*>& elements);
+
 
 	private:
 		void PushRowOfChildActors(EditorElement* actor, std::vector<EditorElement*>& dest);

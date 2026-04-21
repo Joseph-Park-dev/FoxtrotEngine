@@ -19,11 +19,6 @@
 #include "SingletonMacro.h"
 #include "FTDS/Static/FTString.h"
 
-#define PATH_PROJECT DirectoryHelper::GetInstance()->GetProjectPath()
-#define PATH_CHUNK DirectoryHelper::GetInstance()->GetChunkPath()
-#define CHUNK_IS_SAVED DirectoryHelper::GetInstance()->GetCurrChunkSaved()
-#define SET_CHUNK_IS_SAVED(saved) DirectoryHelper::GetInstance()->SetCurrChunkSaved(saved);
-
 namespace Core
 {
 	class DirectoryHelper :
@@ -53,10 +48,12 @@ namespace Core
 	public:
 		Core::FTDS::String& GetProjectPath();
 		Core::FTDS::String& GetChunkPath();
+		Core::FTDS::String& GetAssetPath();
 		bool				GetCurrChunkSaved() const;
 
 		void SetProjPath(Core::FTDS::String&& path);
 		void SetChunkPath(Core::FTDS::String&& path);
+		void SetAssetPath(Core::FTDS::String&& path);
 		void SetCurrChunkSaved(bool val);
 
 	protected:
@@ -65,6 +62,12 @@ namespace Core
 	private:
 		Core::FTDS::String mCurrProjectPath;
 		Core::FTDS::String mCurrChunkPath;
+		Core::FTDS::String mCurrAssetPath;
 		bool			   mCurrChunkSaved;
 	};
+
+	#define PATH_PROJECT DirectoryHelper::GetInstance()->GetProjectPath()
+#define PATH_CHUNK DirectoryHelper::GetInstance()->GetChunkPath()
+#define CHUNK_IS_SAVED DirectoryHelper::GetInstance()->GetCurrChunkSaved()
+#define SET_CHUNK_IS_SAVED(saved) DirectoryHelper::GetInstance()->SetCurrChunkSaved(saved);
 } // namespace Core

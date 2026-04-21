@@ -17,7 +17,7 @@
 #include <imgui/imgui_internal.h>
 #include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
 
-#include "Singleton.h"
+#include "SingletonMacro.h"
 #include "EditorElement.h"
 #include "CommandHistory.h"
 
@@ -57,13 +57,13 @@ namespace Editor
 {
 	class Command;
 	class EditorRenderer;
-	class EditorLayer :
-		public Core::Singleton<EditorLayer>
+	class EditorLayer
 	{
+		SINGLETON(EditorLayer)
 	public:
-		void Initialize();
+		void Initialize(Editor::EditorRenderer* renderer);
 		void Update(float deltaTime, D3D11::D3D11Window* editorWin, D3D11::D3D11InputDevice* input, Editor::EditorRenderer* renderer);
-		void Render(FoxtrotRenderer* renderer);
+		void Render();
 		void ShutDown();
 
 	public:
@@ -139,6 +139,8 @@ namespace Editor
 		}
 
 	private:
+		Editor::EditorRenderer* mRenderer;
+
 		int mActorNameIdx;
 
 		bool mSaveKeyPressed;

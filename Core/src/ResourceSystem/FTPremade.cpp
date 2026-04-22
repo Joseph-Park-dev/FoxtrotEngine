@@ -21,7 +21,7 @@
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS
 	#include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
-	#include <imgui.h>
+	#include <imgui/imgui.h>
 
 	#include "EditorUtils.h"
 	#include "EditorSceneManager.h"
@@ -85,40 +85,21 @@ namespace Core
 	}
 
 #ifdef FOXTROT_EDITOR
-	void FTPremade::Create(Editor::EditorElement* ele)
+	void FTPremade::Save(FTResourceDef& resDef, Editor::EditorElement* ele)
 	{
-		assert(!GetRelativePath().IsEmpty());
+		assert(resDef.Path);
+		printf(resDef.Path);
 
-		FTDS::String  path = GetRelativePath();
-		std::ofstream ofs(path.C_Str());
+		std::ofstream ofs(resDef.Path);
 		if (ofs)
 		{
-			Core::FileIOHelper::BeginDataPackSave(ofs, GetFileName());
+			Core::FileIOHelper::BeginDataPackSave(ofs, resDef.FileName);
 			ele->SaveComponents(ofs);
 			ele->SaveProperties(ofs);
-			Core::FileIOHelper::EndDataPackSave(ofs, GetFileName());
+			Core::FileIOHelper::EndDataPackSave(ofs, resDef.FileName);
 			Core::FileIOHelper::SaveBufferToFile(ofs);
 
-			printf("Premade %s created to %s\n", GetFileName().C_Str(), path.C_Str());
-		}
-		else
-			printf("ERROR: FTPremade::Create -> Failed to open file %s\n", path.C_Str());
-	}
-
-	void FTPremade::Save(EditorElement* ele)
-	{
-		assert(!GetRelativePath().IsEmpty());
-		LogString(GetRelativePath().C_Str());
-		std::ofstream ofs(GetRelativePath().C_Str());
-		if (ofs)
-		{
-			Core::FileIOHelper::BeginDataPackSave(ofs, GetFileName());
-			ele->SaveComponents(ofs);
-			ele->SaveProperties(ofs);
-			Core::FileIOHelper::EndDataPackSave(ofs, GetFileName());
-			Core::FileIOHelper::SaveBufferToFile(ofs);
-
-			printf("Premade saved to %s\n", GetRelativePath().C_Str());
+			printf("Premade saved to %s\n", resDef.Path);
 		}
 		else
 			printf("ERROR: FTPremade::Create -> Failed to open file\n");
@@ -163,14 +144,23 @@ namespace Core
 		}
 	}
 
-	void FTPremade::AddRefCount()
+	FTPremade::FTPremade(FTResourceDef& resDef, Editor::EditorElement* ele)
+		: FTPremade(resDef)
 	{
-		FTResource::AddRefCount();
-	}
+		assert(resDef.Path);
+		std::ofstream ofs(resDef.Path);
+		if (ofs)
+		{
+			Core::FileIOHelper::BeginDataPackSave(ofs, resDef.FileName);
+			ele->SaveComponents(ofs);
+			ele->SaveProperties(ofs);
+			Core::FileIOHelper::EndDataPackSave(ofs, resDef.FileName);
+			Core::FileIOHelper::SaveBufferToFile(ofs);
 
-	void FTPremade::SubtractRefCount()
-	{
-		FTResource::SubtractRefCount();
+			printf("Premade %s created to %s\n", resDef.FileName, resDef.Path);
+		}
+		else
+			printf("ERROR: FTPremade::Create -> Failed to open file %s\n", resDef.Path);
 	}
 #endif
 } // namespace Core

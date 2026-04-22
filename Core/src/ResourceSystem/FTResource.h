@@ -56,7 +56,17 @@ namespace Core
 		virtual void LoadProperties(std::ifstream& ifs) = 0;
 
 	public:
+		const FTDS::String* GetFileName() { return mFileName; }
+		const FTDS::String* GetRelativePath() { return mRelativePath; }
+
+	public:
+		FTResource(FTResourceDef& resDef);
 		virtual ~FTResource() = default;
+
+	private:
+		FTDS::String* mFileName;
+		FTDS::String* mRelativePath;
+		int			  mRefCount;
 
 #ifdef FOXTROT_EDITOR
 	public:

@@ -17,16 +17,20 @@
 
 #include <iosfwd>
 
+#ifdef FOXTROT_EDITOR
+	#include "EditorElement.h"
+namespace Editor
+{
+	class EditorScene;
+	class EditorElement;
+} // namespace Editor
+#endif // FOXTROT_EDITOR
+
 namespace Core
 {
 	class Actor;
 	class FTCore;
 	class Scene;
-
-#ifdef FOXTROT_EDITOR
-	class EditorScene;
-	#include "EditorElement.h"
-#endif // FOXTROT_EDITOR
 
 	class FTPremade :
 		public CoreResource
@@ -56,17 +60,15 @@ namespace Core
 
 #ifdef FOXTROT_EDITOR
 	public:
-		void Create(EditorElement* ele);
-		void Save(EditorElement* ele);
+		void Save(FTResourceDef& resDef, Editor::EditorElement* ele);
 
 		virtual void UpdateUI() override;
 
-	public:
-		virtual void AddRefCount() override;
-		virtual void SubtractRefCount() override;
+		/// @brief Creates FTPremade with existing EditorElement
+		FTPremade(FTResourceDef& resDef, Editor::EditorElement* ele);
 
 	private:
-		EditorElement* mDummyForUI;
+		Editor::EditorElement* mDummyForUI;
 #endif // FOXTROT_EDITOR
 	};
 

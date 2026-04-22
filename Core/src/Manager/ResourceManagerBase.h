@@ -93,14 +93,14 @@ namespace Core
 	public:
 		void InitResMap(size_t resTypeCount)
 		{
-			mResources = DBG_NEW Core::FTDS::Array<Core::FTDS::HashMap<Core::FTResource*>>;
+			mResources = DBG_NEW FTDS::Array<FTDS::HashMap<FTResource*>>;
 			mResources->Reserve(resTypeCount);
 		}
 
 		ResArray* GetResArray();
 
 		template <typename FTRESOURCE>
-		Core::FTDS::HashMap<Core::FTResource*>& GetResMap()
+		FTDS::HashMap<FTResource*>& GetResMap()
 		{
 			return mResources->At(FTRESOURCE::Type);
 		}

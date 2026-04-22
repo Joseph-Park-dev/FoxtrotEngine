@@ -21,6 +21,10 @@
 
 namespace Core
 {
+	FTResource::FTResource(FTResourceDef& resDef)
+	{
+	}
+
 #ifdef FOXTROT_EDITOR
 	bool FTResource::IsReferenced() const
 	{

@@ -376,7 +376,6 @@
     <ClInclude Include="include\assimp\XMLTools.h" />
     <ClInclude Include="include\assimp\ZipArchiveIOSystem.h" />
     <ClInclude Include="src\Managers\FontManager.h" />
-    <ClInclude Include="src\ResourceSystem\ResPath.h" />
     <ClInclude Include="include\box2d\box2d.h" />
     <ClInclude Include="include\directxmath\DirectXCollision.h" />
     <ClInclude Include="include\directxmath\DirectXColors.h" />

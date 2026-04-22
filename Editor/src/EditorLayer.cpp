@@ -624,8 +624,7 @@ namespace Editor
 						path.C_Str()
 					};
 
-					Core::FTPremade* newPremade = DBG_NEW Core::FTPremade(resDef);
-					newPremade->Create(mFocusedEditorElement);
+					Core::FTPremade* newPremade = DBG_NEW Core::FTPremade(resDef, mFocusedEditorElement);
 					ImGui::CloseCurrentPopup();
 					mInfoType = InfoType::None;
 				};

@@ -24,12 +24,15 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Static/FTString.h"
 #include "Static/HashMap.h"
+#include "Plugin/Plugin.h"
 
 namespace Core
 {
 	void ChunkLoader::SaveChunk(FTDS::String& fileName)
 	{
 		std::ofstream ofs(fileName.C_Str());
+		SaveActorsData(ofs);
+
 		SaveChunkData(ofs);
 	}
 
@@ -38,7 +41,12 @@ namespace Core
 		Lock();
 		std::ifstream ifs(fileName.C_Str());
 		LoadChunkData(ifs);
-		// ResourceManager::GetInstance()->LoadResources(ifs);
+		LoadDLLs(ifs);
+
+		// Load premades to Core ResourceManager
+		size_t premadeCount = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CORE_RES_DATA).first;
+		Core::ResourceManager::GetInstance()->LoadResourceFromChunk<FTPremade>(ifs, premadeCount);
+
 		LoadActorsData(ifs);
 		Unlock();
 	}
@@ -115,14 +123,6 @@ namespace Core
 		mMaxActorID = 0;
 	}
 
-	void ChunkLoader::SaveChunkData(std::ofstream& out)
-	{
-		Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
-		FileIOHelper::BeginDataPackSave(out, ChunkKey::CHUNK_DATA);
-		FileIOHelper::SaveInt(out, ChunkKey::ACTOR_COUNT, mMaxActorID);
-		FileIOHelper::EndDataPackSave(out, ChunkKey::CHUNK_DATA);
-	}
-
 	void ChunkLoader::SaveActorsData(std::ofstream& out)
 	{
 	}
@@ -178,12 +178,52 @@ namespace Core
 		}
 	}
 
-	void ChunkLoader::RegisterMemberFuncs()
+	void ChunkLoader::LoadDLLs(std::ifstream& ifs)
 	{
+		size_t dllCount = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::DLL_DATA).first;
+		for (size_t i = 0; i < dllCount; ++i)
+		{
+			FTDS::String dllPath	= {};
+			FTDS::String pluginName = {};
+			FileIOHelper::LoadBasicString(ifs, dllPath);
+			ExtractFileName(dllPath, pluginName);
+
+			HMODULE mod = LoadLibraryA(dllPath.C_Str());
+			FTCore::GetInstance()->RegisterPlugin(mod, pluginName);
+			LoadCompConstructors(ifs, pluginName);
+		}
+	}
+
+	void ChunkLoader::LoadCompConstructors(std::ifstream& ifs, FTDS::String& pluginName)
+	{
+		size_t count = FileIOHelper::BeginDataPackLoad(ifs, pluginName).first;
+		mCompConstructors->Reserve(count);
+		for (size_t i = 0; i < count; ++i)
+		{
+			FTDS::String compName = {};
+			FileIOHelper::LoadBasicString(ifs, compName);
+			compName.Append("_Create");
+
+			Plugin*	 plugin = FTCore::GetInstance()->GetPlugin(pluginName);
+			HMODULE& mod	= plugin->GetModule();
+			mCompConstructors->PushBack(GetProcAddress(mod, compName.C_Str()));
+
+			size_t count = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::MANAGER_DATA).first;
+			plugin->LoadManagerData();
+		}
+	}
+
+	void ChunkLoader::SaveChunkData(std::ofstream& out)
+	{
+		Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
+		FileIOHelper::BeginDataPackSave(out, ChunkKey::CHUNK_DATA);
+		FileIOHelper::SaveInt(out, ChunkKey::ACTOR_COUNT, mMaxActorID);
+		FileIOHelper::EndDataPackSave(out, ChunkKey::CHUNK_DATA);
 	}
 
 	void ChunkLoader::LoadChunkData(std::ifstream& ifs)
 	{
+		// Load number of Actors
 		int maxActor = 0;
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CHUNK_DATA);
 		FileIOHelper::LoadInt(ifs, maxActor);

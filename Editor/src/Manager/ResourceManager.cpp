@@ -17,7 +17,7 @@ namespace Editor
 	// Number of attempts to load resources aborted during the last loading.
 	constexpr size_t MAX_ABORTED_COUNT = 50;
 
-	void ResourceManager::SaveResources(std::ofstream& ofs)
+	void ResourceManager::SaveResourcesToChunk(std::ofstream& ofs)
 	{
 		Core::ResourceManager*	coreRes	 = mGetCoreResManagerFunc();
 		D3D11::ResourceManager* D3D11Res = mGetD3D11ResManagerFunc();
@@ -25,47 +25,47 @@ namespace Editor
 		FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::RESOURCE_DATA);
 
 		FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::FTPremade::FT_PREMADE);
-		SaveResourceToChunk<Core::FTPremade>(coreRes, ofs);
+		SaveResource<Core::FTPremade>(coreRes, ofs);
 		FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::FTPremade::FT_PREMADE);
 
 		FileIOHelper::BeginDataPackSave(ofs, D3D11::ChunkKey::FTFont::FTFONT);
-		SaveResourceToChunk<FTFont>(D3D11Res, ofs);
+		SaveResource<FTFont>(D3D11Res, ofs);
 		FileIOHelper::EndDataPackSave(ofs, D3D11::ChunkKey::FTFont::FTFONT);
 
 		FileIOHelper::BeginDataPackSave(ofs, D3D11::ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
-		SaveResourceToChunk<FTSpineAnimation>(D3D11Res, ofs);
+		SaveResource<FTSpineAnimation>(D3D11Res, ofs);
 		FileIOHelper::EndDataPackSave(ofs, D3D11::ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
 
 		FileIOHelper::BeginDataPackSave(ofs, D3D11::ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
-		SaveResourceToChunk<FTSpriteAnimation>(D3D11Res, ofs);
+		SaveResource<FTSpriteAnimation>(D3D11Res, ofs);
 		FileIOHelper::EndDataPackSave(ofs, D3D11::ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
 
 		FileIOHelper::BeginDataPackSave(ofs, D3D11::ChunkKey::FTTileMap::FT_TILEMAP);
-		SaveResourceToChunk<FTTileMap>(D3D11Res, ofs);
+		SaveResource<FTTileMap>(D3D11Res, ofs);
 		FileIOHelper::EndDataPackSave(ofs, D3D11::ChunkKey::FTTileMap::FT_TILEMAP);
 
 		FileIOHelper::BeginDataPackSave(ofs, D3D11::ChunkKey::FTTexture::FT_TEXTURE);
-		SaveResourceToChunk<FTSprite>(D3D11Res, ofs);
+		SaveResource<FTSprite>(D3D11Res, ofs);
 		FileIOHelper::EndDataPackSave(ofs, D3D11::ChunkKey::FTTexture::FT_TEXTURE);
 
 		FileIOHelper::BeginDataPackSave(ofs, D3D11::ChunkKey::FTMeshGroup::FT_MESH_GROUP);
-		SaveResourceToChunk<FTMeshGroup>(D3D11Res, ofs);
+		SaveResource<FTMeshGroup>(D3D11Res, ofs);
 		FileIOHelper::EndDataPackSave(ofs, D3D11::ChunkKey::FTMeshGroup::FT_MESH_GROUP);
 
 		// FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::Sound::SOUND);
-		// SaveResourceToChunk<Sound>(ofs);
+		// SaveResource<Sound>(ofs);
 		// FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::Sound::SOUND);
 
 		FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::JSON::JSON);
-		SaveResourceToChunk<FTJSON>(coreRes, ofs);
+		SaveResource<FTJSON>(coreRes, ofs);
 		FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::JSON::JSON);
 
 		FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::CSV::CSV);
-		SaveResourceToChunk<FTCSV>(coreRes, ofs);
+		SaveResource<FTCSV>(coreRes, ofs);
 		FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::CSV::CSV);
 
 		FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::FTText::FT_TEXT);
-		SaveResourceToChunk<FTText>(coreRes, ofs);
+		SaveResource<FTText>(coreRes, ofs);
 		FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::FTText::FT_TEXT);
 
 		FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::RESOURCE_DATA);
@@ -275,7 +275,7 @@ namespace Editor
 
 		if (ImGui::Button("Refresh"))
 		{
-			//EditorSceneManager::GetInstance()->DeleteAll();
+			// EditorSceneManager::GetInstance()->DeleteAll();
 			ResourceManager::GetInstance()->DeleteAll();
 			LoadAllResourcesInAsset();
 			EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);

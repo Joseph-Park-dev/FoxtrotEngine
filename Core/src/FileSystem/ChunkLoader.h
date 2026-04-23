@@ -73,9 +73,6 @@ namespace Core
 		virtual void SaveActorsData(std::ofstream& ofs);
 		virtual void LoadActorsData(std::ifstream& ifs);
 
-	protected:
-		void RegisterMemberFuncs() override;
-
 	private:
 		ChunkData mCurrentChunkData;
 		bool	  mIsLoading;
@@ -83,14 +80,23 @@ namespace Core
 		// Name of the copied .chunk file.
 		FTDS::String mCurrentChunkCopy;
 		int			 mMaxActorID;
+
+		FTDS::DynamicArray<FARPROC>* mCompConstructors;
+
+	private:
+		void LoadDLLs(std::ifstream& ifs);
+		void LoadCompConstructors(std::ifstream& ifs, FTDS::String& pluginName);
 	};
 
 	namespace ChunkKey
 	{
 		// Data Pack Names
-		constexpr const char* CHUNK_DATA	= "Chunk Data";
-		constexpr const char* ACTOR_DATA	= "Actor Data";
-		constexpr const char* RESOURCE_DATA = "Resource Data";
+		constexpr const char* CHUNK_DATA		= "Chunk Data";
+		constexpr const char* ACTOR_DATA		= "Actor Data";
+		constexpr const char* CORE_RES_DATA		= "Core Resource Data";
+		constexpr const char* DLL_DATA			= "DLL Data";
+		constexpr const char* COMP_CONSTRUCTORS = "Comp Constructors";
+		constexpr const char* MANAGER_DATA		= "Manager Data";
 
 		constexpr const char* ACTOR_PROPERTIES = "Actor Properties";
 		constexpr const char* TRANSFORM		   = "Transform";

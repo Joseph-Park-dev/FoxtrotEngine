@@ -17,9 +17,6 @@ namespace Core
 
 	public:
 		void LoadDefaultResources() override;
-
-	protected:
-		void RegisterMemberFuncs() override;
 	};
 
 	using GET_RES_MANAGER_INST = Core::ResourceManager* (*)();

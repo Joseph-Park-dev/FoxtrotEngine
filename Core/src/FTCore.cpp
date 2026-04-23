@@ -30,6 +30,8 @@
 
 namespace Core
 {
+	using PLUGIN_CONSTRUCT = Plugin* (*)(FTCore * base);
+
 	FTCore* FTCore::mInstance = nullptr;
 	// Timer*			 Timer::mInstance			= nullptr;
 	// SceneManager*	 SceneManager::mInstance	= nullptr;
@@ -37,8 +39,6 @@ namespace Core
 	// EventManager*	 EventManager::mInstance	= nullptr;
 	// DirectoryHelper* DirectoryHelper::mInstance = nullptr;
 	// ChunkLoader*	 ChunkLoader::mInstance		= nullptr;
-
-	using PLUGIN_CONSTRUCT = Plugin* (*)(FTCore * base);
 
 	void FTCore::LoadGameData()
 	{
@@ -52,35 +52,17 @@ namespace Core
 			FileIOHelper::LoadBasicString(ifs, *chunkTitle);
 			SceneManager::GetInstance()->ChunkList()->PushBack(chunkTitle);
 		}
-
-		std::pair<size_t, FTDS::String> dllPack = FileIOHelper::BeginDataPackLoad(ifs, GameData::DLL_LIST);
-		mLoadedPlugins->Reserve(dllPack.first);
-		for (size_t i = 0; i < dllPack.first; ++i)
-		{
-			FTDS::String dllPath	= {};
-			FTDS::String pluginName = {};
-			FileIOHelper::LoadBasicString(ifs, dllPath);
-			ExtractFileName(dllPath, pluginName);
-			const wchar_t* wideCharPath = dllPath.WC_Str();
-
-			HMODULE			 mod	  = LoadLibrary(wideCharPath);
-			PLUGIN_CONSTRUCT plgConst = (PLUGIN_CONSTRUCT)GetProcAddress(mod, PluginKey::CREATE_PLUGIN);
-			mLoadedPlugins->Insert(pluginName, plgConst(this));
-			mLoadedPlugins->At((int)mLoadedPlugins->GetSize() - 1);
-
-			delete wideCharPath;
-		}
 		DirectoryHelper::GetInstance()->SetProjectPath(std::filesystem::absolute("./").string().c_str());
 	}
 
-	bool FTCore::Initialize(HMODULE coreMod)
+	bool FTCore::Initialize()
 	{
 		LoadGameData();
 
-		for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+		for (auto iter = mPlugins->Begin(); iter != mPlugins->End(); ++iter)
 			(*iter)->Value()->Initialize();
 
-		for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+		for (auto iter = mPlugins->Begin(); iter != mPlugins->End(); ++iter)
 			(*iter)->Value()->Setup();
 
 		InitTimer();
@@ -127,9 +109,18 @@ namespace Core
 		}
 	}
 
+	void FTCore::RegisterPlugin(HMODULE mod, FTDS::String& pluginName)
+	{
+		FARPROC			 proc	  = GetProcAddress(mod, PluginKey::CREATE_PLUGIN);
+		PLUGIN_CONSTRUCT plgConst = (PLUGIN_CONSTRUCT)GetProcAddress(mod, PluginKey::CREATE_PLUGIN);
+		Plugin*			 plugin	  = plgConst(this);
+		plugin->SetModule(mod);
+		mPlugins->Insert(pluginName, plugin);
+	}
+
 	void FTCore::ProcessInput()
 	{
-		for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+		for (auto iter = mPlugins->Begin(); iter != mPlugins->End(); ++iter)
 			(*iter)->Value()->ProcessInput();
 	}
 
@@ -141,16 +132,16 @@ namespace Core
 		if (!mIsUpdating)
 			return;
 
-		for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+		for (auto iter = mPlugins->Begin(); iter != mPlugins->End(); ++iter)
 			(*iter)->Value()->Update(deltaTime);
 
-		for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+		for (auto iter = mPlugins->Begin(); iter != mPlugins->End(); ++iter)
 			(*iter)->Value()->LateUpdate(deltaTime);
 	}
 
 	void FTCore::GenerateOutput()
 	{
-		for (auto iter = mLoadedPlugins->Begin(); iter != mLoadedPlugins->End(); ++iter)
+		for (auto iter = mPlugins->Begin(); iter != mPlugins->End(); ++iter)
 			(*iter)->Value()->Render();
 	}
 
@@ -166,7 +157,7 @@ namespace Core
 		, mIsUpdating(true)
 		, mGameDataPath(
 			  DBG_NEW FTDS::String("./"))
-		, mLoadedPlugins(DBG_NEW FTDS::HashMap<Plugin*>())
+		, mPlugins(DBG_NEW FTDS::HashMap<Plugin*>())
 		, mEntities(DBG_NEW FTDS::HashMap<Entity*>)
 	{
 		mGameDataPath->Append(ChunkKey::GAME_DATA);
@@ -176,12 +167,12 @@ namespace Core
 	FTCore::~FTCore()
 	{
 		delete mGameDataPath;
-		delete mLoadedPlugins;
+		delete mPlugins;
 	}
 
 	void FTCore::ShutDown()
 	{
-		Safe_Delete_Map(mLoadedPlugins);
+		Safe_Delete_Map(mPlugins);
 		Safe_Delete_Map(mEntities);
 
 		SceneManager::GetInstance()->GetCurrentScene()->DeleteAll();
@@ -192,6 +183,11 @@ namespace Core
 		Timer::GetInstance()->Destroy();
 
 		PostQuitMessage(0);
+	}
+
+	Plugin* FTCore::GetPlugin(FTDS::String& pluginName)
+	{
+		return mPlugins->At(pluginName)->Value();
 	}
 
 	extern "C"

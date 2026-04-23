@@ -941,9 +941,6 @@
     <ClInclude Include="src\Managers\FontManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ResourceSystem\ResPath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\assimp\Compiler\poppack1.h">
       <Filter>Header Files</Filter>
     </ClInclude>

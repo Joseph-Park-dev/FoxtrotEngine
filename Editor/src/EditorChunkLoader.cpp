@@ -12,8 +12,8 @@
 
 #include "Manager/ResourceManager.h"
 #include "Manager/SceneManager.h"
-//#include "Manager/CollisionManager.h"
-//#include "Manager/SoundManager.h"
+// #include "Manager/CollisionManager.h"
+// #include "Manager/SoundManager.h"
 #include "Math/FTMath.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Renderer/Camera.h"
@@ -22,7 +22,7 @@
 #include "Component/Animator.h"
 #include "Component/SpriteRenderer.h"
 #include "Component/TileMapRenderer.h"
-//#include "Component/TextRenderer.h"
+// #include "Component/TextRenderer.h"
 #include "Component/MeshRenderer.h"
 #include "Component/SpineAnimator.h"
 
@@ -67,13 +67,11 @@ namespace Editor
 	{
 		Lock();
 		std::ofstream ofs(fileName.C_Str());
-		// Save -> ActorData comes first, // Load -> ChunkData comes first
-		D3D11::Camera::GetInstance()->SaveProperties(ofs);
 		SaveActorsData(ofs);
-		//SoundManager::GetInstance()->SaveProperties(ofs);
-		EditorResourceManager::GetInstance()->SaveResources(ofs);
-		//CollisionManager::GetInstance()->SaveCollisionMarks(ofs);
-		// LightManager::GetInstance()->SaveProperties(ofs);
+		// SoundManager::GetInstance()->SaveProperties(ofs);
+		Editor::ResourceManager::GetInstance()->SaveResources<FTPremade>(ifs, premadeCount);
+		// CollisionManager::GetInstance()->SaveCollisionMarks(ofs);
+		//  LightManager::GetInstance()->SaveProperties(ofs);
 		SaveChunkData(ofs);
 		FileIOHelper::SaveBufferToFile(ofs);
 		Unlock();
@@ -83,11 +81,11 @@ namespace Editor
 	{
 		Lock();
 		std::ifstream ifs(fileName.C_Str());
-		LoadChunkData(ifs);
+		ChunkLoader::LoadChunkData(ifs);
 		// LightManager::GetInstance()->LoadProperties(ifs);
-		//CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
+		// CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
 		EditorResourceManager::GetInstance()->PassLoadResourceInChunk(ifs);
-		//SoundManager::GetInstance()->LoadProperties(ifs);
+		// SoundManager::GetInstance()->LoadProperties(ifs);
 		LoadActorsData(ifs);
 
 		D3D11::Camera::GetInstance()->LoadProperties(ifs, EditorSceneManager::GetInstance());

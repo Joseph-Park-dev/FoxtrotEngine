@@ -20,9 +20,6 @@ namespace D3D11
 	public:
 		Core::ResourceManager* GetCoreResManager();
 
-	protected:
-		void RegisterMemberFuncs() override;
-
 	private:
 		Core::GET_RES_MANAGER_INST mGetCoreResManagerFunc;
 	};

@@ -47,8 +47,9 @@ namespace Core
 		}
 
 	public:
-		virtual void SaveProperties() = 0;
-		virtual void LoadProperties() = 0;
+		virtual void SaveProperties()  = 0;
+		virtual void LoadProperties()  = 0;
+		virtual void LoadManagerData() = 0;
 
 		inline static FTCore* gBase;
 

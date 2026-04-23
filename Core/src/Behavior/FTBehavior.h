@@ -12,13 +12,13 @@ namespace Core
 
 	public:
 #ifdef FOXTROT_EDITOR
-		template <typename CUSTOM_BEHAVIOR>
-		static void AddBehaviorToEditor(const char* key)
-		{
-			EditorChunkLoader::GetInstance()->GetCompCreateMap().insert(std::make_pair(key, &FTBehavior::Create<CUSTOM_BEHAVIOR>));
+		// template <typename CUSTOM_BEHAVIOR>
+		// static void AddBehaviorToEditor(const char* key)
+		//{
+		//	EditorChunkLoader::GetInstance()->GetCompCreateMap().insert(std::make_pair(key, &FTBehavior::Create<CUSTOM_BEHAVIOR>));
 
-			ChunkLoader::GetInstance()->GetComponentLoadMap().Insert(key, &FTBehavior::Load<CUSTOM_BEHAVIOR>);
-		}
+		//	ChunkLoader::GetInstance()->GetComponentLoadMap().Insert(key, &FTBehavior::Load<CUSTOM_BEHAVIOR>);
+		//}
 
 #else
 		// template <typename CUSTOM_BEHAVIOR>

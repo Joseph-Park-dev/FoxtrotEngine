@@ -21,28 +21,6 @@
 
 #include "FTDS/Compare/StringEqual.h"
 
-/// @brief Type discriminator for resources serialized/deserialized from chunk files.
-// enum class ResType
-//{
-//	UNSUPPORTED,
-//	FTTEXTURE,
-//	FT_CUBEMAP_TEXTURE,
-//	FTTILEMAP,
-//	FTPREMADE,
-//	FTMESH,
-//	FTMATERIAL,
-//	FT_VERTEX_SHADER,
-//	FT_PIXEL_SHADER,
-//	FT_SPRITE_ANIMATION,
-//	FT_SPINE_ANIMATION,
-//	FTCSV,
-//	FTJSON,
-//	FTTEXT,
-//	FT_SHADER_META,
-//	FTSOUND,
-//	FTFONT
-// };
-
 namespace Core
 {
 	/// @brief Special keys used by the chunk system to reference built-in/primitive assets.
@@ -191,15 +169,15 @@ namespace Core
 		/// @param resArr Target map. Will be reserved to 'resCount'.
 		/// @param resCount Number of entries to read. Decrements to 0 during import.
 		template <typename FTRESOURCE>
-		void LoadResourceFromChunk(std::ifstream& ifs, Core::FTDS::HashMap<FTRESOURCE*>* resArr, size_t& resCount)
+		void LoadResourceFromChunk(std::ifstream& ifs, size_t& resCount)
 		{
 			if (resCount < 1)
 				return;
 
-			resArr->Reserve(resCount);
+			GetResMap(FTRESOURCE::Type).Reserve(resCount);
 			while (0 < resCount)
 			{
-				LoadResource(ifs, resArr);
+				LoadResource(ifs, GetResMap(FTRESOURCE::Type));
 				--resCount; // Key of the next resource to be imported.
 			}
 		}
@@ -208,15 +186,15 @@ namespace Core
 		/// @tparam FTRESOURCE Resource concrete type with ctor(FTResourceDef, FoxtrotRenderer*).
 		/// @param renderer Valid renderer used to initialize GPU-backed resources.
 		template <typename FTRESOURCE>
-		void LoadGraphicsResourceFromChunk(std::ifstream& ifs, Core::FTDS::HashMap<FTRESOURCE*>* resArr, size_t& resCount, FoxtrotRenderer* renderer)
+		void LoadGraphicsResourceFromChunk(std::ifstream& ifs, size_t& resCount, FoxtrotRenderer* renderer)
 		{
 			if (resCount < 1)
 				return;
 
-			resArr->Reserve(resCount);
+			GetResMap(FTRESOURCE::Type).Reserve(resCount);
 			while (0 < resCount)
 			{
-				LoadResource(ifs, resArr, renderer);
+				LoadResource(ifs, GetResMap(FTRESOURCE::Type), renderer);
 				--resCount; // Key of the next resource to be imported.
 			}
 		}

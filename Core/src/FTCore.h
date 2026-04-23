@@ -82,15 +82,20 @@ namespace Core
 		}
 
 	public:
-		virtual bool Initialize(HMODULE coreMod);
+		virtual bool Initialize();
 		virtual void RunLoop();
 		virtual void ShutDown();
 
 	public:
 		FTDS::HashMap<Entity*>* GetEntities() { return mEntities; }
+		Plugin*					GetPlugin(FTDS::String& pluginName);
 
-		virtual void SetIsRunning(bool isRunning) { mIsRunning = isRunning; }
-		void		 SetIsUpdating(bool isUpdating) { mIsUpdating = isUpdating; }
+		virtual void SetIsRunning(bool isRunning)
+		{
+			mIsRunning = isRunning;
+		}
+		void SetIsUpdating(bool isUpdating) { mIsUpdating = isUpdating; }
+		void RegisterPlugin(HMODULE mod, FTDS::String& pluginName);
 
 	protected:
 		// Gameloop functions.
@@ -109,8 +114,8 @@ namespace Core
 
 	private:
 		FTDS::String*			mGameDataPath;
-		FTDS::HashMap<Plugin*>* mLoadedPlugins;
 		FTDS::HashMap<Entity*>* mEntities;
+		FTDS::HashMap<Plugin*>* mPlugins;
 
 	private:
 		void		   LoadDLL(FTDS::String& path);

@@ -62,9 +62,6 @@ namespace Core
 		void SetChunkPath(FTDS::String&& path);
 		void SetCurrChunkSaved(bool val);
 
-	protected:
-		void RegisterMemberFuncs() override;
-
 	private:
 		FTDS::String* mProjectPath;
 		FTDS::String* mChunkPath;

@@ -23,7 +23,7 @@ namespace Editor
 		void LoadAllResourcesInAsset();
 
 	public:
-		void SaveResources(std::ofstream& ofs);
+		void SaveResourcesToChunk(std::ofstream& ofs);
 
 		/// @brief Load a resource with type extracted from filePath.
 		/// @param aborted File paths whose loading was aborted.
@@ -36,7 +36,7 @@ namespace Editor
 
 	public:
 		template <typename FTRESOURCE>
-		void SaveResourceToChunk(Core::ResourceManagerBase* managerInst, std::ofstream& ofs)
+		void SaveResource(Core::ResourceManagerBase* managerInst, std::ofstream& ofs)
 		{
 			Core::ResArray* resArr = managerInst->GetResArray();
 			for (auto mapIter = resArr->Begin(); mapIter != resArr->End(); ++mapIter)
@@ -56,9 +56,6 @@ namespace Editor
 
 	public:
 		void SetRenderer(Editor::EditorRenderer* renderer);
-
-	protected:
-		void RegisterMemberFuncs() override;
 
 	private:
 		Core::GET_RES_MANAGER_INST	mGetCoreResManagerFunc;

@@ -3,7 +3,7 @@
 #include "Math/FTMath.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "CommandHistory.h"
+	#include <CommandHistory.h>
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -88,19 +88,19 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 		void UpdateUI()
 		{
-			CommandHistory::GetInstance()->UpdateVector3Value(LightKey::STRENGTH, Strength);
-			CommandHistory::GetInstance()->UpdateFloatValue(LightKey::FALLOFF_START, FallOffStart);
-			CommandHistory::GetInstance()->UpdateFloatValue(LightKey::FALLOFF_END, FallOffEnd);
-			CommandHistory::GetInstance()->UpdateVector3Value(LightKey::DIRECTION, Direction);
-			CommandHistory::GetInstance()->UpdateVector3Value(LightKey::POSITION, Position);
-			CommandHistory::GetInstance()->UpdateFloatValue(LightKey::SPOT_POWER, SpotPower);
+			Editor::CommandHistory::GetInstance()->UpdateVector3Value(LightKey::STRENGTH, Strength);
+			Editor::CommandHistory::GetInstance()->UpdateFloatValue(LightKey::FALLOFF_START, FallOffStart);
+			Editor::CommandHistory::GetInstance()->UpdateFloatValue(LightKey::FALLOFF_END, FallOffEnd);
+			Editor::CommandHistory::GetInstance()->UpdateVector3Value(LightKey::DIRECTION, Direction);
+			Editor::CommandHistory::GetInstance()->UpdateVector3Value(LightKey::POSITION, Position);
+			Editor::CommandHistory::GetInstance()->UpdateFloatValue(LightKey::SPOT_POWER, SpotPower);
 		}
 
 #endif
 	};
 
 #ifdef FOXTROT_EDITOR
-	namespace FTEditorUtils
+	namespace Editor
 	{
 		inline const char* TypeToString(Light::TYPE type)
 		{
@@ -116,6 +116,6 @@ namespace D3D11
 					return LightKey::TypeStr::NULL_OBJ;
 			}
 		}
-	} // namespace FTEditorUtils
+	} // namespace Editor
 #endif // FOXTROT_EDITOR
 } // namespace D3D11

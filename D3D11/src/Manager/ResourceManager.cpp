@@ -395,10 +395,6 @@ namespace D3D11
 		return mGetCoreResManagerFunc();
 	}
 
-	void ResourceManager::RegisterMemberFuncs()
-	{
-	}
-
 	extern "C" __declspec(dllexport) Core::Entity* GetResourceManager()
 	{
 		return ResourceManager::GetInstance();

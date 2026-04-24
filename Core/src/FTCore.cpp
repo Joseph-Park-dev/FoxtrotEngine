@@ -109,13 +109,15 @@ namespace Core
 		}
 	}
 
-	void FTCore::RegisterPlugin(HMODULE mod, FTDS::String& pluginName)
+	Plugin* FTCore::RegisterPlugin(HMODULE mod, FTDS::String& pluginName)
 	{
 		FARPROC			 proc	  = GetProcAddress(mod, PluginKey::CREATE_PLUGIN);
 		PLUGIN_CONSTRUCT plgConst = (PLUGIN_CONSTRUCT)GetProcAddress(mod, PluginKey::CREATE_PLUGIN);
 		Plugin*			 plugin	  = plgConst(this);
 		plugin->SetModule(mod);
 		mPlugins->Insert(pluginName, plugin);
+
+		return plugin;
 	}
 
 	void FTCore::ProcessInput()

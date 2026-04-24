@@ -361,6 +361,7 @@
     <ClCompile Include="src\InputSystem\FTInputDevice.cpp" />
     <ClCompile Include="src\Renderer\FTRectArea.cpp" />
     <ClCompile Include="src\Renderer\FTWindow.cpp" />
+    <ClCompile Include="src\ResourceSystem\CoreResource.cpp" />
     <ClCompile Include="src\ResourceSystem\FTPremade.cpp" />
     <ClCompile Include="src\ResourceSystem\FTResource.cpp" />
     <ClCompile Include="src\ResourceSystem\GenericData\FTCSV.cpp" />

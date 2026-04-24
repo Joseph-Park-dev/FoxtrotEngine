@@ -29,6 +29,7 @@ namespace Core
 		virtual void LoadProperties(std::ifstream& ifs) override = 0;
 
 	public:
+		CoreResource(FTResourceDef& resDef);
 		virtual ~CoreResource() = default;
 	};
 } // namespace Core

@@ -453,5 +453,8 @@
     <ClCompile Include="src\ResourceSystem\GenericData\FTText.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ResourceSystem\CoreResource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

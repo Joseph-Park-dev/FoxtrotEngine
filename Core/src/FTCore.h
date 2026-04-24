@@ -88,14 +88,15 @@ namespace Core
 
 	public:
 		FTDS::HashMap<Entity*>* GetEntities() { return mEntities; }
+		FTDS::HashMap<Plugin*>* GetPlugins() { return mPlugins; }
 		Plugin*					GetPlugin(FTDS::String& pluginName);
 
 		virtual void SetIsRunning(bool isRunning)
 		{
 			mIsRunning = isRunning;
 		}
-		void SetIsUpdating(bool isUpdating) { mIsUpdating = isUpdating; }
-		void RegisterPlugin(HMODULE mod, FTDS::String& pluginName);
+		void	SetIsUpdating(bool isUpdating) { mIsUpdating = isUpdating; }
+		Plugin* RegisterPlugin(HMODULE mod, FTDS::String& pluginName);
 
 	protected:
 		// Gameloop functions.

@@ -47,14 +47,14 @@ namespace Core
 		}
 
 	public:
-		virtual void SaveProperties()  = 0;
-		virtual void LoadProperties()  = 0;
-		virtual void LoadManagerData() = 0;
-
-		inline static FTCore* gBase;
+		virtual void SaveProperties()					 = 0;
+		virtual void LoadProperties()					 = 0;
+		virtual void LoadManagerData(std::ifstream& ifs) = 0;
 
 	public:
-		HMODULE& GetModule() { return mModule; }
+		const FTDS::String*				GetName() { return mName; }
+		HMODULE&						GetModule() { return mModule; }
+		FTDS::DynamicArray<Component*>* GetRegisteredComps() { return mRegisteredComps; }
 
 	public:
 		virtual void Initialize()
@@ -108,12 +108,12 @@ namespace Core
 		}
 
 	public:
-		Plugin(FTCore* base)
-			: mModule(NULL)
+		Plugin(const char* name)
+			: mName(DBG_NEW FTDS::String(name))
+			, mModule(NULL)
 			, mRegisteredComps(DBG_NEW FTDS::DynamicArray<Component*>)
-			, mCreateFuncs(DBG_NEW FTDS::DynamicArray<Component* (*)(Actor*)>)
+		//, mCreateFuncs(DBG_NEW FTDS::DynamicArray<Component* (*)(Actor*)>)
 		{
-			gBase = base;
 		}
 
 		virtual ~Plugin()
@@ -153,15 +153,17 @@ namespace Core
 		}
 
 	private:
-		HMODULE										mModule;
-		FTDS::DynamicArray<Component*>*				mRegisteredComps;
-		FTDS::DynamicArray<Component* (*)(Actor*)>* mCreateFuncs;
-		// FTDS::HashMap<Component* (*)(Actor * actor)>* mCompMap;
+		FTDS::String*					mName;
+		HMODULE							mModule;
+		FTDS::DynamicArray<Component*>* mRegisteredComps;
+		// FTDS::DynamicArray<Component* (*)(Actor*)>* mCreateFuncs;
+		//  FTDS::HashMap<Component* (*)(Actor * actor)>* mCompMap;
 
 	private:
 		void Unload() const
 		{
 			FreeLibrary(mModule);
+			delete mName;
 		}
 	};
 
@@ -169,8 +171,10 @@ namespace Core
 	{
 		namespace Plugin
 		{
-			constexpr const char* PLUGIN_DATA = "Plugin Data";
-		}
+			constexpr const char* PLUGIN_DATA		= "Plugin Data";
+			constexpr const char* COMP_CONSTRUCTORS = "Comp Constructors";
+			constexpr const char* MANAGER_DATA		= "Manager Data";
+		} // namespace Plugin
 	} // namespace ChunkKey
 
 	extern "C" __declspec(dllexport) Plugin* CreatePlugin(FTCore* base);

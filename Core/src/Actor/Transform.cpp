@@ -154,10 +154,6 @@ namespace Core
 		}
 	}
 
-	void Transform::RegisterMemberFuncs()
-	{
-	}
-
 	const Actor* Transform::GetOwner() const
 	{
 		return mOwner;

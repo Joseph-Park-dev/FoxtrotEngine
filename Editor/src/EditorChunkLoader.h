@@ -58,9 +58,12 @@ namespace Editor
 		virtual void LoadActorsData(std::ifstream& ifs) override;
 
 	private:
-		ComponentCreateMap mComponentCreateMap;
+		ComponentCreateMap		   mComponentCreateMap;
+		Core::GET_RES_MANAGER_INST mGetCoreResManagerFunc;
 
 	private:
 		void SavePlugins(std::ofstream& ofs);
+		void SaveCompConstructors(std::ofstream& ofs, Plugin* plugin);
+		void SaveManagerData(std::ofstream& ofs, Plugin* plugin);
 	};
 } // namespace Editor

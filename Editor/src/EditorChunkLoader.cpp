@@ -19,6 +19,7 @@
 #include "Renderer/Camera.h"
 #include "Actor/Transform.h"
 #include "Plugin/Plugin.h"
+#include "Plugin/PluginKey.h"
 
 #include "Component/Animator.h"
 #include "Component/SpriteRenderer.h"
@@ -36,7 +37,13 @@ namespace Editor
 	using namespace Core;
 	EditorChunkLoader::EditorChunkLoader()
 		: ChunkLoader()
+		, mGetCoreResManagerFunc(nullptr)
 	{
+		HMODULE coreMod = GetModuleHandleW(Core::DLL);
+		assert(coreMod);
+		mGetCoreResManagerFunc = reinterpret_cast<Core::GET_RES_MANAGER_INST>(
+			GetProcAddress(coreMod, Core::PluginKey::GET_RES_MANAGER));
+
 		// You must list all Components to be used during runtime.
 		// That includes the user defined s, or "Behavior"s.
 		mComponentCreateMap = {
@@ -69,9 +76,11 @@ namespace Editor
 		std::ofstream ofs(fileName.C_Str());
 		SaveActorsData(ofs);
 
-		SavePlugins(ofs);
+		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CORE_RES_DATA);
+		mGetCoreResManagerFunc()->SaveResourcesToChunk<Core::FTPremade>(ofs);
 
-		SaveChunkData(ofs);
+		SavePlugins(ofs);
+		ChunkLoader::SaveChunkData(ofs);
 		FileIOHelper::SaveBufferToFile(ofs);
 		Unlock();
 	}
@@ -80,10 +89,10 @@ namespace Editor
 	{
 		Lock();
 		std::ifstream ifs(fileName.C_Str());
-		LoadChunkData(ifs);
+		ChunkLoader::LoadChunkData(ifs);
 		// LightManager::GetInstance()->LoadProperties(ifs);
 		// CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
-		Editor::ResourceManager::GetInstance()->PassLoadResourceInChunk(ifs);
+		EditorResourceManager::GetInstance()->PassLoadResourceInChunk(ifs);
 		// SoundManager::GetInstance()->LoadProperties(ifs);
 		LoadActorsData(ifs);
 
@@ -157,73 +166,68 @@ namespace Editor
 					element->SetParent(parent);
 				}
 
-				if (0 < element->GetChildActors()->GetSize())
+				if (0 < element->GetChildActors().GetSize())
 				{
 					FTDS::DynamicArray<Actor*> children;
 
-					element->GetChildActors()->IterateArray([&](Actor* c) {
+					element->GetChildActors().IterateArray([&](Actor* c) {
 						Actor* child = actorWithIDs.At(c->GetID())->Value();
 						element->RemoveChild(c);
 						delete c;
 						c = nullptr;
 						children.PushBack(child);
 					});
-					element->GetChildActors()->Clear();
-					element->GetChildActors()->Copy(children);
+					element->GetChildActors().Clear();
+					element->GetChildActors().Copy(children);
 				}
 			}
 		}
 	}
 	void EditorChunkLoader::SavePlugins(std::ofstream& ofs)
 	{
-		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::DLL_DATA);
-
+		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::PLUGIN_DATA);
 		FTDS::HashMap<Plugin*>* plugins = GetBase()->GetPlugins();
+
+		size_t dllIdx = 0;
 		for (auto iter = plugins->Begin(); iter != plugins->End(); ++iter)
 		{
-			FTDS::
-			FTDS::String dllName("./");
-			GetDLLPath((*iter)->Value()->GetModule(), dllName);
-			FileIOHelper::BeginDataPackSave(ofs, dllName);
-			FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::PLUGIN_DATA);
+			Plugin*		 plugin	 = (*iter)->Value();
+			FTDS::String dllPath = {};
+			GetDLLPath(plugin->GetModule(), dllPath);
 
-			FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::COMP_CONSTRUCTORS);
-			(*iter)->Value().
+			FileIOHelper::BeginDataPackSave(ofs, (*iter)->Key());
+			FileIOHelper::SaveString(ofs, ChunkKey::Plugin::DLL_PATH, dllPath);
+			SaveCompConstructors(ofs, (*iter)->Value());
+			SaveManagerData(ofs, (*iter)->Value());
 		}
-
-		for (size_t i = 0; i < dllCount; ++i)
-		{
-			FTDS::String dllPath	= {};
-			FTDS::String pluginName = {};
-			FileIOHelper::LoadBasicString(ifs, dllPath);
-			ExtractFileName(dllPath, pluginName);
-
-			HMODULE mod	   = LoadLibraryA(dllPath.C_Str());
-			Plugin* plugin = FTCore::GetInstance()->RegisterPlugin(mod, pluginName);
-			plgs.PushBack(plugin);
-		}
-
-		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::PLUGIN_DATA);
-		for (auto iter = plgs.Begin(); iter != plgs.End(); ++iter)
-		{
-			FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::COMP_CONSTRUCTORS);
-			LoadCompConstructors(ifs, (*iter));
-			FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::MANAGER_DATA);
-			(*iter)->LoadManagerData(ifs);
-		}
+		FileIOHelper::EndDataPackSave(ofs, ChunkKey::Plugin::PLUGIN_DATA);
 	}
 
-	static void GetDLLPath(HMODULE hModule, FTDS::String& out)
+	void EditorChunkLoader::SaveCompConstructors(std::ofstream& ofs, Plugin* plugin)
+	{
+		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::COMP_CONSTRUCTORS);
+		FTDS::HashMap<FARPROC>* map = GetCompConstructors();
+
+		size_t compIdx = 0;
+		for (auto iter = map->Begin(); iter != map->End(); ++iter)
+			FileIOHelper::SaveString(ofs, std::to_string(compIdx).c_str(), (*iter)->Key().C_Str());
+
+		FileIOHelper::EndDataPackSave(ofs, ChunkKey::Plugin::COMP_CONSTRUCTORS);
+	}
+
+	void EditorChunkLoader::SaveManagerData(std::ofstream& ofs, Plugin* plugin)
+	{
+		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::MANAGER_DATA);
+		plugin->SaveManagerData(ofs);
+		FileIOHelper::EndDataPackSave(ofs, ChunkKey::Plugin::MANAGER_DATA);
+	}
+
+	static void GetDLLPath(HMODULE mod, FTDS::String& out)
 	{
 		char path[MAX_PATH];
-		// Use GetModuleFileName to retrieve the path
-		if (GetModuleFileNameA(hModule, path, sizeof(path)) != 0)
-			out.Append(path);
+		if (GetModuleFileNameA(mod, path, MAX_PATH))
+			out.Assign(path);
 		else
-		{
-			// Handle error
-			DWORD error = GetLastError();
-			std::cerr << "Failed to get path. Error: " << error << std::endl;
-		}
+			std::cerr << "Failed to get path. Error: " << GetLastError() << std::endl;
 	}
 } // namespace Editor

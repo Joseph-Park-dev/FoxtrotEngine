@@ -163,13 +163,17 @@ namespace Core
 		///////////////////////////
 
 	public:
-		/// @brief Load non-graphics resource entries from a chunk stream into a typed map.
-		/// @tparam FTRESOURCE Resource concrete type (e.g., FTCSV, FTJSON, FTText, etc.).
-		/// @param ifs Stream positioned at the next resource entry.
-		/// @param resArr Target map. Will be reserved to 'resCount'.
-		/// @param resCount Number of entries to read. Decrements to 0 during import.
 		template <typename FTRESOURCE>
-		void LoadResourceFromChunk(std::ifstream& ifs, size_t& resCount)
+		void SaveResourcesToChunk(std::ofstream& ofs)
+		{
+			Core::ResArray*			   resArr = this->GetResArray();
+			FTDS::HashMap<FTRESOURCE>& map	  = GetResMap(FTRESOURCE::Type);
+			for (auto iter = map.Begin(); iter != map.End(); ++iter)
+				(*iter)->SaveProperties(ofs);
+		}
+
+		template <typename FTRESOURCE>
+		void LoadResourcesFromChunk(std::ifstream& ifs, size_t& resCount)
 		{
 			if (resCount < 1)
 				return;
@@ -186,7 +190,7 @@ namespace Core
 		/// @tparam FTRESOURCE Resource concrete type with ctor(FTResourceDef, FoxtrotRenderer*).
 		/// @param renderer Valid renderer used to initialize GPU-backed resources.
 		template <typename FTRESOURCE>
-		void LoadGraphicsResourceFromChunk(std::ifstream& ifs, size_t& resCount, FoxtrotRenderer* renderer)
+		void LoadGraphicsResourcesFromChunk(std::ifstream& ifs, size_t& resCount, FoxtrotRenderer* renderer)
 		{
 			if (resCount < 1)
 				return;

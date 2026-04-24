@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
-// 
+//
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
@@ -17,9 +17,9 @@
 #include "Dynamic/DynamicArray.h"
 
 #ifdef FOXTROT_EDITOR
-#include "FTCoreEditor.h"
-#include "EditorSceneManager.h"
-#include "EditorElement.h"
+	#include "EditorSceneManager.h"
+	#include "EditorElement.h"
+	#include "EditorScene.h"
 #endif // FOXTROT_EDITOR
 
 namespace Core
@@ -36,10 +36,6 @@ namespace Core
 		mEvent->Clear();
 	}
 
-	void EventManager::RegisterMemberFuncs()
-	{
-	}
-
 	void EventManager::Execute(const FTEvent& executedEvent)
 	{
 		switch (executedEvent.incident)
@@ -48,8 +44,8 @@ namespace Core
 			{
 
 #ifdef FOXTROT_EDITOR
-				EditorElement* created = static_cast<EditorElement*>(executedEvent.eventData.at(0));
-				EditorScene*   scene   = EditorSceneManager::GetInstance()->GetEditorScene();
+				Editor::EditorElement* created = static_cast<Editor::EditorElement*>(executedEvent.eventData);
+				Editor::EditorScene*   scene   = Editor::EditorSceneManager::GetInstance()->GetEditorScene();
 				scene->AddEditorElement(created);
 #else
 				Actor* created = static_cast<Actor*>(executedEvent.eventData);
@@ -63,8 +59,8 @@ namespace Core
 			{
 
 #ifdef FOXTROT_EDITOR
-				EditorElement* element = static_cast<EditorElement*>(executedEvent.eventData.at(0));
-				EditorScene*   scene   = EditorSceneManager::GetInstance()->GetEditorScene();
+				Editor::EditorElement* element = static_cast<Editor::EditorElement*>(executedEvent.eventData);
+				Editor::EditorScene*   scene   = Editor::EditorSceneManager::GetInstance()->GetEditorScene();
 				scene->RemoveActor(element);
 #else
 				Actor* actorToDestroy = static_cast<Actor*>(executedEvent.eventData);

@@ -39,9 +39,6 @@ namespace Core
 	public:
 		void ProcessEvent();
 
-	protected:
-		void RegisterMemberFuncs() override;
-
 	private:
 		void Execute(const FTEvent& executedEvent);
 	};

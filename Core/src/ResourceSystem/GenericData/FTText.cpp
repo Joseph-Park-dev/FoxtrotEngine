@@ -5,7 +5,8 @@
 namespace Core
 {
 	FTText::FTText(Core::FTResourceDef& resDef)
-		: mData(DBG_NEW Core::FTDS::DynamicArray<Core::FTDS::String*>)
+		: CoreResource(resDef)
+		, mData(DBG_NEW Core::FTDS::DynamicArray<Core::FTDS::String*>)
 	{
 		char*		  buf = nullptr;
 		std::ifstream ifs(resDef.Path);

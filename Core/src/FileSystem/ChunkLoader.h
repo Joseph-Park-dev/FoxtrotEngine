@@ -39,7 +39,7 @@ namespace Core
 	class ChunkLoader :
 		public Core::Entity
 	{
-		SINGLETON(ChunkLoader)
+		SINGLETON_PROTECTED(ChunkLoader)
 		// Member Functions for editor level to generate chunk.json files
 	public:
 		virtual void SaveChunk(FTDS::String& fileName);
@@ -84,19 +84,17 @@ namespace Core
 		FTDS::DynamicArray<FARPROC>* mCompConstructors;
 
 	private:
-		void LoadDLLs(std::ifstream& ifs);
-		void LoadCompConstructors(std::ifstream& ifs, FTDS::String& pluginName);
+		void LoadPlugins(std::ifstream& ifs);
+		void LoadCompConstructors(std::ifstream& ifs, Plugin* plugin);
 	};
 
 	namespace ChunkKey
 	{
 		// Data Pack Names
-		constexpr const char* CHUNK_DATA		= "Chunk Data";
-		constexpr const char* ACTOR_DATA		= "Actor Data";
-		constexpr const char* CORE_RES_DATA		= "Core Resource Data";
-		constexpr const char* DLL_DATA			= "DLL Data";
-		constexpr const char* COMP_CONSTRUCTORS = "Comp Constructors";
-		constexpr const char* MANAGER_DATA		= "Manager Data";
+		constexpr const char* CHUNK_DATA	= "Chunk Data";
+		constexpr const char* ACTOR_DATA	= "Actor Data";
+		constexpr const char* CORE_RES_DATA = "Core Resource Data";
+		constexpr const char* DLL_DATA		= "DLL Data";
 
 		constexpr const char* ACTOR_PROPERTIES = "Actor Properties";
 		constexpr const char* TRANSFORM		   = "Transform";

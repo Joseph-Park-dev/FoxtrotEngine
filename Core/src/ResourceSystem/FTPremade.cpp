@@ -34,7 +34,8 @@
 namespace Core
 {
 	FTPremade::FTPremade(FTResourceDef& resDef)
-		: mOrigin(nullptr)
+		: CoreResource(resDef)
+		, mOrigin(nullptr)
 		, mIsLoaded(false)
 #ifdef FOXTROT_EDITOR
 		, mDummyForUI(nullptr)
@@ -107,7 +108,7 @@ namespace Core
 
 	void FTPremade::UpdateUI()
 	{
-		ImGui::Text(GetFileName().C_Str());
+		ImGui::Text(GetFileName()->C_Str());
 		ImGui::Separator();
 
 		if (ImGui::Button("Add to Chunk"))

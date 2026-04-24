@@ -23,6 +23,8 @@
 
 namespace Core
 {
+	using ResArray = FTDS::Array<FTDS::HashMap<FTResource*>>;
+
 	/// @brief Special keys used by the chunk system to reference built-in/primitive assets.
 	namespace ChunkKey
 	{
@@ -323,7 +325,5 @@ namespace Core
 #else
 		__declspec(dllimport) Entity* GetResourceManager();
 #endif
-
-		using ResArray = FTDS::Array<FTDS::HashMap<FTResource*>>;
 	}
 } // namespace Core

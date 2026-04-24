@@ -41,6 +41,7 @@ namespace Editor
 	class EditorChunkLoader :
 		public Core::ChunkLoader
 	{
+		SINGLETON(EditorChunkLoader)
 	public:
 		// Saves the current scene on Foxtrot Editor into .Chunk file.
 		virtual void SaveChunk(Core::FTDS::String& fileName) override;
@@ -58,5 +59,8 @@ namespace Editor
 
 	private:
 		ComponentCreateMap mComponentCreateMap;
+
+	private:
+		void SavePlugins(std::ofstream& ofs);
 	};
 } // namespace Editor

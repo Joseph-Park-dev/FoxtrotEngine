@@ -75,9 +75,6 @@ namespace Core
 		virtual ~Transform();
 
 	protected:
-		void RegisterMemberFuncs() override;
-
-	protected:
 		const Actor* GetOwner() const;
 
 	private:

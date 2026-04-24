@@ -55,9 +55,6 @@ namespace Core
 	public:
 		void SaveSceneList(std::ofstream& ofs);
 
-	protected:
-		void RegisterMemberFuncs() override;
-
 	private:
 		FTDS::String					   mChunkListPath;
 		Scene*							   mCurrentScene;

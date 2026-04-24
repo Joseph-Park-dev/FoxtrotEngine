@@ -35,32 +35,10 @@ namespace Editor
 		void PassLoadResourceInChunk(std::ifstream& ifs);
 
 	public:
-		template <typename FTRESOURCE>
-		void SaveResource(Core::ResourceManagerBase* managerInst, std::ofstream& ofs)
-		{
-			Core::ResArray* resArr = managerInst->GetResArray();
-			for (auto mapIter = resArr->Begin(); mapIter != resArr->End(); ++mapIter)
-			{
-				for (auto res = (*mapIter).Begin(); res != (*mapIter).End(); ++res)
-				{
-					Core::FileIOHelper::SaveString(
-						ofs,
-						Core::ChunkKey::FTResource::FILE_NAME,
-						managerInst->GetResName(FTRESOURCE::Type, (*res)));
-				}
-			}
-		}
-
-	public:
 		void UpdateUI();
 
 	public:
 		void SetRenderer(Editor::EditorRenderer* renderer);
-
-	private:
-		Core::GET_RES_MANAGER_INST	mGetCoreResManagerFunc;
-		D3D11::GET_RES_MANAGER_INST mGetD3D11ResManagerFunc;
-		Editor::EditorRenderer*		mRenderer;
 
 	private:
 		size_t GetCoreTypeIdx(Core::FTDS::String& fileName);

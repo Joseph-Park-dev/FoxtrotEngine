@@ -16,8 +16,13 @@
 #include "FTCore.h"
 #include "Debugging/DebugMemAlloc.h"
 
+#ifdef FOXTROT_EDITOR
+	#include "CommandHistory.h"
+#endif // FOXTROT_EDITOR
+
 namespace Core
 {
+	using namespace Editor;
 	const bool Component::GetIsSetup() const
 	{
 		return mIsSetup;

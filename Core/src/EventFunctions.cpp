@@ -14,17 +14,19 @@
 #include "ResourceSystem/FTPremade.h"
 #include "Actor/ActorGroup.h"
 #include "Actor/Actor.h"
+#include "Actor/Transform.h"
 #include "Math/FTMath.h"
 #include "EventType.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "FTCoreEditor.h"
+	#include "EditorScene.h"
 	#include "EditorSceneManager.h"
 	#include "EditorElement.h"
 #endif // FOXTROT_EDITOR
 
 namespace Core
 {
+	using namespace Editor;
 	Actor* Instantiate(Actor* actor, ActorGroup actorGroup, Math::FTVector3 pos)
 	{
 		FTEvent addedEvent	= {};
@@ -34,14 +36,12 @@ namespace Core
 #ifdef FOXTROT_EDITOR
 		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
 		actor->GetTransform()->SetWorldPosition(pos);
-		EditorElement* editorElement = DBG_NEW EditorElement(actor, ChunkKey::ID::CLONE);
-		editorElement->Initialize(FTCoreEditor::GetInstance());
-		editorElement->Setup();
+		Editor::EditorElement* editorElement = DBG_NEW Editor::EditorElement(actor, ChunkKey::ID::CLONE);
+		editorElement->Initialize();
 
 		if (editorElement)
 		{
-			addedEvent.eventData.push_back(editorElement);
-			addedEvent.eventData.push_back(nullptr);
+			addedEvent.eventData = editorElement;
 			EventManager::GetInstance()->AddEvent(addedEvent);
 			return editorElement;
 		}
@@ -78,21 +78,19 @@ namespace Core
 		Actor*	   origin	= premade->GetOrigin();
 
 #ifdef FOXTROT_EDITOR
-		EditorScene*   scene		 = EditorSceneManager::GetInstance()->GetEditorScene();
-		EditorElement* editorElement = DBG_NEW EditorElement(origin, ChunkKey::ID::CLONE);
-		editorElement->Initialize(FTCoreEditor::GetInstance());
-		editorElement->Setup();
+		EditorScene*		   scene		 = EditorSceneManager::GetInstance()->GetEditorScene();
+		Editor::EditorElement* editorElement = DBG_NEW Editor::EditorElement(origin, ChunkKey::ID::CLONE);
+		editorElement->Initialize();
 
 		if (editorElement)
 		{
-			addedEvent.eventData.push_back(editorElement);
-			addedEvent.eventData.push_back(nullptr);
+			addedEvent.eventData = editorElement;
 			EventManager::GetInstance()->AddEvent(addedEvent);
 			return editorElement;
 		}
 		else
 		{
-			printf("ERROR : Instantiate() -> Premade not loaded, %s\n", premadeName.C_Str());
+			printf("ERROR : Instantiate() -> Premade not loaded, %s\n", premadeName);
 			return nullptr;
 		}
 #else

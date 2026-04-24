@@ -209,12 +209,14 @@ namespace Core
 		mCompConstructors->Reserve(count);
 		for (size_t i = 0; i < count; ++i)
 		{
-			FTDS::String compName = {};
+			FTDS::String compName	  = {};
+			FTDS::String compProcName = {};
 			FileIOHelper::LoadBasicString(ifs, compName);
-			compName.Append("_Create");
+			compProcName.Assign(compName);
+			compProcName.Append("_Create");
 
 			HMODULE& mod = plugin->GetModule();
-			mCompConstructors->PushBack(GetProcAddress(mod, compName.C_Str()));
+			mCompConstructors->Insert(compProcName, GetProcAddress(mod, compName.C_Str()));
 		}
 	}
 

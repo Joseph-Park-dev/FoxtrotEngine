@@ -30,9 +30,6 @@ namespace Core
 		void  Update();
 		float GetDeltaTime() const { return mDeltaTime; }
 
-	protected:
-		void RegisterMemberFuncs() override;
-
 	private:
 		__int64		  mFrequencyForASecond;
 		LARGE_INTEGER mLastTicks;

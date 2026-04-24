@@ -48,40 +48,6 @@ namespace Core
 		~FTCore();
 
 	public:
-		template <typename FUNC_SIGNATURE>
-		FUNC_SIGNATURE GetCoreFunc(const char* funcName)
-		{
-			return reinterpret_cast<FUNC_SIGNATURE>(GetProcAddress(mModule, funcName));
-		}
-
-		template <typename FUNC_SIGNATURE>
-		FUNC_SIGNATURE GetFunc(const char* moduleName, const char* funcName)
-		{
-			HMODULE& mod = mLoadedPlugins->At(moduleName)->Value()->GetModule();
-			return reinterpret_cast<FUNC_SIGNATURE>(GetProcAddress(mod, funcName));
-		}
-
-		template <typename FUNC_SIGNATURE, typename... ARGS>
-		void CallFunc(const char* moduleName, const char* funcName, ARGS... args)
-		{
-			HMODULE& mod = mLoadedPlugins->At(moduleName)->Value()->GetModule();
-			reinterpret_cast<FUNC_SIGNATURE>(GetProcAddress(mod, funcName))(args...);
-		}
-
-		template <typename FUNC_SIGNATURE, typename RETURN_TYPE, typename... ARGS>
-		RETURN_TYPE CallFunc(const char* moduleName, const char* funcName, ARGS... args)
-		{
-			HMODULE& mod = mLoadedPlugins->At(moduleName)->Value()->GetModule();
-			return reinterpret_cast<FUNC_SIGNATURE>(GetProcAddress(mod, funcName))(args...);
-		}
-
-		template <typename INST>
-		INST* GetSingletonInst(const char* procName)
-		{
-			return reinterpret_cast<INST*>(GetProcAddress(mModule, procName));
-		}
-
-	public:
 		virtual bool Initialize();
 		virtual void RunLoop();
 		virtual void ShutDown();

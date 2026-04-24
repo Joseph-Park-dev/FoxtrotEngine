@@ -113,16 +113,16 @@ namespace Core
 
 		if (ImGui::Button("Add to Chunk"))
 		{
-			EditorChunkLoader::GetInstance()->AddMaxActorID();
-			int id = EditorChunkLoader::GetInstance()->GetMaxActorID();
-			EditorSceneManager::GetInstance()->GetEditorScene()->AddEditorElement(mOrigin, id);
+			Editor::EditorChunkLoader::GetInstance()->AddMaxActorID();
+			int id = Editor::EditorChunkLoader::GetInstance()->GetMaxActorID();
+			Editor::EditorSceneManager::GetInstance()->GetEditorScene()->AddEditorElement(mOrigin, id);
 		}
 
-		if (FTEditorUtils::ButtonCenteredOnLine("Edit Premade"))
+		if (Editor::ButtonCenteredOnLine("Edit Premade"))
 		{
 			if (mOrigin)
 			{
-				mDummyForUI = DBG_NEW EditorElement(mOrigin, ChunkKey::ID::INVALID);
+				mDummyForUI = DBG_NEW Editor::EditorElement(mOrigin, ChunkKey::ID::INVALID);
 				ImGui::OpenPopup("EditPremade");
 			}
 		}

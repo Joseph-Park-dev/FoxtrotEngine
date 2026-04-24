@@ -25,7 +25,7 @@ namespace D3D11
 {
 	class D3D11Window;
 	class D3D11InputDevice;
-}
+} // namespace D3D11
 
 enum class ErrorType
 {

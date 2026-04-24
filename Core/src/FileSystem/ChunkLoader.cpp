@@ -39,17 +39,15 @@ namespace Core
 	void ChunkLoader::LoadChunk(FTDS::String& fileName)
 	{
 		Lock();
-
 		std::ifstream ifs(fileName.C_Str());
 		LoadChunkData(ifs);
 		LoadPlugins(ifs);
 
 		// Load premades to Core ResourceManager
 		size_t premadeCount = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CORE_RES_DATA).first;
-		Core::ResourceManager::GetInstance()->LoadResourceFromChunk<FTPremade>(ifs, premadeCount);
+		Core::ResourceManager::GetInstance()->LoadResourcesFromChunk<FTPremade>(ifs, premadeCount);
 
 		LoadActorsData(ifs);
-
 		Unlock();
 	}
 
@@ -113,6 +111,11 @@ namespace Core
 	const int ChunkLoader::GetMaxActorID() const
 	{
 		return mMaxActorID;
+	}
+
+	FTDS::HashMap<FARPROC>* ChunkLoader::GetCompConstructors()
+	{
+		return mCompConstructors;
 	}
 
 	void ChunkLoader::AddMaxActorID()
@@ -182,48 +185,43 @@ namespace Core
 
 	void ChunkLoader::LoadPlugins(std::ifstream& ifs)
 	{
-		FTDS::DynamicArray<Plugin*> plgs;
-		size_t						dllCount = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::DLL_DATA).first;
-		plgs.Reserve(dllCount);
+		size_t dllCount = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::PLUGIN_DATA).first;
 		for (size_t i = 0; i < dllCount; ++i)
 		{
 			FTDS::String dllPath	= {};
 			FTDS::String pluginName = {};
-			FileIOHelper::BeginDataPackLoad(ifs, dllPath);
 			ExtractFileName(dllPath, pluginName);
 
-			HMODULE mod	   = LoadLibraryA(dllPath.C_Str());
-			Plugin* plugin = FTCore::GetInstance()->RegisterPlugin(mod, pluginName);
-			plgs.PushBack(plugin);
+			HMODULE mod = LoadLibraryA(dllPath.C_Str());
+			FTCore::GetInstance()->RegisterPlugin(mod, pluginName);
+			Plugin* plugin = FTCore::GetInstance()->GetPlugin(pluginName);
 
-			// Starting to load plugin data
-			FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::PLUGIN_DATA);
-
-			// Loading available constructors for creating components
-			FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::COMP_CONSTRUCTORS);
+			size_t count = FileIOHelper::BeginDataPackLoad(ifs, pluginName).first;
+			FileIOHelper::LoadBasicString(ifs, dllPath);
 			LoadCompConstructors(ifs, plugin);
-
-			// Loading manager data
-			FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::MANAGER_DATA);
-			plugin->LoadManagerData(ifs);
+			LoadManagerData(ifs, plugin);
 		}
 	}
 
 	void ChunkLoader::LoadCompConstructors(std::ifstream& ifs, Plugin* plugin)
 	{
+		size_t count = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::COMP_CONSTRUCTORS).first;
+		mCompConstructors->Reserve(count);
 		for (size_t i = 0; i < count; ++i)
 		{
 			FTDS::String compName = {};
 			FileIOHelper::LoadBasicString(ifs, compName);
 			compName.Append("_Create");
 
-			Plugin*	 plugin = FTCore::GetInstance()->GetPlugin(pluginName);
-			HMODULE& mod	= plugin->GetModule();
+			HMODULE& mod = plugin->GetModule();
 			mCompConstructors->PushBack(GetProcAddress(mod, compName.C_Str()));
-
-			size_t count = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::MANAGER_DATA).first;
-			plugin->LoadManagerData();
 		}
+	}
+
+	void ChunkLoader::LoadManagerData(std::ifstream& ifs, Plugin* plugin)
+	{
+		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::MANAGER_DATA);
+		plugin->LoadManagerData(ifs);
 	}
 
 	void ChunkLoader::SaveChunkData(std::ofstream& out)

@@ -63,7 +63,7 @@ namespace Editor
 
 	private:
 		void SavePlugins(std::ofstream& ofs);
-		void SaveCompConstructors(std::ofstream& ofs, Plugin* plugin);
-		void SaveManagerData(std::ofstream& ofs, Plugin* plugin);
+		void SaveCompConstructors(std::ofstream& ofs, Core::Plugin* plugin);
+		void SaveManagerData(std::ofstream& ofs, Core::Plugin* plugin);
 	};
 } // namespace Editor

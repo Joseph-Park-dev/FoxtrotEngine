@@ -59,6 +59,9 @@ namespace Core
 		const FTDS::String* GetFileName() { return mFileName; }
 		const FTDS::String* GetRelativePath() { return mRelativePath; }
 
+		void SetFileName(FTDS::String& val) { return mFileName->Assign(val); }
+		void SetRelativePath(FTDS::String& val) { return mRelativePath->Assign(val); }
+
 	public:
 		FTResource(FTResourceDef& resDef);
 		virtual ~FTResource() = default;

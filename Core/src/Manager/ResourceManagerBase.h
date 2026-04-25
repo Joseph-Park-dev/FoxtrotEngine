@@ -80,7 +80,7 @@ namespace Core
 		ResArray* GetResArray();
 
 		template <typename FTRESOURCE>
-		FTDS::HashMap<FTResource*>& GetResMap()
+		Core::FTDS::HashMap<FTResource*>& GetResMap()
 		{
 			return mResources->At(FTRESOURCE::Type);
 		}
@@ -169,9 +169,9 @@ namespace Core
 		void SaveResourcesToChunk(std::ofstream& ofs)
 		{
 			Core::ResArray*			   resArr = this->GetResArray();
-			FTDS::HashMap<FTRESOURCE>& map	  = GetResMap(FTRESOURCE::Type);
+			FTDS::HashMap<FTResource*>& map	  = GetResMap<FTRESOURCE>();
 			for (auto iter = map.Begin(); iter != map.End(); ++iter)
-				(*iter)->SaveProperties(ofs);
+				(*iter)->Value()->SaveProperties(ofs);
 		}
 
 		template <typename FTRESOURCE>
@@ -180,10 +180,10 @@ namespace Core
 			if (resCount < 1)
 				return;
 
-			GetResMap(FTRESOURCE::Type).Reserve(resCount);
+			GetResMap<FTRESOURCE>().Reserve(resCount);
 			while (0 < resCount)
 			{
-				LoadResource(ifs, GetResMap(FTRESOURCE::Type));
+				LoadResource<FTRESOURCE>(ifs, GetResMap<FTRESOURCE*>());
 				--resCount; // Key of the next resource to be imported.
 			}
 		}
@@ -197,10 +197,10 @@ namespace Core
 			if (resCount < 1)
 				return;
 
-			GetResMap(FTRESOURCE::Type).Reserve(resCount);
+			GetResMap<FTRESOURCE>().Reserve(resCount);
 			while (0 < resCount)
 			{
-				LoadResource(ifs, GetResMap(FTRESOURCE::Type), renderer);
+				LoadResource(ifs, GetResMap<FTRESOURCE>(), renderer);
 				--resCount; // Key of the next resource to be imported.
 			}
 		}
@@ -251,7 +251,7 @@ namespace Core
 		/// Expects two strings in the stream: relative path then file name.
 		/// Constructs FTRESOURCE with FTResourceDef{fileName, relPath} and inserts to map keyed by file name.
 		template <typename FTRESOURCE>
-		void LoadResource(std::ifstream& ifs, Core::FTDS::HashMap<FTRESOURCE*>* resMap)
+		void LoadResource(std::ifstream& ifs, Core::FTDS::HashMap<FTRESOURCE*>& resMap)
 		{
 			Core::FileIOHelper::BeginDataPackLoad(ifs);
 
@@ -263,14 +263,14 @@ namespace Core
 			Core::FTResourceDef resDef(fileName, relPath);
 			FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef);
 
-			assert(0 < resMap->Capacity());
-			resMap->Insert(res->GetFileName(), res);
+			assert(0 < resMap.Capacity());
+			resMap.Insert(res->GetFileName(), res);
 		}
 
 		/// @brief Core loader for graphics resources (renderer required).
 		/// Skips certain built-in primitives that should not be re-instantiated from disk.
 		template <typename FTRESOURCE>
-		void LoadResource(std::ifstream& ifs, Core::FTDS::HashMap<FTRESOURCE*>* resMap, FoxtrotRenderer* renderer)
+		void LoadResource(std::ifstream& ifs, Core::FTDS::HashMap<FTRESOURCE*>& resMap, FoxtrotRenderer* renderer)
 		{
 			assert(renderer);
 
@@ -291,8 +291,8 @@ namespace Core
 				return;
 			}
 
-			assert(0 < resMap->Capacity());
-			resMap->Insert(res->GetFileName(), res);
+			assert(0 < resMap.Capacity());
+			resMap.Insert(res->GetFileName(), res);
 		}
 
 		/// @brief Utility to delete all values and clear a pointer map (safe if already empty).

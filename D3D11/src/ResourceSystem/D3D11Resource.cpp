@@ -9,13 +9,18 @@ void D3D11::D3D11Resource::SaveProperties(std::ofstream& ofs)
 	Core::FileIOHelper::SaveString(
 		ofs,
 		Core::ChunkKey::FTResource::FILE_NAME,
-		D3D11::RES_NAME(D3D11Resource, this));
+		*GetFileName());
+
+	Core::FileIOHelper::SaveString(
+		ofs,
+		Core::ChunkKey::FTResource::FILE_NAME,
+		*GetRelativePath());
 }
 
 void D3D11::D3D11Resource::LoadProperties(std::ifstream& ifs)
 {
-	Core::FTDS::String fileName;
-	Core::FileIOHelper::LoadBasicString(
-		ifs,
-		fileName);
+	Core::FTDS::String val;
+	Core::FileIOHelper::LoadBasicString(ifs, val);
+	val.Clear();
+	Core::FileIOHelper::LoadBasicString(ifs, val);
 }

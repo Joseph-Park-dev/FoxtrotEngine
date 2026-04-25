@@ -25,6 +25,7 @@
 #include "Static/FTString.h"
 #include "Static/HashMap.h"
 #include "Plugin/Plugin.h"
+#include "ResourceSystem/FTPremade.h"
 
 namespace Core
 {

@@ -26,7 +26,8 @@ namespace Core
 	const std::vector<int>& FTCSV::Data() const { return mData; }
 
 	FTCSV::FTCSV(Core::FTResourceDef& resDef)
-		: mData()
+		: CoreResource(resDef)
+		, mData()
 		, mColumnCount(0)
 		, mRowCount(0)
 	{

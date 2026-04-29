@@ -82,3 +82,37 @@
 							~TYPE() override; \
 							inline static TYPE* mInstance = nullptr; \
 							inline static Core::FTCore* mBase = nullptr;
+
+#define SINGLETON_TEST(EXPDEF, TYPE)                              \
+public:                                              \
+	static EXPDEF TYPE* GetInstance()                       \
+	{                                                \
+		return mInstance;                            \
+	}                                                \
+	static void Destroy()                            \
+	{                                                \
+		if (mInstance)                               \
+		{                                            \
+			delete mInstance;                        \
+			mInstance = nullptr;                     \
+		}                                            \
+	}                                                \
+	static void Initialize(Core::FTCore* base)       \
+	{                                                \
+		if (mInstance == nullptr)                    \
+		{                                            \
+			mInstance = DBG_NEW TYPE();              \
+			mBase	  = base;                        \
+		}                                            \
+	}                                                \
+	static Core::FTCore* GetBase()                   \
+	{                                                \
+		return mBase;                                \
+	}                                                \
+	TYPE(const TYPE& obj) = delete;                  \
+                                                     \
+private:                                             \
+	TYPE();                                          \
+	~TYPE() override;                                \
+	inline static TYPE*			mInstance = nullptr; \
+	inline static Core::FTCore* mBase	  = nullptr;

@@ -52,18 +52,19 @@ namespace D3D11
 	void FTTexture::SaveProperties(std::ofstream& ofs)
 	{
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTexture::FT_TEXTURE);
-		// FTResource::SaveProperties(ofs);
+		//FTResource::SaveProperties(ofs);
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTexture::FT_TEXTURE);
 	}
 
 	void FTTexture::LoadProperties(std::ifstream& ifs)
 	{
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTexture::FT_TEXTURE);
-		// FTResource::LoadProperties(ifs);
+		//FTResource::LoadProperties(ifs);
 	}
 
 	FTTexture::FTTexture(FTResourceDef& resDef, D3D11::D3D11Renderer* renderer)
-		: mWidth(0)
+		: D3D11Resource()
+		, mWidth(0)
 		, mHeight(0)
 	{
 		Process(resDef, renderer);

@@ -375,10 +375,7 @@ namespace Editor
 	}
 
 	ResourceManager::ResourceManager()
-		: mGetCoreResManagerFunc(nullptr)
-		, mGetD3D11ResManagerFunc(nullptr)
 	{
-		mRenderer = GetProcAddress(GetCurrentModule(), ""
 	}
 
 	ResourceManager::~ResourceManager()

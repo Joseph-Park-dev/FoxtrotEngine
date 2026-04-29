@@ -155,8 +155,10 @@
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\EditorEventFunctions.h" />
     <ClInclude Include="src\Component\EditorComponent.h" />
     <ClInclude Include="src\Actor\EditorTransform.h" />
+    <ClInclude Include="src\DLLData.h" />
     <ClInclude Include="src\Manager\EditorShapes.h" />
     <ClInclude Include="src\EditorRenderer.h" />
     <ClInclude Include="framework.h" />
@@ -185,12 +187,14 @@
     <ClInclude Include="src\EditorScene.h" />
     <ClInclude Include="src\EditorSceneManager.h" />
     <ClInclude Include="src\EditorUtils.h" />
+    <ClInclude Include="src\Plugin\EditorExports.h" />
     <ClInclude Include="src\Plugin\FTCoreEditor.h" />
     <ClInclude Include="src\ResourceSystem\SupportedResources.h" />
     <ClInclude Include="src\ViewportRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\EditorEventFunctions.cpp" />
     <ClCompile Include="src\Component\EditorComponent.cpp" />
     <ClCompile Include="src\Actor\EditorTransform.cpp" />
     <ClCompile Include="src\Manager\EditorShapes.cpp" />

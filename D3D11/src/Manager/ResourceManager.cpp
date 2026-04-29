@@ -50,11 +50,6 @@ namespace D3D11
 	 */
 	ResourceManager::ResourceManager()
 	{
-		HMODULE coreMod = GetModuleHandleW(Core::DLL);
-		assert(coreMod);
-		mGetCoreResManagerFunc = reinterpret_cast<Core::GET_RES_MANAGER_INST>(
-			GetProcAddress(coreMod, Core::PluginKey::GET_RES_MANAGER));
-
 		InitResMap(ResType::END - 1);
 	}
 

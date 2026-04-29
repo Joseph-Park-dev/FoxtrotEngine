@@ -16,8 +16,14 @@
 #include "FTCore.h"
 #include "Debugging/DebugMemAlloc.h"
 
+#ifdef FOXTROT_EDITOR
+	#include "CommandHistory.h"
+	#include "EditorHelper.h"
+#endif // FOXTROT_EDITOR
+
 namespace Core
 {
+	using namespace Editor;
 	const bool Component::GetIsSetup() const
 	{
 		return mIsSetup;
@@ -36,7 +42,7 @@ namespace Core
 #ifdef FOXTROT_EDITOR
 	void Component::EditorUIUpdate()
 	{
-		CommandHistory::GetInstance()->UpdateBoolValue("Is Active", mIsActive);
+		Editor::UPDATE_BOOL("Is Active", mIsActive);
 	}
 
 	void Component::SetUpdateOrder(int updateOrder)

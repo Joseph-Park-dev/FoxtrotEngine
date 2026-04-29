@@ -35,10 +35,6 @@ namespace Core
 		delete mCurrentScene;
 	}
 
-	void SceneManager::RegisterMemberFuncs()
-	{
-	}
-
 	void SceneManager::SwitchScene(size_t index)
 	{
 		mCurrentScene->DeleteAll();

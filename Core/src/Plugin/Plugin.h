@@ -49,6 +49,7 @@ namespace Core
 	public:
 		virtual void SaveProperties()					 = 0;
 		virtual void LoadProperties()					 = 0;
+		virtual void SaveManagerData(std::ofstream& ofs) = 0;
 		virtual void LoadManagerData(std::ifstream& ifs) = 0;
 
 	public:
@@ -172,6 +173,7 @@ namespace Core
 		namespace Plugin
 		{
 			constexpr const char* PLUGIN_DATA		= "Plugin Data";
+			constexpr const char* DLL_PATH			= "DLL Path";
 			constexpr const char* COMP_CONSTRUCTORS = "Comp Constructors";
 			constexpr const char* MANAGER_DATA		= "Manager Data";
 		} // namespace Plugin

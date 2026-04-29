@@ -16,6 +16,8 @@
 #pragma once
 #include "Entity/Entity.h"
 
+#include <filesystem>
+
 #include "SingletonMacro.h"
 #include "FTDS/Static/FTString.h"
 
@@ -55,9 +57,6 @@ namespace Core
 		void SetChunkPath(Core::FTDS::String&& path);
 		void SetAssetPath(Core::FTDS::String&& path);
 		void SetCurrChunkSaved(bool val);
-
-	protected:
-		void RegisterMemberFuncs() override;
 
 	private:
 		Core::FTDS::String mCurrProjectPath;

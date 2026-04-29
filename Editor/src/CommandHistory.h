@@ -13,8 +13,12 @@
 /// </summary>
 
 #pragma once
-#include "Singleton.h"
+#include "Entity/Entity.h"
+
+#include "SingletonMacro.h"
 #include "FTDS/Static/ArrayStack.h"
+#include "Plugin/EditorExports.h"
+#include "FTDS/Static/FTString.h"
 
 #define COMMAND_MAXCOUNT 30
 #define FLOATMOD_SPEED 0.1f
@@ -29,11 +33,21 @@ namespace Math
 
 namespace Editor
 {
+	using UPDATE_INT_VAL		  = void (*)(const char* label, int& ref);
+	using UPDATE_CLAMPED_INT_VAL  = void (*)(const char* label, int& ref, int min, int max);
+	using UPDATE_UNSIGNED_INT_VAL = void (*)(const char* label, unsigned int& ref);
+	using UPDATE_FLOAT_VAL		  = void (*)(const char* label, float& ref);
+	using UPDATE_BOOL_VAL		  = void (*)(const char* label, bool& ref);
+	using UPDATE_VEC2_VAL		  = void (*)(const char* label, Math::FTVector2& ref);
+	using UPDATE_VEC3_VAL		  = void (*)(const char* label, Math::FTVector2& ref);
+	using UPDATE_VEC4_VAL		  = void (*)(const char* label, Math::FTVector2& ref);
+	using UPDATE_STR_VAL		  = void (*)(const char* label, Core::FTDS::String& ref);
+
 	class ActorCommand;
 	class Command;
-	class CommandHistory :
-		public Core::Singleton<CommandHistory>
+	class CommandHistory : public Core::Entity
 	{
+		SINGLETON(CommandHistory)
 	public:
 		/// <summary>
 		/// Push the current command to the previous,
@@ -44,8 +58,8 @@ namespace Editor
 
 	public:
 		// These member functions will be used on Foxtrot Editor when updating values.
-		void UpdateIntValue(const char* label, int& ref, int modSpeed = INTMOD_SPEED);
-		void UpdateIntValue(const char* label, int& ref, int min, int max, int modSpeed = INTMOD_SPEED);
+		void UpdateIntValue(const char* label, int& ref, unsigned int modSpeed = INTMOD_SPEED);
+		void UpdateIntValue(const char* label, int& ref, int min, int max, unsigned int modSpeed = INTMOD_SPEED);
 		void UpdateUnsignedIntValue(const char* label, unsigned int& ref, unsigned int modSpeed = INTMOD_SPEED);
 		void UpdateFloatValue(const char* label, float& ref, float modSpeed = FLOATMOD_SPEED);
 		void UpdateBoolValue(const char* label, bool& ref);
@@ -75,4 +89,20 @@ namespace Editor
 		// This feature is not working properly in the current version.
 		void RedoCommand();
 	};
+
+	extern "C"
+	{
+		EDITOR_API CommandHistory* GetCMDHistory();
+
+		EDITOR_API void UpdateIntValue(const char* label, int& ref, unsigned int modSpeed = INTMOD_SPEED);
+		EDITOR_API void UpdateClampedIntValue(const char* label, int& ref, int min, int max, int modSpeed = INTMOD_SPEED);
+		EDITOR_API void UpdateUnsignedIntValue(const char* label, unsigned int& ref, unsigned int modSpeed = INTMOD_SPEED);
+		EDITOR_API void UpdateFloatValue(const char* label, float& ref, float modSpeed = FLOATMOD_SPEED);
+		EDITOR_API void UpdateBoolValue(const char* label, bool& ref);
+		EDITOR_API void UpdateVector2Value(const char* label, Math::FTVector2& ref, float modSpeed = FLOATMOD_SPEED);
+		EDITOR_API void UpdateVector3Value(const char* label, Math::FTVector3& ref, float modSpeed = FLOATMOD_SPEED);
+		EDITOR_API void UpdateVector4Value(const char* label, Math::FTVector4& ref, float modSpeed = FLOATMOD_SPEED);
+		EDITOR_API void UpdateStringValue(const char* label, Core::FTDS::String& ref);
+	}
+	using GET_CMD_HISTORY = Editor::CommandHistory* (*)();
 } // namespace Editor

@@ -10,9 +10,9 @@
 
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS
-	#include <imgui.h>
-	#include <imgui_impl_dx11.h>
-	#include <imgui_impl_win32.h>
+	#include <imgui/imgui.h>
+	#include <imgui/backends/imgui_impl_dx11.h>
+	#include <imgui/backends/imgui_impl_win32.h>
 	#include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
 
 	#include "EditorLayer.h"
@@ -23,6 +23,8 @@ namespace Core
 {
 	FTResource::FTResource(FTResourceDef& resDef)
 	{
+		mFileName->Assign(resDef.FileName);
+		mRelativePath->Assign(resDef.Path);
 	}
 
 #ifdef FOXTROT_EDITOR

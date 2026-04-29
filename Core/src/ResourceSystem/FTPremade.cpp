@@ -20,8 +20,10 @@
 
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS
-	#include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
 	#include <imgui/imgui.h>
+	#include <imgui/backends/imgui_impl_win32.h>
+	#include <imgui/backends/imgui_impl_dx11.h>
+	#include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
 
 	#include "EditorUtils.h"
 	#include "EditorSceneManager.h"
@@ -113,16 +115,16 @@ namespace Core
 
 		if (ImGui::Button("Add to Chunk"))
 		{
-			EditorChunkLoader::GetInstance()->AddMaxActorID();
-			int id = EditorChunkLoader::GetInstance()->GetMaxActorID();
-			EditorSceneManager::GetInstance()->GetEditorScene()->AddEditorElement(mOrigin, id);
+			Editor::EditorChunkLoader::GetInstance()->AddMaxActorID();
+			int id = Editor::EditorChunkLoader::GetInstance()->GetMaxActorID();
+			Editor::EditorSceneManager::GetInstance()->GetEditorScene()->AddEditorElement(mOrigin, id);
 		}
 
-		if (FTEditorUtils::ButtonCenteredOnLine("Edit Premade"))
+		if (Editor::ButtonCenteredOnLine("Edit Premade"))
 		{
 			if (mOrigin)
 			{
-				mDummyForUI = DBG_NEW EditorElement(mOrigin, ChunkKey::ID::INVALID);
+				mDummyForUI = DBG_NEW Editor::EditorElement(mOrigin, ChunkKey::ID::INVALID);
 				ImGui::OpenPopup("EditPremade");
 			}
 		}
@@ -135,7 +137,10 @@ namespace Core
 				mDummyForUI->SetIsFocused(true);
 				mDummyForUI->UpdateUI(true);
 				if (ImGui::Button("Save"))
-					Save(mDummyForUI);
+				{
+					FTResourceDef resDef { *GetFileName(), *GetRelativePath() };
+					Save(resDef, mDummyForUI);
+				}
 			}
 			if (ImGui::Button("Close"))
 			{

@@ -22,7 +22,7 @@
 #include <iosfwd>
 
 #include "SingletonMacro.h"
-#include "static/FTString.h"
+#include "FTDS/static/FTString.h"
 
 namespace Core
 {
@@ -58,7 +58,9 @@ namespace Core
 
 		FTDS::String& CurrentChunk();
 
-		const int GetMaxActorID() const;
+		const int				GetMaxActorID() const;
+		FTDS::HashMap<FARPROC>* GetCompConstructors();
+
 		// Add actor count by 1.
 		void AddMaxActorID();
 
@@ -81,11 +83,12 @@ namespace Core
 		FTDS::String mCurrentChunkCopy;
 		int			 mMaxActorID;
 
-		FTDS::DynamicArray<FARPROC>* mCompConstructors;
+		FTDS::HashMap<FARPROC>* mCompConstructors;
 
 	private:
 		void LoadPlugins(std::ifstream& ifs);
 		void LoadCompConstructors(std::ifstream& ifs, Plugin* plugin);
+		void LoadManagerData(std::ifstream& ifs, Plugin* plugin);
 	};
 
 	namespace ChunkKey
@@ -94,7 +97,6 @@ namespace Core
 		constexpr const char* CHUNK_DATA	= "Chunk Data";
 		constexpr const char* ACTOR_DATA	= "Actor Data";
 		constexpr const char* CORE_RES_DATA = "Core Resource Data";
-		constexpr const char* DLL_DATA		= "DLL Data";
 
 		constexpr const char* ACTOR_PROPERTIES = "Actor Properties";
 		constexpr const char* TRANSFORM		   = "Transform";

@@ -25,6 +25,7 @@ namespace Core
 	// }
 
 	FTJSON::FTJSON(Core::FTResourceDef& resDef)
+		: Core::CoreResource(resDef)
 	{
 		if (!mData.empty())
 			return;

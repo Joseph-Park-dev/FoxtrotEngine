@@ -33,24 +33,6 @@ namespace Core
 		addedEvent.incident = EVENT_TYPE::CREATE_ACTOR;
 		actor->SetActorGroup(actorGroup);
 
-#ifdef FOXTROT_EDITOR
-		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-		actor->GetTransform()->SetWorldPosition(pos);
-		Editor::EditorElement* editorElement = DBG_NEW Editor::EditorElement(actor, ChunkKey::ID::CLONE);
-		editorElement->Initialize();
-
-		if (editorElement)
-		{
-			addedEvent.eventData = editorElement;
-			EventManager::GetInstance()->AddEvent(addedEvent);
-			return editorElement;
-		}
-		else
-		{
-			printf("ERROR : Instantiate() -> Premade not loaded, %s\n", actor->GetName().C_Str());
-			return nullptr;
-		}
-#else
 		if (actor)
 		{
 			// actor->Initialize();
@@ -66,8 +48,6 @@ namespace Core
 			printf("ERROR : Instantiate() -> Premade not loaded, %s\n", actor->GetName().C_Str());
 			return nullptr;
 		}
-
-#endif
 	}
 
 	Actor* Instantiate(const char* premadeName)
@@ -76,24 +56,6 @@ namespace Core
 		addedEvent.incident = EVENT_TYPE::CREATE_ACTOR;
 		FTPremade* premade	= Core::GET_RES(FTPremade, premadeName);
 		Actor*	   origin	= premade->GetOrigin();
-
-#ifdef FOXTROT_EDITOR
-		EditorScene*		   scene		 = EditorSceneManager::GetInstance()->GetEditorScene();
-		Editor::EditorElement* editorElement = DBG_NEW Editor::EditorElement(origin, ChunkKey::ID::CLONE);
-		editorElement->Initialize();
-
-		if (editorElement)
-		{
-			addedEvent.eventData = editorElement;
-			EventManager::GetInstance()->AddEvent(addedEvent);
-			return editorElement;
-		}
-		else
-		{
-			printf("ERROR : Instantiate() -> Premade not loaded, %s\n", premadeName);
-			return nullptr;
-		}
-#else
 		if (origin)
 		{
 			// origin->Initialize(FTCore::GetInstance());
@@ -109,7 +71,6 @@ namespace Core
 			printf("ERROR : Instantiate() -> Premade not loaded, %s\n", premadeName);
 			return nullptr;
 		}
-#endif
 	}
 
 	void Destroy(Actor* actor)

@@ -24,6 +24,7 @@
 #include "FileSystem/BufferSizes.h"
 #include "FTDS/Static/ArrayStack.h"
 #include "FTDS/Static/FTString.h"
+#include "DLLData.h"
 
 namespace Editor
 {
@@ -221,7 +222,7 @@ namespace Editor
 		ref = val;
 	}
 
-	void CommandHistory::UpdateIntValue(const char* label, int& ref, int modSpeed)
+	void CommandHistory::UpdateIntValue(const char* label, int& ref, unsigned int modSpeed)
 	{
 		int val = ref;
 		if (ImGui::DragInt(label, &val, modSpeed))
@@ -245,7 +246,7 @@ namespace Editor
 		ref = val;
 	}
 
-	void CommandHistory::UpdateIntValue(const char* label, int& ref, int min, int max, int modSpeed)
+	void CommandHistory::UpdateIntValue(const char* label, int& ref, int min, int max, unsigned int modSpeed)
 	{
 		Math::Clamp(ref, min, max);
 		UpdateIntValue(label, ref, modSpeed);
@@ -300,5 +301,58 @@ namespace Editor
 
 	CommandHistory::~CommandHistory()
 	{
+	}
+
+	extern "C"
+	{
+		CommandHistory* GetCMDHistory()
+		{
+			return CommandHistory::GetInstance();
+		}
+
+		void UpdateIntValue(const char* label, int& ref, unsigned int modSpeed)
+		{
+			CommandHistory::GetInstance()->UpdateIntValue(label, ref, modSpeed);
+		}
+
+		void UpdateClampedIntValue(const char* label, int& ref, int min, int max, int modSpeed)
+		{
+			CommandHistory::GetInstance()->UpdateIntValue(label, ref, modSpeed);
+		}
+
+		void UpdateUnsignedIntValue(const char* label, unsigned int& ref, unsigned int modSpeed)
+		{
+			CommandHistory::GetInstance()->UpdateUnsignedIntValue(label, ref, modSpeed);
+		}
+
+		void UpdateFloatValue(const char* label, float& ref, float modSpeed)
+		{
+			CommandHistory::GetInstance()->UpdateFloatValue(label, ref, modSpeed);
+		}
+
+		void UpdateBoolValue(const char* label, bool& ref)
+		{
+			CommandHistory::GetInstance()->UpdateBoolValue(label, ref);
+		}
+
+		void UpdateVector2Value(const char* label, Math::FTVector2& ref, float modSpeed)
+		{
+			CommandHistory::GetInstance()->UpdateVector2Value(label, ref, modSpeed);
+		}
+
+		void UpdateVector3Value(const char* label, Math::FTVector3& ref, float modSpeed)
+		{
+			CommandHistory::GetInstance()->UpdateVector3Value(label, ref, modSpeed);
+		}
+
+		void UpdateVector4Value(const char* label, Math::FTVector4& ref, float modSpeed)
+		{
+			CommandHistory::GetInstance()->UpdateVector4Value(label, ref, modSpeed);
+		}
+
+		void UpdateStringValue(const char* label, Core::FTDS::String& ref)
+		{
+			CommandHistory::GetInstance()->UpdateStringValue(label, ref);
+		}
 	}
 } // namespace Editor

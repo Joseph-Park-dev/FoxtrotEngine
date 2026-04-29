@@ -18,7 +18,6 @@
 
 #ifdef FOXTROT_EDITOR
 	#include <magic_enum/include/magic_enum/magic_enum.hpp>
-
 	#include "CommandHistory.h"
 #endif // FOXTROT_EDITOR
 

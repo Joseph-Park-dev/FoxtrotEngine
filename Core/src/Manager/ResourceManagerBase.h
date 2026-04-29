@@ -19,8 +19,6 @@
 #include "ResourceSystem/FTResource.h"
 #include "FileSystem/FileIOHelper.h"
 
-#include "FTDS/Compare/StringEqual.h"
-
 namespace Core
 {
 	using ResArray = FTDS::Array<FTDS::HashMap<FTResource*>>;
@@ -183,7 +181,7 @@ namespace Core
 			GetResMap<FTRESOURCE>().Reserve(resCount);
 			while (0 < resCount)
 			{
-				LoadResource<FTRESOURCE>(ifs, GetResMap<FTRESOURCE*>());
+				LoadResource<FTRESOURCE>(ifs, GetResMap<FTRESOURCE>());
 				--resCount; // Key of the next resource to be imported.
 			}
 		}
@@ -251,7 +249,7 @@ namespace Core
 		/// Expects two strings in the stream: relative path then file name.
 		/// Constructs FTRESOURCE with FTResourceDef{fileName, relPath} and inserts to map keyed by file name.
 		template <typename FTRESOURCE>
-		void LoadResource(std::ifstream& ifs, Core::FTDS::HashMap<FTRESOURCE*>& resMap)
+		void LoadResource(std::ifstream& ifs, Core::FTDS::HashMap<Core::FTResource*>& resMap)
 		{
 			Core::FileIOHelper::BeginDataPackLoad(ifs);
 
@@ -264,7 +262,7 @@ namespace Core
 			FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef);
 
 			assert(0 < resMap.Capacity());
-			resMap.Insert(res->GetFileName(), res);
+			resMap.Insert(*res->GetFileName(), res);
 		}
 
 		/// @brief Core loader for graphics resources (renderer required).

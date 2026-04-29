@@ -249,7 +249,7 @@ namespace Editor
 					++count;
 				}
 			}
-			if (FTEditorUtils::ButtonCenteredOnLine("Add Component"))
+			if (Editor::ButtonCenteredOnLine("Add Component"))
 				ImGui::OpenPopup("CompSelectPopUp");
 			DisplayCompSelectionPopup();
 
@@ -272,7 +272,7 @@ namespace Editor
 
 	void EditorElement::UpdateMakePremade()
 	{
-		if (FTEditorUtils::ButtonCenteredOnLine("Make Premade"))
+		if (Editor::ButtonCenteredOnLine("Make Premade"))
 		{
 			bool confirmed = false;
 			EditorLayer::GetInstance()->SetInfoType(InfoType::PremadeIsCreated);

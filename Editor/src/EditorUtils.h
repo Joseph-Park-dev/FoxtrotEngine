@@ -180,12 +180,12 @@ namespace Editor
 			if (ImGui::TreeNode("Selection State: Single Selection"))
 			{
 				if (ImGui::Selectable("Not Assigned"))
-					currSelection.Assign(ChunkKey::NullVal::NULL_OBJECT);
+					currSelection.Assign(Core::ChunkKey::NullVal::NULL_OBJECT);
 
-				resMap->IterateAllNodes([&](FTDS::Record<FTRESOURCE*>* node) {
+				resMap->IterateAllNodes([&](Core::FTDS::Record<FTRESOURCE*>& node) {
 					if (ImGui::Selectable(node->Key().C_Str()))
 					{
-						if (node->Key().NotEqual(ChunkKey::NullVal::NULL_OBJECT))
+						if (node->Key().NotEqual(Core::ChunkKey::NullVal::NULL_OBJECT))
 							currSelection = node->Key();
 					}
 				});
@@ -211,10 +211,10 @@ namespace Editor
 		{
 			if (ImGui::TreeNode("Selection State: Single Selection"))
 			{
-				resMap->IterateAllNodes([&](FTDS::Record<FTRESOURCE*>* node) {
+				resMap->IterateAllNodes([&](Core::FTDS::Record<FTRESOURCE*>& node) {
 					if (ImGui::Selectable(node->Key().C_Str()))
 					{
-						if (node->Key().NotEqual(ChunkKey::NullVal::NULL_OBJECT))
+						if (node->Key().NotEqual(Core::ChunkKey::NullVal::NULL_OBJECT))
 						{
 							if (selectedRes)
 								selectedRes->SubtractRefCount();
@@ -246,10 +246,10 @@ namespace Editor
 		{
 			if (ImGui::TreeNode("Selection State: Single Selection"))
 			{
-				resMap->IterateAllNodes([&](FTDS::Record<FTRESOURCE*>* node) {
+				resMap->IterateAllNodes([&](Core::FTDS::Record<FTRESOURCE*>& node) {
 					if (ImGui::Selectable(node->Key().C_Str()))
 					{
-						if (node->Key().NotEqual(ChunkKey::NullVal::NULL_OBJECT))
+						if (node->Key().NotEqual(Core::ChunkKey::NullVal::NULL_OBJECT))
 						{
 							if (typeid(node->Value()) == typeid(FILTER))
 							{

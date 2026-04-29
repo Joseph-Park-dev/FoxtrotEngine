@@ -4,7 +4,7 @@
 namespace Editor
 {
 	template <typename COMPONENT>
-	class EditorComponent : public COMPONENT
+	class EditorComponent
 	{
 	public:
 		void UpdateUI()

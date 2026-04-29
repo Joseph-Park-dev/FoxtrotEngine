@@ -29,14 +29,14 @@ namespace Editor
 	// You must list all Components to be used during runtime to this map instance.
 	using ComponentCreateMap = std::unordered_map<const char*, ComponentCreateFunc>;
 
-	template <class T>
-	static void CreateComp(Core::Plugin* plugin, Core::Actor* actor, int updateOrder)
-	{
-		// Dynamically allocate actor of type T
-		T* t = Create(plugin, actor, updateOrder);
-		// Call LoadProperties on DBG_NEW actor
-		t->Initialize();
-	}
+	//template <class T>
+	//static void CreateComp(Core::Plugin* plugin, Core::Actor* actor, int updateOrder)
+	//{
+	//	// Dynamically allocate actor of type T
+	//	T* t = Create(plugin, actor, updateOrder);
+	//	// Call LoadProperties on DBG_NEW actor
+	//	t->Initialize();
+	//}
 
 	class EditorChunkLoader :
 		public Core::ChunkLoader

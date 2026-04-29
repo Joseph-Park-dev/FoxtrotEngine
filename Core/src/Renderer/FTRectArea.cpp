@@ -14,6 +14,7 @@
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
+	#include "EditorHelper.h"
 #endif
 
 namespace Core
@@ -73,9 +74,9 @@ namespace Core
 #ifdef FOXTROT_EDITOR
 	void FTRectArea::UpdateUI()
 	{
-		Editor::CommandHistory::GetInstance()->UpdateVector2Value("Center", mCenter);
-		Editor::CommandHistory::GetInstance()->UpdateVector2Value("Size", mSize);
-		Editor::CommandHistory::GetInstance()->UpdateFloatValue("Rot Angle", mRotAngle);
+		Editor::UPDATE_VEC2("Center", mCenter);
+		Editor::UPDATE_VEC2("Size", mSize);
+		Editor::UPDATE_FLOAT("Rot Angle", mRotAngle);
 		Set(mCenter, mSize, mRotAngle);
 	}
 #endif
@@ -101,7 +102,7 @@ namespace Core
 
 	void LoadProperties(std::ifstream* ifs, FTRectArea* rectArea)
 	{
-		float	  rotAngle = 0.f;
+		float			rotAngle = 0.f;
 		Math::FTVector2 size(0.f);
 		Math::FTVector2 center(0.f);
 

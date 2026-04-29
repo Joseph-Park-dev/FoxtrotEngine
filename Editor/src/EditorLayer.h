@@ -11,6 +11,8 @@
 /// </summary>
 
 #pragma once
+#include "Entity/Entity.h"
+
 #include <functional>
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui/imgui.h>
@@ -57,7 +59,8 @@ namespace Editor
 {
 	class Command;
 	class EditorRenderer;
-	class EditorLayer
+	class EditorLayer: 
+		public Core::Entity
 	{
 		SINGLETON(EditorLayer)
 	public:

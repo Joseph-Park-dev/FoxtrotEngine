@@ -23,6 +23,11 @@
 #include "Actor/Actor.h"
 #include "FileSystem/FileIOHelper.h"
 
+#ifdef FOXTROT_EDITOR
+	#include <CommandHistory.h>
+	#include "DLLData.h"
+#endif
+
 namespace Core
 {
 	class Plugin;
@@ -142,10 +147,9 @@ namespace Core
 		// usually use FTCore Update() & Render().
 		virtual void EditorUpdate(float deltaTime) {};
 		virtual void EditorRender(FoxtrotRenderer* renderer) {};
-
-	public:
 		virtual void EditorUIUpdate();
 
+	public:
 		void SetUpdateOrder(int updateOrder);
 
 #endif // FOXTROT_EDITOR

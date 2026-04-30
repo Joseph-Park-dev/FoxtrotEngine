@@ -284,4 +284,9 @@ namespace Editor
 			delete GetTransform();
 		SetTransform(DBG_NEW EditorTransform(this));
 	}
+
+	EditorElement* CreateEditorElementFromActor(Core::Actor* actor, int id)
+	{
+		return DBG_NEW EditorElement(actor, id);
+	}
 } // namespace Editor

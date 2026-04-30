@@ -12,7 +12,6 @@
 #pragma once
 #include <d3d11.h>
 #include <wrl.h> // ComPtr
-#include <imgui/imgui.h>
 
 using namespace Microsoft::WRL;
 

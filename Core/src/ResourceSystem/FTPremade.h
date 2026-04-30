@@ -18,11 +18,16 @@
 #include <iosfwd>
 
 #ifdef FOXTROT_EDITOR
+	#include <functional>
+
 	#include "EditorElement.h"
+
 namespace Editor
 {
 	class EditorScene;
 	class EditorElement;
+
+	typedef EditorElement* (*CREATE_EDITOR_ELEM)(Core::Actor*, int);
 } // namespace Editor
 #endif // FOXTROT_EDITOR
 
@@ -69,6 +74,8 @@ namespace Core
 
 	private:
 		Editor::EditorElement* mDummyForUI;
+		Editor::CREATE_EDITOR_ELEM mCreateEditorElemFunc;
+
 #endif // FOXTROT_EDITOR
 	};
 

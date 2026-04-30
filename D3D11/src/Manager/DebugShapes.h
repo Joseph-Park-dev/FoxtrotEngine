@@ -56,9 +56,6 @@ namespace D3D11
 		// It is not necessary to render shapes manually from the Components
 		void Render(D3D11::D3D11Renderer* renderer);
 
-	protected:
-		void RegisterMemberFuncs() override;
-
 	private:
 		Core::FTDS::DynamicArray<FTShape*>* mShapes;
 		std::wstring						mVSPath;

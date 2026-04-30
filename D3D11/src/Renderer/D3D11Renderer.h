@@ -42,9 +42,6 @@ namespace D3D11
 		~D3D11Renderer();
 
 	protected:
-		void RegisterMemberFuncs() override;
-
-	protected:
 		virtual bool Initialize(Core::FTWindow* window) override;
 
 	private:

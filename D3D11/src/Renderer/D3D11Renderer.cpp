@@ -45,10 +45,6 @@ namespace D3D11
 	void D3D11Renderer::Reset()
 	{
 		mContext->ClearState();
-
-#ifdef FOXTROT_EDITOR
-		mViewportRenderer->Reset();
-#endif // FOXTROT_EDITOR
 	}
 
 	ComPtr<ID3D11Device>&		 D3D11Renderer::GetDevice() { return mDevice; }
@@ -81,10 +77,6 @@ namespace D3D11
 	D3D11Renderer::~D3D11Renderer()
 	{
 		delete mViewport;
-	}
-
-	void D3D11Renderer::RegisterMemberFuncs()
-	{
 	}
 
 	bool D3D11Renderer::Initialize(FTWindow* window)

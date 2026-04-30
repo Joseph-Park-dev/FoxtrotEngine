@@ -189,7 +189,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.\src;..\Core\include\json\include\nlohmann;..\Core\src;..\Core\src\FTDS;..\Math\src;..\D3D11\include;..\D3D11\include\spine;..\D3D11\include\DirectXTK\Inc;..\Core\include\json\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\src;..\Core\include\json\include;..\Core\include\json\include\nlohmann;..\Core\src;..\Core\src\FTDS;..\Math\src;..\D3D11\include;..\D3D11\include\spine;..\D3D11\include\DirectXTK\Inc;..\Editor\include;..\Editor\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

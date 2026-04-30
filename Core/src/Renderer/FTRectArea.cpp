@@ -91,25 +91,25 @@ namespace Core
 		return DBG_NEW FTRectArea(x, y, width, height, rotAngle);
 	}
 
-	void SaveProperties(std::ofstream* ofs, FTRectArea* rectArea)
+	void SaveProperties(std::ofstream& ofs, FTRectArea* rectArea)
 	{
-		FileIOHelper::BeginDataPackSave(*ofs, ChunkKey::FTRectArea);
-		FileIOHelper::SaveVector2(*ofs, ChunkKey::FTRectArea_CENTER, rectArea->GetCenter());
-		FileIOHelper::SaveVector2(*ofs, ChunkKey::FTRectArea_SIZE, rectArea->GetSize());
-		FileIOHelper::SaveFloat(*ofs, ChunkKey::FTRectArea_ROTANGLE, rectArea->GetRotAngle());
-		FileIOHelper::EndDataPackSave(*ofs, ChunkKey::FTRectArea);
+		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTRectArea);
+		FileIOHelper::SaveVector2(ofs, ChunkKey::FTRectArea_CENTER, rectArea->GetCenter());
+		FileIOHelper::SaveVector2(ofs, ChunkKey::FTRectArea_SIZE, rectArea->GetSize());
+		FileIOHelper::SaveFloat(ofs, ChunkKey::FTRectArea_ROTANGLE, rectArea->GetRotAngle());
+		FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTRectArea);
 	}
 
-	void LoadProperties(std::ifstream* ifs, FTRectArea* rectArea)
+	void LoadProperties(std::ifstream& ifs, FTRectArea* rectArea)
 	{
 		float			rotAngle = 0.f;
 		Math::FTVector2 size(0.f);
 		Math::FTVector2 center(0.f);
 
-		FileIOHelper::BeginDataPackLoad(*ifs);
-		FileIOHelper::LoadFloat(*ifs, rotAngle);
-		FileIOHelper::LoadVector2(*ifs, size);
-		FileIOHelper::LoadVector2(*ifs, center);
+		FileIOHelper::BeginDataPackLoad(ifs);
+		FileIOHelper::LoadFloat(ifs, rotAngle);
+		FileIOHelper::LoadVector2(ifs, size);
+		FileIOHelper::LoadVector2(ifs, center);
 		rectArea->Set(center, size, rotAngle);
 	}
 } // namespace Core

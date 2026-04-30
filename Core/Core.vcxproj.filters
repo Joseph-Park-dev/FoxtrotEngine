@@ -507,9 +507,6 @@
     <ClCompile Include="include\imgui\ImGuiFileDialog\ImGuiFileDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="include\imgui\misc\freetype\imgui_freetype.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="include\imgui\imgui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

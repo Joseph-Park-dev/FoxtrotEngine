@@ -36,6 +36,9 @@ namespace D3D11
 		/// @see FTResource::LoadProperties()
 		virtual void LoadProperties(std::ifstream& ifs) override = 0;
 
+	public:
+		FTShader(Core::FTResourceDef& resDef);
+
 	private:
 		/// @brief Type of the shader (e.g vertex shader)
 		ShaderType mType;

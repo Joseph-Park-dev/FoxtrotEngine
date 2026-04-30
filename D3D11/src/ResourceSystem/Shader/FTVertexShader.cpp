@@ -40,7 +40,8 @@ namespace D3D11
 	}
 
 	FTVertexShader::FTVertexShader(FTResourceDef& resDef, D3D11Renderer* renderer)
-		: mShader(nullptr)
+		: D3D11::FTShader(resDef)
+		, mShader(nullptr)
 		, mInputLayout(nullptr)
 #ifdef FOXTROT_EDITOR
 		, mSemanticItems(DBG_NEW FTDS::DynamicArray<SemanticItem*>())

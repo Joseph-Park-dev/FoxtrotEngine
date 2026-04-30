@@ -24,3 +24,8 @@ void D3D11::D3D11Resource::LoadProperties(std::ifstream& ifs)
 	val.Clear();
 	Core::FileIOHelper::LoadBasicString(ifs, val);
 }
+
+D3D11::D3D11Resource::D3D11Resource(Core::FTResourceDef& resDef)
+	: Core::FTResource(resDef)
+{
+}

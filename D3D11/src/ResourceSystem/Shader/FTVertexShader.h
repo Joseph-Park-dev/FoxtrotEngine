@@ -12,13 +12,16 @@
 #include <d3d11.h>
 #include <wrl.h>
 
-#include "Static/HashMap.h"
-#include "Dynamic/DynamicArray.h"
+#include "FTDS/Static/HashMap.h"
+#include "FTDS/Dynamic/DynamicArray.h"
 #include "FileSystem/NullKeys.h"
 
 #ifdef FOXTROT_EDITOR
+	#define IMGUI_DEFINE_MATH_OPERATORS
+	#include <imgui/imgui.h>
 	#include <magic_enum/include/magic_enum/magic_enum.hpp>
 	#include "CommandHistory.h"
+	#include "EditorHelper.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -109,9 +112,9 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 		void UpdateUI()
 		{
-			static FTDS::String names[5] = { "POSITION", "NORMAL", "COLOR", "TEXCOORD", "PSIZE" };
+			static Core::FTDS::String names[5] = { "POSITION", "NORMAL", "COLOR", "TEXCOORD", "PSIZE" };
 
-			static FTDS::String classifications[2] = {
+			static Core::FTDS::String classifications[2] = {
 				"D3D11_INPUT_PER_VERTEX_DATA",
 				"D3D11_INPUT_PER_INSTANCE_DATA"
 			};
@@ -133,15 +136,15 @@ namespace D3D11
 				ImGui::EndCombo();
 			}
 
-			CommandHistory::GetInstance()->UpdateUnsignedIntValue("Semantic Index", Desc.SemanticIndex);
+			Editor::UPDATE_UNSIGNED_INT("Semantic Index", Desc.SemanticIndex);
 
 			UINT format = static_cast<UINT>(Desc.Format);
-			CommandHistory::GetInstance()->UpdateUnsignedIntValue("DXGI_FORMAT", format);
+			Editor::UPDATE_UNSIGNED_INT("DXGI_FORMAT", format);
 			Desc.Format = static_cast<DXGI_FORMAT>(format);
 			ImGui::Text("Current format : %s", magic_enum::enum_name(Desc.Format).data());
 
-			CommandHistory::GetInstance()->UpdateUnsignedIntValue("Input Slot", Desc.InputSlot);
-			CommandHistory::GetInstance()->UpdateUnsignedIntValue("Offset", Desc.AlignedByteOffset);
+			Editor::UPDATE_UNSIGNED_INT("Input Slot", Desc.InputSlot);
+			Editor::UPDATE_UNSIGNED_INT("Offset", Desc.AlignedByteOffset);
 
 			if (ImGui::BeginCombo("Classification", classifications[Desc.InputSlotClass].C_Str()))
 			{
@@ -157,7 +160,7 @@ namespace D3D11
 				ImGui::EndCombo();
 			}
 
-			CommandHistory::GetInstance()->UpdateUnsignedIntValue("Instance Data Step Rate", Desc.InstanceDataStepRate);
+			Editor::UPDATE_UNSIGNED_INT("Instance Data Step Rate", Desc.InstanceDataStepRate);
 		}
 #endif // FOXTROT_EDITOR
 	};

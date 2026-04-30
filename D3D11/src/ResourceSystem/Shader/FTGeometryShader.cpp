@@ -14,6 +14,7 @@ namespace D3D11
 	}
 
 	FTGeometryShader::FTGeometryShader(Core::FTResourceDef& resDef, D3D11Renderer* renderer)
+		: D3D11::FTShader(resDef)
 	{
 		SetType(ShaderType::GEOMETRY_SHADER);
 		CompileShader(resDef, renderer);

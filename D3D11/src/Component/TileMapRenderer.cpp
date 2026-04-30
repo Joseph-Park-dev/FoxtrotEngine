@@ -35,11 +35,12 @@
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
-	#include "EditorResourceManager.h"
 
 	#define IMGUI_DEFINE_MATH_OPERATORS
-	#include <imgui.h>
+	#include <imgui/imgui.h>
 	#include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
+
+	#include "FileSystem/FileTypes.h"
 #endif
 
 #define DEFAULT_TILE_POS 0
@@ -85,7 +86,7 @@ namespace D3D11
 	{
 	}
 
-	void TileMapRenderer::Render(Core::FoxtrotRenderer* renderer)
+	void TileMapRenderer::Render(D3D11::D3D11Renderer* renderer)
 	{
 	}
 
@@ -93,7 +94,7 @@ namespace D3D11
 	{
 		if (GetTileMapKey().NotEqual(Core::ChunkKey::NullVal::NULL_OBJECT))
 		{
-			mTileMap = D3D11::GET_RES(FTTileMap, mTileMapKey);
+			mTileMap = D3D11::ResourceManager::GetInstance()->GetResource<FTTileMap>(mTileMapKey);
 			if (mTileMap)
 			{
 				mTileMap->Initialize();
@@ -158,10 +159,10 @@ namespace D3D11
 	void TileMapRenderer::UpdateCSV()
 	{
 		FTDS::String currentCSV = "No .csv has been assigned";
-		if (mTileMapKey.Equal(::ChunkKey::NullVal::NULL_OBJECT))
+		if (mTileMapKey.Equal(Core::ChunkKey::NullVal::NULL_OBJECT))
 		{
 			currentCSV.Assign("Current sprite : \n");
-			currentCSV.Append(EditorResourceManager::GetInstance()->GetLoadedTileMap(mTileMapKey)->GetRelativePath().C_Str());
+			currentCSV.Append(mTileMapKey);
 		}
 
 		ImGui::Text(currentCSV.C_Str());
@@ -172,25 +173,25 @@ namespace D3D11
 			config.path				 = ".";
 			config.countSelectionMax = 1;
 			ImGuiFileDialog::Instance()->OpenDialog(
-				"SelectCSV", "Select .CSV", FileTypes::TEXTURE, config);
+				"SelectCSV", "Select .CSV", Core::FileTypes::TEXTURE, config);
 			ImGui::OpenPopup("Select .CSV");
 		}
 
 		if (ImGui::BeginPopupModal("Select .CSV", NULL, ImGuiWindowFlags_MenuBar))
 		{
-			FTDS::HashMap<FTTileMap*>* tileMapsMap =
-				EditorResourceManager::GetInstance()->GetTileMaps();
+			FTDS::HashMap<FTResource*>& tileMapsMap =
+				D3D11::ResourceManager::GetInstance()->GetResMap<FTTileMap>();
 			if (ImGui::TreeNode("Selection State: Single Selection"))
 			{
-				FTDS::String tileMapKey = ::ChunkKey::NullVal::NULL_OBJECT;
+				FTDS::String tileMapKey = Core::ChunkKey::NullVal::NULL_OBJECT;
 				static int	 selected	= -1;
 				int			 i			= 0;
-				for (auto iter = tileMapsMap->Begin(); iter != tileMapsMap->End();
+				for (auto iter = tileMapsMap.Begin(); iter != tileMapsMap.End();
 					 ++iter, ++i)
 				{
-					if (ImGui::Selectable((*iter)->Value()->GetFileName().C_Str(), selected == i))
+					if (ImGui::Selectable((*iter)->Value()->GetFileName()->C_Str(), selected == i))
 					{
-						tileMapKey = (*iter)->Value()->GetFileName();
+						tileMapKey = *(*iter)->Value()->GetFileName();
 						selected   = i;
 					}
 				}
@@ -209,9 +210,10 @@ namespace D3D11
 	void TileMapRenderer::UpdateCSV(FTDS::String& key)
 	{
 		FTDS::String currentCSV = {};
-		if (key.NotEqual(::ChunkKey::NullVal::NULL_OBJECT))
+		if (key.NotEqual(Core::ChunkKey::NullVal::NULL_OBJECT))
 			currentCSV =
-				FTDS::String("Current sprite : \n") + EditorResourceManager::GetInstance()->GetLoadedTileMap(key)->GetRelativePath().C_Str();
+				FTDS::String("Current sprite : \n") +
+				Core::ResourceManager::GetInstance()->GetResource<FTTileMap>(key)->GetRelativePath()->C_Str();
 		else
 			currentCSV = "No .csv has been assigned";
 		ImGui::Text(currentCSV.C_Str());
@@ -228,21 +230,21 @@ namespace D3D11
 
 		if (ImGui::BeginPopupModal("Select .CSV", NULL, ImGuiWindowFlags_MenuBar))
 		{
-			FTDS::HashMap<FTTileMap*>* tileMapsMap =
-				EditorResourceManager::GetInstance()->GetTileMaps();
+			FTDS::HashMap<FTResource*>& tileMapsMap =
+				Core::ResourceManager::GetInstance()->GetResMap<FTTileMap>();
 			if (ImGui::TreeNode("Selection State: Single Selection"))
 			{
-				FTDS::String tileMapKey = ::ChunkKey::NullVal::NULL_OBJECT;
+				FTDS::String tileMapKey = Core::ChunkKey::NullVal::NULL_OBJECT;
 				static int	 selected	= -1;
 				int			 i			= 0;
-				for (auto iter = tileMapsMap->Begin(); iter != tileMapsMap->End();
+				for (auto iter = tileMapsMap.Begin(); iter != tileMapsMap.End();
 					 ++iter, ++i)
 				{
 					if ((*iter)->Value())
 					{
-						if (ImGui::Selectable((*iter)->Value()->GetFileName().C_Str(), selected == i))
+						if (ImGui::Selectable((*iter)->Value()->GetFileName()->C_Str(), selected == i))
 						{
-							tileMapKey = (*iter)->Value()->GetFileName();
+							tileMapKey = *(*iter)->Value()->GetFileName();
 							selected   = i;
 						}
 					}

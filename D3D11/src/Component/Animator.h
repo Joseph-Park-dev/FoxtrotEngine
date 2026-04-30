@@ -51,7 +51,7 @@ namespace D3D11
 		virtual void ProcessInput(Core::FTInputDevice* inputDevice) override;
 		virtual void Update(float deltaTime) override;
 		void		 LateUpdate(float deltaTime) override;
-		void		 Render(Core::FoxtrotRenderer* renderer) override;
+		void		 Render(D3D11::D3D11Renderer* renderer) override;
 
 		virtual void CloneTo(Core::Actor* actor) override;
 
@@ -81,7 +81,7 @@ namespace D3D11
 	public:
 		virtual void EditorUpdate(float deltaTime) override;
 		virtual void EditorUIUpdate() override;
-		void		 EditorRender(FoxtrotRenderer* renderer) override;
+		void		 EditorRender(D3D11::D3D11Renderer* renderer) override;
 
 	private:
 		void UpdatePlayAnim();

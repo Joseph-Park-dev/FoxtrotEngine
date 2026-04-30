@@ -27,12 +27,14 @@
 
 #include "ResourceSystem/Shader/FTVertexShader.h"
 #include "ResourceSystem/Shader/FTPixelShader.h"
+#include "ResourceSystem/Material/FTMaterial.h"
 
 #ifdef FOXTROT_EDITOR
+	#define IMGUI_DEFINE_MATH_OPERATORS
+
 	#include "EditorUtils.h"
-	#include "EditorResourceManager.h"
 	#include "EditorCamera.h"
-	#include "ResourceSystem/FTMaterials/FTMaterial.h"
+	#include "EditorHelper.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -105,7 +107,7 @@ namespace D3D11
 			FTDS::String key;
 			FileIOHelper::LoadBasicString(ifs, key);
 
-			FTSpriteAnimation* anim = D3D11::GET_RES(FTSpriteAnimation, key);
+			FTSpriteAnimation* anim = D3D11::ResourceManager::GetInstance()->GetResource<FTSpriteAnimation>(key);
 			mLoadedAnim->PushBack(anim);
 		}
 
@@ -165,15 +167,14 @@ namespace D3D11
 		UpdateFrame(deltaTime);
 	}
 
-	void Animator::Render(Core::FoxtrotRenderer* renderer)
+	void Animator::Render(D3D11::D3D11Renderer* renderer)
 	{
-		D3D11Renderer* rend = static_cast<D3D11Renderer*>(renderer);
 		if (GetSprite())
 		{
 			Core::Transform*   transform = GetOwner()->GetTransform();
 			FTSpriteAnimation* anim		 = static_cast<FTSpriteAnimation*>(GetSprite());
 			GetSprite()->UpdateConstantBuffers(
-				rend,
+				renderer,
 				transform,
 				Camera::GetInstance(),
 				GetMaterial(),
@@ -181,7 +182,7 @@ namespace D3D11
 				mCurrFrameIdx);
 
 			GetSprite()->Render(
-				rend,
+				renderer,
 				transform,
 				Camera::GetInstance(),
 				GetPSO(),
@@ -210,22 +211,22 @@ namespace D3D11
 		UpdatePlayAnim();
 		UpdatePlayList();
 
-		CommandHistory::GetInstance()->UpdateBoolValue("Is Repeated", mIsRepeated);
+		Editor::UPDATE_BOOL("Is Repeated", mIsRepeated);
 		SpriteRenderer::EditorUIUpdate();
 	}
 
-	void Animator::EditorRender(FoxtrotRenderer* renderer)
+	void Animator::EditorRender(D3D11::D3D11Renderer* renderer)
 	{
 		if (GetSprite())
 		{
-			renderer->SwitchFillMode();
+			//renderer->SetFillMode();
 
 			Transform*		   transform = GetOwner()->GetTransform();
 			FTSpriteAnimation* anim		 = static_cast<FTSpriteAnimation*>(GetSprite());
 			GetSprite()->UpdateConstantBuffers(
 				renderer,
 				transform,
-				EditorCamera::GetInstance(),
+				Editor::EditorCamera::GetInstance(),
 				GetMaterial(),
 				anim->GetFrameCount(),
 				mCurrFrameIdx);
@@ -233,7 +234,7 @@ namespace D3D11
 			GetSprite()->Render(
 				renderer,
 				transform,
-				EditorCamera::GetInstance(),
+				Editor::EditorCamera::GetInstance(),
 				GetPSO(),
 				GetMaterial());
 		}
@@ -259,9 +260,9 @@ namespace D3D11
 	void Animator::UpdatePlayList()
 	{
 		FTSpriteAnimation* anim = nullptr;
-		FTEditorUtils::DisplayResSelection<FTSpriteAnimation>(
+		Editor::DisplayResSelection<FTSpriteAnimation>(
 			"Load Animation",
-			ResourceManager::GetInstance()->GetSpriteAnimations(),
+			&ResourceManager::GetInstance()->GetResMap<FTSpriteAnimation>(),
 			anim);
 
 		if (anim)
@@ -280,7 +281,7 @@ namespace D3D11
 				if (anim)
 				{
 					ImGui::PushID(anim);
-					ImGui::Text(anim->GetFileName().C_Str());
+					ImGui::Text(anim->GetFileName()->C_Str());
 					anim->UpdateUI();
 
 					if (ImGui::ArrowButton("##Up", ImGuiDir::ImGuiDir_Up))

@@ -34,7 +34,7 @@
 	#include <EditorCamera.h>
 
 	#define IMGUI_DEFINE_MATH_OPERATORS
-	#include <imgui.h>
+	#include <imgui/imgui.h>
 	#include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
 #endif // FOXTROT_EDITOR
 
@@ -63,13 +63,12 @@ namespace D3D11
 	{
 	}
 
-	void SpriteRenderer::Render(Core::FoxtrotRenderer* renderer)
+	void SpriteRenderer::Render(D3D11::D3D11Renderer* renderer)
 	{
-		D3D11Renderer* rend = static_cast<D3D11Renderer*>(renderer);
 		if (mSprite)
 		{
-			mSprite->UpdateConstantBuffers(rend, GetOwner()->GetTransform(), Camera::GetInstance(), mMaterial);
-			mSprite->Render(rend, GetOwner()->GetTransform(), Camera::GetInstance(), mPSO, mMaterial);
+			mSprite->UpdateConstantBuffers(renderer, GetOwner()->GetTransform(), Camera::GetInstance(), mMaterial);
+			mSprite->Render(renderer, GetOwner()->GetTransform(), Camera::GetInstance(), mPSO, mMaterial);
 		}
 	}
 
@@ -86,7 +85,7 @@ namespace D3D11
 		, mSprite(nullptr)
 		, mMaterial(nullptr)
 	{
-		mPSO = D3D11::GET_RES(D3D11PSO, ChunkKey::SpriteRenderer::PSO);
+		mPSO = D3D11::ResourceManager::GetInstance()->GetResource<D3D11PSO>(ChunkKey::SpriteRenderer::PSO);
 	}
 
 	FTSprite* SpriteRenderer::GetSprite() const
@@ -124,8 +123,8 @@ namespace D3D11
 		FileIOHelper::LoadBasicString(ifs, spriteKey);
 		Component::LoadProperties(ifs);
 
-		mSprite	  = D3D11::GET_RES(FTSprite, spriteKey);
-		mMaterial = D3D11::GET_RES(FTMaterial, matKey);
+		mSprite	  = D3D11::ResourceManager::GetInstance()->GetResource<FTSprite>(spriteKey);
+		mMaterial = D3D11::ResourceManager::GetInstance()->GetResource<FTMaterial>(matKey);
 	}
 
 #ifdef FOXTROT_EDITOR
@@ -136,25 +135,25 @@ namespace D3D11
 		if (mSprite)
 			mSprite->UpdateUI();
 
-		FTEditorUtils::DisplayResSelection(
+		Editor::DisplayResSelection(
 			"Select Sprite",
-			ResourceManager::GetInstance()->GetSprites(),
+			&ResourceManager::GetInstance()->GetResMap<FTSprite>(),
 			mSprite);
 
 		if (mMaterial)
 			mMaterial->UpdateUI();
 
-		FTEditorUtils::DisplayResSelection(
+		Editor::DisplayResSelection(
 			"Select Material",
-			ResourceManager::GetInstance()->GetMaterials(),
+			&ResourceManager::GetInstance()->GetResMap<FTMaterial>(),
 			mMaterial);
 	}
-	void SpriteRenderer::EditorRender(FoxtrotRenderer* renderer)
+	void SpriteRenderer::EditorRender(D3D11::D3D11Renderer* renderer)
 	{
 		if (mSprite)
 		{
 			mSprite->UpdateConstantBuffers(renderer, GetOwner()->GetTransform(), Camera::GetInstance(), mMaterial);
-			mSprite->Render(renderer, GetOwner()->GetTransform(), EditorCamera::GetInstance(), mPSO, mMaterial);
+			mSprite->Render(renderer, GetOwner()->GetTransform(), Editor::EditorCamera::GetInstance(), mPSO, mMaterial);
 		}
 	}
 #endif // FOXTROT_EDITOR

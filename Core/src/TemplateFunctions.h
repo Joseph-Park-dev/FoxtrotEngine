@@ -149,7 +149,7 @@ namespace Core
 		return pathStr;
 	}
 
-	inline FTDS::String ExtractFileName(FTDS::String* path, FTDS::String& out)
+	inline void ExtractFileName(FTDS::String* path, FTDS::String& out)
 	{
 		std::filesystem::path p(path->C_Str());
 		out.Assign(*path);

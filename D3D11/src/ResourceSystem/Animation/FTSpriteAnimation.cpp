@@ -28,9 +28,8 @@
 #include "../Manager/ResourceManager.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "Managers/AnimationManager.h"
-	#include "EditorResourceManager.h"
-	#include "ResourceSystem/FTShaders/FTVertexShader.h"
+	#include "Manager/AnimationManager.h"
+	#include "ResourceSystem/Shader/FTVertexShader.h"
 	#include "EditorUtils.h"
 #endif
 
@@ -77,11 +76,11 @@ namespace D3D11
 		FileIOHelper::LoadInt(ifs, frontDir);
 		FTMeshGroup::LoadProperties(ifs);
 
-		mJSON = GET_RES(Core::FTJSON, jsonKey);
+		mJSON = Core::ResourceManager::GetInstance()->GetResource<Core::FTJSON>(jsonKey);
 		if (!mJSON)
 			return;
 
-		SetTexture(D3D11::GET_RES(FTTexture, texKey));
+		SetTexture(D3D11::ResourceManager::GetInstance()->GetResource<FTTexture>(texKey));
 		if (!GetTexture())
 			return;
 
@@ -190,7 +189,7 @@ namespace D3D11
 	}
 
 #ifdef FOXTROT_EDITOR
-	FTSpriteAnimation::FTSpriteAnimation(FTSpriteAnimationDef& resDef, FoxtrotRenderer* renderer)
+	FTSpriteAnimation::FTSpriteAnimation(FTSpriteAnimationDef& resDef, D3D11::D3D11Renderer* renderer)
 		: FTSprite(resDef, renderer, true)
 		, mJSON(resDef.JSON)
 		, mMinFrameIdx(resDef.MinFrameIdx)
@@ -205,19 +204,17 @@ namespace D3D11
 	{
 		GetTexture()->UpdateUI();
 
-		Vector2 size = GetGCSpriteData()[0].Size;
-		CommandHistory::GetInstance()->UpdateVector2Value("Size", size);
+		FTVector2 size = GetGCSpriteData()[0].Size;
+		Editor::UPDATE_VEC2("Size", size);
 		for (size_t i = 0; i < mMaxFrameIdx - mMinFrameIdx + 1; ++i)
 			GetGCSpriteData()[i].Size = size;
 
-		FTVector3		  scale = FTVector3
-						  CommandHistory::GetInstance() -> UpdateVector3Value("Scale size", scale);
-		SetSizeScale(scale);
+		Editor::UPDATE_VEC3("Scale size", SizeScale());
 
 		bool val = true;
 		0 < GetFrontDir() ? val = true : val = false;
 
-		CommandHistory::GetInstance()->UpdateBoolValue("Is Facing Right", val);
+		Editor::UPDATE_BOOL("Is Facing Right", val);
 		SetRightIsFront(val);
 	}
 

@@ -26,14 +26,14 @@ namespace D3D11
 	struct AnimationFrame;
 
 #ifdef FOXTROT_EDITOR
-	struct FTSpriteAnimationDef : FTResourceDef
+	struct FTSpriteAnimationDef : Core::FTResourceDef
 	{
-		FTJSON*	   JSON		   = nullptr;
-		FTTexture* SpriteSheet = nullptr;
-		bool	   IsRepeated  = true;
-		int		   FPS		   = 24;
-		int		   MinFrameIdx = -1;
-		int		   MaxFrameIdx = -1;
+		Core::FTJSON* JSON		  = nullptr;
+		FTTexture*	  SpriteSheet = nullptr;
+		bool		  IsRepeated  = true;
+		int			  FPS		  = 24;
+		int			  MinFrameIdx = -1;
+		int			  MaxFrameIdx = -1;
 	};
 #endif
 
@@ -94,7 +94,7 @@ namespace D3D11
 
 #ifdef FOXTROT_EDITOR
 	public:
-		FTSpriteAnimation(FTSpriteAnimationDef& resDef, FoxtrotRenderer* renderer);
+		FTSpriteAnimation(FTSpriteAnimationDef& resDef, D3D11Renderer* renderer);
 
 	public:
 		virtual void AddRefCount() override;

@@ -87,10 +87,10 @@ namespace D3D11
 		~FTSpineAnimation();
 
 	private:
-		/// @brief JSON object holding its file path, which will be use to create spine anim.
+		/// @brief JSON path, which will be use to create spine anim.
 		Core::FTDS::String* mJSONPath;
 
-		/// @brief FTText object holding the Atlas file path, which will be use to create spine anim.
+		/// @brief Atlas file path, which will be use to create spine anim.
 		Core::FTDS::String* mAtlasPath;
 
 		/// @brief Timescale for the loaded clips.
@@ -119,6 +119,8 @@ namespace D3D11
 		Core::FTDS::DynamicArray<SpineMesh*>* mMeshes;
 
 	private:
+		void Process(D3D11::D3D11Renderer* renderer);
+
 		/// @brief Loads Spine Atlas & JSON, and creates a spine animation.
 		/// @param device
 		void InitializeSpinAnim(Microsoft::WRL::ComPtr<ID3D11Device>& device);
@@ -141,7 +143,11 @@ namespace D3D11
 
 #ifdef FOXTROT_EDITOR
 	public:
-		FTSpineAnimation(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTJSON* json, FTText* atlas);
+		FTSpineAnimation(
+			Core::FTResourceDef&	  resDef,
+			D3D11Renderer*			  renderer,
+			const Core::FTDS::String* jsonPath,
+			const Core::FTDS::String* atlasPath);
 
 	public:
 		/// @see FTResource::UpdateUI()

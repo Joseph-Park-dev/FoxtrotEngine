@@ -277,7 +277,7 @@ namespace D3D11
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTFont::FTFONT);
 		FileIOHelper::LoadBasicString(ifs, key);
 
-		mFontImage = GET_RES(FTTexture, key);
+		mFontImage = D3D11::ResourceManager::GetInstance()->GetResource<FTTexture>(key);
 	}
 
 	const float FTFont::GetKerning(wchar_t first, wchar_t second) const
@@ -522,8 +522,8 @@ namespace D3D11
 	{
 		if (ImGui::Button("Reload font"))
 		{
-			if (mFontImage)
-				LoadFont(mFontImage);
+		/*	if (mFontImage)
+				LoadFont(mFontImage);*/
 		}
 	}
 #endif // FOXTROT_EDITOR

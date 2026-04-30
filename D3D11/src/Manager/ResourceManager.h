@@ -26,6 +26,5 @@ namespace D3D11
 
 	using GET_RES_MANAGER_INST = D3D11::ResourceManager* (*)();
 
-#define GET_RES(type, key) ResourceManager::GetInstance()->GetResource<type>(type::Type, key)
 #define CORE_RES_NAME(type, res) ResourceManager::GetInstance()->GetCoreResManager()->GetResName(type::Type, res)
 } // namespace D3D11

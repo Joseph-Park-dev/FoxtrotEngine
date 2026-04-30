@@ -47,7 +47,7 @@ namespace D3D11
 	void FTRectangle::UpdateUI()
 	{
 		bool isActive = GetIsActive();
-		CommandHistory::GetInstance()->UpdateBoolValue("Render Shape", isActive);
+		::Editor::UPDATE_BOOL("Render Shape", isActive);
 		SetIsActive(isActive);
 	}
 #endif

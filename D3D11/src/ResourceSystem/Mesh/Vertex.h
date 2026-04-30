@@ -24,14 +24,6 @@ namespace D3D11
 			position.y = y;
 		}
 
-#ifdef FOXTROT_EDITOR
-		Vertex(b2Vec2 vec2)
-		{
-			position.x = vec2.x;
-			position.y = vec2.y;
-		}
-#endif // FOXTROT_EDITOR
-
 		Math::FTVector3 position;
 		Math::FTVector4 color;
 		Math::FTVector2 texcoord;
@@ -60,14 +52,6 @@ namespace D3D11
 			position.x = x;
 			position.y = y;
 		}
-
-#ifdef FOXTROT_EDITOR
-		DebugVertex(b2Vec2 vec2)
-		{
-			position.x = vec2.x;
-			position.y = vec2.y;
-		}
-#endif // FOXTROT_EDITOR
 
 		Math::FTVector3 position;
 		Math::FTVector4 color;

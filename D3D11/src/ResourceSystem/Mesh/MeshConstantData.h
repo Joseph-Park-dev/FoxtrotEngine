@@ -12,6 +12,11 @@
 #pragma once
 #include "Math/FTMath.h"
 
+#ifdef FOXTROT_EDITOR
+	#include "EditorHelper.h"
+#endif // FOXTROT_EDITOR
+	
+
 namespace D3D11
 {
 	// Debug shape only takes a point in VS,
@@ -95,7 +100,7 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 		void UpdateUI()
 		{
-			CommandHistory::GetInstance()->UpdateVector2Value("Sprite Size", Size);
+			Editor::UPDATE_VEC2("Sprite Size", Size);
 		}
 #endif // FOXTROT_EDITOR
 	};

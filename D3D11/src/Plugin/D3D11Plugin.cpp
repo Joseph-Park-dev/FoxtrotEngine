@@ -14,6 +14,8 @@
 #include "FTCore.h"
 #include "Plugin/PluginKey.h"
 
+#include "Component/D3D11Component.h"
+
 namespace ChunkKey
 {
 	namespace Plugin
@@ -36,9 +38,11 @@ public:
 public:
 	void SaveProperties() override;
 	void LoadProperties(SceneManager* sceneManager);
+	void SaveManagerData(std::ofstream& ofs) override;
+	void LoadManagerData(std::ifstream& ifs) override;
 
 public:
-	D3D11Plugin(Core::FTCore* base);
+	D3D11Plugin(const char* name);
 	~D3D11Plugin() override;
 
 private:
@@ -97,7 +101,12 @@ void D3D11Plugin::Render()
 	{
 		// mGameRenderer->RenderClear(mWindow);
 		(*iter)->BeginRender(mRenderer);
-		Plugin::Render(mRenderer);
+		for (auto iter = GetRegisteredComps()->Begin(); iter != GetRegisteredComps()->End(); ++iter)
+		{
+			if (!(*iter)->GetOwner()->IsActive())
+				continue;
+			reinterpret_cast<D3D11::D3D11Component*>(*iter)->Render(mRenderer);
+		}
 		(*iter)->EndRender(mRenderer);
 	}
 }
@@ -120,7 +129,11 @@ void D3D11Plugin::SaveProperties()
 			FileIOHelper::BeginDataPackSave(ofs, (*iter)->GetTitle());
 			FileIOHelper::SaveUnsignedInt(ofs, Core::ChunkKey::FTWindow::WIDTH, (*iter)->GetWidth());
 			FileIOHelper::SaveUnsignedInt(ofs, Core::ChunkKey::FTWindow::HEIGHT, (*iter)->GetHeight());
-			gBase->CallFunc<FTRECTAREA_SAVE>(D3D11::PluginKey::D3D11, D3D11::PluginKey::SAVE_PROPERTIES, &ofs, (*iter)->GetRenderArea());
+
+			HMODULE			mod	 = GetModuleHandleA(DLLPaths::CORE_EDITOR);
+			FARPROC			proc = GetProcAddress(mod, D3D11::PluginKey::SAVE_PROPERTIES);
+			FTRECTAREA_SAVE func = reinterpret_cast<FTRECTAREA_SAVE>(proc);
+			func(ofs, (*iter)->GetRenderArea());
 			FileIOHelper::EndDataPackSave(ofs, (*iter)->GetTitle());
 		}
 		FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::FTWindow::WINDOW_DATA);
@@ -142,21 +155,19 @@ void D3D11Plugin::LoadProperties(SceneManager* sceneManager)
 		size_t winCount = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::FTWindow::WINDOW_DATA).first;
 		for (size_t i = 0; i < winCount; ++i)
 		{
-			FTDS::String winTitle = FileIOHelper::BeginDataPackLoad(ifs).second;
-			FTRectArea*	 rndArea =
-				gBase->CallFunc<FTRECTAREA_CONSTRUCTOR, FTRectArea*>(
-					D3D11::PluginKey::D3D11,
-					D3D11::PluginKey::CREATE_FTRECTAREA,
-					0.f,
-					0.f,
-					0.f,
-					0.f,
-					0.f);
+			FTDS::String		   winTitle = FileIOHelper::BeginDataPackLoad(ifs).second;
+			HMODULE				   mod		= GetModuleHandleA(DLLPaths::CORE_EDITOR);
+			FARPROC				   proc		= GetProcAddress(mod, D3D11::PluginKey::CREATE_FTRECTAREA);
+			FTRECTAREA_CONSTRUCTOR func		= reinterpret_cast<FTRECTAREA_CONSTRUCTOR>(proc);
 
-			unsigned int width	= 0;
-			unsigned int height = 0;
+			FTRectArea*	 rndArea = func(0.f, 0.f, 0.f, 0.f, 0.f);
+			unsigned int width	 = 0;
+			unsigned int height	 = 0;
 
-			gBase->CallFunc<FTRECTAREA_LOAD>(D3D11::PluginKey::D3D11, D3D11::PluginKey::LOAD_PROPERTIES, &ifs, rndArea);
+			proc					 = GetProcAddress(mod, D3D11::PluginKey::LOAD_PROPERTIES);
+			FTRECTAREA_LOAD loadFunc = reinterpret_cast<FTRECTAREA_LOAD>(proc);
+			loadFunc(ifs, rndArea);
+
 			FileIOHelper::LoadUnsignedInt(ifs, width);
 			FileIOHelper::LoadUnsignedInt(ifs, height);
 			CreateD3D11Window(winTitle.C_Str(), width, height, rndArea);
@@ -166,16 +177,24 @@ void D3D11Plugin::LoadProperties(SceneManager* sceneManager)
 	}
 }
 
-D3D11Plugin::D3D11Plugin(Core::FTCore* base)
-	: Plugin(base)
+void D3D11Plugin::SaveManagerData(std::ofstream& ofs)
+{
+}
+
+void D3D11Plugin::LoadManagerData(std::ifstream& ifs)
+{
+}
+
+D3D11Plugin::D3D11Plugin(const char* name)
+	: Core::Plugin(name)
 	, mInputDevices(DBG_NEW FTDS::DynamicArray<D3D11::D3D11InputDevice*>)
 	, mRenderer(nullptr)
 	, mWindows(DBG_NEW FTDS::DynamicArray<D3D11::D3D11Window*>)
 	, mCamera(nullptr)
 {
-	//FTRectArea* area = DBG_NEW FTRectArea(0.f, 0.f, 500.f, 500.f);
-	//CreateD3D11Window("Hello!", 500, 500, area);
-	//CreateInputDevice();
+	// FTRectArea* area = DBG_NEW FTRectArea(0.f, 0.f, 500.f, 500.f);
+	// CreateD3D11Window("Hello!", 500, 500, area);
+	// CreateInputDevice();
 }
 
 D3D11Plugin::~D3D11Plugin()
@@ -189,7 +208,7 @@ void D3D11Plugin::LoadProperties()
 {
 }
 
-extern "C" __declspec(dllexport) Plugin* CreatePlugin(Core::FTCore* base)
+extern "C" __declspec(dllexport) Plugin* CreatePlugin(const char* name)
 {
-	return new D3D11Plugin(base);
+	return new D3D11Plugin(name);
 }

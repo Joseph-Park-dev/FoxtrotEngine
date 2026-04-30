@@ -84,12 +84,12 @@ namespace Core
 		}
 
 		template <typename TYPE>
-		TYPE* GetResource(size_t typeIdx, Core::FTDS::String& key)
+		TYPE* GetResource(Core::FTDS::String& key)
 		{
 			if (key.Equal(Core::ChunkKey::NullVal::NULL_OBJECT))
 				return nullptr;
 
-			Core::FTDS::Record<Core::FTResource*>* rec = mResources->At(typeIdx).At(key);
+			Core::FTDS::Record<Core::FTResource*>* rec = mResources->At(TYPE::Type).At(key);
 			if (!rec)
 			{
 				Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
@@ -99,12 +99,12 @@ namespace Core
 		}
 
 		template <typename TYPE>
-		TYPE* GetResource(size_t typeIdx, const char* key)
+		TYPE* GetResource(const char* key)
 		{
 			if (Core::FTDS::StringEqual(key, Core::ChunkKey::NullVal::NULL_OBJECT))
 				return nullptr;
 
-			Core::FTDS::Record<Core::FTResource*>* rec = mResources->At(typeIdx).At(key);
+			Core::FTDS::Record<Core::FTResource*>* rec = mResources->At(TYPE::Type).At(key);
 			if (!rec)
 			{
 				Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
@@ -315,13 +315,4 @@ namespace Core
 			}
 		}
 	};
-	// Exported factory — C linkage, stable ABI
-	extern "C"
-	{
-#ifdef CORE_EXPORTS
-		__declspec(dllexport) Entity* GetResourceManager();
-#else
-		__declspec(dllimport) Entity* GetResourceManager();
-#endif
-	}
 } // namespace Core

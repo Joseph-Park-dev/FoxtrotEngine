@@ -27,7 +27,6 @@
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorUtils.h"
-	#include "EditorResourceManager.h"
 #endif // FOXTROT_EDITOR
 
 using Microsoft::WRL::ComPtr;
@@ -55,7 +54,8 @@ namespace D3D11
 		val ? mFrontDir = 1 : mFrontDir = -1;
 	}
 
-	Core::FTDS::DynamicArray<Mesh*>* FTMeshGroup::Meshes() { return mMeshes; };
+	Core::FTDS::DynamicArray<Mesh*>* FTMeshGroup::Meshes() { return mMeshes; }
+	Math::FTVector3&				 FTMeshGroup::SizeScale() { return mSizeScale; };
 
 	// This is unused until 3D feature is implemented.
 	// FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer)
@@ -70,7 +70,8 @@ namespace D3D11
 	// }
 
 	FTMeshGroup::FTMeshGroup(Core::FTResourceDef& resDef, D3D11Renderer* renderer, FTMeshData* meshData)
-		: mFrontDir(1)
+		: D3D11Resource(resDef)
+		, mFrontDir(1)
 		, mDirection(1)
 		, mSizeScale(Math::FTVector3(1.0f, 1.0f, 1.0f))
 		, mMeshes(DBG_NEW Core::FTDS::DynamicArray<Mesh*>)
@@ -251,12 +252,12 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 	void FTMeshGroup::UpdateUI()
 	{
-		CommandHistory::GetInstance()->UpdateVector3Value("Scale size", mSizeScale);
+		Editor::UPDATE_VEC3("Scale size", mSizeScale);
 
 		bool val = true;
 		0 < mFrontDir ? val = true : val = false;
 
-		CommandHistory::GetInstance()->UpdateBoolValue("Is Facing Right", val);
+		Editor::UPDATE_BOOL("Is Facing Right", val);
 		SetRightIsFront(val);
 	}
 

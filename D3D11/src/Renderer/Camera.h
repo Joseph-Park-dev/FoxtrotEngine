@@ -93,9 +93,6 @@ namespace D3D11
 		virtual void Update(float deltaTime);
 
 	protected:
-		void RegisterMemberFuncs() override;
-
-	protected:
 		virtual void Zoom();
 
 	private:

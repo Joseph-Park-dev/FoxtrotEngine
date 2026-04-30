@@ -64,9 +64,6 @@ namespace D3D11
 		D3D11Window(Core::Plugin* owner, const char* title, unsigned int width, unsigned int height, Core::FTRectArea* rndArea, WNDPROC proc, WNDPROC_Params* params);
 		~D3D11Window() override;
 
-	protected:
-		void RegisterMemberFuncs() override;
-
 	private:
 		HWND										   mWinHandle; ///< Native window handle.
 		Microsoft::WRL::ComPtr<IDXGISwapChain>		   mSwapChain; ///< Swap chain for presenting frames.

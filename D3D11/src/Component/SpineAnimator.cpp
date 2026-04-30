@@ -57,15 +57,14 @@ namespace D3D11
 	{
 	}
 
-	void SpineAnimator::Render(Core::FoxtrotRenderer* renderer)
+	void SpineAnimator::Render(D3D11::D3D11Renderer* renderer)
 	{
-		D3D11Renderer* rend = static_cast<D3D11Renderer*>(renderer);
 		if (GetMeshGroup())
 		{
 			Core::Transform* transform = GetOwner()->GetTransform();
 			static_cast<FTSpineAnimation*>(
 				GetMeshGroup())
-				->Render(rend, transform, Camera::GetInstance(), GetTexture(), GetVS(), GetPS(), GetMaterial());
+				->Render(renderer, transform, Camera::GetInstance(), GetTexture(), GetVS(), GetPS(), GetMaterial());
 		}
 	}
 
@@ -112,7 +111,7 @@ namespace D3D11
 		FileIOHelper::LoadBasicString(ifs, key);
 		MeshRenderer::LoadProperties(ifs);
 
-		FTSpineAnimation* anim = D3D11::GET_RES(FTSpineAnimation, key);
+		FTSpineAnimation* anim = D3D11::ResourceManager::GetInstance()->GetResource<FTSpineAnimation>(key);
 		if (anim)
 		{
 			SetMeshGroup(anim);
@@ -127,16 +126,14 @@ namespace D3D11
 		this->Update(deltaTime);
 	}
 
-	void SpineAnimator::EditorRender(FoxtrotRenderer* renderer)
+	void SpineAnimator::EditorRender(D3D11::D3D11Renderer* renderer)
 	{
 		if (GetMeshGroup())
 		{
-			renderer->SwitchFillMode();
-
 			Transform* transform = GetOwner()->GetTransform();
 			static_cast<FTSpineAnimation*>(
 				GetMeshGroup())
-				->Render(GetRenderer(), transform, EditorCamera::GetInstance(), GetTexture(), GetVS(), GetPS(), GetMaterial());
+				->Render(renderer, transform, Editor::EditorCamera::GetInstance(), GetTexture(), GetVS(), GetPS(), GetMaterial());
 		}
 	}
 
@@ -144,9 +141,9 @@ namespace D3D11
 	{
 		ImGui::Text("Play List");
 		FTSpineAnimation* anim = nullptr;
-		FTEditorUtils::DisplayResSelection<FTSpineAnimation>(
+		Editor::DisplayResSelection<FTSpineAnimation>(
 			"Load Animation",
-			ResourceManager::GetInstance()->GetSpineAnimations(),
+			&ResourceManager::GetInstance()->GetResMap<FTSpineAnimation>(),
 			anim);
 
 		if (anim)

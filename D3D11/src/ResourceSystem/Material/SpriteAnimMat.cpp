@@ -12,6 +12,7 @@
 #ifdef FOXTROT_EDITOR
 	#include "DirectoryHelper.h"
 	#include "CommandHistory.h"
+	#include "EditorHelper.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -39,7 +40,7 @@ namespace D3D11
 	}
 
 	SpriteAnimMat::SpriteAnimMat(Core::FTResourceDef& resDef, D3D11Renderer* renderer)
-		: FTMaterial(resDef, renderer)
+		: FTMaterial(resDef)
 		, mData(DBG_NEW SpriteAnimMatData)
 	{
 		CreatePixelConstBuffer(renderer->GetDevice());
@@ -63,8 +64,8 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 	void SpriteAnimMat::UpdateUI()
 	{
-		CommandHistory::GetInstance()->UpdateVector4Value("Color", mData->Color);
-		CommandHistory::GetInstance()->UpdateBoolValue("Use Texture", mData->UseTexture);
+		Editor::UPDATE_VEC4("Color", mData->Color);
+		Editor::UPDATE_BOOL("Use Texture", mData->UseTexture);
 	}
 #endif
 } // namespace D3D11

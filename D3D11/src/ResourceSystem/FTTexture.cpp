@@ -25,7 +25,8 @@
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorLayer.h"
-	#include <imgui.h>
+	#define IMGUI_DEFINE_MATH_OPERATORS
+	#include <imgui/imgui.h>
 #endif
 
 namespace D3D11
@@ -63,7 +64,7 @@ namespace D3D11
 	}
 
 	FTTexture::FTTexture(FTResourceDef& resDef, D3D11::D3D11Renderer* renderer)
-		: D3D11Resource()
+		: D3D11Resource(resDef)
 		, mWidth(0)
 		, mHeight(0)
 	{
@@ -129,7 +130,7 @@ namespace D3D11
 	void FTTexture::UpdateUI()
 	{
 		// Display texture name.
-		ImGui::Text(GetFileName().C_Str());
+		ImGui::Text(GetFileName()->C_Str());
 
 		// Display texture preview.
 		ID3D11ShaderResourceView* viewportTexture = this->mSRV.Get();
@@ -138,10 +139,10 @@ namespace D3D11
 
 		// Diplay texture path.
 		FTDS::String currentPath = "No path has been assigned";
-		if (!GetRelativePath().IsEmpty())
+		if (!GetRelativePath()->IsEmpty())
 		{
 			currentPath.Assign("Current path : \n");
-			currentPath.Append(GetRelativePath().C_Str());
+			currentPath.Append(GetRelativePath()->C_Str());
 		}
 
 		// Update texture size.
@@ -154,9 +155,4 @@ namespace D3D11
 		mHeight = static_cast<UINT>(size[1]);
 	}
 #endif // FOXTROT_EDITOR
-
-	extern "C" __declspec(dllexport) FTResource* CreateResource(FTResourceDef& def, Core::FoxtrotRenderer* rnd)
-	{
-		return new FTTexture(def, rnd);
-	}
 } // namespace D3D11

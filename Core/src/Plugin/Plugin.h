@@ -143,15 +143,6 @@ namespace Core
 				(*iter)->ProcessInput(inputDevice);
 			}
 		}
-		void Render(FoxtrotRenderer* renderer)
-		{
-			for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
-			{
-				if (!(*iter)->GetOwner()->IsActive())
-					continue;
-				(*iter)->Render(renderer);
-			}
-		}
 
 	private:
 		FTDS::String*					mName;
@@ -179,5 +170,5 @@ namespace Core
 		} // namespace Plugin
 	} // namespace ChunkKey
 
-	extern "C" __declspec(dllexport) Plugin* CreatePlugin(FTCore* base);
+	extern "C" __declspec(dllexport) Plugin* CreatePlugin(const char* name);
 } // namespace Core

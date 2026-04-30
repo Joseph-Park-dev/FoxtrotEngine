@@ -36,13 +36,11 @@ namespace Editor
 		SINGLETON(EditorSceneManager)
 	public:
 		// Get the EditorElements with the lowest hierarchyLevel.
-		void GetLowests(std::vector<EditorElement*>& elements);
-
-		EditorScene* GetEditorScene();
+		void				 GetLowests(std::vector<EditorElement*>& elements);
+		virtual EditorScene* GetEditorScene();
 
 		// EditorElements with lower hierarchyLevel comes first.
 		void SortByHierarchyLv(std::vector<EditorElement*>& elements);
-
 
 	private:
 		void PushRowOfChildActors(EditorElement* actor, std::vector<EditorElement*>& dest);

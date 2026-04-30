@@ -28,7 +28,7 @@
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
 	#include "EditorUtils.h"
-	#include "EditorResourceManager.h"
+	#include "EditorHelper.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -159,7 +159,8 @@ namespace D3D11
 	}
 
 	FTTileMap::FTTileMap(FTResourceDef& resDef)
-		: mTileWidthOnScreen(0)
+		: D3D11::D3D11Resource(resDef)
+		, mTileWidthOnScreen(0)
 		, mTileHeightOnScreen(0)
 		, mMaxCountOnMapX(0)
 		, mMaxCountOnMapY(0)
@@ -210,7 +211,6 @@ namespace D3D11
 	{
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTileMap::FT_TILEMAP);
 
-
 		FileIOHelper::SaveString(ofs, ChunkKey::FTTileMap::CSV_KEY, CORE_RES_NAME(FTCSV, mCSV));
 		FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTTileMap::SCREEN_WIDTH, mTileWidthOnScreen);
 		FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTTileMap::SCREEN_HEIGHT, mTileHeightOnScreen);
@@ -228,7 +228,7 @@ namespace D3D11
 		FileIOHelper::LoadUnsignedInt(ifs, mTileWidthOnScreen);
 		FTDS::String csvKey;
 		FileIOHelper::LoadBasicString(ifs, csvKey);
-		mCSV = GET_RES(FTCSV, csvKey);
+		mCSV = Core::ResourceManager::GetInstance()->GetResource<FTCSV>(csvKey);
 		// Loading filename
 		FileIOHelper::LoadBasicString(ifs, csvKey);
 	}
@@ -238,9 +238,9 @@ namespace D3D11
 	{
 		ImVec2 previewSize = ImVec2(100, 100);
 
-		FTEditorUtils::DisplayResSelection(
+		Editor::DisplayResSelection(
 			"Select CSV",
-			EditorResourceManager::GetInstance()->GetCSVs(),
+			&Core::ResourceManager::GetInstance()->GetResMap<FTCSV>(),
 			mCSV);
 
 		int tileWidthOnScreen  = static_cast<int>(mTileWidthOnScreen);
@@ -248,10 +248,10 @@ namespace D3D11
 		int maxCountOnMapX	   = static_cast<int>(mMaxCountOnMapX);
 		int maxCountOnMapY	   = static_cast<int>(mMaxCountOnMapY);
 
-		CommandHistory::GetInstance()->UpdateIntValue("Tile width on screen", tileWidthOnScreen);
-		CommandHistory::GetInstance()->UpdateIntValue("Tile height on screen", tileHeightOnScreen);
-		CommandHistory::GetInstance()->UpdateIntValue("Max count on Map X", maxCountOnMapX);
-		CommandHistory::GetInstance()->UpdateIntValue("Max count on Map Y", maxCountOnMapY);
+		Editor::UPDATE_INT("Tile width on screen", tileWidthOnScreen);
+		Editor::UPDATE_INT("Tile height on screen", tileHeightOnScreen);
+		Editor::UPDATE_INT("Max count on Map X", maxCountOnMapX);
+		Editor::UPDATE_INT("Max count on Map Y", maxCountOnMapY);
 
 		mTileWidthOnScreen	= static_cast<UINT>(tileWidthOnScreen);
 		mTileHeightOnScreen = static_cast<UINT>(tileHeightOnScreen);

@@ -1,6 +1,7 @@
 #pragma once
 #include "Renderer/D3D11Renderer.h"
 
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui/imgui.h>
 
 namespace Editor

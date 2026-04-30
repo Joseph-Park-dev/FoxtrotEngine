@@ -58,11 +58,11 @@ namespace D3D11
 		virtual void LoadProperties(std::ifstream& ifs) override {};
 
 	public:
-		/// @brief Set scale value to be multiplied with the scale (3D transformation).
-		void SetSizeScale(const Math::FTVector3 scale);
-
 		/// @brief Returns the initial front horizontal direction.
 		const int GetFrontDir() const;
+
+		/// @brief Set scale value to be multiplied with the scale (3D transformation).
+		void SetSizeScale(const Math::FTVector3 scale);
 
 		/// @brief Set as the model is initially facing the right side of the screen?
 		/// @param val If this is true, it means yes.
@@ -70,6 +70,7 @@ namespace D3D11
 
 		/// @brief Returns meshes ready to be rendered.
 		Core::FTDS::DynamicArray<Mesh*>* Meshes();
+		Math::FTVector3&				 SizeScale();
 
 	public:
 		/// @brief Relative path is used for importing 3D files.

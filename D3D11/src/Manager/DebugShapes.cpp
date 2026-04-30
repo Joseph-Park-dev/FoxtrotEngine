@@ -40,10 +40,6 @@ namespace D3D11
 	{
 		if (0 < mShapes->GetSize())
 			mShapes->Clear();
-
-#ifdef FOXTROT_EDITOR
-		mCamRect = nullptr;
-#endif // FOXTROT_EDITOR
 	}
 
 	void DebugShapes::Initialize(D3D11Renderer* renderer)
@@ -60,10 +56,6 @@ namespace D3D11
 
 		for (auto iter = mShapes->Begin(); iter != mShapes->End(); ++iter)
 			(*iter)->Render(renderer);
-	}
-
-	void DebugShapes::RegisterMemberFuncs()
-	{
 	}
 
 	void DebugShapes::AddShape(FTShape* shape)

@@ -31,6 +31,8 @@
 	#include "EditorScene.h"
 	#include "DirectoryHelper.h"
 	#include "EditorElement.h"
+
+	#include "DLLData.h"
 #endif // FOXTROT_EDITOR
 
 namespace Core
@@ -124,7 +126,7 @@ namespace Core
 		{
 			if (mOrigin)
 			{
-				mDummyForUI = DBG_NEW Editor::EditorElement(mOrigin, ChunkKey::ID::INVALID);
+				mDummyForUI = mCreateEditorElemFunc(mOrigin, ChunkKey::ID::INVALID);
 				ImGui::OpenPopup("EditPremade");
 			}
 		}
@@ -138,7 +140,7 @@ namespace Core
 				mDummyForUI->UpdateUI(true);
 				if (ImGui::Button("Save"))
 				{
-					FTResourceDef resDef { *GetFileName(), *GetRelativePath() };
+					FTResourceDef resDef{ *GetFileName(), *GetRelativePath() };
 					Save(resDef, mDummyForUI);
 				}
 			}
@@ -167,6 +169,9 @@ namespace Core
 		}
 		else
 			printf("ERROR: FTPremade::Create -> Failed to open file %s\n", resDef.Path);
+
+		HMODULE mod = GetModuleHandleA(DLLPaths::EDITOR);
+		mCreateEditorElemFunc = reinterpret_cast<Editor::CREATE_EDITOR_ELEM>(GetProcAddress(mod, Editor::CREATE_EDITOR_ELEMENT_FROM_ACTOR));
 	}
 #endif
 } // namespace Core

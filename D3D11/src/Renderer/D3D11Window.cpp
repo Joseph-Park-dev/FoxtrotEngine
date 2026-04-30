@@ -187,10 +187,6 @@ namespace D3D11
 	{
 	}
 
-	void D3D11Window::RegisterMemberFuncs()
-	{
-	}
-
 	bool D3D11Window::CreateRTV(Microsoft::WRL::ComPtr<ID3D11Device>& device)
 	{
 		HRESULT hr = D3D11Utils::CreateRenderTargetView(mRTV, device, mSwapChain);

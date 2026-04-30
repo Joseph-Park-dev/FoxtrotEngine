@@ -23,4 +23,16 @@ namespace Core
 
 #define RES_NAME(type, res) ResourceManager::GetInstance()->GetResName(type::Type, res)
 #define GET_RES(type, key) ResourceManager::GetInstance()->GetResource<type>(type::Type, key)
+
+		// Exported factory — C linkage, stable ABI
+	extern "C" CORE_API ResourceManager* GetCoreResourceManager();
 } // namespace Core
+
+#ifdef FOXTROT_EDITOR
+namespace Editor
+{
+	using GET_CORE_RES_MANAGER = Core::ResourceManager* (*)();
+	extern CORE_API GET_CORE_RES_MANAGER gGetCoreResManagerFunc;
+	#define CORE_RES_MANAGER() gGetCoreResManagerFunc();
+}
+#endif // FOXTROT_EDITOR

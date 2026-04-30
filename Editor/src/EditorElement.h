@@ -41,24 +41,24 @@ namespace Editor
 		const size_t GetHierarchyLevel() const;
 		const bool	 GetIsDisplayed() const;
 
-		void SetIsFocused(bool isFocused);
-		void SetHierarchyLevel(size_t lv);
-		void SetIsDisplayed(bool isDisplayed);
+		virtual void SetIsFocused(bool isFocused);
+		void		 SetHierarchyLevel(size_t lv);
+		void		 SetIsDisplayed(bool isDisplayed);
 
 	public:
 		void Initialize();
 		//// Updates editor specific features -> this will be omitted from the produced game.
-		//void EditorUpdate(float deltaTime);
+		// void EditorUpdate(float deltaTime);
 
 		//// Renders editor specific features -> this will be omitted from the produced game.
-		//void EditorRender(D3D11::D3D11Renderer* renderer);
+		// void EditorRender(D3D11::D3D11Renderer* renderer);
 
 	public:
 		/// <summary>
 		/// Updates UIs displayed on Inspector menu.
 		/// </summary>
 		/// <param name="isPremade : ">Is this object premade?</param>
-		void UpdateUI(bool isPremade);
+		virtual void UpdateUI(bool isPremade);
 
 	public:
 		/// <summary>
@@ -108,4 +108,10 @@ namespace Editor
 		void UpdateMakePremade();
 		void SwitchTransformToEditor();
 	};
+
+#include "Plugin/EditorExports.h"
+
+	constexpr const char* CREATE_EDITOR_ELEMENT_FROM_ACTOR = "CreateEditorElementFromActor";
+	// extern "C" EDITOR_API EditorElement* CreateEditorElement(int id);
+	extern "C" EDITOR_API EditorElement* CreateEditorElementFromActor(Core::Actor* actor, int id);
 } // namespace Editor

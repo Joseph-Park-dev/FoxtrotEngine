@@ -27,10 +27,9 @@
 #include "Compare/StringEqual.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "FTCoreEditor.h"
+	#define IMGUI_DEFINE_MATH_OPERATORS
 	#include "EditorUtils.h"
 	#include "EditorCamera.h"
-	#include "EditorResourceManager.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -58,7 +57,7 @@ namespace D3D11
 	{
 	}
 
-	void MeshRenderer::Render(Core::FoxtrotRenderer* renderer)
+	void MeshRenderer::Render(D3D11::D3D11Renderer* renderer)
 	{
 		if (mMeshGroup)
 		{
@@ -142,7 +141,7 @@ namespace D3D11
 
 		// Load material.
 		FileIOHelper::LoadBasicString(ifs, keyCache);
-		mMaterial = D3D11::GET_RES(FTMaterial, keyCache);
+		mMaterial = D3D11::ResourceManager::GetInstance()->GetResource<FTMaterial>(keyCache);
 
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMeshGroup::SHADER_KEY);
 
@@ -152,18 +151,16 @@ namespace D3D11
 
 		// Load MeshGroup.
 		FileIOHelper::LoadBasicString(ifs, keyCache);
-		mMeshGroup = D3D11::GET_RES(FTMeshGroup, keyCache);
+		mMeshGroup = D3D11::ResourceManager::GetInstance()->GetResource<FTMeshGroup>(keyCache);
 
 		Component::LoadProperties(ifs);
 	}
 
 #ifdef FOXTROT_EDITOR
-	void MeshRenderer::EditorRender(FoxtrotRenderer* renderer)
+	void MeshRenderer::EditorRender(D3D11::D3D11Renderer* renderer)
 	{
 		if (mMeshGroup)
 		{
-			renderer->SwitchFillMode();
-
 			Transform* transform = GetOwner()->GetTransform();
 			// mMeshGroup->Render(renderer, transform, EditorCamera::GetInstance(), mTexture, mVS, mPS, mMaterial);
 		}
@@ -172,8 +169,6 @@ namespace D3D11
 	void MeshRenderer::EditorUIUpdate()
 	{
 		Component::EditorUIUpdate();
-
-		CHECK_RENDERER(GetRenderer());
 
 		if (!mMeshGroup)
 			return;
@@ -189,9 +184,9 @@ namespace D3D11
 
 		if (mMaterial)
 			mMaterial->UpdateUI();
-		FTEditorUtils::DisplayResSelection(
+		Editor::DisplayResSelection(
 			"Select Material",
-			ResourceManager::GetInstance()->GetMaterials(),
+			&ResourceManager::GetInstance()->GetResMap<FTMaterial>(),
 			mMaterial);
 	}
 #endif // FOXTROT_EDITOR

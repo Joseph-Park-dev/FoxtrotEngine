@@ -3,6 +3,11 @@
 
 #include <iosfwd>
 
+namespace Core
+{
+	struct FTResourceDef;
+}
+
 namespace D3D11
 {
 	enum ResType
@@ -39,6 +44,7 @@ namespace D3D11
 		virtual void LoadProperties(std::ifstream& ifs) override;
 
 	public:
+		D3D11Resource(Core::FTResourceDef& resDef);
 		virtual ~D3D11Resource() = default;
 	};
 } // namespace D3D11

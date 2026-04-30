@@ -64,7 +64,7 @@ namespace Core
 		virtual void ProcessInput(FTInputDevice* inputDevice) = 0;
 		virtual void Update(float deltaTime)				  = 0;
 		virtual void LateUpdate(float deltaTime)			  = 0;
-		virtual void Render(FoxtrotRenderer* renderer)		  = 0;
+		//virtual void Render(Core::FoxtrotRenderer* renderer)  = 0;
 		virtual void CloneTo(Actor* actor)					  = 0;
 
 	public:

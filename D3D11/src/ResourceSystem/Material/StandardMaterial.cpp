@@ -10,6 +10,8 @@
 
 #ifdef FOXTROT_EDITOR
 	#include <EditorUtils.h>
+	#include <CommandHistory.h>
+	#include <EditorHelper.h>
 #endif
 
 namespace D3D11
@@ -36,7 +38,7 @@ namespace D3D11
 	}
 
 	StandardMaterial::StandardMaterial(Core::FTResourceDef& resDef, D3D11Renderer* renderer)
-		: FTMaterial(resDef, renderer)
+		: FTMaterial(resDef)
 		, mData(DBG_NEW StandardMatData)
 	{
 		CreatePixelConstBuffer(renderer->GetDevice());
@@ -64,7 +66,7 @@ namespace D3D11
 		Core::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::StandardMat::STANDARD_MAT);
 
 		Core::FTDS::String fileName;
-		bool useTex;
+		bool			   useTex;
 		Core::FileIOHelper::LoadBool(ifs, useTex);
 		Core::FileIOHelper::LoadFloat(ifs, mData->AlphaTrim);
 		Core::FileIOHelper::LoadVector4(ifs, mData->Color);
@@ -79,11 +81,11 @@ namespace D3D11
 		ImGui::SeparatorText("Standard Mat Data");
 
 		bool useTex = mData->UseTexture;
-		CommandHistory::GetInstance()->UpdateBoolValue(ChunkKey::StandardMat::USE_TEXTURE, useTex);
+		::Editor::UPDATE_BOOL(ChunkKey::StandardMat::USE_TEXTURE, useTex);
 		mData->UseTexture = useTex;
 
-		CommandHistory::GetInstance()->UpdateFloatValue(ChunkKey::StandardMat::ALPHA_TRIM, mData->AlphaTrim);
-		CommandHistory::GetInstance()->UpdateVector4Value(ChunkKey::StandardMat::COLOR, mData->Color);
+		::Editor::UPDATE_FLOAT(ChunkKey::StandardMat::ALPHA_TRIM, mData->AlphaTrim);
+		::Editor::UPDATE_VEC4(ChunkKey::StandardMat::COLOR, mData->Color);
 	}
 #endif
 } // namespace D3D11

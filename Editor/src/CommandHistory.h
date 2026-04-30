@@ -39,8 +39,8 @@ namespace Editor
 	using UPDATE_FLOAT_VAL		  = void (*)(const char* label, float& ref);
 	using UPDATE_BOOL_VAL		  = void (*)(const char* label, bool& ref);
 	using UPDATE_VEC2_VAL		  = void (*)(const char* label, Math::FTVector2& ref);
-	using UPDATE_VEC3_VAL		  = void (*)(const char* label, Math::FTVector2& ref);
-	using UPDATE_VEC4_VAL		  = void (*)(const char* label, Math::FTVector2& ref);
+	using UPDATE_VEC3_VAL		  = void (*)(const char* label, Math::FTVector3& ref);
+	using UPDATE_VEC4_VAL		  = void (*)(const char* label, Math::FTVector4& ref);
 	using UPDATE_STR_VAL		  = void (*)(const char* label, Core::FTDS::String& ref);
 
 	class ActorCommand;

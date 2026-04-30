@@ -13,6 +13,11 @@ namespace D3D11
 {
 	using namespace Core;
 
+	FTShader::FTShader(Core::FTResourceDef& resDef)
+		: D3D11::D3D11Resource(resDef)
+	{
+	}
+
 	void FTShader::SetType(ShaderType&& shaderType)
 	{
 		mType = shaderType;
@@ -36,7 +41,7 @@ namespace D3D11
 	void FTShader::SaveMetaData()
 	{
 		FTDS::String metaPath;
-		metaPath.Assign(GetRelativePath());
+		metaPath.Assign(*GetRelativePath());
 		ReplaceSuffix(metaPath, FileTypes::SHADER, FileTypes::SHADER_META);
 
 		if (!std::filesystem::exists(std::filesystem::path(metaPath.C_Str())))

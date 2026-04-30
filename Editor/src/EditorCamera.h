@@ -13,7 +13,14 @@
 #pragma once
 #include "Renderer/Camera.h"
 
-class FTRectangle;
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui/imgui.h>
+
+namespace D3D11
+{
+	class FTRectangle;
+	class D3D11InputDevice;
+} // namespace D3D11
 
 namespace Editor
 {

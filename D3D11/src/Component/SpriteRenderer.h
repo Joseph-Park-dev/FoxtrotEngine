@@ -30,6 +30,7 @@ namespace D3D11
 	class FTGeometryShader;
 	class FTMaterial;
 	class D3D11PSO;
+	class D3D11Renderer;
 	struct Mesh;
 
 	class SpriteRenderer : public D3D11Component
@@ -43,7 +44,7 @@ namespace D3D11
 		virtual void ProcessInput(Core::FTInputDevice* inputDevice) override;
 		virtual void Update(float deltaTime) override;
 		virtual void LateUpdate(float deltaTime) override;
-		virtual void Render(Core::FoxtrotRenderer* renderer) override;
+		virtual void Render(D3D11::D3D11Renderer* renderer) override;
 		virtual void CloneTo(Core::Actor* actor) override;
 
 	public:
@@ -75,7 +76,7 @@ namespace D3D11
 		virtual void EditorUIUpdate() override;
 
 	public:
-		virtual void EditorRender(FoxtrotRenderer* renderer) override;
+		virtual void EditorRender(D3D11::D3D11Renderer* renderer) override;
 
 #endif
 	};

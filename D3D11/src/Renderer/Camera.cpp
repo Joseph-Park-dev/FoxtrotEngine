@@ -27,6 +27,7 @@
 	#include "EditorLayer.h"
 	#include "EditorSceneManager.h"
 	#include "EditorElement.h"
+	#include "EditorScene.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -45,10 +46,6 @@ namespace D3D11
 	void Camera::Update(float deltaTime)
 	{
 		// Zoom();
-	}
-
-	void Camera::RegisterMemberFuncs()
-	{
 	}
 
 	void Camera::Zoom()
@@ -267,8 +264,8 @@ namespace D3D11
 		FileIOHelper::LoadBasicString(ifs, targetName);
 
 #ifdef FOXTROT_EDITOR
-		if (targetActor.NotEqual(::ChunkKey::NullVal::NULL_OBJECT))
-			mTarget = EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(targetActor, nullptr);
+		if (mTarget)
+			mTarget = Editor::EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(targetName, nullptr);
 #else
 		if (targetName.NotEqual(Core::ChunkKey::NullVal::NULL_OBJECT))
 			mTarget = manager->GetCurrentScene()->FindActor(targetName);

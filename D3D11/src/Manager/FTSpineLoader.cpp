@@ -5,10 +5,6 @@
 #include "ResourceSystem/FTTexture.h"
 #include "Manager/ResourceManager.h"
 
-#ifdef FOXTROT_EDITOR
-	#include "EditorResourceManager.h"
-#endif // FOXTROT_EDITOR
-
 spine::SpineExtension* spine::getDefaultExtension()
 {
 	return new spine::DefaultSpineExtension();
@@ -37,7 +33,7 @@ namespace D3D11
 		FTDS::String	  fileName = ExtractFileName(path.buffer());
 		fileName.ExtractFromLast("/");
 
-		texture = D3D11::GET_RES(D3D11::FTTexture, fileName);
+		texture = D3D11::ResourceManager::GetInstance()->GetResource<D3D11::FTTexture>(fileName);
 		if (!texture)
 			return;
 

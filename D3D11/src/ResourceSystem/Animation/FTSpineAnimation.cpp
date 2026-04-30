@@ -18,16 +18,16 @@
 #include "ResourceSystem/FTTexture.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "EditorResourceManager.h"
 	#include <bitset>
+	#define IMGUI_DEFINE_MATH_OPERATORS
+	#include <imgui/imgui.h>
+	#include "EditorHelper.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
 {
 	using namespace Core;
 	using Microsoft::WRL::ComPtr;
-
-	ResType FTSpineAnimation::Type = ResType::SPINE_ANIMATION;
 
 	void FTSpineAnimation::Update(float deltaTime, spine::Physics physics)
 	{
@@ -113,20 +113,7 @@ namespace D3D11
 		, mState(nullptr)
 		, mMeshes(DBG_NEW FTDS::DynamicArray<SpineMesh*>)
 	{
-		if (mJSONPath && mAtlasPath && !mMeshes->IsEmpty())
-			return;
-
-		std::ifstream ifs(resDef.FileName);
-
-		// If the file exists (not being created).
-		if (ifs.good())
-			this->LoadProperties(ifs);
-
-		// The game will attempt to reload the resource after this call.
-		if (!mJSONPath || !mAtlasPath)
-			return;
-
-		InitializeSpinAnim(renderer->GetDevice());
+		Process(renderer);
 	}
 
 	FTSpineAnimation::~FTSpineAnimation()
@@ -159,6 +146,24 @@ namespace D3D11
 		});
 
 		delete mMeshes;
+	}
+
+	void FTSpineAnimation::Process(D3D11::D3D11Renderer* renderer)
+	{
+		if (mJSONPath && mAtlasPath && !mMeshes->IsEmpty())
+			return;
+
+		std::ifstream ifs(GetFileName()->C_Str());
+
+		// If the file exists (not being created).
+		if (ifs.good())
+			this->LoadProperties(ifs);
+
+		// The game will attempt to reload the resource after this call.
+		if (!mJSONPath || !mAtlasPath)
+			return;
+
+		InitializeSpinAnim(renderer->GetDevice());
 	}
 
 	void FTSpineAnimation::InitializeSpinAnim(ComPtr<ID3D11Device>& device)
@@ -232,9 +237,9 @@ namespace D3D11
 	}
 
 	void FTSpineAnimation::InitializeMeshes(
-		ComPtr<ID3D11Device>&			 device,
-		int								 order,
-		void*							 attachment,
+		ComPtr<ID3D11Device>&		 device,
+		int							 order,
+		void*						 attachment,
 		D3D11::SPINE_ATTACHMENT_TYPE attachmentType)
 	{
 		size_t vertexCount = 0;
@@ -444,12 +449,15 @@ namespace D3D11
 
 #ifdef FOXTROT_EDITOR
 
-	FTSpineAnimation::FTSpineAnimation(FTResourceDef& resDef, FoxtrotRenderer* renderer, FTJSON* json, FTText* atlas)
+	FTSpineAnimation::FTSpineAnimation(
+		Core::FTResourceDef& resDef,
+		D3D11Renderer*		 renderer,
+		const FTDS::String*	 jsonPath,
+		const FTDS::String*	 atlasPath)
 		: FTSpineAnimation(resDef, renderer)
 	{
-		mJSON	  = json;
-		mAtlasTxt = atlas;
-
+		mJSONPath->Assign(*jsonPath);
+		mAtlasPath->Assign(*atlasPath);
 		Process(renderer);
 	}
 
@@ -467,7 +475,7 @@ namespace D3D11
 
 		for (size_t i = 0; i < mSkins.size(); ++i)
 		{
-			CommandHistory::GetInstance()->UpdateBoolValue(mSkins[i]->getName().buffer(), val[i]);
+			Editor::UPDATE_BOOL(mSkins[i]->getName().buffer(), val[i]);
 			if (val[i])
 				mSkinCombination |= (1 << i);
 			else
@@ -482,22 +490,36 @@ namespace D3D11
 
 	void FTSpineAnimation::AddRefCount()
 	{
-		if (mJSON)
-			mJSON->AddRefCount();
+		FTDS::String fileN;
+		Core::ExtractFileName(mJSONPath, fileN);
+		FTJSON* json = D3D11::ResourceManager::GetInstance()->GetResource<FTJSON>(fileN);
+		if (json)
+			json->AddRefCount();
 
-		if (mAtlasTxt)
-			mAtlasTxt->AddRefCount();
+		fileN.Clear();
+
+		Core::ExtractFileName(mAtlasPath, fileN);
+		FTText* atlas = D3D11::ResourceManager::GetInstance()->GetResource<FTText>(fileN);
+		if (atlas)
+			atlas->AddRefCount();
 
 		FTMeshGroup::AddRefCount();
 	}
 
 	void FTSpineAnimation::SubtractRefCount()
 	{
-		if (mJSON)
-			mJSON->SubtractRefCount();
+		FTDS::String fileN;
+		Core::ExtractFileName(mJSONPath, fileN);
+		FTJSON* json = D3D11::ResourceManager::GetInstance()->GetResource<FTJSON>(fileN);
+		if (json)
+			json->SubtractRefCount();
 
-		if (mAtlasTxt)
-			mAtlasTxt->SubtractRefCount();
+		fileN.Clear();
+
+		Core::ExtractFileName(mAtlasPath, fileN);
+		FTText* atlas = D3D11::ResourceManager::GetInstance()->GetResource<FTText>(fileN);
+		if (atlas)
+			atlas->SubtractRefCount();
 
 		FTMeshGroup::SubtractRefCount();
 	}

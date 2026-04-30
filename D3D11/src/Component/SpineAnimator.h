@@ -5,10 +5,10 @@
 
 #include "FTDS/Static/FTString.h"
 
-class FTSpineAnimation;
-
 namespace D3D11
 {
+	class FTSpineAnimation;
+
 	class SpineAnimator :
 		public MeshRenderer
 	{
@@ -23,7 +23,7 @@ namespace D3D11
 		virtual void ProcessInput(Core::FTInputDevice* inputDevice) override;
 		virtual void Update(float deltaTime) override;
 		virtual void LateUpdate(float deltaTime) override;
-		virtual void Render(Core::FoxtrotRenderer* renderer) override;
+		virtual void Render(D3D11::D3D11Renderer* renderer) override;
 
 	public:
 		SpineAnimator(Core::Plugin* plugin, Core::Actor* owner, int updateOrder = Core::DefaultVal::UPDATE_ORDER);
@@ -40,7 +40,7 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 	public:
 		virtual void EditorUpdate(float deltaTime) override;
-		virtual void EditorRender(FoxtrotRenderer* renderer) override;
+		virtual void EditorRender(D3D11::D3D11Renderer* renderer) override;
 		virtual void EditorUIUpdate() override;
 #endif // FOXTROT_EDITOR
 	};

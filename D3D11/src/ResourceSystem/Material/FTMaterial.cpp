@@ -24,7 +24,8 @@ namespace D3D11
 		return mPCBuf;
 	}
 
-	FTMaterial::FTMaterial(Core::FTResourceDef& resDef, D3D11Renderer* renderer)
+	FTMaterial::FTMaterial(Core::FTResourceDef& resDef)
+		: D3D11::D3D11Resource(resDef)
 	{
 		if (mPCBuf)
 			return;

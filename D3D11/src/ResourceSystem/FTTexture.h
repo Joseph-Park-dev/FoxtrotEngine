@@ -12,14 +12,9 @@
 #include <wrl.h>
 #include <d3d11.h>
 
-namespace Core
-{
-	class FoxtrotRenderer;
-	class FTCore;
-} // namespace Core
-
 namespace D3D11
 {
+	class D3D11Renderer;
 	/// @brief A class that holds the image data.
 	/// This can be used as a single sprite, a texture pack for a tilemap, and
 	/// a spritesheet for an animation, etc.

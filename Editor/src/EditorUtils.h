@@ -200,9 +200,9 @@ namespace Editor
 
 	template <typename FTRESOURCE>
 	inline void DisplayResSelection(
-		const char*						  label,
-		Core::FTDS::HashMap<FTRESOURCE*>* resMap,
-		FTRESOURCE*&					  selectedRes)
+		const char*								label,
+		Core::FTDS::HashMap<Core::FTResource*>* resMap,
+		FTRESOURCE*&							selectedRes)
 	{
 		if (ImGui::Button(label))
 			ImGui::OpenPopup(label);
@@ -211,7 +211,7 @@ namespace Editor
 		{
 			if (ImGui::TreeNode("Selection State: Single Selection"))
 			{
-				resMap->IterateAllNodes([&](Core::FTDS::Record<FTRESOURCE*>& node) {
+				resMap->IterateAllNodes([&](Core::FTDS::Record<Core::FTResource*>* node) {
 					if (ImGui::Selectable(node->Key().C_Str()))
 					{
 						if (node->Key().NotEqual(Core::ChunkKey::NullVal::NULL_OBJECT))
@@ -219,7 +219,7 @@ namespace Editor
 							if (selectedRes)
 								selectedRes->SubtractRefCount();
 
-							selectedRes = node->Value();
+							selectedRes = reinterpret_cast<FTRESOURCE*>(node->Value());
 							selectedRes->AddRefCount();
 						}
 					}
@@ -235,9 +235,9 @@ namespace Editor
 
 	template <typename FTRESOURCE, typename FILTER>
 	inline void DisplayResSelection(
-		const char*						  label,
-		Core::FTDS::HashMap<FTRESOURCE*>* resMap,
-		FTRESOURCE*&					  selectedRes)
+		const char*								label,
+		Core::FTDS::HashMap<Core::FTResource*>* resMap,
+		FTRESOURCE*&							selectedRes)
 	{
 		if (ImGui::Button(label))
 			ImGui::OpenPopup(label);

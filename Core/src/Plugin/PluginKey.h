@@ -1,9 +1,13 @@
 #pragma once
 namespace Core
 {
-	constexpr const wchar_t* DLL = L"Core.dll";
 	namespace PluginKey
 	{
-		constexpr const char* GET_RES_MANAGER = "GetResourceManager";
+		constexpr const char* CREATE_PLUGIN = "CreatePlugin";
+		namespace FTCore
+		{
+			constexpr const char* DESTROY = "DestroyCore";
+		} // namespace FTCore
+
 	} // namespace PluginKey
 } // namespace Core

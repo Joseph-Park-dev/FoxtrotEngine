@@ -26,6 +26,7 @@ namespace Core
 	class Actor;
 	class FTInputDevice;
 	class FoxtrotRenderer;
+	class Component;
 
 	using COMP_CONSTRUCTOR = Component* (*)(Actor * actor);
 
@@ -74,6 +75,8 @@ namespace Core
 
 		virtual void ProcessInput() = 0;
 		virtual void Render()		= 0;
+		virtual void ProcessEvent() = 0;
+		virtual void ShutDown()		= 0;
 
 		virtual void Update(float deltaTime)
 		{

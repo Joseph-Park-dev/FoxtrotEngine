@@ -54,7 +54,7 @@ namespace Core
 	{
 		FTEvent addedEvent	= {};
 		addedEvent.incident = EVENT_TYPE::CREATE_ACTOR;
-		FTPremade* premade	= Core::GET_RES(FTPremade, premadeName);
+		FTPremade* premade	= Core::ResourceManager::GetInstance()->GetResource<FTPremade>(premadeName);
 		Actor*	   origin	= premade->GetOrigin();
 		if (origin)
 		{

@@ -2,10 +2,11 @@
 #include "SingletonMacro.h"
 #include "FTDS/Static/HashMap.h"
 #include "Plugin/PluginKey.h"
+#include "Plugin/IPlugin.h"
 
 namespace Core
 {
-	class Plugin;
+	class IPlugin;
 }
 
 class Engine
@@ -35,13 +36,12 @@ public:
 	void ShutDown();
 
 public:
-	virtual Core::Plugin* RegisterPlugin(HMODULE mod, const char* pluginName)
+	virtual Core::IPlugin* RegisterPlugin(HMODULE mod, const char* pluginName)
 	{
 		FARPROC proc			  = GetProcAddress(mod, Core::PluginKey::CREATE_PLUGIN);
-		using PLUGIN_CONSTRUCT	  = Core::Plugin* (*)(const char*);
+		using PLUGIN_CONSTRUCT	  = Core::IPlugin* (*)();
 		PLUGIN_CONSTRUCT plgConst = reinterpret_cast<PLUGIN_CONSTRUCT>(proc);
-		Core::Plugin*	 plugin	  = plgConst(pluginName);
-		plugin->SetModule(mod);
+		Core::IPlugin*	 plugin	  = plgConst();
 		plugin->Initialize();
 		plugin->Setup();
 		mPlugins->Insert(pluginName, plugin);
@@ -49,19 +49,19 @@ public:
 		return plugin;
 	}
 
-	virtual Core::Plugin* GetPlugin(const char* pluginName)
+	virtual Core::IPlugin* GetPlugin(const char* pluginName)
 	{
 		return mPlugins->At(pluginName)->Value();
 	}
 
 public:
 	Engine()
-		: mPlugins(DBG_NEW Core::FTDS::HashMap<Core::Plugin*>())
+		: mPlugins(DBG_NEW Core::FTDS::HashMap<Core::IPlugin*>())
 	{
 	}
 
 private:
-	Core::FTDS::HashMap<Core::Plugin*>* mPlugins;
+	Core::FTDS::HashMap<Core::IPlugin*>* mPlugins;
 
 private:
 	// Gameloop functions.

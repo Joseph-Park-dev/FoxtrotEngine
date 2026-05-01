@@ -117,9 +117,9 @@ namespace Core
 
 		if (ImGui::Button("Add to Chunk"))
 		{
-			Editor::EditorChunkLoader::GetInstance()->AddMaxActorID();
-			int id = Editor::EditorChunkLoader::GetInstance()->GetMaxActorID();
-			Editor::EditorSceneManager::GetInstance()->GetEditorScene()->AddEditorElement(mOrigin, id);
+			mGetEditorChunkLoaderFunc()->AddMaxActorID();
+			int id = mGetEditorChunkLoaderFunc()->GetMaxActorID();
+			mGetEditorSceneFunc()->AddEditorElement(mOrigin, id);
 		}
 
 		if (Editor::ButtonCenteredOnLine("Edit Premade"))
@@ -171,7 +171,11 @@ namespace Core
 			printf("ERROR: FTPremade::Create -> Failed to open file %s\n", resDef.Path);
 
 		HMODULE mod = GetModuleHandleA(DLLPaths::EDITOR);
-		mCreateEditorElemFunc = reinterpret_cast<Editor::CREATE_EDITOR_ELEM>(GetProcAddress(mod, Editor::CREATE_EDITOR_ELEMENT_FROM_ACTOR));
+		if (!mod)
+			Debug::LogError(__LINE__, __FILE__, "Module is Null");
+		mCreateEditorElemFunc	  = reinterpret_cast<Editor::CREATE_EDITOR_ELEM>(GetProcAddress(mod, Editor::CREATE_EDITOR_ELEMENT_FROM_ACTOR));
+		mGetEditorSceneFunc		  = reinterpret_cast<Editor::GET_EDITOR_SCENE>(GetProcAddress(mod, Editor::GET_EDITOR_SCENE_FUNC));
+		mGetEditorChunkLoaderFunc = reinterpret_cast<Editor::GET_EDITOR_CHUNK_LOADER>(GetProcAddress(mod, Editor::GET_EDITOR_CHUNK_LOADER_FUNC));
 	}
 #endif
 } // namespace Core

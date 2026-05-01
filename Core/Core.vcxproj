@@ -190,7 +190,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.\src;.\src\FTDS;..\Math\src;.\include\json\include;..\Editor\src;..\Editor\include;..\Editor\include\imgui;..\Editor\include\imgui\backends;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\src;.\src\FTDS;..\Math\src;.\include\json\include;..\Editor\src;..\Editor\include;..\Editor\include\imgui;..\Editor\include\imgui\backends;..\Main\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -335,7 +335,6 @@
     <ClInclude Include="src\Plugin\CoreExports.h" />
     <ClInclude Include="src\Entity\ObjectLayout.h" />
     <ClInclude Include="src\Plugin\Plugin.h" />
-    <ClInclude Include="src\Plugin\PluginKey.h" />
     <ClInclude Include="src\Renderer\FoxtrotRenderer.h" />
     <ClInclude Include="src\InputSystem\FTInputDevice.h" />
     <ClInclude Include="src\Renderer\FTRectArea.h" />

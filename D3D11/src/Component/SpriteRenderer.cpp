@@ -110,8 +110,8 @@ namespace D3D11
 	void SpriteRenderer::SaveProperties(std::ofstream& ofs)
 	{
 		Component::SaveProperties(ofs);
-		FileIOHelper::SaveString(ofs, ChunkKey::SpriteRenderer::SPRITE, D3D11::RES_NAME(FTSprite, mSprite));
-		FileIOHelper::SaveString(ofs, ChunkKey::SpriteRenderer::MATERIAL, D3D11::RES_NAME(FTMaterial, mMaterial));
+		FileIOHelper::SaveString(ofs, ChunkKey::SpriteRenderer::SPRITE, mSprite->GetFileName());
+		FileIOHelper::SaveString(ofs, ChunkKey::SpriteRenderer::MATERIAL, mMaterial->GetFileName());
 	}
 
 	void SpriteRenderer::LoadProperties(std::ifstream& ifs)

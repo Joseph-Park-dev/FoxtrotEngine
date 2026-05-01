@@ -92,8 +92,7 @@ namespace D3D11
 		if (GetMeshGroup())
 		{
 			FTSpineAnimation*	anim = static_cast<FTSpineAnimation*>(GetMeshGroup());
-			const FTDS::String& fn	 = D3D11::RES_NAME(FTSpineAnimation, anim);
-			FileIOHelper::SaveString(ofs, ChunkKey::SpineAnimator::LOADED_ANIM, fn);
+			FileIOHelper::SaveString(ofs, ChunkKey::SpineAnimator::LOADED_ANIM, anim->GetFileName());
 			FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTSpineAnimation::SKIN_COMBINATION, anim->GetSkinCombination());
 		}
 		else

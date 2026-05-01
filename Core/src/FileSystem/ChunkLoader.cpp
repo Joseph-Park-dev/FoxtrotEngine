@@ -26,6 +26,7 @@
 #include "Static/HashMap.h"
 #include "Plugin/Plugin.h"
 #include "ResourceSystem/FTPremade.h"
+#include "Engine.h"
 
 namespace Core
 {
@@ -194,8 +195,8 @@ namespace Core
 			ExtractFileName(dllPath, pluginName);
 
 			HMODULE mod = LoadLibraryA(dllPath.C_Str());
-			FTCore::GetInstance()->RegisterPlugin(mod, pluginName);
-			Plugin* plugin = FTCore::GetInstance()->GetPlugin(pluginName);
+			Engine::GetInstance()->RegisterPlugin(mod, pluginName.C_Str());
+			Plugin* plugin = Engine::GetInstance()->GetPlugin(pluginName.C_Str());
 
 			size_t count = FileIOHelper::BeginDataPackLoad(ifs, pluginName).first;
 			FileIOHelper::LoadBasicString(ifs, dllPath);

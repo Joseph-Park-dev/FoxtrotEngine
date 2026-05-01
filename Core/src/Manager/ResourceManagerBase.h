@@ -113,17 +113,17 @@ namespace Core
 			return static_cast<TYPE*>(rec->Value());
 		}
 
-		template <typename TYPE>
-		const Core::FTDS::String& GetResName(size_t typeIdx, TYPE* res)
-		{
-			Core::FTDS::HashMap<Core::FTResource*>& resMap = mResources->At(typeIdx);
-			for (auto iter = resMap.Begin(); iter != resMap.End(); ++iter)
-			{
-				if (static_cast<TYPE*>((*iter)->Value()) == res)
-					return (*iter)->Key();
-			}
-			return Core::ChunkKey::NullVal::NULL_OBJECT;
-		}
+		//template <typename TYPE>
+		//const Core::FTDS::String& GetResName(size_t typeIdx, TYPE* res)
+		//{
+		//	Core::FTDS::HashMap<Core::FTResource*>& resMap = mResources->At(typeIdx);
+		//	for (auto iter = resMap.Begin(); iter != resMap.End(); ++iter)
+		//	{
+		//		if (static_cast<TYPE*>((*iter)->Value()) == res)
+		//			return (*iter)->Key();
+		//	}
+		//	return Core::ChunkKey::NullVal::NULL_OBJECT;
+		//}
 
 	public:
 		// ---------------------------

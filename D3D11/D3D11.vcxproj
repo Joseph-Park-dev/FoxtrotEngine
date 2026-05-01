@@ -109,7 +109,7 @@
     <TargetName>D3D11Renderer</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
-    <TargetName>D3D11Renderer</TargetName>
+    <TargetName>D3D11Renderer_Editor</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetName>D3D11Renderer</TargetName>
@@ -189,7 +189,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.\src;..\Core\include\json\include;..\Core\include\json\include\nlohmann;..\Core\src;..\Core\src\FTDS;..\Math\src;..\D3D11\include;..\D3D11\include\spine;..\D3D11\include\DirectXTK\Inc;..\Editor\include;..\Editor\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\src;..\Core\include\json\include;..\Core\include\json\include\nlohmann;..\Core\src;..\Core\src\FTDS;..\Math\src;..\D3D11\include;..\D3D11\include\spine;..\D3D11\include\DirectXTK\Inc;..\Editor\include;..\Editor\include\imgui;..\Editor\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -225,6 +225,19 @@
   <ItemGroup>
     <ClInclude Include="framework.h" />
     <ClInclude Include="include\DirectXTex.h" />
+    <ClInclude Include="include\imgui\backends\imgui_impl_dx11.h" />
+    <ClInclude Include="include\imgui\backends\imgui_impl_win32.h" />
+    <ClInclude Include="include\imgui\imconfig.h" />
+    <ClInclude Include="include\imgui\imgui.h" />
+    <ClInclude Include="include\imgui\ImGuiFileDialog\dirent\dirent.h" />
+    <ClInclude Include="include\imgui\ImGuiFileDialog\ImGuiFileDialog.h" />
+    <ClInclude Include="include\imgui\ImGuiFileDialog\ImGuiFileDialogConfig.h" />
+    <ClInclude Include="include\imgui\ImGuiFileDialog\stb\stb_image.h" />
+    <ClInclude Include="include\imgui\ImGuiFileDialog\stb\stb_image_resize2.h" />
+    <ClInclude Include="include\imgui\imgui_internal.h" />
+    <ClInclude Include="include\imgui\imstb_rectpack.h" />
+    <ClInclude Include="include\imgui\imstb_textedit.h" />
+    <ClInclude Include="include\imgui\imstb_truetype.h" />
     <ClInclude Include="include\spine\Animation.h" />
     <ClInclude Include="include\spine\AnimationState.h" />
     <ClInclude Include="include\spine\AnimationStateData.h" />
@@ -397,6 +410,14 @@
     <ClCompile Include="dllmain.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="include\imgui\backends\imgui_impl_dx11.cpp" />
+    <ClCompile Include="include\imgui\backends\imgui_impl_win32.cpp" />
+    <ClCompile Include="include\imgui\imgui.cpp" />
+    <ClCompile Include="include\imgui\ImGuiFileDialog\ImGuiFileDialog.cpp" />
+    <ClCompile Include="include\imgui\imgui_demo.cpp" />
+    <ClCompile Include="include\imgui\imgui_draw.cpp" />
+    <ClCompile Include="include\imgui\imgui_tables.cpp" />
+    <ClCompile Include="include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="include\spine\Animation.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>

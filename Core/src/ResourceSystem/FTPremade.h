@@ -21,6 +21,8 @@
 	#include <functional>
 
 	#include "EditorElement.h"
+	#include "EditorChunkLoader.h"
+	#include "Manager/EditorEventManager.h"
 
 namespace Editor
 {
@@ -28,6 +30,8 @@ namespace Editor
 	class EditorElement;
 
 	typedef EditorElement* (*CREATE_EDITOR_ELEM)(Core::Actor*, int);
+	typedef EditorScene* (*GET_EDITOR_SCENE)();
+	typedef EditorChunkLoader* (*GET_EDITOR_CHUNK_LOADER)();
 } // namespace Editor
 #endif // FOXTROT_EDITOR
 
@@ -73,8 +77,10 @@ namespace Core
 		FTPremade(FTResourceDef& resDef, Editor::EditorElement* ele);
 
 	private:
-		Editor::EditorElement* mDummyForUI;
-		Editor::CREATE_EDITOR_ELEM mCreateEditorElemFunc;
+		Editor::EditorElement*			mDummyForUI;
+		Editor::CREATE_EDITOR_ELEM		mCreateEditorElemFunc;
+		Editor::GET_EDITOR_SCENE		mGetEditorSceneFunc;
+		Editor::GET_EDITOR_CHUNK_LOADER mGetEditorChunkLoaderFunc;
 
 #endif // FOXTROT_EDITOR
 	};

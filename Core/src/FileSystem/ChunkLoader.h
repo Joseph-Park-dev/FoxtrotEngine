@@ -30,6 +30,7 @@ namespace Core
 	class Actor;
 	class Component;
 	class Scene;
+	class Plugin;
 
 	struct ChunkData
 	{
@@ -101,7 +102,6 @@ namespace Core
 		constexpr const char* ACTOR_PROPERTIES = "Actor Properties";
 		constexpr const char* TRANSFORM		   = "Transform";
 
-		constexpr const char* GAME_DATA		  = "Game Data";
 		constexpr const char* CHUNK_LIST	  = "Chunk List";
 		constexpr const char* CHUNK_LIST_PATH = "Chunk List Path";
 

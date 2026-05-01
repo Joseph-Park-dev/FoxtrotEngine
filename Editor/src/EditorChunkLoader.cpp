@@ -20,6 +20,7 @@
 #include "Actor/Transform.h"
 #include "Plugin/Plugin.h"
 #include "Plugin/PluginKey.h"
+#include "DLLData.h"
 
 #include "Component/Animator.h"
 #include "Component/SpriteRenderer.h"
@@ -39,32 +40,32 @@ namespace Editor
 		: ChunkLoader()
 		, mGetCoreResManagerFunc(nullptr)
 	{
-		HMODULE coreMod = GetModuleHandleW(Core::DLL);
+		HMODULE coreMod = GetModuleHandleA(DLLPaths::CORE_EDITOR);
 		assert(coreMod);
 		mGetCoreResManagerFunc = reinterpret_cast<Core::GET_RES_MANAGER_INST>(
-			GetProcAddress(coreMod, Core::PluginKey::GET_RES_MANAGER));
+			GetProcAddress(coreMod, Editor::GET_CORE_RES_MANAGER_FUNC));
 
-		// You must list all Components to be used during runtime.
-		// That includes the user defined s, or "Behavior"s.
-		mComponentCreateMap = {
-			//{ "AI", Create<AI> },
-			{ "Animator", &CreateComp<D3D11::Animator> },
-			//{ "BoxCollider2D", &CreateComp<BoxCollider2D> },
-			//{ "CircleCollider2D", &CreateComp<CircleCollider2D> },
-			//{ "Rigidbody2D", &CreateComp<Rigidbody2D> },
-			{ "SpriteRenderer", &CreateComp<D3D11::SpriteRenderer> },
-			{ "TileMapRenderer", &CreateComp<D3D11::TileMapRenderer> },
-			//{ "TextRenderer", &CreateComp<D3D11::TextRenderer> },
-			{ "MeshRenderer", &CreateComp<D3D11::MeshRenderer> },
-			{ "SpineAnimator", &CreateComp<D3D11::SpineAnimator> },
+		//// You must list all Components to be used during runtime.
+		//// That includes the user defined s, or "Behavior"s.
+		//mComponentCreateMap = {
+		//	//{ "AI", Create<AI> },
+		//	{ "Animator", &CreateComp<D3D11::Animator> },
+		//	//{ "BoxCollider2D", &CreateComp<BoxCollider2D> },
+		//	//{ "CircleCollider2D", &CreateComp<CircleCollider2D> },
+		//	//{ "Rigidbody2D", &CreateComp<Rigidbody2D> },
+		//	{ "SpriteRenderer", &CreateComp<D3D11::SpriteRenderer> },
+		//	{ "TileMapRenderer", &CreateComp<D3D11::TileMapRenderer> },
+		//	//{ "TextRenderer", &CreateComp<D3D11::TextRenderer> },
+		//	{ "MeshRenderer", &CreateComp<D3D11::MeshRenderer> },
+		//	{ "SpineAnimator", &CreateComp<D3D11::SpineAnimator> },
 
-			//// UI related
-			//{ "ButtonUI", &CreateComp<ButtonUI> },
-			//{ "PanelUI", &CreateComp<PanelUI> },
+		//	//// UI related
+		//	//{ "ButtonUI", &CreateComp<ButtonUI> },
+		//	//{ "PanelUI", &CreateComp<PanelUI> },
 
-			//// Actor Behaviors
-			//{ "Seek", &CreateComp<Seek> },
-			//{ "Flee", &CreateComp<Flee> },
+		//	//// Actor Behaviors
+		//	//{ "Seek", &CreateComp<Seek> },
+		//	//{ "Flee", &CreateComp<Flee> },
 		};
 	}
 
@@ -229,5 +230,10 @@ namespace Editor
 			out.Assign(path);
 		else
 			std::cerr << "Failed to get path. Error: " << GetLastError() << std::endl;
+	}
+
+	EditorChunkLoader* GetEditorChunkLoader()
+	{
+		return EditorChunkLoader::GetInstance();
 	}
 } // namespace Editor

@@ -130,7 +130,7 @@ namespace D3D11
 	void TileMapRenderer::SaveProperties(std::ofstream& ofs)
 	{
 		Component::SaveProperties(ofs);
-		FileIOHelper::SaveString(ofs, ChunkKey::TILEMAP_KEY, D3D11::RES_NAME(FTTileMap, mTileMap));
+		FileIOHelper::SaveString(ofs, ChunkKey::TILEMAP_KEY, mTileMap->GetFileName());
 	}
 
 	void TileMapRenderer::LoadProperties(std::ifstream& ifs)

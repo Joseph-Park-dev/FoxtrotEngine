@@ -15,22 +15,23 @@
 #include <Windows.h>
 #include <stdio.h>
 
-#include "FTCore.h"
+#include "Plugin/Plugin.h"
+#include "FTDS/Static/HashMap.h"
+#include <../../Core/src/Plugin/PluginKey.h>
+#include <../../Editor/src/DLLData.h>
 
-constexpr const wchar_t* DLL_PATH  = L"D:/2024_01/FoxtrotEngine_DirectX/x64/Foxtrot_Editor_Debug/Core.dll";
-constexpr const char*	 PROC_NAME = PluginKey::FTCore::GET_INSTANCE;
-using CORE_CONSTRUCTOR			   = FTCore* (*)();
+constexpr Core::FTDS::HashMap<Core::Plugin*>* gPlugins;
 
 int main(int argc, char* argv[])
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	HMODULE mod = LoadLibrary(DLL_PATH);
 
-	CORE_CONSTRUCTOR getCoreInst	 = (CORE_CONSTRUCTOR)GetProcAddress(mod, PluginKey::FTCore::GET_INSTANCE);
-	CORE_CONSTRUCTOR destroyCoreInst = (CORE_CONSTRUCTOR)GetProcAddress(mod, PluginKey::FTCore::DESTROY);
+	HMODULE mod = LoadLibraryA(DLLPaths::CORE_EDITOR);
 
-	FTCore* core	= getCoreInst();
-	bool	success = core->Initialize();
+	FARPROC		   proc	   = GetProcAddress(mod, Core::PluginKey::CREATE_PLUGIN);
+	Core::GET_CORE getCore = reinterpret_cast<Core::GET_CORE>(proc);
+
+	bool success = core->Initialize();
 	if (success)
 		core->RunLoop();
 	else

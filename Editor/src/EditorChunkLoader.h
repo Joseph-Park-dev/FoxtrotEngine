@@ -23,20 +23,20 @@
 
 namespace Editor
 {
-	// This creates a Component, initializes and assigns it to an Actor.
-	using ComponentCreateFunc = std::function<void(Core::Actor*, Core::FTCore*)>;
+	//// This creates a Component, initializes and assigns it to an Actor.
+	//using ComponentCreateFunc = std::function<void(Core::Actor*, Core::FTCore*)>;
 
-	// You must list all Components to be used during runtime to this map instance.
-	using ComponentCreateMap = std::unordered_map<const char*, ComponentCreateFunc>;
+	//// You must list all Components to be used during runtime to this map instance.
+	//using ComponentCreateMap = std::unordered_map<const char*, ComponentCreateFunc>;
 
-	//template <class T>
-	//static void CreateComp(Core::Plugin* plugin, Core::Actor* actor, int updateOrder)
+	// template <class T>
+	// static void CreateComp(Core::Plugin* plugin, Core::Actor* actor, int updateOrder)
 	//{
 	//	// Dynamically allocate actor of type T
 	//	T* t = Create(plugin, actor, updateOrder);
 	//	// Call LoadProperties on DBG_NEW actor
 	//	t->Initialize();
-	//}
+	// }
 
 	class EditorChunkLoader :
 		public Core::ChunkLoader
@@ -48,8 +48,8 @@ namespace Editor
 		// Loads the a .Chunk file into the current scene on Foxtrot Editor.
 		virtual void LoadChunk(Core::FTDS::String& fileName) override;
 
-	public:
-		ComponentCreateMap& GetCompCreateMap() { return mComponentCreateMap; }
+	//public:
+	//	ComponentCreateMap& GetCompCreateMap() { return mComponentCreateMap; }
 
 	protected:
 		// Takes the values from EditorElements to save them into .Chunk file.
@@ -58,7 +58,7 @@ namespace Editor
 		virtual void LoadActorsData(std::ifstream& ifs) override;
 
 	private:
-		ComponentCreateMap		   mComponentCreateMap;
+		//ComponentCreateMap		   mComponentCreateMap;
 		Core::GET_RES_MANAGER_INST mGetCoreResManagerFunc;
 
 	private:
@@ -66,4 +66,9 @@ namespace Editor
 		void SaveCompConstructors(std::ofstream& ofs, Core::Plugin* plugin);
 		void SaveManagerData(std::ofstream& ofs, Core::Plugin* plugin);
 	};
+
+#include "Plugin/EditorExports.h"
+
+	constexpr const char*					 GET_EDITOR_CHUNK_LOADER_FUNC = "GetEditorChunkLoader";
+	extern "C" EDITOR_API EditorChunkLoader* GetEditorChunkLoader();
 } // namespace Editor

@@ -57,4 +57,9 @@ namespace Editor
 		EditorScene();
 		~EditorScene();
 	};
+
+#include "Plugin/EditorExports.h"
+
+	constexpr const char*			   GET_EDITOR_SCENE_FUNC = "GetEditorScene";
+	extern "C" EDITOR_API EditorScene* GetEditorScene();
 } // namespace Editor

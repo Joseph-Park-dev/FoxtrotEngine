@@ -12,6 +12,7 @@
 #include "Manager/SceneManager.h"
 #include "Renderer/FoxtrotRenderer.h"
 
+#include "EditorSceneManager.h"
 #include "EditorLayer.h"
 #include "EditorElement.h"
 #include "EditorChunkLoader.h"
@@ -105,5 +106,10 @@ namespace Editor
 	EditorScene::~EditorScene()
 	{
 		DeleteAll();
+	}
+
+	EditorScene* GetEditorScene()
+	{
+		return EditorSceneManager::GetInstance()->GetEditorScene();
 	}
 } // namespace Editor

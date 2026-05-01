@@ -88,8 +88,8 @@ namespace Core
 
 	private:
 		void LoadPlugins(std::ifstream& ifs);
-		void LoadCompConstructors(std::ifstream& ifs, Plugin* plugin);
-		void LoadManagerData(std::ifstream& ifs, Plugin* plugin);
+		void LoadCompConstructors(std::ifstream& ifs, HMODULE& mod);
+		void LoadManagerData(std::ifstream& ifs, HMODULE& mod);
 	};
 
 	namespace ChunkKey

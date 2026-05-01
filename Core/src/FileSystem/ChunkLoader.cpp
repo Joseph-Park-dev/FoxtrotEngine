@@ -24,7 +24,7 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Static/FTString.h"
 #include "Static/HashMap.h"
-#include "Plugin/Plugin.h"
+#include "Plugin/IPlugin.h"
 #include "ResourceSystem/FTPremade.h"
 #include "Engine.h"
 
@@ -196,16 +196,12 @@ namespace Core
 
 			HMODULE mod = LoadLibraryA(dllPath.C_Str());
 			Engine::GetInstance()->RegisterPlugin(mod, pluginName.C_Str());
-			Plugin* plugin = Engine::GetInstance()->GetPlugin(pluginName.C_Str());
-
-			size_t count = FileIOHelper::BeginDataPackLoad(ifs, pluginName).first;
-			FileIOHelper::LoadBasicString(ifs, dllPath);
-			LoadCompConstructors(ifs, plugin);
-			LoadManagerData(ifs, plugin);
+			LoadCompConstructors(ifs, mod);
+			LoadManagerData(ifs, mod);
 		}
 	}
 
-	void ChunkLoader::LoadCompConstructors(std::ifstream& ifs, Plugin* plugin)
+	void ChunkLoader::LoadCompConstructors(std::ifstream& ifs, HMODULE& mod)
 	{
 		size_t count = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::COMP_CONSTRUCTORS).first;
 		mCompConstructors->Reserve(count);
@@ -217,15 +213,14 @@ namespace Core
 			compProcName.Assign(compName);
 			compProcName.Append("_Create");
 
-			HMODULE& mod = plugin->GetModule();
 			mCompConstructors->Insert(compProcName, GetProcAddress(mod, compName.C_Str()));
 		}
 	}
 
-	void ChunkLoader::LoadManagerData(std::ifstream& ifs, Plugin* plugin)
+	void ChunkLoader::LoadManagerData(std::ifstream& ifs, HMODULE& mod)
 	{
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::MANAGER_DATA);
-		plugin->LoadManagerData(ifs);
+		// plugin->LoadManagerData(ifs);
 	}
 
 	void ChunkLoader::SaveChunkData(std::ofstream& out)

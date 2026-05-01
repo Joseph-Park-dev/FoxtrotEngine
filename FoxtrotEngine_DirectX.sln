@@ -127,8 +127,8 @@ Global
 		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Foxtrot_Debug|x64.Build.0 = Release|x64
 		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Foxtrot_Debug|x86.ActiveCfg = Release|Win32
 		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Foxtrot_Debug|x86.Build.0 = Release|Win32
-		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Foxtrot_Editor_Debug|x64.ActiveCfg = Release|x64
-		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Foxtrot_Editor_Debug|x64.Build.0 = Release|x64
+		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Foxtrot_Editor_Debug|x64.ActiveCfg = Foxtrot_Editor_Debug|x64
+		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Foxtrot_Editor_Debug|x64.Build.0 = Foxtrot_Editor_Debug|x64
 		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Foxtrot_Editor_Debug|x86.ActiveCfg = Release|Win32
 		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Foxtrot_Editor_Debug|x86.Build.0 = Release|Win32
 		{2B1591E1-1534-4A6C-9F8A-23DAF561104F}.Release|x64.ActiveCfg = Release|x64

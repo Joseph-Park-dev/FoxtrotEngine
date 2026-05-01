@@ -18,7 +18,7 @@
 #include "TemplateFunctions.h"
 #include "NullKeys.h"
 #include "FTDS/Static/FTString.h"
-#include "Math/FTMath.h"
+#include <Math/FTMath.h>
 
 namespace Core
 {
@@ -81,6 +81,7 @@ namespace Core
 		static inline void SaveFloat(std::ofstream& ofs, const FTDS::String& valName, const float& floatVal);
 		static inline void SaveString(std::ofstream& ofs, FTDS::String& valName, const FTDS::String& strVal);
 		static inline void SaveString(std::ofstream& ofs, const char* valName, const FTDS::String& strVal);
+		static inline void SaveString(std::ofstream& ofs, const char* valName, const FTDS::String* strVal);
 		static inline void SaveString(std::ofstream& ofs, const char* valName, const char* strVal);
 		static inline void SaveBool(std::ofstream& ofs, const FTDS::String& valName, const bool& boolVal);
 
@@ -554,6 +555,14 @@ namespace Core
 	{
 		FTDS::String itemTitle = mItemIdent + valName + "[string]" + "\n";
 		FTDS::String item	   = mItemIdent + strVal.C_Str();
+		mDataBuffer.push_back(itemTitle + item);
+		++mItemCounts.back();
+	}
+
+	inline void FileIOHelper::SaveString(std::ofstream& ofs, const char* valName, const FTDS::String* strVal)
+	{
+		FTDS::String itemTitle = mItemIdent + valName + "[string]" + "\n";
+		FTDS::String item	   = mItemIdent + strVal->C_Str();
 		mDataBuffer.push_back(itemTitle + item);
 		++mItemCounts.back();
 	}

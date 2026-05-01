@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Plugin/Plugin.h"
+#include "ICore.h"
 
 #include <fstream>
 
@@ -36,33 +36,43 @@ namespace Core
 	} // namespace GameData
 
 	class FTCore :
-		public Core::Plugin
+		public Core::IPlugin
 	{
 	public:
-		virtual void SaveProperties() {};
-		virtual void LoadProperties() {};
-		virtual void SaveManagerData(std::ofstream& ofs) {};
-		virtual void LoadManagerData(std::ifstream& ifs) {};
+		Core::Entity* GetEntity(const char* name) override;
 
 	public:
-		// FTDS::HashMap<Entity*>* GetEntities() { return mEntities; }
-		// FTDS::HashMap<Plugin*>* GetPlugins() { return mPlugins; }
-		Plugin* GetPlugin(FTDS::String& pluginName);
+		//////////////////////////////////
+		////// Initialization Phase //////
+		//////////////////////////////////
+		// clang-format off
+		virtual void Initialize()	override;
+		virtual void Setup()		override;
+		// clang-format on
+
+		///////////////////////
+		////// Game Loop //////
+		///////////////////////
+		// clang-format off
+		virtual void ProcessInput()				 override;
+		virtual void Update(float deltaTime)	 override;
+		virtual void LateUpdate(float deltaTime) override;
+		virtual void Render()					 override;
+		virtual void ProcessEvent()				 override;
+		// clang-format on
+
+		///////////////////////////////
+		////// Termination Phase //////
+		///////////////////////////////
+		virtual void ShutDown() override;
 
 	public:
-		void Initialize() override;
-
-		void ProcessInput() override;
-		void Render() override;
-		void ProcessEvent() override;
-		void ShutDown() override;
-
-	public:
-		FTCore(const char* name);
+		FTCore();
 		~FTCore();
 
 	private:
-		Core::FTDS::String* mGameDataPath;
+		Core::FTDS::String*					mGameDataPath;
+		Core::FTDS::HashMap<Core::Entity*>* mEntities;
 
 	private:
 		void LoadGameData();
@@ -84,13 +94,30 @@ namespace Core
 		DirectoryHelper::GetInstance()->SetProjectPath(std::filesystem::absolute("./").string().c_str());
 	}
 
+	Core::Entity* FTCore::GetEntity(const char* name)
+	{
+		return mEntities->At(name)->Value();
+	}
+
 	void FTCore::Initialize()
 	{
 		LoadGameData();
 		InitEntities();
 	}
 
+	void FTCore::Setup()
+	{
+	}
+
 	void FTCore::ProcessInput()
+	{
+	}
+
+	void FTCore::Update(float deltaTime)
+	{
+	}
+
+	void FTCore::LateUpdate(float deltaTime)
 	{
 	}
 
@@ -100,12 +127,12 @@ namespace Core
 
 	void FTCore::InitEntities()
 	{
-		Timer::GetInstance();
-		SceneManager::GetInstance();
-		ResourceManager::GetInstance();
-		EventManager::GetInstance();
-		DirectoryHelper::GetInstance();
-		ChunkLoader::GetInstance();
+		mEntities->Insert("Timer", Timer::GetInstance());
+		mEntities->Insert("SceneManager", SceneManager::GetInstance());
+		mEntities->Insert("ResourceManager", ResourceManager::GetInstance());
+		mEntities->Insert("EventManager", EventManager::GetInstance());
+		mEntities->Insert("DirectoryHelper", DirectoryHelper::GetInstance());
+		mEntities->Insert("ChunkLoader", ChunkLoader::GetInstance());
 	}
 
 	void FTCore::ProcessEvent()
@@ -114,8 +141,8 @@ namespace Core
 		EventManager::GetInstance()->ProcessEvent();
 	}
 
-	FTCore::FTCore(const char* name)
-		: Core::Plugin(name)
+	FTCore::FTCore()
+		: mEntities(DBG_NEW Core::FTDS::HashMap<Core::Entity*>)
 		, mGameDataPath(
 			  DBG_NEW FTDS::String("./"))
 	{
@@ -125,6 +152,7 @@ namespace Core
 
 	FTCore::~FTCore()
 	{
+		Safe_Delete_Map(mEntities);
 		delete mGameDataPath;
 	}
 
@@ -142,9 +170,9 @@ namespace Core
 
 	extern "C"
 	{
-		extern "C" __declspec(dllexport) Plugin* CreatePlugin(const char* name)
+		extern "C" __declspec(dllexport) IPlugin* CreatePlugin(const char* name)
 		{
-			return DBG_NEW Core::FTCore(name);
+			return DBG_NEW Core::FTCore();
 		}
 	}
 } // namespace Core

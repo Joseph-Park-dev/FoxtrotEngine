@@ -8,7 +8,7 @@
 
 #include "Component.h"
 
-#include "Plugin/Plugin.h"
+#include "Plugin/IPlugin.h"
 #include "Actor/Actor.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"

@@ -24,10 +24,10 @@
 namespace Editor
 {
 	//// This creates a Component, initializes and assigns it to an Actor.
-	//using ComponentCreateFunc = std::function<void(Core::Actor*, Core::FTCore*)>;
+	// using ComponentCreateFunc = std::function<void(Core::Actor*, Core::FTCore*)>;
 
 	//// You must list all Components to be used during runtime to this map instance.
-	//using ComponentCreateMap = std::unordered_map<const char*, ComponentCreateFunc>;
+	// using ComponentCreateMap = std::unordered_map<const char*, ComponentCreateFunc>;
 
 	// template <class T>
 	// static void CreateComp(Core::Plugin* plugin, Core::Actor* actor, int updateOrder)
@@ -48,18 +48,14 @@ namespace Editor
 		// Loads the a .Chunk file into the current scene on Foxtrot Editor.
 		virtual void LoadChunk(Core::FTDS::String& fileName) override;
 
-	//public:
-	//	ComponentCreateMap& GetCompCreateMap() { return mComponentCreateMap; }
+		// public:
+		//	ComponentCreateMap& GetCompCreateMap() { return mComponentCreateMap; }
 
 	protected:
 		// Takes the values from EditorElements to save them into .Chunk file.
 		virtual void SaveActorsData(std::ofstream& ofs) override;
 		// Reads the values from .Chunk file and assign them to Actors.
 		virtual void LoadActorsData(std::ifstream& ifs) override;
-
-	private:
-		//ComponentCreateMap		   mComponentCreateMap;
-		Core::GET_RES_MANAGER_INST mGetCoreResManagerFunc;
 
 	private:
 		void SavePlugins(std::ofstream& ofs);

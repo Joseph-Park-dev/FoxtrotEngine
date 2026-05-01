@@ -18,7 +18,7 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Renderer/Camera.h"
 #include "Actor/Transform.h"
-#include "Plugin/Plugin.h"
+#include "Plugin/IPlugin.h"
 #include "Plugin/PluginKey.h"
 #include "DLLData.h"
 
@@ -38,16 +38,13 @@ namespace Editor
 	using namespace Core;
 	EditorChunkLoader::EditorChunkLoader()
 		: ChunkLoader()
-		, mGetCoreResManagerFunc(nullptr)
 	{
 		HMODULE coreMod = GetModuleHandleA(DLLPaths::CORE_EDITOR);
 		assert(coreMod);
-		mGetCoreResManagerFunc = reinterpret_cast<Core::GET_RES_MANAGER_INST>(
-			GetProcAddress(coreMod, Editor::GET_CORE_RES_MANAGER_FUNC));
 
 		//// You must list all Components to be used during runtime.
 		//// That includes the user defined s, or "Behavior"s.
-		//mComponentCreateMap = {
+		// mComponentCreateMap = {
 		//	//{ "AI", Create<AI> },
 		//	{ "Animator", &CreateComp<D3D11::Animator> },
 		//	//{ "BoxCollider2D", &CreateComp<BoxCollider2D> },
@@ -66,8 +63,7 @@ namespace Editor
 		//	//// Actor Behaviors
 		//	//{ "Seek", &CreateComp<Seek> },
 		//	//{ "Flee", &CreateComp<Flee> },
-		};
-	}
+	};
 
 	EditorChunkLoader::~EditorChunkLoader() {}
 

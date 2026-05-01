@@ -8,7 +8,10 @@
 #include "FileSystem/FileIOHelper.h"
 
 #include "ResourceSystem/SupportedResources.h"
-#include "Plugin/Plugin.h"
+#include "Plugin/IPlugin.h"
+
+#include "DLLData.h"
+#include <Core/src/Manager/ResourceManager.h>
 
 namespace Editor
 {
@@ -19,13 +22,12 @@ namespace Editor
 
 	void ResourceManager::SaveResourcesToChunk(std::ofstream& ofs)
 	{
-		Core::ResourceManager*	coreRes	 = mGetCoreResManagerFunc();
 		D3D11::ResourceManager* D3D11Res = mGetD3D11ResManagerFunc();
 
 		FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::RESOURCE_DATA);
 
 		FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::FTPremade::FT_PREMADE);
-		SaveResource<Core::FTPremade>(coreRes, ofs);
+		SaveResource<Core::FTPremade>(mCoreRes, ofs);
 		FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::FTPremade::FT_PREMADE);
 
 		FileIOHelper::BeginDataPackSave(ofs, D3D11::ChunkKey::FTFont::FTFONT);
@@ -57,15 +59,15 @@ namespace Editor
 		// FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::Sound::SOUND);
 
 		FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::JSON::JSON);
-		SaveResource<FTJSON>(coreRes, ofs);
+		SaveResource<FTJSON>(mCoreRes, ofs);
 		FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::JSON::JSON);
 
 		FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::CSV::CSV);
-		SaveResource<FTCSV>(coreRes, ofs);
+		SaveResource<FTCSV>(mCoreRes, ofs);
 		FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::CSV::CSV);
 
 		FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::FTText::FT_TEXT);
-		SaveResource<FTText>(coreRes, ofs);
+		SaveResource<FTText>(mCoreRes, ofs);
 		FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::FTText::FT_TEXT);
 
 		FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::RESOURCE_DATA);
@@ -213,18 +215,18 @@ namespace Editor
 		std::pair<size_t, FTDS::String> resPack	  = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::RESOURCE_DATA);
 		size_t							packCount = resPack.first;
 
-		ResArray* coreRes  = mGetCoreResManagerFunc()->GetResArray();
+		ResArray* mCoreRes = mGetCoreResManagerFunc()->GetResArray();
 		ResArray* d3d11Res = mGetD3D11ResManagerFunc()->GetResArray();
 
 		std::pair<size_t, FTDS::String>
 			desc = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::FTText::FT_TEXT);
-		LoadDummyResource<FTText>(ifs, coreRes, desc.first);
+		LoadDummyResource<FTText>(ifs, mCoreRes, desc.first);
 
 		desc = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::CSV::CSV);
-		LoadDummyResource<FTCSV>(ifs, coreRes, desc.first);
+		LoadDummyResource<FTCSV>(ifs, mCoreRes, desc.first);
 
 		desc = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::JSON::JSON);
-		LoadDummyResource<FTJSON>(ifs, coreRes, desc.first);
+		LoadDummyResource<FTJSON>(ifs, mCoreRes, desc.first);
 
 		/*	desc = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::Sound::SOUND);
 			LoadDummyResource<Sound>(ifs, desc.first);*/
@@ -248,7 +250,7 @@ namespace Editor
 		LoadDummyResource<FTFont>(ifs, d3d11Res, desc.first);
 
 		desc = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::FTPremade::FT_PREMADE);
-		LoadDummyResource<Core::FTPremade>(ifs, coreRes, desc.first);
+		LoadDummyResource<Core::FTPremade>(ifs, mCoreRes, desc.first);
 	}
 
 	void ResourceManager::UpdateUI()
@@ -298,10 +300,6 @@ namespace Editor
 	void ResourceManager::SetRenderer(Editor::EditorRenderer* renderer)
 	{
 		mRenderer = renderer;
-	}
-
-	void ResourceManager::RegisterMemberFuncs()
-	{
 	}
 
 	size_t ResourceManager::GetCoreTypeIdx(FTDS::String& fileName)
@@ -376,6 +374,8 @@ namespace Editor
 
 	ResourceManager::ResourceManager()
 	{
+		mCoreRes  = GetFunc<Core::GET_RES_MANAGER_INST>(DLLPaths::CORE_EDITOR, Core::GET_RES_FUNC)();
+		mD3D11Res = GetFunc<D3D11::GET_RES_MANAGER_INST>(DLLPaths::D3D11_EDITOR, Core::GET_RES_FUNC)();
 	}
 
 	ResourceManager::~ResourceManager()

@@ -41,6 +41,10 @@ namespace Editor
 		void SetRenderer(Editor::EditorRenderer* renderer);
 
 	private:
+		Core::ResourceManager*	mCoreRes;
+		D3D11::ResourceManager* mD3D11Res;
+
+	private:
 		size_t GetCoreTypeIdx(Core::FTDS::String& fileName);
 		size_t GetD3D11TypeIdx(Core::FTDS::String& fileName);
 

@@ -1,15 +1,23 @@
 #pragma once
 #include "Component/Component.h"
 
+#include "Renderer/D3D11Renderer.h"
+
 namespace Editor
 {
-	template <typename COMPONENT>
-	class EditorComponent
+	template <typename DERIVED>
+	class EditorComponent : public Core::Component
 	{
 	public:
-		void UpdateUI()
+		virtual void EditorUIUpdate()
 		{
-			COMPONENT::EditorUIUpdate();
+			static_cast<DERIVED*>(this)->EditorUIUpdate();
+		}
+
+	public:
+		virtual void EditorRender(D3D11::D3D11Renderer* renderer)
+		{
+			static_cast<DERIVED*>(this)->EditorRender(renderer);
 		}
 	};
 } // namespace Editor

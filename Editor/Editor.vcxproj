@@ -155,6 +155,13 @@
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Component\EditAnimator.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="src\Component\MeshRenderer.h" />
+    <ClInclude Include="src\Component\SpineAnimator.h" />
+    <ClInclude Include="src\Component\SpriteRenderer.h" />
+    <ClInclude Include="src\Component\TileMapRenderer.h" />
     <ClInclude Include="src\Manager\EditorEventManager.h" />
     <ClInclude Include="src\EditorEventFunctions.h" />
     <ClInclude Include="src\Component\EditorComponent.h" />
@@ -195,6 +202,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\Component\EditAnimator.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\Component\MeshRenderer.cpp" />
+    <ClCompile Include="src\Component\SpineAnimator.cpp" />
+    <ClCompile Include="src\Component\SpriteRenderer.cpp" />
+    <ClCompile Include="src\Component\TileMapRenderer.cpp" />
     <ClCompile Include="src\Manager\EditorEventManager.cpp" />
     <ClCompile Include="src\EditorEventFunctions.cpp" />
     <ClCompile Include="src\Component\EditorComponent.cpp" />

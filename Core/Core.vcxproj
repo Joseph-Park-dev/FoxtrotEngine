@@ -286,6 +286,7 @@
     <ClInclude Include="src\CoreInstance.h" />
     <ClInclude Include="src\EditorHelper.h" />
     <ClInclude Include="src\Entity\Entity.h" />
+    <ClInclude Include="src\ICore.h" />
     <ClInclude Include="src\Manager\DirectoryHelper.h" />
     <ClInclude Include="src\Manager\ResourceManager.h" />
     <ClInclude Include="src\Actor\Actor.h" />
@@ -334,7 +335,7 @@
     <ClInclude Include="src\Manager\SceneManager.h" />
     <ClInclude Include="src\Plugin\CoreExports.h" />
     <ClInclude Include="src\Entity\ObjectLayout.h" />
-    <ClInclude Include="src\Plugin\Plugin.h" />
+    <ClInclude Include="src\Plugin\IPlugin.h" />
     <ClInclude Include="src\Renderer\FoxtrotRenderer.h" />
     <ClInclude Include="src\InputSystem\FTInputDevice.h" />
     <ClInclude Include="src\Renderer\FTRectArea.h" />

@@ -406,7 +406,10 @@
     <ClInclude Include="include\imgui\imstb_truetype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Plugin\Plugin.h">
+    <ClInclude Include="src\Plugin\IPlugin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ICore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

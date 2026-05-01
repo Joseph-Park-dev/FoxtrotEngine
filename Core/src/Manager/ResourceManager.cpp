@@ -380,12 +380,3 @@ namespace Core
 		return Core::ResourceManager::GetInstance();
 	}
 } // namespace Core
-
-#ifdef FOXTROT_EDITOR
-#include "DLLData.h"
-#include "EditorHelper.h"
-namespace Editor
-{
-	Editor::GET_CORE_RES_MANAGER Editor::gGetCoreResManagerFunc = reinterpret_cast<GET_CORE_RES_MANAGER>(GetProcAddress(GetModuleHandleA(DLLPaths::CORE_EDITOR), "UpdateBoolValue"));
-}
-#endif // FOXTROT_EDITOR

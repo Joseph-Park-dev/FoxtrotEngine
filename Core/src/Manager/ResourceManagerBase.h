@@ -113,8 +113,8 @@ namespace Core
 			return static_cast<TYPE*>(rec->Value());
 		}
 
-		//template <typename TYPE>
-		//const Core::FTDS::String& GetResName(size_t typeIdx, TYPE* res)
+		// template <typename TYPE>
+		// const Core::FTDS::String& GetResName(size_t typeIdx, TYPE* res)
 		//{
 		//	Core::FTDS::HashMap<Core::FTResource*>& resMap = mResources->At(typeIdx);
 		//	for (auto iter = resMap.Begin(); iter != resMap.End(); ++iter)
@@ -123,7 +123,7 @@ namespace Core
 		//			return (*iter)->Key();
 		//	}
 		//	return Core::ChunkKey::NullVal::NULL_OBJECT;
-		//}
+		// }
 
 	public:
 		// ---------------------------
@@ -166,8 +166,8 @@ namespace Core
 		template <typename FTRESOURCE>
 		void SaveResourcesToChunk(std::ofstream& ofs)
 		{
-			Core::ResArray*			   resArr = this->GetResArray();
-			FTDS::HashMap<FTResource*>& map	  = GetResMap<FTRESOURCE>();
+			Core::ResArray*				resArr = this->GetResArray();
+			FTDS::HashMap<FTResource*>& map	   = GetResMap<FTRESOURCE>();
 			for (auto iter = map.Begin(); iter != map.End(); ++iter)
 				(*iter)->Value()->SaveProperties(ofs);
 		}
@@ -315,4 +315,5 @@ namespace Core
 			}
 		}
 	};
+	constexpr const char* GET_RES_FUNC = "GetResourceManager";
 } // namespace Core

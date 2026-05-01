@@ -2,7 +2,7 @@
 #include "Manager/ResourceManagerBase.h"
 
 #include "SingletonMacro.h"
-#include "Static/HashMap.h"
+#include "FTDS/Static/HashMap.h"
 #include "Plugin/CoreExports.h"
 #include "FTCore.h"
 
@@ -32,6 +32,7 @@ namespace Core
 namespace Editor
 {
 	using GET_CORE_RES_MANAGER = Core::ResourceManager* (*)();
+	constexpr const char* GET_CORE_RES_MANAGER_FUNC = "GetCoreResourceManager";
 	extern CORE_API GET_CORE_RES_MANAGER gGetCoreResManagerFunc;
 	#define CORE_RES_MANAGER() gGetCoreResManagerFunc();
 }

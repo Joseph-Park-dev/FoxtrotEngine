@@ -264,7 +264,7 @@ namespace D3D11
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTFont::FTFONT);
 
 		if (mFontImage)
-			FileIOHelper::SaveString(ofs, ChunkKey::FTFont::FONT_IMAGE, D3D11::RES_NAME(FTFont, mFontImage));
+			FileIOHelper::SaveString(ofs, ChunkKey::FTFont::FONT_IMAGE, mFontImage->GetFileName());
 		else
 			FileIOHelper::SaveString(ofs, ChunkKey::FTFont::FONT_IMAGE, Core::ChunkKey::NullVal::NULL_OBJECT);
 

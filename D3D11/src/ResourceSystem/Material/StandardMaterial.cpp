@@ -53,7 +53,7 @@ namespace D3D11
 	{
 		Core::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::StandardMat::STANDARD_MAT);
 
-		Core::FileIOHelper::SaveString(ofs, Core::ChunkKey::FTResource::FILE_NAME, RES_NAME(FTMaterial, this));
+		Core::FileIOHelper::SaveString(ofs, Core::ChunkKey::FTResource::FILE_NAME, this->GetFileName());
 		Core::FileIOHelper::SaveBool(ofs, ChunkKey::StandardMat::USE_TEXTURE, mData->UseTexture);
 		Core::FileIOHelper::SaveFloat(ofs, ChunkKey::StandardMat::ALPHA_TRIM, mData->AlphaTrim);
 		Core::FileIOHelper::SaveVector4(ofs, ChunkKey::StandardMat::COLOR, mData->Color);

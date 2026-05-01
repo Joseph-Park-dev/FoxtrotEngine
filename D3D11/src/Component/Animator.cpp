@@ -91,7 +91,7 @@ namespace D3D11
 		size_t i = 0;
 		mLoadedAnim->IterateArray([&](FTSpriteAnimation* anim) {
 			if (anim)
-				FileIOHelper::SaveString(ofs, std::to_string(i).c_str(), D3D11::RES_NAME(FTSpriteAnimation, anim));
+				FileIOHelper::SaveString(ofs, std::to_string(i).c_str(), anim->GetFileName());
 			++i;
 		});
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSpriteAnimator::LOADED_KEYS);

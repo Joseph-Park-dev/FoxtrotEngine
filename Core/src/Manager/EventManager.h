@@ -28,18 +28,16 @@ namespace Core
 	class EventManager :
 		public Core::Entity
 	{
-		SINGLETON(EventManager)
+		SINGLETON_PROTECTED(EventManager)
 
 	public:
 		void AddEvent(const FTEvent& addedEvent);
+		void ProcessEvent();
+
+	protected:
+		virtual void Execute(const FTEvent& executedEvent);
 
 	private:
 		FTDS::DynamicArray<FTEvent>* mEvent;
-
-	public:
-		void ProcessEvent();
-
-	private:
-		void Execute(const FTEvent& executedEvent);
 	};
 } // namespace Core

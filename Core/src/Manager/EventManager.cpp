@@ -42,30 +42,16 @@ namespace Core
 		{
 			case EVENT_TYPE::CREATE_ACTOR:
 			{
-
-#ifdef FOXTROT_EDITOR
-				Editor::EditorElement* created = static_cast<Editor::EditorElement*>(executedEvent.eventData);
-				Editor::EditorScene*   scene   = Editor::EditorSceneManager::GetInstance()->GetEditorScene();
-				scene->AddEditorElement(created);
-#else
 				Actor* created = static_cast<Actor*>(executedEvent.eventData);
 				Scene* scene   = SceneManager::GetInstance()->GetCurrentScene();
 				scene->AddActor(created);
-#endif
 			}
 			break;
 
 			case EVENT_TYPE::DESTROY_ACTOR:
 			{
-
-#ifdef FOXTROT_EDITOR
-				Editor::EditorElement* element = static_cast<Editor::EditorElement*>(executedEvent.eventData);
-				Editor::EditorScene*   scene   = Editor::EditorSceneManager::GetInstance()->GetEditorScene();
-				scene->RemoveActor(element);
-#else
 				Actor* actorToDestroy = static_cast<Actor*>(executedEvent.eventData);
 				actorToDestroy->SetState(ActorState::DEAD);
-#endif
 			}
 			break;
 			case EVENT_TYPE::SWITCH_SCENE:

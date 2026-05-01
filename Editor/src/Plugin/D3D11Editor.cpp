@@ -301,7 +301,7 @@ D3D11Editor::~D3D11Editor()
 	EditorChunkLoader::GetInstance()->Destroy();
 	EditorResourceManager::GetInstance()->Destroy();
 	// FTCore::ShutDown();
-	//delete mEditorWindow;
+	// delete mEditorWindow;
 }
 
 bool D3D11Editor::InitGUI()

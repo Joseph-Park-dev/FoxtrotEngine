@@ -56,12 +56,12 @@ public:
 
 public:
 	Engine()
-		: mPlugins(DBG_NEW Core::FTDS::HashMap<Core::IPlugin*>())
+		: mPlugins(DBG_NEW Common::FTDS::HashMap<Core::IPlugin*>())
 	{
 	}
 
 private:
-	Core::FTDS::HashMap<Core::IPlugin*>* mPlugins;
+	Common::FTDS::HashMap<Core::IPlugin*>* mPlugins;
 
 private:
 	// Gameloop functions.

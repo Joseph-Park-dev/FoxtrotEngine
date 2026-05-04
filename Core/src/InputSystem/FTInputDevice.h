@@ -38,23 +38,23 @@ namespace Core
 	{
 	protected:
 		template <typename BUTTON_TYPE>
-		ButtonInput& GetButtonInput(FTDS::DynamicArray<ButtonInput>* btnArr, BUTTON_TYPE button)
+		ButtonInput& GetButtonInput(Common::FTDS::DynamicArray<ButtonInput>* btnArr, BUTTON_TYPE button)
 		{
 			return btnArr->At((size_t)button);
 		}
 
-		ButtonInput& GetButtonInput(FTDS::DynamicArray<ButtonInput>* btnArr, size_t buttonIdx)
+		ButtonInput& GetButtonInput(Common::FTDS::DynamicArray<ButtonInput>* btnArr, size_t buttonIdx)
 		{
 			return btnArr->At(buttonIdx);
 		}
 
 		template <typename BUTTON_TYPE>
-		BUTTON_STATE& GetButtonState(FTDS::DynamicArray<ButtonInput>* btnArr, BUTTON_TYPE button)
+		BUTTON_STATE& GetButtonState(Common::FTDS::DynamicArray<ButtonInput>* btnArr, BUTTON_TYPE button)
 		{
 			return btnArr->At((size_t)button).ButtonState;
 		}
 
-		BUTTON_STATE& GetButtonState(FTDS::DynamicArray<ButtonInput>* btnArr, size_t buttonIdx)
+		BUTTON_STATE& GetButtonState(Common::FTDS::DynamicArray<ButtonInput>* btnArr, size_t buttonIdx)
 		{
 			return btnArr->At(buttonIdx).ButtonState;
 		}

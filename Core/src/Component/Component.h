@@ -56,7 +56,7 @@ namespace Core
 	class Component
 	{
 	public:
-		virtual FTDS::String GetName() const = 0;
+		virtual Common::FTDS::String GetName() const = 0;
 
 	public:
 		virtual void Initialize() { mIsInitialized = true; }
@@ -70,14 +70,14 @@ namespace Core
 	public:
 		virtual void SaveProperties(std::ofstream& ofs)
 		{
-			FileIOHelper::SaveBool(ofs, ChunkKey::IS_ACTIVE, mIsActive);
-			FileIOHelper::SaveInt(ofs, ChunkKey::UPDATE_ORDER, mUpdateOrder);
+			Common::FileIOHelper::SaveBool(ofs, ChunkKey::IS_ACTIVE, mIsActive);
+			Common::FileIOHelper::SaveInt(ofs, ChunkKey::UPDATE_ORDER, mUpdateOrder);
 		}
 
 		virtual void LoadProperties(std::ifstream& ifs)
 		{
-			FileIOHelper::LoadInt(ifs, mUpdateOrder);
-			FileIOHelper::LoadBool(ifs, mIsActive);
+			Common::FileIOHelper::LoadInt(ifs, mUpdateOrder);
+			Common::FileIOHelper::LoadBool(ifs, mIsActive);
 		}
 
 	public:

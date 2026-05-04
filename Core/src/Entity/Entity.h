@@ -1,6 +1,4 @@
 #pragma once
-#include "Entity/ObjectLayout.h"
-
 #include "FTDS/Static/HashMap.h"
 
 namespace Core

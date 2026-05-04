@@ -191,7 +191,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.\src;.\src\FTDS;..\Math\src;.\include\json\include;..\Editor\src;..\Editor\include;..\Editor\include\imgui;..\Editor\include\imgui\backends;..\Main\src;..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Common;.\src;..\Math\src;.\include\json\include;..\Editor\src;..\Editor\include;..\Editor\include\imgui;..\Editor\include\imgui\backends;..\Main\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -304,7 +304,6 @@
     <ClInclude Include="src\FileSystem\FileTypes.h" />
     <ClInclude Include="src\FTCore.h" />
     <ClInclude Include="src\Manager\EventManager.h" />
-    <ClInclude Include="src\Manager\ResourceManagerBase.h" />
     <ClInclude Include="src\Manager\SceneManager.h" />
     <ClInclude Include="src\Plugin\CoreExports.h" />
     <ClInclude Include="src\Entity\ObjectLayout.h" />
@@ -349,7 +348,6 @@
     <ClCompile Include="src\FTCore.cpp" />
     <ClCompile Include="src\Manager\EventManager.cpp" />
     <ClCompile Include="src\Manager\ResourceManager.cpp" />
-    <ClCompile Include="src\Manager\ResourceManagerBase.cpp" />
     <ClCompile Include="src\Manager\SceneManager.cpp" />
     <ClCompile Include="src\Renderer\FoxtrotRenderer.cpp" />
     <ClCompile Include="src\InputSystem\FTInputDevice.cpp" />

@@ -50,12 +50,12 @@ namespace Common
 		public:
 			void Insert(int key, TYPE value)
 			{
-				FTDS::String conv;
+				Common::FTDS::String conv;
 				ToString(conv, key);
 				this->Insert(conv, value);
 			}
 
-			void Insert(FTDS::String key, TYPE value)
+			void Insert(Common::FTDS::String key, TYPE value)
 			{
 				// HashChainMap uses FTDS::Array,
 				// the number of slots will not be dynamic,
@@ -97,17 +97,17 @@ namespace Common
 
 			FTDS::Record<TYPE>* At(const int key)
 			{
-				FTDS::String conv;
+				Common::FTDS::String conv;
 				ToString(conv, key);
 				return this->At(conv);
 			}
 
-			FTDS::Record<TYPE>* At(const FTDS::String&& key)
+			FTDS::Record<TYPE>* At(const Common::FTDS::String&& key)
 			{
 				return this->At(key.C_Str());
 			}
 
-			FTDS::Record<TYPE>* At(const FTDS::String& key)
+			FTDS::Record<TYPE>* At(const Common::FTDS::String& key)
 			{
 				return this->At(key.C_Str());
 			}
@@ -229,7 +229,7 @@ namespace Common
 		};
 
 		template <class TYPE>
-		void Safe_Delete_Map(FTDS::HashMap<TYPE*>*& map)
+		void Safe_Delete_Map(Common::FTDS::HashMap<TYPE*>*& map)
 		{
 			for (auto iter = map->Begin(); iter != map->End(); ++iter)
 			{
@@ -249,7 +249,7 @@ namespace Common
 	//	if (p->Equal(key))
 	//	{
 	//		// Abort insertion.
-	//		FTDS::String msg("Duplicated key: ");
+	//		Common::FTDS::String msg("Duplicated key: ");
 	//		msg.Append(key);
 	//		Debug::LogError(__LINE__, __FILE__, msg.C_Str());
 	//		return;

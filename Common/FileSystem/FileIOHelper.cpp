@@ -10,27 +10,27 @@
 
 namespace Common
 {
-	std::list<FTDS::String> FileIOHelper::mDataBuffer	   = {};
-	std::list<int>			FileIOHelper::mItemCounts	   = {};
-	std::list<FTDS::String> FileIOHelper::mCurrentDataPack = {};
-	size_t					FileIOHelper::mDataPackIdent   = 0;
-	FTDS::String			FileIOHelper::mItemIdent	   = FTDS::String(mDataPackIdent, '\t');
+	std::list<Common::FTDS::String> Common::FileIOHelper::mDataBuffer	   = {};
+	std::list<int>			Common::FileIOHelper::mItemCounts	   = {};
+	std::list<Common::FTDS::String> Common::FileIOHelper::mCurrentDataPack = {};
+	size_t					Common::FileIOHelper::mDataPackIdent   = 0;
+	Common::FTDS::String			Common::FileIOHelper::mItemIdent	   = Common::FTDS::String(mDataPackIdent, '\t');
 
 	// This function is less safe since there is no assert to check data pack name
-	std::pair<size_t, FTDS::String> FileIOHelper::BeginDataPackLoad(std::ifstream& ifs)
+	std::pair<size_t, Common::FTDS::String> Common::FileIOHelper::BeginDataPackLoad(std::ifstream& ifs)
 	{
-		FTDS::String loadedDataPackKey;
+		Common::FTDS::String loadedDataPackKey;
 		GetLine(ifs, loadedDataPackKey, '\n');
 
 		// Parse data pack key
-		FTDS::String name;
+		Common::FTDS::String name;
 		loadedDataPackKey.ExtractUntilLast(name, "<");
 		if (name.IsEmpty())
-			return std::make_pair(0, ChunkKey::NullVal::NULL_OBJECT);
+			return std::make_pair(0, Common::ChunkKey::NullVal::NULL_OBJECT);
 		name.ExtractFromLast("\t");
 
 		// Parse data pack name
-		FTDS::String countStr;
+		Common::FTDS::String countStr;
 		loadedDataPackKey.ExtractBracketedVal(countStr, "<", ">");
 		size_t count = std::stoi(countStr.C_Str());
 
@@ -40,18 +40,18 @@ namespace Common
 		return std::make_pair(count, name);
 	}
 
-	std::pair<size_t, FTDS::String> FileIOHelper::BeginDataPackLoad(std::ifstream& ifs, FTDS::String dataPackKey)
+	std::pair<size_t, Common::FTDS::String> Common::FileIOHelper::BeginDataPackLoad(std::ifstream& ifs, Common::FTDS::String dataPackKey)
 	{
-		FTDS::String loadedDataPackKey;
+		Common::FTDS::String loadedDataPackKey;
 		GetLine(ifs, loadedDataPackKey, '\n');
 
 		// Parse data pack key
-		FTDS::String name;
+		Common::FTDS::String name;
 		loadedDataPackKey.ExtractUntilFirst(name, "<");
 		name.ExtractFromLast("\t");
 
 		// Parse data pack name
-		FTDS::String countStr;
+		Common::FTDS::String countStr;
 		loadedDataPackKey.ExtractBracketedVal(countStr, "<", ">");
 		size_t count = std::stoi(countStr.C_Str());
 
@@ -68,16 +68,16 @@ namespace Common
 		return std::make_pair(count, name);
 	}
 
-	void FileIOHelper::LoadInt(std::ifstream& ifs, int& intVal)
+	void Common::FileIOHelper::LoadInt(std::ifstream& ifs, int& intVal)
 	{
 		// Parse data information.
-		FTDS::String line;
+		Common::FTDS::String line;
 		GetLine(ifs, line, '\n');
 
-		FTDS::String name;
+		Common::FTDS::String name;
 		line.ExtractUntilLast(name, "[");
 
-		FTDS::String typeNameStr;
+		Common::FTDS::String typeNameStr;
 		line.ExtractBracketedVal(typeNameStr, "[", "]");
 		line.Clear();
 
@@ -86,16 +86,16 @@ namespace Common
 		ParseInt(line, intVal);
 	}
 
-	void FileIOHelper::LoadUnsignedInt(std::ifstream& ifs, unsigned int& intVal)
+	void Common::FileIOHelper::LoadUnsignedInt(std::ifstream& ifs, unsigned int& intVal)
 	{
 		// Parse data information.
-		FTDS::String line;
+		Common::FTDS::String line;
 		GetLine(ifs, line, '\n');
 
-		FTDS::String name;
+		Common::FTDS::String name;
 		line.ExtractUntilLast(name, "[");
 
-		FTDS::String typeNameStr;
+		Common::FTDS::String typeNameStr;
 		line.ExtractBracketedVal(typeNameStr, "[", "]");
 		line.Clear();
 
@@ -104,16 +104,16 @@ namespace Common
 		ParseUnsignedInt(line, intVal);
 	}
 
-	void FileIOHelper::LoadSize(std::ifstream& ifs, size_t& sizeVal)
+	void Common::FileIOHelper::LoadSize(std::ifstream& ifs, size_t& sizeVal)
 	{
 		// Parse data information.
-		FTDS::String line;
+		Common::FTDS::String line;
 		GetLine(ifs, line, '\n');
 
-		FTDS::String name;
+		Common::FTDS::String name;
 		line.ExtractUntilLast(name, "[");
 
-		FTDS::String typeNameStr;
+		Common::FTDS::String typeNameStr;
 		line.ExtractBracketedVal(typeNameStr, "[", "]");
 		line.Clear();
 
@@ -122,16 +122,16 @@ namespace Common
 		ParseSize(line, sizeVal);
 	}
 
-	void FileIOHelper::LoadFloat(std::ifstream& ifs, float& floatVal)
+	void Common::FileIOHelper::LoadFloat(std::ifstream& ifs, float& floatVal)
 	{
 		// Parse data information.
-		FTDS::String line;
+		Common::FTDS::String line;
 		GetLine(ifs, line, '\n');
 
-		FTDS::String name;
+		Common::FTDS::String name;
 		line.ExtractUntilLast(name, "[");
 
-		FTDS::String typeNameStr;
+		Common::FTDS::String typeNameStr;
 		line.ExtractBracketedVal(typeNameStr, "[", "]");
 		line.Clear();
 
@@ -140,16 +140,16 @@ namespace Common
 		ParseFloat(line, floatVal);
 	}
 
-	void FileIOHelper::LoadBool(std::ifstream& ifs, bool& boolVal)
+	void Common::FileIOHelper::LoadBool(std::ifstream& ifs, bool& boolVal)
 	{
 		// Parse data information.
-		FTDS::String line;
+		Common::FTDS::String line;
 		GetLine(ifs, line, '\n');
 
-		FTDS::String name;
+		Common::FTDS::String name;
 		line.ExtractUntilLast(name, "[");
 
-		FTDS::String typeNameStr;
+		Common::FTDS::String typeNameStr;
 		line.ExtractBracketedVal(typeNameStr, "[", "]");
 		line.Clear();
 
@@ -158,16 +158,16 @@ namespace Common
 		ParseBool(line, boolVal);
 	}
 
-	void FileIOHelper::LoadBasicString(std::ifstream& ifs, FTDS::String& strVal)
+	void Common::FileIOHelper::LoadBasicString(std::ifstream& ifs, Common::FTDS::String& strVal)
 	{
 		// Parse data information.
-		FTDS::String line;
+		Common::FTDS::String line;
 		GetLine(ifs, line, '\n');
 
-		FTDS::String name;
+		Common::FTDS::String name;
 		line.ExtractUntilLast(name, "[");
 
-		FTDS::String typeNameStr;
+		Common::FTDS::String typeNameStr;
 		line.ExtractBracketedVal(typeNameStr, "[", "]");
 		line.Clear();
 
@@ -178,16 +178,16 @@ namespace Common
 		strVal.ExtractFromLast("\t");
 	}
 
-	void FileIOHelper::LoadVector2(std::ifstream& ifs, Math::FTVector2& vec2)
+	void Common::FileIOHelper::LoadVector2(std::ifstream& ifs, Math::FTVector2& vec2)
 	{
 		// Parse data information.
-		FTDS::String line;
+		Common::FTDS::String line;
 		GetLine(ifs, line, '\n');
 
-		FTDS::String name;
+		Common::FTDS::String name;
 		line.ExtractUntilLast(name, "[");
 
-		FTDS::String typeNameStr;
+		Common::FTDS::String typeNameStr;
 		line.ExtractBracketedVal(typeNameStr, "[", "]");
 		line.Clear();
 
@@ -196,16 +196,16 @@ namespace Common
 		ParseVector2(line, vec2);
 	}
 
-	void FileIOHelper::LoadVector3(std::ifstream& ifs, Math::FTVector3& vec3)
+	void Common::FileIOHelper::LoadVector3(std::ifstream& ifs, Math::FTVector3& vec3)
 	{
 		// Parse data information.
-		FTDS::String line;
+		Common::FTDS::String line;
 		GetLine(ifs, line, '\n');
 
-		FTDS::String name;
+		Common::FTDS::String name;
 		line.ExtractUntilLast(name, "[");
 
-		FTDS::String typeNameStr;
+		Common::FTDS::String typeNameStr;
 		line.ExtractBracketedVal(typeNameStr, "[", "]");
 		line.Clear();
 
@@ -214,16 +214,16 @@ namespace Common
 		ParseVector3(line, vec3);
 	}
 
-	void FileIOHelper::LoadVector4(std::ifstream& ifs, Math::FTVector4& vec4)
+	void Common::FileIOHelper::LoadVector4(std::ifstream& ifs, Math::FTVector4& vec4)
 	{
 		// Parse data information.
-		FTDS::String line;
+		Common::FTDS::String line;
 		GetLine(ifs, line, '\n');
 
-		FTDS::String name;
+		Common::FTDS::String name;
 		line.ExtractUntilLast(name, "[");
 
-		FTDS::String typeNameStr;
+		Common::FTDS::String typeNameStr;
 		line.ExtractBracketedVal(typeNameStr, "[", "]");
 		line.Clear();
 
@@ -232,13 +232,13 @@ namespace Common
 		ParseVector4(line, vec4);
 	}
 
-	void FileIOHelper::ParseVector3(FTDS::String& line, Math::FTVector3& arg)
+	void Common::FileIOHelper::ParseVector3(Common::FTDS::String& line, Math::FTVector3& arg)
 	{
 		line.ExtractBracketedVal(line, "(", ")");
 
-		FTDS::String xStr;
-		FTDS::String yStr;
-		FTDS::String zStr;
+		Common::FTDS::String xStr;
+		Common::FTDS::String yStr;
+		Common::FTDS::String zStr;
 
 		line.ExtractUntilFirst(xStr, ",");
 		line.ExtractBracketedVal(yStr, ",", ",");
@@ -251,12 +251,12 @@ namespace Common
 		arg = Math::FTVector3(x, y, z);
 	}
 
-	void FileIOHelper::ParseVector2(FTDS::String& line, Math::FTVector2& arg)
+	void Common::FileIOHelper::ParseVector2(Common::FTDS::String& line, Math::FTVector2& arg)
 	{
 		line.ExtractBracketedVal(line, "(", ")");
 
-		FTDS::String xStr;
-		FTDS::String yStr;
+		Common::FTDS::String xStr;
+		Common::FTDS::String yStr;
 
 		line.ExtractUntilFirst(xStr, ",");
 		line.ExtractFromLast(yStr, ",");
@@ -267,21 +267,21 @@ namespace Common
 		arg = Math::FTVector2(x, y);
 	}
 
-	void FileIOHelper::ParseVector4(FTDS::String& line, Math::FTVector4& arg)
+	void Common::FileIOHelper::ParseVector4(Common::FTDS::String& line, Math::FTVector4& arg)
 	{
 		line.ExtractBracketedVal(line, "(", ")");
 
 		// Values at both ends.
-		FTDS::String xStr;
-		FTDS::String wStr;
+		Common::FTDS::String xStr;
+		Common::FTDS::String wStr;
 
 		line.ExtractUntilFirst(xStr, ",");
 		line.ExtractUntilLast(wStr, ",");
 
 		// Values inbetween others.
-		FTDS::String inBetw;
-		FTDS::String yStr;
-		FTDS::String zStr;
+		Common::FTDS::String inBetw;
+		Common::FTDS::String yStr;
+		Common::FTDS::String zStr;
 
 		line.ExtractBracketedVal(inBetw, ",", ",");
 		inBetw.ExtractUntilFirst(yStr, ",");
@@ -295,7 +295,7 @@ namespace Common
 		arg = Math::FTVector4(x, y, z, w);
 	}
 
-	void FileIOHelper::ParseInt(FTDS::String& line, int& arg)
+	void Common::FileIOHelper::ParseInt(Common::FTDS::String& line, int& arg)
 	{
 		// Remove tab identation.
 		size_t tabEnd = line.RFind("\t");
@@ -304,7 +304,7 @@ namespace Common
 		arg = std::stoi(line.C_Str());
 	}
 
-	void FileIOHelper::ParseUnsignedInt(FTDS::String& line, unsigned int& arg)
+	void Common::FileIOHelper::ParseUnsignedInt(Common::FTDS::String& line, unsigned int& arg)
 	{
 		// Remove tab identation.
 		size_t tabEnd = line.RFind("\t");
@@ -313,7 +313,7 @@ namespace Common
 		arg = std::stoul(line.C_Str(), nullptr, 0);
 	}
 
-	void FileIOHelper::ParseSize(FTDS::String& line, size_t& arg)
+	void Common::FileIOHelper::ParseSize(Common::FTDS::String& line, size_t& arg)
 	{
 		// Remove tab identation.
 		size_t tabEnd = line.RFind("\t");
@@ -322,7 +322,7 @@ namespace Common
 		arg = static_cast<size_t>(std::stoul(line.C_Str(), nullptr, 0));
 	}
 
-	void FileIOHelper::ParseFloat(FTDS::String& line, float& arg)
+	void Common::FileIOHelper::ParseFloat(Common::FTDS::String& line, float& arg)
 	{
 		// Remove tab identation.
 		size_t tabEnd = line.RFind("\t");
@@ -331,14 +331,14 @@ namespace Common
 		arg = std::stof(line.C_Str());
 	}
 
-	void FileIOHelper::ParseBool(FTDS::String& line, bool& arg)
+	void Common::FileIOHelper::ParseBool(Common::FTDS::String& line, bool& arg)
 	{
 		// Remove tab identation.
 		line.ExtractFromLast("\t");
 		arg = StrToBool(line);
 	}
 
-	void FileIOHelper::ParseString(FTDS::String& line, FTDS::String& arg)
+	void Common::FileIOHelper::ParseString(Common::FTDS::String& line, Common::FTDS::String& arg)
 	{
 		// Remove tab identation.
 		size_t tabEnd = line.RFind("\t");
@@ -347,10 +347,10 @@ namespace Common
 		arg.Assign(line);
 	}
 
-	void FileIOHelper::BeginDataPackSave(std::ofstream& ofs, FTDS::String dataPackKey)
+	void Common::FileIOHelper::BeginDataPackSave(std::ofstream& ofs, Common::FTDS::String dataPackKey)
 	{
 		mDataPackIdent = mItemCounts.size();
-		mItemIdent	   = FTDS::String(mDataPackIdent + 1, '\t');
+		mItemIdent	   = Common::FTDS::String(mDataPackIdent + 1, '\t');
 
 		if (0 < mItemCounts.size())
 		{
@@ -362,7 +362,7 @@ namespace Common
 		std::cout << "Saving data pack : " << dataPackKey.C_Str() << '\n';
 	}
 
-	void FileIOHelper::EndDataPackSave(std::ofstream& ofs, FTDS::String dataPackKey)
+	void Common::FileIOHelper::EndDataPackSave(std::ofstream& ofs, Common::FTDS::String dataPackKey)
 	{
 		assert(mCurrentDataPack.back() == dataPackKey);
 
@@ -370,17 +370,17 @@ namespace Common
 		mItemCounts.pop_back();
 		mCurrentDataPack.pop_back();
 		mDataPackIdent = mItemCounts.size();
-		mItemIdent	   = FTDS::String(mDataPackIdent + 1, '\t');
+		mItemIdent	   = Common::FTDS::String(mDataPackIdent + 1, '\t');
 
 		// Returning to the datapack ident level
-		FTDS::String title = FTDS::String(mDataPackIdent, '\t') + dataPackKey.C_Str() + "<" + std::to_string(itemCount).c_str() + ">";
+		Common::FTDS::String title = Common::FTDS::String(mDataPackIdent, '\t') + dataPackKey.C_Str() + "<" + std::to_string(itemCount).c_str() + ">";
 		mDataBuffer.push_back(title);
 	}
 
-	void FileIOHelper::SaveBufferToFile(std::ofstream& ofs)
+	void Common::FileIOHelper::SaveBufferToFile(std::ofstream& ofs)
 	{
 		// Key & Value pairs = size() * 2
-		std::list<FTDS::String>::reverse_iterator iter = mDataBuffer.rbegin();
+		std::list<Common::FTDS::String>::reverse_iterator iter = mDataBuffer.rbegin();
 		for (; iter != mDataBuffer.rend(); ++iter)
 		{
 			ofs << (*iter).C_Str() << '\n';
@@ -388,27 +388,27 @@ namespace Common
 		mDataBuffer.clear();
 	}
 
-	void FileIOHelper::SaveVector3(std::ofstream& ofs, const FTDS::String& valName, const Math::FTVector3& vec3)
+	void Common::FileIOHelper::SaveVector3(std::ofstream& ofs, const Common::FTDS::String& valName, const Math::FTVector3& vec3)
 	{
-		FTDS::String itemTitle = mItemIdent + valName + "[Vector3]" + "\n";
-		FTDS::String item	   = mItemIdent +
+		Common::FTDS::String itemTitle = mItemIdent + valName + "[Vector3]" + "\n";
+		Common::FTDS::String item	   = mItemIdent +
 			"(" + std::to_string(vec3.x).c_str() + "," + std::to_string(vec3.y).c_str() + "," + std::to_string(vec3.z).c_str() + ")";
 		mDataBuffer.push_back(itemTitle + item);
 		++mItemCounts.back();
 	}
 
-	void FileIOHelper::SaveVector2(std::ofstream& ofs, const FTDS::String& valName, const Math::FTVector2& vec2)
+	void Common::FileIOHelper::SaveVector2(std::ofstream& ofs, const Common::FTDS::String& valName, const Math::FTVector2& vec2)
 	{
-		FTDS::String itemTitle = mItemIdent + valName + "[Vector2]" + "\n";
-		FTDS::String item	   = mItemIdent + "(" + std::to_string(vec2.x).c_str() + "," + std::to_string(vec2.y).c_str() + ")";
+		Common::FTDS::String itemTitle = mItemIdent + valName + "[Vector2]" + "\n";
+		Common::FTDS::String item	   = mItemIdent + "(" + std::to_string(vec2.x).c_str() + "," + std::to_string(vec2.y).c_str() + ")";
 		mDataBuffer.push_back(itemTitle + item);
 		++mItemCounts.back();
 	}
 
-	void FileIOHelper::SaveVector4(std::ofstream& ofs, const FTDS::String& valName, const Math::FTVector4& vec4)
+	void Common::FileIOHelper::SaveVector4(std::ofstream& ofs, const Common::FTDS::String& valName, const Math::FTVector4& vec4)
 	{
-		FTDS::String itemTitle = mItemIdent + valName + "[Vector4]" + "\n";
-		FTDS::String item =
+		Common::FTDS::String itemTitle = mItemIdent + valName + "[Vector4]" + "\n";
+		Common::FTDS::String item =
 			mItemIdent +
 			"(" +
 			std::to_string(vec4.x).c_str() + "," + std::to_string(vec4.y).c_str() +
@@ -418,79 +418,79 @@ namespace Common
 		++mItemCounts.back();
 	}
 
-	void FileIOHelper::SaveInt(std::ofstream& ofs, const FTDS::String& valName, const int& intVal)
+	void Common::FileIOHelper::SaveInt(std::ofstream& ofs, const Common::FTDS::String& valName, const int& intVal)
 	{
-		FTDS::String itemTitle = mItemIdent + valName + "[int]" + "\n";
-		FTDS::String item	   = mItemIdent + std::to_string(intVal).c_str();
+		Common::FTDS::String itemTitle = mItemIdent + valName + "[int]" + "\n";
+		Common::FTDS::String item	   = mItemIdent + std::to_string(intVal).c_str();
 		mDataBuffer.push_back(itemTitle + item);
 		++mItemCounts.back();
 	}
 
-	void FileIOHelper::SaveUnsignedInt(std::ofstream& ofs, const FTDS::String& valName, const unsigned int& intVal)
+	void Common::FileIOHelper::SaveUnsignedInt(std::ofstream& ofs, const Common::FTDS::String& valName, const unsigned int& intVal)
 	{
-		FTDS::String itemTitle = mItemIdent + valName + "[unsigned int]" + "\n";
-		FTDS::String item	   = mItemIdent + std::to_string(intVal).c_str();
+		Common::FTDS::String itemTitle = mItemIdent + valName + "[unsigned int]" + "\n";
+		Common::FTDS::String item	   = mItemIdent + std::to_string(intVal).c_str();
 		mDataBuffer.push_back(itemTitle + item);
 		++mItemCounts.back();
 	}
 
-	void FileIOHelper::SaveSize(std::ofstream& ofs, const FTDS::String& valName, const size_t& sizeVal)
+	void Common::FileIOHelper::SaveSize(std::ofstream& ofs, const Common::FTDS::String& valName, const size_t& sizeVal)
 	{
-		FTDS::String itemTitle = mItemIdent + valName + "[size]" + "\n";
-		FTDS::String item	   = mItemIdent + std::to_string(sizeVal).c_str();
+		Common::FTDS::String itemTitle = mItemIdent + valName + "[size]" + "\n";
+		Common::FTDS::String item	   = mItemIdent + std::to_string(sizeVal).c_str();
 		mDataBuffer.push_back(itemTitle + item);
 		++mItemCounts.back();
 	}
 
-	void FileIOHelper::SaveFloat(std::ofstream& ofs, const FTDS::String& valName, const float& floatVal)
+	void Common::FileIOHelper::SaveFloat(std::ofstream& ofs, const Common::FTDS::String& valName, const float& floatVal)
 	{
-		FTDS::String itemTitle = mItemIdent + valName + "[float]" + "\n";
-		FTDS::String item	   = mItemIdent + std::to_string(floatVal).c_str();
+		Common::FTDS::String itemTitle = mItemIdent + valName + "[float]" + "\n";
+		Common::FTDS::String item	   = mItemIdent + std::to_string(floatVal).c_str();
 		mDataBuffer.push_back(itemTitle + item);
 		++mItemCounts.back();
 	}
 
-	void FileIOHelper::SaveString(std::ofstream& ofs, FTDS::String& valName, const FTDS::String& strVal)
+	void Common::FileIOHelper::SaveString(std::ofstream& ofs, Common::FTDS::String& valName, const Common::FTDS::String& strVal)
 	{
-		FTDS::String itemTitle = mItemIdent + valName + "[string]" + "\n";
-		FTDS::String item	   = mItemIdent + strVal;
+		Common::FTDS::String itemTitle = mItemIdent + valName + "[string]" + "\n";
+		Common::FTDS::String item	   = mItemIdent + strVal;
 		mDataBuffer.push_back(itemTitle + item);
 		++mItemCounts.back();
 	}
 
-	void FileIOHelper::SaveString(std::ofstream& ofs, const char* valName, const FTDS::String& strVal)
+	void Common::FileIOHelper::SaveString(std::ofstream& ofs, const char* valName, const Common::FTDS::String& strVal)
 	{
-		FTDS::String itemTitle = mItemIdent + valName + "[string]" + "\n";
-		FTDS::String item	   = mItemIdent + strVal.C_Str();
+		Common::FTDS::String itemTitle = mItemIdent + valName + "[string]" + "\n";
+		Common::FTDS::String item	   = mItemIdent + strVal.C_Str();
 		mDataBuffer.push_back(itemTitle + item);
 		++mItemCounts.back();
 	}
 
-	inline void FileIOHelper::SaveString(std::ofstream& ofs, const char* valName, const FTDS::String* strVal)
+	inline void Common::FileIOHelper::SaveString(std::ofstream& ofs, const char* valName, const Common::FTDS::String* strVal)
 	{
-		FTDS::String itemTitle = mItemIdent + valName + "[string]" + "\n";
-		FTDS::String item	   = mItemIdent + strVal->C_Str();
+		Common::FTDS::String itemTitle = mItemIdent + valName + "[string]" + "\n";
+		Common::FTDS::String item	   = mItemIdent + strVal->C_Str();
 		mDataBuffer.push_back(itemTitle + item);
 		++mItemCounts.back();
 	}
 
-	void FileIOHelper::SaveString(std::ofstream& ofs, const char* valName, const char* strVal)
+	void Common::FileIOHelper::SaveString(std::ofstream& ofs, const char* valName, const char* strVal)
 	{
-		FTDS::String itemTitle = mItemIdent + valName + "[string]" + "\n";
-		FTDS::String item	   = mItemIdent + strVal;
+		Common::FTDS::String itemTitle = mItemIdent + valName + "[string]" + "\n";
+		Common::FTDS::String item	   = mItemIdent + strVal;
 		mDataBuffer.push_back(itemTitle + item);
 		++mItemCounts.back();
 	}
 
-	void FileIOHelper::SaveBool(std::ofstream& ofs, const FTDS::String& valName, const bool& boolVal)
+	void Common::FileIOHelper::SaveBool(std::ofstream& ofs, const Common::FTDS::String& valName, const bool& boolVal)
 	{
-		FTDS::String itemTitle = mItemIdent + valName + "[bool]" + "\n";
-		FTDS::String item	   = mItemIdent + ToString(boolVal);
+		Common::FTDS::String itemTitle = mItemIdent + valName + "[bool]" + "\n";
+		Common::FTDS::String item	   = mItemIdent + ToString(boolVal);
 		mDataBuffer.push_back(itemTitle + item);
 		++mItemCounts.back();
 	}
 
-	bool FileIOHelper::GetLine(std::ifstream& ifs, FTDS::String& str, char delimiter)
+	bool Common::FileIOHelper::GetLine(std::ifstream& ifs, Common::FTDS::String& str, char delimiter)
 	{
 		if (ifs.fail())
 			return false;

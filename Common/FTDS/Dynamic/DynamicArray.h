@@ -34,7 +34,7 @@ namespace Common
 				this->mData[mSize - 1] = value;
 			}
 
-			void Copy(FTDS::DynamicArray<TYPE>& from)
+			void Copy(Common::FTDS::DynamicArray<TYPE>& from)
 			{
 				this->Reserve(from.GetSize());
 

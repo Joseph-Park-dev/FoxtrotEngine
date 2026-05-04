@@ -13,7 +13,7 @@ namespace Common
 			void		 SetLink(RecordNode* next) { mLink = next; }
 
 		public:
-			RecordNode(FTDS::String key, TYPE val)
+			RecordNode(Common::FTDS::String key, TYPE val)
 				: Record<TYPE>(key, val)
 				, mLink(nullptr)
 			{

@@ -15,7 +15,7 @@ namespace Common
 
 #define STRING_INPUT std::enable_if<std::is_same<T, const char*>::value, void>::type
 
-		class String : public FTDS::DynamicArray<char>
+		class String : public Common::FTDS::DynamicArray<char>
 		{
 			////////////////////////////////
 			/// String utility functions ///
@@ -23,9 +23,9 @@ namespace Common
 		public:
 			void PushBack(char value) override
 			{
-				FTDS::DynamicArray<char>::PopBack();
-				FTDS::DynamicArray<char>::PushBack(value);
-				FTDS::DynamicArray<char>::PushBack('\0');
+				Common::FTDS::DynamicArray<char>::PopBack();
+				Common::FTDS::DynamicArray<char>::PushBack(value);
+				Common::FTDS::DynamicArray<char>::PushBack('\0');
 			}
 
 			const int RFind(const char* target) const
@@ -39,9 +39,9 @@ namespace Common
 				int i = static_cast<int>(GetLength() - targetLen);
 				for (; 0 <= i; --i) // Start from end
 				{
-					FTDS::String query;
+					Common::FTDS::String query;
 					this->SubStr(query, i, targetLen);
-					if (FTDS::StringEqual(query.C_Str(), target))
+					if (Common::FTDS::StringEqual(query.C_Str(), target))
 					{
 						return i; // Found last occurrence
 					}
@@ -59,7 +59,7 @@ namespace Common
 
 				for (int i = 0; i < GetLength() - targetLen; ++i) // Start from the Beginning
 				{
-					FTDS::String query;
+					Common::FTDS::String query;
 					this->SubStr(query, i, targetLen);
 					if (query.Equal(std::move(target)))
 						return i; // Found last occurrence
@@ -77,17 +77,17 @@ namespace Common
 				this->Size() += inputLength;
 			}
 
-			void Append(FTDS::String& val)
+			void Append(Common::FTDS::String& val)
 			{
 				this->Append(val.C_Str());
 			}
 
-			void Append(const FTDS::String& val)
+			void Append(const Common::FTDS::String& val)
 			{
 				this->Append(val.C_Str());
 			}
 
-			void SubStr(FTDS::String& result, size_t start, size_t length) const
+			void SubStr(Common::FTDS::String& result, size_t start, size_t length) const
 			{
 				if (start >= GetLength())
 					return;
@@ -126,7 +126,7 @@ namespace Common
 				this->Size() = inputLength + 1;
 			}
 
-			void Assign(const FTDS::String& val)
+			void Assign(const Common::FTDS::String& val)
 			{
 				Assign(val.C_Str());
 			}
@@ -138,7 +138,7 @@ namespace Common
 				((this->Append(rest), ...));
 			}
 
-			int ExtractUntilFirst(FTDS::String& result, const char* ch, bool trim = false)
+			int ExtractUntilFirst(Common::FTDS::String& result, const char* ch, bool trim = false)
 			{
 				int end = LFind(ch);
 				if (end == -1)
@@ -153,7 +153,7 @@ namespace Common
 				return end;
 			}
 
-			void ExtractUntilLast(FTDS::String& result, const char* ch)
+			void ExtractUntilLast(Common::FTDS::String& result, const char* ch)
 			{
 				int end = RFind(ch);
 				if (end == -1)
@@ -161,7 +161,7 @@ namespace Common
 				SubStr(result, 0, end);
 			}
 
-			void ExtractFromLast(FTDS::String& result, const char* ch)
+			void ExtractFromLast(Common::FTDS::String& result, const char* ch)
 			{
 				int end = RFind(ch);
 				if (end == -1)
@@ -177,7 +177,7 @@ namespace Common
 				SubStr(end + 1, GetLength());
 			}
 
-			void ExtractBracketedVal(FTDS::String& result, const char* left, const char* right)
+			void ExtractBracketedVal(Common::FTDS::String& result, const char* left, const char* right)
 			{
 				int begin = LFind(left);
 				int end	  = RFind(right);
@@ -195,7 +195,7 @@ namespace Common
 				return !StringEqual(this->C_Str(), right);
 			}
 
-			bool Contains(FTDS::String& value)
+			bool Contains(Common::FTDS::String& value)
 			{
 				return -1 < RFind(value.C_Str());
 			}
@@ -205,9 +205,9 @@ namespace Common
 				return -1 < RFind(value);
 			}
 
-			inline void Split(const char* splitVal, FTDS::DynamicArray<FTDS::String>& result)
+			inline void Split(const char* splitVal, Common::FTDS::DynamicArray<Common::FTDS::String>& result)
 			{
-				FTDS::String bufStr;
+				Common::FTDS::String bufStr;
 				while (-1 < ExtractUntilFirst(bufStr, splitVal, true))
 				{
 					result.PushBack(bufStr.C_Str());
@@ -261,65 +261,65 @@ namespace Common
 				this->Assign(str);
 			}
 
-			void operator=(const FTDS::String& str)
+			void operator=(const Common::FTDS::String& str)
 			{
 				this->Assign(str.C_Str());
 			}
 
-			FTDS::String operator+(const char* str)
+			Common::FTDS::String operator+(const char* str)
 			{
-				FTDS::String result(mData);
+				Common::FTDS::String result(mData);
 				result.Append(str);
 				return result;
 			}
 
-			FTDS::String operator+(const FTDS::String& str)
+			Common::FTDS::String operator+(const Common::FTDS::String& str)
 			{
-				FTDS::String result(mData);
+				Common::FTDS::String result(mData);
 				result.Append(str);
 				return result;
 			}
 
-			FTDS::String operator+=(const FTDS::String& str)
+			Common::FTDS::String operator+=(const Common::FTDS::String& str)
 			{
-				FTDS::String result(mData);
+				Common::FTDS::String result(mData);
 				result.Append(str);
 				return result;
 			}
 
 		public:
 			String()
-				: FTDS::DynamicArray<char>()
+				: Common::FTDS::DynamicArray<char>()
 			{
-				FTDS::DynamicArray<char>::PushBack('\0');
+				Common::FTDS::DynamicArray<char>::PushBack('\0');
 			}
 
 			String(char* val)
-				: FTDS::DynamicArray<char>()
+				: Common::FTDS::DynamicArray<char>()
 			{
 				Assign(val);
 			}
 
 			String(const char* val)
-				: FTDS::DynamicArray<char>()
+				: Common::FTDS::DynamicArray<char>()
 			{
 				Assign(val);
 			}
 
-			String(FTDS::String& val)
-				: FTDS::DynamicArray<char>()
+			String(Common::FTDS::String& val)
+				: Common::FTDS::DynamicArray<char>()
 			{
 				Assign(val.C_Str());
 			}
 
-			String(const FTDS::String& val)
-				: FTDS::DynamicArray<char>()
+			String(const Common::FTDS::String& val)
+				: Common::FTDS::DynamicArray<char>()
 			{
 				Assign(val.C_Str());
 			}
 
 			String(size_t num, char val)
-				: FTDS::DynamicArray<char>()
+				: Common::FTDS::DynamicArray<char>()
 			{
 				Reserve(num + 1);
 				this->Size() = num + 1;
@@ -332,15 +332,15 @@ namespace Common
 			void Clear() override
 			{
 				FTDS::Array<char>::Clear();
-				FTDS::DynamicArray<char>::PushBack('\0');
+				Common::FTDS::DynamicArray<char>::PushBack('\0');
 			}
 		};
 
 		template <>
-		inline void FTDS::Array<FTDS::String>::AllocateMem(size_t newCap)
+		inline void FTDS::Array<Common::FTDS::String>::AllocateMem(size_t newCap)
 		{
 			// Create an array with renewed capacity.
-			FTDS::String* newArr = DBG_NEW FTDS::String[newCap];
+			Common::FTDS::String* newArr = DBG_NEW Common::FTDS::String[newCap];
 
 			// Copy previous data.
 			for (size_t i = 0; i < mCapacity; ++i)
@@ -356,7 +356,7 @@ namespace Common
 		}
 
 		template <>
-		inline void FTDS::DynamicArray<const char*>::PushBack(const char* value)
+		inline void Common::FTDS::DynamicArray<const char*>::PushBack(const char* value)
 		{
 			assert(value);
 
@@ -372,7 +372,7 @@ namespace Common
 		}
 
 		template <>
-		inline void FTDS::DynamicArray<FTDS::String*>::PushBack(FTDS::String* value)
+		inline void Common::FTDS::DynamicArray<Common::FTDS::String*>::PushBack(Common::FTDS::String* value)
 		{
 			assert(value);
 
@@ -380,7 +380,7 @@ namespace Common
 			if (this->mCapacity <= mSize)
 			{
 				// Grow the array by double.
-				FTDS::DynamicArray<FTDS::String*>::AllocateMem(mSize * 2);
+				Common::FTDS::DynamicArray<Common::FTDS::String*>::AllocateMem(mSize * 2);
 			}
 
 			this->mData;
@@ -390,7 +390,7 @@ namespace Common
 		}
 
 		template <>
-		inline int FTDS::DynamicArray<FTDS::String*>::Find(FTDS::String* value)
+		inline int Common::FTDS::DynamicArray<Common::FTDS::String*>::Find(Common::FTDS::String* value)
 		{
 			assert(this->mData);
 
@@ -404,12 +404,12 @@ namespace Common
 
 		inline bool StrContains(const char* str, const char* val)
 		{
-			return -1 < FTDS::String(str).RFind(val);
+			return -1 < Common::FTDS::String(str).RFind(val);
 		}
 
-		inline bool StrContains(const char* str, FTDS::String& val)
+		inline bool StrContains(const char* str, Common::FTDS::String& val)
 		{
-			int idx = FTDS::String(str).RFind(val.C_Str());
+			int idx = Common::FTDS::String(str).RFind(val.C_Str());
 			return -1 < idx;
 		}
 
@@ -464,7 +464,7 @@ namespace Common
 			return result;
 		}
 
-		inline void ToString(FTDS::String& str, int val)
+		inline void ToString(Common::FTDS::String& str, int val)
 		{
 			if (val == 0)
 			{
@@ -481,22 +481,22 @@ namespace Common
 			str.Reverse();
 		}
 
-		inline bool operator==(const FTDS::String& lhs, const char* rhs)
+		inline bool operator==(const Common::FTDS::String& lhs, const char* rhs)
 		{
 			return lhs.Equal(std::move(rhs));
 		}
 
-		inline bool operator==(const char* lhs, const FTDS::String& rhs)
+		inline bool operator==(const char* lhs, const Common::FTDS::String& rhs)
 		{
 			return rhs.Equal(std::move(lhs));
 		}
 
-		inline bool operator==(const FTDS::String& lhs, const FTDS::String& rhs)
+		inline bool operator==(const Common::FTDS::String& lhs, const Common::FTDS::String& rhs)
 		{
 			return lhs.Equal(rhs.C_Str());
 		}
 
-		inline bool operator!=(const FTDS::String& lhs, const FTDS::String& rhs)
+		inline bool operator!=(const Common::FTDS::String& lhs, const Common::FTDS::String& rhs)
 		{
 			return lhs.NotEqual(rhs.C_Str());
 		}

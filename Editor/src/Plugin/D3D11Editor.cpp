@@ -75,7 +75,7 @@ private:
 
 	bool				mIsUpdatingGame;
 	bool				mIsResizingWindow;
-	Core::FTDS::String* mEditorDataFileName;
+	Common::FTDS::String* mEditorDataFileName;
 
 private:
 	// These member functions are to be included in Initialize()
@@ -281,7 +281,7 @@ D3D11Editor::D3D11Editor(Core::FTCore* base)
 
 	, mIsUpdatingGame(false)
 	, mIsResizingWindow(false)
-	, mEditorDataFileName(DBG_NEW Core::FTDS::String)
+	, mEditorDataFileName(DBG_NEW Common::FTDS::String)
 {
 }
 

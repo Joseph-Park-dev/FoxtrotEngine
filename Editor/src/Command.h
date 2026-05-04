@@ -149,16 +149,16 @@ namespace Editor
 		void Undo() override;
 
 	public:
-		void SetNextVal(Core::FTDS::String nextVal);
+		void SetNextVal(Common::FTDS::String nextVal);
 
 	public:
-		StrEditCommand(Core::FTDS::String& valRef);
+		StrEditCommand(Common::FTDS::String& valRef);
 		~StrEditCommand();
 
 	private:
-		Core::FTDS::String& mValue;
-		Core::FTDS::String	mPrevValue;
-		Core::FTDS::String	mNextValue;
+		Common::FTDS::String& mValue;
+		Common::FTDS::String	mPrevValue;
+		Common::FTDS::String	mNextValue;
 	};
 
 	class WStrEditCommand : public Command

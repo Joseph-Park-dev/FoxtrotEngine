@@ -41,12 +41,11 @@ namespace Editor
 	using UPDATE_VEC2_VAL		  = void (*)(const char* label, Math::FTVector2& ref);
 	using UPDATE_VEC3_VAL		  = void (*)(const char* label, Math::FTVector3& ref);
 	using UPDATE_VEC4_VAL		  = void (*)(const char* label, Math::FTVector4& ref);
-	using UPDATE_STR_VAL		  = void (*)(const char* label, Core::FTDS::String& ref);
+	using UPDATE_STR_VAL		  = void (*)(const char* label, Common::FTDS::String& ref);
 
 	class ActorCommand;
 	class Command;
-	class CommandHistory 
-		: public Core::Entity
+	class CommandHistory : public Core::Entity
 	{
 		SINGLETON(CommandHistory)
 	public:
@@ -67,7 +66,7 @@ namespace Editor
 		void UpdateVector2Value(const char* label, Math::FTVector2& ref, float modSpeed = FLOATMOD_SPEED);
 		void UpdateVector3Value(const char* label, Math::FTVector3& ref, float modSpeed = FLOATMOD_SPEED);
 		void UpdateVector4Value(const char* label, Math::FTVector4& ref, float modSpeed = FLOATMOD_SPEED);
-		void UpdateStringValue(const char* label, Core::FTDS::String& ref);
+		void UpdateStringValue(const char* label, Common::FTDS::String& ref);
 
 	public:
 		void Update();
@@ -75,10 +74,10 @@ namespace Editor
 		void ShutDown();
 
 	private:
-		Core::FTDS::ArrayStack<Command*>* mPrevious;
-		Core::FTDS::ArrayStack<Command*>* mNext;
-		Command*						  mCurrent;
-		bool							  mIsRecording; // A value is being modified on UI.
+		Common::FTDS::ArrayStack<Command*>* mPrevious;
+		Common::FTDS::ArrayStack<Command*>* mNext;
+		Command*							mCurrent;
+		bool								mIsRecording; // A value is being modified on UI.
 
 	private:
 		// Get the command located at the pointer position.
@@ -103,7 +102,7 @@ namespace Editor
 		EDITOR_API void UpdateVector2Value(const char* label, Math::FTVector2& ref, float modSpeed = FLOATMOD_SPEED);
 		EDITOR_API void UpdateVector3Value(const char* label, Math::FTVector3& ref, float modSpeed = FLOATMOD_SPEED);
 		EDITOR_API void UpdateVector4Value(const char* label, Math::FTVector4& ref, float modSpeed = FLOATMOD_SPEED);
-		EDITOR_API void UpdateStringValue(const char* label, Core::FTDS::String& ref);
+		EDITOR_API void UpdateStringValue(const char* label, Common::FTDS::String& ref);
 	}
 	using GET_CMD_HISTORY = Editor::CommandHistory* (*)();
 } // namespace Editor

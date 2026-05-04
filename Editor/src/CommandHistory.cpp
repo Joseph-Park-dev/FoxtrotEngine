@@ -177,7 +177,7 @@ namespace Editor
 		ref.w = vec4[3];
 	}
 
-	void CommandHistory::UpdateStringValue(const char* label, Core::FTDS::String& ref)
+	void CommandHistory::UpdateStringValue(const char* label, Common::FTDS::String& ref)
 	{
 		if (ref.Capacity() < BufferSize::STRING_BUFFER_SIZE)
 			ref.Reserve(BufferSize::STRING_BUFFER_SIZE);
@@ -350,7 +350,7 @@ namespace Editor
 			CommandHistory::GetInstance()->UpdateVector4Value(label, ref, modSpeed);
 		}
 
-		void UpdateStringValue(const char* label, Core::FTDS::String& ref)
+		void UpdateStringValue(const char* label, Common::FTDS::String& ref)
 		{
 			CommandHistory::GetInstance()->UpdateStringValue(label, ref);
 		}

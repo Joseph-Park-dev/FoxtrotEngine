@@ -40,11 +40,13 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)FTDS\Static\Record.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FTDS\Utils\DSLogs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FTDS\Utils\StrAssign.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Manager\DirectoryHelper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Manager\ResourceManagerBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ResourceSystem\FTResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceSystem\ResourcePack.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TemplateFunctions.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)FileSystem\FileIOHelper.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Manager\DirectoryHelper.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ResourceSystem\FTResource.cpp" />
   </ItemGroup>
 </Project>

@@ -119,7 +119,7 @@ namespace Editor
 	//		aborted.PushBack(DBG_NEW FTDS::String(path));
 	//}
 
-	// void ResourceManager::LoadD3D11ResByType(const char* filePath, Core::FTDS::DynamicArray<Core::FTDS::String*>& aborted)
+	// void ResourceManager::LoadD3D11ResByType(const char* filePath, Common::FTDS::DynamicArray<Common::FTDS::String*>& aborted)
 	//{
 	//	FTDS::String path(filePath);
 	//	size_t		 type = GetCoreTypeIdx(path);

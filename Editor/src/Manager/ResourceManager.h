@@ -28,8 +28,8 @@ namespace Editor
 		/// @brief Load a resource with type extracted from filePath.
 		/// @param aborted File paths whose loading was aborted.
 		/// After the first LoadResource() these will be attempted to be loaded again.
-		void LoadCoreResByType(const char* filePath, Core::FTDS::DynamicArray<Core::FTDS::String*>& aborted);
-		void LoadD3D11ResByType(const char* filePath, Core::FTDS::DynamicArray<Core::FTDS::String*>& aborted);
+		void LoadCoreResByType(const char* filePath, Common::FTDS::DynamicArray<Common::FTDS::String*>& aborted);
+		void LoadD3D11ResByType(const char* filePath, Common::FTDS::DynamicArray<Common::FTDS::String*>& aborted);
 
 		// On Editor, loading resource from .chunk is not necessary, thus skip the process.
 		void PassLoadResourceInChunk(std::ifstream& ifs);
@@ -45,17 +45,17 @@ namespace Editor
 		D3D11::ResourceManager* mD3D11Res;
 
 	private:
-		size_t GetCoreTypeIdx(Core::FTDS::String& fileName);
-		size_t GetD3D11TypeIdx(Core::FTDS::String& fileName);
+		size_t GetCoreTypeIdx(Common::FTDS::String& fileName);
+		size_t GetD3D11TypeIdx(Common::FTDS::String& fileName);
 
 	public:
 		/// @brief Creates new resources & adding to resource map.
 		/// @tparam FTRESOURCE Non-graphics resource type.
 		template <typename FTRESOURCE>
-		FTRESOURCE* LoadResource(Core::ResourceManagerBase* managerInst, Core::FTDS::String& filePath)
+		FTRESOURCE* LoadResource(Core::ResourceManagerBase* managerInst, Common::FTDS::String& filePath)
 		{
 			// Get Relative path to Assets folder
-			Core::FTDS::String fileName = ExtractFileName(filePath.C_Str());
+			Common::FTDS::String fileName = ExtractFileName(filePath.C_Str());
 			printf("Message: Loading FTResource %s to key %s. \n", filePath.C_Str(), fileName.C_Str());
 
 			FTResourceDef resDef{ fileName, filePath };
@@ -81,12 +81,12 @@ namespace Editor
 		/// @tparam FTRESOURCE Graphics resource type.
 		/// @param renderer Graphics resource requires renderer instance for initialization.
 		template <typename FTRESOURCE>
-		FTRESOURCE* LoadResource(Core::FTDS::String& filePath, Editor::EditorRenderer* renderer)
+		FTRESOURCE* LoadResource(Common::FTDS::String& filePath, Editor::EditorRenderer* renderer)
 		{
 			assert(renderer);
 
 			// Get Relative path to Assets folder
-			Core::FTDS::String fileName = ExtractFileName(filePath.C_Str());
+			Common::FTDS::String fileName = ExtractFileName(filePath.C_Str());
 			printf("Message: Loading FTResource %s to key %s. \n", filePath.C_Str(), fileName.C_Str());
 
 			FTResourceDef resDef{ fileName, filePath };
@@ -105,7 +105,7 @@ namespace Editor
 			resMap.Reserve(resCount);
 			while (0 < resCount)
 			{
-				Core::FTDS::String dummyStr;
+				Common::FTDS::String dummyStr;
 				FileIOHelper::BeginDataPackLoad(ifs);
 				FileIOHelper::LoadBasicString(ifs, dummyStr);
 				FileIOHelper::LoadBasicString(ifs, dummyStr);
@@ -128,7 +128,7 @@ namespace Editor
 		////////////////////////
 	private:
 		// template <typename FTRESOURCE>
-		// void ClearMap(std::unordered_map<Core::FTDS::String, FTRESOURCE*>& resMap)
+		// void ClearMap(std::unordered_map<Common::FTDS::String, FTRESOURCE*>& resMap)
 		//{
 		//	auto iter = resMap.begin();
 		//	while (iter != resMap.end())
@@ -144,7 +144,7 @@ namespace Editor
 		// }
 
 		template <typename FTRESOURCE>
-		void RemoveResource(Core::FTDS::String key, Core::FTDS::HashMap<FTRESOURCE*>* resMap)
+		void RemoveResource(Common::FTDS::String key, Common::FTDS::HashMap<FTRESOURCE*>* resMap)
 		{
 			resMap->Erase(key);
 			// printf("ERROR: ResourceManager::RemoveResource()->key %s does not exist", key);
@@ -155,15 +155,15 @@ namespace Editor
 		//////////////////////////
 	private:
 		template <typename FTRESOURCE>
-		bool KeyExists(Core::FTDS::String key, Core::FTDS::HashMap<FTRESOURCE>* resMap)
+		bool KeyExists(Common::FTDS::String key, Common::FTDS::HashMap<FTRESOURCE>* resMap)
 		{
-			Core::FTDS::Record<FTRESOURCE>* res = nullptr;
+			Common::FTDS::Record<FTRESOURCE>* res = nullptr;
 			res									= resMap->At(key);
 			return res;
 		}
 
 		template <typename FTRESOURCE>
-		void DisplayLoadedResources(const char* label, Core::FTDS::HashMap<FTRESOURCE*>& resMap)
+		void DisplayLoadedResources(const char* label, Common::FTDS::HashMap<FTRESOURCE*>& resMap)
 		{
 			if (ImGui::TreeNode(label))
 			{

@@ -16,13 +16,13 @@
 #include "Renderer/FoxtrotRenderer.h"
 #include "FileSystem/FileIOHelper.h"
 #include "FileSystem/ChunkLoader.h"
-#include "Static/FTString.h"
-#include "Dynamic/DynamicArray.h"
+#include "FTDS/Static/FTString.h"
+#include "FTDS/Dynamic/DynamicArray.h"
 
 namespace Core
 {
 	SceneManager::SceneManager()
-		: mChunkList(DBG_NEW FTDS::DynamicArray<FTDS::String*>())
+		: mChunkList(DBG_NEW Common::FTDS::DynamicArray<Common::FTDS::String*>())
 		, mCurrentScene(nullptr)
 	{
 	}
@@ -38,7 +38,7 @@ namespace Core
 	void SceneManager::SwitchScene(size_t index)
 	{
 		mCurrentScene->DeleteAll();
-		FTDS::String path = FTDS::String(".\\Chunks\\") + mChunkList->At(index)->C_Str();
+		Common::FTDS::String path = Common::FTDS::String(".\\Chunks\\") + mChunkList->At(index)->C_Str();
 		ChunkLoader::GetInstance()->LoadChunk(path);
 	}
 
@@ -47,12 +47,12 @@ namespace Core
 		return mCurrentScene;
 	}
 
-	FTDS::DynamicArray<FTDS::String*>*& SceneManager::ChunkList()
+	Common::FTDS::DynamicArray<Common::FTDS::String*>*& SceneManager::ChunkList()
 	{
 		return mChunkList;
 	}
 
-	void SceneManager::SetChunkListPath(FTDS::String&& path)
+	void SceneManager::SetChunkListPath(Common::FTDS::String&& path)
 	{
 		mChunkListPath.Assign(path);
 	}

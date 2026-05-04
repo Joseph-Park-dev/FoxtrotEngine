@@ -1,27 +1,27 @@
 #pragma once
-#include "SingletonMacro.h"
+#include "Manager/ResourceManagerBase.h"
 
-#include "FTDS/Static/HashMap.h"
-#include "Plugin/CoreExports.h"
-#include "FTCore.h"
+#include "SingletonMacro.h"
+#include "ResourceSystem/ResourcePack.h"
 
 class FTPremade;
 
 namespace Core
 {
-	class ResourceManager
+	class FTPremade;
+
+	class ResourceManager :
+		public Common::ResourceManagerBase
 	{
 		SINGLETON(ResourceManager)
 
 	public:
 		void LoadDefaultResources() override;
+
+	public:
+		FTPremade* GetPremade(const char* key);
+
+	private:
+		Common::ResourcePack<FTPremade>* mPremades;
 	};
-
-	using GET_RES_MANAGER_INST = Core::ResourceManager* (*)();
-
-#define RES_NAME(type, res) ResourceManager::GetInstance()->GetResName(type::Type, res)
-#define GET_RES(type, key) ResourceManager::GetInstance()->GetResource<type>(type::Type, key)
-
-	// Exported factory — C linkage, stable ABI
-	extern "C" CORE_API ResourceManager* GetCoreResourceManager();
 } // namespace Core

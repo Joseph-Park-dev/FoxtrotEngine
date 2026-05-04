@@ -38,6 +38,6 @@ namespace Core
 		virtual void Execute(const FTEvent& executedEvent);
 
 	private:
-		FTDS::DynamicArray<FTEvent>* mEvent;
+		Common::FTDS::DynamicArray<FTEvent>* mEvent;
 	};
 } // namespace Core

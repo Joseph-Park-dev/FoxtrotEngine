@@ -29,18 +29,19 @@
 #include "FTDS/Static/FTString.h"
 #include "FileSystem/NullKeys.h"
 #include "Plugin/CoreExports.h"
-#include "Entity/ObjectLayout.h"
+
 
 namespace Core
 {
+	using namespace Common;
 	ResourceManager::ResourceManager()
+		: mPremades(DBG_NEW ResourcePack<FTPremade>(0))
 	{
-		InitResMap(ResType::END - 1);
 	}
 
 	ResourceManager::~ResourceManager()
 	{
-		ResourceManagerBase::DeleteAll();
+		delete mPremades;
 	}
 
 	/**
@@ -48,7 +49,7 @@ namespace Core
 	 *
 	 * This routine first clears existing resources, loads default (code-generated) ones,
 	 * then reads multiple resource data packs from the provided input stream `ifs`.
-	 * Each pack is located via Core::FileIOHelper::BeginDataPackLoad and the appropriate loader
+	 * Each pack is located via Common::FileIOHelper::BeginDataPackLoad and the appropriate loader
 	 * template is dispatched (LoadResourceFromChunk or LoadGraphicsResourceFromChunk).
 	 *
 	 * @param ifs Input file stream positioned at the start of the resource data pack.
@@ -66,40 +67,40 @@ namespace Core
 	//
 	//	LoadDefaultResources();
 	//
-	//	std::pair<size_t, FTDS::String> resPack	  = Core::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RESOURCE_DATA);
+	//	std::pair<size_t, Common::FTDS::String> resPack	  = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RESOURCE_DATA);
 	//	size_t							packCount = resPack.first;
 	//
-	//	std::pair<size_t, FTDS::String> desc = Core::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTText::FT_TEXT);
+	//	std::pair<size_t, Common::FTDS::String> desc = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTText::FT_TEXT);
 	//	LoadResourceFromChunk<FTText>(ifs, mTexts, desc.first);
 	//
-	//	desc = Core::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
+	//	desc = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
 	//	LoadResourceFromChunk<FTCSV>(ifs, mCSVs, desc.first);
 	//
-	//	desc = Core::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::JSON::JSON);
+	//	desc = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::JSON::JSON);
 	//	LoadResourceFromChunk<FTJSON>(ifs, mJSONs, desc.first);
 	//
-	//	desc = Core::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Sound::SOUND);
+	//	desc = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Sound::SOUND);
 	//	LoadResourceFromChunk<Sound>(ifs, mSounds, desc.first);
 	//
-	//	desc = Core::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMeshGroup::FT_MESH_GROUP);
+	//	desc = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMeshGroup::FT_MESH_GROUP);
 	//	LoadGraphicsResourceFromChunk<FTMeshGroup>(ifs, mMeshGroups, desc.first, mRenderer);
 	//
-	//	desc = Core::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTexture::FT_TEXTURE);
+	//	desc = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTexture::FT_TEXTURE);
 	//	LoadGraphicsResourceFromChunk<FTSprite>(ifs, mSprites, desc.first, mRenderer);
 	//
-	//	desc = Core::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTileMap::FT_TILEMAP);
+	//	desc = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTileMap::FT_TILEMAP);
 	//	LoadResourceFromChunk<FTTileMap>(ifs, mTileMaps, desc.first);
 	//
-	//	desc = Core::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
+	//	desc = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
 	//	LoadGraphicsResourceFromChunk<FTSpriteAnimation>(ifs, mSpriteAnimations, desc.first, mRenderer);
 	//
-	//	desc = Core::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
+	//	desc = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
 	//	LoadGraphicsResourceFromChunk<FTSpineAnimation>(ifs, mSpineAnimations, desc.first, mRenderer);
 	//
-	//	desc = Core::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTFont::FTFONT);
+	//	desc = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTFont::FTFONT);
 	//	LoadGraphicsResourceFromChunk<FTFont>(ifs, mFonts, desc.first, mRenderer);
 	//
-	//	desc = Core::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPremade::FT_PREMADE);
+	//	desc = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTPremade::FT_PREMADE);
 	//	LoadResourceFromChunk<FTPremade>(ifs, mPremades, desc.first);
 	//
 	//	LoadMaterials();
@@ -117,12 +118,12 @@ namespace Core
 	 */
 	void ResourceManager::LoadDefaultResources()
 	{
-		// FTDS::HashMap<FTVertexShader*>	 VS;
-		// FTDS::HashMap<FTGeometryShader*> GS;
-		// FTDS::HashMap<FTPixelShader*>	 PS;
+		// Common::FTDS::HashMap<FTVertexShader*>	 VS;
+		// Common::FTDS::HashMap<FTGeometryShader*> GS;
+		// Common::FTDS::HashMap<FTPixelShader*>	 PS;
 
-		// FTResourceDef resDef{
-		//	ChunkKey::NullVal::NULL_OBJECT, ChunkKey::NullVal::NULL_OBJECT
+		// Common::FTResourceDef resDef{
+		//	Common::ChunkKey::NullVal::NULL_OBJECT, Common::ChunkKey::NullVal::NULL_OBJECT
 		// };
 
 		/////////////////////////////////
@@ -132,7 +133,7 @@ namespace Core
 		// VS.Reserve(5);
 
 		//// 2D sprite animation vertex shader
-		// FTDS::String vsPath = Path::Resource::SHADERS_2D;
+		// Common::FTDS::String vsPath = Path::Resource::SHADERS_2D;
 		// resDef.FileName		= "SpriteVS.hlsl";
 		// vsPath.Append(resDef.FileName);
 		// resDef.RelativePath = vsPath.C_Str();
@@ -346,7 +347,7 @@ namespace Core
 		// PSODef psoDef;
 		//{
 		//	psoDef.FileName		= "SpritePSO";
-		//	psoDef.RelativePath = ChunkKey::NullVal::NULL_OBJECT;
+		//	psoDef.RelativePath = Common::ChunkKey::NullVal::NULL_OBJECT;
 
 		//	psoDef.VS			= VS.At("SpriteVS.hlsl")->Value();
 		//	psoDef.GS			= GS.At("SpriteGS.hlsl")->Value();
@@ -361,7 +362,7 @@ namespace Core
 
 		//{
 		//	psoDef.FileName		= "SpriteAnimPSO";
-		//	psoDef.RelativePath = ChunkKey::NullVal::NULL_OBJECT;
+		//	psoDef.RelativePath = Common::ChunkKey::NullVal::NULL_OBJECT;
 
 		//	psoDef.VS			= VS.At("SpriteVS.hlsl")->Value();
 		//	psoDef.GS			= GS.At("SpriteGS.hlsl")->Value();
@@ -374,9 +375,8 @@ namespace Core
 		//	mPSOs->Insert(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
 		//}
 	}
-
-	ResourceManager* GetCoreResourceManager()
+	Core::FTPremade* ResourceManager::GetPremade(const char* key)
 	{
-		return Core::ResourceManager::GetInstance();
+		return mPremades->GetResource(key);
 	}
 } // namespace Core

@@ -14,7 +14,7 @@
 #include "Actor/ActorGroup.h"
 #include "Scene/Scene.h"
 #include "ResourceSystem/FTPremade.h"
-#include "Dynamic/DynamicArray.h"
+#include "FTDS/Dynamic/DynamicArray.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorSceneManager.h"
@@ -63,7 +63,7 @@ namespace Core
 	}
 
 	EventManager::EventManager()
-		: mEvent(DBG_NEW FTDS::DynamicArray<FTEvent>(1))
+		: mEvent(DBG_NEW Common::FTDS::DynamicArray<FTEvent>(1))
 	{
 	}
 

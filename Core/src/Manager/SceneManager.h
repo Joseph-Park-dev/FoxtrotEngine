@@ -44,9 +44,9 @@ namespace Core
 		virtual Scene* GetCurrentScene();
 
 	public:
-		void SetChunkListPath(FTDS::String&& path);
+		void SetChunkListPath(Common::FTDS::String&& path);
 
-		FTDS::DynamicArray<FTDS::String*>*& ChunkList();
+		Common::FTDS::DynamicArray<Common::FTDS::String*>*& ChunkList();
 
 	public:
 		virtual void Initialize(Scene* scene);
@@ -56,8 +56,8 @@ namespace Core
 		void SaveSceneList(std::ofstream& ofs);
 
 	private:
-		FTDS::String					   mChunkListPath;
+		Common::FTDS::String					   mChunkListPath;
 		Scene*							   mCurrentScene;
-		FTDS::DynamicArray<FTDS::String*>* mChunkList; // List, and order of .chunks
+		Common::FTDS::DynamicArray<Common::FTDS::String*>* mChunkList; // List, and order of .chunks
 	};
 } // namespace Core

@@ -96,7 +96,7 @@ namespace D3D11
 			FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTSpineAnimation::SKIN_COMBINATION, anim->GetSkinCombination());
 		}
 		else
-			FileIOHelper::SaveString(ofs, ChunkKey::SpineAnimator::LOADED_ANIM, Core::ChunkKey::NullVal::NULL_OBJECT);
+			FileIOHelper::SaveString(ofs, ChunkKey::SpineAnimator::LOADED_ANIM, Common::ChunkKey::NullVal::NULL_OBJECT);
 	}
 
 	void SpineAnimator::LoadProperties(std::ifstream& ifs)

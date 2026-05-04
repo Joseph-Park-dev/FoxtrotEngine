@@ -25,14 +25,14 @@ namespace D3D11
 		public SpriteRenderer
 	{
 	public:
-		Core::FTDS::String GetName() const override
+		Common::FTDS::String GetName() const override
 		{
 			return "TileMapRenderer";
 		}
-		Core::FTDS::String& GetTileMapKey();
+		Common::FTDS::String& GetTileMapKey();
 		FTTileMap*			GetTileMap() const;
 
-		void SetTileMapKey(Core::FTDS::String& key);
+		void SetTileMapKey(Common::FTDS::String& key);
 		void SetTileMap(FTTileMap* tileMap);
 
 	public:
@@ -55,7 +55,7 @@ namespace D3D11
 
 	private:
 		FTTileMap*		   mTileMap;
-		Core::FTDS::String mTileMapKey;
+		Common::FTDS::String mTileMapKey;
 
 	public:
 		virtual void SaveProperties(std::ofstream& ofs) override;
@@ -68,7 +68,7 @@ namespace D3D11
 
 	protected:
 		void UpdateCSV();
-		void UpdateCSV(Core::FTDS::String& key);
+		void UpdateCSV(Common::FTDS::String& key);
 #endif
 	};
 

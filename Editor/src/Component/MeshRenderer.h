@@ -41,7 +41,7 @@ namespace D3D11
 		// Component information //
 		///////////////////////////
 	public:
-		virtual Core::FTDS::String GetName() const override { return "MeshRenderer"; }
+		virtual Common::FTDS::String GetName() const override { return "MeshRenderer"; }
 
 		/////////////////////////
 		// Game-loop functions //

@@ -36,7 +36,7 @@ namespace D3D11
 	class SpriteRenderer : public D3D11Component
 	{
 	public:
-		virtual Core::FTDS::String GetName() const override { return "SpriteRenderer"; }
+		virtual Common::FTDS::String GetName() const override { return "SpriteRenderer"; }
 
 	public:
 		virtual void Initialize() override;

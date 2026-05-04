@@ -122,17 +122,17 @@ namespace D3D11
 		if (mMeshGroup)
 			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MESH_KEY, mMeshGroup->GetFileName());
 		else
-			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MESH_KEY, Core::ChunkKey::NullVal::NULL_OBJECT);
+			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MESH_KEY, Common::ChunkKey::NullVal::NULL_OBJECT);
 
 		if (mTexture)
 			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, mTexture->GetFileName());
 		else
-			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, Core::ChunkKey::NullVal::NULL_OBJECT);
+			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, Common::ChunkKey::NullVal::NULL_OBJECT);
 
 		if (mMaterial)
 			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MAT_KEY, mMaterial->GetFileName());
 		else
-			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MAT_KEY, Core::ChunkKey::NullVal::NULL_OBJECT);
+			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MAT_KEY, Common::ChunkKey::NullVal::NULL_OBJECT);
 	}
 
 	void MeshRenderer::LoadProperties(std::ifstream& ifs)

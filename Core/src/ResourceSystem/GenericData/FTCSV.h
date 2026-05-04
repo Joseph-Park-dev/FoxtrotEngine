@@ -34,12 +34,12 @@ namespace Core
 		virtual size_t GetRowCount() const;
 
 		/// @brief Returns the .csv data stored in vector.
-		/// @todo Replace std::vector to FTDS::DynamicArray.
+		/// @todo Replace std::vector to Common::FTDS::DynamicArray.
 		virtual const std::vector<int>& Data() const;
 
 	public:
 		/// @see FTResource::FTResource
-		FTCSV(Core::FTResourceDef& resDef);
+		FTCSV(Common::FTResourceDef& resDef);
 		~FTCSV();
 
 	private:
@@ -54,7 +54,7 @@ namespace Core
 
 	private:
 		/// @brief Parses .csv, sand stores the integer values to mData.
-		void Read(const Core::FTDS::String& path);
+		void Read(const Common::FTDS::String& path);
 	};
 
 	namespace ChunkKey

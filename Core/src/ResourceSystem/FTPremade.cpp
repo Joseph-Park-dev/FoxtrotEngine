@@ -16,7 +16,7 @@
 #include "Manager/ResourceManager.h"
 #include "Scene/Scene.h"
 #include "Actor/Actor.h"
-#include "Static/FTString.h"
+#include "FTDS/Static/FTString.h"
 
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS
@@ -37,7 +37,8 @@
 
 namespace Core
 {
-	FTPremade::FTPremade(FTResourceDef& resDef)
+	using namespace Common;
+	FTPremade::FTPremade(Common::FTResourceDef& resDef)
 		: CoreResource(resDef)
 		, mOrigin(nullptr)
 		, mIsLoaded(false)
@@ -75,8 +76,8 @@ namespace Core
 		if (!mOrigin)
 			mOrigin = DBG_NEW Actor(ChunkKey::ID::CLONE);
 
-		std::ifstream					ifs(path);
-		std::pair<size_t, FTDS::String> pack = Core::FileIOHelper::BeginDataPackLoad(ifs);
+		std::ifstream							ifs(path);
+		std::pair<size_t, Common::FTDS::String> pack = Common::FileIOHelper::BeginDataPackLoad(ifs);
 		mOrigin->LoadProperties(ifs);
 		mOrigin->LoadComponents(ifs);
 
@@ -90,7 +91,7 @@ namespace Core
 	}
 
 #ifdef FOXTROT_EDITOR
-	void FTPremade::Save(FTResourceDef& resDef, Editor::EditorElement* ele)
+	void FTPremade::Save(Common::FTResourceDef& resDef, Editor::EditorElement* ele)
 	{
 		assert(resDef.Path);
 		printf(resDef.Path);
@@ -98,11 +99,11 @@ namespace Core
 		std::ofstream ofs(resDef.Path);
 		if (ofs)
 		{
-			Core::FileIOHelper::BeginDataPackSave(ofs, resDef.FileName);
+			Common::FileIOHelper::BeginDataPackSave(ofs, resDef.FileName);
 			ele->SaveComponents(ofs);
 			ele->SaveProperties(ofs);
-			Core::FileIOHelper::EndDataPackSave(ofs, resDef.FileName);
-			Core::FileIOHelper::SaveBufferToFile(ofs);
+			Common::FileIOHelper::EndDataPackSave(ofs, resDef.FileName);
+			Common::FileIOHelper::SaveBufferToFile(ofs);
 
 			printf("Premade saved to %s\n", resDef.Path);
 		}
@@ -140,7 +141,7 @@ namespace Core
 				mDummyForUI->UpdateUI(true);
 				if (ImGui::Button("Save"))
 				{
-					FTResourceDef resDef{ *GetFileName(), *GetRelativePath() };
+					Common::FTResourceDef resDef{ *GetFileName(), *GetRelativePath() };
 					Save(resDef, mDummyForUI);
 				}
 			}
@@ -152,18 +153,18 @@ namespace Core
 		}
 	}
 
-	FTPremade::FTPremade(FTResourceDef& resDef, Editor::EditorElement* ele)
+	FTPremade::FTPremade(Common::FTResourceDef& resDef, Editor::EditorElement* ele)
 		: FTPremade(resDef)
 	{
 		assert(resDef.Path);
 		std::ofstream ofs(resDef.Path);
 		if (ofs)
 		{
-			Core::FileIOHelper::BeginDataPackSave(ofs, resDef.FileName);
+			Common::FileIOHelper::BeginDataPackSave(ofs, resDef.FileName);
 			ele->SaveComponents(ofs);
 			ele->SaveProperties(ofs);
-			Core::FileIOHelper::EndDataPackSave(ofs, resDef.FileName);
-			Core::FileIOHelper::SaveBufferToFile(ofs);
+			Common::FileIOHelper::EndDataPackSave(ofs, resDef.FileName);
+			Common::FileIOHelper::SaveBufferToFile(ofs);
 
 			printf("Premade %s created to %s\n", resDef.FileName, resDef.Path);
 		}

@@ -34,7 +34,7 @@ namespace Core
 
 	public:
 		/// @see FTResource::FTResource
-		FTJSON(Core::FTResourceDef& resDef);
+		FTJSON(Common::FTResourceDef& resDef);
 
 	private:
 		/// @brief .json data.
@@ -42,7 +42,7 @@ namespace Core
 
 	private:
 		/// @brief Parses the JSON data.
-		void Read(const Core::FTDS::String& path);
+		void Read(const Common::FTDS::String& path);
 	};
 
 	namespace ChunkKey

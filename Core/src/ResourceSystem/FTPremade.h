@@ -52,7 +52,7 @@ namespace Core
 		void LoadProperties(std::ifstream& ifs) override {};
 
 	public:
-		FTPremade(FTResourceDef& resDef);
+		FTPremade(Common::FTResourceDef& resDef);
 		~FTPremade();
 
 	public:
@@ -69,12 +69,12 @@ namespace Core
 
 #ifdef FOXTROT_EDITOR
 	public:
-		void Save(FTResourceDef& resDef, Editor::EditorElement* ele);
+		void Save(Common::FTResourceDef& resDef, Editor::EditorElement* ele);
 
 		virtual void UpdateUI() override;
 
 		/// @brief Creates FTPremade with existing EditorElement
-		FTPremade(FTResourceDef& resDef, Editor::EditorElement* ele);
+		FTPremade(Common::FTResourceDef& resDef, Editor::EditorElement* ele);
 
 	private:
 		Editor::EditorElement*			mDummyForUI;

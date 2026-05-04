@@ -4,19 +4,19 @@
 
 void Core::CoreResource::SaveProperties(std::ofstream& ofs)
 {
-	FileIOHelper::SaveString(ofs, ChunkKey::FTResource::FILE_NAME, *GetFileName());
-	FileIOHelper::SaveString(ofs, ChunkKey::FTResource::FILE_NAME, *GetRelativePath());
+	Common::FileIOHelper::SaveString(ofs, ChunkKey::FTResource::FILE_NAME, *GetFileName());
+	Common::FileIOHelper::SaveString(ofs, ChunkKey::FTResource::FILE_NAME, *GetRelativePath());
 }
 
 void Core::CoreResource::LoadProperties(std::ifstream& ifs)
 {
-	FTDS::String val;
-	FileIOHelper::LoadBasicString(ifs, val);
+	Common::FTDS::String val;
+	Common::FileIOHelper::LoadBasicString(ifs, val);
 	val.Clear();
-	FileIOHelper::LoadBasicString(ifs, val);
+	Common::FileIOHelper::LoadBasicString(ifs, val);
 }
 
-Core::CoreResource::CoreResource(FTResourceDef& resDef)
+Core::CoreResource::CoreResource(Common::FTResourceDef& resDef)
 	: FTResource(resDef)
 {
 }

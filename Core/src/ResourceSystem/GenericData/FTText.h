@@ -36,21 +36,21 @@ namespace Core
 	public:
 		/// @brief Returns the text data.
 		/// The array index equals to line number.
-		Core::FTDS::DynamicArray<Core::FTDS::String*>* Data();
+		Common::FTDS::DynamicArray<Common::FTDS::String*>* Data();
 
 		/// @brief Returns the line string from the data at lineNum.
 		/// @return data at index lineNum-1
-		Core::FTDS::String* GetLineData(size_t lineNum);
+		Common::FTDS::String* GetLineData(size_t lineNum);
 
 	public:
 		/// @see FTResource::FTResource
-		FTText(Core::FTResourceDef& resDef);
+		FTText(Common::FTResourceDef& resDef);
 		~FTText();
 
 	private:
 		/// @brief String text data, Loaded line by line.
 		/// The array index equals to line number.
-		Core::FTDS::DynamicArray<Core::FTDS::String*>* mData;
+		Common::FTDS::DynamicArray<Common::FTDS::String*>* mData;
 
 	private:
 		/// @brief Returns the number of lines of the file.

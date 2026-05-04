@@ -15,7 +15,7 @@ namespace Core
 		END
 	};
 
-	class CoreResource : public FTResource
+	class CoreResource : public Common::FTResource
 	{
 	public:
 		/// @brief Saves resource properties into a file.
@@ -29,7 +29,7 @@ namespace Core
 		virtual void LoadProperties(std::ifstream& ifs) override;
 
 	public:
-		CoreResource(FTResourceDef& resDef);
+		CoreResource(Common::FTResourceDef& resDef);
 		virtual ~CoreResource() = default;
 	};
 } // namespace Core

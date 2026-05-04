@@ -7,14 +7,14 @@
 
 // void FTCSV::SaveProperties(std::ofstream& ofs)
 //{
-//	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CSV::CSV);
+//	Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CSV::CSV);
 //	FTResource::SaveProperties(ofs);
-//	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CSV::CSV);
+//	Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::CSV::CSV);
 // }
 //
 // void FTCSV::LoadProperties(std::ifstream& ifs)
 //{
-//	FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
+//	Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
 //	FTResource::LoadProperties(ifs);
 // }
 
@@ -25,7 +25,7 @@ namespace Core
 
 	const std::vector<int>& FTCSV::Data() const { return mData; }
 
-	FTCSV::FTCSV(Core::FTResourceDef& resDef)
+	FTCSV::FTCSV(Common::FTResourceDef& resDef)
 		: CoreResource(resDef)
 		, mData()
 		, mColumnCount(0)
@@ -42,7 +42,7 @@ namespace Core
 		mData.clear();
 	}
 
-	void FTCSV::Read(const Core::FTDS::String& path)
+	void FTCSV::Read(const Common::FTDS::String& path)
 	{
 		if (!mData.empty())
 			mData.clear();

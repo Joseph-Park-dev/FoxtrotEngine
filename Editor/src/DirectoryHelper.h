@@ -44,28 +44,28 @@ namespace Core
 			}
 		}
 
-		void AbsoluteToRelativePath(Core::FTDS::String& absPath);
-		void RelativeToAbsolutePath(Core::FTDS::String& relPath);
+		void AbsoluteToRelativePath(Common::FTDS::String& absPath);
+		void RelativeToAbsolutePath(Common::FTDS::String& relPath);
 
 	public:
-		Core::FTDS::String& GetProjectPath();
-		Core::FTDS::String& GetChunkPath();
-		Core::FTDS::String& GetAssetPath();
-		bool				GetCurrChunkSaved() const;
+		Common::FTDS::String& GetProjectPath();
+		Common::FTDS::String& GetChunkPath();
+		Common::FTDS::String& GetAssetPath();
+		bool				  GetCurrChunkSaved() const;
 
-		void SetProjPath(Core::FTDS::String&& path);
-		void SetChunkPath(Core::FTDS::String&& path);
-		void SetAssetPath(Core::FTDS::String&& path);
+		void SetProjPath(Common::FTDS::String&& path);
+		void SetChunkPath(Common::FTDS::String&& path);
+		void SetAssetPath(Common::FTDS::String&& path);
 		void SetCurrChunkSaved(bool val);
 
 	private:
-		Core::FTDS::String mCurrProjectPath;
-		Core::FTDS::String mCurrChunkPath;
-		Core::FTDS::String mCurrAssetPath;
-		bool			   mCurrChunkSaved;
+		Common::FTDS::String mCurrProjectPath;
+		Common::FTDS::String mCurrChunkPath;
+		Common::FTDS::String mCurrAssetPath;
+		bool				 mCurrChunkSaved;
 	};
 
-	#define PATH_PROJECT DirectoryHelper::GetInstance()->GetProjectPath()
+#define PATH_PROJECT DirectoryHelper::GetInstance()->GetProjectPath()
 #define PATH_CHUNK DirectoryHelper::GetInstance()->GetChunkPath()
 #define CHUNK_IS_SAVED DirectoryHelper::GetInstance()->GetCurrChunkSaved()
 #define SET_CHUNK_IS_SAVED(saved) DirectoryHelper::GetInstance()->SetCurrChunkSaved(saved);

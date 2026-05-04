@@ -44,9 +44,9 @@ namespace Editor
 		SINGLETON(EditorChunkLoader)
 	public:
 		// Saves the current scene on Foxtrot Editor into .Chunk file.
-		virtual void SaveChunk(Core::FTDS::String& fileName) override;
+		virtual void SaveChunk(Common::FTDS::String& fileName) override;
 		// Loads the a .Chunk file into the current scene on Foxtrot Editor.
-		virtual void LoadChunk(Core::FTDS::String& fileName) override;
+		virtual void LoadChunk(Common::FTDS::String& fileName) override;
 
 		// public:
 		//	ComponentCreateMap& GetCompCreateMap() { return mComponentCreateMap; }

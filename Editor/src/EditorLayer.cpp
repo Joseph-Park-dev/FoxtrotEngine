@@ -228,7 +228,7 @@ namespace Editor
 
 						// Copy the chunk file.
 						EditorChunkLoader::GetInstance()->CopyChunk(Core::PATH_CHUNK);
-						Core::FTDS::String& copiedPath = EditorChunkLoader::GetInstance()->CurrentChunk();
+						Common::FTDS::String& copiedPath = EditorChunkLoader::GetInstance()->CurrentChunk();
 
 						// Load the copied chunk file.
 						EditorChunkLoader::GetInstance()->LoadChunk(copiedPath);
@@ -438,7 +438,7 @@ namespace Editor
 
 	void EditorLayer::DisplaySelection(EditorElement* element, size_t& index)
 	{
-		Core::FTDS::String indentedName = Core::FTDS::String(element->GetHierarchyLevel(), '\t');
+		Common::FTDS::String indentedName = Common::FTDS::String(element->GetHierarchyLevel(), '\t');
 		indentedName.Append(element->GetName());
 
 		if (ImGui::Selectable(indentedName.C_Str(), mActorNameIdx == index))

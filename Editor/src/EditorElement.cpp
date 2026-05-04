@@ -234,7 +234,7 @@ namespace Editor
 					break;
 				if (*comp)
 				{
-					Core::FTDS::String name(std::to_string(count).c_str());
+					Common::FTDS::String name(std::to_string(count).c_str());
 					name.Append(" ");
 					name.Append((*comp)->GetName());
 

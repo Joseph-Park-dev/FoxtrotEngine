@@ -46,7 +46,7 @@ namespace Editor
 		int			   maxID		 = EditorChunkLoader::GetInstance()->GetMaxActorID();
 		EditorElement* editorElement = DBG_NEW EditorElement(maxID);
 
-		Core::FTDS::String& name = editorElement->GetNameRef();
+		Common::FTDS::String& name = editorElement->GetNameRef();
 		name.Append(std::to_string(Actors()->GetSize()).c_str());
 
 		editorElement->SetIsFocused(true);

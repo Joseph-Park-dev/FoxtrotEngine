@@ -30,14 +30,14 @@
 
 namespace Editor
 {
-	inline void DisplayOpenFileDialog(const COMDLG_FILTERSPEC* fileTypes, Core::FTDS::DynamicArray<Core::FTDS::String*>* openFileNames)
+	inline void DisplayOpenFileDialog(const COMDLG_FILTERSPEC* fileTypes, Common::FTDS::DynamicArray<Common::FTDS::String*>* openFileNames)
 	{
 		IShellItemArray* pResults;
 		IFileOpenDialog* pFileOpen = nullptr;
 
 		// Create the FileOpenDialog object
 		HRESULT hr = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pFileOpen));
-		pFileOpen->SetFileTypes(static_cast<UINT>(Core::GetArrayLength(fileTypes)), fileTypes);
+		pFileOpen->SetFileTypes(static_cast<UINT>(Common::GetArrayLength(fileTypes)), fileTypes);
 
 		if (SUCCEEDED(hr))
 		{
@@ -68,7 +68,7 @@ namespace Editor
 							if (SUCCEEDED(hr) && pszFilePath)
 							{
 								// Use the selected file path
-								openFileNames->PushBack(DBG_NEW Core::FTDS::String(Core::ToString(pszFilePath)));
+								openFileNames->PushBack(DBG_NEW Common::FTDS::String(Common::ToString(pszFilePath)));
 								CoTaskMemFree(pszFilePath);
 							}
 						}
@@ -94,7 +94,7 @@ namespace Editor
 		return ImGui::Button(label);
 	}
 
-	inline void DisplayArrayAsCombo(const char* label, Core::FTDS::String* array, size_t arraySize, int& targetIdx)
+	inline void DisplayArrayAsCombo(const char* label, Common::FTDS::String* array, size_t arraySize, int& targetIdx)
 	{
 		const char* comboPreview = array[targetIdx].C_Str();
 		if (ImGui::BeginCombo(label, comboPreview))
@@ -124,17 +124,17 @@ namespace Editor
 
 	inline void DisplayActorSelection(const char* label, Core::Actor*& selected)
 	{
-		Core::Scene*							scene		= EditorSceneManager::GetInstance()->GetCurrentScene();
-		EditorScene*							editorScene = reinterpret_cast<EditorScene*>(scene);
-		Core::FTDS::DynamicArray<Core::Actor*>* editorElems = editorScene->Actors();
-		Core::FTDS::String* actorNames						= DBG_NEW Core::FTDS::String[editorElems->GetSize() + 1];
+		Core::Scene*							  scene		  = EditorSceneManager::GetInstance()->GetCurrentScene();
+		EditorScene*							  editorScene = reinterpret_cast<EditorScene*>(scene);
+		Common::FTDS::DynamicArray<Core::Actor*>* editorElems = editorScene->Actors();
+		Common::FTDS::String* actorNames					  = DBG_NEW Common::FTDS::String[editorElems->GetSize() + 1];
 		actorNames[0].Assign("None");
 		static size_t currIdx;
 
 		for (size_t i = 0; i < editorElems->GetSize(); ++i)
 			actorNames[i + 1] = editorElems->At(i)->GetName();
 
-		Core::FTDS::String comboPreview = actorNames[0];
+		Common::FTDS::String comboPreview = actorNames[0];
 		if (selected)
 			comboPreview = selected->GetName();
 		if (ImGui::BeginCombo("Actor Selection", comboPreview.C_Str()))
@@ -161,9 +161,9 @@ namespace Editor
 
 	template <typename FTRESOURCE>
 	inline void DisplayResSelection(
-		const char*						  label,
-		Core::FTDS::HashMap<FTRESOURCE*>* resMap,
-		Core::FTDS::String&				  currSelection)
+		const char*							label,
+		Common::FTDS::HashMap<FTRESOURCE*>* resMap,
+		Common::FTDS::String&				currSelection)
 	{
 		if (ImGui::Button(label))
 		{
@@ -180,12 +180,12 @@ namespace Editor
 			if (ImGui::TreeNode("Selection State: Single Selection"))
 			{
 				if (ImGui::Selectable("Not Assigned"))
-					currSelection.Assign(Core::ChunkKey::NullVal::NULL_OBJECT);
+					currSelection.Assign(Common::ChunkKey::NullVal::NULL_OBJECT);
 
-				resMap->IterateAllNodes([&](Core::FTDS::Record<FTRESOURCE*>& node) {
+				resMap->IterateAllNodes([&](Common::FTDS::Record<FTRESOURCE*>& node) {
 					if (ImGui::Selectable(node->Key().C_Str()))
 					{
-						if (node->Key().NotEqual(Core::ChunkKey::NullVal::NULL_OBJECT))
+						if (node->Key().NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
 							currSelection = node->Key();
 					}
 				});
@@ -200,9 +200,9 @@ namespace Editor
 
 	template <typename FTRESOURCE>
 	inline void DisplayResSelection(
-		const char*								label,
-		Core::FTDS::HashMap<Core::FTResource*>* resMap,
-		FTRESOURCE*&							selectedRes)
+		const char*								  label,
+		Common::FTDS::HashMap<Common::FTResource*>* resMap,
+		FTRESOURCE*&							  selectedRes)
 	{
 		if (ImGui::Button(label))
 			ImGui::OpenPopup(label);
@@ -211,10 +211,10 @@ namespace Editor
 		{
 			if (ImGui::TreeNode("Selection State: Single Selection"))
 			{
-				resMap->IterateAllNodes([&](Core::FTDS::Record<Core::FTResource*>* node) {
+				resMap->IterateAllNodes([&](Common::FTDS::Record<Common::FTResource*>* node) {
 					if (ImGui::Selectable(node->Key().C_Str()))
 					{
-						if (node->Key().NotEqual(Core::ChunkKey::NullVal::NULL_OBJECT))
+						if (node->Key().NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
 						{
 							if (selectedRes)
 								selectedRes->SubtractRefCount();
@@ -235,9 +235,9 @@ namespace Editor
 
 	template <typename FTRESOURCE, typename FILTER>
 	inline void DisplayResSelection(
-		const char*								label,
-		Core::FTDS::HashMap<Core::FTResource*>* resMap,
-		FTRESOURCE*&							selectedRes)
+		const char*								  label,
+		Common::FTDS::HashMap<Common::FTResource*>* resMap,
+		FTRESOURCE*&							  selectedRes)
 	{
 		if (ImGui::Button(label))
 			ImGui::OpenPopup(label);
@@ -246,10 +246,10 @@ namespace Editor
 		{
 			if (ImGui::TreeNode("Selection State: Single Selection"))
 			{
-				resMap->IterateAllNodes([&](Core::FTDS::Record<FTRESOURCE*>& node) {
+				resMap->IterateAllNodes([&](Common::FTDS::Record<FTRESOURCE*>& node) {
 					if (ImGui::Selectable(node->Key().C_Str()))
 					{
-						if (node->Key().NotEqual(Core::ChunkKey::NullVal::NULL_OBJECT))
+						if (node->Key().NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
 						{
 							if (typeid(node->Value()) == typeid(FILTER))
 							{

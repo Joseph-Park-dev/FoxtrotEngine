@@ -76,6 +76,7 @@
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
+    <Import Project="..\Common\Common.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -190,7 +191,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.\src;.\src\FTDS;..\Math\src;.\include\json\include;..\Editor\src;..\Editor\include;..\Editor\include\imgui;..\Editor\include\imgui\backends;..\Main\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\src;.\src\FTDS;..\Math\src;.\include\json\include;..\Editor\src;..\Editor\include;..\Editor\include\imgui;..\Editor\include\imgui\backends;..\Main\src;..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -287,7 +288,6 @@
     <ClInclude Include="src\EditorHelper.h" />
     <ClInclude Include="src\Entity\Entity.h" />
     <ClInclude Include="src\ICore.h" />
-    <ClInclude Include="src\Manager\DirectoryHelper.h" />
     <ClInclude Include="src\Manager\ResourceManager.h" />
     <ClInclude Include="src\Actor\Actor.h" />
     <ClInclude Include="src\Actor\ActorGroup.h" />
@@ -301,35 +301,8 @@
     <ClInclude Include="src\EventType.h" />
     <ClInclude Include="src\FileSystem\BufferSizes.h" />
     <ClInclude Include="src\FileSystem\ChunkLoader.h" />
-    <ClInclude Include="src\FileSystem\FileIOHelper.h" />
     <ClInclude Include="src\FileSystem\FileTypes.h" />
-    <ClInclude Include="src\FileSystem\NullKeys.h" />
     <ClInclude Include="src\FTCore.h" />
-    <ClInclude Include="src\FTDS\Compare\StringEqual.h" />
-    <ClInclude Include="src\FTDS\Dynamic\BinaryNode.h" />
-    <ClInclude Include="src\FTDS\Dynamic\BinSrchTree.h" />
-    <ClInclude Include="src\FTDS\Dynamic\BinTree.h" />
-    <ClInclude Include="src\FTDS\Dynamic\DynamicArray.h" />
-    <ClInclude Include="src\FTDS\Dynamic\LinkedList.h" />
-    <ClInclude Include="src\FTDS\Dynamic\LinkedQueue.h" />
-    <ClInclude Include="src\FTDS\Dynamic\LinkedStack.h" />
-    <ClInclude Include="src\FTDS\Dynamic\Node.h" />
-    <ClInclude Include="src\FTDS\Dynamic\RecordNode.h" />
-    <ClInclude Include="src\FTDS\Iterator\FTIterator.h" />
-    <ClInclude Include="src\FTDS\Node\HeapNode.h" />
-    <ClInclude Include="src\FTDS\Search\BinarySearch.h" />
-    <ClInclude Include="src\FTDS\Search\DepthFirstSearch.h" />
-    <ClInclude Include="src\FTDS\Sort\InsertionSort.h" />
-    <ClInclude Include="src\FTDS\Static\Array.h" />
-    <ClInclude Include="src\FTDS\Static\ArrayStack.h" />
-    <ClInclude Include="src\FTDS\Static\CircularQueue.h" />
-    <ClInclude Include="src\FTDS\Static\CircularStack.h" />
-    <ClInclude Include="src\FTDS\Static\FTString.h" />
-    <ClInclude Include="src\FTDS\Static\HashMap.h" />
-    <ClInclude Include="src\FTDS\Static\Heap.h" />
-    <ClInclude Include="src\FTDS\Static\Record.h" />
-    <ClInclude Include="src\FTDS\Utils\DSLogs.h" />
-    <ClInclude Include="src\FTDS\Utils\StrAssign.h" />
     <ClInclude Include="src\Manager\EventManager.h" />
     <ClInclude Include="src\Manager\ResourceManagerBase.h" />
     <ClInclude Include="src\Manager\SceneManager.h" />
@@ -373,9 +346,7 @@
     <ClCompile Include="src\EditorHelper.cpp" />
     <ClCompile Include="src\EventFunctions.cpp" />
     <ClCompile Include="src\FileSystem\ChunkLoader.cpp" />
-    <ClCompile Include="src\FileSystem\FileIOHelper.cpp" />
     <ClCompile Include="src\FTCore.cpp" />
-    <ClCompile Include="src\Manager\DirectoryHelper.cpp" />
     <ClCompile Include="src\Manager\EventManager.cpp" />
     <ClCompile Include="src\Manager\ResourceManager.cpp" />
     <ClCompile Include="src\Manager\ResourceManagerBase.cpp" />

@@ -49,13 +49,7 @@
     <ClInclude Include="src\FileSystem\ChunkLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\FileSystem\FileIOHelper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\FileSystem\FileTypes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FileSystem\NullKeys.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Manager\ResourceManagerBase.h">
@@ -118,88 +112,10 @@
     <ClInclude Include="src\Manager\EventManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\FTDS\Compare\StringEqual.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Dynamic\BinaryNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Dynamic\BinSrchTree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Dynamic\BinTree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Dynamic\DynamicArray.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Dynamic\LinkedList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Dynamic\LinkedQueue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Dynamic\LinkedStack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Dynamic\Node.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Dynamic\RecordNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Iterator\FTIterator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Node\HeapNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Search\BinarySearch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Search\DepthFirstSearch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Sort\InsertionSort.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Static\Array.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Static\ArrayStack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Static\CircularQueue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Static\CircularStack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Static\FTString.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Static\HashMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Static\Heap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Static\Record.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Utils\DSLogs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FTDS\Utils\StrAssign.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Plugin\CoreExports.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Manager\ResourceManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Manager\DirectoryHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\CoreInstance.h">
@@ -435,9 +351,6 @@
     <ClCompile Include="src\FileSystem\ChunkLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\FileSystem\FileIOHelper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Manager\ResourceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -475,9 +388,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Manager\EventManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Manager\DirectoryHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Manager\ResourceManagerBase.cpp">

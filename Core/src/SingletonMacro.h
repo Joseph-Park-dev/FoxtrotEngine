@@ -33,7 +33,7 @@
 							TYPE(const TYPE& obj) = delete; \
 						private:\
 							TYPE(); \
-							~TYPE() override; \
+							~TYPE(); \
 							inline static TYPE* mInstance = nullptr; \
 
 // Makes a classe into singleton which allows itself to be inherited.
@@ -56,7 +56,7 @@
 							TYPE(const TYPE& obj) = delete; \
 						protected:\
 							TYPE(); \
-							~TYPE() override; \
+							~TYPE(); \
 							inline static TYPE* mInstance = nullptr; \
 
 #define SINGLETON_TEST(EXPDEF, TYPE)                              \

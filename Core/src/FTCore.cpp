@@ -24,8 +24,8 @@
 #include "Renderer/FoxtrotRenderer.h"
 #include "InputSystem/FTInputDevice.h"
 #include "Scene/Scene.h"
-#include "Static/HashMap.h"
-#include "Static/FTString.h"
+#include "FTDS/Static/HashMap.h"
+#include "FTDS/Static/FTString.h"
 
 namespace Core
 {
@@ -71,8 +71,8 @@ namespace Core
 		~FTCore();
 
 	private:
-		Core::FTDS::String*					mGameDataPath;
-		Core::FTDS::HashMap<Core::Entity*>* mEntities;
+		Common::FTDS::String*				  mGameDataPath;
+		Common::FTDS::HashMap<Core::Entity*>* mEntities;
 
 	private:
 		void LoadGameData();
@@ -82,13 +82,13 @@ namespace Core
 	void FTCore::LoadGameData()
 	{
 		std::ifstream ifs(mGameDataPath->C_Str());
-		Core::FileIOHelper::BeginDataPackLoad(ifs, GameData::TITLE);
+		Common::FileIOHelper::BeginDataPackLoad(ifs, GameData::TITLE);
 
-		std::pair<size_t, FTDS::String> chunkListPack = FileIOHelper::BeginDataPackLoad(ifs, GameData::CHUNK_LIST);
+		std::pair<size_t, Common::FTDS::String> chunkListPack = Common::FileIOHelper::BeginDataPackLoad(ifs, GameData::CHUNK_LIST);
 		for (size_t i = 0; i < chunkListPack.first; ++i)
 		{
-			FTDS::String* chunkTitle = DBG_NEW FTDS::String;
-			FileIOHelper::LoadBasicString(ifs, *chunkTitle);
+			Common::FTDS::String* chunkTitle = DBG_NEW Common::FTDS::String;
+			Common::FileIOHelper::LoadBasicString(ifs, *chunkTitle);
 			SceneManager::GetInstance()->ChunkList()->PushBack(chunkTitle);
 		}
 		DirectoryHelper::GetInstance()->SetProjectPath(std::filesystem::absolute("./").string().c_str());
@@ -142,9 +142,9 @@ namespace Core
 	}
 
 	FTCore::FTCore()
-		: mEntities(DBG_NEW Core::FTDS::HashMap<Core::Entity*>)
+		: mEntities(DBG_NEW Common::FTDS::HashMap<Core::Entity*>)
 		, mGameDataPath(
-			  DBG_NEW FTDS::String("./"))
+			  DBG_NEW Common::FTDS::String("./"))
 	{
 		mGameDataPath->Append(GameData::TITLE);
 		mGameDataPath->Append(FileTypes::GDPACK);

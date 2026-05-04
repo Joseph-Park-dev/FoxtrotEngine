@@ -52,10 +52,10 @@ namespace Core
 
 	Actor* Instantiate(const char* premadeName)
 	{
-		FTEvent addedEvent	= {};
-		addedEvent.incident = EVENT_TYPE::CREATE_ACTOR;
-		FTPremade* premade	= Core::ResourceManager::GetInstance()->GetResource<FTPremade>(premadeName);
-		Actor*	   origin	= premade->GetOrigin();
+		FTEvent addedEvent		 = {};
+		addedEvent.incident		 = EVENT_TYPE::CREATE_ACTOR;
+		Core::FTPremade* premade = Core::ResourceManager::GetInstance()->GetPremade(premadeName);
+		Actor*			 origin	 = premade->GetOrigin();
 		if (origin)
 		{
 			// origin->Initialize(FTCore::GetInstance());

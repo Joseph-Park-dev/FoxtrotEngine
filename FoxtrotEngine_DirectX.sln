@@ -27,6 +27,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "D3D11", "D3D11\D3D11.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Math", "Math\Math.vcxproj", "{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "Common\Common.vcxitems", "{F7FF42B9-DBA5-4B64-A3BB-3787A7100896}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -189,5 +191,9 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B55463C-83C6-4677-899F-6B10D82B8C08}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Common\Common.vcxitems*{cce9835e-f788-4b51-930b-d7805ac1e2a0}*SharedItemsImports = 4
+		Common\Common.vcxitems*{f7ff42b9-dba5-4b64-a3bb-3787a7100896}*SharedItemsImports = 9
 	EndGlobalSection
 EndGlobal

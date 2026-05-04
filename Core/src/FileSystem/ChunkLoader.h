@@ -41,15 +41,16 @@ namespace Core
 		public Core::Entity
 	{
 		SINGLETON_PROTECTED(ChunkLoader)
+
 		// Member Functions for editor level to generate chunk.json files
 	public:
-		virtual void SaveChunk(FTDS::String& fileName);
-		virtual void LoadChunk(FTDS::String& fileName);
+		virtual void SaveChunk(Common::FTDS::String& fileName);
+		virtual void LoadChunk(Common::FTDS::String& fileName);
 
 		void Lock();
 		void Unlock();
 
-		void CopyChunk(FTDS::String& path);
+		void CopyChunk(Common::FTDS::String& path);
 		void DeleteCopiedChunk();
 
 	public:
@@ -57,10 +58,10 @@ namespace Core
 
 		const bool IsLoadingChunk() const;
 
-		FTDS::String& CurrentChunk();
+		Common::FTDS::String& CurrentChunk();
 
-		const int				GetMaxActorID() const;
-		FTDS::HashMap<FARPROC>* GetCompConstructors();
+		const int						GetMaxActorID() const;
+		Common::FTDS::HashMap<FARPROC>* GetCompConstructors();
 
 		// Add actor count by 1.
 		void AddMaxActorID();
@@ -81,10 +82,10 @@ namespace Core
 		bool	  mIsLoading;
 
 		// Name of the copied .chunk file.
-		FTDS::String mCurrentChunkCopy;
-		int			 mMaxActorID;
+		Common::FTDS::String mCurrentChunkCopy;
+		int					 mMaxActorID;
 
-		FTDS::HashMap<FARPROC>* mCompConstructors;
+		Common::FTDS::HashMap<FARPROC>* mCompConstructors;
 
 	private:
 		void LoadPlugins(std::ifstream& ifs);

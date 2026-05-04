@@ -22,15 +22,15 @@
 #include "Actor/Transform.h"
 #include "Actor/Actor.h"
 #include "FileSystem/FileIOHelper.h"
-#include "Static/FTString.h"
-#include "Static/HashMap.h"
+#include "FTDS/Static/FTString.h"
+#include "FTDS/Static/HashMap.h"
 #include "Plugin/IPlugin.h"
 #include "ResourceSystem/FTPremade.h"
 #include "Engine.h"
 
 namespace Core
 {
-	void ChunkLoader::SaveChunk(FTDS::String& fileName)
+	void ChunkLoader::SaveChunk(Common::FTDS::String& fileName)
 	{
 		std::ofstream ofs(fileName.C_Str());
 		SaveActorsData(ofs);
@@ -38,7 +38,7 @@ namespace Core
 		SaveChunkData(ofs);
 	}
 
-	void ChunkLoader::LoadChunk(FTDS::String& fileName)
+	void ChunkLoader::LoadChunk(Common::FTDS::String& fileName)
 	{
 		Lock();
 		std::ifstream ifs(fileName.C_Str());
@@ -46,8 +46,8 @@ namespace Core
 		LoadPlugins(ifs);
 
 		// Load premades to Core ResourceManager
-		size_t premadeCount = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CORE_RES_DATA).first;
-		Core::ResourceManager::GetInstance()->LoadResourcesFromChunk<FTPremade>(ifs, premadeCount);
+		size_t premadeCount = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CORE_RES_DATA).first;
+		//Core::ResourceManager::GetInstance()->LoadResourcesFromChunk(ifs, premadeCount);
 
 		LoadActorsData(ifs);
 		Unlock();
@@ -63,18 +63,18 @@ namespace Core
 		mIsLoading = false;
 	}
 
-	void ChunkLoader::CopyChunk(FTDS::String& path)
+	void ChunkLoader::CopyChunk(Common::FTDS::String& path)
 	{
 		// Get the original file name.
 		std::filesystem::path original = path.C_Str();
 
 		// Get the copied file name.
-		FTDS::String copiedPath;
+		Common::FTDS::String copiedPath;
 		path.ExtractUntilLast(copiedPath, "\\");
 		copiedPath.Append("\\");
 
 		// Get the full copied file path.
-		FTDS::String copiedName = ExtractFileName(path.C_Str());
+		Common::FTDS::String copiedName = ExtractFileName(path.C_Str());
 		copiedName.ExtractUntilFirst(copiedName, ".");
 		copiedName.Append(" Copy.chunk");
 		copiedPath.Append(copiedName);
@@ -105,7 +105,7 @@ namespace Core
 		return mIsLoading;
 	}
 
-	FTDS::String& ChunkLoader::CurrentChunk()
+	Common::FTDS::String& ChunkLoader::CurrentChunk()
 	{
 		return mCurrentChunkCopy;
 	}
@@ -115,7 +115,7 @@ namespace Core
 		return mMaxActorID;
 	}
 
-	FTDS::HashMap<FARPROC>* ChunkLoader::GetCompConstructors()
+	Common::FTDS::HashMap<FARPROC>* ChunkLoader::GetCompConstructors()
 	{
 		return mCompConstructors;
 	}
@@ -137,12 +137,12 @@ namespace Core
 	void ChunkLoader::LoadActorsData(std::ifstream& ifs)
 	{
 		Scene*							  scene = SceneManager::GetInstance()->GetCurrentScene();
-		std::pair<size_t, FTDS::String>&& pack	= FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
+		std::pair<size_t, Common::FTDS::String>&& pack	= Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
 		std::vector<Actor*>				  actorBuf;
 
 		for (size_t i = 0; i < pack.first; ++i)
 		{
-			std::pair<size_t, FTDS::String>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
+			std::pair<size_t, Common::FTDS::String>&& actorData = Common::FileIOHelper::BeginDataPackLoad(ifs);
 			Actor* actor								= DBG_NEW Actor(ChunkKey::ID::INVALID);
 			actor->LoadProperties(ifs);
 			actor->LoadComponents(ifs);
@@ -151,7 +151,7 @@ namespace Core
 			AddMaxActorID();
 		}
 
-		FTDS::HashMap<Actor*> actorWithIDs;
+		Common::FTDS::HashMap<Actor*> actorWithIDs;
 		actorWithIDs.Reserve(scene->GetActors()->GetSize());
 
 		scene->Actors()->IterateArray([&](Actor* actor) {
@@ -170,7 +170,7 @@ namespace Core
 
 			if (0 < (*iter)->GetChildActors()->GetSize())
 			{
-				FTDS::DynamicArray<Actor*> children;
+				Common::FTDS::DynamicArray<Actor*> children;
 
 				(*iter)->GetChildActors()->IterateArray([&](Actor* c) {
 					Actor* child = actorWithIDs.At(c->GetID())->Value();
@@ -187,11 +187,11 @@ namespace Core
 
 	void ChunkLoader::LoadPlugins(std::ifstream& ifs)
 	{
-		size_t dllCount = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::PLUGIN_DATA).first;
+		size_t dllCount = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::PLUGIN_DATA).first;
 		for (size_t i = 0; i < dllCount; ++i)
 		{
-			FTDS::String dllPath	= {};
-			FTDS::String pluginName = {};
+			Common::FTDS::String dllPath	= {};
+			Common::FTDS::String pluginName = {};
 			ExtractFileName(dllPath, pluginName);
 
 			HMODULE mod = LoadLibraryA(dllPath.C_Str());
@@ -203,13 +203,13 @@ namespace Core
 
 	void ChunkLoader::LoadCompConstructors(std::ifstream& ifs, HMODULE& mod)
 	{
-		size_t count = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::COMP_CONSTRUCTORS).first;
+		size_t count = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::COMP_CONSTRUCTORS).first;
 		mCompConstructors->Reserve(count);
 		for (size_t i = 0; i < count; ++i)
 		{
-			FTDS::String compName	  = {};
-			FTDS::String compProcName = {};
-			FileIOHelper::LoadBasicString(ifs, compName);
+			Common::FTDS::String compName	  = {};
+			Common::FTDS::String compProcName = {};
+			Common::FileIOHelper::LoadBasicString(ifs, compName);
 			compProcName.Assign(compName);
 			compProcName.Append("_Create");
 
@@ -219,24 +219,24 @@ namespace Core
 
 	void ChunkLoader::LoadManagerData(std::ifstream& ifs, HMODULE& mod)
 	{
-		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::MANAGER_DATA);
+		Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::MANAGER_DATA);
 		// plugin->LoadManagerData(ifs);
 	}
 
 	void ChunkLoader::SaveChunkData(std::ofstream& out)
 	{
 		Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
-		FileIOHelper::BeginDataPackSave(out, ChunkKey::CHUNK_DATA);
-		FileIOHelper::SaveInt(out, ChunkKey::ACTOR_COUNT, mMaxActorID);
-		FileIOHelper::EndDataPackSave(out, ChunkKey::CHUNK_DATA);
+		Common::FileIOHelper::BeginDataPackSave(out, ChunkKey::CHUNK_DATA);
+		Common::FileIOHelper::SaveInt(out, ChunkKey::ACTOR_COUNT, mMaxActorID);
+		Common::FileIOHelper::EndDataPackSave(out, ChunkKey::CHUNK_DATA);
 	}
 
 	void ChunkLoader::LoadChunkData(std::ifstream& ifs)
 	{
 		// Load number of Actors
 		int maxActor = 0;
-		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CHUNK_DATA);
-		FileIOHelper::LoadInt(ifs, maxActor);
+		Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CHUNK_DATA);
+		Common::FileIOHelper::LoadInt(ifs, maxActor);
 
 		Scene* scene = SceneManager::GetInstance()->GetCurrentScene();
 		scene->Actors()->Reserve(maxActor);

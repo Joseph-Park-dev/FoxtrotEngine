@@ -79,23 +79,23 @@ namespace Core
 		constexpr const size_t MAX_SPEC_LENGTH	  = 50;
 
 		/*inline void GetFileTypesSpec(
-			FTDS::DynamicArray<COMDLG_FILTERSPEC*>* specArr,
+			Common::FTDS::DynamicArray<COMDLG_FILTERSPEC*>* specArr,
 			const wchar_t*							label,
 			const char*								fileTypes)
 		{
 			COMDLG_FILTERSPEC* spec					= DBG_NEW COMDLG_FILTERSPEC();
-			FTDS::String					  types = fileTypes;
+			Common::FTDS::String					  types = fileTypes;
 
-			FTDS::DynamicArray<FTDS::String> splitted;
+			Common::FTDS::DynamicArray<Common::FTDS::String> splitted;
 
-			FTDS::String buf = FTDS::String(fileTypes);
+			Common::FTDS::String buf = Common::FTDS::String(fileTypes);
 			types.Split(", ", splitted);
 			if (splitted.IsEmpty())
 				splitted.PushBack(types.C_Str());
 
 			for (size_t i = 0; i < splitted.GetSize(); ++i)
 			{
-				FTDS::String val = "*";
+				Common::FTDS::String val = "*";
 				val.Append(splitted.At(i));
 				if (i < splitted.GetSize() - 1)
 					val.Append(";");

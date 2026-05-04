@@ -1,7 +1,6 @@
 #pragma once
-#include "Manager/ResourceManagerBase.h"
-
 #include "SingletonMacro.h"
+
 #include "FTDS/Static/HashMap.h"
 #include "Plugin/CoreExports.h"
 #include "FTCore.h"
@@ -10,8 +9,7 @@ class FTPremade;
 
 namespace Core
 {
-	class ResourceManager :
-		public Core::ResourceManagerBase
+	class ResourceManager
 	{
 		SINGLETON(ResourceManager)
 

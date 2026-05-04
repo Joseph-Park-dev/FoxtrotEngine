@@ -26,7 +26,7 @@
 #include "ResourceManager.h"
 
 #include "ResourceSystem/FTPremade.h"
-#include "Static/FTString.h"
+#include "FTDS/Static/FTString.h"
 #include "FileSystem/NullKeys.h"
 #include "Plugin/CoreExports.h"
 #include "Entity/ObjectLayout.h"

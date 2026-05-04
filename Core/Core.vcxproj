@@ -288,6 +288,7 @@
     <ClInclude Include="src\EditorHelper.h" />
     <ClInclude Include="src\Entity\Entity.h" />
     <ClInclude Include="src\ICore.h" />
+    <ClInclude Include="src\Manager\DirectoryHelper.h" />
     <ClInclude Include="src\Manager\ResourceManager.h" />
     <ClInclude Include="src\Actor\Actor.h" />
     <ClInclude Include="src\Actor\ActorGroup.h" />
@@ -306,7 +307,6 @@
     <ClInclude Include="src\Manager\EventManager.h" />
     <ClInclude Include="src\Manager\SceneManager.h" />
     <ClInclude Include="src\Plugin\CoreExports.h" />
-    <ClInclude Include="src\Entity\ObjectLayout.h" />
     <ClInclude Include="src\Plugin\IPlugin.h" />
     <ClInclude Include="src\Renderer\FoxtrotRenderer.h" />
     <ClInclude Include="src\InputSystem\FTInputDevice.h" />
@@ -314,14 +314,12 @@
     <ClInclude Include="src\Renderer\FTWindow.h" />
     <ClInclude Include="src\ResourceSystem\CoreResource.h" />
     <ClInclude Include="src\ResourceSystem\FTPremade.h" />
-    <ClInclude Include="src\ResourceSystem\FTResource.h" />
     <ClInclude Include="src\ResourceSystem\GenericData\FTCSV.h" />
     <ClInclude Include="src\ResourceSystem\GenericData\FTJSON.h" />
     <ClInclude Include="src\ResourceSystem\GenericData\FTText.h" />
     <ClInclude Include="src\Scene\Scene.h" />
     <ClInclude Include="src\Singleton.h" />
     <ClInclude Include="src\SingletonMacro.h" />
-    <ClInclude Include="src\TemplateFunctions.h" />
     <ClInclude Include="src\Timer.h" />
     <ClInclude Include="src\TypeDefinitions.h" />
     <ClInclude Include="src\UnitDefinitions.h" />
@@ -346,6 +344,7 @@
     <ClCompile Include="src\EventFunctions.cpp" />
     <ClCompile Include="src\FileSystem\ChunkLoader.cpp" />
     <ClCompile Include="src\FTCore.cpp" />
+    <ClCompile Include="src\Manager\DirectoryHelper.cpp" />
     <ClCompile Include="src\Manager\EventManager.cpp" />
     <ClCompile Include="src\Manager\ResourceManager.cpp" />
     <ClCompile Include="src\Manager\SceneManager.cpp" />
@@ -355,7 +354,6 @@
     <ClCompile Include="src\Renderer\FTWindow.cpp" />
     <ClCompile Include="src\ResourceSystem\CoreResource.cpp" />
     <ClCompile Include="src\ResourceSystem\FTPremade.cpp" />
-    <ClCompile Include="src\ResourceSystem\FTResource.cpp" />
     <ClCompile Include="src\ResourceSystem\GenericData\FTCSV.cpp" />
     <ClCompile Include="src\ResourceSystem\GenericData\FTJSON.cpp" />
     <ClCompile Include="src\ResourceSystem\GenericData\FTText.cpp" />

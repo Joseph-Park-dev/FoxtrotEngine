@@ -64,9 +64,6 @@
     <ClInclude Include="src\Renderer\FTWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ResourceSystem\FTResource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Scene\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -80,9 +77,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\SingletonMacro.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\TemplateFunctions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Timer.h">
@@ -268,9 +262,6 @@
     <ClInclude Include="src\ResourceSystem\CoreResource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Entity\ObjectLayout.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Singleton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -325,6 +316,9 @@
     <ClInclude Include="src\ICore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Manager\DirectoryHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -361,9 +355,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\FTWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\FTResource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Scene\Scene.cpp">
@@ -427,6 +418,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\EditorHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Manager\DirectoryHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

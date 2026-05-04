@@ -14,7 +14,7 @@
 //#include "Renderer/FoxtrotRenderer.h"
 //#include "Math/FTMath.h"
 //#include "Renderer/FTRectArea.h"
-//#include "Static/FTString.h"
+//#include "FTDS/Static/FTString.h"
 //
 //#ifdef FOXTROT_EDITOR
 //	#define IMGUI_DEFINE_MATH_OPERATORS

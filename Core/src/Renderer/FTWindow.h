@@ -26,7 +26,7 @@ namespace Core
 	public:
 		const Plugin* GetOwner() { return mOwner; }
 		const bool	  GetIsActive() { return mIsActive; }
-		FTDS::String& GetTitle() { return mTitle; }
+		Common::FTDS::String& GetTitle() { return mTitle; }
 		unsigned int  GetWidth() const { return mWidth; };
 		unsigned int  GetHeight() const { return mHeight; }
 		FTRectArea*	  GetRenderArea() const { return mRenderArea; };
@@ -94,7 +94,7 @@ namespace Core
 		Plugin* mOwner;
 		bool	mIsActive;
 
-		FTDS::String mTitle;	  ///< Window title string.
+		Common::FTDS::String mTitle;	  ///< Window title string.
 		unsigned int mWidth;	  ///< Current window client width (not render area width).
 		unsigned int mHeight;	  ///< Current window client height (not render area height).
 		FTRectArea*	 mRenderArea; ///< Sub-rectangle defining where the scene is drawn.

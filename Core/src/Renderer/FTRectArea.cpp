@@ -10,7 +10,7 @@
 
 #include "Math/FTMath.h"
 #include "FileSystem/FileIOHelper.h"
-#include "Static/FTString.h"
+#include "FTDS/Static/FTString.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
@@ -93,11 +93,11 @@ namespace Core
 
 	void SaveProperties(std::ofstream& ofs, FTRectArea* rectArea)
 	{
-		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTRectArea);
-		FileIOHelper::SaveVector2(ofs, ChunkKey::FTRectArea_CENTER, rectArea->GetCenter());
-		FileIOHelper::SaveVector2(ofs, ChunkKey::FTRectArea_SIZE, rectArea->GetSize());
-		FileIOHelper::SaveFloat(ofs, ChunkKey::FTRectArea_ROTANGLE, rectArea->GetRotAngle());
-		FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTRectArea);
+		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTRectArea);
+		Common::FileIOHelper::SaveVector2(ofs, ChunkKey::FTRectArea_CENTER, rectArea->GetCenter());
+		Common::FileIOHelper::SaveVector2(ofs, ChunkKey::FTRectArea_SIZE, rectArea->GetSize());
+		Common::FileIOHelper::SaveFloat(ofs, ChunkKey::FTRectArea_ROTANGLE, rectArea->GetRotAngle());
+		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTRectArea);
 	}
 
 	void LoadProperties(std::ifstream& ifs, FTRectArea* rectArea)
@@ -106,10 +106,10 @@ namespace Core
 		Math::FTVector2 size(0.f);
 		Math::FTVector2 center(0.f);
 
-		FileIOHelper::BeginDataPackLoad(ifs);
-		FileIOHelper::LoadFloat(ifs, rotAngle);
-		FileIOHelper::LoadVector2(ifs, size);
-		FileIOHelper::LoadVector2(ifs, center);
+		Common::FileIOHelper::BeginDataPackLoad(ifs);
+		Common::FileIOHelper::LoadFloat(ifs, rotAngle);
+		Common::FileIOHelper::LoadVector2(ifs, size);
+		Common::FileIOHelper::LoadVector2(ifs, center);
 		rectArea->Set(center, size, rotAngle);
 	}
 } // namespace Core

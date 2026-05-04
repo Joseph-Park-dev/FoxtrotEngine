@@ -20,7 +20,7 @@
 #include <../../Core/src/Plugin/PluginKey.h>
 #include <../../Editor/src/DLLData.h>
 
-constexpr Core::FTDS::HashMap<Core::Plugin*>* gPlugins;
+constexpr Common::FTDS::HashMap<Core::Plugin*>* gPlugins;
 
 int main(int argc, char* argv[])
 {

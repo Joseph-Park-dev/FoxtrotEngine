@@ -15,8 +15,8 @@
 #include "Renderer/FTWindow.h"
 #include "Math/FTMath.h"
 #include "Steering.h"
-#include "Dynamic/DynamicArray.h"
-#include "Static/FTString.h"
+#include "FTDS/Dynamic/DynamicArray.h"
+#include "FTDS/Static/FTString.h"
 
 namespace Core
 {
@@ -191,7 +191,7 @@ namespace Core
 		else
 			mMatrixWorld = mMatrixLocal;
 
-		FTDS::DynamicArray<Actor*>* childActors = mOwner->GetChildActors();
+		Common::FTDS::DynamicArray<Actor*>* childActors = mOwner->GetChildActors();
 		if (0 < childActors->GetSize())
 		{
 			for (auto child = childActors->Begin(); child != childActors->End(); ++child)
@@ -220,27 +220,27 @@ namespace Core
 
 	void Transform::SaveProperties(std::ofstream& ofs)
 	{
-		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::TRANSFORM);
-		FileIOHelper::SaveVector3(ofs, ChunkKey::WORLD_ROTATION, mWorldRotation);
-		FileIOHelper::SaveVector3(ofs, ChunkKey::WORLD_SCALE, mWorldScale);
-		FileIOHelper::SaveVector3(ofs, ChunkKey::WORLD_POS, mWorldPosition);
+		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::TRANSFORM);
+		Common::FileIOHelper::SaveVector3(ofs, ChunkKey::WORLD_ROTATION, mWorldRotation);
+		Common::FileIOHelper::SaveVector3(ofs, ChunkKey::WORLD_SCALE, mWorldScale);
+		Common::FileIOHelper::SaveVector3(ofs, ChunkKey::WORLD_POS, mWorldPosition);
 
-		FileIOHelper::SaveVector3(ofs, ChunkKey::LOCAL_ROTATION, mLocalRotation);
-		FileIOHelper::SaveVector3(ofs, ChunkKey::LOCAL_SCALE, mLocalScale);
-		FileIOHelper::SaveVector3(ofs, ChunkKey::LOCAL_POS, mLocalPosition);
-		FileIOHelper::EndDataPackSave(ofs, ChunkKey::TRANSFORM);
+		Common::FileIOHelper::SaveVector3(ofs, ChunkKey::LOCAL_ROTATION, mLocalRotation);
+		Common::FileIOHelper::SaveVector3(ofs, ChunkKey::LOCAL_SCALE, mLocalScale);
+		Common::FileIOHelper::SaveVector3(ofs, ChunkKey::LOCAL_POS, mLocalPosition);
+		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::TRANSFORM);
 	}
 
 	void Transform::LoadProperties(std::ifstream& ifs)
 	{
-		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::TRANSFORM);
-		FileIOHelper::LoadVector3(ifs, mLocalPosition);
-		FileIOHelper::LoadVector3(ifs, mLocalScale);
-		FileIOHelper::LoadVector3(ifs, mLocalRotation);
+		Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::TRANSFORM);
+		Common::FileIOHelper::LoadVector3(ifs, mLocalPosition);
+		Common::FileIOHelper::LoadVector3(ifs, mLocalScale);
+		Common::FileIOHelper::LoadVector3(ifs, mLocalRotation);
 
-		FileIOHelper::LoadVector3(ifs, mWorldPosition);
-		FileIOHelper::LoadVector3(ifs, mWorldScale);
-		FileIOHelper::LoadVector3(ifs, mWorldRotation);
+		Common::FileIOHelper::LoadVector3(ifs, mWorldPosition);
+		Common::FileIOHelper::LoadVector3(ifs, mWorldScale);
+		Common::FileIOHelper::LoadVector3(ifs, mWorldRotation);
 
 		SetWorldPosition(mWorldPosition);
 		SetWorldScale(mWorldScale);

@@ -53,7 +53,7 @@ namespace Core
 			return static_cast<ActorGroup>(index);
 		}
 
-		static ActorGroup GetActorGroup(FTDS::String str)
+		static ActorGroup GetActorGroup(Common::FTDS::String str)
 		{
 			auto it = std::find(ActorGroupString.begin(), ActorGroupString.end(), str);
 			if (it != ActorGroupString.end())
@@ -62,10 +62,7 @@ namespace Core
 				return (ActorGroup)index;
 			}
 			else
-			{
-				LogString("ERROR : GetActorGroup()-> cannot find the actorgroup");
 				return ActorGroup::DEFAULT;
-			}
 		}
 
 		static inline std::vector<const char*> ActorGroupString = {

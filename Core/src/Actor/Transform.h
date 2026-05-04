@@ -16,7 +16,6 @@
 #include <iosfwd>
 
 #include "Math/FTMath.h"
-#include "Entity/ObjectLayout.h"
 
 namespace Core
 {

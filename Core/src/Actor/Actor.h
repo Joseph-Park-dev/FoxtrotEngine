@@ -93,27 +93,27 @@ namespace Core
 		ActorGroup						GetActorGroup() const { return mActorGroup; }
 		ActorGroup&						GetActorGroupRef() { return mActorGroup; }
 		ActorGroup*						GetActorGroupPtr() { return &mActorGroup; }
-		FTDS::String					GetName();
-		virtual FTDS::String&			GetNameRef();
+		Common::FTDS::String					GetName();
+		virtual Common::FTDS::String&			GetNameRef();
 		const int						GetID() const { return mID; }
 		const bool&						GetIsActive() const { return mIsActive; }
 		Transform*						GetTransform() const { return mTransform; }
 		Actor*							GetParent() const { return mParent; }
-		FTDS::DynamicArray<Component*>* GetComponents() { return mComponents; }
-		FTDS::DynamicArray<Actor*>*		GetChildActors() { return mChild; }
+		Common::FTDS::DynamicArray<Component*>* GetComponents() { return mComponents; }
+		Common::FTDS::DynamicArray<Actor*>*		GetChildActors() { return mChild; }
 		const int&						GetDrawOrder() const { return mDrawOrder; }
 
-		void SetName(FTDS::String&& name);
+		void SetName(Common::FTDS::String&& name);
 		void SetIsActive(bool isActive) { mIsActive = isActive; }
 		void SetActorGroup(ActorGroup group) { mActorGroup = group; }
 		void SetState(ActorState state) { mState = state; }
 		void SetParent(Actor* parent) { mParent = parent; }
 		void SetTransform(Transform* transform) { mTransform = transform; }
-		void SetComponents(FTDS::DynamicArray<Component*>* components) { mComponents = components; }
-		void SetChildActors(FTDS::DynamicArray<Actor*>* children) { mChild = children; }
+		void SetComponents(Common::FTDS::DynamicArray<Component*>* components) { mComponents = components; }
+		void SetChildActors(Common::FTDS::DynamicArray<Actor*>* children) { mChild = children; }
 		void SetDrawOrder(int order) { mDrawOrder = order; }
 
-		bool		  HasName(FTDS::String&& name);
+		bool		  HasName(Common::FTDS::String&& name);
 		bool		  HasName(const char* name);
 		bool		  IsDead();
 		virtual bool& IsActive();
@@ -131,15 +131,15 @@ namespace Core
 		};
 
 	private:
-		FTDS::String					mName;
+		Common::FTDS::String					mName;
 		int								mID;
 		ActorGroup						mActorGroup;
 		ActorState						mState;
 		bool							mIsActive;
 		Transform*						mTransform;
-		FTDS::DynamicArray<Component*>* mComponents;
+		Common::FTDS::DynamicArray<Component*>* mComponents;
 		Actor*							mParent;
-		FTDS::DynamicArray<Actor*>*		mChild;
+		Common::FTDS::DynamicArray<Actor*>*		mChild;
 		int								mDrawOrder;
 
 	public:

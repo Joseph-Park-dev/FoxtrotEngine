@@ -24,8 +24,7 @@
 #include "FileSystem/BufferSizes.h"
 #include "FileSystem/NullKeys.h"
 
-#include "Compare/StringEqual.h"
-#include "Dynamic/DynamicArray.h"
+#include "FTDS/Dynamic/DynamicArray.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorElement.h"
@@ -41,9 +40,9 @@ namespace Core
 		, mState(ActorState::ALIVE)
 		, mIsActive(true)
 		, mTransform(DBG_NEW Transform(this))
-		, mComponents(DBG_NEW FTDS::DynamicArray<Component*>())
+		, mComponents(DBG_NEW Common::FTDS::DynamicArray<Component*>())
 		, mParent(nullptr)
-		, mChild(DBG_NEW FTDS::DynamicArray<Actor*>())
+		, mChild(DBG_NEW Common::FTDS::DynamicArray<Actor*>())
 		, mDrawOrder(0)
 	{
 		// This block should remain as empty.
@@ -56,9 +55,9 @@ namespace Core
 		, mState(ActorState::ALIVE)
 		, mIsActive(true)
 		, mTransform(DBG_NEW Transform(this))
-		, mComponents(DBG_NEW FTDS::DynamicArray<Component*>())
+		, mComponents(DBG_NEW Common::FTDS::DynamicArray<Component*>())
 		, mParent(actor->mParent)
-		, mChild(DBG_NEW FTDS::DynamicArray<Actor*>())
+		, mChild(DBG_NEW Common::FTDS::DynamicArray<Actor*>())
 		, mDrawOrder(actor->mDrawOrder)
 	{
 		mName.Assign(actor->GetNameRef());
@@ -75,9 +74,9 @@ namespace Core
 		, mState(ActorState::ALIVE)
 		, mIsActive(true)
 		, mTransform(DBG_NEW Transform(this))
-		, mComponents(DBG_NEW FTDS::DynamicArray<Component*>())
+		, mComponents(DBG_NEW Common::FTDS::DynamicArray<Component*>())
 		, mParent(actor->mParent)
-		, mChild(DBG_NEW FTDS::DynamicArray<Actor*>())
+		, mChild(DBG_NEW Common::FTDS::DynamicArray<Actor*>())
 		, mDrawOrder(actor->mDrawOrder)
 	{
 		mName.Assign(actor->GetNameRef());
@@ -131,7 +130,7 @@ namespace Core
 	{
 		this->RemoveAllComponents();
 
-		FTDS::DynamicArray<Component*>* compsToCopy = actor->GetComponents();
+		Common::FTDS::DynamicArray<Component*>* compsToCopy = actor->GetComponents();
 		for (size_t i = 0; i < compsToCopy->GetSize(); ++i)
 			compsToCopy->At(i)->CloneTo(this);
 	}
@@ -161,17 +160,17 @@ namespace Core
 		});
 	}
 
-	FTDS::String Actor::GetName()
+	Common::FTDS::String Actor::GetName()
 	{
 		return mName;
 	}
 
-	FTDS::String& Actor::GetNameRef()
+	Common::FTDS::String& Actor::GetNameRef()
 	{
 		return mName;
 	}
 
-	void Actor::SetName(FTDS::String&& name)
+	void Actor::SetName(Common::FTDS::String&& name)
 	{
 		mName.Assign(name);
 	}
@@ -229,14 +228,14 @@ namespace Core
 		mComponents->Clear();
 	}
 
-	bool Actor::HasName(FTDS::String&& name)
+	bool Actor::HasName(Common::FTDS::String&& name)
 	{
 		return mName.Equal(name.C_Str());
 	}
 
 	bool Actor::HasName(const char* name)
 	{
-		return FTDS::StringEqual(mName.C_Str(), name);
+		return Common::FTDS::StringEqual(mName.C_Str(), name);
 	}
 
 	bool Actor::IsDead()
@@ -251,61 +250,61 @@ namespace Core
 
 	void Actor::SaveProperties(std::ofstream& ofs)
 	{
-		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::ACTOR_PROPERTIES);
+		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::ACTOR_PROPERTIES);
 
-		FileIOHelper::SaveString(ofs, ChunkKey::NAME, GetNameRef());
-		FileIOHelper::SaveInt(ofs, ChunkKey::ID::ID, mID);
+		Common::FileIOHelper::SaveString(ofs, ChunkKey::NAME, GetNameRef());
+		Common::FileIOHelper::SaveInt(ofs, ChunkKey::ID::ID, mID);
 		mTransform->SaveProperties(ofs);
-		FileIOHelper::SaveInt(ofs, ChunkKey::DRAW_ORDER, mDrawOrder);
-		FileIOHelper::SaveString(ofs, ChunkKey::ACTOR_GROUP, ActorGroupUtil::GetActorGroupStr(mActorGroup));
-		FileIOHelper::SaveBool(ofs, ChunkKey::STATE, mIsActive);
+		Common::FileIOHelper::SaveInt(ofs, ChunkKey::DRAW_ORDER, mDrawOrder);
+		Common::FileIOHelper::SaveString(ofs, ChunkKey::ACTOR_GROUP, ActorGroupUtil::GetActorGroupStr(mActorGroup));
+		Common::FileIOHelper::SaveBool(ofs, ChunkKey::STATE, mIsActive);
 
 		if (mParent)
-			FileIOHelper::SaveInt(ofs, ChunkKey::PARENT, mParent->GetID());
+			Common::FileIOHelper::SaveInt(ofs, ChunkKey::PARENT, mParent->GetID());
 		else
-			FileIOHelper::SaveString(ofs, ChunkKey::PARENT, ChunkKey::NullVal::NULL_OBJECT);
+			Common::FileIOHelper::SaveString(ofs, ChunkKey::PARENT, Common::ChunkKey::NullVal::NULL_OBJECT);
 
-		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CHILD);
+		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CHILD);
 
 		if (0 < mChild->GetSize())
 		{
 			for (size_t i = 0; i < mChild->GetSize(); ++i)
-				FileIOHelper::SaveInt(ofs, std::to_string(i).c_str(), mChild->At(i)->GetID());
+				Common::FileIOHelper::SaveInt(ofs, std::to_string(i).c_str(), mChild->At(i)->GetID());
 		}
 
-		FileIOHelper::EndDataPackSave(ofs, ChunkKey::CHILD);
+		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::CHILD);
 
 		// Changing the call location of Transform is NOT recommended
 		// Nested .chunk DataPack has unknown problem.
-		FileIOHelper::EndDataPackSave(ofs, ChunkKey::ACTOR_PROPERTIES);
+		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::ACTOR_PROPERTIES);
 	}
 
 	void Actor::SaveComponents(std::ofstream& ofs)
 	{
 		size_t count = mComponents->GetSize();
-		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::COMPONENTS);
+		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::COMPONENTS);
 		for (size_t i = 0; i < count; ++i)
 		{
-			FileIOHelper::BeginDataPackSave(ofs, mComponents->At(i)->GetName());
+			Common::FileIOHelper::BeginDataPackSave(ofs, mComponents->At(i)->GetName());
 			mComponents->At(i)->SaveProperties(ofs);
-			FileIOHelper::EndDataPackSave(ofs, mComponents->At(i)->GetName());
+			Common::FileIOHelper::EndDataPackSave(ofs, mComponents->At(i)->GetName());
 		}
-		FileIOHelper::EndDataPackSave(ofs, ChunkKey::COMPONENTS);
+		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::COMPONENTS);
 	}
 
 	void Actor::LoadProperties(std::ifstream& ifs)
 	{
-		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_PROPERTIES);
+		Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_PROPERTIES);
 
 		// Load dummy child Actors which only stores their names.
-		size_t childCount = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CHILD).first;
+		size_t childCount = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CHILD).first;
 
 		if (0 < childCount)
 		{
 			for (size_t i = 0; i < childCount; ++i)
 			{
 				int id = ChunkKey::ID::INVALID;
-				FileIOHelper::LoadInt(ifs, id);
+				Common::FileIOHelper::LoadInt(ifs, id);
 
 				Actor* pending = DBG_NEW Actor(id);
 				AddChild(pending);
@@ -313,9 +312,9 @@ namespace Core
 		}
 
 		// Load dummmy parent Actors which only stores their names.
-		FTDS::String parentID;
-		FileIOHelper::LoadBasicString(ifs, parentID);
-		if (parentID.NotEqual(ChunkKey::NullVal::NULL_OBJECT))
+		Common::FTDS::String parentID;
+		Common::FileIOHelper::LoadBasicString(ifs, parentID);
+		if (parentID.NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
 		{
 			int	   id	   = std::stoi(parentID.C_Str());
 			Actor* pending = DBG_NEW Actor(id);
@@ -323,33 +322,33 @@ namespace Core
 		}
 
 		// Load Actor state
-		FileIOHelper::LoadBool(ifs, mIsActive);
+		Common::FileIOHelper::LoadBool(ifs, mIsActive);
 
 		// Load Actor group
-		FTDS::String actorGroupStr;
-		FileIOHelper::LoadBasicString(ifs, actorGroupStr);
+		Common::FTDS::String actorGroupStr;
+		Common::FileIOHelper::LoadBasicString(ifs, actorGroupStr);
 		mActorGroup = ActorGroupUtil::GetActorGroup(actorGroupStr);
 
 		// Load Actor draw order
-		FileIOHelper::LoadInt(ifs, mDrawOrder);
+		Common::FileIOHelper::LoadInt(ifs, mDrawOrder);
 
 		// Load Transform
 		mTransform->LoadProperties(ifs);
 
 		// Load int
-		FileIOHelper::LoadInt(ifs, mID);
+		Common::FileIOHelper::LoadInt(ifs, mID);
 
 		// Load Actor name
-		FileIOHelper::LoadBasicString(ifs, mName);
+		Common::FileIOHelper::LoadBasicString(ifs, mName);
 	}
 
 	void Actor::LoadComponents(std::ifstream& ifs)
 	{
-		std::pair<size_t, FTDS::String>&& pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COMPONENTS);
+		std::pair<size_t, Common::FTDS::String>&& pack = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COMPONENTS);
 		mComponents->Reserve(pack.first);
 		for (size_t i = 0; i < pack.first; ++i)
 		{
-			std::pair<size_t, FTDS::String> compPack = FileIOHelper::BeginDataPackLoad(ifs);
+			std::pair<size_t, Common::FTDS::String> compPack = Common::FileIOHelper::BeginDataPackLoad(ifs);
 			// ChunkLoader::GetInstance()->GetComponentLoadMap().At(compPack.second)->Value()(this, ifs);
 		}
 	}

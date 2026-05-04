@@ -11,9 +11,6 @@ namespace Common
 	class ResourcePack
 	{
 	public:
-		virtual void LoadDefaultResources() = 0;
-
-	public:
 		/// @brief Load all FTResources described in the .chunk
 		/// @tparam FTRESOURCE Type of Resource
 		/// @param userData Additional data necessary for resource's constructor.

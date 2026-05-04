@@ -43,8 +43,8 @@ namespace Core
 	 */
 	Scene::Scene()
 		: mIsUpdatingActors(false)
-		, mActors(DBG_NEW FTDS::DynamicArray<Actor*>)
-		, mPendingActors(DBG_NEW FTDS::DynamicArray<Actor*>)
+		, mActors(DBG_NEW Common::FTDS::DynamicArray<Actor*>)
+		, mPendingActors(DBG_NEW Common::FTDS::DynamicArray<Actor*>)
 	{
 	}
 
@@ -83,7 +83,7 @@ namespace Core
 	 * @param filter Optional actor pointer to exclude from match (commonly the caller).
 	 * @return Pointer to the actor if found; otherwise `nullptr`.
 	 */
-	Actor* Scene::FindActor(FTDS::String& name, Actor* filter)
+	Actor* Scene::FindActor(Common::FTDS::String& name, Actor* filter)
 	{
 		for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
 		{
@@ -106,11 +106,11 @@ namespace Core
 	 */
 	Actor* Scene::FindActor(const char* name, Actor* filter)
 	{
-		FTDS::String str(name);
+		Common::FTDS::String str(name);
 		return FindActor(str, filter);
 	}
 
-	const FTDS::String& Scene::GetName()
+	const Common::FTDS::String& Scene::GetName()
 	{
 		return mSceneName;
 	}
@@ -126,27 +126,27 @@ namespace Core
 
 	/**
 	 * @brief Gets a const pointer to the active actors container.
-	 * @return Const pointer to `FTDS::DynamicArray<Actor*>`.
+	 * @return Const pointer to `Common::FTDS::DynamicArray<Actor*>`.
 	 *
 	 * Note: Do not mutate actors via this container during update; use event processing.
 	 */
-	const FTDS::DynamicArray<Actor*>* Scene::GetActors() const
+	const Common::FTDS::DynamicArray<Actor*>* Scene::GetActors() const
 	{
 		return mActors;
 	}
 
-	void Scene::SetName(const FTDS::String&& name)
+	void Scene::SetName(const Common::FTDS::String&& name)
 	{
 		mSceneName.Assign(name);
 	}
 
 	/**
 	 * @brief Provides a reference to the active actors container pointer.
-	 * @return Reference to `FTDS::DynamicArray<Actor*>*` for advanced management.
+	 * @return Reference to `Common::FTDS::DynamicArray<Actor*>*` for advanced management.
 	 *
 	 * Warning: Ownership and lifetime are managed internally; avoid replacing the container unless intended.
 	 */
-	FTDS::DynamicArray<Actor*>*& Scene::Actors()
+	Common::FTDS::DynamicArray<Actor*>*& Scene::Actors()
 	{
 		return mActors;
 	}

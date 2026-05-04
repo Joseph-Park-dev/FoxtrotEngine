@@ -28,18 +28,18 @@ namespace Core
 		void RemoveActor(Actor* actor);
 
 		Actor*		   FindActor(int id);
-		virtual Actor* FindActor(FTDS::String& name, Actor* filter = nullptr);
+		virtual Actor* FindActor(Common::FTDS::String& name, Actor* filter = nullptr);
 		Actor*		   FindActor(const char* name, Actor* filter = nullptr);
 
 	public:
-		const FTDS::String&				  GetName();
+		const Common::FTDS::String&				  GetName();
 		const bool						  GetIsUpdatingActors() const;
-		const FTDS::DynamicArray<Actor*>* GetActors() const;
+		const Common::FTDS::DynamicArray<Actor*>* GetActors() const;
 
-		void SetName(const FTDS::String&& name);
+		void SetName(const Common::FTDS::String&& name);
 		void SetIsUpdatingActors(bool value) { mIsUpdatingActors = value; }
 
-		FTDS::DynamicArray<Actor*>*& Actors();
+		Common::FTDS::DynamicArray<Actor*>*& Actors();
 
 	public:
 		void		 ProcessEvent();
@@ -47,13 +47,13 @@ namespace Core
 
 	private:
 		/// @brief Active actors managed by the scene.
-		FTDS::DynamicArray<Actor*>* mActors;
+		Common::FTDS::DynamicArray<Actor*>* mActors;
 
 		/// @brief Actors pending addition while updates are in progress.
-		FTDS::DynamicArray<Actor*>* mPendingActors;
+		Common::FTDS::DynamicArray<Actor*>* mPendingActors;
 
 		/// @brief Human-readable scene name.
-		FTDS::String mSceneName;
+		Common::FTDS::String mSceneName;
 
 		/// @brief True while the scene is iterating/updating actors.
 		bool mIsUpdatingActors;

@@ -73,185 +73,151 @@ namespace Editor
 		FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::RESOURCE_DATA);
 	}
 
-	void ResourceManager::LoadAllResourcesInAsset()
-	{
-		const char* pathToAsset = DirectoryHelper::GetInstance()->GetAssetPath().C_Str();
-		// File paths whose loading was aborted.
-		// Mostly when certain fields are nullptr or not loaded yet.
-		FTDS::DynamicArray<FTDS::String*> aborted;
+	// void ResourceManager::LoadCoreResByType(const char* filePath, FTDS::DynamicArray<FTDS::String*>& aborted)
+	//{
+	//	FTDS::String path(filePath);
+	//	size_t		 type = GetCoreTypeIdx(path);
 
-		DirectoryHelper::IterateForFileRecurse(
-			pathToAsset,
-			[&](std::string path) {
-				LoadCoreResByType(path.c_str(), aborted);
-				LoadD3D11ResByType(path.c_str(), aborted);
-			});
+	//	Core::ResourceManager* resManager = mGetCoreResManagerFunc();
+	//	FTResource*			   res		  = nullptr;
+	//	printf("Loading file... %s\n", filePath);
 
-		while (!aborted.IsEmpty())
-		{
-			aborted.IterateArray([&](FTDS::String* path) {
-				if (path)
-				{
-					LoadCoreResByType(path->C_Str(), aborted);
-					LoadD3D11ResByType(path->C_Str(), aborted);
-				}
-			});
-		}
+	//	switch (type)
+	//	{
+	//		// Loads non-Graphics resource.
+	//		case Core::ResType::PREMADE:
+	//			res = LoadResource<Core::FTPremade>(resManager, path);
+	//			break;
+	//		case Core::ResType::CSV:
+	//			res = LoadResource<Core::FTCSV>(resManager, path);
+	//			break;
+	//		case Core::ResType::JSON:
+	//			res = LoadResource<Core::FTJSON>(resManager, path);
+	//			break;
+	//		case Core::ResType::TEXT:
+	//			res = LoadResource<Core::FTText>(resManager, path);
+	//			break;
 
-		// ResourceManager::GetInstance()->LoadMaterials();
-		LoadDefaultResources();
+	//		// Filters out the rest of file types.
+	//		case Core::ResType::UNSUPPORTED:
+	//			printf("File %s is unsupported\n", filePath);
+	//			return;
+	//		default:
+	//			return;
+	//	}
 
-		aborted.IterateArray([&](FTDS::String* path) {
-			delete path;
-			path = nullptr;
-		});
-	}
+	//	if (res)
+	//	{
+	//		int pos = aborted.Find(&path);
+	//		if (pos != -1)
+	//		{
+	//			delete aborted.At(pos);
+	//			aborted.Erase(pos);
+	//		}
+	//	}
+	//	else
+	//		aborted.PushBack(DBG_NEW FTDS::String(path));
+	//}
 
-	void ResourceManager::LoadCoreResByType(const char* filePath, FTDS::DynamicArray<FTDS::String*>& aborted)
-	{
-		FTDS::String path(filePath);
-		size_t		 type = GetCoreTypeIdx(path);
+	// void ResourceManager::LoadD3D11ResByType(const char* filePath, Core::FTDS::DynamicArray<Core::FTDS::String*>& aborted)
+	//{
+	//	FTDS::String path(filePath);
+	//	size_t		 type = GetCoreTypeIdx(path);
 
-		Core::ResourceManager* resManager = mGetCoreResManagerFunc();
-		FTResource*			   res		  = nullptr;
-		printf("Loading file... %s\n", filePath);
+	//	D3D11Resource* res = nullptr;
+	//	printf("Loading file... %s\n", filePath);
 
-		switch (type)
-		{
-			// Loads non-Graphics resource.
-			case Core::ResType::PREMADE:
-				res = LoadResource<Core::FTPremade>(resManager, path);
-				break;
-			case Core::ResType::CSV:
-				res = LoadResource<Core::FTCSV>(resManager, path);
-				break;
-			case Core::ResType::JSON:
-				res = LoadResource<Core::FTJSON>(resManager, path);
-				break;
-			case Core::ResType::TEXT:
-				res = LoadResource<Core::FTText>(resManager, path);
-				break;
+	//	switch (type)
+	//	{
+	//		// Loads Graphics resource.
+	//		case D3D11::ResType::TEXTURE:
+	//		{
+	//			FTDS::String  fileName = ExtractFileName(path.C_Str());
+	//			FTResourceDef resDef{ fileName, path };
+	//			FTTexture*	  tex = LoadResource<FTTexture>(path, mRenderer);
+	//			static_cast<FTSprite*>(res)->SetTexture(tex);
+	//			res = tex;
+	//			break;
+	//		}
+	//		case D3D11::ResType::SPRITE_ANIMATION:
+	//			res = LoadResource<FTSpriteAnimation>(path, mRenderer);
+	//			break;
+	//		case D3D11::ResType::SPINE_ANIMATION:
+	//			res = LoadResource<FTSpineAnimation>(path, mRenderer);
+	//			break;
+	//		case D3D11::ResType::MESH_GROUP:
+	//			res = LoadResource<FTMeshGroup>(path, mRenderer);
+	//			break;
+	//		case D3D11::ResType::FONT:
+	//			res = LoadResource<FTFont>(path, mRenderer);
+	//			break;
+	//		case D3D11::ResType::TILEMAP:
+	//			res = LoadResource<FTTileMap>(path, mRenderer);
+	//			break;
 
-			// Filters out the rest of file types.
-			case Core::ResType::UNSUPPORTED:
-				printf("File %s is unsupported\n", filePath);
-				return;
-			default:
-				return;
-		}
+	//		// Filters out the rest of file types.
+	//		case D3D11::ResType::UNSUPPORTED:
+	//			printf("File %s is unsupported\n", filePath);
+	//			return;
+	//		default:
+	//			return;
+	//	}
 
-		if (res)
-		{
-			int pos = aborted.Find(&path);
-			if (pos != -1)
-			{
-				delete aborted.At(pos);
-				aborted.Erase(pos);
-			}
-		}
-		else
-			aborted.PushBack(DBG_NEW FTDS::String(path));
-	}
+	//	if (res)
+	//	{
+	//		int pos = aborted.Find(&path);
+	//		if (pos != -1)
+	//		{
+	//			delete aborted.At(pos);
+	//			aborted.Erase(pos);
+	//		}
+	//	}
+	//	else
+	//		aborted.PushBack(DBG_NEW FTDS::String(path));
+	//}
 
-	void ResourceManager::LoadD3D11ResByType(const char* filePath, Core::FTDS::DynamicArray<Core::FTDS::String*>& aborted)
-	{
-		FTDS::String path(filePath);
-		size_t		 type = GetCoreTypeIdx(path);
+	// void ResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)
+	//{
+	//	std::pair<size_t, FTDS::String> resPack	  = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::RESOURCE_DATA);
+	//	size_t							packCount = resPack.first;
 
-		D3D11Resource* res = nullptr;
-		printf("Loading file... %s\n", filePath);
+	//	ResArray* mCoreRes = mGetCoreResManagerFunc()->GetResArray();
+	//	ResArray* d3d11Res = mGetD3D11ResManagerFunc()->GetResArray();
 
-		switch (type)
-		{
-			// Loads Graphics resource.
-			case D3D11::ResType::TEXTURE:
-			{
-				FTDS::String  fileName = ExtractFileName(path.C_Str());
-				FTResourceDef resDef{ fileName, path };
-				FTTexture*	  tex = LoadResource<FTTexture>(path, mRenderer);
-				static_cast<FTSprite*>(res)->SetTexture(tex);
-				res = tex;
-				break;
-			}
-			case D3D11::ResType::SPRITE_ANIMATION:
-				res = LoadResource<FTSpriteAnimation>(path, mRenderer);
-				break;
-			case D3D11::ResType::SPINE_ANIMATION:
-				res = LoadResource<FTSpineAnimation>(path, mRenderer);
-				break;
-			case D3D11::ResType::MESH_GROUP:
-				res = LoadResource<FTMeshGroup>(path, mRenderer);
-				break;
-			case D3D11::ResType::FONT:
-				res = LoadResource<FTFont>(path, mRenderer);
-				break;
-			case D3D11::ResType::TILEMAP:
-				res = LoadResource<FTTileMap>(path, mRenderer);
-				break;
+	//	std::pair<size_t, FTDS::String>
+	//		desc = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::FTText::FT_TEXT);
+	//	LoadDummyResource<FTText>(ifs, mCoreRes, desc.first);
 
-			// Filters out the rest of file types.
-			case D3D11::ResType::UNSUPPORTED:
-				printf("File %s is unsupported\n", filePath);
-				return;
-			default:
-				return;
-		}
+	//	desc = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::CSV::CSV);
+	//	LoadDummyResource<FTCSV>(ifs, mCoreRes, desc.first);
 
-		if (res)
-		{
-			int pos = aborted.Find(&path);
-			if (pos != -1)
-			{
-				delete aborted.At(pos);
-				aborted.Erase(pos);
-			}
-		}
-		else
-			aborted.PushBack(DBG_NEW FTDS::String(path));
-	}
+	//	desc = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::JSON::JSON);
+	//	LoadDummyResource<FTJSON>(ifs, mCoreRes, desc.first);
 
-	void ResourceManager::PassLoadResourceInChunk(std::ifstream& ifs)
-	{
-		std::pair<size_t, FTDS::String> resPack	  = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::RESOURCE_DATA);
-		size_t							packCount = resPack.first;
+	//	/*	desc = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::Sound::SOUND);
+	//		LoadDummyResource<Sound>(ifs, desc.first);*/
 
-		ResArray* mCoreRes = mGetCoreResManagerFunc()->GetResArray();
-		ResArray* d3d11Res = mGetD3D11ResManagerFunc()->GetResArray();
+	//	desc = FileIOHelper::BeginDataPackLoad(ifs, D3D11::ChunkKey::FTMeshGroup::FT_MESH_GROUP);
+	//	LoadDummyResource<FTMeshGroup>(ifs, d3d11Res, desc.first);
 
-		std::pair<size_t, FTDS::String>
-			desc = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::FTText::FT_TEXT);
-		LoadDummyResource<FTText>(ifs, mCoreRes, desc.first);
+	//	desc = FileIOHelper::BeginDataPackLoad(ifs, D3D11::ChunkKey::FTTexture::FT_TEXTURE);
+	//	LoadDummyResource<FTSprite>(ifs, d3d11Res, desc.first);
 
-		desc = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::CSV::CSV);
-		LoadDummyResource<FTCSV>(ifs, mCoreRes, desc.first);
+	//	desc = FileIOHelper::BeginDataPackLoad(ifs, D3D11::ChunkKey::FTTileMap::FT_TILEMAP);
+	//	LoadDummyResource<FTTileMap>(ifs, d3d11Res, desc.first);
 
-		desc = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::JSON::JSON);
-		LoadDummyResource<FTJSON>(ifs, mCoreRes, desc.first);
+	//	desc = FileIOHelper::BeginDataPackLoad(ifs, D3D11::ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
+	//	LoadDummyResource<FTSpriteAnimation>(ifs, d3d11Res, desc.first);
 
-		/*	desc = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::Sound::SOUND);
-			LoadDummyResource<Sound>(ifs, desc.first);*/
+	//	desc = FileIOHelper::BeginDataPackLoad(ifs, D3D11::ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
+	//	LoadDummyResource<FTSpineAnimation>(ifs, d3d11Res, desc.first);
 
-		desc = FileIOHelper::BeginDataPackLoad(ifs, D3D11::ChunkKey::FTMeshGroup::FT_MESH_GROUP);
-		LoadDummyResource<FTMeshGroup>(ifs, d3d11Res, desc.first);
+	//	desc = FileIOHelper::BeginDataPackLoad(ifs, D3D11::ChunkKey::FTFont::FTFONT);
+	//	LoadDummyResource<FTFont>(ifs, d3d11Res, desc.first);
 
-		desc = FileIOHelper::BeginDataPackLoad(ifs, D3D11::ChunkKey::FTTexture::FT_TEXTURE);
-		LoadDummyResource<FTSprite>(ifs, d3d11Res, desc.first);
-
-		desc = FileIOHelper::BeginDataPackLoad(ifs, D3D11::ChunkKey::FTTileMap::FT_TILEMAP);
-		LoadDummyResource<FTTileMap>(ifs, d3d11Res, desc.first);
-
-		desc = FileIOHelper::BeginDataPackLoad(ifs, D3D11::ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
-		LoadDummyResource<FTSpriteAnimation>(ifs, d3d11Res, desc.first);
-
-		desc = FileIOHelper::BeginDataPackLoad(ifs, D3D11::ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
-		LoadDummyResource<FTSpineAnimation>(ifs, d3d11Res, desc.first);
-
-		desc = FileIOHelper::BeginDataPackLoad(ifs, D3D11::ChunkKey::FTFont::FTFONT);
-		LoadDummyResource<FTFont>(ifs, d3d11Res, desc.first);
-
-		desc = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::FTPremade::FT_PREMADE);
-		LoadDummyResource<Core::FTPremade>(ifs, mCoreRes, desc.first);
-	}
+	//	desc = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::FTPremade::FT_PREMADE);
+	//	LoadDummyResource<Core::FTPremade>(ifs, mCoreRes, desc.first);
+	//}
 
 	void ResourceManager::UpdateUI()
 	{

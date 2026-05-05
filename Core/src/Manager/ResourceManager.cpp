@@ -30,18 +30,23 @@
 #include "FileSystem/NullKeys.h"
 #include "Plugin/CoreExports.h"
 
-
 namespace Core
 {
 	using namespace Common;
 	ResourceManager::ResourceManager()
 		: mPremades(DBG_NEW ResourcePack<FTPremade>(0))
+		, mCSVs(DBG_NEW ResourcePack<FTCSV>(0))
+		, mJSONs(DBG_NEW ResourcePack<FTJSON>(0))
+		, mTexts(DBG_NEW ResourcePack<FTText>(0))
 	{
 	}
 
 	ResourceManager::~ResourceManager()
 	{
 		delete mPremades;
+		delete mCSVs;
+		delete mJSONs;
+		delete mTexts;
 	}
 
 	/**
@@ -378,5 +383,37 @@ namespace Core
 	Core::FTPremade* ResourceManager::GetPremade(const char* key)
 	{
 		return mPremades->GetResource(key);
+	}
+
+	Core::FTCSV* ResourceManager::GetCSV(const char* key)
+	{
+		return mCSVs->GetResource(key);
+	}
+
+	Core::FTJSON* ResourceManager::GetJSON(const char* key)
+	{
+		return mJSONs->GetResource(key);
+	}
+
+	Core::FTText* ResourceManager::GetText(const char* key)
+	{
+		return mTexts->GetResource(key);
+	}
+
+	FTPremade* GetPremade(const char* key)
+	{
+		return ResourceManager::GetInstance()->GetPremade(key);
+	}
+	FTCSV* GetCSV(const char* key)
+	{
+		return ResourceManager::GetInstance()->GetCSV(key);
+	}
+	FTJSON* GetJSON(const char* key)
+	{
+		return ResourceManager::GetInstance()->GetJSON(key);
+	}
+	FTText* GetText(const char* key)
+	{
+		return ResourceManager::GetInstance()->GetText(key);
 	}
 } // namespace Core

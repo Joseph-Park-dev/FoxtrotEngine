@@ -4,8 +4,8 @@
 
 void Core::CoreResource::SaveProperties(std::ofstream& ofs)
 {
-	Common::FileIOHelper::SaveString(ofs, ChunkKey::FTResource::FILE_NAME, *GetFileName());
-	Common::FileIOHelper::SaveString(ofs, ChunkKey::FTResource::FILE_NAME, *GetRelativePath());
+	Common::FileIOHelper::SaveString(ofs, Common::ChunkKey::FTResource::FILE_NAME, *GetFileName());
+	Common::FileIOHelper::SaveString(ofs, Common::ChunkKey::FTResource::FILE_NAME, *GetRelativePath());
 }
 
 void Core::CoreResource::LoadProperties(std::ifstream& ifs)

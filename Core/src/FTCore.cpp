@@ -127,12 +127,12 @@ namespace Core
 
 	void FTCore::InitEntities()
 	{
-		mEntities->Insert("Timer", Timer::GetInstance());
-		mEntities->Insert("SceneManager", SceneManager::GetInstance());
-		mEntities->Insert("ResourceManager", ResourceManager::GetInstance());
-		mEntities->Insert("EventManager", EventManager::GetInstance());
-		mEntities->Insert("DirectoryHelper", DirectoryHelper::GetInstance());
-		mEntities->Insert("ChunkLoader", ChunkLoader::GetInstance());
+		// mEntities->Insert("Timer", Timer::GetInstance());
+		// mEntities->Insert("SceneManager", SceneManager::GetInstance());
+		// mEntities->Insert("ResourceManager", ResourceManager::GetInstance());
+		// mEntities->Insert("EventManager", EventManager::GetInstance());
+		// mEntities->Insert("DirectoryHelper", DirectoryHelper::GetInstance());
+		// mEntities->Insert("ChunkLoader", ChunkLoader::GetInstance());
 	}
 
 	void FTCore::ProcessEvent()

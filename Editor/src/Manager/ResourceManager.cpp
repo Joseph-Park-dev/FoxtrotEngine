@@ -244,23 +244,23 @@ namespace Editor
 		if (ImGui::Button("Refresh"))
 		{
 			// EditorSceneManager::GetInstance()->DeleteAll();
-			ResourceManager::GetInstance()->DeleteAll();
+			// ResourceManager::GetInstance()->DeleteAll();
 			LoadAllResourcesInAsset();
 			EditorChunkLoader::GetInstance()->LoadChunk(PATH_CHUNK);
 		}
 
-		DisplayLoadedResources<D3D11PSO>("PSOs", GetPSOs());
-		DisplayLoadedResources<FTSprite>("Sprites", GetSprites());
-		DisplayLoadedResources<FTTileMap>("Tilemaps", GetTileMaps());
-		DisplayLoadedResources<FTPremade>("Premades", GetPremades());
-		DisplayLoadedResources<FTMaterial>("Materials", GetMaterials());
-		DisplayLoadedResources<FTMeshGroup>("MeshGroups", GetMeshGroups());
-		DisplayLoadedResources<FTSpriteAnimation>("Sprite Animations", GetSpriteAnimations());
-		DisplayLoadedResources<FTSpineAnimation>("Spine Animations", GetSpineAnimations());
-		DisplayLoadedResources<Sound>("Sounds", GetSounds());
-		DisplayLoadedResources<FTCSV>("CSVs", GetCSVs());
-		DisplayLoadedResources<FTJSON>("JSONs", GetJSONs());
-		DisplayLoadedResources<FTText>("Texts", GetTexts());
+		// DisplayLoadedResources<D3D11PSO>("PSOs", GetPSOs());
+		// DisplayLoadedResources<FTSprite>("Sprites", GetSprites());
+		// DisplayLoadedResources<FTTileMap>("Tilemaps", GetTileMaps());
+		// DisplayLoadedResources<FTPremade>("Premades", GetPremades());
+		// DisplayLoadedResources<FTMaterial>("Materials", GetMaterials());
+		// DisplayLoadedResources<FTMeshGroup>("MeshGroups", GetMeshGroups());
+		// DisplayLoadedResources<FTSpriteAnimation>("Sprite Animations", GetSpriteAnimations());
+		// DisplayLoadedResources<FTSpineAnimation>("Spine Animations", GetSpineAnimations());
+		// DisplayLoadedResources<Sound>("Sounds", GetSounds());
+		// DisplayLoadedResources<FTCSV>("CSVs", GetCSVs());
+		// DisplayLoadedResources<FTJSON>("JSONs", GetJSONs());
+		// DisplayLoadedResources<FTText>("Texts", GetTexts());
 	}
 
 	void ResourceManager::SetRenderer(Editor::EditorRenderer* renderer)

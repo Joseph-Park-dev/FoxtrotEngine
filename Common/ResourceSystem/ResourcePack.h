@@ -51,7 +51,7 @@ namespace Common
 
 		FTRESOURCE* GetResource(const char* key)
 		{
-			if (key.Equal(Common::ChunkKey::NullVal::NULL_OBJECT))
+			if (FTDS::StringEqual(key, Common::ChunkKey::NullVal::NULL_OBJECT))
 				return nullptr;
 
 			FTDS::Record<FTRESOURCE*>* rec = mResources->At(key);

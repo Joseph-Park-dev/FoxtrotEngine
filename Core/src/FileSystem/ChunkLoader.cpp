@@ -47,7 +47,7 @@ namespace Core
 
 		// Load premades to Core ResourceManager
 		size_t premadeCount = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CORE_RES_DATA).first;
-		//Core::ResourceManager::GetInstance()->LoadResourcesFromChunk(ifs, premadeCount);
+		// Core::ResourceManager::GetInstance()->LoadResourcesFromChunk(ifs, premadeCount);
 
 		LoadActorsData(ifs);
 		Unlock();
@@ -74,7 +74,7 @@ namespace Core
 		copiedPath.Append("\\");
 
 		// Get the full copied file path.
-		Common::FTDS::String copiedName = ExtractFileName(path.C_Str());
+		Common::FTDS::String copiedName = Common::ExtractFileName(path.C_Str());
 		copiedName.ExtractUntilFirst(copiedName, ".");
 		copiedName.Append(" Copy.chunk");
 		copiedPath.Append(copiedName);
@@ -136,14 +136,14 @@ namespace Core
 
 	void ChunkLoader::LoadActorsData(std::ifstream& ifs)
 	{
-		Scene*							  scene = SceneManager::GetInstance()->GetCurrentScene();
+		Scene*									  scene = SceneManager::GetInstance()->GetCurrentScene();
 		std::pair<size_t, Common::FTDS::String>&& pack	= Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
-		std::vector<Actor*>				  actorBuf;
+		std::vector<Actor*>						  actorBuf;
 
 		for (size_t i = 0; i < pack.first; ++i)
 		{
 			std::pair<size_t, Common::FTDS::String>&& actorData = Common::FileIOHelper::BeginDataPackLoad(ifs);
-			Actor* actor								= DBG_NEW Actor(ChunkKey::ID::INVALID);
+			Actor* actor										= DBG_NEW Actor(ChunkKey::ID::INVALID);
 			actor->LoadProperties(ifs);
 			actor->LoadComponents(ifs);
 			scene->AddActor(actor);
@@ -192,7 +192,7 @@ namespace Core
 		{
 			Common::FTDS::String dllPath	= {};
 			Common::FTDS::String pluginName = {};
-			ExtractFileName(dllPath, pluginName);
+			Common::ExtractFileName(dllPath, pluginName);
 
 			HMODULE mod = LoadLibraryA(dllPath.C_Str());
 			Engine::GetInstance()->RegisterPlugin(mod, pluginName.C_Str());

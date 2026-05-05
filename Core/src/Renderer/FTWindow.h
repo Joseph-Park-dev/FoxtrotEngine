@@ -24,12 +24,12 @@ namespace Core
 		public Core::Entity
 	{
 	public:
-		const Plugin* GetOwner() { return mOwner; }
-		const bool	  GetIsActive() { return mIsActive; }
+		const Plugin*		  GetOwner() { return mOwner; }
+		const bool			  GetIsActive() { return mIsActive; }
 		Common::FTDS::String& GetTitle() { return mTitle; }
-		unsigned int  GetWidth() const { return mWidth; };
-		unsigned int  GetHeight() const { return mHeight; }
-		FTRectArea*	  GetRenderArea() const { return mRenderArea; };
+		unsigned int		  GetWidth() const { return mWidth; };
+		unsigned int		  GetHeight() const { return mHeight; }
+		FTRectArea*			  GetRenderArea() const { return mRenderArea; };
 
 		/**
 		 * @brief Sets the window width (does not automatically resize swap chain).
@@ -95,9 +95,9 @@ namespace Core
 		bool	mIsActive;
 
 		Common::FTDS::String mTitle;	  ///< Window title string.
-		unsigned int mWidth;	  ///< Current window client width (not render area width).
-		unsigned int mHeight;	  ///< Current window client height (not render area height).
-		FTRectArea*	 mRenderArea; ///< Sub-rectangle defining where the scene is drawn.
+		unsigned int		 mWidth;	  ///< Current window client width (not render area width).
+		unsigned int		 mHeight;	  ///< Current window client height (not render area height).
+		FTRectArea*			 mRenderArea; ///< Sub-rectangle defining where the scene is drawn.
 	};
 
 	namespace ChunkKey

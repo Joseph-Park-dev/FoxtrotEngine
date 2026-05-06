@@ -38,17 +38,16 @@ Foxtrot Engine has been developed by JungBae Park from GooCat Studio for the gam
 Visual Studio 2022 is recommended since the project is not built and tested on other development environments.
 ### 1. Downloading the repository
 Simply clone the repository or download as a .zip file.
-### 2. Check for project configuration
+### 2. Run setup.bat to install the external dependencies.
+### 3.. Check for project configuration
 Windows SDK Version: 10.0 <br>
 Platform Toolset: Visual Studio 2022 (v143) <br>
 C++ Language Standard: ISO C++17 Standard (/std:c++17) <br>
-Vcpkg is enabled, using Manifest. Check out the vcpkg file for package info.
-
-### 3. Use the correct solution configuration
+### 4. Use the correct solution configuration
 Use **Foxtrot_Debug** when building a game in production. <br>
 **Foxtrot_Editor_Debug** is used for updating Foxtrot Editor so unless you are working on improving the Editor, it is not necessary.
 
-### 4. Build the Projects
+### 5. Build the Projects
 #### a. Building Foxtrot Editor
 Set the configuration to **"Foxtrot_Editor_Debug"**. <br>
 Build the project **"FoxtrotEngine"** first, and then build the project **"FoxtrotEditor"**. The output "FoxtrotEditor.exe" should be in **"{root}/FoxtrotEditor/Builds"**.<br>

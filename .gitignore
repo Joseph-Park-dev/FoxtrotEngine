@@ -6,6 +6,7 @@
 *.exp
 
 extern/
+x64/
 
 ### C++ ###
 # Prerequisites

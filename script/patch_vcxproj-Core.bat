@@ -3,7 +3,7 @@ setlocal enabledelayedexpansion
 :: ============================================================
 :: Configuration
 :: ============================================================
-set VCXPROJ=..\src\Core\Core.vcxproj
+set VCXPROJ=.\src\Core\Core.vcxproj
 set PS_TEMP=%~dp0patch_vcxproj_temp.ps1
 
 :: ============================================================

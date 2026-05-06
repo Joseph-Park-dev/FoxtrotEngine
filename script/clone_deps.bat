@@ -11,7 +11,8 @@ set GIT=git
 :: Repositories to clone
 :: ============================================================
 set REPOS[0]=https://github.com/ocornut/imgui.git
-set REPOS[1]=https://github.com/nlohmann/json.git
+set REPOS[1]=https://github.com/aiekick/ImGuiFileDialog.git
+set REPOS[2]=https://github.com/nlohmann/json.git
 
 :: ============================================================
 :: Clone loop

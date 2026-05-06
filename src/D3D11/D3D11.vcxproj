@@ -189,7 +189,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDIr)\include\Common;$(SolutionDIr)\include\Core;$(SolutionDIr)\include\D3D11;$(SolutionDIr)\include\Editor;$(SolutionDIr)\extern\imgui;$(SolutionDIr)\extern\imgui\ImGuiFileDialog;$(SolutionDIr)\extern\json\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDIr)\include\Common;$(SolutionDIr)\include\Core;$(SolutionDIr)\include\D3D11;$(SolutionDIr)\include\Editor;$(SolutionDir)\include\Math;$(SolutionDIr)\extern\imgui;$(SolutionDIr)\extern\imgui\ImGuiFileDialog;$(SolutionDIr)\extern\json\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -238,8 +238,8 @@
     <ClCompile Include="Plugin\D3D11Plugin.cpp" />
     <ClCompile Include="Renderer\Camera.cpp" />
     <ClCompile Include="Renderer\D3D11Renderer.cpp" />
-    <ClCompile Include="Renderer\D3D11Utils.cpp" />
-    <ClCompile Include="Renderer\D3D11Window.cpp" />
+    <ClCompile Include="Utility\D3D11Utils.cpp" />
+    <ClCompile Include="Entity\D3D11Window.cpp" />
     <ClCompile Include="ResourceSystem\Animation\AnimationFrame.cpp" />
     <ClCompile Include="ResourceSystem\Animation\FTSpineAnimation.cpp" />
     <ClCompile Include="ResourceSystem\Animation\FTSpriteAnimation.cpp" />

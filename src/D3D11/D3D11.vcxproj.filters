@@ -66,10 +66,10 @@
     <ClCompile Include="Renderer\D3D11Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\D3D11Utils.cpp">
+    <ClCompile Include="Utility\D3D11Utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\D3D11Window.cpp">
+    <ClCompile Include="Entity\D3D11Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ResourceSystem\Animation\AnimationFrame.cpp">

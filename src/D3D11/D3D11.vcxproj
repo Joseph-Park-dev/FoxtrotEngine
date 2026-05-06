@@ -1,0 +1,755 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Foxtrot_Editor_Debug|Win32">
+      <Configuration>Foxtrot_Editor_Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Foxtrot_Editor_Debug|x64">
+      <Configuration>Foxtrot_Editor_Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>18.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{95944b49-be89-43df-bd3f-03d01fa7c284}</ProjectGuid>
+    <RootNamespace>D3D11Renderer</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>D3D11Renderer</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>D3D11Renderer</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|Win32'">
+    <TargetName>D3D11Renderer</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>D3D11Renderer</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
+    <TargetName>D3D11Renderer_Editor</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>D3D11Renderer</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;D3D11RENDERER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;D3D11RENDERER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;D3D11RENDERER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;D3D11RENDERER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>.\src;..\Core\include\json\include;..\Core\include\json\include\nlohmann;..\Core\src;..\Core\src\FTDS;..\Math\src;..\D3D11\include;..\D3D11\include\spine;..\D3D11\include\DirectXTK\Inc;..\Editor\include;..\Editor\include\imgui;..\Editor\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>d3d11.lib;D3DCompiler.lib;Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Math\builds</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;D3D11RENDERER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\Core\src;.\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+    <None Include="include\DirectXTex.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="include\DirectXTex.h" />
+    <ClInclude Include="include\imgui\backends\imgui_impl_dx11.h" />
+    <ClInclude Include="include\imgui\backends\imgui_impl_win32.h" />
+    <ClInclude Include="include\imgui\imconfig.h" />
+    <ClInclude Include="include\imgui\imgui.h" />
+    <ClInclude Include="include\imgui\ImGuiFileDialog\dirent\dirent.h" />
+    <ClInclude Include="include\imgui\ImGuiFileDialog\ImGuiFileDialog.h" />
+    <ClInclude Include="include\imgui\ImGuiFileDialog\ImGuiFileDialogConfig.h" />
+    <ClInclude Include="include\imgui\ImGuiFileDialog\stb\stb_image.h" />
+    <ClInclude Include="include\imgui\ImGuiFileDialog\stb\stb_image_resize2.h" />
+    <ClInclude Include="include\imgui\imgui_internal.h" />
+    <ClInclude Include="include\imgui\imstb_rectpack.h" />
+    <ClInclude Include="include\imgui\imstb_textedit.h" />
+    <ClInclude Include="include\imgui\imstb_truetype.h" />
+    <ClInclude Include="include\spine\Animation.h" />
+    <ClInclude Include="include\spine\AnimationState.h" />
+    <ClInclude Include="include\spine\AnimationStateData.h" />
+    <ClInclude Include="include\spine\Atlas.h" />
+    <ClInclude Include="include\spine\AtlasAttachmentLoader.h" />
+    <ClInclude Include="include\spine\Attachment.h" />
+    <ClInclude Include="include\spine\AttachmentLoader.h" />
+    <ClInclude Include="include\spine\AttachmentTimeline.h" />
+    <ClInclude Include="include\spine\AttachmentType.h" />
+    <ClInclude Include="include\spine\BlendMode.h" />
+    <ClInclude Include="include\spine\BlockAllocator.h" />
+    <ClInclude Include="include\spine\Bone.h" />
+    <ClInclude Include="include\spine\BoneData.h" />
+    <ClInclude Include="include\spine\BoundingBoxAttachment.h" />
+    <ClInclude Include="include\spine\ClippingAttachment.h" />
+    <ClInclude Include="include\spine\Color.h" />
+    <ClInclude Include="include\spine\ColorTimeline.h" />
+    <ClInclude Include="include\spine\ConstraintData.h" />
+    <ClInclude Include="include\spine\ContainerUtil.h" />
+    <ClInclude Include="include\spine\CurveTimeline.h" />
+    <ClInclude Include="include\spine\Debug.h" />
+    <ClInclude Include="include\spine\DeformTimeline.h" />
+    <ClInclude Include="include\spine\dll.h" />
+    <ClInclude Include="include\spine\DrawOrderTimeline.h" />
+    <ClInclude Include="include\spine\Event.h" />
+    <ClInclude Include="include\spine\EventData.h" />
+    <ClInclude Include="include\spine\EventTimeline.h" />
+    <ClInclude Include="include\spine\Extension.h" />
+    <ClInclude Include="include\spine\HashMap.h" />
+    <ClInclude Include="include\spine\HasRendererObject.h" />
+    <ClInclude Include="include\spine\IkConstraint.h" />
+    <ClInclude Include="include\spine\IkConstraintData.h" />
+    <ClInclude Include="include\spine\IkConstraintTimeline.h" />
+    <ClInclude Include="include\spine\Inherit.h" />
+    <ClInclude Include="include\spine\InheritTimeline.h" />
+    <ClInclude Include="include\spine\Json.h" />
+    <ClInclude Include="include\spine\LinkedMesh.h" />
+    <ClInclude Include="include\spine\Log.h" />
+    <ClInclude Include="include\spine\MathUtil.h" />
+    <ClInclude Include="include\spine\MeshAttachment.h" />
+    <ClInclude Include="include\spine\MixBlend.h" />
+    <ClInclude Include="include\spine\MixDirection.h" />
+    <ClInclude Include="include\spine\PathAttachment.h" />
+    <ClInclude Include="include\spine\PathConstraint.h" />
+    <ClInclude Include="include\spine\PathConstraintData.h" />
+    <ClInclude Include="include\spine\PathConstraintMixTimeline.h" />
+    <ClInclude Include="include\spine\PathConstraintPositionTimeline.h" />
+    <ClInclude Include="include\spine\PathConstraintSpacingTimeline.h" />
+    <ClInclude Include="include\spine\Physics.h" />
+    <ClInclude Include="include\spine\PhysicsConstraint.h" />
+    <ClInclude Include="include\spine\PhysicsConstraintData.h" />
+    <ClInclude Include="include\spine\PhysicsConstraintTimeline.h" />
+    <ClInclude Include="include\spine\PointAttachment.h" />
+    <ClInclude Include="include\spine\Pool.h" />
+    <ClInclude Include="include\spine\PositionMode.h" />
+    <ClInclude Include="include\spine\Property.h" />
+    <ClInclude Include="include\spine\RegionAttachment.h" />
+    <ClInclude Include="include\spine\RotateMode.h" />
+    <ClInclude Include="include\spine\RotateTimeline.h" />
+    <ClInclude Include="include\spine\RTTI.h" />
+    <ClInclude Include="include\spine\ScaleTimeline.h" />
+    <ClInclude Include="include\spine\Sequence.h" />
+    <ClInclude Include="include\spine\SequenceTimeline.h" />
+    <ClInclude Include="include\spine\ShearTimeline.h" />
+    <ClInclude Include="include\spine\Skeleton.h" />
+    <ClInclude Include="include\spine\SkeletonBinary.h" />
+    <ClInclude Include="include\spine\SkeletonBounds.h" />
+    <ClInclude Include="include\spine\SkeletonClipping.h" />
+    <ClInclude Include="include\spine\SkeletonData.h" />
+    <ClInclude Include="include\spine\SkeletonJson.h" />
+    <ClInclude Include="include\spine\SkeletonRenderer.h" />
+    <ClInclude Include="include\spine\Skin.h" />
+    <ClInclude Include="include\spine\Slot.h" />
+    <ClInclude Include="include\spine\SlotData.h" />
+    <ClInclude Include="include\spine\SpacingMode.h" />
+    <ClInclude Include="include\spine\spine.h" />
+    <ClInclude Include="include\spine\SpineObject.h" />
+    <ClInclude Include="include\spine\SpineString.h" />
+    <ClInclude Include="include\spine\TextureLoader.h" />
+    <ClInclude Include="include\spine\TextureRegion.h" />
+    <ClInclude Include="include\spine\Timeline.h" />
+    <ClInclude Include="include\spine\TransformConstraint.h" />
+    <ClInclude Include="include\spine\TransformConstraintData.h" />
+    <ClInclude Include="include\spine\TransformConstraintTimeline.h" />
+    <ClInclude Include="include\spine\TranslateTimeline.h" />
+    <ClInclude Include="include\spine\Triangulator.h" />
+    <ClInclude Include="include\spine\Updatable.h" />
+    <ClInclude Include="include\spine\Vector.h" />
+    <ClInclude Include="include\spine\Version.h" />
+    <ClInclude Include="include\spine\VertexAttachment.h" />
+    <ClInclude Include="include\spine\Vertices.h" />
+    <ClInclude Include="include\stb_connected_components.h" />
+    <ClInclude Include="include\stb_c_lexer.h" />
+    <ClInclude Include="include\stb_divide.h" />
+    <ClInclude Include="include\stb_ds.h" />
+    <ClInclude Include="include\stb_dxt.h" />
+    <ClInclude Include="include\stb_easy_font.h" />
+    <ClInclude Include="include\stb_herringbone_wang_tile.h" />
+    <ClInclude Include="include\stb_hexwave.h" />
+    <ClInclude Include="include\stb_image.h" />
+    <ClInclude Include="include\stb_image_resize2.h" />
+    <ClInclude Include="include\stb_image_write.h" />
+    <ClInclude Include="include\stb_include.h" />
+    <ClInclude Include="include\stb_leakcheck.h" />
+    <ClInclude Include="include\stb_perlin.h" />
+    <ClInclude Include="include\stb_rect_pack.h" />
+    <ClInclude Include="include\stb_sprintf.h" />
+    <ClInclude Include="include\stb_textedit.h" />
+    <ClInclude Include="include\stb_tilemap_editor.h" />
+    <ClInclude Include="include\stb_truetype.h" />
+    <ClInclude Include="include\stb_voxel_render.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="src\Component\D3D11Component.h" />
+    <ClInclude Include="src\Manager\DebugShapes.h" />
+    <ClInclude Include="src\Renderer\Camera.h" />
+    <ClInclude Include="src\Component\Animator.h" />
+    <ClInclude Include="src\Component\MeshRenderer.h" />
+    <ClInclude Include="src\Component\SpineAnimator.h" />
+    <ClInclude Include="src\Component\SpriteRenderer.h" />
+    <ClInclude Include="src\Component\TileMapRenderer.h" />
+    <ClInclude Include="src\InputSystem\D3D11InputDevice.h" />
+    <ClInclude Include="src\DebugFuncs.h" />
+    <ClInclude Include="src\Renderer\D3D11Renderer.h" />
+    <ClInclude Include="src\Renderer\D3D11Utils.h" />
+    <ClInclude Include="src\Renderer\D3D11Window.h" />
+    <ClInclude Include="src\Manager\AnimationManager.h" />
+    <ClInclude Include="src\Manager\FTSpineLoader.h" />
+    <ClInclude Include="src\Manager\LightManager.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="src\Manager\ResourceManager.h" />
+    <ClInclude Include="src\Plugin\PluginKey.h" />
+    <ClInclude Include="src\ResourceSystem\Animation\AnimationFrame.h" />
+    <ClInclude Include="src\ResourceSystem\Animation\FTSpineAnimation.h" />
+    <ClInclude Include="src\ResourceSystem\Animation\FTSpriteAnimation.h" />
+    <ClInclude Include="src\ResourceSystem\Cubemap\FTCubemap.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="src\ResourceSystem\D3D11PSO.h" />
+    <ClInclude Include="src\ResourceSystem\D3D11Resource.h" />
+    <ClInclude Include="src\ResourceSystem\Font\FontChar.h" />
+    <ClInclude Include="src\ResourceSystem\Font\FontKerning.h" />
+    <ClInclude Include="src\ResourceSystem\Font\FTFont.h" />
+    <ClInclude Include="src\ResourceSystem\Font\TextVertex.h" />
+    <ClInclude Include="src\ResourceSystem\Material\FTMaterial.h" />
+    <ClInclude Include="src\ResourceSystem\Material\SpriteAnimMat.h" />
+    <ClInclude Include="src\ResourceSystem\Material\StandardMaterial.h" />
+    <ClInclude Include="src\ResourceSystem\Mesh\FTMeshData.h" />
+    <ClInclude Include="src\ResourceSystem\Mesh\FTMeshDataPack.h" />
+    <ClInclude Include="src\ResourceSystem\Mesh\FTMeshGroup.h" />
+    <ClInclude Include="src\ResourceSystem\Shader\FTGeometryShader.h" />
+    <ClInclude Include="src\ResourceSystem\Shader\FTPixelShader.h" />
+    <ClInclude Include="src\ResourceSystem\Shader\FTShader.h" />
+    <ClInclude Include="src\ResourceSystem\Shader\FTVertexShader.h" />
+    <ClInclude Include="src\ResourceSystem\Shape\FTRectangle.h" />
+    <ClInclude Include="src\ResourceSystem\Shape\FTShape.h" />
+    <ClInclude Include="src\ResourceSystem\Sprite\FTSprite.h" />
+    <ClInclude Include="src\ResourceSystem\FTTexture.h" />
+    <ClInclude Include="src\ResourceSystem\Sprite\FTTileMap.h" />
+    <ClInclude Include="src\ResourceSystem\Mesh\GeometryGenerator.h" />
+    <ClInclude Include="src\ResourceSystem\Light.h" />
+    <ClInclude Include="src\ResourceSystem\Mesh\Mesh.h" />
+    <ClInclude Include="src\ResourceSystem\Mesh\MeshConstantData.h" />
+    <ClInclude Include="src\ResourceSystem\Font\TextAttribute.h" />
+    <ClInclude Include="src\ResourceSystem\Sprite\Tile.h" />
+    <ClInclude Include="src\ResourceSystem\Mesh\Vertex.h" />
+    <ClInclude Include="src\Renderer\WindowProcess.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\imgui\backends\imgui_impl_dx11.cpp" />
+    <ClCompile Include="include\imgui\backends\imgui_impl_win32.cpp" />
+    <ClCompile Include="include\imgui\imgui.cpp" />
+    <ClCompile Include="include\imgui\ImGuiFileDialog\ImGuiFileDialog.cpp" />
+    <ClCompile Include="include\imgui\imgui_demo.cpp" />
+    <ClCompile Include="include\imgui\imgui_draw.cpp" />
+    <ClCompile Include="include\imgui\imgui_tables.cpp" />
+    <ClCompile Include="include\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="include\spine\Animation.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\AnimationState.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\AnimationStateData.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\Atlas.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\AtlasAttachmentLoader.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\Attachment.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\AttachmentLoader.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\AttachmentTimeline.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\Bone.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\BoneData.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\BoundingBoxAttachment.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\ClippingAttachment.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\ColorTimeline.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\ConstraintData.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\CurveTimeline.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\DeformTimeline.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\DrawOrderTimeline.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\Event.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\EventData.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\EventTimeline.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\Extension.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\IkConstraint.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\IkConstraintData.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\IkConstraintTimeline.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\InheritTimeline.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\Json.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\LinkedMesh.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\Log.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\MathUtil.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\MeshAttachment.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\PathAttachment.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\PathConstraint.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\PathConstraintData.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\PathConstraintMixTimeline.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\PathConstraintPositionTimeline.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\PathConstraintSpacingTimeline.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\PhysicsConstraint.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\PhysicsConstraintData.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\PhysicsConstraintTimeline.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\PointAttachment.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\RegionAttachment.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\RotateTimeline.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\RTTI.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\ScaleTimeline.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\Sequence.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\SequenceTimeline.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\ShearTimeline.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\Skeleton.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\SkeletonBinary.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\SkeletonBounds.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\SkeletonClipping.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\SkeletonData.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\SkeletonJson.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\SkeletonRenderer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\Skin.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\Slot.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\SlotData.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\SpineObject.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\TextureLoader.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\Timeline.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\TransformConstraint.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\TransformConstraintData.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\TransformConstraintTimeline.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\TranslateTimeline.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\Triangulator.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\Updatable.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\spine\VertexAttachment.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="include\stb_vorbis.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="src\Component\D3D11Component.cpp" />
+    <ClCompile Include="src\Manager\DebugShapes.cpp" />
+    <ClCompile Include="src\Renderer\Camera.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Component\Animator.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Component\MeshRenderer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Component\SpineAnimator.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Component\SpriteRenderer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Component\TileMapRenderer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\InputSystem\D3D11InputDevice.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Manager\AnimationManager.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Manager\FTSpineLoader.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Manager\LightManager.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\Manager\ResourceManager.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Plugin\D3D11Plugin.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\D3D11Renderer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\D3D11Utils.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\D3D11Window.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Animation\AnimationFrame.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Animation\FTSpineAnimation.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Animation\FTSpriteAnimation.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Cubemap\FTCubemap.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\D3D11PSO.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\D3D11Resource.cpp" />
+    <ClCompile Include="src\ResourceSystem\Font\FontChar.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Font\FTFont.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Material\FTMaterial.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Material\SpriteAnimMat.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Material\StandardMaterial.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Mesh\FTMeshData.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Mesh\FTMeshDataPack.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Mesh\FTMeshGroup.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Shader\FTGeometryShader.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Shader\FTPixelShader.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Shader\FTShader.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Shader\FTVertexShader.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Shape\FTRectangle.cpp" />
+    <ClCompile Include="src\ResourceSystem\Shape\FTShape.cpp" />
+    <ClCompile Include="src\ResourceSystem\Sprite\FTSprite.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\FTTexture.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Sprite\FTTileMap.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Mesh\GeometryGenerator.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\ResourceSystem\Sprite\Tile.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

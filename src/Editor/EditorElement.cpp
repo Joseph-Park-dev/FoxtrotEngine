@@ -1,0 +1,292 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+//
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
+#include "EditorElement.h"
+
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui/imgui.h>
+#include <imgui/backends/imgui_impl_dx11.h>
+#include <imgui/backends/imgui_impl_win32.h>
+
+#include "EditorLayer.h"
+#include "EditorSceneManager.h"
+#include "EditorChunkLoader.h"
+#include "CommandHistory.h"
+#include "Command.h"
+#include "EditorUtils.h"
+#include "Actor/EditorTransform.h"
+#include "Component/EditorComponent.h"
+
+#include "InputSystem/FTInputDevice.h"
+#include "Manager/ResourceManager.h"
+#include "FileSystem/ChunkLoader.h"
+#include "Actor/Transform.h"
+#include "Actor/ActorGroup.h"
+#include "Renderer/FoxtrotRenderer.h"
+#include "Component/Component.h"
+#include "ResourceSystem/FTPremade.h"
+
+#include "FTDS/Static/FTString.h"
+
+namespace Editor
+{
+	void EditorElement::UpdateUI(bool isPremade)
+	{
+		if (mIsFocused)
+		{
+			ImGui::BeginChild(GetName().C_Str());
+			if (ImGui::BeginTabBar("MyTabBar", ImGuiTabBarFlags_None))
+			{
+				if (ImGui::BeginTabItem("Basic Data"))
+				{
+					UpdateActorName();
+					UpdateDrawOrder();
+					UpdateActorGroup();
+					CommandHistory::GetInstance()->UpdateBoolValue("Is Active", IsActive());
+					UpdateTransformUI();
+
+					ImGui::EndTabItem();
+				}
+				if (ImGui::BeginTabItem("Components"))
+				{
+					UpdateComponentsUI();
+					ImGui::EndTabItem();
+				}
+				if (!isPremade)
+					UpdateMakePremade();
+
+				ImGui::EndTabBar();
+			}
+			ImGui::EndChild();
+		}
+	}
+
+	const bool EditorElement::GetIsFocused() const
+	{
+		return mIsFocused;
+	}
+
+	const size_t EditorElement::GetHierarchyLevel() const
+	{
+		return mHierarchyLevel;
+	}
+
+	const bool EditorElement::GetIsDisplayed() const
+	{
+		return mIsDisplayed;
+	}
+
+	void EditorElement::SetIsFocused(bool isFocused)
+	{
+		mIsFocused = isFocused;
+	}
+
+	void EditorElement::SetHierarchyLevel(size_t lv)
+	{
+		mHierarchyLevel = lv;
+	}
+
+	void EditorElement::SetIsDisplayed(bool isDisplayed)
+	{
+		mIsDisplayed = isDisplayed;
+	}
+
+	void EditorElement::Initialize()
+	{
+		EditorElement* buf	 = this;
+		size_t		   level = 0;
+		while (buf)
+		{
+			if (!buf->GetParent()) // No parent Actors.
+				break;
+			buf = dynamic_cast<EditorElement*>(buf->GetParent());
+			++level;
+		}
+		mHierarchyLevel = level;
+	}
+
+	//void EditorElement::EditorUpdate(float deltaTime)
+	//{
+	//	for (auto comp = GetComponents()->Begin(); comp != GetComponents()->End(); ++comp)
+	//	{
+	//		if (*comp)
+	//		{
+	//			if ((*comp)->GetIsActive())
+	//				(*comp)->EditorUpdate(deltaTime);
+	//		}
+	//	}
+	//}
+
+	//void EditorElement::EditorRender(D3D11Renderer* renderer)
+	//{
+	//	for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
+	//	{
+	//		if (*comp)
+	//		{
+	//			if ((*comp)->GetIsActive())
+	//				(*comp)->EditorRender(renderer);
+	//		}
+	//	}
+	//}
+
+	EditorElement::EditorElement(int id)
+		: Actor(id)
+		, mIsFocused(false)
+		, mHierarchyLevel(0)
+		, mIsDisplayed(false)
+	{
+		SwitchTransformToEditor();
+	}
+
+	EditorElement::EditorElement(Actor* actor, int id)
+		: Actor(actor, id)
+		, mIsFocused(false)
+		, mHierarchyLevel(0)
+		, mIsDisplayed(false)
+	{
+		SwitchTransformToEditor();
+	}
+
+	EditorElement::EditorElement(Core::Actor* actor, int id, bool deepCpyChild)
+		: Core::Actor(actor, id, deepCpyChild)
+		, mIsFocused(false)
+		, mHierarchyLevel(0)
+		, mIsDisplayed(false)
+	{
+		SwitchTransformToEditor();
+	}
+
+	EditorElement::EditorElement(Core::FTPremade* premade, int id)
+		: Core::Actor(premade, id)
+		, mIsFocused(false)
+		, mHierarchyLevel(0)
+		, mIsDisplayed(false)
+	{
+		SwitchTransformToEditor();
+	}
+
+	void EditorElement::CopyChildObjectFrom(Actor* actor)
+	{
+		if (GetChildActors()->GetSize() < 1)
+			return;
+
+		actor->GetChildActors()->IterateArray([&](Actor* child) {
+			if (child)
+			{
+				EditorChunkLoader::GetInstance()->AddMaxActorID();
+				int maxID = EditorChunkLoader::GetInstance()->GetMaxActorID();
+				this->AddChild(DBG_NEW Actor(child, maxID));
+			}
+		});
+	}
+
+	void EditorElement::UpdateActorName()
+	{
+		CommandHistory::GetInstance()->UpdateStringValue("Actor Name", GetNameRef());
+	}
+
+	void EditorElement::UpdateActorGroup()
+	{
+		const char* comboPreview = Core::ActorGroupUtil::GetActorGroupStr(GetActorGroup());
+		if (ImGui::BeginCombo("Actor Group", comboPreview))
+		{
+			for (size_t n = 0; n <= Core::ActorGroupUtil::GetCount() - 1; ++n)
+			{
+				if (ImGui::Selectable(Core::ActorGroupUtil::GetActorGroupStr(n)))
+				{
+					int					   grpIdx  = static_cast<int>(++n);
+					Editor::ActorGroupEditCommand* command = DBG_NEW Editor::ActorGroupEditCommand(GetActorGroupRef());
+					command->SetNextVal(static_cast<Core::ActorGroup>(grpIdx));
+					// CommandHistory::GetInstance()->AddCommand(command);
+
+					SetActorGroup((Core::ActorGroup)grpIdx);
+				}
+			}
+			ImGui::EndCombo();
+		}
+	}
+
+	void EditorElement::UpdateDrawOrder()
+	{
+		int i = GetDrawOrder();
+		ImGui::InputInt("Draw Order", &i);
+		SetDrawOrder(i);
+	}
+
+	void EditorElement::UpdateTransformUI()
+	{
+		Core::Transform* transform = GetTransform();
+	}
+
+	void EditorElement::UpdateComponentsUI()
+	{
+		if (ImGui::BeginChild(GetName().C_Str()))
+		{
+			size_t count = 0;
+			for (auto comp = GetComponents()->Begin(); comp != GetComponents()->End(); ++comp)
+			{
+				if (GetComponents()->IsEmpty())
+					break;
+				if (*comp)
+				{
+					Common::FTDS::String name(std::to_string(count).c_str());
+					name.Append(" ");
+					name.Append((*comp)->GetName());
+
+					if (ImGui::TreeNode(name.C_Str()))
+					{
+						CommandHistory::GetInstance()->UpdateIntValue(Core::ChunkKey::UPDATE_ORDER, (*comp)->UpdateOrder());
+						(*comp)->EditorUIUpdate();
+						if (ImGui::SmallButton("Delete"))
+							RemoveComponent((*comp));
+						ImGui::TreePop();
+					}
+					++count;
+				}
+			}
+			if (Editor::ButtonCenteredOnLine("Add Component"))
+				ImGui::OpenPopup("CompSelectPopUp");
+			DisplayCompSelectionPopup();
+
+			ImGui::EndChild();
+		}
+	}
+
+	void EditorElement::DisplayCompSelectionPopup()
+	{
+		if (ImGui::BeginPopup("CompSelectPopUp"))
+		{
+			ImGui::SeparatorText("Add Components");
+			ComponentCreateMap::iterator iter = EditorChunkLoader::GetInstance()->GetCompCreateMap().begin();
+			for (; iter != EditorChunkLoader::GetInstance()->GetCompCreateMap().end(); ++iter)
+				if (ImGui::Selectable((*iter).first))
+					(*iter).second(this);
+			ImGui::EndPopup();
+		}
+	}
+
+	void EditorElement::UpdateMakePremade()
+	{
+		if (Editor::ButtonCenteredOnLine("Make Premade"))
+		{
+			bool confirmed = false;
+			EditorLayer::GetInstance()->SetInfoType(InfoType::PremadeIsCreated);
+		}
+	}
+	void EditorElement::SwitchTransformToEditor()
+	{
+		if (GetTransform())
+			delete GetTransform();
+		SetTransform(DBG_NEW EditorTransform(this));
+	}
+
+	EditorElement* CreateEditorElementFromActor(Core::Actor* actor, int id)
+	{
+		return DBG_NEW EditorElement(actor, id);
+	}
+} // namespace Editor

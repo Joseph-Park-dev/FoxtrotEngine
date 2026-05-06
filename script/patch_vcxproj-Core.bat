@@ -80,4 +80,3 @@ del "%PS_TEMP%"
 
 echo.
 echo Done patching %VCXPROJ%.
-pause

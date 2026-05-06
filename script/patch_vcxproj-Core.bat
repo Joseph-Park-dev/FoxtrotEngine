@@ -9,13 +9,13 @@ set PS_TEMP=%~dp0patch_vcxproj_temp.ps1
 :: ============================================================
 :: Source files (.cpp) to add
 :: ============================================================
-set SOURCES[0]=extern\imgui\imgui.cpp
+set SOURCES[0]=$(SolutionDir)extern\imgui\imgui.cpp
 set /a SRC_COUNT+=1
-set SOURCES[1]=extern\imgui\imgui_draw.cpp
+set SOURCES[1]=$(SolutionDir)extern\imgui\imgui_draw.cpp
 set /a SRC_COUNT+=1
-set SOURCES[2]=extern\imgui\imgui_tables.cpp
+set SOURCES[2]=$(SolutionDir)extern\imgui\imgui_tables.cpp
 set /a SRC_COUNT+=1
-set SOURCES[3]=extern\imgui\imgui_widgetscpp
+set SOURCES[3]=$(SolutionDir)extern\imgui\imgui_widgets.cpp
 set /a SRC_COUNT+=1
 
 :: ============================================================

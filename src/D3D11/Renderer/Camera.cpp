@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Camera.h"
+#include "Renderer/Camera.h"
 
 #include "Renderer/FTWindow.h"
 #include "Renderer/FTRectArea.h"

@@ -23,7 +23,7 @@
  * engine's rendering and file I/O subsystems.
  */
 
-#include "ResourceManager.h"
+#include "Manager/ResourceManager.h"
 
 #include "ResourceSystem/D3D11Resource.h"
 #include "Static/FTString.h"

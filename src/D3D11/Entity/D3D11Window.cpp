@@ -1,17 +1,16 @@
-#include "D3D11Window.h"
+#include "Entity/D3D11Window.h"
 
 #include <Windows.h>
 #include <wrl.h>
 
-#include "D3D11Renderer.h"
-#include "D3D11Utils.h"
+#include "Renderer/D3D11Renderer.h"
+#include "UtilityD3D11Utils.h"
 #include "InputSystem/D3D11InputDevice.h"
 #include "Renderer/FTRectArea.h"
 #include "TemplateFunctions.h"
 #include "Debugging/DebugFuncs.h"
 #include "DebugFuncs.h"
-#include "Plugin/Plugin.h"
-#include "CoreInstance.h"
+#include "Plugin/IPlugin.h"
 
 namespace D3D11
 {

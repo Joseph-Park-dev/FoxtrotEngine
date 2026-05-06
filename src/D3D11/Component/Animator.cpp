@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Animator.h"
+#include "Component/Animator.h"
 
 #include "Actor/Actor.h"
 #include "Actor/Transform.h"
@@ -219,7 +219,7 @@ namespace D3D11
 	{
 		if (GetSprite())
 		{
-			//renderer->SetFillMode();
+			// renderer->SetFillMode();
 
 			Transform*		   transform = GetOwner()->GetTransform();
 			FTSpriteAnimation* anim		 = static_cast<FTSpriteAnimation*>(GetSprite());

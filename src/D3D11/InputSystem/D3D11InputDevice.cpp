@@ -1,4 +1,4 @@
-#include "D3D11InputDevice.h"
+#include "InputSystem/D3D11InputDevice.h"
 
 #include <Windows.h>
 

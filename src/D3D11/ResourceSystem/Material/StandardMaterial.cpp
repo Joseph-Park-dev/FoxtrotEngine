@@ -65,7 +65,7 @@ namespace D3D11
 	{
 		Core::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::StandardMat::STANDARD_MAT);
 
-		Core::FTDS::String fileName;
+		Common::FTDS::String fileName;
 		bool			   useTex;
 		Core::FileIOHelper::LoadBool(ifs, useTex);
 		Core::FileIOHelper::LoadFloat(ifs, mData->AlphaTrim);

@@ -90,7 +90,7 @@ namespace D3D11
 		});
 	}
 
-	void FTFont::UpdateTextVertices(Core::FTDS::String& text, D3D11Renderer* renderer, FTVector2 pos, FTVector2 scale, FTVector2 padding, FTVector3 color, float alpha)
+	void FTFont::UpdateTextVertices(Common::FTDS::String& text, D3D11Renderer* renderer, FTVector2 pos, FTVector2 scale, FTVector2 padding, FTVector3 color, float alpha)
 	{
 		if (text.IsEmpty())
 			return;

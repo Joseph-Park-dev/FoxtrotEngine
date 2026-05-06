@@ -1,4 +1,4 @@
-#include "FTSpineLoader.h"
+#include "Manager/FTSpineLoader.h"
 
 #include "spine/Extension.h"
 
@@ -51,4 +51,4 @@ namespace D3D11
 	{
 		spine::SpineExtension::setInstance(spine::getDefaultExtension());
 	}
-} // namespace spine
+} // namespace D3D11

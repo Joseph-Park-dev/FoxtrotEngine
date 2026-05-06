@@ -1,5 +1,5 @@
 #pragma once
-#include "Plugin/Plugin.h"
+#include "Plugin/IPlugin.h"
 
 #include "InputSystem/D3D11InputDevice.h"
 #include "Renderer/D3D11Renderer.h"

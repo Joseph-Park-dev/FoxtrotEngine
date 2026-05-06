@@ -1,7 +1,7 @@
-#include "D3D11Renderer.h"
+#include "Renderer/D3D11Renderer.h"
 
-#include "D3D11Window.h"
-#include "D3D11Utils.h"
+#include "Entity/D3D11Window.h"
+#include "Utility/D3D11Utils.h"
 #include "Debugging/DebugMemAlloc.h"
 #include "DebugFuncs.h"
 #include "Renderer/FTRectArea.h"

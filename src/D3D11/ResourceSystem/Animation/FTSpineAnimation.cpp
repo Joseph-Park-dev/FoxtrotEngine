@@ -1,4 +1,4 @@
-#include "FTSpineAnimation.h"
+#include "ResourceSystem/Animation/FTSpineAnimation.h"
 
 #include <spine/spine.h>
 #include <wrl.h>
@@ -372,7 +372,12 @@ namespace D3D11
 				// Copies indices.
 				{
 					const uint16_t indices[6] = {
-						0, 1, 2, 0, 2, 3, // Front face.
+						0,
+						1,
+						2,
+						0,
+						2,
+						3, // Front face.
 					};
 					UINT					 indexCount = 6;
 					D3D11_MAPPED_SUBRESOURCE mapped		= {};

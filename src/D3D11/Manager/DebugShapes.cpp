@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "DebugShapes.h"
+#include "Manager/DebugShapes.h"
 
 #include <wrl.h>
 #include <d3d11.h>

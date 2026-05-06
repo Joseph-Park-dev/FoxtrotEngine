@@ -12,7 +12,7 @@
 #pragma once
 #include "Component/D3D11Component.h"
 
-#include "Static/FTString.h"
+#include "FTDS/Static/FTString.h"
 
 namespace Core
 {
@@ -41,7 +41,7 @@ namespace D3D11
 		// Component information //
 		///////////////////////////
 	public:
-		virtual Core::FTDS::String GetName() const override { return "MeshRenderer"; }
+		virtual Common::FTDS::String GetName() const override { return "MeshRenderer"; }
 
 		/////////////////////////
 		// Game-loop functions //

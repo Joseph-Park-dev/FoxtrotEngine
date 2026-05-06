@@ -1,4 +1,4 @@
-#include "LightManager.h"
+#include "Manager/LightManager.h"
 
 #include <wrl.h>
 #include <d3d11.h>
@@ -50,15 +50,15 @@ ComPtr<ID3D11ShaderResourceView> LightManager::GetCubeMapSpecular()
 void LightManager::Initialize(FoxtrotRenderer* renderer)
 {
 	mTypes[0] = Light::TYPE::DIRECTIONAL;
-	//InitializeCubeMap(renderer);
+	// InitializeCubeMap(renderer);
 }
 
 void LightManager::InitializeCubeMap(FoxtrotRenderer* renderer)
 {
 	if (!mCubemap)
 	{
-		//mCubemap = DBG_NEW FTCubemap;
-		//mCubemap->Initialize({ GeometryGenerator::MakeBox(20.f) }, renderer->GetDevice(), renderer->GetContext());
+		// mCubemap = DBG_NEW FTCubemap;
+		// mCubemap->Initialize({ GeometryGenerator::MakeBox(20.f) }, renderer->GetDevice(), renderer->GetContext());
 	}
 }
 
@@ -85,12 +85,12 @@ void LightManager::SaveProperties(std::ofstream& ofs)
 {
 	for (size_t i = 0; i < GameData::MAX_LIGHTS; ++i)
 		mLights[i].SaveProperties(ofs, mTypes[i], mActiveStatus[i]);
-	//mCubemap->SaveProperties(ofs);
+	// mCubemap->SaveProperties(ofs);
 }
 
 void LightManager::LoadProperties(std::ifstream& ifs)
 {
-	//mCubemap->LoadProperties(ifs);
+	// mCubemap->LoadProperties(ifs);
 	for (size_t i = 0; i < GameData::MAX_LIGHTS; ++i)
 		mLights[i].LoadProperties(ifs, mTypes[i], mActiveStatus[i]);
 }
@@ -110,7 +110,7 @@ void LightManager::DisplayLightMenu()
 	}
 	mTypes[0] = (Light::TYPE)indices[0];
 
-	if(mCubemap)
+	if (mCubemap)
 		mCubemap->UpdateUI();
 	ImGui::End();
 }

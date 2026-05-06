@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "TileMapRenderer.h"
+#include "Component/TileMapRenderer.h"
 
 #include <queue>
 #include <string>
@@ -20,7 +20,6 @@
 #include "ResourceSystem/FTTexture.h"
 
 #include "Actor/Transform.h"
-#include "FTCore.h"
 #include "ResourceSystem/Mesh/Mesh.h"
 #include "ResourceSystem/Mesh/FTMeshData.h"
 #include "ResourceSystem/Mesh/FTMeshGroup.h"

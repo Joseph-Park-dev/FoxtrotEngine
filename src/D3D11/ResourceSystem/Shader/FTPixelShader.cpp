@@ -38,7 +38,7 @@ namespace D3D11
 	{
 		mShader.Reset();
 
-		Core::FTDS::String   path		 = resDef.Path;
+		Common::FTDS::String   path		 = resDef.Path;
 		const wchar_t* wcharPath = path.WC_Str();
 		D3D11Utils::CreatePixelShader(
 			renderer->GetDevice(),

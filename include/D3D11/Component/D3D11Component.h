@@ -1,6 +1,8 @@
 #pragma once
 #include "Component/Component.h"
 
+#include "FTDS/Static/FTString.h"
+
 namespace Core
 {
 	class FTInputDevice;
@@ -14,7 +16,7 @@ namespace D3D11
 		public Core::Component
 	{
 	public:
-		virtual Core::FTDS::String GetName() const = 0;
+		virtual Common::FTDS::String GetName() const = 0;
 
 	public:
 		virtual void Initialize();

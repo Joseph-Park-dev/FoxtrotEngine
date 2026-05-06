@@ -1,4 +1,4 @@
-#include "SpineAnimator.h"
+#include "Component/SpineAnimator.h"
 
 #include <spine/spine.h>
 
@@ -16,7 +16,6 @@
 #include "ResourceSystem/Shader/FTPixelShader.h"
 #include "Renderer/D3D11Renderer.h"
 #include "Renderer/Camera.h"
-#include "FTCore.h"
 #include "Actor/Actor.h"
 #include "Actor/Transform.h"
 
@@ -91,7 +90,7 @@ namespace D3D11
 		MeshRenderer::SaveProperties(ofs);
 		if (GetMeshGroup())
 		{
-			FTSpineAnimation*	anim = static_cast<FTSpineAnimation*>(GetMeshGroup());
+			FTSpineAnimation* anim = static_cast<FTSpineAnimation*>(GetMeshGroup());
 			FileIOHelper::SaveString(ofs, ChunkKey::SpineAnimator::LOADED_ANIM, anim->GetFileName());
 			FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTSpineAnimation::SKIN_COMBINATION, anim->GetSkinCombination());
 		}

@@ -19,7 +19,7 @@ void D3D11::D3D11Resource::SaveProperties(std::ofstream& ofs)
 
 void D3D11::D3D11Resource::LoadProperties(std::ifstream& ifs)
 {
-	Core::FTDS::String val;
+	Common::FTDS::String val;
 	Core::FileIOHelper::LoadBasicString(ifs, val);
 	val.Clear();
 	Core::FileIOHelper::LoadBasicString(ifs, val);

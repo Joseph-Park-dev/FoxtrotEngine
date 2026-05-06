@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "MeshRenderer.h"
+#include "Component/MeshRenderer.h"
 
 #include "Actor/Transform.h"
 #include "Actor/Actor.h"
@@ -24,7 +24,6 @@
 #include "Manager/ResourceManager.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
-#include "Compare/StringEqual.h"
 
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS

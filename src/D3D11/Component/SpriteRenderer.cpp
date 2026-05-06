@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "SpriteRenderer.h"
+#include "Component/SpriteRenderer.h"
 
 #include "Actor/Actor.h"
 #include "Actor/Transform.h"

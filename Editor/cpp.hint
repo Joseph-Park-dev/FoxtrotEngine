@@ -1,2 +1,0 @@
-#define EDITOR_API __declspec(dllexport)
-#define EDITOR_API __declspec(dllimport)

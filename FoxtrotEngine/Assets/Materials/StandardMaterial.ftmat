@@ -1,7 +1,0 @@
-StandardMaterial<4>
-	Use Texture[bool]
-	true
-	Alpha Trim[float]
-	0.900000
-	Color[Vector4]
-	(1.00000,1.00000,1.00000)

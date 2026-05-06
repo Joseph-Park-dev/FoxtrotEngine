@@ -1,5 +1,0 @@
-FTPixelShader<2>
-	RelativePath[string]
-	.\Assets\Shaders\2D\Texture2DPS.hlsl
-	FileName[string]
-	Texture2DPS.hlsl

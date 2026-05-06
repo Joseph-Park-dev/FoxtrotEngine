@@ -1,7 +1,0 @@
-{
-  "name": "foxtrot-engine",
-  "dependencies": [
-    "directxtex",
-    "directxtk"
-  ]
-}

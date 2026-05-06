@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Read(//d/2024_01/FoxtrotEngine_DirectX/**)",
-      "Bash(grep -rn \"// COMMIT\\\\|// ADD\\\\|// REMOVED\\\\|// TODO\\\\|//COMMIT\\\\|//ADD\\\\|//REMOVED\" Core/src/ FoxtrotEngine/src/D3D11Renderer/D3D11Renderer.cpp FoxtrotEngine/src/D3D11Renderer/D3D11Renderer.h FoxtrotEngine/src/ResourceSystem/D3D11PSO.h)"
-    ]
-  }
-}

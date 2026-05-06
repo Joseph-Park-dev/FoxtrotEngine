@@ -1,5 +1,0 @@
-FTPixelShader<2>
-	RelativePath[string]
-	.\Assets\Shaders\DebugShapePS.hlsl
-	FileName[string]
-	DebugShapePS.hlsl

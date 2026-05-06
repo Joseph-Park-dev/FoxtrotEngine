@@ -13,7 +13,7 @@
 	#include <imgui/imgui.h>
 	#include <imgui/backends/imgui_impl_dx11.h>
 	#include <imgui/backends/imgui_impl_win32.h>
-	#include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
+	#include <ImGuiFileDialog/ImGuiFileDialog.h>
 
 	#include "EditorLayer.h"
 	#include "DirectoryHelper.h"

@@ -12,7 +12,7 @@
 #pragma once
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui/imgui.h>
-#include "imgui/ImGuiFileDialog/ImGuiFileDialog.h"
+#include <ImGuiFileDialog/ImGuiFileDialog.h>
 
 #include <Windows.h>
 #include <shobjidl.h> // For IFileOpenDialog
@@ -200,9 +200,9 @@ namespace Editor
 
 	template <typename FTRESOURCE>
 	inline void DisplayResSelection(
-		const char*								  label,
+		const char*									label,
 		Common::FTDS::HashMap<Common::FTResource*>* resMap,
-		FTRESOURCE*&							  selectedRes)
+		FTRESOURCE*&								selectedRes)
 	{
 		if (ImGui::Button(label))
 			ImGui::OpenPopup(label);
@@ -235,9 +235,9 @@ namespace Editor
 
 	template <typename FTRESOURCE, typename FILTER>
 	inline void DisplayResSelection(
-		const char*								  label,
+		const char*									label,
 		Common::FTDS::HashMap<Common::FTResource*>* resMap,
-		FTRESOURCE*&							  selectedRes)
+		FTRESOURCE*&								selectedRes)
 	{
 		if (ImGui::Button(label))
 			ImGui::OpenPopup(label);

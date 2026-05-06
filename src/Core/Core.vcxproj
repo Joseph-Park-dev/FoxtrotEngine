@@ -228,10 +228,6 @@
     <None Include=".clang-format" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\extern\imgui\imgui.cpp" />
-    <ClCompile Include="..\..\extern\imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\..\extern\imgui\imgui_tables.cpp" />
-    <ClCompile Include="..\..\extern\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Actor\Actor.cpp" />
     <ClCompile Include="Actor\Transform.cpp" />
     <ClCompile Include="Behavior\FTBehavior.cpp" />
@@ -257,14 +253,15 @@
     <ClCompile Include="ResourceSystem\GenericData\FTText.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Utility\EditorHelper.cpp" />
-    <ClCompile Include="extern\imgui\imgui.cpp" />
-    <ClCompile Include="extern\imgui\imgui_draw.cpp" />
-    <ClCompile Include="extern\imgui\imgui_tables.cpp" />
-    <ClCompile Include="extern\imgui\imgui_widgetscpp" />
+    <ClCompile Include="$(SolutionDir)extern\imgui\imgui.cpp" />
+    <ClCompile Include="$(SolutionDir)extern\imgui\imgui_draw.cpp" />
+    <ClCompile Include="$(SolutionDir)extern\imgui\imgui_tables.cpp" />
+    <ClCompile Include="$(SolutionDir)extern\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup />
   <ItemGroup />
   <ItemGroup />
   <ItemGroup />

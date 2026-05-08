@@ -1,17 +1,18 @@
 #include "FTVertexShader.h"
 
 #include "Renderer/D3D11Renderer.h"
-#include "Renderer/D3D11Utils.h"
+#include "Utility/D3D11Utils.h"
 #include "Dynamic/RecordNode.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Manager/ResourceManager.h"
 
 namespace D3D11
 {
+	using namespace Common;
 	using namespace Core;
 	ResType FTVertexShader::Type = ResType::VERTEX_SHADER;
 
-	void FTVertexShader::CompileShader(Core::FTResourceDef& resDef, D3D11Renderer* renderer)
+	void FTVertexShader::CompileShader(Common::FTResourceDef& resDef, D3D11Renderer* renderer)
 	{
 		if (mSemanticItems->IsEmpty())
 			return;
@@ -25,7 +26,7 @@ namespace D3D11
 
 		mShader.Reset();
 
-		FTDS::String   path		 = resDef.Path;
+		Common::FTDS::String   path		 = resDef.Path;
 		const wchar_t* wcharPath = path.WC_Str();
 		DX::ThrowIfFailed(
 			D3D11Utils::CreateVertexShaderAndInputLayout(
@@ -44,7 +45,7 @@ namespace D3D11
 		, mShader(nullptr)
 		, mInputLayout(nullptr)
 #ifdef FOXTROT_EDITOR
-		, mSemanticItems(DBG_NEW FTDS::DynamicArray<SemanticItem*>())
+		, mSemanticItems(DBG_NEW Common::FTDS::DynamicArray<SemanticItem*>())
 #endif // FOXTROT_EDITOR
 	{
 		SetType(ShaderType::VERTEX_SHADER);

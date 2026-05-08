@@ -1,5 +1,5 @@
 #pragma once
-#include "SingletonMacro.h"
+#include "Utility/SingletonMacro.h"
 
 namespace GameData
 {

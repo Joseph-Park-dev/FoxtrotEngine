@@ -26,6 +26,7 @@
 
 namespace D3D11
 {
+	using namespace Common;
 	using namespace Core;
 
 	void SpineAnimator::Play(const int idx, bool isRepeated)
@@ -95,7 +96,7 @@ namespace D3D11
 			FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTSpineAnimation::SKIN_COMBINATION, anim->GetSkinCombination());
 		}
 		else
-			FileIOHelper::SaveString(ofs, ChunkKey::SpineAnimator::LOADED_ANIM, Core::ChunkKey::NullVal::NULL_OBJECT);
+			FileIOHelper::SaveString(ofs, ChunkKey::SpineAnimator::LOADED_ANIM, Common::ChunkKey::NullVal::NULL_OBJECT);
 	}
 
 	void SpineAnimator::LoadProperties(std::ifstream& ifs)
@@ -105,11 +106,11 @@ namespace D3D11
 		unsigned char skinCombination = static_cast<unsigned char>(skinCombi);
 
 		// Load Animation
-		FTDS::String key;
+		Common::FTDS::String key;
 		FileIOHelper::LoadBasicString(ifs, key);
 		MeshRenderer::LoadProperties(ifs);
 
-		FTSpineAnimation* anim = D3D11::ResourceManager::GetInstance()->GetResource<FTSpineAnimation>(key);
+		FTSpineAnimation* anim = D3D11::ResourceManager::GetInstance()->GetSpineAnimation(key);
 		if (anim)
 		{
 			SetMeshGroup(anim);
@@ -141,7 +142,7 @@ namespace D3D11
 		FTSpineAnimation* anim = nullptr;
 		Editor::DisplayResSelection<FTSpineAnimation>(
 			"Load Animation",
-			&ResourceManager::GetInstance()->GetResMap<FTSpineAnimation>(),
+			ResourceManager::GetInstance()->GetSpineAnimations(),
 			anim);
 
 		if (anim)

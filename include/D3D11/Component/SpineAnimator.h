@@ -7,13 +7,14 @@
 
 namespace D3D11
 {
+	using namespace Common;
 	class FTSpineAnimation;
 
 	class SpineAnimator :
 		public MeshRenderer
 	{
 	public:
-		virtual Core::FTDS::String GetName() const override { return "SpineAnimator"; }
+		virtual Common::FTDS::String GetName() const override { return "SpineAnimator"; }
 
 	public:
 		void Play(const int idx, bool isRepeated);

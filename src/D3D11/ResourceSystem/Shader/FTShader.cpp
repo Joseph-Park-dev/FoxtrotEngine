@@ -4,16 +4,16 @@
 
 #include "FileSystem/FileIOHelper.h"
 #include "Debugging/DebugFuncs.h"
-#include "FTCore.h"
 #include "TemplateFunctions.h"
 #include "FileSystem/FileTypes.h"
 #include "Renderer/D3D11Renderer.h"
 
 namespace D3D11
 {
+	using namespace Common;
 	using namespace Core;
 
-	FTShader::FTShader(Core::FTResourceDef& resDef)
+	FTShader::FTShader(Common::FTResourceDef& resDef)
 		: D3D11::D3D11Resource(resDef)
 	{
 	}
@@ -25,7 +25,7 @@ namespace D3D11
 
 	void FTShader::LoadMetaData(FTResourceDef& resDef)
 	{
-		FTDS::String metaPath;
+		Common::FTDS::String metaPath;
 		metaPath.Assign(resDef.Path);
 		ReplaceSuffix(metaPath, FileTypes::SHADER, FileTypes::SHADER_META);
 
@@ -40,7 +40,7 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 	void FTShader::SaveMetaData()
 	{
-		FTDS::String metaPath;
+		Common::FTDS::String metaPath;
 		metaPath.Assign(*GetRelativePath());
 		ReplaceSuffix(metaPath, FileTypes::SHADER, FileTypes::SHADER_META);
 

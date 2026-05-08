@@ -5,14 +5,14 @@
 #include "Debugging/DebugMemAlloc.h"
 #include "FileSystem/FileIOHelper.h"
 #include "TemplateFunctions.h"
-#include "Renderer/D3D11Utils.h"
+#include "Utility/D3D11Utils.h"
 #include "Renderer/D3D11Renderer.h"
 #include "Manager/ResourceManager.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "DirectoryHelper.h"
 	#include "CommandHistory.h"
-	#include "EditorHelper.h"
+	#include "Utility/EditorHelper.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -39,7 +39,7 @@ namespace D3D11
 		FileIOHelper::LoadBool(ifs, mData->UseTexture);
 	}
 
-	SpriteAnimMat::SpriteAnimMat(Core::FTResourceDef& resDef, D3D11Renderer* renderer)
+	SpriteAnimMat::SpriteAnimMat(Common::FTResourceDef& resDef, D3D11Renderer* renderer)
 		: FTMaterial(resDef)
 		, mData(DBG_NEW SpriteAnimMatData)
 	{

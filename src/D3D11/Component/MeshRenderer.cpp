@@ -33,6 +33,7 @@
 
 namespace D3D11
 {
+	using namespace Common;
 	using namespace Core;
 	void MeshRenderer::Initialize()
 	{
@@ -121,26 +122,26 @@ namespace D3D11
 		if (mMeshGroup)
 			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MESH_KEY, mMeshGroup->GetFileName());
 		else
-			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MESH_KEY, Core::ChunkKey::NullVal::NULL_OBJECT);
+			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MESH_KEY, Common::ChunkKey::NullVal::NULL_OBJECT);
 
 		if (mTexture)
 			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, mTexture->GetFileName());
 		else
-			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, Core::ChunkKey::NullVal::NULL_OBJECT);
+			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::TEXTURE_KEY, Common::ChunkKey::NullVal::NULL_OBJECT);
 
 		if (mMaterial)
 			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MAT_KEY, mMaterial->GetFileName());
 		else
-			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MAT_KEY, Core::ChunkKey::NullVal::NULL_OBJECT);
+			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MAT_KEY, Common::ChunkKey::NullVal::NULL_OBJECT);
 	}
 
 	void MeshRenderer::LoadProperties(std::ifstream& ifs)
 	{
-		FTDS::String keyCache; // Temporary space to store the loaded keys.
+		Common::FTDS::String keyCache; // Temporary space to store the loaded keys.
 
 		// Load material.
 		FileIOHelper::LoadBasicString(ifs, keyCache);
-		mMaterial = D3D11::ResourceManager::GetInstance()->GetResource<FTMaterial>(keyCache);
+		mMaterial = D3D11::ResourceManager::GetInstance()->GetMaterial(keyCache);
 
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTMeshGroup::SHADER_KEY);
 
@@ -150,7 +151,7 @@ namespace D3D11
 
 		// Load MeshGroup.
 		FileIOHelper::LoadBasicString(ifs, keyCache);
-		mMeshGroup = D3D11::ResourceManager::GetInstance()->GetResource<FTMeshGroup>(keyCache);
+		mMeshGroup = D3D11::ResourceManager::GetInstance()->GetMeshGroup(keyCache);
 
 		Component::LoadProperties(ifs);
 	}
@@ -185,7 +186,7 @@ namespace D3D11
 			mMaterial->UpdateUI();
 		Editor::DisplayResSelection(
 			"Select Material",
-			&ResourceManager::GetInstance()->GetResMap<FTMaterial>(),
+			ResourceManager::GetInstance()->GetMaterials(),
 			mMaterial);
 	}
 #endif // FOXTROT_EDITOR

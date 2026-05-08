@@ -69,14 +69,14 @@ namespace D3D11
 		void SetRightIsFront(bool val);
 
 		/// @brief Returns meshes ready to be rendered.
-		Core::FTDS::DynamicArray<Mesh*>* Meshes();
+		Common::FTDS::DynamicArray<Mesh*>* Meshes();
 		Math::FTVector3&				 SizeScale();
 
 	public:
 		/// @brief Relative path is used for importing 3D files.
 		// This is unused until 3D feature is implemented.
 		// FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer);
-		FTMeshGroup(Core::FTResourceDef& resDef, D3D11Renderer* renderer, FTMeshData* meshData = nullptr);
+		FTMeshGroup(Common::FTResourceDef& resDef, D3D11Renderer* renderer, FTMeshData* meshData = nullptr);
 		virtual ~FTMeshGroup();
 
 	protected:
@@ -138,7 +138,7 @@ namespace D3D11
 		Math::FTVector3 mSizeScale;
 
 		/// @brief Meshes created from FTMeshData, ready to be rendered.
-		Core::FTDS::DynamicArray<Mesh*>*		   mMeshes;
+		Common::FTDS::DynamicArray<Mesh*>*		   mMeshes;
 		Microsoft::WRL::ComPtr<ID3D11SamplerState> mSamplerState;
 
 		/// @brief Vertex constant buffer which will applied to all meshes.
@@ -156,7 +156,7 @@ namespace D3D11
 
 		/// @brief Creates the meshes from the array of meshData.
 		/// This is usually called when importing a 3D model file.
-		void InitializeMeshes(Microsoft::WRL::ComPtr<ID3D11Device>& device, Core::FTDS::DynamicArray<FTMeshData*>&& meshDataArr);
+		void InitializeMeshes(Microsoft::WRL::ComPtr<ID3D11Device>& device, Common::FTDS::DynamicArray<FTMeshData*>&& meshDataArr);
 
 #ifdef FOXTROT_EDITOR
 	public:

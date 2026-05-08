@@ -32,6 +32,7 @@
 
 namespace D3D11
 {
+	using namespace Common;
 	using namespace Core;
 	using namespace Math;
 	void Camera::Initialize(FTWindow* renderWindow, unsigned int pixels, float unit)
@@ -246,7 +247,7 @@ namespace D3D11
 		if (mTarget)
 			FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, mTarget->GetNameRef());
 		else
-			FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, Core::ChunkKey::NullVal::NULL_OBJECT);
+			FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, Common::ChunkKey::NullVal::NULL_OBJECT);
 		FileIOHelper::SaveVector3(ofs, ChunkKey::CAM_POSITION, mPosition);
 		FileIOHelper::SaveVector3(ofs, ChunkKey::CAM_OFFSET, mOffset);
 		FileIOHelper::SaveFloat(ofs, ChunkKey::CAM_ZOOM, mZoomFactor);
@@ -260,14 +261,14 @@ namespace D3D11
 		FileIOHelper::LoadVector3(ifs, mOffset);
 
 		FileIOHelper::LoadVector3(ifs, mPosition);
-		FTDS::String targetName = {};
+		Common::FTDS::String targetName = {};
 		FileIOHelper::LoadBasicString(ifs, targetName);
 
 #ifdef FOXTROT_EDITOR
 		if (mTarget)
 			mTarget = Editor::EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(targetName, nullptr);
 #else
-		if (targetName.NotEqual(Core::ChunkKey::NullVal::NULL_OBJECT))
+		if (targetName.NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
 			mTarget = manager->GetCurrentScene()->FindActor(targetName);
 #endif // FOXTROT_EDITOR
 	}

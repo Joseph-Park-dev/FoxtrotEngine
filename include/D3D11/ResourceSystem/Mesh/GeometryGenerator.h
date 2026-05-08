@@ -15,6 +15,7 @@
 
 namespace D3D11
 {
+	using namespace Common;
 	class Tile;
 	class FTTileMap;
 	struct TextAttribute;
@@ -30,11 +31,11 @@ namespace D3D11
 		static FTMeshData*	   MakeSquare(float scale, Math::FTVector4 color);
 
 		// MakeSquare() for Making tilemap
-		static Core::FTDS::DynamicArray<FTMeshData> MakeTileMapGrid(FTTileMap* tileMap);
+		static Common::FTDS::DynamicArray<FTMeshData> MakeTileMapGrid(FTTileMap* tileMap);
 
 		static FTMeshData  MakeTile(Tile& tile);
-		static void		   MakeSpriteAnimation(Core::FTDS::DynamicArray<FTMeshData*>& animMeshes, Tile* tileMap, size_t startIdx, size_t endIdx);
-		static void		   MakeSpriteAnimation(Core::FTDS::DynamicArray<FTMeshData*>& animMeshes, Tile* tileMap, size_t count);
+		static void		   MakeSpriteAnimation(Common::FTDS::DynamicArray<FTMeshData*>& animMeshes, Tile* tileMap, size_t startIdx, size_t endIdx);
+		static void		   MakeSpriteAnimation(Common::FTDS::DynamicArray<FTMeshData*>& animMeshes, Tile* tileMap, size_t count);
 		static FTMeshData* MakeAnimationFrame(Tile& tile);
 		// static void MakeSpriteTextGrid(std::vector<FTMeshData>& textMeshes, Tile* tileMap, size_t length, TextAttribute* attribute);
 		// static FTMeshData MakeSpriteText(Tile tile, TextAttribute* attrib, size_t col, size_t row);

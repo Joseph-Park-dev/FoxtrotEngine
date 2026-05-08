@@ -36,7 +36,7 @@ namespace D3D11
 
 	public:
 		/// @brief Relative path is used for importing material data.
-		FTMaterial(Core::FTResourceDef& resDef);
+		FTMaterial(Common::FTResourceDef& resDef);
 
 	protected:
 		/// @brief Creates a pixel constant buffer using the material data.

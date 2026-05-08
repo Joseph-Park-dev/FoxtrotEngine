@@ -11,8 +11,8 @@
 
 #pragma once
 #define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui/imgui.h>
-#include <ImGuiFileDialog/ImGuiFileDialog.h>
+#include <imgui.h>
+#include <ImGuiFileDialog.h>
 
 #include <Windows.h>
 #include <shobjidl.h> // For IFileOpenDialog
@@ -27,6 +27,7 @@
 
 #include "FTDS/Dynamic/DynamicArray.h"
 #include "FTDS/Static/HashMap.h"
+#include "ResourceSystem/ResourcePack.h"
 
 namespace Editor
 {
@@ -161,9 +162,9 @@ namespace Editor
 
 	template <typename FTRESOURCE>
 	inline void DisplayResSelection(
-		const char*							label,
-		Common::FTDS::HashMap<FTRESOURCE*>* resMap,
-		Common::FTDS::String&				currSelection)
+		const char*						  label,
+		Common::ResourcePack<FTRESOURCE>* resPack,
+		Common::FTDS::String&			  currSelection)
 	{
 		if (ImGui::Button(label))
 		{
@@ -182,7 +183,7 @@ namespace Editor
 				if (ImGui::Selectable("Not Assigned"))
 					currSelection.Assign(Common::ChunkKey::NullVal::NULL_OBJECT);
 
-				resMap->IterateAllNodes([&](Common::FTDS::Record<FTRESOURCE*>& node) {
+				resPack->GetResMap()->IterateAllNodes([&](Common::FTDS::Record<FTRESOURCE>* node) {
 					if (ImGui::Selectable(node->Key().C_Str()))
 					{
 						if (node->Key().NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
@@ -200,9 +201,9 @@ namespace Editor
 
 	template <typename FTRESOURCE>
 	inline void DisplayResSelection(
-		const char*									label,
-		Common::FTDS::HashMap<Common::FTResource*>* resMap,
-		FTRESOURCE*&								selectedRes)
+		const char*						  label,
+		Common::ResourcePack<FTRESOURCE>* resPack,
+		FTRESOURCE*&					  selectedRes)
 	{
 		if (ImGui::Button(label))
 			ImGui::OpenPopup(label);
@@ -211,7 +212,7 @@ namespace Editor
 		{
 			if (ImGui::TreeNode("Selection State: Single Selection"))
 			{
-				resMap->IterateAllNodes([&](Common::FTDS::Record<Common::FTResource*>* node) {
+				resPack->GetResMap()->IterateAllNodes([&](Common::FTDS::Record<FTRESOURCE*>* node) {
 					if (ImGui::Selectable(node->Key().C_Str()))
 					{
 						if (node->Key().NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
@@ -219,7 +220,7 @@ namespace Editor
 							if (selectedRes)
 								selectedRes->SubtractRefCount();
 
-							selectedRes = reinterpret_cast<FTRESOURCE*>(node->Value());
+							selectedRes = node->Value();
 							selectedRes->AddRefCount();
 						}
 					}
@@ -235,9 +236,9 @@ namespace Editor
 
 	template <typename FTRESOURCE, typename FILTER>
 	inline void DisplayResSelection(
-		const char*									label,
-		Common::FTDS::HashMap<Common::FTResource*>* resMap,
-		FTRESOURCE*&								selectedRes)
+		const char*						  label,
+		Common::ResourcePack<FTRESOURCE>* resPack,
+		FTRESOURCE*&					  selectedRes)
 	{
 		if (ImGui::Button(label))
 			ImGui::OpenPopup(label);
@@ -246,10 +247,10 @@ namespace Editor
 		{
 			if (ImGui::TreeNode("Selection State: Single Selection"))
 			{
-				resMap->IterateAllNodes([&](Common::FTDS::Record<FTRESOURCE*>& node) {
+				resPack->GetResMap()->IterateAllNodes([&](Common::FTDS::Record<FTRESOURCE*>* node) {
 					if (ImGui::Selectable(node->Key().C_Str()))
 					{
-						if (node->Key().NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
+						if (node->Key()->NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
 						{
 							if (typeid(node->Value()) == typeid(FILTER))
 							{

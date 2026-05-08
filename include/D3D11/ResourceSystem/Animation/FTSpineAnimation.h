@@ -9,8 +9,8 @@
 #pragma once
 #include "ResourceSystem/Sprite/FTSprite.h"
 
-#include <Dynamic/DynamicArray.h>
-#include <spine.h>
+#include <FTDS/Dynamic/DynamicArray.h>
+#include <spine/spine.h>
 
 namespace Core
 {
@@ -21,6 +21,7 @@ namespace Core
 
 namespace D3D11
 {
+	using namespace Common;
 	class Camera;
 	class FTTexture;
 	class FTPixelShader;
@@ -78,20 +79,20 @@ namespace D3D11
 		spine::Vector<spine::Animation*>& LoadedClips();
 
 		/// @brief FTSpineAnimation uses SpineMesh, not Mesh!
-		Core::FTDS::DynamicArray<Mesh*>* Meshes() = delete;
+		Common::FTDS::DynamicArray<Mesh*>* Meshes() = delete;
 
 	public:
 		/// @brief Creates the spine animation.
 		/// The file paths of the generic data will only be used.
-		FTSpineAnimation(Core::FTResourceDef& resDef, D3D11Renderer* renderer);
+		FTSpineAnimation(Common::FTResourceDef& resDef, D3D11Renderer* renderer);
 		~FTSpineAnimation();
 
 	private:
 		/// @brief JSON path, which will be use to create spine anim.
-		Core::FTDS::String* mJSONPath;
+		Common::FTDS::String* mJSONPath;
 
 		/// @brief Atlas file path, which will be use to create spine anim.
-		Core::FTDS::String* mAtlasPath;
+		Common::FTDS::String* mAtlasPath;
 
 		/// @brief Timescale for the loaded clips.
 		float mTimeScale;
@@ -116,7 +117,7 @@ namespace D3D11
 
 		/// @brief FTSpineAnimation uses SpineMesh, not Mesh!
 		/// @see Meshes()
-		Core::FTDS::DynamicArray<SpineMesh*>* mMeshes;
+		Common::FTDS::DynamicArray<SpineMesh*>* mMeshes;
 
 	private:
 		void Process(D3D11::D3D11Renderer* renderer);
@@ -144,10 +145,10 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 	public:
 		FTSpineAnimation(
-			Core::FTResourceDef&	  resDef,
+			Common::FTResourceDef&	  resDef,
 			D3D11Renderer*			  renderer,
-			const Core::FTDS::String* jsonPath,
-			const Core::FTDS::String* atlasPath);
+			const Common::FTDS::String* jsonPath,
+			const Common::FTDS::String* atlasPath);
 
 	public:
 		/// @see FTResource::UpdateUI()

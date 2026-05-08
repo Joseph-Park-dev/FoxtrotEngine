@@ -1,8 +1,8 @@
 #pragma once
 #include "Entity/Entity.h"
 
-#include "SingletonMacro.h"
-#include "Static/FTString.h"
+#include "Utility/SingletonMacro.h"
+#include "FTDS/Static/FTString.h"
 #include "Manager/FTSpineLoader.h"
 
 namespace Core
@@ -18,6 +18,7 @@ namespace Core
 
 namespace D3D11
 {
+	using namespace Common;
 	class D3D11Renderer;
 	class FTSpriteAnimation;
 	class FTSpineAnimation;
@@ -48,7 +49,7 @@ namespace D3D11
 		{
 			std::ofstream ofs(animation->GetRelativePath()->C_Str());
 			animation->SaveProperties(ofs);
-			Core::FileIOHelper::SaveBufferToFile(ofs);
+			Common::FileIOHelper::SaveBufferToFile(ofs);
 		}
 
 	private:
@@ -56,9 +57,9 @@ namespace D3D11
 			FTSpriteAnimationDef& resDef);
 
 		FTSpineAnimation* CreateAnimationFromSpine(
-			Core::FTResourceDef&	  resDef,
-			const Core::FTDS::String* jsonPath,
-			const Core::FTDS::String* atlasPath);
+			Common::FTResourceDef&		resDef,
+			const Common::FTDS::String* jsonPath,
+			const Common::FTDS::String* atlasPath);
 #endif
 	};
 } // namespace D3D11

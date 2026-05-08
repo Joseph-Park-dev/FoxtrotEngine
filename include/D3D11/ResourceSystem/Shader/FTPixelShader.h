@@ -34,11 +34,11 @@ namespace D3D11
 
 	public:
 		/// @see FTShader::FTShader()
-		FTPixelShader(Core::FTResourceDef& resDef, D3D11Renderer* renderer);
+		FTPixelShader(Common::FTResourceDef& resDef, D3D11Renderer* renderer);
 
 	protected:
 		/// @see FTShader::CompileShader()
-		void CompileShader(Core::FTResourceDef& resDef, D3D11Renderer* renderer) override;
+		void CompileShader(Common::FTResourceDef& resDef, D3D11Renderer* renderer) override;
 
 	private:
 		/// @brief The shader should remain compiled after initialization.

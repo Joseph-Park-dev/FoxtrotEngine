@@ -20,12 +20,13 @@
 #ifdef FOXTROT_EDITOR
 	#include <bitset>
 	#define IMGUI_DEFINE_MATH_OPERATORS
-	#include <imgui/imgui.h>
-	#include "EditorHelper.h"
+	#include <imgui.h>
+	#include "Utility/EditorHelper.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
 {
+	using namespace Common;
 	using namespace Core;
 	using Microsoft::WRL::ComPtr;
 
@@ -111,7 +112,7 @@ namespace D3D11
 		, mSkeleton(nullptr)
 		, mStateData(nullptr)
 		, mState(nullptr)
-		, mMeshes(DBG_NEW FTDS::DynamicArray<SpineMesh*>)
+		, mMeshes(DBG_NEW Common::FTDS::DynamicArray<SpineMesh*>)
 	{
 		Process(renderer);
 	}
@@ -455,10 +456,10 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 
 	FTSpineAnimation::FTSpineAnimation(
-		Core::FTResourceDef& resDef,
+		Common::FTResourceDef& resDef,
 		D3D11Renderer*		 renderer,
-		const FTDS::String*	 jsonPath,
-		const FTDS::String*	 atlasPath)
+		const Common::FTDS::String*	 jsonPath,
+		const Common::FTDS::String*	 atlasPath)
 		: FTSpineAnimation(resDef, renderer)
 	{
 		mJSONPath->Assign(*jsonPath);
@@ -495,7 +496,7 @@ namespace D3D11
 
 	void FTSpineAnimation::AddRefCount()
 	{
-		FTDS::String fileN;
+		Common::FTDS::String fileN;
 		Core::ExtractFileName(mJSONPath, fileN);
 		FTJSON* json = D3D11::ResourceManager::GetInstance()->GetResource<FTJSON>(fileN);
 		if (json)
@@ -513,7 +514,7 @@ namespace D3D11
 
 	void FTSpineAnimation::SubtractRefCount()
 	{
-		FTDS::String fileN;
+		Common::FTDS::String fileN;
 		Core::ExtractFileName(mJSONPath, fileN);
 		FTJSON* json = D3D11::ResourceManager::GetInstance()->GetResource<FTJSON>(fileN);
 		if (json)

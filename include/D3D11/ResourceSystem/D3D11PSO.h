@@ -11,7 +11,7 @@ namespace D3D11
 	class FTGeometryShader;
 	class FTPixelShader;
 
-	struct PSODef : Core::FTResourceDef
+	struct PSODef : Common::FTResourceDef
 	{
 		FTVertexShader*	  VS;
 		FTGeometryShader* GS;

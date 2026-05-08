@@ -18,14 +18,15 @@
 
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS
-	#include <imgui/imgui.h>
-	#include <magic_enum/include/magic_enum/magic_enum.hpp>
+	#include <imgui.h>
+	#include <magic_enum/magic_enum.hpp>
 	#include "CommandHistory.h"
-	#include "EditorHelper.h"
+	#include "Utility/EditorHelper.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
 {
+	using namespace Common;
 	class D3D11Renderer;
 	struct SemanticItem;
 
@@ -51,18 +52,18 @@ namespace D3D11
 
 	public:
 		/// @see FTShader::FTShader()
-		FTVertexShader(Core::FTResourceDef& resDef, D3D11Renderer* renderer);
+		FTVertexShader(Common::FTResourceDef& resDef, D3D11Renderer* renderer);
 		~FTVertexShader() override;
 
 	protected:
 		/// @see FTShader::CompileShader()
-		void CompileShader(Core::FTResourceDef& resDef, D3D11Renderer* renderer) override;
+		void CompileShader(Common::FTResourceDef& resDef, D3D11Renderer* renderer) override;
 
 	private:
 		/// @brief The shader should remain compiled after initialization.
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> mShader;
 		Microsoft::WRL::ComPtr<ID3D11InputLayout>  mInputLayout;
-		Core::FTDS::DynamicArray<SemanticItem*>*   mSemanticItems;
+		Common::FTDS::DynamicArray<SemanticItem*>* mSemanticItems;
 
 #ifdef FOXTROT_EDITOR
 	public:
@@ -92,14 +93,14 @@ namespace D3D11
 	struct SemanticItem
 	{
 		size_t					 NameIdx;
-		Core::FTDS::String		 Name;
+		Common::FTDS::String	 Name;
 		D3D11_INPUT_ELEMENT_DESC Desc;
 
 		SemanticItem()
 			: NameIdx(0)
 			, Desc()
 		{
-			Desc.SemanticName		  = Core::ChunkKey::NullVal::NULL_OBJECT;
+			Desc.SemanticName		  = Common::ChunkKey::NullVal::NULL_OBJECT;
 			Desc.SemanticIndex		  = 0;
 			Desc.InputSlot			  = 0;
 			Desc.AlignedByteOffset	  = 0;
@@ -112,9 +113,9 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 		void UpdateUI()
 		{
-			static Core::FTDS::String names[5] = { "POSITION", "NORMAL", "COLOR", "TEXCOORD", "PSIZE" };
+			static Common::FTDS::String names[5] = { "POSITION", "NORMAL", "COLOR", "TEXCOORD", "PSIZE" };
 
-			static Core::FTDS::String classifications[2] = {
+			static Common::FTDS::String classifications[2] = {
 				"D3D11_INPUT_PER_VERTEX_DATA",
 				"D3D11_INPUT_PER_INSTANCE_DATA"
 			};

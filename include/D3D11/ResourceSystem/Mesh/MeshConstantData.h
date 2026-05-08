@@ -13,7 +13,7 @@
 #include "Math/FTMath.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "EditorHelper.h"
+	#include "Utility/EditorHelper.h"
 #endif // FOXTROT_EDITOR
 	
 

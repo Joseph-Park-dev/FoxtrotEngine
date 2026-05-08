@@ -23,6 +23,7 @@
 
 namespace D3D11
 {
+	using namespace Common;
 	using namespace Core;
 	using namespace Math;
 	using namespace std;
@@ -345,7 +346,7 @@ namespace D3D11
 	HRESULT D3D11Utils::CreateVertexShaderAndInputLayout(
 		ComPtr<ID3D11Device>&								device,
 		const wstring&										filename,
-		const FTDS::DynamicArray<D3D11_INPUT_ELEMENT_DESC>& inputElements,
+		const Common::FTDS::DynamicArray<D3D11_INPUT_ELEMENT_DESC>& inputElements,
 		ComPtr<ID3D11VertexShader>&							vertexShader,
 		ComPtr<ID3D11InputLayout>&							inputLayout)
 	{
@@ -536,7 +537,7 @@ namespace D3D11
 		DX::ThrowIfFailed(device->CreateBuffer(&bufferDesc, &indexBufferData, indexBuffer.GetAddressOf()));
 	}
 
-	void D3D11Utils::CreateIndexBuffer(ComPtr<ID3D11Device>& device, FTDS::DynamicArray<uint32_t>& indices, ComPtr<ID3D11Buffer>& indexBuffer)
+	void D3D11Utils::CreateIndexBuffer(ComPtr<ID3D11Device>& device, Common::FTDS::DynamicArray<uint32_t>& indices, ComPtr<ID3D11Buffer>& indexBuffer)
 	{
 		D3D11_BUFFER_DESC bufferDesc = {};
 		ZeroMemory(&bufferDesc, sizeof(bufferDesc));
@@ -588,7 +589,7 @@ namespace D3D11
 		device->CreateGeometryShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), NULL, &geometryShader);
 	}
 
-	void D3D11Utils::ReadImage(FTDS::String filename, std::vector<uint8_t>& image, int& width, int& height)
+	void D3D11Utils::ReadImage(Common::FTDS::String filename, std::vector<uint8_t>& image, int& width, int& height)
 	{
 		int channels;
 
@@ -680,7 +681,7 @@ namespace D3D11
 	}
 
 	void D3D11Utils::CreateTextureArray(
-		ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, const std::vector<FTDS::String> filenames, ComPtr<ID3D11Texture2D>& texture, ComPtr<ID3D11ShaderResourceView>& textureResourceView)
+		ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, const std::vector<Common::FTDS::String> filenames, ComPtr<ID3D11Texture2D>& texture, ComPtr<ID3D11ShaderResourceView>& textureResourceView)
 	{
 
 		using namespace std;
@@ -758,7 +759,7 @@ namespace D3D11
 	//	return result;
 	// }
 
-	void D3D11Utils::WriteToFile(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Texture2D>& textureToWrite, FTDS::String& filename)
+	void D3D11Utils::WriteToFile(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context, ComPtr<ID3D11Texture2D>& textureToWrite, Common::FTDS::String& filename)
 	{
 		D3D11_TEXTURE2D_DESC desc;
 		textureToWrite->GetDesc(&desc);

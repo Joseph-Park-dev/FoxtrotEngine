@@ -10,6 +10,7 @@ namespace Core
 
 namespace D3D11
 {
+	using namespace Common;
 	class D3D11Renderer;
 
 	class D3D11Component :
@@ -34,5 +35,10 @@ namespace D3D11
 	public:
 		D3D11Component(Core::Plugin* plugin, Core::Actor* owner, int updateOrder = Core::DefaultVal::UPDATE_ORDER);
 		virtual ~D3D11Component();
+
+#ifdef FOXTROT_EDITOR
+		virtual void EditorRender(D3D11::D3D11Renderer* renderer) = 0;
+
+#endif // FOXTROT_EDITOR
 	};
 } // namespace D3D11

@@ -29,7 +29,7 @@ namespace D3D11
 		END
 	};
 
-	class D3D11Resource : public Core::FTResource
+	class D3D11Resource : public Common::FTResource
 	{
 	public:
 		inline static ResType Type;
@@ -44,7 +44,7 @@ namespace D3D11
 		virtual void LoadProperties(std::ifstream& ifs) override;
 
 	public:
-		D3D11Resource(Core::FTResourceDef& resDef);
+		D3D11Resource(Common::FTResourceDef& resDef);
 		virtual ~D3D11Resource() = default;
 	};
 } // namespace D3D11

@@ -84,10 +84,10 @@ namespace D3D11
 		bool		 mIsDragging;
 
 		int*							 mMouseCode;
-		Core::FTDS::DynamicArray<Core::ButtonInput>* mMouseButtons;
+		Common::FTDS::DynamicArray<Core::ButtonInput>* mMouseButtons;
 
 	private:
 		int*							 mKeyboardCode;
-		Core::FTDS::DynamicArray<Core::ButtonInput>* mKeyboardButtons;
+		Common::FTDS::DynamicArray<Core::ButtonInput>* mKeyboardButtons;
 	};
 } // namespace D3D11

@@ -26,6 +26,7 @@ namespace Core
 
 namespace D3D11
 {
+	using namespace Common;
 	class Tile;
 
 	class FTTileMap :
@@ -36,7 +37,7 @@ namespace D3D11
 
 	public:
 		void Initialize();
-		void ReadCSV(Core::FTResourceDef& resDef, Core::FTDS::String& str);
+		void ReadCSV(Common::FTResourceDef& resDef, Common::FTDS::String& str);
 
 	public:
 		Tile* GetTiles() { return mTileMap; }
@@ -55,7 +56,7 @@ namespace D3D11
 		void SetMaxCountOnMapY(UINT yCount);
 
 	public:
-		FTTileMap(Core::FTResourceDef& resDef);
+		FTTileMap(Common::FTResourceDef& resDef);
 		~FTTileMap();
 
 	protected:

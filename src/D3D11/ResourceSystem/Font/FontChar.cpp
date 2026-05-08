@@ -3,7 +3,7 @@
 #include <d3d11.h>
 
 #include "ResourceSystem/Font/TextVertex.h"
-#include "Renderer/D3D11Utils.h"
+#include "Utility/D3D11Utils.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "ResourceSystem/Mesh/GeometryGenerator.h"
 #include "ResourceSystem/Mesh/Mesh.h"

@@ -1,30 +1,67 @@
 #pragma once
 #include "Manager/ResourceManagerBase.h"
 
-#include "SingletonMacro.h"
-#include "FTDS/Static/HashMap.h"
-// Core Plugin key
-#include <../Plugin/PluginKey.h>
-// Core ResourceManager
-#include <../Manager/ResourceManager.h>
+#include "Utility/SingletonMacro.h"
+#include "ResourceSystem/ResourcePack.h"
 
 namespace D3D11
 {
+	class FTSpriteAnimation;
+	class FTSpineAnimation;
+	class FTFont;
+	class FTMaterial;
+	class FTMeshGroup;
+	class FTVertexShader;
+	class FTGeometryShader;
+	class FTPixelShader;
+	class FTSprite;
+	class FTTileMap;
+	class D3D11PSO;
+
 	class ResourceManager :
-		public Core::ResourceManagerBase
+		public Common::ResourceManagerBase
 	{
 		SINGLETON(ResourceManager)
 	public:
 		void LoadDefaultResources() override;
 
 	public:
-		Core::ResourceManager* GetCoreResManager();
+		FTSpriteAnimation* GetSpriteAnimation(Common::FTDS::String& key);
+		FTSpineAnimation*  GetSpineAnimation(Common::FTDS::String& key);
+		FTFont*			   GetFont(Common::FTDS::String& key);
+		FTMaterial*		   GetMaterial(Common::FTDS::String& key);
+		FTMeshGroup*	   GetMeshGroup(Common::FTDS::String& key);
+		FTVertexShader*	   GetVertexShader(Common::FTDS::String& key);
+		FTGeometryShader*  GetGeometryShader(Common::FTDS::String& key);
+		FTPixelShader*	   GetPixelShader(Common::FTDS::String& key);
+		FTSprite*		   GetSprite(Common::FTDS::String& key);
+		FTTileMap*		   GetTileMap(Common::FTDS::String& key);
+		D3D11PSO*		   GetPSO(Common::FTDS::String& key);
+
+	public:
+		Common::ResourcePack<FTSpriteAnimation>* GetSpriteAnimations();
+		Common::ResourcePack<FTSpineAnimation>*	 GetSpineAnimations();
+		Common::ResourcePack<FTFont>*			 GetFonts();
+		Common::ResourcePack<FTMaterial>*		 GetMaterials();
+		Common::ResourcePack<FTMeshGroup>*		 GetMeshGroups();
+		Common::ResourcePack<FTVertexShader>*	 GetVertexShaders();
+		Common::ResourcePack<FTGeometryShader>*	 GetGeometryShaders();
+		Common::ResourcePack<FTPixelShader>*	 GetPixelShaders();
+		Common::ResourcePack<FTSprite>*			 GetSprites();
+		Common::ResourcePack<FTTileMap>*		 GetTileMaps();
+		Common::ResourcePack<D3D11PSO>*			 GetPSOs();
 
 	private:
-		Core::GET_RES_MANAGER_INST mGetCoreResManagerFunc;
+		Common::ResourcePack<FTSpriteAnimation>* mSpriteAnimations;
+		Common::ResourcePack<FTSpineAnimation>*	 mSpineAnimations;
+		Common::ResourcePack<FTFont>*			 mFonts;
+		Common::ResourcePack<FTMaterial>*		 mMaterials;
+		Common::ResourcePack<FTMeshGroup>*		 mMeshGroups;
+		Common::ResourcePack<FTVertexShader>*	 mVertexShaders;
+		Common::ResourcePack<FTGeometryShader>*	 mGeometryShaders;
+		Common::ResourcePack<FTPixelShader>*	 mPixelShaders;
+		Common::ResourcePack<FTSprite>*			 mSprites;
+		Common::ResourcePack<FTTileMap>*		 mTileMaps;
+		Common::ResourcePack<D3D11PSO>*			 mPSOs;
 	};
-
-	using GET_RES_MANAGER_INST = D3D11::ResourceManager* (*)();
-
-#define CORE_RES_NAME(type, res) ResourceManager::GetInstance()->GetCoreResManager()->GetResName(type::Type, res)
 } // namespace D3D11

@@ -23,6 +23,7 @@ namespace Core
 
 namespace D3D11
 {
+	using namespace Common;
 	class FTTexture;
 	class FTVertexShader;
 	class FTGeometryShader;

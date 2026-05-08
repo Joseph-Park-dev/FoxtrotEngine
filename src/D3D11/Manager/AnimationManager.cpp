@@ -11,20 +11,20 @@
 #include "ResourceSystem/GenericData/FTJSON.h"
 #include "Manager/ResourceManager.h"
 #include "Manager/FTSpineLoader.h"
-#include "FTCore.h"
 #include "FileSystem/NullKeys.h"
 #include "Renderer/FoxtrotRenderer.h"
 
-#include "Static/FTString.h"
+#include "FTDS/Static/FTString.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorUtils.h"
-	#include "EditorHelper.h"
+	#include "Utility/EditorHelper.h"
 	#include "FileSystem/BufferSizes.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
 {
+	using namespace Common;
 	using namespace Core;
 
 	FTSpineLoader* AnimationManager::GetSpineLoader()
@@ -61,7 +61,7 @@ namespace D3D11
 
 			ImGui::Separator();
 			FTDS::HashMap<FTResource*>& map =
-				ResourceManager::GetInstance()->GetResMap<FTSpriteAnimation>();
+				ResourceManager::GetInstance()->GetSpriteAnimations();
 			auto iter = map.Begin();
 
 			if (ImGui::TreeNode("Loaded Sprite Animations"))
@@ -86,7 +86,7 @@ namespace D3D11
 			}
 
 			FTDS::HashMap<FTResource*>& spineAnimMap =
-				ResourceManager::GetInstance()->GetResMap<FTSpineAnimation>();
+				ResourceManager::GetInstance()->GetSpineAnimations();
 
 			if (ImGui::TreeNode("Loaded Spine Animations"))
 			{
@@ -122,7 +122,7 @@ namespace D3D11
 				FTSpriteAnimationDef resDef;
 
 				// Update file name of the sprite animation.
-				static FTDS::String name = "Empty Value";
+				static Common::FTDS::String name = "Empty Value";
 				Editor::UPDATE_STR("Name", name);
 
 				// Is the sprite animation to be repeated?
@@ -167,7 +167,7 @@ namespace D3D11
 					resDef.FileName = name.C_Str();
 
 					// Update the relative path of the sprite animation.
-					FTDS::String path = DirectoryHelper::GetInstance()->GetAssetPath();
+					Common::FTDS::String path = DirectoryHelper::GetInstance()->GetAssetPath();
 					path.Append(resDef.FileName);
 					resDef.Path = path.C_Str();
 
@@ -186,7 +186,7 @@ namespace D3D11
 			{
 				FTResourceDef resDef;
 
-				static FTDS::String name = "Empty Value";
+				static Common::FTDS::String name = "Empty Value";
 				Editor::UPDATE_STR("Name", name);
 
 				static FTJSON* json;
@@ -202,7 +202,7 @@ namespace D3D11
 					resDef.FileName = name.C_Str();
 
 					// Update the relative path of the sprite animation.
-					FTDS::String path = DirectoryHelper::GetInstance()->GetAssetPath();
+					Common::FTDS::String path = DirectoryHelper::GetInstance()->GetAssetPath();
 					path.Append(resDef.FileName);
 					resDef.Path = path.C_Str();
 
@@ -220,15 +220,15 @@ namespace D3D11
 		FTSpriteAnimation* anim = DBG_NEW FTSpriteAnimation(resDef, mRenderer);
 
 		SaveAnimationAsFile(anim);
-		D3D11::ResourceManager::GetInstance()->GetResMap<FTSpriteAnimation>().Insert(*anim->GetFileName(), anim);
+		D3D11::ResourceManager::GetInstance()->GetSpriteAnimations().Insert(*anim->GetFileName(), anim);
 		return anim;
 	}
 
-	FTSpineAnimation* AnimationManager::CreateAnimationFromSpine(FTResourceDef& resDef, const FTDS::String* jsonPath, const FTDS::String* atlasPath)
+	FTSpineAnimation* AnimationManager::CreateAnimationFromSpine(FTResourceDef& resDef, const Common::FTDS::String* jsonPath, const Common::FTDS::String* atlasPath)
 	{
 		FTSpineAnimation* anim = DBG_NEW FTSpineAnimation(resDef, mRenderer, jsonPath, atlasPath);
 		SaveAnimationAsFile(anim);
-		D3D11::ResourceManager::GetInstance()->GetResMap<FTSpineAnimation>().Insert(*anim->GetFileName(), anim);
+		D3D11::ResourceManager::GetInstance()->GetSpineAnimations().Insert(*anim->GetFileName(), anim);
 		return anim;
 	}
 #endif // FOXTROT_EDITOR

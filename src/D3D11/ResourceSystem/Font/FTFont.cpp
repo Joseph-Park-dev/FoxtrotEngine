@@ -2,7 +2,7 @@
 
 #include "ResourceSystem/FTTexture.h"
 #include "Renderer/D3D11Renderer.h"
-#include "Renderer/D3D11Utils.h"
+#include "Utility/D3D11Utils.h"
 #include "ResourceSystem/Shader/FTVertexShader.h"
 #include "ResourceSystem/Shader/FTPixelShader.h"
 #include "ResourceSystem/Material/FTMaterial.h"
@@ -16,19 +16,20 @@
 #include "Actor/Transform.h"
 #include "FileSystem/FileTypes.h"
 
-#include "Static/FTString.h"
+#include "FTDS/Static/FTString.h"
 
 using Microsoft::WRL::ComPtr;
 
 namespace D3D11
 {
+	using namespace Common;
 	using namespace Core;
 	using namespace Math;
 	ResType FTFont::Type = ResType::FONT;
 
-	void FTFont::AddText(ComPtr<ID3D11Device>& device, FTDS::String& text)
+	void FTFont::AddText(ComPtr<ID3D11Device>& device, Common::FTDS::String& text)
 	{
-		FTDS::DynamicArray<TextVertex> vertices;
+		Common::FTDS::DynamicArray<TextVertex> vertices;
 		vertices.Reserve(text.GetLength());
 
 		for (size_t i = 0; i < text.GetLength(); ++i)
@@ -42,7 +43,7 @@ namespace D3D11
 		Meshes()->PushBack(mesh);
 	}
 
-	void FTFont::Render(FTDS::String& text, D3D11Renderer* renderer, Core::Transform* transform, Camera* camInst, FTTexture* tex, FTVertexShader* vs, FTPixelShader* ps, FTMaterial* mat)
+	void FTFont::Render(Common::FTDS::String& text, D3D11Renderer* renderer, Core::Transform* transform, Camera* camInst, FTTexture* tex, FTVertexShader* vs, FTPixelShader* ps, FTMaterial* mat)
 	{
 		if (!Meshes())
 			return;
@@ -194,7 +195,7 @@ namespace D3D11
 		return (mTopPadding + mBottomPadding) * paddingY;
 	}
 
-	FTFont::FTFont(Core::FTResourceDef& resDef, D3D11Renderer* renderer)
+	FTFont::FTFont(Common::FTResourceDef& resDef, D3D11Renderer* renderer)
 		: FTMeshGroup(resDef, renderer, nullptr)
 		, mSize(0)
 		, mLineHeight(0.f)
@@ -212,7 +213,7 @@ namespace D3D11
 		if (!mCharList->IsEmpty() && mKerningsList)
 			return;
 
-		FTDS::String metaPath = resDef.Path;
+		Common::FTDS::String metaPath = resDef.Path;
 
 		metaPath.SubStr(0, metaPath.RFind(FileTypes::FONT));
 		metaPath.Append(FileTypes::FONT_META);
@@ -266,14 +267,14 @@ namespace D3D11
 		if (mFontImage)
 			FileIOHelper::SaveString(ofs, ChunkKey::FTFont::FONT_IMAGE, mFontImage->GetFileName());
 		else
-			FileIOHelper::SaveString(ofs, ChunkKey::FTFont::FONT_IMAGE, Core::ChunkKey::NullVal::NULL_OBJECT);
+			FileIOHelper::SaveString(ofs, ChunkKey::FTFont::FONT_IMAGE, Common::ChunkKey::NullVal::NULL_OBJECT);
 
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTFont::FTFONT);
 	}
 
 	void FTFont::LoadProperties(std::ifstream& ifs)
 	{
-		FTDS::String key;
+		Common::FTDS::String key;
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTFont::FTFONT);
 		FileIOHelper::LoadBasicString(ifs, key);
 

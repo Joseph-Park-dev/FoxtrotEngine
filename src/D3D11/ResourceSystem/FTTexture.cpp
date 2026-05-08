@@ -20,17 +20,18 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Manager/ResourceManager.h"
 #include "Renderer/D3D11Renderer.h"
-#include "Renderer/D3D11Utils.h"
+#include "Utility/D3D11Utils.h"
 #include "FTDS/Static/FTString.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorLayer.h"
 	#define IMGUI_DEFINE_MATH_OPERATORS
-	#include <imgui/imgui.h>
+	#include <imgui.h>
 #endif
 
 namespace D3D11
 {
+	using namespace Common;
 	using Microsoft::WRL::ComPtr;
 	using namespace Core;
 	ResType FTTexture::Type = ResType::TEXTURE;
@@ -53,14 +54,14 @@ namespace D3D11
 	void FTTexture::SaveProperties(std::ofstream& ofs)
 	{
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTexture::FT_TEXTURE);
-		//FTResource::SaveProperties(ofs);
+		// FTResource::SaveProperties(ofs);
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTexture::FT_TEXTURE);
 	}
 
 	void FTTexture::LoadProperties(std::ifstream& ifs)
 	{
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTexture::FT_TEXTURE);
-		//FTResource::LoadProperties(ifs);
+		// FTResource::LoadProperties(ifs);
 	}
 
 	FTTexture::FTTexture(FTResourceDef& resDef, D3D11::D3D11Renderer* renderer)
@@ -138,7 +139,7 @@ namespace D3D11
 		ImGui::Image((ImTextureID)viewportTexture, previewSize);
 
 		// Diplay texture path.
-		FTDS::String currentPath = "No path has been assigned";
+		Common::FTDS::String currentPath = "No path has been assigned";
 		if (!GetRelativePath()->IsEmpty())
 		{
 			currentPath.Assign("Current path : \n");

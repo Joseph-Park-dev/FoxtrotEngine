@@ -12,7 +12,7 @@
 
 #include "FileSystem/FileIOHelper.h"
 #include "Renderer/D3D11Renderer.h"
-#include "Renderer/D3D11Utils.h"
+#include "Utility/D3D11Utils.h"
 #include "Renderer/Camera.h"
 #include "ResourceSystem/Material/FTMaterial.h"
 #include "ResourceSystem/Animation/AnimationFrame.h"
@@ -35,6 +35,7 @@
 
 namespace D3D11
 {
+	using namespace Common;
 	using Microsoft::WRL::ComPtr;
 	using namespace Core;
 	using namespace Math;
@@ -61,8 +62,8 @@ namespace D3D11
 	{
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
 
-		FTDS::String	jsonKey;
-		FTDS::String	texKey;
+		Common::FTDS::String	jsonKey;
+		Common::FTDS::String	texKey;
 		Math::FTVector3 sizeScale = Math::FTVector3(1.f, 1.f, 1.f);
 
 		FileIOHelper::LoadBasicString(ifs, jsonKey);

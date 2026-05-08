@@ -55,34 +55,34 @@ namespace D3D11
 
 		void SaveProperties(std::ofstream& ofs, TYPE& type, bool& isActive)
 		{
-			Core::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::LIGHT);
+			Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::LIGHT);
 
-			Core::FileIOHelper::SaveInt(ofs, LightKey::TYPE, type);
-			Core::FileIOHelper::SaveBool(ofs, LightKey::IS_ACTIVE, isActive);
-			Core::FileIOHelper::SaveVector3(ofs, LightKey::STRENGTH, Strength);
-			Core::FileIOHelper::SaveFloat(ofs, LightKey::FALLOFF_START, FallOffStart);
-			Core::FileIOHelper::SaveFloat(ofs, LightKey::FALLOFF_END, FallOffEnd);
-			Core::FileIOHelper::SaveVector3(ofs, LightKey::DIRECTION, Direction);
-			Core::FileIOHelper::SaveVector3(ofs, LightKey::POSITION, Position);
-			Core::FileIOHelper::SaveFloat(ofs, LightKey::SPOT_POWER, SpotPower);
+			Common::FileIOHelper::SaveInt(ofs, LightKey::TYPE, type);
+			Common::FileIOHelper::SaveBool(ofs, LightKey::IS_ACTIVE, isActive);
+			Common::FileIOHelper::SaveVector3(ofs, LightKey::STRENGTH, Strength);
+			Common::FileIOHelper::SaveFloat(ofs, LightKey::FALLOFF_START, FallOffStart);
+			Common::FileIOHelper::SaveFloat(ofs, LightKey::FALLOFF_END, FallOffEnd);
+			Common::FileIOHelper::SaveVector3(ofs, LightKey::DIRECTION, Direction);
+			Common::FileIOHelper::SaveVector3(ofs, LightKey::POSITION, Position);
+			Common::FileIOHelper::SaveFloat(ofs, LightKey::SPOT_POWER, SpotPower);
 
-			Core::FileIOHelper::EndDataPackSave(ofs, ChunkKey::LIGHT);
+			Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::LIGHT);
 		}
 
 		void LoadProperties(std::ifstream& ifs, TYPE& type, bool& isActive)
 		{
-			Core::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::LIGHT);
+			Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::LIGHT);
 
-			Core::FileIOHelper::LoadFloat(ifs, SpotPower);
-			Core::FileIOHelper::LoadVector3(ifs, Position);
-			Core::FileIOHelper::LoadVector3(ifs, Direction);
-			Core::FileIOHelper::LoadFloat(ifs, FallOffEnd);
-			Core::FileIOHelper::LoadFloat(ifs, FallOffStart);
-			Core::FileIOHelper::LoadVector3(ifs, Strength);
-			Core::FileIOHelper::LoadBool(ifs, isActive);
+			Common::FileIOHelper::LoadFloat(ifs, SpotPower);
+			Common::FileIOHelper::LoadVector3(ifs, Position);
+			Common::FileIOHelper::LoadVector3(ifs, Direction);
+			Common::FileIOHelper::LoadFloat(ifs, FallOffEnd);
+			Common::FileIOHelper::LoadFloat(ifs, FallOffStart);
+			Common::FileIOHelper::LoadVector3(ifs, Strength);
+			Common::FileIOHelper::LoadBool(ifs, isActive);
 
 			int typeInt = TYPE::DIRECTIONAL;
-			Core::FileIOHelper::LoadInt(ifs, typeInt);
+			Common::FileIOHelper::LoadInt(ifs, typeInt);
 			type = (TYPE)typeInt;
 		}
 #ifdef FOXTROT_EDITOR

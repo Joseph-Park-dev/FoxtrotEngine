@@ -25,7 +25,7 @@ namespace D3D11
 		virtual void LoadProperties(std::ifstream& ifs) override;
 
 	public:
-		SpriteAnimMat(Core::FTResourceDef& resDef, D3D11Renderer* renderer);
+		SpriteAnimMat(Common::FTResourceDef& resDef, D3D11Renderer* renderer);
 		~SpriteAnimMat();
 
 	protected:

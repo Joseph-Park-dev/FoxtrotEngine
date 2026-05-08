@@ -12,7 +12,7 @@
 #include <d3d11.h>
 #include <string>
 
-#include "Renderer/D3D11Utils.h"
+#include "Utility/D3D11Utils.h"
 #include "Renderer/D3D11Renderer.h"
 #include "ResourceSystem/Shape/FTRectangle.h"
 #include "ResourceSystem/Shape/FTShape.h"
@@ -25,11 +25,12 @@
 
 namespace D3D11
 {
+	using namespace Common;
 	using namespace Core;
 	using Microsoft::WRL::ComPtr;
 
 	DebugShapes::DebugShapes()
-		: mShapes(DBG_NEW FTDS::DynamicArray<FTShape*>)
+		: mShapes(DBG_NEW Common::FTDS::DynamicArray<FTShape*>)
 		, mVSPath(L".\\FoxtrotEngine\\Assets\\Shaders\\DebugShapeVS.hlsl")
 		, mGSPath(L".\\FoxtrotEngine\\Assets\\Shaders\\DebugShapeGS.hlsl")
 		, mPSPath(L".\\FoxtrotEngine\\Assets\\Shaders\\DebugShapePS.hlsl")

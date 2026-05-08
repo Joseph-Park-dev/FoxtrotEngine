@@ -28,11 +28,12 @@
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
 	#include "EditorUtils.h"
-	#include "EditorHelper.h"
+	#include "Utility/EditorHelper.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
 {
+	using namespace Common;
 	using namespace Core;
 	ResType FTTileMap::Type = ResType::TILEMAP;
 
@@ -68,7 +69,7 @@ namespace D3D11
 		}
 	}
 
-	void FTTileMap::ReadCSV(FTResourceDef& resDef, FTDS::String& str)
+	void FTTileMap::ReadCSV(FTResourceDef& resDef, Common::FTDS::String& str)
 	{
 		// These values cannot be 0;
 		assert(mTileWidthOnScreen != 0);
@@ -226,7 +227,7 @@ namespace D3D11
 		FileIOHelper::LoadUnsignedInt(ifs, mMaxCountOnMapX);
 		FileIOHelper::LoadUnsignedInt(ifs, mTileHeightOnScreen);
 		FileIOHelper::LoadUnsignedInt(ifs, mTileWidthOnScreen);
-		FTDS::String csvKey;
+		Common::FTDS::String csvKey;
 		FileIOHelper::LoadBasicString(ifs, csvKey);
 		mCSV = Core::ResourceManager::GetInstance()->GetResource<FTCSV>(csvKey);
 		// Loading filename

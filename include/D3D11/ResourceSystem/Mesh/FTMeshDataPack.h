@@ -6,13 +6,13 @@ namespace D3D11
 	class FTMeshDataPack
 	{
 	public:
-		Core::FTDS::DynamicArray<FTMeshData*>& GetMeshData();
+		Common::FTDS::DynamicArray<FTMeshData*>& GetMeshData();
 
 	public:
 		FTMeshDataPack();
 
 	private:
-		Core::FTDS::DynamicArray<FTMeshData*> mMeshData;
+		Common::FTDS::DynamicArray<FTMeshData*> mMeshData;
 	};
 
 	namespace ChunkKey

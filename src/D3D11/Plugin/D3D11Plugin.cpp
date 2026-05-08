@@ -11,7 +11,6 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Manager/SceneManager.h"
 #include "Manager/ResourceManager.h"
-#include "FTCore.h"
 #include "Plugin/PluginKey.h"
 
 #include "Component/D3D11Component.h"
@@ -25,6 +24,7 @@ namespace ChunkKey
 } // namespace ChunkKey
 
 using namespace Core;
+using namespace Common;
 class D3D11Plugin :
 	public Core::Plugin
 {
@@ -46,9 +46,9 @@ public:
 	~D3D11Plugin() override;
 
 private:
-	FTDS::DynamicArray<D3D11::D3D11InputDevice*>* mInputDevices;
+	Common::FTDS::DynamicArray<D3D11::D3D11InputDevice*>* mInputDevices;
 	D3D11::D3D11Renderer*						  mRenderer;
-	FTDS::DynamicArray<D3D11::D3D11Window*>*	  mWindows;
+	Common::FTDS::DynamicArray<D3D11::D3D11Window*>*	  mWindows;
 	D3D11::Camera*								  mCamera;
 
 private:
@@ -113,7 +113,7 @@ void D3D11Plugin::Render()
 
 void D3D11Plugin::SaveProperties()
 {
-	FTDS::String dataPath = D3D11::PluginKey::D3D11;
+	Common::FTDS::String dataPath = D3D11::PluginKey::D3D11;
 	dataPath.Append(FileTypes::PLUGIN_DATA);
 	std::ofstream ofs(dataPath.C_Str());
 
@@ -144,7 +144,7 @@ void D3D11Plugin::SaveProperties()
 
 void D3D11Plugin::LoadProperties(SceneManager* sceneManager)
 {
-	FTDS::String dataPath = D3D11::PluginKey::D3D11;
+	Common::FTDS::String dataPath = D3D11::PluginKey::D3D11;
 	dataPath.Append(FileTypes::PLUGIN_DATA);
 	std::ifstream ifs(dataPath.C_Str());
 	if (!ifs.good())
@@ -155,7 +155,7 @@ void D3D11Plugin::LoadProperties(SceneManager* sceneManager)
 		size_t winCount = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::FTWindow::WINDOW_DATA).first;
 		for (size_t i = 0; i < winCount; ++i)
 		{
-			FTDS::String		   winTitle = FileIOHelper::BeginDataPackLoad(ifs).second;
+			Common::FTDS::String		   winTitle = FileIOHelper::BeginDataPackLoad(ifs).second;
 			HMODULE				   mod		= GetModuleHandleA(DLLPaths::CORE_EDITOR);
 			FARPROC				   proc		= GetProcAddress(mod, D3D11::PluginKey::CREATE_FTRECTAREA);
 			FTRECTAREA_CONSTRUCTOR func		= reinterpret_cast<FTRECTAREA_CONSTRUCTOR>(proc);
@@ -187,9 +187,9 @@ void D3D11Plugin::LoadManagerData(std::ifstream& ifs)
 
 D3D11Plugin::D3D11Plugin(const char* name)
 	: Core::Plugin(name)
-	, mInputDevices(DBG_NEW FTDS::DynamicArray<D3D11::D3D11InputDevice*>)
+	, mInputDevices(DBG_NEW Common::FTDS::DynamicArray<D3D11::D3D11InputDevice*>)
 	, mRenderer(nullptr)
-	, mWindows(DBG_NEW FTDS::DynamicArray<D3D11::D3D11Window*>)
+	, mWindows(DBG_NEW Common::FTDS::DynamicArray<D3D11::D3D11Window*>)
 	, mCamera(nullptr)
 {
 	// FTRectArea* area = DBG_NEW FTRectArea(0.f, 0.f, 500.f, 500.f);

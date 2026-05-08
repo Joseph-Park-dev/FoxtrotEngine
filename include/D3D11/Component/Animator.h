@@ -24,13 +24,14 @@ namespace Core
 
 namespace D3D11
 {
+	using namespace Common;
 	class FTSpriteAnimation;
 
 	class Animator :
 		public SpriteRenderer
 	{
 	public:
-		virtual Core::FTDS::String GetName() const override
+		virtual Common::FTDS::String GetName() const override
 		{
 			return "Animator";
 		}
@@ -63,7 +64,7 @@ namespace D3D11
 		~Animator() override;
 
 	private:
-		Core::FTDS::DynamicArray<D3D11::FTSpriteAnimation*>* mLoadedAnim;
+		Common::FTDS::DynamicArray<D3D11::FTSpriteAnimation*>* mLoadedAnim;
 		int													 mCurrFrameIdx;
 		float												 mAccTime;
 		bool												 mIsFinished;

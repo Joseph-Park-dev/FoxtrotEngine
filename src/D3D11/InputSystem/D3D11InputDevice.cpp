@@ -4,10 +4,11 @@
 
 #include "FTDS/Dynamic/DynamicArray.h"
 #include "Math/FTMath.h"
-#include <Renderer/D3D11Window.h>
+#include <Entity/D3D11Window.h>
 
 namespace D3D11
 {
+	using namespace Common;
 	using namespace Core;
 	void D3D11InputDevice::DetectKeyboardInput()
 	{
@@ -184,8 +185,8 @@ namespace D3D11
 		, mMousePosY(0)
 		, mMouseWheelDelta(0.f)
 		, mIsDragging(false)
-		, mMouseButtons(DBG_NEW FTDS::DynamicArray<ButtonInput>)
-		, mKeyboardButtons(DBG_NEW FTDS::DynamicArray<ButtonInput>)
+		, mMouseButtons(DBG_NEW Common::FTDS::DynamicArray<ButtonInput>)
+		, mKeyboardButtons(DBG_NEW Common::FTDS::DynamicArray<ButtonInput>)
 	{
 		mKeyboardCode = DBG_NEW int[(size_t)KEYBOARD::LAST_FLAG]{
 			'A',

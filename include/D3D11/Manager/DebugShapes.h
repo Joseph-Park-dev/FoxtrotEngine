@@ -17,7 +17,7 @@
 #include <d3d11.h>
 #include <wrl.h>
 
-#include "SingletonMacro.h"
+#include "Utility/SingletonMacro.h"
 #include "FTDS/Dynamic/DynamicArray.h"
 
 namespace D3D11
@@ -57,7 +57,7 @@ namespace D3D11
 		void Render(D3D11::D3D11Renderer* renderer);
 
 	private:
-		Core::FTDS::DynamicArray<FTShape*>* mShapes;
+		Common::FTDS::DynamicArray<FTShape*>* mShapes;
 		std::wstring						mVSPath;
 		std::wstring						mGSPath;
 		std::wstring						mPSPath;

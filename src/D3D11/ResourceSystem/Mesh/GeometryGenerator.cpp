@@ -18,18 +18,19 @@
 #include "ResourceSystem/Font/TextAttribute.h"
 #include "ResourceSystem/Font/TextVertex.h"
 
-#include "Static/FTString.h"
+#include "FTDS/Static/FTString.h"
 
 namespace D3D11
 {
+	using namespace Common;
 	using namespace Core;
 	using namespace Math;
 	
 	FTMeshData GeometryGenerator::MakeSquare()
 	{
-		FTDS::DynamicArray<FTVector3> positions;
-		FTDS::DynamicArray<FTVector4> colors;
-		FTDS::DynamicArray<FTVector2> texcoords;
+		Common::FTDS::DynamicArray<FTVector3> positions;
+		Common::FTDS::DynamicArray<FTVector4> colors;
+		Common::FTDS::DynamicArray<FTVector2> texcoords;
 
 		positions.Reserve(4);
 		colors.Reserve(4);
@@ -74,9 +75,9 @@ namespace D3D11
 
 	FTMeshData GeometryGenerator::MakeSquare(float scale)
 	{
-		FTDS::DynamicArray<FTVector3> positions;
-		FTDS::DynamicArray<FTVector4> colors;
-		FTDS::DynamicArray<FTVector2> texcoords;
+		Common::FTDS::DynamicArray<FTVector3> positions;
+		Common::FTDS::DynamicArray<FTVector4> colors;
+		Common::FTDS::DynamicArray<FTVector2> texcoords;
 
 		positions.Reserve(4);
 		colors.Reserve(4);
@@ -148,9 +149,9 @@ namespace D3D11
 
 	FTMeshData* GeometryGenerator::MakeSquare(float scale, FTVector4 color)
 	{
-		FTDS::DynamicArray<FTVector3> positions;
-		FTDS::DynamicArray<FTVector4> colors;
-		FTDS::DynamicArray<FTVector2> texcoords;
+		Common::FTDS::DynamicArray<FTVector3> positions;
+		Common::FTDS::DynamicArray<FTVector4> colors;
+		Common::FTDS::DynamicArray<FTVector2> texcoords;
 
 		positions.Reserve(4);
 		colors.Reserve(4);
@@ -194,9 +195,9 @@ namespace D3D11
 		return meshData;
 	}
 
-	FTDS::DynamicArray<FTMeshData> GeometryGenerator::MakeTileMapGrid(FTTileMap* tileMap)
+	Common::FTDS::DynamicArray<FTMeshData> GeometryGenerator::MakeTileMapGrid(FTTileMap* tileMap)
 	{
-		FTDS::DynamicArray<FTMeshData> tileMapMeshes;
+		Common::FTDS::DynamicArray<FTMeshData> tileMapMeshes;
 		LogInt("X : ", tileMap->GetMaxCountOnScreenX());
 		LogInt("Y : ", tileMap->GetMaxCountOnScreenY());
 		for (size_t r = 0; r < tileMap->GetMaxCountOnScreenY(); ++r)
@@ -213,9 +214,9 @@ namespace D3D11
 
 	FTMeshData GeometryGenerator::MakeTile(Tile& tile)
 	{
-		FTDS::DynamicArray<FTVector3> positions;
-		FTDS::DynamicArray<FTVector4> colors;
-		FTDS::DynamicArray<FTVector2> texcoords; // 텍스춰 좌표
+		Common::FTDS::DynamicArray<FTVector3> positions;
+		Common::FTDS::DynamicArray<FTVector4> colors;
+		Common::FTDS::DynamicArray<FTVector2> texcoords; // 텍스춰 좌표
 
 		FTRectArea* rectOnScreen = tile.GetRectOnScreen();
 
@@ -267,7 +268,7 @@ namespace D3D11
 		return meshData;
 	}
 
-	void GeometryGenerator::MakeSpriteAnimation(FTDS::DynamicArray<FTMeshData*>& animMeshes, Tile* tileMap, size_t startIdx, size_t endIdx)
+	void GeometryGenerator::MakeSpriteAnimation(Common::FTDS::DynamicArray<FTMeshData*>& animMeshes, Tile* tileMap, size_t startIdx, size_t endIdx)
 	{
 		size_t count = endIdx - startIdx + 1;
 		assert(0 < count);
@@ -279,7 +280,7 @@ namespace D3D11
 		}
 	}
 
-	void GeometryGenerator::MakeSpriteAnimation(FTDS::DynamicArray<FTMeshData*>& animMeshes, Tile* tileMap, size_t count)
+	void GeometryGenerator::MakeSpriteAnimation(Common::FTDS::DynamicArray<FTMeshData*>& animMeshes, Tile* tileMap, size_t count)
 	{
 		animMeshes.Reserve(count);
 		for (size_t i = 0; i < count; ++i)
@@ -291,9 +292,9 @@ namespace D3D11
 
 	FTMeshData* GeometryGenerator::MakeAnimationFrame(Tile& tile)
 	{
-		FTDS::DynamicArray<FTVector3> positions;
-		FTDS::DynamicArray<FTVector4> colors;
-		FTDS::DynamicArray<FTVector2> texcoords;
+		Common::FTDS::DynamicArray<FTVector3> positions;
+		Common::FTDS::DynamicArray<FTVector4> colors;
+		Common::FTDS::DynamicArray<FTVector2> texcoords;
 
 		FTVector2 GetSize = tile.GetRectOnScreen()->GetSize();
 
@@ -351,7 +352,7 @@ namespace D3D11
 	}
 } // namespace D3D11
 
-// void GeometryGenerator::MakeSpriteTextGrid(FTDS::DynamicArray<FTMeshData>& textMeshes, Tile* tileMap, size_t length, TextAttribute* attribute)
+// void GeometryGenerator::MakeSpriteTextGrid(Common::FTDS::DynamicArray<FTMeshData>& textMeshes, Tile* tileMap, size_t length, TextAttribute* attribute)
 //{
 //     if (0 < attribute->MaxChars)
 //     {
@@ -370,10 +371,10 @@ namespace D3D11
 //
 // FTMeshData GeometryGenerator::MakeSpriteText(Tile tile, TextAttribute* attrib, size_t col, size_t row)
 //{
-//     FTDS::DynamicArray<FTVector3> positions;
-//     FTDS::DynamicArray<FTVector3> colors;
-//     FTDS::DynamicArray<FTVector3> normals;
-//     FTDS::DynamicArray<FTVector2> texcoords; // 텍스춰 좌표
+//     Common::FTDS::DynamicArray<FTVector3> positions;
+//     Common::FTDS::DynamicArray<FTVector3> colors;
+//     Common::FTDS::DynamicArray<FTVector3> normals;
+//     Common::FTDS::DynamicArray<FTVector2> texcoords; // 텍스춰 좌표
 //
 //     FTRectArea& rectOnScreen = tile.GetRectOnScreen();
 //
@@ -430,10 +431,10 @@ namespace D3D11
 
 // FTMeshData GeometryGenerator::MakeBox(float scale)
 //{
-//	FTDS::DynamicArray<FTVector3> positions;
-//	FTDS::DynamicArray<FTVector3> colors;
-//	FTDS::DynamicArray<FTVector3> normals;
-//	FTDS::DynamicArray<FTVector2> texcoords; // 텍스춰 좌표
+//	Common::FTDS::DynamicArray<FTVector3> positions;
+//	Common::FTDS::DynamicArray<FTVector3> colors;
+//	Common::FTDS::DynamicArray<FTVector3> normals;
+//	Common::FTDS::DynamicArray<FTVector2> texcoords; // 텍스춰 좌표
 //
 //	// 윗면
 //	positions.PushBack(FTVector3(-1.0f, 1.0f, -1.0f) * scale);
@@ -602,8 +603,8 @@ namespace D3D11
 //	const float dx = width / numSlices;
 //	const float dy = height / numStacks;
 //
-//	FTDS::DynamicArray<Vertex>&   vertices = meshData.Vertices;
-//	FTDS::DynamicArray<uint32_t>& indices	= meshData.Indices;
+//	Common::FTDS::DynamicArray<Vertex>&   vertices = meshData.Vertices;
+//	Common::FTDS::DynamicArray<uint32_t>& indices	= meshData.Indices;
 //
 //	FTVector3 leftBottom = FTVector3(-0.5f * width, -0.5f * height, 0.0f);
 //
@@ -652,7 +653,7 @@ namespace D3D11
 //	const float dTheta = -XM_2PI / float(sliceCount);
 //
 //	FTMeshData			 meshData;
-//	FTDS::DynamicArray<Vertex>& vertices = meshData.Vertices;
+//	Common::FTDS::DynamicArray<Vertex>& vertices = meshData.Vertices;
 //
 //	// 옆면의 바닥 버텍스들 (인덱스 0 이상 sliceCount 미만)
 //	for (int i = 0; i <= sliceCount; i++)
@@ -682,7 +683,7 @@ namespace D3D11
 //		vertices.PushBack(v);
 //	}
 //
-//	FTDS::DynamicArray<uint32_t>& indices = meshData.Indices;
+//	Common::FTDS::DynamicArray<uint32_t>& indices = meshData.Indices;
 //
 //	for (int i = 0; i < sliceCount; i++)
 //	{
@@ -708,7 +709,7 @@ namespace D3D11
 //
 //	FTMeshData meshData;
 //
-//	FTDS::DynamicArray<Vertex>& vertices = meshData.Vertices;
+//	Common::FTDS::DynamicArray<Vertex>& vertices = meshData.Vertices;
 //
 //	for (int j = 0; j <= numStacks; j++)
 //	{
@@ -731,7 +732,7 @@ namespace D3D11
 //		}
 //	}
 //
-//	FTDS::DynamicArray<uint32_t>& indices = meshData.Indices;
+//	Common::FTDS::DynamicArray<uint32_t>& indices = meshData.Indices;
 //
 //	for (int j = 0; j < numStacks; j++)
 //	{
@@ -754,13 +755,13 @@ namespace D3D11
 //	return meshData;
 // }
 
-// FTDS::DynamicArray<FTMeshData*> GeometryGenerator::ReadFromFile(const FTDS::String& resPath)
+// Common::FTDS::DynamicArray<FTMeshData*> GeometryGenerator::ReadFromFile(const Common::FTDS::String& resPath)
 //{
 //	using namespace DirectX;
 //
 //	ModelLoader modelLoader;
 //	modelLoader.Load(resPath);
-//	FTDS::DynamicArray<FTMeshData>& meshes = modelLoader.meshes;
+//	Common::FTDS::DynamicArray<FTMeshData>& meshes = modelLoader.meshes;
 //
 //	// Normalize Vertices
 //	FTVector3 vmin(1000, 1000, 1000);
@@ -791,7 +792,7 @@ namespace D3D11
 //		});
 //	}
 //
-//	FTDS::DynamicArray<FTMeshData*> meshData;
+//	Common::FTDS::DynamicArray<FTMeshData*> meshData;
 //	meshData.Reserve(meshes.GetSize());
 //
 //	for (FTMeshData meshD : meshes)
@@ -800,13 +801,13 @@ namespace D3D11
 //	return meshData;
 // }
 
-// FTDS::DynamicArray<FTMeshData> GeometryGenerator::ReadFromFile(FTDS::String& basePath, FTDS::String& filename)
+// Common::FTDS::DynamicArray<FTMeshData> GeometryGenerator::ReadFromFile(Common::FTDS::String& basePath, Common::FTDS::String& filename)
 //{
 //	using namespace DirectX;
 //
 //	ModelLoader modelLoader;
 //	modelLoader.Load(basePath, filename);
-//	FTDS::DynamicArray<FTMeshData>& meshes = modelLoader.meshes;
+//	Common::FTDS::DynamicArray<FTMeshData>& meshes = modelLoader.meshes;
 //
 //	// Normalize Vertices
 //	FTVector3 vmin(1000, 1000, 1000);

@@ -20,7 +20,7 @@
 #include "InputSystem/FTInputDevice.h"
 #include "Renderer/Camera.h"
 #include "Renderer/D3D11Renderer.h"
-#include "Renderer/D3D11Utils.h"
+#include "Utility/D3D11Utils.h"
 #include "Actor/Transform.h"
 #include "ResourceSystem/Mesh/FTMeshData.h"
 #include "FTDS/Dynamic/DynamicArray.h"
@@ -33,6 +33,7 @@ using Microsoft::WRL::ComPtr;
 
 namespace D3D11
 {
+	using namespace Common;
 	ResType FTMeshGroup::Type = ResType::MESH_GROUP;
 
 	void FTMeshGroup::Render(D3D11Renderer* renderer, Core::Transform* transform, Camera* camInst, D3D11PSO* pso, FTMaterial* mat)
@@ -54,7 +55,7 @@ namespace D3D11
 		val ? mFrontDir = 1 : mFrontDir = -1;
 	}
 
-	Core::FTDS::DynamicArray<Mesh*>* FTMeshGroup::Meshes() { return mMeshes; }
+	Common::FTDS::DynamicArray<Mesh*>* FTMeshGroup::Meshes() { return mMeshes; }
 	Math::FTVector3&				 FTMeshGroup::SizeScale() { return mSizeScale; };
 
 	// This is unused until 3D feature is implemented.
@@ -63,18 +64,18 @@ namespace D3D11
 	//	, mFrontDir(1)
 	//	, mDirection(1)
 	//	, mSizeScale(FTVector3(1.0f, 1.0f, 1.0f))
-	//	, mMeshes(DBG_NEW FTDS::DynamicArray<Mesh*>)
+	//	, mMeshes(DBG_NEW Common::FTDS::DynamicArray<Mesh*>)
 	//	, mVCData(DBG_NEW PointModelMat)
 	//{
 	//	Process(renderer);
 	// }
 
-	FTMeshGroup::FTMeshGroup(Core::FTResourceDef& resDef, D3D11Renderer* renderer, FTMeshData* meshData)
+	FTMeshGroup::FTMeshGroup(Common::FTResourceDef& resDef, D3D11Renderer* renderer, FTMeshData* meshData)
 		: D3D11Resource(resDef)
 		, mFrontDir(1)
 		, mDirection(1)
 		, mSizeScale(Math::FTVector3(1.0f, 1.0f, 1.0f))
-		, mMeshes(DBG_NEW Core::FTDS::DynamicArray<Mesh*>)
+		, mMeshes(DBG_NEW Common::FTDS::DynamicArray<Mesh*>)
 		, mVCData(DBG_NEW PointModelMat)
 	{
 		if (!meshData)
@@ -236,7 +237,7 @@ namespace D3D11
 		mMeshes->PushBack(newMesh);
 	}
 
-	void FTMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, Core::FTDS::DynamicArray<FTMeshData*>&& meshDataArr)
+	void FTMeshGroup::InitializeMeshes(ComPtr<ID3D11Device>& device, Common::FTDS::DynamicArray<FTMeshData*>&& meshDataArr)
 	{
 		if (0 < meshDataArr.GetSize())
 			Clear();

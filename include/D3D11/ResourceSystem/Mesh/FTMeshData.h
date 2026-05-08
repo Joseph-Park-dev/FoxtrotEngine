@@ -20,8 +20,8 @@ namespace D3D11
 	{
 		bool IsEmpty() const;
 
-		Core::FTDS::DynamicArray<Vertex>   Vertices;
-		Core::FTDS::DynamicArray<uint32_t> Indices;
+		Common::FTDS::DynamicArray<Vertex>   Vertices;
+		Common::FTDS::DynamicArray<uint32_t> Indices;
 
 		FTMeshData operator=(FTMeshData& data)
 		{
@@ -44,7 +44,7 @@ namespace D3D11
 	{
 		bool IsEmpty() const;
 
-		Core::FTDS::DynamicArray<DebugVertex> Vertices;
+		Common::FTDS::DynamicArray<DebugVertex> Vertices;
 		// std::vector<uint32_t>	 Indices;
 	};
 } // namespace D3D11

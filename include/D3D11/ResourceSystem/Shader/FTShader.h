@@ -37,7 +37,7 @@ namespace D3D11
 		virtual void LoadProperties(std::ifstream& ifs) override = 0;
 
 	public:
-		FTShader(Core::FTResourceDef& resDef);
+		FTShader(Common::FTResourceDef& resDef);
 
 	private:
 		/// @brief Type of the shader (e.g vertex shader)
@@ -45,13 +45,13 @@ namespace D3D11
 
 	protected:
 		/// @brief Compiles shader base on its type.
-		virtual void CompileShader(Core::FTResourceDef& resDef, D3D11Renderer* renderer) = 0;
+		virtual void CompileShader(Common::FTResourceDef& resDef, D3D11Renderer* renderer) = 0;
 
 		/// @brief Set current shader type during initialization.
 		void SetType(ShaderType&& shaderType);
 
 		/// @brief Loads the meta data for this wrapper.
-		void LoadMetaData(Core::FTResourceDef& resDef);
+		void LoadMetaData(Common::FTResourceDef& resDef);
 
 #ifdef FOXTROT_EDITOR
 	public:

@@ -6,12 +6,11 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "FTMaterial.h"
+#include "ResourceSystem/Material/FTMaterial.h"
 
 #include <wrl.h>
 
-#include "FTCore.h"
-#include "Renderer/D3D11Utils.h"
+#include "Utility/D3D11Utils.h"
 #include "Renderer/D3D11Renderer.h"
 #include "FileSystem/FileIOHelper.h"
 
@@ -24,7 +23,7 @@ namespace D3D11
 		return mPCBuf;
 	}
 
-	FTMaterial::FTMaterial(Core::FTResourceDef& resDef)
+	FTMaterial::FTMaterial(Common::FTResourceDef& resDef)
 		: D3D11::D3D11Resource(resDef)
 	{
 		if (mPCBuf)

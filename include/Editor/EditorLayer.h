@@ -15,9 +15,9 @@
 
 #include <functional>
 #define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui/imgui.h>
-#include <imgui/imgui_internal.h>
-#include <ImGuiFileDialog/ImGuiFileDialog.h>
+#include <imgui.h>
+#include <imgui_internal.h>
+#include <ImGuiFileDialog.h>
 
 #include "Utility/SingletonMacro.h"
 #include "EditorElement.h"

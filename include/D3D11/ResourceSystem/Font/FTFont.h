@@ -1,10 +1,11 @@
 #pragma once
 #include <ResourceSystem/Mesh/FTMeshGroup.h>
 
-#include "Static/HashMap.h"
+#include "FTDS/Static/HashMap.h"
 
 namespace D3D11
 {
+	using namespace Common;
 	class FTTexture;
 	class FTVertexShader;
 	class FTPixelShader;
@@ -19,11 +20,11 @@ namespace D3D11
 		static D3D11::ResType Type;
 
 	public:
-		void LoadFont(FTTexture* img, Core::FTResourceDef& resDef);
-		void AddText(Microsoft::WRL::ComPtr<ID3D11Device>& device, Core::FTDS::String& text);
+		void LoadFont(FTTexture* img, Common::FTResourceDef& resDef);
+		void AddText(Microsoft::WRL::ComPtr<ID3D11Device>& device, Common::FTDS::String& text);
 
 		void Render(
-			Core::FTDS::String& text,
+			Common::FTDS::String& text,
 			D3D11Renderer*		renderer,
 			Core::Transform*	transform,
 			Camera*				camInst,
@@ -34,7 +35,7 @@ namespace D3D11
 
 		/// @brief Updates the vertices from the text to be rendered.
 		void UpdateTextVertices(
-			Core::FTDS::String& text,
+			Common::FTDS::String& text,
 			D3D11Renderer*		renderer,
 			Math::FTVector2		pos,
 			Math::FTVector2		scale,
@@ -60,7 +61,7 @@ namespace D3D11
 		void SetFontImage(FTTexture* fontImage);
 
 	public:
-		FTFont(Core::FTResourceDef& resDef, D3D11Renderer* renderer);
+		FTFont(Common::FTResourceDef& resDef, D3D11Renderer* renderer);
 		~FTFont();
 
 	public:
@@ -77,9 +78,9 @@ namespace D3D11
 		float mBaseHeight;	  // height of all characters, will be normalized
 		int	  mNumCharacters; // number of characters in the font
 
-		Core::FTDS::HashMap<FontChar*>*	   mCharList;	  // list of characters
+		Common::FTDS::HashMap<FontChar*>*	   mCharList;	  // list of characters
 		int								   mNumKernings;  // the number of kernings
-		Core::FTDS::HashMap<FontKerning*>* mKerningsList; // list to hold kerning values
+		Common::FTDS::HashMap<FontKerning*>* mKerningsList; // list to hold kerning values
 
 		float	   mLeftPadding;
 		float	   mTopPadding;

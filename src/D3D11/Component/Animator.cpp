@@ -18,7 +18,6 @@
 #include "Manager/ResourceManager.h"
 #include "Manager/AnimationManager.h"
 #include "TemplateFunctions.h"
-#include "FTCore.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
 #include "FileSystem/BufferSizes.h"
@@ -34,16 +33,17 @@
 
 	#include "EditorUtils.h"
 	#include "EditorCamera.h"
-	#include "EditorHelper.h"
+	#include "Utility/EditorHelper.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
 {
+	using namespace Common;
 	using namespace Core;
 
 	Animator::Animator(Core::Plugin* plugin, Core::Actor* owner, int updateOrder)
 		: SpriteRenderer(plugin, owner, updateOrder)
-		, mLoadedAnim(DBG_NEW FTDS::DynamicArray<D3D11::FTSpriteAnimation*>)
+		, mLoadedAnim(DBG_NEW Common::FTDS::DynamicArray<D3D11::FTSpriteAnimation*>)
 		, mCurrFrameIdx(0)
 		, mAccTime(0.f)
 		, mIsFinished(false)
@@ -100,14 +100,14 @@ namespace D3D11
 	void Animator::LoadProperties(std::ifstream& ifs)
 	{
 		// Load Animations
-		std::pair<size_t, FTDS::String> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpriteAnimator::LOADED_KEYS);
+		std::pair<size_t, Common::FTDS::String> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpriteAnimator::LOADED_KEYS);
 		mLoadedAnim->Reserve(pack.first);
 		for (size_t i = 0; i < pack.first; ++i)
 		{
-			FTDS::String key;
+			Common::FTDS::String key;
 			FileIOHelper::LoadBasicString(ifs, key);
 
-			FTSpriteAnimation* anim = D3D11::ResourceManager::GetInstance()->GetResource<FTSpriteAnimation>(key);
+			FTSpriteAnimation* anim = D3D11::ResourceManager::GetInstance()->GetSpriteAnimation(key);
 			mLoadedAnim->PushBack(anim);
 		}
 
@@ -262,7 +262,7 @@ namespace D3D11
 		FTSpriteAnimation* anim = nullptr;
 		Editor::DisplayResSelection<FTSpriteAnimation>(
 			"Load Animation",
-			&ResourceManager::GetInstance()->GetResMap<FTSpriteAnimation>(),
+			ResourceManager::GetInstance()->GetSpriteAnimations(),
 			anim);
 
 		if (anim)

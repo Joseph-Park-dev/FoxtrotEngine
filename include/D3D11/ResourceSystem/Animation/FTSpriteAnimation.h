@@ -26,7 +26,7 @@ namespace D3D11
 	struct AnimationFrame;
 
 #ifdef FOXTROT_EDITOR
-	struct FTSpriteAnimationDef : Core::FTResourceDef
+	struct FTSpriteAnimationDef : Common::FTResourceDef
 	{
 		Core::FTJSON* JSON		  = nullptr;
 		FTTexture*	  SpriteSheet = nullptr;
@@ -65,7 +65,7 @@ namespace D3D11
 
 	public:
 		/// @brief Relative path is used for importing .spriteanim file.
-		FTSpriteAnimation(Core::FTResourceDef& resDef, D3D11Renderer* renderer);
+		FTSpriteAnimation(Common::FTResourceDef& resDef, D3D11Renderer* renderer);
 		~FTSpriteAnimation();
 
 	private:

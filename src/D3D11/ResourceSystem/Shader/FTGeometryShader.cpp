@@ -1,11 +1,12 @@
 #include "FTGeometryShader.h"
 
-#include "Renderer/D3D11Utils.h"
+#include "Utility/D3D11Utils.h"
 #include "Renderer/D3D11Renderer.h"
 #include "Manager/ResourceManager.h"
 
 namespace D3D11
 {
+	using namespace Common;
 	ResType FTGeometryShader::Type = ResType::GEOMETRY_SHADER;
 
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader>& FTGeometryShader::GetShader()
@@ -13,14 +14,14 @@ namespace D3D11
 		return mShader;
 	}
 
-	FTGeometryShader::FTGeometryShader(Core::FTResourceDef& resDef, D3D11Renderer* renderer)
+	FTGeometryShader::FTGeometryShader(Common::FTResourceDef& resDef, D3D11Renderer* renderer)
 		: D3D11::FTShader(resDef)
 	{
 		SetType(ShaderType::GEOMETRY_SHADER);
 		CompileShader(resDef, renderer);
 	}
 
-	void FTGeometryShader::CompileShader(Core::FTResourceDef& resDef, D3D11Renderer* renderer)
+	void FTGeometryShader::CompileShader(Common::FTResourceDef& resDef, D3D11Renderer* renderer)
 	{
 		mShader.Reset();
 

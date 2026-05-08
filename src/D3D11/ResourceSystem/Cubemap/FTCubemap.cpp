@@ -35,7 +35,7 @@ void FTCubemap::CalcVCData(Camera* camInst)
 //
 //	//FTMeshGroup::Initialize(std::move(meshes), device, context);
 //
-//	std::vector<FTDS::String> matKey = { ChunkKey::STANDARD_MAT };
+//	std::vector<Common::FTDS::String> matKey = { ChunkKey::STANDARD_MAT };
 //}
 
 //void FTCubemap::Render(FoxtrotRenderer* renderer)
@@ -84,13 +84,13 @@ void FTCubemap::CalcVCData(Camera* camInst)
 ComPtr<ID3D11ShaderResourceView>& FTCubemap::GetDiffuseResView() { return mDiffuseResView; }
 ComPtr<ID3D11ShaderResourceView>& FTCubemap::GetSpecularResView() { return mSpecularResView; }
 
-void FTCubemap::SetDiffuseTexture(FTDS::String& key)
+void FTCubemap::SetDiffuseTexture(Common::FTDS::String& key)
 {
 	FTTexture* tex = ResourceManager::GetInstance()->GetLoadedTexture(key);
 	mDiffuseResView = tex->GetSRV();
 }
 
-void FTCubemap::SetSpecularTexture(FTDS::String& key)
+void FTCubemap::SetSpecularTexture(Common::FTDS::String& key)
 {
 	FTTexture* tex = ResourceManager::GetInstance()->GetLoadedTexture(key);
 	mSpecularResView = tex->GetSRV();

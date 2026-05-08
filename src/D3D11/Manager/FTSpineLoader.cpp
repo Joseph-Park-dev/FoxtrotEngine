@@ -12,6 +12,7 @@ spine::SpineExtension* spine::getDefaultExtension()
 
 namespace D3D11
 {
+	using namespace Common;
 	using namespace Core;
 	using namespace spine;
 	SkeletonData* FTSpineLoader::ReadSkeletonJsonData(const String& filename, Atlas* atlas, float scale)
@@ -30,7 +31,7 @@ namespace D3D11
 	void FTSpineLoader::load(AtlasPage& page, const String& path)
 	{
 		D3D11::FTTexture* texture  = nullptr;
-		FTDS::String	  fileName = ExtractFileName(path.buffer());
+		Common::FTDS::String	  fileName = ExtractFileName(path.buffer());
 		fileName.ExtractFromLast("/");
 
 		texture = D3D11::ResourceManager::GetInstance()->GetResource<D3D11::FTTexture>(fileName);

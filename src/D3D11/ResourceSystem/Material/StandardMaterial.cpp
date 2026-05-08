@@ -2,7 +2,7 @@
 
 #include "Manager/ResourceManager.h"
 #include "ResourceSystem/Light.h"
-#include "Renderer/D3D11Utils.h"
+#include "Utility/D3D11Utils.h"
 #include "Renderer/D3D11Renderer.h"
 #include "Renderer/Camera.h"
 #include "ResourceSystem/Mesh/Mesh.h"
@@ -16,6 +16,7 @@
 
 namespace D3D11
 {
+	using namespace Common;
 	using Microsoft::WRL::ComPtr;
 	ResType StandardMaterial::Type = ResType::MATERIAL;
 
@@ -37,7 +38,7 @@ namespace D3D11
 		D3D11Utils::UpdateBuffer(context, *mData, GetPCBuf());
 	}
 
-	StandardMaterial::StandardMaterial(Core::FTResourceDef& resDef, D3D11Renderer* renderer)
+	StandardMaterial::StandardMaterial(Common::FTResourceDef& resDef, D3D11Renderer* renderer)
 		: FTMaterial(resDef)
 		, mData(DBG_NEW StandardMatData)
 	{
@@ -51,26 +52,26 @@ namespace D3D11
 
 	void StandardMaterial::SaveProperties(std::ofstream& ofs)
 	{
-		Core::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::StandardMat::STANDARD_MAT);
+		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::StandardMat::STANDARD_MAT);
 
-		Core::FileIOHelper::SaveString(ofs, Core::ChunkKey::FTResource::FILE_NAME, this->GetFileName());
-		Core::FileIOHelper::SaveBool(ofs, ChunkKey::StandardMat::USE_TEXTURE, mData->UseTexture);
-		Core::FileIOHelper::SaveFloat(ofs, ChunkKey::StandardMat::ALPHA_TRIM, mData->AlphaTrim);
-		Core::FileIOHelper::SaveVector4(ofs, ChunkKey::StandardMat::COLOR, mData->Color);
+		Common::FileIOHelper::SaveString(ofs, Core::ChunkKey::FTResource::FILE_NAME, this->GetFileName());
+		Common::FileIOHelper::SaveBool(ofs, ChunkKey::StandardMat::USE_TEXTURE, mData->UseTexture);
+		Common::FileIOHelper::SaveFloat(ofs, ChunkKey::StandardMat::ALPHA_TRIM, mData->AlphaTrim);
+		Common::FileIOHelper::SaveVector4(ofs, ChunkKey::StandardMat::COLOR, mData->Color);
 
-		Core::FileIOHelper::EndDataPackSave(ofs, ChunkKey::StandardMat::STANDARD_MAT);
+		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::StandardMat::STANDARD_MAT);
 	}
 
 	void StandardMaterial::LoadProperties(std::ifstream& ifs)
 	{
-		Core::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::StandardMat::STANDARD_MAT);
+		Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::StandardMat::STANDARD_MAT);
 
 		Common::FTDS::String fileName;
 		bool			   useTex;
-		Core::FileIOHelper::LoadBool(ifs, useTex);
-		Core::FileIOHelper::LoadFloat(ifs, mData->AlphaTrim);
-		Core::FileIOHelper::LoadVector4(ifs, mData->Color);
-		Core::FileIOHelper::LoadBasicString(ifs, fileName);
+		Common::FileIOHelper::LoadBool(ifs, useTex);
+		Common::FileIOHelper::LoadFloat(ifs, mData->AlphaTrim);
+		Common::FileIOHelper::LoadVector4(ifs, mData->Color);
+		Common::FileIOHelper::LoadBasicString(ifs, fileName);
 
 		mData->UseTexture = (uint32_t)useTex;
 	}

@@ -47,7 +47,7 @@ namespace D3D11
 
 	public:
 		/// @brief Relative path is used for importing material data.
-		StandardMaterial(Core::FTResourceDef& resDef, D3D11Renderer* renderer);
+		StandardMaterial(Common::FTResourceDef& resDef, D3D11Renderer* renderer);
 		~StandardMaterial() override;
 
 	protected:

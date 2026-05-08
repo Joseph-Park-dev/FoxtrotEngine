@@ -10,13 +10,12 @@
 
 #include "Actor/Actor.h"
 #include "Actor/Transform.h"
-#include "FTCore.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Manager/ResourceManager.h"
 #include "Math/FTMath.h"
 #include "Renderer/Camera.h"
-#include "Renderer/D3D11Utils.h"
+#include "Utility/D3D11Utils.h"
 #include "Renderer/D3D11Renderer.h"
 #include "ResourceSystem/Mesh/FTMeshGroup.h"
 #include "ResourceSystem/Sprite/FTSprite.h"
@@ -34,12 +33,13 @@
 	#include <EditorCamera.h>
 
 	#define IMGUI_DEFINE_MATH_OPERATORS
-	#include <imgui/imgui.h>
-	#include <imgui/ImGuiFileDialog/ImGuiFileDialog.h>
+	#include <imgui.h>
+	#include <ImGuiFileDialog.h>
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
 {
+	using namespace Common;
 	using namespace Core;
 	void SpriteRenderer::Initialize()
 	{
@@ -116,15 +116,15 @@ namespace D3D11
 
 	void SpriteRenderer::LoadProperties(std::ifstream& ifs)
 	{
-		FTDS::String matKey;
+		Common::FTDS::String matKey;
 		FileIOHelper::LoadBasicString(ifs, matKey);
 
-		FTDS::String spriteKey;
+		Common::FTDS::String spriteKey;
 		FileIOHelper::LoadBasicString(ifs, spriteKey);
 		Component::LoadProperties(ifs);
 
 		mSprite	  = D3D11::ResourceManager::GetInstance()->GetResource<FTSprite>(spriteKey);
-		mMaterial = D3D11::ResourceManager::GetInstance()->GetResource<FTMaterial>(matKey);
+		mMaterial = D3D11::ResourceManager::GetInstance()->GetMaterial(matKey);
 	}
 
 #ifdef FOXTROT_EDITOR

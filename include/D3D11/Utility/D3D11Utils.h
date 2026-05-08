@@ -27,6 +27,7 @@
 
 namespace D3D11
 {
+	using namespace Common;
 	class Camera;
 	inline HRESULT CheckResult(HRESULT hr, ID3DBlob* errorBlob)
 	{
@@ -94,7 +95,7 @@ namespace D3D11
 		static HRESULT CreateVertexShaderAndInputLayout(
 			Microsoft::WRL::ComPtr<ID3D11Device>&					  device,
 			const std::wstring&										  filename,
-			const Core::FTDS::DynamicArray<D3D11_INPUT_ELEMENT_DESC>& inputElements,
+			const Common::FTDS::DynamicArray<D3D11_INPUT_ELEMENT_DESC>& inputElements,
 			Microsoft::WRL::ComPtr<ID3D11VertexShader>&				  vertexShader,
 			Microsoft::WRL::ComPtr<ID3D11InputLayout>&				  inputLayout);
 
@@ -139,7 +140,7 @@ namespace D3D11
 
 		static void CreateIndexBuffer(
 			Microsoft::WRL::ComPtr<ID3D11Device>& device,
-			Core::FTDS::DynamicArray<uint32_t>&	  indices,
+			Common::FTDS::DynamicArray<uint32_t>&	  indices,
 			Microsoft::WRL::ComPtr<ID3D11Buffer>& indexBuffer);
 
 		static void CreateIndexBuffer(
@@ -207,7 +208,7 @@ namespace D3D11
 		template <typename T_VERTEX>
 		static void CreateVertexBuffer(
 			Microsoft::WRL::ComPtr<ID3D11Device>& device,
-			Core::FTDS::DynamicArray<T_VERTEX>&	  vertices,
+			Common::FTDS::DynamicArray<T_VERTEX>&	  vertices,
 			Microsoft::WRL::ComPtr<ID3D11Buffer>& vertexBuffer)
 		{
 			// D3D11_USAGE enumeration (d3d11.h)
@@ -297,7 +298,7 @@ namespace D3D11
 			context->Unmap(buffer.Get(), NULL);
 		}
 
-		static void ReadImage(Core::FTDS::String filename, std::vector<uint8_t>& image, int& width, int& height);
+		static void ReadImage(Common::FTDS::String filename, std::vector<uint8_t>& image, int& width, int& height);
 
 		static Microsoft::WRL::ComPtr<ID3D11Texture2D> CreateStagingTexture(
 			Microsoft::WRL::ComPtr<ID3D11Device>&		 device,
@@ -312,7 +313,7 @@ namespace D3D11
 		CreateTextureArray(
 			Microsoft::WRL::ComPtr<ID3D11Device>&			  device,
 			Microsoft::WRL::ComPtr<ID3D11DeviceContext>&	  context,
-			const std::vector<Core::FTDS::String>			  filenames,
+			const std::vector<Common::FTDS::String>			  filenames,
 			Microsoft::WRL::ComPtr<ID3D11Texture2D>&		  texture,
 			Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& textureResourceView);
 
@@ -323,7 +324,7 @@ namespace D3D11
 			Microsoft::WRL::ComPtr<ID3D11Device>&		 device,
 			Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,
 			Microsoft::WRL::ComPtr<ID3D11Texture2D>&	 textureToWrite,
-			Core::FTDS::String&							 filename);
+			Common::FTDS::String&							 filename);
 
 		static UINT GetShaderType(Microsoft::WRL::ComPtr<ID3DBlob>& shaderBlob);
 	};

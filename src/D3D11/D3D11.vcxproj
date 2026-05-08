@@ -189,7 +189,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDIr)\include\Common;$(SolutionDIr)\include\Core;$(SolutionDIr)\include\D3D11;$(SolutionDIr)\include\Editor;$(SolutionDir)\include\Math;$(SolutionDIr)\extern\imgui;$(SolutionDIr)\extern\imgui\ImGuiFileDialog;$(SolutionDIr)\extern\json\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDIr)include\Common;$(SolutionDIr)include\D3D11;$(SolutionDIr)include\D3D11\Component;$(SolutionDIr)include\D3D11\Entity;$(SolutionDIr)include\D3D11\InputSystem;$(SolutionDIr)include\D3D11\Manager;$(SolutionDIr)include\D3D11\Plugin;$(SolutionDIr)include\D3D11\Renderer;$(SolutionDIr)include\D3D11\ResourceSystem;$(SolutionDIr)include\D3D11\Utility;$(SolutionDIr)include\Core;$(SolutionDIr)include\Editor;$(SolutionDir)include\Math;$(SolutionDIr)extern\imgui;$(SolutionDIr)extern\ImGuiFileDialog;$(SolutionDIr)extern\json\include;$(SolutionDIr)extern\spine-runtimes\spine-cpp\spine-cpp\include;$(SolutionDIr)extern\magic_enum\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -266,6 +266,62 @@
     <ClCompile Include="ResourceSystem\Sprite\FTSprite.cpp" />
     <ClCompile Include="ResourceSystem\Sprite\FTTileMap.cpp" />
     <ClCompile Include="ResourceSystem\Sprite\Tile.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\D3D11\Component\Animator.h" />
+    <ClInclude Include="..\..\include\D3D11\Component\D3D11Component.h" />
+    <ClInclude Include="..\..\include\D3D11\Component\MeshRenderer.h" />
+    <ClInclude Include="..\..\include\D3D11\Component\SpineAnimator.h" />
+    <ClInclude Include="..\..\include\D3D11\Component\SpriteRenderer.h" />
+    <ClInclude Include="..\..\include\D3D11\Component\TileMapRenderer.h" />
+    <ClInclude Include="..\..\include\D3D11\DebugFuncs.h" />
+    <ClInclude Include="..\..\include\D3D11\Entity\D3D11Window.h" />
+    <ClInclude Include="..\..\include\D3D11\framework.h" />
+    <ClInclude Include="..\..\include\D3D11\InputSystem\D3D11InputDevice.h" />
+    <ClInclude Include="..\..\include\D3D11\Manager\AnimationManager.h" />
+    <ClInclude Include="..\..\include\D3D11\Manager\DebugShapes.h" />
+    <ClInclude Include="..\..\include\D3D11\Manager\FTSpineLoader.h" />
+    <ClInclude Include="..\..\include\D3D11\Manager\LightManager.h" />
+    <ClInclude Include="..\..\include\D3D11\Manager\ResourceManager.h" />
+    <ClInclude Include="..\..\include\D3D11\pch.h" />
+    <ClInclude Include="..\..\include\D3D11\Plugin\PluginKey.h" />
+    <ClInclude Include="..\..\include\D3D11\Renderer\Camera.h" />
+    <ClInclude Include="..\..\include\D3D11\Renderer\D3D11Renderer.h" />
+    <ClInclude Include="..\..\include\D3D11\Renderer\WindowProcess.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Animation\AnimationFrame.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Animation\FTSpineAnimation.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Animation\FTSpriteAnimation.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Cubemap\FTCubemap.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\D3D11PSO.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\D3D11Resource.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Font\FontChar.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Font\FontKerning.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Font\FTFont.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Font\TextAttribute.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Font\TextVertex.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\FTFontMap.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\FTTexture.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Light.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Material\FTMaterial.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Material\SpriteAnimMat.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Material\StandardMaterial.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Mesh\FTMeshData.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Mesh\FTMeshDataPack.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Mesh\FTMeshGroup.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Mesh\GeometryGenerator.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Mesh\Mesh.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Mesh\MeshConstantData.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Mesh\Vertex.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Shader\FTGeometryShader.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Shader\FTPixelShader.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Shader\FTShader.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Shader\FTVertexShader.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Shape\FTRectangle.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Shape\FTShape.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Sprite\FTSprite.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Sprite\FTTileMap.h" />
+    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Sprite\Tile.h" />
+    <ClInclude Include="..\..\include\D3D11\Utility\D3D11Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

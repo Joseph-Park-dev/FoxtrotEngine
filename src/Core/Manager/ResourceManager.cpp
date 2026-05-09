@@ -400,6 +400,26 @@ namespace Core
 		return mTexts->GetResource(key);
 	}
 
+	Common::ResourcePack<FTPremade>* ResourceManager::GetPremades()
+	{
+		return mPremades;
+	}
+
+	Common::ResourcePack<FTCSV>* ResourceManager::GetCSVs()
+	{
+		return mCSVs;
+	}
+
+	Common::ResourcePack<FTJSON>* ResourceManager::GetJSONs()
+	{
+		return mJSONs;
+	}
+
+	Common::ResourcePack<FTText>* ResourceManager::GetTexts()
+	{
+		return mTexts;
+	}
+
 	FTPremade* GetPremade(const char* key)
 	{
 		return ResourceManager::GetInstance()->GetPremade(key);
@@ -415,5 +435,13 @@ namespace Core
 	FTText* GetText(const char* key)
 	{
 		return ResourceManager::GetInstance()->GetText(key);
+	}
+	CORE_API Common::ResourcePack<FTJSON>* GetJSONs()
+	{
+		return ResourceManager::GetInstance()->GetJSONs();
+	}
+	CORE_API Common::ResourcePack<FTText>* GetTexts()
+	{
+		return ResourceManager::GetInstance()->GetTexts();
 	}
 } // namespace Core

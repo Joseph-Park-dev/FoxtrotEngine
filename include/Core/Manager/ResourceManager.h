@@ -6,6 +6,12 @@
 
 namespace Core
 {
+	namespace ProcName
+	{
+		constexpr const char* GetJSONs = "GetJSONs";
+		constexpr const char* GetTexts = "GetTexts";
+	} // namespace ProcName
+
 	class FTPremade;
 	class FTCSV;
 	class FTJSON;
@@ -25,6 +31,11 @@ namespace Core
 		FTJSON*	   GetJSON(const char* key);
 		FTText*	   GetText(const char* key);
 
+		Common::ResourcePack<FTPremade>* GetPremades();
+		Common::ResourcePack<FTCSV>*	 GetCSVs();
+		Common::ResourcePack<FTJSON>*	 GetJSONs();
+		Common::ResourcePack<FTText>*	 GetTexts();
+
 	private:
 		Common::ResourcePack<FTPremade>* mPremades;
 		Common::ResourcePack<FTCSV>*	 mCSVs;
@@ -38,5 +49,8 @@ namespace Core
 		CORE_API FTCSV*		GetCSV(const char* key);
 		CORE_API FTJSON*	GetJSON(const char* key);
 		CORE_API FTText*	GetText(const char* key);
+
+		CORE_API Common::ResourcePack<FTJSON>* GetJSONs();
+		CORE_API Common::ResourcePack<FTText>* GetTexts();
 	}
 } // namespace Core

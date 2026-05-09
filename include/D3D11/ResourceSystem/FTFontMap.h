@@ -1,10 +1,12 @@
 #pragma once
-#include "ResourceSystem/FTTileMap.h"
+#include "ResourceSystem/Sprite/FTTileMap.h"
 
-class FTFontMap :
-    public FTTileMap
+namespace D3D11
 {
-public:
-    //virtual void ReadCSV() override;
-};
-
+	class FTFontMap :
+		public FTTileMap
+	{
+	public:
+		// virtual void ReadCSV() override;
+	};
+} // namespace D3D11

@@ -1,12 +1,10 @@
 #include "Manager/LightManager.h"
 
-#include <wrl.h>
-#include <d3d11.h>
-
 #include "Debugging/DebugMemAlloc.h"
 #include "ResourceSystem/CubeMap/FTCubemap.h"
 #include "ResourceSystem/Mesh/GeometryGenerator.h"
-#include "Renderer/FoxtrotRenderer.h"
+#include "ResourceSystem/Light.h"
+#include "Renderer/D3D11Renderer.h"
 #include "Renderer/Camera.h"
 
 #ifdef FOXTROT_EDITOR
@@ -15,103 +13,106 @@
 
 using Microsoft::WRL::ComPtr;
 
-LightManager::LightManager()
-	: mLights(DBG_NEW Light[GameData::MAX_LIGHTS])
-	, mTypes(DBG_NEW Light::TYPE[GameData::MAX_LIGHTS])
-	, mActiveStatus(DBG_NEW bool[GameData::MAX_LIGHTS])
-	, mCubemap(nullptr)
+namespace D3D11
 {
-}
-
-LightManager::~LightManager()
-{
-	delete[] mLights;
-	delete[] mTypes;
-	delete[] mActiveStatus;
-	delete mCubemap;
-}
-
-Light&		 LightManager::GetLight(size_t i) const { return mLights[i]; }
-Light::TYPE& LightManager::GetType(size_t i) const { return mTypes[i]; }
-bool&		 LightManager::IsActive(size_t i) const { return mActiveStatus[i]; }
-
-FTCubemap* LightManager::GetCubeMap() const { return mCubemap; }
-
-ComPtr<ID3D11ShaderResourceView> LightManager::GetCubeMapDiffuse()
-{
-	return mCubemap->GetDiffuseResView();
-}
-
-ComPtr<ID3D11ShaderResourceView> LightManager::GetCubeMapSpecular()
-{
-	return mCubemap->GetDiffuseResView();
-}
-
-void LightManager::Initialize(FoxtrotRenderer* renderer)
-{
-	mTypes[0] = Light::TYPE::DIRECTIONAL;
-	// InitializeCubeMap(renderer);
-}
-
-void LightManager::InitializeCubeMap(FoxtrotRenderer* renderer)
-{
-	if (!mCubemap)
+	LightManager::LightManager()
+		: mLights(DBG_NEW Light[GameData::MAX_LIGHTS])
+		, mTypes(DBG_NEW Light::TYPE[GameData::MAX_LIGHTS])
+		, mActiveStatus(DBG_NEW bool[GameData::MAX_LIGHTS])
+		, mCubemap(nullptr)
 	{
-		// mCubemap = DBG_NEW FTCubemap;
-		// mCubemap->Initialize({ GeometryGenerator::MakeBox(20.f) }, renderer->GetDevice(), renderer->GetContext());
 	}
-}
 
-void LightManager::Render(FoxtrotRenderer* renderer, Camera* camInst)
-{
-	/*if (mCubemap)
+	LightManager::~LightManager()
 	{
-		mCubemap->CalcVCData(camInst);
-		mCubemap->UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext());
-		mCubemap->Render(renderer);
-	}*/
-}
+		delete[] mLights;
+		delete[] mTypes;
+		delete[] mActiveStatus;
+		delete mCubemap;
+	}
 
-void LightManager::Reset(FoxtrotRenderer* renderer)
-{
-	/*delete mCubemap;
-	mCubemap = nullptr;
+	Light&		 LightManager::GetLight(size_t i) const { return mLights[i]; }
+	Light::TYPE& LightManager::GetType(size_t i) const { return mTypes[i]; }
+	bool&		 LightManager::IsActive(size_t i) const { return mActiveStatus[i]; }
 
-	InitializeCubeMap(renderer);
-	mCubemap->SetTexture(texKey);*/
-}
+	FTCubemap* LightManager::GetCubeMap() const { return mCubemap; }
 
-void LightManager::SaveProperties(std::ofstream& ofs)
-{
-	for (size_t i = 0; i < GameData::MAX_LIGHTS; ++i)
-		mLights[i].SaveProperties(ofs, mTypes[i], mActiveStatus[i]);
-	// mCubemap->SaveProperties(ofs);
-}
+	ComPtr<ID3D11ShaderResourceView> LightManager::GetCubeMapDiffuse()
+	{
+		return mCubemap->GetDiffuseResView();
+	}
 
-void LightManager::LoadProperties(std::ifstream& ifs)
-{
-	// mCubemap->LoadProperties(ifs);
-	for (size_t i = 0; i < GameData::MAX_LIGHTS; ++i)
-		mLights[i].LoadProperties(ifs, mTypes[i], mActiveStatus[i]);
-}
+	ComPtr<ID3D11ShaderResourceView> LightManager::GetCubeMapSpecular()
+	{
+		return mCubemap->GetDiffuseResView();
+	}
+
+	void LightManager::Initialize(D3D11::D3D11Renderer* renderer)
+	{
+		mTypes[0] = Light::TYPE::DIRECTIONAL;
+		// InitializeCubeMap(renderer);
+	}
+
+	void LightManager::InitializeCubeMap(D3D11::D3D11Renderer* renderer)
+	{
+		if (!mCubemap)
+		{
+			// mCubemap = DBG_NEW FTCubemap;
+			// mCubemap->Initialize({ GeometryGenerator::MakeBox(20.f) }, renderer->GetDevice(), renderer->GetContext());
+		}
+	}
+
+	void LightManager::Render(D3D11::D3D11Renderer* renderer, Camera* camInst)
+	{
+		/*if (mCubemap)
+		{
+			mCubemap->CalcVCData(camInst);
+			mCubemap->UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext());
+			mCubemap->Render(renderer);
+		}*/
+	}
+
+	void LightManager::Reset(D3D11::D3D11Renderer* renderer)
+	{
+		/*delete mCubemap;
+		mCubemap = nullptr;
+
+		InitializeCubeMap(renderer);
+		mCubemap->SetTexture(texKey);*/
+	}
+
+	void LightManager::SaveProperties(std::ofstream& ofs)
+	{
+		for (size_t i = 0; i < GameData::MAX_LIGHTS; ++i)
+			mLights[i].SaveProperties(ofs, mTypes[i], mActiveStatus[i]);
+		// mCubemap->SaveProperties(ofs);
+	}
+
+	void LightManager::LoadProperties(std::ifstream& ifs)
+	{
+		// mCubemap->LoadProperties(ifs);
+		for (size_t i = 0; i < GameData::MAX_LIGHTS; ++i)
+			mLights[i].LoadProperties(ifs, mTypes[i], mActiveStatus[i]);
+	}
 
 #ifdef FOXTROT_EDITOR
-void LightManager::DisplayLightMenu()
-{
-	ImGui::Begin("Lights");
-	const char* lightTypesStr[3] = { "DIRECTIONAL", "POINT", "SPOT" };
-	static int	indices[3];
-	if (ImGui::BeginListBox(("Light " + std::to_string(0)).c_str(), ImVec2(-FLT_MIN, 200)))
+	void LightManager::DisplayLightMenu()
 	{
-		ImGui::Checkbox(LightKey::IS_ACTIVE, &mActiveStatus[0]);
-		FTEditorUtils::DisplayArrayAsCombo(LightKey::TYPE, lightTypesStr, Light::TYPE::END, indices[0]);
-		mLights[0].UpdateUI();
-		ImGui::EndListBox();
-	}
-	mTypes[0] = (Light::TYPE)indices[0];
+		ImGui::Begin("Lights");
+		const char* lightTypesStr[3] = { "DIRECTIONAL", "POINT", "SPOT" };
+		static int	indices[3];
+		if (ImGui::BeginListBox(("Light " + std::to_string(0)).c_str(), ImVec2(-FLT_MIN, 200)))
+		{
+			ImGui::Checkbox(LightKey::IS_ACTIVE, &mActiveStatus[0]);
+			::Editor::DisplayArrayAsCombo(LightKey::TYPE, lightTypesStr, Light::TYPE::END, indices[0]);
+			mLights[0].UpdateUI();
+			ImGui::EndListBox();
+		}
+		mTypes[0] = (Light::TYPE)indices[0];
 
-	if (mCubemap)
-		mCubemap->UpdateUI();
-	ImGui::End();
-}
+		if (mCubemap)
+			mCubemap->UpdateUI();
+		ImGui::End();
+	}
 #endif // FOXTROT_EDITOR
+} // namespace D3D11

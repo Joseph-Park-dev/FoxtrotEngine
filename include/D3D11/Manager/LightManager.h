@@ -1,46 +1,56 @@
 #pragma once
 #include "Utility/SingletonMacro.h"
 
+#include <wrl.h>
+#include <d3d11.h>
+
+#include "ResourceSystem/Light.h"
+
 namespace GameData
 {
 	constexpr size_t MAX_LIGHTS = 3;
 }
 
-class FTCubemap;
-class Camera;
-class Light;
-
-class LightManager
+namespace D3D11
 {
-	SINGLETON(LightManager)
+	class FTCubemap;
+	class Camera;
+	class D3D11Renderer;
 
-public:
-	Light&		 GetLight(size_t i) const;
-	bool&		 IsActive(size_t i) const;
+	class LightManager
+	{
+		SINGLETON(LightManager)
 
-	FTCubemap* GetCubeMap() const;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> GetCubeMapDiffuse();
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> GetCubeMapSpecular();
+	public:
+		Light&		 GetLight(size_t i) const;
+		Light::TYPE& GetType(size_t i) const;
+		bool&		 IsActive(size_t i) const;
 
-public:
-	void Initialize(FoxtrotRenderer* renderer);
-	void InitializeCubeMap(FoxtrotRenderer* renderer);
-	void Render(FoxtrotRenderer* renderer, Camera* camInst);
+		FTCubemap*										   GetCubeMap() const;
+		::Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> GetCubeMapDiffuse();
+		::Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> GetCubeMapSpecular();
 
-	void Reset(FoxtrotRenderer* renderer);
+	public:
+		void Initialize(D3D11::D3D11Renderer* renderer);
+		void InitializeCubeMap(D3D11::D3D11Renderer* renderer);
+		void Render(D3D11::D3D11Renderer* renderer, Camera* camInst);
 
-private:
-	Light*		 mLights;
-	bool*		 mActiveStatus;
+		void Reset(D3D11::D3D11Renderer* renderer);
 
-	FTCubemap* mCubemap;
+	private:
+		Light*		 mLights;
+		Light::TYPE* mTypes;
+		bool*		 mActiveStatus;
 
-public:
-	void SaveProperties(std::ofstream& ofs);
-	void LoadProperties(std::ifstream& ifs);
+		FTCubemap* mCubemap;
+
+	public:
+		void SaveProperties(std::ofstream& ofs);
+		void LoadProperties(std::ifstream& ifs);
 
 #ifdef FOXTROT_EDITOR
-public:
-	void DisplayLightMenu();
+	public:
+		void DisplayLightMenu();
 #endif
-};
+	};
+} // namespace D3D11

@@ -3,6 +3,7 @@
 #include "spine/Extension.h"
 
 #include "ResourceSystem/FTTexture.h"
+#include "ResourceSystem/Sprite/FTSprite.h"
 #include "Manager/ResourceManager.h"
 
 spine::SpineExtension* spine::getDefaultExtension()
@@ -30,11 +31,11 @@ namespace D3D11
 
 	void FTSpineLoader::load(AtlasPage& page, const String& path)
 	{
-		D3D11::FTTexture* texture  = nullptr;
-		Common::FTDS::String	  fileName = ExtractFileName(path.buffer());
+		D3D11::FTTexture*	 texture  = nullptr;
+		Common::FTDS::String fileName = ExtractFileName(path.buffer());
 		fileName.ExtractFromLast("/");
 
-		texture = D3D11::ResourceManager::GetInstance()->GetResource<D3D11::FTTexture>(fileName);
+		texture = D3D11::ResourceManager::GetInstance()->GetSprite(fileName)->GetTexture();
 		if (!texture)
 			return;
 

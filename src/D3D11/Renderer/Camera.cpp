@@ -20,8 +20,6 @@
 #include "FileSystem/NullKeys.h"
 #include "Math/FTMath.h"
 
-#include "Compare/StringEqual.h"
-
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
 	#include "EditorLayer.h"

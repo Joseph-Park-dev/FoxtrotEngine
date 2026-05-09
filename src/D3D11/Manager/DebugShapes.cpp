@@ -67,7 +67,7 @@ namespace D3D11
 	void DebugShapes::RemoveShape(FTShape* shape)
 	{
 		int pos = mShapes->Find(shape);
-		if (pos != Core::ChunkKey::NullVal::INVALID_IDX)
+		if (pos != Common::ChunkKey::NullVal::INVALID_IDX)
 		{
 			size_t	 idx   = static_cast<size_t>(pos);
 			FTShape* shape = mShapes->At(idx);

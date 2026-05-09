@@ -20,6 +20,8 @@
 	#include "EditorUtils.h"
 	#include "Utility/EditorHelper.h"
 	#include "FileSystem/BufferSizes.h"
+	#include "DLLData.h"
+	#include "../Core/Manager/ResourceManager.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -35,6 +37,14 @@ namespace D3D11
 	void AnimationManager::Initialize(D3D11::D3D11Renderer* renderer)
 	{
 		mRenderer = renderer;
+#ifdef FOXTROT_EDITOR
+		HMODULE coreMod = GetModuleHandleA(DLLPaths::CORE_EDITOR);
+		FARPROC proc	= GetProcAddress(coreMod, Core::ProcName::GetJSONs);
+		GetJSONsFunc	= reinterpret_cast<GET_JSON_FUNC>(proc);
+
+		proc		 = GetProcAddress(coreMod, Core::ProcName::GetTexts);
+		GetTextsFunc = reinterpret_cast<GET_TEXT_FUNC>(proc);
+#endif // FOXTROT_EDITOR
 	}
 
 	AnimationManager::AnimationManager()
@@ -60,13 +70,13 @@ namespace D3D11
 			CreateAnimationGUI();
 
 			ImGui::Separator();
-			FTDS::HashMap<FTResource*>& map =
+			Common::ResourcePack<FTSpriteAnimation>* spriteAnims =
 				ResourceManager::GetInstance()->GetSpriteAnimations();
-			auto iter = map.Begin();
+			auto iter = spriteAnims->GetResMap()->Begin();
 
 			if (ImGui::TreeNode("Loaded Sprite Animations"))
 			{
-				map.IterateAllValues([&](FTResource* res) {
+				spriteAnims->GetResMap()->IterateAllValues([&](FTResource* res) {
 					FTSpriteAnimation* anim = reinterpret_cast<FTSpriteAnimation*>(res);
 					if (anim)
 					{
@@ -85,12 +95,12 @@ namespace D3D11
 				ImGui::TreePop();
 			}
 
-			FTDS::HashMap<FTResource*>& spineAnimMap =
+			Common::ResourcePack<FTSpineAnimation>* spineAnims =
 				ResourceManager::GetInstance()->GetSpineAnimations();
 
 			if (ImGui::TreeNode("Loaded Spine Animations"))
 			{
-				spineAnimMap.IterateAllValues([&](FTResource* res) {
+				spineAnims->GetResMap()->IterateAllValues([&](FTResource* res) {
 					FTSpineAnimation* anim = reinterpret_cast<FTSpineAnimation*>(res);
 					if (anim)
 					{
@@ -130,7 +140,7 @@ namespace D3D11
 
 				// Update texture (sprite sheet) of the sprite animation.
 				static FTSprite* texture;
-				Editor::DisplayResSelection("Select Sprite", &ResourceManager::GetInstance()->GetResMap<FTSprite>(), texture);
+				Editor::DisplayResSelection("Select Sprite", ResourceManager::GetInstance()->GetSprites(), texture);
 				if (texture)
 					ImGui::Text(texture->GetFileName()->C_Str());
 				else
@@ -138,7 +148,7 @@ namespace D3D11
 
 				// Update JSON (spritet sheet data) of the sprite animation.
 				static FTJSON* JSON;
-				Editor::DisplayResSelection("Select JSON", &ResourceManager::GetInstance()->GetResMap<FTJSON>(), JSON);
+				Editor::DisplayResSelection("Select JSON", GetJSONsFunc(), JSON);
 				if (JSON)
 				{
 					ImGui::Text(JSON->GetFileName()->C_Str());
@@ -184,16 +194,16 @@ namespace D3D11
 			}
 			if (ImGui::BeginTabItem("Spine Anim"))
 			{
-				FTResourceDef resDef;
+				Common::FTResourceDef resDef;
 
 				static Common::FTDS::String name = "Empty Value";
 				Editor::UPDATE_STR("Name", name);
 
 				static FTJSON* json;
-				Editor::DisplayResSelection("Select Skeleton Data", &ResourceManager::GetInstance()->GetResMap<FTJSON>(), json);
+				Editor::DisplayResSelection("Select Skeleton Data", GetJSONsFunc(), json);
 
 				static FTText* atlasTxt;
-				Editor::DisplayResSelection("Select Spine Atlas", &ResourceManager::GetInstance()->GetResMap<FTText>(), atlasTxt);
+				Editor::DisplayResSelection("Select Spine Atlas", GetTextsFunc(), atlasTxt);
 
 				if (ImGui::Button("Create"))
 				{
@@ -215,20 +225,30 @@ namespace D3D11
 		}
 	}
 
+	GET_JSON_FUNC& AnimationManager::GetJSONsFuncGetter()
+	{
+		return GetJSONsFunc;
+	}
+
+	GET_TEXT_FUNC& AnimationManager::GetTextsFuncGetter()
+	{
+		return GetTextsFunc;
+	}
+
 	FTSpriteAnimation* AnimationManager::CreateAnimationFromJSON(FTSpriteAnimationDef& resDef)
 	{
 		FTSpriteAnimation* anim = DBG_NEW FTSpriteAnimation(resDef, mRenderer);
 
 		SaveAnimationAsFile(anim);
-		D3D11::ResourceManager::GetInstance()->GetSpriteAnimations().Insert(*anim->GetFileName(), anim);
+		D3D11::ResourceManager::GetInstance()->GetSpriteAnimations()->AddResource(anim->GetFileName(), anim);
 		return anim;
 	}
 
-	FTSpineAnimation* AnimationManager::CreateAnimationFromSpine(FTResourceDef& resDef, const Common::FTDS::String* jsonPath, const Common::FTDS::String* atlasPath)
+	FTSpineAnimation* AnimationManager::CreateAnimationFromSpine(Common::FTResourceDef& resDef, const Common::FTDS::String* jsonPath, const Common::FTDS::String* atlasPath)
 	{
 		FTSpineAnimation* anim = DBG_NEW FTSpineAnimation(resDef, mRenderer, jsonPath, atlasPath);
 		SaveAnimationAsFile(anim);
-		D3D11::ResourceManager::GetInstance()->GetSpineAnimations().Insert(*anim->GetFileName(), anim);
+		D3D11::ResourceManager::GetInstance()->GetSpineAnimations()->AddResource(anim->GetFileName(), anim);
 		return anim;
 	}
 #endif // FOXTROT_EDITOR

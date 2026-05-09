@@ -14,6 +14,8 @@ namespace Core
 
 #ifdef FOXTROT_EDITOR
 	#include "Manager/ResourceManager.h"
+using GET_JSON_FUNC = Common::ResourcePack<Core::FTJSON>* (*)();
+using GET_TEXT_FUNC = Common::ResourcePack<Core::FTText>* (*)();
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -51,6 +53,14 @@ namespace D3D11
 			animation->SaveProperties(ofs);
 			Common::FileIOHelper::SaveBufferToFile(ofs);
 		}
+
+	public:
+		GET_JSON_FUNC& GetJSONsFuncGetter();
+		GET_TEXT_FUNC& GetTextsFuncGetter();
+
+	private:
+		GET_JSON_FUNC GetJSONsFunc;
+		GET_TEXT_FUNC GetTextsFunc;
 
 	private:
 		FTSpriteAnimation* CreateAnimationFromJSON(

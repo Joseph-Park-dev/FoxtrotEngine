@@ -94,7 +94,7 @@ namespace D3D11
 	{
 		if (GetTileMapKey().NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
 		{
-			mTileMap = D3D11::ResourceManager::GetInstance()->GetResource<FTTileMap>(mTileMapKey);
+			mTileMap = D3D11::ResourceManager::GetInstance()->GetTileMap(mTileMapKey);
 			if (mTileMap)
 			{
 				mTileMap->Initialize();
@@ -179,14 +179,14 @@ namespace D3D11
 
 		if (ImGui::BeginPopupModal("Select .CSV", NULL, ImGuiWindowFlags_MenuBar))
 		{
-			FTDS::HashMap<FTResource*>& tileMapsMap =
-				D3D11::ResourceManager::GetInstance()->GetResMap<FTTileMap>();
+			Common::ResourcePack<FTTileMap>* tileMapPack =
+				D3D11::ResourceManager::GetInstance()->GetTileMaps();
 			if (ImGui::TreeNode("Selection State: Single Selection"))
 			{
 				Common::FTDS::String tileMapKey = Common::ChunkKey::NullVal::NULL_OBJECT;
-				static int	 selected	= -1;
-				int			 i			= 0;
-				for (auto iter = tileMapsMap.Begin(); iter != tileMapsMap.End();
+				static int			 selected	= -1;
+				int					 i			= 0;
+				for (auto iter = tileMapPack->GetResMap()->Begin(); iter != tileMapPack->GetResMap()->End();
 					 ++iter, ++i)
 				{
 					if (ImGui::Selectable((*iter)->Value()->GetFileName()->C_Str(), selected == i))
@@ -213,7 +213,7 @@ namespace D3D11
 		if (key.NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
 			currentCSV =
 				Common::FTDS::String("Current sprite : \n") +
-				Core::ResourceManager::GetInstance()->GetResource<FTTileMap>(key)->GetRelativePath()->C_Str();
+				ResourceManager::GetInstance()->GetTileMap(key)->GetRelativePath()->C_Str();
 		else
 			currentCSV = "No .csv has been assigned";
 		ImGui::Text(currentCSV.C_Str());
@@ -230,14 +230,14 @@ namespace D3D11
 
 		if (ImGui::BeginPopupModal("Select .CSV", NULL, ImGuiWindowFlags_MenuBar))
 		{
-			FTDS::HashMap<FTResource*>& tileMapsMap =
-				Core::ResourceManager::GetInstance()->GetResMap<FTTileMap>();
+			Common::ResourcePack<FTTileMap>* tileMapsPack =
+				ResourceManager::GetInstance()->GetTileMaps();
 			if (ImGui::TreeNode("Selection State: Single Selection"))
 			{
 				Common::FTDS::String tileMapKey = Common::ChunkKey::NullVal::NULL_OBJECT;
-				static int	 selected	= -1;
-				int			 i			= 0;
-				for (auto iter = tileMapsMap.Begin(); iter != tileMapsMap.End();
+				static int			 selected	= -1;
+				int					 i			= 0;
+				for (auto iter = tileMapsPack->GetResMap()->Begin(); iter != tileMapsPack->GetResMap()->End();
 					 ++iter, ++i)
 				{
 					if ((*iter)->Value())

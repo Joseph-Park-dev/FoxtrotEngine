@@ -62,9 +62,9 @@ namespace D3D11
 	{
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
 
-		Common::FTDS::String	jsonKey;
-		Common::FTDS::String	texKey;
-		Math::FTVector3 sizeScale = Math::FTVector3(1.f, 1.f, 1.f);
+		Common::FTDS::String jsonKey;
+		Common::FTDS::String texKey;
+		Math::FTVector3		 sizeScale = Math::FTVector3(1.f, 1.f, 1.f);
 
 		FileIOHelper::LoadBasicString(ifs, jsonKey);
 		FileIOHelper::LoadBasicString(ifs, texKey);
@@ -77,11 +77,11 @@ namespace D3D11
 		FileIOHelper::LoadInt(ifs, frontDir);
 		FTMeshGroup::LoadProperties(ifs);
 
-		mJSON = Core::ResourceManager::GetInstance()->GetResource<Core::FTJSON>(jsonKey);
+		mJSON = AnimationManager::GetInstance()->GetJSONsFuncGetter()()->GetResource(jsonKey);
 		if (!mJSON)
 			return;
 
-		SetTexture(D3D11::ResourceManager::GetInstance()->GetResource<FTTexture>(texKey));
+		SetTexture(D3D11::ResourceManager::GetInstance()->GetSprite(texKey)->GetTexture());
 		if (!GetTexture())
 			return;
 
@@ -103,7 +103,7 @@ namespace D3D11
 		return static_cast<size_t>(mMaxFrameIdx - mMinFrameIdx + 1);
 	}
 
-	FTSpriteAnimation::FTSpriteAnimation(FTResourceDef& resDef, D3D11Renderer* renderer)
+	FTSpriteAnimation::FTSpriteAnimation(Common::FTResourceDef& resDef, D3D11Renderer* renderer)
 		: FTSprite(resDef, renderer, true)
 		, mJSON(nullptr)
 		, mMinFrameIdx(0)

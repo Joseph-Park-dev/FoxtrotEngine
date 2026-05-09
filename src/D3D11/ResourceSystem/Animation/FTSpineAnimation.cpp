@@ -100,7 +100,7 @@ namespace D3D11
 		return mLoadedClips;
 	}
 
-	FTSpineAnimation::FTSpineAnimation(FTResourceDef& resDef, D3D11Renderer* renderer)
+	FTSpineAnimation::FTSpineAnimation(Common::FTResourceDef& resDef, D3D11Renderer* renderer)
 		: FTSprite(resDef, renderer)
 		, mJSONPath(nullptr)
 		, mAtlasPath(nullptr)
@@ -456,10 +456,10 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 
 	FTSpineAnimation::FTSpineAnimation(
-		Common::FTResourceDef& resDef,
-		D3D11Renderer*		 renderer,
-		const Common::FTDS::String*	 jsonPath,
-		const Common::FTDS::String*	 atlasPath)
+		Common::FTResourceDef&		resDef,
+		D3D11Renderer*				renderer,
+		const Common::FTDS::String* jsonPath,
+		const Common::FTDS::String* atlasPath)
 		: FTSpineAnimation(resDef, renderer)
 	{
 		mJSONPath->Assign(*jsonPath);
@@ -497,15 +497,15 @@ namespace D3D11
 	void FTSpineAnimation::AddRefCount()
 	{
 		Common::FTDS::String fileN;
-		Core::ExtractFileName(mJSONPath, fileN);
-		FTJSON* json = D3D11::ResourceManager::GetInstance()->GetResource<FTJSON>(fileN);
+		Common::ExtractFileName(mJSONPath, fileN);
+		FTJSON* json = AnimationManager::GetInstance()->GetJSONsFuncGetter()()->GetResource(fileN);
 		if (json)
 			json->AddRefCount();
 
 		fileN.Clear();
 
-		Core::ExtractFileName(mAtlasPath, fileN);
-		FTText* atlas = D3D11::ResourceManager::GetInstance()->GetResource<FTText>(fileN);
+		Common::ExtractFileName(mAtlasPath, fileN);
+		FTText* atlas = AnimationManager::GetInstance()->GetTextsFuncGetter()()->GetResource(fileN);
 		if (atlas)
 			atlas->AddRefCount();
 
@@ -515,15 +515,15 @@ namespace D3D11
 	void FTSpineAnimation::SubtractRefCount()
 	{
 		Common::FTDS::String fileN;
-		Core::ExtractFileName(mJSONPath, fileN);
-		FTJSON* json = D3D11::ResourceManager::GetInstance()->GetResource<FTJSON>(fileN);
+		Common::ExtractFileName(mJSONPath, fileN);
+		FTJSON* json = AnimationManager::GetInstance()->GetJSONsFuncGetter()()->GetResource(fileN);
 		if (json)
 			json->SubtractRefCount();
 
 		fileN.Clear();
 
-		Core::ExtractFileName(mAtlasPath, fileN);
-		FTText* atlas = D3D11::ResourceManager::GetInstance()->GetResource<FTText>(fileN);
+		Common::ExtractFileName(mAtlasPath, fileN);
+		FTText* atlas = AnimationManager::GetInstance()->GetTextsFuncGetter()()->GetResource(fileN);
 		if (atlas)
 			atlas->SubtractRefCount();
 

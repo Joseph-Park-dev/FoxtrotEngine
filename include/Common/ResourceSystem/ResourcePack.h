@@ -63,6 +63,11 @@ namespace Common
 			return rec->Value();
 		}
 
+		void AddResource(const Common::FTDS::String* key, FTRESOURCE* res)
+		{
+			mResources->Insert(*key, res);
+		}
+
 	public:
 		ResourcePack(size_t resCount)
 			: mResources(DBG_NEW Common::FTDS::HashMap<FTRESOURCE*>(resCount))

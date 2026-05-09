@@ -85,7 +85,7 @@ namespace D3D11
 		, mSprite(nullptr)
 		, mMaterial(nullptr)
 	{
-		mPSO = D3D11::ResourceManager::GetInstance()->GetResource<D3D11PSO>(ChunkKey::SpriteRenderer::PSO);
+		mPSO = D3D11::ResourceManager::GetInstance()->GetPSO(ChunkKey::SpriteRenderer::PSO);
 	}
 
 	FTSprite* SpriteRenderer::GetSprite() const
@@ -123,7 +123,7 @@ namespace D3D11
 		FileIOHelper::LoadBasicString(ifs, spriteKey);
 		Component::LoadProperties(ifs);
 
-		mSprite	  = D3D11::ResourceManager::GetInstance()->GetResource<FTSprite>(spriteKey);
+		mSprite	  = D3D11::ResourceManager::GetInstance()->GetSprite(spriteKey);
 		mMaterial = D3D11::ResourceManager::GetInstance()->GetMaterial(matKey);
 	}
 
@@ -137,7 +137,7 @@ namespace D3D11
 
 		Editor::DisplayResSelection(
 			"Select Sprite",
-			&ResourceManager::GetInstance()->GetResMap<FTSprite>(),
+			ResourceManager::GetInstance()->GetSprites(),
 			mSprite);
 
 		if (mMaterial)
@@ -145,7 +145,7 @@ namespace D3D11
 
 		Editor::DisplayResSelection(
 			"Select Material",
-			&ResourceManager::GetInstance()->GetResMap<FTMaterial>(),
+			ResourceManager::GetInstance()->GetMaterials(),
 			mMaterial);
 	}
 	void SpriteRenderer::EditorRender(D3D11::D3D11Renderer* renderer)

@@ -38,6 +38,18 @@ namespace D3D11
 		FTTileMap*		   GetTileMap(Common::FTDS::String& key);
 		D3D11PSO*		   GetPSO(Common::FTDS::String& key);
 
+		FTSpriteAnimation* GetSpriteAnimation(const char* key);
+		FTSpineAnimation*  GetSpineAnimation(const char* key);
+		FTFont*			   GetFont(const char* key);
+		FTMaterial*		   GetMaterial(const char* key);
+		FTMeshGroup*	   GetMeshGroup(const char* key);
+		FTVertexShader*	   GetVertexShader(const char* key);
+		FTGeometryShader*  GetGeometryShader(const char* key);
+		FTPixelShader*	   GetPixelShader(const char* key);
+		FTSprite*		   GetSprite(const char* key);
+		FTTileMap*		   GetTileMap(const char* key);
+		D3D11PSO*		   GetPSO(const char* key);
+
 	public:
 		Common::ResourcePack<FTSpriteAnimation>* GetSpriteAnimations();
 		Common::ResourcePack<FTSpineAnimation>*	 GetSpineAnimations();

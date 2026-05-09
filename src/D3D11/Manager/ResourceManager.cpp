@@ -35,9 +35,9 @@ namespace D3D11
 	using namespace Common;
 	void ResourceManager::LoadDefaultResources()
 	{
-		// FTDS::HashMap<FTVertexShader*>	 VS;
-		// FTDS::HashMap<FTGeometryShader*> GS;
-		// FTDS::HashMap<FTPixelShader*>	 PS;
+		// Common::FTDS::HashMap<FTVertexShader*>	 VS;
+		// Common::FTDS::HashMap<FTGeometryShader*> GS;
+		// Common::FTDS::HashMap<FTPixelShader*>	 PS;
 
 		// FTResourceDef resDef{
 		//	::ChunkKey::NullVal::NULL_OBJECT, ::ChunkKey::NullVal::NULL_OBJECT
@@ -344,6 +344,61 @@ namespace D3D11
 	}
 
 	D3D11PSO* ResourceManager::GetPSO(Common::FTDS::String& key)
+	{
+		return mPSOs->GetResource(key);
+	}
+
+	FTSpriteAnimation* ResourceManager::GetSpriteAnimation(const char* key)
+	{
+		return mSpriteAnimations->GetResource(key);
+	}
+
+	FTSpineAnimation* ResourceManager::GetSpineAnimation(const char* key)
+	{
+		return mSpineAnimations->GetResource(key);
+	}
+
+	FTFont* ResourceManager::GetFont(const char* key)
+	{
+		return mFonts->GetResource(key);
+	}
+
+	FTMaterial* ResourceManager::GetMaterial(const char* key)
+	{
+		return mMaterials->GetResource(key);
+	}
+
+	FTMeshGroup* ResourceManager::GetMeshGroup(const char* key)
+	{
+		return mMeshGroups->GetResource(key);
+	}
+
+	FTVertexShader* ResourceManager::GetVertexShader(const char* key)
+	{
+		return mVertexShaders->GetResource(key);
+	}
+
+	FTGeometryShader* ResourceManager::GetGeometryShader(const char* key)
+	{
+		return mGeometryShaders->GetResource(key);
+	}
+
+	FTPixelShader* ResourceManager::GetPixelShader(const char* key)
+	{
+		return mPixelShaders->GetResource(key);
+	}
+
+	FTSprite* ResourceManager::GetSprite(const char* key)
+	{
+		return mSprites->GetResource(key);
+	}
+
+	FTTileMap* ResourceManager::GetTileMap(const char* key)
+	{
+		return mTileMaps->GetResource(key);
+	}
+
+	D3D11PSO* ResourceManager::GetPSO(const char* key)
 	{
 		return mPSOs->GetResource(key);
 	}

@@ -3,7 +3,7 @@
 
 #include "InputSystem/D3D11InputDevice.h"
 #include "Renderer/D3D11Renderer.h"
-#include "Renderer/D3D11Window.h"
+#include "Entity/D3D11Window.h"
 #include "Renderer/Camera.h"
 #include "FTDS/Dynamic/DynamicArray.h"
 #include "Renderer/FTRectArea.h"
@@ -26,7 +26,7 @@ namespace ChunkKey
 using namespace Core;
 using namespace Common;
 class D3D11Plugin :
-	public Core::Plugin
+	public Core::IPlugin
 {
 public:
 	void				  CreateInputDevice();
@@ -36,23 +36,14 @@ public:
 	virtual void		  Render() override;
 
 public:
-	void SaveProperties() override;
-	void LoadProperties(SceneManager* sceneManager);
-	void SaveManagerData(std::ofstream& ofs) override;
-	void LoadManagerData(std::ifstream& ifs) override;
-
-public:
 	D3D11Plugin(const char* name);
 	~D3D11Plugin() override;
 
 private:
 	Common::FTDS::DynamicArray<D3D11::D3D11InputDevice*>* mInputDevices;
-	D3D11::D3D11Renderer*						  mRenderer;
+	D3D11::D3D11Renderer*								  mRenderer;
 	Common::FTDS::DynamicArray<D3D11::D3D11Window*>*	  mWindows;
-	D3D11::Camera*								  mCamera;
-
-private:
-	void LoadProperties() override;
+	D3D11::Camera*										  mCamera;
 };
 
 void D3D11Plugin::CreateInputDevice()
@@ -91,7 +82,6 @@ void D3D11Plugin::ProcessInput()
 		{
 			(*iter)->ProcessInput(*input);
 		}
-		Plugin::ProcessInput(*input);
 	}
 }
 
@@ -155,7 +145,7 @@ void D3D11Plugin::LoadProperties(SceneManager* sceneManager)
 		size_t winCount = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::FTWindow::WINDOW_DATA).first;
 		for (size_t i = 0; i < winCount; ++i)
 		{
-			Common::FTDS::String		   winTitle = FileIOHelper::BeginDataPackLoad(ifs).second;
+			Common::FTDS::String   winTitle = FileIOHelper::BeginDataPackLoad(ifs).second;
 			HMODULE				   mod		= GetModuleHandleA(DLLPaths::CORE_EDITOR);
 			FARPROC				   proc		= GetProcAddress(mod, D3D11::PluginKey::CREATE_FTRECTAREA);
 			FTRECTAREA_CONSTRUCTOR func		= reinterpret_cast<FTRECTAREA_CONSTRUCTOR>(proc);

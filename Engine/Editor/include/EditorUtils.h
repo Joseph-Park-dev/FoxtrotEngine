@@ -12,7 +12,7 @@
 #pragma once
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
-#include <ImGuiFileDialog.h>
+#include <ImGuiFileDialog/ImGuiFileDialog.h>
 
 #include <Windows.h>
 #include <shobjidl.h> // For IFileOpenDialog

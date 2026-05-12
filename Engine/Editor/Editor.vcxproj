@@ -190,7 +190,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\Core\src;..\D3D11\src;..\Math\src;.\include;.\include\imgui\ImGuiFileDialog;.\include\imgui;.\src;..\;..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Common\include;$(SolutionDir)EngineCore\include;.\include;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Main\include;$(SolutionDir)third_party;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\json\include;$(SolutionDir)third_party\ImGuiFileDialog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -228,7 +228,6 @@
     <ClInclude Include="include\Component\SpineAnimator.h" />
     <ClInclude Include="include\Component\SpriteRenderer.h" />
     <ClInclude Include="include\Component\TileMapRenderer.h" />
-    <ClInclude Include="include\DirectoryHelper.h" />
     <ClInclude Include="include\DLLData.h" />
     <ClInclude Include="include\EditorCamera.h" />
     <ClInclude Include="include\EditorChunkLoader.h" />

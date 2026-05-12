@@ -186,9 +186,6 @@
     <ClInclude Include="include\CommandHistory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\DirectoryHelper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\DLLData.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -14,7 +14,7 @@
 #include <D3D11.h>
 
 #include "FTDS/Dynamic/DynamicArray.h"
-#include "Math/FTMath.h"
+#include "FTMath.h"
 
 namespace D3D11
 {

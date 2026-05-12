@@ -10,7 +10,7 @@
 /// </summary>
 
 #pragma once
-#include "Math/FTMath.h"
+#include "FTMath.h"
 
 namespace D3D11
 {

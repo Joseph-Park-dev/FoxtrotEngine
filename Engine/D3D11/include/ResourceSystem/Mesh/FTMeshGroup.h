@@ -12,7 +12,7 @@
 #include <wrl.h>
 #include <d3d11.h>
 
-#include "Math/FTMath.h"
+#include "FTMath.h"
 
 namespace Core
 {
@@ -70,7 +70,7 @@ namespace D3D11
 
 		/// @brief Returns meshes ready to be rendered.
 		Common::FTDS::DynamicArray<Mesh*>* Meshes();
-		Math::FTVector3&				 SizeScale();
+		Math::FTVector3&				   SizeScale();
 
 	public:
 		/// @brief Relative path is used for importing 3D files.

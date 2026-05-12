@@ -1,4 +1,4 @@
-#include "FTRectangle.h"
+#include "ResourceSystem/Shape/FTRectangle.h"
 
 #include "ResourceSystem/Mesh/GeometryGenerator.h"
 #include "Renderer/D3D11Renderer.h"

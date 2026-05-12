@@ -13,7 +13,7 @@
 
 #pragma once
 #include "Debugging/DebugMemAlloc.h"
-#include "Math/FTMath.h"
+#include "FTMath.h"
 
 namespace Core
 {

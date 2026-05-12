@@ -15,7 +15,7 @@
 #include "Actor/ActorGroup.h"
 #include "Actor/Actor.h"
 #include "Actor/Transform.h"
-#include "Math/FTMath.h"
+#include "FTMath.h"
 #include "EventSystem/EventType.h"
 
 #ifdef FOXTROT_EDITOR

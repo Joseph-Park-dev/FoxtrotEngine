@@ -13,7 +13,7 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Renderer/FTRectArea.h"
 #include "Renderer/FTWindow.h"
-#include "Math/FTMath.h"
+#include "FTMath.h"
 #include "Actor/Steering.h"
 #include "FTDS/Dynamic/DynamicArray.h"
 #include "FTDS/Static/FTString.h"

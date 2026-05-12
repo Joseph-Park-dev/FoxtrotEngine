@@ -15,7 +15,7 @@
 
 #include <iosfwd>
 
-#include "Math/FTMath.h"
+#include "FTMath.h"
 
 namespace Core
 {

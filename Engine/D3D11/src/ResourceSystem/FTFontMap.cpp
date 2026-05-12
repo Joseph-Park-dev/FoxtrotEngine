@@ -7,7 +7,7 @@
 #include <string>
 
 #include "Debugging/DebugMemAlloc.h"
-#include "Tile.h"
+#include "ResourceSystem/Sprite/Tile.h"
 
 //void FTFontMap::ReadCSV()
 //{

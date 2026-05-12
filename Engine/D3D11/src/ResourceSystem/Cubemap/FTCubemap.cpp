@@ -1,50 +1,51 @@
-#include "FTCubemap.h"
+#include "ResourceSystem/Cubemap/FTCubemap.h"
 
-#include "ResourceSystem/GeometryGenerator.h"
-#include "ResourceSystem/Mesh.h"
-#include "ResourceSystem/FTMaterials/StandardMaterial.h"
-#include "ResourceSystem/FTShaders/FTVertexShader.h"
-#include "ResourceSystem/FTShaders/FTPixelShader.h"
-#include "Managers/ResourceManager.h"
+#include "ResourceSystem/Mesh/GeometryGenerator.h"
+#include "ResourceSystem/Mesh/Mesh.h"
+#include "ResourceSystem/Material/FTMaterial.h"
+#include "ResourceSystem/Shader/FTVertexShader.h"
+#include "ResourceSystem/Shader/FTPixelShader.h"
+#include "Manager/ResourceManager.h"
 #include "Renderer/FoxtrotRenderer.h"
 #include "Renderer/Camera.h"
 
 #ifdef FOXTROT_EDITOR
-#include "EditorUtils.h"
-#include "EditorResourceManager.h"
+	#include "EditorUtils.h"
 #endif
 
-void FTCubemap::CalcVCData(Camera* camInst)
+namespace D3D11
 {
-	// Model Transformation
-	Matrix modelMat = Matrix();
+	void FTCubemap::CalcVCData(Camera* camInst)
+	{
+		// Model Transformation
+		Matrix modelMat = Matrix();
 
-	// View Transformation
-	Matrix&& viewMat = camInst->GetViewRow();
-	Vector3	 eyeWorld = Vector3::Transform(Vector3(0.0f), viewMat.Invert());
+		// View Transformation
+		Matrix&& viewMat  = camInst->GetViewRow();
+		Vector3	 eyeWorld = Vector3::Transform(Vector3(0.0f), viewMat.Invert());
 
-	// Project Transformation
-	Matrix&& projMat = std::move(camInst->GetProjRow());
-}
+		// Project Transformation
+		Matrix&& projMat = std::move(camInst->GetProjRow());
+	}
 
-//void FTCubemap::Initialize(std::vector<FTMeshData>&& meshes, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
-//{
-//	// Rendered face should be headed inward.
-//	for (FTMeshData& meshData : meshes)
-//		std::reverse(meshData.Indices.begin(), meshData.Indices.end());
-//
-//	//FTMeshGroup::Initialize(std::move(meshes), device, context);
-//
-//	std::vector<Common::FTDS::String> matKey = { ChunkKey::STANDARD_MAT };
-//}
+	// void FTCubemap::Initialize(std::vector<FTMeshData>&& meshes, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
+	//{
+	//	// Rendered face should be headed inward.
+	//	for (FTMeshData& meshData : meshes)
+	//		std::reverse(meshData.Indices.begin(), meshData.Indices.end());
+	//
+	//	//FTMeshGroup::Initialize(std::move(meshes), device, context);
+	//
+	//	std::vector<Common::FTDS::String> matKey = { ChunkKey::STANDARD_MAT };
+	// }
 
-//void FTCubemap::Render(FoxtrotRenderer* renderer)
-//{
-//	UINT						 stride	 = sizeof(Vertex);
-//	UINT						 offset	 = 0;
-//	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
+	// void FTCubemap::Render(FoxtrotRenderer* renderer)
+	//{
+	//	UINT						 stride	 = sizeof(Vertex);
+	//	UINT						 offset	 = 0;
+	//	ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
 
-	//for (const Mesh* mesh : Meshes())
+	// for (const Mesh* mesh : Meshes())
 	//{
 	//	context->VSSetConstantBuffers(
 	//		0, mesh->VertexConstantBuffers.size(), mesh->VertexConstantBuffers.data()->GetAddressOf());
@@ -54,9 +55,9 @@ void FTCubemap::CalcVCData(Camera* camInst)
 
 	//	if (mDiffuseResView && mSpecularResView)
 	//	{
-	//		ID3D11ShaderResourceView* resViews[2] = { 
+	//		ID3D11ShaderResourceView* resViews[2] = {
 	//			mDiffuseResView.Get(),
-	//			mSpecularResView.Get() 
+	//			mSpecularResView.Get()
 	//		};
 	//		context->PSSetShaderResources(0, 2, resViews);
 	//	}
@@ -79,63 +80,64 @@ void FTCubemap::CalcVCData(Camera* camInst)
 
 	//	context->DrawIndexed(mesh->IndexCount, 0, 0);
 	//}
-//}
+	//}
 
-ComPtr<ID3D11ShaderResourceView>& FTCubemap::GetDiffuseResView() { return mDiffuseResView; }
-ComPtr<ID3D11ShaderResourceView>& FTCubemap::GetSpecularResView() { return mSpecularResView; }
+	ComPtr<ID3D11ShaderResourceView>& FTCubemap::GetDiffuseResView() { return mDiffuseResView; }
+	ComPtr<ID3D11ShaderResourceView>& FTCubemap::GetSpecularResView() { return mSpecularResView; }
 
-void FTCubemap::SetDiffuseTexture(Common::FTDS::String& key)
-{
-	FTTexture* tex = ResourceManager::GetInstance()->GetLoadedTexture(key);
-	mDiffuseResView = tex->GetSRV();
-}
+	void FTCubemap::SetDiffuseTexture(Common::FTDS::String& key)
+	{
+		FTTexture* tex	= ResourceManager::GetInstance()->GetLoadedTexture(key);
+		mDiffuseResView = tex->GetSRV();
+	}
 
-void FTCubemap::SetSpecularTexture(Common::FTDS::String& key)
-{
-	FTTexture* tex = ResourceManager::GetInstance()->GetLoadedTexture(key);
-	mSpecularResView = tex->GetSRV();
-}
+	void FTCubemap::SetSpecularTexture(Common::FTDS::String& key)
+	{
+		FTTexture* tex	 = ResourceManager::GetInstance()->GetLoadedTexture(key);
+		mSpecularResView = tex->GetSRV();
+	}
 
-//void FTCubemap::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTMeshData>& meshes)
-//{
-//	//Meshes().reserve(meshes.size());
-//	for (const FTMeshData& meshData : meshes)
-//	{
-//		Mesh* newMesh = DBG_NEW Mesh;
-//		newMesh->VertexCount = UINT(meshData.Vertices.size());
-//		newMesh->IndexCount = UINT(meshData.Indices.size());
-//
-//		D3D11Utils::CreateVertexBuffer(device, meshData.Vertices, newMesh->VertexBuffer);
-//		D3D11Utils::CreateIndexBuffer(device, meshData.Indices, newMesh->IndexBuffer);
-//
-//		//this->Meshes().push_back(newMesh);
-//	}
-//}
+	// void FTCubemap::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTMeshData>& meshes)
+	//{
+	//	//Meshes().reserve(meshes.size());
+	//	for (const FTMeshData& meshData : meshes)
+	//	{
+	//		Mesh* newMesh = DBG_NEW Mesh;
+	//		newMesh->VertexCount = UINT(meshData.Vertices.size());
+	//		newMesh->IndexCount = UINT(meshData.Indices.size());
+	//
+	//		D3D11Utils::CreateVertexBuffer(device, meshData.Vertices, newMesh->VertexBuffer);
+	//		D3D11Utils::CreateIndexBuffer(device, meshData.Indices, newMesh->IndexBuffer);
+	//
+	//		//this->Meshes().push_back(newMesh);
+	//	}
+	// }
 
-void FTCubemap::SaveProperties(std::ofstream& ofs)
-{
-	FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CubeMap::FTCubeMap);
-	FTMeshGroup::SaveProperties(ofs);
-	FileIOHelper::EndDataPackSave(ofs, ChunkKey::CubeMap::FTCubeMap);
-}
+	void FTCubemap::SaveProperties(std::ofstream& ofs)
+	{
+		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CubeMap::FTCubeMap);
+		FTMeshGroup::SaveProperties(ofs);
+		FileIOHelper::EndDataPackSave(ofs, ChunkKey::CubeMap::FTCubeMap);
+	}
 
-void FTCubemap::LoadProperties(std::ifstream& ifs)
-{
-	FileIOHelper::BeginDataPackLoad(ifs);
-	FTMeshGroup::LoadProperties(ifs);
-}
+	void FTCubemap::LoadProperties(std::ifstream& ifs)
+	{
+		FileIOHelper::BeginDataPackLoad(ifs);
+		FTMeshGroup::LoadProperties(ifs);
+	}
 
 #ifdef FOXTROT_EDITOR
-void FTCubemap::UpdateUI()
-{
-	/*static const char* diffuseKey;
-	FTEditorUtils::DisplayResSelection("Select Diffuse Texture", EditorResourceManager::GetInstance()->GetTexturesMap(), diffuseKey);
-	if (diffuseKey != ::ChunkKey::NullVal::NULL_OBJECT)
-		this->SetDiffuseTexture(diffuseKey);
+	void FTCubemap::UpdateUI()
+	{
+		/*static const char* diffuseKey;
+		FTEditorUtils::DisplayResSelection("Select Diffuse Texture", EditorResourceManager::GetInstance()->GetTexturesMap(), diffuseKey);
+		if (diffuseKey != ::ChunkKey::NullVal::NULL_OBJECT)
+			this->SetDiffuseTexture(diffuseKey);
 
-	static const char* specularKey;
-	FTEditorUtils::DisplayResSelection("Select Specular Texture", EditorResourceManager::GetInstance()->GetTexturesMap(), specularKey);
-	if (specularKey != ::ChunkKey::NullVal::NULL_OBJECT)
-		this->SetSpecularTexture(specularKey);*/
-}
+		static const char* specularKey;
+		FTEditorUtils::DisplayResSelection("Select Specular Texture", EditorResourceManager::GetInstance()->GetTexturesMap(), specularKey);
+		if (specularKey != ::ChunkKey::NullVal::NULL_OBJECT)
+			this->SetSpecularTexture(specularKey);*/
+	}
 #endif // FOXTROT_EDITOR
+} // namespace D3D11

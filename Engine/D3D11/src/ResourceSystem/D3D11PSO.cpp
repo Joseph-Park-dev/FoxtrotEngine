@@ -1,8 +1,8 @@
-#include "D3D11PSO.h"
+#include "ResourceSystem/D3D11PSO.h"
 
-#include "Shader/FTVertexShader.h"
-#include "Shader/FTGeometryShader.h"
-#include "Shader/FTPixelShader.h"
+#include "ResourceSystem/Shader/FTVertexShader.h"
+#include "ResourceSystem/Shader/FTGeometryShader.h"
+#include "ResourceSystem/Shader/FTPixelShader.h"
 #include "Manager/ResourceManager.h"
 
 namespace D3D11
@@ -64,7 +64,7 @@ namespace D3D11
 		mVS->UpdateUI();
 		Editor::UPDATE_BOOL("Wireframe", mWireFramed);
 
-		//!mWireFramed ? mRS = ResourceManager::GetInstance()->GetRS()->At(0) : mRS = ResourceManager::GetInstance()->GetRS()->At(1);
+		//! mWireFramed ? mRS = ResourceManager::GetInstance()->GetRS()->At(0) : mRS = ResourceManager::GetInstance()->GetRS()->At(1);
 	}
 #endif
 } // namespace D3D11

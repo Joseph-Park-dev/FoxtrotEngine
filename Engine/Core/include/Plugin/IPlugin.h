@@ -44,6 +44,9 @@ namespace Core
 		////// Termination Phase //////
 		///////////////////////////////
 		virtual void ShutDown() = 0;
+
+	public:
+		virtual ~IPlugin() {};
 	};
 
 	namespace ChunkKey

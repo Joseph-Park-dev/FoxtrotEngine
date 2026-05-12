@@ -1,6 +1,6 @@
 #pragma once
 #include "FileSystem/FileIOHelper.h"
-#include "Math/FTMath.h"
+#include "FTMath.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"

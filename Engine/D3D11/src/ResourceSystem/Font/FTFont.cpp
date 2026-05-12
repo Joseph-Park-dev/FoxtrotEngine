@@ -1,8 +1,9 @@
-#include "FTFont.h"
+#include "ResourceSystem/Font/FTFont.h"
 
-#include "ResourceSystem/FTTexture.h"
 #include "Renderer/D3D11Renderer.h"
 #include "Utility/D3D11Utils.h"
+#include "ResourceSystem/FTTexture.h"
+#include "ResourceSystem/Sprite/FTSprite.h"
 #include "ResourceSystem/Shader/FTVertexShader.h"
 #include "ResourceSystem/Shader/FTPixelShader.h"
 #include "ResourceSystem/Material/FTMaterial.h"
@@ -278,7 +279,7 @@ namespace D3D11
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTFont::FTFONT);
 		FileIOHelper::LoadBasicString(ifs, key);
 
-		mFontImage = D3D11::ResourceManager::GetInstance()->GetResource<FTTexture>(key);
+		mFontImage = D3D11::ResourceManager::GetInstance()->GetSprite(key)->GetTexture();
 	}
 
 	const float FTFont::GetKerning(wchar_t first, wchar_t second) const
@@ -308,7 +309,7 @@ namespace D3D11
 		mFontImage = fontImage;
 	}
 
-	void FTFont::LoadFont(FTTexture* img, FTResourceDef& resDef)
+	void FTFont::LoadFont(FTTexture* img, Common::FTResourceDef& resDef)
 	{
 		FTVector2 renderRes = Camera::GetInstance()->GetResolution();
 
@@ -523,8 +524,8 @@ namespace D3D11
 	{
 		if (ImGui::Button("Reload font"))
 		{
-		/*	if (mFontImage)
-				LoadFont(mFontImage);*/
+			/*	if (mFontImage)
+					LoadFont(mFontImage);*/
 		}
 	}
 #endif // FOXTROT_EDITOR

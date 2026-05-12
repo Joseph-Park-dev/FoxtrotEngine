@@ -6,11 +6,11 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "D3D11Utils.h"
+#include "Utility/D3D11Utils.h"
 
-#include <DDSTextureLoader.h> // For reading Cubemaps
-#include <dxgi.h>			  // DXGIFactory
-#include <dxgi1_4.h>		  // DXGIFactory4
+// #include <DDSTextureLoader.h> // For reading Cubemaps
+#include <dxgi.h>	 // DXGIFactory
+#include <dxgi1_4.h> // DXGIFactory4
 #include <stdio.h>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -344,11 +344,11 @@ namespace D3D11
 	}
 
 	HRESULT D3D11Utils::CreateVertexShaderAndInputLayout(
-		ComPtr<ID3D11Device>&								device,
-		const wstring&										filename,
+		ComPtr<ID3D11Device>&										device,
+		const wstring&												filename,
 		const Common::FTDS::DynamicArray<D3D11_INPUT_ELEMENT_DESC>& inputElements,
-		ComPtr<ID3D11VertexShader>&							vertexShader,
-		ComPtr<ID3D11InputLayout>&							inputLayout)
+		ComPtr<ID3D11VertexShader>&									vertexShader,
+		ComPtr<ID3D11InputLayout>&									inputLayout)
 	{
 
 		ComPtr<ID3DBlob> shaderBlob;

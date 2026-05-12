@@ -21,7 +21,6 @@
 #include "EditorSceneManager.h"
 #include "EditorLayer.h"
 #include "EditorScene.h"
-#include "DirectoryHelper.h"
 #include "FileSystem/FileTypes.h"
 #include "FileSystem/NullKeys.h"
 

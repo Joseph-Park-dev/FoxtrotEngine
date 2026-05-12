@@ -9,7 +9,7 @@
 #pragma once
 #include "ResourceSystem/D3D11Resource.h"
 
-#include "Math/FTMath.h"
+#include "FTMath.h"
 
 #include <wrl.h>
 #include <d3d11.h>

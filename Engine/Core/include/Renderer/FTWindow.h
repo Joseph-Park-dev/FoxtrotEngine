@@ -17,14 +17,12 @@ namespace Core
 {
 	class FoxtrotRenderer;
 	class FTInputDevice;
-	class Plugin;
 	enum class MOUSE;
 
 	class FTWindow :
 		public Core::Entity
 	{
 	public:
-		const Plugin*		  GetOwner() { return mOwner; }
 		const bool			  GetIsActive() { return mIsActive; }
 		Common::FTDS::String& GetTitle() { return mTitle; }
 		unsigned int		  GetWidth() const { return mWidth; };
@@ -72,9 +70,8 @@ namespace Core
 		 * @param height Initial window height.
 		 * @param rndArea Pointer to render area definition (may be identical to full window).
 		 */
-		FTWindow(Plugin* owner, const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea)
-			: mOwner(owner)
-			, mWidth(width)
+		FTWindow(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea)
+			: mWidth(width)
 			, mHeight(height)
 			, mRenderArea(rndArea)
 			, mIsActive(true)
@@ -91,8 +88,7 @@ namespace Core
 		};
 
 	private:
-		Plugin* mOwner;
-		bool	mIsActive;
+		bool mIsActive;
 
 		Common::FTDS::String mTitle;	  ///< Window title string.
 		unsigned int		 mWidth;	  ///< Current window client width (not render area width).

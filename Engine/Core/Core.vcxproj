@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -29,8 +29,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{95944b49-be89-43df-bd3f-03d01fa7c284}</ProjectGuid>
-    <RootNamespace>D3D11Renderer</RootNamespace>
+    <ProjectGuid>{cce9835e-f788-4b51-930b-d7805ac1e2a0}</ProjectGuid>
+    <RootNamespace>Core</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -76,6 +76,7 @@
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
+    <Import Project="..\Common\Common.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -97,28 +98,32 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetName>D3D11Renderer</TargetName>
+    <TargetName>Core</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <TargetName>D3D11Renderer</TargetName>
+    <TargetName>Core</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|Win32'">
-    <TargetName>D3D11Renderer</TargetName>
+    <TargetName>Core</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetName>D3D11Renderer</TargetName>
+    <TargetName>Core</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
-    <TargetName>D3D11Renderer_Editor</TargetName>
+    <TargetName>Core_Editor</TargetName>
+    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <TargetName>D3D11Renderer</TargetName>
+    <TargetName>Core</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;D3D11RENDERER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -134,7 +139,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;D3D11RENDERER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -152,7 +157,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;D3D11RENDERER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -168,11 +173,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;D3D11RENDERER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>.\src;.\src\FTDS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -184,19 +190,19 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;CORE_EXPORTS;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDIr)include\Common;$(SolutionDIr)include\D3D11;$(SolutionDIr)include\D3D11\Component;$(SolutionDIr)include\D3D11\Entity;$(SolutionDIr)include\D3D11\InputSystem;$(SolutionDIr)include\D3D11\Manager;$(SolutionDIr)include\D3D11\Plugin;$(SolutionDIr)include\D3D11\Renderer;$(SolutionDIr)include\D3D11\ResourceSystem;$(SolutionDIr)include\D3D11\Utility;$(SolutionDIr)include\Core;$(SolutionDIr)include\Editor;$(SolutionDir)include\Math;$(SolutionDIr)extern\imgui;$(SolutionDIr)extern\ImGuiFileDialog;$(SolutionDIr)extern\json\include;$(SolutionDIr)extern\spine-runtimes\spine-cpp\spine-cpp\include;$(SolutionDIr)extern\magic_enum\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Common\include;$(SolutionDir)Core\include;$(SolutionDir)Editor\include;$(SolutionDir)Math\include;$(SolutionDir)Main\include;$(SolutionDir)extern;$(SolutionDir)extern\imgui;$(SolutionDir)extern\json\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>d3d11.lib;D3DCompiler.lib;Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Math\builds</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -205,12 +211,12 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;D3D11RENDERER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\Core\src;.\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\src;.\src\FTDS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -219,111 +225,113 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="cpp.hint" />
-    <None Include="include\DirectXTex.inl" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Component\Animator.cpp" />
-    <ClCompile Include="Component\D3D11Component.cpp" />
-    <ClCompile Include="Component\MeshRenderer.cpp" />
-    <ClCompile Include="Component\SpineAnimator.cpp" />
-    <ClCompile Include="Component\SpriteRenderer.cpp" />
-    <ClCompile Include="Component\TileMapRenderer.cpp" />
-    <ClCompile Include="InputSystem\D3D11InputDevice.cpp" />
-    <ClCompile Include="Manager\AnimationManager.cpp" />
-    <ClCompile Include="Manager\DebugShapes.cpp" />
-    <ClCompile Include="Manager\FTSpineLoader.cpp" />
-    <ClCompile Include="Manager\LightManager.cpp" />
+    <ClCompile Include="Actor\Actor.cpp" />
+    <ClCompile Include="Actor\Transform.cpp" />
+    <ClCompile Include="Behavior\FTBehavior.cpp" />
+    <ClCompile Include="Component\Component.cpp" />
+    <ClCompile Include="Entity\Timer.cpp" />
+    <ClCompile Include="EventSystem\EventFunctions.cpp" />
+    <ClCompile Include="FileSystem\ChunkLoader.cpp" />
+    <ClCompile Include="InputSystem\FTInputDevice.cpp" />
+    <ClCompile Include="Manager\DirectoryHelper.cpp" />
+    <ClCompile Include="Manager\EventManager.cpp" />
     <ClCompile Include="Manager\ResourceManager.cpp" />
-    <ClCompile Include="Plugin\D3D11Plugin.cpp" />
-    <ClCompile Include="Renderer\Camera.cpp" />
-    <ClCompile Include="Renderer\D3D11Renderer.cpp" />
-    <ClCompile Include="Utility\D3D11Utils.cpp" />
-    <ClCompile Include="Entity\D3D11Window.cpp" />
-    <ClCompile Include="ResourceSystem\Animation\AnimationFrame.cpp" />
-    <ClCompile Include="ResourceSystem\Animation\FTSpineAnimation.cpp" />
-    <ClCompile Include="ResourceSystem\Animation\FTSpriteAnimation.cpp" />
-    <ClCompile Include="ResourceSystem\Cubemap\FTCubemap.cpp" />
-    <ClCompile Include="ResourceSystem\D3D11PSO.cpp" />
-    <ClCompile Include="ResourceSystem\D3D11Resource.cpp" />
-    <ClCompile Include="ResourceSystem\Font\FontChar.cpp" />
-    <ClCompile Include="ResourceSystem\Font\FTFont.cpp" />
-    <ClCompile Include="ResourceSystem\FTFontMap.cpp" />
-    <ClCompile Include="ResourceSystem\FTTexture.cpp" />
-    <ClCompile Include="ResourceSystem\Material\FTMaterial.cpp" />
-    <ClCompile Include="ResourceSystem\Material\SpriteAnimMat.cpp" />
-    <ClCompile Include="ResourceSystem\Material\StandardMaterial.cpp" />
-    <ClCompile Include="ResourceSystem\Mesh\FTMeshData.cpp" />
-    <ClCompile Include="ResourceSystem\Mesh\FTMeshDataPack.cpp" />
-    <ClCompile Include="ResourceSystem\Mesh\FTMeshGroup.cpp" />
-    <ClCompile Include="ResourceSystem\Mesh\GeometryGenerator.cpp" />
-    <ClCompile Include="ResourceSystem\Shader\FTGeometryShader.cpp" />
-    <ClCompile Include="ResourceSystem\Shader\FTPixelShader.cpp" />
-    <ClCompile Include="ResourceSystem\Shader\FTShader.cpp" />
-    <ClCompile Include="ResourceSystem\Shader\FTVertexShader.cpp" />
-    <ClCompile Include="ResourceSystem\Shape\FTRectangle.cpp" />
-    <ClCompile Include="ResourceSystem\Shape\FTShape.cpp" />
-    <ClCompile Include="ResourceSystem\Sprite\FTSprite.cpp" />
-    <ClCompile Include="ResourceSystem\Sprite\FTTileMap.cpp" />
-    <ClCompile Include="ResourceSystem\Sprite\Tile.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\include\D3D11\Component\Animator.h" />
-    <ClInclude Include="..\..\include\D3D11\Component\D3D11Component.h" />
-    <ClInclude Include="..\..\include\D3D11\Component\MeshRenderer.h" />
-    <ClInclude Include="..\..\include\D3D11\Component\SpineAnimator.h" />
-    <ClInclude Include="..\..\include\D3D11\Component\SpriteRenderer.h" />
-    <ClInclude Include="..\..\include\D3D11\Component\TileMapRenderer.h" />
-    <ClInclude Include="..\..\include\D3D11\DebugFuncs.h" />
-    <ClInclude Include="..\..\include\D3D11\Entity\D3D11Window.h" />
-    <ClInclude Include="..\..\include\D3D11\framework.h" />
-    <ClInclude Include="..\..\include\D3D11\InputSystem\D3D11InputDevice.h" />
-    <ClInclude Include="..\..\include\D3D11\Manager\AnimationManager.h" />
-    <ClInclude Include="..\..\include\D3D11\Manager\DebugShapes.h" />
-    <ClInclude Include="..\..\include\D3D11\Manager\FTSpineLoader.h" />
-    <ClInclude Include="..\..\include\D3D11\Manager\LightManager.h" />
-    <ClInclude Include="..\..\include\D3D11\Manager\ResourceManager.h" />
-    <ClInclude Include="..\..\include\D3D11\pch.h" />
-    <ClInclude Include="..\..\include\D3D11\Plugin\PluginKey.h" />
-    <ClInclude Include="..\..\include\D3D11\Renderer\Camera.h" />
-    <ClInclude Include="..\..\include\D3D11\Renderer\D3D11Renderer.h" />
-    <ClInclude Include="..\..\include\D3D11\Renderer\WindowProcess.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Animation\AnimationFrame.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Animation\FTSpineAnimation.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Animation\FTSpriteAnimation.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Cubemap\FTCubemap.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\D3D11PSO.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\D3D11Resource.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Font\FontChar.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Font\FontKerning.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Font\FTFont.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Font\TextAttribute.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Font\TextVertex.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\FTFontMap.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\FTTexture.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Light.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Material\FTMaterial.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Material\SpriteAnimMat.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Material\StandardMaterial.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Mesh\FTMeshData.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Mesh\FTMeshDataPack.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Mesh\FTMeshGroup.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Mesh\GeometryGenerator.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Mesh\Mesh.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Mesh\MeshConstantData.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Mesh\Vertex.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Shader\FTGeometryShader.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Shader\FTPixelShader.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Shader\FTShader.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Shader\FTVertexShader.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Shape\FTRectangle.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Shape\FTShape.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Sprite\FTSprite.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Sprite\FTTileMap.h" />
-    <ClInclude Include="..\..\include\D3D11\ResourceSystem\Sprite\Tile.h" />
-    <ClInclude Include="..\..\include\D3D11\Utility\D3D11Utils.h" />
+    <ClCompile Include="Manager\SceneManager.cpp" />
+    <ClCompile Include="Plugin\dllmain.cpp" />
+    <ClCompile Include="Plugin\FTCore.cpp" />
+    <ClCompile Include="Plugin\pch.cpp" />
+    <ClCompile Include="Renderer\FoxtrotRenderer.cpp" />
+    <ClCompile Include="Renderer\FTRectArea.cpp" />
+    <ClCompile Include="Renderer\FTWindow.cpp" />
+    <ClCompile Include="ResourceSystem\CoreResource.cpp" />
+    <ClCompile Include="ResourceSystem\FTPremade.cpp" />
+    <ClCompile Include="ResourceSystem\GenericData\FTCSV.cpp" />
+    <ClCompile Include="ResourceSystem\GenericData\FTJSON.cpp" />
+    <ClCompile Include="ResourceSystem\GenericData\FTText.cpp" />
+    <ClCompile Include="Scene\Scene.cpp" />
+    <ClCompile Include="src\Actor\Actor.cpp" />
+    <ClCompile Include="src\Actor\Transform.cpp" />
+    <ClCompile Include="src\Behavior\FTBehavior.cpp" />
+    <ClCompile Include="src\Component\Component.cpp" />
+    <ClCompile Include="src\Entity\Timer.cpp" />
+    <ClCompile Include="src\EventSystem\EventFunctions.cpp" />
+    <ClCompile Include="src\FileSystem\ChunkLoader.cpp" />
+    <ClCompile Include="src\InputSystem\FTInputDevice.cpp" />
+    <ClCompile Include="src\Manager\DirectoryHelper.cpp" />
+    <ClCompile Include="src\Manager\EventManager.cpp" />
+    <ClCompile Include="src\Manager\ResourceManager.cpp" />
+    <ClCompile Include="src\Manager\SceneManager.cpp" />
+    <ClCompile Include="src\Plugin\dllmain.cpp" />
+    <ClCompile Include="src\Plugin\FTCore.cpp" />
+    <ClCompile Include="src\Plugin\pch.cpp" />
+    <ClCompile Include="src\Renderer\FoxtrotRenderer.cpp" />
+    <ClCompile Include="src\Renderer\FTRectArea.cpp" />
+    <ClCompile Include="src\Renderer\FTWindow.cpp" />
+    <ClCompile Include="src\ResourceSystem\CoreResource.cpp" />
+    <ClCompile Include="src\ResourceSystem\FTPremade.cpp" />
+    <ClCompile Include="src\ResourceSystem\GenericData\FTCSV.cpp" />
+    <ClCompile Include="src\ResourceSystem\GenericData\FTJSON.cpp" />
+    <ClCompile Include="src\ResourceSystem\GenericData\FTText.cpp" />
+    <ClCompile Include="src\Scene\Scene.cpp" />
+    <ClCompile Include="src\Utility\EditorHelper.cpp" />
+    <ClCompile Include="Utility\EditorHelper.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Math\Math.vcxproj">
+      <Project>{05f1cde6-51be-4ec3-898e-d9d15811ed7f}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Actor\Actor.h" />
+    <ClInclude Include="include\Actor\ActorGroup.h" />
+    <ClInclude Include="include\Actor\Steering.h" />
+    <ClInclude Include="include\Actor\Transform.h" />
+    <ClInclude Include="include\Behavior\FTBehavior.h" />
+    <ClInclude Include="include\Component\Component.h" />
+    <ClInclude Include="include\Debugging\DebugFuncs.h" />
+    <ClInclude Include="include\Debugging\DebugMemAlloc.h" />
+    <ClInclude Include="include\Entity\Entity.h" />
+    <ClInclude Include="include\Entity\Timer.h" />
+    <ClInclude Include="include\EventSystem\EventFunctions.h" />
+    <ClInclude Include="include\EventSystem\EventType.h" />
+    <ClInclude Include="include\FileSystem\BufferSizes.h" />
+    <ClInclude Include="include\FileSystem\ChunkLoader.h" />
+    <ClInclude Include="include\FileSystem\FileTypes.h" />
+    <ClInclude Include="include\InputSystem\FTInputDevice.h" />
+    <ClInclude Include="include\Manager\DirectoryHelper.h" />
+    <ClInclude Include="include\Manager\EventManager.h" />
+    <ClInclude Include="include\Manager\ResourceHelper.h" />
+    <ClInclude Include="include\Manager\ResourceManager.h" />
+    <ClInclude Include="include\Manager\SceneManager.h" />
+    <ClInclude Include="include\Plugin\CoreExports.h" />
+    <ClInclude Include="include\Plugin\framework.h" />
+    <ClInclude Include="include\Plugin\IPlugin.h" />
+    <ClInclude Include="include\Plugin\pch.h" />
+    <ClInclude Include="include\Plugin\PluginKey.h" />
+    <ClInclude Include="include\Renderer\FoxtrotRenderer.h" />
+    <ClInclude Include="include\Renderer\FTRectArea.h" />
+    <ClInclude Include="include\Renderer\FTWindow.h" />
+    <ClInclude Include="include\ResourceSystem\CoreResource.h" />
+    <ClInclude Include="include\ResourceSystem\FTPremade.h" />
+    <ClInclude Include="include\ResourceSystem\GenericData\FTCSV.h" />
+    <ClInclude Include="include\ResourceSystem\GenericData\FTJSON.h" />
+    <ClInclude Include="include\ResourceSystem\GenericData\FTText.h" />
+    <ClInclude Include="include\Scene\Scene.h" />
+    <ClInclude Include="include\Utility\EditorHelper.h" />
+    <ClInclude Include="include\Utility\SingletonMacro.h" />
+    <ClInclude Include="include\Utility\TypeDefinitions.h" />
+    <ClInclude Include="include\Utility\UnitDefinitions.h" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
 </Project>

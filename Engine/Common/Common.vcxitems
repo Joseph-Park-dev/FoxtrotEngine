@@ -40,6 +40,36 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)FTDS\Static\Record.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FTDS\Utils\DSLogs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FTDS\Utils\StrAssign.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FileSystem\FileIOHelper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FileSystem\NullKeys.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Dynamic\BinaryNode.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Dynamic\BinSrchTree.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Dynamic\BinTree.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Dynamic\DynamicArray.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Dynamic\LinkedList.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Dynamic\LinkedQueue.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Dynamic\LinkedStack.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Dynamic\Node.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Dynamic\RecordNode.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Iterator\FTIterator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Node\HeapNode.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Search\BinarySearch.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Search\DepthFirstSearch.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Sort\InsertionSort.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Static\Array.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Static\ArrayStack.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Static\CircularQueue.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Static\CircularStack.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Static\FTString.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Static\HashMap.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Static\Heap.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Static\Record.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Utils\DSLogs.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Utils\StrAssign.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\Manager\ResourceManagerBase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\ResourceSystem\FTResource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\ResourceSystem\ResourcePack.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\TemplateFunctions.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Manager\ResourceManagerBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceSystem\FTResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceSystem\ResourcePack.h" />
@@ -47,5 +77,7 @@
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)FileSystem\FileIOHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ResourceSystem\FTResource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\FileSystem\FileIOHelper.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\ResourceSystem\FTResource.cpp" />
   </ItemGroup>
 </Project>

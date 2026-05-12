@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Foxtrot_Editor_Debug|Win32">
+      <Configuration>Foxtrot_Editor_Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Foxtrot_Editor_Debug|x64">
+      <Configuration>Foxtrot_Editor_Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>18.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{95944b49-be89-43df-bd3f-03d01fa7c284}</ProjectGuid>
+    <RootNamespace>D3D11Renderer</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>D3D11Renderer</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>D3D11Renderer</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|Win32'">
+    <TargetName>D3D11Renderer</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>D3D11Renderer</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
+    <TargetName>D3D11Renderer_Editor</TargetName>
+    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>D3D11Renderer</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;D3D11RENDERER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;D3D11RENDERER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;D3D11RENDERER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;D3D11RENDERER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDIr)include\Common;$(SolutionDIr)include\D3D11;$(SolutionDIr)include\D3D11\Component;$(SolutionDIr)include\D3D11\Entity;$(SolutionDIr)include\D3D11\InputSystem;$(SolutionDIr)include\D3D11\Manager;$(SolutionDIr)include\D3D11\Plugin;$(SolutionDIr)include\D3D11\Renderer;$(SolutionDIr)include\D3D11\ResourceSystem;$(SolutionDIr)include\D3D11\Utility;$(SolutionDIr)include\Core;$(SolutionDIr)include\Editor;$(SolutionDir)include\Math;$(SolutionDIr)extern\imgui;$(SolutionDIr)extern\ImGuiFileDialog;$(SolutionDIr)extern\json\include;$(SolutionDIr)extern\spine-runtimes\spine-cpp\spine-cpp\include;$(SolutionDIr)extern\magic_enum\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>d3d11.lib;D3DCompiler.lib;Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Math\builds</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;D3D11RENDERER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\Core\src;.\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="include\DirectXTex.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Component\Animator.cpp" />
+    <ClCompile Include="Component\D3D11Component.cpp" />
+    <ClCompile Include="Component\MeshRenderer.cpp" />
+    <ClCompile Include="Component\SpineAnimator.cpp" />
+    <ClCompile Include="Component\SpriteRenderer.cpp" />
+    <ClCompile Include="Component\TileMapRenderer.cpp" />
+    <ClCompile Include="InputSystem\D3D11InputDevice.cpp" />
+    <ClCompile Include="Manager\AnimationManager.cpp" />
+    <ClCompile Include="Manager\DebugShapes.cpp" />
+    <ClCompile Include="Manager\FTSpineLoader.cpp" />
+    <ClCompile Include="Manager\LightManager.cpp" />
+    <ClCompile Include="Manager\ResourceManager.cpp" />
+    <ClCompile Include="Plugin\D3D11Plugin.cpp" />
+    <ClCompile Include="Renderer\Camera.cpp" />
+    <ClCompile Include="Renderer\D3D11Renderer.cpp" />
+    <ClCompile Include="src\Component\Animator.cpp" />
+    <ClCompile Include="src\Component\D3D11Component.cpp" />
+    <ClCompile Include="src\Component\MeshRenderer.cpp" />
+    <ClCompile Include="src\Component\SpineAnimator.cpp" />
+    <ClCompile Include="src\Component\SpriteRenderer.cpp" />
+    <ClCompile Include="src\Component\TileMapRenderer.cpp" />
+    <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\Entity\D3D11Window.cpp" />
+    <ClCompile Include="src\InputSystem\D3D11InputDevice.cpp" />
+    <ClCompile Include="src\Manager\AnimationManager.cpp" />
+    <ClCompile Include="src\Manager\DebugShapes.cpp" />
+    <ClCompile Include="src\Manager\FTSpineLoader.cpp" />
+    <ClCompile Include="src\Manager\LightManager.cpp" />
+    <ClCompile Include="src\Manager\ResourceManager.cpp" />
+    <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\Plugin\D3D11Plugin.cpp" />
+    <ClCompile Include="src\Renderer\Camera.cpp" />
+    <ClCompile Include="src\Renderer\D3D11Renderer.cpp" />
+    <ClCompile Include="src\ResourceSystem\Animation\AnimationFrame.cpp" />
+    <ClCompile Include="src\ResourceSystem\Animation\FTSpineAnimation.cpp" />
+    <ClCompile Include="src\ResourceSystem\Animation\FTSpriteAnimation.cpp" />
+    <ClCompile Include="src\ResourceSystem\Cubemap\FTCubemap.cpp" />
+    <ClCompile Include="src\ResourceSystem\D3D11PSO.cpp" />
+    <ClCompile Include="src\ResourceSystem\D3D11Resource.cpp" />
+    <ClCompile Include="src\ResourceSystem\Font\FontChar.cpp" />
+    <ClCompile Include="src\ResourceSystem\Font\FTFont.cpp" />
+    <ClCompile Include="src\ResourceSystem\FTFontMap.cpp" />
+    <ClCompile Include="src\ResourceSystem\FTTexture.cpp" />
+    <ClCompile Include="src\ResourceSystem\Material\FTMaterial.cpp" />
+    <ClCompile Include="src\ResourceSystem\Material\SpriteAnimMat.cpp" />
+    <ClCompile Include="src\ResourceSystem\Material\StandardMaterial.cpp" />
+    <ClCompile Include="src\ResourceSystem\Mesh\FTMeshData.cpp" />
+    <ClCompile Include="src\ResourceSystem\Mesh\FTMeshDataPack.cpp" />
+    <ClCompile Include="src\ResourceSystem\Mesh\FTMeshGroup.cpp" />
+    <ClCompile Include="src\ResourceSystem\Mesh\GeometryGenerator.cpp" />
+    <ClCompile Include="src\ResourceSystem\Shader\FTGeometryShader.cpp" />
+    <ClCompile Include="src\ResourceSystem\Shader\FTPixelShader.cpp" />
+    <ClCompile Include="src\ResourceSystem\Shader\FTShader.cpp" />
+    <ClCompile Include="src\ResourceSystem\Shader\FTVertexShader.cpp" />
+    <ClCompile Include="src\ResourceSystem\Shape\FTRectangle.cpp" />
+    <ClCompile Include="src\ResourceSystem\Shape\FTShape.cpp" />
+    <ClCompile Include="src\ResourceSystem\Sprite\FTSprite.cpp" />
+    <ClCompile Include="src\ResourceSystem\Sprite\FTTileMap.cpp" />
+    <ClCompile Include="src\ResourceSystem\Sprite\Tile.cpp" />
+    <ClCompile Include="src\Utility\D3D11Utils.cpp" />
+    <ClCompile Include="Utility\D3D11Utils.cpp" />
+    <ClCompile Include="Entity\D3D11Window.cpp" />
+    <ClCompile Include="ResourceSystem\Animation\AnimationFrame.cpp" />
+    <ClCompile Include="ResourceSystem\Animation\FTSpineAnimation.cpp" />
+    <ClCompile Include="ResourceSystem\Animation\FTSpriteAnimation.cpp" />
+    <ClCompile Include="ResourceSystem\Cubemap\FTCubemap.cpp" />
+    <ClCompile Include="ResourceSystem\D3D11PSO.cpp" />
+    <ClCompile Include="ResourceSystem\D3D11Resource.cpp" />
+    <ClCompile Include="ResourceSystem\Font\FontChar.cpp" />
+    <ClCompile Include="ResourceSystem\Font\FTFont.cpp" />
+    <ClCompile Include="ResourceSystem\FTFontMap.cpp" />
+    <ClCompile Include="ResourceSystem\FTTexture.cpp" />
+    <ClCompile Include="ResourceSystem\Material\FTMaterial.cpp" />
+    <ClCompile Include="ResourceSystem\Material\SpriteAnimMat.cpp" />
+    <ClCompile Include="ResourceSystem\Material\StandardMaterial.cpp" />
+    <ClCompile Include="ResourceSystem\Mesh\FTMeshData.cpp" />
+    <ClCompile Include="ResourceSystem\Mesh\FTMeshDataPack.cpp" />
+    <ClCompile Include="ResourceSystem\Mesh\FTMeshGroup.cpp" />
+    <ClCompile Include="ResourceSystem\Mesh\GeometryGenerator.cpp" />
+    <ClCompile Include="ResourceSystem\Shader\FTGeometryShader.cpp" />
+    <ClCompile Include="ResourceSystem\Shader\FTPixelShader.cpp" />
+    <ClCompile Include="ResourceSystem\Shader\FTShader.cpp" />
+    <ClCompile Include="ResourceSystem\Shader\FTVertexShader.cpp" />
+    <ClCompile Include="ResourceSystem\Shape\FTRectangle.cpp" />
+    <ClCompile Include="ResourceSystem\Shape\FTShape.cpp" />
+    <ClCompile Include="ResourceSystem\Sprite\FTSprite.cpp" />
+    <ClCompile Include="ResourceSystem\Sprite\FTTileMap.cpp" />
+    <ClCompile Include="ResourceSystem\Sprite\Tile.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Component\Animator.h" />
+    <ClInclude Include="include\Component\D3D11Component.h" />
+    <ClInclude Include="include\Component\MeshRenderer.h" />
+    <ClInclude Include="include\Component\SpineAnimator.h" />
+    <ClInclude Include="include\Component\SpriteRenderer.h" />
+    <ClInclude Include="include\Component\TileMapRenderer.h" />
+    <ClInclude Include="include\DebugFuncs.h" />
+    <ClInclude Include="include\Entity\D3D11Window.h" />
+    <ClInclude Include="include\framework.h" />
+    <ClInclude Include="include\InputSystem\D3D11InputDevice.h" />
+    <ClInclude Include="include\Manager\AnimationManager.h" />
+    <ClInclude Include="include\Manager\DebugShapes.h" />
+    <ClInclude Include="include\Manager\FTSpineLoader.h" />
+    <ClInclude Include="include\Manager\LightManager.h" />
+    <ClInclude Include="include\Manager\ResourceManager.h" />
+    <ClInclude Include="include\pch.h" />
+    <ClInclude Include="include\Plugin\PluginKey.h" />
+    <ClInclude Include="include\Renderer\Camera.h" />
+    <ClInclude Include="include\Renderer\D3D11Renderer.h" />
+    <ClInclude Include="include\Renderer\WindowProcess.h" />
+    <ClInclude Include="include\ResourceSystem\Animation\AnimationFrame.h" />
+    <ClInclude Include="include\ResourceSystem\Animation\FTSpineAnimation.h" />
+    <ClInclude Include="include\ResourceSystem\Animation\FTSpriteAnimation.h" />
+    <ClInclude Include="include\ResourceSystem\Cubemap\FTCubemap.h" />
+    <ClInclude Include="include\ResourceSystem\D3D11PSO.h" />
+    <ClInclude Include="include\ResourceSystem\D3D11Resource.h" />
+    <ClInclude Include="include\ResourceSystem\Font\FontChar.h" />
+    <ClInclude Include="include\ResourceSystem\Font\FontKerning.h" />
+    <ClInclude Include="include\ResourceSystem\Font\FTFont.h" />
+    <ClInclude Include="include\ResourceSystem\Font\TextAttribute.h" />
+    <ClInclude Include="include\ResourceSystem\Font\TextVertex.h" />
+    <ClInclude Include="include\ResourceSystem\FTFontMap.h" />
+    <ClInclude Include="include\ResourceSystem\FTTexture.h" />
+    <ClInclude Include="include\ResourceSystem\Light.h" />
+    <ClInclude Include="include\ResourceSystem\Material\FTMaterial.h" />
+    <ClInclude Include="include\ResourceSystem\Material\SpriteAnimMat.h" />
+    <ClInclude Include="include\ResourceSystem\Material\StandardMaterial.h" />
+    <ClInclude Include="include\ResourceSystem\Mesh\FTMeshData.h" />
+    <ClInclude Include="include\ResourceSystem\Mesh\FTMeshDataPack.h" />
+    <ClInclude Include="include\ResourceSystem\Mesh\FTMeshGroup.h" />
+    <ClInclude Include="include\ResourceSystem\Mesh\GeometryGenerator.h" />
+    <ClInclude Include="include\ResourceSystem\Mesh\Mesh.h" />
+    <ClInclude Include="include\ResourceSystem\Mesh\MeshConstantData.h" />
+    <ClInclude Include="include\ResourceSystem\Mesh\Vertex.h" />
+    <ClInclude Include="include\ResourceSystem\Shader\FTGeometryShader.h" />
+    <ClInclude Include="include\ResourceSystem\Shader\FTPixelShader.h" />
+    <ClInclude Include="include\ResourceSystem\Shader\FTShader.h" />
+    <ClInclude Include="include\ResourceSystem\Shader\FTVertexShader.h" />
+    <ClInclude Include="include\ResourceSystem\Shape\FTRectangle.h" />
+    <ClInclude Include="include\ResourceSystem\Shape\FTShape.h" />
+    <ClInclude Include="include\ResourceSystem\Sprite\FTSprite.h" />
+    <ClInclude Include="include\ResourceSystem\Sprite\FTTileMap.h" />
+    <ClInclude Include="include\ResourceSystem\Sprite\Tile.h" />
+    <ClInclude Include="include\Utility\D3D11Utils.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

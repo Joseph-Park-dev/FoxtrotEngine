@@ -7,7 +7,7 @@
 #include "Manager/ResourceManager.h"
 #include "Actor/Transform.h"
 #include "Actor/Steering.h"
-#include "Math/FTMath.h"
+#include "FTMath.h"
 #include "ResourceSystem/Shader/FTVertexShader.h"
 #include "ResourceSystem/Shader/FTGeometryShader.h"
 #include "ResourceSystem/Shader/FTPixelShader.h"
@@ -129,7 +129,7 @@ namespace D3D11
 		mGCSpriteData = data;
 	}
 
-	FTSprite::FTSprite(FTResourceDef& resDef, D3D11Renderer* renderer)
+	FTSprite::FTSprite(Common::FTResourceDef& resDef, D3D11Renderer* renderer)
 		: FTMeshGroup(resDef, renderer, nullptr)
 		, mGCMatData(DBG_NEW PointVPMat)
 		, mGCSpriteData(DBG_NEW SpriteGCData)
@@ -140,7 +140,7 @@ namespace D3D11
 		delete vertex;
 	}
 
-	FTSprite::FTSprite(FTResourceDef& resDef, D3D11Renderer* renderer, bool isAnim)
+	FTSprite::FTSprite(Common::FTResourceDef& resDef, D3D11Renderer* renderer, bool isAnim)
 		: FTMeshGroup(resDef, renderer, nullptr)
 		, mGCMatData(DBG_NEW PointVPMat)
 		, mGCSpriteData(DBG_NEW SpriteGCData)

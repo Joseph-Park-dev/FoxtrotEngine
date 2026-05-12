@@ -16,7 +16,7 @@
 #include <iosfwd>
 
 #include "Utility/SingletonMacro.h"
-#include "Math/FTMath.h"
+#include "FTMath.h"
 
 namespace Core
 {

@@ -170,14 +170,14 @@ namespace D3D11
 	ComPtr<ID3D11RenderTargetView>& D3D11Window::GetRTV() { return mRTV; }
 	ComPtr<ID3D11DepthStencilView>& D3D11Window::GetDSV() { return mDSV; }
 
-	D3D11Window::D3D11Window(Plugin* owner, const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea)
-		: FTWindow(owner, title, width, height, rndArea)
+	D3D11Window::D3D11Window(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea)
+		: FTWindow(title, width, height, rndArea)
 	{
 		this->Initialize(WS_OVERLAPPED);
 	}
 
-	D3D11Window::D3D11Window(Plugin* owner, const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea, WNDPROC proc, WNDPROC_Params* params)
-		: FTWindow(owner, title, width, height, rndArea)
+	D3D11Window::D3D11Window(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea, WNDPROC proc, WNDPROC_Params* params)
+		: FTWindow(title, width, height, rndArea)
 	{
 		this->Initialize(WS_OVERLAPPED, proc, params);
 	}
@@ -226,15 +226,11 @@ namespace D3D11
 			core = reinterpret_cast<Core::FTCore*>(
 				GetWindowLongPtr(hwnd, GWLP_USERDATA));
 		}
-
-		if (core)
+		if (msg == WM_DESTROY)
 		{
-			if (msg == WM_DESTROY)
-			{
-				core->SetIsRunning(false);
-				return 0;
-			}
+			return 0;
 		}
+
 		return DefWindowProc(hwnd, msg, wParam, lParam);
 	}
 } // namespace D3D11

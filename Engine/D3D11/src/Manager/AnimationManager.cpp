@@ -21,7 +21,9 @@
 	#include "Utility/EditorHelper.h"
 	#include "FileSystem/BufferSizes.h"
 	#include "DLLData.h"
-	#include "../Core/Manager/ResourceManager.h"
+	// NULLPATH WARNING: This relative path include is problematic.
+	// It references Core::ProcName::GetJSONs/GetTexts which are defined in Core/include/Manager/ResourceManager.h
+	// Consider moving Core::ProcName to a separate header to avoid ResourceManager.h name collision.
 #endif // FOXTROT_EDITOR
 
 namespace D3D11

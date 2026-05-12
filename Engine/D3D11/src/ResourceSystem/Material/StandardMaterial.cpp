@@ -9,9 +9,9 @@
 #include "Debugging/DebugFuncs.h"
 
 #ifdef FOXTROT_EDITOR
-	#include <EditorUtils.h>
-	#include <CommandHistory.h>
-	#include <EditorHelper.h>
+	#include "EditorUtils.h"
+	#include "CommandHistory.h"
+	#include "Utility/EditorHelper.h"
 #endif
 
 namespace D3D11

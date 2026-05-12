@@ -13,7 +13,7 @@
 #include <d3d11.h>
 #include <wrl.h>
 
-#include "Math/FTMath.h"
+#include "FTMath.h"
 #include "ResourceSystem/Mesh/MeshConstantData.h"
 
 class Transform;

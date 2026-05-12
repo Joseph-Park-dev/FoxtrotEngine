@@ -13,7 +13,7 @@
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Manager/ResourceManager.h"
-#include "Math/FTMath.h"
+#include "FTMath.h"
 #include "Renderer/Camera.h"
 #include "Utility/D3D11Utils.h"
 #include "Renderer/D3D11Renderer.h"
@@ -34,7 +34,7 @@
 
 	#define IMGUI_DEFINE_MATH_OPERATORS
 	#include <imgui.h>
-	#include <ImGuiFileDialog.h>
+	#include <ImGuiFileDialog/ImGuiFileDialog.h>
 #endif // FOXTROT_EDITOR
 
 namespace D3D11

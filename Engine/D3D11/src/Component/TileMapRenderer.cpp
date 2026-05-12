@@ -15,7 +15,7 @@
 #include <iostream>
 
 #include "Actor/Actor.h"
-#include "Math/FTMath.h"
+#include "FTMath.h"
 #include "ResourceSystem/Sprite/Tile.h"
 #include "ResourceSystem/FTTexture.h"
 
@@ -37,7 +37,7 @@
 
 	#define IMGUI_DEFINE_MATH_OPERATORS
 	#include <imgui.h>
-	#include <ImGuiFileDialog.h>
+	#include <ImGuiFileDialog/ImGuiFileDialog.h>
 
 	#include "FileSystem/FileTypes.h"
 #endif

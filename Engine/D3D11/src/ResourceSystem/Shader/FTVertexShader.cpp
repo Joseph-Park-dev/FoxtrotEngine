@@ -1,10 +1,10 @@
-#include "FTVertexShader.h"
+#include "ResourceSystem/Shader/FTVertexShader.h"
 
 #include "Renderer/D3D11Renderer.h"
 #include "Utility/D3D11Utils.h"
-#include "Dynamic/RecordNode.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Manager/ResourceManager.h"
+#include "FTDS/Dynamic/RecordNode.h"
 
 namespace D3D11
 {
@@ -26,8 +26,8 @@ namespace D3D11
 
 		mShader.Reset();
 
-		Common::FTDS::String   path		 = resDef.Path;
-		const wchar_t* wcharPath = path.WC_Str();
+		Common::FTDS::String path	   = resDef.Path;
+		const wchar_t*		 wcharPath = path.WC_Str();
 		DX::ThrowIfFailed(
 			D3D11Utils::CreateVertexShaderAndInputLayout(
 				renderer->GetDevice(),
@@ -40,7 +40,7 @@ namespace D3D11
 		delete[] inputDesc;
 	}
 
-	FTVertexShader::FTVertexShader(FTResourceDef& resDef, D3D11Renderer* renderer)
+	FTVertexShader::FTVertexShader(Common::FTResourceDef& resDef, D3D11Renderer* renderer)
 		: D3D11::FTShader(resDef)
 		, mShader(nullptr)
 		, mInputLayout(nullptr)

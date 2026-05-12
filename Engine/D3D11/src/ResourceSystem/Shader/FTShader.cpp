@@ -1,4 +1,4 @@
-#include "FTShader.h"
+#include "ResourceSystem/Shader/FTShader.h"
 
 #include <fstream>
 
@@ -23,7 +23,7 @@ namespace D3D11
 		mType = shaderType;
 	}
 
-	void FTShader::LoadMetaData(FTResourceDef& resDef)
+	void FTShader::LoadMetaData(Common::FTResourceDef& resDef)
 	{
 		Common::FTDS::String metaPath;
 		metaPath.Assign(resDef.Path);

@@ -32,8 +32,33 @@ public:
 	void				  CreateInputDevice();
 	D3D11::D3D11Renderer* CreateRenderer(D3D11::D3D11Window* window);
 	D3D11::D3D11Window*	  CreateD3D11Window(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea);
-	virtual void		  ProcessInput() override;
-	virtual void		  Render() override;
+
+	void SaveProperties();
+	void LoadProperties(SceneManager* sceneManager);
+
+public:
+	virtual Core::Entity* GetEntity(const char* name) override;
+
+public:
+	//////////////////////////////////
+	////// Initialization Phase //////
+	//////////////////////////////////
+	virtual void Initialize() override;
+	virtual void Setup() override;
+
+	///////////////////////
+	////// Game Loop //////
+	///////////////////////
+	virtual void ProcessInput() override;
+	virtual void Update(float deltaTime) override;
+	virtual void LateUpdate(float deltaTime) override;
+	virtual void Render() override;
+	virtual void ProcessEvent() override;
+
+	///////////////////////////////
+	////// Termination Phase //////
+	///////////////////////////////
+	virtual void ShutDown() override;
 
 public:
 	D3D11Plugin(const char* name);
@@ -44,6 +69,8 @@ private:
 	D3D11::D3D11Renderer*								  mRenderer;
 	Common::FTDS::DynamicArray<D3D11::D3D11Window*>*	  mWindows;
 	D3D11::Camera*										  mCamera;
+
+	Common::FTDS::DynamicArray<D3D11::D3D11Component*>* mRegisteredComps;
 };
 
 void D3D11Plugin::CreateInputDevice()
@@ -61,9 +88,21 @@ D3D11::D3D11Renderer* D3D11Plugin::CreateRenderer(D3D11::D3D11Window* window)
 
 D3D11::D3D11Window* D3D11Plugin::CreateD3D11Window(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea)
 {
-	D3D11::D3D11Window* window = DBG_NEW D3D11::D3D11Window(this, title, width, height, rndArea);
+	D3D11::D3D11Window* window = DBG_NEW D3D11::D3D11Window(title, width, height, rndArea);
 	mWindows->PushBack(window);
 	return window;
+}
+
+void D3D11Plugin::Initialize()
+{
+	for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+		(*iter)->Initialize();
+}
+
+void D3D11Plugin::Setup()
+{
+	for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+		(*iter)->Setup();
 }
 
 void D3D11Plugin::ProcessInput()
@@ -85,13 +124,33 @@ void D3D11Plugin::ProcessInput()
 	}
 }
 
+void D3D11Plugin::Update(float deltaTime)
+{
+	for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+	{
+		if (!(*iter)->GetOwner()->IsActive())
+			continue;
+		(*iter)->Update(deltaTime);
+	}
+}
+
+void D3D11Plugin::LateUpdate(float deltaTime)
+{
+	for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+	{
+		if (!(*iter)->GetOwner()->IsActive())
+			continue;
+		(*iter)->LateUpdate(deltaTime);
+	}
+}
+
 void D3D11Plugin::Render()
 {
 	for (auto iter = mWindows->Begin(); iter != mWindows->End(); ++iter)
 	{
 		// mGameRenderer->RenderClear(mWindow);
 		(*iter)->BeginRender(mRenderer);
-		for (auto iter = GetRegisteredComps()->Begin(); iter != GetRegisteredComps()->End(); ++iter)
+		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
 		{
 			if (!(*iter)->GetOwner()->IsActive())
 				continue;
@@ -99,6 +158,10 @@ void D3D11Plugin::Render()
 		}
 		(*iter)->EndRender(mRenderer);
 	}
+}
+
+void D3D11Plugin::ProcessEvent()
+{
 }
 
 void D3D11Plugin::SaveProperties()
@@ -167,17 +230,17 @@ void D3D11Plugin::LoadProperties(SceneManager* sceneManager)
 	}
 }
 
-void D3D11Plugin::SaveManagerData(std::ofstream& ofs)
+Core::Entity* D3D11Plugin::GetEntity(const char* name)
 {
+	return nullptr;
 }
 
-void D3D11Plugin::LoadManagerData(std::ifstream& ifs)
+void D3D11Plugin::ShutDown()
 {
 }
 
 D3D11Plugin::D3D11Plugin(const char* name)
-	: Core::Plugin(name)
-	, mInputDevices(DBG_NEW Common::FTDS::DynamicArray<D3D11::D3D11InputDevice*>)
+	: mInputDevices(DBG_NEW Common::FTDS::DynamicArray<D3D11::D3D11InputDevice*>)
 	, mRenderer(nullptr)
 	, mWindows(DBG_NEW Common::FTDS::DynamicArray<D3D11::D3D11Window*>)
 	, mCamera(nullptr)
@@ -194,11 +257,7 @@ D3D11Plugin::~D3D11Plugin()
 	delete mWindows;
 }
 
-void D3D11Plugin::LoadProperties()
-{
-}
-
-extern "C" __declspec(dllexport) Plugin* CreatePlugin(const char* name)
+extern "C" __declspec(dllexport) Core::IPlugin* CreatePlugin(const char* name)
 {
 	return new D3D11Plugin(name);
 }

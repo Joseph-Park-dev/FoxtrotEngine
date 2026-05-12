@@ -10,7 +10,7 @@
 #include "ResourceSystem/Sprite/FTSprite.h"
 
 #include "TemplateFunctions.h"
-#include "Math/FTMath.h"
+#include "FTMath.h"
 
 namespace Core
 {

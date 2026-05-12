@@ -16,7 +16,7 @@
 #include "ResourceSystem/Shader/FTPixelShader.h"
 #include "Renderer/D3D11Renderer.h"
 #include "Renderer/Camera.h"
-#include "FTCore.h"
+// #include "FTCore.h" // NULLPATH: File doesn't exist - FTCore class defined in FTCore.cpp without header
 #include "Actor/Actor.h"
 #include "Actor/Transform.h"
 

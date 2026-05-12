@@ -20,7 +20,7 @@
 #include "ResourceSystem/FTTexture.h"
 
 #include "Actor/Transform.h"
-#include "FTCore.h"
+// #include "FTCore.h" // NULLPATH: File doesn't exist - FTCore class defined in FTCore.cpp without header
 #include "ResourceSystem/Mesh/Mesh.h"
 #include "ResourceSystem/Mesh/FTMeshData.h"
 #include "ResourceSystem/Mesh/FTMeshGroup.h"

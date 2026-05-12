@@ -10,7 +10,7 @@
 
 #include "Actor/Actor.h"
 #include "Actor/Transform.h"
-#include "FTCore.h"
+// #include "FTCore.h" // NULLPATH: File doesn't exist - FTCore class defined in FTCore.cpp
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Manager/ResourceManager.h"
@@ -31,7 +31,7 @@
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
 	#include "EditorUtils.h"
-	#include <EditorCamera.h>
+	#include "EditorCamera.h"
 
 	#define IMGUI_DEFINE_MATH_OPERATORS
 	#include <imgui/imgui.h>

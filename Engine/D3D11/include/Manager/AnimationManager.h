@@ -10,12 +10,14 @@ namespace Core
 	class FTCore;
 	class FTJSON;
 	class FTText;
+	class DirectoryHelper;
 } // namespace Core
 
 #ifdef FOXTROT_EDITOR
 	#include "Manager/ResourceManager.h"
-using GET_JSON_FUNC = Common::ResourcePack<Core::FTJSON>* (*)();
-using GET_TEXT_FUNC = Common::ResourcePack<Core::FTText>* (*)();
+using GET_JSON_FUNC		  = Common::ResourcePack<Core::FTJSON>* (*)();
+using GET_TEXT_FUNC		  = Common::ResourcePack<Core::FTText>* (*)();
+using GET_ASSET_PATH_FUNC = Common::FTDS::String* (*)();
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -59,8 +61,9 @@ namespace D3D11
 		GET_TEXT_FUNC& GetTextsFuncGetter();
 
 	private:
-		GET_JSON_FUNC GetJSONsFunc;
-		GET_TEXT_FUNC GetTextsFunc;
+		GET_JSON_FUNC		GetJSONsFunc;
+		GET_TEXT_FUNC		GetTextsFunc;
+		GET_ASSET_PATH_FUNC GetAssetPathFunc;
 
 	private:
 		FTSpriteAnimation* CreateAnimationFromJSON(

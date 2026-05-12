@@ -24,7 +24,7 @@
 #include "FileSystem/FileIOHelper.h"
 
 #ifdef FOXTROT_EDITOR
-	#include <CommandHistory.h>
+	#include "CommandHistory.h"
 	#include "DLLData.h"
 #endif
 

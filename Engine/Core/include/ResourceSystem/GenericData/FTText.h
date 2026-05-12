@@ -9,8 +9,8 @@
 #pragma once
 #include "ResourceSystem/CoreResource.h"
 
-#include <FTDS/Dynamic/DynamicArray.h>
-#include <FTDS/Static/FTString.h>
+#include "FTDS/Dynamic/DynamicArray.h"
+#include "FTDS/Static/FTString.h"
 
 namespace Core
 {

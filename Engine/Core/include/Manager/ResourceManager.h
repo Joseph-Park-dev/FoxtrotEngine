@@ -3,6 +3,7 @@
 
 #include "Utility/SingletonMacro.h"
 #include "ResourceSystem/ResourcePack.h"
+#include "Plugin/CoreExports.h"
 
 namespace Core
 {

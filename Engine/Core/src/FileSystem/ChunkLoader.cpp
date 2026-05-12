@@ -13,7 +13,7 @@
 #include <iostream>
 #include <filesystem>
 
-#include "Math/FTMath.h"
+#include "FTMath.h"
 #include "TemplateFunctions.h"
 #include "Manager/SceneManager.h"
 #include "Manager/ResourceManager.h"

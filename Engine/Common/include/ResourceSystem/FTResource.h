@@ -9,9 +9,7 @@
 #pragma once
 #include <iosfwd>
 
-#include "Debugging/DebugMemAlloc.h"
-#include "FTDS/Static/FTString.h"
-#include "Plugin/CoreExports.h"
+#include "../FTDS/Static/FTString.h"
 
 namespace Common
 {
@@ -98,6 +96,4 @@ namespace Common
 			constexpr const char* RELATIVE_PATH = "RelativePath";
 		} // namespace FTResource
 	} // namespace ChunkKey
-
-	extern "C" CORE_API FTResource* CreateResource(Common::FTResourceDef& def, FoxtrotRenderer* rnd);
-} // namespace Core
+} // namespace Common

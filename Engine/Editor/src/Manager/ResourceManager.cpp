@@ -11,7 +11,9 @@
 #include "Plugin/IPlugin.h"
 
 #include "DLLData.h"
-#include <Core/src/Manager/ResourceManager.h>
+// NOTE: Including Core's ResourceManager.h to access Core::ChunkKey constants.
+// This path may need adjustment based on include directory configuration.
+#include "Manager/ResourceManager.h"
 
 namespace Editor
 {

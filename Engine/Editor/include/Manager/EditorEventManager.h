@@ -1,7 +1,7 @@
 #pragma once
 #include "Utility/SingletonMacro.h"
 
-#include <../Core/Manager/EventManager.h>
+#include "Manager/EventManager.h"
 
 namespace Editor
 {

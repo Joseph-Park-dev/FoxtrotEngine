@@ -8,7 +8,7 @@
 
 #include "Renderer/FTRectArea.h"
 
-#include "Math/FTMath.h"
+#include "FTMath.h"
 #include "FileSystem/FileIOHelper.h"
 #include "FTDS/Static/FTString.h"
 

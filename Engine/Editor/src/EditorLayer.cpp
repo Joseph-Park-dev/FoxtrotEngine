@@ -37,7 +37,7 @@
 
 #include "ResourceSystem/ResPath.h"
 
-#include <Manager/AnimationManager.h>
+#include "Manager/AnimationManager.h"
 
 namespace Editor
 {

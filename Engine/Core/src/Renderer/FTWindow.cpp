@@ -12,7 +12,7 @@
 //#include "InputSystem/FTInputDevice.h"
 //#include "Manager/SceneManager.h"
 //#include "Renderer/FoxtrotRenderer.h"
-//#include "Math/FTMath.h"
+//#include "FTMath.h"
 //#include "Renderer/FTRectArea.h"
 //#include "FTDS/Static/FTString.h"
 //

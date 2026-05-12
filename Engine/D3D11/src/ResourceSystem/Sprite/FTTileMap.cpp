@@ -23,7 +23,6 @@
 #include "ResourceSystem/GenericData/FTCSV.h"
 #include "ResourceSystem/D3D11Resource.h"
 #include "ResourceSystem/FTResource.h"
-#include "..\Manager\ResourceManager.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"

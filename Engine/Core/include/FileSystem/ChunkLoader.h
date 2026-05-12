@@ -22,7 +22,7 @@
 #include <iosfwd>
 
 #include "Utility/SingletonMacro.h"
-#include "FTDS/static/FTString.h"
+#include "FTDS/Static/FTString.h"
 
 namespace Core
 {

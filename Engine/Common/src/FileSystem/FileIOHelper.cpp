@@ -6,14 +6,14 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "FileSystem/FileIOHelper.h"
+#include <./include/FileSystem/FileIOHelper.h>
 
 namespace Common
 {
 	std::list<Common::FTDS::String> Common::FileIOHelper::mDataBuffer	   = {};
-	std::list<int>			Common::FileIOHelper::mItemCounts	   = {};
+	std::list<int>					Common::FileIOHelper::mItemCounts	   = {};
 	std::list<Common::FTDS::String> Common::FileIOHelper::mCurrentDataPack = {};
-	size_t					Common::FileIOHelper::mDataPackIdent   = 0;
+	size_t							Common::FileIOHelper::mDataPackIdent   = 0;
 	Common::FTDS::String			Common::FileIOHelper::mItemIdent	   = Common::FTDS::String(mDataPackIdent, '\t');
 
 	// This function is less safe since there is no assert to check data pack name
@@ -358,8 +358,6 @@ namespace Common
 		}
 		mItemCounts.push_back(0);
 		mCurrentDataPack.push_back(dataPackKey);
-
-		std::cout << "Saving data pack : " << dataPackKey.C_Str() << '\n';
 	}
 
 	void Common::FileIOHelper::EndDataPackSave(std::ofstream& ofs, Common::FTDS::String dataPackKey)

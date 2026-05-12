@@ -3,7 +3,7 @@
 #include "Math/FTMath.h"
 
 #ifdef FOXTROT_EDITOR
-	#include <CommandHistory.h>
+	#include "CommandHistory.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11

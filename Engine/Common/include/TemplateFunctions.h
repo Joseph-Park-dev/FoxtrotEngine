@@ -20,8 +20,7 @@
 #include <filesystem>
 
 #include "FTDS/Static/FTString.h"
-#include "Math/FTMath.h"
-#include "Debugging/DebugMemAlloc.h"
+#include <../Math/include/FTMath.h>
 
 // static Common::FTDS::String ToString(const wchar_t* text)
 //{
@@ -143,7 +142,7 @@ namespace Common
 	inline Common::FTDS::String ExtractFileName(const char* path)
 	{
 		std::filesystem::path p(path);
-		Common::FTDS::String		  pathStr = Common::FTDS::String(p.string().c_str());
+		Common::FTDS::String  pathStr = Common::FTDS::String(p.string().c_str());
 		int					  idx	  = pathStr.RFind("\\");
 		pathStr.SubStr(idx + 1, pathStr.GetLength() - idx); // 1 -> "\\" should be omitted.
 		return pathStr;
@@ -168,7 +167,7 @@ namespace Common
 	inline Common::FTDS::String ExtractFileType(const char* path)
 	{
 		std::filesystem::path p(path);
-		Common::FTDS::String		  pathStr = Common::FTDS::String(p.string().c_str());
+		Common::FTDS::String  pathStr = Common::FTDS::String(p.string().c_str());
 		int					  idx	  = pathStr.RFind(".");
 		pathStr.SubStr(idx, pathStr.GetLength() - idx);
 		return pathStr;
@@ -245,4 +244,4 @@ namespace Common
 		}
 		map.clear();
 	}
-} // namespace Core
+} // namespace Common

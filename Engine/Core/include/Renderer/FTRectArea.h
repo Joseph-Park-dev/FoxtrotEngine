@@ -12,7 +12,7 @@
 
 #pragma once
 #include <iosfwd>
-#include "Math/FTMath.h"
+#include "FTMath.h"
 #include "Plugin/CoreExports.h"
 
 namespace Core

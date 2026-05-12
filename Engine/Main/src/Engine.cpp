@@ -1,8 +1,8 @@
 #include "Engine.h"
 
-#include "Plugin/Plugin.h"
-#include "FTCore.h"
-#include "Timer.h"
+#include "Plugin/IPlugin.h"
+// #include "FTCore.h" // NULLPATH: File doesn't exist - FTCore is defined in FTCore.cpp
+#include "Entity/Timer.h"
 
 namespace GameData
 {

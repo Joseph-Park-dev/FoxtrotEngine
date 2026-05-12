@@ -25,7 +25,6 @@
 #include "ResourceSystem/GenericData/FTJSON.h"
 #include "ResourceSystem/FTTexture.h"
 #include "Manager/ResourceManager.h"
-#include "../Manager/ResourceManager.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "Manager/AnimationManager.h"

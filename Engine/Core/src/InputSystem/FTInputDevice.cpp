@@ -11,7 +11,7 @@
 //#include "TemplateFunctions.h"
 //#include "FTCore.h"
 //#include "Renderer/FTWindow.h"
-//#include "Math/FTMath.h"
+//#include "FTMath.h"
 //#include "FTDS/Dynamic/DynamicArray.h"
 //
 //#ifdef FOXTROT_EDITOR

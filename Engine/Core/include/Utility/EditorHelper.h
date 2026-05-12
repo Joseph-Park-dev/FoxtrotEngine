@@ -1,7 +1,7 @@
 #pragma once
 #ifdef FOXTROT_EDITOR
-	#include <Plugin/CoreExports.h>
-	#include <CommandHistory.h>
+	#include "Plugin/CoreExports.h"
+	#include "CommandHistory.h"
 
 namespace Editor
 {

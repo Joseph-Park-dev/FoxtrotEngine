@@ -13,7 +13,7 @@
 /// </summary>
 
 #pragma once
-#include "Math/FTMath.h"
+#include "FTMath.h"
 #include "FTDS/Dynamic/DynamicArray.h"
 
 namespace Core

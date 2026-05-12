@@ -76,6 +76,7 @@
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
+    <Import Project="..\Common\Common.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -190,14 +191,14 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDIr)include\Common;$(SolutionDIr)include\D3D11;$(SolutionDIr)include\D3D11\Component;$(SolutionDIr)include\D3D11\Entity;$(SolutionDIr)include\D3D11\InputSystem;$(SolutionDIr)include\D3D11\Manager;$(SolutionDIr)include\D3D11\Plugin;$(SolutionDIr)include\D3D11\Renderer;$(SolutionDIr)include\D3D11\ResourceSystem;$(SolutionDIr)include\D3D11\Utility;$(SolutionDIr)include\Core;$(SolutionDIr)include\Editor;$(SolutionDir)include\Math;$(SolutionDIr)extern\imgui;$(SolutionDIr)extern\ImGuiFileDialog;$(SolutionDIr)extern\json\include;$(SolutionDIr)extern\spine-runtimes\spine-cpp\spine-cpp\include;$(SolutionDIr)extern\magic_enum\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\D3D11\include;$(SolutionDir)Engine\Common\include;$(SolutionDir)Engine\Core\include;$(SolutionDir)Engine\Editor\include;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Main\include;$(SolutionDir)third_party;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\json\include;$(SolutionDir)third_party\spine-runtimes\spine-cpp\spine-cpp\include;$(SolutionDir)third_party\magic_enum\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>d3d11.lib;D3DCompiler.lib;Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Math\builds</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)build\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -223,21 +224,73 @@
     <None Include="include\DirectXTex.inl" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Component\Animator.cpp" />
-    <ClCompile Include="Component\D3D11Component.cpp" />
-    <ClCompile Include="Component\MeshRenderer.cpp" />
-    <ClCompile Include="Component\SpineAnimator.cpp" />
-    <ClCompile Include="Component\SpriteRenderer.cpp" />
-    <ClCompile Include="Component\TileMapRenderer.cpp" />
-    <ClCompile Include="InputSystem\D3D11InputDevice.cpp" />
-    <ClCompile Include="Manager\AnimationManager.cpp" />
-    <ClCompile Include="Manager\DebugShapes.cpp" />
-    <ClCompile Include="Manager\FTSpineLoader.cpp" />
-    <ClCompile Include="Manager\LightManager.cpp" />
-    <ClCompile Include="Manager\ResourceManager.cpp" />
-    <ClCompile Include="Plugin\D3D11Plugin.cpp" />
-    <ClCompile Include="Renderer\Camera.cpp" />
-    <ClCompile Include="Renderer\D3D11Renderer.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Animation.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AnimationState.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AnimationStateData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Atlas.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AtlasAttachmentLoader.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Attachment.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AttachmentLoader.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AttachmentTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Bone.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\BoneData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\BoundingBoxAttachment.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\ClippingAttachment.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\ColorTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\ConstraintData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\CurveTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\DeformTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\DrawOrderTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Event.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\EventData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\EventTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Extension.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\IkConstraint.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\IkConstraintData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\IkConstraintTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\InheritTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Json.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\LinkedMesh.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Log.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\MathUtil.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\MeshAttachment.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathAttachment.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathConstraint.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathConstraintData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathConstraintMixTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathConstraintPositionTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathConstraintSpacingTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PhysicsConstraint.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PhysicsConstraintData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PhysicsConstraintTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PointAttachment.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\RegionAttachment.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\RotateTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\RTTI.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\ScaleTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Sequence.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SequenceTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\ShearTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Skeleton.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonBinary.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonBounds.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonClipping.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonJson.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonRenderer.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Skin.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Slot.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SlotData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SpineObject.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\TextureLoader.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Timeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\TransformConstraint.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\TransformConstraintData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\TransformConstraintTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\TranslateTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Triangulator.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Updatable.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\VertexAttachment.cpp" />
     <ClCompile Include="src\Component\Animator.cpp" />
     <ClCompile Include="src\Component\D3D11Component.cpp" />
     <ClCompile Include="src\Component\MeshRenderer.cpp" />
@@ -259,7 +312,9 @@
     <ClCompile Include="src\ResourceSystem\Animation\AnimationFrame.cpp" />
     <ClCompile Include="src\ResourceSystem\Animation\FTSpineAnimation.cpp" />
     <ClCompile Include="src\ResourceSystem\Animation\FTSpriteAnimation.cpp" />
-    <ClCompile Include="src\ResourceSystem\Cubemap\FTCubemap.cpp" />
+    <ClCompile Include="src\ResourceSystem\Cubemap\FTCubemap.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\ResourceSystem\D3D11PSO.cpp" />
     <ClCompile Include="src\ResourceSystem\D3D11Resource.cpp" />
     <ClCompile Include="src\ResourceSystem\Font\FontChar.cpp" />
@@ -283,34 +338,6 @@
     <ClCompile Include="src\ResourceSystem\Sprite\FTTileMap.cpp" />
     <ClCompile Include="src\ResourceSystem\Sprite\Tile.cpp" />
     <ClCompile Include="src\Utility\D3D11Utils.cpp" />
-    <ClCompile Include="Utility\D3D11Utils.cpp" />
-    <ClCompile Include="Entity\D3D11Window.cpp" />
-    <ClCompile Include="ResourceSystem\Animation\AnimationFrame.cpp" />
-    <ClCompile Include="ResourceSystem\Animation\FTSpineAnimation.cpp" />
-    <ClCompile Include="ResourceSystem\Animation\FTSpriteAnimation.cpp" />
-    <ClCompile Include="ResourceSystem\Cubemap\FTCubemap.cpp" />
-    <ClCompile Include="ResourceSystem\D3D11PSO.cpp" />
-    <ClCompile Include="ResourceSystem\D3D11Resource.cpp" />
-    <ClCompile Include="ResourceSystem\Font\FontChar.cpp" />
-    <ClCompile Include="ResourceSystem\Font\FTFont.cpp" />
-    <ClCompile Include="ResourceSystem\FTFontMap.cpp" />
-    <ClCompile Include="ResourceSystem\FTTexture.cpp" />
-    <ClCompile Include="ResourceSystem\Material\FTMaterial.cpp" />
-    <ClCompile Include="ResourceSystem\Material\SpriteAnimMat.cpp" />
-    <ClCompile Include="ResourceSystem\Material\StandardMaterial.cpp" />
-    <ClCompile Include="ResourceSystem\Mesh\FTMeshData.cpp" />
-    <ClCompile Include="ResourceSystem\Mesh\FTMeshDataPack.cpp" />
-    <ClCompile Include="ResourceSystem\Mesh\FTMeshGroup.cpp" />
-    <ClCompile Include="ResourceSystem\Mesh\GeometryGenerator.cpp" />
-    <ClCompile Include="ResourceSystem\Shader\FTGeometryShader.cpp" />
-    <ClCompile Include="ResourceSystem\Shader\FTPixelShader.cpp" />
-    <ClCompile Include="ResourceSystem\Shader\FTShader.cpp" />
-    <ClCompile Include="ResourceSystem\Shader\FTVertexShader.cpp" />
-    <ClCompile Include="ResourceSystem\Shape\FTRectangle.cpp" />
-    <ClCompile Include="ResourceSystem\Shape\FTShape.cpp" />
-    <ClCompile Include="ResourceSystem\Sprite\FTSprite.cpp" />
-    <ClCompile Include="ResourceSystem\Sprite\FTTileMap.cpp" />
-    <ClCompile Include="ResourceSystem\Sprite\Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Component\Animator.h" />
@@ -336,7 +363,9 @@
     <ClInclude Include="include\ResourceSystem\Animation\AnimationFrame.h" />
     <ClInclude Include="include\ResourceSystem\Animation\FTSpineAnimation.h" />
     <ClInclude Include="include\ResourceSystem\Animation\FTSpriteAnimation.h" />
-    <ClInclude Include="include\ResourceSystem\Cubemap\FTCubemap.h" />
+    <ClInclude Include="include\ResourceSystem\Cubemap\FTCubemap.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="include\ResourceSystem\D3D11PSO.h" />
     <ClInclude Include="include\ResourceSystem\D3D11Resource.h" />
     <ClInclude Include="include\ResourceSystem\Font\FontChar.h" />

@@ -11,19 +11,21 @@
 #include "ResourceSystem/GenericData/FTJSON.h"
 #include "Manager/ResourceManager.h"
 #include "Manager/FTSpineLoader.h"
+#include "Manager/DirectoryHelper.h"
 #include "FileSystem/NullKeys.h"
 #include "Renderer/FoxtrotRenderer.h"
 
 #include "FTDS/Static/FTString.h"
+#include <../../Core/include/Manager/ResourceManager.h>
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorUtils.h"
 	#include "Utility/EditorHelper.h"
 	#include "FileSystem/BufferSizes.h"
 	#include "DLLData.h"
-	// NULLPATH WARNING: This relative path include is problematic.
-	// It references Core::ProcName::GetJSONs/GetTexts which are defined in Core/include/Manager/ResourceManager.h
-	// Consider moving Core::ProcName to a separate header to avoid ResourceManager.h name collision.
+// NULLPATH WARNING: This relative path include is problematic.
+// It references Core::ProcName::GetJSONs/GetTexts which are defined in Core/include/Manager/ResourceManager.h
+// Consider moving Core::ProcName to a separate header to avoid ResourceManager.h name collision.
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -46,6 +48,9 @@ namespace D3D11
 
 		proc		 = GetProcAddress(coreMod, Core::ProcName::GetTexts);
 		GetTextsFunc = reinterpret_cast<GET_TEXT_FUNC>(proc);
+
+		proc			 = GetProcAddress(coreMod, Core::ProcName::GetAssetPath);
+		GetAssetPathFunc = reinterpret_cast<GET_ASSET_PATH_FUNC>(proc);
 #endif // FOXTROT_EDITOR
 	}
 
@@ -179,9 +184,9 @@ namespace D3D11
 					resDef.FileName = name.C_Str();
 
 					// Update the relative path of the sprite animation.
-					Common::FTDS::String path = DirectoryHelper::GetInstance()->GetAssetPath();
-					path.Append(resDef.FileName);
-					resDef.Path = path.C_Str();
+					Common::FTDS::String* path = GetAssetPathFunc();
+					path->Append(resDef.FileName);
+					resDef.Path = path->C_Str();
 
 					resDef.JSON		   = JSON;
 					resDef.SpriteSheet = texture->GetTexture();
@@ -214,9 +219,9 @@ namespace D3D11
 					resDef.FileName = name.C_Str();
 
 					// Update the relative path of the sprite animation.
-					Common::FTDS::String path = DirectoryHelper::GetInstance()->GetAssetPath();
-					path.Append(resDef.FileName);
-					resDef.Path = path.C_Str();
+					Common::FTDS::String* path = GetAssetPathFunc();
+					path->Append(resDef.FileName);
+					resDef.Path = path->C_Str();
 
 					CreateAnimationFromSpine(resDef, json->GetRelativePath(), atlasTxt->GetRelativePath());
 				}

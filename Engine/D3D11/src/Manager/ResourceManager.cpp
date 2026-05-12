@@ -458,4 +458,11 @@ namespace D3D11
 		return mPSOs;
 	}
 
+	ResourceManager::ResourceManager()
+	{
+	}
+
+	ResourceManager::~ResourceManager()
+	{
+	}
 } // namespace D3D11

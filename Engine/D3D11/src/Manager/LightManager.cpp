@@ -1,7 +1,7 @@
 #include "Manager/LightManager.h"
 
 #include "Debugging/DebugMemAlloc.h"
-#include "ResourceSystem/CubeMap/FTCubemap.h"
+#include "ResourceSystem/Cubemap/FTCubemap.h"
 #include "ResourceSystem/Mesh/GeometryGenerator.h"
 #include "ResourceSystem/Light.h"
 #include "Renderer/D3D11Renderer.h"

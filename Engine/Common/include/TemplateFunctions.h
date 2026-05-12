@@ -20,7 +20,7 @@
 #include <filesystem>
 
 #include "FTDS/Static/FTString.h"
-#include <../Math/include/FTMath.h>
+#include "FTMath.h"
 
 // static Common::FTDS::String ToString(const wchar_t* text)
 //{

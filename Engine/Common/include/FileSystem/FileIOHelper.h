@@ -18,7 +18,7 @@
 #include "../TemplateFunctions.h"
 #include "NullKeys.h"
 #include "../FTDS/Static/FTString.h"
-#include <../Math/include/FTMath.h>
+#include "FTMath.h"
 
 namespace Common
 {

@@ -3,7 +3,7 @@
 
 #include <Windows.h>
 
-#include <../Common/include/Debugging/DebugMemAlloc.h>
+#include <Debugging/DebugMemAlloc.h>
 
 namespace Common
 {

@@ -6,18 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "ResourceSystem/FTResource.h"
-
-#ifdef FOXTROT_EDITOR
-	#define IMGUI_DEFINE_MATH_OPERATORS
-	#include <imgui/imgui.h>
-	#include <imgui/backends/imgui_impl_dx11.h>
-	#include <imgui/backends/imgui_impl_win32.h>
-	#include <ImGuiFileDialog/ImGuiFileDialog.h>
-
-	#include "EditorLayer.h"
-	#include "DirectoryHelper.h"
-#endif // FOXTROT_EDITOR
+#include <../Common/include/ResourceSystem/FTResource.h>
 
 namespace Common
 {

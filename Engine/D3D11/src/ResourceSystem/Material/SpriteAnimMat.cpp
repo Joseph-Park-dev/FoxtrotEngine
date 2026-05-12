@@ -1,4 +1,4 @@
-#include "SpriteAnimMat.h"
+#include "ResourceSystem/Material/SpriteAnimMat.h"
 
 #include <d3d11.h>
 
@@ -10,7 +10,7 @@
 #include "Manager/ResourceManager.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "DirectoryHelper.h"
+	#include "Manager/DirectoryHelper.h"
 	#include "CommandHistory.h"
 	#include "Utility/EditorHelper.h"
 #endif // FOXTROT_EDITOR

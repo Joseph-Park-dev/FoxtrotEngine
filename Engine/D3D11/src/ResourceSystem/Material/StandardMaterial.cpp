@@ -1,4 +1,4 @@
-#include "StandardMaterial.h"
+#include "ResourceSystem/Material/StandardMaterial.h"
 
 #include "Manager/ResourceManager.h"
 #include "ResourceSystem/Light.h"
@@ -54,7 +54,7 @@ namespace D3D11
 	{
 		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::StandardMat::STANDARD_MAT);
 
-		Common::FileIOHelper::SaveString(ofs, Core::ChunkKey::FTResource::FILE_NAME, this->GetFileName());
+		Common::FileIOHelper::SaveString(ofs, Common::ChunkKey::FTResource::FILE_NAME, this->GetFileName());
 		Common::FileIOHelper::SaveBool(ofs, ChunkKey::StandardMat::USE_TEXTURE, mData->UseTexture);
 		Common::FileIOHelper::SaveFloat(ofs, ChunkKey::StandardMat::ALPHA_TRIM, mData->AlphaTrim);
 		Common::FileIOHelper::SaveVector4(ofs, ChunkKey::StandardMat::COLOR, mData->Color);
@@ -67,7 +67,7 @@ namespace D3D11
 		Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::StandardMat::STANDARD_MAT);
 
 		Common::FTDS::String fileName;
-		bool			   useTex;
+		bool				 useTex;
 		Common::FileIOHelper::LoadBool(ifs, useTex);
 		Common::FileIOHelper::LoadFloat(ifs, mData->AlphaTrim);
 		Common::FileIOHelper::LoadVector4(ifs, mData->Color);

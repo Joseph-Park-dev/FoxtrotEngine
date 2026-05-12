@@ -8,7 +8,8 @@
 namespace Core
 {
 	class FTCore;
-}
+	class IPlugin;
+} // namespace Core
 
 namespace D3D11
 {
@@ -60,8 +61,8 @@ namespace D3D11
 		Microsoft::WRL::ComPtr<ID3D11DepthStencilView>& GetDSV();
 
 	public:
-		D3D11Window(Core::Plugin* owner, const char* title, unsigned int width, unsigned int height, Core::FTRectArea* rndArea);
-		D3D11Window(Core::Plugin* owner, const char* title, unsigned int width, unsigned int height, Core::FTRectArea* rndArea, WNDPROC proc, WNDPROC_Params* params);
+		D3D11Window(const char* title, unsigned int width, unsigned int height, Core::FTRectArea* rndArea);
+		D3D11Window(const char* title, unsigned int width, unsigned int height, Core::FTRectArea* rndArea, WNDPROC proc, WNDPROC_Params* params);
 		~D3D11Window() override;
 
 	private:

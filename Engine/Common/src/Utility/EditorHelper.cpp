@@ -1,7 +1,6 @@
 #pragma once
 #ifdef FOXTROT_EDITOR
 	#include "Utility/EditorHelper.h"
-
 	#include "DLLData.h"
 
 Editor::UPDATE_INT_VAL			Editor::gUpdateIntValueFunc			= reinterpret_cast<UPDATE_INT_VAL>(GetProcAddress(GetModuleHandleA(DLLPaths::EDITOR), "UpdateBoolValue"));

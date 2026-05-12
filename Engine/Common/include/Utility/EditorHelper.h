@@ -5,15 +5,15 @@
 
 namespace Editor
 {
-	extern CORE_API UPDATE_INT_VAL			gUpdateIntValueFunc;
-	extern CORE_API UPDATE_CLAMPED_INT_VAL	gUpdateClampedIntValueFunc;
-	extern CORE_API UPDATE_UNSIGNED_INT_VAL gUpdateUnsignedIntValueFunc;
-	extern CORE_API UPDATE_FLOAT_VAL		gUpdateFloatValueFunc;
-	extern CORE_API UPDATE_BOOL_VAL			gUpdateBoolValueFunc;
-	extern CORE_API UPDATE_VEC2_VAL			gUpdateVector2ValueFunc;
-	extern CORE_API UPDATE_VEC3_VAL			gUpdateVector3ValueFunc;
-	extern CORE_API UPDATE_VEC4_VAL			gUpdateVector4ValueFunc;
-	extern CORE_API UPDATE_STR_VAL			gUpdateStringValueFunc;
+	extern __declspec(dllexport) UPDATE_INT_VAL			 gUpdateIntValueFunc;
+	extern __declspec(dllexport) UPDATE_CLAMPED_INT_VAL	 gUpdateClampedIntValueFunc;
+	extern __declspec(dllexport) UPDATE_UNSIGNED_INT_VAL gUpdateUnsignedIntValueFunc;
+	extern __declspec(dllexport) UPDATE_FLOAT_VAL		 gUpdateFloatValueFunc;
+	extern __declspec(dllexport) UPDATE_BOOL_VAL		 gUpdateBoolValueFunc;
+	extern __declspec(dllexport) UPDATE_VEC2_VAL		 gUpdateVector2ValueFunc;
+	extern __declspec(dllexport) UPDATE_VEC3_VAL		 gUpdateVector3ValueFunc;
+	extern __declspec(dllexport) UPDATE_VEC4_VAL		 gUpdateVector4ValueFunc;
+	extern __declspec(dllexport) UPDATE_STR_VAL			 gUpdateStringValueFunc;
 
 	#define UPDATE_INT(label, ref) gUpdateIntValueFunc(label, ref);
 	#define UPDATE_CLAMPED_INT(label, ref, minVal, maxVal) gUpdateClampedIntValueFunc(label, ref, minVal, maxVal);

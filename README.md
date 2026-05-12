@@ -2,13 +2,13 @@
 
 <p align="center">
     <a href="https://github.com/Joseph-Park-dev/FoxtrotEngine/">
-        <img src="./resource/Logo/FoxtrotEngine_LOGO.png" width="55%" height="55%" title="LOGO">
+        <img src="./assets/Logo/FoxtrotEngine_LOGO.png" width="55%" height="55%" title="LOGO">
     </a>
 </p>
 
 <p align="center">
     <a href="https://goocatstudio.itch.io/foxtrot-engine-2d/">
-        <img src="./resource/Logo/itch.io_badge-color.svg" width="20%" height="20%" title="itchioBadge">
+        <img src="./assets/Logo/itch.io_badge-color.svg" width="20%" height="20%" title="itchioBadge">
     </a>
 </p>
 

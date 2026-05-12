@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "FTMeshGroup.h"
+#include "ResourceSystem/Mesh/FTMeshGroup.h"
 
 #include "ResourceSystem/Mesh/GeometryGenerator.h"
 #include "ResourceSystem/Mesh/Mesh.h"

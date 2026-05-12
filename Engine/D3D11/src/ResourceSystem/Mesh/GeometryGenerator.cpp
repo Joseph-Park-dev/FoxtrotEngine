@@ -6,10 +6,10 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "GeometryGenerator.h"
+#include "ResourceSystem/Mesh/GeometryGenerator.h"
 
 #include "TemplateFunctions.h"
-#include "Math/FTMath.h"
+#include "FTMath.h"
 #include "ResourceSystem/Mesh/Vertex.h"
 #include "ResourceSystem/Mesh/FTMeshData.h"
 #include "ResourceSystem/FTTexture.h"

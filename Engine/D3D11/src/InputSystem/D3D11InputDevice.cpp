@@ -3,7 +3,7 @@
 #include <Windows.h>
 
 #include "FTDS/Dynamic/DynamicArray.h"
-#include "Math/FTMath.h"
+#include "FTMath.h"
 #include <Entity/D3D11Window.h>
 
 namespace D3D11

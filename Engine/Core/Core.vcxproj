@@ -178,7 +178,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.\src;.\src\FTDS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -195,13 +195,13 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Common\include;$(SolutionDir)Core\include;$(SolutionDir)Editor\include;$(SolutionDir)Math\include;$(SolutionDir)Main\include;$(SolutionDir)extern;$(SolutionDir)extern\imgui;$(SolutionDir)extern\json\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Common\include;.\include;$(SolutionDir)Engine\Editor\include;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Main\include;$(SolutionDir)third_party;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\json\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)build\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -224,31 +224,55 @@
       <EnableUAC>false</EnableUAC>
     </Link>
   </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
   <ItemGroup>
-    <ClCompile Include="Actor\Actor.cpp" />
-    <ClCompile Include="Actor\Transform.cpp" />
-    <ClCompile Include="Behavior\FTBehavior.cpp" />
-    <ClCompile Include="Component\Component.cpp" />
-    <ClCompile Include="Entity\Timer.cpp" />
-    <ClCompile Include="EventSystem\EventFunctions.cpp" />
-    <ClCompile Include="FileSystem\ChunkLoader.cpp" />
-    <ClCompile Include="InputSystem\FTInputDevice.cpp" />
-    <ClCompile Include="Manager\DirectoryHelper.cpp" />
-    <ClCompile Include="Manager\EventManager.cpp" />
-    <ClCompile Include="Manager\ResourceManager.cpp" />
-    <ClCompile Include="Manager\SceneManager.cpp" />
-    <ClCompile Include="Plugin\dllmain.cpp" />
-    <ClCompile Include="Plugin\FTCore.cpp" />
-    <ClCompile Include="Plugin\pch.cpp" />
-    <ClCompile Include="Renderer\FoxtrotRenderer.cpp" />
-    <ClCompile Include="Renderer\FTRectArea.cpp" />
-    <ClCompile Include="Renderer\FTWindow.cpp" />
-    <ClCompile Include="ResourceSystem\CoreResource.cpp" />
-    <ClCompile Include="ResourceSystem\FTPremade.cpp" />
-    <ClCompile Include="ResourceSystem\GenericData\FTCSV.cpp" />
-    <ClCompile Include="ResourceSystem\GenericData\FTJSON.cpp" />
-    <ClCompile Include="ResourceSystem\GenericData\FTText.cpp" />
-    <ClCompile Include="Scene\Scene.cpp" />
+    <ProjectReference Include="..\Math\Math.vcxproj">
+      <Project>{05f1cde6-51be-4ec3-898e-d9d15811ed7f}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Actor\Actor.h" />
+    <ClInclude Include="include\Actor\ActorGroup.h" />
+    <ClInclude Include="include\Actor\Steering.h" />
+    <ClInclude Include="include\Actor\Transform.h" />
+    <ClInclude Include="include\Behavior\FTBehavior.h" />
+    <ClInclude Include="include\Component\Component.h" />
+    <ClInclude Include="include\Entity\Entity.h" />
+    <ClInclude Include="include\Entity\Timer.h" />
+    <ClInclude Include="include\EventSystem\EventFunctions.h" />
+    <ClInclude Include="include\EventSystem\EventType.h" />
+    <ClInclude Include="include\FileSystem\ChunkLoader.h" />
+    <ClInclude Include="include\InputSystem\FTInputDevice.h" />
+    <ClInclude Include="include\Manager\DirectoryHelper.h" />
+    <ClInclude Include="include\Manager\EventManager.h" />
+    <ClInclude Include="include\Manager\ResourceHelper.h" />
+    <ClInclude Include="include\Manager\ResourceManager.h" />
+    <ClInclude Include="include\Manager\SceneManager.h" />
+    <ClInclude Include="include\Plugin\CoreExports.h" />
+    <ClInclude Include="include\Plugin\framework.h" />
+    <ClInclude Include="include\Plugin\IPlugin.h" />
+    <ClInclude Include="include\Plugin\pch.h" />
+    <ClInclude Include="include\Plugin\PluginKey.h" />
+    <ClInclude Include="include\Renderer\FoxtrotRenderer.h" />
+    <ClInclude Include="include\Renderer\FTRectArea.h" />
+    <ClInclude Include="include\Renderer\FTWindow.h" />
+    <ClInclude Include="include\ResourceSystem\CoreResource.h" />
+    <ClInclude Include="include\ResourceSystem\FTPremade.h" />
+    <ClInclude Include="include\ResourceSystem\GenericData\FTCSV.h" />
+    <ClInclude Include="include\ResourceSystem\GenericData\FTJSON.h" />
+    <ClInclude Include="include\ResourceSystem\GenericData\FTText.h" />
+    <ClInclude Include="include\Scene\Scene.h" />
+    <ClInclude Include="include\Utility\SingletonMacro.h" />
+    <ClInclude Include="include\Utility\TypeDefinitions.h" />
+    <ClInclude Include="include\Utility\UnitDefinitions.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\third_party\imgui\imgui.cpp" />
+    <ClCompile Include="..\..\third_party\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\..\third_party\imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\..\third_party\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Actor\Actor.cpp" />
     <ClCompile Include="src\Actor\Transform.cpp" />
     <ClCompile Include="src\Behavior\FTBehavior.cpp" />
@@ -273,59 +297,7 @@
     <ClCompile Include="src\ResourceSystem\GenericData\FTJSON.cpp" />
     <ClCompile Include="src\ResourceSystem\GenericData\FTText.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
-    <ClCompile Include="src\Utility\EditorHelper.cpp" />
-    <ClCompile Include="Utility\EditorHelper.cpp" />
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Math\Math.vcxproj">
-      <Project>{05f1cde6-51be-4ec3-898e-d9d15811ed7f}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\Actor\Actor.h" />
-    <ClInclude Include="include\Actor\ActorGroup.h" />
-    <ClInclude Include="include\Actor\Steering.h" />
-    <ClInclude Include="include\Actor\Transform.h" />
-    <ClInclude Include="include\Behavior\FTBehavior.h" />
-    <ClInclude Include="include\Component\Component.h" />
-    <ClInclude Include="include\Debugging\DebugFuncs.h" />
-    <ClInclude Include="include\Debugging\DebugMemAlloc.h" />
-    <ClInclude Include="include\Entity\Entity.h" />
-    <ClInclude Include="include\Entity\Timer.h" />
-    <ClInclude Include="include\EventSystem\EventFunctions.h" />
-    <ClInclude Include="include\EventSystem\EventType.h" />
-    <ClInclude Include="include\FileSystem\BufferSizes.h" />
-    <ClInclude Include="include\FileSystem\ChunkLoader.h" />
-    <ClInclude Include="include\FileSystem\FileTypes.h" />
-    <ClInclude Include="include\InputSystem\FTInputDevice.h" />
-    <ClInclude Include="include\Manager\DirectoryHelper.h" />
-    <ClInclude Include="include\Manager\EventManager.h" />
-    <ClInclude Include="include\Manager\ResourceHelper.h" />
-    <ClInclude Include="include\Manager\ResourceManager.h" />
-    <ClInclude Include="include\Manager\SceneManager.h" />
-    <ClInclude Include="include\Plugin\CoreExports.h" />
-    <ClInclude Include="include\Plugin\framework.h" />
-    <ClInclude Include="include\Plugin\IPlugin.h" />
-    <ClInclude Include="include\Plugin\pch.h" />
-    <ClInclude Include="include\Plugin\PluginKey.h" />
-    <ClInclude Include="include\Renderer\FoxtrotRenderer.h" />
-    <ClInclude Include="include\Renderer\FTRectArea.h" />
-    <ClInclude Include="include\Renderer\FTWindow.h" />
-    <ClInclude Include="include\ResourceSystem\CoreResource.h" />
-    <ClInclude Include="include\ResourceSystem\FTPremade.h" />
-    <ClInclude Include="include\ResourceSystem\GenericData\FTCSV.h" />
-    <ClInclude Include="include\ResourceSystem\GenericData\FTJSON.h" />
-    <ClInclude Include="include\ResourceSystem\GenericData\FTText.h" />
-    <ClInclude Include="include\Scene\Scene.h" />
-    <ClInclude Include="include\Utility\EditorHelper.h" />
-    <ClInclude Include="include\Utility\SingletonMacro.h" />
-    <ClInclude Include="include\Utility\TypeDefinitions.h" />
-    <ClInclude Include="include\Utility\UnitDefinitions.h" />
-  </ItemGroup>
-  <ItemGroup />
   <ItemGroup />
   <ItemGroup />
   <ItemGroup />

@@ -15,10 +15,10 @@
 #include <list>
 #include <fstream>
 
-#include "TemplateFunctions.h"
+#include "../TemplateFunctions.h"
 #include "NullKeys.h"
-#include "FTDS/Static/FTString.h"
-#include <Math/FTMath.h>
+#include "../FTDS/Static/FTString.h"
+#include <../Math/include/FTMath.h>
 
 namespace Common
 {
@@ -97,7 +97,7 @@ namespace Common
 
 		// Points to the current data pack that is being saved.
 		static std::list<Common::FTDS::String> mCurrentDataPack;
-		static size_t				   mDataPackIdent;
+		static size_t						   mDataPackIdent;
 		static Common::FTDS::String			   mItemIdent;
 
 		// static inline void SaveVector2(std::ofstream& ofs, const Common::FTDS::String& valName, const b2Vec2& vec2);

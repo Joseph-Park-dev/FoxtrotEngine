@@ -18,7 +18,7 @@
 #include "Actor/Transform.h"
 #include "Actor/Actor.h"
 #include "FileSystem/NullKeys.h"
-#include "Math/FTMath.h"
+#include "FTMath.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"

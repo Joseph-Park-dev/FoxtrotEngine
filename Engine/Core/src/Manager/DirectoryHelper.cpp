@@ -9,6 +9,9 @@
 #include "Manager/DirectoryHelper.h"
 
 #include "FTDS/Static/FTString.h"
+#include "Plugin/CoreExports.h"
+
+using GET_ASSET_PATH_FUNC = Common::FTDS::String* (*)();
 
 namespace Core
 {
@@ -107,5 +110,10 @@ namespace Core
 	{
 		mAssetPath->Assign(*mProjectPath);
 		mAssetPath->Append("\\Assets\\");
+	}
+
+	CORE_API Common::FTDS::String* Core::GetAssetPath()
+	{
+		return DirectoryHelper::GetInstance()->GetAssetPath();
 	}
 } // namespace Core

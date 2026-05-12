@@ -20,6 +20,7 @@
 
 #include "Utility/SingletonMacro.h"
 #include "FTDS/Static/FTString.h"
+#include "Plugin/CoreExports.h"
 
 namespace Core
 {
@@ -27,6 +28,11 @@ namespace Core
 #define PATH_CHUNK DirectoryHelper::GetInstance()->GetChunkPath()
 #define CHUNK_IS_SAVED DirectoryHelper::GetInstance()->GetCurrChunkSaved()
 #define SET_CHUNK_IS_SAVED(saved) DirectoryHelper::GetInstance()->SetCurrChunkSaved(saved)
+
+	namespace ProcName
+	{
+		constexpr const char* GetAssetPath = "GetAssetPath";
+	} // namespace ProcName
 
 	class DirectoryHelper :
 		public Core::Entity
@@ -71,4 +77,9 @@ namespace Core
 	private:
 		void SetAssetPath();
 	};
+
+	extern "C"
+	{
+		CORE_API Common::FTDS::String* GetAssetPath();
+	}
 } // namespace Core

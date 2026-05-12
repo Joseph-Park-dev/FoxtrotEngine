@@ -15,10 +15,10 @@
 #include <Windows.h>
 #include <stdio.h>
 
-#include "Plugin/Plugin.h"
+#include "Plugin/IPlugin.h"
 #include "FTDS/Static/HashMap.h"
-#include <../../Core/src/Plugin/PluginKey.h>
-#include <../../Editor/src/DLLData.h>
+#include "Plugin/PluginKey.h"
+#include "DLLData.h"
 
 constexpr Common::FTDS::HashMap<Core::Plugin*>* gPlugins;
 

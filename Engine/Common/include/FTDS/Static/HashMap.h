@@ -4,7 +4,7 @@
 #include "FTDS/Static/Record.h"
 #include "FTDS/Static/FTString.h"
 #include "Debugging/DebugFuncs.h"
-#include "Math/FTMath.h"
+#include "FTMath.h"
 
 namespace Common
 {

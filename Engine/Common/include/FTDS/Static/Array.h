@@ -2,9 +2,7 @@
 #include <memory>
 #include <cassert>
 
-#include "Debugging/DebugMemAlloc.h"
-#include "Debugging/DebugFuncs.h"
-#include "FTDS/Iterator/FTIterator.h"
+#include "../Iterator/FTIterator.h"
 
 namespace Common
 {
@@ -69,13 +67,6 @@ namespace Common
 			{
 				if (newCapacity <= mCapacity)
 					return;
-
-				if (newCapacity < 1) // Input capacity must be bigger than Zero.
-				{
-					Debug::LogError(__LINE__, __FILE__, "New capacity is 0!");
-					return;
-				}
-				// When the current capacity is zero; initialization phase.
 				AllocateMem(newCapacity);
 			}
 

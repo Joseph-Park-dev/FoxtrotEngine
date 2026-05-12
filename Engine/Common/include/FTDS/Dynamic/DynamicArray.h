@@ -1,5 +1,5 @@
 #pragma once
-#include "FTDS/Static/Array.h"
+#include "../Static/Array.h"
 
 namespace Common
 {

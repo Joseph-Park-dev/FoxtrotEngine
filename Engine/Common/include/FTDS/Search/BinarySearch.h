@@ -1,7 +1,7 @@
 #pragma once
 #include <type_traits>
 
-#include "Math/FTMath.h"
+#include "FTMath.h"
 
 namespace Common
 {

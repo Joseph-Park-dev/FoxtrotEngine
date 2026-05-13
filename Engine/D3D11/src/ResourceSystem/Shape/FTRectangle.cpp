@@ -51,4 +51,9 @@ namespace D3D11
 		SetIsActive(isActive);
 	}
 #endif
+
+	D3D11_API D3D11::FTRectangle* D3D11::CreateFTRectangle()
+	{
+		return DBG_NEW D3D11::FTRectangle;
+	}
 } // namespace D3D11

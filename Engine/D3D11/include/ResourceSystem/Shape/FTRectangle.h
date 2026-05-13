@@ -3,8 +3,15 @@
 
 #include <fstream>
 
+#include <Plugin/D3D11Exports.h>
+
 namespace D3D11
 {
+	namespace ProcName
+	{
+		constexpr const char* CREATE_FT_RECTANGLE = "CreateFTRectangle";
+	}
+
 	class FTRectangle : public FTShape
 	{
 	public:
@@ -24,6 +31,8 @@ namespace D3D11
 		void UpdateUI();
 #endif
 	};
+
+	extern "C" D3D11_API D3D11::FTRectangle* CreateFTRectangle(); 
 
 	namespace ChunkKey
 	{

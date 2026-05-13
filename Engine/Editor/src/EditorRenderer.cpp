@@ -2,6 +2,7 @@
 
 #include "ViewportRenderer.h"
 #include "Debugging/DebugFuncs.h"
+#include "Debugging/DebugMemAlloc.h"
 
 namespace Editor
 {

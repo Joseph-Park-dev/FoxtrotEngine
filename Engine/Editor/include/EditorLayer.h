@@ -60,8 +60,7 @@ namespace Editor
 {
 	class Command;
 	class EditorRenderer;
-	class EditorLayer :
-		public Core::Entity
+	class EditorLayer
 	{
 		SINGLETON(EditorLayer)
 	public:

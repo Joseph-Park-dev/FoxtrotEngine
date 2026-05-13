@@ -45,7 +45,7 @@ namespace Editor
 
 	class ActorCommand;
 	class Command;
-	class CommandHistory : public Core::Entity
+	class CommandHistory
 	{
 		SINGLETON(CommandHistory)
 	public:

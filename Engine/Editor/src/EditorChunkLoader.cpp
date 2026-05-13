@@ -185,10 +185,10 @@ namespace Editor
 	void EditorChunkLoader::SavePlugins(std::ofstream& ofs)
 	{
 		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::PLUGIN_DATA);
-		//Common::FTDS::HashMap<Core::IPlugin*>* plugins = Engine::GetInstance()->GetPlugins();
+		// Common::FTDS::HashMap<Core::IPlugin*>* plugins = Engine::GetInstance()->GetPlugins();
 
-		//size_t dllIdx = 0;
-		//for (auto iter = plugins->Begin(); iter != plugins->End(); ++iter)
+		// size_t dllIdx = 0;
+		// for (auto iter = plugins->Begin(); iter != plugins->End(); ++iter)
 		//{
 		//	Core::IPlugin*		 plugin	 = (*iter)->Value();
 		//	Common::FTDS::String dllPath = {};
@@ -204,20 +204,20 @@ namespace Editor
 
 	void EditorChunkLoader::SaveCompConstructors(std::ofstream& ofs, Plugin* plugin)
 	{
-		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::COMP_CONSTRUCTORS);
-		Common::FTDS::HashMap<FARPROC>* map = GetCompConstructors();
+		// Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::COMP_CONSTRUCTORS);
+		// Common::FTDS::HashMap<FARPROC>* map = GetCompConstructors();
 
-		size_t compIdx = 0;
-		for (auto iter = map->Begin(); iter != map->End(); ++iter)
-			Common::FileIOHelper::SaveString(ofs, std::to_string(compIdx).c_str(), (*iter)->Key().C_Str());
+		// size_t compIdx = 0;
+		// for (auto iter = map->Begin(); iter != map->End(); ++iter)
+		//	Common::FileIOHelper::SaveString(ofs, std::to_string(compIdx).c_str(), (*iter)->Key().C_Str());
 
-		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::Plugin::COMP_CONSTRUCTORS);
+		// Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::Plugin::COMP_CONSTRUCTORS);
 	}
 
 	void EditorChunkLoader::SaveManagerData(std::ofstream& ofs, Plugin* plugin)
 	{
 		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::MANAGER_DATA);
-		//plugin->SaveManagerData(ofs);
+		// plugin->SaveManagerData(ofs);
 		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::Plugin::MANAGER_DATA);
 	}
 

@@ -19,14 +19,12 @@ namespace D3D11
 
 	struct WNDPROC_Params
 	{
-		WNDPROC_Params(Core::FTCore* core, D3D11::D3D11Window* win, D3D11::D3D11InputDevice* input, D3D11::D3D11Renderer* rend, bool* isResizing)
-			: Core(core)
-			, Window(win)
+		WNDPROC_Params(D3D11::D3D11Window* win, D3D11::D3D11InputDevice* input, D3D11::D3D11Renderer* rend, bool* isResizing)
+			: Window(win)
 			, InputDevice(input)
 			, Renderer(rend)
 			, IsResizingWin(isResizing) {}
 
-		Core::FTCore*			 Core;
 		D3D11::D3D11Window*		 Window;
 		D3D11::D3D11InputDevice* InputDevice;
 		D3D11::D3D11Renderer*	 Renderer;

@@ -85,7 +85,7 @@ namespace D3D11
 		/// @brief Creates the spine animation.
 		/// The file paths of the generic data will only be used.
 		FTSpineAnimation(Common::FTResourceDef& resDef, D3D11Renderer* renderer);
-		~FTSpineAnimation();
+		~FTSpineAnimation() override;
 
 	private:
 		/// @brief JSON path, which will be use to create spine anim.

@@ -77,7 +77,7 @@ namespace D3D11
 		// This is unused until 3D feature is implemented.
 		// FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer);
 		FTMeshGroup(Common::FTResourceDef& resDef, D3D11Renderer* renderer, FTMeshData* meshData = nullptr);
-		virtual ~FTMeshGroup();
+		virtual ~FTMeshGroup() override;
 
 	protected:
 		/// @brief Reads a file which returns the FTMeshData, and creates the meshes.

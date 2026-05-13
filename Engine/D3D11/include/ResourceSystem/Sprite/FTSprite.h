@@ -48,7 +48,7 @@ namespace D3D11
 		/// @brief Constructor skips FTSprite::Process() if isAnim is true.
 		/// @param isAnim Is this constructor called from FTSpriteAnimation?
 		FTSprite(Common::FTResourceDef& resDef, D3D11Renderer* renderer, bool isAnim);
-		virtual ~FTSprite();
+		virtual ~FTSprite() override;
 
 	protected:
 		virtual void InitializeConstantBuffers(Microsoft::WRL::ComPtr<ID3D11Device>& device) override;

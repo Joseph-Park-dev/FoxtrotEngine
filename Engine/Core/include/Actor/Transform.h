@@ -23,8 +23,7 @@ namespace Core
 	class Actor;
 	struct Steering;
 
-	class CORE_API Transform :
-		Core::Entity
+	class Transform
 	{
 	public:
 		//////////////////////////////

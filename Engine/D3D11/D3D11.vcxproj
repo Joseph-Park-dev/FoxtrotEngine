@@ -224,6 +224,11 @@
     <None Include="include\DirectXTex.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\third_party\ImGuiFileDialog\ImGuiFileDialog.cpp" />
+    <ClCompile Include="..\..\third_party\imgui\imgui.cpp" />
+    <ClCompile Include="..\..\third_party\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\..\third_party\imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\..\third_party\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Animation.cpp" />
     <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AnimationState.cpp" />
     <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AnimationStateData.cpp" />

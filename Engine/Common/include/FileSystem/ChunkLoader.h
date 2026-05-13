@@ -95,6 +95,8 @@ namespace Core
 
 	namespace ChunkKey
 	{
+		constexpr const char* GAME_DATA = "Game Data";
+
 		// Data Pack Names
 		constexpr const char* CHUNK_DATA	= "Chunk Data";
 		constexpr const char* ACTOR_DATA	= "Actor Data";

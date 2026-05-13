@@ -6,7 +6,7 @@
 
 #include "Manager/ResourceManager.h"
 #include "Manager/EventManager.h"
-#include "EventType.h"
+#include "EventSystem/EventType.h"
 
 namespace Editor
 {
@@ -29,30 +29,6 @@ namespace Editor
 		else
 		{
 			printf("ERROR : Instantiate() -> Premade not loaded, %s\n", actor->GetName().C_Str());
-			return nullptr;
-		}
-	}
-
-	EditorElement* Editor::Instantiate(const char* premadeName)
-	{
-		Core::FTEvent addedEvent = {};
-		addedEvent.incident		 = Core::EVENT_TYPE::CREATE_ACTOR;
-		Core::FTPremade* premade = Core::GET_RES(Core::FTPremade, premadeName);
-		Core::Actor* origin = premade->GetOrigin();
-
-		EditorScene*		   scene		 = EditorSceneManager::GetInstance()->GetEditorScene();
-		Editor::EditorElement* editorElement = DBG_NEW Editor::EditorElement(origin, Core::ChunkKey::ID::CLONE);
-		editorElement->Initialize();
-
-		if (editorElement)
-		{
-			addedEvent.eventData = editorElement;
-			Core::EventManager::GetInstance()->AddEvent(addedEvent);
-			return editorElement;
-		}
-		else
-		{
-			printf("ERROR : Instantiate() -> Premade not loaded, %s\n", premadeName);
 			return nullptr;
 		}
 	}

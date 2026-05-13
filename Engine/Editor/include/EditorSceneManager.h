@@ -29,6 +29,7 @@ namespace D3D11
 namespace Editor
 {
 	class EditorElement;
+	class EditorScene;
 
 	class EditorSceneManager :
 		public Core::SceneManager

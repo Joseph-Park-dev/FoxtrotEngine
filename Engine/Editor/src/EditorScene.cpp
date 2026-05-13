@@ -73,7 +73,7 @@ namespace Editor
 		return element;
 	}
 
-	void EditorScene::EditorUpdate(float deltaTime)
+	/*void EditorScene::EditorUpdate(float deltaTime)
 	{
 		SetIsUpdatingActors(true);
 
@@ -97,7 +97,7 @@ namespace Editor
 		}
 
 		SetIsUpdatingActors(false);
-	}
+	}*/
 
 	EditorScene::EditorScene()
 	{

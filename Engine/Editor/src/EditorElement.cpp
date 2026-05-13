@@ -262,10 +262,10 @@ namespace Editor
 		if (ImGui::BeginPopup("CompSelectPopUp"))
 		{
 			ImGui::SeparatorText("Add Components");
-			ComponentCreateMap::iterator iter = EditorChunkLoader::GetInstance()->GetCompCreateMap().begin();
-			for (; iter != EditorChunkLoader::GetInstance()->GetCompCreateMap().end(); ++iter)
-				if (ImGui::Selectable((*iter).first))
-					(*iter).second(this);
+			//ComponentCreateMap::iterator iter = EditorChunkLoader::GetInstance()->GetCompCreateMap().begin();
+			//for (; iter != EditorChunkLoader::GetInstance()->GetCompCreateMap().end(); ++iter)
+			//	if (ImGui::Selectable((*iter).first))
+			//		(*iter).second(this);
 			ImGui::EndPopup();
 		}
 	}

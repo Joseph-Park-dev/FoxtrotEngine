@@ -6,12 +6,12 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "EditAnimator.h"
+#include "Component/EditAnimator.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "EditorUtils.h"
 #include "EditorCamera.h"
-#include "EditorHelper.h"
+#include "Utility/EditorHelper.h"
 #include "CommandHistory.h"
 
 #include "ResourceSystem/Animation/FTSpriteAnimation.h"

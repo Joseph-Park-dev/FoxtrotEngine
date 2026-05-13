@@ -14,7 +14,7 @@
 #include "FTDS/Dynamic/DynamicArray.h"
 #include "Manager/EditorShapes.h"
 #include "Renderer/FTWindow.h"
-#include "Math/FTMath.h"
+#include "FTMath.h"
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
@@ -136,8 +136,8 @@ namespace Editor
 		// Set Target
 		Scene*							  scene		  = EditorSceneManager::GetInstance()->GetCurrentScene();
 		EditorScene*					  editorScene = reinterpret_cast<EditorScene*>(scene);
-		FTDS::DynamicArray<Core::Actor*>* editorElems = editorScene->Actors();
-		FTDS::String* actorNames					  = DBG_NEW FTDS::String[editorElems->GetSize() + 1];
+		Common::FTDS::DynamicArray<Core::Actor*>* editorElems = editorScene->Actors();
+		Common::FTDS::String* actorNames					  = DBG_NEW Common::FTDS::String[editorElems->GetSize() + 1];
 		actorNames[0].Assign("None");
 		static size_t currIdx;
 

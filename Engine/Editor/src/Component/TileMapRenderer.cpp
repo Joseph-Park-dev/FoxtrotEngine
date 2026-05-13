@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "TileMapRenderer.h"
+#include "Component/TileMapRenderer.h"
 
 #include <queue>
 #include <string>
@@ -15,7 +15,7 @@
 #include <iostream>
 
 #include "Actor/Actor.h"
-#include "Math/FTMath.h"
+#include "FTMath.h"
 #include "ResourceSystem/Sprite/Tile.h"
 #include "ResourceSystem/FTTexture.h"
 
@@ -48,7 +48,7 @@
 namespace D3D11
 {
 	using namespace Core;
-	FTDS::String& TileMapRenderer::GetTileMapKey()
+	Common::FTDS::String& TileMapRenderer::GetTileMapKey()
 	{
 		return mTileMapKey;
 	}
@@ -58,7 +58,7 @@ namespace D3D11
 		return mTileMap;
 	}
 
-	void TileMapRenderer::SetTileMapKey(FTDS::String& key)
+	void TileMapRenderer::SetTileMapKey(Common::FTDS::String& key)
 	{
 		mTileMapKey = key;
 	}
@@ -98,7 +98,7 @@ namespace D3D11
 			if (mTileMap)
 			{
 				mTileMap->Initialize();
-				FTDS::DynamicArray<FTMeshData> meshData = GeometryGenerator::MakeTileMapGrid(mTileMap);
+				Common::FTDS::DynamicArray<FTMeshData> meshData = GeometryGenerator::MakeTileMapGrid(mTileMap);
 
 				// Need to Implement here
 
@@ -135,7 +135,7 @@ namespace D3D11
 
 	void TileMapRenderer::LoadProperties(std::ifstream& ifs)
 	{
-		FTDS::String texKey;
+		Common::FTDS::String texKey;
 		FileIOHelper::LoadBasicString(ifs, texKey);
 		// SetTexKey(texKey);
 		FileIOHelper::LoadBasicString(ifs, mTileMapKey);
@@ -158,7 +158,7 @@ namespace D3D11
 
 	void TileMapRenderer::UpdateCSV()
 	{
-		FTDS::String currentCSV = "No .csv has been assigned";
+		Common::FTDS::String currentCSV = "No .csv has been assigned";
 		if (mTileMapKey.Equal(Common::ChunkKey::NullVal::NULL_OBJECT))
 		{
 			currentCSV.Assign("Current sprite : \n");
@@ -179,11 +179,11 @@ namespace D3D11
 
 		if (ImGui::BeginPopupModal("Select .CSV", NULL, ImGuiWindowFlags_MenuBar))
 		{
-			FTDS::HashMap<FTResource*>& tileMapsMap =
+			Common::FTDS::HashMap<FTResource*>& tileMapsMap =
 				D3D11::ResourceManager::GetInstance()->GetResMap<FTTileMap>();
 			if (ImGui::TreeNode("Selection State: Single Selection"))
 			{
-				FTDS::String tileMapKey = Common::ChunkKey::NullVal::NULL_OBJECT;
+				Common::FTDS::String tileMapKey = Common::ChunkKey::NullVal::NULL_OBJECT;
 				static int	 selected	= -1;
 				int			 i			= 0;
 				for (auto iter = tileMapsMap.Begin(); iter != tileMapsMap.End();
@@ -207,12 +207,12 @@ namespace D3D11
 			ImGui::EndPopup();
 		}
 	}
-	void TileMapRenderer::UpdateCSV(FTDS::String& key)
+	void TileMapRenderer::UpdateCSV(Common::FTDS::String& key)
 	{
-		FTDS::String currentCSV = {};
+		Common::FTDS::String currentCSV = {};
 		if (key.NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
 			currentCSV =
-				FTDS::String("Current sprite : \n") +
+				Common::FTDS::String("Current sprite : \n") +
 				Core::ResourceManager::GetInstance()->GetResource<FTTileMap>(key)->GetRelativePath()->C_Str();
 		else
 			currentCSV = "No .csv has been assigned";
@@ -230,11 +230,11 @@ namespace D3D11
 
 		if (ImGui::BeginPopupModal("Select .CSV", NULL, ImGuiWindowFlags_MenuBar))
 		{
-			FTDS::HashMap<FTResource*>& tileMapsMap =
+			Common::FTDS::HashMap<FTResource*>& tileMapsMap =
 				Core::ResourceManager::GetInstance()->GetResMap<FTTileMap>();
 			if (ImGui::TreeNode("Selection State: Single Selection"))
 			{
-				FTDS::String tileMapKey = Common::ChunkKey::NullVal::NULL_OBJECT;
+				Common::FTDS::String tileMapKey = Common::ChunkKey::NullVal::NULL_OBJECT;
 				static int	 selected	= -1;
 				int			 i			= 0;
 				for (auto iter = tileMapsMap.Begin(); iter != tileMapsMap.End();

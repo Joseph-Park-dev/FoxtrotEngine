@@ -1,1 +1,1 @@
-#include "EditorComponent.h"
+#include "Component/EditorComponent.h"

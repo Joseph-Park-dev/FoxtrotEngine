@@ -1,10 +1,10 @@
-#include "EditorEventManager.h"
+#include "Manager/EditorEventManager.h"
 
 #include "EditorEventFunctions.h"
 #include "EditorSceneManager.h"
 #include "EditorScene.h"
 #include "EditorElement.h"
-#include "EventType.h"
+#include "EventSystem/EventType.h"
 
 namespace Editor
 {

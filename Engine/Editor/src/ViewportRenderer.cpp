@@ -11,11 +11,9 @@
 #include <d3d11.h>
 #include <wrl.h>
 #include <functional>
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui/imgui.h>
 
 #include "Renderer/D3D11Renderer.h"
-#include "Renderer/D3D11Utils.h"
+#include "Utility/D3D11Utils.h"
 #include "Renderer/FTWindow.h"
 #include "Renderer/FTRectArea.h"
 #include "TemplateFunctions.h"

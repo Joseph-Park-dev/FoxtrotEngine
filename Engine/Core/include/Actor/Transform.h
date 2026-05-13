@@ -16,13 +16,14 @@
 #include <iosfwd>
 
 #include "FTMath.h"
+#include "Plugin/CoreExports.h"
 
 namespace Core
 {
 	class Actor;
 	struct Steering;
 
-	class Transform :
+	class CORE_API Transform :
 		Core::Entity
 	{
 	public:

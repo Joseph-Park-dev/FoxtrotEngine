@@ -35,17 +35,17 @@ namespace D3D11
 	Light::TYPE& LightManager::GetType(size_t i) const { return mTypes[i]; }
 	bool&		 LightManager::IsActive(size_t i) const { return mActiveStatus[i]; }
 
-	FTCubemap* LightManager::GetCubeMap() const { return mCubemap; }
+	// FTCubemap* LightManager::GetCubeMap() const { return mCubemap; }
 
-	ComPtr<ID3D11ShaderResourceView> LightManager::GetCubeMapDiffuse()
-	{
-		return mCubemap->GetDiffuseResView();
-	}
+	// ComPtr<ID3D11ShaderResourceView> LightManager::GetCubeMapDiffuse()
+	//{
+	//	return mCubemap->GetDiffuseResView();
+	// }
 
-	ComPtr<ID3D11ShaderResourceView> LightManager::GetCubeMapSpecular()
-	{
-		return mCubemap->GetDiffuseResView();
-	}
+	// ComPtr<ID3D11ShaderResourceView> LightManager::GetCubeMapSpecular()
+	//{
+	//	return mCubemap->GetDiffuseResView();
+	// }
 
 	void LightManager::Initialize(D3D11::D3D11Renderer* renderer)
 	{

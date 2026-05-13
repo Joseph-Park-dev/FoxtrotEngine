@@ -26,9 +26,9 @@ namespace D3D11
 		Light::TYPE& GetType(size_t i) const;
 		bool&		 IsActive(size_t i) const;
 
-		FTCubemap*										   GetCubeMap() const;
-		::Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> GetCubeMapDiffuse();
-		::Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> GetCubeMapSpecular();
+		// FTCubemap*										   GetCubeMap() const;
+		//::Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> GetCubeMapDiffuse();
+		//::Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> GetCubeMapSpecular();
 
 	public:
 		void Initialize(D3D11::D3D11Renderer* renderer);

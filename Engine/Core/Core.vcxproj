@@ -238,7 +238,6 @@
     <ClInclude Include="include\Actor\Steering.h" />
     <ClInclude Include="include\Actor\Transform.h" />
     <ClInclude Include="include\Behavior\FTBehavior.h" />
-    <ClInclude Include="include\Entity\Entity.h" />
     <ClInclude Include="include\Entity\Timer.h" />
     <ClInclude Include="include\EventSystem\EventFunctions.h" />
     <ClInclude Include="include\EventSystem\EventType.h" />

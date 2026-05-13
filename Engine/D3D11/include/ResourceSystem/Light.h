@@ -4,6 +4,7 @@
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
+	#include "Utility/EditorHelper.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -88,12 +89,12 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 		void UpdateUI()
 		{
-			Editor::CommandHistory::GetInstance()->UpdateVector3Value(LightKey::STRENGTH, Strength);
-			Editor::CommandHistory::GetInstance()->UpdateFloatValue(LightKey::FALLOFF_START, FallOffStart);
-			Editor::CommandHistory::GetInstance()->UpdateFloatValue(LightKey::FALLOFF_END, FallOffEnd);
-			Editor::CommandHistory::GetInstance()->UpdateVector3Value(LightKey::DIRECTION, Direction);
-			Editor::CommandHistory::GetInstance()->UpdateVector3Value(LightKey::POSITION, Position);
-			Editor::CommandHistory::GetInstance()->UpdateFloatValue(LightKey::SPOT_POWER, SpotPower);
+			::Editor::UPDATE_VEC3(LightKey::STRENGTH, Strength);
+			::Editor::UPDATE_FLOAT(LightKey::FALLOFF_START, FallOffStart);
+			::Editor::UPDATE_FLOAT(LightKey::FALLOFF_END, FallOffEnd);
+			::Editor::UPDATE_VEC3(LightKey::DIRECTION, Direction);
+			::Editor::UPDATE_VEC3(LightKey::POSITION, Position);
+			::Editor::UPDATE_FLOAT(LightKey::SPOT_POWER, SpotPower);
 		}
 
 #endif

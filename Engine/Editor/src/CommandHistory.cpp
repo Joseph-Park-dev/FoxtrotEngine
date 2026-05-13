@@ -222,10 +222,10 @@ namespace Editor
 		ref = val;
 	}
 
-	void CommandHistory::UpdateIntValue(const char* label, int& ref, unsigned int modSpeed)
+	void CommandHistory::UpdateIntValue(const char* label, int& ref, int modSpeed)
 	{
 		int val = ref;
-		if (ImGui::DragInt(label, &val, modSpeed))
+		if (ImGui::DragInt(label, &val, (float)modSpeed))
 		{
 			if (!mIsRecording)
 			{
@@ -246,7 +246,7 @@ namespace Editor
 		ref = val;
 	}
 
-	void CommandHistory::UpdateIntValue(const char* label, int& ref, int min, int max, unsigned int modSpeed)
+	void CommandHistory::UpdateIntValue(const char* label, int& ref, int min, int max, int modSpeed)
 	{
 		Math::Clamp(ref, min, max);
 		UpdateIntValue(label, ref, modSpeed);
@@ -262,7 +262,7 @@ namespace Editor
 		}
 	}
 
-	void CommandHistory::UpdateUnsignedIntValue(const char* label, unsigned int& ref, unsigned int modSpeed)
+	void CommandHistory::UpdateUnsignedIntValue(const char* label, unsigned int& ref, int modSpeed)
 	{
 		int val = static_cast<int>(ref);
 		UpdateIntValue(label, val);
@@ -293,8 +293,8 @@ namespace Editor
 
 	CommandHistory::CommandHistory()
 		: mCurrent(nullptr)
-		, mPrevious(DBG_NEW FTDS::ArrayStack<Command*>(COMMAND_MAXCOUNT))
-		, mNext(DBG_NEW FTDS::ArrayStack<Command*>(COMMAND_MAXCOUNT))
+		, mPrevious(DBG_NEW Common::FTDS::ArrayStack<Command*>(COMMAND_MAXCOUNT))
+		, mNext(DBG_NEW Common::FTDS::ArrayStack<Command*>(COMMAND_MAXCOUNT))
 		, mIsRecording(false)
 	{
 	}

@@ -20,6 +20,7 @@
 #include <ImGuiFileDialog/ImGuiFileDialog.h>
 
 #include "Utility/SingletonMacro.h"
+#include "Manager/DirectoryHelper.h"
 #include "EditorElement.h"
 #include "CommandHistory.h"
 
@@ -142,7 +143,11 @@ namespace Editor
 		}
 
 	private:
-		Editor::EditorRenderer* mRenderer;
+		Editor::EditorRenderer*		  mRenderer;
+		Core::GET_PROJ_PATH_FUNC	  mGetProjPathFunc;
+		Core::GET_CHUNK_PATH_FUNC	  mGetChunkPathFunc;
+		Core::GET_ASSET_PATH_FUNC	  mGetAssetPathFunc;
+		Core::SET_CHUNK_IS_SAVED_FUNC mSetChunkIsSaved;
 
 		int mActorNameIdx;
 

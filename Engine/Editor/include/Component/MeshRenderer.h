@@ -12,7 +12,7 @@
 #pragma once
 #include "Component/D3D11Component.h"
 
-#include "Static/FTString.h"
+#include "FTDS/Static/FTString.h"
 
 namespace Core
 {
@@ -109,7 +109,7 @@ namespace D3D11
 		/////////////////////////////////////
 #ifdef FOXTROT_EDITOR
 	public:
-		virtual void EditorRender(D3D11::D3D11Renderer* renderer) override;
+		virtual void EditorRender(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst) override;
 		virtual void EditorUIUpdate() override;
 #endif
 	};

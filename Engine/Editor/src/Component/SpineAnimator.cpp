@@ -1,4 +1,4 @@
-#include "SpineAnimator.h"
+#include "Component/SpineAnimator.h"
 
 #include <spine/spine.h>
 
@@ -106,7 +106,7 @@ namespace D3D11
 		unsigned char skinCombination = static_cast<unsigned char>(skinCombi);
 
 		// Load Animation
-		FTDS::String key;
+		Common::FTDS::String key;
 		FileIOHelper::LoadBasicString(ifs, key);
 		MeshRenderer::LoadProperties(ifs);
 

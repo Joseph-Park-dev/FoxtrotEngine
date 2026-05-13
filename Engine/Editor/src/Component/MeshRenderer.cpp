@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "MeshRenderer.h"
+#include "Component/MeshRenderer.h"
 
 #include "Actor/Transform.h"
 #include "Actor/Actor.h"
@@ -24,7 +24,7 @@
 #include "Manager/ResourceManager.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
-#include "Compare/StringEqual.h"
+// #include "Compare/StringEqual.h" // NULLPATH: StringEqual.h not found in any include directory
 
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS
@@ -137,7 +137,7 @@ namespace D3D11
 
 	void MeshRenderer::LoadProperties(std::ifstream& ifs)
 	{
-		FTDS::String keyCache; // Temporary space to store the loaded keys.
+		Common::FTDS::String keyCache; // Temporary space to store the loaded keys.
 
 		// Load material.
 		FileIOHelper::LoadBasicString(ifs, keyCache);

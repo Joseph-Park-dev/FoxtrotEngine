@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "SpriteRenderer.h"
+#include "Component/SpriteRenderer.h"
 
 #include "Actor/Actor.h"
 #include "Actor/Transform.h"
@@ -14,9 +14,9 @@
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Manager/ResourceManager.h"
-#include "Math/FTMath.h"
+#include "FTMath.h"
 #include "Renderer/Camera.h"
-#include "Renderer/D3D11Utils.h"
+#include "Utility/D3D11Utils.h"
 #include "Renderer/D3D11Renderer.h"
 #include "ResourceSystem/Mesh/FTMeshGroup.h"
 #include "ResourceSystem/Sprite/FTSprite.h"
@@ -116,10 +116,10 @@ namespace D3D11
 
 	void SpriteRenderer::LoadProperties(std::ifstream& ifs)
 	{
-		FTDS::String matKey;
+		Common::FTDS::String matKey;
 		FileIOHelper::LoadBasicString(ifs, matKey);
 
-		FTDS::String spriteKey;
+		Common::FTDS::String spriteKey;
 		FileIOHelper::LoadBasicString(ifs, spriteKey);
 		Component::LoadProperties(ifs);
 

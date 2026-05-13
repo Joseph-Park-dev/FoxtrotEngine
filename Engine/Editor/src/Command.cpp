@@ -8,7 +8,7 @@
 
 #include "Command.h"
 
-#include "Math/FTMath.h"
+#include "FTMath.h"
 #include "TemplateFunctions.h"
 #include "Actor/Actor.h"
 #include "Actor/ActorGroup.h"
@@ -140,12 +140,12 @@ namespace Editor
 		mValue = mPrevValue;
 	}
 
-	void StrEditCommand::SetNextVal(FTDS::String nextVal)
+	void StrEditCommand::SetNextVal(Common::FTDS::String nextVal)
 	{
 		mNextValue.Assign(nextVal);
 	}
 
-	StrEditCommand::StrEditCommand(FTDS::String& valRef)
+	StrEditCommand::StrEditCommand(Common::FTDS::String& valRef)
 		: mPrevValue(valRef)
 		, mValue(valRef)
 		, mNextValue()

@@ -1,6 +1,5 @@
 #include "ActorCommand.h"
 
-#include "EventFunctions.h"
 #include "EditorSceneManager.h"
 #include "EditorElement.h"
 
@@ -18,7 +17,7 @@ namespace Editor
 	{
 		ActorCommand::Undo();
 
-		Core::Destroy(GetVal());
+		//Core::Destroy(GetVal());
 	}
 
 	ActorAdditionCommand::ActorAdditionCommand(EditorElement* elem)

@@ -10,7 +10,7 @@
 /// </summary>
 
 #pragma once
-#include "Math/FTMath.h"
+#include "FTMath.h"
 #include "FTDS/Static/FTString.h"
 #include "Actor/ActorGroup.h"
 

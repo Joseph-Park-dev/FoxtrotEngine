@@ -28,9 +28,6 @@ public:
 	}
 	Engine(const Engine& obj) = delete;
 
-private:
-	inline static Engine* mInstance = nullptr;
-
 public:
 	void RunLoop();
 	void ShutDown();
@@ -54,11 +51,24 @@ public:
 		return mPlugins->At(pluginName)->Value();
 	}
 
+	Common::FTDS::HashMap<Core::IPlugin*>* GetPlugins()
+	{
+		return mPlugins;
+	}
+
+	void SetIsRunning(bool val) { mIsRunning = val; }
+	void SetIsUpdating(bool val) { mIsUpdating = val; }
+
 public:
 	Engine()
 		: mPlugins(DBG_NEW Common::FTDS::HashMap<Core::IPlugin*>())
+		, mIsRunning(true)
+		, mIsUpdating(true)
 	{
 	}
+
+private:
+	inline static Engine* mInstance = nullptr;
 
 private:
 	Common::FTDS::HashMap<Core::IPlugin*>* mPlugins;

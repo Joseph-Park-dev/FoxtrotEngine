@@ -5,6 +5,11 @@
 #include "FileSystem/FileIOHelper.h"
 #include "ResourceSystem/FTResource.h"
 
+#ifdef FOXTROT_EDITOR
+	#include <imgui.h>
+#endif // FOXTROT_EDITOR
+	
+
 namespace Common
 {
 	template <typename FTRESOURCE>
@@ -123,6 +128,22 @@ namespace Common
 					if (entry.path().extension() == fileType)
 						LoadResource(ifs, userData);
 				}
+			}
+		}
+
+		void DisplayLoadedResources(const char* label)
+		{
+			if (ImGui::TreeNode(label))
+			{
+				for (auto iter = mResources->Begin(); iter != mResources->End(); ++iter)
+				{
+					if (ImGui::TreeNode((*iter)->Key().C_Str()))
+					{
+						(*iter)->Value()->UpdateUI();
+						ImGui::TreePop();
+					}
+				}
+				ImGui::TreePop();
 			}
 		}
 #endif // FOXTROT_EDITOR

@@ -5,7 +5,7 @@
 *.cso
 *.exp
 
-extern/
+third_party/
 x64/
 
 ### C++ ###

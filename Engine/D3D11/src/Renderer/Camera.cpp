@@ -156,6 +156,11 @@ namespace D3D11
 		return mZoomFactor;
 	}
 
+	Math::FTVector3& Camera::Position()
+	{
+		return mPosition;
+	}
+
 	FTVector3& Camera::Offset()
 	{
 		return mOffset;
@@ -264,7 +269,7 @@ namespace D3D11
 
 #ifdef FOXTROT_EDITOR
 		if (mTarget)
-			mTarget = Editor::EditorSceneManager::GetInstance()->GetEditorScene()->FindActor(targetName, nullptr);
+			mTarget = reinterpret_cast<Editor::EditorSceneManager*>(manager)->GetEditorScene()->FindActor(targetName, nullptr);
 #else
 		if (targetName.NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
 			mTarget = manager->GetCurrentScene()->FindActor(targetName);

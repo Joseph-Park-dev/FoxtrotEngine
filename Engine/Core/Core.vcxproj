@@ -242,7 +242,6 @@
     <ClInclude Include="include\Entity\Timer.h" />
     <ClInclude Include="include\EventSystem\EventFunctions.h" />
     <ClInclude Include="include\EventSystem\EventType.h" />
-    <ClInclude Include="include\FileSystem\ChunkLoader.h" />
     <ClInclude Include="include\InputSystem\FTInputDevice.h" />
     <ClInclude Include="include\Manager\DirectoryHelper.h" />
     <ClInclude Include="include\Manager\EventManager.h" />
@@ -251,6 +250,7 @@
     <ClInclude Include="include\Manager\SceneManager.h" />
     <ClInclude Include="include\Plugin\CoreExports.h" />
     <ClInclude Include="include\Plugin\framework.h" />
+    <ClInclude Include="include\Plugin\GetFunc.h" />
     <ClInclude Include="include\Plugin\IPlugin.h" />
     <ClInclude Include="include\Plugin\pch.h" />
     <ClInclude Include="include\Plugin\PluginKey.h" />
@@ -277,7 +277,6 @@
     <ClCompile Include="src\Behavior\FTBehavior.cpp" />
     <ClCompile Include="src\Entity\Timer.cpp" />
     <ClCompile Include="src\EventSystem\EventFunctions.cpp" />
-    <ClCompile Include="src\FileSystem\ChunkLoader.cpp" />
     <ClCompile Include="src\InputSystem\FTInputDevice.cpp" />
     <ClCompile Include="src\Manager\DirectoryHelper.cpp" />
     <ClCompile Include="src\Manager\EventManager.cpp" />

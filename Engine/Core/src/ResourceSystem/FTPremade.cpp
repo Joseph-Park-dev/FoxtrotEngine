@@ -29,7 +29,7 @@
 	#include "EditorSceneManager.h"
 	#include "EditorChunkLoader.h"
 	#include "EditorScene.h"
-	#include "DirectoryHelper.h"
+	#include "Manager/DirectoryHelper.h"
 	#include "EditorElement.h"
 
 	#include "DLLData.h"

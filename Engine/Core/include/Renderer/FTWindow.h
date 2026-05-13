@@ -19,8 +19,7 @@ namespace Core
 	class FTInputDevice;
 	enum class MOUSE;
 
-	class FTWindow :
-		public Core::Entity
+	class FTWindow
 	{
 	public:
 		const bool			  GetIsActive() { return mIsActive; }

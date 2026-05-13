@@ -21,8 +21,7 @@ namespace Math
 namespace Core
 {
 	class FTWindow;
-	class FoxtrotRenderer :
-		public Core::Entity
+	class FoxtrotRenderer
 	{
 	protected:
 		virtual bool Initialize(FTWindow* window) = 0;

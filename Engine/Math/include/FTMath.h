@@ -22,6 +22,8 @@
 #include <limits>
 #include <assert.h>
 
+#include "MathExports.h"
+
 namespace Math
 {
 	const float Pi(3.1415926535f);
@@ -141,7 +143,7 @@ namespace Math
 
 	class FTVector2;
 
-	class alignas(16) FTVector4
+	class MATH_API alignas(16) FTVector4
 	{
 	public:
 		union
@@ -174,7 +176,7 @@ namespace Math
 	class FTMatrix4;
 
 	// 3D Vector
-	class FTVector3
+	class MATH_API FTVector3
 	{
 	public:
 		float x;
@@ -315,7 +317,7 @@ namespace Math
 		static const FTVector3 NegInfinity;
 	};
 
-	class FTVector2
+	class MATH_API FTVector2
 	{
 	public:
 		union
@@ -723,7 +725,7 @@ namespace Math
 	};
 
 	// 4x4 Matrix
-	class FTMatrix4
+	class MATH_API FTMatrix4
 	{
 	public:
 		float mat[4][4];

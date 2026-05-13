@@ -238,7 +238,6 @@
     <ClInclude Include="include\Actor\Steering.h" />
     <ClInclude Include="include\Actor\Transform.h" />
     <ClInclude Include="include\Behavior\FTBehavior.h" />
-    <ClInclude Include="include\Component\Component.h" />
     <ClInclude Include="include\Entity\Entity.h" />
     <ClInclude Include="include\Entity\Timer.h" />
     <ClInclude Include="include\EventSystem\EventFunctions.h" />
@@ -276,7 +275,6 @@
     <ClCompile Include="src\Actor\Actor.cpp" />
     <ClCompile Include="src\Actor\Transform.cpp" />
     <ClCompile Include="src\Behavior\FTBehavior.cpp" />
-    <ClCompile Include="src\Component\Component.cpp" />
     <ClCompile Include="src\Entity\Timer.cpp" />
     <ClCompile Include="src\EventSystem\EventFunctions.cpp" />
     <ClCompile Include="src\FileSystem\ChunkLoader.cpp" />

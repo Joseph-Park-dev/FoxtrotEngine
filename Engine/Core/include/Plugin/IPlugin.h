@@ -11,6 +11,7 @@
 /// </summary>
 
 #include <Windows.h>
+#include <assert.h>
 
 #include "Debugging/DebugFuncs.h"
 
@@ -61,14 +62,4 @@ namespace Core
 	} // namespace ChunkKey
 
 	extern "C" __declspec(dllexport) IPlugin* CreatePlugin(const char* name);
-
-	template <typename FUNC>
-	FUNC GetFunc(const char* moduleName, const char* procName)
-	{
-		HMODULE mod = GetModuleHandleA(moduleName);
-		if (!mod)
-			Debug::LogError(__LINE__, __FILE__, "Module is null.");
-		FARPROC proc = GetProcAddress(mod, procName);
-		return reinterpret_cast<FUNC>(proc);
-	}
 } // namespace Core

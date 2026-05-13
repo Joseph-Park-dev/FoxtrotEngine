@@ -26,7 +26,7 @@ call :clone "!REPOS[2]!"
 :: ============================================================
 :: Download only spine-cpp from Spine Runtimes
 :: ============================================================
-cd extern
+cd third_party
 git clone --no-checkout --depth=1 --filter=blob:none https://github.com/esotericsoftware/spine-runtimes
 cd spine-runtimes
 git sparse-checkout init --cone

@@ -444,4 +444,8 @@ namespace Core
 	{
 		return ResourceManager::GetInstance()->GetTexts();
 	}
+	CORE_API Common::ResourcePack<FTCSV>* GetCSVs()
+	{
+		return ResourceManager::GetInstance()->GetCSVs();
+	}
 } // namespace Core

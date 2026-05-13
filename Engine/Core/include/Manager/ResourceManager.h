@@ -11,6 +11,9 @@ namespace Core
 	{
 		constexpr const char* GetJSONs = "GetJSONs";
 		constexpr const char* GetTexts = "GetTexts";
+		constexpr const char* GetCSVs  = "GetCSVs";
+
+		constexpr const char* GetCSV = "GetCSV";
 	} // namespace ProcName
 
 	class FTPremade;
@@ -53,5 +56,6 @@ namespace Core
 
 		CORE_API Common::ResourcePack<FTJSON>* GetJSONs();
 		CORE_API Common::ResourcePack<FTText>* GetTexts();
+		CORE_API Common::ResourcePack<FTCSV>* GetCSVs();
 	}
 } // namespace Core

@@ -31,8 +31,18 @@ namespace Core
 
 	namespace ProcName
 	{
-		constexpr const char* GetAssetPath = "GetAssetPath";
+		constexpr const char* GetProjectPath  = "GetProjectPath";
+		constexpr const char* GetAssetPath	  = "GetAssetPath";
+		constexpr const char* GetChunkPath	  = "GetChunkPath";
+		constexpr const char* GetChunkIsSaved = "GetChunkIsSaved";
+		constexpr const char* SetChunkIsSaved = "SetChunkIsSaved";
 	} // namespace ProcName
+
+	using CHUNK_IS_SAVED_FUNC = bool (*)();
+	using SET_CHUNK_IS_SAVED_FUNC = void (*)(bool);
+	using GET_PROJ_PATH_FUNC  = Common::FTDS::String* (*)();
+	using GET_CHUNK_PATH_FUNC = Common::FTDS::String* (*)();
+	using GET_ASSET_PATH_FUNC = Common::FTDS::String* (*)();
 
 	class DirectoryHelper :
 		public Core::Entity
@@ -80,6 +90,10 @@ namespace Core
 
 	extern "C"
 	{
+		CORE_API Common::FTDS::String* GetProjectPath();
 		CORE_API Common::FTDS::String* GetAssetPath();
+		CORE_API Common::FTDS::String* GetChunkPath();
+		CORE_API bool				   GetChunkIsSaved();
+		CORE_API void				   SetChunkIsSaved(bool val);
 	}
 } // namespace Core

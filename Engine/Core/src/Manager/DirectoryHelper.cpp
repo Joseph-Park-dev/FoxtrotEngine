@@ -112,8 +112,28 @@ namespace Core
 		mAssetPath->Append("\\Assets\\");
 	}
 
+	CORE_API Common::FTDS::String* GetProjectPath()
+	{
+		return DirectoryHelper::GetInstance()->GetProjectPath();
+	}
+
 	CORE_API Common::FTDS::String* Core::GetAssetPath()
 	{
 		return DirectoryHelper::GetInstance()->GetAssetPath();
+	}
+
+	CORE_API Common::FTDS::String* GetChunkPath()
+	{
+		return DirectoryHelper::GetInstance()->GetChunkPath();
+	}
+
+	CORE_API bool GetChunkIsSaved()
+	{
+		return DirectoryHelper::GetInstance()->GetCurrChunkSaved();
+	}
+
+	CORE_API void SetChunkIsSaved(bool val)
+	{
+		return DirectoryHelper::GetInstance()->SetCurrChunkSaved(val);
 	}
 } // namespace Core

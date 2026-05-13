@@ -19,6 +19,8 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
+#include "ResourceSystem/ResourcePack.h"
+
 namespace Core
 {
 	class FTCSV;
@@ -29,6 +31,7 @@ namespace D3D11
 	using namespace Common;
 	class Tile;
 
+	using GET_CSVS_FUNC = Common::ResourcePack<Core::FTCSV>* (*)();
 	class FTTileMap :
 		public D3D11Resource
 	{
@@ -86,6 +89,9 @@ namespace D3D11
 	public:
 		virtual void AddRefCount() override;
 		virtual void SubtractRefCount() override;
+
+	private:
+		GET_CSVS_FUNC mGetCSVsFunc;
 #endif // FOXTROT_EDITOR
 	};
 

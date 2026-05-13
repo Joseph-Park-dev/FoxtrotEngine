@@ -24,6 +24,7 @@
 #include "ResourceSystem/D3D11Resource.h"
 #include "ResourceSystem/FTResource.h"
 
+#include "DLLData.h"
 #include <../../Core/include/Manager/ResourceManager.h>
 
 #ifdef FOXTROT_EDITOR
@@ -68,6 +69,13 @@ namespace D3D11
 					InitializeTile(mTileMap[idx], c, r, mCSV->Data().at(idx));
 			}
 		}
+#ifdef FOXTROT_EDITOR
+
+		HMODULE coreMod = GetModuleHandleA(DLLPaths::CORE);
+		assert(coreMod != NULL);
+		FARPROC proc = GetProcAddress(coreMod, Core::ProcName::GetCSVs);
+		mGetCSVsFunc = reinterpret_cast<GET_CSVS_FUNC>(proc);
+#endif // FOXTROT_EDITOR
 	}
 
 	void FTTileMap::ReadCSV(Common::FTResourceDef& resDef, Common::FTDS::String& str)
@@ -223,6 +231,12 @@ namespace D3D11
 
 	void FTTileMap::LoadProperties(std::ifstream& ifs)
 	{
+		HMODULE coreMod = GetModuleHandleA(DLLPaths::CORE);
+		assert(coreMod != NULL);
+		FARPROC proc		= GetProcAddress(coreMod, Core::ProcName::GetCSV);
+		using GET_CSV_FUNC	= FTCSV* (*)(const char*);
+		GET_CSV_FUNC getCSV = reinterpret_cast<GET_CSV_FUNC>(proc);
+
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTTileMap::FT_TILEMAP);
 		FileIOHelper::LoadUnsignedInt(ifs, mMaxCountOnMapY);
 		FileIOHelper::LoadUnsignedInt(ifs, mMaxCountOnMapX);
@@ -230,7 +244,7 @@ namespace D3D11
 		FileIOHelper::LoadUnsignedInt(ifs, mTileWidthOnScreen);
 		Common::FTDS::String csvKey;
 		FileIOHelper::LoadBasicString(ifs, csvKey);
-		mCSV = Core::ResourceManager::GetInstance()->GetCSV(csvKey.C_Str());
+		mCSV = getCSV(csvKey.C_Str());
 		// Loading filename
 		FileIOHelper::LoadBasicString(ifs, csvKey);
 	}
@@ -242,7 +256,7 @@ namespace D3D11
 
 		Editor::DisplayResSelection(
 			"Select CSV",
-			Core::ResourceManager::GetInstance()->GetCSVs(),
+			mGetCSVsFunc(),
 			mCSV);
 
 		int tileWidthOnScreen  = static_cast<int>(mTileWidthOnScreen);

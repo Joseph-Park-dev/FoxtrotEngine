@@ -2,6 +2,8 @@
 
 namespace DLLPaths
 {
+	constexpr const char* CORE = "Core.dll";
+
 #ifdef FOXTROT_EDITOR
 	constexpr const char* CORE_EDITOR  = "Core_Editor.dll";
 	constexpr const char* D3D11_EDITOR = "D3D11_Editor.dll";

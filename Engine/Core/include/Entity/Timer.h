@@ -21,8 +21,7 @@ namespace Core
 {
 #define FT_TICKS_PASSED(A, B) ((__int64)((B) - (A)) <= 0)
 
-	class Timer :
-		public Core::Entity
+	class Timer
 	{
 		SINGLETON(Timer)
 

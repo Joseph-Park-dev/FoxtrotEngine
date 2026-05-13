@@ -14,7 +14,7 @@
 #include "Manager/SceneManager.h"
 // #include "Manager/CollisionManager.h"
 // #include "Manager/SoundManager.h"
-#include "Math/FTMath.h"
+#include "FTMath.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Renderer/Camera.h"
 #include "Actor/Transform.h"
@@ -32,6 +32,8 @@
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
 #include "EditorScene.h"
+
+#include "Engine.h"
 
 namespace Editor
 {
@@ -67,29 +69,29 @@ namespace Editor
 
 	EditorChunkLoader::~EditorChunkLoader() {}
 
-	void EditorChunkLoader::SaveChunk(FTDS::String& fileName)
+	void EditorChunkLoader::SaveChunk(Common::FTDS::String& fileName)
 	{
 		Lock();
 		std::ofstream ofs(fileName.C_Str());
 		SaveActorsData(ofs);
 
-		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CORE_RES_DATA);
-		mGetCoreResManagerFunc()->SaveResourcesToChunk<Core::FTPremade>(ofs);
+		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CORE_RES_DATA);
+		// mGetCoreResManagerFunc()->SaveResourcesToChunk<Core::FTPremade>(ofs);
 
 		SavePlugins(ofs);
 		ChunkLoader::SaveChunkData(ofs);
-		FileIOHelper::SaveBufferToFile(ofs);
+		Common::FileIOHelper::SaveBufferToFile(ofs);
 		Unlock();
 	}
 
-	void EditorChunkLoader::LoadChunk(FTDS::String& fileName)
+	void EditorChunkLoader::LoadChunk(Common::FTDS::String& fileName)
 	{
 		Lock();
 		std::ifstream ifs(fileName.C_Str());
 		ChunkLoader::LoadChunkData(ifs);
 		// LightManager::GetInstance()->LoadProperties(ifs);
 		// CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
-		EditorResourceManager::GetInstance()->PassLoadResourceInChunk(ifs);
+		// EditorResourceManager::GetInstance()->PassLoadResourceInChunk(ifs);
 		// SoundManager::GetInstance()->LoadProperties(ifs);
 		LoadActorsData(ifs);
 
@@ -101,34 +103,34 @@ namespace Editor
 	{
 		ResetMaxActorID();
 		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-		FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::ACTOR_DATA);
+		Common::FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::ACTOR_DATA);
 
 		// Actor's temp ID to be assigned as parent/Children.
 
-		FTDS::DynamicArray<Actor*>* actors = scene->Actors();
+		Common::FTDS::DynamicArray<Actor*>* actors = scene->Actors();
 		for (auto actor = actors->Begin(); actor != actors->End(); ++actor)
 		{
 			EditorElement* element = static_cast<EditorElement*>(*actor);
-			FileIOHelper::BeginDataPackSave(ofs, element->GetName());
+			Common::FileIOHelper::BeginDataPackSave(ofs, element->GetName());
 			element->SaveComponents(ofs);
 			element->SaveProperties(ofs);
-			FileIOHelper::EndDataPackSave(ofs, element->GetName());
+			Common::FileIOHelper::EndDataPackSave(ofs, element->GetName());
 			AddMaxActorID();
 		}
-		FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::ACTOR_DATA);
+		Common::FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::ACTOR_DATA);
 	}
 
 	void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
 	{
-		EditorScene*					  scene = EditorSceneManager::GetInstance()->GetEditorScene();
-		std::pair<size_t, FTDS::String>&& pack	= FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::ACTOR_DATA);
-		std::vector<Actor*>				  actorBuf;
+		EditorScene*							  scene = EditorSceneManager::GetInstance()->GetEditorScene();
+		std::pair<size_t, Common::FTDS::String>&& pack	= Common::FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::ACTOR_DATA);
+		std::vector<Actor*>						  actorBuf;
 		ResetMaxActorID();
 
 		for (size_t i = 0; i < pack.first; ++i)
 		{
-			std::pair<size_t, FTDS::String>&& actorData = FileIOHelper::BeginDataPackLoad(ifs);
-			Actor							  actor		= Actor(Core::ChunkKey::ID::INVALID);
+			std::pair<size_t, Common::FTDS::String>&& actorData = Common::FileIOHelper::BeginDataPackLoad(ifs);
+			Actor									  actor		= Actor(Core::ChunkKey::ID::INVALID);
 			actor.LoadProperties(ifs);
 			actor.LoadComponents(ifs);
 			EditorElement* element = scene->AddEditorElement(&actor);
@@ -137,10 +139,10 @@ namespace Editor
 			AddMaxActorID();
 		}
 
-		FTDS::HashMap<EditorElement*> actorWithIDs;
+		Common::FTDS::HashMap<EditorElement*> actorWithIDs;
 		actorWithIDs.Reserve(scene->Actors()->GetSize());
 
-		FTDS::DynamicArray<Actor*>* actors = scene->Actors();
+		Common::FTDS::DynamicArray<Actor*>* actors = scene->Actors();
 		for (auto actor = actors->Begin(); actor != actors->End(); ++actor)
 		{
 			if (*actor)
@@ -163,63 +165,63 @@ namespace Editor
 					element->SetParent(parent);
 				}
 
-				if (0 < element->GetChildActors().GetSize())
+				if (0 < element->GetChildActors()->GetSize())
 				{
-					FTDS::DynamicArray<Actor*> children;
+					Common::FTDS::DynamicArray<Actor*> children;
 
-					element->GetChildActors().IterateArray([&](Actor* c) {
+					element->GetChildActors()->IterateArray([&](Actor* c) {
 						Actor* child = actorWithIDs.At(c->GetID())->Value();
 						element->RemoveChild(c);
 						delete c;
 						c = nullptr;
 						children.PushBack(child);
 					});
-					element->GetChildActors().Clear();
-					element->GetChildActors().Copy(children);
+					element->GetChildActors()->Clear();
+					element->GetChildActors()->Copy(children);
 				}
 			}
 		}
 	}
 	void EditorChunkLoader::SavePlugins(std::ofstream& ofs)
 	{
-		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::PLUGIN_DATA);
-		FTDS::HashMap<Plugin*>* plugins = GetBase()->GetPlugins();
+		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::PLUGIN_DATA);
+		//Common::FTDS::HashMap<Core::IPlugin*>* plugins = Engine::GetInstance()->GetPlugins();
 
-		size_t dllIdx = 0;
-		for (auto iter = plugins->Begin(); iter != plugins->End(); ++iter)
-		{
-			Plugin*		 plugin	 = (*iter)->Value();
-			FTDS::String dllPath = {};
-			GetDLLPath(plugin->GetModule(), dllPath);
+		//size_t dllIdx = 0;
+		//for (auto iter = plugins->Begin(); iter != plugins->End(); ++iter)
+		//{
+		//	Core::IPlugin*		 plugin	 = (*iter)->Value();
+		//	Common::FTDS::String dllPath = {};
+		//	GetDLLPath(plugin->GetModule(), dllPath);
 
-			FileIOHelper::BeginDataPackSave(ofs, (*iter)->Key());
-			FileIOHelper::SaveString(ofs, ChunkKey::Plugin::DLL_PATH, dllPath);
-			SaveCompConstructors(ofs, (*iter)->Value());
-			SaveManagerData(ofs, (*iter)->Value());
-		}
-		FileIOHelper::EndDataPackSave(ofs, ChunkKey::Plugin::PLUGIN_DATA);
+		//	Common::FileIOHelper::BeginDataPackSave(ofs, (*iter)->Key());
+		//	Common::FileIOHelper::SaveString(ofs, ChunkKey::Plugin::DLL_PATH, dllPath);
+		//	SaveCompConstructors(ofs, (*iter)->Value());
+		//	SaveManagerData(ofs, (*iter)->Value());
+		//}
+		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::Plugin::PLUGIN_DATA);
 	}
 
 	void EditorChunkLoader::SaveCompConstructors(std::ofstream& ofs, Plugin* plugin)
 	{
-		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::COMP_CONSTRUCTORS);
-		FTDS::HashMap<FARPROC>* map = GetCompConstructors();
+		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::COMP_CONSTRUCTORS);
+		Common::FTDS::HashMap<FARPROC>* map = GetCompConstructors();
 
 		size_t compIdx = 0;
 		for (auto iter = map->Begin(); iter != map->End(); ++iter)
-			FileIOHelper::SaveString(ofs, std::to_string(compIdx).c_str(), (*iter)->Key().C_Str());
+			Common::FileIOHelper::SaveString(ofs, std::to_string(compIdx).c_str(), (*iter)->Key().C_Str());
 
-		FileIOHelper::EndDataPackSave(ofs, ChunkKey::Plugin::COMP_CONSTRUCTORS);
+		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::Plugin::COMP_CONSTRUCTORS);
 	}
 
 	void EditorChunkLoader::SaveManagerData(std::ofstream& ofs, Plugin* plugin)
 	{
-		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::MANAGER_DATA);
-		plugin->SaveManagerData(ofs);
-		FileIOHelper::EndDataPackSave(ofs, ChunkKey::Plugin::MANAGER_DATA);
+		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::MANAGER_DATA);
+		//plugin->SaveManagerData(ofs);
+		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::Plugin::MANAGER_DATA);
 	}
 
-	static void GetDLLPath(HMODULE mod, FTDS::String& out)
+	static void GetDLLPath(HMODULE mod, Common::FTDS::String& out)
 	{
 		char path[MAX_PATH];
 		if (GetModuleFileNameA(mod, path, MAX_PATH))

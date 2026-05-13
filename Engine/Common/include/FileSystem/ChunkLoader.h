@@ -37,8 +37,7 @@ namespace Core
 		size_t ActorCount;
 	};
 
-	class ChunkLoader :
-		public Core::Entity
+	class ChunkLoader
 	{
 		SINGLETON_PROTECTED(ChunkLoader)
 
@@ -60,8 +59,7 @@ namespace Core
 
 		Common::FTDS::String& CurrentChunk();
 
-		const int						GetMaxActorID() const;
-		Common::FTDS::HashMap<FARPROC>* GetCompConstructors();
+		const int GetMaxActorID() const;
 
 		// Add actor count by 1.
 		void AddMaxActorID();
@@ -84,8 +82,6 @@ namespace Core
 		// Name of the copied .chunk file.
 		Common::FTDS::String mCurrentChunkCopy;
 		int					 mMaxActorID;
-
-		Common::FTDS::HashMap<FARPROC>* mCompConstructors;
 
 	private:
 		void LoadPlugins(std::ifstream& ifs);

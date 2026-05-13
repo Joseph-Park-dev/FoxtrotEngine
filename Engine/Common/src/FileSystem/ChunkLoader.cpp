@@ -115,11 +115,6 @@ namespace Core
 		return mMaxActorID;
 	}
 
-	Common::FTDS::HashMap<FARPROC>* ChunkLoader::GetCompConstructors()
-	{
-		return mCompConstructors;
-	}
-
 	void ChunkLoader::AddMaxActorID()
 	{
 		++mMaxActorID;
@@ -203,18 +198,18 @@ namespace Core
 
 	void ChunkLoader::LoadCompConstructors(std::ifstream& ifs, HMODULE& mod)
 	{
-		size_t count = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::COMP_CONSTRUCTORS).first;
-		mCompConstructors->Reserve(count);
-		for (size_t i = 0; i < count; ++i)
-		{
-			Common::FTDS::String compName	  = {};
-			Common::FTDS::String compProcName = {};
-			Common::FileIOHelper::LoadBasicString(ifs, compName);
-			compProcName.Assign(compName);
-			compProcName.Append("_Create");
+		// size_t count = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::COMP_CONSTRUCTORS).first;
+		// mCompConstructors->Reserve(count);
+		// for (size_t i = 0; i < count; ++i)
+		//{
+		//	Common::FTDS::String compName	  = {};
+		//	Common::FTDS::String compProcName = {};
+		//	Common::FileIOHelper::LoadBasicString(ifs, compName);
+		//	compProcName.Assign(compName);
+		//	compProcName.Append("_Create");
 
-			mCompConstructors->Insert(compProcName, GetProcAddress(mod, compName.C_Str()));
-		}
+		//	mCompConstructors->Insert(compProcName, GetProcAddress(mod, compName.C_Str()));
+		//}
 	}
 
 	void ChunkLoader::LoadManagerData(std::ifstream& ifs, HMODULE& mod)

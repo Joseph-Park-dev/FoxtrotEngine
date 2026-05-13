@@ -25,8 +25,7 @@ namespace Core
 		void*	   eventData;
 	};
 
-	class EventManager :
-		public Core::Entity
+	class EventManager
 	{
 		SINGLETON_PROTECTED(EventManager)
 

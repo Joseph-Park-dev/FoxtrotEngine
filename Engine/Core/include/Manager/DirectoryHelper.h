@@ -38,14 +38,13 @@ namespace Core
 		constexpr const char* SetChunkIsSaved = "SetChunkIsSaved";
 	} // namespace ProcName
 
-	using CHUNK_IS_SAVED_FUNC = bool (*)();
+	using CHUNK_IS_SAVED_FUNC	  = bool (*)();
 	using SET_CHUNK_IS_SAVED_FUNC = void (*)(bool);
-	using GET_PROJ_PATH_FUNC  = Common::FTDS::String* (*)();
-	using GET_CHUNK_PATH_FUNC = Common::FTDS::String* (*)();
-	using GET_ASSET_PATH_FUNC = Common::FTDS::String* (*)();
+	using GET_PROJ_PATH_FUNC	  = Common::FTDS::String* (*)();
+	using GET_CHUNK_PATH_FUNC	  = Common::FTDS::String* (*)();
+	using GET_ASSET_PATH_FUNC	  = Common::FTDS::String* (*)();
 
-	class DirectoryHelper :
-		public Core::Entity
+	class DirectoryHelper
 	{
 		SINGLETON(DirectoryHelper)
 

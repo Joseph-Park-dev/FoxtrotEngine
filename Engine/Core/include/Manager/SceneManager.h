@@ -34,8 +34,7 @@ namespace Core
 	#define FIND_ACTOR(id) SceneManager::GetInstance()->GetCurrentScene()->FindActor(id)
 #endif // FOXTROT_EDITOR
 
-	class SceneManager :
-		public Core::Entity
+	class SceneManager
 	{
 		SINGLETON_PROTECTED(SceneManager)
 

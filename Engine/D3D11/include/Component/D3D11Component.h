@@ -12,6 +12,7 @@ namespace D3D11
 {
 	using namespace Common;
 	class D3D11Renderer;
+	class Camera;
 
 	class D3D11Component :
 		public Core::Component
@@ -37,7 +38,8 @@ namespace D3D11
 		virtual ~D3D11Component();
 
 #ifdef FOXTROT_EDITOR
-		virtual void EditorRender(D3D11::D3D11Renderer* renderer) = 0;
+		virtual void EditorRender(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst) = 0;
+		virtual void EditorUIUpdate() override;
 
 #endif // FOXTROT_EDITOR
 	};

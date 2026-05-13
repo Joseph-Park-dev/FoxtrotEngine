@@ -215,7 +215,7 @@ namespace D3D11
 		SpriteRenderer::EditorUIUpdate();
 	}
 
-	void Animator::EditorRender(D3D11::D3D11Renderer* renderer)
+	void Animator::EditorRender(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst)
 	{
 		if (GetSprite())
 		{
@@ -226,7 +226,7 @@ namespace D3D11
 			GetSprite()->UpdateConstantBuffers(
 				renderer,
 				transform,
-				Editor::EditorCamera::GetInstance(),
+				camInst,
 				GetMaterial(),
 				anim->GetFrameCount(),
 				mCurrFrameIdx);
@@ -234,7 +234,7 @@ namespace D3D11
 			GetSprite()->Render(
 				renderer,
 				transform,
-				Editor::EditorCamera::GetInstance(),
+				camInst,
 				GetPSO(),
 				GetMaterial());
 		}

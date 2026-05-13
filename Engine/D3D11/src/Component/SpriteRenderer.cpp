@@ -148,12 +148,12 @@ namespace D3D11
 			ResourceManager::GetInstance()->GetMaterials(),
 			mMaterial);
 	}
-	void SpriteRenderer::EditorRender(D3D11::D3D11Renderer* renderer)
+	void SpriteRenderer::EditorRender(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst)
 	{
 		if (mSprite)
 		{
-			mSprite->UpdateConstantBuffers(renderer, GetOwner()->GetTransform(), Camera::GetInstance(), mMaterial);
-			mSprite->Render(renderer, GetOwner()->GetTransform(), Editor::EditorCamera::GetInstance(), mPSO, mMaterial);
+			mSprite->UpdateConstantBuffers(renderer, GetOwner()->GetTransform(), camInst, mMaterial);
+			mSprite->Render(renderer, GetOwner()->GetTransform(), camInst, mPSO, mMaterial);
 		}
 	}
 #endif // FOXTROT_EDITOR

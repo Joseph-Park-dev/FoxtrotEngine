@@ -125,14 +125,14 @@ namespace D3D11
 		this->Update(deltaTime);
 	}
 
-	void SpineAnimator::EditorRender(D3D11::D3D11Renderer* renderer)
+	void SpineAnimator::EditorRender(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst)
 	{
 		if (GetMeshGroup())
 		{
 			Transform* transform = GetOwner()->GetTransform();
 			static_cast<FTSpineAnimation*>(
 				GetMeshGroup())
-				->Render(renderer, transform, Editor::EditorCamera::GetInstance(), GetTexture(), GetVS(), GetPS(), GetMaterial());
+				->Render(renderer, transform, camInst, GetTexture(), GetVS(), GetPS(), GetMaterial());
 		}
 	}
 

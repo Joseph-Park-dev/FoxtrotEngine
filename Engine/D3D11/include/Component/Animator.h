@@ -65,10 +65,10 @@ namespace D3D11
 
 	private:
 		Common::FTDS::DynamicArray<D3D11::FTSpriteAnimation*>* mLoadedAnim;
-		int													 mCurrFrameIdx;
-		float												 mAccTime;
-		bool												 mIsFinished;
-		bool												 mIsRepeated;
+		int													   mCurrFrameIdx;
+		float												   mAccTime;
+		bool												   mIsFinished;
+		bool												   mIsRepeated;
 
 	public:
 		virtual void SaveProperties(std::ofstream& ofs) override;
@@ -82,7 +82,7 @@ namespace D3D11
 	public:
 		virtual void EditorUpdate(float deltaTime) override;
 		virtual void EditorUIUpdate() override;
-		void		 EditorRender(D3D11::D3D11Renderer* renderer) override;
+		void		 EditorRender(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst) override;
 
 	private:
 		void UpdatePlayAnim();

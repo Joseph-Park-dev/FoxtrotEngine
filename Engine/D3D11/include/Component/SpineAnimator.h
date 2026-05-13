@@ -41,7 +41,7 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 	public:
 		virtual void EditorUpdate(float deltaTime) override;
-		virtual void EditorRender(D3D11::D3D11Renderer* renderer) override;
+		virtual void EditorRender(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst) override;
 		virtual void EditorUIUpdate() override;
 #endif // FOXTROT_EDITOR
 	};

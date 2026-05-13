@@ -157,7 +157,7 @@ namespace D3D11
 	}
 
 #ifdef FOXTROT_EDITOR
-	void MeshRenderer::EditorRender(D3D11::D3D11Renderer* renderer)
+	void MeshRenderer::EditorRender(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst)
 	{
 		if (mMeshGroup)
 		{

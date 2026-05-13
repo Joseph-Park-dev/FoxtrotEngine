@@ -50,6 +50,7 @@ namespace Editor
 
 	EditorRenderer::EditorRenderer(D3D11::D3D11Window* window)
 		: D3D11::D3D11Renderer(window)
+		, mViewportRenderer(DBG_NEW ViewportRenderer)
 	{
 	}
 } // namespace Editor

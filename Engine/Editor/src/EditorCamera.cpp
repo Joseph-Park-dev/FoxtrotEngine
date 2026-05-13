@@ -15,6 +15,7 @@
 #include "Manager/EditorShapes.h"
 #include "Renderer/FTWindow.h"
 #include "FTMath.h"
+#include "Plugin/GetFunc.h"
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
@@ -33,12 +34,15 @@ namespace Editor
 		, mPanKeyPressed(false)
 		, mPanValModSpeed(0.01f)
 		, mZoomValModSpeed(0.1f)
-		, mDebugRect(DBG_NEW D3D11::FTRectangle)
+		, mDebugRect(nullptr)
 	{
 		// EditorCamera needs to be behind the Camera
 		// to let debug rect visible.
 		const Math::FTVector3& camPos = Camera::GetInstance()->GetPosition();
 		SetPosition(camPos.x, camPos.y, camPos.z - 0.1f);
+
+		using GET_RECT_FUNC = D3D11::FTRectangle* (*)();
+		mDebugRect			= GetFunc<GET_RECT_FUNC>(DLLPaths::D3D11_EDITOR, D3D11::ProcName::CREATE_FT_RECTANGLE)();
 	}
 
 	EditorCamera::~EditorCamera()
@@ -134,8 +138,8 @@ namespace Editor
 		}*/
 
 		// Set Target
-		Scene*							  scene		  = EditorSceneManager::GetInstance()->GetCurrentScene();
-		EditorScene*					  editorScene = reinterpret_cast<EditorScene*>(scene);
+		Scene*									  scene		  = EditorSceneManager::GetInstance()->GetCurrentScene();
+		EditorScene*							  editorScene = reinterpret_cast<EditorScene*>(scene);
 		Common::FTDS::DynamicArray<Core::Actor*>* editorElems = editorScene->Actors();
 		Common::FTDS::String* actorNames					  = DBG_NEW Common::FTDS::String[editorElems->GetSize() + 1];
 		actorNames[0].Assign("None");

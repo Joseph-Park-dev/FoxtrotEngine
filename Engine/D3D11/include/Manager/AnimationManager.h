@@ -28,8 +28,7 @@ namespace D3D11
 	class FTSpineAnimation;
 	struct FTSpriteAnimationDef;
 
-	class AnimationManager :
-		public Core::Entity
+	class AnimationManager
 	{
 		SINGLETON(AnimationManager)
 

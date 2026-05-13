@@ -27,8 +27,7 @@ namespace D3D11
 	class D3D11Renderer;
 
 	// This provides a context to render shapes as DebugShapes
-	class DebugShapes :
-		public Core::Entity
+	class DebugShapes
 	{
 		SINGLETON_PROTECTED(DebugShapes)
 	public:
@@ -58,9 +57,9 @@ namespace D3D11
 
 	private:
 		Common::FTDS::DynamicArray<FTShape*>* mShapes;
-		std::wstring						mVSPath;
-		std::wstring						mGSPath;
-		std::wstring						mPSPath;
+		std::wstring						  mVSPath;
+		std::wstring						  mGSPath;
+		std::wstring						  mPSPath;
 
 	private:
 		Microsoft::WRL::ComPtr<ID3D11VertexShader>	 mVS;

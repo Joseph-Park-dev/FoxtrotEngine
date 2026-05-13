@@ -44,8 +44,7 @@ namespace D3D11
 		Perspective
 	};
 
-	class Camera :
-		public Core::Entity
+	class Camera
 	{
 		SINGLETON_PROTECTED(Camera)
 	public:

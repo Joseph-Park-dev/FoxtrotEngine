@@ -33,4 +33,11 @@ namespace D3D11
 	D3D11::D3D11Component::~D3D11Component()
 	{
 	}
+
+#ifdef FOXTROT_EDITOR
+	void D3D11Component::EditorUIUpdate()
+	{
+		Core::Component::EditorUIUpdate();
+	}
+#endif
 } // namespace D3D11

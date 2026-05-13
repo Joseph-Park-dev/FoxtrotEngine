@@ -2,7 +2,7 @@ Review all local modifications relative to HEAD, including both staged and unsta
 
 Before adding, check for any of the following patterns:
 
-The file must be located in "src" and "include" folder.
+The file must be located in "src" or "include" folder.
 
 Before committing, check for any of the following patterns:
 

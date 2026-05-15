@@ -1,10 +1,12 @@
 #pragma once
 #include "Plugin/IPlugin.h"
+#include "Factory/IGraphicsFactory.h"
+#include "Factory/IInputSysFactory.h"
 
 #include "InputSystem/D3D11InputDevice.h"
 #include "Renderer/D3D11Renderer.h"
-#include "Entity/D3D11Window.h"
-#include "Renderer/Camera.h"
+#include "Renderer/D3D11Window.h"
+#include "Renderer/D3D11Camera.h"
 #include "FTDS/Dynamic/DynamicArray.h"
 #include "Renderer/FTRectArea.h"
 #include "FileSystem/FileTypes.h"
@@ -26,18 +28,22 @@ namespace ChunkKey
 using namespace Core;
 using namespace Common;
 class D3D11Plugin :
-	public Core::IPlugin
+	public Core::IPlugin,
+	public Core::IGraphicsFactory,
+	public Core::IInputSysFactory
 {
 public:
-	void				  CreateInputDevice();
-	D3D11::D3D11Renderer* CreateRenderer(D3D11::D3D11Window* window);
-	D3D11::D3D11Window*	  CreateD3D11Window(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea);
+	virtual IWindow* CreateAppWindow(
+		const char*	 title,
+		unsigned int width,
+		unsigned int height,
+		FTRectArea*	 renderArea) override;
+	virtual IRenderer*	  CreateRenderer(IWindow* window) override;
+	virtual ICamera*	  CreateCamera() override;
+	virtual IInputDevice* CreateInputDevice() override;
 
 	void SaveProperties();
 	void LoadProperties(SceneManager* sceneManager);
-
-public:
-	virtual Core::Entity* GetEntity(const char* name) override;
 
 public:
 	//////////////////////////////////
@@ -72,6 +78,23 @@ private:
 
 	Common::FTDS::DynamicArray<D3D11::D3D11Component*>* mRegisteredComps;
 };
+
+IWindow* D3D11Plugin::CreateAppWindow(const char* title, unsigned int width, unsigned int height, FTRectArea* renderArea)
+{
+	D3D11::D3D11Window* win = DBG_NEW D3D11::D3D11Window(title, width, height, renderArea);
+	mWindows->PushBack(win);
+	return win;
+}
+
+IRenderer* D3D11Plugin::CreateRenderer(Core::IWindow* window)
+{
+	return DBG_NEW D3D11::D3D11Renderer(window);
+}
+
+ICamera* D3D11Plugin::CreateCamera()
+{
+	return DBG_NEW D3D11::D3D11Camera();
+}
 
 void D3D11Plugin::CreateInputDevice()
 {
@@ -117,9 +140,9 @@ void D3D11Plugin::ProcessInput()
 
 	for (auto input = mInputDevices->Begin(); input != mInputDevices->End(); ++input)
 	{
-		for (auto iter = mWindows->Begin(); iter != mWindows->End(); ++iter)
+		for (auto win = mWindows->Begin(); win != mWindows->End(); ++win)
 		{
-			(*iter)->ProcessInput(*input);
+			(*input)->Update(*win);
 		}
 	}
 }

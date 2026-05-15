@@ -241,7 +241,8 @@
     <ClInclude Include="include\Entity\Timer.h" />
     <ClInclude Include="include\EventSystem\EventFunctions.h" />
     <ClInclude Include="include\EventSystem\EventType.h" />
-    <ClInclude Include="include\InputSystem\FTInputDevice.h" />
+    <ClInclude Include="include\Factory\IGraphicsFactory.h" />
+    <ClInclude Include="include\InputSystem\IInputDevice.h" />
     <ClInclude Include="include\Manager\DirectoryHelper.h" />
     <ClInclude Include="include\Manager\EventManager.h" />
     <ClInclude Include="include\Manager\ResourceHelper.h" />
@@ -253,9 +254,10 @@
     <ClInclude Include="include\Plugin\IPlugin.h" />
     <ClInclude Include="include\Plugin\pch.h" />
     <ClInclude Include="include\Plugin\PluginKey.h" />
-    <ClInclude Include="include\Renderer\FoxtrotRenderer.h" />
     <ClInclude Include="include\Renderer\FTRectArea.h" />
-    <ClInclude Include="include\Renderer\FTWindow.h" />
+    <ClInclude Include="include\Renderer\ICamera.h" />
+    <ClInclude Include="include\Renderer\IRenderer.h" />
+    <ClInclude Include="include\Renderer\IWindow.h" />
     <ClInclude Include="include\ResourceSystem\CoreResource.h" />
     <ClInclude Include="include\ResourceSystem\FTPremade.h" />
     <ClInclude Include="include\ResourceSystem\GenericData\FTCSV.h" />
@@ -271,6 +273,7 @@
     <ClCompile Include="..\..\third_party\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\third_party\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\third_party\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="include\Factory\IInputSysFactory.h" />
     <ClCompile Include="src\Actor\Actor.cpp" />
     <ClCompile Include="src\Actor\Transform.cpp" />
     <ClCompile Include="src\Behavior\FTBehavior.cpp" />

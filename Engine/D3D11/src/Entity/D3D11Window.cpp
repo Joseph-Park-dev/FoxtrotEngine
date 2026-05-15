@@ -24,9 +24,9 @@ namespace D3D11
 
 	bool D3D11Window::Initialize(int windowMode, WNDPROC proc, WNDPROC_Params* params)
 	{
-		assert(!GetTitle().IsEmpty());
+		assert(!mTitle->IsEmpty());
 
-		const wchar_t* title = GetTitle().WC_Str();
+		const wchar_t* title = mTitle->WC_Str();
 
 		WNDCLASSEX wc = {
 			sizeof(WNDCLASSEX),
@@ -79,7 +79,7 @@ namespace D3D11
 		return true;
 	}
 
-	bool D3D11Window::InitializeWindowRenderer(D3D11Renderer* renderer)
+	bool D3D11Window::InitializeWindowRenderer(D3D11::D3D11Renderer* renderer)
 	{
 		if (!CreateRTV(renderer->GetDevice()))
 		{
@@ -95,7 +95,7 @@ namespace D3D11
 		return true;
 	}
 
-	bool D3D11Window::CreateSwapChain(D3D11Renderer* renderer)
+	bool D3D11Window::CreateSwapChain(D3D11::D3D11Renderer* renderer)
 	{
 		HRESULT hr = D3D11Utils::CreateSwapChain(mWinHandle, renderer->GetDevice(), mSwapChain, GetWidth(), GetHeight(), renderer->GetNumQualityLevels());
 		if (hr != S_OK)
@@ -103,10 +103,10 @@ namespace D3D11
 		return true;
 	}
 
-	void D3D11Window::ResizeWindow(Core::FoxtrotRenderer* renderer)
+	void D3D11Window::ResizeWindow(Core::IRenderer* renderer)
 	{
 		D3D11Renderer* rend = reinterpret_cast<D3D11Renderer*>(renderer);
-		Reset(rend);
+		Reset();
 		if (mSwapChain)
 		{
 			DX::ThrowIfFailed(
@@ -117,22 +117,9 @@ namespace D3D11
 		}
 	}
 
-	void D3D11Window::ProcessInput(D3D11InputDevice* inputDevice)
+	void D3D11Window::BeginRender(Core::IRenderer* renderer)
 	{
-		MSG msg = {};
-		if (PeekMessage(&msg, mWinHandle, 0, 0, PM_REMOVE))
-		{
-			// EditorCamera2D::GetInstance()->ProcessInput(msg);
-		}
-		inputDevice->DetectMouseInput(msg);
-		inputDevice->DetectKeyboardInput();
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-	}
-
-	void D3D11Window::BeginRender(Core::FoxtrotRenderer* renderer)
-	{
-		D3D11Renderer* rend = static_cast<D3D11Renderer*>(renderer);
+		D3D11Renderer* rend = reinterpret_cast<D3D11Renderer*>(renderer);
 		ClearWindow(rend);
 		ID3D11RenderTargetView* targetsPrev[] = { mRTV.Get() };
 		rend->GetContext()->OMSetRenderTargets(1, targetsPrev, mDSV.Get());
@@ -149,17 +136,17 @@ namespace D3D11
 		rend->SetViewport(0.f, 0.f, GetRenderArea()->GetSize().x, GetRenderArea()->GetSize().y);
 	}
 
-	void D3D11Window::EndRender(Core::FoxtrotRenderer* renderer)
+	void D3D11Window::EndRender(Core::IRenderer* renderer)
 	{
 		mSwapChain->Present(1, 0);
 
-		D3D11Renderer*			rend		= static_cast<D3D11Renderer*>(renderer);
+		D3D11Renderer*			rend		= reinterpret_cast<D3D11Renderer*>(renderer);
 		ID3D11RenderTargetView* nullViews[] = { nullptr };
 		rend->GetContext()->OMSetRenderTargets(1, nullViews, nullptr);
 		rend->GetContext()->OMSetDepthStencilState(nullptr, 0);
 	}
 
-	void D3D11Window::Reset(Core::FoxtrotRenderer* renderer)
+	void D3D11Window::Reset()
 	{
 		mRTV.Reset();
 		mDSV.Reset();
@@ -170,20 +157,58 @@ namespace D3D11
 	ComPtr<ID3D11RenderTargetView>& D3D11Window::GetRTV() { return mRTV; }
 	ComPtr<ID3D11DepthStencilView>& D3D11Window::GetDSV() { return mDSV; }
 
+	const Common::FTDS::String* D3D11Window::GetTitle() const
+	{
+		return mTitle;
+	}
+
+	unsigned int D3D11Window::GetWidth() const
+	{
+		return mWidth;
+	}
+
+	unsigned int D3D11Window::GetHeight() const
+	{
+		return mHeight;
+	}
+
+	void D3D11Window::SetWidth(unsigned int width)
+	{
+		mWidth = width;
+	}
+
+	void D3D11Window::SetHeight(unsigned int height)
+	{
+		mHeight = height;
+	}
+
+	FTRectArea* D3D11Window::GetRenderArea() const
+	{
+		return mRenderArea;
+	}
+
 	D3D11Window::D3D11Window(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea)
-		: FTWindow(title, width, height, rndArea)
+		: mTitle(DBG_NEW Common::FTDS::String(title))
+		, mWidth(width)
+		, mHeight(height)
+		, mRenderArea(rndArea)
 	{
 		this->Initialize(WS_OVERLAPPED);
 	}
 
 	D3D11Window::D3D11Window(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea, WNDPROC proc, WNDPROC_Params* params)
-		: FTWindow(title, width, height, rndArea)
+		: mTitle(DBG_NEW Common::FTDS::String(title))
+		, mWidth(width)
+		, mHeight(height)
+		, mRenderArea(rndArea)
 	{
 		this->Initialize(WS_OVERLAPPED, proc, params);
 	}
 
 	D3D11Window::~D3D11Window()
 	{
+		delete mTitle;
+		delete mRenderArea;
 	}
 
 	bool D3D11Window::CreateRTV(Microsoft::WRL::ComPtr<ID3D11Device>& device)

@@ -1,6 +1,6 @@
 #include "Renderer/D3D11Renderer.h"
 
-#include "Entity/D3D11Window.h"
+#include "Renderer/D3D11Window.h"
 #include "Utility/D3D11Utils.h"
 #include "Debugging/DebugMemAlloc.h"
 #include "DebugFuncs.h"
@@ -11,40 +11,32 @@ namespace D3D11
 	using namespace Core;
 	using namespace Math;
 	using namespace Microsoft::WRL;
-	void D3D11Renderer::SetViewport(FTVector2&& topLeft, FTVector2&& resolution)
-	{
-		// Set the viewport
-		ZeroMemory(mViewport, sizeof(D3D11_VIEWPORT));
-
-		mViewport->TopLeftX = topLeft.x;
-		mViewport->TopLeftY = topLeft.y;
-		mViewport->Width	= resolution.x;
-		mViewport->Height	= resolution.y;
-		// m_screenViewport.Width = static_cast<float>(m_screenHeight);
-		mViewport->MinDepth = 0.0f;
-		mViewport->MaxDepth = 1.0f; // Note: important for depth buffering
-		mContext->RSSetViewports(1, mViewport);
-	}
-
-	void D3D11Renderer::SetViewport(FLOAT topLeftX, FLOAT topLeftY, FLOAT resX, FLOAT resY)
-	{
-		// Set the viewport
-		ZeroMemory(mViewport, sizeof(D3D11_VIEWPORT));
-
-		mViewport->TopLeftX = topLeftX;
-		mViewport->TopLeftY = topLeftY;
-		mViewport->Width	= resX;
-		mViewport->Height	= resY;
-		// m_screenViewport.Width = static_cast<float>(m_screenHeight);
-		mViewport->MinDepth = 0.0f;
-		mViewport->MaxDepth = 1.0f; // Note: important for depth buffering
-		if (mContext)
-			mContext->RSSetViewports(1, mViewport);
-	}
 
 	void D3D11Renderer::Reset()
 	{
 		mContext->ClearState();
+	}
+
+	void D3D11Renderer::GetViewport(float& outTopLeftX, float& outTopLeftY, float& outWidth, float& outHeight) const
+	{
+		outTopLeftX = mViewport->TopLeftX;
+		outTopLeftY = mViewport->TopLeftY;
+		outWidth	= mViewport->Width;
+		outHeight	= mViewport->Height;
+	}
+
+	void D3D11Renderer::SetViewport(float topLeftX, float topLeftY, float width, float height)
+	{
+		ZeroMemory(mViewport, sizeof(D3D11_VIEWPORT));
+		mViewport->TopLeftX = topLeftX;
+		mViewport->TopLeftY = topLeftY;
+		mViewport->Width	= width;
+		mViewport->Height	= height;
+		mViewport->MinDepth = 0.0f;
+		mViewport->MaxDepth = 1.0f; // Note: important for depth buffering
+
+		if (mContext)
+			mContext->RSSetViewports(1, mViewport);
 	}
 
 	ComPtr<ID3D11Device>&		 D3D11Renderer::GetDevice() { return mDevice; }
@@ -56,7 +48,7 @@ namespace D3D11
 		return mViewport;
 	}
 
-	const FillMode& D3D11Renderer::GetFillMode()
+	const FillMode& D3D11Renderer::GetFillMode() const
 	{
 		return mFillMode;
 	}
@@ -66,7 +58,7 @@ namespace D3D11
 		mFillMode = mode;
 	}
 
-	D3D11Renderer::D3D11Renderer(D3D11::D3D11Window* window)
+	D3D11Renderer::D3D11Renderer(Core::IWindow* window)
 		: mNumQualityLevels(0)
 		, mViewport(DBG_NEW D3D11_VIEWPORT)
 		, mFillMode(D3D11::FillMode::SOLID)
@@ -79,11 +71,11 @@ namespace D3D11
 		delete mViewport;
 	}
 
-	bool D3D11Renderer::Initialize(FTWindow* window)
+	bool D3D11Renderer::Initialize(Core::IWindow* window)
 	{
-		D3D11Window* win		  = static_cast<D3D11Window*>(window);
-		UINT		 renderWidth  = static_cast<UINT>(window->GetRenderArea()->GetSize().x);
-		UINT		 renderHeight = static_cast<UINT>(window->GetRenderArea()->GetSize().y);
+		D3D11::D3D11Window* win			 = static_cast<D3D11::D3D11Window*>(window);
+		UINT				renderWidth	 = static_cast<UINT>(window->GetRenderArea()->GetSize().x);
+		UINT				renderHeight = static_cast<UINT>(window->GetRenderArea()->GetSize().y);
 
 		DX::ThrowIfFailed(
 			D3D11Utils::CreateDeviceAndContext(

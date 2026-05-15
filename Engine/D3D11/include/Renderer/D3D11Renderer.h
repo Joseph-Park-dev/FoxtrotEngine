@@ -1,5 +1,5 @@
 #pragma once
-#include "Renderer/FoxtrotRenderer.h"
+#include "Renderer/IRenderer.h"
 
 #include <wrl.h>
 #include <windows.h>
@@ -10,22 +10,14 @@
 
 namespace D3D11
 {
-	enum class FillMode
-	{
-		SOLID,
-		WIRE_FRAME
-	};
 	class D3D11Window;
 
 	class D3D11Renderer :
-		public Core::FoxtrotRenderer
+		public Core::IRenderer
 	{
 	public:
-		void SetViewport(
-			Math::FTVector2&& topLeft,
-			Math::FTVector2&& resolution);
-		void SetViewport(FLOAT topLeftX, FLOAT topLeftY, FLOAT resX, FLOAT resY);
-		void Reset();
+		virtual void GetViewport(float& outTopLeftX, float& outTopLeftY, float& outWidth, float& outHeight) const override;
+		virtual void SetViewport(float topLeftX, float topLeftY, float width, float height) override;
 
 	public:
 		// D3D11 interfaces (Getters).
@@ -33,22 +25,23 @@ namespace D3D11
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& GetContext();
 		const unsigned int							 GetNumQualityLevels() const;
 		D3D11_VIEWPORT*								 GetViewport();
-		const FillMode&								 GetFillMode();
+		const Core::FillMode&						 GetFillMode() const;
 
 		void SetFillMode(const FillMode mode);
 
 	public:
-		D3D11Renderer(D3D11::D3D11Window* window);
+		D3D11Renderer(Core::IWindow* window);
 		~D3D11Renderer();
 
 	protected:
-		virtual bool Initialize(Core::FTWindow* window) override;
+		virtual bool Initialize(Core::IWindow* window) override;
+		void		 Reset();
 
 	private:
 		Microsoft::WRL::ComPtr<ID3D11Device>		mDevice;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> mContext;
 		D3D11_VIEWPORT*								mViewport;
 		UINT										mNumQualityLevels;
-		FillMode									mFillMode;
+		Core::FillMode								mFillMode;
 	};
 } // namespace D3D11

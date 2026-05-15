@@ -296,6 +296,7 @@
     <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Triangulator.cpp" />
     <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Updatable.cpp" />
     <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\VertexAttachment.cpp" />
+    <ClCompile Include="include\Renderer\D3D11Camera.cpp" />
     <ClCompile Include="src\Component\Animator.cpp" />
     <ClCompile Include="src\Component\D3D11Component.cpp" />
     <ClCompile Include="src\Component\MeshRenderer.cpp" />
@@ -352,7 +353,7 @@
     <ClInclude Include="include\Component\SpriteRenderer.h" />
     <ClInclude Include="include\Component\TileMapRenderer.h" />
     <ClInclude Include="include\DebugFuncs.h" />
-    <ClInclude Include="include\Entity\D3D11Window.h" />
+    <ClInclude Include="include\Renderer\D3D11Window.h" />
     <ClInclude Include="include\framework.h" />
     <ClInclude Include="include\InputSystem\D3D11InputDevice.h" />
     <ClInclude Include="include\Manager\AnimationManager.h" />
@@ -362,7 +363,7 @@
     <ClInclude Include="include\Manager\ResourceManager.h" />
     <ClInclude Include="include\pch.h" />
     <ClInclude Include="include\Plugin\PluginKey.h" />
-    <ClInclude Include="include\Renderer\Camera.h" />
+    <ClInclude Include="include\Renderer\D3D11Camera.h" />
     <ClInclude Include="include\Renderer\D3D11Renderer.h" />
     <ClInclude Include="include\Renderer\WindowProcess.h" />
     <ClInclude Include="include\ResourceSystem\Animation\AnimationFrame.h" />

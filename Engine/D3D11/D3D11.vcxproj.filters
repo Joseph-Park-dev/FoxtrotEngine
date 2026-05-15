@@ -371,6 +371,9 @@
     <ClCompile Include="..\..\third_party\ImGuiFileDialog\ImGuiFileDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="include\Renderer\D3D11Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Component\Animator.h">
@@ -391,7 +394,7 @@
     <ClInclude Include="include\Component\TileMapRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Entity\D3D11Window.h">
+    <ClInclude Include="include\Renderer\D3D11Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\InputSystem\D3D11InputDevice.h">
@@ -415,7 +418,7 @@
     <ClInclude Include="include\Plugin\PluginKey.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Renderer\Camera.h">
+    <ClInclude Include="include\Renderer\D3D11Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Renderer\D3D11Renderer.h">

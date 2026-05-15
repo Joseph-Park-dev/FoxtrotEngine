@@ -72,38 +72,12 @@ namespace D3D11
 
 	FTMatrix4 Camera::GetViewRow()
 	{
-		FTVector3 camPos = FTVector3::Zero;
-		if (mTarget)
-		{
-			Transform* transform = mTarget->GetTransform();
-			FTVector3  targetPos = transform->GetWorldPosition();
-			// Z axis transformation is controlled independently
-			camPos	  = FTVector3(targetPos.x, targetPos.y, mPosition.z);
-			mPosition = (camPos + mOffset);
-		}
-
-		return FTMatrix4::CreateTranslation(mPosition);
+		
 	}
 
 	FTMatrix4 Camera::GetProjRow()
 	{
-		float	  unitsPerPixel = 1 / mPixelsPerUnit;
-		FTVector2 renderSize	= GetResolution();
-		assert(0 < renderSize.x);
-		assert(0 < renderSize.y);
 
-		float worldWidth  = renderSize.x * unitsPerPixel;
-		float worldHeight = renderSize.y * unitsPerPixel;
-
-		worldWidth /= mZoomFactor;
-		worldHeight /= mZoomFactor;
-
-		mAspect = renderSize.x / renderSize.y;
-
-		return mViewType == Viewtype::Perspective
-			? FTMatrix4::CreatePerspectiveFOV(Math::ToRadians(mProjFOVAngleY), GetResolution().x, GetResolution().y, mNearZ, mFarZ)
-			: FTMatrix4::CreateOrtho(
-				  worldWidth, worldHeight, mNearZ, mFarZ);
 	}
 
 	const FTVector3& Camera::GetPosition() const

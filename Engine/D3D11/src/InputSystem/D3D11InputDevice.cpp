@@ -4,7 +4,8 @@
 
 #include "FTDS/Dynamic/DynamicArray.h"
 #include "FTMath.h"
-#include <Entity/D3D11Window.h>
+#include "Debugging/DebugMemAlloc.h"
+#include "Renderer/D3D11Window.h"
 
 namespace D3D11
 {
@@ -19,11 +20,11 @@ namespace D3D11
 			{
 				if (btnInput.IsPushedPrevFrame)
 				{
-					btnInput.ButtonState = BUTTON_STATE::HOLD;
+					btnInput.ButtonState = ButtonState::HOLD;
 				}
 				else
 				{
-					btnInput.ButtonState = BUTTON_STATE::TAP;
+					btnInput.ButtonState = ButtonState::TAP;
 				}
 				btnInput.IsPushedPrevFrame = true;
 			}
@@ -31,11 +32,11 @@ namespace D3D11
 			{
 				if (btnInput.IsPushedPrevFrame)
 				{
-					btnInput.ButtonState = BUTTON_STATE::AWAY;
+					btnInput.ButtonState = ButtonState::AWAY;
 				}
 				else
 				{
-					btnInput.ButtonState = BUTTON_STATE::NONE;
+					btnInput.ButtonState = ButtonState::NONE;
 				}
 				btnInput.IsPushedPrevFrame = false;
 			}
@@ -63,11 +64,11 @@ namespace D3D11
 			{
 				if (mouse.IsPushedPrevFrame)
 				{
-					mouse.ButtonState = BUTTON_STATE::HOLD;
+					mouse.ButtonState = ButtonState::HOLD;
 				}
 				else
 				{
-					mouse.ButtonState = BUTTON_STATE::TAP;
+					mouse.ButtonState = ButtonState::TAP;
 				}
 				mouse.IsPushedPrevFrame = true;
 			}
@@ -75,11 +76,11 @@ namespace D3D11
 			{
 				if (mouse.IsPushedPrevFrame)
 				{
-					mouse.ButtonState = BUTTON_STATE::AWAY;
+					mouse.ButtonState = ButtonState::AWAY;
 				}
 				else
 				{
-					mouse.ButtonState = BUTTON_STATE::NONE;
+					mouse.ButtonState = ButtonState::NONE;
 				}
 				mouse.IsPushedPrevFrame = false;
 			}
@@ -106,15 +107,15 @@ namespace D3D11
 			mIsDragging = false;
 	}
 
-	bool D3D11InputDevice::KEY_HOLD(KEYBOARD key) { return GetButtonState(mKeyboardButtons, key) == BUTTON_STATE::HOLD; }
-	bool D3D11InputDevice::KEY_TAP(KEYBOARD key) { return GetButtonState(mKeyboardButtons, key) == BUTTON_STATE::TAP; }
-	bool D3D11InputDevice::KEY_AWAY(KEYBOARD key) { return GetButtonState(mKeyboardButtons, key) == BUTTON_STATE::AWAY; }
-	bool D3D11InputDevice::KEY_NONE(KEYBOARD key) { return GetButtonState(mKeyboardButtons, key) == BUTTON_STATE::NONE; }
+	bool D3D11InputDevice::KEY_HOLD(KEYBOARD key) { return GetButtonState(mKeyboardButtons, key) == ButtonState::HOLD; }
+	bool D3D11InputDevice::KEY_TAP(KEYBOARD key) { return GetButtonState(mKeyboardButtons, key) == ButtonState::TAP; }
+	bool D3D11InputDevice::KEY_AWAY(KEYBOARD key) { return GetButtonState(mKeyboardButtons, key) == ButtonState::AWAY; }
+	bool D3D11InputDevice::KEY_NONE(KEYBOARD key) { return GetButtonState(mKeyboardButtons, key) == ButtonState::NONE; }
 
-	bool D3D11InputDevice::MOUSE_HOLD(MOUSE mouse) { return GetButtonState(mMouseButtons, mouse) == BUTTON_STATE::HOLD; }
-	bool D3D11InputDevice::MOUSE_TAP(MOUSE mouse) { return GetButtonState(mMouseButtons, mouse) == BUTTON_STATE::TAP; }
-	bool D3D11InputDevice::MOUSE_AWAY(MOUSE mouse) { return GetButtonState(mMouseButtons, mouse) == BUTTON_STATE::AWAY; }
-	bool D3D11InputDevice::MOUSE_NONE(MOUSE mouse) { return GetButtonState(mMouseButtons, mouse) == BUTTON_STATE::NONE; }
+	bool D3D11InputDevice::MOUSE_HOLD(MOUSE mouse) { return GetButtonState(mMouseButtons, mouse) == ButtonState::HOLD; }
+	bool D3D11InputDevice::MOUSE_TAP(MOUSE mouse) { return GetButtonState(mMouseButtons, mouse) == ButtonState::TAP; }
+	bool D3D11InputDevice::MOUSE_AWAY(MOUSE mouse) { return GetButtonState(mMouseButtons, mouse) == ButtonState::AWAY; }
+	bool D3D11InputDevice::MOUSE_NONE(MOUSE mouse) { return GetButtonState(mMouseButtons, mouse) == ButtonState::NONE; }
 
 	unsigned int D3D11InputDevice::MOUSE_X() { return mMousePosX; }
 	unsigned int D3D11InputDevice::MOUSE_Y() { return mMousePosY; }
@@ -180,6 +181,28 @@ namespace D3D11
 		mMouseWheelDelta = delta;
 	}
 
+	void D3D11InputDevice::Update(Core::IWindow* window)
+	{
+		MSG					msg = {};
+		D3D11::D3D11Window* win = reinterpret_cast<D3D11::D3D11Window*>(window);
+		if (PeekMessage(&msg, win->GetHandle(), 0, 0, PM_REMOVE))
+		{
+			// EditorCamera2D::GetInstance()->ProcessInput(msg);
+		}
+		DetectMouseInput(msg);
+		DetectKeyboardInput();
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+
+	void D3D11InputDevice::Reset()
+	{
+		mMousePosX = 0;
+		mMousePosY = 0;
+		mMouseWheelDelta = 0.f;
+		mIsDragging		 = false;
+	}
+
 	D3D11InputDevice::D3D11InputDevice()
 		: mMousePosX(0)
 		, mMousePosY(0)
@@ -206,13 +229,13 @@ namespace D3D11
 		mMouseButtons->Reserve((size_t)MOUSE::LAST_FLAG);
 		for (size_t i = 0; i < (size_t)MOUSE::LAST_FLAG; ++i)
 		{
-			mMouseButtons->PushBack(ButtonInput{ BUTTON_STATE::NONE, false });
+			mMouseButtons->PushBack(ButtonInput{ ButtonState::NONE, false });
 		}
 
 		mKeyboardButtons->Reserve((size_t)KEYBOARD::LAST_FLAG);
 		for (size_t i = 0; i < (size_t)KEYBOARD::LAST_FLAG; ++i)
 		{
-			mKeyboardButtons->PushBack(ButtonInput{ BUTTON_STATE::NONE, false });
+			mKeyboardButtons->PushBack(ButtonInput{ ButtonState::NONE, false });
 		}
 	}
 

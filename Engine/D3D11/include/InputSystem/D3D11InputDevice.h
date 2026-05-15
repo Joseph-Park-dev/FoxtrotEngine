@@ -1,5 +1,5 @@
 #pragma once
-#include "InputSystem/FTInputDevice.h"
+#include "InputSystem/IInputDevice.h"
 
 #include <Windows.h>
 
@@ -39,7 +39,7 @@ namespace D3D11
 	class D3D11Window;
 
 	class D3D11InputDevice :
-		public Core::FTInputDevice
+		public Core::IInputDevice
 	{
 
 	public:
@@ -65,13 +65,28 @@ namespace D3D11
 		void LockCursorInSceneViewport(D3D11Window* window, Math::FTVector2 mousePos);
 		void UnlockCursorOutOfSceneViewport();
 
-		const unsigned int GetMousePosX() const;
-		const unsigned int GetMousePosY() const;
-		const float		   GetMouseWheelDelta() const;
+		const unsigned int	GetMousePosX() const;
+		const unsigned int	GetMousePosY() const;
+		virtual const float GetMouseWheelDelta() const override;
 
 		void SetMousePosition(Math::FTVector2 pos);
 		void SetMousePosition(unsigned int posX, unsigned int posY);
 		void SetMouseWheelDelta(float delta);
+
+	public:
+		//////////////////////////////////////////
+		////// Frame Update //////////////////////
+		//////////////////////////////////////////
+
+		/// <summary>
+		/// Updates input state. Called once per frame before input processing.
+		/// </summary>
+		virtual void Update(Core::IWindow* window) override;
+
+		/// <summary>
+		/// Resets per-frame input state. Called at end of frame.
+		/// </summary>
+		virtual void Reset() override;
 
 	public:
 		D3D11InputDevice();
@@ -83,11 +98,11 @@ namespace D3D11
 		float		 mMouseWheelDelta;
 		bool		 mIsDragging;
 
-		int*							 mMouseCode;
+		int*										   mMouseCode;
 		Common::FTDS::DynamicArray<Core::ButtonInput>* mMouseButtons;
 
 	private:
-		int*							 mKeyboardCode;
+		int*										   mKeyboardCode;
 		Common::FTDS::DynamicArray<Core::ButtonInput>* mKeyboardButtons;
 	};
 } // namespace D3D11

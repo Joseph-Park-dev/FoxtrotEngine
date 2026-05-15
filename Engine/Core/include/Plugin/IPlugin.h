@@ -23,9 +23,6 @@ namespace Core
 	class IPlugin
 	{
 	public:
-		virtual Core::Entity* GetEntity(const char* name) = 0;
-
-	public:
 		//////////////////////////////////
 		////// Initialization Phase //////
 		//////////////////////////////////
@@ -47,7 +44,7 @@ namespace Core
 		virtual void ShutDown() = 0;
 
 	public:
-		virtual ~IPlugin() {};
+		virtual ~IPlugin() = default;
 	};
 
 	namespace ChunkKey

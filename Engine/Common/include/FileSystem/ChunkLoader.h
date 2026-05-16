@@ -28,7 +28,7 @@ namespace Core
 {
 	class Transform;
 	class Actor;
-	class Component;
+	class IComponent;
 	class Scene;
 	class Plugin;
 

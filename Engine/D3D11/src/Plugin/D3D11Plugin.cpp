@@ -6,7 +6,7 @@
 #include "InputSystem/D3D11InputDevice.h"
 #include "Renderer/D3D11Renderer.h"
 #include "Renderer/D3D11Window.h"
-#include "Renderer/D3D11Camera.h"
+#include "Renderer/Camera.h"
 #include "FTDS/Dynamic/DynamicArray.h"
 #include "Renderer/FTRectArea.h"
 #include "FileSystem/FileTypes.h"
@@ -93,7 +93,7 @@ IRenderer* D3D11Plugin::CreateRenderer(Core::IWindow* window)
 
 ICamera* D3D11Plugin::CreateCamera()
 {
-	return DBG_NEW D3D11::D3D11Camera();
+	return DBG_NEW D3D11::Camera();
 }
 
 void D3D11Plugin::CreateInputDevice()

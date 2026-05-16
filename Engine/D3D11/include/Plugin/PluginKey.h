@@ -1,5 +1,5 @@
 #pragma once
-#include "Entity/D3D11Window.h"
+#include "Renderer/D3D11Window.h"
 
 namespace Core
 {

@@ -1,4 +1,4 @@
-// ----------------------------------------------------------------
+﻿// ----------------------------------------------------------------
 // From Game Programming in C++ by Sanjay Madhav
 // Copyright (C) 2017 Sanjay Madhav. All rights reserved.
 //
@@ -156,7 +156,7 @@ namespace Math
 			};
 		};
 
-		// Default — zero vector
+		// Default â€” zero vector
 		FTVector4()
 			: SIMD(_mm_setzero_ps()) {}
 
@@ -164,7 +164,7 @@ namespace Math
 		FTVector4(float x, float y, float z, float w)
 			: SIMD(_mm_set_ps(w, z, y, x)) {}
 
-		// Splat — all lanes same value
+		// Splat â€” all lanes same value
 		explicit FTVector4(float s)
 			: SIMD(_mm_set1_ps(s)) {}
 
@@ -237,6 +237,24 @@ namespace Math
 		friend bool operator!=(const FTVector3& left, const FTVector3& right)
 		{
 			return (left.x != right.x) || (left.y != right.y) || (left.z != right.z);
+		}
+
+		FTVector3 operator=(const FTVector3& other)
+		{
+			this->x = other.x;
+			this->y = other.y;
+			this->z = other.z;
+
+			return *this; // return *this by convention
+		}
+
+		FTVector3 operator=(FTVector3& other)
+		{
+			this->x = other.x;
+			this->y = other.y;
+			this->z = other.z;
+
+			return *this; // return *this by convention
 		}
 
 		// Scalar *=
@@ -338,11 +356,11 @@ namespace Math
 		FTVector2()
 			: x(0.0f), y(0.0f) {}
 
-		// 2 components — z,w lanes set to 0
+		// 2 components â€” z,w lanes set to 0
 		FTVector2(float xIn, float yIn)
 			: x(xIn), y(yIn) {}
 
-		// 2 components — z,w lanes set to 0
+		// 2 components â€” z,w lanes set to 0
 		FTVector2(unsigned int xIn, unsigned int yIn)
 			: x(static_cast<float>(xIn)), y(static_cast<float>(yIn)) {}
 
@@ -519,7 +537,7 @@ namespace Math
 		static inline void Add_Vec_X2(
 			const FTVector2& a0, const FTVector2& b0, const FTVector2& a1, const FTVector2& b1, FTVector2& out0, FTVector2& out1)
 		{
-			// Load a0 into low 64 bits, a1 into high 64 bits → [X0, Y0, X1, Y1]
+			// Load a0 into low 64 bits, a1 into high 64 bits â†’ [X0, Y0, X1, Y1]
 			__m128 a = _mm_movelh_ps(
 				_mm_loadl_pi(_mm_setzero_ps(), (__m64*)a0.Data),
 				_mm_loadl_pi(_mm_setzero_ps(), (__m64*)a1.Data));
@@ -528,19 +546,19 @@ namespace Math
 				_mm_loadl_pi(_mm_setzero_ps(), (__m64*)b0.Data),
 				_mm_loadl_pi(_mm_setzero_ps(), (__m64*)b1.Data));
 
-			// One instruction — adds all 4 floats simultaneously
+			// One instruction â€” adds all 4 floats simultaneously
 			// [X0+X0, Y0+Y0, X1+X1, Y1+Y1]
 			__m128 res = _mm_add_ps(a, b);
 
 			// Unpack back to two FTVector2s
-			_mm_storel_pi((__m64*)out0.Data, res); // low  64 bits → out0
-			_mm_storeh_pi((__m64*)out1.Data, res); // high 64 bits → out1
+			_mm_storel_pi((__m64*)out0.Data, res); // low  64 bits â†’ out0
+			_mm_storeh_pi((__m64*)out1.Data, res); // high 64 bits â†’ out1
 		}
 
 		static inline void Sub_Vec_X2(
 			const FTVector2& a0, const FTVector2& b0, const FTVector2& a1, const FTVector2& b1, FTVector2& out0, FTVector2& out1)
 		{
-			// Load a0 into low 64 bits, a1 into high 64 bits → [X0, Y0, X1, Y1]
+			// Load a0 into low 64 bits, a1 into high 64 bits â†’ [X0, Y0, X1, Y1]
 			__m128 a = _mm_movelh_ps(
 				_mm_loadl_pi(_mm_setzero_ps(), (__m64*)a0.Data),
 				_mm_loadl_pi(_mm_setzero_ps(), (__m64*)a1.Data));
@@ -549,19 +567,19 @@ namespace Math
 				_mm_loadl_pi(_mm_setzero_ps(), (__m64*)b0.Data),
 				_mm_loadl_pi(_mm_setzero_ps(), (__m64*)b1.Data));
 
-			// One instruction — subtracts all 4 floats simultaneously
+			// One instruction â€” subtracts all 4 floats simultaneously
 			// [X0+X0, Y0+Y0, X1+X1, Y1+Y1]
 			__m128 res = _mm_sub_ps(a, b);
 
 			// Unpack back to two FTVector2s
-			_mm_storel_pi((__m64*)out0.Data, res); // low  64 bits → out0
-			_mm_storeh_pi((__m64*)out1.Data, res); // high 64 bits → out1
+			_mm_storel_pi((__m64*)out0.Data, res); // low  64 bits â†’ out0
+			_mm_storeh_pi((__m64*)out1.Data, res); // high 64 bits â†’ out1
 		}
 
 		static inline void Mul_Vec_X2(
 			const FTVector2& a0, const FTVector2& b0, const FTVector2& a1, const FTVector2& b1, FTVector2& out0, FTVector2& out1)
 		{
-			// Load a0 into low 64 bits, a1 into high 64 bits → [X0, Y0, X1, Y1]
+			// Load a0 into low 64 bits, a1 into high 64 bits â†’ [X0, Y0, X1, Y1]
 			__m128 a = _mm_movelh_ps(
 				_mm_loadl_pi(_mm_setzero_ps(), (__m64*)a0.Data),
 				_mm_loadl_pi(_mm_setzero_ps(), (__m64*)a1.Data));
@@ -570,18 +588,18 @@ namespace Math
 				_mm_loadl_pi(_mm_setzero_ps(), (__m64*)b0.Data),
 				_mm_loadl_pi(_mm_setzero_ps(), (__m64*)b1.Data));
 
-			// One instruction — multiplies all 4 floats simultaneously
+			// One instruction â€” multiplies all 4 floats simultaneously
 			__m128 res = _mm_mul_ps(a, b);
 
 			// Unpack back to two FTVector2s
-			_mm_storel_pi((__m64*)out0.Data, res); // low  64 bits → out0
-			_mm_storeh_pi((__m64*)out1.Data, res); // high 64 bits → out1
+			_mm_storel_pi((__m64*)out0.Data, res); // low  64 bits â†’ out0
+			_mm_storeh_pi((__m64*)out1.Data, res); // high 64 bits â†’ out1
 		}
 
 		static inline void Div_Vec_X2(
 			const FTVector2& a0, const FTVector2& b0, const FTVector2& a1, const FTVector2& b1, FTVector2& out0, FTVector2& out1)
 		{
-			// Load a0 into low 64 bits, a1 into high 64 bits → [X0, Y0, X1, Y1]
+			// Load a0 into low 64 bits, a1 into high 64 bits â†’ [X0, Y0, X1, Y1]
 			__m128 a = _mm_movelh_ps(
 				_mm_loadl_pi(_mm_setzero_ps(), (__m64*)a0.Data),
 				_mm_loadl_pi(_mm_setzero_ps(), (__m64*)a1.Data));
@@ -590,12 +608,12 @@ namespace Math
 				_mm_loadl_pi(_mm_setzero_ps(), (__m64*)b0.Data),
 				_mm_loadl_pi(_mm_setzero_ps(), (__m64*)b1.Data));
 
-			// One instruction — divides all 4 floats simultaneously
+			// One instruction â€” divides all 4 floats simultaneously
 			__m128 res = _mm_div_ps(a, b);
 
 			// Unpack back to two FTVector2s
-			_mm_storel_pi((__m64*)out0.Data, res); // low  64 bits → out0
-			_mm_storeh_pi((__m64*)out1.Data, res); // high 64 bits → out1
+			_mm_storel_pi((__m64*)out0.Data, res); // low  64 bits â†’ out0
+			_mm_storeh_pi((__m64*)out1.Data, res); // high 64 bits â†’ out1
 		}
 	};
 

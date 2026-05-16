@@ -1,8 +1,9 @@
 #pragma once
 #include "Utility/SingletonMacro.h"
 #include "FTDS/Static/HashMap.h"
-#include "Plugin/PluginKey.h"
 #include "Plugin/IPlugin.h"
+
+#include <../Core/include/Plugin/PluginKey.h>
 
 namespace Core
 {

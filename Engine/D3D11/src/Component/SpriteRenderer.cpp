@@ -51,7 +51,7 @@ namespace D3D11
 		D3D11Component::Setup();
 	}
 
-	void SpriteRenderer::ProcessInput(FTInputDevice* inputDevice)
+	void SpriteRenderer::ProcessInput(IInputDevice* inputDevice)
 	{
 	}
 
@@ -63,24 +63,24 @@ namespace D3D11
 	{
 	}
 
-	void SpriteRenderer::Render(D3D11::D3D11Renderer* renderer)
+	void SpriteRenderer::Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst, Core::ICamera* camInst)
 	{
 		if (mSprite)
 		{
-			mSprite->UpdateConstantBuffers(renderer, GetOwner()->GetTransform(), Camera::GetInstance(), mMaterial);
-			mSprite->Render(renderer, GetOwner()->GetTransform(), Camera::GetInstance(), mPSO, mMaterial);
+			mSprite->UpdateConstantBuffers(renderer, GetOwner()->GetTransform(), camInst, mMaterial);
+			mSprite->Render(renderer, GetOwner()->GetTransform(), camInst, mPSO, mMaterial);
 		}
 	}
 
 	void SpriteRenderer::CloneTo(Actor* actor)
 	{
-		SpriteRenderer* newComp = DBG_NEW SpriteRenderer(GetPlugin(), actor, GetUpdateOrder());
+		SpriteRenderer* newComp = DBG_NEW SpriteRenderer(actor, GetUpdateOrder());
 		newComp->mSprite		= this->mSprite;
 		newComp->mPSO			= this->mPSO;
 		newComp->mMaterial		= this->mMaterial;
 	}
 
-	SpriteRenderer::SpriteRenderer(Plugin* plugin, Actor* owner, int updateOrder)
+	SpriteRenderer::SpriteRenderer(Actor* owner, int updateOrder)
 		: D3D11Component(plugin, owner, updateOrder)
 		, mSprite(nullptr)
 		, mMaterial(nullptr)
@@ -148,7 +148,7 @@ namespace D3D11
 			ResourceManager::GetInstance()->GetMaterials(),
 			mMaterial);
 	}
-	void SpriteRenderer::EditorRender(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst)
+	void SpriteRenderer::EditorRender(D3D11::D3D11Renderer* renderer, Editor::EditorCamera* camInst)
 	{
 		if (mSprite)
 		{

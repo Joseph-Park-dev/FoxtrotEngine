@@ -45,7 +45,7 @@ namespace D3D11
 		D3D11Component::Setup();
 	}
 
-	void MeshRenderer::ProcessInput(FTInputDevice* inputDevice)
+	void MeshRenderer::ProcessInput(IInputDevice* inputDevice)
 	{
 	}
 
@@ -57,7 +57,7 @@ namespace D3D11
 	{
 	}
 
-	void MeshRenderer::Render(D3D11::D3D11Renderer* renderer)
+	void MeshRenderer::Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst)
 	{
 		if (mMeshGroup)
 		{
@@ -68,7 +68,7 @@ namespace D3D11
 
 	void MeshRenderer::CloneTo(Actor* actor)
 	{
-		MeshRenderer* newComp = DBG_NEW MeshRenderer(GetPlugin(), actor, GetUpdateOrder());
+		MeshRenderer* newComp = DBG_NEW MeshRenderer(actor, GetUpdateOrder());
 		newComp->mRenderer	  = this->mRenderer;
 		newComp->mMeshGroup	  = this->mMeshGroup;
 		newComp->mTexture	  = this->mTexture;
@@ -93,7 +93,7 @@ namespace D3D11
 	void MeshRenderer::SetPS(FTPixelShader* ps) { mPS = ps; }
 	void MeshRenderer::SetMaterial(FTMaterial* mat) { mMaterial = mat; }
 
-	MeshRenderer::MeshRenderer(Plugin* plugin, Actor* owner, int updateOrder)
+	MeshRenderer::MeshRenderer(Actor* owner, int updateOrder)
 		: D3D11Component(plugin, owner, updateOrder)
 		, mMeshGroup(nullptr)
 		, mRenderer(nullptr)
@@ -157,7 +157,7 @@ namespace D3D11
 	}
 
 #ifdef FOXTROT_EDITOR
-	void MeshRenderer::EditorRender(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst)
+	void MeshRenderer::EditorRender(D3D11::D3D11Renderer* renderer, Editor::EditorCamera* camInst)
 	{
 		if (mMeshGroup)
 		{

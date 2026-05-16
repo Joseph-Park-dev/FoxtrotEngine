@@ -14,20 +14,20 @@ namespace D3D11
 		public MeshRenderer
 	{
 	public:
-		virtual Common::FTDS::String GetName() const override { return "SpineAnimator"; }
+		virtual const char* GetName() const override { return "SpineAnimator"; }
 
 	public:
 		void Play(const int idx, bool isRepeated);
 
 	public:
 		void		 Initialize() override;
-		virtual void ProcessInput(Core::FTInputDevice* inputDevice) override;
+		virtual void ProcessInput(Core::IInputDevice* inputDevice) override;
 		virtual void Update(float deltaTime) override;
 		virtual void LateUpdate(float deltaTime) override;
-		virtual void Render(D3D11::D3D11Renderer* renderer) override;
+		virtual void Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst) override;
 
 	public:
-		SpineAnimator(Core::Plugin* plugin, Core::Actor* owner, int updateOrder = Core::DefaultVal::UPDATE_ORDER);
+		SpineAnimator(Core::Actor* owner, int updateOrder = Core::DefaultVal::UPDATE_ORDER);
 		virtual void CloneTo(Core::Actor* actor) override;
 
 	private:
@@ -41,7 +41,7 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 	public:
 		virtual void EditorUpdate(float deltaTime) override;
-		virtual void EditorRender(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst) override;
+		virtual void EditorRender(D3D11::D3D11Renderer* renderer, Editor::EditorCamera* camInst) override;
 		virtual void EditorUIUpdate() override;
 #endif // FOXTROT_EDITOR
 	};

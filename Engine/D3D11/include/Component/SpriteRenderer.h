@@ -37,22 +37,21 @@ namespace D3D11
 	class SpriteRenderer : public D3D11Component
 	{
 	public:
-		virtual Common::FTDS::String GetName() const override { return "SpriteRenderer"; }
+		virtual const char* GetName() const override { return "SpriteRenderer"; }
 
 	public:
 		virtual void Initialize() override;
 		virtual void Setup() override;
-		virtual void ProcessInput(Core::FTInputDevice* inputDevice) override;
+		virtual void ProcessInput(Core::IInputDevice* inputDevice) override;
 		virtual void Update(float deltaTime) override;
 		virtual void LateUpdate(float deltaTime) override;
-		virtual void Render(D3D11::D3D11Renderer* renderer) override;
+		virtual void Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst) override;
 		virtual void CloneTo(Core::Actor* actor) override;
 
 	public:
 		SpriteRenderer(
-			Core::Plugin* plugin,
-			Core::Actor*  owner,
-			int			  updateOrder = Core::DefaultVal::UPDATE_ORDER);
+			Core::Actor* owner,
+			int			 updateOrder = Core::DefaultVal::UPDATE_ORDER);
 
 	protected:
 		FTSprite*	GetSprite() const;
@@ -77,7 +76,7 @@ namespace D3D11
 		virtual void EditorUIUpdate() override;
 
 	public:
-		virtual void EditorRender(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst) override;
+		virtual void EditorRender(D3D11::D3D11Renderer* renderer, Editor::EditorCamera* camInst) override;
 
 #endif
 	};

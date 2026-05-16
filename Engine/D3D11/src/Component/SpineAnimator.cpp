@@ -39,7 +39,7 @@ namespace D3D11
 		MeshRenderer::Initialize();
 	}
 
-	void SpineAnimator::ProcessInput(FTInputDevice* inputDevice)
+	void SpineAnimator::ProcessInput(IInputDevice* inputDevice)
 	{
 	}
 
@@ -57,7 +57,7 @@ namespace D3D11
 	{
 	}
 
-	void SpineAnimator::Render(D3D11::D3D11Renderer* renderer)
+	void SpineAnimator::Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst)
 	{
 		if (GetMeshGroup())
 		{
@@ -68,7 +68,7 @@ namespace D3D11
 		}
 	}
 
-	SpineAnimator::SpineAnimator(Plugin* plugin, Actor* owner, int updateOrder)
+	SpineAnimator::SpineAnimator(Actor* owner, int updateOrder)
 		: MeshRenderer(plugin, owner, updateOrder)
 		, mTimeScale(1.f)
 		, mUsePhysics(spine::Physics_None)
@@ -77,7 +77,7 @@ namespace D3D11
 
 	void SpineAnimator::CloneTo(Actor* actor)
 	{
-		SpineAnimator* newComp = DBG_NEW SpineAnimator(GetPlugin(), actor, GetUpdateOrder());
+		SpineAnimator* newComp = DBG_NEW SpineAnimator(actor, GetUpdateOrder());
 		newComp->SetRenderer(this->GetRenderer());
 		newComp->SetMeshGroup(this->GetMeshGroup());
 		newComp->SetTexture(this->GetTexture());
@@ -125,7 +125,7 @@ namespace D3D11
 		this->Update(deltaTime);
 	}
 
-	void SpineAnimator::EditorRender(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst)
+	void SpineAnimator::EditorRender(D3D11::D3D11Renderer* renderer, Editor::EditorCamera* camInst)
 	{
 		if (GetMeshGroup())
 		{

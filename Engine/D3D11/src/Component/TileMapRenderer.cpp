@@ -74,7 +74,7 @@ namespace D3D11
 		this->InitializeTileMap();
 	}
 
-	void TileMapRenderer::ProcessInput(FTInputDevice* inputDevice)
+	void TileMapRenderer::ProcessInput(IInputDevice* inputDevice)
 	{
 	}
 
@@ -86,7 +86,7 @@ namespace D3D11
 	{
 	}
 
-	void TileMapRenderer::Render(D3D11::D3D11Renderer* renderer)
+	void TileMapRenderer::Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst)
 	{
 	}
 
@@ -109,12 +109,12 @@ namespace D3D11
 
 	void TileMapRenderer::CloneTo(Actor* actor)
 	{
-		TileMapRenderer* newComp = DBG_NEW TileMapRenderer(GetPlugin(), actor, GetUpdateOrder());
+		TileMapRenderer* newComp = DBG_NEW TileMapRenderer(actor, GetUpdateOrder());
 		newComp->mTileMapKey	 = this->mTileMapKey;
 	}
 
-	TileMapRenderer::TileMapRenderer(Plugin* plugin, Actor* owner, int updateOrder)
-		: SpriteRenderer(plugin, owner, updateOrder)
+	TileMapRenderer::TileMapRenderer(Actor* owner, int updateOrder)
+		: SpriteRenderer(owner, updateOrder)
 		, mTileMap(nullptr)
 		, mTileMapKey(Common::ChunkKey::NullVal::NULL_OBJECT)
 

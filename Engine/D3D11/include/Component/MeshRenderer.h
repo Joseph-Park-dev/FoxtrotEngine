@@ -42,7 +42,7 @@ namespace D3D11
 		// Component information //
 		///////////////////////////
 	public:
-		virtual Common::FTDS::String GetName() const override { return "MeshRenderer"; }
+		virtual const char* GetName() const override { return "MeshRenderer"; }
 
 		/////////////////////////
 		// Game-loop functions //
@@ -50,16 +50,16 @@ namespace D3D11
 	public:
 		virtual void Initialize() override;
 		virtual void Setup() override;
-		virtual void ProcessInput(Core::FTInputDevice* inputDevice) override;
+		virtual void ProcessInput(Core::IInputDevice* inputDevice) override;
 		virtual void Update(float deltaTime) override;
 		virtual void LateUpdate(float deltaTime) override;
-		virtual void Render(D3D11::D3D11Renderer* renderer) override;
+		virtual void Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst) override;
 
 		/////////////////////////////////////
 		// Instantiation-related functions //
 		/////////////////////////////////////
 	public:
-		MeshRenderer(Core::Plugin* plugin, Core::Actor* owner, int updateOrder);
+		MeshRenderer(Core::Actor* owner, int updateOrder);
 		virtual ~MeshRenderer() override;
 		virtual void CloneTo(Core::Actor* actor) override;
 
@@ -110,7 +110,7 @@ namespace D3D11
 		/////////////////////////////////////
 #ifdef FOXTROT_EDITOR
 	public:
-		virtual void EditorRender(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst) override;
+		virtual void EditorRender(D3D11::D3D11Renderer* renderer, Editor::EditorCamera* camInst) override;
 		virtual void EditorUIUpdate() override;
 #endif
 	};

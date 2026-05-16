@@ -26,36 +26,35 @@ namespace D3D11
 		public SpriteRenderer
 	{
 	public:
-		Common::FTDS::String GetName() const override
+		const char* GetName() const override
 		{
 			return "TileMapRenderer";
 		}
 		Common::FTDS::String& GetTileMapKey();
-		FTTileMap*			GetTileMap() const;
+		FTTileMap*			  GetTileMap() const;
 
 		void SetTileMapKey(Common::FTDS::String& key);
 		void SetTileMap(FTTileMap* tileMap);
 
 	public:
 		virtual void Initialize() override;
-		virtual void ProcessInput(Core::FTInputDevice* inputDevice) override;
+		virtual void ProcessInput(Core::IInputDevice* inputDevice) override;
 		virtual void Update(float deltaTime) override;
 		virtual void LateUpdate(float deltaTime) override;
-		virtual void Render(D3D11::D3D11Renderer* renderer) override;
+		virtual void Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst) override;
 		virtual void CloneTo(Core::Actor* actor) override;
 
 	public:
 		TileMapRenderer(
-			Core::Plugin* plugin,
-			Core::Actor*  owner,
-			int			  UpdateOrder = Core::DefaultVal::UPDATE_ORDER);
+			Core::Actor* owner,
+			int			 UpdateOrder = Core::DefaultVal::UPDATE_ORDER);
 		virtual ~TileMapRenderer() override;
 
 	protected:
 		virtual void InitializeTileMap();
 
 	private:
-		FTTileMap*		   mTileMap;
+		FTTileMap*			 mTileMap;
 		Common::FTDS::String mTileMapKey;
 
 	public:

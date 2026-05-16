@@ -41,8 +41,8 @@ namespace D3D11
 	using namespace Common;
 	using namespace Core;
 
-	Animator::Animator(Core::Plugin* plugin, Core::Actor* owner, int updateOrder)
-		: SpriteRenderer(plugin, owner, updateOrder)
+	Animator::Animator(Core::Actor* owner, int updateOrder)
+		: SpriteRenderer(owner, updateOrder)
 		, mLoadedAnim(DBG_NEW Common::FTDS::DynamicArray<D3D11::FTSpriteAnimation*>)
 		, mCurrFrameIdx(0)
 		, mAccTime(0.f)
@@ -152,7 +152,7 @@ namespace D3D11
 		D3D11Component::Initialize();
 	}
 
-	void Animator::ProcessInput(FTInputDevice* inputDevice)
+	void Animator::ProcessInput(IInputDevice* inputDevice)
 	{
 	}
 
@@ -167,7 +167,7 @@ namespace D3D11
 		UpdateFrame(deltaTime);
 	}
 
-	void Animator::Render(D3D11::D3D11Renderer* renderer)
+	void Animator::Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst)
 	{
 		if (GetSprite())
 		{
@@ -176,7 +176,7 @@ namespace D3D11
 			GetSprite()->UpdateConstantBuffers(
 				renderer,
 				transform,
-				Camera::GetInstance(),
+				camInst,
 				GetMaterial(),
 				anim->GetFrameCount(),
 				mCurrFrameIdx);
@@ -184,7 +184,7 @@ namespace D3D11
 			GetSprite()->Render(
 				renderer,
 				transform,
-				Camera::GetInstance(),
+				camInst,
 				GetPSO(),
 				GetMaterial());
 		}
@@ -192,7 +192,7 @@ namespace D3D11
 
 	void Animator::CloneTo(Actor* actor)
 	{
-		Animator* newComp = DBG_NEW Animator(GetPlugin(), actor, GetUpdateOrder());
+		Animator* newComp = DBG_NEW Animator(actor, GetUpdateOrder());
 
 		newComp->mLoadedAnim->Assign(this->mLoadedAnim);
 		newComp->SetSprite(this->GetSprite());
@@ -215,7 +215,7 @@ namespace D3D11
 		SpriteRenderer::EditorUIUpdate();
 	}
 
-	void Animator::EditorRender(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst)
+	void Animator::EditorRender(D3D11::D3D11Renderer* renderer, *camInst)
 	{
 		if (GetSprite())
 		{

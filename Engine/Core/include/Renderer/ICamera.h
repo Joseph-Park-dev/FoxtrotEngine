@@ -13,8 +13,18 @@
 #pragma once
 #include "FTMath.h"
 
+#include <iosfwd>
+
 namespace Core
 {
+	enum class Viewtype
+	{
+		Orthographic,
+		Perspective
+	};
+
+	class Actor;
+	class SceneManager;
 	/// <summary>
 	/// Abstract camera interface for view/projection transformations.
 	/// </summary>
@@ -47,6 +57,10 @@ namespace Core
 		virtual Math::FTVector2 ScreenToNDC(const Math::FTVector2& screenPos) const = 0;
 
 	public:
+		virtual void SaveProperties(std::ofstream& ofs)									 = 0;
+		virtual void LoadProperties(std::ifstream& ifs, Core::SceneManager* targetActor) = 0;
+
+	public:
 		//////////////////////////////////////////
 		////// Transform Properties //////////////
 		//////////////////////////////////////////
@@ -56,20 +70,23 @@ namespace Core
 		/// </summary>
 		virtual const Math::FTVector3& GetPosition() const = 0;
 
-		/// <summary>
-		/// Gets the camera rotation (pitch, yaw, roll in radians).
-		/// </summary>
-		virtual const Math::FTVector3& GetRotation() const = 0;
+		virtual const Viewtype GetViewType()	  = 0;
+		virtual const float	   GetProjFOVAngleY() = 0;
+		virtual const float	   GetAspectRatio()	  = 0;
+		virtual const float	   GetPixelsPerUnit() = 0;
+		virtual const float	   GetNearZ()		  = 0;
+		virtual const float	   GetFarZ()		  = 0;
+
+		virtual const Math::FTVector3& GetOffSet() const	 = 0;
+		virtual const float			   GetZoomFactor() const = 0;
 
 		/// <summary>
 		/// Sets the camera position in world space.
 		/// </summary>
 		virtual void SetPosition(const Math::FTVector3& position) = 0;
-
-		/// <summary>
-		/// Sets the camera rotation (pitch, yaw, roll in radians).
-		/// </summary>
-		virtual void SetRotation(const Math::FTVector3& rotation) = 0;
+		virtual void SetViewType(Core::Viewtype viewType)		  = 0;
+		virtual void SetTargetActor(Core::Actor* actor)			  = 0;
+		virtual void SetOffset(Math::FTVector3 offset)			  = 0;
 
 		//////////////////////////////////////////
 		////// Matrix Accessors //////////////////
@@ -85,29 +102,10 @@ namespace Core
 		/// </summary>
 		virtual void GetProjectionMatrix(Math::FTMatrix4& outProjMat) const = 0;
 
-		//////////////////////////////////////////
-		////// Projection Settings ///////////////
-		//////////////////////////////////////////
-
-		/// <summary>
-		/// Sets orthographic projection parameters for 2D rendering.
-		/// </summary>
-		/// <param name="width">View width in world units.</param>
-		/// <param name="height">View height in world units.</param>
-		/// <param name="nearPlane">Near clipping plane distance.</param>
-		/// <param name="farPlane">Far clipping plane distance.</param>
-		virtual void SetOrthographic(float width, float height, float nearPlane, float farPlane) = 0;
-
-		/// <summary>
-		/// Sets perspective projection parameters for 3D rendering.
-		/// </summary>
-		/// <param name="fovY">Vertical field of view in radians.</param>
-		/// <param name="aspectRatio">Width/height aspect ratio.</param>
-		/// <param name="nearPlane">Near clipping plane distance.</param>
-		/// <param name="farPlane">Far clipping plane distance.</param>
-		virtual void SetPerspective(float fovY, float aspectRatio, float nearPlane, float farPlane) = 0;
-
 	public:
 		virtual ~ICamera() = default;
+
+	protected:
+		virtual void InitializePixelsPerUnit(unsigned int pixels, float units = 1.f) = 0;
 	};
 } // namespace Core

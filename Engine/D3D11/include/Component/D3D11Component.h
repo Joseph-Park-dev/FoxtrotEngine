@@ -1,44 +1,55 @@
 #pragma once
-#include "Component/Component.h"
+#include "Component/IComponent.h"
 
 #include "FTDS/Static/FTString.h"
 
 namespace Core
 {
-	class FTInputDevice;
+	class IInputDevice;
 } // namespace Core
 
 namespace D3D11
 {
-	using namespace Common;
-	class D3D11Renderer;
 	class Camera;
-
+	class D3D11Renderer;
 	class D3D11Component :
-		public Core::Component
+		public Core::IComponent
 	{
 	public:
-		virtual Common::FTDS::String GetName() const = 0;
+		virtual const char* GetName() const = 0;
 
 	public:
 		virtual void Initialize();
 		virtual void Setup();
-		virtual void ProcessInput(Core::FTInputDevice* inputDevice) = 0;
-		virtual void Update(float deltaTime)						= 0;
-		virtual void LateUpdate(float deltaTime)					= 0;
-		virtual void Render(D3D11::D3D11Renderer* renderer)			= 0;
-		virtual void CloneTo(Core::Actor* actor)					= 0;
+		virtual void ProcessInput(Core::IInputDevice* inputDevice)					= 0;
+		virtual void Update(float deltaTime)										= 0;
+		virtual void LateUpdate(float deltaTime)									= 0;
+		virtual void Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst) = 0;
+		virtual void CloneTo(Core::Actor* actor)									= 0;
 
 	public:
 		virtual void SaveProperties(std::ofstream& ofs) override;
 		virtual void LoadProperties(std::ifstream& ifs) override;
 
 	public:
-		D3D11Component(Core::Plugin* plugin, Core::Actor* owner, int updateOrder = Core::DefaultVal::UPDATE_ORDER);
+		D3D11Component(Core::Actor* owner, int updateOrder = Core::DefaultVal::UPDATE_ORDER);
 		virtual ~D3D11Component();
 
+	private:
+		Core::Actor* mOwner;
+		int			 mUpdateOrder;
+
+	private:
+		// This is turned as true as the Initialize(FTCore*) is executed.
+		bool mIsInitialized;
+		// This is turned as true as the Setup() is executed.
+		bool mIsSetup;
+		// The component is alive in the game loop
+		// (During ProcessInput, Update, LateUpdate and Render)
+		bool mIsActive;
+
 #ifdef FOXTROT_EDITOR
-		virtual void EditorRender(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst) = 0;
+		virtual void EditorRender(D3D11::D3D11Renderer* renderer, Editor::EditorCamera* camInst) = 0;
 		virtual void EditorUIUpdate() override;
 
 #endif // FOXTROT_EDITOR

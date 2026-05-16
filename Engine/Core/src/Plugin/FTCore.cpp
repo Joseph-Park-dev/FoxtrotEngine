@@ -19,10 +19,9 @@
 #include "Manager/DirectoryHelper.h"
 #include "TemplateFunctions.h"
 #include "Entity/Timer.h"
-#include "Renderer/FTWindow.h"
+#include "Renderer/IWindow.h"
 #include "Renderer/FTRectArea.h"
-#include "Renderer/FoxtrotRenderer.h"
-#include "InputSystem/FTInputDevice.h"
+#include "InputSystem/IInputDevice.h"
 #include "Scene/Scene.h"
 #include "FTDS/Static/HashMap.h"
 #include "FTDS/Static/FTString.h"
@@ -38,9 +37,6 @@ namespace Core
 	class FTCore :
 		public Core::IPlugin
 	{
-	public:
-		Core::Entity* GetEntity(const char* name) override;
-
 	public:
 		//////////////////////////////////
 		////// Initialization Phase //////
@@ -92,11 +88,6 @@ namespace Core
 			SceneManager::GetInstance()->ChunkList()->PushBack(chunkTitle);
 		}
 		DirectoryHelper::GetInstance()->SetProjectPath(std::filesystem::absolute("./").string().c_str());
-	}
-
-	Core::Entity* FTCore::GetEntity(const char* name)
-	{
-		return mEntities->At(name)->Value();
 	}
 
 	void FTCore::Initialize()

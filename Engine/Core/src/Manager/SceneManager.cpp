@@ -13,7 +13,6 @@
 #include <vector>
 
 #include "Scene/Scene.h"
-#include "Renderer/FoxtrotRenderer.h"
 #include "FileSystem/FileIOHelper.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FTDS/Static/FTString.h"

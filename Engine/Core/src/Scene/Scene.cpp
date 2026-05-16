@@ -32,7 +32,6 @@
 #include "Manager/EventManager.h"
 #include "TemplateFunctions.h"
 #include "Actor/Transform.h"
-#include "Renderer/FoxtrotRenderer.h"
 
 namespace Core
 {

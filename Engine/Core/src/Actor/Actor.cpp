@@ -11,7 +11,7 @@
 #include <fstream>
 
 #include "Scene/Scene.h"
-#include "InputSystem/FTInputDevice.h"
+#include "InputSystem/IInputDevice.h"
 #include "Actor/ActorGroup.h"
 #include "Actor/Transform.h"
 #include "FileSystem/ChunkLoader.h"

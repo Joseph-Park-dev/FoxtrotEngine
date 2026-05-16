@@ -279,7 +279,6 @@
     <ClCompile Include="src\Behavior\FTBehavior.cpp" />
     <ClCompile Include="src\Entity\Timer.cpp" />
     <ClCompile Include="src\EventSystem\EventFunctions.cpp" />
-    <ClCompile Include="src\InputSystem\FTInputDevice.cpp" />
     <ClCompile Include="src\Manager\DirectoryHelper.cpp" />
     <ClCompile Include="src\Manager\EventManager.cpp" />
     <ClCompile Include="src\Manager\ResourceManager.cpp" />
@@ -287,9 +286,7 @@
     <ClCompile Include="src\Plugin\dllmain.cpp" />
     <ClCompile Include="src\Plugin\FTCore.cpp" />
     <ClCompile Include="src\Plugin\pch.cpp" />
-    <ClCompile Include="src\Renderer\FoxtrotRenderer.cpp" />
     <ClCompile Include="src\Renderer\FTRectArea.cpp" />
-    <ClCompile Include="src\Renderer\FTWindow.cpp" />
     <ClCompile Include="src\ResourceSystem\CoreResource.cpp" />
     <ClCompile Include="src\ResourceSystem\FTPremade.cpp" />
     <ClCompile Include="src\ResourceSystem\GenericData\FTCSV.cpp" />

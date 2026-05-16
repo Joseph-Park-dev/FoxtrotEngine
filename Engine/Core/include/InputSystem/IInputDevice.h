@@ -18,6 +18,7 @@
 
 namespace Core
 {
+	class IWindow;
 	enum class ButtonState
 	{
 		NONE,

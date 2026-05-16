@@ -6,137 +6,91 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 /// <summary>
-/// Pure virtual interface for component implementations.
-/// Defines the component lifecycle contract without platform dependencies.
+/// Base class for all Components.
+///
+/// [Design philosophy]
+/// The Component controls its elements in an upper level,
+/// and the element has the related operation.
+///
+/// Means of access to the elements (Getters & Setters) are not to be
+/// exposed. Make them protected, or minimize the cases of them being public.
 /// </summary>
 
 #pragma once
 #include <iosfwd>
 
-namespace Common
-{
-	namespace FTDS
-	{
-		class String;
-	}
-} // namespace Common
+#include "Debugging/DebugMemAlloc.h"
 
 namespace Core
 {
 	class Actor;
-	class IRenderer;
 	class IInputDevice;
 
-	/// <summary>
-	/// Abstract component interface defining the lifecycle contract.
-	/// All components must implement these methods regardless of platform.
-	/// </summary>
+	namespace DefaultVal
+	{
+		constexpr int UPDATE_ORDER = 100;
+	}
+
+	namespace ChunkKey
+	{
+		constexpr const char* COMPONENTS   = "Components";
+		constexpr const char* UPDATE_ORDER = "UpdateOrder";
+		constexpr const char* IS_ACTIVE	   = "Is Active";
+	} // namespace ChunkKey
+
 	class IComponent
 	{
 	public:
-		virtual ~IComponent() = default;
+		virtual const char* GetName() const = 0;
 
-		//////////////////////////////////////////
-		////// Identity //////////////////////////
-		//////////////////////////////////////////
-
-		/// <summary>
-		/// Gets the component type name for serialization and debugging.
-		/// </summary>
-		virtual Common::FTDS::String GetName() const = 0;
-
-		//////////////////////////////////////////
-		////// Lifecycle /////////////////////////
-		//////////////////////////////////////////
-
-		/// <summary>
-		/// Called once after component creation to initialize resources.
-		/// </summary>
-		virtual void Initialize() = 0;
-
-		/// <summary>
-		/// Called after Initialize() to complete setup (e.g., after all components are added).
-		/// </summary>
-		virtual void Setup() = 0;
-
-		/// <summary>
-		/// Called each frame to process input events.
-		/// </summary>
-		/// <param name="inputDevice">The input device to query.</param>
+	public:
+		virtual void Initialize()							 = 0;
+		virtual void Setup()								 = 0;
 		virtual void ProcessInput(IInputDevice* inputDevice) = 0;
+		virtual void Update(float deltaTime)				 = 0;
+		virtual void LateUpdate(float deltaTime)			 = 0;
+		virtual void CloneTo(Actor* actor)					 = 0;
 
-		/// <summary>
-		/// Called each frame for main update logic.
-		/// </summary>
-		/// <param name="deltaTime">Time elapsed since last frame in seconds.</param>
-		virtual void Update(float deltaTime) = 0;
-
-		/// <summary>
-		/// Called each frame after Update() for post-update logic.
-		/// </summary>
-		/// <param name="deltaTime">Time elapsed since last frame in seconds.</param>
-		virtual void LateUpdate(float deltaTime) = 0;
-
-		/// <summary>
-		/// Called each frame to render the component.
-		/// </summary>
-		/// <param name="renderer">The active renderer instance.</param>
-		virtual void Render(IRenderer* renderer) = 0;
-
-		/// <summary>
-		/// Creates a copy of this component attached to the specified actor.
-		/// </summary>
-		/// <param name="actor">The actor to clone to.</param>
-		virtual void CloneTo(Actor* actor) = 0;
-
-		//////////////////////////////////////////
-		////// Serialization /////////////////////
-		//////////////////////////////////////////
-
-		/// <summary>
-		/// Saves component properties to a stream.
-		/// </summary>
-		/// <param name="ofs">Output file stream.</param>
+	public:
 		virtual void SaveProperties(std::ofstream& ofs) = 0;
-
-		/// <summary>
-		/// Loads component properties from a stream.
-		/// </summary>
-		/// <param name="ifs">Input file stream.</param>
 		virtual void LoadProperties(std::ifstream& ifs) = 0;
 
-		//////////////////////////////////////////
-		////// State /////////////////////////////
-		//////////////////////////////////////////
+	public:
+		virtual Actor*	   GetOwner()				= 0;
+		virtual const int  GetUpdateOrder()			= 0;
+		virtual const bool GetIsInitialized() const = 0;
+		virtual const bool GetIsSetup() const		= 0;
+		virtual const bool GetIsActive() const		= 0;
 
-		/// <summary>
-		/// Gets the owning actor.
-		/// </summary>
-		virtual Actor* GetOwner() const = 0;
-
-		/// <summary>
-		/// Gets the update order priority (lower values update first).
-		/// </summary>
-		virtual int GetUpdateOrder() const = 0;
-
-		/// <summary>
-		/// Returns true if Initialize() has been called.
-		/// </summary>
-		virtual bool GetIsInitialized() const = 0;
-
-		/// <summary>
-		/// Returns true if Setup() has been called.
-		/// </summary>
-		virtual bool GetIsSetup() const = 0;
-
-		/// <summary>
-		/// Returns true if the component is active in the game loop.
-		/// </summary>
-		virtual bool GetIsActive() const = 0;
-
-		/// <summary>
-		/// Sets the component active state.
-		/// </summary>
 		virtual void SetIsActive(bool isActive) = 0;
+
+		virtual int& UpdateOrder() = 0;
+
+	public:
+		template <class T>
+		static void Load(Actor* actor, std::ifstream& ifs)
+		{
+			/// Dynamically allocate actor of type T
+			T* t = DBG_NEW T(actor, DefaultVal::UPDATE_ORDER);
+			// Load Properties first -> then initialize with the loaded values.
+			t->LoadProperties(ifs);
+		}
+
+#ifdef FOXTROT_EDITOR
+	public:
+		// Member functions for EditorElement objects.
+		// Functions for editor specific tasks, which means
+		// codes to be executed in the Editor, but not in the produced game.
+		//
+		// Renderer dependent components,
+		// (such as MeshRendererComponent, SpriteRendererComponent, etc.)
+		// usually use FTCore Update() & Render().
+		virtual void EditorUpdate(float deltaTime) = 0;
+		virtual void EditorUIUpdate()			   = 0;
+
+	public:
+		virtual void SetUpdateOrder(int updateOrder) = 0;
+
+#endif // FOXTROT_EDITOR
 	};
 } // namespace Core

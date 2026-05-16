@@ -194,7 +194,7 @@ namespace Math
 		}
 
 		// Vector addition (a + b)
-		friend FTVector3 operator+(const FTVector3& a, const FTVector3& b)
+		friend FTVector3 operator+(FTVector3& a, FTVector3& b)
 		{
 			return FTVector3(a.x + b.x, a.y + b.y, a.z + b.z);
 		}

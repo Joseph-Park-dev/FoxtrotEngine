@@ -47,7 +47,7 @@ namespace D3D11
 		virtual void Render(
 			D3D11Renderer*	 renderer,
 			Core::Transform* transform,
-			Camera*			 camInst,
+			D3D11::Camera*	 camInst,
 			D3D11PSO*		 pso,
 			FTMaterial*		 mat);
 
@@ -101,7 +101,7 @@ namespace D3D11
 			Microsoft::WRL::ComPtr<ID3D11Device>&		 device,
 			Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,
 			Core::Transform*							 transform,
-			Camera*										 camInst,
+			D3D11::Camera*								 camInst,
 			FTMaterial*									 mat,
 			const int									 frontDir = 0);
 

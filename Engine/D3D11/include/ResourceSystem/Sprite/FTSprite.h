@@ -22,19 +22,19 @@ namespace D3D11
 	public:
 		/// @param meshIndex Index of an elements from the sliced spritesheet.
 		void UpdateConstantBuffers(
-			D3D11Renderer* renderer,
+			D3D11Renderer*	 renderer,
 			Core::Transform* transform,
-			Camera*		   camInst,
-			FTMaterial*	   mat,
-			const size_t   gcDataCount = 1,
-			const int	   meshIndex   = 0);
+			Core::ICamera*	 camInst,
+			FTMaterial*		 mat,
+			const size_t	 gcDataCount = 1,
+			const int		 meshIndex	 = 0);
 
 		virtual void Render(
-			D3D11Renderer* renderer,
+			D3D11Renderer*	 renderer,
 			Core::Transform* transform,
-			Camera*		   camInst,
-			D3D11PSO*	   pso,
-			FTMaterial*	   mat) override;
+			Core::ICamera*	 camInst,
+			D3D11PSO*		 pso,
+			FTMaterial*		 mat) override;
 
 	public:
 		FTTexture*	  GetTexture() const;

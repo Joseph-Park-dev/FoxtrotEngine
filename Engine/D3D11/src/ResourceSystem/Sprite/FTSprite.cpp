@@ -23,7 +23,7 @@ namespace D3D11
 	using namespace Microsoft::WRL;
 	ResType FTSprite::Type = ResType::SPRITE;
 
-	void FTSprite::UpdateConstantBuffers(D3D11Renderer* renderer, Transform* transform, Camera* camInst, FTMaterial* mat, const size_t gcDataCount, const int meshIndex)
+	void FTSprite::UpdateConstantBuffers(D3D11Renderer* renderer, Transform* transform, Core::ICamera* camInst, FTMaterial* mat, const size_t gcDataCount, const int meshIndex)
 	{
 		// Model Transformation
 		// Front Direction will be multiplied to scale.
@@ -47,10 +47,12 @@ namespace D3D11
 		// invTransposeMat = invTransposeMat.Transpose().Invert();
 
 		// View Transformation
-		FTMatrix4&& viewMat = camInst->GetViewRow();
+		FTMatrix4 viewMat = FTMatrix4::Identity;
+		camInst->GetViewMatrix(viewMat);
 
 		// Project Transformation
-		FTMatrix4&& projMat = std::move(camInst->GetProjRow());
+		FTMatrix4 projMat = FTMatrix4::Identity;
+		camInst->GetProjectionMatrix(projMat);
 
 		GetVCData()->ModelMat = modelMat.Transposed();
 		D3D11Utils::UpdateBuffer(
@@ -69,7 +71,7 @@ namespace D3D11
 			mat->UpdateBuffer(renderer->GetContext());
 	}
 
-	void FTSprite::Render(D3D11Renderer* renderer, Transform* transform, Camera* camInst, D3D11PSO* pso, FTMaterial* mat)
+	void FTSprite::Render(D3D11Renderer* renderer, Transform* transform, Core::ICamera* camInst, D3D11PSO* pso, FTMaterial* mat)
 	{
 		if (!pso->IsValid()) // Vertex Shader is always required when drawing.
 			return;

@@ -16,7 +16,7 @@
 #include "Actor/Transform.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
-#include "Component/Component.h"
+#include "Component/IComponent.h"
 #include "Debugging/DebugMemAlloc.h"
 #include "ResourceSystem/FTPremade.h"
 #include "Manager/SceneManager.h"
@@ -39,7 +39,7 @@ namespace Core
 		, mState(ActorState::ALIVE)
 		, mIsActive(true)
 		, mTransform(DBG_NEW Transform(this))
-		, mComponents(DBG_NEW Common::FTDS::DynamicArray<Component*>())
+		, mComponents(DBG_NEW Common::FTDS::DynamicArray<IComponent*>())
 		, mParent(nullptr)
 		, mChild(DBG_NEW Common::FTDS::DynamicArray<Actor*>())
 		, mDrawOrder(0)
@@ -54,7 +54,7 @@ namespace Core
 		, mState(ActorState::ALIVE)
 		, mIsActive(true)
 		, mTransform(DBG_NEW Transform(this))
-		, mComponents(DBG_NEW Common::FTDS::DynamicArray<Component*>())
+		, mComponents(DBG_NEW Common::FTDS::DynamicArray<IComponent*>())
 		, mParent(actor->mParent)
 		, mChild(DBG_NEW Common::FTDS::DynamicArray<Actor*>())
 		, mDrawOrder(actor->mDrawOrder)
@@ -73,7 +73,7 @@ namespace Core
 		, mState(ActorState::ALIVE)
 		, mIsActive(true)
 		, mTransform(DBG_NEW Transform(this))
-		, mComponents(DBG_NEW Common::FTDS::DynamicArray<Component*>())
+		, mComponents(DBG_NEW Common::FTDS::DynamicArray<IComponent*>())
 		, mParent(actor->mParent)
 		, mChild(DBG_NEW Common::FTDS::DynamicArray<Actor*>())
 		, mDrawOrder(actor->mDrawOrder)
@@ -129,7 +129,7 @@ namespace Core
 	{
 		this->RemoveAllComponents();
 
-		Common::FTDS::DynamicArray<Component*>* compsToCopy = actor->GetComponents();
+		Common::FTDS::DynamicArray<IComponent*>* compsToCopy = actor->GetComponents();
 		for (size_t i = 0; i < compsToCopy->GetSize(); ++i)
 			compsToCopy->At(i)->CloneTo(this);
 	}
@@ -192,7 +192,7 @@ namespace Core
 			child->mParent = child->mParent->mParent;
 	}
 
-	void Actor::AddComponent(Component* component)
+	void Actor::AddComponent(IComponent* component)
 	{
 		int	   updateOrder = component->GetUpdateOrder();
 		auto   iter		   = mComponents->Begin();
@@ -209,7 +209,7 @@ namespace Core
 		mComponents->Insert(iterPos, component);
 	}
 
-	void Actor::RemoveComponent(Component* component)
+	void Actor::RemoveComponent(IComponent* component)
 	{
 		int pos = mComponents->Find(component);
 		if (pos == -1)

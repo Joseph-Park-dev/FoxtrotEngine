@@ -20,7 +20,7 @@ namespace Core
 	class Transform;
 	class FTInputDevice;
 	class Scene;
-	class Component;
+	class IComponent;
 	class FoxtrotRenderer;
 	class FTPremade;
 	enum class ACTOR_TAG;
@@ -71,15 +71,15 @@ namespace Core
 	public:
 		void		 AddChild(Actor* actor);
 		void		 RemoveChild(Actor* actor);
-		virtual void AddComponent(Component* component);
-		void		 RemoveComponent(Component* component);
+		virtual void AddComponent(IComponent* component);
+		void		 RemoveComponent(IComponent* component);
 		void		 RemoveAllComponents();
 
 	public:
 		// Deep copies transform from another Actor.
 		void CopyTransformFrom(Actor* actor);
 
-		// Creates new Component with values from another Actor.
+		// Creates new IComponent with values from another Actor.
 		void CopyComponentsFrom(Actor* actor);
 
 		// Deep copies all child Actors
@@ -90,18 +90,18 @@ namespace Core
 
 	public:
 		// Getters/Setters
-		ActorGroup								GetActorGroup() const { return mActorGroup; }
-		ActorGroup&								GetActorGroupRef() { return mActorGroup; }
-		ActorGroup*								GetActorGroupPtr() { return &mActorGroup; }
-		Common::FTDS::String					GetName();
-		virtual Common::FTDS::String&			GetNameRef();
-		const int								GetID() const { return mID; }
-		const bool&								GetIsActive() const { return mIsActive; }
-		Transform*								GetTransform() const { return mTransform; }
-		Actor*									GetParent() const { return mParent; }
-		Common::FTDS::DynamicArray<Component*>* GetComponents() { return mComponents; }
-		Common::FTDS::DynamicArray<Actor*>*		GetChildActors() { return mChild; }
-		const int&								GetDrawOrder() const { return mDrawOrder; }
+		ActorGroup								 GetActorGroup() const { return mActorGroup; }
+		ActorGroup&								 GetActorGroupRef() { return mActorGroup; }
+		ActorGroup*								 GetActorGroupPtr() { return &mActorGroup; }
+		Common::FTDS::String					 GetName();
+		virtual Common::FTDS::String&			 GetNameRef();
+		const int								 GetID() const { return mID; }
+		const bool&								 GetIsActive() const { return mIsActive; }
+		Transform*								 GetTransform() const { return mTransform; }
+		Actor*									 GetParent() const { return mParent; }
+		Common::FTDS::DynamicArray<IComponent*>* GetComponents() { return mComponents; }
+		Common::FTDS::DynamicArray<Actor*>*		 GetChildActors() { return mChild; }
+		const int&								 GetDrawOrder() const { return mDrawOrder; }
 
 		void SetName(Common::FTDS::String&& name);
 		void SetIsActive(bool isActive) { mIsActive = isActive; }
@@ -109,7 +109,7 @@ namespace Core
 		void SetState(ActorState state) { mState = state; }
 		void SetParent(Actor* parent) { mParent = parent; }
 		void SetTransform(Transform* transform) { mTransform = transform; }
-		void SetComponents(Common::FTDS::DynamicArray<Component*>* components) { mComponents = components; }
+		void SetComponents(Common::FTDS::DynamicArray<IComponent*>* components) { mComponents = components; }
 		void SetChildActors(Common::FTDS::DynamicArray<Actor*>* children) { mChild = children; }
 		void SetDrawOrder(int order) { mDrawOrder = order; }
 
@@ -131,16 +131,16 @@ namespace Core
 		};
 
 	private:
-		Common::FTDS::String					mName;
-		int										mID;
-		ActorGroup								mActorGroup;
-		ActorState								mState;
-		bool									mIsActive;
-		Transform*								mTransform;
-		Common::FTDS::DynamicArray<Component*>* mComponents;
-		Actor*									mParent;
-		Common::FTDS::DynamicArray<Actor*>*		mChild;
-		int										mDrawOrder;
+		Common::FTDS::String					 mName;
+		int										 mID;
+		ActorGroup								 mActorGroup;
+		ActorState								 mState;
+		bool									 mIsActive;
+		Transform*								 mTransform;
+		Common::FTDS::DynamicArray<IComponent*>* mComponents;
+		Actor*									 mParent;
+		Common::FTDS::DynamicArray<Actor*>*		 mChild;
+		int										 mDrawOrder;
 
 	public:
 		void SaveProperties(std::ofstream& ofs);

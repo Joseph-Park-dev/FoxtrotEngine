@@ -27,7 +27,7 @@ namespace D3D11
 		D3D11_VIEWPORT*								 GetViewport();
 		const Core::FillMode&						 GetFillMode() const;
 
-		void SetFillMode(const FillMode mode);
+		void SetFillMode(const Core::FillMode mode);
 
 	public:
 		D3D11Renderer(Core::IWindow* window);

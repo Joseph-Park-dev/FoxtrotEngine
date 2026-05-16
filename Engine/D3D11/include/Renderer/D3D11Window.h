@@ -16,6 +16,7 @@ namespace D3D11
 {
 	class D3D11InputDevice;
 	class D3D11Renderer;
+	class D3D11Window;
 
 	struct WNDPROC_Params
 	{
@@ -88,7 +89,7 @@ namespace D3D11
 		/// <summary>
 		/// Gets the render area rectangle within the window.
 		/// </summary>
-		virtual FTRectArea* GetRenderArea() const override;
+		virtual Core::FTRectArea* GetRenderArea() const override;
 
 	public:
 		D3D11Window(const char* title, unsigned int width, unsigned int height, Core::FTRectArea* rndArea);
@@ -104,7 +105,7 @@ namespace D3D11
 		Common::FTDS::String* mTitle;
 		unsigned int		  mWidth;
 		unsigned int		  mHeight;
-		FTRectArea*			  mRenderArea;
+		Core::FTRectArea*	  mRenderArea;
 
 	private:
 		/**

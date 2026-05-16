@@ -296,7 +296,10 @@
     <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Triangulator.cpp" />
     <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Updatable.cpp" />
     <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\VertexAttachment.cpp" />
-    <ClCompile Include="include\Renderer\D3D11Camera.cpp" />
+    <ClCompile Include="src\Renderer\Camera-1.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Camera.cpp" />
     <ClCompile Include="src\Component\Animator.cpp" />
     <ClCompile Include="src\Component\D3D11Component.cpp" />
     <ClCompile Include="src\Component\MeshRenderer.cpp" />
@@ -313,7 +316,6 @@
     <ClCompile Include="src\Manager\ResourceManager.cpp" />
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\Plugin\D3D11Plugin.cpp" />
-    <ClCompile Include="src\Renderer\Camera.cpp" />
     <ClCompile Include="src\Renderer\D3D11Renderer.cpp" />
     <ClCompile Include="src\ResourceSystem\Animation\AnimationFrame.cpp" />
     <ClCompile Include="src\ResourceSystem\Animation\FTSpineAnimation.cpp" />
@@ -363,7 +365,7 @@
     <ClInclude Include="include\Manager\ResourceManager.h" />
     <ClInclude Include="include\pch.h" />
     <ClInclude Include="include\Plugin\PluginKey.h" />
-    <ClInclude Include="include\Renderer\D3D11Camera.h" />
+    <ClInclude Include="include\Renderer\Camera.h" />
     <ClInclude Include="include\Renderer\D3D11Renderer.h" />
     <ClInclude Include="include\Renderer\WindowProcess.h" />
     <ClInclude Include="include\ResourceSystem\Animation\AnimationFrame.h" />
@@ -403,6 +405,14 @@
     <ClInclude Include="include\ResourceSystem\Sprite\Tile.h" />
     <ClInclude Include="include\Utility\D3D11Utils.h" />
     <ClInclude Include="include\Plugin\D3D11Exports.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.vcxproj">
+      <Project>{cce9835e-f788-4b51-930b-d7805ac1e2a0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Math\Math.vcxproj">
+      <Project>{05f1cde6-51be-4ec3-898e-d9d15811ed7f}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

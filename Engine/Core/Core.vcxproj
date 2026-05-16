@@ -237,7 +237,10 @@
     <ClInclude Include="include\Actor\ActorGroup.h" />
     <ClInclude Include="include\Actor\Steering.h" />
     <ClInclude Include="include\Actor\Transform.h" />
-    <ClInclude Include="include\Behavior\FTBehavior.h" />
+    <ClInclude Include="include\Behavior\FTBehavior.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="include\Component\IComponent.h" />
     <ClInclude Include="include\Entity\Timer.h" />
     <ClInclude Include="include\EventSystem\EventFunctions.h" />
     <ClInclude Include="include\EventSystem\EventType.h" />
@@ -276,7 +279,9 @@
     <ClCompile Include="include\Factory\IInputSysFactory.h" />
     <ClCompile Include="src\Actor\Actor.cpp" />
     <ClCompile Include="src\Actor\Transform.cpp" />
-    <ClCompile Include="src\Behavior\FTBehavior.cpp" />
+    <ClCompile Include="src\Behavior\FTBehavior.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\Entity\Timer.cpp" />
     <ClCompile Include="src\EventSystem\EventFunctions.cpp" />
     <ClCompile Include="src\Manager\DirectoryHelper.cpp" />

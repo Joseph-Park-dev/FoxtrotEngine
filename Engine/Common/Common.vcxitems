@@ -14,7 +14,6 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)include\Component\Component.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\Debugging\DebugFuncs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\Debugging\DebugMemAlloc.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\Entity\Entity.h" />
@@ -54,7 +53,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)include\Utility\EditorHelper.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\Component\Component.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\FileSystem\ChunkLoader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\FileSystem\FileIOHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\ResourceSystem\FTResource.cpp" />

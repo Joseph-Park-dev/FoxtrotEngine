@@ -6,9 +6,9 @@
 #include "ResourceSystem/FTResource.h"
 
 #ifdef FOXTROT_EDITOR
+	#define IMGUI_DEFINE_MATH_OPERATORS
 	#include <imgui.h>
 #endif // FOXTROT_EDITOR
-	
 
 namespace Common
 {

@@ -24,8 +24,9 @@ namespace D3D11
 
 namespace Editor
 {
+	class EditorWindow;
 	class EditorCamera :
-		public D3D11::Camera
+		public Core::ICamera
 	{
 		SINGLETON(EditorCamera)
 	public:
@@ -36,9 +37,9 @@ namespace Editor
 		D3D11::FTRectangle* GetDebugRect();
 
 	public:
-		void		 Initialize(Core::FTWindow* renderWindow, unsigned int pixels, float unit) override;
+		void		 Initialize(Editor::EditorWindow* window, unsigned int pixels, float unit);
 		virtual void ProcessInput(D3D11::D3D11InputDevice* inputDevice);
-		virtual void Update(float deltaTime) override;
+		virtual void Update(float deltaTime);
 
 	private:
 		bool  mPanKeyPressed;

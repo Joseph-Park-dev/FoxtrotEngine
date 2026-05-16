@@ -56,7 +56,7 @@ namespace Editor
 		return mDebugRect;
 	}
 
-	void EditorCamera::Initialize(Core::FTWindow* renderWindow, unsigned int pixels, float unit)
+	void EditorCamera::Initialize(Editor::EditorWindow* renderWindow, unsigned int pixels, float unit)
 	{
 		Camera::Initialize(renderWindow, pixels, unit);
 		EditorShapes::GetInstance()->SetCameraRect(mDebugRect);

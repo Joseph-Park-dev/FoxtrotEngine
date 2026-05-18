@@ -18,7 +18,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)include\Debugging\DebugMemAlloc.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\Entity\Entity.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\FileSystem\BufferSizes.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)include\FileSystem\ChunkLoader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\FileSystem\FileIOHelper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\FileSystem\FileTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\FileSystem\NullKeys.h" />
@@ -53,7 +52,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)include\Utility\EditorHelper.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\FileSystem\ChunkLoader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\FileSystem\FileIOHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\ResourceSystem\FTResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\Utility\EditorHelper.cpp" />

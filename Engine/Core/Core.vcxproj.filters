@@ -30,12 +30,6 @@
     <ClCompile Include="src\EventSystem\EventFunctions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\FileSystem\ChunkLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\InputSystem\FTInputDevice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Manager\DirectoryHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -57,13 +51,7 @@
     <ClCompile Include="src\Plugin\pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer\FoxtrotRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Renderer\FTRectArea.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\FTWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ResourceSystem\GenericData\FTCSV.cpp">
@@ -96,6 +84,12 @@
     <ClCompile Include="..\..\third_party\imgui\imgui_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="include\Factory\IInputSysFactory.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FileSystem\ChunkLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Actor\Actor.h">
@@ -113,9 +107,6 @@
     <ClInclude Include="include\Behavior\FTBehavior.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Entity\Entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Entity\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -123,12 +114,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\EventSystem\EventType.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\FileSystem\ChunkLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\InputSystem\FTInputDevice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Manager\DirectoryHelper.h">
@@ -161,13 +146,7 @@
     <ClInclude Include="include\Plugin\PluginKey.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Renderer\FoxtrotRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Renderer\FTRectArea.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Renderer\FTWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\ResourceSystem\GenericData\FTCSV.h">
@@ -195,6 +174,33 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Utility\UnitDefinitions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Component\IComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Factory\IGraphicsFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\InputSystem\IInputDevice.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Plugin\GetFunc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Renderer\ICamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Renderer\IRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Renderer\IWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FileSystem\IChunkLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FileSystem\ChunkLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

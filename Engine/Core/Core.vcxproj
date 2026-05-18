@@ -245,6 +245,8 @@
     <ClInclude Include="include\EventSystem\EventFunctions.h" />
     <ClInclude Include="include\EventSystem\EventType.h" />
     <ClInclude Include="include\Factory\IGraphicsFactory.h" />
+    <ClInclude Include="include\FileSystem\ChunkLoader.h" />
+    <ClInclude Include="include\FileSystem\IChunkLoader.h" />
     <ClInclude Include="include\InputSystem\IInputDevice.h" />
     <ClInclude Include="include\Manager\DirectoryHelper.h" />
     <ClInclude Include="include\Manager\EventManager.h" />
@@ -284,6 +286,7 @@
     </ClCompile>
     <ClCompile Include="src\Entity\Timer.cpp" />
     <ClCompile Include="src\EventSystem\EventFunctions.cpp" />
+    <ClCompile Include="src\FileSystem\ChunkLoader.cpp" />
     <ClCompile Include="src\Manager\DirectoryHelper.cpp" />
     <ClCompile Include="src\Manager\EventManager.cpp" />
     <ClCompile Include="src\Manager\ResourceManager.cpp" />

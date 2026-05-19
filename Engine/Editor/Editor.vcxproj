@@ -245,7 +245,7 @@
     </ClInclude>
     <ClInclude Include="include\DLLData.h" />
     <ClInclude Include="include\EditorCamera.h" />
-    <ClInclude Include="include\EditorChunkLoader.h" />
+    <ClInclude Include="include\ChunkLoader.h" />
     <ClInclude Include="include\EditorElement.h" />
     <ClInclude Include="include\EditorEventFunctions.h" />
     <ClInclude Include="include\EditorLayer.h" />
@@ -345,7 +345,7 @@
     <ClCompile Include="src\Command.cpp" />
     <ClCompile Include="src\CommandHistory.cpp" />
     <ClCompile Include="src\EditorCamera.cpp" />
-    <ClCompile Include="src\EditorChunkLoader.cpp" />
+    <ClCompile Include="src\ChunkLoader.cpp" />
     <ClCompile Include="src\EditorElement.cpp" />
     <ClCompile Include="src\EditorLayer.cpp" />
     <ClCompile Include="src\Manager\ResourceManager.cpp">

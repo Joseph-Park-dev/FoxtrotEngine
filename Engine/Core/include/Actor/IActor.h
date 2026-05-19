@@ -1,0 +1,140 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+//
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+/// <summary>
+/// An object that can be placed into a Scene.
+/// An Actor is consist of Transformation, Components, Behaviours, etc.
+/// </summary>
+
+#pragma once
+#include <iosfwd>
+
+#include "FTDS/Static/FTString.h"
+#include "Actor/ActorGroup.h"
+
+namespace Core
+{
+	class IActor;
+	class Transform;
+	class FTInputDevice;
+	class Scene;
+	class IComponent;
+	class FoxtrotRenderer;
+	class FTPremade;
+	enum class ACTOR_TAG;
+	enum class ActorGroup;
+	namespace FTDS
+	{
+		template <typename TYPE>
+		class DynamicArray;
+		class String;
+	} // namespace FTDS
+
+	enum class ActorState
+	{
+		ALIVE,
+		DEAD
+	};
+
+	struct ActorData
+	{
+		Common::FTDS::String					 Name		= {};
+		int										 ID			= 0;
+		ActorGroup								 ActorGroup = ActorGroup::DEFAULT;
+		ActorState								 State		= ActorState::ALIVE;
+		bool									 IsActive	= true;
+		Transform*								 Transform	= nullptr;
+		Common::FTDS::DynamicArray<IComponent*>* Components = nullptr;
+		IActor*									 Parent		= nullptr;
+		Common::FTDS::DynamicArray<IActor*>*	 Children	= nullptr;
+		int										 DrawOrder	= 0;
+	};
+
+	class IActor
+	{
+	public:
+		virtual void AddChild(IActor* actor)				= 0;
+		virtual void RemoveChild(IActor* actor)				= 0;
+		virtual void AddComponent(IComponent* component)	= 0;
+		virtual void RemoveComponent(IComponent* component) = 0;
+		virtual void RemoveAllComponents()					= 0;
+
+	public:
+		// Deep copies transform from another IActor.
+		virtual void CopyTransformFrom(IActor* actor) = 0;
+
+		// Creates new IComponent with values from another IActor.
+		virtual void CopyComponentsFrom(IActor* actor) = 0;
+
+		// Deep copies all child Actors
+		virtual void CopyChildObjectFrom(IActor* actor) = 0;
+
+		// Shallow copies all child Actors.
+		virtual void RefChildObjectFrom(IActor* actor) = 0;
+
+	public:
+		// Getters/Setters
+		virtual ActorGroup								 GetActorGroup() const = 0;
+		virtual ActorGroup&								 GetActorGroupRef()	   = 0;
+		virtual ActorGroup*								 GetActorGroupPtr()	   = 0;
+		virtual Common::FTDS::String					 GetName()			   = 0;
+		virtual Common::FTDS::String&					 GetNameRef()		   = 0;
+		virtual const int								 GetID() const		   = 0;
+		virtual const bool&								 GetIsActive() const   = 0;
+		virtual Transform*								 GetTransform() const  = 0;
+		virtual IActor*									 GetParent() const	   = 0;
+		virtual Common::FTDS::DynamicArray<IComponent*>* GetComponents()	   = 0;
+		virtual Common::FTDS::DynamicArray<IActor*>*	 GetChildActors()	   = 0;
+		virtual const int&								 GetDrawOrder() const  = 0;
+
+		virtual void SetName(Common::FTDS::String&& name)								= 0;
+		virtual void SetIsActive(bool isActive)											= 0;
+		virtual void SetActorGroup(ActorGroup group)									= 0;
+		virtual void SetState(ActorState state)											= 0;
+		virtual void SetParent(IActor* parent)											= 0;
+		virtual void SetTransform(Transform* transform)									= 0;
+		virtual void SetComponents(Common::FTDS::DynamicArray<IComponent*>* components) = 0;
+		virtual void SetChildActors(Common::FTDS::DynamicArray<IActor*>* children)		= 0;
+		virtual void SetDrawOrder(int order)											= 0;
+
+		virtual bool  HasName(Common::FTDS::String&& name) = 0;
+		virtual bool  HasName(const char* name)			   = 0;
+		virtual bool  IsDead()							   = 0;
+		virtual bool& IsActive()						   = 0;
+
+	public:
+		virtual void SaveProperties(std::ofstream& ofs) = 0;
+		virtual void SaveComponents(std::ofstream& ofs) = 0;
+
+		virtual void LoadProperties(std::ifstream& ifs) = 0;
+		virtual void LoadComponents(std::ifstream& ifs) = 0;
+
+	public:
+		virtual ~IActor() = default;
+	};
+
+	namespace ChunkKey
+	{
+		constexpr const char* NAME		 = "Name";
+		constexpr const char* DRAW_ORDER = "Draw Order";
+		constexpr const char* STATE		 = "State";
+		constexpr const char* PARENT	 = "Parent";
+		constexpr const char* CHILD		 = "Child List";
+
+		namespace ID
+		{
+			// ID for invalid, or temporary object
+			constexpr int INVALID = -1;
+
+			// ID for cloned object (instantiated object)
+			constexpr int CLONE = 0;
+
+			// ID for chunk title.
+			constexpr const char* ID = "ID";
+		} // namespace ID
+	} // namespace ChunkKey
+} // namespace Core

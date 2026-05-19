@@ -67,33 +67,14 @@ namespace Core
 		/// <returns>Pointer to created camera. Caller owns the memory.</returns>
 		virtual ICamera* CreateCamera() = 0;
 
-		//////////////////////////////////////////
-		////// Backend Information ///////////////
-		//////////////////////////////////////////
-
-		/// <summary>
-		/// Gets the name of the graphics backend (e.g., "D3D11", "Vulkan").
-		/// </summary>
-		virtual const char* GetBackendName() const = 0;
-
-		/// <summary>
-		/// Gets the version string of the backend implementation.
-		/// </summary>
-		virtual const char* GetBackendVersion() const = 0;
-
-		/// <summary>
-		/// Checks if the backend is available on the current system.
-		/// </summary>
-		virtual bool IsBackendAvailable() const = 0;
-
 	public:
 		virtual ~IGraphicsFactory() = default;
 	};
 
-	/// <summary>
-	/// Creates the default engine factory for the current platform.
-	/// On Windows, this returns a D3D11 factory.
-	/// </summary>
-	/// <returns>Pointer to the factory. Caller owns the memory.</returns>
-	extern "C" __declspec(dllexport) IGraphicsFactory* CreateGraphicsFactory();
+	///// <summary>
+	///// Creates the default engine factory for the current platform.
+	///// On Windows, this returns a D3D11 factory.
+	///// </summary>
+	///// <returns>Pointer to the factory. Caller owns the memory.</returns>
+	// extern "C" __declspec(dllexport) IGraphicsFactory* CreateGraphicsFactory();
 } // namespace Core

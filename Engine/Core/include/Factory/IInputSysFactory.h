@@ -40,25 +40,6 @@ namespace Core
 		/// <returns>Pointer to created input device. Caller owns the memory.</returns>
 		virtual IInputDevice* CreateInputDevice() = 0;
 
-		//////////////////////////////////////////
-		////// Backend Information ///////////////
-		//////////////////////////////////////////
-
-		/// <summary>
-		/// Gets the name of the graphics backend (e.g., "D3D11", "Vulkan").
-		/// </summary>
-		virtual const char* GetBackendName() const = 0;
-
-		/// <summary>
-		/// Gets the version string of the backend implementation.
-		/// </summary>
-		virtual const char* GetBackendVersion() const = 0;
-
-		/// <summary>
-		/// Checks if the backend is available on the current system.
-		/// </summary>
-		virtual bool IsBackendAvailable() const = 0;
-
 	public:
 		virtual ~IInputSysFactory() = default;
 	};

@@ -63,7 +63,7 @@ namespace D3D11
 	{
 	}
 
-	void SpriteRenderer::Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst, Core::ICamera* camInst)
+	void SpriteRenderer::Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst)
 	{
 		if (mSprite)
 		{
@@ -72,7 +72,7 @@ namespace D3D11
 		}
 	}
 
-	void SpriteRenderer::CloneTo(Actor* actor)
+	void SpriteRenderer::CloneTo(Core::IActor* actor)
 	{
 		SpriteRenderer* newComp = DBG_NEW SpriteRenderer(actor, GetUpdateOrder());
 		newComp->mSprite		= this->mSprite;
@@ -81,7 +81,7 @@ namespace D3D11
 	}
 
 	SpriteRenderer::SpriteRenderer(Actor* owner, int updateOrder)
-		: D3D11Component(plugin, owner, updateOrder)
+		: D3D11Component(owner, updateOrder)
 		, mSprite(nullptr)
 		, mMaterial(nullptr)
 	{
@@ -109,7 +109,7 @@ namespace D3D11
 
 	void SpriteRenderer::SaveProperties(std::ofstream& ofs)
 	{
-		Component::SaveProperties(ofs);
+		D3D11::D3D11Component::SaveProperties(ofs);
 		FileIOHelper::SaveString(ofs, ChunkKey::SpriteRenderer::SPRITE, mSprite->GetFileName());
 		FileIOHelper::SaveString(ofs, ChunkKey::SpriteRenderer::MATERIAL, mMaterial->GetFileName());
 	}
@@ -121,7 +121,7 @@ namespace D3D11
 
 		Common::FTDS::String spriteKey;
 		FileIOHelper::LoadBasicString(ifs, spriteKey);
-		Component::LoadProperties(ifs);
+		D3D11::D3D11Component::LoadProperties(ifs);
 
 		mSprite	  = D3D11::ResourceManager::GetInstance()->GetSprite(spriteKey);
 		mMaterial = D3D11::ResourceManager::GetInstance()->GetMaterial(matKey);
@@ -130,7 +130,7 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 	void SpriteRenderer::EditorUIUpdate()
 	{
-		Component::EditorUIUpdate();
+		D3D11::D3D11Component::EditorUIUpdate();
 
 		if (mSprite)
 			mSprite->UpdateUI();
@@ -148,7 +148,7 @@ namespace D3D11
 			ResourceManager::GetInstance()->GetMaterials(),
 			mMaterial);
 	}
-	void SpriteRenderer::EditorRender(D3D11::D3D11Renderer* renderer, Editor::EditorCamera* camInst)
+	void SpriteRenderer::EditorRender(D3D11::D3D11Renderer* renderer, Core::ICamera* camInst)
 	{
 		if (mSprite)
 		{

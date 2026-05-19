@@ -19,7 +19,7 @@
 namespace Core
 {
 	class Actor;
-	class FoxtrotRenderer;
+	class ICamera;
 } // namespace Core
 
 namespace D3D11
@@ -46,7 +46,7 @@ namespace D3D11
 		virtual void Update(float deltaTime) override;
 		virtual void LateUpdate(float deltaTime) override;
 		virtual void Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst) override;
-		virtual void CloneTo(Core::Actor* actor) override;
+		virtual void CloneTo(Core::IActor* actor) override;
 
 	public:
 		SpriteRenderer(
@@ -76,7 +76,7 @@ namespace D3D11
 		virtual void EditorUIUpdate() override;
 
 	public:
-		virtual void EditorRender(D3D11::D3D11Renderer* renderer, Editor::EditorCamera* camInst) override;
+		virtual void EditorRender(D3D11::D3D11Renderer* renderer, Core::ICamera* camInst) override;
 
 #endif
 	};

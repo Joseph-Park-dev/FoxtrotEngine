@@ -37,6 +37,7 @@ namespace Core
 
 		// World Transformation
 		virtual const Math::FTVector3& GetWorldPosition() const;
+		virtual Math::FTVector3		   GetWorldPosition();
 		virtual const Math::FTVector3& GetWorldScale() const;
 		const Math::FTVector3&		   GetWorldRotation() const;
 		virtual const Math::FTMatrix4& GetMatrixWorld() const;

@@ -27,7 +27,7 @@
 
 	#include "EditorUtils.h"
 	#include "EditorSceneManager.h"
-	#include "EditorChunkLoader.h"
+	#include "ChunkLoader.h"
 	#include "EditorScene.h"
 	#include "Manager/DirectoryHelper.h"
 	#include "EditorElement.h"

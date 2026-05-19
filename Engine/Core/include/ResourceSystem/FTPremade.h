@@ -21,7 +21,7 @@
 	#include <functional>
 
 	#include "EditorElement.h"
-	#include "EditorChunkLoader.h"
+	#include "ChunkLoader.h"
 	#include "Manager/EditorEventManager.h"
 
 namespace Editor
@@ -31,7 +31,7 @@ namespace Editor
 
 	typedef EditorElement* (*CREATE_EDITOR_ELEM)(Core::Actor*, int);
 	typedef EditorScene* (*GET_EDITOR_SCENE)();
-	typedef EditorChunkLoader* (*GET_EDITOR_CHUNK_LOADER)();
+	typedef ChunkLoader* (*GET_EDITOR_CHUNK_LOADER)();
 } // namespace Editor
 #endif // FOXTROT_EDITOR
 

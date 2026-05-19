@@ -23,7 +23,7 @@
 
 namespace Core
 {
-	class Actor;
+	class IActor;
 	class IInputDevice;
 
 	namespace DefaultVal
@@ -49,14 +49,14 @@ namespace Core
 		virtual void ProcessInput(IInputDevice* inputDevice) = 0;
 		virtual void Update(float deltaTime)				 = 0;
 		virtual void LateUpdate(float deltaTime)			 = 0;
-		virtual void CloneTo(Actor* actor)					 = 0;
+		virtual void CloneTo(IActor* actor)					 = 0;
 
 	public:
 		virtual void SaveProperties(std::ofstream& ofs) = 0;
 		virtual void LoadProperties(std::ifstream& ifs) = 0;
 
 	public:
-		virtual Actor*	   GetOwner()				= 0;
+		virtual IActor*	   GetOwner()				= 0;
 		virtual const int  GetUpdateOrder()			= 0;
 		virtual const bool GetIsInitialized() const = 0;
 		virtual const bool GetIsSetup() const		= 0;
@@ -64,11 +64,11 @@ namespace Core
 
 		virtual void SetIsActive(bool isActive) = 0;
 
-		virtual int& UpdateOrder() = 0;
+		// virtual int& UpdateOrder() = 0;
 
 	public:
 		template <class T>
-		static void Load(Actor* actor, std::ifstream& ifs)
+		static void Load(Core::IActor* actor, std::ifstream& ifs)
 		{
 			/// Dynamically allocate actor of type T
 			T* t = DBG_NEW T(actor, DefaultVal::UPDATE_ORDER);
@@ -89,7 +89,7 @@ namespace Core
 		virtual void EditorUIUpdate()			   = 0;
 
 	public:
-		virtual void SetUpdateOrder(int updateOrder) = 0;
+		// virtual void SetUpdateOrder(int updateOrder) = 0;
 
 #endif // FOXTROT_EDITOR
 	};

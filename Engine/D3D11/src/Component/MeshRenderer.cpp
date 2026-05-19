@@ -19,7 +19,7 @@
 #include "ResourceSystem/Shader/FTPixelShader.h"
 #include "ResourceSystem/FTTexture.h"
 #include "Renderer/Camera.h"
-#include "Renderer/FoxtrotRenderer.h"
+#include "Renderer/IRenderer.h"
 #include "TemplateFunctions.h"
 #include "Manager/ResourceManager.h"
 #include "FileSystem/ChunkLoader.h"
@@ -66,7 +66,7 @@ namespace D3D11
 		}
 	}
 
-	void MeshRenderer::CloneTo(Actor* actor)
+	void MeshRenderer::CloneTo(Core::IActor* actor)
 	{
 		MeshRenderer* newComp = DBG_NEW MeshRenderer(actor, GetUpdateOrder());
 		newComp->mRenderer	  = this->mRenderer;
@@ -93,8 +93,8 @@ namespace D3D11
 	void MeshRenderer::SetPS(FTPixelShader* ps) { mPS = ps; }
 	void MeshRenderer::SetMaterial(FTMaterial* mat) { mMaterial = mat; }
 
-	MeshRenderer::MeshRenderer(Actor* owner, int updateOrder)
-		: D3D11Component(plugin, owner, updateOrder)
+	MeshRenderer::MeshRenderer(Core::IActor* owner, int updateOrder)
+		: D3D11Component(owner, updateOrder)
 		, mMeshGroup(nullptr)
 		, mRenderer(nullptr)
 		, mTexture(nullptr)
@@ -117,7 +117,7 @@ namespace D3D11
 
 	void MeshRenderer::SaveProperties(std::ofstream& ofs)
 	{
-		Component::SaveProperties(ofs);
+		D3D11::D3D11Component::SaveProperties(ofs);
 
 		if (mMeshGroup)
 			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MESH_KEY, mMeshGroup->GetFileName());
@@ -153,11 +153,11 @@ namespace D3D11
 		FileIOHelper::LoadBasicString(ifs, keyCache);
 		mMeshGroup = D3D11::ResourceManager::GetInstance()->GetMeshGroup(keyCache);
 
-		Component::LoadProperties(ifs);
+		D3D11::D3D11Component::LoadProperties(ifs);
 	}
 
 #ifdef FOXTROT_EDITOR
-	void MeshRenderer::EditorRender(D3D11::D3D11Renderer* renderer, Editor::EditorCamera* camInst)
+	void MeshRenderer::EditorRender(D3D11::D3D11Renderer* renderer, Core::ICamera* camInst)
 	{
 		if (mMeshGroup)
 		{
@@ -168,7 +168,7 @@ namespace D3D11
 
 	void MeshRenderer::EditorUIUpdate()
 	{
-		Component::EditorUIUpdate();
+		D3D11::D3D11Component::EditorUIUpdate();
 
 		if (!mMeshGroup)
 			return;

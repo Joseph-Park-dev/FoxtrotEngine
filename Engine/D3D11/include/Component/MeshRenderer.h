@@ -59,9 +59,9 @@ namespace D3D11
 		// Instantiation-related functions //
 		/////////////////////////////////////
 	public:
-		MeshRenderer(Core::Actor* owner, int updateOrder);
+		MeshRenderer(Core::IActor* owner, int updateOrder);
 		virtual ~MeshRenderer() override;
-		virtual void CloneTo(Core::Actor* actor) override;
+		virtual void CloneTo(Core::IActor* actor) override;
 
 		///////////////////////////////////////
 		// Getters & Setters to the elements //
@@ -110,7 +110,7 @@ namespace D3D11
 		/////////////////////////////////////
 #ifdef FOXTROT_EDITOR
 	public:
-		virtual void EditorRender(D3D11::D3D11Renderer* renderer, Editor::EditorCamera* camInst) override;
+		virtual void EditorRender(D3D11::D3D11Renderer* renderer, Core::ICamera* camInst) override;
 		virtual void EditorUIUpdate() override;
 #endif
 	};

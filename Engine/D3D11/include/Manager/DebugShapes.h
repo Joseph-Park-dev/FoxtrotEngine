@@ -53,7 +53,7 @@ namespace D3D11
 
 		// Batch renders shapes.
 		// It is not necessary to render shapes manually from the Components
-		void Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst);
+		void Render(D3D11::D3D11Renderer* renderer);
 
 	private:
 		Common::FTDS::DynamicArray<FTShape*>* mShapes;

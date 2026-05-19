@@ -26,7 +26,7 @@
 #include "ResourceSystem/Mesh/GeometryGenerator.h"
 #include "ResourceSystem/Sprite/FTTileMap.h"
 #include "Renderer/Camera.h"
-#include "Renderer/FoxtrotRenderer.h"
+#include "Renderer/IRenderer.h"
 #include "Manager/ResourceManager.h"
 #include "Renderer/FTRectArea.h"
 #include "FileSystem/ChunkLoader.h"

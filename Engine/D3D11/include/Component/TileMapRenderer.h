@@ -42,7 +42,7 @@ namespace D3D11
 		virtual void Update(float deltaTime) override;
 		virtual void LateUpdate(float deltaTime) override;
 		virtual void Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst) override;
-		virtual void CloneTo(Core::Actor* actor) override;
+		virtual void CloneTo(Core::IActor* actor) override;
 
 	public:
 		TileMapRenderer(

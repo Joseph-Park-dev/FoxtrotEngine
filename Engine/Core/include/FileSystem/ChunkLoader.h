@@ -20,19 +20,14 @@
 #include "FileSystem/IChunkLoader.h"
 
 #include "Utility/SingletonMacro.h"
+#include <FTDS/Static/FTString.h>
 
 namespace Core
 {
-	struct ChunkData
-	{
-		const char* Path;
-		size_t		ActorCount;
-	};
-
 	class ChunkLoader :
 		public IChunkLoader
 	{
-		SINGLETON_PROTECTED(ChunkLoader)
+		SINGLETON(ChunkLoader)
 
 		// Member Functions for editor level to generate chunk.json files
 	public:
@@ -42,18 +37,18 @@ namespace Core
 		virtual void Lock() override;
 		virtual void Unlock() override;
 
-		virtual const char* CopyChunk(const char* chunkPath = "./") override;
-		virtual void		DeleteCopiedChunk() override;
+		virtual void CopyChunk(const char* chunkPath = "./") override;
+		virtual void DeleteCopiedChunk() override;
 
 	public:
 		// ComponentLoadMap& GetComponentLoadMap() { return mComponentLoadMap; }
 
-		const bool IsLoadingChunk() const;
-		const int  GetMaxActorID() const;
+		virtual const bool IsLoadingChunk() const override;
+		virtual const int  GetMaxActorID() const override;
 
 		// Add actor count by 1.
-		void AddMaxActorID();
-		void ResetMaxActorID();
+		virtual void AddMaxActorID() override;
+		virtual void ResetMaxActorID() override;
 
 	protected:
 		virtual void SaveChunkData(::std::ofstream& out) override;
@@ -64,9 +59,7 @@ namespace Core
 		void LoadActorsData(::std::ifstream& ifs);
 
 	private:
-		ChunkData mCurrentChunkData;
-		bool	  mIsLoading;
-		int		  mMaxActorID;
+		ChunkData* mCurrentChunkData;
 	};
 
 	namespace ChunkKey

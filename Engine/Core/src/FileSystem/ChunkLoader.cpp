@@ -11,6 +11,13 @@
 #include <fstream>
 #include <filesystem>
 
+#include "FileSystem/FileIOHelper.h"
+#include "Debugging/DebugFuncs.h"
+#include "Manager/SceneManager.h"
+#include "Scene/Scene.h"
+#include "FTDS/Static/HashMap.h"
+#include "Actor/Actor.h"
+
 namespace Core
 {
 	void ChunkLoader::SaveChunk(const char* chunkPath)
@@ -37,18 +44,18 @@ namespace Core
 
 	void ChunkLoader::Lock()
 	{
-		mIsLoading = true;
+		mCurrentChunkData->IsLoading = true;
 	}
 
 	void ChunkLoader::Unlock()
 	{
-		mIsLoading = false;
+		mCurrentChunkData->IsLoading = false;
 	}
 
-	const char* ChunkLoader::CopyChunk(const char* chunkPath)
+	void ChunkLoader::CopyChunk(const char* chunkPath)
 	{
 		// Get the original file name.
-		std::filesystem::path original = chunkPath;
+		Common::FTDS::String path = chunkPath;
 
 		// Get the copied file name.
 		Common::FTDS::String copiedPath;
@@ -65,50 +72,63 @@ namespace Core
 
 		// Copy the selected .chunk file to load into the game.
 		std::filesystem::copy_file(
-			original,
+			std::filesystem::path(path.C_Str()),
 			copied,
 			std::filesystem::copy_options::overwrite_existing);
 
 		// Assign the copied file name as current.
-		mCurrentChunkCopy.Assign(copiedPath);
+		mCurrentChunkData->Path.Assign(path);
 	}
 
 	void ChunkLoader::DeleteCopiedChunk()
 	{
-		if (!mCurrentChunkCopy.IsEmpty())
-		{
-			std::filesystem::remove(mCurrentChunkCopy.C_Str());
-			mCurrentChunkCopy.Clear();
-		}
+		// Get the copied file name.
+		Common::FTDS::String copiedPath;
+		mCurrentChunkData->Path.ExtractUntilLast(copiedPath, "\\");
+		copiedPath.Append("\\");
+
+		// Get the full copied file path.
+		Common::FTDS::String copiedName = Common::ExtractFileName(mCurrentChunkData->Path.C_Str());
+		copiedName.ExtractUntilFirst(copiedName, ".");
+		copiedName.Append(" Copy.chunk");
+		copiedPath.Append(copiedName);
+
+		if (!copiedPath.IsEmpty())
+			std::filesystem::remove(copiedPath.C_Str());
+		else
+			Debug::LogError(__LINE__, __FILE__, "Failed to remove copied file: path is empty.");
 	}
 
 	const bool ChunkLoader::IsLoadingChunk() const
 	{
-		return mIsLoading;
-	}
-
-	Common::FTDS::String& ChunkLoader::CurrentChunk()
-	{
-		return mCurrentChunkCopy;
+		return mCurrentChunkData->IsLoading;
 	}
 
 	const int ChunkLoader::GetMaxActorID() const
 	{
-		return mMaxActorID;
+		return mCurrentChunkData->MaxActorID;
 	}
 
 	void ChunkLoader::AddMaxActorID()
 	{
-		++mMaxActorID;
+		++mCurrentChunkData->MaxActorID;
 	}
 
 	void ChunkLoader::ResetMaxActorID()
 	{
-		mMaxActorID = 0;
+		mCurrentChunkData->MaxActorID = 0;
 	}
 
-	void ChunkLoader::SaveActorsData(std::ofstream& out)
+	void ChunkLoader::SaveActorsData(std::ofstream& ofs)
 	{
+		Scene* scene = SceneManager::GetInstance()->GetCurrentScene();
+		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::ACTOR_DATA);
+		for (auto iter = scene->Actors()->Begin(); iter != scene->Actors()->End(); ++iter)
+		{
+			Common::FileIOHelper::BeginDataPackSave(ofs, (*iter)->GetNameRef());
+			(*iter)->SaveComponents(ofs);
+			(*iter)->SaveProperties(ofs);
+		}
 	}
 
 	void ChunkLoader::LoadActorsData(std::ifstream& ifs)
@@ -162,49 +182,11 @@ namespace Core
 		}
 	}
 
-	void ChunkLoader::LoadPlugins(std::ifstream& ifs)
-	{
-		size_t dllCount = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::PLUGIN_DATA).first;
-		for (size_t i = 0; i < dllCount; ++i)
-		{
-			Common::FTDS::String dllPath	= {};
-			Common::FTDS::String pluginName = {};
-			Common::ExtractFileName(dllPath, pluginName);
-
-			HMODULE mod = LoadLibraryA(dllPath.C_Str());
-			Engine::GetInstance()->RegisterPlugin(mod, pluginName.C_Str());
-			LoadCompConstructors(ifs, mod);
-			LoadManagerData(ifs, mod);
-		}
-	}
-
-	void ChunkLoader::LoadCompConstructors(std::ifstream& ifs, HMODULE& mod)
-	{
-		// size_t count = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::COMP_CONSTRUCTORS).first;
-		// mCompConstructors->Reserve(count);
-		// for (size_t i = 0; i < count; ++i)
-		//{
-		//	Common::FTDS::String compName	  = {};
-		//	Common::FTDS::String compProcName = {};
-		//	Common::FileIOHelper::LoadBasicString(ifs, compName);
-		//	compProcName.Assign(compName);
-		//	compProcName.Append("_Create");
-
-		//	mCompConstructors->Insert(compProcName, GetProcAddress(mod, compName.C_Str()));
-		//}
-	}
-
-	void ChunkLoader::LoadManagerData(std::ifstream& ifs, HMODULE& mod)
-	{
-		Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Plugin::MANAGER_DATA);
-		// plugin->LoadManagerData(ifs);
-	}
-
 	void ChunkLoader::SaveChunkData(std::ofstream& out)
 	{
-		Scene* currScene = SceneManager::GetInstance()->GetCurrentScene();
+		Scene* scene = SceneManager::GetInstance()->GetCurrentScene();
 		Common::FileIOHelper::BeginDataPackSave(out, ChunkKey::CHUNK_DATA);
-		Common::FileIOHelper::SaveInt(out, ChunkKey::ACTOR_COUNT, mMaxActorID);
+		Common::FileIOHelper::SaveInt(out, ChunkKey::ACTOR_COUNT, mCurrentChunkData->MaxActorID);
 		Common::FileIOHelper::EndDataPackSave(out, ChunkKey::CHUNK_DATA);
 	}
 
@@ -220,10 +202,7 @@ namespace Core
 	}
 
 	ChunkLoader::ChunkLoader()
-		: mCurrentChunkData{}
-		, mIsLoading(false)
-		, mCurrentChunkCopy()
-		, mMaxActorID(ChunkKey::ID::CLONE) {
+		: mCurrentChunkData(DBG_NEW ChunkData) {
 			/*mComponentLoadMap = {
 				{ "AI", &Component::Load<AI> },
 				{ "Animator", &Component::Load<Animator> },
@@ -262,5 +241,6 @@ namespace Core
 	ChunkLoader::~ChunkLoader()
 	{
 		DeleteCopiedChunk();
+		delete mCurrentChunkData;
 	}
 } // namespace Core

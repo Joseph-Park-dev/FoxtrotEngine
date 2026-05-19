@@ -15,9 +15,9 @@
 /// </summary>
 
 #pragma once
-#include "FileSystem/ChunkLoader.h"
+#include "FileSystem/IChunkLoader.h"
 
-#include <algorithm>
+#include "Utility/SingletonMacro.h"
 
 namespace Editor
 {
@@ -36,33 +36,54 @@ namespace Editor
 	//	t->Initialize();
 	// }
 
-	class EditorChunkLoader :
-		public Core::ChunkLoader
+	class ChunkLoader :
+		public Core::IChunkLoader
 	{
-		SINGLETON(EditorChunkLoader)
+		SINGLETON(ChunkLoader)
 	public:
 		// Saves the current scene on Foxtrot Editor into .Chunk file.
-		virtual void SaveChunk(Common::FTDS::String& fileName) override;
+		virtual void SaveChunk(const char* chunkPath) override;
 		// Loads the a .Chunk file into the current scene on Foxtrot Editor.
-		virtual void LoadChunk(Common::FTDS::String& fileName) override;
+		virtual void LoadChunk(const char* chunkPath) override;
 
-		// public:
-		//	ComponentCreateMap& GetCompCreateMap() { return mComponentCreateMap; }
+		/// @brief Halts gameloop while loading a .chunk
+		virtual void Lock() override;
+
+		/// @brief Resume gameloop after finishing .chunk loading.
+		virtual void Unlock() override;
+
+		/// @brief To prevent .chunk from corrupting, the copy of the file is made before loading.
+		/// The copied .chunk is the one that should be read into the game.
+		/// @param path The copy is recommended to be located in the same directory with the original.
+		/// @return Full path of the copied .chunk
+		virtual void CopyChunk(const char* chunkPath = "./") override;
+		/// @brief Delete the copied chunk after being used.
+		virtual void DeleteCopiedChunk() override;
+
+	public:
+		virtual const bool IsLoadingChunk() const override;
+		virtual const int  GetMaxActorID() const override;
+
+		// Add actor count by 1.
+		virtual void AddMaxActorID() override;
+		virtual void ResetMaxActorID() override;
 
 	protected:
+		/// @brief Save .chunk specific data
+		virtual void SaveChunkData(::std::ofstream& out) override;
+		/// @brief Load .chunk specific data
+		virtual void LoadChunkData(::std::ifstream& out) override;
 		// Takes the values from EditorElements to save them into .Chunk file.
-		virtual void SaveActorsData(std::ofstream& ofs) override;
+		virtual void SaveActorsData(std::ofstream& ofs);
 		// Reads the values from .Chunk file and assign them to Actors.
-		virtual void LoadActorsData(std::ifstream& ifs) override;
+		virtual void LoadActorsData(std::ifstream& ifs);
 
 	private:
-		void SavePlugins(std::ofstream& ofs);
-		void SaveCompConstructors(std::ofstream& ofs, Core::Plugin* plugin);
-		void SaveManagerData(std::ofstream& ofs, Core::Plugin* plugin);
+		Core::ChunkData* mCurrentChunkData;
 	};
 
 #include "Plugin/EditorExports.h"
 
-	constexpr const char*					 GET_EDITOR_CHUNK_LOADER_FUNC = "GetEditorChunkLoader";
-	extern "C" EDITOR_API EditorChunkLoader* GetEditorChunkLoader();
+	constexpr const char* GET_EDITOR_CHUNK_LOADER_FUNC = "GetEditorChunkLoader";
+	extern "C" EDITOR_API Editor::ChunkLoader* GetEditorChunkLoader();
 } // namespace Editor

@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "EditorChunkLoader.h"
+#include "ChunkLoader.h"
 
 #include <fstream>
 
@@ -38,7 +38,7 @@
 namespace Editor
 {
 	using namespace Core;
-	EditorChunkLoader::EditorChunkLoader()
+	ChunkLoader::ChunkLoader()
 		: ChunkLoader()
 	{
 		HMODULE coreMod = GetModuleHandleA(DLLPaths::CORE_EDITOR);
@@ -67,27 +67,26 @@ namespace Editor
 		//	//{ "Flee", &CreateComp<Flee> },
 	};
 
-	EditorChunkLoader::~EditorChunkLoader() {}
+	ChunkLoader::~ChunkLoader() {}
 
-	void EditorChunkLoader::SaveChunk(Common::FTDS::String& fileName)
+	void ChunkLoader::SaveChunk(const char* chunkPath)
 	{
 		Lock();
-		std::ofstream ofs(fileName.C_Str());
+		std::ofstream ofs(chunkPath);
 		SaveActorsData(ofs);
 
 		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CORE_RES_DATA);
 		// mGetCoreResManagerFunc()->SaveResourcesToChunk<Core::FTPremade>(ofs);
 
-		SavePlugins(ofs);
 		ChunkLoader::SaveChunkData(ofs);
 		Common::FileIOHelper::SaveBufferToFile(ofs);
 		Unlock();
 	}
 
-	void EditorChunkLoader::LoadChunk(Common::FTDS::String& fileName)
+	void ChunkLoader::LoadChunk(const char* chunkPath)
 	{
 		Lock();
-		std::ifstream ifs(fileName.C_Str());
+		std::ifstream ifs(chunkPath);
 		ChunkLoader::LoadChunkData(ifs);
 		// LightManager::GetInstance()->LoadProperties(ifs);
 		// CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
@@ -99,7 +98,7 @@ namespace Editor
 		Unlock();
 	}
 
-	void EditorChunkLoader::SaveActorsData(std::ofstream& ofs)
+	void ChunkLoader::SaveActorsData(std::ofstream& ofs)
 	{
 		ResetMaxActorID();
 		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
@@ -120,7 +119,7 @@ namespace Editor
 		Common::FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::ACTOR_DATA);
 	}
 
-	void EditorChunkLoader::LoadActorsData(std::ifstream& ifs)
+	void ChunkLoader::LoadActorsData(std::ifstream& ifs)
 	{
 		EditorScene*							  scene = EditorSceneManager::GetInstance()->GetEditorScene();
 		std::pair<size_t, Common::FTDS::String>&& pack	= Common::FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::ACTOR_DATA);
@@ -182,43 +181,25 @@ namespace Editor
 			}
 		}
 	}
-	void EditorChunkLoader::SavePlugins(std::ofstream& ofs)
+
+	const bool ChunkLoader::IsLoadingChunk() const
 	{
-		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::PLUGIN_DATA);
-		// Common::FTDS::HashMap<Core::IPlugin*>* plugins = Engine::GetInstance()->GetPlugins();
-
-		// size_t dllIdx = 0;
-		// for (auto iter = plugins->Begin(); iter != plugins->End(); ++iter)
-		//{
-		//	Core::IPlugin*		 plugin	 = (*iter)->Value();
-		//	Common::FTDS::String dllPath = {};
-		//	GetDLLPath(plugin->GetModule(), dllPath);
-
-		//	Common::FileIOHelper::BeginDataPackSave(ofs, (*iter)->Key());
-		//	Common::FileIOHelper::SaveString(ofs, ChunkKey::Plugin::DLL_PATH, dllPath);
-		//	SaveCompConstructors(ofs, (*iter)->Value());
-		//	SaveManagerData(ofs, (*iter)->Value());
-		//}
-		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::Plugin::PLUGIN_DATA);
+		return mCurrentChunkData->mIsLoading;
 	}
 
-	void EditorChunkLoader::SaveCompConstructors(std::ofstream& ofs, Plugin* plugin)
+	const int ChunkLoader::GetMaxActorID() const
 	{
-		// Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::COMP_CONSTRUCTORS);
-		// Common::FTDS::HashMap<FARPROC>* map = GetCompConstructors();
-
-		// size_t compIdx = 0;
-		// for (auto iter = map->Begin(); iter != map->End(); ++iter)
-		//	Common::FileIOHelper::SaveString(ofs, std::to_string(compIdx).c_str(), (*iter)->Key().C_Str());
-
-		// Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::Plugin::COMP_CONSTRUCTORS);
+		return mCurrentChunkData->MaxActorID;
 	}
 
-	void EditorChunkLoader::SaveManagerData(std::ofstream& ofs, Plugin* plugin)
+	void ChunkLoader::AddMaxActorID()
 	{
-		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Plugin::MANAGER_DATA);
-		// plugin->SaveManagerData(ofs);
-		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::Plugin::MANAGER_DATA);
+		++mCurrentChunkData->MaxActorID;
+	}
+
+	void ChunkLoader::ResetMaxActorID()
+	{
+		mCurrentChunkData->MaxActorID = 0;
 	}
 
 	static void GetDLLPath(HMODULE mod, Common::FTDS::String& out)
@@ -230,8 +211,8 @@ namespace Editor
 			std::cerr << "Failed to get path. Error: " << GetLastError() << std::endl;
 	}
 
-	EditorChunkLoader* GetEditorChunkLoader()
+	EDITOR_API Editor::ChunkLoader* GetEditorChunkLoader()
 	{
-		return EditorChunkLoader::GetInstance();
+		return Editor::ChunkLoader::GetInstance();
 	}
 } // namespace Editor

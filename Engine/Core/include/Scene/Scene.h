@@ -13,10 +13,10 @@
 #pragma once
 #include "FTDS/Static/FTString.h"
 #include "FTDS/Dynamic/DynamicArray.h"
+#include "Actor/IActor.h"
 
 namespace Core
 {
-	class Actor;
 	class FTCore;
 	class FTInputDevice;
 	class FoxtrotRenderer;
@@ -24,22 +24,22 @@ namespace Core
 	class Scene
 	{
 	public:
-		void AddActor(Actor* actor);
-		void RemoveActor(Actor* actor);
+		void AddActor(IActor* actor);
+		void RemoveActor(IActor* actor);
 
-		Actor*		   FindActor(int id);
-		virtual Actor* FindActor(Common::FTDS::String& name, Actor* filter = nullptr);
-		Actor*		   FindActor(const char* name, Actor* filter = nullptr);
+		IActor*			FindActor(int id);
+		virtual IActor* FindActor(Common::FTDS::String& name, IActor* filter = nullptr);
+		IActor*			FindActor(const char* name, IActor* filter = nullptr);
 
 	public:
-		const Common::FTDS::String&				  GetName();
-		const bool						  GetIsUpdatingActors() const;
-		const Common::FTDS::DynamicArray<Actor*>* GetActors() const;
+		const Common::FTDS::String&				   GetName();
+		const bool								   GetIsUpdatingActors() const;
+		const Common::FTDS::DynamicArray<IActor*>* GetActors() const;
 
 		void SetName(const Common::FTDS::String&& name);
 		void SetIsUpdatingActors(bool value) { mIsUpdatingActors = value; }
 
-		Common::FTDS::DynamicArray<Actor*>*& Actors();
+		Common::FTDS::DynamicArray<IActor*>*& Actors();
 
 	public:
 		void		 ProcessEvent();
@@ -47,10 +47,10 @@ namespace Core
 
 	private:
 		/// @brief Active actors managed by the scene.
-		Common::FTDS::DynamicArray<Actor*>* mActors;
+		Common::FTDS::DynamicArray<IActor*>* mActors;
 
 		/// @brief Actors pending addition while updates are in progress.
-		Common::FTDS::DynamicArray<Actor*>* mPendingActors;
+		Common::FTDS::DynamicArray<IActor*>* mPendingActors;
 
 		/// @brief Human-readable scene name.
 		Common::FTDS::String mSceneName;

@@ -1,7 +1,7 @@
 #include "ResourceSystem/Sprite/FTSprite.h"
 
 #include "Renderer/D3D11Renderer.h"
-#include "Renderer/Camera.h"
+#include "Renderer/ICamera.h"
 #include "Utility/D3D11Utils.h"
 #include "ResourceSystem/D3D11PSO.h"
 #include "Manager/ResourceManager.h"

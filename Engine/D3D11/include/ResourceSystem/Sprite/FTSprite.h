@@ -1,6 +1,11 @@
 #pragma once
 #include "ResourceSystem/Mesh/FTMeshGroup.h"
 
+namespace Core
+{
+	class ICamera;
+}
+
 namespace D3D11
 {
 	struct PointVPMat;
@@ -10,7 +15,6 @@ namespace D3D11
 	class FTPixelShader;
 	class D3D11Renderer;
 	class D3D11PSO;
-	class Camera;
 	class FTTexture;
 
 	class FTSprite :

@@ -234,6 +234,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Actor\Actor.h" />
+    <ClInclude Include="include\Actor\IActor.h" />
     <ClInclude Include="include\Actor\ActorGroup.h" />
     <ClInclude Include="include\Actor\Steering.h" />
     <ClInclude Include="include\Actor\Transform.h" />

@@ -84,10 +84,11 @@ namespace D3D11
 		if (mTarget)
 		{
 			Core::Transform* transform = mTarget->GetTransform();
-			Math::FTVector3	 worldPos  = transform->GetWorldPosition();
+			mPosition				   = transform->GetWorldPosition();
 			// Z axis transformation is controlled independently
+
 			worldPos.z = mPosition.z;
-			mPosition  = worldPos + mOffset;
+			mPosition  = FTVector3(worldPos + mOffset);
 		}
 		outViewMat = FTMatrix4::CreateTranslation(mPosition);
 	}
@@ -107,8 +108,8 @@ namespace D3D11
 
 		mAspect = renderSize.x / renderSize.y;
 
-		return mViewType == Viewtype::Perspective
-			? FTMatrix4::CreatePerspectiveFOV(Math::ToRadians(mProjFOVAngleY), GetResolution().x, GetResolution().y, mNearZ, mFarZ)
+		return mViewType == Core::Viewtype::Perspective
+			? FTMatrix4::CreatePerspectiveFOV(Math::ToRadians(mProjFOVAngleY), renderSize.x, renderSize.y, mNearZ, mFarZ)
 			: FTMatrix4::CreateOrtho(
 				  worldWidth, worldHeight, mNearZ, mFarZ);
 	}

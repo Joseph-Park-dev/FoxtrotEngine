@@ -28,7 +28,6 @@ namespace Editor
 	class EditorCamera :
 		public Core::ICamera
 	{
-		SINGLETON(EditorCamera)
 	public:
 		void DisplayMainCameraMenu();
 		void DisplayEditorCameraMenu();

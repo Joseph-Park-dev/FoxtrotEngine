@@ -38,7 +38,7 @@ namespace Core
 	{
 		mCurrentScene->DeleteAll();
 		Common::FTDS::String path = Common::FTDS::String(".\\Chunks\\") + mChunkList->At(index)->C_Str();
-		ChunkLoader::GetInstance()->LoadChunk(path);
+		ChunkLoader::GetInstance()->LoadChunk(path.C_Str());
 	}
 
 	Scene* SceneManager::GetCurrentScene()

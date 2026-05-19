@@ -1,7 +1,6 @@
 #include "ResourceSystem/Mesh/FTMeshDataPack.h"
 
 #include "FileSystem/FileIOHelper.h"
-#include "Component/Component.h"
 
 namespace D3D11
 {

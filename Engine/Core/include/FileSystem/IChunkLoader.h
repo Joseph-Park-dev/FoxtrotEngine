@@ -8,8 +8,20 @@
 #pragma once
 #include <iosfwd>
 
+#include "FTDS/Static/HashMap.h"
+
 namespace Core
 {
+	class IComponent;
+	struct ChunkData
+	{
+		Common::FTDS::String			   Path = {};
+		Common::FTDS::HashMap<IComponent*> CompLoadMap;
+		int								   MaxActorID;
+		/// @brief Is this chunk currently being loaded?
+		bool							   IsLoading;
+	};
+
 	class IChunkLoader
 	{
 		// Member Functions for editor level to generate chunk.json files
@@ -27,9 +39,17 @@ namespace Core
 		/// The copied .chunk is the one that should be read into the game.
 		/// @param path The copy is recommended to be located in the same directory with the original.
 		/// @return Full path of the copied .chunk
-		virtual const char* CopyChunk(const char* chunkPath = "./") = 0;
+		virtual void CopyChunk(const char* chunkPath = "./") = 0;
 		/// @brief Delete the copied chunk after being used.
 		virtual void DeleteCopiedChunk() = 0;
+
+	public:
+		virtual const bool IsLoadingChunk() const = 0;
+		virtual const int  GetMaxActorID() const  = 0;
+
+		// Add actor count by 1.
+		virtual void AddMaxActorID()   = 0;
+		virtual void ResetMaxActorID() = 0;
 
 	protected:
 		/// @brief Save .chunk specific data

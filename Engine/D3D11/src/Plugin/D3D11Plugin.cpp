@@ -3,6 +3,7 @@
 #include "Factory/IGraphicsFactory.h"
 #include "Factory/IInputSysFactory.h"
 
+#include "Actor/IActor.h"
 #include "InputSystem/D3D11InputDevice.h"
 #include "Renderer/D3D11Renderer.h"
 #include "Renderer/D3D11Window.h"
@@ -86,30 +87,25 @@ IWindow* D3D11Plugin::CreateAppWindow(const char* title, unsigned int width, uns
 	return win;
 }
 
-IRenderer* D3D11Plugin::CreateRenderer(Core::IWindow* window)
-{
-	return DBG_NEW D3D11::D3D11Renderer(window);
-}
-
 ICamera* D3D11Plugin::CreateCamera()
 {
-	return DBG_NEW D3D11::Camera();
+	return D3D11::Camera::GetInstance();
 }
 
-void D3D11Plugin::CreateInputDevice()
+IInputDevice* D3D11Plugin::CreateInputDevice()
 {
 	D3D11::D3D11InputDevice* device = DBG_NEW D3D11::D3D11InputDevice;
 	mInputDevices->PushBack(device);
 }
 
-D3D11::D3D11Renderer* D3D11Plugin::CreateRenderer(D3D11::D3D11Window* window)
+IRenderer* D3D11Plugin::CreateRenderer(IWindow* window)
 {
 	D3D11::D3D11Renderer* renderer = DBG_NEW D3D11::D3D11Renderer(window);
 	mRenderer					   = renderer;
 	return renderer;
 }
 
-D3D11::D3D11Window* D3D11Plugin::CreateD3D11Window(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea)
+IWindow* D3D11Plugin::CreateAppWindow(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea)
 {
 	D3D11::D3D11Window* window = DBG_NEW D3D11::D3D11Window(title, width, height, rndArea);
 	mWindows->PushBack(window);
@@ -175,9 +171,9 @@ void D3D11Plugin::Render()
 		(*iter)->BeginRender(mRenderer);
 		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
 		{
-			if (!(*iter)->GetOwner()->IsActive())
+			if (!(*iter)->GetOwner()->GetIsActive())
 				continue;
-			reinterpret_cast<D3D11::D3D11Component*>(*iter)->Render(mRenderer);
+			(*iter)->Render(mRenderer, mCamera);
 		}
 		(*iter)->EndRender(mRenderer);
 	}
@@ -189,38 +185,38 @@ void D3D11Plugin::ProcessEvent()
 
 void D3D11Plugin::SaveProperties()
 {
-	Common::FTDS::String dataPath = D3D11::PluginKey::D3D11;
-	dataPath.Append(FileTypes::PLUGIN_DATA);
-	std::ofstream ofs(dataPath.C_Str());
+	// Common::FTDS::String dataPath = D3D11::PluginKey::D3D11;
+	// dataPath.Append(FileTypes::PLUGIN_DATA);
+	// std::ofstream ofs(dataPath.C_Str());
 
-	if (ofs.good())
-	{
-		FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::Plugin::PLUGIN_DATA);
+	// if (ofs.good())
+	//{
+	//	FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::Plugin::PLUGIN_DATA);
 
-		mCamera->SaveProperties(ofs);
+	//	mCamera->SaveProperties(ofs);
 
-		FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::FTWindow::WINDOW_DATA);
-		for (auto iter = mWindows->Begin(); iter != mWindows->End(); ++iter)
-		{
-			FileIOHelper::BeginDataPackSave(ofs, (*iter)->GetTitle());
-			FileIOHelper::SaveUnsignedInt(ofs, Core::ChunkKey::FTWindow::WIDTH, (*iter)->GetWidth());
-			FileIOHelper::SaveUnsignedInt(ofs, Core::ChunkKey::FTWindow::HEIGHT, (*iter)->GetHeight());
+	//	FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::FTWindow::WINDOW_DATA);
+	//	for (auto iter = mWindows->Begin(); iter != mWindows->End(); ++iter)
+	//	{
+	//		FileIOHelper::BeginDataPackSave(ofs, (*iter)->GetTitle());
+	//		FileIOHelper::SaveUnsignedInt(ofs, Core::ChunkKey::FTWindow::WIDTH, (*iter)->GetWidth());
+	//		FileIOHelper::SaveUnsignedInt(ofs, Core::ChunkKey::FTWindow::HEIGHT, (*iter)->GetHeight());
 
-			HMODULE			mod	 = GetModuleHandleA(DLLPaths::CORE_EDITOR);
-			FARPROC			proc = GetProcAddress(mod, D3D11::PluginKey::SAVE_PROPERTIES);
-			FTRECTAREA_SAVE func = reinterpret_cast<FTRECTAREA_SAVE>(proc);
-			func(ofs, (*iter)->GetRenderArea());
-			FileIOHelper::EndDataPackSave(ofs, (*iter)->GetTitle());
-		}
-		FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::FTWindow::WINDOW_DATA);
+	//		HMODULE			mod	 = GetModuleHandleA(DLLPaths::CORE_EDITOR);
+	//		FARPROC			proc = GetProcAddress(mod, D3D11::PluginKey::SAVE_PROPERTIES);
+	//		FTRECTAREA_SAVE func = reinterpret_cast<FTRECTAREA_SAVE>(proc);
+	//		func(ofs, (*iter)->GetRenderArea());
+	//		FileIOHelper::EndDataPackSave(ofs, (*iter)->GetTitle());
+	//	}
+	//	FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::FTWindow::WINDOW_DATA);
 
-		FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::Plugin::PLUGIN_DATA);
-	}
+	//	FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::Plugin::PLUGIN_DATA);
+	//}
 }
 
 void D3D11Plugin::LoadProperties(SceneManager* sceneManager)
 {
-	Common::FTDS::String dataPath = D3D11::PluginKey::D3D11;
+	/*Common::FTDS::String dataPath = D3D11::PluginKey::D3D11;
 	dataPath.Append(FileTypes::PLUGIN_DATA);
 	std::ifstream ifs(dataPath.C_Str());
 	if (!ifs.good())
@@ -250,12 +246,7 @@ void D3D11Plugin::LoadProperties(SceneManager* sceneManager)
 		}
 
 		mCamera->LoadProperties(ifs, sceneManager);
-	}
-}
-
-Core::Entity* D3D11Plugin::GetEntity(const char* name)
-{
-	return nullptr;
+	}*/
 }
 
 void D3D11Plugin::ShutDown()

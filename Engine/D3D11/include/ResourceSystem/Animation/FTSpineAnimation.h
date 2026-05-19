@@ -43,7 +43,7 @@ namespace D3D11
 		void Render(
 			D3D11Renderer*	 renderer,
 			Core::Transform* transform,
-			Camera*			 camInst,
+			D3D11::Camera*	 camInst,
 			FTTexture*		 tex,
 			FTVertexShader*	 vs,
 			FTPixelShader*	 ps,
@@ -145,8 +145,8 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 	public:
 		FTSpineAnimation(
-			Common::FTResourceDef&	  resDef,
-			D3D11Renderer*			  renderer,
+			Common::FTResourceDef&		resDef,
+			D3D11Renderer*				renderer,
 			const Common::FTDS::String* jsonPath,
 			const Common::FTDS::String* atlasPath);
 

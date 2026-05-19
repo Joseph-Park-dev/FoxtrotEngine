@@ -15,20 +15,20 @@
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
-#include "EditorChunkLoader.h"
+#include "ChunkLoader.h"
 #include "CommandHistory.h"
 #include "Command.h"
 #include "EditorUtils.h"
 #include "Actor/EditorTransform.h"
 #include "Component/EditorComponent.h"
 
-#include "InputSystem/FTInputDevice.h"
+#include "InputSystem/IInputDevice.h"
 #include "Manager/ResourceManager.h"
 #include "FileSystem/ChunkLoader.h"
 #include "Actor/Transform.h"
 #include "Actor/ActorGroup.h"
-#include "Renderer/FoxtrotRenderer.h"
-#include "Component/Component.h"
+#include "Actor/IActor.h"
+#include "Component/IComponent.h"
 #include "ResourceSystem/FTPremade.h"
 
 #include "FTDS/Static/FTString.h"
@@ -110,7 +110,7 @@ namespace Editor
 		mHierarchyLevel = level;
 	}
 
-	//void EditorElement::EditorUpdate(float deltaTime)
+	// void EditorElement::EditorUpdate(float deltaTime)
 	//{
 	//	for (auto comp = GetComponents()->Begin(); comp != GetComponents()->End(); ++comp)
 	//	{
@@ -120,9 +120,9 @@ namespace Editor
 	//				(*comp)->EditorUpdate(deltaTime);
 	//		}
 	//	}
-	//}
+	// }
 
-	//void EditorElement::EditorRender(D3D11Renderer* renderer)
+	// void EditorElement::EditorRender(D3D11Renderer* renderer)
 	//{
 	//	for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
 	//	{
@@ -132,7 +132,7 @@ namespace Editor
 	//				(*comp)->EditorRender(renderer);
 	//		}
 	//	}
-	//}
+	// }
 
 	EditorElement::EditorElement(int id)
 		: Actor(id)
@@ -170,7 +170,7 @@ namespace Editor
 		SwitchTransformToEditor();
 	}
 
-	void EditorElement::CopyChildObjectFrom(Actor* actor)
+	void EditorElement::CopyChildObjectFrom(IActor* actor)
 	{
 		if (GetChildActors()->GetSize() < 1)
 			return;
@@ -178,8 +178,8 @@ namespace Editor
 		actor->GetChildActors()->IterateArray([&](Actor* child) {
 			if (child)
 			{
-				EditorChunkLoader::GetInstance()->AddMaxActorID();
-				int maxID = EditorChunkLoader::GetInstance()->GetMaxActorID();
+				Editor::ChunkLoader::GetInstance()->AddMaxActorID();
+				int maxID = Editor::ChunkLoader::GetInstance()->GetMaxActorID();
 				this->AddChild(DBG_NEW Actor(child, maxID));
 			}
 		});
@@ -199,7 +199,7 @@ namespace Editor
 			{
 				if (ImGui::Selectable(Core::ActorGroupUtil::GetActorGroupStr(n)))
 				{
-					int					   grpIdx  = static_cast<int>(++n);
+					int							   grpIdx  = static_cast<int>(++n);
 					Editor::ActorGroupEditCommand* command = DBG_NEW Editor::ActorGroupEditCommand(GetActorGroupRef());
 					command->SetNextVal(static_cast<Core::ActorGroup>(grpIdx));
 					// CommandHistory::GetInstance()->AddCommand(command);
@@ -262,8 +262,8 @@ namespace Editor
 		if (ImGui::BeginPopup("CompSelectPopUp"))
 		{
 			ImGui::SeparatorText("Add Components");
-			//ComponentCreateMap::iterator iter = EditorChunkLoader::GetInstance()->GetCompCreateMap().begin();
-			//for (; iter != EditorChunkLoader::GetInstance()->GetCompCreateMap().end(); ++iter)
+			// ComponentCreateMap::iterator iter = EditorChunkLoader::GetInstance()->GetCompCreateMap().begin();
+			// for (; iter != EditorChunkLoader::GetInstance()->GetCompCreateMap().end(); ++iter)
 			//	if (ImGui::Selectable((*iter).first))
 			//		(*iter).second(this);
 			ImGui::EndPopup();

@@ -87,7 +87,7 @@ namespace Editor
 
 	public:
 		// Deep copies all child Actors
-		void CopyChildObjectFrom(Actor* actor) override;
+		void CopyChildObjectFrom(IActor* actor) override;
 
 	private:
 		bool   mIsFocused;		// Is this item clicked on Foxtrot Editor's Hierarchy menu?

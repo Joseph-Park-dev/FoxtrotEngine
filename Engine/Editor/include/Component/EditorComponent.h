@@ -1,5 +1,5 @@
 #pragma once
-#include "Component/Component.h"
+#include "Component/IComponent.h"
 
 #include "Renderer/D3D11Renderer.h"
 

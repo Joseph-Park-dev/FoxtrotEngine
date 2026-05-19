@@ -122,12 +122,12 @@ namespace Editor
 		}
 	}
 
-	inline void DisplayActorSelection(const char* label, Core::Actor*& selected)
+	inline void DisplayActorSelection(const char* label, Core::IActor*& selected)
 	{
-		Core::Scene*							  scene		  = EditorSceneManager::GetInstance()->GetCurrentScene();
-		EditorScene*							  editorScene = reinterpret_cast<EditorScene*>(scene);
-		Common::FTDS::DynamicArray<Core::Actor*>* editorElems = editorScene->Actors();
-		Common::FTDS::String* actorNames					  = DBG_NEW Common::FTDS::String[editorElems->GetSize() + 1];
+		Core::Scene*							   scene	   = EditorSceneManager::GetInstance()->GetCurrentScene();
+		EditorScene*							   editorScene = reinterpret_cast<EditorScene*>(scene);
+		Common::FTDS::DynamicArray<Core::IActor*>* editorElems = editorScene->Actors();
+		Common::FTDS::String* actorNames					   = DBG_NEW Common::FTDS::String[editorElems->GetSize() + 1];
 		actorNames[0].Assign("None");
 		static size_t currIdx;
 
@@ -148,7 +148,7 @@ namespace Editor
 						selected = nullptr;
 					else
 					{
-						Core::Actor* actor =
+						Core::IActor* actor =
 							editorScene->FindActor(actorNames[currIdx], nullptr);
 						selected = actor;
 					}

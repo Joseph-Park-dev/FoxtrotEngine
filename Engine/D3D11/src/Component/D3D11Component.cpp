@@ -32,7 +32,37 @@ namespace D3D11
 		Common::FileIOHelper::LoadBool(ifs, mIsActive);
 	}
 
-	D3D11::D3D11Component::D3D11Component(Core::Actor* owner, int updateOrder)
+	Core::IActor* D3D11Component::GetOwner()
+	{
+		return mOwner;
+	}
+
+	const int D3D11Component::GetUpdateOrder()
+	{
+		return mUpdateOrder;
+	}
+
+	const bool D3D11Component::GetIsInitialized() const
+	{
+		return mIsInitialized;
+	}
+
+	const bool D3D11Component::GetIsSetup() const
+	{
+		return mIsSetup;
+	}
+
+	const bool D3D11Component::GetIsActive() const
+	{
+		return mIsActive;
+	}
+
+	void D3D11Component::SetIsActive(bool isActive)
+	{
+		mIsActive = isActive;
+	}
+
+	D3D11::D3D11Component::D3D11Component(Core::IActor* owner, int updateOrder)
 		: mOwner(owner)
 		, mUpdateOrder(updateOrder)
 		, mIsInitialized(false)
@@ -46,6 +76,9 @@ namespace D3D11
 	}
 
 #ifdef FOXTROT_EDITOR
+	void D3D11Component::EditorUpdate(float deltaTime)
+	{
+	}
 	void D3D11Component::EditorUIUpdate()
 	{
 		Editor::UPDATE_BOOL("Is Active", mIsActive);

@@ -6,6 +6,8 @@
 namespace Core
 {
 	class IInputDevice;
+	class IActor;
+	class ICamera;
 } // namespace Core
 
 namespace D3D11
@@ -25,19 +27,28 @@ namespace D3D11
 		virtual void Update(float deltaTime)										= 0;
 		virtual void LateUpdate(float deltaTime)									= 0;
 		virtual void Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst) = 0;
-		virtual void CloneTo(Core::Actor* actor)									= 0;
+		virtual void CloneTo(Core::IActor* actor)									= 0;
 
 	public:
 		virtual void SaveProperties(std::ofstream& ofs) override;
 		virtual void LoadProperties(std::ifstream& ifs) override;
 
 	public:
-		D3D11Component(Core::Actor* owner, int updateOrder = Core::DefaultVal::UPDATE_ORDER);
+		virtual Core::IActor* GetOwner() override;
+		virtual const int	  GetUpdateOrder() override;
+		virtual const bool	  GetIsInitialized() const override;
+		virtual const bool	  GetIsSetup() const override;
+		virtual const bool	  GetIsActive() const override;
+
+		virtual void SetIsActive(bool isActive) override;
+
+	public:
+		D3D11Component(Core::IActor* owner, int updateOrder = Core::DefaultVal::UPDATE_ORDER);
 		virtual ~D3D11Component();
 
 	private:
-		Core::Actor* mOwner;
-		int			 mUpdateOrder;
+		Core::IActor* mOwner;
+		int			  mUpdateOrder;
 
 	private:
 		// This is turned as true as the Initialize(FTCore*) is executed.
@@ -49,9 +60,11 @@ namespace D3D11
 		bool mIsActive;
 
 #ifdef FOXTROT_EDITOR
-		virtual void EditorRender(D3D11::D3D11Renderer* renderer, Editor::EditorCamera* camInst) = 0;
-		virtual void EditorUIUpdate() override;
 
+	public:
+		virtual void EditorUpdate(float deltaTime) override;
+		virtual void EditorRender(D3D11::D3D11Renderer* renderer, Core::ICamera* camInst) = 0;
+		virtual void EditorUIUpdate() override;
 #endif // FOXTROT_EDITOR
 	};
 } // namespace D3D11

@@ -54,64 +54,13 @@ namespace Core
 
 	public:
 		//////////////////////////////////////////
-		////// Keyboard Input ////////////////////
-		//////////////////////////////////////////
-
-		/// <summary>
-		/// Checks if a key was just pressed this frame.
-		/// </summary>
-		/// <param name="keyCode">Platform-agnostic key code.</param>
-		virtual bool IsKeyTap(int keyCode) const = 0;
-
-		/// <summary>
-		/// Checks if a key is currently held down.
-		/// </summary>
-		/// <param name="keyCode">Platform-agnostic key code.</param>
-		virtual bool IsKeyHold(int keyCode) const = 0;
-
-		/// <summary>
-		/// Checks if a key was just released this frame.
-		/// </summary>
-		/// <param name="keyCode">Platform-agnostic key code.</param>
-		virtual bool IsKeyAway(int keyCode) const = 0;
-
-		/// <summary>
-		/// Gets the current state of a keyboard key.
-		/// </summary>
-		/// <param name="keyCode">Platform-agnostic key code.</param>
-		virtual ButtonState GetKeyState(int keyCode) const = 0;
-
-		//////////////////////////////////////////
 		////// Mouse Input ///////////////////////
 		//////////////////////////////////////////
-
-		/// <summary>
-		/// Checks if a mouse button was just pressed this frame.
-		/// </summary>
-		/// <param name="button">Mouse button index (0=left, 1=right, 2=middle).</param>
-		virtual bool IsMouseTap(int button) const = 0;
-
-		/// <summary>
-		/// Checks if a mouse button is currently held down.
-		/// </summary>
-		/// <param name="button">Mouse button index.</param>
-		virtual bool IsMouseHold(int button) const = 0;
-
-		/// <summary>
-		/// Checks if a mouse button was just released this frame.
-		/// </summary>
-		/// <param name="button">Mouse button index.</param>
-		virtual bool IsMouseAway(int button) const = 0;
-
 		/// <summary>
 		/// Gets the current mouse position in screen coordinates.
 		/// </summary>
-		virtual Math::FTVector2 GetMousePosition() const = 0;
-
-		/// <summary>
-		/// Gets the mouse movement delta since last frame.
-		/// </summary>
-		virtual Math::FTVector2 GetMouseDelta() const = 0;
+		virtual const unsigned int GetMousePosX() const = 0;
+		virtual const unsigned int GetMousePosY() const = 0;
 
 		/// <summary>
 		/// Gets the mouse wheel scroll delta.

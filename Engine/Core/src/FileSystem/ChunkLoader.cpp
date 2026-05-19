@@ -148,10 +148,10 @@ namespace Core
 			AddMaxActorID();
 		}
 
-		Common::FTDS::HashMap<Actor*> actorWithIDs;
+		Common::FTDS::HashMap<IActor*> actorWithIDs;
 		actorWithIDs.Reserve(scene->GetActors()->GetSize());
 
-		scene->Actors()->IterateArray([&](Actor* actor) {
+		scene->Actors()->IterateArray([&](IActor* actor) {
 			actorWithIDs.Insert(actor->GetID(), actor);
 		});
 
@@ -159,7 +159,7 @@ namespace Core
 		{
 			if ((*iter)->GetParent())
 			{
-				Actor* parent = actorWithIDs.At((*iter)->GetParent()->GetID())->Value();
+				IActor* parent = actorWithIDs.At((*iter)->GetParent()->GetID())->Value();
 				delete (*iter)->GetParent();
 				(*iter)->SetParent(nullptr);
 				(*iter)->SetParent(parent);
@@ -167,10 +167,10 @@ namespace Core
 
 			if (0 < (*iter)->GetChildActors()->GetSize())
 			{
-				Common::FTDS::DynamicArray<Actor*> children;
+				Common::FTDS::DynamicArray<IActor*> children;
 
-				(*iter)->GetChildActors()->IterateArray([&](Actor* c) {
-					Actor* child = actorWithIDs.At(c->GetID())->Value();
+				(*iter)->GetChildActors()->IterateArray([&](IActor* c) {
+					IActor* child = actorWithIDs.At(c->GetID())->Value();
 					(*iter)->RemoveChild(c);
 					delete c;
 					c = nullptr;

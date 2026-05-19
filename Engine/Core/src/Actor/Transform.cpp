@@ -191,7 +191,7 @@ namespace Core
 		else
 			mMatrixWorld = mMatrixLocal;
 
-		Common::FTDS::DynamicArray<Actor*>* childActors = mOwner->GetChildActors();
+		Common::FTDS::DynamicArray<IActor*>* childActors = mOwner->GetChildActors();
 		if (0 < childActors->GetSize())
 		{
 			for (auto child = childActors->Begin(); child != childActors->End(); ++child)

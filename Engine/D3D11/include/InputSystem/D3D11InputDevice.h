@@ -65,9 +65,9 @@ namespace D3D11
 		void LockCursorInSceneViewport(D3D11Window* window, Math::FTVector2 mousePos);
 		void UnlockCursorOutOfSceneViewport();
 
-		const unsigned int	GetMousePosX() const;
-		const unsigned int	GetMousePosY() const;
-		virtual const float GetMouseWheelDelta() const override;
+		virtual const unsigned int GetMousePosX() const override;
+		virtual const unsigned int GetMousePosY() const override;
+		virtual const float		   GetMouseWheelDelta() const override;
 
 		void SetMousePosition(Math::FTVector2 pos);
 		void SetMousePosition(unsigned int posX, unsigned int posY);

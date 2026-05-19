@@ -71,6 +71,20 @@ namespace Math
 	{
 	}
 
+	FTVector3::FTVector3(const FTVector3& other)
+		: x(other.x)
+		, y(other.y)
+		, z(other.z)
+	{
+	}
+
+	FTVector3::FTVector3(const FTVector3&& other) noexcept
+		: x(other.x)
+		, y(other.y)
+		, z(other.z)
+	{
+	}
+
 	void FTVector3::Assign(float arr[3]) const
 	{
 		arr[0] = this->x;

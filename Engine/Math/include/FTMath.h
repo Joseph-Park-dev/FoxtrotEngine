@@ -187,6 +187,9 @@ namespace Math
 		explicit FTVector3(float in);
 		explicit FTVector3(float inX, float inY, float inZ);
 
+		FTVector3(const FTVector3& other);			 // copy constructor
+		FTVector3(const FTVector3&& other) noexcept; // move constructor
+
 		// Vector addition (a + b)
 		friend FTVector3 operator+(FTVector3 a, FTVector3 b)
 		{
@@ -239,20 +242,29 @@ namespace Math
 			return (left.x != right.x) || (left.y != right.y) || (left.z != right.z);
 		}
 
-		FTVector3 operator=(const FTVector3& other)
+		FTVector3& operator=(FTVector3 rhs) // copy assignment
 		{
-			this->x = other.x;
-			this->y = other.y;
-			this->z = other.z;
+			this->x = rhs.x;
+			this->y = rhs.y;
+			this->z = rhs.z;
 
 			return *this; // return *this by convention
 		}
 
-		FTVector3 operator=(FTVector3& other)
+		FTVector3& operator=(const FTVector3& rhs) // copy assignment
 		{
-			this->x = other.x;
-			this->y = other.y;
-			this->z = other.z;
+			this->x = rhs.x;
+			this->y = rhs.y;
+			this->z = rhs.z;
+
+			return *this; // return *this by convention
+		}
+
+		FTVector3& operator=(FTVector3&& rhs) noexcept // move assignment
+		{
+			this->x = rhs.x;
+			this->y = rhs.y;
+			this->z = rhs.z;
 
 			return *this; // return *this by convention
 		}

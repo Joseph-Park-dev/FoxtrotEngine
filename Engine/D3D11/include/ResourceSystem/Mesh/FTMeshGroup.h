@@ -17,7 +17,8 @@
 namespace Core
 {
 	class Transform;
-}
+	class ICamera;
+} // namespace Core
 
 namespace D3D11
 {
@@ -47,7 +48,7 @@ namespace D3D11
 		virtual void Render(
 			D3D11Renderer*	 renderer,
 			Core::Transform* transform,
-			D3D11::Camera*	 camInst,
+			Core::ICamera*	 camInst,
 			D3D11PSO*		 pso,
 			FTMaterial*		 mat);
 

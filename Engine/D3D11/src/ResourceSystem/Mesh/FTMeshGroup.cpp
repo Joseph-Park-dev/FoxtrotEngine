@@ -17,7 +17,7 @@
 #include "ResourceSystem/Shader/FTGeometryShader.h"
 #include "ResourceSystem/D3D11PSO.h"
 #include "Manager/ResourceManager.h"
-#include "InputSystem/FTInputDevice.h"
+#include "InputSystem/IInputDevice.h"
 #include "Renderer/Camera.h"
 #include "Renderer/D3D11Renderer.h"
 #include "Utility/D3D11Utils.h"
@@ -56,7 +56,7 @@ namespace D3D11
 	}
 
 	Common::FTDS::DynamicArray<Mesh*>* FTMeshGroup::Meshes() { return mMeshes; }
-	Math::FTVector3&				 FTMeshGroup::SizeScale() { return mSizeScale; };
+	Math::FTVector3&				   FTMeshGroup::SizeScale() { return mSizeScale; };
 
 	// This is unused until 3D feature is implemented.
 	// FTMeshGroup::FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer)

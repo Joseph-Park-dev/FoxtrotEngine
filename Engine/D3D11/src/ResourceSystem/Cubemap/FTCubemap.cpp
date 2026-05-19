@@ -6,7 +6,7 @@
 #include "ResourceSystem/Shader/FTVertexShader.h"
 #include "ResourceSystem/Shader/FTPixelShader.h"
 #include "Manager/ResourceManager.h"
-#include "Renderer/FoxtrotRenderer.h"
+#include "Renderer/IRenderer.h"
 #include "Renderer/Camera.h"
 
 #ifdef FOXTROT_EDITOR

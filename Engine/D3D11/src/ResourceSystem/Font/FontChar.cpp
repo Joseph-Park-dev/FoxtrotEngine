@@ -4,7 +4,7 @@
 
 #include "ResourceSystem/Font/TextVertex.h"
 #include "Utility/D3D11Utils.h"
-#include "Renderer/FoxtrotRenderer.h"
+#include "Renderer/IRenderer.h"
 #include "ResourceSystem/Mesh/GeometryGenerator.h"
 #include "ResourceSystem/Mesh/Mesh.h"
 

@@ -19,6 +19,7 @@
 #include "Renderer/Camera.h"
 #include "Actor/Transform.h"
 #include "Manager/DebugShapes.h"
+#include "Debugging/DebugFuncs.h"
 
 namespace D3D11
 {
@@ -69,10 +70,13 @@ namespace D3D11
 
 	void FTShape::UpdateGC(Camera* camInst)
 	{
-		Math::FTMatrix4&& viewMat = camInst->GetViewRow();
-		Math::FTMatrix4&& projMat = camInst->GetProjRow();
-		mGSCData.view			  = viewMat.Transposed();
-		mGSCData.projection		  = projMat.Transposed();
+		Math::FTMatrix4 viewMat = Math::FTMatrix4::Identity;
+		Math::FTMatrix4 projMat = Math::FTMatrix4::Identity;
+		camInst->GetViewMatrix(viewMat);
+		camInst->GetProjectionMatrix(projMat);
+
+		mGSCData.view		= viewMat.Transposed();
+		mGSCData.projection = projMat.Transposed();
 	}
 
 	void FTShape::UpdatePC()
@@ -188,14 +192,20 @@ namespace D3D11
 		mVSCData.model = model.Transposed();
 	}
 
-	void FTShape::UpdateViewMatrix(Camera* camInst)
+	void FTShape::UpdateViewMatrix(D3D11::Camera* camInst)
 	{
-		mGSCData.view = camInst->GetViewRow().Transposed();
+		Math::FTMatrix4 viewMat = Math::FTMatrix4::Identity;
+		camInst->GetViewMatrix(viewMat);
+		viewMat.Transpose();
+		mGSCData.view = viewMat;
 	}
 
-	void FTShape::UpdateProjectionMatrix(Camera* camInst)
+	void FTShape::UpdateProjectionMatrix(D3D11::Camera* camInst)
 	{
-		mGSCData.projection = camInst->GetProjRow().Transposed();
+		Math::FTMatrix4 projMat = Math::FTMatrix4::Identity;
+		camInst->GetProjectionMatrix(projMat);
+		projMat.Transpose();
+		mGSCData.projection = projMat;
 	}
 
 	void FTShape::InitializeConstantBuffer(ComPtr<ID3D11Device>& device)

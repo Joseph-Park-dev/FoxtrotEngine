@@ -27,8 +27,8 @@ namespace D3D11
 		virtual void Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst) override;
 
 	public:
-		SpineAnimator(Core::Actor* owner, int updateOrder = Core::DefaultVal::UPDATE_ORDER);
-		virtual void CloneTo(Core::Actor* actor) override;
+		SpineAnimator(Core::IActor* owner, int updateOrder = Core::DefaultVal::UPDATE_ORDER);
+		virtual void CloneTo(Core::IActor* actor) override;
 
 	private:
 		float		   mTimeScale;
@@ -41,7 +41,7 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 	public:
 		virtual void EditorUpdate(float deltaTime) override;
-		virtual void EditorRender(D3D11::D3D11Renderer* renderer, Editor::EditorCamera* camInst) override;
+		virtual void EditorRender(D3D11::D3D11Renderer* renderer, Core::ICamera* camInst) override;
 		virtual void EditorUIUpdate() override;
 #endif // FOXTROT_EDITOR
 	};

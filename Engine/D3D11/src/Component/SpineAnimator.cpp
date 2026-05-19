@@ -68,14 +68,14 @@ namespace D3D11
 		}
 	}
 
-	SpineAnimator::SpineAnimator(Actor* owner, int updateOrder)
-		: MeshRenderer(plugin, owner, updateOrder)
+	SpineAnimator::SpineAnimator(Core::IActor* owner, int updateOrder)
+		: MeshRenderer(owner, updateOrder)
 		, mTimeScale(1.f)
 		, mUsePhysics(spine::Physics_None)
 	{
 	}
 
-	void SpineAnimator::CloneTo(Actor* actor)
+	void SpineAnimator::CloneTo(Core::IActor* actor)
 	{
 		SpineAnimator* newComp = DBG_NEW SpineAnimator(actor, GetUpdateOrder());
 		newComp->SetRenderer(this->GetRenderer());
@@ -125,7 +125,7 @@ namespace D3D11
 		this->Update(deltaTime);
 	}
 
-	void SpineAnimator::EditorRender(D3D11::D3D11Renderer* renderer, Editor::EditorCamera* camInst)
+	void SpineAnimator::EditorRender(D3D11::D3D11Renderer* renderer, Core::ICamera* camInst)
 	{
 		if (GetMeshGroup())
 		{

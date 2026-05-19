@@ -188,7 +188,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;EDITOR_EXPORTS;_WINDOWS;_USRDLL;FOXTROT_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>.\include;$(SolutionDir)Engine\Common\include;$(SolutionDir)Engine\Core\include;$(SolutionDir)Engine\D3D11\include;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Main\include;$(SolutionDir)third_party;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\json\include;$(SolutionDir)third_party\ImGuiFileDialog;$(SolutionDir)third_party\spine-runtimes\spine-cpp\spine-cpp\include;$(SolutionDir)third_party\magic_enum\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

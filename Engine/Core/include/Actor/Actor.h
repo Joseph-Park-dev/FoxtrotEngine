@@ -11,34 +11,16 @@
 /// </summary>
 
 #pragma once
+#include "Actor/IActor.h"
+
 #include <fstream>
 
 #include "FTDS/Static/FTString.h"
 
 namespace Core
 {
-	class Transform;
-	class FTInputDevice;
-	class Scene;
-	class IComponent;
-	class FoxtrotRenderer;
-	class FTPremade;
-	enum class ACTOR_TAG;
-	enum class ActorGroup;
-	namespace FTDS
-	{
-		template <typename TYPE>
-		class DynamicArray;
-		class String;
-	} // namespace FTDS
-
-	enum class ActorState
-	{
-		ALIVE,
-		DEAD
-	};
-
-	class Actor
+	class Actor :
+		public Core::IActor
 	{
 	public:
 		/// <summary>
@@ -69,59 +51,59 @@ namespace Core
 		virtual ~Actor();
 
 	public:
-		void		 AddChild(Actor* actor);
-		void		 RemoveChild(Actor* actor);
-		virtual void AddComponent(IComponent* component);
-		void		 RemoveComponent(IComponent* component);
-		void		 RemoveAllComponents();
+		virtual void AddChild(IActor* actor) override;
+		virtual void RemoveChild(IActor* actor) override;
+		virtual void AddComponent(IComponent* component) override;
+		virtual void RemoveComponent(IComponent* component) override;
+		virtual void RemoveAllComponents() override;
 
 	public:
 		// Deep copies transform from another Actor.
-		void CopyTransformFrom(Actor* actor);
+		virtual void CopyTransformFrom(IActor* actor) override;
 
 		// Creates new IComponent with values from another Actor.
-		void CopyComponentsFrom(Actor* actor);
+		virtual void CopyComponentsFrom(IActor* actor) override;
 
 		// Deep copies all child Actors
-		virtual void CopyChildObjectFrom(Actor* actor);
+		virtual void CopyChildObjectFrom(IActor* actor) override;
 
 		// Shallow copies all child Actors.
-		void RefChildObjectFrom(Actor* actor);
+		virtual void RefChildObjectFrom(IActor* actor) override;
 
 	public:
 		// Getters/Setters
-		ActorGroup								 GetActorGroup() const { return mActorGroup; }
-		ActorGroup&								 GetActorGroupRef() { return mActorGroup; }
-		ActorGroup*								 GetActorGroupPtr() { return &mActorGroup; }
-		Common::FTDS::String					 GetName();
-		virtual Common::FTDS::String&			 GetNameRef();
-		const int								 GetID() const { return mID; }
-		const bool&								 GetIsActive() const { return mIsActive; }
-		Transform*								 GetTransform() const { return mTransform; }
-		Actor*									 GetParent() const { return mParent; }
-		Common::FTDS::DynamicArray<IComponent*>* GetComponents() { return mComponents; }
-		Common::FTDS::DynamicArray<Actor*>*		 GetChildActors() { return mChild; }
-		const int&								 GetDrawOrder() const { return mDrawOrder; }
+		virtual ActorGroup								 GetActorGroup() const override;
+		virtual ActorGroup&								 GetActorGroupRef() override;
+		virtual ActorGroup*								 GetActorGroupPtr() override;
+		virtual Common::FTDS::String					 GetName() override;
+		virtual Common::FTDS::String&					 GetNameRef() override;
+		virtual const int								 GetID() const override;
+		virtual const bool&								 GetIsActive() const override;
+		virtual Transform*								 GetTransform() const override;
+		virtual Actor*									 GetParent() const override;
+		virtual Common::FTDS::DynamicArray<IComponent*>* GetComponents() override;
+		virtual Common::FTDS::DynamicArray<IActor*>*	 GetChildActors() override;
+		virtual const int&								 GetDrawOrder() const override;
 
-		void SetName(Common::FTDS::String&& name);
-		void SetIsActive(bool isActive) { mIsActive = isActive; }
-		void SetActorGroup(ActorGroup group) { mActorGroup = group; }
-		void SetState(ActorState state) { mState = state; }
-		void SetParent(Actor* parent) { mParent = parent; }
-		void SetTransform(Transform* transform) { mTransform = transform; }
-		void SetComponents(Common::FTDS::DynamicArray<IComponent*>* components) { mComponents = components; }
-		void SetChildActors(Common::FTDS::DynamicArray<Actor*>* children) { mChild = children; }
-		void SetDrawOrder(int order) { mDrawOrder = order; }
+		virtual void SetName(Common::FTDS::String&& name) override;
+		virtual void SetIsActive(bool isActive) override;
+		virtual void SetActorGroup(ActorGroup group) override;
+		virtual void SetState(ActorState state) override;
+		virtual void SetParent(IActor* parent) override;
+		virtual void SetTransform(Transform* transform) override;
+		virtual void SetComponents(Common::FTDS::DynamicArray<IComponent*>* components) override;
+		virtual void SetChildActors(Common::FTDS::DynamicArray<IActor*>* children) override;
+		virtual void SetDrawOrder(int order) override;
 
-		bool		  HasName(Common::FTDS::String&& name);
-		bool		  HasName(const char* name);
-		bool		  IsDead();
-		virtual bool& IsActive();
+		virtual bool  HasName(Common::FTDS::String&& name) override;
+		virtual bool  HasName(const char* name) override;
+		virtual bool  IsDead() override;
+		virtual bool& IsActive() override;
 
 		template <class T>
 		T* GetComponent()
 		{
-			for (auto iter = mComponents.Begin(); iter != mComponents.End(); ++iter)
+			for (auto iter = mData->Components->Begin(); iter != mData->Components->End(); ++iter)
 			{
 				T* comp = dynamic_cast<T*>(*iter);
 				if (comp)
@@ -131,43 +113,13 @@ namespace Core
 		};
 
 	private:
-		Common::FTDS::String					 mName;
-		int										 mID;
-		ActorGroup								 mActorGroup;
-		ActorState								 mState;
-		bool									 mIsActive;
-		Transform*								 mTransform;
-		Common::FTDS::DynamicArray<IComponent*>* mComponents;
-		Actor*									 mParent;
-		Common::FTDS::DynamicArray<Actor*>*		 mChild;
-		int										 mDrawOrder;
+		ActorData* mData;
 
 	public:
-		void SaveProperties(std::ofstream& ofs);
-		void SaveComponents(std::ofstream& ofs);
+		virtual void SaveProperties(std::ofstream& ofs) override;
+		virtual void SaveComponents(std::ofstream& ofs) override;
 
-		void LoadProperties(std::ifstream& ifs);
-		void LoadComponents(std::ifstream& ifs);
+		virtual void LoadProperties(std::ifstream& ifs) override;
+		virtual void LoadComponents(std::ifstream& ifs) override;
 	};
-
-	namespace ChunkKey
-	{
-		constexpr const char* NAME		 = "Name";
-		constexpr const char* DRAW_ORDER = "Draw Order";
-		constexpr const char* STATE		 = "State";
-		constexpr const char* PARENT	 = "Parent";
-		constexpr const char* CHILD		 = "Child List";
-
-		namespace ID
-		{
-			// ID for invalid, or temporary object
-			constexpr int INVALID = -1;
-
-			// ID for cloned object (instantiated object)
-			constexpr int CLONE = 0;
-
-			// ID for chunk title.
-			constexpr const char* ID = "ID";
-		} // namespace ID
-	} // namespace ChunkKey
 } // namespace Core

@@ -48,7 +48,7 @@ namespace D3D11
 		void		 LateUpdate(float deltaTime) override;
 		void		 Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst) override;
 
-		virtual void CloneTo(Core::Actor* actor) override;
+		virtual void CloneTo(Core::IActor* actor) override;
 
 	public:
 		Animator(
@@ -75,7 +75,7 @@ namespace D3D11
 	public:
 		virtual void EditorUpdate(float deltaTime) override;
 		virtual void EditorUIUpdate() override;
-		void		 EditorRender(D3D11::D3D11Renderer* renderer, Editor::EditorCamera* camInst) override;
+		void		 EditorRender(D3D11::D3D11Renderer* renderer, Core::ICamera* camInst) override;
 
 	private:
 		void UpdatePlayAnim();

@@ -190,7 +190,7 @@ namespace D3D11
 		}
 	}
 
-	void Animator::CloneTo(Actor* actor)
+	void Animator::CloneTo(Core::IActor* actor)
 	{
 		Animator* newComp = DBG_NEW Animator(actor, GetUpdateOrder());
 
@@ -215,7 +215,7 @@ namespace D3D11
 		SpriteRenderer::EditorUIUpdate();
 	}
 
-	void Animator::EditorRender(D3D11::D3D11Renderer* renderer, *camInst)
+	void Animator::EditorRender(D3D11::D3D11Renderer* renderer, Core::ICamera* camInst)
 	{
 		if (GetSprite())
 		{

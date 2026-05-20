@@ -13,7 +13,7 @@
 /// </summary>
 
 #pragma once
-#include "Component/EditorComponent.h"
+#include "Component/IEditorComponent.h"
 #include "Component/Animator.h"
 
 #include "TemplateFunctions.h"
@@ -21,24 +21,16 @@
 namespace Editor
 {
 	class EditAnimator :
-		public Editor::EditorComponent<D3D11::Animator>
+		public IEditorComponent,
+		public D3D11::Animator
 	{
 	public:
 		virtual void EditorUpdate(float deltaTime) override;
-		virtual void EditorUIUpdateImpl();
-		virtual void EditorRenderImpl(D3D11::D3D11Renderer* renderer);
+		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst) override;
+		virtual void EditorUIUpdate() override;
 
 	private:
 		void UpdatePlayAnim();
 		void UpdatePlayList();
 	};
-
-	namespace ChunkKey
-	{
-		namespace FTSpriteAnimator
-		{
-			constexpr const char* LOADED_KEYS = "Loaded Keys";
-
-		} // namespace FTSpriteAnimator
-	} // namespace ChunkKey
 } // namespace Editor

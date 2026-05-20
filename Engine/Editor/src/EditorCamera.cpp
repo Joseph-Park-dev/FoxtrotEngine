@@ -13,7 +13,7 @@
 #include "Renderer/FTRectArea.h"
 #include "FTDS/Dynamic/DynamicArray.h"
 #include "Manager/EditorShapes.h"
-#include "Renderer/FTWindow.h"
+#include "Renderer/IWindow.h"
 #include "FTMath.h"
 #include "Plugin/GetFunc.h"
 

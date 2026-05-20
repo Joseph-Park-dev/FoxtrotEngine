@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -225,20 +225,23 @@
     <ClInclude Include="include\Actor\EditorTransform.h" />
     <ClInclude Include="include\Command.h" />
     <ClInclude Include="include\CommandHistory.h" />
-    <ClInclude Include="include\Component\EditAnimator.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
+    <ClInclude Include="include\Component\EditorAnimator.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="include\Component\EditorComponent.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
+    <ClInclude Include="include\Component\EditorTileMapRenderer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="include\Component\MeshRenderer.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
+    <ClInclude Include="include\Component\IEditorComponent.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="include\Component\SpineAnimator.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
+    <ClInclude Include="include\Component\EditorMeshRenderer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="include\Component\SpriteRenderer.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
+    <ClInclude Include="include\Component\EditorSpineAnimator.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="include\Component\EditorSpriteRenderer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="include\Component\TileMapRenderer.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>

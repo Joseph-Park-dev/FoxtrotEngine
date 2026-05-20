@@ -13,7 +13,7 @@
 /// </summary>
 
 #pragma once
-#include "Actor/Actor.h"
+#include "Actor/IActor.h"
 
 namespace Core
 {
@@ -34,7 +34,7 @@ namespace Editor
 	class EditorScene;
 
 	class EditorElement :
-		public Core::Actor
+		public Core::IActor
 	{
 	public:
 		const bool	 GetIsFocused() const;

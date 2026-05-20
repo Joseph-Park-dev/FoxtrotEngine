@@ -52,8 +52,8 @@ namespace D3D11
 
 	public:
 		Animator(
-			Core::Actor* owner,
-			int			 updateOrder = Core::DefaultVal::UPDATE_ORDER);
+			Core::IActor* owner,
+			int			  updateOrder = Core::DefaultVal::UPDATE_ORDER);
 		~Animator() override;
 
 	private:

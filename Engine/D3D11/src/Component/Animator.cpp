@@ -8,7 +8,7 @@
 
 #include "Component/Animator.h"
 
-#include "Actor/Actor.h"
+#include "Actor/IActor.h"
 #include "Actor/Transform.h"
 #include "ResourceSystem/Sprite/Tile.h"
 #include "ResourceSystem/FTTexture.h"
@@ -41,7 +41,7 @@ namespace D3D11
 	using namespace Common;
 	using namespace Core;
 
-	Animator::Animator(Core::Actor* owner, int updateOrder)
+	Animator::Animator(Core::IActor* owner, int updateOrder)
 		: SpriteRenderer(owner, updateOrder)
 		, mLoadedAnim(DBG_NEW Common::FTDS::DynamicArray<D3D11::FTSpriteAnimation*>)
 		, mCurrFrameIdx(0)

@@ -1,6 +1,8 @@
 #include "ResourceSystem/Font/FTFont.h"
 
 #include "Renderer/D3D11Renderer.h"
+#include "Renderer/D3D11Window.h"
+#include "Renderer/FTRectArea.h"
 #include "Utility/D3D11Utils.h"
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/Sprite/FTSprite.h"
@@ -311,7 +313,7 @@ namespace D3D11
 
 	void FTFont::LoadFont(FTTexture* img, Common::FTResourceDef& resDef)
 	{
-		FTVector2 renderRes = Camera::GetInstance()->GetResolution();
+		FTVector2 renderRes = Camera::GetInstance()->GetRenderWindow()->GetRenderArea()->GetSize();
 
 		std::wifstream fs;
 		fs.open(resDef.Path);

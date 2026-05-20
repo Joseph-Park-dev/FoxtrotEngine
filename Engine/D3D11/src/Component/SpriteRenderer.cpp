@@ -128,33 +128,13 @@ namespace D3D11
 	}
 
 #ifdef FOXTROT_EDITOR
-	void SpriteRenderer::EditorUIUpdate()
+	FTSprite*& SpriteRenderer::Sprite()
 	{
-		D3D11::D3D11Component::EditorUIUpdate();
-
-		if (mSprite)
-			mSprite->UpdateUI();
-
-		Editor::DisplayResSelection(
-			"Select Sprite",
-			ResourceManager::GetInstance()->GetSprites(),
-			mSprite);
-
-		if (mMaterial)
-			mMaterial->UpdateUI();
-
-		Editor::DisplayResSelection(
-			"Select Material",
-			ResourceManager::GetInstance()->GetMaterials(),
-			mMaterial);
+		return mSprite;
 	}
-	void SpriteRenderer::EditorRender(D3D11::D3D11Renderer* renderer, Core::ICamera* camInst)
+	FTMaterial*& SpriteRenderer::Material()
 	{
-		if (mSprite)
-		{
-			mSprite->UpdateConstantBuffers(renderer, GetOwner()->GetTransform(), camInst, mMaterial);
-			mSprite->Render(renderer, GetOwner()->GetTransform(), camInst, mPSO, mMaterial);
-		}
+		return mMaterial;
 	}
 #endif // FOXTROT_EDITOR
 } // namespace D3D11

@@ -73,12 +73,9 @@ namespace D3D11
 		virtual void LoadProperties(std::ifstream& ifs) override;
 
 #ifdef FOXTROT_EDITOR
-	public:
-		virtual void EditorUIUpdate() override;
-
-	public:
-		virtual void EditorRender(D3D11::D3D11Renderer* renderer, Core::ICamera* camInst) override;
-
+	protected:
+		FTSprite*&	 Sprite();
+		FTMaterial*& Material();
 #endif
 	};
 

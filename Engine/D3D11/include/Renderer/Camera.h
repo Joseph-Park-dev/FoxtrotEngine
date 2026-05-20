@@ -20,7 +20,7 @@
 
 namespace Core
 {
-	class Actor;
+	class IActor;
 	class SceneManager;
 } // namespace Core
 
@@ -39,7 +39,8 @@ namespace D3D11
 		constexpr const char* CAM_ZOOM			  = "Zoom";
 	} // namespace ChunkKey
 
-	class Camera : public Core::ICamera
+	class Camera :
+		public Core::ICamera
 	{
 		SINGLETON(Camera)
 
@@ -48,7 +49,7 @@ namespace D3D11
 		////// Coordinate Conversion /////////////
 		//////////////////////////////////////////
 
-		virtual Math::FTVector3 ScreenToWorld(const Math::FTVector2& screenPos) const override;
+		virtual Math::FTVector3 ScreenToWorld(const Math::FTVector2& screenPos) override;
 		virtual Math::FTVector2 WorldToScreen(const Math::FTVector3& worldPos) const override;
 		virtual Math::FTVector2 ScreenToNDC(const Math::FTVector2& screenPos) const override;
 
@@ -67,23 +68,24 @@ namespace D3D11
 		////// Matrix Accessors //////////////////
 		//////////////////////////////////////////
 
-		virtual void GetViewMatrix(Math::FTMatrix4& outViewMat) const override;
-		virtual void GetProjectionMatrix(Math::FTMatrix4& outProjMat) const override;
+		virtual void GetViewMatrix(Math::FTMatrix4& outViewMat) override;
+		virtual void GetProjectionMatrix(Math::FTMatrix4& outProjMat) override;
 
 	public:
-		const Core::Viewtype GetViewType() override;
-		const float			 GetProjFOVAngleY() override;
-		const float			 GetAspectRatio() override;
-		const float			 GetPixelsPerUnit() override;
-		const float			 GetNearZ() override;
-		const float			 GetFarZ() override;
+		const D3D11::D3D11Window* GetRenderWindow();
+		const Core::Viewtype	  GetViewType() override;
+		const float				  GetProjFOVAngleY() override;
+		const float				  GetAspectRatio() override;
+		const float				  GetPixelsPerUnit() override;
+		const float				  GetNearZ() override;
+		const float				  GetFarZ() override;
 
 		const Math::FTVector3& GetOffSet() const override;
 		const float			   GetZoomFactor() const override;
 
 		void SetPosition(const Math::FTVector3& pos) override;
 		void SetViewType(Core::Viewtype viewType) override;
-		void SetTargetActor(Core::Actor* actor) override;
+		void SetTargetActor(Core::IActor* actor) override;
 		void SetOffset(Math::FTVector3 offset) override;
 
 	public:
@@ -97,16 +99,16 @@ namespace D3D11
 	public:
 		// "pixels" defines how much of them should fit in a given unit.
 		virtual void Initialize(D3D11::D3D11Window* renderWindow, unsigned int pixels, float unit);
-		virtual void Update(float deltaTime);
+		//	virtual void Update(float deltaTime);
 
-	protected:
-		virtual void Zoom();
+		// protected:
+		//	virtual void Zoom();
 
 	private:
-		D3D11::D3D11Window* mRenderWindow;
-		Core::Actor*		mTarget;
-		Math::FTVector3		mPosition;
-		Math::FTVector3		mOffset;
+		D3D11::D3D11Window*		mRenderWindow;
+		Core::IActor*			mTarget;
+		mutable Math::FTVector3 mPosition;
+		Math::FTVector3			mOffset;
 
 		float mProjFOVAngleY;
 		float mNearZ, mFarZ;

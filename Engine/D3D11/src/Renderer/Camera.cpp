@@ -1,7 +1,7 @@
 #include "Renderer/Camera.h"
 
 #include "FTMath.h"
-#include "Actor/Actor.h"
+#include "Actor/IActor.h"
 #include "Actor/Transform.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Renderer/D3D11Window.h"
@@ -10,7 +10,7 @@
 namespace D3D11
 {
 	using namespace Math;
-	Math::FTVector3 D3D11::Camera::ScreenToWorld(const Math::FTVector2& screenPos) const
+	Math::FTVector3 Camera::ScreenToWorld(const Math::FTVector2& screenPos)
 	{
 		FTVector2 ndc	  = ScreenToNDC(screenPos);
 		FTVector3 clipPos = FTVector3(ndc.x, ndc.y, 0.0f);
@@ -27,12 +27,12 @@ namespace D3D11
 		return FTVector3::Transform(clipPos, viewProj, 1.0f);
 	}
 
-	Math::FTVector2 D3D11::Camera::WorldToScreen(const Math::FTVector3& worldPos) const
+	Math::FTVector2 Camera::WorldToScreen(const Math::FTVector3& worldPos) const
 	{
 		return Math::FTVector2();
 	}
 
-	Math::FTVector2 D3D11::Camera::ScreenToNDC(const Math::FTVector2& screenPos) const
+	Math::FTVector2 Camera::ScreenToNDC(const Math::FTVector2& screenPos) const
 	{
 		FTVector2 renderSize = mRenderWindow->GetRenderArea()->GetSize();
 		FTVector2 ndc		 = FTVector2::Zero;
@@ -79,21 +79,20 @@ namespace D3D11
 		return mPosition;
 	}
 
-	void Camera::GetViewMatrix(Math::FTMatrix4& outViewMat) const
+	void Camera::GetViewMatrix(Math::FTMatrix4& outViewMat)
 	{
 		if (mTarget)
 		{
 			Core::Transform* transform = mTarget->GetTransform();
-			mPosition				   = transform->GetWorldPosition();
+			FTVector3		 worldPos  = transform->GetWorldPosition();
 			// Z axis transformation is controlled independently
-
 			worldPos.z = mPosition.z;
-			mPosition  = FTVector3(worldPos + mOffset);
+			mPosition  = worldPos + mOffset;
 		}
 		outViewMat = FTMatrix4::CreateTranslation(mPosition);
 	}
 
-	void Camera::GetProjectionMatrix(Math::FTMatrix4& outProjMat) const
+	void Camera::GetProjectionMatrix(Math::FTMatrix4& outProjMat)
 	{
 		float	  unitsPerPixel = 1 / mPixelsPerUnit;
 		FTVector2 renderSize	= mRenderWindow->GetRenderArea()->GetSize();
@@ -108,10 +107,15 @@ namespace D3D11
 
 		mAspect = renderSize.x / renderSize.y;
 
-		return mViewType == Core::Viewtype::Perspective
-			? FTMatrix4::CreatePerspectiveFOV(Math::ToRadians(mProjFOVAngleY), renderSize.x, renderSize.y, mNearZ, mFarZ)
-			: FTMatrix4::CreateOrtho(
+		mViewType == Core::Viewtype::Perspective
+			? outProjMat = FTMatrix4::CreatePerspectiveFOV(Math::ToRadians(mProjFOVAngleY), renderSize.x, renderSize.y, mNearZ, mFarZ)
+			: outProjMat = FTMatrix4::CreateOrtho(
 				  worldWidth, worldHeight, mNearZ, mFarZ);
+	}
+
+	const D3D11::D3D11Window* Camera::GetRenderWindow()
+	{
+		return mRenderWindow;
 	}
 
 	const Core::Viewtype Camera::GetViewType()
@@ -164,7 +168,7 @@ namespace D3D11
 		mViewType = viewType;
 	}
 
-	void Camera::SetTargetActor(Core::Actor* actor)
+	void Camera::SetTargetActor(Core::IActor* actor)
 	{
 		mTarget = actor;
 	}
@@ -217,6 +221,10 @@ namespace D3D11
 		, mZoomDelta(0.f)
 		, mZoomFactor(1.0f)
 		, mViewType(Core::Viewtype::Orthographic)
+	{
+	}
+
+	Camera::~Camera()
 	{
 	}
 } // namespace D3D11

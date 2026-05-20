@@ -80,13 +80,6 @@ private:
 	Common::FTDS::DynamicArray<D3D11::D3D11Component*>* mRegisteredComps;
 };
 
-IWindow* D3D11Plugin::CreateAppWindow(const char* title, unsigned int width, unsigned int height, FTRectArea* renderArea)
-{
-	D3D11::D3D11Window* win = DBG_NEW D3D11::D3D11Window(title, width, height, renderArea);
-	mWindows->PushBack(win);
-	return win;
-}
-
 ICamera* D3D11Plugin::CreateCamera()
 {
 	return D3D11::Camera::GetInstance();
@@ -96,6 +89,7 @@ IInputDevice* D3D11Plugin::CreateInputDevice()
 {
 	D3D11::D3D11InputDevice* device = DBG_NEW D3D11::D3D11InputDevice;
 	mInputDevices->PushBack(device);
+	return device;
 }
 
 IRenderer* D3D11Plugin::CreateRenderer(IWindow* window)

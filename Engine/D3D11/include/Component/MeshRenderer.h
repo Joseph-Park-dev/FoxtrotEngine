@@ -16,7 +16,7 @@
 
 namespace Core
 {
-	class Actor;
+	class IActor;
 	class Transform;
 	class FoxtrotRenderer;
 } // namespace Core

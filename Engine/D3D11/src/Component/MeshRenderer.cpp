@@ -9,7 +9,7 @@
 #include "Component/MeshRenderer.h"
 
 #include "Actor/Transform.h"
-#include "Actor/Actor.h"
+#include "Actor/IActor.h"
 #include "ResourceSystem/Mesh/Mesh.h"
 #include "ResourceSystem/Mesh/FTMeshDataPack.h"
 #include "ResourceSystem/Mesh/FTMeshGroup.h"

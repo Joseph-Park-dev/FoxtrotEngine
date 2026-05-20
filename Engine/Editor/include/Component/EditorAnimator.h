@@ -20,7 +20,8 @@
 
 namespace Editor
 {
-	class EditAnimator :
+	using GET_SPRITE_ANIMS_FUNC = Common::ResourcePack<FTSpriteAnimation>* (*)();
+	class EditorAnimator :
 		public IEditorComponent,
 		public D3D11::Animator
 	{
@@ -28,6 +29,14 @@ namespace Editor
 		virtual void EditorUpdate(float deltaTime) override;
 		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst) override;
 		virtual void EditorUIUpdate() override;
+
+	public:
+		EditorAnimator(
+			Core::IActor* owner,
+			int			  updateOrder = Core::DefaultVal::UPDATE_ORDER);
+
+	private:
+		GET_SPRITE_ANIMS_FUNC mGetSpriteAnimFunc;
 
 	private:
 		void UpdatePlayAnim();

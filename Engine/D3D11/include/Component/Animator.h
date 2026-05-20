@@ -72,14 +72,12 @@ namespace D3D11
 		bool IndexOutOfRange(FTSpriteAnimation* anim);
 
 #ifdef FOXTROT_EDITOR
-	public:
-		virtual void EditorUpdate(float deltaTime) override;
-		virtual void EditorUIUpdate() override;
-		void		 EditorRender(D3D11::D3D11Renderer* renderer, Core::ICamera* camInst) override;
+	protected:
+		Common::FTDS::DynamicArray<D3D11::FTSpriteAnimation*>* LoadedAnim() { return mLoadedAnim; }
 
-	private:
-		void UpdatePlayAnim();
-		void UpdatePlayList();
+		bool& IsFinished() { return mIsFinished; };
+		bool& IsRepeated() { return mIsRepeated; };
+		int&  CurrFrameIdx() { return mCurrFrameIdx; }
 
 #endif // FOXTROT_EDITOR
 	};

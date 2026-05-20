@@ -43,7 +43,7 @@ namespace D3D11
 		void Render(
 			D3D11Renderer*	 renderer,
 			Core::Transform* transform,
-			D3D11::Camera*	 camInst,
+			Core::ICamera*	 camInst,
 			FTTexture*		 tex,
 			FTVertexShader*	 vs,
 			FTPixelShader*	 ps,

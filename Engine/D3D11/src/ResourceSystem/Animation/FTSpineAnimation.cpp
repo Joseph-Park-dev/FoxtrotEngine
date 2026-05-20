@@ -41,7 +41,7 @@ namespace D3D11
 		mSkeleton->updateWorldTransform(physics);
 	}
 
-	void FTSpineAnimation::Render(D3D11Renderer* renderer, Core::Transform* transform, D3D11::Camera* camInst, FTTexture* tex, FTVertexShader* vs, FTPixelShader* ps, FTMaterial* mat)
+	void FTSpineAnimation::Render(D3D11Renderer* renderer, Core::Transform* transform, Core::ICamera* camInst, FTTexture* tex, FTVertexShader* vs, FTPixelShader* ps, FTMaterial* mat)
 	{
 		// This enables the resource reusable throughout the Component instances.
 		UpdateConstantBuffers(renderer, transform, camInst, mat, GetFrontDir());

@@ -1,6 +1,6 @@
 #include "ResourceSystem/Sprite/FTSprite.h"
 
-#include "Renderer/D3D11Renderer.h"
+#include "Renderer/IRenderer.h"
 #include "Renderer/ICamera.h"
 #include "Utility/D3D11Utils.h"
 #include "ResourceSystem/D3D11PSO.h"
@@ -23,7 +23,7 @@ namespace D3D11
 	using namespace Microsoft::WRL;
 	ResType FTSprite::Type = ResType::SPRITE;
 
-	void FTSprite::UpdateConstantBuffers(D3D11Renderer* renderer, Transform* transform, Core::ICamera* camInst, FTMaterial* mat, const size_t gcDataCount, const int meshIndex)
+	void FTSprite::UpdateConstantBuffers(Core::IRenderer* renderer, Transform* transform, Core::ICamera* camInst, FTMaterial* mat, const size_t gcDataCount, const int meshIndex)
 	{
 		// Model Transformation
 		// Front Direction will be multiplied to scale.
@@ -71,7 +71,7 @@ namespace D3D11
 			mat->UpdateBuffer(renderer->GetContext());
 	}
 
-	void FTSprite::Render(D3D11Renderer* renderer, Transform* transform, Core::ICamera* camInst, D3D11PSO* pso, FTMaterial* mat)
+	void FTSprite::Render(Core::IRenderer* renderer, Transform* transform, Core::ICamera* camInst, D3D11PSO* pso, FTMaterial* mat)
 	{
 		if (!pso->IsValid()) // Vertex Shader is always required when drawing.
 			return;

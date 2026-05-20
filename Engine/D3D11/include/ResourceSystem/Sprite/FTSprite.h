@@ -13,7 +13,7 @@ namespace D3D11
 	struct SpriteVertex;
 	class FTGeometryShader;
 	class FTPixelShader;
-	class D3D11Renderer;
+	class IRenderer;
 	class D3D11PSO;
 	class FTTexture;
 
@@ -26,7 +26,7 @@ namespace D3D11
 	public:
 		/// @param meshIndex Index of an elements from the sliced spritesheet.
 		void UpdateConstantBuffers(
-			D3D11Renderer*	 renderer,
+			Core::IRenderer* renderer,
 			Core::Transform* transform,
 			Core::ICamera*	 camInst,
 			FTMaterial*		 mat,
@@ -34,7 +34,7 @@ namespace D3D11
 			const int		 meshIndex	 = 0);
 
 		virtual void Render(
-			D3D11Renderer*	 renderer,
+			Core::IRenderer* renderer,
 			Core::Transform* transform,
 			Core::ICamera*	 camInst,
 			D3D11PSO*		 pso,

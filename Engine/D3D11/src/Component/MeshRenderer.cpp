@@ -155,39 +155,4 @@ namespace D3D11
 
 		D3D11::D3D11Component::LoadProperties(ifs);
 	}
-
-#ifdef FOXTROT_EDITOR
-	void MeshRenderer::EditorRender(D3D11::D3D11Renderer* renderer, Core::ICamera* camInst)
-	{
-		if (mMeshGroup)
-		{
-			Transform* transform = GetOwner()->GetTransform();
-			// mMeshGroup->Render(renderer, transform, EditorCamera::GetInstance(), mTexture, mVS, mPS, mMaterial);
-		}
-	}
-
-	void MeshRenderer::EditorUIUpdate()
-	{
-		D3D11::D3D11Component::EditorUIUpdate();
-
-		if (!mMeshGroup)
-			return;
-
-		// mMeshGroup->UpdateUI();
-
-		if (mTexture)
-			mTexture->UpdateUI();
-		// FTEditorUtils::DisplayResSelection(
-		//	"Select Texture",
-		//	ResourceManager::GetInstance()->GetSprites(),
-		//	mTexture);
-
-		if (mMaterial)
-			mMaterial->UpdateUI();
-		Editor::DisplayResSelection(
-			"Select Material",
-			ResourceManager::GetInstance()->GetMaterials(),
-			mMaterial);
-	}
-#endif // FOXTROT_EDITOR
 } // namespace D3D11

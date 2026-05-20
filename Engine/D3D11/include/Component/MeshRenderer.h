@@ -109,9 +109,8 @@ namespace D3D11
 		// FoxtrotEditor related functions //
 		/////////////////////////////////////
 #ifdef FOXTROT_EDITOR
-	public:
-		virtual void EditorRender(D3D11::D3D11Renderer* renderer, Core::ICamera* camInst) override;
-		virtual void EditorUIUpdate() override;
+	protected:
+		FTMaterial*& Material() { return mMaterial; }
 #endif
 	};
 } // namespace D3D11

@@ -293,7 +293,7 @@
     <ClCompile Include="src\Component\TileMapRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Component\EditAnimator.cpp">
+    <ClCompile Include="src\Component\EditorAnimator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\dllmain.cpp">

@@ -371,7 +371,7 @@
     <ClCompile Include="..\..\third_party\ImGuiFileDialog\ImGuiFileDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="include\Renderer\D3D11Camera.cpp">
+    <ClCompile Include="src\Renderer\Camera-1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -416,9 +416,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Plugin\PluginKey.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Renderer\D3D11Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Renderer\D3D11Renderer.h">
@@ -539,6 +536,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Plugin\D3D11Exports.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Renderer\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

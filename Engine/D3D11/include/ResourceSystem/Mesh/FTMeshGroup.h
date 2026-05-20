@@ -18,13 +18,13 @@ namespace Core
 {
 	class Transform;
 	class ICamera;
+	class IRenderer;
 } // namespace Core
 
 namespace D3D11
 {
 	class FTMaterial;
 	class FTVertexShader;
-	class D3D11Renderer;
 	class FTGeometryShader;
 	class FTPixelShader;
 	class D3D11PSO;
@@ -46,7 +46,7 @@ namespace D3D11
 	public:
 		/// @brief Renders the entire meshes created, as a full model.
 		virtual void Render(
-			D3D11Renderer*	 renderer,
+			Core::IRenderer* renderer,
 			Core::Transform* transform,
 			Core::ICamera*	 camInst,
 			D3D11PSO*		 pso,

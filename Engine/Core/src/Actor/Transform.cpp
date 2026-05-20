@@ -25,7 +25,6 @@ namespace Core
 	const Math::FTVector3& Transform::GetLocalRotation() const { return mLocalRotation; }
 
 	const Math::FTVector3& Transform::GetWorldPosition() const { return mWorldPosition; }
-	Math::FTVector3		   Transform::GetWorldPosition() { return mWorldPosition; }
 	const Math::FTVector3& Transform::GetWorldScale() const { return mWorldScale; }
 	const Math::FTVector3& Transform::GetWorldRotation() const { return mWorldRotation; }
 	const Math::FTMatrix4& Transform::GetMatrixWorld() const { return mMatrixWorld; }

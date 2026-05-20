@@ -75,22 +75,5 @@ namespace Core
 			// Load Properties first -> then initialize with the loaded values.
 			t->LoadProperties(ifs);
 		}
-
-#ifdef FOXTROT_EDITOR
-	public:
-		// Member functions for EditorElement objects.
-		// Functions for editor specific tasks, which means
-		// codes to be executed in the Editor, but not in the produced game.
-		//
-		// Renderer dependent components,
-		// (such as MeshRendererComponent, SpriteRendererComponent, etc.)
-		// usually use FTCore Update() & Render().
-		virtual void EditorUpdate(float deltaTime) = 0;
-		virtual void EditorUIUpdate()			   = 0;
-
-	public:
-		// virtual void SetUpdateOrder(int updateOrder) = 0;
-
-#endif // FOXTROT_EDITOR
 	};
 } // namespace Core

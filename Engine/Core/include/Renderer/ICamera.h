@@ -23,7 +23,7 @@ namespace Core
 		Perspective
 	};
 
-	class Actor;
+	class IActor;
 	class SceneManager;
 	/// <summary>
 	/// Abstract camera interface for view/projection transformations.
@@ -40,7 +40,7 @@ namespace Core
 		/// </summary>
 		/// <param name="screenPos">Position in screen pixels.</param>
 		/// <returns>Position in world space.</returns>
-		virtual Math::FTVector3 ScreenToWorld(const Math::FTVector2& screenPos) const = 0;
+		virtual Math::FTVector3 ScreenToWorld(const Math::FTVector2& screenPos) = 0;
 
 		/// <summary>
 		/// Converts world coordinates to screen coordinates.
@@ -85,7 +85,7 @@ namespace Core
 		/// </summary>
 		virtual void SetPosition(const Math::FTVector3& position) = 0;
 		virtual void SetViewType(Core::Viewtype viewType)		  = 0;
-		virtual void SetTargetActor(Core::Actor* actor)			  = 0;
+		virtual void SetTargetActor(Core::IActor* actor)		  = 0;
 		virtual void SetOffset(Math::FTVector3 offset)			  = 0;
 
 		//////////////////////////////////////////
@@ -95,12 +95,12 @@ namespace Core
 		/// <summary>
 		/// Gets the view matrix (world-to-camera transformation).
 		/// </summary>
-		virtual void GetViewMatrix(Math::FTMatrix4& outViewMat) const = 0;
+		virtual void GetViewMatrix(Math::FTMatrix4& outViewMat) = 0;
 
 		/// <summary>
 		/// Gets the projection matrix (camera-to-clip transformation).
 		/// </summary>
-		virtual void GetProjectionMatrix(Math::FTMatrix4& outProjMat) const = 0;
+		virtual void GetProjectionMatrix(Math::FTMatrix4& outProjMat) = 0;
 
 	public:
 		virtual ~ICamera() = default;

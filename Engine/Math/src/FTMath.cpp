@@ -78,7 +78,7 @@ namespace Math
 	{
 	}
 
-	FTVector3::FTVector3(const FTVector3&& other) noexcept
+	FTVector3::FTVector3(FTVector3&& other) noexcept
 		: x(other.x)
 		, y(other.y)
 		, z(other.z)
@@ -90,6 +90,13 @@ namespace Math
 		arr[0] = this->x;
 		arr[1] = this->y;
 		arr[2] = this->z;
+	}
+
+	void FTVector3::Assign(Math::FTVector3& out) const
+	{
+		out.x = this->x;
+		out.y = this->y;
+		out.z = this->z;
 	}
 
 	float FTVector3::LengthSq()

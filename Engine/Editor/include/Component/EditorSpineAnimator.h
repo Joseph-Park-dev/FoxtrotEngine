@@ -8,9 +8,7 @@
 
 namespace Editor
 {
-	class FTSpineAnimation;
-
-	class SpineAnimator :
+	class EditorSpineAnimator :
 		public IEditorComponent,
 		public D3D11::SpineAnimator
 	{

@@ -74,14 +74,4 @@ namespace D3D11
 	D3D11::D3D11Component::~D3D11Component()
 	{
 	}
-
-#ifdef FOXTROT_EDITOR
-	void D3D11Component::EditorUpdate(float deltaTime)
-	{
-	}
-	void D3D11Component::EditorUIUpdate()
-	{
-		Editor::UPDATE_BOOL("Is Active", mIsActive);
-	}
-#endif
 } // namespace D3D11

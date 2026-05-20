@@ -58,5 +58,11 @@ namespace D3D11
 		// The component is alive in the game loop
 		// (During ProcessInput, Update, LateUpdate and Render)
 		bool mIsActive;
+
+#ifdef FOXTROT_EDITOR
+	protected:
+		bool& IsActive() { return mIsActive; }
+
+#endif // FOXTROT_EDITOR
 	};
 } // namespace D3D11

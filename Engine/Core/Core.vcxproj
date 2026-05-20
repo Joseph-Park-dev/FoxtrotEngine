@@ -241,7 +241,12 @@
     <ClInclude Include="include\Behavior\FTBehavior.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="include\Component\Graphics\IAnimator.h" />
     <ClInclude Include="include\Component\IComponent.h" />
+    <ClInclude Include="include\Component\Graphics\IMeshRenderer.h" />
+    <ClInclude Include="include\Component\Graphics\ISpineAnimator.h" />
+    <ClInclude Include="include\Component\Graphics\ISpriteRenderer.h" />
+    <ClInclude Include="include\Component\Graphics\ITileMapRenderer.h" />
     <ClInclude Include="include\Entity\Timer.h" />
     <ClInclude Include="include\EventSystem\EventFunctions.h" />
     <ClInclude Include="include\EventSystem\EventType.h" />

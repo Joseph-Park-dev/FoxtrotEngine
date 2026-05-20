@@ -16,7 +16,7 @@
 #include "ResourceSystem/Shader/FTPixelShader.h"
 #include "Renderer/D3D11Renderer.h"
 #include "Renderer/Camera.h"
-#include "Actor/Actor.h"
+#include "Actor/IActor.h"
 #include "Actor/Transform.h"
 
 #ifdef FOXTROT_EDITOR

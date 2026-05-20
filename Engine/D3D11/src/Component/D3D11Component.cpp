@@ -1,7 +1,7 @@
 #include "Component/D3D11Component.h"
 
 #include "Plugin/IPlugin.h"
-#include "Actor/Actor.h"
+#include "Actor/IActor.h"
 #include "FileSystem/FileIOHelper.h"
 
 #ifdef FOXTROT_EDITOR

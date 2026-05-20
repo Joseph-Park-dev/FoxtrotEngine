@@ -58,13 +58,5 @@ namespace D3D11
 		// The component is alive in the game loop
 		// (During ProcessInput, Update, LateUpdate and Render)
 		bool mIsActive;
-
-#ifdef FOXTROT_EDITOR
-
-	public:
-		virtual void EditorUpdate(float deltaTime) override;
-		virtual void EditorRender(D3D11::D3D11Renderer* renderer, Core::ICamera* camInst) = 0;
-		virtual void EditorUIUpdate() override;
-#endif // FOXTROT_EDITOR
 	};
 } // namespace D3D11

@@ -16,9 +16,10 @@
 #include "Utility/EditorHelper.h"
 #include "CommandHistory.h"
 #include "EditorRenderer.h"
-#include "Plugin/GetFunc.h"
 
 #include "ResourceSystem/Animation/FTSpriteAnimation.h"
+#include "Manager/AnimationManager.h"
+#include <../D3D11/include/Manager/ResourceManager.h>
 
 namespace Editor
 {
@@ -42,7 +43,7 @@ namespace Editor
 	EditorAnimator::EditorAnimator(Core::IActor* owner, int updateOrder)
 		: Animator(owner, updateOrder)
 	{
-		mGetSpriteAnimFunc = GetFunc<GET_SPRITE_ANIMS_FUNC>(DLLPaths::D3D11_EDITOR, GET_SPRITE_ANIMS);
+		//mGetSpriteAnimFunc = GetFunc<GET_SPRITE_ANIMS_FUNC>(DLLPaths::D3D11_EDITOR, GET_SPRITE_ANIMS);
 	}
 
 	void EditorAnimator::EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst)
@@ -94,7 +95,7 @@ namespace Editor
 		FTSpriteAnimation* anim = nullptr;
 		Editor::DisplayResSelection<FTSpriteAnimation>(
 			"Load Animation",
-			mGetSpriteAnimFunc(),
+			D3D11::ResourceManager::GetInstance()->GetSpriteAnimations(),
 			anim);
 
 		if (anim)
@@ -123,7 +124,7 @@ namespace Editor
 						LoadedAnim()->Swap(i + 1, i);
 
 					if (ImGui::Button("Update"))
-						AnimationManager::GetInstance()->SaveAnimationAsFile(anim);
+						D3D11::AnimationManager::GetInstance()->SaveAnimationAsFile(anim);
 
 					if (ImGui::Button("Delete"))
 					{

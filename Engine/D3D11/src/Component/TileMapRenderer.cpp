@@ -14,7 +14,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "Actor/Actor.h"
+#include "Actor/IActor.h"
 #include "FTMath.h"
 #include "ResourceSystem/Sprite/Tile.h"
 #include "ResourceSystem/FTTexture.h"
@@ -107,13 +107,13 @@ namespace D3D11
 		}
 	}
 
-	void TileMapRenderer::CloneTo(Actor* actor)
+	void TileMapRenderer::CloneTo(IActor* actor)
 	{
 		TileMapRenderer* newComp = DBG_NEW TileMapRenderer(actor, GetUpdateOrder());
 		newComp->mTileMapKey	 = this->mTileMapKey;
 	}
 
-	TileMapRenderer::TileMapRenderer(Actor* owner, int updateOrder)
+	TileMapRenderer::TileMapRenderer(IActor* owner, int updateOrder)
 		: SpriteRenderer(owner, updateOrder)
 		, mTileMap(nullptr)
 		, mTileMapKey(Common::ChunkKey::NullVal::NULL_OBJECT)
@@ -129,7 +129,7 @@ namespace D3D11
 
 	void TileMapRenderer::SaveProperties(std::ofstream& ofs)
 	{
-		Component::SaveProperties(ofs);
+		D3D11Component::SaveProperties(ofs);
 		FileIOHelper::SaveString(ofs, ChunkKey::TILEMAP_KEY, mTileMap->GetFileName());
 	}
 
@@ -139,7 +139,7 @@ namespace D3D11
 		FileIOHelper::LoadBasicString(ifs, texKey);
 		// SetTexKey(texKey);
 		FileIOHelper::LoadBasicString(ifs, mTileMapKey);
-		Component::LoadProperties(ifs);
+		D3D11Component::LoadProperties(ifs);
 	}
 
 #ifdef FOXTROT_EDITOR

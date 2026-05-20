@@ -46,8 +46,8 @@ namespace D3D11
 
 	public:
 		TileMapRenderer(
-			Core::Actor* owner,
-			int			 UpdateOrder = Core::DefaultVal::UPDATE_ORDER);
+			Core::IActor* owner,
+			int			  UpdateOrder = Core::DefaultVal::UPDATE_ORDER);
 		virtual ~TileMapRenderer() override;
 
 	protected:

@@ -1,6 +1,4 @@
 #pragma once
-#include "Component/IComponent.h"
-
 namespace Core
 {
 	class IRenderer;
@@ -9,8 +7,7 @@ namespace Core
 
 namespace Editor
 {
-	class IEditorComponent :
-		public Core::IComponent
+	class IEditorComponent
 	{
 	public:
 		virtual void EditorUpdate(float deltaTime)									 = 0;

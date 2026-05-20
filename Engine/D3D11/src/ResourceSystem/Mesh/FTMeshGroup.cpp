@@ -36,7 +36,7 @@ namespace D3D11
 	using namespace Common;
 	ResType FTMeshGroup::Type = ResType::MESH_GROUP;
 
-	void FTMeshGroup::Render(D3D11Renderer* renderer, Core::Transform* transform, Camera* camInst, D3D11PSO* pso, FTMaterial* mat)
+	void FTMeshGroup::Render(D3D11Renderer* renderer, Core::Transform* transform, Core::ICamera* camInst, D3D11PSO* pso, FTMaterial* mat)
 	{
 	}
 

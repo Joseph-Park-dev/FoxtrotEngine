@@ -6,7 +6,7 @@
 
 namespace Editor
 {
-	bool EditorRenderer::InitializeViewport(Core::FTWindow* window, UINT posX, UINT posY, UINT width, UINT height)
+	bool EditorRenderer::InitializeViewport(Core::IWindow* window, UINT posX, UINT posY, UINT width, UINT height)
 	{
 		if (!mViewportRenderer)
 		{

@@ -16,11 +16,8 @@
 #include "Component/IEditorComponent.h"
 #include "Component/Animator.h"
 
-#include "TemplateFunctions.h"
-
 namespace Editor
 {
-	using GET_SPRITE_ANIMS_FUNC = Common::ResourcePack<FTSpriteAnimation>* (*)();
 	class EditorAnimator :
 		public IEditorComponent,
 		public D3D11::Animator

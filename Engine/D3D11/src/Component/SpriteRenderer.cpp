@@ -8,7 +8,7 @@
 
 #include "Component/SpriteRenderer.h"
 
-#include "Actor/Actor.h"
+#include "Actor/IActor.h"
 #include "Actor/Transform.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
@@ -80,7 +80,7 @@ namespace D3D11
 		newComp->mMaterial		= this->mMaterial;
 	}
 
-	SpriteRenderer::SpriteRenderer(Actor* owner, int updateOrder)
+	SpriteRenderer::SpriteRenderer(IActor* owner, int updateOrder)
 		: D3D11Component(owner, updateOrder)
 		, mSprite(nullptr)
 		, mMaterial(nullptr)

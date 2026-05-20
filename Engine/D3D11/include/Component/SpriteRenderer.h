@@ -18,7 +18,7 @@
 
 namespace Core
 {
-	class Actor;
+	class IActor;
 	class ICamera;
 } // namespace Core
 
@@ -34,7 +34,8 @@ namespace D3D11
 	class D3D11Renderer;
 	struct Mesh;
 
-	class SpriteRenderer : public D3D11Component
+	class SpriteRenderer :
+		public D3D11Component
 	{
 	public:
 		virtual const char* GetName() const override { return "SpriteRenderer"; }
@@ -50,8 +51,8 @@ namespace D3D11
 
 	public:
 		SpriteRenderer(
-			Core::Actor* owner,
-			int			 updateOrder = Core::DefaultVal::UPDATE_ORDER);
+			Core::IActor* owner,
+			int			  updateOrder = Core::DefaultVal::UPDATE_ORDER);
 
 	protected:
 		FTSprite*	GetSprite() const;

@@ -6,43 +6,46 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Component/EditAnimator.h"
+#include "Component/EditorAnimator.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui.h>
+
 #include "EditorUtils.h"
 #include "EditorCamera.h"
 #include "Utility/EditorHelper.h"
 #include "CommandHistory.h"
+#include "EditorRenderer.h"
+#include "Plugin/GetFunc.h"
 
 #include "ResourceSystem/Animation/FTSpriteAnimation.h"
 
 namespace Editor
 {
+	constexpr const char* GET_SPRITE_ANIMS = "GetSpriteAnimations";
 	using namespace Core;
 	using namespace D3D11;
-	void EditAnimator::EditorUpdate(float deltaTime)
+	void EditorAnimator::EditorUpdate(float deltaTime)
 	{
 		LateUpdate(deltaTime);
 	}
 
-	void EditAnimator::EditorUIUpdateImpl()
+	void EditorAnimator::EditorUIUpdate()
 	{
 		UpdatePlayAnim();
 		UpdatePlayList();
 
-		Editor::CommandHistory::GetInstance()->UpdateBoolValue("Is Repeated", IsRepeated());
+		CommandHistory::GetInstance()->UpdateBoolValue("Is Repeated", IsRepeated());
 		SpriteRenderer::EditorUIUpdate();
 	}
 
-	void EditAnimator::EditorRenderImpl(D3D11::D3D11Renderer* renderer)
+	EditorAnimator::EditorAnimator(Core::IActor* owner, int updateOrder)
+		: Animator(owner, updateOrder)
 	{
+		mGetSpriteAnimFunc = GetFunc<GET_SPRITE_ANIMS_FUNC>(DLLPaths::D3D11_EDITOR, GET_SPRITE_ANIMS);
 	}
 
-	void EditAnimator::EditorUIUpdate()
-	{
-	}
-
-	void EditAnimator::EditorRender(D3D11::D3D11Renderer* renderer)
+	void EditorAnimator::EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst)
 	{
 		if (GetSprite())
 		{
@@ -50,28 +53,30 @@ namespace Editor
 
 			Transform*		   transform = GetOwner()->GetTransform();
 			FTSpriteAnimation* anim		 = static_cast<FTSpriteAnimation*>(GetSprite());
+			EditorRenderer*	   rend		 = reinterpret_cast<EditorRenderer*>(renderer);
+
 			GetSprite()->UpdateConstantBuffers(
 				renderer,
 				transform,
-				Editor::EditorCamera::GetInstance(),
+				camInst,
 				GetMaterial(),
 				anim->GetFrameCount(),
-				GetCurrentFrameIdx());
+				CurrFrameIdx());
 
 			GetSprite()->Render(
 				renderer,
 				transform,
-				Editor::EditorCamera::GetInstance(),
+				camInst,
 				GetPSO(),
 				GetMaterial());
 		}
 	}
 
-	void EditAnimator::UpdatePlayAnim()
+	void EditorAnimator::UpdatePlayAnim()
 	{
 		if (GetSprite())
 		{
-			if (GetIsFinished())
+			if (IsFinished())
 			{
 				if (ImGui::Button("Stop"))
 					Stop();
@@ -84,27 +89,27 @@ namespace Editor
 		}
 	}
 
-	void EditAnimator::UpdatePlayList()
+	void EditorAnimator::UpdatePlayList()
 	{
 		FTSpriteAnimation* anim = nullptr;
 		Editor::DisplayResSelection<FTSpriteAnimation>(
 			"Load Animation",
-			&ResourceManager::GetInstance()->GetResMap<FTSpriteAnimation>(),
+			mGetSpriteAnimFunc(),
 			anim);
 
 		if (anim)
 		{
-			mLoadedAnim->PushBack(anim);
-			if (mLoadedAnim->GetSize() == 1)
+			LoadedAnim()->PushBack(anim);
+			if (LoadedAnim()->GetSize() == 1)
 				SetSprite(anim);
 		}
 
 		ImGui::SeparatorText("Play List");
-		if (0 < mLoadedAnim->GetSize())
+		if (0 < LoadedAnim()->GetSize())
 		{
 			size_t i = 0;
 
-			mLoadedAnim->IterateArray([&](FTSpriteAnimation* anim) {
+			LoadedAnim()->IterateArray([&](FTSpriteAnimation* anim) {
 				if (anim)
 				{
 					ImGui::PushID(anim);
@@ -112,10 +117,10 @@ namespace Editor
 					anim->UpdateUI();
 
 					if (ImGui::ArrowButton("##Up", ImGuiDir::ImGuiDir_Up))
-						mLoadedAnim->Swap(i - 1, i);
+						LoadedAnim()->Swap(i - 1, i);
 					ImGui::SameLine();
 					if (ImGui::ArrowButton("##Down", ImGuiDir::ImGuiDir_Down))
-						mLoadedAnim->Swap(i + 1, i);
+						LoadedAnim()->Swap(i + 1, i);
 
 					if (ImGui::Button("Update"))
 						AnimationManager::GetInstance()->SaveAnimationAsFile(anim);
@@ -123,7 +128,7 @@ namespace Editor
 					if (ImGui::Button("Delete"))
 					{
 						anim->SubtractRefCount();
-						mLoadedAnim->Erase(i);
+						LoadedAnim()->Erase(i);
 						ImGui::PopID();
 						return;
 					}

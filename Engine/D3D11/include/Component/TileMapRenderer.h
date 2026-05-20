@@ -62,13 +62,8 @@ namespace D3D11
 		virtual void LoadProperties(std::ifstream& ifs) override;
 
 #ifdef FOXTROT_EDITOR
-	public:
-		virtual void EditorUIUpdate() override;
-		void		 OnConfirmUpdate();
-
 	protected:
-		void UpdateCSV();
-		void UpdateCSV(Common::FTDS::String& key);
+		Common::FTDS::String& TileMapKey();
 #endif
 	};
 

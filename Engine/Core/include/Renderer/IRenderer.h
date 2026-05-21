@@ -12,6 +12,11 @@
 
 #pragma once
 
+#ifdef PLATFORM_D3D11
+	#include <d3d11.h>
+	#include <wrl.h>
+#endif
+
 namespace Math
 {
 	class FTVector2;
@@ -51,6 +56,14 @@ namespace Core
 		/// <param name="width">Viewport width.</param>
 		/// <param name="height">Viewport height.</param>
 		virtual void SetViewport(float topLeftX, float topLeftY, float width, float height) = 0;
+
+#ifdef PLATFORM_D3D11
+	public:
+		virtual Microsoft::WRL::ComPtr<ID3D11Device>&		 GetDevice()				 = 0;
+		virtual Microsoft::WRL::ComPtr<ID3D11DeviceContext>& GetContext()				 = 0;
+		virtual D3D11_VIEWPORT*								 GetViewport()				 = 0;
+		virtual const unsigned int							 GetNumQualityLevels() const = 0;
+#endif // PLATFORM_D3D11
 
 	protected:
 		/// <summary>

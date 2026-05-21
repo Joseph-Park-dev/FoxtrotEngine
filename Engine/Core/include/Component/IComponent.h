@@ -20,6 +20,7 @@
 #include <iosfwd>
 
 #include "Debugging/DebugMemAlloc.h"
+#include "Plugin/CoreExports.h"
 
 namespace Core
 {
@@ -76,4 +77,10 @@ namespace Core
 			t->LoadProperties(ifs);
 		}
 	};
+
+	template <typename COMP>
+	COMP CreateComponent(Core::IActor* owner, int updateOrder)
+	{
+		return DBG_NEW COMP;
+	}
 } // namespace Core

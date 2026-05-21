@@ -24,13 +24,13 @@ namespace Core
 		public Core::IComponent
 	{
 	protected:
-		virtual FTSprite*	GetSprite() const	= 0;
-		virtual FTMaterial* GetMaterial() const = 0;
-		virtual IPSO*		GetPSO() const		= 0;
+		virtual ISprite*   GetSprite() const   = 0;
+		virtual IMaterial* GetMaterial() const = 0;
+		virtual IPSO*	   GetPSO() const	   = 0;
 
-		virtual void SetSprite(FTSprite* sprite)  = 0;
-		virtual void SetMaterial(FTMaterial* mat) = 0;
-		virtual void SetPSO(IPSO* pso)			  = 0;
+		virtual void SetSprite(ISprite* sprite)	 = 0;
+		virtual void SetMaterial(IMaterial* mat) = 0;
+		virtual void SetPSO(IPSO* pso)			 = 0;
 	};
 
 	namespace ChunkKey

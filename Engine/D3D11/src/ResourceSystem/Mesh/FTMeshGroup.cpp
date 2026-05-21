@@ -19,7 +19,7 @@
 #include "Manager/ResourceManager.h"
 #include "InputSystem/IInputDevice.h"
 #include "Renderer/Camera.h"
-#include "Renderer/D3D11Renderer.h"
+#include "Renderer/IRenderer.h"
 #include "Utility/D3D11Utils.h"
 #include "Actor/Transform.h"
 #include "ResourceSystem/Mesh/FTMeshData.h"
@@ -36,7 +36,7 @@ namespace D3D11
 	using namespace Common;
 	ResType FTMeshGroup::Type = ResType::MESH_GROUP;
 
-	void FTMeshGroup::Render(D3D11Renderer* renderer, Core::Transform* transform, Core::ICamera* camInst, D3D11PSO* pso, FTMaterial* mat)
+	void FTMeshGroup::Render(Core::IRenderer* renderer, Core::Transform* transform, Core::ICamera* camInst, D3D11PSO* pso, FTMaterial* mat)
 	{
 	}
 
@@ -70,7 +70,7 @@ namespace D3D11
 	//	Process(renderer);
 	// }
 
-	FTMeshGroup::FTMeshGroup(Common::FTResourceDef& resDef, D3D11Renderer* renderer, FTMeshData* meshData)
+	FTMeshGroup::FTMeshGroup(Common::FTResourceDef& resDef, Core::IRenderer* renderer, FTMeshData* meshData)
 		: D3D11Resource(resDef)
 		, mFrontDir(1)
 		, mDirection(1)
@@ -210,7 +210,7 @@ namespace D3D11
 		mDirection = dir;
 	}
 
-	void FTMeshGroup::Process(D3D11Renderer* renderer, FTMeshData* meshData)
+	void FTMeshGroup::Process(Core::IRenderer* renderer, FTMeshData* meshData)
 	{
 		// if (this->IsProcessed())
 		//	return;

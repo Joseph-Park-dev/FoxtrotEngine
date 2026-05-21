@@ -24,7 +24,7 @@ namespace D3D11
 		virtual Microsoft::WRL::ComPtr<ID3D11Device>&		 GetDevice() override;
 		virtual Microsoft::WRL::ComPtr<ID3D11DeviceContext>& GetContext() override;
 		virtual D3D11_VIEWPORT*								 GetViewport() override;
-		const unsigned int									 GetNumQualityLevels() const;
+		const unsigned int									 GetNumQualityLevels() const override;
 		const Core::FillMode&								 GetFillMode() const;
 
 		void SetFillMode(const Core::FillMode mode);

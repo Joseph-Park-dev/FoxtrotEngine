@@ -64,7 +64,7 @@ namespace D3D11
 		// FTResource::LoadProperties(ifs);
 	}
 
-	FTTexture::FTTexture(Common::FTResourceDef& resDef, D3D11::D3D11Renderer* renderer)
+	FTTexture::FTTexture(Common::FTResourceDef& resDef, Core::IRenderer* renderer)
 		: D3D11Resource(resDef)
 		, mWidth(0)
 		, mHeight(0)
@@ -79,7 +79,7 @@ namespace D3D11
 			LogString("FTTexture()::ReleaseTexture() -> Release Texture Failed");
 	}
 
-	void FTTexture::Process(Common::FTResourceDef& resDef, D3D11::D3D11Renderer* renderer)
+	void FTTexture::Process(Common::FTResourceDef& resDef, Core::IRenderer* renderer)
 	{
 		// Returns early if the resource is processed.
 		if (mSRV)

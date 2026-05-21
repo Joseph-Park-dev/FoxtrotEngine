@@ -12,9 +12,13 @@
 #include <wrl.h>
 #include <d3d11.h>
 
+namespace Core
+{
+	class IRenderer;
+}
+
 namespace D3D11
 {
-	class D3D11Renderer;
 	/// @brief A class that holds the image data.
 	/// This can be used as a single sprite, a texture pack for a tilemap, and
 	/// a spritesheet for an animation, etc.
@@ -46,11 +50,11 @@ namespace D3D11
 	public:
 		/// @brief FTTexture is a graphics resource, so it needs a FTRenderer instance for initialization.
 		/// @param renderer This is usually a game renderer.
-		FTTexture(Common::FTResourceDef& resDef, D3D11::D3D11Renderer* renderer);
+		FTTexture(Common::FTResourceDef& resDef, Core::IRenderer* renderer);
 		~FTTexture();
 
 	protected:
-		virtual void Process(Common::FTResourceDef& resDef, D3D11::D3D11Renderer* renderer);
+		virtual void Process(Common::FTResourceDef& resDef, Core::IRenderer* renderer);
 
 	private:
 		UINT											 mWidth;

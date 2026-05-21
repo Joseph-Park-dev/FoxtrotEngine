@@ -131,7 +131,7 @@ namespace D3D11
 		mGCSpriteData = data;
 	}
 
-	FTSprite::FTSprite(Common::FTResourceDef& resDef, D3D11Renderer* renderer)
+	FTSprite::FTSprite(Common::FTResourceDef& resDef, Core::IRenderer* renderer)
 		: FTMeshGroup(resDef, renderer, nullptr)
 		, mGCMatData(DBG_NEW PointVPMat)
 		, mGCSpriteData(DBG_NEW SpriteGCData)
@@ -142,7 +142,7 @@ namespace D3D11
 		delete vertex;
 	}
 
-	FTSprite::FTSprite(Common::FTResourceDef& resDef, D3D11Renderer* renderer, bool isAnim)
+	FTSprite::FTSprite(Common::FTResourceDef& resDef, Core::IRenderer* renderer, bool isAnim)
 		: FTMeshGroup(resDef, renderer, nullptr)
 		, mGCMatData(DBG_NEW PointVPMat)
 		, mGCSpriteData(DBG_NEW SpriteGCData)
@@ -184,7 +184,7 @@ namespace D3D11
 		return mGCSpriteBuf;
 	}
 
-	void FTSprite::Process(D3D11Renderer* renderer, SpriteVertex* vertices, size_t verticesCount)
+	void FTSprite::Process(Core::IRenderer* renderer, SpriteVertex* vertices, size_t verticesCount)
 	{
 		if (!Meshes()->IsEmpty())
 			return;

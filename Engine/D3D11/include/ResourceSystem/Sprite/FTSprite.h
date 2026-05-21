@@ -48,10 +48,10 @@ namespace D3D11
 		void SetGCSpriteData(SpriteGCData* data);
 
 	public:
-		FTSprite(Common::FTResourceDef& resDef, D3D11Renderer* renderer);
+		FTSprite(Common::FTResourceDef& resDef, Core::IRenderer* renderer);
 		/// @brief Constructor skips FTSprite::Process() if isAnim is true.
 		/// @param isAnim Is this constructor called from FTSpriteAnimation?
-		FTSprite(Common::FTResourceDef& resDef, D3D11Renderer* renderer, bool isAnim);
+		FTSprite(Common::FTResourceDef& resDef, Core::IRenderer* renderer, bool isAnim);
 		virtual ~FTSprite() override;
 
 	protected:
@@ -70,7 +70,7 @@ namespace D3D11
 		FTTexture* mTexture;
 
 	private:
-		void Process(D3D11Renderer* renderer, SpriteVertex* vertices, size_t verticesCount);
+		void Process(Core::IRenderer* renderer, SpriteVertex* vertices, size_t verticesCount);
 
 #ifdef FOXTROT_EDITOR
 	public:

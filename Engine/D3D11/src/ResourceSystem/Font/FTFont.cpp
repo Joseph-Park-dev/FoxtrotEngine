@@ -46,7 +46,7 @@ namespace D3D11
 		Meshes()->PushBack(mesh);
 	}
 
-	void FTFont::Render(Common::FTDS::String& text, D3D11Renderer* renderer, Core::Transform* transform, Camera* camInst, FTTexture* tex, FTVertexShader* vs, FTPixelShader* ps, FTMaterial* mat)
+	void FTFont::Render(Common::FTDS::String& text, Core::IRenderer* renderer, Core::Transform* transform, Camera* camInst, FTTexture* tex, FTVertexShader* vs, FTPixelShader* ps, FTMaterial* mat)
 	{
 		if (!Meshes())
 			return;
@@ -94,7 +94,7 @@ namespace D3D11
 		});
 	}
 
-	void FTFont::UpdateTextVertices(Common::FTDS::String& text, D3D11Renderer* renderer, FTVector2 pos, FTVector2 scale, FTVector2 padding, FTVector3 color, float alpha)
+	void FTFont::UpdateTextVertices(Common::FTDS::String& text, Core::IRenderer* renderer, FTVector2 pos, FTVector2 scale, FTVector2 padding, FTVector3 color, float alpha)
 	{
 		if (text.IsEmpty())
 			return;

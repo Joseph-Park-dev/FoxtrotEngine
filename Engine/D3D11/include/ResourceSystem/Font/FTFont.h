@@ -25,23 +25,23 @@ namespace D3D11
 
 		void Render(
 			Common::FTDS::String& text,
-			D3D11Renderer*		renderer,
-			Core::Transform*	transform,
-			Camera*				camInst,
-			FTTexture*			tex,
-			FTVertexShader*		vs,
-			FTPixelShader*		ps,
-			FTMaterial*			mat);
+			Core::IRenderer*	  renderer,
+			Core::Transform*	  transform,
+			Camera*				  camInst,
+			FTTexture*			  tex,
+			FTVertexShader*		  vs,
+			FTPixelShader*		  ps,
+			FTMaterial*			  mat);
 
 		/// @brief Updates the vertices from the text to be rendered.
 		void UpdateTextVertices(
 			Common::FTDS::String& text,
-			D3D11Renderer*		renderer,
-			Math::FTVector2		pos,
-			Math::FTVector2		scale,
-			Math::FTVector2		padding,
-			Math::FTVector3		color,
-			float				alpha);
+			Core::IRenderer*	  renderer,
+			Math::FTVector2		  pos,
+			Math::FTVector2		  scale,
+			Math::FTVector2		  padding,
+			Math::FTVector3		  color,
+			float				  alpha);
 
 	public:
 		const int	GetSize() const;
@@ -61,7 +61,7 @@ namespace D3D11
 		void SetFontImage(FTTexture* fontImage);
 
 	public:
-		FTFont(Common::FTResourceDef& resDef, D3D11Renderer* renderer);
+		FTFont(Common::FTResourceDef& resDef, Core::IRenderer* renderer);
 		~FTFont();
 
 	public:
@@ -78,8 +78,8 @@ namespace D3D11
 		float mBaseHeight;	  // height of all characters, will be normalized
 		int	  mNumCharacters; // number of characters in the font
 
-		Common::FTDS::HashMap<FontChar*>*	   mCharList;	  // list of characters
-		int								   mNumKernings;  // the number of kernings
+		Common::FTDS::HashMap<FontChar*>*	 mCharList;		// list of characters
+		int									 mNumKernings;	// the number of kernings
 		Common::FTDS::HashMap<FontKerning*>* mKerningsList; // list to hold kerning values
 
 		float	   mLeftPadding;

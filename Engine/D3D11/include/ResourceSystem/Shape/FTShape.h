@@ -16,11 +16,14 @@
 #include "FTMath.h"
 #include "ResourceSystem/Mesh/MeshConstantData.h"
 
-class Transform;
+namespace Core
+{
+	class Transform;
+	class ICamera;
+} // namespace Core
 
 namespace D3D11
 {
-	class Camera;
 	class FTRectArea;
 	struct FTDebugMeshData;
 	struct Mesh;
@@ -41,8 +44,8 @@ namespace D3D11
 
 	public:
 		virtual void Initialize(D3D11Renderer* renderer);
-		void		 UpdateVC(Math::FTMatrix4& model, D3D11::Camera* camInst);
-		void		 UpdateGC(D3D11::Camera* camInst);
+		void		 UpdateVC(Math::FTMatrix4& model, Core::ICamera* camInst);
+		void		 UpdateGC(Core::ICamera* camInst);
 		virtual void UpdatePC();
 
 		// This is for ShapeActors (e.g. SquareActor)
@@ -82,8 +85,8 @@ namespace D3D11
 			Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
 
 		void UpdateModelMatrix(Math::FTVector3 pos, Math::FTVector3 rot, Math::FTVector3 size);
-		void UpdateViewMatrix(D3D11::Camera* camInst);
-		void UpdateProjectionMatrix(D3D11::Camera* camInst);
+		void UpdateViewMatrix(Core::ICamera* camInst);
+		void UpdateProjectionMatrix(Core::ICamera* camInst);
 	};
 
 	namespace ChunkKey

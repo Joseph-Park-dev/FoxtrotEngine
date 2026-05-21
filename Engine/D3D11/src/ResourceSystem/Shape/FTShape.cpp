@@ -61,14 +61,14 @@ namespace D3D11
 		InitializeConstantBuffer(renderer->GetDevice());
 	}
 
-	void FTShape::UpdateVC(Math::FTMatrix4& model, Camera* camInst)
+	void FTShape::UpdateVC(Math::FTMatrix4& model, Core::ICamera* camInst)
 	{
 		if (!mMesh)
 			return;
 		mVSCData.model = model.Transposed();
 	}
 
-	void FTShape::UpdateGC(Camera* camInst)
+	void FTShape::UpdateGC(Core::ICamera* camInst)
 	{
 		Math::FTMatrix4 viewMat = Math::FTMatrix4::Identity;
 		Math::FTMatrix4 projMat = Math::FTMatrix4::Identity;
@@ -192,7 +192,7 @@ namespace D3D11
 		mVSCData.model = model.Transposed();
 	}
 
-	void FTShape::UpdateViewMatrix(D3D11::Camera* camInst)
+	void FTShape::UpdateViewMatrix(Core::ICamera* camInst)
 	{
 		Math::FTMatrix4 viewMat = Math::FTMatrix4::Identity;
 		camInst->GetViewMatrix(viewMat);
@@ -200,7 +200,7 @@ namespace D3D11
 		mGSCData.view = viewMat;
 	}
 
-	void FTShape::UpdateProjectionMatrix(D3D11::Camera* camInst)
+	void FTShape::UpdateProjectionMatrix(Core::ICamera* camInst)
 	{
 		Math::FTMatrix4 projMat = Math::FTMatrix4::Identity;
 		camInst->GetProjectionMatrix(projMat);

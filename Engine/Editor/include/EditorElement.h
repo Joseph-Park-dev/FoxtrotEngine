@@ -70,14 +70,14 @@ namespace Editor
 		/// Constructor that deep-copies an Actor object.
 		/// </summary>
 		/// <param name="origin : ">An Actor object to deep-copy values from.</param>
-		EditorElement(Actor* actor, int id);
+		EditorElement(IActor* actor, int id);
 
 		/// <summary>
 		/// Copy constructors controlling if the object is deep copied.
 		/// </summary>
 		/// <param name="actor">Actor being copied.</param>
 		/// <param name="deepCpy">Perform deep copy through child Actors?</param>
-		EditorElement(Actor* actor, int id, bool deepCpyChild);
+		EditorElement(IActor* actor, int id, bool deepCpyChild);
 
 		/// <summary>
 		/// Constructor that is used for FTPremade origin.

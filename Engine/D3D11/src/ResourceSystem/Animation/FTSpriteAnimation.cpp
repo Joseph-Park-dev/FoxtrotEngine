@@ -11,7 +11,7 @@
 #include <nlohmann/json.hpp>
 
 #include "FileSystem/FileIOHelper.h"
-#include "Renderer/D3D11Renderer.h"
+#include "Renderer/IRenderer.h"
 #include "Utility/D3D11Utils.h"
 #include "Renderer/Camera.h"
 #include "ResourceSystem/Material/FTMaterial.h"
@@ -102,7 +102,7 @@ namespace D3D11
 		return static_cast<size_t>(mMaxFrameIdx - mMinFrameIdx + 1);
 	}
 
-	FTSpriteAnimation::FTSpriteAnimation(Common::FTResourceDef& resDef, D3D11Renderer* renderer)
+	FTSpriteAnimation::FTSpriteAnimation(Common::FTResourceDef& resDef, Core::IRenderer* renderer)
 		: FTSprite(resDef, renderer, true)
 		, mJSON(nullptr)
 		, mMinFrameIdx(0)
@@ -189,7 +189,7 @@ namespace D3D11
 	}
 
 #ifdef FOXTROT_EDITOR
-	FTSpriteAnimation::FTSpriteAnimation(FTSpriteAnimationDef& resDef, D3D11::D3D11Renderer* renderer)
+	FTSpriteAnimation::FTSpriteAnimation(FTSpriteAnimationDef& resDef, Core::IRenderer* renderer)
 		: FTSprite(resDef, renderer, true)
 		, mJSON(resDef.JSON)
 		, mMinFrameIdx(resDef.MinFrameIdx)

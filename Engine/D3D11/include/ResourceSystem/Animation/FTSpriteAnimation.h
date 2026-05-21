@@ -65,7 +65,7 @@ namespace D3D11
 
 	public:
 		/// @brief Relative path is used for importing .spriteanim file.
-		FTSpriteAnimation(Common::FTResourceDef& resDef, D3D11Renderer* renderer);
+		FTSpriteAnimation(Common::FTResourceDef& resDef, Core::IRenderer* renderer);
 		~FTSpriteAnimation();
 
 	private:
@@ -94,7 +94,7 @@ namespace D3D11
 
 #ifdef FOXTROT_EDITOR
 	public:
-		FTSpriteAnimation(FTSpriteAnimationDef& resDef, D3D11Renderer* renderer);
+		FTSpriteAnimation(FTSpriteAnimationDef& resDef, Core::IRenderer* renderer);
 
 	public:
 		virtual void AddRefCount() override;

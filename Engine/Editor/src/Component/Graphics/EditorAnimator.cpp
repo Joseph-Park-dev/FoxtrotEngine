@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Component/EditorAnimator.h"
+#include "Component/Graphics/EditorAnimator.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
@@ -43,7 +43,7 @@ namespace Editor
 	EditorAnimator::EditorAnimator(Core::IActor* owner, int updateOrder)
 		: Animator(owner, updateOrder)
 	{
-		//mGetSpriteAnimFunc = GetFunc<GET_SPRITE_ANIMS_FUNC>(DLLPaths::D3D11_EDITOR, GET_SPRITE_ANIMS);
+		// mGetSpriteAnimFunc = GetFunc<GET_SPRITE_ANIMS_FUNC>(DLLPaths::D3D11_EDITOR, GET_SPRITE_ANIMS);
 	}
 
 	void EditorAnimator::EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst)

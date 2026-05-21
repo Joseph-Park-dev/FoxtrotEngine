@@ -225,22 +225,22 @@
     <ClInclude Include="include\Actor\EditorTransform.h" />
     <ClInclude Include="include\Command.h" />
     <ClInclude Include="include\CommandHistory.h" />
-    <ClInclude Include="include\Component\EditorAnimator.h">
+    <ClInclude Include="include\Component\Graphics\EditorAnimator.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="include\Component\EditorTileMapRenderer.h">
+    <ClInclude Include="include\Component\Graphics\EditorTileMapRenderer.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="include\Component\IEditorComponent.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="include\Component\EditorMeshRenderer.h">
+    <ClInclude Include="include\Component\Graphics\EditorMeshRenderer.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="include\Component\EditorSpineAnimator.h">
+    <ClInclude Include="include\Component\Graphics\EditorSpineAnimator.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="include\Component\EditorSpriteRenderer.h">
+    <ClInclude Include="include\Component\Graphics\EditorSpriteRenderer.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="include\Component\TileMapRenderer.h">
@@ -319,28 +319,25 @@
     <ClCompile Include="..\..\third_party\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\third_party\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\third_party\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="src\Component\EditorAnimator.cpp">
+    <ClCompile Include="src\Component\Graphics\EditorAnimator.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="src\Component\EditorMeshRenderer.cpp">
+    <ClCompile Include="src\Component\Graphics\EditorMeshRenderer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="src\Component\EditorSpineAnimator.cpp">
+    <ClCompile Include="src\Component\Graphics\EditorSpineAnimator.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="src\Component\EditorSpriteRenderer.cpp">
+    <ClCompile Include="src\Component\Graphics\EditorSpriteRenderer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="src\Component\EditorTileMapRenderer.cpp">
+    <ClCompile Include="src\Component\Graphics\EditorTileMapRenderer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\Manager\EditorEventManager.cpp" />
     <ClCompile Include="src\EditorEventFunctions.cpp" />
-    <ClCompile Include="src\Component\EditorComponent.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="src\Actor\EditorTransform.cpp" />
     <ClCompile Include="src\Manager\EditorShapes.cpp" />
     <ClCompile Include="src\EditorRenderer.cpp" />

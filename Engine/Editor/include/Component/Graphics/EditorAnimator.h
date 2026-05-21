@@ -33,7 +33,7 @@ namespace Editor
 			int			  updateOrder = Core::DefaultVal::UPDATE_ORDER);
 
 	private:
-		//GET_SPRITE_ANIMS_FUNC mGetSpriteAnimFunc;
+		// GET_SPRITE_ANIMS_FUNC mGetSpriteAnimFunc;
 
 	private:
 		void UpdatePlayAnim();

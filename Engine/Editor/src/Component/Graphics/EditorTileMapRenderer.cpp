@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Component/EditorTileMapRenderer.h"
+#include "Component/Graphics/EditorTileMapRenderer.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui/imgui.h>
@@ -23,6 +23,12 @@
 
 namespace Editor
 {
+	void EditorTileMapRenderer::EditorUpdate(float deltaTime)
+	{
+	}
+	void EditorTileMapRenderer::EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst)
+	{
+	}
 	void EditorTileMapRenderer::EditorUIUpdate()
 	{
 		// UpdateSprite();
@@ -137,4 +143,4 @@ namespace Editor
 			ImGui::EndPopup();
 		}
 	}
-} // namespace D3D11
+} // namespace Editor

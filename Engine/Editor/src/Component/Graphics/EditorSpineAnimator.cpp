@@ -1,4 +1,4 @@
-#include "Component/EditorSpineAnimator.h"
+#include "Component/Graphics/EditorSpineAnimator.h"
 
 #include "ResourceSystem/Animation/FTSpineAnimation.h"
 #include "EditorUtils.h"

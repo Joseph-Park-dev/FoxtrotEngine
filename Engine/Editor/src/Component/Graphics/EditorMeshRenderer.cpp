@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Component/EditorMeshRenderer.h"
+#include "Component/Graphics/EditorMeshRenderer.h"
 
 #include "Actor/Transform.h"
 #include "Actor/Actor.h"

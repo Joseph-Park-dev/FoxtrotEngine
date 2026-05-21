@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Component/EditorSpriteRenderer.h"
+#include "Component/Graphics/EditorSpriteRenderer.h"
 
 #include "CommandHistory.h"
 #include "EditorUtils.h"
@@ -41,6 +41,10 @@ namespace Editor
 			"Select Material",
 			D3D11::ResourceManager::GetInstance()->GetMaterials(),
 			Material());
+	}
+
+	void EditorSpriteRenderer::EditorUpdate(float deltaTime)
+	{
 	}
 
 	void EditorSpriteRenderer::EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst)

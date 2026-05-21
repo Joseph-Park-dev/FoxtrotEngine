@@ -86,7 +86,7 @@ namespace D3D11
 	{
 	}
 
-	void TileMapRenderer::Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst)
+	void TileMapRenderer::Render(Core::IRenderer* renderer, Core::ICamera* camInst)
 	{
 	}
 

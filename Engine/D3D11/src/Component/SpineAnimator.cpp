@@ -57,7 +57,7 @@ namespace D3D11
 	{
 	}
 
-	void SpineAnimator::Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst)
+	void SpineAnimator::Render(Core::IRenderer* renderer, Core::ICamera* camInst)
 	{
 		if (GetMeshGroup())
 		{
@@ -118,47 +118,4 @@ namespace D3D11
 			anim->SetSkinCombination(skinCombination);
 		}
 	}
-
-#ifdef FOXTROT_EDITOR
-	void SpineAnimator::EditorUpdate(float deltaTime)
-	{
-		this->Update(deltaTime);
-	}
-
-	void SpineAnimator::EditorRender(D3D11::D3D11Renderer* renderer, Core::ICamera* camInst)
-	{
-		if (GetMeshGroup())
-		{
-			Transform* transform = GetOwner()->GetTransform();
-			static_cast<FTSpineAnimation*>(
-				GetMeshGroup())
-				->Render(renderer, transform, camInst, GetTexture(), GetVS(), GetPS(), GetMaterial());
-		}
-	}
-
-	void SpineAnimator::EditorUIUpdate()
-	{
-		ImGui::Text("Play List");
-		FTSpineAnimation* anim = nullptr;
-		Editor::DisplayResSelection<FTSpineAnimation>(
-			"Load Animation",
-			ResourceManager::GetInstance()->GetSpineAnimations(),
-			anim);
-
-		if (anim)
-		{
-			SetMeshGroup(anim);
-			anim->SetAnimation(1, true);
-		}
-
-		if (GetMeshGroup())
-		{
-			FTSpineAnimation* anim = static_cast<FTSpineAnimation*>(GetMeshGroup());
-			anim->UpdateUI();
-			if (ImGui::Button("Update"))
-				AnimationManager::GetInstance()->SaveAnimationAsFile(anim);
-			MeshRenderer::EditorUIUpdate();
-		}
-	}
-#endif
 } // namespace D3D11

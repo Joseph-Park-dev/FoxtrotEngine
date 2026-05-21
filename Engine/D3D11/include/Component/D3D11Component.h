@@ -7,6 +7,7 @@ namespace Core
 {
 	class IInputDevice;
 	class IActor;
+	class IRenderer;
 	class ICamera;
 } // namespace Core
 
@@ -23,11 +24,11 @@ namespace D3D11
 	public:
 		virtual void Initialize();
 		virtual void Setup();
-		virtual void ProcessInput(Core::IInputDevice* inputDevice)					= 0;
-		virtual void Update(float deltaTime)										= 0;
-		virtual void LateUpdate(float deltaTime)									= 0;
-		virtual void Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst) = 0;
-		virtual void CloneTo(Core::IActor* actor)									= 0;
+		virtual void ProcessInput(Core::IInputDevice* inputDevice)			   = 0;
+		virtual void Update(float deltaTime)								   = 0;
+		virtual void LateUpdate(float deltaTime)							   = 0;
+		virtual void Render(Core::IRenderer* renderer, Core::ICamera* camInst) = 0;
+		virtual void CloneTo(Core::IActor* actor)							   = 0;
 
 	public:
 		virtual void SaveProperties(std::ofstream& ofs) override;

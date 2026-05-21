@@ -159,7 +159,7 @@ namespace D3D11
 		UpdateFrame(deltaTime);
 	}
 
-	void Animator::Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst)
+	void Animator::Render(Core::IRenderer* renderer, Core::ICamera* camInst)
 	{
 		if (GetSprite())
 		{

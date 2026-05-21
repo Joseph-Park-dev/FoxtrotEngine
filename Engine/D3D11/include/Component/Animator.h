@@ -46,7 +46,7 @@ namespace D3D11
 		virtual void ProcessInput(Core::IInputDevice* inputDevice) override;
 		virtual void Update(float deltaTime) override;
 		void		 LateUpdate(float deltaTime) override;
-		void		 Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst) override;
+		void		 Render(Core::IRenderer* renderer, Core::ICamera* camInst) override;
 
 		virtual void CloneTo(Core::IActor* actor) override;
 

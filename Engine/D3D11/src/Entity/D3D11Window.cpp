@@ -79,7 +79,7 @@ namespace D3D11
 		return true;
 	}
 
-	bool D3D11Window::InitializeWindowRenderer(D3D11::D3D11Renderer* renderer)
+	bool D3D11Window::InitializeWindowRenderer(Core::IRenderer* renderer)
 	{
 		if (!CreateRTV(renderer->GetDevice()))
 		{
@@ -95,7 +95,7 @@ namespace D3D11
 		return true;
 	}
 
-	bool D3D11Window::CreateSwapChain(D3D11::D3D11Renderer* renderer)
+	bool D3D11Window::CreateSwapChain(Core::IRenderer* renderer)
 	{
 		HRESULT hr = D3D11Utils::CreateSwapChain(mWinHandle, renderer->GetDevice(), mSwapChain, GetWidth(), GetHeight(), renderer->GetNumQualityLevels());
 		if (hr != S_OK)

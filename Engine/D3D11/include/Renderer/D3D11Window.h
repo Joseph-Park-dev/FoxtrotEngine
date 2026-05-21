@@ -43,8 +43,8 @@ namespace D3D11
 	public:
 		bool Initialize(int windowMode);
 		bool Initialize(int windowMode, WNDPROC proc, WNDPROC_Params* params = nullptr);
-		bool InitializeWindowRenderer(D3D11::D3D11Renderer* renderer);
-		bool CreateSwapChain(D3D11::D3D11Renderer* renderer);
+		bool InitializeWindowRenderer(Core::IRenderer* renderer);
+		bool CreateSwapChain(Core::IRenderer* renderer);
 
 	public:
 		void Reset();

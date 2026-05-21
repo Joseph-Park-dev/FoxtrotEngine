@@ -57,7 +57,7 @@ namespace D3D11
 	{
 	}
 
-	void MeshRenderer::Render(D3D11::D3D11Renderer* renderer, D3D11::Camera* camInst)
+	void MeshRenderer::Render(Core::IRenderer* renderer, Core::ICamera* camInst)
 	{
 		if (mMeshGroup)
 		{

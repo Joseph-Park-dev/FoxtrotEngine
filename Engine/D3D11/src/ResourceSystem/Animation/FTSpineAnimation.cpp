@@ -41,7 +41,7 @@ namespace D3D11
 		mSkeleton->updateWorldTransform(physics);
 	}
 
-	void FTSpineAnimation::Render(D3D11Renderer* renderer, Core::Transform* transform, Core::ICamera* camInst, FTTexture* tex, FTVertexShader* vs, FTPixelShader* ps, FTMaterial* mat)
+	void FTSpineAnimation::Render(Core::IRenderer* renderer, Core::Transform* transform, Core::ICamera* camInst, FTTexture* tex, FTVertexShader* vs, FTPixelShader* ps, FTMaterial* mat)
 	{
 		// This enables the resource reusable throughout the Component instances.
 		UpdateConstantBuffers(renderer, transform, camInst, mat, GetFrontDir());
@@ -100,7 +100,7 @@ namespace D3D11
 		return mLoadedClips;
 	}
 
-	FTSpineAnimation::FTSpineAnimation(Common::FTResourceDef& resDef, D3D11Renderer* renderer)
+	FTSpineAnimation::FTSpineAnimation(Common::FTResourceDef& resDef, Core::IRenderer* renderer)
 		: FTSprite(resDef, renderer)
 		, mJSONPath(nullptr)
 		, mAtlasPath(nullptr)
@@ -149,7 +149,7 @@ namespace D3D11
 		delete mMeshes;
 	}
 
-	void FTSpineAnimation::Process(D3D11::D3D11Renderer* renderer)
+	void FTSpineAnimation::Process(Core::IRenderer* renderer)
 	{
 		if (mJSONPath && mAtlasPath && !mMeshes->IsEmpty())
 			return;
@@ -457,7 +457,7 @@ namespace D3D11
 
 	FTSpineAnimation::FTSpineAnimation(
 		Common::FTResourceDef&		resDef,
-		D3D11Renderer*				renderer,
+		Core::IRenderer*			renderer,
 		const Common::FTDS::String* jsonPath,
 		const Common::FTDS::String* atlasPath)
 		: FTSpineAnimation(resDef, renderer)

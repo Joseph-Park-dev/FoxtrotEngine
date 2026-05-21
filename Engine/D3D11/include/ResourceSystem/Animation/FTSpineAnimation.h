@@ -41,7 +41,7 @@ namespace D3D11
 
 		/// @brief Renders the entire meshes created, as a full model.
 		void Render(
-			D3D11Renderer*	 renderer,
+			Core::IRenderer* renderer,
 			Core::Transform* transform,
 			Core::ICamera*	 camInst,
 			FTTexture*		 tex,
@@ -84,7 +84,7 @@ namespace D3D11
 	public:
 		/// @brief Creates the spine animation.
 		/// The file paths of the generic data will only be used.
-		FTSpineAnimation(Common::FTResourceDef& resDef, D3D11Renderer* renderer);
+		FTSpineAnimation(Common::FTResourceDef& resDef, Core::IRenderer* renderer);
 		~FTSpineAnimation() override;
 
 	private:
@@ -120,7 +120,7 @@ namespace D3D11
 		Common::FTDS::DynamicArray<SpineMesh*>* mMeshes;
 
 	private:
-		void Process(D3D11::D3D11Renderer* renderer);
+		void Process(Core::IRenderer* renderer);
 
 		/// @brief Loads Spine Atlas & JSON, and creates a spine animation.
 		/// @param device
@@ -146,7 +146,7 @@ namespace D3D11
 	public:
 		FTSpineAnimation(
 			Common::FTResourceDef&		resDef,
-			D3D11Renderer*				renderer,
+			Core::IRenderer*			renderer,
 			const Common::FTDS::String* jsonPath,
 			const Common::FTDS::String* atlasPath);
 

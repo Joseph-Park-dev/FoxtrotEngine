@@ -164,6 +164,11 @@ namespace Core
 		});
 	}
 
+	ActorData* Actor::GetData()
+	{
+		return mData;
+	}
+
 	ActorGroup Actor::GetActorGroup() const
 	{
 		return mData->ActorGroup;
@@ -286,23 +291,6 @@ namespace Core
 
 		if (child->GetParent()->GetParent())
 			child->SetParent(child->GetParent()->GetParent());
-	}
-
-	void Actor::AddComponent(IComponent* component)
-	{
-		int	   updateOrder = component->GetUpdateOrder();
-		auto   iter		   = mData->Components->Begin();
-		size_t iterPos	   = 0;
-		for (; iter != mData->Components->End(); ++iter)
-		{
-			if (!(*iter))
-				break;
-
-			if (updateOrder < (*iter)->GetUpdateOrder())
-				break;
-			++iterPos;
-		}
-		mData->Components->Insert(iterPos, component);
 	}
 
 	void Actor::RemoveComponent(IComponent* component)

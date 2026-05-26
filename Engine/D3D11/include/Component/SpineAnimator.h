@@ -14,7 +14,10 @@ namespace D3D11
 		public MeshRenderer
 	{
 	public:
-		virtual const char* GetName() const override { return "SpineAnimator"; }
+		virtual const char* GetName() override
+		{
+			return "SpineAnimator";
+		}
 
 	public:
 		void Play(const int idx, bool isRepeated);
@@ -43,7 +46,8 @@ namespace D3D11
 	{
 		namespace SpineAnimator
 		{
+			constexpr const char* NAME		  = "SpineAnimator";
 			constexpr const char* LOADED_ANIM = "Loaded Anim";
-		}
+		} // namespace SpineAnimator
 	} // namespace ChunkKey
 } // namespace D3D11

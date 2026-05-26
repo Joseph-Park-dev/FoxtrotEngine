@@ -25,7 +25,7 @@ namespace D3D11
 		public SpriteRenderer
 	{
 	public:
-		virtual const char* GetName() const override
+		virtual const char* GetName() override
 		{
 			return "Animator";
 		}
@@ -84,10 +84,11 @@ namespace D3D11
 
 	namespace ChunkKey
 	{
-		namespace FTSpriteAnimator
+		namespace Animator
 		{
+			constexpr const char* NAME		  = "Animator";
 			constexpr const char* LOADED_KEYS = "Loaded Keys";
 
-		} // namespace FTSpriteAnimator
+		} // namespace Animator
 	} // namespace ChunkKey
 } // namespace D3D11

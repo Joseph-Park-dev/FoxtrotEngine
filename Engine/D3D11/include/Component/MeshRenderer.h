@@ -42,7 +42,10 @@ namespace D3D11
 		// Component information //
 		///////////////////////////
 	public:
-		virtual const char* GetName() const override { return "MeshRenderer"; }
+		virtual const char* GetName() override
+		{
+			return "MeshRenderer";
+		}
 
 		/////////////////////////
 		// Game-loop functions //
@@ -113,4 +116,12 @@ namespace D3D11
 		FTMaterial*& Material() { return mMaterial; }
 #endif
 	};
+
+	namespace ChunkKey
+	{
+		namespace MeshRenderer
+		{
+			constexpr const char* NAME = "MeshRenderer";
+		} // namespace MeshRenderer
+	} // namespace ChunkKey
 } // namespace D3D11

@@ -13,7 +13,7 @@
 #include "Manager/FTSpineLoader.h"
 #include "Manager/DirectoryHelper.h"
 #include "FileSystem/NullKeys.h"
-#include "Renderer/IRenderer.h"
+#include "Renderer/D3D11Renderer.h"
 
 #include "FTDS/Static/FTString.h"
 #include <../../Core/include/Manager/ResourceManager.h>

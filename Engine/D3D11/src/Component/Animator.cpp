@@ -79,20 +79,20 @@ namespace D3D11
 		SpriteRenderer::SaveProperties(ofs);
 
 		// Loop through loaded animation keys and save.
-		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSpriteAnimator::LOADED_KEYS);
+		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Animator::LOADED_KEYS);
 		size_t i = 0;
 		mLoadedAnim->IterateArray([&](FTSpriteAnimation* anim) {
 			if (anim)
 				FileIOHelper::SaveString(ofs, std::to_string(i).c_str(), anim->GetFileName());
 			++i;
 		});
-		FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSpriteAnimator::LOADED_KEYS);
+		FileIOHelper::EndDataPackSave(ofs, ChunkKey::Animator::LOADED_KEYS);
 	}
 
 	void Animator::LoadProperties(std::ifstream& ifs)
 	{
 		// Load Animations
-		std::pair<size_t, Common::FTDS::String> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpriteAnimator::LOADED_KEYS);
+		std::pair<size_t, Common::FTDS::String> pack = FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::Animator::LOADED_KEYS);
 		mLoadedAnim->Reserve(pack.first);
 		for (size_t i = 0; i < pack.first; ++i)
 		{

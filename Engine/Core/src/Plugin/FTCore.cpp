@@ -38,6 +38,9 @@ namespace Core
 		public Core::IPlugin
 	{
 	public:
+		virtual void RegisterComponent(IComponent* comp) {};
+
+	public:
 		//////////////////////////////////
 		////// Initialization Phase //////
 		//////////////////////////////////

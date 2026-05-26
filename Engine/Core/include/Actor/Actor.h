@@ -53,7 +53,6 @@ namespace Core
 	public:
 		virtual void AddChild(IActor* actor) override;
 		virtual void RemoveChild(IActor* actor) override;
-		virtual void AddComponent(IComponent* component) override;
 		virtual void RemoveComponent(IComponent* component) override;
 		virtual void RemoveAllComponents() override;
 
@@ -72,6 +71,7 @@ namespace Core
 
 	public:
 		// Getters/Setters
+		virtual ActorData*								 GetData() override;
 		virtual ActorGroup								 GetActorGroup() const override;
 		virtual ActorGroup&								 GetActorGroupRef() override;
 		virtual ActorGroup*								 GetActorGroupPtr() override;
@@ -99,18 +99,6 @@ namespace Core
 		virtual bool  HasName(const char* name) override;
 		virtual bool  IsDead() override;
 		virtual bool& IsActive() override;
-
-		template <class T>
-		T* GetComponent()
-		{
-			for (auto iter = mData->Components->Begin(); iter != mData->Components->End(); ++iter)
-			{
-				T* comp = dynamic_cast<T*>(*iter);
-				if (comp)
-					return comp;
-			}
-			return nullptr;
-		};
 
 	private:
 		ActorData* mData;

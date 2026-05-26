@@ -15,15 +15,14 @@
 
 #include "FTDS/Static/FTString.h"
 #include "Actor/ActorGroup.h"
+#include "Component/IComponent.h"
+#include "Plugin/IPlugin.h"
 
 namespace Core
 {
 	class IActor;
 	class Transform;
-	class FTInputDevice;
 	class Scene;
-	class IComponent;
-	class FoxtrotRenderer;
 	class FTPremade;
 	enum class ACTOR_TAG;
 	enum class ActorGroup;
@@ -52,6 +51,39 @@ namespace Core
 		IActor*									 Parent		= nullptr;
 		Common::FTDS::DynamicArray<IActor*>*	 Children	= nullptr;
 		int										 DrawOrder	= 0;
+
+		template <typename COMP>
+		COMP* AddComponent(IPlugin* plugin, IActor* actor)
+		{
+			COMP*  comp		   = new COMP(actor);
+			int	   updateOrder = comp->GetUpdateOrder();
+			auto   iter		   = Components->Begin();
+			size_t iterPos	   = 0;
+			for (; iter != Components->End(); ++iter)
+			{
+				if (!(*iter))
+					break;
+
+				if (updateOrder < (*iter)->GetUpdateOrder())
+					break;
+				++iterPos;
+			}
+			Components->Insert(iterPos, comp);
+			plugin->RegisterComponent(comp);
+			return comp;
+		}
+
+		template <class COMP>
+		COMP* GetComponent()
+		{
+			for (auto iter = Components->Begin(); iter != Components->End(); ++iter)
+			{
+				COMP* comp = dynamic_cast<COMP*>(*iter);
+				if (comp)
+					return comp;
+			}
+			return nullptr;
+		};
 	};
 
 	class IActor
@@ -59,7 +91,6 @@ namespace Core
 	public:
 		virtual void AddChild(IActor* actor)				= 0;
 		virtual void RemoveChild(IActor* actor)				= 0;
-		virtual void AddComponent(IComponent* component)	= 0;
 		virtual void RemoveComponent(IComponent* component) = 0;
 		virtual void RemoveAllComponents()					= 0;
 
@@ -78,6 +109,7 @@ namespace Core
 
 	public:
 		// Getters/Setters
+		virtual ActorData*								 GetData()			   = 0;
 		virtual ActorGroup								 GetActorGroup() const = 0;
 		virtual ActorGroup&								 GetActorGroupRef()	   = 0;
 		virtual ActorGroup*								 GetActorGroupPtr()	   = 0;
@@ -90,6 +122,12 @@ namespace Core
 		virtual Common::FTDS::DynamicArray<IComponent*>* GetComponents()	   = 0;
 		virtual Common::FTDS::DynamicArray<IActor*>*	 GetChildActors()	   = 0;
 		virtual const int&								 GetDrawOrder() const  = 0;
+
+		template <typename COMP>
+		COMP* AddComponent(IPlugin* plugin)
+		{
+			return GetData()->AddComponent<COMP>(plugin, this);
+		}
 
 		virtual void SetName(Common::FTDS::String&& name)								= 0;
 		virtual void SetIsActive(bool isActive)											= 0;

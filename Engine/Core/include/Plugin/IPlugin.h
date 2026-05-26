@@ -9,19 +9,25 @@
 /// Interface for all Plugins.
 /// A direct instantiation of this class is strictly prohibited.
 /// </summary>
-
+#pragma once
 #include <Windows.h>
 #include <assert.h>
 
 #include "Debugging/DebugFuncs.h"
+#include "Plugin/CoreExports.h"
+#include "Component/IComponent.h"
+#include "FTDS/Static/FTString.h"
 
-#pragma once
 namespace Core
 {
 	class Entity;
+	class IActor;
 
 	class IPlugin
 	{
+	public:
+		virtual void RegisterComponent(IComponent* comp) = 0;
+
 	public:
 		//////////////////////////////////
 		////// Initialization Phase //////
@@ -58,5 +64,15 @@ namespace Core
 		} // namespace Plugin
 	} // namespace ChunkKey
 
-	extern "C" __declspec(dllexport) IPlugin* CreatePlugin(const char* name);
+	extern "C"
+	{
+		CORE_API IPlugin* CreatePlugin(const char* name);
+
+		/// @brief Creates plugin-specific component to actor
+		/// @param plugin Plugin to register component
+		/// @param actor Actor object the component is loaded to
+		/// @param name Name of the component
+		/// @return
+		CORE_API IComponent* CreateComponent(IPlugin* plugin, IActor* actor, Common::FTDS::String& name);
+	}
 } // namespace Core

@@ -132,12 +132,12 @@ namespace D3D11
 	}
 
 	void FTMeshGroup::UpdateConstantBuffers(
-		ComPtr<ID3D11Device>&		 device,
-		ComPtr<ID3D11DeviceContext>& context,
-		Core::Transform*			 transform,
-		Camera*						 camInst,
-		FTMaterial*					 mat,
-		const int					 frontDir)
+		Microsoft::WRL::ComPtr<ID3D11Device>&		 device,
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,
+		Core::Transform*							 transform,
+		Core::ICamera*								 camInst,
+		FTMaterial*									 mat,
+		const int									 frontDir)
 	{
 		//// Model Transformation
 		//// Front Direction will be multiplied to scale.

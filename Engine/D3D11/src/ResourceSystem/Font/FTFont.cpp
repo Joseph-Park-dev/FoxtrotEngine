@@ -1,6 +1,6 @@
 #include "ResourceSystem/Font/FTFont.h"
 
-#include "Renderer/D3D11Renderer.h"
+#include "Renderer/IRenderer.h"
 #include "Renderer/D3D11Window.h"
 #include "Renderer/FTRectArea.h"
 #include "Utility/D3D11Utils.h"
@@ -198,7 +198,7 @@ namespace D3D11
 		return (mTopPadding + mBottomPadding) * paddingY;
 	}
 
-	FTFont::FTFont(Common::FTResourceDef& resDef, D3D11Renderer* renderer)
+	FTFont::FTFont(Common::FTResourceDef& resDef, Core::IRenderer* renderer)
 		: FTMeshGroup(resDef, renderer, nullptr)
 		, mSize(0)
 		, mLineHeight(0.f)

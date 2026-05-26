@@ -2,6 +2,7 @@
 #include "Plugin/IPlugin.h"
 #include "Factory/IGraphicsFactory.h"
 #include "Factory/IInputSysFactory.h"
+#include "Plugin/D3D11Exports.h"
 
 #include "Actor/IActor.h"
 #include "InputSystem/D3D11InputDevice.h"
@@ -27,7 +28,6 @@ namespace ChunkKey
 } // namespace ChunkKey
 
 using namespace Core;
-using namespace Common;
 class D3D11Plugin :
 	public Core::IPlugin,
 	public Core::IGraphicsFactory,
@@ -265,7 +265,34 @@ D3D11Plugin::~D3D11Plugin()
 	delete mWindows;
 }
 
-extern "C" __declspec(dllexport) Core::IPlugin* CreatePlugin(const char* name)
+#include "FTDS/Static/FTString.h"
+#include "Component/Animator.h"
+#include "Component/MeshRenderer.h"
+#include "Component/SpineAnimator.h"
+#include "Component/SpriteRenderer.h"
+#include "Component/TileMapRenderer.h"
+
+extern "C"
 {
-	return new D3D11Plugin(name);
+	D3D11_API IComponent* CreateComponent(IPlugin* plugin, IActor* actor, Common::FTDS::String& name)
+	{
+		// comp->LoadProperties();
+		// NEED TO MAKE COMPONENT MANAGER.
+
+		Core::IComponent* comp = nullptr;
+
+		if (name.Equal(D3D11::ChunkKey::Animator::NAME))
+			comp = actor->AddComponent<D3D11::Animator>(plugin);
+
+		else if (name.Equal(D3D11::ChunkKey::SpriteRenderer::NAME))
+			comp = actor->AddComponent<D3D11::SpriteRenderer>(plugin);
+
+		else if (name.Equal(D3D11::ChunkKey::SpineAnimator::NAME))
+			comp = actor->AddComponent<D3D11::SpineAnimator>(plugin);
+
+		else if (name.Equal(D3D11::ChunkKey::TileMapRenderer::NAME))
+			comp = actor->AddComponent<D3D11::TileMapRenderer>(plugin);
+
+		return comp;
+	}
 }

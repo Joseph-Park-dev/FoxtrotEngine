@@ -26,10 +26,11 @@ namespace D3D11
 		public SpriteRenderer
 	{
 	public:
-		const char* GetName() const override
+		virtual const char* GetName() override
 		{
 			return "TileMapRenderer";
 		}
+
 		Common::FTDS::String& GetTileMapKey();
 		FTTileMap*			  GetTileMap() const;
 
@@ -69,6 +70,10 @@ namespace D3D11
 
 	namespace ChunkKey
 	{
-		constexpr const char* TILEMAP_KEY = "TileMapKey";
-	}
+		namespace TileMapRenderer
+		{
+			constexpr const char* NAME		  = "TileMapRenderer";
+			constexpr const char* TILEMAP_KEY = "TileMapKey";
+		} // namespace TileMapRenderer
+	} // namespace ChunkKey
 } // namespace D3D11

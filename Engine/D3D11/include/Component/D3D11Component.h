@@ -19,9 +19,6 @@ namespace D3D11
 		public Core::IComponent
 	{
 	public:
-		virtual const char* GetName() const = 0;
-
-	public:
 		virtual void Initialize();
 		virtual void Setup();
 		virtual void ProcessInput(Core::IInputDevice* inputDevice)			   = 0;
@@ -35,6 +32,7 @@ namespace D3D11
 		virtual void LoadProperties(std::ifstream& ifs) override;
 
 	public:
+		virtual const char*	  GetName() = 0;
 		virtual Core::IActor* GetOwner() override;
 		virtual const int	  GetUpdateOrder() override;
 		virtual const bool	  GetIsInitialized() const override;

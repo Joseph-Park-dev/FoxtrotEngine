@@ -42,9 +42,6 @@ namespace Core
 	class IComponent
 	{
 	public:
-		virtual const char* GetName() const = 0;
-
-	public:
 		virtual void Initialize()							 = 0;
 		virtual void Setup()								 = 0;
 		virtual void ProcessInput(IInputDevice* inputDevice) = 0;
@@ -57,11 +54,12 @@ namespace Core
 		virtual void LoadProperties(std::ifstream& ifs) = 0;
 
 	public:
-		virtual IActor*	   GetOwner()				= 0;
-		virtual const int  GetUpdateOrder()			= 0;
-		virtual const bool GetIsInitialized() const = 0;
-		virtual const bool GetIsSetup() const		= 0;
-		virtual const bool GetIsActive() const		= 0;
+		virtual const char* GetName()				 = 0;
+		virtual IActor*		GetOwner()				 = 0;
+		virtual const int	GetUpdateOrder()		 = 0;
+		virtual const bool	GetIsInitialized() const = 0;
+		virtual const bool	GetIsSetup() const		 = 0;
+		virtual const bool	GetIsActive() const		 = 0;
 
 		virtual void SetIsActive(bool isActive) = 0;
 

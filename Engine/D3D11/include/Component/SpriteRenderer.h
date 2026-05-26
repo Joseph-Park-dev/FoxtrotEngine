@@ -38,7 +38,10 @@ namespace D3D11
 		public D3D11Component
 	{
 	public:
-		virtual const char* GetName() const override { return "SpriteRenderer"; }
+		virtual const char* GetName() override
+		{
+			return "SpriteRenderer";
+		}
 
 	public:
 		virtual void Initialize() override;
@@ -83,6 +86,8 @@ namespace D3D11
 	{
 		namespace SpriteRenderer
 		{
+			constexpr const char* NAME = "SpriteRenderer";
+
 			constexpr const char* SPRITE	   = "Sprite";
 			constexpr const char* MATERIAL	   = "Material";
 			constexpr const char* FRONT_DIR	   = "Front Dir";

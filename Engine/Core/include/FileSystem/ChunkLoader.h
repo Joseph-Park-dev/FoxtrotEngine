@@ -67,9 +67,9 @@ namespace Core
 		constexpr const char* GAME_DATA = "Game Data";
 
 		// Data Pack Names
-		constexpr const char* CHUNK_DATA	= "Chunk Data";
-		constexpr const char* ACTOR_DATA	= "Actor Data";
-		constexpr const char* CORE_RES_DATA = "Core Resource Data";
+		constexpr const char* CHUNK_DATA = "Chunk Data";
+		constexpr const char* ACTOR_DATA = "Actor Data";
+		constexpr const char* RES_DATA	 = "Resource Data";
 
 		constexpr const char* ACTOR_PROPERTIES = "Actor Properties";
 		constexpr const char* TRANSFORM		   = "Transform";

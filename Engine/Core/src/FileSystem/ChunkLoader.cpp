@@ -35,7 +35,7 @@ namespace Core
 		LoadChunkData(ifs);
 
 		// Load premades to Core ResourceManager
-		size_t premadeCount = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CORE_RES_DATA).first;
+		size_t premadeCount = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RES_DATA).first;
 		// Core::ResourceManager::GetInstance()->LoadResourcesFromChunk(ifs, premadeCount);
 
 		LoadActorsData(ifs);

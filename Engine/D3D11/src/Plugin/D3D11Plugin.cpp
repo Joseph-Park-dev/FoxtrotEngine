@@ -44,7 +44,7 @@ public:
 	virtual IInputDevice* CreateInputDevice() override;
 
 	void SaveProperties();
-	void LoadProperties(SceneManager* sceneManager);
+	void LoadProperties(std::ifstream& ifs) override;
 
 public:
 	//////////////////////////////////
@@ -196,7 +196,7 @@ void D3D11Plugin::SaveProperties()
 	//		FileIOHelper::SaveUnsignedInt(ofs, Core::ChunkKey::FTWindow::WIDTH, (*iter)->GetWidth());
 	//		FileIOHelper::SaveUnsignedInt(ofs, Core::ChunkKey::FTWindow::HEIGHT, (*iter)->GetHeight());
 
-	//		HMODULE			mod	 = GetModuleHandleA(DLLPaths::CORE_EDITOR);
+	//		HMODULE			mod	 = GetModuleHandleA(DLLPath::CORE_EDITOR);
 	//		FARPROC			proc = GetProcAddress(mod, D3D11::PluginKey::SAVE_PROPERTIES);
 	//		FTRECTAREA_SAVE func = reinterpret_cast<FTRECTAREA_SAVE>(proc);
 	//		func(ofs, (*iter)->GetRenderArea());
@@ -208,39 +208,9 @@ void D3D11Plugin::SaveProperties()
 	//}
 }
 
-void D3D11Plugin::LoadProperties(SceneManager* sceneManager)
+void D3D11Plugin::LoadProperties(std::ifstream& ifs)
 {
-	/*Common::FTDS::String dataPath = D3D11::PluginKey::D3D11;
-	dataPath.Append(FileTypes::PLUGIN_DATA);
-	std::ifstream ifs(dataPath.C_Str());
-	if (!ifs.good())
-		SaveProperties();
-	else
-	{
-		FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::Plugin::PLUGIN_DATA);
-		size_t winCount = FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::FTWindow::WINDOW_DATA).first;
-		for (size_t i = 0; i < winCount; ++i)
-		{
-			Common::FTDS::String   winTitle = FileIOHelper::BeginDataPackLoad(ifs).second;
-			HMODULE				   mod		= GetModuleHandleA(DLLPaths::CORE_EDITOR);
-			FARPROC				   proc		= GetProcAddress(mod, D3D11::PluginKey::CREATE_FTRECTAREA);
-			FTRECTAREA_CONSTRUCTOR func		= reinterpret_cast<FTRECTAREA_CONSTRUCTOR>(proc);
-
-			FTRectArea*	 rndArea = func(0.f, 0.f, 0.f, 0.f, 0.f);
-			unsigned int width	 = 0;
-			unsigned int height	 = 0;
-
-			proc					 = GetProcAddress(mod, D3D11::PluginKey::LOAD_PROPERTIES);
-			FTRECTAREA_LOAD loadFunc = reinterpret_cast<FTRECTAREA_LOAD>(proc);
-			loadFunc(ifs, rndArea);
-
-			FileIOHelper::LoadUnsignedInt(ifs, width);
-			FileIOHelper::LoadUnsignedInt(ifs, height);
-			CreateD3D11Window(winTitle.C_Str(), width, height, rndArea);
-		}
-
-		mCamera->LoadProperties(ifs, sceneManager);
-	}*/
+	mCamera->LoadProperties(ifs);
 }
 
 void D3D11Plugin::ShutDown()
@@ -248,7 +218,8 @@ void D3D11Plugin::ShutDown()
 }
 
 D3D11Plugin::D3D11Plugin(const char* name)
-	: mInputDevices(DBG_NEW Common::FTDS::DynamicArray<D3D11::D3D11InputDevice*>)
+	: mRegisteredComps(DBG_NEW Common::FTDS::DynamicArray<D3D11::D3D11Component*>)
+	, mInputDevices(DBG_NEW Common::FTDS::DynamicArray<D3D11::D3D11InputDevice*>)
 	, mRenderer(nullptr)
 	, mWindows(DBG_NEW Common::FTDS::DynamicArray<D3D11::D3D11Window*>)
 	, mCamera(nullptr)
@@ -260,6 +231,7 @@ D3D11Plugin::D3D11Plugin(const char* name)
 
 D3D11Plugin::~D3D11Plugin()
 {
+	delete mRegisteredComps;
 	delete mInputDevices;
 	delete mRenderer;
 	delete mWindows;

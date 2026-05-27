@@ -55,7 +55,7 @@ namespace D3D11
 
 	public:
 		void SaveProperties(std::ofstream& ofs) override;
-		void LoadProperties(std::ifstream& ifs, Core::SceneManager* targetActor) override;
+		void LoadProperties(std::ifstream& ifs) override;
 
 	public:
 		//////////////////////////////////////////

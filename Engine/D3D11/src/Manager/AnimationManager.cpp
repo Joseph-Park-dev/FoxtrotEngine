@@ -22,7 +22,7 @@
 	#include "EditorUtils.h"
 	#include "Utility/EditorHelper.h"
 	#include "FileSystem/BufferSizes.h"
-	#include "DLLData.h"
+	#include "FileSystem/DLLPath.h"
 // NULLPATH WARNING: This relative path include is problematic.
 // It references Core::ProcName::GetJSONs/GetTexts which are defined in Core/include/Manager/ResourceManager.h
 // Consider moving Core::ProcName to a separate header to avoid ResourceManager.h name collision.
@@ -42,7 +42,7 @@ namespace D3D11
 	{
 		mRenderer = renderer;
 #ifdef FOXTROT_EDITOR
-		HMODULE coreMod = GetModuleHandleA(DLLPaths::CORE_EDITOR);
+		HMODULE coreMod = GetModuleHandleA(DLLPath::CORE_EDITOR);
 		FARPROC proc	= GetProcAddress(coreMod, Core::ProcName::GetJSONs);
 		GetJSONsFunc	= reinterpret_cast<GET_JSON_FUNC>(proc);
 

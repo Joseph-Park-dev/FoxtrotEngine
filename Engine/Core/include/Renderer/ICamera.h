@@ -57,8 +57,8 @@ namespace Core
 		virtual Math::FTVector2 ScreenToNDC(const Math::FTVector2& screenPos) const = 0;
 
 	public:
-		virtual void SaveProperties(std::ofstream& ofs)									 = 0;
-		virtual void LoadProperties(std::ifstream& ifs, Core::SceneManager* targetActor) = 0;
+		virtual void SaveProperties(std::ofstream& ofs) = 0;
+		virtual void LoadProperties(std::ifstream& ifs) = 0;
 
 	public:
 		//////////////////////////////////////////

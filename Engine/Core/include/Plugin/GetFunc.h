@@ -1,5 +1,4 @@
 #pragma once
-#include <DLLData.h>
 
 template <typename FUNC>
 inline FUNC GetFunc(const char* moduleName, const char* procName)

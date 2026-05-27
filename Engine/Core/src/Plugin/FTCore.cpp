@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Plugin/IPlugin.h"
+#include "Core/Core.h"
 
 #include <fstream>
 
@@ -17,14 +17,17 @@
 #include "Manager/ResourceManager.h"
 #include "Manager/EventManager.h"
 #include "Manager/DirectoryHelper.h"
+#include "Manager/PluginManager.h"
 #include "TemplateFunctions.h"
-#include "Entity/Timer.h"
+#include "Manager/Timer.h"
 #include "Renderer/IWindow.h"
 #include "Renderer/FTRectArea.h"
 #include "InputSystem/IInputDevice.h"
 #include "Scene/Scene.h"
 #include "FTDS/Static/HashMap.h"
 #include "FTDS/Static/FTString.h"
+
+#include "Plugin/PluginKey.h"
 
 namespace Core
 {
@@ -33,50 +36,6 @@ namespace Core
 		constexpr const char* TITLE		 = "Game Data";
 		constexpr const char* CHUNK_LIST = "Chunk List";
 	} // namespace GameData
-
-	class FTCore :
-		public Core::IPlugin
-	{
-	public:
-		virtual void RegisterComponent(IComponent* comp) {};
-
-	public:
-		//////////////////////////////////
-		////// Initialization Phase //////
-		//////////////////////////////////
-		// clang-format off
-		virtual void Initialize()	override;
-		virtual void Setup()		override;
-		// clang-format on
-
-		///////////////////////
-		////// Game Loop //////
-		///////////////////////
-		// clang-format off
-		virtual void ProcessInput()				 override;
-		virtual void Update(float deltaTime)	 override;
-		virtual void LateUpdate(float deltaTime) override;
-		virtual void Render()					 override;
-		virtual void ProcessEvent()				 override;
-		// clang-format on
-
-		///////////////////////////////
-		////// Termination Phase //////
-		///////////////////////////////
-		virtual void ShutDown() override;
-
-	public:
-		FTCore();
-		~FTCore();
-
-	private:
-		Common::FTDS::String*				  mGameDataPath;
-		Common::FTDS::HashMap<Core::Entity*>* mEntities;
-
-	private:
-		void LoadGameData();
-		void InitEntities();
-	};
 
 	void FTCore::LoadGameData()
 	{
@@ -93,10 +52,25 @@ namespace Core
 		DirectoryHelper::GetInstance()->SetProjectPath(std::filesystem::absolute("./").string().c_str());
 	}
 
+	void FTCore::LoadPlugins(std::ifstream& ifs)
+	{
+		size_t count = Common::FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::Plugin::PLUGIN_DATA).first;
+
+		for (size_t i = 0; i < count; ++i)
+		{
+			Common::FTDS::String name;
+			Common::FileIOHelper::LoadBasicString(ifs, name);
+
+			Core::IPlugin* plg = Core::PluginManager::GetInstance()->RegisterPlugin(name.C_Str());
+			plg->LoadProperties(ifs);
+			plg->Initialize();
+			plg->Setup();
+		}
+	}
+
 	void FTCore::Initialize()
 	{
 		LoadGameData();
-		InitEntities();
 	}
 
 	void FTCore::Setup()
@@ -105,28 +79,31 @@ namespace Core
 
 	void FTCore::ProcessInput()
 	{
+		PluginManager::GetInstance()->ProcessInput();
 	}
 
-	void FTCore::Update(float deltaTime)
+	void FTCore::Update()
 	{
+		Core::Timer::GetInstance()->Update();
+		float deltaTime = Core::Timer::GetInstance()->GetDeltaTime();
+
+		if (!mIsUpdating)
+			return;
+		PluginManager::GetInstance()->Update(deltaTime);
 	}
 
-	void FTCore::LateUpdate(float deltaTime)
+	void FTCore::LateUpdate()
 	{
+		if (!mIsUpdating)
+			return;
+
+		float deltaTime = Core::Timer::GetInstance()->GetDeltaTime();
+		PluginManager::GetInstance()->LateUpdate(deltaTime);
 	}
 
 	void FTCore::Render()
 	{
-	}
-
-	void FTCore::InitEntities()
-	{
-		// mEntities->Insert("Timer", Timer::GetInstance());
-		// mEntities->Insert("SceneManager", SceneManager::GetInstance());
-		// mEntities->Insert("ResourceManager", ResourceManager::GetInstance());
-		// mEntities->Insert("EventManager", EventManager::GetInstance());
-		// mEntities->Insert("DirectoryHelper", DirectoryHelper::GetInstance());
-		// mEntities->Insert("ChunkLoader", ChunkLoader::GetInstance());
+		PluginManager::GetInstance()->Render();
 	}
 
 	void FTCore::ProcessEvent()
@@ -136,8 +113,7 @@ namespace Core
 	}
 
 	FTCore::FTCore()
-		: mEntities(DBG_NEW Common::FTDS::HashMap<Core::Entity*>)
-		, mGameDataPath(
+		: mGameDataPath(
 			  DBG_NEW Common::FTDS::String("./"))
 	{
 		mGameDataPath->Append(GameData::TITLE);
@@ -146,7 +122,6 @@ namespace Core
 
 	FTCore::~FTCore()
 	{
-		Safe_Delete_Map(mEntities);
 		delete mGameDataPath;
 	}
 
@@ -162,11 +137,8 @@ namespace Core
 		PostQuitMessage(0);
 	}
 
-	extern "C"
+	CORE_API FTCore* Core::CreateCore()
 	{
-		extern "C" __declspec(dllexport) IPlugin* CreatePlugin(const char* name)
-		{
-			return DBG_NEW Core::FTCore();
-		}
+		return FTCore::GetInstance();
 	}
 } // namespace Core

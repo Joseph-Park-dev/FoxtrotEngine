@@ -24,7 +24,7 @@
     <ClCompile Include="src\Behavior\FTBehavior.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Entity\Timer.cpp">
+    <ClCompile Include="src\Manager\Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\EventSystem\EventFunctions.cpp">
@@ -90,6 +90,12 @@
     <ClCompile Include="src\FileSystem\ChunkLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Manager\PluginManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\Core\Core.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Actor\IActor.h">
@@ -107,7 +113,7 @@
     <ClInclude Include="include\Behavior\FTBehavior.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Entity\Timer.h">
+    <ClInclude Include="include\Manager\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\EventSystem\EventFunctions.h">
@@ -219,6 +225,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Component\Graphics\ITileMapRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Manager\PluginManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Core\Core.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

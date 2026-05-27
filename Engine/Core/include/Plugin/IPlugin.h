@@ -29,6 +29,12 @@ namespace Core
 		virtual void RegisterComponent(IComponent* comp) = 0;
 
 	public:
+		////////////////////////////////
+		////// Data Loading Phase //////
+		////////////////////////////////
+		virtual void SaveProperties(std::ofstream& ofs) = 0;
+		virtual void LoadProperties(std::ifstream& ifs) = 0;
+
 		//////////////////////////////////
 		////// Initialization Phase //////
 		//////////////////////////////////

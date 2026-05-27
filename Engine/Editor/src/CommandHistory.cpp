@@ -24,7 +24,7 @@
 #include "FileSystem/BufferSizes.h"
 #include "FTDS/Static/ArrayStack.h"
 #include "FTDS/Static/FTString.h"
-#include "DLLData.h"
+#include "FileSystem/DLLPath.h"
 
 namespace Editor
 {

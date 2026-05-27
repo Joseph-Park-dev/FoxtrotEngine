@@ -246,7 +246,6 @@
     <ClInclude Include="include\Component\TileMapRenderer.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="include\DLLData.h" />
     <ClInclude Include="include\EditorCamera.h" />
     <ClInclude Include="include\ChunkLoader.h" />
     <ClInclude Include="include\EditorElement.h" />

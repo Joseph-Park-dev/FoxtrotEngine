@@ -24,7 +24,7 @@
 #include "ResourceSystem/D3D11Resource.h"
 #include "ResourceSystem/FTResource.h"
 
-#include "DLLData.h"
+#include "FileSystem/DLLPath.h"
 #include <../../Core/include/Manager/ResourceManager.h>
 
 #ifdef FOXTROT_EDITOR
@@ -71,7 +71,7 @@ namespace D3D11
 		}
 #ifdef FOXTROT_EDITOR
 
-		HMODULE coreMod = GetModuleHandleA(DLLPaths::CORE);
+		HMODULE coreMod = GetModuleHandleA(DLLPath::CORE);
 		assert(coreMod != NULL);
 		FARPROC proc = GetProcAddress(coreMod, Core::ProcName::GetCSVs);
 		mGetCSVsFunc = reinterpret_cast<GET_CSVS_FUNC>(proc);
@@ -231,7 +231,7 @@ namespace D3D11
 
 	void FTTileMap::LoadProperties(std::ifstream& ifs)
 	{
-		HMODULE coreMod = GetModuleHandleA(DLLPaths::CORE);
+		HMODULE coreMod = GetModuleHandleA(DLLPath::CORE);
 		assert(coreMod != NULL);
 		FARPROC proc		= GetProcAddress(coreMod, Core::ProcName::GetCSV);
 		using GET_CSV_FUNC	= FTCSV* (*)(const char*);

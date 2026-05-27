@@ -43,7 +43,7 @@ namespace Editor
 	EditorAnimator::EditorAnimator(Core::IActor* owner, int updateOrder)
 		: Animator(owner, updateOrder)
 	{
-		// mGetSpriteAnimFunc = GetFunc<GET_SPRITE_ANIMS_FUNC>(DLLPaths::D3D11_EDITOR, GET_SPRITE_ANIMS);
+		// mGetSpriteAnimFunc = GetFunc<GET_SPRITE_ANIMS_FUNC>(DLLPath::D3D11_EDITOR, GET_SPRITE_ANIMS);
 	}
 
 	void EditorAnimator::EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst)

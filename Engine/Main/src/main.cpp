@@ -18,7 +18,7 @@
 #include "Plugin/IPlugin.h"
 #include "FTDS/Static/HashMap.h"
 #include "Plugin/PluginKey.h"
-#include "DLLData.h"
+#include "FileSystem/DLLPath.h"
 
 constexpr Common::FTDS::HashMap<Core::Plugin*>* gPlugins;
 
@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	HMODULE mod = LoadLibraryA(DLLPaths::CORE_EDITOR);
+	HMODULE mod = LoadLibraryA(DLLPath::CORE_EDITOR);
 
 	FARPROC		   proc	   = GetProcAddress(mod, Core::PluginKey::CREATE_PLUGIN);
 	Core::GET_CORE getCore = reinterpret_cast<Core::GET_CORE>(proc);

@@ -7,6 +7,9 @@
 #include "Renderer/D3D11Window.h"
 #include "Renderer/FTRectArea.h"
 
+#include "Plugin/GetFunc.h"
+#include <../Core/include/Plugin/PluginKey.h>
+
 namespace D3D11
 {
 	using namespace Math;
@@ -55,7 +58,7 @@ namespace D3D11
 		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::CAMERA_DATA);
 	}
 
-	void Camera::LoadProperties(std::ifstream& ifs, Core::SceneManager* targetActor)
+	void Camera::LoadProperties(std::ifstream& ifs)
 	{
 		Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CAMERA_DATA);
 		Common::FileIOHelper::LoadFloat(ifs, mZoomFactor);
@@ -65,13 +68,16 @@ namespace D3D11
 		Common::FTDS::String targetName = {};
 		Common::FileIOHelper::LoadBasicString(ifs, targetName);
 
-		// #ifdef FOXTROT_EDITOR
-		//		if (mTarget)
-		//			mTarget = reinterpret_cast<Editor::EditorSceneManager*>(manager)->GetEditorScene()->FindActor(targetName, nullptr);
-		// #else
-		//		if (targetName.NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
-		//			mTarget = manager->GetCurrentScene()->FindActor(targetName);
-		// #endif // FOXTROT_EDITOR
+#ifdef FOXTROT_EDITOR
+		if (!mTarget)
+		{
+			using FIND_ACTOR = Core::IActor* (*)(Common::FTDS::String&, Core::IActor*);
+			mTarget			 = GetFunc<FIND_ACTOR>(Plugin::Name::CORE_EDITOR, ProcNames::FIND_ACTOR)(targetName, nullptr);
+		}
+#else
+		if (targetName.NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
+			mTarget = manager->GetCurrentScene()->FindActor(targetName);
+#endif // FOXTROT_EDITOR
 	}
 
 	const Math::FTVector3& Camera::GetPosition() const

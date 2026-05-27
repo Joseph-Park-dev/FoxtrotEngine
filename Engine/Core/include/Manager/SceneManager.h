@@ -18,11 +18,12 @@
 #include "Utility/SingletonMacro.h"
 #include "FTDS/Static/FTString.h"
 
+#include "Plugin/CoreExports.h"
+
 namespace Core
 {
 	class Scene;
-	class FoxtrotRenderer;
-	class FTInputDevice;
+	class IActor;
 	namespace FTDS
 	{
 		template <typename TYPE>
@@ -59,4 +60,9 @@ namespace Core
 		Scene*											   mCurrentScene;
 		Common::FTDS::DynamicArray<Common::FTDS::String*>* mChunkList; // List, and order of .chunks
 	};
+
+	extern "C"
+	{
+		CORE_API Core::IActor* FindActor(const char* name, Core::IActor* filter);
+	}
 } // namespace Core

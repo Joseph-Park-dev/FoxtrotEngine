@@ -32,7 +32,8 @@
 	#include "Manager/DirectoryHelper.h"
 	#include "EditorElement.h"
 
-	#include "DLLData.h"
+	#include "Plugin/PluginKey.h"
+	#include "FileSystem/DLLPath.h"
 #endif // FOXTROT_EDITOR
 
 namespace Core
@@ -171,7 +172,7 @@ namespace Core
 		else
 			printf("ERROR: FTPremade::Create -> Failed to open file %s\n", resDef.Path);
 
-		HMODULE mod = GetModuleHandleA(DLLPaths::EDITOR);
+		HMODULE mod = GetModuleHandleA(DLLPath::EDITOR);
 		if (!mod)
 			Debug::LogError(__LINE__, __FILE__, "Module is Null");
 		mCreateEditorElemFunc	  = reinterpret_cast<Editor::CREATE_EDITOR_ELEM>(GetProcAddress(mod, Editor::CREATE_EDITOR_ELEMENT_FROM_ACTOR));

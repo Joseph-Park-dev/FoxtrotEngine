@@ -42,7 +42,7 @@ namespace Editor
 		SetPosition(camPos.x, camPos.y, camPos.z - 0.1f);
 
 		using GET_RECT_FUNC = D3D11::FTRectangle* (*)();
-		mDebugRect			= GetFunc<GET_RECT_FUNC>(DLLPaths::D3D11_EDITOR, D3D11::ProcName::CREATE_FT_RECTANGLE)();
+		mDebugRect			= GetFunc<GET_RECT_FUNC>(DLLPath::D3D11_EDITOR, D3D11::ProcName::CREATE_FT_RECTANGLE)();
 	}
 
 	EditorCamera::~EditorCamera()

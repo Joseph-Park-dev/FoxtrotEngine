@@ -17,6 +17,7 @@
 #include "FileSystem/ChunkLoader.h"
 #include "FTDS/Static/FTString.h"
 #include "FTDS/Dynamic/DynamicArray.h"
+#include "Actor/IActor.h"
 
 namespace Core
 {
@@ -69,5 +70,10 @@ namespace Core
 
 	void SceneManager::SaveSceneList(std::ofstream& ofs)
 	{
+	}
+
+	CORE_API Core::IActor* FindActor(const char* name, Core::IActor* filter)
+	{
+		return SceneManager::GetInstance()->GetCurrentScene()->FindActor(name, filter);
 	}
 } // namespace Core

@@ -1,21 +1,21 @@
-//#include "Manager/ResourceManager.h"
+// #include "Manager/ResourceManager.h"
 //
-//#include "EditorChunkLoader.h"
-//#include "DirectoryHelper.h"
-//#include "EditorUtils.h"
+// #include "EditorChunkLoader.h"
+// #include "DirectoryHelper.h"
+// #include "EditorUtils.h"
 //
-//#include "FTDS/Static/FTString.h"
-//#include "FileSystem/FileIOHelper.h"
+// #include "FTDS/Static/FTString.h"
+// #include "FileSystem/FileIOHelper.h"
 //
-//#include "ResourceSystem/SupportedResources.h"
-//#include "Plugin/IPlugin.h"
+// #include "ResourceSystem/SupportedResources.h"
+// #include "Plugin/IPlugin.h"
 //
-//#include "DLLData.h"
+// #include "FileSystem/DLLPath.h"
 //// NOTE: Including Core's ResourceManager.h to access Core::ChunkKey constants.
 //// This path may need adjustment based on include directory configuration.
-//#include "Manager/ResourceManager.h"
+// #include "Manager/ResourceManager.h"
 //
-//namespace Editor
+// namespace Editor
 //{
 //	using namespace Core;
 //	using namespace D3D11;
@@ -342,11 +342,11 @@
 //
 //	ResourceManager::ResourceManager()
 //	{
-//		mCoreRes  = GetFunc<Core::GET_RES_MANAGER_INST>(DLLPaths::CORE_EDITOR, Core::GET_RES_FUNC)();
-//		mD3D11Res = GetFunc<D3D11::GET_RES_MANAGER_INST>(DLLPaths::D3D11_EDITOR, Core::GET_RES_FUNC)();
+//		mCoreRes  = GetFunc<Core::GET_RES_MANAGER_INST>(DLLPath::CORE_EDITOR, Core::GET_RES_FUNC)();
+//		mD3D11Res = GetFunc<D3D11::GET_RES_MANAGER_INST>(DLLPath::D3D11_EDITOR, Core::GET_RES_FUNC)();
 //	}
 //
 //	ResourceManager::~ResourceManager()
 //	{
 //	}
-//} // namespace Editor
+// } // namespace Editor

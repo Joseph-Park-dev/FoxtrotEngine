@@ -20,7 +20,7 @@
 #include "Actor/Transform.h"
 #include "Plugin/IPlugin.h"
 #include "Plugin/PluginKey.h"
-#include "DLLData.h"
+#include "FileSystem/DLLPath.h"
 
 #include "Component/Animator.h"
 #include "Component/SpriteRenderer.h"
@@ -41,7 +41,7 @@ namespace Editor
 	ChunkLoader::ChunkLoader()
 		: ChunkLoader()
 	{
-		HMODULE coreMod = GetModuleHandleA(DLLPaths::CORE_EDITOR);
+		HMODULE coreMod = GetModuleHandleA(DLLPath::CORE_EDITOR);
 		assert(coreMod);
 
 		//// You must list all Components to be used during runtime.

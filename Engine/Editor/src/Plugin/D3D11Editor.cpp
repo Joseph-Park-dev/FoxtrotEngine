@@ -30,7 +30,7 @@
 #include "Entity/D3D11Window.h"
 #include "InputSystem/D3D11InputDevice.h"
 #include "Plugin/PluginKey.h"
-#include "DLLData.h"
+#include "FileSystem/DLLPath.h"
 #include "Plugin/GetFunc.h"
 
 #include <../../D3D11/include/Plugin/PluginKey.h>
@@ -103,7 +103,7 @@ private:
 
 void D3D11Editor::Initialize()
 {
-	gGetChunkISSavedFunc = GetFunc<Core::CHUNK_IS_SAVED_FUNC>(DLLPaths::CORE_EDITOR, Core::ProcName::GetChunkIsSaved);
+	gGetChunkISSavedFunc = GetFunc<Core::CHUNK_IS_SAVED_FUNC>(DLLPath::CORE_EDITOR, Core::ProcName::GetChunkIsSaved);
 
 	if (mEditorWin)
 	{
@@ -117,10 +117,10 @@ void D3D11Editor::Initialize()
 		mGameWin = nullptr;
 	}
 
-	D3D11::CREATE_WINDOW_PROC	 createWindowFunc	   = GetFunc<D3D11::CREATE_WINDOW_PROC>(DLLPaths::D3D11_EDITOR, D3D11::PluginKey::CREATE_D3D11_WINDOW);
-	D3D11::CREATE_RENDERER		 createRendererFunc	   = GetFunc<D3D11::CREATE_RENDERER>(DLLPaths::D3D11_EDITOR, D3D11::PluginKey::CREATE_RENDERER);
-	D3D11::CREATE_INPUTDEVICE	 createInputDeviceFunc = GetFunc<D3D11::CREATE_INPUTDEVICE>(DLLPaths::D3D11_EDITOR, D3D11::PluginKey::CREATE_INPUTDEVICE);
-	Core::FTRECTAREA_CONSTRUCTOR createRectAreaFunc	   = GetFunc<Core::FTRECTAREA_CONSTRUCTOR>(DLLPaths::CORE_EDITOR, Core::PluginKey::CREATE_FTRECTAREA);
+	D3D11::CREATE_WINDOW_PROC	 createWindowFunc	   = GetFunc<D3D11::CREATE_WINDOW_PROC>(DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_D3D11_WINDOW);
+	D3D11::CREATE_RENDERER		 createRendererFunc	   = GetFunc<D3D11::CREATE_RENDERER>(DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_RENDERER);
+	D3D11::CREATE_INPUTDEVICE	 createInputDeviceFunc = GetFunc<D3D11::CREATE_INPUTDEVICE>(DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_INPUTDEVICE);
+	Core::FTRECTAREA_CONSTRUCTOR createRectAreaFunc	   = GetFunc<Core::FTRECTAREA_CONSTRUCTOR>(DLLPath::CORE_EDITOR, Core::PluginKey::CREATE_FTRECTAREA);
 
 	Core::FTRectArea*		rndArea = createRectAreaFunc(0.f, 0.f, 1280.f, 720.f, 0.f);
 	wndprocParams					= DBG_NEW D3D11::WNDPROC_Params{ mEditorWin, mInputDevice, mRenderer, &mIsResizingWindow };

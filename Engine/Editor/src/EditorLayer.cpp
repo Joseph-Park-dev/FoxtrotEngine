@@ -49,10 +49,10 @@ namespace Editor
 		mRenderer = renderer;
 		LoadEditorConfig();
 
-		mGetProjPathFunc  = GetFunc<GET_PROJ_PATH_FUNC>(DLLPaths::CORE_EDITOR, ProcName::GetProjectPath);
-		mGetChunkPathFunc = GetFunc<GET_CHUNK_PATH_FUNC>(DLLPaths::CORE_EDITOR, ProcName::GetChunkPath);
-		mGetAssetPathFunc = GetFunc<GET_ASSET_PATH_FUNC>(DLLPaths::CORE_EDITOR, ProcName::GetAssetPath);
-		mSetChunkIsSaved = GetFunc<SET_CHUNK_IS_SAVED_FUNC>(DLLPaths::CORE_EDITOR, ProcName::SetChunkIsSaved);
+		mGetProjPathFunc  = GetFunc<GET_PROJ_PATH_FUNC>(DLLPath::CORE_EDITOR, ProcName::GetProjectPath);
+		mGetChunkPathFunc = GetFunc<GET_CHUNK_PATH_FUNC>(DLLPath::CORE_EDITOR, ProcName::GetChunkPath);
+		mGetAssetPathFunc = GetFunc<GET_ASSET_PATH_FUNC>(DLLPath::CORE_EDITOR, ProcName::GetAssetPath);
+		mSetChunkIsSaved  = GetFunc<SET_CHUNK_IS_SAVED_FUNC>(DLLPath::CORE_EDITOR, ProcName::SetChunkIsSaved);
 	}
 
 	void EditorLayer::Update(float deltaTime, D3D11::D3D11Window* editorWin, D3D11::D3D11InputDevice* input, Editor::EditorRenderer* renderer)
@@ -565,7 +565,7 @@ namespace Editor
 	{
 		std::string menuID = "Resource Manager";
 		ImGui::Begin(menuID.c_str());
-		//Editor::ResourceManager::GetInstance()->UpdateUI();
+		// Editor::ResourceManager::GetInstance()->UpdateUI();
 		ImGui::End();
 	}
 
@@ -795,10 +795,10 @@ namespace Editor
 		{
 			EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 			EditorShapes::GetInstance()->DeleteAll();
-			//ResourceManager::GetInstance()->DeleteAll();
+			// ResourceManager::GetInstance()->DeleteAll();
 			mGetProjPathFunc()->Assign(path.c_str());
-			//Editor::ResourceManager::GetInstance()->LoadAllResourcesInAsset();
-			// EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
+			// Editor::ResourceManager::GetInstance()->LoadAllResourcesInAsset();
+			//  EditorResourceManager::GetInstance()->Initialize(FTCoreEditor::GetInstance()->GetGameRenderer());
 		}
 		else
 			mErrorType = ErrorType::ProjectNotValid;

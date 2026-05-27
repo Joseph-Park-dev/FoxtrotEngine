@@ -18,6 +18,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)include\Debugging\DebugMemAlloc.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\Entity\Entity.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\FileSystem\BufferSizes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\FileSystem\DLLPath.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\FileSystem\FileIOHelper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\FileSystem\FileTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\FileSystem\NullKeys.h" />

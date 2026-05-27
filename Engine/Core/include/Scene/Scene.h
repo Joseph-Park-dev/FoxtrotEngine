@@ -17,7 +17,6 @@
 
 namespace Core
 {
-	class FTCore;
 	class FTInputDevice;
 	class FoxtrotRenderer;
 

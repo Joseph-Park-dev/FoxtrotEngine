@@ -10,7 +10,7 @@
 
 namespace Editor
 {
-	EditorElement* Editor::Instantiate(Core::Actor* actor, Core::ActorGroup actorGroup, Math::FTVector3 pos)
+	EditorElement* Editor::Instantiate(Core::IActor* actor, Core::ActorGroup actorGroup, Math::FTVector3 pos)
 	{
 		Core::FTEvent addedEvent = {};
 		addedEvent.incident		 = Core::EVENT_TYPE::CREATE_ACTOR;
@@ -35,8 +35,8 @@ namespace Editor
 
 	void Editor::Destroy(EditorElement* actor)
 	{
-		Core::FTEvent addedEvent	= {};
-		addedEvent.incident = Core::EVENT_TYPE::DESTROY_ACTOR;
+		Core::FTEvent addedEvent = {};
+		addedEvent.incident		 = Core::EVENT_TYPE::DESTROY_ACTOR;
 		// addedEvent.eventData.push_back(actor);
 		Core::EventManager::GetInstance()->AddEvent(addedEvent);
 	}

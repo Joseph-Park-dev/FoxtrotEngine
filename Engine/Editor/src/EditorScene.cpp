@@ -55,7 +55,7 @@ namespace Editor
 		return editorElement;
 	}
 
-	EditorElement* EditorScene::AddEditorElement(Core::Actor* actor)
+	EditorElement* EditorScene::AddEditorElement(Core::IActor* actor)
 	{
 		UnfocusEditorElements();
 
@@ -64,7 +64,7 @@ namespace Editor
 		return element;
 	}
 
-	EditorElement* EditorScene::AddEditorElement(Core::Actor* actor, int id)
+	EditorElement* EditorScene::AddEditorElement(Core::IActor* actor, int id)
 	{
 		UnfocusEditorElements();
 

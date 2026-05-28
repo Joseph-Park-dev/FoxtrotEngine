@@ -20,7 +20,6 @@
 #include "Command.h"
 #include "EditorUtils.h"
 #include "Actor/EditorTransform.h"
-#include "Component/EditorComponent.h"
 
 #include "InputSystem/IInputDevice.h"
 #include "Manager/ResourceManager.h"
@@ -170,6 +169,30 @@ namespace Editor
 		SwitchTransformToEditor();
 	}
 
+	void EditorElement::AddChild(IActor* actor)
+	{
+	}
+
+	void EditorElement::RemoveChild(IActor* actor)
+	{
+	}
+
+	void EditorElement::RemoveComponent(IComponent* component)
+	{
+	}
+
+	void EditorElement::RemoveAllComponents()
+	{
+	}
+
+	void EditorElement::CopyTransformFrom(IActor* actor)
+	{
+	}
+
+	void EditorElement::CopyComponentsFrom(IActor* actor)
+	{
+	}
+
 	void EditorElement::CopyChildObjectFrom(IActor* actor)
 	{
 		if (GetChildActors()->GetSize() < 1)
@@ -183,6 +206,75 @@ namespace Editor
 				this->AddChild(DBG_NEW Actor(child, maxID));
 			}
 		});
+	}
+
+	void EditorElement::RefChildObjectFrom(IActor* actor)
+	{
+	}
+
+	ActorData* EditorElement::GetData()
+	{
+		return nullptr;
+	}
+
+	ActorGroup EditorElement::GetActorGroup() const
+	{
+		return ActorGroup();
+	}
+
+	ActorGroup& EditorElement::GetActorGroupRef()
+	{
+		// TODO: insert return statement here
+	}
+
+	ActorGroup* EditorElement::GetActorGroupPtr()
+	{
+		return nullptr;
+	}
+
+	Common::FTDS::String EditorElement::GetName()
+	{
+		return Common::FTDS::String();
+	}
+
+	Common::FTDS::String& EditorElement::GetNameRef()
+	{
+		// TODO: insert return statement here
+	}
+
+	const int EditorElement::GetID() const
+	{
+		return 0;
+	}
+
+	const bool& EditorElement::GetIsActive() const
+	{
+		// TODO: insert return statement here
+	}
+
+	Transform* EditorElement::GetTransform() const
+	{
+		return nullptr;
+	}
+
+	IActor* EditorElement::GetParent() const
+	{
+		return nullptr;
+	}
+
+	Common::FTDS::DynamicArray<IComponent*>* EditorElement::GetComponents()
+	{
+		return nullptr;
+	}
+
+	Common::FTDS::DynamicArray<IActor*>* EditorElement::GetChildActors()
+	{
+		return nullptr;
+	}
+
+	const int& EditorElement::GetDrawOrder() const
+	{
+		// TODO: insert return statement here
 	}
 
 	void EditorElement::UpdateActorName()
@@ -288,5 +380,60 @@ namespace Editor
 	EditorElement* CreateEditorElementFromActor(Core::Actor* actor, int id)
 	{
 		return DBG_NEW EditorElement(actor, id);
+	}
+	void EditorElement::SetName(Common::FTDS::String&& name)
+	{
+	}
+	void EditorElement::SetIsActive(bool isActive)
+	{
+	}
+	void EditorElement::SetActorGroup(ActorGroup group)
+	{
+	}
+	void EditorElement::SetState(ActorState state)
+	{
+	}
+	void EditorElement::SetParent(IActor* parent)
+	{
+	}
+	void EditorElement::SetTransform(Transform* transform)
+	{
+	}
+	void EditorElement::SetComponents(Common::FTDS::DynamicArray<IComponent*>* components)
+	{
+	}
+	void EditorElement::SetChildActors(Common::FTDS::DynamicArray<IActor*>* children)
+	{
+	}
+	void EditorElement::SetDrawOrder(int order)
+	{
+	}
+	bool EditorElement::HasName(Common::FTDS::String&& name)
+	{
+		return false;
+	}
+	bool EditorElement::HasName(const char* name)
+	{
+		return false;
+	}
+	bool EditorElement::IsDead()
+	{
+		return false;
+	}
+	bool& EditorElement::IsActive()
+	{
+		// TODO: insert return statement here
+	}
+	void EditorElement::SaveProperties(std::ofstream& ofs)
+	{
+	}
+	void EditorElement::SaveComponents(std::ofstream& ofs)
+	{
+	}
+	void EditorElement::LoadProperties(std::ifstream& ifs)
+	{
+	}
+	void EditorElement::LoadComponents(std::ifstream& ifs)
+	{
 	}
 } // namespace Editor

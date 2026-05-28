@@ -18,7 +18,6 @@
 #include <d3d11.h>
 
 #include "EditorElement.h"
-#include "EditorChunkLoader.h"
 #include "CommandHistory.h"
 #include "Command.h"
 #include "ViewportRenderer.h"
@@ -29,8 +28,9 @@
 #include "Manager/ResourceManager.h"
 #include "ResourceSystem/FTResource.h"
 
-#include "Entity/D3D11Window.h"
-#include "InputSystem/D3D11InputDevice.h"
+#include "Renderer/IWindow.h"
+#include "Renderer/FTRectArea.h"
+#include "InputSystem/IInputDevice.h"
 #include "EditorRenderer.h"
 #include "EventSystem/EventFunctions.h"
 #include "FileSystem/FileTypes.h"
@@ -38,7 +38,7 @@
 #include "ResourceSystem/ResPath.h"
 #include "Plugin/GetFunc.h"
 #include "Manager/AnimationManager.h"
-#include "Engine.h"
+#include "FileSystem/DLLPath.h"
 
 namespace Editor
 {
@@ -55,7 +55,7 @@ namespace Editor
 		mSetChunkIsSaved  = GetFunc<SET_CHUNK_IS_SAVED_FUNC>(DLLPath::CORE_EDITOR, ProcName::SetChunkIsSaved);
 	}
 
-	void EditorLayer::Update(float deltaTime, D3D11::D3D11Window* editorWin, D3D11::D3D11InputDevice* input, Editor::EditorRenderer* renderer)
+	void EditorLayer::Update(float deltaTime, Core::IWindow* editorWin, Core::IInputDevice* input, Editor::EditorRenderer* renderer, Editor::EditorCamera* editorCam)
 	{
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
@@ -79,8 +79,8 @@ namespace Editor
 		DisplayInspectorMenu();
 
 		ImGui::Begin("Camera Menu");
-		EditorCamera::GetInstance()->DisplayMainCameraMenu();
-		EditorCamera::GetInstance()->DisplayEditorCameraMenu();
+		editorCam->DisplayGameCameraMenu();
+		editorCam->DisplayEditorCameraMenu();
 		ImGui::End();
 
 		DisplayInfoMessage();
@@ -91,7 +91,7 @@ namespace Editor
 		ImGui::EndFrame();
 	}
 
-	void EditorLayer::DisplayViewport(D3D11::D3D11Window* editorWin, D3D11::D3D11InputDevice* input, Editor::EditorRenderer* renderer)
+	void EditorLayer::DisplayViewport(Core::IWindow* editorWin, Core::IInputDevice* input, Editor::EditorRenderer* renderer)
 	{
 		ImGui::Begin("Scene");
 		if (ImGui::IsWindowFocused())
@@ -103,11 +103,11 @@ namespace Editor
 		ImVec2 contentReg = ImGui::GetContentRegionAvail();
 
 		ImVec2 size(editorWin->GetRenderArea()->GetSize().x, editorWin->GetRenderArea()->GetSize().y);
-		if (input->MOUSE_HOLD(D3D11::MOUSE::MOUSE_LEFT) && SceneViewportSizeChanged(size))
+		if (input->MOUSE_HOLD(Core::MOUSE::MOUSE_LEFT) && SceneViewportSizeChanged(size))
 		{
 			mIsResizingViewport = true;
 		}
-		if (mIsResizingViewport && input->MOUSE_AWAY(D3D11::MOUSE::MOUSE_LEFT))
+		if (mIsResizingViewport && input->MOUSE_AWAY(Core::MOUSE::MOUSE_LEFT))
 		{
 			editorWin->GetRenderArea()->Set(0.f, 0.f, contentReg.x, contentReg.y);
 			renderer->GetViewportRenderer()->InitializeTexture(renderer, contentReg);

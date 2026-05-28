@@ -20,7 +20,7 @@
 
 namespace Core
 {
-	class Actor;
+	class IActor;
 	struct Steering;
 
 	class Transform
@@ -59,7 +59,7 @@ namespace Core
 		void SetRightward(const Math::FTVector3 dir);
 		void SetSteering(const Steering steering);
 
-		void SetOwner(Actor* actor);
+		void SetOwner(Core::IActor* actor);
 
 		static Math::FTVector3 ConvertRadToDegree(Math::FTVector3 radianRot);
 		static Math::FTVector3 ConvertDegreeToRad(Math::FTVector3 degreeRot);
@@ -69,12 +69,12 @@ namespace Core
 		void CloneTo(Transform* target);
 
 	public:
-		Transform(Actor* owner);
-		Transform(Actor* owner, Transform& origin);
+		Transform(Core::IActor* owner);
+		Transform(Core::IActor* owner, Transform& origin);
 		virtual ~Transform();
 
 	protected:
-		const Actor* GetOwner() const;
+		const Core::IActor* GetOwner() const;
 
 	private:
 		// Local Transformation.
@@ -92,7 +92,7 @@ namespace Core
 		Math::FTVector3 mRightward; // A local rightward direction
 		Steering*		mSteering;
 
-		Actor* mOwner;
+		Core::IActor* mOwner;
 
 	public:
 		void SaveProperties(std::ofstream& ofs);

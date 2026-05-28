@@ -8,7 +8,7 @@
 
 #include "Actor/Transform.h"
 
-#include "Actor/Actor.h"
+#include "Actor/IActor.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Renderer/FTRectArea.h"
@@ -70,15 +70,15 @@ namespace Core
 	void Transform::SetWorldPosition(const Math::FTVector3 worldPos)
 	{
 		mWorldPosition = worldPos;
-		Actor* parent  = mOwner->GetParent();
+		IActor* parent = mOwner->GetParent();
 		if (!parent)
 			SetLocalPosition(worldPos);
 	}
 
 	void Transform::SetWorldScale(const Math::FTVector3 worldScale)
 	{
-		mWorldScale	  = worldScale;
-		Actor* parent = mOwner->GetParent();
+		mWorldScale	   = worldScale;
+		IActor* parent = mOwner->GetParent();
 		if (!parent)
 			SetLocalScale(worldScale);
 	}
@@ -86,7 +86,7 @@ namespace Core
 	void Transform::SetWorldRotation(const Math::FTVector3 worldRot)
 	{
 		mWorldRotation = worldRot;
-		Actor* parent  = mOwner->GetParent();
+		IActor* parent = mOwner->GetParent();
 		if (!parent)
 			SetLocalRotation(worldRot);
 	}
@@ -104,12 +104,12 @@ namespace Core
 		mSteering->JumpTriggered = steering.JumpTriggered;
 	}
 
-	void Transform::SetOwner(Actor* actor)
+	void Transform::SetOwner(Core::IActor* actor)
 	{
 		mOwner = actor;
 	}
 
-	Transform::Transform(Actor* owner)
+	Transform::Transform(Core::IActor* owner)
 		: mLocalPosition(Math::FTVector3::Zero)
 		, mLocalScale(Math::FTVector3(1.f, 1.0f, 1.0f))
 		, mLocalRotation(Math::FTVector3::Zero)
@@ -127,7 +127,7 @@ namespace Core
 	{
 	}
 
-	Transform::Transform(Actor* owner, Transform& origin)
+	Transform::Transform(Core::IActor* owner, Transform& origin)
 		: mLocalPosition(origin.mLocalPosition)
 		, mLocalScale(origin.mLocalScale)
 		, mLocalRotation(origin.mLocalRotation)
@@ -154,7 +154,7 @@ namespace Core
 		}
 	}
 
-	const Actor* Transform::GetOwner() const
+	const Core::IActor* Transform::GetOwner() const
 	{
 		return mOwner;
 	}
@@ -185,7 +185,7 @@ namespace Core
 
 		mMatrixLocal = matScale * matRotation * matTranslation;
 
-		Actor* parent = mOwner->GetParent();
+		IActor* parent = mOwner->GetParent();
 		if (parent)
 			mMatrixWorld = mMatrixLocal * parent->GetTransform()->mMatrixWorld;
 		else

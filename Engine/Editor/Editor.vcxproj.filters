@@ -201,9 +201,6 @@
     <ClInclude Include="include\pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ViewportRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Component\IEditorComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -255,9 +252,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Plugin\D3D11Editor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ViewportRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\EditorRenderer.cpp">

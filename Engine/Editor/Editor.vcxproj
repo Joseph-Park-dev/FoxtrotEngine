@@ -266,7 +266,6 @@
     <ClInclude Include="include\Plugin\FTCoreEditor.h" />
     <ClInclude Include="include\ResourceSystem\ResPath.h" />
     <ClInclude Include="include\ResourceSystem\SupportedResources.h" />
-    <ClInclude Include="include\ViewportRenderer.h" />
     <ClInclude Include="src\Component\EditAnimator.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -354,7 +353,6 @@
     <ClCompile Include="src\EditorSceneManager.cpp" />
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\Plugin\D3D11Editor.cpp" />
-    <ClCompile Include="src\ViewportRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Icons\FoxtrotEngine_icon.png_x16_2024_12_31_21_18_53.ico" />

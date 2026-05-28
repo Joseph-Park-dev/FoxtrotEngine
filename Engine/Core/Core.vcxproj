@@ -247,7 +247,7 @@
     <ClInclude Include="include\Component\Graphics\ISpineAnimator.h" />
     <ClInclude Include="include\Component\Graphics\ISpriteRenderer.h" />
     <ClInclude Include="include\Component\Graphics\ITileMapRenderer.h" />
-    <ClInclude Include="include\Core\Core.h" />
+    <ClInclude Include="include\Core\FTCore.h" />
     <ClInclude Include="include\Manager\Timer.h" />
     <ClInclude Include="include\EventSystem\EventFunctions.h" />
     <ClInclude Include="include\EventSystem\EventType.h" />
@@ -275,6 +275,7 @@
     <ClInclude Include="include\ResourceSystem\GenericData\FTCSV.h" />
     <ClInclude Include="include\ResourceSystem\GenericData\FTJSON.h" />
     <ClInclude Include="include\ResourceSystem\GenericData\FTText.h" />
+    <ClInclude Include="include\ResourceSystem\SupportedResources.h" />
     <ClInclude Include="include\Scene\Scene.h" />
     <ClInclude Include="include\Utility\SingletonMacro.h" />
     <ClInclude Include="include\Utility\TypeDefinitions.h" />
@@ -286,7 +287,6 @@
     <ClCompile Include="..\..\third_party\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\third_party\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\third_party\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="include\Core\Core.cpp" />
     <ClCompile Include="include\Factory\IInputSysFactory.h" />
     <ClCompile Include="src\Manager\PluginManager.cpp" />
     <ClCompile Include="src\Actor\Actor.cpp" />

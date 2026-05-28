@@ -54,6 +54,7 @@ namespace D3D11
 		Microsoft::WRL::ComPtr<ID3D11BlendState>		mBS;
 		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> mDSS;
 		Microsoft::WRL::ComPtr<ID3D11RasterizerState>	mRS;
+		Microsoft::WRL::ComPtr<ID3D11SamplerState>		mSS;
 		// Microsoft::WRL::ComPtr<ID3D11HullShader>		mHullShader;
 		// Microsoft::WRL::ComPtr<ID3D11DomainShader>	mDomainShader;
 

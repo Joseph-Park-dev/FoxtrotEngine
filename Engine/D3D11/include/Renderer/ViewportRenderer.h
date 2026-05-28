@@ -10,26 +10,17 @@
 /// </summary>
 
 #pragma once
-#include <d3d11.h>
-#include <wrl.h> // ComPtr
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
-
-using namespace Microsoft::WRL;
+#include "Plugin/D3D11Exports.h"
 
 namespace Core
 {
-	class FTWindow;
+	class IWindow;
 	class FTRectArea;
 } // namespace Core
 
 namespace D3D11
 {
 	class D3D11Renderer;
-}
-
-namespace Editor
-{
 	class ViewportRenderer
 	{
 	public:
@@ -44,20 +35,22 @@ namespace Editor
 		void Reset();
 
 	public:
-		ComPtr<ID3D11RenderTargetView>&	  GetViewportRTV() { return mRTV; }
-		ComPtr<ID3D11ShaderResourceView>& GetViewportSRV() { return mSRV; }
+		Microsoft::WRL::ComPtr<ID3D11RenderTargetView>&	  GetViewportRTV() { return mRTV; }
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetViewportSRV() { return mSRV; }
 
 	public:
 		ViewportRenderer();
 		~ViewportRenderer();
 
 	private:
-		ComPtr<ID3D11Texture2D>			 mRenderTexture;
-		ComPtr<ID3D11RenderTargetView>	 mRTV;
-		ComPtr<ID3D11ShaderResourceView> mSRV;
-		ComPtr<ID3D11DepthStencilView>	 mDSV;
+		Microsoft::WRL::ComPtr<ID3D11Texture2D>			 mRenderTexture;
+		Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	 mRTV;
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mSRV;
+		Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	 mDSV;
 
 	private:
 		void CreateRenderTargetView(D3D11::D3D11Renderer* renderer, UINT width, UINT height);
 	};
-} // namespace Editor
+
+	extern "C" D3D11_API ViewportRenderer* CreateViewportRenderer();
+} // namespace D3D11

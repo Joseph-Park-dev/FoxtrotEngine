@@ -33,11 +33,27 @@ namespace Editor
 
 	void EditorAnimator::EditorUIUpdate()
 	{
+		CommandHistory::GetInstance()->UpdateBoolValue("Is Active", IsActive());
+		CommandHistory::GetInstance()->UpdateBoolValue("Is Repeated", IsRepeated());
+
+		if (GetSprite())
+			GetSprite()->UpdateUI();
+
+		Editor::DisplayResSelection(
+			"Select Sprite",
+			D3D11::ResourceManager::GetInstance()->GetSprites(),
+			Sprite());
+
+		if (GetMaterial())
+			GetMaterial()->UpdateUI();
+
+		Editor::DisplayResSelection(
+			"Select Material",
+			D3D11::ResourceManager::GetInstance()->GetMaterials(),
+			Material());
+
 		UpdatePlayAnim();
 		UpdatePlayList();
-
-		CommandHistory::GetInstance()->UpdateBoolValue("Is Repeated", IsRepeated());
-		SpriteRenderer::EditorUIUpdate();
 	}
 
 	EditorAnimator::EditorAnimator(Core::IActor* owner, int updateOrder)

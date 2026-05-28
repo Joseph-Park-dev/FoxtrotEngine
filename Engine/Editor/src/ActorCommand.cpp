@@ -9,15 +9,15 @@ namespace Editor
 	{
 		ActorCommand::Do();
 
-		//EditorScene* scene = EditorSceneManager::GetInstance()->GetCurrentScene();
-		// EditorElement* element = DBG_NEW EditorElement(GetVal());
+		// EditorScene* scene = EditorSceneManager::GetInstance()->GetCurrentScene();
+		//  EditorElement* element = DBG_NEW EditorElement(GetVal());
 	}
 
 	void ActorAdditionCommand::Undo()
 	{
 		ActorCommand::Undo();
 
-		//Core::Destroy(GetVal());
+		// Core::Destroy(GetVal());
 	}
 
 	ActorAdditionCommand::ActorAdditionCommand(EditorElement* elem)
@@ -27,12 +27,12 @@ namespace Editor
 
 	void ActorCommand::Do()
 	{
-		*mValue = mNextValue;
+		mValue = mNextValue;
 	}
 
 	void ActorCommand::Undo()
 	{
-		*mValue = mPrevValue;
+		mValue = mPrevValue;
 	}
 
 	EditorElement* ActorCommand::GetVal()
@@ -42,11 +42,11 @@ namespace Editor
 
 	void ActorCommand::SetNextVal(EditorElement* nextVal)
 	{
-		mNextValue = *nextVal;
+		mNextValue = nextVal;
 	}
 
 	ActorCommand::ActorCommand(EditorElement* elem)
-		: mPrevValue(*elem), mValue(elem), mNextValue(*elem)
+		: mPrevValue(elem), mValue(elem), mNextValue(elem)
 	{
 	}
 } // namespace Editor

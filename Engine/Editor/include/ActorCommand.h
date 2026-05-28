@@ -32,8 +32,8 @@ namespace Editor
 
 	private:
 		EditorElement* mValue;
-		EditorElement  mPrevValue;
-		EditorElement  mNextValue;
+		EditorElement* mPrevValue;
+		EditorElement* mNextValue;
 	};
 
 	class ActorAdditionCommand :

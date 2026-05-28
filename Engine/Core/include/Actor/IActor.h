@@ -14,16 +14,16 @@
 #include <iosfwd>
 
 #include "FTDS/Static/FTString.h"
-#include "Actor/ActorGroup.h"
-#include "Component/IComponent.h"
 #include "Plugin/IPlugin.h"
+#include "Actor/IActor.h"
 
 namespace Core
 {
-	class IActor;
-	class Transform;
 	class Scene;
 	class FTPremade;
+	class Transform;
+	struct ActorData;
+	enum class ActorState;
 	enum class ACTOR_TAG;
 	enum class ActorGroup;
 	namespace FTDS
@@ -33,64 +33,11 @@ namespace Core
 		class String;
 	} // namespace FTDS
 
-	enum class ActorState
-	{
-		ALIVE,
-		DEAD
-	};
-
-	struct ActorData
-	{
-		Common::FTDS::String					 Name		= {};
-		int										 ID			= 0;
-		ActorGroup								 ActorGroup = ActorGroup::DEFAULT;
-		ActorState								 State		= ActorState::ALIVE;
-		bool									 IsActive	= true;
-		Transform*								 Transform	= nullptr;
-		Common::FTDS::DynamicArray<IComponent*>* Components = nullptr;
-		IActor*									 Parent		= nullptr;
-		Common::FTDS::DynamicArray<IActor*>*	 Children	= nullptr;
-		int										 DrawOrder	= 0;
-
-		template <typename COMP>
-		COMP* AddComponent(IPlugin* plugin, IActor* actor)
-		{
-			COMP*  comp		   = new COMP(actor);
-			int	   updateOrder = comp->GetUpdateOrder();
-			auto   iter		   = Components->Begin();
-			size_t iterPos	   = 0;
-			for (; iter != Components->End(); ++iter)
-			{
-				if (!(*iter))
-					break;
-
-				if (updateOrder < (*iter)->GetUpdateOrder())
-					break;
-				++iterPos;
-			}
-			Components->Insert(iterPos, comp);
-			plugin->RegisterComponent(comp);
-			return comp;
-		}
-
-		template <class COMP>
-		COMP* GetComponent()
-		{
-			for (auto iter = Components->Begin(); iter != Components->End(); ++iter)
-			{
-				COMP* comp = dynamic_cast<COMP*>(*iter);
-				if (comp)
-					return comp;
-			}
-			return nullptr;
-		};
-	};
-
 	class IActor
 	{
 	public:
-		virtual void AddChild(IActor* actor)				= 0;
-		virtual void RemoveChild(IActor* actor)				= 0;
+		virtual void AddChild(IActor* actor)	= 0;
+		virtual void RemoveChild(IActor* actor) = 0;
 		virtual void RemoveComponent(IComponent* component) = 0;
 		virtual void RemoveAllComponents()					= 0;
 
@@ -109,40 +56,34 @@ namespace Core
 
 	public:
 		// Getters/Setters
-		virtual ActorData*								 GetData()			   = 0;
-		virtual ActorGroup								 GetActorGroup() const = 0;
-		virtual ActorGroup&								 GetActorGroupRef()	   = 0;
-		virtual ActorGroup*								 GetActorGroupPtr()	   = 0;
-		virtual Common::FTDS::String					 GetName()			   = 0;
-		virtual Common::FTDS::String&					 GetNameRef()		   = 0;
-		virtual const int								 GetID() const		   = 0;
-		virtual const bool&								 GetIsActive() const   = 0;
-		virtual Transform*								 GetTransform() const  = 0;
-		virtual IActor*									 GetParent() const	   = 0;
-		virtual Common::FTDS::DynamicArray<IComponent*>* GetComponents()	   = 0;
-		virtual Common::FTDS::DynamicArray<IActor*>*	 GetChildActors()	   = 0;
-		virtual const int&								 GetDrawOrder() const  = 0;
+		virtual Core::ActorData*							   GetData()			 = 0;
+		virtual Core::ActorGroup							   GetActorGroup() const = 0;
+		virtual Core::ActorGroup&							   GetActorGroupRef()	 = 0;
+		virtual Core::ActorGroup*							   GetActorGroupPtr()	 = 0;
+		virtual Common::FTDS::String						   GetName()			 = 0;
+		virtual Common::FTDS::String&						   GetNameRef()			 = 0;
+		virtual const int									   GetID() const		 = 0;
+		virtual const bool&									   GetIsActive() const	 = 0;
+		virtual bool&										   GetIsActiveRef()		 = 0;
+		virtual Core::Transform*							   GetTransform() const	 = 0;
+		virtual Core::IActor*								   GetParent() const	 = 0;
+		virtual Common::FTDS::DynamicArray<Core::IComponent*>* GetComponents()		 = 0;
+		virtual Common::FTDS::DynamicArray<Core::IActor*>*	   GetChildActors()		 = 0;
+		virtual const int&									   GetDrawOrder() const	 = 0;
 
-		template <typename COMP>
-		COMP* AddComponent(IPlugin* plugin)
-		{
-			return GetData()->AddComponent<COMP>(plugin, this);
-		}
+		virtual void SetName(Common::FTDS::String&& name)									  = 0;
+		virtual void SetIsActive(bool isActive)												  = 0;
+		virtual void SetActorGroup(Core::ActorGroup group)									  = 0;
+		virtual void SetState(Core::ActorState state)										  = 0;
+		virtual void SetParent(Core::IActor* parent)										  = 0;
+		virtual void SetTransform(Core::Transform* transform)								  = 0;
+		virtual void SetComponents(Common::FTDS::DynamicArray<Core::IComponent*>* components) = 0;
+		virtual void SetChildActors(Common::FTDS::DynamicArray<Core::IActor*>* children)	  = 0;
+		virtual void SetDrawOrder(int order)												  = 0;
 
-		virtual void SetName(Common::FTDS::String&& name)								= 0;
-		virtual void SetIsActive(bool isActive)											= 0;
-		virtual void SetActorGroup(ActorGroup group)									= 0;
-		virtual void SetState(ActorState state)											= 0;
-		virtual void SetParent(IActor* parent)											= 0;
-		virtual void SetTransform(Transform* transform)									= 0;
-		virtual void SetComponents(Common::FTDS::DynamicArray<IComponent*>* components) = 0;
-		virtual void SetChildActors(Common::FTDS::DynamicArray<IActor*>* children)		= 0;
-		virtual void SetDrawOrder(int order)											= 0;
-
-		virtual bool  HasName(Common::FTDS::String&& name) = 0;
-		virtual bool  HasName(const char* name)			   = 0;
-		virtual bool  IsDead()							   = 0;
-		virtual bool& IsActive()						   = 0;
+		virtual bool HasName(Common::FTDS::String&& name) = 0;
+		virtual bool HasName(const char* name)			  = 0;
+		virtual bool IsDead()							  = 0;
 
 	public:
 		virtual void SaveProperties(std::ofstream& ofs) = 0;

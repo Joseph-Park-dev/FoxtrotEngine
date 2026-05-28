@@ -9,9 +9,13 @@ namespace Core
 	class IWindow;
 }
 
-namespace Editor
+namespace D3D11
 {
 	class ViewportRenderer;
+}
+
+namespace Editor
+{
 	class EditorRenderer :
 		public Core::IRenderer
 	{
@@ -21,12 +25,12 @@ namespace Editor
 		void SetViewport(const ImVec2& topLeft, const ImVec2& resolution);
 
 	public:
-		ViewportRenderer* GetViewportRenderer();
+		D3D11::ViewportRenderer* GetViewportRenderer();
 
 	public:
-		EditorRenderer(D3D11::D3D11Window* window);
+		EditorRenderer(Core::IWindow* window);
 
 	private:
-		ViewportRenderer* mViewportRenderer;
+		D3D11::ViewportRenderer* mViewportRenderer;
 	};
 } // namespace Editor

@@ -1,8 +1,10 @@
 #include "EditorRenderer.h"
 
-#include "ViewportRenderer.h"
+#include "Renderer/ViewportRenderer.h"
 #include "Debugging/DebugFuncs.h"
 #include "Debugging/DebugMemAlloc.h"
+#include "Plugin/GetFunc.h"
+#include "Plugin/PluginKey.h"
 
 namespace Editor
 {
@@ -44,14 +46,16 @@ namespace Editor
 		GetContext()->RSSetViewports(1, GetViewport());
 	}
 
-	ViewportRenderer* EditorRenderer::GetViewportRenderer()
+	D3D11::ViewportRenderer* EditorRenderer::GetViewportRenderer()
 	{
 		return mViewportRenderer;
 	}
 
-	EditorRenderer::EditorRenderer(D3D11::D3D11Window* window)
-		: D3D11::D3D11Renderer(window)
-		, mViewportRenderer(DBG_NEW ViewportRenderer)
+	EditorRenderer::EditorRenderer(Core::IWindow* window)
+		: Core::IRenderer(window)
+		, mViewportRenderer(nullptr)
 	{
+		using CREATE_VP_RENDERER = D3D11::ViewportRenderer* (*)();
+		mViewportRenderer		 = GetFunc<CREATE_VP_RENDERER>(Plugin::Name::D3D11_EDITOR, ProcNames::D3D11::CREATE_VP_RENDERER)();
 	}
 } // namespace Editor

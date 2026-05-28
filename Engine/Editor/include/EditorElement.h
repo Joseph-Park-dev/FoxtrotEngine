@@ -37,6 +37,69 @@ namespace Editor
 		public Core::IActor
 	{
 	public:
+		virtual void AddChild(IActor* actor) override;
+		virtual void RemoveChild(IActor* actor) override;
+		virtual void RemoveComponent(IComponent* component) override;
+		virtual void RemoveAllComponents() override;
+
+	public:
+		// Deep copies transform from another IActor.
+		virtual void CopyTransformFrom(IActor* actor) override;
+
+		// Creates new IComponent with values from another IActor.
+		virtual void CopyComponentsFrom(IActor* actor) override;
+
+		// Deep copies all child Actors
+		virtual void CopyChildObjectFrom(IActor* actor) override;
+
+		// Shallow copies all child Actors.
+		virtual void RefChildObjectFrom(IActor* actor) override;
+
+	public:
+		// Getters/Setters
+		virtual ActorData*								 GetData() override;
+		virtual ActorGroup								 GetActorGroup() const override;
+		virtual ActorGroup&								 GetActorGroupRef() override;
+		virtual ActorGroup*								 GetActorGroupPtr() override;
+		virtual Common::FTDS::String					 GetName() override;
+		virtual Common::FTDS::String&					 GetNameRef() override;
+		virtual const int								 GetID() const override;
+		virtual const bool&								 GetIsActive() const override;
+		virtual Transform*								 GetTransform() const override;
+		virtual IActor*									 GetParent() const override;
+		virtual Common::FTDS::DynamicArray<IComponent*>* GetComponents() override;
+		virtual Common::FTDS::DynamicArray<IActor*>*	 GetChildActors() override;
+		virtual const int&								 GetDrawOrder() const override;
+
+		template <typename COMP>
+		COMP* AddComponent(IPlugin* plugin)
+		{
+			return GetData()->AddComponent<COMP>(plugin, this);
+		}
+
+		virtual void SetName(Common::FTDS::String&& name) override;
+		virtual void SetIsActive(bool isActive) override;
+		virtual void SetActorGroup(ActorGroup group) override;
+		virtual void SetState(ActorState state) override;
+		virtual void SetParent(IActor* parent) override;
+		virtual void SetTransform(Transform* transform) override;
+		virtual void SetComponents(Common::FTDS::DynamicArray<IComponent*>* components) override;
+		virtual void SetChildActors(Common::FTDS::DynamicArray<IActor*>* children) override;
+		virtual void SetDrawOrder(int order) override;
+
+		virtual bool  HasName(Common::FTDS::String&& name) override;
+		virtual bool  HasName(const char* name) override;
+		virtual bool  IsDead() override;
+		virtual bool& IsActive() override;
+
+	public:
+		virtual void SaveProperties(std::ofstream& ofs) override;
+		virtual void SaveComponents(std::ofstream& ofs) override;
+
+		virtual void LoadProperties(std::ifstream& ifs) override;
+		virtual void LoadComponents(std::ifstream& ifs) override;
+
+	public:
 		const bool	 GetIsFocused() const;
 		const size_t GetHierarchyLevel() const;
 		const bool	 GetIsDisplayed() const;

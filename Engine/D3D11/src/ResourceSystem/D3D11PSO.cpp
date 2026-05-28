@@ -31,6 +31,7 @@ namespace D3D11
 		context->OMSetBlendState(mBS.Get(), mBlendFactor, 0xffffffff);
 		context->OMSetDepthStencilState(mDSS.Get(), mStencilRef);
 		context->RSSetState(mRS.Get());
+		context->PSSetSamplers(0, 1, mSS.GetAddressOf());
 
 		context->IASetPrimitiveTopology(mPrimTopology);
 	}
@@ -49,6 +50,7 @@ namespace D3D11
 		mBS	 = resDef.BS;
 		mDSS = resDef.DSS;
 		mRS	 = resDef.RS;
+		mSS	 = resDef.SS;
 
 		size_t blndFacSize = sizeof(float) * 4;
 		memcpy_s(mBlendFactor, blndFacSize, resDef.BlendFactor, blndFacSize);

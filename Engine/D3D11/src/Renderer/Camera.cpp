@@ -37,7 +37,7 @@ namespace D3D11
 
 	Math::FTVector2 Camera::ScreenToNDC(const Math::FTVector2& screenPos) const
 	{
-		FTVector2 renderSize = mRenderWindow->GetRenderArea()->GetSize();
+		FTVector2 renderSize = mData->GetResolution();
 		FTVector2 ndc		 = FTVector2::Zero;
 
 		ndc.x = (screenPos.x / renderSize.x) * 2.f - 1.0f;
@@ -48,31 +48,31 @@ namespace D3D11
 	void Camera::SaveProperties(std::ofstream& ofs)
 	{
 		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CAMERA_DATA);
-		if (mTarget)
-			Common::FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, mTarget->GetNameRef());
+		if (mData->Target)
+			Common::FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, mData->Target->GetNameRef());
 		else
 			Common::FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, Common::ChunkKey::NullVal::NULL_OBJECT);
-		Common::FileIOHelper::SaveVector3(ofs, ChunkKey::CAM_POSITION, mPosition);
-		Common::FileIOHelper::SaveVector3(ofs, ChunkKey::CAM_OFFSET, mOffset);
-		Common::FileIOHelper::SaveFloat(ofs, ChunkKey::CAM_ZOOM, mZoomFactor);
+		Common::FileIOHelper::SaveVector3(ofs, ChunkKey::CAM_POSITION, mData->Position);
+		Common::FileIOHelper::SaveVector3(ofs, ChunkKey::CAM_OFFSET, mData->Offset);
+		Common::FileIOHelper::SaveFloat(ofs, ChunkKey::CAM_ZOOM, mData->ZoomFactor);
 		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::CAMERA_DATA);
 	}
 
 	void Camera::LoadProperties(std::ifstream& ifs)
 	{
 		Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CAMERA_DATA);
-		Common::FileIOHelper::LoadFloat(ifs, mZoomFactor);
-		Common::FileIOHelper::LoadVector3(ifs, mOffset);
+		Common::FileIOHelper::LoadFloat(ifs, mData->ZoomFactor);
+		Common::FileIOHelper::LoadVector3(ifs, mData->Offset);
 
-		Common::FileIOHelper::LoadVector3(ifs, mPosition);
+		Common::FileIOHelper::LoadVector3(ifs, mData->Position);
 		Common::FTDS::String targetName = {};
 		Common::FileIOHelper::LoadBasicString(ifs, targetName);
 
 #ifdef FOXTROT_EDITOR
-		if (!mTarget)
+		if (!mData->Target)
 		{
 			using FIND_ACTOR = Core::IActor* (*)(Common::FTDS::String&, Core::IActor*);
-			mTarget			 = GetFunc<FIND_ACTOR>(Plugin::Name::CORE_EDITOR, ProcNames::FIND_ACTOR)(targetName, nullptr);
+			mData->Target	 = GetFunc<FIND_ACTOR>(Plugin::Name::CORE_EDITOR, ProcNames::FIND_ACTOR)(targetName, nullptr);
 		}
 #else
 		if (targetName.NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
@@ -80,153 +80,149 @@ namespace D3D11
 #endif // FOXTROT_EDITOR
 	}
 
+	Core::CameraData* Camera::Data()
+	{
+		return mData;
+	}
+
 	const Math::FTVector3& Camera::GetPosition() const
 	{
-		return mPosition;
+		return mData->Position;
 	}
 
 	void Camera::GetViewMatrix(Math::FTMatrix4& outViewMat)
 	{
-		if (mTarget)
+		if (mData->Target)
 		{
-			Core::Transform* transform = mTarget->GetTransform();
+			Core::Transform* transform = mData->Target->GetTransform();
 			FTVector3		 worldPos  = transform->GetWorldPosition();
 			// Z axis transformation is controlled independently
-			worldPos.z = mPosition.z;
-			mPosition  = worldPos + mOffset;
+			worldPos.z		= mData->Position.z;
+			mData->Position = worldPos + mData->Offset;
 		}
-		outViewMat = FTMatrix4::CreateTranslation(mPosition);
+		outViewMat = FTMatrix4::CreateTranslation(mData->Position);
 	}
 
 	void Camera::GetProjectionMatrix(Math::FTMatrix4& outProjMat)
 	{
-		float	  unitsPerPixel = 1 / mPixelsPerUnit;
-		FTVector2 renderSize	= mRenderWindow->GetRenderArea()->GetSize();
+		const FTVector2 renderSize = mData->GetResolution();
 		assert(0 < renderSize.x);
 		assert(0 < renderSize.y);
 
-		float worldWidth  = renderSize.x * unitsPerPixel;
-		float worldHeight = renderSize.y * unitsPerPixel;
+		float worldWidth  = renderSize.x * mData->UnitsPerPixel;
+		float worldHeight = renderSize.y * mData->UnitsPerPixel;
 
-		worldWidth /= mZoomFactor;
-		worldHeight /= mZoomFactor;
+		worldWidth /= mData->ZoomFactor;
+		worldHeight /= mData->ZoomFactor;
 
-		mAspect = renderSize.x / renderSize.y;
+		mData->Aspect = renderSize.x / renderSize.y;
 
-		mViewType == Core::Viewtype::Perspective
-			? outProjMat = FTMatrix4::CreatePerspectiveFOV(Math::ToRadians(mProjFOVAngleY), renderSize.x, renderSize.y, mNearZ, mFarZ)
+		mData->ViewType == Core::Viewtype::Perspective
+			? outProjMat = FTMatrix4::CreatePerspectiveFOV(Math::ToRadians(mData->ProjFOVAngleY), renderSize.x, renderSize.y, mData->NearZ, mData->FarZ)
 			: outProjMat = FTMatrix4::CreateOrtho(
-				  worldWidth, worldHeight, mNearZ, mFarZ);
-	}
-
-	const D3D11::D3D11Window* Camera::GetRenderWindow()
-	{
-		return mRenderWindow;
+				  worldWidth, worldHeight, mData->NearZ, mData->FarZ);
 	}
 
 	const Core::Viewtype Camera::GetViewType()
 	{
-		return mViewType;
+		return mData->ViewType;
 	}
 
 	const float Camera::GetProjFOVAngleY()
 	{
-		return mProjFOVAngleY;
+		return mData->ProjFOVAngleY;
 	}
 
 	const float Camera::GetAspectRatio()
 	{
-		return mAspect;
+		return mData->Aspect;
 	}
 
-	const float Camera::GetPixelsPerUnit()
+	const float Camera::GetUnitsPerPixel()
 	{
-		return mPixelsPerUnit;
+		return mData->UnitsPerPixel;
 	}
 
 	const float Camera::GetNearZ()
 	{
-		return mNearZ;
+		return mData->NearZ;
 	}
 
 	const float Camera::GetFarZ()
 	{
-		return mFarZ;
+		return mData->FarZ;
 	}
 
 	const Math::FTVector3& Camera::GetOffSet() const
 	{
-		return mOffset;
+		return mData->Offset;
 	}
 
 	const float Camera::GetZoomFactor() const
 	{
-		return mZoomFactor;
+		return mData->ZoomFactor;
+	}
+
+	const Math::FTVector2&& Camera::GetResolution() const
+	{
+		return mData->GetResolution();
 	}
 
 	void Camera::SetPosition(const Math::FTVector3& pos)
 	{
-		mPosition = pos;
+		mData->Position = pos;
 	}
 
 	void Camera::SetViewType(Core::Viewtype viewType)
 	{
-		mViewType = viewType;
+		mData->ViewType = viewType;
 	}
 
 	void Camera::SetTargetActor(Core::IActor* actor)
 	{
-		mTarget = actor;
+		mData->Target = actor;
 	}
 
 	void Camera::SetOffset(Math::FTVector3 offset)
 	{
-		mOffset = offset;
+		mData->Offset = offset;
 	}
 
 	Math::FTVector3& Camera::Position()
 	{
-		return mPosition;
+		return mData->Position;
 	}
 
 	Math::FTVector3& Camera::Offset()
 	{
-		return mOffset;
+		return mData->Offset;
 	}
 
 	float& Camera::ZoomFactor()
 	{
-		return mZoomFactor;
+		return mData->ZoomFactor;
 	}
 
 	float& Camera::ZoomDelta()
 	{
-		return mZoomDelta;
+		return mData->ZoomDelta;
 	}
 
 	void Camera::Initialize(D3D11::D3D11Window* renderWindow, unsigned int pixels, float unit)
 	{
-		mRenderWindow = renderWindow;
+		FTVector2 size = renderWindow->GetRenderArea()->GetSize();
+		mData->ResX	   = static_cast<unsigned int>(size.x);
+		mData->ResY	   = static_cast<unsigned int>(size.y);
 		InitializePixelsPerUnit(pixels, unit);
 	}
 
 	void Camera::InitializePixelsPerUnit(unsigned int pixels, float units)
 	{
-		mPixelsPerUnit = (float)pixels / units;
+		mData->UnitsPerPixel = units / static_cast<float>(pixels);
 	}
 
-	Camera::Camera()
-		: mRenderWindow(nullptr)
-		, mTarget(nullptr)
-		, mPosition(FTVector3(0.0f, 0.0f, -5.0f))
-		, mProjFOVAngleY(70.f)
-		, mNearZ(0.01f)
-		, mFarZ(100.0f)
-		, mAspect(0.f)
-		, mPixelsPerUnit(0.f)
-		, mZoomDelta(0.f)
-		, mZoomFactor(1.0f)
-		, mViewType(Core::Viewtype::Orthographic)
+	Camera::Camera(Core::CameraData* data)
+		: mData(data)
 	{
 	}
 

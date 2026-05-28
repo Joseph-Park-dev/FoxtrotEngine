@@ -80,7 +80,7 @@ namespace Editor
 				ImGui::TreePop();
 				if (selected != -1)
 				{
-					mTileMapKey = tileMapKey;
+					SetTileMapKey(tileMapKey);
 					// SetTexture();
 				}
 			}

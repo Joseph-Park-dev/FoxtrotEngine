@@ -18,12 +18,12 @@ namespace D3D11
 	class FTTileMap;
 	class D3D11PSO;
 
-	class ResourceManager :
-		public Common::ResourceManagerBase
+	class ResourceManager
 	{
 		SINGLETON(ResourceManager)
 	public:
-		void LoadDefaultResources() override;
+		void LoadDefaultResources(D3D11::D3D11Renderer* renderer);
+		void LoadResourcesFromChunk(std::ifstream& ifs, void* renderer);
 
 	public:
 		FTSpriteAnimation* GetSpriteAnimation(Common::FTDS::String& key);

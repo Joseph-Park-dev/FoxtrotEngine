@@ -23,7 +23,7 @@
 #include "ResourceSystem/FTTexture.h"
 #include "TemplateFunctions.h"
 #include "FTDS/Static/FTString.h"
-#include "DebugFuncs.h"
+#include "Debugging/DebugFuncs.h"
 
 namespace D3D11
 {
@@ -93,11 +93,11 @@ namespace D3D11
 			Microsoft::WRL::ComPtr<ID3D11InputLayout>&	 inputLayout);
 
 		static HRESULT CreateVertexShaderAndInputLayout(
-			Microsoft::WRL::ComPtr<ID3D11Device>&					  device,
-			const std::wstring&										  filename,
+			Microsoft::WRL::ComPtr<ID3D11Device>&						device,
+			const std::wstring&											filename,
 			const Common::FTDS::DynamicArray<D3D11_INPUT_ELEMENT_DESC>& inputElements,
-			Microsoft::WRL::ComPtr<ID3D11VertexShader>&				  vertexShader,
-			Microsoft::WRL::ComPtr<ID3D11InputLayout>&				  inputLayout);
+			Microsoft::WRL::ComPtr<ID3D11VertexShader>&					vertexShader,
+			Microsoft::WRL::ComPtr<ID3D11InputLayout>&					inputLayout);
 
 		static HRESULT CreateRenderTargetView(
 			Microsoft::WRL::ComPtr<ID3D11RenderTargetView>& RTV,
@@ -140,7 +140,7 @@ namespace D3D11
 
 		static void CreateIndexBuffer(
 			Microsoft::WRL::ComPtr<ID3D11Device>& device,
-			Common::FTDS::DynamicArray<uint32_t>&	  indices,
+			Common::FTDS::DynamicArray<uint32_t>& indices,
 			Microsoft::WRL::ComPtr<ID3D11Buffer>& indexBuffer);
 
 		static void CreateIndexBuffer(
@@ -208,7 +208,7 @@ namespace D3D11
 		template <typename T_VERTEX>
 		static void CreateVertexBuffer(
 			Microsoft::WRL::ComPtr<ID3D11Device>& device,
-			Common::FTDS::DynamicArray<T_VERTEX>&	  vertices,
+			Common::FTDS::DynamicArray<T_VERTEX>& vertices,
 			Microsoft::WRL::ComPtr<ID3D11Buffer>& vertexBuffer)
 		{
 			// D3D11_USAGE enumeration (d3d11.h)
@@ -324,7 +324,7 @@ namespace D3D11
 			Microsoft::WRL::ComPtr<ID3D11Device>&		 device,
 			Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,
 			Microsoft::WRL::ComPtr<ID3D11Texture2D>&	 textureToWrite,
-			Common::FTDS::String&							 filename);
+			Common::FTDS::String&						 filename);
 
 		static UINT GetShaderType(Microsoft::WRL::ComPtr<ID3DBlob>& shaderBlob);
 	};

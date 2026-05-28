@@ -22,6 +22,7 @@ namespace Core
 {
 	class IActor;
 	class SceneManager;
+	struct CameraData;
 } // namespace Core
 
 namespace D3D11
@@ -42,8 +43,6 @@ namespace D3D11
 	class Camera :
 		public Core::ICamera
 	{
-		SINGLETON(Camera)
-
 	public:
 		//////////////////////////////////////////
 		////// Coordinate Conversion /////////////
@@ -62,6 +61,7 @@ namespace D3D11
 		////// Transform Properties //////////////
 		//////////////////////////////////////////
 
+		virtual Core::CameraData*	   Data() override;
 		virtual const Math::FTVector3& GetPosition() const override;
 
 		//////////////////////////////////////////
@@ -72,16 +72,16 @@ namespace D3D11
 		virtual void GetProjectionMatrix(Math::FTMatrix4& outProjMat) override;
 
 	public:
-		const D3D11::D3D11Window* GetRenderWindow();
-		const Core::Viewtype	  GetViewType() override;
-		const float				  GetProjFOVAngleY() override;
-		const float				  GetAspectRatio() override;
-		const float				  GetPixelsPerUnit() override;
-		const float				  GetNearZ() override;
-		const float				  GetFarZ() override;
+		const Core::Viewtype GetViewType() override;
+		const float			 GetProjFOVAngleY() override;
+		const float			 GetAspectRatio() override;
+		const float			 GetUnitsPerPixel() override;
+		const float			 GetNearZ() override;
+		const float			 GetFarZ() override;
 
-		const Math::FTVector3& GetOffSet() const override;
-		const float			   GetZoomFactor() const override;
+		const Math::FTVector3&	GetOffSet() const override;
+		const float				GetZoomFactor() const override;
+		const Math::FTVector2&& GetResolution() const override;
 
 		void SetPosition(const Math::FTVector3& pos) override;
 		void SetViewType(Core::Viewtype viewType) override;
@@ -91,10 +91,11 @@ namespace D3D11
 	public:
 		Math::FTVector3& Position();
 		Math::FTVector3& Offset();
-		float&			 ZoomFactor();
+		float&			 ZoomFactor() override;
 
-	protected:
-		float& ZoomDelta();
+	public:
+		Camera(Core::CameraData* data);
+		~Camera() override;
 
 	public:
 		// "pixels" defines how much of them should fit in a given unit.
@@ -104,21 +105,11 @@ namespace D3D11
 		// protected:
 		//	virtual void Zoom();
 
+	protected:
+		float& ZoomDelta();
+
 	private:
-		D3D11::D3D11Window*		mRenderWindow;
-		Core::IActor*			mTarget;
-		mutable Math::FTVector3 mPosition;
-		Math::FTVector3			mOffset;
-
-		float mProjFOVAngleY;
-		float mNearZ, mFarZ;
-		float mAspect;
-		float mPixelsPerUnit; // Used for pixel-perfect calculation.
-
-		float mZoomFactor;
-		float mZoomDelta;
-
-		Core::Viewtype mViewType;
+		Core::CameraData* mData;
 
 	private:
 		void InitializePixelsPerUnit(unsigned int pixels, float units = 1.f);

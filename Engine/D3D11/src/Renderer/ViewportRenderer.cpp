@@ -6,27 +6,24 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "ViewportRenderer.h"
+#include "Renderer/ViewportRenderer.h"
 
 #include <d3d11.h>
 #include <wrl.h>
 #include <functional>
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui.h>
 
 #include "Renderer/D3D11Renderer.h"
 #include "Utility/D3D11Utils.h"
-#include "Renderer/FTWindow.h"
+#include "Debugging/D3D11DebugFuncs.h"
+#include "Renderer/IWindow.h"
 #include "Renderer/FTRectArea.h"
 #include "TemplateFunctions.h"
 #include "Manager/DebugShapes.h"
 
-#include "EditorLayer.h"
-#include "EditorSceneManager.h"
-#include "EditorChunkLoader.h"
-#include "EditorCamera.h"
-
-namespace Editor
+namespace D3D11
 {
-	using namespace D3D11;
 	void ViewportRenderer::InitializeTexture(D3D11Renderer* renderer, ImVec2 size)
 	{
 		if (0 < size.x && 0 < size.y)
@@ -48,13 +45,13 @@ namespace Editor
 
 	void ViewportRenderer::DrawOnTexture(D3D11Renderer* renderer)
 	{
-		if (!EditorChunkLoader::GetInstance()->IsLoadingChunk())
-		{
-			//EditorSceneManager::GetInstance()->EditorRender(renderer);
-			//DebugShapes::GetInstance()->Render(renderer);
-			//DebugShapes::GetInstance()->RenderCamRect(renderer);
-			//LightManager::GetInstance()->Render(renderer, EditorCamera::GetInstance());
-		}
+		// if (!EditorChunkLoader::GetInstance()->IsLoadingChunk())
+		//{
+		//  EditorSceneManager::GetInstance()->EditorRender(renderer);
+		//  DebugShapes::GetInstance()->Render(renderer);
+		//  DebugShapes::GetInstance()->RenderCamRect(renderer);
+		//  LightManager::GetInstance()->Render(renderer, EditorCamera::GetInstance());
+		//}
 	}
 
 	void ViewportRenderer::EndRender(D3D11Renderer* renderer)
@@ -125,4 +122,9 @@ namespace Editor
 	ViewportRenderer::~ViewportRenderer()
 	{
 	}
-} // namespace Editor
+
+	D3D11_API ViewportRenderer* CreateViewportRenderer()
+	{
+		return DBG_NEW ViewportRenderer;
+	}
+} // namespace D3D11

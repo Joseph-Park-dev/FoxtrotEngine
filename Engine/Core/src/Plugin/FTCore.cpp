@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Core/Core.h"
+#include "Core/FTCore.h"
 
 #include <fstream>
 
@@ -50,22 +50,6 @@ namespace Core
 			SceneManager::GetInstance()->ChunkList()->PushBack(chunkTitle);
 		}
 		DirectoryHelper::GetInstance()->SetProjectPath(std::filesystem::absolute("./").string().c_str());
-	}
-
-	void FTCore::LoadPlugins(std::ifstream& ifs)
-	{
-		size_t count = Common::FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::Plugin::PLUGIN_DATA).first;
-
-		for (size_t i = 0; i < count; ++i)
-		{
-			Common::FTDS::String name;
-			Common::FileIOHelper::LoadBasicString(ifs, name);
-
-			Core::IPlugin* plg = Core::PluginManager::GetInstance()->RegisterPlugin(name.C_Str());
-			plg->LoadProperties(ifs);
-			plg->Initialize();
-			plg->Setup();
-		}
 	}
 
 	void FTCore::Initialize()

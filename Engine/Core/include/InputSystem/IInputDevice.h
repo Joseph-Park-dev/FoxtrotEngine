@@ -18,7 +18,26 @@
 
 namespace Core
 {
-	class IWindow;
+	enum class KEYBOARD
+	{
+		A,
+		D,
+		W,
+		S,
+		SHIFT,
+		SPACE,
+		LAST_FLAG
+	};
+
+	enum class MOUSE
+	{
+		MOUSE_LEFT,
+		MOUSE_RIGHT,
+		MOUSE_MIDDLE,
+
+		LAST_FLAG
+	};
+
 	enum class ButtonState
 	{
 		NONE,
@@ -33,6 +52,7 @@ namespace Core
 		bool		IsPushedPrevFrame;
 	};
 
+	class IWindow;
 #define MAX_KEYCOUNT 6
 
 	class IInputDevice
@@ -66,6 +86,20 @@ namespace Core
 		/// Gets the mouse wheel scroll delta.
 		/// </summary>
 		virtual const float GetMouseWheelDelta() const = 0;
+
+	public:
+		virtual bool KEY_HOLD(KEYBOARD key) = 0;
+		virtual bool KEY_TAP(KEYBOARD key)	= 0;
+		virtual bool KEY_AWAY(KEYBOARD key) = 0;
+		virtual bool KEY_NONE(KEYBOARD key) = 0;
+
+		virtual bool MOUSE_HOLD(MOUSE mouse) = 0;
+		virtual bool MOUSE_TAP(MOUSE mouse)	 = 0;
+		virtual bool MOUSE_AWAY(MOUSE mouse) = 0;
+		virtual bool MOUSE_NONE(MOUSE mouse) = 0;
+
+		virtual unsigned int MOUSE_X() = 0;
+		virtual unsigned int MOUSE_Y() = 0;
 
 	public:
 		virtual ~IInputDevice() = default;

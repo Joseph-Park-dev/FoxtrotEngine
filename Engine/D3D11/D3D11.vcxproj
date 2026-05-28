@@ -317,6 +317,7 @@
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\Plugin\D3D11Plugin.cpp" />
     <ClCompile Include="src\Renderer\D3D11Renderer.cpp" />
+    <ClCompile Include="src\Renderer\ViewportRenderer.cpp" />
     <ClCompile Include="src\ResourceSystem\Animation\AnimationFrame.cpp" />
     <ClCompile Include="src\ResourceSystem\Animation\FTSpineAnimation.cpp" />
     <ClCompile Include="src\ResourceSystem\Animation\FTSpriteAnimation.cpp" />
@@ -354,7 +355,7 @@
     <ClInclude Include="include\Component\SpineAnimator.h" />
     <ClInclude Include="include\Component\SpriteRenderer.h" />
     <ClInclude Include="include\Component\TileMapRenderer.h" />
-    <ClInclude Include="include\DebugFuncs.h" />
+    <ClInclude Include="include\Debugging\D3D11DebugFuncs.h" />
     <ClInclude Include="include\Renderer\D3D11Window.h" />
     <ClInclude Include="include\framework.h" />
     <ClInclude Include="include\InputSystem\D3D11InputDevice.h" />
@@ -403,8 +404,10 @@
     <ClInclude Include="include\ResourceSystem\Sprite\FTSprite.h" />
     <ClInclude Include="include\ResourceSystem\Sprite\FTTileMap.h" />
     <ClInclude Include="include\ResourceSystem\Sprite\Tile.h" />
+    <ClInclude Include="include\ResourceSystem\SupportedResources.h" />
     <ClInclude Include="include\Utility\D3D11Utils.h" />
     <ClInclude Include="include\Plugin\D3D11Exports.h" />
+    <ClInclude Include="include\Renderer\ViewportRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">

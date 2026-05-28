@@ -17,6 +17,7 @@
 #include "Scene/Scene.h"
 #include "FTDS/Static/HashMap.h"
 #include "Actor/Actor.h"
+#include "Manager/PluginManager.h"
 
 namespace Core
 {
@@ -33,12 +34,22 @@ namespace Core
 		Lock();
 		::std::ifstream ifs(chunkPath);
 		LoadChunkData(ifs);
+		LoadActorProperties(ifs);
+		LoadPlugins(ifs);
+
+		// Plugin Data;
+		//		-Manager  Data;
+		//		-Resource Data;
+
+		// Actor Data;
+		//		-Loads Actor Properties;
+		//		-Register	 Components;
 
 		// Load premades to Core ResourceManager
-		size_t premadeCount = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RES_DATA).first;
+		Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RES_DATA).first;
+
 		// Core::ResourceManager::GetInstance()->LoadResourcesFromChunk(ifs, premadeCount);
 
-		LoadActorsData(ifs);
 		Unlock();
 	}
 
@@ -131,7 +142,7 @@ namespace Core
 		}
 	}
 
-	void ChunkLoader::LoadActorsData(std::ifstream& ifs)
+	void ChunkLoader::LoadActorProperties(std::ifstream& ifs)
 	{
 		Scene*									  scene = SceneManager::GetInstance()->GetCurrentScene();
 		std::pair<size_t, Common::FTDS::String>&& pack	= Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
@@ -142,7 +153,6 @@ namespace Core
 			std::pair<size_t, Common::FTDS::String>&& actorData = Common::FileIOHelper::BeginDataPackLoad(ifs);
 			Actor* actor										= DBG_NEW Actor(ChunkKey::ID::INVALID);
 			actor->LoadProperties(ifs);
-			actor->LoadComponents(ifs);
 			scene->AddActor(actor);
 
 			AddMaxActorID();
@@ -179,6 +189,31 @@ namespace Core
 				(*iter)->GetChildActors()->Clear();
 				(*iter)->GetChildActors()->Copy(children);
 			}
+		}
+	}
+
+	void ChunkLoader::LoadActorComponents(::std::ifstream& ifs)
+	{
+		std::pair<size_t, Common::FTDS::String>&& pack	= Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_COMP);
+		Scene*									  scene = SceneManager::GetInstance()->GetCurrentScene();
+		for (auto iter = scene->Actors()->Begin(); iter != scene->Actors()->End(); ++iter)
+		{
+			Common::FileIOHelper::BeginDataPackLoad(ifs, (*iter)->GetName());
+			(*iter)->LoadComponents(ifs);
+		}
+	}
+
+	void ChunkLoader::LoadPlugins(std::ifstream& ifs)
+	{
+		size_t count = Common::FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::Plugin::PLUGIN_DATA).first;
+
+		for (size_t i = 0; i < count; ++i)
+		{
+			Common::FTDS::String name;
+			Common::FileIOHelper::LoadBasicString(ifs, name);
+
+			Core::IPlugin* plg = Core::PluginManager::GetInstance()->RegisterPlugin(name.C_Str());
+			plg->LoadProperties(ifs);
 		}
 	}
 

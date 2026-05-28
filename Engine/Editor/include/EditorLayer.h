@@ -11,7 +11,6 @@
 /// </summary>
 
 #pragma once
-#include "Entity/Entity.h"
 
 #include <functional>
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -23,6 +22,11 @@
 #include "Manager/DirectoryHelper.h"
 #include "EditorElement.h"
 #include "CommandHistory.h"
+
+namespace Core
+{
+	class IWindow;
+}
 
 namespace D3D11
 {
@@ -60,12 +64,18 @@ namespace Editor
 {
 	class Command;
 	class EditorRenderer;
+	class EditorCamera;
 	class EditorLayer
 	{
 		SINGLETON(EditorLayer)
 	public:
 		void Initialize(Editor::EditorRenderer* renderer);
-		void Update(float deltaTime, D3D11::D3D11Window* editorWin, D3D11::D3D11InputDevice* input, Editor::EditorRenderer* renderer);
+		void Update(
+			float					deltaTime,
+			Core::IWindow*			editorWin,
+			Core::IInputDevice*		input,
+			Editor::EditorRenderer* renderer,
+			Editor::EditorCamera*	editorCam);
 		void Render();
 		void ShutDown();
 
@@ -179,7 +189,7 @@ namespace Editor
 		//  This is execptionally placed in Update() due to its requirement
 		//  to be nested in ImGUi's Frame.
 		/// </summary>
-		void DisplayViewport(D3D11::D3D11Window* editorWin, D3D11::D3D11InputDevice* input, Editor::EditorRenderer* renderer);
+		void DisplayViewport(Core::IWindow* editorWin, Core::IInputDevice* input, Editor::EditorRenderer* renderer);
 
 		// Displays current frame rate.
 		void DisplayFrameRate();

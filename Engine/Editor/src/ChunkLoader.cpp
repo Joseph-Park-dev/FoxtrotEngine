@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "ChunkLoader.h"
+#include "FileSystem/ChunkLoader.h"
 
 #include <fstream>
 
@@ -33,7 +33,7 @@
 #include "EditorSceneManager.h"
 #include "EditorScene.h"
 
-#include "Engine.h"
+#include "Actor/Actor.h"
 
 namespace Editor
 {
@@ -75,8 +75,8 @@ namespace Editor
 		std::ofstream ofs(chunkPath);
 		SaveActorsData(ofs);
 
-		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CORE_RES_DATA);
-		// mGetCoreResManagerFunc()->SaveResourcesToChunk<Core::FTPremade>(ofs);
+		// Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CORE_RES_DATA);
+		//  mGetCoreResManagerFunc()->SaveResourcesToChunk<Core::FTPremade>(ofs);
 
 		ChunkLoader::SaveChunkData(ofs);
 		Common::FileIOHelper::SaveBufferToFile(ofs);
@@ -94,7 +94,7 @@ namespace Editor
 		// SoundManager::GetInstance()->LoadProperties(ifs);
 		LoadActorsData(ifs);
 
-		D3D11::Camera::GetInstance()->LoadProperties(ifs, EditorSceneManager::GetInstance());
+		// D3D11::Camera::GetInstance()->LoadProperties(ifs);
 		Unlock();
 	}
 
@@ -106,7 +106,7 @@ namespace Editor
 
 		// Actor's temp ID to be assigned as parent/Children.
 
-		Common::FTDS::DynamicArray<Actor*>* actors = scene->Actors();
+		Common::FTDS::DynamicArray<Core::IActor*>* actors = scene->Actors();
 		for (auto actor = actors->Begin(); actor != actors->End(); ++actor)
 		{
 			EditorElement* element = static_cast<EditorElement*>(*actor);
@@ -132,7 +132,7 @@ namespace Editor
 			Actor									  actor		= Actor(Core::ChunkKey::ID::INVALID);
 			actor.LoadProperties(ifs);
 			actor.LoadComponents(ifs);
-			EditorElement* element = scene->AddEditorElement(&actor);
+			Core::IActor* element = scene->AddEditorElement(&actor);
 			element->GetTransform()->SetOwner(element);
 
 			AddMaxActorID();
@@ -141,7 +141,7 @@ namespace Editor
 		Common::FTDS::HashMap<EditorElement*> actorWithIDs;
 		actorWithIDs.Reserve(scene->Actors()->GetSize());
 
-		Common::FTDS::DynamicArray<Actor*>* actors = scene->Actors();
+		Common::FTDS::DynamicArray<IActor*>* actors = scene->Actors();
 		for (auto actor = actors->Begin(); actor != actors->End(); ++actor)
 		{
 			if (*actor)
@@ -166,10 +166,10 @@ namespace Editor
 
 				if (0 < element->GetChildActors()->GetSize())
 				{
-					Common::FTDS::DynamicArray<Actor*> children;
+					Common::FTDS::DynamicArray<IActor*> children;
 
 					element->GetChildActors()->IterateArray([&](Actor* c) {
-						Actor* child = actorWithIDs.At(c->GetID())->Value();
+						Core::IActor* child = actorWithIDs.At(c->GetID())->Value();
 						element->RemoveChild(c);
 						delete c;
 						c = nullptr;
@@ -184,7 +184,7 @@ namespace Editor
 
 	const bool ChunkLoader::IsLoadingChunk() const
 	{
-		return mCurrentChunkData->mIsLoading;
+		return mCurrentChunkData->IsLoading;
 	}
 
 	const int ChunkLoader::GetMaxActorID() const

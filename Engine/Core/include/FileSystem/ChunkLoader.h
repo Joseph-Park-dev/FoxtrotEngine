@@ -56,10 +56,14 @@ namespace Core
 
 	protected:
 		void SaveActorsData(::std::ofstream& ofs);
-		void LoadActorsData(::std::ifstream& ifs);
+		void LoadActorProperties(::std::ifstream& ifs);
+		void LoadActorComponents(::std::ifstream& ifs);
 
 	private:
 		ChunkData* mCurrentChunkData;
+
+	private:
+		void LoadPlugins(std::ifstream& ifs);
 	};
 
 	namespace ChunkKey
@@ -69,6 +73,7 @@ namespace Core
 		// Data Pack Names
 		constexpr const char* CHUNK_DATA = "Chunk Data";
 		constexpr const char* ACTOR_DATA = "Actor Data";
+		constexpr const char* ACTOR_COMP = "Actor Component";
 		constexpr const char* RES_DATA	 = "Resource Data";
 
 		constexpr const char* ACTOR_PROPERTIES = "Actor Properties";

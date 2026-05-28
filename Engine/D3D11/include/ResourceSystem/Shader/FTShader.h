@@ -31,10 +31,10 @@ namespace D3D11
 	{
 	public:
 		/// @see FTResource::SaveProperties()
-		virtual void SaveProperties(std::ofstream& ofs) override = 0;
+		virtual void SaveProperties(std::ofstream& ofs) override {};
 
 		/// @see FTResource::LoadProperties()
-		virtual void LoadProperties(std::ifstream& ifs) override = 0;
+		virtual void LoadProperties(std::ifstream& ifs) override {};
 
 	public:
 		FTShader(Common::FTResourceDef& resDef);

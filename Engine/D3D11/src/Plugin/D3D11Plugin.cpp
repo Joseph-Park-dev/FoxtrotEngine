@@ -71,6 +71,10 @@ public:
 	D3D11Plugin(const char* name);
 	~D3D11Plugin() override;
 
+protected:
+	virtual void LoadManagerData(std::ifstream& ifs) override;
+	virtual void LoadResourceData(std::ifstream& ifs) override;
+
 private:
 	Common::FTDS::DynamicArray<D3D11::D3D11InputDevice*>* mInputDevices;
 	D3D11::D3D11Renderer*								  mRenderer;
@@ -210,7 +214,8 @@ void D3D11Plugin::SaveProperties()
 
 void D3D11Plugin::LoadProperties(std::ifstream& ifs)
 {
-	mCamera->LoadProperties(ifs);
+	LoadManagerData(ifs);
+	LoadResourceData(ifs);
 }
 
 void D3D11Plugin::ShutDown()
@@ -235,6 +240,17 @@ D3D11Plugin::~D3D11Plugin()
 	delete mInputDevices;
 	delete mRenderer;
 	delete mWindows;
+}
+
+void D3D11Plugin::LoadManagerData(std::ifstream& ifs)
+{
+	mCamera->LoadProperties(ifs);
+}
+
+void D3D11Plugin::LoadResourceData(std::ifstream& ifs)
+{
+	D3D11::ResourceManager::GetInstance()->LoadDefaultResources(mRenderer);
+	D3D11::ResourceManager::GetInstance()->LoadResourcesFromChunk(ifs, mRenderer);
 }
 
 #include "FTDS/Static/FTString.h"

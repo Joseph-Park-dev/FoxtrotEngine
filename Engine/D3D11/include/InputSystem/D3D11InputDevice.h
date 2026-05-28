@@ -5,26 +5,6 @@
 
 namespace D3D11
 {
-	enum class KEYBOARD
-	{
-		A,
-		D,
-		W,
-		S,
-		SHIFT,
-		SPACE,
-		LAST_FLAG
-	};
-
-	enum class MOUSE
-	{
-		MOUSE_LEFT,
-		MOUSE_RIGHT,
-		MOUSE_MIDDLE,
-
-		LAST_FLAG
-	};
-
 	enum class GAMEPADBUTTON
 	{
 		INVALID,
@@ -48,18 +28,18 @@ namespace D3D11
 		virtual void DetectMouseDrag(int& deltaX, int& deltaY);
 
 	public:
-		bool KEY_HOLD(KEYBOARD key);
-		bool KEY_TAP(KEYBOARD key);
-		bool KEY_AWAY(KEYBOARD key);
-		bool KEY_NONE(KEYBOARD key);
+		bool KEY_HOLD(Core::KEYBOARD key) override;
+		bool KEY_TAP(Core::KEYBOARD key) override;
+		bool KEY_AWAY(Core::KEYBOARD key) override;
+		bool KEY_NONE(Core::KEYBOARD key) override;
 
-		bool MOUSE_HOLD(MOUSE mouse);
-		bool MOUSE_TAP(MOUSE mouse);
-		bool MOUSE_AWAY(MOUSE mouse);
-		bool MOUSE_NONE(MOUSE mouse);
+		bool MOUSE_HOLD(Core::MOUSE mouse) override;
+		bool MOUSE_TAP(Core::MOUSE mouse) override;
+		bool MOUSE_AWAY(Core::MOUSE mouse) override;
+		bool MOUSE_NONE(Core::MOUSE mouse) override;
 
-		unsigned int MOUSE_X();
-		unsigned int MOUSE_Y();
+		unsigned int MOUSE_X() override;
+		unsigned int MOUSE_Y() override;
 
 	public:
 		void LockCursorInSceneViewport(D3D11Window* window, Math::FTVector2 mousePos);

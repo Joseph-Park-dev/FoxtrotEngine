@@ -9,7 +9,7 @@
 #include "Renderer/FTRectArea.h"
 #include "TemplateFunctions.h"
 #include "Debugging/DebugFuncs.h"
-#include "DebugFuncs.h"
+#include "Debugging/D3D11DebugFuncs.h"
 #include "Plugin/IPlugin.h"
 
 namespace D3D11

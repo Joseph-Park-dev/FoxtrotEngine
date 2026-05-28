@@ -20,7 +20,7 @@
 #include "FileSystem/IChunkLoader.h"
 
 #include "Utility/SingletonMacro.h"
-#include <FTDS/Static/FTString.h>
+#include "FTDS/Static/FTString.h"
 
 namespace Core
 {
@@ -37,7 +37,7 @@ namespace Core
 		virtual void Lock() override;
 		virtual void Unlock() override;
 
-		virtual void CopyChunk(const char* chunkPath = "./") override;
+		virtual void CopyChunk(FTDS::String& copiedPathOut, const char* chunkPath = "./") override;
 		virtual void DeleteCopiedChunk() override;
 
 	public:

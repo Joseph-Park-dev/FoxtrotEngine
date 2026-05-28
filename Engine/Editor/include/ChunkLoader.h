@@ -18,6 +18,7 @@
 #include "FileSystem/IChunkLoader.h"
 
 #include "Utility/SingletonMacro.h"
+#include "FTDS/Static/FTString.h"
 
 namespace Editor
 {
@@ -56,13 +57,14 @@ namespace Editor
 		/// The copied .chunk is the one that should be read into the game.
 		/// @param path The copy is recommended to be located in the same directory with the original.
 		/// @return Full path of the copied .chunk
-		virtual void CopyChunk(const char* chunkPath = "./") override;
+		virtual void CopyChunk(FTDS::String& copiedPathOut, const char* chunkPath = "./") override;
 		/// @brief Delete the copied chunk after being used.
 		virtual void DeleteCopiedChunk() override;
 
 	public:
 		virtual const bool IsLoadingChunk() const override;
 		virtual const int  GetMaxActorID() const override;
+		Core::ChunkData*   GetChunkData();
 
 		// Add actor count by 1.
 		virtual void AddMaxActorID() override;

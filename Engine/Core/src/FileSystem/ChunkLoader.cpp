@@ -18,6 +18,7 @@
 #include "FTDS/Static/HashMap.h"
 #include "Actor/Actor.h"
 #include "Manager/PluginManager.h"
+#include "FTDS/Static/FTString.h"
 
 namespace Core
 {
@@ -63,7 +64,7 @@ namespace Core
 		mCurrentChunkData->IsLoading = false;
 	}
 
-	void ChunkLoader::CopyChunk(const char* chunkPath)
+	void ChunkLoader::CopyChunk(FTDS::String& copiedPathOut, const char* chunkPath)
 	{
 		// Get the original file name.
 		Common::FTDS::String path = chunkPath;
@@ -89,6 +90,7 @@ namespace Core
 
 		// Assign the copied file name as current.
 		mCurrentChunkData->Path.Assign(path);
+		copiedPathOut.Assign(copiedPath);
 	}
 
 	void ChunkLoader::DeleteCopiedChunk()

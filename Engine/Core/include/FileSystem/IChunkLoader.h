@@ -9,6 +9,7 @@
 #include <iosfwd>
 
 #include "FTDS/Static/HashMap.h"
+#include "FTDS/Static/FTString.h"
 
 namespace Core
 {
@@ -17,9 +18,9 @@ namespace Core
 	{
 		Common::FTDS::String			   Path = {};
 		Common::FTDS::HashMap<IComponent*> CompLoadMap;
-		int								   MaxActorID;
+		int								   MaxActorID = 0;
 		/// @brief Is this chunk currently being loaded?
-		bool							   IsLoading;
+		bool							   IsLoading = false;
 	};
 
 	class IChunkLoader
@@ -39,7 +40,7 @@ namespace Core
 		/// The copied .chunk is the one that should be read into the game.
 		/// @param path The copy is recommended to be located in the same directory with the original.
 		/// @return Full path of the copied .chunk
-		virtual void CopyChunk(const char* chunkPath = "./") = 0;
+		virtual void CopyChunk(FTDS::String& copiedPathOut, const char* chunkPath = "./") = 0;
 		/// @brief Delete the copied chunk after being used.
 		virtual void DeleteCopiedChunk() = 0;
 

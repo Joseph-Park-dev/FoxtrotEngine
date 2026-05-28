@@ -191,6 +191,11 @@ namespace Editor
 		return mCurrentChunkData->MaxActorID;
 	}
 
+	Core::ChunkData* ChunkLoader::GetChunkData()
+	{
+		return mCurrentChunkData;
+	}
+
 	void ChunkLoader::AddMaxActorID()
 	{
 		++mCurrentChunkData->MaxActorID;

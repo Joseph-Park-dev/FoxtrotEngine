@@ -76,7 +76,6 @@ namespace Core
 		constexpr const char* ACTOR_COMP = "Actor Component";
 		constexpr const char* RES_DATA	 = "Resource Data";
 
-		constexpr const char* ACTOR_PROPERTIES = "Actor Properties";
 		constexpr const char* TRANSFORM		   = "Transform";
 
 		constexpr const char* CHUNK_LIST	  = "Chunk List";

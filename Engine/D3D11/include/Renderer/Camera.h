@@ -28,18 +28,6 @@ namespace Core
 namespace D3D11
 {
 	class D3D11Window;
-
-	namespace ChunkKey
-	{
-		constexpr const char* CAMERA_DATA		  = "Camera Data";
-		constexpr const char* TARGET_ACTOR		  = "Target Actor";
-		constexpr const char* RENDER_RESOLUTION	  = "Render Resolution";
-		constexpr const char* RENDER_SCREENCENTER = "Screen Center";
-		constexpr const char* CAM_POSITION		  = "Position";
-		constexpr const char* CAM_OFFSET		  = "Offset";
-		constexpr const char* CAM_ZOOM			  = "Zoom";
-	} // namespace ChunkKey
-
 	class Camera :
 		public Core::ICamera
 	{
@@ -57,11 +45,12 @@ namespace D3D11
 		void LoadProperties(std::ifstream& ifs) override;
 
 	public:
+		virtual Core::CameraData* Data() override;
+
 		//////////////////////////////////////////
 		////// Transform Properties //////////////
 		//////////////////////////////////////////
 
-		virtual Core::CameraData*	   Data() override;
 		virtual const Math::FTVector3& GetPosition() const override;
 
 		//////////////////////////////////////////
@@ -112,6 +101,6 @@ namespace D3D11
 		Core::CameraData* mData;
 
 	private:
-		void InitializePixelsPerUnit(unsigned int pixels, float units = 1.f);
+		void InitializeUnitsPerPixel(unsigned int pixels, float units = 1.f);
 	};
 } // namespace D3D11

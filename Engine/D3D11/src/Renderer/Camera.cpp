@@ -213,10 +213,10 @@ namespace D3D11
 		FTVector2 size = renderWindow->GetRenderArea()->GetSize();
 		mData->ResX	   = static_cast<unsigned int>(size.x);
 		mData->ResY	   = static_cast<unsigned int>(size.y);
-		InitializePixelsPerUnit(pixels, unit);
+		InitializeUnitsPerPixel(pixels, unit);
 	}
 
-	void Camera::InitializePixelsPerUnit(unsigned int pixels, float units)
+	void Camera::InitializeUnitsPerPixel(unsigned int pixels, float units)
 	{
 		mData->UnitsPerPixel = units / static_cast<float>(pixels);
 	}

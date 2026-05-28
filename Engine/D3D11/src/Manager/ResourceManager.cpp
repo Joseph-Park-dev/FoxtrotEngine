@@ -29,268 +29,290 @@
 #include "FTDS/Static/FTString.h"
 #include "FileSystem/NullKeys.h"
 #include "Entity/Entity.h"
+#include "Renderer/D3D11Renderer.h"
+#include "Debugging/D3D11DebugFuncs.h"
+
+#include "ResourceSystem/SupportedResources.h"
 
 namespace D3D11
 {
+	constexpr const char* SHADERS	 = ".\\FoxtrotEngine\\Assets\\Shaders\\";
+	constexpr const char* SHADERS_2D = ".\\FoxtrotEngine\\Assets\\Shaders\\2D\\";
 	using namespace Common;
-	void ResourceManager::LoadDefaultResources()
+	using Microsoft::WRL::ComPtr;
+
+	void ResourceManager::LoadDefaultResources(D3D11::D3D11Renderer* renderer)
 	{
-		// Common::FTDS::HashMap<FTVertexShader*>	 VS;
-		// Common::FTDS::HashMap<FTGeometryShader*> GS;
-		// Common::FTDS::HashMap<FTPixelShader*>	 PS;
+		Common::FTDS::HashMap<FTVertexShader*>	 VS;
+		Common::FTDS::HashMap<FTGeometryShader*> GS;
+		Common::FTDS::HashMap<FTPixelShader*>	 PS;
 
-		// FTResourceDef resDef{
-		//	::ChunkKey::NullVal::NULL_OBJECT, ::ChunkKey::NullVal::NULL_OBJECT
-		// };
+		FTResourceDef resDef{
+			Common::ChunkKey::NullVal::NULL_OBJECT, Common::ChunkKey::NullVal::NULL_OBJECT
+		};
+
+		///////////////////////////////
+		///// Vertex Shader Setup /////
+		///////////////////////////////
+
+		VS.Reserve(5);
+
+		// 2D sprite animation vertex shader
+		Common::FTDS::String vsPath = SHADERS_2D;
+		resDef.FileName				= "SpriteVS.hlsl";
+		vsPath.Append(resDef.FileName);
+		resDef.Path = vsPath.C_Str();
+
+		VS.Insert(
+			resDef.FileName,
+			DBG_NEW FTVertexShader(resDef, renderer));
+
+		// 2D text renderer vertex shader
+		vsPath			= SHADERS_2D;
+		resDef.FileName = "TextRenderer2DVS.hlsl";
+		vsPath.Append(resDef.FileName);
+		resDef.Path = vsPath.C_Str();
+
+		VS.Insert(
+			resDef.FileName,
+			DBG_NEW FTVertexShader(resDef, renderer));
+
+		// 2D debug shape vertex shader
+		vsPath			= SHADERS;
+		resDef.FileName = "DebugShapeVS.hlsl";
+		vsPath.Append(resDef.FileName);
+		resDef.Path = vsPath.C_Str();
+
+		VS.Insert(
+			resDef.FileName,
+			DBG_NEW FTVertexShader(resDef, renderer));
+
+		// 2D texture vertex shader
+		vsPath			= SHADERS;
+		resDef.FileName = "TextureVS.hlsl";
+		vsPath.Append(resDef.FileName);
+		resDef.Path = vsPath.C_Str();
+
+		VS.Insert(
+			resDef.FileName,
+			DBG_NEW FTVertexShader(resDef, renderer));
+
+		// 2D spine animation vertex shader
+		vsPath			= SHADERS;
+		resDef.FileName = "TextureVSSpine.hlsl";
+		vsPath.Append(resDef.FileName);
+		resDef.Path = vsPath.C_Str();
+
+		VS.Insert(
+			resDef.FileName,
+			DBG_NEW FTVertexShader(resDef, renderer));
+
+		//////////////////////////////
+		///// Pixel Shader Setup /////
+		//////////////////////////////
+
+		PS.Reserve(6);
+
+		// 2D sprite animation pixel shader
+		vsPath			= SHADERS_2D;
+		resDef.FileName = "SpritePS.hlsl";
+		vsPath.Append(resDef.FileName);
+		resDef.Path = vsPath.C_Str();
+
+		PS.Insert(
+			resDef.FileName,
+			DBG_NEW FTPixelShader(resDef, renderer));
+
+		// 2D text renderer pixel shader
+		vsPath			= SHADERS_2D;
+		resDef.FileName = "TextRenderer2DPS.hlsl";
+		vsPath.Append(resDef.FileName);
+		resDef.Path = vsPath.C_Str();
+
+		PS.Insert(
+			resDef.FileName,
+			DBG_NEW FTPixelShader(resDef, renderer));
+
+		// 2D texture pixel shader
+		vsPath			= SHADERS_2D;
+		resDef.FileName = "Texture2DPS.hlsl";
+		vsPath.Append(resDef.FileName);
+		resDef.Path = vsPath.C_Str();
+
+		PS.Insert(
+			resDef.FileName,
+			DBG_NEW FTPixelShader(resDef, renderer));
+
+		// 2D spine animation pixel shader
+		vsPath			= SHADERS_2D;
+		resDef.FileName = "Texture2DSpinePS.hlsl";
+		vsPath.Append(resDef.FileName);
+		resDef.Path = vsPath.C_Str();
+
+		PS.Insert(
+			resDef.FileName,
+			DBG_NEW FTPixelShader(resDef, renderer));
+
+		// 2D debug shape pixel shader
+		vsPath			= SHADERS;
+		resDef.FileName = "DebugShapePS.hlsl";
+		vsPath.Append(resDef.FileName);
+		resDef.Path = vsPath.C_Str();
+
+		PS.Insert(
+			resDef.FileName,
+			DBG_NEW FTPixelShader(resDef, renderer));
+
+		// 2D texture pixel shader
+		vsPath			= SHADERS;
+		resDef.FileName = "TexturePS.hlsl";
+		vsPath.Append(resDef.FileName);
+		resDef.Path = vsPath.C_Str();
+
+		PS.Insert(
+			resDef.FileName,
+			DBG_NEW FTPixelShader(resDef, renderer));
 
 		/////////////////////////////////
-		/////// Vertex Shader Setup /////
+		///// Geometry Shader Setup /////
 		/////////////////////////////////
 
-		// VS.Reserve(5);
+		GS.Reserve(2);
 
-		//// 2D sprite animation vertex shader
-		// Common::FTDS::String vsPath = Path::Resource::SHADERS_2D;
-		// resDef.FileName		= "SpriteVS.hlsl";
-		// vsPath.Append(resDef.FileName);
-		// resDef.RelativePath = vsPath.C_Str();
+		// 2D sprite animation geometry shader
+		vsPath			= SHADERS_2D;
+		resDef.FileName = "SpriteGS.hlsl";
+		vsPath.Append(resDef.FileName);
+		resDef.Path = vsPath.C_Str();
 
-		// VS.Insert(
-		//	resDef.FileName,
-		//	DBG_NEW FTVertexShader(resDef, mRenderer));
+		GS.Insert(
+			resDef.FileName,
+			DBG_NEW FTGeometryShader(resDef, renderer));
 
-		//// 2D text renderer vertex shader
-		// vsPath			= Path::Resource::SHADERS_2D;
-		// resDef.FileName = "TextRenderer2DVS.hlsl";
-		// vsPath.Append(resDef.FileName);
-		// resDef.RelativePath = vsPath.C_Str();
+		// 2D debug shape geometry shader
+		vsPath			= SHADERS;
+		resDef.FileName = "DebugShapeGS.hlsl";
+		vsPath.Append(resDef.FileName);
+		resDef.Path = vsPath.C_Str();
 
-		// VS.Insert(
-		//	resDef.FileName,
-		//	DBG_NEW FTVertexShader(resDef, mRenderer));
+		GS.Insert(
+			resDef.FileName,
+			DBG_NEW FTGeometryShader(resDef, renderer));
 
-		//// 2D debug shape vertex shader
-		// vsPath			= Path::Resource::SHADERS;
-		// resDef.FileName = "DebugShapeVS.hlsl";
-		// vsPath.Append(resDef.FileName);
-		// resDef.RelativePath = vsPath.C_Str();
+		//////////////////////////////
+		///// PSO Elements Setup /////
+		//////////////////////////////
 
-		// VS.Insert(
-		//	resDef.FileName,
-		//	DBG_NEW FTVertexShader(resDef, mRenderer));
+		ComPtr<ID3D11BlendState> spriteBS;
 
-		//// 2D texture vertex shader
-		// vsPath			= Path::Resource::SHADERS;
-		// resDef.FileName = "TextureVS.hlsl";
-		// vsPath.Append(resDef.FileName);
-		// resDef.RelativePath = vsPath.C_Str();
+		D3D11_BLEND_DESC blendDesc = {};
+		ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
+		blendDesc.AlphaToCoverageEnable	 = FALSE;
+		blendDesc.IndependentBlendEnable = FALSE;
 
-		// VS.Insert(
-		//	resDef.FileName,
-		//	DBG_NEW FTVertexShader(resDef, mRenderer));
+		D3D11_RENDER_TARGET_BLEND_DESC& rtBlendDesc = blendDesc.RenderTarget[0];
+		rtBlendDesc.BlendEnable						= TRUE;
+		rtBlendDesc.SrcBlend						= D3D11_BLEND_ONE;
+		rtBlendDesc.DestBlend						= D3D11_BLEND_INV_SRC_ALPHA;
+		rtBlendDesc.BlendOp							= D3D11_BLEND_OP_ADD;
+		rtBlendDesc.SrcBlendAlpha					= D3D11_BLEND_ONE;
+		rtBlendDesc.DestBlendAlpha					= D3D11_BLEND_INV_SRC_ALPHA;
+		rtBlendDesc.BlendOpAlpha					= D3D11_BLEND_OP_ADD;
+		rtBlendDesc.RenderTargetWriteMask			= D3D11_COLOR_WRITE_ENABLE_ALL;
 
-		//// 2D spine animation vertex shader
-		// vsPath			= Path::Resource::SHADERS;
-		// resDef.FileName = "TextureVSSpine.hlsl";
-		// vsPath.Append(resDef.FileName);
-		// resDef.RelativePath = vsPath.C_Str();
+		DX::ThrowIfFailed(renderer->GetDevice()->CreateBlendState(&blendDesc, spriteBS.GetAddressOf()));
 
-		// VS.Insert(
-		//	resDef.FileName,
-		//	DBG_NEW FTVertexShader(resDef, mRenderer));
+		ComPtr<ID3D11DepthStencilState> spriteDSS;
 
-		////////////////////////////////
-		/////// Pixel Shader Setup /////
-		////////////////////////////////
+		D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+		ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+		depthStencilDesc.DepthEnable	= false; // false
+		depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ALL;
+		depthStencilDesc.DepthFunc		= D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL;
 
-		// PS.Reserve(6);
+		DX::ThrowIfFailed(renderer->GetDevice()->CreateDepthStencilState(&depthStencilDesc, spriteDSS.GetAddressOf()));
 
-		//// 2D sprite animation pixel shader
-		// vsPath			= Path::Resource::SHADERS_2D;
-		// resDef.FileName = "SpritePS.hlsl";
-		// vsPath.Append(resDef.FileName);
-		// resDef.RelativePath = vsPath.C_Str();
+		ComPtr<ID3D11RasterizerState> SolidRS;
+		ComPtr<ID3D11RasterizerState> WireframeRS;
 
-		// PS.Insert(
-		//	resDef.FileName,
-		//	DBG_NEW FTPixelShader(resDef, mRenderer));
+		D3D11_RASTERIZER_DESC rastDesc;
+		ZeroMemory(&rastDesc, sizeof(D3D11_RASTERIZER_DESC)); // Need this
+															  // rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+		rastDesc.FillMode			   = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+		rastDesc.CullMode			   = D3D11_CULL_MODE::D3D11_CULL_NONE;
+		rastDesc.FrontCounterClockwise = false;
+		rastDesc.DepthClipEnable	   = true;
+		rastDesc.MultisampleEnable	   = true;
 
-		//// 2D text renderer pixel shader
-		// vsPath			= Path::Resource::SHADERS_2D;
-		// resDef.FileName = "TextRenderer2DPS.hlsl";
-		// vsPath.Append(resDef.FileName);
-		// resDef.RelativePath = vsPath.C_Str();
+		DX::ThrowIfFailed(renderer->GetDevice()->CreateRasterizerState(&rastDesc, SolidRS.GetAddressOf()));
 
-		// PS.Insert(
-		//	resDef.FileName,
-		//	DBG_NEW FTPixelShader(resDef, mRenderer));
+		rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_WIREFRAME;
+		DX::ThrowIfFailed(renderer->GetDevice()->CreateRasterizerState(&rastDesc, WireframeRS.GetAddressOf()));
 
-		//// 2D texture pixel shader
-		// vsPath			= Path::Resource::SHADERS_2D;
-		// resDef.FileName = "Texture2DPS.hlsl";
-		// vsPath.Append(resDef.FileName);
-		// resDef.RelativePath = vsPath.C_Str();
+		Microsoft::WRL::ComPtr<ID3D11SamplerState> SamplerState;
+		D3D11_SAMPLER_DESC						   sampDesc;
+		ZeroMemory(&sampDesc, sizeof(sampDesc));
+		sampDesc.Filter			= D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		sampDesc.AddressU		= D3D11_TEXTURE_ADDRESS_WRAP;
+		sampDesc.AddressV		= D3D11_TEXTURE_ADDRESS_WRAP;
+		sampDesc.AddressW		= D3D11_TEXTURE_ADDRESS_WRAP;
+		sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+		sampDesc.MinLOD			= 0;
+		sampDesc.MaxLOD			= D3D11_FLOAT32_MAX;
 
-		// PS.Insert(
-		//	resDef.FileName,
-		//	DBG_NEW FTPixelShader(resDef, mRenderer));
+		// Create the Sample State
+		renderer->GetDevice()->CreateSamplerState(&sampDesc, SamplerState.GetAddressOf());
 
-		//// 2D spine animation pixel shader
-		// vsPath			= Path::Resource::SHADERS_2D;
-		// resDef.FileName = "Texture2DSpinePS.hlsl";
-		// vsPath.Append(resDef.FileName);
-		// resDef.RelativePath = vsPath.C_Str();
+		///////////////////////////
+		///// Assembling PSOs /////
+		///////////////////////////
+		PSODef psoDef;
+		{
+			psoDef.FileName = "SpritePSO";
+			psoDef.Path		= Common::ChunkKey::NullVal::NULL_OBJECT;
 
-		// PS.Insert(
-		//	resDef.FileName,
-		//	DBG_NEW FTPixelShader(resDef, mRenderer));
+			psoDef.VS			= VS.At("SpriteVS.hlsl")->Value();
+			psoDef.GS			= GS.At("SpriteGS.hlsl")->Value();
+			psoDef.PS			= PS.At("SpritePS.hlsl")->Value();
+			psoDef.BS			= spriteBS;
+			psoDef.DSS			= spriteDSS;
+			psoDef.RS			= SolidRS;
+			psoDef.SS			= SamplerState;
+			psoDef.PrimTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
 
-		//// 2D debug shape pixel shader
-		// vsPath			= Path::Resource::SHADERS;
-		// resDef.FileName = "DebugShapePS.hlsl";
-		// vsPath.Append(resDef.FileName);
-		// resDef.RelativePath = vsPath.C_Str();
+			mPSOs->AddResource(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
+		}
 
-		// PS.Insert(
-		//	resDef.FileName,
-		//	DBG_NEW FTPixelShader(resDef, mRenderer));
+		{
+			psoDef.FileName = "SpriteAnimPSO";
+			psoDef.Path		= Common::ChunkKey::NullVal::NULL_OBJECT;
 
-		//// 2D texture pixel shader
-		// vsPath			= Path::Resource::SHADERS;
-		// resDef.FileName = "TexturePS.hlsl";
-		// vsPath.Append(resDef.FileName);
-		// resDef.RelativePath = vsPath.C_Str();
+			psoDef.VS			= VS.At("SpriteVS.hlsl")->Value();
+			psoDef.GS			= GS.At("SpriteGS.hlsl")->Value();
+			psoDef.PS			= PS.At("SpritePS.hlsl")->Value();
+			psoDef.BS			= spriteBS;
+			psoDef.DSS			= spriteDSS;
+			psoDef.RS			= SolidRS;
+			psoDef.SS			= SamplerState;
+			psoDef.PrimTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
 
-		// PS.Insert(
-		//	resDef.FileName,
-		//	DBG_NEW FTPixelShader(resDef, mRenderer));
+			mPSOs->AddResource(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
+		}
+	}
 
-		///////////////////////////////////
-		/////// Geometry Shader Setup /////
-		///////////////////////////////////
-
-		// GS.Reserve(2);
-
-		//// 2D sprite animation geometry shader
-		// vsPath			= Path::Resource::SHADERS_2D;
-		// resDef.FileName = "SpriteGS.hlsl";
-		// vsPath.Append(resDef.FileName);
-		// resDef.RelativePath = vsPath.C_Str();
-
-		// GS.Insert(
-		//	resDef.FileName,
-		//	DBG_NEW FTGeometryShader(resDef, mRenderer));
-
-		//// 2D debug shape geometry shader
-		// vsPath			= Path::Resource::SHADERS;
-		// resDef.FileName = "DebugShapeGS.hlsl";
-		// vsPath.Append(resDef.FileName);
-		// resDef.RelativePath = vsPath.C_Str();
-
-		// GS.Insert(
-		//	resDef.FileName,
-		//	DBG_NEW FTGeometryShader(resDef, mRenderer));
-
-		////////////////////////////////
-		/////// PSO Elements Setup /////
-		////////////////////////////////
-
-		// ComPtr<ID3D11BlendState> spriteBS;
-
-		// D3D11_BLEND_DESC blendDesc = {};
-		// ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
-		// blendDesc.AlphaToCoverageEnable	 = FALSE;
-		// blendDesc.IndependentBlendEnable = FALSE;
-
-		// D3D11_RENDER_TARGET_BLEND_DESC& rtBlendDesc = blendDesc.RenderTarget[0];
-		// rtBlendDesc.BlendEnable						= TRUE;
-		// rtBlendDesc.SrcBlend						= D3D11_BLEND_ONE;
-		// rtBlendDesc.DestBlend						= D3D11_BLEND_INV_SRC_ALPHA;
-		// rtBlendDesc.BlendOp							= D3D11_BLEND_OP_ADD;
-		// rtBlendDesc.SrcBlendAlpha					= D3D11_BLEND_ONE;
-		// rtBlendDesc.DestBlendAlpha					= D3D11_BLEND_INV_SRC_ALPHA;
-		// rtBlendDesc.BlendOpAlpha					= D3D11_BLEND_OP_ADD;
-		// rtBlendDesc.RenderTargetWriteMask			= D3D11_COLOR_WRITE_ENABLE_ALL;
-
-		// DX::ThrowIfFailed(mRenderer->GetDevice()->CreateBlendState(&blendDesc, spriteBS.GetAddressOf()));
-
-		// ComPtr<ID3D11DepthStencilState> spriteDSS;
-
-		// D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
-		// ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-		// depthStencilDesc.DepthEnable	= false; // false
-		// depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ALL;
-		// depthStencilDesc.DepthFunc		= D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL;
-
-		// DX::ThrowIfFailed(mRenderer->GetDevice()->CreateDepthStencilState(&depthStencilDesc, spriteDSS.GetAddressOf()));
-
-		// mRS->Reserve(2);
-		// ComPtr<ID3D11RasterizerState> SolidRS;
-		// ComPtr<ID3D11RasterizerState> WireframeRS;
-
-		// D3D11_RASTERIZER_DESC rastDesc;
-		// ZeroMemory(&rastDesc, sizeof(D3D11_RASTERIZER_DESC)); // Need this
-		//// rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-		// rastDesc.FillMode			   = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-		// rastDesc.CullMode			   = D3D11_CULL_MODE::D3D11_CULL_NONE;
-		// rastDesc.FrontCounterClockwise = false;
-		// rastDesc.DepthClipEnable	   = true;
-		// rastDesc.MultisampleEnable	   = true;
-
-		// DX::ThrowIfFailed(mRenderer->GetDevice()->CreateRasterizerState(&rastDesc, SolidRS.GetAddressOf()));
-
-		// rastDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_WIREFRAME;
-		// DX::ThrowIfFailed(mRenderer->GetDevice()->CreateRasterizerState(&rastDesc, WireframeRS.GetAddressOf()));
-
-		// mRS->At(0) = SolidRS;
-		// mRS->At(1) = WireframeRS;
-
-		// D3D11_SAMPLER_DESC sampDesc;
-		// ZeroMemory(&sampDesc, sizeof(sampDesc));
-		// sampDesc.Filter			= D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-		// sampDesc.AddressU		= D3D11_TEXTURE_ADDRESS_WRAP;
-		// sampDesc.AddressV		= D3D11_TEXTURE_ADDRESS_WRAP;
-		// sampDesc.AddressW		= D3D11_TEXTURE_ADDRESS_WRAP;
-		// sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-		// sampDesc.MinLOD			= 0;
-		// sampDesc.MaxLOD			= D3D11_FLOAT32_MAX;
-
-		//// Create the Sample State
-		// mDevice->CreateSamplerState(&sampDesc, mSamplerState.GetAddressOf());
-
-		/////////////////////////////
-		/////// Assembling PSOs /////
-		/////////////////////////////
-		// PSODef psoDef;
-		//{
-		//	psoDef.FileName		= "SpritePSO";
-		//	psoDef.RelativePath = ::ChunkKey::NullVal::NULL_OBJECT;
-
-		//	psoDef.VS			= VS.At("SpriteVS.hlsl")->Value();
-		//	psoDef.GS			= GS.At("SpriteGS.hlsl")->Value();
-		//	psoDef.PS			= PS.At("SpritePS.hlsl")->Value();
-		//	psoDef.BS			= spriteBS;
-		//	psoDef.DSS			= spriteDSS;
-		//	psoDef.RS			= SolidRS;
-		//	psoDef.PrimTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
-
-		//	mPSOs->Insert(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
-		//}
-
-		//{
-		//	psoDef.FileName		= "SpriteAnimPSO";
-		//	psoDef.RelativePath = ::ChunkKey::NullVal::NULL_OBJECT;
-
-		//	psoDef.VS			= VS.At("SpriteVS.hlsl")->Value();
-		//	psoDef.GS			= GS.At("SpriteGS.hlsl")->Value();
-		//	psoDef.PS			= PS.At("SpritePS.hlsl")->Value();
-		//	psoDef.BS			= spriteBS;
-		//	psoDef.DSS			= spriteDSS;
-		//	psoDef.RS			= SolidRS;
-		//	psoDef.PrimTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
-
-		//	mPSOs->Insert(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
-		//}
+	void ResourceManager::LoadResourcesFromChunk(std::ifstream& ifs, void* renderer)
+	{
+		mSpriteAnimations->LoadResourcesFromChunk(ifs, renderer);
+		mSpineAnimations->LoadResourcesFromChunk(ifs, renderer);
+		mFonts->LoadResourcesFromChunk(ifs, renderer);
+		mMaterials->LoadResourcesFromChunk(ifs, renderer);
+		mMeshGroups->LoadResourcesFromChunk(ifs, renderer);
+		mVertexShaders->LoadResourcesFromChunk(ifs, renderer);
+		mGeometryShaders->LoadResourcesFromChunk(ifs, renderer);
+		mPixelShaders->LoadResourcesFromChunk(ifs, renderer);
+		mSprites->LoadResourcesFromChunk(ifs, renderer);
+		mTileMaps->LoadResourcesFromChunk(ifs, renderer);
+		mPSOs->LoadResourcesFromChunk(ifs, renderer);
 	}
 
 	FTSpriteAnimation* ResourceManager::GetSpriteAnimation(Common::FTDS::String& key)

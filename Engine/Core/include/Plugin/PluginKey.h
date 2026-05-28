@@ -16,6 +16,11 @@ namespace ProcNames
 {
 	constexpr const char* CMDHistory = "GetCMDHistory";
 	constexpr const char* FIND_ACTOR = "FindActor";
+
+	namespace D3D11
+	{
+		constexpr const char* CREATE_VP_RENDERER = "CreateViewportRenderer";
+	}
 } // namespace ProcNames
 
 namespace Plugin

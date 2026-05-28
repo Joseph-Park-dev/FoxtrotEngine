@@ -57,6 +57,10 @@ namespace Core
 
 	public:
 		virtual ~IPlugin() = default;
+
+	protected:
+		virtual void LoadManagerData(std::ifstream& ifs)  = 0;
+		virtual void LoadResourceData(std::ifstream& ifs) = 0;
 	};
 
 	namespace ChunkKey

@@ -15,6 +15,8 @@
 #pragma once
 #include "Actor/IActor.h"
 
+#include "Component/IComponent.h"
+
 namespace Core
 {
 	class Scene;
@@ -37,9 +39,9 @@ namespace Editor
 		public Core::IActor
 	{
 	public:
-		virtual void AddChild(IActor* actor) override;
-		virtual void RemoveChild(IActor* actor) override;
-		virtual void RemoveComponent(IComponent* component) override;
+		virtual void AddChild(Core::IActor* actor) override;
+		virtual void RemoveChild(Core::IActor* actor) override;
+		virtual void RemoveComponent(Core::IComponent* component) override;
 		virtual void RemoveAllComponents() override;
 
 	public:
@@ -57,40 +59,34 @@ namespace Editor
 
 	public:
 		// Getters/Setters
-		virtual ActorData*								 GetData() override;
-		virtual ActorGroup								 GetActorGroup() const override;
-		virtual ActorGroup&								 GetActorGroupRef() override;
-		virtual ActorGroup*								 GetActorGroupPtr() override;
-		virtual Common::FTDS::String					 GetName() override;
-		virtual Common::FTDS::String&					 GetNameRef() override;
-		virtual const int								 GetID() const override;
-		virtual const bool&								 GetIsActive() const override;
-		virtual Transform*								 GetTransform() const override;
-		virtual IActor*									 GetParent() const override;
-		virtual Common::FTDS::DynamicArray<IComponent*>* GetComponents() override;
-		virtual Common::FTDS::DynamicArray<IActor*>*	 GetChildActors() override;
-		virtual const int&								 GetDrawOrder() const override;
-
-		template <typename COMP>
-		COMP* AddComponent(IPlugin* plugin)
-		{
-			return GetData()->AddComponent<COMP>(plugin, this);
-		}
+		virtual Core::ActorData*							   GetData() override;
+		virtual Core::ActorGroup							   GetActorGroup() const override;
+		virtual Core::ActorGroup&							   GetActorGroupRef() override;
+		virtual Core::ActorGroup*							   GetActorGroupPtr() override;
+		virtual Common::FTDS::String						   GetName() override;
+		virtual Common::FTDS::String&						   GetNameRef() override;
+		virtual const int									   GetID() const override;
+		virtual const bool&									   GetIsActive() const override;
+		virtual bool&										   GetIsActiveRef() override;
+		virtual Core::Transform*							   GetTransform() const override;
+		virtual Editor::EditorElement*						   GetParent() const override;
+		virtual Common::FTDS::DynamicArray<Core::IComponent*>* GetComponents() override;
+		virtual Common::FTDS::DynamicArray<Core::IActor*>*	   GetChildActors() override;
+		virtual const int&									   GetDrawOrder() const override;
 
 		virtual void SetName(Common::FTDS::String&& name) override;
 		virtual void SetIsActive(bool isActive) override;
-		virtual void SetActorGroup(ActorGroup group) override;
-		virtual void SetState(ActorState state) override;
-		virtual void SetParent(IActor* parent) override;
-		virtual void SetTransform(Transform* transform) override;
-		virtual void SetComponents(Common::FTDS::DynamicArray<IComponent*>* components) override;
+		virtual void SetActorGroup(Core::ActorGroup group) override;
+		virtual void SetState(Core::ActorState state) override;
+		virtual void SetParent(Core::IActor* parent) override;
+		virtual void SetTransform(Core::Transform* transform) override;
+		virtual void SetComponents(Common::FTDS::DynamicArray<Core::IComponent*>* components) override;
 		virtual void SetChildActors(Common::FTDS::DynamicArray<IActor*>* children) override;
 		virtual void SetDrawOrder(int order) override;
 
-		virtual bool  HasName(Common::FTDS::String&& name) override;
-		virtual bool  HasName(const char* name) override;
-		virtual bool  IsDead() override;
-		virtual bool& IsActive() override;
+		virtual bool HasName(Common::FTDS::String&& name) override;
+		virtual bool HasName(const char* name) override;
+		virtual bool IsDead() override;
 
 	public:
 		virtual void SaveProperties(std::ofstream& ofs) override;
@@ -148,15 +144,12 @@ namespace Editor
 		/// Not recommended to use outside of FTPremade
 		EditorElement(Core::FTPremade* premade, int id);
 
-	public:
-		// Deep copies all child Actors
-		void CopyChildObjectFrom(IActor* actor) override;
-
 	private:
-		bool   mIsFocused;		// Is this item clicked on Foxtrot Editor's Hierarchy menu?
-		size_t mHierarchyLevel; // How many parent Actors are there for this object?
+		Core::ActorData* mData;
 
-		bool mIsDisplayed; // Is this item displayed on Hierarchy menu during this frame?
+		bool   mIsFocused;		// Is this item clicked on Foxtrot Editor's Hierarchy menu?
+		bool   mIsDisplayed;	// Is this item displayed on Hierarchy menu during this frame?
+		size_t mHierarchyLevel; // How many parent Actors are there for this object?
 
 	private:
 		void UpdateActorName();
@@ -176,5 +169,5 @@ namespace Editor
 
 	constexpr const char* CREATE_EDITOR_ELEMENT_FROM_ACTOR = "CreateEditorElementFromActor";
 	// extern "C" EDITOR_API EditorElement* CreateEditorElement(int id);
-	extern "C" EDITOR_API EditorElement* CreateEditorElementFromActor(Core::Actor* actor, int id);
+	extern "C" EDITOR_API EditorElement* CreateEditorElementFromActor(Core::IActor* actor, int id);
 } // namespace Editor

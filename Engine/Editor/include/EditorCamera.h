@@ -11,7 +11,7 @@
 /// </summary>
 
 #pragma once
-#include "Renderer/Camera.h"
+#include "Renderer/ICamera.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
@@ -32,11 +32,56 @@ namespace Editor
 		public Core::ICamera
 	{
 	public:
+		//////////////////////////////////////////
+		////// Coordinate Conversion /////////////
+		//////////////////////////////////////////
+
+		virtual Math::FTVector3 ScreenToWorld(const Math::FTVector2& screenPos) override;
+		virtual Math::FTVector2 WorldToScreen(const Math::FTVector3& worldPos) const override;
+		virtual Math::FTVector2 ScreenToNDC(const Math::FTVector2& screenPos) const override;
+
+	public:
+		void SaveProperties(std::ofstream& ofs) override;
+		void LoadProperties(std::ifstream& ifs) override;
+
+	public:
 		void DisplayGameCameraMenu(Core::ICamera* gameCam);
 		void DisplayEditorCameraMenu();
 
 	public:
+		virtual Core::CameraData* Data() override;
+
+		//////////////////////////////////////////
+		////// Transform Properties //////////////
+		//////////////////////////////////////////
+
+		virtual const Math::FTVector3& GetPosition() const override;
+
+		//////////////////////////////////////////
+		////// Matrix Accessors //////////////////
+		//////////////////////////////////////////
+
+		virtual void GetViewMatrix(Math::FTMatrix4& outViewMat) override;
+		virtual void GetProjectionMatrix(Math::FTMatrix4& outProjMat) override;
+
+	public:
+		const Core::Viewtype GetViewType() override;
+		const float			 GetProjFOVAngleY() override;
+		const float			 GetAspectRatio() override;
+		const float			 GetUnitsPerPixel() override;
+		const float			 GetNearZ() override;
+		const float			 GetFarZ() override;
+
+		const Math::FTVector3&	GetOffSet() const override;
+		const float				GetZoomFactor() const override;
+		const Math::FTVector2&& GetResolution() const override;
+
 		D3D11::FTRectangle* GetDebugRect();
+
+		void SetPosition(const Math::FTVector3& pos) override;
+		void SetViewType(Core::Viewtype viewType) override;
+		void SetTargetActor(Core::IActor* actor) override;
+		void SetOffset(Math::FTVector3 offset) override;
 
 		float& ZoomFactor() override;
 

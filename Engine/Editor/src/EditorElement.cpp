@@ -14,10 +14,10 @@
 #include <imgui/backends/imgui_impl_win32.h>
 
 #include "EditorLayer.h"
-#include "EditorSceneManager.h"
 #include "ChunkLoader.h"
 #include "CommandHistory.h"
 #include "Command.h"
+#include "Component/IEditorComponent.h"
 #include "EditorUtils.h"
 #include "Actor/EditorTransform.h"
 
@@ -27,6 +27,7 @@
 #include "Actor/Transform.h"
 #include "Actor/ActorGroup.h"
 #include "Actor/IActor.h"
+#include "Actor/ActorData.h"
 #include "Component/IComponent.h"
 #include "ResourceSystem/FTPremade.h"
 
@@ -46,7 +47,7 @@ namespace Editor
 					UpdateActorName();
 					UpdateDrawOrder();
 					UpdateActorGroup();
-					CommandHistory::GetInstance()->UpdateBoolValue("Is Active", IsActive());
+					CommandHistory::GetInstance()->UpdateBoolValue("Is Active", GetIsActiveRef());
 					UpdateTransformUI();
 
 					ImGui::EndTabItem();
@@ -109,172 +110,257 @@ namespace Editor
 		mHierarchyLevel = level;
 	}
 
-	// void EditorElement::EditorUpdate(float deltaTime)
-	//{
-	//	for (auto comp = GetComponents()->Begin(); comp != GetComponents()->End(); ++comp)
-	//	{
-	//		if (*comp)
-	//		{
-	//			if ((*comp)->GetIsActive())
-	//				(*comp)->EditorUpdate(deltaTime);
-	//		}
-	//	}
-	// }
-
-	// void EditorElement::EditorRender(D3D11Renderer* renderer)
-	//{
-	//	for (auto comp = GetComponents().Begin(); comp != GetComponents().End(); ++comp)
-	//	{
-	//		if (*comp)
-	//		{
-	//			if ((*comp)->GetIsActive())
-	//				(*comp)->EditorRender(renderer);
-	//		}
-	//	}
-	// }
-
 	EditorElement::EditorElement(int id)
-		: Actor(id)
+		: mData(DBG_NEW Core::ActorData)
 		, mIsFocused(false)
 		, mHierarchyLevel(0)
 		, mIsDisplayed(false)
 	{
+		mData->Name		  = "New Empty Actor";
+		mData->ID		  = id;
+		mData->ActorGroup = Core::ActorGroup::DEFAULT;
+		mData->State	  = Core::ActorState::ALIVE;
+		mData->IsActive	  = true;
+		mData->Transform  = DBG_NEW	 Core::Transform(this);
+		mData->Components = DBG_NEW Common::FTDS::DynamicArray<Core::IComponent*>;
+		mData->Parent	  = nullptr;
+		mData->Children	  = DBG_NEW Common::FTDS::DynamicArray<Core::IActor*>;
+		mData->DrawOrder  = 0;
+
 		SwitchTransformToEditor();
 	}
 
-	EditorElement::EditorElement(Actor* actor, int id)
-		: Actor(actor, id)
+	EditorElement::EditorElement(Core::IActor* actor, int id)
+		: mData(DBG_NEW Core::ActorData)
 		, mIsFocused(false)
 		, mHierarchyLevel(0)
 		, mIsDisplayed(false)
 	{
+		mData->Name = "New Copied Actor";
+		mData->ID	= id;
+		SetActorGroup(actor->GetActorGroup());
+		mData->State	  = Core::ActorState::ALIVE;
+		mData->IsActive	  = true;
+		mData->Transform  = DBG_NEW	 Core::Transform(this);
+		mData->Components = DBG_NEW Common::FTDS::DynamicArray<Core::IComponent*>;
+		SetParent(actor->GetParent());
+		mData->Children	 = DBG_NEW Common::FTDS::DynamicArray<Core::IActor*>;
+		mData->DrawOrder = actor->GetData()->DrawOrder;
+
+		mData->Name.Assign(actor->GetNameRef());
+
+		CopyChildObjectFrom(actor);
+		CopyTransformFrom(actor);
+		CopyComponentsFrom(actor);
+
 		SwitchTransformToEditor();
 	}
 
-	EditorElement::EditorElement(Core::Actor* actor, int id, bool deepCpyChild)
-		: Core::Actor(actor, id, deepCpyChild)
+	EditorElement::EditorElement(Core::IActor* actor, int id, bool deepCpyChild)
+		: mData(DBG_NEW Core::ActorData)
 		, mIsFocused(false)
 		, mHierarchyLevel(0)
 		, mIsDisplayed(false)
 	{
+		mData->Name = "New Copied Actor";
+		mData->ID	= id;
+		SetActorGroup(actor->GetActorGroup());
+		mData->State	  = Core::ActorState::ALIVE;
+		mData->IsActive	  = true;
+		mData->Transform  = DBG_NEW	 Core::Transform(this);
+		mData->Components = DBG_NEW Common::FTDS::DynamicArray<Core::IComponent*>;
+		SetParent(actor->GetParent());
+		mData->Children	 = DBG_NEW Common::FTDS::DynamicArray<Core::IActor*>;
+		mData->DrawOrder = actor->GetData()->DrawOrder;
+
+		mData->Name.Assign(actor->GetNameRef());
+
+		if (deepCpyChild)
+			CopyChildObjectFrom(actor);
+		else
+			RefChildObjectFrom(actor);
+
+		CopyTransformFrom(actor);
+		CopyComponentsFrom(actor);
+
 		SwitchTransformToEditor();
 	}
 
 	EditorElement::EditorElement(Core::FTPremade* premade, int id)
-		: Core::Actor(premade, id)
-		, mIsFocused(false)
-		, mHierarchyLevel(0)
-		, mIsDisplayed(false)
+		: EditorElement(reinterpret_cast<Core::IActor*>(premade->GetOrigin()), id)
 	{
 		SwitchTransformToEditor();
 	}
 
-	void EditorElement::AddChild(IActor* actor)
+	void EditorElement::AddChild(IActor* child)
 	{
+		mData->AddChild(child);
 	}
 
-	void EditorElement::RemoveChild(IActor* actor)
+	void EditorElement::RemoveChild(IActor* child)
 	{
+		mData->RemoveChild(child);
 	}
 
-	void EditorElement::RemoveComponent(IComponent* component)
+	void EditorElement::RemoveComponent(Core::IComponent* component)
 	{
+		mData->RemoveComponent(component);
 	}
 
 	void EditorElement::RemoveAllComponents()
 	{
+		mData->RemoveAllComponents();
 	}
 
 	void EditorElement::CopyTransformFrom(IActor* actor)
 	{
+		mData->CopyTransformFrom(actor);
 	}
 
 	void EditorElement::CopyComponentsFrom(IActor* actor)
 	{
+		mData->CopyComponentsFrom(actor);
 	}
 
 	void EditorElement::CopyChildObjectFrom(IActor* actor)
 	{
-		if (GetChildActors()->GetSize() < 1)
-			return;
-
-		actor->GetChildActors()->IterateArray([&](Actor* child) {
-			if (child)
-			{
-				Editor::ChunkLoader::GetInstance()->AddMaxActorID();
-				int maxID = Editor::ChunkLoader::GetInstance()->GetMaxActorID();
-				this->AddChild(DBG_NEW Actor(child, maxID));
-			}
-		});
+		mData->CopyChildObjectFrom<EditorElement>(actor);
 	}
 
 	void EditorElement::RefChildObjectFrom(IActor* actor)
 	{
+		mData->RefChildObjectFrom(actor);
 	}
 
-	ActorData* EditorElement::GetData()
+	Core::ActorData* EditorElement::GetData()
 	{
-		return nullptr;
+		return mData;
 	}
 
-	ActorGroup EditorElement::GetActorGroup() const
+	Core::ActorGroup EditorElement::GetActorGroup() const
 	{
-		return ActorGroup();
+		return mData->ActorGroup;
 	}
 
-	ActorGroup& EditorElement::GetActorGroupRef()
+	Core::ActorGroup& EditorElement::GetActorGroupRef()
 	{
-		// TODO: insert return statement here
+		return mData->ActorGroup;
 	}
 
-	ActorGroup* EditorElement::GetActorGroupPtr()
+	Core::ActorGroup* EditorElement::GetActorGroupPtr()
 	{
-		return nullptr;
+		return &mData->ActorGroup;
 	}
 
 	Common::FTDS::String EditorElement::GetName()
 	{
-		return Common::FTDS::String();
+		return mData->Name;
 	}
 
 	Common::FTDS::String& EditorElement::GetNameRef()
 	{
-		// TODO: insert return statement here
+		return mData->Name;
 	}
 
 	const int EditorElement::GetID() const
 	{
-		return 0;
+		return mData->ID;
 	}
 
 	const bool& EditorElement::GetIsActive() const
 	{
-		// TODO: insert return statement here
+		return mData->IsActive;
 	}
 
-	Transform* EditorElement::GetTransform() const
+	bool& EditorElement::GetIsActiveRef()
 	{
-		return nullptr;
+		return mData->IsActive;
 	}
 
-	IActor* EditorElement::GetParent() const
+	Core::Transform* EditorElement::GetTransform() const
 	{
-		return nullptr;
+		return mData->Transform;
 	}
 
-	Common::FTDS::DynamicArray<IComponent*>* EditorElement::GetComponents()
+	Editor::EditorElement* EditorElement::GetParent() const
 	{
-		return nullptr;
+		return reinterpret_cast<EditorElement*>(mData->Parent);
 	}
 
-	Common::FTDS::DynamicArray<IActor*>* EditorElement::GetChildActors()
+	Common::FTDS::DynamicArray<Core::IComponent*>* EditorElement::GetComponents()
 	{
-		return nullptr;
+		return mData->Components;
+	}
+
+	Common::FTDS::DynamicArray<Core::IActor*>* EditorElement::GetChildActors()
+	{
+		return mData->Children;
 	}
 
 	const int& EditorElement::GetDrawOrder() const
 	{
-		// TODO: insert return statement here
+		return mData->DrawOrder;
+	}
+
+	void EditorElement::SetName(Common::FTDS::String&& name)
+	{
+		mData->Name.Assign(name);
+	}
+
+	void EditorElement::SetIsActive(bool isActive)
+	{
+		mData->IsActive = isActive;
+	}
+
+	void EditorElement::SetActorGroup(Core::ActorGroup group)
+	{
+		mData->ActorGroup = group;
+	}
+
+	void EditorElement::SetState(Core::ActorState state)
+	{
+		mData->State = state;
+	}
+
+	void EditorElement::SetParent(IActor* parent)
+	{
+		mData->Parent = parent;
+		parent->AddChild(this);
+	}
+
+	void EditorElement::SetTransform(Core::Transform* transform)
+	{
+		mData->Transform = transform;
+	}
+
+	void EditorElement::SetComponents(Common::FTDS::DynamicArray<Core::IComponent*>* components)
+	{
+		mData->Components = components;
+	}
+
+	void EditorElement::SetChildActors(Common::FTDS::DynamicArray<IActor*>* children)
+	{
+		mData->Children = children;
+	}
+
+	void EditorElement::SetDrawOrder(int order)
+	{
+		mData->DrawOrder = order;
+	}
+
+	bool EditorElement::HasName(Common::FTDS::String&& name)
+	{
+		return mData->Name.Equal(name.C_Str());
+	}
+
+	bool EditorElement::HasName(const char* name)
+	{
+		return Common::FTDS::StringEqual(mData->Name.C_Str(), name);
+	}
+
+	bool EditorElement::IsDead()
+	{
+		return mData->State == Core::ActorState::DEAD;
 	}
 
 	void EditorElement::UpdateActorName()
@@ -320,22 +406,23 @@ namespace Editor
 		if (ImGui::BeginChild(GetName().C_Str()))
 		{
 			size_t count = 0;
-			for (auto comp = GetComponents()->Begin(); comp != GetComponents()->End(); ++comp)
+			for (auto iter = GetComponents()->Begin(); iter != GetComponents()->End(); ++iter)
 			{
+				Editor::IEditorComponent* comp = reinterpret_cast<Editor::IEditorComponent*>(*iter);
 				if (GetComponents()->IsEmpty())
 					break;
-				if (*comp)
+				if (comp)
 				{
 					Common::FTDS::String name(std::to_string(count).c_str());
 					name.Append(" ");
-					name.Append((*comp)->GetName());
+					name.Append((*iter)->GetName());
 
 					if (ImGui::TreeNode(name.C_Str()))
 					{
-						CommandHistory::GetInstance()->UpdateIntValue(Core::ChunkKey::UPDATE_ORDER, (*comp)->UpdateOrder());
-						(*comp)->EditorUIUpdate();
+						//CommandHistory::GetInstance()->UpdateIntValue(Core::ChunkKey::UPDATE_ORDER, (*comp)->UpdateOrder());
+						(comp)->EditorUIUpdate();
 						if (ImGui::SmallButton("Delete"))
-							RemoveComponent((*comp));
+							RemoveComponent(*iter);
 						ImGui::TreePop();
 					}
 					++count;
@@ -377,63 +464,8 @@ namespace Editor
 		SetTransform(DBG_NEW EditorTransform(this));
 	}
 
-	EditorElement* CreateEditorElementFromActor(Core::Actor* actor, int id)
+	EditorElement* CreateEditorElementFromActor(Core::IActor* actor, int id)
 	{
 		return DBG_NEW EditorElement(actor, id);
-	}
-	void EditorElement::SetName(Common::FTDS::String&& name)
-	{
-	}
-	void EditorElement::SetIsActive(bool isActive)
-	{
-	}
-	void EditorElement::SetActorGroup(ActorGroup group)
-	{
-	}
-	void EditorElement::SetState(ActorState state)
-	{
-	}
-	void EditorElement::SetParent(IActor* parent)
-	{
-	}
-	void EditorElement::SetTransform(Transform* transform)
-	{
-	}
-	void EditorElement::SetComponents(Common::FTDS::DynamicArray<IComponent*>* components)
-	{
-	}
-	void EditorElement::SetChildActors(Common::FTDS::DynamicArray<IActor*>* children)
-	{
-	}
-	void EditorElement::SetDrawOrder(int order)
-	{
-	}
-	bool EditorElement::HasName(Common::FTDS::String&& name)
-	{
-		return false;
-	}
-	bool EditorElement::HasName(const char* name)
-	{
-		return false;
-	}
-	bool EditorElement::IsDead()
-	{
-		return false;
-	}
-	bool& EditorElement::IsActive()
-	{
-		// TODO: insert return statement here
-	}
-	void EditorElement::SaveProperties(std::ofstream& ofs)
-	{
-	}
-	void EditorElement::SaveComponents(std::ofstream& ofs)
-	{
-	}
-	void EditorElement::LoadProperties(std::ifstream& ifs)
-	{
-	}
-	void EditorElement::LoadComponents(std::ifstream& ifs)
-	{
 	}
 } // namespace Editor

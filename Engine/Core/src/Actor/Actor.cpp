@@ -10,6 +10,7 @@
 
 #include <fstream>
 
+#include "Actor/ActorData.h"
 #include "Scene/Scene.h"
 #include "InputSystem/IInputDevice.h"
 #include "Actor/ActorGroup.h"
@@ -47,19 +48,19 @@ namespace Core
 		mData->DrawOrder  = 0;
 	}
 
-	Actor::Actor(Actor* actor, int id)
+	Actor::Actor(Core::IActor* actor, int id)
 		: mData(DBG_NEW ActorData)
 	{
-		mData->Name		  = "New Copied Actor";
-		mData->ID		  = id;
-		mData->ActorGroup = actor->mData->ActorGroup;
+		mData->Name = "New Copied Actor";
+		mData->ID	= id;
+		SetActorGroup(actor->GetActorGroup());
 		mData->State	  = ActorState::ALIVE;
 		mData->IsActive	  = true;
 		mData->Transform  = DBG_NEW	 Transform(this);
 		mData->Components = DBG_NEW Common::FTDS::DynamicArray<IComponent*>;
-		mData->Parent	  = actor->mData->Parent;
-		mData->Children	  = DBG_NEW Common::FTDS::DynamicArray<IActor*>;
-		mData->DrawOrder  = actor->mData->DrawOrder;
+		SetParent(actor->GetParent());
+		mData->Children	 = DBG_NEW Common::FTDS::DynamicArray<IActor*>;
+		mData->DrawOrder = actor->GetData()->DrawOrder;
 
 		mData->Name.Assign(actor->GetNameRef());
 
@@ -68,19 +69,19 @@ namespace Core
 		CopyComponentsFrom(actor);
 	}
 
-	Actor::Actor(Actor* actor, int id, bool deepCpyChild)
+	Actor::Actor(Core::IActor* actor, int id, bool deepCpyChild)
 		: mData(DBG_NEW ActorData)
 	{
-		mData->Name		  = "New Copied Actor";
-		mData->ID		  = id;
-		mData->ActorGroup = actor->mData->ActorGroup;
+		mData->Name = "New Copied Actor";
+		mData->ID	= id;
+		SetActorGroup(actor->GetActorGroup());
 		mData->State	  = ActorState::ALIVE;
 		mData->IsActive	  = true;
 		mData->Transform  = DBG_NEW	 Transform(this);
 		mData->Components = DBG_NEW Common::FTDS::DynamicArray<IComponent*>;
-		mData->Parent	  = actor->mData->Parent;
-		mData->Children	  = DBG_NEW Common::FTDS::DynamicArray<IActor*>;
-		mData->DrawOrder  = actor->mData->DrawOrder;
+		SetParent(actor->GetParent());
+		mData->Children	 = DBG_NEW Common::FTDS::DynamicArray<IActor*>;
+		mData->DrawOrder = actor->GetData()->DrawOrder;
 
 		mData->Name.Assign(actor->GetNameRef());
 
@@ -101,67 +102,47 @@ namespace Core
 
 	Actor::~Actor()
 	{
-		if (mData->Transform)
-		{
-			delete mData->Transform;
-			mData->Transform = nullptr;
-		}
+		delete mData;
+	}
 
-		for (size_t i = 0; i < mData->Components->Size(); ++i)
-		{
-			delete mData->Components->At(i);
-			mData->Components->At(i) = nullptr;
-		}
-		delete mData->Components;
+	void Actor::AddChild(IActor* child)
+	{
+		mData->AddChild(child);
+	}
 
-		for (size_t i = 0; i < mData->Children->Size(); ++i)
-		{
-			delete mData->Children->At(i);
-			mData->Children->At(i) = nullptr;
-		}
-		delete mData->Children;
+	void Actor::RemoveChild(IActor* child)
+	{
+		mData->RemoveChild(child);
+	}
 
-		mData->Parent = nullptr;
+	void Actor::RemoveComponent(IComponent* component)
+	{
+		mData->RemoveComponent(component);
+	}
+
+	void Actor::RemoveAllComponents()
+	{
+		mData->RemoveAllComponents();
 	}
 
 	void Actor::CopyTransformFrom(IActor* actor)
 	{
-		actor->GetTransform()->CloneTo(mData->Transform);
+		mData->CopyTransformFrom(actor);
 	}
 
 	void Actor::CopyComponentsFrom(IActor* actor)
 	{
-		this->RemoveAllComponents();
-
-		Common::FTDS::DynamicArray<IComponent*>* compsToCopy = actor->GetComponents();
-		for (size_t i = 0; i < compsToCopy->GetSize(); ++i)
-			compsToCopy->At(i)->CloneTo(this);
+		mData->CopyComponentsFrom(actor);
 	}
 
 	void Actor::CopyChildObjectFrom(IActor* actor)
 	{
-		if (GetChildActors()->GetSize() < 1)
-			return;
-
-		actor->GetChildActors()->IterateArray([&](IActor* child) {
-			if (child)
-			{
-				Actor* childAc = reinterpret_cast<Actor*>(child);
-				ChunkLoader::GetInstance()->AddMaxActorID();
-				int maxID = ChunkLoader::GetInstance()->GetMaxActorID();
-				this->AddChild(DBG_NEW Actor(childAc, maxID));
-			}
-		});
+		mData->CopyChildObjectFrom<Actor>(actor);
 	}
 
 	void Actor::RefChildObjectFrom(IActor* actor)
 	{
-		if (actor->GetChildActors()->GetSize() < 1)
-			return;
-
-		actor->GetChildActors()->IterateArray([&](IActor* child) {
-			this->AddChild(child);
-		});
+		mData->RefChildObjectFrom(actor);
 	}
 
 	ActorData* Actor::GetData()
@@ -200,6 +181,11 @@ namespace Core
 	}
 
 	const bool& Actor::GetIsActive() const
+	{
+		return mData->IsActive;
+	}
+
+	bool& Actor::GetIsActiveRef()
 	{
 		return mData->IsActive;
 	}
@@ -275,42 +261,6 @@ namespace Core
 		mData->DrawOrder = order;
 	}
 
-	void Actor::AddChild(IActor* child)
-	{
-		child->SetParent(this);
-		mData->Children->PushBack(child);
-	}
-
-	void Actor::RemoveChild(IActor* child)
-	{
-		int pos = mData->Children->Find(child);
-		if (pos == -1)
-			return;
-
-		mData->Children->Erase(pos);
-
-		if (child->GetParent()->GetParent())
-			child->SetParent(child->GetParent()->GetParent());
-	}
-
-	void Actor::RemoveComponent(IComponent* component)
-	{
-		int pos = mData->Components->Find(component);
-		if (pos == -1)
-			return;
-
-		delete component;
-		component = nullptr;
-		mData->Components->Erase(pos);
-	}
-
-	void Actor::RemoveAllComponents()
-	{
-		for (auto comp = mData->Components->Begin(); comp != mData->Components->End(); ++comp)
-			delete *comp;
-		mData->Components->Clear();
-	}
-
 	bool Actor::HasName(Common::FTDS::String&& name)
 	{
 		return mData->Name.Equal(name.C_Str());
@@ -326,53 +276,14 @@ namespace Core
 		return mData->State == ActorState::DEAD;
 	}
 
-	bool& Actor::IsActive()
-	{
-		return mData->IsActive;
-	}
-
 	void Actor::SaveProperties(std::ofstream& ofs)
 	{
-		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::ACTOR_PROPERTIES);
-
-		Common::FileIOHelper::SaveString(ofs, ChunkKey::NAME, mData->Name);
-		Common::FileIOHelper::SaveInt(ofs, ChunkKey::ID::ID, mData->ID);
-		mData->Transform->SaveProperties(ofs);
-		Common::FileIOHelper::SaveInt(ofs, ChunkKey::DRAW_ORDER, mData->DrawOrder);
-		Common::FileIOHelper::SaveString(ofs, ChunkKey::ACTOR_GROUP, ActorGroupUtil::GetActorGroupStr(mData->ActorGroup));
-		Common::FileIOHelper::SaveBool(ofs, ChunkKey::STATE, mData->IsActive);
-
-		if (mData->Parent)
-			Common::FileIOHelper::SaveInt(ofs, ChunkKey::PARENT, mData->Parent->GetID());
-		else
-			Common::FileIOHelper::SaveString(ofs, ChunkKey::PARENT, Common::ChunkKey::NullVal::NULL_OBJECT);
-
-		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CHILD);
-
-		if (0 < mData->Children->GetSize())
-		{
-			for (size_t i = 0; i < mData->Children->GetSize(); ++i)
-				Common::FileIOHelper::SaveInt(ofs, std::to_string(i).c_str(), mData->Children->At(i)->GetID());
-		}
-
-		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::CHILD);
-
-		// Changing the call location of Transform is NOT recommended
-		// Nested .chunk DataPack has unknown problem.
-		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::ACTOR_PROPERTIES);
+		mData->SaveProperties(ofs);
 	}
 
 	void Actor::SaveComponents(std::ofstream& ofs)
 	{
-		size_t count = mData->Components->GetSize();
-		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::COMPONENTS);
-		for (size_t i = 0; i < count; ++i)
-		{
-			Common::FileIOHelper::BeginDataPackSave(ofs, mData->Components->At(i)->GetName());
-			mData->Components->At(i)->SaveProperties(ofs);
-			Common::FileIOHelper::EndDataPackSave(ofs, mData->Components->At(i)->GetName());
-		}
-		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::COMPONENTS);
+		mData->SaveComponents(ofs);
 	}
 
 	void Actor::LoadProperties(std::ifstream& ifs)
@@ -389,7 +300,7 @@ namespace Core
 				int id = ChunkKey::ID::INVALID;
 				Common::FileIOHelper::LoadInt(ifs, id);
 
-				Actor* pending = DBG_NEW Actor(id);
+				IActor* pending = DBG_NEW Actor(id);
 				AddChild(pending);
 			}
 		}
@@ -404,35 +315,11 @@ namespace Core
 			SetParent(pending);
 		}
 
-		// Load Actor state
-		Common::FileIOHelper::LoadBool(ifs, mData->IsActive);
-
-		// Load Actor group
-		Common::FTDS::String actorGroupStr;
-		Common::FileIOHelper::LoadBasicString(ifs, actorGroupStr);
-		mData->ActorGroup = ActorGroupUtil::GetActorGroup(actorGroupStr);
-
-		// Load Actor draw order
-		Common::FileIOHelper::LoadInt(ifs, mData->DrawOrder);
-
-		// Load Transform
-		mData->Transform->LoadProperties(ifs);
-
-		// Load int
-		Common::FileIOHelper::LoadInt(ifs, mData->ID);
-
-		// Load Actor name
-		Common::FileIOHelper::LoadBasicString(ifs, mData->Name);
+		mData->LoadProperties(ifs);
 	}
 
 	void Actor::LoadComponents(std::ifstream& ifs)
 	{
-		std::pair<size_t, Common::FTDS::String>&& pack = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COMPONENTS);
-		mData->Components->Reserve(pack.first);
-		for (size_t i = 0; i < pack.first; ++i)
-		{
-			std::pair<size_t, Common::FTDS::String> compPack = Common::FileIOHelper::BeginDataPackLoad(ifs);
-			// ChunkLoader::GetInstance()->GetComponentLoadMap().At(compPack.second)->Value()(this, ifs);
-		}
+		mData->LoadComponents(ifs);
 	}
 } // namespace Core

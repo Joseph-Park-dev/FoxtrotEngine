@@ -19,22 +19,19 @@
 #include "EditorSceneManager.h"
 #include "Manager/DirectoryHelper.h"
 #include "EditorCamera.h"
-#include "ViewportRenderer.h"
-#include "EditorChunkLoader.h"
 #include "Manager/ResourceManager.h"
 #include "EditorUtils.h"
-#include "EditorRenderer.h"
 
 #include "Debugging/DebugFuncs.h"
+#include "Renderer/D3D11Renderer.h"
+#include "Renderer/ViewportRenderer.h"
 #include "Renderer/FTRectArea.h"
-#include "Entity/D3D11Window.h"
 #include "InputSystem/D3D11InputDevice.h"
 #include "Plugin/PluginKey.h"
 #include "FileSystem/DLLPath.h"
 #include "Plugin/GetFunc.h"
 
 #include <../../D3D11/include/Plugin/PluginKey.h>
-#include <Engine.h>
 
 using namespace Editor;
 
@@ -80,9 +77,12 @@ public:
 private:
 	D3D11::D3D11Window*		 mEditorWin;
 	D3D11::D3D11Window*		 mGameWin;
-	Editor::EditorRenderer*	 mRenderer;
+	D3D11::D3D11Renderer*	 mRenderer;
 	D3D11::D3D11InputDevice* mInputDevice;
 	D3D11::WNDPROC_Params*	 wndprocParams;
+	D3D11::ViewportRenderer* mViewport;
+
+	Editor::EditorCamera* mEditorCamera;
 
 	bool				  mIsUpdatingGame;
 	bool				  mIsResizingWindow;
@@ -121,13 +121,15 @@ void D3D11Editor::Initialize()
 	D3D11::CREATE_RENDERER		 createRendererFunc	   = GetFunc<D3D11::CREATE_RENDERER>(DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_RENDERER);
 	D3D11::CREATE_INPUTDEVICE	 createInputDeviceFunc = GetFunc<D3D11::CREATE_INPUTDEVICE>(DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_INPUTDEVICE);
 	Core::FTRECTAREA_CONSTRUCTOR createRectAreaFunc	   = GetFunc<Core::FTRECTAREA_CONSTRUCTOR>(DLLPath::CORE_EDITOR, Core::PluginKey::CREATE_FTRECTAREA);
+	D3D11::CREATE_VP_RENDERER	 createVPRendererFunc  = GetFunc<D3D11::CREATE_VP_RENDERER>(DLLPath::CORE_EDITOR, D3D11::PluginKey::CREATE_VP_RENDERER);
 
 	Core::FTRectArea*		rndArea = createRectAreaFunc(0.f, 0.f, 1280.f, 720.f, 0.f);
 	wndprocParams					= DBG_NEW D3D11::WNDPROC_Params{ mEditorWin, mInputDevice, mRenderer, &mIsResizingWindow };
 	mEditorWin						= createWindowFunc("Foxtrot Editor", 3840, 2160, rndArea, WinProc, wndprocParams);
 
-	mRenderer = DBG_NEW Editor::EditorRenderer(mEditorWin);
-	mRenderer->InitializeViewport(mEditorWin, 500, 500, 1920, 1080);
+	mRenderer = createRendererFunc(mEditorWin);
+	mViewport = createVPRendererFunc();
+	mViewport->InitializeTexture(mRenderer, ImVec2(1280.f, 720.f));
 
 	rndArea->Set(0.f, 0.f, 1920.f, 1080.f, 0.f);
 	mGameWin = createWindowFunc("Game", 1920, 1080, rndArea, WinProc, wndprocParams);
@@ -151,7 +153,8 @@ void D3D11Editor::Initialize()
 	}
 
 	// Camera::GetInstance()->Initialize(GetGameWindow(), 64.f, 1.8f);
-	Editor::EditorCamera::GetInstance()->Initialize(mEditorWin, 64.f, 1.8f);
+	mEditorCamera = DBG_NEW Editor::EditorCamera;
+	mEditorCamera->Initialize(mEditorWin, 64.f, 1.8f);
 	// D3D11::DebugShapes::GetInstance()->GetCameraRect()->Initialize(GetGameRenderer());
 
 	mInputDevice = createInputDeviceFunc();
@@ -236,6 +239,7 @@ D3D11Editor::D3D11Editor()
 	, mRenderer(nullptr)
 	, mInputDevice(nullptr)
 	, wndprocParams(nullptr)
+	, mViewport(nullptr)
 
 	, mIsUpdatingGame(false)
 	, mIsResizingWindow(false)

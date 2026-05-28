@@ -10,12 +10,10 @@
 
 #include "Manager/ResourceManager.h"
 #include "Manager/SceneManager.h"
-#include "Renderer/FoxtrotRenderer.h"
 
-#include "EditorSceneManager.h"
 #include "EditorLayer.h"
 #include "EditorElement.h"
-#include "EditorChunkLoader.h"
+#include "ChunkLoader.h"
 #include "ActorCommand.h"
 
 namespace Editor
@@ -42,8 +40,8 @@ namespace Editor
 	EditorElement* EditorScene::AddEditorElement()
 	{
 		UnfocusEditorElements();
-		EditorChunkLoader::GetInstance()->AddMaxActorID();
-		int			   maxID		 = EditorChunkLoader::GetInstance()->GetMaxActorID();
+		Editor::ChunkLoader::GetInstance()->AddMaxActorID();
+		int			   maxID		 = Editor::ChunkLoader::GetInstance()->GetMaxActorID();
 		EditorElement* editorElement = DBG_NEW EditorElement(maxID);
 
 		Common::FTDS::String& name = editorElement->GetNameRef();
@@ -106,10 +104,5 @@ namespace Editor
 	EditorScene::~EditorScene()
 	{
 		DeleteAll();
-	}
-
-	EditorScene* GetEditorScene()
-	{
-		return EditorSceneManager::GetInstance()->GetEditorScene();
 	}
 } // namespace Editor

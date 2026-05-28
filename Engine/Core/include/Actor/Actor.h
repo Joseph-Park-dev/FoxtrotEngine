@@ -32,14 +32,14 @@ namespace Core
 		/// Copy constructors that adds a deep-copied Actor to the scene.
 		/// </summary>
 		/// <param name="actor : "> Actor being copied.</param>
-		Actor(Actor* actor, int id);
+		Actor(Core::IActor* actor, int id);
 
 		/// <summary>
 		/// Copy constructors controlling if the object is deep copied.
 		/// </summary>
 		/// <param name="actor">Actor being copied.</param>
 		/// <param name="deepCpy">Perform deep copy through child Actors?</param>
-		Actor(Actor* actor, int id, bool deepCpyChild);
+		Actor(Core::IActor* actor, int id, bool deepCpyChild);
 
 		/// <summary>
 		/// Copies the origin from the FTPremade into this object, adding it to the scene
@@ -79,6 +79,7 @@ namespace Core
 		virtual Common::FTDS::String&					 GetNameRef() override;
 		virtual const int								 GetID() const override;
 		virtual const bool&								 GetIsActive() const override;
+		virtual bool&									 GetIsActiveRef() override;
 		virtual Transform*								 GetTransform() const override;
 		virtual Actor*									 GetParent() const override;
 		virtual Common::FTDS::DynamicArray<IComponent*>* GetComponents() override;
@@ -98,7 +99,6 @@ namespace Core
 		virtual bool  HasName(Common::FTDS::String&& name) override;
 		virtual bool  HasName(const char* name) override;
 		virtual bool  IsDead() override;
-		virtual bool& IsActive() override;
 
 	private:
 		ActorData* mData;

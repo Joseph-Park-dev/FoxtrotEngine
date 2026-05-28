@@ -16,6 +16,7 @@ namespace D3D11
 	using CREATE_WINDOW_PROC = D3D11::D3D11Window* (*)(const char*, unsigned int, unsigned int, Core::FTRectArea*, WNDPROC, WNDPROC_Params*);
 	using CREATE_RENDERER	 = D3D11::D3D11Renderer* (*)(D3D11::D3D11Window*);
 	using CREATE_INPUTDEVICE = D3D11::D3D11InputDevice* (*)();
+	using CREATE_VP_RENDERER = D3D11::ViewportRenderer* (*)();
 
 	namespace PluginKey
 	{
@@ -24,6 +25,7 @@ namespace D3D11
 		constexpr const char* CREATE_RENDERER	  = "CreateRenderer";
 		constexpr const char* CREATE_INPUTDEVICE  = "CreateInputDevice";
 		constexpr const char* CREATE_FTRECTAREA	  = "CreateFTRectArea";
+		constexpr const char* CREATE_VP_RENDERER  = "CreateViewportRenderer";
 		constexpr const char* SAVE_PROPERTIES	  = "SaveProperties";
 		constexpr const char* LOAD_PROPERTIES	  = "LoadProperties";
 	} // namespace PluginKey

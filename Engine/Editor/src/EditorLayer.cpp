@@ -20,7 +20,6 @@
 #include "EditorElement.h"
 #include "CommandHistory.h"
 #include "Command.h"
-#include "ViewportRenderer.h"
 #include "EditorSceneManager.h"
 #include "EditorScene.h"
 #include "EditorCamera.h"

@@ -8,6 +8,7 @@
 
 #include "EditorCamera.h"
 
+#include "Renderer/CameraData.h"
 #include "InputSystem/IInputDevice.h"
 #include "ResourceSystem/Shape/FTRectangle.h"
 #include "Renderer/FTRectArea.h"
@@ -30,74 +31,31 @@ namespace Editor
 	using namespace D3D11;
 	using namespace Math;
 
-	constexpr float LOOKAT_MODSPEED = 0.01;
+	constexpr float LOOKAT_MODSPEED = 0.01f;
 
 	Math::FTVector3 EditorCamera::ScreenToWorld(const Math::FTVector2& screenPos)
 	{
-		FTVector2 ndc	  = ScreenToNDC(screenPos);
-		FTVector3 clipPos = FTVector3(ndc.x, ndc.y, 0.0f);
-
-		FTMatrix4 view = FTMatrix4::Identity;
-		FTMatrix4 proj = FTMatrix4::Identity;
-
-		GetViewMatrix(view);
-		GetProjectionMatrix(proj);
-
-		FTMatrix4 viewProj = view * proj;
-		viewProj.Invert();
-
-		return FTVector3::Transform(clipPos, viewProj, 1.0f);
+		return mData->ScreenToWorld(screenPos);
 	}
 
 	Math::FTVector2 EditorCamera::WorldToScreen(const Math::FTVector3& worldPos) const
 	{
-		return Math::FTVector2();
+		return mData->WorldToScreen(worldPos);
 	}
 
 	Math::FTVector2 EditorCamera::ScreenToNDC(const Math::FTVector2& screenPos) const
 	{
-		FTVector2 renderSize = mData->GetResolution();
-		FTVector2 ndc		 = FTVector2::Zero;
-
-		ndc.x = (screenPos.x / renderSize.x) * 2.f - 1.0f;
-		ndc.y = 1.0f - (screenPos.y / renderSize.y) * 2.f;
-		return ndc;
+		return mData->ScreenToNDC(screenPos);
 	}
 
 	void EditorCamera::SaveProperties(std::ofstream& ofs)
 	{
-		Common::FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::CAMERA_DATA);
-		if (mData->Target)
-			Common::FileIOHelper::SaveString(ofs, Core::ChunkKey::TARGET_ACTOR, mData->Target->GetNameRef());
-		else
-			Common::FileIOHelper::SaveString(ofs, Core::ChunkKey::TARGET_ACTOR, Common::ChunkKey::NullVal::NULL_OBJECT);
-		Common::FileIOHelper::SaveVector3(ofs, Core::ChunkKey::CAM_POSITION, mData->Position);
-		Common::FileIOHelper::SaveVector3(ofs, Core::ChunkKey::CAM_OFFSET, mData->Offset);
-		Common::FileIOHelper::SaveFloat(ofs, Core::ChunkKey::CAM_ZOOM, mData->ZoomFactor);
-		Common::FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::CAMERA_DATA);
+		mData->SaveProperties(ofs);
 	}
 
 	void EditorCamera::LoadProperties(std::ifstream& ifs)
 	{
-#include "Plugin/GetFunc.h"
-		Common::FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::CAMERA_DATA);
-		Common::FileIOHelper::LoadFloat(ifs, mData->ZoomFactor);
-		Common::FileIOHelper::LoadVector3(ifs, mData->Offset);
-
-		Common::FileIOHelper::LoadVector3(ifs, mData->Position);
-		Common::FTDS::String targetName = {};
-		Common::FileIOHelper::LoadBasicString(ifs, targetName);
-
-#ifdef FOXTROT_EDITOR
-		if (!mData->Target)
-		{
-			using FIND_ACTOR = Core::IActor* (*)(Common::FTDS::String&, Core::IActor*);
-			mData->Target	 = GetFunc<FIND_ACTOR>(Plugin::Name::CORE_EDITOR, ProcNames::FIND_ACTOR)(targetName, nullptr);
-		}
-#else
-		if (targetName.NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
-			mTarget = manager->GetCurrentScene()->FindActor(targetName);
-#endif // FOXTROT_EDITOR
+		mData->LoadProperties(ifs);
 	}
 
 	void EditorCamera::DisplayGameCameraMenu(Core::ICamera* gameCam)
@@ -187,6 +145,71 @@ namespace Editor
 		ImGui::EndChild();
 	}
 
+	Core::CameraData* EditorCamera::Data()
+	{
+		return mData;
+	}
+
+	const Math::FTVector3& EditorCamera::GetPosition() const
+	{
+		return mData->Position;
+	}
+
+	void EditorCamera::GetViewMatrix(Math::FTMatrix4& outViewMat)
+	{
+		mData->GetViewMatrix(outViewMat);
+	}
+
+	void EditorCamera::GetProjectionMatrix(Math::FTMatrix4& outProjMat)
+	{
+		mData->GetProjectionMatrix(outProjMat);
+	}
+
+	const Core::Viewtype EditorCamera::GetViewType()
+	{
+		return mData->ViewType;
+	}
+
+	const float EditorCamera::GetProjFOVAngleY()
+	{
+		return mData->ProjFOVAngleY;
+	}
+
+	const float EditorCamera::GetAspectRatio()
+	{
+		return mData->Aspect;
+	}
+
+	const float EditorCamera::GetUnitsPerPixel()
+	{
+		return mData->UnitsPerPixel;
+	}
+
+	const float EditorCamera::GetNearZ()
+	{
+		return mData->NearZ;
+	}
+
+	const float EditorCamera::GetFarZ()
+	{
+		return mData->FarZ;
+	}
+
+	const Math::FTVector3& EditorCamera::GetOffSet() const
+	{
+		return mData->Offset;
+	}
+
+	const float EditorCamera::GetZoomFactor() const
+	{
+		return mData->ZoomFactor;
+	}
+
+	const Math::FTVector2&& EditorCamera::GetResolution() const
+	{
+		return mData->GetResolution();
+	}
+
 	D3D11::FTRectangle* EditorCamera::GetDebugRect()
 	{
 		return mDebugRect;
@@ -252,8 +275,8 @@ namespace Editor
 		mDebugRect->UpdatePC();
 	}
 
-	EditorCamera::EditorCamera(Core::CameraData* data)
-		: mData(data)
+	EditorCamera::EditorCamera()
+		: mData(DBG_NEW CameraData)
 		, mPanKeyPressed(false)
 		, mPanValModSpeed(0.01f)
 		, mZoomValModSpeed(0.1f)
@@ -273,6 +296,11 @@ namespace Editor
 	{
 		delete mDebugRect;
 		mDebugRect = nullptr;
+	}
+
+	void EditorCamera::InitializePixelsPerUnit(unsigned int pixels, float units)
+	{
+		mData->InitializePixelsPerUnit(pixels, units)
 	}
 
 	void EditorCamera::PanLocalXY(Math::FTVector2 vec2)

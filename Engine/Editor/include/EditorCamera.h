@@ -19,7 +19,8 @@
 namespace Core
 {
 	class IInputDevice;
-}
+	class IWindow;
+} // namespace Core
 
 namespace D3D11
 {
@@ -91,8 +92,11 @@ namespace Editor
 		virtual void Update(Core::ICamera* gameCamera);
 
 	public:
-		EditorCamera(Core::CameraData* data);
+		EditorCamera();
 		~EditorCamera() override;
+
+	protected:
+		void InitializePixelsPerUnit(unsigned int pixels, float units);
 
 	private:
 		Core::CameraData* mData;

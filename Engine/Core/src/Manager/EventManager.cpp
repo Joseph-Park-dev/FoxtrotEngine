@@ -11,6 +11,7 @@
 #include "Manager/SceneManager.h"
 #include "EventSystem/EventType.h"
 #include "Actor/Actor.h"
+#include "Actor/ActorData.h"
 #include "Actor/ActorGroup.h"
 #include "Scene/Scene.h"
 #include "ResourceSystem/FTPremade.h"
@@ -51,7 +52,7 @@ namespace Core
 			case EVENT_TYPE::DESTROY_ACTOR:
 			{
 				Actor* actorToDestroy = static_cast<Actor*>(executedEvent.eventData);
-				actorToDestroy->SetState(ActorState::DEAD);
+				actorToDestroy->SetState(Core::ActorState::DEAD);
 			}
 			break;
 			case EVENT_TYPE::SWITCH_SCENE:

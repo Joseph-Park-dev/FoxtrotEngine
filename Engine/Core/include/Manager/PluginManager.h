@@ -27,6 +27,9 @@ namespace Core
 
 		Common::FTDS::HashMap<Core::IPlugin*>* GetPlugins();
 
+	public:
+		void LoadComponents(Core::IActor* actor);
+
 	private:
 		Common::FTDS::HashMap<HMODULE>*		   mModules;
 		Common::FTDS::HashMap<Core::IPlugin*>* mPlugins;

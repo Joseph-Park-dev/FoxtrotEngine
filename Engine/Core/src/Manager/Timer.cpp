@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "Entity/Timer.h"
+#include "Manager/Timer.h"
 
 namespace Core
 {

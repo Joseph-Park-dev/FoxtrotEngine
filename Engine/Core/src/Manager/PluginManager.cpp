@@ -52,6 +52,10 @@ namespace Core
 		return mPlugins;
 	}
 
+	void PluginManager::LoadComponents(Core::IActor* actor)
+	{
+	}
+
 	void PluginManager::ProcessInput()
 	{
 		for (auto iter = mPlugins->Begin(); iter != mPlugins->End(); ++iter)

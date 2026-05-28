@@ -21,13 +21,12 @@ namespace Core
 	class FTJSON;
 	class FTText;
 
-	class ResourceManager :
-		public Common::ResourceManagerBase
+	class ResourceManager
 	{
 		SINGLETON(ResourceManager)
 
 	public:
-		void LoadDefaultResources() override;
+		void LoadDefaultResources();
 
 	public:
 		FTPremade* GetPremade(const char* key);

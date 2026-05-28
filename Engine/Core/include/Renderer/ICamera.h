@@ -25,7 +25,7 @@ namespace Core
 
 	class IActor;
 	class SceneManager;
-	class CameraData;
+	struct CameraData;
 
 	/// <summary>
 	/// Abstract camera interface for view/projection transformations.

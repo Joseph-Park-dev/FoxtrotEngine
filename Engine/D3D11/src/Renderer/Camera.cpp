@@ -1,5 +1,6 @@
 #include "Renderer/Camera.h"
 
+#include "Renderer/CameraData.h"
 #include "FTMath.h"
 #include "Actor/IActor.h"
 #include "Actor/Transform.h"
@@ -15,69 +16,27 @@ namespace D3D11
 	using namespace Math;
 	Math::FTVector3 Camera::ScreenToWorld(const Math::FTVector2& screenPos)
 	{
-		FTVector2 ndc	  = ScreenToNDC(screenPos);
-		FTVector3 clipPos = FTVector3(ndc.x, ndc.y, 0.0f);
-
-		FTMatrix4 view = FTMatrix4::Identity;
-		FTMatrix4 proj = FTMatrix4::Identity;
-
-		GetViewMatrix(view);
-		GetProjectionMatrix(proj);
-
-		FTMatrix4 viewProj = view * proj;
-		viewProj.Invert();
-
-		return FTVector3::Transform(clipPos, viewProj, 1.0f);
+		return mData->ScreenToWorld(screenPos);
 	}
 
 	Math::FTVector2 Camera::WorldToScreen(const Math::FTVector3& worldPos) const
 	{
-		return Math::FTVector2();
+		return mData->WorldToScreen(worldPos);
 	}
 
 	Math::FTVector2 Camera::ScreenToNDC(const Math::FTVector2& screenPos) const
 	{
-		FTVector2 renderSize = mData->GetResolution();
-		FTVector2 ndc		 = FTVector2::Zero;
-
-		ndc.x = (screenPos.x / renderSize.x) * 2.f - 1.0f;
-		ndc.y = 1.0f - (screenPos.y / renderSize.y) * 2.f;
-		return ndc;
+		return mData->ScreenToNDC(screenPos);
 	}
 
 	void Camera::SaveProperties(std::ofstream& ofs)
 	{
-		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CAMERA_DATA);
-		if (mData->Target)
-			Common::FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, mData->Target->GetNameRef());
-		else
-			Common::FileIOHelper::SaveString(ofs, ChunkKey::TARGET_ACTOR, Common::ChunkKey::NullVal::NULL_OBJECT);
-		Common::FileIOHelper::SaveVector3(ofs, ChunkKey::CAM_POSITION, mData->Position);
-		Common::FileIOHelper::SaveVector3(ofs, ChunkKey::CAM_OFFSET, mData->Offset);
-		Common::FileIOHelper::SaveFloat(ofs, ChunkKey::CAM_ZOOM, mData->ZoomFactor);
-		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::CAMERA_DATA);
+		mData->SaveProperties(ofs);
 	}
 
 	void Camera::LoadProperties(std::ifstream& ifs)
 	{
-		Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CAMERA_DATA);
-		Common::FileIOHelper::LoadFloat(ifs, mData->ZoomFactor);
-		Common::FileIOHelper::LoadVector3(ifs, mData->Offset);
-
-		Common::FileIOHelper::LoadVector3(ifs, mData->Position);
-		Common::FTDS::String targetName = {};
-		Common::FileIOHelper::LoadBasicString(ifs, targetName);
-
-#ifdef FOXTROT_EDITOR
-		if (!mData->Target)
-		{
-			using FIND_ACTOR = Core::IActor* (*)(Common::FTDS::String&, Core::IActor*);
-			mData->Target	 = GetFunc<FIND_ACTOR>(Plugin::Name::CORE_EDITOR, ProcNames::FIND_ACTOR)(targetName, nullptr);
-		}
-#else
-		if (targetName.NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
-			mTarget = manager->GetCurrentScene()->FindActor(targetName);
-#endif // FOXTROT_EDITOR
+		mData->LoadProperties(ifs);
 	}
 
 	Core::CameraData* Camera::Data()
@@ -92,35 +51,12 @@ namespace D3D11
 
 	void Camera::GetViewMatrix(Math::FTMatrix4& outViewMat)
 	{
-		if (mData->Target)
-		{
-			Core::Transform* transform = mData->Target->GetTransform();
-			FTVector3		 worldPos  = transform->GetWorldPosition();
-			// Z axis transformation is controlled independently
-			worldPos.z		= mData->Position.z;
-			mData->Position = worldPos + mData->Offset;
-		}
-		outViewMat = FTMatrix4::CreateTranslation(mData->Position);
+		mData->GetViewMatrix(outViewMat);
 	}
 
 	void Camera::GetProjectionMatrix(Math::FTMatrix4& outProjMat)
 	{
-		const FTVector2 renderSize = mData->GetResolution();
-		assert(0 < renderSize.x);
-		assert(0 < renderSize.y);
-
-		float worldWidth  = renderSize.x * mData->UnitsPerPixel;
-		float worldHeight = renderSize.y * mData->UnitsPerPixel;
-
-		worldWidth /= mData->ZoomFactor;
-		worldHeight /= mData->ZoomFactor;
-
-		mData->Aspect = renderSize.x / renderSize.y;
-
-		mData->ViewType == Core::Viewtype::Perspective
-			? outProjMat = FTMatrix4::CreatePerspectiveFOV(Math::ToRadians(mData->ProjFOVAngleY), renderSize.x, renderSize.y, mData->NearZ, mData->FarZ)
-			: outProjMat = FTMatrix4::CreateOrtho(
-				  worldWidth, worldHeight, mData->NearZ, mData->FarZ);
+		mData->GetProjectionMatrix(outProjMat);
 	}
 
 	const Core::Viewtype Camera::GetViewType()
@@ -218,7 +154,7 @@ namespace D3D11
 
 	void Camera::InitializeUnitsPerPixel(unsigned int pixels, float units)
 	{
-		mData->UnitsPerPixel = units / static_cast<float>(pixels);
+		mData->InitializePixelsPerUnit(pixels, units);
 	}
 
 	Camera::Camera(Core::CameraData* data)

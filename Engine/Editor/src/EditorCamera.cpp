@@ -16,7 +16,9 @@
 #include "Renderer/IWindow.h"
 #include "FTMath.h"
 #include "Plugin/GetFunc.h"
+#include "Plugin/PluginKey.h"
 #include "FileSystem/DLLPath.h"
+#include "FileSystem/FileIOHelper.h"
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
@@ -30,27 +32,159 @@ namespace Editor
 
 	constexpr float LOOKAT_MODSPEED = 0.01;
 
-	EditorCamera::EditorCamera(Core::CameraData* data)
-		: mData(data)
-		, mPanKeyPressed(false)
-		, mPanValModSpeed(0.01f)
-		, mZoomValModSpeed(0.1f)
-		, mDebugRect(nullptr)
+	Math::FTVector3 EditorCamera::ScreenToWorld(const Math::FTVector2& screenPos)
 	{
-		//// EditorCamera needs to be behind the Camera
-		//// to let debug rect visible.
-		// Math::FTVector3& camPos = Camera::GetInstance()->Position();
-		// camPos.z -= 0.1f;
-		// SetPosition(camPos);
+		FTVector2 ndc	  = ScreenToNDC(screenPos);
+		FTVector3 clipPos = FTVector3(ndc.x, ndc.y, 0.0f);
 
-		using GET_RECT_FUNC = D3D11::FTRectangle* (*)();
-		mDebugRect			= GetFunc<GET_RECT_FUNC>(DLLPath::D3D11_EDITOR, D3D11::ProcName::CREATE_FT_RECTANGLE)();
+		FTMatrix4 view = FTMatrix4::Identity;
+		FTMatrix4 proj = FTMatrix4::Identity;
+
+		GetViewMatrix(view);
+		GetProjectionMatrix(proj);
+
+		FTMatrix4 viewProj = view * proj;
+		viewProj.Invert();
+
+		return FTVector3::Transform(clipPos, viewProj, 1.0f);
 	}
 
-	EditorCamera::~EditorCamera()
+	Math::FTVector2 EditorCamera::WorldToScreen(const Math::FTVector3& worldPos) const
 	{
-		delete mDebugRect;
-		mDebugRect = nullptr;
+		return Math::FTVector2();
+	}
+
+	Math::FTVector2 EditorCamera::ScreenToNDC(const Math::FTVector2& screenPos) const
+	{
+		FTVector2 renderSize = mData->GetResolution();
+		FTVector2 ndc		 = FTVector2::Zero;
+
+		ndc.x = (screenPos.x / renderSize.x) * 2.f - 1.0f;
+		ndc.y = 1.0f - (screenPos.y / renderSize.y) * 2.f;
+		return ndc;
+	}
+
+	void EditorCamera::SaveProperties(std::ofstream& ofs)
+	{
+		Common::FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::CAMERA_DATA);
+		if (mData->Target)
+			Common::FileIOHelper::SaveString(ofs, Core::ChunkKey::TARGET_ACTOR, mData->Target->GetNameRef());
+		else
+			Common::FileIOHelper::SaveString(ofs, Core::ChunkKey::TARGET_ACTOR, Common::ChunkKey::NullVal::NULL_OBJECT);
+		Common::FileIOHelper::SaveVector3(ofs, Core::ChunkKey::CAM_POSITION, mData->Position);
+		Common::FileIOHelper::SaveVector3(ofs, Core::ChunkKey::CAM_OFFSET, mData->Offset);
+		Common::FileIOHelper::SaveFloat(ofs, Core::ChunkKey::CAM_ZOOM, mData->ZoomFactor);
+		Common::FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::CAMERA_DATA);
+	}
+
+	void EditorCamera::LoadProperties(std::ifstream& ifs)
+	{
+#include "Plugin/GetFunc.h"
+		Common::FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::CAMERA_DATA);
+		Common::FileIOHelper::LoadFloat(ifs, mData->ZoomFactor);
+		Common::FileIOHelper::LoadVector3(ifs, mData->Offset);
+
+		Common::FileIOHelper::LoadVector3(ifs, mData->Position);
+		Common::FTDS::String targetName = {};
+		Common::FileIOHelper::LoadBasicString(ifs, targetName);
+
+#ifdef FOXTROT_EDITOR
+		if (!mData->Target)
+		{
+			using FIND_ACTOR = Core::IActor* (*)(Common::FTDS::String&, Core::IActor*);
+			mData->Target	 = GetFunc<FIND_ACTOR>(Plugin::Name::CORE_EDITOR, ProcNames::FIND_ACTOR)(targetName, nullptr);
+		}
+#else
+		if (targetName.NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
+			mTarget = manager->GetCurrentScene()->FindActor(targetName);
+#endif // FOXTROT_EDITOR
+	}
+
+	void EditorCamera::DisplayGameCameraMenu(Core::ICamera* gameCam)
+	{
+		ImVec2 area = ImVec2(ImGui::GetContentRegionAvail().x, 150.f);
+		ImGui::BeginChild("Game Camera", area);
+		ImGui::SeparatorText("Game Camera");
+
+		CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", gameCam->Data()->Position, LOOKAT_MODSPEED);
+
+		/*float yaw	= mYaw;
+		float pitch = mPitch;*/
+
+		// CommandHistory::GetInstance()->UpdateFloatValue("Look-At Yaw", yaw, LOOKAT_MODSPEED);
+		// CommandHistory::GetInstance()->UpdateFloatValue("Look-At Pitch", mPitch, LOOKAT_MODSPEED);
+
+		/*if (yaw != mYaw || pitch != mPitch)
+		{
+			mYaw = yaw; mPitch = pitch;
+			UpdateViewDirections();
+		}*/
+
+		// Set Target
+		Scene*									   scene	   = EditorSceneManager::GetInstance()->GetCurrentScene();
+		EditorScene*							   editorScene = reinterpret_cast<EditorScene*>(scene);
+		Common::FTDS::DynamicArray<Core::IActor*>* editorElems = editorScene->Actors();
+		Common::FTDS::String* actorNames					   = DBG_NEW Common::FTDS::String[editorElems->GetSize() + 1];
+		actorNames[0].Assign("None");
+		static size_t currIdx;
+
+		for (size_t i = 0; i < editorElems->GetSize(); ++i)
+			actorNames[i + 1] = editorElems->At(i)->GetName();
+
+		const char* comboPreview = actorNames[currIdx].C_Str();
+		if (ImGui::BeginCombo(Core::ChunkKey::TARGET_ACTOR, comboPreview))
+		{
+			for (size_t i = 0; i < editorElems->GetSize() + 1; ++i)
+			{
+				if (ImGui::Selectable(actorNames[i].C_Str()))
+				{
+					currIdx = i;
+					if (currIdx == 0)
+						gameCam->SetTargetActor(nullptr);
+					else
+					{
+						Core::IActor* actor =
+							editorScene->FindActor(actorNames[currIdx], nullptr);
+						gameCam->SetTargetActor(actor);
+					}
+				}
+			}
+			ImGui::EndCombo();
+		}
+		delete[] actorNames;
+
+		CommandHistory::GetInstance()->UpdateVector3Value("Offset from target", gameCam->Data()->Offset, LOOKAT_MODSPEED);
+		CommandHistory::GetInstance()->UpdateFloatValue("Zoom", gameCam->ZoomFactor());
+
+		if (ImGui::Button("2D"))
+		{
+			if (GetViewType() == Viewtype::Perspective)
+			{
+				SetViewType(Viewtype::Orthographic);
+				gameCam->SetViewType(Viewtype::Orthographic);
+				printf("Orthographic");
+			}
+			else if (GetViewType() == Viewtype::Orthographic)
+			{
+				SetViewType(Viewtype::Perspective);
+				gameCam->SetViewType(Viewtype::Perspective);
+				printf("Perspective");
+			}
+		}
+
+		ImGui::EndChild();
+	}
+
+	void EditorCamera::DisplayEditorCameraMenu()
+	{
+		ImGui::BeginChild("Editor Camera");
+		ImGui::SeparatorText("Editor Camera");
+
+		FTVector3 pos = this->GetPosition();
+		CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", pos, LOOKAT_MODSPEED);
+		this->SetPosition(pos);
+
+		ImGui::EndChild();
 	}
 
 	D3D11::FTRectangle* EditorCamera::GetDebugRect()
@@ -118,96 +252,32 @@ namespace Editor
 		mDebugRect->UpdatePC();
 	}
 
+	EditorCamera::EditorCamera(Core::CameraData* data)
+		: mData(data)
+		, mPanKeyPressed(false)
+		, mPanValModSpeed(0.01f)
+		, mZoomValModSpeed(0.1f)
+		, mDebugRect(nullptr)
+	{
+		//// EditorCamera needs to be behind the Camera
+		//// to let debug rect visible.
+		// Math::FTVector3& camPos = Camera::GetInstance()->Position();
+		// camPos.z -= 0.1f;
+		// SetPosition(camPos);
+
+		using GET_RECT_FUNC = D3D11::FTRectangle* (*)();
+		mDebugRect			= GetFunc<GET_RECT_FUNC>(DLLPath::D3D11_EDITOR, D3D11::ProcName::CREATE_FT_RECTANGLE)();
+	}
+
+	EditorCamera::~EditorCamera()
+	{
+		delete mDebugRect;
+		mDebugRect = nullptr;
+	}
+
 	void EditorCamera::PanLocalXY(Math::FTVector2 vec2)
 	{
 		mData->Position.x += vec2.x;
 		mData->Position.y += vec2.y;
-	}
-
-	void EditorCamera::DisplayGameCameraMenu(Core::ICamera* gameCam)
-	{
-		ImVec2 area = ImVec2(ImGui::GetContentRegionAvail().x, 150.f);
-		ImGui::BeginChild("Game Camera", area);
-		ImGui::SeparatorText("Game Camera");
-
-		CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", gameCam->Data()->Position, LOOKAT_MODSPEED);
-
-		/*float yaw	= mYaw;
-		float pitch = mPitch;*/
-
-		// CommandHistory::GetInstance()->UpdateFloatValue("Look-At Yaw", yaw, LOOKAT_MODSPEED);
-		// CommandHistory::GetInstance()->UpdateFloatValue("Look-At Pitch", mPitch, LOOKAT_MODSPEED);
-
-		/*if (yaw != mYaw || pitch != mPitch)
-		{
-			mYaw = yaw; mPitch = pitch;
-			UpdateViewDirections();
-		}*/
-
-		// Set Target
-		Scene*									   scene	   = EditorSceneManager::GetInstance()->GetCurrentScene();
-		EditorScene*							   editorScene = reinterpret_cast<EditorScene*>(scene);
-		Common::FTDS::DynamicArray<Core::IActor*>* editorElems = editorScene->Actors();
-		Common::FTDS::String* actorNames					   = DBG_NEW Common::FTDS::String[editorElems->GetSize() + 1];
-		actorNames[0].Assign("None");
-		static size_t currIdx;
-
-		for (size_t i = 0; i < editorElems->GetSize(); ++i)
-			actorNames[i + 1] = editorElems->At(i)->GetName();
-
-		const char* comboPreview = actorNames[currIdx].C_Str();
-		if (ImGui::BeginCombo(D3D11::ChunkKey::TARGET_ACTOR, comboPreview))
-		{
-			for (size_t i = 0; i < editorElems->GetSize() + 1; ++i)
-			{
-				if (ImGui::Selectable(actorNames[i].C_Str()))
-				{
-					currIdx = i;
-					if (currIdx == 0)
-						gameCam->SetTargetActor(nullptr);
-					else
-					{
-						Core::IActor* actor =
-							editorScene->FindActor(actorNames[currIdx], nullptr);
-						gameCam->SetTargetActor(actor);
-					}
-				}
-			}
-			ImGui::EndCombo();
-		}
-		delete[] actorNames;
-
-		CommandHistory::GetInstance()->UpdateVector3Value("Offset from target", gameCam->Data()->Offset, LOOKAT_MODSPEED);
-		CommandHistory::GetInstance()->UpdateFloatValue("Zoom", gameCam->ZoomFactor());
-
-		if (ImGui::Button("2D"))
-		{
-			if (GetViewType() == Viewtype::Perspective)
-			{
-				SetViewType(Viewtype::Orthographic);
-				gameCam->SetViewType(Viewtype::Orthographic);
-				printf("Orthographic");
-			}
-			else if (GetViewType() == Viewtype::Orthographic)
-			{
-				SetViewType(Viewtype::Perspective);
-				gameCam->SetViewType(Viewtype::Perspective);
-				printf("Perspective");
-			}
-		}
-
-		ImGui::EndChild();
-	}
-
-	void EditorCamera::DisplayEditorCameraMenu()
-	{
-		ImGui::BeginChild("Editor Camera");
-		ImGui::SeparatorText("Editor Camera");
-
-		FTVector3 pos = this->GetPosition();
-		CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", pos, LOOKAT_MODSPEED);
-		this->SetPosition(pos);
-
-		ImGui::EndChild();
 	}
 } // namespace Editor

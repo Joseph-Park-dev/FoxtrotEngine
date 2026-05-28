@@ -26,12 +26,14 @@
 namespace Core
 {
 	class IWindow;
+	class IRenderer;
 }
 
 namespace D3D11
 {
 	class D3D11Window;
 	class D3D11InputDevice;
+	class ViewportRenderer;
 } // namespace D3D11
 
 enum class ErrorType
@@ -63,19 +65,19 @@ enum class FileMenuEvents
 namespace Editor
 {
 	class Command;
-	class EditorRenderer;
 	class EditorCamera;
 	class EditorLayer
 	{
 		SINGLETON(EditorLayer)
 	public:
-		void Initialize(Editor::EditorRenderer* renderer);
+		void Initialize(Core::IRenderer* renderer);
 		void Update(
-			float					deltaTime,
-			Core::IWindow*			editorWin,
-			Core::IInputDevice*		input,
-			Editor::EditorRenderer* renderer,
-			Editor::EditorCamera*	editorCam);
+			float deltaTime, 
+			Core::IWindow* editorWin, 
+			Core::IInputDevice* input, 
+			Core::IRenderer* renderer,
+			Core::ICamera* gameCam, 
+			Editor::EditorCamera* editorCam);
 		void Render();
 		void ShutDown();
 
@@ -183,13 +185,15 @@ namespace Editor
 		ErrorType	   mErrorType;
 		FileMenuEvents mFileMenuEvent;
 
+		D3D11::ViewportRenderer* mViewport;
+
 	private:
 		/// <summary>
 		//  Renders viewport.
 		//  This is execptionally placed in Update() due to its requirement
 		//  to be nested in ImGUi's Frame.
 		/// </summary>
-		void DisplayViewport(Core::IWindow* editorWin, Core::IInputDevice* input, Editor::EditorRenderer* renderer);
+		void DisplayViewport(Core::IWindow* editorWin, Core::IInputDevice* input, Core::IRenderer* renderer);
 
 		// Displays current frame rate.
 		void DisplayFrameRate();

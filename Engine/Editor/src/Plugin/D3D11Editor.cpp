@@ -82,6 +82,7 @@ private:
 	D3D11::WNDPROC_Params*	 wndprocParams;
 	D3D11::ViewportRenderer* mViewport;
 
+	D3D11::Camera*		  mGameCamera;
 	Editor::EditorCamera* mEditorCamera;
 
 	bool				  mIsUpdatingGame;
@@ -228,8 +229,8 @@ void D3D11Editor::Update(float deltaTime)
 	// }
 	// else
 	//	EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
-	D3D11::Camera::GetInstance()->Update(deltaTime);
-	EditorCamera::GetInstance()->Update(deltaTime);
+	mGameCamera->Update(deltaTime);
+	mEditorCamera->Update(deltaTime);
 	EditorLayer::GetInstance()->Update(deltaTime, mEditorWin, mInputDevice, mRenderer);
 }
 

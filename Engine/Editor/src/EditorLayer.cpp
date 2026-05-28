@@ -39,11 +39,13 @@
 #include "Manager/AnimationManager.h"
 #include "FileSystem/DLLPath.h"
 
+#include "Renderer/ViewportRenderer.h"
+
 namespace Editor
 {
 	using namespace Core;
 
-	void EditorLayer::Initialize(Editor::EditorRenderer* renderer)
+	void EditorLayer::Initialize(Core::IRenderer* renderer)
 	{
 		mRenderer = renderer;
 		LoadEditorConfig();
@@ -54,7 +56,7 @@ namespace Editor
 		mSetChunkIsSaved  = GetFunc<SET_CHUNK_IS_SAVED_FUNC>(DLLPath::CORE_EDITOR, ProcName::SetChunkIsSaved);
 	}
 
-	void EditorLayer::Update(float deltaTime, Core::IWindow* editorWin, Core::IInputDevice* input, Editor::EditorRenderer* renderer, Editor::EditorCamera* editorCam)
+	void EditorLayer::Update(float deltaTime, Core::IWindow* editorWin, Core::IInputDevice* input, Core::IRenderer* renderer, Core::ICamera* gameCam, Editor::EditorCamera* editorCam)
 	{
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
@@ -78,7 +80,7 @@ namespace Editor
 		DisplayInspectorMenu();
 
 		ImGui::Begin("Camera Menu");
-		editorCam->DisplayGameCameraMenu();
+		editorCam->DisplayGameCameraMenu(gameCam);
 		editorCam->DisplayEditorCameraMenu();
 		ImGui::End();
 
@@ -90,7 +92,7 @@ namespace Editor
 		ImGui::EndFrame();
 	}
 
-	void EditorLayer::DisplayViewport(Core::IWindow* editorWin, Core::IInputDevice* input, Editor::EditorRenderer* renderer)
+	void EditorLayer::DisplayViewport(Core::IWindow* editorWin, Core::IInputDevice* input, Core::IRenderer* renderer)
 	{
 		ImGui::Begin("Scene");
 		if (ImGui::IsWindowFocused())
@@ -109,11 +111,11 @@ namespace Editor
 		if (mIsResizingViewport && input->MOUSE_AWAY(Core::MOUSE::MOUSE_LEFT))
 		{
 			editorWin->GetRenderArea()->Set(0.f, 0.f, contentReg.x, contentReg.y);
-			renderer->GetViewportRenderer()->InitializeTexture(renderer, contentReg);
+			mViewport->InitializeTexture(reinterpret_cast<D3D11::D3D11Renderer*>(renderer), contentReg);
 			mIsResizingViewport = false;
 		}
 
-		ID3D11ShaderResourceView* viewportTexture = renderer->GetViewportRenderer()->GetViewportSRV().Get();
+		ID3D11ShaderResourceView* viewportTexture = mViewport->GetViewportSRV().Get();
 		ImGui::Image((ImTextureID)(intptr_t)viewportTexture, contentReg);
 
 		ImGui::End();
@@ -177,7 +179,7 @@ namespace Editor
 				{
 					if (!mGetProjPathFunc()->IsEmpty())
 					{
-						EditorChunkLoader::GetInstance()->SaveChunk(*mGetChunkPathFunc());
+						Editor::ChunkLoader::GetInstance()->SaveChunk(mGetChunkPathFunc()->C_Str());
 						printf("Chunk saved to %s", mGetChunkPathFunc()->C_Str());
 						mInfoType = InfoType::ChunkIsSaved;
 					}
@@ -225,18 +227,18 @@ namespace Editor
 					{
 						// Clear up the scene to load the current chunk file.
 						mFocusedEditorElement = nullptr;
-						EditorChunkLoader::GetInstance()->SaveChunk(*mGetChunkPathFunc());
+						Editor::ChunkLoader::GetInstance()->SaveChunk(mGetChunkPathFunc()->C_Str());
 						// DebugShapes::GetInstance()->DeleteAll();
 						// UIManager::GetInstance()->Reset();
 						// CollisionManager::GetInstance()->Reset();
 						EditorSceneManager::GetInstance()->GetCurrentScene()->DeleteAll();
 
 						// Copy the chunk file.
-						EditorChunkLoader::GetInstance()->CopyChunk(*mGetChunkPathFunc());
-						Common::FTDS::String& copiedPath = EditorChunkLoader::GetInstance()->CurrentChunk();
-
+						Common::FTDS::String copiedPath = {};
+						Editor::ChunkLoader::GetInstance()->CopyChunk(copiedPath, mGetChunkPathFunc()->C_Str());
+						
 						// Load the copied chunk file.
-						EditorChunkLoader::GetInstance()->LoadChunk(copiedPath);
+						Editor::ChunkLoader::GetInstance()->LoadChunk(copiedPath);
 
 						// Start updating the game.
 						Engine::GetInstance()->SetIsUpdating(true);

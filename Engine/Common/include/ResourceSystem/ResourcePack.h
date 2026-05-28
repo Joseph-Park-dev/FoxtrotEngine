@@ -20,9 +20,10 @@ namespace Common
 		/// @tparam FTRESOURCE Type of Resource
 		/// @param userData Additional data necessary for resource's constructor.
 		/// Pointer to renderer can be a good example for graphics resources
-		void LoadResourcesFromChunk(std::ifstream& ifs, size_t& resCount, void* userData = nullptr)
+		void LoadResourcesFromChunk(std::ifstream& ifs, void* userData = nullptr)
 		{
-			Common::FileIOHelper::BeginDataPackLoad(ifs);
+
+			size_t resCount = Common::FileIOHelper::BeginDataPackLoad(ifs);
 			if (resCount < 1)
 				return;
 
@@ -71,6 +72,11 @@ namespace Common
 		void AddResource(const Common::FTDS::String* key, FTRESOURCE* res)
 		{
 			mResources->Insert(*key, res);
+		}
+
+		void AddResource(const char* key, FTRESOURCE* res)
+		{
+			mResources->Insert(key, res);
 		}
 
 	public:

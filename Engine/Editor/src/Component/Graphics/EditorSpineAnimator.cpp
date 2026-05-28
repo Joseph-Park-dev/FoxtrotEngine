@@ -19,10 +19,9 @@ namespace Editor
 		if (GetMeshGroup())
 		{
 			Core::Transform* transform = GetOwner()->GetTransform();
-			EditorRenderer*	 rend	   = reinterpret_cast<EditorRenderer*>(renderer);
 			static_cast<D3D11::FTSpineAnimation*>(
 				GetMeshGroup())
-				->Render(rend, transform, camInst, GetTexture(), GetVS(), GetPS(), GetMaterial());
+				->Render(renderer, transform, camInst, GetTexture(), GetVS(), GetPS(), GetMaterial());
 		}
 	}
 

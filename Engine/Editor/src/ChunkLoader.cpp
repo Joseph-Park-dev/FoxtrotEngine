@@ -39,7 +39,6 @@ namespace Editor
 {
 	using namespace Core;
 	ChunkLoader::ChunkLoader()
-		: ChunkLoader()
 	{
 		HMODULE coreMod = GetModuleHandleA(DLLPath::CORE_EDITOR);
 		assert(coreMod);

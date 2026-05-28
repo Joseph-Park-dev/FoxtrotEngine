@@ -51,7 +51,6 @@ namespace Core
 
 	private:
 		void LoadGameData();
-		void LoadPlugins(std::ifstream& ifs);
 	};
 
 	extern "C" CORE_API FTCore* CreateCore();

@@ -16,31 +16,42 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 
+namespace Core
+{
+	class IInputDevice;
+}
+
 namespace D3D11
 {
 	class FTRectangle;
-	class D3D11InputDevice;
 } // namespace D3D11
 
 namespace Editor
 {
-	class EditorWindow;
 	class EditorCamera :
 		public Core::ICamera
 	{
 	public:
-		void DisplayMainCameraMenu();
+		void DisplayGameCameraMenu(Core::ICamera* gameCam);
 		void DisplayEditorCameraMenu();
 
 	public:
 		D3D11::FTRectangle* GetDebugRect();
 
+		float& ZoomFactor() override;
+
 	public:
-		void		 Initialize(Editor::EditorWindow* window, unsigned int pixels, float unit);
-		virtual void ProcessInput(D3D11::D3D11InputDevice* inputDevice);
-		virtual void Update(float deltaTime);
+		void		 Initialize(Core::IWindow* window, unsigned int pixels, float unit);
+		virtual void ProcessInput(Core::IInputDevice* inputDevice);
+		virtual void Update(Core::ICamera* gameCamera);
+
+	public:
+		EditorCamera(Core::CameraData* data);
+		~EditorCamera() override;
 
 	private:
+		Core::CameraData* mData;
+
 		bool  mPanKeyPressed;
 		float mPanValModSpeed;
 		float mZoomValModSpeed;

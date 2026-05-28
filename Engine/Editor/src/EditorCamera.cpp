@@ -8,7 +8,7 @@
 
 #include "EditorCamera.h"
 
-#include "InputSystem/D3D11InputDevice.h"
+#include "InputSystem/IInputDevice.h"
 #include "ResourceSystem/Shape/FTRectangle.h"
 #include "Renderer/FTRectArea.h"
 #include "FTDS/Dynamic/DynamicArray.h"
@@ -16,6 +16,7 @@
 #include "Renderer/IWindow.h"
 #include "FTMath.h"
 #include "Plugin/GetFunc.h"
+#include "FileSystem/DLLPath.h"
 
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
@@ -29,17 +30,18 @@ namespace Editor
 
 	constexpr float LOOKAT_MODSPEED = 0.01;
 
-	EditorCamera::EditorCamera()
-		: Camera()
+	EditorCamera::EditorCamera(Core::CameraData* data)
+		: mData(data)
 		, mPanKeyPressed(false)
 		, mPanValModSpeed(0.01f)
 		, mZoomValModSpeed(0.1f)
 		, mDebugRect(nullptr)
 	{
-		// EditorCamera needs to be behind the Camera
-		// to let debug rect visible.
-		const Math::FTVector3& camPos = Camera::GetInstance()->GetPosition();
-		SetPosition(camPos.x, camPos.y, camPos.z - 0.1f);
+		//// EditorCamera needs to be behind the Camera
+		//// to let debug rect visible.
+		// Math::FTVector3& camPos = Camera::GetInstance()->Position();
+		// camPos.z -= 0.1f;
+		// SetPosition(camPos);
 
 		using GET_RECT_FUNC = D3D11::FTRectangle* (*)();
 		mDebugRect			= GetFunc<GET_RECT_FUNC>(DLLPath::D3D11_EDITOR, D3D11::ProcName::CREATE_FT_RECTANGLE)();
@@ -56,13 +58,21 @@ namespace Editor
 		return mDebugRect;
 	}
 
-	void EditorCamera::Initialize(Editor::EditorWindow* renderWindow, unsigned int pixels, float unit)
+	float& EditorCamera::ZoomFactor()
 	{
-		Camera::Initialize(renderWindow, pixels, unit);
+		return mData->ZoomFactor;
+	}
+
+	void EditorCamera::Initialize(Core::IWindow* renderWindow, unsigned int pixels, float unit)
+	{
+		FTVector2 size = renderWindow->GetRenderArea()->GetSize();
+		mData->ResX	   = static_cast<unsigned int>(size.x);
+		mData->ResY	   = static_cast<unsigned int>(size.y);
+		InitializePixelsPerUnit(pixels, unit);
 		EditorShapes::GetInstance()->SetCameraRect(mDebugRect);
 	}
 
-	void EditorCamera::ProcessInput(D3D11InputDevice* inputDevice)
+	void EditorCamera::ProcessInput(IInputDevice* inputDevice)
 	{
 		if (0 < inputDevice->GetMouseWheelDelta())
 			ZoomFactor() += mZoomValModSpeed;
@@ -70,10 +80,8 @@ namespace Editor
 			ZoomFactor() -= mZoomValModSpeed;
 	}
 
-	void EditorCamera::Update(float deltaTime)
+	void EditorCamera::Update(Core::ICamera* gameCam)
 	{
-		Camera::Update(deltaTime);
-
 		mPanKeyPressed = ImGui::IsMouseDragging(ImGuiMouseButton_Middle);
 		if (EditorLayer::GetInstance()->CursorOnViewport())
 		{
@@ -98,13 +106,13 @@ namespace Editor
 		mDebugRect->GetGSCData().size = resRatio.GetD3Vec2();
 		mDebugRect->GetPixelConstantData().IsActive = true;*/
 
-		Math::FTMatrix4 translationMat = Math::FTMatrix4::CreateTranslation(Camera::GetInstance()->GetPosition());
+		Math::FTMatrix4 translationMat = Math::FTMatrix4::CreateTranslation(gameCam->GetPosition());
 		mDebugRect->UpdateVC(translationMat, this);
 
 		mDebugRect->UpdateGC(this);
-		Math::FTVector2 size = Camera::GetInstance()->GetResolution();
-		size /= Camera::GetInstance()->GetPixelsPerUnit();
-		size /= Camera::GetInstance()->GetZoomFactor();
+		Math::FTVector2 size = gameCam->GetResolution();
+		size *= gameCam->GetUnitsPerPixel();
+		size /= gameCam->GetZoomFactor();
 		mDebugRect->GetGSCData().size = size;
 		mDebugRect->SetIsActive(true);
 		mDebugRect->UpdatePC();
@@ -112,18 +120,17 @@ namespace Editor
 
 	void EditorCamera::PanLocalXY(Math::FTVector2 vec2)
 	{
-		Position().x += vec2.x;
-		Position().y += vec2.y;
+		mData->Position.x += vec2.x;
+		mData->Position.y += vec2.y;
 	}
 
-	void EditorCamera::DisplayMainCameraMenu()
+	void EditorCamera::DisplayGameCameraMenu(Core::ICamera* gameCam)
 	{
 		ImVec2 area = ImVec2(ImGui::GetContentRegionAvail().x, 150.f);
-		ImGui::BeginChild("Main Camera", area);
-		ImGui::SeparatorText("Main Camera");
+		ImGui::BeginChild("Game Camera", area);
+		ImGui::SeparatorText("Game Camera");
 
-		Math::FTVector3& pos = Camera::GetInstance()->Position();
-		CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", pos, LOOKAT_MODSPEED);
+		CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", gameCam->Data()->Position, LOOKAT_MODSPEED);
 
 		/*float yaw	= mYaw;
 		float pitch = mPitch;*/
@@ -138,10 +145,10 @@ namespace Editor
 		}*/
 
 		// Set Target
-		Scene*									  scene		  = EditorSceneManager::GetInstance()->GetCurrentScene();
-		EditorScene*							  editorScene = reinterpret_cast<EditorScene*>(scene);
-		Common::FTDS::DynamicArray<Core::Actor*>* editorElems = editorScene->Actors();
-		Common::FTDS::String* actorNames					  = DBG_NEW Common::FTDS::String[editorElems->GetSize() + 1];
+		Scene*									   scene	   = EditorSceneManager::GetInstance()->GetCurrentScene();
+		EditorScene*							   editorScene = reinterpret_cast<EditorScene*>(scene);
+		Common::FTDS::DynamicArray<Core::IActor*>* editorElems = editorScene->Actors();
+		Common::FTDS::String* actorNames					   = DBG_NEW Common::FTDS::String[editorElems->GetSize() + 1];
 		actorNames[0].Assign("None");
 		static size_t currIdx;
 
@@ -157,12 +164,12 @@ namespace Editor
 				{
 					currIdx = i;
 					if (currIdx == 0)
-						Camera::GetInstance()->SetTargetActor(nullptr);
+						gameCam->SetTargetActor(nullptr);
 					else
 					{
-						Actor* actor =
+						Core::IActor* actor =
 							editorScene->FindActor(actorNames[currIdx], nullptr);
-						Camera::GetInstance()->SetTargetActor(actor);
+						gameCam->SetTargetActor(actor);
 					}
 				}
 			}
@@ -170,21 +177,21 @@ namespace Editor
 		}
 		delete[] actorNames;
 
-		CommandHistory::GetInstance()->UpdateVector3Value("Offset from target", Camera::GetInstance()->Offset(), LOOKAT_MODSPEED);
-		CommandHistory::GetInstance()->UpdateFloatValue("Zoom", Camera::GetInstance()->ZoomFactor());
+		CommandHistory::GetInstance()->UpdateVector3Value("Offset from target", gameCam->Data()->Offset, LOOKAT_MODSPEED);
+		CommandHistory::GetInstance()->UpdateFloatValue("Zoom", gameCam->ZoomFactor());
 
 		if (ImGui::Button("2D"))
 		{
 			if (GetViewType() == Viewtype::Perspective)
 			{
 				SetViewType(Viewtype::Orthographic);
-				Camera::GetInstance()->SetViewType(Viewtype::Orthographic);
+				gameCam->SetViewType(Viewtype::Orthographic);
 				printf("Orthographic");
 			}
 			else if (GetViewType() == Viewtype::Orthographic)
 			{
 				SetViewType(Viewtype::Perspective);
-				Camera::GetInstance()->SetViewType(Viewtype::Perspective);
+				gameCam->SetViewType(Viewtype::Perspective);
 				printf("Perspective");
 			}
 		}

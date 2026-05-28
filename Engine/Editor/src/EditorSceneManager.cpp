@@ -21,7 +21,7 @@ namespace Editor
 {
 	void EditorSceneManager::GetLowests(std::vector<EditorElement*>& elements)
 	{
-		Common::FTDS::DynamicArray<Core::Actor*>*& actors = Core::SceneManager::GetCurrentScene()->Actors();
+		Common::FTDS::DynamicArray<Core::IActor*>*& actors = Core::SceneManager::GetCurrentScene()->Actors();
 
 		for (auto iter = actors->Begin(); iter != actors->End(); ++iter)
 		{
@@ -47,7 +47,7 @@ namespace Editor
 	void EditorSceneManager::PushRowOfChildActors(EditorElement* actor, std::vector<EditorElement*>& dest)
 	{
 		dest.push_back(actor);
-		Common::FTDS::DynamicArray<Core::Actor*>* childActors = actor->GetChildActors();
+		Common::FTDS::DynamicArray<Core::IActor*>* childActors = actor->GetChildActors();
 		for (auto child = childActors->Begin(); child != childActors->End(); ++child)
 		{
 			EditorElement* elemChild = static_cast<EditorElement*>(*child);

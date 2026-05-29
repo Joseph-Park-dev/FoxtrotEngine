@@ -19,6 +19,7 @@
 
 namespace D3D11
 {
+#define DEFAULT_TILE_POS 0
 	using namespace Common;
 	class FTTileMap;
 
@@ -63,8 +64,14 @@ namespace D3D11
 		virtual void LoadProperties(std::ifstream& ifs) override;
 
 #ifdef FOXTROT_EDITOR
+	public:
+		virtual void EditorUpdate(float deltaTime) override;
+		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst) override;
+		virtual void EditorUIUpdate(Editor::CommandHistory* chInst) override;
+
 	protected:
-		Common::FTDS::String& TileMapKey();
+		void UpdateCSV();
+		void UpdateCSV(Common::FTDS::String& key);
 #endif
 	};
 

@@ -143,9 +143,125 @@ namespace D3D11
 	}
 
 #ifdef FOXTROT_EDITOR
-	Common::FTDS::String& TileMapRenderer::TileMapKey()
+	void TileMapRenderer::EditorUpdate(float deltaTime)
 	{
-		return mTileMapKey;
+	}
+	void TileMapRenderer::EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst)
+	{
+	}
+	void TileMapRenderer::EditorUIUpdate(Editor::CommandHistory* chInst)
+	{
+		// UpdateSprite();
+		UpdateCSV();
+
+		if (ImGui::Button("Update"))
+			this->InitializeTileMap();
+	}
+
+	void TileMapRenderer::UpdateCSV()
+	{
+		Common::FTDS::String currentCSV = "No .csv has been assigned";
+		if (mTileMapKey.Equal(Common::ChunkKey::NullVal::NULL_OBJECT))
+		{
+			currentCSV.Assign("Current sprite : \n");
+			currentCSV.Append(mTileMapKey);
+		}
+
+		ImGui::Text(currentCSV.C_Str());
+
+		if (ImGui::Button("Select .CSV"))
+		{
+			IGFD::FileDialogConfig config;
+			config.path				 = ".";
+			config.countSelectionMax = 1;
+			ImGuiFileDialog::Instance()->OpenDialog(
+				"SelectCSV", "Select .CSV", Core::FileTypes::TEXTURE, config);
+			ImGui::OpenPopup("Select .CSV");
+		}
+
+		if (ImGui::BeginPopupModal("Select .CSV", NULL, ImGuiWindowFlags_MenuBar))
+		{
+			Common::ResourcePack<D3D11::FTTileMap>* tileMapsMap =
+				D3D11::ResourceManager::GetInstance()->GetTileMaps();
+			if (ImGui::TreeNode("Selection State: Single Selection"))
+			{
+				Common::FTDS::String tileMapKey = Common::ChunkKey::NullVal::NULL_OBJECT;
+				static int			 selected	= -1;
+				int					 i			= 0;
+				for (auto iter = tileMapsMap->GetResMap()->Begin(); iter != tileMapsMap->GetResMap()->End();
+					 ++iter, ++i)
+				{
+					if (ImGui::Selectable((*iter)->Value()->GetFileName()->C_Str(), selected == i))
+					{
+						tileMapKey = *(*iter)->Value()->GetFileName();
+						selected   = i;
+					}
+				}
+				ImGui::TreePop();
+				if (selected != -1)
+				{
+					SetTileMapKey(tileMapKey);
+					// SetTexture();
+				}
+			}
+			if (ImGui::Button("Close"))
+				ImGui::CloseCurrentPopup();
+			ImGui::EndPopup();
+		}
+	}
+	void TileMapRenderer::UpdateCSV(Common::FTDS::String& key)
+	{
+		Common::FTDS::String currentCSV = {};
+		if (key.NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
+			currentCSV =
+				Common::FTDS::String("Current sprite : \n") +
+				D3D11::ResourceManager::GetInstance()->GetTileMap(key)->GetRelativePath()->C_Str();
+		else
+			currentCSV = "No .csv has been assigned";
+		ImGui::Text(currentCSV.C_Str());
+
+		if (ImGui::Button("Select .CSV"))
+		{
+			IGFD::FileDialogConfig config;
+			config.path				 = ".";
+			config.countSelectionMax = 1;
+			ImGuiFileDialog::Instance()->OpenDialog(
+				"SelectCSV", "Select .CSV", Core::FileTypes::TEXTURE, config);
+			ImGui::OpenPopup("Select .CSV");
+		}
+
+		if (ImGui::BeginPopupModal("Select .CSV", NULL, ImGuiWindowFlags_MenuBar))
+		{
+			Common::ResourcePack<D3D11::FTTileMap>* tileMapsMap =
+				D3D11::ResourceManager::GetInstance()->GetTileMaps();
+			if (ImGui::TreeNode("Selection State: Single Selection"))
+			{
+				Common::FTDS::String tileMapKey = Common::ChunkKey::NullVal::NULL_OBJECT;
+				static int			 selected	= -1;
+				int					 i			= 0;
+				for (auto iter = tileMapsMap->GetResMap()->Begin(); iter != tileMapsMap->GetResMap()->End();
+					 ++iter, ++i)
+				{
+					if ((*iter)->Value())
+					{
+						if (ImGui::Selectable((*iter)->Value()->GetFileName()->C_Str(), selected == i))
+						{
+							tileMapKey = *(*iter)->Value()->GetFileName();
+							selected   = i;
+						}
+					}
+				}
+				ImGui::TreePop();
+				if (selected != -1)
+				{
+					key = tileMapKey;
+					// SetTexture();
+				}
+			}
+			if (ImGui::Button("Close"))
+				ImGui::CloseCurrentPopup();
+			ImGui::EndPopup();
+		}
 	}
 #endif
 } // namespace D3D11

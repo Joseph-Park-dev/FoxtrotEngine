@@ -37,7 +37,7 @@ namespace Core
 		virtual void Lock() override;
 		virtual void Unlock() override;
 
-		virtual void CopyChunk(FTDS::String& copiedPathOut, const char* chunkPath = "./") override;
+		virtual void CopyChunk(Common::FTDS::String& copiedPathOut, const char* chunkPath = "./") override;
 		virtual void DeleteCopiedChunk() override;
 
 	public:
@@ -65,23 +65,4 @@ namespace Core
 	private:
 		void LoadPlugins(std::ifstream& ifs);
 	};
-
-	namespace ChunkKey
-	{
-		constexpr const char* GAME_DATA = "Game Data";
-
-		// Data Pack Names
-		constexpr const char* CHUNK_DATA = "Chunk Data";
-		constexpr const char* ACTOR_DATA = "Actor Data";
-		constexpr const char* ACTOR_COMP = "Actor Component";
-		constexpr const char* RES_DATA	 = "Resource Data";
-
-		constexpr const char* TRANSFORM		   = "Transform";
-
-		constexpr const char* CHUNK_LIST	  = "Chunk List";
-		constexpr const char* CHUNK_LIST_PATH = "Chunk List Path";
-
-		// Actor Related
-		constexpr const char* ACTOR_COUNT = "Actor Count";
-	} // namespace ChunkKey
 } // namespace Core

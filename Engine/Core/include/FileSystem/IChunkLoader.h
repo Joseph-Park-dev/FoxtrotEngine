@@ -20,7 +20,7 @@ namespace Core
 		Common::FTDS::HashMap<IComponent*> CompLoadMap;
 		int								   MaxActorID = 0;
 		/// @brief Is this chunk currently being loaded?
-		bool							   IsLoading = false;
+		bool IsLoading = false;
 	};
 
 	class IChunkLoader
@@ -40,7 +40,7 @@ namespace Core
 		/// The copied .chunk is the one that should be read into the game.
 		/// @param path The copy is recommended to be located in the same directory with the original.
 		/// @return Full path of the copied .chunk
-		virtual void CopyChunk(FTDS::String& copiedPathOut, const char* chunkPath = "./") = 0;
+		virtual void CopyChunk(Common::FTDS::String& copiedPathOut, const char* chunkPath = "./") = 0;
 		/// @brief Delete the copied chunk after being used.
 		virtual void DeleteCopiedChunk() = 0;
 
@@ -58,4 +58,23 @@ namespace Core
 		/// @brief Load .chunk specific data
 		virtual void LoadChunkData(::std::ifstream& out) = 0;
 	};
+
+	namespace ChunkKey
+	{
+		constexpr const char* GAME_DATA = "Game Data";
+
+		// Data Pack Names
+		constexpr const char* CHUNK_DATA = "Chunk Data";
+		constexpr const char* ACTOR_DATA = "Actor Data";
+		constexpr const char* ACTOR_COMP = "Actor Component";
+		constexpr const char* RES_DATA	 = "Resource Data";
+
+		constexpr const char* TRANSFORM = "Transform";
+
+		constexpr const char* CHUNK_LIST	  = "Chunk List";
+		constexpr const char* CHUNK_LIST_PATH = "Chunk List Path";
+
+		// Actor Related
+		constexpr const char* ACTOR_COUNT = "Actor Count";
+	} // namespace ChunkKey
 } // namespace Core

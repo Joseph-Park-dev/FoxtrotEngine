@@ -64,7 +64,7 @@ namespace Core
 		mCurrentChunkData->IsLoading = false;
 	}
 
-	void ChunkLoader::CopyChunk(FTDS::String& copiedPathOut, const char* chunkPath)
+	void ChunkLoader::CopyChunk(Common::FTDS::String& copiedPathOut, const char* chunkPath)
 	{
 		// Get the original file name.
 		Common::FTDS::String path = chunkPath;

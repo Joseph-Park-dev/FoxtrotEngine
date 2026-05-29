@@ -139,6 +139,11 @@ namespace D3D11
 		return mData->ZoomFactor;
 	}
 
+	void Camera::InitializePixelsPerUnit(unsigned int pixels, float units)
+	{
+		mData->InitializePixelsPerUnit(pixels, units);
+	}
+
 	float& Camera::ZoomDelta()
 	{
 		return mData->ZoomDelta;
@@ -157,8 +162,8 @@ namespace D3D11
 		mData->InitializePixelsPerUnit(pixels, units);
 	}
 
-	Camera::Camera(Core::CameraData* data)
-		: mData(data)
+	Camera::Camera()
+		: mData(DBG_NEW Core::CameraData)
 	{
 	}
 

@@ -83,7 +83,7 @@ namespace D3D11
 		float&			 ZoomFactor() override;
 
 	public:
-		Camera(Core::CameraData* data);
+		Camera();
 		~Camera() override;
 
 	public:
@@ -95,6 +95,7 @@ namespace D3D11
 		//	virtual void Zoom();
 
 	protected:
+		virtual void InitializePixelsPerUnit(unsigned int pixels, float units = 1.f) override;
 		float& ZoomDelta();
 
 	private:

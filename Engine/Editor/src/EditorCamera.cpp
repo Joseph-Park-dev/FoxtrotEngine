@@ -300,7 +300,7 @@ namespace Editor
 
 	void EditorCamera::InitializePixelsPerUnit(unsigned int pixels, float units)
 	{
-		mData->InitializePixelsPerUnit(pixels, units)
+		mData->InitializePixelsPerUnit(pixels, units);
 	}
 
 	void EditorCamera::PanLocalXY(Math::FTVector2 vec2)

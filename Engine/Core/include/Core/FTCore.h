@@ -12,9 +12,6 @@ namespace Core
 		SINGLETON(FTCore)
 
 	public:
-		virtual void RegisterComponent(Core::IComponent* comp) {};
-
-	public:
 		//////////////////////////////////
 		////// Initialization Phase //////
 		//////////////////////////////////

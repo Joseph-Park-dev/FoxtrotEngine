@@ -21,11 +21,16 @@
 
 #include "Debugging/DebugMemAlloc.h"
 #include "Plugin/CoreExports.h"
+#ifdef FOXTROT_EDITOR
+	#include "CommandHistory.h"
+#endif
 
 namespace Core
 {
 	class IActor;
 	class IInputDevice;
+	class IRenderer;
+	class ICamera;
 
 	namespace DefaultVal
 	{
@@ -74,11 +79,12 @@ namespace Core
 			// Load Properties first -> then initialize with the loaded values.
 			t->LoadProperties(ifs);
 		}
-	};
 
-	template <typename COMP>
-	COMP CreateComponent(Core::IActor* owner, int updateOrder)
-	{
-		return DBG_NEW COMP;
-	}
+#ifdef FOXTROT_EDITOR
+	public:
+		virtual void EditorUpdate(float deltaTime)									 = 0;
+		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst) = 0;
+		virtual void EditorUIUpdate(Editor::CommandHistory* chInst)					 = 0;
+#endif // FOXTROT_EDITOR
+	};
 } // namespace Core

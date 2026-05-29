@@ -5,6 +5,7 @@
 #include "Plugin/D3D11Exports.h"
 
 #include "Actor/IActor.h"
+#include "Actor/ActorData.h"
 #include "InputSystem/D3D11InputDevice.h"
 #include "Renderer/D3D11Renderer.h"
 #include "Renderer/D3D11Window.h"
@@ -34,16 +35,27 @@ class D3D11Plugin :
 	public Core::IInputSysFactory
 {
 public:
+	virtual void RegisterComponent(IComponent* comp) override;
+
+public:
 	virtual IWindow* CreateAppWindow(
 		const char*	 title,
 		unsigned int width,
 		unsigned int height,
 		FTRectArea*	 renderArea) override;
+
+	virtual IWindow* CreateAppWindow(
+		const char*	 title,
+		unsigned int width,
+		unsigned int height,
+		FTRectArea*	 rndArea,
+		WNDPROC		 wndProc,
+		void*		 wndProcParams) override;
 	virtual IRenderer*	  CreateRenderer(IWindow* window) override;
 	virtual ICamera*	  CreateCamera() override;
 	virtual IInputDevice* CreateInputDevice() override;
 
-	void SaveProperties();
+	void SaveProperties(std::ofstream& ofs) override;
 	void LoadProperties(std::ifstream& ifs) override;
 
 public:
@@ -86,7 +98,7 @@ private:
 
 ICamera* D3D11Plugin::CreateCamera()
 {
-	return D3D11::Camera::GetInstance();
+	return DBG_NEW D3D11::Camera;
 }
 
 IInputDevice* D3D11Plugin::CreateInputDevice()
@@ -103,9 +115,22 @@ IRenderer* D3D11Plugin::CreateRenderer(IWindow* window)
 	return renderer;
 }
 
+void D3D11Plugin::RegisterComponent(IComponent* comp)
+{
+	mRegisteredComps->PushBack(reinterpret_cast<D3D11::D3D11Component*>(comp));
+}
+
 IWindow* D3D11Plugin::CreateAppWindow(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea)
 {
 	D3D11::D3D11Window* window = DBG_NEW D3D11::D3D11Window(title, width, height, rndArea);
+	mWindows->PushBack(window);
+	return window;
+}
+
+IWindow* D3D11Plugin::CreateAppWindow(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea, WNDPROC wndProc, void* wndProcParams)
+{
+	D3D11::D3D11Window* window = 
+		DBG_NEW D3D11::D3D11Window(title, width, height, rndArea, wndProc, static_cast<D3D11::WNDPROC_Params*>(wndProcParams));
 	mWindows->PushBack(window);
 	return window;
 }
@@ -145,7 +170,7 @@ void D3D11Plugin::Update(float deltaTime)
 {
 	for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
 	{
-		if (!(*iter)->GetOwner()->IsActive())
+		if (!(*iter)->GetOwner()->GetIsActive())
 			continue;
 		(*iter)->Update(deltaTime);
 	}
@@ -155,7 +180,7 @@ void D3D11Plugin::LateUpdate(float deltaTime)
 {
 	for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
 	{
-		if (!(*iter)->GetOwner()->IsActive())
+		if (!(*iter)->GetOwner()->GetIsActive())
 			continue;
 		(*iter)->LateUpdate(deltaTime);
 	}
@@ -181,7 +206,7 @@ void D3D11Plugin::ProcessEvent()
 {
 }
 
-void D3D11Plugin::SaveProperties()
+void D3D11Plugin::SaveProperties(std::ofstream& ofs)
 {
 	// Common::FTDS::String dataPath = D3D11::PluginKey::D3D11;
 	// dataPath.Append(FileTypes::PLUGIN_DATA);
@@ -262,6 +287,11 @@ void D3D11Plugin::LoadResourceData(std::ifstream& ifs)
 
 extern "C"
 {
+	D3D11_API IPlugin* CreatePlugin(const char* name)
+	{
+		return DBG_NEW D3D11Plugin(name);
+	}
+
 	D3D11_API IComponent* CreateComponent(IPlugin* plugin, IActor* actor, Common::FTDS::String& name)
 	{
 		// comp->LoadProperties();
@@ -270,16 +300,16 @@ extern "C"
 		Core::IComponent* comp = nullptr;
 
 		if (name.Equal(D3D11::ChunkKey::Animator::NAME))
-			comp = actor->AddComponent<D3D11::Animator>(plugin);
+			comp = actor->GetData()->AddComponent<D3D11::Animator>(plugin);
 
 		else if (name.Equal(D3D11::ChunkKey::SpriteRenderer::NAME))
-			comp = actor->AddComponent<D3D11::SpriteRenderer>(plugin);
+			comp = actor->GetData()->AddComponent<D3D11::SpriteRenderer>(plugin);
 
 		else if (name.Equal(D3D11::ChunkKey::SpineAnimator::NAME))
-			comp = actor->AddComponent<D3D11::SpineAnimator>(plugin);
+			comp = actor->GetData()->AddComponent<D3D11::SpineAnimator>(plugin);
 
 		else if (name.Equal(D3D11::ChunkKey::TileMapRenderer::NAME))
-			comp = actor->AddComponent<D3D11::TileMapRenderer>(plugin);
+			comp = actor->GetData()->AddComponent<D3D11::TileMapRenderer>(plugin);
 
 		return comp;
 	}

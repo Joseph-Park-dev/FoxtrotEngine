@@ -17,16 +17,8 @@
 namespace Editor
 {
 	class EditorTileMapRenderer :
-		public IEditorComponent,
-		public D3D11::TileMapRenderer
+		public IEditorComponent<D3D11::TileMapRenderer>
 	{
-	public:
-		virtual void EditorUpdate(float deltaTime) override;
-		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst) override;
-		virtual void EditorUIUpdate() override;
 
-	protected:
-		void UpdateCSV();
-		void UpdateCSV(Common::FTDS::String& key);
 	};
 } // namespace Editor

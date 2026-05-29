@@ -9,12 +9,8 @@
 namespace Editor
 {
 	class EditorSpineAnimator :
-		public IEditorComponent,
-		public D3D11::SpineAnimator
+		public IEditorComponent<D3D11::SpineAnimator>
 	{
-	public:
-		virtual void EditorUpdate(float deltaTime) override;
-		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst) override;
-		virtual void EditorUIUpdate() override;
+
 	};
 } // namespace Editor

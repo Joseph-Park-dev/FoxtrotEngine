@@ -18,12 +18,8 @@
 namespace Editor
 {
 	class EditorSpriteRenderer :
-		public IEditorComponent,
-		public D3D11::SpriteRenderer
+		public IEditorComponent<D3D11::SpriteRenderer>
 	{
-	public:
-		virtual void EditorUpdate(float deltaTime) override;
-		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst) override;
-		virtual void EditorUIUpdate() override;
+
 	};
 } // namespace Editor

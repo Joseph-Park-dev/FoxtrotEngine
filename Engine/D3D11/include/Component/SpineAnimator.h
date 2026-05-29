@@ -40,6 +40,14 @@ namespace D3D11
 	public:
 		virtual void SaveProperties(std::ofstream& ofs) override;
 		virtual void LoadProperties(std::ifstream& ifs) override;
+
+#ifdef FOXTROT_EDITOR
+	public:
+		virtual void EditorUpdate(float deltaTime) override;
+		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst) override;
+		virtual void EditorUIUpdate(Editor::CommandHistory* chInst) override;
+#endif // FOXTROT_EDITOR
+	
 	};
 
 	namespace ChunkKey

@@ -64,7 +64,7 @@ namespace D3D11
 			Core::Transform* transform = GetOwner()->GetTransform();
 			static_cast<FTSpineAnimation*>(
 				GetMeshGroup())
-				->Render(renderer, transform, Camera::GetInstance(), GetTexture(), GetVS(), GetPS(), GetMaterial());
+				->Render(renderer, transform, camInst, GetTexture(), GetVS(), GetPS(), GetMaterial());
 		}
 	}
 
@@ -116,6 +116,58 @@ namespace D3D11
 			SetMeshGroup(anim);
 			anim->SetAnimation(0, true);
 			anim->SetSkinCombination(skinCombination);
+		}
+	}
+
+	void SpineAnimator::EditorUpdate(float deltaTime)
+	{
+		Update(deltaTime);
+	}
+
+	void SpineAnimator::EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst)
+	{
+		if (GetMeshGroup())
+		{
+			Core::Transform* transform = GetOwner()->GetTransform();
+			static_cast<D3D11::FTSpineAnimation*>(
+				GetMeshGroup())
+				->Render(renderer, transform, camInst, GetTexture(), GetVS(), GetPS(), GetMaterial());
+		}
+	}
+
+	void SpineAnimator::EditorUIUpdate(Editor::CommandHistory* chInst)
+	{
+		ImGui::Text("Play List");
+		D3D11::FTSpineAnimation* anim = nullptr;
+		Editor::DisplayResSelection<D3D11::FTSpineAnimation>(
+			"Load Animation",
+			D3D11::ResourceManager::GetInstance()->GetSpineAnimations(),
+			anim);
+
+		if (anim)
+		{
+			SetMeshGroup(anim);
+			anim->SetAnimation(1, true);
+
+			anim = static_cast<D3D11::FTSpineAnimation*>(GetMeshGroup());
+			anim->UpdateUI();
+			if (ImGui::Button("Update"))
+				D3D11::AnimationManager::GetInstance()->SaveAnimationAsFile(anim);
+
+			if (GetTexture())
+				GetTexture()->UpdateUI();
+			// FTEditorUtils::DisplayResSelection(
+			//	"Select Texture",
+			//	ResourceManager::GetInstance()->GetSprites(),
+			//	mTexture);
+
+			if (GetMaterial())
+				GetMaterial()->UpdateUI();
+
+			Editor::DisplayResSelection(
+				"Select Material",
+				D3D11::ResourceManager::GetInstance()->GetMaterials(),
+				Material());
 		}
 	}
 } // namespace D3D11

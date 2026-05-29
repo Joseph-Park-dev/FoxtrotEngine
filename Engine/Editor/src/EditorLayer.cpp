@@ -40,6 +40,7 @@
 #include "FileSystem/DLLPath.h"
 
 #include "Renderer/ViewportRenderer.h"
+#include "Core/FTCore.h"
 
 namespace Editor
 {
@@ -47,13 +48,12 @@ namespace Editor
 
 	void EditorLayer::Initialize(Core::IRenderer* renderer)
 	{
-		mRenderer = renderer;
 		LoadEditorConfig();
 
 		mGetProjPathFunc  = GetFunc<GET_PROJ_PATH_FUNC>(DLLPath::CORE_EDITOR, ProcName::GetProjectPath);
 		mGetChunkPathFunc = GetFunc<GET_CHUNK_PATH_FUNC>(DLLPath::CORE_EDITOR, ProcName::GetChunkPath);
 		mGetAssetPathFunc = GetFunc<GET_ASSET_PATH_FUNC>(DLLPath::CORE_EDITOR, ProcName::GetAssetPath);
-		mSetChunkIsSaved  = GetFunc<SET_CHUNK_IS_SAVED_FUNC>(DLLPath::CORE_EDITOR, ProcName::SetChunkIsSaved);
+		mSetChunkIsSavedFunc  = GetFunc<SET_CHUNK_IS_SAVED_FUNC>(DLLPath::CORE_EDITOR, ProcName::SetChunkIsSaved);
 	}
 
 	void EditorLayer::Update(float deltaTime, Core::IWindow* editorWin, Core::IInputDevice* input, Core::IRenderer* renderer, Core::ICamera* gameCam, Editor::EditorCamera* editorCam)
@@ -238,10 +238,10 @@ namespace Editor
 						Editor::ChunkLoader::GetInstance()->CopyChunk(copiedPath, mGetChunkPathFunc()->C_Str());
 						
 						// Load the copied chunk file.
-						Editor::ChunkLoader::GetInstance()->LoadChunk(copiedPath);
+						Editor::ChunkLoader::GetInstance()->LoadChunk(copiedPath.C_Str());
 
 						// Start updating the game.
-						Engine::GetInstance()->SetIsUpdating(true);
+						FTCore::GetInstance()->SetIsUpdating(true);
 					}
 					else
 						printf("Saved file path doesn't exist but trying to access it");
@@ -256,17 +256,17 @@ namespace Editor
 					if (!mGetChunkPathFunc()->IsEmpty())
 					{
 						// Delete the created copy.
-						EditorChunkLoader::GetInstance()->DeleteCopiedChunk();
+						Editor::ChunkLoader::GetInstance()->DeleteCopiedChunk();
 
 						// Clear up the scene to load the current chunk file.
 						mFocusedEditorElement = nullptr;
-						Engine::GetInstance()->SetIsUpdating(false);
+						FTCore::GetInstance()->SetIsUpdating(false);
 						EditorShapes::GetInstance()->DeleteAll();
 						// CollisionManager::GetInstance()->Reset();
 						EditorSceneManager::GetInstance()->GetCurrentScene()->DeleteAll();
 
 						// Reload current scene again.
-						EditorChunkLoader::GetInstance()->LoadChunk(*mGetChunkPathFunc());
+						Editor::ChunkLoader::GetInstance()->LoadChunk(mGetChunkPathFunc()->C_Str());
 					}
 				}
 			}
@@ -432,7 +432,7 @@ namespace Editor
 			}
 			ImGui::EndListBox();
 
-			EditorSceneManager::GetInstance()->GetCurrentScene()->Actors()->IterateArray([&](Core::Actor* actor) {
+			EditorSceneManager::GetInstance()->GetCurrentScene()->Actors()->IterateArray([&](Core::IActor* actor) {
 				EditorElement* ele = static_cast<EditorElement*>(actor);
 				ele->SetIsDisplayed(false);
 			});
@@ -468,7 +468,7 @@ namespace Editor
 		// Recurse to display child Actors in the list.
 		if (0 < element->GetChildActors()->GetSize())
 		{
-			Common::FTDS::DynamicArray<Actor*>* childActors = element->GetChildActors();
+			Common::FTDS::DynamicArray<IActor*>* childActors = element->GetChildActors();
 			for (auto child = childActors->Begin(); child != childActors->End(); ++child)
 			{
 				EditorElement* childElem = static_cast<EditorElement*>(*child);
@@ -508,7 +508,7 @@ namespace Editor
 				{
 					if (child->GetParent())
 					{
-						Common::FTDS::DynamicArray<Actor*>* children = child->GetParent()->GetChildActors();
+						Common::FTDS::DynamicArray<IActor*>* children = child->GetParent()->GetChildActors();
 
 						int pos = children->Find(child);
 						if (pos != -1)
@@ -550,7 +550,7 @@ namespace Editor
 
 	void EditorLayer::SetHierarchyLvRecurse(EditorElement* element, int val)
 	{
-		Common::FTDS::DynamicArray<Core::Actor*>* childActors = element->GetChildActors();
+		Common::FTDS::DynamicArray<Core::IActor*>* childActors = element->GetChildActors();
 		if (childActors->GetSize() < 1)
 			return;
 
@@ -591,7 +591,7 @@ namespace Editor
 					mFocusedEditorElement = nullptr;
 
 					if (0 < mActorNameIdx)
-						mActorNameIdx = scene->Actors()->GetSize() - 1;
+						mActorNameIdx = static_cast<int>(scene->Actors()->GetSize()) - 1;
 				}
 			}
 		}
@@ -680,7 +680,7 @@ namespace Editor
 				std::function<void()> onConfirm = [this]()
 					-> void {
 					SaveEditorConfig();
-					Engine::GetInstance()->SetIsRunning(false);
+					FTCore::GetInstance()->SetIsRunning(false);
 					mErrorType = ErrorType::None;
 					ImGui::CloseCurrentPopup();
 				};
@@ -808,17 +808,17 @@ namespace Editor
 	void EditorLayer::Save(std::string& path)
 	{
 		mGetChunkPathFunc()->Assign(path.c_str());
-		EditorChunkLoader::GetInstance()->SaveChunk(*mGetChunkPathFunc());
+		Editor::ChunkLoader::GetInstance()->SaveChunk(mGetChunkPathFunc()->C_Str());
 		mInfoType = InfoType::ChunkIsSaved;
-		mSetChunkIsSaved(true);
+		mSetChunkIsSavedFunc(true);
 	}
 
 	void EditorLayer::SaveAs(std::string& path)
 	{
 		mGetChunkPathFunc()->Assign(path.c_str());
-		EditorChunkLoader::GetInstance()->SaveChunk(*mGetChunkPathFunc());
+		Editor::ChunkLoader::GetInstance()->SaveChunk(mGetChunkPathFunc()->C_Str());
 		mInfoType = InfoType::ChunkIsSaved;
-		mSetChunkIsSaved(true);
+		mSetChunkIsSavedFunc(true);
 	}
 
 	void EditorLayer::Open(std::string& path)
@@ -826,9 +826,9 @@ namespace Editor
 		mFocusedEditorElement = nullptr;
 		EditorSceneManager::GetInstance()->GetEditorScene()->DeleteAll();
 		mGetChunkPathFunc()->Assign(path.c_str());
-		EditorChunkLoader::GetInstance()->LoadChunk(*mGetChunkPathFunc());
+		Editor::ChunkLoader::GetInstance()->LoadChunk(mGetChunkPathFunc()->C_Str());
 		// LightManager::GetInstance()->Reset(FTCoreEditor::GetInstance()->GetGameRenderer());
-		mSetChunkIsSaved(true);
+		mSetChunkIsSavedFunc(true);
 	}
 
 	void EditorLayer::SaveEditorConfig()
@@ -871,8 +871,7 @@ namespace Editor
 	}
 
 	EditorLayer::EditorLayer()
-		: mRenderer(nullptr)
-		, mActorNameIdx(0)
+		: mActorNameIdx(0)
 		, mSaveKeyPressed(false)
 		, mSaveAsKeyPressed(false)
 		, mOpenKeyPressed(false)
@@ -887,7 +886,12 @@ namespace Editor
 		, mDraggedEditorElement(nullptr)
 		, mInfoType(InfoType::None)
 		, mFileMenuEvent(FileMenuEvents::None)
+		, mViewport(nullptr)
 		, mErrorType(ErrorType::None)
+		, mSetChunkIsSavedFunc(nullptr)
+		, mGetProjPathFunc(nullptr)
+		, mGetChunkPathFunc(nullptr)
+		, mGetAssetPathFunc(nullptr)
 	{
 	}
 

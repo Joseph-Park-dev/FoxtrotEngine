@@ -27,6 +27,7 @@ namespace Core
 {
 	class IWindow;
 	class IRenderer;
+	class ICamera;
 }
 
 namespace D3D11
@@ -154,11 +155,10 @@ namespace Editor
 		}
 
 	private:
-		Editor::EditorRenderer*		  mRenderer;
 		Core::GET_PROJ_PATH_FUNC	  mGetProjPathFunc;
 		Core::GET_CHUNK_PATH_FUNC	  mGetChunkPathFunc;
 		Core::GET_ASSET_PATH_FUNC	  mGetAssetPathFunc;
-		Core::SET_CHUNK_IS_SAVED_FUNC mSetChunkIsSaved;
+		Core::SET_CHUNK_IS_SAVED_FUNC mSetChunkIsSavedFunc;
 
 		int mActorNameIdx;
 

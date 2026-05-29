@@ -155,4 +155,39 @@ namespace D3D11
 
 		D3D11::D3D11Component::LoadProperties(ifs);
 	}
+	void MeshRenderer::EditorUpdate(float deltaTime)
+	{
+	}
+	void MeshRenderer::EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst)
+	{
+	}
+	void MeshRenderer::EditorUIUpdate(Editor::CommandHistory* chInst)
+	{
+		D3D11::D3D11Component::EditorUIUpdate(chInst);
+
+		if (!GetMeshGroup())
+			return;
+
+		// mMeshGroup->UpdateUI();
+
+		if (GetTexture())
+			GetTexture()->UpdateUI();
+		// FTEditorUtils::DisplayResSelection(
+		//	"Select Texture",
+		//	ResourceManager::GetInstance()->GetSprites(),
+		//	mTexture);
+
+		if (GetMaterial())
+			GetMaterial()->UpdateUI();
+
+		Editor::DisplayResSelection(
+			"Select Material",
+			D3D11::ResourceManager::GetInstance()->GetMaterials(),
+			Material());
+	}
+
+	FTMaterial*& MeshRenderer::Material()
+	{
+		return mMaterial;
+	}
 } // namespace D3D11

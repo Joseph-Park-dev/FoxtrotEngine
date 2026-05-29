@@ -289,6 +289,7 @@
     <ClCompile Include="..\..\third_party\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\third_party\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\third_party\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\Renderer\CameraData.cpp" />
     <ClCompile Include="src\Actor\ActorData.cpp" />
     <ClCompile Include="include\Factory\IInputSysFactory.h" />
     <ClCompile Include="src\Manager\PluginManager.cpp" />

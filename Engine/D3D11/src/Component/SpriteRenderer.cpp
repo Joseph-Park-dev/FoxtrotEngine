@@ -128,6 +128,50 @@ namespace D3D11
 	}
 
 #ifdef FOXTROT_EDITOR
+	void SpriteRenderer::EditorUpdate(float deltaTime)
+	{
+	}
+
+	void SpriteRenderer::EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst)
+	{
+		if (GetSprite())
+		{
+			GetSprite()->UpdateConstantBuffers(
+				renderer,
+				GetOwner()->GetTransform(),
+				camInst,
+				Material());
+
+			GetSprite()->Render(
+				renderer,
+				GetOwner()->GetTransform(),
+				camInst,
+				PSO(),
+				Material());
+		}
+	}
+
+	void SpriteRenderer::EditorUIUpdate(Editor::CommandHistory* chInst)
+	{
+		D3D11::D3D11Component::EditorUIUpdate(chInst);
+
+		if (GetSprite())
+			GetSprite()->UpdateUI();
+
+		Editor::DisplayResSelection(
+			"Select Sprite",
+			D3D11::ResourceManager::GetInstance()->GetSprites(),
+			Sprite());
+
+		if (GetMaterial())
+			GetMaterial()->UpdateUI();
+
+		Editor::DisplayResSelection(
+			"Select Material",
+			D3D11::ResourceManager::GetInstance()->GetMaterials(),
+			Material());
+	}
+
 	FTSprite*& SpriteRenderer::Sprite()
 	{
 		return mSprite;
@@ -135,6 +179,10 @@ namespace D3D11
 	FTMaterial*& SpriteRenderer::Material()
 	{
 		return mMaterial;
+	}
+	D3D11PSO*& SpriteRenderer::PSO()
+	{
+		return mPSO;
 	}
 #endif // FOXTROT_EDITOR
 } // namespace D3D11

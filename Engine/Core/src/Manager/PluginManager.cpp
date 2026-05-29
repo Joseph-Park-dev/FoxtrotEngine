@@ -85,4 +85,9 @@ namespace Core
 		for (auto iter = mPlugins->Begin(); iter != mPlugins->End(); ++iter)
 			(*iter)->Value()->ProcessEvent();
 	}
+
+	CORE_API void RegisterPlugin(const char* pluginName)
+	{
+		PluginManager::GetInstance()->RegisterPlugin(pluginName);
+	}
 } // namespace Core

@@ -34,4 +34,9 @@ namespace Core
 		Common::FTDS::HashMap<HMODULE>*		   mModules;
 		Common::FTDS::HashMap<Core::IPlugin*>* mPlugins;
 	};
+
+	extern "C"
+	{
+		CORE_API IPlugin* RegisterPlugin(const char* pluginName);
+	}
 } // namespace Core

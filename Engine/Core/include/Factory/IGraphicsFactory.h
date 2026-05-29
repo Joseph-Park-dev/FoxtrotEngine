@@ -11,6 +11,7 @@
 /// </summary>
 
 #pragma once
+#include <Windows.h>
 
 namespace Common
 {
@@ -53,6 +54,14 @@ namespace Core
 			unsigned int width,
 			unsigned int height,
 			FTRectArea*	 renderArea) = 0;
+
+		virtual IWindow* CreateAppWindow(
+			const char*	 title,
+			unsigned int width,
+			unsigned int height,
+			FTRectArea*	 renderArea,
+			WNDPROC		 wndProc,
+			void*		 wndProcParams) = 0;
 
 		/// <summary>
 		/// Creates a platform-specific renderer.

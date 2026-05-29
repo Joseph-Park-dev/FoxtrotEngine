@@ -408,10 +408,9 @@ namespace Editor
 			size_t count = 0;
 			for (auto iter = GetComponents()->Begin(); iter != GetComponents()->End(); ++iter)
 			{
-				Editor::IEditorComponent* comp = reinterpret_cast<Editor::IEditorComponent*>(*iter);
 				if (GetComponents()->IsEmpty())
 					break;
-				if (comp)
+				if (*iter)
 				{
 					Common::FTDS::String name(std::to_string(count).c_str());
 					name.Append(" ");
@@ -420,7 +419,7 @@ namespace Editor
 					if (ImGui::TreeNode(name.C_Str()))
 					{
 						//CommandHistory::GetInstance()->UpdateIntValue(Core::ChunkKey::UPDATE_ORDER, (*comp)->UpdateOrder());
-						(comp)->EditorUIUpdate();
+						(*iter)->EditorUIUpdate(CommandHistory::GetInstance());
 						if (ImGui::SmallButton("Delete"))
 							RemoveComponent(*iter);
 						ImGui::TreePop();

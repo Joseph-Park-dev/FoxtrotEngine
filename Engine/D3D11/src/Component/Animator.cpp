@@ -28,6 +28,11 @@
 #include "ResourceSystem/Shader/FTPixelShader.h"
 #include "ResourceSystem/Material/FTMaterial.h"
 
+#ifdef FOXTROT_EDITOR
+	#include "EditorUtils.h"
+#endif // FOXTROT_EDITOR
+	
+
 namespace D3D11
 {
 	using namespace Common;
@@ -191,4 +196,130 @@ namespace D3D11
 		newComp->SetPSO(this->GetPSO());
 		newComp->SetMaterial(this->GetMaterial());
 	}
+
+#ifdef FOXTROT_EDITOR
+	void Animator::EditorUpdate(float deltaTime)
+	{
+		LateUpdate(deltaTime);
+	}
+
+	void Animator::EditorUIUpdate(Editor::CommandHistory* chInst)
+	{
+		chInst->UpdateBoolValue("Is Repeated", mIsRepeated);
+
+		if (GetSprite())
+			GetSprite()->UpdateUI();
+
+		Editor::DisplayResSelection(
+			"Select Sprite",
+			D3D11::ResourceManager::GetInstance()->GetSprites(),
+			Sprite());
+
+		if (GetMaterial())
+			GetMaterial()->UpdateUI();
+
+		Editor::DisplayResSelection(
+			"Select Material",
+			D3D11::ResourceManager::GetInstance()->GetMaterials(),
+			Material());
+
+		UpdatePlayAnim();
+		UpdatePlayList();
+	}
+
+	void Animator::EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst)
+	{
+		if (GetSprite())
+		{
+			// renderer->SetFillMode();
+
+			Transform*		   transform = GetOwner()->GetTransform();
+			FTSpriteAnimation* anim		 = static_cast<FTSpriteAnimation*>(GetSprite());
+			GetSprite()->UpdateConstantBuffers(
+				renderer,
+				transform,
+				camInst,
+				GetMaterial(),
+				anim->GetFrameCount(),
+				GetCurrFrameIdx());
+
+			GetSprite()->Render(
+				renderer,
+				transform,
+				camInst,
+				GetPSO(),
+				GetMaterial());
+		}
+	}
+
+	void Animator::UpdatePlayAnim()
+	{
+		if (GetSprite())
+		{
+			if (GetIsFinished())
+			{
+				if (ImGui::Button("Stop"))
+					Stop();
+			}
+			else
+			{
+				if (ImGui::Button("Play"))
+					Play(0);
+			}
+		}
+	}
+
+	void Animator::UpdatePlayList()
+	{
+		FTSpriteAnimation* anim = nullptr;
+		Editor::DisplayResSelection<FTSpriteAnimation>(
+			"Load Animation",
+			D3D11::ResourceManager::GetInstance()->GetSpriteAnimations(),
+			anim);
+
+		if (anim)
+		{
+			mLoadedAnim->PushBack(anim);
+			if (mLoadedAnim->GetSize() == 1)
+				Sprite() = anim;
+		}
+
+		ImGui::SeparatorText("Play List");
+		if (0 < mLoadedAnim->GetSize())
+		{
+			size_t i = 0;
+
+			mLoadedAnim->IterateArray([&](FTSpriteAnimation* anim) {
+				if (anim)
+				{
+					ImGui::PushID(anim);
+					ImGui::Text(anim->GetFileName()->C_Str());
+					anim->UpdateUI();
+
+					if (ImGui::ArrowButton("##Up", ImGuiDir::ImGuiDir_Up))
+						mLoadedAnim->Swap(i - 1, i);
+					ImGui::SameLine();
+					if (ImGui::ArrowButton("##Down", ImGuiDir::ImGuiDir_Down))
+						mLoadedAnim->Swap(i + 1, i);
+
+					if (ImGui::Button("Update"))
+						D3D11::AnimationManager::GetInstance()->SaveAnimationAsFile(anim);
+
+					if (ImGui::Button("Delete"))
+					{
+						anim->SubtractRefCount();
+						mLoadedAnim->Erase(i);
+						ImGui::PopID();
+						return;
+					}
+
+					ImGui::PopID();
+					++i;
+				}
+			});
+		}
+		ImGui::Separator();
+	}
+#endif // FOXTROT_EDITOR
+
 } // namespace D3D11

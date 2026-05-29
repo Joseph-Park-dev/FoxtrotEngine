@@ -2,6 +2,9 @@
 #include "Component/IComponent.h"
 
 #include "FTDS/Static/FTString.h"
+#ifdef FOXTROT_EDITOR
+	#include "CommandHistory.h"
+#endif
 
 namespace Core
 {
@@ -59,9 +62,10 @@ namespace D3D11
 		bool mIsActive;
 
 #ifdef FOXTROT_EDITOR
-	protected:
-		bool& IsActive() { return mIsActive; }
-
+	public:
+		virtual void EditorUpdate(float deltaTime)									 = 0;
+		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst) = 0;
+		virtual void EditorUIUpdate(Editor::CommandHistory* chInst);
 #endif // FOXTROT_EDITOR
 	};
 } // namespace D3D11

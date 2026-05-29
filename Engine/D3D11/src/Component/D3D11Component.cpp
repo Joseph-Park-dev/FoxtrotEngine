@@ -5,7 +5,7 @@
 #include "FileSystem/FileIOHelper.h"
 
 #ifdef FOXTROT_EDITOR
-	#include <Utility/EditorHelper.h>
+	#include "Utility/EditorHelper.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -74,4 +74,11 @@ namespace D3D11
 	D3D11::D3D11Component::~D3D11Component()
 	{
 	}
+
+#ifdef FOXTROT_EDITOR
+	void D3D11Component::EditorUIUpdate(Editor::CommandHistory* chInst)
+	{
+		chInst->UpdateBoolValue("Is Active", mIsActive);
+	}
+#endif // FOXTROT_EDITOR
 } // namespace D3D11

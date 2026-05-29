@@ -31,6 +31,10 @@
 #include "FileSystem/DLLPath.h"
 #include "Plugin/GetFunc.h"
 
+#include "Factory/IGraphicsFactory.h"
+#include "Factory/IInputSysFactory.h"
+
+#include "Core/FTCore.h"
 #include <../../D3D11/include/Plugin/PluginKey.h>
 
 using namespace Editor;
@@ -118,22 +122,27 @@ void D3D11Editor::Initialize()
 		mGameWin = nullptr;
 	}
 
-	D3D11::CREATE_WINDOW_PROC	 createWindowFunc	   = GetFunc<D3D11::CREATE_WINDOW_PROC>(DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_D3D11_WINDOW);
-	D3D11::CREATE_RENDERER		 createRendererFunc	   = GetFunc<D3D11::CREATE_RENDERER>(DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_RENDERER);
-	D3D11::CREATE_INPUTDEVICE	 createInputDeviceFunc = GetFunc<D3D11::CREATE_INPUTDEVICE>(DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_INPUTDEVICE);
-	Core::FTRECTAREA_CONSTRUCTOR createRectAreaFunc	   = GetFunc<Core::FTRECTAREA_CONSTRUCTOR>(DLLPath::CORE_EDITOR, Core::PluginKey::CREATE_FTRECTAREA);
-	D3D11::CREATE_VP_RENDERER	 createVPRendererFunc  = GetFunc<D3D11::CREATE_VP_RENDERER>(DLLPath::CORE_EDITOR, D3D11::PluginKey::CREATE_VP_RENDERER);
+	using REGISTER_PLUGIN				= IPlugin* (*)(const char*);
+	IPlugin*				d3d11Plugin = GetFunc<REGISTER_PLUGIN>(DLLPath::CORE_EDITOR, ProcNames::Core::REGISTER_PLUGIN)(Plugin::Name::D3D11_EDITOR);
+	Core::IGraphicsFactory* graphicsFac = reinterpret_cast<Core::IGraphicsFactory*>(d3d11Plugin);
 
-	Core::FTRectArea*		rndArea = createRectAreaFunc(0.f, 0.f, 1280.f, 720.f, 0.f);
-	wndprocParams					= DBG_NEW D3D11::WNDPROC_Params{ mEditorWin, mInputDevice, mRenderer, &mIsResizingWindow };
-	mEditorWin						= createWindowFunc("Foxtrot Editor", 3840, 2160, rndArea, WinProc, wndprocParams);
+	Core::FTRECTAREA_CONSTRUCTOR createRectAreaFunc	  = GetFunc<Core::FTRECTAREA_CONSTRUCTOR>(DLLPath::CORE_EDITOR, Core::PluginKey::CREATE_FTRECTAREA);
+	D3D11::CREATE_VP_RENDERER	 createVPRendererFunc = GetFunc<D3D11::CREATE_VP_RENDERER>(DLLPath::CORE_EDITOR, D3D11::PluginKey::CREATE_VP_RENDERER);
+	// D3D11::CREATE_WINDOW_PROC	 createWindowFunc	   = GetFunc<D3D11::CREATE_WINDOW_PROC>(DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_D3D11_WINDOW);
+	// D3D11::CREATE_RENDERER		 createRendererFunc	   = GetFunc<D3D11::CREATE_RENDERER>(DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_RENDERER);
+	// D3D11::CREATE_INPUTDEVICE	 createInputDeviceFunc = GetFunc<D3D11::CREATE_INPUTDEVICE>(DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_INPUTDEVICE);
 
-	mRenderer = createRendererFunc(mEditorWin);
+	Core::FTRectArea* rndArea = createRectAreaFunc(0.f, 0.f, 1280.f, 720.f, 0.f);
+
+	wndprocParams = DBG_NEW D3D11::WNDPROC_Params{ mEditorWin, mInputDevice, mRenderer, &mIsResizingWindow };
+	mEditorWin	  = static_cast<D3D11::D3D11Window*>(graphicsFac->CreateAppWindow("Foxtrot Editor", 3840, 2160, rndArea, WinProc, wndprocParams));
+	mRenderer	  = reinterpret_cast<D3D11::D3D11Renderer*>(graphicsFac->CreateRenderer(mEditorWin));
+
 	mViewport = createVPRendererFunc();
 	mViewport->InitializeTexture(mRenderer, ImVec2(1280.f, 720.f));
 
 	rndArea->Set(0.f, 0.f, 1920.f, 1080.f, 0.f);
-	mGameWin = createWindowFunc("Game", 1920, 1080, rndArea, WinProc, wndprocParams);
+	mGameWin = static_cast<D3D11::D3D11Window*>(graphicsFac->CreateAppWindow("Game", 1920, 1080, rndArea, WinProc, wndprocParams));
 
 	if (!mGameWin->CreateSwapChain(mRenderer))
 	{
@@ -155,10 +164,11 @@ void D3D11Editor::Initialize()
 
 	// Camera::GetInstance()->Initialize(GetGameWindow(), 64.f, 1.8f);
 	mEditorCamera = DBG_NEW Editor::EditorCamera;
-	mEditorCamera->Initialize(mEditorWin, 64.f, 1.8f);
+	mEditorCamera->Initialize(mEditorWin, 64, 1.8f);
 	// D3D11::DebugShapes::GetInstance()->GetCameraRect()->Initialize(GetGameRenderer());
 
-	mInputDevice = createInputDeviceFunc();
+	Core::IInputSysFactory* inputFac = reinterpret_cast<Core::IInputSysFactory*>(d3d11Plugin);
+	mInputDevice					 = reinterpret_cast<D3D11::D3D11InputDevice*>(inputFac->CreateInputDevice());
 
 	if (!InitGUI())
 	{
@@ -189,7 +199,7 @@ void D3D11Editor::Initialize()
 
 void D3D11Editor::ProcessInput()
 {
-	EditorCamera::GetInstance()->ProcessInput(mInputDevice);
+	mEditorCamera->ProcessInput(mInputDevice);
 }
 
 void D3D11Editor::Render()
@@ -209,9 +219,9 @@ void D3D11Editor::Render()
 	// EditorLayer::GetInstance()->Render(renderer);
 	// mEditorWindow->EndRender(renderer);
 
-	mRenderer->GetViewportRenderer()->BeginRender(mRenderer);
-	mRenderer->GetViewportRenderer()->DrawOnTexture(mRenderer);
-	mRenderer->GetViewportRenderer()->EndRender(mRenderer);
+	mViewport->BeginRender(mRenderer);
+	mViewport->DrawOnTexture(mRenderer);
+	mViewport->EndRender(mRenderer);
 }
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -229,9 +239,10 @@ void D3D11Editor::Update(float deltaTime)
 	// }
 	// else
 	//	EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
-	mGameCamera->Update(deltaTime);
-	mEditorCamera->Update(deltaTime);
-	EditorLayer::GetInstance()->Update(deltaTime, mEditorWin, mInputDevice, mRenderer);
+	// mGameCamera->Update(deltaTime);
+	Core::ICamera* gameCam = reinterpret_cast<Core::ICamera*>(mGameCamera);
+	mEditorCamera->Update(gameCam);
+	EditorLayer::GetInstance()->Update(deltaTime, mEditorWin, mInputDevice, mRenderer, gameCam, mEditorCamera);
 }
 
 D3D11Editor::D3D11Editor()
@@ -241,6 +252,8 @@ D3D11Editor::D3D11Editor()
 	, mInputDevice(nullptr)
 	, wndprocParams(nullptr)
 	, mViewport(nullptr)
+	, mGameCamera(nullptr)
+	, mEditorCamera(nullptr)
 
 	, mIsUpdatingGame(false)
 	, mIsResizingWindow(false)
@@ -255,14 +268,19 @@ D3D11Editor::~D3D11Editor()
 	EditorLayer::GetInstance()->ShutDown();
 
 	// FontManager::GetInstance()->Destroy();
-	EditorCamera::GetInstance()->Destroy();
 	CommandHistory::GetInstance()->Destroy();
 	// DebugShapes::GetInstance()->Destroy();
 	EditorLayer::GetInstance()->Destroy();
 	EditorSceneManager::GetInstance()->Destroy();
-	EditorChunkLoader::GetInstance()->Destroy();
+	ChunkLoader::GetInstance()->Destroy();
 	// FTCore::ShutDown();
 	// delete mEditorWindow;
+
+	delete mEditorWin;
+	delete mGameWin;
+	delete mRenderer;
+	delete mInputDevice;
+	delete mViewport;
 }
 
 bool D3D11Editor::InitGUI()
@@ -324,7 +342,7 @@ LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			if (!D3D11Editor::gGetChunkISSavedFunc())
 				EditorLayer::GetInstance()->SetErrorType(ErrorType::ChunkNotSaved);
 			else
-				Engine::GetInstance()->SetIsRunning(false);
+				Core::FTCore::GetInstance()->SetIsRunning(false);
 			return 0;
 		}
 		case WM_SIZE:
@@ -338,7 +356,7 @@ LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			break;
 		}
 	}
-	if (params->IsResizingWin && params->InputDevice->MOUSE_AWAY(D3D11::MOUSE::MOUSE_LEFT))
+	if (params->IsResizingWin && params->InputDevice->MOUSE_AWAY(Core::MOUSE::MOUSE_LEFT))
 	{
 		if (params->Renderer)
 		{

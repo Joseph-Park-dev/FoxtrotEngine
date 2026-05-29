@@ -167,7 +167,7 @@ namespace Editor
 				{
 					Common::FTDS::DynamicArray<IActor*> children;
 
-					element->GetChildActors()->IterateArray([&](Actor* c) {
+					element->GetChildActors()->IterateArray([&](IActor* c) {
 						Core::IActor* child = actorWithIDs.At(c->GetID())->Value();
 						element->RemoveChild(c);
 						delete c;

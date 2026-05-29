@@ -57,7 +57,7 @@ namespace Editor
 		/// The copied .chunk is the one that should be read into the game.
 		/// @param path The copy is recommended to be located in the same directory with the original.
 		/// @return Full path of the copied .chunk
-		virtual void CopyChunk(FTDS::String& copiedPathOut, const char* chunkPath = "./") override;
+		virtual void CopyChunk(Common::FTDS::String& copiedPathOut, const char* chunkPath = "./") override;
 		/// @brief Delete the copied chunk after being used.
 		virtual void DeleteCopiedChunk() override;
 

@@ -17,6 +17,7 @@ namespace D3D11
 	class FTSprite;
 	class FTTileMap;
 	class D3D11PSO;
+	class D3D11Renderer;
 
 	class ResourceManager
 	{

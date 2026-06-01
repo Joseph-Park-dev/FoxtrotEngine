@@ -311,8 +311,8 @@ namespace D3D11
 		mGeometryShaders->LoadResourcesFromChunk(ifs, renderer);
 		mPixelShaders->LoadResourcesFromChunk(ifs, renderer);
 		mSprites->LoadResourcesFromChunk(ifs, renderer);
-		mTileMaps->LoadResourcesFromChunk(ifs, renderer);
-		mPSOs->LoadResourcesFromChunk(ifs, renderer);
+		mTileMaps->LoadResourcesFromChunk(ifs);
+		//mPSOs->LoadResourcesFromChunk(ifs, renderer);
 	}
 
 	FTSpriteAnimation* ResourceManager::GetSpriteAnimation(Common::FTDS::String& key)

@@ -42,7 +42,8 @@ namespace D3D11
 		// Component information //
 		///////////////////////////
 	public:
-		virtual const char* GetName() override
+		static inline const char* NAME = "MeshRenderer";
+		virtual const char*		  GetName() override
 		{
 			return "MeshRenderer";
 		}
@@ -62,7 +63,7 @@ namespace D3D11
 		// Instantiation-related functions //
 		/////////////////////////////////////
 	public:
-		MeshRenderer(Core::IActor* owner, int updateOrder);
+		MeshRenderer(Core::IActor* owner, int updateOrder = Core::DefaultVal::UPDATE_ORDER);
 		virtual ~MeshRenderer() override;
 		virtual void CloneTo(Core::IActor* actor) override;
 
@@ -130,4 +131,10 @@ namespace D3D11
 			constexpr const char* NAME = "MeshRenderer";
 		} // namespace MeshRenderer
 	} // namespace ChunkKey
+
+	#include "Plugin/D3D11Exports.h"
+	D3D11_API D3D11::MeshRenderer* CreateMeshRenderer(Core::IActor* actor)
+	{
+		return DBG_NEW D3D11::MeshRenderer(actor);
+	}
 } // namespace D3D11

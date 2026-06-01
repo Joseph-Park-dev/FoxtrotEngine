@@ -27,7 +27,8 @@ namespace D3D11
 		public SpriteRenderer
 	{
 	public:
-		virtual const char* GetName() override
+		static inline const char* NAME = "TileMapRenderer";
+		virtual const char*		  GetName() override
 		{
 			return "TileMapRenderer";
 		}
@@ -83,4 +84,10 @@ namespace D3D11
 			constexpr const char* TILEMAP_KEY = "TileMapKey";
 		} // namespace TileMapRenderer
 	} // namespace ChunkKey
+
+	#include "Plugin/D3D11Exports.h"
+	D3D11_API D3D11::TileMapRenderer* CreateTileMapRenderer(Core::IActor* actor)
+	{
+		return DBG_NEW D3D11::TileMapRenderer(actor);
+	}
 } // namespace D3D11

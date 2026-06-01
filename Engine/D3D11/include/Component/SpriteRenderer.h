@@ -38,7 +38,8 @@ namespace D3D11
 		public D3D11Component
 	{
 	public:
-		virtual const char* GetName() override
+		static inline const char* NAME = "SpriteRenderer";
+		virtual const char*		  GetName() override
 		{
 			return "SpriteRenderer";
 		}
@@ -102,4 +103,10 @@ namespace D3D11
 			constexpr const char* PSO		   = "SpritePSO";
 		} // namespace SpriteRenderer
 	} // namespace ChunkKey
+
+	#include "Plugin/D3D11Exports.h"
+	D3D11_API D3D11::SpriteRenderer* CreateSpriteRenderer(Core::IActor* actor)
+	{
+		return DBG_NEW D3D11::SpriteRenderer(actor);
+	}
 } // namespace D3D11

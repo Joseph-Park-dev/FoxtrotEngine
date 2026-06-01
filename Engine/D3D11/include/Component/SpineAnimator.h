@@ -14,6 +14,7 @@ namespace D3D11
 		public MeshRenderer
 	{
 	public:
+		static inline const char* NAME = "SpineAnimator";
 		virtual const char* GetName() override
 		{
 			return "SpineAnimator";
@@ -58,4 +59,10 @@ namespace D3D11
 			constexpr const char* LOADED_ANIM = "Loaded Anim";
 		} // namespace SpineAnimator
 	} // namespace ChunkKey
+
+	#include "Plugin/D3D11Exports.h"
+	D3D11_API D3D11::SpineAnimator* CreateSpineAnimator(Core::IActor* actor)
+	{
+		return DBG_NEW D3D11::SpineAnimator(actor);
+	}
 } // namespace D3D11

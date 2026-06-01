@@ -131,18 +131,18 @@ namespace D3D11
 		mGCSpriteData = data;
 	}
 
-	FTSprite::FTSprite(Common::FTResourceDef& resDef, Core::IRenderer* renderer)
+	FTSprite::FTSprite(Common::FTResourceDef& resDef, void* renderer)
 		: FTMeshGroup(resDef, renderer, nullptr)
 		, mGCMatData(DBG_NEW PointVPMat)
 		, mGCSpriteData(DBG_NEW SpriteGCData)
 		, mTexture(nullptr)
 	{
 		SpriteVertex* vertex = DBG_NEW SpriteVertex;
-		Process(renderer, vertex, 1);
+		Process(reinterpret_cast<Core::IRenderer*>(renderer), vertex, 1);
 		delete vertex;
 	}
 
-	FTSprite::FTSprite(Common::FTResourceDef& resDef, Core::IRenderer* renderer, bool isAnim)
+	FTSprite::FTSprite(Common::FTResourceDef& resDef, void* renderer, bool isAnim)
 		: FTMeshGroup(resDef, renderer, nullptr)
 		, mGCMatData(DBG_NEW PointVPMat)
 		, mGCSpriteData(DBG_NEW SpriteGCData)
@@ -151,7 +151,7 @@ namespace D3D11
 		if (!isAnim)
 		{
 			SpriteVertex* vertex = DBG_NEW SpriteVertex;
-			Process(renderer, vertex, 1);
+			Process(reinterpret_cast<Core::IRenderer*>(renderer), vertex, 1);
 			delete vertex;
 		}
 	}

@@ -48,10 +48,10 @@ namespace D3D11
 		void SetGCSpriteData(SpriteGCData* data);
 
 	public:
-		FTSprite(Common::FTResourceDef& resDef, Core::IRenderer* renderer);
+		FTSprite(Common::FTResourceDef& resDef, void* renderer);
 		/// @brief Constructor skips FTSprite::Process() if isAnim is true.
 		/// @param isAnim Is this constructor called from FTSpriteAnimation?
-		FTSprite(Common::FTResourceDef& resDef, Core::IRenderer* renderer, bool isAnim);
+		FTSprite(Common::FTResourceDef& resDef, void* renderer, bool isAnim);
 		virtual ~FTSprite() override;
 
 	protected:

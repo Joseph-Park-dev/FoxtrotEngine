@@ -24,10 +24,10 @@
 
 namespace D3D11
 {
-	void ViewportRenderer::InitializeTexture(D3D11Renderer* renderer, ImVec2 size)
+	void ViewportRenderer::InitializeTexture(D3D11Renderer* renderer, float xSize, float ySize)
 	{
-		if (0 < size.x && 0 < size.y)
-			CreateRenderTargetView(renderer, size.x, size.y);
+		if (0 < xSize && 0 < ySize)
+			CreateRenderTargetView(renderer, xSize, ySize);
 	}
 
 	void ViewportRenderer::BeginRender(D3D11Renderer* renderer)
@@ -110,16 +110,14 @@ namespace D3D11
 			D3D11Utils::CreateDepthBuffer(renderer->GetDevice(), width, height, renderer->GetNumQualityLevels(), mDSV));
 
 		renderer->GetDevice()->CreateShaderResourceView(mRenderTexture.Get(), 0, mSRV.GetAddressOf());
+
+		GetModuleHandleA
 	}
 
 	ViewportRenderer::ViewportRenderer()
 		: mRenderTexture(nullptr)
 		, mRTV(nullptr)
 		, mSRV(nullptr)
-	{
-	}
-
-	ViewportRenderer::~ViewportRenderer()
 	{
 	}
 

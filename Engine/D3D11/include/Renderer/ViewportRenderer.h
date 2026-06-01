@@ -24,7 +24,7 @@ namespace D3D11
 	class ViewportRenderer
 	{
 	public:
-		void InitializeTexture(D3D11::D3D11Renderer* renderer, ImVec2 size);
+		void InitializeTexture(D3D11::D3D11Renderer* renderer, float xSize, float ySize);
 
 		void BeginRender(D3D11::D3D11Renderer* renderer);
 		// Switches the RenderTarget to this object's, renders the scene,
@@ -40,7 +40,6 @@ namespace D3D11
 
 	public:
 		ViewportRenderer();
-		~ViewportRenderer();
 
 	private:
 		Microsoft::WRL::ComPtr<ID3D11Texture2D>			 mRenderTexture;

@@ -70,7 +70,7 @@ namespace D3D11
 	//	Process(renderer);
 	// }
 
-	FTMeshGroup::FTMeshGroup(Common::FTResourceDef& resDef, Core::IRenderer* renderer, FTMeshData* meshData)
+	FTMeshGroup::FTMeshGroup(Common::FTResourceDef& resDef, void* renderer, FTMeshData* meshData)
 		: D3D11Resource(resDef)
 		, mFrontDir(1)
 		, mDirection(1)
@@ -83,7 +83,8 @@ namespace D3D11
 			Debug::LogError(__LINE__, __FILE__, "MeshData is null. If this is called while initializing FTSprite or SpineAnim, it is OK");
 			return;
 		}
-		Process(renderer, meshData);
+		D3D11::D3D11Renderer* rend = reinterpret_cast<D3D11::D3D11Renderer*>(renderer);
+		Process(rend, meshData);
 	}
 
 	FTMeshGroup::~FTMeshGroup()
@@ -210,7 +211,7 @@ namespace D3D11
 		mDirection = dir;
 	}
 
-	void FTMeshGroup::Process(Core::IRenderer* renderer, FTMeshData* meshData)
+	void FTMeshGroup::Process(D3D11::D3D11Renderer* renderer, FTMeshData* meshData)
 	{
 		// if (this->IsProcessed())
 		//	return;

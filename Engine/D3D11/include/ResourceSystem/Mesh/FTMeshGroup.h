@@ -29,6 +29,7 @@ namespace D3D11
 	class FTPixelShader;
 	class D3D11PSO;
 	class Camera;
+	class D3D11Renderer;
 	struct Mesh;
 	struct FTMeshData;
 	struct PointModelMat;
@@ -77,7 +78,7 @@ namespace D3D11
 		/// @brief Relative path is used for importing 3D files.
 		// This is unused until 3D feature is implemented.
 		// FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer);
-		FTMeshGroup(Common::FTResourceDef& resDef, Core::IRenderer* renderer, FTMeshData* meshData = nullptr);
+		FTMeshGroup(Common::FTResourceDef& resDef, void* renderer, FTMeshData* meshData = nullptr);
 		virtual ~FTMeshGroup() override;
 
 	protected:
@@ -150,7 +151,7 @@ namespace D3D11
 
 	private:
 		/// @brief Takes a FTMeshData (usually from GeometryGenerator), and creates the meshes.
-		void Process(Core::IRenderer* renderer, FTMeshData* meshData);
+		void Process(D3D11::D3D11Renderer* renderer, FTMeshData* meshData);
 
 		/// @brief Creates a mesh from a single meshData.
 		void InitializeMesh(Microsoft::WRL::ComPtr<ID3D11Device>& device, FTMeshData* meshData);

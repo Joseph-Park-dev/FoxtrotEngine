@@ -2,14 +2,27 @@
 #include "Utility/SingletonMacro.h"
 
 #include "FTDS/Static/HashMap.h"
+#include "FTDS/Static/FTString.h"
 #include "Plugin/IPlugin.h"
 #include "Plugin/PluginKey.h"
 
 namespace Core
 {
+	constexpr const char* CREATE_PREFIX = "Create";
+
 	class PluginManager
 	{
 		SINGLETON(PluginManager)
+
+	public:
+		template <typename COMP>
+		COMP* RegisterComp(IActor* actor, const char* pluginName)
+		{
+			Common::FTDS::String procName = CREATE_PREFIX;
+			procName.Append(COMP::NAME);
+			using construct = COMP* (*)(IActor);
+			return reinterpret_cast<construct>(GetProcAddress(mModules->At(pluginName)->Value(), procName.C_Str()))(actor);
+		}
 
 	public:
 		// Gameloop functions.

@@ -20,10 +20,9 @@ namespace Common
 		/// @tparam FTRESOURCE Type of Resource
 		/// @param userData Additional data necessary for resource's constructor.
 		/// Pointer to renderer can be a good example for graphics resources
-		void LoadResourcesFromChunk(std::ifstream& ifs, void* userData = nullptr)
+		void LoadResourcesFromChunk(std::ifstream& ifs, void* userData)
 		{
-
-			size_t resCount = Common::FileIOHelper::BeginDataPackLoad(ifs);
+			size_t resCount = Common::FileIOHelper::BeginDataPackLoad(ifs).first;
 			if (resCount < 1)
 				return;
 
@@ -31,6 +30,20 @@ namespace Common
 			while (0 < resCount)
 			{
 				LoadResource(ifs, userData);
+				--resCount; // Key of the next resource to be imported.
+			}
+		}
+
+		void LoadResourcesFromChunk(std::ifstream& ifs)
+		{
+			size_t resCount = Common::FileIOHelper::BeginDataPackLoad(ifs).first;
+			if (resCount < 1)
+				return;
+
+			mResources->Reserve(resCount);
+			while (0 < resCount)
+			{
+				LoadResource(ifs);
 				--resCount; // Key of the next resource to be imported.
 			}
 		}
@@ -108,6 +121,22 @@ namespace Common
 
 			Common::FTResourceDef resDef(fileName, relPath);
 			FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef, userData);
+
+			assert(0 < mResources->Capacity());
+			mResources->Insert(*res->GetFileName(), res);
+		}
+
+		void LoadResource(std::ifstream& ifs)
+		{
+			Common::FileIOHelper::BeginDataPackLoad(ifs);
+
+			Common::FTDS::String relPath;
+			Common::FTDS::String fileName;
+			Common::FileIOHelper::LoadBasicString(ifs, relPath);
+			Common::FileIOHelper::LoadBasicString(ifs, fileName);
+
+			Common::FTResourceDef resDef(fileName, relPath);
+			FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef);
 
 			assert(0 < mResources->Capacity());
 			mResources->Insert(*res->GetFileName(), res);

@@ -18,7 +18,7 @@ namespace D3D11
 
 	public:
 		/// @see FTShader::FTShader()
-		FTGeometryShader(Common::FTResourceDef& resDef, D3D11Renderer* renderer);
+		FTGeometryShader(Common::FTResourceDef& resDef, void* renderer);
 
 	protected:
 		/// @see FTShader::CompileShader()

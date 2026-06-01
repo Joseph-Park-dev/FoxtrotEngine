@@ -27,12 +27,14 @@ namespace D3D11
 
 	ComPtr<ID3D11PixelShader>& FTPixelShader::GetShader() { return mShader; }
 
-	FTPixelShader::FTPixelShader(Common::FTResourceDef& resDef, D3D11Renderer* renderer)
+	FTPixelShader::FTPixelShader(Common::FTResourceDef& resDef, void* renderer)
 		: FTShader(resDef)
 	{
 		SetType(ShaderType::PIXEL_SHADER);
 		LoadMetaData(resDef);
-		CompileShader(resDef, renderer);
+
+		D3D11::D3D11Renderer* rend = reinterpret_cast<D3D11::D3D11Renderer*>(renderer);
+		CompileShader(resDef, rend);
 	}
 
 	void FTPixelShader::CompileShader(Common::FTResourceDef& resDef, D3D11Renderer* renderer)

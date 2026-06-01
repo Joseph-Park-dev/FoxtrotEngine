@@ -34,7 +34,7 @@ namespace D3D11
 
 	public:
 		/// @see FTShader::FTShader()
-		FTPixelShader(Common::FTResourceDef& resDef, D3D11Renderer* renderer);
+		FTPixelShader(Common::FTResourceDef& resDef, void* renderer);
 
 	protected:
 		/// @see FTShader::CompileShader()

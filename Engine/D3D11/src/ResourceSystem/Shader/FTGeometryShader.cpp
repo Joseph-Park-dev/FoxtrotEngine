@@ -14,11 +14,12 @@ namespace D3D11
 		return mShader;
 	}
 
-	FTGeometryShader::FTGeometryShader(Common::FTResourceDef& resDef, D3D11Renderer* renderer)
+	FTGeometryShader::FTGeometryShader(Common::FTResourceDef& resDef, void* renderer)
 		: D3D11::FTShader(resDef)
 	{
 		SetType(ShaderType::GEOMETRY_SHADER);
-		CompileShader(resDef, renderer);
+		D3D11::D3D11Renderer* rend = reinterpret_cast<D3D11::D3D11Renderer*>(renderer);
+		CompileShader(resDef, rend);
 	}
 
 	void FTGeometryShader::CompileShader(Common::FTResourceDef& resDef, D3D11Renderer* renderer)

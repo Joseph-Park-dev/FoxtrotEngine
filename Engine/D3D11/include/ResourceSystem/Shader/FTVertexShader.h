@@ -52,7 +52,7 @@ namespace D3D11
 
 	public:
 		/// @see FTShader::FTShader()
-		FTVertexShader(Common::FTResourceDef& resDef, D3D11Renderer* renderer);
+		FTVertexShader(Common::FTResourceDef& resDef, void* renderer);
 		~FTVertexShader() override;
 
 	protected:

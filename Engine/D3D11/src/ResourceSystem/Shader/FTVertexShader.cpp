@@ -50,7 +50,8 @@ namespace D3D11
 	{
 		SetType(ShaderType::VERTEX_SHADER);
 		LoadMetaData(resDef);
-		CompileShader(resDef, renderer);
+		D3D11::D3D11Renderer* rend = reinterpret_cast<D3D11::D3D11Renderer*>(renderer);
+		CompileShader(resDef, rend);
 	}
 
 	FTVertexShader::~FTVertexShader()

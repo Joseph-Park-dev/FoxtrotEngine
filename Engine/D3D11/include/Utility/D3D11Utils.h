@@ -24,6 +24,7 @@
 #include "TemplateFunctions.h"
 #include "FTDS/Static/FTString.h"
 #include "Debugging/DebugFuncs.h"
+#include "Debugging/D3D11DebugFuncs.h"
 
 namespace D3D11
 {

@@ -1,6 +1,12 @@
 #pragma once
+#include <iosfwd>
+#include "ICamera.h"
+#include "FTMath.h"
+
 namespace Core
 {
+	class IActor;
+
 	struct CameraData
 	{
 		Core::IActor*  Target	= nullptr;

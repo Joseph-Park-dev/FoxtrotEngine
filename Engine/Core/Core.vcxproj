@@ -195,7 +195,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Common\include;.\include;$(SolutionDir)Engine\Editor\include;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Main\include;$(SolutionDir)third_party;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\json\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Common\include;.\include;.\include\Component\Interfaces;.\include\Component\Data;$(SolutionDir)Engine\Editor\include;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Main\include;$(SolutionDir)third_party;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\json\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -242,12 +242,7 @@
     <ClInclude Include="include\Behavior\FTBehavior.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="include\Component\Graphics\IAnimator.h" />
-    <ClInclude Include="include\Component\IComponent.h" />
-    <ClInclude Include="include\Component\Graphics\IMeshRenderer.h" />
-    <ClInclude Include="include\Component\Graphics\ISpineAnimator.h" />
-    <ClInclude Include="include\Component\Graphics\ISpriteRenderer.h" />
-    <ClInclude Include="include\Component\Graphics\ITileMapRenderer.h" />
+    <ClInclude Include="include\Component\Data\ComponentData.h" />
     <ClInclude Include="include\Core\FTCore.h" />
     <ClInclude Include="include\Manager\Timer.h" />
     <ClInclude Include="include\EventSystem\EventFunctions.h" />
@@ -255,7 +250,6 @@
     <ClInclude Include="include\Factory\IGraphicsFactory.h" />
     <ClInclude Include="include\FileSystem\ChunkLoader.h" />
     <ClInclude Include="include\FileSystem\IChunkLoader.h" />
-    <ClInclude Include="include\InputSystem\IInputDevice.h" />
     <ClInclude Include="include\Manager\DirectoryHelper.h" />
     <ClInclude Include="include\Manager\EventManager.h" />
     <ClInclude Include="include\Manager\ResourceHelper.h" />
@@ -269,9 +263,6 @@
     <ClInclude Include="include\Plugin\PluginKey.h" />
     <ClInclude Include="include\Renderer\CameraData.h" />
     <ClInclude Include="include\Renderer\FTRectArea.h" />
-    <ClInclude Include="include\Renderer\ICamera.h" />
-    <ClInclude Include="include\Renderer\IRenderer.h" />
-    <ClInclude Include="include\Renderer\IWindow.h" />
     <ClInclude Include="include\ResourceSystem\CoreResource.h" />
     <ClInclude Include="include\ResourceSystem\FTPremade.h" />
     <ClInclude Include="include\ResourceSystem\GenericData\FTCSV.h" />
@@ -289,6 +280,7 @@
     <ClCompile Include="..\..\third_party\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\third_party\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\third_party\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\Component\Data\ComponentData.cpp" />
     <ClCompile Include="src\Renderer\CameraData.cpp" />
     <ClCompile Include="src\Actor\ActorData.cpp" />
     <ClCompile Include="include\Factory\IInputSysFactory.h" />

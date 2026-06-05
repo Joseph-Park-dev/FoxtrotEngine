@@ -14,6 +14,7 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\Component\IComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\Debugging\DebugFuncs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\Debugging\DebugMemAlloc.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\Entity\Entity.h" />

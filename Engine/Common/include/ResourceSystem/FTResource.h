@@ -6,94 +6,64 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#pragma once
-#include <iosfwd>
-
-#include "../FTDS/Static/FTString.h"
-
-namespace Common
-{
-	class FoxtrotRenderer;
-
-	/// @brief Initialization struct for FTResources
-	struct FTResourceDef
-	{
-		const char* FileName;
-		const char* Path;
-
-		FTResourceDef()
-			: FileName()
-			, Path()
-		{
-		}
-		FTResourceDef(const char* fileName, const char* path)
-			: FileName(fileName)
-			, Path(path)
-		{
-		}
-
-		FTResourceDef(const Common::FTDS::String& fileName, const Common::FTDS::String& path)
-			: FileName(fileName.C_Str())
-			, Path(path.C_Str())
-		{
-		}
-	};
-
-	/// @brief Base class that wraps the resources used in the game.
-	class FTResource
-	{
-	public:
-		/// @brief Saves resource properties into a file.
-		/// @param ofs This should either be a stream to a .chunk file, or to a dedicated resource file
-		/// like FTSpriteAnimation, FTPremade, etc.
-		virtual void SaveProperties(std::ofstream& ofs) = 0;
-
-		/// @brief Loads resource properties into an instance.
-		/// @param ifs This should either be a stream from a .chunk file, or from a dedicated resource file
-		/// like FTSpriteAnimation, FTPremade, etc.
-		virtual void LoadProperties(std::ifstream& ifs) = 0;
-
-	public:
-		const Common::FTDS::String* GetFileName() { return mFileName; }
-		const Common::FTDS::String* GetRelativePath() { return mRelativePath; }
-
-		void SetFileName(Common::FTDS::String& val) { return mFileName->Assign(val); }
-		void SetRelativePath(Common::FTDS::String& val) { return mRelativePath->Assign(val); }
-
-	public:
-		FTResource(Common::FTResourceDef& resDef);
-		virtual ~FTResource() = default;
-
-	private:
-		Common::FTDS::String* mFileName;
-		Common::FTDS::String* mRelativePath;
-		int					  mRefCount;
-
-#ifdef FOXTROT_EDITOR
-	public:
-		/// @brief Displays GUI to modify the data on Foxtrot Editor.
-		virtual void UpdateUI() {};
-
-	public:
-		/// @brief Is this resource referenced by any of the Components in the .chunk?
-		/// @return if 0 < mRefCount, true.
-		bool IsReferenced() const;
-
-		/// @brief Adds mRefCount if the resource is referenced by any of the Components in a .chunk.
-		virtual void AddRefCount();
-
-		/// @brief Subtracts mRefCount if the resource is taken away from a Component in a .chunk.
-		virtual void SubtractRefCount();
-#endif
-	};
-
-	/// @brief String literal keys used for saving resource properties.
-	namespace ChunkKey
-	{
-		namespace FTResource
-		{
-			constexpr const char* FILE_NAME		= "FileName";
-			constexpr const char* RELATIVE_PATH = "RelativePath";
-		} // namespace FTResource
-	} // namespace ChunkKey
-} // namespace Common
+// #pragma once
+// #include <iosfwd>
+//
+// namespace Common
+//{
+//	struct ResourceData
+//	{
+//		const char* FileName;
+//		const char* RelativePath;
+//		int			RefCount;
+//	};
+//
+//	/// @brief Base class that wraps the resources used in the game.
+//	class FTResource
+//	{
+//	public:
+//		/// @brief Saves resource properties into a file.
+//		/// @param ofs This should either be a stream to a .chunk file, or to a dedicated resource file
+//		/// like FTSpriteAnimation, FTPremade, etc.
+//		virtual void SaveProperties(std::ofstream& ofs) = 0;
+//
+//		/// @brief Loads resource properties into an instance.
+//		/// @param ifs This should either be a stream from a .chunk file, or from a dedicated resource file
+//		/// like FTSpriteAnimation, FTPremade, etc.
+//		virtual void LoadProperties(std::ifstream& ifs) = 0;
+//
+//	public:
+//		const Common::FTDS::String* GetFileName() { return mFileName; }
+//		const Common::FTDS::String* GetRelativePath() { return mRelativePath; }
+//
+//		void SetFileName(Common::FTDS::String& val) { return mFileName->Assign(val); }
+//		void SetRelativePath(Common::FTDS::String& val) { return mRelativePath->Assign(val); }
+//
+// #ifdef FOXTROT_EDITOR
+//	public:
+//		/// @brief Displays GUI to modify the data on Foxtrot Editor.
+//		virtual void UpdateUI() {};
+//
+//	public:
+//		/// @brief Is this resource referenced by any of the Components in the .chunk?
+//		/// @return if 0 < mRefCount, true.
+//		bool IsReferenced() const;
+//
+//		/// @brief Adds mRefCount if the resource is referenced by any of the Components in a .chunk.
+//		virtual void AddRefCount();
+//
+//		/// @brief Subtracts mRefCount if the resource is taken away from a Component in a .chunk.
+//		virtual void SubtractRefCount();
+// #endif
+//	};
+//
+//	/// @brief String literal keys used for saving resource properties.
+//	namespace ChunkKey
+//	{
+//		namespace FTResource
+//		{
+//			constexpr const char* FILE_NAME		= "FileName";
+//			constexpr const char* RELATIVE_PATH = "RelativePath";
+//		} // namespace FTResource
+//	} // namespace ChunkKey
+// } // namespace Common

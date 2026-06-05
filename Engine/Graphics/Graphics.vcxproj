@@ -170,7 +170,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>.\include\ResourceSystem\Mesh;$(SolutionDIr)Engine\Common\include;$(SolutionDIr)Engine\Common\include\Component;$(SolutionDIr)Engine\Common\include\ResourceSystem;$(SolutionDIr)Engine\Math\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\include\ResourceSystem;$(SolutionDIr)Engine\Common\include;$(SolutionDIr)Engine\Common\include\Component;$(SolutionDIr)Engine\Common\include\ResourceSystem;$(SolutionDIr)Engine\Math\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -221,10 +221,10 @@
     <ClInclude Include="include\ResourceSystem\Mesh\IModel.h" />
     <ClInclude Include="include\ResourceSystem\Mesh\MeshConstantData.h" />
     <ClInclude Include="include\ResourceSystem\Mesh\Vertex.h" />
-    <ClInclude Include="include\ResourceSystem\Shader\FTGeometryShader.h" />
-    <ClInclude Include="include\ResourceSystem\Shader\FTPixelShader.h" />
-    <ClInclude Include="include\ResourceSystem\Shader\FTShader.h" />
-    <ClInclude Include="include\ResourceSystem\Shader\FTVertexShader.h" />
+    <ClInclude Include="include\ResourceSystem\Shader\IGeometryShader.h" />
+    <ClInclude Include="include\ResourceSystem\Shader\IPixelShader.h" />
+    <ClInclude Include="include\ResourceSystem\Shader\IShader.h" />
+    <ClInclude Include="include\ResourceSystem\Shader\IVertexShader.h" />
     <ClInclude Include="include\ResourceSystem\Shape\FTRectangle.h" />
     <ClInclude Include="include\ResourceSystem\Shape\FTShape.h" />
     <ClInclude Include="include\ResourceSystem\Sprite\FTTileMap.h" />

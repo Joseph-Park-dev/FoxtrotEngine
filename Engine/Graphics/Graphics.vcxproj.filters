@@ -81,16 +81,16 @@
     <ClInclude Include="include\ResourceSystem\Mesh\Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ResourceSystem\Shader\FTGeometryShader.h">
+    <ClInclude Include="include\ResourceSystem\Shader\IGeometryShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ResourceSystem\Shader\FTPixelShader.h">
+    <ClInclude Include="include\ResourceSystem\Shader\IPixelShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ResourceSystem\Shader\FTShader.h">
+    <ClInclude Include="include\ResourceSystem\Shader\IShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ResourceSystem\Shader\FTVertexShader.h">
+    <ClInclude Include="include\ResourceSystem\Shader\IVertexShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\ResourceSystem\Shape\FTRectangle.h">

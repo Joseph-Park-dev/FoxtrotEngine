@@ -25,7 +25,7 @@ namespace D3D11
 		virtual Microsoft::WRL::ComPtr<ID3D11DeviceContext>& GetContext() override;
 		virtual D3D11_VIEWPORT*								 GetViewport() override;
 		const unsigned int									 GetNumQualityLevels() const override;
-		const Core::FillMode&								 GetFillMode() const;
+		const Core::FillMode&								 GetFillMode() const override;
 
 		void SetFillMode(const Core::FillMode mode);
 
@@ -42,6 +42,6 @@ namespace D3D11
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> mContext;
 		D3D11_VIEWPORT*								mViewport;
 		UINT										mNumQualityLevels;
-		Core::FillMode								mFillMode;
+		Graphics::FillMode							mFillMode;
 	};
 } // namespace D3D11

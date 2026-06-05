@@ -7,7 +7,7 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include "ResourceSystem/D3D11Resource.h"
+#include "IModel.h"
 
 #include <wrl.h>
 #include <d3d11.h>
@@ -33,6 +33,18 @@ namespace D3D11
 	struct Mesh;
 	struct FTMeshData;
 	struct PointModelMat;
+
+	struct ModelData :
+		Graphics::ModelData
+	{
+		Microsoft::WRL::ComPtr<ID3D11SamplerState> SamplerState;
+
+		/// @brief Vertex constant buffer which will applied to all meshes.
+		Microsoft::WRL::ComPtr<ID3D11Buffer> VCBuf;
+
+		/// @brief Vertex constant data.
+		PointModelMat* VCData;
+	};
 
 	/// @brief A class holding Meshes created from a FTMeshData.
 	/// This should be used in the MeshRenderer Component, and its derived Components.

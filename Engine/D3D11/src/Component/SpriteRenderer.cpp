@@ -151,7 +151,7 @@ namespace D3D11
 		}
 	}
 
-	void SpriteRenderer::EditorUIUpdate(Editor::CommandHistory* chInst)
+	void SpriteRenderer::EditorUIUpdate()
 	{
 		D3D11::D3D11Component::EditorUIUpdate(chInst);
 

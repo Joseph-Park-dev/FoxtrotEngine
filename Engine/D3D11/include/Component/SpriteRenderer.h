@@ -12,9 +12,7 @@
 /// </summary>
 
 #pragma once
-#include "Component/D3D11Component.h"
-
-#include "TemplateFunctions.h"
+#include "Graphics/ISpriteRenderer.h"
 
 namespace Core
 {
@@ -25,7 +23,6 @@ namespace Core
 
 namespace D3D11
 {
-	using namespace Common;
 	class FTSprite;
 	class FTVertexShader;
 	class FTPixelShader;
@@ -35,7 +32,7 @@ namespace D3D11
 	struct Mesh;
 
 	class SpriteRenderer :
-		public D3D11Component
+		public Core::ISpriteRenderer
 	{
 	public:
 		static inline const char* NAME = "SpriteRenderer";
@@ -44,20 +41,41 @@ namespace D3D11
 			return "SpriteRenderer";
 		}
 
+		//////////////////////
+		/// Initialization ///
+		//////////////////////
 	public:
 		virtual void Initialize() override;
 		virtual void Setup() override;
+
+		////////////////
+		/// Gameloop ///
+		////////////////
 		virtual void ProcessInput(Core::IInputDevice* inputDevice) override;
 		virtual void Update(float deltaTime) override;
 		virtual void LateUpdate(float deltaTime) override;
 		virtual void Render(Core::IRenderer* renderer, Core::ICamera* camInst) override;
-		virtual void CloneTo(Core::IActor* actor) override;
 
+		/////////////////
+		/// Chunk I/O ///
+		/////////////////
+	public:
+		virtual void SaveProperties(std::ofstream& ofs) override;
+		virtual void LoadProperties(std::ifstream& ifs) override;
+
+		//////////////////////////////
+		/// Constructors / Copying ///
+		//////////////////////////////
 	public:
 		SpriteRenderer(
 			Core::IActor* owner,
 			int			  updateOrder = Core::DefaultVal::UPDATE_ORDER);
 
+		virtual void CloneTo(Core::IActor* actor) override;
+
+		////////////////////////////
+		/// Accessors / Mutators ///
+		////////////////////////////
 	protected:
 		FTSprite*	GetSprite() const;
 		FTMaterial* GetMaterial() const;
@@ -72,20 +90,11 @@ namespace D3D11
 		D3D11PSO*	mPSO;
 		FTMaterial* mMaterial;
 
-	public:
-		virtual void SaveProperties(std::ofstream& ofs) override;
-		virtual void LoadProperties(std::ifstream& ifs) override;
-
 #ifdef FOXTROT_EDITOR
 	public:
 		virtual void EditorUpdate(float deltaTime) override;
 		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst) override;
-		virtual void EditorUIUpdate(Editor::CommandHistory* chInst) override;
-
-	protected:
-		FTSprite*& Sprite();
-		FTMaterial*& Material();
-		D3D11PSO*& PSO();
+		virtual void EditorUIUpdate() override;
 
 #endif
 	};
@@ -104,7 +113,7 @@ namespace D3D11
 		} // namespace SpriteRenderer
 	} // namespace ChunkKey
 
-	#include "Plugin/D3D11Exports.h"
+#include "Plugin/D3D11Exports.h"
 	D3D11_API D3D11::SpriteRenderer* CreateSpriteRenderer(Core::IActor* actor)
 	{
 		return DBG_NEW D3D11::SpriteRenderer(actor);

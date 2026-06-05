@@ -5,7 +5,11 @@ namespace Core
 {
 	enum class ActorGroup;
 	class IActor;
+<<<<<<< Updated upstream
 }
+=======
+} // namespace Core
+>>>>>>> Stashed changes
 
 namespace Editor
 {

@@ -15,6 +15,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Main", "Engine\Main\Main.vc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Math", "Engine\Math\Math.vcxproj", "{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Graphics", "Engine\Graphics\Graphics.vcxproj", "{4C184CBA-DFAC-4DE3-897C-E909687C16DD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InputSystem", "Engine\InputSystem\InputSystem.vcxproj", "{F72FB9A9-0E80-40AC-A8DD-1A9649F2E51C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -85,6 +89,30 @@ Global
 		{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}.Release|x64.Build.0 = Release|x64
 		{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}.Release|x86.ActiveCfg = Release|Win32
 		{05F1CDE6-51BE-4EC3-898E-D9D15811ED7F}.Release|x86.Build.0 = Release|Win32
+		{4C184CBA-DFAC-4DE3-897C-E909687C16DD}.Debug|x64.ActiveCfg = Debug|x64
+		{4C184CBA-DFAC-4DE3-897C-E909687C16DD}.Debug|x64.Build.0 = Debug|x64
+		{4C184CBA-DFAC-4DE3-897C-E909687C16DD}.Debug|x86.ActiveCfg = Debug|Win32
+		{4C184CBA-DFAC-4DE3-897C-E909687C16DD}.Debug|x86.Build.0 = Debug|Win32
+		{4C184CBA-DFAC-4DE3-897C-E909687C16DD}.Foxtrot_Editor_Debug|x64.ActiveCfg = Foxtrot_Editor_Debug|x64
+		{4C184CBA-DFAC-4DE3-897C-E909687C16DD}.Foxtrot_Editor_Debug|x64.Build.0 = Foxtrot_Editor_Debug|x64
+		{4C184CBA-DFAC-4DE3-897C-E909687C16DD}.Foxtrot_Editor_Debug|x86.ActiveCfg = Release|Win32
+		{4C184CBA-DFAC-4DE3-897C-E909687C16DD}.Foxtrot_Editor_Debug|x86.Build.0 = Release|Win32
+		{4C184CBA-DFAC-4DE3-897C-E909687C16DD}.Release|x64.ActiveCfg = Release|x64
+		{4C184CBA-DFAC-4DE3-897C-E909687C16DD}.Release|x64.Build.0 = Release|x64
+		{4C184CBA-DFAC-4DE3-897C-E909687C16DD}.Release|x86.ActiveCfg = Release|Win32
+		{4C184CBA-DFAC-4DE3-897C-E909687C16DD}.Release|x86.Build.0 = Release|Win32
+		{F72FB9A9-0E80-40AC-A8DD-1A9649F2E51C}.Debug|x64.ActiveCfg = Debug|x64
+		{F72FB9A9-0E80-40AC-A8DD-1A9649F2E51C}.Debug|x64.Build.0 = Debug|x64
+		{F72FB9A9-0E80-40AC-A8DD-1A9649F2E51C}.Debug|x86.ActiveCfg = Debug|Win32
+		{F72FB9A9-0E80-40AC-A8DD-1A9649F2E51C}.Debug|x86.Build.0 = Debug|Win32
+		{F72FB9A9-0E80-40AC-A8DD-1A9649F2E51C}.Foxtrot_Editor_Debug|x64.ActiveCfg = Foxtrot_Editor_Debug|x64
+		{F72FB9A9-0E80-40AC-A8DD-1A9649F2E51C}.Foxtrot_Editor_Debug|x64.Build.0 = Foxtrot_Editor_Debug|x64
+		{F72FB9A9-0E80-40AC-A8DD-1A9649F2E51C}.Foxtrot_Editor_Debug|x86.ActiveCfg = Release|Win32
+		{F72FB9A9-0E80-40AC-A8DD-1A9649F2E51C}.Foxtrot_Editor_Debug|x86.Build.0 = Release|Win32
+		{F72FB9A9-0E80-40AC-A8DD-1A9649F2E51C}.Release|x64.ActiveCfg = Release|x64
+		{F72FB9A9-0E80-40AC-A8DD-1A9649F2E51C}.Release|x64.Build.0 = Release|x64
+		{F72FB9A9-0E80-40AC-A8DD-1A9649F2E51C}.Release|x86.ActiveCfg = Release|Win32
+		{F72FB9A9-0E80-40AC-A8DD-1A9649F2E51C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,8 +122,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Engine\Common\Common.vcxitems*{30273513-c587-4640-9315-8d7cade6534a}*SharedItemsImports = 4
+		Engine\Common\Common.vcxitems*{4c184cba-dfac-4de3-897c-e909687c16dd}*SharedItemsImports = 4
 		Engine\Common\Common.vcxitems*{95944b49-be89-43df-bd3f-03d01fa7c284}*SharedItemsImports = 4
 		Engine\Common\Common.vcxitems*{cce9835e-f788-4b51-930b-d7805ac1e2a0}*SharedItemsImports = 4
+		Engine\Common\Common.vcxitems*{f72fb9a9-0e80-40ac-a8dd-1a9649f2e51c}*SharedItemsImports = 4
 		Engine\Common\Common.vcxitems*{f7ff42b9-dba5-4b64-a3bb-3787a7100896}*SharedItemsImports = 9
 	EndGlobalSection
 EndGlobal

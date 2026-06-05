@@ -7,11 +7,11 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include "ResourceSystem/Graphics/Sprite/FTSprite.h"
+#include "Mesh/IModel.h"
 
-#include <FTDS/Dynamic/DynamicArray.h>
+#include "FTDS/Dynamic/DynamicArray.h"
 
-namespace Core
+namespace Graphics
 {
 	class Transform;
 	class IJSON;
@@ -25,23 +25,20 @@ namespace Core
 	/// @brief A FTResource that holds a Spine Animation.
 	/// This will be registered to a SpineAnimator Component instance.
 	class ISpineAnimation :
-		public ISprite
+		public Graphics::IModel
 	{
 	public:
-		static inline D3D11::ResType Type = D3D11::ResType::SPINE_ANIMATION;
-
-	public:
-		void Update(float deltaTime, spine::Physics physics);
+		void Update(float deltaTime);
 
 		/// @brief Renders the entire meshes created, as a full model.
 		void Render(
-			D3D11Renderer*	   renderer,
-			Core::Transform*   transform,
-			Graphics::ICamera* camInst,
-			FTTexture*		   tex,
-			FTVertexShader*	   vs,
-			FTPixelShader*	   ps,
-			FTMaterial*		   mat);
+			Graphics::IRenderer*	 renderer,
+			Core::Transform*		 transform,
+			Graphics::ICamera*		 camInst,
+			Graphics::ITexture*		 tex,
+			Graphics::IVertexShader* vs,
+			Graphics::IPixelShader*	 ps,
+			FTMaterial*				 mat);
 
 		/// @see FTResource::SaveProperties()
 		virtual void SaveProperties(std::ofstream& ofs) override;
@@ -170,4 +167,4 @@ namespace Core
 			constexpr const char* SKIN_COMBINATION	 = "Skin Combination";
 		} // namespace FTSpineAnimation
 	} // namespace ChunkKey
-} // namespace Core
+} // namespace Graphics

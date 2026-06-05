@@ -72,7 +72,7 @@
     <ClInclude Include="include\ResourceSystem\Material\StandardMaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ResourceSystem\Mesh\IMeshGroup.h">
+    <ClInclude Include="include\ResourceSystem\Mesh\IModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\ResourceSystem\Mesh\MeshConstantData.h">

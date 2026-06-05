@@ -191,7 +191,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Engine\D3D11\include;$(SolutionDir)Engine\Common\include;$(SolutionDir)Engine\Core\include;$(SolutionDir)Engine\Core\include\Component\Interfaces;$(SolutionDir)Engine\Core\include\Component\Data;$(SolutionDir)Engine\Editor\include;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Main\include;$(SolutionDir)third_party;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\json\include;$(SolutionDir)third_party\spine-runtimes\spine-cpp\spine-cpp\include;$(SolutionDir)third_party\magic_enum\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\D3D11\include;$(SolutionDir)Engine\Graphics\include\ResourceSystem\Mesh;$(SolutionDir)Engine\Common\include;$(SolutionDir)Engine\Core\include;$(SolutionDir)Engine\Core\include\Component\Interfaces;$(SolutionDir)Engine\Core\include\Component\Data;$(SolutionDir)Engine\Editor\include;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Main\include;$(SolutionDir)third_party;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\json\include;$(SolutionDir)third_party\spine-runtimes\spine-cpp\spine-cpp\include;$(SolutionDir)third_party\magic_enum\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

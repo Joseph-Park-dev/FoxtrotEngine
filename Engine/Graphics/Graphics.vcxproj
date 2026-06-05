@@ -170,7 +170,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>.\include\ResourceSystem\Mesh;$(SolutionDIr)Engine\Common\include;$(SolutionDIr)Engine\Common\include\Component;$(SolutionDIr)Engine\Math\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\include\ResourceSystem\Mesh;$(SolutionDIr)Engine\Common\include;$(SolutionDIr)Engine\Common\include\Component;$(SolutionDIr)Engine\Common\include\ResourceSystem;$(SolutionDIr)Engine\Math\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -218,7 +218,7 @@
     <ClInclude Include="include\ResourceSystem\Material\FTMaterial.h" />
     <ClInclude Include="include\ResourceSystem\Material\SpriteAnimMat.h" />
     <ClInclude Include="include\ResourceSystem\Material\StandardMaterial.h" />
-    <ClInclude Include="include\ResourceSystem\Mesh\IMeshGroup.h" />
+    <ClInclude Include="include\ResourceSystem\Mesh\IModel.h" />
     <ClInclude Include="include\ResourceSystem\Mesh\MeshConstantData.h" />
     <ClInclude Include="include\ResourceSystem\Mesh\Vertex.h" />
     <ClInclude Include="include\ResourceSystem\Shader\FTGeometryShader.h" />
@@ -228,7 +228,9 @@
     <ClInclude Include="include\ResourceSystem\Shape\FTRectangle.h" />
     <ClInclude Include="include\ResourceSystem\Shape\FTShape.h" />
     <ClInclude Include="include\ResourceSystem\Sprite\FTTileMap.h" />
-    <ClInclude Include="include\ResourceSystem\Sprite\ISprite.h" />
+    <ClInclude Include="include\ResourceSystem\Sprite\ISprite.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="include\ResourceSystem\Sprite\Tile.h" />
   </ItemGroup>
   <ItemGroup>

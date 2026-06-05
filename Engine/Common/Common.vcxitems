@@ -48,10 +48,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Utils\DSLogs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\FTDS\Utils\StrAssign.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\Manager\ResourceManagerBase.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)include\ResourceSystem\FTResource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\ResourceSystem\IResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\ResourceSystem\ResourcePack.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\TemplateFunctions.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\Utility\EditorHelper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)include\ResourceSystem\FTResource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)src\FileSystem\FileIOHelper.cpp" />

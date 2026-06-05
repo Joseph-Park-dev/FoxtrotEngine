@@ -7,28 +7,23 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include "ResourceSystem/D3D11Resource.h"
+#include "IResource.h"
 
-namespace Core
+namespace Common
 {
-	class FoxtrotRenderer;
+	class IRenderer;
+	struct FTResourceDef;
 }
 
-namespace D3D11
+namespace Graphics
 {
-	class D3D11Renderer;
-
-	enum class ShaderType
-	{
-		VERTEX_SHADER,
-		PIXEL_SHADER,
-		GEOMETRY_SHADER
-	};
-
 	/// @brief A base abstract wrapper for HLSL Shaders.
-	class FTShader :
-		public D3D11Resource
+	class IShader :
+		public Common::IResource
 	{
+		/////////////////
+		/// Chunk I/O ///
+		/////////////////
 	public:
 		/// @see FTResource::SaveProperties()
 		virtual void SaveProperties(std::ofstream& ofs) override = 0;
@@ -36,29 +31,15 @@ namespace D3D11
 		/// @see FTResource::LoadProperties()
 		virtual void LoadProperties(std::ifstream& ifs) override = 0;
 
-	public:
-		FTShader(Common::FTResourceDef& resDef);
-
-	private:
-		/// @brief Type of the shader (e.g vertex shader)
-		ShaderType mType;
-
+		//////////////////////
+		/// Initialization ///
+		//////////////////////
 	protected:
 		/// @brief Compiles shader base on its type.
-		virtual void CompileShader(Common::FTResourceDef& resDef, D3D11Renderer* renderer) = 0;
-
-		/// @brief Set current shader type during initialization.
-		void SetType(ShaderType&& shaderType);
+		virtual void CompileShader(Common::FTResourceDef& resDef, Common::IRenderer* renderer) = 0;
 
 		/// @brief Loads the meta data for this wrapper.
-		void LoadMetaData(Common::FTResourceDef& resDef);
-
-#ifdef FOXTROT_EDITOR
-	public:
-		/// @brief Saves meta data for this wrapper.
-		void SaveMetaData();
-
-#endif
+		virtual void LoadMetaData(Common::FTResourceDef& resDef) = 0;
 	};
 
 	namespace ChunkKey
@@ -69,4 +50,4 @@ namespace D3D11
 			constexpr const char* NAME	   = "Name";
 		} // namespace Shader
 	} // namespace ChunkKey
-} // namespace D3D11
+} // namespace Graphics

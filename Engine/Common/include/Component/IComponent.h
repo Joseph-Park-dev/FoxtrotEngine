@@ -19,12 +19,16 @@
 #pragma once
 #include <iosfwd>
 
+namespace Graphics
+{
+	class IRenderer;
+	class ICamera;
+} // namespace Graphics
+
 namespace Common
 {
 	class IActor;
 	class IInputDevice;
-	class IRenderer;
-	class ICamera;
 
 	namespace DefaultVal
 	{

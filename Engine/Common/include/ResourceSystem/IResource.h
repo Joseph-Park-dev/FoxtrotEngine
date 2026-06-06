@@ -16,8 +16,11 @@ namespace Common
 	struct ResourceData
 	{
 		Common::FTDS::String* FileName;
-		Common::FTDS::String* RelativePath;
-		int					  RefCount;
+		Common::FTDS::String* Path;
+
+#ifdef FOXTROT_EDITOR
+		int RefCount;
+#endif // FOXTROT_EDITOR
 	};
 
 	/// @brief Base class that wraps the resources used in the game.

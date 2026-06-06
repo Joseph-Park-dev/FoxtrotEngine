@@ -11,8 +11,6 @@
 #include "Actor/IActor.h"
 #include "FileSystem/ChunkLoader.h"
 #include "FileSystem/FileIOHelper.h"
-#include "Renderer/FTRectArea.h"
-#include "Renderer/IWindow.h"
 #include "FTMath.h"
 #include "Actor/Steering.h"
 #include "FTDS/Dynamic/DynamicArray.h"
@@ -69,24 +67,24 @@ namespace Core
 
 	void Transform::SetWorldPosition(const Math::FTVector3 worldPos)
 	{
-		mWorldPosition = worldPos;
-		IActor* parent = mOwner->GetParent();
+		mWorldPosition		   = worldPos;
+		Common::IActor* parent = mOwner->GetParent();
 		if (!parent)
 			SetLocalPosition(worldPos);
 	}
 
 	void Transform::SetWorldScale(const Math::FTVector3 worldScale)
 	{
-		mWorldScale	   = worldScale;
-		IActor* parent = mOwner->GetParent();
+		mWorldScale			   = worldScale;
+		Common::IActor* parent = mOwner->GetParent();
 		if (!parent)
 			SetLocalScale(worldScale);
 	}
 
 	void Transform::SetWorldRotation(const Math::FTVector3 worldRot)
 	{
-		mWorldRotation = worldRot;
-		IActor* parent = mOwner->GetParent();
+		mWorldRotation		   = worldRot;
+		Common::IActor* parent = mOwner->GetParent();
 		if (!parent)
 			SetLocalRotation(worldRot);
 	}
@@ -104,12 +102,12 @@ namespace Core
 		mSteering->JumpTriggered = steering.JumpTriggered;
 	}
 
-	void Transform::SetOwner(Core::IActor* actor)
+	void Transform::SetOwner(Common::IActor* actor)
 	{
 		mOwner = actor;
 	}
 
-	Transform::Transform(Core::IActor* owner)
+	Transform::Transform(Common::IActor* owner)
 		: mLocalPosition(Math::FTVector3::Zero)
 		, mLocalScale(Math::FTVector3(1.f, 1.0f, 1.0f))
 		, mLocalRotation(Math::FTVector3::Zero)
@@ -127,7 +125,7 @@ namespace Core
 	{
 	}
 
-	Transform::Transform(Core::IActor* owner, Transform& origin)
+	Transform::Transform(Common::IActor* owner, Transform& origin)
 		: mLocalPosition(origin.mLocalPosition)
 		, mLocalScale(origin.mLocalScale)
 		, mLocalRotation(origin.mLocalRotation)
@@ -154,7 +152,7 @@ namespace Core
 		}
 	}
 
-	const Core::IActor* Transform::GetOwner() const
+	const Common::IActor* Transform::GetOwner() const
 	{
 		return mOwner;
 	}
@@ -185,13 +183,13 @@ namespace Core
 
 		mMatrixLocal = matScale * matRotation * matTranslation;
 
-		IActor* parent = mOwner->GetParent();
+		Common::IActor* parent = mOwner->GetParent();
 		if (parent)
 			mMatrixWorld = mMatrixLocal * parent->GetTransform()->mMatrixWorld;
 		else
 			mMatrixWorld = mMatrixLocal;
 
-		Common::FTDS::DynamicArray<IActor*>* childActors = mOwner->GetChildActors();
+		Common::FTDS::DynamicArray<Common::IActor*>* childActors = mOwner->GetChildActors();
 		if (0 < childActors->GetSize())
 		{
 			for (auto child = childActors->Begin(); child != childActors->End(); ++child)

@@ -51,18 +51,6 @@
     <ClCompile Include="src\Plugin\pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ResourceSystem\GenericData\FTCSV.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\GenericData\FTJSON.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\GenericData\FTText.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceSystem\CoreResource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\ResourceSystem\FTPremade.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -88,12 +76,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Manager\PluginManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\CameraData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Component\Data\ComponentData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -143,18 +125,6 @@
     <ClInclude Include="include\Plugin\PluginKey.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ResourceSystem\GenericData\FTCSV.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ResourceSystem\GenericData\FTJSON.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ResourceSystem\GenericData\FTText.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ResourceSystem\CoreResource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\ResourceSystem\FTPremade.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -192,12 +162,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\ResourceSystem\SupportedResources.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Renderer\CameraData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Component\Data\ComponentData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

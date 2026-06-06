@@ -60,7 +60,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -169,7 +169,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>.\include\ResourceSystem;$(SolutionDIr)Engine\Common\include;$(SolutionDIr)Engine\Common\include\Component;$(SolutionDIr)Engine\Common\include\ResourceSystem;$(SolutionDIr)Engine\Math\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -207,31 +207,24 @@
     <ClInclude Include="include\Renderer\ICamera.h" />
     <ClInclude Include="include\Renderer\IRenderer.h" />
     <ClInclude Include="include\Renderer\IWindow.h" />
-    <ClInclude Include="include\ResourceSystem\Animation\FTSpineAnimation.h" />
-    <ClInclude Include="include\ResourceSystem\Animation\FTSpriteAnimation.h" />
-    <ClInclude Include="include\ResourceSystem\Cubemap\FTCubemap.h" />
+    <ClInclude Include="include\ResourceSystem\Animation\ISpineAnimation.h" />
+    <ClInclude Include="include\ResourceSystem\Animation\ISpriteAnimation.h" />
     <ClInclude Include="include\ResourceSystem\Font\FontChar.h" />
     <ClInclude Include="include\ResourceSystem\Font\FontKerning.h" />
-    <ClInclude Include="include\ResourceSystem\Font\FTFont.h" />
+    <ClInclude Include="include\ResourceSystem\Font\IFont.h" />
     <ClInclude Include="include\ResourceSystem\Font\TextAttribute.h" />
     <ClInclude Include="include\ResourceSystem\Font\TextVertex.h" />
-    <ClInclude Include="include\ResourceSystem\Material\FTMaterial.h" />
-    <ClInclude Include="include\ResourceSystem\Material\SpriteAnimMat.h" />
-    <ClInclude Include="include\ResourceSystem\Material\StandardMaterial.h" />
+    <ClInclude Include="include\ResourceSystem\ITexture.h" />
+    <ClInclude Include="include\ResourceSystem\Material\IMaterial.h" />
     <ClInclude Include="include\ResourceSystem\Mesh\IModel.h" />
     <ClInclude Include="include\ResourceSystem\Mesh\MeshConstantData.h" />
     <ClInclude Include="include\ResourceSystem\Mesh\Vertex.h" />
-    <ClInclude Include="include\ResourceSystem\Shader\IGeometryShader.h" />
-    <ClInclude Include="include\ResourceSystem\Shader\IPixelShader.h" />
     <ClInclude Include="include\ResourceSystem\Shader\IShader.h" />
-    <ClInclude Include="include\ResourceSystem\Shader\IVertexShader.h" />
-    <ClInclude Include="include\ResourceSystem\Shape\FTRectangle.h" />
-    <ClInclude Include="include\ResourceSystem\Shape\FTShape.h" />
-    <ClInclude Include="include\ResourceSystem\Sprite\FTTileMap.h" />
+    <ClInclude Include="include\ResourceSystem\Shape\IShape.h" />
+    <ClInclude Include="include\ResourceSystem\Sprite\ITileMap.h" />
     <ClInclude Include="include\ResourceSystem\Sprite\ISprite.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="include\ResourceSystem\Sprite\Tile.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Math\Math.vcxproj">

@@ -262,7 +262,6 @@
     <ClInclude Include="include\Plugin\pch.h" />
     <ClInclude Include="include\Plugin\PluginKey.h" />
     <ClInclude Include="include\Renderer\CameraData.h" />
-    <ClInclude Include="include\Renderer\FTRectArea.h" />
     <ClInclude Include="include\ResourceSystem\CoreResource.h" />
     <ClInclude Include="include\ResourceSystem\FTPremade.h" />
     <ClInclude Include="include\ResourceSystem\GenericData\FTCSV.h" />
@@ -300,7 +299,6 @@
     <ClCompile Include="src\Plugin\dllmain.cpp" />
     <ClCompile Include="src\Plugin\FTCore.cpp" />
     <ClCompile Include="src\Plugin\pch.cpp" />
-    <ClCompile Include="src\Renderer\FTRectArea.cpp" />
     <ClCompile Include="src\ResourceSystem\CoreResource.cpp" />
     <ClCompile Include="src\ResourceSystem\FTPremade.cpp" />
     <ClCompile Include="src\ResourceSystem\GenericData\FTCSV.cpp" />

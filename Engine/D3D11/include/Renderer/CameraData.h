@@ -3,14 +3,17 @@
 #include "ICamera.h"
 #include "FTMath.h"
 
-namespace Core
+namespace Common
 {
 	class IActor;
+} // namespace Common
 
+namespace Core
+{
 	struct CameraData
 	{
-		Core::IActor*  Target	= nullptr;
-		Core::Viewtype ViewType = Core::Viewtype::Orthographic;
+		Common::IActor*	   Target	= nullptr;
+		Graphics::Viewtype ViewType = Graphics::Viewtype::Orthographic;
 
 		/// @brief Screen width (Resolution X)
 		unsigned int ResX = 1920;
@@ -53,20 +56,20 @@ namespace Core
 		void GetViewMatrix(Math::FTMatrix4& outViewMat);
 		void GetProjectionMatrix(Math::FTMatrix4& outProjMat);
 
-		const Core::Viewtype GetViewType();
-		const float			 GetProjFOVAngleY();
-		const float			 GetAspectRatio();
-		const float			 GetUnitsPerPixel();
-		const float			 GetNearZ();
-		const float			 GetFarZ();
+		const Graphics::Viewtype GetViewType();
+		const float				 GetProjFOVAngleY();
+		const float				 GetAspectRatio();
+		const float				 GetUnitsPerPixel();
+		const float				 GetNearZ();
+		const float				 GetFarZ();
 
 		const Math::FTVector3&	GetOffSet() const;
 		const float				GetZoomFactor() const;
 		const Math::FTVector2&& GetResolution() const;
 
 		void SetPosition(const Math::FTVector3& pos);
-		void SetViewType(Core::Viewtype viewType);
-		void SetTargetActor(Core::IActor* actor);
+		void SetViewType(Graphics::Viewtype viewType);
+		void SetTargetActor(Common::IActor* actor);
 		void SetOffset(Math::FTVector3 offset);
 
 		void InitializePixelsPerUnit(unsigned int pixels, float units = 1.f);

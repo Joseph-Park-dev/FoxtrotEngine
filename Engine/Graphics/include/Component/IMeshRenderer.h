@@ -12,6 +12,16 @@
 #pragma once
 #include "IComponent.h"
 
+namespace Core
+{
+	class IActor;
+}
+
+namespace InputSystem
+{
+	class IInputDevice;
+}
+
 namespace Graphics
 {
 	class IRenderer;
@@ -39,7 +49,7 @@ namespace Graphics
 	public:
 		virtual void Initialize()													   = 0;
 		virtual void Setup()														   = 0;
-		virtual void ProcessInput(Core::IInputDevice* inputDevice)					   = 0;
+		virtual void ProcessInput(InputSystem::IInputDevice* inputDevice)			   = 0;
 		virtual void Update(float deltaTime)										   = 0;
 		virtual void LateUpdate(float deltaTime)									   = 0;
 		virtual void Render(Graphics::IRenderer* renderer, Graphics::ICamera* camInst) = 0;

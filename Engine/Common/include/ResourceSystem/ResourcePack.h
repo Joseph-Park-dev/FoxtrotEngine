@@ -3,7 +3,7 @@
 
 #include "FTDS/Static/HashMap.h"
 #include "FileSystem/FileIOHelper.h"
-#include "ResourceSystem/FTResource.h"
+#include "ResourceSystem/IResource.h"
 
 #ifdef FOXTROT_EDITOR
 	#define IMGUI_DEFINE_MATH_OPERATORS
@@ -119,7 +119,7 @@ namespace Common
 			Common::FileIOHelper::LoadBasicString(ifs, relPath);
 			Common::FileIOHelper::LoadBasicString(ifs, fileName);
 
-			Common::FTResourceDef resDef(fileName, relPath);
+			Common::ResourceData resDef(fileName, relPath);
 			FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef, userData);
 
 			assert(0 < mResources->Capacity());
@@ -135,7 +135,7 @@ namespace Common
 			Common::FileIOHelper::LoadBasicString(ifs, relPath);
 			Common::FileIOHelper::LoadBasicString(ifs, fileName);
 
-			Common::FTResourceDef resDef(fileName, relPath);
+			Common::ResourceData resDef(fileName, relPath);
 			FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef);
 
 			assert(0 < mResources->Capacity());

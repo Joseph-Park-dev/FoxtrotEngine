@@ -7,13 +7,13 @@
 
 namespace Common
 {
-	void Common::ActorData::AddChild(IActor* child)
+	void Common::ActorData::AddChild(Common::IActor* child)
 	{
 		child->SetParent(Owner);
 		Children->PushBack(child);
 	}
 
-	void Common::ActorData::RemoveChild(IActor* child)
+	void Common::ActorData::RemoveChild(Common::IActor* child)
 	{
 		int pos = Children->Find(child);
 		if (pos == -1)
@@ -25,7 +25,7 @@ namespace Common
 		//	child->SetParent(child->GetParent()->GetParent());
 	}
 
-	void Common::ActorData::RemoveComponent(IComponent* comp)
+	void Common::ActorData::RemoveComponent(Common::IComponent* comp)
 	{
 		int pos = Components->Find(comp);
 		if (pos == -1)
@@ -43,12 +43,12 @@ namespace Common
 		Components->Clear();
 	}
 
-	void ActorData::CopyTransformFrom(IActor* actor)
+	void Common::ActorData::CopyTransformFrom(Common::IActor* actor)
 	{
 		actor->GetTransform()->CloneTo(Transform);
 	}
 
-	void ActorData::CopyComponentsFrom(IActor* actor)
+	void Common::ActorData::CopyComponentsFrom(Common::IActor* actor)
 	{
 		this->RemoveAllComponents();
 
@@ -57,12 +57,12 @@ namespace Common
 			compsToCopy->At(i)->CloneTo(Owner);
 	}
 
-	void ActorData::RefChildObjectFrom(IActor* actor)
+	void Common::ActorData::RefChildObjectFrom(Common::IActor* actor)
 	{
 		if (actor->GetChildActors()->GetSize() < 1)
 			return;
 
-		actor->GetChildActors()->IterateArray([&](IActor* child) {
+		actor->GetChildActors()->IterateArray([&](Common::IActor* child) {
 			this->AddChild(child);
 		});
 	}
@@ -102,17 +102,17 @@ namespace Common
 		return IsActive;
 	}
 
-	bool& ActorData::GetIsActiveRef()
+	bool& Common::ActorData::GetIsActiveRef()
 	{
 		return IsActive;
 	}
 
-	Common::Transform* Common::ActorData::GetTransform() const
+	Core::Transform* Common::ActorData::GetTransform() const
 	{
 		return Transform;
 	}
 
-	IActor* Common::ActorData::GetParent() const
+	Common::IActor* Common::ActorData::GetParent() const
 	{
 		return Parent;
 	}
@@ -122,7 +122,7 @@ namespace Common
 		return Components;
 	}
 
-	Common::FTDS::DynamicArray<IActor*>* Common::ActorData::GetChildActors()
+	Common::FTDS::DynamicArray<Common::IActor*>* Common::ActorData::GetChildActors()
 	{
 		return Children;
 	}
@@ -152,12 +152,12 @@ namespace Common
 		State = state;
 	}
 
-	void Common::ActorData::SetParent(IActor* parent)
+	void Common::ActorData::SetParent(Common::IActor* parent)
 	{
 		Parent = parent;
 	}
 
-	void Common::ActorData::SetTransform(Common::Transform* transform)
+	void Common::ActorData::SetTransform(Core::Transform* transform)
 	{
 		Transform = transform;
 	}
@@ -167,7 +167,7 @@ namespace Common
 		Components = components;
 	}
 
-	void Common::ActorData::SetChildActors(Common::FTDS::DynamicArray<IActor*>* children)
+	void Common::ActorData::SetChildActors(Common::FTDS::DynamicArray<Common::IActor*>* children)
 	{
 		Children = children;
 	}
@@ -192,7 +192,7 @@ namespace Common
 		return State == ActorState::DEAD;
 	}
 
-	void ActorData::SaveProperties(std::ofstream& ofs)
+	void Common::ActorData::SaveProperties(std::ofstream& ofs)
 	{
 		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::ACTOR_PROPERTIES);
 
@@ -223,7 +223,7 @@ namespace Common
 		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::ACTOR_PROPERTIES);
 	}
 
-	void ActorData::SaveComponents(std::ofstream& ofs)
+	void Common::ActorData::SaveComponents(std::ofstream& ofs)
 	{
 		size_t count = Components->GetSize();
 		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::COMPONENTS);
@@ -236,7 +236,7 @@ namespace Common
 		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::COMPONENTS);
 	}
 
-	void ActorData::LoadProperties(std::ifstream& ifs)
+	void Common::ActorData::LoadProperties(std::ifstream& ifs)
 	{
 		// Load Actor state
 		Common::FileIOHelper::LoadBool(ifs, IsActive);
@@ -259,7 +259,7 @@ namespace Common
 		Common::FileIOHelper::LoadBasicString(ifs, Name);
 	}
 
-	void ActorData::LoadComponents(std::ifstream& ifs)
+	void Common::ActorData::LoadComponents(std::ifstream& ifs)
 	{
 		std::pair<size_t, Common::FTDS::String>&& pack = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COMPONENTS);
 		Components->Reserve(pack.first);

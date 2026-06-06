@@ -19,10 +19,13 @@ namespace Common
 	}
 } // namespace Common
 
-namespace Core
+namespace InputSystem
 {
 	class IInputDevice;
+} // namespace InputSystem
 
+namespace Core
+{
 	/// <summary>
 	/// Abstract factory for creating platform-specific engine subsystems.
 	/// Allows Core to create objects without knowing about specific implementations.
@@ -38,7 +41,7 @@ namespace Core
 		/// Creates a platform-specific input device handler.
 		/// </summary>
 		/// <returns>Pointer to created input device. Caller owns the memory.</returns>
-		virtual IInputDevice* CreateInputDevice() = 0;
+		virtual InputSystem::IInputDevice* CreateInputDevice() = 0;
 
 	public:
 		virtual ~IInputSysFactory() = default;

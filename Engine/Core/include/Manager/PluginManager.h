@@ -16,11 +16,11 @@ namespace Core
 
 	public:
 		template <typename COMP>
-		COMP* RegisterComp(IActor* actor, const char* pluginName)
+		COMP* RegisterComp(Common::IActor* actor, const char* pluginName)
 		{
 			Common::FTDS::String procName = CREATE_PREFIX;
 			procName.Append(COMP::NAME);
-			using construct = COMP* (*)(IActor);
+			using construct = COMP* (*)(Common::IActor*);
 			return reinterpret_cast<construct>(GetProcAddress(mModules->At(pluginName)->Value(), procName.C_Str()))(actor);
 		}
 
@@ -35,21 +35,21 @@ namespace Core
 		void ShutDown();
 
 	public:
-		Core::IPlugin* RegisterPlugin(const char* pluginName);
-		Core::IPlugin* GetPlugin(const char* pluginName);
+		Common::IPlugin* RegisterPlugin(const char* pluginName);
+		Common::IPlugin* GetPlugin(const char* pluginName);
 
-		Common::FTDS::HashMap<Core::IPlugin*>* GetPlugins();
+		Common::FTDS::HashMap<Common::IPlugin*>* GetPlugins();
 
 	public:
-		void LoadComponents(Core::IActor* actor);
+		void LoadComponents(Common::IActor* actor);
 
 	private:
 		Common::FTDS::HashMap<HMODULE>*		   mModules;
-		Common::FTDS::HashMap<Core::IPlugin*>* mPlugins;
+		Common::FTDS::HashMap<Common::IPlugin*>* mPlugins;
 	};
 
 	extern "C"
 	{
-		CORE_API IPlugin* RegisterPlugin(const char* pluginName);
+		CORE_API Common::IPlugin* RegisterPlugin(const char* pluginName);
 	}
 } // namespace Core

@@ -10,7 +10,7 @@
 //
 // namespace Common
 //{
-//	FTResource::FTResource(Common::FTResourceDef& resDef)
+//	FTResource::FTResource(Common::ResourceData& resDef)
 //	{
 //		mFileName->Assign(resDef.FileName);
 //		mRelativePath->Assign(resDef.Path);

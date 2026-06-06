@@ -14,7 +14,7 @@
 #pragma once
 #include "TemplateFunctions.h"
 
-namespace Core
+namespace Common
 {
 	enum class ActorGroup
 	{
@@ -80,4 +80,4 @@ namespace Core
 	{
 		constexpr const char* ACTOR_GROUP = "Actor Group";
 	}
-} // namespace Core
+} // namespace Common

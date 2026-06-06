@@ -14,30 +14,19 @@
 #include <iosfwd>
 
 #include "FTDS/Static/FTString.h"
-#include "Plugin/IPlugin.h"
-#include "Actor/IActor.h"
 
-namespace Core
+namespace Common
 {
-	class Scene;
-	class FTPremade;
-	class Transform;
+	class IComponent;
 	struct ActorData;
-	enum class ActorState;
-	enum class ACTOR_TAG;
 	enum class ActorGroup;
-	namespace FTDS
-	{
-		template <typename TYPE>
-		class DynamicArray;
-		class String;
-	} // namespace FTDS
+	enum class ActorState;
 
 	class IActor
 	{
 	public:
-		virtual void AddChild(IActor* actor)	= 0;
-		virtual void RemoveChild(IActor* actor) = 0;
+		virtual void AddChild(IActor* actor)				= 0;
+		virtual void RemoveChild(IActor* actor)				= 0;
 		virtual void RemoveComponent(IComponent* component) = 0;
 		virtual void RemoveAllComponents()					= 0;
 
@@ -56,30 +45,30 @@ namespace Core
 
 	public:
 		// Getters/Setters
-		virtual Core::ActorData*							   GetData()			 = 0;
-		virtual Core::ActorGroup							   GetActorGroup() const = 0;
-		virtual Core::ActorGroup&							   GetActorGroupRef()	 = 0;
-		virtual Core::ActorGroup*							   GetActorGroupPtr()	 = 0;
-		virtual Common::FTDS::String						   GetName()			 = 0;
-		virtual Common::FTDS::String&						   GetNameRef()			 = 0;
-		virtual const int									   GetID() const		 = 0;
-		virtual const bool&									   GetIsActive() const	 = 0;
-		virtual bool&										   GetIsActiveRef()		 = 0;
-		virtual Core::Transform*							   GetTransform() const	 = 0;
-		virtual Core::IActor*								   GetParent() const	 = 0;
-		virtual Common::FTDS::DynamicArray<Core::IComponent*>* GetComponents()		 = 0;
-		virtual Common::FTDS::DynamicArray<Core::IActor*>*	   GetChildActors()		 = 0;
-		virtual const int&									   GetDrawOrder() const	 = 0;
+		virtual Common::ActorData*								 GetData()			   = 0;
+		virtual Common::ActorGroup								 GetActorGroup() const = 0;
+		virtual Common::ActorGroup&								 GetActorGroupRef()	   = 0;
+		virtual Common::ActorGroup*								 GetActorGroupPtr()	   = 0;
+		virtual Common::FTDS::String							 GetName()			   = 0;
+		virtual Common::FTDS::String&							 GetNameRef()		   = 0;
+		virtual const int										 GetID() const		   = 0;
+		virtual const bool&										 GetIsActive() const   = 0;
+		virtual bool&											 GetIsActiveRef()	   = 0;
+		virtual Core::Transform*								 GetTransform() const  = 0;
+		virtual Common::IActor*									 GetParent() const	   = 0;
+		virtual Common::FTDS::DynamicArray<Common::IComponent*>* GetComponents()	   = 0;
+		virtual Common::FTDS::DynamicArray<Common::IActor*>*	 GetChildActors()	   = 0;
+		virtual const int&										 GetDrawOrder() const  = 0;
 
-		virtual void SetName(Common::FTDS::String&& name)									  = 0;
-		virtual void SetIsActive(bool isActive)												  = 0;
-		virtual void SetActorGroup(Core::ActorGroup group)									  = 0;
-		virtual void SetState(Core::ActorState state)										  = 0;
-		virtual void SetParent(Core::IActor* parent)										  = 0;
-		virtual void SetTransform(Core::Transform* transform)								  = 0;
-		virtual void SetComponents(Common::FTDS::DynamicArray<Core::IComponent*>* components) = 0;
-		virtual void SetChildActors(Common::FTDS::DynamicArray<Core::IActor*>* children)	  = 0;
-		virtual void SetDrawOrder(int order)												  = 0;
+		virtual void SetName(Common::FTDS::String&& name)										= 0;
+		virtual void SetIsActive(bool isActive)													= 0;
+		virtual void SetActorGroup(Common::ActorGroup group)									= 0;
+		virtual void SetState(Common::ActorState state)											= 0;
+		virtual void SetParent(Common::IActor* parent)											= 0;
+		virtual void SetTransform(Core::Transform* transform)									= 0;
+		virtual void SetComponents(Common::FTDS::DynamicArray<Common::IComponent*>* components) = 0;
+		virtual void SetChildActors(Common::FTDS::DynamicArray<Common::IActor*>* children)		= 0;
+		virtual void SetDrawOrder(int order)													= 0;
 
 		virtual bool HasName(Common::FTDS::String&& name) = 0;
 		virtual bool HasName(const char* name)			  = 0;
@@ -116,4 +105,4 @@ namespace Core
 			constexpr const char* ID = "ID";
 		} // namespace ID
 	} // namespace ChunkKey
-} // namespace Core
+} // namespace Common

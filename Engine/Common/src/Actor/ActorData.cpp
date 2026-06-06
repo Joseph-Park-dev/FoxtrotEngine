@@ -5,15 +5,15 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Actor/Transform.h"
 
-namespace Core
+namespace Common
 {
-	void Core::ActorData::AddChild(IActor* child)
+	void Common::ActorData::AddChild(IActor* child)
 	{
 		child->SetParent(Owner);
 		Children->PushBack(child);
 	}
 
-	void Core::ActorData::RemoveChild(IActor* child)
+	void Common::ActorData::RemoveChild(IActor* child)
 	{
 		int pos = Children->Find(child);
 		if (pos == -1)
@@ -21,11 +21,11 @@ namespace Core
 
 		Children->Erase(pos);
 
-		//if (child->GetParent()->GetParent())
+		// if (child->GetParent()->GetParent())
 		//	child->SetParent(child->GetParent()->GetParent());
 	}
 
-	void Core::ActorData::RemoveComponent(IComponent* comp)
+	void Common::ActorData::RemoveComponent(IComponent* comp)
 	{
 		int pos = Components->Find(comp);
 		if (pos == -1)
@@ -36,7 +36,7 @@ namespace Core
 		Components->Erase(pos);
 	}
 
-	void Core::ActorData::RemoveAllComponents()
+	void Common::ActorData::RemoveAllComponents()
 	{
 		for (auto comp = Components->Begin(); comp != Components->End(); ++comp)
 			delete *comp;
@@ -67,37 +67,37 @@ namespace Core
 		});
 	}
 
-	Core::ActorGroup Core::ActorData::GetActorGroup() const
+	Common::ActorGroup Common::ActorData::GetActorGroup() const
 	{
 		return ActorGroup;
 	}
 
-	Core::ActorGroup& Core::ActorData::GetActorGroupRef()
+	Common::ActorGroup& Common::ActorData::GetActorGroupRef()
 	{
 		return ActorGroup;
 	}
 
-	Core::ActorGroup* Core::ActorData::GetActorGroupPtr()
+	Common::ActorGroup* Common::ActorData::GetActorGroupPtr()
 	{
 		return &ActorGroup;
 	}
 
-	Common::FTDS::String Core::ActorData::GetName()
+	Common::FTDS::String Common::ActorData::GetName()
 	{
 		return Name;
 	}
 
-	Common::FTDS::String& Core::ActorData::GetNameRef()
+	Common::FTDS::String& Common::ActorData::GetNameRef()
 	{
 		return Name;
 	}
 
-	const int Core::ActorData::GetID() const
+	const int Common::ActorData::GetID() const
 	{
 		return ID;
 	}
 
-	const bool Core::ActorData::GetIsActive() const
+	const bool Common::ActorData::GetIsActive() const
 	{
 		return IsActive;
 	}
@@ -107,87 +107,87 @@ namespace Core
 		return IsActive;
 	}
 
-	Core::Transform* Core::ActorData::GetTransform() const
+	Common::Transform* Common::ActorData::GetTransform() const
 	{
 		return Transform;
 	}
 
-	IActor* Core::ActorData::GetParent() const
+	IActor* Common::ActorData::GetParent() const
 	{
 		return Parent;
 	}
 
-	Common::FTDS::DynamicArray<IComponent*>* Core::ActorData::GetComponents()
+	Common::FTDS::DynamicArray<IComponent*>* Common::ActorData::GetComponents()
 	{
 		return Components;
 	}
 
-	Common::FTDS::DynamicArray<IActor*>* Core::ActorData::GetChildActors()
+	Common::FTDS::DynamicArray<IActor*>* Common::ActorData::GetChildActors()
 	{
 		return Children;
 	}
 
-	const int Core::ActorData::GetDrawOrder() const
+	const int Common::ActorData::GetDrawOrder() const
 	{
 		return DrawOrder;
 	}
 
-	void Core::ActorData::SetName(Common::FTDS::String&& name)
+	void Common::ActorData::SetName(Common::FTDS::String&& name)
 	{
 		Name.Assign(name);
 	}
 
-	void Core::ActorData::SetIsActive(bool isActive)
+	void Common::ActorData::SetIsActive(bool isActive)
 	{
 		IsActive = isActive;
 	}
 
-	void Core::ActorData::SetActorGroup(Core::ActorGroup group)
+	void Common::ActorData::SetActorGroup(Common::ActorGroup group)
 	{
 		ActorGroup = group;
 	}
 
-	void Core::ActorData::SetState(ActorState state)
+	void Common::ActorData::SetState(ActorState state)
 	{
 		State = state;
 	}
 
-	void Core::ActorData::SetParent(IActor* parent)
+	void Common::ActorData::SetParent(IActor* parent)
 	{
 		Parent = parent;
 	}
 
-	void Core::ActorData::SetTransform(Core::Transform* transform)
+	void Common::ActorData::SetTransform(Common::Transform* transform)
 	{
 		Transform = transform;
 	}
 
-	void Core::ActorData::SetComponents(Common::FTDS::DynamicArray<IComponent*>* components)
+	void Common::ActorData::SetComponents(Common::FTDS::DynamicArray<IComponent*>* components)
 	{
 		Components = components;
 	}
 
-	void Core::ActorData::SetChildActors(Common::FTDS::DynamicArray<IActor*>* children)
+	void Common::ActorData::SetChildActors(Common::FTDS::DynamicArray<IActor*>* children)
 	{
 		Children = children;
 	}
 
-	void Core::ActorData::SetDrawOrder(int order)
+	void Common::ActorData::SetDrawOrder(int order)
 	{
 		DrawOrder = order;
 	}
 
-	bool Core::ActorData::HasName(Common::FTDS::String&& name)
+	bool Common::ActorData::HasName(Common::FTDS::String&& name)
 	{
 		return Name.Equal(name.C_Str());
 	}
 
-	bool Core::ActorData::HasName(const char* name)
+	bool Common::ActorData::HasName(const char* name)
 	{
 		return Name.Equal(name);
 	}
 
-	bool Core::ActorData::IsDead()
+	bool Common::ActorData::IsDead()
 	{
 		return State == ActorState::DEAD;
 	}
@@ -269,4 +269,4 @@ namespace Core
 			// ChunkLoader::GetInstance()->GetComponentLoadMap().At(compPack.second)->Value()(this, ifs);
 		}
 	}
-} // namespace Core
+} // namespace Common

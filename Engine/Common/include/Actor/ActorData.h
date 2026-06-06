@@ -8,7 +8,7 @@
 #include "Actor/IActor.h"
 #include "FileSystem/ChunkLoader.h"
 
-namespace Core
+namespace Common
 {
 	enum class ActorState
 	{
@@ -25,17 +25,17 @@ namespace Core
 
 	struct ActorData
 	{
-		Core::IActor*							 Owner		= nullptr;
+		Common::IActor*							 Owner		= nullptr;
 		Common::FTDS::String					 Name		= {};
 		int										 ID			= Common::ChunkKey::NullVal::INVALID_IDX;
-		Core::ActorGroup						 ActorGroup = ActorGroup::DEFAULT;
-		Core::ActorState						 State		= ActorState::ALIVE;
+		Common::ActorGroup						 ActorGroup = Common::ActorGroup::DEFAULT;
+		Common::ActorState						 State		= ActorState::ALIVE;
 		bool									 IsActive	= true;
 		Core::Transform*						 Transform	= nullptr;
 		Common::FTDS::DynamicArray<IComponent*>* Components = nullptr;
 		IActor*									 Parent		= nullptr;
 		Common::FTDS::DynamicArray<IActor*>*	 Children	= nullptr;
-		int										 DrawOrder	= Core::DefaultVal::DRAW_ORDER;
+		int										 DrawOrder	= Common::DefaultVal::DRAW_ORDER;
 
 		~ActorData()
 		{
@@ -113,11 +113,11 @@ namespace Core
 			if (GetChildActors()->GetSize() < 1)
 				return;
 
-			actor->GetChildActors()->IterateArray([&](Core::IActor* child) {
+			actor->GetChildActors()->IterateArray([&](Common::IActor* child) {
 				if (child)
 				{
 					ACTOR_INSTANCE* childAc = reinterpret_cast<ACTOR_INSTANCE*>(child);
-					ChunkLoader::GetInstance()->AddMaxActorID();
+					Core::ChunkLoader::GetInstance()->AddMaxActorID();
 					int maxID = Core::ChunkLoader::GetInstance()->GetMaxActorID();
 					this->AddChild(DBG_NEW ACTOR_INSTANCE(childAc, maxID));
 				}
@@ -127,9 +127,9 @@ namespace Core
 		// Shallow copies all child Actors.
 		void RefChildObjectFrom(IActor* actor);
 
-		Core::ActorGroup						 GetActorGroup() const;
-		Core::ActorGroup&						 GetActorGroupRef();
-		Core::ActorGroup*						 GetActorGroupPtr();
+		Common::ActorGroup						 GetActorGroup() const;
+		Common::ActorGroup&						 GetActorGroupRef();
+		Common::ActorGroup*						 GetActorGroupPtr();
 		Common::FTDS::String					 GetName();
 		Common::FTDS::String&					 GetNameRef();
 		const int								 GetID() const;
@@ -143,12 +143,12 @@ namespace Core
 
 		void SetName(Common::FTDS::String&& name);
 		void SetIsActive(bool isActive);
-		void SetActorGroup(Core::ActorGroup group);
-		void SetState(Core::ActorState state);
-		void SetParent(Core::IActor* parent);
+		void SetActorGroup(Common::ActorGroup group);
+		void SetState(Common::ActorState state);
+		void SetParent(Common::IActor* parent);
 		void SetTransform(Core::Transform* transform);
-		void SetComponents(Common::FTDS::DynamicArray<Core::IComponent*>* components);
-		void SetChildActors(Common::FTDS::DynamicArray<Core::IActor*>* children);
+		void SetComponents(Common::FTDS::DynamicArray<Common::IComponent*>* components);
+		void SetChildActors(Common::FTDS::DynamicArray<Common::IActor*>* children);
 		void SetDrawOrder(int order);
 
 		bool HasName(Common::FTDS::String&& name);
@@ -166,4 +166,4 @@ namespace Core
 	{
 		constexpr const char* ACTOR_PROPERTIES = "Actor Properties";
 	}
-} // namespace Core
+} // namespace Common

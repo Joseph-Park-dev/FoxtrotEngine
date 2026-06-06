@@ -69,7 +69,7 @@ namespace Core
 #ifdef FOXTROT_EDITOR
 		if (!Target)
 		{
-			using FIND_ACTOR = Core::IActor* (*)(Common::FTDS::String&, Core::IActor*);
+			using FIND_ACTOR = Common::IActor* (*)(Common::FTDS::String&, Common::IActor*);
 			Target	 = GetFunc<FIND_ACTOR>(Plugin::Name::CORE_EDITOR, ProcNames::FIND_ACTOR)(targetName, nullptr);
 		}
 #else
@@ -110,13 +110,13 @@ namespace Core
 
 		Aspect = renderSize.x / renderSize.y;
 
-		ViewType == Core::Viewtype::Perspective
+		ViewType == Graphics::Viewtype::Perspective
 			? outProjMat = FTMatrix4::CreatePerspectiveFOV(Math::ToRadians(ProjFOVAngleY), renderSize.x, renderSize.y, NearZ, FarZ)
 			: outProjMat = FTMatrix4::CreateOrtho(
 				  worldWidth, worldHeight, NearZ, FarZ);
 	}
 
-	const Core::Viewtype Core::CameraData::GetViewType()
+	const Graphics::Viewtype Core::CameraData::GetViewType()
 	{
 		return ViewType;
 	}
@@ -166,12 +166,12 @@ namespace Core
 		Position = pos;
 	}
 
-	void Core::CameraData::SetViewType(Core::Viewtype viewType)
+	void Core::CameraData::SetViewType(Graphics::Viewtype viewType)
 	{
 		ViewType = viewType;
 	}
 
-	void Core::CameraData::SetTargetActor(Core::IActor* actor)
+	void Core::CameraData::SetTargetActor(Common::IActor* actor)
 	{
 		Target = actor;
 	}

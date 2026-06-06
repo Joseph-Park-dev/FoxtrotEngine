@@ -23,22 +23,22 @@ namespace Core
 	class Scene
 	{
 	public:
-		void AddActor(IActor* actor);
-		void RemoveActor(IActor* actor);
+		void AddActor(Common::IActor* actor);
+		void RemoveActor(Common::IActor* actor);
 
-		IActor*			FindActor(int id);
-		virtual IActor* FindActor(Common::FTDS::String& name, IActor* filter = nullptr);
-		IActor*			FindActor(const char* name, IActor* filter = nullptr);
+		Common::IActor*			FindActor(int id);
+		virtual Common::IActor* FindActor(Common::FTDS::String& name, Common::IActor* filter = nullptr);
+		Common::IActor*			FindActor(const char* name, Common::IActor* filter = nullptr);
 
 	public:
-		const Common::FTDS::String&				   GetName();
-		const bool								   GetIsUpdatingActors() const;
-		const Common::FTDS::DynamicArray<IActor*>* GetActors() const;
+		const Common::FTDS::String&						   GetName();
+		const bool										   GetIsUpdatingActors() const;
+		const Common::FTDS::DynamicArray<Common::IActor*>* GetActors() const;
 
 		void SetName(const Common::FTDS::String&& name);
 		void SetIsUpdatingActors(bool value) { mIsUpdatingActors = value; }
 
-		Common::FTDS::DynamicArray<IActor*>*& Actors();
+		Common::FTDS::DynamicArray<Common::IActor*>*& Actors();
 
 	public:
 		void		 ProcessEvent();
@@ -46,10 +46,10 @@ namespace Core
 
 	private:
 		/// @brief Active actors managed by the scene.
-		Common::FTDS::DynamicArray<IActor*>* mActors;
+		Common::FTDS::DynamicArray<Common::IActor*>* mActors;
 
 		/// @brief Actors pending addition while updates are in progress.
-		Common::FTDS::DynamicArray<IActor*>* mPendingActors;
+		Common::FTDS::DynamicArray<Common::IActor*>* mPendingActors;
 
 		/// @brief Human-readable scene name.
 		Common::FTDS::String mSceneName;

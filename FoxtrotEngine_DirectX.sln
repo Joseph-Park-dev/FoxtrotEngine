@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Graphics", "Engine\Graphics
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InputSystem", "Engine\InputSystem\InputSystem.vcxproj", "{F72FB9A9-0E80-40AC-A8DD-1A9649F2E51C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GenericData", "Engine\GenericData\GenericData.vcxproj", "{895C9AF5-F0D9-403D-AF4F-5FFE5E4FFD94}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -113,6 +115,18 @@ Global
 		{F72FB9A9-0E80-40AC-A8DD-1A9649F2E51C}.Release|x64.Build.0 = Release|x64
 		{F72FB9A9-0E80-40AC-A8DD-1A9649F2E51C}.Release|x86.ActiveCfg = Release|Win32
 		{F72FB9A9-0E80-40AC-A8DD-1A9649F2E51C}.Release|x86.Build.0 = Release|Win32
+		{895C9AF5-F0D9-403D-AF4F-5FFE5E4FFD94}.Debug|x64.ActiveCfg = Debug|x64
+		{895C9AF5-F0D9-403D-AF4F-5FFE5E4FFD94}.Debug|x64.Build.0 = Debug|x64
+		{895C9AF5-F0D9-403D-AF4F-5FFE5E4FFD94}.Debug|x86.ActiveCfg = Debug|Win32
+		{895C9AF5-F0D9-403D-AF4F-5FFE5E4FFD94}.Debug|x86.Build.0 = Debug|Win32
+		{895C9AF5-F0D9-403D-AF4F-5FFE5E4FFD94}.Foxtrot_Editor_Debug|x64.ActiveCfg = Release|x64
+		{895C9AF5-F0D9-403D-AF4F-5FFE5E4FFD94}.Foxtrot_Editor_Debug|x64.Build.0 = Release|x64
+		{895C9AF5-F0D9-403D-AF4F-5FFE5E4FFD94}.Foxtrot_Editor_Debug|x86.ActiveCfg = Release|Win32
+		{895C9AF5-F0D9-403D-AF4F-5FFE5E4FFD94}.Foxtrot_Editor_Debug|x86.Build.0 = Release|Win32
+		{895C9AF5-F0D9-403D-AF4F-5FFE5E4FFD94}.Release|x64.ActiveCfg = Release|x64
+		{895C9AF5-F0D9-403D-AF4F-5FFE5E4FFD94}.Release|x64.Build.0 = Release|x64
+		{895C9AF5-F0D9-403D-AF4F-5FFE5E4FFD94}.Release|x86.ActiveCfg = Release|Win32
+		{895C9AF5-F0D9-403D-AF4F-5FFE5E4FFD94}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

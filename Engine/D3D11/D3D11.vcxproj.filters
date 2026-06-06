@@ -380,6 +380,9 @@
     <ClCompile Include="src\Renderer\FTRectArea.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Renderer\CameraData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Component\Animator.h">
@@ -554,6 +557,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Renderer\FTRectArea.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Renderer\CameraData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

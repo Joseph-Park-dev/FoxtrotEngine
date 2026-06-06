@@ -17,12 +17,6 @@
 #include "ResourceSystem/FTPremade.h"
 #include "FTDS/Dynamic/DynamicArray.h"
 
-#ifdef FOXTROT_EDITOR
-	#include "EditorSceneManager.h"
-	#include "EditorElement.h"
-	#include "EditorScene.h"
-#endif // FOXTROT_EDITOR
-
 namespace Core
 {
 	void EventManager::AddEvent(const FTEvent& addedEvent)
@@ -52,7 +46,7 @@ namespace Core
 			case EVENT_TYPE::DESTROY_ACTOR:
 			{
 				Actor* actorToDestroy = static_cast<Actor*>(executedEvent.eventData);
-				actorToDestroy->SetState(Core::ActorState::DEAD);
+				actorToDestroy->SetState(Common::ActorState::DEAD);
 			}
 			break;
 			case EVENT_TYPE::SWITCH_SCENE:

@@ -296,6 +296,7 @@
     <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Triangulator.cpp" />
     <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Updatable.cpp" />
     <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\VertexAttachment.cpp" />
+    <ClCompile Include="src\Renderer\CameraData.cpp" />
     <ClCompile Include="src\Renderer\FTRectArea.cpp" />
     <ClCompile Include="src\Renderer\Camera-1.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
@@ -357,6 +358,7 @@
     <ClInclude Include="include\Component\SpriteRenderer.h" />
     <ClInclude Include="include\Component\TileMapRenderer.h" />
     <ClInclude Include="include\Debugging\D3D11DebugFuncs.h" />
+    <ClInclude Include="include\Renderer\CameraData.h" />
     <ClInclude Include="include\Renderer\D3D11Window.h" />
     <ClInclude Include="include\framework.h" />
     <ClInclude Include="include\InputSystem\D3D11InputDevice.h" />

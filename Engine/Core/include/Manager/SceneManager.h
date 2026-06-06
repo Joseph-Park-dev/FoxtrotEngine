@@ -20,15 +20,19 @@
 
 #include "Plugin/CoreExports.h"
 
-namespace Core
+namespace Common
 {
-	class Scene;
 	class IActor;
 	namespace FTDS
 	{
 		template <typename TYPE>
 		class DynamicArray;
 	} // namespace FTDS
+} // namespace Common
+
+namespace Core
+{
+	class Scene;
 
 #ifndef FOXTROT_EDITOR // If it's not on Editor.
 	#define FIND_ACTOR_FILTER(name, filter) SceneManager::GetInstance()->GetCurrentScene()->FindActor(name, filter)
@@ -63,6 +67,6 @@ namespace Core
 
 	extern "C"
 	{
-		CORE_API Core::IActor* FindActor(const char* name, Core::IActor* filter);
+		CORE_API Common::IActor* FindActor(const char* name, Common::IActor* filter);
 	}
 } // namespace Core

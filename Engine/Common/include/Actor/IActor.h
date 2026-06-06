@@ -15,6 +15,11 @@
 
 #include "FTDS/Static/FTString.h"
 
+namespace Core
+{
+	class Transform;
+}
+
 namespace Common
 {
 	class IComponent;
@@ -25,23 +30,23 @@ namespace Common
 	class IActor
 	{
 	public:
-		virtual void AddChild(IActor* actor)				= 0;
-		virtual void RemoveChild(IActor* actor)				= 0;
-		virtual void RemoveComponent(IComponent* component) = 0;
-		virtual void RemoveAllComponents()					= 0;
+		virtual void AddChild(Common::IActor* actor)				= 0;
+		virtual void RemoveChild(Common::IActor* actor)				= 0;
+		virtual void RemoveComponent(Common::IComponent* component) = 0;
+		virtual void RemoveAllComponents()							= 0;
 
 	public:
-		// Deep copies transform from another IActor.
-		virtual void CopyTransformFrom(IActor* actor) = 0;
+		// Deep copies transform from another Common::IActor.
+		virtual void CopyTransformFrom(Common::IActor* actor) = 0;
 
-		// Creates new IComponent with values from another IActor.
-		virtual void CopyComponentsFrom(IActor* actor) = 0;
+		// Creates new IComponent with values from another Common::IActor.
+		virtual void CopyComponentsFrom(Common::IActor* actor) = 0;
 
 		// Deep copies all child Actors
-		virtual void CopyChildObjectFrom(IActor* actor) = 0;
+		virtual void CopyChildObjectFrom(Common::IActor* actor) = 0;
 
 		// Shallow copies all child Actors.
-		virtual void RefChildObjectFrom(IActor* actor) = 0;
+		virtual void RefChildObjectFrom(Common::IActor* actor) = 0;
 
 	public:
 		// Getters/Setters

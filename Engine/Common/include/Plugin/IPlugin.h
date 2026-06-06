@@ -24,7 +24,7 @@ namespace Common
 	class IPlugin
 	{
 	public:
-		virtual void RegisterComponent(IComponent* comp) = 0;
+		virtual void RegisterComponent(Common::IComponent* comp) = 0;
 
 	public:
 		////////////////////////////////
@@ -81,6 +81,6 @@ namespace Common
 		/// @param actor Actor object the component is loaded to
 		/// @param name Name of the component
 		/// @return
-		CORE_API IComponent* CreateComponent(IPlugin* plugin, IActor* actor, Common::FTDS::String& name);
+		CORE_API IComponent* CreateComponent(IPlugin* plugin, Common::IActor* actor, Common::FTDS::String& name);
 	}
 } // namespace Common

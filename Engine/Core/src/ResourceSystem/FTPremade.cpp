@@ -18,40 +18,40 @@
 #include "Actor/Actor.h"
 #include "FTDS/Static/FTString.h"
 
-#ifdef FOXTROT_EDITOR
-	#define IMGUI_DEFINE_MATH_OPERATORS
-	#include <imgui/imgui.h>
-	#include <imgui/backends/imgui_impl_win32.h>
-	#include <imgui/backends/imgui_impl_dx11.h>
-	#include <ImGuiFileDialog/ImGuiFileDialog.h>
-
-	#include "EditorUtils.h"
-	#include "EditorSceneManager.h"
-	#include "ChunkLoader.h"
-	#include "EditorScene.h"
-	#include "Manager/DirectoryHelper.h"
-	#include "EditorElement.h"
-
-	#include "Plugin/PluginKey.h"
-	#include "FileSystem/DLLPath.h"
-#endif // FOXTROT_EDITOR
+// #ifdef FOXTROT_EDITOR
+//	#define IMGUI_DEFINE_MATH_OPERATORS
+//	#include <imgui/imgui.h>
+//	#include <imgui/backends/imgui_impl_win32.h>
+//	#include <imgui/backends/imgui_impl_dx11.h>
+//	#include <ImGuiFileDialog/ImGuiFileDialog.h>
+//
+//	#include "EditorUtils.h"
+//	#include "EditorSceneManager.h"
+//	#include "ChunkLoader.h"
+//	#include "EditorScene.h"
+//	#include "Manager/DirectoryHelper.h"
+//	#include "EditorElement.h"
+//
+//	#include "Plugin/PluginKey.h"
+//	#include "FileSystem/DLLPath.h"
+// #endif // FOXTROT_EDITOR
 
 namespace Core
 {
 	using namespace Common;
-	FTPremade::FTPremade(Common::FTResourceDef& resDef)
-		: CoreResource(resDef)
+	FTPremade::FTPremade(Common::ResourceData* data)
+		: mData(data)
 		, mOrigin(nullptr)
 		, mIsLoaded(false)
-#ifdef FOXTROT_EDITOR
-		, mDummyForUI(nullptr)
-#endif // FOXTROT_EDITOR
+	// #ifdef FOXTROT_EDITOR
+	//		, mDummyForUI(nullptr)
+	// #endif // FOXTROT_EDITOR
 	{
 		if (mOrigin)
 			return;
 
-		if (std::filesystem::exists(resDef.Path))
-			this->Load(resDef.Path);
+		if (std::filesystem::exists(data->Path->C_Str()))
+			this->Load(data->Path->C_Str());
 	}
 
 	FTPremade::~FTPremade()
@@ -75,7 +75,7 @@ namespace Core
 	void FTPremade::Load(const char* path)
 	{
 		if (!mOrigin)
-			mOrigin = DBG_NEW Actor(ChunkKey::ID::CLONE);
+			mOrigin = DBG_NEW Actor(Common::ChunkKey::ID::CLONE);
 
 		std::ifstream							ifs(path);
 		std::pair<size_t, Common::FTDS::String> pack = Common::FileIOHelper::BeginDataPackLoad(ifs);
@@ -91,93 +91,93 @@ namespace Core
 		mIsLoaded = true;
 	}
 
-#ifdef FOXTROT_EDITOR
-	void FTPremade::Save(Common::FTResourceDef& resDef, Editor::EditorElement* ele)
-	{
-		assert(resDef.Path);
-		printf(resDef.Path);
-
-		std::ofstream ofs(resDef.Path);
-		if (ofs)
-		{
-			Common::FileIOHelper::BeginDataPackSave(ofs, resDef.FileName);
-			ele->SaveComponents(ofs);
-			ele->SaveProperties(ofs);
-			Common::FileIOHelper::EndDataPackSave(ofs, resDef.FileName);
-			Common::FileIOHelper::SaveBufferToFile(ofs);
-
-			printf("Premade saved to %s\n", resDef.Path);
-		}
-		else
-			printf("ERROR: FTPremade::Create -> Failed to open file\n");
-	}
-
-	void FTPremade::UpdateUI()
-	{
-		ImGui::Text(GetFileName()->C_Str());
-		ImGui::Separator();
-
-		if (ImGui::Button("Add to Chunk"))
-		{
-			mGetEditorChunkLoaderFunc()->AddMaxActorID();
-			int id = mGetEditorChunkLoaderFunc()->GetMaxActorID();
-			mGetEditorSceneFunc()->AddEditorElement(mOrigin, id);
-		}
-
-		if (Editor::ButtonCenteredOnLine("Edit Premade"))
-		{
-			if (mOrigin)
-			{
-				mDummyForUI = mCreateEditorElemFunc(mOrigin, ChunkKey::ID::INVALID);
-				ImGui::OpenPopup("EditPremade");
-			}
-		}
-		if (ImGui::BeginPopupModal("EditPremade"))
-		{
-			if (mDummyForUI)
-			{
-				// Only values from Actor is needed here.
-				// Thus dynamic_cast is not needed.
-				mDummyForUI->SetIsFocused(true);
-				mDummyForUI->UpdateUI(true);
-				if (ImGui::Button("Save"))
-				{
-					Common::FTResourceDef resDef{ *GetFileName(), *GetRelativePath() };
-					Save(resDef, mDummyForUI);
-				}
-			}
-			if (ImGui::Button("Close"))
-			{
-				ImGui::CloseCurrentPopup();
-			}
-			ImGui::EndPopup();
-		}
-	}
-
-	FTPremade::FTPremade(Common::FTResourceDef& resDef, Editor::EditorElement* ele)
-		: FTPremade(resDef)
-	{
-		assert(resDef.Path);
-		std::ofstream ofs(resDef.Path);
-		if (ofs)
-		{
-			Common::FileIOHelper::BeginDataPackSave(ofs, resDef.FileName);
-			ele->SaveComponents(ofs);
-			ele->SaveProperties(ofs);
-			Common::FileIOHelper::EndDataPackSave(ofs, resDef.FileName);
-			Common::FileIOHelper::SaveBufferToFile(ofs);
-
-			printf("Premade %s created to %s\n", resDef.FileName, resDef.Path);
-		}
-		else
-			printf("ERROR: FTPremade::Create -> Failed to open file %s\n", resDef.Path);
-
-		HMODULE mod = GetModuleHandleA(DLLPath::EDITOR);
-		if (!mod)
-			Debug::LogError(__LINE__, __FILE__, "Module is Null");
-		mCreateEditorElemFunc	  = reinterpret_cast<Editor::CREATE_EDITOR_ELEM>(GetProcAddress(mod, Editor::CREATE_EDITOR_ELEMENT_FROM_ACTOR));
-		mGetEditorSceneFunc		  = reinterpret_cast<Editor::GET_EDITOR_SCENE>(GetProcAddress(mod, Editor::GET_EDITOR_SCENE_FUNC));
-		mGetEditorChunkLoaderFunc = reinterpret_cast<Editor::GET_EDITOR_CHUNK_LOADER>(GetProcAddress(mod, Editor::GET_EDITOR_CHUNK_LOADER_FUNC));
-	}
-#endif
+	// #ifdef FOXTROT_EDITOR
+	//	void FTPremade::Save(Common::FTResourceDef& resDef, Editor::EditorElement* ele)
+	//	{
+	//		assert(resDef.Path);
+	//		printf(resDef.Path);
+	//
+	//		std::ofstream ofs(resDef.Path);
+	//		if (ofs)
+	//		{
+	//			Common::FileIOHelper::BeginDataPackSave(ofs, resDef.FileName);
+	//			ele->SaveComponents(ofs);
+	//			ele->SaveProperties(ofs);
+	//			Common::FileIOHelper::EndDataPackSave(ofs, resDef.FileName);
+	//			Common::FileIOHelper::SaveBufferToFile(ofs);
+	//
+	//			printf("Premade saved to %s\n", resDef.Path);
+	//		}
+	//		else
+	//			printf("ERROR: FTPremade::Create -> Failed to open file\n");
+	//	}
+	//
+	//	void FTPremade::UpdateUI()
+	//	{
+	//		ImGui::Text(GetFileName()->C_Str());
+	//		ImGui::Separator();
+	//
+	//		if (ImGui::Button("Add to Chunk"))
+	//		{
+	//			mGetEditorChunkLoaderFunc()->AddMaxActorID();
+	//			int id = mGetEditorChunkLoaderFunc()->GetMaxActorID();
+	//			mGetEditorSceneFunc()->AddEditorElement(mOrigin, id);
+	//		}
+	//
+	//		if (Editor::ButtonCenteredOnLine("Edit Premade"))
+	//		{
+	//			if (mOrigin)
+	//			{
+	//				mDummyForUI = mCreateEditorElemFunc(mOrigin, ChunkKey::ID::INVALID);
+	//				ImGui::OpenPopup("EditPremade");
+	//			}
+	//		}
+	//		if (ImGui::BeginPopupModal("EditPremade"))
+	//		{
+	//			if (mDummyForUI)
+	//			{
+	//				// Only values from Actor is needed here.
+	//				// Thus dynamic_cast is not needed.
+	//				mDummyForUI->SetIsFocused(true);
+	//				mDummyForUI->UpdateUI(true);
+	//				if (ImGui::Button("Save"))
+	//				{
+	//					Common::FTResourceDef resDef{ *GetFileName(), *GetRelativePath() };
+	//					Save(resDef, mDummyForUI);
+	//				}
+	//			}
+	//			if (ImGui::Button("Close"))
+	//			{
+	//				ImGui::CloseCurrentPopup();
+	//			}
+	//			ImGui::EndPopup();
+	//		}
+	//	}
+	//
+	//	FTPremade::FTPremade(Common::FTResourceDef& resDef, Editor::EditorElement* ele)
+	//		: FTPremade(resDef)
+	//	{
+	//		assert(resDef.Path);
+	//		std::ofstream ofs(resDef.Path);
+	//		if (ofs)
+	//		{
+	//			Common::FileIOHelper::BeginDataPackSave(ofs, resDef.FileName);
+	//			ele->SaveComponents(ofs);
+	//			ele->SaveProperties(ofs);
+	//			Common::FileIOHelper::EndDataPackSave(ofs, resDef.FileName);
+	//			Common::FileIOHelper::SaveBufferToFile(ofs);
+	//
+	//			printf("Premade %s created to %s\n", resDef.FileName, resDef.Path);
+	//		}
+	//		else
+	//			printf("ERROR: FTPremade::Create -> Failed to open file %s\n", resDef.Path);
+	//
+	//		HMODULE mod = GetModuleHandleA(DLLPath::EDITOR);
+	//		if (!mod)
+	//			Debug::LogError(__LINE__, __FILE__, "Module is Null");
+	//		mCreateEditorElemFunc	  = reinterpret_cast<Editor::CREATE_EDITOR_ELEM>(GetProcAddress(mod, Editor::CREATE_EDITOR_ELEMENT_FROM_ACTOR));
+	//		mGetEditorSceneFunc		  = reinterpret_cast<Editor::GET_EDITOR_SCENE>(GetProcAddress(mod, Editor::GET_EDITOR_SCENE_FUNC));
+	//		mGetEditorChunkLoaderFunc = reinterpret_cast<Editor::GET_EDITOR_CHUNK_LOADER>(GetProcAddress(mod, Editor::GET_EDITOR_CHUNK_LOADER_FUNC));
+	//	}
+	// #endif
 } // namespace Core

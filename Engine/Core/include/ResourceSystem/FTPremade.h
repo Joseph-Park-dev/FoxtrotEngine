@@ -13,27 +13,9 @@
 /// </summary>
 
 #pragma once
-#include "ResourceSystem/CoreResource.h"
+#include "IResource.h"
 
 #include <iosfwd>
-
-#ifdef FOXTROT_EDITOR
-	#include <functional>
-
-	#include "EditorElement.h"
-	#include "ChunkLoader.h"
-	#include "Manager/EditorEventManager.h"
-
-namespace Editor
-{
-	class EditorScene;
-	class EditorElement;
-
-	typedef EditorElement* (*CREATE_EDITOR_ELEM)(Core::Actor*, int);
-	typedef EditorScene* (*GET_EDITOR_SCENE)();
-	typedef ChunkLoader* (*GET_EDITOR_CHUNK_LOADER)();
-} // namespace Editor
-#endif // FOXTROT_EDITOR
 
 namespace Core
 {
@@ -42,17 +24,14 @@ namespace Core
 	class Scene;
 
 	class FTPremade :
-		public CoreResource
+		public Common::IResource
 	{
-	public:
-		static inline Core::ResType Type = Core::ResType::PREMADE;
-
 	public:
 		void SaveProperties(std::ofstream& ofs) override {};
 		void LoadProperties(std::ifstream& ifs) override {};
 
 	public:
-		FTPremade(Common::FTResourceDef& resDef);
+		FTPremade(Common::ResourceData* resDef);
 		~FTPremade();
 
 	public:
@@ -60,6 +39,8 @@ namespace Core
 		bool   GetIsLoaded();
 
 	private:
+		Common::ResourceData* mData;
+
 		// Member variable that holds the actual Actor Data.
 		Actor* mOrigin;
 		bool   mIsLoaded;
@@ -67,22 +48,22 @@ namespace Core
 	private:
 		void Load(const char* path);
 
-#ifdef FOXTROT_EDITOR
-	public:
-		void Save(Common::FTResourceDef& resDef, Editor::EditorElement* ele);
-
-		virtual void UpdateUI() override;
-
-		/// @brief Creates FTPremade with existing EditorElement
-		FTPremade(Common::FTResourceDef& resDef, Editor::EditorElement* ele);
-
-	private:
-		Editor::EditorElement*			mDummyForUI;
-		Editor::CREATE_EDITOR_ELEM		mCreateEditorElemFunc;
-		Editor::GET_EDITOR_SCENE		mGetEditorSceneFunc;
-		Editor::GET_EDITOR_CHUNK_LOADER mGetEditorChunkLoaderFunc;
-
-#endif // FOXTROT_EDITOR
+		// #ifdef FOXTROT_EDITOR
+		//	public:
+		//		void Save(Common::FTResourceDef& resDef, Editor::EditorElement* ele);
+		//
+		//		virtual void UpdateUI() override;
+		//
+		//		/// @brief Creates FTPremade with existing EditorElement
+		//		FTPremade(Common::FTResourceDef& resDef, Editor::EditorElement* ele);
+		//
+		//	private:
+		//		Editor::EditorElement*			mDummyForUI;
+		//		Editor::CREATE_EDITOR_ELEM		mCreateEditorElemFunc;
+		//		Editor::GET_EDITOR_SCENE		mGetEditorSceneFunc;
+		//		Editor::GET_EDITOR_CHUNK_LOADER mGetEditorChunkLoaderFunc;
+		//
+		// #endif // FOXTROT_EDITOR
 	};
 
 	namespace ChunkKey

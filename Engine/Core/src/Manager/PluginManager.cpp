@@ -14,7 +14,7 @@ namespace Core
 {
 	PluginManager::PluginManager()
 		: mModules(DBG_NEW Common::FTDS::HashMap<HMODULE>)
-		, mPlugins(DBG_NEW Common::FTDS::HashMap<Core::IPlugin*>)
+		, mPlugins(DBG_NEW Common::FTDS::HashMap<Common::IPlugin*>)
 	{
 	}
 
@@ -26,33 +26,33 @@ namespace Core
 		delete mModules;
 	}
 
-	Core::IPlugin* PluginManager::RegisterPlugin(const char* pluginName)
+	Common::IPlugin* PluginManager::RegisterPlugin(const char* pluginName)
 	{
 		Common::FTDS::String path = pluginName;
 		path.Append(Core::FileTypes::DLL);
 
 		HMODULE mod				  = LoadLibraryA(path.C_Str());
 		FARPROC proc			  = GetProcAddress(mod, Core::PluginKey::CREATE_PLUGIN);
-		using PLUGIN_CONSTRUCT	  = Core::IPlugin* (*)();
+		using PLUGIN_CONSTRUCT	  = Common::IPlugin* (*)();
 		PLUGIN_CONSTRUCT plgConst = reinterpret_cast<PLUGIN_CONSTRUCT>(proc);
-		Core::IPlugin*	 plugin	  = plgConst();
+		Common::IPlugin*	 plugin	  = plgConst();
 
 		mModules->Insert(pluginName, mod);
 		mPlugins->Insert(pluginName, plugin);
 		return plugin;
 	}
 
-	Core::IPlugin* PluginManager::GetPlugin(const char* pluginName)
+	Common::IPlugin* PluginManager::GetPlugin(const char* pluginName)
 	{
 		return mPlugins->At(pluginName)->Value();
 	}
 
-	Common::FTDS::HashMap<Core::IPlugin*>* PluginManager::GetPlugins()
+	Common::FTDS::HashMap<Common::IPlugin*>* PluginManager::GetPlugins()
 	{
 		return mPlugins;
 	}
 
-	void PluginManager::LoadComponents(Core::IActor* actor)
+	void PluginManager::LoadComponents(Common::IActor* actor)
 	{
 	}
 

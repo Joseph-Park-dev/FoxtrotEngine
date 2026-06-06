@@ -18,9 +18,13 @@
 #include "FTMath.h"
 #include "Plugin/CoreExports.h"
 
-namespace Core
+namespace Common
 {
 	class IActor;
+} // namespace Common
+
+namespace Core
+{
 	struct Steering;
 
 	class Transform
@@ -59,7 +63,7 @@ namespace Core
 		void SetRightward(const Math::FTVector3 dir);
 		void SetSteering(const Steering steering);
 
-		void SetOwner(Core::IActor* actor);
+		void SetOwner(Common::IActor* actor);
 
 		static Math::FTVector3 ConvertRadToDegree(Math::FTVector3 radianRot);
 		static Math::FTVector3 ConvertDegreeToRad(Math::FTVector3 degreeRot);
@@ -69,12 +73,12 @@ namespace Core
 		void CloneTo(Transform* target);
 
 	public:
-		Transform(Core::IActor* owner);
-		Transform(Core::IActor* owner, Transform& origin);
+		Transform(Common::IActor* owner);
+		Transform(Common::IActor* owner, Transform& origin);
 		virtual ~Transform();
 
 	protected:
-		const Core::IActor* GetOwner() const;
+		const Common::IActor* GetOwner() const;
 
 	private:
 		// Local Transformation.
@@ -92,7 +96,7 @@ namespace Core
 		Math::FTVector3 mRightward; // A local rightward direction
 		Steering*		mSteering;
 
-		Core::IActor* mOwner;
+		Common::IActor* mOwner;
 
 	public:
 		void SaveProperties(std::ofstream& ofs);

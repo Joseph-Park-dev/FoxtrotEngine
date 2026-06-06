@@ -36,7 +36,7 @@ namespace Editor
 	class EditorScene;
 
 	class EditorElement :
-		public Core::IActor
+		public Common::IActor
 	{
 	public:
 		virtual void AddChild(Core::IActor* actor) override;

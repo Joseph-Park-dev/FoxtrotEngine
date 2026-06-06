@@ -25,17 +25,17 @@ namespace Common
 
 	struct ActorData
 	{
-		Common::IActor*							 Owner		= nullptr;
-		Common::FTDS::String					 Name		= {};
-		int										 ID			= Common::ChunkKey::NullVal::INVALID_IDX;
-		Common::ActorGroup						 ActorGroup = Common::ActorGroup::DEFAULT;
-		Common::ActorState						 State		= ActorState::ALIVE;
-		bool									 IsActive	= true;
-		Core::Transform*						 Transform	= nullptr;
-		Common::FTDS::DynamicArray<IComponent*>* Components = nullptr;
-		IActor*									 Parent		= nullptr;
-		Common::FTDS::DynamicArray<IActor*>*	 Children	= nullptr;
-		int										 DrawOrder	= Common::DefaultVal::DRAW_ORDER;
+		Common::IActor*								 Owner		= nullptr;
+		Common::FTDS::String						 Name		= {};
+		int											 ID			= Common::ChunkKey::NullVal::INVALID_IDX;
+		Common::ActorGroup							 ActorGroup = Common::ActorGroup::DEFAULT;
+		Common::ActorState							 State		= ActorState::ALIVE;
+		bool										 IsActive	= true;
+		Core::Transform*							 Transform	= nullptr;
+		Common::FTDS::DynamicArray<IComponent*>*	 Components = nullptr;
+		Common::IActor*								 Parent		= nullptr;
+		Common::FTDS::DynamicArray<Common::IActor*>* Children	= nullptr;
+		int											 DrawOrder	= Common::DefaultVal::DRAW_ORDER;
 
 		~ActorData()
 		{
@@ -95,20 +95,20 @@ namespace Common
 			return nullptr;
 		};
 
-		void AddChild(IActor* child);
-		void RemoveChild(IActor* child);
-		void RemoveComponent(IComponent* comp);
+		void AddChild(Common::IActor* child);
+		void RemoveChild(Common::IActor* child);
+		void RemoveComponent(Common::IComponent* comp);
 		void RemoveAllComponents();
 
 		// Deep copies transform from another Actor.
-		void CopyTransformFrom(IActor* actor);
+		void CopyTransformFrom(Common::IActor* actor);
 
 		// Creates new IComponent with values from another Actor.
-		void CopyComponentsFrom(IActor* actor);
+		void CopyComponentsFrom(Common::IActor* actor);
 
 		// Deep copies all child Actors
 		template <typename ACTOR_INSTANCE>
-		void CopyChildObjectFrom(IActor* actor)
+		void CopyChildObjectFrom(Common::IActor* actor)
 		{
 			if (GetChildActors()->GetSize() < 1)
 				return;
@@ -125,21 +125,21 @@ namespace Common
 		}
 
 		// Shallow copies all child Actors.
-		void RefChildObjectFrom(IActor* actor);
+		void RefChildObjectFrom(Common::IActor* actor);
 
-		Common::ActorGroup						 GetActorGroup() const;
-		Common::ActorGroup&						 GetActorGroupRef();
-		Common::ActorGroup*						 GetActorGroupPtr();
-		Common::FTDS::String					 GetName();
-		Common::FTDS::String&					 GetNameRef();
-		const int								 GetID() const;
-		const bool								 GetIsActive() const;
-		bool&									 GetIsActiveRef();
-		Core::Transform*						 GetTransform() const;
-		IActor*									 GetParent() const;
-		Common::FTDS::DynamicArray<IComponent*>* GetComponents();
-		Common::FTDS::DynamicArray<IActor*>*	 GetChildActors();
-		const int								 GetDrawOrder() const;
+		Common::ActorGroup							 GetActorGroup() const;
+		Common::ActorGroup&							 GetActorGroupRef();
+		Common::ActorGroup*							 GetActorGroupPtr();
+		Common::FTDS::String						 GetName();
+		Common::FTDS::String&						 GetNameRef();
+		const int									 GetID() const;
+		const bool									 GetIsActive() const;
+		bool&										 GetIsActiveRef();
+		Core::Transform*							 GetTransform() const;
+		Common::IActor*								 GetParent() const;
+		Common::FTDS::DynamicArray<IComponent*>*	 GetComponents();
+		Common::FTDS::DynamicArray<Common::IActor*>* GetChildActors();
+		const int									 GetDrawOrder() const;
 
 		void SetName(Common::FTDS::String&& name);
 		void SetIsActive(bool isActive);

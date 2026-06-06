@@ -21,14 +21,20 @@ namespace Common
 	}
 } // namespace Common
 
-namespace Core
+namespace Common
+{
+	class FTRectArea;
+} // namespace Common
+
+namespace Graphics
 {
 	class IWindow;
 	class IRenderer;
-	class IInputDevice;
 	class ICamera;
-	class IResourceManager;
-	class FTRectArea;
+} // namespace Graphics
+
+namespace Core
+{
 
 	/// <summary>
 	/// Abstract factory for creating platform-specific engine subsystems.
@@ -49,17 +55,17 @@ namespace Core
 		/// <param name="height">Initial window height.</param>
 		/// <param name="renderArea">Render area within the window (can be nullptr for fullscreen).</param>
 		/// <returns>Pointer to created window. Caller owns the memory.</returns>
-		virtual IWindow* CreateAppWindow(
+		virtual Graphics::IWindow* CreateAppWindow(
 			const char*	 title,
 			unsigned int width,
 			unsigned int height,
-			FTRectArea*	 renderArea) = 0;
+			Common::FTRectArea*	 renderArea) = 0;
 
-		virtual IWindow* CreateAppWindow(
+		virtual Graphics::IWindow* CreateAppWindow(
 			const char*	 title,
 			unsigned int width,
 			unsigned int height,
-			FTRectArea*	 renderArea,
+			Common::FTRectArea*	 renderArea,
 			WNDPROC		 wndProc,
 			void*		 wndProcParams) = 0;
 
@@ -68,13 +74,13 @@ namespace Core
 		/// </summary>
 		/// <param name="window">The window to render to.</param>
 		/// <returns>Pointer to created renderer. Caller owns the memory.</returns>
-		virtual IRenderer* CreateRenderer(IWindow* window) = 0;
+		virtual Graphics::IRenderer* CreateRenderer(Graphics::IWindow* window) = 0;
 
 		/// <summary>
 		/// Creates a platform-specific camera.
 		/// </summary>
 		/// <returns>Pointer to created camera. Caller owns the memory.</returns>
-		virtual ICamera* CreateCamera() = 0;
+		virtual Graphics::ICamera* CreateCamera() = 0;
 
 	public:
 		virtual ~IGraphicsFactory() = default;

@@ -12,7 +12,6 @@
 
 #include "Actor/ActorData.h"
 #include "Scene/Scene.h"
-#include "InputSystem/IInputDevice.h"
 #include "Actor/ActorGroup.h"
 #include "Actor/Transform.h"
 #include "FileSystem/ChunkLoader.h"

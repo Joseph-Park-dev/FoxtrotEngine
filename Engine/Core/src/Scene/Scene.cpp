@@ -42,8 +42,8 @@ namespace Core
 	 */
 	Scene::Scene()
 		: mIsUpdatingActors(false)
-		, mActors(DBG_NEW Common::FTDS::DynamicArray<IActor*>)
-		, mPendingActors(DBG_NEW Common::FTDS::DynamicArray<IActor*>)
+		, mActors(DBG_NEW Common::FTDS::DynamicArray<Common::IActor*>)
+		, mPendingActors(DBG_NEW Common::FTDS::DynamicArray<Common::IActor*>)
 	{
 	}
 
@@ -64,7 +64,7 @@ namespace Core
 	 * @param id Unique actor ID to search for.
 	 * @return Pointer to the actor if found; otherwise `nullptr`.
 	 */
-	IActor* Scene::FindActor(int id)
+	Common::IActor* Scene::FindActor(int id)
 	{
 		for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
 		{
@@ -82,7 +82,7 @@ namespace Core
 	 * @param filter Optional actor pointer to exclude from match (commonly the caller).
 	 * @return Pointer to the actor if found; otherwise `nullptr`.
 	 */
-	IActor* Scene::FindActor(Common::FTDS::String& name, IActor* filter)
+	Common::IActor* Scene::FindActor(Common::FTDS::String& name, Common::IActor* filter)
 	{
 		for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
 		{
@@ -103,7 +103,7 @@ namespace Core
 	 * @param filter Optional actor pointer to exclude.
 	 * @return Pointer to the actor if found; otherwise `nullptr`.
 	 */
-	IActor* Scene::FindActor(const char* name, IActor* filter)
+	Common::IActor* Scene::FindActor(const char* name, Common::IActor* filter)
 	{
 		Common::FTDS::String str(name);
 		return FindActor(str, filter);
@@ -129,7 +129,7 @@ namespace Core
 	 *
 	 * Note: Do not mutate actors via this container during update; use event processing.
 	 */
-	const Common::FTDS::DynamicArray<IActor*>* Scene::GetActors() const
+	const Common::FTDS::DynamicArray<Common::IActor*>* Scene::GetActors() const
 	{
 		return mActors;
 	}
@@ -145,7 +145,7 @@ namespace Core
 	 *
 	 * Warning: Ownership and lifetime are managed internally; avoid replacing the container unless intended.
 	 */
-	Common::FTDS::DynamicArray<IActor*>*& Scene::Actors()
+	Common::FTDS::DynamicArray<Common::IActor*>*& Scene::Actors()
 	{
 		return mActors;
 	}
@@ -161,7 +161,7 @@ namespace Core
 	 *
 	 * Precondition: `actor` must be non-null and allocated on heap.
 	 */
-	void Scene::AddActor(IActor* actor)
+	void Scene::AddActor(Common::IActor* actor)
 	{
 		if (mIsUpdatingActors)
 			mPendingActors->PushBack(actor);
@@ -259,7 +259,7 @@ namespace Core
 	 *
 	 * Postcondition: If found, actor memory is freed and removed from container.
 	 */
-	void Scene::RemoveActor(IActor* actor)
+	void Scene::RemoveActor(Common::IActor* actor)
 	{
 		int pos = -1;
 

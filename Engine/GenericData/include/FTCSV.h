@@ -7,25 +7,29 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include "ResourceSystem/CoreResource.h"
+#include "IResource.h"
 
-#include <queue>
+#include "FTDS/Dynamic/DynamicArray.h"
 
-namespace Core
+namespace GenericData
 {
 	/// @brief A wrapper class to store CSV data.
 	class FTCSV :
-		public Core::CoreResource
+		public Common::IResource
 	{
-		// public:
-		//	/// @see FTResource::SaveProperties()
-		//	virtual void SaveProperties(std::ofstream& ofs) override;
-		//
-		//	/// @see FTResource::LoadProperties()
-		//	virtual void LoadProperties(std::ifstream& ifs) override;
+		/////////////////
+		/// Chunk I/O ///
+		/////////////////
 	public:
-		static inline Core::ResType Type = Core::ResType::CSV;
+		/// @see FTResource::SaveProperties()
+		virtual void SaveProperties(std::ofstream& ofs) override;
 
+		/// @see FTResource::LoadProperties()
+		virtual void LoadProperties(std::ifstream& ifs) override;
+
+		////////////////////////////
+		/// Accessors / Mutators ///
+		////////////////////////////
 	public:
 		/// @brief Returns column(horizontal) count.
 		virtual size_t GetColumnCount() const;
@@ -35,16 +39,18 @@ namespace Core
 
 		/// @brief Returns the .csv data stored in vector.
 		/// @todo Replace std::vector to Common::FTDS::DynamicArray.
-		virtual const std::vector<int>& Data() const;
+		virtual const Common::FTDS::DynamicArray<int>& Data() const;
 
 	public:
 		/// @see FTResource::FTResource
-		FTCSV(Common::FTResourceDef& resDef);
+		FTCSV(Common::ResourceData* resDef);
 		~FTCSV();
 
 	private:
+		Common::ResourceData* mMetaData;
+
 		/// @brief .csv integer data. Useful for making a tiled object.
-		std::vector<int> mData;
+		Common::FTDS::DynamicArray<int> mData;
 
 		/// @brief Column(horizontal) count.
 		size_t mColumnCount;
@@ -64,4 +70,4 @@ namespace Core
 			constexpr const char* CSV = "CSV";
 		}
 	} // namespace ChunkKey
-} // namespace Core
+} // namespace GenericData

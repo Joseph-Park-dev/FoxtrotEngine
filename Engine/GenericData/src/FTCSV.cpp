@@ -1,51 +1,52 @@
-#include "ResourceSystem/GenericData/FTCSV.h"
+#include "FTCSV.h"
 
 #include <sstream>
+#include <queue>
 
 #include "FileSystem/FileIOHelper.h"
-#include "Manager/ResourceManager.h"
+#include "FTDS/Dynamic/DynamicArray.h"
 
-// void FTCSV::SaveProperties(std::ofstream& ofs)
-//{
-//	Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CSV::CSV);
-//	FTResource::SaveProperties(ofs);
-//	Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::CSV::CSV);
-// }
-//
-// void FTCSV::LoadProperties(std::ifstream& ifs)
-//{
-//	Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
-//	FTResource::LoadProperties(ifs);
-// }
-
-namespace Core
+namespace GenericData
 {
+	void FTCSV::SaveProperties(std::ofstream& ofs)
+	{
+		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CSV::CSV);
+		FTResource::SaveProperties(ofs);
+		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::CSV::CSV);
+	}
+
+	void FTCSV::LoadProperties(std::ifstream& ifs)
+	{
+		Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
+		FTResource::LoadProperties(ifs);
+	}
+
 	size_t FTCSV::GetColumnCount() const { return mColumnCount; }
 	size_t FTCSV::GetRowCount() const { return mRowCount; }
 
-	const std::vector<int>& FTCSV::Data() const { return mData; }
+	const Common::FTDS::DynamicArray<int>& FTCSV::Data() const { return mData; }
 
-	FTCSV::FTCSV(Common::FTResourceDef& resDef)
-		: CoreResource(resDef)
+	FTCSV::FTCSV(Common::ResourceData* metaData)
+		: mMetaData(metaData)
 		, mData()
 		, mColumnCount(0)
 		, mRowCount(0)
 	{
-		if (!mData.empty())
+		if (!mData.IsEmpty())
 			return;
 
-		this->Read(resDef.Path);
+		this->Read(*metaData->Path);
 	}
 
 	FTCSV::~FTCSV()
 	{
-		mData.clear();
+		mData.Clear();
 	}
 
 	void FTCSV::Read(const Common::FTDS::String& path)
 	{
-		if (!mData.empty())
-			mData.clear();
+		if (!mData.IsEmpty())
+			mData.Clear();
 
 		std::ifstream ifs;
 		ifs.open(path.C_Str(), std::fstream::in);
@@ -77,7 +78,7 @@ namespace Core
 		mColumnCount = column;
 		mRowCount	 = row;
 
-		mData.reserve(resultBuf.size());
+		mData.Reserve(resultBuf.size());
 
 		while (!resultBuf.empty())
 		{
@@ -87,4 +88,4 @@ namespace Core
 
 		ifs.close();
 	}
-} // namespace Core
+} // namespace GenericData

@@ -1,0 +1,2 @@
+#define GENERICDATA_API __declspec(dllexport)
+#define GENERICDATA_API __declspec(dllimport)

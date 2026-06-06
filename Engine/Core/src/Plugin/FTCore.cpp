@@ -20,14 +20,12 @@
 #include "Manager/PluginManager.h"
 #include "TemplateFunctions.h"
 #include "Manager/Timer.h"
-#include "Renderer/IWindow.h"
-#include "Renderer/FTRectArea.h"
-#include "InputSystem/IInputDevice.h"
 #include "Scene/Scene.h"
 #include "FTDS/Static/HashMap.h"
 #include "FTDS/Static/FTString.h"
 
 #include "Plugin/PluginKey.h"
+#include "Plugin/CoreExports.h"
 
 namespace Core
 {
@@ -119,10 +117,5 @@ namespace Core
 		Timer::GetInstance()->Destroy();
 
 		PostQuitMessage(0);
-	}
-
-	CORE_API FTCore* Core::CreateCore()
-	{
-		return FTCore::GetInstance();
 	}
 } // namespace Core

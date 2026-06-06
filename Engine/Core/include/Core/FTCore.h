@@ -49,6 +49,4 @@ namespace Core
 	private:
 		void LoadGameData();
 	};
-
-	extern "C" CORE_API FTCore* CreateCore();
 } // namespace Core

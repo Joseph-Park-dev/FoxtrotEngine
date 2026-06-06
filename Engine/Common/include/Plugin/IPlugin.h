@@ -10,15 +10,13 @@
 /// A direct instantiation of this class is strictly prohibited.
 /// </summary>
 #pragma once
-#include <Windows.h>
-#include <assert.h>
 
 #include "Debugging/DebugFuncs.h"
 #include "Plugin/CoreExports.h"
 #include "Component/IComponent.h"
 #include "FTDS/Static/FTString.h"
 
-namespace Core
+namespace Common
 {
 	class Entity;
 	class IActor;
@@ -85,4 +83,4 @@ namespace Core
 		/// @return
 		CORE_API IComponent* CreateComponent(IPlugin* plugin, IActor* actor, Common::FTDS::String& name);
 	}
-} // namespace Core
+} // namespace Common

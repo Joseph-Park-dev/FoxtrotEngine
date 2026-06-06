@@ -15,6 +15,11 @@
 #pragma once
 #include "FTDS/Dynamic/DynamicArray.h"
 
+namespace Graphics
+{
+	class IWindow;
+}
+
 namespace InputSystem
 {
 	enum class KEYBOARD

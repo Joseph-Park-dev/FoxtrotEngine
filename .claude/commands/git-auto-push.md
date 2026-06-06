@@ -8,7 +8,7 @@ Before committing, check for any of the following patterns:
 
 COMMIT, ADD, REMOVED, or similar developer notes.
 
-Commit classes individually, pairing the header (.h) and source (.cpp) files together.
+Commit classes individually, pairing the header (.h) and source (.cpp) files together. One pair, one commit.
 
 Group local modifications in categories and create commit for each categories.
 

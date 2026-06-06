@@ -10,7 +10,9 @@
       "Bash(dir /s /b \"D:\\\\2026_01\\\\FoxtrotEngine\\\\Engine\\\\*\")",
       "Bash(findstr:*)",
       "Bash(Get-ChildItem -Path \"D:\\\\2026_01\\\\FoxtrotEngine\\\\Engine\" -Directory)",
-      "Bash(ForEach-Object { $_Name })"
+      "Bash(ForEach-Object { $_Name })",
+      "Bash(dir /s /b \"D:\\\\2026_01\\\\FoxtrotEngine\\\\Core\")",
+      "Bash(dir:*)"
     ]
   }
 }

@@ -18,16 +18,9 @@
 #include "FTMath.h"
 #include "EventSystem/EventType.h"
 
-#ifdef FOXTROT_EDITOR
-	#include "EditorScene.h"
-	#include "EditorSceneManager.h"
-	#include "EditorElement.h"
-#endif // FOXTROT_EDITOR
-
 namespace Core
 {
-	using namespace Editor;
-	Actor* Instantiate(Actor* actor, ActorGroup actorGroup, Math::FTVector3 pos)
+	Actor* Instantiate(Actor* actor, Common::ActorGroup actorGroup, Math::FTVector3 pos)
 	{
 		FTEvent addedEvent	= {};
 		addedEvent.incident = EVENT_TYPE::CREATE_ACTOR;

@@ -1,10 +1,13 @@
-#pragma once
-namespace Core
-{
-	class FoxtrotRenderer;
-}
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+//
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
 
-namespace D3D11
+#pragma once
+namespace Graphics
 {
 	struct FontCharData
 	{
@@ -67,4 +70,4 @@ namespace D3D11
 		float mOffsetY;	 // offset from top of line to top of character
 		float mAdvanceX; // how far to move to right for next character
 	};
-} // namespace D3D11
+} // namespace Graphics

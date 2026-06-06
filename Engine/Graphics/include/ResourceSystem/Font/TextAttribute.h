@@ -1,24 +1,23 @@
+// ----------------------------------------------------------------
+// Foxtrot Engine 2D
+// Copyright (C) 2025 JungBae Park. All rights reserved.
+//
+// Released under the GNU General Public License v3.0
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #pragma once
 #include "FTMath.h"
 
-namespace D3D11
+namespace Graphics
 {
 	struct TextAttribute
 	{
-		float			Rotation;
-		Math::FTVector2 Offset;
-		Math::FTVector2 Origin;
-		Math::FTVector2 Scale;
-		Math::FTVector4 Color;
-
-		TextAttribute()
-			: Rotation(0.0f)
-			, Offset(Math::FTVector2(0.0f, 0.0f))
-			, Origin(Math::FTVector2(0.0f, 0.0f))
-			, Scale(Math::FTVector2(0.0f, 0.0f))
-			, Color(Math::FTVector4(0.f))
-		{
-		}
+		float			Rotation = 0.0f;
+		Math::FTVector2 Offset	 = Math::FTVector2::Zero;
+		Math::FTVector2 Origin	 = Math::FTVector2::Zero;
+		Math::FTVector2 Scale	 = Math::FTVector2::Zero;
+		Math::FTVector4 Color	 = Math::FTVector4(0.f);
 
 		TextAttribute* operator=(TextAttribute* origin)
 		{
@@ -30,4 +29,4 @@ namespace D3D11
 			return this;
 		}
 	};
-} // namespace D3D11
+} // namespace Graphics

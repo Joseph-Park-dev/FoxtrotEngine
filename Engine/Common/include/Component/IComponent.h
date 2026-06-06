@@ -64,12 +64,12 @@ namespace Common
 		/// Accessors / Mutators ///
 		////////////////////////////
 	public:
-		virtual const char* GetName()				 = 0;
-		virtual IActor*		GetOwner()				 = 0;
-		virtual const int	GetUpdateOrder()		 = 0;
-		virtual const bool	GetIsInitialized() const = 0;
-		virtual const bool	GetIsSetup() const		 = 0;
-		virtual const bool	GetIsActive() const		 = 0;
+		virtual const char*		GetName()				 = 0;
+		virtual Common::IActor* GetOwner()				 = 0;
+		virtual const int		GetUpdateOrder()		 = 0;
+		virtual const bool		GetIsInitialized() const = 0;
+		virtual const bool		GetIsSetup() const		 = 0;
+		virtual const bool		GetIsActive() const		 = 0;
 
 		virtual void SetIsActive(bool isActive) = 0;
 
@@ -77,7 +77,7 @@ namespace Common
 		/// Constructors / Copying ///
 		//////////////////////////////
 	public:
-		virtual void CloneTo(IActor* actor) = 0;
+		virtual void CloneTo(Common::IActor* actor) = 0;
 
 		//		///////////////////////////////
 		//		/// Editor Member Functions ///
@@ -88,5 +88,10 @@ namespace Common
 		//		virtual void EditorRender(Graphics::IRenderer* renderer, Graphics::ICamera* camInst) = 0;
 		//		virtual void EditorUIUpdate()												 = 0;
 		// #endif // FOXTROT_EDITOR
+	};
+
+	namespace ChunkKey
+	{
+		constexpr const char* COMPONENTS = "Components";
 	};
 } // namespace Common

@@ -234,9 +234,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Actor\Actor.h" />
-    <ClInclude Include="include\Actor\ActorData.h" />
-    <ClInclude Include="include\Actor\IActor.h" />
-    <ClInclude Include="include\Actor\ActorGroup.h" />
     <ClInclude Include="include\Actor\Steering.h" />
     <ClInclude Include="include\Actor\Transform.h" />
     <ClInclude Include="include\Behavior\FTBehavior.h">
@@ -258,7 +255,6 @@
     <ClInclude Include="include\Plugin\CoreExports.h" />
     <ClInclude Include="include\Plugin\framework.h" />
     <ClInclude Include="include\Plugin\GetFunc.h" />
-    <ClInclude Include="include\Plugin\IPlugin.h" />
     <ClInclude Include="include\Plugin\pch.h" />
     <ClInclude Include="include\Plugin\PluginKey.h" />
     <ClInclude Include="include\Renderer\CameraData.h" />
@@ -281,7 +277,6 @@
     <ClCompile Include="..\..\third_party\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Component\Data\ComponentData.cpp" />
     <ClCompile Include="src\Renderer\CameraData.cpp" />
-    <ClCompile Include="src\Actor\ActorData.cpp" />
     <ClCompile Include="include\Factory\IInputSysFactory.h" />
     <ClCompile Include="src\Manager\PluginManager.cpp" />
     <ClCompile Include="src\Actor\Actor.cpp" />

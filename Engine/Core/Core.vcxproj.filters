@@ -90,9 +90,6 @@
     <ClCompile Include="src\Manager\PluginManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Actor\ActorData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Renderer\CameraData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -101,12 +98,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Actor\IActor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Actor\ActorGroup.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Actor\Steering.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -144,9 +135,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Plugin\framework.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Plugin\IPlugin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Plugin\pch.h">
@@ -204,9 +192,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\ResourceSystem\SupportedResources.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Actor\ActorData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Renderer\CameraData.h">

@@ -11,14 +11,18 @@
 #include "FTDS/Static/HashMap.h"
 #include "FTDS/Static/FTString.h"
 
-namespace Core
+namespace Common
 {
 	class IComponent;
+} // namespace Common
+
+namespace Core
+{
 	struct ChunkData
 	{
-		Common::FTDS::String			   Path = {};
-		Common::FTDS::HashMap<IComponent*> CompLoadMap;
-		int								   MaxActorID = 0;
+		Common::FTDS::String					   Path = {};
+		Common::FTDS::HashMap<Common::IComponent*> CompLoadMap;
+		int										   MaxActorID = 0;
 		/// @brief Is this chunk currently being loaded?
 		bool IsLoading = false;
 	};

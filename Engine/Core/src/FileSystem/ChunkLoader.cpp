@@ -153,17 +153,17 @@ namespace Core
 		for (size_t i = 0; i < pack.first; ++i)
 		{
 			std::pair<size_t, Common::FTDS::String>&& actorData = Common::FileIOHelper::BeginDataPackLoad(ifs);
-			Actor* actor										= DBG_NEW Actor(ChunkKey::ID::INVALID);
+			Actor* actor										= DBG_NEW Actor(Common::ChunkKey::ID::INVALID);
 			actor->LoadProperties(ifs);
 			scene->AddActor(actor);
 
 			AddMaxActorID();
 		}
 
-		Common::FTDS::HashMap<IActor*> actorWithIDs;
+		Common::FTDS::HashMap<Common::IActor*> actorWithIDs;
 		actorWithIDs.Reserve(scene->GetActors()->GetSize());
 
-		scene->Actors()->IterateArray([&](IActor* actor) {
+		scene->Actors()->IterateArray([&](Common::IActor* actor) {
 			actorWithIDs.Insert(actor->GetID(), actor);
 		});
 
@@ -171,7 +171,7 @@ namespace Core
 		{
 			if ((*iter)->GetParent())
 			{
-				IActor* parent = actorWithIDs.At((*iter)->GetParent()->GetID())->Value();
+				Common::IActor* parent = actorWithIDs.At((*iter)->GetParent()->GetID())->Value();
 				delete (*iter)->GetParent();
 				(*iter)->SetParent(nullptr);
 				(*iter)->SetParent(parent);
@@ -179,10 +179,10 @@ namespace Core
 
 			if (0 < (*iter)->GetChildActors()->GetSize())
 			{
-				Common::FTDS::DynamicArray<IActor*> children;
+				Common::FTDS::DynamicArray<Common::IActor*> children;
 
-				(*iter)->GetChildActors()->IterateArray([&](IActor* c) {
-					IActor* child = actorWithIDs.At(c->GetID())->Value();
+				(*iter)->GetChildActors()->IterateArray([&](Common::IActor* c) {
+					Common::IActor* child = actorWithIDs.At(c->GetID())->Value();
 					(*iter)->RemoveChild(c);
 					delete c;
 					c = nullptr;
@@ -207,14 +207,14 @@ namespace Core
 
 	void ChunkLoader::LoadPlugins(std::ifstream& ifs)
 	{
-		size_t count = Common::FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::Plugin::PLUGIN_DATA).first;
+		size_t count = Common::FileIOHelper::BeginDataPackLoad(ifs, Common::ChunkKey::Plugin::PLUGIN_DATA).first;
 
 		for (size_t i = 0; i < count; ++i)
 		{
 			Common::FTDS::String name;
 			Common::FileIOHelper::LoadBasicString(ifs, name);
 
-			Core::IPlugin* plg = Core::PluginManager::GetInstance()->RegisterPlugin(name.C_Str());
+			Common::IPlugin* plg = Core::PluginManager::GetInstance()->RegisterPlugin(name.C_Str());
 			plg->LoadProperties(ifs);
 		}
 	}

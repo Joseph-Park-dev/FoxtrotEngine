@@ -296,6 +296,7 @@
     <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Triangulator.cpp" />
     <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Updatable.cpp" />
     <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\VertexAttachment.cpp" />
+    <ClCompile Include="src\Renderer\FTRectArea.cpp" />
     <ClCompile Include="src\Renderer\Camera-1.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -368,6 +369,7 @@
     <ClInclude Include="include\Plugin\PluginKey.h" />
     <ClInclude Include="include\Renderer\Camera.h" />
     <ClInclude Include="include\Renderer\D3D11Renderer.h" />
+    <ClInclude Include="include\Renderer\FTRectArea.h" />
     <ClInclude Include="include\Renderer\WindowProcess.h" />
     <ClInclude Include="include\ResourceSystem\Animation\AnimationFrame.h" />
     <ClInclude Include="include\ResourceSystem\Animation\FTSpineAnimation.h" />

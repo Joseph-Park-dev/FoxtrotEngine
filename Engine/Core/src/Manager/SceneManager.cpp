@@ -72,7 +72,7 @@ namespace Core
 	{
 	}
 
-	CORE_API Core::IActor* FindActor(const char* name, Core::IActor* filter)
+	CORE_API Common::IActor* FindActor(const char* name, Common::IActor* filter)
 	{
 		return SceneManager::GetInstance()->GetCurrentScene()->FindActor(name, filter);
 	}

@@ -61,7 +61,7 @@ namespace Core
 
 	void FTCore::ProcessInput()
 	{
-		PluginManager::GetInstance()->ProcessInput();
+		// PluginManager::GetInstance()->ProcessInput();
 	}
 
 	void FTCore::Update()
@@ -71,7 +71,7 @@ namespace Core
 
 		if (!mIsUpdating)
 			return;
-		PluginManager::GetInstance()->Update(deltaTime);
+		// PluginManager::GetInstance()->Update(deltaTime);
 	}
 
 	void FTCore::LateUpdate()
@@ -80,12 +80,12 @@ namespace Core
 			return;
 
 		float deltaTime = Core::Timer::GetInstance()->GetDeltaTime();
-		PluginManager::GetInstance()->LateUpdate(deltaTime);
+		// PluginManager::GetInstance()->LateUpdate(deltaTime);
 	}
 
 	void FTCore::Render()
 	{
-		PluginManager::GetInstance()->Render();
+		// PluginManager::GetInstance()->Render();
 	}
 
 	void FTCore::ProcessEvent()

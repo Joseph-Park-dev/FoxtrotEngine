@@ -12,7 +12,6 @@
 #pragma once
 
 #include "Debugging/DebugFuncs.h"
-#include "Plugin/CoreExports.h"
 #include "Component/IComponent.h"
 #include "FTDS/Static/FTString.h"
 
@@ -71,16 +70,4 @@ namespace Common
 			constexpr const char* MANAGER_DATA		= "Manager Data";
 		} // namespace Plugin
 	} // namespace ChunkKey
-
-	extern "C"
-	{
-		CORE_API IPlugin* CreatePlugin(const char* name);
-
-		/// @brief Creates plugin-specific component to actor
-		/// @param plugin Plugin to register component
-		/// @param actor Actor object the component is loaded to
-		/// @param name Name of the component
-		/// @return
-		CORE_API IComponent* CreateComponent(IPlugin* plugin, Common::IActor* actor, Common::FTDS::String& name);
-	}
 } // namespace Common

@@ -14,7 +14,6 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)include\Actor\ActorData.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\Actor\ActorGroup.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\Actor\IActor.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)include\Component\Data\ComponentData.h" />
@@ -60,7 +59,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)include\ResourceSystem\FTResource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\Actor\ActorData.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\Component\Data\ComponentData.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\FileSystem\FileIOHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\ResourceSystem\FTResource.cpp" />

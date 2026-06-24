@@ -63,6 +63,6 @@ namespace Core
 		ChunkData* mCurrentChunkData;
 
 	private:
-		void LoadPlugins(std::ifstream& ifs);
+		// void LoadPlugins(std::ifstream& ifs);
 	};
 } // namespace Core

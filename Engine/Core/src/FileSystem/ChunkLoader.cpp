@@ -36,7 +36,7 @@ namespace Core
 		::std::ifstream ifs(chunkPath);
 		LoadChunkData(ifs);
 		LoadActorProperties(ifs);
-		LoadPlugins(ifs);
+		// LoadPlugins(ifs);
 
 		// Plugin Data;
 		//		-Manager  Data;
@@ -205,19 +205,19 @@ namespace Core
 		}
 	}
 
-	void ChunkLoader::LoadPlugins(std::ifstream& ifs)
-	{
-		size_t count = Common::FileIOHelper::BeginDataPackLoad(ifs, Common::ChunkKey::Plugin::PLUGIN_DATA).first;
+	// void ChunkLoader::LoadPlugins(std::ifstream& ifs)
+	//{
+	//	size_t count = Common::FileIOHelper::BeginDataPackLoad(ifs, Common::ChunkKey::Plugin::PLUGIN_DATA).first;
 
-		for (size_t i = 0; i < count; ++i)
-		{
-			Common::FTDS::String name;
-			Common::FileIOHelper::LoadBasicString(ifs, name);
+	//	for (size_t i = 0; i < count; ++i)
+	//	{
+	//		Common::FTDS::String name;
+	//		Common::FileIOHelper::LoadBasicString(ifs, name);
 
-			Common::IPlugin* plg = Core::PluginManager::GetInstance()->RegisterPlugin(name.C_Str());
-			plg->LoadProperties(ifs);
-		}
-	}
+	//		Common::IPlugin* plg = Core::PluginManager::GetInstance()->RegisterPlugin(name.C_Str());
+	//		plg->LoadProperties(ifs);
+	//	}
+	//}
 
 	void ChunkLoader::SaveChunkData(std::ofstream& out)
 	{

@@ -1,6 +1,7 @@
 #pragma once
 #include <iosfwd>
-#include "ICamera.h"
+
+#include "Renderer/ICamera.h"
 #include "FTMath.h"
 
 namespace Common

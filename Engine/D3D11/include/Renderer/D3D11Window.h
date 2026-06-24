@@ -33,7 +33,7 @@ namespace D3D11
 	};
 
 	class D3D11Window :
-		public Core::IWindow
+		public Graphics::IWindow
 	{
 	public:
 		void BeginRender(Core::IRenderer* renderer) override;

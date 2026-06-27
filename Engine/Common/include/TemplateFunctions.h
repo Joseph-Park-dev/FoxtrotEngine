@@ -20,7 +20,6 @@
 #include <filesystem>
 
 #include "FTDS/Static/FTString.h"
-#include "FTMath.h"
 
 // static Common::FTDS::String ToString(const wchar_t* text)
 //{
@@ -57,20 +56,20 @@ namespace Common
 		printf(msg.C_Str());
 	}
 
-	inline void LogVector2(Math::FTVector2 val)
-	{
-		printf("X : %f Y : %f\n", val.x, val.y);
-	}
+	//inline void LogVector2(Math::FTVector2 val)
+	//{
+	//	printf("X : %f Y : %f\n", val.x, val.y);
+	//}
 
-	inline void LogVector2(Common::FTDS::String message, Math::FTVector2 val)
-	{
-		printf("%s, X : %f Y : %f\n", message.C_Str(), val.x, val.y);
-	}
+	//inline void LogVector2(Common::FTDS::String message, Math::FTVector2 val)
+	//{
+	//	printf("%s, X : %f Y : %f\n", message.C_Str(), val.x, val.y);
+	//}
 
-	inline void LogVector3(Common::FTDS::String message, Math::FTVector3 val)
-	{
-		printf("%s, X : %f Y : %f Z : %f\n", message.C_Str(), val.x, val.y, val.z);
-	}
+	//inline void LogVector3(Common::FTDS::String message, Math::FTVector3 val)
+	//{
+	//	printf("%s, X : %f Y : %f Z : %f\n", message.C_Str(), val.x, val.y, val.z);
+	//}
 
 	inline void LogBool(bool val)
 	{

@@ -12,7 +12,14 @@
       "Bash(Get-ChildItem -Path \"D:\\\\2026_01\\\\FoxtrotEngine\\\\Engine\" -Directory)",
       "Bash(ForEach-Object { $_Name })",
       "Bash(dir /s /b \"D:\\\\2026_01\\\\FoxtrotEngine\\\\Core\")",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(java *)",
+      "Bash(powershell *)",
+      "Bash(where magick *)",
+      "Bash(magick -version)",
+      "Bash(python3 -c ' *)",
+      "Bash(python -c ' *)",
+      "Bash(python *)"
     ]
   }
 }

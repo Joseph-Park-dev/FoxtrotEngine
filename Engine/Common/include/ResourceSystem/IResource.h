@@ -10,13 +10,36 @@
 #include <iosfwd>
 
 #include "FTDS/Static/FTString.h"
+#include "FileSystem/FileIOHelper.h"
 
 namespace Common
 {
+	/// @brief String literal keys used for saving resource properties.
+	namespace ChunkKey
+	{
+		namespace FTResource
+		{
+			constexpr const char* FILE_NAME		= "FileName";
+			constexpr const char* RELATIVE_PATH = "Path";
+		} // namespace FTResource
+	} // namespace ChunkKey
+
 	struct ResourceData
 	{
 		Common::FTDS::String* FileName;
 		Common::FTDS::String* Path;
+
+		void SaveProperties(std::ofstream& ofs)
+		{
+			FileIOHelper::SaveString(ofs, ChunkKey::FTResource::FILE_NAME, FileName);
+			FileIOHelper::SaveString(ofs, ChunkKey::FTResource::RELATIVE_PATH, Path);
+		}
+
+		void LoadProperties(std::ifstream& ifs)
+		{
+			FileIOHelper::LoadBasicString(ifs, *Path);
+			FileIOHelper::LoadBasicString(ifs, *FileName);
+		}
 
 #ifdef FOXTROT_EDITOR
 		int RefCount;
@@ -56,14 +79,4 @@ namespace Common
 	public:
 		virtual ~IResource() = default;
 	};
-
-	/// @brief String literal keys used for saving resource properties.
-	namespace ChunkKey
-	{
-		namespace FTResource
-		{
-			constexpr const char* FILE_NAME		= "FileName";
-			constexpr const char* RELATIVE_PATH = "RelativePath";
-		} // namespace FTResource
-	} // namespace ChunkKey
 } // namespace Common

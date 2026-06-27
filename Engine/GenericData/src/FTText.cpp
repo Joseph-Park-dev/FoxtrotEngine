@@ -1,15 +1,15 @@
-#include "ResourceSystem/GenericData/FTText.h"
+#include "FTText.h"
 
 #include "FileSystem/FileIOHelper.h"
 
 namespace Core
 {
-	FTText::FTText(Common::FTResourceDef& resDef)
-		: CoreResource(resDef)
+	FTText::FTText(Common::ResourceData* metaData)
+		: mMetaData(metaData)
 		, mData(DBG_NEW Common::FTDS::DynamicArray<Common::FTDS::String*>)
 	{
 		char*		  buf = nullptr;
-		std::ifstream ifs(resDef.Path);
+		std::ifstream ifs(mMetaData->Path->C_Str());
 		size_t		  lineCount = GetLineCount(ifs);
 		mData->Reserve(lineCount);
 

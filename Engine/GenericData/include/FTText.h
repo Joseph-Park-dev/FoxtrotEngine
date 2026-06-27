@@ -7,7 +7,7 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include "ResourceSystem/CoreResource.h"
+#include "IResource.h"
 
 #include "FTDS/Dynamic/DynamicArray.h"
 #include "FTDS/Static/FTString.h"
@@ -22,7 +22,7 @@ namespace Core
 	/// This can also be used in handling arbitrary files to store & pass
 	/// file names and relative path.
 	class FTText :
-		public Core::CoreResource
+		public Common::IResource
 	{
 		// public:
 		//	/// @see FTResource::SaveProperties()
@@ -30,9 +30,6 @@ namespace Core
 		//
 		//	/// @see FTResource::LoadProperties()
 		//	virtual void LoadProperties(std::ifstream& ifs) override;
-	public:
-		static inline Core::ResType Type = Core::ResType::TEXT;
-
 	public:
 		/// @brief Returns the text data.
 		/// The array index equals to line number.
@@ -44,10 +41,12 @@ namespace Core
 
 	public:
 		/// @see FTResource::FTResource
-		FTText(Common::FTResourceDef& resDef);
+		FTText(Common::ResourceData* resDef);
 		~FTText();
 
 	private:
+		Common::ResourceData* mMetaData;
+
 		/// @brief String text data, Loaded line by line.
 		/// The array index equals to line number.
 		Common::FTDS::DynamicArray<Common::FTDS::String*>* mData;

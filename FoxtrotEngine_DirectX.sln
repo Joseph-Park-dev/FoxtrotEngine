@@ -137,6 +137,7 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Engine\Common\Common.vcxitems*{30273513-c587-4640-9315-8d7cade6534a}*SharedItemsImports = 4
 		Engine\Common\Common.vcxitems*{4c184cba-dfac-4de3-897c-e909687c16dd}*SharedItemsImports = 4
+		Engine\Common\Common.vcxitems*{895c9af5-f0d9-403d-af4f-5ffe5e4ffd94}*SharedItemsImports = 4
 		Engine\Common\Common.vcxitems*{95944b49-be89-43df-bd3f-03d01fa7c284}*SharedItemsImports = 4
 		Engine\Common\Common.vcxitems*{cce9835e-f788-4b51-930b-d7805ac1e2a0}*SharedItemsImports = 4
 		Engine\Common\Common.vcxitems*{f72fb9a9-0e80-40ac-a8dd-1a9649f2e51c}*SharedItemsImports = 4

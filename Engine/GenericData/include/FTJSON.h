@@ -7,7 +7,7 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include "ResourceSystem/CoreResource.h"
+#include "IResource.h"
 
 #include <nlohmann/json.hpp>
 
@@ -17,7 +17,7 @@ namespace Core
 	/// Currently using nlohmann JSON library.
 	/// @note https://github.com/nlohmann/json
 	class FTJSON :
-		public Core::CoreResource
+		public Common::IResource
 	{
 		// public:
 		//	/// @see FTResource::SaveProperties()
@@ -26,17 +26,15 @@ namespace Core
 		//	/// @see FTResource::LoadProperties()
 		//	virtual void LoadProperties(std::ifstream& ifs) override;
 	public:
-		static inline Core::ResType Type = Core::ResType::JSON;
-
-	public:
 		/// @brief Returns the JSON data as nlohmann::json.
 		virtual const nlohmann::json& Data() const;
 
 	public:
 		/// @see FTResource::FTResource
-		FTJSON(Common::FTResourceDef& resDef);
+		FTJSON(Common::ResourceData* resDef);
 
 	private:
+		Common::ResourceData* mMetaData;
 		/// @brief .json data.
 		nlohmann::json mData;
 

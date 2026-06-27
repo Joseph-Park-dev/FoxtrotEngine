@@ -1,4 +1,4 @@
-#include "ResourceSystem/GenericData/FTJSON.h"
+#include "FTJSON.h"
 
 #include <fstream>
 #include <nlohmann/json.hpp>
@@ -23,13 +23,13 @@ namespace Core
 	//	FTResource::LoadProperties(ifs);
 	// }
 
-	FTJSON::FTJSON(Common::FTResourceDef& resDef)
-		: Core::CoreResource(resDef)
+	FTJSON::FTJSON(Common::ResourceData* metaData)
+		: mMetaData(metaData)
 	{
 		if (!mData.empty())
 			return;
 
-		this->Read(resDef.Path);
+		this->Read(*mMetaData->Path);
 	}
 
 	void FTJSON::Read(const Common::FTDS::String& path)

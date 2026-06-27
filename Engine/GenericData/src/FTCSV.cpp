@@ -11,14 +11,14 @@ namespace GenericData
 	void FTCSV::SaveProperties(std::ofstream& ofs)
 	{
 		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CSV::CSV);
-		FTResource::SaveProperties(ofs);
+		mMetaData->SaveProperties(ofs);
 		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::CSV::CSV);
 	}
 
 	void FTCSV::LoadProperties(std::ifstream& ifs)
 	{
 		Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::CSV::CSV);
-		FTResource::LoadProperties(ifs);
+		mMetaData->LoadProperties(ifs);
 	}
 
 	size_t FTCSV::GetColumnCount() const { return mColumnCount; }
@@ -82,7 +82,7 @@ namespace GenericData
 
 		while (!resultBuf.empty())
 		{
-			mData.push_back(resultBuf.front());
+			mData.PushBack(resultBuf.front());
 			resultBuf.pop();
 		}
 

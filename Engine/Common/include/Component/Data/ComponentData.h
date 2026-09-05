@@ -35,7 +35,6 @@ namespace Common
 
 	namespace ChunkKey
 	{
-		constexpr const char* COMPONENTS   = "Components";
 		constexpr const char* UPDATE_ORDER = "UpdateOrder";
 		constexpr const char* IS_ACTIVE	   = "Is Active";
 	} // namespace ChunkKey

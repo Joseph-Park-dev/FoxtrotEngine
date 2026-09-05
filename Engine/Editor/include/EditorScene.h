@@ -35,12 +35,12 @@ namespace Editor
 		/// Useful when Stopping a scene on FTEditor.
 		/// </summary>
 		/// <param name="actor : ">Actor to copy values from.</param>
-		virtual Editor::EditorElement* AddEditorElement(Core::IActor* actor);
+		virtual Editor::EditorElement* AddEditorElement(Common::IActor* actor);
 
 		/// @brief Adds an EditorElement with new id.
 		/// Useful when making Premade instance.
 		/// @param id This should have new id.
-		virtual Editor::EditorElement* AddEditorElement(Core::IActor* actor, int id);
+		virtual Editor::EditorElement* AddEditorElement(Common::IActor* actor, int id);
 
 	public:
 		// Deletes all EditorElements & clearing the Scene.

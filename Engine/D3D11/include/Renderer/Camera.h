@@ -22,8 +22,12 @@ namespace Core
 {
 	class IActor;
 	class SceneManager;
-	struct CameraData;
 } // namespace Core
+
+namespace D3D11
+{
+	struct CameraData;
+} // namespace D3D11
 
 namespace D3D11
 {
@@ -45,7 +49,7 @@ namespace D3D11
 		void LoadProperties(std::ifstream& ifs) override;
 
 	public:
-		virtual Core::CameraData* Data() override;
+		virtual D3D11::CameraData* Data() override;
 
 		//////////////////////////////////////////
 		////// Transform Properties //////////////
@@ -99,7 +103,7 @@ namespace D3D11
 		float& ZoomDelta();
 
 	private:
-		Core::CameraData* mData;
+		D3D11::CameraData* mData;
 
 	private:
 		void InitializeUnitsPerPixel(unsigned int pixels, float units = 1.f);

@@ -39,7 +39,7 @@ namespace D3D11
 		mData->LoadProperties(ifs);
 	}
 
-	Core::CameraData* Camera::Data()
+	D3D11::CameraData* Camera::Data()
 	{
 		return mData;
 	}
@@ -163,7 +163,7 @@ namespace D3D11
 	}
 
 	Camera::Camera()
-		: mData(DBG_NEW Core::CameraData)
+		: mData(DBG_NEW D3D11::CameraData)
 	{
 	}
 

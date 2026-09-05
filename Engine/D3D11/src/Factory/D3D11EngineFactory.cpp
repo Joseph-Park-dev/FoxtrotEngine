@@ -23,7 +23,7 @@ namespace D3D11
 		const char*        title,
 		unsigned int       width,
 		unsigned int       height,
-		Core::FTRectArea*  renderArea)
+		D3D11::FTRectArea*  renderArea)
 	{
 		return DBG_NEW D3D11Window(title, width, height, renderArea);
 	}

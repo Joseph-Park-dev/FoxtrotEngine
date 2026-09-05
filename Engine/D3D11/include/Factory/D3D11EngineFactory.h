@@ -29,7 +29,7 @@ namespace D3D11
 			const char*        title,
 			unsigned int       width,
 			unsigned int       height,
-			Core::FTRectArea*  renderArea) override;
+			D3D11::FTRectArea*  renderArea) override;
 
 		Core::IRenderer* CreateRenderer(Core::IWindow* window) override;
 

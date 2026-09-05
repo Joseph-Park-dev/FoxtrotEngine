@@ -10,6 +10,8 @@ namespace Core
 	class IPlugin;
 }
 
+namespace Main
+{
 class Engine
 {
 public:
@@ -85,3 +87,4 @@ private:
 	bool mIsRunning;
 	bool mIsUpdating;
 };
+} // namespace Main

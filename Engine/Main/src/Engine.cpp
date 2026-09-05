@@ -1,13 +1,15 @@
-#include "Engine.h"
+#include "../include/Engine.h"
 
 #include "Plugin/IPlugin.h"
 // #include "FTCore.h" // NULLPATH: File doesn't exist - FTCore is defined in FTCore.cpp
 #include "Entity/Timer.h"
 
-namespace GameData
+namespace Main
 {
-	constexpr const char* DLL_LIST	 = "DLL List";
-} // namespace GameData
+	namespace GameData
+	{
+		constexpr const char* DLL_LIST	 = "DLL List";
+	} // namespace GameData
 
 void Engine::RunLoop()
 {
@@ -58,3 +60,4 @@ void Engine::ProcessEvent()
 	for (auto iter = mPlugins->Begin(); iter != mPlugins->End(); ++iter)
 		(*iter)->Value()->ProcessEvent();
 }
+} // namespace Main

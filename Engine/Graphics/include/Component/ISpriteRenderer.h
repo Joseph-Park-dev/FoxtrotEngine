@@ -23,17 +23,6 @@ namespace Graphics
 	class ISpriteRenderer :
 		public Common::IComponent
 	{
-		////////////////////////////
-		/// Accessors / Mutators ///
-		////////////////////////////
-	protected:
-		virtual ISprite*   GetSprite() const   = 0;
-		virtual IMaterial* GetMaterial() const = 0;
-		virtual IPSO*	   GetPSO() const	   = 0;
-
-		virtual void SetSprite(ISprite* sprite)	 = 0;
-		virtual void SetMaterial(IMaterial* mat) = 0;
-		virtual void SetPSO(IPSO* pso)			 = 0;
 	};
 
 	namespace ChunkKey

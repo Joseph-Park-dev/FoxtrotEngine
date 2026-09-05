@@ -101,9 +101,20 @@ private:
 
 private:
 	// GameLoop functions
+	void RegisterComponent(Common::IComponent* comp) override { (void)comp; }
+	void SaveProperties(std::ofstream&) override {}
+	void LoadProperties(std::ifstream&) override {}
+	void Setup() override {}
 	void ProcessInput() override;
 	void Update(float deltaTime) override;
+	void LateUpdate(float) override {}
 	void Render() override;
+	void ProcessEvent() override {}
+	void ShutDown() override {}
+
+protected:
+	void LoadManagerData(std::ifstream&) override {}
+	void LoadResourceData(std::ifstream&) override {}
 
 	// static LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 };
@@ -128,13 +139,12 @@ void D3D11Editor::Initialize()
 	IPlugin*				d3d11Plugin = Core::GetFunc<REGISTER_PLUGIN>(Common::DLLPath::CORE_EDITOR, Core::ProcNames::Core::REGISTER_PLUGIN)(Core::Plugin::Name::D3D11_EDITOR);
 	Core::IGraphicsFactory* graphicsFac = reinterpret_cast<Core::IGraphicsFactory*>(d3d11Plugin);
 
-	Core::FTRECTAREA_CONSTRUCTOR createRectAreaFunc	  = Core::GetFunc<Core::FTRECTAREA_CONSTRUCTOR>(Common::DLLPath::CORE_EDITOR, Core::PluginKey::CREATE_FTRECTAREA);
-	D3D11::CREATE_VP_RENDERER	 createVPRendererFunc = Core::GetFunc<D3D11::CREATE_VP_RENDERER>(Common::DLLPath::CORE_EDITOR, D3D11::PluginKey::CREATE_VP_RENDERER);
+	D3D11::CREATE_VP_RENDERER createVPRendererFunc = Core::GetFunc<D3D11::CREATE_VP_RENDERER>(Common::DLLPath::D3D11, Core::ProcNames::D3D11::CREATE_VP_RENDERER);
 	// D3D11::CREATE_WINDOW_PROC	 createWindowFunc	   = Core::GetFunc<D3D11::CREATE_WINDOW_PROC>(Common::DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_D3D11_WINDOW);
 	// D3D11::CREATE_RENDERER		 createRendererFunc	   = Core::GetFunc<D3D11::CREATE_RENDERER>(Common::DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_RENDERER);
 	// D3D11::CREATE_INPUTDEVICE	 createInputDeviceFunc = Core::GetFunc<D3D11::CREATE_INPUTDEVICE>(Common::DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_INPUTDEVICE);
 
-	D3D11::FTRectArea* rndArea = createRectAreaFunc(0.f, 0.f, 1280.f, 720.f, 0.f);
+	D3D11::FTRectArea* rndArea = DBG_NEW D3D11::FTRectArea(0.f, 0.f, 1280.f, 720.f, 0.f);
 
 	wndprocParams = DBG_NEW D3D11::WNDPROC_Params{ mEditorWin, mInputDevice, mRenderer, &mIsResizingWindow };
 	mEditorWin	  = static_cast<D3D11::D3D11Window*>(graphicsFac->CreateAppWindow("Foxtrot Editor", 3840, 2160, rndArea, WinProc, wndprocParams));
@@ -368,4 +378,15 @@ LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 	}
 	return DefWindowProc(hwnd, msg, wParam, lParam);
+}
+
+#include "Plugin/EditorExports.h"
+
+extern "C"
+{
+	EDITOR_API Common::IPlugin* CreatePlugin(const char* name)
+	{
+		(void)name;
+		return DBG_NEW Editor::D3D11Editor();
+	}
 }

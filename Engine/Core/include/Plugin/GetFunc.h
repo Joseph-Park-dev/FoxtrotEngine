@@ -1,4 +1,6 @@
 #pragma once
+#include <Windows.h>
+#include <cassert>
 
 namespace Core
 {

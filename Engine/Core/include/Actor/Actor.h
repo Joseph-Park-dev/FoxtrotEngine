@@ -20,7 +20,6 @@
 namespace Core
 {
 	class FTPremade;
-	struct ActorData;
 
 	class Actor :
 		public Common::IActor

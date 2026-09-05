@@ -10,7 +10,7 @@
 /// </summary>
 
 #pragma once
-namespace Core
+namespace Common
 {
 	namespace FileTypes
 	{
@@ -112,4 +112,4 @@ namespace Core
 			specArr->PushBack(spec);
 		}*/
 	} // namespace FileTypes
-} // namespace Core
+} // namespace Common

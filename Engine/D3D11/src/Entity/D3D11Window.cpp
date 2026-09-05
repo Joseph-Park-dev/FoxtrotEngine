@@ -83,13 +83,13 @@ namespace D3D11
 	{
 		if (!CreateRTV(renderer->GetDevice()))
 		{
-			Debug::LogError(__LINE__, __FILE__, "Failed to Initialize RTV");
+			Common::Debug::LogError(__LINE__, __FILE__, "Failed to Initialize RTV");
 			return false;
 		}
 
 		if (!CreateDSV(renderer->GetDevice(), renderer->GetNumQualityLevels()))
 		{
-			Debug::LogError(__LINE__, __FILE__, "Failed to Initialize DSV");
+			Common::Debug::LogError(__LINE__, __FILE__, "Failed to Initialize DSV");
 			return false;
 		}
 		return true;

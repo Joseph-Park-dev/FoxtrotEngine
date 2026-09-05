@@ -6,13 +6,12 @@
 
 #include "ResourceSystem/Light.h"
 
-namespace GameData
-{
-	constexpr size_t MAX_LIGHTS = 3;
-}
-
 namespace D3D11
 {
+	namespace GameData
+	{
+		constexpr size_t MAX_LIGHTS = 3;
+	}
 	class FTCubemap;
 	class Camera;
 	class D3D11Renderer;

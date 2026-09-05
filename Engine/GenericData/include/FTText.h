@@ -12,7 +12,7 @@
 #include "FTDS/Dynamic/DynamicArray.h"
 #include "FTDS/Static/FTString.h"
 
-namespace Core
+namespace GenericData
 {
 	/// @brief Maximum number of characters per line.
 	/// If the line is longer, the exceeding won't be read.
@@ -67,4 +67,4 @@ namespace Core
 			constexpr const char* FT_TEXT = "Text";
 		}
 	} // namespace ChunkKey
-} // namespace Core
+} // namespace GenericData

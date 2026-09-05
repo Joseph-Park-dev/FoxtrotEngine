@@ -2,7 +2,7 @@
 
 #include "FileSystem/FileIOHelper.h"
 
-namespace Core
+namespace GenericData
 {
 	FTText::FTText(Common::ResourceData* metaData)
 		: mMetaData(metaData)
@@ -63,4 +63,4 @@ namespace Core
 			mData->PushBack(line);
 		}
 	}
-} // namespace Core
+} // namespace GenericData

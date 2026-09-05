@@ -12,33 +12,36 @@ namespace Core
 	} // namespace PluginKey
 } // namespace Core
 
-namespace ProcNames
+namespace Core
 {
-	constexpr const char* CMDHistory = "GetCMDHistory";
-	constexpr const char* FIND_ACTOR = "FindActor";
-
-	namespace Core
+	namespace ProcNames
 	{
-		constexpr const char* REGISTER_PLUGIN = "RegisterPlugin";
-	}
+		constexpr const char* CMDHistory = "GetCMDHistory";
+		constexpr const char* FIND_ACTOR = "FindActor";
 
-	namespace D3D11
-	{
-		constexpr const char* CREATE_VP_RENDERER = "CreateViewportRenderer";
-	}
-} // namespace ProcNames
+		namespace Core
+		{
+			constexpr const char* REGISTER_PLUGIN = "RegisterPlugin";
+		}
 
-namespace Plugin
-{
-	namespace Name
+		namespace D3D11
+		{
+			constexpr const char* CREATE_VP_RENDERER = "CreateViewportRenderer";
+		}
+	} // namespace ProcNames
+
+	namespace Plugin
 	{
-		constexpr const char* CORE	= "Core";
-		constexpr const char* D3D11 = "D3D11";
+		namespace Name
+		{
+			constexpr const char* CORE	= "Core";
+			constexpr const char* D3D11 = "D3D11";
 
 #ifdef FOXTROT_EDITOR
-		constexpr const char* CORE_EDITOR  = "Core_Editor";
-		constexpr const char* D3D11_EDITOR = "D3D11_Editor";
-		constexpr const char* EDITOR	   = "Editor";
+			constexpr const char* CORE_EDITOR  = "Core_Editor";
+			constexpr const char* D3D11_EDITOR = "D3D11_Editor";
+			constexpr const char* EDITOR	   = "Editor";
 #endif // FOXTROT_EDITOR
-	} // namespace Name
-} // namespace Plugin
+		} // namespace Name
+	} // namespace Plugin
+} // namespace Core

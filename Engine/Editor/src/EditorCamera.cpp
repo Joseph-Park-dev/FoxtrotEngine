@@ -8,6 +8,7 @@
 
 #include "EditorCamera.h"
 
+#include "Renderer/Camera.h"
 #include "Renderer/CameraData.h"
 #include "InputSystem/IInputDevice.h"
 #include "ResourceSystem/Shape/FTRectangle.h"
@@ -64,7 +65,8 @@ namespace Editor
 		ImGui::BeginChild("Game Camera", area);
 		ImGui::SeparatorText("Game Camera");
 
-		CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", gameCam->Data()->Position, LOOKAT_MODSPEED);
+		D3D11::CameraData* gameData = static_cast<D3D11::Camera*>(gameCam)->Data();
+		CommandHistory::GetInstance()->UpdateVector3Value("Look-At Position", gameData->Position, LOOKAT_MODSPEED);
 
 		/*float yaw	= mYaw;
 		float pitch = mPitch;*/
@@ -90,7 +92,7 @@ namespace Editor
 			actorNames[i + 1] = editorElems->At(i)->GetName();
 
 		const char* comboPreview = actorNames[currIdx].C_Str();
-		if (ImGui::BeginCombo(Core::ChunkKey::TARGET_ACTOR, comboPreview))
+		if (ImGui::BeginCombo(Graphics::ChunkKey::TARGET_ACTOR, comboPreview))
 		{
 			for (size_t i = 0; i < editorElems->GetSize() + 1; ++i)
 			{
@@ -111,7 +113,7 @@ namespace Editor
 		}
 		delete[] actorNames;
 
-		CommandHistory::GetInstance()->UpdateVector3Value("Offset from target", gameCam->Data()->Offset, LOOKAT_MODSPEED);
+		CommandHistory::GetInstance()->UpdateVector3Value("Offset from target", gameData->Offset, LOOKAT_MODSPEED);
 		CommandHistory::GetInstance()->UpdateFloatValue("Zoom", gameCam->ZoomFactor());
 
 		if (ImGui::Button("2D"))

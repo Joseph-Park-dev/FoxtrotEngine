@@ -12,15 +12,12 @@
 
 #pragma once
 #include "Renderer/ICamera.h"
+#include "Renderer/CameraData.h"
+#include "Core/InterfaceAliases.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 
-namespace Core
-{
-	class IInputDevice;
-	class IWindow;
-} // namespace Core
 
 namespace D3D11
 {
@@ -30,7 +27,7 @@ namespace D3D11
 namespace Editor
 {
 	class EditorCamera :
-		public Core::ICamera
+		public Graphics::ICamera
 	{
 	public:
 		//////////////////////////////////////////
@@ -50,7 +47,7 @@ namespace Editor
 		void DisplayEditorCameraMenu();
 
 	public:
-		virtual D3D11::CameraData* Data() override;
+		virtual D3D11::CameraData* Data();
 
 		//////////////////////////////////////////
 		////// Transform Properties //////////////
@@ -96,7 +93,7 @@ namespace Editor
 		~EditorCamera() override;
 
 	protected:
-		void InitializePixelsPerUnit(unsigned int pixels, float units);
+		void InitializePixelsPerUnit(unsigned int pixels, float units) override;
 
 	private:
 		D3D11::CameraData* mData;

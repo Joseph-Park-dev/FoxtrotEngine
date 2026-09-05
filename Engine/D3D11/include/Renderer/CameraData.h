@@ -9,7 +9,7 @@ namespace Common
 	class IActor;
 } // namespace Common
 
-namespace Core
+namespace D3D11
 {
 	struct CameraData
 	{
@@ -75,4 +75,4 @@ namespace Core
 
 		void InitializePixelsPerUnit(unsigned int pixels, float units = 1.f);
 	};
-} // namespace Core
+} // namespace D3D11

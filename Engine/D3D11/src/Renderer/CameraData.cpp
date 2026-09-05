@@ -7,10 +7,10 @@
 #include "Plugin/GetFunc.h"
 #include "Plugin/PluginKey.h"
 
-namespace Core
+namespace D3D11
 {
 	using namespace Math;
-	Math::FTVector3 Core::CameraData::ScreenToWorld(const Math::FTVector2& screenPos)
+	Math::FTVector3 CameraData::ScreenToWorld(const Math::FTVector2& screenPos)
 	{
 		FTVector2 ndc	  = ScreenToNDC(screenPos);
 		FTVector3 clipPos = FTVector3(ndc.x, ndc.y, 0.0f);
@@ -27,13 +27,13 @@ namespace Core
 		return FTVector3::Transform(clipPos, viewProj, 1.0f);
 	}
 
-	Math::FTVector2 Core::CameraData::WorldToScreen(const Math::FTVector3& worldPos) const
+	Math::FTVector2 CameraData::WorldToScreen(const Math::FTVector3& worldPos) const
 	{
-		Debug::LogError(__LINE__, __FILE__, "Not implemented");
+		Common::Debug::LogError(__LINE__, __FILE__, "Not implemented");
 		return Math::FTVector2();
 	}
 
-	Math::FTVector2 Core::CameraData::ScreenToNDC(const Math::FTVector2& screenPos) const
+	Math::FTVector2 CameraData::ScreenToNDC(const Math::FTVector2& screenPos) const
 	{
 		FTVector2 renderSize = GetResolution();
 		FTVector2 ndc		 = FTVector2::Zero;
@@ -43,7 +43,7 @@ namespace Core
 		return ndc;
 	}
 
-	void Core::CameraData::SaveProperties(std::ofstream& ofs)
+	void CameraData::SaveProperties(std::ofstream& ofs)
 	{
 		Common::FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::CAMERA_DATA);
 		if (Target)
@@ -56,7 +56,7 @@ namespace Core
 		Common::FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::CAMERA_DATA);
 	}
 
-	void Core::CameraData::LoadProperties(std::ifstream& ifs)
+	void CameraData::LoadProperties(std::ifstream& ifs)
 	{
 		Common::FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::CAMERA_DATA);
 		Common::FileIOHelper::LoadFloat(ifs, ZoomFactor);
@@ -70,7 +70,7 @@ namespace Core
 		if (!Target)
 		{
 			using FIND_ACTOR = Common::IActor* (*)(Common::FTDS::String&, Common::IActor*);
-			Target	 = GetFunc<FIND_ACTOR>(Plugin::Name::CORE_EDITOR, ProcNames::FIND_ACTOR)(targetName, nullptr);
+			Target	 = ::Core::GetFunc<FIND_ACTOR>(::Core::Plugin::Name::CORE_EDITOR, ::Core::ProcNames::FIND_ACTOR)(targetName, nullptr);
 		}
 #else
 		if (targetName.NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
@@ -78,12 +78,12 @@ namespace Core
 #endif // FOXTROT_EDITOR
 	}
 
-	const Math::FTVector3& Core::CameraData::GetPosition() const
+	const Math::FTVector3& CameraData::GetPosition() const
 	{
 		return Position;
 	}
 
-	void Core::CameraData::GetViewMatrix(Math::FTMatrix4& outViewMat)
+	void CameraData::GetViewMatrix(Math::FTMatrix4& outViewMat)
 	{
 		if (Target)
 		{
@@ -96,7 +96,7 @@ namespace Core
 		outViewMat = FTMatrix4::CreateTranslation(Position);
 	}
 
-	void Core::CameraData::GetProjectionMatrix(Math::FTMatrix4& outProjMat)
+	void CameraData::GetProjectionMatrix(Math::FTMatrix4& outProjMat)
 	{
 		const FTVector2 renderSize = GetResolution();
 		assert(0 < renderSize.x);
@@ -116,67 +116,67 @@ namespace Core
 				  worldWidth, worldHeight, NearZ, FarZ);
 	}
 
-	const Graphics::Viewtype Core::CameraData::GetViewType()
+	const Graphics::Viewtype CameraData::GetViewType()
 	{
 		return ViewType;
 	}
 
-	const float Core::CameraData::GetProjFOVAngleY()
+	const float CameraData::GetProjFOVAngleY()
 	{
 		return ProjFOVAngleY;
 	}
 
-	const float Core::CameraData::GetAspectRatio()
+	const float CameraData::GetAspectRatio()
 	{
 		return Aspect;
 	}
 
-	const float Core::CameraData::GetUnitsPerPixel()
+	const float CameraData::GetUnitsPerPixel()
 	{
 		return UnitsPerPixel;
 	}
 
-	const float Core::CameraData::GetNearZ()
+	const float CameraData::GetNearZ()
 	{
 		return NearZ;
 	}
 
-	const float Core::CameraData::GetFarZ()
+	const float CameraData::GetFarZ()
 	{
 		return FarZ;
 	}
 
-	const Math::FTVector3& Core::CameraData::GetOffSet() const
+	const Math::FTVector3& CameraData::GetOffSet() const
 	{
 		return Offset;
 	}
 
-	const float Core::CameraData::GetZoomFactor() const
+	const float CameraData::GetZoomFactor() const
 	{
 		return ZoomFactor;
 	}
 
-	const Math::FTVector2&& Core::CameraData::GetResolution() const
+	const Math::FTVector2&& CameraData::GetResolution() const
 	{
 		return Math::FTVector2(ResX, ResY);
 	}
 
-	void Core::CameraData::SetPosition(const Math::FTVector3& pos)
+	void CameraData::SetPosition(const Math::FTVector3& pos)
 	{
 		Position = pos;
 	}
 
-	void Core::CameraData::SetViewType(Graphics::Viewtype viewType)
+	void CameraData::SetViewType(Graphics::Viewtype viewType)
 	{
 		ViewType = viewType;
 	}
 
-	void Core::CameraData::SetTargetActor(Common::IActor* actor)
+	void CameraData::SetTargetActor(Common::IActor* actor)
 	{
 		Target = actor;
 	}
 
-	void Core::CameraData::SetOffset(Math::FTVector3 offset)
+	void CameraData::SetOffset(Math::FTVector3 offset)
 	{
 		Offset = offset;
 	}
@@ -185,4 +185,4 @@ namespace Core
 	{
 		UnitsPerPixel = units / static_cast<float>(pixels);
 	}
-} // namespace Core
+} // namespace D3D11

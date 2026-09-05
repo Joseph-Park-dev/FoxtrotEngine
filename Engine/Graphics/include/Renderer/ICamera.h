@@ -15,6 +15,11 @@
 
 #include "FTMath.h"
 
+namespace Common
+{
+	class IActor;
+} // namespace Common
+
 namespace Graphics
 {
 	enum class Viewtype
@@ -22,9 +27,6 @@ namespace Graphics
 		Orthographic,
 		Perspective
 	};
-
-	class IActor;
-	class SceneManager;
 
 	/// <summary>
 	/// Abstract camera interface for view/projection transformations.
@@ -87,7 +89,7 @@ namespace Graphics
 		/// </summary>
 		virtual void SetPosition(const Math::FTVector3& position) = 0;
 		virtual void SetViewType(Graphics::Viewtype viewType)	  = 0;
-		virtual void SetTargetActor(Graphics::IActor* actor)	  = 0;
+		virtual void SetTargetActor(Common::IActor* actor)		  = 0;
 		virtual void SetOffset(Math::FTVector3 offset)			  = 0;
 
 		virtual float& ZoomFactor() = 0;

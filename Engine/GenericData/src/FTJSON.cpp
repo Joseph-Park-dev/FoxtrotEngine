@@ -6,7 +6,7 @@
 #include "FTDS/Static/FTString.h"
 #include "FileSystem/FileIOHelper.h"
 
-namespace Core
+namespace GenericData
 {
 	const nlohmann::json& FTJSON::Data() const { return mData; }
 
@@ -37,4 +37,4 @@ namespace Core
 		std::ifstream ifs(path.C_Str());
 		mData = nlohmann::json::parse(ifs);
 	}
-} // namespace Core
+} // namespace GenericData

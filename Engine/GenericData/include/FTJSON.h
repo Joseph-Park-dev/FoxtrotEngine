@@ -11,7 +11,7 @@
 
 #include <nlohmann/json.hpp>
 
-namespace Core
+namespace GenericData
 {
 	/// @brief A wrapper class to store JSON data.
 	/// Currently using nlohmann JSON library.
@@ -50,4 +50,4 @@ namespace Core
 			constexpr const char* JSON = "JSON";
 		}
 	} // namespace ChunkKey
-} // namespace Core
+} // namespace GenericData

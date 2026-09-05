@@ -99,7 +99,8 @@ private:
 
 Graphics::ICamera* D3D11Plugin::CreateCamera()
 {
-	return DBG_NEW D3D11::Camera;
+	mCamera = DBG_NEW D3D11::Camera;
+	return mCamera;
 }
 
 InputSystem::IInputDevice* D3D11Plugin::CreateInputDevice()
@@ -138,6 +139,22 @@ Graphics::IWindow* D3D11Plugin::CreateAppWindow(const char* title, unsigned int 
 
 void D3D11Plugin::Initialize()
 {
+#ifndef FOXTROT_EDITOR
+	if (mWindows->GetSize() == 0)
+	{
+		D3D11::FTRectArea* area = DBG_NEW D3D11::FTRectArea(0.f, 0.f, 1280.f, 720.f);
+		CreateAppWindow("Foxtrot", 1280, 720, area);
+		if (0 < mWindows->GetSize())
+		{
+			CreateRenderer(mWindows->At(0));
+			if (mWindows->At(0))
+				mWindows->At(0)->Initialize(SW_SHOW);
+		}
+		mCamera = static_cast<D3D11::Camera*>(CreateCamera());
+		CreateInputDevice();
+	}
+#endif
+
 	for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
 		(*iter)->Initialize();
 }

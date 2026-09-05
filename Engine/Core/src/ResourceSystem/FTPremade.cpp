@@ -172,9 +172,9 @@ namespace Core
 	//		else
 	//			printf("ERROR: FTPremade::Create -> Failed to open file %s\n", resDef.Path);
 	//
-	//		HMODULE mod = GetModuleHandleA(DLLPath::EDITOR);
+	//		HMODULE mod = GetModuleHandleA(Common::DLLPath::EDITOR);
 	//		if (!mod)
-	//			Debug::LogError(__LINE__, __FILE__, "Module is Null");
+	//			Common::Debug::LogError(__LINE__, __FILE__, "Module is Null");
 	//		mCreateEditorElemFunc	  = reinterpret_cast<Editor::CREATE_EDITOR_ELEM>(GetProcAddress(mod, Editor::CREATE_EDITOR_ELEMENT_FROM_ACTOR));
 	//		mGetEditorSceneFunc		  = reinterpret_cast<Editor::GET_EDITOR_SCENE>(GetProcAddress(mod, Editor::GET_EDITOR_SCENE_FUNC));
 	//		mGetEditorChunkLoaderFunc = reinterpret_cast<Editor::GET_EDITOR_CHUNK_LOADER>(GetProcAddress(mod, Editor::GET_EDITOR_CHUNK_LOADER_FUNC));

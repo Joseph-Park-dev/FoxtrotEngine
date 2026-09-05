@@ -94,10 +94,10 @@
 //	//			res = LoadResource<Core::FTCSV>(resManager, path);
 //	//			break;
 //	//		case Core::ResType::JSON:
-//	//			res = LoadResource<Core::FTJSON>(resManager, path);
+//	//			res = LoadResource<GenericData::FTJSON>(resManager, path);
 //	//			break;
 //	//		case Core::ResType::TEXT:
-//	//			res = LoadResource<Core::FTText>(resManager, path);
+//	//			res = LoadResource<GenericData::FTText>(resManager, path);
 //	//			break;
 //
 //	//		// Filters out the rest of file types.
@@ -229,7 +229,7 @@
 //			config.countSelectionMax = 0;
 //			config.path				 = DirectoryHelper::GetInstance()->GetAssetPath().C_Str();
 //
-//			ImGuiFileDialog::Instance()->OpenDialog("ImportRes", "Choose Files", FileTypes::ALL_FILE_FORMATS, config);
+//			ImGuiFileDialog::Instance()->OpenDialog("ImportRes", "Choose Files", Common::FileTypes::ALL_FILE_FORMATS, config);
 //		}
 //
 //		/*if (ImGuiFileDialog::Instance()->Display("ImportRes"))
@@ -280,16 +280,16 @@
 //		Common::FTDS::String format = fileName;
 //		format.SubStr(fileName.RFind("."), length);
 //
-//		if (StrContains(FileTypes::CSV, format))
+//		if (StrContains(Common::FileTypes::CSV, format))
 //			return Core::ResType::CSV;
 //
-//		else if (StrContains(FileTypes::JSON, format))
+//		else if (StrContains(Common::FileTypes::JSON, format))
 //			return Core::ResType::JSON;
 //
-//		else if (StrContains(FileTypes::TEXT, format))
+//		else if (StrContains(Common::FileTypes::TEXT, format))
 //			return Core::ResType::TEXT;
 //
-//		else if (StrContains(FileTypes::PREMADE, format))
+//		else if (StrContains(Common::FileTypes::PREMADE, format))
 //			return Core::ResType::PREMADE;
 //
 //		else
@@ -306,34 +306,34 @@
 //		Common::FTDS::String format = fileName;
 //		format.SubStr(fileName.RFind("."), length);
 //
-//		if (StrContains(FileTypes::TEXTURE, format))
+//		if (StrContains(Common::FileTypes::TEXTURE, format))
 //			return D3D11::ResType::TEXTURE;
-//		else if (StrContains(FileTypes::TILEMAP, format))
+//		else if (StrContains(Common::FileTypes::TILEMAP, format))
 //			return D3D11::ResType::TILEMAP;
-//		else if (StrContains(FileTypes::MESH, format))
+//		else if (StrContains(Common::FileTypes::MESH, format))
 //			return D3D11::ResType::MESH_GROUP;
 //
-//		else if (StrContains(FileTypes::SPRITE_ANIMATION, format))
+//		else if (StrContains(Common::FileTypes::SPRITE_ANIMATION, format))
 //			return D3D11::ResType::SPRITE_ANIMATION;
 //
-//		else if (StrContains(FileTypes::SPINE_ANIMATION, format))
+//		else if (StrContains(Common::FileTypes::SPINE_ANIMATION, format))
 //			return D3D11::ResType::SPINE_ANIMATION;
 //
-//		else if (StrContains(FileTypes::SHADER_META, format))
+//		else if (StrContains(Common::FileTypes::SHADER_META, format))
 //			return D3D11::ResType::SHADER_META;
 //
-//		else if (StrContains(FileTypes::SHADER, format))
+//		else if (StrContains(Common::FileTypes::SHADER, format))
 //
-//			if (fileName.Contains(FileTypes::VERTEX_SHADER))
+//			if (fileName.Contains(Common::FileTypes::VERTEX_SHADER))
 //				return D3D11::ResType::VERTEX_SHADER;
-//			else if (fileName.Contains(FileTypes::PIXEL_SHADER))
+//			else if (fileName.Contains(Common::FileTypes::PIXEL_SHADER))
 //				return D3D11::ResType::PIXEL_SHADER;
-//			else if (fileName.Contains(FileTypes::GEOMETRY_SHADER))
+//			else if (fileName.Contains(Common::FileTypes::GEOMETRY_SHADER))
 //				return D3D11::ResType::GEOMETRY_SHADER;
 //			else
 //				return D3D11::ResType::UNSUPPORTED;
 //
-//		else if (StrContains(FileTypes::FONT, format))
+//		else if (StrContains(Common::FileTypes::FONT, format))
 //			return D3D11::ResType::FONT;
 //
 //		else
@@ -342,8 +342,8 @@
 //
 //	ResourceManager::ResourceManager()
 //	{
-//		mCoreRes  = GetFunc<Core::GET_RES_MANAGER_INST>(DLLPath::CORE_EDITOR, Core::GET_RES_FUNC)();
-//		mD3D11Res = GetFunc<D3D11::GET_RES_MANAGER_INST>(DLLPath::D3D11_EDITOR, Core::GET_RES_FUNC)();
+//		mCoreRes  = Core::GetFunc<Core::GET_RES_MANAGER_INST>(Common::DLLPath::CORE_EDITOR, Core::GET_RES_FUNC)();
+//		mD3D11Res = Core::GetFunc<D3D11::GET_RES_MANAGER_INST>(Common::DLLPath::D3D11_EDITOR, Core::GET_RES_FUNC)();
 //	}
 //
 //	ResourceManager::~ResourceManager()

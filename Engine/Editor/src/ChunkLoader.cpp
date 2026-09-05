@@ -40,7 +40,7 @@ namespace Editor
 	using namespace Core;
 	ChunkLoader::ChunkLoader()
 	{
-		HMODULE coreMod = GetModuleHandleA(DLLPath::CORE_EDITOR);
+		HMODULE coreMod = GetModuleHandleA(Common::DLLPath::CORE_EDITOR);
 		assert(coreMod);
 
 		//// You must list all Components to be used during runtime.

@@ -50,10 +50,10 @@ namespace Editor
 	{
 		LoadEditorConfig();
 
-		mGetProjPathFunc  = GetFunc<GET_PROJ_PATH_FUNC>(DLLPath::CORE_EDITOR, ProcName::GetProjectPath);
-		mGetChunkPathFunc = GetFunc<GET_CHUNK_PATH_FUNC>(DLLPath::CORE_EDITOR, ProcName::GetChunkPath);
-		mGetAssetPathFunc = GetFunc<GET_ASSET_PATH_FUNC>(DLLPath::CORE_EDITOR, ProcName::GetAssetPath);
-		mSetChunkIsSavedFunc  = GetFunc<SET_CHUNK_IS_SAVED_FUNC>(DLLPath::CORE_EDITOR, ProcName::SetChunkIsSaved);
+		mGetProjPathFunc  = Core::GetFunc<GET_PROJ_PATH_FUNC>(Common::DLLPath::CORE_EDITOR, ProcName::GetProjectPath);
+		mGetChunkPathFunc = Core::GetFunc<GET_CHUNK_PATH_FUNC>(Common::DLLPath::CORE_EDITOR, ProcName::GetChunkPath);
+		mGetAssetPathFunc = Core::GetFunc<GET_ASSET_PATH_FUNC>(Common::DLLPath::CORE_EDITOR, ProcName::GetAssetPath);
+		mSetChunkIsSavedFunc  = Core::GetFunc<SET_CHUNK_IS_SAVED_FUNC>(Common::DLLPath::CORE_EDITOR, ProcName::SetChunkIsSaved);
 	}
 
 	void EditorLayer::Update(float deltaTime, Core::IWindow* editorWin, Core::IInputDevice* input, Core::IRenderer* renderer, Core::ICamera* gameCam, Editor::EditorCamera* editorCam)
@@ -190,7 +190,7 @@ namespace Editor
 				{
 					IGFD::FileDialogConfig config;
 					config.path = mGetProjPathFunc()->C_Str();
-					ImGuiFileDialog::Instance()->OpenDialog(fileMenu[2], "Choose Directory", Core::FileTypes::CHUNK, config);
+					ImGuiFileDialog::Instance()->OpenDialog(fileMenu[2], "Choose Directory", Common::FileTypes::CHUNK, config);
 					mFileMenuEvent = FileMenuEvents::Save;
 				}
 			}
@@ -198,7 +198,7 @@ namespace Editor
 			{
 				IGFD::FileDialogConfig config;
 				config.path = mGetProjPathFunc()->C_Str();
-				ImGuiFileDialog::Instance()->OpenDialog(fileMenu[3], "Choose Directory", Core::FileTypes::CHUNK, config);
+				ImGuiFileDialog::Instance()->OpenDialog(fileMenu[3], "Choose Directory", Common::FileTypes::CHUNK, config);
 				mFileMenuEvent = FileMenuEvents::SaveAs;
 			}
 			else if (selection == fileMenu[4] || mOpenKeyPressed)
@@ -207,7 +207,7 @@ namespace Editor
 				{
 					IGFD::FileDialogConfig config;
 					config.path = mGetProjPathFunc()->C_Str();
-					ImGuiFileDialog::Instance()->OpenDialog(fileMenu[4], "Choose File", Core::FileTypes::CHUNK, config);
+					ImGuiFileDialog::Instance()->OpenDialog(fileMenu[4], "Choose File", Common::FileTypes::CHUNK, config);
 					mFileMenuEvent = FileMenuEvents::Open;
 				}
 			}
@@ -621,7 +621,7 @@ namespace Editor
 				auto onConfirm = [this]()
 					-> void {
 					Common::FTDS::String name = mFocusedEditorElement->GetName();
-					name.Append(FileTypes::PREMADE);
+					name.Append(Common::FileTypes::PREMADE);
 
 					Common::FTDS::String* path = mGetAssetPathFunc();
 					path->Append(name);
@@ -767,7 +767,7 @@ namespace Editor
 			buildDir.Append("\\Builds");
 			chunkDir.Append("\\Chunks");
 			engineDir.Append("\\FoxtrotEngine");
-			gameDataDir.Assign(engineDir.C_Str(), "\\GameData", FileTypes::GDPACK);
+			gameDataDir.Assign(engineDir.C_Str(), "\\GameData", Common::FileTypes::GDPACK);
 
 			std::filesystem::create_directory(assetDir.C_Str());
 			std::filesystem::create_directory(buildDir.C_Str());

@@ -23,11 +23,16 @@
 #include "EditorElement.h"
 #include "CommandHistory.h"
 
-namespace Core
+namespace Graphics
 {
 	class IWindow;
 	class IRenderer;
 	class ICamera;
+}
+
+namespace InputSystem
+{
+	class IInputDevice;
 }
 
 namespace D3D11
@@ -37,47 +42,47 @@ namespace D3D11
 	class ViewportRenderer;
 } // namespace D3D11
 
-enum class ErrorType
-{
-	None,
-	ProjectPathExists,
-	ProjectPathNotEmpty,
-	ChunkNotSaved,
-	ProjectNotValid
-};
-
-enum class InfoType
-{
-	None,
-	ChunkIsSaved,
-	PremadeIsCreated
-};
-
-enum class FileMenuEvents
-{
-	None,
-	NewProject,
-	OpenProject,
-	Save,
-	SaveAs,
-	Open
-};
-
 namespace Editor
 {
+	enum class ErrorType
+	{
+		None,
+		ProjectPathExists,
+		ProjectPathNotEmpty,
+		ChunkNotSaved,
+		ProjectNotValid
+	};
+
+	enum class InfoType
+	{
+		None,
+		ChunkIsSaved,
+		PremadeIsCreated
+	};
+
+	enum class FileMenuEvents
+	{
+		None,
+		NewProject,
+		OpenProject,
+		Save,
+		SaveAs,
+		Open
+	};
+
 	class Command;
 	class EditorCamera;
 	class EditorLayer
 	{
 		SINGLETON(EditorLayer)
 	public:
-		void Initialize(Core::IRenderer* renderer);
+		void Initialize(Graphics::IRenderer* renderer);
 		void Update(
 			float deltaTime, 
-			Core::IWindow* editorWin, 
-			Core::IInputDevice* input, 
-			Core::IRenderer* renderer,
-			Core::ICamera* gameCam, 
+			Graphics::IWindow* editorWin, 
+			InputSystem::IInputDevice* input, 
+			Graphics::IRenderer* renderer,
+			Graphics::ICamera* gameCam, 
 			Editor::EditorCamera* editorCam);
 		void Render();
 		void ShutDown();
@@ -193,7 +198,7 @@ namespace Editor
 		//  This is execptionally placed in Update() due to its requirement
 		//  to be nested in ImGUi's Frame.
 		/// </summary>
-		void DisplayViewport(Core::IWindow* editorWin, Core::IInputDevice* input, Core::IRenderer* renderer);
+		void DisplayViewport(Graphics::IWindow* editorWin, InputSystem::IInputDevice* input, Graphics::IRenderer* renderer);
 
 		// Displays current frame rate.
 		void DisplayFrameRate();

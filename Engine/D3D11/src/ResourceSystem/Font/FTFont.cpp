@@ -140,7 +140,7 @@ namespace D3D11
 
 			// don't overflow the buffer. In your app if this is true, you can
 			// implement a resize of your text vertex buffer
-			if (numCharacters >= BufferSize::MAX_FONT_CHAR_COUNT)
+			if (numCharacters >= Common::BufferSize::MAX_FONT_CHAR_COUNT)
 				break;
 
 			float kerning = 0.0f;
@@ -218,8 +218,8 @@ namespace D3D11
 
 		Common::FTDS::String metaPath = resDef.Path;
 
-		metaPath.SubStr(0, metaPath.RFind(FileTypes::FONT));
-		metaPath.Append(FileTypes::FONT_META);
+		metaPath.SubStr(0, metaPath.RFind(Common::FileTypes::FONT));
+		metaPath.Append(Common::FileTypes::FONT_META);
 
 		if (!std::filesystem::exists(metaPath.C_Str()))
 		{

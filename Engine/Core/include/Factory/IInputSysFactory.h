@@ -47,10 +47,4 @@ namespace Core
 		virtual ~IInputSysFactory() = default;
 	};
 
-	/// <summary>
-	/// Creates the default engine factory for the current platform.
-	/// On Windows, this returns a D3D11 factory.
-	/// </summary>
-	/// <returns>Pointer to the factory. Caller owns the memory.</returns>
-	extern "C" __declspec(dllexport) IInputSysFactory* CreateInputSysFactory();
 } // namespace Core

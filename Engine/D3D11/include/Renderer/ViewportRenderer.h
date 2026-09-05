@@ -15,8 +15,12 @@
 namespace Core
 {
 	class IWindow;
-	class FTRectArea;
 } // namespace Core
+
+namespace D3D11
+{
+	class FTRectArea;
+} // namespace D3D11
 
 namespace D3D11
 {

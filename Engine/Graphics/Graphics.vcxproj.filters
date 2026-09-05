@@ -87,5 +87,8 @@
     <ClInclude Include="include\ResourceSystem\Sprite\ITileMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Factory\GraphicsFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

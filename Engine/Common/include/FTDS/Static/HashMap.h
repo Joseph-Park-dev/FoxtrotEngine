@@ -86,7 +86,7 @@ namespace Common
 				}
 				if (this->mData[hashVal])
 				{
-					Debug::LogError(__LINE__, __FILE__, "HashMap is full");
+					Common::Debug::LogError(__LINE__, __FILE__, "HashMap is full");
 					delete node;
 					node = nullptr;
 					return;
@@ -251,7 +251,7 @@ namespace Common
 	//		// Abort insertion.
 	//		Common::FTDS::String msg("Duplicated key: ");
 	//		msg.Append(key);
-	//		Debug::LogError(__LINE__, __FILE__, msg.C_Str());
+	//		Common::Debug::LogError(__LINE__, __FILE__, msg.C_Str());
 	//		return;
 	//	}
 	// }

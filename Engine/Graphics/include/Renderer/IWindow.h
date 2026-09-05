@@ -11,11 +11,16 @@
 /// </summary>
 
 #pragma once
+namespace D3D11
+{
+	class FTRectArea;
+} // namespace D3D11
+
 namespace Graphics
 {
 	class IRenderer;
 	class IInputDevice;
-	class FTRectArea;
+	using FTRectArea = D3D11::FTRectArea;
 
 	/// <summary>
 	/// Abstract window interface defining the contract for all platform windows.

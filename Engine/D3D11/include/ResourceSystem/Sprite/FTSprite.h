@@ -1,10 +1,6 @@
 #pragma once
 #include "ResourceSystem/Mesh/FTMeshGroup.h"
 
-namespace Core
-{
-	class ICamera;
-}
 
 namespace D3D11
 {

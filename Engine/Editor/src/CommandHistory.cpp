@@ -179,15 +179,15 @@ namespace Editor
 
 	void CommandHistory::UpdateStringValue(const char* label, Common::FTDS::String& ref)
 	{
-		if (ref.Capacity() < BufferSize::STRING_BUFFER_SIZE)
-			ref.Reserve(BufferSize::STRING_BUFFER_SIZE);
+		if (ref.Capacity() < Common::BufferSize::STRING_BUFFER_SIZE)
+			ref.Reserve(Common::BufferSize::STRING_BUFFER_SIZE);
 
 		// static StrEditCommand* command;
 
-		static char strVal[BufferSize::STRING_BUFFER_SIZE] = { 0 };
+		static char strVal[Common::BufferSize::STRING_BUFFER_SIZE] = { 0 };
 		strcpy_s(strVal, ref.C_Str());
 
-		if (ImGui::InputText(label, strVal, BufferSize::STRING_BUFFER_SIZE, ImGuiInputTextFlags_::ImGuiInputTextFlags_EnterReturnsTrue))
+		if (ImGui::InputText(label, strVal, Common::BufferSize::STRING_BUFFER_SIZE, ImGuiInputTextFlags_::ImGuiInputTextFlags_EnterReturnsTrue))
 		{
 			StrEditCommand* command = DBG_NEW StrEditCommand(ref);
 			ref.Assign(strVal);

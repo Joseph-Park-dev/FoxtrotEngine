@@ -1,9 +1,5 @@
 #pragma once
-namespace Core
-{
-	class IRenderer;
-	class ICamera;
-} // namespace Core
+#include "Core/InterfaceAliases.h"
 
 namespace Editor
 {

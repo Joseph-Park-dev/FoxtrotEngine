@@ -109,7 +109,7 @@ namespace Core
 		if (!copiedPath.IsEmpty())
 			std::filesystem::remove(copiedPath.C_Str());
 		else
-			Debug::LogError(__LINE__, __FILE__, "Failed to remove copied file: path is empty.");
+			Common::Debug::LogError(__LINE__, __FILE__, "Failed to remove copied file: path is empty.");
 	}
 
 	const bool ChunkLoader::IsLoadingChunk() const

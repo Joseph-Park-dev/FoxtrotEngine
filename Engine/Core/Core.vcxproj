@@ -241,6 +241,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="include\Core\FTCore.h" />
+    <ClInclude Include="include\Factory\EngineContext.h" />
     <ClInclude Include="include\Manager\Timer.h" />
     <ClInclude Include="include\EventSystem\EventFunctions.h" />
     <ClInclude Include="include\EventSystem\EventType.h" />
@@ -264,7 +265,7 @@
     <ClInclude Include="include\Utility\TypeDefinitions.h" />
     <ClInclude Include="include\Utility\UnitDefinitions.h" />
     <ClInclude Include="include\Manager\PluginManager.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -273,7 +274,7 @@
     <ClCompile Include="..\..\third_party\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\third_party\imgui\imgui_widgets.cpp" />
     <ClCompile Include="include\Factory\IInputSysFactory.h" />
-    <ClCompile Include="src\Actor\ActorData.cpp" />
+    <ClCompile Include="..\Common\src\Actor\ActorData.cpp" />
     <ClCompile Include="src\Manager\PluginManager.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>

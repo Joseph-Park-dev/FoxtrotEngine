@@ -14,8 +14,8 @@
 namespace D3D11
 {
 	Tile::Tile()
-		: mRectOnScreen(DBG_NEW Core::FTRectArea(0.0f, 0.0f, 0.0f, 0.0f))
-		, mRectOnMap(DBG_NEW Core::FTRectArea(0.0f, 0.0f, 0.0f, 0.0f))
+		: mRectOnScreen(DBG_NEW D3D11::FTRectArea(0.0f, 0.0f, 0.0f, 0.0f))
+		, mRectOnMap(DBG_NEW D3D11::FTRectArea(0.0f, 0.0f, 0.0f, 0.0f))
 	{
 	}
 

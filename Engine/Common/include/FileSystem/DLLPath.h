@@ -1,13 +1,16 @@
 #pragma once
 
-namespace DLLPath
+namespace Common
 {
-	constexpr const char* CORE	= "Core.dll";
-	constexpr const char* D3D11 = "D3D11.dll";
+	namespace DLLPath
+	{
+		constexpr const char* CORE	= "Core.dll";
+		constexpr const char* D3D11 = "D3D11.dll";
 
 #ifdef FOXTROT_EDITOR
-	constexpr const char* CORE_EDITOR  = "Core_Editor.dll";
-	constexpr const char* D3D11_EDITOR = "D3D11_Editor.dll";
-	constexpr const char* EDITOR	   = "Editor.dll";
+		constexpr const char* CORE_EDITOR  = "Core_Editor.dll";
+		constexpr const char* D3D11_EDITOR = "D3D11_Editor.dll";
+		constexpr const char* EDITOR	   = "Editor.dll";
 #endif // FOXTROT_EDITOR
-} // namespace DLLPath
+	} // namespace DLLPath
+} // namespace Common

@@ -51,7 +51,7 @@ namespace D3D11
 		TileMapRenderer(
 			Core::IActor* owner,
 			int			  UpdateOrder = Core::DefaultVal::UPDATE_ORDER);
-		virtual ~TileMapRenderer() override;
+		virtual ~TileMapRenderer();
 
 	protected:
 		virtual void InitializeTileMap();
@@ -66,9 +66,9 @@ namespace D3D11
 
 #ifdef FOXTROT_EDITOR
 	public:
-		virtual void EditorUpdate(float deltaTime) override;
-		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst) override;
-		virtual void EditorUIUpdate(Editor::CommandHistory* chInst) override;
+		virtual void EditorUpdate(float deltaTime);
+		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst);
+		virtual void EditorUIUpdate(Editor::CommandHistory* chInst);
 
 	protected:
 		void UpdateCSV();
@@ -86,8 +86,12 @@ namespace D3D11
 	} // namespace ChunkKey
 
 	#include "Plugin/D3D11Exports.h"
+#ifdef D3D11_EXPORTS
 	D3D11_API D3D11::TileMapRenderer* CreateTileMapRenderer(Core::IActor* actor)
 	{
 		return DBG_NEW D3D11::TileMapRenderer(actor);
 	}
+#else
+	D3D11_API D3D11::TileMapRenderer* CreateTileMapRenderer(Core::IActor* actor);
+#endif
 } // namespace D3D11

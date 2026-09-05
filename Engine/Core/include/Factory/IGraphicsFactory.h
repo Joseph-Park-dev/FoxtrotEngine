@@ -21,10 +21,10 @@ namespace Common
 	}
 } // namespace Common
 
-namespace Common
+namespace D3D11
 {
 	class FTRectArea;
-} // namespace Common
+} // namespace D3D11
 
 namespace Graphics
 {
@@ -59,13 +59,13 @@ namespace Core
 			const char*	 title,
 			unsigned int width,
 			unsigned int height,
-			Common::FTRectArea*	 renderArea) = 0;
+			D3D11::FTRectArea*	 renderArea) = 0;
 
 		virtual Graphics::IWindow* CreateAppWindow(
 			const char*	 title,
 			unsigned int width,
 			unsigned int height,
-			Common::FTRectArea*	 renderArea,
+			D3D11::FTRectArea*	 renderArea,
 			WNDPROC		 wndProc,
 			void*		 wndProcParams) = 0;
 

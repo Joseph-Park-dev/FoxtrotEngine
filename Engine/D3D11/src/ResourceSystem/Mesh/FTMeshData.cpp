@@ -2,7 +2,7 @@
 
 #include "FTDS/Dynamic/DynamicArray.h"
 
-namespace Graphics
+namespace D3D11
 {
 	bool FTMeshData::IsEmpty() const
 	{
@@ -13,4 +13,4 @@ namespace Graphics
 	{
 		return Vertices.IsEmpty(); // || Indices.empty();
 	}
-} // namespace Graphics
+} // namespace D3D11

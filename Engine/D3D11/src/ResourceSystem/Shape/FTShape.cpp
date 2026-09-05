@@ -229,16 +229,16 @@ namespace D3D11
 		if (mVSCBuf)
 			D3D11Utils::UpdateBuffer(context, mVSCData, mVSCBuf);
 		else
-			Debug::LogError(__LINE__, __FILE__, "VSC Buffer is null");
+			Common::Debug::LogError(__LINE__, __FILE__, "VSC Buffer is null");
 
 		if (mGSCBuf)
 			D3D11Utils::UpdateBuffer(context, mGSCData, mGSCBuf);
 		else
-			Debug::LogError(__LINE__, __FILE__, "GSC Buffer is null");
+			Common::Debug::LogError(__LINE__, __FILE__, "GSC Buffer is null");
 
 		if (mPSCBuf)
 			D3D11Utils::UpdateBuffer(context, mPSCData, mPSCBuf);
 		else
-			Debug::LogError(__LINE__, __FILE__, "PSC Buffer is null");
+			Common::Debug::LogError(__LINE__, __FILE__, "PSC Buffer is null");
 	}
 } // namespace D3D11

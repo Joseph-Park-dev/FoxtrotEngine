@@ -5,13 +5,13 @@
 #include "Manager/Timer.h"
 #include "FileSystem/FileTypes.h"
 
-namespace GameData
-{
-	constexpr const char* DLL_LIST = "DLL List";
-} // namespace GameData
-
 namespace Core
 {
+	namespace GameData
+	{
+		constexpr const char* DLL_LIST = "DLL List";
+	} // namespace GameData
+
 	PluginManager::PluginManager()
 		: mModules(DBG_NEW Common::FTDS::HashMap<HMODULE>)
 		, mPlugins(DBG_NEW Common::FTDS::HashMap<Common::IPlugin*>)
@@ -29,7 +29,7 @@ namespace Core
 	Common::IPlugin* PluginManager::RegisterPlugin(const char* pluginName)
 	{
 		Common::FTDS::String path = pluginName;
-		path.Append(Core::FileTypes::DLL);
+		path.Append(Common::FileTypes::DLL);
 
 		HMODULE mod				  = LoadLibraryA(path.C_Str());
 		FARPROC proc			  = GetProcAddress(mod, Core::PluginKey::CREATE_PLUGIN);

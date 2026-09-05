@@ -44,7 +44,7 @@ namespace Core
 		void LoadComponents(Common::IActor* actor);
 
 	private:
-		Common::FTDS::HashMap<HMODULE>*		   mModules;
+		Common::FTDS::HashMap<HMODULE>*			 mModules;
 		Common::FTDS::HashMap<Common::IPlugin*>* mPlugins;
 	};
 

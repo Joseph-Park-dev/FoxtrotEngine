@@ -20,13 +20,16 @@
 #include "Plugin/PluginKey.h"
 #include "FileSystem/DLLPath.h"
 
-constexpr Common::FTDS::HashMap<Core::Plugin*>* gPlugins;
+namespace Main
+{
+	constexpr Common::FTDS::HashMap<Core::Plugin*>* gPlugins;
+} // namespace Main
 
 int main(int argc, char* argv[])
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	HMODULE mod = LoadLibraryA(DLLPath::CORE_EDITOR);
+	HMODULE mod = LoadLibraryA(Common::DLLPath::CORE_EDITOR);
 
 	FARPROC		   proc	   = GetProcAddress(mod, Core::PluginKey::CREATE_PLUGIN);
 	Core::GET_CORE getCore = reinterpret_cast<Core::GET_CORE>(proc);

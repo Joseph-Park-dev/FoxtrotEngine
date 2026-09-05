@@ -59,6 +59,8 @@ BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMoni
 	return TRUE; // continue enumeration
 }
 
+namespace Editor
+{
 class D3D11Editor :
 	public Core::IPlugin
 {
@@ -108,7 +110,7 @@ private:
 
 void D3D11Editor::Initialize()
 {
-	gGetChunkISSavedFunc = GetFunc<Core::CHUNK_IS_SAVED_FUNC>(DLLPath::CORE_EDITOR, Core::ProcName::GetChunkIsSaved);
+	gGetChunkISSavedFunc = Core::GetFunc<Core::CHUNK_IS_SAVED_FUNC>(Common::DLLPath::CORE_EDITOR, Core::ProcName::GetChunkIsSaved);
 
 	if (mEditorWin)
 	{
@@ -123,16 +125,16 @@ void D3D11Editor::Initialize()
 	}
 
 	using REGISTER_PLUGIN				= IPlugin* (*)(const char*);
-	IPlugin*				d3d11Plugin = GetFunc<REGISTER_PLUGIN>(DLLPath::CORE_EDITOR, ProcNames::Core::REGISTER_PLUGIN)(Plugin::Name::D3D11_EDITOR);
+	IPlugin*				d3d11Plugin = Core::GetFunc<REGISTER_PLUGIN>(Common::DLLPath::CORE_EDITOR, Core::ProcNames::Core::REGISTER_PLUGIN)(Core::Plugin::Name::D3D11_EDITOR);
 	Core::IGraphicsFactory* graphicsFac = reinterpret_cast<Core::IGraphicsFactory*>(d3d11Plugin);
 
-	Core::FTRECTAREA_CONSTRUCTOR createRectAreaFunc	  = GetFunc<Core::FTRECTAREA_CONSTRUCTOR>(DLLPath::CORE_EDITOR, Core::PluginKey::CREATE_FTRECTAREA);
-	D3D11::CREATE_VP_RENDERER	 createVPRendererFunc = GetFunc<D3D11::CREATE_VP_RENDERER>(DLLPath::CORE_EDITOR, D3D11::PluginKey::CREATE_VP_RENDERER);
-	// D3D11::CREATE_WINDOW_PROC	 createWindowFunc	   = GetFunc<D3D11::CREATE_WINDOW_PROC>(DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_D3D11_WINDOW);
-	// D3D11::CREATE_RENDERER		 createRendererFunc	   = GetFunc<D3D11::CREATE_RENDERER>(DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_RENDERER);
-	// D3D11::CREATE_INPUTDEVICE	 createInputDeviceFunc = GetFunc<D3D11::CREATE_INPUTDEVICE>(DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_INPUTDEVICE);
+	Core::FTRECTAREA_CONSTRUCTOR createRectAreaFunc	  = Core::GetFunc<Core::FTRECTAREA_CONSTRUCTOR>(Common::DLLPath::CORE_EDITOR, Core::PluginKey::CREATE_FTRECTAREA);
+	D3D11::CREATE_VP_RENDERER	 createVPRendererFunc = Core::GetFunc<D3D11::CREATE_VP_RENDERER>(Common::DLLPath::CORE_EDITOR, D3D11::PluginKey::CREATE_VP_RENDERER);
+	// D3D11::CREATE_WINDOW_PROC	 createWindowFunc	   = Core::GetFunc<D3D11::CREATE_WINDOW_PROC>(Common::DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_D3D11_WINDOW);
+	// D3D11::CREATE_RENDERER		 createRendererFunc	   = Core::GetFunc<D3D11::CREATE_RENDERER>(Common::DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_RENDERER);
+	// D3D11::CREATE_INPUTDEVICE	 createInputDeviceFunc = Core::GetFunc<D3D11::CREATE_INPUTDEVICE>(Common::DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_INPUTDEVICE);
 
-	Core::FTRectArea* rndArea = createRectAreaFunc(0.f, 0.f, 1280.f, 720.f, 0.f);
+	D3D11::FTRectArea* rndArea = createRectAreaFunc(0.f, 0.f, 1280.f, 720.f, 0.f);
 
 	wndprocParams = DBG_NEW D3D11::WNDPROC_Params{ mEditorWin, mInputDevice, mRenderer, &mIsResizingWindow };
 	mEditorWin	  = static_cast<D3D11::D3D11Window*>(graphicsFac->CreateAppWindow("Foxtrot Editor", 3840, 2160, rndArea, WinProc, wndprocParams));
@@ -146,19 +148,19 @@ void D3D11Editor::Initialize()
 
 	if (!mGameWin->CreateSwapChain(mRenderer))
 	{
-		Debug::LogError(__LINE__, __FILE__, "Failed to Initialize SwapChain");
+		Common::Debug::LogError(__LINE__, __FILE__, "Failed to Initialize SwapChain");
 		return;
 	}
 
 	if (!mEditorWin->InitializeWindowRenderer(mRenderer))
 	{
-		Debug::LogError(__LINE__, __FILE__, "Failed to Initialize Editor FTWindow Renderer");
+		Common::Debug::LogError(__LINE__, __FILE__, "Failed to Initialize Editor FTWindow Renderer");
 		return;
 	}
 
 	if (!mGameWin->InitializeWindowRenderer(mRenderer))
 	{
-		Debug::LogError(__LINE__, __FILE__, "Failed to Initialize FTWindow Renderer");
+		Common::Debug::LogError(__LINE__, __FILE__, "Failed to Initialize FTWindow Renderer");
 		return;
 	}
 
@@ -172,7 +174,7 @@ void D3D11Editor::Initialize()
 
 	if (!InitGUI())
 	{
-		Debug::LogError(__LINE__, __FILE__, "Failed to Initialize ImGui");
+		Common::Debug::LogError(__LINE__, __FILE__, "Failed to Initialize ImGui");
 		return;
 	}
 	Editor::EditorLayer::GetInstance()->Initialize(mRenderer);
@@ -315,6 +317,7 @@ bool D3D11Editor::InitGUI()
 	}
 	return true;
 }
+} // namespace Editor
 
 LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {

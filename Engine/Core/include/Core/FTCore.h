@@ -16,8 +16,9 @@ namespace Core
 		////// Initialization Phase //////
 		//////////////////////////////////
 		// clang-format off
-		virtual void Initialize();
+		virtual bool Initialize();
 		virtual void Setup();
+		virtual void RunLoop();
 		// clang-format on
 
 		///////////////////////

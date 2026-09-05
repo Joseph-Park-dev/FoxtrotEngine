@@ -6,17 +6,20 @@
 #include "GenericData.h"
 
 
-// This is an example of an exported variable
-GENERICDATA_API int nGenericData=0;
-
-// This is an example of an exported function.
-GENERICDATA_API int fnGenericData(void)
+namespace GenericData
 {
-    return 0;
-}
+	// This is an example of an exported variable
+	GENERICDATA_API int nGenericData=0;
 
-// This is the constructor of a class that has been exported.
-CGenericData::CGenericData()
-{
-    return;
-}
+	// This is an example of an exported function.
+	GENERICDATA_API int fnGenericData(void)
+	{
+		return 0;
+	}
+
+	// This is the constructor of a class that has been exported.
+	CGenericData::CGenericData()
+	{
+		return;
+	}
+} // namespace GenericData

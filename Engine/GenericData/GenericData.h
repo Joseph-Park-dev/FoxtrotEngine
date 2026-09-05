@@ -10,13 +10,16 @@
 #define GENERICDATA_API __declspec(dllimport)
 #endif
 
-// This class is exported from the dll
-class GENERICDATA_API CGenericData {
-public:
-	CGenericData(void);
-	// TODO: add your methods here.
-};
+namespace GenericData
+{
+	// This class is exported from the dll
+	class GENERICDATA_API CGenericData {
+	public:
+		CGenericData(void);
+		// TODO: add your methods here.
+	};
 
-extern GENERICDATA_API int nGenericData;
+	extern GENERICDATA_API int nGenericData;
 
-GENERICDATA_API int fnGenericData(void);
+	GENERICDATA_API int fnGenericData(void);
+} // namespace GenericData

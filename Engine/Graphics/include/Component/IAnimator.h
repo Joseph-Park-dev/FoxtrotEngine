@@ -21,6 +21,13 @@ namespace Graphics
 		public ISpriteRenderer
 	{
 	public:
+		static inline const char* NAME = "Animator";
+		virtual const char*		  GetName() override
+		{
+			return "Animator";
+		}
+
+	public:
 		virtual void Play(const size_t idx, bool isRepeated = true) = 0;
 		virtual void Stop()											= 0;
 

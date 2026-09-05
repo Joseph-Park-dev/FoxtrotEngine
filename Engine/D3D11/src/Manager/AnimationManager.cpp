@@ -42,7 +42,7 @@ namespace D3D11
 	{
 		mRenderer = renderer;
 #ifdef FOXTROT_EDITOR
-		HMODULE coreMod = GetModuleHandleA(DLLPath::CORE_EDITOR);
+		HMODULE coreMod = GetModuleHandleA(Common::DLLPath::CORE_EDITOR);
 		FARPROC proc	= GetProcAddress(coreMod, Core::ProcName::GetJSONs);
 		GetJSONsFunc	= reinterpret_cast<GET_JSON_FUNC>(proc);
 
@@ -179,8 +179,8 @@ namespace D3D11
 				// Save sprite animation into a file.
 				if (ImGui::Button("Create"))
 				{
-					if (!name.Contains(FileTypes::SPRITE_ANIMATION))
-						name.Append(FileTypes::SPRITE_ANIMATION);
+					if (!name.Contains(Common::FileTypes::SPRITE_ANIMATION))
+						name.Append(Common::FileTypes::SPRITE_ANIMATION);
 					resDef.FileName = name.C_Str();
 
 					// Update the relative path of the sprite animation.
@@ -214,8 +214,8 @@ namespace D3D11
 
 				if (ImGui::Button("Create"))
 				{
-					if (!name.Contains(FileTypes::SPINE_ANIMATION))
-						name.Append(FileTypes::SPINE_ANIMATION);
+					if (!name.Contains(Common::FileTypes::SPINE_ANIMATION))
+						name.Append(Common::FileTypes::SPINE_ANIMATION);
 					resDef.FileName = name.C_Str();
 
 					// Update the relative path of the sprite animation.

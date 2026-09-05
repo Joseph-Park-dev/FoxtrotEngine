@@ -8,15 +8,19 @@
 namespace Core
 {
 	class FTCore;
-	class FTJSON;
-	class FTText;
 	class DirectoryHelper;
 } // namespace Core
 
+namespace GenericData
+{
+	class FTJSON;
+	class FTText;
+} // namespace GenericData
+
 #ifdef FOXTROT_EDITOR
 	#include "Manager/ResourceManager.h"
-using GET_JSON_FUNC		  = Common::ResourcePack<Core::FTJSON>* (*)();
-using GET_TEXT_FUNC		  = Common::ResourcePack<Core::FTText>* (*)();
+using GET_JSON_FUNC		  = Common::ResourcePack<GenericData::FTJSON>* (*)();
+using GET_TEXT_FUNC		  = Common::ResourcePack<GenericData::FTText>* (*)();
 using GET_ASSET_PATH_FUNC = Common::FTDS::String* (*)();
 #endif // FOXTROT_EDITOR
 

@@ -12,10 +12,10 @@
 #include "TemplateFunctions.h"
 #include "FTMath.h"
 
-namespace Core
+namespace GenericData
 {
 	class FTJSON;
-}
+} // namespace GenericData
 
 namespace D3D11
 {
@@ -28,7 +28,7 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 	struct FTSpriteAnimationDef : Common::FTResourceDef
 	{
-		Core::FTJSON* JSON		  = nullptr;
+		GenericData::FTJSON* JSON		  = nullptr;
 		FTTexture*	  SpriteSheet = nullptr;
 		bool		  IsRepeated  = true;
 		int			  FPS		  = 24;
@@ -70,7 +70,7 @@ namespace D3D11
 
 	private:
 		/// @brief A JSON file that holds the rect data on a spritesheet.
-		Core::FTJSON* mJSON;
+		GenericData::FTJSON* mJSON;
 
 		/// @brief Frames-per-second for this animation.
 		int mFPS;

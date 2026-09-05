@@ -1,49 +1,40 @@
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
-// Copyright (C) 2025 JungBae Park. All rights reserved.
+// Copyright (C) 2026 JungBae Park. All rights reserved.
 //
 // Released under the GNU General Public License v3.0
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
-/// <summary>
-/// Main function of Foxtrot Editor.
-/// </summary>
 
-#pragma once
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
-#include <Windows.h>
 #include <stdio.h>
 
-#include "Plugin/IPlugin.h"
-#include "FTDS/Static/HashMap.h"
-#include "Plugin/PluginKey.h"
-#include "FileSystem/DLLPath.h"
+#include "Core/FTCore.h"
+#include "Plugin/CoreExports.h"
 
-namespace Main
+extern "C"
 {
-	constexpr Common::FTDS::HashMap<Core::Plugin*>* gPlugins;
-} // namespace Main
+	CORE_API Core::FTCore* GetCore();
+	CORE_API void		   DestroyCore();
+}
 
 int main(int argc, char* argv[])
 {
+	(void)argc;
+	(void)argv;
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	HMODULE mod = LoadLibraryA(Common::DLLPath::CORE_EDITOR);
-
-	FARPROC		   proc	   = GetProcAddress(mod, Core::PluginKey::CREATE_PLUGIN);
-	Core::GET_CORE getCore = reinterpret_cast<Core::GET_CORE>(proc);
-
-	bool success = core->Initialize();
-	if (success)
-		core->RunLoop();
-	else
+	Core::FTCore* core = GetCore();
+	if (!core || !core->Initialize())
 	{
-		printf("main() -> Initialization failed");
+		printf("main() -> Initialization failed\n");
+		DestroyCore();
 		return -1;
 	}
-	core->ShutDown();
-	destroyCoreInst();
 
+	core->RunLoop();
+	core->ShutDown();
+	DestroyCore();
 	return 0;
 }

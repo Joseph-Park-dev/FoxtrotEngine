@@ -9,10 +9,10 @@
 #pragma once
 #include "Mesh/IModel.h"
 
-namespace Core
+namespace GenericData
 {
 	class FTJSON;
-}
+} // namespace GenericData
 
 namespace Graphics
 {
@@ -20,7 +20,7 @@ namespace Graphics
 		Common::ResourceData
 	{
 		/// @brief A JSON file that holds the rect data on a spritesheet.
-		Core::FTJSON* JSON = nullptr;
+		GenericData::FTJSON* JSON = nullptr;
 
 		/// @brief Frames-per-second for this animation.
 		int FPS;

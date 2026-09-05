@@ -161,7 +161,7 @@ namespace D3D11
 		HRESULT		 hr			 = device->QueryInterface(__uuidof(IDXGIDevice), (void**)&pDXGIDevice);
 		if (FAILED(hr))
 		{
-			Debug::LogError(__LINE__, __FILE__, "Failed to retrieve DXGI device");
+			Common::Debug::LogError(__LINE__, __FILE__, "Failed to retrieve DXGI device");
 			return hr;
 		}
 
@@ -170,7 +170,7 @@ namespace D3D11
 		pDXGIDevice->Release();
 		if (FAILED(hr))
 		{
-			Debug::LogError(__LINE__, __FILE__, "Failed to retrieve DXGI adapter");
+			Common::Debug::LogError(__LINE__, __FILE__, "Failed to retrieve DXGI adapter");
 			return hr;
 		}
 
@@ -179,7 +179,7 @@ namespace D3D11
 		pDXGIAdapter->Release();
 		if (FAILED(hr))
 		{
-			Debug::LogError(__LINE__, __FILE__, "Failed to retrieve DXGI factory");
+			Common::Debug::LogError(__LINE__, __FILE__, "Failed to retrieve DXGI factory");
 			return hr;
 		}
 
@@ -215,7 +215,7 @@ namespace D3D11
 		pDXGIFactory->Release();
 		if (FAILED(hr))
 		{
-			Debug::LogError(__LINE__, __FILE__, "Failed to create swap chain");
+			Common::Debug::LogError(__LINE__, __FILE__, "Failed to create swap chain");
 			return hr;
 		}
 		return S_OK;

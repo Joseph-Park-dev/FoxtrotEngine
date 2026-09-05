@@ -27,7 +27,7 @@ namespace D3D11
 	{
 		Common::FTDS::String metaPath;
 		metaPath.Assign(resDef.Path);
-		ReplaceSuffix(metaPath, FileTypes::SHADER, FileTypes::SHADER_META);
+		ReplaceSuffix(metaPath, Common::FileTypes::SHADER, Common::FileTypes::SHADER_META);
 
 		// .shadermeta does not exist, thus the engine is not going to consider the file.
 		if (!std::filesystem::exists(std::filesystem::path(metaPath.C_Str())))
@@ -42,10 +42,10 @@ namespace D3D11
 	{
 		Common::FTDS::String metaPath;
 		metaPath.Assign(*GetRelativePath());
-		ReplaceSuffix(metaPath, FileTypes::SHADER, FileTypes::SHADER_META);
+		ReplaceSuffix(metaPath, Common::FileTypes::SHADER, Common::FileTypes::SHADER_META);
 
 		if (!std::filesystem::exists(std::filesystem::path(metaPath.C_Str())))
-			Debug::LogError(__LINE__, __FILE__, ".shadermeta does not exist. Creating one...");
+			Common::Debug::LogError(__LINE__, __FILE__, ".shadermeta does not exist. Creating one...");
 
 		std::ofstream ofs(metaPath.C_Str());
 
@@ -55,7 +55,7 @@ namespace D3D11
 			FileIOHelper::SaveBufferToFile(ofs);
 		}
 		else
-			Debug::LogError(__LINE__, __FILE__, "Failed to save shader meta file");
+			Common::Debug::LogError(__LINE__, __FILE__, "Failed to save shader meta file");
 	}
 #endif // FOXTROT_EDITOR
 } // namespace D3D11

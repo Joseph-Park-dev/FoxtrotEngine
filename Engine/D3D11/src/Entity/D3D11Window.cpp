@@ -11,6 +11,7 @@
 #include "Debugging/DebugFuncs.h"
 #include "Debugging/D3D11DebugFuncs.h"
 #include "Plugin/IPlugin.h"
+#include "Core/FTCore.h"
 
 namespace D3D11
 {
@@ -79,15 +80,16 @@ namespace D3D11
 		return true;
 	}
 
-	bool D3D11Window::InitializeWindowRenderer(Core::IRenderer* renderer)
+	bool D3D11Window::InitializeWindowRenderer(Graphics::IRenderer* renderer)
 	{
-		if (!CreateRTV(renderer->GetDevice()))
+		D3D11Renderer* d3dRenderer = static_cast<D3D11Renderer*>(renderer);
+		if (!CreateRTV(d3dRenderer->GetDevice()))
 		{
 			Common::Debug::LogError(__LINE__, __FILE__, "Failed to Initialize RTV");
 			return false;
 		}
 
-		if (!CreateDSV(renderer->GetDevice(), renderer->GetNumQualityLevels()))
+		if (!CreateDSV(d3dRenderer->GetDevice(), d3dRenderer->GetNumQualityLevels()))
 		{
 			Common::Debug::LogError(__LINE__, __FILE__, "Failed to Initialize DSV");
 			return false;
@@ -95,15 +97,16 @@ namespace D3D11
 		return true;
 	}
 
-	bool D3D11Window::CreateSwapChain(Core::IRenderer* renderer)
+	bool D3D11Window::CreateSwapChain(Graphics::IRenderer* renderer)
 	{
-		HRESULT hr = D3D11Utils::CreateSwapChain(mWinHandle, renderer->GetDevice(), mSwapChain, GetWidth(), GetHeight(), renderer->GetNumQualityLevels());
+		D3D11Renderer* d3dRenderer = static_cast<D3D11Renderer*>(renderer);
+		HRESULT hr = D3D11Utils::CreateSwapChain(mWinHandle, d3dRenderer->GetDevice(), mSwapChain, GetWidth(), GetHeight(), d3dRenderer->GetNumQualityLevels());
 		if (hr != S_OK)
 			return false;
 		return true;
 	}
 
-	void D3D11Window::ResizeWindow(Core::IRenderer* renderer)
+	void D3D11Window::ResizeWindow(Graphics::IRenderer* renderer)
 	{
 		D3D11Renderer* rend = reinterpret_cast<D3D11Renderer*>(renderer);
 		Reset();
@@ -117,7 +120,7 @@ namespace D3D11
 		}
 	}
 
-	void D3D11Window::BeginRender(Core::IRenderer* renderer)
+	void D3D11Window::BeginRender(Graphics::IRenderer* renderer)
 	{
 		D3D11Renderer* rend = reinterpret_cast<D3D11Renderer*>(renderer);
 		ClearWindow(rend);
@@ -136,7 +139,7 @@ namespace D3D11
 		rend->SetViewport(0.f, 0.f, GetRenderArea()->GetSize().x, GetRenderArea()->GetSize().y);
 	}
 
-	void D3D11Window::EndRender(Core::IRenderer* renderer)
+	void D3D11Window::EndRender(Graphics::IRenderer* renderer)
 	{
 		mSwapChain->Present(1, 0);
 
@@ -157,9 +160,9 @@ namespace D3D11
 	ComPtr<ID3D11RenderTargetView>& D3D11Window::GetRTV() { return mRTV; }
 	ComPtr<ID3D11DepthStencilView>& D3D11Window::GetDSV() { return mDSV; }
 
-	const Common::FTDS::String* D3D11Window::GetTitle() const
+	const char* D3D11Window::GetTitle() const
 	{
-		return mTitle;
+		return mTitle ? mTitle->C_Str() : "";
 	}
 
 	unsigned int D3D11Window::GetWidth() const

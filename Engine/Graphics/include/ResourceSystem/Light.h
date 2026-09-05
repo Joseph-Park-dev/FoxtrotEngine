@@ -7,6 +7,8 @@
 	#include "Utility/EditorHelper.h"
 #endif // FOXTROT_EDITOR
 
+namespace Graphics
+{
 namespace D3D11
 {
 	namespace LightKey
@@ -120,3 +122,4 @@ namespace D3D11
 	} // namespace Editor
 #endif // FOXTROT_EDITOR
 } // namespace D3D11
+} // namespace Graphics

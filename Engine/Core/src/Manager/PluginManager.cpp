@@ -18,12 +18,25 @@ namespace Core
 	{
 	}
 
+	PluginManager::~PluginManager()
+	{
+		ShutDown();
+	}
+
 	void PluginManager::ShutDown()
 	{
-		Safe_Delete_Map(mPlugins);
-		for (auto iter = mModules->Begin(); iter != mModules->End(); ++iter)
-			FreeLibrary((*iter)->Value());
-		delete mModules;
+		if (mPlugins)
+		{
+			Safe_Delete_Map(mPlugins);
+			mPlugins = nullptr;
+		}
+		if (mModules)
+		{
+			for (auto iter = mModules->Begin(); iter != mModules->End(); ++iter)
+				FreeLibrary((*iter)->Value());
+			delete mModules;
+			mModules = nullptr;
+		}
 	}
 
 	Common::IPlugin* PluginManager::RegisterPlugin(const char* pluginName)
@@ -31,11 +44,22 @@ namespace Core
 		Common::FTDS::String path = pluginName;
 		path.Append(Common::FileTypes::DLL);
 
-		HMODULE mod				  = LoadLibraryA(path.C_Str());
-		FARPROC proc			  = GetProcAddress(mod, Core::PluginKey::CREATE_PLUGIN);
-		using PLUGIN_CONSTRUCT	  = Common::IPlugin* (*)();
+		HMODULE mod = LoadLibraryA(path.C_Str());
+		if (!mod)
+			return nullptr;
+
+		FARPROC proc = GetProcAddress(mod, Core::PluginKey::CREATE_PLUGIN);
+		if (!proc)
+			return nullptr;
+
+		using PLUGIN_CONSTRUCT	  = Common::IPlugin* (*)(const char*);
 		PLUGIN_CONSTRUCT plgConst = reinterpret_cast<PLUGIN_CONSTRUCT>(proc);
-		Common::IPlugin*	 plugin	  = plgConst();
+		Common::IPlugin* plugin	  = plgConst(pluginName);
+		if (!plugin)
+			return nullptr;
+
+		plugin->Initialize();
+		plugin->Setup();
 
 		mModules->Insert(pluginName, mod);
 		mPlugins->Insert(pluginName, plugin);
@@ -58,31 +82,49 @@ namespace Core
 
 	void PluginManager::ProcessInput()
 	{
+		if (!mPlugins)
+			return;
 		for (auto iter = mPlugins->Begin(); iter != mPlugins->End(); ++iter)
 			(*iter)->Value()->ProcessInput();
 	}
 
 	void PluginManager::Update(float deltaTime)
 	{
+		if (!mPlugins)
+			return;
 		for (auto iter = mPlugins->Begin(); iter != mPlugins->End(); ++iter)
 			(*iter)->Value()->Update(deltaTime);
 	}
 
 	void PluginManager::LateUpdate(float deltaTime)
 	{
+		if (!mPlugins)
+			return;
 		for (auto iter = mPlugins->Begin(); iter != mPlugins->End(); ++iter)
 			(*iter)->Value()->LateUpdate(deltaTime);
 	}
 
 	void PluginManager::Render()
 	{
+		if (!mPlugins)
+			return;
 		for (auto iter = mPlugins->Begin(); iter != mPlugins->End(); ++iter)
 			(*iter)->Value()->Render();
 	}
 
 	void PluginManager::ProcessEvent()
 	{
+		if (!mPlugins)
+			return;
 		for (auto iter = mPlugins->Begin(); iter != mPlugins->End(); ++iter)
 			(*iter)->Value()->ProcessEvent();
 	}
 } // namespace Core
+
+extern "C"
+{
+	CORE_API Common::IPlugin* RegisterPlugin(const char* pluginName)
+	{
+		return Core::PluginManager::GetInstance()->RegisterPlugin(pluginName);
+	}
+}

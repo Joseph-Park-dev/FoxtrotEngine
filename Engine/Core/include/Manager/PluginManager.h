@@ -5,6 +5,7 @@
 #include "FTDS/Static/FTString.h"
 #include "Plugin/IPlugin.h"
 #include "Plugin/PluginKey.h"
+#include "Plugin/CoreExports.h"
 
 namespace Core
 {

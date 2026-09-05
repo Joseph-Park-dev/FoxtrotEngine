@@ -20,40 +20,41 @@
 
 #include "Component/D3D11Component.h"
 
-namespace ChunkKey
+namespace D3D11
 {
-	namespace Plugin
+	namespace ChunkKey
 	{
-		constexpr const char* D3D11 = "D3D11";
-	}
-} // namespace ChunkKey
+		namespace Plugin
+		{
+			constexpr const char* D3D11 = "D3D11";
+		}
+	} // namespace ChunkKey
 
-using namespace Core;
 class D3D11Plugin :
 	public Core::IPlugin,
 	public Core::IGraphicsFactory,
 	public Core::IInputSysFactory
 {
 public:
-	virtual void RegisterComponent(IComponent* comp) override;
+	virtual void RegisterComponent(Common::IComponent* comp) override;
 
 public:
-	virtual IWindow* CreateAppWindow(
+	virtual Graphics::IWindow* CreateAppWindow(
 		const char*	 title,
 		unsigned int width,
 		unsigned int height,
-		FTRectArea*	 renderArea) override;
+		D3D11::FTRectArea*	 renderArea) override;
 
-	virtual IWindow* CreateAppWindow(
+	virtual Graphics::IWindow* CreateAppWindow(
 		const char*	 title,
 		unsigned int width,
 		unsigned int height,
-		FTRectArea*	 rndArea,
+		D3D11::FTRectArea*	 rndArea,
 		WNDPROC		 wndProc,
 		void*		 wndProcParams) override;
-	virtual IRenderer*	  CreateRenderer(IWindow* window) override;
-	virtual ICamera*	  CreateCamera() override;
-	virtual IInputDevice* CreateInputDevice() override;
+	virtual Graphics::IRenderer*	  CreateRenderer(Graphics::IWindow* window) override;
+	virtual Graphics::ICamera*	  CreateCamera() override;
+	virtual InputSystem::IInputDevice* CreateInputDevice() override;
 
 	void SaveProperties(std::ofstream& ofs) override;
 	void LoadProperties(std::ifstream& ifs) override;
@@ -96,38 +97,38 @@ private:
 	Common::FTDS::DynamicArray<D3D11::D3D11Component*>* mRegisteredComps;
 };
 
-ICamera* D3D11Plugin::CreateCamera()
+Graphics::ICamera* D3D11Plugin::CreateCamera()
 {
 	return DBG_NEW D3D11::Camera;
 }
 
-IInputDevice* D3D11Plugin::CreateInputDevice()
+InputSystem::IInputDevice* D3D11Plugin::CreateInputDevice()
 {
 	D3D11::D3D11InputDevice* device = DBG_NEW D3D11::D3D11InputDevice;
 	mInputDevices->PushBack(device);
 	return device;
 }
 
-IRenderer* D3D11Plugin::CreateRenderer(IWindow* window)
+Graphics::IRenderer* D3D11Plugin::CreateRenderer(Graphics::IWindow* window)
 {
 	D3D11::D3D11Renderer* renderer = DBG_NEW D3D11::D3D11Renderer(window);
 	mRenderer					   = renderer;
 	return renderer;
 }
 
-void D3D11Plugin::RegisterComponent(IComponent* comp)
+void D3D11Plugin::RegisterComponent(Common::IComponent* comp)
 {
 	mRegisteredComps->PushBack(reinterpret_cast<D3D11::D3D11Component*>(comp));
 }
 
-IWindow* D3D11Plugin::CreateAppWindow(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea)
+Graphics::IWindow* D3D11Plugin::CreateAppWindow(const char* title, unsigned int width, unsigned int height, D3D11::FTRectArea* rndArea)
 {
 	D3D11::D3D11Window* window = DBG_NEW D3D11::D3D11Window(title, width, height, rndArea);
 	mWindows->PushBack(window);
 	return window;
 }
 
-IWindow* D3D11Plugin::CreateAppWindow(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea, WNDPROC wndProc, void* wndProcParams)
+Graphics::IWindow* D3D11Plugin::CreateAppWindow(const char* title, unsigned int width, unsigned int height, D3D11::FTRectArea* rndArea, WNDPROC wndProc, void* wndProcParams)
 {
 	D3D11::D3D11Window* window = 
 		DBG_NEW D3D11::D3D11Window(title, width, height, rndArea, wndProc, static_cast<D3D11::WNDPROC_Params*>(wndProcParams));
@@ -209,7 +210,7 @@ void D3D11Plugin::ProcessEvent()
 void D3D11Plugin::SaveProperties(std::ofstream& ofs)
 {
 	// Common::FTDS::String dataPath = D3D11::PluginKey::D3D11;
-	// dataPath.Append(FileTypes::PLUGIN_DATA);
+	// dataPath.Append(Common::FileTypes::PLUGIN_DATA);
 	// std::ofstream ofs(dataPath.C_Str());
 
 	// if (ofs.good())
@@ -225,7 +226,7 @@ void D3D11Plugin::SaveProperties(std::ofstream& ofs)
 	//		FileIOHelper::SaveUnsignedInt(ofs, Core::ChunkKey::FTWindow::WIDTH, (*iter)->GetWidth());
 	//		FileIOHelper::SaveUnsignedInt(ofs, Core::ChunkKey::FTWindow::HEIGHT, (*iter)->GetHeight());
 
-	//		HMODULE			mod	 = GetModuleHandleA(DLLPath::CORE_EDITOR);
+	//		HMODULE			mod	 = GetModuleHandleA(Common::DLLPath::CORE_EDITOR);
 	//		FARPROC			proc = GetProcAddress(mod, D3D11::PluginKey::SAVE_PROPERTIES);
 	//		FTRECTAREA_SAVE func = reinterpret_cast<FTRECTAREA_SAVE>(proc);
 	//		func(ofs, (*iter)->GetRenderArea());
@@ -277,6 +278,7 @@ void D3D11Plugin::LoadResourceData(std::ifstream& ifs)
 	D3D11::ResourceManager::GetInstance()->LoadDefaultResources(mRenderer);
 	D3D11::ResourceManager::GetInstance()->LoadResourcesFromChunk(ifs, mRenderer);
 }
+} // namespace D3D11
 
 #include "FTDS/Static/FTString.h"
 #include "Component/Animator.h"
@@ -287,9 +289,9 @@ void D3D11Plugin::LoadResourceData(std::ifstream& ifs)
 
 extern "C"
 {
-	D3D11_API IPlugin* CreatePlugin(const char* name)
+	D3D11_API Core::IPlugin* CreatePlugin(const char* name)
 	{
-		return DBG_NEW D3D11Plugin(name);
+		return DBG_NEW D3D11::D3D11Plugin(name);
 	}
 
 	D3D11_API IComponent* CreateComponent(IPlugin* plugin, IActor* actor, Common::FTDS::String& name)

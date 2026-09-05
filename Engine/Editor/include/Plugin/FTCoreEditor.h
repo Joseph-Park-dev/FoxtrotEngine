@@ -18,4 +18,7 @@
 // #include "FTCore.h" // NULLPATH: File doesn't exist - FTCore class defined in FTCore.cpp without header
 // NOTE: FTCoreEditor.h needs a proper FTCore.h header to inherit from FTCore class
 
-class FTWindow;
+namespace Editor
+{
+	class FTWindow;
+} // namespace Editor

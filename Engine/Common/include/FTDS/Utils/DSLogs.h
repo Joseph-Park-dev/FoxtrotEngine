@@ -3,8 +3,11 @@
 #include <cstdlib>
 #include <cassert>
 
-inline void LogError(char* message)
+namespace Common
 {
-	printf_s("%s\n", message);
-	exit(1);
-}
+	inline void LogError(char* message)
+	{
+		printf_s("%s\n", message);
+		exit(1);
+	}
+} // namespace Common

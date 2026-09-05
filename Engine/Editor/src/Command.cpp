@@ -195,13 +195,13 @@ namespace Editor
 		mValue = mPrevValue;
 	}
 
-	void ActorGroupEditCommand::SetNextVal(ActorGroup nextVal)
+	void ActorGroupEditCommand::SetNextVal(Common::ActorGroup nextVal)
 	{
 		mNextValue = nextVal;
 	}
 
-	ActorGroupEditCommand::ActorGroupEditCommand(ActorGroup& valRef)
-		: mPrevValue(valRef), mValue(valRef), mNextValue(ActorGroup::NOT_ASSIGNED)
+	ActorGroupEditCommand::ActorGroupEditCommand(Common::ActorGroup& valRef)
+		: mPrevValue(valRef), mValue(valRef), mNextValue(Common::ActorGroup::NOT_ASSIGNED)
 	{
 	}
 

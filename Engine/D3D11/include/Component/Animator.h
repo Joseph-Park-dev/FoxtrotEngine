@@ -13,27 +13,34 @@
 /// </summary>
 
 #pragma once
-#include "Component/IAnimator.h"
+#include "Component/SpriteRenderer.h"
 
 #include "TemplateFunctions.h"
+
+#ifdef FOXTROT_EDITOR
+namespace Editor
+{
+	class CommandHistory;
+}
+#endif
 
 namespace D3D11
 {
 	class FTSpriteAnimation;
 
 	class Animator :
-		public Graphics::IAnimator
+		public SpriteRenderer
 	{
 	public:
-		void Play(const size_t idx, bool isRepeated = true) override;
-		void Stop() override;
+		void Play(const size_t idx, bool isRepeated = true);
+		void Stop();
 
 	public:
-		bool GetIsFinished() const override;
-		int	 GetCurrFrameIdx() const override;
+		bool GetIsFinished() const;
+		int	 GetCurrFrameIdx() const;
 
-		void SetFrame(int frameNumber) override;
-		void SetIsFinished(bool val) override;
+		void SetFrame(int frameNumber);
+		void SetIsFinished(bool val);
 
 	public:
 		virtual void Initialize();
@@ -48,7 +55,7 @@ namespace D3D11
 		Animator(
 			Core::IActor* owner,
 			int			  updateOrder = Core::DefaultVal::UPDATE_ORDER);
-		~Animator() override;
+		~Animator();
 
 	private:
 		Common::FTDS::DynamicArray<D3D11::FTSpriteAnimation*>* mLoadedAnim;
@@ -67,9 +74,9 @@ namespace D3D11
 
 #ifdef FOXTROT_EDITOR
 	public:
-		virtual void EditorUpdate(float deltaTime) override;
-		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst) override;
-		virtual void EditorUIUpdate(Editor::CommandHistory* chInst) override;
+		virtual void EditorUpdate(float deltaTime);
+		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst);
+		virtual void EditorUIUpdate(Editor::CommandHistory* chInst);
 
 	private:
 		void UpdatePlayAnim();
@@ -89,8 +96,12 @@ namespace D3D11
 	} // namespace ChunkKey
 
 #include "Plugin/D3D11Exports.h"
+#ifdef D3D11_EXPORTS
 	D3D11_API D3D11::Animator* CreateAnimator(Core::IActor* actor)
 	{
 		return DBG_NEW D3D11::Animator(actor);
 	}
+#else
+	D3D11_API D3D11::Animator* CreateAnimator(Core::IActor* actor);
+#endif
 } // namespace D3D11

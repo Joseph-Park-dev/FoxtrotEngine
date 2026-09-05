@@ -110,7 +110,7 @@
     <TargetName>Core</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
-    <TargetName>Core_Editor</TargetName>
+    <TargetName>Core</TargetName>
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -176,7 +176,7 @@
       <PreprocessorDefinitions>_DEBUG;CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -231,6 +231,9 @@
     <ProjectReference Include="..\Math\Math.vcxproj">
       <Project>{05f1cde6-51be-4ec3-898e-d9d15811ed7f}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\GenericData\GenericData.vcxproj">
+      <Project>{895c9af5-f0d9-403d-af4f-5ffe5e4ffd94}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Actor\Actor.h" />
@@ -269,19 +272,12 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\third_party\imgui\imgui.cpp" />
-    <ClCompile Include="..\..\third_party\imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\..\third_party\imgui\imgui_tables.cpp" />
-    <ClCompile Include="..\..\third_party\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="include\Factory\IInputSysFactory.h" />
     <ClCompile Include="..\Common\src\Actor\ActorData.cpp" />
-    <ClCompile Include="src\Manager\PluginManager.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="src\Manager\PluginManager.cpp" />
     <ClCompile Include="src\Actor\Actor.cpp" />
     <ClCompile Include="src\Actor\Transform.cpp" />
     <ClCompile Include="src\Behavior\FTBehavior.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\Manager\Timer.cpp" />
     <ClCompile Include="src\EventSystem\EventFunctions.cpp" />

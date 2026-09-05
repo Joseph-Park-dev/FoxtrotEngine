@@ -15,10 +15,6 @@
 namespace Core
 {
 	class IEngineFactory;
-	class IWindow;
-	class IRenderer;
-	class IInputDevice;
-	class ICamera;
 	class IResourceManager;
 
 	/// <summary>

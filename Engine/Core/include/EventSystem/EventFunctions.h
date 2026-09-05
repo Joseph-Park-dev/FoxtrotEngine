@@ -17,7 +17,6 @@ namespace Math
 
 namespace Core
 {
-	enum class ActorGroup;
 	class Actor;
 
 	namespace FTDS

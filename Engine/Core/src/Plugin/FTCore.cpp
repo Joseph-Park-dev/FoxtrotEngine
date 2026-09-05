@@ -9,6 +9,7 @@
 #include "Core/FTCore.h"
 
 #include <fstream>
+#include <Windows.h>
 
 #include "FileSystem/FileIOHelper.h"
 #include "FileSystem/ChunkLoader.h"
@@ -38,6 +39,9 @@ namespace Core
 	void FTCore::LoadGameData()
 	{
 		std::ifstream ifs(mGameDataPath->C_Str());
+		if (!ifs.good())
+			return;
+
 		Common::FileIOHelper::BeginDataPackLoad(ifs, GameData::TITLE);
 
 		std::pair<size_t, Common::FTDS::String> chunkListPack = Common::FileIOHelper::BeginDataPackLoad(ifs, GameData::CHUNK_LIST);
@@ -50,18 +54,56 @@ namespace Core
 		DirectoryHelper::GetInstance()->SetProjectPath(std::filesystem::absolute("./").string().c_str());
 	}
 
-	void FTCore::Initialize()
+	bool FTCore::Initialize()
 	{
 		LoadGameData();
+
+		PluginManager* plugins = PluginManager::GetInstance();
+		if (!plugins->RegisterPlugin(Core::Plugin::Name::D3D11))
+			return false;
+
+#ifdef FOXTROT_EDITOR
+		if (!plugins->RegisterPlugin(Core::Plugin::Name::EDITOR))
+			return false;
+#endif
+		Setup();
+		return true;
 	}
 
 	void FTCore::Setup()
 	{
 	}
 
+	void FTCore::RunLoop()
+	{
+		while (mIsRunning)
+		{
+			MSG msg{};
+			while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+			{
+				if (msg.message == WM_QUIT)
+				{
+					mIsRunning = false;
+					break;
+				}
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+
+			if (!mIsRunning)
+				break;
+
+			ProcessInput();
+			Update();
+			LateUpdate();
+			Render();
+			ProcessEvent();
+		}
+	}
+
 	void FTCore::ProcessInput()
 	{
-		// PluginManager::GetInstance()->ProcessInput();
+		PluginManager::GetInstance()->ProcessInput();
 	}
 
 	void FTCore::Update()
@@ -71,7 +113,7 @@ namespace Core
 
 		if (!mIsUpdating)
 			return;
-		// PluginManager::GetInstance()->Update(deltaTime);
+		PluginManager::GetInstance()->Update(deltaTime);
 	}
 
 	void FTCore::LateUpdate()
@@ -80,12 +122,12 @@ namespace Core
 			return;
 
 		float deltaTime = Core::Timer::GetInstance()->GetDeltaTime();
-		// PluginManager::GetInstance()->LateUpdate(deltaTime);
+		PluginManager::GetInstance()->LateUpdate(deltaTime);
 	}
 
 	void FTCore::Render()
 	{
-		// PluginManager::GetInstance()->Render();
+		PluginManager::GetInstance()->Render();
 	}
 
 	void FTCore::ProcessEvent()
@@ -95,8 +137,9 @@ namespace Core
 	}
 
 	FTCore::FTCore()
-		: mGameDataPath(
-			  DBG_NEW Common::FTDS::String("./"))
+		: mGameDataPath(DBG_NEW Common::FTDS::String("./"))
+		, mIsRunning(true)
+		, mIsUpdating(true)
 	{
 		mGameDataPath->Append(GameData::TITLE);
 		mGameDataPath->Append(Common::FileTypes::GDPACK);
@@ -116,6 +159,21 @@ namespace Core
 		ChunkLoader::GetInstance()->Destroy();
 		Timer::GetInstance()->Destroy();
 
+		PluginManager::GetInstance()->ShutDown();
+		PluginManager::GetInstance()->Destroy();
 		PostQuitMessage(0);
 	}
 } // namespace Core
+
+extern "C"
+{
+	CORE_API Core::FTCore* GetCore()
+	{
+		return Core::FTCore::GetInstance();
+	}
+
+	CORE_API void DestroyCore()
+	{
+		Core::FTCore::Destroy();
+	}
+}

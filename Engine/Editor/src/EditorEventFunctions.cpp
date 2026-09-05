@@ -17,7 +17,7 @@ namespace Editor
 		actor->SetActorGroup(actorGroup);
 
 		EditorScene*		   scene = EditorSceneManager::GetInstance()->GetEditorScene();
-		Editor::EditorElement* elem	 = DBG_NEW Editor::EditorElement(actor, Core::ChunkKey::ID::CLONE);
+		Editor::EditorElement* elem	 = DBG_NEW Editor::EditorElement(actor, Common::ChunkKey::ID::CLONE);
 		elem->Initialize();
 
 		if (elem)

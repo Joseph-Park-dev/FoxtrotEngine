@@ -5,10 +5,6 @@
 
 #include <../Core/include/Plugin/PluginKey.h>
 
-namespace Core
-{
-	class IPlugin;
-}
 
 namespace Main
 {

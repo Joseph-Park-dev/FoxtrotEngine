@@ -61,8 +61,12 @@ namespace D3D11
 	} // namespace ChunkKey
 
 	#include "Plugin/D3D11Exports.h"
+#ifdef D3D11_EXPORTS
 	D3D11_API D3D11::SpineAnimator* CreateSpineAnimator(Core::IActor* actor)
 	{
 		return DBG_NEW D3D11::SpineAnimator(actor);
 	}
+#else
+	D3D11_API D3D11::SpineAnimator* CreateSpineAnimator(Core::IActor* actor);
+#endif
 } // namespace D3D11

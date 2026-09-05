@@ -111,7 +111,7 @@ namespace Editor
 	}
 
 	EditorElement::EditorElement(int id)
-		: mData(DBG_NEW Core::ActorData)
+		: mData(DBG_NEW Common::ActorData)
 		, mIsFocused(false)
 		, mHierarchyLevel(0)
 		, mIsDisplayed(false)
@@ -131,7 +131,7 @@ namespace Editor
 	}
 
 	EditorElement::EditorElement(Core::IActor* actor, int id)
-		: mData(DBG_NEW Core::ActorData)
+		: mData(DBG_NEW Common::ActorData)
 		, mIsFocused(false)
 		, mHierarchyLevel(0)
 		, mIsDisplayed(false)
@@ -157,7 +157,7 @@ namespace Editor
 	}
 
 	EditorElement::EditorElement(Core::IActor* actor, int id, bool deepCpyChild)
-		: mData(DBG_NEW Core::ActorData)
+		: mData(DBG_NEW Common::ActorData)
 		, mIsFocused(false)
 		, mHierarchyLevel(0)
 		, mIsDisplayed(false)
@@ -232,7 +232,7 @@ namespace Editor
 		mData->RefChildObjectFrom(actor);
 	}
 
-	Core::ActorData* EditorElement::GetData()
+	Common::ActorData* EditorElement::GetData()
 	{
 		return mData;
 	}

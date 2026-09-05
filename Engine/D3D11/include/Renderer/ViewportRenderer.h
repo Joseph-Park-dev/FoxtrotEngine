@@ -11,11 +11,9 @@
 
 #pragma once
 #include "Plugin/D3D11Exports.h"
+#include <wrl/client.h>
+#include <d3d11.h>
 
-namespace Core
-{
-	class IWindow;
-} // namespace Core
 
 namespace D3D11
 {

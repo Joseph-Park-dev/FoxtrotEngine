@@ -3,6 +3,7 @@
 #include "Plugin/IPlugin.h"
 #include "Actor/IActor.h"
 #include "FileSystem/FileIOHelper.h"
+#include "Component/Data/ComponentData.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "Utility/EditorHelper.h"
@@ -22,8 +23,8 @@ namespace D3D11
 
 	void D3D11::D3D11Component::SaveProperties(std::ofstream& ofs)
 	{
-		Common::FileIOHelper::SaveBool(ofs, Core::ChunkKey::IS_ACTIVE, mIsActive);
-		Common::FileIOHelper::SaveInt(ofs, Core::ChunkKey::UPDATE_ORDER, mUpdateOrder);
+		Common::FileIOHelper::SaveBool(ofs, Common::ChunkKey::IS_ACTIVE, mIsActive);
+		Common::FileIOHelper::SaveInt(ofs, Common::ChunkKey::UPDATE_ORDER, mUpdateOrder);
 	}
 
 	void D3D11::D3D11Component::LoadProperties(std::ifstream& ifs)

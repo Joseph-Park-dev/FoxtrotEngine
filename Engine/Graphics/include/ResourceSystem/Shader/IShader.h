@@ -11,8 +11,12 @@
 
 namespace Common
 {
-	class IRenderer;
 	struct FTResourceDef;
+}
+
+namespace Graphics
+{
+	class IRenderer;
 }
 
 namespace Graphics
@@ -36,7 +40,7 @@ namespace Graphics
 		//////////////////////
 	protected:
 		/// @brief Compiles shader base on its type.
-		virtual void CompileShader(Common::FTResourceDef& resDef, Common::IRenderer* renderer) = 0;
+		virtual void CompileShader(Common::FTResourceDef& resDef, Graphics::IRenderer* renderer) = 0;
 
 		/// @brief Loads the meta data for this wrapper.
 		virtual void LoadMetaData(Common::FTResourceDef& resDef) = 0;

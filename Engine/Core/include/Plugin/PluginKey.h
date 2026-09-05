@@ -38,8 +38,8 @@ namespace Core
 			constexpr const char* D3D11 = "D3D11";
 
 #ifdef FOXTROT_EDITOR
-			constexpr const char* CORE_EDITOR  = "Core_Editor";
-			constexpr const char* D3D11_EDITOR = "D3D11_Editor";
+			constexpr const char* CORE_EDITOR  = "Core";
+			constexpr const char* D3D11_EDITOR = "D3D11";
 			constexpr const char* EDITOR	   = "Editor";
 #endif // FOXTROT_EDITOR
 		} // namespace Name

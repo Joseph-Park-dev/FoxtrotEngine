@@ -1,29 +1,31 @@
 #pragma once
-// #ifdef FOXTROT_EDITOR
-//	#include "Plugin/CoreExports.h"
-//	#include "CommandHistory.h"
-//
-// namespace Editor
-//{
-//	extern __declspec(dllexport) UPDATE_INT_VAL			 gUpdateIntValueFunc;
-//	extern __declspec(dllexport) UPDATE_CLAMPED_INT_VAL	 gUpdateClampedIntValueFunc;
-//	extern __declspec(dllexport) UPDATE_UNSIGNED_INT_VAL gUpdateUnsignedIntValueFunc;
-//	extern __declspec(dllexport) UPDATE_FLOAT_VAL		 gUpdateFloatValueFunc;
-//	extern __declspec(dllexport) UPDATE_BOOL_VAL		 gUpdateBoolValueFunc;
-//	extern __declspec(dllexport) UPDATE_VEC2_VAL		 gUpdateVector2ValueFunc;
-//	extern __declspec(dllexport) UPDATE_VEC3_VAL		 gUpdateVector3ValueFunc;
-//	extern __declspec(dllexport) UPDATE_VEC4_VAL		 gUpdateVector4ValueFunc;
-//	extern __declspec(dllexport) UPDATE_STR_VAL			 gUpdateStringValueFunc;
-//
-//	#define UPDATE_INT(label, ref) gUpdateIntValueFunc(label, ref);
-//	#define UPDATE_CLAMPED_INT(label, ref, minVal, maxVal) gUpdateClampedIntValueFunc(label, ref, minVal, maxVal);
-//	#define UPDATE_UNSIGNED_INT(label, ref) gUpdateUnsignedIntValueFunc(label, ref);
-//	#define UPDATE_FLOAT(label, ref) gUpdateFloatValueFunc(label, ref);
-//	#define UPDATE_BOOL(label, ref) gUpdateBoolValueFunc(label, ref);
-//	#define UPDATE_VEC2(label, ref) gUpdateVector2ValueFunc(label, ref);
-//	#define UPDATE_VEC3(label, ref) gUpdateVector3ValueFunc(label, ref);
-//	#define UPDATE_VEC4(label, ref) gUpdateVector4ValueFunc(label, ref);
-//	#define UPDATE_STR(label, ref) gUpdateStringValueFunc(label, ref);
-//
-// } // namespace Editor
-// #endif // FOXTROT_EDITOR
+
+#ifdef FOXTROT_EDITOR
+namespace Math
+{
+	class FTVector2;
+	class FTVector3;
+	class FTVector4;
+} // namespace Math
+
+namespace Common
+{
+	namespace FTDS
+	{
+		class String;
+	}
+} // namespace Common
+
+namespace Editor
+{
+	inline void UPDATE_INT(const char*, int&) {}
+	inline void UPDATE_CLAMPED_INT(const char*, int&, int, int) {}
+	inline void UPDATE_UNSIGNED_INT(const char*, unsigned int&) {}
+	inline void UPDATE_FLOAT(const char*, float&) {}
+	inline void UPDATE_BOOL(const char*, bool&) {}
+	inline void UPDATE_VEC2(const char*, Math::FTVector2&) {}
+	inline void UPDATE_VEC3(const char*, Math::FTVector3&) {}
+	inline void UPDATE_VEC4(const char*, Math::FTVector4&) {}
+	inline void UPDATE_STR(const char*, Common::FTDS::String&) {}
+} // namespace Editor
+#endif // FOXTROT_EDITOR

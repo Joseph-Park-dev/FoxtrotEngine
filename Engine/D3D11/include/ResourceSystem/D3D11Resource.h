@@ -3,10 +3,6 @@
 
 #include <iosfwd>
 
-namespace Core
-{
-	struct FTResourceDef;
-}
 
 namespace D3D11
 {

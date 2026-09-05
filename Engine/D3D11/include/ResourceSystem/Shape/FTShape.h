@@ -19,7 +19,6 @@
 namespace Core
 {
 	class Transform;
-	class ICamera;
 } // namespace Core
 
 namespace D3D11

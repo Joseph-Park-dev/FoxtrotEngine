@@ -21,10 +21,10 @@ namespace D3D11
 
 	public:
 		// D3D11 interfaces (Getters).
-		virtual Microsoft::WRL::ComPtr<ID3D11Device>&		 GetDevice() override;
-		virtual Microsoft::WRL::ComPtr<ID3D11DeviceContext>& GetContext() override;
-		virtual D3D11_VIEWPORT*								 GetViewport() override;
-		const unsigned int									 GetNumQualityLevels() const override;
+		virtual Microsoft::WRL::ComPtr<ID3D11Device>&		 GetDevice();
+		virtual Microsoft::WRL::ComPtr<ID3D11DeviceContext>& GetContext();
+		virtual D3D11_VIEWPORT*								 GetViewport();
+		const unsigned int									 GetNumQualityLevels() const;
 		const Core::FillMode&								 GetFillMode() const override;
 
 		void SetFillMode(const Core::FillMode mode);
@@ -34,7 +34,7 @@ namespace D3D11
 		~D3D11Renderer();
 
 	protected:
-		virtual bool Initialize(Core::IWindow* window) override;
+		virtual bool Initialize(Core::IWindow* window);
 		void		 Reset();
 
 	private:

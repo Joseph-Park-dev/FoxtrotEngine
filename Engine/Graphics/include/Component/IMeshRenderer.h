@@ -12,10 +12,6 @@
 #pragma once
 #include "IComponent.h"
 
-namespace Core
-{
-	class IActor;
-}
 
 namespace InputSystem
 {
@@ -54,7 +50,7 @@ namespace Graphics
 		virtual void LateUpdate(float deltaTime)									   = 0;
 		virtual void Render(Graphics::IRenderer* renderer, Graphics::ICamera* camInst) = 0;
 
-		virtual void CloneTo(Core::IActor* actor) = 0;
+		virtual void CloneTo(Common::IActor* actor) = 0;
 
 		/////////////////////////////////////
 		// Instantiation-related functions //

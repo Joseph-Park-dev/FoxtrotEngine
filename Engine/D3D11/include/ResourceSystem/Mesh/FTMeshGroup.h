@@ -8,6 +8,7 @@
 
 #pragma once
 #include "IModel.h"
+#include "ResourceSystem/D3D11Resource.h"
 
 #include <wrl.h>
 #include <d3d11.h>
@@ -17,8 +18,6 @@
 namespace Core
 {
 	class Transform;
-	class ICamera;
-	class IRenderer;
 } // namespace Core
 
 namespace D3D11

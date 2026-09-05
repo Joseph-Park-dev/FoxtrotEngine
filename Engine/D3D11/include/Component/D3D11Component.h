@@ -1,4 +1,5 @@
 #pragma once
+#include "Core/InterfaceAliases.h"
 #include "Component/IComponent.h"
 
 #include "FTDS/Static/FTString.h"
@@ -6,13 +7,6 @@
 	#include "CommandHistory.h"
 #endif
 
-namespace Core
-{
-	class IInputDevice;
-	class IActor;
-	class IRenderer;
-	class ICamera;
-} // namespace Core
 
 namespace D3D11
 {

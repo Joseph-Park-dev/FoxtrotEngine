@@ -12,10 +12,6 @@
 #include <wrl.h>
 #include <d3d11.h>
 
-namespace Core
-{
-	class IRenderer;
-}
 
 namespace D3D11
 {

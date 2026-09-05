@@ -16,7 +16,6 @@
 
 namespace Core
 {
-	class IActor;
 	class Transform;
 	class FoxtrotRenderer;
 } // namespace Core
@@ -133,8 +132,12 @@ namespace D3D11
 	} // namespace ChunkKey
 
 	#include "Plugin/D3D11Exports.h"
+#ifdef D3D11_EXPORTS
 	D3D11_API D3D11::MeshRenderer* CreateMeshRenderer(Core::IActor* actor)
 	{
 		return DBG_NEW D3D11::MeshRenderer(actor);
 	}
+#else
+	D3D11_API D3D11::MeshRenderer* CreateMeshRenderer(Core::IActor* actor);
+#endif
 } // namespace D3D11

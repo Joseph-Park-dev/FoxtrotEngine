@@ -5,12 +5,10 @@
 #include <wrl.h>
 #include <d3d11.h>
 
-namespace Core
+namespace Graphics
 {
-	class FTCore;
-	class IPlugin;
 	class IRenderer;
-} // namespace Core
+} // namespace Graphics
 
 namespace D3D11
 {
@@ -36,15 +34,15 @@ namespace D3D11
 		public Graphics::IWindow
 	{
 	public:
-		void BeginRender(Core::IRenderer* renderer) override;
-		void EndRender(Core::IRenderer* renderer) override;
-		void ResizeWindow(Core::IRenderer* renderer) override;
+		void BeginRender(Graphics::IRenderer* renderer) override;
+		void EndRender(Graphics::IRenderer* renderer) override;
+		void ResizeWindow(Graphics::IRenderer* renderer) override;
 
 	public:
 		bool Initialize(int windowMode);
 		bool Initialize(int windowMode, WNDPROC proc, WNDPROC_Params* params = nullptr);
-		bool InitializeWindowRenderer(Core::IRenderer* renderer);
-		bool CreateSwapChain(Core::IRenderer* renderer);
+		bool InitializeWindowRenderer(Graphics::IRenderer* renderer);
+		bool CreateSwapChain(Graphics::IRenderer* renderer);
 
 	public:
 		void Reset();
@@ -64,7 +62,7 @@ namespace D3D11
 		/// <summary>
 		/// Gets the window title.
 		/// </summary>
-		virtual const Common::FTDS::String* GetTitle() const override;
+		virtual const char* GetTitle() const override;
 
 		/// <summary>
 		/// Gets the window client width in pixels.

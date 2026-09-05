@@ -36,8 +36,8 @@ namespace Core
 	ResourceManager::ResourceManager()
 		: mPremades(DBG_NEW ResourcePack<FTPremade>(0))
 		, mCSVs(DBG_NEW ResourcePack<FTCSV>(0))
-		, mJSONs(DBG_NEW ResourcePack<FTJSON>(0))
-		, mTexts(DBG_NEW ResourcePack<FTText>(0))
+		, mJSONs(DBG_NEW ResourcePack<GenericData::FTJSON>(0))
+		, mTexts(DBG_NEW ResourcePack<GenericData::FTText>(0))
 	{
 	}
 
@@ -390,12 +390,12 @@ namespace Core
 		return mCSVs->GetResource(key);
 	}
 
-	Core::FTJSON* ResourceManager::GetJSON(const char* key)
+	GenericData::FTJSON* ResourceManager::GetJSON(const char* key)
 	{
 		return mJSONs->GetResource(key);
 	}
 
-	Core::FTText* ResourceManager::GetText(const char* key)
+	GenericData::FTText* ResourceManager::GetText(const char* key)
 	{
 		return mTexts->GetResource(key);
 	}
@@ -410,12 +410,12 @@ namespace Core
 		return mCSVs;
 	}
 
-	Common::ResourcePack<FTJSON>* ResourceManager::GetJSONs()
+	Common::ResourcePack<GenericData::FTJSON>* ResourceManager::GetJSONs()
 	{
 		return mJSONs;
 	}
 
-	Common::ResourcePack<FTText>* ResourceManager::GetTexts()
+	Common::ResourcePack<GenericData::FTText>* ResourceManager::GetTexts()
 	{
 		return mTexts;
 	}
@@ -428,19 +428,19 @@ namespace Core
 	{
 		return ResourceManager::GetInstance()->GetCSV(key);
 	}
-	FTJSON* GetJSON(const char* key)
+	GenericData::FTJSON* GetJSON(const char* key)
 	{
 		return ResourceManager::GetInstance()->GetJSON(key);
 	}
-	FTText* GetText(const char* key)
+	GenericData::FTText* GetText(const char* key)
 	{
 		return ResourceManager::GetInstance()->GetText(key);
 	}
-	CORE_API Common::ResourcePack<FTJSON>* GetJSONs()
+	CORE_API Common::ResourcePack<GenericData::FTJSON>* GetJSONs()
 	{
 		return ResourceManager::GetInstance()->GetJSONs();
 	}
-	CORE_API Common::ResourcePack<FTText>* GetTexts()
+	CORE_API Common::ResourcePack<GenericData::FTText>* GetTexts()
 	{
 		return ResourceManager::GetInstance()->GetTexts();
 	}

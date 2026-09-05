@@ -80,7 +80,7 @@ namespace D3D11
 	{
 		if (!meshData)
 		{
-			Debug::LogError(__LINE__, __FILE__, "MeshData is null. If this is called while initializing FTSprite or SpineAnim, it is OK");
+			Common::Debug::LogError(__LINE__, __FILE__, "MeshData is null. If this is called while initializing FTSprite or SpineAnim, it is OK");
 			return;
 		}
 		D3D11::D3D11Renderer* rend = reinterpret_cast<D3D11::D3D11Renderer*>(renderer);

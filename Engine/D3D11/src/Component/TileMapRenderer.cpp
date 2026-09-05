@@ -175,7 +175,7 @@ namespace D3D11
 			config.path				 = ".";
 			config.countSelectionMax = 1;
 			ImGuiFileDialog::Instance()->OpenDialog(
-				"SelectCSV", "Select .CSV", Core::FileTypes::TEXTURE, config);
+				"SelectCSV", "Select .CSV", Common::FileTypes::TEXTURE, config);
 			ImGui::OpenPopup("Select .CSV");
 		}
 
@@ -226,7 +226,7 @@ namespace D3D11
 			config.path				 = ".";
 			config.countSelectionMax = 1;
 			ImGuiFileDialog::Instance()->OpenDialog(
-				"SelectCSV", "Select .CSV", Core::FileTypes::TEXTURE, config);
+				"SelectCSV", "Select .CSV", Common::FileTypes::TEXTURE, config);
 			ImGui::OpenPopup("Select .CSV");
 		}
 

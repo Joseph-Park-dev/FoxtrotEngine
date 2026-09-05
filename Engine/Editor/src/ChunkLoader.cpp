@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 
-#include "FileSystem/ChunkLoader.h"
+#include "ChunkLoader.h"
 
 #include <fstream>
 
@@ -37,7 +37,6 @@
 
 namespace Editor
 {
-	using namespace Core;
 	ChunkLoader::ChunkLoader()
 	{
 		HMODULE coreMod = GetModuleHandleA(Common::DLLPath::CORE_EDITOR);
@@ -128,7 +127,7 @@ namespace Editor
 		for (size_t i = 0; i < pack.first; ++i)
 		{
 			std::pair<size_t, Common::FTDS::String>&& actorData = Common::FileIOHelper::BeginDataPackLoad(ifs);
-			Actor									  actor		= Actor(Core::ChunkKey::ID::INVALID);
+			Actor									  actor		= Actor(Common::ChunkKey::ID::INVALID);
 			actor.LoadProperties(ifs);
 			actor.LoadComponents(ifs);
 			Core::IActor* element = scene->AddEditorElement(&actor);

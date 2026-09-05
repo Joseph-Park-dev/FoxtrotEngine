@@ -204,6 +204,7 @@
     <ClInclude Include="include\Component\ISpineAnimator.h" />
     <ClInclude Include="include\Component\ISpriteRenderer.h" />
     <ClInclude Include="include\Component\ITileMapRenderer.h" />
+    <ClInclude Include="include\Factory\GraphicsFactory.h" />
     <ClInclude Include="include\Renderer\ICamera.h" />
     <ClInclude Include="include\Renderer\IRenderer.h" />
     <ClInclude Include="include\Renderer\IWindow.h" />

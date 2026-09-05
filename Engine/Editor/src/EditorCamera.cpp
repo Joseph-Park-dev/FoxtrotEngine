@@ -145,7 +145,7 @@ namespace Editor
 		ImGui::EndChild();
 	}
 
-	Core::CameraData* EditorCamera::Data()
+	D3D11::CameraData* EditorCamera::Data()
 	{
 		return mData;
 	}
@@ -289,7 +289,7 @@ namespace Editor
 		// SetPosition(camPos);
 
 		using GET_RECT_FUNC = D3D11::FTRectangle* (*)();
-		mDebugRect			= GetFunc<GET_RECT_FUNC>(DLLPath::D3D11_EDITOR, D3D11::ProcName::CREATE_FT_RECTANGLE)();
+		mDebugRect			= Core::GetFunc<GET_RECT_FUNC>(Common::DLLPath::D3D11_EDITOR, D3D11::ProcName::CREATE_FT_RECTANGLE)();
 	}
 
 	EditorCamera::~EditorCamera()

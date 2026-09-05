@@ -50,7 +50,7 @@ namespace Editor
 		void DisplayEditorCameraMenu();
 
 	public:
-		virtual Core::CameraData* Data() override;
+		virtual D3D11::CameraData* Data() override;
 
 		//////////////////////////////////////////
 		////// Transform Properties //////////////
@@ -99,7 +99,7 @@ namespace Editor
 		void InitializePixelsPerUnit(unsigned int pixels, float units);
 
 	private:
-		Core::CameraData* mData;
+		D3D11::CameraData* mData;
 
 		bool  mPanKeyPressed;
 		float mPanValModSpeed;

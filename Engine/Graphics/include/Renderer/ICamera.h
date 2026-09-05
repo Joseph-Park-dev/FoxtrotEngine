@@ -25,7 +25,6 @@ namespace Graphics
 
 	class IActor;
 	class SceneManager;
-	struct CameraData;
 
 	/// <summary>
 	/// Abstract camera interface for view/projection transformations.

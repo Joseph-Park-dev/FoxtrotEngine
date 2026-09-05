@@ -13,7 +13,7 @@
 /// </summary>
 
 #pragma once
-#include "Component/SpriteRenderer.h"
+#include "Component/IAnimator.h"
 
 #include "TemplateFunctions.h"
 
@@ -22,34 +22,27 @@ namespace D3D11
 	class FTSpriteAnimation;
 
 	class Animator :
-		public SpriteRenderer
+		public Graphics::IAnimator
 	{
 	public:
-		static inline const char* NAME = "Animator";
-		virtual const char*		  GetName() override
-		{
-			return "Animator";
-		}
+		void Play(const size_t idx, bool isRepeated = true) override;
+		void Stop() override;
 
 	public:
-		void Play(const size_t idx, bool isRepeated = true);
-		void Stop();
+		bool GetIsFinished() const override;
+		int	 GetCurrFrameIdx() const override;
+
+		void SetFrame(int frameNumber) override;
+		void SetIsFinished(bool val) override;
 
 	public:
-		bool GetIsFinished() const;
-		int	 GetCurrFrameIdx() const;
+		virtual void Initialize();
+		virtual void ProcessInput(Core::IInputDevice* inputDevice);
+		virtual void Update(float deltaTime);
+		void		 LateUpdate(float deltaTime);
+		void		 Render(Core::IRenderer* renderer, Core::ICamera* camInst);
 
-		void SetFrame(int frameNumber);
-		void SetIsFinished(bool val);
-
-	public:
-		virtual void Initialize() override;
-		virtual void ProcessInput(Core::IInputDevice* inputDevice) override;
-		virtual void Update(float deltaTime) override;
-		void		 LateUpdate(float deltaTime) override;
-		void		 Render(Core::IRenderer* renderer, Core::ICamera* camInst) override;
-
-		virtual void CloneTo(Core::IActor* actor) override;
+		virtual void CloneTo(Core::IActor* actor);
 
 	public:
 		Animator(
@@ -95,7 +88,7 @@ namespace D3D11
 		} // namespace Animator
 	} // namespace ChunkKey
 
-	#include "Plugin/D3D11Exports.h"
+#include "Plugin/D3D11Exports.h"
 	D3D11_API D3D11::Animator* CreateAnimator(Core::IActor* actor)
 	{
 		return DBG_NEW D3D11::Animator(actor);

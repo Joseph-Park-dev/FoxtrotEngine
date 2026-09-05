@@ -25,10 +25,14 @@ namespace Graphics
 	class ICamera;
 } // namespace Graphics
 
+namespace InputSystem
+{
+	class IInputDevice;
+} // namespace InputSystem
+
 namespace Common
 {
 	class IActor;
-	class IInputDevice;
 
 	namespace DefaultVal
 	{
@@ -37,6 +41,9 @@ namespace Common
 
 	class IComponent
 	{
+	public:
+		virtual ~IComponent() = default;
+
 		//////////////////////
 		/// Initialization ///
 		//////////////////////
@@ -48,7 +55,7 @@ namespace Common
 		/// Gameloop ///
 		////////////////
 	public:
-		virtual void ProcessInput(IInputDevice* inputDevice)						   = 0;
+		virtual void ProcessInput(InputSystem::IInputDevice* inputDevice)			   = 0;
 		virtual void Update(float deltaTime)										   = 0;
 		virtual void LateUpdate(float deltaTime)									   = 0;
 		virtual void Render(Graphics::IRenderer* renderer, Graphics::ICamera* camInst) = 0;
@@ -93,5 +100,5 @@ namespace Common
 	namespace ChunkKey
 	{
 		constexpr const char* COMPONENTS = "Components";
-	};
+	}
 } // namespace Common

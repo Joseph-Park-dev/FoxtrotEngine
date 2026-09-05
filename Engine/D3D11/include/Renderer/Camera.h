@@ -20,7 +20,6 @@
 
 namespace Core
 {
-	class IActor;
 	class SceneManager;
 } // namespace Core
 
@@ -49,7 +48,7 @@ namespace D3D11
 		void LoadProperties(std::ifstream& ifs) override;
 
 	public:
-		virtual D3D11::CameraData* Data() override;
+		virtual D3D11::CameraData* Data();
 
 		//////////////////////////////////////////
 		////// Transform Properties //////////////

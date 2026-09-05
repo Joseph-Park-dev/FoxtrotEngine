@@ -99,7 +99,7 @@ namespace Core
 			  DBG_NEW Common::FTDS::String("./"))
 	{
 		mGameDataPath->Append(GameData::TITLE);
-		mGameDataPath->Append(FileTypes::GDPACK);
+		mGameDataPath->Append(Common::FileTypes::GDPACK);
 	}
 
 	FTCore::~FTCore()

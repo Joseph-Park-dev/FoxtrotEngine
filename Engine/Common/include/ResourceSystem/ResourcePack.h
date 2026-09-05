@@ -62,7 +62,7 @@ namespace Common
 			FTDS::Record<FTRESOURCE*>* rec = mResources->At(key);
 			if (!rec)
 			{
-				Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
+				Common::Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
 				return nullptr;
 			}
 			return rec->Value();
@@ -76,7 +76,7 @@ namespace Common
 			FTDS::Record<FTRESOURCE*>* rec = mResources->At(key);
 			if (!rec)
 			{
-				Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
+				Common::Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
 				return nullptr;
 			}
 			return rec->Value();

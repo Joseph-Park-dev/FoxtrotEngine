@@ -32,6 +32,6 @@
 //		: mViewportRenderer(nullptr)
 //	{
 //		using CREATE_VP_RENDERER = D3D11::ViewportRenderer* (*)();
-//		mViewportRenderer		 = GetFunc<CREATE_VP_RENDERER>(Plugin::Name::D3D11_EDITOR, ProcNames::D3D11::CREATE_VP_RENDERER)();
+//		mViewportRenderer		 = Core::GetFunc<CREATE_VP_RENDERER>(Core::Plugin::Name::D3D11_EDITOR, Core::ProcNames::D3D11::CREATE_VP_RENDERER)();
 //	}
 //} // namespace Editor

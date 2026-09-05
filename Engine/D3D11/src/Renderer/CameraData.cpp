@@ -5,7 +5,8 @@
 #include "Actor/ActorData.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Plugin/GetFunc.h"
-#include "Plugin/PluginKey.h"
+#include "../../../Core/include/Plugin/PluginKey.h"
+#include "FileSystem/DLLPath.h"
 
 namespace D3D11
 {
@@ -45,20 +46,20 @@ namespace D3D11
 
 	void CameraData::SaveProperties(std::ofstream& ofs)
 	{
-		Common::FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::CAMERA_DATA);
+		Common::FileIOHelper::BeginDataPackSave(ofs, Graphics::ChunkKey::CAMERA_DATA);
 		if (Target)
-			Common::FileIOHelper::SaveString(ofs, Core::ChunkKey::TARGET_ACTOR, Target->GetNameRef());
+			Common::FileIOHelper::SaveString(ofs, Graphics::ChunkKey::TARGET_ACTOR, Target->GetNameRef());
 		else
-			Common::FileIOHelper::SaveString(ofs, Core::ChunkKey::TARGET_ACTOR, Common::ChunkKey::NullVal::NULL_OBJECT);
-		Common::FileIOHelper::SaveVector3(ofs, Core::ChunkKey::CAM_POSITION, Position);
-		Common::FileIOHelper::SaveVector3(ofs, Core::ChunkKey::CAM_OFFSET, Offset);
-		Common::FileIOHelper::SaveFloat(ofs, Core::ChunkKey::CAM_ZOOM, ZoomFactor);
-		Common::FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::CAMERA_DATA);
+			Common::FileIOHelper::SaveString(ofs, Graphics::ChunkKey::TARGET_ACTOR, Common::ChunkKey::NullVal::NULL_OBJECT);
+		Common::FileIOHelper::SaveVector3(ofs, Graphics::ChunkKey::CAM_POSITION, Position);
+		Common::FileIOHelper::SaveVector3(ofs, Graphics::ChunkKey::CAM_OFFSET, Offset);
+		Common::FileIOHelper::SaveFloat(ofs, Graphics::ChunkKey::CAM_ZOOM, ZoomFactor);
+		Common::FileIOHelper::EndDataPackSave(ofs, Graphics::ChunkKey::CAMERA_DATA);
 	}
 
 	void CameraData::LoadProperties(std::ifstream& ifs)
 	{
-		Common::FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::CAMERA_DATA);
+		Common::FileIOHelper::BeginDataPackLoad(ifs, Graphics::ChunkKey::CAMERA_DATA);
 		Common::FileIOHelper::LoadFloat(ifs, ZoomFactor);
 		Common::FileIOHelper::LoadVector3(ifs, Offset);
 
@@ -69,8 +70,8 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 		if (!Target)
 		{
-			using FIND_ACTOR = Common::IActor* (*)(Common::FTDS::String&, Common::IActor*);
-			Target	 = ::Core::GetFunc<FIND_ACTOR>(::Core::Plugin::Name::CORE_EDITOR, ::Core::ProcNames::FIND_ACTOR)(targetName, nullptr);
+			using FindActorFn = Common::IActor* (*)(Common::FTDS::String&, Common::IActor*);
+			Target			  = Core::GetFunc<FindActorFn>(Common::DLLPath::CORE, Core::ProcNames::FIND_ACTOR)(targetName, nullptr);
 		}
 #else
 		if (targetName.NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))

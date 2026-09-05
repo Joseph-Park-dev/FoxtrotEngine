@@ -9,11 +9,11 @@
 #pragma once
 #include "ResourceSystem/Material/FTMaterial.h"
 
-struct Light;
-class FTMeshGroup;
-
 namespace D3D11
 {
+	struct Light;
+	class FTMeshGroup;
+
 	/// @brief The value of the material data are to be applied to Pixel Constant Buffers.
 	struct BlinnPhongData
 	{

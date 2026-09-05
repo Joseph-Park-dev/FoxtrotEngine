@@ -12,14 +12,8 @@
 /// </summary>
 
 #pragma once
-#include "Graphics/ISpriteRenderer.h"
+#include "Component/ISpriteRenderer.h"
 
-namespace Core
-{
-	class IActor;
-	class IRenderer;
-	class ICamera;
-} // namespace Core
 
 namespace D3D11
 {
@@ -92,9 +86,9 @@ namespace D3D11
 
 #ifdef FOXTROT_EDITOR
 	public:
-		virtual void EditorUpdate(float deltaTime) override;
-		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst) override;
-		virtual void EditorUIUpdate() override;
+		virtual void EditorUpdate(float deltaTime);
+		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst);
+		virtual void EditorUIUpdate();
 
 #endif
 	};
@@ -114,8 +108,12 @@ namespace D3D11
 	} // namespace ChunkKey
 
 #include "Plugin/D3D11Exports.h"
+#ifdef D3D11_EXPORTS
 	D3D11_API D3D11::SpriteRenderer* CreateSpriteRenderer(Core::IActor* actor)
 	{
 		return DBG_NEW D3D11::SpriteRenderer(actor);
 	}
+#else
+	D3D11_API D3D11::SpriteRenderer* CreateSpriteRenderer(Core::IActor* actor);
+#endif
 } // namespace D3D11

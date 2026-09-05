@@ -58,15 +58,15 @@ namespace Editor
 		void Undo() override;
 
 	public:
-		void SetNextVal(Core::ActorGroup nextVal);
+		void SetNextVal(Common::ActorGroup nextVal);
 
 	public:
-		ActorGroupEditCommand(Core::ActorGroup& valRef);
+		ActorGroupEditCommand(Common::ActorGroup& valRef);
 
 	private:
-		Core::ActorGroup& mValue;
-		Core::ActorGroup  mPrevValue;
-		Core::ActorGroup  mNextValue;
+		Common::ActorGroup& mValue;
+		Common::ActorGroup  mPrevValue;
+		Common::ActorGroup  mNextValue;
 	};
 
 	class FloatEditCommand : public Command

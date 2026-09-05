@@ -17,7 +17,7 @@
 	#include "Utility/EditorHelper.h"
 #endif
 
-namespace Core
+namespace D3D11
 {
 	const FTRectArea FTRectArea::Zero(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -112,4 +112,4 @@ namespace Core
 		Common::FileIOHelper::LoadVector2(ifs, center);
 		rectArea->Set(center, size, rotAngle);
 	}
-} // namespace Core
+} // namespace D3D11

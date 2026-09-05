@@ -14,7 +14,7 @@
 #include <iosfwd>
 #include "FTMath.h"
 
-namespace Common
+namespace D3D11
 {
 	class FTRectArea
 	{
@@ -84,4 +84,4 @@ namespace Common
 		constexpr const char* FTRectArea_SIZE	  = "Size";
 		constexpr const char* FTRectArea_ROTANGLE = "RotAngle";
 	} // namespace ChunkKey
-} // namespace Common
+} // namespace D3D11

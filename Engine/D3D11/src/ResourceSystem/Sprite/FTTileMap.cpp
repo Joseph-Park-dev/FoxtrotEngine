@@ -71,7 +71,7 @@ namespace D3D11
 		}
 #ifdef FOXTROT_EDITOR
 
-		HMODULE coreMod = GetModuleHandleA(DLLPath::CORE);
+		HMODULE coreMod = GetModuleHandleA(Common::DLLPath::CORE);
 		assert(coreMod != NULL);
 		FARPROC proc = GetProcAddress(coreMod, Core::ProcName::GetCSVs);
 		mGetCSVsFunc = reinterpret_cast<GET_CSVS_FUNC>(proc);
@@ -231,7 +231,7 @@ namespace D3D11
 
 	void FTTileMap::LoadProperties(std::ifstream& ifs)
 	{
-		HMODULE coreMod = GetModuleHandleA(DLLPath::CORE);
+		HMODULE coreMod = GetModuleHandleA(Common::DLLPath::CORE);
 		assert(coreMod != NULL);
 		FARPROC proc		= GetProcAddress(coreMod, Core::ProcName::GetCSV);
 		using GET_CSV_FUNC	= FTCSV* (*)(const char*);

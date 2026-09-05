@@ -11,11 +11,14 @@
 /// 
 #pragma once
 
-namespace BufferSize
+namespace Common
 {
-	constexpr size_t MAX_CHAR_COUNT = 30;
-	constexpr size_t STRING_BUFFER_SIZE = 50 * sizeof(char);
-	constexpr size_t WSTRING_BUFFER_SIZE = 50 * sizeof(wchar_t);
+	namespace BufferSize
+	{
+		constexpr size_t MAX_CHAR_COUNT = 30;
+		constexpr size_t STRING_BUFFER_SIZE = 50 * sizeof(char);
+		constexpr size_t WSTRING_BUFFER_SIZE = 50 * sizeof(wchar_t);
 
-	constexpr size_t MAX_FONT_CHAR_COUNT = 256;
-} // namespace BufferSize
+		constexpr size_t MAX_FONT_CHAR_COUNT = 256;
+	} // namespace BufferSize
+} // namespace Common

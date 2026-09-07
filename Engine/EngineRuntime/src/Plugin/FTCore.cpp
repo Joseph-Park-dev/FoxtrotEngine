@@ -1,3 +1,4 @@
+#include "Plugin/GameSystems.h"
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
@@ -10,6 +11,7 @@
 
 #include <fstream>
 #include <Windows.h>
+#include "Foxtrot/Runtime/PlatformApi.h"
 
 #include "FileSystem/FileIOHelper.h"
 #include "FileSystem/ChunkLoader.h"
@@ -58,14 +60,8 @@ namespace Core
 	{
 		LoadGameData();
 
-		PluginManager* plugins = PluginManager::GetInstance();
-		if (!plugins->RegisterPlugin(Core::Plugin::Name::D3D11))
-			return false;
-
-#ifdef FOXTROT_EDITOR
-		if (!plugins->RegisterPlugin(Core::Plugin::Name::EDITOR))
-			return false;
-#endif
+        if (!SceneManager::GetInstance()->GetCurrentScene())
+            SceneManager::GetInstance()->Initialize(new Scene);
 		Setup();
 		return true;
 	}
@@ -74,11 +70,15 @@ namespace Core
 	{
 	}
 
-	void FTCore::RunLoop()
+	void FTCore::RunLoop() { RunFrames(0); }
+
+    void FTCore::RunFrames(unsigned int maxFrames)
 	{
-		while (mIsRunning)
+        unsigned int frame = 0;
+		while (mIsRunning && (!maxFrames || frame++ < maxFrames))
 		{
-			MSG msg{};
+			FtBeginInputFrame();
+            MSG msg{};
 			while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 			{
 				if (msg.message == WM_QUIT)
@@ -113,6 +113,7 @@ namespace Core
 
 		if (!mIsUpdating)
 			return;
+		Foxtrot::UpdateGameSystems(deltaTime);
 		PluginManager::GetInstance()->Update(deltaTime);
 	}
 
@@ -152,16 +153,17 @@ namespace Core
 
 	void FTCore::ShutDown()
 	{
-		SceneManager::GetInstance()->GetCurrentScene()->DeleteAll();
+		if (auto scene = SceneManager::GetInstance()->GetCurrentScene()) scene->DeleteAll();
 		SceneManager::GetInstance()->Destroy();
 		ResourceManager::GetInstance()->Destroy();
 		EventManager::GetInstance()->Destroy();
 		ChunkLoader::GetInstance()->Destroy();
-		Timer::GetInstance()->Destroy();
+		Timer::Destroy();
+		DirectoryHelper::Destroy();
 
 		PluginManager::GetInstance()->ShutDown();
 		PluginManager::GetInstance()->Destroy();
-		PostQuitMessage(0);
+		FtDestroyAllNativeWindows();
 	}
 } // namespace Core
 

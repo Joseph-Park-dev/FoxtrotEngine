@@ -1,4 +1,5 @@
 #pragma once
+#include "Plugin/CoreExports.h"
 #include "Utility/SingletonMacro.h"
 
 #include "Component/IComponent.h"
@@ -7,7 +8,7 @@
 
 namespace Core
 {
-	class FTCore
+	class CORE_API FTCore
 	{
 		SINGLETON(FTCore)
 
@@ -19,6 +20,7 @@ namespace Core
 		virtual bool Initialize();
 		virtual void Setup();
 		virtual void RunLoop();
+        void RunFrames(unsigned int maxFrames);
 		// clang-format on
 
 		///////////////////////

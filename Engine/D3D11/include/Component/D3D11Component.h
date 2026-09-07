@@ -13,7 +13,7 @@ namespace D3D11
 	class Camera;
 	class D3D11Renderer;
 	class D3D11Component :
-		public Core::IComponent
+		public virtual Core::IComponent
 	{
 	public:
 		virtual void Initialize();

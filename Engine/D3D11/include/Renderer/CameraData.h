@@ -1,4 +1,5 @@
 #pragma once
+#include "Plugin/D3D11Exports.h"
 #include <iosfwd>
 
 #include "Renderer/ICamera.h"
@@ -11,7 +12,7 @@ namespace Common
 
 namespace D3D11
 {
-	struct CameraData
+	struct D3D11_API CameraData
 	{
 		Common::IActor*	   Target	= nullptr;
 		Graphics::Viewtype ViewType = Graphics::Viewtype::Orthographic;
@@ -66,7 +67,7 @@ namespace D3D11
 
 		const Math::FTVector3&	GetOffSet() const;
 		const float				GetZoomFactor() const;
-		const Math::FTVector2&& GetResolution() const;
+		Math::FTVector2 GetResolution() const;
 
 		void SetPosition(const Math::FTVector3& pos);
 		void SetViewType(Graphics::Viewtype viewType);

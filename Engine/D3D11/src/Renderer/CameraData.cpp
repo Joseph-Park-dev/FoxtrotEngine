@@ -5,7 +5,7 @@
 #include "Actor/ActorData.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Plugin/GetFunc.h"
-#include "../../../Core/include/Plugin/PluginKey.h"
+#include "Plugin/PluginKey.h"
 #include "FileSystem/DLLPath.h"
 
 namespace D3D11
@@ -70,12 +70,12 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 		if (!Target)
 		{
-			using FindActorFn = Common::IActor* (*)(Common::FTDS::String&, Common::IActor*);
-			Target			  = Core::GetFunc<FindActorFn>(Common::DLLPath::CORE, Core::ProcNames::FIND_ACTOR)(targetName, nullptr);
+			using FindActorFn = Common::IActor* (*)(const char*, Common::IActor*);
+			Target			  = Core::GetFunc<FindActorFn>(Common::DLLPath::CORE, "FindActor")(targetName.C_Str(), nullptr);
 		}
 #else
 		if (targetName.NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
-			mTarget = manager->GetCurrentScene()->FindActor(targetName);
+			Target = Core::GetFunc<Common::IActor* (*)(const char*, Common::IActor*)>(Common::DLLPath::CORE, "FindActor")(targetName.C_Str(), nullptr);
 #endif // FOXTROT_EDITOR
 	}
 
@@ -157,7 +157,7 @@ namespace D3D11
 		return ZoomFactor;
 	}
 
-	const Math::FTVector2&& CameraData::GetResolution() const
+	Math::FTVector2 CameraData::GetResolution() const
 	{
 		return Math::FTVector2(ResX, ResY);
 	}

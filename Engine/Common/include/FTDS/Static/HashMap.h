@@ -220,8 +220,6 @@ namespace Common
 			~HashMap() override
 			{
 				Clear();
-				delete this->mData;
-				this->mData = nullptr;
 			}
 
 		private:

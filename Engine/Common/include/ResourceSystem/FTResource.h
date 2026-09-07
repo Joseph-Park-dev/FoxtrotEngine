@@ -12,7 +12,7 @@
 
 namespace Common
 {
-	using FTResourceDef = ResourceData;
+	struct FTResourceDef { const char* FileName; const char* Path; int RefCount = 0; };
 
 	class FTResource :
 		public IResource
@@ -87,8 +87,8 @@ namespace Common
 		explicit FTResource(FTResourceDef& resDef)
 			: mMetaData(DBG_NEW ResourceData())
 		{
-			mMetaData->FileName = resDef.FileName;
-			mMetaData->Path		= resDef.Path;
+			mMetaData->FileName = new Common::FTDS::String(resDef.FileName);
+			mMetaData->Path = new Common::FTDS::String(resDef.Path);
 #ifdef FOXTROT_EDITOR
 			mMetaData->RefCount = resDef.RefCount;
 #endif

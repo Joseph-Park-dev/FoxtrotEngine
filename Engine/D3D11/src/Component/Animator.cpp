@@ -323,3 +323,9 @@ namespace D3D11
 #endif // FOXTROT_EDITOR
 
 } // namespace D3D11
+namespace D3D11 {
+D3D11_API D3D11::Animator* CreateAnimator(Core::IActor* actor)
+	{
+		return DBG_NEW D3D11::Animator(actor);
+	}
+}

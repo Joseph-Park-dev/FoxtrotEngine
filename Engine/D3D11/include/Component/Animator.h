@@ -96,12 +96,5 @@ namespace D3D11
 	} // namespace ChunkKey
 
 #include "Plugin/D3D11Exports.h"
-#ifdef D3D11_EXPORTS
-	D3D11_API D3D11::Animator* CreateAnimator(Core::IActor* actor)
-	{
-		return DBG_NEW D3D11::Animator(actor);
-	}
-#else
-	D3D11_API D3D11::Animator* CreateAnimator(Core::IActor* actor);
-#endif
+D3D11_API D3D11::Animator* CreateAnimator(Core::IActor* actor);
 } // namespace D3D11

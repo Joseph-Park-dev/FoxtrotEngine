@@ -119,6 +119,7 @@ namespace D3D11
 		}
 	}
 
+	#ifdef FOXTROT_EDITOR
 	void SpineAnimator::EditorUpdate(float deltaTime)
 	{
 		Update(deltaTime);
@@ -170,4 +171,11 @@ namespace D3D11
 				Material());
 		}
 	}
+#endif
 } // namespace D3D11
+namespace D3D11 {
+D3D11_API D3D11::SpineAnimator* CreateSpineAnimator(Core::IActor* actor)
+	{
+		return DBG_NEW D3D11::SpineAnimator(actor);
+	}
+}

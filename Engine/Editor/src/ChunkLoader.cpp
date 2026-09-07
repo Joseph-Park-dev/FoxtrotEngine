@@ -1,3 +1,4 @@
+#include "FileSystem/ChunkLoader.h"
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
@@ -37,7 +38,9 @@
 
 namespace Editor
 {
-	ChunkLoader::ChunkLoader()
+	using Core::Actor;
+	using Common::IActor;
+	ChunkLoader::ChunkLoader() : mCurrentChunkData(new Core::ChunkData)
 	{
 		HMODULE coreMod = GetModuleHandleA(Common::DLLPath::CORE_EDITOR);
 		assert(coreMod);
@@ -65,7 +68,7 @@ namespace Editor
 		//	//{ "Flee", &CreateComp<Flee> },
 	};
 
-	ChunkLoader::~ChunkLoader() {}
+	ChunkLoader::~ChunkLoader() { delete mCurrentChunkData; }
 
 	void ChunkLoader::SaveChunk(const char* chunkPath)
 	{
@@ -219,3 +222,18 @@ namespace Editor
 		return Editor::ChunkLoader::GetInstance();
 	}
 } // namespace Editor
+namespace Editor {
+void ChunkLoader::Lock() { mCurrentChunkData->IsLoading = true; }
+void ChunkLoader::Unlock() { mCurrentChunkData->IsLoading = false; }
+void ChunkLoader::CopyChunk(Common::FTDS::String& out, const char* path) { Core::ChunkLoader::GetInstance()->CopyChunk(out, path); }
+void ChunkLoader::DeleteCopiedChunk() { Core::ChunkLoader::GetInstance()->DeleteCopiedChunk(); }
+void ChunkLoader::SaveChunkData(std::ofstream& out) {
+    Common::FileIOHelper::BeginDataPackSave(out, Core::ChunkKey::CHUNK_DATA);
+    Common::FileIOHelper::SaveInt(out, Core::ChunkKey::ACTOR_COUNT, mCurrentChunkData->MaxActorID);
+    Common::FileIOHelper::EndDataPackSave(out, Core::ChunkKey::CHUNK_DATA);
+}
+void ChunkLoader::LoadChunkData(std::ifstream& in) {
+    Common::FileIOHelper::BeginDataPackLoad(in, Core::ChunkKey::CHUNK_DATA);
+    Common::FileIOHelper::LoadInt(in, mCurrentChunkData->MaxActorID);
+}
+}

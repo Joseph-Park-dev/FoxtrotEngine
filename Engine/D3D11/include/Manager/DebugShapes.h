@@ -11,6 +11,7 @@
 /// </summary>
 
 #pragma once
+#include "Plugin/D3D11Exports.h"
 #include "Entity/Entity.h"
 
 #include <string>
@@ -27,7 +28,7 @@ namespace D3D11
 	class D3D11Renderer;
 
 	// This provides a context to render shapes as DebugShapes
-	class DebugShapes
+	class D3D11_API DebugShapes
 	{
 		SINGLETON_PROTECTED(DebugShapes)
 	public:

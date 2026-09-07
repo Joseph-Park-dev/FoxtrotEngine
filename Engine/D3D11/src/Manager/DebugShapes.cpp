@@ -39,8 +39,8 @@ namespace D3D11
 
 	DebugShapes::~DebugShapes()
 	{
-		if (0 < mShapes->GetSize())
-			mShapes->Clear();
+		DeleteAll();
+		delete mShapes;
 	}
 
 	void DebugShapes::Initialize(D3D11Renderer* renderer)
@@ -87,7 +87,7 @@ namespace D3D11
 			delete (*iter);
 			(*iter) = nullptr;
 		}
-		delete mShapes;
+		mShapes->Clear();
 	}
 
 	ComPtr<ID3D11VertexShader>&	  DebugShapes::GetVS() { return mVS; }

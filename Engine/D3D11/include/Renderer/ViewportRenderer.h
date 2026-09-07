@@ -11,6 +11,7 @@
 
 #pragma once
 #include "Plugin/D3D11Exports.h"
+#include "Plugin/D3D11Exports.h"
 #include <wrl/client.h>
 #include <d3d11.h>
 
@@ -23,7 +24,7 @@ namespace D3D11
 namespace D3D11
 {
 	class D3D11Renderer;
-	class ViewportRenderer
+	class D3D11_API ViewportRenderer
 	{
 	public:
 		void InitializeTexture(D3D11::D3D11Renderer* renderer, float xSize, float ySize);
@@ -54,4 +55,6 @@ namespace D3D11
 	};
 
 	extern "C" D3D11_API ViewportRenderer* CreateViewportRenderer();
+    extern "C" D3D11_API void DestroyViewportRenderer(ViewportRenderer* renderer);
+    extern "C" D3D11_API void SetEditorGuiContext(void* context);
 } // namespace D3D11

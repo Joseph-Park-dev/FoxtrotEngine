@@ -1,4 +1,5 @@
-﻿// ----------------------------------------------------------------
+#include <imgui.h>
+// ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
 //
@@ -32,6 +33,11 @@ namespace D3D11
 
 	void ViewportRenderer::BeginRender(D3D11Renderer* renderer)
 	{
+        if (mRenderTexture) {
+            D3D11_TEXTURE2D_DESC desc{};
+            mRenderTexture->GetDesc(&desc);
+            renderer->SetViewport(0, 0, static_cast<float>(desc.Width), static_cast<float>(desc.Height));
+        }
 		float clearColor[] = { 0.f, 0.f, 0.f, 0.f };
 		if (mRTV)
 			renderer->GetContext()
@@ -111,7 +117,7 @@ namespace D3D11
 
 		renderer->GetDevice()->CreateShaderResourceView(mRenderTexture.Get(), 0, mSRV.GetAddressOf());
 
-		GetModuleHandleA
+
 	}
 
 	ViewportRenderer::ViewportRenderer()
@@ -126,3 +132,7 @@ namespace D3D11
 		return DBG_NEW ViewportRenderer;
 	}
 } // namespace D3D11
+namespace D3D11 {
+void DestroyViewportRenderer(ViewportRenderer* renderer) { delete renderer; }
+void SetEditorGuiContext(void* context) { ImGui::SetCurrentContext(static_cast<ImGuiContext*>(context)); }
+}

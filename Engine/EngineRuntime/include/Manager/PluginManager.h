@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "Utility/SingletonMacro.h"
 
 #include "FTDS/Static/HashMap.h"
@@ -15,15 +16,6 @@ namespace Core
 	{
 		SINGLETON(PluginManager)
 
-	public:
-		template <typename COMP>
-		COMP* RegisterComp(Common::IActor* actor, const char* pluginName)
-		{
-			Common::FTDS::String procName = CREATE_PREFIX;
-			procName.Append(COMP::NAME);
-			using construct = COMP* (*)(Common::IActor*);
-			return reinterpret_cast<construct>(GetProcAddress(mModules->At(pluginName)->Value(), procName.C_Str()))(actor);
-		}
 
 	public:
 		// Gameloop functions.
@@ -34,6 +26,7 @@ namespace Core
 		void ProcessEvent();
 
 		void ShutDown();
+        void Attach(const char* name, Common::IPlugin* plugin);
 
 	public:
 		Common::IPlugin* RegisterPlugin(const char* pluginName);
@@ -45,7 +38,7 @@ namespace Core
 		void LoadComponents(Common::IActor* actor);
 
 	private:
-		Common::FTDS::HashMap<HMODULE>*			 mModules;
+		std::vector<Common::IPlugin*> mOrder;
 		Common::FTDS::HashMap<Common::IPlugin*>* mPlugins;
 	};
 

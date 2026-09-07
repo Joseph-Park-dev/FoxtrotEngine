@@ -7,7 +7,7 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include "IModel.h"
+#include "ResourceSystem/Mesh/IModel.h"
 #include "ResourceSystem/D3D11Resource.h"
 
 #include <wrl.h>

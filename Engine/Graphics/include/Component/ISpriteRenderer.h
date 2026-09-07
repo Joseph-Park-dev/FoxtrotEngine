@@ -12,7 +12,7 @@
 /// </summary>
 
 #pragma once
-#include "IComponent.h"
+#include "Component/IComponent.h"
 
 namespace Graphics
 {
@@ -21,7 +21,7 @@ namespace Graphics
 	class IPSO;
 
 	class ISpriteRenderer :
-		public Common::IComponent
+		public virtual Common::IComponent
 	{
 	};
 

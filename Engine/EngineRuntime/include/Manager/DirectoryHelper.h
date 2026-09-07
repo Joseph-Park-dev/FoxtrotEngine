@@ -14,6 +14,7 @@
 /// </summary>
 
 #pragma once
+#include "Plugin/CoreExports.h"
 #include "Entity/Entity.h"
 
 #include <filesystem>
@@ -44,7 +45,7 @@ namespace Core
 	using GET_CHUNK_PATH_FUNC	  = Common::FTDS::String* (*)();
 	using GET_ASSET_PATH_FUNC	  = Common::FTDS::String* (*)();
 
-	class DirectoryHelper
+	class CORE_API DirectoryHelper
 	{
 		SINGLETON(DirectoryHelper)
 

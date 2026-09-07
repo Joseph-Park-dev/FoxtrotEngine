@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "Renderer/D3D11Renderer.h"
 
 #include "Renderer/D3D11Window.h"
@@ -14,7 +15,7 @@ namespace D3D11
 
 	void D3D11Renderer::Reset()
 	{
-		mContext->ClearState();
+		if (mContext) { mContext->ClearState(); mContext->Flush(); }
 	}
 
 	void D3D11Renderer::GetViewport(float& outTopLeftX, float& outTopLeftY, float& outWidth, float& outHeight) const
@@ -63,27 +64,30 @@ namespace D3D11
 		, mViewport(DBG_NEW D3D11_VIEWPORT)
 		, mFillMode(D3D11::FillMode::SOLID)
 	{
-		Initialize(window);
+		if (!Initialize(window)) throw std::runtime_error("Cannot initialize D3D11 renderer");
 	}
 
 	D3D11Renderer::~D3D11Renderer()
 	{
+		Reset();
 		delete mViewport;
 	}
 
 	bool D3D11Renderer::Initialize(Core::IWindow* window)
 	{
 		D3D11::D3D11Window* win			 = static_cast<D3D11::D3D11Window*>(window);
-		UINT				renderWidth	 = static_cast<UINT>(window->GetRenderArea()->GetSize().x);
-		UINT				renderHeight = static_cast<UINT>(window->GetRenderArea()->GetSize().y);
+        RECT client{};
+        if (!GetClientRect(win->GetHandle(), &client)) return false;
+        UINT renderWidth = static_cast<UINT>(client.right - client.left);
+        UINT renderHeight = static_cast<UINT>(client.bottom - client.top);
+        win->SetWidth(renderWidth);
+        win->SetHeight(renderHeight);
 
 		DX::ThrowIfFailed(
 			D3D11Utils::CreateDeviceAndContext(
 				win->GetHandle(), mDevice, mContext, win->GetSwapChain(), renderWidth, renderHeight, mNumQualityLevels));
 
-		HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
-		if (FAILED(hr))
-			return false;
-		return true;
+		SetViewport(0, 0, static_cast<float>(renderWidth), static_cast<float>(renderHeight));
+		return win->InitializeWindowRenderer(this);
 	}
 } // namespace D3D11

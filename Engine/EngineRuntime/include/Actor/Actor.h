@@ -11,6 +11,7 @@
 /// </summary>
 
 #pragma once
+#include "Plugin/CoreExports.h"
 #include "Actor/IActor.h"
 
 #include <fstream>
@@ -21,7 +22,7 @@ namespace Core
 {
 	class FTPremade;
 
-	class Actor :
+	class CORE_API Actor :
 		public Common::IActor
 	{
 	public:

@@ -265,3 +265,9 @@ namespace D3D11
 	}
 #endif
 } // namespace D3D11
+namespace D3D11 {
+D3D11_API D3D11::TileMapRenderer* CreateTileMapRenderer(Core::IActor* actor)
+	{
+		return DBG_NEW D3D11::TileMapRenderer(actor);
+	}
+}

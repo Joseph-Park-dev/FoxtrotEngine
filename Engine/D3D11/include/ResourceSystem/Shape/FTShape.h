@@ -10,11 +10,12 @@
 /// </summary>
 
 #pragma once
+#include "Plugin/D3D11Exports.h"
 #include <d3d11.h>
 #include <wrl.h>
 
 #include "FTMath.h"
-#include "ResourceSystem/Mesh/MeshConstantData.h"
+#include "../Mesh/MeshConstantData.h"
 
 namespace Core
 {
@@ -29,7 +30,7 @@ namespace D3D11
 	struct FTMeshData;
 	class D3D11Renderer;
 
-	class FTShape
+	class D3D11_API FTShape
 	{
 	public:
 		DebugVCData& GetVCData();

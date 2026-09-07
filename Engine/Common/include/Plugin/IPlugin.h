@@ -53,6 +53,7 @@ namespace Common
 		virtual void ShutDown() = 0;
 
 	public:
+		virtual void* QueryInterface(const char*) noexcept { return nullptr; }
 		virtual ~IPlugin() = default;
 
 	protected:

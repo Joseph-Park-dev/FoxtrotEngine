@@ -1,0 +1,74 @@
+---
+description: FoxtrotEngine C++ and game engine conventions
+alwaysApply: true
+---
+
+# FoxtrotEngine C++ Conventions
+
+FoxtrotEngine is a Windows-only, DirectX 11, component-based 2D game engine (C++17, Visual Studio 2022). Match existing patterns in `Engine/` before introducing new ones.
+
+## Project Layout
+
+- `Engine/Common` — shared interfaces, FTDS data structures, base types
+- `Engine/Core` — actors, scenes, managers, chunk I/O, game loop
+- `Engine/D3D11` — DirectX 11 renderer and graphics components
+- `Engine/Editor` — ImGui editor (Command pattern for undo/redo)
+- `Engine/Graphics` — renderer/resource abstractions (interfaces)
+- `Engine/Math`, `Engine/InputSystem`, `Engine/GenericData` — supporting libs
+
+### Each projects, except for Editor will build .dll
+
+## Naming & Formatting
+
+- **Classes:** PascalCase (`Actor`, `ResourceManager`)
+- **Private members:** `mCamelCase` (`mOwner`, `mComponents`)
+- **Methods:** PascalCase (`GetComponent`, `AddChild`)
+- **Constants:** `SCREAMING_SNAKE_CASE`; **namespaces:** PascalCase
+- **Headers:** `#pragma once`, GPL v3 copyright block, `/// <summary>` docs
+- **Style:** Allman braces, tabs (4-wide), left pointer alignment (`int* ptr`) — follow `.clang-format`
+
+## Memory & Ownership
+
+- Use `DBG_NEW` for allocations; raw `new`/`delete`, no smart pointers
+- Clean up in destructors; singletons must call `Destroy()` on shutdown
+
+```cpp
+// ✅ GOOD
+mInstance = DBG_NEW ResourceManager();
+
+// ❌ BAD
+auto mgr = std::make_unique<ResourceManager>();
+```
+
+## Architecture Patterns
+
+**Singleton managers** — use `SINGLETON` / `SINGLETON_PROTECTED` macros:
+
+```cpp
+SINGLETON(ResourceManager)
+ResourceManager::GetInstance()->LoadTexture(...);
+```
+
+**Actor-Component** — actors own components; prefer interfaces in `Common`:
+
+```cpp
+actor->AddComponent<SpriteRenderer>();
+actor->GetComponent<Rigidbody2D>()->SetVelocity(...);
+```
+
+**Component lifecycle:** `Initialize` → `Setup` → `ProcessInput` → `Update` → `LateUpdate` → `Render`
+
+**Editor commands** — inherit from `Command`, execute via `CommandHistory::GetInstance()`
+
+## Serialization & Data
+
+- Scene/resource data uses `.chunk` files via `ChunkLoader`
+- Serialization keys live in `Common::ChunkKey` namespaces
+- Use `Common::FTDS::String`, `DynamicArray`, etc. — not STL containers where FTDS equivalents exist
+
+## When Adding Code
+
+- Place files in the correct module; keep `.h`/`.cpp` paired in the same directory
+- Extend existing interfaces (`IActor`, `IComponent`, `IRenderer`) rather than duplicating logic
+- Prefer minimal, focused diffs; do not refactor unrelated code
+- Windows/DX11 only — no cross-platform abstractions unless explicitly requested

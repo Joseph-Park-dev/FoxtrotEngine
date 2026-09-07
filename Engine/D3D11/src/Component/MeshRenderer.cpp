@@ -155,6 +155,7 @@ namespace D3D11
 
 		D3D11::D3D11Component::LoadProperties(ifs);
 	}
+	#ifdef FOXTROT_EDITOR
 	void MeshRenderer::EditorUpdate(float deltaTime)
 	{
 	}
@@ -190,4 +191,11 @@ namespace D3D11
 	{
 		return mMaterial;
 	}
+#endif
 } // namespace D3D11
+namespace D3D11 {
+D3D11_API D3D11::MeshRenderer* CreateMeshRenderer(Core::IActor* actor)
+	{
+		return DBG_NEW D3D11::MeshRenderer(actor);
+	}
+}

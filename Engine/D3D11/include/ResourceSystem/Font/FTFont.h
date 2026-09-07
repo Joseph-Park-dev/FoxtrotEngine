@@ -20,7 +20,7 @@ namespace D3D11
 		static D3D11::ResType Type;
 
 	public:
-		void LoadFont(FTTexture* img, Common::FTResourceDef& resDef);
+		void LoadFont(FTTexture* img, Common::FTResourceDef& resDef, const Math::FTVector2& renderRes);
 		void AddText(Microsoft::WRL::ComPtr<ID3D11Device>& device, Common::FTDS::String& text);
 
 		void Render(

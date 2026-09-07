@@ -1,3 +1,4 @@
+#include "Renderer/D3D11Renderer.h"
 #include "ResourceSystem/Font/FTFont.h"
 
 #include "Renderer/IRenderer.h"
@@ -54,14 +55,14 @@ namespace D3D11
 		FTVector3 pos	= transform->GetWorldPosition();
 		FTVector3 scale = transform->GetWorldScale();
 
-		UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext(), transform, camInst, mat, GetFrontDir());
+		UpdateConstantBuffers(static_cast<D3D11Renderer*>(renderer)->GetDevice(), static_cast<D3D11Renderer*>(renderer)->GetContext(), transform, camInst, mat, GetFrontDir());
 
 		if (!vs || !ps) // Vertex Shader is always required when drawing.
 			return;
 
 		UINT						 stride	 = sizeof(TextVertex);
 		UINT						 offset	 = 0;
-		ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
+		ComPtr<ID3D11DeviceContext>& context = static_cast<D3D11Renderer*>(renderer)->GetContext();
 
 		size_t size = Meshes()->GetSize();
 
@@ -114,7 +115,7 @@ namespace D3D11
 		wchar_t lastChar = -1; // no last character to start with
 
 		D3D11_MAPPED_SUBRESOURCE mapped;
-		renderer->GetContext()->Map(Meshes()->At(0)->VertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
+		static_cast<D3D11Renderer*>(renderer)->GetContext()->Map(Meshes()->At(0)->VertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
 
 		for (size_t i = 0; i < text.GetLength(); ++i)
 		{
@@ -170,7 +171,7 @@ namespace D3D11
 
 			lastChar = c;
 		}
-		renderer->GetContext()->Unmap(Meshes()->At(0)->VertexBuffer.Get(), 0);
+		static_cast<D3D11Renderer*>(renderer)->GetContext()->Unmap(Meshes()->At(0)->VertexBuffer.Get(), 0);
 	}
 
 	const int FTFont::GetSize() const
@@ -234,11 +235,12 @@ namespace D3D11
 		if (!mFontImage)
 			return;
 
-		CreateTextureSampler(renderer->GetDevice());
-		InitializeConstantBuffers(renderer->GetDevice());
+		CreateTextureSampler(static_cast<D3D11Renderer*>(renderer)->GetDevice());
+		InitializeConstantBuffers(static_cast<D3D11Renderer*>(renderer)->GetDevice());
 
-		if (mFontImage)
-			LoadFont(mFontImage, resDef);
+		float x, y, width, height;
+			renderer->GetViewport(x, y, width, height);
+			LoadFont(mFontImage, resDef, FTVector2(width, height));
 	}
 
 	FTFont::~FTFont()
@@ -311,9 +313,8 @@ namespace D3D11
 		mFontImage = fontImage;
 	}
 
-	void FTFont::LoadFont(FTTexture* img, Common::FTResourceDef& resDef)
+	void FTFont::LoadFont(FTTexture* img, Common::FTResourceDef& resDef, const Math::FTVector2& renderRes)
 	{
-		FTVector2 renderRes = Camera::GetInstance()->GetRenderWindow()->GetRenderArea()->GetSize();
 
 		std::wifstream fs;
 		fs.open(resDef.Path);

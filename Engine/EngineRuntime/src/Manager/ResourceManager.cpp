@@ -23,6 +23,8 @@
  * engine's rendering and file I/O subsystems.
  */
 
+#include "FTJSON.h"
+#include "FTText.h"
 #include "Manager/ResourceManager.h"
 
 #include "ResourceSystem/FTPremade.h"

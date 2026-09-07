@@ -20,7 +20,6 @@ Engine/
   GenericData/    static library: CSV, JSON and text resource implementations
   Graphics/       header utility project: existing graphics contracts
   InputSystem/    header utility project: existing input contracts
-  Common/         shared source/header directory, not a separately loaded module
 ```
 
 Main produces `Game.exe` in Debug/Release and `FoxtrotEditor.exe` in
@@ -77,8 +76,8 @@ Core.lib. Every engine DLL links Core.lib and uses Core's exports. The EXE does
 not link Core.lib: it explicitly loads Core first and resolves `FtGetModuleApi`.
 
 Core currently provides `FtLog`, `FtSeconds`, `FtAllocate`, `FtDeallocate`, and the
-module contract. The existing `Common::FileIOHelper` implementation is centralized
-there to share serialization state; it is a same-toolchain C++ compatibility API,
+module contract. The existing `Common::FileIOHelper` implementation is located at
+`Engine/Core/src/FileSystem/FileIOHelper.cpp` to share serialization state; it is a same-toolchain C++ compatibility API,
 not a portable ABI. Math remains a static library of value-level utilities.
 Foundational path/configuration/error helpers can be added here when actually
 shared. Core owns no window, graphics device, scene, game loop or game state.
@@ -233,8 +232,8 @@ lifecycle cases passed against the final sources. The aggregate local log is
 `build/verification.log`; per-configuration build logs and test traces remain under
 `build/`. Binary import inspection confirmed that both EXEs have no engine imports,
 Core has no upward engine imports, and all four consuming DLLs import Core.
-`git diff --check` also passed. Compiler warnings remain in the legacy interfaces
-and third-party code; full content/editor workflows are outside this validation.
+`git diff --check` also passed. That validation preceded the compiler warning cleanup
+described below; full content/editor workflows were outside its scope.
 
 ### Cursor and presentation coordinates
 
@@ -258,3 +257,39 @@ alignment before and after resizing a test-owned native window. The full
 The cursor revision passed all six builds and all 24 lifecycle/cursor cases.
 Results are in `build/cursor-verification.log`, with the final Debug x64 offscreen
 viewport refresh recorded in `build/cursor-debug-refresh.log`.
+
+### Physical ownership of formerly shared files
+
+The former Engine/Common files now reside in their owning projects. Core holds
+shared containers, debugging/file helpers and foundational resource types;
+EngineRuntime holds actor/component/plugin contracts, ResourcePack and their
+runtime implementations; Editor holds EditorHelper. Existing Common:: namespaces
+remain unchanged. Project includes and source items use the new locations, and the
+unused Common.vcxitems manifest has been retired. Dormant sources remain visible
+as non-compiling project items. No build or tests were run during the relocation itself.
+
+### Compiler warning cleanup
+
+Legacy classes containing STL containers, math values or COM smart pointers export
+their out-of-line methods individually instead of exporting the entire class.
+SceneManager and DebugShapes keep their singleton storage and creation/destruction
+functions in their owning DLL, so clients cannot create separate singleton copies.
+These legacy APIs still require the same MSVC toolset, configuration and CRT across
+modules; this cleanup does not make their C++ layouts a portable ABI.
+
+ResourcePack destruction requires a complete resource type, and ResourceManager
+includes the JSON/text definitions before instantiating deletion. Renderer components
+explicitly resolve their shared IComponent virtual methods. Index and pixel-size
+conversions are checked or made explicit, and decoded image memory is released with
+stbi_image_free through RAII.
+
+Compiler warning C4244 is disabled only for the pinned upstream Spine runtime's
+source files. All engine sources retain their existing warning level and conversion
+diagnostics; DLL-interface and incomplete-deletion diagnostics are not suppressed.
+
+After this cleanup, MSBuild Rebuild completed with zero warnings and zero errors
+for Debug, Release and Foxtrot_Editor_Debug on both x64 and x86. Results are recorded
+in build/warning-clean-results.txt, with per-configuration logs named
+build/warning-clean-<configuration>-<platform>.log. The compiler command records
+also confirm that the Spine suppression does not apply to engine sources.
+No tests or application executables were run for this cleanup.

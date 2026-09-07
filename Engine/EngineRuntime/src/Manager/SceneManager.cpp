@@ -78,3 +78,21 @@ namespace Core
 		return SceneManager::GetInstance()->GetCurrentScene()->FindActor(name, filter);
 	}
 } // namespace Core
+
+namespace Core
+{
+    SceneManager* SceneManager::mInstance = nullptr;
+
+    SceneManager* SceneManager::GetInstance()
+    {
+        if (!mInstance)
+            mInstance = DBG_NEW SceneManager();
+        return mInstance;
+    }
+
+    void SceneManager::Destroy()
+    {
+        delete mInstance;
+        mInstance = nullptr;
+    }
+}

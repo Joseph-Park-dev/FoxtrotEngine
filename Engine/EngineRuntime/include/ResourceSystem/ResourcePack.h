@@ -103,6 +103,7 @@ namespace Common
 
 		~ResourcePack()
 		{
+			static_assert(sizeof(FTRESOURCE) > 0, "ResourcePack destruction requires a complete resource type");
 			for (auto it = mResources->Begin(); it != mResources->End(); ++it)
 				if (*it) delete (*it)->Value();
 			delete mResources;

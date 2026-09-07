@@ -14,12 +14,12 @@
 <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
 <PropertyGroup><TargetName>EngineRuntime</TargetName></PropertyGroup>
 <ItemDefinitionGroup><ClCompile>
-<AdditionalIncludeDirectories>$(SolutionDir)Engine\EngineRuntime\include;$(SolutionDir)Engine\Common\include;$(SolutionDir)Engine\Common\include\ResourceSystem;$(SolutionDir)Engine\Common\include\Debugging;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Graphics\include;$(SolutionDir)Engine\InputSystem\include;$(SolutionDir)Engine\GenericData\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+<AdditionalIncludeDirectories>$(SolutionDir)Engine\EngineRuntime\include;$(SolutionDir)Engine\Core\include;$(SolutionDir)Engine\Core\include\ResourceSystem;$(SolutionDir)Engine\Core\include\Debugging;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Graphics\include;$(SolutionDir)Engine\InputSystem\include;$(SolutionDir)Engine\GenericData\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 <PreprocessorDefinitions>CORE_EXPORTS;MATH_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 </ClCompile>
 <Link><ModuleDefinitionFile>$(ProjectDir)Module.def</ModuleDefinitionFile><AdditionalDependencies>;%(AdditionalDependencies)</AdditionalDependencies><SubSystem>Console</SubSystem></Link></ItemDefinitionGroup>
 <ItemGroup>
-<ClCompile Include="..\Common\src\Actor\ActorData.cpp"/>
+<ClCompile Include="src\Actor\ActorData.cpp"/>
 <ClCompile Include="src\Manager\PluginManager.cpp"/>
 <ClCompile Include="src\Actor\Actor.cpp"/>
 <ClCompile Include="src\Actor\Transform.cpp"/>
@@ -37,7 +37,7 @@
 <ClCompile Include="src\Platform\Win32Window.cpp"/>
 <ClCompile Include="src\InputSystem\D3D11InputDevice.cpp"/>
 
-<ClCompile Include="..\Common\src\Component\Data\ComponentData.cpp"/>
+<ClCompile Include="src\Component\Data\ComponentData.cpp"/>
 <ClInclude Include="include\**\*.h"/>
 </ItemGroup>
 <ItemGroup>

@@ -24,7 +24,7 @@ namespace Common
 
 	class IActor;
 
-	struct CORE_API ActorData
+	struct ActorData
 	{
 		Common::IActor*								 Owner		= nullptr;
 		Common::FTDS::String						 Name		= {};
@@ -38,7 +38,7 @@ namespace Common
 		Common::FTDS::DynamicArray<Common::IActor*>* Children	= nullptr;
 		int											 DrawOrder	= Common::DefaultVal::DRAW_ORDER;
 
-		~ActorData()
+		CORE_API ~ActorData()
 		{
 			if (Transform)
 			{
@@ -96,16 +96,16 @@ namespace Common
 			return nullptr;
 		};
 
-		void AddChild(Common::IActor* child);
-		void RemoveChild(Common::IActor* child);
-		void RemoveComponent(Common::IComponent* comp);
-		void RemoveAllComponents();
+		CORE_API void AddChild(Common::IActor* child);
+		CORE_API void RemoveChild(Common::IActor* child);
+		CORE_API void RemoveComponent(Common::IComponent* comp);
+		CORE_API void RemoveAllComponents();
 
 		// Deep copies transform from another Actor.
-		void CopyTransformFrom(Common::IActor* actor);
+		CORE_API void CopyTransformFrom(Common::IActor* actor);
 
 		// Creates new IComponent with values from another Actor.
-		void CopyComponentsFrom(Common::IActor* actor);
+		CORE_API void CopyComponentsFrom(Common::IActor* actor);
 
 		// Deep copies all child Actors
 		template <typename ACTOR_INSTANCE>
@@ -126,41 +126,41 @@ namespace Common
 		}
 
 		// Shallow copies all child Actors.
-		void RefChildObjectFrom(Common::IActor* actor);
+		CORE_API void RefChildObjectFrom(Common::IActor* actor);
 
-		Common::ActorGroup							 GetActorGroup() const;
-		Common::ActorGroup&							 GetActorGroupRef();
-		Common::ActorGroup*							 GetActorGroupPtr();
-		Common::FTDS::String						 GetName();
-		Common::FTDS::String&						 GetNameRef();
-		const int									 GetID() const;
-		const bool									 GetIsActive() const;
-		bool&										 GetIsActiveRef();
-		Core::Transform*							 GetTransform() const;
-		Common::IActor*								 GetParent() const;
-		Common::FTDS::DynamicArray<IComponent*>*	 GetComponents();
-		Common::FTDS::DynamicArray<Common::IActor*>* GetChildActors();
-		const int									 GetDrawOrder() const;
+		CORE_API Common::ActorGroup							 GetActorGroup() const;
+		CORE_API Common::ActorGroup&							 GetActorGroupRef();
+		CORE_API Common::ActorGroup*							 GetActorGroupPtr();
+		CORE_API Common::FTDS::String						 GetName();
+		CORE_API Common::FTDS::String&						 GetNameRef();
+		CORE_API const int									 GetID() const;
+		CORE_API const bool									 GetIsActive() const;
+		CORE_API bool&										 GetIsActiveRef();
+		CORE_API Core::Transform*							 GetTransform() const;
+		CORE_API Common::IActor*								 GetParent() const;
+		CORE_API Common::FTDS::DynamicArray<IComponent*>*	 GetComponents();
+		CORE_API Common::FTDS::DynamicArray<Common::IActor*>* GetChildActors();
+		CORE_API const int									 GetDrawOrder() const;
 
-		void SetName(Common::FTDS::String&& name);
-		void SetIsActive(bool isActive);
-		void SetActorGroup(Common::ActorGroup group);
-		void SetState(Common::ActorState state);
-		void SetParent(Common::IActor* parent);
-		void SetTransform(Core::Transform* transform);
-		void SetComponents(Common::FTDS::DynamicArray<Common::IComponent*>* components);
-		void SetChildActors(Common::FTDS::DynamicArray<Common::IActor*>* children);
-		void SetDrawOrder(int order);
+		CORE_API void SetName(Common::FTDS::String&& name);
+		CORE_API void SetIsActive(bool isActive);
+		CORE_API void SetActorGroup(Common::ActorGroup group);
+		CORE_API void SetState(Common::ActorState state);
+		CORE_API void SetParent(Common::IActor* parent);
+		CORE_API void SetTransform(Core::Transform* transform);
+		CORE_API void SetComponents(Common::FTDS::DynamicArray<Common::IComponent*>* components);
+		CORE_API void SetChildActors(Common::FTDS::DynamicArray<Common::IActor*>* children);
+		CORE_API void SetDrawOrder(int order);
 
-		bool HasName(Common::FTDS::String&& name);
-		bool HasName(const char* name);
-		bool IsDead();
+		CORE_API bool HasName(Common::FTDS::String&& name);
+		CORE_API bool HasName(const char* name);
+		CORE_API bool IsDead();
 
-		void SaveProperties(std::ofstream& ofs);
-		void SaveComponents(std::ofstream& ofs);
+		CORE_API void SaveProperties(std::ofstream& ofs);
+		CORE_API void SaveComponents(std::ofstream& ofs);
 
-		void LoadProperties(std::ifstream& ifs);
-		void LoadComponents(std::ifstream& ifs);
+		CORE_API void LoadProperties(std::ifstream& ifs);
+		CORE_API void LoadComponents(std::ifstream& ifs);
 	};
 
 	namespace ChunkKey

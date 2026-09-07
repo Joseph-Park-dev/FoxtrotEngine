@@ -27,6 +27,14 @@ namespace D3D11
 		public SpriteRenderer
 	{
 	public:
+        // Resolve the shared IComponent interface explicitly at the renderer boundary.
+        Core::IActor* GetOwner() override { return D3D11Component::GetOwner(); }
+        const int GetUpdateOrder() override { return D3D11Component::GetUpdateOrder(); }
+        const bool GetIsInitialized() const override { return D3D11Component::GetIsInitialized(); }
+        const bool GetIsSetup() const override { return D3D11Component::GetIsSetup(); }
+        const bool GetIsActive() const override { return D3D11Component::GetIsActive(); }
+        void SetIsActive(bool value) override { D3D11Component::SetIsActive(value); }
+
 		static inline const char* NAME = "TileMapRenderer";
 		virtual const char*		  GetName() override
 		{

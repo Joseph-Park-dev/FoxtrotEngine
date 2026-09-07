@@ -14,7 +14,7 @@
 <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
 <PropertyGroup><TargetName>InputSystem</TargetName></PropertyGroup>
 <ItemDefinitionGroup><ClCompile>
-<AdditionalIncludeDirectories>$(SolutionDir)Engine\EngineRuntime\include;$(SolutionDir)Engine\Common\include;$(SolutionDir)Engine\Common\include\ResourceSystem;$(SolutionDir)Engine\Common\include\Debugging;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Graphics\include;$(SolutionDir)Engine\InputSystem\include;$(SolutionDir)Engine\GenericData\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+<AdditionalIncludeDirectories>$(SolutionDir)Engine\EngineRuntime\include;$(SolutionDir)Engine\Core\include;$(SolutionDir)Engine\Core\include\ResourceSystem;$(SolutionDir)Engine\Core\include\Debugging;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Graphics\include;$(SolutionDir)Engine\InputSystem\include;$(SolutionDir)Engine\GenericData\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 <PreprocessorDefinitions>;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 </ClCompile>
 <Link><AdditionalDependencies>;%(AdditionalDependencies)</AdditionalDependencies><SubSystem>Console</SubSystem></Link></ItemDefinitionGroup>

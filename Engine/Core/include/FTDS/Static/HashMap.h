@@ -126,7 +126,7 @@ namespace Common
 
 				size_t pow2 = Math::NextPowerOf2(static_cast<int>(this->Capacity()));
 				// Perform Quadratic probing
-				for (int i = 1; i <= pow2; ++i)
+				for (size_t i = 1; i <= pow2; ++i)
 				{
 					size_t qIndex = (hashVal + (i + i * i) / 2) % pow2;
 

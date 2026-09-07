@@ -2,6 +2,7 @@
 #include "../Dynamic/DynamicArray.h"
 
 #include <Windows.h>
+#include <climits>
 
 #include <Debugging/DebugMemAlloc.h>
 
@@ -30,6 +31,8 @@ namespace Common
 
 			const int RFind(const char* target) const
 			{
+				if (!target)
+					return -1;
 				size_t targetLen = FTDS::StrLen(target);
 				if (!target || this->GetLength() < 1 || this->GetLength() < targetLen)
 				{
@@ -43,7 +46,7 @@ namespace Common
 					this->SubStr(query, i, targetLen);
 					if (Common::FTDS::StringEqual(query.C_Str(), target))
 					{
-						return i; // Found last occurrence
+						return static_cast<int>(i); // Found occurrence
 					}
 				}
 				return -1; // Not found
@@ -51,18 +54,20 @@ namespace Common
 
 			int LFind(const char* target)
 			{
+				if (!target)
+					return -1;
 				size_t targetLen = FTDS::StrLen(target);
 				if (!target || this->GetLength() < 1 || this->GetLength() < targetLen)
 				{
 					return -1; // Handle edge cases
 				}
 
-				for (int i = 0; i < GetLength() - targetLen; ++i) // Start from the Beginning
+				for (size_t i = 0; i <= GetLength() - targetLen && i <= INT_MAX; ++i) // Start from the Beginning
 				{
 					Common::FTDS::String query;
 					this->SubStr(query, i, targetLen);
 					if (query.Equal(std::move(target)))
-						return i; // Found last occurrence
+						return static_cast<int>(i); // Found occurrence
 				}
 				return -1; // Not found
 			}

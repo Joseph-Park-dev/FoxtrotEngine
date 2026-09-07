@@ -12,7 +12,7 @@ namespace Common
 
 namespace D3D11
 {
-	struct D3D11_API CameraData
+	struct CameraData
 	{
 		Common::IActor*	   Target	= nullptr;
 		Graphics::Viewtype ViewType = Graphics::Viewtype::Orthographic;
@@ -38,42 +38,42 @@ namespace D3D11
 		////// Coordinate Conversion /////////////
 		//////////////////////////////////////////
 
-		Math::FTVector3 ScreenToWorld(const Math::FTVector2& screenPos);
-		Math::FTVector2 WorldToScreen(const Math::FTVector3& worldPos) const;
-		Math::FTVector2 ScreenToNDC(const Math::FTVector2& screenPos) const;
+		D3D11_API Math::FTVector3 ScreenToWorld(const Math::FTVector2& screenPos);
+		D3D11_API Math::FTVector2 WorldToScreen(const Math::FTVector3& worldPos) const;
+		D3D11_API Math::FTVector2 ScreenToNDC(const Math::FTVector2& screenPos) const;
 
-		void SaveProperties(std::ofstream& ofs);
-		void LoadProperties(std::ifstream& ifs);
+		D3D11_API void SaveProperties(std::ofstream& ofs);
+		D3D11_API void LoadProperties(std::ifstream& ifs);
 
 		//////////////////////////////////////////
 		////// Transform Properties //////////////
 		//////////////////////////////////////////
 
-		const Math::FTVector3& GetPosition() const;
+		D3D11_API const Math::FTVector3& GetPosition() const;
 
 		//////////////////////////////////////////
 		////// Matrix Accessors //////////////////
 		//////////////////////////////////////////
 
-		void GetViewMatrix(Math::FTMatrix4& outViewMat);
-		void GetProjectionMatrix(Math::FTMatrix4& outProjMat);
+		D3D11_API void GetViewMatrix(Math::FTMatrix4& outViewMat);
+		D3D11_API void GetProjectionMatrix(Math::FTMatrix4& outProjMat);
 
-		const Graphics::Viewtype GetViewType();
-		const float				 GetProjFOVAngleY();
-		const float				 GetAspectRatio();
-		const float				 GetUnitsPerPixel();
-		const float				 GetNearZ();
-		const float				 GetFarZ();
+		D3D11_API const Graphics::Viewtype GetViewType();
+		D3D11_API const float				 GetProjFOVAngleY();
+		D3D11_API const float				 GetAspectRatio();
+		D3D11_API const float				 GetUnitsPerPixel();
+		D3D11_API const float				 GetNearZ();
+		D3D11_API const float				 GetFarZ();
 
-		const Math::FTVector3&	GetOffSet() const;
-		const float				GetZoomFactor() const;
-		Math::FTVector2 GetResolution() const;
+		D3D11_API const Math::FTVector3&	GetOffSet() const;
+		D3D11_API const float				GetZoomFactor() const;
+		D3D11_API Math::FTVector2 GetResolution() const;
 
-		void SetPosition(const Math::FTVector3& pos);
-		void SetViewType(Graphics::Viewtype viewType);
-		void SetTargetActor(Common::IActor* actor);
-		void SetOffset(Math::FTVector3 offset);
+		D3D11_API void SetPosition(const Math::FTVector3& pos);
+		D3D11_API void SetViewType(Graphics::Viewtype viewType);
+		D3D11_API void SetTargetActor(Common::IActor* actor);
+		D3D11_API void SetOffset(Math::FTVector3 offset);
 
-		void InitializePixelsPerUnit(unsigned int pixels, float units = 1.f);
+		D3D11_API void InitializePixelsPerUnit(unsigned int pixels, float units = 1.f);
 	};
 } // namespace D3D11

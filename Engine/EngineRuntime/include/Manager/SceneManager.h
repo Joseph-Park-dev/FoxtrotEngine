@@ -40,25 +40,33 @@ namespace Core
 	#define FIND_ACTOR(id) SceneManager::GetInstance()->GetCurrentScene()->FindActor(id)
 #endif // FOXTROT_EDITOR
 
-	class CORE_API SceneManager
+	class SceneManager
 	{
-		SINGLETON_PROTECTED(SceneManager)
+	public:
+		CORE_API static SceneManager* GetInstance();
+		CORE_API static void Destroy();
+		SceneManager(const SceneManager&) = delete;
+	protected:
+		CORE_API SceneManager();
+		CORE_API ~SceneManager();
+	private:
+		static SceneManager* mInstance;
 
 	public:
-		void		   SwitchScene(size_t index);
-		virtual Scene* GetCurrentScene();
+		CORE_API void		   SwitchScene(size_t index);
+		CORE_API virtual Scene* GetCurrentScene();
 
 	public:
-		void SetChunkListPath(Common::FTDS::String&& path);
+		CORE_API void SetChunkListPath(Common::FTDS::String&& path);
 
-		Common::FTDS::DynamicArray<Common::FTDS::String*>*& ChunkList();
-
-	public:
-		virtual void Initialize(Scene* scene);
-		virtual void ProcessEvent();
+		CORE_API Common::FTDS::DynamicArray<Common::FTDS::String*>*& ChunkList();
 
 	public:
-		void SaveSceneList(std::ofstream& ofs);
+		CORE_API virtual void Initialize(Scene* scene);
+		CORE_API virtual void ProcessEvent();
+
+	public:
+		CORE_API void SaveSceneList(std::ofstream& ofs);
 
 	private:
 		Common::FTDS::String							   mChunkListPath;

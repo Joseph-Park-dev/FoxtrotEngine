@@ -30,40 +30,40 @@ namespace D3D11
 	struct FTMeshData;
 	class D3D11Renderer;
 
-	class D3D11_API FTShape
+	class FTShape
 	{
 	public:
-		DebugVCData& GetVCData();
-		DebugGCData& GetGSCData();
-		DebugPCData& GetPixelConstantData();
+		D3D11_API DebugVCData& GetVCData();
+		D3D11_API DebugGCData& GetGSCData();
+		D3D11_API DebugPCData& GetPixelConstantData();
 
-		Mesh* GetMesh();
+		D3D11_API Mesh* GetMesh();
 		bool  GetIsActive() { return mIsActive; }
 
 		void SetIsActive(bool val) { mIsActive = val; }
 
 	public:
-		virtual void Initialize(D3D11Renderer* renderer);
-		void		 UpdateVC(Math::FTMatrix4& model, Core::ICamera* camInst);
-		void		 UpdateGC(Core::ICamera* camInst);
-		virtual void UpdatePC();
+		D3D11_API virtual void Initialize(D3D11Renderer* renderer);
+		D3D11_API void		 UpdateVC(Math::FTMatrix4& model, Core::ICamera* camInst);
+		D3D11_API void		 UpdateGC(Core::ICamera* camInst);
+		D3D11_API virtual void UpdatePC();
 
 		// This is for ShapeActors (e.g. SquareActor)
-		void Render(D3D11Renderer* renderer);
+		D3D11_API void Render(D3D11Renderer* renderer);
 		// This should be called in DebugShapes instance only once per frame.
 		// You don't have to use this member function by yourself.
-		void Render(
+		D3D11_API void Render(
 			D3D11Renderer*								renderer,
 			Microsoft::WRL::ComPtr<ID3D11VertexShader>& vertexShader,
 			Microsoft::WRL::ComPtr<ID3D11PixelShader>&	pixelShader,
 			Microsoft::WRL::ComPtr<ID3D11InputLayout>&	inputLayout);
 
 	public:
-		FTShape();
-		virtual ~FTShape();
+		D3D11_API FTShape();
+		D3D11_API virtual ~FTShape();
 
 	protected:
-		void InitializeMesh(Microsoft::WRL::ComPtr<ID3D11Device>& device, FTDebugMeshData&& meshData);
+		D3D11_API void InitializeMesh(Microsoft::WRL::ComPtr<ID3D11Device>& device, FTDebugMeshData&& meshData);
 
 	private:
 		Mesh* mMesh;
@@ -79,14 +79,14 @@ namespace D3D11
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mPSCBuf;
 
 	private:
-		void InitializeConstantBuffer(Microsoft::WRL::ComPtr<ID3D11Device>& device);
-		void UpdateConstantBuffers(
+		D3D11_API void InitializeConstantBuffer(Microsoft::WRL::ComPtr<ID3D11Device>& device);
+		D3D11_API void UpdateConstantBuffers(
 			Microsoft::WRL::ComPtr<ID3D11Device>&		 device,
 			Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
 
-		void UpdateModelMatrix(Math::FTVector3 pos, Math::FTVector3 rot, Math::FTVector3 size);
-		void UpdateViewMatrix(Core::ICamera* camInst);
-		void UpdateProjectionMatrix(Core::ICamera* camInst);
+		D3D11_API void UpdateModelMatrix(Math::FTVector3 pos, Math::FTVector3 rot, Math::FTVector3 size);
+		D3D11_API void UpdateViewMatrix(Core::ICamera* camInst);
+		D3D11_API void UpdateProjectionMatrix(Core::ICamera* camInst);
 	};
 
 	namespace ChunkKey

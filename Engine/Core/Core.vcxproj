@@ -14,17 +14,18 @@
 <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
 <PropertyGroup><TargetName>Core</TargetName></PropertyGroup>
 <ItemDefinitionGroup><ClCompile>
-<AdditionalIncludeDirectories>$(SolutionDir)Engine\Common\include;$(SolutionDir)Engine\Common\include\ResourceSystem;$(SolutionDir)Engine\Math\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+<AdditionalIncludeDirectories>$(SolutionDir)Engine\Core\include;$(SolutionDir)Engine\Core\include\ResourceSystem;$(SolutionDir)Engine\Math\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 <PreprocessorDefinitions>FT_CORE_EXPORTS;MATH_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 </ClCompile>
 <Link><ModuleDefinitionFile>$(ProjectDir)Module.def</ModuleDefinitionFile><AdditionalDependencies>;%(AdditionalDependencies)</AdditionalDependencies><SubSystem>Console</SubSystem></Link></ItemDefinitionGroup>
 <ItemGroup>
 <ClCompile Include="src\Foundation.cpp"/>
-<ClCompile Include="..\Common\src\FileSystem\FileIOHelper.cpp"/>
+<ClCompile Include="src\FileSystem\FileIOHelper.cpp"/>
 <ClInclude Include="include\**\*.h"/>
 </ItemGroup>
 <ItemGroup>
 <ProjectReference Include="..\Math\Math.vcxproj"><Project>{05f1cde6-51be-4ec3-898e-d9d15811ed7f}</Project></ProjectReference>
 </ItemGroup>
+<ItemGroup><None Include="src\ResourceSystem\FTResource.cpp"/><None Include="src\FTDS\Dynamic\RecordNode"/><None Include="include\FTDS\Dynamic\RecordNode"/></ItemGroup>
 <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
 </Project>

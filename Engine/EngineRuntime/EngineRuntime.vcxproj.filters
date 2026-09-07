@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <ItemGroup>
-    <ClCompile Include="..\Common\src\Actor\ActorData.cpp">
+    <ClCompile Include="src\Actor\ActorData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Manager\PluginManager.cpp">
@@ -52,7 +52,7 @@
     <ClCompile Include="src\InputSystem\D3D11InputDevice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\src\Component\Data\ComponentData.cpp">
+    <ClCompile Include="src\Component\Data\ComponentData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClInclude Include="include\**\*.h">

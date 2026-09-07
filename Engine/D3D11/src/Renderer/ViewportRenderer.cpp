@@ -27,8 +27,11 @@ namespace D3D11
 {
 	void ViewportRenderer::InitializeTexture(D3D11Renderer* renderer, float xSize, float ySize)
 	{
-		if (0 < xSize && 0 < ySize)
-			CreateRenderTargetView(renderer, xSize, ySize);
+		// Quantize UI dimensions to whole pixels only within the D3D11 texture limit.
+        // These comparisons also reject NaN and infinity before conversion to UINT.
+        if (1 <= xSize && xSize <= D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION &&
+            1 <= ySize && ySize <= D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION)
+            CreateRenderTargetView(renderer, static_cast<UINT>(xSize), static_cast<UINT>(ySize));
 	}
 
 	void ViewportRenderer::BeginRender(D3D11Renderer* renderer)
@@ -136,3 +139,5 @@ namespace D3D11 {
 void DestroyViewportRenderer(ViewportRenderer* renderer) { delete renderer; }
 void SetEditorGuiContext(void* context) { ImGui::SetCurrentContext(static_cast<ImGuiContext*>(context)); }
 }
+
+D3D11::ViewportRenderer::~ViewportRenderer() = default;

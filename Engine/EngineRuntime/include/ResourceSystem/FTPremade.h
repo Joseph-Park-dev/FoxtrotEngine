@@ -24,7 +24,7 @@ namespace Core
 	class FTCore;
 	class Scene;
 
-	class CORE_API FTPremade :
+	class FTPremade :
 		public Common::IResource
 	{
 	public:
@@ -32,12 +32,12 @@ namespace Core
 		void LoadProperties(std::ifstream& ifs) override {};
 
 	public:
-		FTPremade(Common::ResourceData* resDef);
-		~FTPremade();
+		CORE_API FTPremade(Common::ResourceData* resDef);
+		CORE_API ~FTPremade();
 
 	public:
-		Actor* GetOrigin();
-		bool   GetIsLoaded();
+		CORE_API Actor* GetOrigin();
+		CORE_API bool   GetIsLoaded();
 
 	private:
 		Common::ResourceData* mData;
@@ -47,7 +47,7 @@ namespace Core
 		bool   mIsLoaded;
 
 	private:
-		void Load(const char* path);
+		CORE_API void Load(const char* path);
 
 		// #ifdef FOXTROT_EDITOR
 		//	public:

@@ -28,7 +28,7 @@ namespace Core
 {
 	struct Steering;
 
-	class CORE_API Transform
+	class Transform
 	{
 	public:
 		//////////////////////////////
@@ -36,50 +36,50 @@ namespace Core
 		//////////////////////////////
 
 		// Local Transformation
-		const Math::FTVector3& GetLocalPosition() const;
-		const Math::FTVector3& GetLocalScale() const;
-		const Math::FTVector3& GetLocalRotation() const;
+		CORE_API const Math::FTVector3& GetLocalPosition() const;
+		CORE_API const Math::FTVector3& GetLocalScale() const;
+		CORE_API const Math::FTVector3& GetLocalRotation() const;
 
 		// World Transformation
-		virtual const Math::FTVector3& GetWorldPosition() const;
-		virtual const Math::FTVector3& GetWorldScale() const;
-		const Math::FTVector3&		   GetWorldRotation() const;
-		virtual const Math::FTMatrix4& GetMatrixWorld() const;
-		const Math::FTVector3		   GetRotationDegree() const;
-		const Math::FTVector3&		   GetRightward() const;
-		virtual const Steering*		   GetSteering() const;
+		CORE_API virtual const Math::FTVector3& GetWorldPosition() const;
+		CORE_API virtual const Math::FTVector3& GetWorldScale() const;
+		CORE_API const Math::FTVector3&		   GetWorldRotation() const;
+		CORE_API virtual const Math::FTMatrix4& GetMatrixWorld() const;
+		CORE_API const Math::FTVector3		   GetRotationDegree() const;
+		CORE_API const Math::FTVector3&		   GetRightward() const;
+		CORE_API virtual const Steering*		   GetSteering() const;
 
-		const bool IsHalting() const;
+		CORE_API const bool IsHalting() const;
 
 		// Local Transformation
-		void SetLocalPosition(const Math::FTVector3 val);
-		void SetLocalScale(const Math::FTVector3 val);
-		void SetLocalRotation(const Math::FTVector3 val);
+		CORE_API void SetLocalPosition(const Math::FTVector3 val);
+		CORE_API void SetLocalScale(const Math::FTVector3 val);
+		CORE_API void SetLocalRotation(const Math::FTVector3 val);
 
 		// World Transformation
-		void		 SetWorldPosition(const Math::FTVector3 worldPos);
-		virtual void SetWorldScale(const Math::FTVector3 worldScale);
-		void		 SetWorldRotation(const Math::FTVector3 worldRot);
+		CORE_API void		 SetWorldPosition(const Math::FTVector3 worldPos);
+		CORE_API virtual void SetWorldScale(const Math::FTVector3 worldScale);
+		CORE_API void		 SetWorldRotation(const Math::FTVector3 worldRot);
 
-		void SetRightward(const Math::FTVector3 dir);
-		void SetSteering(const Steering steering);
+		CORE_API void SetRightward(const Math::FTVector3 dir);
+		CORE_API void SetSteering(const Steering steering);
 
-		void SetOwner(Common::IActor* actor);
+		CORE_API void SetOwner(Common::IActor* actor);
 
-		static Math::FTVector3 ConvertRadToDegree(Math::FTVector3 radianRot);
-		static Math::FTVector3 ConvertDegreeToRad(Math::FTVector3 degreeRot);
-
-	public:
-		void Update();
-		void CloneTo(Transform* target);
+		CORE_API static Math::FTVector3 ConvertRadToDegree(Math::FTVector3 radianRot);
+		CORE_API static Math::FTVector3 ConvertDegreeToRad(Math::FTVector3 degreeRot);
 
 	public:
-		Transform(Common::IActor* owner);
-		Transform(Common::IActor* owner, Transform& origin);
-		virtual ~Transform();
+		CORE_API void Update();
+		CORE_API void CloneTo(Transform* target);
+
+	public:
+		CORE_API Transform(Common::IActor* owner);
+		CORE_API Transform(Common::IActor* owner, Transform& origin);
+		CORE_API virtual ~Transform();
 
 	protected:
-		const Common::IActor* GetOwner() const;
+		CORE_API const Common::IActor* GetOwner() const;
 
 	private:
 		// Local Transformation.
@@ -100,8 +100,8 @@ namespace Core
 		Common::IActor* mOwner;
 
 	public:
-		void SaveProperties(std::ofstream& ofs);
-		void LoadProperties(std::ifstream& ofs);
+		CORE_API void SaveProperties(std::ofstream& ofs);
+		CORE_API void LoadProperties(std::ifstream& ofs);
 	};
 
 	namespace ChunkKey

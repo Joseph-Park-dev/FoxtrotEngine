@@ -4,7 +4,7 @@
     <ClCompile Include="src\Foundation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\src\FileSystem\FileIOHelper.cpp">
+    <ClCompile Include="src\FileSystem\FileIOHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClInclude Include="include\**\*.h">
@@ -16,4 +16,5 @@
     <Filter Include="Header Files" />
     <Filter Include="Other Files" />
   </ItemGroup>
+<ItemGroup><None Include="src\ResourceSystem\FTResource.cpp"><Filter>Other Files</Filter></None><None Include="src\FTDS\Dynamic\RecordNode"><Filter>Other Files</Filter></None><None Include="include\FTDS\Dynamic\RecordNode"><Filter>Other Files</Filter></None></ItemGroup>
 </Project>

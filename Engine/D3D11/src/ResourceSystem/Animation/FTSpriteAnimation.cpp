@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "Plugin/GetFunc.h"
 #include "Manager/AnimationManager.h"
 #include "Renderer/D3D11Renderer.h"
@@ -140,14 +141,18 @@ namespace D3D11
 		float sheetH = sheetSize.at(SpriteSheetKeys::H);
 
 		// Get the number of sprites, create the buffer for the tiles.
-		size_t vCount = mMaxFrameIdx - mMinFrameIdx + 1;
+		if (mMinFrameIdx < 0 || mMaxFrameIdx < mMinFrameIdx)
+            throw std::invalid_argument("Invalid sprite animation frame range");
+        const size_t firstFrame = static_cast<size_t>(mMinFrameIdx);
+        const size_t lastFrame = static_cast<size_t>(mMaxFrameIdx);
+        const size_t vCount = lastFrame - firstFrame + 1;
 		if (GetGCSpriteData())
 			delete[] GetGCSpriteData();
 		SpriteVertex* vertices = DBG_NEW SpriteVertex[vCount];
 
 		SetGCSpriteData(DBG_NEW SpriteGCData[vCount]);
 		// For every sprite data in JSON...
-		for (size_t i = mMinFrameIdx; i <= mMaxFrameIdx; ++i)
+		for (size_t i = firstFrame; i <= lastFrame; ++i)
 		{
 			// Base array containing sprite data.
 			nlohmann::json frame = mJSON->Data()[SpriteSheetKeys::BASE][i];
@@ -171,7 +176,7 @@ namespace D3D11
 			float pivotX = frame[SpriteSheetKeys::PIVOT][SpriteSheetKeys::X];
 			float pivotY = frame[SpriteSheetKeys::PIVOT][SpriteSheetKeys::Y];
 
-			size_t tileIdx			   = i - mMinFrameIdx;
+			size_t tileIdx			   = i - firstFrame;
 			vertices[tileIdx].Position = Math::FTVector3(screenX, screenY, 0.0f);
 
 			GetGCSpriteData()[tileIdx].Size	 = FTVector2(screenW, screenH);
@@ -209,7 +214,7 @@ namespace D3D11
 
 		FTVector2 size = GetGCSpriteData()[0].Size;
 		Editor::UPDATE_VEC2("Size", size);
-		for (size_t i = 0; i < mMaxFrameIdx - mMinFrameIdx + 1; ++i)
+		for (size_t i = 0; i < static_cast<size_t>(mMaxFrameIdx) - static_cast<size_t>(mMinFrameIdx) + 1; ++i)
 			GetGCSpriteData()[i].Size = size;
 
 		Editor::UPDATE_VEC3("Scale size", SizeScale());

@@ -6,7 +6,7 @@
 //// See LICENSE in root directory for full details.
 //// ----------------------------------------------------------------
 //
-// #include <../Common/include/ResourceSystem/FTResource.h>
+// #include <ResourceSystem/FTResource.h>
 //
 // namespace Common
 //{

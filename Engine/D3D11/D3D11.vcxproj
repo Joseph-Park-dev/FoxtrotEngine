@@ -14,7 +14,7 @@
 <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
 <PropertyGroup><TargetName>FoxtrotD3D11</TargetName></PropertyGroup>
 <ItemDefinitionGroup><ClCompile>
-<AdditionalIncludeDirectories>$(SolutionDir)Engine\EngineRuntime\include;$(SolutionDir)Engine\Common\include;$(SolutionDir)Engine\Common\include\ResourceSystem;$(SolutionDir)Engine\Common\include\Debugging;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Graphics\include;$(SolutionDir)Engine\InputSystem\include;$(SolutionDir)Engine\GenericData\include;$(SolutionDir)Engine\D3D11\include;$(SolutionDir)Engine\Editor\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+<AdditionalIncludeDirectories>$(SolutionDir)Engine\EngineRuntime\include;$(SolutionDir)Engine\Core\include;$(SolutionDir)Engine\Core\include\ResourceSystem;$(SolutionDir)Engine\Core\include\Debugging;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Graphics\include;$(SolutionDir)Engine\InputSystem\include;$(SolutionDir)Engine\GenericData\include;$(SolutionDir)Engine\D3D11\include;$(SolutionDir)Engine\Editor\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 <PreprocessorDefinitions>D3D11_EXPORTS;MATH_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 </ClCompile>
 <Link><ImportLibrary>$(OutDir)FoxtrotD3D11.lib</ImportLibrary><ModuleDefinitionFile>$(ProjectDir)Module.def</ModuleDefinitionFile><AdditionalDependencies>d3d11.lib;dxgi.lib;d3dcompiler.lib;ole32.lib;%(AdditionalDependencies)</AdditionalDependencies><SubSystem>Console</SubSystem></Link></ItemDefinitionGroup>
@@ -147,6 +147,13 @@
 <ProjectReference Include="..\EngineRuntime\EngineRuntime.vcxproj"><Project>{B9E4C0BB-30E3-4D40-A0ED-46084649AE62}</Project></ProjectReference>
 <ProjectReference Include="..\Math\Math.vcxproj"><Project>{05f1cde6-51be-4ec3-898e-d9d15811ed7f}</Project></ProjectReference>
 <ProjectReference Include="..\GenericData\GenericData.vcxproj"><Project>{895c9af5-f0d9-403d-af4f-5ffe5e4ffd94}</Project></ProjectReference>
+</ItemGroup>
+<!-- Preserve the pinned upstream Spine sources. Its numeric animation-data
+     conversions are intentional; C4244 stays enabled for all engine sources. -->
+<ItemGroup>
+  <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\*.cpp">
+    <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+  </ClCompile>
 </ItemGroup>
 <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
 </Project>

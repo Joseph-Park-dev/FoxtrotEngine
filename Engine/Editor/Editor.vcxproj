@@ -14,7 +14,7 @@
 <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
 <PropertyGroup><TargetName>Editor</TargetName></PropertyGroup>
 <ItemDefinitionGroup><ClCompile>
-<AdditionalIncludeDirectories>$(SolutionDir)Engine\EngineRuntime\include;$(SolutionDir)Engine\Common\include;$(SolutionDir)Engine\Common\include\ResourceSystem;$(SolutionDir)Engine\Common\include\Debugging;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Graphics\include;$(SolutionDir)Engine\InputSystem\include;$(SolutionDir)Engine\GenericData\include;$(SolutionDir)Engine\Editor\include;$(SolutionDir)Engine\D3D11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+<AdditionalIncludeDirectories>$(SolutionDir)Engine\EngineRuntime\include;$(SolutionDir)Engine\Core\include;$(SolutionDir)Engine\Core\include\ResourceSystem;$(SolutionDir)Engine\Core\include\Debugging;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Graphics\include;$(SolutionDir)Engine\InputSystem\include;$(SolutionDir)Engine\GenericData\include;$(SolutionDir)Engine\Editor\include;$(SolutionDir)Engine\D3D11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 <PreprocessorDefinitions>EDITOR_EXPORTS;FOXTROT_EDITOR;PLATFORM_D3D11;MATH_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 </ClCompile>
 <Link><ModuleDefinitionFile>$(ProjectDir)Module.def</ModuleDefinitionFile><AdditionalDependencies>d3d11.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies><SubSystem>Console</SubSystem></Link></ItemDefinitionGroup>
@@ -53,5 +53,6 @@
 <ProjectReference Include="..\D3D11\D3D11.vcxproj"><Project>{95944b49-be89-43df-bd3f-03d01fa7c284}</Project></ProjectReference>
 <ProjectReference Include="..\Math\Math.vcxproj"><Project>{05f1cde6-51be-4ec3-898e-d9d15811ed7f}</Project></ProjectReference>
 </ItemGroup>
+<ItemGroup><None Include="src\Utility\EditorHelper.cpp"/></ItemGroup>
 <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
 </Project>

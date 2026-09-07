@@ -1,3 +1,5 @@
+#include <memory>
+#include <stdexcept>
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
@@ -550,15 +552,23 @@ namespace D3D11
 	{
 		int channels;
 
-		unsigned char* img =
-			stbi_load(filename.C_Str(), &width, &height, &channels, 0);
+		std::unique_ptr<unsigned char, decltype(&stbi_image_free)> pixels(
+            stbi_load(filename.C_Str(), &width, &height, &channels, 0), &stbi_image_free);
+        const auto* img = pixels.get();
+        if (!img || width <= 0 || height <= 0)
+            throw std::runtime_error("Failed to load image");
+        const size_t rowBytes = static_cast<size_t>(width) * 4;
+        if (rowBytes / 4 != static_cast<size_t>(width) ||
+            static_cast<size_t>(height) > image.max_size() / rowBytes)
+            throw std::length_error("Image dimensions exceed buffer capacity");
+        const size_t pixelCount = static_cast<size_t>(width) * static_cast<size_t>(height);
 
 		// 4ä�η� ���� ����
-		image.resize(width * height * 4);
+		image.resize(pixelCount * 4);
 
 		if (channels == 1)
 		{
-			for (size_t i = 0; i < width * height; i++)
+			for (size_t i = 0; i < pixelCount; i++)
 			{
 				uint8_t g = img[i * channels + 0];
 				for (size_t c = 0; c < 4; c++)
@@ -569,7 +579,7 @@ namespace D3D11
 		}
 		else if (channels == 3)
 		{
-			for (size_t i = 0; i < width * height; i++)
+			for (size_t i = 0; i < pixelCount; i++)
 			{
 				for (size_t c = 0; c < 3; c++)
 				{
@@ -580,7 +590,7 @@ namespace D3D11
 		}
 		else if (channels == 4)
 		{
-			for (size_t i = 0; i < width * height; i++)
+			for (size_t i = 0; i < pixelCount; i++)
 			{
 				for (size_t c = 0; c < 4; c++)
 				{
@@ -592,7 +602,7 @@ namespace D3D11
 		{
 			std::cout << "Cannot read " << channels << " channels" << endl;
 		}
-		delete[] img;
+
 	}
 
 	ComPtr<ID3D11Texture2D>

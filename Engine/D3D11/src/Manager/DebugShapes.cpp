@@ -116,3 +116,20 @@ namespace D3D11
 
 #endif // FOXTROT_EDITOR
 } // namespace D3D11
+namespace D3D11
+{
+    DebugShapes* DebugShapes::mInstance = nullptr;
+
+    DebugShapes* DebugShapes::GetInstance()
+    {
+        if (!mInstance)
+            mInstance = DBG_NEW DebugShapes();
+        return mInstance;
+    }
+
+    void DebugShapes::Destroy()
+    {
+        delete mInstance;
+        mInstance = nullptr;
+    }
+}

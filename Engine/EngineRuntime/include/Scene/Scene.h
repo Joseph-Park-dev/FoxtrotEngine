@@ -21,29 +21,29 @@ namespace Core
 	class FTInputDevice;
 	class FoxtrotRenderer;
 
-	class CORE_API Scene
+	class Scene
 	{
 	public:
-		void AddActor(Common::IActor* actor);
-		void RemoveActor(Common::IActor* actor);
+		CORE_API void AddActor(Common::IActor* actor);
+		CORE_API void RemoveActor(Common::IActor* actor);
 
-		Common::IActor*			FindActor(int id);
-		virtual Common::IActor* FindActor(Common::FTDS::String& name, Common::IActor* filter = nullptr);
-		Common::IActor*			FindActor(const char* name, Common::IActor* filter = nullptr);
+		CORE_API Common::IActor*			FindActor(int id);
+		CORE_API virtual Common::IActor* FindActor(Common::FTDS::String& name, Common::IActor* filter = nullptr);
+		CORE_API Common::IActor*			FindActor(const char* name, Common::IActor* filter = nullptr);
 
 	public:
-		const Common::FTDS::String&						   GetName();
-		const bool										   GetIsUpdatingActors() const;
-		const Common::FTDS::DynamicArray<Common::IActor*>* GetActors() const;
+		CORE_API const Common::FTDS::String&						   GetName();
+		CORE_API const bool										   GetIsUpdatingActors() const;
+		CORE_API const Common::FTDS::DynamicArray<Common::IActor*>* GetActors() const;
 
-		void SetName(const Common::FTDS::String&& name);
+		CORE_API void SetName(const Common::FTDS::String&& name);
 		void SetIsUpdatingActors(bool value) { mIsUpdatingActors = value; }
 
-		Common::FTDS::DynamicArray<Common::IActor*>*& Actors();
+		CORE_API Common::FTDS::DynamicArray<Common::IActor*>*& Actors();
 
 	public:
-		void		 ProcessEvent();
-		virtual void DeleteAll();
+		CORE_API void		 ProcessEvent();
+		CORE_API virtual void DeleteAll();
 
 	private:
 		/// @brief Active actors managed by the scene.
@@ -60,21 +60,21 @@ namespace Core
 
 	public:
 		/// @brief Constructs an empty scene.
-		Scene();
+		CORE_API Scene();
 
 		/// @brief Destroys the scene and releases owned resources.
-		virtual ~Scene();
+		CORE_API virtual ~Scene();
 
 	private:
 		/// @brief Commits pending actors to the active collection.
 		/// @details
 		/// Called after updates when it is safe to mutate actor arrays.
-		void AddPendingActors();
+		CORE_API void AddPendingActors();
 
 		/// @brief Removes and cleans up actors marked as dead.
 		/// @details
 		/// Executes after updates to keep collections consistent.
-		void ClearDeadActors();
+		CORE_API void ClearDeadActors();
 
 		/// @brief Grants `EventManager` access to private event integration.
 		friend class EventManager;

@@ -28,33 +28,41 @@ namespace D3D11
 	class D3D11Renderer;
 
 	// This provides a context to render shapes as DebugShapes
-	class D3D11_API DebugShapes
+	class DebugShapes
 	{
-		SINGLETON_PROTECTED(DebugShapes)
+	public:
+		D3D11_API static DebugShapes* GetInstance();
+		D3D11_API static void Destroy();
+		DebugShapes(const DebugShapes&) = delete;
+	protected:
+		D3D11_API DebugShapes();
+		D3D11_API ~DebugShapes();
+	private:
+		static DebugShapes* mInstance;
 	public:
 		// Adds the created shape to the std::vector.
-		void AddShape(FTShape* shape);
+		D3D11_API void AddShape(FTShape* shape);
 
 		// To delete an individual shape, this member function can be called.
 		// Do not delete debug shapes manually in Components.
-		void RemoveShape(FTShape* shape);
+		D3D11_API void RemoveShape(FTShape* shape);
 
 		// The debug shapes is batch-deleted automatically in this member function.
 		// Do not delete debug shapes manually in Components.
-		void DeleteAll();
+		D3D11_API void DeleteAll();
 
 	public:
-		Microsoft::WRL::ComPtr<ID3D11VertexShader>&	  GetVS();
-		Microsoft::WRL::ComPtr<ID3D11GeometryShader>& GetGSSquare();
-		Microsoft::WRL::ComPtr<ID3D11PixelShader>&	  GetPS();
-		Microsoft::WRL::ComPtr<ID3D11InputLayout>&	  GetInputLayout();
+		D3D11_API Microsoft::WRL::ComPtr<ID3D11VertexShader>&	  GetVS();
+		D3D11_API Microsoft::WRL::ComPtr<ID3D11GeometryShader>& GetGSSquare();
+		D3D11_API Microsoft::WRL::ComPtr<ID3D11PixelShader>&	  GetPS();
+		D3D11_API Microsoft::WRL::ComPtr<ID3D11InputLayout>&	  GetInputLayout();
 
 	public:
-		void Initialize(D3D11::D3D11Renderer* renderer);
+		D3D11_API void Initialize(D3D11::D3D11Renderer* renderer);
 
 		// Batch renders shapes.
 		// It is not necessary to render shapes manually from the Components
-		void Render(D3D11::D3D11Renderer* renderer);
+		D3D11_API void Render(D3D11::D3D11Renderer* renderer);
 
 	private:
 		Common::FTDS::DynamicArray<FTShape*>* mShapes;
@@ -69,6 +77,6 @@ namespace D3D11
 		Microsoft::WRL::ComPtr<ID3D11InputLayout>	 mInputLayout;
 
 	private:
-		void CreateShaders(Microsoft::WRL::ComPtr<ID3D11Device>& device);
+		D3D11_API void CreateShaders(Microsoft::WRL::ComPtr<ID3D11Device>& device);
 	};
 } // namespace D3D11

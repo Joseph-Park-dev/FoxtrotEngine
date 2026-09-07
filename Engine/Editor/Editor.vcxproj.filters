@@ -88,4 +88,5 @@
     <Filter Include="Header Files" />
     <Filter Include="Other Files" />
   </ItemGroup>
+<ItemGroup><None Include="src\Utility\EditorHelper.cpp"><Filter>Other Files</Filter></None></ItemGroup>
 </Project>

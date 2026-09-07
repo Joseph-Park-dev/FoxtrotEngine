@@ -1,0 +1,161 @@
+@startuml FoxtrotEngine_Component_Diagram
+!theme plain
+title FoxtrotEngine - Visual Studio Solution Component Diagram
+
+' Style settings
+skinparam component {
+    BackgroundColor<<dll>> #LightBlue
+    BackgroundColor<<lib>> #LightGreen
+    BackgroundColor<<exe>> #LightCoral
+    BackgroundColor<<shared>> #LightYellow
+    BorderColor Black
+    FontSize 12
+}
+
+skinparam package {
+    BackgroundColor #FAFAFA
+    BorderColor #666666
+}
+
+skinparam legend {
+    BackgroundColor #FFFFFF
+    BorderColor #000000
+}
+
+' Legend
+legend right
+    |= Type |= Description |
+    | <back:#LightGreen>   </back> | Static/Dynamic Library (Math) |
+    | <back:#LightBlue>   </back> | Dynamic Library (DLL) |
+    | <back:#LightCoral>   </back> | Application (EXE) |
+    | <back:#LightYellow>   </back> | Shared Items (.vcxitems) |
+    |  --|>  | Project Reference |
+    |  ..>  | Shared Items Import |
+    |  -->  | Link Dependency |
+endlegend
+
+package "FoxtrotEngine Solution" {
+
+    ' Foundation Layer
+    package "Foundation Layer" {
+        [Math] <<lib>> as Math
+        note right of Math
+            Static/Dynamic Library
+            - FTMath utilities
+            - Random number generation
+            - No external dependencies
+        end note
+    }
+
+    ' Shared Items
+    package "Shared Code" {
+        [Common] <<shared>> as Common
+        note right of Common
+            Shared Items (.vcxitems)
+            - FTDS (Data Structures)
+            - FileSystem utilities
+            - Component interfaces
+            - Resource system base
+        end note
+    }
+
+    ' Core Layer
+    package "Core Layer" {
+        [Core] <<dll>> as Core
+        note right of Core
+            Core DLL
+            - Actor/Transform system
+            - Scene management
+            - Resource management
+            - Event system
+            - Plugin system
+        end note
+
+        [GenericData] <<dll>> as GenericData
+        note left of GenericData
+            GenericData DLL
+            - CSV parser (FTCSV)
+            - JSON handler (FTJSON)
+            - Text utilities (FTText)
+        end note
+    }
+
+    ' Abstraction Layer
+    package "Abstraction Layer" {
+        [Graphics] <<dll>> as Graphics
+        note right of Graphics
+            Graphics DLL
+            - Renderer interfaces
+            - Component interfaces
+            - Resource interfaces
+            - Platform-agnostic API
+        end note
+
+        [InputSystem] <<dll>> as InputSystem
+        note left of InputSystem
+            InputSystem DLL
+            - Input device interfaces
+            - Platform-agnostic input
+        end note
+    }
+
+    ' Platform Layer
+    package "Platform Layer (DirectX 11)" {
+        [D3D11] <<dll>> as D3D11
+        note right of D3D11
+            D3D11 Renderer DLL
+            - DirectX 11 rendering
+            - Spine animation
+            - Texture/Shader/Mesh
+            - Camera system
+        end note
+    }
+
+    ' Editor Layer
+    package "Editor Layer" {
+        [Editor] <<dll>> as Editor
+        note right of Editor
+            Editor DLL
+            - ImGui-based UI
+            - Command pattern (Undo/Redo)
+            - Scene editing
+            - Asset management
+        end note
+    }
+
+    ' Application Layer
+    package "Application Layer" {
+        [Main] <<exe>> as Main
+        note right of Main
+            Main Application (EXE)
+            - Entry point
+            - Plugin loading
+            - Engine initialization
+        end note
+    }
+}
+
+' Project References (solid lines)
+Core --|> Math : ProjectReference
+Graphics --|> Math : ProjectReference
+InputSystem --|> Math : ProjectReference
+D3D11 --|> Core : ProjectReference
+D3D11 --|> Math : ProjectReference
+Editor --|> Math : ProjectReference
+
+' Link Dependencies (dashed lines)
+D3D11 --> Graphics : Links Graphics.lib
+
+' Shared Items Imports (dotted lines)
+Core ..> Common : imports
+D3D11 ..> Common : imports
+Editor ..> Common : imports
+Graphics ..> Common : imports
+InputSystem ..> Common : imports
+
+' Runtime Loading (plugin system)
+Main ..> Core : loads dynamically
+Main ..> D3D11 : loads dynamically
+Main ..> Editor : loads dynamically
+
+@enduml

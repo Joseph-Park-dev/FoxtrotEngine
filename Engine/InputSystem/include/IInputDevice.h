@@ -83,8 +83,8 @@ namespace InputSystem
 		/// <summary>
 		/// Gets the current mouse position in screen coordinates.
 		/// </summary>
-		virtual const unsigned int GetMousePosX() const = 0;
-		virtual const unsigned int GetMousePosY() const = 0;
+		virtual int GetMousePosX() const = 0;
+		virtual int GetMousePosY() const = 0;
 
 		/// <summary>
 		/// Gets the mouse wheel scroll delta.
@@ -102,8 +102,8 @@ namespace InputSystem
 		virtual bool MOUSE_AWAY(MOUSE mouse) = 0;
 		virtual bool MOUSE_NONE(MOUSE mouse) = 0;
 
-		virtual unsigned int MOUSE_X() = 0;
-		virtual unsigned int MOUSE_Y() = 0;
+		virtual int MOUSE_X() = 0;
+		virtual int MOUSE_Y() = 0;
 
 	public:
 		virtual ~IInputDevice() = default;

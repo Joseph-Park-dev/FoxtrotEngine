@@ -24,8 +24,10 @@ namespace GenericData
 	// }
 
 	FTJSON::FTJSON(Common::ResourceData* metaData)
-		: mMetaData(metaData)
+		: Common::FTResource()
 	{
+		SetFileName(*metaData->FileName);
+		SetRelativePath(*metaData->Path);
 		if (!mData.empty())
 			return;
 

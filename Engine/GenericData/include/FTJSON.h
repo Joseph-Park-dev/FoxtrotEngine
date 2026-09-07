@@ -7,7 +7,7 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include "IResource.h"
+#include "ResourceSystem/FTResource.h"
 
 #include <nlohmann/json.hpp>
 
@@ -17,7 +17,7 @@ namespace GenericData
 	/// Currently using nlohmann JSON library.
 	/// @note https://github.com/nlohmann/json
 	class FTJSON :
-		public Common::IResource
+		public Common::FTResource
 	{
 		// public:
 		//	/// @see FTResource::SaveProperties()
@@ -34,7 +34,7 @@ namespace GenericData
 		FTJSON(Common::ResourceData* resDef);
 
 	private:
-		Common::ResourceData* mMetaData;
+
 		/// @brief .json data.
 		nlohmann::json mData;
 

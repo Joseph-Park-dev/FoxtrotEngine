@@ -11,6 +11,7 @@
 /// </summary>
 
 #pragma once
+#include "Plugin/CoreExports.h"
 #include "Entity/Entity.h"
 
 #include <iosfwd>
@@ -27,7 +28,7 @@ namespace Core
 {
 	struct Steering;
 
-	class Transform
+	class CORE_API Transform
 	{
 	public:
 		//////////////////////////////

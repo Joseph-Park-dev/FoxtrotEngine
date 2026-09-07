@@ -1,4 +1,5 @@
 #pragma once
+#include "Plugin/CoreExports.h"
 #include "FTDS/Static/FTString.h"
 #include "FileSystem/NullKeys.h"
 #include "Actor/ActorGroup.h"
@@ -23,7 +24,7 @@ namespace Common
 
 	class IActor;
 
-	struct ActorData
+	struct CORE_API ActorData
 	{
 		Common::IActor*								 Owner		= nullptr;
 		Common::FTDS::String						 Name		= {};

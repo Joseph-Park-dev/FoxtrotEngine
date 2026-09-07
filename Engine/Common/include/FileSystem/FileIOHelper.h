@@ -11,6 +11,7 @@
 /// </summary>
 
 #pragma once
+#include "Foxtrot/Core/CoreApi.h"
 #include <iosfwd>
 #include <list>
 #include <fstream>
@@ -22,7 +23,7 @@
 
 namespace Common
 {
-	class FileIOHelper
+	class FT_CORE_API FileIOHelper
 	{
 	public:
 		static std::pair<size_t, Common::FTDS::String> BeginDataPackLoad(std::ifstream& ifs);

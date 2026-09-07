@@ -1,3 +1,6 @@
+#include "Plugin/GetFunc.h"
+#include "Manager/AnimationManager.h"
+#include "Renderer/D3D11Renderer.h"
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
@@ -76,7 +79,7 @@ namespace D3D11
 		FileIOHelper::LoadInt(ifs, frontDir);
 		FTMeshGroup::LoadProperties(ifs);
 
-		mJSON = AnimationManager::GetInstance()->GetJSONsFuncGetter()()->GetResource(jsonKey);
+		mJSON = Core::GetFunc<GenericData::FTJSON* (*)(const char*)>("EngineRuntime.dll", "GetJSON")(jsonKey.C_Str());
 		if (!mJSON)
 			return;
 
@@ -119,7 +122,7 @@ namespace D3D11
 		if (!mJSON)
 			return;
 
-		Initialize(renderer->GetDevice(), renderer->GetContext());
+		Initialize(static_cast<D3D11Renderer*>(renderer)->GetDevice(), static_cast<D3D11Renderer*>(renderer)->GetContext());
 	}
 
 	FTSpriteAnimation::~FTSpriteAnimation()
@@ -197,7 +200,7 @@ namespace D3D11
 		, mFPS(resDef.FPS)
 		, mIsRepeated(resDef.IsRepeated)
 	{
-		Initialize(renderer->GetDevice(), renderer->GetContext());
+		Initialize(static_cast<D3D11Renderer*>(renderer)->GetDevice(), static_cast<D3D11Renderer*>(renderer)->GetContext());
 	}
 
 	void FTSpriteAnimation::UpdateUI()

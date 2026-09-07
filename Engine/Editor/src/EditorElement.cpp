@@ -1,3 +1,4 @@
+#include "Component/D3D11Component.h"
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
@@ -419,7 +420,8 @@ namespace Editor
 					if (ImGui::TreeNode(name.C_Str()))
 					{
 						//CommandHistory::GetInstance()->UpdateIntValue(Core::ChunkKey::UPDATE_ORDER, (*comp)->UpdateOrder());
-						(*iter)->EditorUIUpdate(CommandHistory::GetInstance());
+						if (auto* inspector = dynamic_cast<D3D11::D3D11Component*>(*iter))
+                            inspector->EditorUIUpdate(CommandHistory::GetInstance());
 						if (ImGui::SmallButton("Delete"))
 							RemoveComponent(*iter);
 						ImGui::TreePop();
@@ -468,3 +470,9 @@ namespace Editor
 		return DBG_NEW EditorElement(actor, id);
 	}
 } // namespace Editor
+namespace Editor {
+void EditorElement::SaveProperties(std::ofstream& out) { mData->SaveProperties(out); }
+void EditorElement::SaveComponents(std::ofstream& out) { mData->SaveComponents(out); }
+void EditorElement::LoadProperties(std::ifstream& in) { mData->LoadProperties(in); }
+void EditorElement::LoadComponents(std::ifstream& in) { mData->LoadComponents(in); }
+}

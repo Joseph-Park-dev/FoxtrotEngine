@@ -10,6 +10,7 @@
 /// </summary>
 
 #pragma once
+#include "Plugin/CoreExports.h"
 #include "Entity/Entity.h"
 
 #include "Utility/SingletonMacro.h"
@@ -25,7 +26,7 @@ namespace Core
 		void*	   eventData;
 	};
 
-	class EventManager
+	class CORE_API EventManager
 	{
 		SINGLETON_PROTECTED(EventManager)
 

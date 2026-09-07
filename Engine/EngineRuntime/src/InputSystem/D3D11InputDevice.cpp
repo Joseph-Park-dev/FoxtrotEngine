@@ -1,11 +1,13 @@
 #include "InputSystem/D3D11InputDevice.h"
 
 #include <Windows.h>
+#include <windowsx.h>
 
 #include "FTDS/Dynamic/DynamicArray.h"
 #include "FTMath.h"
 #include "Debugging/DebugMemAlloc.h"
-#include "Renderer/D3D11Window.h"
+#include "Renderer/IWindow.h"
+#include "Foxtrot/Runtime/PlatformApi.h"
 
 namespace D3D11
 {
@@ -16,7 +18,7 @@ namespace D3D11
 		for (size_t i = 0; i < (size_t)KEYBOARD::LAST_FLAG; ++i)
 		{
 			ButtonInput& btnInput = GetButtonInput(mKeyboardButtons, i);
-			if (GetAsyncKeyState(mKeyboardCode[i]))
+			if (GetAsyncKeyState(mKeyboardCode[i]) & 0x8000)
 			{
 				if (btnInput.IsPushedPrevFrame)
 				{
@@ -45,12 +47,9 @@ namespace D3D11
 
 	void D3D11InputDevice::DetectMouseInput(MSG msg)
 	{
-		if (msg.lParam)
-		{
-			unsigned int mouseX = static_cast<unsigned int>(LOWORD(msg.lParam));
-			unsigned int mouseY = static_cast<unsigned int>(HIWORD(msg.lParam));
-			SetMousePosition(mouseX, mouseY);
-		}
+        // WM_MOUSEMOVE is client-relative and signed; (0,0) is a valid update.
+        if (msg.message == WM_MOUSEMOVE)
+            SetMousePosition(GET_X_LPARAM(msg.lParam), GET_Y_LPARAM(msg.lParam));
 
 		if (msg.message == WM_MOUSEWHEEL)
 			SetMouseWheelDelta(GET_WHEEL_DELTA_WPARAM(msg.wParam));
@@ -60,7 +59,7 @@ namespace D3D11
 		for (size_t i = 0; i < (size_t)MOUSE::LAST_FLAG; ++i)
 		{
 			ButtonInput& mouse = GetButtonInput(mMouseButtons, i);
-			if (GetAsyncKeyState(mMouseCode[i]))
+			if (GetAsyncKeyState(mMouseCode[i]) & 0x8000)
 			{
 				if (mouse.IsPushedPrevFrame)
 				{
@@ -117,13 +116,13 @@ namespace D3D11
 	bool D3D11InputDevice::MOUSE_AWAY(MOUSE mouse) { return GetButtonState(mMouseButtons, mouse) == ButtonState::AWAY; }
 	bool D3D11InputDevice::MOUSE_NONE(MOUSE mouse) { return GetButtonState(mMouseButtons, mouse) == ButtonState::NONE; }
 
-	unsigned int D3D11InputDevice::MOUSE_X() { return mMousePosX; }
-	unsigned int D3D11InputDevice::MOUSE_Y() { return mMousePosY; }
+	int D3D11InputDevice::MOUSE_X() { return mMousePosX; }
+	int D3D11InputDevice::MOUSE_Y() { return mMousePosY; }
 
-	void D3D11InputDevice::LockCursorInSceneViewport(D3D11Window* window, Math::FTVector2 mousePos)
+	void D3D11InputDevice::LockCursorInSceneViewport(Graphics::IWindow* window, Math::FTVector2 mousePos)
 	{
 		RECT rect;
-		GetClientRect(window->GetHandle(), &rect);
+		GetClientRect(static_cast<HWND>(window->NativeHandle()), &rect);
 
 		POINT ul;
 		ul.x = rect.left;
@@ -133,8 +132,8 @@ namespace D3D11
 		lr.x = rect.right;
 		lr.y = rect.bottom;
 
-		MapWindowPoints(window->GetHandle(), nullptr, &ul, 1);
-		MapWindowPoints(window->GetHandle(), nullptr, &lr, 1);
+		MapWindowPoints(static_cast<HWND>(window->NativeHandle()), nullptr, &ul, 1);
+		MapWindowPoints(static_cast<HWND>(window->NativeHandle()), nullptr, &lr, 1);
 
 		rect.left = ul.x;
 		rect.top  = ul.y;
@@ -149,12 +148,12 @@ namespace D3D11
 		ClipCursor(nullptr);
 	}
 
-	const unsigned int D3D11InputDevice::GetMousePosX() const
+	int D3D11InputDevice::GetMousePosX() const
 	{
 		return mMousePosX;
 	}
 
-	const unsigned int D3D11InputDevice::GetMousePosY() const
+	int D3D11InputDevice::GetMousePosY() const
 	{
 		return mMousePosY;
 	}
@@ -166,11 +165,11 @@ namespace D3D11
 
 	void D3D11InputDevice::SetMousePosition(Math::FTVector2 pos)
 	{
-		mMousePosX = static_cast<unsigned int>(pos.x);
-		mMousePosY = static_cast<unsigned int>(pos.y);
+		mMousePosX = static_cast<int>(pos.x);
+		mMousePosY = static_cast<int>(pos.y);
 	}
 
-	void D3D11InputDevice::SetMousePosition(unsigned int posX, unsigned int posY)
+	void D3D11InputDevice::SetMousePosition(int posX, int posY)
 	{
 		mMousePosX = posX;
 		mMousePosY = posY;
@@ -183,17 +182,13 @@ namespace D3D11
 
 	void D3D11InputDevice::Update(Core::IWindow* window)
 	{
-		MSG					msg = {};
-		D3D11::D3D11Window* win = reinterpret_cast<D3D11::D3D11Window*>(window);
-		if (PeekMessage(&msg, win->GetHandle(), 0, 0, PM_REMOVE))
-		{
-			// EditorCamera2D::GetInstance()->ProcessInput(msg);
-		}
-		DetectMouseInput(msg);
-		DetectKeyboardInput();
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-	}
+        POINT pos{};
+        if (GetCursorPos(&pos) && ScreenToClient(static_cast<HWND>(window->NativeHandle()), &pos))
+            SetMousePosition(pos.x, pos.y);
+        DetectMouseInput(MSG{});
+        SetMouseWheelDelta(FtMouseWheelDelta());
+        DetectKeyboardInput();
+    }
 
 	void D3D11InputDevice::Reset()
 	{

@@ -2,6 +2,7 @@
 #include "InputSystem/IInputDevice.h"
 
 #include <Windows.h>
+#include "Plugin/CoreExports.h"
 
 namespace D3D11
 {
@@ -18,7 +19,7 @@ namespace D3D11
 
 	class D3D11Window;
 
-	class D3D11InputDevice :
+	class CORE_API D3D11InputDevice :
 		public Core::IInputDevice
 	{
 
@@ -38,19 +39,19 @@ namespace D3D11
 		bool MOUSE_AWAY(Core::MOUSE mouse) override;
 		bool MOUSE_NONE(Core::MOUSE mouse) override;
 
-		unsigned int MOUSE_X() override;
-		unsigned int MOUSE_Y() override;
+		int MOUSE_X() override;
+		int MOUSE_Y() override;
 
 	public:
-		void LockCursorInSceneViewport(D3D11Window* window, Math::FTVector2 mousePos);
+		void LockCursorInSceneViewport(Graphics::IWindow* window, Math::FTVector2 mousePos);
 		void UnlockCursorOutOfSceneViewport();
 
-		virtual const unsigned int GetMousePosX() const override;
-		virtual const unsigned int GetMousePosY() const override;
+		virtual int GetMousePosX() const override;
+		virtual int GetMousePosY() const override;
 		virtual const float		   GetMouseWheelDelta() const override;
 
 		void SetMousePosition(Math::FTVector2 pos);
-		void SetMousePosition(unsigned int posX, unsigned int posY);
+		void SetMousePosition(int posX, int posY);
 		void SetMouseWheelDelta(float delta);
 
 	public:
@@ -74,7 +75,7 @@ namespace D3D11
 
 	private:
 		// Mouse related data.
-		unsigned int mMousePosX, mMousePosY;
+		int mMousePosX, mMousePosY;
 		float		 mMouseWheelDelta;
 		bool		 mIsDragging;
 

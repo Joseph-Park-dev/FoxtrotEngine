@@ -5,9 +5,11 @@
 namespace GenericData
 {
 	FTText::FTText(Common::ResourceData* metaData)
-		: mMetaData(metaData)
+		: Common::FTResource()
 		, mData(DBG_NEW Common::FTDS::DynamicArray<Common::FTDS::String*>)
 	{
+		SetFileName(*metaData->FileName);
+		SetRelativePath(*metaData->Path);
 		char*		  buf = nullptr;
 		std::ifstream ifs(mMetaData->Path->C_Str());
 		size_t		  lineCount = GetLineCount(ifs);

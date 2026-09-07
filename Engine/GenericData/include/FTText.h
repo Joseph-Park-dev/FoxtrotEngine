@@ -7,7 +7,7 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include "IResource.h"
+#include "ResourceSystem/FTResource.h"
 
 #include "FTDS/Dynamic/DynamicArray.h"
 #include "FTDS/Static/FTString.h"
@@ -22,7 +22,7 @@ namespace GenericData
 	/// This can also be used in handling arbitrary files to store & pass
 	/// file names and relative path.
 	class FTText :
-		public Common::IResource
+		public Common::FTResource
 	{
 		// public:
 		//	/// @see FTResource::SaveProperties()
@@ -45,7 +45,7 @@ namespace GenericData
 		~FTText();
 
 	private:
-		Common::ResourceData* mMetaData;
+
 
 		/// @brief String text data, Loaded line by line.
 		/// The array index equals to line number.

@@ -3,7 +3,7 @@
 #include "FTDS/Static/HashMap.h"
 #include "Plugin/IPlugin.h"
 
-#include <../Core/include/Plugin/PluginKey.h>
+#include "Plugin/PluginKey.h"
 
 
 namespace Main

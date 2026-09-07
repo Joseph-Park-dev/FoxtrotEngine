@@ -40,7 +40,7 @@ namespace D3D11
 		delete[] inputDesc;
 	}
 
-	FTVertexShader::FTVertexShader(Common::FTResourceDef& resDef, D3D11Renderer* renderer)
+	FTVertexShader::FTVertexShader(Common::FTResourceDef& resDef, void* renderer)
 		: D3D11::FTShader(resDef)
 		, mShader(nullptr)
 		, mInputLayout(nullptr)

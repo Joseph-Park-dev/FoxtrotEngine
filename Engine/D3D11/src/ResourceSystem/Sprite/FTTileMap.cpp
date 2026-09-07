@@ -25,7 +25,7 @@
 #include "ResourceSystem/FTResource.h"
 
 #include "FileSystem/DLLPath.h"
-#include <../../Core/include/Manager/ResourceManager.h>
+#include "Manager/ResourceManager.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
@@ -65,15 +65,15 @@ namespace D3D11
 			for (size_t c = 0; c < column; ++c)
 			{
 				size_t idx = column * r + c;
-				if (mCSV->Data().at(idx))
-					InitializeTile(mTileMap[idx], c, r, mCSV->Data().at(idx));
+				if (mCSV->Data().At(idx))
+					InitializeTile(mTileMap[idx], c, r, mCSV->Data().At(idx));
 			}
 		}
 #ifdef FOXTROT_EDITOR
 
 		HMODULE coreMod = GetModuleHandleA(Common::DLLPath::CORE);
 		assert(coreMod != NULL);
-		FARPROC proc = GetProcAddress(coreMod, Core::ProcName::GetCSVs);
+		FARPROC proc = GetProcAddress(coreMod, "GetCSVs");
 		mGetCSVsFunc = reinterpret_cast<GET_CSVS_FUNC>(proc);
 #endif // FOXTROT_EDITOR
 	}
@@ -233,7 +233,7 @@ namespace D3D11
 	{
 		HMODULE coreMod = GetModuleHandleA(Common::DLLPath::CORE);
 		assert(coreMod != NULL);
-		FARPROC proc		= GetProcAddress(coreMod, Core::ProcName::GetCSV);
+		FARPROC proc		= GetProcAddress(coreMod, "GetCSV");
 		using GET_CSV_FUNC	= FTCSV* (*)(const char*);
 		GET_CSV_FUNC getCSV = reinterpret_cast<GET_CSV_FUNC>(proc);
 

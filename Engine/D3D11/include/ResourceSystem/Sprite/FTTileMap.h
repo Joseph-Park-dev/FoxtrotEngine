@@ -11,6 +11,7 @@
 /// </summary>
 
 #pragma once
+#include "FTCSV.h"
 #include "ResourceSystem/D3D11Resource.h"
 
 #define WSTRING_OFFSET 32
@@ -23,7 +24,7 @@
 
 namespace Core
 {
-	class FTCSV;
+	using FTCSV = GenericData::FTCSV;
 }
 
 namespace D3D11

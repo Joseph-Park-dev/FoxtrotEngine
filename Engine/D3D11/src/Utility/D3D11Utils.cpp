@@ -15,7 +15,7 @@
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image.h>
-#include <stb_image_write.h>
+#include "../../vendor/stb_image_write.h"
 
 #include "FTDS/Dynamic/DynamicArray.h"
 #include "Debugging/DebugFuncs.h"
@@ -108,50 +108,7 @@ namespace D3D11
 			return hr;
 		}
 
-		DXGI_SWAP_CHAIN_DESC sd;
-		ZeroMemory(&sd, sizeof(sd));
-		sd.BufferDesc.Width					  = renderWidth;				// set the back buffer width
-		sd.BufferDesc.Height				  = renderHeight;				// set the back buffer height
-		sd.BufferDesc.Format				  = DXGI_FORMAT_R8G8B8A8_UNORM; // use 32-bit color
-		sd.BufferCount						  = 2;							// Double-buffering
-		sd.BufferDesc.RefreshRate.Numerator	  = 60;
-		sd.BufferDesc.RefreshRate.Denominator = 1;
-
-		sd.BufferUsage	= DXGI_USAGE_SHADER_INPUT | DXGI_USAGE_RENDER_TARGET_OUTPUT; // how swap chain is to be used
-		sd.OutputWindow = window;													 // the window to be used
-		sd.Windowed		= TRUE;														 // windowed/full-screen mode
-		sd.Flags		= DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;					 // allow full-screen switching
-		sd.SwapEffect	= DXGI_SWAP_EFFECT_DISCARD;
-		if (numQualityLevel > 0)
-		{
-			sd.SampleDesc.Count	  = 4; // how many multi-samples
-			sd.SampleDesc.Quality = numQualityLevel - 1;
-		}
-		else
-		{
-			sd.SampleDesc.Count	  = 1; // how many multi-samples
-			sd.SampleDesc.Quality = 0;
-		}
-
-		hr = D3D11CreateDeviceAndSwapChain(
-			0, // Default adapter
-			driverType,
-			0, // No software device
-			createDeviceFlags,
-			featureLevels,
-			1,
-			D3D11_SDK_VERSION,
-			&sd,
-			swapChain.GetAddressOf(),
-			device.GetAddressOf(),
-			&featureLevel,
-			context.GetAddressOf());
-		if (FAILED(hr))
-		{
-			printf("D3D11CreateDeviceAndSwapChain() failed.");
-			return hr;
-		}
-		return hr;
+		return CreateSwapChain(window, device, swapChain, renderWidth, renderHeight, numQualityLevel);
 	}
 
 	HRESULT D3D11Utils::CreateSwapChain(const HWND window, ComPtr<ID3D11Device>& device, ComPtr<IDXGISwapChain>& swapChain, int renderW, int renderH, UINT numQualityLevel)

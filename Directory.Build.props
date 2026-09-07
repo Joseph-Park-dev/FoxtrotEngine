@@ -1,43 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <FoxtrotOutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</FoxtrotOutDir>
-    <OutDir>$(FoxtrotOutDir)</OutDir>
-    <IntDir>$(FoxtrotOutDir)obj\$(MSBuildProjectName)\</IntDir>
-  </PropertyGroup>
-  <ItemDefinitionGroup>
-    <ClCompile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <RuntimeLibrary Condition="$(Configuration.Contains('Release'))">MultiThreadedDLL</RuntimeLibrary>
-      <RuntimeLibrary Condition="!$(Configuration.Contains('Release'))">MultiThreadedDebugDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>
-        $(SolutionDir)Engine\Common\include;
-        $(SolutionDir)Engine\Common\include\Component;
-        $(SolutionDir)Engine\Common\include\ResourceSystem;
-        $(SolutionDir)Engine\Common\include\Debugging;
-        $(SolutionDir)Engine\Math\include;
-        $(SolutionDir)Engine\Graphics\include;
-        $(SolutionDir)Engine\Graphics\include\Component;
-        $(SolutionDir)Engine\Graphics\include\ResourceSystem;
-        $(SolutionDir)Engine\Graphics\include\ResourceSystem\Mesh;
-        $(SolutionDir)Engine\InputSystem\include;
-        $(SolutionDir)Engine\Core\include;
-        $(SolutionDir)Engine\GenericData\include;
-        $(SolutionDir)Engine\D3D11\include;
-        $(SolutionDir)third_party;
-        $(SolutionDir)third_party\imgui;
-        $(SolutionDir)third_party\json\include;
-        $(SolutionDir)third_party\ImGuiFileDialog;
-        $(SolutionDir)third_party\spine-runtimes\spine-cpp\spine-cpp\include;
-        $(SolutionDir)third_party\magic_enum\include;
-        %(AdditionalIncludeDirectories)
-      </AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>MATH_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="$(Configuration.Contains('Editor'))">FOXTROT_EDITOR;PLATFORM_D3D11;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ForcedIncludeFiles Condition="'$(MSBuildProjectName)' != 'Math' AND '$(MSBuildProjectName)' != 'GenericData'">Core/InterfaceAliases.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-    </ClCompile>
-    <Link>
-      <AdditionalLibraryDirectories>$(FoxtrotOutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-    </Link>
-  </ItemDefinitionGroup>
+<PropertyGroup><OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir><IntDir>$(OutDir)obj\$(MSBuildProjectName)\</IntDir><VcpkgEnabled>false</VcpkgEnabled></PropertyGroup>
+<ItemDefinitionGroup><ClCompile><LanguageStandard>stdcpp17</LanguageStandard><RuntimeLibrary Condition="'$(Configuration)'=='Release'">MultiThreadedDLL</RuntimeLibrary><RuntimeLibrary Condition="'$(Configuration)'!='Release'">MultiThreadedDebugDLL</RuntimeLibrary><PreprocessorDefinitions Condition="'$(Configuration)'!='Release'">_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions><PreprocessorDefinitions Condition="'$(Configuration)'=='Release'">NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions><PreprocessorDefinitions Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'">FOXTROT_EDITOR;PLATFORM_D3D11;%(PreprocessorDefinitions)</PreprocessorDefinitions><AdditionalIncludeDirectories>$(SolutionDir)Engine\Core\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories><WarningLevel>Level3</WarningLevel><ExceptionHandling>Sync</ExceptionHandling></ClCompile><Link><AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories></Link></ItemDefinitionGroup>
+<ItemDefinitionGroup Condition="'$(MSBuildProjectName)'=='EngineRuntime' Or '$(MSBuildProjectName)'=='D3D11' Or '$(MSBuildProjectName)'=='Editor' Or '$(MSBuildProjectName)'=='GenericData'"><ClCompile><AdditionalIncludeDirectories>$(SolutionDir)third_party;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\json\include;$(SolutionDir)third_party\ImGuiFileDialog;$(SolutionDir)third_party\ImGuiFileDialog\stb;$(SolutionDir)third_party\spine-runtimes\spine-cpp\spine-cpp\include;$(SolutionDir)third_party\magic_enum\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories><ForcedIncludeFiles Condition="'$(MSBuildProjectName)'!='GenericData'">Core/InterfaceAliases.h</ForcedIncludeFiles></ClCompile></ItemDefinitionGroup>
 </Project>

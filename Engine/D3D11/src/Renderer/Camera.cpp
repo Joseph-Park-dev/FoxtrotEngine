@@ -9,7 +9,7 @@
 #include "Renderer/FTRectArea.h"
 
 #include "Plugin/GetFunc.h"
-#include <../Core/include/Plugin/PluginKey.h>
+#include "Plugin/PluginKey.h"
 
 namespace D3D11
 {
@@ -99,7 +99,7 @@ namespace D3D11
 		return mData->ZoomFactor;
 	}
 
-	const Math::FTVector2&& Camera::GetResolution() const
+	Math::FTVector2 Camera::GetResolution() const
 	{
 		return mData->GetResolution();
 	}
@@ -169,5 +169,6 @@ namespace D3D11
 
 	Camera::~Camera()
 	{
+		delete mData;
 	}
 } // namespace D3D11

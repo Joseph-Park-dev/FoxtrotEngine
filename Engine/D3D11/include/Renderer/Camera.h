@@ -11,6 +11,7 @@
 /// </summary>
 
 #pragma once
+#include "Plugin/D3D11Exports.h"
 #include "Renderer/ICamera.h"
 
 #include <iosfwd>
@@ -31,7 +32,7 @@ namespace D3D11
 namespace D3D11
 {
 	class D3D11Window;
-	class Camera :
+	class D3D11_API Camera :
 		public Core::ICamera
 	{
 	public:
@@ -73,7 +74,7 @@ namespace D3D11
 
 		const Math::FTVector3&	GetOffSet() const override;
 		const float				GetZoomFactor() const override;
-		const Math::FTVector2&& GetResolution() const override;
+		Math::FTVector2 GetResolution() const override;
 
 		void SetPosition(const Math::FTVector3& pos) override;
 		void SetViewType(Core::Viewtype viewType) override;

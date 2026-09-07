@@ -82,7 +82,7 @@ namespace Graphics
 
 		virtual const Math::FTVector3&	GetOffSet() const	  = 0;
 		virtual const float				GetZoomFactor() const = 0;
-		virtual const Math::FTVector2&& GetResolution() const = 0;
+		virtual Math::FTVector2 GetResolution() const = 0;
 
 		/// <summary>
 		/// Sets the camera position in world space.

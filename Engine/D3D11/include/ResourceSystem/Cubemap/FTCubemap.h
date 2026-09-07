@@ -9,7 +9,7 @@ namespace D3D11
 		public FTMeshGroup
 	{
 	public:
-		virtual void CalcVCData(Camera* camInst);
+
 
 		// public:
 		//	virtual void Initialize(

@@ -1,3 +1,5 @@
+#include "ResourceSystem/FTTexture.h"
+#include "ResourceSystem/Sprite/FTSprite.h"
 #include "ResourceSystem/Cubemap/FTCubemap.h"
 
 #include "ResourceSystem/Mesh/GeometryGenerator.h"
@@ -15,18 +17,6 @@
 
 namespace D3D11
 {
-	void FTCubemap::CalcVCData(Camera* camInst)
-	{
-		// Model Transformation
-		Matrix modelMat = Matrix();
-
-		// View Transformation
-		Matrix&& viewMat  = camInst->GetViewRow();
-		Vector3	 eyeWorld = Vector3::Transform(Vector3(0.0f), viewMat.Invert());
-
-		// Project Transformation
-		Matrix&& projMat = std::move(camInst->GetProjRow());
-	}
 
 	// void FTCubemap::Initialize(std::vector<FTMeshData>&& meshes, ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 	//{
@@ -82,19 +72,21 @@ namespace D3D11
 	//}
 	//}
 
-	ComPtr<ID3D11ShaderResourceView>& FTCubemap::GetDiffuseResView() { return mDiffuseResView; }
-	ComPtr<ID3D11ShaderResourceView>& FTCubemap::GetSpecularResView() { return mSpecularResView; }
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& FTCubemap::GetDiffuseResView() { return mDiffuseResView; }
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& FTCubemap::GetSpecularResView() { return mSpecularResView; }
 
 	void FTCubemap::SetDiffuseTexture(Common::FTDS::String& key)
 	{
-		FTTexture* tex	= ResourceManager::GetInstance()->GetLoadedTexture(key);
-		mDiffuseResView = tex->GetSRV();
+		auto* sprite = ResourceManager::GetInstance()->GetSprite(key);
+		FTTexture* tex = sprite ? sprite->GetTexture() : nullptr;
+		mDiffuseResView = tex ? tex->GetSRV() : nullptr;
 	}
 
 	void FTCubemap::SetSpecularTexture(Common::FTDS::String& key)
 	{
-		FTTexture* tex	 = ResourceManager::GetInstance()->GetLoadedTexture(key);
-		mSpecularResView = tex->GetSRV();
+		auto* sprite = ResourceManager::GetInstance()->GetSprite(key);
+		FTTexture* tex = sprite ? sprite->GetTexture() : nullptr;
+		mSpecularResView = tex ? tex->GetSRV() : nullptr;
 	}
 
 	// void FTCubemap::InitializeMeshes(ComPtr<ID3D11Device>& device, std::vector<FTMeshData>& meshes)

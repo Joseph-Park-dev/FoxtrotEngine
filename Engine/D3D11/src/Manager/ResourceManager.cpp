@@ -1,3 +1,4 @@
+#include "ResourceSystem/Material/StandardMaterial.h"
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
@@ -43,9 +44,11 @@ namespace D3D11
 
 	void ResourceManager::LoadDefaultResources(D3D11::D3D11Renderer* renderer)
 	{
-		Common::FTDS::HashMap<FTVertexShader*>	 VS;
-		Common::FTDS::HashMap<FTGeometryShader*> GS;
-		Common::FTDS::HashMap<FTPixelShader*>	 PS;
+        if (!mPSOs->GetResMap()->IsEmpty()) return;
+        // The packs own default shaders; PSOs only borrow them.
+        auto& VS = *mVertexShaders->GetResMap();
+        auto& GS = *mGeometryShaders->GetResMap();
+        auto& PS = *mPixelShaders->GetResMap();
 
 		FTResourceDef resDef{
 			Common::ChunkKey::NullVal::NULL_OBJECT, Common::ChunkKey::NullVal::NULL_OBJECT
@@ -302,10 +305,10 @@ namespace D3D11
 
 	void ResourceManager::LoadResourcesFromChunk(std::ifstream& ifs, void* renderer)
 	{
-		mSpriteAnimations->LoadResourcesFromChunk(ifs, renderer);
-		mSpineAnimations->LoadResourcesFromChunk(ifs, renderer);
-		mFonts->LoadResourcesFromChunk(ifs, renderer);
-		mMaterials->LoadResourcesFromChunk(ifs, renderer);
+		mSpriteAnimations->LoadResourcesFromChunk(ifs, renderer, [](Common::FTResourceDef& def, void* context) -> FTSpriteAnimation* { return new FTSpriteAnimation(def, static_cast<D3D11Renderer*>(context)); });
+		mSpineAnimations->LoadResourcesFromChunk(ifs, renderer, [](Common::FTResourceDef& def, void* context) -> FTSpineAnimation* { return new FTSpineAnimation(def, static_cast<D3D11Renderer*>(context)); });
+		mFonts->LoadResourcesFromChunk(ifs, renderer, [](Common::FTResourceDef& def, void* context) -> FTFont* { return new FTFont(def, static_cast<D3D11Renderer*>(context)); });
+		mMaterials->LoadResourcesFromChunk(ifs, renderer, [](Common::FTResourceDef& def, void* context) -> FTMaterial* { return new StandardMaterial(def, static_cast<D3D11Renderer*>(context)); });
 		mMeshGroups->LoadResourcesFromChunk(ifs, renderer);
 		mVertexShaders->LoadResourcesFromChunk(ifs, renderer);
 		mGeometryShaders->LoadResourcesFromChunk(ifs, renderer);
@@ -481,10 +484,32 @@ namespace D3D11
 	}
 
 	ResourceManager::ResourceManager()
+	: mSpriteAnimations(new Common::ResourcePack<FTSpriteAnimation>(16))
+	, mSpineAnimations(new Common::ResourcePack<FTSpineAnimation>(16))
+	, mFonts(new Common::ResourcePack<FTFont>(16))
+	, mMaterials(new Common::ResourcePack<FTMaterial>(16))
+	, mMeshGroups(new Common::ResourcePack<FTMeshGroup>(16))
+	, mVertexShaders(new Common::ResourcePack<FTVertexShader>(16))
+	, mGeometryShaders(new Common::ResourcePack<FTGeometryShader>(16))
+	, mPixelShaders(new Common::ResourcePack<FTPixelShader>(16))
+	, mSprites(new Common::ResourcePack<FTSprite>(16))
+	, mTileMaps(new Common::ResourcePack<FTTileMap>(16))
+	, mPSOs(new Common::ResourcePack<D3D11PSO>(16))
 	{
 	}
 
 	ResourceManager::~ResourceManager()
 	{
+		delete mSpriteAnimations;
+		delete mSpineAnimations;
+		delete mTileMaps;
+		delete mFonts;
+		delete mMeshGroups;
+		delete mMaterials;
+		delete mPSOs;
+		delete mVertexShaders;
+		delete mGeometryShaders;
+		delete mPixelShaders;
+		delete mSprites;
 	}
 } // namespace D3D11

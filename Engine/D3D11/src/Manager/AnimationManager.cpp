@@ -16,7 +16,7 @@
 #include "Renderer/D3D11Renderer.h"
 
 #include "FTDS/Static/FTString.h"
-#include <../../Core/include/Manager/ResourceManager.h>
+#include "Manager/ResourceManager.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorUtils.h"
@@ -24,7 +24,7 @@
 	#include "FileSystem/BufferSizes.h"
 	#include "FileSystem/DLLPath.h"
 // NULLPATH WARNING: This relative path include is problematic.
-// It references Core::ProcName::GetJSONs/GetTexts which are defined in Core/include/Manager/ResourceManager.h
+// It references "GetJSONs"/GetTexts which are defined in Core/include/Manager/ResourceManager.h
 // Consider moving Core::ProcName to a separate header to avoid ResourceManager.h name collision.
 #endif // FOXTROT_EDITOR
 
@@ -43,10 +43,10 @@ namespace D3D11
 		mRenderer = renderer;
 #ifdef FOXTROT_EDITOR
 		HMODULE coreMod = GetModuleHandleA(Common::DLLPath::CORE_EDITOR);
-		FARPROC proc	= GetProcAddress(coreMod, Core::ProcName::GetJSONs);
+		FARPROC proc	= GetProcAddress(coreMod, "GetJSONs");
 		GetJSONsFunc	= reinterpret_cast<GET_JSON_FUNC>(proc);
 
-		proc		 = GetProcAddress(coreMod, Core::ProcName::GetTexts);
+		proc		 = GetProcAddress(coreMod, "GetTexts");
 		GetTextsFunc = reinterpret_cast<GET_TEXT_FUNC>(proc);
 
 		proc			 = GetProcAddress(coreMod, Core::ProcName::GetAssetPath);
@@ -154,7 +154,7 @@ namespace D3D11
 					ImGui::Text("Texture not selected");
 
 				// Update JSON (spritet sheet data) of the sprite animation.
-				static FTJSON* JSON;
+				static GenericData::FTJSON* JSON;
 				Editor::DisplayResSelection("Select JSON", GetJSONsFunc(), JSON);
 				if (JSON)
 				{
@@ -206,10 +206,10 @@ namespace D3D11
 				static Common::FTDS::String name = "Empty Value";
 				Editor::UPDATE_STR("Name", name);
 
-				static FTJSON* json;
+				static GenericData::FTJSON* json;
 				Editor::DisplayResSelection("Select Skeleton Data", GetJSONsFunc(), json);
 
-				static FTText* atlasTxt;
+				static GenericData::FTText* atlasTxt;
 				Editor::DisplayResSelection("Select Spine Atlas", GetTextsFunc(), atlasTxt);
 
 				if (ImGui::Button("Create"))

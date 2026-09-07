@@ -1,4 +1,5 @@
 #pragma once
+#include "Plugin/D3D11Exports.h"
 #include "Entity/Entity.h"
 
 #include "Utility/SingletonMacro.h"
@@ -32,7 +33,7 @@ namespace D3D11
 	class FTSpineAnimation;
 	struct FTSpriteAnimationDef;
 
-	class AnimationManager
+	class D3D11_API AnimationManager
 	{
 		SINGLETON(AnimationManager)
 

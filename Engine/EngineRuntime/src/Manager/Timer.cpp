@@ -23,8 +23,6 @@ namespace Core
 	{
 		LARGE_INTEGER currentTicks;
 		QueryPerformanceCounter((LARGE_INTEGER*)&currentTicks);
-		while (!FT_TICKS_PASSED(currentTicks.QuadPart, mLastTicks.QuadPart + 16))
-			;
 		mDeltaTime = (float)(currentTicks.QuadPart - mLastTicks.QuadPart) * mTimeScale;
 		if (mDeltaTime > 0.05f)
 		{

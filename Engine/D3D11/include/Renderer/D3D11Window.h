@@ -1,4 +1,5 @@
 #pragma once
+#include "Plugin/D3D11Exports.h"
 #include "Renderer/IWindow.h"
 
 #include <Windows.h>
@@ -30,7 +31,7 @@ namespace D3D11
 		bool*					 IsResizingWin;
 	};
 
-	class D3D11Window :
+	class D3D11_API D3D11Window :
 		public Graphics::IWindow
 	{
 	public:
@@ -46,6 +47,7 @@ namespace D3D11
 
 	public:
 		void Reset();
+        void* NativeHandle() const override { return mWinHandle; }
 
 	public:
 		// Accessors return references to internal COM pointers / window handle.
@@ -123,6 +125,6 @@ namespace D3D11
 
 		void ClearWindow(D3D11Renderer* renderer);
 
-		static LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+		static LRESULT CALLBACK WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	};
 } // namespace D3D11

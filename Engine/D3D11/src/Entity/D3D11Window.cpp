@@ -11,7 +11,7 @@
 #include "Debugging/DebugFuncs.h"
 #include "Debugging/D3D11DebugFuncs.h"
 #include "Plugin/IPlugin.h"
-#include "Core/FTCore.h"
+#include "Foxtrot/Runtime/PlatformApi.h"
 
 namespace D3D11
 {
@@ -25,60 +25,11 @@ namespace D3D11
 
 	bool D3D11Window::Initialize(int windowMode, WNDPROC proc, WNDPROC_Params* params)
 	{
-		assert(!mTitle->IsEmpty());
-
-		const wchar_t* title = mTitle->WC_Str();
-
-		WNDCLASSEX wc = {
-			sizeof(WNDCLASSEX),
-			CS_CLASSDC,
-			proc,
-			0L,
-			0L,
-			GetModuleHandle(NULL),
-			NULL,
-			NULL,
-			NULL,
-			NULL,
-			title, // lpszClassName, L-string
-			NULL
-		};
-		if (!RegisterClassEx(&wc))
-		{
-			LogString("RegisterClassEx() failed.");
-			return false;
-		}
-		RECT wr = { 0, 0, static_cast<LONG>(GetWidth()), static_cast<LONG>(GetHeight()) };
-
-		// Calculate required outer window rectangle for given client area.
-		AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, false);
-
-		mWinHandle = CreateWindow(
-			wc.lpszClassName,
-			title,
-			WS_OVERLAPPEDWINDOW | WS_SYSMENU,
-			100,				// x-coordinate, top left
-			100,				// y-coordinate, top left
-			wr.right - wr.left, // horizontal resolution
-			wr.bottom - wr.top, // vertical resolution
-			NULL,
-			NULL,
-			wc.hInstance,
-			params);
-
-		if (!mWinHandle)
-		{
-			LogString("CreateWindow() failed.");
-			return false;
-		}
-
-		ShowWindow(mWinHandle, windowMode);
-		SetForegroundWindow(mWinHandle);
-		UpdateWindow(mWinHandle);
-
-		delete[] title;
-		return true;
-	}
+        if (mWinHandle) return true;
+        mWinHandle = FtCreateNativeWindow(mTitle->C_Str(), mWidth, mHeight,
+            proc == D3D11Window::WinProc ? nullptr : proc, params);
+        return mWinHandle != nullptr;
+    }
 
 	bool D3D11Window::InitializeWindowRenderer(Graphics::IRenderer* renderer)
 	{
@@ -109,6 +60,7 @@ namespace D3D11
 	void D3D11Window::ResizeWindow(Graphics::IRenderer* renderer)
 	{
 		D3D11Renderer* rend = reinterpret_cast<D3D11Renderer*>(renderer);
+        rend->GetContext()->OMSetRenderTargets(0, nullptr, nullptr);
 		Reset();
 		if (mSwapChain)
 		{
@@ -123,20 +75,23 @@ namespace D3D11
 	void D3D11Window::BeginRender(Graphics::IRenderer* renderer)
 	{
 		D3D11Renderer* rend = reinterpret_cast<D3D11Renderer*>(renderer);
+        // Keep presentation pixels aligned with Win32/ImGui client coordinates.
+        // Scene render areas are independent offscreen targets.
+        RECT client{};
+        if (GetClientRect(mWinHandle, &client) && client.right > 0 && client.bottom > 0) {
+            DXGI_SWAP_CHAIN_DESC desc{};
+            DX::ThrowIfFailed(mSwapChain->GetDesc(&desc));
+            SetWidth(static_cast<unsigned int>(client.right));
+            SetHeight(static_cast<unsigned int>(client.bottom));
+            if (desc.BufferDesc.Width != mWidth || desc.BufferDesc.Height != mHeight)
+                ResizeWindow(renderer);
+        }
 		ClearWindow(rend);
 		ID3D11RenderTargetView* targetsPrev[] = { mRTV.Get() };
 		rend->GetContext()->OMSetRenderTargets(1, targetsPrev, mDSV.Get());
 		// renderer->GetContext()->OMSetDepthStencilState(renderer->GetDSS().Get(), 0);
 
-		MSG msg = {};
-		InvalidateRect(mWinHandle, NULL, true);
-		if (PeekMessage(&msg, mWinHandle, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-		UpdateWindow(mWinHandle);
-		rend->SetViewport(0.f, 0.f, GetRenderArea()->GetSize().x, GetRenderArea()->GetSize().y);
+		rend->SetViewport(0.f, 0.f, static_cast<float>(GetWidth()), static_cast<float>(GetHeight()));
 	}
 
 	void D3D11Window::EndRender(Graphics::IRenderer* renderer)
@@ -191,7 +146,8 @@ namespace D3D11
 	}
 
 	D3D11Window::D3D11Window(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea)
-		: mTitle(DBG_NEW Common::FTDS::String(title))
+		: mWinHandle(nullptr)
+        , mTitle(DBG_NEW Common::FTDS::String(title))
 		, mWidth(width)
 		, mHeight(height)
 		, mRenderArea(rndArea)
@@ -200,7 +156,8 @@ namespace D3D11
 	}
 
 	D3D11Window::D3D11Window(const char* title, unsigned int width, unsigned int height, FTRectArea* rndArea, WNDPROC proc, WNDPROC_Params* params)
-		: mTitle(DBG_NEW Common::FTDS::String(title))
+		: mWinHandle(nullptr)
+        , mTitle(DBG_NEW Common::FTDS::String(title))
 		, mWidth(width)
 		, mHeight(height)
 		, mRenderArea(rndArea)
@@ -210,7 +167,10 @@ namespace D3D11
 
 	D3D11Window::~D3D11Window()
 	{
-		delete mTitle;
+		Reset();
+        FtDestroyNativeWindow(mWinHandle);
+        mWinHandle = nullptr;
+        delete mTitle;
 		delete mRenderArea;
 	}
 
@@ -239,25 +199,9 @@ namespace D3D11
 			renderer->GetContext()->ClearDepthStencilView(mDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	}
 
-	LRESULT D3D11Window::WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+	LRESULT CALLBACK D3D11Window::WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
-		Core::FTCore* core = nullptr;
-		if (msg == WM_NCCREATE)
-		{
-			auto* cs = reinterpret_cast<CREATESTRUCT*>(lParam);
-			core	 = static_cast<Core::FTCore*>(cs->lpCreateParams);
-			SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(core));
-		}
-		else
-		{
-			// Retrieve the pointer on every message
-			core = reinterpret_cast<Core::FTCore*>(
-				GetWindowLongPtr(hwnd, GWLP_USERDATA));
-		}
-		if (msg == WM_DESTROY)
-		{
-			return 0;
-		}
+        if (msg == WM_CLOSE) { PostQuitMessage(0); return 0; }
 
 		return DefWindowProc(hwnd, msg, wParam, lParam);
 	}

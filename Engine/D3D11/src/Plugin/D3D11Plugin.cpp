@@ -1,4 +1,7 @@
-#pragma once
+#include "Manager/AnimationManager.h"
+#include "Manager/DebugShapes.h"
+#include <cstring>
+#include <stdexcept>
 #include "Plugin/IPlugin.h"
 #include "Factory/IGraphicsFactory.h"
 #include "Factory/IInputSysFactory.h"
@@ -37,6 +40,11 @@ class D3D11Plugin :
 {
 public:
 	virtual void RegisterComponent(Common::IComponent* comp) override;
+    void* QueryInterface(const char* name) noexcept override {
+        if (std::strcmp(name, "GraphicsFactory") == 0) return static_cast<Core::IGraphicsFactory*>(this);
+        if (std::strcmp(name, "InputFactory") == 0) return static_cast<Core::IInputSysFactory*>(this);
+        return nullptr;
+    }
 
 public:
 	virtual Graphics::IWindow* CreateAppWindow(
@@ -119,7 +127,7 @@ Graphics::IRenderer* D3D11Plugin::CreateRenderer(Graphics::IWindow* window)
 
 void D3D11Plugin::RegisterComponent(Common::IComponent* comp)
 {
-	mRegisteredComps->PushBack(reinterpret_cast<D3D11::D3D11Component*>(comp));
+	if (auto* backend = dynamic_cast<D3D11::D3D11Component*>(comp)) mRegisteredComps->PushBack(backend);
 }
 
 Graphics::IWindow* D3D11Plugin::CreateAppWindow(const char* title, unsigned int width, unsigned int height, D3D11::FTRectArea* rndArea)
@@ -151,6 +159,7 @@ void D3D11Plugin::Initialize()
 				mWindows->At(0)->Initialize(SW_SHOW);
 		}
 		mCamera = static_cast<D3D11::Camera*>(CreateCamera());
+		mCamera->Initialize(mWindows->At(0), 64, 1.8f);
 		CreateInputDevice();
 	}
 #endif
@@ -177,10 +186,11 @@ void D3D11Plugin::ProcessInput()
 
 	for (auto input = mInputDevices->Begin(); input != mInputDevices->End(); ++input)
 	{
-		for (auto win = mWindows->Begin(); win != mWindows->End(); ++win)
-		{
-			(*input)->Update(*win);
-		}
+        // Poll once per device/frame, using the focused window's client space.
+        auto* target = mWindows->GetSize() ? mWindows->At(0) : nullptr;
+        for (auto win = mWindows->Begin(); win != mWindows->End(); ++win)
+            if ((*win)->GetHandle() == GetForegroundWindow()) target = *win;
+        if (target) (*input)->Update(target);
 	}
 }
 
@@ -206,6 +216,9 @@ void D3D11Plugin::LateUpdate(float deltaTime)
 
 void D3D11Plugin::Render()
 {
+#ifdef FOXTROT_EDITOR
+    return; // Editor owns presentation of its windows.
+#endif
 	for (auto iter = mWindows->Begin(); iter != mWindows->End(); ++iter)
 	{
 		// mGameRenderer->RenderClear(mWindow);
@@ -279,10 +292,17 @@ D3D11Plugin::D3D11Plugin(const char* name)
 
 D3D11Plugin::~D3D11Plugin()
 {
+	D3D11::ResourceManager::Destroy();
+	D3D11::AnimationManager::Destroy();
+	D3D11::DebugShapes::Destroy();
 	delete mRegisteredComps;
+	for (auto it = mInputDevices->Begin(); it != mInputDevices->End(); ++it) delete *it;
 	delete mInputDevices;
-	delete mRenderer;
+	delete mCamera;
+	if (mRenderer && mRenderer->GetContext()) mRenderer->GetContext()->ClearState();
+	for (auto it = mWindows->Begin(); it != mWindows->End(); ++it) delete *it;
 	delete mWindows;
+	delete mRenderer;
 }
 
 void D3D11Plugin::LoadManagerData(std::ifstream& ifs)
@@ -311,7 +331,7 @@ extern "C"
 		return DBG_NEW D3D11::D3D11Plugin(name);
 	}
 
-	D3D11_API IComponent* CreateComponent(IPlugin* plugin, IActor* actor, Common::FTDS::String& name)
+	D3D11_API Common::IComponent* CreateComponent(Common::IPlugin* plugin, Common::IActor* actor, Common::FTDS::String& name)
 	{
 		// comp->LoadProperties();
 		// NEED TO MAKE COMPONENT MANAGER.

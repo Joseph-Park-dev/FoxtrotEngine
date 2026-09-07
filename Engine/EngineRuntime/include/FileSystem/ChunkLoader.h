@@ -17,6 +17,7 @@
 /// </summary>
 
 #pragma once
+#include "Plugin/CoreExports.h"
 #include "FileSystem/IChunkLoader.h"
 
 #include "Utility/SingletonMacro.h"
@@ -24,7 +25,7 @@
 
 namespace Core
 {
-	class ChunkLoader :
+	class CORE_API ChunkLoader :
 		public IChunkLoader
 	{
 		SINGLETON(ChunkLoader)

@@ -86,7 +86,8 @@ namespace Graphics
 		virtual void SetHeight(unsigned int height) = 0;
 
 	public:
-		virtual ~IWindow() = default;
+		virtual void* NativeHandle() const = 0;
+        virtual ~IWindow() = default;
 	};
 
 	namespace ChunkKey

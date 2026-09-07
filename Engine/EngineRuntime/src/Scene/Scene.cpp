@@ -222,17 +222,15 @@ namespace Core
 	/**
 	 * @brief Moves all pending actors into the active list.
 	 *
-	 * Note: Current implementation clears `mPendingActors` inside the loop; the clear
-	 * empties the container immediately after first push. If multiple actors are pending,
-	 * consider deferring the clear until after the loop to add all items.
+	 * Clear the pending list only after transferring every actor.
 	 */
 	void Scene::AddPendingActors()
 	{
 		for (auto iter = mPendingActors->Begin(); iter != mPendingActors->End(); ++iter)
 		{
 			mActors->PushBack(*iter);
-			mPendingActors->Clear();
 		}
+		mPendingActors->Clear();
 	}
 
 	/**

@@ -11,6 +11,7 @@
 /// </summary>
 
 #pragma once
+#include "Plugin/CoreExports.h"
 #include "FTDS/Static/FTString.h"
 #include "FTDS/Dynamic/DynamicArray.h"
 #include "Actor/IActor.h"
@@ -20,7 +21,7 @@ namespace Core
 	class FTInputDevice;
 	class FoxtrotRenderer;
 
-	class Scene
+	class CORE_API Scene
 	{
 	public:
 		void AddActor(Common::IActor* actor);

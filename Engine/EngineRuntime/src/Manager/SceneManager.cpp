@@ -29,6 +29,7 @@ namespace Core
 
 	SceneManager::~SceneManager()
 	{
+		for (auto it = mChunkList->Begin(); it != mChunkList->End(); ++it) delete *it;
 		mChunkList->Clear();
 
 		delete mChunkList;
@@ -60,7 +61,7 @@ namespace Core
 	void SceneManager::Initialize(Scene* scene)
 	{
 		mCurrentScene = scene;
-		SwitchScene(0);
+		if (mChunkList && !mChunkList->IsEmpty()) SwitchScene(0);
 	}
 
 	void SceneManager::ProcessEvent()

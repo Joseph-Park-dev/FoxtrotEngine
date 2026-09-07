@@ -11,6 +11,7 @@
 /// </summary>
 
 #pragma once
+#include "Plugin/CoreExports.h"
 #include "Entity/Entity.h"
 
 #include <iosfwd>
@@ -39,7 +40,7 @@ namespace Core
 	#define FIND_ACTOR(id) SceneManager::GetInstance()->GetCurrentScene()->FindActor(id)
 #endif // FOXTROT_EDITOR
 
-	class SceneManager
+	class CORE_API SceneManager
 	{
 		SINGLETON_PROTECTED(SceneManager)
 

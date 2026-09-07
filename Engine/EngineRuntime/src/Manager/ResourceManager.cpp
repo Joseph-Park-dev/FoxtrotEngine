@@ -41,6 +41,13 @@ namespace Core
 	{
 	}
 
+    void ResourceManager::ReleaseWorldResources()
+    {
+        // Prefabs may retain component vtables from renderer or game DLLs.
+        delete mPremades;
+        mPremades = nullptr;
+    }
+
 	ResourceManager::~ResourceManager()
 	{
 		delete mPremades;

@@ -1,4 +1,5 @@
 #pragma once
+#include "FTCSV.h"
 #include "Manager/ResourceManagerBase.h"
 
 #include "Utility/SingletonMacro.h"
@@ -17,7 +18,7 @@ namespace Core
 	} // namespace ProcName
 
 	class FTPremade;
-	class FTCSV;
+	using FTCSV = GenericData::FTCSV;
 } // namespace Core
 
 namespace GenericData
@@ -35,6 +36,7 @@ namespace Core
 
 	public:
 		void LoadDefaultResources();
+        void ReleaseWorldResources();
 
 	public:
 		FTPremade*				 GetPremade(const char* key);

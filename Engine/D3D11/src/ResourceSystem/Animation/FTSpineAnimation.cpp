@@ -1,3 +1,4 @@
+#include "Renderer/D3D11Renderer.h"
 #include "ResourceSystem/Animation/FTSpineAnimation.h"
 
 #include <spine/spine.h>
@@ -49,7 +50,7 @@ namespace D3D11
 		if (!vs || !ps || !mat) // Vertex Shader is always required when drawing.
 			return;
 
-		ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
+		ComPtr<ID3D11DeviceContext>& context = static_cast<D3D11Renderer*>(renderer)->GetContext();
 		UpdateBuffers(context);
 
 		mMeshes->IterateArray([&](SpineMesh* mesh) {
@@ -164,7 +165,7 @@ namespace D3D11
 		if (!mJSONPath || !mAtlasPath)
 			return;
 
-		InitializeSpinAnim(renderer->GetDevice());
+		InitializeSpinAnim(static_cast<D3D11Renderer*>(renderer)->GetDevice());
 	}
 
 	void FTSpineAnimation::InitializeSpinAnim(ComPtr<ID3D11Device>& device)
@@ -498,14 +499,14 @@ namespace D3D11
 	{
 		Common::FTDS::String fileN;
 		Common::ExtractFileName(mJSONPath, fileN);
-		FTJSON* json = AnimationManager::GetInstance()->GetJSONsFuncGetter()()->GetResource(fileN);
+		GenericData::FTJSON* json = AnimationManager::GetInstance()->GetJSONsFuncGetter()()->GetResource(fileN);
 		if (json)
 			json->AddRefCount();
 
 		fileN.Clear();
 
 		Common::ExtractFileName(mAtlasPath, fileN);
-		FTText* atlas = AnimationManager::GetInstance()->GetTextsFuncGetter()()->GetResource(fileN);
+		GenericData::FTText* atlas = AnimationManager::GetInstance()->GetTextsFuncGetter()()->GetResource(fileN);
 		if (atlas)
 			atlas->AddRefCount();
 
@@ -516,14 +517,14 @@ namespace D3D11
 	{
 		Common::FTDS::String fileN;
 		Common::ExtractFileName(mJSONPath, fileN);
-		FTJSON* json = AnimationManager::GetInstance()->GetJSONsFuncGetter()()->GetResource(fileN);
+		GenericData::FTJSON* json = AnimationManager::GetInstance()->GetJSONsFuncGetter()()->GetResource(fileN);
 		if (json)
 			json->SubtractRefCount();
 
 		fileN.Clear();
 
 		Common::ExtractFileName(mAtlasPath, fileN);
-		FTText* atlas = AnimationManager::GetInstance()->GetTextsFuncGetter()()->GetResource(fileN);
+		GenericData::FTText* atlas = AnimationManager::GetInstance()->GetTextsFuncGetter()()->GetResource(fileN);
 		if (atlas)
 			atlas->SubtractRefCount();
 

@@ -27,11 +27,13 @@ namespace GenericData
 	const Common::FTDS::DynamicArray<int>& FTCSV::Data() const { return mData; }
 
 	FTCSV::FTCSV(Common::ResourceData* metaData)
-		: mMetaData(metaData)
+		: Common::FTResource()
 		, mData()
 		, mColumnCount(0)
 		, mRowCount(0)
 	{
+		SetFileName(*metaData->FileName);
+		SetRelativePath(*metaData->Path);
 		if (!mData.IsEmpty())
 			return;
 

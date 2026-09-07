@@ -7,7 +7,7 @@
 // ----------------------------------------------------------------
 
 #pragma once
-#include "IResource.h"
+#include "ResourceSystem/FTResource.h"
 
 #include "FTDS/Dynamic/DynamicArray.h"
 
@@ -15,7 +15,7 @@ namespace GenericData
 {
 	/// @brief A wrapper class to store CSV data.
 	class FTCSV :
-		public Common::IResource
+		public Common::FTResource
 	{
 		/////////////////
 		/// Chunk I/O ///
@@ -47,7 +47,7 @@ namespace GenericData
 		~FTCSV();
 
 	private:
-		Common::ResourceData* mMetaData;
+
 
 		/// @brief .csv integer data. Useful for making a tiled object.
 		Common::FTDS::DynamicArray<int> mData;

@@ -1,3 +1,4 @@
+#include "Renderer/D3D11Renderer.h"
 #include "ResourceSystem/Sprite/FTSprite.h"
 
 #include "Renderer/IRenderer.h"
@@ -56,19 +57,19 @@ namespace D3D11
 
 		GetVCData()->ModelMat = modelMat.Transposed();
 		D3D11Utils::UpdateBuffer(
-			renderer->GetContext(), *GetVCData(), GetVCBuf());
+			static_cast<D3D11Renderer*>(renderer)->GetContext(), *GetVCData(), GetVCBuf());
 
 		mGCMatData->ViewMat = viewMat.Transposed();
 		mGCMatData->ProjMat = projMat.Transposed();
-		D3D11Utils::UpdateBuffer(renderer->GetContext(), *mGCMatData, mGCMatBuf);
+		D3D11Utils::UpdateBuffer(static_cast<D3D11Renderer*>(renderer)->GetContext(), *mGCMatData, mGCMatBuf);
 
 		for (size_t i = 0; i < gcDataCount; ++i)
 			mGCSpriteData[i].Scale = FTVector2(GetSizeScale().x * scaleWithDir.x, GetSizeScale().y * scaleWithDir.y);
 
-		D3D11Utils::UpdateBuffer(renderer->GetContext(), mGCSpriteData[meshIndex], mGCSpriteBuf);
+		D3D11Utils::UpdateBuffer(static_cast<D3D11Renderer*>(renderer)->GetContext(), mGCSpriteData[meshIndex], mGCSpriteBuf);
 
 		if (mat)
-			mat->UpdateBuffer(renderer->GetContext());
+			mat->UpdateBuffer(static_cast<D3D11Renderer*>(renderer)->GetContext());
 	}
 
 	void FTSprite::Render(Core::IRenderer* renderer, Transform* transform, Core::ICamera* camInst, D3D11PSO* pso, FTMaterial* mat)
@@ -79,7 +80,7 @@ namespace D3D11
 		UINT						 stride	 = sizeof(SpriteVertex);
 		UINT						 offset	 = 0;
 		Mesh*						 mesh	 = Meshes()->At(0);
-		ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
+		ComPtr<ID3D11DeviceContext>& context = static_cast<D3D11Renderer*>(renderer)->GetContext();
 
 		if (mesh)
 		{
@@ -192,12 +193,12 @@ namespace D3D11
 		Meshes()->Reserve(1);
 
 		Mesh* mesh = DBG_NEW Mesh;
-		D3D11Utils::CreateVertexBuffer(renderer->GetDevice(), vertices, verticesCount, mesh->VertexBuffer);
+		D3D11Utils::CreateVertexBuffer(static_cast<D3D11Renderer*>(renderer)->GetDevice(), vertices, verticesCount, mesh->VertexBuffer);
 		mesh->VertexCount = static_cast<UINT>(verticesCount);
 		Meshes()->PushBack(mesh);
 
-		CreateTextureSampler(renderer->GetDevice());
-		InitializeConstantBuffers(renderer->GetDevice());
+		CreateTextureSampler(static_cast<D3D11Renderer*>(renderer)->GetDevice());
+		InitializeConstantBuffers(static_cast<D3D11Renderer*>(renderer)->GetDevice());
 	}
 
 #ifdef FOXTROT_EDITOR

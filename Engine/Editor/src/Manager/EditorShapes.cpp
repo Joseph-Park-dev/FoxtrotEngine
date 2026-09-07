@@ -20,3 +20,6 @@ namespace Editor
 		mCamRect->Render(renderer);
 	}
 } // namespace Editor
+namespace Editor { EditorShapes::EditorShapes() : mCamRect(nullptr) {} }
+
+namespace Editor { EditorShapes::~EditorShapes() = default; }

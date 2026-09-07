@@ -72,7 +72,7 @@ namespace Editor
 
 		const Math::FTVector3&	GetOffSet() const override;
 		const float				GetZoomFactor() const override;
-		const Math::FTVector2&& GetResolution() const override;
+		Math::FTVector2 GetResolution() const override;
 
 		D3D11::FTRectangle* GetDebugRect();
 

@@ -207,7 +207,7 @@ namespace Editor
 		return mData->ZoomFactor;
 	}
 
-	const Math::FTVector2&& EditorCamera::GetResolution() const
+	Math::FTVector2 EditorCamera::GetResolution() const
 	{
 		return mData->GetResolution();
 	}
@@ -296,6 +296,7 @@ namespace Editor
 
 	EditorCamera::~EditorCamera()
 	{
+		delete mData;
 		delete mDebugRect;
 		mDebugRect = nullptr;
 	}
@@ -311,3 +312,9 @@ namespace Editor
 		mData->Position.y += vec2.y;
 	}
 } // namespace Editor
+namespace Editor {
+void EditorCamera::SetPosition(const Math::FTVector3& position) { mData->Position = position; }
+void EditorCamera::SetViewType(Core::Viewtype type) { mData->ViewType = type; }
+void EditorCamera::SetTargetActor(Core::IActor* actor) { mData->Target = actor; }
+void EditorCamera::SetOffset(Math::FTVector3 offset) { mData->Offset = offset; }
+}

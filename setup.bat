@@ -1,9 +1,9 @@
 @echo off
 echo [*] Cloning dependencies...
-call script\clone_deps.bat
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0script\setup-dependencies.ps1"
+if errorlevel 1 exit /b 1
 
-echo [*] Patching vcxproj...
-call script\patch_vcxproj-Core.bat
+rem Project source lists are checked in; do not patch Core with renderer dependencies.
 
 echo.
 echo All steps complete.

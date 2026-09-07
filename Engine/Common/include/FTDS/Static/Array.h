@@ -95,6 +95,8 @@ namespace Common
 				return mData[idx];
 			}
 
+			const TYPE& At(size_t idx) const { return mData[idx]; }
+
 			size_t Capacity() { return mCapacity; }
 
 		public:

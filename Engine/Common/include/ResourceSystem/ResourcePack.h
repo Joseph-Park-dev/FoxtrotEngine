@@ -1,5 +1,8 @@
 #pragma once
 #include <fstream>
+#include <type_traits>
+#include <stdexcept>
+#include "ResourceSystem/FTResource.h"
 
 #include "FTDS/Static/HashMap.h"
 #include "FileSystem/FileIOHelper.h"
@@ -20,7 +23,7 @@ namespace Common
 		/// @tparam FTRESOURCE Type of Resource
 		/// @param userData Additional data necessary for resource's constructor.
 		/// Pointer to renderer can be a good example for graphics resources
-		void LoadResourcesFromChunk(std::ifstream& ifs, void* userData)
+		void LoadResourcesFromChunk(std::ifstream& ifs, void* userData, FTRESOURCE* (*factory)(FTResourceDef&, void*) = nullptr)
 		{
 			size_t resCount = Common::FileIOHelper::BeginDataPackLoad(ifs).first;
 			if (resCount < 1)
@@ -29,7 +32,7 @@ namespace Common
 			mResources->Reserve(resCount);
 			while (0 < resCount)
 			{
-				LoadResource(ifs, userData);
+				LoadResource(ifs, userData, factory);
 				--resCount; // Key of the next resource to be imported.
 			}
 		}
@@ -100,7 +103,9 @@ namespace Common
 
 		~ResourcePack()
 		{
-			FTDS::Safe_Delete_Map(mResources);
+			for (auto it = mResources->Begin(); it != mResources->End(); ++it)
+				if (*it) delete (*it)->Value();
+			delete mResources;
 		}
 
 	private:
@@ -110,7 +115,7 @@ namespace Common
 		/// @brief Load single resource from .chunk
 		/// @param userData Additional data necessary for resource's constructor.
 		/// Pointer to renderer can be an example for graphics resources
-		void LoadResource(std::ifstream& ifs, void* userData = nullptr)
+		void LoadResource(std::ifstream& ifs, void* userData, FTRESOURCE* (*factory)(FTResourceDef&, void*))
 		{
 			Common::FileIOHelper::BeginDataPackLoad(ifs);
 
@@ -119,8 +124,11 @@ namespace Common
 			Common::FileIOHelper::LoadBasicString(ifs, relPath);
 			Common::FileIOHelper::LoadBasicString(ifs, fileName);
 
-			Common::ResourceData resDef(fileName, relPath);
-			FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef, userData);
+			Common::FTResourceDef resDef{fileName.C_Str(), relPath.C_Str()};
+			FTRESOURCE* res = nullptr;
+			if (factory) res = factory(resDef, userData);
+			else if constexpr (std::is_constructible_v<FTRESOURCE, FTResourceDef&, void*>) res = DBG_NEW FTRESOURCE(resDef, userData);
+			if (!res) throw std::runtime_error("Resource factory required");
 
 			assert(0 < mResources->Capacity());
 			mResources->Insert(*res->GetFileName(), res);
@@ -135,7 +143,7 @@ namespace Common
 			Common::FileIOHelper::LoadBasicString(ifs, relPath);
 			Common::FileIOHelper::LoadBasicString(ifs, fileName);
 
-			Common::ResourceData resDef(fileName, relPath);
+			Common::FTResourceDef resDef{fileName.C_Str(), relPath.C_Str()};
 			FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef);
 
 			assert(0 < mResources->Capacity());
@@ -161,7 +169,7 @@ namespace Common
 				if (entry.is_regular_file())
 				{
 					if (entry.path().extension() == fileType)
-						LoadResource(ifs, userData);
+						LoadResource(ifs, userData, nullptr);
 				}
 			}
 		}

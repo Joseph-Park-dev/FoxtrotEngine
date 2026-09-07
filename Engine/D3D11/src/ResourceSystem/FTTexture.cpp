@@ -96,7 +96,7 @@ namespace D3D11
 
 		// Copy image data from CPU into staging texture.
 		ComPtr<ID3D11Texture2D> stagingTexture =
-			D3D11Utils::CreateStagingTexture(renderer->GetDevice(), renderer->GetContext(), width, height, image);
+			D3D11Utils::CreateStagingTexture(static_cast<D3D11Renderer*>(renderer)->GetDevice(), static_cast<D3D11Renderer*>(renderer)->GetContext(), width, height, image);
 
 		// Description for the result texture that will be used.
 		D3D11_TEXTURE2D_DESC txtDesc;
@@ -115,16 +115,16 @@ namespace D3D11
 		ComPtr<ID3D11Texture2D> resultTex;
 
 		// Create blank texture (all-black).
-		renderer->GetDevice()->CreateTexture2D(&txtDesc, nullptr, resultTex.GetAddressOf());
+		static_cast<D3D11Renderer*>(renderer)->GetDevice()->CreateTexture2D(&txtDesc, nullptr, resultTex.GetAddressOf());
 
 		// Copy staging texture data to the result.
-		renderer->GetContext()->CopySubresourceRegion(resultTex.Get(), 0, 0, 0, 0, stagingTexture.Get(), 0, nullptr);
+		static_cast<D3D11Renderer*>(renderer)->GetContext()->CopySubresourceRegion(resultTex.Get(), 0, 0, 0, 0, stagingTexture.Get(), 0, nullptr);
 
 		// Create SRV from the resultTex.
-		renderer->GetDevice()->CreateShaderResourceView(resultTex.Get(), 0, mSRV.GetAddressOf());
+		static_cast<D3D11Renderer*>(renderer)->GetDevice()->CreateShaderResourceView(resultTex.Get(), 0, mSRV.GetAddressOf());
 
 		// Create MipMaps.
-		renderer->GetContext()->GenerateMips(mSRV.Get());
+		static_cast<D3D11Renderer*>(renderer)->GetContext()->GenerateMips(mSRV.Get());
 	}
 
 #ifdef FOXTROT_EDITOR

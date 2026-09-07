@@ -10,7 +10,7 @@
 /// </summary>
 
 #pragma once
-#include "IComponent.h"
+#include "Component/IComponent.h"
 
 
 namespace InputSystem

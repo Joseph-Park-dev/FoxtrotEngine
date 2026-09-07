@@ -1,0 +1,66 @@
+@startuml FoxtrotEngine_Dependency_Hierarchy
+!theme plain
+title FoxtrotEngine - Project Dependency Hierarchy
+
+' Styling
+skinparam component {
+    BackgroundColor<<foundation>> #98FB98
+    BackgroundColor<<core>> #87CEEB
+    BackgroundColor<<platform>> #DDA0DD
+    BackgroundColor<<editor>> #FFB6C1
+    BackgroundColor<<app>> #FFA07A
+    BackgroundColor<<shared>> #FFFACD
+    BorderColor Black
+}
+
+' Layer hierarchy (top to bottom = high to low level)
+
+package "Application" {
+    [Main.exe] <<app>>
+}
+
+package "Plugins (Dynamically Loaded)" {
+    [Editor.dll] <<editor>>
+    [D3D11Renderer.dll] <<platform>>
+}
+
+package "Core Engine" {
+    [Core.dll] <<core>>
+    [GenericData.dll] <<core>>
+}
+
+package "Abstraction Interfaces" {
+    [Graphics.dll] <<core>>
+    [InputSystem.dll] <<core>>
+}
+
+package "Foundation" {
+    [Math.lib/.dll] <<foundation>>
+}
+
+package "Shared Code" {
+    [Common.vcxitems] <<shared>>
+}
+
+' Dependencies
+[Main.exe] --> [Core.dll] : loads
+[Main.exe] --> [D3D11Renderer.dll] : loads
+[Main.exe] --> [Editor.dll] : loads (editor mode)
+
+[Editor.dll] --> [Math.lib/.dll]
+[D3D11Renderer.dll] --> [Core.dll]
+[D3D11Renderer.dll] --> [Graphics.dll] : links
+[D3D11Renderer.dll] --> [Math.lib/.dll]
+
+[Core.dll] --> [Math.lib/.dll]
+[Graphics.dll] --> [Math.lib/.dll]
+[InputSystem.dll] --> [Math.lib/.dll]
+
+' Shared items (compiled into each)
+[Core.dll] ..> [Common.vcxitems] : includes
+[D3D11Renderer.dll] ..> [Common.vcxitems] : includes
+[Editor.dll] ..> [Common.vcxitems] : includes
+[Graphics.dll] ..> [Common.vcxitems] : includes
+[InputSystem.dll] ..> [Common.vcxitems] : includes
+
+@enduml

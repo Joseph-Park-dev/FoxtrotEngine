@@ -77,6 +77,7 @@ namespace Editor
 		SINGLETON(EditorLayer)
 	public:
 		void Initialize(Graphics::IRenderer* renderer);
+        void SetViewportRenderer(D3D11::ViewportRenderer* viewport) { mViewport = viewport; }
 		void Update(
 			float deltaTime, 
 			Graphics::IWindow* editorWin, 

@@ -1,3 +1,5 @@
+#include "Renderer/D3D11Renderer.h"
+#include "ChunkLoader.h"
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
@@ -94,29 +96,26 @@ namespace Editor
 
 	void EditorLayer::DisplayViewport(Core::IWindow* editorWin, Core::IInputDevice* input, Core::IRenderer* renderer)
 	{
-		ImGui::Begin("Scene");
-		if (ImGui::IsWindowFocused())
-			mCursorOnViewport = true;
-		else
-			mCursorOnViewport = false;
-
-		ImVec2 windowPos  = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
-		ImVec2 contentReg = ImGui::GetContentRegionAvail();
-
-		ImVec2 size(editorWin->GetRenderArea()->GetSize().x, editorWin->GetRenderArea()->GetSize().y);
-		if (input->MOUSE_HOLD(Core::MOUSE::MOUSE_LEFT) && SceneViewportSizeChanged(size))
-		{
-			mIsResizingViewport = true;
-		}
-		if (mIsResizingViewport && input->MOUSE_AWAY(Core::MOUSE::MOUSE_LEFT))
-		{
-			editorWin->GetRenderArea()->Set(0.f, 0.f, contentReg.x, contentReg.y);
-			mViewport->InitializeTexture(reinterpret_cast<D3D11::D3D11Renderer*>(renderer), contentReg);
-			mIsResizingViewport = false;
-		}
-
-		ID3D11ShaderResourceView* viewportTexture = mViewport->GetViewportSRV().Get();
-		ImGui::Image((ImTextureID)(intptr_t)viewportTexture, contentReg);
+        if (!ImGui::Begin("Scene")) {
+            mCursorOnViewport = false;
+            ImGui::End();
+            return;
+        }
+        const ImVec2 content = ImGui::GetContentRegionAvail();
+        if (content.x > 0 && content.y > 0) {
+            const ImVec2 size(static_cast<float>(static_cast<int>(content.x)),
+                              static_cast<float>(static_cast<int>(content.y)));
+            auto* area = editorWin->GetRenderArea();
+            if (size.x >= 1 && size.y >= 1 &&
+                (area->GetSize().x != size.x || area->GetSize().y != size.y)) {
+                mViewport->InitializeTexture(static_cast<D3D11::D3D11Renderer*>(renderer), size.x, size.y);
+                area->Set(0.f, 0.f, size.x, size.y);
+            }
+            ImGui::Image((ImTextureID)(intptr_t)mViewport->GetViewportSRV().Get(), size);
+            mCursorOnViewport = ImGui::IsItemHovered();
+        } else {
+            mCursorOnViewport = false;
+        }
 
 		ImGui::End();
 	}
@@ -631,7 +630,14 @@ namespace Editor
 						path->C_Str()
 					};
 
-					Core::FTPremade* newPremade = DBG_NEW Core::FTPremade(resDef, mFocusedEditorElement);
+					std::ofstream premadeFile(resDef.Path);
+                    if (premadeFile) {
+                        Common::FileIOHelper::BeginDataPackSave(premadeFile, resDef.FileName);
+                        mFocusedEditorElement->SaveProperties(premadeFile);
+                        mFocusedEditorElement->SaveComponents(premadeFile);
+                        Common::FileIOHelper::EndDataPackSave(premadeFile, resDef.FileName);
+                        Common::FileIOHelper::SaveBufferToFile(premadeFile);
+                    }
 					ImGui::CloseCurrentPopup();
 					mInfoType = InfoType::None;
 				};
@@ -845,8 +851,7 @@ namespace Editor
 	{
 		ImGuiIO&	  io = ImGui::GetIO();
 		std::ifstream ifs(Path::EDITOR_CONFIG);
-		if (!ifs.good())
-			SaveEditorConfig();
+		if (!ifs.good()) { SaveEditorConfig(); return; }
 
 		Common::FileIOHelper::BeginDataPackLoad(ifs, ConfigKey::GUI);
 		Common::FileIOHelper::LoadFloat(ifs, io.FontGlobalScale);

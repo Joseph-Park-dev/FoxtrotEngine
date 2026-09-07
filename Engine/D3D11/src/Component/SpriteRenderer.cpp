@@ -151,7 +151,7 @@ namespace D3D11
 		}
 	}
 
-	void SpriteRenderer::EditorUIUpdate()
+	void SpriteRenderer::EditorUIUpdate(Editor::CommandHistory* chInst)
 	{
 		D3D11::D3D11Component::EditorUIUpdate(chInst);
 
@@ -186,3 +186,9 @@ namespace D3D11
 	}
 #endif // FOXTROT_EDITOR
 } // namespace D3D11
+namespace D3D11 {
+D3D11_API D3D11::SpriteRenderer* CreateSpriteRenderer(Core::IActor* actor)
+	{
+		return DBG_NEW D3D11::SpriteRenderer(actor);
+	}
+}

@@ -13,6 +13,7 @@
 
 #pragma once
 #include "Component/ISpriteRenderer.h"
+#include "Component/D3D11Component.h"
 
 
 namespace D3D11
@@ -26,7 +27,7 @@ namespace D3D11
 	struct Mesh;
 
 	class SpriteRenderer :
-		public Core::ISpriteRenderer
+		public Core::ISpriteRenderer, public D3D11Component
 	{
 	public:
 		static inline const char* NAME = "SpriteRenderer";
@@ -88,7 +89,11 @@ namespace D3D11
 	public:
 		virtual void EditorUpdate(float deltaTime);
 		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst);
-		virtual void EditorUIUpdate();
+		virtual void EditorUIUpdate(Editor::CommandHistory* chInst) override;
+	protected:
+		FTSprite*& Sprite();
+		FTMaterial*& Material();
+		D3D11PSO*& PSO();
 
 #endif
 	};
@@ -108,12 +113,5 @@ namespace D3D11
 	} // namespace ChunkKey
 
 #include "Plugin/D3D11Exports.h"
-#ifdef D3D11_EXPORTS
-	D3D11_API D3D11::SpriteRenderer* CreateSpriteRenderer(Core::IActor* actor)
-	{
-		return DBG_NEW D3D11::SpriteRenderer(actor);
-	}
-#else
-	D3D11_API D3D11::SpriteRenderer* CreateSpriteRenderer(Core::IActor* actor);
-#endif
+D3D11_API D3D11::SpriteRenderer* CreateSpriteRenderer(Core::IActor* actor);
 } // namespace D3D11

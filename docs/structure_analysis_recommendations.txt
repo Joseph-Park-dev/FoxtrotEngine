@@ -1,0 +1,219 @@
+================================================================================
+FoxtrotEngine - Structure Analysis & Recommendations
+================================================================================
+Generated: 2026-06-18
+Solution: FoxtrotEngine_DirectX.sln
+
+================================================================================
+CURRENT ARCHITECTURE SUMMARY
+================================================================================
+
+Project         | Type          | Dependencies              | Uses Common
+----------------|---------------|---------------------------|-------------
+Math            | Static/DLL    | None                      | No
+GenericData     | DLL           | None                      | No
+Common          | .vcxitems     | N/A                       | N/A (is shared)
+Core            | DLL           | Math                      | Yes
+Graphics        | DLL           | Math                      | Yes
+InputSystem     | DLL           | Math                      | Yes
+D3D11           | DLL           | Core, Math, Graphics      | Yes
+Editor          | DLL           | Math                      | Yes
+Main            | EXE           | (runtime loading)         | No
+
+================================================================================
+RECOMMENDATIONS
+================================================================================
+
+--------------------------------------------------------------------------------
+1. MISSING PROJECT REFERENCE: Editor -> Core
+--------------------------------------------------------------------------------
+Issue:
+The Editor project includes Core/include directories but lacks an explicit
+<ProjectReference> to Core. This could cause build order issues.
+
+Solution:
+Add to Editor.vcxproj:
+
+    <ProjectReference Include="..\Core\Core.vcxproj">
+        <Project>{cce9835e-f788-4b51-930b-d7805ac1e2a0}</Project>
+    </ProjectReference>
+
+--------------------------------------------------------------------------------
+2. MISSING PROJECT REFERENCE: Editor -> D3D11
+--------------------------------------------------------------------------------
+Issue:
+Editor includes D3D11/include but has no project reference. If Editor uses
+D3D11 types directly, the build order is not guaranteed.
+
+Solution:
+Add to Editor.vcxproj:
+
+    <ProjectReference Include="..\D3D11\D3D11.vcxproj">
+        <Project>{95944b49-be89-43df-bd3f-03d01fa7c284}</Project>
+    </ProjectReference>
+
+--------------------------------------------------------------------------------
+3. GRAPHICS PROJECT CONFIGURATION TYPE
+--------------------------------------------------------------------------------
+Issue:
+Graphics appears to define interfaces (IRenderer, ICamera, etc.) but is
+configured as DynamicLibrary in some configs and Application in others.
+For pure interfaces, this is inconsistent.
+
+Solution:
+For interface-only projects, consider:
+- Making it a static library consistently
+- Or making it header-only (no .cpp files, no build output)
+- Or standardizing to DynamicLibrary across all configurations
+
+--------------------------------------------------------------------------------
+4. INCONSISTENT CONFIGURATION TYPES
+--------------------------------------------------------------------------------
+Issue:
+Several projects change ConfigurationType between configurations:
+
+- Graphics:
+  * Application (Win32/Debug, Win32/Release, x64/Debug)
+  * DynamicLibrary (x64/Foxtrot_Editor_Debug, x64/Release)
+
+- InputSystem:
+  * Application (most configurations)
+  * DynamicLibrary (Foxtrot_Editor_Debug|x64)
+
+Solution:
+Standardize ConfigurationType across all configurations. Recommended:
+- Use DynamicLibrary for all library projects
+- Use Application only for Main
+
+--------------------------------------------------------------------------------
+5. GENERICDATA ISOLATION
+--------------------------------------------------------------------------------
+Issue:
+GenericData has no project references but includes Common paths in
+AdditionalIncludeDirectories. This creates an implicit dependency without
+explicit build ordering.
+
+Solution:
+Either:
+- Keep GenericData fully standalone (remove Common include paths)
+- Or add explicit reference if Common types are needed at runtime
+
+--------------------------------------------------------------------------------
+6. CIRCULAR INCLUDE PATH RISK
+--------------------------------------------------------------------------------
+Issue:
+D3D11 includes Editor headers:
+    $(SolutionDir)Engine\Editor\include
+
+But Editor includes D3D11 headers:
+    $(SolutionDir)Engine\D3D11\include
+
+This bidirectional include path can lead to circular dependencies and
+compilation issues.
+
+Solution:
+- Move shared types to Common.vcxitems
+- Use forward declarations where possible
+- Consider introducing an interface layer between Editor and D3D11
+
+--------------------------------------------------------------------------------
+7. MAIN PROJECT HAS NO BUILD DEPENDENCIES
+--------------------------------------------------------------------------------
+Issue:
+Main.vcxproj has no project references, relying entirely on runtime DLL
+loading. This means DLLs may not be built before Main, causing runtime errors.
+
+Solution:
+Add build-only dependencies (no linking):
+
+    <ProjectReference Include="..\Core\Core.vcxproj">
+        <Project>{cce9835e-f788-4b51-930b-d7805ac1e2a0}</Project>
+        <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\D3D11\D3D11.vcxproj">
+        <Project>{95944b49-be89-43df-bd3f-03d01fa7c284}</Project>
+        <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Editor\Editor.vcxproj">
+        <Project>{30273513-c587-4640-9315-8d7cade6534a}</Project>
+        <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+
+--------------------------------------------------------------------------------
+8. CONSIDER SEPARATING D3D11 RENDERER COMPONENTS
+--------------------------------------------------------------------------------
+Issue:
+D3D11.vcxproj includes many responsibilities:
+- Core rendering (D3D11Renderer, Camera, ViewportRenderer)
+- Animation (Animator, SpineAnimator, AnimationManager)
+- Resources (Texture, Shader, Mesh, Material, Font)
+- Input (D3D11InputDevice)
+- Third-party integration (Spine runtime - 60+ files)
+
+This creates a monolithic DLL that is hard to maintain and test.
+
+Solution:
+Consider splitting into separate projects:
+- D3D11Renderer     - Core rendering pipeline
+- D3D11Resources    - Texture, Shader, Mesh, Material loading
+- SpineIntegration  - Spine animation support (or move to third_party lib)
+
+--------------------------------------------------------------------------------
+9. DUPLICATE IMGUI COMPILATION
+--------------------------------------------------------------------------------
+Issue:
+ImGui source files are compiled in multiple projects:
+- Core: imgui.cpp, imgui_draw.cpp, imgui_tables.cpp, imgui_widgets.cpp
+- D3D11: imgui.cpp, imgui_draw.cpp, imgui_tables.cpp, imgui_widgets.cpp,
+         ImGuiFileDialog.cpp
+- Editor: imgui.cpp, imgui_draw.cpp, imgui_tables.cpp, imgui_widgets.cpp,
+          imgui_impl_dx11.cpp, imgui_impl_win32.cpp, ImGuiFileDialog.cpp
+
+This increases build time and binary size, and can cause symbol conflicts.
+
+Solution:
+Create a separate ImGui static library project:
+- Engine/ImGui/ImGui.vcxproj (StaticLibrary)
+- Compile all ImGui sources once
+- Other projects link to ImGui.lib
+
+--------------------------------------------------------------------------------
+10. LANGUAGE STANDARD INCONSISTENCY
+--------------------------------------------------------------------------------
+Issue:
+Projects use mixed C++ standards across configurations:
+
+- Most Debug/Release configurations: stdcpp20
+- Foxtrot_Editor_Debug|x64: stdcpp17 (in Core, D3D11, Editor, Graphics,
+  InputSystem, Math)
+
+This can cause subtle compatibility issues and prevents using C++20 features
+in editor builds.
+
+Solution:
+Unify to C++20 across all configurations:
+
+    <LanguageStandard>stdcpp20</LanguageStandard>
+
+Or if C++17 is required for compatibility, standardize on C++17 everywhere.
+
+================================================================================
+ADDITIONAL OBSERVATIONS
+================================================================================
+
+1. The plugin architecture (Main loading DLLs dynamically) is a good design
+   for modularity, but ensure DLL search paths are correctly configured.
+
+2. Common.vcxitems is well-utilized for sharing code across projects without
+   duplication. Continue this pattern for shared utilities.
+
+3. Consider using vcpkg for third-party dependencies (currently disabled for
+   Core via <VcpkgEnabled>false</VcpkgEnabled>).
+
+4. The separation of Graphics (interfaces) from D3D11 (implementation) follows
+   good abstraction principles. This would allow future support for other
+   rendering backends (Vulkan, OpenGL, etc.).
+
+================================================================================
+END OF RECOMMENDATIONS
+================================================================================

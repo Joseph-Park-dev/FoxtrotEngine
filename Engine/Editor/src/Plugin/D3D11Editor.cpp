@@ -1,3 +1,10 @@
+#include "Manager/EditorShapes.h"
+#include <stdexcept>
+#include "Renderer/Camera.h"
+#include "Foxtrot/Runtime/PlatformApi.h"
+#include "EditorScene.h"
+#include <stdexcept>
+#include "ChunkLoader.h"
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
@@ -37,9 +44,11 @@
 #include "Core/FTCore.h"
 #include <../../D3D11/include/Plugin/PluginKey.h>
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 using namespace Editor;
 
-LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK GameWinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData)
 {
@@ -78,7 +87,7 @@ public:
 	~D3D11Editor() override;
 
 public:
-	static Core::CHUNK_IS_SAVED_FUNC gGetChunkISSavedFunc;
+	inline static Core::CHUNK_IS_SAVED_FUNC gGetChunkISSavedFunc = nullptr;
 
 private:
 	D3D11::D3D11Window*		 mEditorWin;
@@ -98,6 +107,7 @@ private:
 private:
 	// These member functions are to be included in Initialize()
 	bool InitGUI();
+    bool mGuiReady = false;
 
 private:
 	// GameLoop functions
@@ -116,28 +126,17 @@ protected:
 	void LoadManagerData(std::ifstream&) override {}
 	void LoadResourceData(std::ifstream&) override {}
 
-	// static LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	// static LRESULT CALLBACK WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 };
 
 void D3D11Editor::Initialize()
 {
 	gGetChunkISSavedFunc = Core::GetFunc<Core::CHUNK_IS_SAVED_FUNC>(Common::DLLPath::CORE_EDITOR, Core::ProcName::GetChunkIsSaved);
 
-	if (mEditorWin)
-	{
-		delete mEditorWin;
-		mEditorWin = nullptr;
-	}
-
-	if (mGameWin)
-	{
-		delete mGameWin;
-		mGameWin = nullptr;
-	}
 
 	using REGISTER_PLUGIN				= IPlugin* (*)(const char*);
-	IPlugin*				d3d11Plugin = Core::GetFunc<REGISTER_PLUGIN>(Common::DLLPath::CORE_EDITOR, Core::ProcNames::Core::REGISTER_PLUGIN)(Core::Plugin::Name::D3D11_EDITOR);
-	Core::IGraphicsFactory* graphicsFac = reinterpret_cast<Core::IGraphicsFactory*>(d3d11Plugin);
+	IPlugin*				d3d11Plugin = Core::GetFunc<REGISTER_PLUGIN>(Common::DLLPath::CORE_EDITOR, Core::ProcNames::Core::REGISTER_PLUGIN)("D3D11");
+	Core::IGraphicsFactory* graphicsFac = static_cast<Core::IGraphicsFactory*>(d3d11Plugin->QueryInterface("GraphicsFactory"));
 
 	D3D11::CREATE_VP_RENDERER createVPRendererFunc = Core::GetFunc<D3D11::CREATE_VP_RENDERER>(Common::DLLPath::D3D11, Core::ProcNames::D3D11::CREATE_VP_RENDERER);
 	// D3D11::CREATE_WINDOW_PROC	 createWindowFunc	   = Core::GetFunc<D3D11::CREATE_WINDOW_PROC>(Common::DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_D3D11_WINDOW);
@@ -151,10 +150,10 @@ void D3D11Editor::Initialize()
 	mRenderer	  = reinterpret_cast<D3D11::D3D11Renderer*>(graphicsFac->CreateRenderer(mEditorWin));
 
 	mViewport = createVPRendererFunc();
-	mViewport->InitializeTexture(mRenderer, ImVec2(1280.f, 720.f));
+	mViewport->InitializeTexture(mRenderer, 1280.f, 720.f);
 
-	rndArea->Set(0.f, 0.f, 1920.f, 1080.f, 0.f);
-	mGameWin = static_cast<D3D11::D3D11Window*>(graphicsFac->CreateAppWindow("Game", 1920, 1080, rndArea, WinProc, wndprocParams));
+	rndArea = DBG_NEW D3D11::FTRectArea(0.f, 0.f, 1920.f, 1080.f, 0.f);
+	mGameWin = static_cast<D3D11::D3D11Window*>(graphicsFac->CreateAppWindow("Game", 1920, 1080, rndArea, GameWinProc, nullptr));
 
 	if (!mGameWin->CreateSwapChain(mRenderer))
 	{
@@ -174,19 +173,27 @@ void D3D11Editor::Initialize()
 		return;
 	}
 
+	mGameCamera = static_cast<D3D11::Camera*>(graphicsFac->CreateCamera());
+    mGameCamera->Initialize(mGameWin, 64, 1.8f);
+    EditorSceneManager::GetInstance()->Initialize(new EditorScene);
 	// Camera::GetInstance()->Initialize(GetGameWindow(), 64.f, 1.8f);
 	mEditorCamera = DBG_NEW Editor::EditorCamera;
 	mEditorCamera->Initialize(mEditorWin, 64, 1.8f);
 	// D3D11::DebugShapes::GetInstance()->GetCameraRect()->Initialize(GetGameRenderer());
 
-	Core::IInputSysFactory* inputFac = reinterpret_cast<Core::IInputSysFactory*>(d3d11Plugin);
+	Core::IInputSysFactory* inputFac = static_cast<Core::IInputSysFactory*>(d3d11Plugin->QueryInterface("InputFactory"));
 	mInputDevice					 = reinterpret_cast<D3D11::D3D11InputDevice*>(inputFac->CreateInputDevice());
 
 	if (!InitGUI())
 	{
-		Common::Debug::LogError(__LINE__, __FILE__, "Failed to Initialize ImGui");
-		return;
+		throw std::runtime_error("Failed to initialize ImGui");
 	}
+	mGuiReady = true;
+    D3D11::SetEditorGuiContext(ImGui::GetCurrentContext());
+    wndprocParams->Window = mEditorWin;
+    wndprocParams->Renderer = mRenderer;
+    wndprocParams->InputDevice = mInputDevice;
+    Editor::EditorLayer::GetInstance()->SetViewportRenderer(mViewport);
 	Editor::EditorLayer::GetInstance()->Initialize(mRenderer);
 
 	// Look for secondary window to display editor window.
@@ -234,9 +241,12 @@ void D3D11Editor::Render()
 	mViewport->BeginRender(mRenderer);
 	mViewport->DrawOnTexture(mRenderer);
 	mViewport->EndRender(mRenderer);
+    mEditorWin->BeginRender(mRenderer);
+    EditorLayer::GetInstance()->Render();
+    mEditorWin->EndRender(mRenderer);
 }
 
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 
 void D3D11Editor::Update(float deltaTime)
 {
@@ -275,24 +285,20 @@ D3D11Editor::D3D11Editor()
 
 D3D11Editor::~D3D11Editor()
 {
-	CommandHistory::GetInstance()->ShutDown();
-	EditorSceneManager::GetInstance()->GetCurrentScene()->DeleteAll();
-	EditorLayer::GetInstance()->ShutDown();
-
-	// FontManager::GetInstance()->Destroy();
-	CommandHistory::GetInstance()->Destroy();
-	// DebugShapes::GetInstance()->Destroy();
-	EditorLayer::GetInstance()->Destroy();
-	EditorSceneManager::GetInstance()->Destroy();
-	ChunkLoader::GetInstance()->Destroy();
-	// FTCore::ShutDown();
-	// delete mEditorWindow;
-
-	delete mEditorWin;
-	delete mGameWin;
-	delete mRenderer;
-	delete mInputDevice;
-	delete mViewport;
+    if (mEditorWin) FtDetachWindowCallback(mEditorWin->GetHandle());
+    if (mGameWin) FtDetachWindowCallback(mGameWin->GetHandle());
+    CommandHistory::GetInstance()->ShutDown();
+    CommandHistory::Destroy();
+    EditorSceneManager::Destroy();
+    ChunkLoader::Destroy();
+    if (mGuiReady) { D3D11::SetEditorGuiContext(nullptr); EditorLayer::GetInstance()->ShutDown(); }
+    EditorLayer::Destroy();
+    EditorShapes::Destroy();
+    delete mEditorCamera;
+    D3D11::DestroyViewportRenderer(mViewport);
+    delete wndprocParams;
+    delete mEditorDataFileName;
+    // Windows, device, game camera and input are borrowed from D3D11's factory.
 }
 
 bool D3D11Editor::InitGUI()
@@ -315,21 +321,22 @@ bool D3D11Editor::InitGUI()
 	ImGui::StyleColorsDark();
 	if (!ImGui_ImplWin32_Init(mEditorWin->GetHandle()))
 	{
-		printf("Imgui Wind32 Init failed");
+		ImGui::DestroyContext();
 		return false;
 	}
 	if (!ImGui_ImplDX11_Init(
 			mRenderer->GetDevice().Get(),
 			mRenderer->GetContext().Get()))
 	{
-		printf("Imgui DX11 Init failed");
+		ImGui_ImplWin32_Shutdown();
+		ImGui::DestroyContext();
 		return false;
 	}
 	return true;
 }
 } // namespace Editor
 
-LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam))
 		return true;
@@ -358,25 +365,8 @@ LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				Core::FTCore::GetInstance()->SetIsRunning(false);
 			return 0;
 		}
-		case WM_SIZE:
-		{
-			if (params->Window)
-			{
-				*params->IsResizingWin = true;
-				params->Window->SetWidth(UINT(LOWORD(lParam)));
-				params->Window->SetHeight(UINT(HIWORD(lParam)));
-			}
-			break;
-		}
 	}
-	if (params->IsResizingWin && params->InputDevice->MOUSE_AWAY(Core::MOUSE::MOUSE_LEFT))
-	{
-		if (params->Renderer)
-		{
-			params->Window->ResizeWindow(params->Renderer);
-			*params->IsResizingWin = false;
-		}
-	}
+
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
@@ -389,4 +379,11 @@ extern "C"
 		(void)name;
 		return DBG_NEW Editor::D3D11Editor();
 	}
+}
+// Preserve the unsaved-scene close check without feeding a second HWND's mouse
+// coordinates into the editor window's ImGui backend.
+LRESULT CALLBACK GameWinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    if (msg == WM_CLOSE) return WinProc(hwnd, msg, wParam, lParam);
+    return DefWindowProc(hwnd, msg, wParam, lParam);
 }

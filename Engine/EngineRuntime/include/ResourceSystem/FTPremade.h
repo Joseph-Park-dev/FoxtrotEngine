@@ -13,6 +13,7 @@
 /// </summary>
 
 #pragma once
+#include "Plugin/CoreExports.h"
 #include "IResource.h"
 
 #include <iosfwd>
@@ -23,7 +24,7 @@ namespace Core
 	class FTCore;
 	class Scene;
 
-	class FTPremade :
+	class CORE_API FTPremade :
 		public Common::IResource
 	{
 	public:

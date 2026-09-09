@@ -13,16 +13,23 @@ namespace D3D11
 	using namespace Common;
 	using namespace Core;
 
+	/// @brief Initializes shader metadata and compilation state.
+	/// @param resDef Resource definition containing the filename and source path.
+	/// @note Initializes the :FTShader base or delegates to its constructor.
 	FTShader::FTShader(Common::FTResourceDef& resDef)
 		: D3D11::D3D11Resource(resDef)
 	{
 	}
 
+	/// @brief Updates the type used by subsequent operations.
+	/// @param shaderType Replacement type.
 	void FTShader::SetType(ShaderType&& shaderType)
 	{
 		mType = shaderType;
 	}
 
+	/// @brief Restores resource metadata from its serialized representation.
+	/// @param resDef Resource definition containing the filename and source path.
 	void FTShader::LoadMetaData(Common::FTResourceDef& resDef)
 	{
 		Common::FTDS::String metaPath;
@@ -38,6 +45,7 @@ namespace D3D11
 	}
 
 #ifdef FOXTROT_EDITOR
+	/// @brief Writes resource metadata to its serialized representation.
 	void FTShader::SaveMetaData()
 	{
 		Common::FTDS::String metaPath;

@@ -37,26 +37,44 @@ namespace D3D11
 		static D3D11::ResType Type;
 
 	public:
+		/// @brief Serializes this object's persistent properties to a .chunk stream.
 		/// @see FTResource::SaveProperties()
+		/// @param ofs Output stream receiving the serialized data.
+		/// @note Writes to the supplied stream at its current position.
 		virtual void SaveProperties(std::ofstream& ofs) override;
 
+		/// @brief Restores this object's persistent properties from a .chunk stream.
 		/// @see FTResource::LoadProperties()
+		/// @param ifs Input stream positioned at the expected data; reading advances its position.
+		/// @note Advances the stream position and updates the destination state.
 		virtual void LoadProperties(std::ifstream& ifs) override;
 
 	public:
 		/// @brief Returns compiled HLSL vertex shader object.
+		/// @return Borrowed access to the shader.
+		/// @note Changes through the returned reference affect this object's stored state.
 		Microsoft::WRL::ComPtr<ID3D11VertexShader>& GetShader();
 
 		/// @brief Returns the current input layout.
+		/// @return Borrowed access to the input layout.
+		/// @note Changes through the returned reference affect this object's stored state.
 		Microsoft::WRL::ComPtr<ID3D11InputLayout>& GetInputLayout();
 
 	public:
+		/// @brief Initializes a vertex shader and its input-layout metadata.
 		/// @see FTShader::FTShader()
+		/// @param resDef Resource definition containing the filename and source path.
+		/// @param renderer Renderer providing the graphics device and current render state.
 		FTVertexShader(Common::FTResourceDef& resDef, void* renderer);
+		/// @brief Releases the resources managed by this instance during destruction.
 		~FTVertexShader() override;
 
 	protected:
+		/// @brief Compiles shader source into bytecode using the shader's configured entry point and profile.
 		/// @see FTShader::CompileShader()
+		/// @param resDef Resource definition containing the filename and source path.
+		/// @param renderer Renderer providing the graphics device and current render state.
+		/// @throws D3D11::DX::com_exception If a checked Direct3D operation fails.
 		void CompileShader(Common::FTResourceDef& resDef, D3D11Renderer* renderer) override;
 
 	private:
@@ -67,6 +85,7 @@ namespace D3D11
 
 #ifdef FOXTROT_EDITOR
 	public:
+		/// @brief Builds the editor controls for inspecting and modifying this object's state.
 		void UpdateUI() override;
 #endif
 	};
@@ -96,6 +115,8 @@ namespace D3D11
 		Common::FTDS::String	 Name;
 		D3D11_INPUT_ELEMENT_DESC Desc;
 
+		/// @brief Initializes one vertex input semantic and its layout metadata.
+		/// @note Initializes the NameIdx base or delegates to its constructor.
 		SemanticItem()
 			: NameIdx(0)
 			, Desc()
@@ -107,10 +128,17 @@ namespace D3D11
 			Desc.InstanceDataStepRate = 0;
 		}
 
+		/// @brief Serializes this object's persistent properties to a .chunk stream.
+		/// @param ofs Output stream receiving the serialized data.
+		/// @note Writes to the supplied stream at its current position.
 		void SaveProperties(::std::ofstream& ofs);
+		/// @brief Restores this object's persistent properties from a .chunk stream.
+		/// @param ifs Input stream positioned at the expected data; reading advances its position.
+		/// @note Advances the stream position and updates the destination state.
 		void LoadProperties(::std::ifstream& ifs);
 
 #ifdef FOXTROT_EDITOR
+		/// @brief Builds the editor controls for inspecting and modifying this object's state.
 		void UpdateUI()
 		{
 			static Common::FTDS::String names[5] = { "POSITION", "NORMAL", "COLOR", "TEXCOORD", "PSIZE" };

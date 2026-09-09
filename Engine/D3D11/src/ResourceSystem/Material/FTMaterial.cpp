@@ -18,11 +18,17 @@ namespace D3D11
 {
 	using namespace Core;
 	using Microsoft::WRL::ComPtr;
+	/// @brief Returns the pcbuf used by this ftmaterial.
+	/// @return Borrowed access to the pcbuf.
+	/// @note Changes through the returned reference affect this object's stored state.
 	ComPtr<ID3D11Buffer>& FTMaterial::GetPCBuf()
 	{
 		return mPCBuf;
 	}
 
+	/// @brief Initializes the shared metadata for a rendering material.
+	/// @param resDef Resource definition containing the filename and source path.
+	/// @note Initializes the :FTMaterial base or delegates to its constructor.
 	FTMaterial::FTMaterial(Common::FTResourceDef& resDef)
 		: D3D11::D3D11Resource(resDef)
 	{

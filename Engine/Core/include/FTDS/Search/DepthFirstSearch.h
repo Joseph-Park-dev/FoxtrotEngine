@@ -11,6 +11,10 @@ namespace Common
 	{
 		using namespace FTDS;
 
+		/// @brief Searches tree nodes using an explicit depth-first traversal stack.
+		/// @param tree Tree whose nodes are searched.
+		/// @param val Value to assign, insert, or process.
+		/// @return Searches tree nodes using an explicit depth-first traversal stack.
 		template <typename TYPE>
 		TreeNode<TYPE>* DFS(BinSrchTree<TYPE>* tree, TYPE val)
 		{

@@ -42,17 +42,23 @@ namespace Graphics
 	{
 	public:
 		/// @brief Returns Frames per second
+		/// @return Current fps.
 		virtual const int GetFPS() const = 0;
 
 		/// @brief Returns the last frame index.
+		/// @return Current max frame idx.
 		virtual const int GetMaxFrameIdx() const = 0;
 
 		/// @brief Returns the first frame index.
+		/// @return Current min frame idx.
 		virtual const int GetMinFrameIdx() const = 0;
 
+		/// @brief Returns the frame count used by this isprite animation.
+		/// @return Current frame count.
 		virtual const size_t GetFrameCount() const = 0;
 
 	public:
+		/// @brief Completes destruction through the object's inheritance hierarchy.
 		virtual ~ISpriteAnimation() override = 0;
 	};
 

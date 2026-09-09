@@ -30,6 +30,9 @@
 
 namespace Editor
 {
+	/// @brief Opens a native file-selection dialog and returns the selected path.
+	/// @param fileTypes Supported file-type filters for the dialog.
+	/// @param openFileNames Receives the selected file paths.
 	inline void DisplayOpenFileDialog(const COMDLG_FILTERSPEC* fileTypes, Common::FTDS::DynamicArray<Common::FTDS::String*>* openFileNames)
 	{
 		IShellItemArray* pResults;
@@ -80,6 +83,10 @@ namespace Editor
 		}
 	}
 
+	/// @brief Draws an ImGui button centered within the available line width.
+	/// @param label Text identifying the editor control.
+	/// @param alignment Alignment used when placing the content.
+	/// @return True if the operation succeeds or the tested condition holds; otherwise false.
 	inline bool ButtonCenteredOnLine(const char* label, float alignment = 0.5f)
 	{
 		ImGuiStyle& style = ImGui::GetStyle();
@@ -94,6 +101,11 @@ namespace Editor
 		return ImGui::Button(label);
 	}
 
+	/// @brief Displays array entries as an ImGui combo-box selection.
+	/// @param label Text identifying the editor control.
+	/// @param array Contiguous array of elements.
+	/// @param arraySize Number of elements in the array.
+	/// @param targetIdx Index of the destination entry.
 	inline void DisplayArrayAsCombo(const char* label, Common::FTDS::String* array, size_t arraySize, int& targetIdx)
 	{
 		const char* comboPreview = array[targetIdx].C_Str();
@@ -108,6 +120,11 @@ namespace Editor
 		}
 	}
 
+	/// @brief Displays array entries as an ImGui combo-box selection.
+	/// @param label Text identifying the editor control.
+	/// @param array Contiguous array of elements.
+	/// @param arraySize Number of elements in the array.
+	/// @param targetIdx Index of the destination entry.
 	inline void DisplayArrayAsCombo(const char* label, const char** array, size_t arraySize, int& targetIdx)
 	{
 		const char* comboPreview = array[targetIdx];
@@ -122,6 +139,9 @@ namespace Editor
 		}
 	}
 
+	/// @brief Draws the actor selection control and updates the selected actor.
+	/// @param label Text identifying the editor control.
+	/// @param selected Current selection, updated by the control.
 	inline void DisplayActorSelection(const char* label, Core::IActor*& selected)
 	{
 		Core::Scene*							   scene	   = EditorSceneManager::GetInstance()->GetCurrentScene();
@@ -159,6 +179,10 @@ namespace Editor
 		delete[] actorNames;
 	}
 
+	/// @brief Draws a resource selection control and updates its selection.
+	/// @param label Text identifying the editor control.
+	/// @param resPack Resource pack supplying selectable entries.
+	/// @param currSelection Current selection, updated when another entry is chosen.
 	template <typename FTRESOURCE>
 	inline void DisplayResSelection(
 		const char*						  label,
@@ -198,6 +222,10 @@ namespace Editor
 		}
 	}
 
+	/// @brief Draws a resource selection control and updates its selection.
+	/// @param label Text identifying the editor control.
+	/// @param resPack Resource pack supplying selectable entries.
+	/// @param selectedRes Resource selected in the editor.
 	template <typename FTRESOURCE>
 	inline void DisplayResSelection(
 		const char*						  label,
@@ -233,6 +261,10 @@ namespace Editor
 		}
 	}
 
+	/// @brief Draws a resource selection control and updates its selection.
+	/// @param label Text identifying the editor control.
+	/// @param resPack Resource pack supplying selectable entries.
+	/// @param selectedRes Resource selected in the editor.
 	template <typename FTRESOURCE, typename FILTER>
 	inline void DisplayResSelection(
 		const char*						  label,
@@ -271,6 +303,11 @@ namespace Editor
 		}
 	}
 
+	/// @brief Returns the file path from dialog used by this service.
+	/// @param key Lookup key identifying the stored entry.
+	/// @param title Window title or dialog caption.
+	/// @param fileTypes Supported file-type filters for the dialog.
+	/// @return Current file path from dialog.
 	inline std::string GetFilePathFromDialog(const char* key, const char* title, const char* fileTypes)
 	{
 		IGFD::FileDialogConfig config;

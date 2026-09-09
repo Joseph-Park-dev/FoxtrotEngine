@@ -17,6 +17,9 @@ namespace Common
 	Common::FTDS::String			Common::FileIOHelper::mItemIdent	   = Common::FTDS::String(mDataPackIdent, '\t');
 
 	// This function is less safe since there is no assert to check data pack name
+	/// @brief Reads the opening .chunk data-pack marker and determines its key and entry count.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @return Pair containing the entry count and parsed data-pack key.
 	std::pair<size_t, Common::FTDS::String> Common::FileIOHelper::BeginDataPackLoad(std::ifstream& ifs)
 	{
 		Common::FTDS::String loadedDataPackKey;
@@ -40,6 +43,10 @@ namespace Common
 		return std::make_pair(count, name);
 	}
 
+	/// @brief Reads the opening .chunk data-pack marker and determines its key and entry count.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @param dataPackKey Key identifying the serialized data-pack section.
+	/// @return Pair containing the entry count and parsed data-pack key.
 	std::pair<size_t, Common::FTDS::String> Common::FileIOHelper::BeginDataPackLoad(std::ifstream& ifs, Common::FTDS::String dataPackKey)
 	{
 		Common::FTDS::String loadedDataPackKey;
@@ -68,6 +75,10 @@ namespace Common
 		return std::make_pair(count, name);
 	}
 
+	/// @brief Reads the next serialized int value and stores it in the output argument.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @param intVal Integer value read, written, or edited.
+	/// @note Advances the stream position and updates the destination state.
 	void FileIOHelper::LoadInt(std::ifstream& ifs, int& intVal)
 	{
 		// Parse data information.
@@ -86,6 +97,10 @@ namespace Common
 		ParseInt(line, intVal);
 	}
 
+	/// @brief Reads the next serialized unsigned int value and stores it in the output argument.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @param intVal Integer value read, written, or edited.
+	/// @note Advances the stream position and updates the destination state.
 	void FileIOHelper::LoadUnsignedInt(std::ifstream& ifs, unsigned int& intVal)
 	{
 		// Parse data information.
@@ -104,6 +119,10 @@ namespace Common
 		ParseUnsignedInt(line, intVal);
 	}
 
+	/// @brief Reads the next serialized size value and stores it in the output argument.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @param sizeVal Size value read or written.
+	/// @note Advances the stream position and updates the destination state.
 	void FileIOHelper::LoadSize(std::ifstream& ifs, size_t& sizeVal)
 	{
 		// Parse data information.
@@ -122,6 +141,10 @@ namespace Common
 		ParseSize(line, sizeVal);
 	}
 
+	/// @brief Reads the next serialized float value and stores it in the output argument.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @param floatVal Floating-point value read, written, or edited.
+	/// @note Advances the stream position and updates the destination state.
 	void FileIOHelper::LoadFloat(std::ifstream& ifs, float& floatVal)
 	{
 		// Parse data information.
@@ -140,6 +163,10 @@ namespace Common
 		ParseFloat(line, floatVal);
 	}
 
+	/// @brief Reads the next serialized bool value and stores it in the output argument.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @param boolVal Boolean value to serialize or convert.
+	/// @note Advances the stream position and updates the destination state.
 	void FileIOHelper::LoadBool(std::ifstream& ifs, bool& boolVal)
 	{
 		// Parse data information.
@@ -158,6 +185,10 @@ namespace Common
 		ParseBool(line, boolVal);
 	}
 
+	/// @brief Reads the next serialized basic string value and stores it in the output argument.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @param strVal String value read or written.
+	/// @note Advances the stream position and updates the destination state.
 	void FileIOHelper::LoadBasicString(std::ifstream& ifs, Common::FTDS::String& strVal)
 	{
 		// Parse data information.
@@ -178,6 +209,10 @@ namespace Common
 		strVal.ExtractFromLast("\t");
 	}
 
+	/// @brief Reads the next serialized vector2 value and stores it in the output argument.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @param vec2 Two-dimensional vector read or written.
+	/// @note Advances the stream position and updates the destination state.
 	void FileIOHelper::LoadVector2(std::ifstream& ifs, Math::FTVector2& vec2)
 	{
 		// Parse data information.
@@ -196,6 +231,10 @@ namespace Common
 		ParseVector2(line, vec2);
 	}
 
+	/// @brief Reads the next serialized vector3 value and stores it in the output argument.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @param vec3 Three-dimensional vector read or written.
+	/// @note Advances the stream position and updates the destination state.
 	void FileIOHelper::LoadVector3(std::ifstream& ifs, Math::FTVector3& vec3)
 	{
 		// Parse data information.
@@ -214,6 +253,10 @@ namespace Common
 		ParseVector3(line, vec3);
 	}
 
+	/// @brief Reads the next serialized vector4 value and stores it in the output argument.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @param vec4 Four-dimensional vector read or written.
+	/// @note Advances the stream position and updates the destination state.
 	void FileIOHelper::LoadVector4(std::ifstream& ifs, Math::FTVector4& vec4)
 	{
 		// Parse data information.
@@ -232,6 +275,9 @@ namespace Common
 		ParseVector4(line, vec4);
 	}
 
+	/// @brief Extracts a vector3 value from a serialized text line.
+	/// @param line Text line to parse or modify.
+	/// @param arg Receives the parsed value.
 	void FileIOHelper::ParseVector3(Common::FTDS::String& line, Math::FTVector3& arg)
 	{
 		line.ExtractBracketedVal(line, "(", ")");
@@ -251,6 +297,9 @@ namespace Common
 		arg = Math::FTVector3(x, y, z);
 	}
 
+	/// @brief Extracts a vector2 value from a serialized text line.
+	/// @param line Text line to parse or modify.
+	/// @param arg Receives the parsed value.
 	void FileIOHelper::ParseVector2(Common::FTDS::String& line, Math::FTVector2& arg)
 	{
 		line.ExtractBracketedVal(line, "(", ")");
@@ -267,6 +316,9 @@ namespace Common
 		arg = Math::FTVector2(x, y);
 	}
 
+	/// @brief Extracts a vector4 value from a serialized text line.
+	/// @param line Text line to parse or modify.
+	/// @param arg Receives the parsed value.
 	void FileIOHelper::ParseVector4(Common::FTDS::String& line, Math::FTVector4& arg)
 	{
 		line.ExtractBracketedVal(line, "(", ")");
@@ -295,6 +347,9 @@ namespace Common
 		arg = Math::FTVector4(x, y, z, w);
 	}
 
+	/// @brief Extracts a int value from a serialized text line.
+	/// @param line Text line to parse or modify.
+	/// @param arg Receives the parsed value.
 	void FileIOHelper::ParseInt(Common::FTDS::String& line, int& arg)
 	{
 		// Remove tab identation.
@@ -304,6 +359,9 @@ namespace Common
 		arg = std::stoi(line.C_Str());
 	}
 
+	/// @brief Extracts a unsigned int value from a serialized text line.
+	/// @param line Text line to parse or modify.
+	/// @param arg Receives the parsed value.
 	void FileIOHelper::ParseUnsignedInt(Common::FTDS::String& line, unsigned int& arg)
 	{
 		// Remove tab identation.
@@ -313,6 +371,9 @@ namespace Common
 		arg = std::stoul(line.C_Str(), nullptr, 0);
 	}
 
+	/// @brief Extracts a size value from a serialized text line.
+	/// @param line Text line to parse or modify.
+	/// @param arg Receives the parsed value.
 	void FileIOHelper::ParseSize(Common::FTDS::String& line, size_t& arg)
 	{
 		// Remove tab identation.
@@ -322,6 +383,9 @@ namespace Common
 		arg = static_cast<size_t>(std::stoul(line.C_Str(), nullptr, 0));
 	}
 
+	/// @brief Extracts a float value from a serialized text line.
+	/// @param line Text line to parse or modify.
+	/// @param arg Receives the parsed value.
 	void FileIOHelper::ParseFloat(Common::FTDS::String& line, float& arg)
 	{
 		// Remove tab identation.
@@ -331,6 +395,9 @@ namespace Common
 		arg = std::stof(line.C_Str());
 	}
 
+	/// @brief Extracts a bool value from a serialized text line.
+	/// @param line Text line to parse or modify.
+	/// @param arg Receives the parsed value.
 	void FileIOHelper::ParseBool(Common::FTDS::String& line, bool& arg)
 	{
 		// Remove tab identation.
@@ -338,6 +405,9 @@ namespace Common
 		arg = StrToBool(line);
 	}
 
+	/// @brief Extracts a string value from a serialized text line.
+	/// @param line Text line to parse or modify.
+	/// @param arg Receives the parsed value.
 	void FileIOHelper::ParseString(Common::FTDS::String& line, Common::FTDS::String& arg)
 	{
 		// Remove tab identation.
@@ -347,6 +417,9 @@ namespace Common
 		arg.Assign(line);
 	}
 
+	/// @brief Writes an opening .chunk data-pack marker for the supplied key.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @param dataPackKey Key identifying the serialized data-pack section.
 	void FileIOHelper::BeginDataPackSave(std::ofstream& ofs, Common::FTDS::String dataPackKey)
 	{
 		mDataPackIdent = mItemCounts.size();
@@ -360,6 +433,9 @@ namespace Common
 		mCurrentDataPack.push_back(dataPackKey);
 	}
 
+	/// @brief Writes the closing marker for the current .chunk data pack.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @param dataPackKey Key identifying the serialized data-pack section.
 	void FileIOHelper::EndDataPackSave(std::ofstream& ofs, Common::FTDS::String dataPackKey)
 	{
 		assert(mCurrentDataPack.back() == dataPackKey);
@@ -375,6 +451,8 @@ namespace Common
 		mDataBuffer.push_back(title);
 	}
 
+	/// @brief Flushes the accumulated serialization buffer to the output stream.
+	/// @param ofs Output stream receiving the serialized data.
 	void FileIOHelper::SaveBufferToFile(std::ofstream& ofs)
 	{
 		// Key & Value pairs = size() * 2
@@ -386,6 +464,11 @@ namespace Common
 		mDataBuffer.clear();
 	}
 
+	/// @brief Writes a named vector3 value in the engine's .chunk text format.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @param valName Key written before the serialized value.
+	/// @param vec3 Three-dimensional vector read or written.
+	/// @note Writes to the supplied stream at its current position.
 	void FileIOHelper::SaveVector3(std::ofstream& ofs, const Common::FTDS::String& valName, const Math::FTVector3& vec3)
 	{
 		Common::FTDS::String itemTitle = mItemIdent + valName + "[Vector3]" + "\n";
@@ -395,6 +478,11 @@ namespace Common
 		++mItemCounts.back();
 	}
 
+	/// @brief Writes a named vector2 value in the engine's .chunk text format.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @param valName Key written before the serialized value.
+	/// @param vec2 Two-dimensional vector read or written.
+	/// @note Writes to the supplied stream at its current position.
 	void FileIOHelper::SaveVector2(std::ofstream& ofs, const Common::FTDS::String& valName, const Math::FTVector2& vec2)
 	{
 		Common::FTDS::String itemTitle = mItemIdent + valName + "[Vector2]" + "\n";
@@ -403,6 +491,11 @@ namespace Common
 		++mItemCounts.back();
 	}
 
+	/// @brief Writes a named vector4 value in the engine's .chunk text format.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @param valName Key written before the serialized value.
+	/// @param vec4 Four-dimensional vector read or written.
+	/// @note Writes to the supplied stream at its current position.
 	void FileIOHelper::SaveVector4(std::ofstream& ofs, const Common::FTDS::String& valName, const Math::FTVector4& vec4)
 	{
 		Common::FTDS::String itemTitle = mItemIdent + valName + "[Vector4]" + "\n";
@@ -416,6 +509,11 @@ namespace Common
 		++mItemCounts.back();
 	}
 
+	/// @brief Writes a named int value in the engine's .chunk text format.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @param valName Key written before the serialized value.
+	/// @param intVal Integer value read, written, or edited.
+	/// @note Writes to the supplied stream at its current position.
 	void FileIOHelper::SaveInt(std::ofstream& ofs, const Common::FTDS::String& valName, const int& intVal)
 	{
 		Common::FTDS::String itemTitle = mItemIdent + valName + "[int]" + "\n";
@@ -424,6 +522,11 @@ namespace Common
 		++mItemCounts.back();
 	}
 
+	/// @brief Writes a named unsigned int value in the engine's .chunk text format.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @param valName Key written before the serialized value.
+	/// @param intVal Integer value read, written, or edited.
+	/// @note Writes to the supplied stream at its current position.
 	void FileIOHelper::SaveUnsignedInt(std::ofstream& ofs, const Common::FTDS::String& valName, const unsigned int& intVal)
 	{
 		Common::FTDS::String itemTitle = mItemIdent + valName + "[unsigned int]" + "\n";
@@ -432,6 +535,11 @@ namespace Common
 		++mItemCounts.back();
 	}
 
+	/// @brief Writes a named size value in the engine's .chunk text format.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @param valName Key written before the serialized value.
+	/// @param sizeVal Size value read or written.
+	/// @note Writes to the supplied stream at its current position.
 	void FileIOHelper::SaveSize(std::ofstream& ofs, const Common::FTDS::String& valName, const size_t& sizeVal)
 	{
 		Common::FTDS::String itemTitle = mItemIdent + valName + "[size]" + "\n";
@@ -440,6 +548,11 @@ namespace Common
 		++mItemCounts.back();
 	}
 
+	/// @brief Writes a named float value in the engine's .chunk text format.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @param valName Key written before the serialized value.
+	/// @param floatVal Floating-point value read, written, or edited.
+	/// @note Writes to the supplied stream at its current position.
 	void FileIOHelper::SaveFloat(std::ofstream& ofs, const Common::FTDS::String& valName, const float& floatVal)
 	{
 		Common::FTDS::String itemTitle = mItemIdent + valName + "[float]" + "\n";
@@ -448,6 +561,11 @@ namespace Common
 		++mItemCounts.back();
 	}
 
+	/// @brief Writes a named string value in the engine's .chunk text format.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @param valName Key written before the serialized value.
+	/// @param strVal String value read or written.
+	/// @note Writes to the supplied stream at its current position.
 	void FileIOHelper::SaveString(std::ofstream& ofs, Common::FTDS::String& valName, const Common::FTDS::String& strVal)
 	{
 		Common::FTDS::String itemTitle = mItemIdent + valName + "[string]" + "\n";
@@ -456,6 +574,11 @@ namespace Common
 		++mItemCounts.back();
 	}
 
+	/// @brief Writes a named string value in the engine's .chunk text format.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @param valName Key written before the serialized value.
+	/// @param strVal String value read or written.
+	/// @note Writes to the supplied stream at its current position.
 	void FileIOHelper::SaveString(std::ofstream& ofs, const char* valName, const Common::FTDS::String& strVal)
 	{
 		Common::FTDS::String itemTitle = mItemIdent + valName + "[string]" + "\n";
@@ -464,6 +587,11 @@ namespace Common
 		++mItemCounts.back();
 	}
 
+	/// @brief Writes a named string value in the engine's .chunk text format.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @param valName Key written before the serialized value.
+	/// @param strVal String value read or written.
+	/// @note Writes to the supplied stream at its current position.
 	void FileIOHelper::SaveString(std::ofstream& ofs, const char* valName, const Common::FTDS::String* strVal)
 	{
 		Common::FTDS::String itemTitle = mItemIdent + valName + "[string]" + "\n";
@@ -472,6 +600,11 @@ namespace Common
 		++mItemCounts.back();
 	}
 
+	/// @brief Writes a named string value in the engine's .chunk text format.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @param valName Key written before the serialized value.
+	/// @param strVal String value read or written.
+	/// @note Writes to the supplied stream at its current position.
 	void FileIOHelper::SaveString(std::ofstream& ofs, const char* valName, const char* strVal)
 	{
 		Common::FTDS::String itemTitle = mItemIdent + valName + "[string]" + "\n";
@@ -480,6 +613,11 @@ namespace Common
 		++mItemCounts.back();
 	}
 
+	/// @brief Writes a named bool value in the engine's .chunk text format.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @param valName Key written before the serialized value.
+	/// @param boolVal Boolean value to serialize or convert.
+	/// @note Writes to the supplied stream at its current position.
 	void FileIOHelper::SaveBool(std::ofstream& ofs, const Common::FTDS::String& valName, const bool& boolVal)
 	{
 		Common::FTDS::String itemTitle = mItemIdent + valName + "[bool]" + "\n";
@@ -488,6 +626,11 @@ namespace Common
 		++mItemCounts.back();
 	}
 
+	/// @brief Returns the line used by this file iohelper.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @param str Text used by the operation.
+	/// @param delimiter Character that terminates the input line.
+	/// @return Current value of the line flag.
 	bool FileIOHelper::GetLine(std::ifstream& ifs, Common::FTDS::String& str, char delimiter)
 	{
 		if (ifs.fail())

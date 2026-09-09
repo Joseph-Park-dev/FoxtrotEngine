@@ -45,7 +45,35 @@
 <ClCompile Include="src\pch.cpp"/>
 <ClCompile Include="src\Plugin\D3D11Editor.cpp"/>
 <ClCompile Include="src\Plugin\Module.cpp"/>
-<ClInclude Include="include\**\*.h"/>
+<ClInclude Include="include\Actor\EditorTransform.h"/>
+<ClInclude Include="include\ActorCommand.h"/>
+<ClInclude Include="include\ChunkLoader.h"/>
+<ClInclude Include="include\Command.h"/>
+<ClInclude Include="include\CommandHistory.h"/>
+<ClInclude Include="include\Component\Graphics\EditorAnimator.h"/>
+<ClInclude Include="include\Component\Graphics\EditorMeshRenderer.h"/>
+<ClInclude Include="include\Component\Graphics\EditorSpineAnimator.h"/>
+<ClInclude Include="include\Component\Graphics\EditorSpriteRenderer.h"/>
+<ClInclude Include="include\Component\Graphics\EditorTileMapRenderer.h"/>
+<ClInclude Include="include\Component\IEditorComponent.h"/>
+<ClInclude Include="include\EditorCamera.h"/>
+<ClInclude Include="include\EditorElement.h"/>
+<ClInclude Include="include\EditorEventFunctions.h"/>
+<ClInclude Include="include\EditorLayer.h"/>
+<ClInclude Include="include\EditorRenderer.h"/>
+<ClInclude Include="include\EditorScene.h"/>
+<ClInclude Include="include\EditorSceneManager.h"/>
+<ClInclude Include="include\EditorUtils.h"/>
+<ClInclude Include="include\framework.h"/>
+<ClInclude Include="include\Manager\EditorEventManager.h"/>
+<ClInclude Include="include\Manager\EditorShapes.h"/>
+<ClInclude Include="include\Manager\ResourceManager.h"/>
+<ClInclude Include="include\pch.h"/>
+<ClInclude Include="include\Plugin\EditorExports.h"/>
+<ClInclude Include="include\Plugin\FTCoreEditor.h"/>
+<ClInclude Include="include\ResourceSystem\ResPath.h"/>
+<ClInclude Include="include\ResourceSystem\SupportedResources.h"/>
+<ClInclude Include="include\Utility\EditorHelper.h"/>
 </ItemGroup>
 <ItemGroup>
 <ProjectReference Include="..\Core\Core.vcxproj"><Project>{cce9835e-f788-4b51-930b-d7805ac1e2a0}</Project></ProjectReference>

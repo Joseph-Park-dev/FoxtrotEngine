@@ -22,9 +22,11 @@ namespace Graphics
 		////////////////////////////
 	public:
 		/// @brief Get original pixel-width of the image. This shall not be edited after the ITexture is created.
+		/// @return Current width.
 		virtual const unsigned int GetWidth() const = 0;
 
 		/// @brief Get original pixel-height of the image. This shall not be edited after the ITexture is created.
+		/// @return Current height.
 		virtual const unsigned int GetHeight() const = 0;
 
 		/////////////////
@@ -33,16 +35,19 @@ namespace Graphics
 	public:
 		/// @brief Saves resource properties into a file.
 		/// @param ofs A stream to a .chunk file
+		/// @note Writes to the supplied stream at its current position.
 		virtual void SaveProperties(std::ofstream& ofs) override = 0;
 
 		/// @brief Loads resource properties into an instance.
 		/// @param ifs A stream from a .chunk file
+		/// @note Advances the stream position and updates the destination state.
 		virtual void LoadProperties(std::ifstream& ifs) override = 0;
 
 		///////////////////////////////////
 		/// Const/Destructors & Copying ///
 		///////////////////////////////////
 	public:
+		/// @brief Completes destruction through the object's inheritance hierarchy.
 		virtual ~ITexture() override = 0;
 	};
 

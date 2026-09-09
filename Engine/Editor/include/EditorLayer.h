@@ -76,8 +76,19 @@ namespace Editor
 	{
 		SINGLETON(EditorLayer)
 	public:
+		/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
+		/// @param renderer Renderer providing the graphics device and current render state.
 		void Initialize(Graphics::IRenderer* renderer);
+        /// @brief Updates the viewport renderer used by subsequent operations.
+        /// @param viewport Replacement viewport renderer.
         void SetViewportRenderer(D3D11::ViewportRenderer* viewport) { mViewport = viewport; }
+		/// @brief Advances frame-dependent state using the current time step.
+		/// @param deltaTime Elapsed frame time in seconds.
+		/// @param editorWin Editor window receiving the UI or rendering output.
+		/// @param input Input state for the current frame.
+		/// @param renderer Renderer providing the graphics device and current render state.
+		/// @param gameCam Camera used to render the game scene.
+		/// @param editorCam Camera used for editor navigation.
 		void Update(
 			float deltaTime, 
 			Graphics::IWindow* editorWin, 
@@ -85,27 +96,52 @@ namespace Editor
 			Graphics::IRenderer* renderer,
 			Graphics::ICamera* gameCam, 
 			Editor::EditorCamera* editorCam);
+		/// @brief Submits this object's graphics work for the current frame.
 		void Render();
+		/// @brief Releases runtime services and resources during engine shutdown.
 		void ShutDown();
 
 	public:
+		/// @brief Exposes the editor element currently selected for inspection.
+		/// @return Borrowed access to the focused editor element.
 		EditorElement* FocusedEditorElement() { return mFocusedEditorElement; }
+		/// @brief Returns the actor name idx used by this editor layer.
+		/// @return Borrowed access to the actor name idx.
+		/// @note Changes through the returned reference affect this object's stored state.
 		int&		   GetActorNameIdx() { return mActorNameIdx; }
+		/// @brief Returns the undo key pressed used by this editor layer.
+		/// @return Current value of the undo key pressed flag.
 		bool		   GetUndoKeyPressed() const { return mUndoKeyPressed; }
+		/// @brief Returns the redo key pressed used by this editor layer.
+		/// @return Current value of the redo key pressed flag.
 		bool		   GetRedoKeyPressed() const { return mRedoKeyPressed; }
+		/// @brief Returns the confirm key pressed used by this editor layer.
+		/// @return Current value of the confirm key pressed flag.
 		bool		   GetConfirmKeyPressed() const { return mConfirmKeyPressed; }
+		/// @brief Returns the error type used by this editor layer.
+		/// @return Current error type.
 		ErrorType	   GetErrorType() const { return mErrorType; }
 
 		// ImGuiFileDialogFlags& GetFileSelectFlag() { return mFileSelectFlag; }
 
+		/// @brief Updates the info type used by subsequent operations.
+		/// @param type Replacement info type.
 		void SetInfoType(InfoType type) { mInfoType = type; }
+		/// @brief Updates the error type used by subsequent operations.
+		/// @param type Replacement error type.
 		void SetErrorType(ErrorType type) { mErrorType = type; }
 
 		// Is the cursor on the viewport area?
+		/// @brief Tests whether the cursor lies inside the scene viewport bounds.
+		/// @return True when the cursor lies inside the scene viewport bounds; otherwise false.
 		bool CursorOnViewport() const;
 
 	public:
 		// Pops up a message box with confirm button only.
+		/// @brief Shows an informational popup.
+		/// @param title Window title or dialog caption.
+		/// @param msg Windows message containing input or window data.
+		/// @param onConfirm Callback invoked when the operation is confirmed.
 		template <class FUNCTOR>
 		void PopUpInfo(const char* title, const char* msg, FUNCTOR&& onConfirm)
 		{
@@ -137,6 +173,11 @@ namespace Editor
 
 		// Pops up a message box with confirm and cancel buttons.
 		// (User needs to choose)
+		/// @brief Shows a confirmation popup and reports the user's choice.
+		/// @param title Window title or dialog caption.
+		/// @param msg Windows message containing input or window data.
+		/// @param onConfirm Callback invoked when the operation is confirmed.
+		/// @param onCancel Callback invoked when the operation is cancelled.
 		template <class FUNCTOR>
 		void PopUpInquiry(const char* title, const char* msg, FUNCTOR&& onConfirm, FUNCTOR&& onCancel)
 		{
@@ -198,74 +239,117 @@ namespace Editor
 		//  Renders viewport.
 		//  This is execptionally placed in Update() due to its requirement
 		//  to be nested in ImGUi's Frame.
-		/// </summary>
+		/// @brief Displays the rendered scene texture and handles viewport interaction.
+		/// @param editorWin Editor window receiving the UI or rendering output.
+		/// @param input Input state for the current frame.
+		/// @param renderer Renderer providing the graphics device and current render state.
 		void DisplayViewport(Graphics::IWindow* editorWin, InputSystem::IInputDevice* input, Graphics::IRenderer* renderer);
 
 		// Displays current frame rate.
+		/// @brief Displays current timing and frame-rate information in the editor.
 		void DisplayFrameRate();
 
-		/// <summary>
+		/// @brief Repositions or sizes the current ImGui control to fit the available content region.
 		/// Change the GUI values such as font size.
-		/// </summary>
+		/// @param opened Whether the editor window remains open.
 		void AdjustGUI(bool* opened);
 
 		// Displays menu docked at the top of the screen
 		// & calls the related functions.
+		/// @brief Builds the editor's top-level menu bar.
 		void DisplayMainMenuBar();
 
-		/// <summary>
+		/// @brief Builds the editor's edit menu, including command-history actions.
 		/// Displays Edit menu for project-wise settings.
-		/// </summary>
 		void DisplayEditMenu();
 
 		// Displays menu docked at the top of the screen
 		// & calls the related functions.
+		/// @brief Builds editor controls for engine manager state.
 		void DisplayManagersMenu();
 
 		// Displays list of EditorElements in the Scene.
 		// & calls the related functions.
+		/// @brief Draws the scene actor hierarchy and processes selection changes.
 		void DisplayHierarchyMenu();
 
 		// Displays a single selection in the hierarchy.
+		/// @brief Draws selectable entries and applies the selected value.
+		/// @param actor Actor participating in this operation.
+		/// @param index Zero-based element index.
 		void DisplaySelection(EditorElement* actor, size_t& index);
 
+		/// @brief Handles editor drag interactions for the selected object.
+		/// @param from Source container whose values are copied.
 		void ProcessDragEvent(EditorElement* from);
+		/// @brief Handles an item dropped onto the editor target.
+		/// @param target Target object or value sought by the operation.
 		void ProcessDropEvent(EditorElement* target);
 
 		// Recurse through the children of an element, add "val"
 		// to the hierarchy levels.
+		/// @brief Updates the hierarchy lv recurse used by subsequent operations.
+		/// @param element Element to insert or edit.
+		/// @param val Value to assign, insert, or process.
 		void SetHierarchyLvRecurse(EditorElement* element, int val);
 
 		// Displays FTResources loaded to current project.
 		// & calls the related functions.
+		/// @brief Draws the editor's resource management panel.
 		void DisplayResourceMenu();
 
 		// Displays the focused EditorElement's info.
 		// & calls the related functions.
+		/// @brief Draws editable properties for the currently selected editor element.
 		void DisplayInspectorMenu();
 
 		// Viewport size is changed by dragging.
+		/// @brief Updates dependent camera and rendering state after the scene viewport is resized.
+		/// @param size Number of elements or bytes required by the operation.
+		/// @return True if the operation succeeds or the tested condition holds; otherwise false.
 		bool SceneViewportSizeChanged(ImVec2 size);
 
 		// Does Foxtrot Project exists in projDir?
 		// std::string is used exceptionally because of readability issue.
+		/// @brief Tests whether the required project files or directory are present.
+		/// @param projDir Project directory.
+		/// @return True when the required project files or directory are present; otherwise false.
 		bool ProjectExists(std::string projDir);
 
+		/// @brief Displays an informational message through the platform's message UI.
 		void DisplayInfoMessage();
+		/// @brief Shows an informational popup.
+		/// @param msg Windows message containing input or window data.
 		void PopUpInfo(const char* msg);
 
+		/// @brief Displays an error message through the platform's message UI.
 		void DisplayErrorMessage();
+		/// @brief Shows an error popup and returns its user response when applicable.
+		/// @param title Window title or dialog caption.
+		/// @param msg Windows message containing input or window data.
 		void PopUpError(const char* title, const char* msg);
 
 		// Called according to FileMenuEvents.
+		/// @brief Initializes the directories and configuration for a new editor project.
+		/// @param path Filesystem path of the resource or project.
 		void CreateNewProject(std::string& path);
+		/// @brief Loads the selected editor project and its configured paths.
+		/// @param path Filesystem path of the resource or project.
 		void OpenProject(std::string& path);
+		/// @brief Writes the current editor document to its configured path.
+		/// @param path Filesystem path of the resource or project.
 		void Save(std::string& path);
+		/// @brief Selects a destination and writes the current editor document there.
+		/// @param path Filesystem path of the resource or project.
 		void SaveAs(std::string& path);
+		/// @brief Opens the selected file or project for subsequent editing.
+		/// @param path Filesystem path of the resource or project.
 		void Open(std::string& path);
 
 	private:
+		/// @brief Persists editor preferences to the configuration file.
 		void SaveEditorConfig();
+		/// @brief Restores editor preferences from the configuration file.
 		void LoadEditorConfig();
 	};
 

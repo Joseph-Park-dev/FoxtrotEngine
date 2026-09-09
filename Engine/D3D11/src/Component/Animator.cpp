@@ -38,6 +38,10 @@ namespace D3D11
 	using namespace Common;
 	using namespace Core;
 
+	/// @brief Initializes sprite-animation playback state for its owner.
+	/// @param owner Actor or object associated with the new instance.
+	/// @param updateOrder Order used when dispatching component updates.
+	/// @note Initializes the :Animator base or delegates to its constructor.
 	Animator::Animator(Core::IActor* owner, int updateOrder)
 		: SpriteRenderer(owner, updateOrder)
 		, mLoadedAnim(DBG_NEW Common::FTDS::DynamicArray<D3D11::FTSpriteAnimation*>)
@@ -48,12 +52,16 @@ namespace D3D11
 	{
 	}
 
+	/// @brief Releases the resources managed by this instance during destruction.
 	Animator::~Animator()
 	{
 		mLoadedAnim->Clear();
 		delete mLoadedAnim;
 	}
 
+	/// @brief Starts or selects animation playback.
+	/// @param idx Zero-based element index.
+	/// @param isRepeated Whether playback repeats after its final frame.
 	void Animator::Play(const size_t idx, bool isRepeated)
 	{
 		FTSpriteAnimation* anim = mLoadedAnim->At(idx);
@@ -63,22 +71,34 @@ namespace D3D11
 		mIsRepeated = isRepeated;
 	}
 
+	/// @brief Stops animation playback.
 	void Animator::Stop()
 	{
 		mIsFinished = true;
 	}
 
+	/// @brief Returns the is finished used by this animator.
+	/// @return Current value of the is finished flag.
 	bool Animator::GetIsFinished() const { return mIsFinished; }
+	/// @brief Returns the curr frame idx used by this animator.
+	/// @return Current curr frame idx.
 	int	 Animator::GetCurrFrameIdx() const { return mCurrFrameIdx; }
 
+	/// @brief Updates the frame used by subsequent operations.
+	/// @param frameNumber Replacement frame.
 	void Animator::SetFrame(int frameNumber)
 	{
 		mIsFinished	  = false;
 		mCurrFrameIdx = frameNumber;
 		mAccTime	  = 0.f;
 	}
+	/// @brief Updates the is finished used by subsequent operations.
+	/// @param val Replacement is finished.
 	void Animator::SetIsFinished(bool val) { mIsFinished = val; }
 
+	/// @brief Serializes this object's persistent properties to a .chunk stream.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @note Writes to the supplied stream at its current position.
 	void Animator::SaveProperties(std::ofstream& ofs)
 	{
 		SpriteRenderer::SaveProperties(ofs);
@@ -94,6 +114,9 @@ namespace D3D11
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::Animator::LOADED_KEYS);
 	}
 
+	/// @brief Restores this object's persistent properties from a .chunk stream.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @note Advances the stream position and updates the destination state.
 	void Animator::LoadProperties(std::ifstream& ifs)
 	{
 		// Load Animations
@@ -115,6 +138,8 @@ namespace D3D11
 			Play(0);
 	}
 
+	/// @brief Advances the animation's current frame according to playback state.
+	/// @param deltaTime Elapsed frame time in seconds.
 	void Animator::UpdateFrame(float deltaTime)
 	{
 		if (mIsFinished)
@@ -136,11 +161,15 @@ namespace D3D11
 		}
 	}
 
+	/// @brief Tests whether an index lies outside the container's accessible range.
+	/// @param anim Animation resource used by the operation.
+	/// @return True when an index lies outside the container's accessible range; otherwise false.
 	bool Animator::IndexOutOfRange(FTSpriteAnimation* anim)
 	{
 		return (anim->GetMaxFrameIdx() - anim->GetMinFrameIdx()) < mCurrFrameIdx;
 	}
 
+	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
 	void Animator::Initialize()
 	{
 		if (0 < mLoadedAnim->GetSize())
@@ -149,14 +178,20 @@ namespace D3D11
 		D3D11Component::Initialize();
 	}
 
+	/// @brief Provides an empty lifecycle or extension hook for this implementation.
+	/// @param inputDevice Device exposing the current frame's input state.
 	void Animator::ProcessInput(IInputDevice* inputDevice)
 	{
 	}
 
+	/// @brief Provides an empty lifecycle or extension hook for this implementation.
+	/// @param deltaTime Elapsed frame time in seconds.
 	void Animator::Update(float deltaTime)
 	{
 	}
 
+	/// @brief Runs the post-update lifecycle phase after ordinary frame updates.
+	/// @param deltaTime Elapsed frame time in seconds.
 	void Animator::LateUpdate(float deltaTime)
 	{
 		if (!GetSprite())
@@ -164,6 +199,9 @@ namespace D3D11
 		UpdateFrame(deltaTime);
 	}
 
+	/// @brief Submits this object's graphics work for the current frame.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @param camInst Camera supplying the view and projection for this draw.
 	void Animator::Render(Core::IRenderer* renderer, Core::ICamera* camInst)
 	{
 		if (GetSprite())
@@ -187,6 +225,8 @@ namespace D3D11
 		}
 	}
 
+	/// @brief Copies this object's state into the requested target or attaches its clone to the target actor.
+	/// @param actor Actor participating in this operation.
 	void Animator::CloneTo(Core::IActor* actor)
 	{
 		Animator* newComp = DBG_NEW Animator(actor, GetUpdateOrder());
@@ -198,11 +238,15 @@ namespace D3D11
 	}
 
 #ifdef FOXTROT_EDITOR
+	/// @brief Advances state needed only while operating in the editor.
+	/// @param deltaTime Elapsed frame time in seconds.
 	void Animator::EditorUpdate(float deltaTime)
 	{
 		LateUpdate(deltaTime);
 	}
 
+	/// @brief Updates the object's editor-facing controls.
+	/// @param chInst Glyph instance whose metrics or vertices are used.
 	void Animator::EditorUIUpdate(Editor::CommandHistory* chInst)
 	{
 		chInst->UpdateBoolValue("Is Repeated", mIsRepeated);
@@ -227,6 +271,9 @@ namespace D3D11
 		UpdatePlayList();
 	}
 
+	/// @brief Submits editor-specific overlays and viewport graphics.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @param camInst Camera supplying the view and projection for this draw.
 	void Animator::EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst)
 	{
 		if (GetSprite())
@@ -252,6 +299,7 @@ namespace D3D11
 		}
 	}
 
+	/// @brief Processes the editor controls for animation playback.
 	void Animator::UpdatePlayAnim()
 	{
 		if (GetSprite())
@@ -269,6 +317,7 @@ namespace D3D11
 		}
 	}
 
+	/// @brief Refreshes the animation selection and playback list.
 	void Animator::UpdatePlayList()
 	{
 		FTSpriteAnimation* anim = nullptr;
@@ -324,6 +373,9 @@ namespace D3D11
 
 } // namespace D3D11
 namespace D3D11 {
+/// @brief Creates an animation component associated with an actor.
+/// @param actor Actor participating in this operation.
+/// @return Created animator instance or resource.
 D3D11_API D3D11::Animator* CreateAnimator(Core::IActor* actor)
 	{
 		return DBG_NEW D3D11::Animator(actor);

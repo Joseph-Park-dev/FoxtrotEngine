@@ -29,6 +29,8 @@ namespace D3D11
 	using namespace Core;
 	using Microsoft::WRL::ComPtr;
 
+	/// @brief Initializes the debug-geometry registry.
+	/// @note Initializes the :DebugShapes base or delegates to its constructor.
 	DebugShapes::DebugShapes()
 		: mShapes(DBG_NEW Common::FTDS::DynamicArray<FTShape*>)
 		, mVSPath(L".\\FoxtrotEngine\\Assets\\Shaders\\DebugShapeVS.hlsl")
@@ -37,12 +39,15 @@ namespace D3D11
 	{
 	}
 
+	/// @brief Releases the resources managed by this instance during destruction.
 	DebugShapes::~DebugShapes()
 	{
 		DeleteAll();
 		delete mShapes;
 	}
 
+	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
+	/// @param renderer Renderer providing the graphics device and current render state.
 	void DebugShapes::Initialize(D3D11Renderer* renderer)
 	{
 		/*if (0 < mShapes.size())
@@ -50,6 +55,8 @@ namespace D3D11
 		this->CreateShaders(renderer->GetDevice());
 	}
 
+	/// @brief Submits this object's graphics work for the current frame.
+	/// @param renderer Renderer providing the graphics device and current render state.
 	void DebugShapes::Render(D3D11Renderer* renderer)
 	{
 		if (mShapes->GetSize() < 1)
@@ -59,11 +66,15 @@ namespace D3D11
 			(*iter)->Render(renderer);
 	}
 
+	/// @brief Registers a shape for subsequent rendering.
+	/// @param shape Shape to register, remove, or render.
 	void DebugShapes::AddShape(FTShape* shape)
 	{
 		mShapes->PushBack(shape);
 	}
 
+	/// @brief Removes a shape from the managed rendering collection.
+	/// @param shape Shape to register, remove, or render.
 	void DebugShapes::RemoveShape(FTShape* shape)
 	{
 		int pos = mShapes->Find(shape);
@@ -77,6 +88,7 @@ namespace D3D11
 		}
 	}
 
+	/// @brief Deletes the scene's managed actors and clears its collections.
 	void DebugShapes::DeleteAll()
 	{
 		if (mShapes->GetSize() < 1)
@@ -90,11 +102,25 @@ namespace D3D11
 		mShapes->Clear();
 	}
 
+	/// @brief Returns the vs used by this debug shapes.
+	/// @return Borrowed access to the vs.
+	/// @note Changes through the returned reference affect this object's stored state.
 	ComPtr<ID3D11VertexShader>&	  DebugShapes::GetVS() { return mVS; }
+	/// @brief Returns the gssquare used by this debug shapes.
+	/// @return Borrowed access to the gssquare.
+	/// @note Changes through the returned reference affect this object's stored state.
 	ComPtr<ID3D11GeometryShader>& DebugShapes::GetGSSquare() { return mGSSquare; }
+	/// @brief Returns the ps used by this debug shapes.
+	/// @return Borrowed access to the ps.
+	/// @note Changes through the returned reference affect this object's stored state.
 	ComPtr<ID3D11PixelShader>&	  DebugShapes::GetPS() { return mPS; }
+	/// @brief Returns the input layout used by this debug shapes.
+	/// @return Borrowed access to the input layout.
+	/// @note Changes through the returned reference affect this object's stored state.
 	ComPtr<ID3D11InputLayout>&	  DebugShapes::GetInputLayout() { return mInputLayout; }
 
+	/// @brief Creates the shader stages required by this rendering resource.
+	/// @param device Direct3D device used to create GPU resources.
 	void DebugShapes::CreateShaders(ComPtr<ID3D11Device>& device)
 	{
 		std::vector<D3D11_INPUT_ELEMENT_DESC> basicInputElements = {
@@ -120,6 +146,9 @@ namespace D3D11
 {
     DebugShapes* DebugShapes::mInstance = nullptr;
 
+    /// @brief Returns the shared instance used by this manager.
+    /// @return Borrowed singleton pointer; do not delete it directly.
+    /// @note Synchronize concurrent initialization, access, and destruction externally.
     DebugShapes* DebugShapes::GetInstance()
     {
         if (!mInstance)
@@ -127,6 +156,8 @@ namespace D3D11
         return mInstance;
     }
 
+    /// @brief Deletes the shared instance and clears the singleton pointer.
+    /// @note Invalidates borrowed pointers to the instance; synchronize concurrent access externally.
     void DebugShapes::Destroy()
     {
         delete mInstance;

@@ -15,6 +15,8 @@ namespace Common
 			using FTDS::Array<TYPE>::mSize;
 
 		public:
+			/// @brief Appends a value at the rear of the queue.
+			/// @param value Value to assign, insert, or process.
 			void Enqueue(TYPE value)
 			{
 				mRear		 = (mRear + 1) % mCapacity;
@@ -25,12 +27,15 @@ namespace Common
 				else
 					++mSize;
 			}
+			/// @brief Removes the front queue element.
 			void Dequeue()
 			{
 				assert(!this->IsEmpty());
 				mFront = (mFront + 1) % mCapacity;
 				--mSize;
 			}
+			/// @brief Inspects the next accessible element without removing it.
+			/// @return Value at the inspected position.
 			TYPE Peek()
 			{
 				assert(!this->IsEmpty());
@@ -38,6 +43,8 @@ namespace Common
 			}
 
 		public:
+			/// @brief Initializes the circular queue's front and rear indices.
+			/// @note Initializes the Array<TYPE> base or delegates to its constructor.
 			CircularQueue()
 				: Array<TYPE>()
 				, mFront(0)

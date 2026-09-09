@@ -21,6 +21,9 @@ namespace D3D11
 {
 	const FTRectArea FTRectArea::Zero(0.0f, 0.0f, 0.0f, 0.0f);
 
+	/// @brief Tests whether two rectangular areas intersect.
+	/// @param point Point to test or draw.
+	/// @return True when two rectangular areas intersect; otherwise false.
 	bool FTRectArea::Overlaps(const Math::FTVector2& point)
 	{
 		Math::FTVector2 v1 = Math::FTVector2(Math::Cos(mRotAngle), Math::Sin(mRotAngle));
@@ -45,6 +48,10 @@ namespace D3D11
 	//	return Overlaps(other.mMin) || Overlaps(other.mMax);
 	// }
 
+	/// @brief Updates the  used by subsequent operations.
+	/// @param center Center position of the geometry.
+	/// @param dimension Dimensions used when creating the resource.
+	/// @param rotAngle Rotation angle.
 	void FTRectArea::Set(Math::FTVector2 center, Math::FTVector2 dimension, float rotAngle)
 	{
 		mCenter	  = center;
@@ -56,11 +63,15 @@ namespace D3D11
 		mRotAngle = rotAngle;
 	}
 
+	/// @brief Initializes the origin and dimensions of a rendering rectangle.
+	/// @note Initializes the :FTRectArea base or delegates to its constructor.
 	FTRectArea::FTRectArea()
 	{
 		Set(0.f, 0.f, 0.f, 0.f);
 	}
 
+	/// @brief Copies this object's state into the requested target or attaches its clone to the target actor.
+	/// @param rect Rectangle bounds used by the operation.
 	void FTRectArea::CloneTo(FTRectArea* rect)
 	{
 		rect->mCenter = mCenter;
@@ -72,6 +83,7 @@ namespace D3D11
 	}
 
 #ifdef FOXTROT_EDITOR
+	/// @brief Builds the editor controls for inspecting and modifying this object's state.
 	void FTRectArea::UpdateUI()
 	{
 		Editor::UPDATE_VEC2("Center", mCenter);
@@ -81,16 +93,29 @@ namespace D3D11
 	}
 #endif
 
+	/// @brief Creates the rectangle used to define a rendering or viewport area.
+	/// @return Created ftrect area instance or resource.
 	FTRectArea* CreateFTRectArea()
 	{
 		return DBG_NEW FTRectArea();
 	}
 
+	/// @brief Creates the rectangle used to define a rendering or viewport area.
+	/// @param x Horizontal coordinate or X component.
+	/// @param y Vertical coordinate or Y component.
+	/// @param width Width of the window, texture, or geometry.
+	/// @param height Height of the window, texture, or geometry.
+	/// @param rotAngle Rotation angle.
+	/// @return Created ftrect area instance or resource.
 	FTRectArea* CreateFTRectArea(float x, float y, float width, float height, float rotAngle)
 	{
 		return DBG_NEW FTRectArea(x, y, width, height, rotAngle);
 	}
 
+	/// @brief Serializes this object's persistent properties to a .chunk stream.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @param rectArea Rendering rectangle.
+	/// @note Writes to the supplied stream at its current position.
 	void SaveProperties(std::ofstream& ofs, FTRectArea* rectArea)
 	{
 		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTRectArea);
@@ -100,6 +125,10 @@ namespace D3D11
 		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTRectArea);
 	}
 
+	/// @brief Restores this object's persistent properties from a .chunk stream.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @param rectArea Rendering rectangle.
+	/// @note Advances the stream position and updates the destination state.
 	void LoadProperties(std::ifstream& ifs, FTRectArea* rectArea)
 	{
 		float			rotAngle = 0.f;

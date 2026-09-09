@@ -37,9 +37,19 @@ namespace D3D11
 		static inline D3D11::ResType Type = D3D11::ResType::SPINE_ANIMATION;
 
 	public:
+		/// @brief Advances frame-dependent state using the current time step.
+		/// @param deltaTime Elapsed frame time in seconds.
+		/// @param physics Physics service used by the operation.
 		void Update(float deltaTime, spine::Physics physics);
 
 		/// @brief Renders the entire meshes created, as a full model.
+		/// @param renderer Renderer providing the graphics device and current render state.
+		/// @param transform Transform associated with the actor.
+		/// @param camInst Camera supplying the view and projection for this draw.
+		/// @param tex Texture resource used by the operation.
+		/// @param vs Vertex shader resource.
+		/// @param ps Pixel shader resource.
+		/// @param mat Matrix or material used by this operation.
 		void Render(
 			Core::IRenderer* renderer,
 			Core::Transform* transform,
@@ -49,21 +59,30 @@ namespace D3D11
 			FTPixelShader*	 ps,
 			FTMaterial*		 mat);
 
+		/// @brief Serializes this object's persistent properties to a .chunk stream.
 		/// @see FTResource::SaveProperties()
+		/// @param ofs Output stream receiving the serialized data.
+		/// @note Writes to the supplied stream at its current position.
 		virtual void SaveProperties(std::ofstream& ofs) override;
 
+		/// @brief Restores this object's persistent properties from a .chunk stream.
 		/// @see FTResource::LoadProperties()
+		/// @param ifs Input stream positioned at the expected data; reading advances its position.
+		/// @note Advances the stream position and updates the destination state.
 		virtual void LoadProperties(std::ifstream& ifs) override;
 
 	public:
 		/// @brief Gets the skin combination consists of shifted bits.
+		/// @return Current skin combination.
 		const unsigned char GetSkinCombination() const;
 
 		/// @brief Sets the skin conbination & updates the skin.
+		/// @param skinCombi Replacement skin combination.
 		void SetSkinCombination(const unsigned char skinCombi);
 
 		/// @brief Sets timescale for the loaded clips.
 		/// Useful to control the playback speed.
+		/// @param val Replacement time scale.
 		void SetTimeScale(const float val);
 
 		/// @brief Plays the loaded clip on TrackEntry 0.
@@ -76,15 +95,21 @@ namespace D3D11
 		void ToggleSkin(const size_t idx);
 
 		/// @brief Returns the refernce to the loaded spine animation clips.
+		/// @return Borrowed access to the loaded clips.
+		/// @note Changes through the returned reference affect this object's stored state.
 		spine::Vector<spine::Animation*>& LoadedClips();
 
 		/// @brief FTSpineAnimation uses SpineMesh, not Mesh!
+		/// @return No value; this overload is deleted and cannot be called.
 		Common::FTDS::DynamicArray<Mesh*>* Meshes() = delete;
 
 	public:
 		/// @brief Creates the spine animation.
 		/// The file paths of the generic data will only be used.
+		/// @param resDef Resource definition containing the filename and source path.
+		/// @param renderer Renderer providing the graphics device and current render state.
 		FTSpineAnimation(Common::FTResourceDef& resDef, Core::IRenderer* renderer);
+		/// @brief Releases the resources managed by this instance during destruction.
 		~FTSpineAnimation() override;
 
 	private:
@@ -120,6 +145,8 @@ namespace D3D11
 		Common::FTDS::DynamicArray<SpineMesh*>* mMeshes;
 
 	private:
+		/// @brief Applies this object's processing step.
+		/// @param renderer Renderer providing the graphics device and current render state.
 		void Process(Core::IRenderer* renderer);
 
 		/// @brief Loads Spine Atlas & JSON, and creates a spine animation.
@@ -130,6 +157,7 @@ namespace D3D11
 		/// @param order draw order for the current mesh.
 		/// @param attachment attachment to acquire mesh properties.
 		/// @param attachmentType This is either a SpineMesh or SpineRegion.
+		/// @param device Direct3D device used to create GPU resources.
 		void InitializeMeshes(
 			Microsoft::WRL::ComPtr<ID3D11Device>& device,
 			int									  order,
@@ -137,6 +165,7 @@ namespace D3D11
 			D3D11::SPINE_ATTACHMENT_TYPE		  attachmentType);
 
 		/// @brief Updates the buffers for each spine meshes according to the vertices data.
+		/// @param context Context associated with this operation.
 		void UpdateBuffers(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
 
 		/// @brief Updates the skin according to the skin combination.
@@ -144,6 +173,11 @@ namespace D3D11
 
 #ifdef FOXTROT_EDITOR
 	public:
+		/// @brief Initializes Spine skeleton, atlas, and animation playback resources.
+		/// @param resDef Resource definition containing the filename and source path.
+		/// @param renderer Renderer providing the graphics device and current render state.
+		/// @param jsonPath Path to the JSON resource description.
+		/// @param atlasPath Path to the Spine atlas file.
 		FTSpineAnimation(
 			Common::FTResourceDef&		resDef,
 			Core::IRenderer*			renderer,
@@ -151,13 +185,16 @@ namespace D3D11
 			const Common::FTDS::String* atlasPath);
 
 	public:
+		/// @brief Builds the editor controls for inspecting and modifying this object's state.
 		/// @see FTResource::UpdateUI()
 		void UpdateUI() override;
 
 	public:
+		/// @brief Increments the resource metadata's reference count when metadata exists.
 		/// @see FTResource::AddRefCount()
 		virtual void AddRefCount() override;
 
+		/// @brief Decrements the resource metadata's reference count when metadata exists.
 		/// @see FTResource::SubtractRefCount()
 		virtual void SubtractRefCount() override;
 #endif // FOXTROT_EDITOR

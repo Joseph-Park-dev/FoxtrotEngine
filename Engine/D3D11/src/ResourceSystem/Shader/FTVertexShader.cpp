@@ -12,6 +12,10 @@ namespace D3D11
 	using namespace Core;
 	ResType FTVertexShader::Type = ResType::VERTEX_SHADER;
 
+	/// @brief Compiles shader source into bytecode using the shader's configured entry point and profile.
+	/// @param resDef Resource definition containing the filename and source path.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @throws D3D11::DX::com_exception If a checked Direct3D operation fails.
 	void FTVertexShader::CompileShader(Common::FTResourceDef& resDef, D3D11Renderer* renderer)
 	{
 		if (mSemanticItems->IsEmpty())
@@ -40,6 +44,10 @@ namespace D3D11
 		delete[] inputDesc;
 	}
 
+	/// @brief Initializes a vertex shader and its input-layout metadata.
+	/// @param resDef Resource definition containing the filename and source path.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @note Initializes the :FTVertexShader base or delegates to its constructor.
 	FTVertexShader::FTVertexShader(Common::FTResourceDef& resDef, void* renderer)
 		: D3D11::FTShader(resDef)
 		, mShader(nullptr)
@@ -54,6 +62,7 @@ namespace D3D11
 		CompileShader(resDef, rend);
 	}
 
+	/// @brief Releases the resources managed by this instance during destruction.
 	FTVertexShader::~FTVertexShader()
 	{
 #ifdef FOXTROT_EDITOR
@@ -66,6 +75,9 @@ namespace D3D11
 #endif
 	}
 
+	/// @brief Serializes this object's persistent properties to a .chunk stream.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @note Writes to the supplied stream at its current position.
 	void FTVertexShader::SaveProperties(std::ofstream& ofs)
 	{
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTVertexShader::FT_VERTEX_SHADER);
@@ -85,6 +97,9 @@ namespace D3D11
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTVertexShader::FT_VERTEX_SHADER);
 	}
 
+	/// @brief Restores this object's persistent properties from a .chunk stream.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @note Advances the stream position and updates the destination state.
 	void FTVertexShader::LoadProperties(std::ifstream& ifs)
 	{
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTVertexShader::FT_VERTEX_SHADER);
@@ -105,10 +120,17 @@ namespace D3D11
 		D3D11Resource::LoadProperties(ifs);
 	}
 
+	/// @brief Returns the shader used by this ftvertex shader.
+	/// @return Borrowed access to the shader.
+	/// @note Changes through the returned reference affect this object's stored state.
 	Microsoft::WRL::ComPtr<ID3D11VertexShader>& FTVertexShader::GetShader() { return mShader; }
+	/// @brief Returns the input layout used by this ftvertex shader.
+	/// @return Borrowed access to the input layout.
+	/// @note Changes through the returned reference affect this object's stored state.
 	Microsoft::WRL::ComPtr<ID3D11InputLayout>&	FTVertexShader::GetInputLayout() { return mInputLayout; }
 
 #ifdef FOXTROT_EDITOR
+	/// @brief Builds the editor controls for inspecting and modifying this object's state.
 	void FTVertexShader::UpdateUI()
 	{
 		ImGui::SeparatorText("Input Elements");
@@ -149,6 +171,9 @@ namespace D3D11
 	}
 #endif
 
+	/// @brief Serializes this object's persistent properties to a .chunk stream.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @note Writes to the supplied stream at its current position.
 	void SemanticItem::SaveProperties(std::ofstream& ofs)
 	{
 		FileIOHelper::SaveString(ofs, ChunkKey::FTVertexShader::SEMANTIC_NAME, Name);
@@ -160,6 +185,9 @@ namespace D3D11
 		FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTVertexShader::INSTANCE_DATA_STEP_RATE, Desc.InstanceDataStepRate);
 	}
 
+	/// @brief Restores this object's persistent properties from a .chunk stream.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @note Advances the stream position and updates the destination state.
 	void SemanticItem::LoadProperties(std::ifstream& ifs)
 	{
 		FileIOHelper::LoadUnsignedInt(ifs, Desc.InstanceDataStepRate);

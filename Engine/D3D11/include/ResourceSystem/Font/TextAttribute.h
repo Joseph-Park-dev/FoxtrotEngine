@@ -11,6 +11,8 @@ namespace D3D11
 		Math::FTVector2 Scale;
 		Math::FTVector4 Color;
 
+		/// @brief Initializes text content and its placement attributes.
+		/// @note Initializes the Rotation base or delegates to its constructor.
 		TextAttribute()
 			: Rotation(0.0f)
 			, Offset(Math::FTVector2(0.0f, 0.0f))
@@ -20,6 +22,9 @@ namespace D3D11
 		{
 		}
 
+		/// @brief Copies the supplied value into this object.
+		/// @param origin Source instance whose state is copied.
+		/// @return Value produced by the overloaded operation.
 		TextAttribute* operator=(TextAttribute* origin)
 		{
 			this->Rotation = origin->Rotation;

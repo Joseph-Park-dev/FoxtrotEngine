@@ -44,6 +44,7 @@ namespace D3D11
 		UINT								 IndexCount;
 		D3D_PRIMITIVE_TOPOLOGY				 Primitve{ D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP };
 
+		/// @brief Completes destruction through the object's inheritance hierarchy.
 		~SpineMesh()
 		{
 			PositionBuf.Reset();
@@ -53,6 +54,13 @@ namespace D3D11
 			IndexCount	= 0;
 		}
 
+		/// @brief Binds the resource views and GPU state required for drawing.
+		/// @param device Direct3D device used to create GPU resources.
+		/// @param order Ordering value used when processing or drawing the object.
+		/// @param attachmentType Spine attachment category.
+		/// @param vertexCount Number of vertices to upload or draw.
+		/// @param indexCount Number of indices to upload or draw.
+		/// @return Binds the resource views and GPU state required for drawing.
 		int ResourceBinding(
 			Microsoft::WRL::ComPtr<ID3D11Device>& device,
 			int									  order,
@@ -107,6 +115,8 @@ namespace D3D11
 			return S_OK;
 		}
 
+		/// @brief Submits geometry or text to the configured rendering target.
+		/// @param context Context associated with this operation.
 		void Draw(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
 		{
 			ID3D11Buffer* buffers[] = { PositionBuf.Get(), TexcoordBuf.Get() };

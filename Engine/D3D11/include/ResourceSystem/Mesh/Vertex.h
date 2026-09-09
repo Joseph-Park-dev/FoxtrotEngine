@@ -16,8 +16,12 @@ namespace D3D11
 {
 	struct Vertex
 	{
+		/// @brief Initializes mesh vertex attributes.
 		Vertex() {}
 
+		/// @brief Initializes mesh vertex attributes.
+		/// @param x Horizontal coordinate or X component.
+		/// @param y Vertical coordinate or Y component.
 		Vertex(float x, float y)
 		{
 			position.x = x;
@@ -28,6 +32,9 @@ namespace D3D11
 		Math::FTVector4 color;
 		Math::FTVector2 texcoord;
 
+		/// @brief Copies the supplied value into this object.
+		/// @param v Vertical texture coordinate.
+		/// @return Value produced by the overloaded operation.
 		Vertex operator=(Vertex& v)
 		{
 			position = v.position;
@@ -45,8 +52,12 @@ namespace D3D11
 
 	struct DebugVertex
 	{
+		/// @brief Initializes a vertex used for debug geometry.
 		DebugVertex() {}
 
+		/// @brief Initializes a vertex used for debug geometry.
+		/// @param x Horizontal coordinate or X component.
+		/// @param y Vertical coordinate or Y component.
 		DebugVertex(float x, float y)
 		{
 			position.x = x;

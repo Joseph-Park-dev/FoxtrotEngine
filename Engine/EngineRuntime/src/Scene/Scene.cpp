@@ -35,11 +35,9 @@
 
 namespace Core
 {
-	/**
-	 * @brief Constructs a `Scene` with empty actor containers.
-	 *
-	 * Initializes the active and pending actor lists and sets updating flag to false.
-	 */
+	/// @brief Constructs a `Scene` with empty actor containers.
+	/// Initializes the active and pending actor lists and sets updating flag to false.
+	/// @note Initializes the :Scene base or delegates to its constructor.
 	Scene::Scene()
 		: mIsUpdatingActors(false)
 		, mActors(DBG_NEW Common::FTDS::DynamicArray<Common::IActor*>)
@@ -47,11 +45,8 @@ namespace Core
 	{
 	}
 
-	/**
-	 * @brief Destructor. Cleans up all actors and internal containers.
-	 *
-	 * Calls `DeleteAll()` to delete owned actors, then deletes container instances.
-	 */
+	/// @brief Destructor. Cleans up all actors and internal containers.
+	/// Calls `DeleteAll()` to delete owned actors, then deletes container instances.
 	Scene::~Scene()
 	{
 		DeleteAll();
@@ -59,11 +54,9 @@ namespace Core
 		delete mPendingActors;
 	}
 
-	/**
-	 * @brief Finds an actor by unique identifier.
-	 * @param id Unique actor ID to search for.
-	 * @return Pointer to the actor if found; otherwise `nullptr`.
-	 */
+	/// @brief Finds an actor by unique identifier.
+	/// @param id Unique actor ID to search for.
+	/// @return Pointer to the actor if found; otherwise `nullptr`.
 	Common::IActor* Scene::FindActor(int id)
 	{
 		for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
@@ -76,12 +69,10 @@ namespace Core
 		return nullptr;
 	}
 
-	/**
-	 * @brief Finds an actor by name with optional filter to exclude a specific actor.
-	 * @param name Actor name to search for.
-	 * @param filter Optional actor pointer to exclude from match (commonly the caller).
-	 * @return Pointer to the actor if found; otherwise `nullptr`.
-	 */
+	/// @brief Finds an actor by name with optional filter to exclude a specific actor.
+	/// @param name Actor name to search for.
+	/// @param filter Optional actor pointer to exclude from match (commonly the caller).
+	/// @return Pointer to the actor if found; otherwise `nullptr`.
 	Common::IActor* Scene::FindActor(Common::FTDS::String& name, Common::IActor* filter)
 	{
 		for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
@@ -97,70 +88,62 @@ namespace Core
 		return nullptr;
 	}
 
-	/**
-	 * @brief Overload for finding an actor by C-string name with optional filter.
-	 * @param name Null-terminated string name.
-	 * @param filter Optional actor pointer to exclude.
-	 * @return Pointer to the actor if found; otherwise `nullptr`.
-	 */
+	/// @brief Overload for finding an actor by C-string name with optional filter.
+	/// @param name Null-terminated string name.
+	/// @param filter Optional actor pointer to exclude.
+	/// @return Pointer to the actor if found; otherwise `nullptr`.
 	Common::IActor* Scene::FindActor(const char* name, Common::IActor* filter)
 	{
 		Common::FTDS::String str(name);
 		return FindActor(str, filter);
 	}
 
+	/// @brief Returns the name used by this scene.
+	/// @return Borrowed access to the name.
 	const Common::FTDS::String& Scene::GetName()
 	{
 		return mSceneName;
 	}
 
-	/**
-	 * @brief Indicates if the scene is currently iterating/updating actors.
-	 * @return True if within `Update()` loop; otherwise false.
-	 */
+	/// @brief Indicates if the scene is currently iterating/updating actors.
+	/// @return True if within `Update()` loop; otherwise false.
 	const bool Scene::GetIsUpdatingActors() const
 	{
 		return mIsUpdatingActors;
 	}
 
-	/**
-	 * @brief Gets a const pointer to the active actors container.
-	 * @return Const pointer to `Common::FTDS::DynamicArray<Actor*>`.
-	 *
-	 * Note: Do not mutate actors via this container during update; use event processing.
-	 */
+	/// @brief Gets a const pointer to the active actors container.
+	/// @return Const pointer to `Common::FTDS::DynamicArray<Actor*>`.
+	/// Note: Do not mutate actors via this container during update; use event processing.
 	const Common::FTDS::DynamicArray<Common::IActor*>* Scene::GetActors() const
 	{
 		return mActors;
 	}
 
+	/// @brief Updates the name used by subsequent operations.
+	/// @param name Replacement name.
 	void Scene::SetName(const Common::FTDS::String&& name)
 	{
 		mSceneName.Assign(name);
 	}
 
-	/**
-	 * @brief Provides a reference to the active actors container pointer.
-	 * @return Reference to `Common::FTDS::DynamicArray<Actor*>*` for advanced management.
-	 *
-	 * Warning: Ownership and lifetime are managed internally; avoid replacing the container unless intended.
-	 */
+	/// @brief Provides a reference to the active actors container pointer.
+	/// @return Reference to `Common::FTDS::DynamicArray<Actor*>*` for advanced management.
+	/// Warning: Ownership and lifetime are managed internally; avoid replacing the container unless intended.
+	/// @note Changes through the returned reference affect this object's stored state.
 	Common::FTDS::DynamicArray<Common::IActor*>*& Scene::Actors()
 	{
 		return mActors;
 	}
 
-	/**
-	 * @brief Adds an actor to the scene.
-	 * @param actor Newly created actor pointer (owned by the scene after addition).
-	 *
-	 * Behavior:
-	 * - If currently updating, actor is queued in `mPendingActors`.
-	 * - Otherwise, actor is inserted into `mActors` ordered by `GetDrawOrder()`.
-	 *   Lower draw order actors are placed earlier.
-	 *
-	 * Precondition: `actor` must be non-null and allocated on heap.
-	 */
+	/// @brief Adds an actor to the scene.
+	/// @param actor Newly created actor pointer (owned by the scene after addition).
+	/// Behavior:
+	/// - If currently updating, actor is queued in `mPendingActors`.
+	/// - Otherwise, actor is inserted into `mActors` ordered by `GetDrawOrder()`.
+	/// Lower draw order actors are placed earlier.
+	/// Precondition: `actor` must be non-null and allocated on heap.
+	/// @note Queues insertion during actor updates; the update flag is not a thread synchronization mechanism.
 	void Scene::AddActor(Common::IActor* actor)
 	{
 		if (mIsUpdatingActors)
@@ -186,22 +169,16 @@ namespace Core
 		}
 	}
 
-	/**
-	 * @brief Processes scene-level events: applies pending additions and removes dead actors.
-	 *
-	 * Typical call site: once per frame after updates.
-	 */
+	/// @brief Processes scene-level events: applies pending additions and removes dead actors.
+	/// Typical call site: once per frame after updates.
 	void Scene::ProcessEvent()
 	{
 		AddPendingActors();
 		ClearDeadActors();
 	}
 
-	/**
-	 * @brief Deletes all actors (active and pending) and clears containers.
-	 *
-	 * Safe to call multiple times. Sets deleted pointer slots to `nullptr` before clearing.
-	 */
+	/// @brief Deletes all actors (active and pending) and clears containers.
+	/// Safe to call multiple times. Sets deleted pointer slots to `nullptr` before clearing.
 	void Scene::DeleteAll()
 	{
 		for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
@@ -219,11 +196,8 @@ namespace Core
 		mPendingActors->Clear();
 	}
 
-	/**
-	 * @brief Moves all pending actors into the active list.
-	 *
-	 * Clear the pending list only after transferring every actor.
-	 */
+	/// @brief Moves all pending actors into the active list.
+	/// Clear the pending list only after transferring every actor.
 	void Scene::AddPendingActors()
 	{
 		for (auto iter = mPendingActors->Begin(); iter != mPendingActors->End(); ++iter)
@@ -233,11 +207,8 @@ namespace Core
 		mPendingActors->Clear();
 	}
 
-	/**
-	 * @brief Removes actors flagged as dead from the scene.
-	 *
-	 * Iterates through active actors and calls `RemoveActor()` for those reporting `IsDead()`.
-	 */
+	/// @brief Removes actors flagged as dead from the scene.
+	/// Iterates through active actors and calls `RemoveActor()` for those reporting `IsDead()`.
 	void Scene::ClearDeadActors()
 	{
 		for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
@@ -247,16 +218,13 @@ namespace Core
 		}
 	}
 
-	/**
-	 * @brief Removes and deletes an actor from either pending or active containers.
-	 * @param actor Actor pointer to remove (owned by the scene).
-	 *
-	 * Behavior:
-	 * - Searches and deletes from `mPendingActors` if present, then erases entry.
-	 * - Searches and deletes from `mActors` if present, then erases entry.
-	 *
-	 * Postcondition: If found, actor memory is freed and removed from container.
-	 */
+	/// @brief Removes and deletes an actor from either pending or active containers.
+	/// @param actor Actor pointer to remove (owned by the scene).
+	/// Behavior:
+	/// - Searches and deletes from `mPendingActors` if present, then erases entry.
+	/// - Searches and deletes from `mActors` if present, then erases entry.
+	/// Postcondition: If found, actor memory is freed and removed from container.
+	/// @note Invalidates references to the removed actor.
 	void Scene::RemoveActor(Common::IActor* actor)
 	{
 		int pos = -1;

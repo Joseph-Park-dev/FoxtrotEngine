@@ -43,8 +43,12 @@ namespace Editor
 		SINGLETON(ChunkLoader)
 	public:
 		// Saves the current scene on Foxtrot Editor into .Chunk file.
+		/// @brief Serializes the current scene and resources to the selected .chunk file.
+		/// @param chunkPath Path to the .chunk file.
 		virtual void SaveChunk(const char* chunkPath) override;
 		// Loads the a .Chunk file into the current scene on Foxtrot Editor.
+		/// @brief Restores the scene and its resources from a .chunk file.
+		/// @param chunkPath Path to the .chunk file.
 		virtual void LoadChunk(const char* chunkPath) override;
 
 		/// @brief Halts gameloop while loading a .chunk
@@ -57,27 +61,43 @@ namespace Editor
 		/// The copied .chunk is the one that should be read into the game.
 		/// @param path The copy is recommended to be located in the same directory with the original.
 		/// @return Full path of the copied .chunk
+		/// @param copiedPathOut Receives the path of the temporary chunk copy.
+		/// @param chunkPath Path to the .chunk file.
 		virtual void CopyChunk(Common::FTDS::String& copiedPathOut, const char* chunkPath = "./") override;
 		/// @brief Delete the copied chunk after being used.
 		virtual void DeleteCopiedChunk() override;
 
 	public:
+		/// @brief Tests the loading chunk condition for the current object.
+		/// @return True if the operation succeeds or the tested condition holds; otherwise false.
 		virtual const bool IsLoadingChunk() const override;
+		/// @brief Returns the max actor id used by this chunk loader.
+		/// @return Current max actor id.
 		virtual const int  GetMaxActorID() const override;
+		/// @brief Returns the chunk data used by this chunk loader.
+		/// @return Borrowed access to the chunk data.
 		Core::ChunkData*   GetChunkData();
 
 		// Add actor count by 1.
+		/// @brief Advances the actor identifier counter used during chunk loading.
 		virtual void AddMaxActorID() override;
+		/// @brief Resets the actor identifier counter before rebuilding scene content.
 		virtual void ResetMaxActorID() override;
 
 	protected:
 		/// @brief Save .chunk specific data
+		/// @param out Receives the operation's output.
 		virtual void SaveChunkData(::std::ofstream& out) override;
 		/// @brief Load .chunk specific data
+		/// @param out Receives the operation's output.
 		virtual void LoadChunkData(::std::ifstream& out) override;
 		// Takes the values from EditorElements to save them into .Chunk file.
+		/// @brief Writes actor properties and components for the current scene.
+		/// @param ofs Output stream receiving the serialized data.
 		virtual void SaveActorsData(std::ofstream& ofs);
 		// Reads the values from .Chunk file and assign them to Actors.
+		/// @brief Restores serialized actor state for the loaded scene.
+		/// @param ifs Input stream positioned at the expected data; reading advances its position.
 		virtual void LoadActorsData(std::ifstream& ifs);
 
 	private:
@@ -87,5 +107,7 @@ namespace Editor
 #include "Plugin/EditorExports.h"
 
 	constexpr const char* GET_EDITOR_CHUNK_LOADER_FUNC = "GetEditorChunkLoader";
+	/// @brief Returns the editor chunk loader used by this service.
+	/// @return Borrowed access to the editor chunk loader.
 	extern "C" EDITOR_API Editor::ChunkLoader* GetEditorChunkLoader();
 } // namespace Editor

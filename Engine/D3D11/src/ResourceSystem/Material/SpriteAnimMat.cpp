@@ -21,16 +21,23 @@ namespace D3D11
 	using Microsoft::WRL::ComPtr;
 	ResType SpriteAnimMat::Type = ResType::MATERIAL;
 
+	/// @brief Creates the pixel-shader constant buffer used by this shader.
+	/// @param device Direct3D device used to create GPU resources.
 	void SpriteAnimMat::CreatePixelConstBuffer(ComPtr<ID3D11Device>& device)
 	{
 		D3D11Utils::CreateConstantBuffer(device, *mData, GetPCBuf());
 	}
 
+	/// @brief Uploads the current CPU data to its GPU buffer.
+	/// @param context Context associated with this operation.
 	void SpriteAnimMat::UpdateBuffer(ComPtr<ID3D11DeviceContext>& context)
 	{
 		D3D11Utils::UpdateBuffer(context, *mData, GetPCBuf());
 	}
 
+	/// @brief Restores this object's persistent properties from a .chunk stream.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @note Advances the stream position and updates the destination state.
 	void SpriteAnimMat::LoadProperties(std::ifstream& ifs)
 	{
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::SpriteAnimMat::SPRITE_ANIM_MAT);
@@ -39,6 +46,10 @@ namespace D3D11
 		FileIOHelper::LoadBool(ifs, mData->UseTexture);
 	}
 
+	/// @brief Initializes shader resources used for animated sprites.
+	/// @param resDef Resource definition containing the filename and source path.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @note Initializes the :SpriteAnimMat base or delegates to its constructor.
 	SpriteAnimMat::SpriteAnimMat(Common::FTResourceDef& resDef, D3D11Renderer* renderer)
 		: FTMaterial(resDef)
 		, mData(DBG_NEW SpriteAnimMatData)
@@ -46,11 +57,15 @@ namespace D3D11
 		CreatePixelConstBuffer(renderer->GetDevice());
 	}
 
+	/// @brief Releases the resources managed by this instance during destruction.
 	SpriteAnimMat::~SpriteAnimMat()
 	{
 		delete mData;
 	}
 
+	/// @brief Serializes this object's persistent properties to a .chunk stream.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @note Writes to the supplied stream at its current position.
 	void SpriteAnimMat::SaveProperties(std::ofstream& ofs)
 	{
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::SpriteAnimMat::SPRITE_ANIM_MAT);
@@ -62,6 +77,7 @@ namespace D3D11
 	}
 
 #ifdef FOXTROT_EDITOR
+	/// @brief Builds the editor controls for inspecting and modifying this object's state.
 	void SpriteAnimMat::UpdateUI()
 	{
 		Editor::UPDATE_VEC4("Color", mData->Color);

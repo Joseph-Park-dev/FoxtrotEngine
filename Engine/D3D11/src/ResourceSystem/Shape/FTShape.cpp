@@ -27,6 +27,8 @@ namespace D3D11
 	using namespace Math;
 	using Microsoft::WRL::ComPtr;
 
+	/// @brief Initializes shape geometry and its rendering state.
+	/// @note Initializes the :FTShape base or delegates to its constructor.
 	FTShape::FTShape()
 		: mMesh(DBG_NEW Mesh)
 		, mVSCData()
@@ -36,6 +38,7 @@ namespace D3D11
 	{
 	}
 
+	/// @brief Releases the resources managed by this instance during destruction.
 	FTShape::~FTShape()
 	{
 		if (mMesh)
@@ -51,16 +54,32 @@ namespace D3D11
 			mPSCBuf.Reset();
 	}
 
+	/// @brief Returns the vcdata used by this ftshape.
+	/// @return Borrowed access to the vcdata.
+	/// @note Changes through the returned reference affect this object's stored state.
 	DebugVCData& FTShape::GetVCData() { return mVSCData; }
+	/// @brief Returns the gscdata used by this ftshape.
+	/// @return Borrowed access to the gscdata.
+	/// @note Changes through the returned reference affect this object's stored state.
 	DebugGCData& FTShape::GetGSCData() { return mGSCData; }
+	/// @brief Returns the pixel constant data used by this ftshape.
+	/// @return Borrowed access to the pixel constant data.
+	/// @note Changes through the returned reference affect this object's stored state.
 	DebugPCData& FTShape::GetPixelConstantData() { return mPSCData; }
+	/// @brief Returns the mesh used by this ftshape.
+	/// @return Borrowed access to the mesh.
 	Mesh*		 FTShape::GetMesh() { return mMesh; }
 
+	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
+	/// @param renderer Renderer providing the graphics device and current render state.
 	void FTShape::Initialize(D3D11Renderer* renderer)
 	{
 		InitializeConstantBuffer(renderer->GetDevice());
 	}
 
+	/// @brief Uploads vertex-shader constant data.
+	/// @param model Model resource associated with this object.
+	/// @param camInst Camera supplying the view and projection for this draw.
 	void FTShape::UpdateVC(Math::FTMatrix4& model, Core::ICamera* camInst)
 	{
 		if (!mMesh)
@@ -68,6 +87,8 @@ namespace D3D11
 		mVSCData.model = model.Transposed();
 	}
 
+	/// @brief Uploads geometry-shader constant data.
+	/// @param camInst Camera supplying the view and projection for this draw.
 	void FTShape::UpdateGC(Core::ICamera* camInst)
 	{
 		Math::FTMatrix4 viewMat = Math::FTMatrix4::Identity;
@@ -79,11 +100,14 @@ namespace D3D11
 		mGSCData.projection = projMat.Transposed();
 	}
 
+	/// @brief Uploads pixel-shader constant data.
 	void FTShape::UpdatePC()
 	{
 		mPSCData.IsActive = mIsActive;
 	}
 
+	/// @brief Submits this object's graphics work for the current frame.
+	/// @param renderer Renderer providing the graphics device and current render state.
 	void FTShape::Render(D3D11Renderer* renderer)
 	{
 		if (!mMesh)
@@ -123,6 +147,11 @@ namespace D3D11
 		context->GSSetShader(nullptr, 0, 0);
 	}
 
+	/// @brief Submits this object's graphics work for the current frame.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @param vertexShader Vertex shader used by the pipeline.
+	/// @param pixelShader Pixel shader used by the pipeline.
+	/// @param inputLayout Direct3D vertex input layout.
 	void FTShape::Render(
 		D3D11Renderer*								renderer,
 		Microsoft::WRL::ComPtr<ID3D11VertexShader>& vertexShader,
@@ -155,6 +184,9 @@ namespace D3D11
 		context->Draw(mMesh->VertexCount, 0);
 	}
 
+	/// @brief Builds or binds the mesh resources required by the renderer.
+	/// @param device Direct3D device used to create GPU resources.
+	/// @param meshData CPU-side mesh vertices and indices.
 	void FTShape::InitializeMesh(ComPtr<ID3D11Device>& device, FTDebugMeshData&& meshData)
 	{
 		mMesh->VertexCount = UINT(meshData.Vertices.GetSize());
@@ -181,6 +213,10 @@ namespace D3D11
 	//     mVSCData.model = model.Transpose();
 	// }
 
+	/// @brief Recomputes the model transform used for rendering.
+	/// @param pos Position or zero-based insertion index.
+	/// @param rot Rotation used by the operation.
+	/// @param size Number of elements or bytes required by the operation.
 	void FTShape::UpdateModelMatrix(Math::FTVector3 pos, Math::FTVector3 rot, Math::FTVector3 size)
 	{
 		Math::FTMatrix4 model =
@@ -192,6 +228,8 @@ namespace D3D11
 		mVSCData.model = model.Transposed();
 	}
 
+	/// @brief Recomputes the camera view matrix from its position and orientation.
+	/// @param camInst Camera supplying the view and projection for this draw.
 	void FTShape::UpdateViewMatrix(Core::ICamera* camInst)
 	{
 		Math::FTMatrix4 viewMat = Math::FTMatrix4::Identity;
@@ -200,6 +238,8 @@ namespace D3D11
 		mGSCData.view = viewMat;
 	}
 
+	/// @brief Recomputes the camera projection from its current lens and viewport settings.
+	/// @param camInst Camera supplying the view and projection for this draw.
 	void FTShape::UpdateProjectionMatrix(Core::ICamera* camInst)
 	{
 		Math::FTMatrix4 projMat = Math::FTMatrix4::Identity;
@@ -208,6 +248,8 @@ namespace D3D11
 		mGSCData.projection = projMat;
 	}
 
+	/// @brief Allocates and initializes the GPU constant buffer used by this object.
+	/// @param device Direct3D device used to create GPU resources.
 	void FTShape::InitializeConstantBuffer(ComPtr<ID3D11Device>& device)
 	{
 		mVSCData.model		= Math::FTMatrix4();
@@ -222,6 +264,9 @@ namespace D3D11
 		D3D11Utils::CreateConstantBuffer(device, mPSCData, mPSCBuf);
 	}
 
+	/// @brief Uploads the current shader parameters to the constant buffers.
+	/// @param device Direct3D device used to create GPU resources.
+	/// @param context Context associated with this operation.
 	void FTShape::UpdateConstantBuffers(
 		Microsoft::WRL::ComPtr<ID3D11Device>&		 device,
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)

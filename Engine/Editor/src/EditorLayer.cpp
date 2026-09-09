@@ -48,6 +48,8 @@ namespace Editor
 {
 	using namespace Core;
 
+	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
+	/// @param renderer Renderer providing the graphics device and current render state.
 	void EditorLayer::Initialize(Core::IRenderer* renderer)
 	{
 		LoadEditorConfig();
@@ -58,6 +60,13 @@ namespace Editor
 		mSetChunkIsSavedFunc  = Core::GetFunc<SET_CHUNK_IS_SAVED_FUNC>(Common::DLLPath::CORE_EDITOR, ProcName::SetChunkIsSaved);
 	}
 
+	/// @brief Advances frame-dependent state using the current time step.
+	/// @param deltaTime Elapsed frame time in seconds.
+	/// @param editorWin Editor window receiving the UI or rendering output.
+	/// @param input Input state for the current frame.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @param gameCam Camera used to render the game scene.
+	/// @param editorCam Camera used for editor navigation.
 	void EditorLayer::Update(float deltaTime, Core::IWindow* editorWin, Core::IInputDevice* input, Core::IRenderer* renderer, Core::ICamera* gameCam, Editor::EditorCamera* editorCam)
 	{
 		ImGui_ImplDX11_NewFrame();
@@ -94,6 +103,10 @@ namespace Editor
 		ImGui::EndFrame();
 	}
 
+	/// @brief Displays the rendered scene texture and handles viewport interaction.
+	/// @param editorWin Editor window receiving the UI or rendering output.
+	/// @param input Input state for the current frame.
+	/// @param renderer Renderer providing the graphics device and current render state.
 	void EditorLayer::DisplayViewport(Core::IWindow* editorWin, Core::IInputDevice* input, Core::IRenderer* renderer)
 	{
         if (!ImGui::Begin("Scene")) {
@@ -120,6 +133,7 @@ namespace Editor
 		ImGui::End();
 	}
 
+	/// @brief Displays current timing and frame-rate information in the editor.
 	void EditorLayer::DisplayFrameRate()
 	{
 		ImGui::Begin("Frame Rate");
@@ -128,6 +142,8 @@ namespace Editor
 		ImGui::End();
 	}
 
+	/// @brief Repositions or sizes the current ImGui control to fit the available content region.
+	/// @param opened Whether the editor window remains open.
 	void EditorLayer::AdjustGUI(bool* opened)
 	{
 		if (!ImGui::Begin("GUI Preferences", opened))
@@ -140,6 +156,7 @@ namespace Editor
 		ImGui::End();
 	}
 
+	/// @brief Builds the editor's top-level menu bar.
 	void EditorLayer::DisplayMainMenuBar()
 	{
 		const size_t	  maxMenuEle		   = 5;
@@ -362,6 +379,7 @@ namespace Editor
 		}
 	}
 
+	/// @brief Builds the editor's edit menu, including command-history actions.
 	void EditorLayer::DisplayEditMenu()
 	{
 		const size_t maxMenuEle			= 1;
@@ -382,6 +400,7 @@ namespace Editor
 			AdjustGUI(&opened[0]);
 	}
 
+	/// @brief Builds editor controls for engine manager state.
 	void EditorLayer::DisplayManagersMenu()
 	{
 		const size_t maxMenuEle			= 4;
@@ -409,6 +428,7 @@ namespace Editor
 		//	CollisionManager::GetInstance()->UpdateUI(&opened[3]);
 	}
 
+	/// @brief Draws the scene actor hierarchy and processes selection changes.
 	void EditorLayer::DisplayHierarchyMenu()
 	{
 		std::string menuID = "Hierarchy Menu";
@@ -442,6 +462,9 @@ namespace Editor
 		ImGui::End();
 	}
 
+	/// @brief Draws selectable entries and applies the selected value.
+	/// @param element Element to insert or edit.
+	/// @param index Zero-based element index.
 	void EditorLayer::DisplaySelection(EditorElement* element, size_t& index)
 	{
 		Common::FTDS::String indentedName = Common::FTDS::String(element->GetHierarchyLevel(), '\t');
@@ -476,6 +499,8 @@ namespace Editor
 		}
 	}
 
+	/// @brief Handles editor drag interactions for the selected object.
+	/// @param from Source container whose values are copied.
 	void EditorLayer::ProcessDragEvent(EditorElement* from)
 	{
 		if (ImGui::BeginDragDropSource())
@@ -486,6 +511,8 @@ namespace Editor
 		}
 	}
 
+	/// @brief Handles an item dropped onto the editor target.
+	/// @param target Target object or value sought by the operation.
 	void EditorLayer::ProcessDropEvent(EditorElement* target)
 	{
 		// Assign the actor as a child to an another.
@@ -547,6 +574,9 @@ namespace Editor
 		}
 	}
 
+	/// @brief Updates the hierarchy lv recurse used by subsequent operations.
+	/// @param element Element to insert or edit.
+	/// @param val Value to assign, insert, or process.
 	void EditorLayer::SetHierarchyLvRecurse(EditorElement* element, int val)
 	{
 		Common::FTDS::DynamicArray<Core::IActor*>* childActors = element->GetChildActors();
@@ -561,6 +591,7 @@ namespace Editor
 		}
 	}
 
+	/// @brief Draws the editor's resource management panel.
 	void EditorLayer::DisplayResourceMenu()
 	{
 		std::string menuID = "Resource Manager";
@@ -569,6 +600,7 @@ namespace Editor
 		ImGui::End();
 	}
 
+	/// @brief Draws editable properties for the currently selected editor element.
 	void EditorLayer::DisplayInspectorMenu()
 	{
 		std::string menuID = "Inspector";
@@ -598,16 +630,23 @@ namespace Editor
 		ImGui::End();
 	}
 
+	/// @brief Updates dependent camera and rendering state after the scene viewport is resized.
+	/// @param size Number of elements or bytes required by the operation.
+	/// @return True if the operation succeeds or the tested condition holds; otherwise false.
 	bool EditorLayer::SceneViewportSizeChanged(ImVec2 size)
 	{
 		return size != ImGui::GetContentRegionAvail();
 	}
 
+	/// @brief Tests whether the required project files or directory are present.
+	/// @param projDir Project directory.
+	/// @return True when the required project files or directory are present; otherwise false.
 	bool EditorLayer::ProjectExists(std::string projDir)
 	{
 		return std::filesystem::exists(projDir + "//Assets") && std::filesystem::exists(projDir + "//Builds") && std::filesystem::exists(projDir + "//Chunks") && std::filesystem::exists(projDir + "//FoxtrotEngine");
 	}
 
+	/// @brief Displays an informational message through the platform's message UI.
 	void EditorLayer::DisplayInfoMessage()
 	{
 		switch (mInfoType)
@@ -656,6 +695,7 @@ namespace Editor
 		}
 	}
 
+	/// @brief Displays an error message through the platform's message UI.
 	void EditorLayer::DisplayErrorMessage()
 	{
 		switch (mErrorType)
@@ -710,6 +750,8 @@ namespace Editor
 		}
 	}
 
+	/// @brief Shows an informational popup.
+	/// @param msg Windows message containing input or window data.
 	void EditorLayer::PopUpInfo(const char* msg)
 	{
 		ImGui::OpenPopup("Info");
@@ -732,6 +774,9 @@ namespace Editor
 		}
 	}
 
+	/// @brief Shows an error popup and returns its user response when applicable.
+	/// @param title Window title or dialog caption.
+	/// @param msg Windows message containing input or window data.
 	void EditorLayer::PopUpError(const char* title, const char* msg)
 	{
 		ImGui::OpenPopup(title);
@@ -754,6 +799,8 @@ namespace Editor
 		}
 	}
 
+	/// @brief Initializes the directories and configuration for a new editor project.
+	/// @param path Filesystem path of the resource or project.
 	void EditorLayer::CreateNewProject(std::string& path)
 	{
 		bool projExists	 = ProjectExists(path.c_str());
@@ -796,6 +843,8 @@ namespace Editor
 		}
 	}
 
+	/// @brief Loads the selected editor project and its configured paths.
+	/// @param path Filesystem path of the resource or project.
 	void EditorLayer::OpenProject(std::string& path)
 	{
 		if (ProjectExists(path))
@@ -811,6 +860,8 @@ namespace Editor
 			mErrorType = ErrorType::ProjectNotValid;
 	}
 
+	/// @brief Writes the current editor document to its configured path.
+	/// @param path Filesystem path of the resource or project.
 	void EditorLayer::Save(std::string& path)
 	{
 		mGetChunkPathFunc()->Assign(path.c_str());
@@ -819,6 +870,8 @@ namespace Editor
 		mSetChunkIsSavedFunc(true);
 	}
 
+	/// @brief Selects a destination and writes the current editor document there.
+	/// @param path Filesystem path of the resource or project.
 	void EditorLayer::SaveAs(std::string& path)
 	{
 		mGetChunkPathFunc()->Assign(path.c_str());
@@ -827,6 +880,8 @@ namespace Editor
 		mSetChunkIsSavedFunc(true);
 	}
 
+	/// @brief Opens the selected file or project for subsequent editing.
+	/// @param path Filesystem path of the resource or project.
 	void EditorLayer::Open(std::string& path)
 	{
 		mFocusedEditorElement = nullptr;
@@ -837,6 +892,7 @@ namespace Editor
 		mSetChunkIsSavedFunc(true);
 	}
 
+	/// @brief Persists editor preferences to the configuration file.
 	void EditorLayer::SaveEditorConfig()
 	{
 		ImGuiIO&	  io = ImGui::GetIO();
@@ -847,6 +903,7 @@ namespace Editor
 		Common::FileIOHelper::SaveBufferToFile(ofs);
 	}
 
+	/// @brief Restores editor preferences from the configuration file.
 	void EditorLayer::LoadEditorConfig()
 	{
 		ImGuiIO&	  io = ImGui::GetIO();
@@ -857,12 +914,14 @@ namespace Editor
 		Common::FileIOHelper::LoadFloat(ifs, io.FontGlobalScale);
 	}
 
+	/// @brief Submits this object's graphics work for the current frame.
 	void EditorLayer::Render()
 	{
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	}
 
+	/// @brief Releases runtime services and resources during engine shutdown.
 	void EditorLayer::ShutDown()
 	{
 		ImGui_ImplDX11_Shutdown();
@@ -870,11 +929,15 @@ namespace Editor
 		ImGui::DestroyContext();
 	}
 
+	/// @brief Tests whether the cursor lies inside the scene viewport bounds.
+	/// @return True when the cursor lies inside the scene viewport bounds; otherwise false.
 	bool EditorLayer::CursorOnViewport() const
 	{
 		return mCursorOnViewport;
 	}
 
+	/// @brief Initializes the editor panels and their visibility state.
+	/// @note Initializes the :EditorLayer base or delegates to its constructor.
 	EditorLayer::EditorLayer()
 		: mActorNameIdx(0)
 		, mSaveKeyPressed(false)
@@ -900,6 +963,7 @@ namespace Editor
 	{
 	}
 
+	/// @brief Completes destruction through the object's inheritance hierarchy.
 	EditorLayer::~EditorLayer()
 	{
 	}

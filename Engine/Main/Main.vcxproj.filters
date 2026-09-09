@@ -7,7 +7,10 @@
     <ClCompile Include="src\ModuleHost.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClInclude Include="include\**\*.h">
+    <ClInclude Include="include\Engine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ModuleHost.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

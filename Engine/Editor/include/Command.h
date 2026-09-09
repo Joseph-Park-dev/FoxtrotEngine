@@ -26,9 +26,11 @@ namespace Editor
 	class Command
 	{
 	public:
+		/// @brief Applies the command's change to the target object.
 		/// Set the existing value as the previous, new value as the current.
 		virtual void Do() = 0;
 
+		/// @brief Restores the target state saved before the command was applied.
 		/// Set the previous value as the current.
 		virtual void Undo() = 0;
 	};
@@ -36,13 +38,19 @@ namespace Editor
 	class IntEditCommand : public Command
 	{
 	public:
+		/// @brief Applies the command's change to the target object.
 		void Do() override;
+		/// @brief Restores the target state saved before the command was applied.
 		void Undo() override;
 
 	public:
+		/// @brief Updates the next val used by subsequent operations.
+		/// @param nextVal Replacement next val.
 		void SetNextVal(int nextVal);
 
 	public:
+		/// @brief Initializes the previous and replacement integer values for undo/redo.
+		/// @param valRef Value edited by the UI control.
 		IntEditCommand(int& valRef);
 
 	private:
@@ -54,13 +62,19 @@ namespace Editor
 	class ActorGroupEditCommand : public Command
 	{
 	public:
+		/// @brief Applies the command's change to the target object.
 		void Do() override;
+		/// @brief Restores the target state saved before the command was applied.
 		void Undo() override;
 
 	public:
+		/// @brief Updates the next val used by subsequent operations.
+		/// @param nextVal Replacement next val.
 		void SetNextVal(Common::ActorGroup nextVal);
 
 	public:
+		/// @brief Initializes the previous and replacement actor group for undo/redo.
+		/// @param valRef Value edited by the UI control.
 		ActorGroupEditCommand(Common::ActorGroup& valRef);
 
 	private:
@@ -72,13 +86,19 @@ namespace Editor
 	class FloatEditCommand : public Command
 	{
 	public:
+		/// @brief Applies the command's change to the target object.
 		void Do() override;
+		/// @brief Restores the target state saved before the command was applied.
 		void Undo() override;
 
 	public:
+		/// @brief Updates the next val used by subsequent operations.
+		/// @param nextVal Replacement next val.
 		void SetNextVal(float nextVal);
 
 	public:
+		/// @brief Initializes the previous and replacement float values for undo/redo.
+		/// @param valRef Value edited by the UI control.
 		FloatEditCommand(float& valRef);
 
 	private:
@@ -90,13 +110,19 @@ namespace Editor
 	class Vector2EditCommand : public Command
 	{
 	public:
+		/// @brief Applies the command's change to the target object.
 		void Do() override;
+		/// @brief Restores the target state saved before the command was applied.
 		void Undo() override;
 
 	public:
+		/// @brief Updates the next val used by subsequent operations.
+		/// @param nextVal Replacement next val.
 		void SetNextVal(Math::FTVector2 nextVal);
 
 	public:
+		/// @brief Initializes the previous and replacement two-dimensional vectors for undo/redo.
+		/// @param valRef Value edited by the UI control.
 		Vector2EditCommand(Math::FTVector2& valRef);
 
 	private:
@@ -108,14 +134,22 @@ namespace Editor
 	class Vector3EditCommand : public Command
 	{
 	public:
+		/// @brief Applies the command's change to the target object.
 		void Do() override;
+		/// @brief Restores the target state saved before the command was applied.
 		void Undo() override;
 
 	public:
+		/// @brief Returns the prev val used by this vector3 edit command.
+		/// @return Current prev val.
 		Math::FTVector3 GetPrevVal();
+		/// @brief Updates the next val used by subsequent operations.
+		/// @param nextVal Replacement next val.
 		void			SetNextVal(Math::FTVector3 nextVal);
 
 	public:
+		/// @brief Initializes the previous and replacement three-dimensional vectors for undo/redo.
+		/// @param valRef Value edited by the UI control.
 		Vector3EditCommand(Math::FTVector3& valRef);
 
 	private:
@@ -127,13 +161,19 @@ namespace Editor
 	class Vector4EditCommand : public Command
 	{
 	public:
+		/// @brief Applies the command's change to the target object.
 		void Do() override;
+		/// @brief Restores the target state saved before the command was applied.
 		void Undo() override;
 
 	public:
+		/// @brief Updates the next val used by subsequent operations.
+		/// @param nextVal Replacement next val.
 		void SetNextVal(Math::FTVector4 nextVal);
 
 	public:
+		/// @brief Initializes the previous and replacement four-dimensional vectors for undo/redo.
+		/// @param valRef Value edited by the UI control.
 		Vector4EditCommand(Math::FTVector4& valRef);
 
 	private:
@@ -145,14 +185,21 @@ namespace Editor
 	class StrEditCommand : public Command
 	{
 	public:
+		/// @brief Applies the command's change to the target object.
 		void Do() override;
+		/// @brief Restores the target state saved before the command was applied.
 		void Undo() override;
 
 	public:
+		/// @brief Updates the next val used by subsequent operations.
+		/// @param nextVal Replacement next val.
 		void SetNextVal(Common::FTDS::String nextVal);
 
 	public:
+		/// @brief Initializes the previous and replacement text values for undo/redo.
+		/// @param valRef Value edited by the UI control.
 		StrEditCommand(Common::FTDS::String& valRef);
+		/// @brief Completes destruction through the object's inheritance hierarchy.
 		~StrEditCommand();
 
 	private:
@@ -164,14 +211,21 @@ namespace Editor
 	class WStrEditCommand : public Command
 	{
 	public:
+		/// @brief Applies the command's change to the target object.
 		void Do() override;
+		/// @brief Restores the target state saved before the command was applied.
 		void Undo() override;
 
 	public:
+		/// @brief Updates the next val used by subsequent operations.
+		/// @param nextVal Replacement next val.
 		void SetNextVal(std::wstring nextVal);
 
 	public:
+		/// @brief Initializes the previous and replacement wide strings for undo/redo.
+		/// @param valRef Value edited by the UI control.
 		WStrEditCommand(std::wstring& valRef);
+		/// @brief Completes destruction through the object's inheritance hierarchy.
 		~WStrEditCommand();
 
 	private:
@@ -183,15 +237,24 @@ namespace Editor
 	class BoolEditCommand : public Command
 	{
 	public:
+		/// @brief Applies the command's change to the target object.
 		void Do() override;
+		/// @brief Restores the target state saved before the command was applied.
 		void Undo() override;
 
 	public:
+		/// @brief Updates the prev val used by subsequent operations.
+		/// @param prevVal Replacement prev val.
 		void SetPrevVal(bool prevVal);
+		/// @brief Updates the next val used by subsequent operations.
+		/// @param nextVal Replacement next val.
 		void SetNextVal(bool nextVal);
 
 	public:
+		/// @brief Initializes the previous and replacement boolean values for undo/redo.
+		/// @param valRef Value edited by the UI control.
 		BoolEditCommand(bool& valRef);
+		/// @brief Completes destruction through the object's inheritance hierarchy.
 		~BoolEditCommand();
 
 	private:

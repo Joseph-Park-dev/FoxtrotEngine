@@ -20,14 +20,22 @@ namespace Editor
 		public Command
 	{
 	public:
+		/// @brief Applies the command's change to the target object.
 		void Do() override;
+		/// @brief Restores the target state saved before the command was applied.
 		void Undo() override;
 
 	public:
+		/// @brief Returns the val used by this actor command.
+		/// @return Borrowed access to the val.
 		EditorElement* GetVal();
+		/// @brief Updates the next val used by subsequent operations.
+		/// @param nextVal Replacement next val.
 		void		   SetNextVal(EditorElement* nextVal);
 
 	public:
+		/// @brief Initializes the actor target used by undoable editor operations.
+		/// @param elem Editor element targeted by the operation.
 		ActorCommand(EditorElement* elem);
 
 	private:
@@ -40,10 +48,14 @@ namespace Editor
 		public ActorCommand
 	{
 	public:
+		/// @brief Applies the command's change to the target object.
 		void Do() override;
+		/// @brief Restores the target state saved before the command was applied.
 		void Undo() override;
 
 	public:
+		/// @brief Initializes an undoable actor insertion.
+		/// @param elem Editor element targeted by the operation.
 		ActorAdditionCommand(EditorElement* elem);
 	};
 } // namespace Editor

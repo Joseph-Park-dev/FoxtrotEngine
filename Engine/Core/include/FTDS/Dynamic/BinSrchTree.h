@@ -11,6 +11,9 @@ namespace Common
 			using BinTree<TYPE>::mRoot;
 
 		public:
+			/// @brief Adds a keyed or positioned element to the container.
+			/// @param key Lookup key identifying the stored entry.
+			/// @param val Value to assign, insert, or process.
 			void Insert(int key, TYPE val)
 			{
 				if (mRoot == nullptr)
@@ -21,6 +24,9 @@ namespace Common
 				Insert(mRoot, key, val);
 			}
 
+			/// @brief Searches stored entries for the supplied key or value.
+			/// @param key Lookup key identifying the stored entry.
+			/// @return Borrowed matching entry, or nullptr when the search does not find one.
 			BinaryNode<TYPE>* Find(int key)
 			{
 				if (!mRoot)
@@ -29,6 +35,9 @@ namespace Common
 					return Find(mRoot, key);
 			}
 
+			/// @brief Searches the binary search tree by following ordered child links iteratively.
+			/// @param key Lookup key identifying the stored entry.
+			/// @return Borrowed matching entry, or nullptr when the search does not find one.
 			BinaryNode<TYPE>* FindIter(int key)
 			{
 				BinaryNode<TYPE>* node = mRoot;
@@ -48,16 +57,28 @@ namespace Common
 			}
 
 		private:
+			/// @brief Tests whether the target key is smaller and a left child exists.
+			/// @param curr Current string or value to modify.
+			/// @param tKey Target key used to choose a subtree.
+			/// @return True when the target key is smaller and a left child exists; otherwise false.
 			bool Leftward(BinaryNode<TYPE>* curr, int tKey)
 			{
 				return tKey < curr->Key && curr->Left;
 			}
 
+			/// @brief Tests whether the target key is larger and a right child exists.
+			/// @param curr Current string or value to modify.
+			/// @param tKey Target key used to choose a subtree.
+			/// @return True when the target key is larger and a right child exists; otherwise false.
 			bool Rightward(BinaryNode<TYPE>* curr, int tKey)
 			{
 				return curr->Key < tKey && curr->Right;
 			}
 
+			/// @brief Adds a keyed or positioned element to the container.
+			/// @param current Current tree node from which traversal begins.
+			/// @param key Lookup key identifying the stored entry.
+			/// @param val Value to assign, insert, or process.
 			void Insert(BinaryNode<TYPE>* current, int key, TYPE val)
 			{
 				if (key < current->Key)
@@ -78,6 +99,10 @@ namespace Common
 					return;
 			}
 
+			/// @brief Searches stored entries for the supplied key or value.
+			/// @param current Current tree node from which traversal begins.
+			/// @param targetKey Key to search for.
+			/// @return Borrowed matching entry, or nullptr when the search does not find one.
 			BinaryNode<TYPE>* Find(BinaryNode<TYPE>* current, int targetKey)
 			{
 				if (!current)

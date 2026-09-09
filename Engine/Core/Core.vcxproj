@@ -21,7 +21,42 @@
 <ItemGroup>
 <ClCompile Include="src\Foundation.cpp"/>
 <ClCompile Include="src\FileSystem\FileIOHelper.cpp"/>
-<ClInclude Include="include\**\*.h"/>
+<ClInclude Include="include\Debugging\DebugFuncs.h"/>
+<ClInclude Include="include\Debugging\DebugMemAlloc.h"/>
+<ClInclude Include="include\FileSystem\BufferSizes.h"/>
+<ClInclude Include="include\FileSystem\FileIOHelper.h"/>
+<ClInclude Include="include\FileSystem\FileTypes.h"/>
+<ClInclude Include="include\FileSystem\NullKeys.h"/>
+<ClInclude Include="include\Foxtrot\Core\CoreApi.h"/>
+<ClInclude Include="include\Foxtrot\Core\ModuleApi.h"/>
+<ClInclude Include="include\FTDS\Dynamic\BinaryNode.h"/>
+<ClInclude Include="include\FTDS\Dynamic\BinSrchTree.h"/>
+<ClInclude Include="include\FTDS\Dynamic\BinTree.h"/>
+<ClInclude Include="include\FTDS\Dynamic\DynamicArray.h"/>
+<ClInclude Include="include\FTDS\Dynamic\LinkedList.h"/>
+<ClInclude Include="include\FTDS\Dynamic\LinkedQueue.h"/>
+<ClInclude Include="include\FTDS\Dynamic\LinkedStack.h"/>
+<ClInclude Include="include\FTDS\Dynamic\Node.h"/>
+<ClInclude Include="include\FTDS\Dynamic\RecordNode.h"/>
+<ClInclude Include="include\FTDS\Iterator\FTIterator.h"/>
+<ClInclude Include="include\FTDS\Node\HeapNode.h"/>
+<ClInclude Include="include\FTDS\Search\BinarySearch.h"/>
+<ClInclude Include="include\FTDS\Search\DepthFirstSearch.h"/>
+<ClInclude Include="include\FTDS\Sort\InsertionSort.h"/>
+<ClInclude Include="include\FTDS\Static\Array.h"/>
+<ClInclude Include="include\FTDS\Static\ArrayStack.h"/>
+<ClInclude Include="include\FTDS\Static\CircularQueue.h"/>
+<ClInclude Include="include\FTDS\Static\CircularStack.h"/>
+<ClInclude Include="include\FTDS\Static\FTString.h"/>
+<ClInclude Include="include\FTDS\Static\HashMap.h"/>
+<ClInclude Include="include\FTDS\Static\Heap.h"/>
+<ClInclude Include="include\FTDS\Static\Record.h"/>
+<ClInclude Include="include\FTDS\Utils\DSLogs.h"/>
+<ClInclude Include="include\FTDS\Utils\StrAssign.h"/>
+<ClInclude Include="include\ResourceSystem\CoreResource.h"/>
+<ClInclude Include="include\ResourceSystem\FTResource.h"/>
+<ClInclude Include="include\ResourceSystem\IResource.h"/>
+<ClInclude Include="include\TemplateFunctions.h"/>
 </ItemGroup>
 <ItemGroup>
 <ProjectReference Include="..\Math\Math.vcxproj"><Project>{05f1cde6-51be-4ec3-898e-d9d15811ed7f}</Project></ProjectReference>

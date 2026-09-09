@@ -38,6 +38,7 @@ namespace Core
 		constexpr const char* CHUNK_LIST = "Chunk List";
 	} // namespace GameData
 
+	/// @brief Reads the configured game data needed to initialize runtime content.
 	void FTCore::LoadGameData()
 	{
 		std::ifstream ifs(mGameDataPath->C_Str());
@@ -56,6 +57,8 @@ namespace Core
 		DirectoryHelper::GetInstance()->SetProjectPath(std::filesystem::absolute("./").string().c_str());
 	}
 
+	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
+	/// @return True if the operation succeeds or the tested condition holds; otherwise false.
 	bool FTCore::Initialize()
 	{
 		LoadGameData();
@@ -66,12 +69,16 @@ namespace Core
 		return true;
 	}
 
+	/// @brief Provides an empty lifecycle or extension hook for this implementation.
 	void FTCore::Setup()
 	{
 	}
 
+	/// @brief Runs input, update, rendering, and event processing until the engine stops.
 	void FTCore::RunLoop() { RunFrames(0); }
 
+    /// @brief Runs the engine loop for a bounded number of frames.
+    /// @param maxFrames Maximum number of frames to run.
     void FTCore::RunFrames(unsigned int maxFrames)
 	{
         unsigned int frame = 0;
@@ -101,11 +108,13 @@ namespace Core
 		}
 	}
 
+	/// @brief Dispatches input for the current frame to the relevant engine objects.
 	void FTCore::ProcessInput()
 	{
 		PluginManager::GetInstance()->ProcessInput();
 	}
 
+	/// @brief Advances frame-dependent state using the current time step.
 	void FTCore::Update()
 	{
 		Core::Timer::GetInstance()->Update();
@@ -117,6 +126,7 @@ namespace Core
 		PluginManager::GetInstance()->Update(deltaTime);
 	}
 
+	/// @brief Runs the post-update lifecycle phase after ordinary frame updates.
 	void FTCore::LateUpdate()
 	{
 		if (!mIsUpdating)
@@ -126,17 +136,21 @@ namespace Core
 		PluginManager::GetInstance()->LateUpdate(deltaTime);
 	}
 
+	/// @brief Submits this object's graphics work for the current frame.
 	void FTCore::Render()
 	{
 		PluginManager::GetInstance()->Render();
 	}
 
+	/// @brief Processes queued lifecycle and scene changes at the frame boundary.
 	void FTCore::ProcessEvent()
 	{
 		SceneManager::GetInstance()->ProcessEvent();
 		EventManager::GetInstance()->ProcessEvent();
 	}
 
+	/// @brief Initializes engine loop flags and runtime service state.
+	/// @note Initializes the :FTCore base or delegates to its constructor.
 	FTCore::FTCore()
 		: mGameDataPath(DBG_NEW Common::FTDS::String("./"))
 		, mIsRunning(true)
@@ -146,11 +160,13 @@ namespace Core
 		mGameDataPath->Append(Common::FileTypes::GDPACK);
 	}
 
+	/// @brief Releases the resources managed by this instance during destruction.
 	FTCore::~FTCore()
 	{
 		delete mGameDataPath;
 	}
 
+	/// @brief Releases runtime services and resources during engine shutdown.
 	void FTCore::ShutDown()
 	{
 		if (auto scene = SceneManager::GetInstance()->GetCurrentScene()) scene->DeleteAll();
@@ -169,11 +185,14 @@ namespace Core
 
 extern "C"
 {
+	/// @brief Returns the core used by this service.
+	/// @return Borrowed access to the core.
 	CORE_API Core::FTCore* GetCore()
 	{
 		return Core::FTCore::GetInstance();
 	}
 
+	/// @brief Shuts down and releases the core engine instance.
 	CORE_API void DestroyCore()
 	{
 		Core::FTCore::Destroy();

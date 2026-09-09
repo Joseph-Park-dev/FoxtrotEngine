@@ -98,6 +98,7 @@ namespace D3D11
 		Math::FTVector2 Dummy;
 
 #ifdef FOXTROT_EDITOR
+		/// @brief Builds the editor controls for inspecting and modifying this object's state.
 		void UpdateUI()
 		{
 			Editor::UPDATE_VEC2("Sprite Size", Size);

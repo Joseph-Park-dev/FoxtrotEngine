@@ -27,25 +27,40 @@ namespace Graphics
 		/// Initialization ///
 		//////////////////////
 	public:
+		/// @brief Parses comma-separated integer data into tile-map cells.
+		/// @param csvPath Path to the comma-separated tile data.
+		/// @param out Receives the operation's output.
 		virtual void ReadCSV(const char* csvPath, Common::FTDS::String& out) = 0;
 
 	protected:
+		/// @brief Initializes the tile's geometry and texture coordinates.
+		/// @param tile Tile instance to process.
+		/// @param column Column index in the grid.
+		/// @param row Row index in the grid.
+		/// @param tileNum Tile index or number of tiles.
 		virtual void InitializeTile(Tile& tile, size_t column, size_t row, size_t tileNum) = 0;
 
 		/////////////////
 		/// Chunk I/O ///
 		/////////////////
 	public:
+		/// @brief Serializes this object's persistent properties to a .chunk stream.
 		/// @see FTResource::SaveProperties()
+		/// @param ofs Output stream receiving the serialized data.
+		/// @note Writes to the supplied stream at its current position.
 		virtual void SaveProperties(std::ofstream& ofs) override = 0;
 
+		/// @brief Restores this object's persistent properties from a .chunk stream.
 		/// @see FTResource::LoadProperties()
+		/// @param ifs Input stream positioned at the expected data; reading advances its position.
+		/// @note Advances the stream position and updates the destination state.
 		virtual void LoadProperties(std::ifstream& ifs) override = 0;
 
 		///////////////////////////////////
 		/// Const/Destructors & Copying ///
 		///////////////////////////////////
 	public:
+		/// @brief Completes destruction through the object's inheritance hierarchy.
 		virtual ~ITileMap() override = 0;
 	};
 

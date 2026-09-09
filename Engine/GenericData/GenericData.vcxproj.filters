@@ -10,7 +10,22 @@
     <ClCompile Include="src\FTText.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClInclude Include="include\**\*.h">
+    <ClInclude Include="include\FTCSV.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FTJSON.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FTText.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ResourceSystem\GenericData\FTCSV.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ResourceSystem\GenericData\FTJSON.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ResourceSystem\GenericData\FTText.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

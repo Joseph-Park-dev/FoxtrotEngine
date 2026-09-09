@@ -31,16 +31,24 @@ namespace Common
 
 	struct ActorGroupUtil
 	{
+		/// @brief Returns the count used by this actor group util.
+		/// @return Current count.
 		static const size_t GetCount()
 		{
 			return static_cast<size_t>(ActorGroup::END) - 1;
 		}
 
+		/// @brief Returns the actor group str used by this actor group util.
+		/// @param group Actor group classification.
+		/// @return Borrowed access to the actor group str.
 		static const char* GetActorGroupStr(ActorGroup group)
 		{
 			return ActorGroupString[(size_t)group];
 		}
 
+		/// @brief Returns the actor group str used by this actor group util.
+		/// @param index Zero-based element index.
+		/// @return Borrowed access to the actor group str.
 		static const char* GetActorGroupStr(size_t index)
 		{
 			return ActorGroupString.at(index + 1);
@@ -48,11 +56,17 @@ namespace Common
 
 		// Index does not guarantee to be ranged within the active elements.
 		// For example, index 0 will return NOT_ASSIGNED, which is not used.
+		/// @brief Returns the actor group used by this actor group util.
+		/// @param index Zero-based element index.
+		/// @return Current actor group.
 		static ActorGroup GetActorGroup(size_t index)
 		{
 			return static_cast<ActorGroup>(index);
 		}
 
+		/// @brief Returns the actor group used by this actor group util.
+		/// @param str Text used by the operation.
+		/// @return Current actor group.
 		static ActorGroup GetActorGroup(Common::FTDS::String str)
 		{
 			auto it = std::find(ActorGroupString.begin(), ActorGroupString.end(), str);

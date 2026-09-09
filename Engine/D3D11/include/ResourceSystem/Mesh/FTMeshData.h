@@ -18,11 +18,16 @@ namespace D3D11
 {
 	struct FTMeshData
 	{
+		/// @brief Tests whether the container has no logical elements.
+		/// @return True when the container has no logical elements; otherwise false.
 		bool IsEmpty() const;
 
 		Common::FTDS::DynamicArray<Vertex>   Vertices;
 		Common::FTDS::DynamicArray<uint32_t> Indices;
 
+		/// @brief Copies the supplied value into this object.
+		/// @param data Input payload used by the operation.
+		/// @return Value produced by the overloaded operation.
 		FTMeshData operator=(FTMeshData& data)
 		{
 			size_t i = 0;
@@ -42,6 +47,8 @@ namespace D3D11
 
 	struct FTDebugMeshData
 	{
+		/// @brief Tests whether the container has no logical elements.
+		/// @return True when the container has no logical elements; otherwise false.
 		bool IsEmpty() const;
 
 		Common::FTDS::DynamicArray<DebugVertex> Vertices;

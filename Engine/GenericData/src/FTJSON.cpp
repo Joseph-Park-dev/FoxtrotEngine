@@ -8,6 +8,8 @@
 
 namespace GenericData
 {
+	/// @brief Exposes the stored payload for consumers of this resource or container.
+	/// @return Borrowed access to the data.
 	const nlohmann::json& FTJSON::Data() const { return mData; }
 
 	// void FTJSON::SaveProperties(std::ofstream& ofs)
@@ -23,6 +25,10 @@ namespace GenericData
 	//	FTResource::LoadProperties(ifs);
 	// }
 
+	/// @brief Initializes a parsed JSON resource.
+	/// @param metaData meta data used by this operation.
+	/// @note Initializes the :FTJSON base or delegates to its constructor.
+	/// @throws nlohmann::json::parse_error If the resource file contains invalid JSON.
 	FTJSON::FTJSON(Common::ResourceData* metaData)
 		: Common::FTResource()
 	{
@@ -34,6 +40,9 @@ namespace GenericData
 		this->Read(*mMetaData->Path);
 	}
 
+	/// @brief Parses source content into the resource's stored representation.
+	/// @param path Filesystem path of the resource or project.
+	/// @throws nlohmann::json::parse_error If the input is not valid JSON.
 	void FTJSON::Read(const Common::FTDS::String& path)
 	{
 		std::ifstream ifs(path.C_Str());

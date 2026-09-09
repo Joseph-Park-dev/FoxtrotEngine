@@ -1,0 +1,4 @@
+root = true
+
+[*.{c,cc,cpp,cxx,h,hh,hpp,hxx,inl}]
+vc_generate_documentation_comments = doxygen_triple_slash

@@ -31,10 +31,15 @@ namespace Core
 		SINGLETON_PROTECTED(EventManager)
 
 	public:
+		/// @brief Queues an event for processing at the frame boundary.
+		/// @param addedEvent Event copied into the pending queue.
 		void AddEvent(const FTEvent& addedEvent);
+		/// @brief Processes queued lifecycle and scene changes at the frame boundary.
 		void ProcessEvent();
 
 	protected:
+		/// @brief Applies the requested event or command to engine state.
+		/// @param executedEvent Event whose operation is applied.
 		virtual void Execute(const FTEvent& executedEvent);
 
 	private:

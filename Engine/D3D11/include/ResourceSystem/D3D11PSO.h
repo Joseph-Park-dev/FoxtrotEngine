@@ -38,12 +38,18 @@ namespace D3D11
 
 	public:
 		// void operator=(const D3D11PSO& pso);
+		/// @brief Tests the valid condition for the current object.
+		/// @return True if the operation succeeds or the tested condition holds; otherwise false.
 		bool IsValid();
 
 	public:
+		/// @brief Updates the to pipeline used by subsequent operations.
+		/// @param context Replacement to pipeline.
 		void SetToPipeline(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
 
 	public:
+		/// @brief Initializes the shader stages and state used by a rendering pipeline.
+		/// @param resDef Resource definition containing the filename and source path.
 		D3D11PSO(PSODef& resDef);
 
 	private:
@@ -68,6 +74,7 @@ namespace D3D11
 
 #ifdef FOXTROT_EDITOR
 	public:
+		/// @brief Builds the editor controls for inspecting and modifying this object's state.
 		void UpdateUI() override;
 
 #endif // FOXTROT_EDITOR

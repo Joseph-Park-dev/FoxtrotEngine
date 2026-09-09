@@ -32,22 +32,22 @@ namespace Graphics
 		////// Render Frame Lifecycle ////////////
 		//////////////////////////////////////////
 
-		/// <summary>
+		/// @brief Binds and clears the render target and configures the viewport for a rendering pass.
 		/// Prepares render targets for a new frame (clears buffers, sets render targets).
-		/// </summary>
 		/// <param name="renderer">The active renderer instance.</param>
+		/// @param renderer Renderer providing the graphics device and current render state.
 		virtual void BeginRender(IRenderer* renderer) = 0;
 
-		/// <summary>
+		/// @brief Finishes the rendering pass and restores or presents its target.
 		/// Finalizes frame rendering (present swap chain, resolve MSAA, etc.).
-		/// </summary>
 		/// <param name="renderer">The active renderer instance.</param>
+		/// @param renderer Renderer providing the graphics device and current render state.
 		virtual void EndRender(IRenderer* renderer) = 0;
 
-		/// <summary>
+		/// @brief Updates the window presentation resources to match its client dimensions.
 		/// Handles window resize events, including buffer recreation.
-		/// </summary>
 		/// <param name="renderer">The active renderer instance.</param>
+		/// @param renderer Renderer providing the graphics device and current render state.
 		virtual void ResizeWindow(IRenderer* renderer) = 0;
 
 	public:
@@ -55,38 +55,41 @@ namespace Graphics
 		////// Window Properties /////////////////
 		//////////////////////////////////////////
 
-		/// <summary>
+		/// @brief Returns the title used by this iwindow.
 		/// Returns the window title.
-		/// </summary>
+		/// @return Borrowed access to the title.
 		virtual const char* GetTitle() const = 0;
 
-		/// <summary>
+		/// @brief Returns the width used by this iwindow.
 		/// Returns the window client width in pixels.
-		/// </summary>
+		/// @return Current width.
 		virtual unsigned int GetWidth() const = 0;
 
-		/// <summary>
+		/// @brief Returns the height used by this iwindow.
 		/// Returns the window client height in pixels.
-		/// </summary>
+		/// @return Current height.
 		virtual unsigned int GetHeight() const = 0;
 
-		/// <summary>
+		/// @brief Returns the render area used by this iwindow.
 		/// Returns the render area rectangle within the window.
-		/// </summary>
+		/// @return Borrowed access to the render area.
 		virtual FTRectArea* GetRenderArea() const = 0;
 
-		/// <summary>
+		/// @brief Updates the width used by subsequent operations.
 		/// Sets the window client width.
-		/// </summary>
+		/// @param width Replacement width.
 		virtual void SetWidth(unsigned int width) = 0;
 
-		/// <summary>
+		/// @brief Updates the height used by subsequent operations.
 		/// Sets the window client height.
-		/// </summary>
+		/// @param height Replacement height.
 		virtual void SetHeight(unsigned int height) = 0;
 
 	public:
+		/// @brief Exposes the underlying platform window handle.
+		/// @return The underlying platform window handle.
 		virtual void* NativeHandle() const = 0;
+        /// @brief Completes destruction through the object's inheritance hierarchy.
         virtual ~IWindow() = default;
 	};
 

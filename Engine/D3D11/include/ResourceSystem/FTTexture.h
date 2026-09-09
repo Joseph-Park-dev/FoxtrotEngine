@@ -26,30 +26,40 @@ namespace D3D11
 
 	public:
 		/// @brief Get original pixel-width of the image. This shall not be edited after the FTTexture is created.
+		/// @return Current width.
 		const UINT GetWidth() const;
 
 		/// @brief Get original pixel-height of the image. This shall not be edited after the FTTexture is created.
+		/// @return Current height.
 		const UINT GetHeight() const;
 
 		/// @brief Get ShaderResourceView for the texture. This shall not be edited after the FTTexture is created.
+		/// @return Borrowed access to the srv.
 		const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetSRV() const;
 
 	public:
 		/// @brief Saves resource properties into a file.
 		/// @param ofs A stream to a .chunk file
+		/// @note Writes to the supplied stream at its current position.
 		virtual void SaveProperties(std::ofstream& ofs) override;
 
 		/// @brief Loads resource properties into an instance.
 		/// @param ifs A stream from a .chunk file
+		/// @note Advances the stream position and updates the destination state.
 		virtual void LoadProperties(std::ifstream& ifs) override;
 
 	public:
 		/// @brief FTTexture is a graphics resource, so it needs a FTRenderer instance for initialization.
 		/// @param renderer This is usually a game renderer.
+		/// @param resDef Resource definition containing the filename and source path.
 		FTTexture(Common::FTResourceDef& resDef, Core::IRenderer* renderer);
+		/// @brief Completes destruction through the object's inheritance hierarchy.
 		~FTTexture();
 
 	protected:
+		/// @brief Applies this object's processing step.
+		/// @param resDef Resource definition containing the filename and source path.
+		/// @param renderer Renderer providing the graphics device and current render state.
 		virtual void Process(Common::FTResourceDef& resDef, Core::IRenderer* renderer);
 
 	private:
@@ -59,6 +69,7 @@ namespace D3D11
 
 #ifdef FOXTROT_EDITOR
 	public:
+		/// @brief Builds the editor controls for inspecting and modifying this object's state.
 		virtual void UpdateUI() override;
 
 #endif

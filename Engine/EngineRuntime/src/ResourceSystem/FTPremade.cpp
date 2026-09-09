@@ -39,6 +39,9 @@
 namespace Core
 {
 	using namespace Common;
+	/// @brief Initializes metadata for a reusable actor template.
+	/// @param data Input payload used by the operation.
+	/// @note Initializes the :FTPremade base or delegates to its constructor.
 	FTPremade::FTPremade(Common::ResourceData* data)
 		: mData(data)
 		, mOrigin(nullptr)
@@ -54,17 +57,22 @@ namespace Core
 			this->Load(data->Path->C_Str());
 	}
 
+	/// @brief Releases the resources managed by this instance during destruction.
 	FTPremade::~FTPremade()
 	{
 		delete mOrigin;
 		mOrigin = nullptr;
 	}
 
+	/// @brief Returns the is loaded used by this ftpremade.
+	/// @return Current value of the is loaded flag.
 	bool FTPremade::GetIsLoaded()
 	{
 		return mIsLoaded;
 	}
 
+	/// @brief Returns the origin used by this ftpremade.
+	/// @return Borrowed access to the origin.
 	Actor* FTPremade::GetOrigin()
 	{
 		if (!mOrigin)
@@ -72,6 +80,8 @@ namespace Core
 		return mOrigin;
 	}
 
+	/// @brief Loads and initializes the content identified by the supplied path or descriptor.
+	/// @param path Filesystem path of the resource or project.
 	void FTPremade::Load(const char* path)
 	{
 		if (!mOrigin)

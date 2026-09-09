@@ -17,6 +17,12 @@ namespace Common
 		/// <param name="target : ">Value to search for.</param>
 		/// <returns></returns>
 		template <typename NUM, typename std::enable_if<std::is_arithmetic<NUM>::value>::type* = nullptr>
+		/// @brief Searches an ascending numeric array by repeatedly narrowing the index interval.
+		/// @param array Contiguous array of elements.
+		/// @param count Number of entries to process.
+		/// @param target Target object or value sought by the operation.
+		/// @return Searches an ascending numeric array by repeatedly narrowing the index interval.
+		/// @pre array must contain count elements sorted in ascending order.
 		int BinarySearch(NUM* array, size_t count, NUM target)
 		{
 			size_t idxHigh = count - 1;

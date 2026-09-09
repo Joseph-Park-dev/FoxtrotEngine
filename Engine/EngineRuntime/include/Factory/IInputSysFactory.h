@@ -37,13 +37,13 @@ namespace Core
 		////// Factory Methods ///////////////////
 		//////////////////////////////////////////
 
-		/// <summary>
+		/// @brief Creates the native input device used by the engine.
 		/// Creates a platform-specific input device handler.
-		/// </summary>
-		/// <returns>Pointer to created input device. Caller owns the memory.</returns>
+		/// @return Created input device instance or resource.
 		virtual InputSystem::IInputDevice* CreateInputDevice() = 0;
 
 	public:
+		/// @brief Completes destruction through the object's inheritance hierarchy.
 		virtual ~IInputSysFactory() = default;
 	};
 

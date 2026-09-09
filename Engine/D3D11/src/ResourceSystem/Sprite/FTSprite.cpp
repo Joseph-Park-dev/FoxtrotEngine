@@ -24,6 +24,13 @@ namespace D3D11
 	using namespace Microsoft::WRL;
 	ResType FTSprite::Type = ResType::SPRITE;
 
+	/// @brief Uploads the current shader parameters to the constant buffers.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @param transform Transform associated with the actor.
+	/// @param camInst Camera supplying the view and projection for this draw.
+	/// @param mat Matrix or material used by this operation.
+	/// @param gcDataCount Number of geometry-shader constant-data entries.
+	/// @param meshIndex Index of the mesh within the group.
 	void FTSprite::UpdateConstantBuffers(Core::IRenderer* renderer, Transform* transform, Core::ICamera* camInst, FTMaterial* mat, const size_t gcDataCount, const int meshIndex)
 	{
 		// Model Transformation
@@ -72,6 +79,12 @@ namespace D3D11
 			mat->UpdateBuffer(static_cast<D3D11Renderer*>(renderer)->GetContext());
 	}
 
+	/// @brief Submits this object's graphics work for the current frame.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @param transform Transform associated with the actor.
+	/// @param camInst Camera supplying the view and projection for this draw.
+	/// @param pso Pipeline state object used for rendering.
+	/// @param mat Matrix or material used by this operation.
 	void FTSprite::Render(Core::IRenderer* renderer, Transform* transform, Core::ICamera* camInst, D3D11PSO* pso, FTMaterial* mat)
 	{
 		if (!pso->IsValid()) // Vertex Shader is always required when drawing.
@@ -112,26 +125,38 @@ namespace D3D11
 		}
 	}
 
+	/// @brief Returns the texture used by this ftsprite.
+	/// @return Borrowed access to the texture.
 	FTTexture* FTSprite::GetTexture() const
 	{
 		return mTexture;
 	}
 
+	/// @brief Returns the gcsprite data used by this ftsprite.
+	/// @return Borrowed access to the gcsprite data.
 	SpriteGCData* FTSprite::GetGCSpriteData() const
 	{
 		return mGCSpriteData;
 	}
 
+	/// @brief Updates the texture used by subsequent operations.
+	/// @param texture Replacement texture.
 	void FTSprite::SetTexture(FTTexture* texture)
 	{
 		mTexture = texture;
 	}
 
+	/// @brief Updates the gcsprite data used by subsequent operations.
+	/// @param data Replacement gcsprite data.
 	void FTSprite::SetGCSpriteData(SpriteGCData* data)
 	{
 		mGCSpriteData = data;
 	}
 
+	/// @brief Initializes sprite metadata and its mesh representation.
+	/// @param resDef Resource definition containing the filename and source path.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @note Initializes the :FTSprite base or delegates to its constructor.
 	FTSprite::FTSprite(Common::FTResourceDef& resDef, void* renderer)
 		: FTMeshGroup(resDef, renderer, nullptr)
 		, mGCMatData(DBG_NEW PointVPMat)
@@ -143,6 +168,11 @@ namespace D3D11
 		delete vertex;
 	}
 
+	/// @brief Initializes sprite metadata and its mesh representation.
+	/// @param resDef Resource definition containing the filename and source path.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @param isAnim Whether the resource uses animated rendering.
+	/// @note Initializes the :FTSprite base or delegates to its constructor.
 	FTSprite::FTSprite(Common::FTResourceDef& resDef, void* renderer, bool isAnim)
 		: FTMeshGroup(resDef, renderer, nullptr)
 		, mGCMatData(DBG_NEW PointVPMat)
@@ -157,6 +187,7 @@ namespace D3D11
 		}
 	}
 
+	/// @brief Releases the resources managed by this instance during destruction.
 	FTSprite::~FTSprite()
 	{
 		delete mGCMatData;
@@ -168,6 +199,8 @@ namespace D3D11
 		}
 	}
 
+	/// @brief Allocates and initializes the GPU constant buffers used by this object.
+	/// @param device Direct3D device used to create GPU resources.
 	void FTSprite::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
 	{
 		FTMeshGroup::InitializeConstantBuffers(device);
@@ -175,16 +208,26 @@ namespace D3D11
 		D3D11Utils::CreateConstantBuffer(device, *mGCSpriteData, mGCSpriteBuf);
 	}
 
+	/// @brief Returns the gcmat buf used by this ftsprite.
+	/// @return Borrowed access to the gcmat buf.
+	/// @note Changes through the returned reference affect this object's stored state.
 	Microsoft::WRL::ComPtr<ID3D11Buffer>& FTSprite::GetGCMatBuf()
 	{
 		return mGCMatBuf;
 	}
 
+	/// @brief Returns the gcsprite buf used by this ftsprite.
+	/// @return Borrowed access to the gcsprite buf.
+	/// @note Changes through the returned reference affect this object's stored state.
 	Microsoft::WRL::ComPtr<ID3D11Buffer>& FTSprite::GetGCSpriteBuf()
 	{
 		return mGCSpriteBuf;
 	}
 
+	/// @brief Applies this object's processing step.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @param vertices Vertex data defining the mesh.
+	/// @param verticesCount Number of vertices.
 	void FTSprite::Process(Core::IRenderer* renderer, SpriteVertex* vertices, size_t verticesCount)
 	{
 		if (!Meshes()->IsEmpty())
@@ -202,6 +245,7 @@ namespace D3D11
 	}
 
 #ifdef FOXTROT_EDITOR
+	/// @brief Builds the editor controls for inspecting and modifying this object's state.
 	void FTSprite::UpdateUI()
 	{
 		mTexture->UpdateUI();
@@ -209,11 +253,13 @@ namespace D3D11
 		FTMeshGroup::UpdateUI();
 	}
 
+	/// @brief Increments the resource metadata's reference count when metadata exists.
 	void FTSprite::AddRefCount()
 	{
 		mTexture->AddRefCount();
 	}
 
+	/// @brief Decrements the resource metadata's reference count when metadata exists.
 	void FTSprite::SubtractRefCount()
 	{
 		mTexture->SubtractRefCount();

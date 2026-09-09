@@ -57,6 +57,11 @@ namespace D3D11
 
 	public:
 		/// @brief Renders the entire meshes created, as a full model.
+		/// @param renderer Renderer providing the graphics device and current render state.
+		/// @param transform Transform associated with the actor.
+		/// @param camInst Camera supplying the view and projection for this draw.
+		/// @param pso Pipeline state object used for rendering.
+		/// @param mat Matrix or material used by this operation.
 		virtual void Render(
 			Core::IRenderer* renderer,
 			Core::Transform* transform,
@@ -64,17 +69,25 @@ namespace D3D11
 			D3D11PSO*		 pso,
 			FTMaterial*		 mat);
 
+		/// @brief Provides an empty lifecycle or extension hook for this implementation.
 		/// @see FTResource::SaveProperties()
+		/// @param ofs Output stream receiving the serialized data.
+		/// @note Writes to the supplied stream at its current position.
 		virtual void SaveProperties(std::ofstream& ofs) override {};
 
+		/// @brief Provides an empty lifecycle or extension hook for this implementation.
 		/// @see FTResource::LoadProperties()
+		/// @param ifs Input stream positioned at the expected data; reading advances its position.
+		/// @note Advances the stream position and updates the destination state.
 		virtual void LoadProperties(std::ifstream& ifs) override {};
 
 	public:
 		/// @brief Returns the initial front horizontal direction.
+		/// @return Current front dir.
 		const int GetFrontDir() const;
 
 		/// @brief Set scale value to be multiplied with the scale (3D transformation).
+		/// @param scale Replacement size scale.
 		void SetSizeScale(const Math::FTVector3 scale);
 
 		/// @brief Set as the model is initially facing the right side of the screen?
@@ -82,14 +95,23 @@ namespace D3D11
 		void SetRightIsFront(bool val);
 
 		/// @brief Returns meshes ready to be rendered.
+		/// @return Borrowed access to the meshes.
 		Common::FTDS::DynamicArray<Mesh*>* Meshes();
+		/// @brief Exposes the scale applied to the object's dimensions.
+		/// @return Borrowed access to the size scale.
+		/// @note Changes through the returned reference affect this object's stored state.
 		Math::FTVector3&				   SizeScale();
 
 	public:
 		/// @brief Relative path is used for importing 3D files.
 		// This is unused until 3D feature is implemented.
 		// FTMeshGroup(FTResourceDef& resDef, FoxtrotRenderer* renderer);
+		/// @brief Initializes mesh storage and shader constants for grouped rendering.
+		/// @param resDef Resource definition containing the filename and source path.
+		/// @param renderer Renderer providing the graphics device and current render state.
+		/// @param meshData CPU-side mesh vertices and indices.
 		FTMeshGroup(Common::FTResourceDef& resDef, void* renderer, FTMeshData* meshData = nullptr);
+		/// @brief Releases the resources managed by this instance during destruction.
 		virtual ~FTMeshGroup() override;
 
 	protected:
@@ -98,10 +120,13 @@ namespace D3D11
 		// virtual void Process(FoxtrotRenderer* renderer) override;
 
 		/// @brief Creates constant buffers such as Vertex Constant Buffers.
+		/// @param device Direct3D device used to create GPU resources.
 		virtual void InitializeConstantBuffers(Microsoft::WRL::ComPtr<ID3D11Device>& device);
 
 		/// @brief Create texture sampler.
 		/// @todo Consider moving this to D3D11Utils class.
+		/// @param device Direct3D device used to create GPU resources.
+		/// @return Created texture sampler instance or resource.
 		HRESULT CreateTextureSampler(Microsoft::WRL::ComPtr<ID3D11Device>& device);
 
 		/// @brief Updates the constant buffers right before rendering.
@@ -110,6 +135,8 @@ namespace D3D11
 		/// @param mat Material applied to this mesh model.
 		/// @param frontDir Initial front direction the model is facing toward.
 		/// @todo If the engine targets for 2D games, remove the inverse transpose calculation.
+		/// @param device Direct3D device used to create GPU resources.
+		/// @param context Context associated with this operation.
 		virtual void UpdateConstantBuffers(
 			Microsoft::WRL::ComPtr<ID3D11Device>&		 device,
 			Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,
@@ -122,20 +149,30 @@ namespace D3D11
 		void Clear();
 
 	protected:
+		/// @brief Returns the sampler state used by this ftmesh group.
+		/// @return Borrowed access to the sampler state.
+		/// @note Changes through the returned reference affect this object's stored state.
 		Microsoft::WRL::ComPtr<ID3D11SamplerState>& GetSamplerState();
 
 		/// @brief Returns vertex constant buffer.
+		/// @return Borrowed access to the vcbuf.
+		/// @note Changes through the returned reference affect this object's stored state.
 		Microsoft::WRL::ComPtr<ID3D11Buffer>& GetVCBuf();
 
+		/// @brief Returns the vcdata used by this ftmesh group.
+		/// @return Borrowed access to the vcdata.
 		PointModelMat* GetVCData();
 
 		/// @brief Returns the size scale.
+		/// @return Borrowed access to the size scale.
 		const Math::FTVector3& GetSizeScale() const;
 
 		/// @brief Returns the mesh direction.
+		/// @return Current direction.
 		const int GetDirection() const;
 
 		/// @brief Set the mesh direction.
+		/// @param dir Replacement direction.
 		void SetDirection(int dir);
 
 	private:
@@ -162,17 +199,24 @@ namespace D3D11
 
 	private:
 		/// @brief Takes a FTMeshData (usually from GeometryGenerator), and creates the meshes.
+		/// @param renderer Renderer providing the graphics device and current render state.
+		/// @param meshData CPU-side mesh vertices and indices.
 		void Process(D3D11::D3D11Renderer* renderer, FTMeshData* meshData);
 
 		/// @brief Creates a mesh from a single meshData.
+		/// @param device Direct3D device used to create GPU resources.
+		/// @param meshData CPU-side mesh vertices and indices.
 		void InitializeMesh(Microsoft::WRL::ComPtr<ID3D11Device>& device, FTMeshData* meshData);
 
 		/// @brief Creates the meshes from the array of meshData.
 		/// This is usually called when importing a 3D model file.
+		/// @param device Direct3D device used to create GPU resources.
+		/// @param meshDataArr Collection of mesh data.
 		void InitializeMeshes(Microsoft::WRL::ComPtr<ID3D11Device>& device, Common::FTDS::DynamicArray<FTMeshData*>&& meshDataArr);
 
 #ifdef FOXTROT_EDITOR
 	public:
+		/// @brief Builds the editor controls for inspecting and modifying this object's state.
 		void UpdateUI();
 
 #endif // FOXTROT_EDITOR

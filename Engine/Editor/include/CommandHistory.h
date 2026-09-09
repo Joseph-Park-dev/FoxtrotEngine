@@ -49,28 +49,67 @@ namespace Editor
 	{
 		SINGLETON(CommandHistory)
 	public:
-		/// <summary>
+		/// @brief Records the command sequence used to support subsequent undo and redo.
 		/// Push the current command to the previous,
 		/// Flush out the next commands.
-		/// </summary>
 		void ArrangeCommand();
+		/// @brief Updates the current used by subsequent operations.
+		/// @param cmd Replacement current.
 		void SetCurrent(Command* cmd);
 
 	public:
 		// These member functions will be used on Foxtrot Editor when updating values.
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param modSpeed Playback or edit speed multiplier.
 		virtual void UpdateIntValue(const char* label, int& ref, int modSpeed = INTMOD_SPEED);
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param min Inclusive lower bound.
+		/// @param max Inclusive upper bound.
+		/// @param modSpeed Playback or edit speed multiplier.
 		virtual void UpdateIntValue(const char* label, int& ref, int min, int max, int modSpeed = INTMOD_SPEED);
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param modSpeed Playback or edit speed multiplier.
 		virtual void UpdateUnsignedIntValue(const char* label, unsigned int& ref, int modSpeed = INTMOD_SPEED);
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param modSpeed Playback or edit speed multiplier.
 		virtual void UpdateFloatValue(const char* label, float& ref, float modSpeed = FLOATMOD_SPEED);
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
 		virtual void UpdateBoolValue(const char* label, bool& ref);
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param modSpeed Playback or edit speed multiplier.
 		virtual void UpdateVector2Value(const char* label, Math::FTVector2& ref, float modSpeed = FLOATMOD_SPEED);
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param modSpeed Playback or edit speed multiplier.
 		virtual void UpdateVector3Value(const char* label, Math::FTVector3& ref, float modSpeed = FLOATMOD_SPEED);
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param modSpeed Playback or edit speed multiplier.
 		virtual void UpdateVector4Value(const char* label, Math::FTVector4& ref, float modSpeed = FLOATMOD_SPEED);
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
 		virtual void UpdateStringValue(const char* label, Common::FTDS::String& ref);
 
 	public:
+		/// @brief Advances frame-dependent state using the current time step.
 		void Update();
 		// This will be called when closing a Foxtrot Editor instance.
+		/// @brief Releases runtime services and resources during engine shutdown.
 		void ShutDown();
 
 	private:
@@ -81,27 +120,69 @@ namespace Editor
 
 	private:
 		// Get the command located at the pointer position.
+		/// @brief Returns the current command used by this command history.
+		/// @return Borrowed access to the current command.
 		Command* GetCurrentCommand();
 
 		// Navigates through the Commands.
 		// This feature is not working properly in the current version.
+		/// @brief Reverses the most recently applied command in the history.
 		void UndoCommand();
 		// This feature is not working properly in the current version.
+		/// @brief Reapplies the next command in the redo history.
 		void RedoCommand();
 	};
 
 	extern "C"
 	{
+		/// @brief Returns the cmdhistory used by this service.
+		/// @return Borrowed access to the cmdhistory.
 		EDITOR_API CommandHistory* GetCMDHistory();
 
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param modSpeed Playback or edit speed multiplier.
 		EDITOR_API void UpdateIntValue(const char* label, int& ref, unsigned int modSpeed = INTMOD_SPEED);
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param min Inclusive lower bound.
+		/// @param max Inclusive upper bound.
+		/// @param modSpeed Playback or edit speed multiplier.
 		EDITOR_API void UpdateClampedIntValue(const char* label, int& ref, int min, int max, int modSpeed = INTMOD_SPEED);
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param modSpeed Playback or edit speed multiplier.
 		EDITOR_API void UpdateUnsignedIntValue(const char* label, unsigned int& ref, unsigned int modSpeed = INTMOD_SPEED);
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param modSpeed Playback or edit speed multiplier.
 		EDITOR_API void UpdateFloatValue(const char* label, float& ref, float modSpeed = FLOATMOD_SPEED);
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
 		EDITOR_API void UpdateBoolValue(const char* label, bool& ref);
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param modSpeed Playback or edit speed multiplier.
 		EDITOR_API void UpdateVector2Value(const char* label, Math::FTVector2& ref, float modSpeed = FLOATMOD_SPEED);
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param modSpeed Playback or edit speed multiplier.
 		EDITOR_API void UpdateVector3Value(const char* label, Math::FTVector3& ref, float modSpeed = FLOATMOD_SPEED);
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param modSpeed Playback or edit speed multiplier.
 		EDITOR_API void UpdateVector4Value(const char* label, Math::FTVector4& ref, float modSpeed = FLOATMOD_SPEED);
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
 		EDITOR_API void UpdateStringValue(const char* label, Common::FTDS::String& ref);
 	}
 	using GET_CMD_HISTORY = Editor::CommandHistory* (*)();

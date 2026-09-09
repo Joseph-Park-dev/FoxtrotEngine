@@ -30,9 +30,8 @@ namespace Core
 		ICamera*           Camera          = nullptr;
 		IResourceManager*  ResourceManager = nullptr;
 
-		/// <summary>
+		/// @brief Releases initialized services and resources during shutdown.
 		/// Releases all subsystems in reverse order of creation.
-		/// </summary>
 		void Shutdown();
 	};
 } // namespace Core

@@ -22,6 +22,9 @@ namespace Common
 		class Heap : public FTDS::Array<FTDS::HeapNode<TYPE>*>
 		{
 		public:
+			/// @brief Adds a keyed or positioned element to the container.
+			/// @param key Lookup key identifying the stored entry.
+			/// @param val Value to assign, insert, or process.
 			void Insert(size_t key, TYPE val)
 			{
 				if (this->mLastIdx == mSize - 1)
@@ -42,6 +45,7 @@ namespace Common
 			}
 
 		public:
+			/// @brief Initializes an empty priority heap.
 			Heap()
 				: FTDS::Array<FTDS::HeapNode<TYPE>*>()
 				, mSize(0)
@@ -49,6 +53,8 @@ namespace Common
 			{
 			}
 
+			/// @brief Releases the resources managed by this instance during destruction.
+			/// @note Releasing container storage does not implicitly delete objects held through raw pointer values.
 			~Heap()
 			{
 				for (size_t i = 0; i < mSize + 1; ++i)

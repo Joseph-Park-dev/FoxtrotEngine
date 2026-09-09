@@ -10,6 +10,11 @@
 
 namespace Editor
 {
+	/// @brief Creates an actor instance and schedules it for the requested scene or group.
+	/// @param actor Actor participating in this operation.
+	/// @param actorGroup Actor group used for scene classification.
+	/// @param pos Position or zero-based insertion index.
+	/// @return Created instantiate instance or resource.
 	EditorElement* Editor::Instantiate(Core::IActor* actor, Core::ActorGroup actorGroup, Math::FTVector3 pos)
 	{
 		Core::FTEvent addedEvent = {};
@@ -33,6 +38,8 @@ namespace Editor
 		}
 	}
 
+	/// @brief Releases the managed instance or schedules the specified actor for destruction.
+	/// @param actor Actor participating in this operation.
 	void Editor::Destroy(EditorElement* actor)
 	{
 		Core::FTEvent addedEvent = {};

@@ -6,6 +6,9 @@ namespace Common
 {
 	namespace FTDS
 	{
+		/// @brief Allocates an independent null-terminated copy of the source text.
+		/// @param source Source text or object copied by the operation.
+		/// @return New character buffer owned by the caller; release it with delete[].
 		inline const char* MakeHeapStr(const char* source)
 		{
 			size_t size	  = std::strlen(source) + 1;

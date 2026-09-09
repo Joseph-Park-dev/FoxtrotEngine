@@ -58,6 +58,11 @@ namespace Graphics
 		////////////////
 	public:
 		/// @brief Renders the entire meshes created, as a full model.
+		/// @param renderer Renderer providing the graphics device and current render state.
+		/// @param transform Transform associated with the actor.
+		/// @param camInst Camera supplying the view and projection for this draw.
+		/// @param pso Pipeline state object used for rendering.
+		/// @param mat Matrix or material used by this operation.
 		virtual void Render(
 			Graphics::IRenderer* renderer,
 			Core::Transform*	 transform,
@@ -69,16 +74,23 @@ namespace Graphics
 		/// Chunk I/O ///
 		/////////////////
 	public:
+		/// @brief Serializes this object's persistent properties to a .chunk stream.
 		/// @see FTResource::SaveProperties()
+		/// @param ofs Output stream receiving the serialized data.
+		/// @note Writes to the supplied stream at its current position.
 		virtual void SaveProperties(std::ofstream& ofs) override = 0;
 
+		/// @brief Restores this object's persistent properties from a .chunk stream.
 		/// @see FTResource::LoadProperties()
+		/// @param ifs Input stream positioned at the expected data; reading advances its position.
+		/// @note Advances the stream position and updates the destination state.
 		virtual void LoadProperties(std::ifstream& ifs) override = 0;
 
 		///////////////////////////////////
 		/// Const/Destructors & Copying ///
 		///////////////////////////////////
 	public:
+		/// @brief Completes destruction through the object's inheritance hierarchy.
 		virtual ~IModel() override = 0;
 	};
 

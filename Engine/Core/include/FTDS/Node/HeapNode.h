@@ -15,6 +15,10 @@ namespace Common
 		template <typename TYPE>
 		struct HeapNode
 		{
+			/// @brief Initializes a priority key and its associated payload.
+			/// @param key Lookup key identifying the stored entry.
+			/// @param value Value to assign, insert, or process.
+			/// @note Initializes the Key base or delegates to its constructor.
 			HeapNode(size_t key, const TYPE& value)
 				: Key(key), Value(value)
 			{

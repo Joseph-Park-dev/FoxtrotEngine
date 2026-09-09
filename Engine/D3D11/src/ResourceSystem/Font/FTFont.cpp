@@ -31,6 +31,9 @@ namespace D3D11
 	using namespace Math;
 	ResType FTFont::Type = ResType::FONT;
 
+	/// @brief Appends a text item to the font's renderable text collection.
+	/// @param device Direct3D device used to create GPU resources.
+	/// @param text Null-terminated text to display, log, or convert.
 	void FTFont::AddText(ComPtr<ID3D11Device>& device, Common::FTDS::String& text)
 	{
 		Common::FTDS::DynamicArray<TextVertex> vertices;
@@ -47,6 +50,15 @@ namespace D3D11
 		Meshes()->PushBack(mesh);
 	}
 
+	/// @brief Submits this object's graphics work for the current frame.
+	/// @param text Null-terminated text to display, log, or convert.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @param transform Transform associated with the actor.
+	/// @param camInst Camera supplying the view and projection for this draw.
+	/// @param tex Texture resource used by the operation.
+	/// @param vs Vertex shader resource.
+	/// @param ps Pixel shader resource.
+	/// @param mat Matrix or material used by this operation.
 	void FTFont::Render(Common::FTDS::String& text, Core::IRenderer* renderer, Core::Transform* transform, Camera* camInst, FTTexture* tex, FTVertexShader* vs, FTPixelShader* ps, FTMaterial* mat)
 	{
 		if (!Meshes())
@@ -95,6 +107,14 @@ namespace D3D11
 		});
 	}
 
+	/// @brief Rebuilds glyph vertices for the currently stored text.
+	/// @param text Null-terminated text to display, log, or convert.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @param pos Position or zero-based insertion index.
+	/// @param scale Scale factor applied to the content.
+	/// @param padding Space around the control or geometry.
+	/// @param color Color components used when rendering.
+	/// @param alpha Opacity or blend weight.
 	void FTFont::UpdateTextVertices(Common::FTDS::String& text, Core::IRenderer* renderer, FTVector2 pos, FTVector2 scale, FTVector2 padding, FTVector3 color, float alpha)
 	{
 		if (text.IsEmpty())
@@ -174,31 +194,47 @@ namespace D3D11
 		static_cast<D3D11Renderer*>(renderer)->GetContext()->Unmap(Meshes()->At(0)->VertexBuffer.Get(), 0);
 	}
 
+	/// @brief Returns the size used by this ftfont.
+	/// @return Current size.
 	const int FTFont::GetSize() const
 	{
 		return mSize;
 	}
 
+	/// @brief Returns the line height used by this ftfont.
+	/// @return Current line height.
 	const float FTFont::GetLineHeight() const
 	{
 		return 0.0f;
 	}
 
+	/// @brief Returns the base height used by this ftfont.
+	/// @return Current base height.
 	const float FTFont::GetBaseHeight() const
 	{
 		return 0.0f;
 	}
 
+	/// @brief Returns the horizontal padding used by this ftfont.
+	/// @param paddingX Horizontal padding.
+	/// @return Current horizontal padding.
 	float FTFont::GetHorizontalPadding(float paddingX)
 	{
 		return (mLeftPadding + mRightPadding) * paddingX;
 	}
 
+	/// @brief Returns the vertical padding used by this ftfont.
+	/// @param paddingY Vertical padding.
+	/// @return Current vertical padding.
 	float FTFont::GetVerticalPadding(float paddingY)
 	{
 		return (mTopPadding + mBottomPadding) * paddingY;
 	}
 
+	/// @brief Initializes glyph metrics, textures, and text-rendering storage.
+	/// @param resDef Resource definition containing the filename and source path.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @note Initializes the :FTFont base or delegates to its constructor.
 	FTFont::FTFont(Common::FTResourceDef& resDef, Core::IRenderer* renderer)
 		: FTMeshGroup(resDef, renderer, nullptr)
 		, mSize(0)
@@ -243,6 +279,7 @@ namespace D3D11
 			LoadFont(mFontImage, resDef, FTVector2(width, height));
 	}
 
+	/// @brief Releases the resources managed by this instance during destruction.
 	FTFont::~FTFont()
 	{
 		mCharList->IterateAllValues([&](FontChar* fc) {
@@ -265,6 +302,9 @@ namespace D3D11
 		delete mKerningsList;
 	}
 
+	/// @brief Serializes this object's persistent properties to a .chunk stream.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @note Writes to the supplied stream at its current position.
 	void FTFont::SaveProperties(std::ofstream& ofs)
 	{
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTFont::FTFONT);
@@ -277,6 +317,9 @@ namespace D3D11
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTFont::FTFONT);
 	}
 
+	/// @brief Restores this object's persistent properties from a .chunk stream.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @note Advances the stream position and updates the destination state.
 	void FTFont::LoadProperties(std::ifstream& ifs)
 	{
 		Common::FTDS::String key;
@@ -286,6 +329,10 @@ namespace D3D11
 		mFontImage = D3D11::ResourceManager::GetInstance()->GetSprite(key)->GetTexture();
 	}
 
+	/// @brief Returns the kerning used by this ftfont.
+	/// @param first Initial input value or first operand.
+	/// @param second Second input operand.
+	/// @return Current kerning.
 	const float FTFont::GetKerning(wchar_t first, wchar_t second) const
 	{
 		for (int i = 0; i < mNumKernings; ++i)
@@ -298,21 +345,32 @@ namespace D3D11
 		return 0.0f;
 	}
 
+	/// @brief Returns the char used by this ftfont.
+	/// @param c Character or component value.
+	/// @return Borrowed access to the char.
 	FontChar* FTFont::GetChar(wchar_t c) const
 	{
 		return mCharList->At(c)->Value();
 	}
 
+	/// @brief Returns the font image used by this ftfont.
+	/// @return Borrowed access to the font image.
 	FTTexture* FTFont::GetFontImage() const
 	{
 		return mFontImage;
 	}
 
+	/// @brief Updates the font image used by subsequent operations.
+	/// @param fontImage Replacement font image.
 	void FTFont::SetFontImage(FTTexture* fontImage)
 	{
 		mFontImage = fontImage;
 	}
 
+	/// @brief Parses font metrics and creates the resources needed to draw glyphs.
+	/// @param img Image resource used by this operation.
+	/// @param resDef Resource definition containing the filename and source path.
+	/// @param renderRes Rendering resolution.
 	void FTFont::LoadFont(FTTexture* img, Common::FTResourceDef& resDef, const Math::FTVector2& renderRes)
 	{
 
@@ -523,6 +581,7 @@ namespace D3D11
 	}
 
 #ifdef FOXTROT_EDITOR
+	/// @brief Builds the editor controls for inspecting and modifying this object's state.
 	void FTFont::UpdateUI()
 	{
 		if (ImGui::Button("Reload font"))

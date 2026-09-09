@@ -34,22 +34,32 @@
 
 namespace Common
 {
+	/// @brief Writes a formatted int diagnostic to standard output.
+	/// @param val Value to assign, insert, or process.
 	inline void LogInt(int val)
 	{
 		printf("int : %d\n", val);
 	}
 
+	/// @brief Writes a formatted int diagnostic to standard output.
+	/// @param message Diagnostic text or message identifier.
+	/// @param val Value to assign, insert, or process.
 	inline void LogInt(Common::FTDS::String message, int val)
 	{
 		Common::FTDS::String msg = message + std::to_string(val).c_str() + "\n";
 		printf(msg.C_Str());
 	}
 
+	/// @brief Writes a formatted float diagnostic to standard output.
+	/// @param val Value to assign, insert, or process.
 	inline void LogFloat(float val)
 	{
 		printf("float : %f\n", val);
 	}
 
+	/// @brief Writes a formatted float diagnostic to standard output.
+	/// @param message Diagnostic text or message identifier.
+	/// @param val Value to assign, insert, or process.
 	inline void LogFloat(Common::FTDS::String message, float val)
 	{
 		Common::FTDS::String msg = message + std::to_string(val).c_str() + "\n";
@@ -71,6 +81,8 @@ namespace Common
 	//	printf("%s, X : %f Y : %f Z : %f\n", message.C_Str(), val.x, val.y, val.z);
 	//}
 
+	/// @brief Writes a formatted bool diagnostic to standard output.
+	/// @param val Value to assign, insert, or process.
 	inline void LogBool(bool val)
 	{
 		if (val)
@@ -79,21 +91,31 @@ namespace Common
 			printf("Bool Log : False\n");
 	}
 
+	/// @brief Writes a formatted string diagnostic to standard output.
+	/// @param val Value to assign, insert, or process.
 	inline void LogString(Common::FTDS::String val)
 	{
 		printf("%s\n", val.C_Str());
 	}
 
+	/// @brief Writes a formatted string diagnostic to standard output.
+	/// @param val Value to assign, insert, or process.
 	inline void LogString(const char* val)
 	{
 		printf("%s\n", val);
 	}
 
+	/// @brief Writes a formatted string diagnostic to standard output.
+	/// @param message Diagnostic text or message identifier.
+	/// @param val Value to assign, insert, or process.
 	inline void LogString(std::wstring message, std::wstring val)
 	{
 		printf("%ls\n", (message + L" :" + val).c_str());
 	}
 
+	/// @brief Writes a formatted string diagnostic to standard output.
+	/// @param message Diagnostic text or message identifier.
+	/// @param val Value to assign, insert, or process.
 	inline void LogString(Common::FTDS::String message, Common::FTDS::String val)
 	{
 		message.Append(" :");
@@ -115,6 +137,9 @@ namespace Common
 	//	return str;
 	// }
 
+	/// @brief Converts the supplied value to the text representation used by the engine.
+	/// @param text Null-terminated text to display, log, or convert.
+	/// @return Converts the supplied value to the text representation used by the engine.
 	static char* ToString(const wchar_t* text)
 	{
 		size_t i	= 0;
@@ -128,16 +153,25 @@ namespace Common
 		return nullptr;
 	}
 
+	/// @brief Converts the supplied value to the text representation used by the engine.
+	/// @param boolVal Boolean value to serialize or convert.
+	/// @return Converts the supplied value to the text representation used by the engine.
 	static const char* ToString(bool boolVal)
 	{
 		return boolVal ? "true" : "false";
 	}
 
+	/// @brief Interprets the exact string "true" as true and all other text as false.
+	/// @param str Text used by the operation.
+	/// @return True only when str equals "true".
 	static const bool StrToBool(Common::FTDS::String& str)
 	{
 		return str.Equal("true") ? true : false;
 	}
 
+	/// @brief Extracts the final filename component from a Windows-style path.
+	/// @param path Filesystem path of the resource or project.
+	/// @return Extracts the final filename component from a Windows-style path.
 	inline Common::FTDS::String ExtractFileName(const char* path)
 	{
 		std::filesystem::path p(path);
@@ -147,6 +181,9 @@ namespace Common
 		return pathStr;
 	}
 
+	/// @brief Extracts the final filename component from a Windows-style path.
+	/// @param path Filesystem path of the resource or project.
+	/// @param out Receives the operation's output.
 	inline void ExtractFileName(Common::FTDS::String* path, Common::FTDS::String& out)
 	{
 		std::filesystem::path p(path->C_Str());
@@ -155,6 +192,9 @@ namespace Common
 		out.SubStr(idx + 1, out.GetLength() - idx); // 1 -> "\\" should be omitted.
 	}
 
+	/// @brief Extracts the final filename component from a Windows-style path.
+	/// @param path Filesystem path of the resource or project.
+	/// @param out Receives the operation's output.
 	inline void ExtractFileName(const Common::FTDS::String& path, Common::FTDS::String& out)
 	{
 		std::filesystem::path p(path.C_Str());
@@ -163,6 +203,9 @@ namespace Common
 		out.SubStr(idx + 1, out.GetLength() - idx); // 1 -> "\\" should be omitted.
 	}
 
+	/// @brief Extracts the suffix beginning at the final period in a path.
+	/// @param path Filesystem path of the resource or project.
+	/// @return Extracts the suffix beginning at the final period in a path.
 	inline Common::FTDS::String ExtractFileType(const char* path)
 	{
 		std::filesystem::path p(path);
@@ -172,18 +215,28 @@ namespace Common
 		return pathStr;
 	}
 
+	/// @brief Keeps the prefix preceding the first matching delimiter.
+	/// @param line Text line to parse or modify.
+	/// @param end Delimiter marking the end of the retained text.
 	inline void ExtractUntil(Common::FTDS::String& line, const char* end)
 	{
 		int typeBeg = line.LFind(end);
 		line.SubStr(0, typeBeg);
 	}
 
+	/// @brief Truncates the text at the final occurrence of the suffix marker.
+	/// @param line Text line to parse or modify.
+	/// @param start First character index or delimiter marking truncation.
 	inline void RemoveSuffix(Common::FTDS::String& line, const char* start)
 	{
 		size_t typeBegin = line.RFind(start);
 		line.SubStr(0, typeBegin);
 	}
 
+	/// @brief Compares the end of a wide string with the requested suffix.
+	/// @param fullString Complete text whose suffix is tested.
+	/// @param ending Suffix to compare against the end of the string.
+	/// @return True when the compared values match; otherwise false.
 	inline bool EndsWith(
 		const std::wstring& fullString,
 		const std::wstring& ending)
@@ -198,18 +251,27 @@ namespace Common
 		return fullString.compare(fullString.size() - ending.size(), ending.size(), ending) == 0;
 	}
 
+	/// @brief Removes the previous suffix length and appends replacement text.
+	/// @param curr Current string or value to modify.
+	/// @param prevSuffix Suffix whose length is removed.
+	/// @param postSuffix Replacement suffix text.
 	inline void ReplaceSuffix(Common::FTDS::String& curr, Common::FTDS::String prevSuffix, Common::FTDS::String postSuffix)
 	{
 		curr.SubStr(0, curr.GetLength() - prevSuffix.GetLength());
 		curr.Append(postSuffix);
 	}
 
+	/// @brief Returns the array length used by this service.
+	/// @param arr Array storage accessed by the helper.
+	/// @return Current array length.
 	template <typename T>
 	size_t GetArrayLength(T arr)
 	{
 		return sizeof(arr) / sizeof(T);
 	}
 
+	/// @brief Deletes pointer elements selected by the array helper, then releases the array.
+	/// @param arr Array storage accessed by the helper.
 	template <typename T>
 	void SafeDeleteArray(T** arr)
 	{
@@ -221,6 +283,8 @@ namespace Common
 		delete[] arr;
 	}
 
+	/// @brief Deletes the stored pointer values and clears the vector.
+	/// @param vec Vector or vector container processed by the helper.
 	template <typename T>
 	void Safe_Delete_Vector(std::vector<T>& vec)
 	{
@@ -234,6 +298,8 @@ namespace Common
 		vec.clear();
 	}
 
+	/// @brief Deletes owned pointer entries and clears or releases the map.
+	/// @param map Map whose pointer entries are processed.
 	template <class TKey, class TVal>
 	void Safe_Delete_Map(std::unordered_map<TKey, TVal>& map)
 	{

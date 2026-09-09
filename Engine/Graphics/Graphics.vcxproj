@@ -19,7 +19,32 @@
 </ClCompile>
 <Link><AdditionalDependencies>;%(AdditionalDependencies)</AdditionalDependencies><SubSystem>Console</SubSystem></Link></ItemDefinitionGroup>
 <ItemGroup>
-<ClInclude Include="include\**\*.h"/>
+<ClInclude Include="include\Component\IAnimator.h"/>
+<ClInclude Include="include\Component\IMeshRenderer.h"/>
+<ClInclude Include="include\Component\ISpineAnimator.h"/>
+<ClInclude Include="include\Component\ISpriteRenderer.h"/>
+<ClInclude Include="include\Component\ITileMapRenderer.h"/>
+<ClInclude Include="include\Factory\GraphicsFactory.h"/>
+<ClInclude Include="include\Renderer\ICamera.h"/>
+<ClInclude Include="include\Renderer\IRenderer.h"/>
+<ClInclude Include="include\Renderer\IWindow.h"/>
+<ClInclude Include="include\ResourceSystem\Animation\ISpineAnimation.h"/>
+<ClInclude Include="include\ResourceSystem\Animation\ISpriteAnimation.h"/>
+<ClInclude Include="include\ResourceSystem\Font\FontChar.h"/>
+<ClInclude Include="include\ResourceSystem\Font\FontKerning.h"/>
+<ClInclude Include="include\ResourceSystem\Font\IFont.h"/>
+<ClInclude Include="include\ResourceSystem\Font\TextAttribute.h"/>
+<ClInclude Include="include\ResourceSystem\Font\TextVertex.h"/>
+<ClInclude Include="include\ResourceSystem\ITexture.h"/>
+<ClInclude Include="include\ResourceSystem\Light.h"/>
+<ClInclude Include="include\ResourceSystem\Material\IMaterial.h"/>
+<ClInclude Include="include\ResourceSystem\Mesh\IModel.h"/>
+<ClInclude Include="include\ResourceSystem\Mesh\MeshConstantData.h"/>
+<ClInclude Include="include\ResourceSystem\Mesh\Vertex.h"/>
+<ClInclude Include="include\ResourceSystem\Shader\IShader.h"/>
+<ClInclude Include="include\ResourceSystem\Shape\IShape.h"/>
+<ClInclude Include="include\ResourceSystem\Sprite\ISprite.h"/>
+<ClInclude Include="include\ResourceSystem\Sprite\ITileMap.h"/>
 </ItemGroup>
 <ItemGroup>
 <ProjectReference Include="..\Core\Core.vcxproj"><Project>{cce9835e-f788-4b51-930b-d7805ac1e2a0}</Project><LinkLibraryDependencies>false</LinkLibraryDependencies></ProjectReference>

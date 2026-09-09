@@ -10,6 +10,9 @@ namespace Common
 {
 	namespace FTDS
 	{
+		/// @brief Computes a 64-bit FNV-1a hash of null-terminated text.
+		/// @param str Text used by the operation.
+		/// @return 64-bit FNV-1a hash value.
 		inline uint64_t GenerateHash_fnv1a_64(const char* str)
 		{
 			const uint64_t FNV_PRIME	= 0x100000001b3;
@@ -27,12 +30,20 @@ namespace Common
 		}
 
 		// Simple HashFunction using modular operator.
+		/// @brief Maps a string hash into the available table slots.
+		/// @param key Lookup key identifying the stored entry.
+		/// @param arrSize Number of available hash-table slots; must be nonzero.
+		/// @return Slot index in [0, arrSize).
+		/// @pre arrSize must be nonzero.
 		inline size_t HashFunction(const char* key, size_t arrSize)
 		{
 			return GenerateHash_fnv1a_64(key) % arrSize;
 		}
 
 		// Sum the ASCII code numbers from the alphabets of the key.
+		/// @brief Computes a numeric key from the character codes in the supplied text.
+		/// @param key Lookup key identifying the stored entry.
+		/// @return A numeric key from the character codes in the supplied text.
 		inline size_t Transform(const char* key)
 		{
 			size_t number = 0;
@@ -48,6 +59,9 @@ namespace Common
 		class HashMap : public FTDS::Array<FTDS::Record<TYPE>*>
 		{
 		public:
+			/// @brief Adds a keyed or positioned element to the container.
+			/// @param key Lookup key identifying the stored entry.
+			/// @param value Value to assign, insert, or process.
 			void Insert(int key, TYPE value)
 			{
 				Common::FTDS::String conv;
@@ -55,6 +69,9 @@ namespace Common
 				this->Insert(conv, value);
 			}
 
+			/// @brief Adds a keyed or positioned element to the container.
+			/// @param key Lookup key identifying the stored entry.
+			/// @param value Value to assign, insert, or process.
 			void Insert(Common::FTDS::String key, TYPE value)
 			{
 				// HashChainMap uses FTDS::Array,
@@ -95,6 +112,9 @@ namespace Common
 				++mSize;
 			}
 
+			/// @brief Retrieves the element or record selected by an index or key.
+			/// @param key Lookup key identifying the stored entry.
+			/// @return Borrowed record for the key, or nullptr when the lookup fails.
 			FTDS::Record<TYPE>* At(const int key)
 			{
 				Common::FTDS::String conv;
@@ -102,16 +122,25 @@ namespace Common
 				return this->At(conv);
 			}
 
+			/// @brief Retrieves the element or record selected by an index or key.
+			/// @param key Lookup key identifying the stored entry.
+			/// @return Borrowed record for the key, or nullptr when the lookup fails.
 			FTDS::Record<TYPE>* At(const Common::FTDS::String&& key)
 			{
 				return this->At(key.C_Str());
 			}
 
+			/// @brief Retrieves the element or record selected by an index or key.
+			/// @param key Lookup key identifying the stored entry.
+			/// @return Borrowed record for the key, or nullptr when the lookup fails.
 			FTDS::Record<TYPE>* At(const Common::FTDS::String& key)
 			{
 				return this->At(key.C_Str());
 			}
 
+			/// @brief Retrieves the element or record selected by an index or key.
+			/// @param key Lookup key identifying the stored entry.
+			/// @return Borrowed record for the key, or nullptr when the lookup fails.
 			FTDS::Record<TYPE>* At(const char*&& key)
 			{
 				assert(0 < this->Capacity());
@@ -141,6 +170,9 @@ namespace Common
 				return nullptr;
 			}
 
+			/// @brief Removes the element selected by the supplied index or key.
+			/// @param key Lookup key identifying the stored entry.
+			/// @note Releasing container storage does not implicitly delete objects held through raw pointer values.
 			void Erase(const char* key)
 			{
 				Record<TYPE>* node = At(key);
@@ -150,6 +182,8 @@ namespace Common
 			}
 
 		public:
+			/// @brief Invokes the callback on occupied record slots.
+			/// @param unaryOp Callback invoked for each visited entry.
 			template <class UnaryOperation>
 			void IterateAllNodes(
 				UnaryOperation&& unaryOp)
@@ -166,6 +200,8 @@ namespace Common
 				}
 			}
 
+			/// @brief Invokes the callback on values in occupied record slots.
+			/// @param unaryOp Callback invoked for each visited entry.
 			template <class UnaryOperation>
 			void IterateAllValues(
 				UnaryOperation&& unaryOp)
@@ -184,6 +220,8 @@ namespace Common
 			}
 
 			// Clear the linked nodes inside the array data.
+			/// @brief Resets the logical contents and releases or reinitializes storage as defined by the container.
+			/// @note Releasing container storage does not implicitly delete objects held through raw pointer values.
 			void Clear() override
 			{
 				if (mSize < 1)
@@ -199,17 +237,26 @@ namespace Common
 			}
 
 		public:
+			/// @brief Returns the size used by this hash map.
+			/// @return Borrowed access to the size.
 			const size_t& GetSize() { return mSize; }
+			/// @brief Tests whether the container has no logical elements.
+			/// @return True when the container has no logical elements; otherwise false.
 			bool		  IsEmpty() const { return mSize == 0; }
+			/// @brief Tests whether occupied storage has reached the capacity.
+			/// @return True when occupied storage has reached the capacity; otherwise false.
 			bool		  IsFull() const { return this->mCapacity <= mSize; }
 
 		public:
+			/// @brief Initializes an empty keyed record table.
 			HashMap()
 				: FTDS::Array<Record<TYPE>*>()
 				, mSize(0)
 			{
 			}
 
+			/// @brief Initializes an empty keyed record table.
+			/// @param capacity Initial number of element slots to allocate.
 			HashMap(size_t capacity)
 				: FTDS::Array<Record<TYPE>*>(capacity)
 				, mSize(0)
@@ -217,6 +264,7 @@ namespace Common
 			}
 
 			// Auto deletion of the RecordNodes inside each slot.
+			/// @brief Releases the resources managed by this instance during destruction.
 			~HashMap() override
 			{
 				Clear();
@@ -226,6 +274,9 @@ namespace Common
 			size_t mSize;
 		};
 
+		/// @brief Deletes owned pointer entries and clears or releases the map.
+		/// @param map Map whose pointer entries are processed.
+		/// @note Releasing container storage does not implicitly delete objects held through raw pointer values.
 		template <class TYPE>
 		void Safe_Delete_Map(Common::FTDS::HashMap<TYPE*>*& map)
 		{

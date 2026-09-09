@@ -22,20 +22,34 @@ namespace Graphics
 	{
 	public:
 		static inline const char* NAME = "Animator";
+		/// @brief Returns the name used by this ianimator.
+		/// @return Borrowed access to the name.
 		virtual const char*		  GetName() override
 		{
 			return "Animator";
 		}
 
 	public:
+		/// @brief Starts or selects animation playback.
+		/// @param idx Zero-based element index.
+		/// @param isRepeated Whether playback repeats after its final frame.
 		virtual void Play(const size_t idx, bool isRepeated = true) = 0;
+		/// @brief Stops animation playback.
 		virtual void Stop()											= 0;
 
 	public:
+		/// @brief Returns the is finished used by this ianimator.
+		/// @return Current value of the is finished flag.
 		virtual bool GetIsFinished() const	 = 0;
+		/// @brief Returns the curr frame idx used by this ianimator.
+		/// @return Current curr frame idx.
 		virtual int	 GetCurrFrameIdx() const = 0;
 
+		/// @brief Updates the frame used by subsequent operations.
+		/// @param frameNumber Replacement frame.
 		virtual void SetFrame(int frameNumber) = 0;
+		/// @brief Updates the is finished used by subsequent operations.
+		/// @param val Replacement is finished.
 		virtual void SetIsFinished(bool val)   = 0;
 	};
 

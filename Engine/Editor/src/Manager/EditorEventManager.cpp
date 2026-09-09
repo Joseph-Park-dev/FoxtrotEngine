@@ -8,6 +8,8 @@
 
 namespace Editor
 {
+	/// @brief Applies the requested event or command to engine state.
+	/// @param executedEvent Event whose operation is applied.
 	void EditorEventManager::Execute(const Core::FTEvent& executedEvent)
 	{
 		switch (executedEvent.incident)
@@ -35,11 +37,14 @@ namespace Editor
 		}
 	}
 
+	/// @brief Initializes the pending editor-event collection.
+	/// @note Initializes the :EditorEventManager base or delegates to its constructor.
 	EditorEventManager::EditorEventManager()
 		: Core::EventManager()
 	{
 	}
 
+	/// @brief Completes destruction through the object's inheritance hierarchy.
 	EditorEventManager::~EditorEventManager()
 	{
 	}

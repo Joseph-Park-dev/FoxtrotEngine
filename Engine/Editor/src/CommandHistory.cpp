@@ -30,6 +30,7 @@ namespace Editor
 {
 	using namespace Core;
 	using namespace Math;
+	/// @brief Reverses the most recently applied command in the history.
 	void CommandHistory::UndoCommand()
 	{
 		if (mCurrent)
@@ -44,6 +45,7 @@ namespace Editor
 		}
 	}
 
+	/// @brief Reapplies the next command in the redo history.
 	void CommandHistory::RedoCommand()
 	{
 		if (mCurrent)
@@ -59,6 +61,7 @@ namespace Editor
 		}
 	}
 
+	/// @brief Records the command sequence used to support subsequent undo and redo.
 	void CommandHistory::ArrangeCommand()
 	{
 		if (mCurrent)
@@ -72,11 +75,14 @@ namespace Editor
 		}
 	}
 
+	/// @brief Updates the current used by subsequent operations.
+	/// @param cmd Replacement current.
 	void CommandHistory::SetCurrent(Command* cmd)
 	{
 		mCurrent = cmd;
 	}
 
+	/// @brief Advances frame-dependent state using the current time step.
 	void CommandHistory::Update()
 	{
 		if (EditorLayer::GetInstance()->GetUndoKeyPressed())
@@ -85,6 +91,10 @@ namespace Editor
 			RedoCommand();
 	}
 
+	/// @brief Draws a typed editor control and applies changes to the referenced value.
+	/// @param label Text identifying the editor control.
+	/// @param ref Reference value used by the operation.
+	/// @param modSpeed Playback or edit speed multiplier.
 	void CommandHistory::UpdateVector2Value(const char* label, FTVector2& ref, float modSpeed)
 	{
 		float vec2[2];
@@ -113,6 +123,10 @@ namespace Editor
 		ref.y = vec2[1];
 	}
 
+	/// @brief Draws a typed editor control and applies changes to the referenced value.
+	/// @param label Text identifying the editor control.
+	/// @param ref Reference value used by the operation.
+	/// @param modSpeed Playback or edit speed multiplier.
 	void CommandHistory::UpdateVector3Value(const char* label, FTVector3& ref, float modSpeed)
 	{
 		float vec3[3];
@@ -144,6 +158,10 @@ namespace Editor
 		ref.z = vec3[2];
 	}
 
+	/// @brief Draws a typed editor control and applies changes to the referenced value.
+	/// @param label Text identifying the editor control.
+	/// @param ref Reference value used by the operation.
+	/// @param modSpeed Playback or edit speed multiplier.
 	void CommandHistory::UpdateVector4Value(const char* label, FTVector4& ref, float modSpeed)
 	{
 		float vec4[4];
@@ -177,6 +195,9 @@ namespace Editor
 		ref.w = vec4[3];
 	}
 
+	/// @brief Draws a typed editor control and applies changes to the referenced value.
+	/// @param label Text identifying the editor control.
+	/// @param ref Reference value used by the operation.
 	void CommandHistory::UpdateStringValue(const char* label, Common::FTDS::String& ref)
 	{
 		if (ref.Capacity() < Common::BufferSize::STRING_BUFFER_SIZE)
@@ -198,6 +219,10 @@ namespace Editor
 		strVal[0] = '\0';
 	}
 
+	/// @brief Draws a typed editor control and applies changes to the referenced value.
+	/// @param label Text identifying the editor control.
+	/// @param ref Reference value used by the operation.
+	/// @param modSpeed Playback or edit speed multiplier.
 	void CommandHistory::UpdateFloatValue(const char* label, float& ref, float modSpeed)
 	{
 		float val = ref;
@@ -222,6 +247,10 @@ namespace Editor
 		ref = val;
 	}
 
+	/// @brief Draws a typed editor control and applies changes to the referenced value.
+	/// @param label Text identifying the editor control.
+	/// @param ref Reference value used by the operation.
+	/// @param modSpeed Playback or edit speed multiplier.
 	void CommandHistory::UpdateIntValue(const char* label, int& ref, int modSpeed)
 	{
 		int val = ref;
@@ -246,12 +275,21 @@ namespace Editor
 		ref = val;
 	}
 
+	/// @brief Draws a typed editor control and applies changes to the referenced value.
+	/// @param label Text identifying the editor control.
+	/// @param ref Reference value used by the operation.
+	/// @param min Inclusive lower bound.
+	/// @param max Inclusive upper bound.
+	/// @param modSpeed Playback or edit speed multiplier.
 	void CommandHistory::UpdateIntValue(const char* label, int& ref, int min, int max, int modSpeed)
 	{
 		Math::Clamp(ref, min, max);
 		UpdateIntValue(label, ref, modSpeed);
 	}
 
+	/// @brief Draws a typed editor control and applies changes to the referenced value.
+	/// @param label Text identifying the editor control.
+	/// @param ref Reference value used by the operation.
 	void CommandHistory::UpdateBoolValue(const char* label, bool& ref)
 	{
 		if (ImGui::Checkbox(label, &ref))
@@ -262,6 +300,10 @@ namespace Editor
 		}
 	}
 
+	/// @brief Draws a typed editor control and applies changes to the referenced value.
+	/// @param label Text identifying the editor control.
+	/// @param ref Reference value used by the operation.
+	/// @param modSpeed Playback or edit speed multiplier.
 	void CommandHistory::UpdateUnsignedIntValue(const char* label, unsigned int& ref, int modSpeed)
 	{
 		int val = static_cast<int>(ref);
@@ -269,6 +311,7 @@ namespace Editor
 		ref = static_cast<UINT>(val);
 	}
 
+	/// @brief Releases runtime services and resources during engine shutdown.
 	void CommandHistory::ShutDown()
 	{
 		auto iter = mPrevious->Begin();
@@ -286,11 +329,15 @@ namespace Editor
 		delete mNext;
 	}
 
+	/// @brief Returns the current command used by this command history.
+	/// @return Borrowed access to the current command.
 	Command* CommandHistory::GetCurrentCommand()
 	{
 		return mCurrent;
 	}
 
+	/// @brief Initializes the undo and redo history.
+	/// @note Initializes the :CommandHistory base or delegates to its constructor.
 	CommandHistory::CommandHistory()
 		: mCurrent(nullptr)
 		, mPrevious(DBG_NEW Common::FTDS::ArrayStack<Command*>(COMMAND_MAXCOUNT))
@@ -299,57 +346,96 @@ namespace Editor
 	{
 	}
 
+	/// @brief Completes destruction through the object's inheritance hierarchy.
 	CommandHistory::~CommandHistory()
 	{
 	}
 
 	extern "C"
 	{
+		/// @brief Returns the cmdhistory used by this service.
+		/// @return Borrowed access to the cmdhistory.
 		CommandHistory* GetCMDHistory()
 		{
 			return CommandHistory::GetInstance();
 		}
 
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param modSpeed Playback or edit speed multiplier.
 		void UpdateIntValue(const char* label, int& ref, unsigned int modSpeed)
 		{
 			CommandHistory::GetInstance()->UpdateIntValue(label, ref, modSpeed);
 		}
 
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param min Inclusive lower bound.
+		/// @param max Inclusive upper bound.
+		/// @param modSpeed Playback or edit speed multiplier.
 		void UpdateClampedIntValue(const char* label, int& ref, int min, int max, int modSpeed)
 		{
 			CommandHistory::GetInstance()->UpdateIntValue(label, ref, modSpeed);
 		}
 
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param modSpeed Playback or edit speed multiplier.
 		void UpdateUnsignedIntValue(const char* label, unsigned int& ref, unsigned int modSpeed)
 		{
 			CommandHistory::GetInstance()->UpdateUnsignedIntValue(label, ref, modSpeed);
 		}
 
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param modSpeed Playback or edit speed multiplier.
 		void UpdateFloatValue(const char* label, float& ref, float modSpeed)
 		{
 			CommandHistory::GetInstance()->UpdateFloatValue(label, ref, modSpeed);
 		}
 
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
 		void UpdateBoolValue(const char* label, bool& ref)
 		{
 			CommandHistory::GetInstance()->UpdateBoolValue(label, ref);
 		}
 
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param modSpeed Playback or edit speed multiplier.
 		void UpdateVector2Value(const char* label, Math::FTVector2& ref, float modSpeed)
 		{
 			CommandHistory::GetInstance()->UpdateVector2Value(label, ref, modSpeed);
 		}
 
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param modSpeed Playback or edit speed multiplier.
 		void UpdateVector3Value(const char* label, Math::FTVector3& ref, float modSpeed)
 		{
 			CommandHistory::GetInstance()->UpdateVector3Value(label, ref, modSpeed);
 		}
 
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
+		/// @param modSpeed Playback or edit speed multiplier.
 		void UpdateVector4Value(const char* label, Math::FTVector4& ref, float modSpeed)
 		{
 			CommandHistory::GetInstance()->UpdateVector4Value(label, ref, modSpeed);
 		}
 
+		/// @brief Draws a typed editor control and applies changes to the referenced value.
+		/// @param label Text identifying the editor control.
+		/// @param ref Reference value used by the operation.
 		void UpdateStringValue(const char* label, Common::FTDS::String& ref)
 		{
 			CommandHistory::GetInstance()->UpdateStringValue(label, ref);

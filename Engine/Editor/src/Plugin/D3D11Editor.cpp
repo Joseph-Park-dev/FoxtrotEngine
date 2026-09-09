@@ -44,12 +44,36 @@
 #include "Core/FTCore.h"
 #include <../../D3D11/include/Plugin/PluginKey.h>
 
+/// @brief Forwards native window messages to the ImGui Win32 backend.
+/// @param hWnd Native window receiving the message.
+/// @param msg Windows message containing input or window data.
+/// @param wParam Message-specific Windows parameter.
+/// @param lParam Message-specific Windows parameter.
+/// @return Forwards native window messages to the ImGui Win32 backend.
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 using namespace Editor;
 
+/// @brief Dispatches native window messages for input and window lifecycle handling.
+/// @param hwnd Native window receiving the message.
+/// @param msg Windows message containing input or window data.
+/// @param wParam Message-specific Windows parameter.
+/// @param lParam Message-specific Windows parameter.
+/// @return Dispatches native window messages for input and window lifecycle handling.
 LRESULT CALLBACK WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+/// @brief Dispatches native window messages to the game window's input and lifecycle handlers.
+/// @param hwnd Native window receiving the message.
+/// @param msg Windows message containing input or window data.
+/// @param wParam Message-specific Windows parameter.
+/// @param lParam Message-specific Windows parameter.
+/// @return Dispatches native window messages to the game window's input and lifecycle handlers.
 LRESULT CALLBACK GameWinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+/// @brief Processes a monitor encountered during display enumeration.
+/// @param hMonitor Monitor handle supplied by display enumeration.
+/// @param hdcMonitor Monitor device context supplied by enumeration.
+/// @param lprcMonitor Monitor bounds supplied by enumeration.
+/// @param dwData Caller context supplied to monitor enumeration.
+/// @return Processes a monitor encountered during display enumeration.
 BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData)
 {
 	MONITORINFOEX mi;
@@ -74,16 +98,26 @@ class D3D11Editor :
 	public Core::IPlugin
 {
 public:
+	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
+	/// @throws std::runtime_error If the operation encounters the failure condition checked by this implementation.
 	void Initialize() override;
 
 public:
+	/// @brief Returns the is updating game used by this d3 d11 editor.
+	/// @return Current value of the is updating game flag.
 	bool				GetIsUpdatingGame() const { return mIsUpdatingGame; }
+	/// @brief Returns the editor window used by this d3 d11 editor.
+	/// @return Borrowed access to the editor window.
 	D3D11::D3D11Window* GetEditorWindow() { return mEditorWin; }
 
+	/// @brief Updates the is updating game used by subsequent operations.
+	/// @param isUpdating Replacement is updating game.
 	void SetIsUpdatingGame(bool isUpdating) { mIsUpdatingGame = isUpdating; }
 
 public:
+	/// @brief Initializes the editor plugin's windows, cameras, and services.
 	D3D11Editor();
+	/// @brief Releases the resources managed by this instance during destruction.
 	~D3D11Editor() override;
 
 public:
@@ -106,29 +140,54 @@ private:
 
 private:
 	// These member functions are to be included in Initialize()
+	/// @brief Initializes the ImGui state and platform/rendering backend bindings.
+	/// @return True if the operation succeeds or the tested condition holds; otherwise false.
 	bool InitGUI();
     bool mGuiReady = false;
 
 private:
 	// GameLoop functions
+	/// @brief Registers a component for plugin-managed lifecycle processing.
+	/// @param comp Component instance associated with the actor or plugin.
 	void RegisterComponent(Common::IComponent* comp) override { (void)comp; }
+	/// @brief Provides an empty lifecycle or extension hook for this implementation.
+	/// @note Unnamed parameter (std::ofstream&): reserved by this interface or unused by this implementation.
+	/// @note Writes to the supplied stream at its current position.
 	void SaveProperties(std::ofstream&) override {}
+	/// @brief Provides an empty lifecycle or extension hook for this implementation.
+	/// @note Unnamed parameter (std::ifstream&): reserved by this interface or unused by this implementation.
+	/// @note Advances the stream position and updates the destination state.
 	void LoadProperties(std::ifstream&) override {}
+	/// @brief Provides an empty lifecycle or extension hook for this implementation.
 	void Setup() override {}
+	/// @brief Dispatches input for the current frame to the relevant engine objects.
 	void ProcessInput() override;
+	/// @brief Advances frame-dependent state using the current time step.
+	/// @param deltaTime Elapsed frame time in seconds.
 	void Update(float deltaTime) override;
+	/// @brief Provides an empty lifecycle or extension hook for this implementation.
+	/// @note Unnamed parameter (float): reserved by this interface or unused by this implementation.
 	void LateUpdate(float) override {}
+	/// @brief Submits this object's graphics work for the current frame.
 	void Render() override;
+	/// @brief Provides an empty lifecycle or extension hook for this implementation.
 	void ProcessEvent() override {}
+	/// @brief Provides an empty lifecycle or extension hook for this implementation.
 	void ShutDown() override {}
 
 protected:
+	/// @brief Provides an empty lifecycle or extension hook for this implementation.
+	/// @note Unnamed parameter (std::ifstream&): reserved by this interface or unused by this implementation.
 	void LoadManagerData(std::ifstream&) override {}
+	/// @brief Provides an empty lifecycle or extension hook for this implementation.
+	/// @note Unnamed parameter (std::ifstream&): reserved by this interface or unused by this implementation.
 	void LoadResourceData(std::ifstream&) override {}
 
 	// static LRESULT CALLBACK WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 };
 
+/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
+/// @throws std::runtime_error If the operation encounters the failure condition checked by this implementation.
 void D3D11Editor::Initialize()
 {
 	gGetChunkISSavedFunc = Core::GetFunc<Core::CHUNK_IS_SAVED_FUNC>(Common::DLLPath::CORE_EDITOR, Core::ProcName::GetChunkIsSaved);
@@ -216,11 +275,13 @@ void D3D11Editor::Initialize()
 		SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
+/// @brief Dispatches input for the current frame to the relevant engine objects.
 void D3D11Editor::ProcessInput()
 {
 	mEditorCamera->ProcessInput(mInputDevice);
 }
 
+/// @brief Submits this object's graphics work for the current frame.
 void D3D11Editor::Render()
 {
 	// if (!EditorChunkLoader::GetInstance()->IsLoadingChunk())
@@ -248,6 +309,8 @@ void D3D11Editor::Render()
 
 
 
+/// @brief Advances frame-dependent state using the current time step.
+/// @param deltaTime Elapsed frame time in seconds.
 void D3D11Editor::Update(float deltaTime)
 {
 	// if (mIsUpdatingGame)
@@ -267,6 +330,8 @@ void D3D11Editor::Update(float deltaTime)
 	EditorLayer::GetInstance()->Update(deltaTime, mEditorWin, mInputDevice, mRenderer, gameCam, mEditorCamera);
 }
 
+/// @brief Initializes the editor plugin's windows, cameras, and services.
+/// @note Initializes the :D3D11Editor base or delegates to its constructor.
 D3D11Editor::D3D11Editor()
 	: mEditorWin(nullptr)
 	, mGameWin(nullptr)
@@ -283,6 +348,7 @@ D3D11Editor::D3D11Editor()
 {
 }
 
+/// @brief Releases the resources managed by this instance during destruction.
 D3D11Editor::~D3D11Editor()
 {
     if (mEditorWin) FtDetachWindowCallback(mEditorWin->GetHandle());
@@ -301,6 +367,8 @@ D3D11Editor::~D3D11Editor()
     // Windows, device, game camera and input are borrowed from D3D11's factory.
 }
 
+/// @brief Initializes the ImGui state and platform/rendering backend bindings.
+/// @return True if the operation succeeds or the tested condition holds; otherwise false.
 bool D3D11Editor::InitGUI()
 {
 	IMGUI_CHECKVERSION();
@@ -336,6 +404,12 @@ bool D3D11Editor::InitGUI()
 }
 } // namespace Editor
 
+/// @brief Dispatches native window messages for input and window lifecycle handling.
+/// @param hwnd Native window receiving the message.
+/// @param msg Windows message containing input or window data.
+/// @param wParam Message-specific Windows parameter.
+/// @param lParam Message-specific Windows parameter.
+/// @return Dispatches native window messages for input and window lifecycle handling.
 LRESULT CALLBACK WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam))
@@ -374,6 +448,9 @@ LRESULT CALLBACK WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 extern "C"
 {
+	/// @brief Allocates the plugin implementation exported by this module.
+	/// @param name Name used to identify the requested object or interface.
+	/// @return Created plugin instance or resource.
 	EDITOR_API Common::IPlugin* CreatePlugin(const char* name)
 	{
 		(void)name;
@@ -382,6 +459,12 @@ extern "C"
 }
 // Preserve the unsaved-scene close check without feeding a second HWND's mouse
 // coordinates into the editor window's ImGui backend.
+/// @brief Dispatches native window messages to the game window's input and lifecycle handlers.
+/// @param hwnd Native window receiving the message.
+/// @param msg Windows message containing input or window data.
+/// @param wParam Message-specific Windows parameter.
+/// @param lParam Message-specific Windows parameter.
+/// @return Dispatches native window messages to the game window's input and lifecycle handlers.
 LRESULT CALLBACK GameWinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     if (msg == WM_CLOSE) return WinProc(hwnd, msg, wParam, lParam);

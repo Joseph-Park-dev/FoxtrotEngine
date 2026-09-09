@@ -33,11 +33,15 @@ namespace D3D11
 	using namespace Common;
 	using namespace Core;
 
+	/// @brief Returns the spine loader used by this animation manager.
+	/// @return Borrowed access to the spine loader.
 	FTSpineLoader* AnimationManager::GetSpineLoader()
 	{
 		return mSpineLoader;
 	}
 
+	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
+	/// @param renderer Renderer providing the graphics device and current render state.
 	void AnimationManager::Initialize(D3D11::D3D11Renderer* renderer)
 	{
 		mRenderer = renderer;
@@ -54,18 +58,23 @@ namespace D3D11
 #endif // FOXTROT_EDITOR
 	}
 
+	/// @brief Initializes the registered animation clips.
+	/// @note Initializes the :AnimationManager base or delegates to its constructor.
 	AnimationManager::AnimationManager()
 		: mRenderer(nullptr)
 		, mSpineLoader(new FTSpineLoader)
 	{
 	}
 
+	/// @brief Releases the resources managed by this instance during destruction.
 	AnimationManager::~AnimationManager()
 	{
 		delete mSpineLoader;
 	}
 
 #ifdef FOXTROT_EDITOR
+	/// @brief Builds the editor controls for inspecting and modifying this object's state.
+	/// @param opened Whether the editor window remains open.
 	void AnimationManager::UpdateUI(bool* opened)
 	{
 		if (!ImGui::Begin("Animation Manager", opened))
@@ -129,6 +138,7 @@ namespace D3D11
 		}
 	}
 
+	/// @brief Displays the controls used to define and create an animation resource.
 	void AnimationManager::CreateAnimationGUI()
 	{
 		ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
@@ -232,16 +242,25 @@ namespace D3D11
 		}
 	}
 
+	/// @brief Returns the jsons func getter used by this animation manager.
+	/// @return Borrowed access to the jsons func getter.
+	/// @note Changes through the returned reference affect this object's stored state.
 	GET_JSON_FUNC& AnimationManager::GetJSONsFuncGetter()
 	{
 		return GetJSONsFunc;
 	}
 
+	/// @brief Returns the texts func getter used by this animation manager.
+	/// @return Borrowed access to the texts func getter.
+	/// @note Changes through the returned reference affect this object's stored state.
 	GET_TEXT_FUNC& AnimationManager::GetTextsFuncGetter()
 	{
 		return GetTextsFunc;
 	}
 
+	/// @brief Loads an animation clip from its JSON description and registers it.
+	/// @param resDef Resource definition containing the filename and source path.
+	/// @return Created animation from json instance or resource.
 	FTSpriteAnimation* AnimationManager::CreateAnimationFromJSON(FTSpriteAnimationDef& resDef)
 	{
 		FTSpriteAnimation* anim = DBG_NEW FTSpriteAnimation(resDef, mRenderer);
@@ -251,6 +270,11 @@ namespace D3D11
 		return anim;
 	}
 
+	/// @brief Builds an animation resource from Spine skeleton and atlas data.
+	/// @param resDef Resource definition containing the filename and source path.
+	/// @param jsonPath Path to the JSON resource description.
+	/// @param atlasPath Path to the Spine atlas file.
+	/// @return Created animation from spine instance or resource.
 	FTSpineAnimation* AnimationManager::CreateAnimationFromSpine(Common::FTResourceDef& resDef, const Common::FTDS::String* jsonPath, const Common::FTDS::String* atlasPath)
 	{
 		FTSpineAnimation* anim = DBG_NEW FTSpineAnimation(resDef, mRenderer, jsonPath, atlasPath);

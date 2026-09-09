@@ -23,6 +23,8 @@ namespace Common
 		/// @tparam FTRESOURCE Type of Resource
 		/// @param userData Additional data necessary for resource's constructor.
 		/// Pointer to renderer can be a good example for graphics resources
+		/// @param ifs Input stream positioned at the expected data; reading advances its position.
+		/// @param factory Optional factory callback used to construct a resource from its definition.
 		void LoadResourcesFromChunk(std::ifstream& ifs, void* userData, FTRESOURCE* (*factory)(FTResourceDef&, void*) = nullptr)
 		{
 			size_t resCount = Common::FileIOHelper::BeginDataPackLoad(ifs).first;
@@ -37,6 +39,8 @@ namespace Common
 			}
 		}
 
+		/// @brief Restores resource entries from a .chunk data pack.
+		/// @param ifs Input stream positioned at the expected data; reading advances its position.
 		void LoadResourcesFromChunk(std::ifstream& ifs)
 		{
 			size_t resCount = Common::FileIOHelper::BeginDataPackLoad(ifs).first;
@@ -52,11 +56,16 @@ namespace Common
 		}
 
 	public:
+		/// @brief Returns the res map used by this resource pack.
+		/// @return Borrowed access to the res map.
 		Common::FTDS::HashMap<FTRESOURCE*>* GetResMap()
 		{
 			return mResources;
 		}
 
+		/// @brief Returns the resource used by this resource pack.
+		/// @param key Lookup key identifying the stored entry.
+		/// @return Borrowed access to the resource. May be null when no matching object is available.
 		FTRESOURCE* GetResource(Common::FTDS::String& key)
 		{
 			if (key.Equal(Common::ChunkKey::NullVal::NULL_OBJECT))
@@ -71,6 +80,9 @@ namespace Common
 			return rec->Value();
 		}
 
+		/// @brief Returns the resource used by this resource pack.
+		/// @param key Lookup key identifying the stored entry.
+		/// @return Borrowed access to the resource. May be null when no matching object is available.
 		FTRESOURCE* GetResource(const char* key)
 		{
 			if (FTDS::StringEqual(key, Common::ChunkKey::NullVal::NULL_OBJECT))
@@ -85,22 +97,31 @@ namespace Common
 			return rec->Value();
 		}
 
+		/// @brief Registers a resource in the pack under the supplied lookup key.
+		/// @param key Lookup key identifying the stored entry.
+		/// @param res Resource to register or inspect.
 		void AddResource(const Common::FTDS::String* key, FTRESOURCE* res)
 		{
 			mResources->Insert(*key, res);
 		}
 
+		/// @brief Registers a resource in the pack under the supplied lookup key.
+		/// @param key Lookup key identifying the stored entry.
+		/// @param res Resource to register or inspect.
 		void AddResource(const char* key, FTRESOURCE* res)
 		{
 			mResources->Insert(key, res);
 		}
 
 	public:
+		/// @brief Initializes an empty resource registry with the requested capacity.
+		/// @param resCount Initial capacity of the resource registry.
 		ResourcePack(size_t resCount)
 			: mResources(DBG_NEW Common::FTDS::HashMap<FTRESOURCE*>(resCount))
 		{
 		}
 
+		/// @brief Releases the resources managed by this instance during destruction.
 		~ResourcePack()
 		{
 			static_assert(sizeof(FTRESOURCE) > 0, "ResourcePack destruction requires a complete resource type");
@@ -116,6 +137,9 @@ namespace Common
 		/// @brief Load single resource from .chunk
 		/// @param userData Additional data necessary for resource's constructor.
 		/// Pointer to renderer can be an example for graphics resources
+		/// @param ifs Input stream positioned at the expected data; reading advances its position.
+		/// @param factory Optional factory callback used to construct a resource from its definition.
+		/// @throws std::runtime_error If the operation encounters the failure condition checked by this implementation.
 		void LoadResource(std::ifstream& ifs, void* userData, FTRESOURCE* (*factory)(FTResourceDef&, void*))
 		{
 			Common::FileIOHelper::BeginDataPackLoad(ifs);
@@ -135,6 +159,8 @@ namespace Common
 			mResources->Insert(*res->GetFileName(), res);
 		}
 
+		/// @brief Builds one resource from its serialized definition and registers it in the pack.
+		/// @param ifs Input stream positioned at the expected data; reading advances its position.
 		void LoadResource(std::ifstream& ifs)
 		{
 			Common::FileIOHelper::BeginDataPackLoad(ifs);
@@ -153,6 +179,7 @@ namespace Common
 
 #ifdef FOXTROT_EDITOR
 		/// @brief Save a list of resources added to this ResourcePack to .chunk
+		/// @param ofs Output stream receiving the serialized data.
 		void SaveResourcesToChunk(std::ofstream& ofs)
 		{
 			Common::FileIOHelper::BeginDataPackSave(ofs, FTRESOURCE::GetName());
@@ -161,6 +188,10 @@ namespace Common
 			Common::FileIOHelper::EndDataPackSave(ofs, FTRESOURCE::GetName());
 		}
 
+		/// @brief Visits asset files of the requested type and loads them into this resource pack.
+		/// @param dir Directory to enumerate or resolve.
+		/// @param fileType File extension or type used to filter resources.
+		/// @param userData Additional context forwarded to resource construction.
 		void LoadAllResourcesInAsset(const char* dir, const char* fileType, void* userData = nullptr)
 		{
 			for (const std::filesystem::directory_entry& entry :
@@ -175,6 +206,8 @@ namespace Common
 			}
 		}
 
+		/// @brief Draws the editor's resource selection controls for this pack.
+		/// @param label Text identifying the editor control.
 		void DisplayLoadedResources(const char* label)
 		{
 			if (ImGui::TreeNode(label))

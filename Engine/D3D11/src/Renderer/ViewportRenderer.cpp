@@ -25,6 +25,10 @@
 
 namespace D3D11
 {
+	/// @brief Creates the viewport or resource texture and associated views.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @param xSize Horizontal extent.
+	/// @param ySize Vertical extent.
 	void ViewportRenderer::InitializeTexture(D3D11Renderer* renderer, float xSize, float ySize)
 	{
 		// Quantize UI dimensions to whole pixels only within the D3D11 texture limit.
@@ -34,6 +38,8 @@ namespace D3D11
             CreateRenderTargetView(renderer, static_cast<UINT>(xSize), static_cast<UINT>(ySize));
 	}
 
+	/// @brief Binds and clears the render target and configures the viewport for a rendering pass.
+	/// @param renderer Renderer providing the graphics device and current render state.
 	void ViewportRenderer::BeginRender(D3D11Renderer* renderer)
 	{
         if (mRenderTexture) {
@@ -41,7 +47,7 @@ namespace D3D11
             mRenderTexture->GetDesc(&desc);
             renderer->SetViewport(0, 0, static_cast<float>(desc.Width), static_cast<float>(desc.Height));
         }
-		float clearColor[] = { 0.f, 0.f, 0.f, 0.f };
+		float clearColor[] = { 0.2f, 0.2f, 0.2f, 0.2f };
 		if (mRTV)
 			renderer->GetContext()
 				->ClearRenderTargetView(mRTV.Get(), clearColor);
@@ -52,6 +58,8 @@ namespace D3D11
 		renderer->GetContext()->OMSetRenderTargets(1, targetsPrev, mDSV.Get());
 	}
 
+	/// @brief Provides an empty lifecycle or extension hook for this implementation.
+	/// @param renderer Renderer providing the graphics device and current render state.
 	void ViewportRenderer::DrawOnTexture(D3D11Renderer* renderer)
 	{
 		// if (!EditorChunkLoader::GetInstance()->IsLoadingChunk())
@@ -63,6 +71,8 @@ namespace D3D11
 		//}
 	}
 
+	/// @brief Finishes the rendering pass and restores or presents its target.
+	/// @param renderer Renderer providing the graphics device and current render state.
 	void ViewportRenderer::EndRender(D3D11Renderer* renderer)
 	{
 		ID3D11RenderTargetView* nullViews[] = { nullptr };
@@ -70,6 +80,7 @@ namespace D3D11
 		renderer->GetContext()->OMSetDepthStencilState(nullptr, 0);
 	}
 
+	/// @brief Clears transient state before the next processing cycle.
 	void ViewportRenderer::Reset()
 	{
 		mRenderTexture.Reset();
@@ -78,6 +89,11 @@ namespace D3D11
 		mDSV.Reset();
 	}
 
+	/// @brief Creates a render-target view used to bind a texture for rendering.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @param width Width of the window, texture, or geometry.
+	/// @param height Height of the window, texture, or geometry.
+	/// @throws D3D11::DX::com_exception If a checked Direct3D operation fails.
 	void ViewportRenderer::CreateRenderTargetView(D3D11Renderer* renderer, UINT width, UINT height)
 	{
 		Reset();
@@ -123,6 +139,8 @@ namespace D3D11
 
 	}
 
+	/// @brief Initializes off-screen texture and render-target state.
+	/// @note Initializes the :ViewportRenderer base or delegates to its constructor.
 	ViewportRenderer::ViewportRenderer()
 		: mRenderTexture(nullptr)
 		, mRTV(nullptr)
@@ -130,14 +148,21 @@ namespace D3D11
 	{
 	}
 
+	/// @brief Creates an off-screen renderer for a scene viewport.
+	/// @return Created viewport renderer instance or resource.
 	D3D11_API ViewportRenderer* CreateViewportRenderer()
 	{
 		return DBG_NEW ViewportRenderer;
 	}
 } // namespace D3D11
 namespace D3D11 {
+/// @brief Releases a viewport renderer and its associated GPU resources.
+/// @param renderer Renderer providing the graphics device and current render state.
 void DestroyViewportRenderer(ViewportRenderer* renderer) { delete renderer; }
+/// @brief Updates the editor gui context used by subsequent operations.
+/// @param context Replacement editor gui context.
 void SetEditorGuiContext(void* context) { ImGui::SetCurrentContext(static_cast<ImGuiContext*>(context)); }
 }
 
+/// @brief Completes destruction through the object's inheritance hierarchy.
 D3D11::ViewportRenderer::~ViewportRenderer() = default;

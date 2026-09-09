@@ -4,6 +4,10 @@
 
 namespace Core
 {
+	/// @brief Returns the func used by this service.
+	/// @param moduleName Name of the already loaded module.
+	/// @param procName Name of the exported function to resolve.
+	/// @return Current func.
 	template <typename FUNC>
 	inline FUNC GetFunc(const char* moduleName, const char* procName)
 	{

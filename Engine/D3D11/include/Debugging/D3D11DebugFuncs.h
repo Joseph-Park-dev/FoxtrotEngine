@@ -12,9 +12,15 @@ namespace D3D11
 		class com_exception : public std::exception
 		{
 		public:
+			/// @brief Initializes the failed HRESULT retained for diagnostic reporting.
+			/// @param hr HRESULT returned by the Direct3D operation.
+			/// @note Initializes the result base or delegates to its constructor.
 			com_exception(HRESULT hr)
 				: result(hr) {}
 
+			/// @brief Exposes the diagnostic text associated with this exception.
+			/// @return Borrowed pointer to a shared diagnostic buffer.
+			/// @note A subsequent call overwrites the buffer; concurrent calls require external synchronization.
 			const char* what() const noexcept override
 			{
 				static char s_str[64] = {};
@@ -27,6 +33,9 @@ namespace D3D11
 		};
 
 		// Helper utility converts D3D API failures into exceptions.
+		/// @brief Raises an exception when a Direct3D operation reports failure.
+		/// @param hr HRESULT returned by the Direct3D operation.
+		/// @throws com_exception If hr indicates failure.
 		inline void ThrowIfFailed(HRESULT hr)
 		{
 			if (FAILED(hr))

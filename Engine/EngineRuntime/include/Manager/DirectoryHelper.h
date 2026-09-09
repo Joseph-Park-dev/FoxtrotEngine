@@ -52,6 +52,9 @@ namespace Core
 	public:
 		// Iterate all files in a folder,
 		// takes the folder path & executes unaryOp (Functor).
+		/// @brief Visits matching filesystem entries recursively and invokes the supplied callback.
+		/// @param dir Directory to enumerate or resolve.
+		/// @param unaryOp Callback invoked for each visited entry.
 		template <class UnaryOperation>
 		static void IterateForFileRecurse(
 			const char*		 dir,
@@ -65,17 +68,35 @@ namespace Core
 			}
 		}
 
+		/// @brief Rewrites an absolute path relative to the current project directory.
+		/// @param absPath abs path used by this operation.
 		void AbsoluteToRelativePath(Common::FTDS::String& absPath);
+		/// @brief Resolves a project-relative path into an absolute path.
+		/// @param relPath Project-relative path to resolve.
 		void RelativeToAbsolutePath(Common::FTDS::String& relPath);
 
 	public:
+		/// @brief Returns the project path used by this directory helper.
+		/// @return Borrowed access to the project path.
 		Common::FTDS::String* GetProjectPath();
+		/// @brief Returns the chunk path used by this directory helper.
+		/// @return Borrowed access to the chunk path.
 		Common::FTDS::String* GetChunkPath();
+		/// @brief Returns the asset path used by this directory helper.
+		/// @return Borrowed access to the asset path.
 		Common::FTDS::String* GetAssetPath();
+		/// @brief Returns the curr chunk saved used by this directory helper.
+		/// @return Current value of the curr chunk saved flag.
 		bool				  GetCurrChunkSaved() const;
 
+		/// @brief Updates the project path used by subsequent operations.
+		/// @param path Replacement project path.
 		void SetProjectPath(Common::FTDS::String&& path);
+		/// @brief Updates the chunk path used by subsequent operations.
+		/// @param path Replacement chunk path.
 		void SetChunkPath(Common::FTDS::String&& path);
+		/// @brief Updates the curr chunk saved used by subsequent operations.
+		/// @param val Replacement curr chunk saved.
 		void SetCurrChunkSaved(bool val);
 
 	private:
@@ -85,15 +106,26 @@ namespace Core
 		bool				  mCurrentChunkSaved;
 
 	private:
+		/// @brief Updates the asset path used by subsequent operations.
 		void SetAssetPath();
 	};
 
 	extern "C"
 	{
+		/// @brief Returns the project path used by this service.
+		/// @return Borrowed access to the project path.
 		CORE_API Common::FTDS::String* GetProjectPath();
+		/// @brief Returns the asset path used by this service.
+		/// @return Borrowed access to the asset path.
 		CORE_API Common::FTDS::String* GetAssetPath();
+		/// @brief Returns the chunk path used by this service.
+		/// @return Borrowed access to the chunk path.
 		CORE_API Common::FTDS::String* GetChunkPath();
+		/// @brief Returns the chunk is saved used by this service.
+		/// @return Current value of the chunk is saved flag.
 		CORE_API bool				   GetChunkIsSaved();
+		/// @brief Updates the chunk is saved used by subsequent operations.
+		/// @param val Replacement chunk is saved.
 		CORE_API void				   SetChunkIsSaved(bool val);
 	}
 } // namespace Core

@@ -18,12 +18,14 @@
 
 namespace Editor
 {
+	/// @brief Deletes the scene's managed actors and clears its collections.
 	void EditorScene::DeleteAll()
 	{
 		UnfocusEditorElements();
 		Scene::DeleteAll();
 	}
 
+	/// @brief Clears selection and focus from the editor elements.
 	void EditorScene::UnfocusEditorElements()
 	{
 		if (!EditorLayer::GetInstance()->FocusedEditorElement())
@@ -37,6 +39,8 @@ namespace Editor
 		}
 	}
 
+	/// @brief Registers an editor element for hierarchy, selection, and lifecycle processing.
+	/// @return Registers an editor element for hierarchy, selection, and lifecycle processing.
 	EditorElement* EditorScene::AddEditorElement()
 	{
 		UnfocusEditorElements();
@@ -53,6 +57,9 @@ namespace Editor
 		return editorElement;
 	}
 
+	/// @brief Registers an editor element for hierarchy, selection, and lifecycle processing.
+	/// @param actor Actor participating in this operation.
+	/// @return Registers an editor element for hierarchy, selection, and lifecycle processing.
 	EditorElement* EditorScene::AddEditorElement(Core::IActor* actor)
 	{
 		UnfocusEditorElements();
@@ -62,6 +69,10 @@ namespace Editor
 		return element;
 	}
 
+	/// @brief Registers an editor element for hierarchy, selection, and lifecycle processing.
+	/// @param actor Actor participating in this operation.
+	/// @param id Actor or entry identifier.
+	/// @return Registers an editor element for hierarchy, selection, and lifecycle processing.
 	EditorElement* EditorScene::AddEditorElement(Core::IActor* actor, int id)
 	{
 		UnfocusEditorElements();
@@ -97,10 +108,13 @@ namespace Editor
 		SetIsUpdatingActors(false);
 	}*/
 
+	/// @brief Initializes scene state used by editor hierarchy operations.
+	/// @note Initializes the :EditorScene base or delegates to its constructor.
 	EditorScene::EditorScene()
 	{
 	}
 
+	/// @brief Completes destruction through the object's inheritance hierarchy.
 	EditorScene::~EditorScene()
 	{
 		DeleteAll();

@@ -25,25 +25,32 @@ namespace Editor
 	{
 	public:
 		// Sets all EditorElements' focused status to false.
+		/// @brief Clears selection and focus from the editor elements.
 		void UnfocusEditorElements();
 
 		// Adds an empty EditorElement.
+		/// @brief Registers an editor element for hierarchy, selection, and lifecycle processing.
+		/// @return Registers an editor element for hierarchy, selection, and lifecycle processing.
 		Editor::EditorElement* AddEditorElement();
 
-		/// <summary>
+		/// @brief Registers an editor element for hierarchy, selection, and lifecycle processing.
 		/// Adds an EditorElement with copied values from actor.
 		/// Useful when Stopping a scene on FTEditor.
-		/// </summary>
 		/// <param name="actor : ">Actor to copy values from.</param>
+		/// @param actor Actor participating in this operation.
+		/// @return Registers an editor element for hierarchy, selection, and lifecycle processing.
 		virtual Editor::EditorElement* AddEditorElement(Common::IActor* actor);
 
 		/// @brief Adds an EditorElement with new id.
 		/// Useful when making Premade instance.
 		/// @param id This should have new id.
+		/// @param actor Actor participating in this operation.
+		/// @return Registers an editor element for hierarchy, selection, and lifecycle processing.
 		virtual Editor::EditorElement* AddEditorElement(Common::IActor* actor, int id);
 
 	public:
 		// Deletes all EditorElements & clearing the Scene.
+		/// @brief Deletes the scene's managed actors and clears its collections.
 		void DeleteAll() override;
 
 	public:
@@ -54,12 +61,16 @@ namespace Editor
 		// void EditorRender(Core::FoxtrotRenderer* renderer);
 
 	public:
+		/// @brief Initializes scene state used by editor hierarchy operations.
 		EditorScene();
+		/// @brief Completes destruction through the object's inheritance hierarchy.
 		~EditorScene();
 	};
 
 #include "Plugin/EditorExports.h"
 
 	constexpr const char*			   GET_EDITOR_SCENE_FUNC = "GetEditorScene";
+	/// @brief Returns the editor scene used by this service.
+	/// @return Borrowed access to the editor scene.
 	extern "C" EDITOR_API EditorScene* GetEditorScene();
 } // namespace Editor

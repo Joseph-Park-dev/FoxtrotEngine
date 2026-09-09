@@ -39,6 +39,7 @@ namespace D3D11
 	using namespace Core;
 	ResType FTTileMap::Type = ResType::TILEMAP;
 
+	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
 	void FTTileMap::Initialize()
 	{
 		if (!mCSV)
@@ -78,6 +79,9 @@ namespace D3D11
 #endif // FOXTROT_EDITOR
 	}
 
+	/// @brief Parses comma-separated integer data into tile-map cells.
+	/// @param resDef Resource definition containing the filename and source path.
+	/// @param str Text used by the operation.
 	void FTTileMap::ReadCSV(Common::FTResourceDef& resDef, Common::FTDS::String& str)
 	{
 		// These values cannot be 0;
@@ -128,46 +132,68 @@ namespace D3D11
 		}
 	}
 
+	/// @brief Returns the tile used by this fttile map.
+	/// @param row Row index in the grid.
+	/// @param column Column index in the grid.
+	/// @return Borrowed access to the tile.
+	/// @note Changes through the returned reference affect this object's stored state.
 	Tile& FTTileMap::GetTile(size_t row, size_t column)
 	{
 		return mTileMap[mMaxCountOnScreenX * row + column];
 	}
 
+	/// @brief Updates the tiles used by subsequent operations.
+	/// @param tiles Replacement tiles.
 	void FTTileMap::SetTiles(Tile* tiles)
 	{
 		mTileMap = tiles;
 	}
 
+	/// @brief Updates the tile width used by subsequent operations.
+	/// @param width Replacement tile width.
 	void FTTileMap::SetTileWidth(UINT width)
 	{
 		mTileWidthOnScreen = width;
 	}
 
+	/// @brief Updates the tile height used by subsequent operations.
+	/// @param height Replacement tile height.
 	void FTTileMap::SetTileHeight(UINT height)
 	{
 		mTileHeightOnScreen = height;
 	}
 
+	/// @brief Updates the max count on screen x used by subsequent operations.
+	/// @param xCount Replacement max count on screen x.
 	void FTTileMap::SetMaxCountOnScreenX(UINT xCount)
 	{
 		mMaxCountOnScreenX = xCount;
 	}
 
+	/// @brief Updates the max count on screen y used by subsequent operations.
+	/// @param yCount Replacement max count on screen y.
 	void FTTileMap::SetMaxCountOnScreenY(UINT yCount)
 	{
 		mMaxCountOnScreenY = yCount;
 	}
 
+	/// @brief Updates the max count on map x used by subsequent operations.
+	/// @param xCount Replacement max count on map x.
 	void FTTileMap::SetMaxCountOnMapX(UINT xCount)
 	{
 		mMaxCountOnMapX = xCount;
 	}
 
+	/// @brief Updates the max count on map y used by subsequent operations.
+	/// @param yCount Replacement max count on map y.
 	void FTTileMap::SetMaxCountOnMapY(UINT yCount)
 	{
 		mMaxCountOnMapY = yCount;
 	}
 
+	/// @brief Initializes tile-map dimensions and tile storage.
+	/// @param resDef Resource definition containing the filename and source path.
+	/// @note Initializes the :FTTileMap base or delegates to its constructor.
 	FTTileMap::FTTileMap(Common::FTResourceDef& resDef)
 		: D3D11::D3D11Resource(resDef)
 		, mTileWidthOnScreen(0)
@@ -189,6 +215,7 @@ namespace D3D11
 		this->Initialize();
 	}
 
+	/// @brief Releases the resources managed by this instance during destruction.
 	FTTileMap::~FTTileMap()
 	{
 		if (mTileMap)
@@ -198,6 +225,11 @@ namespace D3D11
 		}
 	}
 
+	/// @brief Initializes the tile's geometry and texture coordinates.
+	/// @param tile Tile instance to process.
+	/// @param column Column index in the grid.
+	/// @param row Row index in the grid.
+	/// @param tileNum Tile index or number of tiles.
 	void FTTileMap::InitializeTile(Tile& tile, size_t column, size_t row, size_t tileNum)
 	{
 		FTRectArea* rectOnMap = tile.GetRectOnMap();
@@ -217,6 +249,9 @@ namespace D3D11
 			static_cast<float>(mTileHeightOnScreen));
 	}
 
+	/// @brief Serializes this object's persistent properties to a .chunk stream.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @note Writes to the supplied stream at its current position.
 	void FTTileMap::SaveProperties(std::ofstream& ofs)
 	{
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTTileMap::FT_TILEMAP);
@@ -229,6 +264,9 @@ namespace D3D11
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTTileMap::FT_TILEMAP);
 	}
 
+	/// @brief Restores this object's persistent properties from a .chunk stream.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @note Advances the stream position and updates the destination state.
 	void FTTileMap::LoadProperties(std::ifstream& ifs)
 	{
 		HMODULE coreMod = GetModuleHandleA(Common::DLLPath::CORE);
@@ -250,6 +288,7 @@ namespace D3D11
 	}
 
 #ifdef FOXTROT_EDITOR
+	/// @brief Builds the editor controls for inspecting and modifying this object's state.
 	void FTTileMap::UpdateUI()
 	{
 		ImVec2 previewSize = ImVec2(100, 100);
@@ -275,6 +314,7 @@ namespace D3D11
 		mMaxCountOnMapY		= static_cast<UINT>(maxCountOnMapY);
 	}
 
+	/// @brief Increments the resource metadata's reference count when metadata exists.
 	void FTTileMap::AddRefCount()
 	{
 		if (mCSV)
@@ -282,6 +322,7 @@ namespace D3D11
 		FTResource::AddRefCount();
 	}
 
+	/// @brief Decrements the resource metadata's reference count when metadata exists.
 	void FTTileMap::SubtractRefCount()
 	{
 		if (mCSV)

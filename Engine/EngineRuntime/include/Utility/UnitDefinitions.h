@@ -15,6 +15,12 @@
 
 namespace Core
 {
+	/// @brief Converts a distance to the engine's meter-based unit convention.
+	/// @param value Value to assign, insert, or process.
+	/// @return Converts a distance to the engine's meter-based unit convention.
 	float Meters(float value) { return value * UNITFIGURE; }
+	/// @brief Converts a centimeter distance to the engine's meter-based unit convention.
+	/// @param value Value to assign, insert, or process.
+	/// @return Converts a centimeter distance to the engine's meter-based unit convention.
 	float Centimeters(float value) { return Meters(value) / 100.f; }
 } // namespace Core

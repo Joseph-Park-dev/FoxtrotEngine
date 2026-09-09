@@ -25,7 +25,17 @@ namespace Core
 	}
 
 	// Object Spawning & Destroying
+	/// @brief Creates an actor instance and schedules it for the requested scene or group.
+	/// @param actor Actor participating in this operation.
+	/// @param actorGroup Actor group used for scene classification.
+	/// @param pos Position or zero-based insertion index.
+	/// @return Created instantiate instance or resource.
 	Actor* Instantiate(Actor* actor, ActorGroup actorGroup, Math::FTVector3 pos);
+	/// @brief Creates an actor instance and schedules it for the requested scene or group.
+	/// @param premadeName Registered name of the premade resource.
+	/// @return Created instantiate instance or resource.
 	Actor* Instantiate(const char* premadeName);
+	/// @brief Provides an empty lifecycle or extension hook for this implementation.
+	/// @param actor Actor participating in this operation.
 	void   Destroy(Actor* actor);
 } // namespace Core

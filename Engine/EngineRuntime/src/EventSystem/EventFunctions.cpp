@@ -20,6 +20,11 @@
 
 namespace Core
 {
+	/// @brief Creates an actor instance and schedules it for the requested scene or group.
+	/// @param actor Actor participating in this operation.
+	/// @param actorGroup Actor group used for scene classification.
+	/// @param pos Position or zero-based insertion index.
+	/// @return Created instantiate instance or resource.
 	Actor* Instantiate(Actor* actor, Common::ActorGroup actorGroup, Math::FTVector3 pos)
 	{
 		FTEvent addedEvent	= {};
@@ -43,6 +48,9 @@ namespace Core
 		}
 	}
 
+	/// @brief Creates an actor instance and schedules it for the requested scene or group.
+	/// @param premadeName Registered name of the premade resource.
+	/// @return Created instantiate instance or resource.
 	Actor* Instantiate(const char* premadeName)
 	{
 		FTEvent addedEvent		 = {};
@@ -66,6 +74,8 @@ namespace Core
 		}
 	}
 
+	/// @brief Releases the managed instance or schedules the specified actor for destruction.
+	/// @param actor Actor participating in this operation.
 	void Destroy(Actor* actor)
 	{
 		FTEvent addedEvent	= {};

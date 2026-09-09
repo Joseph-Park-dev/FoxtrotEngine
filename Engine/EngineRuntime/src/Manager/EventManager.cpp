@@ -19,11 +19,14 @@
 
 namespace Core
 {
+	/// @brief Queues an event for processing at the frame boundary.
+	/// @param addedEvent Event copied into the pending queue.
 	void EventManager::AddEvent(const FTEvent& addedEvent)
 	{
 		mEvent->PushBack(addedEvent);
 	}
 
+	/// @brief Processes queued lifecycle and scene changes at the frame boundary.
 	void EventManager::ProcessEvent()
 	{
 		for (size_t i = 0; i < mEvent->GetSize(); ++i)
@@ -31,6 +34,8 @@ namespace Core
 		mEvent->Clear();
 	}
 
+	/// @brief Applies the requested event or command to engine state.
+	/// @param executedEvent Event whose operation is applied.
 	void EventManager::Execute(const FTEvent& executedEvent)
 	{
 		switch (executedEvent.incident)
@@ -57,11 +62,14 @@ namespace Core
 		}
 	}
 
+	/// @brief Initializes the pending event collection.
+	/// @note Initializes the :EventManager base or delegates to its constructor.
 	EventManager::EventManager()
 		: mEvent(DBG_NEW Common::FTDS::DynamicArray<FTEvent>(1))
 	{
 	}
 
+	/// @brief Completes destruction through the object's inheritance hierarchy.
 	EventManager::~EventManager()
 	{
 	}

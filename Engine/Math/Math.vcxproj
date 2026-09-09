@@ -21,7 +21,9 @@
 <ItemGroup>
 <ClCompile Include="src\FTMath.cpp"/>
 <ClCompile Include="src\Random.cpp"/>
-<ClInclude Include="include\**\*.h"/>
+<ClInclude Include="include\FTMath.h"/>
+<ClInclude Include="include\MathExports.h"/>
+<ClInclude Include="include\Random.h"/>
 </ItemGroup>
 <ItemGroup>
 </ItemGroup>

@@ -26,16 +26,24 @@ namespace Core
 
 		bool JumpTriggered;
 
+		/// @brief Allocates steering state with no requested motion.
+		/// @return Created empty steering instance or resource.
 		static Steering* CreateEmptySteering()
 		{
 			return DBG_NEW Steering(0.f, Math::FTVector3::Zero);
 		}
 
+		/// @brief Produces steering state with no requested angular or linear motion.
+		/// @return Steering state with no requested angular or linear motion.
 		static Steering Halt()
 		{
 			return Steering(0.f, Math::FTVector3::Zero);
 		}
 
+		/// @brief Initializes requested angular and linear motion with jumping disabled.
+		/// @param angular Requested angular motion.
+		/// @param linear Requested linear motion.
+		/// @note Initializes the Angular base or delegates to its constructor.
 		Steering(float angular, Math::FTVector3 linear)
 			: Angular(angular)
 			, Linear(linear)

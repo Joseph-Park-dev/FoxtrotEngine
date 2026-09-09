@@ -20,11 +20,15 @@ namespace D3D11
 	using Microsoft::WRL::ComPtr;
 	ResType StandardMaterial::Type = ResType::MATERIAL;
 
+	/// @brief Creates the pixel-shader constant buffer used by this shader.
+	/// @param device Direct3D device used to create GPU resources.
 	void StandardMaterial::CreatePixelConstBuffer(ComPtr<ID3D11Device>& device)
 	{
 		D3D11Utils::CreateConstantBuffer(device, *mData, GetPCBuf());
 	}
 
+	/// @brief Uploads the current CPU data to its GPU buffer.
+	/// @param context Context associated with this operation.
 	void StandardMaterial::UpdateBuffer(ComPtr<ID3D11DeviceContext>& context)
 	{
 		/*for (size_t i = 0; i < Light::TYPE::END; ++i)
@@ -38,6 +42,10 @@ namespace D3D11
 		D3D11Utils::UpdateBuffer(context, *mData, GetPCBuf());
 	}
 
+	/// @brief Initializes the standard material's shader and texture state.
+	/// @param resDef Resource definition containing the filename and source path.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @note Initializes the :StandardMaterial base or delegates to its constructor.
 	StandardMaterial::StandardMaterial(Common::FTResourceDef& resDef, D3D11Renderer* renderer)
 		: FTMaterial(resDef)
 		, mData(DBG_NEW StandardMatData)
@@ -45,11 +53,15 @@ namespace D3D11
 		CreatePixelConstBuffer(renderer->GetDevice());
 	}
 
+	/// @brief Releases the resources managed by this instance during destruction.
 	StandardMaterial::~StandardMaterial()
 	{
 		delete mData;
 	}
 
+	/// @brief Serializes this object's persistent properties to a .chunk stream.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @note Writes to the supplied stream at its current position.
 	void StandardMaterial::SaveProperties(std::ofstream& ofs)
 	{
 		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::StandardMat::STANDARD_MAT);
@@ -62,6 +74,9 @@ namespace D3D11
 		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::StandardMat::STANDARD_MAT);
 	}
 
+	/// @brief Restores this object's persistent properties from a .chunk stream.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @note Advances the stream position and updates the destination state.
 	void StandardMaterial::LoadProperties(std::ifstream& ifs)
 	{
 		Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::StandardMat::STANDARD_MAT);
@@ -77,6 +92,7 @@ namespace D3D11
 	}
 
 #ifdef FOXTROT_EDITOR
+	/// @brief Builds the editor controls for inspecting and modifying this object's state.
 	void StandardMaterial::UpdateUI()
 	{
 		ImGui::SeparatorText("Standard Mat Data");

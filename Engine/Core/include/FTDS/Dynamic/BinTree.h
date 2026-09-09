@@ -16,24 +16,32 @@ namespace Common
 		{
 		public:
 			// Traversal Algorithms
+			/// @brief Visits tree nodes in left-subtree, node, right-subtree order.
+			/// @param func Callback invoked for each visited entry.
 			template <typename FUNC>
 			void InOrder(FUNC func)
 			{
 				InOrder(mRoot, func);
 			}
 
+			/// @brief Visits each tree node before its left and right subtrees.
+			/// @param func Callback invoked for each visited entry.
 			template <typename FUNC>
 			void PreOrder(FUNC func)
 			{
 				PreOrder(mRoot, func);
 			}
 
+			/// @brief Visits each tree node after its left and right subtrees.
+			/// @param func Callback invoked for each visited entry.
 			template <typename FUNC>
 			void PostOrder(FUNC func)
 			{
 				PostOrder(mRoot, func);
 			}
 
+			/// @brief Visits tree nodes breadth first using a bounded temporary queue.
+			/// @param func Callback invoked for each visited entry.
 			template <typename FUNC>
 			void LevelOrder(FUNC func)
 			{
@@ -57,15 +65,24 @@ namespace Common
 			}
 
 		public:
+			/// @brief Returns the root used by this bin tree.
+			/// @return Borrowed access to the root.
 			BinaryNode<TYPE>* GetRoot() { return mRoot; }
+			/// @brief Updates the root used by subsequent operations.
+			/// @param node Replacement root.
 			void			  SetRoot(BinaryNode<TYPE>* node) { mRoot = node; }
 
+			/// @brief Tests whether the container has no logical elements.
+			/// @return True when the container has no logical elements; otherwise false.
 			bool IsEmpty() { return mRoot == nullptr; }
 
 		public:
+			/// @brief Initializes an empty binary tree.
 			BinTree()
 				: mRoot(nullptr) {}
 
+			/// @brief Releases the resources managed by this instance during destruction.
+			/// @note Releasing container storage does not implicitly delete objects held through raw pointer values.
 			~BinTree()
 			{
 				PostOrder([](BinaryNode<TYPE>* node) {
@@ -78,6 +95,9 @@ namespace Common
 			BinaryNode<TYPE>* mRoot;
 
 		private:
+			/// @brief Visits tree nodes in left-subtree, node, right-subtree order.
+			/// @param node Tree or list node used by the operation.
+			/// @param f Callback applied to each visited tree node.
 			template <typename FUNC>
 			void InOrder(BinaryNode<TYPE>* node, FUNC f)
 			{
@@ -89,6 +109,9 @@ namespace Common
 				}
 			}
 
+			/// @brief Visits each tree node before its left and right subtrees.
+			/// @param node Tree or list node used by the operation.
+			/// @param f Callback applied to each visited tree node.
 			template <typename FUNC>
 			void PreOrder(BinaryNode<TYPE>* node, FUNC f)
 			{
@@ -100,6 +123,9 @@ namespace Common
 				}
 			}
 
+			/// @brief Visits each tree node after its left and right subtrees.
+			/// @param node Tree or list node used by the operation.
+			/// @param f Callback applied to each visited tree node.
 			template <typename FUNC>
 			void PostOrder(BinaryNode<TYPE>* node, FUNC f)
 			{

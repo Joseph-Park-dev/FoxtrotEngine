@@ -44,6 +44,9 @@ namespace D3D11
 	using namespace Math;
 	ResType FTSpriteAnimation::Type = ResType::SPRITE_ANIMATION;
 
+	/// @brief Serializes this object's persistent properties to a .chunk stream.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @note Writes to the supplied stream at its current position.
 	void FTSpriteAnimation::SaveProperties(std::ofstream& ofs)
 	{
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
@@ -61,6 +64,9 @@ namespace D3D11
 		FileIOHelper::EndDataPackSave(ofs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
 	}
 
+	/// @brief Restores this object's persistent properties from a .chunk stream.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @note Advances the stream position and updates the destination state.
 	void FTSpriteAnimation::LoadProperties(std::ifstream& ifs)
 	{
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpriteAnimation::FT_SPRITE_ANIMATION);
@@ -93,19 +99,31 @@ namespace D3D11
 		0 < frontDir ? SetRightIsFront(true) : SetRightIsFront(false);
 	}
 
+	/// @brief Returns the fps used by this ftsprite animation.
+	/// @return Current fps.
 	const int FTSpriteAnimation::GetFPS() const
 	{
 		return mFPS;
 	}
 
+	/// @brief Returns the max frame idx used by this ftsprite animation.
+	/// @return Current max frame idx.
 	const int FTSpriteAnimation::GetMaxFrameIdx() const { return mMaxFrameIdx; }
+	/// @brief Returns the min frame idx used by this ftsprite animation.
+	/// @return Current min frame idx.
 	const int FTSpriteAnimation::GetMinFrameIdx() const { return mMinFrameIdx; }
 
+	/// @brief Returns the frame count used by this ftsprite animation.
+	/// @return Current frame count.
 	const size_t FTSpriteAnimation::GetFrameCount() const
 	{
 		return static_cast<size_t>(mMaxFrameIdx - mMinFrameIdx + 1);
 	}
 
+	/// @brief Initializes the clip's frame collection and playback metadata.
+	/// @param resDef Resource definition containing the filename and source path.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @note Initializes the :FTSpriteAnimation base or delegates to its constructor.
 	FTSpriteAnimation::FTSpriteAnimation(Common::FTResourceDef& resDef, Core::IRenderer* renderer)
 		: FTSprite(resDef, renderer, true)
 		, mJSON(nullptr)
@@ -126,12 +144,17 @@ namespace D3D11
 		Initialize(static_cast<D3D11Renderer*>(renderer)->GetDevice(), static_cast<D3D11Renderer*>(renderer)->GetContext());
 	}
 
+	/// @brief Completes destruction through the object's inheritance hierarchy.
 	FTSpriteAnimation::~FTSpriteAnimation()
 	{
 		// Texture deallocation is handled in FTSprite.
 		SetTexture(nullptr);
 	}
 
+	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
+	/// @param device Direct3D device used to create GPU resources.
+	/// @param context Context associated with this operation.
+	/// @throws std::invalid_argument If the operation encounters the failure condition checked by this implementation.
 	void FTSpriteAnimation::Initialize(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
 	{
 		// Get sheet size from JSON.
@@ -197,6 +220,10 @@ namespace D3D11
 	}
 
 #ifdef FOXTROT_EDITOR
+	/// @brief Initializes the clip's frame collection and playback metadata.
+	/// @param resDef Resource definition containing the filename and source path.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @note Initializes the :FTSpriteAnimation base or delegates to its constructor.
 	FTSpriteAnimation::FTSpriteAnimation(FTSpriteAnimationDef& resDef, Core::IRenderer* renderer)
 		: FTSprite(resDef, renderer, true)
 		, mJSON(resDef.JSON)
@@ -208,6 +235,7 @@ namespace D3D11
 		Initialize(static_cast<D3D11Renderer*>(renderer)->GetDevice(), static_cast<D3D11Renderer*>(renderer)->GetContext());
 	}
 
+	/// @brief Builds the editor controls for inspecting and modifying this object's state.
 	void FTSpriteAnimation::UpdateUI()
 	{
 		GetTexture()->UpdateUI();
@@ -226,12 +254,14 @@ namespace D3D11
 		SetRightIsFront(val);
 	}
 
+	/// @brief Increments the resource metadata's reference count when metadata exists.
 	void FTSpriteAnimation::AddRefCount()
 	{
 		mJSON->AddRefCount();
 		FTSprite::AddRefCount();
 	}
 
+	/// @brief Decrements the resource metadata's reference count when metadata exists.
 	void FTSpriteAnimation::SubtractRefCount()
 	{
 		mJSON->SubtractRefCount();

@@ -19,6 +19,9 @@ namespace Graphics
 		Math::FTVector2 Scale	 = Math::FTVector2::Zero;
 		Math::FTVector4 Color	 = Math::FTVector4(0.f);
 
+		/// @brief Copies the supplied value into this object.
+		/// @param origin Source instance whose state is copied.
+		/// @return Value produced by the overloaded operation.
 		TextAttribute* operator=(TextAttribute* origin)
 		{
 			this->Rotation = origin->Rotation;

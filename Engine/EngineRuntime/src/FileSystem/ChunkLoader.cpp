@@ -22,6 +22,8 @@
 
 namespace Core
 {
+	/// @brief Serializes the current scene and resources to the selected .chunk file.
+	/// @param chunkPath Path to the .chunk file.
 	void ChunkLoader::SaveChunk(const char* chunkPath)
 	{
 		::std::ofstream ofs(chunkPath);
@@ -30,6 +32,8 @@ namespace Core
 		SaveChunkData(ofs);
 	}
 
+	/// @brief Restores the scene and its resources from a .chunk file.
+	/// @param chunkPath Path to the .chunk file.
 	void ChunkLoader::LoadChunk(const char* chunkPath)
 	{
 		Lock();
@@ -54,16 +58,21 @@ namespace Core
 		Unlock();
 	}
 
+	/// @brief Pauses game updates while chunk state is being changed.
 	void ChunkLoader::Lock()
 	{
 		mCurrentChunkData->IsLoading = true;
 	}
 
+	/// @brief Resumes game updates after chunk processing completes.
 	void ChunkLoader::Unlock()
 	{
 		mCurrentChunkData->IsLoading = false;
 	}
 
+	/// @brief Creates a temporary copy of a chunk so the source remains available during loading.
+	/// @param copiedPathOut Receives the path of the temporary chunk copy.
+	/// @param chunkPath Path to the .chunk file.
 	void ChunkLoader::CopyChunk(Common::FTDS::String& copiedPathOut, const char* chunkPath)
 	{
 		// Get the original file name.
@@ -93,6 +102,7 @@ namespace Core
 		copiedPathOut.Assign(copiedPath);
 	}
 
+	/// @brief Removes the temporary chunk copy created for loading.
 	void ChunkLoader::DeleteCopiedChunk()
 	{
 		// Get the copied file name.
@@ -112,26 +122,34 @@ namespace Core
 			Common::Debug::LogError(__LINE__, __FILE__, "Failed to remove copied file: path is empty.");
 	}
 
+	/// @brief Tests the loading chunk condition for the current object.
+	/// @return True if the operation succeeds or the tested condition holds; otherwise false.
 	const bool ChunkLoader::IsLoadingChunk() const
 	{
 		return mCurrentChunkData->IsLoading;
 	}
 
+	/// @brief Returns the max actor id used by this chunk loader.
+	/// @return Current max actor id.
 	const int ChunkLoader::GetMaxActorID() const
 	{
 		return mCurrentChunkData->MaxActorID;
 	}
 
+	/// @brief Advances the actor identifier counter used during chunk loading.
 	void ChunkLoader::AddMaxActorID()
 	{
 		++mCurrentChunkData->MaxActorID;
 	}
 
+	/// @brief Resets the actor identifier counter before rebuilding scene content.
 	void ChunkLoader::ResetMaxActorID()
 	{
 		mCurrentChunkData->MaxActorID = 0;
 	}
 
+	/// @brief Writes actor properties and components for the current scene.
+	/// @param ofs Output stream receiving the serialized data.
 	void ChunkLoader::SaveActorsData(std::ofstream& ofs)
 	{
 		Scene* scene = SceneManager::GetInstance()->GetCurrentScene();
@@ -144,6 +162,8 @@ namespace Core
 		}
 	}
 
+	/// @brief Creates or restores actors from the property sections of the chunk.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
 	void ChunkLoader::LoadActorProperties(std::ifstream& ifs)
 	{
 		Scene*									  scene = SceneManager::GetInstance()->GetCurrentScene();
@@ -194,6 +214,8 @@ namespace Core
 		}
 	}
 
+	/// @brief Restores component sections after actor properties have been loaded.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
 	void ChunkLoader::LoadActorComponents(::std::ifstream& ifs)
 	{
 		std::pair<size_t, Common::FTDS::String>&& pack	= Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_COMP);
@@ -219,6 +241,8 @@ namespace Core
 	//	}
 	//}
 
+	/// @brief Writes the chunk-specific scene metadata to the output stream.
+	/// @param out Receives the operation's output.
 	void ChunkLoader::SaveChunkData(std::ofstream& out)
 	{
 		Scene* scene = SceneManager::GetInstance()->GetCurrentScene();
@@ -227,6 +251,8 @@ namespace Core
 		Common::FileIOHelper::EndDataPackSave(out, ChunkKey::CHUNK_DATA);
 	}
 
+	/// @brief Reads chunk-specific scene metadata from the input stream.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
 	void ChunkLoader::LoadChunkData(std::ifstream& ifs)
 	{
 		// Load number of Actors
@@ -238,6 +264,8 @@ namespace Core
 		scene->Actors()->Reserve(maxActor);
 	}
 
+	/// @brief Initializes chunk-loading state and actor identifier tracking.
+	/// @note Initializes the :ChunkLoader base or delegates to its constructor.
 	ChunkLoader::ChunkLoader()
 		: mCurrentChunkData(DBG_NEW ChunkData) {
 			/*mComponentLoadMap = {
@@ -275,6 +303,7 @@ namespace Core
 			// mComponentLoadMap.Insert("Flee", &Component::Load<Flee>);
 		};
 
+	/// @brief Releases the resources managed by this instance during destruction.
 	ChunkLoader::~ChunkLoader()
 	{
 		DeleteCopiedChunk();

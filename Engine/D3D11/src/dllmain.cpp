@@ -1,6 +1,11 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "pch.h"
 
+/// @brief Handles Windows DLL lifecycle notifications.
+/// @param hModule Windows module handle supplied by the loader.
+/// @param ul_reason_for_call Windows DLL lifecycle notification code.
+/// @param lpReserved Windows loader context reserved by the platform.
+/// @return Handles Windows DLL lifecycle notifications.
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
                        LPVOID lpReserved
@@ -16,4 +21,3 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     }
     return TRUE;
 }
-

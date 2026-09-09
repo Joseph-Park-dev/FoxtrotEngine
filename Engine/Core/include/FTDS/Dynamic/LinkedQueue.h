@@ -10,6 +10,8 @@ namespace Common
 		class LinkedQueue
 		{
 		public:
+			/// @brief Appends a value at the rear of the queue.
+			/// @param value Value to assign, insert, or process.
 			void Enqueue(TYPE value)
 			{
 				Node<TYPE>* node = new Node<TYPE>(value);
@@ -26,6 +28,8 @@ namespace Common
 				++mSize;
 			}
 
+			/// @brief Removes the front queue element.
+			/// @note Releasing container storage does not implicitly delete objects held through raw pointer values.
 			void Dequeue()
 			{
 				if (!mFront)
@@ -43,6 +47,8 @@ namespace Common
 				--mSize;
 			}
 
+			/// @brief Inspects the next accessible element without removing it.
+			/// @return Value at the inspected position.
 			TYPE Peek()
 			{
 				if (mFront)
@@ -50,10 +56,15 @@ namespace Common
 				return NULL;
 			}
 
+			/// @brief Exposes the element count used to track occupied storage.
+			/// @return Current size.
 			size_t Size() { return mSize; }
+			/// @brief Tests whether the container has no logical elements.
+			/// @return True when the container has no logical elements; otherwise false.
 			bool   IsEmpty() { return mSize < 1; }
 
 		public:
+			/// @brief Initializes an empty FIFO queue.
 			LinkedQueue<TYPE>()
 				: mFront(nullptr)
 				, mRear(nullptr)
@@ -70,6 +81,7 @@ namespace Common
 
 #include <stdio.h>
 
+	/// @brief Exercises FIFO insertion, inspection, and removal with dynamically allocated integers.
 	inline void Demonstrate_LinkedQueue()
 	{
 		FTDS::LinkedQueue<int*> queue;

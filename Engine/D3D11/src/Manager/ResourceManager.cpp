@@ -42,6 +42,9 @@ namespace D3D11
 	using namespace Common;
 	using Microsoft::WRL::ComPtr;
 
+	/// @brief Creates or loads the resources needed before scene content can be used.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @throws D3D11::DX::com_exception If a checked Direct3D operation fails.
 	void ResourceManager::LoadDefaultResources(D3D11::D3D11Renderer* renderer)
 	{
         if (!mPSOs->GetResMap()->IsEmpty()) return;
@@ -303,6 +306,9 @@ namespace D3D11
 		}
 	}
 
+	/// @brief Restores resource entries from a .chunk data pack.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @param renderer Renderer providing the graphics device and current render state.
 	void ResourceManager::LoadResourcesFromChunk(std::ifstream& ifs, void* renderer)
 	{
 		mSpriteAnimations->LoadResourcesFromChunk(ifs, renderer, [](Common::FTResourceDef& def, void* context) -> FTSpriteAnimation* { return new FTSpriteAnimation(def, static_cast<D3D11Renderer*>(context)); });
@@ -318,171 +324,261 @@ namespace D3D11
 		//mPSOs->LoadResourcesFromChunk(ifs, renderer);
 	}
 
+	/// @brief Returns the sprite animation used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the sprite animation.
 	FTSpriteAnimation* ResourceManager::GetSpriteAnimation(Common::FTDS::String& key)
 	{
 		return mSpriteAnimations->GetResource(key);
 	}
 
+	/// @brief Returns the spine animation used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the spine animation.
 	FTSpineAnimation* ResourceManager::GetSpineAnimation(Common::FTDS::String& key)
 	{
 		return mSpineAnimations->GetResource(key);
 	}
 
+	/// @brief Returns the font used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the font.
 	FTFont* ResourceManager::GetFont(Common::FTDS::String& key)
 	{
 		return mFonts->GetResource(key);
 	}
 
+	/// @brief Returns the material used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the material.
 	FTMaterial* ResourceManager::GetMaterial(Common::FTDS::String& key)
 	{
 		return mMaterials->GetResource(key);
 	}
 
+	/// @brief Returns the mesh group used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the mesh group.
 	FTMeshGroup* ResourceManager::GetMeshGroup(Common::FTDS::String& key)
 	{
 		return mMeshGroups->GetResource(key);
 	}
 
+	/// @brief Returns the vertex shader used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the vertex shader.
 	FTVertexShader* ResourceManager::GetVertexShader(Common::FTDS::String& key)
 	{
 		return mVertexShaders->GetResource(key);
 	}
 
+	/// @brief Returns the geometry shader used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the geometry shader.
 	FTGeometryShader* ResourceManager::GetGeometryShader(Common::FTDS::String& key)
 	{
 		return mGeometryShaders->GetResource(key);
 	}
 
+	/// @brief Returns the pixel shader used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the pixel shader.
 	FTPixelShader* ResourceManager::GetPixelShader(Common::FTDS::String& key)
 	{
 		return mPixelShaders->GetResource(key);
 	}
 
+	/// @brief Returns the sprite used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the sprite.
 	FTSprite* ResourceManager::GetSprite(Common::FTDS::String& key)
 	{
 		return mSprites->GetResource(key);
 	}
 
+	/// @brief Returns the tile map used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the tile map.
 	FTTileMap* ResourceManager::GetTileMap(Common::FTDS::String& key)
 	{
 		return mTileMaps->GetResource(key);
 	}
 
+	/// @brief Returns the pso used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the pso.
 	D3D11PSO* ResourceManager::GetPSO(Common::FTDS::String& key)
 	{
 		return mPSOs->GetResource(key);
 	}
 
+	/// @brief Returns the sprite animation used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the sprite animation.
 	FTSpriteAnimation* ResourceManager::GetSpriteAnimation(const char* key)
 	{
 		return mSpriteAnimations->GetResource(key);
 	}
 
+	/// @brief Returns the spine animation used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the spine animation.
 	FTSpineAnimation* ResourceManager::GetSpineAnimation(const char* key)
 	{
 		return mSpineAnimations->GetResource(key);
 	}
 
+	/// @brief Returns the font used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the font.
 	FTFont* ResourceManager::GetFont(const char* key)
 	{
 		return mFonts->GetResource(key);
 	}
 
+	/// @brief Returns the material used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the material.
 	FTMaterial* ResourceManager::GetMaterial(const char* key)
 	{
 		return mMaterials->GetResource(key);
 	}
 
+	/// @brief Returns the mesh group used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the mesh group.
 	FTMeshGroup* ResourceManager::GetMeshGroup(const char* key)
 	{
 		return mMeshGroups->GetResource(key);
 	}
 
+	/// @brief Returns the vertex shader used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the vertex shader.
 	FTVertexShader* ResourceManager::GetVertexShader(const char* key)
 	{
 		return mVertexShaders->GetResource(key);
 	}
 
+	/// @brief Returns the geometry shader used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the geometry shader.
 	FTGeometryShader* ResourceManager::GetGeometryShader(const char* key)
 	{
 		return mGeometryShaders->GetResource(key);
 	}
 
+	/// @brief Returns the pixel shader used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the pixel shader.
 	FTPixelShader* ResourceManager::GetPixelShader(const char* key)
 	{
 		return mPixelShaders->GetResource(key);
 	}
 
+	/// @brief Returns the sprite used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the sprite.
 	FTSprite* ResourceManager::GetSprite(const char* key)
 	{
 		return mSprites->GetResource(key);
 	}
 
+	/// @brief Returns the tile map used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the tile map.
 	FTTileMap* ResourceManager::GetTileMap(const char* key)
 	{
 		return mTileMaps->GetResource(key);
 	}
 
+	/// @brief Returns the pso used by this resource manager.
+	/// @param key Lookup key identifying the stored entry.
+	/// @return Borrowed access to the pso.
 	D3D11PSO* ResourceManager::GetPSO(const char* key)
 	{
 		return mPSOs->GetResource(key);
 	}
 
+	/// @brief Returns the sprite animations used by this resource manager.
+	/// @return Borrowed access to the sprite animations.
 	Common::ResourcePack<FTSpriteAnimation>* ResourceManager::GetSpriteAnimations()
 	{
 		return mSpriteAnimations;
 	}
 
+	/// @brief Returns the spine animations used by this resource manager.
+	/// @return Borrowed access to the spine animations.
 	Common::ResourcePack<FTSpineAnimation>* ResourceManager::GetSpineAnimations()
 	{
 		return mSpineAnimations;
 	}
 
+	/// @brief Returns the fonts used by this resource manager.
+	/// @return Borrowed access to the fonts.
 	Common::ResourcePack<FTFont>* ResourceManager::GetFonts()
 	{
 		return mFonts;
 	}
 
+	/// @brief Returns the materials used by this resource manager.
+	/// @return Borrowed access to the materials.
 	Common::ResourcePack<FTMaterial>* ResourceManager::GetMaterials()
 	{
 		return mMaterials;
 	}
 
+	/// @brief Returns the mesh groups used by this resource manager.
+	/// @return Borrowed access to the mesh groups.
 	Common::ResourcePack<FTMeshGroup>* ResourceManager::GetMeshGroups()
 	{
 		return mMeshGroups;
 	}
 
+	/// @brief Returns the vertex shaders used by this resource manager.
+	/// @return Borrowed access to the vertex shaders.
 	Common::ResourcePack<FTVertexShader>* ResourceManager::GetVertexShaders()
 	{
 		return mVertexShaders;
 	}
 
+	/// @brief Returns the geometry shaders used by this resource manager.
+	/// @return Borrowed access to the geometry shaders.
 	Common::ResourcePack<FTGeometryShader>* ResourceManager::GetGeometryShaders()
 	{
 		return mGeometryShaders;
 	}
 
+	/// @brief Returns the pixel shaders used by this resource manager.
+	/// @return Borrowed access to the pixel shaders.
 	Common::ResourcePack<FTPixelShader>* ResourceManager::GetPixelShaders()
 	{
 		return mPixelShaders;
 	}
 
+	/// @brief Returns the sprites used by this resource manager.
+	/// @return Borrowed access to the sprites.
 	Common::ResourcePack<FTSprite>* ResourceManager::GetSprites()
 	{
 		return mSprites;
 	}
 
+	/// @brief Returns the tile maps used by this resource manager.
+	/// @return Borrowed access to the tile maps.
 	Common::ResourcePack<FTTileMap>* ResourceManager::GetTileMaps()
 	{
 		return mTileMaps;
 	}
 
+	/// @brief Returns the psos used by this resource manager.
+	/// @return Borrowed access to the psos.
 	Common::ResourcePack<D3D11PSO>* ResourceManager::GetPSOs()
 	{
 		return mPSOs;
 	}
 
+	/// @brief Initializes the resource packs owned by the manager.
+	/// @note Initializes the :ResourceManager base or delegates to its constructor.
 	ResourceManager::ResourceManager()
 	: mSpriteAnimations(new Common::ResourcePack<FTSpriteAnimation>(16))
 	, mSpineAnimations(new Common::ResourcePack<FTSpineAnimation>(16))
@@ -498,6 +594,7 @@ namespace D3D11
 	{
 	}
 
+	/// @brief Releases the resources managed by this instance during destruction.
 	ResourceManager::~ResourceManager()
 	{
 		delete mSpriteAnimations;

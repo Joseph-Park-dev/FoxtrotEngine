@@ -10,6 +10,8 @@ namespace Editor
 		SINGLETON(EditorEventManager)
 
 	private:
+		/// @brief Applies the requested event or command to engine state.
+		/// @param executedEvent Event whose operation is applied.
 		void Execute(const Core::FTEvent& executedEvent) override;
 	};
 } // namespace Editor

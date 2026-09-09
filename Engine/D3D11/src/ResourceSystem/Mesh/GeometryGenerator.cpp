@@ -26,6 +26,8 @@ namespace D3D11
 	using namespace Core;
 	using namespace Math;
 	
+	/// @brief Builds mesh data representing a square.
+	/// @return Created square instance or resource.
 	FTMeshData GeometryGenerator::MakeSquare()
 	{
 		Common::FTDS::DynamicArray<FTVector3> positions;
@@ -73,6 +75,9 @@ namespace D3D11
 		return meshData;
 	}
 
+	/// @brief Builds mesh data representing a square.
+	/// @param scale Scale factor applied to the content.
+	/// @return Created square instance or resource.
 	FTMeshData GeometryGenerator::MakeSquare(float scale)
 	{
 		Common::FTDS::DynamicArray<FTVector3> positions;
@@ -120,6 +125,9 @@ namespace D3D11
 		return meshData;
 	}
 
+	/// @brief Builds mesh data representing a point.
+	/// @param color Color components used when rendering.
+	/// @return Created point instance or resource.
 	FTMeshData GeometryGenerator::MakePoint(FTVector4 color)
 	{
 		FTMeshData meshData;
@@ -134,6 +142,9 @@ namespace D3D11
 		return meshData;
 	}
 
+	/// @brief Creates point geometry for editor or debug visualization.
+	/// @param color Color components used when rendering.
+	/// @return Created debug point instance or resource.
 	FTDebugMeshData GeometryGenerator::MakeDebugPoint(FTVector4 color)
 	{
 		FTDebugMeshData meshData;
@@ -147,6 +158,10 @@ namespace D3D11
 		return meshData;
 	}
 
+	/// @brief Builds mesh data representing a square.
+	/// @param scale Scale factor applied to the content.
+	/// @param color Color components used when rendering.
+	/// @return Created square instance or resource.
 	FTMeshData* GeometryGenerator::MakeSquare(float scale, FTVector4 color)
 	{
 		Common::FTDS::DynamicArray<FTVector3> positions;
@@ -195,6 +210,9 @@ namespace D3D11
 		return meshData;
 	}
 
+	/// @brief Builds the grid geometry used to render a tile map.
+	/// @param tileMap Tile-map resource used for rendering.
+	/// @return Created tile map grid instance or resource.
 	Common::FTDS::DynamicArray<FTMeshData> GeometryGenerator::MakeTileMapGrid(FTTileMap* tileMap)
 	{
 		Common::FTDS::DynamicArray<FTMeshData> tileMapMeshes;
@@ -212,6 +230,9 @@ namespace D3D11
 		return tileMapMeshes;
 	}
 
+	/// @brief Builds geometry and texture coordinates for one tile.
+	/// @param tile Tile instance to process.
+	/// @return Created tile instance or resource.
 	FTMeshData GeometryGenerator::MakeTile(Tile& tile)
 	{
 		Common::FTDS::DynamicArray<FTVector3> positions;
@@ -268,6 +289,11 @@ namespace D3D11
 		return meshData;
 	}
 
+	/// @brief Creates a sprite animation from the supplied frame descriptions.
+	/// @param animMeshes Meshes associated with the animation frames.
+	/// @param tileMap Tile-map resource used for rendering.
+	/// @param startIdx Beginning index of the selected range.
+	/// @param endIdx Ending index of the selected range.
 	void GeometryGenerator::MakeSpriteAnimation(Common::FTDS::DynamicArray<FTMeshData*>& animMeshes, Tile* tileMap, size_t startIdx, size_t endIdx)
 	{
 		size_t count = endIdx - startIdx + 1;
@@ -280,6 +306,10 @@ namespace D3D11
 		}
 	}
 
+	/// @brief Creates a sprite animation from the supplied frame descriptions.
+	/// @param animMeshes Meshes associated with the animation frames.
+	/// @param tileMap Tile-map resource used for rendering.
+	/// @param count Number of entries to process.
 	void GeometryGenerator::MakeSpriteAnimation(Common::FTDS::DynamicArray<FTMeshData*>& animMeshes, Tile* tileMap, size_t count)
 	{
 		animMeshes.Reserve(count);
@@ -290,6 +320,9 @@ namespace D3D11
 		}
 	}
 
+	/// @brief Creates a frame description for an animation clip.
+	/// @param tile Tile instance to process.
+	/// @return Created animation frame instance or resource.
 	FTMeshData* GeometryGenerator::MakeAnimationFrame(Tile& tile)
 	{
 		Common::FTDS::DynamicArray<FTVector3> positions;

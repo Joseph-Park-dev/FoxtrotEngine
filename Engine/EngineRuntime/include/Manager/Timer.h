@@ -26,7 +26,10 @@ namespace Core
 		SINGLETON(Timer)
 
 	public:
+		/// @brief Advances frame-dependent state using the current time step.
 		void  Update();
+		/// @brief Returns the delta time used by this timer.
+		/// @return Current delta time.
 		float GetDeltaTime() const { return mDeltaTime; }
 
 	private:

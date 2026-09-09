@@ -10,6 +10,8 @@
 
 namespace Core
 {
+	/// @brief Initializes the high-resolution frame timing state.
+	/// @note Initializes the :Timer base or delegates to its constructor.
 	Timer::Timer()
 		: mDeltaTime(0.f)
 	{
@@ -19,6 +21,7 @@ namespace Core
 		mTimeScale = 1.0f / (float)mFrequencyForASecond;
 	}
 
+	/// @brief Advances frame-dependent state using the current time step.
 	void Timer::Update()
 	{
 		LARGE_INTEGER currentTicks;
@@ -31,5 +34,6 @@ namespace Core
 		mLastTicks = currentTicks;
 	}
 
+	/// @brief Completes destruction through the object's inheritance hierarchy.
 	Timer::~Timer() {}
 } // namespace Core

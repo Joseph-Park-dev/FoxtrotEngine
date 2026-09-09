@@ -19,7 +19,8 @@
 </ClCompile>
 <Link><AdditionalDependencies>;%(AdditionalDependencies)</AdditionalDependencies><SubSystem>Console</SubSystem></Link></ItemDefinitionGroup>
 <ItemGroup>
-<ClInclude Include="include\**\*.h"/>
+<ClInclude Include="include\IInputDevice.h"/>
+<ClInclude Include="include\InputSystem\IInputDevice.h"/>
 </ItemGroup>
 <ItemGroup>
 <ProjectReference Include="..\Core\Core.vcxproj"><Project>{cce9835e-f788-4b51-930b-d7805ac1e2a0}</Project><LinkLibraryDependencies>false</LinkLibraryDependencies></ProjectReference>

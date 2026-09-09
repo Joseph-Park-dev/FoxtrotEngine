@@ -50,6 +50,7 @@ namespace Math
 
 	const Quaternion Quaternion::Identity(0.0f, 0.0f, 0.0f, 1.0f);
 
+	/// @brief Initializes every vector component to zero.
 	FTVector3::FTVector3()
 		: x(0.0f)
 		, y(0.0f)
@@ -57,6 +58,8 @@ namespace Math
 	{
 	}
 
+	/// @brief Initializes the numeric components from the supplied values.
+	/// @param in Value assigned to every component.
 	FTVector3::FTVector3(float in)
 		: x(in)
 		, y(in)
@@ -64,6 +67,10 @@ namespace Math
 	{
 	}
 
+	/// @brief Initializes the numeric components from the supplied values.
+	/// @param inX X component.
+	/// @param inY Y component.
+	/// @param inZ Z component.
 	FTVector3::FTVector3(float inX, float inY, float inZ)
 		: x(inX)
 		, y(inY)
@@ -71,6 +78,8 @@ namespace Math
 	{
 	}
 
+	/// @brief Copies component values from an existing vector.
+	/// @param other Vector whose components are copied.
 	FTVector3::FTVector3(const FTVector3& other)
 		: x(other.x)
 		, y(other.y)
@@ -78,6 +87,8 @@ namespace Math
 	{
 	}
 
+	/// @brief Copies component values from an existing vector.
+	/// @param other Vector whose components are copied.
 	FTVector3::FTVector3(FTVector3&& other) noexcept
 		: x(other.x)
 		, y(other.y)
@@ -85,6 +96,8 @@ namespace Math
 	{
 	}
 
+	/// @brief Copies this vector's components into caller-provided output storage.
+	/// @param arr Writable storage for three float components.
 	void FTVector3::Assign(float arr[3]) const
 	{
 		arr[0] = this->x;
@@ -92,6 +105,8 @@ namespace Math
 		arr[2] = this->z;
 	}
 
+	/// @brief Copies this vector's components into caller-provided output storage.
+	/// @param out Receives a copy of this vector.
 	void FTVector3::Assign(Math::FTVector3& out) const
 	{
 		out.x = this->x;
@@ -99,16 +114,22 @@ namespace Math
 		out.z = this->z;
 	}
 
+	/// @brief Computes the sum of squared components without taking a square root.
+	/// @return Squared Euclidean magnitude.
 	float FTVector3::LengthSq()
 	{
 		return (x * x + y * y + z * z);
 	}
 
+	/// @brief Computes the Euclidean magnitude of the components.
+	/// @return Euclidean magnitude.
 	float FTVector3::Length()
 	{
 		return (Math::Sqrt(LengthSq()));
 	}
 
+	/// @brief Scales this object's components to unit length.
+	/// @pre The input magnitude must be nonzero.
 	void FTVector3::Normalize()
 	{
 		float length = Length();
@@ -117,6 +138,10 @@ namespace Math
 		z /= length;
 	}
 
+	/// @brief Produces a unit-length copy of the input.
+	/// @param vec Input vector.
+	/// @return Unit-length value.
+	/// @pre The input magnitude must be nonzero.
 	FTVector3 FTVector3::Normalize(const FTVector3& vec)
 	{
 		FTVector3 temp = vec;
@@ -124,11 +149,19 @@ namespace Math
 		return temp;
 	}
 
+	/// @brief Computes the scalar inner product of two component sequences.
+	/// @param a First operand or interpolation start.
+	/// @param b Second operand or interpolation end.
+	/// @return Scalar inner product.
 	float FTVector3::Dot(const FTVector3& a, const FTVector3& b)
 	{
 		return (a.x * b.x + a.y * b.y + a.z * b.z);
 	}
 
+	/// @brief Computes the right-handed vector perpendicular to the two input vectors.
+	/// @param a First operand or interpolation start.
+	/// @param b Second operand or interpolation end.
+	/// @return Cross-product vector.
 	FTVector3 FTVector3::Cross(const FTVector3& a, const FTVector3& b)
 	{
 		FTVector3 temp;
@@ -138,16 +171,31 @@ namespace Math
 		return temp;
 	}
 
+	/// @brief Interpolates component values from a to b using an unclamped blend factor.
+	/// @param a First operand or interpolation start.
+	/// @param b Second operand or interpolation end.
+	/// @param f Blend factor; zero selects a and one selects b.
+	/// @return Component values from a to b using an unclamped blend factor.
 	FTVector3 FTVector3::Lerp(const FTVector3& a, const FTVector3& b, float f)
 	{
 		return FTVector3(a + f * (b - a));
 	}
 
+	/// @brief Reflects a vector across a plane with the supplied unit normal.
+	/// @param v Incident vector.
+	/// @param n Unit-length surface normal.
+	/// @return A vector across a plane with the supplied unit normal.
+	/// @pre The normal must have unit length.
 	FTVector3 FTVector3::Reflect(const FTVector3& v, const FTVector3& n)
 	{
 		return v - 2.0f * FTVector3::Dot(v, n) * n;
 	}
 
+	/// @brief Applies a row-vector affine matrix transform with the supplied homogeneous coordinate.
+	/// @param vec Input vector.
+	/// @param mat Row-vector transformation matrix.
+	/// @param w Homogeneous coordinate: one for a position, zero for a direction.
+	/// @return A row-vector affine matrix transform with the supplied homogeneous coordinate.
 	FTVector3 FTVector3::Transform(const FTVector3& vec, const FTMatrix4& mat, float w)
 	{
 		FTVector3 retVal;
@@ -161,11 +209,20 @@ namespace Math
 		return retVal;
 	}
 
+	/// @brief Converts a polar angle and distance to a Cartesian displacement.
+	/// @param angle Angle in radians.
+	/// @param dist Radial distance.
+	/// @return A polar angle and distance to a Cartesian displacement.
 	FTVector2 FTVector2::PlotCircularFall(float angle, float dist)
 	{
 		return FTVector2(dist * Math::Cos(angle), dist * Math::Sin(angle));
 	}
 
+	/// @brief Applies a row-vector affine matrix transform with the supplied homogeneous coordinate.
+	/// @param vec Input vector.
+	/// @param mat Row-vector transformation matrix.
+	/// @param w Homogeneous coordinate: one for a position, zero for a direction.
+	/// @return A row-vector affine matrix transform with the supplied homogeneous coordinate.
 	FTVector2 FTVector2::Transform(const FTVector2& vec, const FTMatrix3& mat, float w)
 	{
 		FTVector2 retVal(0.f);
@@ -175,6 +232,8 @@ namespace Math
 		return retVal;
 	}
 
+	/// @brief Replaces this matrix with its multiplicative inverse.
+	/// @pre The matrix must be nonsingular.
 	void FTMatrix4::Invert()
 	{
 		float tmp[12];
@@ -288,6 +347,7 @@ namespace Math
 		}
 	}
 
+	/// @brief Exchanges matrix rows and columns in place.
 	void FTMatrix4::Transpose()
 	{
 		__m128 row0 = _mm_load_ps(mat[0]);
@@ -303,6 +363,8 @@ namespace Math
 		_mm_store_ps(mat[3], row3);
 	}
 
+	/// @brief Produces a transposed matrix while retaining this matrix's values.
+	/// @return A transposed matrix while retaining this matrix's values.
 	FTMatrix4 FTMatrix4::Transposed() const
 	{
 		FTMatrix4 result = *this;

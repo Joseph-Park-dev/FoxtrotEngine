@@ -31,7 +31,11 @@ namespace Core
 	{
 		// Member Functions for editor level to generate chunk.json files
 	public:
+		/// @brief Serializes the current scene and resources to the selected .chunk file.
+		/// @param chunkPath Path to the .chunk file.
 		virtual void SaveChunk(const char* chunkPath) = 0;
+		/// @brief Restores the scene and its resources from a .chunk file.
+		/// @param chunkPath Path to the .chunk file.
 		virtual void LoadChunk(const char* chunkPath) = 0;
 
 		/// @brief Halts gameloop while loading a .chunk
@@ -44,22 +48,32 @@ namespace Core
 		/// The copied .chunk is the one that should be read into the game.
 		/// @param path The copy is recommended to be located in the same directory with the original.
 		/// @return Full path of the copied .chunk
+		/// @param copiedPathOut Receives the path of the temporary chunk copy.
+		/// @param chunkPath Path to the .chunk file.
 		virtual void CopyChunk(Common::FTDS::String& copiedPathOut, const char* chunkPath = "./") = 0;
 		/// @brief Delete the copied chunk after being used.
 		virtual void DeleteCopiedChunk() = 0;
 
 	public:
+		/// @brief Tests the loading chunk condition for the current object.
+		/// @return True if the operation succeeds or the tested condition holds; otherwise false.
 		virtual const bool IsLoadingChunk() const = 0;
+		/// @brief Returns the max actor id used by this ichunk loader.
+		/// @return Current max actor id.
 		virtual const int  GetMaxActorID() const  = 0;
 
 		// Add actor count by 1.
+		/// @brief Advances the actor identifier counter used during chunk loading.
 		virtual void AddMaxActorID()   = 0;
+		/// @brief Resets the actor identifier counter before rebuilding scene content.
 		virtual void ResetMaxActorID() = 0;
 
 	protected:
 		/// @brief Save .chunk specific data
+		/// @param out Receives the operation's output.
 		virtual void SaveChunkData(::std::ofstream& out) = 0;
 		/// @brief Load .chunk specific data
+		/// @param out Receives the operation's output.
 		virtual void LoadChunkData(::std::ifstream& out) = 0;
 	};
 

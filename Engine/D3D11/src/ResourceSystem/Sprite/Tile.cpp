@@ -13,12 +13,15 @@
 
 namespace D3D11
 {
+	/// @brief Initializes tile placement and texture selection.
+	/// @note Initializes the :Tile base or delegates to its constructor.
 	Tile::Tile()
 		: mRectOnScreen(DBG_NEW D3D11::FTRectArea(0.0f, 0.0f, 0.0f, 0.0f))
 		, mRectOnMap(DBG_NEW D3D11::FTRectArea(0.0f, 0.0f, 0.0f, 0.0f))
 	{
 	}
 
+	/// @brief Releases the resources managed by this instance during destruction.
 	Tile::~Tile()
 	{
 		delete mRectOnScreen;

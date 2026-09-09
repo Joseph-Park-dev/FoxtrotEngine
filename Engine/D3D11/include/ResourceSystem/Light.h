@@ -54,6 +54,11 @@ namespace D3D11
 		Math::FTVector3 Position	 = Math::FTVector3(0.0f, 0.0f, -2.0f);
 		float			SpotPower	 = 1.0f;
 
+		/// @brief Serializes this object's persistent properties to a .chunk stream.
+		/// @param ofs Output stream receiving the serialized data.
+		/// @param type Resource or component type identifier.
+		/// @param isActive Whether the object participates in runtime processing.
+		/// @note Writes to the supplied stream at its current position.
 		void SaveProperties(std::ofstream& ofs, TYPE& type, bool& isActive)
 		{
 			Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::LIGHT);
@@ -70,6 +75,11 @@ namespace D3D11
 			Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::LIGHT);
 		}
 
+		/// @brief Restores this object's persistent properties from a .chunk stream.
+		/// @param ifs Input stream positioned at the expected data; reading advances its position.
+		/// @param type Resource or component type identifier.
+		/// @param isActive Whether the object participates in runtime processing.
+		/// @note Advances the stream position and updates the destination state.
 		void LoadProperties(std::ifstream& ifs, TYPE& type, bool& isActive)
 		{
 			Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::LIGHT);
@@ -87,6 +97,7 @@ namespace D3D11
 			type = (TYPE)typeInt;
 		}
 #ifdef FOXTROT_EDITOR
+		/// @brief Builds the editor controls for inspecting and modifying this object's state.
 		void UpdateUI()
 		{
 			::Editor::UPDATE_VEC3(LightKey::STRENGTH, Strength);
@@ -103,6 +114,9 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 	namespace Editor
 	{
+		/// @brief Converts a resource or component type identifier to its display text.
+		/// @param type Resource or component type identifier.
+		/// @return Converts a resource or component type identifier to its display text.
 		inline const char* TypeToString(Light::TYPE type)
 		{
 			switch (type)

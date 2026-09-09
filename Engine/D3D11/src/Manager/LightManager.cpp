@@ -15,6 +15,8 @@ using Microsoft::WRL::ComPtr;
 
 namespace D3D11
 {
+	/// @brief Initializes the scene-light collection and shader data.
+	/// @note Initializes the :LightManager base or delegates to its constructor.
 	LightManager::LightManager()
 		: mLights(DBG_NEW Light[GameData::MAX_LIGHTS])
 		, mTypes(DBG_NEW Light::TYPE[GameData::MAX_LIGHTS])
@@ -23,6 +25,7 @@ namespace D3D11
 	{
 	}
 
+	/// @brief Releases the resources managed by this instance during destruction.
 	LightManager::~LightManager()
 	{
 		delete[] mLights;
@@ -31,8 +34,19 @@ namespace D3D11
 		delete mCubemap;
 	}
 
+	/// @brief Returns the light used by this light manager.
+	/// @param i Zero-based index.
+	/// @return Borrowed access to the light.
+	/// @note Changes through the returned reference affect this object's stored state.
 	Light&		 LightManager::GetLight(size_t i) const { return mLights[i]; }
+	/// @brief Returns the type used by this light manager.
+	/// @param i Zero-based index.
+	/// @return Borrowed access to the type.
+	/// @note Changes through the returned reference affect this object's stored state.
 	Light::TYPE& LightManager::GetType(size_t i) const { return mTypes[i]; }
+	/// @brief Tests the active condition for the current object.
+	/// @param i Zero-based index.
+	/// @return True if the operation succeeds or the tested condition holds; otherwise false.
 	bool&		 LightManager::IsActive(size_t i) const { return mActiveStatus[i]; }
 
 	// FTCubemap* LightManager::GetCubeMap() const { return mCubemap; }
@@ -47,12 +61,16 @@ namespace D3D11
 	//	return mCubemap->GetDiffuseResView();
 	// }
 
+	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
+	/// @param renderer Renderer providing the graphics device and current render state.
 	void LightManager::Initialize(D3D11::D3D11Renderer* renderer)
 	{
 		mTypes[0] = Light::TYPE::DIRECTIONAL;
 		// InitializeCubeMap(renderer);
 	}
 
+	/// @brief Creates the cube-map texture resources used by the material.
+	/// @param renderer Renderer providing the graphics device and current render state.
 	void LightManager::InitializeCubeMap(D3D11::D3D11Renderer* renderer)
 	{
 		if (!mCubemap)
@@ -62,6 +80,9 @@ namespace D3D11
 		}
 	}
 
+	/// @brief Provides an empty lifecycle or extension hook for this implementation.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @param camInst Camera supplying the view and projection for this draw.
 	void LightManager::Render(D3D11::D3D11Renderer* renderer, Camera* camInst)
 	{
 		/*if (mCubemap)
@@ -72,6 +93,8 @@ namespace D3D11
 		}*/
 	}
 
+	/// @brief Provides an empty lifecycle or extension hook for this implementation.
+	/// @param renderer Renderer providing the graphics device and current render state.
 	void LightManager::Reset(D3D11::D3D11Renderer* renderer)
 	{
 		/*delete mCubemap;
@@ -81,6 +104,9 @@ namespace D3D11
 		mCubemap->SetTexture(texKey);*/
 	}
 
+	/// @brief Serializes this object's persistent properties to a .chunk stream.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @note Writes to the supplied stream at its current position.
 	void LightManager::SaveProperties(std::ofstream& ofs)
 	{
 		for (size_t i = 0; i < GameData::MAX_LIGHTS; ++i)
@@ -88,6 +114,9 @@ namespace D3D11
 		// mCubemap->SaveProperties(ofs);
 	}
 
+	/// @brief Restores this object's persistent properties from a .chunk stream.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @note Advances the stream position and updates the destination state.
 	void LightManager::LoadProperties(std::ifstream& ifs)
 	{
 		// mCubemap->LoadProperties(ifs);
@@ -96,6 +125,7 @@ namespace D3D11
 	}
 
 #ifdef FOXTROT_EDITOR
+	/// @brief Builds the controls for inspecting and editing scene lights.
 	void LightManager::DisplayLightMenu()
 	{
 		ImGui::Begin("Lights");

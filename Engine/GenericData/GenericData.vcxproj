@@ -22,7 +22,12 @@
 <ClCompile Include="src\FTCSV.cpp"/>
 <ClCompile Include="src\FTJSON.cpp"/>
 <ClCompile Include="src\FTText.cpp"/>
-<ClInclude Include="include\**\*.h"/>
+<ClInclude Include="include\FTCSV.h"/>
+<ClInclude Include="include\FTJSON.h"/>
+<ClInclude Include="include\FTText.h"/>
+<ClInclude Include="include\ResourceSystem\GenericData\FTCSV.h"/>
+<ClInclude Include="include\ResourceSystem\GenericData\FTJSON.h"/>
+<ClInclude Include="include\ResourceSystem\GenericData\FTText.h"/>
 </ItemGroup>
 <ItemGroup>
 <ProjectReference Include="..\Core\Core.vcxproj"><Project>{cce9835e-f788-4b51-930b-d7805ac1e2a0}</Project><LinkLibraryDependencies>false</LinkLibraryDependencies></ProjectReference>

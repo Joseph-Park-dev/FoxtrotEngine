@@ -19,6 +19,8 @@
 
 namespace Editor
 {
+	/// @brief Returns the lowests used by this editor scene manager.
+	/// @param elements Collection of editor or data elements.
 	void EditorSceneManager::GetLowests(std::vector<EditorElement*>& elements)
 	{
 		Common::FTDS::DynamicArray<Core::IActor*>*& actors = Core::SceneManager::GetCurrentScene()->Actors();
@@ -32,11 +34,15 @@ namespace Editor
 		}
 	}
 
+	/// @brief Returns the editor scene used by this editor scene manager.
+	/// @return Borrowed access to the editor scene.
 	EditorScene* EditorSceneManager::GetEditorScene()
 	{
 		return reinterpret_cast<EditorScene*>(GetCurrentScene());
 	}
 
+	/// @brief Orders editor elements by their hierarchy depth.
+	/// @param elements Collection of editor or data elements.
 	void EditorSceneManager::SortByHierarchyLv(std::vector<EditorElement*>& elements)
 	{
 		std::sort(elements.begin(), elements.end(), [](const EditorElement* lhs, const EditorElement* rhs) {
@@ -44,6 +50,9 @@ namespace Editor
 		});
 	}
 
+	/// @brief Appends a row of child actor entries to the editor hierarchy.
+	/// @param actor Actor participating in this operation.
+	/// @param dest Destination receiving the converted or copied data.
 	void EditorSceneManager::PushRowOfChildActors(EditorElement* actor, std::vector<EditorElement*>& dest)
 	{
 		dest.push_back(actor);
@@ -55,11 +64,14 @@ namespace Editor
 		}
 	}
 
+	/// @brief Initializes editor scene selection and configuration state.
+	/// @note Initializes the :EditorSceneManager base or delegates to its constructor.
 	EditorSceneManager::EditorSceneManager()
 		: Core::SceneManager()
 	{
 	}
 
+	/// @brief Completes destruction through the object's inheritance hierarchy.
 	EditorSceneManager::~EditorSceneManager()
 	{
 	}

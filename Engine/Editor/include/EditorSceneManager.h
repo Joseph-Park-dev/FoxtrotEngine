@@ -37,13 +37,22 @@ namespace Editor
 		SINGLETON(EditorSceneManager)
 	public:
 		// Get the EditorElements with the lowest hierarchyLevel.
+		/// @brief Returns the lowests used by this editor scene manager.
+		/// @param elements Collection of editor or data elements.
 		void				 GetLowests(std::vector<EditorElement*>& elements);
+		/// @brief Returns the editor scene used by this editor scene manager.
+		/// @return Borrowed access to the editor scene.
 		virtual EditorScene* GetEditorScene();
 
 		// EditorElements with lower hierarchyLevel comes first.
+		/// @brief Orders editor elements by their hierarchy depth.
+		/// @param elements Collection of editor or data elements.
 		void SortByHierarchyLv(std::vector<EditorElement*>& elements);
 
 	private:
+		/// @brief Appends a row of child actor entries to the editor hierarchy.
+		/// @param actor Actor participating in this operation.
+		/// @param dest Destination receiving the converted or copied data.
 		void PushRowOfChildActors(EditorElement* actor, std::vector<EditorElement*>& dest);
 	};
 } // namespace Editor

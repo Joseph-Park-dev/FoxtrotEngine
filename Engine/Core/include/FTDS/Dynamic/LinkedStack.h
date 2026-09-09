@@ -13,6 +13,8 @@ namespace Common
 			using LinkedList<TYPE>::mSize;
 
 		public:
+			/// @brief Adds a value at the insertion end of this container.
+			/// @param val Value to assign, insert, or process.
 			virtual void Push(TYPE val) override
 			{
 				Node<TYPE>* node = DBG_NEW Node<TYPE>(val);
@@ -25,6 +27,8 @@ namespace Common
 				++mSize;
 			}
 
+			/// @brief Removes a value from the removal end of this container.
+			/// @note Releasing container storage does not implicitly delete objects held through raw pointer values.
 			virtual void Pop() override
 			{
 				if (mHead)
@@ -37,14 +41,19 @@ namespace Common
 				}
 			}
 
+			/// @brief Inspects the next accessible element without removing it.
+			/// @return Value at the inspected position.
 			TYPE& Peek() { return mHead->Value; }
 
 		public:
+			/// @brief Initializes an empty linked stack.
+			/// @note Initializes the LinkedList<TYPE> base or delegates to its constructor.
 			LinkedStack()
 				: LinkedList<TYPE>()
 			{
 			}
 
+			/// @brief Completes destruction through the object's inheritance hierarchy.
 			~LinkedStack()
 			{
 				while (!this->IsEmpty())

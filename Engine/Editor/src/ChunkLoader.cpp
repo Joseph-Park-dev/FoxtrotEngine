@@ -40,6 +40,8 @@ namespace Editor
 {
 	using Core::Actor;
 	using Common::IActor;
+	/// @brief Initializes chunk-loading state and actor identifier tracking.
+	/// @note Initializes the :ChunkLoader base or delegates to its constructor.
 	ChunkLoader::ChunkLoader() : mCurrentChunkData(new Core::ChunkData)
 	{
 		HMODULE coreMod = GetModuleHandleA(Common::DLLPath::CORE_EDITOR);
@@ -68,8 +70,11 @@ namespace Editor
 		//	//{ "Flee", &CreateComp<Flee> },
 	};
 
+	/// @brief Releases the resources managed by this instance during destruction.
 	ChunkLoader::~ChunkLoader() { delete mCurrentChunkData; }
 
+	/// @brief Serializes the current scene and resources to the selected .chunk file.
+	/// @param chunkPath Path to the .chunk file.
 	void ChunkLoader::SaveChunk(const char* chunkPath)
 	{
 		Lock();
@@ -84,6 +89,8 @@ namespace Editor
 		Unlock();
 	}
 
+	/// @brief Restores the scene and its resources from a .chunk file.
+	/// @param chunkPath Path to the .chunk file.
 	void ChunkLoader::LoadChunk(const char* chunkPath)
 	{
 		Lock();
@@ -99,6 +106,8 @@ namespace Editor
 		Unlock();
 	}
 
+	/// @brief Writes actor properties and components for the current scene.
+	/// @param ofs Output stream receiving the serialized data.
 	void ChunkLoader::SaveActorsData(std::ofstream& ofs)
 	{
 		ResetMaxActorID();
@@ -120,6 +129,8 @@ namespace Editor
 		Common::FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::ACTOR_DATA);
 	}
 
+	/// @brief Restores serialized actor state for the loaded scene.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
 	void ChunkLoader::LoadActorsData(std::ifstream& ifs)
 	{
 		EditorScene*							  scene = EditorSceneManager::GetInstance()->GetEditorScene();
@@ -183,31 +194,42 @@ namespace Editor
 		}
 	}
 
+	/// @brief Tests the loading chunk condition for the current object.
+	/// @return True if the operation succeeds or the tested condition holds; otherwise false.
 	const bool ChunkLoader::IsLoadingChunk() const
 	{
 		return mCurrentChunkData->IsLoading;
 	}
 
+	/// @brief Returns the max actor id used by this chunk loader.
+	/// @return Current max actor id.
 	const int ChunkLoader::GetMaxActorID() const
 	{
 		return mCurrentChunkData->MaxActorID;
 	}
 
+	/// @brief Returns the chunk data used by this chunk loader.
+	/// @return Borrowed access to the chunk data.
 	Core::ChunkData* ChunkLoader::GetChunkData()
 	{
 		return mCurrentChunkData;
 	}
 
+	/// @brief Advances the actor identifier counter used during chunk loading.
 	void ChunkLoader::AddMaxActorID()
 	{
 		++mCurrentChunkData->MaxActorID;
 	}
 
+	/// @brief Resets the actor identifier counter before rebuilding scene content.
 	void ChunkLoader::ResetMaxActorID()
 	{
 		mCurrentChunkData->MaxActorID = 0;
 	}
 
+	/// @brief Returns the dllpath used by this service.
+	/// @param mod Loaded module containing the plugin entry point.
+	/// @param out Receives the operation's output.
 	static void GetDLLPath(HMODULE mod, Common::FTDS::String& out)
 	{
 		char path[MAX_PATH];
@@ -217,21 +239,33 @@ namespace Editor
 			std::cerr << "Failed to get path. Error: " << GetLastError() << std::endl;
 	}
 
+	/// @brief Returns the editor chunk loader used by this service.
+	/// @return Borrowed access to the editor chunk loader.
 	EDITOR_API Editor::ChunkLoader* GetEditorChunkLoader()
 	{
 		return Editor::ChunkLoader::GetInstance();
 	}
 } // namespace Editor
 namespace Editor {
+/// @brief Pauses game updates while chunk state is being changed.
 void ChunkLoader::Lock() { mCurrentChunkData->IsLoading = true; }
+/// @brief Resumes game updates after chunk processing completes.
 void ChunkLoader::Unlock() { mCurrentChunkData->IsLoading = false; }
+/// @brief Creates a temporary copy of a chunk so the source remains available during loading.
+/// @param out Receives the operation's output.
+/// @param path Filesystem path of the resource or project.
 void ChunkLoader::CopyChunk(Common::FTDS::String& out, const char* path) { Core::ChunkLoader::GetInstance()->CopyChunk(out, path); }
+/// @brief Removes the temporary chunk copy created for loading.
 void ChunkLoader::DeleteCopiedChunk() { Core::ChunkLoader::GetInstance()->DeleteCopiedChunk(); }
+/// @brief Writes the chunk-specific scene metadata to the output stream.
+/// @param out Receives the operation's output.
 void ChunkLoader::SaveChunkData(std::ofstream& out) {
     Common::FileIOHelper::BeginDataPackSave(out, Core::ChunkKey::CHUNK_DATA);
     Common::FileIOHelper::SaveInt(out, Core::ChunkKey::ACTOR_COUNT, mCurrentChunkData->MaxActorID);
     Common::FileIOHelper::EndDataPackSave(out, Core::ChunkKey::CHUNK_DATA);
 }
+/// @brief Reads chunk-specific scene metadata from the input stream.
+/// @param in Input value.
 void ChunkLoader::LoadChunkData(std::ifstream& in) {
     Common::FileIOHelper::BeginDataPackLoad(in, Core::ChunkKey::CHUNK_DATA);
     Common::FileIOHelper::LoadInt(in, mCurrentChunkData->MaxActorID);

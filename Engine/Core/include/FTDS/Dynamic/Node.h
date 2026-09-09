@@ -6,9 +6,10 @@ namespace Common
 		template <typename TYPE>
 		struct Node
 		{
-			/// <summary>
+			/// @brief Initializes a list value with no successor.
 			/// Node template to be used for dynamic data structure.
-			/// </summary>
+			/// @param val Value to assign, insert, or process.
+			/// @note Initializes the Value base or delegates to its constructor.
 			Node(TYPE val)
 				: Value(val)
 				, Next(nullptr)

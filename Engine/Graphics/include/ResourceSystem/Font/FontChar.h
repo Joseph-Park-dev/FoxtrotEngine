@@ -35,20 +35,38 @@ namespace Graphics
 	class FontChar
 	{
 	public:
+		/// @brief Reports the stored identifier used to distinguish this entry.
+		/// @return The stored identifier used to distinguish this entry.
 		int	  ID();
 		float U();
 		float V();
+		/// @brief Reports the glyph's width in its font texture.
+		/// @return The glyph's width in its font texture.
 		float WidthOnTex();
+		/// @brief Reports the glyph's height in its font texture.
+		/// @return The glyph's height in its font texture.
 		float HeightOnTex();
 
+		/// @brief Reports the glyph width after applying the screen-space scale.
+		/// @return The glyph width after applying the screen-space scale.
 		float WidthOnScreen();
+		/// @brief Reports the glyph height after applying the screen-space scale.
+		/// @return The glyph height after applying the screen-space scale.
 		float HeightOnScreen();
 
+		/// @brief Reports the glyph's horizontal drawing offset.
+		/// @return Current offset x.
 		float OffsetX();
+		/// @brief Reports the glyph's vertical drawing offset.
+		/// @return Current offset y.
 		float OffsetY();
+		/// @brief Reports the horizontal cursor advance after rendering this glyph.
+		/// @return The horizontal cursor advance after rendering this glyph.
 		float AdvanceX();
 
 	public:
+		/// @brief Initializes the glyph's atlas bounds and layout metrics.
+		/// @param data Input payload used by the operation.
 		FontChar(FontCharData& data);
 
 	private:

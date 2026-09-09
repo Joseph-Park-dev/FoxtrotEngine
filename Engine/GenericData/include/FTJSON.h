@@ -27,10 +27,14 @@ namespace GenericData
 		//	virtual void LoadProperties(std::ifstream& ifs) override;
 	public:
 		/// @brief Returns the JSON data as nlohmann::json.
+		/// @return Borrowed access to the data.
 		virtual const nlohmann::json& Data() const;
 
 	public:
+		/// @brief Initializes a parsed JSON resource.
 		/// @see FTResource::FTResource
+		/// @param resDef Resource definition containing the filename and source path.
+		/// @throws nlohmann::json::parse_error If the resource file contains invalid JSON.
 		FTJSON(Common::ResourceData* resDef);
 
 	private:
@@ -40,6 +44,8 @@ namespace GenericData
 
 	private:
 		/// @brief Parses the JSON data.
+		/// @param path Filesystem path of the resource or project.
+		/// @throws nlohmann::json::parse_error If the input is not valid JSON.
 		void Read(const Common::FTDS::String& path);
 	};
 

@@ -34,31 +34,48 @@ namespace Editor
 
 	constexpr float LOOKAT_MODSPEED = 0.01f;
 
+	/// @brief Converts a screen-space position into world coordinates using the camera transforms.
+	/// @param screenPos Position in screen coordinates.
+	/// @return Converts a screen-space position into world coordinates using the camera transforms.
 	Math::FTVector3 EditorCamera::ScreenToWorld(const Math::FTVector2& screenPos)
 	{
 		return mData->ScreenToWorld(screenPos);
 	}
 
+	/// @brief Projects a world-space position into screen coordinates.
+	/// @param worldPos Position in world coordinates.
+	/// @return Current world to screen.
 	Math::FTVector2 EditorCamera::WorldToScreen(const Math::FTVector3& worldPos) const
 	{
 		return mData->WorldToScreen(worldPos);
 	}
 
+	/// @brief Converts screen coordinates to normalized device coordinates.
+	/// @param screenPos Position in screen coordinates.
+	/// @return Converts screen coordinates to normalized device coordinates.
 	Math::FTVector2 EditorCamera::ScreenToNDC(const Math::FTVector2& screenPos) const
 	{
 		return mData->ScreenToNDC(screenPos);
 	}
 
+	/// @brief Serializes this object's persistent properties to a .chunk stream.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @note Writes to the supplied stream at its current position.
 	void EditorCamera::SaveProperties(std::ofstream& ofs)
 	{
 		mData->SaveProperties(ofs);
 	}
 
+	/// @brief Restores this object's persistent properties from a .chunk stream.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @note Advances the stream position and updates the destination state.
 	void EditorCamera::LoadProperties(std::ifstream& ifs)
 	{
 		mData->LoadProperties(ifs);
 	}
 
+	/// @brief Builds the controls for configuring the game camera.
+	/// @param gameCam Camera used to render the game scene.
 	void EditorCamera::DisplayGameCameraMenu(Core::ICamera* gameCam)
 	{
 		ImVec2 area = ImVec2(ImGui::GetContentRegionAvail().x, 150.f);
@@ -135,6 +152,7 @@ namespace Editor
 		ImGui::EndChild();
 	}
 
+	/// @brief Builds the controls for configuring the editor camera.
 	void EditorCamera::DisplayEditorCameraMenu()
 	{
 		ImGui::BeginChild("Editor Camera");
@@ -147,81 +165,115 @@ namespace Editor
 		ImGui::EndChild();
 	}
 
+	/// @brief Exposes the stored payload for consumers of this resource or container.
+	/// @return Borrowed access to the data.
 	D3D11::CameraData* EditorCamera::Data()
 	{
 		return mData;
 	}
 
+	/// @brief Returns the position used by this editor camera.
+	/// @return Borrowed access to the position.
 	const Math::FTVector3& EditorCamera::GetPosition() const
 	{
 		return mData->Position;
 	}
 
+	/// @brief Returns the view matrix used by this editor camera.
+	/// @param outViewMat Receives the view matrix.
 	void EditorCamera::GetViewMatrix(Math::FTMatrix4& outViewMat)
 	{
 		mData->GetViewMatrix(outViewMat);
 	}
 
+	/// @brief Returns the projection matrix used by this editor camera.
+	/// @param outProjMat Receives the projection matrix.
 	void EditorCamera::GetProjectionMatrix(Math::FTMatrix4& outProjMat)
 	{
 		mData->GetProjectionMatrix(outProjMat);
 	}
 
+	/// @brief Returns the view type used by this editor camera.
+	/// @return Current view type.
 	const Core::Viewtype EditorCamera::GetViewType()
 	{
 		return mData->ViewType;
 	}
 
+	/// @brief Returns the proj fovangle y used by this editor camera.
+	/// @return Current proj fovangle y.
 	const float EditorCamera::GetProjFOVAngleY()
 	{
 		return mData->ProjFOVAngleY;
 	}
 
+	/// @brief Returns the aspect ratio used by this editor camera.
+	/// @return Current aspect ratio.
 	const float EditorCamera::GetAspectRatio()
 	{
 		return mData->Aspect;
 	}
 
+	/// @brief Returns the units per pixel used by this editor camera.
+	/// @return Current units per pixel.
 	const float EditorCamera::GetUnitsPerPixel()
 	{
 		return mData->UnitsPerPixel;
 	}
 
+	/// @brief Returns the near z used by this editor camera.
+	/// @return Current near z.
 	const float EditorCamera::GetNearZ()
 	{
 		return mData->NearZ;
 	}
 
+	/// @brief Returns the far z used by this editor camera.
+	/// @return Current far z.
 	const float EditorCamera::GetFarZ()
 	{
 		return mData->FarZ;
 	}
 
+	/// @brief Returns the off set used by this editor camera.
+	/// @return Borrowed access to the off set.
 	const Math::FTVector3& EditorCamera::GetOffSet() const
 	{
 		return mData->Offset;
 	}
 
+	/// @brief Returns the zoom factor used by this editor camera.
+	/// @return Current zoom factor.
 	const float EditorCamera::GetZoomFactor() const
 	{
 		return mData->ZoomFactor;
 	}
 
+	/// @brief Returns the resolution used by this editor camera.
+	/// @return Current resolution.
 	Math::FTVector2 EditorCamera::GetResolution() const
 	{
 		return mData->GetResolution();
 	}
 
+	/// @brief Returns the debug rect used by this editor camera.
+	/// @return Borrowed access to the debug rect.
 	D3D11::FTRectangle* EditorCamera::GetDebugRect()
 	{
 		return mDebugRect;
 	}
 
+	/// @brief Applies a multiplicative change to the editor camera zoom.
+	/// @return Applies a multiplicative change to the editor camera zoom.
 	float& EditorCamera::ZoomFactor()
 	{
 		return mData->ZoomFactor;
 	}
 
+	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
+	/// @param renderWindow Window associated with the render target.
+	/// @param pixels Pixel data or pixel dimensions.
+	/// @param unit Unit conversion factor.
 	void EditorCamera::Initialize(Core::IWindow* renderWindow, unsigned int pixels, float unit)
 	{
 		FTVector2 size = renderWindow->GetRenderArea()->GetSize();
@@ -231,6 +283,8 @@ namespace Editor
 		EditorShapes::GetInstance()->SetCameraRect(mDebugRect);
 	}
 
+	/// @brief Dispatches input for the current frame to the relevant engine objects.
+	/// @param inputDevice Device exposing the current frame's input state.
 	void EditorCamera::ProcessInput(IInputDevice* inputDevice)
 	{
 		if (0 < inputDevice->GetMouseWheelDelta())
@@ -239,6 +293,8 @@ namespace Editor
 			ZoomFactor() -= mZoomValModSpeed;
 	}
 
+	/// @brief Advances frame-dependent state using the current time step.
+	/// @param gameCam Camera used to render the game scene.
 	void EditorCamera::Update(Core::ICamera* gameCam)
 	{
 		mPanKeyPressed = ImGui::IsMouseDragging(ImGuiMouseButton_Middle);
@@ -277,6 +333,8 @@ namespace Editor
 		mDebugRect->UpdatePC();
 	}
 
+	/// @brief Initializes camera state used for editor navigation.
+	/// @note Initializes the :EditorCamera base or delegates to its constructor.
 	EditorCamera::EditorCamera()
 		: mData(DBG_NEW CameraData)
 		, mPanKeyPressed(false)
@@ -294,6 +352,7 @@ namespace Editor
 		mDebugRect			= Core::GetFunc<GET_RECT_FUNC>(Common::DLLPath::D3D11_EDITOR, D3D11::ProcName::CREATE_FT_RECTANGLE)();
 	}
 
+	/// @brief Releases the resources managed by this instance during destruction.
 	EditorCamera::~EditorCamera()
 	{
 		delete mData;
@@ -301,11 +360,16 @@ namespace Editor
 		mDebugRect = nullptr;
 	}
 
+	/// @brief Establishes the conversion from engine world units to pixels.
+	/// @param pixels Pixel data or pixel dimensions.
+	/// @param units World-space distance or unit count.
 	void EditorCamera::InitializePixelsPerUnit(unsigned int pixels, float units)
 	{
 		mData->InitializePixelsPerUnit(pixels, units);
 	}
 
+	/// @brief Moves the editor camera along its local horizontal and vertical axes.
+	/// @param vec2 Two-dimensional vector read or written.
 	void EditorCamera::PanLocalXY(Math::FTVector2 vec2)
 	{
 		mData->Position.x += vec2.x;
@@ -313,8 +377,16 @@ namespace Editor
 	}
 } // namespace Editor
 namespace Editor {
+/// @brief Updates the position used by subsequent operations.
+/// @param position Replacement position.
 void EditorCamera::SetPosition(const Math::FTVector3& position) { mData->Position = position; }
+/// @brief Updates the view type used by subsequent operations.
+/// @param type Replacement view type.
 void EditorCamera::SetViewType(Core::Viewtype type) { mData->ViewType = type; }
+/// @brief Updates the target actor used by subsequent operations.
+/// @param actor Replacement target actor.
 void EditorCamera::SetTargetActor(Core::IActor* actor) { mData->Target = actor; }
+/// @brief Updates the offset used by subsequent operations.
+/// @param offset Replacement offset.
 void EditorCamera::SetOffset(Math::FTVector3 offset) { mData->Offset = offset; }
 }

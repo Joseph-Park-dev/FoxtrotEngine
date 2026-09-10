@@ -3,16 +3,16 @@
 #include <cstring>
 namespace {
 struct GameState {
-    const Foxtrot::GameServices* services{};
-    uint64_t system{};
-    uint64_t frames{};
+    const Foxtrot::GameServices* Services{};
+    uint64_t System{};
+    uint64_t Frames{};
 };
 /// @brief Advances the game module's registered system callback for the current frame.
 /// @param context Context associated with this operation.
 /// @note Unnamed parameter (float): reserved by this interface or unused by this implementation.
 void FT_CALL Tick(void* context, float) noexcept {
     auto& game = *static_cast<GameState*>(context);
-    if (game.frames++ == 0) FtLog("Game update system running");
+    if (game.Frames++ == 0) FtLog("Game update system running");
     // Game-specific systems and rules belong here; engine objects stay in Runtime.
 }
 /// @brief Initializes the services and state required before this object's runtime lifecycle begins.
@@ -20,13 +20,13 @@ void FT_CALL Tick(void* context, float) noexcept {
 /// @param host Host services available to the module.
 /// @return Status indicating whether the operation completed successfully.
 Foxtrot::Status FT_CALL Initialize(void* context, const Foxtrot::HostServices* host) noexcept {
-    if (!host || host->size != sizeof(*host) || !host->find) return Foxtrot::Status::InvalidArgument;
+    if (!host || host->Size != sizeof(*host) || !host->Find) return Foxtrot::Status::InvalidArgument;
     auto& game = *static_cast<GameState*>(context);
-    auto runtime = host->find(host->context, "EngineRuntime");
+    auto runtime = host->Find(host->Context, "EngineRuntime");
     if (!runtime) return Foxtrot::Status::Failed;
-    game.services = static_cast<const Foxtrot::GameServices*>(runtime->query(runtime->instance, "GameServices"));
-    if (!game.services || game.services->size != sizeof(Foxtrot::GameServices)) return Foxtrot::Status::AbiMismatch;
-    auto status = game.services->registerSystem(Tick, &game, &game.system);
+    game.Services = static_cast<const Foxtrot::GameServices*>(runtime->Query(runtime->Instance, "GameServices"));
+    if (!game.Services || game.Services->Size != sizeof(Foxtrot::GameServices)) return Foxtrot::Status::AbiMismatch;
+    auto status = game.Services->RegisterSystem(Tick, &game, &game.System);
     if (status == Foxtrot::Status::Ok) FtLog("Game initialized");
     return status;
 }
@@ -34,12 +34,12 @@ Foxtrot::Status FT_CALL Initialize(void* context, const Foxtrot::HostServices* h
 /// @param context Context associated with this operation.
 void FT_CALL Shutdown(void* context) noexcept {
     auto& game = *static_cast<GameState*>(context);
-    if (game.system && game.services) {
-        game.services->unregisterSystem(game.system);
-        game.system = 0;
+    if (game.System && game.Services) {
+        game.Services->UnregisterSystem(game.System);
+        game.System = 0;
         FtLog("Game shutdown");
     }
-    game.services = nullptr;
+    game.Services = nullptr;
 }
 /// @brief Releases the managed instance or schedules the specified actor for destruction.
 /// @param context Context associated with this operation.
@@ -55,7 +55,7 @@ void* FT_CALL Query(void*, const char*) noexcept { return nullptr; }
 /// @param bytes Size of the allocation or ABI output buffer in bytes.
 /// @param out Receives the operation's output.
 /// @return ABI status indicating success or the reason the descriptor could not be produced.
-FT_EXPORT Foxtrot::Status FT_CALL FtGetModuleApi(uint32_t abi, uint32_t bytes, Foxtrot::ModuleApi* out) noexcept {
+FT_EXPORT Foxtrot::Status FT_CALL FtGetModuleAPI(uint32_t abi, uint32_t bytes, Foxtrot::ModuleAPI* out) noexcept {
     if (!out || bytes != sizeof(*out) || abi != Foxtrot::ModuleAbi) return Foxtrot::Status::AbiMismatch;
     try {
         auto state = new GameState;

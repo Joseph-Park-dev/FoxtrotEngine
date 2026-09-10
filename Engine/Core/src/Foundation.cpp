@@ -58,7 +58,7 @@ void* FT_CALL Query(void*, const char*) noexcept { return nullptr; }
 /// @param bytes Size of the allocation or ABI output buffer in bytes.
 /// @param out Receives the operation's output.
 /// @return ABI status indicating success or the reason the descriptor could not be produced.
-FT_EXPORT Foxtrot::Status FT_CALL FtGetModuleApi(uint32_t abi, uint32_t bytes, Foxtrot::ModuleApi* out) noexcept
+FT_EXPORT Foxtrot::Status FT_CALL FtGetModuleAPI(uint32_t abi, uint32_t bytes, Foxtrot::ModuleAPI* out) noexcept
 {
     if (!out || bytes != sizeof(*out) || abi != Foxtrot::ModuleAbi) return Foxtrot::Status::AbiMismatch;
     *out = {sizeof(*out), Foxtrot::ModuleAbi, Foxtrot::BuildAbi, sizeof(void*), "Core", nullptr,

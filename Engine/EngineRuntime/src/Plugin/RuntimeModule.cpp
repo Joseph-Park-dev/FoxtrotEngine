@@ -16,9 +16,9 @@ namespace
 {
 	struct System
 	{
-		uint64_t			token;
-		Foxtrot::SystemTick tick;
-		void*				context;
+		uint64_t			Token;
+		Foxtrot::SystemTick Tick;
+		void*				Context;
 	};
 
 	std::vector<System> systems;
@@ -57,7 +57,7 @@ namespace
 	{
 		if (ticking)
 			return Foxtrot::Status::Busy;
-		auto it = std::find_if(systems.begin(), systems.end(), [token](const auto& s) { return s.token == token; });
+		auto it = std::find_if(systems.begin(), systems.end(), [token](const auto& s) { return s.Token == token; });
 		if (it == systems.end())
 			return Foxtrot::Status::InvalidArgument;
 		systems.erase(it);
@@ -214,7 +214,7 @@ namespace
 /// @param bytes Size of the allocation or ABI output buffer in bytes.
 /// @param out Receives the operation's output.
 /// @return ABI status indicating success or the reason the descriptor could not be produced.
-FT_EXPORT Foxtrot::Status FT_CALL FtGetModuleApi(uint32_t abi, uint32_t bytes, Foxtrot::ModuleApi* out) noexcept
+FT_EXPORT Foxtrot::Status FT_CALL FtGetModuleAPI(uint32_t abi, uint32_t bytes, Foxtrot::ModuleAPI* out) noexcept
 {
 	if (!out || bytes != sizeof(*out) || abi != Foxtrot::ModuleAbi)
 		return Foxtrot::Status::AbiMismatch;
@@ -229,6 +229,6 @@ void Foxtrot::UpdateGameSystems(float dt) noexcept
 {
 	ticking = true;
 	for (const auto& system : systems)
-		system.tick(system.context, dt);
+		system.Tick(system.Context, dt);
 	ticking = false;
 }

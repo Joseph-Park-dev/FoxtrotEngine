@@ -16,7 +16,7 @@ ModuleHost::ModuleHost()
 	mDir.assign(path, count);
 	mDir.resize(mDir.find_last_of(L"\\/") + 1);
 
-	services = { sizeof(services), this, [](void* self, const char* name) noexcept {
+	mServices = { sizeof(mServices), this, [](void* self, const char* name) noexcept {
 					return static_cast<ModuleHost*>(self)->Find(name);
 				} };
 	delete path;
@@ -27,15 +27,15 @@ ModuleHost::~ModuleHost() { Shutdown(); }
 /// @brief Looks up a previously loaded module by its exact name.
 /// @param name Name used to identify the requested object or interface.
 /// @return Borrowed descriptor, or nullptr for a null or unknown name.
-const Foxtrot::ModuleApi* ModuleHost::Find(const char* name) const noexcept
+const Foxtrot::ModuleAPI* ModuleHost::Find(const char* name) const noexcept
 {
 	if (!name)
 		return nullptr;
 
 	// Find entry with same ModuleAPI name.
-	for (const auto& e : entries)
-		if (e->api.name && std::strcmp(name, e->api.name) == 0)
-			return &e->api;
+	for (const auto& e : mEntries)
+		if (e->API.Name && std::strcmp(name, e->API.Name) == 0)
+			return &e->API;
 	return nullptr;
 }
 /// @brief Loads a DLL beside the executable, validates its module ABI, and initializes it once.
@@ -44,42 +44,47 @@ const Foxtrot::ModuleApi* ModuleHost::Find(const char* name) const noexcept
 /// @return Borrowed module descriptor, valid until Shutdown() or host destruction.
 /// @pre file and expectedName must be valid null-terminated strings.
 /// @throws std::runtime_error If loading, ABI validation, or module initialization fails.
-const Foxtrot::ModuleApi* ModuleHost::Load(const wchar_t* file, const char* expectedName)
+const Foxtrot::ModuleAPI* ModuleHost::Load(const wchar_t* file, const char* expectedName)
 {
 	if (auto existing = Find(expectedName))
 		return existing;
 
-	// Load DLL
+	// Loading DLL
 	auto	   e	= std::make_unique<Entry>();
 	const auto path = mDir + file;
-	e->handle		= LoadLibraryExW(path.c_str(), nullptr, LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
-	if (!e->handle)
+	e->Handle		= LoadLibraryExW(path.c_str(), nullptr, LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
+	if (!e->Handle)
 		throw std::runtime_error(std::string("Cannot load ") + expectedName + " (Win32 " + std::to_string(GetLastError()) + ")");
 
 	try
 	{
-		auto get = reinterpret_cast<Foxtrot::GetModuleApi>(GetProcAddress(e->handle, "FtGetModuleApi"));
-		if (!get || get(Foxtrot::ModuleAbi, sizeof(e->api), &e->api) != Foxtrot::Status::Ok)
+		// Getting a function ptr that fetches API from the module.
+		auto get = reinterpret_cast<Foxtrot::GetModuleAPI>(GetProcAddress(e->Handle, "FtGetModuleAPI"));
+
+		// Assigning API values into the entry.
+		if (!get || get(Foxtrot::ModuleAbi, sizeof(e->API), &e->API) != Foxtrot::Status::Ok)
 			throw std::runtime_error("Missing or incompatible module entry point");
-		if (e->api.size != sizeof(e->api) || e->api.abi != Foxtrot::ModuleAbi ||
-			e->api.build != Foxtrot::BuildAbi || e->api.pointerBytes != sizeof(void*) ||
-			!e->api.name || std::strcmp(e->api.name, expectedName) != 0 ||
-			!e->api.initialize || !e->api.shutdown || !e->api.destroy || !e->api.query)
+
+		if (IsInvalidAPI(e->API, expectedName))
 			throw std::runtime_error("Invalid module API descriptor");
-		e->initialized = true; // Shutdown must tolerate partial initialization.
-		if (e->api.initialize(e->api.instance, &services) != Foxtrot::Status::Ok)
+
+		// Initializing entry.
+		e->Initialized = true; // Shutdown must tolerate partial initialization.
+		if (e->API.Initialize(e->API.Instance, &mServices) != Foxtrot::Status::Ok)
 			throw std::runtime_error(std::string("Initialization failed: ") + expectedName);
+
+		// Finalizing DLL loading.
 		std::fprintf(stderr, "Loaded %s\n", expectedName);
-		entries.push_back(std::move(e));
-		return &entries.back()->api;
+		mEntries.push_back(std::move(e));
+		return &mEntries.back()->API;
 	}
 	catch (...)
 	{
-		if (e->initialized)
-			e->api.shutdown(e->api.instance);
-		if (e->api.destroy)
-			e->api.destroy(e->api.instance);
-		FreeLibrary(e->handle);
+		if (e->Initialized)
+			e->API.Shutdown(e->API.Instance);
+		if (e->API.Destroy)
+			e->API.Destroy(e->API.Instance);
+		FreeLibrary(e->Handle);
 		throw;
 	}
 }
@@ -87,14 +92,22 @@ const Foxtrot::ModuleApi* ModuleHost::Load(const wchar_t* file, const char* expe
 /// @note Invalidates all descriptors and service pointers obtained from these modules.
 void ModuleHost::Shutdown() noexcept
 {
-	while (!entries.empty())
+	while (!mEntries.empty())
 	{
-		auto e = std::move(entries.back());
-		entries.pop_back();
-		if (e->initialized)
-			e->api.shutdown(e->api.instance);
-		e->api.destroy(e->api.instance);
-		std::fprintf(stderr, "Unloading %s\n", e->api.name);
-		FreeLibrary(e->handle);
+		auto e = std::move(mEntries.back());
+		mEntries.pop_back();
+		if (e->Initialized)
+			e->API.Shutdown(e->API.Instance);
+		e->API.Destroy(e->API.Instance);
+		std::fprintf(stderr, "Unloading %s\n", e->API.Name);
+		FreeLibrary(e->Handle);
 	}
+}
+
+bool ModuleHost::IsInvalidAPI(Foxtrot::ModuleAPI& API, const char* name)
+{
+	return API.Size != sizeof(API) || API.Abi != Foxtrot::ModuleAbi ||
+		API.Build != Foxtrot::BuildAbi || API.PointerBytes != sizeof(void*) ||
+		!API.Name || std::strcmp(API.Name, name) != 0 ||
+		!API.Initialize || !API.Shutdown || !API.Destroy || !API.Query;
 }

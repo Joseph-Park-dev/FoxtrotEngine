@@ -6,9 +6,9 @@
 namespace Foxtrot {
 // Internal same-toolchain bridge for the existing component interfaces.
 struct PluginAdapter {
-    Common::IPlugin* plugin{};
-    Common::IPlugin* (*create)();
-    bool initialized{};
+    Common::IPlugin* Plugin{};
+    Common::IPlugin* (*Create)();
+    bool Initialized{};
     /// @brief Initializes the services and state required before this object's runtime lifecycle begins.
     /// @param ptr Opaque module instance supplied by the host.
     /// @note Unnamed parameter (const HostServices*): reserved by this interface or unused by this implementation.
@@ -16,10 +16,10 @@ struct PluginAdapter {
     static Status FT_CALL Initialize(void* ptr, const HostServices*) noexcept {
         auto& self = *static_cast<PluginAdapter*>(ptr);
         try {
-            self.plugin = self.create();
-            if (!self.plugin) return Status::Failed;
-            self.initialized = true;
-            self.plugin->Initialize(); self.plugin->Setup();
+            self.Plugin = self.Create();
+            if (!self.Plugin) return Status::Failed;
+            self.Initialized = true;
+            self.Plugin->Initialize(); self.Plugin->Setup();
             return Status::Ok;
         } catch (const std::exception& e) { FtLog(e.what()); return Status::Failed; }
           catch (...) { FtLog("Plugin initialization failed"); return Status::Failed; }
@@ -28,16 +28,16 @@ struct PluginAdapter {
     /// @param ptr Opaque module instance supplied by the host.
     static void FT_CALL Shutdown(void* ptr) noexcept {
         auto& self = *static_cast<PluginAdapter*>(ptr);
-        if (self.initialized && self.plugin) {
-            self.initialized = false;
-            try { self.plugin->ShutDown(); } catch (...) { FtLog("Plugin shutdown failed"); }
+        if (self.Initialized && self.Plugin) {
+            self.Initialized = false;
+            try { self.Plugin->ShutDown(); } catch (...) { FtLog("Plugin shutdown failed"); }
         }
     }
     /// @brief Releases the managed instance or schedules the specified actor for destruction.
     /// @param ptr Opaque module instance supplied by the host.
     static void FT_CALL Destroy(void* ptr) noexcept {
         auto self = static_cast<PluginAdapter*>(ptr);
-        Shutdown(ptr); delete self->plugin; delete self;
+        Shutdown(ptr); delete self->Plugin; delete self;
     }
     /// @brief Returns the named module service supported by this ABI adapter.
     /// @param ptr Opaque module instance supplied by the host.
@@ -45,9 +45,9 @@ struct PluginAdapter {
     /// @return Borrowed interface pointer, or nullptr when the interface is unsupported.
     static void* FT_CALL Query(void* ptr, const char* name) noexcept {
         auto self = static_cast<PluginAdapter*>(ptr);
-        if (!name || !self->plugin) return nullptr;
-        if (std::strcmp(name, "LegacyPlugin") == 0) return self->plugin;
-        return self->plugin->QueryInterface(name);
+        if (!name || !self->Plugin) return nullptr;
+        if (std::strcmp(name, "LegacyPlugin") == 0) return self->Plugin;
+        return self->Plugin->QueryInterface(name);
     }
 };
 /// @brief Validates ABI compatibility and constructs the exported plugin lifecycle descriptor.
@@ -57,7 +57,7 @@ struct PluginAdapter {
 /// @param name Name used to identify the requested object or interface.
 /// @param create Factory callback that constructs the plugin.
 /// @return ABI status indicating success or the reason the descriptor could not be produced.
-inline Status MakePluginApi(uint32_t abi, uint32_t bytes, ModuleApi* out, const char* name, Common::IPlugin* (*create)()) noexcept {
+inline Status MakePluginAPI(uint32_t abi, uint32_t bytes, ModuleAPI* out, const char* name, Common::IPlugin* (*create)()) noexcept {
     if (!out || abi != ModuleAbi || bytes != sizeof(*out)) return Status::AbiMismatch;
     try {
         auto state = new PluginAdapter{nullptr, create, false};

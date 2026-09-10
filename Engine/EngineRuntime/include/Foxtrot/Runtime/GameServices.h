@@ -10,9 +10,9 @@ namespace Foxtrot
 
 	struct GameServices
 	{
-		uint32_t size;
-		Status(FT_CALL* registerSystem)(SystemTick, void*, uint64_t* token) noexcept;
-		Status(FT_CALL* unregisterSystem)(uint64_t token) noexcept;
-		void(FT_CALL* requestExit)() noexcept;
+		uint32_t Size;
+		Status(FT_CALL* RegisterSystem)(SystemTick, void*, uint64_t* token) noexcept;
+		Status(FT_CALL* UnregisterSystem)(uint64_t token) noexcept;
+		void(FT_CALL* RequestExit)() noexcept;
 	};
 } // namespace Foxtrot

@@ -11,5 +11,5 @@ static Common::IPlugin* Create() { return CreatePlugin("D3D11"); }
 /// @param bytes Size of the allocation or ABI output buffer in bytes.
 /// @param out Receives the operation's output.
 /// @return ABI status indicating success or the reason the descriptor could not be produced.
-FT_EXPORT Foxtrot::Status FT_CALL FtGetModuleApi(uint32_t abi, uint32_t bytes, Foxtrot::ModuleApi* out) noexcept
-{ return Foxtrot::MakePluginApi(abi, bytes, out, "D3D11", Create); }
+FT_EXPORT Foxtrot::Status FT_CALL FtGetModuleAPI(uint32_t abi, uint32_t bytes, Foxtrot::ModuleAPI* out) noexcept
+{ return Foxtrot::MakePluginAPI(abi, bytes, out, "D3D11", Create); }

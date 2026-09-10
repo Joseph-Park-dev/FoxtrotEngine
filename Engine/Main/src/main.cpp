@@ -15,28 +15,33 @@ namespace
 	int RunSession(uint32_t frames, bool editor, bool failAfterRuntime)
 	{
 		ModuleHost modules;
+
+		// Loading Core Module.
 		modules.Load(L"Core.dll", "Core");
+
+		// Loading EngineRuntime Module.
 		auto runtime = modules.Load(L"EngineRuntime.dll", "EngineRuntime");
-		auto control = static_cast<Foxtrot::RuntimeControl*>(runtime->query(runtime->instance, "RuntimeControl"));
+		auto control = static_cast<Foxtrot::RuntimeControl*>(runtime->Query(runtime->Instance, "RuntimeControl"));
 		if (!control)
 			throw std::runtime_error("Runtime control API missing");
+
 		struct StopWorld
 		{
-			Foxtrot::RuntimeControl* control;
-			~StopWorld() { control->stop(); }
+			Foxtrot::RuntimeControl* Control;
+			~StopWorld() { Control->Stop(); }
 		} stop{ control };
 		if (failAfterRuntime)
 			throw std::runtime_error("Injected startup failure after Runtime");
 		auto attach = [&](const wchar_t* file, const char* name) {
 			auto module = modules.Load(file, name);
-			if (control->attach(name, module->query(module->instance, "LegacyPlugin")) != Foxtrot::Status::Ok)
+			if (control->Attach(name, module->Query(module->Instance, "LegacyPlugin")) != Foxtrot::Status::Ok)
 				throw std::runtime_error("Cannot attach plugin to runtime");
 		};
 		attach(L"FoxtrotD3D11.dll", "D3D11");
 		modules.Load(L"Game.dll", "Game");
 		if (editor)
 			attach(L"Editor.dll", "Editor");
-		return control->run(frames) == Foxtrot::Status::Ok ? 0 : 1;
+		return control->Run(frames) == Foxtrot::Status::Ok ? 0 : 1;
 	}
 	/// @brief Checks that the session's dynamically loaded engine modules have been released.
 	/// @return True if the operation succeeds or the tested condition holds; otherwise false.

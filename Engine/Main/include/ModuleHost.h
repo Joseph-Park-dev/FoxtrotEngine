@@ -31,12 +31,12 @@ public:
 	/// @return Borrowed module descriptor, valid until Shutdown() or host destruction.
 	/// @pre file and expectedName must be valid null-terminated strings.
 	/// @throws std::runtime_error If loading, ABI validation, or module initialization fails.
-	const Foxtrot::ModuleApi* Load(const wchar_t* file, const char* expectedName);
+	const Foxtrot::ModuleAPI* Load(const wchar_t* file, const char* expectedName);
 
 	/// @brief Looks up a previously loaded module by its exact name.
 	/// @param name Name used to identify the requested object or interface.
 	/// @return Borrowed descriptor, or nullptr for a null or unknown name.
-	const Foxtrot::ModuleApi* Find(const char* name) const noexcept;
+	const Foxtrot::ModuleAPI* Find(const char* name) const noexcept;
 
 	/// @brief Shuts down, destroys, and unloads modules in reverse load order.
 	/// @note Invalidates all descriptors and service pointers obtained from these modules.
@@ -45,12 +45,16 @@ public:
 private:
 	struct Entry
 	{
-		HMODULE			   handle{};
-		Foxtrot::ModuleApi api{};
-		bool			   initialized{};
+		HMODULE			   Handle{};
+		Foxtrot::ModuleAPI API{};
+		bool			   Initialized{};
 	};
 
+	/// @brief Root directory path where the DLL is loaded from.
 	std::wstring						mDir;
-	std::vector<std::unique_ptr<Entry>> entries;
-	Foxtrot::HostServices				services{};
+	std::vector<std::unique_ptr<Entry>> mEntries;
+	Foxtrot::HostServices				mServices{};
+
+private:
+	bool IsInvalidAPI(Foxtrot::ModuleAPI& API, const char* name);
 };

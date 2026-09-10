@@ -73,7 +73,7 @@ not a backend-independent editor API.
 Public bootstrap headers live under `Engine/Core/include/Foxtrot/Core` and are
 exposed through the shared MSBuild properties. Building Core produces Core.dll and
 Core.lib. Every engine DLL links Core.lib and uses Core's exports. The EXE does
-not link Core.lib: it explicitly loads Core first and resolves `FtGetModuleApi`.
+not link Core.lib: it explicitly loads Core first and resolves `FtGetModuleAPI`.
 
 Core currently provides `FtLog`, `FtSeconds`, `FtAllocate`, `FtDeallocate`, and the
 module contract. The existing `Common::FileIOHelper` implementation is located at
@@ -91,7 +91,7 @@ be attempted as a way to unload Core while consumers are active.
 
 `Main/src/ModuleHost.cpp` resolves each module beside the executable using an
 absolute path and `LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS`.
-It owns handles and stable API records, looks up the undecorated `FtGetModuleApi`
+It owns handles and stable API records, looks up the undecorated `FtGetModuleAPI`
 symbol, validates descriptors, then calls initialize. Each DLL has a `.def` file
 so this symbol is stable on both Win32 and x64.
 

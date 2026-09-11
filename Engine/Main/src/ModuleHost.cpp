@@ -9,18 +9,18 @@
 ModuleHost::ModuleHost()
 {
 	// Resolves directory path
-	wchar_t* path  = new wchar_t[32768];
-	DWORD	 count = GetModuleFileNameW(nullptr, path, 32768);
+	auto path = std::make_unique<wchar_t[]>(32768);
+	DWORD	 count = GetModuleFileNameW(nullptr, path.get(), 32768);
 	if (!count || count == 32768)
 		throw std::runtime_error("Cannot resolve executable directory");
-	mDir.assign(path, count);
+	mDir.assign(path.get(), count);
 	mDir.resize(mDir.find_last_of(L"\\/") + 1);
 
 	mServices = { sizeof(mServices), this, [](void* self, const char* name) noexcept {
 					return static_cast<ModuleHost*>(self)->Find(name);
 				} };
-	delete path;
 }
+
 /// @brief Releases the resources managed by this instance during destruction.
 ModuleHost::~ModuleHost() { Shutdown(); }
 
@@ -38,6 +38,7 @@ const Foxtrot::ModuleAPI* ModuleHost::Find(const char* name) const noexcept
 			return &e->API;
 	return nullptr;
 }
+
 /// @brief Loads a DLL beside the executable, validates its module ABI, and initializes it once.
 /// @param file Source filename or module file to load.
 /// @param expectedName Module name required by the host's ABI validation.
@@ -56,6 +57,7 @@ const Foxtrot::ModuleAPI* ModuleHost::Load(const wchar_t* file, const char* expe
 	if (!e->Handle)
 		throw std::runtime_error(std::string("Cannot load ") + expectedName + " (Win32 " + std::to_string(GetLastError()) + ")");
 
+	// Initializing Module as an entry, feeding API data.
 	try
 	{
 		// Getting a function ptr that fetches API from the module.

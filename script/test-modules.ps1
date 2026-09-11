@@ -32,3 +32,29 @@ foreach ($case in @(@{Name='reload'; Argument='--reload-test'; Exit=0}, @{Name='
     if ($trace -notmatch 'Unloading Core') { throw 'Core cleanup was not reached.' }
     Write-Output "PASS $Configuration $Platform $($case.Name)"
 }
+
+# Exercise the default interactive launch as well as the bounded test sessions.
+$errorLog = Join-Path $binaryDirectory 'startup.stderr.log'
+$outputLog = Join-Path $binaryDirectory 'startup.stdout.log'
+$process = Start-Process -FilePath $executable -WorkingDirectory $testDirectory -WindowStyle Normal -PassThru -RedirectStandardError $errorLog -RedirectStandardOutput $outputLog
+try {
+    $process.Handle | Out-Null
+    if ($process.WaitForExit(3000)) { throw "Default launch exited early ($($process.ExitCode)): $(Get-Content -LiteralPath $errorLog -Raw)" }
+    $process.Refresh()
+    $expectedTitle = if ($Configuration -eq 'Foxtrot_Editor_Debug') { 'Foxtrot Editor', 'Game' } else { 'Foxtrot' }
+    if (!$process.MainWindowHandle -or $process.MainWindowTitle -notin $expectedTitle) { throw 'Default launch did not show an engine window.' }
+    if (!(Get-Content -LiteralPath $errorLog -Raw).Contains('Game update system running')) { throw 'Default launch did not reach the frame loop.' }
+    # The editor's unsaved-scene guard can veto WM_CLOSE. Its orderly shutdown
+    # is covered by the reload case above; only the game closes unconditionally.
+    if ($Configuration -ne 'Foxtrot_Editor_Debug') {
+        if (!$process.CloseMainWindow()) { throw 'Could not request window closure.' }
+        if (!$process.WaitForExit(10000)) { throw 'Window closure did not stop the engine.' }
+        if ($process.ExitCode -ne 0) { throw "Window closure exited $($process.ExitCode): $(Get-Content -LiteralPath $errorLog -Raw)" }
+        if ((Get-Content -LiteralPath $errorLog -Raw) -notmatch 'Unloading Core') { throw 'Window closure did not unload engine modules.' }
+    }
+    Write-Output "PASS $Configuration $Platform interactive startup"
+}
+finally {
+    if (!$process.HasExited) { Stop-Process -Id $process.Id }
+    $process.Dispose()
+}

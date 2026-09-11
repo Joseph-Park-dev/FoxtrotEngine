@@ -25,6 +25,7 @@
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
 #include "Manager/DirectoryHelper.h"
+#include "Manager/PluginManager.h"
 #include "EditorCamera.h"
 #include "Manager/ResourceManager.h"
 #include "EditorUtils.h"
@@ -192,10 +193,21 @@ void D3D11Editor::Initialize()
 {
 	gGetChunkISSavedFunc = Core::GetFunc<Core::CHUNK_IS_SAVED_FUNC>(Common::DLLPath::CORE_EDITOR, Core::ProcName::GetChunkIsSaved);
 
+	IPlugin* d3d11Plugin = nullptr;
+	if (auto* plugins = Core::GetAvailablePlugins())
+		for (auto it = plugins->Begin(); it != plugins->End(); ++it)
+			if (*it && (*it)->Key().Equal("D3D11"))
+			{
+				d3d11Plugin = (*it)->Value();
+				break;
+			}
+	if (!d3d11Plugin)
+		throw std::runtime_error("Editor requires the attached D3D11 plugin");
 
-	using REGISTER_PLUGIN				= IPlugin* (*)(const char*);
-	IPlugin*				d3d11Plugin = Core::GetFunc<REGISTER_PLUGIN>(Common::DLLPath::CORE_EDITOR, Core::ProcNames::Core::REGISTER_PLUGIN)("D3D11");
 	Core::IGraphicsFactory* graphicsFac = static_cast<Core::IGraphicsFactory*>(d3d11Plugin->QueryInterface("GraphicsFactory"));
+	Core::IInputSysFactory* inputFac = static_cast<Core::IInputSysFactory*>(d3d11Plugin->QueryInterface("InputFactory"));
+	if (!graphicsFac || !inputFac)
+		throw std::runtime_error("D3D11 plugin is missing editor graphics or input services");
 
 	D3D11::CREATE_VP_RENDERER createVPRendererFunc = Core::GetFunc<D3D11::CREATE_VP_RENDERER>(Common::DLLPath::D3D11, Core::ProcNames::D3D11::CREATE_VP_RENDERER);
 	// D3D11::CREATE_WINDOW_PROC	 createWindowFunc	   = Core::GetFunc<D3D11::CREATE_WINDOW_PROC>(Common::DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_D3D11_WINDOW);
@@ -240,7 +252,6 @@ void D3D11Editor::Initialize()
 	mEditorCamera->Initialize(mEditorWin, 64, 1.8f);
 	// D3D11::DebugShapes::GetInstance()->GetCameraRect()->Initialize(GetGameRenderer());
 
-	Core::IInputSysFactory* inputFac = static_cast<Core::IInputSysFactory*>(d3d11Plugin->QueryInterface("InputFactory"));
 	mInputDevice					 = reinterpret_cast<D3D11::D3D11InputDevice*>(inputFac->CreateInputDevice());
 
 	if (!InitGUI())

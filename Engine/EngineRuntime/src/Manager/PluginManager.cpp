@@ -7,6 +7,11 @@
 
 namespace Core
 {
+	Common::FTDS::HashMap<Common::IPlugin*>* GetAvailablePlugins()
+	{
+		return PluginManager::GetInstance()->GetPlugins();
+	}
+
 	namespace GameData
 	{
 		constexpr const char* DLL_LIST = "DLL List";
@@ -130,13 +135,13 @@ namespace Core
 	}
 } // namespace Core
 
-extern "C"
-{
-	/// @brief Obtains a plugin instance and registers it for engine lifecycle dispatch.
-	/// @param pluginName Plugin's registered name.
-	/// @return Obtains a plugin instance and registers it for engine lifecycle dispatch.
-	CORE_API Common::IPlugin* RegisterPlugin(const char* pluginName)
-	{
-		return Core::PluginManager::GetInstance()->RegisterPlugin(pluginName);
-	}
-}
+//extern "C"
+//{
+//	/// @brief Obtains a plugin instance and registers it for engine lifecycle dispatch.
+//	/// @param pluginName Plugin's registered name.
+//	/// @return Obtains a plugin instance and registers it for engine lifecycle dispatch.
+//	CORE_API Common::IPlugin* RegisterPlugin(const char* pluginName)
+//	{
+//		return Core::PluginManager::GetInstance()->RegisterPlugin(pluginName);
+//	}
+//}

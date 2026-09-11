@@ -12,6 +12,9 @@ namespace Core
 {
 	constexpr const char* CREATE_PREFIX = "Create";
 
+	/// @brief Returns the runtime-owned plugin registry without creating a per-DLL singleton.
+	CORE_API Common::FTDS::HashMap<Common::IPlugin*>* GetAvailablePlugins();
+
 	class PluginManager
 	{
 		SINGLETON(PluginManager)

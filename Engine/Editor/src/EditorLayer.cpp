@@ -810,11 +810,11 @@ namespace Editor
 		{
 			mGetProjPathFunc()->Assign(path.c_str());
 
-			Common::FTDS::String&& assetDir(std::move(*mGetProjPathFunc()));
-			Common::FTDS::String&& buildDir(std::move(*mGetProjPathFunc()));
-			Common::FTDS::String&& chunkDir(std::move(*mGetProjPathFunc()));
-			Common::FTDS::String&& engineDir(std::move(*mGetProjPathFunc()));
-			Common::FTDS::String&& gameDataDir("");
+			Common::FTDS::String assetDir(*mGetProjPathFunc());
+			Common::FTDS::String buildDir(*mGetProjPathFunc());
+			Common::FTDS::String chunkDir(*mGetProjPathFunc());
+			Common::FTDS::String engineDir(*mGetProjPathFunc());
+			Common::FTDS::String gameDataDir("");
 
 			assetDir.Append("\\Assets");
 			buildDir.Append("\\Builds");

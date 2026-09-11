@@ -24,6 +24,8 @@
 
 #include "InputSystem/IInputDevice.h"
 #include "Manager/ResourceManager.h"
+#include "Manager/PluginManager.h"
+#include "Factory/IComponentFactory.h"
 #include "FileSystem/ChunkLoader.h"
 #include "Actor/Transform.h"
 #include "Actor/ActorGroup.h"
@@ -117,6 +119,7 @@ namespace Editor
 		, mHierarchyLevel(0)
 		, mIsDisplayed(false)
 	{
+		mData->Owner = this;
 		mData->Name		  = "New Empty Actor";
 		mData->ID		  = id;
 		mData->ActorGroup = Core::ActorGroup::DEFAULT;
@@ -137,6 +140,7 @@ namespace Editor
 		, mHierarchyLevel(0)
 		, mIsDisplayed(false)
 	{
+		mData->Owner = this;
 		mData->Name = "New Copied Actor";
 		mData->ID	= id;
 		SetActorGroup(actor->GetActorGroup());
@@ -163,6 +167,7 @@ namespace Editor
 		, mHierarchyLevel(0)
 		, mIsDisplayed(false)
 	{
+		mData->Owner = this;
 		mData->Name = "New Copied Actor";
 		mData->ID	= id;
 		SetActorGroup(actor->GetActorGroup());
@@ -442,10 +447,37 @@ namespace Editor
 		if (ImGui::BeginPopup("CompSelectPopUp"))
 		{
 			ImGui::SeparatorText("Add Components");
-			// ComponentCreateMap::iterator iter = EditorChunkLoader::GetInstance()->GetCompCreateMap().begin();
-			// for (; iter != EditorChunkLoader::GetInstance()->GetCompCreateMap().end(); ++iter)
-			//	if (ImGui::Selectable((*iter).first))
-			//		(*iter).second(this);
+
+			auto* plugins = Core::GetAvailablePlugins();
+			if (plugins)
+			{
+				plugins->IterateAllValues([&](Common::IPlugin* plugin) {
+					if (!plugin)
+						return;
+					auto* factory = static_cast<Core::IComponentFactory*>(
+						plugin->QueryInterface(Core::IComponentFactory::INTERFACE_NAME));
+					if (!factory)
+						return;
+
+					std::size_t count = 0;
+					const auto* entries = factory->GetComponentFactories(count);
+					if (!entries)
+						return;
+
+					ImGui::PushID(plugin);
+					for (std::size_t i = 0; i < count; ++i)
+					{
+						const auto& entry = entries[i];
+						if (!entry.Name || !entry.Name[0] || !entry.Create)
+							continue;
+						ImGui::PushID(static_cast<const void*>(&entry));
+						if (ImGui::Selectable(entry.Name))
+							entry.Create(plugin, this);
+						ImGui::PopID();
+					}
+					ImGui::PopID();
+				});
+			}
 			ImGui::EndPopup();
 		}
 	}

@@ -1,16 +1,18 @@
+#include "Foxtrot/Runtime/RuntimeApi.h"
+
+#include <vector>
+#include <algorithm>
+#include <cstring>
+#include <exception>
+
 #include "Manager/ResourceManager.h"
 #include "Foxtrot/Runtime/GameServices.h"
 #include "Plugin/GameSystems.h"
-#include <vector>
-#include <algorithm>
 #include "Foxtrot/Core/CoreApi.h"
-#include "Foxtrot/Runtime/RuntimeApi.h"
 #include "Core/FTCore.h"
 #include "Manager/PluginManager.h"
 #include "Manager/SceneManager.h"
 #include "Scene/Scene.h"
-#include <cstring>
-#include <exception>
 
 namespace
 {
@@ -194,7 +196,13 @@ namespace
 		}
 	}
 
+	/*=====================================
+	======= RuntimeControl Instance =======
+	=====================================*/ 
+	
+	// This will be accessed through func "Query"
 	Foxtrot::RuntimeControl control{ Attach, Run, Stop };
+
 	/// @brief Returns the named module service supported by this ABI adapter.
 	/// @note Unnamed parameter (void*): reserved by this interface or unused by this implementation.
 	/// @param name Name used to identify the requested object or interface.

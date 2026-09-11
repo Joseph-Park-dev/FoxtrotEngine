@@ -1,36 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-<ItemGroup Label="ProjectConfigurations">
-<ProjectConfiguration Include="Debug|Win32"><Configuration>Debug</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-<ProjectConfiguration Include="Debug|x64"><Configuration>Debug</Configuration><Platform>x64</Platform></ProjectConfiguration>
-<ProjectConfiguration Include="Release|Win32"><Configuration>Release</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-<ProjectConfiguration Include="Release|x64"><Configuration>Release</Configuration><Platform>x64</Platform></ProjectConfiguration>
-<ProjectConfiguration Include="Foxtrot_Editor_Debug|Win32"><Configuration>Foxtrot_Editor_Debug</Configuration><Platform>Win32</Platform></ProjectConfiguration>
-<ProjectConfiguration Include="Foxtrot_Editor_Debug|x64"><Configuration>Foxtrot_Editor_Debug</Configuration><Platform>x64</Platform></ProjectConfiguration>
-</ItemGroup>
-<PropertyGroup Label="Globals"><ProjectGuid>{2b1591e1-1534-4a6c-9f8a-23daf561104f}</ProjectGuid><RootNamespace>Main</RootNamespace><WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion></PropertyGroup>
-<Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
-<PropertyGroup Label="Configuration"><ConfigurationType>Application</ConfigurationType><PlatformToolset>v145</PlatformToolset><CharacterSet>Unicode</CharacterSet></PropertyGroup>
-<Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
-<PropertyGroup><TargetName>Main</TargetName></PropertyGroup>
-<PropertyGroup><TargetName>Game</TargetName></PropertyGroup><PropertyGroup Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'"><TargetName>FoxtrotEditor</TargetName></PropertyGroup>
-<ItemDefinitionGroup><ClCompile>
-<AdditionalIncludeDirectories>$(SolutionDir)Engine\EngineRuntime\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-<PreprocessorDefinitions>;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-</ClCompile>
-<Link><AdditionalDependencies>;%(AdditionalDependencies)</AdditionalDependencies><SubSystem>Console</SubSystem></Link></ItemDefinitionGroup>
-<ItemGroup>
-<ClCompile Include="src\main.cpp"/>
-<ClCompile Include="src\ModuleHost.cpp"/>
-<ClInclude Include="include\Engine.h"/>
-<ClInclude Include="include\ModuleHost.h"/>
-</ItemGroup>
-<ItemGroup>
-<ProjectReference Include="..\Core\Core.vcxproj"><Project>{cce9835e-f788-4b51-930b-d7805ac1e2a0}</Project><LinkLibraryDependencies>false</LinkLibraryDependencies></ProjectReference>
-<ProjectReference Include="..\EngineRuntime\EngineRuntime.vcxproj"><Project>{B9E4C0BB-30E3-4D40-A0ED-46084649AE62}</Project><LinkLibraryDependencies>false</LinkLibraryDependencies></ProjectReference>
-<ProjectReference Include="..\D3D11\D3D11.vcxproj"><Project>{95944b49-be89-43df-bd3f-03d01fa7c284}</Project><LinkLibraryDependencies>false</LinkLibraryDependencies></ProjectReference>
-<ProjectReference Include="..\Editor\Editor.vcxproj" Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'"><Project>{30273513-c587-4640-9315-8d7cade6534a}</Project><LinkLibraryDependencies>false</LinkLibraryDependencies></ProjectReference>
-<ProjectReference Include="..\Game\Game.vcxproj"><Project>{B053813A-9EBD-4DD8-BE75-5C28DC74BB72}</Project><LinkLibraryDependencies>false</LinkLibraryDependencies></ProjectReference>
-</ItemGroup>
-<Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Foxtrot_Editor_Debug|Win32">
+      <Configuration>Foxtrot_Editor_Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Foxtrot_Editor_Debug|x64">
+      <Configuration>Foxtrot_Editor_Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2b1591e1-1534-4a6c-9f8a-23daf561104f}</ProjectGuid>
+    <RootNamespace>Main</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup>
+    <TargetName>Main</TargetName>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetName>Game</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'">
+    <TargetName>FoxtrotEditor</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\EngineRuntime\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\ModuleHost.cpp" />
+    <ClInclude Include="include\ModuleHost.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.vcxproj">
+      <Project>{cce9835e-f788-4b51-930b-d7805ac1e2a0}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\EngineRuntime\EngineRuntime.vcxproj">
+      <Project>{B9E4C0BB-30E3-4D40-A0ED-46084649AE62}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\D3D11\D3D11.vcxproj">
+      <Project>{95944b49-be89-43df-bd3f-03d01fa7c284}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\Editor\Editor.vcxproj" Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'">
+      <Project>{30273513-c587-4640-9315-8d7cade6534a}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\Game\Game.vcxproj">
+      <Project>{B053813A-9EBD-4DD8-BE75-5C28DC74BB72}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

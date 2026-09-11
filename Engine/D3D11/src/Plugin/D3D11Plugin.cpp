@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include "Plugin/IPlugin.h"
 #include "Factory/IGraphicsFactory.h"
+#include "Factory/IComponentFactory.h"
 #include "Factory/IInputSysFactory.h"
 #include "Plugin/D3D11Exports.h"
 
@@ -36,20 +37,25 @@ namespace D3D11
 class D3D11Plugin :
 	public Core::IPlugin,
 	public Core::IGraphicsFactory,
-	public Core::IInputSysFactory
+	public Core::IInputSysFactory,
+	public Core::IComponentFactory
 {
 public:
 	/// @brief Registers a component for plugin-managed lifecycle processing.
 	/// @param comp Component instance associated with the actor or plugin.
 	virtual void RegisterComponent(Common::IComponent* comp) override;
+
     /// @brief Looks up an optional named interface implemented by this plugin.
     /// @param name Name used to identify the requested object or interface.
     /// @return Borrowed interface pointer, or nullptr when the interface is unsupported.
     void* QueryInterface(const char* name) noexcept override {
         if (std::strcmp(name, "GraphicsFactory") == 0) return static_cast<Core::IGraphicsFactory*>(this);
         if (std::strcmp(name, "InputFactory") == 0) return static_cast<Core::IInputSysFactory*>(this);
+        if (std::strcmp(name, Core::IComponentFactory::INTERFACE_NAME) == 0) return static_cast<Core::IComponentFactory*>(this);
         return nullptr;
     }
+
+	const Core::ComponentFactoryEntry* GetComponentFactories(std::size_t& count) const noexcept override;
 
 public:
 	/// @brief Creates a native application window with the requested client dimensions and render area.
@@ -81,6 +87,7 @@ public:
 		D3D11::FTRectArea*	 rndArea,
 		WNDPROC		 wndProc,
 		void*		 wndProcParams) override;
+
 	/// @brief Creates the graphics renderer associated with the application window.
 	/// @param window Window used by the operation.
 	/// @return Borrowed pointer to the subsystem retained by this plugin.
@@ -430,6 +437,33 @@ void D3D11Plugin::LoadResourceData(std::ifstream& ifs)
 #include "Component/SpriteRenderer.h"
 #include "Component/TileMapRenderer.h"
 
+namespace D3D11
+{
+	namespace
+	{
+		template <typename Component>
+		Common::IComponent* CreateRegisteredComponent(Common::IPlugin* plugin, Common::IActor* actor)
+		{
+			if (!plugin || !actor || !actor->GetData() || !actor->GetComponents())
+				return nullptr;
+			return actor->GetData()->AddComponent<Component>(plugin);
+		}
+
+		const Core::ComponentFactoryEntry ComponentFactories[] = {
+			{ MeshRenderer::NAME, CreateRegisteredComponent<MeshRenderer> },
+			{ ChunkKey::Animator::NAME, CreateRegisteredComponent<Animator> },
+			{ ChunkKey::SpriteRenderer::NAME, CreateRegisteredComponent<SpriteRenderer> },
+			{ ChunkKey::SpineAnimator::NAME, CreateRegisteredComponent<SpineAnimator> },
+			{ ChunkKey::TileMapRenderer::NAME, CreateRegisteredComponent<TileMapRenderer> }
+		};
+	}
+
+	const Core::ComponentFactoryEntry* D3D11Plugin::GetComponentFactories(std::size_t& count) const noexcept
+	{
+		count = sizeof(ComponentFactories) / sizeof(ComponentFactories[0]);
+		return ComponentFactories;
+	}
+}
 extern "C"
 {
 	/// @brief Allocates the plugin implementation exported by this module.
@@ -447,23 +481,9 @@ extern "C"
 	/// @return Created component instance or resource.
 	D3D11_API Common::IComponent* CreateComponent(Common::IPlugin* plugin, Common::IActor* actor, Common::FTDS::String& name)
 	{
-		// comp->LoadProperties();
-		// NEED TO MAKE COMPONENT MANAGER.
-
-		Core::IComponent* comp = nullptr;
-
-		if (name.Equal(D3D11::ChunkKey::Animator::NAME))
-			comp = actor->GetData()->AddComponent<D3D11::Animator>(plugin);
-
-		else if (name.Equal(D3D11::ChunkKey::SpriteRenderer::NAME))
-			comp = actor->GetData()->AddComponent<D3D11::SpriteRenderer>(plugin);
-
-		else if (name.Equal(D3D11::ChunkKey::SpineAnimator::NAME))
-			comp = actor->GetData()->AddComponent<D3D11::SpineAnimator>(plugin);
-
-		else if (name.Equal(D3D11::ChunkKey::TileMapRenderer::NAME))
-			comp = actor->GetData()->AddComponent<D3D11::TileMapRenderer>(plugin);
-
-		return comp;
+		for (const auto& entry : D3D11::ComponentFactories)
+			if (name.Equal(entry.Name))
+				return entry.Create(plugin, actor);
+		return nullptr;
 	}
 }

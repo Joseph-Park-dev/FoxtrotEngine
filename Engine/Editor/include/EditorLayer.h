@@ -22,6 +22,7 @@
 #include "Manager/DirectoryHelper.h"
 #include "EditorElement.h"
 #include "CommandHistory.h"
+#include "Plugin/IEditorResourceService.h"
 
 namespace Graphics
 {
@@ -121,6 +122,8 @@ namespace Editor
 		/// @brief Returns the error type used by this editor layer.
 		/// @return Current error type.
 		ErrorType	   GetErrorType() const { return mErrorType; }
+
+		Common::FTDS::DynamicArray<Core::IEditorResourceService*>* GetResService() { return mResService; }
 
 		// ImGuiFileDialogFlags& GetFileSelectFlag() { return mFileSelectFlag; }
 
@@ -233,6 +236,9 @@ namespace Editor
 		FileMenuEvents mFileMenuEvent;
 
 		D3D11::ViewportRenderer* mViewport;
+
+		Core::IRenderer*										   mRenderer;
+		Common::FTDS::DynamicArray<Core::IEditorResourceService*>* mResService;
 
 	private:
 		/// <summary>

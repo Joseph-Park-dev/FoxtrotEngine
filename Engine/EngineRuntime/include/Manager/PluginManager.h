@@ -19,7 +19,6 @@ namespace Core
 	{
 		SINGLETON(PluginManager)
 
-
 	public:
 		// Gameloop functions.
 		/// @brief Dispatches input for the current frame to the relevant engine objects.

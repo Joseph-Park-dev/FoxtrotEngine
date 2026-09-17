@@ -24,6 +24,11 @@
 
 #include "Component/D3D11Component.h"
 
+#ifdef FOXTROT_EDITOR
+	#include "Manager/DirectoryHelper.h"
+	#include "Plugin/IEditorResourceService.h"
+#endif // FOXTROT_EDITOR
+
 namespace D3D11
 {
 	namespace ChunkKey
@@ -34,42 +39,243 @@ namespace D3D11
 		}
 	} // namespace ChunkKey
 
-class D3D11Plugin :
-	public Core::IPlugin,
-	public Core::IGraphicsFactory,
-	public Core::IInputSysFactory,
-	public Core::IComponentFactory
-{
-public:
+#ifdef FOXTROT_EDITOR
+	class D3D11EditorResourceService final :
+		public Core::IEditorResourceService
+	{
+	public:
+		bool LoadAllResourcesInAsset(
+			const char*			 assetDirectory,
+			Graphics::IRenderer* renderer) noexcept override
+		{
+			if (!assetDirectory || !*assetDirectory)
+				return false;
+
+			// Contract: renderer must have been created by D3D11.
+			auto* d3dRenderer =
+				static_cast<D3D11::D3D11Renderer*>(renderer);
+
+			try
+			{
+				Common::FTDS::String directory(assetDirectory);
+
+				D3D11::ResourceManager::GetInstance()
+					->LoadAllResourcesInAsset(
+						&directory, d3dRenderer);
+
+				return true;
+			}
+			catch (...)
+			{
+				Common::Debug::LogError(
+					__LINE__, __FILE__, "Asset loading failed.");
+				return false;
+			}
+		}
+
+		void DisplayLoadedResources() override
+		{
+			D3D11::ResourceManager::GetInstance()->EditorUIUpdate();
+		}
+	};
+
+#endif
+
+	class D3D11Plugin :
+		public Core::IPlugin,
+		public Core::IGraphicsFactory,
+		public Core::IInputSysFactory,
+		public Core::IComponentFactory
+	{
+	public:
+		/// @brief Registers a component for plugin-managed lifecycle processing.
+		/// @param comp Component instance associated with the actor or plugin.
+		virtual void RegisterComponent(Common::IComponent* comp) override;
+
+		/// @brief Looks up an optional named interface implemented by this plugin.
+		/// @param name Name used to identify the requested object or interface.
+		/// @return Borrowed interface pointer, or nullptr when the interface is unsupported.
+		void* QueryInterface(const char* name) noexcept override
+		{
+			if (std::strcmp(name, "GraphicsFactory") == 0)
+				return static_cast<Core::IGraphicsFactory*>(this);
+			if (std::strcmp(name, "InputFactory") == 0)
+				return static_cast<Core::IInputSysFactory*>(this);
+			if (std::strcmp(name, Core::IComponentFactory::INTERFACE_NAME) == 0)
+				return static_cast<Core::IComponentFactory*>(this);
+
+#ifdef FOXTROT_EDITOR
+			if (std::strcmp(name, Core::IEditorResourceService::INTERFACE_NAME) == 0)
+				return static_cast<Core::IEditorResourceService*>(mEditorResources);
+#endif // FOXTROT_EDITOR
+			return nullptr;
+		}
+
+		const Core::ComponentFactoryEntry* GetComponentFactories(std::size_t& count) const noexcept override;
+
+	public:
+		/// @brief Creates a native application window with the requested client dimensions and render area.
+		/// @param title Window title or dialog caption.
+		/// @param width Width of the window, texture, or geometry.
+		/// @param height Height of the window, texture, or geometry.
+		/// @param renderArea Area of the window used for rendering.
+		/// @return Borrowed pointer to the subsystem retained by this plugin.
+		/// @note The plugin manages the returned object's lifetime.
+		virtual Graphics::IWindow* CreateAppWindow(
+			const char*		   title,
+			unsigned int	   width,
+			unsigned int	   height,
+			D3D11::FTRectArea* renderArea) override;
+
+		/// @brief Creates a native application window with the requested client dimensions and render area.
+		/// @param title Window title or dialog caption.
+		/// @param width Width of the window, texture, or geometry.
+		/// @param height Height of the window, texture, or geometry.
+		/// @param rndArea Area used for rendering.
+		/// @param wndProc Window procedure receiving native messages.
+		/// @param wndProcParams Opaque context forwarded to the window procedure.
+		/// @return Borrowed pointer to the subsystem retained by this plugin.
+		/// @note The plugin manages the returned object's lifetime.
+		virtual Graphics::IWindow* CreateAppWindow(
+			const char*		   title,
+			unsigned int	   width,
+			unsigned int	   height,
+			D3D11::FTRectArea* rndArea,
+			WNDPROC			   wndProc,
+			void*			   wndProcParams) override;
+
+		/// @brief Creates the graphics renderer associated with the application window.
+		/// @param window Window used by the operation.
+		/// @return Borrowed pointer to the subsystem retained by this plugin.
+		/// @note The plugin manages the returned object's lifetime.
+		virtual Graphics::IRenderer* CreateRenderer(Graphics::IWindow* window) override;
+		/// @brief Creates a camera instance for scene rendering.
+		/// @return Borrowed pointer to the subsystem retained by this plugin.
+		/// @note The plugin manages the returned object's lifetime.
+		virtual Graphics::ICamera* CreateCamera() override;
+		/// @brief Creates the native input device used by the engine.
+		/// @return Borrowed pointer to the subsystem retained by this plugin.
+		/// @note The plugin manages the returned object's lifetime.
+		virtual InputSystem::IInputDevice* CreateInputDevice() override;
+
+		/// @brief Provides an empty lifecycle or extension hook for this implementation.
+		/// @param ofs Output stream receiving the serialized data.
+		/// @note Writes to the supplied stream at its current position.
+		void SaveProperties(std::ofstream& ofs) override;
+		/// @brief Restores this object's persistent properties from a .chunk stream.
+		/// @param ifs Input stream positioned at the expected data; reading advances its position.
+		/// @note Advances the stream position and updates the destination state.
+		void LoadProperties(std::ifstream& ifs) override;
+
+	public:
+		/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
+		/// ///////////////////////////////
+		/// /// Initialization Phase //////
+		/// ///////////////////////////////
+		virtual void Initialize() override;
+		/// @brief Updates the up used by subsequent operations.
+		virtual void Setup() override;
+
+		/// @brief Dispatches input for the current frame to the relevant engine objects.
+		/// ////////////////////
+		/// /// Game Loop //////
+		/// ////////////////////
+		virtual void ProcessInput() override;
+		/// @brief Advances frame-dependent state using the current time step.
+		/// @param deltaTime Elapsed frame time in seconds.
+		virtual void Update(float deltaTime) override;
+		/// @brief Runs the post-update lifecycle phase after ordinary frame updates.
+		/// @param deltaTime Elapsed frame time in seconds.
+		virtual void LateUpdate(float deltaTime) override;
+		/// @brief Submits this object's graphics work for the current frame.
+		virtual void Render() override;
+		/// @brief Provides an empty lifecycle or extension hook for this implementation.
+		virtual void ProcessEvent() override;
+
+		/// @brief Provides an empty lifecycle or extension hook for this implementation.
+		/// ////////////////////////////
+		/// /// Termination Phase //////
+		/// ////////////////////////////
+		virtual void ShutDown() override;
+
+	public:
+		/// @brief Initializes the Direct3D plugin's component and graphics service state.
+		/// @param name Name used to identify the requested object or interface.
+		D3D11Plugin(const char* name);
+		/// @brief Releases the resources managed by this instance during destruction.
+		~D3D11Plugin() override;
+
+	protected:
+		/// @brief Restores plugin manager state from the chunk stream.
+		/// @param ifs Input stream positioned at the expected data; reading advances its position.
+		virtual void LoadManagerData(std::ifstream& ifs) override;
+		/// @brief Restores plugin resource state from the chunk stream.
+		/// @param ifs Input stream positioned at the expected data; reading advances its position.
+		virtual void LoadResourceData(std::ifstream& ifs) override;
+
+	private:
+		Common::FTDS::DynamicArray<D3D11::D3D11InputDevice*>* mInputDevices;
+		D3D11::D3D11Renderer*								  mRenderer;
+		Common::FTDS::DynamicArray<D3D11::D3D11Window*>*	  mWindows;
+		D3D11::Camera*										  mCamera;
+
+		Common::FTDS::DynamicArray<D3D11::D3D11Component*>* mRegisteredComps;
+#ifdef FOXTROT_EDITOR
+		D3D11::D3D11EditorResourceService* mEditorResources = nullptr;
+#endif
+	};
+
+	/// @brief Creates a camera instance for scene rendering.
+	/// @return Borrowed pointer to the subsystem retained by this plugin.
+	/// @note The plugin manages the returned object's lifetime.
+	Graphics::ICamera* D3D11Plugin::CreateCamera()
+	{
+		mCamera = DBG_NEW D3D11::Camera;
+		return mCamera;
+	}
+
+	/// @brief Creates the native input device used by the engine.
+	/// @return Borrowed pointer to the subsystem retained by this plugin.
+	/// @note The plugin manages the returned object's lifetime.
+	InputSystem::IInputDevice* D3D11Plugin::CreateInputDevice()
+	{
+		D3D11::D3D11InputDevice* device = DBG_NEW D3D11::D3D11InputDevice;
+		mInputDevices->PushBack(device);
+		return device;
+	}
+
+	/// @brief Creates the graphics renderer associated with the application window.
+	/// @param window Window used by the operation.
+	/// @return Borrowed pointer to the subsystem retained by this plugin.
+	/// @note The plugin manages the returned object's lifetime.
+	Graphics::IRenderer* D3D11Plugin::CreateRenderer(Graphics::IWindow* window)
+	{
+		D3D11::D3D11Renderer* renderer = DBG_NEW D3D11::D3D11Renderer(window);
+		mRenderer					   = renderer;
+		return renderer;
+	}
+
 	/// @brief Registers a component for plugin-managed lifecycle processing.
 	/// @param comp Component instance associated with the actor or plugin.
-	virtual void RegisterComponent(Common::IComponent* comp) override;
+	void D3D11Plugin::RegisterComponent(Common::IComponent* comp)
+	{
+		if (auto* backend = dynamic_cast<D3D11::D3D11Component*>(comp))
+			mRegisteredComps->PushBack(backend);
+	}
 
-    /// @brief Looks up an optional named interface implemented by this plugin.
-    /// @param name Name used to identify the requested object or interface.
-    /// @return Borrowed interface pointer, or nullptr when the interface is unsupported.
-    void* QueryInterface(const char* name) noexcept override {
-        if (std::strcmp(name, "GraphicsFactory") == 0) return static_cast<Core::IGraphicsFactory*>(this);
-        if (std::strcmp(name, "InputFactory") == 0) return static_cast<Core::IInputSysFactory*>(this);
-        if (std::strcmp(name, Core::IComponentFactory::INTERFACE_NAME) == 0) return static_cast<Core::IComponentFactory*>(this);
-        return nullptr;
-    }
-
-	const Core::ComponentFactoryEntry* GetComponentFactories(std::size_t& count) const noexcept override;
-
-public:
 	/// @brief Creates a native application window with the requested client dimensions and render area.
 	/// @param title Window title or dialog caption.
 	/// @param width Width of the window, texture, or geometry.
 	/// @param height Height of the window, texture, or geometry.
-	/// @param renderArea Area of the window used for rendering.
+	/// @param rndArea Area used for rendering.
 	/// @return Borrowed pointer to the subsystem retained by this plugin.
 	/// @note The plugin manages the returned object's lifetime.
-	virtual Graphics::IWindow* CreateAppWindow(
-		const char*	 title,
-		unsigned int width,
-		unsigned int height,
-		D3D11::FTRectArea*	 renderArea) override;
+	Graphics::IWindow* D3D11Plugin::CreateAppWindow(const char* title, unsigned int width, unsigned int height, D3D11::FTRectArea* rndArea)
+	{
+		D3D11::D3D11Window* window = DBG_NEW D3D11::D3D11Window(title, width, height, rndArea);
+		mWindows->PushBack(window);
+		return window;
+	}
 
 	/// @brief Creates a native application window with the requested client dimensions and render area.
 	/// @param title Window title or dialog caption.
@@ -80,354 +286,217 @@ public:
 	/// @param wndProcParams Opaque context forwarded to the window procedure.
 	/// @return Borrowed pointer to the subsystem retained by this plugin.
 	/// @note The plugin manages the returned object's lifetime.
-	virtual Graphics::IWindow* CreateAppWindow(
-		const char*	 title,
-		unsigned int width,
-		unsigned int height,
-		D3D11::FTRectArea*	 rndArea,
-		WNDPROC		 wndProc,
-		void*		 wndProcParams) override;
+	Graphics::IWindow* D3D11Plugin::CreateAppWindow(const char* title, unsigned int width, unsigned int height, D3D11::FTRectArea* rndArea, WNDPROC wndProc, void* wndProcParams)
+	{
+		D3D11::D3D11Window* window =
+			DBG_NEW			D3D11::D3D11Window(title, width, height, rndArea, wndProc, static_cast<D3D11::WNDPROC_Params*>(wndProcParams));
+		mWindows->PushBack(window);
+		return window;
+	}
 
-	/// @brief Creates the graphics renderer associated with the application window.
-	/// @param window Window used by the operation.
-	/// @return Borrowed pointer to the subsystem retained by this plugin.
-	/// @note The plugin manages the returned object's lifetime.
-	virtual Graphics::IRenderer*	  CreateRenderer(Graphics::IWindow* window) override;
-	/// @brief Creates a camera instance for scene rendering.
-	/// @return Borrowed pointer to the subsystem retained by this plugin.
-	/// @note The plugin manages the returned object's lifetime.
-	virtual Graphics::ICamera*	  CreateCamera() override;
-	/// @brief Creates the native input device used by the engine.
-	/// @return Borrowed pointer to the subsystem retained by this plugin.
-	/// @note The plugin manages the returned object's lifetime.
-	virtual InputSystem::IInputDevice* CreateInputDevice() override;
-
-	/// @brief Provides an empty lifecycle or extension hook for this implementation.
-	/// @param ofs Output stream receiving the serialized data.
-	/// @note Writes to the supplied stream at its current position.
-	void SaveProperties(std::ofstream& ofs) override;
-	/// @brief Restores this object's persistent properties from a .chunk stream.
-	/// @param ifs Input stream positioned at the expected data; reading advances its position.
-	/// @note Advances the stream position and updates the destination state.
-	void LoadProperties(std::ifstream& ifs) override;
-
-public:
 	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
-	/// ///////////////////////////////
-	/// /// Initialization Phase //////
-	/// ///////////////////////////////
-	virtual void Initialize() override;
+	void D3D11Plugin::Initialize()
+	{
+#ifndef FOXTROT_EDITOR
+		if (mWindows->GetSize() == 0)
+		{
+			D3D11::FTRectArea* area = DBG_NEW D3D11::FTRectArea(0.f, 0.f, 1280.f, 720.f);
+			CreateAppWindow("Foxtrot", 1280, 720, area);
+			if (0 < mWindows->GetSize())
+			{
+				CreateRenderer(mWindows->At(0));
+				if (mWindows->At(0))
+					mWindows->At(0)->Initialize(SW_SHOW);
+			}
+			mCamera = static_cast<D3D11::Camera*>(CreateCamera());
+			mCamera->Initialize(mWindows->At(0), 64, 1.8f);
+			CreateInputDevice();
+		}
+#else
+		mEditorResources = DBG_NEW D3D11EditorResourceService;
+#endif
+		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+			(*iter)->Initialize();
+	}
+
 	/// @brief Updates the up used by subsequent operations.
-	virtual void Setup() override;
+	void D3D11Plugin::Setup()
+	{
+		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+			(*iter)->Setup();
+	}
 
 	/// @brief Dispatches input for the current frame to the relevant engine objects.
-	/// ////////////////////
-	/// /// Game Loop //////
-	/// ////////////////////
-	virtual void ProcessInput() override;
+	void D3D11Plugin::ProcessInput()
+	{
+		size_t i = 0;
+		for (auto iter = mWindows->Begin(); iter != mWindows->End(); ++iter)
+		{
+			if (!(*iter))
+				mWindows->Erase(i);
+			++i;
+		}
+
+		for (auto input = mInputDevices->Begin(); input != mInputDevices->End(); ++input)
+		{
+			// Poll once per device/frame, using the focused window's client space.
+			auto* target = mWindows->GetSize() ? mWindows->At(0) : nullptr;
+			for (auto win = mWindows->Begin(); win != mWindows->End(); ++win)
+				if ((*win)->GetHandle() == GetForegroundWindow())
+					target = *win;
+			if (target)
+				(*input)->Update(target);
+		}
+	}
+
 	/// @brief Advances frame-dependent state using the current time step.
 	/// @param deltaTime Elapsed frame time in seconds.
-	virtual void Update(float deltaTime) override;
-	/// @brief Runs the post-update lifecycle phase after ordinary frame updates.
-	/// @param deltaTime Elapsed frame time in seconds.
-	virtual void LateUpdate(float deltaTime) override;
-	/// @brief Submits this object's graphics work for the current frame.
-	virtual void Render() override;
-	/// @brief Provides an empty lifecycle or extension hook for this implementation.
-	virtual void ProcessEvent() override;
-
-	/// @brief Provides an empty lifecycle or extension hook for this implementation.
-	/// ////////////////////////////
-	/// /// Termination Phase //////
-	/// ////////////////////////////
-	virtual void ShutDown() override;
-
-public:
-	/// @brief Initializes the Direct3D plugin's component and graphics service state.
-	/// @param name Name used to identify the requested object or interface.
-	D3D11Plugin(const char* name);
-	/// @brief Releases the resources managed by this instance during destruction.
-	~D3D11Plugin() override;
-
-protected:
-	/// @brief Restores plugin manager state from the chunk stream.
-	/// @param ifs Input stream positioned at the expected data; reading advances its position.
-	virtual void LoadManagerData(std::ifstream& ifs) override;
-	/// @brief Restores plugin resource state from the chunk stream.
-	/// @param ifs Input stream positioned at the expected data; reading advances its position.
-	virtual void LoadResourceData(std::ifstream& ifs) override;
-
-private:
-	Common::FTDS::DynamicArray<D3D11::D3D11InputDevice*>* mInputDevices;
-	D3D11::D3D11Renderer*								  mRenderer;
-	Common::FTDS::DynamicArray<D3D11::D3D11Window*>*	  mWindows;
-	D3D11::Camera*										  mCamera;
-
-	Common::FTDS::DynamicArray<D3D11::D3D11Component*>* mRegisteredComps;
-};
-
-/// @brief Creates a camera instance for scene rendering.
-/// @return Borrowed pointer to the subsystem retained by this plugin.
-/// @note The plugin manages the returned object's lifetime.
-Graphics::ICamera* D3D11Plugin::CreateCamera()
-{
-	mCamera = DBG_NEW D3D11::Camera;
-	return mCamera;
-}
-
-/// @brief Creates the native input device used by the engine.
-/// @return Borrowed pointer to the subsystem retained by this plugin.
-/// @note The plugin manages the returned object's lifetime.
-InputSystem::IInputDevice* D3D11Plugin::CreateInputDevice()
-{
-	D3D11::D3D11InputDevice* device = DBG_NEW D3D11::D3D11InputDevice;
-	mInputDevices->PushBack(device);
-	return device;
-}
-
-/// @brief Creates the graphics renderer associated with the application window.
-/// @param window Window used by the operation.
-/// @return Borrowed pointer to the subsystem retained by this plugin.
-/// @note The plugin manages the returned object's lifetime.
-Graphics::IRenderer* D3D11Plugin::CreateRenderer(Graphics::IWindow* window)
-{
-	D3D11::D3D11Renderer* renderer = DBG_NEW D3D11::D3D11Renderer(window);
-	mRenderer					   = renderer;
-	return renderer;
-}
-
-/// @brief Registers a component for plugin-managed lifecycle processing.
-/// @param comp Component instance associated with the actor or plugin.
-void D3D11Plugin::RegisterComponent(Common::IComponent* comp)
-{
-	if (auto* backend = dynamic_cast<D3D11::D3D11Component*>(comp)) mRegisteredComps->PushBack(backend);
-}
-
-/// @brief Creates a native application window with the requested client dimensions and render area.
-/// @param title Window title or dialog caption.
-/// @param width Width of the window, texture, or geometry.
-/// @param height Height of the window, texture, or geometry.
-/// @param rndArea Area used for rendering.
-/// @return Borrowed pointer to the subsystem retained by this plugin.
-/// @note The plugin manages the returned object's lifetime.
-Graphics::IWindow* D3D11Plugin::CreateAppWindow(const char* title, unsigned int width, unsigned int height, D3D11::FTRectArea* rndArea)
-{
-	D3D11::D3D11Window* window = DBG_NEW D3D11::D3D11Window(title, width, height, rndArea);
-	mWindows->PushBack(window);
-	return window;
-}
-
-/// @brief Creates a native application window with the requested client dimensions and render area.
-/// @param title Window title or dialog caption.
-/// @param width Width of the window, texture, or geometry.
-/// @param height Height of the window, texture, or geometry.
-/// @param rndArea Area used for rendering.
-/// @param wndProc Window procedure receiving native messages.
-/// @param wndProcParams Opaque context forwarded to the window procedure.
-/// @return Borrowed pointer to the subsystem retained by this plugin.
-/// @note The plugin manages the returned object's lifetime.
-Graphics::IWindow* D3D11Plugin::CreateAppWindow(const char* title, unsigned int width, unsigned int height, D3D11::FTRectArea* rndArea, WNDPROC wndProc, void* wndProcParams)
-{
-	D3D11::D3D11Window* window = 
-		DBG_NEW D3D11::D3D11Window(title, width, height, rndArea, wndProc, static_cast<D3D11::WNDPROC_Params*>(wndProcParams));
-	mWindows->PushBack(window);
-	return window;
-}
-
-/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
-void D3D11Plugin::Initialize()
-{
-#ifndef FOXTROT_EDITOR
-	if (mWindows->GetSize() == 0)
+	void D3D11Plugin::Update(float deltaTime)
 	{
-		D3D11::FTRectArea* area = DBG_NEW D3D11::FTRectArea(0.f, 0.f, 1280.f, 720.f);
-		CreateAppWindow("Foxtrot", 1280, 720, area);
-		if (0 < mWindows->GetSize())
-		{
-			CreateRenderer(mWindows->At(0));
-			if (mWindows->At(0))
-				mWindows->At(0)->Initialize(SW_SHOW);
-		}
-		mCamera = static_cast<D3D11::Camera*>(CreateCamera());
-		mCamera->Initialize(mWindows->At(0), 64, 1.8f);
-		CreateInputDevice();
-	}
-#endif
-
-	for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
-		(*iter)->Initialize();
-}
-
-/// @brief Updates the up used by subsequent operations.
-void D3D11Plugin::Setup()
-{
-	for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
-		(*iter)->Setup();
-}
-
-/// @brief Dispatches input for the current frame to the relevant engine objects.
-void D3D11Plugin::ProcessInput()
-{
-	size_t i = 0;
-	for (auto iter = mWindows->Begin(); iter != mWindows->End(); ++iter)
-	{
-		if (!(*iter))
-			mWindows->Erase(i);
-		++i;
-	}
-
-	for (auto input = mInputDevices->Begin(); input != mInputDevices->End(); ++input)
-	{
-        // Poll once per device/frame, using the focused window's client space.
-        auto* target = mWindows->GetSize() ? mWindows->At(0) : nullptr;
-        for (auto win = mWindows->Begin(); win != mWindows->End(); ++win)
-            if ((*win)->GetHandle() == GetForegroundWindow()) target = *win;
-        if (target) (*input)->Update(target);
-	}
-}
-
-/// @brief Advances frame-dependent state using the current time step.
-/// @param deltaTime Elapsed frame time in seconds.
-void D3D11Plugin::Update(float deltaTime)
-{
-	for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
-	{
-		if (!(*iter)->GetOwner()->GetIsActive())
-			continue;
-		(*iter)->Update(deltaTime);
-	}
-}
-
-/// @brief Runs the post-update lifecycle phase after ordinary frame updates.
-/// @param deltaTime Elapsed frame time in seconds.
-void D3D11Plugin::LateUpdate(float deltaTime)
-{
-	for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
-	{
-		if (!(*iter)->GetOwner()->GetIsActive())
-			continue;
-		(*iter)->LateUpdate(deltaTime);
-	}
-}
-
-/// @brief Submits this object's graphics work for the current frame.
-void D3D11Plugin::Render()
-{
-#ifdef FOXTROT_EDITOR
-    return; // Editor owns presentation of its windows.
-#endif
-	for (auto iter = mWindows->Begin(); iter != mWindows->End(); ++iter)
-	{
-		// mGameRenderer->RenderClear(mWindow);
-		(*iter)->BeginRender(mRenderer);
 		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
 		{
 			if (!(*iter)->GetOwner()->GetIsActive())
 				continue;
-			(*iter)->Render(mRenderer, mCamera);
+			(*iter)->Update(deltaTime);
 		}
-		(*iter)->EndRender(mRenderer);
 	}
-}
 
-/// @brief Provides an empty lifecycle or extension hook for this implementation.
-void D3D11Plugin::ProcessEvent()
-{
-}
+	/// @brief Runs the post-update lifecycle phase after ordinary frame updates.
+	/// @param deltaTime Elapsed frame time in seconds.
+	void D3D11Plugin::LateUpdate(float deltaTime)
+	{
+		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+		{
+			if (!(*iter)->GetOwner()->GetIsActive())
+				continue;
+			(*iter)->LateUpdate(deltaTime);
+		}
+	}
 
-/// @brief Provides an empty lifecycle or extension hook for this implementation.
-/// @param ofs Output stream receiving the serialized data.
-/// @note Writes to the supplied stream at its current position.
-void D3D11Plugin::SaveProperties(std::ofstream& ofs)
-{
-	// Common::FTDS::String dataPath = D3D11::PluginKey::D3D11;
-	// dataPath.Append(Common::FileTypes::PLUGIN_DATA);
-	// std::ofstream ofs(dataPath.C_Str());
+	/// @brief Submits this object's graphics work for the current frame.
+	void D3D11Plugin::Render()
+	{
+#ifdef FOXTROT_EDITOR
+		return; // Editor owns presentation of its windows.
+#endif
+		for (auto iter = mWindows->Begin(); iter != mWindows->End(); ++iter)
+		{
+			// mGameRenderer->RenderClear(mWindow);
+			(*iter)->BeginRender(mRenderer);
+			for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+			{
+				if (!(*iter)->GetOwner()->GetIsActive())
+					continue;
+				(*iter)->Render(mRenderer, mCamera);
+			}
+			(*iter)->EndRender(mRenderer);
+		}
+	}
 
-	// if (ofs.good())
-	//{
-	//	FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::Plugin::PLUGIN_DATA);
+	/// @brief Provides an empty lifecycle or extension hook for this implementation.
+	void D3D11Plugin::ProcessEvent()
+	{
+	}
 
-	//	mCamera->SaveProperties(ofs);
+	/// @brief Provides an empty lifecycle or extension hook for this implementation.
+	/// @param ofs Output stream receiving the serialized data.
+	/// @note Writes to the supplied stream at its current position.
+	void D3D11Plugin::SaveProperties(std::ofstream& ofs)
+	{
+		// Common::FTDS::String dataPath = D3D11::PluginKey::D3D11;
+		// dataPath.Append(Common::FileTypes::PLUGIN_DATA);
+		// std::ofstream ofs(dataPath.C_Str());
 
-	//	FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::FTWindow::WINDOW_DATA);
-	//	for (auto iter = mWindows->Begin(); iter != mWindows->End(); ++iter)
-	//	{
-	//		FileIOHelper::BeginDataPackSave(ofs, (*iter)->GetTitle());
-	//		FileIOHelper::SaveUnsignedInt(ofs, Core::ChunkKey::FTWindow::WIDTH, (*iter)->GetWidth());
-	//		FileIOHelper::SaveUnsignedInt(ofs, Core::ChunkKey::FTWindow::HEIGHT, (*iter)->GetHeight());
+		// if (ofs.good())
+		//{
+		//	FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::Plugin::PLUGIN_DATA);
 
-	//		HMODULE			mod	 = GetModuleHandleA(Common::DLLPath::CORE_EDITOR);
-	//		FARPROC			proc = GetProcAddress(mod, D3D11::PluginKey::SAVE_PROPERTIES);
-	//		FTRECTAREA_SAVE func = reinterpret_cast<FTRECTAREA_SAVE>(proc);
-	//		func(ofs, (*iter)->GetRenderArea());
-	//		FileIOHelper::EndDataPackSave(ofs, (*iter)->GetTitle());
-	//	}
-	//	FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::FTWindow::WINDOW_DATA);
+		//	mCamera->SaveProperties(ofs);
 
-	//	FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::Plugin::PLUGIN_DATA);
-	//}
-}
+		//	FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::FTWindow::WINDOW_DATA);
+		//	for (auto iter = mWindows->Begin(); iter != mWindows->End(); ++iter)
+		//	{
+		//		FileIOHelper::BeginDataPackSave(ofs, (*iter)->GetTitle());
+		//		FileIOHelper::SaveUnsignedInt(ofs, Core::ChunkKey::FTWindow::WIDTH, (*iter)->GetWidth());
+		//		FileIOHelper::SaveUnsignedInt(ofs, Core::ChunkKey::FTWindow::HEIGHT, (*iter)->GetHeight());
 
-/// @brief Restores this object's persistent properties from a .chunk stream.
-/// @param ifs Input stream positioned at the expected data; reading advances its position.
-/// @note Advances the stream position and updates the destination state.
-void D3D11Plugin::LoadProperties(std::ifstream& ifs)
-{
-	LoadManagerData(ifs);
-	LoadResourceData(ifs);
-}
+		//		HMODULE			mod	 = GetModuleHandleA(Common::DLLPath::CORE_EDITOR);
+		//		FARPROC			proc = GetProcAddress(mod, D3D11::PluginKey::SAVE_PROPERTIES);
+		//		FTRECTAREA_SAVE func = reinterpret_cast<FTRECTAREA_SAVE>(proc);
+		//		func(ofs, (*iter)->GetRenderArea());
+		//		FileIOHelper::EndDataPackSave(ofs, (*iter)->GetTitle());
+		//	}
+		//	FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::FTWindow::WINDOW_DATA);
 
-/// @brief Provides an empty lifecycle or extension hook for this implementation.
-void D3D11Plugin::ShutDown()
-{
-}
+		//	FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::Plugin::PLUGIN_DATA);
+		//}
+	}
 
-/// @brief Initializes the Direct3D plugin's component and graphics service state.
-/// @param name Name used to identify the requested object or interface.
-/// @note Initializes the :D3D11Plugin base or delegates to its constructor.
-D3D11Plugin::D3D11Plugin(const char* name)
-	: mRegisteredComps(DBG_NEW Common::FTDS::DynamicArray<D3D11::D3D11Component*>)
-	, mInputDevices(DBG_NEW Common::FTDS::DynamicArray<D3D11::D3D11InputDevice*>)
-	, mRenderer(nullptr)
-	, mWindows(DBG_NEW Common::FTDS::DynamicArray<D3D11::D3D11Window*>)
-	, mCamera(nullptr)
-{
-	// FTRectArea* area = DBG_NEW FTRectArea(0.f, 0.f, 500.f, 500.f);
-	// CreateD3D11Window("Hello!", 500, 500, area);
-	// CreateInputDevice();
-}
+	/// @brief Restores this object's persistent properties from a .chunk stream.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @note Advances the stream position and updates the destination state.
+	void D3D11Plugin::LoadProperties(std::ifstream& ifs)
+	{
+		LoadManagerData(ifs);
+		LoadResourceData(ifs);
+	}
 
-/// @brief Releases the resources managed by this instance during destruction.
-D3D11Plugin::~D3D11Plugin()
-{
-	D3D11::ResourceManager::Destroy();
-	D3D11::AnimationManager::Destroy();
-	D3D11::DebugShapes::Destroy();
-	delete mRegisteredComps;
-	for (auto it = mInputDevices->Begin(); it != mInputDevices->End(); ++it) delete *it;
-	delete mInputDevices;
-	delete mCamera;
-	if (mRenderer && mRenderer->GetContext()) mRenderer->GetContext()->ClearState();
-	for (auto it = mWindows->Begin(); it != mWindows->End(); ++it) delete *it;
-	delete mWindows;
-	delete mRenderer;
-}
+	/// @brief Provides an empty lifecycle or extension hook for this implementation.
+	void D3D11Plugin::ShutDown()
+	{
+	}
 
-/// @brief Restores plugin manager state from the chunk stream.
-/// @param ifs Input stream positioned at the expected data; reading advances its position.
-void D3D11Plugin::LoadManagerData(std::ifstream& ifs)
-{
-	mCamera->LoadProperties(ifs);
-}
+	/// @brief Initializes the Direct3D plugin's component and graphics service state.
+	/// @param name Name used to identify the requested object or interface.
+	/// @note Initializes the :D3D11Plugin base or delegates to its constructor.
+	D3D11Plugin::D3D11Plugin(const char* name)
+		: mRegisteredComps(DBG_NEW Common::FTDS::DynamicArray<D3D11::D3D11Component*>)
+		, mInputDevices(DBG_NEW Common::FTDS::DynamicArray<D3D11::D3D11InputDevice*>)
+		, mRenderer(nullptr)
+		, mWindows(DBG_NEW Common::FTDS::DynamicArray<D3D11::D3D11Window*>)
+		, mCamera(nullptr)
+	{
+		// FTRectArea* area = DBG_NEW FTRectArea(0.f, 0.f, 500.f, 500.f);
+		// CreateD3D11Window("Hello!", 500, 500, area);
+		// CreateInputDevice();
+	}
 
-/// @brief Restores plugin resource state from the chunk stream.
-/// @param ifs Input stream positioned at the expected data; reading advances its position.
-void D3D11Plugin::LoadResourceData(std::ifstream& ifs)
-{
-	D3D11::ResourceManager::GetInstance()->LoadDefaultResources(mRenderer);
-	D3D11::ResourceManager::GetInstance()->LoadResourcesFromChunk(ifs, mRenderer);
-}
+	/// @brief Releases the resources managed by this instance during destruction.
+	D3D11Plugin::~D3D11Plugin()
+	{
+#ifdef FOXTROT_EDITOR
+		delete mEditorResources;
+#endif
+		D3D11::ResourceManager::Destroy();
+		D3D11::AnimationManager::Destroy();
+		D3D11::DebugShapes::Destroy();
+		delete mRegisteredComps;
+		for (auto it = mInputDevices->Begin(); it != mInputDevices->End(); ++it)
+			delete *it;
+		delete mInputDevices;
+		delete mCamera;
+		if (mRenderer && mRenderer->GetContext())
+			mRenderer->GetContext()->ClearState();
+		for (auto it = mWindows->Begin(); it != mWindows->End(); ++it)
+			delete *it;
+		delete mWindows;
+		delete mRenderer;
+	}
+
+	/// @brief Restores plugin manager state from the chunk stream.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	void D3D11Plugin::LoadManagerData(std::ifstream& ifs)
+	{
+		mCamera->LoadProperties(ifs);
+	}
+
+	/// @brief Restores plugin resource state from the chunk stream.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	void D3D11Plugin::LoadResourceData(std::ifstream& ifs)
+	{
+		D3D11::ResourceManager::GetInstance()->LoadDefaultResources(mRenderer);
+		D3D11::ResourceManager::GetInstance()->LoadResourcesFromChunk(ifs, mRenderer);
+	}
 } // namespace D3D11
 
 #include "FTDS/Static/FTString.h"
@@ -456,14 +525,15 @@ namespace D3D11
 			{ ChunkKey::SpineAnimator::NAME, CreateRegisteredComponent<SpineAnimator> },
 			{ ChunkKey::TileMapRenderer::NAME, CreateRegisteredComponent<TileMapRenderer> }
 		};
-	}
+	} // namespace
 
 	const Core::ComponentFactoryEntry* D3D11Plugin::GetComponentFactories(std::size_t& count) const noexcept
 	{
 		count = sizeof(ComponentFactories) / sizeof(ComponentFactories[0]);
 		return ComponentFactories;
 	}
-}
+} // namespace D3D11
+
 extern "C"
 {
 	/// @brief Allocates the plugin implementation exported by this module.

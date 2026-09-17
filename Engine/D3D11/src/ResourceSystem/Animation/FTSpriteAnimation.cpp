@@ -124,7 +124,7 @@ namespace D3D11
 	/// @param resDef Resource definition containing the filename and source path.
 	/// @param renderer Renderer providing the graphics device and current render state.
 	/// @note Initializes the :FTSpriteAnimation base or delegates to its constructor.
-	FTSpriteAnimation::FTSpriteAnimation(Common::FTResourceDef& resDef, Core::IRenderer* renderer)
+	FTSpriteAnimation::FTSpriteAnimation(Common::FTResourceDef& resDef, void* renderer)
 		: FTSprite(resDef, renderer, true)
 		, mJSON(nullptr)
 		, mMinFrameIdx(0)

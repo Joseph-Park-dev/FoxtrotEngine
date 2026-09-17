@@ -78,7 +78,7 @@ namespace D3D11
 		/// @brief Relative path is used for importing .spriteanim file.
 		/// @param resDef Resource definition containing the filename and source path.
 		/// @param renderer Renderer providing the graphics device and current render state.
-		FTSpriteAnimation(Common::FTResourceDef& resDef, Core::IRenderer* renderer);
+		FTSpriteAnimation(Common::FTResourceDef& resDef, void* renderer);
 		/// @brief Completes destruction through the object's inheritance hierarchy.
 		~FTSpriteAnimation();
 

@@ -21,7 +21,7 @@ namespace
 
 		// Loading EngineRuntime Module.
 		const Foxtrot::ModuleAPI* runtime = modules.Load(L"EngineRuntime.dll", "EngineRuntime");
-		Foxtrot::RuntimeControl* control = static_cast<Foxtrot::RuntimeControl*>(runtime->Query(runtime->Instance, "RuntimeControl"));
+		Foxtrot::RuntimeControl*  control = static_cast<Foxtrot::RuntimeControl*>(runtime->Query(runtime->Instance, "RuntimeControl"));
 		if (!control)
 			throw std::runtime_error("Runtime control API missing");
 

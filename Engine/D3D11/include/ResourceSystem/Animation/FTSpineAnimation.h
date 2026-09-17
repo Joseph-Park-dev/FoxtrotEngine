@@ -108,7 +108,7 @@ namespace D3D11
 		/// The file paths of the generic data will only be used.
 		/// @param resDef Resource definition containing the filename and source path.
 		/// @param renderer Renderer providing the graphics device and current render state.
-		FTSpineAnimation(Common::FTResourceDef& resDef, Core::IRenderer* renderer);
+		FTSpineAnimation(Common::FTResourceDef& resDef, void* renderer);
 		/// @brief Releases the resources managed by this instance during destruction.
 		~FTSpineAnimation() override;
 
@@ -147,7 +147,7 @@ namespace D3D11
 	private:
 		/// @brief Applies this object's processing step.
 		/// @param renderer Renderer providing the graphics device and current render state.
-		void Process(Core::IRenderer* renderer);
+		void Process(void* renderer);
 
 		/// @brief Loads Spine Atlas & JSON, and creates a spine animation.
 		/// @param device

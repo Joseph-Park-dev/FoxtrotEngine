@@ -101,7 +101,7 @@ namespace D3D11
 		return mLoadedClips;
 	}
 
-	FTSpineAnimation::FTSpineAnimation(Common::FTResourceDef& resDef, Core::IRenderer* renderer)
+	FTSpineAnimation::FTSpineAnimation(Common::FTResourceDef& resDef, void* renderer)
 		: FTSprite(resDef, renderer)
 		, mJSONPath(nullptr)
 		, mAtlasPath(nullptr)
@@ -150,7 +150,7 @@ namespace D3D11
 		delete mMeshes;
 	}
 
-	void FTSpineAnimation::Process(Core::IRenderer* renderer)
+	void FTSpineAnimation::Process(void* renderer)
 	{
 		if (mJSONPath && mAtlasPath && !mMeshes->IsEmpty())
 			return;

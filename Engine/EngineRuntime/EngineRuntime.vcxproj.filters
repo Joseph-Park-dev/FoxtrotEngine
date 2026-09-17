@@ -205,4 +205,7 @@
     <Filter Include="Header Files" />
     <Filter Include="Other Files" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Plugin\IEditorResourceService.h" />
+  </ItemGroup>
 </Project>

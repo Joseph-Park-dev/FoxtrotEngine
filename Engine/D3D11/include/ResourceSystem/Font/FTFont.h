@@ -110,7 +110,7 @@ namespace D3D11
 		/// @brief Initializes glyph metrics, textures, and text-rendering storage.
 		/// @param resDef Resource definition containing the filename and source path.
 		/// @param renderer Renderer providing the graphics device and current render state.
-		FTFont(Common::FTResourceDef& resDef, Core::IRenderer* renderer);
+		FTFont(Common::FTResourceDef& resDef, void* renderer);
 		/// @brief Releases the resources managed by this instance during destruction.
 		~FTFont();
 

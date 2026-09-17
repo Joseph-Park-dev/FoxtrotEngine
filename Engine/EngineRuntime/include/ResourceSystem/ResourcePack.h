@@ -25,7 +25,7 @@ namespace Common
 		/// Pointer to renderer can be a good example for graphics resources
 		/// @param ifs Input stream positioned at the expected data; reading advances its position.
 		/// @param factory Optional factory callback used to construct a resource from its definition.
-		void LoadResourcesFromChunk(std::ifstream& ifs, void* userData, FTRESOURCE* (*factory)(FTResourceDef&, void*) = nullptr)
+		void LoadResourcesFromChunk(std::ifstream& ifs, void* userData)
 		{
 			size_t resCount = Common::FileIOHelper::BeginDataPackLoad(ifs).first;
 			if (resCount < 1)
@@ -34,7 +34,7 @@ namespace Common
 			mResources->Reserve(resCount);
 			while (0 < resCount)
 			{
-				LoadResource(ifs, userData, factory);
+				LoadResource(ifs, userData);
 				--resCount; // Key of the next resource to be imported.
 			}
 		}
@@ -126,7 +126,8 @@ namespace Common
 		{
 			static_assert(sizeof(FTRESOURCE) > 0, "ResourcePack destruction requires a complete resource type");
 			for (auto it = mResources->Begin(); it != mResources->End(); ++it)
-				if (*it) delete (*it)->Value();
+				if (*it)
+					delete (*it)->Value();
 			delete mResources;
 		}
 
@@ -140,7 +141,7 @@ namespace Common
 		/// @param ifs Input stream positioned at the expected data; reading advances its position.
 		/// @param factory Optional factory callback used to construct a resource from its definition.
 		/// @throws std::runtime_error If the operation encounters the failure condition checked by this implementation.
-		void LoadResource(std::ifstream& ifs, void* userData, FTRESOURCE* (*factory)(FTResourceDef&, void*))
+		void LoadResource(std::ifstream& ifs, void* userData = nullptr)
 		{
 			Common::FileIOHelper::BeginDataPackLoad(ifs);
 
@@ -149,42 +150,25 @@ namespace Common
 			Common::FileIOHelper::LoadBasicString(ifs, relPath);
 			Common::FileIOHelper::LoadBasicString(ifs, fileName);
 
-			Common::FTResourceDef resDef{fileName.C_Str(), relPath.C_Str()};
-			FTRESOURCE* res = nullptr;
-			if (factory) res = factory(resDef, userData);
-			else if constexpr (std::is_constructible_v<FTRESOURCE, FTResourceDef&, void*>) res = DBG_NEW FTRESOURCE(resDef, userData);
-			if (!res) throw std::runtime_error("Resource factory required");
+			Common::FTResourceDef resDef{ fileName.C_Str(), relPath.C_Str() };
 
-			assert(0 < mResources->Capacity());
-			mResources->Insert(*res->GetFileName(), res);
-		}
-
-		/// @brief Builds one resource from its serialized definition and registers it in the pack.
-		/// @param ifs Input stream positioned at the expected data; reading advances its position.
-		void LoadResource(std::ifstream& ifs)
-		{
-			Common::FileIOHelper::BeginDataPackLoad(ifs);
-
-			Common::FTDS::String relPath;
-			Common::FTDS::String fileName;
-			Common::FileIOHelper::LoadBasicString(ifs, relPath);
-			Common::FileIOHelper::LoadBasicString(ifs, fileName);
-
-			Common::FTResourceDef resDef{fileName.C_Str(), relPath.C_Str()};
-			FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef);
-
+			FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef, userData);
+			if (!res)
+				Common::Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
 			assert(0 < mResources->Capacity());
 			mResources->Insert(*res->GetFileName(), res);
 		}
 
 #ifdef FOXTROT_EDITOR
+	public:
 		/// @brief Save a list of resources added to this ResourcePack to .chunk
 		/// @param ofs Output stream receiving the serialized data.
 		void SaveResourcesToChunk(std::ofstream& ofs)
 		{
 			Common::FileIOHelper::BeginDataPackSave(ofs, FTRESOURCE::GetName());
 			for (auto iter = mResources->Begin(); iter != mResources->End(); ++iter)
-				(*iter)->Value()->SaveProperties(ofs);
+				if (*iter && (*iter)->Value())
+					(*iter)->Value()->SaveProperties(ofs);
 			Common::FileIOHelper::EndDataPackSave(ofs, FTRESOURCE::GetName());
 		}
 
@@ -200,8 +184,9 @@ namespace Common
 				std::ifstream ifs(entry.path());
 				if (entry.is_regular_file())
 				{
-					if (entry.path().extension() == fileType)
-						LoadResource(ifs, userData, nullptr);
+					FTDS::String strPath = FTDS::String(fileType);
+					if (strPath.Contains(entry.path().extension().string().c_str()))
+						LoadResource(ifs, userData);
 				}
 			}
 		}
@@ -214,6 +199,8 @@ namespace Common
 			{
 				for (auto iter = mResources->Begin(); iter != mResources->End(); ++iter)
 				{
+					if (!*iter || !(*iter)->Value())
+						continue;
 					if (ImGui::TreeNode((*iter)->Key().C_Str()))
 					{
 						(*iter)->Value()->UpdateUI();

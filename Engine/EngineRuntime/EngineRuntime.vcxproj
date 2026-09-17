@@ -108,6 +108,7 @@
     <ClInclude Include="include\Plugin\framework.h" />
     <ClInclude Include="include\Plugin\GameSystems.h" />
     <ClInclude Include="include\Plugin\GetFunc.h" />
+    <ClInclude Include="include\Plugin\IEditorResourceService.h" />
     <ClInclude Include="include\Plugin\IPlugin.h" />
     <ClInclude Include="include\Plugin\ModuleAdapter.h" />
     <ClInclude Include="include\Plugin\pch.h" />

@@ -44,7 +44,7 @@ namespace Foxtrot
 		// An opaque pointer owned by the executable.
 		void* Context;
 
-		// A function pointer for looking up a module by name.
+		// Callback that returns a loaded module’s ModuleAPI by name, or nullptr.
 		const ModuleAPI*(FT_CALL* Find)(
 			void*,
 			const char*) noexcept;

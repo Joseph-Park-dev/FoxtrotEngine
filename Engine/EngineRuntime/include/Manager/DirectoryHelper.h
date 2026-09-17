@@ -21,14 +21,14 @@
 
 #include "Utility/SingletonMacro.h"
 #include "FTDS/Static/FTString.h"
-#include "Plugin/CoreExports.h"
 
 namespace Core
 {
-#define PATH_PROJECT DirectoryHelper::GetInstance()->GetProjectPath()
-#define PATH_CHUNK DirectoryHelper::GetInstance()->GetChunkPath()
-#define CHUNK_IS_SAVED DirectoryHelper::GetInstance()->GetCurrChunkSaved()
-#define SET_CHUNK_IS_SAVED(saved) DirectoryHelper::GetInstance()->SetCurrChunkSaved(saved)
+#define PATH_PROJECT Core::DirectoryHelper::GetInstance()->GetProjectPath()
+#define PATH_CHUNK Core::DirectoryHelper::GetInstance()->GetChunkPath()
+#define PATH_ASSET Core::DirectoryHelper::GetInstance()->GetAssetPath()
+#define CHUNK_IS_SAVED Core::DirectoryHelper::GetInstance()->GetCurrChunkSaved()
+#define SET_CHUNK_IS_SAVED(saved) Core::DirectoryHelper::GetInstance()->SetCurrChunkSaved(saved)
 
 	namespace ProcName
 	{

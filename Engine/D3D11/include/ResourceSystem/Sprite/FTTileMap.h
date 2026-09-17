@@ -95,7 +95,7 @@ namespace D3D11
 	public:
 		/// @brief Initializes tile-map dimensions and tile storage.
 		/// @param resDef Resource definition containing the filename and source path.
-		FTTileMap(Common::FTResourceDef& resDef);
+		FTTileMap(Common::FTResourceDef& resDef, void* renderer);
 		/// @brief Releases the resources managed by this instance during destruction.
 		~FTTileMap();
 

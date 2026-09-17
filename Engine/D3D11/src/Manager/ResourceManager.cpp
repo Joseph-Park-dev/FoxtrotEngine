@@ -34,6 +34,11 @@
 #include "Debugging/D3D11DebugFuncs.h"
 
 #include "ResourceSystem/SupportedResources.h"
+#include "FileSystem/FileTypes.h"
+
+#ifdef FOXTROT_EDITOR
+	#include "CommandHistory.h"
+#endif // FOXTROT_EDITOR
 
 namespace D3D11
 {
@@ -47,11 +52,12 @@ namespace D3D11
 	/// @throws D3D11::DX::com_exception If a checked Direct3D operation fails.
 	void ResourceManager::LoadDefaultResources(D3D11::D3D11Renderer* renderer)
 	{
-        if (!mPSOs->GetResMap()->IsEmpty()) return;
-        // The packs own default shaders; PSOs only borrow them.
-        auto& VS = *mVertexShaders->GetResMap();
-        auto& GS = *mGeometryShaders->GetResMap();
-        auto& PS = *mPixelShaders->GetResMap();
+		if (!mPSOs->GetResMap()->IsEmpty())
+			return;
+		// The packs own default shaders; PSOs only borrow them.
+		auto& VS = *mVertexShaders->GetResMap();
+		auto& GS = *mGeometryShaders->GetResMap();
+		auto& PS = *mPixelShaders->GetResMap();
 
 		FTResourceDef resDef{
 			Common::ChunkKey::NullVal::NULL_OBJECT, Common::ChunkKey::NullVal::NULL_OBJECT
@@ -311,17 +317,17 @@ namespace D3D11
 	/// @param renderer Renderer providing the graphics device and current render state.
 	void ResourceManager::LoadResourcesFromChunk(std::ifstream& ifs, void* renderer)
 	{
-		mSpriteAnimations->LoadResourcesFromChunk(ifs, renderer, [](Common::FTResourceDef& def, void* context) -> FTSpriteAnimation* { return new FTSpriteAnimation(def, static_cast<D3D11Renderer*>(context)); });
-		mSpineAnimations->LoadResourcesFromChunk(ifs, renderer, [](Common::FTResourceDef& def, void* context) -> FTSpineAnimation* { return new FTSpineAnimation(def, static_cast<D3D11Renderer*>(context)); });
-		mFonts->LoadResourcesFromChunk(ifs, renderer, [](Common::FTResourceDef& def, void* context) -> FTFont* { return new FTFont(def, static_cast<D3D11Renderer*>(context)); });
-		mMaterials->LoadResourcesFromChunk(ifs, renderer, [](Common::FTResourceDef& def, void* context) -> FTMaterial* { return new StandardMaterial(def, static_cast<D3D11Renderer*>(context)); });
+		mSpriteAnimations->LoadResourcesFromChunk(ifs, renderer);
+		mSpineAnimations->LoadResourcesFromChunk(ifs, renderer);
+		mFonts->LoadResourcesFromChunk(ifs, renderer);
+		//mMaterials->LoadResourcesFromChunk(ifs, renderer);
 		mMeshGroups->LoadResourcesFromChunk(ifs, renderer);
 		mVertexShaders->LoadResourcesFromChunk(ifs, renderer);
 		mGeometryShaders->LoadResourcesFromChunk(ifs, renderer);
 		mPixelShaders->LoadResourcesFromChunk(ifs, renderer);
 		mSprites->LoadResourcesFromChunk(ifs, renderer);
 		mTileMaps->LoadResourcesFromChunk(ifs);
-		//mPSOs->LoadResourcesFromChunk(ifs, renderer);
+		// mPSOs->LoadResourcesFromChunk(ifs, renderer);
 	}
 
 	/// @brief Returns the sprite animation used by this resource manager.
@@ -563,12 +569,17 @@ namespace D3D11
 		return mSprites;
 	}
 
-	/// @brief Returns the tile maps used by this resource manager.
-	/// @return Borrowed access to the tile maps.
 	Common::ResourcePack<FTTileMap>* ResourceManager::GetTileMaps()
 	{
 		return mTileMaps;
 	}
+
+	/// @brief Returns the tile maps used by this resource manager.
+	/// @return Borrowed access to the tile maps.
+	//Common::ResourcePack<FTTileMap>* ResourceManager::GetTileMaps()
+	//{
+	//	return mTileMaps;
+	//}
 
 	/// @brief Returns the psos used by this resource manager.
 	/// @return Borrowed access to the psos.
@@ -580,17 +591,17 @@ namespace D3D11
 	/// @brief Initializes the resource packs owned by the manager.
 	/// @note Initializes the :ResourceManager base or delegates to its constructor.
 	ResourceManager::ResourceManager()
-	: mSpriteAnimations(new Common::ResourcePack<FTSpriteAnimation>(16))
-	, mSpineAnimations(new Common::ResourcePack<FTSpineAnimation>(16))
-	, mFonts(new Common::ResourcePack<FTFont>(16))
-	, mMaterials(new Common::ResourcePack<FTMaterial>(16))
-	, mMeshGroups(new Common::ResourcePack<FTMeshGroup>(16))
-	, mVertexShaders(new Common::ResourcePack<FTVertexShader>(16))
-	, mGeometryShaders(new Common::ResourcePack<FTGeometryShader>(16))
-	, mPixelShaders(new Common::ResourcePack<FTPixelShader>(16))
-	, mSprites(new Common::ResourcePack<FTSprite>(16))
-	, mTileMaps(new Common::ResourcePack<FTTileMap>(16))
-	, mPSOs(new Common::ResourcePack<D3D11PSO>(16))
+		: mSpriteAnimations(new Common::ResourcePack<FTSpriteAnimation>(16))
+		, mSpineAnimations(new Common::ResourcePack<FTSpineAnimation>(16))
+		, mFonts(new Common::ResourcePack<FTFont>(16))
+		, mMaterials(new Common::ResourcePack<FTMaterial>(16))
+		, mMeshGroups(new Common::ResourcePack<FTMeshGroup>(16))
+		, mVertexShaders(new Common::ResourcePack<FTVertexShader>(16))
+		, mGeometryShaders(new Common::ResourcePack<FTGeometryShader>(16))
+		, mPixelShaders(new Common::ResourcePack<FTPixelShader>(16))
+		, mSprites(new Common::ResourcePack<FTSprite>(16))
+		//, mTileMaps(new Common::ResourcePack<FTTileMap>(16))
+		, mPSOs(new Common::ResourcePack<D3D11PSO>(16))
 	{
 	}
 
@@ -599,7 +610,7 @@ namespace D3D11
 	{
 		delete mSpriteAnimations;
 		delete mSpineAnimations;
-		delete mTileMaps;
+		//delete mTileMaps;
 		delete mFonts;
 		delete mMeshGroups;
 		delete mMaterials;
@@ -609,4 +620,37 @@ namespace D3D11
 		delete mPixelShaders;
 		delete mSprites;
 	}
+
+#ifdef FOXTROT_EDITOR
+	void ResourceManager::LoadAllResourcesInAsset(FTDS::String* dir, void* renderer)
+	{
+		LogString("Loaded");
+
+		const char* assetDir = dir->C_Str();
+		mMeshGroups->LoadAllResourcesInAsset(assetDir, FileTypes::MESH, renderer);
+		mSprites->LoadAllResourcesInAsset(assetDir, FileTypes::TEXTURE, renderer);
+		//mMaterials->LoadAllResourcesInAsset(assetDir, FileTypes::MATERIAL, renderer);
+		mVertexShaders->LoadAllResourcesInAsset(assetDir, FileTypes::VERTEX_SHADER, renderer);
+		mGeometryShaders->LoadAllResourcesInAsset(assetDir, FileTypes::GEOMETRY_SHADER, renderer);
+		mPixelShaders->LoadAllResourcesInAsset(assetDir, FileTypes::PIXEL_SHADER, renderer);
+		//mTileMaps->LoadAllResourcesInAsset(assetDir, FileTypes::TILEMAP, renderer);
+		mFonts->LoadAllResourcesInAsset(assetDir, FileTypes::FONT, renderer);
+		mSpriteAnimations->LoadAllResourcesInAsset(assetDir, FileTypes::SPRITE_ANIMATION, renderer);
+		mSpineAnimations->LoadAllResourcesInAsset(assetDir, FileTypes::SPINE_ANIMATION, renderer);
+	}
+
+	void ResourceManager::EditorUIUpdate()
+	{
+		mMeshGroups->DisplayLoadedResources("Mesh Groups");
+		mSprites->DisplayLoadedResources("Sprites");
+		mMaterials->DisplayLoadedResources("Materials");
+		mVertexShaders->DisplayLoadedResources("Vertex Shaders");
+		//mGeometryShaders->DisplayLoadedResources("Geometry Shaders");
+		mPixelShaders->DisplayLoadedResources("Pixel Shaders");
+		//mTileMaps->DisplayLoadedResources("TileMaps");
+		mFonts->DisplayLoadedResources("Fonts");
+		mSpriteAnimations->DisplayLoadedResources("Sprite Animations");
+		mSpineAnimations->DisplayLoadedResources("Spine Animations");
+	}
+#endif // DEBUG
 } // namespace D3D11

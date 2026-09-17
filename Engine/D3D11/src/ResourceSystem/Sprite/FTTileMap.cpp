@@ -194,7 +194,7 @@ namespace D3D11
 	/// @brief Initializes tile-map dimensions and tile storage.
 	/// @param resDef Resource definition containing the filename and source path.
 	/// @note Initializes the :FTTileMap base or delegates to its constructor.
-	FTTileMap::FTTileMap(Common::FTResourceDef& resDef)
+	FTTileMap::FTTileMap(Common::FTResourceDef& resDef, void* renderer)
 		: D3D11::D3D11Resource(resDef)
 		, mTileWidthOnScreen(0)
 		, mTileHeightOnScreen(0)

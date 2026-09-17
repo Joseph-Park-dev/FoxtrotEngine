@@ -40,20 +40,20 @@ namespace Common
 		/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
 		virtual void Initialize() = 0;
 		/// @brief Updates the up used by subsequent operations.
-		virtual void Setup()	  = 0;
+		virtual void Setup() = 0;
 
 		/// @brief Dispatches input for the current frame to the relevant engine objects.
-		virtual void ProcessInput()				 = 0;
+		virtual void ProcessInput() = 0;
 		/// @brief Advances frame-dependent state using the current time step.
 		/// @param deltaTime Elapsed frame time in seconds.
-		virtual void Update(float deltaTime)	 = 0;
+		virtual void Update(float deltaTime) = 0;
 		/// @brief Runs the post-update lifecycle phase after ordinary frame updates.
 		/// @param deltaTime Elapsed frame time in seconds.
 		virtual void LateUpdate(float deltaTime) = 0;
 		/// @brief Submits this object's graphics work for the current frame.
-		virtual void Render()					 = 0;
+		virtual void Render() = 0;
 		/// @brief Processes queued lifecycle and scene changes at the frame boundary.
-		virtual void ProcessEvent()				 = 0;
+		virtual void ProcessEvent() = 0;
 
 		/// @brief Releases runtime services and resources during engine shutdown.
 		virtual void ShutDown() = 0;
@@ -69,7 +69,7 @@ namespace Common
 	protected:
 		/// @brief Restores plugin manager state from the chunk stream.
 		/// @param ifs Input stream positioned at the expected data; reading advances its position.
-		virtual void LoadManagerData(std::ifstream& ifs)  = 0;
+		virtual void LoadManagerData(std::ifstream& ifs) = 0;
 		/// @brief Restores plugin resource state from the chunk stream.
 		/// @param ifs Input stream positioned at the expected data; reading advances its position.
 		virtual void LoadResourceData(std::ifstream& ifs) = 0;

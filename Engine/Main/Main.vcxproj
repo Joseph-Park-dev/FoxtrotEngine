@@ -47,6 +47,12 @@
   <PropertyGroup Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'">
     <TargetName>FoxtrotEditor</TargetName>
   </PropertyGroup>
+  <PropertyGroup>
+    <LocalDebuggerCommand>$(TargetPath)</LocalDebuggerCommand>
+    <!-- Match launching the executable from its output folder for relative game data paths. -->
+    <LocalDebuggerWorkingDirectory>$(OutDir)</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)Engine\EngineRuntime\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

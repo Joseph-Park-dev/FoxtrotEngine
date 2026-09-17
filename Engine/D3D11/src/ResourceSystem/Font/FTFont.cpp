@@ -235,7 +235,7 @@ namespace D3D11
 	/// @param resDef Resource definition containing the filename and source path.
 	/// @param renderer Renderer providing the graphics device and current render state.
 	/// @note Initializes the :FTFont base or delegates to its constructor.
-	FTFont::FTFont(Common::FTResourceDef& resDef, Core::IRenderer* renderer)
+	FTFont::FTFont(Common::FTResourceDef& resDef, void* renderer)
 		: FTMeshGroup(resDef, renderer, nullptr)
 		, mSize(0)
 		, mLineHeight(0.f)
@@ -275,8 +275,8 @@ namespace D3D11
 		InitializeConstantBuffers(static_cast<D3D11Renderer*>(renderer)->GetDevice());
 
 		float x, y, width, height;
-			renderer->GetViewport(x, y, width, height);
-			LoadFont(mFontImage, resDef, FTVector2(width, height));
+		static_cast<D3D11Renderer*>(renderer)->GetViewport(x, y, width, height);
+		LoadFont(mFontImage, resDef, FTVector2(width, height));
 	}
 
 	/// @brief Releases the resources managed by this instance during destruction.

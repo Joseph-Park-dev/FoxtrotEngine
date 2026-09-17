@@ -9,6 +9,7 @@ namespace
 		uint64_t					 System{};
 		uint64_t					 Frames{};
 	};
+
 	/// @brief Advances the game module's registered system callback for the current frame.
 	/// @param context Context associated with this operation.
 	/// @note Unnamed parameter (float): reserved by this interface or unused by this implementation.
@@ -19,6 +20,7 @@ namespace
 			FtLog("Game update system running");
 		// Game-specific systems and rules belong here; engine objects stay in Runtime.
 	}
+
 	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
 	/// @param context Context associated with this operation.
 	/// @param host Host services available to the module.
@@ -27,13 +29,16 @@ namespace
 	{
 		if (!host || host->Size != sizeof(*host) || !host->Find)
 			return Foxtrot::Status::InvalidArgument;
+
 		auto& game	  = *static_cast<GameState*>(context);
 		auto  runtime = host->Find(host->Context, "EngineRuntime");
 		if (!runtime)
 			return Foxtrot::Status::Failed;
+
 		game.Services = static_cast<const Foxtrot::GameServices*>(runtime->Query(runtime->Instance, "GameServices"));
 		if (!game.Services || game.Services->Size != sizeof(Foxtrot::GameServices))
 			return Foxtrot::Status::AbiMismatch;
+
 		auto status = game.Services->RegisterSystem(Tick, &game, &game.System);
 		if (status == Foxtrot::Status::Ok)
 			FtLog("Game initialized");

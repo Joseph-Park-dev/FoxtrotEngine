@@ -56,7 +56,8 @@ namespace D3D11
 
 	public:
 		/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
-		virtual void Initialize();
+		virtual void Initialize() override;
+		virtual void Setup() override;
 		/// @brief Provides an empty lifecycle or extension hook for this implementation.
 		/// @param inputDevice Device exposing the current frame's input state.
 		virtual void ProcessInput(Core::IInputDevice* inputDevice);
@@ -73,15 +74,13 @@ namespace D3D11
 
 		/// @brief Copies this object's state into the requested target or attaches its clone to the target actor.
 		/// @param actor Actor participating in this operation.
-		virtual void CloneTo(Core::IActor* actor);
+		virtual void CloneTo(Common::IActor* actor);
 
 	public:
 		/// @brief Initializes sprite-animation playback state for its owner.
 		/// @param owner Actor or object associated with the new instance.
 		/// @param updateOrder Order used when dispatching component updates.
-		Animator(
-			Core::IActor* owner,
-			int			  updateOrder = Core::DefaultVal::UPDATE_ORDER);
+		Animator(Common::IActor* owner);
 		/// @brief Releases the resources managed by this instance during destruction.
 		~Animator();
 
@@ -147,5 +146,5 @@ namespace D3D11
 /// @brief Creates an animation component associated with an actor.
 /// @param actor Actor participating in this operation.
 /// @return Created animator instance or resource.
-D3D11_API D3D11::Animator* CreateAnimator(Core::IActor* actor);
+D3D11_API D3D11::Animator* CreateAnimator(Common::IActor* actor);
 } // namespace D3D11

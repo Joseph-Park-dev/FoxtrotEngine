@@ -85,8 +85,8 @@ namespace D3D11
 	/// @param owner Actor or object associated with the new instance.
 	/// @param updateOrder Order used when dispatching component updates.
 	/// @note Initializes the :SpineAnimator base or delegates to its constructor.
-	SpineAnimator::SpineAnimator(Core::IActor* owner, int updateOrder)
-		: MeshRenderer(owner, updateOrder)
+	SpineAnimator::SpineAnimator(Core::IActor* owner)
+		: MeshRenderer(owner)
 		, mTimeScale(1.f)
 		, mUsePhysics(spine::Physics_None)
 	{
@@ -96,7 +96,7 @@ namespace D3D11
 	/// @param actor Actor participating in this operation.
 	void SpineAnimator::CloneTo(Core::IActor* actor)
 	{
-		SpineAnimator* newComp = DBG_NEW SpineAnimator(actor, GetUpdateOrder());
+		SpineAnimator* newComp = DBG_NEW SpineAnimator(actor);
 		newComp->SetRenderer(this->GetRenderer());
 		newComp->SetMeshGroup(this->GetMeshGroup());
 		newComp->SetTexture(this->GetTexture());
@@ -168,7 +168,7 @@ namespace D3D11
 
 	/// @brief Updates the object's editor-facing controls.
 	/// @param chInst Glyph instance whose metrics or vertices are used.
-	void SpineAnimator::EditorUIUpdate(Editor::CommandHistory* chInst)
+	void SpineAnimator::EditorUIUpdate()
 	{
 		ImGui::Text("Play List");
 		D3D11::FTSpineAnimation* anim = nullptr;

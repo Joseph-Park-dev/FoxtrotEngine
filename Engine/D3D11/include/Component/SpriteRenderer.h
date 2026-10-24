@@ -12,9 +12,8 @@
 /// </summary>
 
 #pragma once
-#include "Component/ISpriteRenderer.h"
 #include "Component/D3D11Component.h"
-
+#include "Component/IComponent.h"
 
 namespace D3D11
 {
@@ -27,33 +26,18 @@ namespace D3D11
 	struct Mesh;
 
 	class SpriteRenderer :
-		public Core::ISpriteRenderer, public D3D11Component
+		public D3D11Component
 	{
 	public:
-        // Resolve the shared IComponent interface explicitly at the renderer boundary.
-        /// @brief Returns the owner used by this sprite renderer.
-        /// @return Borrowed access to the owner.
-        Core::IActor* GetOwner() override { return D3D11Component::GetOwner(); }
-        /// @brief Returns the update order used by this sprite renderer.
-        /// @return Current update order.
-        const int GetUpdateOrder() override { return D3D11Component::GetUpdateOrder(); }
-        /// @brief Returns the is initialized used by this sprite renderer.
-        /// @return Current value of the is initialized flag.
-        const bool GetIsInitialized() const override { return D3D11Component::GetIsInitialized(); }
-        /// @brief Returns the is setup used by this sprite renderer.
-        /// @return Current value of the is setup flag.
-        const bool GetIsSetup() const override { return D3D11Component::GetIsSetup(); }
-        /// @brief Returns the is active used by this sprite renderer.
-        /// @return Current value of the is active flag.
-        const bool GetIsActive() const override { return D3D11Component::GetIsActive(); }
-        /// @brief Updates the is active used by subsequent operations.
-        /// @param value Replacement is active.
-        void SetIsActive(bool value) override { D3D11Component::SetIsActive(value); }
+		// Resolve the shared IComponent interface explicitly at the renderer boundary.
+		/// @brief Returns the owner used by this sprite renderer.
+		/// @return Borrowed access to the owner.
+		Common::IActor* GetOwner() override;
 
 		static inline const char* NAME = "SpriteRenderer";
 		/// @brief Returns the name used by this sprite renderer.
 		/// @return Borrowed access to the name.
-		virtual const char*		  GetName() override
+		virtual const char* GetName() override
 		{
 			return "SpriteRenderer";
 		}
@@ -104,13 +88,11 @@ namespace D3D11
 		/// @brief Initializes sprite and material bindings for its actor.
 		/// @param owner Actor or object associated with the new instance.
 		/// @param updateOrder Order used when dispatching component updates.
-		SpriteRenderer(
-			Core::IActor* owner,
-			int			  updateOrder = Core::DefaultVal::UPDATE_ORDER);
+		SpriteRenderer(Common::IActor* owner);
 
 		/// @brief Copies this object's state into the requested target or attaches its clone to the target actor.
 		/// @param actor Actor participating in this operation.
-		virtual void CloneTo(Core::IActor* actor) override;
+		virtual void CloneTo(Common::IActor* actor) override;
 
 		////////////////////////////
 		/// Accessors / Mutators ///
@@ -118,13 +100,13 @@ namespace D3D11
 	protected:
 		/// @brief Returns the sprite used by this sprite renderer.
 		/// @return Borrowed access to the sprite.
-		FTSprite*	GetSprite() const;
+		FTSprite* GetSprite() const;
 		/// @brief Returns the material used by this sprite renderer.
 		/// @return Borrowed access to the material.
 		FTMaterial* GetMaterial() const;
 		/// @brief Returns the pso used by this sprite renderer.
 		/// @return Borrowed access to the pso.
-		D3D11PSO*	GetPSO() const;
+		D3D11PSO* GetPSO() const;
 
 		/// @brief Updates the sprite used by subsequent operations.
 		/// @param sprite Replacement sprite.
@@ -137,9 +119,11 @@ namespace D3D11
 		void SetPSO(D3D11PSO* pso);
 
 	private:
-		FTSprite*	mSprite;
-		D3D11PSO*	mPSO;
-		FTMaterial* mMaterial;
+		Common::IActor* mOwner;
+
+		FTSprite*		mSprite;
+		D3D11PSO*		mPSO;
+		FTMaterial*		mMaterial;
 
 #ifdef FOXTROT_EDITOR
 	public:
@@ -152,7 +136,8 @@ namespace D3D11
 		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst);
 		/// @brief Updates the object's editor-facing controls.
 		/// @param chInst Glyph instance whose metrics or vertices are used.
-		virtual void EditorUIUpdate(Editor::CommandHistory* chInst) override;
+		virtual void EditorUIUpdate() override;
+
 	protected:
 		/// @brief Exposes the sprite resource selected for this renderer.
 		/// @return Borrowed access to the sprite.
@@ -185,8 +170,8 @@ namespace D3D11
 	} // namespace ChunkKey
 
 #include "Plugin/D3D11Exports.h"
-/// @brief Creates a sprite-rendering component associated with an actor.
-/// @param actor Actor participating in this operation.
-/// @return Created sprite renderer instance or resource.
-D3D11_API D3D11::SpriteRenderer* CreateSpriteRenderer(Core::IActor* actor);
+	/// @brief Creates a sprite-rendering component associated with an actor.
+	/// @param actor Actor participating in this operation.
+	/// @return Created sprite renderer instance or resource.
+	D3D11_API D3D11::SpriteRenderer* CreateSpriteRenderer(Core::IActor* actor);
 } // namespace D3D11

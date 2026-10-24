@@ -96,48 +96,48 @@ namespace Core
 		// Getters/Setters
 		/// @brief Returns the data used by this actor.
 		/// @return Borrowed access to the data.
-		CORE_API virtual Common::ActorData*								 GetData() override;
+		CORE_API virtual Common::ActorData* GetData() override;
 		/// @brief Returns the actor group used by this actor.
 		/// @return Current actor group.
-		CORE_API virtual Common::ActorGroup								 GetActorGroup() const override;
+		CORE_API virtual Common::ActorGroup GetActorGroup() const override;
 		/// @brief Returns the actor group ref used by this actor.
 		/// @return Borrowed access to the actor group ref.
 		/// @note Changes through the returned reference affect this object's stored state.
-		CORE_API virtual Common::ActorGroup&								 GetActorGroupRef() override;
+		CORE_API virtual Common::ActorGroup& GetActorGroupRef() override;
 		/// @brief Returns the actor group ptr used by this actor.
 		/// @return Borrowed access to the actor group ptr.
-		CORE_API virtual Common::ActorGroup*								 GetActorGroupPtr() override;
+		CORE_API virtual Common::ActorGroup* GetActorGroupPtr() override;
 		/// @brief Returns the name used by this actor.
 		/// @return Current name.
-		CORE_API virtual Common::FTDS::String							 GetName() override;
+		CORE_API virtual Common::FTDS::String GetName() override;
 		/// @brief Returns the name ref used by this actor.
 		/// @return Borrowed access to the name ref.
 		/// @note Changes through the returned reference affect this object's stored state.
-		CORE_API virtual Common::FTDS::String&							 GetNameRef() override;
+		CORE_API virtual Common::FTDS::String& GetNameRef() override;
 		/// @brief Returns the id used by this actor.
 		/// @return Current id.
-		CORE_API virtual const int										 GetID() const override;
+		CORE_API virtual const int GetID() const override;
 		/// @brief Returns the is active used by this actor.
 		/// @return Current value of the is active flag.
-		CORE_API virtual const bool&										 GetIsActive() const override;
+		CORE_API virtual const bool& GetIsActive() const override;
 		/// @brief Returns the is active ref used by this actor.
 		/// @return Current value of the is active ref flag.
-		CORE_API virtual bool&											 GetIsActiveRef() override;
+		CORE_API virtual bool& GetIsActiveRef() override;
 		/// @brief Returns the transform used by this actor.
 		/// @return Borrowed access to the transform.
-		CORE_API virtual Transform*										 GetTransform() const override;
+		CORE_API virtual Transform* GetTransform() const override;
 		/// @brief Returns the parent used by this actor.
 		/// @return Borrowed access to the parent.
-		CORE_API virtual Actor*											 GetParent() const override;
+		CORE_API virtual Actor* GetParent() const override;
 		/// @brief Returns the components used by this actor.
 		/// @return Borrowed access to the components.
 		CORE_API virtual Common::FTDS::DynamicArray<Common::IComponent*>* GetComponents() override;
 		/// @brief Returns the child actors used by this actor.
 		/// @return Borrowed access to the child actors.
-		CORE_API virtual Common::FTDS::DynamicArray<Common::IActor*>*	 GetChildActors() override;
+		CORE_API virtual Common::FTDS::DynamicArray<Common::IActor*>* GetChildActors() override;
 		/// @brief Returns the draw order used by this actor.
 		/// @return Borrowed access to the draw order.
-		CORE_API virtual const int&										 GetDrawOrder() const override;
+		CORE_API virtual const int& GetDrawOrder() const override;
 
 		/// @brief Updates the name used by subsequent operations.
 		/// @param name Replacement name.

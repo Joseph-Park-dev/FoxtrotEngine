@@ -38,13 +38,11 @@ namespace D3D11
 	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
 	void MeshRenderer::Initialize()
 	{
-		D3D11Component::Initialize();
 	}
 
 	/// @brief Updates the up used by subsequent operations.
 	void MeshRenderer::Setup()
 	{
-		D3D11Component::Setup();
 	}
 
 	/// @brief Provides an empty lifecycle or extension hook for this implementation.
@@ -81,7 +79,7 @@ namespace D3D11
 	/// @param actor Actor participating in this operation.
 	void MeshRenderer::CloneTo(Core::IActor* actor)
 	{
-		MeshRenderer* newComp = DBG_NEW MeshRenderer(actor, GetUpdateOrder());
+		MeshRenderer* newComp = DBG_NEW MeshRenderer(actor);
 		newComp->mRenderer	  = this->mRenderer;
 		newComp->mMeshGroup	  = this->mMeshGroup;
 		newComp->mTexture	  = this->mTexture;
@@ -138,8 +136,8 @@ namespace D3D11
 	/// @param owner Actor or object associated with the new instance.
 	/// @param updateOrder Order used when dispatching component updates.
 	/// @note Initializes the :MeshRenderer base or delegates to its constructor.
-	MeshRenderer::MeshRenderer(Core::IActor* owner, int updateOrder)
-		: D3D11Component(owner, updateOrder)
+	MeshRenderer::MeshRenderer(Core::IActor* owner)
+		: D3D11Component(owner)
 		, mMeshGroup(nullptr)
 		, mRenderer(nullptr)
 		, mTexture(nullptr)
@@ -166,8 +164,6 @@ namespace D3D11
 	/// @note Writes to the supplied stream at its current position.
 	void MeshRenderer::SaveProperties(std::ofstream& ofs)
 	{
-		D3D11::D3D11Component::SaveProperties(ofs);
-
 		if (mMeshGroup)
 			FileIOHelper::SaveString(ofs, ChunkKey::FTMeshGroup::MESH_KEY, mMeshGroup->GetFileName());
 		else
@@ -204,8 +200,6 @@ namespace D3D11
 		// Load MeshGroup.
 		FileIOHelper::LoadBasicString(ifs, keyCache);
 		mMeshGroup = D3D11::ResourceManager::GetInstance()->GetMeshGroup(keyCache);
-
-		D3D11::D3D11Component::LoadProperties(ifs);
 	}
 	#ifdef FOXTROT_EDITOR
 	/// @brief Provides an empty lifecycle or extension hook for this implementation.
@@ -221,10 +215,8 @@ namespace D3D11
 	}
 	/// @brief Updates the object's editor-facing controls.
 	/// @param chInst Glyph instance whose metrics or vertices are used.
-	void MeshRenderer::EditorUIUpdate(Editor::CommandHistory* chInst)
+	void MeshRenderer::EditorUIUpdate()
 	{
-		D3D11::D3D11Component::EditorUIUpdate(chInst);
-
 		if (!GetMeshGroup())
 			return;
 

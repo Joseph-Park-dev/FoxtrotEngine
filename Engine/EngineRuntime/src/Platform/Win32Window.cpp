@@ -12,9 +12,9 @@ namespace
 		void*	user{};
 	};
 
-	std::vector<std::unique_ptr<Window>> windows;
-	float								 wheel		 = 0;
-	constexpr wchar_t					 ClassName[] = L"Foxtrot.Runtime.Window";
+	std::vector<Window*> windows;
+	float				 wheel		 = 0;
+	constexpr wchar_t	 ClassName[] = L"Foxtrot.Runtime.Window";
 
 	/// @brief Dispatches native window messages for input and window lifecycle handling.
 	/// @param hwnd Native window receiving the message.
@@ -55,6 +55,7 @@ namespace
 		return DefWindowProcW(hwnd, msg, wp, lp);
 	}
 } // namespace
+
 /// @brief Creates a native window and associates its callback and user context.
 /// @param title Window title or dialog caption.
 /// @param width Width of the window, texture, or geometry.
@@ -70,25 +71,31 @@ extern "C" HWND FtCreateNativeWindow(const char* title, unsigned int width, unsi
 	wc.hInstance	 = GetModuleHandleW(L"EngineRuntime.dll");
 	wc.hCursor		 = LoadCursorW(nullptr, IDC_ARROW);
 	wc.lpszClassName = ClassName;
+
 	if (!RegisterClassExW(&wc) && GetLastError() != ERROR_CLASS_ALREADY_EXISTS)
 		return nullptr;
+
 	int count = MultiByteToWideChar(CP_UTF8, 0, title, -1, nullptr, 0);
 	if (!count)
 		return nullptr;
+
 	std::wstring wide(static_cast<size_t>(count), L'\0');
 	MultiByteToWideChar(CP_UTF8, 0, title, -1, wide.data(), count);
-	auto state		= std::make_unique<Window>();
+
+	Window* state	= DBG_NEW Window();
 	state->callback = callback;
 	state->user		= user;
+
 	RECT rect{ 0, 0, static_cast<LONG>(width), static_cast<LONG>(height) };
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
-	HWND handle = CreateWindowExW(0, ClassName, wide.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, rect.right - rect.left, rect.bottom - rect.top, nullptr, nullptr, wc.hInstance, state.get());
+	HWND handle = CreateWindowExW(0, ClassName, wide.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, rect.right - rect.left, rect.bottom - rect.top, nullptr, nullptr, wc.hInstance, state);
 	if (!handle)
 		return nullptr;
 	windows.push_back(std::move(state));
 	ShowWindow(handle, SW_SHOW);
 	return handle;
 }
+
 /// @brief Destroys a window registered with the runtime's native window service.
 /// @param handle Native handle managed by this operation.
 /// @note Call on the thread that owns the native windows.
@@ -98,10 +105,12 @@ extern "C" void FtDestroyNativeWindow(HWND handle) noexcept
 	if (it == windows.end())
 		return;
 	(*it)->callback = nullptr;
+
 	RemovePropW(handle, L"Foxtrot.Runtime.State");
 	DestroyWindow(handle);
 	windows.erase(it);
 }
+
 /// @brief Destroys all native windows retained by the runtime service.
 /// @note Call on the thread that owns the native windows.
 extern "C" void FtDestroyAllNativeWindows() noexcept
@@ -110,9 +119,11 @@ extern "C" void FtDestroyAllNativeWindows() noexcept
 		FtDestroyNativeWindow(windows.back()->handle);
 	UnregisterClassW(ClassName, GetModuleHandleW(L"EngineRuntime.dll"));
 }
+
 /// @brief Reads the mouse-wheel movement accumulated for the current input frame.
 /// @return The mouse-wheel movement accumulated for the current input frame.
 extern "C" float FtMouseWheelDelta() noexcept { return wheel; }
+
 /// @brief Clears transient native input accumulators before sampling a new frame.
 extern "C" void FtBeginInputFrame() noexcept { wheel = 0; }
 

@@ -426,7 +426,7 @@ namespace Editor
 					{
 						//CommandHistory::GetInstance()->UpdateIntValue(Core::ChunkKey::UPDATE_ORDER, (*comp)->UpdateOrder());
 						if (auto* inspector = dynamic_cast<D3D11::D3D11Component*>(*iter))
-                            inspector->EditorUIUpdate(CommandHistory::GetInstance());
+                            inspector->EditorUIUpdate();
 						if (ImGui::SmallButton("Delete"))
 							RemoveComponent(*iter);
 						ImGui::TreePop();

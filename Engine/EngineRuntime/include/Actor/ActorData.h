@@ -72,10 +72,10 @@ namespace Common
 		COMP* AddComponent(IPlugin* plugin)
 		{
 			COMP*  comp		   = new COMP(Owner);
-			int	   updateOrder = comp->GetUpdateOrder();
+			//int	   updateOrder = comp->GetUpdateOrder();
 			auto   iter		   = Components->Begin();
 			size_t iterPos	   = 0;
-			for (; iter != Components->End(); ++iter)
+			/*for (; iter != Components->End(); ++iter)
 			{
 				if (!(*iter))
 					break;
@@ -83,7 +83,7 @@ namespace Common
 				if (updateOrder < (*iter)->GetUpdateOrder())
 					break;
 				++iterPos;
-			}
+			}*/
 			Components->Insert(iterPos, comp);
 			plugin->RegisterComponent(comp);
 			return comp;
@@ -152,45 +152,45 @@ namespace Common
 
 		/// @brief Returns the actor group used by this actor data.
 		/// @return Current actor group.
-		CORE_API Common::ActorGroup							 GetActorGroup() const;
+		CORE_API Common::ActorGroup GetActorGroup() const;
 		/// @brief Returns the actor group ref used by this actor data.
 		/// @return Borrowed access to the actor group ref.
 		/// @note Changes through the returned reference affect this object's stored state.
-		CORE_API Common::ActorGroup&							 GetActorGroupRef();
+		CORE_API Common::ActorGroup& GetActorGroupRef();
 		/// @brief Returns the actor group ptr used by this actor data.
 		/// @return Borrowed access to the actor group ptr.
-		CORE_API Common::ActorGroup*							 GetActorGroupPtr();
+		CORE_API Common::ActorGroup* GetActorGroupPtr();
 		/// @brief Returns the name used by this actor data.
 		/// @return Current name.
-		CORE_API Common::FTDS::String						 GetName();
+		CORE_API Common::FTDS::String GetName();
 		/// @brief Returns the name ref used by this actor data.
 		/// @return Borrowed access to the name ref.
 		/// @note Changes through the returned reference affect this object's stored state.
-		CORE_API Common::FTDS::String&						 GetNameRef();
+		CORE_API Common::FTDS::String& GetNameRef();
 		/// @brief Returns the id used by this actor data.
 		/// @return Current id.
-		CORE_API const int									 GetID() const;
+		CORE_API const int GetID() const;
 		/// @brief Returns the is active used by this actor data.
 		/// @return Current value of the is active flag.
-		CORE_API const bool									 GetIsActive() const;
+		CORE_API const bool GetIsActive() const;
 		/// @brief Returns the is active ref used by this actor data.
 		/// @return Current value of the is active ref flag.
-		CORE_API bool&										 GetIsActiveRef();
+		CORE_API bool& GetIsActiveRef();
 		/// @brief Returns the transform used by this actor data.
 		/// @return Borrowed access to the transform.
-		CORE_API Core::Transform*							 GetTransform() const;
+		CORE_API Core::Transform* GetTransform() const;
 		/// @brief Returns the parent used by this actor data.
 		/// @return Borrowed access to the parent.
-		CORE_API Common::IActor*								 GetParent() const;
+		CORE_API Common::IActor* GetParent() const;
 		/// @brief Returns the components used by this actor data.
 		/// @return Borrowed access to the components.
-		CORE_API Common::FTDS::DynamicArray<IComponent*>*	 GetComponents();
+		CORE_API Common::FTDS::DynamicArray<IComponent*>* GetComponents();
 		/// @brief Returns the child actors used by this actor data.
 		/// @return Borrowed access to the child actors.
 		CORE_API Common::FTDS::DynamicArray<Common::IActor*>* GetChildActors();
 		/// @brief Returns the draw order used by this actor data.
 		/// @return Current draw order.
-		CORE_API const int									 GetDrawOrder() const;
+		CORE_API const int GetDrawOrder() const;
 
 		/// @brief Updates the name used by subsequent operations.
 		/// @param name Replacement name.

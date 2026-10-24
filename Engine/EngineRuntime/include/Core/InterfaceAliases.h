@@ -51,6 +51,4 @@ namespace Core
 	using ButtonState	  = InputSystem::ButtonState;
 	using ButtonInput	  = InputSystem::ButtonInput;
 	using FTResourceDef	  = Common::FTResourceDef;
-
-	namespace DefaultVal = Common::DefaultVal;
 } // namespace Core

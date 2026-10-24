@@ -42,8 +42,8 @@ namespace D3D11
 	/// @param owner Actor or object associated with the new instance.
 	/// @param updateOrder Order used when dispatching component updates.
 	/// @note Initializes the :Animator base or delegates to its constructor.
-	Animator::Animator(Core::IActor* owner, int updateOrder)
-		: SpriteRenderer(owner, updateOrder)
+	Animator::Animator(Core::IActor* owner)
+		: SpriteRenderer(owner)
 		, mLoadedAnim(DBG_NEW Common::FTDS::DynamicArray<D3D11::FTSpriteAnimation*>)
 		, mCurrFrameIdx(0)
 		, mAccTime(0.f)
@@ -174,8 +174,10 @@ namespace D3D11
 	{
 		if (0 < mLoadedAnim->GetSize())
 			Play(0);
+	}
 
-		D3D11Component::Initialize();
+	void Animator::Setup()
+	{
 	}
 
 	/// @brief Provides an empty lifecycle or extension hook for this implementation.
@@ -229,7 +231,7 @@ namespace D3D11
 	/// @param actor Actor participating in this operation.
 	void Animator::CloneTo(Core::IActor* actor)
 	{
-		Animator* newComp = DBG_NEW Animator(actor, GetUpdateOrder());
+		Animator* newComp = DBG_NEW Animator(actor);
 
 		newComp->mLoadedAnim->Assign(this->mLoadedAnim);
 		newComp->SetSprite(this->GetSprite());

@@ -41,16 +41,17 @@ namespace D3D11
 {
 	using namespace Common;
 	using namespace Core;
-	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
-	void SpriteRenderer::Initialize()
+	Common::IActor* SpriteRenderer::GetOwner()
 	{
-		D3D11Component::Initialize();
+		return mOwner;
 	}
 
-	/// @brief Updates the up used by subsequent operations.
+	void SpriteRenderer::Initialize()
+	{
+	}
+
 	void SpriteRenderer::Setup()
 	{
-		D3D11Component::Setup();
 	}
 
 	/// @brief Provides an empty lifecycle or extension hook for this implementation.
@@ -85,9 +86,9 @@ namespace D3D11
 
 	/// @brief Copies this object's state into the requested target or attaches its clone to the target actor.
 	/// @param actor Actor participating in this operation.
-	void SpriteRenderer::CloneTo(Core::IActor* actor)
+	void SpriteRenderer::CloneTo(Common::IActor* actor)
 	{
-		SpriteRenderer* newComp = DBG_NEW SpriteRenderer(actor, GetUpdateOrder());
+		SpriteRenderer* newComp = DBG_NEW SpriteRenderer(actor);
 		newComp->mSprite		= this->mSprite;
 		newComp->mPSO			= this->mPSO;
 		newComp->mMaterial		= this->mMaterial;
@@ -97,8 +98,9 @@ namespace D3D11
 	/// @param owner Actor or object associated with the new instance.
 	/// @param updateOrder Order used when dispatching component updates.
 	/// @note Initializes the :SpriteRenderer base or delegates to its constructor.
-	SpriteRenderer::SpriteRenderer(IActor* owner, int updateOrder)
-		: D3D11Component(owner, updateOrder)
+	SpriteRenderer::SpriteRenderer(IActor* owner)
+		: D3D11Component(owner)
+		, mOwner(owner)
 		, mSprite(nullptr)
 		, mMaterial(nullptr)
 	{
@@ -141,7 +143,6 @@ namespace D3D11
 	/// @note Writes to the supplied stream at its current position.
 	void SpriteRenderer::SaveProperties(std::ofstream& ofs)
 	{
-		D3D11::D3D11Component::SaveProperties(ofs);
 		FileIOHelper::SaveString(ofs, ChunkKey::SpriteRenderer::SPRITE, mSprite->GetFileName());
 		FileIOHelper::SaveString(ofs, ChunkKey::SpriteRenderer::MATERIAL, mMaterial->GetFileName());
 	}
@@ -156,7 +157,6 @@ namespace D3D11
 
 		Common::FTDS::String spriteKey;
 		FileIOHelper::LoadBasicString(ifs, spriteKey);
-		D3D11::D3D11Component::LoadProperties(ifs);
 
 		mSprite	  = D3D11::ResourceManager::GetInstance()->GetSprite(spriteKey);
 		mMaterial = D3D11::ResourceManager::GetInstance()->GetMaterial(matKey);
@@ -193,10 +193,8 @@ namespace D3D11
 
 	/// @brief Updates the object's editor-facing controls.
 	/// @param chInst Glyph instance whose metrics or vertices are used.
-	void SpriteRenderer::EditorUIUpdate(Editor::CommandHistory* chInst)
+	void SpriteRenderer::EditorUIUpdate()
 	{
-		D3D11::D3D11Component::EditorUIUpdate(chInst);
-
 		if (GetSprite())
 			GetSprite()->UpdateUI();
 

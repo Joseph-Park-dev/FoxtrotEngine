@@ -49,10 +49,10 @@ namespace D3D11
 		/// @brief Initializes Spine animation playback state for its actor.
 		/// @param owner Actor or object associated with the new instance.
 		/// @param updateOrder Order used when dispatching component updates.
-		SpineAnimator(Core::IActor* owner, int updateOrder = Core::DefaultVal::UPDATE_ORDER);
+		SpineAnimator(Common::IActor* owner);
 		/// @brief Copies this object's state into the requested target or attaches its clone to the target actor.
 		/// @param actor Actor participating in this operation.
-		virtual void CloneTo(Core::IActor* actor) override;
+		virtual void CloneTo(Common::IActor* actor) override;
 
 	private:
 		float		   mTimeScale;
@@ -79,7 +79,7 @@ namespace D3D11
 		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst) override;
 		/// @brief Updates the object's editor-facing controls.
 		/// @param chInst Glyph instance whose metrics or vertices are used.
-		virtual void EditorUIUpdate(Editor::CommandHistory* chInst) override;
+		virtual void EditorUIUpdate() override;
 #endif // FOXTROT_EDITOR
 	
 	};
@@ -97,5 +97,5 @@ namespace D3D11
 /// @brief Creates a Spine animation component associated with an actor.
 /// @param actor Actor participating in this operation.
 /// @return Created spine animator instance or resource.
-D3D11_API D3D11::SpineAnimator* CreateSpineAnimator(Core::IActor* actor);
+	D3D11_API D3D11::SpineAnimator* CreateSpineAnimator(Common::IActor* actor);
 } // namespace D3D11

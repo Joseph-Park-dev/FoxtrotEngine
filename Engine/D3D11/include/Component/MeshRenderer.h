@@ -78,12 +78,12 @@ namespace D3D11
 		/// @brief Initializes mesh and material state for its owning actor.
 		/// @param owner Actor or object associated with the new instance.
 		/// @param updateOrder Order used when dispatching component updates.
-		MeshRenderer(Core::IActor* owner, int updateOrder = Core::DefaultVal::UPDATE_ORDER);
+		MeshRenderer(Common::IActor* owner);
 		/// @brief Completes destruction through the object's inheritance hierarchy.
 		virtual ~MeshRenderer() override;
 		/// @brief Copies this object's state into the requested target or attaches its clone to the target actor.
 		/// @param actor Actor participating in this operation.
-		virtual void CloneTo(Core::IActor* actor) override;
+		virtual void CloneTo(Common::IActor* actor) override;
 
 		///////////////////////////////////////
 		// Getters & Setters to the elements //
@@ -175,7 +175,7 @@ namespace D3D11
 		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst) override;
 		/// @brief Updates the object's editor-facing controls.
 		/// @param chInst Glyph instance whose metrics or vertices are used.
-		virtual void EditorUIUpdate(Editor::CommandHistory* chInst) override;
+		virtual void EditorUIUpdate() override;
 
 	protected:
 		/// @brief Exposes the material used when drawing this object.
@@ -198,5 +198,5 @@ namespace D3D11
 /// @brief Creates a mesh-rendering component associated with an actor.
 /// @param actor Actor participating in this operation.
 /// @return Created mesh renderer instance or resource.
-D3D11_API D3D11::MeshRenderer* CreateMeshRenderer(Core::IActor* actor);
+D3D11_API D3D11::MeshRenderer* CreateMeshRenderer(Common::IActor* actor);
 } // namespace D3D11

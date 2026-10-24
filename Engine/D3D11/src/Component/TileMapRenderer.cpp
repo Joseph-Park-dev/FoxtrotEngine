@@ -84,6 +84,10 @@ namespace D3D11
 		this->InitializeTileMap();
 	}
 
+	void TileMapRenderer::Setup()
+	{
+	}
+
 	/// @brief Provides an empty lifecycle or extension hook for this implementation.
 	/// @param inputDevice Device exposing the current frame's input state.
 	void TileMapRenderer::ProcessInput(IInputDevice* inputDevice)
@@ -131,7 +135,7 @@ namespace D3D11
 	/// @param actor Actor participating in this operation.
 	void TileMapRenderer::CloneTo(IActor* actor)
 	{
-		TileMapRenderer* newComp = DBG_NEW TileMapRenderer(actor, GetUpdateOrder());
+		TileMapRenderer* newComp = DBG_NEW TileMapRenderer(actor);
 		newComp->mTileMapKey	 = this->mTileMapKey;
 	}
 
@@ -139,8 +143,8 @@ namespace D3D11
 	/// @param owner Actor or object associated with the new instance.
 	/// @param updateOrder Order used when dispatching component updates.
 	/// @note Initializes the :TileMapRenderer base or delegates to its constructor.
-	TileMapRenderer::TileMapRenderer(IActor* owner, int updateOrder)
-		: SpriteRenderer(owner, updateOrder)
+	TileMapRenderer::TileMapRenderer(IActor* owner)
+		: SpriteRenderer(owner)
 		, mTileMap(nullptr)
 		, mTileMapKey(Common::ChunkKey::NullVal::NULL_OBJECT)
 
@@ -159,7 +163,6 @@ namespace D3D11
 	/// @note Writes to the supplied stream at its current position.
 	void TileMapRenderer::SaveProperties(std::ofstream& ofs)
 	{
-		D3D11Component::SaveProperties(ofs);
 		FileIOHelper::SaveString(ofs, ChunkKey::TileMapRenderer::TILEMAP_KEY, mTileMap->GetFileName());
 	}
 
@@ -172,7 +175,6 @@ namespace D3D11
 		FileIOHelper::LoadBasicString(ifs, texKey);
 		// SetTexKey(texKey);
 		FileIOHelper::LoadBasicString(ifs, mTileMapKey);
-		D3D11Component::LoadProperties(ifs);
 	}
 
 #ifdef FOXTROT_EDITOR
@@ -189,7 +191,7 @@ namespace D3D11
 	}
 	/// @brief Updates the object's editor-facing controls.
 	/// @param chInst Glyph instance whose metrics or vertices are used.
-	void TileMapRenderer::EditorUIUpdate(Editor::CommandHistory* chInst)
+	void TileMapRenderer::EditorUIUpdate()
 	{
 		// UpdateSprite();
 		UpdateCSV();

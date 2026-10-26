@@ -270,6 +270,14 @@ namespace Common
 				Clear();
 			}
 
+			HashMap(std::initializer_list<std::pair<const char*, TYPE>> entries)
+				: FTDS::Array<Record<TYPE>*>(entries.size()))
+				, mSize(0)
+			{
+				for (const auto& entry : entries)
+					Insert(entry.first, entry.second);
+			}
+
 		private:
 			size_t mSize;
 		};

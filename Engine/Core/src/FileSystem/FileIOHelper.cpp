@@ -636,28 +636,45 @@ namespace Common
 		if (ifs.fail())
 			return false;
 
-		char   ch	  = '\0'; // initialize to null character
-		size_t length = 0;
+		// A text-mode stream can seek to a position previously returned by tellg.
+		// Relative seekg is ignored once get() fails at EOF, because failbit stays set.
+		const std::streampos start			  = ifs.tellg();
+		char				 ch				  = '\0';
+		size_t				 length			  = 0;
+		bool				 foundDelimiter	  = false;
 
-		// Calculate the number of characters in a line.
 		while (ifs.get(ch))
 		{
 			if (ch == delimiter)
+			{
+				foundDelimiter = true;
 				break;
+			}
 			++length;
 		}
-		int capacity = static_cast<int>(length + 1);
-		str.Reserve(capacity);
-		ifs.seekg(-capacity - 1, std::ios_base::cur);
 
-		// Read characters one by one.
+		// A blank line has already consumed its delimiter. True EOF has nothing to copy.
+		if (length == 0)
+			return false;
+
+		if (!foundDelimiter)
+			ifs.clear();
+
+		str.Reserve(static_cast<int>(length + 1));
+		ifs.seekg(start);
+
 		for (size_t i = 0; i < length; ++i)
 		{
-			ifs.get(ch);
+			if (!ifs.get(ch))
+				return false;
 			str.PushBack(ch);
 		}
 		str.PushBack('\0');
-		ifs.seekg(2, std::ios_base::cur); // Skip the "\n" at the end of the line.
+
+		// Text mode presents \r\n as one '\n'. One extraction consumes both bytes.
+		if (foundDelimiter)
+			ifs.get(ch);
+
 		return str.Data() && 0 < length;
 	}
 } // namespace Common

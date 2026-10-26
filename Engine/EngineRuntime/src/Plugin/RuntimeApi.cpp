@@ -23,9 +23,10 @@ namespace
 		void*				Context;
 	};
 
-	std::vector<System> systems;
-	uint64_t			nextToken = 1;
-	bool				ticking	  = false;
+	std::vector<System>	  systems;
+	uint64_t			  nextToken = 1;
+	bool				  ticking	= false;
+	constexpr const char* DLL_LIST	= ".\\DLL List.ftconfig";
 
 	/// @brief Registers a callback and context for game-system updates.
 	/// @param tick Callback invoked once per game-system update.
@@ -73,6 +74,21 @@ namespace
 	bool				  initialized	 = false;
 	bool				  stopped		 = false;
 
+	void FT_CALL GetDLLList(Common::FTDS::Array<Common::FTDS::String>& list)
+	{
+		std::ifstream dllList = std::ifstream(DLL_LIST);
+		size_t		  count	  = Common::FileIOHelper::BeginDataPackLoad(dllList).first;
+		list.Reserve(count);
+
+		Common::FTDS::String dll;
+		for (size_t i = 0; i < count; ++i)
+		{
+			Common::FileIOHelper::LoadBasicString(dllList, dll);
+			list[i].Assign(dll);
+			dll.Clear();
+		}
+	}
+
 	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
 	/// @note Unnamed parameter (void*): reserved by this interface or unused by this implementation.
 	/// @note Unnamed parameter (const Foxtrot::HostServices*): reserved by this interface or unused by this implementation.
@@ -87,6 +103,7 @@ namespace
 			if (FAILED(hr))
 				return Foxtrot::Status::Failed;
 			comInitialized = true;
+
 			if (!Core::FTCore::GetInstance()->Initialize())
 				return Foxtrot::Status::Failed;
 			FtLog("EngineRuntime initialized");
@@ -198,10 +215,11 @@ namespace
 
 	/*=====================================
 	======= RuntimeControl Instance =======
-	=====================================*/ 
-	
+	=====================================*/
+
 	// This will be accessed through func "Query"
 	Foxtrot::RuntimeControl control{ Attach, Run, Stop };
+	Common::FTDS::Array<Common::FTDS::String> dLLList;
 
 	/// @brief Returns the named module service supported by this ABI adapter.
 	/// @note Unnamed parameter (void*): reserved by this interface or unused by this implementation.
@@ -213,6 +231,12 @@ namespace
 			return nullptr;
 		if (std::strcmp(name, "GameServices") == 0)
 			return &gameServices;
+		if (std::strcmp(name, "DLLList") == 0)
+		{
+			dLLList.Clear();
+			GetDLLList(dLLList);
+			return &dLLList;
+		}
 		return std::strcmp(name, "RuntimeControl") == 0 ? &control : nullptr;
 	}
 } // namespace

@@ -457,7 +457,7 @@ namespace Common
 			/// @brief Resets the logical contents and releases or reinitializes storage as defined by the container.
 			void Clear() override
 			{
-				FTDS::Array<char>::Clear();
+				FTDS::DynamicArray<char>::Clear();
 				Common::FTDS::DynamicArray<char>::PushBack('\0');
 			}
 		};

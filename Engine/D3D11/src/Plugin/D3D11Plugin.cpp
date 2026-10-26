@@ -506,33 +506,14 @@ namespace D3D11
 #include "Component/SpriteRenderer.h"
 #include "Component/TileMapRenderer.h"
 
-namespace D3D11
+FT_EXPORT void SetComponentFactory(Common::FTDS::HashMap<ComponentFactoryEntry>& entries) noexcept
 {
-	namespace
-	{
-		template <typename Component>
-		Common::IComponent* CreateRegisteredComponent(Common::IPlugin* plugin, Common::IActor* actor)
-		{
-			if (!plugin || !actor || !actor->GetData() || !actor->GetComponents())
-				return nullptr;
-			return actor->GetData()->AddComponent<Component>(plugin);
-		}
-
-		const Core::ComponentFactoryEntry ComponentFactories[] = {
-			{ MeshRenderer::NAME, CreateRegisteredComponent<MeshRenderer> },
-			{ ChunkKey::Animator::NAME, CreateRegisteredComponent<Animator> },
-			{ ChunkKey::SpriteRenderer::NAME, CreateRegisteredComponent<SpriteRenderer> },
-			{ ChunkKey::SpineAnimator::NAME, CreateRegisteredComponent<SpineAnimator> },
-			{ ChunkKey::TileMapRenderer::NAME, CreateRegisteredComponent<TileMapRenderer> }
-		};
-	} // namespace
-
-	const Core::ComponentFactoryEntry* D3D11Plugin::GetComponentFactories(std::size_t& count) const noexcept
-	{
-		count = sizeof(ComponentFactories) / sizeof(ComponentFactories[0]);
-		return ComponentFactories;
-	}
-} // namespace D3D11
+	entries.Insert(D3D11::ChunkKey::Animator::NAME, CreateRegisteredComponent<D3D11::Animator>);
+	entries.Insert(D3D11::ChunkKey::MeshRenderer::NAME, CreateRegisteredComponent<D3D11::MeshRenderer>);
+	entries.Insert(D3D11::ChunkKey::SpineAnimator::NAME, CreateRegisteredComponent<D3D11::SpineAnimator>);
+	entries.Insert(D3D11::ChunkKey::SpriteRenderer::NAME, CreateRegisteredComponent<D3D11::SpriteRenderer>);
+	entries.Insert(D3D11::ChunkKey::TileMapRenderer::NAME, CreateRegisteredComponent<D3D11::TileMapRenderer>);
+}
 
 extern "C"
 {

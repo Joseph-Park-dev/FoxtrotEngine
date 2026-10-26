@@ -56,8 +56,8 @@ namespace
 			attach(fileName, (*iter).C_Str());
 			delete fileName;
 		}
-
 		modules.Load(L"Game.dll", "Game");
+
 		if (editor)
 			attach(L"Editor.dll", "Editor");
 		return control->Run(frames) == Foxtrot::Status::Ok ? 0 : 1;

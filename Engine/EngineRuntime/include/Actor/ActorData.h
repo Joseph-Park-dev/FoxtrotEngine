@@ -69,7 +69,7 @@ namespace Common
 		/// @return Component owned by the actor's component collection.
 		/// @pre The actor's component collection and plugin must be initialized.
 		template <typename COMP>
-		COMP* AddComponent(IPlugin* plugin)
+		COMP* AddComponent()
 		{
 			COMP*  comp		   = new COMP(Owner);
 			//int	   updateOrder = comp->GetUpdateOrder();
@@ -85,7 +85,7 @@ namespace Common
 				++iterPos;
 			}*/
 			Components->Insert(iterPos, comp);
-			plugin->RegisterComponent(comp);
+			//plugin->RegisterComponent(comp);
 			return comp;
 		}
 

@@ -218,7 +218,7 @@ namespace
 	=====================================*/
 
 	// This will be accessed through func "Query"
-	Foxtrot::RuntimeControl control{ Attach, Run, Stop };
+	Foxtrot::RuntimeControl					  control{ Attach, Run, Stop };
 	Common::FTDS::Array<Common::FTDS::String> dLLList;
 
 	/// @brief Returns the named module service supported by this ABI adapter.

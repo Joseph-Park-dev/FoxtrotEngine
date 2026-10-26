@@ -5,6 +5,12 @@
 #include "FileSystem/FileIOHelper.h"
 #include "Component/Data/ComponentData.h"
 
+#include "Component/Animator.h"
+#include "Component/MeshRenderer.h"
+#include "Component/SpineAnimator.h"
+#include "Component/SpriteRenderer.h"
+#include "Component/TileMapRenderer.h"
+
 #ifdef FOXTROT_EDITOR
 	#include "Utility/EditorHelper.h"
 #endif // FOXTROT_EDITOR

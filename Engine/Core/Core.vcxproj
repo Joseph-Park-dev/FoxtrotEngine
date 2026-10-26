@@ -48,7 +48,7 @@
     </ClCompile>
     <Link>
       <ModuleDefinitionFile>$(ProjectDir)Module.def</ModuleDefinitionFile>
-      <AdditionalDependencies>;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>

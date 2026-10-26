@@ -16,5 +16,5 @@ static Common::IPlugin* Create() { return CreatePlugin("D3D11"); }
 /// @return ABI status indicating success or the reason the descriptor could not be produced.
 FT_EXPORT Foxtrot::Status FT_CALL FtGetModuleAPI(uint32_t abi, uint32_t bytes, Foxtrot::ModuleAPI* out) noexcept
 {
-	return Foxtrot::MakePluginAPI(abi, bytes, out, "D3D11", Create);
+	return Foxtrot::MakePluginAPI(abi, bytes, out, "FoxtrotD3D11", Create);
 }

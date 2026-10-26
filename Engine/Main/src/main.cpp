@@ -1,8 +1,12 @@
-#include "ModuleHost.h"
-#include "Foxtrot/Runtime/RuntimeApi.h"
 #include <cstdio>
 #include <cstring>
 #include <stdexcept>
+#include <fstream>
+
+#include "ModuleHost.h"
+#include "Foxtrot/Runtime/RuntimeApi.h"
+#include "FTDS/Static/Array.h"
+#include "FTDS/Static/FTString.h"
 
 namespace
 {
@@ -40,7 +44,19 @@ namespace
 			if (control->Attach(name, module->Query(module->Instance, "LegacyPlugin")) != Foxtrot::Status::Ok)
 				throw std::runtime_error("Cannot attach plugin to runtime");
 		};
-		attach(L"FoxtrotD3D11.dll", "D3D11");
+
+		Common::FTDS::Array<Common::FTDS::String>* dllList =
+			static_cast<Common::FTDS::Array<Common::FTDS::String>*>(runtime->Query(runtime->Instance, "DLLList"));
+
+		for (auto iter = dllList->Begin(); iter != dllList->End(); ++iter)
+		{
+			Common::FTDS::String name = (*iter);
+			name.Append(".dll");
+			const wchar_t* fileName = name.WC_Str();
+			attach(fileName, (*iter).C_Str());
+			delete fileName;
+		}
+
 		modules.Load(L"Game.dll", "Game");
 		if (editor)
 			attach(L"Editor.dll", "Editor");

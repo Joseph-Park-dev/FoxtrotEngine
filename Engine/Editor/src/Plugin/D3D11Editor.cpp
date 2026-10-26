@@ -196,7 +196,7 @@ void D3D11Editor::Initialize()
 	IPlugin* d3d11Plugin = nullptr;
 	if (auto* plugins = Core::GetAvailablePlugins())
 		for (auto it = plugins->Begin(); it != plugins->End(); ++it)
-			if (*it && (*it)->Key().Equal("D3D11"))
+			if (*it && (*it)->Key().Equal("FoxtrotD3D11"))
 			{
 				d3d11Plugin = (*it)->Value();
 				break;

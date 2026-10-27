@@ -20,6 +20,7 @@
 #include <d3d11.h>
 
 #include "EditorElement.h"
+#include "ComponentRegistry.h"
 #include "CommandHistory.h"
 #include "Command.h"
 #include "EditorSceneManager.h"
@@ -61,6 +62,8 @@ namespace Editor
 		mGetChunkPathFunc	 = Core::GetFunc<GET_CHUNK_PATH_FUNC>(Common::DLLPath::CORE_EDITOR, ProcName::GetChunkPath);
 		mGetAssetPathFunc	 = Core::GetFunc<GET_ASSET_PATH_FUNC>(Common::DLLPath::CORE_EDITOR, ProcName::GetAssetPath);
 		mSetChunkIsSavedFunc = Core::GetFunc<SET_CHUNK_IS_SAVED_FUNC>(Common::DLLPath::CORE_EDITOR, ProcName::SetChunkIsSaved);
+
+		ComponentRegistry::GetInstance()->FetchFromImportedDLLs();
 
 		mRenderer	= renderer;
 		mResService = DBG_NEW Common::FTDS::DynamicArray<Core::IEditorResourceService*>;
@@ -879,11 +882,28 @@ namespace Editor
 			// ResourceManager::GetInstance()->DeleteAll();
 			DirectoryHelper::GetInstance()->SetProjectPath(path.c_str());
 
+			// CSV, JSON, and text have to be loaded before graphics resources that reference them.
+			Core::IEditorResourceService* coreService = nullptr;
+			if (auto* plugins = Core::GetAvailablePlugins())
+			{
+				for (auto it = plugins->Begin(); it != plugins->End(); ++it)
+				{
+					if (!*it || !(*it)->Value() || !(*it)->Key().Equal("Core"))
+						continue;
+					coreService = static_cast<Core::IEditorResourceService*>(
+						(*it)->Value()->QueryInterface(Core::IEditorResourceService::INTERFACE_NAME));
+					break;
+				}
+			}
+			if (coreService)
+				coreService->LoadAllResourcesInAsset(PATH_ASSET->C_Str(), mRenderer);
+
 			for (auto iter = mResService->Begin(); iter != mResService->End(); ++iter)
 			{
 				// HashMap iterators visit empty buckets as well as registered plugins.
-				if (!*iter)
+				if (!*iter || *iter == coreService)
 					continue;
+				(*iter)->LoadDefaultResources(PATH_ASSET->C_Str(), mRenderer);
 				(*iter)->LoadAllResourcesInAsset(PATH_ASSET->C_Str(), mRenderer);
 			}
 		}

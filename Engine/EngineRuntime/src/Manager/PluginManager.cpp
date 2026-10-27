@@ -52,15 +52,6 @@ namespace Core
 		mOrder.push_back(plugin);
 	}
 
-	/// @brief Obtains a plugin instance and registers it for engine lifecycle dispatch.
-	/// @param name Name used to identify the requested object or interface.
-	/// @return Obtains a plugin instance and registers it for engine lifecycle dispatch.
-	Common::IPlugin* PluginManager::RegisterPlugin(const char* name)
-	{
-		// Compatibility lookup only. The EXE is the sole DLL loader.
-		return GetPlugin(name);
-	}
-
 	/// @brief Returns the plugin used by this plugin manager.
 	/// @param pluginName Plugin's registered name.
 	/// @return Borrowed access to the plugin. May be null when no matching object is available.
@@ -142,6 +133,6 @@ namespace Core
 //	/// @return Obtains a plugin instance and registers it for engine lifecycle dispatch.
 //	CORE_API Common::IPlugin* RegisterPlugin(const char* pluginName)
 //	{
-//		return Core::PluginManager::GetInstance()->RegisterPlugin(pluginName);
+//		return Core::PluginManager::GetInstance()->GetPlugin(pluginName);
 //	}
 //}

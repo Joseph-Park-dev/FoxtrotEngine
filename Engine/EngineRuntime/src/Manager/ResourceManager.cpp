@@ -31,6 +31,10 @@
 #include "FTDS/Static/FTString.h"
 #include "FileSystem/NullKeys.h"
 #include "Plugin/CoreExports.h"
+#include "FileSystem/FileTypes.h"
+#ifdef FOXTROT_EDITOR
+	#include "Plugin/CoreEditorResourceService.h"
+#endif // FOXTROT_EDITOR
 
 namespace Core
 {
@@ -45,13 +49,13 @@ namespace Core
 	{
 	}
 
-    /// @brief Releases resources associated with the loaded world.
-    void ResourceManager::ReleaseWorldResources()
-    {
-        // Prefabs may retain component vtables from renderer or game DLLs.
-        delete mPremades;
-        mPremades = nullptr;
-    }
+	/// @brief Releases resources associated with the loaded world.
+	void ResourceManager::ReleaseWorldResources()
+	{
+		// Prefabs may retain component vtables from renderer or game DLLs.
+		delete mPremades;
+		mPremades = nullptr;
+	}
 
 	/// @brief Releases the resources managed by this instance during destruction.
 	ResourceManager::~ResourceManager()
@@ -449,6 +453,29 @@ namespace Core
 	{
 		return mTexts;
 	}
+
+#ifdef FOXTROT_EDITOR
+	void ResourceManager::LoadAllResourcesInAsset(FTDS::String* dir)
+	{
+		const char* assetDir = dir->C_Str();
+		mCSVs->LoadAllResourcesInAsset(assetDir, FileTypes::CSV);
+		mJSONs->LoadAllResourcesInAsset(assetDir, FileTypes::JSON);
+		mTexts->LoadAllResourcesInAsset(assetDir, FileTypes::TEXT);
+	}
+
+	void ResourceManager::EditorUIUpdate()
+	{
+		mCSVs->DisplayLoadedResources("CSVs");
+		mJSONs->DisplayLoadedResources("JSONs");
+		mTexts->DisplayLoadedResources("Texts");
+	}
+
+	void SetEditorGuiContext(void* context)
+	{
+		ImGui::SetCurrentContext(static_cast<ImGuiContext*>(context));
+	}
+
+#endif // DEBUG
 
 	/// @brief Returns the premade used by this service.
 	/// @param key Lookup key identifying the stored entry.

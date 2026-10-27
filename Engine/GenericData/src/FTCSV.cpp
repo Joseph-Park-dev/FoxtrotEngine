@@ -39,20 +39,19 @@ namespace GenericData
 	const Common::FTDS::DynamicArray<int>& FTCSV::Data() const { return mData; }
 
 	/// @brief Initializes a resource containing parsed integer CSV data.
-	/// @param metaData meta data used by this operation.
+	/// @param resDef Resource definition containing the filename and source path.
 	/// @note Initializes the :FTCSV base or delegates to its constructor.
-	FTCSV::FTCSV(Common::ResourceData* metaData)
-		: Common::FTResource()
+	FTCSV::FTCSV(Common::FTResourceDef& resDef, void* data)
+		: Common::FTResource(resDef)
 		, mData()
 		, mColumnCount(0)
 		, mRowCount(0)
 	{
-		SetFileName(*metaData->FileName);
-		SetRelativePath(*metaData->Path);
+		(void)data;
 		if (!mData.IsEmpty())
 			return;
 
-		this->Read(*metaData->Path);
+		this->Read(*mMetaData->Path);
 	}
 
 	/// @brief Releases the resources managed by this instance during destruction.

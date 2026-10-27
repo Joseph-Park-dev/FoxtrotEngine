@@ -26,14 +26,13 @@ namespace GenericData
 	// }
 
 	/// @brief Initializes a parsed JSON resource.
-	/// @param metaData meta data used by this operation.
+	/// @param resDef Resource definition containing the filename and source path.
 	/// @note Initializes the :FTJSON base or delegates to its constructor.
 	/// @throws nlohmann::json::parse_error If the resource file contains invalid JSON.
-	FTJSON::FTJSON(Common::ResourceData* metaData)
-		: Common::FTResource()
+	FTJSON::FTJSON(Common::FTResourceDef& resDef, void* data)
+		: Common::FTResource(resDef)
 	{
-		SetFileName(*metaData->FileName);
-		SetRelativePath(*metaData->Path);
+		(void)data;
 		if (!mData.empty())
 			return;
 

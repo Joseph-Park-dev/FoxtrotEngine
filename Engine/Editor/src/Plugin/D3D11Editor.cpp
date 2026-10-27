@@ -45,6 +45,8 @@
 
 #include "Core/FTCore.h"
 #include "Plugin/CoreEditorResourceService.h"
+#include "Actor/IActor.h"
+#include "Component/IComponent.h"
 #include <../../D3D11/include/Plugin/PluginKey.h>
 
 /// @brief Forwards native window messages to the ImGui Win32 backend.
@@ -173,6 +175,11 @@ private:
 	void LateUpdate(float) override {}
 	/// @brief Submits this object's graphics work for the current frame.
 	void Render() override;
+	/// @brief Draws active scene components into the currently bound render target.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	/// @param camera Camera supplying the view and projection for this draw.
+	/// @param editorPass True to call EditorRender; false to call Render.
+	void RenderScene(Core::IRenderer* renderer, Core::ICamera* camera, bool editorPass);
 	/// @brief Provides an empty lifecycle or extension hook for this implementation.
 	void ProcessEvent() override {}
 	/// @brief Provides an empty lifecycle or extension hook for this implementation.
@@ -313,12 +320,78 @@ void D3D11Editor::Render()
 	// EditorLayer::GetInstance()->Render(renderer);
 	// mEditorWindow->EndRender(renderer);
 
-	mViewport->BeginRender(mRenderer);
-	mViewport->DrawOnTexture(mRenderer);
-	mViewport->EndRender(mRenderer);
-    mEditorWin->BeginRender(mRenderer);
-    EditorLayer::GetInstance()->Render();
-    mEditorWin->EndRender(mRenderer);
+	if (mViewport && mRenderer && mEditorCamera)
+	{
+		D3D11::FTRectArea* area = mEditorWin ? mEditorWin->GetRenderArea() : nullptr;
+		if (area && mEditorCamera->Data())
+		{
+			Math::FTVector2 size = area->GetSize();
+			if (1.f <= size.x && 1.f <= size.y)
+			{
+				mEditorCamera->Data()->ResX = static_cast<unsigned int>(size.x);
+				mEditorCamera->Data()->ResY = static_cast<unsigned int>(size.y);
+			}
+		}
+
+		mViewport->BeginRender(mRenderer);
+		RenderScene(mRenderer, mEditorCamera, true);
+		mViewport->EndRender(mRenderer);
+	}
+
+	if (mGameWin && mRenderer && mGameCamera)
+	{
+		mGameWin->BeginRender(mRenderer);
+		if (mGameCamera->Data() && 0 < mGameWin->GetWidth() && 0 < mGameWin->GetHeight())
+		{
+			mGameCamera->Data()->ResX = mGameWin->GetWidth();
+			mGameCamera->Data()->ResY = mGameWin->GetHeight();
+		}
+		RenderScene(mRenderer, mGameCamera, false);
+		mGameWin->EndRender(mRenderer);
+	}
+
+	if (mEditorWin && mRenderer)
+	{
+		mEditorWin->BeginRender(mRenderer);
+		EditorLayer::GetInstance()->Render();
+		mEditorWin->EndRender(mRenderer);
+	}
+}
+
+/// @brief Draws active scene components into the currently bound render target.
+/// @param renderer Renderer providing the graphics device and current render state.
+/// @param camera Camera supplying the view and projection for this draw.
+/// @param editorPass True to call EditorRender; false to call Render.
+void D3D11Editor::RenderScene(Core::IRenderer* renderer, Core::ICamera* camera, bool editorPass)
+{
+	if (!renderer || !camera)
+		return;
+
+	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+	if (!scene || !scene->Actors())
+		return;
+
+	Common::FTDS::DynamicArray<Common::IActor*>* actors = scene->Actors();
+	for (auto actor = actors->Begin(); actor != actors->End(); ++actor)
+	{
+		if (!(*actor) || !(*actor)->GetIsActive())
+			continue;
+
+		Common::FTDS::DynamicArray<Common::IComponent*>* components = (*actor)->GetComponents();
+		if (!components)
+			continue;
+
+		for (auto component = components->Begin(); component != components->End(); ++component)
+		{
+			if (!(*component))
+				continue;
+
+			if (editorPass)
+				(*component)->EditorRender(renderer, camera);
+			else
+				(*component)->Render(renderer, camera);
+		}
+	}
 }
 
 
@@ -365,21 +438,36 @@ D3D11Editor::D3D11Editor()
 /// @brief Releases the resources managed by this instance during destruction.
 D3D11Editor::~D3D11Editor()
 {
-    if (mEditorWin) FtDetachWindowCallback(mEditorWin->GetHandle());
-    if (mGameWin) FtDetachWindowCallback(mGameWin->GetHandle());
-    CommandHistory::GetInstance()->ShutDown();
-    CommandHistory::Destroy();
-    ComponentRegistry::Destroy();
-    EditorSceneManager::Destroy();
-    ChunkLoader::Destroy();
-    if (mGuiReady) { D3D11::SetEditorGuiContext(nullptr); Core::SetEditorGuiContext(nullptr); EditorLayer::GetInstance()->ShutDown(); }
-    EditorLayer::Destroy();
-    EditorShapes::Destroy();
-    delete mEditorCamera;
-    D3D11::DestroyViewportRenderer(mViewport);
-    delete wndprocParams;
-    delete mEditorDataFileName;
-    // Windows, device, game camera and input are borrowed from D3D11's factory.
+	// Stop window messages before ImGui teardown. The device and HWND are still alive here.
+	if (mEditorWin)
+		FtDetachWindowCallback(mEditorWin->GetHandle());
+	if (mGameWin)
+		FtDetachWindowCallback(mGameWin->GetHandle());
+
+	if (mGuiReady)
+	{
+		EditorLayer::GetInstance()->ShutDown();
+		D3D11::SetEditorGuiContext(nullptr);
+		Core::SetEditorGuiContext(nullptr);
+		mGuiReady = false;
+	}
+
+	CommandHistory::GetInstance()->ShutDown();
+	CommandHistory::Destroy();
+	ComponentRegistry::Destroy();
+	EditorSceneManager::Destroy();
+	ChunkLoader::Destroy();
+	EditorLayer::Destroy();
+	EditorShapes::Destroy();
+	delete mEditorCamera;
+	mEditorCamera = nullptr;
+	D3D11::DestroyViewportRenderer(mViewport);
+	mViewport = nullptr;
+	delete wndprocParams;
+	wndprocParams = nullptr;
+	delete mEditorDataFileName;
+	mEditorDataFileName = nullptr;
+	// Windows, device, game camera and input are borrowed from D3D11's factory.
 }
 
 /// @brief Initializes the ImGui state and platform/rendering backend bindings.
@@ -448,7 +536,17 @@ LRESULT CALLBACK WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 		case WM_CLOSE:
 		{
-			if (!D3D11Editor::gGetChunkISSavedFunc())
+			bool unsavedChunk = false;
+			if (D3D11Editor::gGetChunkISSavedFunc && !D3D11Editor::gGetChunkISSavedFunc())
+			{
+				Core::GET_CHUNK_PATH_FUNC getChunkPath = Core::GetFunc<Core::GET_CHUNK_PATH_FUNC>(
+					Common::DLLPath::CORE_EDITOR,
+					Core::ProcName::GetChunkPath);
+				Common::FTDS::String* chunkPath = getChunkPath ? getChunkPath() : nullptr;
+				unsavedChunk					= chunkPath && !chunkPath->IsEmpty();
+			}
+
+			if (unsavedChunk)
 				EditorLayer::GetInstance()->SetErrorType(ErrorType::ChunkNotSaved);
 			else
 				Core::FTCore::GetInstance()->SetIsRunning(false);

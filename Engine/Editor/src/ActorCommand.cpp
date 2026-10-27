@@ -5,23 +5,6 @@
 
 namespace Editor
 {
-	/// @brief Applies the command's change to the target object.
-	void ActorAdditionCommand::Do()
-	{
-		ActorCommand::Do();
-
-		// EditorScene* scene = EditorSceneManager::GetInstance()->GetCurrentScene();
-		//  EditorElement* element = DBG_NEW EditorElement(GetVal());
-	}
-
-	/// @brief Restores the target state saved before the command was applied.
-	void ActorAdditionCommand::Undo()
-	{
-		ActorCommand::Undo();
-
-		// Core::Destroy(GetVal());
-	}
-
 	/// @brief Initializes an undoable actor insertion.
 	/// @param elem Editor element targeted by the operation.
 	/// @note Initializes the :ActorAdditionCommand base or delegates to its constructor.

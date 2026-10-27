@@ -46,7 +46,7 @@ namespace GenericData
 		/// @brief Initializes a resource containing text lines.
 		/// @see FTResource::FTResource
 		/// @param resDef Resource definition containing the filename and source path.
-		FTText(Common::ResourceData* resDef);
+		FTText(Common::FTResourceDef& resDef, void* data = nullptr);
 		/// @brief Releases the resources managed by this instance during destruction.
 		~FTText();
 

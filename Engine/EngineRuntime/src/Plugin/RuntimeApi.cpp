@@ -13,6 +13,9 @@
 #include "Manager/PluginManager.h"
 #include "Manager/SceneManager.h"
 #include "Scene/Scene.h"
+#ifdef FOXTROT_EDITOR
+	#include "Plugin/CoreEditorResourceService.h"
+#endif // FOXTROT_EDITOR
 
 namespace
 {
@@ -73,6 +76,9 @@ namespace
 	bool				  comInitialized = false;
 	bool				  initialized	 = false;
 	bool				  stopped		 = false;
+#ifdef FOXTROT_EDITOR
+	Common::IPlugin* corePlugin = nullptr;
+#endif // FOXTROT_EDITOR
 
 	void FT_CALL GetDLLList(Common::FTDS::Array<Common::FTDS::String>& list)
 	{
@@ -106,6 +112,12 @@ namespace
 
 			if (!Core::FTCore::GetInstance()->Initialize())
 				return Foxtrot::Status::Failed;
+#ifdef FOXTROT_EDITOR
+			corePlugin = Core::CreateCorePlugin();
+			Core::PluginManager::GetInstance()->Attach("Core", corePlugin);
+			corePlugin->Initialize();
+			corePlugin->Setup();
+#endif // FOXTROT_EDITOR
 			FtLog("EngineRuntime initialized");
 			return Foxtrot::Status::Ok;
 		}
@@ -155,6 +167,10 @@ namespace
 		{
 			FtLog("Runtime shutdown failed");
 		}
+#ifdef FOXTROT_EDITOR
+		delete corePlugin;
+		corePlugin = nullptr;
+#endif // FOXTROT_EDITOR
 		systems.clear();
 		if (comInitialized)
 		{

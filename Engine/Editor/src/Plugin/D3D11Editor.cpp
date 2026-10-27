@@ -23,6 +23,7 @@
 #include <iostream>
 
 #include "EditorLayer.h"
+#include "ComponentRegistry.h"
 #include "EditorSceneManager.h"
 #include "Manager/DirectoryHelper.h"
 #include "Manager/PluginManager.h"
@@ -43,6 +44,7 @@
 #include "Factory/IInputSysFactory.h"
 
 #include "Core/FTCore.h"
+#include "Plugin/CoreEditorResourceService.h"
 #include <../../D3D11/include/Plugin/PluginKey.h>
 
 /// @brief Forwards native window messages to the ImGui Win32 backend.
@@ -260,6 +262,7 @@ void D3D11Editor::Initialize()
 	}
 	mGuiReady = true;
     D3D11::SetEditorGuiContext(ImGui::GetCurrentContext());
+    Core::SetEditorGuiContext(ImGui::GetCurrentContext());
     wndprocParams->Window = mEditorWin;
     wndprocParams->Renderer = mRenderer;
     wndprocParams->InputDevice = mInputDevice;
@@ -366,9 +369,10 @@ D3D11Editor::~D3D11Editor()
     if (mGameWin) FtDetachWindowCallback(mGameWin->GetHandle());
     CommandHistory::GetInstance()->ShutDown();
     CommandHistory::Destroy();
+    ComponentRegistry::Destroy();
     EditorSceneManager::Destroy();
     ChunkLoader::Destroy();
-    if (mGuiReady) { D3D11::SetEditorGuiContext(nullptr); EditorLayer::GetInstance()->ShutDown(); }
+    if (mGuiReady) { D3D11::SetEditorGuiContext(nullptr); Core::SetEditorGuiContext(nullptr); EditorLayer::GetInstance()->ShutDown(); }
     EditorLayer::Destroy();
     EditorShapes::Destroy();
     delete mEditorCamera;

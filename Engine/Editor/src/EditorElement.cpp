@@ -24,8 +24,7 @@
 
 #include "InputSystem/IInputDevice.h"
 #include "Manager/ResourceManager.h"
-#include "Manager/PluginManager.h"
-#include "Factory/IComponentFactory.h"
+#include "ComponentRegistry.h"
 #include "FileSystem/ChunkLoader.h"
 #include "Actor/Transform.h"
 #include "Actor/ActorGroup.h"
@@ -448,36 +447,19 @@ namespace Editor
 		{
 			ImGui::SeparatorText("Add Components");
 
-			auto* plugins = Core::GetAvailablePlugins();
-			if (plugins)
-			{
-				plugins->IterateAllValues([&](Common::IPlugin* plugin) {
-					if (!plugin)
-						return;
-					auto* factory = static_cast<Core::IComponentFactory*>(
-						plugin->QueryInterface(Core::IComponentFactory::INTERFACE_NAME));
-					if (!factory)
-						return;
+			Common::FTDS::HashMap<ComponentFactoryEntry>& factories =
+				ComponentRegistry::GetInstance()->GetComponentFactories();
+			factories.IterateAllNodes([&](Common::FTDS::Record<ComponentFactoryEntry>* node) {
+				if (!node || !node->Value())
+					return;
 
-					std::size_t count = 0;
-					const auto* entries = factory->GetComponentFactories(count);
-					if (!entries)
-						return;
+				const char* name = node->Key().C_Str();
+				if (!name || !name[0])
+					return;
 
-					ImGui::PushID(plugin);
-					for (std::size_t i = 0; i < count; ++i)
-					{
-						const auto& entry = entries[i];
-						if (!entry.Name || !entry.Name[0] || !entry.Create)
-							continue;
-						ImGui::PushID(static_cast<const void*>(&entry));
-						if (ImGui::Selectable(entry.Name))
-							entry.Create(plugin, this);
-						ImGui::PopID();
-					}
-					ImGui::PopID();
-				});
-			}
+				if (ImGui::Selectable(name))
+					node->Value()(this);
+			});
 			ImGui::EndPopup();
 		}
 	}

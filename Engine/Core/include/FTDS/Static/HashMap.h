@@ -143,7 +143,8 @@ namespace Common
 			/// @return Borrowed record for the key, or nullptr when the lookup fails.
 			FTDS::Record<TYPE>* At(const char*&& key)
 			{
-				assert(0 < this->Capacity());
+				if (!key || this->Capacity() < 1)
+					return nullptr;
 
 				// Get Hash Value from HashFuntion()
 				size_t hashVal = FTDS::HashFunction(key, this->Capacity());
@@ -271,7 +272,7 @@ namespace Common
 			}
 
 			HashMap(std::initializer_list<std::pair<const char*, TYPE>> entries)
-				: FTDS::Array<Record<TYPE>*>(entries.size()))
+				: FTDS::Array<Record<TYPE>*>(entries.size())
 				, mSize(0)
 			{
 				for (const auto& entry : entries)

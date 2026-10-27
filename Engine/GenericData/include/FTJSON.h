@@ -35,7 +35,7 @@ namespace GenericData
 		/// @see FTResource::FTResource
 		/// @param resDef Resource definition containing the filename and source path.
 		/// @throws nlohmann::json::parse_error If the resource file contains invalid JSON.
-		FTJSON(Common::ResourceData* resDef);
+		FTJSON(Common::FTResourceDef& resDef, void* data = nullptr);
 
 	private:
 

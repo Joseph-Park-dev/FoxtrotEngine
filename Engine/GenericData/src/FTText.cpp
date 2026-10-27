@@ -5,15 +5,13 @@
 namespace GenericData
 {
 	/// @brief Initializes a resource containing text lines.
-	/// @param metaData meta data used by this operation.
+	/// @param resDef Resource definition containing the filename and source path.
 	/// @note Initializes the :FTText base or delegates to its constructor.
-	FTText::FTText(Common::ResourceData* metaData)
-		: Common::FTResource()
+	FTText::FTText(Common::FTResourceDef& resDef, void* data)
+		: Common::FTResource(resDef)
 		, mData(DBG_NEW Common::FTDS::DynamicArray<Common::FTDS::String*>)
 	{
-		SetFileName(*metaData->FileName);
-		SetRelativePath(*metaData->Path);
-		char*		  buf = nullptr;
+		(void)data;
 		std::ifstream ifs(mMetaData->Path->C_Str());
 		size_t		  lineCount = GetLineCount(ifs);
 		mData->Reserve(lineCount);

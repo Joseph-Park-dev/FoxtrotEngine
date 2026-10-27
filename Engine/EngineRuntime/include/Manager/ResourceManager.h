@@ -29,7 +29,6 @@ namespace GenericData
 
 namespace Core
 {
-
 	class ResourceManager
 	{
 		SINGLETON(ResourceManager)
@@ -38,18 +37,18 @@ namespace Core
 		/// @brief Provides an empty lifecycle or extension hook for this implementation.
 		/// @throws D3D11::DX::com_exception If a checked Direct3D operation fails.
 		void LoadDefaultResources();
-        /// @brief Releases resources associated with the loaded world.
-        void ReleaseWorldResources();
+		/// @brief Releases resources associated with the loaded world.
+		void ReleaseWorldResources();
 
 	public:
 		/// @brief Returns the premade used by this resource manager.
 		/// @param key Lookup key identifying the stored entry.
 		/// @return Borrowed access to the premade.
-		FTPremade*				 GetPremade(const char* key);
+		FTPremade* GetPremade(const char* key);
 		/// @brief Returns the csv used by this resource manager.
 		/// @param key Lookup key identifying the stored entry.
 		/// @return Borrowed access to the csv.
-		FTCSV*					 GetCSV(const char* key);
+		FTCSV* GetCSV(const char* key);
 		/// @brief Returns the json used by this resource manager.
 		/// @param key Lookup key identifying the stored entry.
 		/// @return Borrowed access to the json.
@@ -61,10 +60,10 @@ namespace Core
 
 		/// @brief Returns the premades used by this resource manager.
 		/// @return Borrowed access to the premades.
-		Common::ResourcePack<FTPremade>*			   GetPremades();
+		Common::ResourcePack<FTPremade>* GetPremades();
 		/// @brief Returns the csvs used by this resource manager.
 		/// @return Borrowed access to the csvs.
-		Common::ResourcePack<FTCSV>*				   GetCSVs();
+		Common::ResourcePack<FTCSV>* GetCSVs();
 		/// @brief Returns the jsons used by this resource manager.
 		/// @return Borrowed access to the jsons.
 		Common::ResourcePack<GenericData::FTJSON>* GetJSONs();
@@ -73,10 +72,17 @@ namespace Core
 		Common::ResourcePack<GenericData::FTText>* GetTexts();
 
 	private:
-		Common::ResourcePack<FTPremade>*				 mPremades;
-		Common::ResourcePack<FTCSV>*					 mCSVs;
+		Common::ResourcePack<FTPremade>*		   mPremades;
+		Common::ResourcePack<GenericData::FTCSV>*  mCSVs;
 		Common::ResourcePack<GenericData::FTJSON>* mJSONs;
 		Common::ResourcePack<GenericData::FTText>* mTexts;
+
+#ifdef FOXTROT_EDITOR
+	public:
+		void LoadAllResourcesInAsset(Common::FTDS::String* dir);
+		void EditorUIUpdate();
+
+#endif // DEBUG
 	};
 
 	extern "C"
@@ -84,11 +90,11 @@ namespace Core
 		/// @brief Returns the premade used by this service.
 		/// @param key Lookup key identifying the stored entry.
 		/// @return Borrowed access to the premade.
-		CORE_API FTPremade*					 GetPremade(const char* key);
+		CORE_API FTPremade* GetPremade(const char* key);
 		/// @brief Returns the csv used by this service.
 		/// @param key Lookup key identifying the stored entry.
 		/// @return Borrowed access to the csv.
-		CORE_API FTCSV*						 GetCSV(const char* key);
+		CORE_API FTCSV* GetCSV(const char* key);
 		/// @brief Returns the json used by this service.
 		/// @param key Lookup key identifying the stored entry.
 		/// @return Borrowed access to the json.
@@ -106,6 +112,6 @@ namespace Core
 		CORE_API Common::ResourcePack<GenericData::FTText>* GetTexts();
 		/// @brief Returns the csvs used by this service.
 		/// @return Borrowed access to the csvs.
-		CORE_API Common::ResourcePack<FTCSV>*					 GetCSVs();
+		CORE_API Common::ResourcePack<FTCSV>* GetCSVs();
 	}
 } // namespace Core

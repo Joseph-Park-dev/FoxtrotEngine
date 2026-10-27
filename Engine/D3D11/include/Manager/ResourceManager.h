@@ -28,7 +28,7 @@ namespace D3D11
 		/// @brief Creates or loads the resources needed before scene content can be used.
 		/// @param renderer Renderer providing the graphics device and current render state.
 		/// @throws D3D11::DX::com_exception If a checked Direct3D operation fails.
-		void LoadDefaultResources(D3D11::D3D11Renderer* renderer);
+		void LoadDefaultResources(Common::FTDS::String* projDir, D3D11::D3D11Renderer* renderer);
 		/// @brief Restores resource entries from a .chunk data pack.
 		/// @param ifs Input stream positioned at the expected data; reading advances its position.
 		/// @param renderer Renderer providing the graphics device and current render state.

@@ -42,10 +42,6 @@ namespace Core
         void Attach(const char* name, Common::IPlugin* plugin);
 
 	public:
-		/// @brief Obtains a plugin instance and registers it for engine lifecycle dispatch.
-		/// @param pluginName Plugin's registered name.
-		/// @return Obtains a plugin instance and registers it for engine lifecycle dispatch.
-		Common::IPlugin* RegisterPlugin(const char* pluginName);
 		/// @brief Returns the plugin used by this plugin manager.
 		/// @param pluginName Plugin's registered name.
 		/// @return Borrowed access to the plugin. May be null when no matching object is available.

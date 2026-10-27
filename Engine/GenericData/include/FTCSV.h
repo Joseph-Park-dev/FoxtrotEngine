@@ -54,7 +54,7 @@ namespace GenericData
 		/// @brief Initializes a resource containing parsed integer CSV data.
 		/// @see FTResource::FTResource
 		/// @param resDef Resource definition containing the filename and source path.
-		FTCSV(Common::ResourceData* resDef);
+		FTCSV(Common::FTResourceDef& resDef, void* data = nullptr);
 		/// @brief Releases the resources managed by this instance during destruction.
 		~FTCSV();
 

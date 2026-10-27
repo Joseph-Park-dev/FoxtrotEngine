@@ -159,6 +159,18 @@ namespace Common
 			mResources->Insert(*res->GetFileName(), res);
 		}
 
+		void LoadResource(Common::FTDS::String&& relPath, void* userData = nullptr)
+		{
+			Common::FTDS::String  fileName = ExtractFileName(relPath.C_Str());
+			Common::FTResourceDef resDef{ fileName.C_Str(), relPath.C_Str() };
+
+			FTRESOURCE* res = DBG_NEW FTRESOURCE(resDef, userData);
+			if (!res)
+				Common::Debug::LogError(__LINE__, __FILE__, "Resource is NULL");
+			assert(0 < mResources->Capacity());
+			mResources->Insert(*res->GetFileName(), res);
+		}
+
 #ifdef FOXTROT_EDITOR
 	public:
 		/// @brief Save a list of resources added to this ResourcePack to .chunk
@@ -178,16 +190,37 @@ namespace Common
 		/// @param userData Additional context forwarded to resource construction.
 		void LoadAllResourcesInAsset(const char* dir, const char* fileType, void* userData = nullptr)
 		{
+			if (!dir || !*dir || !fileType || !*fileType)
+				return;
+			if (!std::filesystem::exists(dir) || !std::filesystem::is_directory(dir))
+				return;
+
+			size_t count = 0;
 			for (const std::filesystem::directory_entry& entry :
 				 std::filesystem::recursive_directory_iterator(dir))
 			{
-				std::ifstream ifs(entry.path());
-				if (entry.is_regular_file())
-				{
-					FTDS::String strPath = FTDS::String(fileType);
-					if (strPath.Contains(entry.path().extension().string().c_str()))
-						LoadResource(ifs, userData);
-				}
+				if (!entry.is_regular_file())
+					continue;
+				FTDS::String accepted(fileType);
+				if (accepted.Contains(entry.path().extension().string().c_str()))
+					++count;
+			}
+			if (count < 1)
+				return;
+
+			// Empty packs are created with capacity 0. Size them before the first insert.
+			// A pack that already holds records is left as-is: growing it clears every slot.
+			if (mResources->GetSize() == 0 && mResources->Capacity() < count)
+				mResources->Reserve(count);
+
+			for (const std::filesystem::directory_entry& entry :
+				 std::filesystem::recursive_directory_iterator(dir))
+			{
+				if (!entry.is_regular_file())
+					continue;
+				FTDS::String accepted(fileType);
+				if (accepted.Contains(entry.path().extension().string().c_str()))
+					LoadResource(entry.path().string().c_str(), userData);
 			}
 		}
 

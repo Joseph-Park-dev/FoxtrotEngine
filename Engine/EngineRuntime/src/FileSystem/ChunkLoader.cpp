@@ -236,7 +236,7 @@ namespace Core
 	//		Common::FTDS::String name;
 	//		Common::FileIOHelper::LoadBasicString(ifs, name);
 
-	//		Common::IPlugin* plg = Core::PluginManager::GetInstance()->RegisterPlugin(name.C_Str());
+	//		Common::IPlugin* plg = Core::PluginManager::GetInstance()->GetPlugin(name.C_Str());
 	//		plg->LoadProperties(ifs);
 	//	}
 	//}

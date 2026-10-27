@@ -155,7 +155,7 @@ namespace Editor
 
 			if (ImGui::BeginPopupModal(title, NULL))
 			{
-				ImGui::Text(msg);
+				ImGui::TextUnformatted(msg);
 				ImGui::Separator();
 				ImGui::SetItemDefaultFocus();
 
@@ -191,7 +191,7 @@ namespace Editor
 
 			if (ImGui::BeginPopupModal(title, NULL))
 			{
-				ImGui::Text(msg);
+				ImGui::TextUnformatted(msg);
 				ImGui::Separator();
 				ImGui::SetItemDefaultFocus();
 

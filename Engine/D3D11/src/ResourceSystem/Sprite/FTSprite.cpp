@@ -87,7 +87,7 @@ namespace D3D11
 	/// @param mat Matrix or material used by this operation.
 	void FTSprite::Render(Core::IRenderer* renderer, Transform* transform, Core::ICamera* camInst, D3D11PSO* pso, FTMaterial* mat)
 	{
-		if (!pso->IsValid()) // Vertex Shader is always required when drawing.
+		if (!renderer || !pso || !pso->IsValid())
 			return;
 
 		UINT						 stride	 = sizeof(SpriteVertex);
@@ -118,6 +118,8 @@ namespace D3D11
 			context->PSSetSamplers(0, 1, GetSamplerState().GetAddressOf());
 			if (mat)
 				context->PSSetConstantBuffers(0, 1, mat->GetPCBuf().GetAddressOf());
+			else if (mDefaultPSBuf)
+				context->PSSetConstantBuffers(0, 1, mDefaultPSBuf.GetAddressOf());
 
 			context->IASetVertexBuffers(0, 1, mesh->VertexBuffer.GetAddressOf(), &stride, &offset);
 			context->IASetIndexBuffer(mesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
@@ -160,12 +162,10 @@ namespace D3D11
 	FTSprite::FTSprite(Common::FTResourceDef& resDef, void* renderer)
 		: FTMeshGroup(resDef, renderer, nullptr)
 		, mGCMatData(DBG_NEW PointVPMat)
-		, mGCSpriteData(DBG_NEW SpriteGCData)
+		, mGCSpriteData(DBG_NEW SpriteGCData[1])
 		, mTexture(DBG_NEW FTTexture(resDef, static_cast<Core::IRenderer*>(renderer)))
 	{
-		SpriteVertex* vertex = DBG_NEW SpriteVertex;
-		Process(reinterpret_cast<Core::IRenderer*>(renderer), vertex, 1);
-		delete vertex;
+		PrepareStaticSprite(reinterpret_cast<Core::IRenderer*>(renderer));
 	}
 
 	/// @brief Initializes sprite metadata and its mesh representation.
@@ -176,15 +176,11 @@ namespace D3D11
 	FTSprite::FTSprite(Common::FTResourceDef& resDef, void* renderer, bool isAnim)
 		: FTMeshGroup(resDef, renderer, nullptr)
 		, mGCMatData(DBG_NEW PointVPMat)
-		, mGCSpriteData(DBG_NEW SpriteGCData)
+		, mGCSpriteData(DBG_NEW SpriteGCData[1])
 		, mTexture(DBG_NEW FTTexture(resDef, static_cast<Core::IRenderer*>(renderer)))
 	{
 		if (!isAnim)
-		{
-			SpriteVertex* vertex = DBG_NEW SpriteVertex;
-			Process(reinterpret_cast<Core::IRenderer*>(renderer), vertex, 1);
-			delete vertex;
-		}
+			PrepareStaticSprite(reinterpret_cast<Core::IRenderer*>(renderer));
 	}
 
 	/// @brief Releases the resources managed by this instance during destruction.
@@ -206,6 +202,12 @@ namespace D3D11
 		FTMeshGroup::InitializeConstantBuffers(device);
 		D3D11Utils::CreateConstantBuffer(device, *mGCMatData, mGCMatBuf);
 		D3D11Utils::CreateConstantBuffer(device, *mGCSpriteData, mGCSpriteBuf);
+
+		SpritePSData psData;
+		psData.Color	  = Math::FTVector4(1.f, 1.f, 1.f, 1.f);
+		psData.UseTexture = true;
+		psData.Dummy	  = Math::FTVector3::Zero;
+		D3D11Utils::CreateConstantBuffer(device, psData, mDefaultPSBuf);
 	}
 
 	/// @brief Returns the gcmat buf used by this ftsprite.
@@ -222,6 +224,23 @@ namespace D3D11
 	Microsoft::WRL::ComPtr<ID3D11Buffer>& FTSprite::GetGCSpriteBuf()
 	{
 		return mGCSpriteBuf;
+	}
+
+	/// @brief Builds the single-point mesh for a non-animated sprite.
+	/// @param renderer Renderer providing the graphics device and current render state.
+	void FTSprite::PrepareStaticSprite(Core::IRenderer* renderer)
+	{
+		if (mTexture && 0 < mTexture->GetWidth() && 0 < mTexture->GetHeight())
+		{
+			mGCSpriteData->Size = Math::FTVector2(
+				static_cast<float>(mTexture->GetWidth()),
+				static_cast<float>(mTexture->GetHeight()));
+		}
+
+		SpriteVertex* vertex = DBG_NEW SpriteVertex;
+		vertex->Position	 = Math::FTVector3::Zero;
+		Process(renderer, vertex, 1);
+		delete vertex;
 	}
 
 	/// @brief Applies this object's processing step.

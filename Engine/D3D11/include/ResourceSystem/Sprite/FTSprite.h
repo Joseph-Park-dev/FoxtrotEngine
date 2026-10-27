@@ -96,10 +96,14 @@ namespace D3D11
 		SpriteGCData*						 mGCSpriteData;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mGCMatBuf;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mGCSpriteBuf;
+		Microsoft::WRL::ComPtr<ID3D11Buffer> mDefaultPSBuf;
 
 		FTTexture* mTexture;
 
 	private:
+		/// @brief Builds the single-point mesh for a non-animated sprite.
+		/// @param renderer Renderer providing the graphics device and current render state.
+		void PrepareStaticSprite(Core::IRenderer* renderer);
 		/// @brief Applies this object's processing step.
 		/// @param renderer Renderer providing the graphics device and current render state.
 		/// @param vertices Vertex data defining the mesh.

@@ -110,10 +110,12 @@ namespace D3D11
 			Core::Transform* transform = Target->GetData()->Transform;
 			FTVector3		 worldPos  = transform->GetWorldPosition();
 			// Z axis transformation is controlled independently
-			worldPos.z		= Position.z;
-			Position = worldPos + Offset;
+			worldPos.z = Position.z;
+			Position   = worldPos + Offset;
 		}
-		outViewMat = FTMatrix4::CreateTranslation(Position);
+		// Inverse of the camera translation. A camera at z = -5 keeps world z = 0
+		// inside the orthographic near/far range.
+		outViewMat = FTMatrix4::CreateTranslation(FTVector3::Zero - Position);
 	}
 
 	/// @brief Returns the projection matrix used by this camera data.

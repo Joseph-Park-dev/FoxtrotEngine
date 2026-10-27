@@ -789,7 +789,7 @@ namespace Editor
 
 		if (ImGui::BeginPopupModal("Info", NULL))
 		{
-			ImGui::Text(msg);
+			ImGui::TextUnformatted(msg);
 			ImGui::Separator();
 			ImGui::SetItemDefaultFocus();
 
@@ -814,7 +814,7 @@ namespace Editor
 
 		if (ImGui::BeginPopupModal(title, NULL))
 		{
-			ImGui::Text(msg);
+			ImGui::TextUnformatted(msg);
 			ImGui::Separator();
 
 			if (ImGui::Button("OK", ImVec2(120, 0)))
@@ -979,6 +979,9 @@ namespace Editor
 	/// @brief Releases runtime services and resources during engine shutdown.
 	void EditorLayer::ShutDown()
 	{
+		if (!ImGui::GetCurrentContext())
+			return;
+
 		ImGui_ImplDX11_Shutdown();
 		ImGui_ImplWin32_Shutdown();
 		ImGui::DestroyContext();

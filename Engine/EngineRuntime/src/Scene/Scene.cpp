@@ -181,6 +181,30 @@ namespace Core
 	/// Safe to call multiple times. Sets deleted pointer slots to `nullptr` before clearing.
 	void Scene::DeleteAll()
 	{
+		// Actors in the scene list are also stored on their parents. Clear those
+		// links first so ~ActorData does not delete a child the scene still owns.
+		auto detachSceneOwnedChildren = [this](Common::FTDS::DynamicArray<Common::IActor*>* actors) {
+			if (!actors)
+				return;
+
+			for (auto iter = actors->Begin(); iter != actors->End(); ++iter)
+			{
+				Common::IActor* actor = *iter;
+				if (!actor || !actor->GetChildActors())
+					continue;
+
+				Common::FTDS::DynamicArray<Common::IActor*>* children = actor->GetChildActors();
+				for (size_t i = children->GetSize(); 0 < i; --i)
+				{
+					Common::IActor* child = children->At(i - 1);
+					if (mActors->Find(child) != -1 || mPendingActors->Find(child) != -1)
+						children->Erase(i - 1);
+				}
+			}
+		};
+		detachSceneOwnedChildren(mActors);
+		detachSceneOwnedChildren(mPendingActors);
+
 		for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
 		{
 			delete (*iter);

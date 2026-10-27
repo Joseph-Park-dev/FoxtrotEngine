@@ -77,11 +77,15 @@ namespace D3D11
 	/// @param camInst Camera supplying the view and projection for this draw.
 	void SpriteRenderer::Render(Core::IRenderer* renderer, Core::ICamera* camInst)
 	{
-		if (mSprite)
-		{
-			mSprite->UpdateConstantBuffers(renderer, GetOwner()->GetTransform(), camInst, mMaterial);
-			mSprite->Render(renderer, GetOwner()->GetTransform(), camInst, mPSO, mMaterial);
-		}
+		if (!mSprite || !GetOwner() || !GetOwner()->GetTransform())
+			return;
+		if (!mPSO)
+			mPSO = D3D11::ResourceManager::GetInstance()->GetPSO(ChunkKey::SpriteRenderer::PSO);
+		if (!mPSO)
+			return;
+
+		mSprite->UpdateConstantBuffers(renderer, GetOwner()->GetTransform(), camInst, mMaterial);
+		mSprite->Render(renderer, GetOwner()->GetTransform(), camInst, mPSO, mMaterial);
 	}
 
 	/// @brief Copies this object's state into the requested target or attaches its clone to the target actor.
@@ -174,21 +178,25 @@ namespace D3D11
 	/// @param camInst Camera supplying the view and projection for this draw.
 	void SpriteRenderer::EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst)
 	{
-		if (GetSprite())
-		{
-			GetSprite()->UpdateConstantBuffers(
-				renderer,
-				GetOwner()->GetTransform(),
-				camInst,
-				Material());
+		if (!GetSprite() || !GetOwner() || !GetOwner()->GetTransform())
+			return;
+		if (!PSO())
+			PSO() = D3D11::ResourceManager::GetInstance()->GetPSO(ChunkKey::SpriteRenderer::PSO);
+		if (!PSO())
+			return;
 
-			GetSprite()->Render(
-				renderer,
-				GetOwner()->GetTransform(),
-				camInst,
-				PSO(),
-				Material());
-		}
+		GetSprite()->UpdateConstantBuffers(
+			renderer,
+			GetOwner()->GetTransform(),
+			camInst,
+			Material());
+
+		GetSprite()->Render(
+			renderer,
+			GetOwner()->GetTransform(),
+			camInst,
+			PSO(),
+			Material());
 	}
 
 	/// @brief Updates the object's editor-facing controls.

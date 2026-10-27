@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <cassert>
+#include <type_traits>
 
 #include "../Iterator/FTIterator.h"
 
@@ -99,16 +100,12 @@ namespace Common
 			/// @note Releasing container storage does not implicitly delete objects held through raw pointer values.
 			virtual void Clear()
 			{
-				if (0 < mCapacity)
-				{
-					size_t newCap = mCapacity;
-					mCapacity	  = 0;
+				if (mCapacity == 0)
+					return;
 
-					if (mData)
-						free(mData);
-					mData = nullptr;
-					AllocateMem(newCap);
-				}
+				size_t newCap = mCapacity;
+				ReleaseStorage();
+				AllocateMem(newCap);
 			}
 
 		public:
@@ -156,8 +153,7 @@ namespace Common
 			/// @note Releasing container storage does not implicitly delete objects held through raw pointer values.
 			virtual ~Array()
 			{
-				free(mData);
-				mData = nullptr;
+				ReleaseStorage();
 			}
 
 		public:
@@ -166,6 +162,23 @@ namespace Common
 			const TYPE* Data() const { return mData; }
 
 		protected:
+			/// @brief Runs element destructors when required, then releases the backing block.
+			/// @note Non-trivial elements must be constructed in storage obtained from malloc.
+			void ReleaseStorage()
+			{
+				if (!mData)
+					return;
+
+				if constexpr (!std::is_trivially_destructible_v<TYPE>)
+				{
+					for (size_t i = 0; i < mCapacity; ++i)
+						mData[i].~TYPE();
+				}
+				free(mData);
+				mData	  = nullptr;
+				mCapacity = 0;
+			}
+
 			/// @brief Reallocates backing storage and zeroes every slot, including previously stored contents.
 			/// @param newCap New number of backing-storage slots.
 			/// @note Reallocation invalidates pointers, references, and iterators into the old storage.

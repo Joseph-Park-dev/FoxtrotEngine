@@ -42,15 +42,13 @@
 
 namespace D3D11
 {
-	constexpr const char* SHADERS	 = ".\\FoxtrotEngine\\Assets\\Shaders\\";
-	constexpr const char* SHADERS_2D = ".\\FoxtrotEngine\\Assets\\Shaders\\2D\\";
 	using namespace Common;
 	using Microsoft::WRL::ComPtr;
 
 	/// @brief Creates or loads the resources needed before scene content can be used.
 	/// @param renderer Renderer providing the graphics device and current render state.
 	/// @throws D3D11::DX::com_exception If a checked Direct3D operation fails.
-	void ResourceManager::LoadDefaultResources(D3D11::D3D11Renderer* renderer)
+	void ResourceManager::LoadDefaultResources(Common::FTDS::String* projDir, D3D11::D3D11Renderer* renderer)
 	{
 		if (!mPSOs->GetResMap()->IsEmpty())
 			return;
@@ -69,8 +67,13 @@ namespace D3D11
 
 		VS.Reserve(5);
 
+		Common::FTDS::String shaders   = *projDir;
+		Common::FTDS::String shaders2D = *projDir;
+		shaders.Append("DefaultRes\\Shaders\\");
+		shaders2D.Append("DefaultRes\\Shaders\\2D\\");
+
 		// 2D sprite animation vertex shader
-		Common::FTDS::String vsPath = SHADERS_2D;
+		Common::FTDS::String vsPath = shaders2D;
 		resDef.FileName				= "SpriteVS.hlsl";
 		vsPath.Append(resDef.FileName);
 		resDef.Path = vsPath.C_Str();
@@ -80,7 +83,7 @@ namespace D3D11
 			DBG_NEW FTVertexShader(resDef, renderer));
 
 		// 2D text renderer vertex shader
-		vsPath			= SHADERS_2D;
+		vsPath			= shaders2D;
 		resDef.FileName = "TextRenderer2DVS.hlsl";
 		vsPath.Append(resDef.FileName);
 		resDef.Path = vsPath.C_Str();
@@ -90,7 +93,7 @@ namespace D3D11
 			DBG_NEW FTVertexShader(resDef, renderer));
 
 		// 2D debug shape vertex shader
-		vsPath			= SHADERS;
+		vsPath			= shaders2D;
 		resDef.FileName = "DebugShapeVS.hlsl";
 		vsPath.Append(resDef.FileName);
 		resDef.Path = vsPath.C_Str();
@@ -100,7 +103,7 @@ namespace D3D11
 			DBG_NEW FTVertexShader(resDef, renderer));
 
 		// 2D texture vertex shader
-		vsPath			= SHADERS;
+		vsPath			= shaders;
 		resDef.FileName = "TextureVS.hlsl";
 		vsPath.Append(resDef.FileName);
 		resDef.Path = vsPath.C_Str();
@@ -110,7 +113,7 @@ namespace D3D11
 			DBG_NEW FTVertexShader(resDef, renderer));
 
 		// 2D spine animation vertex shader
-		vsPath			= SHADERS;
+		vsPath			= shaders;
 		resDef.FileName = "TextureVSSpine.hlsl";
 		vsPath.Append(resDef.FileName);
 		resDef.Path = vsPath.C_Str();
@@ -126,7 +129,7 @@ namespace D3D11
 		PS.Reserve(6);
 
 		// 2D sprite animation pixel shader
-		vsPath			= SHADERS_2D;
+		vsPath			= shaders2D;
 		resDef.FileName = "SpritePS.hlsl";
 		vsPath.Append(resDef.FileName);
 		resDef.Path = vsPath.C_Str();
@@ -136,7 +139,7 @@ namespace D3D11
 			DBG_NEW FTPixelShader(resDef, renderer));
 
 		// 2D text renderer pixel shader
-		vsPath			= SHADERS_2D;
+		vsPath			= shaders2D;
 		resDef.FileName = "TextRenderer2DPS.hlsl";
 		vsPath.Append(resDef.FileName);
 		resDef.Path = vsPath.C_Str();
@@ -146,7 +149,7 @@ namespace D3D11
 			DBG_NEW FTPixelShader(resDef, renderer));
 
 		// 2D texture pixel shader
-		vsPath			= SHADERS_2D;
+		vsPath			= shaders2D;
 		resDef.FileName = "Texture2DPS.hlsl";
 		vsPath.Append(resDef.FileName);
 		resDef.Path = vsPath.C_Str();
@@ -156,7 +159,7 @@ namespace D3D11
 			DBG_NEW FTPixelShader(resDef, renderer));
 
 		// 2D spine animation pixel shader
-		vsPath			= SHADERS_2D;
+		vsPath			= shaders2D;
 		resDef.FileName = "Texture2DSpinePS.hlsl";
 		vsPath.Append(resDef.FileName);
 		resDef.Path = vsPath.C_Str();
@@ -166,7 +169,7 @@ namespace D3D11
 			DBG_NEW FTPixelShader(resDef, renderer));
 
 		// 2D debug shape pixel shader
-		vsPath			= SHADERS;
+		vsPath			= shaders;
 		resDef.FileName = "DebugShapePS.hlsl";
 		vsPath.Append(resDef.FileName);
 		resDef.Path = vsPath.C_Str();
@@ -176,7 +179,7 @@ namespace D3D11
 			DBG_NEW FTPixelShader(resDef, renderer));
 
 		// 2D texture pixel shader
-		vsPath			= SHADERS;
+		vsPath			= shaders;
 		resDef.FileName = "TexturePS.hlsl";
 		vsPath.Append(resDef.FileName);
 		resDef.Path = vsPath.C_Str();
@@ -192,7 +195,7 @@ namespace D3D11
 		GS.Reserve(2);
 
 		// 2D sprite animation geometry shader
-		vsPath			= SHADERS_2D;
+		vsPath			= shaders2D;
 		resDef.FileName = "SpriteGS.hlsl";
 		vsPath.Append(resDef.FileName);
 		resDef.Path = vsPath.C_Str();
@@ -202,7 +205,7 @@ namespace D3D11
 			DBG_NEW FTGeometryShader(resDef, renderer));
 
 		// 2D debug shape geometry shader
-		vsPath			= SHADERS;
+		vsPath			= shaders;
 		resDef.FileName = "DebugShapeGS.hlsl";
 		vsPath.Append(resDef.FileName);
 		resDef.Path = vsPath.C_Str();
@@ -210,6 +213,20 @@ namespace D3D11
 		GS.Insert(
 			resDef.FileName,
 			DBG_NEW FTGeometryShader(resDef, renderer));
+
+		/////////////////////
+		///// Materials /////
+		/////////////////////
+		Common::FTDS::String materials   = *projDir;
+		materials.Append("DefaultRes\\Materials\\");
+		resDef.FileName = "StandardMaterial.ftmat";
+		materials.Append(resDef.FileName);
+		resDef.Path = materials.C_Str();
+
+		mMaterials->GetResMap()->Insert(
+			resDef.FileName,
+			DBG_NEW StandardMaterial(resDef, renderer)
+		);
 
 		//////////////////////////////
 		///// PSO Elements Setup /////
@@ -320,7 +337,7 @@ namespace D3D11
 		mSpriteAnimations->LoadResourcesFromChunk(ifs, renderer);
 		mSpineAnimations->LoadResourcesFromChunk(ifs, renderer);
 		mFonts->LoadResourcesFromChunk(ifs, renderer);
-		//mMaterials->LoadResourcesFromChunk(ifs, renderer);
+		// mMaterials->LoadResourcesFromChunk(ifs, renderer);
 		mMeshGroups->LoadResourcesFromChunk(ifs, renderer);
 		mVertexShaders->LoadResourcesFromChunk(ifs, renderer);
 		mGeometryShaders->LoadResourcesFromChunk(ifs, renderer);
@@ -576,10 +593,10 @@ namespace D3D11
 
 	/// @brief Returns the tile maps used by this resource manager.
 	/// @return Borrowed access to the tile maps.
-	//Common::ResourcePack<FTTileMap>* ResourceManager::GetTileMaps()
+	// Common::ResourcePack<FTTileMap>* ResourceManager::GetTileMaps()
 	//{
 	//	return mTileMaps;
-	//}
+	// }
 
 	/// @brief Returns the psos used by this resource manager.
 	/// @return Borrowed access to the psos.
@@ -610,7 +627,7 @@ namespace D3D11
 	{
 		delete mSpriteAnimations;
 		delete mSpineAnimations;
-		//delete mTileMaps;
+		// delete mTileMaps;
 		delete mFonts;
 		delete mMeshGroups;
 		delete mMaterials;
@@ -624,16 +641,14 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 	void ResourceManager::LoadAllResourcesInAsset(FTDS::String* dir, void* renderer)
 	{
-		LogString("Loaded");
-
 		const char* assetDir = dir->C_Str();
 		mMeshGroups->LoadAllResourcesInAsset(assetDir, FileTypes::MESH, renderer);
 		mSprites->LoadAllResourcesInAsset(assetDir, FileTypes::TEXTURE, renderer);
-		//mMaterials->LoadAllResourcesInAsset(assetDir, FileTypes::MATERIAL, renderer);
+		// mMaterials->LoadAllResourcesInAsset(assetDir, FileTypes::MATERIAL, renderer);
 		mVertexShaders->LoadAllResourcesInAsset(assetDir, FileTypes::VERTEX_SHADER, renderer);
 		mGeometryShaders->LoadAllResourcesInAsset(assetDir, FileTypes::GEOMETRY_SHADER, renderer);
 		mPixelShaders->LoadAllResourcesInAsset(assetDir, FileTypes::PIXEL_SHADER, renderer);
-		//mTileMaps->LoadAllResourcesInAsset(assetDir, FileTypes::TILEMAP, renderer);
+		// mTileMaps->LoadAllResourcesInAsset(assetDir, FileTypes::TILEMAP, renderer);
 		mFonts->LoadAllResourcesInAsset(assetDir, FileTypes::FONT, renderer);
 		mSpriteAnimations->LoadAllResourcesInAsset(assetDir, FileTypes::SPRITE_ANIMATION, renderer);
 		mSpineAnimations->LoadAllResourcesInAsset(assetDir, FileTypes::SPINE_ANIMATION, renderer);
@@ -645,9 +660,9 @@ namespace D3D11
 		mSprites->DisplayLoadedResources("Sprites");
 		mMaterials->DisplayLoadedResources("Materials");
 		mVertexShaders->DisplayLoadedResources("Vertex Shaders");
-		//mGeometryShaders->DisplayLoadedResources("Geometry Shaders");
+		// mGeometryShaders->DisplayLoadedResources("Geometry Shaders");
 		mPixelShaders->DisplayLoadedResources("Pixel Shaders");
-		//mTileMaps->DisplayLoadedResources("TileMaps");
+		// mTileMaps->DisplayLoadedResources("TileMaps");
 		mFonts->DisplayLoadedResources("Fonts");
 		mSpriteAnimations->DisplayLoadedResources("Sprite Animations");
 		mSpineAnimations->DisplayLoadedResources("Spine Animations");

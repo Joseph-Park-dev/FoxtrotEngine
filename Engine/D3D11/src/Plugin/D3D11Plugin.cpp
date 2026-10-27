@@ -5,6 +5,7 @@
 #include "Plugin/IPlugin.h"
 #include "Factory/IGraphicsFactory.h"
 #include "Factory/IComponentFactory.h"
+#include "FTDS/Static/HashMap.h"
 #include "Factory/IInputSysFactory.h"
 #include "Plugin/D3D11Exports.h"
 
@@ -44,6 +45,33 @@ namespace D3D11
 		public Core::IEditorResourceService
 	{
 	public:
+		bool LoadDefaultResources(const char* projDirectory, Graphics::IRenderer* renderer) noexcept override
+		{
+			if (!projDirectory || !*projDirectory)
+				return false;
+
+			// Contract: renderer must have been created by D3D11.
+			auto* d3dRenderer =
+				static_cast<D3D11::D3D11Renderer*>(renderer);
+
+			try
+			{
+				Common::FTDS::String directory(projDirectory);
+				D3D11::ResourceManager::GetInstance()
+					->LoadDefaultResources(
+						&directory, d3dRenderer);
+
+				return true;
+			}
+			catch (...)
+			{
+				Common::Debug::LogError(
+					__LINE__, __FILE__, "Asset loading failed.");
+				return false;
+			}
+		}
+
+
 		bool LoadAllResourcesInAsset(
 			const char*			 assetDirectory,
 			Graphics::IRenderer* renderer) noexcept override
@@ -58,7 +86,6 @@ namespace D3D11
 			try
 			{
 				Common::FTDS::String directory(assetDirectory);
-
 				D3D11::ResourceManager::GetInstance()
 					->LoadAllResourcesInAsset(
 						&directory, d3dRenderer);
@@ -84,8 +111,7 @@ namespace D3D11
 	class D3D11Plugin :
 		public Core::IPlugin,
 		public Core::IGraphicsFactory,
-		public Core::IInputSysFactory,
-		public Core::IComponentFactory
+		public Core::IInputSysFactory
 	{
 	public:
 		/// @brief Registers a component for plugin-managed lifecycle processing.
@@ -101,8 +127,6 @@ namespace D3D11
 				return static_cast<Core::IGraphicsFactory*>(this);
 			if (std::strcmp(name, "InputFactory") == 0)
 				return static_cast<Core::IInputSysFactory*>(this);
-			if (std::strcmp(name, Core::IComponentFactory::INTERFACE_NAME) == 0)
-				return static_cast<Core::IComponentFactory*>(this);
 
 #ifdef FOXTROT_EDITOR
 			if (std::strcmp(name, Core::IEditorResourceService::INTERFACE_NAME) == 0)
@@ -110,8 +134,6 @@ namespace D3D11
 #endif // FOXTROT_EDITOR
 			return nullptr;
 		}
-
-		const Core::ComponentFactoryEntry* GetComponentFactories(std::size_t& count) const noexcept override;
 
 	public:
 		/// @brief Creates a native application window with the requested client dimensions and render area.
@@ -494,7 +516,7 @@ namespace D3D11
 	/// @param ifs Input stream positioned at the expected data; reading advances its position.
 	void D3D11Plugin::LoadResourceData(std::ifstream& ifs)
 	{
-		D3D11::ResourceManager::GetInstance()->LoadDefaultResources(mRenderer);
+		D3D11::ResourceManager::GetInstance()->LoadDefaultResources(Core::DirectoryHelper::GetInstance()->GetProjectPath(), mRenderer);
 		D3D11::ResourceManager::GetInstance()->LoadResourcesFromChunk(ifs, mRenderer);
 	}
 } // namespace D3D11
@@ -532,9 +554,12 @@ extern "C"
 	/// @return Created component instance or resource.
 	D3D11_API Common::IComponent* CreateComponent(Common::IPlugin* plugin, Common::IActor* actor, Common::FTDS::String& name)
 	{
-		for (const auto& entry : D3D11::ComponentFactories)
-			if (name.Equal(entry.Name))
-				return entry.Create(plugin, actor);
-		return nullptr;
+		(void)plugin;
+		Common::FTDS::HashMap<ComponentFactoryEntry> entries(32);
+		SetComponentFactory(entries);
+		Common::FTDS::Record<ComponentFactoryEntry>* record = entries.At(name);
+		if (!record || !record->Value())
+			return nullptr;
+		return record->Value()(actor);
 	}
 }

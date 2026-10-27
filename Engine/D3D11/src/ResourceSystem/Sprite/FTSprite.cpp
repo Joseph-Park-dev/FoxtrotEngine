@@ -161,7 +161,7 @@ namespace D3D11
 		: FTMeshGroup(resDef, renderer, nullptr)
 		, mGCMatData(DBG_NEW PointVPMat)
 		, mGCSpriteData(DBG_NEW SpriteGCData)
-		, mTexture(nullptr)
+		, mTexture(DBG_NEW FTTexture(resDef, static_cast<Core::IRenderer*>(renderer)))
 	{
 		SpriteVertex* vertex = DBG_NEW SpriteVertex;
 		Process(reinterpret_cast<Core::IRenderer*>(renderer), vertex, 1);
@@ -177,7 +177,7 @@ namespace D3D11
 		: FTMeshGroup(resDef, renderer, nullptr)
 		, mGCMatData(DBG_NEW PointVPMat)
 		, mGCSpriteData(DBG_NEW SpriteGCData)
-		, mTexture(nullptr)
+		, mTexture(DBG_NEW FTTexture(resDef, static_cast<Core::IRenderer*>(renderer)))
 	{
 		if (!isAnim)
 		{

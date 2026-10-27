@@ -48,12 +48,6 @@ namespace Editor
 		public ActorCommand
 	{
 	public:
-		/// @brief Applies the command's change to the target object.
-		void Do() override;
-		/// @brief Restores the target state saved before the command was applied.
-		void Undo() override;
-
-	public:
 		/// @brief Initializes an undoable actor insertion.
 		/// @param elem Editor element targeted by the operation.
 		ActorAdditionCommand(EditorElement* elem);

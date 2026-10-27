@@ -468,19 +468,27 @@ namespace Common
 		template <>
 		inline void FTDS::Array<Common::FTDS::String>::AllocateMem(size_t newCap)
 		{
-			// Create an array with renewed capacity.
-			Common::FTDS::String* newArr = DBG_NEW Common::FTDS::String[newCap];
+			// malloc pairs with Array::ReleaseStorage. new[] does not: ~Array
+			// runs while EngineRuntime unloads and free() would fault on that block.
+			Common::FTDS::String* newArr = static_cast<Common::FTDS::String*>(malloc(sizeof(Common::FTDS::String) * newCap));
+			if (!newArr)
+				return;
 
-			// Copy previous data.
+			for (size_t i = 0; i < newCap; ++i)
+				new (newArr + i) Common::FTDS::String();
+
 			for (size_t i = 0; i < mCapacity; ++i)
-				if (!this->mData[i].IsEmpty())
-					newArr[i].Assign(this->mData[i]);
+				if (mData && !mData[i].IsEmpty())
+					newArr[i].Assign(mData[i]);
 
-			delete[] mData;
+			if (mData)
+			{
+				for (size_t i = 0; i < mCapacity; ++i)
+					mData[i].~String();
+				free(mData);
+			}
 
-			// Set new array as current data.
-			mData = newArr;
-			// Set new capacity.
+			mData	  = newArr;
 			mCapacity = newCap;
 		}
 

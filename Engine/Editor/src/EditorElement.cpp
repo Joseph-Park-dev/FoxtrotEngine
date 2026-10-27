@@ -403,7 +403,23 @@ namespace Editor
 
 	void EditorElement::UpdateTransformUI()
 	{
-		Core::Transform* transform = GetTransform();
+		EditorTransform* transform = static_cast<EditorTransform*>(GetTransform());
+		if (!transform)
+			return;
+
+		CommandHistory* history = CommandHistory::GetInstance();
+		if (!GetParent())
+		{
+			history->UpdateVector3Value("World Position", transform->WorldPosition());
+			history->UpdateVector3Value("World Scale", transform->WorldScale());
+			history->UpdateVector3Value("World Rotation", transform->WorldRotation());
+		}
+		else
+		{
+			history->UpdateVector3Value("Local Position", transform->LocalPosition());
+			history->UpdateVector3Value("Local Scale", transform->LocalScale());
+			history->UpdateVector3Value("Local Rotation", transform->LocalRotation());
+		}
 	}
 
 	void EditorElement::UpdateComponentsUI()

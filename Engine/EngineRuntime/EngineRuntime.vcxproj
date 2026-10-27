@@ -53,6 +53,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\third_party\imgui\imgui.cpp" Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'" />
+    <ClCompile Include="..\..\third_party\imgui\imgui_draw.cpp" Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'" />
+    <ClCompile Include="..\..\third_party\imgui\imgui_tables.cpp" Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'" />
+    <ClCompile Include="..\..\third_party\imgui\imgui_widgets.cpp" Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'" />
     <ClCompile Include="src\Actor\ActorData.cpp" />
     <ClCompile Include="src\Manager\PluginManager.cpp" />
     <ClCompile Include="src\Actor\Actor.cpp" />
@@ -68,6 +72,7 @@
     <ClCompile Include="src\ResourceSystem\FTPremade.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
     <ClCompile Include="src\Plugin\RuntimeApi.cpp" />
+    <ClCompile Include="src\Plugin\CoreEditorResourceService.cpp" />
     <ClCompile Include="src\Platform\Win32Window.cpp" />
     <ClCompile Include="src\InputSystem\D3D11InputDevice.cpp" />
     <ClCompile Include="src\Component\Data\ComponentData.cpp" />
@@ -109,6 +114,7 @@
     <ClInclude Include="include\Plugin\GameSystems.h" />
     <ClInclude Include="include\Plugin\GetFunc.h" />
     <ClInclude Include="include\Plugin\IEditorResourceService.h" />
+    <ClInclude Include="include\Plugin\CoreEditorResourceService.h" />
     <ClInclude Include="include\Plugin\IPlugin.h" />
     <ClInclude Include="include\Plugin\ModuleAdapter.h" />
     <ClInclude Include="include\Plugin\pch.h" />

@@ -35,6 +35,7 @@
 <ClCompile Include="src\ActorCommand.cpp"/>
 <ClCompile Include="src\Command.cpp"/>
 <ClCompile Include="src\CommandHistory.cpp"/>
+<ClCompile Include="src\ComponentRegistry.cpp"/>
 <ClCompile Include="src\EditorCamera.cpp"/>
 <ClCompile Include="src\ChunkLoader.cpp"/>
 <ClCompile Include="src\EditorElement.cpp"/>
@@ -50,6 +51,7 @@
 <ClInclude Include="include\ChunkLoader.h"/>
 <ClInclude Include="include\Command.h"/>
 <ClInclude Include="include\CommandHistory.h"/>
+<ClInclude Include="include\ComponentRegistry.h"/>
 <ClInclude Include="include\Component\Graphics\EditorAnimator.h"/>
 <ClInclude Include="include\Component\Graphics\EditorMeshRenderer.h"/>
 <ClInclude Include="include\Component\Graphics\EditorSpineAnimator.h"/>

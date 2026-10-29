@@ -99,412 +99,473 @@ BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMoni
 
 namespace Editor
 {
-class D3D11Editor :
-	public Core::IPlugin
-{
-public:
+	class D3D11Editor :
+		public Core::IPlugin
+	{
+	public:
+		/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
+		/// @throws std::runtime_error If the operation encounters the failure condition checked by this implementation.
+		void Initialize() override;
+
+	public:
+		/// @brief Returns the is updating game used by this d3 d11 editor.
+		/// @return Current value of the is updating game flag.
+		bool GetIsUpdatingGame() const { return mIsUpdatingGame; }
+		/// @brief Returns the editor window used by this d3 d11 editor.
+		/// @return Borrowed access to the editor window.
+		D3D11::D3D11Window* GetEditorWindow() { return mEditorWin; }
+
+		/// @brief Updates the is updating game used by subsequent operations.
+		/// @param isUpdating Replacement is updating game.
+		void SetIsUpdatingGame(bool isUpdating) { mIsUpdatingGame = isUpdating; }
+
+	public:
+		/// @brief Initializes the editor plugin's windows, cameras, and services.
+		D3D11Editor();
+		/// @brief Releases the resources managed by this instance during destruction.
+		~D3D11Editor() override;
+
+	public:
+		inline static Core::CHUNK_IS_SAVED_FUNC gGetChunkISSavedFunc = nullptr;
+
+	private:
+		D3D11::D3D11Window*		 mEditorWin;
+		D3D11::D3D11Window*		 mGameWin;
+		D3D11::D3D11Renderer*	 mRenderer;
+		D3D11::D3D11InputDevice* mInputDevice;
+		D3D11::WNDPROC_Params*	 wndprocParams;
+		D3D11::ViewportRenderer* mViewport;
+
+		D3D11::Camera*		  mGameCamera;
+		Editor::EditorCamera* mEditorCamera;
+
+		bool				  mIsUpdatingGame;
+		bool				  mIsResizingWindow;
+		Common::FTDS::String* mEditorDataFileName;
+
+	private:
+		// These member functions are to be included in Initialize()
+		/// @brief Initializes the ImGui state and platform/rendering backend bindings.
+		/// @return True if the operation succeeds or the tested condition holds; otherwise false.
+		bool InitGUI();
+		bool mGuiReady = false;
+
+	private:
+		// GameLoop functions
+		/// @brief Registers a component for plugin-managed lifecycle processing.
+		/// @param comp Component instance associated with the actor or plugin.
+		void RegisterComponent(Common::IComponent* comp) override { (void)comp; }
+		/// @brief Provides an empty lifecycle or extension hook for this implementation.
+		/// @note Unnamed parameter (std::ofstream&): reserved by this interface or unused by this implementation.
+		/// @note Writes to the supplied stream at its current position.
+		void SaveProperties(std::ofstream&) override {}
+		/// @brief Provides an empty lifecycle or extension hook for this implementation.
+		/// @note Unnamed parameter (std::ifstream&): reserved by this interface or unused by this implementation.
+		/// @note Advances the stream position and updates the destination state.
+		void LoadProperties(std::ifstream&) override {}
+		/// @brief Provides an empty lifecycle or extension hook for this implementation.
+		void Setup() override {}
+		/// @brief Dispatches input for the current frame to the relevant engine objects.
+		void ProcessInput() override;
+		/// @brief Advances frame-dependent state using the current time step.
+		/// @param deltaTime Elapsed frame time in seconds.
+		void Update(float deltaTime) override;
+		/// @brief Provides an empty lifecycle or extension hook for this implementation.
+		/// @note Unnamed parameter (float): reserved by this interface or unused by this implementation.
+		void LateUpdate(float) override;
+		/// @brief Submits this object's graphics work for the current frame.
+		void Render() override;
+		/// @brief Draws active scene components into the currently bound render target.
+		/// @param renderer Renderer providing the graphics device and current render state.
+		/// @param camera Camera supplying the view and projection for this draw.
+		/// @param editorPass True to call EditorRender; false to call Render.
+		void RenderScene(Core::IRenderer* renderer, Core::ICamera* camera, bool editorPass);
+		/// @brief Provides an empty lifecycle or extension hook for this implementation.
+		void ProcessEvent() override {}
+		/// @brief Provides an empty lifecycle or extension hook for this implementation.
+		void ShutDown() override {}
+
+	protected:
+		/// @brief Provides an empty lifecycle or extension hook for this implementation.
+		/// @note Unnamed parameter (std::ifstream&): reserved by this interface or unused by this implementation.
+		void LoadManagerData(std::ifstream&) override {}
+		/// @brief Provides an empty lifecycle or extension hook for this implementation.
+		/// @note Unnamed parameter (std::ifstream&): reserved by this interface or unused by this implementation.
+		void LoadResourceData(std::ifstream&) override {}
+
+		// static LRESULT CALLBACK WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	};
+
 	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
 	/// @throws std::runtime_error If the operation encounters the failure condition checked by this implementation.
-	void Initialize() override;
+	void D3D11Editor::Initialize()
+	{
+		gGetChunkISSavedFunc = Core::GetFunc<Core::CHUNK_IS_SAVED_FUNC>(Common::DLLPath::CORE_EDITOR, Core::ProcName::GetChunkIsSaved);
 
-public:
-	/// @brief Returns the is updating game used by this d3 d11 editor.
-	/// @return Current value of the is updating game flag.
-	bool				GetIsUpdatingGame() const { return mIsUpdatingGame; }
-	/// @brief Returns the editor window used by this d3 d11 editor.
-	/// @return Borrowed access to the editor window.
-	D3D11::D3D11Window* GetEditorWindow() { return mEditorWin; }
+		IPlugin* d3d11Plugin = nullptr;
+		if (auto* plugins = Core::GetAvailablePlugins())
+			for (auto it = plugins->Begin(); it != plugins->End(); ++it)
+				if (*it && (*it)->Key().Equal("FoxtrotD3D11"))
+				{
+					d3d11Plugin = (*it)->Value();
+					break;
+				}
+		if (!d3d11Plugin)
+			throw std::runtime_error("Editor requires the attached D3D11 plugin");
 
-	/// @brief Updates the is updating game used by subsequent operations.
-	/// @param isUpdating Replacement is updating game.
-	void SetIsUpdatingGame(bool isUpdating) { mIsUpdatingGame = isUpdating; }
+		Core::IGraphicsFactory* graphicsFac = static_cast<Core::IGraphicsFactory*>(d3d11Plugin->QueryInterface("GraphicsFactory"));
+		Core::IInputSysFactory* inputFac	= static_cast<Core::IInputSysFactory*>(d3d11Plugin->QueryInterface("InputFactory"));
+		if (!graphicsFac || !inputFac)
+			throw std::runtime_error("D3D11 plugin is missing editor graphics or input services");
 
-public:
-	/// @brief Initializes the editor plugin's windows, cameras, and services.
-	D3D11Editor();
-	/// @brief Releases the resources managed by this instance during destruction.
-	~D3D11Editor() override;
+		D3D11::CREATE_VP_RENDERER createVPRendererFunc = Core::GetFunc<D3D11::CREATE_VP_RENDERER>(Common::DLLPath::D3D11, Core::ProcNames::D3D11::CREATE_VP_RENDERER);
+		// D3D11::CREATE_WINDOW_PROC	 createWindowFunc	   = Core::GetFunc<D3D11::CREATE_WINDOW_PROC>(Common::DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_D3D11_WINDOW);
+		// D3D11::CREATE_RENDERER		 createRendererFunc	   = Core::GetFunc<D3D11::CREATE_RENDERER>(Common::DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_RENDERER);
+		// D3D11::CREATE_INPUTDEVICE	 createInputDeviceFunc = Core::GetFunc<D3D11::CREATE_INPUTDEVICE>(Common::DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_INPUTDEVICE);
 
-public:
-	inline static Core::CHUNK_IS_SAVED_FUNC gGetChunkISSavedFunc = nullptr;
+		D3D11::FTRectArea* rndArea = DBG_NEW D3D11::FTRectArea(0.f, 0.f, 1280.f, 720.f, 0.f);
 
-private:
-	D3D11::D3D11Window*		 mEditorWin;
-	D3D11::D3D11Window*		 mGameWin;
-	D3D11::D3D11Renderer*	 mRenderer;
-	D3D11::D3D11InputDevice* mInputDevice;
-	D3D11::WNDPROC_Params*	 wndprocParams;
-	D3D11::ViewportRenderer* mViewport;
+		wndprocParams = DBG_NEW D3D11::WNDPROC_Params{ mEditorWin, mInputDevice, mRenderer, &mIsResizingWindow };
+		mEditorWin	  = static_cast<D3D11::D3D11Window*>(graphicsFac->CreateAppWindow("Foxtrot Editor", 3840, 2160, rndArea, WinProc, wndprocParams));
+		mRenderer	  = reinterpret_cast<D3D11::D3D11Renderer*>(graphicsFac->CreateRenderer(mEditorWin));
 
-	D3D11::Camera*		  mGameCamera;
-	Editor::EditorCamera* mEditorCamera;
+		mViewport = createVPRendererFunc();
+		mViewport->InitializeTexture(mRenderer, 1280.f, 720.f);
 
-	bool				  mIsUpdatingGame;
-	bool				  mIsResizingWindow;
-	Common::FTDS::String* mEditorDataFileName;
+		rndArea	 = DBG_NEW D3D11::FTRectArea(0.f, 0.f, 1920.f, 1080.f, 0.f);
+		mGameWin = static_cast<D3D11::D3D11Window*>(graphicsFac->CreateAppWindow("Game", 1920, 1080, rndArea, GameWinProc, nullptr));
 
-private:
-	// These member functions are to be included in Initialize()
-	/// @brief Initializes the ImGui state and platform/rendering backend bindings.
-	/// @return True if the operation succeeds or the tested condition holds; otherwise false.
-	bool InitGUI();
-    bool mGuiReady = false;
+		if (!mGameWin->CreateSwapChain(mRenderer))
+		{
+			Common::Debug::LogError(__LINE__, __FILE__, "Failed to Initialize SwapChain");
+			return;
+		}
 
-private:
-	// GameLoop functions
-	/// @brief Registers a component for plugin-managed lifecycle processing.
-	/// @param comp Component instance associated with the actor or plugin.
-	void RegisterComponent(Common::IComponent* comp) override { (void)comp; }
-	/// @brief Provides an empty lifecycle or extension hook for this implementation.
-	/// @note Unnamed parameter (std::ofstream&): reserved by this interface or unused by this implementation.
-	/// @note Writes to the supplied stream at its current position.
-	void SaveProperties(std::ofstream&) override {}
-	/// @brief Provides an empty lifecycle or extension hook for this implementation.
-	/// @note Unnamed parameter (std::ifstream&): reserved by this interface or unused by this implementation.
-	/// @note Advances the stream position and updates the destination state.
-	void LoadProperties(std::ifstream&) override {}
-	/// @brief Provides an empty lifecycle or extension hook for this implementation.
-	void Setup() override {}
+		if (!mEditorWin->InitializeWindowRenderer(mRenderer))
+		{
+			Common::Debug::LogError(__LINE__, __FILE__, "Failed to Initialize Editor FTWindow Renderer");
+			return;
+		}
+
+		if (!mGameWin->InitializeWindowRenderer(mRenderer))
+		{
+			Common::Debug::LogError(__LINE__, __FILE__, "Failed to Initialize FTWindow Renderer");
+			return;
+		}
+
+		mGameCamera = static_cast<D3D11::Camera*>(graphicsFac->CreateCamera());
+		mGameCamera->Initialize(mGameWin, 64, 1.8f);
+		EditorSceneManager::GetInstance()->Initialize(new EditorScene);
+		// Camera::GetInstance()->Initialize(GetGameWindow(), 64.f, 1.8f);
+		mEditorCamera = DBG_NEW Editor::EditorCamera;
+		mEditorCamera->Initialize(mEditorWin, 64, 1.8f);
+		// D3D11::DebugShapes::GetInstance()->GetCameraRect()->Initialize(GetGameRenderer());
+
+		mInputDevice = reinterpret_cast<D3D11::D3D11InputDevice*>(inputFac->CreateInputDevice());
+
+		if (!InitGUI())
+		{
+			throw std::runtime_error("Failed to initialize ImGui");
+		}
+		mGuiReady = true;
+		D3D11::SetEditorGuiContext(ImGui::GetCurrentContext());
+		Core::SetEditorGuiContext(ImGui::GetCurrentContext());
+		wndprocParams->Window	   = mEditorWin;
+		wndprocParams->Renderer	   = mRenderer;
+		wndprocParams->InputDevice = mInputDevice;
+		Editor::EditorLayer::GetInstance()->SetViewportRenderer(mViewport);
+		Editor::EditorLayer::GetInstance()->Initialize(mRenderer);
+
+		// Look for secondary window to display editor window.
+		HMONITOR secondaryMon = MonitorFromPoint(POINT{ 0, 0 }, MONITOR_DEFAULTTOPRIMARY);
+		EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, (LPARAM)&secondaryMon);
+
+		MONITORINFO hMonitorInfo;
+		hMonitorInfo.cbSize = sizeof(hMonitorInfo);
+		GetMonitorInfo(secondaryMon, &hMonitorInfo);
+
+		RECT r = hMonitorInfo.rcMonitor;
+
+		SetWindowPos(
+			mEditorWin->GetHandle(),
+			NULL,
+			r.left,
+			r.top,
+			mEditorWin->GetWidth(),
+			mEditorWin->GetHeight(),
+			SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+	}
+
 	/// @brief Dispatches input for the current frame to the relevant engine objects.
-	void ProcessInput() override;
-	/// @brief Advances frame-dependent state using the current time step.
-	/// @param deltaTime Elapsed frame time in seconds.
-	void Update(float deltaTime) override;
-	/// @brief Provides an empty lifecycle or extension hook for this implementation.
-	/// @note Unnamed parameter (float): reserved by this interface or unused by this implementation.
-	void LateUpdate(float) override {}
+	void D3D11Editor::ProcessInput()
+	{
+		mEditorCamera->ProcessInput(mInputDevice);
+	}
+
+	void D3D11Editor::LateUpdate(float deltaTime)
+	{
+		// if (mIsUpdatingGame)
+		//{
+		//	EditorSceneManager::GetInstance()->Update(deltaTime);
+		//	EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
+		//	SoundManager::GetInstance()->Update();
+		//	Physics2D::GetInstance()->Update();
+		//	CollisionManager::GetInstance()->Update();
+		//	UIManager::GetInstance()->Update(deltaTime, mEditorWindow->GetInputDevice());
+		// }
+		// else
+		//	EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
+		// mGameCamera->Update(deltaTime);
+
+		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+		if (!scene || !scene->Actors())
+			return;
+
+		Common::FTDS::DynamicArray<Common::IActor*>* actors = scene->Actors();
+		for (auto actor = actors->Begin(); actor != actors->End(); ++actor)
+		{
+			if (!(*actor) || !(*actor)->GetIsActive())
+				continue;
+
+			Common::FTDS::DynamicArray<Common::IComponent*>* components = (*actor)->GetComponents();
+			if (!components)
+				continue;
+
+			for (auto component = components->Begin(); component != components->End(); ++component)
+			{
+				if (!(*component))
+					continue;
+
+				(*component)->LateUpdate(deltaTime);
+			}
+		}
+	}
+
 	/// @brief Submits this object's graphics work for the current frame.
-	void Render() override;
+	void D3D11Editor::Render()
+	{
+		// if (!EditorChunkLoader::GetInstance()->IsLoadingChunk())
+		//{
+		//	EditorSceneManager::GetInstance()->Render(renderer);
+		//	// EditorSceneManager::GetInstance()->EditorRender(renderer);
+		//	DebugShapes::GetInstance()->Render(renderer);
+		//	LightManager::GetInstance()->Render(renderer, Camera::GetInstance());
+		// }
+		// GetGameWindow()->EndRender(renderer);
+		// GetGameWindow()->GetSwapChain()->Present(1, 0);
+
+		//// Renders the editor window.
+		// mEditorWindow->BeginRender(renderer);
+		// EditorLayer::GetInstance()->Render(renderer);
+		// mEditorWindow->EndRender(renderer);
+
+		if (mViewport && mRenderer && mEditorCamera)
+		{
+			D3D11::FTRectArea* area = mEditorWin ? mEditorWin->GetRenderArea() : nullptr;
+			if (area && mEditorCamera->Data())
+			{
+				Math::FTVector2 size = area->GetSize();
+				if (1.f <= size.x && 1.f <= size.y)
+				{
+					mEditorCamera->Data()->ResX = static_cast<unsigned int>(size.x);
+					mEditorCamera->Data()->ResY = static_cast<unsigned int>(size.y);
+				}
+			}
+
+			mViewport->BeginRender(mRenderer);
+			RenderScene(mRenderer, mEditorCamera, true);
+			mViewport->EndRender(mRenderer);
+		}
+
+		if (mGameWin && mRenderer && mGameCamera)
+		{
+			mGameWin->BeginRender(mRenderer);
+			if (mGameCamera->Data() && 0 < mGameWin->GetWidth() && 0 < mGameWin->GetHeight())
+			{
+				mGameCamera->Data()->ResX = mGameWin->GetWidth();
+				mGameCamera->Data()->ResY = mGameWin->GetHeight();
+			}
+			RenderScene(mRenderer, mGameCamera, false);
+			mGameWin->EndRender(mRenderer);
+		}
+
+		if (mEditorWin && mRenderer)
+		{
+			mEditorWin->BeginRender(mRenderer);
+			EditorLayer::GetInstance()->Render();
+			mEditorWin->EndRender(mRenderer);
+		}
+	}
+
 	/// @brief Draws active scene components into the currently bound render target.
 	/// @param renderer Renderer providing the graphics device and current render state.
 	/// @param camera Camera supplying the view and projection for this draw.
 	/// @param editorPass True to call EditorRender; false to call Render.
-	void RenderScene(Core::IRenderer* renderer, Core::ICamera* camera, bool editorPass);
-	/// @brief Provides an empty lifecycle or extension hook for this implementation.
-	void ProcessEvent() override {}
-	/// @brief Provides an empty lifecycle or extension hook for this implementation.
-	void ShutDown() override {}
-
-protected:
-	/// @brief Provides an empty lifecycle or extension hook for this implementation.
-	/// @note Unnamed parameter (std::ifstream&): reserved by this interface or unused by this implementation.
-	void LoadManagerData(std::ifstream&) override {}
-	/// @brief Provides an empty lifecycle or extension hook for this implementation.
-	/// @note Unnamed parameter (std::ifstream&): reserved by this interface or unused by this implementation.
-	void LoadResourceData(std::ifstream&) override {}
-
-	// static LRESULT CALLBACK WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-};
-
-/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
-/// @throws std::runtime_error If the operation encounters the failure condition checked by this implementation.
-void D3D11Editor::Initialize()
-{
-	gGetChunkISSavedFunc = Core::GetFunc<Core::CHUNK_IS_SAVED_FUNC>(Common::DLLPath::CORE_EDITOR, Core::ProcName::GetChunkIsSaved);
-
-	IPlugin* d3d11Plugin = nullptr;
-	if (auto* plugins = Core::GetAvailablePlugins())
-		for (auto it = plugins->Begin(); it != plugins->End(); ++it)
-			if (*it && (*it)->Key().Equal("FoxtrotD3D11"))
-			{
-				d3d11Plugin = (*it)->Value();
-				break;
-			}
-	if (!d3d11Plugin)
-		throw std::runtime_error("Editor requires the attached D3D11 plugin");
-
-	Core::IGraphicsFactory* graphicsFac = static_cast<Core::IGraphicsFactory*>(d3d11Plugin->QueryInterface("GraphicsFactory"));
-	Core::IInputSysFactory* inputFac = static_cast<Core::IInputSysFactory*>(d3d11Plugin->QueryInterface("InputFactory"));
-	if (!graphicsFac || !inputFac)
-		throw std::runtime_error("D3D11 plugin is missing editor graphics or input services");
-
-	D3D11::CREATE_VP_RENDERER createVPRendererFunc = Core::GetFunc<D3D11::CREATE_VP_RENDERER>(Common::DLLPath::D3D11, Core::ProcNames::D3D11::CREATE_VP_RENDERER);
-	// D3D11::CREATE_WINDOW_PROC	 createWindowFunc	   = Core::GetFunc<D3D11::CREATE_WINDOW_PROC>(Common::DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_D3D11_WINDOW);
-	// D3D11::CREATE_RENDERER		 createRendererFunc	   = Core::GetFunc<D3D11::CREATE_RENDERER>(Common::DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_RENDERER);
-	// D3D11::CREATE_INPUTDEVICE	 createInputDeviceFunc = Core::GetFunc<D3D11::CREATE_INPUTDEVICE>(Common::DLLPath::D3D11_EDITOR, D3D11::PluginKey::CREATE_INPUTDEVICE);
-
-	D3D11::FTRectArea* rndArea = DBG_NEW D3D11::FTRectArea(0.f, 0.f, 1280.f, 720.f, 0.f);
-
-	wndprocParams = DBG_NEW D3D11::WNDPROC_Params{ mEditorWin, mInputDevice, mRenderer, &mIsResizingWindow };
-	mEditorWin	  = static_cast<D3D11::D3D11Window*>(graphicsFac->CreateAppWindow("Foxtrot Editor", 3840, 2160, rndArea, WinProc, wndprocParams));
-	mRenderer	  = reinterpret_cast<D3D11::D3D11Renderer*>(graphicsFac->CreateRenderer(mEditorWin));
-
-	mViewport = createVPRendererFunc();
-	mViewport->InitializeTexture(mRenderer, 1280.f, 720.f);
-
-	rndArea = DBG_NEW D3D11::FTRectArea(0.f, 0.f, 1920.f, 1080.f, 0.f);
-	mGameWin = static_cast<D3D11::D3D11Window*>(graphicsFac->CreateAppWindow("Game", 1920, 1080, rndArea, GameWinProc, nullptr));
-
-	if (!mGameWin->CreateSwapChain(mRenderer))
+	void D3D11Editor::RenderScene(Core::IRenderer* renderer, Core::ICamera* camera, bool editorPass)
 	{
-		Common::Debug::LogError(__LINE__, __FILE__, "Failed to Initialize SwapChain");
-		return;
-	}
+		if (!renderer || !camera)
+			return;
 
-	if (!mEditorWin->InitializeWindowRenderer(mRenderer))
-	{
-		Common::Debug::LogError(__LINE__, __FILE__, "Failed to Initialize Editor FTWindow Renderer");
-		return;
-	}
+		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+		if (!scene || !scene->Actors())
+			return;
 
-	if (!mGameWin->InitializeWindowRenderer(mRenderer))
-	{
-		Common::Debug::LogError(__LINE__, __FILE__, "Failed to Initialize FTWindow Renderer");
-		return;
-	}
-
-	mGameCamera = static_cast<D3D11::Camera*>(graphicsFac->CreateCamera());
-    mGameCamera->Initialize(mGameWin, 64, 1.8f);
-    EditorSceneManager::GetInstance()->Initialize(new EditorScene);
-	// Camera::GetInstance()->Initialize(GetGameWindow(), 64.f, 1.8f);
-	mEditorCamera = DBG_NEW Editor::EditorCamera;
-	mEditorCamera->Initialize(mEditorWin, 64, 1.8f);
-	// D3D11::DebugShapes::GetInstance()->GetCameraRect()->Initialize(GetGameRenderer());
-
-	mInputDevice					 = reinterpret_cast<D3D11::D3D11InputDevice*>(inputFac->CreateInputDevice());
-
-	if (!InitGUI())
-	{
-		throw std::runtime_error("Failed to initialize ImGui");
-	}
-	mGuiReady = true;
-    D3D11::SetEditorGuiContext(ImGui::GetCurrentContext());
-    Core::SetEditorGuiContext(ImGui::GetCurrentContext());
-    wndprocParams->Window = mEditorWin;
-    wndprocParams->Renderer = mRenderer;
-    wndprocParams->InputDevice = mInputDevice;
-    Editor::EditorLayer::GetInstance()->SetViewportRenderer(mViewport);
-	Editor::EditorLayer::GetInstance()->Initialize(mRenderer);
-
-	// Look for secondary window to display editor window.
-	HMONITOR secondaryMon = MonitorFromPoint(POINT{ 0, 0 }, MONITOR_DEFAULTTOPRIMARY);
-	EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, (LPARAM)&secondaryMon);
-
-	MONITORINFO hMonitorInfo;
-	hMonitorInfo.cbSize = sizeof(hMonitorInfo);
-	GetMonitorInfo(secondaryMon, &hMonitorInfo);
-
-	RECT r = hMonitorInfo.rcMonitor;
-
-	SetWindowPos(
-		mEditorWin->GetHandle(),
-		NULL,
-		r.left,
-		r.top,
-		mEditorWin->GetWidth(),
-		mEditorWin->GetHeight(),
-		SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-}
-
-/// @brief Dispatches input for the current frame to the relevant engine objects.
-void D3D11Editor::ProcessInput()
-{
-	mEditorCamera->ProcessInput(mInputDevice);
-}
-
-/// @brief Submits this object's graphics work for the current frame.
-void D3D11Editor::Render()
-{
-	// if (!EditorChunkLoader::GetInstance()->IsLoadingChunk())
-	//{
-	//	EditorSceneManager::GetInstance()->Render(renderer);
-	//	// EditorSceneManager::GetInstance()->EditorRender(renderer);
-	//	DebugShapes::GetInstance()->Render(renderer);
-	//	LightManager::GetInstance()->Render(renderer, Camera::GetInstance());
-	// }
-	// GetGameWindow()->EndRender(renderer);
-	// GetGameWindow()->GetSwapChain()->Present(1, 0);
-
-	//// Renders the editor window.
-	// mEditorWindow->BeginRender(renderer);
-	// EditorLayer::GetInstance()->Render(renderer);
-	// mEditorWindow->EndRender(renderer);
-
-	if (mViewport && mRenderer && mEditorCamera)
-	{
-		D3D11::FTRectArea* area = mEditorWin ? mEditorWin->GetRenderArea() : nullptr;
-		if (area && mEditorCamera->Data())
+		Common::FTDS::DynamicArray<Common::IActor*>* actors = scene->Actors();
+		for (auto actor = actors->Begin(); actor != actors->End(); ++actor)
 		{
-			Math::FTVector2 size = area->GetSize();
-			if (1.f <= size.x && 1.f <= size.y)
-			{
-				mEditorCamera->Data()->ResX = static_cast<unsigned int>(size.x);
-				mEditorCamera->Data()->ResY = static_cast<unsigned int>(size.y);
-			}
-		}
-
-		mViewport->BeginRender(mRenderer);
-		RenderScene(mRenderer, mEditorCamera, true);
-		mViewport->EndRender(mRenderer);
-	}
-
-	if (mGameWin && mRenderer && mGameCamera)
-	{
-		mGameWin->BeginRender(mRenderer);
-		if (mGameCamera->Data() && 0 < mGameWin->GetWidth() && 0 < mGameWin->GetHeight())
-		{
-			mGameCamera->Data()->ResX = mGameWin->GetWidth();
-			mGameCamera->Data()->ResY = mGameWin->GetHeight();
-		}
-		RenderScene(mRenderer, mGameCamera, false);
-		mGameWin->EndRender(mRenderer);
-	}
-
-	if (mEditorWin && mRenderer)
-	{
-		mEditorWin->BeginRender(mRenderer);
-		EditorLayer::GetInstance()->Render();
-		mEditorWin->EndRender(mRenderer);
-	}
-}
-
-/// @brief Draws active scene components into the currently bound render target.
-/// @param renderer Renderer providing the graphics device and current render state.
-/// @param camera Camera supplying the view and projection for this draw.
-/// @param editorPass True to call EditorRender; false to call Render.
-void D3D11Editor::RenderScene(Core::IRenderer* renderer, Core::ICamera* camera, bool editorPass)
-{
-	if (!renderer || !camera)
-		return;
-
-	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-	if (!scene || !scene->Actors())
-		return;
-
-	Common::FTDS::DynamicArray<Common::IActor*>* actors = scene->Actors();
-	for (auto actor = actors->Begin(); actor != actors->End(); ++actor)
-	{
-		if (!(*actor) || !(*actor)->GetIsActive())
-			continue;
-
-		Common::FTDS::DynamicArray<Common::IComponent*>* components = (*actor)->GetComponents();
-		if (!components)
-			continue;
-
-		for (auto component = components->Begin(); component != components->End(); ++component)
-		{
-			if (!(*component))
+			if (!(*actor) || !(*actor)->GetIsActive())
 				continue;
 
-			if (editorPass)
-				(*component)->EditorRender(renderer, camera);
-			else
-				(*component)->Render(renderer, camera);
+			Common::FTDS::DynamicArray<Common::IComponent*>* components = (*actor)->GetComponents();
+			if (!components)
+				continue;
+
+			for (auto component = components->Begin(); component != components->End(); ++component)
+			{
+				if (!(*component))
+					continue;
+
+				if (editorPass)
+					(*component)->EditorRender(renderer, camera);
+				else
+					(*component)->Render(renderer, camera);
+			}
 		}
 	}
-}
 
-
-
-/// @brief Advances frame-dependent state using the current time step.
-/// @param deltaTime Elapsed frame time in seconds.
-void D3D11Editor::Update(float deltaTime)
-{
-	// if (mIsUpdatingGame)
-	//{
-	//	EditorSceneManager::GetInstance()->Update(deltaTime);
-	//	EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
-	//	SoundManager::GetInstance()->Update();
-	//	Physics2D::GetInstance()->Update();
-	//	CollisionManager::GetInstance()->Update();
-	//	UIManager::GetInstance()->Update(deltaTime, mEditorWindow->GetInputDevice());
-	// }
-	// else
-	//	EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
-	// mGameCamera->Update(deltaTime);
-	Core::ICamera* gameCam = reinterpret_cast<Core::ICamera*>(mGameCamera);
-	mEditorCamera->Update(gameCam);
-	EditorLayer::GetInstance()->Update(deltaTime, mEditorWin, mInputDevice, mRenderer, gameCam, mEditorCamera);
-}
-
-/// @brief Initializes the editor plugin's windows, cameras, and services.
-/// @note Initializes the :D3D11Editor base or delegates to its constructor.
-D3D11Editor::D3D11Editor()
-	: mEditorWin(nullptr)
-	, mGameWin(nullptr)
-	, mRenderer(nullptr)
-	, mInputDevice(nullptr)
-	, wndprocParams(nullptr)
-	, mViewport(nullptr)
-	, mGameCamera(nullptr)
-	, mEditorCamera(nullptr)
-
-	, mIsUpdatingGame(false)
-	, mIsResizingWindow(false)
-	, mEditorDataFileName(DBG_NEW Common::FTDS::String)
-{
-}
-
-/// @brief Releases the resources managed by this instance during destruction.
-D3D11Editor::~D3D11Editor()
-{
-	// Stop window messages before ImGui teardown. The device and HWND are still alive here.
-	if (mEditorWin)
-		FtDetachWindowCallback(mEditorWin->GetHandle());
-	if (mGameWin)
-		FtDetachWindowCallback(mGameWin->GetHandle());
-
-	if (mGuiReady)
+	/// @brief Advances frame-dependent state using the current time step.
+	/// @param deltaTime Elapsed frame time in seconds.
+	void D3D11Editor::Update(float deltaTime)
 	{
-		EditorLayer::GetInstance()->ShutDown();
-		D3D11::SetEditorGuiContext(nullptr);
-		Core::SetEditorGuiContext(nullptr);
-		mGuiReady = false;
+		// if (mIsUpdatingGame)
+		//{
+		//	EditorSceneManager::GetInstance()->Update(deltaTime);
+		//	EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
+		//	SoundManager::GetInstance()->Update();
+		//	Physics2D::GetInstance()->Update();
+		//	CollisionManager::GetInstance()->Update();
+		//	UIManager::GetInstance()->Update(deltaTime, mEditorWindow->GetInputDevice());
+		// }
+		// else
+		//	EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
+		// mGameCamera->Update(deltaTime);
+
+		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+		if (!scene || !scene->Actors())
+			return;
+
+		Common::FTDS::DynamicArray<Common::IActor*>* actors = scene->Actors();
+		for (auto actor = actors->Begin(); actor != actors->End(); ++actor)
+		{
+			if (!(*actor) || !(*actor)->GetIsActive())
+				continue;
+
+			Common::FTDS::DynamicArray<Common::IComponent*>* components = (*actor)->GetComponents();
+			if (!components)
+				continue;
+
+			for (auto component = components->Begin(); component != components->End(); ++component)
+			{
+				if (!(*component))
+					continue;
+
+				(*component)->Update(deltaTime);
+			}
+		}
+
+		Core::ICamera* gameCam = reinterpret_cast<Core::ICamera*>(mGameCamera);
+		mEditorCamera->Update(gameCam);
+		EditorLayer::GetInstance()->Update(deltaTime, mEditorWin, mInputDevice, mRenderer, gameCam, mEditorCamera);
 	}
 
-	CommandHistory::GetInstance()->ShutDown();
-	CommandHistory::Destroy();
-	ComponentRegistry::Destroy();
-	EditorSceneManager::Destroy();
-	ChunkLoader::Destroy();
-	EditorLayer::Destroy();
-	EditorShapes::Destroy();
-	delete mEditorCamera;
-	mEditorCamera = nullptr;
-	D3D11::DestroyViewportRenderer(mViewport);
-	mViewport = nullptr;
-	delete wndprocParams;
-	wndprocParams = nullptr;
-	delete mEditorDataFileName;
-	mEditorDataFileName = nullptr;
-	// Windows, device, game camera and input are borrowed from D3D11's factory.
-}
+	/// @brief Initializes the editor plugin's windows, cameras, and services.
+	/// @note Initializes the :D3D11Editor base or delegates to its constructor.
+	D3D11Editor::D3D11Editor()
+		: mEditorWin(nullptr)
+		, mGameWin(nullptr)
+		, mRenderer(nullptr)
+		, mInputDevice(nullptr)
+		, wndprocParams(nullptr)
+		, mViewport(nullptr)
+		, mGameCamera(nullptr)
+		, mEditorCamera(nullptr)
 
-/// @brief Initializes the ImGui state and platform/rendering backend bindings.
-/// @return True if the operation succeeds or the tested condition holds; otherwise false.
-bool D3D11Editor::InitGUI()
-{
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
-	(void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	// io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-	io.DisplaySize			   = ImVec2(float(mEditorWin->GetWidth()), float(mEditorWin->GetHeight()));
-	io.ConfigDpiScaleFonts	   = true;
-	io.ConfigDpiScaleViewports = true;
-	// io.FontGlobalScale		   = 1.5f;
-
-	// ImGuiStyle& style = ImGui::GetStyle();
-	// style.ScaleAllSizes(2.0f);
-
-	ImGui::StyleColorsDark();
-	if (!ImGui_ImplWin32_Init(mEditorWin->GetHandle()))
+		, mIsUpdatingGame(false)
+		, mIsResizingWindow(false)
+		, mEditorDataFileName(DBG_NEW Common::FTDS::String)
 	{
-		ImGui::DestroyContext();
-		return false;
 	}
-	if (!ImGui_ImplDX11_Init(
-			mRenderer->GetDevice().Get(),
-			mRenderer->GetContext().Get()))
+
+	/// @brief Releases the resources managed by this instance during destruction.
+	D3D11Editor::~D3D11Editor()
 	{
-		ImGui_ImplWin32_Shutdown();
-		ImGui::DestroyContext();
-		return false;
+		// Stop window messages before ImGui teardown. The device and HWND are still alive here.
+		if (mEditorWin)
+			FtDetachWindowCallback(mEditorWin->GetHandle());
+		if (mGameWin)
+			FtDetachWindowCallback(mGameWin->GetHandle());
+
+		if (mGuiReady)
+		{
+			EditorLayer::GetInstance()->ShutDown();
+			D3D11::SetEditorGuiContext(nullptr);
+			Core::SetEditorGuiContext(nullptr);
+			mGuiReady = false;
+		}
+
+		CommandHistory::GetInstance()->ShutDown();
+		CommandHistory::Destroy();
+		ComponentRegistry::Destroy();
+		EditorSceneManager::Destroy();
+		ChunkLoader::Destroy();
+		EditorLayer::Destroy();
+		EditorShapes::Destroy();
+		delete mEditorCamera;
+		mEditorCamera = nullptr;
+		D3D11::DestroyViewportRenderer(mViewport);
+		mViewport = nullptr;
+		delete wndprocParams;
+		wndprocParams = nullptr;
+		delete mEditorDataFileName;
+		mEditorDataFileName = nullptr;
+		// Windows, device, game camera and input are borrowed from D3D11's factory.
 	}
-	return true;
-}
+
+	/// @brief Initializes the ImGui state and platform/rendering backend bindings.
+	/// @return True if the operation succeeds or the tested condition holds; otherwise false.
+	bool D3D11Editor::InitGUI()
+	{
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO();
+		(void)io;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+		// io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+		io.DisplaySize			   = ImVec2(float(mEditorWin->GetWidth()), float(mEditorWin->GetHeight()));
+		io.ConfigDpiScaleFonts	   = true;
+		io.ConfigDpiScaleViewports = true;
+		// io.FontGlobalScale		   = 1.5f;
+
+		// ImGuiStyle& style = ImGui::GetStyle();
+		// style.ScaleAllSizes(2.0f);
+
+		ImGui::StyleColorsDark();
+		if (!ImGui_ImplWin32_Init(mEditorWin->GetHandle()))
+		{
+			ImGui::DestroyContext();
+			return false;
+		}
+		if (!ImGui_ImplDX11_Init(
+				mRenderer->GetDevice().Get(),
+				mRenderer->GetContext().Get()))
+		{
+			ImGui_ImplWin32_Shutdown();
+			ImGui::DestroyContext();
+			return false;
+		}
+		return true;
+	}
 } // namespace Editor
 
 /// @brief Dispatches native window messages for input and window lifecycle handling.
@@ -580,6 +641,7 @@ extern "C"
 /// @return Dispatches native window messages to the game window's input and lifecycle handlers.
 LRESULT CALLBACK GameWinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    if (msg == WM_CLOSE) return WinProc(hwnd, msg, wParam, lParam);
-    return DefWindowProc(hwnd, msg, wParam, lParam);
+	if (msg == WM_CLOSE)
+		return WinProc(hwnd, msg, wParam, lParam);
+	return DefWindowProc(hwnd, msg, wParam, lParam);
 }

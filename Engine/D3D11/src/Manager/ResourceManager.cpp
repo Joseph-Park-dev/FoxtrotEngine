@@ -217,7 +217,7 @@ namespace D3D11
 		/////////////////////
 		///// Materials /////
 		/////////////////////
-		Common::FTDS::String materials   = *projDir;
+		Common::FTDS::String materials = *projDir;
 		materials.Append("DefaultRes\\Materials\\");
 		resDef.FileName = "StandardMaterial.ftmat";
 		materials.Append(resDef.FileName);
@@ -225,8 +225,7 @@ namespace D3D11
 
 		mMaterials->GetResMap()->Insert(
 			resDef.FileName,
-			DBG_NEW StandardMaterial(resDef, renderer)
-		);
+			DBG_NEW StandardMaterial(resDef, renderer));
 
 		//////////////////////////////
 		///// PSO Elements Setup /////
@@ -250,6 +249,11 @@ namespace D3D11
 		rtBlendDesc.RenderTargetWriteMask			= D3D11_COLOR_WRITE_ENABLE_ALL;
 
 		DX::ThrowIfFailed(renderer->GetDevice()->CreateBlendState(&blendDesc, spriteBS.GetAddressOf()));
+
+		ComPtr<ID3D11BlendState> spineBS;
+		rtBlendDesc.SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		DX::ThrowIfFailed(renderer->GetDevice()->CreateBlendState(&blendDesc, spineBS.GetAddressOf()));
+		rtBlendDesc.SrcBlend = D3D11_BLEND_ONE;
 
 		ComPtr<ID3D11DepthStencilState> spriteDSS;
 
@@ -324,6 +328,22 @@ namespace D3D11
 			psoDef.RS			= SolidRS;
 			psoDef.SS			= SamplerState;
 			psoDef.PrimTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
+
+			mPSOs->AddResource(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
+		}
+
+		{
+			psoDef.FileName = "SpineAnimPSO";
+			psoDef.Path		= Common::ChunkKey::NullVal::NULL_OBJECT;
+
+			psoDef.VS			= VS.At("TextureVSSpine.hlsl")->Value();
+			psoDef.GS			= nullptr;
+			psoDef.PS			= PS.At("Texture2DSpinePS.hlsl")->Value();
+			psoDef.BS			= spineBS;
+			psoDef.DSS			= spriteDSS;
+			psoDef.RS			= SolidRS;
+			psoDef.SS			= SamplerState;
+			psoDef.PrimTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 			mPSOs->AddResource(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
 		}

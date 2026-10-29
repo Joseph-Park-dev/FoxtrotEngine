@@ -90,7 +90,11 @@ namespace D3D11
 		if (!mJSON)
 			return;
 
-		SetTexture(D3D11::ResourceManager::GetInstance()->GetSprite(texKey)->GetTexture());
+		FTSprite* sheet = D3D11::ResourceManager::GetInstance()->GetSprite(texKey);
+		if (!sheet)
+			return;
+
+		SetTexture(sheet->GetTexture());
 		if (!GetTexture())
 			return;
 
@@ -232,13 +236,19 @@ namespace D3D11
 		, mFPS(resDef.FPS)
 		, mIsRepeated(resDef.IsRepeated)
 	{
+		// The definition names a sprite sheet. The .spriteanim path is not an image.
+		SetTexture(resDef.SpriteSheet);
+		if (!mJSON)
+			return;
+
 		Initialize(static_cast<D3D11Renderer*>(renderer)->GetDevice(), static_cast<D3D11Renderer*>(renderer)->GetContext());
 	}
 
 	/// @brief Builds the editor controls for inspecting and modifying this object's state.
 	void FTSpriteAnimation::UpdateUI()
 	{
-		GetTexture()->UpdateUI();
+		if (GetTexture())
+			GetTexture()->UpdateUI();
 
 		FTVector2 size = GetGCSpriteData()[0].Size;
 		Editor::UPDATE_VEC2("Size", size);

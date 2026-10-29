@@ -14,7 +14,7 @@ namespace D3D11
 	/// @return True if the operation succeeds or the tested condition holds; otherwise false.
 	bool D3D11PSO::IsValid()
 	{
-		return mVS && mGS && mPS && mBS && mDSS && mRS && mBlendFactor && mPrimTopology;
+		return mVS && mPS && mBS && mDSS && mRS && mSS && mPrimTopology;
 	}
 
 	/// @brief Updates the to pipeline used by subsequent operations.
@@ -25,7 +25,10 @@ namespace D3D11
 	{
 		context->VSSetShader(mVS->GetShader().Get(), 0, 0);
 		context->IASetInputLayout(mVS->GetInputLayout().Get());
-		context->GSSetShader(mGS->GetShader().Get(), 0, 0);
+		if (mGS)
+			context->GSSetShader(mGS->GetShader().Get(), 0, 0);
+		else
+			context->GSSetShader(nullptr, nullptr, 0);
 		context->PSSetShader(mPS->GetShader().Get(), 0, 0);
 
 		context->OMSetBlendState(mBS.Get(), mBlendFactor, 0xffffffff);

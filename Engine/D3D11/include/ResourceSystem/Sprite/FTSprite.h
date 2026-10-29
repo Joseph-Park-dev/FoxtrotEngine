@@ -26,7 +26,7 @@ namespace D3D11
 		/// @param camInst Camera supplying the view and projection for this draw.
 		/// @param mat Matrix or material used by this operation.
 		/// @param gcDataCount Number of geometry-shader constant-data entries.
-		void UpdateConstantBuffers(
+		virtual void UpdateConstantBuffers(
 			Core::IRenderer* renderer,
 			Core::Transform* transform,
 			Core::ICamera*	 camInst,

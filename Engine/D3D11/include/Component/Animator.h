@@ -60,21 +60,21 @@ namespace D3D11
 		virtual void Setup() override;
 		/// @brief Provides an empty lifecycle or extension hook for this implementation.
 		/// @param inputDevice Device exposing the current frame's input state.
-		virtual void ProcessInput(Core::IInputDevice* inputDevice);
+		virtual void ProcessInput(Core::IInputDevice* inputDevice) override;
 		/// @brief Provides an empty lifecycle or extension hook for this implementation.
 		/// @param deltaTime Elapsed frame time in seconds.
-		virtual void Update(float deltaTime);
+		virtual void Update(float deltaTime) override;
 		/// @brief Runs the post-update lifecycle phase after ordinary frame updates.
 		/// @param deltaTime Elapsed frame time in seconds.
-		void		 LateUpdate(float deltaTime);
+		void LateUpdate(float deltaTime) override;
 		/// @brief Submits this object's graphics work for the current frame.
 		/// @param renderer Renderer providing the graphics device and current render state.
 		/// @param camInst Camera supplying the view and projection for this draw.
-		void		 Render(Core::IRenderer* renderer, Core::ICamera* camInst);
+		void Render(Core::IRenderer* renderer, Core::ICamera* camInst) override;
 
 		/// @brief Copies this object's state into the requested target or attaches its clone to the target actor.
 		/// @param actor Actor participating in this operation.
-		virtual void CloneTo(Common::IActor* actor);
+		virtual void CloneTo(Common::IActor* actor) override;
 
 	public:
 		/// @brief Initializes sprite-animation playback state for its owner.
@@ -121,7 +121,7 @@ namespace D3D11
 		virtual void EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst);
 		/// @brief Updates the object's editor-facing controls.
 		/// @param chInst Glyph instance whose metrics or vertices are used.
-		virtual void EditorUIUpdate(Editor::CommandHistory* chInst);
+		virtual void EditorUIUpdate() override;
 
 	private:
 		/// @brief Processes the editor controls for animation playback.

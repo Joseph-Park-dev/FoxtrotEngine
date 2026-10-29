@@ -249,9 +249,9 @@ namespace D3D11
 
 	/// @brief Updates the object's editor-facing controls.
 	/// @param chInst Glyph instance whose metrics or vertices are used.
-	void Animator::EditorUIUpdate(Editor::CommandHistory* chInst)
+	void Animator::EditorUIUpdate()
 	{
-		chInst->UpdateBoolValue("Is Repeated", mIsRepeated);
+		Editor::UPDATE_BOOL("Is Repeated", mIsRepeated);
 
 		if (GetSprite())
 			GetSprite()->UpdateUI();

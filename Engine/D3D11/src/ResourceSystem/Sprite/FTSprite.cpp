@@ -6,6 +6,7 @@
 #include "Utility/D3D11Utils.h"
 #include "ResourceSystem/D3D11PSO.h"
 #include "Manager/ResourceManager.h"
+#include "Actor/IActor.h"
 #include "Actor/Transform.h"
 #include "Actor/Steering.h"
 #include "FTMath.h"
@@ -22,6 +23,32 @@ namespace D3D11
 	using namespace Core;
 	using namespace Math;
 	using namespace Microsoft::WRL;
+
+	/// @brief Rotation-only world orientation, using the same axis order as Transform::Update.
+	static void GetSpriteOrientation(Transform* transform, FTMatrix4& out)
+	{
+		const FTVector3& rotation = transform->GetLocalRotation();
+		out =
+			FTMatrix4::CreateRotationX(rotation.x) *
+			FTMatrix4::CreateRotationY(rotation.y) *
+			FTMatrix4::CreateRotationZ(rotation.z);
+
+		const Common::IActor* ancestor = transform->GetOwner();
+		while (ancestor && ancestor->GetParent())
+		{
+			ancestor		  = ancestor->GetParent();
+			Transform* parent = ancestor->GetTransform();
+			if (!parent)
+				continue;
+
+			const FTVector3& parentRotation = parent->GetLocalRotation();
+			out *=
+				FTMatrix4::CreateRotationX(parentRotation.x) *
+				FTMatrix4::CreateRotationY(parentRotation.y) *
+				FTMatrix4::CreateRotationZ(parentRotation.z);
+		}
+	}
+
 	ResType FTSprite::Type = ResType::SPRITE;
 
 	/// @brief Uploads the current shader parameters to the constant buffers.
@@ -70,8 +97,21 @@ namespace D3D11
 		mGCMatData->ProjMat = projMat.Transposed();
 		D3D11Utils::UpdateBuffer(static_cast<D3D11Renderer*>(renderer)->GetContext(), *mGCMatData, mGCMatBuf);
 
+		// The sprite vertex is at the origin, so model-matrix rotation does not
+		// move it. The geometry shader builds the quad from these axes.
+		FTMatrix4 orientation;
+		GetSpriteOrientation(transform, orientation);
+		const FTVector4 right(
+			orientation.mat[0][0], orientation.mat[0][1], orientation.mat[0][2], 0.f);
+		const FTVector4 up(
+			orientation.mat[1][0], orientation.mat[1][1], orientation.mat[1][2], 0.f);
+
 		for (size_t i = 0; i < gcDataCount; ++i)
+		{
 			mGCSpriteData[i].Scale = FTVector2(GetSizeScale().x * scaleWithDir.x, GetSizeScale().y * scaleWithDir.y);
+			mGCSpriteData[i].Right = right;
+			mGCSpriteData[i].Up	   = up;
+		}
 
 		D3D11Utils::UpdateBuffer(static_cast<D3D11Renderer*>(renderer)->GetContext(), mGCSpriteData[meshIndex], mGCSpriteBuf);
 
@@ -177,10 +217,13 @@ namespace D3D11
 		: FTMeshGroup(resDef, renderer, nullptr)
 		, mGCMatData(DBG_NEW PointVPMat)
 		, mGCSpriteData(DBG_NEW SpriteGCData[1])
-		, mTexture(DBG_NEW FTTexture(resDef, static_cast<Core::IRenderer*>(renderer)))
+		, mTexture(nullptr)
 	{
-		if (!isAnim)
-			PrepareStaticSprite(reinterpret_cast<Core::IRenderer*>(renderer));
+		if (isAnim)
+			return;
+
+		mTexture = DBG_NEW FTTexture(resDef, static_cast<Core::IRenderer*>(renderer));
+		PrepareStaticSprite(reinterpret_cast<Core::IRenderer*>(renderer));
 	}
 
 	/// @brief Releases the resources managed by this instance during destruction.
@@ -275,13 +318,15 @@ namespace D3D11
 	/// @brief Increments the resource metadata's reference count when metadata exists.
 	void FTSprite::AddRefCount()
 	{
-		mTexture->AddRefCount();
+		if (mTexture)
+			mTexture->AddRefCount();
 	}
 
 	/// @brief Decrements the resource metadata's reference count when metadata exists.
 	void FTSprite::SubtractRefCount()
 	{
-		mTexture->SubtractRefCount();
+		if (mTexture)
+			mTexture->SubtractRefCount();
 	}
 #endif
 } // namespace D3D11

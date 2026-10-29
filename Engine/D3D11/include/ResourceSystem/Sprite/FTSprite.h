@@ -1,7 +1,6 @@
 #pragma once
 #include "ResourceSystem/Mesh/FTMeshGroup.h"
 
-
 namespace D3D11
 {
 	struct PointVPMat;
@@ -51,7 +50,7 @@ namespace D3D11
 	public:
 		/// @brief Returns the texture used by this ftsprite.
 		/// @return Borrowed access to the texture.
-		FTTexture*	  GetTexture() const;
+		FTTexture* GetTexture() const;
 		/// @brief Returns the gcsprite data used by this ftsprite.
 		/// @return Borrowed access to the gcsprite data.
 		SpriteGCData* GetGCSpriteData() const;
@@ -68,7 +67,8 @@ namespace D3D11
 		/// @param resDef Resource definition containing the filename and source path.
 		/// @param renderer Renderer providing the graphics device and current render state.
 		FTSprite(Common::FTResourceDef& resDef, void* renderer);
-		/// @brief Constructor skips FTSprite::Process() if isAnim is true.
+		/// @brief Animation files are not images. When isAnim is true, this skips
+		/// texture creation and static mesh setup so the caller can assign a sprite sheet.
 		/// @param isAnim Is this constructor called from FTSpriteAnimation?
 		/// @param resDef Resource definition containing the filename and source path.
 		/// @param renderer Renderer providing the graphics device and current render state.

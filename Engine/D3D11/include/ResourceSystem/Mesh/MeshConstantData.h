@@ -95,7 +95,15 @@ namespace D3D11
 		Math::FTVector2 Scale = Math::FTVector2(1.f, 1.f);
 		Math::FTVector4 Frame = Math::FTVector4(0.f, 0.f, 1.f, 1.f);
 		Math::FTVector2 Pivot = Math::FTVector2(0.5f, 0.5f);
-		Math::FTVector2 Dummy;
+
+		/// @brief Pads the pivot row so the axes below stay 16-byte aligned.
+		Math::FTVector2 Dummy = Math::FTVector2(1.f, 0.f);
+
+		/// @brief World-space right axis of the sprite quad. w stays zero.
+		Math::FTVector4 Right = Math::FTVector4(1.f, 0.f, 0.f, 0.f);
+
+		/// @brief World-space up axis of the sprite quad. w stays zero.
+		Math::FTVector4 Up = Math::FTVector4(0.f, 1.f, 0.f, 0.f);
 
 #ifdef FOXTROT_EDITOR
 		/// @brief Builds the editor controls for inspecting and modifying this object's state.

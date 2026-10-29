@@ -65,17 +65,26 @@ namespace Editor
 	/// @brief Builds the editor controls for inspecting and modifying this object's state.
 	void EditorTransform::UpdateUI()
 	{
-		if (!GetOwner()->GetParent()) // The owner does not have parent Actor.
+		// The drag fields write the stored vector. The world matrix is rebuilt
+		// from the local components inside the setters.
+		CommandHistory* history = CommandHistory::GetInstance();
+		if (!GetOwner()->GetParent())
 		{
-			CommandHistory::GetInstance()->UpdateVector3Value("World Position", WorldPosition());
-			CommandHistory::GetInstance()->UpdateVector3Value("World Scale", WorldScale());
-			CommandHistory::GetInstance()->UpdateVector3Value("World Rotation", WorldRotation());
+			history->UpdateVector3Value("World Position", WorldPosition());
+			SetWorldPosition(GetWorldPosition());
+			history->UpdateVector3Value("World Scale", WorldScale());
+			SetWorldScale(GetWorldScale());
+			history->UpdateVector3Value("World Rotation", WorldRotation());
+			SetWorldRotation(GetWorldRotation());
 		}
 		else
 		{
-			CommandHistory::GetInstance()->UpdateVector3Value("Local Position", LocalPosition());
-			CommandHistory::GetInstance()->UpdateVector3Value("Local Scale", LocalScale());
-			CommandHistory::GetInstance()->UpdateVector3Value("Local Rotation", LocalRotation());
+			history->UpdateVector3Value("Local Position", LocalPosition());
+			SetLocalPosition(GetLocalPosition());
+			history->UpdateVector3Value("Local Scale", LocalScale());
+			SetLocalScale(GetLocalScale());
+			history->UpdateVector3Value("Local Rotation", LocalRotation());
+			SetLocalRotation(GetLocalRotation());
 		}
 	}
 } // namespace Editor

@@ -55,19 +55,19 @@ namespace Core
 		CORE_API virtual const Math::FTVector3& GetWorldScale() const;
 		/// @brief Returns the world rotation used by this transform.
 		/// @return Borrowed access to the world rotation.
-		CORE_API const Math::FTVector3&		   GetWorldRotation() const;
+		CORE_API const Math::FTVector3& GetWorldRotation() const;
 		/// @brief Returns the matrix world used by this transform.
 		/// @return Borrowed access to the matrix world.
 		CORE_API virtual const Math::FTMatrix4& GetMatrixWorld() const;
 		/// @brief Returns the rotation degree used by this transform.
 		/// @return Current rotation degree.
-		CORE_API const Math::FTVector3		   GetRotationDegree() const;
+		CORE_API const Math::FTVector3 GetRotationDegree() const;
 		/// @brief Returns the rightward used by this transform.
 		/// @return Borrowed access to the rightward.
-		CORE_API const Math::FTVector3&		   GetRightward() const;
+		CORE_API const Math::FTVector3& GetRightward() const;
 		/// @brief Returns the steering used by this transform.
 		/// @return Borrowed access to the steering.
-		CORE_API virtual const Steering*		   GetSteering() const;
+		CORE_API virtual const Steering* GetSteering() const;
 
 		/// @brief Tests the halting condition for the current object.
 		/// @return True if the operation succeeds or the tested condition holds; otherwise false.
@@ -87,13 +87,13 @@ namespace Core
 		// World Transformation
 		/// @brief Updates the world position used by subsequent operations.
 		/// @param worldPos Replacement world position.
-		CORE_API void		 SetWorldPosition(const Math::FTVector3 worldPos);
+		CORE_API void SetWorldPosition(const Math::FTVector3 worldPos);
 		/// @brief Updates the world scale used by subsequent operations.
 		/// @param worldScale Replacement world scale.
 		CORE_API virtual void SetWorldScale(const Math::FTVector3 worldScale);
 		/// @brief Updates the world rotation used by subsequent operations.
 		/// @param worldRot Replacement world rotation.
-		CORE_API void		 SetWorldRotation(const Math::FTVector3 worldRot);
+		CORE_API void SetWorldRotation(const Math::FTVector3 worldRot);
 
 		/// @brief Updates the rightward used by subsequent operations.
 		/// @param dir Replacement rightward.
@@ -101,6 +101,10 @@ namespace Core
 		/// @brief Updates the steering used by subsequent operations.
 		/// @param steering Replacement steering.
 		CORE_API void SetSteering(const Steering steering);
+
+		/// @brief Returns the owner used by this transform.
+		/// @return Borrowed access to the owner.
+		CORE_API const Common::IActor* GetOwner() const;
 
 		/// @brief Updates the owner used by subsequent operations.
 		/// @param actor Replacement owner.
@@ -132,11 +136,6 @@ namespace Core
 		CORE_API Transform(Common::IActor* owner, Transform& origin);
 		/// @brief Releases the resources managed by this instance during destruction.
 		CORE_API virtual ~Transform();
-
-	protected:
-		/// @brief Returns the owner used by this transform.
-		/// @return Borrowed access to the owner.
-		CORE_API const Common::IActor* GetOwner() const;
 
 	private:
 		// Local Transformation.

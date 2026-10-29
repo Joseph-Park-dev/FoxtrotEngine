@@ -85,6 +85,25 @@ namespace D3D11
 	};
 	static_assert((sizeof(PointVPMat) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
 
+	/// @brief Vertex constants for the spine shader. Register b0 holds model, view, and projection.
+	struct SpineVCData
+	{
+		Math::FTMatrix4 Model = Math::FTMatrix4();
+		Math::FTMatrix4 View  = Math::FTMatrix4();
+		Math::FTMatrix4 Proj  = Math::FTMatrix4();
+	};
+	static_assert((sizeof(SpineVCData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
+
+	/// @brief Pixel constants for Texture2DSpinePS. useTexture and alphaTrim occupy the first two registers.
+	struct SpinePSData
+	{
+		Math::FTVector3 EyeWorld   = Math::FTVector3::Zero;
+		uint32_t		UseTexture = 1;
+		float			AlphaTrim  = 0.01f;
+		Math::FTVector3 Dummy	   = Math::FTVector3::Zero;
+	};
+	static_assert((sizeof(SpinePSData) % 16) == 0, "Constant Buffer size must be 16-byte aligned");
+
 	//////////////////////////////////
 	//////// Sprite Animation ////////
 	//////////////////////////////////

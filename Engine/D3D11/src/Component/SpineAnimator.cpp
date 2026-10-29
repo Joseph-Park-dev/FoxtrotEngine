@@ -72,13 +72,16 @@ namespace D3D11
 	/// @param camInst Camera supplying the view and projection for this draw.
 	void SpineAnimator::Render(Core::IRenderer* renderer, Core::ICamera* camInst)
 	{
-		if (GetMeshGroup())
-		{
-			Core::Transform* transform = GetOwner()->GetTransform();
-			static_cast<FTSpineAnimation*>(
-				GetMeshGroup())
-				->Render(renderer, transform, camInst, GetTexture(), GetVS(), GetPS(), GetMaterial());
-		}
+		if (!GetMeshGroup() || !GetOwner() || !GetOwner()->GetTransform())
+			return;
+
+		if (!GetPSO())
+			SetPSO(ResourceManager::GetInstance()->GetPSO(ChunkKey::SpineAnimator::PSO));
+		if (!GetPSO())
+			return;
+
+		static_cast<FTSpineAnimation*>(GetMeshGroup())
+			->Render(renderer, GetOwner()->GetTransform(), camInst, GetPSO(), GetMaterial());
 	}
 
 	/// @brief Initializes Spine animation playback state for its actor.
@@ -90,6 +93,7 @@ namespace D3D11
 		, mTimeScale(1.f)
 		, mUsePhysics(spine::Physics_None)
 	{
+		SetPSO(D3D11::ResourceManager::GetInstance()->GetPSO(ChunkKey::SpineAnimator::PSO));
 	}
 
 	/// @brief Copies this object's state into the requested target or attaches its clone to the target actor.
@@ -103,6 +107,7 @@ namespace D3D11
 		newComp->SetVS(this->GetVS());
 		newComp->SetPS(this->GetPS());
 		newComp->SetMaterial(this->GetMaterial());
+		newComp->SetPSO(this->GetPSO());
 	}
 
 	/// @brief Serializes this object's persistent properties to a .chunk stream.
@@ -128,7 +133,6 @@ namespace D3D11
 	{
 		UINT skinCombi = 0;
 		FileIOHelper::LoadUnsignedInt(ifs, skinCombi);
-		unsigned char skinCombination = static_cast<unsigned char>(skinCombi);
 
 		// Load Animation
 		Common::FTDS::String key;
@@ -140,7 +144,7 @@ namespace D3D11
 		{
 			SetMeshGroup(anim);
 			anim->SetAnimation(0, true);
-			anim->SetSkinCombination(skinCombination);
+			anim->SetSkinCombination(skinCombi);
 		}
 	}
 
@@ -157,13 +161,16 @@ namespace D3D11
 	/// @param camInst Camera supplying the view and projection for this draw.
 	void SpineAnimator::EditorRender(Core::IRenderer* renderer, Core::ICamera* camInst)
 	{
-		if (GetMeshGroup())
-		{
-			Core::Transform* transform = GetOwner()->GetTransform();
-			static_cast<D3D11::FTSpineAnimation*>(
-				GetMeshGroup())
-				->Render(renderer, transform, camInst, GetTexture(), GetVS(), GetPS(), GetMaterial());
-		}
+		if (!GetMeshGroup() || !GetOwner() || !GetOwner()->GetTransform())
+			return;
+
+		if (!GetPSO())
+			SetPSO(ResourceManager::GetInstance()->GetPSO(ChunkKey::SpineAnimator::PSO));
+		if (!GetPSO())
+			return;
+
+		static_cast<FTSpineAnimation*>(GetMeshGroup())
+			->Render(renderer, GetOwner()->GetTransform(), camInst, GetPSO(), GetMaterial());
 	}
 
 	/// @brief Updates the object's editor-facing controls.
@@ -171,7 +178,7 @@ namespace D3D11
 	void SpineAnimator::EditorUIUpdate()
 	{
 		ImGui::Text("Play List");
-		D3D11::FTSpineAnimation* anim = nullptr;
+		FTSpineAnimation* anim = static_cast<FTSpineAnimation*>(GetMeshGroup());
 		Editor::DisplayResSelection<D3D11::FTSpineAnimation>(
 			"Load Animation",
 			D3D11::ResourceManager::GetInstance()->GetSpineAnimations(),
@@ -180,7 +187,9 @@ namespace D3D11
 		if (anim)
 		{
 			SetMeshGroup(anim);
-			anim->SetAnimation(1, true);
+			const int clipCount = static_cast<int>(anim->LoadedClips().size());
+			if (0 < clipCount)
+				anim->SetAnimation(1 < clipCount ? 1 : 0, true);
 
 			anim = static_cast<D3D11::FTSpineAnimation*>(GetMeshGroup());
 			anim->UpdateUI();
@@ -189,10 +198,15 @@ namespace D3D11
 
 			if (GetTexture())
 				GetTexture()->UpdateUI();
-			// FTEditorUtils::DisplayResSelection(
-			//	"Select Texture",
-			//	ResourceManager::GetInstance()->GetSprites(),
-			//	mTexture);
+
+			static FTSprite* tex = nullptr;
+			 Editor::DisplayResSelection(
+				"Select Texture",
+				ResourceManager::GetInstance()->GetSprites(),
+				tex);
+
+			 if (tex)
+				 SetTexture(tex->GetTexture());
 
 			if (GetMaterial())
 				GetMaterial()->UpdateUI();

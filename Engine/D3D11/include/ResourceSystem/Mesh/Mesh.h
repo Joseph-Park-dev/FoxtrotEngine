@@ -33,15 +33,21 @@ namespace D3D11
 		SPINE_MESH_REGION,
 	};
 
+	class FTTexture;
+
 	struct SpineMesh
 	{
 		int									 DrawOrder;
 		int									 MeshType;
+		bool								 Active = false;
+		FTTexture*							 Texture = nullptr;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> PositionBuf;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> TexcoordBuf;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> IndexBuf;
 		UINT								 VertexCount;
 		UINT								 IndexCount;
+		UINT								 DrawVertexCount = 0;
+		UINT								 DrawIndexCount	 = 0;
 		D3D_PRIMITIVE_TOPOLOGY				 Primitve{ D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP };
 
 		/// @brief Completes destruction through the object's inheritance hierarchy.
@@ -75,10 +81,13 @@ namespace D3D11
 			if (0 >= vertexCount)
 				return E_FAIL;
 
-			this->DrawOrder	  = order;
-			this->MeshType	  = attachmentType;
-			this->VertexCount = static_cast<UINT>(vertexCount);
-			this->IndexCount  = static_cast<UINT>(indexCount);
+			this->DrawOrder		  = order;
+			this->MeshType		  = attachmentType;
+			this->Active		  = false;
+			this->VertexCount	  = static_cast<UINT>(vertexCount);
+			this->IndexCount	  = static_cast<UINT>(indexCount);
+			this->DrawVertexCount = this->VertexCount;
+			this->DrawIndexCount  = this->IndexCount;
 			// vertex buffer
 			{
 				// position
@@ -119,19 +128,22 @@ namespace D3D11
 		/// @param context Context associated with this operation.
 		void Draw(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
 		{
+			if (!Active)
+				return;
+
 			ID3D11Buffer* buffers[] = { PositionBuf.Get(), TexcoordBuf.Get() };
 			UINT		  strides[] = { (UINT)sizeof(float) * 2, (UINT)sizeof(float) * 2 };
 			UINT		  offsets[] = { 0, 0 };
 			context->IASetVertexBuffers(0, 2, buffers, strides, offsets);
 			context->IASetPrimitiveTopology(Primitve);
-			if (IndexCount)
+			if (DrawIndexCount && IndexBuf)
 			{
 				context->IASetIndexBuffer(IndexBuf.Get(), DXGI_FORMAT_R16_UINT, 0);
-				context->DrawIndexed(IndexCount, 0, 0);
+				context->DrawIndexed(DrawIndexCount, 0, 0);
 			}
-			else
+			else if (DrawVertexCount)
 			{
-				context->Draw(VertexCount, 0);
+				context->Draw(DrawVertexCount, 0);
 			}
 		}
 	};

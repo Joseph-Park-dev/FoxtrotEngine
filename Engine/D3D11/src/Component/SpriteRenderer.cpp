@@ -79,13 +79,13 @@ namespace D3D11
 	{
 		if (!mSprite || !GetOwner() || !GetOwner()->GetTransform())
 			return;
-		if (!mPSO)
-			mPSO = D3D11::ResourceManager::GetInstance()->GetPSO(ChunkKey::SpriteRenderer::PSO);
-		if (!mPSO)
+		if (!GetPSO())
+			SetPSO(D3D11::ResourceManager::GetInstance()->GetPSO(ChunkKey::SpriteRenderer::PSO));
+		if (!GetPSO())
 			return;
 
 		mSprite->UpdateConstantBuffers(renderer, GetOwner()->GetTransform(), camInst, mMaterial);
-		mSprite->Render(renderer, GetOwner()->GetTransform(), camInst, mPSO, mMaterial);
+		mSprite->Render(renderer, GetOwner()->GetTransform(), camInst, GetPSO(), mMaterial);
 	}
 
 	/// @brief Copies this object's state into the requested target or attaches its clone to the target actor.
@@ -94,8 +94,8 @@ namespace D3D11
 	{
 		SpriteRenderer* newComp = DBG_NEW SpriteRenderer(actor);
 		newComp->mSprite		= this->mSprite;
-		newComp->mPSO			= this->mPSO;
 		newComp->mMaterial		= this->mMaterial;
+		newComp->SetPSO(this->GetPSO());
 	}
 
 	/// @brief Initializes sprite and material bindings for its actor.
@@ -108,7 +108,7 @@ namespace D3D11
 		, mSprite(nullptr)
 		, mMaterial(nullptr)
 	{
-		mPSO = D3D11::ResourceManager::GetInstance()->GetPSO(ChunkKey::SpriteRenderer::PSO);
+		SetPSO(D3D11::ResourceManager::GetInstance()->GetPSO(ChunkKey::SpriteRenderer::PSO));
 	}
 
 	/// @brief Returns the sprite used by this sprite renderer.
@@ -125,22 +125,12 @@ namespace D3D11
 		return mMaterial;
 	}
 
-	/// @brief Returns the pso used by this sprite renderer.
-	/// @return Borrowed access to the pso.
-	D3D11PSO* SpriteRenderer::GetPSO() const
-	{
-		return mPSO;
-	}
-
 	/// @brief Updates the sprite used by subsequent operations.
 	/// @param sprite Replacement sprite.
 	void SpriteRenderer::SetSprite(FTSprite* sprite) { mSprite = sprite; }
 	/// @brief Updates the material used by subsequent operations.
 	/// @param mat Replacement material.
 	void SpriteRenderer::SetMaterial(FTMaterial* mat) { mMaterial = mat; }
-	/// @brief Updates the pso used by subsequent operations.
-	/// @param pso Replacement pso.
-	void SpriteRenderer::SetPSO(D3D11PSO* pso) { mPSO = pso; }
 
 	/// @brief Serializes this object's persistent properties to a .chunk stream.
 	/// @param ofs Output stream receiving the serialized data.
@@ -234,21 +224,16 @@ namespace D3D11
 	{
 		return mMaterial;
 	}
-	/// @brief Exposes the pipeline state used for drawing this object.
-	/// @return Borrowed access to the pso.
-	/// @note Changes through the returned reference affect this object's stored state.
-	D3D11PSO*& SpriteRenderer::PSO()
-	{
-		return mPSO;
-	}
+
 #endif // FOXTROT_EDITOR
 } // namespace D3D11
-namespace D3D11 {
-/// @brief Creates a sprite-rendering component associated with an actor.
-/// @param actor Actor participating in this operation.
-/// @return Created sprite renderer instance or resource.
-D3D11_API D3D11::SpriteRenderer* CreateSpriteRenderer(Core::IActor* actor)
+namespace D3D11
+{
+	/// @brief Creates a sprite-rendering component associated with an actor.
+	/// @param actor Actor participating in this operation.
+	/// @return Created sprite renderer instance or resource.
+	D3D11_API D3D11::SpriteRenderer* CreateSpriteRenderer(Core::IActor* actor)
 	{
 		return DBG_NEW D3D11::SpriteRenderer(actor);
 	}
-}
+} // namespace D3D11

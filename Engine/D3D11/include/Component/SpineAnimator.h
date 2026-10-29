@@ -30,7 +30,7 @@ namespace D3D11
 
 	public:
 		/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
-		void		 Initialize() override;
+		void Initialize() override;
 		/// @brief Provides an empty lifecycle or extension hook for this implementation.
 		/// @param inputDevice Device exposing the current frame's input state.
 		virtual void ProcessInput(Core::IInputDevice* inputDevice) override;
@@ -81,7 +81,6 @@ namespace D3D11
 		/// @param chInst Glyph instance whose metrics or vertices are used.
 		virtual void EditorUIUpdate() override;
 #endif // FOXTROT_EDITOR
-	
 	};
 
 	namespace ChunkKey
@@ -90,12 +89,13 @@ namespace D3D11
 		{
 			constexpr const char* NAME		  = "SpineAnimator";
 			constexpr const char* LOADED_ANIM = "Loaded Anim";
+			constexpr const char* PSO		  = "SpineAnimPSO";
 		} // namespace SpineAnimator
 	} // namespace ChunkKey
 
-	#include "Plugin/D3D11Exports.h"
-/// @brief Creates a Spine animation component associated with an actor.
-/// @param actor Actor participating in this operation.
-/// @return Created spine animator instance or resource.
+#include "Plugin/D3D11Exports.h"
+	/// @brief Creates a Spine animation component associated with an actor.
+	/// @param actor Actor participating in this operation.
+	/// @return Created spine animator instance or resource.
 	D3D11_API D3D11::SpineAnimator* CreateSpineAnimator(Common::IActor* actor);
 } // namespace D3D11

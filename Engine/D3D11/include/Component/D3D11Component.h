@@ -11,6 +11,8 @@ namespace D3D11
 {
 	class Camera;
 	class D3D11Renderer;
+	class D3D11PSO;
+
 	class D3D11Component :
 		public Core::IComponent
 	{
@@ -43,8 +45,13 @@ namespace D3D11
 		/// @brief Returns the owner used by this d3 d11 component.
 		/// @return Borrowed access to the owner.
 		virtual Core::IActor* GetOwner() override;
-		/// @brief Returns the update order used by this d3 d11 component.
-		/// @return Current update order.
+		/// @brief Returns the pso used by this sprite renderer.
+		/// @return Borrowed access to the pso.
+		D3D11PSO* GetPSO() const;
+
+		/// @brief Updates the pso used by subsequent operations.
+		/// @param pso Replacement pso.
+		void SetPSO(D3D11PSO* pso);
 
 	public:
 		/// @brief Initializes component lifecycle state and its owning actor.
@@ -56,6 +63,7 @@ namespace D3D11
 
 	private:
 		Core::IActor* mOwner;
+		D3D11PSO*	  mPSO;
 
 #ifdef FOXTROT_EDITOR
 	public:
@@ -69,6 +77,13 @@ namespace D3D11
 		/// @brief Updates the object's editor-facing controls.
 		/// @param chInst Glyph instance whose metrics or vertices are used.
 		virtual void EditorUIUpdate() = 0;
+
+	protected:
+		/// @brief Exposes the pipeline state used for drawing this object.
+		/// @return Borrowed access to the pso.
+		/// @note Changes through the returned reference affect this object's stored state.
+		D3D11PSO*& PSO();
+
 #endif // FOXTROT_EDITOR
 	};
 } // namespace D3D11

@@ -104,9 +104,6 @@ namespace D3D11
 		/// @brief Returns the material used by this sprite renderer.
 		/// @return Borrowed access to the material.
 		FTMaterial* GetMaterial() const;
-		/// @brief Returns the pso used by this sprite renderer.
-		/// @return Borrowed access to the pso.
-		D3D11PSO* GetPSO() const;
 
 		/// @brief Updates the sprite used by subsequent operations.
 		/// @param sprite Replacement sprite.
@@ -114,15 +111,11 @@ namespace D3D11
 		/// @brief Updates the material used by subsequent operations.
 		/// @param mat Replacement material.
 		void SetMaterial(FTMaterial* mat);
-		/// @brief Updates the pso used by subsequent operations.
-		/// @param pso Replacement pso.
-		void SetPSO(D3D11PSO* pso);
 
 	private:
 		Common::IActor* mOwner;
 
 		FTSprite*		mSprite;
-		D3D11PSO*		mPSO;
 		FTMaterial*		mMaterial;
 
 #ifdef FOXTROT_EDITOR
@@ -147,10 +140,6 @@ namespace D3D11
 		/// @return Borrowed access to the material.
 		/// @note Changes through the returned reference affect this object's stored state.
 		FTMaterial*& Material();
-		/// @brief Exposes the pipeline state used for drawing this object.
-		/// @return Borrowed access to the pso.
-		/// @note Changes through the returned reference affect this object's stored state.
-		D3D11PSO*& PSO();
 
 #endif
 	};

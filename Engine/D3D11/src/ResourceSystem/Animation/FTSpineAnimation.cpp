@@ -8,7 +8,7 @@
 #include "Manager/AnimationManager.h"
 #include "Manager/ResourceManager.h"
 #include "Manager/FTSpineLoader.h"
-#include "Renderer/D3D11Renderer.h"
+#include "Manager/DirectoryHelper.h"
 #include "ResourceSystem/Material/FTMaterial.h"
 #include "ResourceSystem/Mesh/FTMeshData.h"
 #include "ResourceSystem/Mesh/Mesh.h"
@@ -17,6 +17,12 @@
 #include "ResourceSystem/GenericData/FTJSON.h"
 #include "ResourceSystem/GenericData/FTText.h"
 #include "ResourceSystem/FTTexture.h"
+#include "Actor/Transform.h"
+#include "Actor/Steering.h"
+#include "FTMath.h"
+#include "ResourceSystem/Mesh/MeshConstantData.h"
+#include "Utility/D3D11Utils.h"
+#include "ResourceSystem/D3D11PSO.h"
 
 #ifdef FOXTROT_EDITOR
 	#include <bitset>
@@ -29,6 +35,7 @@ namespace D3D11
 {
 	using namespace Common;
 	using namespace Core;
+	using namespace Math;
 	using Microsoft::WRL::ComPtr;
 
 	void FTSpineAnimation::Update(float deltaTime, spine::Physics physics)
@@ -42,39 +49,86 @@ namespace D3D11
 		mSkeleton->updateWorldTransform(physics);
 	}
 
-	void FTSpineAnimation::Render(Core::IRenderer* renderer, Core::Transform* transform, Core::ICamera* camInst, FTTexture* tex, FTVertexShader* vs, FTPixelShader* ps, FTMaterial* mat)
+	void FTSpineAnimation::UpdateConstantBuffers(Core::IRenderer* renderer, Core::Transform* transform, Core::ICamera* camInst, FTMaterial* mat, const size_t, const int)
 	{
-		// This enables the resource reusable throughout the Component instances.
-		UpdateConstantBuffers(renderer, transform, camInst, mat, GetFrontDir());
-
-		if (!vs || !ps || !mat) // Vertex Shader is always required when drawing.
+		if (!renderer || !transform || !camInst || !mSpineVCData || !mSpineVCBuf || !mSpinePSData || !mSpinePSBuf)
 			return;
 
+		// Facing flips the skeleton on the model matrix. The actor scale stays positive.
+		float linearX = transform->GetSteering()->Linear.x;
+		if (linearX < 0)
+			SetDirection(-1);
+		else if (0 < linearX)
+			SetDirection(1);
+
+		FTVector3 scale = transform->GetLocalScale();
+		if (scale.x < 0.f || scale.y < 0.f)
+			transform->SetLocalScale(FTVector3(Math::Abs(scale.x), Math::Abs(scale.y), scale.z));
+
+		const float facing	 = static_cast<float>(GetFrontDir() * GetDirection());
+		FTMatrix4	modelMat = FTMatrix4::CreateScale(facing, 1.f, 1.f) * transform->GetMatrixWorld();
+
+		FTMatrix4 viewMat = FTMatrix4::Identity;
+		camInst->GetViewMatrix(viewMat);
+
+		FTMatrix4 projMat = FTMatrix4::Identity;
+		camInst->GetProjectionMatrix(projMat);
+
+		// TextureVSSpine reads model, view, and projection from register b0.
+		mSpineVCData->Model = modelMat.Transposed();
+		mSpineVCData->View	= viewMat.Transposed();
+		mSpineVCData->Proj	= projMat.Transposed();
+		D3D11Utils::UpdateBuffer(
+			static_cast<D3D11Renderer*>(renderer)->GetContext(), *mSpineVCData, mSpineVCBuf);
+
+		D3D11Utils::UpdateBuffer(
+			static_cast<D3D11Renderer*>(renderer)->GetContext(), *mSpinePSData, mSpinePSBuf);
+
+		if (mat)
+			mat->UpdateBuffer(static_cast<D3D11Renderer*>(renderer)->GetContext());
+	}
+
+	void FTSpineAnimation::Render(Core::IRenderer* renderer, Core::Transform* transform, Core::ICamera* camInst, D3D11PSO* pso, FTMaterial* mat)
+	{
+		if (!renderer || !pso || !pso->IsValid() || !mMeshes || !mSkeleton)
+			return;
+
+		UpdateConstantBuffers(renderer, transform, camInst, mat);
+
+		ComPtr<ID3D11Device>&		 device	 = static_cast<D3D11Renderer*>(renderer)->GetDevice();
 		ComPtr<ID3D11DeviceContext>& context = static_cast<D3D11Renderer*>(renderer)->GetContext();
-		UpdateBuffers(context);
+		UpdateBuffers(device, context);
+		pso->SetToPipeline(context);
 
-		mMeshes->IterateArray([&](SpineMesh* mesh) {
-			context->VSSetConstantBuffers(
-				0, 1, GetVCBuf().GetAddressOf());
+		context->VSSetConstantBuffers(0, 1, mSpineVCBuf.GetAddressOf());
+		if (mSpinePSBuf)
+			context->PSSetConstantBuffers(0, 1, mSpinePSBuf.GetAddressOf());
 
-			if (tex)
+		// Index 0 is the back-most slot. Later slots are drawn on top.
+		auto& drawOrder = mSkeleton->getDrawOrder();
+		for (size_t i = 0; i < drawOrder.size(); ++i)
+		{
+			spine::Slot* slot = drawOrder[i];
+			if (!slot)
+				continue;
+
+			const int slotIndex = slot->getData().getIndex();
+			if (slotIndex < 0 || mMeshes->GetSize() <= static_cast<size_t>(slotIndex))
+				continue;
+
+			SpineMesh* mesh = mMeshes->At(static_cast<size_t>(slotIndex));
+			if (!mesh || !mesh->Active)
+				continue;
+
+			FTTexture* pageTex = mesh->Texture ? mesh->Texture : GetTexture();
+			if (pageTex)
 			{
-				std::vector<ID3D11ShaderResourceView*> resViews;
-				resViews.push_back(tex->GetSRV().Get());
-				context->PSSetShaderResources(0, (UINT)resViews.size(), resViews.data());
+				ID3D11ShaderResourceView* srv = pageTex->GetSRV().Get();
+				context->PSSetShaderResources(0, 1, &srv);
 			}
 
-			context->VSSetShader(vs->GetShader().Get(), 0, 0);
-
-			context->PSSetSamplers(0, 1, GetSamplerState().GetAddressOf());
-			context->PSSetShader(ps->GetShader().Get(), 0, 0);
-
-			if (mat)
-				context->PSSetConstantBuffers(0, 1, mat->GetPCBuf().GetAddressOf());
-
-			context->IASetInputLayout(vs->GetInputLayout().Get());
 			mesh->Draw(context);
-		});
+		}
 	}
 
 	void FTSpineAnimation::SetTimeScale(const float val)
@@ -84,6 +138,8 @@ namespace D3D11
 
 	void FTSpineAnimation::SetAnimation(const int idx, const bool isRepeated)
 	{
+		if (!mState || idx < 0 || mLoadedClips.size() <= static_cast<size_t>(idx))
+			return;
 		if (mCurrAnimIdx == idx)
 			return;
 		mCurrAnimIdx = idx;
@@ -102,10 +158,11 @@ namespace D3D11
 	}
 
 	FTSpineAnimation::FTSpineAnimation(Common::FTResourceDef& resDef, void* renderer)
-		: FTSprite(resDef, renderer)
-		, mJSONPath(nullptr)
-		, mAtlasPath(nullptr)
+		: FTSprite(resDef, renderer, true)
+		, mJSONPath(DBG_NEW Common::FTDS::String)
+		, mAtlasPath(DBG_NEW Common::FTDS::String)
 		, mTimeScale(1.f)
+		, mInitRightward(true)
 		, mSkinCombination(0x0)
 		, mCurrAnimIdx(-1)
 		, mAtlas(nullptr)
@@ -114,8 +171,11 @@ namespace D3D11
 		, mStateData(nullptr)
 		, mState(nullptr)
 		, mMeshes(DBG_NEW Common::FTDS::DynamicArray<SpineMesh*>)
+		, mSpineVCData(nullptr)
+		, mSpinePSData(nullptr)
 	{
 		Process(renderer);
+		ApplyInitialDirection();
 	}
 
 	FTSpineAnimation::~FTSpineAnimation()
@@ -148,21 +208,31 @@ namespace D3D11
 		});
 
 		delete mMeshes;
+		delete mSpineVCData;
+		delete mSpinePSData;
+		mSpineVCData = nullptr;
+		mSpinePSData = nullptr;
+		delete mJSONPath;
+		delete mAtlasPath;
+		mJSONPath  = nullptr;
+		mAtlasPath = nullptr;
 	}
 
 	void FTSpineAnimation::Process(void* renderer)
 	{
-		if (mJSONPath && mAtlasPath && !mMeshes->IsEmpty())
+		if (!mMeshes->IsEmpty())
 			return;
 
-		std::ifstream ifs(GetFileName()->C_Str());
+		// A .spineanim on disk supplies the JSON and atlas paths.
+		// Paths already assigned by the editor constructor are left in place.
+		if (mJSONPath->IsEmpty() || mAtlasPath->IsEmpty())
+		{
+			std::ifstream ifs(GetRelativePath()->C_Str());
+			if (ifs.good())
+				this->LoadProperties(ifs);
+		}
 
-		// If the file exists (not being created).
-		if (ifs.good())
-			this->LoadProperties(ifs);
-
-		// The game will attempt to reload the resource after this call.
-		if (!mJSONPath || !mAtlasPath)
+		if (mJSONPath->IsEmpty() || mAtlasPath->IsEmpty())
 			return;
 
 		InitializeSpinAnim(static_cast<D3D11Renderer*>(renderer)->GetDevice());
@@ -184,8 +254,8 @@ namespace D3D11
 
 		FTSpineLoader* spineLoader = AnimationManager::GetInstance()->GetSpineLoader();
 
-		// ResourceManager::GetInstance()->RelativeToAbsolutePath(mAtlasTxt);
-		// ResourceManager::GetInstance()->RelativeToAbsolutePath(mJSON);
+		Core::DirectoryHelper::GetInstance()->RelativeToAbsolutePath(*mAtlasPath);
+		Core::DirectoryHelper::GetInstance()->RelativeToAbsolutePath(*mJSONPath);
 
 		mAtlas		  = new spine::Atlas(mAtlasPath->C_Str(), spineLoader);
 		mSkeletonData = spineLoader->ReadSkeletonJsonData(mJSONPath->C_Str(), mAtlas, 1.0f);
@@ -202,27 +272,10 @@ namespace D3D11
 				mSkins.addAll(mSkeletonData->getSkins());
 		SetSkin();
 
-		auto drawOrder = mSkeleton->getDrawOrder();
-		mMeshes->Reserve(drawOrder.size());
-		for (size_t i = 0; i < drawOrder.size(); ++i)
-		{
-			spine::Slot*	   slot		  = drawOrder[i];
-			spine::Attachment* attachment = slot->getAttachment();
-			if (!attachment)
-				continue;
-			if (attachment->getRTTI().isExactly(spine::MeshAttachment::rtti))
-			{
-				InitializeMeshes(device, static_cast<int>(i), attachment, D3D11::SPINE_ATTACHMENT_TYPE::SPINE_MESH_ATTACH);
-			}
-			else if (attachment->getRTTI().isExactly(spine::RegionAttachment::rtti))
-			{
-				InitializeMeshes(device, static_cast<int>(i), attachment, D3D11::SPINE_ATTACHMENT_TYPE::SPINE_MESH_REGION);
-			}
-		}
-
-#ifdef FOXTROT_EDITOR
-		mMeshes->Reverse();
-#endif // FOXTROT_EDITOR
+		auto& slots = mSkeleton->getSlots();
+		mMeshes->Reserve(slots.size() > 0 ? slots.size() : 1);
+		for (size_t i = 0; i < slots.size(); ++i)
+			mMeshes->PushBack(nullptr);
 
 		// Set default properties.
 		spine::Bone::setYDown(false);
@@ -238,48 +291,113 @@ namespace D3D11
 		InitializeConstantBuffers(device);
 	}
 
-	void FTSpineAnimation::InitializeMeshes(
-		ComPtr<ID3D11Device>&		 device,
-		int							 order,
-		void*						 attachment,
-		D3D11::SPINE_ATTACHMENT_TYPE attachmentType)
+	void FTSpineAnimation::InitializeConstantBuffers(ComPtr<ID3D11Device>& device)
 	{
-		size_t vertexCount = 0;
-		size_t indexCount  = 0;
+		FTSprite::InitializeConstantBuffers(device);
 
-		if (SPINE_ATTACHMENT_TYPE::SPINE_MESH_ATTACH == attachmentType)
-		{
-			auto* mesh	= static_cast<spine::MeshAttachment*>(attachment);
-			vertexCount = mesh->getWorldVerticesLength() / 2;
-			indexCount	= mesh->getTriangles().size();
-		}
-		else if (SPINE_ATTACHMENT_TYPE::SPINE_MESH_REGION == attachmentType)
-		{
-			vertexCount = 4;
-			indexCount	= 6;
-		}
+		if (!mSpineVCData)
+			mSpineVCData = DBG_NEW SpineVCData;
 
-		SpineMesh* mesh = DBG_NEW SpineMesh;
-		mesh->ResourceBinding(device, order, attachmentType, vertexCount, indexCount);
-		mMeshes->PushBack(mesh);
+		mSpineVCBuf.Reset();
+		D3D11Utils::CreateConstantBuffer(device, *mSpineVCData, mSpineVCBuf);
+
+		if (!mSpinePSData)
+			mSpinePSData = DBG_NEW SpinePSData;
+		mSpinePSBuf.Reset();
+		D3D11Utils::CreateConstantBuffer(device, *mSpinePSData, mSpinePSBuf);
 	}
 
-	void FTSpineAnimation::UpdateBuffers(ComPtr<ID3D11DeviceContext>& context)
+	SpineMesh* FTSpineAnimation::EnsureSlotMesh(
+		ComPtr<ID3D11Device>&		 device,
+		int							 slotIndex,
+		D3D11::SPINE_ATTACHMENT_TYPE attachmentType,
+		size_t						 vertexCount,
+		size_t						 indexCount)
 	{
-		if (!mSkeleton)
+		if (slotIndex < 0 || vertexCount == 0)
+			return nullptr;
+
+		while (mMeshes->GetSize() <= static_cast<size_t>(slotIndex))
+			mMeshes->PushBack(nullptr);
+
+		SpineMesh* mesh		= mMeshes->At(static_cast<size_t>(slotIndex));
+		const bool reusable = mesh && mesh->VertexCount >= vertexCount && mesh->IndexCount >= indexCount && mesh->PositionBuf && mesh->TexcoordBuf && (indexCount == 0 || mesh->IndexBuf);
+		if (!reusable)
+		{
+			delete mesh;
+			mesh = DBG_NEW SpineMesh;
+			if (FAILED(mesh->ResourceBinding(device, slotIndex, attachmentType, vertexCount, indexCount)))
+			{
+				delete mesh;
+				mesh = nullptr;
+			}
+			mMeshes->At(static_cast<size_t>(slotIndex)) = mesh;
+		}
+
+		if (!mesh)
+			return nullptr;
+
+		mesh->MeshType		  = attachmentType;
+		mesh->DrawOrder		  = slotIndex;
+		mesh->DrawVertexCount = static_cast<UINT>(vertexCount);
+		mesh->DrawIndexCount  = static_cast<UINT>(indexCount);
+		return mesh;
+	}
+
+	static FTTexture* AtlasTexture(spine::TextureRegion* region)
+	{
+		if (!region)
+			return nullptr;
+
+		auto* atlasRegion = static_cast<spine::AtlasRegion*>(region);
+		if (!atlasRegion->page)
+			return nullptr;
+
+		return static_cast<FTTexture*>(atlasRegion->page->texture);
+	}
+
+	void FTSpineAnimation::UpdateBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
+	{
+		if (!mSkeleton || !mMeshes)
 			return;
 
-		mMeshes->IterateArray([&](SpineMesh* mesh) {
-			if (!mesh)
-				return;
+		auto& slots = mSkeleton->getSlots();
+		while (mMeshes->GetSize() < slots.size())
+			mMeshes->PushBack(nullptr);
 
-			spine::Slot*	   slot		  = mSkeleton->getDrawOrder()[mesh->DrawOrder];
+		for (size_t i = 0; i < slots.size(); ++i)
+		{
+			spine::Slot* slot = slots[i];
+			if (!slot)
+				continue;
+
+			const int  slotIndex = slot->getData().getIndex();
+			SpineMesh* mesh		 = nullptr;
+			if (0 <= slotIndex && static_cast<size_t>(slotIndex) < mMeshes->GetSize())
+			{
+				mesh = mMeshes->At(static_cast<size_t>(slotIndex));
+				if (mesh)
+				{
+					mesh->Active  = false;
+					mesh->Texture = nullptr;
+				}
+			}
+
 			spine::Attachment* attachment = slot->getAttachment();
+			if (!attachment)
+				continue;
 
 			// For spine mesh attachment
-			if (mesh->MeshType == D3D11::SPINE_ATTACHMENT_TYPE::SPINE_MESH_ATTACH)
+			if (attachment->getRTTI().isExactly(spine::MeshAttachment::rtti))
 			{
-				spine::MeshAttachment* attm = static_cast<spine::MeshAttachment*>(attachment);
+				spine::MeshAttachment* attm		   = static_cast<spine::MeshAttachment*>(attachment);
+				const size_t		   vertexCount = attm->getWorldVerticesLength() / 2;
+				const size_t		   indexCount  = attm->getTriangles().size();
+				mesh							   = EnsureSlotMesh(device, slotIndex, D3D11::SPINE_ATTACHMENT_TYPE::SPINE_MESH_ATTACH, vertexCount, indexCount);
+				if (!mesh)
+					continue;
+
+				mesh->Texture = AtlasTexture(attm->getRegion());
 
 				//// Check if the texture is present.
 				// spine::TextureRegion* texRegion = attm->getRegion();
@@ -320,31 +438,23 @@ namespace D3D11
 					const uint16_t*			 indices	= attm->getTriangles().buffer();
 					UINT					 indexCount = static_cast<UINT>(attm->getTriangles().size());
 					D3D11_MAPPED_SUBRESOURCE mapped		= {};
-					if (SUCCEEDED(context->Map(mesh->IndexBuf.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+					if (mesh->IndexBuf && SUCCEEDED(context->Map(mesh->IndexBuf.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
 					{
 						memcpy(mapped.pData, indices, sizeof(uint16_t) * indexCount);
 						context->Unmap(mesh->IndexBuf.Get(), 0);
 					}
 				}
+				mesh->Active = true;
 			}
 			// For spine mesh region, which is a square.
-			else if (mesh->MeshType == D3D11::SPINE_ATTACHMENT_TYPE::SPINE_MESH_REGION)
+			else if (attachment->getRTTI().isExactly(spine::RegionAttachment::rtti))
 			{
 				auto* region = static_cast<spine::RegionAttachment*>(attachment);
+				mesh		 = EnsureSlotMesh(device, slotIndex, D3D11::SPINE_ATTACHMENT_TYPE::SPINE_MESH_REGION, 4, 6);
+				if (!mesh)
+					continue;
 
-				// RegionAttachment -> TextureRegion
-				spine::TextureRegion* texRegion = region->getRegion();
-				if (!texRegion)
-					return;
-
-				// TextureRegion �� AtlasRegion
-				auto* atlasRegion = reinterpret_cast<spine::AtlasRegion*>(texRegion);
-
-				// AtlasPage �� rendererObject
-				auto* page	 = atlasRegion->page;
-				auto* texSRV = reinterpret_cast<ID3D11ShaderResourceView*>(page->texture);
-				if (!texSRV)
-					return;
+				mesh->Texture = AtlasTexture(region->getRegion());
 
 				// Copies the vertex positions.
 				{
@@ -383,14 +493,15 @@ namespace D3D11
 					};
 					UINT					 indexCount = 6;
 					D3D11_MAPPED_SUBRESOURCE mapped		= {};
-					if (SUCCEEDED(context->Map(mesh->IndexBuf.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+					if (mesh->IndexBuf && SUCCEEDED(context->Map(mesh->IndexBuf.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
 					{
 						memcpy(mapped.pData, indices, sizeof(uint16_t) * indexCount);
 						context->Unmap(mesh->IndexBuf.Get(), 0);
 					}
 				}
+				mesh->Active = true;
 			}
-		});
+		}
 	}
 
 	void FTSpineAnimation::SetSkin()
@@ -398,16 +509,12 @@ namespace D3D11
 		spine::Skin* prev = mSkeleton->getSkin();
 		spine::Skin* skin = new spine::Skin("Skin");
 
-		// Loop through bitmask, marking if 1.
-		int bitCount = sizeof(mSkinCombination) * 8; // Total number of bits in the integer
-		for (int i = bitCount - 1; i >= 0; --i)
+		const size_t skinCount = mSkins.size() < MAX_SKIN_COUNT ? mSkins.size() : MAX_SKIN_COUNT;
+		for (size_t i = 0; i < skinCount; ++i)
 		{
-			unsigned int mask = 1U << i; // Create a mask with a single bit at position 'i'
+			const unsigned int mask = 1u << static_cast<unsigned int>(i);
 			if (mSkinCombination & mask)
-			{
-				spine::Skin* s = mSkins[i];
 				skin->addSkin(mSkins[i]);
-			}
 		}
 		mSkeleton->setSkin(skin);
 		mSkeleton->setSlotsToSetupPose();
@@ -415,10 +522,16 @@ namespace D3D11
 		delete prev;
 	}
 
+	void FTSpineAnimation::ApplyInitialDirection()
+	{
+		SetDirection(mInitRightward ? 1 : -1);
+	}
+
 	void FTSpineAnimation::SaveProperties(std::ofstream& ofs)
 	{
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
 		FTMeshGroup::SaveProperties(ofs);
+		FileIOHelper::SaveBool(ofs, ChunkKey::FTSpineAnimation::INIT_RIGHTWARD, mInitRightward);
 		FileIOHelper::SaveInt(ofs, ChunkKey::FTMeshGroup::FRONT_DIR, GetFrontDir());
 		FileIOHelper::SaveUnsignedInt(ofs, ChunkKey::FTSpineAnimation::SKIN_COMBINATION, static_cast<UINT>(mSkinCombination));
 		FileIOHelper::SaveString(ofs, ChunkKey::FTSpineAnimation::JSON_KEY, *mJSONPath);
@@ -428,12 +541,13 @@ namespace D3D11
 
 	void FTSpineAnimation::LoadProperties(std::ifstream& ifs)
 	{
-		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
+		std::pair<size_t, Common::FTDS::String> pack =
+			FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTSpineAnimation::FT_SPINE_ANIMATION);
 		FileIOHelper::LoadBasicString(ifs, *mAtlasPath);
 		FileIOHelper::LoadBasicString(ifs, *mJSONPath);
 		UINT skinCombi = 0;
 		FileIOHelper::LoadUnsignedInt(ifs, skinCombi);
-		mSkinCombination = static_cast<unsigned char>(skinCombi);
+		mSkinCombination = skinCombi;
 
 		int frontDir = -1;
 		FileIOHelper::LoadInt(ifs, frontDir);
@@ -441,14 +555,17 @@ namespace D3D11
 		FTMeshGroup::LoadProperties(ifs);
 
 		0 < frontDir ? SetRightIsFront(true) : SetRightIsFront(false);
+
+		FileIOHelper::LoadBool(ifs, mInitRightward);
+		ApplyInitialDirection();
 	}
 
-	const unsigned char FTSpineAnimation::GetSkinCombination() const
+	const unsigned int FTSpineAnimation::GetSkinCombination() const
 	{
 		return mSkinCombination;
 	}
 
-	void FTSpineAnimation::SetSkinCombination(const unsigned char skinCombi)
+	void FTSpineAnimation::SetSkinCombination(const unsigned int skinCombi)
 	{
 		mSkinCombination = skinCombi;
 		SetSkin();
@@ -461,35 +578,63 @@ namespace D3D11
 		Core::IRenderer*			renderer,
 		const Common::FTDS::String* jsonPath,
 		const Common::FTDS::String* atlasPath)
-		: FTSpineAnimation(resDef, renderer)
+		: FTSprite(resDef, renderer, true)
+		, mJSONPath(DBG_NEW Common::FTDS::String)
+		, mAtlasPath(DBG_NEW Common::FTDS::String)
+		, mTimeScale(1.f)
+		, mInitRightward(true)
+		, mSkinCombination(0x0)
+		, mCurrAnimIdx(-1)
+		, mAtlas(nullptr)
+		, mSkeletonData(nullptr)
+		, mSkeleton(nullptr)
+		, mStateData(nullptr)
+		, mState(nullptr)
+		, mMeshes(DBG_NEW Common::FTDS::DynamicArray<SpineMesh*>)
+		, mSpineVCData(nullptr)
+		, mSpinePSData(nullptr)
 	{
-		mJSONPath->Assign(*jsonPath);
-		mAtlasPath->Assign(*atlasPath);
+		// The .spineanim path is not an image. Build from the supplied JSON and atlas.
+		if (jsonPath)
+			mJSONPath->Assign(*jsonPath);
+		if (atlasPath)
+			mAtlasPath->Assign(*atlasPath);
 		Process(renderer);
+		ApplyInitialDirection();
 	}
 
 	void FTSpineAnimation::UpdateUI()
 	{
-		static bool val[MAX_SKIN_COUNT];
+		ImGui::Checkbox("Initial Rightward", &mInitRightward);
+		ApplyInitialDirection();
 
-		int bitCount = sizeof(mSkinCombination) * 8; // Total number of bits in the integer
-		for (int i = bitCount - 1; i >= 0; --i)
-		{
-			unsigned int mask = 1U << i; // Create a mask with a single bit at position 'i'
-			if (mSkinCombination & mask)
-				val[i] = true;
-		}
+		ImGui::SeparatorText("Skins");
 
-		for (size_t i = 0; i < mSkins.size(); ++i)
+		if (mSkins.size() == 0)
+			ImGui::TextUnformatted("This skeleton has no skins.");
+
+		bool		 skinChanged = false;
+		const size_t skinCount	 = mSkins.size() < MAX_SKIN_COUNT ? mSkins.size() : MAX_SKIN_COUNT;
+		for (size_t i = 0; i < skinCount; ++i)
 		{
-			Editor::UPDATE_BOOL(mSkins[i]->getName().buffer(), val[i]);
-			if (val[i])
-				mSkinCombination |= (1 << i);
+			const unsigned int bit	   = 1u << static_cast<unsigned int>(i);
+			bool			   enabled = (mSkinCombination & bit) != 0;
+
+			const char* name = mSkins[i] ? mSkins[i]->getName().buffer() : nullptr;
+			if (!name || name[0] == '\0')
+				name = "Unnamed Skin";
+
+			ImGui::PushID(static_cast<int>(i));
+			if (ImGui::Checkbox(name, &enabled))
+				skinChanged = true;
+			ImGui::PopID();
+
+			if (enabled)
+				mSkinCombination |= bit;
 			else
-				mSkinCombination &= ~(1 << i);
+				mSkinCombination &= ~bit;
 		}
-
-		if (ImGui::Button("UpdateSkin"))
+		if (skinChanged || ImGui::Button("UpdateSkin"))
 			SetSkin();
 
 		FTMeshGroup::UpdateUI();
@@ -497,36 +642,36 @@ namespace D3D11
 
 	void FTSpineAnimation::AddRefCount()
 	{
-		Common::FTDS::String fileN;
-		Common::ExtractFileName(mJSONPath, fileN);
-		GenericData::FTJSON* json = AnimationManager::GetInstance()->GetJSONsFuncGetter()()->GetResource(fileN);
-		if (json)
-			json->AddRefCount();
+		// Common::FTDS::String fileN;
+		// Common::ExtractFileName(mJSONPath, fileN);
+		// GenericData::FTJSON* json = AnimationManager::GetInstance()->GetJSONsFuncGetter()()->GetResource(fileN);
+		// if (json)
+		//	json->AddRefCount();
 
-		fileN.Clear();
+		// fileN.Clear();
 
-		Common::ExtractFileName(mAtlasPath, fileN);
-		GenericData::FTText* atlas = AnimationManager::GetInstance()->GetTextsFuncGetter()()->GetResource(fileN);
-		if (atlas)
-			atlas->AddRefCount();
+		// Common::ExtractFileName(mAtlasPath, fileN);
+		// GenericData::FTText* atlas = AnimationManager::GetInstance()->GetTextsFuncGetter()()->GetResource(fileN);
+		// if (atlas)
+		//	atlas->AddRefCount();
 
 		FTMeshGroup::AddRefCount();
 	}
 
 	void FTSpineAnimation::SubtractRefCount()
 	{
-		Common::FTDS::String fileN;
-		Common::ExtractFileName(mJSONPath, fileN);
-		GenericData::FTJSON* json = AnimationManager::GetInstance()->GetJSONsFuncGetter()()->GetResource(fileN);
-		if (json)
-			json->SubtractRefCount();
+		// Common::FTDS::String fileN;
+		// Common::ExtractFileName(mJSONPath, fileN);
+		// GenericData::FTJSON* json = AnimationManager::GetInstance()->GetJSONsFuncGetter()()->GetResource(fileN);
+		// if (json)
+		//	json->SubtractRefCount();
 
-		fileN.Clear();
+		// fileN.Clear();
 
-		Common::ExtractFileName(mAtlasPath, fileN);
-		GenericData::FTText* atlas = AnimationManager::GetInstance()->GetTextsFuncGetter()()->GetResource(fileN);
-		if (atlas)
-			atlas->SubtractRefCount();
+		// Common::ExtractFileName(mAtlasPath, fileN);
+		// GenericData::FTText* atlas = AnimationManager::GetInstance()->GetTextsFuncGetter()()->GetResource(fileN);
+		// if (atlas)
+		//	atlas->SubtractRefCount();
 
 		FTMeshGroup::SubtractRefCount();
 	}

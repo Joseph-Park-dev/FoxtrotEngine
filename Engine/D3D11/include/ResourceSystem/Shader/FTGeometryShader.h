@@ -12,6 +12,12 @@ namespace D3D11
 	public:
 		static D3D11::ResType Type;
 
+		/// @brief Returns the .chunk data-pack key for this resource type.
+		static const char* GetName()
+		{
+			return "FTGeometryShader";
+		}
+
 	public:
 		/// @brief Returns compiled HLSL pixel shader object.
 		/// @return Borrowed access to the shader.

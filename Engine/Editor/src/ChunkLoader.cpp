@@ -21,6 +21,8 @@
 #include "Actor/Transform.h"
 #include "Plugin/IPlugin.h"
 #include "Plugin/PluginKey.h"
+#include "Plugin/IEditorResourceService.h"
+#include "Manager/PluginManager.h"
 #include "FileSystem/DLLPath.h"
 
 #include "Component/Animator.h"
@@ -38,8 +40,8 @@
 
 namespace Editor
 {
-	using Core::Actor;
 	using Common::IActor;
+	using Core::Actor;
 	/// @brief Initializes chunk-loading state and actor identifier tracking.
 	/// @note Initializes the :ChunkLoader base or delegates to its constructor.
 	ChunkLoader::ChunkLoader() : mCurrentChunkData(new Core::ChunkData)
@@ -81,8 +83,26 @@ namespace Editor
 		std::ofstream ofs(chunkPath);
 		SaveActorsData(ofs);
 
-		// Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::CORE_RES_DATA);
-		//  mGetCoreResManagerFunc()->SaveResourcesToChunk<Core::FTPremade>(ofs);
+		Common::FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::RES_DATA);
+		if (auto* plugins = Core::GetAvailablePlugins())
+		{
+			auto iterBegin = plugins->Begin();
+			for (auto iter = iterBegin; iter != plugins->End(); ++iter)
+			{
+				// HashMap iterators visit empty buckets as well as registered plugins.
+				if (!*iter || !(*iter)->Value())
+					continue;
+
+				void* resService = (*iter)->Value()->QueryInterface(Core::IEditorResourceService::INTERFACE_NAME);
+				if (resService)
+				{
+					Common::FileIOHelper::BeginDataPackSave(ofs, (*iter)->Value()->GetName());
+					static_cast<Core::IEditorResourceService*>(resService)->SaveReferencedResources(ofs);
+					Common::FileIOHelper::EndDataPackSave(ofs, (*iter)->Value()->GetName());
+				}
+			}
+		}
+		Common::FileIOHelper::EndDataPackSave(ofs, Core::ChunkKey::RES_DATA);
 
 		ChunkLoader::SaveChunkData(ofs);
 		Common::FileIOHelper::SaveBufferToFile(ofs);
@@ -96,10 +116,21 @@ namespace Editor
 		Lock();
 		std::ifstream ifs(chunkPath);
 		ChunkLoader::LoadChunkData(ifs);
-		// LightManager::GetInstance()->LoadProperties(ifs);
-		// CollisionManager::GetInstance()->LoadCollisionMarks(ifs);
-		// EditorResourceManager::GetInstance()->PassLoadResourceInChunk(ifs);
-		// SoundManager::GetInstance()->LoadProperties(ifs);
+
+		size_t count = Common::FileIOHelper::BeginDataPackLoad(ifs, Core::ChunkKey::RES_DATA).first;
+		while (0 < count)
+		{
+			Common::FTDS::String dllName = Common::FileIOHelper::BeginDataPackLoad(ifs).second;
+			if (auto* plugins = Core::GetAvailablePlugins())
+			{
+				Common::IPlugin* plugin		= plugins->At(dllName)->Value();
+				void*			 resService = plugin->QueryInterface(Core::IEditorResourceService::INTERFACE_NAME);
+				if (resService)
+					static_cast<Core::IEditorResourceService*>(resService)->LoadReferencedResources(ifs);
+			}
+			--count;
+		}
+
 		LoadActorsData(ifs);
 
 		// D3D11::Camera::GetInstance()->LoadProperties(ifs);
@@ -246,28 +277,31 @@ namespace Editor
 		return Editor::ChunkLoader::GetInstance();
 	}
 } // namespace Editor
-namespace Editor {
-/// @brief Pauses game updates while chunk state is being changed.
-void ChunkLoader::Lock() { mCurrentChunkData->IsLoading = true; }
-/// @brief Resumes game updates after chunk processing completes.
-void ChunkLoader::Unlock() { mCurrentChunkData->IsLoading = false; }
-/// @brief Creates a temporary copy of a chunk so the source remains available during loading.
-/// @param out Receives the operation's output.
-/// @param path Filesystem path of the resource or project.
-void ChunkLoader::CopyChunk(Common::FTDS::String& out, const char* path) { Core::ChunkLoader::GetInstance()->CopyChunk(out, path); }
-/// @brief Removes the temporary chunk copy created for loading.
-void ChunkLoader::DeleteCopiedChunk() { Core::ChunkLoader::GetInstance()->DeleteCopiedChunk(); }
-/// @brief Writes the chunk-specific scene metadata to the output stream.
-/// @param out Receives the operation's output.
-void ChunkLoader::SaveChunkData(std::ofstream& out) {
-    Common::FileIOHelper::BeginDataPackSave(out, Core::ChunkKey::CHUNK_DATA);
-    Common::FileIOHelper::SaveInt(out, Core::ChunkKey::ACTOR_COUNT, mCurrentChunkData->MaxActorID);
-    Common::FileIOHelper::EndDataPackSave(out, Core::ChunkKey::CHUNK_DATA);
-}
-/// @brief Reads chunk-specific scene metadata from the input stream.
-/// @param in Input value.
-void ChunkLoader::LoadChunkData(std::ifstream& in) {
-    Common::FileIOHelper::BeginDataPackLoad(in, Core::ChunkKey::CHUNK_DATA);
-    Common::FileIOHelper::LoadInt(in, mCurrentChunkData->MaxActorID);
-}
-}
+namespace Editor
+{
+	/// @brief Pauses game updates while chunk state is being changed.
+	void ChunkLoader::Lock() { mCurrentChunkData->IsLoading = true; }
+	/// @brief Resumes game updates after chunk processing completes.
+	void ChunkLoader::Unlock() { mCurrentChunkData->IsLoading = false; }
+	/// @brief Creates a temporary copy of a chunk so the source remains available during loading.
+	/// @param out Receives the operation's output.
+	/// @param path Filesystem path of the resource or project.
+	void ChunkLoader::CopyChunk(Common::FTDS::String& out, const char* path) { Core::ChunkLoader::GetInstance()->CopyChunk(out, path); }
+	/// @brief Removes the temporary chunk copy created for loading.
+	void ChunkLoader::DeleteCopiedChunk() { Core::ChunkLoader::GetInstance()->DeleteCopiedChunk(); }
+	/// @brief Writes the chunk-specific scene metadata to the output stream.
+	/// @param out Receives the operation's output.
+	void ChunkLoader::SaveChunkData(std::ofstream& out)
+	{
+		Common::FileIOHelper::BeginDataPackSave(out, Core::ChunkKey::CHUNK_DATA);
+		Common::FileIOHelper::SaveInt(out, Core::ChunkKey::ACTOR_COUNT, mCurrentChunkData->MaxActorID);
+		Common::FileIOHelper::EndDataPackSave(out, Core::ChunkKey::CHUNK_DATA);
+	}
+	/// @brief Reads chunk-specific scene metadata from the input stream.
+	/// @param in Input value.
+	void ChunkLoader::LoadChunkData(std::ifstream& in)
+	{
+		Common::FileIOHelper::BeginDataPackLoad(in, Core::ChunkKey::CHUNK_DATA);
+		Common::FileIOHelper::LoadInt(in, mCurrentChunkData->MaxActorID);
+	}
+} // namespace Editor

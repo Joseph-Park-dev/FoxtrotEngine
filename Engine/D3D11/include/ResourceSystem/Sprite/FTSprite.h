@@ -18,6 +18,12 @@ namespace D3D11
 	public:
 		static D3D11::ResType Type;
 
+		/// @brief Returns the .chunk data-pack key for this resource type.
+		static const char* GetName()
+		{
+			return "FTSprite";
+		}
+
 	public:
 		/// @brief Uploads the current shader parameters to the constant buffers.
 		/// @param meshIndex Index of an elements from the sliced spritesheet.

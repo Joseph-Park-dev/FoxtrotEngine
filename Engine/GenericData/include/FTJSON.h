@@ -19,6 +19,13 @@ namespace GenericData
 	class FTJSON :
 		public Common::FTResource
 	{
+	public:
+		/// @brief Returns the .chunk data-pack key for this resource type.
+		static const char* GetName()
+		{
+			return "JSON";
+		}
+
 		// public:
 		//	/// @see FTResource::SaveProperties()
 		//	virtual void SaveProperties(std::ofstream& ofs) override;

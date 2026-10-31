@@ -86,6 +86,7 @@ namespace D3D11
 		newComp->mVS		  = this->mVS;
 		newComp->mPS		  = this->mPS;
 		newComp->mMaterial	  = this->mMaterial;
+		RegisterClone(actor, newComp);
 	}
 
 	/// @brief Returns the renderer used by this mesh renderer.

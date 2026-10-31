@@ -21,6 +21,12 @@ namespace GenericData
 		/// Chunk I/O ///
 		/////////////////
 	public:
+		/// @brief Returns the .chunk data-pack key for this resource type.
+		static const char* GetName()
+		{
+			return "CSV";
+		}
+
 		/// @brief Serializes this object's persistent properties to a .chunk stream.
 		/// @see FTResource::SaveProperties()
 		/// @param ofs Output stream receiving the serialized data.

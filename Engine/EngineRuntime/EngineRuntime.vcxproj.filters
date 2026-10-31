@@ -225,5 +225,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Plugin\IEditorResourceService.h" />
+    <ClInclude Include="include\Factory\IFTResourceFactory.h" />
   </ItemGroup>
 </Project>

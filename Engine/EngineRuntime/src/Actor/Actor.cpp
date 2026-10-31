@@ -33,6 +33,7 @@ namespace Core
 	Actor::Actor(int id)
 		: mData(DBG_NEW Common::ActorData)
 	{
+		mData->Owner	  = this;
 		mData->Name		  = "New Empty Actor";
 		mData->ID		  = id;
 		mData->ActorGroup = Common::ActorGroup::DEFAULT;
@@ -52,6 +53,7 @@ namespace Core
 	Actor::Actor(Common::IActor* actor, int id)
 		: mData(DBG_NEW Common::ActorData)
 	{
+		mData->Owner = this;
 		mData->Name = "New Copied Actor";
 		mData->ID	= id;
 		SetActorGroup(actor->GetActorGroup());
@@ -78,6 +80,7 @@ namespace Core
 	Actor::Actor(Common::IActor* actor, int id, bool deepCpyChild)
 		: mData(DBG_NEW Common::ActorData)
 	{
+		mData->Owner = this;
 		mData->Name = "New Copied Actor";
 		mData->ID	= id;
 		SetActorGroup(actor->GetActorGroup());

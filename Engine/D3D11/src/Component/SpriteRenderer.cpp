@@ -96,6 +96,7 @@ namespace D3D11
 		newComp->mSprite		= this->mSprite;
 		newComp->mMaterial		= this->mMaterial;
 		newComp->SetPSO(this->GetPSO());
+		RegisterClone(actor, newComp);
 	}
 
 	/// @brief Initializes sprite and material bindings for its actor.

@@ -38,6 +38,12 @@ namespace Core
 
 		/// @brief Draws the loaded core assets in the editor resource menu.
 		void DisplayLoadedResources() override;
+
+		/// @brief Writes referenced CSV, JSON, and text resources into the chunk stream.
+		/// @param ofs Output stream receiving the serialized data.
+		void SaveReferencedResources(std::ofstream& ofs) override;
+		void LoadReferencedResources(std::ifstream& ifs) override;
+
 	};
 
 	/// @brief Points this module's ImGui copy at the editor context.

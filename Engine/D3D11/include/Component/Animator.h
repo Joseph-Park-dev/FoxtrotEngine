@@ -32,6 +32,12 @@ namespace D3D11
 		public SpriteRenderer
 	{
 	public:
+		virtual const char* GetName() override
+		{
+			return "Animator";
+		}
+
+	public:
 		/// @brief Starts or selects animation playback.
 		/// @param idx Zero-based element index.
 		/// @param isRepeated Whether playback repeats after its final frame.
@@ -102,6 +108,12 @@ namespace D3D11
 		virtual void LoadProperties(std::ifstream& ifs) override;
 
 	private:
+		/// @brief Binds the first loaded clip and a sprite pipeline when playback has neither.
+		void BindLoadedAnimation();
+		/// @brief Submits the current animation frame.
+		/// @param renderer Renderer providing the graphics device and current render state.
+		/// @param camInst Camera supplying the view and projection for this draw.
+		void DrawSprite(Core::IRenderer* renderer, Core::ICamera* camInst);
 		/// @brief Advances the animation's current frame according to playback state.
 		/// @param deltaTime Elapsed frame time in seconds.
 		void UpdateFrame(float deltaTime);

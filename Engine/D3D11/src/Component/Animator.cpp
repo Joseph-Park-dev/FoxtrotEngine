@@ -101,8 +101,6 @@ namespace D3D11
 	/// @note Writes to the supplied stream at its current position.
 	void Animator::SaveProperties(std::ofstream& ofs)
 	{
-		SpriteRenderer::SaveProperties(ofs);
-
 		// Loop through loaded animation keys and save.
 		FileIOHelper::BeginDataPackSave(ofs, ChunkKey::Animator::LOADED_KEYS);
 		size_t i = 0;
@@ -237,6 +235,7 @@ namespace D3D11
 		newComp->SetSprite(this->GetSprite());
 		newComp->SetPSO(this->GetPSO());
 		newComp->SetMaterial(this->GetMaterial());
+		RegisterClone(actor, newComp);
 	}
 
 #ifdef FOXTROT_EDITOR

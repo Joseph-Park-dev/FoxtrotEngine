@@ -61,6 +61,12 @@ namespace D3D11
 		/// @brief Completes destruction through the object's inheritance hierarchy.
 		virtual ~D3D11Component();
 
+	protected:
+		/// @brief Adds a clone to the target actor's component list so the editor can display it.
+		/// @param actor Actor that will own the clone.
+		/// @param clone Component created for that actor.
+		void RegisterClone(Core::IActor* actor, D3D11Component* clone);
+
 	private:
 		Core::IActor* mOwner;
 		D3D11PSO*	  mPSO;

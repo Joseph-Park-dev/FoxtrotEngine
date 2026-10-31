@@ -22,12 +22,14 @@
 #include "Manager/SceneManager.h"
 #include "Manager/ResourceManager.h"
 #include "Plugin/PluginKey.h"
+#include "FileSystem/DLLPath.h"
 
 #include "Component/D3D11Component.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "Manager/DirectoryHelper.h"
 	#include "Plugin/IEditorResourceService.h"
+	#include "ResourceSystem/SupportedResources.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -36,7 +38,7 @@ namespace D3D11
 	{
 		namespace Plugin
 		{
-			constexpr const char* D3D11 = "D3D11";
+			constexpr const char* D3D11 = "FoxtrotD3D11";
 		}
 	} // namespace ChunkKey
 
@@ -47,6 +49,8 @@ namespace D3D11
 	public:
 		bool LoadDefaultResources(const char* projDirectory, Graphics::IRenderer* renderer) noexcept override
 		{
+			if (renderer)
+				mRenderer = renderer;
 			if (!projDirectory || !*projDirectory)
 				return false;
 
@@ -71,11 +75,12 @@ namespace D3D11
 			}
 		}
 
-
 		bool LoadAllResourcesInAsset(
 			const char*			 assetDirectory,
 			Graphics::IRenderer* renderer) noexcept override
 		{
+			if (renderer)
+				mRenderer = renderer;
 			if (!assetDirectory || !*assetDirectory)
 				return false;
 
@@ -104,6 +109,45 @@ namespace D3D11
 		{
 			D3D11::ResourceManager::GetInstance()->EditorUIUpdate();
 		}
+
+		/// @brief Writes referenced graphics resources into the chunk stream.
+		/// @param ofs Output stream receiving the serialized data.
+		void SaveReferencedResources(std::ofstream& ofs) override
+		{
+			ResourceManager* resources = ResourceManager::GetInstance();
+			resources->GetSpriteAnimations()->SaveReferencedResourcesToChunk(ofs);
+			resources->GetSpineAnimations()->SaveReferencedResourcesToChunk(ofs);
+			resources->GetFonts()->SaveReferencedResourcesToChunk(ofs);
+			resources->GetMaterials()->SaveReferencedResourcesToChunk(ofs);
+			resources->GetMeshGroups()->SaveReferencedResourcesToChunk(ofs);
+			resources->GetVertexShaders()->SaveReferencedResourcesToChunk(ofs);
+			resources->GetGeometryShaders()->SaveReferencedResourcesToChunk(ofs);
+			resources->GetPixelShaders()->SaveReferencedResourcesToChunk(ofs);
+			resources->GetSprites()->SaveReferencedResourcesToChunk(ofs);
+			resources->GetTileMaps()->SaveReferencedResourcesToChunk(ofs);
+			resources->GetPSOs()->SaveReferencedResourcesToChunk(ofs);
+		}
+
+		void LoadReferencedResources(std::ifstream& ifs) override
+		{
+			HMODULE			 module	   = GetModuleHandleA(Common::DLLPath::D3D11);
+			void*			 renderer  = mRenderer;
+			ResourceManager* resources = ResourceManager::GetInstance();
+			resources->GetPSOs()->LoadReferencedResourcesFromChunk(ifs, module, renderer);
+			resources->GetTileMaps()->LoadReferencedResourcesFromChunk(ifs, module, renderer);
+			resources->GetSprites()->LoadReferencedResourcesFromChunk(ifs, module, renderer);
+			resources->GetPixelShaders()->LoadReferencedResourcesFromChunk(ifs, module, renderer);
+			resources->GetGeometryShaders()->LoadReferencedResourcesFromChunk(ifs, module, renderer);
+			resources->GetVertexShaders()->LoadReferencedResourcesFromChunk(ifs, module, renderer);
+			resources->GetMeshGroups()->LoadReferencedResourcesFromChunk(ifs, module, renderer);
+			resources->GetMaterials()->LoadReferencedResourcesFromChunk(ifs, module, renderer);
+			resources->GetFonts()->LoadReferencedResourcesFromChunk(ifs, module, renderer);
+			resources->GetSpineAnimations()->LoadReferencedResourcesFromChunk(ifs, module, renderer);
+			resources->GetSpriteAnimations()->LoadReferencedResourcesFromChunk(ifs, module, renderer);
+		}
+
+	private:
+		Graphics::IRenderer* mRenderer = nullptr;
 	};
 
 #endif
@@ -113,6 +157,9 @@ namespace D3D11
 		public Core::IGraphicsFactory,
 		public Core::IInputSysFactory
 	{
+	public:
+		const char* GetName() override { return "FoxtrotD3D11"; }
+
 	public:
 		/// @brief Registers a component for plugin-managed lifecycle processing.
 		/// @param comp Component instance associated with the actor or plugin.
@@ -527,6 +574,42 @@ namespace D3D11
 #include "Component/SpineAnimator.h"
 #include "Component/SpriteRenderer.h"
 #include "Component/TileMapRenderer.h"
+#include "Factory/IFTResourceFactory.h"
+#include "ResourceSystem/Animation/FTSpriteAnimation.h"
+#include "ResourceSystem/Animation/FTSpineAnimation.h"
+#include "ResourceSystem/Font/FTFont.h"
+#include "ResourceSystem/Mesh/FTMeshGroup.h"
+#include "ResourceSystem/Shader/FTVertexShader.h"
+#include "ResourceSystem/Shader/FTGeometryShader.h"
+#include "ResourceSystem/Shader/FTPixelShader.h"
+#include "ResourceSystem/Sprite/FTSprite.h"
+#include "ResourceSystem/Sprite/FTTileMap.h"
+#include "ResourceSystem/Material/StandardMaterial.h"
+#include "ResourceSystem/Material/SpriteAnimMat.h"
+#include "ResourceSystem/D3D11PSO.h"
+#include "Debugging/DebugMemAlloc.h"
+
+namespace
+{
+	Common::IResource* CreateStandardMaterial(Common::FTResourceDef& resDef, void* renderer)
+	{
+		if (!renderer)
+			return nullptr;
+		return DBG_NEW D3D11::StandardMaterial(resDef, static_cast<D3D11::D3D11Renderer*>(renderer));
+	}
+
+	Common::IResource* CreateSpriteAnimMaterial(Common::FTResourceDef& resDef, void* renderer)
+	{
+		if (!renderer)
+			return nullptr;
+		return DBG_NEW D3D11::SpriteAnimMat(resDef, static_cast<D3D11::D3D11Renderer*>(renderer));
+	}
+
+	Common::IResource* CreateUnloadedPSO(Common::FTResourceDef&, void*)
+	{
+		return nullptr;
+	}
+}
 
 FT_EXPORT void SetComponentFactory(Common::FTDS::HashMap<ComponentFactoryEntry>& entries) noexcept
 {
@@ -535,6 +618,24 @@ FT_EXPORT void SetComponentFactory(Common::FTDS::HashMap<ComponentFactoryEntry>&
 	entries.Insert(D3D11::ChunkKey::SpineAnimator::NAME, CreateRegisteredComponent<D3D11::SpineAnimator>);
 	entries.Insert(D3D11::ChunkKey::SpriteRenderer::NAME, CreateRegisteredComponent<D3D11::SpriteRenderer>);
 	entries.Insert(D3D11::ChunkKey::TileMapRenderer::NAME, CreateRegisteredComponent<D3D11::TileMapRenderer>);
+}
+
+/// @brief Registers graphics resource constructors exported by this module.
+/// @param entries Receives one factory per graphics resource pack key.
+FT_EXPORT void SetResourceFactory(Common::FTDS::HashMap<ResourceFactoryEntry>& entries) noexcept
+{
+	entries.Insert(D3D11::FTSpriteAnimation::GetName(), CreateRegisteredResource<D3D11::FTSpriteAnimation>);
+	entries.Insert(D3D11::FTSpineAnimation::GetName(), CreateRegisteredResource<D3D11::FTSpineAnimation>);
+	entries.Insert(D3D11::FTFont::GetName(), CreateRegisteredResource<D3D11::FTFont>);
+	entries.Insert(D3D11::FTMeshGroup::GetName(), CreateRegisteredResource<D3D11::FTMeshGroup>);
+	entries.Insert(D3D11::FTVertexShader::GetName(), CreateRegisteredResource<D3D11::FTVertexShader>);
+	entries.Insert(D3D11::FTGeometryShader::GetName(), CreateRegisteredResource<D3D11::FTGeometryShader>);
+	entries.Insert(D3D11::FTPixelShader::GetName(), CreateRegisteredResource<D3D11::FTPixelShader>);
+	entries.Insert(D3D11::FTSprite::GetName(), CreateRegisteredResource<D3D11::FTSprite>);
+	entries.Insert(D3D11::FTTileMap::GetName(), CreateRegisteredResource<D3D11::FTTileMap>);
+	entries.Insert(D3D11::ChunkKey::StandardMat::STANDARD_MAT, CreateStandardMaterial);
+	entries.Insert(D3D11::ChunkKey::SpriteAnimMat::SPRITE_ANIM_MAT, CreateSpriteAnimMaterial);
+	entries.Insert(D3D11::D3D11PSO::GetName(), CreateUnloadedPSO);
 }
 
 extern "C"

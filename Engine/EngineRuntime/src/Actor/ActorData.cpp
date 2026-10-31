@@ -1,9 +1,123 @@
 #include "Actor/ActorData.h"
 
+#include <fstream>
+
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+
 #include "Actor/IActor.h"
 #include "Actor/ActorGroup.h"
 #include "FileSystem/FileIOHelper.h"
+#include "FileSystem/DLLPath.h"
 #include "Actor/Transform.h"
+#include "Factory/IComponentFactory.h"
+#include "FTDS/Static/HashMap.h"
+#include "Debugging/DebugFuncs.h"
+
+namespace
+{
+	constexpr const char* DLL_LIST = ".\\DLL List.ftconfig";
+
+	using SetComponentFactoryFn = void(__cdecl*)(Common::FTDS::HashMap<ComponentFactoryEntry>&);
+
+	/// @brief Resolves one loaded module and stores the component factories it exports.
+	/// @param name Module name without the .dll extension.
+	/// @param factories Receives one map per module that exports SetComponentFactory.
+	void QueryComponentModule(
+		const Common::FTDS::String& name,
+		Common::FTDS::DynamicArray<Common::FTDS::HashMap<ComponentFactoryEntry>*>& factories)
+	{
+		if (name.IsEmpty())
+			return;
+
+		Common::FTDS::String fileName(name);
+		fileName.Append(".dll");
+
+		HMODULE module = GetModuleHandleA(fileName.C_Str());
+		if (!module && name.Equal("D3D11"))
+			module = GetModuleHandleA(Common::DLLPath::D3D11);
+		if (!module)
+			return;
+
+		auto setFactory = reinterpret_cast<SetComponentFactoryFn>(GetProcAddress(module, "SetComponentFactory"));
+		if (!setFactory)
+			return;
+
+		Common::FTDS::HashMap<ComponentFactoryEntry>* entries =
+			DBG_NEW Common::FTDS::HashMap<ComponentFactoryEntry>(32);
+		setFactory(*entries);
+		factories.PushBack(entries);
+	}
+
+	/// @brief Reads DLL List.ftconfig and caches each module's component factories.
+	/// @param factories Receives one map per module that exports SetComponentFactory.
+	void LoadImportedComponentFactories(
+		Common::FTDS::DynamicArray<Common::FTDS::HashMap<ComponentFactoryEntry>*>& factories)
+	{
+		std::ifstream dllList(DLL_LIST);
+		if (!dllList.is_open())
+		{
+			Common::Debug::LogError(__LINE__, __FILE__, "Failed to read DLL List.ftconfig");
+			return;
+		}
+
+		try
+		{
+			std::pair<size_t, Common::FTDS::String> pack = Common::FileIOHelper::BeginDataPackLoad(dllList);
+			// BeginDataPackLoad returns NULL OBJECT when the first line has no data-pack marker.
+			if (pack.second.Equal(Common::ChunkKey::NullVal::NULL_OBJECT))
+			{
+				dllList.clear();
+				dllList.seekg(0, std::ios::beg);
+
+				Common::FTDS::String line;
+				while (dllList)
+				{
+					line.Clear();
+					if (!Common::FileIOHelper::GetLine(dllList, line))
+					{
+						if (dllList.eof() || dllList.fail())
+							break;
+						continue;
+					}
+					QueryComponentModule(line, factories);
+				}
+			}
+			else
+			{
+				Common::FTDS::String dll;
+				for (size_t i = 0; i < pack.first; ++i)
+				{
+					Common::FileIOHelper::LoadBasicString(dllList, dll);
+					QueryComponentModule(dll, factories);
+					dll.Clear();
+				}
+			}
+		}
+		catch (...)
+		{
+			Common::Debug::LogError(__LINE__, __FILE__, "Failed to read DLL List.ftconfig");
+		}
+	}
+
+	/// @brief Consumes an Actor Properties pack header when that header is still the next line.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	void ConsumeActorPropertiesHeader(std::ifstream& ifs)
+	{
+		const std::streampos pos = ifs.tellg();
+		if (!ifs || pos == std::streampos(-1))
+			return;
+
+		Common::FTDS::String line;
+		const bool			 read = Common::FileIOHelper::GetLine(ifs, line);
+		ifs.clear();
+		ifs.seekg(pos);
+		if (!read || !line.Contains(Common::ChunkKey::ACTOR_PROPERTIES))
+			return;
+
+		Common::FileIOHelper::BeginDataPackLoad(ifs, Common::ChunkKey::ACTOR_PROPERTIES);
+	}
+} // namespace
 
 namespace Common
 {
@@ -313,6 +427,8 @@ namespace Common
 	/// @note Advances the stream position and updates the destination state.
 	void Common::ActorData::LoadProperties(std::ifstream& ifs)
 	{
+		ConsumeActorPropertiesHeader(ifs);
+
 		// Load Actor state
 		Common::FileIOHelper::LoadBool(ifs, IsActive);
 
@@ -340,10 +456,36 @@ namespace Common
 	{
 		std::pair<size_t, Common::FTDS::String>&& pack = Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::COMPONENTS);
 		Components->Reserve(pack.first);
+
+		Common::FTDS::DynamicArray<Common::FTDS::HashMap<ComponentFactoryEntry>*> factories;
+		LoadImportedComponentFactories(factories);
+
 		for (size_t i = 0; i < pack.first; ++i)
 		{
 			std::pair<size_t, Common::FTDS::String> compPack = Common::FileIOHelper::BeginDataPackLoad(ifs);
-			// ChunkLoader::GetInstance()->GetComponentLoadMap().At(compPack.second)->Value()(this, ifs);
+
+			ComponentFactoryEntry createComponent = nullptr;
+			for (size_t moduleIndex = 0; moduleIndex < factories.GetSize(); ++moduleIndex)
+			{
+				Common::FTDS::Record<ComponentFactoryEntry>* record = factories.At(moduleIndex)->At(compPack.second);
+				if (!record || !record->Value())
+					continue;
+				createComponent = record->Value();
+				break;
+			}
+
+			if (!createComponent)
+			{
+				Common::Debug::LogError(__LINE__, __FILE__, compPack.second.C_Str());
+				continue;
+			}
+
+			Common::IComponent* component = createComponent(Owner);
+			if (component)
+				component->LoadProperties(ifs);
 		}
+
+		for (size_t i = 0; i < factories.GetSize(); ++i)
+			delete factories.At(i);
 	}
 } // namespace Common

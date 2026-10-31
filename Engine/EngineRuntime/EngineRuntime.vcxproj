@@ -92,6 +92,7 @@
     <ClInclude Include="include\EventSystem\EventType.h" />
     <ClInclude Include="include\Factory\EngineContext.h" />
     <ClInclude Include="include\Factory\IComponentFactory.h" />
+    <ClInclude Include="include\Factory\IFTResourceFactory.h" />
     <ClInclude Include="include\Factory\IGraphicsFactory.h" />
     <ClInclude Include="include\Factory\IInputSysFactory.h" />
     <ClInclude Include="include\FileSystem\ChunkLoader.h" />

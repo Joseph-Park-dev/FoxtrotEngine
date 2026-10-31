@@ -14,8 +14,20 @@
 
 	#include "Plugin/IPlugin.h"
 	#include "Manager/ResourceManager.h"
+	#include "FTJSON.h"
+	#include "FTText.h"
+	#include "FTCSV.h"
 	#include "FTDS/Static/FTString.h"
 	#include "Debugging/DebugFuncs.h"
+	#include "FileSystem/DLLPath.h"
+	#include "Foxtrot/Core/ModuleApi.h"
+	#include "Factory/IFTResourceFactory.h"
+	#include "FTDS/Static/HashMap.h"
+
+	#ifndef WIN32_LEAN_AND_MEAN
+		#define WIN32_LEAN_AND_MEAN
+	#endif
+	#include <Windows.h>
 
 namespace Core
 {
@@ -54,9 +66,29 @@ namespace Core
 		ResourceManager::GetInstance()->EditorUIUpdate();
 	}
 
+	/// @brief Writes referenced CSV, JSON, and text resources into the chunk stream.
+	/// @param ofs Output stream receiving the serialized data.
+	void CoreEditorResourceService::SaveReferencedResources(std::ofstream& ofs)
+	{
+		ResourceManager::GetInstance()->GetCSVs()->SaveReferencedResourcesToChunk(ofs);
+		ResourceManager::GetInstance()->GetJSONs()->SaveReferencedResourcesToChunk(ofs);
+		ResourceManager::GetInstance()->GetTexts()->SaveReferencedResourcesToChunk(ofs);
+	}
+
+	void CoreEditorResourceService::LoadReferencedResources(std::ifstream& ifs)
+	{
+		HMODULE module = GetModuleHandleA(Common::DLLPath::CORE);
+		ResourceManager::GetInstance()->GetTexts()->LoadReferencedResourcesFromChunk(ifs, module, nullptr);
+		ResourceManager::GetInstance()->GetJSONs()->LoadReferencedResourcesFromChunk(ifs, module, nullptr);
+		ResourceManager::GetInstance()->GetCSVs()->LoadReferencedResourcesFromChunk(ifs, module, nullptr);
+	}
+
 	class CorePlugin :
 		public Common::IPlugin
 	{
+	public:
+		const char* GetName() override { return "Core"; }
+
 	public:
 		void  RegisterComponent(Common::IComponent*) override {}
 		void  SaveProperties(std::ofstream&) override {}
@@ -103,4 +135,23 @@ namespace Core
 		return DBG_NEW CorePlugin;
 	}
 } // namespace Core
+
+/// @brief Registers CSV, JSON, and text constructors exported by this module.
+/// @param entries Receives one factory per core resource pack key.
+FT_EXPORT void SetResourceFactory(Common::FTDS::HashMap<ResourceFactoryEntry>& entries) noexcept
+{
+	entries.Insert(GenericData::FTCSV::GetName(), CreateRegisteredResource<GenericData::FTCSV>);
+	entries.Insert(GenericData::FTJSON::GetName(), CreateRegisteredResource<GenericData::FTJSON>);
+	entries.Insert(GenericData::FTText::GetName(), CreateRegisteredResource<GenericData::FTText>);
+}
+#else
+	#include "Foxtrot/Core/ModuleApi.h"
+	#include "Factory/IFTResourceFactory.h"
+	#include "FTDS/Static/HashMap.h"
+
+/// @brief Editor resource factories are unused by non-editor builds of this module.
+/// @param entries Receives one factory per core resource pack key.
+FT_EXPORT void SetResourceFactory(Common::FTDS::HashMap<ResourceFactoryEntry>&) noexcept
+{
+}
 #endif // FOXTROT_EDITOR

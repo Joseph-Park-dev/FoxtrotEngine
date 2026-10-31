@@ -36,6 +36,12 @@ namespace D3D11
 	public:
 		static D3D11::ResType Type;
 
+		/// @brief Returns the .chunk data-pack key for this resource type.
+		static const char* GetName()
+		{
+			return "D3D11PSO";
+		}
+
 	public:
 		// void operator=(const D3D11PSO& pso);
 		/// @brief Tests the valid condition for the current object.

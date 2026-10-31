@@ -28,7 +28,6 @@ namespace Core
 	{
 		::std::ofstream ofs(chunkPath);
 		SaveActorsData(ofs);
-
 		SaveChunkData(ofs);
 	}
 
@@ -39,7 +38,7 @@ namespace Core
 		Lock();
 		::std::ifstream ifs(chunkPath);
 		LoadChunkData(ifs);
-		LoadActorProperties(ifs);
+		LoadActorsData(ifs);
 		// LoadPlugins(ifs);
 
 		// Plugin Data;
@@ -51,6 +50,7 @@ namespace Core
 		//		-Register	 Components;
 
 		// Load premades to Core ResourceManager
+
 		Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::RES_DATA).first;
 
 		// Core::ResourceManager::GetInstance()->LoadResourcesFromChunk(ifs, premadeCount);
@@ -164,7 +164,7 @@ namespace Core
 
 	/// @brief Creates or restores actors from the property sections of the chunk.
 	/// @param ifs Input stream positioned at the expected data; reading advances its position.
-	void ChunkLoader::LoadActorProperties(std::ifstream& ifs)
+	void ChunkLoader::LoadActorsData(std::ifstream& ifs)
 	{
 		Scene*									  scene = SceneManager::GetInstance()->GetCurrentScene();
 		std::pair<size_t, Common::FTDS::String>&& pack	= Common::FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::ACTOR_DATA);
@@ -175,6 +175,7 @@ namespace Core
 			std::pair<size_t, Common::FTDS::String>&& actorData = Common::FileIOHelper::BeginDataPackLoad(ifs);
 			Actor* actor										= DBG_NEW Actor(Common::ChunkKey::ID::INVALID);
 			actor->LoadProperties(ifs);
+			actor->LoadComponents(ifs);
 			scene->AddActor(actor);
 
 			AddMaxActorID();

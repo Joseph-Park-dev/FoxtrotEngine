@@ -19,6 +19,12 @@ namespace D3D11
 	public:
 		static D3D11::ResType Type;
 
+		/// @brief Returns the .chunk data-pack key for this resource type.
+		static const char* GetName()
+		{
+			return "FTFont";
+		}
+
 	public:
 		/// @brief Parses font metrics and creates the resources needed to draw glyphs.
 		/// @param img Image resource used by this operation.

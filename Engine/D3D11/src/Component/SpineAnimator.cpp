@@ -108,6 +108,7 @@ namespace D3D11
 		newComp->SetPS(this->GetPS());
 		newComp->SetMaterial(this->GetMaterial());
 		newComp->SetPSO(this->GetPSO());
+		RegisterClone(actor, newComp);
 	}
 
 	/// @brief Serializes this object's persistent properties to a .chunk stream.

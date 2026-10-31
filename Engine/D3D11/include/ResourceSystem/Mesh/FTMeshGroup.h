@@ -55,6 +55,12 @@ namespace D3D11
 	public:
 		static D3D11::ResType Type;
 
+		/// @brief Returns the .chunk data-pack key for this resource type.
+		static const char* GetName()
+		{
+			return "FTMeshGroup";
+		}
+
 	public:
 		/// @brief Renders the entire meshes created, as a full model.
 		/// @param renderer Renderer providing the graphics device and current render state.

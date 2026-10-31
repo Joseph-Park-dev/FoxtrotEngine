@@ -637,7 +637,7 @@ namespace D3D11
 		, mGeometryShaders(new Common::ResourcePack<FTGeometryShader>(16))
 		, mPixelShaders(new Common::ResourcePack<FTPixelShader>(16))
 		, mSprites(new Common::ResourcePack<FTSprite>(16))
-		//, mTileMaps(new Common::ResourcePack<FTTileMap>(16))
+		, mTileMaps(new Common::ResourcePack<FTTileMap>(16))
 		, mPSOs(new Common::ResourcePack<D3D11PSO>(16))
 	{
 	}
@@ -647,7 +647,7 @@ namespace D3D11
 	{
 		delete mSpriteAnimations;
 		delete mSpineAnimations;
-		// delete mTileMaps;
+		delete mTileMaps;
 		delete mFonts;
 		delete mMeshGroups;
 		delete mMaterials;

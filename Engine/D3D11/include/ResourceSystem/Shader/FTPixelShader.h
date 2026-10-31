@@ -21,6 +21,12 @@ namespace D3D11
 	public:
 		static D3D11::ResType Type;
 
+		/// @brief Returns the .chunk data-pack key for this resource type.
+		static const char* GetName()
+		{
+			return "FTPixelShader";
+		}
+
 	public:
 		/// @brief Serializes this object's persistent properties to a .chunk stream.
 		/// @see FTResource::SaveProperties()

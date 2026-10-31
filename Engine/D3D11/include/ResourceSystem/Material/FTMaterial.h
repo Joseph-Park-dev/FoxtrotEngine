@@ -27,6 +27,12 @@ namespace D3D11
 		public D3D11Resource
 	{
 	public:
+		/// @brief Returns the .chunk data-pack key for this resource type.
+		static const char* GetName()
+		{
+			return "FTMaterial";
+		}
+
 		/// @brief Updates pixel constant buffer with material data.
 		/// @param context Context associated with this operation.
 		virtual void UpdateBuffer(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context) = 0;

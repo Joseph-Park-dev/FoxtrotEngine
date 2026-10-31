@@ -2,6 +2,7 @@
 
 #include "Plugin/IPlugin.h"
 #include "Actor/IActor.h"
+#include "FTDS/Dynamic/DynamicArray.h"
 #include "FileSystem/FileIOHelper.h"
 #include "Component/Data/ComponentData.h"
 
@@ -42,6 +43,16 @@ namespace D3D11
 		: mOwner(owner)
 		, mPSO(nullptr)
 	{
+	}
+
+	void D3D11::D3D11Component::RegisterClone(Core::IActor* actor, D3D11Component* clone)
+	{
+		if (!actor || !clone)
+			return;
+		Common::FTDS::DynamicArray<Core::IComponent*>* components = actor->GetComponents();
+		if (!components)
+			return;
+		components->PushBack(clone);
 	}
 
 	/// @brief Completes destruction through the object's inheritance hierarchy.

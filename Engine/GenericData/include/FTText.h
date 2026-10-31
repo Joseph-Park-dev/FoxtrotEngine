@@ -24,6 +24,13 @@ namespace GenericData
 	class FTText :
 		public Common::FTResource
 	{
+	public:
+		/// @brief Returns the .chunk data-pack key for this resource type.
+		static const char* GetName()
+		{
+			return "Text";
+		}
+
 		// public:
 		//	/// @see FTResource::SaveProperties()
 		//	virtual void SaveProperties(std::ofstream& ofs) override;

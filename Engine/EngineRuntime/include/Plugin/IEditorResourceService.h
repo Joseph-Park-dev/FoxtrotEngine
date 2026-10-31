@@ -1,5 +1,6 @@
 // Shared header — proposed
 #pragma once
+#include <fstream>
 #include "Renderer/IRenderer.h"
 
 #ifdef FOXTROT_EDITOR
@@ -21,9 +22,14 @@ namespace Core
 
 		virtual void DisplayLoadedResources() = 0;
 
-	protected:
+		/// @brief Writes this service's referenced resources into the open chunk stream.
+		/// @param ofs Output stream receiving the serialized data.
+		virtual void SaveReferencedResources(std::ofstream& ofs) = 0;
+		virtual void LoadReferencedResources(std::ifstream& ifs) = 0;
+
+		protected :
 		// Borrowed service: Editor must not delete it.
 		virtual ~IEditorResourceService() = default;
 	};
-} // namespace Common
+} // namespace Core
 #endif

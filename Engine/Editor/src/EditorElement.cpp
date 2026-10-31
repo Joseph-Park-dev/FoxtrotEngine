@@ -174,7 +174,9 @@ namespace Editor
 		mData->IsActive	  = true;
 		mData->Transform  = DBG_NEW	 Core::Transform(this);
 		mData->Components = DBG_NEW Common::FTDS::DynamicArray<Core::IComponent*>;
-		SetParent(actor->GetParent());
+
+		if (actor->GetParent())
+			SetParent(actor->GetParent());
 		mData->Children	 = DBG_NEW Common::FTDS::DynamicArray<Core::IActor*>;
 		mData->DrawOrder = actor->GetData()->DrawOrder;
 
@@ -477,9 +479,37 @@ namespace Editor
 	}
 	void EditorElement::SwitchTransformToEditor()
 	{
-		if (GetTransform())
-			delete GetTransform();
-		SetTransform(DBG_NEW EditorTransform(this));
+		Math::FTVector3 localPosition  = Math::FTVector3::Zero;
+		Math::FTVector3 localScale	   = Math::FTVector3(1.f, 1.f, 1.f);
+		Math::FTVector3 localRotation  = Math::FTVector3::Zero;
+		Math::FTVector3 worldPosition  = Math::FTVector3::Zero;
+		Math::FTVector3 worldScale	   = Math::FTVector3(1.f, 1.f, 1.f);
+		Math::FTVector3 worldRotation  = Math::FTVector3::Zero;
+
+		Core::Transform* current = GetTransform();
+		if (current)
+		{
+			localPosition = current->GetLocalPosition();
+			localScale	  = current->GetLocalScale();
+			localRotation = current->GetLocalRotation();
+			worldPosition = current->GetWorldPosition();
+			worldScale	  = current->GetWorldScale();
+			worldRotation = current->GetWorldRotation();
+			delete current;
+			mData->Transform = nullptr;
+		}
+
+		EditorTransform* editorTransform = DBG_NEW EditorTransform(this);
+		editorTransform->SetLocalPosition(localPosition);
+		editorTransform->SetLocalScale(localScale);
+		editorTransform->SetLocalRotation(localRotation);
+		if (!GetParent())
+		{
+			editorTransform->SetWorldPosition(worldPosition);
+			editorTransform->SetWorldScale(worldScale);
+			editorTransform->SetWorldRotation(worldRotation);
+		}
+		SetTransform(editorTransform);
 	}
 
 	EditorElement* CreateEditorElementFromActor(Core::IActor* actor, int id)

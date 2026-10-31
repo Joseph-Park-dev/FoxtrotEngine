@@ -38,6 +38,12 @@ namespace D3D11
 	public:
 		static inline D3D11::ResType Type = D3D11::ResType::SPINE_ANIMATION;
 
+		/// @brief Returns the .chunk data-pack key for this resource type.
+		static const char* GetName()
+		{
+			return "FTSpineAnimation";
+		}
+
 	public:
 		/// @brief Advances frame-dependent state using the current time step.
 		/// @param deltaTime Elapsed frame time in seconds.

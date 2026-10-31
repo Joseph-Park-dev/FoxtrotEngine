@@ -81,7 +81,7 @@ namespace Core
 		void SaveActorsData(::std::ofstream& ofs);
 		/// @brief Creates or restores actors from the property sections of the chunk.
 		/// @param ifs Input stream positioned at the expected data; reading advances its position.
-		void LoadActorProperties(::std::ifstream& ifs);
+		void LoadActorsData(::std::ifstream& ifs);
 		/// @brief Restores component sections after actor properties have been loaded.
 		/// @param ifs Input stream positioned at the expected data; reading advances its position.
 		void LoadActorComponents(::std::ifstream& ifs);

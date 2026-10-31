@@ -137,6 +137,7 @@ namespace D3D11
 	{
 		TileMapRenderer* newComp = DBG_NEW TileMapRenderer(actor);
 		newComp->mTileMapKey	 = this->mTileMapKey;
+		RegisterClone(actor, newComp);
 	}
 
 	/// @brief Initializes tile-map bindings for its owning actor.

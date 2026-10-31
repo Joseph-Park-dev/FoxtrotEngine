@@ -23,6 +23,9 @@ namespace Common
 	class IPlugin
 	{
 	public:
+		virtual const char* GetName() = 0;
+
+	public:
 		/// @brief Registers a component for plugin-managed lifecycle processing.
 		/// @param comp Component instance associated with the actor or plugin.
 		virtual void RegisterComponent(Common::IComponent* comp) = 0;

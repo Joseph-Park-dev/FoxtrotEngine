@@ -103,6 +103,9 @@ namespace Editor
 		public Core::IPlugin
 	{
 	public:
+		const char* GetName() override { return "D3D11Editor"; }
+
+	public:
 		/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
 		/// @throws std::runtime_error If the operation encounters the failure condition checked by this implementation.
 		void Initialize() override;

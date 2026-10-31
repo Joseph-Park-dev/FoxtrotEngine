@@ -130,8 +130,6 @@ namespace D3D11
 		}
 
 		mLoadedAnim->Reverse();
-		SpriteRenderer::LoadProperties(ifs);
-
 		if (0 < mLoadedAnim->GetSize())
 			Play(0);
 	}

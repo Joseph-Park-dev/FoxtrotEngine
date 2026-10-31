@@ -1,3 +1,4 @@
 EXPORTS
     FtGetModuleAPI
     SetComponentFactory
+    SetResourceFactory

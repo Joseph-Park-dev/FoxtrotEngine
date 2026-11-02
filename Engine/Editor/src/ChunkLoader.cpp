@@ -10,6 +10,7 @@
 #include "ChunkLoader.h"
 
 #include <fstream>
+#include <vector>
 
 #include "Manager/ResourceManager.h"
 #include "Manager/SceneManager.h"
@@ -37,6 +38,7 @@
 #include "EditorScene.h"
 
 #include "Actor/Actor.h"
+#include "Actor/ActorData.h"
 
 namespace Editor
 {
@@ -178,6 +180,12 @@ namespace Editor
 			Core::IActor* element = scene->AddEditorElement(&actor);
 			element->GetTransform()->SetOwner(element);
 
+			// The editor element now owns the parent/child placeholders.
+			if (actor.GetChildActors())
+				actor.GetChildActors()->Clear();
+			if (actor.GetData())
+				actor.GetData()->Parent = nullptr;
+
 			AddMaxActorID();
 		}
 
@@ -194,34 +202,62 @@ namespace Editor
 			}
 		}
 
+		struct HierarchyLink
+		{
+			EditorElement*				 Element = nullptr;
+			EditorElement*				 Parent	 = nullptr;
+			std::vector<EditorElement*> Children;
+		};
+		std::vector<HierarchyLink> links;
+		links.reserve(actors->GetSize());
+
 		for (auto actor = actors->Begin(); actor != actors->End(); ++actor)
 		{
 			EditorElement* element = static_cast<EditorElement*>(*actor);
-			if (element)
+			if (!element)
+				continue;
+
+			HierarchyLink link;
+			link.Element = element;
+
+			if (Common::IActor* placeholder = element->GetParent())
 			{
-				if (element->GetParent())
-				{
-					EditorElement* parent = actorWithIDs.At(element->GetParent()->GetID())->Value();
-					delete element->GetParent();
-					element->SetParent(nullptr);
-					element->SetParent(parent);
-				}
-
-				if (0 < element->GetChildActors()->GetSize())
-				{
-					Common::FTDS::DynamicArray<IActor*> children;
-
-					element->GetChildActors()->IterateArray([&](IActor* c) {
-						Core::IActor* child = actorWithIDs.At(c->GetID())->Value();
-						element->RemoveChild(c);
-						delete c;
-						c = nullptr;
-						children.PushBack(child);
-					});
-					element->GetChildActors()->Clear();
-					element->GetChildActors()->Copy(children);
-				}
+				Common::FTDS::Record<EditorElement*>* record = actorWithIDs.At(placeholder->GetID());
+				link.Parent = record ? record->Value() : nullptr;
+				if (placeholder->GetChildActors())
+					placeholder->GetChildActors()->Clear();
+				element->GetData()->Parent = nullptr;
+				delete placeholder;
 			}
+
+			Common::FTDS::DynamicArray<IActor*>* storedChildren = element->GetChildActors();
+			if (storedChildren && 0 < storedChildren->GetSize())
+			{
+				for (size_t childIndex = 0; childIndex < storedChildren->GetSize(); ++childIndex)
+				{
+					IActor* placeholder = storedChildren->At(childIndex);
+					if (!placeholder)
+						continue;
+
+					Common::FTDS::Record<EditorElement*>* record = actorWithIDs.At(placeholder->GetID());
+					if (record && record->Value())
+						link.Children.push_back(record->Value());
+					if (placeholder->GetChildActors())
+						placeholder->GetChildActors()->Clear();
+					delete placeholder;
+				}
+				storedChildren->Clear();
+			}
+
+			links.push_back(std::move(link));
+		}
+
+		for (HierarchyLink& link : links)
+		{
+			if (link.Parent)
+				link.Element->SetParent(link.Parent);
+			for (EditorElement* child : link.Children)
+				link.Element->AddChild(child);
 		}
 	}
 

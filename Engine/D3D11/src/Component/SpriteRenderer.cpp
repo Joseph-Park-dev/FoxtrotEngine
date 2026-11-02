@@ -29,7 +29,7 @@
 #include "FileSystem/NullKeys.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "CommandHistory.h"
+	#include "Plugin/ICommandHistory.h"
 	#include "EditorUtils.h"
 	#include <EditorCamera.h>
 

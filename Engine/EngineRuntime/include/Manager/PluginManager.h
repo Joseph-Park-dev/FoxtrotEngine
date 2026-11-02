@@ -15,11 +15,19 @@ namespace Core
 	/// @brief Returns the runtime-owned plugin registry without creating a per-DLL singleton.
 	CORE_API Common::FTDS::HashMap<Common::IPlugin*>* GetAvailablePlugins();
 
-	class PluginManager
+#pragma warning(push)
+#pragma warning(disable : 4251)
+	class CORE_API PluginManager
 	{
 		SINGLETON(PluginManager)
 
 	public:
+		// Gameloop functions.
+		void Initialize();
+		/// @brief Calls Initialize on every component registered to each attached plugin, in attach order.
+		void InitializeComponents();
+		// Gameloop functions.
+		void Setup();
 		// Gameloop functions.
 		/// @brief Dispatches input for the current frame to the relevant engine objects.
 		void ProcessInput();
@@ -68,4 +76,5 @@ namespace Core
 		/// @return Obtains a plugin instance and registers it for engine lifecycle dispatch.
 		CORE_API Common::IPlugin* RegisterPlugin(const char* pluginName);
 	}
+#pragma warning(pop)
 } // namespace Core

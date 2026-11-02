@@ -1,5 +1,29 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-<PropertyGroup><OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir><IntDir>$(OutDir)obj\$(MSBuildProjectName)\</IntDir><VcpkgEnabled>false</VcpkgEnabled></PropertyGroup>
-<ItemDefinitionGroup><ClCompile><LanguageStandard>stdcpp17</LanguageStandard><RuntimeLibrary Condition="'$(Configuration)'=='Release'">MultiThreadedDLL</RuntimeLibrary><RuntimeLibrary Condition="'$(Configuration)'!='Release'">MultiThreadedDebugDLL</RuntimeLibrary><PreprocessorDefinitions Condition="'$(Configuration)'!='Release'">_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions><PreprocessorDefinitions Condition="'$(Configuration)'=='Release'">NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions><PreprocessorDefinitions Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'">FOXTROT_EDITOR;PLATFORM_D3D11;%(PreprocessorDefinitions)</PreprocessorDefinitions><AdditionalIncludeDirectories>$(SolutionDir)Engine\Core\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories><WarningLevel>Level3</WarningLevel><ExceptionHandling>Sync</ExceptionHandling></ClCompile><Link><AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories></Link></ItemDefinitionGroup>
-<ItemDefinitionGroup Condition="'$(MSBuildProjectName)'=='EngineRuntime' Or '$(MSBuildProjectName)'=='D3D11' Or '$(MSBuildProjectName)'=='Editor' Or '$(MSBuildProjectName)'=='GenericData'"><ClCompile><AdditionalIncludeDirectories>$(SolutionDir)third_party;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\json\include;$(SolutionDir)third_party\ImGuiFileDialog;$(SolutionDir)third_party\ImGuiFileDialog\stb;$(SolutionDir)third_party\spine-runtimes\spine-cpp\spine-cpp\include;$(SolutionDir)third_party\magic_enum\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories><ForcedIncludeFiles Condition="'$(MSBuildProjectName)'!='GenericData'">Core/InterfaceAliases.h</ForcedIncludeFiles></ClCompile></ItemDefinitionGroup>
+	<PropertyGroup>
+		<OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
+		<IntDir>$(OutDir)obj\$(MSBuildProjectName)\</IntDir>
+		<VcpkgEnabled>false</VcpkgEnabled>
+	</PropertyGroup>
+	<ItemDefinitionGroup>
+		<ClCompile>
+			<LanguageStandard>stdcpp17</LanguageStandard>
+			<RuntimeLibrary Condition="'$(Configuration)'=='Release'">MultiThreadedDLL</RuntimeLibrary>
+			<RuntimeLibrary Condition="'$(Configuration)'!='Release'">MultiThreadedDebugDLL</RuntimeLibrary>
+			<PreprocessorDefinitions Condition="'$(Configuration)'!='Release'">_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+			<PreprocessorDefinitions Condition="'$(Configuration)'=='Release'">NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+			<PreprocessorDefinitions Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'">FOXTROT_EDITOR;PLATFORM_D3D11;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+			<AdditionalIncludeDirectories>$(SolutionDir)Engine\Core\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+			<WarningLevel>Level3</WarningLevel>
+			<ExceptionHandling>Sync</ExceptionHandling>
+		</ClCompile>
+		<Link>
+			<AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+		</Link>
+	</ItemDefinitionGroup>
+	<ItemDefinitionGroup Condition="'$(MSBuildProjectName)'=='EngineRuntime' Or '$(MSBuildProjectName)'=='D3D11' Or '$(MSBuildProjectName)'=='Editor' Or '$(MSBuildProjectName)'=='GenericData'">
+		<ClCompile>
+			<AdditionalIncludeDirectories>$(SolutionDir)third_party;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\json\include;$(SolutionDir)third_party\ImGuiFileDialog;$(SolutionDir)third_party\ImGuiFileDialog\stb;$(SolutionDir)third_party\spine-runtimes\spine-cpp\spine-cpp\include;$(SolutionDir)third_party\magic_enum\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+			<ForcedIncludeFiles Condition="'$(MSBuildProjectName)'!='GenericData'">Core/InterfaceAliases.h</ForcedIncludeFiles>
+		</ClCompile>
+	</ItemDefinitionGroup>
 </Project>

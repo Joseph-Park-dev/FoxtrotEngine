@@ -10,6 +10,7 @@
 
 #include <fstream>
 #include <filesystem>
+#include <vector>
 
 #include "FileSystem/FileIOHelper.h"
 #include "Debugging/DebugFuncs.h"
@@ -188,30 +189,62 @@ namespace Core
 			actorWithIDs.Insert(actor->GetID(), actor);
 		});
 
+		struct HierarchyLink
+		{
+			Common::IActor*				  Element = nullptr;
+			Common::IActor*				  Parent  = nullptr;
+			std::vector<Common::IActor*> Children;
+		};
+		std::vector<HierarchyLink> links;
+		links.reserve(scene->Actors()->GetSize());
+
 		for (auto iter = scene->Actors()->Begin(); iter != scene->Actors()->End(); ++iter)
 		{
-			if ((*iter)->GetParent())
+			Common::IActor* element = *iter;
+			if (!element)
+				continue;
+
+			HierarchyLink link;
+			link.Element = element;
+
+			if (Common::IActor* placeholder = element->GetParent())
 			{
-				Common::IActor* parent = actorWithIDs.At((*iter)->GetParent()->GetID())->Value();
-				delete (*iter)->GetParent();
-				(*iter)->SetParent(nullptr);
-				(*iter)->SetParent(parent);
+				Common::FTDS::Record<Common::IActor*>* record = actorWithIDs.At(placeholder->GetID());
+				link.Parent = record ? record->Value() : nullptr;
+				if (placeholder->GetChildActors())
+					placeholder->GetChildActors()->Clear();
+				element->SetParent(nullptr);
+				delete placeholder;
 			}
 
-			if (0 < (*iter)->GetChildActors()->GetSize())
+			Common::FTDS::DynamicArray<Common::IActor*>* storedChildren = element->GetChildActors();
+			if (storedChildren && 0 < storedChildren->GetSize())
 			{
-				Common::FTDS::DynamicArray<Common::IActor*> children;
+				for (size_t childIndex = 0; childIndex < storedChildren->GetSize(); ++childIndex)
+				{
+					Common::IActor* placeholder = storedChildren->At(childIndex);
+					if (!placeholder)
+						continue;
 
-				(*iter)->GetChildActors()->IterateArray([&](Common::IActor* c) {
-					Common::IActor* child = actorWithIDs.At(c->GetID())->Value();
-					(*iter)->RemoveChild(c);
-					delete c;
-					c = nullptr;
-					children.PushBack(child);
-				});
-				(*iter)->GetChildActors()->Clear();
-				(*iter)->GetChildActors()->Copy(children);
+					Common::FTDS::Record<Common::IActor*>* record = actorWithIDs.At(placeholder->GetID());
+					if (record && record->Value())
+						link.Children.push_back(record->Value());
+					if (placeholder->GetChildActors())
+						placeholder->GetChildActors()->Clear();
+					delete placeholder;
+				}
+				storedChildren->Clear();
 			}
+
+			links.push_back(std::move(link));
+		}
+
+		for (HierarchyLink& link : links)
+		{
+			if (link.Parent)
+				link.Element->SetParent(link.Parent);
+			for (Common::IActor* child : link.Children)
+				link.Element->AddChild(child);
 		}
 	}
 

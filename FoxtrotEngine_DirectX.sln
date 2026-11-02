@@ -20,6 +20,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game", "Engine\Game\Game.vc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Main", "Engine\Main\Main.vcxproj", "{2b1591e1-1534-4a6c-9f8a-23daf561104f}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Physics2D", "Engine\Physics2D\Physics2D.vcxproj", "{b1ae5aad-3b5a-4022-aa80-9a6e465933fa}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -146,5 +148,17 @@ Global
 		{B053813A-9EBD-4DD8-BE75-5C28DC74BB72}.Foxtrot_Editor_Debug|x64.Build.0 = Foxtrot_Editor_Debug|x64
 		{B053813A-9EBD-4DD8-BE75-5C28DC74BB72}.Foxtrot_Editor_Debug|x86.ActiveCfg = Foxtrot_Editor_Debug|Win32
 		{B053813A-9EBD-4DD8-BE75-5C28DC74BB72}.Foxtrot_Editor_Debug|x86.Build.0 = Foxtrot_Editor_Debug|Win32
+		{b1ae5aad-3b5a-4022-aa80-9a6e465933fa}.Debug|x64.ActiveCfg = Debug|x64
+		{b1ae5aad-3b5a-4022-aa80-9a6e465933fa}.Debug|x64.Build.0 = Debug|x64
+		{b1ae5aad-3b5a-4022-aa80-9a6e465933fa}.Debug|x86.ActiveCfg = Debug|Win32
+		{b1ae5aad-3b5a-4022-aa80-9a6e465933fa}.Debug|x86.Build.0 = Debug|Win32
+		{b1ae5aad-3b5a-4022-aa80-9a6e465933fa}.Release|x64.ActiveCfg = Release|x64
+		{b1ae5aad-3b5a-4022-aa80-9a6e465933fa}.Release|x64.Build.0 = Release|x64
+		{b1ae5aad-3b5a-4022-aa80-9a6e465933fa}.Release|x86.ActiveCfg = Release|Win32
+		{b1ae5aad-3b5a-4022-aa80-9a6e465933fa}.Release|x86.Build.0 = Release|Win32
+		{b1ae5aad-3b5a-4022-aa80-9a6e465933fa}.Foxtrot_Editor_Debug|x64.ActiveCfg = Foxtrot_Editor_Debug|x64
+		{b1ae5aad-3b5a-4022-aa80-9a6e465933fa}.Foxtrot_Editor_Debug|x64.Build.0 = Foxtrot_Editor_Debug|x64
+		{b1ae5aad-3b5a-4022-aa80-9a6e465933fa}.Foxtrot_Editor_Debug|x86.ActiveCfg = Foxtrot_Editor_Debug|Win32
+		{b1ae5aad-3b5a-4022-aa80-9a6e465933fa}.Foxtrot_Editor_Debug|x86.Build.0 = Foxtrot_Editor_Debug|Win32
 	EndGlobalSection
 EndGlobal

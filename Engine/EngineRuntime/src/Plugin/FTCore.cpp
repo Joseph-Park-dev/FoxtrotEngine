@@ -120,18 +120,16 @@ namespace Core
 		Core::Timer::GetInstance()->Update();
 		float deltaTime = Core::Timer::GetInstance()->GetDeltaTime();
 
-		if (!mIsUpdating)
-			return;
-		Foxtrot::UpdateGameSystems(deltaTime);
+		if (mIsUpdating)
+			Foxtrot::UpdateGameSystems(deltaTime);
+
+		// Plugins include the editor. Stopping playback must not skip the editor frame.
 		PluginManager::GetInstance()->Update(deltaTime);
 	}
 
 	/// @brief Runs the post-update lifecycle phase after ordinary frame updates.
 	void FTCore::LateUpdate()
 	{
-		if (!mIsUpdating)
-			return;
-
 		float deltaTime = Core::Timer::GetInstance()->GetDeltaTime();
 		PluginManager::GetInstance()->LateUpdate(deltaTime);
 	}

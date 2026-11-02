@@ -89,6 +89,15 @@
       <Project>{B053813A-9EBD-4DD8-BE75-5C28DC74BB72}</Project>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
+    <ProjectReference Include="..\Physics2D\Physics2D.vcxproj">
+      <Project>{b1ae5aad-3b5a-4022-aa80-9a6e465933fa}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemGroup>
+  <ItemDefinitionGroup>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)DLL List.ftconfig" "$(OutDir)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

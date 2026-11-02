@@ -306,8 +306,15 @@ namespace Core
 	/// @param parent Replacement parent.
 	void Actor::SetParent(Common::IActor* parent)
 	{
+		if (mData->Parent == parent)
+			return;
+
+		if (mData->Parent)
+			mData->Parent->RemoveChild(this);
+
 		mData->Parent = parent;
-		parent->AddChild(this);
+		if (parent)
+			parent->AddChild(this);
 	}
 
 	/// @brief Updates the transform used by subsequent operations.
@@ -393,8 +400,10 @@ namespace Core
 				int id = Common::ChunkKey::ID::INVALID;
 				Common::FileIOHelper::LoadInt(ifs, id);
 
+				// Placeholder only. Linking it now would recurse through SetParent/AddChild
+				// and the temporary actor would delete the placeholder in its destructor.
 				Common::IActor* pending = DBG_NEW Actor(id);
-				AddChild(pending);
+				mData->Children->PushBack(pending);
 			}
 		}
 
@@ -405,7 +414,7 @@ namespace Core
 		{
 			int	   id	   = std::stoi(parentID.C_Str());
 			Actor* pending = DBG_NEW Actor(id);
-			SetParent(pending);
+			mData->Parent  = pending;
 		}
 
 		mData->LoadProperties(ifs);

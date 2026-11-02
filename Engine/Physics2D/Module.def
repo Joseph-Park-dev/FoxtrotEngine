@@ -1,0 +1,4 @@
+EXPORTS
+    FtGetModuleAPI
+    CreatePlugin
+    SetComponentFactory

@@ -85,7 +85,6 @@ namespace Common
 				++iterPos;
 			}*/
 			Components->Insert(iterPos, comp);
-			//plugin->RegisterComponent(comp);
 			return comp;
 		}
 

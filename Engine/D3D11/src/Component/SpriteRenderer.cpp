@@ -26,6 +26,7 @@
 #include "ResourceSystem/Material/FTMaterial.h"
 #include "ResourceSystem/D3D11PSO.h"
 #include "Scene/Scene.h"
+#include "FileSystem/NullKeys.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "CommandHistory.h"
@@ -138,8 +139,15 @@ namespace D3D11
 	/// @note Writes to the supplied stream at its current position.
 	void SpriteRenderer::SaveProperties(std::ofstream& ofs)
 	{
-		FileIOHelper::SaveString(ofs, ChunkKey::SpriteRenderer::SPRITE, mSprite->GetFileName());
-		FileIOHelper::SaveString(ofs, ChunkKey::SpriteRenderer::MATERIAL, mMaterial->GetFileName());
+		if (mSprite)
+			FileIOHelper::SaveString(ofs, ChunkKey::SpriteRenderer::SPRITE, mSprite->GetFileName());
+		else
+			FileIOHelper::SaveString(ofs, ChunkKey::SpriteRenderer::SPRITE, Common::ChunkKey::NullVal::NULL_OBJECT);
+
+		if (mMaterial)
+			FileIOHelper::SaveString(ofs, ChunkKey::SpriteRenderer::MATERIAL, mMaterial->GetFileName());
+		else
+			FileIOHelper::SaveString(ofs, ChunkKey::SpriteRenderer::MATERIAL, Common::ChunkKey::NullVal::NULL_OBJECT);
 	}
 
 	/// @brief Restores this object's persistent properties from a .chunk stream.

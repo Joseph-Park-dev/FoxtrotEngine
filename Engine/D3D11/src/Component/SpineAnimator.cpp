@@ -116,7 +116,6 @@ namespace D3D11
 	/// @note Writes to the supplied stream at its current position.
 	void SpineAnimator::SaveProperties(std::ofstream& ofs)
 	{
-		MeshRenderer::SaveProperties(ofs);
 		if (GetMeshGroup())
 		{
 			FTSpineAnimation* anim = static_cast<FTSpineAnimation*>(GetMeshGroup());
@@ -138,7 +137,6 @@ namespace D3D11
 		// Load Animation
 		Common::FTDS::String key;
 		FileIOHelper::LoadBasicString(ifs, key);
-		MeshRenderer::LoadProperties(ifs);
 
 		FTSpineAnimation* anim = D3D11::ResourceManager::GetInstance()->GetSpineAnimation(key);
 		if (anim)

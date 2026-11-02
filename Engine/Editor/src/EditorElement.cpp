@@ -1,4 +1,3 @@
-#include "Component/D3D11Component.h"
 // ----------------------------------------------------------------
 // Foxtrot Engine 2D
 // Copyright (C) 2025 JungBae Park. All rights reserved.
@@ -174,10 +173,9 @@ namespace Editor
 		mData->IsActive	  = true;
 		mData->Transform  = DBG_NEW	 Core::Transform(this);
 		mData->Components = DBG_NEW Common::FTDS::DynamicArray<Core::IComponent*>;
-
-		if (actor->GetParent())
-			SetParent(actor->GetParent());
-		mData->Children	 = DBG_NEW Common::FTDS::DynamicArray<Core::IActor*>;
+		mData->Children	  = DBG_NEW Common::FTDS::DynamicArray<Core::IActor*>;
+		// Keep the load placeholder. ChunkLoader replaces it with the live parent.
+		mData->Parent	 = actor->GetParent();
 		mData->DrawOrder = actor->GetData()->DrawOrder;
 
 		mData->Name.Assign(actor->GetNameRef());
@@ -331,8 +329,15 @@ namespace Editor
 
 	void EditorElement::SetParent(IActor* parent)
 	{
+		if (mData->Parent == parent)
+			return;
+
+		if (mData->Parent)
+			mData->Parent->RemoveChild(this);
+
 		mData->Parent = parent;
-		parent->AddChild(this);
+		if (parent)
+			parent->AddChild(this);
 	}
 
 	void EditorElement::SetTransform(Core::Transform* transform)
@@ -428,9 +433,7 @@ namespace Editor
 
 					if (ImGui::TreeNode(name.C_Str()))
 					{
-						//CommandHistory::GetInstance()->UpdateIntValue(Core::ChunkKey::UPDATE_ORDER, (*comp)->UpdateOrder());
-						if (auto* inspector = dynamic_cast<D3D11::D3D11Component*>(*iter))
-                            inspector->EditorUIUpdate();
+						(*iter)->EditorUIUpdate();
 						if (ImGui::SmallButton("Delete"))
 							RemoveComponent(*iter);
 						ImGui::TreePop();

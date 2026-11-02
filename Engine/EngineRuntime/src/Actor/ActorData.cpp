@@ -125,7 +125,18 @@ namespace Common
 	/// @param child Child actor to attach or detach.
 	void Common::ActorData::AddChild(Common::IActor* child)
 	{
-		child->SetParent(Owner);
+		if (!child || !Children)
+			return;
+		if (Children->Find(child) != -1)
+			return;
+
+		// SetParent calls AddChild after the parent pointer is stored.
+		if (child->GetParent() != Owner)
+		{
+			child->SetParent(Owner);
+			return;
+		}
+
 		Children->PushBack(child);
 	}
 

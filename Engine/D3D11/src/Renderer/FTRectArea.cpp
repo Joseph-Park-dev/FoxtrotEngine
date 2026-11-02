@@ -13,7 +13,7 @@
 #include "FTDS/Static/FTString.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "CommandHistory.h"
+	#include "Plugin/ICommandHistory.h"
 	#include "Utility/EditorHelper.h"
 #endif
 

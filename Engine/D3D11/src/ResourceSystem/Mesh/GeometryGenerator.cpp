@@ -151,7 +151,7 @@ namespace D3D11
 
 		DebugVertex vertex;
 		vertex.position = FTVector3::Zero;
-		vertex.color	= color;
+		vertex.color	= FTVector3(color.x, color.y, color.z);
 
 		meshData.Vertices.PushBack(vertex);
 

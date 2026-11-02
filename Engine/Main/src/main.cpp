@@ -5,6 +5,7 @@
 
 #include "ModuleHost.h"
 #include "Foxtrot/Runtime/RuntimeApi.h"
+#include "FileSystem/DLLPath.h"
 #include "FTDS/Static/Array.h"
 #include "FTDS/Static/FTString.h"
 
@@ -45,16 +46,33 @@ namespace
 				throw std::runtime_error("Cannot attach plugin to runtime");
 		};
 
+		// DLL List stores the plugin id. D3D11's file and module name are FoxtrotD3D11.
+		auto resolveModule = [](const Common::FTDS::String& entry, Common::FTDS::String& fileName, Common::FTDS::String& moduleName) {
+			if (entry.Equal("D3D11") || entry.Equal("FoxtrotD3D11"))
+			{
+				fileName.Assign(Common::DLLPath::D3D11);
+				moduleName.Assign("FoxtrotD3D11");
+				return;
+			}
+			fileName.Assign(entry);
+			fileName.Append(".dll");
+			moduleName.Assign(entry);
+		};
+
 		Common::FTDS::Array<Common::FTDS::String>* dllList =
 			static_cast<Common::FTDS::Array<Common::FTDS::String>*>(runtime->Query(runtime->Instance, "DLLList"));
 
 		for (auto iter = dllList->Begin(); iter != dllList->End(); ++iter)
 		{
-			Common::FTDS::String name = (*iter);
-			name.Append(".dll");
-			const wchar_t* fileName = name.WC_Str();
-			attach(fileName, (*iter).C_Str());
-			delete fileName;
+			if ((*iter).IsEmpty())
+				continue;
+
+			Common::FTDS::String fileName;
+			Common::FTDS::String moduleName;
+			resolveModule(*iter, fileName, moduleName);
+			const wchar_t* wideFile = fileName.WC_Str();
+			attach(wideFile, moduleName.C_Str());
+			delete[] wideFile;
 		}
 		modules.Load(L"Game.dll", "Game");
 
@@ -67,7 +85,7 @@ namespace
 	/// @return True if the operation succeeds or the tested condition holds; otherwise false.
 	bool ModulesUnloaded()
 	{
-		for (const auto* name : { L"Core.dll", L"EngineRuntime.dll", L"FoxtrotD3D11.dll", L"Game.dll", L"Editor.dll" })
+		for (const auto* name : { L"Core.dll", L"EngineRuntime.dll", L"FoxtrotD3D11.dll", L"Physics2D.dll", L"Game.dll", L"Editor.dll" })
 		{
 			if (GetModuleHandleW(name))
 			{

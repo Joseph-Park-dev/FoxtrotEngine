@@ -55,6 +55,9 @@ namespace Core
 		/// @brief Updates the is running used by subsequent operations.
 		/// @param val Replacement is running.
 		void SetIsRunning(bool val) { mIsRunning = val; }
+		/// @brief Returns whether gameplay simulation is advancing.
+		/// @return True while play mode is simulating actors and game systems.
+		bool GetIsUpdating() const { return mIsUpdating; }
 		/// @brief Updates the is updating used by subsequent operations.
 		/// @param val Replacement is updating.
 		void SetIsUpdating(bool val) { mIsUpdating = val; }

@@ -320,6 +320,9 @@ namespace Editor
 		//	EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
 		// mGameCamera->Update(deltaTime);
 
+		if (!Core::FTCore::GetInstance()->GetIsUpdating())
+			return;
+
 		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
 		if (!scene || !scene->Actors())
 			return;
@@ -453,28 +456,31 @@ namespace Editor
 		//	EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
 		// mGameCamera->Update(deltaTime);
 
-		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
-		if (!scene || !scene->Actors())
-			return;
+		//if (Core::FTCore::GetInstance()->GetIsUpdating())
+		//{
+		//	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+		//	if (scene && scene->Actors())
+		//	{
+		//		Common::FTDS::DynamicArray<Common::IActor*>* actors = scene->Actors();
+		//		for (auto actor = actors->Begin(); actor != actors->End(); ++actor)
+		//		{
+		//			if (!(*actor) || !(*actor)->GetIsActive())
+		//				continue;
 
-		Common::FTDS::DynamicArray<Common::IActor*>* actors = scene->Actors();
-		for (auto actor = actors->Begin(); actor != actors->End(); ++actor)
-		{
-			if (!(*actor) || !(*actor)->GetIsActive())
-				continue;
+		//			Common::FTDS::DynamicArray<Common::IComponent*>* components = (*actor)->GetComponents();
+		//			if (!components)
+		//				continue;
 
-			Common::FTDS::DynamicArray<Common::IComponent*>* components = (*actor)->GetComponents();
-			if (!components)
-				continue;
+		//			for (auto component = components->Begin(); component != components->End(); ++component)
+		//			{
+		//				if (!(*component))
+		//					continue;
 
-			for (auto component = components->Begin(); component != components->End(); ++component)
-			{
-				if (!(*component))
-					continue;
-
-				(*component)->Update(deltaTime);
-			}
-		}
+		//				(*component)->Update(deltaTime);
+		//			}
+		//		}
+		//	}
+		//}
 
 		Core::ICamera* gameCam = reinterpret_cast<Core::ICamera*>(mGameCamera);
 		mEditorCamera->Update(gameCam);

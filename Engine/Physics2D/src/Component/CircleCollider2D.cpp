@@ -7,6 +7,7 @@
 // ----------------------------------------------------------------
 
 #include "Component/CircleCollider2D.h"
+#include "Plugin/Physics2D.h"
 
 #include "Actor/ActorData.h"
 #include "Actor/IActor.h"
@@ -70,6 +71,7 @@ namespace Physics2D
 		newComp->mCenter = mCenter;
 		if (actor && actor->GetComponents())
 			actor->GetComponents()->PushBack(newComp);
+		RegisterOwnedComponent(newComp);
 	}
 
 	void CircleCollider2D::SaveProperties(std::ofstream& ofs)

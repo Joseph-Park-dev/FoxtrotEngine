@@ -28,7 +28,7 @@
 #include "Manager/ResourceManager.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "CommandHistory.h"
+	#include "Plugin/ICommandHistory.h"
 	#include "EditorUtils.h"
 	#include "Utility/EditorHelper.h"
 #endif // FOXTROT_EDITOR

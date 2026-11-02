@@ -29,6 +29,8 @@ namespace Common
 		/// @brief Registers a component for plugin-managed lifecycle processing.
 		/// @param comp Component instance associated with the actor or plugin.
 		virtual void RegisterComponent(Common::IComponent* comp) = 0;
+		/// @brief Drops registered component pointers without deleting the components.
+		virtual void ClearRegisteredComponents() {}
 
 	public:
 		/// @brief Serializes this object's persistent properties to a .chunk stream.
@@ -40,8 +42,10 @@ namespace Common
 		/// @note Advances the stream position and updates the destination state.
 		virtual void LoadProperties(std::ifstream& ifs) = 0;
 
-		/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
+		/// @brief Initializes core plugin services. Does not initialize registered components.
 		virtual void Initialize() = 0;
+		/// @brief Calls Initialize on every component registered to this plugin.
+		virtual void InitializeComponents() = 0;
 		/// @brief Updates the up used by subsequent operations.
 		virtual void Setup() = 0;
 

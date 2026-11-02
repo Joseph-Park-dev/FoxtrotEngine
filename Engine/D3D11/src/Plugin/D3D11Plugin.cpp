@@ -25,6 +25,7 @@
 #include "FileSystem/DLLPath.h"
 
 #include "Component/D3D11Component.h"
+#include "Core/FTCore.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "Manager/DirectoryHelper.h"
@@ -422,6 +423,9 @@ namespace D3D11
 	/// @param deltaTime Elapsed frame time in seconds.
 	void D3D11Plugin::Update(float deltaTime)
 	{
+		if (!Core::FTCore::GetInstance()->GetIsUpdating())
+			return;
+
 		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
 		{
 			if (!(*iter)->GetOwner()->GetIsActive())
@@ -434,6 +438,9 @@ namespace D3D11
 	/// @param deltaTime Elapsed frame time in seconds.
 	void D3D11Plugin::LateUpdate(float deltaTime)
 	{
+		if (!Core::FTCore::GetInstance()->GetIsUpdating())
+			return;
+
 		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
 		{
 			if (!(*iter)->GetOwner()->GetIsActive())

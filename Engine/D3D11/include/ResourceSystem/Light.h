@@ -3,7 +3,7 @@
 #include "FTMath.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "CommandHistory.h"
+	#include "Plugin/ICommandHistory.h"
 	#include "Utility/EditorHelper.h"
 #endif // FOXTROT_EDITOR
 

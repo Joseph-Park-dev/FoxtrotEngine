@@ -33,7 +33,7 @@
 #include "FileSystem/FileIOHelper.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "CommandHistory.h"
+	#include "Plugin/ICommandHistory.h"
 
 	#define IMGUI_DEFINE_MATH_OPERATORS
 	#include <imgui.h>

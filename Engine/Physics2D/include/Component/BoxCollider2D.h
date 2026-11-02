@@ -18,9 +18,9 @@ namespace Physics2D
 	{
 		namespace BoxCollider2D
 		{
-			constexpr const char* NAME = "BoxCollider2D";
+			constexpr const char* NAME			 = "BoxCollider2D";
 			constexpr const char* COLLIDER_SCALE = "Collider Scale";
-		}
+		} // namespace BoxCollider2D
 	} // namespace ChunkKey
 
 	class BoxCollider2D : public Collider2D
@@ -49,6 +49,9 @@ namespace Physics2D
 	public:
 		void SaveProperties(std::ofstream& ofs) override;
 		void LoadProperties(std::ifstream& ifs) override;
+
+	private:
+		bool RigidBodyExists();
 
 #ifdef FOXTROT_EDITOR
 	public:

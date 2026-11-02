@@ -10,7 +10,7 @@
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorUtils.h"
-	#include "CommandHistory.h"
+	#include "Plugin/ICommandHistory.h"
 	#include "Utility/EditorHelper.h"
 #endif
 

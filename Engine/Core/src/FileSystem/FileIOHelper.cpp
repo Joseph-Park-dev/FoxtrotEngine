@@ -636,45 +636,20 @@ namespace Common
 		if (ifs.fail())
 			return false;
 
-		// A text-mode stream can seek to a position previously returned by tellg.
-		// Relative seekg is ignored once get() fails at EOF, because failbit stays set.
-		const std::streampos start			  = ifs.tellg();
-		char				 ch				  = '\0';
-		size_t				 length			  = 0;
-		bool				 foundDelimiter	  = false;
-
+		// Read once. Seeking back to tellg() in text mode resumes mid-line.
+		str.Clear();
+		char ch	 = '\0';
+		bool any = false;
 		while (ifs.get(ch))
 		{
+			if (ch == '\r')
+				continue;
 			if (ch == delimiter)
-			{
-				foundDelimiter = true;
 				break;
-			}
-			++length;
-		}
-
-		// A blank line has already consumed its delimiter. True EOF has nothing to copy.
-		if (length == 0)
-			return false;
-
-		if (!foundDelimiter)
-			ifs.clear();
-
-		str.Reserve(static_cast<int>(length + 1));
-		ifs.seekg(start);
-
-		for (size_t i = 0; i < length; ++i)
-		{
-			if (!ifs.get(ch))
-				return false;
 			str.PushBack(ch);
+			any = true;
 		}
-		str.PushBack('\0');
 
-		// Text mode presents \r\n as one '\n'. One extraction consumes both bytes.
-		if (foundDelimiter)
-			ifs.get(ch);
-
-		return str.Data() && 0 < length;
+		return any && str.Data();
 	}
 } // namespace Common

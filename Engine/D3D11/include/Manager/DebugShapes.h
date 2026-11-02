@@ -49,6 +49,7 @@ namespace D3D11
 	private:
 		static DebugShapes* mInstance;
 	public:
+		D3D11_API FTRectangle* AddRectangle();
 		// Adds the created shape to the std::vector.
 		/// @brief Registers a shape for subsequent rendering.
 		/// @param shape Shape to register, remove, or render.
@@ -86,7 +87,7 @@ namespace D3D11
 	public:
 		/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
 		/// @param renderer Renderer providing the graphics device and current render state.
-		D3D11_API void Initialize(D3D11::D3D11Renderer* renderer);
+		D3D11_API void Initialize();
 
 		// Batch renders shapes.
 		// It is not necessary to render shapes manually from the Components
@@ -96,9 +97,6 @@ namespace D3D11
 
 	private:
 		Common::FTDS::DynamicArray<FTShape*>* mShapes;
-		std::wstring						  mVSPath;
-		std::wstring						  mGSPath;
-		std::wstring						  mPSPath;
 
 	private:
 		Microsoft::WRL::ComPtr<ID3D11VertexShader>	 mVS;

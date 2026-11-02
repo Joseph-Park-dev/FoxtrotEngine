@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Foxtrot_Editor_Debug|Win32">
+      <Configuration>Foxtrot_Editor_Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Foxtrot_Editor_Debug|x64">
+      <Configuration>Foxtrot_Editor_Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{b1ae5aad-3b5a-4022-aa80-9a6e465933fa}</ProjectGuid>
+    <RootNamespace>Physics2D</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup>
+    <TargetName>Physics2D</TargetName>
+    <OutDir>$(ProjectDir)build\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)build\$(Platform)\$(Configuration)\obj\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)third_party\box2d\include;$(ProjectDir)include;$(SolutionDir)Engine\EngineRuntime\include;$(SolutionDir)Engine\Core\include;$(SolutionDir)Engine\Math\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>PHYSICS2D_EXPORTS;MATH_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <ModuleDefinitionFile>$(ProjectDir)Module.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)third_party\box2d\build\src\Debug;$(SolutionDir)build\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>box2dd.lib;Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>if not exist "$(SolutionDir)build\$(Platform)\$(Configuration)\" mkdir "$(SolutionDir)build\$(Platform)\$(Configuration)\"
+copy /Y "$(TargetPath)" "$(SolutionDir)build\$(Platform)\$(Configuration)\"
+copy /Y "$(TargetDir)$(TargetName).lib" "$(SolutionDir)build\$(Platform)\$(Configuration)\"
+copy /Y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)build\$(Platform)\$(Configuration)\"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Component\BoxCollider2D.cpp" />
+    <ClCompile Include="src\Component\CircleCollider2D.cpp" />
+    <ClCompile Include="src\Component\Collider2D.cpp" />
+    <ClCompile Include="src\Component\Rigidbody2D.cpp" />
+    <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\Plugin\Module.cpp" />
+    <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\Plugin\Physics2D.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Component\BoxCollider2D.h" />
+    <ClInclude Include="include\Component\CircleCollider2D.h" />
+    <ClInclude Include="include\Component\Collider2D.h" />
+    <ClInclude Include="include\Component\Rigidbody2D.h" />
+    <ClInclude Include="include\framework.h" />
+    <ClInclude Include="include\pch.h" />
+    <ClInclude Include="include\Plugin\Physics2D.h" />
+    <ClInclude Include="include\Plugin\Physics2DExports.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+    <None Include="Module.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Math\Math.vcxproj">
+      <Project>{05f1cde6-51be-4ec3-898e-d9d15811ed7f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Core.vcxproj">
+      <Project>{cce9835e-f788-4b51-930b-d7805ac1e2a0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\EngineRuntime\EngineRuntime.vcxproj">
+      <Project>{B9E4C0BB-30E3-4D40-A0ED-46084649AE62}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Editor\Editor.vcxproj" Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'">
+      <Project>{30273513-c587-4640-9315-8d7cade6534a}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Editor\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+</Project>

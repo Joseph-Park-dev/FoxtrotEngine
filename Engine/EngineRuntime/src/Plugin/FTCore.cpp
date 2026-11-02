@@ -65,7 +65,7 @@ namespace Core
 
         if (!SceneManager::GetInstance()->GetCurrentScene())
             SceneManager::GetInstance()->Initialize(new Scene);
-		Setup();
+
 		return true;
 	}
 

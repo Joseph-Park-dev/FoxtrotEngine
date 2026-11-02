@@ -1,6 +1,6 @@
 #include "ResourceSystem/Shape/FTRectangle.h"
 
-#include "ResourceSystem/Mesh/GeometryGenerator.h"
+#include "ResourceSystem/Mesh/Vertex.h"
 #include "Renderer/D3D11Renderer.h"
 #include "Renderer/FTRectArea.h"
 #include "Renderer/Camera.h"
@@ -10,13 +10,21 @@
 
 namespace D3D11
 {
+	using namespace Common;
 	using namespace Core;
 	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
 	/// @param renderer Renderer providing the graphics device and current render state.
 	void FTRectangle::Initialize(D3D11Renderer* renderer)
 	{
+		if (!renderer || !renderer->GetDevice())
+			return;
+
 		FTShape::Initialize(renderer);
-		InitializeMesh(renderer->GetDevice(), GeometryGenerator::MakeDebugPoint(Math::FTVector4(1.f, 0.f, 0.f, 1.f)));
+		// A returned DynamicArray is copied by pointer. Debug builds then free that block twice.
+		DebugVertex vertex;
+		vertex.position = Math::FTVector3::Zero;
+		vertex.color	= Math::FTVector3(1.f, 0.f, 0.f);
+		InitializePoint(renderer->GetDevice(), vertex);
 	}
 
 	/// @brief Initializes rectangle geometry and its graphics resources.

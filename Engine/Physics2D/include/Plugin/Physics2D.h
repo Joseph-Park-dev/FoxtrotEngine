@@ -12,10 +12,20 @@
 
 struct b2WorldId;
 
+namespace Common
+{
+	class IComponent;
+}
+
 namespace Physics2D
 {
 	class Physics2D;
 
 	Physics2D* GetPhysics2D();
 	b2WorldId& GetPhysics2DWorldID();
+
+	/// @brief Registers a component for plugin-managed lifecycle processing.
+	void RegisterOwnedComponent(Common::IComponent* comp);
+	/// @brief Removes a component from plugin-managed lifecycle processing.
+	void UnregisterOwnedComponent(Common::IComponent* comp);
 } // namespace Physics2D

@@ -78,6 +78,31 @@ namespace Core
 	{
 	}
 
+	void PluginManager::Initialize()
+	{
+		if (!mPlugins)
+			return;
+		for (auto plugin : mOrder)
+			plugin->Initialize();
+	}
+
+	/// @brief Calls Initialize on every component registered to each attached plugin, in attach order.
+	void PluginManager::InitializeComponents()
+	{
+		if (!mPlugins)
+			return;
+		for (auto plugin : mOrder)
+			plugin->InitializeComponents();
+	}
+
+	void PluginManager::Setup()
+	{
+		if (!mPlugins)
+			return;
+		for (auto plugin : mOrder)
+			plugin->Setup();
+	}
+
 	/// @brief Dispatches input for the current frame to the relevant engine objects.
 	void PluginManager::ProcessInput()
 	{

@@ -9,6 +9,11 @@
 
 namespace D3D11
 {
+	/// @brief Registers a component for plugin-managed lifecycle processing.
+	void RegisterOwnedComponent(Common::IComponent* comp);
+	/// @brief Removes a component from plugin-managed lifecycle processing.
+	void UnregisterOwnedComponent(Common::IComponent* comp);
+
 	class Camera;
 	class D3D11Renderer;
 	class D3D11PSO;

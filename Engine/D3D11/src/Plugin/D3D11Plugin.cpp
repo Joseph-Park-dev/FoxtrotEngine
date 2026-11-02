@@ -165,6 +165,9 @@ namespace D3D11
 		/// @brief Registers a component for plugin-managed lifecycle processing.
 		/// @param comp Component instance associated with the actor or plugin.
 		virtual void RegisterComponent(Common::IComponent* comp) override;
+		void		 UnregisterComponent(Common::IComponent* comp);
+		/// @brief Drops registered component pointers without deleting the components.
+		virtual void ClearRegisteredComponents() override;
 
 		/// @brief Looks up an optional named interface implemented by this plugin.
 		/// @param name Name used to identify the requested object or interface.
@@ -243,6 +246,8 @@ namespace D3D11
 		/// /// Initialization Phase //////
 		/// ///////////////////////////////
 		virtual void Initialize() override;
+		/// @brief Calls Initialize on every component registered to this plugin.
+		virtual void InitializeComponents() override;
 		/// @brief Updates the up used by subsequent operations.
 		virtual void Setup() override;
 
@@ -275,6 +280,10 @@ namespace D3D11
 		/// @brief Releases the resources managed by this instance during destruction.
 		~D3D11Plugin() override;
 
+		/// @brief Returns the plugin instance created by the module factory.
+		/// @return Borrowed plugin pointer, or nullptr before the module is created.
+		static D3D11Plugin* GetInstance();
+
 	protected:
 		/// @brief Restores plugin manager state from the chunk stream.
 		/// @param ifs Input stream positioned at the expected data; reading advances its position.
@@ -289,11 +298,15 @@ namespace D3D11
 		Common::FTDS::DynamicArray<D3D11::D3D11Window*>*	  mWindows;
 		D3D11::Camera*										  mCamera;
 
-		Common::FTDS::DynamicArray<D3D11::D3D11Component*>* mRegisteredComps;
+		Common::FTDS::DynamicArray<Common::IComponent*>* mRegisteredComps;
 #ifdef FOXTROT_EDITOR
 		D3D11::D3D11EditorResourceService* mEditorResources = nullptr;
 #endif
+
+		static D3D11Plugin* mInstance;
 	};
+
+	D3D11Plugin* D3D11Plugin::mInstance = nullptr;
 
 	/// @brief Creates a camera instance for scene rendering.
 	/// @return Borrowed pointer to the subsystem retained by this plugin.
@@ -331,6 +344,39 @@ namespace D3D11
 	{
 		if (auto* backend = dynamic_cast<D3D11::D3D11Component*>(comp))
 			mRegisteredComps->PushBack(backend);
+	}
+
+	void D3D11Plugin::UnregisterComponent(Common::IComponent* comp)
+	{
+		if (!mRegisteredComps || !comp)
+			return;
+
+		for (size_t index = mRegisteredComps->GetSize(); 0 < index; --index)
+		{
+			if (mRegisteredComps->At(index - 1) != comp)
+				continue;
+			mRegisteredComps->Erase(index - 1);
+		}
+	}
+
+	/// @brief Registers a component for plugin-managed lifecycle processing.
+	void RegisterOwnedComponent(Common::IComponent* comp)
+	{
+		if (D3D11Plugin* plugin = D3D11Plugin::GetInstance())
+			plugin->RegisterComponent(comp);
+	}
+
+	/// @brief Removes a component from plugin-managed lifecycle processing.
+	void UnregisterOwnedComponent(Common::IComponent* comp)
+	{
+		if (D3D11Plugin* plugin = D3D11Plugin::GetInstance())
+			plugin->UnregisterComponent(comp);
+	}
+
+	/// @brief Drops registered component pointers without deleting the components.
+	void D3D11Plugin::ClearRegisteredComponents()
+	{
+		mRegisteredComps->Clear();
 	}
 
 	/// @brief Creates a native application window with the requested client dimensions and render area.
@@ -383,17 +429,31 @@ namespace D3D11
 			CreateInputDevice();
 		}
 #else
-		mEditorResources = DBG_NEW D3D11EditorResourceService;
+		if (!mEditorResources)
+			mEditorResources = DBG_NEW D3D11EditorResourceService;
 #endif
+	}
+
+	/// @brief Calls Initialize on every component registered to this plugin.
+	void D3D11Plugin::InitializeComponents()
+	{
 		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+		{
+			if (!*iter)
+				continue;
 			(*iter)->Initialize();
+		}
 	}
 
 	/// @brief Updates the up used by subsequent operations.
 	void D3D11Plugin::Setup()
 	{
 		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+		{
+			if (!*iter)
+				continue;
 			(*iter)->Setup();
+		}
 	}
 
 	/// @brief Dispatches input for the current frame to the relevant engine objects.
@@ -522,16 +582,25 @@ namespace D3D11
 	{
 	}
 
+	/// @brief Returns the plugin instance created by the module factory.
+	/// @return Borrowed plugin pointer, or nullptr before the module is created.
+	D3D11Plugin* D3D11Plugin::GetInstance()
+	{
+		return mInstance;
+	}
+
 	/// @brief Initializes the Direct3D plugin's component and graphics service state.
 	/// @param name Name used to identify the requested object or interface.
 	/// @note Initializes the :D3D11Plugin base or delegates to its constructor.
 	D3D11Plugin::D3D11Plugin(const char* name)
-		: mRegisteredComps(DBG_NEW Common::FTDS::DynamicArray<D3D11::D3D11Component*>)
+		: mRegisteredComps(DBG_NEW Common::FTDS::DynamicArray<Common::IComponent*>)
 		, mInputDevices(DBG_NEW Common::FTDS::DynamicArray<D3D11::D3D11InputDevice*>)
 		, mRenderer(nullptr)
 		, mWindows(DBG_NEW Common::FTDS::DynamicArray<D3D11::D3D11Window*>)
 		, mCamera(nullptr)
 	{
+		(void)name;
+		mInstance = this;
 		// FTRectArea* area = DBG_NEW FTRectArea(0.f, 0.f, 500.f, 500.f);
 		// CreateD3D11Window("Hello!", 500, 500, area);
 		// CreateInputDevice();
@@ -540,6 +609,8 @@ namespace D3D11
 	/// @brief Releases the resources managed by this instance during destruction.
 	D3D11Plugin::~D3D11Plugin()
 	{
+		if (mInstance == this)
+			mInstance = nullptr;
 #ifdef FOXTROT_EDITOR
 		delete mEditorResources;
 #endif
@@ -598,6 +669,18 @@ namespace D3D11
 
 namespace
 {
+	template <typename Component>
+	Common::IComponent* CreateComponent(Common::IActor* actor)
+	{
+		Common::IComponent* comp = CreateRegisteredComponent<Component>(actor);
+		if (!comp)
+			return nullptr;
+		D3D11::D3D11Plugin* plugin = D3D11::D3D11Plugin::GetInstance();
+		if (plugin)
+			plugin->RegisterComponent(comp);
+		return comp;
+	}
+
 	Common::IResource* CreateStandardMaterial(Common::FTResourceDef& resDef, void* renderer)
 	{
 		if (!renderer)
@@ -620,11 +703,11 @@ namespace
 
 FT_EXPORT void SetComponentFactory(Common::FTDS::HashMap<ComponentFactoryEntry>& entries) noexcept
 {
-	entries.Insert(D3D11::ChunkKey::Animator::NAME, CreateRegisteredComponent<D3D11::Animator>);
-	entries.Insert(D3D11::ChunkKey::MeshRenderer::NAME, CreateRegisteredComponent<D3D11::MeshRenderer>);
-	entries.Insert(D3D11::ChunkKey::SpineAnimator::NAME, CreateRegisteredComponent<D3D11::SpineAnimator>);
-	entries.Insert(D3D11::ChunkKey::SpriteRenderer::NAME, CreateRegisteredComponent<D3D11::SpriteRenderer>);
-	entries.Insert(D3D11::ChunkKey::TileMapRenderer::NAME, CreateRegisteredComponent<D3D11::TileMapRenderer>);
+	entries.Insert(D3D11::ChunkKey::Animator::NAME, CreateComponent<D3D11::Animator>);
+	entries.Insert(D3D11::ChunkKey::MeshRenderer::NAME, CreateComponent<D3D11::MeshRenderer>);
+	entries.Insert(D3D11::ChunkKey::SpineAnimator::NAME, CreateComponent<D3D11::SpineAnimator>);
+	entries.Insert(D3D11::ChunkKey::SpriteRenderer::NAME, CreateComponent<D3D11::SpriteRenderer>);
+	entries.Insert(D3D11::ChunkKey::TileMapRenderer::NAME, CreateComponent<D3D11::TileMapRenderer>);
 }
 
 /// @brief Registers graphics resource constructors exported by this module.

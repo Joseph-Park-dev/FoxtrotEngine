@@ -41,6 +41,9 @@ namespace Physics2D
 		/// @brief Accepts a component for later plugin-managed processing.
 		/// @param comp Component instance associated with the actor or plugin.
 		void RegisterComponent(Common::IComponent* comp) override;
+		void UnregisterComponent(Common::IComponent* comp);
+		/// @brief Drops registered component pointers without deleting the components.
+		void ClearRegisteredComponents() override;
 
 		/// @brief Writes persistent properties. This plugin stores none.
 		/// @param ofs Output stream receiving the serialized data.
@@ -51,6 +54,8 @@ namespace Physics2D
 
 		/// @brief Initializes the services required before the runtime lifecycle begins.
 		void Initialize() override;
+		/// @brief Calls Initialize on every component registered to this plugin.
+		void InitializeComponents() override;
 		/// @brief Finishes setup after initialization.
 		void Setup() override;
 		/// @brief Dispatches input for the current frame.
@@ -127,6 +132,39 @@ namespace Physics2D
 		mRegisteredComps->PushBack(comp);
 	}
 
+	void Physics2D::UnregisterComponent(Common::IComponent* comp)
+	{
+		if (!mRegisteredComps || !comp)
+			return;
+
+		for (size_t index = mRegisteredComps->GetSize(); 0 < index; --index)
+		{
+			if (mRegisteredComps->At(index - 1) != comp)
+				continue;
+			mRegisteredComps->Erase(index - 1);
+		}
+	}
+
+	/// @brief Registers a component for plugin-managed lifecycle processing.
+	void RegisterOwnedComponent(Common::IComponent* comp)
+	{
+		if (Physics2D* plugin = Physics2D::GetInstance())
+			plugin->RegisterComponent(comp);
+	}
+
+	/// @brief Removes a component from plugin-managed lifecycle processing.
+	void UnregisterOwnedComponent(Common::IComponent* comp)
+	{
+		if (Physics2D* plugin = Physics2D::GetInstance())
+			plugin->UnregisterComponent(comp);
+	}
+
+	/// @brief Drops registered component pointers without deleting the components.
+	void Physics2D::ClearRegisteredComponents()
+	{
+		mRegisteredComps->Clear();
+	}
+
 	/// @brief Writes persistent properties. This plugin stores none.
 	/// @param ofs Output stream receiving the serialized data.
 	void Physics2D::SaveProperties(std::ofstream& ofs)
@@ -147,19 +185,37 @@ namespace Physics2D
 		const float pixelsPerMeter = 64.f / 1.8f;
 		b2SetLengthUnitsPerMeter(pixelsPerMeter);
 
+		if (b2World_IsValid(mWorldID))
+		{
+			b2DestroyWorld(mWorldID);
+			mWorldID = b2_nullWorldId;
+		}
+
 		b2WorldDef worldDef = b2DefaultWorldDef();
 		worldDef.gravity	= b2Vec2{ 0.0f, -9.8f * pixelsPerMeter };
 		mWorldID			= b2CreateWorld(&worldDef);
+	}
 
+	/// @brief Calls Initialize on every component registered to this plugin.
+	void Physics2D::InitializeComponents()
+	{
 		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+		{
+			if (!*iter)
+				continue;
 			(*iter)->Initialize();
+		}
 	}
 
 	/// @brief Finishes setup after initialization.
 	void Physics2D::Setup()
 	{
 		for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
+		{
+			if (!*iter)
+				continue;
 			(*iter)->Setup();
+		}
 	}
 
 	/// @brief Dispatches input for the current frame.
@@ -268,11 +324,26 @@ namespace Physics2D
 	}
 } // namespace Physics2D
 
+namespace
+{
+	template <typename Component>
+	Common::IComponent* CreateComponent(Common::IActor* actor)
+	{
+		Common::IComponent* comp = CreateRegisteredComponent<Component>(actor);
+		if (!comp)
+			return nullptr;
+		Physics2D::Physics2D* plugin = Physics2D::Physics2D::GetInstance();
+		if (plugin)
+			plugin->RegisterComponent(comp);
+		return comp;
+	}
+}
+
 FT_EXPORT void SetComponentFactory(Common::FTDS::HashMap<ComponentFactoryEntry>& entries) noexcept
 {
-	entries.Insert(Physics2D::ChunkKey::Rigidbody2D::NAME, CreateRegisteredComponent<Physics2D::Rigidbody2D>);
-	entries.Insert(Physics2D::ChunkKey::BoxCollider2D::NAME, CreateRegisteredComponent<Physics2D::BoxCollider2D>);
-	entries.Insert(Physics2D::ChunkKey::CircleCollider2D::NAME, CreateRegisteredComponent<Physics2D::CircleCollider2D>);
+	entries.Insert(Physics2D::ChunkKey::Rigidbody2D::NAME, CreateComponent<Physics2D::Rigidbody2D>);
+	entries.Insert(Physics2D::ChunkKey::BoxCollider2D::NAME, CreateComponent<Physics2D::BoxCollider2D>);
+	entries.Insert(Physics2D::ChunkKey::CircleCollider2D::NAME, CreateComponent<Physics2D::CircleCollider2D>);
 }
 
 extern "C"

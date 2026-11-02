@@ -4,7 +4,6 @@ namespace Common
 {
 	class IActor;
 	class IComponent;
-	class IPlugin;
 } // namespace Common
 
 using ComponentFactoryEntry = Common::IComponent* (*)(Common::IActor* actor);

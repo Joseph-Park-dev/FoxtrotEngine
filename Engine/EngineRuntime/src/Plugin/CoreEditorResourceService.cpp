@@ -94,6 +94,8 @@ namespace Core
 		void  SaveProperties(std::ofstream&) override {}
 		void  LoadProperties(std::ifstream&) override {}
 		void  Initialize() override;
+		/// @brief Calls Initialize on every component registered to this plugin.
+		void  InitializeComponents() override {}
 		void  Setup() override {}
 		void  ProcessInput() override {}
 		void  Update(float) override {}
@@ -115,7 +117,8 @@ namespace Core
 
 	void CorePlugin::Initialize()
 	{
-		mEditorResources = DBG_NEW CoreEditorResourceService;
+		if (!mEditorResources)
+			mEditorResources = DBG_NEW CoreEditorResourceService;
 	}
 
 	void* CorePlugin::QueryInterface(const char* name) noexcept

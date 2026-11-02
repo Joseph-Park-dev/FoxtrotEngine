@@ -53,11 +53,13 @@ namespace D3D11
 		if (!components)
 			return;
 		components->PushBack(clone);
+		RegisterOwnedComponent(clone);
 	}
 
 	/// @brief Completes destruction through the object's inheritance hierarchy.
 	D3D11::D3D11Component::~D3D11Component()
 	{
+		UnregisterOwnedComponent(this);
 	}
 
 	D3D11PSO*& D3D11Component::PSO()

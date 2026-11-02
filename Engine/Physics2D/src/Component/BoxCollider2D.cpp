@@ -7,6 +7,7 @@
 // ----------------------------------------------------------------
 
 #include "Component/BoxCollider2D.h"
+#include "Plugin/Physics2D.h"
 
 #include "Actor/ActorData.h"
 #include "Actor/IActor.h"
@@ -53,10 +54,6 @@ namespace Physics2D
 
 			GetShapeID() = b2CreatePolygonShape(rb->GetBodyID(), &polygonShapeDef, &polygon);
 		}
-		else if (rb)
-		{
-			Common::LogString("ERROR : BoxCollider2D::Initialize() -> BodyId not valid");
-		}
 
 		Collider2D::Initialize();
 	}
@@ -78,6 +75,7 @@ namespace Physics2D
 		newComp->mScale = mScale;
 		if (actor && actor->GetComponents())
 			actor->GetComponents()->PushBack(newComp);
+		RegisterOwnedComponent(newComp);
 	}
 
 	void BoxCollider2D::SaveProperties(std::ofstream& ofs)
@@ -90,6 +88,11 @@ namespace Physics2D
 	{
 		Common::FileIOHelper::LoadVector2(ifs, mScale);
 		Collider2D::LoadProperties(ifs);
+	}
+
+	bool BoxCollider2D::RigidBodyExists()
+	{
+		return GetOwner()->GetData()->GetComponent<Rigidbody2D>() != nullptr;
 	}
 
 #ifdef FOXTROT_EDITOR

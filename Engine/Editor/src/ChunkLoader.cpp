@@ -133,7 +133,21 @@ namespace Editor
 			--count;
 		}
 
+		if (auto* plugins = Core::GetAvailablePlugins())
+		{
+			for (auto it = plugins->Begin(); it != plugins->End(); ++it)
+			{
+				if (!*it || !(*it)->Value())
+					continue;
+				(*it)->Value()->ClearRegisteredComponents();
+			}
+		}
+
 		LoadActorsData(ifs);
+
+		Core::PluginManager::GetInstance()->Initialize();
+		Core::PluginManager::GetInstance()->InitializeComponents();
+		Core::PluginManager::GetInstance()->Setup();
 
 		// D3D11::Camera::GetInstance()->LoadProperties(ifs);
 		Unlock();

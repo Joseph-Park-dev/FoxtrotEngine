@@ -7,6 +7,7 @@
 // ----------------------------------------------------------------
 
 #include "Component/Collider2D.h"
+#include "Plugin/Physics2D.h"
 
 #include "Actor/IActor.h"
 #include "Actor/Transform.h"
@@ -107,6 +108,7 @@ namespace Physics2D
 
 	Collider2D::~Collider2D()
 	{
+		UnregisterOwnedComponent(this);
 		if (b2Shape_IsValid(mShapeID))
 			b2DestroyShape(mShapeID, true);
 	}
@@ -117,6 +119,7 @@ namespace Physics2D
 		newCollider->mOffset	= mOffset;
 		if (actor && actor->GetComponents())
 			actor->GetComponents()->PushBack(newCollider);
+		RegisterOwnedComponent(newCollider);
 	}
 
 	void Collider2D::SaveProperties(std::ofstream& ofs)

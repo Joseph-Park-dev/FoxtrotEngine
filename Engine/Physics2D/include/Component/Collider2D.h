@@ -47,10 +47,10 @@ namespace Physics2D
 		Common::IActor* GetOwner() override;
 
 	public:
-		b2ShapeId&		   GetShapeID();
-		Math::FTVector2	   GetOffsetPos() const;
-		Math::FTVector2&   GetOffsetPosRef();
-		Math::FTVector2	   GetFinalPosition() const;
+		b2ShapeId&			GetShapeID();
+		Math::FTVector2		GetOffsetPos() const;
+		Math::FTVector2&	GetOffsetPosRef();
+		Math::FTVector2		GetFinalPosition() const;
 		CollisionStatesMap& GetCollisionStates();
 
 		void SetOffsetPos(Math::FTVector2 offsetPos);
@@ -80,6 +80,10 @@ namespace Physics2D
 		void EditorRender(Graphics::IRenderer* renderer, Graphics::ICamera* camInst) override;
 		void EditorUIUpdate() override;
 
+	protected:
+		bool		 IsShowingDebugShape();
+		virtual void ToggleDebugShape();
+
 	private:
 		void UpdateOffsetPos();
 #endif
@@ -92,5 +96,9 @@ namespace Physics2D
 		Math::FTVector2	   mOffset;
 		Math::FTVector2	   mFinalPosition;
 		CollisionStatesMap mCollisionStates;
+
+#ifdef FOXTROT_EDITOR
+		bool mShowDebugShape;
+#endif // FOXTROT_EDITOR
 	};
 } // namespace Physics2D

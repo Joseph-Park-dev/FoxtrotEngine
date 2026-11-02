@@ -109,6 +109,8 @@ namespace Editor
 		/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
 		/// @throws std::runtime_error If the operation encounters the failure condition checked by this implementation.
 		void Initialize() override;
+		/// @brief Calls Initialize on every component registered to this plugin.
+		void InitializeComponents() override {}
 
 	public:
 		/// @brief Returns the is updating game used by this d3 d11 editor.
@@ -203,6 +205,9 @@ namespace Editor
 	/// @throws std::runtime_error If the operation encounters the failure condition checked by this implementation.
 	void D3D11Editor::Initialize()
 	{
+		if (mEditorWin)
+			return;
+
 		gGetChunkISSavedFunc = Core::GetFunc<Core::CHUNK_IS_SAVED_FUNC>(Common::DLLPath::CORE_EDITOR, Core::ProcName::GetChunkIsSaved);
 
 		IPlugin* d3d11Plugin = nullptr;
@@ -297,6 +302,8 @@ namespace Editor
 			mEditorWin->GetWidth(),
 			mEditorWin->GetHeight(),
 			SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+
+		Core::FTCore::GetInstance()->SetIsUpdating(false);
 	}
 
 	/// @brief Dispatches input for the current frame to the relevant engine objects.
@@ -456,7 +463,7 @@ namespace Editor
 		//	EditorSceneManager::GetInstance()->EditorUpdate(deltaTime);
 		// mGameCamera->Update(deltaTime);
 
-		//if (Core::FTCore::GetInstance()->GetIsUpdating())
+		// if (Core::FTCore::GetInstance()->GetIsUpdating())
 		//{
 		//	EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
 		//	if (scene && scene->Actors())

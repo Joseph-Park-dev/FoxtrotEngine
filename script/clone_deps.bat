@@ -13,6 +13,7 @@ set GIT=git
 set REPOS[0]=https://github.com/ocornut/imgui.git
 set REPOS[1]=https://github.com/aiekick/ImGuiFileDialog.git
 set REPOS[2]=https://github.com/nlohmann/json.git
+set REPOS[3]=https://github.com/erincatto/box2d.git
 
 :: ============================================================
 :: Clone loop
@@ -22,6 +23,7 @@ if not exist "%BASE_DIR%" mkdir "%BASE_DIR%"
 call :clone "!REPOS[0]!" "docking"
 call :clone "!REPOS[1]!"
 call :clone "!REPOS[2]!"
+call :clone "!REPOS[3]!"
 
 :: ============================================================
 :: Download only spine-cpp from Spine Runtimes

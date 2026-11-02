@@ -24,8 +24,41 @@
 #include "Component/BoxCollider2D.h"
 #include "Component/CircleCollider2D.h"
 #include "Component/Rigidbody2D.h"
+#ifdef FOXTROT_EDITOR
+	#include "Plugin/ICommandHistory.h"
+	#include "Plugin/GetFunc.h"
+	#include "FileSystem/DLLPath.h"
+	#include "Plugin/PluginKey.h"
+#endif
 #include "Manager/SceneManager.h"
 #include "Scene/Scene.h"
+
+#ifdef FOXTROT_EDITOR
+namespace Editor
+{
+	static ICommandHistory* sCommandHistory = nullptr;
+
+	/// @brief Resolves GetCMDHistory from Editor.dll. Safe to call more than once.
+	void AcquireCommandHistory()
+	{
+		if (sCommandHistory != nullptr)
+			return;
+
+		sCommandHistory = Core::GetFunc<GET_CMD_HISTORY>(
+			Common::DLLPath::EDITOR,
+			Core::ProcNames::CMDHistory)();
+	}
+
+	/// @brief Returns the command history stored by AcquireCommandHistory.
+	/// @return Borrowed command history. Null until AcquireCommandHistory has run.
+	ICommandHistory* GetCommandHistory()
+	{
+		if (!sCommandHistory)
+			AcquireCommandHistory();
+		return sCommandHistory;
+	}
+} // namespace Editor
+#endif
 
 namespace Physics2D
 {

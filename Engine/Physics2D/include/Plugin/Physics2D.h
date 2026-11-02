@@ -17,6 +17,20 @@ namespace Common
 	class IComponent;
 }
 
+#ifdef FOXTROT_EDITOR
+namespace Editor
+{
+	class ICommandHistory;
+
+	/// @brief Resolves GetCMDHistory from Editor.dll. Safe to call more than once.
+	void AcquireCommandHistory();
+
+	/// @brief Returns the command history stored by AcquireCommandHistory.
+	/// @return Borrowed command history. Null until AcquireCommandHistory has run.
+	ICommandHistory* GetCommandHistory();
+} // namespace Editor
+#endif
+
 namespace Physics2D
 {
 	class Physics2D;

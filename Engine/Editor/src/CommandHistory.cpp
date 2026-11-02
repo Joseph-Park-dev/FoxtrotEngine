@@ -353,92 +353,11 @@ namespace Editor
 
 	extern "C"
 	{
-		/// @brief Returns the cmdhistory used by this service.
-		/// @return Borrowed access to the cmdhistory.
-		CommandHistory* GetCMDHistory()
+		/// @brief Returns the command history used by editor value controls.
+		/// @return Borrowed command history. The Editor owns the instance.
+		ICommandHistory* GetCMDHistory()
 		{
 			return CommandHistory::GetInstance();
-		}
-
-		/// @brief Draws a typed editor control and applies changes to the referenced value.
-		/// @param label Text identifying the editor control.
-		/// @param ref Reference value used by the operation.
-		/// @param modSpeed Playback or edit speed multiplier.
-		void UpdateIntValue(const char* label, int& ref, unsigned int modSpeed)
-		{
-			CommandHistory::GetInstance()->UpdateIntValue(label, ref, modSpeed);
-		}
-
-		/// @brief Draws a typed editor control and applies changes to the referenced value.
-		/// @param label Text identifying the editor control.
-		/// @param ref Reference value used by the operation.
-		/// @param min Inclusive lower bound.
-		/// @param max Inclusive upper bound.
-		/// @param modSpeed Playback or edit speed multiplier.
-		void UpdateClampedIntValue(const char* label, int& ref, int min, int max, int modSpeed)
-		{
-			CommandHistory::GetInstance()->UpdateIntValue(label, ref, modSpeed);
-		}
-
-		/// @brief Draws a typed editor control and applies changes to the referenced value.
-		/// @param label Text identifying the editor control.
-		/// @param ref Reference value used by the operation.
-		/// @param modSpeed Playback or edit speed multiplier.
-		void UpdateUnsignedIntValue(const char* label, unsigned int& ref, unsigned int modSpeed)
-		{
-			CommandHistory::GetInstance()->UpdateUnsignedIntValue(label, ref, modSpeed);
-		}
-
-		/// @brief Draws a typed editor control and applies changes to the referenced value.
-		/// @param label Text identifying the editor control.
-		/// @param ref Reference value used by the operation.
-		/// @param modSpeed Playback or edit speed multiplier.
-		void UpdateFloatValue(const char* label, float& ref, float modSpeed)
-		{
-			CommandHistory::GetInstance()->UpdateFloatValue(label, ref, modSpeed);
-		}
-
-		/// @brief Draws a typed editor control and applies changes to the referenced value.
-		/// @param label Text identifying the editor control.
-		/// @param ref Reference value used by the operation.
-		void UpdateBoolValue(const char* label, bool& ref)
-		{
-			CommandHistory::GetInstance()->UpdateBoolValue(label, ref);
-		}
-
-		/// @brief Draws a typed editor control and applies changes to the referenced value.
-		/// @param label Text identifying the editor control.
-		/// @param ref Reference value used by the operation.
-		/// @param modSpeed Playback or edit speed multiplier.
-		void UpdateVector2Value(const char* label, Math::FTVector2& ref, float modSpeed)
-		{
-			CommandHistory::GetInstance()->UpdateVector2Value(label, ref, modSpeed);
-		}
-
-		/// @brief Draws a typed editor control and applies changes to the referenced value.
-		/// @param label Text identifying the editor control.
-		/// @param ref Reference value used by the operation.
-		/// @param modSpeed Playback or edit speed multiplier.
-		void UpdateVector3Value(const char* label, Math::FTVector3& ref, float modSpeed)
-		{
-			CommandHistory::GetInstance()->UpdateVector3Value(label, ref, modSpeed);
-		}
-
-		/// @brief Draws a typed editor control and applies changes to the referenced value.
-		/// @param label Text identifying the editor control.
-		/// @param ref Reference value used by the operation.
-		/// @param modSpeed Playback or edit speed multiplier.
-		void UpdateVector4Value(const char* label, Math::FTVector4& ref, float modSpeed)
-		{
-			CommandHistory::GetInstance()->UpdateVector4Value(label, ref, modSpeed);
-		}
-
-		/// @brief Draws a typed editor control and applies changes to the referenced value.
-		/// @param label Text identifying the editor control.
-		/// @param ref Reference value used by the operation.
-		void UpdateStringValue(const char* label, Common::FTDS::String& ref)
-		{
-			CommandHistory::GetInstance()->UpdateStringValue(label, ref);
 		}
 	}
 } // namespace Editor

@@ -98,6 +98,7 @@ namespace Physics2D
 
 	Rigidbody2D::~Rigidbody2D()
 	{
+		UnregisterOwnedComponent(this);
 		if (b2Body_IsValid(mBodyID))
 			b2DestroyBody(mBodyID);
 	}
@@ -123,6 +124,7 @@ namespace Physics2D
 #endif
 		if (actor && actor->GetComponents())
 			actor->GetComponents()->PushBack(newComp);
+		RegisterOwnedComponent(newComp);
 	}
 
 	void Rigidbody2D::SaveProperties(std::ofstream& ofs)

@@ -12,6 +12,13 @@
 #pragma once
 #include "Component/Collider2D.h"
 
+#ifdef FOXTROT_EDITOR
+namespace D3D11
+{
+	class FTRectangle;
+}
+#endif // FOXTROT_EDITOR
+
 namespace Physics2D
 {
 	namespace ChunkKey
@@ -59,8 +66,20 @@ namespace Physics2D
 		void EditorRender(Graphics::IRenderer* renderer, Graphics::ICamera* camInst) override;
 		void EditorUIUpdate() override;
 
+		void UpdateDebugShapes(Math::FTVector3 pos, Math::FTVector3 rot, Math::FTVector3 scale, Graphics::ICamera* cameraInst);
+
 	private:
+		void ToggleDebugShape() override;
 		void UpdateScale();
+
+		/// <summary>
+		/// Editor viewport rectangle for this box. DebugShapes owns and deletes it after AddShape.
+		/// </summary>
+		D3D11::FTRectangle* mDebugRect;
+		/// <summary>
+		/// Set when GPU setup for the debug rectangle fails, so the editor does not retry every frame.
+		/// </summary>
+		bool mDebugGpuFailed;
 #endif
 	};
 } // namespace Physics2D

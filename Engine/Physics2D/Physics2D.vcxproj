@@ -103,11 +103,14 @@ copy /Y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)build\$(Platform)\$(Confi
     <ProjectReference Include="..\Editor\Editor.vcxproj" Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'">
       <Project>{30273513-c587-4640-9315-8d7cade6534a}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\D3D11\D3D11.vcxproj" Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'">
+      <Project>{95944b49-be89-43df-bd3f-03d01fa7c284}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Editor\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Editor\include;%(AdditionalIncludeDirectories);$(SolutionDir)Engine\D3D11\include;$(SolutionDir)Engine\Graphics\include;$(SolutionDir)Engine\InputSystem\include</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
 </Project>

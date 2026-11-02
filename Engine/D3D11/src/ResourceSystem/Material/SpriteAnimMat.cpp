@@ -11,7 +11,7 @@
 
 #ifdef FOXTROT_EDITOR
 	#include "Manager/DirectoryHelper.h"
-	#include "CommandHistory.h"
+	#include "Plugin/ICommandHistory.h"
 	#include "Utility/EditorHelper.h"
 #endif // FOXTROT_EDITOR
 

@@ -123,8 +123,11 @@ namespace D3D11
 	void CameraData::GetProjectionMatrix(Math::FTMatrix4& outProjMat)
 	{
 		const FTVector2 renderSize = GetResolution();
-		assert(0 < renderSize.x);
-		assert(0 < renderSize.y);
+		if (renderSize.x <= 0.f || renderSize.y <= 0.f || ZoomFactor == 0.f)
+		{
+			outProjMat = FTMatrix4::Identity;
+			return;
+		}
 
 		float worldWidth  = renderSize.x * UnitsPerPixel;
 		float worldHeight = renderSize.y * UnitsPerPixel;

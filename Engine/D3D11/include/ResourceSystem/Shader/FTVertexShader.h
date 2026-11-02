@@ -20,7 +20,7 @@
 	#define IMGUI_DEFINE_MATH_OPERATORS
 	#include <imgui.h>
 	#include <magic_enum/magic_enum.hpp>
-	#include "CommandHistory.h"
+	#include "Plugin/ICommandHistory.h"
 	#include "Utility/EditorHelper.h"
 #endif // FOXTROT_EDITOR
 

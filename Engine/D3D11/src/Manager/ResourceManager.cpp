@@ -37,7 +37,7 @@
 #include "FileSystem/FileTypes.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "CommandHistory.h"
+	#include "Plugin/ICommandHistory.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -92,8 +92,8 @@ namespace D3D11
 			resDef.FileName,
 			DBG_NEW FTVertexShader(resDef, renderer));
 
-		// 2D debug shape vertex shader
-		vsPath			= shaders2D;
+		// Debug shape vertex shader sits with DebugShapeGS/PS under DefaultRes\Shaders.
+		vsPath			= shaders;
 		resDef.FileName = "DebugShapeVS.hlsl";
 		vsPath.Append(resDef.FileName);
 		resDef.Path = vsPath.C_Str();

@@ -65,6 +65,9 @@ namespace Graphics
 		}
 
 		Math::FTVector3 position;
-		Math::FTVector4 color;
+		/// <summary>
+		/// Packed float3 so the color sits at byte 12, matching DebugShapeVS input layout.
+		/// </summary>
+		Math::FTVector3 color;
 	};
 } // namespace Graphics

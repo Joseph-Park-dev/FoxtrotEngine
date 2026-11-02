@@ -34,7 +34,7 @@ namespace D3D11
 		, mVSCData()
 		, mGSCData()
 		, mPSCData()
-		, mIsActive(false)
+		, mIsActive(true)
 	{
 	}
 
@@ -110,37 +110,48 @@ namespace D3D11
 	/// @param renderer Renderer providing the graphics device and current render state.
 	void FTShape::Render(D3D11Renderer* renderer)
 	{
-		if (!mMesh)
+		if (!mMesh || !mMesh->VertexBuffer)
 			return;
 		if (!mVSCBuf.Get())
 			return;
+		if (!mGSCBuf.Get())
+			return;
 		if (!mPSCBuf.Get())
 			return;
+		if (!mIsActive)
+			return;
 
-		UINT stride = sizeof(Vertex);
+		DebugShapes* dbgShapes = DebugShapes::GetInstance();
+		if (!dbgShapes->GetVS() || !dbgShapes->GetGSSquare() || !dbgShapes->GetPS() || !dbgShapes->GetInputLayout())
+			return;
+
+		UINT stride = sizeof(DebugVertex);
 		UINT offset = 0;
 
 		UpdateConstantBuffers(renderer->GetDevice(), renderer->GetContext());
 
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
 
-		DebugShapes* dbgShapes = DebugShapes::GetInstance();
 		context->VSSetShader(dbgShapes->GetVS().Get(), 0, 0);
 		context->VSSetConstantBuffers(0, 1, mVSCBuf.GetAddressOf());
 
 		context->GSSetShader(dbgShapes->GetGSSquare().Get(), 0, 0);
-		Microsoft::WRL::ComPtr<ID3D11Buffer> GSCBuffers[2] = {
-			mVSCBuf,
-			mGSCBuf
+		ID3D11Buffer* geometryBuffers[2] = {
+			mVSCBuf.Get(),
+			mGSCBuf.Get()
 		};
-		context->GSSetConstantBuffers(0, 2, GSCBuffers->GetAddressOf());
+		context->GSSetConstantBuffers(0, 2, geometryBuffers);
 
 		context->PSSetShader(dbgShapes->GetPS().Get(), 0, 0);
 		context->PSSetConstantBuffers(0, 1, mPSCBuf.GetAddressOf());
+		// DebugShapePS keeps alphaThres in $Globals (b1). A leftover sprite buffer makes every pixel fail the clip.
+		ID3D11Buffer* unboundPixel = nullptr;
+		context->PSSetConstantBuffers(1, 1, &unboundPixel);
 
 		context->IASetInputLayout(dbgShapes->GetInputLayout().Get());
 		context->IASetVertexBuffers(0, 1, mMesh->VertexBuffer.GetAddressOf(), &stride, &offset);
-		context->IASetIndexBuffer(mMesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+		// The debug mesh is a point list. A null index buffer with R32_UINT is rejected by the debug layer and the draw is removed.
+		context->IASetIndexBuffer(nullptr, DXGI_FORMAT_UNKNOWN, 0);
 		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 		context->Draw(mMesh->VertexCount, 0);
 
@@ -158,7 +169,7 @@ namespace D3D11
 		Microsoft::WRL::ComPtr<ID3D11PixelShader>&	pixelShader,
 		Microsoft::WRL::ComPtr<ID3D11InputLayout>&	inputLayout)
 	{
-		if (!mMesh)
+		if (!mMesh || !mMesh->VertexBuffer)
 			return;
 		if (!mVSCBuf.Get())
 			return;
@@ -179,7 +190,8 @@ namespace D3D11
 
 		context->IASetInputLayout(inputLayout.Get());
 		context->IASetVertexBuffers(0, 1, mMesh->VertexBuffer.GetAddressOf(), &stride, &offset);
-		context->IASetIndexBuffer(mMesh->IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+		ID3D11Buffer* indexBuffer = mMesh->IndexBuffer.Get();
+		context->IASetIndexBuffer(indexBuffer, indexBuffer ? DXGI_FORMAT_R32_UINT : DXGI_FORMAT_UNKNOWN, 0);
 		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 		context->Draw(mMesh->VertexCount, 0);
 	}
@@ -191,6 +203,19 @@ namespace D3D11
 	{
 		mMesh->VertexCount = UINT(meshData.Vertices.GetSize());
 		D3D11Utils::CreateVertexBuffer(device, meshData.Vertices, mMesh->VertexBuffer);
+	}
+
+	/// <summary>
+	/// Uploads one debug point without taking ownership of a mesh-data container.
+	/// </summary>
+	void FTShape::InitializePoint(ComPtr<ID3D11Device>& device, const DebugVertex& vertex)
+	{
+		if (!mMesh || !device)
+			return;
+
+		DebugVertex point = vertex;
+		mMesh->VertexCount = 1;
+		D3D11Utils::CreateVertexBuffer(device, &point, static_cast<size_t>(1), mMesh->VertexBuffer);
 	}
 
 	// void FTShape::UpdateConstantBufferModel(Transform* transform)
@@ -220,7 +245,7 @@ namespace D3D11
 	void FTShape::UpdateModelMatrix(Math::FTVector3 pos, Math::FTVector3 rot, Math::FTVector3 size)
 	{
 		Math::FTMatrix4 model =
-			// Matrix::CreateScale(size.GetDXVec3()) *
+			FTMatrix4::CreateScale(size) *
 			FTMatrix4::CreateRotationY(rot.y) *
 			FTMatrix4::CreateRotationX(rot.x) *
 			FTMatrix4::CreateRotationZ(rot.z) *

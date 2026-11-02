@@ -16,7 +16,7 @@
 #include "FTDS/Dynamic/DynamicArray.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "CommandHistory.h"
+	#include "Plugin/ICommandHistory.h"
 #endif
 
 namespace Physics2D
@@ -95,6 +95,9 @@ namespace Physics2D
 		, mShapeID(b2_nullShapeId)
 		, mOffset(0.f, 0.f)
 		, mFinalPosition(0.f, 0.f)
+#ifdef FOXTROT_EDITOR
+		, mShowDebugShape(false)
+#endif // FOXTROT_EDITOR
 	{
 	}
 
@@ -103,6 +106,7 @@ namespace Physics2D
 		, mShapeID(b2_nullShapeId)
 		, mOffset(origin.mOffset)
 		, mFinalPosition(origin.mFinalPosition)
+		, mShowDebugShape(origin.mShowDebugShape)
 	{
 	}
 
@@ -146,14 +150,25 @@ namespace Physics2D
 
 	void Collider2D::EditorUIUpdate()
 	{
+		ToggleDebugShape();
 		UpdateOffsetPos();
 	}
 
 	void Collider2D::UpdateOffsetPos()
 	{
 		Math::FTVector2 updatedVal = GetOffsetPos();
-		Editor::UpdateVector2Value("Offset Position", updatedVal, FLOATMOD_SPEED);
+		Editor::GetCommandHistory()->UpdateVector2Value("Offset Position", updatedVal, Editor::FLOATMOD_SPEED);
 		mOffset = updatedVal;
+	}
+
+	void Collider2D::ToggleDebugShape()
+	{
+		Editor::GetCommandHistory()->UpdateBoolValue("Show Debug Shape", mShowDebugShape);
+	}
+
+	bool Collider2D::IsShowingDebugShape()
+	{
+		return mShowDebugShape;
 	}
 #endif
 } // namespace Physics2D

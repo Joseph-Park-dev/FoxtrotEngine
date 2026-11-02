@@ -16,8 +16,12 @@
 #include "Renderer/D3D11Renderer.h"
 #include "ResourceSystem/Shape/FTRectangle.h"
 #include "ResourceSystem/Shape/FTShape.h"
+#include "ResourceSystem/Shader/FTVertexShader.h"
+#include "ResourceSystem/Shader/FTGeometryShader.h"
+#include "ResourceSystem/Shader/FTPixelShader.h"
 #include "FileSystem/NullKeys.h"
 #include "FTDS/Dynamic/DynamicArray.h"
+#include "Manager/ResourceManager.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorCamera.h"
@@ -33,9 +37,6 @@ namespace D3D11
 	/// @note Initializes the :DebugShapes base or delegates to its constructor.
 	DebugShapes::DebugShapes()
 		: mShapes(DBG_NEW Common::FTDS::DynamicArray<FTShape*>)
-		, mVSPath(L".\\FoxtrotEngine\\Assets\\Shaders\\DebugShapeVS.hlsl")
-		, mGSPath(L".\\FoxtrotEngine\\Assets\\Shaders\\DebugShapeGS.hlsl")
-		, mPSPath(L".\\FoxtrotEngine\\Assets\\Shaders\\DebugShapePS.hlsl")
 	{
 	}
 
@@ -46,21 +47,64 @@ namespace D3D11
 		delete mShapes;
 	}
 
+	D3D11_API FTRectangle* DebugShapes::AddRectangle()
+	{
+		FTRectangle* rect = DBG_NEW FTRectangle;
+		AddShape(rect);
+		return rect;
+	}
+
 	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
 	/// @param renderer Renderer providing the graphics device and current render state.
-	void DebugShapes::Initialize(D3D11Renderer* renderer)
+	void DebugShapes::Initialize()
 	{
-		/*if (0 < mShapes.size())
-			mShapes.clear();*/
-		this->CreateShaders(renderer->GetDevice());
+		ResourceManager* resources = ResourceManager::GetInstance();
+		if (!resources)
+			return;
+
+		FTVertexShader*	  vertexShader	 = resources->GetVertexShader("DebugShapeVS.hlsl");
+		FTGeometryShader* geometryShader = resources->GetGeometryShader("DebugShapeGS.hlsl");
+		FTPixelShader*	  pixelShader	 = resources->GetPixelShader("DebugShapePS.hlsl");
+		if (!vertexShader || !geometryShader || !pixelShader)
+			return;
+
+		mVS			 = vertexShader->GetShader();
+		mInputLayout = vertexShader->GetInputLayout();
+		mGSSquare	 = geometryShader->GetShader();
+		mPS			 = pixelShader->GetShader();
 	}
 
 	/// @brief Submits this object's graphics work for the current frame.
 	/// @param renderer Renderer providing the graphics device and current render state.
 	void DebugShapes::Render(D3D11Renderer* renderer)
 	{
-		if (mShapes->GetSize() < 1)
+		if (!renderer || !mShapes || mShapes->GetSize() < 1)
 			return;
+
+		if (!mVS || !mGSSquare || !mPS || !mInputLayout)
+			Initialize();
+		if (!mVS || !mGSSquare || !mPS || !mInputLayout)
+			return;
+
+		// Scene and ImGui draws leave scissor, depth, and blend state that clip or discard the outline.
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
+		context->OMSetBlendState(nullptr, nullptr, 0xffffffff);
+		context->OMSetDepthStencilState(nullptr, 0);
+
+		static Microsoft::WRL::ComPtr<ID3D11RasterizerState> debugRasterizer;
+		if (!debugRasterizer)
+		{
+			D3D11_RASTERIZER_DESC desc;
+			ZeroMemory(&desc, sizeof(desc));
+			desc.FillMode			   = D3D11_FILL_SOLID;
+			desc.CullMode			   = D3D11_CULL_NONE;
+			desc.DepthClipEnable	   = TRUE;
+			desc.ScissorEnable		   = FALSE;
+			desc.AntialiasedLineEnable = TRUE;
+			renderer->GetDevice()->CreateRasterizerState(&desc, debugRasterizer.GetAddressOf());
+		}
+		if (debugRasterizer)
+			context->RSSetState(debugRasterizer.Get());
 
 		for (auto iter = mShapes->Begin(); iter != mShapes->End(); ++iter)
 			(*iter)->Render(renderer);
@@ -105,7 +149,7 @@ namespace D3D11
 	/// @brief Returns the vs used by this debug shapes.
 	/// @return Borrowed access to the vs.
 	/// @note Changes through the returned reference affect this object's stored state.
-	ComPtr<ID3D11VertexShader>&	  DebugShapes::GetVS() { return mVS; }
+	ComPtr<ID3D11VertexShader>& DebugShapes::GetVS() { return mVS; }
 	/// @brief Returns the gssquare used by this debug shapes.
 	/// @return Borrowed access to the gssquare.
 	/// @note Changes through the returned reference affect this object's stored state.
@@ -113,29 +157,20 @@ namespace D3D11
 	/// @brief Returns the ps used by this debug shapes.
 	/// @return Borrowed access to the ps.
 	/// @note Changes through the returned reference affect this object's stored state.
-	ComPtr<ID3D11PixelShader>&	  DebugShapes::GetPS() { return mPS; }
+	ComPtr<ID3D11PixelShader>& DebugShapes::GetPS() { return mPS; }
 	/// @brief Returns the input layout used by this debug shapes.
 	/// @return Borrowed access to the input layout.
 	/// @note Changes through the returned reference affect this object's stored state.
-	ComPtr<ID3D11InputLayout>&	  DebugShapes::GetInputLayout() { return mInputLayout; }
+	ComPtr<ID3D11InputLayout>& DebugShapes::GetInputLayout() { return mInputLayout; }
 
 	/// @brief Creates the shader stages required by this rendering resource.
 	/// @param device Direct3D device used to create GPU resources.
 	void DebugShapes::CreateShaders(ComPtr<ID3D11Device>& device)
 	{
-		std::vector<D3D11_INPUT_ELEMENT_DESC> basicInputElements = {
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		};
-
-		D3D11Utils::CreateVertexShaderAndInputLayout(
-			device, mVSPath, basicInputElements, mVS, mInputLayout);
-
-		D3D11Utils::CreateGeometryShader(
-			device, mGSPath, mGSSquare);
-
-		D3D11Utils::CreatePixelShader(
-			device, mPSPath, mPS);
+		// std::vector<D3D11_INPUT_ELEMENT_DESC> basicInputElements = {
+		//	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		//	{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		// };
 	}
 
 #ifdef FOXTROT_EDITOR
@@ -144,23 +179,23 @@ namespace D3D11
 } // namespace D3D11
 namespace D3D11
 {
-    DebugShapes* DebugShapes::mInstance = nullptr;
+	DebugShapes* DebugShapes::mInstance = nullptr;
 
-    /// @brief Returns the shared instance used by this manager.
-    /// @return Borrowed singleton pointer; do not delete it directly.
-    /// @note Synchronize concurrent initialization, access, and destruction externally.
-    DebugShapes* DebugShapes::GetInstance()
-    {
-        if (!mInstance)
-            mInstance = DBG_NEW DebugShapes();
-        return mInstance;
-    }
+	/// @brief Returns the shared instance used by this manager.
+	/// @return Borrowed singleton pointer; do not delete it directly.
+	/// @note Synchronize concurrent initialization, access, and destruction externally.
+	DebugShapes* DebugShapes::GetInstance()
+	{
+		if (!mInstance)
+			mInstance = DBG_NEW DebugShapes();
+		return mInstance;
+	}
 
-    /// @brief Deletes the shared instance and clears the singleton pointer.
-    /// @note Invalidates borrowed pointers to the instance; synchronize concurrent access externally.
-    void DebugShapes::Destroy()
-    {
-        delete mInstance;
-        mInstance = nullptr;
-    }
-}
+	/// @brief Deletes the shared instance and clears the singleton pointer.
+	/// @note Invalidates borrowed pointers to the instance; synchronize concurrent access externally.
+	void DebugShapes::Destroy()
+	{
+		delete mInstance;
+		mInstance = nullptr;
+	}
+} // namespace D3D11

@@ -18,7 +18,7 @@
 #include "Component/Collider2D.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "CommandHistory.h"
+	#include "Plugin/ICommandHistory.h"
 #endif
 
 namespace Physics2D
@@ -278,21 +278,22 @@ void Rigidbody2D::PrepareForSimulation()
 
 	void Rigidbody2D::EditorUIUpdate()
 	{
-		Editor::UpdateBoolValue(ChunkKey::Rigidbody2D::ALLOW_FAST_ROTATION, mBodyDefCache.allowFastRotation);
-		Editor::UpdateFloatValue(ChunkKey::Rigidbody2D::ANGULAR_DAMPING, mBodyDefCache.angularDamping, FLOATMOD_SPEED);
-		Editor::UpdateFloatValue(ChunkKey::Rigidbody2D::ANGULAR_VELOCITY, mBodyDefCache.angularVelocity, FLOATMOD_SPEED);
-		Editor::UpdateBoolValue(ChunkKey::Rigidbody2D::ENABLE_SLEEP, mBodyDefCache.enableSleep);
-		Editor::UpdateBoolValue(ChunkKey::Rigidbody2D::FIXED_ROTATION, mBodyDefCache.motionLocks.angularZ);
-		Editor::UpdateFloatValue(ChunkKey::Rigidbody2D::GRAVITY_SCALE, mBodyDefCache.gravityScale, FLOATMOD_SPEED);
-		Editor::UpdateBoolValue(ChunkKey::Rigidbody2D::IS_AWAKE, mBodyDefCache.isAwake);
-		Editor::UpdateBoolValue(ChunkKey::Rigidbody2D::IS_BULLET, mBodyDefCache.isBullet);
-		Editor::UpdateBoolValue(ChunkKey::Rigidbody2D::IS_ENABLED, mBodyDefCache.isEnabled);
+		Editor::ICommandHistory* history = Editor::GetCommandHistory();
+		history->UpdateBoolValue(ChunkKey::Rigidbody2D::ALLOW_FAST_ROTATION, mBodyDefCache.allowFastRotation);
+		history->UpdateFloatValue(ChunkKey::Rigidbody2D::ANGULAR_DAMPING, mBodyDefCache.angularDamping, Editor::FLOATMOD_SPEED);
+		history->UpdateFloatValue(ChunkKey::Rigidbody2D::ANGULAR_VELOCITY, mBodyDefCache.angularVelocity, Editor::FLOATMOD_SPEED);
+		history->UpdateBoolValue(ChunkKey::Rigidbody2D::ENABLE_SLEEP, mBodyDefCache.enableSleep);
+		history->UpdateBoolValue(ChunkKey::Rigidbody2D::FIXED_ROTATION, mBodyDefCache.motionLocks.angularZ);
+		history->UpdateFloatValue(ChunkKey::Rigidbody2D::GRAVITY_SCALE, mBodyDefCache.gravityScale, Editor::FLOATMOD_SPEED);
+		history->UpdateBoolValue(ChunkKey::Rigidbody2D::IS_AWAKE, mBodyDefCache.isAwake);
+		history->UpdateBoolValue(ChunkKey::Rigidbody2D::IS_BULLET, mBodyDefCache.isBullet);
+		history->UpdateBoolValue(ChunkKey::Rigidbody2D::IS_ENABLED, mBodyDefCache.isEnabled);
 
 		Math::FTVector2 velocity(mBodyDefCache.linearVelocity.x, mBodyDefCache.linearVelocity.y);
-		Editor::UpdateVector2Value(ChunkKey::Rigidbody2D::INITIAL_VELOCITY, velocity, FLOATMOD_SPEED);
+		history->UpdateVector2Value(ChunkKey::Rigidbody2D::INITIAL_VELOCITY, velocity, Editor::FLOATMOD_SPEED);
 		mBodyDefCache.linearVelocity = ToB2Vec2(velocity);
 
-		Editor::UpdateFloatValue(ChunkKey::Rigidbody2D::SLEEP_THRESHOLD, mBodyDefCache.sleepThreshold, FLOATMOD_SPEED);
+		history->UpdateFloatValue(ChunkKey::Rigidbody2D::SLEEP_THRESHOLD, mBodyDefCache.sleepThreshold, Editor::FLOATMOD_SPEED);
 		UpdateBodyType();
 
 		if (GetOwner() && GetOwner()->GetTransform())
@@ -305,7 +306,7 @@ void Rigidbody2D::PrepareForSimulation()
 	void Rigidbody2D::UpdateBodyType()
 	{
 		int bodyType = static_cast<int>(mBodyDefCache.type);
-		Editor::UpdateIntValue(ChunkKey::Rigidbody2D::BODY_TYPE, bodyType, INTMOD_SPEED);
+		Editor::GetCommandHistory()->UpdateIntValue(ChunkKey::Rigidbody2D::BODY_TYPE, bodyType, Editor::INTMOD_SPEED);
 		if (bodyType < static_cast<int>(b2_staticBody))
 			bodyType = static_cast<int>(b2_staticBody);
 		if (bodyType > static_cast<int>(b2_dynamicBody))

@@ -905,6 +905,9 @@ namespace Editor
 					continue;
 				(*iter)->LoadDefaultResources(PATH_ASSET->C_Str(), mRenderer);
 				(*iter)->LoadAllResourcesInAsset(PATH_ASSET->C_Str(), mRenderer);
+
+				if (mRenderer)
+					D3D11::DebugShapes::GetInstance()->Initialize();
 			}
 		}
 		else

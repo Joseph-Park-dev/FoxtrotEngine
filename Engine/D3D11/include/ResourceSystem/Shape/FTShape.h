@@ -16,6 +16,7 @@
 
 #include "FTMath.h"
 #include "../Mesh/MeshConstantData.h"
+#include "../Mesh/Vertex.h"
 
 namespace Core
 {
@@ -70,6 +71,11 @@ namespace D3D11
 		D3D11_API void		 UpdateGC(Core::ICamera* camInst);
 		/// @brief Uploads pixel-shader constant data.
 		D3D11_API virtual void UpdatePC();
+		/// @brief Recomputes the model transform used for rendering.
+		/// @param pos Position or zero-based insertion index.
+		/// @param rot Rotation used by the operation.
+		/// @param size Number of elements or bytes required by the operation.
+		D3D11_API void UpdateModelMatrix(Math::FTVector3 pos, Math::FTVector3 rot, Math::FTVector3 size);
 
 		// This is for ShapeActors (e.g. SquareActor)
 		/// @brief Submits this object's graphics work for the current frame.
@@ -99,6 +105,10 @@ namespace D3D11
 		/// @param device Direct3D device used to create GPU resources.
 		/// @param meshData CPU-side mesh vertices and indices.
 		D3D11_API void InitializeMesh(Microsoft::WRL::ComPtr<ID3D11Device>& device, FTDebugMeshData&& meshData);
+		/// <summary>
+		/// Uploads one debug point without taking ownership of a mesh-data container.
+		/// </summary>
+		D3D11_API void InitializePoint(Microsoft::WRL::ComPtr<ID3D11Device>& device, const DebugVertex& vertex);
 
 	private:
 		Mesh* mMesh;
@@ -124,11 +134,6 @@ namespace D3D11
 			Microsoft::WRL::ComPtr<ID3D11Device>&		 device,
 			Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
 
-		/// @brief Recomputes the model transform used for rendering.
-		/// @param pos Position or zero-based insertion index.
-		/// @param rot Rotation used by the operation.
-		/// @param size Number of elements or bytes required by the operation.
-		D3D11_API void UpdateModelMatrix(Math::FTVector3 pos, Math::FTVector3 rot, Math::FTVector3 size);
 		/// @brief Recomputes the camera view matrix from its position and orientation.
 		/// @param camInst Camera supplying the view and projection for this draw.
 		D3D11_API void UpdateViewMatrix(Core::ICamera* camInst);

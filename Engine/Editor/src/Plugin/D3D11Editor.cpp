@@ -387,6 +387,7 @@ namespace Editor
 
 			mViewport->BeginRender(mRenderer);
 			RenderScene(mRenderer, mEditorCamera, true);
+			D3D11::DebugShapes::GetInstance()->Render(mRenderer);
 			mViewport->EndRender(mRenderer);
 		}
 

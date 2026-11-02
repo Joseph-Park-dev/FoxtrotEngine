@@ -4,7 +4,6 @@
 #include "FileSystem/NullKeys.h"
 #include "Actor/ActorGroup.h"
 #include "Component/IComponent.h"
-#include "Plugin/IPlugin.h"
 #include "Actor/Transform.h"
 #include "Actor/IActor.h"
 #include "FileSystem/ChunkLoader.h"
@@ -64,10 +63,9 @@ namespace Common
 			Parent = nullptr;
 		}
 
-		/// @brief Constructs a component, inserts it by update order, and registers it with the plugin.
-		/// @param plugin Plugin supplying component or lifecycle services.
+		/// @brief Constructs a component and inserts it into the actor's component collection.
 		/// @return Component owned by the actor's component collection.
-		/// @pre The actor's component collection and plugin must be initialized.
+		/// @pre The actor's component collection must be initialized.
 		template <typename COMP>
 		COMP* AddComponent()
 		{

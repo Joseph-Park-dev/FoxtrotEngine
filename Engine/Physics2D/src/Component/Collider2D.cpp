@@ -51,6 +51,11 @@ namespace Physics2D
 		return mOffset;
 	}
 
+	void Collider2D::SetShowDebugShape(bool isShowing)
+	{
+		mShowDebugShape = isShowing;
+	}
+
 	void Collider2D::SetOffsetPos(Math::FTVector2 offsetPos)
 	{
 		mOffset = offsetPos;
@@ -95,9 +100,7 @@ namespace Physics2D
 		, mShapeID(b2_nullShapeId)
 		, mOffset(0.f, 0.f)
 		, mFinalPosition(0.f, 0.f)
-#ifdef FOXTROT_EDITOR
 		, mShowDebugShape(false)
-#endif // FOXTROT_EDITOR
 	{
 	}
 
@@ -128,12 +131,14 @@ namespace Physics2D
 
 	void Collider2D::SaveProperties(std::ofstream& ofs)
 	{
+		Common::FileIOHelper::SaveBool(ofs, ChunkKey::Collider2D::SHOW_DEBUG_SHAPE, mShowDebugShape);
 		Common::FileIOHelper::SaveVector2(ofs, ChunkKey::Collider2D::OFFSET, mOffset);
 	}
 
 	void Collider2D::LoadProperties(std::ifstream& ifs)
 	{
 		Common::FileIOHelper::LoadVector2(ifs, mOffset);
+		Common::FileIOHelper::LoadBool(ifs, mShowDebugShape);
 	}
 
 #ifdef FOXTROT_EDITOR

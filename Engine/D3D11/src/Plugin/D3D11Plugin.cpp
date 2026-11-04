@@ -432,6 +432,8 @@ namespace D3D11
 		if (!mEditorResources)
 			mEditorResources = DBG_NEW D3D11EditorResourceService;
 #endif
+
+		DebugShapes::GetInstance()->Initialize(mRenderer);
 	}
 
 	/// @brief Calls Initialize on every component registered to this plugin.

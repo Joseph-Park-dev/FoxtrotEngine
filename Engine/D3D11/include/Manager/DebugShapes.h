@@ -26,6 +26,7 @@ namespace D3D11
 	class FTRectangle;
 	class FTShape;
 	class D3D11Renderer;
+	class D3D11PSO;
 
 	// This provides a context to render shapes as DebugShapes
 	class DebugShapes
@@ -67,27 +68,9 @@ namespace D3D11
 		D3D11_API void DeleteAll();
 
 	public:
-		/// @brief Returns the vs used by this debug shapes.
-		/// @return Borrowed access to the vs.
-		/// @note Changes through the returned reference affect this object's stored state.
-		D3D11_API Microsoft::WRL::ComPtr<ID3D11VertexShader>&	  GetVS();
-		/// @brief Returns the gssquare used by this debug shapes.
-		/// @return Borrowed access to the gssquare.
-		/// @note Changes through the returned reference affect this object's stored state.
-		D3D11_API Microsoft::WRL::ComPtr<ID3D11GeometryShader>& GetGSSquare();
-		/// @brief Returns the ps used by this debug shapes.
-		/// @return Borrowed access to the ps.
-		/// @note Changes through the returned reference affect this object's stored state.
-		D3D11_API Microsoft::WRL::ComPtr<ID3D11PixelShader>&	  GetPS();
-		/// @brief Returns the input layout used by this debug shapes.
-		/// @return Borrowed access to the input layout.
-		/// @note Changes through the returned reference affect this object's stored state.
-		D3D11_API Microsoft::WRL::ComPtr<ID3D11InputLayout>&	  GetInputLayout();
-
-	public:
 		/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
 		/// @param renderer Renderer providing the graphics device and current render state.
-		D3D11_API void Initialize();
+		D3D11_API void Initialize(D3D11Renderer* renderer);
 
 		// Batch renders shapes.
 		// It is not necessary to render shapes manually from the Components
@@ -99,14 +82,7 @@ namespace D3D11
 		Common::FTDS::DynamicArray<FTShape*>* mShapes;
 
 	private:
-		Microsoft::WRL::ComPtr<ID3D11VertexShader>	 mVS;
-		Microsoft::WRL::ComPtr<ID3D11GeometryShader> mGSSquare;
-		Microsoft::WRL::ComPtr<ID3D11PixelShader>	 mPS;
-		Microsoft::WRL::ComPtr<ID3D11InputLayout>	 mInputLayout;
-
-	private:
-		/// @brief Creates the shader stages required by this rendering resource.
-		/// @param device Direct3D device used to create GPU resources.
-		D3D11_API void CreateShaders(Microsoft::WRL::ComPtr<ID3D11Device>& device);
+		D3D11Renderer* mRenderer;
+		D3D11PSO* mPSO;
 	};
 } // namespace D3D11

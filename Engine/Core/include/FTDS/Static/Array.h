@@ -169,11 +169,6 @@ namespace Common
 				if (!mData)
 					return;
 
-				if constexpr (!std::is_trivially_destructible_v<TYPE>)
-				{
-					for (size_t i = 0; i < mCapacity; ++i)
-						mData[i].~TYPE();
-				}
 				free(mData);
 				mData	  = nullptr;
 				mCapacity = 0;

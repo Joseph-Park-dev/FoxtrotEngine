@@ -32,8 +32,9 @@ namespace Physics2D
 	{
 		namespace Collider2D
 		{
-			constexpr const char* OFFSET = "Offset";
-		}
+			constexpr const char* SHOW_DEBUG_SHAPE = "Show Debug Shape";
+			constexpr const char* OFFSET		   = "Offset";
+		} // namespace Collider2D
 	} // namespace ChunkKey
 
 	class Collider2D : public Common::IComponent
@@ -56,12 +57,12 @@ namespace Physics2D
 		void SetOffsetPos(Math::FTVector2 offsetPos);
 
 	public:
-		void Initialize() override;
-		void Setup() override;
-		void ProcessInput(InputSystem::IInputDevice* inputDevice) override;
-		void Update(float deltaTime) override;
-		void LateUpdate(float deltaTime) override;
-		void Render(Graphics::IRenderer* renderer, Graphics::ICamera* camInst) override;
+		virtual void Initialize() override;
+		void		 Setup() override;
+		void		 ProcessInput(InputSystem::IInputDevice* inputDevice) override;
+		void		 Update(float deltaTime) override;
+		void		 LateUpdate(float deltaTime) override;
+		virtual void Render(Graphics::IRenderer* renderer, Graphics::ICamera* camInst) override;
 
 	public:
 		explicit Collider2D(Common::IActor* owner);
@@ -74,6 +75,11 @@ namespace Physics2D
 		void SaveProperties(std::ofstream& ofs) override;
 		void LoadProperties(std::ifstream& ifs) override;
 
+	protected:
+		bool IsShowingDebugShape();
+
+		void SetShowDebugShape(bool isShowing);
+
 #ifdef FOXTROT_EDITOR
 	public:
 		void EditorUpdate(float deltaTime) override;
@@ -81,7 +87,6 @@ namespace Physics2D
 		void EditorUIUpdate() override;
 
 	protected:
-		bool		 IsShowingDebugShape();
 		virtual void ToggleDebugShape();
 
 	private:

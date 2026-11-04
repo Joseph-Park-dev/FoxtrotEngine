@@ -43,6 +43,7 @@ namespace Physics2D
 
 	public:
 		void Initialize() override;
+		void Render(Graphics::IRenderer* renderer, Graphics::ICamera* camInst) override;
 
 	public:
 		explicit BoxCollider2D(Common::IActor* owner);
@@ -60,6 +61,12 @@ namespace Physics2D
 	private:
 		bool RigidBodyExists();
 
+		/// <summary>
+		/// Box centered on the collider offset, sized by the actor scale and collider scale.
+		/// </summary>
+		b2Polygon MakePolygon();
+		void	 ApplyPolygon();
+
 #ifdef FOXTROT_EDITOR
 	public:
 		void EditorUpdate(float deltaTime) override;
@@ -71,6 +78,11 @@ namespace Physics2D
 	private:
 		void ToggleDebugShape() override;
 		void UpdateScale();
+
+		/// <summary>
+		/// Creates the debug rectangle on the device, then places it for the camera about to draw it.
+		/// </summary>
+		void SyncDebugRect(Graphics::IRenderer* renderer, Graphics::ICamera* camInst);
 
 		/// <summary>
 		/// Editor viewport rectangle for this box. DebugShapes owns and deletes it after AddShape.

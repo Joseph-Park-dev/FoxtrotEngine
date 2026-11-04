@@ -268,9 +268,10 @@ namespace Editor
 						// Clear up the scene to load the current chunk file.
 						mFocusedEditorElement = nullptr;
 						Editor::ChunkLoader::GetInstance()->SaveChunk(mGetChunkPathFunc()->C_Str());
-						// DebugShapes::GetInstance()->DeleteAll();
 						// UIManager::GetInstance()->Reset();
 						// CollisionManager::GetInstance()->Reset();
+						D3D11::DebugShapes::GetInstance()->DeleteAll();
+						EditorShapes::GetInstance()->DeleteAll();
 						EditorSceneManager::GetInstance()->GetCurrentScene()->DeleteAll();
 
 						// Copy the chunk file.
@@ -301,6 +302,7 @@ namespace Editor
 						// Clear up the scene to load the current chunk file.
 						mFocusedEditorElement = nullptr;
 						FTCore::GetInstance()->SetIsUpdating(false);
+						D3D11::DebugShapes::GetInstance()->DeleteAll();
 						EditorShapes::GetInstance()->DeleteAll();
 						// CollisionManager::GetInstance()->Reset();
 						EditorSceneManager::GetInstance()->GetCurrentScene()->DeleteAll();
@@ -905,9 +907,6 @@ namespace Editor
 					continue;
 				(*iter)->LoadDefaultResources(PATH_ASSET->C_Str(), mRenderer);
 				(*iter)->LoadAllResourcesInAsset(PATH_ASSET->C_Str(), mRenderer);
-
-				if (mRenderer)
-					D3D11::DebugShapes::GetInstance()->Initialize();
 			}
 		}
 		else

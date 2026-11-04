@@ -16,12 +16,10 @@
 #include "Renderer/D3D11Renderer.h"
 #include "ResourceSystem/Shape/FTRectangle.h"
 #include "ResourceSystem/Shape/FTShape.h"
-#include "ResourceSystem/Shader/FTVertexShader.h"
-#include "ResourceSystem/Shader/FTGeometryShader.h"
-#include "ResourceSystem/Shader/FTPixelShader.h"
 #include "FileSystem/NullKeys.h"
 #include "FTDS/Dynamic/DynamicArray.h"
 #include "Manager/ResourceManager.h"
+#include "ResourceSystem/D3D11PSO.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorCamera.h"
@@ -33,10 +31,14 @@ namespace D3D11
 	using namespace Core;
 	using Microsoft::WRL::ComPtr;
 
+	constexpr const char* DEBUG_SHAPE_PSO = "DebugShapePSO";
+
 	/// @brief Initializes the debug-geometry registry.
 	/// @note Initializes the :DebugShapes base or delegates to its constructor.
 	DebugShapes::DebugShapes()
 		: mShapes(DBG_NEW Common::FTDS::DynamicArray<FTShape*>)
+		, mRenderer(nullptr)
+		, mPSO(nullptr)
 	{
 	}
 
@@ -50,28 +52,25 @@ namespace D3D11
 	D3D11_API FTRectangle* DebugShapes::AddRectangle()
 	{
 		FTRectangle* rect = DBG_NEW FTRectangle;
+		if (mRenderer)
+			rect->Initialize(mRenderer);
 		AddShape(rect);
 		return rect;
 	}
 
 	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.
 	/// @param renderer Renderer providing the graphics device and current render state.
-	void DebugShapes::Initialize()
+	void DebugShapes::Initialize(D3D11Renderer* renderer)
 	{
+		if (renderer)
+			mRenderer = renderer;
+
 		ResourceManager* resources = ResourceManager::GetInstance();
 		if (!resources)
 			return;
 
-		FTVertexShader*	  vertexShader	 = resources->GetVertexShader("DebugShapeVS.hlsl");
-		FTGeometryShader* geometryShader = resources->GetGeometryShader("DebugShapeGS.hlsl");
-		FTPixelShader*	  pixelShader	 = resources->GetPixelShader("DebugShapePS.hlsl");
-		if (!vertexShader || !geometryShader || !pixelShader)
-			return;
-
-		mVS			 = vertexShader->GetShader();
-		mInputLayout = vertexShader->GetInputLayout();
-		mGSSquare	 = geometryShader->GetShader();
-		mPS			 = pixelShader->GetShader();
+		if (!mPSO)
+			mPSO = resources->GetPSO(DEBUG_SHAPE_PSO);
 	}
 
 	/// @brief Submits this object's graphics work for the current frame.
@@ -81,33 +80,17 @@ namespace D3D11
 		if (!renderer || !mShapes || mShapes->GetSize() < 1)
 			return;
 
-		if (!mVS || !mGSSquare || !mPS || !mInputLayout)
-			Initialize();
-		if (!mVS || !mGSSquare || !mPS || !mInputLayout)
-			return;
+		if (!mPSO || !mRenderer)
+			Initialize(renderer);
 
-		// Scene and ImGui draws leave scissor, depth, and blend state that clip or discard the outline.
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
-		context->OMSetBlendState(nullptr, nullptr, 0xffffffff);
-		context->OMSetDepthStencilState(nullptr, 0);
-
-		static Microsoft::WRL::ComPtr<ID3D11RasterizerState> debugRasterizer;
-		if (!debugRasterizer)
-		{
-			D3D11_RASTERIZER_DESC desc;
-			ZeroMemory(&desc, sizeof(desc));
-			desc.FillMode			   = D3D11_FILL_SOLID;
-			desc.CullMode			   = D3D11_CULL_NONE;
-			desc.DepthClipEnable	   = TRUE;
-			desc.ScissorEnable		   = FALSE;
-			desc.AntialiasedLineEnable = TRUE;
-			renderer->GetDevice()->CreateRasterizerState(&desc, debugRasterizer.GetAddressOf());
-		}
-		if (debugRasterizer)
-			context->RSSetState(debugRasterizer.Get());
+		mPSO->SetToPipeline(renderer->GetContext());
 
 		for (auto iter = mShapes->Begin(); iter != mShapes->End(); ++iter)
 			(*iter)->Render(renderer);
+
+		// DebugShapeVS writes COLOR after an extra POSITION. That matches DebugShapePS
+		// only while DebugShapeGS is still bound, so clear it after the whole batch.
+		renderer->GetContext()->GSSetShader(nullptr, nullptr, 0);
 	}
 
 	/// @brief Registers a shape for subsequent rendering.
@@ -144,33 +127,6 @@ namespace D3D11
 			(*iter) = nullptr;
 		}
 		mShapes->Clear();
-	}
-
-	/// @brief Returns the vs used by this debug shapes.
-	/// @return Borrowed access to the vs.
-	/// @note Changes through the returned reference affect this object's stored state.
-	ComPtr<ID3D11VertexShader>& DebugShapes::GetVS() { return mVS; }
-	/// @brief Returns the gssquare used by this debug shapes.
-	/// @return Borrowed access to the gssquare.
-	/// @note Changes through the returned reference affect this object's stored state.
-	ComPtr<ID3D11GeometryShader>& DebugShapes::GetGSSquare() { return mGSSquare; }
-	/// @brief Returns the ps used by this debug shapes.
-	/// @return Borrowed access to the ps.
-	/// @note Changes through the returned reference affect this object's stored state.
-	ComPtr<ID3D11PixelShader>& DebugShapes::GetPS() { return mPS; }
-	/// @brief Returns the input layout used by this debug shapes.
-	/// @return Borrowed access to the input layout.
-	/// @note Changes through the returned reference affect this object's stored state.
-	ComPtr<ID3D11InputLayout>& DebugShapes::GetInputLayout() { return mInputLayout; }
-
-	/// @brief Creates the shader stages required by this rendering resource.
-	/// @param device Direct3D device used to create GPU resources.
-	void DebugShapes::CreateShaders(ComPtr<ID3D11Device>& device)
-	{
-		// std::vector<D3D11_INPUT_ELEMENT_DESC> basicInputElements = {
-		//	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		//	{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		// };
 	}
 
 #ifdef FOXTROT_EDITOR

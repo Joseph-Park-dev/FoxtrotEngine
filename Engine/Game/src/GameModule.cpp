@@ -1,5 +1,7 @@
 #include "Foxtrot/Core/CoreApi.h"
 #include "Foxtrot/Runtime/GameServices.h"
+#include "Foxtrot/Runtime/RuntimeApi.h"
+#include "Script.h"
 #include <cstring>
 namespace
 {
@@ -39,6 +41,11 @@ namespace
 		if (!game.Services || game.Services->Size != sizeof(Foxtrot::GameServices))
 			return Foxtrot::Status::AbiMismatch;
 
+		auto control = static_cast<Foxtrot::RuntimeControl*>(runtime->Query(runtime->Instance, "RuntimeControl"));
+		auto attached = Game::AttachScriptPlugin(control);
+		if (attached != Foxtrot::Status::Ok)
+			return attached;
+
 		auto status = game.Services->RegisterSystem(Tick, &game, &game.System);
 		if (status == Foxtrot::Status::Ok)
 			FtLog("Game initialized");
@@ -64,6 +71,7 @@ namespace
 	void FT_CALL Destroy(void* context) noexcept
 	{
 		Shutdown(context);
+		Game::DestroyScriptPlugin();
 		delete static_cast<GameState*>(context);
 	}
 
@@ -71,8 +79,10 @@ namespace
 	/// @note Unnamed parameter (void*): reserved by this interface or unused by this implementation.
 	/// @note Unnamed parameter (const char*): reserved by this interface or unused by this implementation.
 	/// @return Borrowed interface pointer, or nullptr when the interface is unsupported.
-	void* FT_CALL Query(void*, const char*) noexcept
+	void* FT_CALL Query(void*, const char* name) noexcept
 	{
+		if (name && std::strcmp(name, "LegacyPlugin") == 0)
+			return Game::GetScriptPlugin();
 		return nullptr;
 	}
 } // namespace

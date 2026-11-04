@@ -76,6 +76,7 @@
     <ClCompile Include="src\Platform\Win32Window.cpp" />
     <ClCompile Include="src\InputSystem\D3D11InputDevice.cpp" />
     <ClCompile Include="src\Component\Data\ComponentData.cpp" />
+    <ClCompile Include="src\Behavior\FTBehavior.cpp" />
     <ClInclude Include="include\Actor\Actor.h" />
     <ClInclude Include="include\Actor\ActorData.h" />
     <ClInclude Include="include\Actor\ActorGroup.h" />

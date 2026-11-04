@@ -16,6 +16,9 @@
     <ClCompile Include="src\Actor\ActorData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Behavior\FTBehavior.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\Manager\PluginManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

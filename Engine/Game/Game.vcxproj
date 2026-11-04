@@ -14,15 +14,20 @@
 <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
 <PropertyGroup><TargetName>Game</TargetName></PropertyGroup>
 <ItemDefinitionGroup><ClCompile>
-<AdditionalIncludeDirectories>$(SolutionDir)Engine\EngineRuntime\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+<AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)Engine\EngineRuntime\include;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Graphics\include;$(SolutionDir)Engine\InputSystem\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 <PreprocessorDefinitions>;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 </ClCompile>
-<Link><ModuleDefinitionFile>$(ProjectDir)Module.def</ModuleDefinitionFile><AdditionalDependencies>;%(AdditionalDependencies)</AdditionalDependencies><SubSystem>Console</SubSystem></Link></ItemDefinitionGroup>
+<Link><ModuleDefinitionFile>$(ProjectDir)Module.def</ModuleDefinitionFile><AdditionalDependencies>EngineRuntime.lib;%(AdditionalDependencies)</AdditionalDependencies><SubSystem>Console</SubSystem></Link></ItemDefinitionGroup>
 <ItemGroup>
 <ClCompile Include="src\GameModule.cpp"/>
+<ClCompile Include="src\Script.cpp"/>
+</ItemGroup>
+<ItemGroup>
+<ClInclude Include="include\Script.h"/>
 </ItemGroup>
 <ItemGroup>
 <ProjectReference Include="..\Core\Core.vcxproj"><Project>{cce9835e-f788-4b51-930b-d7805ac1e2a0}</Project></ProjectReference>
+<ProjectReference Include="..\EngineRuntime\EngineRuntime.vcxproj"><Project>{B9E4C0BB-30E3-4D40-A0ED-46084649AE62}</Project></ProjectReference>
 </ItemGroup>
 <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
 </Project>

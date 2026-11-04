@@ -122,8 +122,6 @@ namespace D3D11
 			return;
 
 		DebugShapes* dbgShapes = DebugShapes::GetInstance();
-		if (!dbgShapes->GetVS() || !dbgShapes->GetGSSquare() || !dbgShapes->GetPS() || !dbgShapes->GetInputLayout())
-			return;
 
 		UINT stride = sizeof(DebugVertex);
 		UINT offset = 0;
@@ -132,30 +130,22 @@ namespace D3D11
 
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context = renderer->GetContext();
 
-		context->VSSetShader(dbgShapes->GetVS().Get(), 0, 0);
 		context->VSSetConstantBuffers(0, 1, mVSCBuf.GetAddressOf());
-
-		context->GSSetShader(dbgShapes->GetGSSquare().Get(), 0, 0);
 		ID3D11Buffer* geometryBuffers[2] = {
 			mVSCBuf.Get(),
 			mGSCBuf.Get()
 		};
 		context->GSSetConstantBuffers(0, 2, geometryBuffers);
 
-		context->PSSetShader(dbgShapes->GetPS().Get(), 0, 0);
 		context->PSSetConstantBuffers(0, 1, mPSCBuf.GetAddressOf());
 		// DebugShapePS keeps alphaThres in $Globals (b1). A leftover sprite buffer makes every pixel fail the clip.
 		ID3D11Buffer* unboundPixel = nullptr;
 		context->PSSetConstantBuffers(1, 1, &unboundPixel);
 
-		context->IASetInputLayout(dbgShapes->GetInputLayout().Get());
 		context->IASetVertexBuffers(0, 1, mMesh->VertexBuffer.GetAddressOf(), &stride, &offset);
 		// The debug mesh is a point list. A null index buffer with R32_UINT is rejected by the debug layer and the draw is removed.
 		context->IASetIndexBuffer(nullptr, DXGI_FORMAT_UNKNOWN, 0);
-		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 		context->Draw(mMesh->VertexCount, 0);
-
-		context->GSSetShader(nullptr, 0, 0);
 	}
 
 	/// @brief Submits this object's graphics work for the current frame.

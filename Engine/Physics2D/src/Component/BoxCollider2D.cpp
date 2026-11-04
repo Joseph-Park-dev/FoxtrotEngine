@@ -13,6 +13,7 @@
 #include "Actor/IActor.h"
 #include "Actor/Transform.h"
 #include "Component/Rigidbody2D.h"
+#include "Core/FTCore.h"
 #include "Debugging/DebugMemAlloc.h"
 #include "FileSystem/FileIOHelper.h"
 #include "FTDS/Dynamic/DynamicArray.h"
@@ -54,23 +55,25 @@ namespace Physics2D
 			b2ShapeDef polygonShapeDef			= b2DefaultShapeDef();
 			polygonShapeDef.filter.categoryBits = static_cast<uint64_t>(GetOwner()->GetActorGroup());
 
-			const Math::FTVector3& ownerScale = GetOwner()->GetTransform()->GetWorldScale();
-			Math::FTVector2		   polygonScale(mScale.x * ownerScale.x, mScale.y * ownerScale.y);
-			b2Polygon			   polygon = b2MakeBox(polygonScale.x / 2.f, polygonScale.y / 2.f);
+			b2Polygon polygon = MakePolygon();
+			GetShapeID()	  = b2CreatePolygonShape(rb->GetBodyID(), &polygonShapeDef, &polygon);
 
-			GetShapeID() = b2CreatePolygonShape(rb->GetBodyID(), &polygonShapeDef, &polygon);
+			if (!mDebugRect)
+				mDebugRect = D3D11::DebugShapes::GetInstance()->AddRectangle();
 		}
-
 		Collider2D::Initialize();
+	}
+
+	void BoxCollider2D::Render(Graphics::IRenderer* renderer, Graphics::ICamera* camInst)
+	{
+		SyncDebugRect(renderer, camInst);
 	}
 
 	BoxCollider2D::BoxCollider2D(Common::IActor* owner)
 		: Collider2D(owner)
 		, mScale(1.f, 1.f)
-#ifdef FOXTROT_EDITOR
 		, mDebugRect(nullptr)
 		, mDebugGpuFailed(false)
-#endif
 	{
 	}
 
@@ -78,20 +81,15 @@ namespace Physics2D
 	{
 		if (b2Shape_IsValid(GetShapeID()))
 			b2DestroyShape(GetShapeID(), true);
-#ifdef FOXTROT_EDITOR
-		if (mDebugRect)
-		{
-			D3D11::DebugShapes::GetInstance()->RemoveShape(mDebugRect);
-			mDebugRect = nullptr;
-		}
-#endif
 	}
 
 	void BoxCollider2D::CloneTo(Common::IActor* actor)
 	{
 		BoxCollider2D* newComp = DBG_NEW BoxCollider2D(actor);
+		newComp->SetShowDebugShape(IsShowingDebugShape());
 		newComp->SetOffsetPos(GetOffsetPos());
-		newComp->mScale = mScale;
+		newComp->mScale		= mScale;
+
 		if (actor && actor->GetComponents())
 			actor->GetComponents()->PushBack(newComp);
 		RegisterOwnedComponent(newComp);
@@ -114,59 +112,95 @@ namespace Physics2D
 		return GetOwner()->GetData()->GetComponent<Rigidbody2D>() != nullptr;
 	}
 
+	b2Polygon BoxCollider2D::MakePolygon()
+	{
+		float halfWidth	 = Math::Abs(mScale.x) * 0.5f;
+		float halfHeight = Math::Abs(mScale.y) * 0.5f;
+		if (GetOwner() && GetOwner()->GetTransform())
+		{
+			const Math::FTVector3& ownerScale = GetOwner()->GetTransform()->GetWorldScale();
+			halfWidth *= Math::Abs(ownerScale.x);
+			halfHeight *= Math::Abs(ownerScale.y);
+		}
+
+		const Math::FTVector2 offset = GetOffsetPos();
+		return b2MakeOffsetBox(halfWidth, halfHeight, b2Vec2{ offset.x, offset.y }, b2MakeRot(0.f));
+	}
+
+	void BoxCollider2D::ApplyPolygon()
+	{
+		if (!b2Shape_IsValid(GetShapeID()))
+			return;
+
+		b2Polygon polygon = MakePolygon();
+		b2Shape_SetPolygon(GetShapeID(), &polygon);
+	}
+
 #ifdef FOXTROT_EDITOR
+	void BoxCollider2D::SyncDebugRect(Graphics::IRenderer* renderer, Graphics::ICamera* camInst)
+	{
+		if (mDebugGpuFailed)
+			return;
+
+		if (!mDebugRect || !mDebugRect->GetMesh() || !mDebugRect->GetMesh()->VertexBuffer)
+			return;
+
+		mDebugRect->SetIsActive(true);
+
+		if (!GetOwner() || !GetOwner()->GetTransform())
+			return;
+
+		Core::Transform*	   transform  = GetOwner()->GetTransform();
+		const Math::FTVector2  offset	= GetOffsetPos();
+		const Math::FTVector3& worldPos = transform->GetWorldPosition();
+		const Math::FTVector3  worldRot = transform->GetWorldRotation();
+		Math::FTVector3		   pos		= worldPos;
+		float				   bodyAngle = worldRot.z;
+
+		Rigidbody2D* rb = nullptr;
+		if (GetOwner()->GetData() && GetOwner()->GetData()->Components)
+			rb = GetOwner()->GetData()->GetComponent<Rigidbody2D>();
+		if (rb && b2Body_IsValid(rb->GetBodyID()))
+		{
+			if (!Core::FTCore::GetInstance()->GetIsUpdating())
+			{
+				b2Body_SetTransform(
+					rb->GetBodyID(),
+					b2Vec2{ worldPos.x, worldPos.y },
+					b2MakeRot(bodyAngle));
+			}
+
+			bodyAngle				= b2Rot_GetAngle(b2Body_GetRotation(rb->GetBodyID()));
+			const b2Pos shapeCenter = b2Body_GetWorldPoint(rb->GetBodyID(), b2Vec2{ offset.x, offset.y });
+			pos.x					= static_cast<float>(shapeCenter.x);
+			pos.y					= static_cast<float>(shapeCenter.y);
+		}
+		else
+		{
+			const float cosine = Math::Cos(bodyAngle);
+			const float sine   = Math::Sin(bodyAngle);
+			pos.x += offset.x * cosine - offset.y * sine;
+			pos.y += offset.x * sine + offset.y * cosine;
+		}
+
+		// DebugShapeVS builds the quad from one matrix column. A non-uniform scale
+		// bends that column, so only the body yaw goes into the matrix.
+		const Math::FTVector3  boxRot(0.f, 0.f, bodyAngle);
+		const Math::FTVector3& worldScale = transform->GetWorldScale();
+		const Math::FTVector3  scale(
+			Math::Abs(worldScale.x * mScale.x),
+			Math::Abs(worldScale.y * mScale.y),
+			1.f);
+		UpdateDebugShapes(pos, boxRot, scale, camInst);
+	}
+
 	void BoxCollider2D::EditorUpdate(float deltaTime)
 	{
 	}
 
 	void BoxCollider2D::EditorRender(Graphics::IRenderer* renderer, Graphics::ICamera* camInst)
 	{
-		if (!IsShowingDebugShape() || mDebugGpuFailed)
-			return;
-
-		D3D11::D3D11Renderer* d3dRenderer = static_cast<D3D11::D3D11Renderer*>(renderer);
-		if (!mDebugRect)
-		{
-			mDebugRect = D3D11::CreateFTRectangle();
-			if (mDebugRect)
-				D3D11::DebugShapes::GetInstance()->AddShape(mDebugRect);
-		}
-
-		// GPU buffers are created once a device exists. A failed create must not run again next frame.
-		if (mDebugRect && d3dRenderer && mDebugRect->GetMesh() && !mDebugRect->GetMesh()->VertexBuffer)
-		{
-			try
-			{
-				mDebugRect->Initialize(d3dRenderer);
-			}
-			catch (const D3D11::DX::com_exception&)
-			{
-				D3D11::DebugShapes::GetInstance()->RemoveShape(mDebugRect);
-				mDebugRect		 = nullptr;
-				mDebugGpuFailed	 = true;
-				return;
-			}
-		}
-
-		if (mDebugRect)
-			mDebugRect->SetIsActive(true);
-
-		if (!GetOwner() || !GetOwner()->GetTransform())
-			return;
-
-		Core::Transform*	  transform = GetOwner()->GetTransform();
-		const Math::FTVector2 offset	= GetOffsetPos();
-		Math::FTVector3		  pos		= transform->GetWorldPosition();
-		pos.x += offset.x;
-		pos.y += offset.y;
-
-		const Math::FTVector3  rot		  = transform->GetWorldRotation();
-		const Math::FTVector3& worldScale = transform->GetWorldScale();
-		const Math::FTVector3  scale(
-			worldScale.x * mScale.x,
-			worldScale.y * mScale.y,
-			1.f);
-		UpdateDebugShapes(pos, rot, scale, camInst);
+		SyncDebugRect(renderer, camInst);
 	}
 
 	void BoxCollider2D::EditorUIUpdate()
@@ -182,7 +216,7 @@ namespace Physics2D
 
 		if (mDebugRect->GetIsActive())
 		{
-			mDebugRect->UpdateModelMatrix(pos, rot, scale);
+			mDebugRect->UpdateModelMatrix(pos, rot, Math::FTVector3(1.f, 1.f, 1.f));
 			mDebugRect->GetGSCData().size = Math::FTVector2(scale.x, scale.y);
 			mDebugRect->UpdateGC(cameraInst);
 			mDebugRect->UpdatePC();
@@ -192,8 +226,6 @@ namespace Physics2D
 	void BoxCollider2D::ToggleDebugShape()
 	{
 		Collider2D::ToggleDebugShape();
-		if (mDebugRect)
-			mDebugRect->SetIsActive(IsShowingDebugShape());
 	}
 
 	void BoxCollider2D::UpdateScale()
@@ -206,11 +238,7 @@ namespace Physics2D
 			if (mScale.x <= 0.f || mScale.y <= 0.f || !GetOwner() || !GetOwner()->GetTransform())
 				return;
 
-			const Math::FTVector3& ownerScale = GetOwner()->GetTransform()->GetWorldScale();
-			Math::FTVector2		   resultantScale(mScale.x * ownerScale.x, mScale.y * ownerScale.y);
-			b2Polygon			   polygon = b2MakeBox(resultantScale.x / 2.f, resultantScale.y / 2.f);
-			if (b2Shape_IsValid(GetShapeID()))
-				b2Shape_SetPolygon(GetShapeID(), &polygon);
+			ApplyPolygon();
 		}
 	}
 #endif

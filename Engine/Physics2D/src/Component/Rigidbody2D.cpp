@@ -77,7 +77,7 @@ namespace Physics2D
 		GetOwner()->GetTransform()->SetWorldPosition(Math::FTVector3(position.x, position.y, current.z));
 
 		Math::FTVector3 prevRot	   = GetOwner()->GetTransform()->GetWorldRotation();
-		Math::FTVector3 updatedRot = Math::FTVector3(prevRot.x, prevRot.y, -b2Rot_GetAngle(rotation));
+		Math::FTVector3 updatedRot = Math::FTVector3(prevRot.x, prevRot.y, b2Rot_GetAngle(rotation));
 		GetOwner()->GetTransform()->SetWorldRotation(updatedRot);
 	}
 
@@ -117,7 +117,7 @@ namespace Physics2D
 			if (actor && actor->GetTransform())
 			{
 				bodyDef.position = ToB2Vec2(actor->GetTransform()->GetWorldPosition());
-				bodyDef.rotation = b2MakeRot(-actor->GetTransform()->GetWorldRotation().z);
+				bodyDef.rotation = b2MakeRot(actor->GetTransform()->GetWorldRotation().z);
 			}
 			newComp->mBodyID = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &bodyDef);
 		}
@@ -193,7 +193,7 @@ namespace Physics2D
 		if (GetOwner() && GetOwner()->GetTransform())
 		{
 			bodyDef.position = ToB2Vec2(GetOwner()->GetTransform()->GetWorldPosition());
-			bodyDef.rotation = b2MakeRot(-GetOwner()->GetTransform()->GetWorldRotation().z);
+			bodyDef.rotation = b2MakeRot(GetOwner()->GetTransform()->GetWorldRotation().z);
 		}
 
 		if (GetPhysics2D())
@@ -217,7 +217,7 @@ void Rigidbody2D::PrepareForSimulation()
 			if (GetOwner() && GetOwner()->GetTransform())
 			{
 				bodyDef.position = ToB2Vec2(GetOwner()->GetTransform()->GetWorldPosition());
-				bodyDef.rotation = b2MakeRot(-GetOwner()->GetTransform()->GetWorldRotation().z);
+				bodyDef.rotation = b2MakeRot(GetOwner()->GetTransform()->GetWorldRotation().z);
 			}
 			mBodyID = b2CreateBody(GetPhysics2DWorldID(), &bodyDef);
 		}
@@ -236,9 +236,11 @@ void Rigidbody2D::PrepareForSimulation()
 			Common::FTDS::DynamicArray<Common::IComponent*>* components = GetOwner()->GetComponents();
 			for (auto component = components->Begin(); component != components->End(); ++component)
 			{
-				if (Collider2D* col = static_cast<Collider2D*>(*component))
+				if (Collider2D* col = dynamic_cast<Collider2D*>(*component))
 				{
-					if (!b2Shape_IsValid(col->GetShapeID()))
+					if (b2Shape_IsValid(col->GetShapeID()))
+						continue;
+					else
 					{
 						col->Initialize();
 						shapesAdded = shapesAdded || b2Shape_IsValid(col->GetShapeID());

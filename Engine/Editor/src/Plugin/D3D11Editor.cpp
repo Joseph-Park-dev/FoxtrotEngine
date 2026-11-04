@@ -400,6 +400,7 @@ namespace Editor
 				mGameCamera->Data()->ResY = mGameWin->GetHeight();
 			}
 			RenderScene(mRenderer, mGameCamera, false);
+			D3D11::DebugShapes::GetInstance()->Render(mRenderer);
 			mGameWin->EndRender(mRenderer);
 		}
 

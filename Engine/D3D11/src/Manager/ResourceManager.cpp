@@ -347,6 +347,22 @@ namespace D3D11
 
 			mPSOs->AddResource(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
 		}
+
+		{
+			psoDef.FileName = "DebugShapePSO";
+			psoDef.Path		= Common::ChunkKey::NullVal::NULL_OBJECT;
+
+			psoDef.VS			= VS.At("DebugShapeVS.hlsl")->Value();
+			psoDef.GS			= GS.At("DebugShapeGS.hlsl")->Value();
+			psoDef.PS			= PS.At("DebugShapePS.hlsl")->Value();
+			psoDef.BS			= nullptr;
+			psoDef.DSS			= nullptr;
+			psoDef.RS			= WireframeRS;
+			psoDef.SS			= SamplerState;
+			psoDef.PrimTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
+
+			mPSOs->AddResource(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
+		}
 	}
 
 	/// @brief Restores resource entries from a .chunk data pack.

@@ -73,6 +73,7 @@ namespace Editor
 
 	class Command;
 	class EditorCamera;
+	struct EditorPluginModule;
 	class EditorLayer
 	{
 		SINGLETON(EditorLayer)
@@ -138,6 +139,9 @@ namespace Editor
 		/// @brief Tests whether the cursor lies inside the scene viewport bounds.
 		/// @return True when the cursor lies inside the scene viewport bounds; otherwise false.
 		bool CursorOnViewport() const;
+
+		/// @brief Maps the open project's Game.dll when it is not the loaded module, then refreshes component factories.
+		void RefreshGameBehaviors();
 
 	public:
 		// Pops up a message box with confirm button only.
@@ -234,6 +238,9 @@ namespace Editor
 		InfoType	   mInfoType;
 		ErrorType	   mErrorType;
 		FileMenuEvents mFileMenuEvent;
+		bool		   mPluginManagerOpen;
+		Common::FTDS::String mPluginStatus;
+		Common::FTDS::DynamicArray<EditorPluginModule*>* mEditorPlugins;
 
 		D3D11::ViewportRenderer* mViewport;
 
@@ -273,6 +280,43 @@ namespace Editor
 		// & calls the related functions.
 		/// @brief Builds editor controls for engine manager state.
 		void DisplayManagersMenu();
+
+		/// @brief Opens the plugin manager and lists available and loaded plugin DLLs.
+		void DisplayPluginManagerMenu();
+		/// @brief Loads every plugin DLL in the project directory, reloading ones already imported.
+		void ReimportAllPlugins();
+		/// @brief Unloads one plugin DLL and loads it again.
+		/// @param moduleName Plugin or module name shown in the loaded list.
+		/// @return True when the plugin is attached after the reload.
+		bool HotReloadPlugin(const char* moduleName);
+		/// @brief Unloads one plugin DLL and leaves it unmapped.
+		/// @param moduleName Plugin or module name shown in the loaded list.
+		/// @return True when the plugin DLL was released.
+		bool UnloadPlugin(const char* moduleName);
+		/// @brief Unloads plugin DLLs imported by the editor.
+		void ReleaseEditorPlugins();
+		/// @brief Appends plugin DLL paths found directly in the project directory.
+		/// @param paths Receives owned path strings. The caller deletes each entry.
+		void CollectPluginDlls(Common::FTDS::DynamicArray<Common::FTDS::String*>& paths) const;
+		/// @brief Loads one plugin DLL that the executable has not already loaded.
+		/// @param path Filesystem path of the DLL.
+		/// @return True when the plugin was attached.
+		bool LoadPluginFile(const char* path);
+		/// @brief Unloads one plugin DLL previously loaded by the editor.
+		/// @param moduleName Plugin or module name.
+		/// @return True when an editor-owned plugin of that name was released.
+		bool UnloadOwnedPlugin(const char* moduleName);
+		/// @brief Tests whether the editor loaded this plugin DLL.
+		/// @param moduleName Plugin or module name.
+		/// @return True when the editor owns the loaded module.
+		bool OwnsPlugin(const char* moduleName) const;
+		/// @brief Resolves a plugin name to a DLL path in the project directory.
+		/// @param moduleName Plugin or module name.
+		/// @param path Receives the matching DLL path.
+		/// @return True when a matching DLL is present.
+		bool FindPluginFile(const char* moduleName, Common::FTDS::String& path) const;
+		/// @brief Refreshes component factories and editor services after a plugin load.
+		void RefreshAfterPluginLoad();
 
 		// Displays list of EditorElements in the Scene.
 		// & calls the related functions.

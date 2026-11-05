@@ -10,6 +10,8 @@
 
 #include "EditorLayer.h"
 
+#include <filesystem>
+#include <string>
 #include <unordered_map>
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui/imgui.h>
@@ -63,7 +65,7 @@ namespace Editor
 		mGetAssetPathFunc	 = Core::GetFunc<GET_ASSET_PATH_FUNC>(Common::DLLPath::CORE_EDITOR, ProcName::GetAssetPath);
 		mSetChunkIsSavedFunc = Core::GetFunc<SET_CHUNK_IS_SAVED_FUNC>(Common::DLLPath::CORE_EDITOR, ProcName::SetChunkIsSaved);
 
-		ComponentRegistry::GetInstance()->FetchFromImportedDLLs();
+		RefreshGameBehaviors();
 
 		mRenderer	= renderer;
 		mResService = DBG_NEW Common::FTDS::DynamicArray<Core::IEditorResourceService*>;
@@ -254,6 +256,7 @@ namespace Editor
 
 			DisplayEditMenu();
 			DisplayManagersMenu();
+			DisplayPluginManagerMenu();
 
 			if (ImGui::Button("New Empty Actor"))
 				reinterpret_cast<EditorScene*>(EditorSceneManager::GetInstance()->GetCurrentScene())
@@ -873,6 +876,42 @@ namespace Editor
 		}
 	}
 
+	/// @brief Maps the open project's Game.dll when it is not the loaded module, then refreshes component factories.
+	void EditorLayer::RefreshGameBehaviors()
+	{
+		static std::wstring attempted;
+		if (mGetProjPathFunc)
+		{
+			Common::FTDS::String* project = mGetProjPathFunc();
+			if (project && project->C_Str() && project->C_Str()[0])
+			{
+				std::error_code		  error;
+				std::filesystem::path plugins = std::filesystem::path(project->C_Str()) / "Plugins" / "Game.dll";
+				if (std::filesystem::exists(plugins, error))
+				{
+					bool matches = false;
+					if (HMODULE game = GetModuleHandleA("Game.dll"))
+					{
+						wchar_t loaded[32768]{};
+						if (GetModuleFileNameW(game, loaded, 32768))
+							matches = std::filesystem::equivalent(plugins, loaded, error) && !error;
+					}
+
+					const std::wstring key = plugins.wstring();
+					if (!matches && attempted != key)
+					{
+						attempted = key;
+						ReloadPluginModule("Game");
+					}
+					else if (matches)
+						attempted.clear();
+				}
+			}
+		}
+
+		ComponentRegistry::GetInstance()->FetchFromImportedDLLs();
+	}
+
 	/// @brief Loads the selected editor project and its configured paths.
 	/// @param path Filesystem path of the resource or project.
 	void EditorLayer::OpenProject(std::string& path)
@@ -883,6 +922,7 @@ namespace Editor
 			EditorShapes::GetInstance()->DeleteAll();
 			// ResourceManager::GetInstance()->DeleteAll();
 			DirectoryHelper::GetInstance()->SetProjectPath(path.c_str());
+			RefreshGameBehaviors();
 
 			// CSV, JSON, and text have to be loaded before graphics resources that reference them.
 			Core::IEditorResourceService* coreService = nullptr;
@@ -981,6 +1021,7 @@ namespace Editor
 	/// @brief Releases runtime services and resources during engine shutdown.
 	void EditorLayer::ShutDown()
 	{
+		ReleaseEditorPlugins();
 		if (!ImGui::GetCurrentContext())
 			return;
 
@@ -1014,6 +1055,9 @@ namespace Editor
 		, mDraggedEditorElement(nullptr)
 		, mInfoType(InfoType::None)
 		, mFileMenuEvent(FileMenuEvents::None)
+		, mPluginManagerOpen(false)
+		, mPluginStatus()
+		, mEditorPlugins(DBG_NEW Common::FTDS::DynamicArray<EditorPluginModule*>(8))
 		, mViewport(nullptr)
 		, mErrorType(ErrorType::None)
 		, mSetChunkIsSavedFunc(nullptr)
@@ -1028,6 +1072,8 @@ namespace Editor
 	/// @brief Completes destruction through the object's inheritance hierarchy.
 	EditorLayer::~EditorLayer()
 	{
+		ReleaseEditorPlugins();
+		delete mEditorPlugins;
 		delete mResService;
 	}
 } // namespace Editor

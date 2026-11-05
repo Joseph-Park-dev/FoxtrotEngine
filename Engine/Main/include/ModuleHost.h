@@ -25,8 +25,8 @@ public:
 	/// @return No value; this overload is deleted and cannot be called.
 	ModuleHost& operator=(const ModuleHost&) = delete;
 
-	/// @brief Loads a DLL beside the executable, validates its module ABI, and initializes it once.
-	/// @param file Source filename or module file to load.
+	/// @brief Loads a DLL, validates its module ABI, and initializes it once.
+	/// @param file Filename beside the executable, or an absolute path.
 	/// @param expectedName Module name required by the host's ABI validation.
 	/// @return Borrowed module descriptor, valid until Shutdown() or host destruction.
 	/// @pre file and expectedName must be valid null-terminated strings.
@@ -38,6 +38,17 @@ public:
 	/// @return Borrowed descriptor, or nullptr for a null or unknown name.
 	const Foxtrot::ModuleAPI* Find(const char* name) const noexcept;
 
+	/// @brief Unloads one hosted plugin DLL and loads it again.
+	/// @param expectedName Module name required by the host's ABI validation.
+	/// @param fileOverride Absolute or host-relative DLL path. Null keeps the path used for the previous load.
+	/// @return Ok when the module was attached again. InvalidArgument when this host did not load it. Busy when the module must stay mapped. Failed when reload did not complete.
+	Foxtrot::Status Reload(const char* expectedName, const wchar_t* fileOverride = nullptr);
+
+	/// @brief Unloads one hosted plugin DLL and leaves it unmapped.
+	/// @param expectedName Module name required by the host's ABI validation.
+	/// @return Ok when the module was released. InvalidArgument when this host did not load it. Busy when the module must stay mapped. Failed when unload did not complete.
+	Foxtrot::Status Unload(const char* expectedName);
+
 	/// @brief Shuts down, destroys, and unloads modules in reverse load order.
 	/// @note Invalidates all descriptors and service pointers obtained from these modules.
 	void Shutdown() noexcept;
@@ -48,6 +59,7 @@ private:
 		HMODULE			   Handle{};
 		Foxtrot::ModuleAPI API{};
 		bool			   Initialized{};
+		std::wstring	   File;
 	};
 
 	/// @brief Root directory path where the DLL is loaded from.

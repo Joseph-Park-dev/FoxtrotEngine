@@ -40,6 +40,7 @@
 <ClCompile Include="src\ChunkLoader.cpp"/>
 <ClCompile Include="src\EditorElement.cpp"/>
 <ClCompile Include="src\EditorLayer.cpp"/>
+<ClCompile Include="src\EditorPluginMenu.cpp"/>
 <ClCompile Include="src\Manager\ResourceManager.cpp"/>
 <ClCompile Include="src\EditorScene.cpp"/>
 <ClCompile Include="src\EditorSceneManager.cpp"/>

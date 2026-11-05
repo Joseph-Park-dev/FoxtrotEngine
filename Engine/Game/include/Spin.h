@@ -1,11 +1,11 @@
 #pragma once
 #include "Script.h"
 
-class ChangedScript : public Game::Script
+class HelloWorld : public Game::Script
 {
 public:
-	static constexpr const char* NAME = "Script is changed";
-	ChangedScript(Common::IActor* owner)
+	static constexpr const char* NAME = "HelloWorld";
+	HelloWorld(Common::IActor* owner)
 		: Script(owner, NAME)
 	{
 	}
@@ -15,4 +15,4 @@ public:
 	}
 };
 
-REGISTERED_SCRIPT(ChangedScript)
+REGISTERED_SCRIPT(HelloWorld)

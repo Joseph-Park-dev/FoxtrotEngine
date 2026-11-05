@@ -453,6 +453,9 @@ namespace Editor
 	{
 		if (ImGui::BeginPopup("CompSelectPopUp"))
 		{
+			if (ImGui::IsWindowAppearing())
+				EditorLayer::GetInstance()->RefreshGameBehaviors();
+
 			ImGui::SeparatorText("Add Components");
 
 			Common::FTDS::HashMap<ComponentFactoryEntry>& factories =

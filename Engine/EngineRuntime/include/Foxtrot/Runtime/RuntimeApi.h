@@ -13,5 +13,8 @@ namespace Foxtrot
 
 		// Deletes the current scene’s objects, releases world resources, and clears the running flag. Repeated calls are guarded.
 		void(FT_CALL* Stop)() noexcept;
+
+		// Removes a plugin from the runtime registry. Does not delete the plugin.
+		Status(FT_CALL* Detach)(const char*) noexcept;
 	};
 } // namespace Foxtrot

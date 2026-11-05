@@ -207,6 +207,24 @@ namespace
 		}
 	}
 
+	/// @brief Removes a plugin from the runtime registry without deleting it.
+	/// @param name Name used when the plugin was attached.
+	/// @return Status indicating whether the operation completed successfully.
+	Foxtrot::Status FT_CALL Detach(const char* name) noexcept
+	{
+		if (!name)
+			return Foxtrot::Status::InvalidArgument;
+		try
+		{
+			Core::PluginManager::GetInstance()->Detach(name);
+			return Foxtrot::Status::Ok;
+		}
+		catch (...)
+		{
+			return Foxtrot::Status::Failed;
+		}
+	}
+
 	/// @brief Executes the requested runtime session.
 	/// @param maxFrames Maximum number of frames to run.
 	/// @return Status indicating whether the operation completed successfully.
@@ -234,7 +252,7 @@ namespace
 	=====================================*/
 
 	// This will be accessed through func "Query"
-	Foxtrot::RuntimeControl					  control{ Attach, Run, Stop };
+	Foxtrot::RuntimeControl					  control{ Attach, Run, Stop, Detach };
 	Common::FTDS::Array<Common::FTDS::String> dLLList;
 
 	/// @brief Returns the named module service supported by this ABI adapter.

@@ -3,6 +3,8 @@
 #include <cstdio>
 #include <cstring>
 #include <filesystem>
+#include <fstream>
+#include <string>
 
 #include <Windows.h>
 
@@ -69,20 +71,20 @@ namespace
 			{
 				const IMAGE_DATA_DIRECTORY& directory = nt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
 				auto						rvaToPtr  = [&](DWORD rva) -> const uint8_t* {
-					   const IMAGE_SECTION_HEADER* section = IMAGE_FIRST_SECTION(nt);
-					   for (WORD i = 0; i < nt->FileHeader.NumberOfSections; ++i)
-					   {
-						   DWORD span = section[i].Misc.VirtualSize;
-						   if (span < section[i].SizeOfRawData)
-							   span = section[i].SizeOfRawData;
-						   if (rva < section[i].VirtualAddress || rva >= section[i].VirtualAddress + span)
-							   continue;
-						   const size_t offset = static_cast<size_t>(section[i].PointerToRawData) + (rva - section[i].VirtualAddress);
-						   if (offset >= size)
-							   return nullptr;
-						   return base + offset;
-					   }
-					   return nullptr;
+					const IMAGE_SECTION_HEADER* section = IMAGE_FIRST_SECTION(nt);
+					for (WORD i = 0; i < nt->FileHeader.NumberOfSections; ++i)
+					{
+						DWORD span = section[i].Misc.VirtualSize;
+						if (span < section[i].SizeOfRawData)
+							span = section[i].SizeOfRawData;
+						if (rva < section[i].VirtualAddress || rva >= section[i].VirtualAddress + span)
+							continue;
+						const size_t offset = static_cast<size_t>(section[i].PointerToRawData) + (rva - section[i].VirtualAddress);
+						if (offset >= size)
+							return nullptr;
+						return base + offset;
+					}
+					return nullptr;
 				};
 
 				if (directory.VirtualAddress != 0)
@@ -139,6 +141,62 @@ namespace
 		out.Assign(name);
 		out.Append(".dll");
 	}
+
+	/// @brief Starts script/build-game.bat without waiting, so the editor can answer its unload and reload requests.
+	/// @return True when a new build process was started. False when one is already running or the script could not be started.
+	bool LaunchBuildGameBat(bool& alreadyRunning)
+	{
+		alreadyRunning			   = false;
+		static HANDLE buildProcess = nullptr;
+		if (buildProcess)
+		{
+			if (WaitForSingleObject(buildProcess, 0) == WAIT_TIMEOUT)
+			{
+				alreadyRunning = true;
+				return false;
+			}
+			CloseHandle(buildProcess);
+			buildProcess = nullptr;
+		}
+
+		wchar_t		exePath[32768]{};
+		const DWORD count = GetModuleFileNameW(nullptr, exePath, 32768);
+		if (count == 0 || count >= 32768)
+			return false;
+
+		std::error_code		  error;
+		std::filesystem::path directory = std::filesystem::path(exePath).parent_path();
+		std::filesystem::path bat;
+		for (int depth = 0; depth < 8 && !directory.empty(); ++depth)
+		{
+			const std::filesystem::path candidate = directory / L"script" / L"build-game.bat";
+			if (std::filesystem::is_regular_file(candidate, error) && !error)
+			{
+				bat = candidate;
+				break;
+			}
+			const std::filesystem::path parent = directory.parent_path();
+			if (parent == directory)
+				break;
+			directory = parent;
+		}
+		if (bat.empty())
+			return false;
+
+		std::wstring command = L"cmd.exe /c \"";
+		command += bat.wstring();
+		command += L"\"";
+
+		STARTUPINFOW startup{};
+		startup.cb = sizeof(startup);
+		PROCESS_INFORMATION process{};
+		if (!CreateProcessW(nullptr, command.data(), nullptr, nullptr, FALSE, CREATE_NEW_CONSOLE, nullptr, nullptr, &startup, &process))
+			return false;
+
+		CloseHandle(process.hThread);
+		buildProcess = process.hProcess;
+		return true;
+	}
 } // namespace
 
 namespace Editor
@@ -169,12 +227,23 @@ namespace Editor
 		if (module->Initialized && module->Api.Destroy)
 			module->Api.Destroy(module->Api.Instance);
 		module->Initialized = false;
-		module->Api		 = {};
+		module->Api			= {};
 		if (module->Handle)
 		{
 			FreeLibrary(module->Handle);
 			module->Handle = nullptr;
 		}
+	}
+
+	void EditorLayer::RefreshGamePlugin()
+	{
+		bool alreadyRunning = false;
+		if (LaunchBuildGameBat(alreadyRunning))
+			mPluginStatus.Assign("Building Game.dll...");
+		else if (alreadyRunning)
+			mPluginStatus.Assign("Game.dll build is already running.");
+		else
+			mPluginStatus.Assign("Failed to start script\\build-game.bat.");
 	}
 
 	/// @brief Opens the plugin manager and lists available and loaded plugin DLLs.
@@ -217,7 +286,7 @@ namespace Editor
 		ImGui::Separator();
 		ImGui::TextUnformatted("Loaded");
 		Common::FTDS::String reloadName;
-		auto*				 plugins = Core::GetAvailablePlugins();
+		auto*				 plugins   = Core::GetAvailablePlugins();
 		bool				 anyLoaded = plugins && !plugins->IsEmpty();
 		if (!anyLoaded)
 			ImGui::TextDisabled("No plugins are loaded.");
@@ -233,7 +302,7 @@ namespace Editor
 			{
 				if (!*it || !(*it)->Value())
 					continue;
-				const char* name = (*it)->Key().C_Str();
+				const char*			 name = (*it)->Key().C_Str();
 				Common::FTDS::String dllName;
 				DllNameForPlugin(name, dllName);
 
@@ -276,6 +345,8 @@ namespace Editor
 		{
 			if (IsPinnedModule(reloadName.C_Str()))
 				mPluginStatus.Assign("Cannot hot reload this plugin while the editor is running.");
+			else if (reloadName.Equal("Game"))
+				RefreshGamePlugin();
 			else if (HotReloadPlugin(reloadName.C_Str()))
 			{
 				mPluginStatus.Assign("Hot reloaded ");
@@ -327,6 +398,56 @@ namespace Editor
 		char message[192];
 		sprintf_s(message, "Reimport finished. Loaded %d, skipped %d, failed %d.", imported, skipped, failed);
 		mPluginStatus.Assign(message);
+	}
+
+	/// @brief Unloads or reloads Game.dll when a build script writes a request file.
+	void EditorLayer::PollGameDllCommand()
+	{
+		wchar_t		temp[MAX_PATH]{};
+		const DWORD length = GetTempPathW(MAX_PATH, temp);
+		if (length == 0 || length >= MAX_PATH)
+			return;
+
+		const std::filesystem::path directory = std::filesystem::path(temp) / L"FoxtrotEngine";
+		const std::filesystem::path request	  = directory / L"game-dll.req";
+		std::error_code				error;
+		if (!std::filesystem::is_regular_file(request, error))
+			return;
+
+		std::string command;
+		{
+			std::ifstream input(request);
+			if (!input)
+				return;
+			std::getline(input, command);
+		}
+		std::filesystem::remove(request, error);
+
+		while (!command.empty() && (command.back() == '\r' || command.back() == ' ' || command.back() == '\t'))
+			command.pop_back();
+
+		bool ok = false;
+		if (command == "unload")
+		{
+			ok = UnloadPlugin("Game") || GetModuleHandleA("Game.dll") == nullptr;
+			mPluginStatus.Assign(ok ? "Unloaded Game." : "Failed to unload Game.");
+		}
+		else if (command == "reload")
+		{
+			ok = HotReloadPlugin("Game");
+			mPluginStatus.Assign(ok ? "Reloaded Game." : "Failed to reload Game.");
+		}
+
+		const std::filesystem::path pending = directory / L"game-dll.ack.tmp";
+		const std::filesystem::path ack		= directory / L"game-dll.ack";
+		{
+			std::ofstream output(pending, std::ios::trunc);
+			if (!output)
+				return;
+			output << (ok ? "ok" : "fail");
+		}
+		std::filesystem::remove(ack, error);
+		std::filesystem::rename(pending, ack, error);
 	}
 
 	/// @brief Unloads one plugin DLL and leaves it unmapped.
@@ -415,10 +536,10 @@ namespace Editor
 		if (!mGetProjPathFunc || !mGetProjPathFunc() || mGetProjPathFunc()->IsEmpty())
 			return;
 
-		Common::FTDS::String		 path = mGetProjPathFunc()->C_Str();
+		Common::FTDS::String path = mGetProjPathFunc()->C_Str();
 		path.Append("\\Plugins");
 		const std::filesystem::path directory(path.C_Str());
-		std::error_code				 error;
+		std::error_code				error;
 		if (!std::filesystem::is_directory(directory, error))
 			return;
 
@@ -517,8 +638,8 @@ namespace Editor
 				continue;
 			UnloadModule(module);
 			delete module;
-			const size_t last		 = mEditorPlugins->GetSize() - 1;
-			mEditorPlugins->At(i)	 = mEditorPlugins->At(last);
+			const size_t last	  = mEditorPlugins->GetSize() - 1;
+			mEditorPlugins->At(i) = mEditorPlugins->At(last);
 			mEditorPlugins->PopBack();
 			return true;
 		}

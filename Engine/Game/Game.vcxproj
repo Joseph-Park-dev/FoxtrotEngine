@@ -42,7 +42,7 @@
     <TargetName>Game</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Foxtrot_Editor_Debug|x64'">
-    <OutDir>F:\2026_01\-GooCat Studio- VampiCat\Plugins</OutDir>
+    <GamePluginDir>F:\2026_01\-GooCat Studio- VampiCat\Plugins\</GamePluginDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -53,6 +53,7 @@
       <ModuleDefinitionFile>$(ProjectDir)Module.def</ModuleDefinitionFile>
       <AdditionalDependencies>EngineRuntime.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
+      <ProgramDatabaseFile Condition="'$(HotReloadId)' != ''">$(IntDir)Game-$(HotReloadId).pdb</ProgramDatabaseFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -73,4 +74,7 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Target Name="CopyGamePlugin" AfterTargets="Build" Condition="'$(GamePluginDir)' != '' and Exists('$(TargetPath)')">
+    <Copy SourceFiles="$(TargetPath)" DestinationFiles="$(GamePluginDir)Game.dll" SkipUnchangedFiles="true" />
+  </Target>
 </Project>

@@ -54,49 +54,63 @@ namespace
 	void LoadImportedComponentFactories(
 		Common::FTDS::DynamicArray<Common::FTDS::HashMap<ComponentFactoryEntry>*>& factories)
 	{
+		bool queriedGame = false;
+		auto query		 = [&](const Common::FTDS::String& name) {
+			if (name.Equal("Game") || name.Equal("Game.dll"))
+				queriedGame = true;
+			QueryComponentModule(name, factories);
+		};
+
 		std::ifstream dllList(DLL_LIST);
 		if (!dllList.is_open())
-		{
 			Common::Debug::LogError(__LINE__, __FILE__, "Failed to read DLL List.ftconfig");
-			return;
-		}
-
-		try
+		else
 		{
-			std::pair<size_t, Common::FTDS::String> pack = Common::FileIOHelper::BeginDataPackLoad(dllList);
-			// BeginDataPackLoad returns NULL OBJECT when the first line has no data-pack marker.
-			if (pack.second.Equal(Common::ChunkKey::NullVal::NULL_OBJECT))
+			try
 			{
-				dllList.clear();
-				dllList.seekg(0, std::ios::beg);
-
-				Common::FTDS::String line;
-				while (dllList)
+				std::pair<size_t, Common::FTDS::String> pack = Common::FileIOHelper::BeginDataPackLoad(dllList);
+				// BeginDataPackLoad returns NULL OBJECT when the first line has no data-pack marker.
+				if (pack.second.Equal(Common::ChunkKey::NullVal::NULL_OBJECT))
 				{
-					line.Clear();
-					if (!Common::FileIOHelper::GetLine(dllList, line))
+					dllList.clear();
+					dllList.seekg(0, std::ios::beg);
+
+					Common::FTDS::String line;
+					while (dllList)
 					{
-						if (dllList.eof() || dllList.fail())
-							break;
-						continue;
+						line.Clear();
+						if (!Common::FileIOHelper::GetLine(dllList, line))
+						{
+							if (dllList.eof() || dllList.fail())
+								break;
+							continue;
+						}
+						query(line);
 					}
-					QueryComponentModule(line, factories);
+				}
+				else
+				{
+					Common::FTDS::String dll;
+					for (size_t i = 0; i < pack.first; ++i)
+					{
+						Common::FileIOHelper::LoadBasicString(dllList, dll);
+						query(dll);
+						dll.Clear();
+					}
 				}
 			}
-			else
+			catch (...)
 			{
-				Common::FTDS::String dll;
-				for (size_t i = 0; i < pack.first; ++i)
-				{
-					Common::FileIOHelper::LoadBasicString(dllList, dll);
-					QueryComponentModule(dll, factories);
-					dll.Clear();
-				}
+				queriedGame = false;
+				Common::Debug::LogError(__LINE__, __FILE__, "Failed to read DLL List.ftconfig");
 			}
 		}
-		catch (...)
+
+		// Game behaviors live in Game.dll even when the DLL list omits that entry.
+		if (!queriedGame)
 		{
-			Common::Debug::LogError(__LINE__, __FILE__, "Failed to read DLL List.ftconfig");
+			Common::FTDS::String game("Game");
+			QueryComponentModule(game, factories);
 		}
 	}
 

@@ -225,6 +225,7 @@ namespace Editor
 		bool mRedoKeyPressed;
 		bool mDeleteKeyPressed;
 		bool mDuplicateKeyPressed;
+		bool mRefreshKeyPressed;
 
 		// Copy+Paste related
 		EditorElement* mFocusedEditorElement;
@@ -281,6 +282,7 @@ namespace Editor
 		/// @brief Builds editor controls for engine manager state.
 		void DisplayManagersMenu();
 
+		void RefreshGamePlugin();
 		/// @brief Opens the plugin manager and lists available and loaded plugin DLLs.
 		void DisplayPluginManagerMenu();
 		/// @brief Loads every plugin DLL in the project directory, reloading ones already imported.
@@ -293,6 +295,8 @@ namespace Editor
 		/// @param moduleName Plugin or module name shown in the loaded list.
 		/// @return True when the plugin DLL was released.
 		bool UnloadPlugin(const char* moduleName);
+		/// @brief Unloads or reloads Game.dll when a build script writes a request file.
+		void PollGameDllCommand();
 		/// @brief Unloads plugin DLLs imported by the editor.
 		void ReleaseEditorPlugins();
 		/// @brief Appends plugin DLL paths found directly in the project directory.

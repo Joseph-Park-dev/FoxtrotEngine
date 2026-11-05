@@ -91,6 +91,8 @@ namespace Editor
 	/// @param editorCam Camera used for editor navigation.
 	void EditorLayer::Update(float deltaTime, Core::IWindow* editorWin, Core::IInputDevice* input, Core::IRenderer* renderer, Core::ICamera* gameCam, Editor::EditorCamera* editorCam)
 	{
+		PollGameDllCommand();
+
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
@@ -104,6 +106,10 @@ namespace Editor
 		mRedoKeyPressed		 = ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey::ImGuiKey_Z);
 		mDeleteKeyPressed	 = ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Delete);
 		mDuplicateKeyPressed = ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_D);
+		mRefreshKeyPressed = ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_R);
+
+		if (mRefreshKeyPressed)
+			RefreshGamePlugin();
 
 		CommandHistory::GetInstance()->Update();
 
@@ -1049,6 +1055,7 @@ namespace Editor
 		, mConfirmKeyPressed(false)
 		, mDeleteKeyPressed(false)
 		, mDuplicateKeyPressed(false)
+		, mRefreshKeyPressed(false)
 		, mIsResizingViewport(false)
 		, mCursorOnViewport(false)
 		, mFocusedEditorElement(nullptr)

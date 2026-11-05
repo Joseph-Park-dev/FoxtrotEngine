@@ -29,7 +29,10 @@ namespace
 	/// @return Status indicating whether the operation completed successfully.
 	Foxtrot::Status FT_CALL Initialize(void* context, const Foxtrot::HostServices* host) noexcept
 	{
-		if (!host || host->Size != sizeof(*host) || !host->Find)
+		// The editor plugin importer initializes without host services and attaches LegacyPlugin itself.
+		if (!host)
+			return Foxtrot::Status::Ok;
+		if (host->Size != sizeof(*host) || !host->Find)
 			return Foxtrot::Status::InvalidArgument;
 
 		auto& game	  = *static_cast<GameState*>(context);
@@ -40,11 +43,6 @@ namespace
 		game.Services = static_cast<const Foxtrot::GameServices*>(runtime->Query(runtime->Instance, "GameServices"));
 		if (!game.Services || game.Services->Size != sizeof(Foxtrot::GameServices))
 			return Foxtrot::Status::AbiMismatch;
-
-		auto control = static_cast<Foxtrot::RuntimeControl*>(runtime->Query(runtime->Instance, "RuntimeControl"));
-		auto attached = Game::AttachScriptPlugin(control);
-		if (attached != Foxtrot::Status::Ok)
-			return attached;
 
 		auto status = game.Services->RegisterSystem(Tick, &game, &game.System);
 		if (status == Foxtrot::Status::Ok)

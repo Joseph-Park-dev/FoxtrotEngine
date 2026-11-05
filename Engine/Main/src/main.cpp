@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <cstring>
+#include <filesystem>
 #include <stdexcept>
 #include <fstream>
 
@@ -11,6 +12,78 @@
 
 namespace
 {
+	ModuleHost* gModules = nullptr;
+
+	/// @brief Chooses the Game.dll that contains the open project's behaviors.
+	/// @return Absolute Plugins/Game.dll when that file exists, otherwise Game.dll beside the executable.
+	std::wstring ResolveGameDll()
+	{
+		const std::wstring fallback = L"Game.dll";
+		HMODULE			   runtime	= GetModuleHandleW(L"EngineRuntime.dll");
+		if (!runtime)
+			return fallback;
+
+		using GetProjectPathFn = Common::FTDS::String*(__cdecl*)();
+		auto getPath		   = reinterpret_cast<GetProjectPathFn>(GetProcAddress(runtime, "GetProjectPath"));
+		if (!getPath)
+			return fallback;
+
+		Common::FTDS::String* path = getPath();
+		std::error_code		  error;
+		// Game data may not have assigned a project yet. The working directory is that project when the editor is launched from it.
+		std::filesystem::path root = (path && path->C_Str() && path->C_Str()[0]) ? std::filesystem::path(path->C_Str()) : std::filesystem::current_path(error);
+		if (error || root.empty())
+			return fallback;
+
+		std::filesystem::path plugins = root / "Plugins" / "Game.dll";
+		if (!std::filesystem::exists(plugins, error))
+			return fallback;
+
+		plugins = std::filesystem::absolute(plugins, error);
+		if (error || plugins.empty())
+			return fallback;
+		return plugins.wstring();
+	}
+
+	/// @brief Unloads one plugin DLL owned by the active module host.
+	/// @param name Module name required by the host's ABI validation.
+	/// @return Status reported by the host unload.
+	Foxtrot::Status FT_CALL UnloadHostedPlugin(const char* name) noexcept
+	{
+		if (!gModules || !name)
+			return Foxtrot::Status::InvalidArgument;
+		try
+		{
+			return gModules->Unload(name);
+		}
+		catch (...)
+		{
+			return Foxtrot::Status::Failed;
+		}
+	}
+
+	/// @brief Unloads and loads one plugin DLL owned by the active module host.
+	/// @param name Module name required by the host's ABI validation.
+	/// @return Status reported by the host reload.
+	Foxtrot::Status FT_CALL ReloadHostedPlugin(const char* name) noexcept
+	{
+		if (!gModules || !name)
+			return Foxtrot::Status::InvalidArgument;
+		try
+		{
+			if (std::strcmp(name, "Game") == 0)
+			{
+				const std::wstring gameFile = ResolveGameDll();
+				return gModules->Reload(name, gameFile.c_str());
+			}
+			return gModules->Reload(name);
+		}
+		catch (...)
+		{
+			return Foxtrot::Status::Failed;
+		}
+	}
+
 	/// @brief Loads the requested modules, executes a session, and shuts them down in dependency order.
 	/// @param frames Frame count or animation frame descriptions.
 	/// @param editor Whether to load and run editor services.
@@ -20,12 +93,27 @@ namespace
 	int RunSession(uint32_t frames, bool editor, bool failAfterRuntime)
 	{
 		ModuleHost modules;
+		gModules = &modules;
+		struct ClearHost
+		{
+			~ClearHost() { gModules = nullptr; }
+		} clearHost;
 
 		// Loading Core Module.
 		modules.Load(L"Core.dll", "Core");
 
 		// Loading EngineRuntime Module.
 		const Foxtrot::ModuleAPI* runtime = modules.Load(L"EngineRuntime.dll", "EngineRuntime");
+		using SetReloader = void(FT_CALL*)(Foxtrot::Status(FT_CALL*)(const char*) noexcept) noexcept;
+		auto setReloader  = reinterpret_cast<SetReloader>(GetProcAddress(GetModuleHandleW(L"EngineRuntime.dll"), "SetPluginReloader"));
+		if (!setReloader)
+			throw std::runtime_error("Plugin reload entry point missing");
+		setReloader(&ReloadHostedPlugin);
+		using SetUnloader = void(FT_CALL*)(Foxtrot::Status(FT_CALL*)(const char*) noexcept) noexcept;
+		auto setUnloader  = reinterpret_cast<SetUnloader>(GetProcAddress(GetModuleHandleW(L"EngineRuntime.dll"), "SetPluginUnloader"));
+		if (!setUnloader)
+			throw std::runtime_error("Plugin unload entry point missing");
+		setUnloader(&UnloadHostedPlugin);
 		Foxtrot::RuntimeControl*  control = static_cast<Foxtrot::RuntimeControl*>(runtime->Query(runtime->Instance, "RuntimeControl"));
 		if (!control)
 			throw std::runtime_error("Runtime control API missing");
@@ -62,10 +150,19 @@ namespace
 		Common::FTDS::Array<Common::FTDS::String>* dllList =
 			static_cast<Common::FTDS::Array<Common::FTDS::String>*>(runtime->Query(runtime->Instance, "DLLList"));
 
+		// Behaviors are registered in the project copy, not the DLL copied beside the editor.
+		const std::wstring gameFile	  = ResolveGameDll();
+		bool			   loadedGame = false;
 		for (auto iter = dllList->Begin(); iter != dllList->End(); ++iter)
 		{
 			if ((*iter).IsEmpty())
 				continue;
+			if ((*iter).Equal("Game"))
+			{
+				attach(gameFile.c_str(), "Game");
+				loadedGame = true;
+				continue;
+			}
 
 			Common::FTDS::String fileName;
 			Common::FTDS::String moduleName;
@@ -74,7 +171,8 @@ namespace
 			attach(wideFile, moduleName.C_Str());
 			delete[] wideFile;
 		}
-		modules.Load(L"Game.dll", "Game");
+		if (!loadedGame)
+			attach(gameFile.c_str(), "Game");
 
 		if (editor)
 			attach(L"Editor.dll", "Editor");

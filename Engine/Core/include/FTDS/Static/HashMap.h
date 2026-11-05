@@ -176,10 +176,20 @@ namespace Common
 			/// @note Releasing container storage does not implicitly delete objects held through raw pointer values.
 			void Erase(const char* key)
 			{
-				Record<TYPE>* node = At(key);
-				delete node;
-				node = nullptr;
-				--mSize;
+				if (!key || this->Capacity() < 1 || mSize < 1)
+					return;
+
+				for (size_t i = 0; i < this->Capacity(); ++i)
+				{
+					Record<TYPE>* node = this->mData[i];
+					if (!node || !node->Equal(key))
+						continue;
+
+					delete node;
+					this->mData[i] = nullptr;
+					--mSize;
+					return;
+				}
 			}
 
 		public:

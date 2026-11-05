@@ -1,9 +1,30 @@
 #include "Manager/PluginManager.h"
 
 #include <Windows.h>
+#include <algorithm>
 
 #include "Manager/Timer.h"
 #include "FileSystem/FileTypes.h"
+
+namespace
+{
+	template <typename Fn>
+	void ForEachPlugin(std::vector<Common::IPlugin*>& order, Fn&& fn)
+	{
+		const std::vector<Common::IPlugin*> snapshot = order;
+		for (Common::IPlugin* plugin : snapshot)
+		{
+			if (!plugin)
+				continue;
+			if (std::find(order.begin(), order.end(), plugin) == order.end())
+				continue;
+			fn(plugin);
+		}
+	}
+
+	Core::PluginReloader gPluginReloader = nullptr;
+	Core::PluginReloader gPluginUnloader = nullptr;
+}
 
 namespace Core
 {
@@ -52,6 +73,19 @@ namespace Core
 		mOrder.push_back(plugin);
 	}
 
+	/// @brief Removes a plugin from the registry without deleting it.
+	/// @param name Name used when the plugin was attached.
+	void PluginManager::Detach(const char* name)
+	{
+		if (!mPlugins || !name)
+			return;
+		Common::IPlugin* plugin = GetPlugin(name);
+		if (!plugin)
+			return;
+		mPlugins->Erase(name);
+		mOrder.erase(std::remove(mOrder.begin(), mOrder.end(), plugin), mOrder.end());
+	}
+
 	/// @brief Returns the plugin used by this plugin manager.
 	/// @param pluginName Plugin's registered name.
 	/// @return Borrowed access to the plugin. May be null when no matching object is available.
@@ -82,8 +116,7 @@ namespace Core
 	{
 		if (!mPlugins)
 			return;
-		for (auto plugin : mOrder)
-			plugin->Initialize();
+		ForEachPlugin(mOrder, [](Common::IPlugin* plugin) { plugin->Initialize(); });
 	}
 
 	/// @brief Calls Initialize on every component registered to each attached plugin, in attach order.
@@ -91,16 +124,14 @@ namespace Core
 	{
 		if (!mPlugins)
 			return;
-		for (auto plugin : mOrder)
-			plugin->InitializeComponents();
+		ForEachPlugin(mOrder, [](Common::IPlugin* plugin) { plugin->InitializeComponents(); });
 	}
 
 	void PluginManager::Setup()
 	{
 		if (!mPlugins)
 			return;
-		for (auto plugin : mOrder)
-			plugin->Setup();
+		ForEachPlugin(mOrder, [](Common::IPlugin* plugin) { plugin->Setup(); });
 	}
 
 	/// @brief Dispatches input for the current frame to the relevant engine objects.
@@ -108,8 +139,7 @@ namespace Core
 	{
 		if (!mPlugins)
 			return;
-		for (auto plugin : mOrder)
-			plugin->ProcessInput();
+		ForEachPlugin(mOrder, [](Common::IPlugin* plugin) { plugin->ProcessInput(); });
 	}
 
 	/// @brief Advances frame-dependent state using the current time step.
@@ -118,8 +148,7 @@ namespace Core
 	{
 		if (!mPlugins)
 			return;
-		for (auto plugin : mOrder)
-			plugin->Update(deltaTime);
+		ForEachPlugin(mOrder, [deltaTime](Common::IPlugin* plugin) { plugin->Update(deltaTime); });
 	}
 
 	/// @brief Runs the post-update lifecycle phase after ordinary frame updates.
@@ -128,8 +157,7 @@ namespace Core
 	{
 		if (!mPlugins)
 			return;
-		for (auto plugin : mOrder)
-			plugin->LateUpdate(deltaTime);
+		ForEachPlugin(mOrder, [deltaTime](Common::IPlugin* plugin) { plugin->LateUpdate(deltaTime); });
 	}
 
 	/// @brief Submits this object's graphics work for the current frame.
@@ -137,8 +165,7 @@ namespace Core
 	{
 		if (!mPlugins)
 			return;
-		for (auto plugin : mOrder)
-			plugin->Render();
+		ForEachPlugin(mOrder, [](Common::IPlugin* plugin) { plugin->Render(); });
 	}
 
 	/// @brief Processes queued lifecycle and scene changes at the frame boundary.
@@ -146,8 +173,35 @@ namespace Core
 	{
 		if (!mPlugins)
 			return;
-		for (auto plugin : mOrder)
-			plugin->ProcessEvent();
+		ForEachPlugin(mOrder, [](Common::IPlugin* plugin) { plugin->ProcessEvent(); });
+	}
+
+	extern "C" void FT_CALL SetPluginReloader(PluginReloader reloader) noexcept
+	{
+		gPluginReloader = reloader;
+	}
+
+	extern "C" Foxtrot::Status FT_CALL ReloadPluginModule(const char* moduleName) noexcept
+	{
+		if (!moduleName)
+			return Foxtrot::Status::InvalidArgument;
+		if (!gPluginReloader)
+			return Foxtrot::Status::Failed;
+		return gPluginReloader(moduleName);
+	}
+
+	extern "C" void FT_CALL SetPluginUnloader(PluginReloader unloader) noexcept
+	{
+		gPluginUnloader = unloader;
+	}
+
+	extern "C" Foxtrot::Status FT_CALL UnloadPluginModule(const char* moduleName) noexcept
+	{
+		if (!moduleName)
+			return Foxtrot::Status::InvalidArgument;
+		if (!gPluginUnloader)
+			return Foxtrot::Status::Failed;
+		return gPluginUnloader(moduleName);
 	}
 } // namespace Core
 

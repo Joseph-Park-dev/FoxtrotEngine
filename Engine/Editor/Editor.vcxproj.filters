@@ -64,6 +64,9 @@
     <ClCompile Include="src\EditorLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\EditorPluginMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\Manager\ResourceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

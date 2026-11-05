@@ -7,6 +7,7 @@
 #include "Plugin/IPlugin.h"
 #include "Plugin/PluginKey.h"
 #include "Plugin/CoreExports.h"
+#include "Foxtrot/Core/ModuleApi.h"
 
 namespace Core
 {
@@ -48,6 +49,9 @@ namespace Core
         /// @param name Name used to identify the requested object or interface.
         /// @param plugin Plugin supplying component or lifecycle services.
         void Attach(const char* name, Common::IPlugin* plugin);
+		/// @brief Removes a plugin from the registry without deleting it.
+		/// @param name Name used when the plugin was attached.
+		void Detach(const char* name);
 
 	public:
 		/// @brief Returns the plugin used by this plugin manager.
@@ -76,5 +80,25 @@ namespace Core
 		/// @return Obtains a plugin instance and registers it for engine lifecycle dispatch.
 		CORE_API Common::IPlugin* RegisterPlugin(const char* pluginName);
 	}
+
+	using PluginReloader = Foxtrot::Status(FT_CALL*)(const char* moduleName) noexcept;
+
+	/// @brief Registers the executable callback that unloads and loads one hosted module.
+	/// @param reloader Host callback. Pass nullptr to clear it.
+	extern "C" CORE_API void FT_CALL SetPluginReloader(PluginReloader reloader) noexcept;
+
+	/// @brief Asks the executable to unload and load a hosted plugin module.
+	/// @param moduleName Module name passed to the host when the DLL was loaded.
+	/// @return Ok when the module was reloaded, InvalidArgument when the host does not own it, Busy when it must stay loaded, or Failed.
+	extern "C" CORE_API Foxtrot::Status FT_CALL ReloadPluginModule(const char* moduleName) noexcept;
+
+	/// @brief Registers the executable callback that unloads one hosted module.
+	/// @param unloader Host callback. Pass nullptr to clear it.
+	extern "C" CORE_API void FT_CALL SetPluginUnloader(PluginReloader unloader) noexcept;
+
+	/// @brief Asks the executable to unload a hosted plugin module.
+	/// @param moduleName Module name passed to the host when the DLL was loaded.
+	/// @return Ok when the module was unloaded, InvalidArgument when the host does not own it, Busy when it must stay loaded, or Failed.
+	extern "C" CORE_API Foxtrot::Status FT_CALL UnloadPluginModule(const char* moduleName) noexcept;
 #pragma warning(pop)
 } // namespace Core

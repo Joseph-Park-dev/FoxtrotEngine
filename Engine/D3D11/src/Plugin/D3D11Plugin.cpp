@@ -26,6 +26,7 @@
 
 #include "Component/D3D11Component.h"
 #include "Core/FTCore.h"
+#include "Manager/PluginManager.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "Manager/DirectoryHelper.h"
@@ -178,6 +179,12 @@ namespace D3D11
 				return static_cast<Core::IGraphicsFactory*>(this);
 			if (std::strcmp(name, "InputFactory") == 0)
 				return static_cast<Core::IInputSysFactory*>(this);
+			if (std::strcmp(name, "InputDevice") == 0)
+			{
+				if (mInputDevices && 0 < mInputDevices->GetSize())
+					return static_cast<InputSystem::IInputDevice*>(mInputDevices->At(0));
+				return nullptr;
+			}
 
 #ifdef FOXTROT_EDITOR
 			if (std::strcmp(name, Core::IEditorResourceService::INTERFACE_NAME) == 0)
@@ -523,6 +530,8 @@ namespace D3D11
 			(*iter)->BeginRender(mRenderer);
 			for (auto iter = mRegisteredComps->Begin(); iter != mRegisteredComps->End(); ++iter)
 			{
+				if (!(*iter) || Core::IsComponentRenderingSuspended(*iter))
+					continue;
 				if (!(*iter)->GetOwner()->GetIsActive())
 					continue;
 				(*iter)->Render(mRenderer, mCamera);

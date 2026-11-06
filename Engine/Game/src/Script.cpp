@@ -17,6 +17,8 @@
 #include "FTDS/Dynamic/DynamicArray.h"
 #include "FTDS/Static/HashMap.h"
 #include "Foxtrot/Runtime/RuntimeApi.h"
+#include "InputSystem/IInputDevice.h"
+#include "Manager/PluginManager.h"
 #include "Plugin/IPlugin.h"
 
 namespace
@@ -110,7 +112,7 @@ namespace
 		void SaveProperties(std::ofstream& ofs) override { (void)ofs; }
 		void LoadProperties(std::ifstream& ifs) override { (void)ifs; }
 
-		void Initialize() override {}
+		void Initialize() override { CacheInputDevice(); }
 
 		void InitializeComponents() override
 		{
@@ -132,7 +134,17 @@ namespace
 			});
 		}
 
-		void ProcessInput() override {}
+		void ProcessInput() override
+		{
+			if (!mInputDevice)
+				CacheInputDevice();
+			if (!mInputDevice)
+				return;
+
+			ForActiveScripts([this](Game::Script* script) {
+				script->ProcessInput(mInputDevice);
+			});
+		}
 
 		void Update(float deltaTime) override
 		{
@@ -166,8 +178,41 @@ namespace
 		void ShutDown() override {}
 
 	protected:
-		void LoadManagerData(std::ifstream& ifs) override { (void)ifs; }
-		void LoadResourceData(std::ifstream& ifs) override { (void)ifs; }
+		void LoadManagerData(std::ifstream& ifs) override
+		{
+			(void)ifs;
+		}
+		void LoadResourceData(std::ifstream& ifs) override
+		{
+			(void)ifs;
+		}
+
+	private:
+		/// @brief Stores the graphics plugin's input device for later script dispatch.
+		void CacheInputDevice()
+		{
+			if (mInputDevice)
+				return;
+
+			Common::FTDS::HashMap<Common::IPlugin*>* plugins = Core::GetAvailablePlugins();
+			if (!plugins)
+				return;
+
+			for (auto it = plugins->Begin(); it != plugins->End(); ++it)
+			{
+				if (!*it || !(*it)->Key().Equal("FoxtrotD3D11"))
+					continue;
+
+				Common::IPlugin* graphics = (*it)->Value();
+				if (!graphics)
+					return;
+
+				mInputDevice = static_cast<InputSystem::IInputDevice*>(graphics->QueryInterface("InputDevice"));
+				return;
+			}
+		}
+
+		InputSystem::IInputDevice* mInputDevice = nullptr;
 	};
 
 	ScriptPlugin* gPlugin = nullptr;

@@ -907,6 +907,7 @@ namespace Editor
 					if (!matches && attempted != key)
 					{
 						attempted = key;
+						SuspendComponentRenderingForModule("Game");
 						ReloadPluginModule("Game");
 					}
 					else if (matches)

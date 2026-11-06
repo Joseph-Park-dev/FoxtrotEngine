@@ -3,8 +3,15 @@
 #include <Windows.h>
 #include <algorithm>
 
+#include "Actor/IActor.h"
+#include "Component/IComponent.h"
+#include "FileSystem/FileIOHelper.h"
+#include "FTDS/Dynamic/DynamicArray.h"
 #include "Manager/Timer.h"
 #include "FileSystem/FileTypes.h"
+
+#include <fstream>
+#include <list>
 
 namespace
 {
@@ -202,6 +209,103 @@ namespace Core
 		if (!gPluginUnloader)
 			return Foxtrot::Status::Failed;
 		return gPluginUnloader(moduleName);
+	}
+
+	Common::FTDS::DynamicArray<const void*>& SuspendedComponentRendering()
+	{
+		static Common::FTDS::DynamicArray<const void*> components(32);
+		return components;
+	}
+
+	/// @brief Stops later draw calls for a component whose module is about to be unmapped.
+	/// @param component Component pointer. Draw checks compare the pointer and do not call it.
+	void SuspendComponentRendering(const void* component)
+	{
+		if (!component)
+			return;
+		Common::FTDS::DynamicArray<const void*>& suspended = SuspendedComponentRendering();
+		if (suspended.Find(component) != -1)
+			return;
+		suspended.PushBack(component);
+	}
+
+	/// @brief Reports whether draw calls for this component were stopped for a DLL reload.
+	/// @param component Component pointer recorded by SuspendComponentRendering.
+	/// @return True when rendering this component must be skipped.
+	bool IsComponentRenderingSuspended(const void* component)
+	{
+		if (!component)
+			return false;
+		return SuspendedComponentRendering().Find(component) != -1;
+	}
+
+	struct ReloadedComponentSave
+	{
+		Common::IActor*					   Owner;
+		std::list<Common::FTDS::String>	   Lines;
+	};
+
+	std::list<ReloadedComponentSave>& ReloadedComponentSaves()
+	{
+		static std::list<ReloadedComponentSave> saves;
+		return saves;
+	}
+
+	/// @brief Saves a component while its module is still loaded, then removes it from the actor.
+	/// @param owner Actor that currently owns the component.
+	/// @param component Component whose code is about to be unmapped.
+	void DetachComponentForModuleReload(Common::IActor* owner, Common::IComponent* component)
+	{
+		if (!component)
+			return;
+
+		const char*			 rawName = component->GetName();
+		Common::FTDS::String name	 = rawName ? rawName : "";
+
+		if (owner && Common::FileIOHelper::IsSaveStackClear())
+		{
+			std::list<Common::FTDS::String> preexisting;
+			Common::FileIOHelper::TakeSaveBuffer(preexisting);
+
+			std::ofstream unused;
+			Common::FileIOHelper::BeginDataPackSave(unused, name);
+			component->SaveProperties(unused);
+			Common::FileIOHelper::EndDataPackSave(unused, name);
+
+			ReloadedComponentSave record;
+			record.Owner = owner;
+			Common::FileIOHelper::TakeSaveBuffer(record.Lines);
+			Common::FileIOHelper::RestoreSaveBuffer(preexisting);
+			ReloadedComponentSaves().push_back(std::move(record));
+		}
+
+		bool removed = false;
+		if (owner && owner->GetComponents() && owner->GetComponents()->Find(component) != -1)
+		{
+			owner->RemoveComponent(component);
+			removed = true;
+		}
+		if (!removed)
+			SuspendComponentRendering(component);
+	}
+
+	/// @brief Writes component packs captured before a module reload into the open actor save.
+	/// @param owner Actor whose captured components should be written.
+	void AppendReloadedComponentSaves(Common::IActor* owner)
+	{
+		if (!owner)
+			return;
+		for (ReloadedComponentSave& record : ReloadedComponentSaves())
+		{
+			if (record.Owner == owner)
+				Common::FileIOHelper::AppendSavedPack(record.Lines);
+		}
+	}
+
+	/// @brief Drops component packs captured for a module reload.
+	void ClearReloadedComponentSaves()
+	{
+		ReloadedComponentSaves().clear();
 	}
 } // namespace Core
 

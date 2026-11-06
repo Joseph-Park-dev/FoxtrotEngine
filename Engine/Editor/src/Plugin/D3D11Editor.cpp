@@ -437,7 +437,7 @@ namespace Editor
 
 			for (auto component = components->Begin(); component != components->End(); ++component)
 			{
-				if (!(*component))
+				if (!(*component) || Core::IsComponentRenderingSuspended(*component))
 					continue;
 
 				if (editorPass)

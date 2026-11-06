@@ -13,6 +13,7 @@
 #include "Factory/IComponentFactory.h"
 #include "FTDS/Static/HashMap.h"
 #include "Debugging/DebugFuncs.h"
+#include "Manager/PluginManager.h"
 
 namespace
 {
@@ -440,10 +441,16 @@ namespace Common
 		Common::FileIOHelper::BeginDataPackSave(ofs, ChunkKey::COMPONENTS);
 		for (size_t i = 0; i < count; ++i)
 		{
-			Common::FileIOHelper::BeginDataPackSave(ofs, Components->At(i)->GetName());
-			Components->At(i)->SaveProperties(ofs);
-			Common::FileIOHelper::EndDataPackSave(ofs, Components->At(i)->GetName());
+			Common::IComponent* component = Components->At(i);
+			if (!component || Core::IsComponentRenderingSuspended(component))
+				continue;
+			const char*			 rawName = component->GetName();
+			Common::FTDS::String name	 = rawName ? rawName : "";
+			Common::FileIOHelper::BeginDataPackSave(ofs, name);
+			component->SaveProperties(ofs);
+			Common::FileIOHelper::EndDataPackSave(ofs, name);
 		}
+		Core::AppendReloadedComponentSaves(Owner);
 		Common::FileIOHelper::EndDataPackSave(ofs, ChunkKey::COMPONENTS);
 	}
 

@@ -149,6 +149,18 @@ namespace Common
 		/// @brief Flushes the accumulated serialization buffer to the output stream.
 		/// @param ofs Output stream receiving the serialized data.
 		FT_CORE_API static void SaveBufferToFile(std::ofstream& ofs);
+		/// @brief Reports whether a data-pack save is not already open.
+		/// @return True when no save pack is on the stack.
+		FT_CORE_API static bool IsSaveStackClear();
+		/// @brief Moves the accumulated save lines into the destination and clears the buffer.
+		/// @param lines Receives the buffered lines.
+		FT_CORE_API static void TakeSaveBuffer(std::list<Common::FTDS::String>& lines);
+		/// @brief Puts lines back into the save buffer without counting them as a new pack.
+		/// @param lines Lines to restore. The list is emptied.
+		FT_CORE_API static void RestoreSaveBuffer(std::list<Common::FTDS::String>& lines);
+		/// @brief Appends one previously captured pack to the open save and counts it as one item.
+		/// @param lines Lines produced by a completed Begin/End pair.
+		FT_CORE_API static void AppendSavedPack(const std::list<Common::FTDS::String>& lines);
 
 		/// @brief Writes a named vector2 value in the engine's .chunk text format.
 		/// @param ofs Output stream receiving the serialized data.

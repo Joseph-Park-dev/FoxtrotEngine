@@ -291,6 +291,9 @@ namespace Editor
 		/// @param moduleName Plugin or module name shown in the loaded list.
 		/// @return True when the plugin is attached after the reload.
 		bool HotReloadPlugin(const char* moduleName);
+		/// @brief Stops draw calls for components whose code lives in a module about to be unmapped.
+		/// @param moduleName Plugin or module name shown in the loaded list.
+		void SuspendComponentRenderingForModule(const char* moduleName);
 		/// @brief Unloads one plugin DLL and leaves it unmapped.
 		/// @param moduleName Plugin or module name shown in the loaded list.
 		/// @return True when the plugin DLL was released.

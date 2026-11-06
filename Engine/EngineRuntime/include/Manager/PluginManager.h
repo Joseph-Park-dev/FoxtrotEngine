@@ -100,5 +100,26 @@ namespace Core
 	/// @param moduleName Module name passed to the host when the DLL was loaded.
 	/// @return Ok when the module was unloaded, InvalidArgument when the host does not own it, Busy when it must stay loaded, or Failed.
 	extern "C" CORE_API Foxtrot::Status FT_CALL UnloadPluginModule(const char* moduleName) noexcept;
+
+	/// @brief Stops later draw calls for a component whose module is about to be unmapped.
+	/// @param component Component pointer. Draw checks compare the pointer and do not call it.
+	CORE_API void SuspendComponentRendering(const void* component);
+
+	/// @brief Reports whether draw calls for this component were stopped for a DLL reload.
+	/// @param component Component pointer recorded by SuspendComponentRendering.
+	/// @return True when rendering this component must be skipped.
+	CORE_API bool IsComponentRenderingSuspended(const void* component);
+
+	/// @brief Saves a component while its module is still loaded, then removes it from the actor.
+	/// @param owner Actor that currently owns the component.
+	/// @param component Component whose code is about to be unmapped.
+	CORE_API void DetachComponentForModuleReload(Common::IActor* owner, Common::IComponent* component);
+
+	/// @brief Writes component packs captured before a module reload into the open actor save.
+	/// @param owner Actor whose captured components should be written.
+	CORE_API void AppendReloadedComponentSaves(Common::IActor* owner);
+
+	/// @brief Drops component packs captured for a module reload.
+	CORE_API void ClearReloadedComponentSaves();
 #pragma warning(pop)
 } // namespace Core

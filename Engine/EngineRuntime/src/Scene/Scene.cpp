@@ -30,6 +30,7 @@
 #include "Actor/Actor.h"
 #include "Actor/ActorGroup.h"
 #include "Manager/EventManager.h"
+#include "Manager/PluginManager.h"
 #include "TemplateFunctions.h"
 #include "Actor/Transform.h"
 
@@ -181,6 +182,7 @@ namespace Core
 	/// Safe to call multiple times. Sets deleted pointer slots to `nullptr` before clearing.
 	void Scene::DeleteAll()
 	{
+		ClearReloadedComponentSaves();
 		// Actors in the scene list are also stored on their parents. Clear those
 		// links first so ~ActorData does not delete a child the scene still owns.
 		auto detachSceneOwnedChildren = [this](Common::FTDS::DynamicArray<Common::IActor*>* actors) {

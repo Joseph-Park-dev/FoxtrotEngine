@@ -464,6 +464,40 @@ namespace Common
 		mDataBuffer.clear();
 	}
 
+	/// @brief Reports whether a data-pack save is not already open.
+	/// @return True when no save pack is on the stack.
+	bool FileIOHelper::IsSaveStackClear()
+	{
+		return mItemCounts.empty() && mCurrentDataPack.empty();
+	}
+
+	/// @brief Moves the accumulated save lines into the destination and clears the buffer.
+	/// @param lines Receives the buffered lines.
+	void FileIOHelper::TakeSaveBuffer(std::list<Common::FTDS::String>& lines)
+	{
+		lines.clear();
+		lines.splice(lines.end(), mDataBuffer);
+	}
+
+	/// @brief Puts lines back into the save buffer without counting them as a new pack.
+	/// @param lines Lines to restore. The list is emptied.
+	void FileIOHelper::RestoreSaveBuffer(std::list<Common::FTDS::String>& lines)
+	{
+		mDataBuffer.splice(mDataBuffer.end(), lines);
+	}
+
+	/// @brief Appends one previously captured pack to the open save and counts it as one item.
+	/// @param lines Lines produced by a completed Begin/End pair.
+	void FileIOHelper::AppendSavedPack(const std::list<Common::FTDS::String>& lines)
+	{
+		if (lines.empty())
+			return;
+		for (const Common::FTDS::String& line : lines)
+			mDataBuffer.push_back(line);
+		if (!mItemCounts.empty())
+			++mItemCounts.back();
+	}
+
 	/// @brief Writes a named vector3 value in the engine's .chunk text format.
 	/// @param ofs Output stream receiving the serialized data.
 	/// @param valName Key written before the serialized value.

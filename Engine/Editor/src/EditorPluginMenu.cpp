@@ -8,7 +8,10 @@
 
 #include <Windows.h>
 
+#include "Actor/IActor.h"
 #include "ComponentRegistry.h"
+#include "EditorScene.h"
+#include "EditorSceneManager.h"
 #include "Factory/IComponentFactory.h"
 #include "FTDS/Static/HashMap.h"
 #include "Manager/PluginManager.h"
@@ -450,6 +453,46 @@ namespace Editor
 		std::filesystem::rename(pending, ack, error);
 	}
 
+	/// @brief Stops draw calls for components whose code lives in a module about to be unmapped.
+	/// @param moduleName Plugin or module name shown in the loaded list.
+	void EditorLayer::SuspendComponentRenderingForModule(const char* moduleName)
+	{
+		if (!moduleName)
+			return;
+
+		Common::FTDS::String dllName;
+		DllNameForPlugin(moduleName, dllName);
+		HMODULE module = GetModuleHandleA(dllName.C_Str());
+		if (!module)
+			return;
+
+		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+		if (!scene || !scene->Actors())
+			return;
+
+		Common::FTDS::DynamicArray<Common::IActor*>* actors = scene->Actors();
+		for (auto actor = actors->Begin(); actor != actors->End(); ++actor)
+		{
+			if (!*actor)
+				continue;
+			Common::FTDS::DynamicArray<Common::IComponent*>* components = (*actor)->GetComponents();
+			if (!components)
+				continue;
+			for (size_t index = components->GetSize(); 0 < index; --index)
+			{
+				Common::IComponent* component = components->At(index - 1);
+				if (!component)
+					continue;
+				void*					 code = *reinterpret_cast<void**>(component);
+				MEMORY_BASIC_INFORMATION info{};
+				if (VirtualQuery(code, &info, sizeof(info)) == 0)
+					continue;
+				if (info.AllocationBase == module)
+					Core::DetachComponentForModuleReload(*actor, component);
+			}
+		}
+	}
+
 	/// @brief Unloads one plugin DLL and leaves it unmapped.
 	/// @param moduleName Plugin or module name shown in the loaded list.
 	/// @return True when the plugin DLL was released.
@@ -458,6 +501,7 @@ namespace Editor
 		if (!moduleName || IsPinnedModule(moduleName))
 			return false;
 
+		SuspendComponentRenderingForModule(moduleName);
 		const Foxtrot::Status hosted = Core::UnloadPluginModule(moduleName);
 		if (hosted == Foxtrot::Status::Ok)
 		{
@@ -481,6 +525,7 @@ namespace Editor
 		if (!moduleName || IsPinnedModule(moduleName))
 			return false;
 
+		SuspendComponentRenderingForModule(moduleName);
 		const Foxtrot::Status hosted = Core::ReloadPluginModule(moduleName);
 		if (hosted == Foxtrot::Status::Ok)
 		{

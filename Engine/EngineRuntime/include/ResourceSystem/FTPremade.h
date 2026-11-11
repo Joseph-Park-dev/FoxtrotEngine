@@ -14,73 +14,29 @@
 
 #pragma once
 #include "Plugin/CoreExports.h"
-#include "IResource.h"
+#include "ResourceSystem/FTResource.h"
 
-#include <iosfwd>
+namespace Common
+{
+	class IActor;
+}
+
+#ifdef FOXTROT_EDITOR
+namespace Editor
+{
+	class EditorElement;
+	class EditorScene;
+	class ChunkLoader;
+
+	using CREATE_EDITOR_ELEM		= EditorElement* (*)(Common::IActor*, int);
+	using GET_EDITOR_SCENE			= EditorScene* (*)();
+	using GET_EDITOR_CHUNK_LOADER	= ChunkLoader* (*)();
+} // namespace Editor
+#endif // FOXTROT_EDITOR
 
 namespace Core
 {
 	class Actor;
-	class FTCore;
-	class Scene;
-
-	class FTPremade :
-		public Common::IResource
-	{
-	public:
-		/// @brief Provides an empty lifecycle or extension hook for this implementation.
-		/// @param ofs Output stream receiving the serialized data.
-		/// @note Writes to the supplied stream at its current position.
-		void SaveProperties(std::ofstream& ofs) override {};
-		/// @brief Provides an empty lifecycle or extension hook for this implementation.
-		/// @param ifs Input stream positioned at the expected data; reading advances its position.
-		/// @note Advances the stream position and updates the destination state.
-		void LoadProperties(std::ifstream& ifs) override {};
-
-	public:
-		/// @brief Initializes metadata for a reusable actor template.
-		/// @param resDef Resource definition containing the filename and source path.
-		CORE_API FTPremade(Common::ResourceData* resDef);
-		/// @brief Releases the resources managed by this instance during destruction.
-		CORE_API ~FTPremade();
-
-	public:
-		/// @brief Returns the origin used by this ftpremade.
-		/// @return Borrowed access to the origin.
-		CORE_API Actor* GetOrigin();
-		/// @brief Returns the is loaded used by this ftpremade.
-		/// @return Current value of the is loaded flag.
-		CORE_API bool   GetIsLoaded();
-
-	private:
-		Common::ResourceData* mData;
-
-		// Member variable that holds the actual Actor Data.
-		Actor* mOrigin;
-		bool   mIsLoaded;
-
-	private:
-		/// @brief Loads and initializes the content identified by the supplied path or descriptor.
-		/// @param path Filesystem path of the resource or project.
-		CORE_API void Load(const char* path);
-
-		// #ifdef FOXTROT_EDITOR
-		//	public:
-		//		void Save(Common::FTResourceDef& resDef, Editor::EditorElement* ele);
-		//
-		//		virtual void UpdateUI() override;
-		//
-		//		/// @brief Creates FTPremade with existing EditorElement
-		//		FTPremade(Common::FTResourceDef& resDef, Editor::EditorElement* ele);
-		//
-		//	private:
-		//		Editor::EditorElement*			mDummyForUI;
-		//		Editor::CREATE_EDITOR_ELEM		mCreateEditorElemFunc;
-		//		Editor::GET_EDITOR_SCENE		mGetEditorSceneFunc;
-		//		Editor::GET_EDITOR_CHUNK_LOADER mGetEditorChunkLoaderFunc;
-		//
-		// #endif // FOXTROT_EDITOR
-	};
 
 	namespace ChunkKey
 	{
@@ -89,4 +45,77 @@ namespace Core
 			constexpr const char* FT_PREMADE = "FTPremade";
 		}
 	} // namespace ChunkKey
+
+	class FTPremade :
+		public Common::FTResource
+	{
+	public:
+		/// @brief Returns the .chunk data-pack key for this resource type.
+		static const char* GetName()
+		{
+			return ChunkKey::FTPremade::FT_PREMADE;
+		}
+
+	public:
+		/// @brief Returns the origin used by this ftpremade.
+		/// @return Borrowed access to the origin.
+		CORE_API Actor* GetOrigin();
+		/// @brief Returns the is loaded used by this ftpremade.
+		/// @return Current value of the is loaded flag.
+		CORE_API bool GetIsLoaded();
+
+	public:
+		/// @brief Initializes a premade by loading the actor stored at resDef.Path.
+		/// @param resDef Resource definition containing the filename and source path.
+		/// @param data Unused. Present so resource packs can construct this type.
+		CORE_API FTPremade(Common::FTResourceDef& resDef, void* data = nullptr);
+		/// @brief Releases the origin actor owned by this premade.
+		CORE_API ~FTPremade() override;
+
+	private:
+		/// @brief Loads the actor template stored in the premade file.
+		/// @param path Filesystem path of the .premade file.
+		void Load(const char* path);
+		/// @brief Drops the current origin and loads it again from this premade's path.
+		void Reload();
+
+		Actor* mOrigin;
+		bool   mIsLoaded;
+
+#ifdef FOXTROT_EDITOR
+	public:
+		/// @brief Writes actor into this premade's file and reloads the origin from that file.
+		/// @param actor Actor whose properties and components are stored.
+		void Overwrite(Common::IActor* actor);
+
+		/// @brief Writes actor to the premade file described by resDef.
+		/// @param resDef Resource definition containing the filename and source path.
+		/// @param actor Actor whose properties and components are stored.
+		void Save(Common::FTResourceDef& resDef, Common::IActor* actor);
+
+		/// @brief Draws controls that place or edit this premade in the editor.
+		void UpdateUI() override;
+
+	private:
+		/// @brief Resolves editor callbacks exported by Editor.dll.
+		void BindEditorFunctions();
+
+		Editor::EditorElement*			mDummyForUI;
+		Editor::CREATE_EDITOR_ELEM		mCreateEditorElemFunc;
+		Editor::GET_EDITOR_SCENE		mGetEditorSceneFunc;
+		Editor::GET_EDITOR_CHUNK_LOADER mGetEditorChunkLoaderFunc;
+#endif // FOXTROT_EDITOR
+	};
+
+#ifdef FOXTROT_EDITOR
+	extern "C"
+	{
+		/// @brief Creates or replaces a premade file and registers it with the resource manager.
+		/// @param fileName File name, including the .premade extension, used as the lookup key.
+		/// @param path Full path of the premade file.
+		/// @param actor Actor whose properties and components are stored.
+		/// @return Premade owned by the resource manager, or nullptr when the arguments are unusable.
+		CORE_API FTPremade* CreatePremade(const char* fileName, const char* path, Common::IActor* actor);
+	}
+#endif // FOXTROT_EDITOR
 } // namespace Core

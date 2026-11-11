@@ -8,58 +8,67 @@
 
 #include "ResourceSystem/FTPremade.h"
 
-#include <fstream>
+#include <cassert>
 #include <filesystem>
+#include <fstream>
 
-#include "FileSystem/ChunkLoader.h"
-#include "FileSystem/FileIOHelper.h"
-#include "Manager/ResourceManager.h"
-#include "Scene/Scene.h"
 #include "Actor/Actor.h"
+#include "Debugging/DebugFuncs.h"
+#include "FileSystem/FileIOHelper.h"
 #include "FTDS/Static/FTString.h"
+#include "Manager/ResourceManager.h"
 
-// #ifdef FOXTROT_EDITOR
-//	#define IMGUI_DEFINE_MATH_OPERATORS
-//	#include <imgui/imgui.h>
-//	#include <imgui/backends/imgui_impl_win32.h>
-//	#include <imgui/backends/imgui_impl_dx11.h>
-//	#include <ImGuiFileDialog/ImGuiFileDialog.h>
-//
-//	#include "EditorUtils.h"
-//	#include "EditorSceneManager.h"
-//	#include "ChunkLoader.h"
-//	#include "EditorScene.h"
-//	#include "Manager/DirectoryHelper.h"
-//	#include "EditorElement.h"
-//
-//	#include "Plugin/PluginKey.h"
-//	#include "FileSystem/DLLPath.h"
-// #endif // FOXTROT_EDITOR
+#ifdef FOXTROT_EDITOR
+	#define IMGUI_DEFINE_MATH_OPERATORS
+	#include <imgui.h>
+
+	#ifndef WIN32_LEAN_AND_MEAN
+		#define WIN32_LEAN_AND_MEAN
+	#endif
+	#ifndef NOMINMAX
+		#define NOMINMAX
+	#endif
+	#include <Windows.h>
+
+	#include "ChunkLoader.h"
+	#include "EditorElement.h"
+	#include "EditorScene.h"
+	#include "FileSystem/DLLPath.h"
+#endif // FOXTROT_EDITOR
 
 namespace Core
 {
-	using namespace Common;
-	/// @brief Initializes metadata for a reusable actor template.
-	/// @param data Input payload used by the operation.
+	/// @brief Initializes a premade by loading the actor stored at resDef.Path.
+	/// @param resDef Resource definition containing the filename and source path.
+	/// @param data Unused. Present so resource packs can construct this type.
 	/// @note Initializes the :FTPremade base or delegates to its constructor.
-	FTPremade::FTPremade(Common::ResourceData* data)
-		: mData(data)
+	FTPremade::FTPremade(Common::FTResourceDef& resDef, void* data)
+		: Common::FTResource(resDef)
 		, mOrigin(nullptr)
 		, mIsLoaded(false)
-	// #ifdef FOXTROT_EDITOR
-	//		, mDummyForUI(nullptr)
-	// #endif // FOXTROT_EDITOR
+#ifdef FOXTROT_EDITOR
+		, mDummyForUI(nullptr)
+		, mCreateEditorElemFunc(nullptr)
+		, mGetEditorSceneFunc(nullptr)
+		, mGetEditorChunkLoaderFunc(nullptr)
+#endif // FOXTROT_EDITOR
 	{
-		if (mOrigin)
-			return;
+		(void)data;
+		if (mMetaData && mMetaData->Path)
+			this->Load(mMetaData->Path->C_Str());
 
-		if (std::filesystem::exists(data->Path->C_Str()))
-			this->Load(data->Path->C_Str());
+#ifdef FOXTROT_EDITOR
+		BindEditorFunctions();
+#endif // FOXTROT_EDITOR
 	}
 
-	/// @brief Releases the resources managed by this instance during destruction.
+	/// @brief Releases the origin actor owned by this premade.
 	FTPremade::~FTPremade()
 	{
+#ifdef FOXTROT_EDITOR
+		delete mDummyForUI;
+		mDummyForUI = nullptr;
+#endif // FOXTROT_EDITOR
 		delete mOrigin;
 		mOrigin = nullptr;
 	}
@@ -80,114 +89,188 @@ namespace Core
 		return mOrigin;
 	}
 
-	/// @brief Loads and initializes the content identified by the supplied path or descriptor.
-	/// @param path Filesystem path of the resource or project.
+	/// @brief Loads the actor template stored in the premade file.
+	/// @param path Filesystem path of the .premade file.
 	void FTPremade::Load(const char* path)
 	{
+		if (!path || !std::filesystem::exists(path))
+			return;
+
+		std::ifstream ifs(path);
+		if (!ifs)
+			return;
+
 		if (!mOrigin)
 			mOrigin = DBG_NEW Actor(Common::ChunkKey::ID::CLONE);
 
-		std::ifstream							ifs(path);
-		std::pair<size_t, Common::FTDS::String> pack = Common::FileIOHelper::BeginDataPackLoad(ifs);
+		Common::FileIOHelper::BeginDataPackLoad(ifs);
 		mOrigin->LoadProperties(ifs);
 		mOrigin->LoadComponents(ifs);
-
-		// #ifdef FOXTROT_EDITOR
-		//	mOrigin->Initialize(FTCoreEditor::GetInstance());
-		// #else
-		//	mOrigin->Initialize(FTCore::GetInstance());
-		// #endif // FOXTROT_EDITOR
-
 		mIsLoaded = true;
 	}
 
-	// #ifdef FOXTROT_EDITOR
-	//	void FTPremade::Save(Common::FTResourceDef& resDef, Editor::EditorElement* ele)
-	//	{
-	//		assert(resDef.Path);
-	//		printf(resDef.Path);
-	//
-	//		std::ofstream ofs(resDef.Path);
-	//		if (ofs)
-	//		{
-	//			Common::FileIOHelper::BeginDataPackSave(ofs, resDef.FileName);
-	//			ele->SaveComponents(ofs);
-	//			ele->SaveProperties(ofs);
-	//			Common::FileIOHelper::EndDataPackSave(ofs, resDef.FileName);
-	//			Common::FileIOHelper::SaveBufferToFile(ofs);
-	//
-	//			printf("Premade saved to %s\n", resDef.Path);
-	//		}
-	//		else
-	//			printf("ERROR: FTPremade::Create -> Failed to open file\n");
-	//	}
-	//
-	//	void FTPremade::UpdateUI()
-	//	{
-	//		ImGui::Text(GetFileName()->C_Str());
-	//		ImGui::Separator();
-	//
-	//		if (ImGui::Button("Add to Chunk"))
-	//		{
-	//			mGetEditorChunkLoaderFunc()->AddMaxActorID();
-	//			int id = mGetEditorChunkLoaderFunc()->GetMaxActorID();
-	//			mGetEditorSceneFunc()->AddEditorElement(mOrigin, id);
-	//		}
-	//
-	//		if (Editor::ButtonCenteredOnLine("Edit Premade"))
-	//		{
-	//			if (mOrigin)
-	//			{
-	//				mDummyForUI = mCreateEditorElemFunc(mOrigin, ChunkKey::ID::INVALID);
-	//				ImGui::OpenPopup("EditPremade");
-	//			}
-	//		}
-	//		if (ImGui::BeginPopupModal("EditPremade"))
-	//		{
-	//			if (mDummyForUI)
-	//			{
-	//				// Only values from Actor is needed here.
-	//				// Thus dynamic_cast is not needed.
-	//				mDummyForUI->SetIsFocused(true);
-	//				mDummyForUI->UpdateUI(true);
-	//				if (ImGui::Button("Save"))
-	//				{
-	//					Common::FTResourceDef resDef{ *GetFileName(), *GetRelativePath() };
-	//					Save(resDef, mDummyForUI);
-	//				}
-	//			}
-	//			if (ImGui::Button("Close"))
-	//			{
-	//				ImGui::CloseCurrentPopup();
-	//			}
-	//			ImGui::EndPopup();
-	//		}
-	//	}
-	//
-	//	FTPremade::FTPremade(Common::FTResourceDef& resDef, Editor::EditorElement* ele)
-	//		: FTPremade(resDef)
-	//	{
-	//		assert(resDef.Path);
-	//		std::ofstream ofs(resDef.Path);
-	//		if (ofs)
-	//		{
-	//			Common::FileIOHelper::BeginDataPackSave(ofs, resDef.FileName);
-	//			ele->SaveComponents(ofs);
-	//			ele->SaveProperties(ofs);
-	//			Common::FileIOHelper::EndDataPackSave(ofs, resDef.FileName);
-	//			Common::FileIOHelper::SaveBufferToFile(ofs);
-	//
-	//			printf("Premade %s created to %s\n", resDef.FileName, resDef.Path);
-	//		}
-	//		else
-	//			printf("ERROR: FTPremade::Create -> Failed to open file %s\n", resDef.Path);
-	//
-	//		HMODULE mod = GetModuleHandleA(Common::DLLPath::EDITOR);
-	//		if (!mod)
-	//			Common::Debug::LogError(__LINE__, __FILE__, "Module is Null");
-	//		mCreateEditorElemFunc	  = reinterpret_cast<Editor::CREATE_EDITOR_ELEM>(GetProcAddress(mod, Editor::CREATE_EDITOR_ELEMENT_FROM_ACTOR));
-	//		mGetEditorSceneFunc		  = reinterpret_cast<Editor::GET_EDITOR_SCENE>(GetProcAddress(mod, Editor::GET_EDITOR_SCENE_FUNC));
-	//		mGetEditorChunkLoaderFunc = reinterpret_cast<Editor::GET_EDITOR_CHUNK_LOADER>(GetProcAddress(mod, Editor::GET_EDITOR_CHUNK_LOADER_FUNC));
-	//	}
-	// #endif
+	/// @brief Drops the current origin and loads it again from this premade's path.
+	void FTPremade::Reload()
+	{
+		delete mOrigin;
+		mOrigin	  = nullptr;
+		mIsLoaded = false;
+		if (GetRelativePath())
+			Load(GetRelativePath()->C_Str());
+	}
+
+#ifdef FOXTROT_EDITOR
+	/// @brief Resolves editor callbacks exported by Editor.dll.
+	void FTPremade::BindEditorFunctions()
+	{
+		HMODULE mod = GetModuleHandleA(Common::DLLPath::EDITOR);
+		if (!mod)
+		{
+			Common::Debug::LogError(__LINE__, __FILE__, "Editor module is null");
+			return;
+		}
+
+		mCreateEditorElemFunc = reinterpret_cast<Editor::CREATE_EDITOR_ELEM>(
+			GetProcAddress(mod, Editor::CREATE_EDITOR_ELEMENT_FROM_ACTOR));
+		mGetEditorSceneFunc = reinterpret_cast<Editor::GET_EDITOR_SCENE>(
+			GetProcAddress(mod, Editor::GET_EDITOR_SCENE_FUNC));
+		mGetEditorChunkLoaderFunc = reinterpret_cast<Editor::GET_EDITOR_CHUNK_LOADER>(
+			GetProcAddress(mod, Editor::GET_EDITOR_CHUNK_LOADER_FUNC));
+	}
+
+	/// @brief Writes actor to the premade file described by resDef.
+	/// @param resDef Resource definition containing the filename and source path.
+	/// @param actor Actor whose properties and components are stored.
+	void FTPremade::Save(Common::FTResourceDef& resDef, Common::IActor* actor)
+	{
+		assert(resDef.Path);
+		assert(actor);
+		if (!resDef.Path || !actor)
+			return;
+
+		std::ofstream ofs(resDef.Path);
+		if (!ofs)
+		{
+			Common::Debug::LogError(__LINE__, __FILE__, "Failed to open premade file");
+			return;
+		}
+
+		// Components are written before properties. SaveBufferToFile reverses the
+		// buffer, so Load reads properties first and components second.
+		Common::FileIOHelper::BeginDataPackSave(ofs, resDef.FileName);
+		actor->SaveComponents(ofs);
+		actor->SaveProperties(ofs);
+		Common::FileIOHelper::EndDataPackSave(ofs, resDef.FileName);
+		Common::FileIOHelper::SaveBufferToFile(ofs);
+	}
+
+	/// @brief Writes actor into this premade's file and reloads the origin from that file.
+	/// @param actor Actor whose properties and components are stored.
+	void FTPremade::Overwrite(Common::IActor* actor)
+	{
+		if (!actor || !GetFileName() || !GetRelativePath())
+			return;
+
+		Common::FTResourceDef resDef{ GetFileName()->C_Str(), GetRelativePath()->C_Str() };
+		Save(resDef, actor);
+		Reload();
+	}
+
+	/// @brief Draws controls that place or edit this premade in the editor.
+	void FTPremade::UpdateUI()
+	{
+		if (!mCreateEditorElemFunc || !mGetEditorSceneFunc || !mGetEditorChunkLoaderFunc)
+			BindEditorFunctions();
+
+		const char* fileName = GetFileName() ? GetFileName()->C_Str() : "";
+		ImGui::TextUnformatted(fileName);
+		ImGui::Separator();
+
+		if (ImGui::Button("Add to Chunk") && mOrigin && mGetEditorChunkLoaderFunc && mGetEditorSceneFunc)
+		{
+			mGetEditorChunkLoaderFunc()->AddMaxActorID();
+			int id = mGetEditorChunkLoaderFunc()->GetMaxActorID();
+			mGetEditorSceneFunc()->AddEditorElement(mOrigin, id);
+		}
+
+		if (ImGui::Button("Edit Premade") && mOrigin && mCreateEditorElemFunc)
+		{
+			delete mDummyForUI;
+			mDummyForUI = mCreateEditorElemFunc(mOrigin, Common::ChunkKey::ID::INVALID);
+			ImGui::OpenPopup(fileName);
+		}
+
+		if (ImGui::BeginPopupModal(fileName))
+		{
+			if (mDummyForUI)
+			{
+				mDummyForUI->SetIsFocused(true);
+				mDummyForUI->UpdateUI(true);
+				if (ImGui::Button("Save"))
+				{
+					Common::FTResourceDef resDef{ GetFileName()->C_Str(), GetRelativePath()->C_Str() };
+					Save(resDef, mDummyForUI);
+					Reload();
+				}
+			}
+			if (ImGui::Button("Close"))
+			{
+				delete mDummyForUI;
+				mDummyForUI = nullptr;
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::EndPopup();
+		}
+	}
+
+	/// @brief Creates or replaces a premade file and registers it with the resource manager.
+	/// @param fileName File name, including the .premade extension, used as the lookup key.
+	/// @param path Full path of the premade file.
+	/// @param actor Actor whose properties and components are stored.
+	/// @return Premade owned by the resource manager, or nullptr when the arguments are unusable.
+	FTPremade* CreatePremade(const char* fileName, const char* path, Common::IActor* actor)
+	{
+		if (!fileName || !*fileName || !path || !*path || !actor)
+			return nullptr;
+
+		Common::ResourcePack<FTPremade>* pack = ResourceManager::GetInstance()->GetPremades();
+		if (!pack || !pack->GetResMap())
+			return nullptr;
+
+		Common::FTDS::HashMap<FTPremade*>* resources = pack->GetResMap();
+		if (resources->Capacity() == 0)
+			resources->Reserve(8);
+
+		Common::FTDS::String				 key(fileName);
+		Common::FTDS::Record<FTPremade*>*	 existing = resources->At(key);
+		if (existing && existing->Value())
+		{
+			Common::FTDS::String updatedPath(path);
+			existing->Value()->SetRelativePath(updatedPath);
+			existing->Value()->Overwrite(actor);
+			return existing->Value();
+		}
+
+		Common::FTResourceDef resDef{ fileName, path };
+		FTPremade*			  premade = DBG_NEW FTPremade(resDef, nullptr);
+		premade->Overwrite(actor);
+
+		const size_t sizeBefore = resources->GetSize();
+		pack->AddResource(premade->GetFileName(), premade);
+		if (resources->GetSize() == sizeBefore)
+		{
+			delete premade;
+			Common::Debug::LogError(__LINE__, __FILE__, "Premade pack is full");
+			return nullptr;
+		}
+		return premade;
+	}
+#endif // FOXTROT_EDITOR
 } // namespace Core
+
+#ifndef FOXTROT_EDITOR
+extern "C" Core::FTPremade* CreatePremade(const char*, const char*, Common::IActor*)
+{
+	return nullptr;
+}
+#endif // FOXTROT_EDITOR

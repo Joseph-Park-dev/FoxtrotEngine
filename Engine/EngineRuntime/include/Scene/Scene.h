@@ -21,6 +21,14 @@ namespace Core
 	class FTInputDevice;
 	class FoxtrotRenderer;
 
+	/// @brief Called with an actor immediately before the scene deletes it.
+	using ActorDestroyedFn = void (*)(Common::IActor* actor);
+
+	/// @brief Registers the callback invoked before an actor is deleted.
+	CORE_API void SetOnActorDestroyed(ActorDestroyedFn callback);
+	/// @brief Notifies listeners that an actor is about to be deleted.
+	CORE_API void NotifyActorDestroyed(Common::IActor* actor);
+
 	class Scene
 	{
 	public:

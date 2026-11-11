@@ -36,6 +36,24 @@
 
 namespace Core
 {
+	namespace
+	{
+		ActorDestroyedFn gOnActorDestroyed = nullptr;
+	}
+
+	/// @brief Registers the callback invoked before an actor is deleted.
+	void SetOnActorDestroyed(ActorDestroyedFn callback)
+	{
+		gOnActorDestroyed = callback;
+	}
+
+	/// @brief Notifies listeners that an actor is about to be deleted.
+	void NotifyActorDestroyed(Common::IActor* actor)
+	{
+		if (gOnActorDestroyed && actor)
+			gOnActorDestroyed(actor);
+	}
+
 	/// @brief Constructs a `Scene` with empty actor containers.
 	/// Initializes the active and pending actor lists and sets updating flag to false.
 	/// @note Initializes the :Scene base or delegates to its constructor.
@@ -78,6 +96,8 @@ namespace Core
 	{
 		for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
 		{
+			if (!*iter)
+				continue;
 			if ((*iter)->GetName().Equal(name.C_Str()))
 				if ((*iter) != filter)
 					return (*iter);
@@ -95,6 +115,9 @@ namespace Core
 	/// @return Pointer to the actor if found; otherwise `nullptr`.
 	Common::IActor* Scene::FindActor(const char* name, Common::IActor* filter)
 	{
+		if (!name)
+			return nullptr;
+
 		Common::FTDS::String str(name);
 		return FindActor(str, filter);
 	}
@@ -209,12 +232,14 @@ namespace Core
 
 		for (auto iter = mActors->Begin(); iter != mActors->End(); ++iter)
 		{
+			NotifyActorDestroyed(*iter);
 			delete (*iter);
 			(*iter) = nullptr;
 		}
 
 		for (auto iter = mPendingActors->Begin(); iter != mPendingActors->End(); ++iter)
 		{
+			NotifyActorDestroyed(*iter);
 			delete (*iter);
 			(*iter) = nullptr;
 		}
@@ -253,18 +278,22 @@ namespace Core
 	/// @note Invalidates references to the removed actor.
 	void Scene::RemoveActor(Common::IActor* actor)
 	{
-		int pos = -1;
+		if (!actor)
+			return;
 
-		pos = mPendingActors->Find(actor);
+		int pos = mPendingActors->Find(actor);
 		if (pos != -1)
 		{
+			NotifyActorDestroyed(actor);
 			delete mPendingActors->At(pos);
 			mPendingActors->Erase(pos);
+			return;
 		}
 
 		pos = mActors->Find(actor);
 		if (pos != -1)
 		{
+			NotifyActorDestroyed(actor);
 			delete mActors->At(pos);
 			mActors->Erase(pos);
 		}

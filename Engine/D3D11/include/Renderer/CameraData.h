@@ -4,6 +4,7 @@
 
 #include "Renderer/ICamera.h"
 #include "FTMath.h"
+#include "FTDS/Static/FTString.h"
 
 namespace Common
 {
@@ -14,7 +15,14 @@ namespace D3D11
 {
 	struct CameraData
 	{
+		/// @brief Registers this camera so a deleted target actor is cleared.
+		D3D11_API CameraData();
+		/// @brief Drops this camera from the actor-destruction list.
+		D3D11_API ~CameraData();
+
 		Common::IActor*	   Target	= nullptr;
+		/// @brief Actor name loaded from a chunk. Used to rebind Target after actors exist.
+		Common::FTDS::String TargetName;
 		Graphics::Viewtype ViewType = Graphics::Viewtype::Orthographic;
 
 		/// @brief Screen width (Resolution X)

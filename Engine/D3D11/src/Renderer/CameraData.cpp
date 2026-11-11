@@ -1,16 +1,95 @@
 #include "Renderer/CameraData.h"
 
+#include <Windows.h>
+
 #include "Renderer/ICamera.h"
 #include "Actor/IActor.h"
 #include "Actor/ActorData.h"
+#include "Scene/Scene.h"
 #include "FileSystem/FileIOHelper.h"
-#include "Plugin/GetFunc.h"
+#include "FileSystem/NullKeys.h"
 #include "Plugin/PluginKey.h"
 #include "FileSystem/DLLPath.h"
 
 namespace D3D11
 {
 	using namespace Math;
+
+	namespace
+	{
+		constexpr size_t MAX_CAMERAS = 8;
+		CameraData*		 gCameras[MAX_CAMERAS] = {};
+		size_t			 gCameraCount		   = 0;
+
+		void ForgetDestroyedActor(Common::IActor* actor)
+		{
+			for (size_t i = 0; i < gCameraCount; ++i)
+			{
+				if (gCameras[i] && gCameras[i]->Target == actor)
+					gCameras[i]->Target = nullptr;
+			}
+		}
+
+		void RegisterCamera(CameraData* data)
+		{
+			if (!data)
+				return;
+
+			for (size_t i = 0; i < gCameraCount; ++i)
+			{
+				if (gCameras[i] == data)
+					return;
+			}
+
+			if (gCameraCount < MAX_CAMERAS)
+				gCameras[gCameraCount++] = data;
+
+			Core::SetOnActorDestroyed(&ForgetDestroyedActor);
+		}
+
+		void UnregisterCamera(CameraData* data)
+		{
+			for (size_t i = 0; i < gCameraCount; ++i)
+			{
+				if (gCameras[i] != data)
+					continue;
+
+				gCameras[i] = gCameras[gCameraCount - 1];
+				gCameras[gCameraCount - 1] = nullptr;
+				--gCameraCount;
+				return;
+			}
+		}
+
+		void BindLoadedTarget(CameraData* data, const Common::FTDS::String& targetName)
+		{
+			data->Target	 = nullptr;
+			data->TargetName = targetName;
+			if (targetName.IsEmpty() || targetName.Equal(Common::ChunkKey::NullVal::NULL_OBJECT))
+				return;
+
+			HMODULE module = GetModuleHandleA(Common::DLLPath::CORE);
+			if (!module)
+				return;
+
+			using FindActorFn = Common::IActor* (*)(const char*, Common::IActor*);
+			FindActorFn findActor = reinterpret_cast<FindActorFn>(GetProcAddress(module, "FindActor"));
+			if (!findActor)
+				return;
+
+			data->Target = findActor(targetName.C_Str(), nullptr);
+		}
+	}
+
+	CameraData::CameraData()
+	{
+		RegisterCamera(this);
+	}
+
+	CameraData::~CameraData()
+	{
+		UnregisterCamera(this);
+	}
 	/// @brief Converts a screen-space position into world coordinates using the camera transforms.
 	/// @param screenPos Position in screen coordinates.
 	/// @return Converts a screen-space position into world coordinates using the camera transforms.
@@ -59,7 +138,9 @@ namespace D3D11
 	void CameraData::SaveProperties(std::ofstream& ofs)
 	{
 		Common::FileIOHelper::BeginDataPackSave(ofs, Graphics::ChunkKey::CAMERA_DATA);
-		if (Target)
+		// SaveBufferToFile reverses the buffer, so fields are pushed in the
+		// opposite order of LoadProperties. The file reads Zoom, Offset, Position, Target.
+		if (Target && Target->GetData())
 			Common::FileIOHelper::SaveString(ofs, Graphics::ChunkKey::TARGET_ACTOR, Target->GetNameRef());
 		else
 			Common::FileIOHelper::SaveString(ofs, Graphics::ChunkKey::TARGET_ACTOR, Common::ChunkKey::NullVal::NULL_OBJECT);
@@ -77,21 +158,11 @@ namespace D3D11
 		Common::FileIOHelper::BeginDataPackLoad(ifs, Graphics::ChunkKey::CAMERA_DATA);
 		Common::FileIOHelper::LoadFloat(ifs, ZoomFactor);
 		Common::FileIOHelper::LoadVector3(ifs, Offset);
-
 		Common::FileIOHelper::LoadVector3(ifs, Position);
+
 		Common::FTDS::String targetName = {};
 		Common::FileIOHelper::LoadBasicString(ifs, targetName);
-
-#ifdef FOXTROT_EDITOR
-		if (!Target)
-		{
-			using FindActorFn = Common::IActor* (*)(const char*, Common::IActor*);
-			Target			  = Core::GetFunc<FindActorFn>(Common::DLLPath::CORE, "FindActor")(targetName.C_Str(), nullptr);
-		}
-#else
-		if (targetName.NotEqual(Common::ChunkKey::NullVal::NULL_OBJECT))
-			Target = Core::GetFunc<Common::IActor* (*)(const char*, Common::IActor*)>(Common::DLLPath::CORE, "FindActor")(targetName.C_Str(), nullptr);
-#endif // FOXTROT_EDITOR
+		BindLoadedTarget(this, targetName);
 	}
 
 	/// @brief Returns the position used by this camera data.
@@ -107,11 +178,19 @@ namespace D3D11
 	{
 		if (Target)
 		{
-			Core::Transform* transform = Target->GetData()->Transform;
-			FTVector3		 worldPos  = transform->GetWorldPosition();
-			// Z axis transformation is controlled independently
-			worldPos.z = Position.z;
-			Position   = worldPos + Offset;
+			Common::ActorData* data		 = Target->GetData();
+			Core::Transform*   transform = data ? data->Transform : nullptr;
+			if (!transform)
+			{
+				Target = nullptr;
+			}
+			else
+			{
+				FTVector3 worldPos = transform->GetWorldPosition();
+				// Z axis transformation is controlled independently
+				worldPos.z = Position.z;
+				Position   = worldPos + Offset;
+			}
 		}
 		// Inverse of the camera translation. A camera at z = -5 keeps world z = 0
 		// inside the orthographic near/far range.

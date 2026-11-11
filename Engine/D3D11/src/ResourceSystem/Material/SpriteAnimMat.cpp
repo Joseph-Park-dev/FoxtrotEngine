@@ -11,8 +11,7 @@
 
 #ifdef FOXTROT_EDITOR
 	#include "Manager/DirectoryHelper.h"
-	#include "Plugin/ICommandHistory.h"
-	#include "Utility/EditorHelper.h"
+	#include "Plugin/CommandHistoryAccess.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -80,8 +79,9 @@ namespace D3D11
 	/// @brief Builds the editor controls for inspecting and modifying this object's state.
 	void SpriteAnimMat::UpdateUI()
 	{
-		Editor::UPDATE_VEC4("Color", mData->Color);
-		Editor::UPDATE_BOOL("Use Texture", mData->UseTexture);
+		::Editor::ICommandHistory* history = ::Editor::GetCommandHistory();
+		history->UpdateVector4Value("Color", mData->Color);
+		history->UpdateBoolValue("Use Texture", mData->UseTexture);
 	}
 #endif
 } // namespace D3D11

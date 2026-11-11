@@ -13,8 +13,7 @@
 #include "FTDS/Static/FTString.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "Plugin/ICommandHistory.h"
-	#include "Utility/EditorHelper.h"
+	#include "Plugin/CommandHistoryAccess.h"
 #endif
 
 namespace D3D11
@@ -86,9 +85,10 @@ namespace D3D11
 	/// @brief Builds the editor controls for inspecting and modifying this object's state.
 	void FTRectArea::UpdateUI()
 	{
-		Editor::UPDATE_VEC2("Center", mCenter);
-		Editor::UPDATE_VEC2("Size", mSize);
-		Editor::UPDATE_FLOAT("Rot Angle", mRotAngle);
+		::Editor::ICommandHistory* history = ::Editor::GetCommandHistory();
+		history->UpdateVector2Value("Center", mCenter);
+		history->UpdateVector2Value("Size", mSize);
+		history->UpdateFloatValue("Rot Angle", mRotAngle);
 		Set(mCenter, mSize, mRotAngle);
 	}
 #endif

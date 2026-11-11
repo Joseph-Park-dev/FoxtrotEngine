@@ -96,7 +96,13 @@ namespace Core
 	/// @return Borrowed matching entry, or nullptr when the search does not find one.
 	CORE_API Common::IActor* FindActor(const char* name, Common::IActor* filter)
 	{
-		return SceneManager::GetInstance()->GetCurrentScene()->FindActor(name, filter);
+		if (!name)
+			return nullptr;
+
+		Scene* scene = SceneManager::GetInstance()->GetCurrentScene();
+		if (!scene)
+			return nullptr;
+		return scene->FindActor(name, filter);
 	}
 } // namespace Core
 

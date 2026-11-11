@@ -10,8 +10,7 @@
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorUtils.h"
-	#include "Plugin/ICommandHistory.h"
-	#include "Utility/EditorHelper.h"
+	#include "Plugin/CommandHistoryAccess.h"
 #endif
 
 namespace D3D11
@@ -97,12 +96,13 @@ namespace D3D11
 	{
 		ImGui::SeparatorText("Standard Mat Data");
 
+		::Editor::ICommandHistory* history = ::Editor::GetCommandHistory();
 		bool useTex = mData->UseTexture;
-		::Editor::UPDATE_BOOL(ChunkKey::StandardMat::USE_TEXTURE, useTex);
+		history->UpdateBoolValue(ChunkKey::StandardMat::USE_TEXTURE, useTex);
 		mData->UseTexture = useTex;
 
-		::Editor::UPDATE_FLOAT(ChunkKey::StandardMat::ALPHA_TRIM, mData->AlphaTrim);
-		::Editor::UPDATE_VEC4(ChunkKey::StandardMat::COLOR, mData->Color);
+		history->UpdateFloatValue(ChunkKey::StandardMat::ALPHA_TRIM, mData->AlphaTrim);
+		history->UpdateVector4Value(ChunkKey::StandardMat::COLOR, mData->Color);
 	}
 #endif
 } // namespace D3D11

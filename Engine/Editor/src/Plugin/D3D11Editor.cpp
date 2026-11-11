@@ -97,6 +97,33 @@ BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMoni
 	return TRUE; // continue enumeration
 }
 
+#ifdef FOXTROT_EDITOR
+namespace Editor
+{
+	static ICommandHistory* sCommandHistory = nullptr;
+
+	/// @brief Resolves GetCMDHistory from Editor.dll. Safe to call more than once.
+	void AcquireCommandHistory()
+	{
+		if (sCommandHistory != nullptr)
+			return;
+
+		sCommandHistory = Core::GetFunc<GET_CMD_HISTORY>(
+			Common::DLLPath::EDITOR,
+			Core::ProcNames::CMDHistory)();
+	}
+
+	/// @brief Returns the command history stored by AcquireCommandHistory.
+	/// @return Borrowed command history. Null until AcquireCommandHistory has run.
+	ICommandHistory* GetCommandHistory()
+	{
+		if (!sCommandHistory)
+			AcquireCommandHistory();
+		return sCommandHistory;
+	}
+} // namespace Editor
+#endif
+
 namespace Editor
 {
 	class D3D11Editor :

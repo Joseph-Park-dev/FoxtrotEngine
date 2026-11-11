@@ -5,6 +5,10 @@
 #include "ResourceSystem/Shader/FTPixelShader.h"
 #include "Manager/ResourceManager.h"
 
+#ifdef FOXTROT_EDITOR
+	#include "Plugin/CommandHistoryAccess.h"
+#endif
+
 namespace D3D11
 {
 	ResType D3D11PSO::Type = ResType::D3D11_PSO;
@@ -69,7 +73,7 @@ namespace D3D11
 	{
 		ImGui::SeparatorText("Vertex Shader");
 		mVS->UpdateUI();
-		Editor::UPDATE_BOOL("Wireframe", mWireFramed);
+		::Editor::GetCommandHistory()->UpdateBoolValue("Wireframe", mWireFramed);
 
 		//! mWireFramed ? mRS = ResourceManager::GetInstance()->GetRS()->At(0) : mRS = ResourceManager::GetInstance()->GetRS()->At(1);
 	}

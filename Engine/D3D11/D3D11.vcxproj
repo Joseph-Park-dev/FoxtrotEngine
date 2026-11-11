@@ -143,6 +143,7 @@
     <ClCompile Include="src\Manager\LightManager.cpp" />
     <ClCompile Include="src\Manager\ResourceManager.cpp" />
     <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\Plugin\CommandHistoryAccess.cpp" />
     <ClCompile Include="src\Plugin\D3D11Plugin.cpp" />
     <ClCompile Include="src\Renderer\D3D11Renderer.cpp" />
     <ClCompile Include="src\Renderer\ViewportRenderer.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="include\Manager\LightManager.h" />
     <ClInclude Include="include\Manager\ResourceManager.h" />
     <ClInclude Include="include\pch.h" />
+    <ClInclude Include="include\Plugin\CommandHistoryAccess.h" />
     <ClInclude Include="include\Plugin\D3D11Exports.h" />
     <ClInclude Include="include\Plugin\PluginKey.h" />
     <ClInclude Include="include\Renderer\Camera.h" />

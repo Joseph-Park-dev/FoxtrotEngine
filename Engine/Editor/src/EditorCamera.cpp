@@ -25,6 +25,7 @@
 #include "EditorLayer.h"
 #include "EditorSceneManager.h"
 #include "EditorScene.h"
+#include "Actor/ActorData.h"
 
 namespace Editor
 {
@@ -98,33 +99,52 @@ namespace Editor
 		}*/
 
 		// Set Target
-		Scene*									   scene	   = EditorSceneManager::GetInstance()->GetCurrentScene();
-		EditorScene*							   editorScene = reinterpret_cast<EditorScene*>(scene);
-		Common::FTDS::DynamicArray<Core::IActor*>* editorElems = editorScene->Actors();
-		Common::FTDS::String* actorNames					   = DBG_NEW Common::FTDS::String[editorElems->GetSize() + 1];
+		Scene*		 scene		 = EditorSceneManager::GetInstance()->GetCurrentScene();
+		EditorScene* editorScene = scene ? static_cast<EditorScene*>(scene) : nullptr;
+		Common::FTDS::DynamicArray<Core::IActor*>* editorElems = editorScene ? editorScene->Actors() : nullptr;
+		const size_t actorCount = editorElems ? editorElems->GetSize() : 0;
+		Common::FTDS::String* actorNames = DBG_NEW Common::FTDS::String[actorCount + 1];
 		actorNames[0].Assign("None");
-		static size_t currIdx;
 
-		for (size_t i = 0; i < editorElems->GetSize(); ++i)
-			actorNames[i + 1] = editorElems->At(i)->GetName();
-
-		const char* comboPreview = actorNames[currIdx].C_Str();
-		if (ImGui::BeginCombo(Graphics::ChunkKey::TARGET_ACTOR, comboPreview))
+		size_t listed = 0;
+		for (size_t i = 0; i < actorCount; ++i)
 		{
-			for (size_t i = 0; i < editorElems->GetSize() + 1; ++i)
+			Core::IActor* actor = editorElems->At(i);
+			if (!actor)
+				continue;
+
+			++listed;
+			actorNames[listed].Assign(actor->GetName());
+		}
+
+		Common::FTDS::String preview;
+		preview.Assign("None");
+		if (gameData->Target)
+		{
+			Common::ActorData* data = gameData->Target->GetData();
+			if (data && data->Name.C_Str())
+				preview.Assign(data->Name);
+			else
+				gameCam->SetTargetActor(nullptr);
+		}
+
+		if (ImGui::BeginCombo(Graphics::ChunkKey::TARGET_ACTOR, preview.C_Str()))
+		{
+			for (size_t i = 0; i < listed + 1; ++i)
 			{
-				if (ImGui::Selectable(actorNames[i].C_Str()))
+				const char* label = actorNames[i].C_Str();
+				if (!label)
+					continue;
+
+				ImGui::PushID(static_cast<int>(i));
+				if (ImGui::Selectable(label))
 				{
-					currIdx = i;
-					if (currIdx == 0)
+					if (i == 0 || !editorScene)
 						gameCam->SetTargetActor(nullptr);
 					else
-					{
-						Core::IActor* actor =
-							editorScene->FindActor(actorNames[currIdx], nullptr);
-						gameCam->SetTargetActor(actor);
-					}
+						gameCam->SetTargetActor(editorScene->FindActor(actorNames[i], nullptr));
 				}
+				ImGui::PopID();
 			}
 			ImGui::EndCombo();
 		}

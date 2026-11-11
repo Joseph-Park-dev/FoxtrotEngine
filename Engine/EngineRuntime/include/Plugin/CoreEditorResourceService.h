@@ -6,7 +6,7 @@
 // See LICENSE in root directory for full details.
 // ----------------------------------------------------------------
 /// <summary>
-/// Editor service that loads and displays core assets (CSV, JSON, text).
+/// Editor service that loads and displays core assets (CSV, JSON, text, premade).
 /// </summary>
 #pragma once
 #include "Plugin/CoreExports.h"
@@ -28,7 +28,7 @@ namespace Core
 			const char*			 projDirectory,
 			Graphics::IRenderer* renderer = nullptr) noexcept override;
 
-		/// @brief Loads CSV, JSON, and text assets from the given directory.
+		/// @brief Loads CSV, JSON, text, and premade assets from the given directory.
 		/// @param assetDirectory Directory containing the assets to load.
 		/// @param renderer Unused. Core assets do not require a graphics device.
 		/// @return True when the directory is valid and loading finishes.
@@ -39,7 +39,7 @@ namespace Core
 		/// @brief Draws the loaded core assets in the editor resource menu.
 		void DisplayLoadedResources() override;
 
-		/// @brief Writes referenced CSV, JSON, and text resources into the chunk stream.
+		/// @brief Writes referenced CSV, JSON, text, and premade resources into the chunk stream.
 		/// @param ofs Output stream receiving the serialized data.
 		void SaveReferencedResources(std::ofstream& ofs) override;
 		void LoadReferencedResources(std::ifstream& ifs) override;

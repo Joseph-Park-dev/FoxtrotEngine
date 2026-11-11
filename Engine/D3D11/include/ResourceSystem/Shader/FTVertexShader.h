@@ -20,8 +20,7 @@
 	#define IMGUI_DEFINE_MATH_OPERATORS
 	#include <imgui.h>
 	#include <magic_enum/magic_enum.hpp>
-	#include "Plugin/ICommandHistory.h"
-	#include "Utility/EditorHelper.h"
+	#include "Plugin/CommandHistoryAccess.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -171,15 +170,16 @@ namespace D3D11
 				ImGui::EndCombo();
 			}
 
-			Editor::UPDATE_UNSIGNED_INT("Semantic Index", Desc.SemanticIndex);
+			::Editor::ICommandHistory* history = ::Editor::GetCommandHistory();
+			history->UpdateUnsignedIntValue("Semantic Index", Desc.SemanticIndex);
 
 			UINT format = static_cast<UINT>(Desc.Format);
-			Editor::UPDATE_UNSIGNED_INT("DXGI_FORMAT", format);
+			history->UpdateUnsignedIntValue("DXGI_FORMAT", format);
 			Desc.Format = static_cast<DXGI_FORMAT>(format);
 			ImGui::Text("Current format : %s", magic_enum::enum_name(Desc.Format).data());
 
-			Editor::UPDATE_UNSIGNED_INT("Input Slot", Desc.InputSlot);
-			Editor::UPDATE_UNSIGNED_INT("Offset", Desc.AlignedByteOffset);
+			history->UpdateUnsignedIntValue("Input Slot", Desc.InputSlot);
+			history->UpdateUnsignedIntValue("Offset", Desc.AlignedByteOffset);
 
 			if (ImGui::BeginCombo("Classification", classifications[Desc.InputSlotClass].C_Str()))
 			{
@@ -195,7 +195,7 @@ namespace D3D11
 				ImGui::EndCombo();
 			}
 
-			Editor::UPDATE_UNSIGNED_INT("Instance Data Step Rate", Desc.InstanceDataStepRate);
+			history->UpdateUnsignedIntValue("Instance Data Step Rate", Desc.InstanceDataStepRate);
 		}
 #endif // FOXTROT_EDITOR
 	};

@@ -3,8 +3,7 @@
 #include "FTMath.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "Plugin/ICommandHistory.h"
-	#include "Utility/EditorHelper.h"
+	#include "Plugin/CommandHistoryAccess.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -100,12 +99,13 @@ namespace D3D11
 		/// @brief Builds the editor controls for inspecting and modifying this object's state.
 		void UpdateUI()
 		{
-			::Editor::UPDATE_VEC3(LightKey::STRENGTH, Strength);
-			::Editor::UPDATE_FLOAT(LightKey::FALLOFF_START, FallOffStart);
-			::Editor::UPDATE_FLOAT(LightKey::FALLOFF_END, FallOffEnd);
-			::Editor::UPDATE_VEC3(LightKey::DIRECTION, Direction);
-			::Editor::UPDATE_VEC3(LightKey::POSITION, Position);
-			::Editor::UPDATE_FLOAT(LightKey::SPOT_POWER, SpotPower);
+			::Editor::ICommandHistory* history = ::Editor::GetCommandHistory();
+			history->UpdateVector3Value(LightKey::STRENGTH, Strength);
+			history->UpdateFloatValue(LightKey::FALLOFF_START, FallOffStart);
+			history->UpdateFloatValue(LightKey::FALLOFF_END, FallOffEnd);
+			history->UpdateVector3Value(LightKey::DIRECTION, Direction);
+			history->UpdateVector3Value(LightKey::POSITION, Position);
+			history->UpdateFloatValue(LightKey::SPOT_POWER, SpotPower);
 		}
 
 #endif

@@ -86,6 +86,7 @@ namespace Core
 		constexpr const char* ACTOR_DATA = "Actor Data";
 		constexpr const char* ACTOR_COMP = "Actor Component";
 		constexpr const char* RES_DATA	 = "Resource Data";
+		constexpr const char* CAM_DATA	 = "Camera Data";
 
 		constexpr const char* TRANSFORM = "Transform";
 

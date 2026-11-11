@@ -18,7 +18,9 @@
 // #include "Manager/SoundManager.h"
 #include "FTMath.h"
 #include "FileSystem/FileIOHelper.h"
+#include "FileSystem/NullKeys.h"
 #include "Renderer/Camera.h"
+#include "Renderer/CameraData.h"
 #include "Actor/Transform.h"
 #include "Plugin/IPlugin.h"
 #include "Plugin/PluginKey.h"
@@ -39,6 +41,80 @@
 
 #include "Actor/Actor.h"
 #include "Actor/ActorData.h"
+
+namespace
+{
+	Core::ICamera* FindGameCamera()
+	{
+		auto* plugins = Core::GetAvailablePlugins();
+		if (!plugins)
+			return nullptr;
+
+		for (auto iter = plugins->Begin(); iter != plugins->End(); ++iter)
+		{
+			if (!*iter || !(*iter)->Value())
+				continue;
+
+			void* camera = (*iter)->Value()->QueryInterface(Graphics::GAME_CAMERA_INTERFACE);
+			if (camera)
+				return static_cast<Core::ICamera*>(camera);
+		}
+		return nullptr;
+	}
+
+	bool ChunkHasCameraData(std::ifstream& ifs)
+	{
+		const std::streampos pos = ifs.tellg();
+		if (!ifs || pos == std::streampos(-1))
+			return false;
+
+		Common::FTDS::String line;
+		const bool			 read = Common::FileIOHelper::GetLine(ifs, line);
+		ifs.clear();
+		ifs.seekg(pos);
+		return read && line.Contains(Graphics::ChunkKey::CAMERA_DATA);
+	}
+
+	void SaveGameCamera(std::ofstream& ofs)
+	{
+		Core::ICamera* camera = FindGameCamera();
+		if (!camera)
+			return;
+
+		camera->SaveProperties(ofs);
+	}
+
+	void RebindEditorCameraTarget(D3D11::CameraData* data)
+	{
+		if (!data)
+			return;
+
+		data->Target = nullptr;
+		if (data->TargetName.IsEmpty() || data->TargetName.Equal(Common::ChunkKey::NullVal::NULL_OBJECT))
+			return;
+
+		Editor::EditorScene* scene = Editor::EditorSceneManager::GetInstance()->GetEditorScene();
+		if (!scene)
+			return;
+
+		data->Target = scene->FindActor(data->TargetName.C_Str(), nullptr);
+	}
+
+	void LoadGameCamera(std::ifstream& ifs)
+	{
+		if (!ChunkHasCameraData(ifs))
+			return;
+
+		Core::ICamera* camera = FindGameCamera();
+		if (!camera)
+			return;
+
+		camera->LoadProperties(ifs);
+
+		D3D11::Camera* gameCam = static_cast<D3D11::Camera*>(camera);
+		RebindEditorCameraTarget(gameCam->Data());
+	}
+} // namespace
 
 namespace Editor
 {
@@ -83,6 +159,8 @@ namespace Editor
 	{
 		Lock();
 		std::ofstream ofs(chunkPath);
+		// Pushed first so SaveBufferToFile writes this section after the actors.
+		SaveGameCamera(ofs);
 		SaveActorsData(ofs);
 
 		Common::FileIOHelper::BeginDataPackSave(ofs, Core::ChunkKey::RES_DATA);
@@ -144,12 +222,12 @@ namespace Editor
 		}
 
 		LoadActorsData(ifs);
+		LoadGameCamera(ifs);
 
 		Core::PluginManager::GetInstance()->Initialize();
 		Core::PluginManager::GetInstance()->InitializeComponents();
 		Core::PluginManager::GetInstance()->Setup();
 
-		// D3D11::Camera::GetInstance()->LoadProperties(ifs);
 		Unlock();
 	}
 

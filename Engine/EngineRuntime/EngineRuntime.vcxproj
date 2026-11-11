@@ -52,6 +52,11 @@
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(SolutionDir)Engine\Editor\include</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\third_party\imgui\imgui.cpp" Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'" />
     <ClCompile Include="..\..\third_party\imgui\imgui_draw.cpp" Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'" />

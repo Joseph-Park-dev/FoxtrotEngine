@@ -24,6 +24,16 @@ namespace D3D11
 	using namespace Math;
 	using namespace Microsoft::WRL;
 
+	/// @brief World units covered by one texel when the camera zoom is left at its default.
+	static float PixelToWorld(Core::ICamera* camInst)
+	{
+		if (!camInst)
+			return 1.f;
+
+		const float unitsPerPixel = camInst->GetUnitsPerPixel();
+		return 0.f < unitsPerPixel ? unitsPerPixel : 1.f;
+	}
+
 	/// @brief Rotation-only world orientation, using the same axis order as Transform::Update.
 	static void GetSpriteOrientation(Transform* transform, FTMatrix4& out)
 	{
@@ -106,9 +116,14 @@ namespace D3D11
 		const FTVector4 up(
 			orientation.mat[1][0], orientation.mat[1][1], orientation.mat[1][2], 0.f);
 
+		// Size stays in pixels. Scale converts that into world units so an
+		// unmodified camera zoom draws the texture at its original pixel size.
+		const float pixelToWorld = PixelToWorld(camInst);
 		for (size_t i = 0; i < gcDataCount; ++i)
 		{
-			mGCSpriteData[i].Scale = FTVector2(GetSizeScale().x * scaleWithDir.x, GetSizeScale().y * scaleWithDir.y);
+			mGCSpriteData[i].Scale = FTVector2(
+				GetSizeScale().x * scaleWithDir.x * pixelToWorld,
+				GetSizeScale().y * scaleWithDir.y * pixelToWorld);
 			mGCSpriteData[i].Right = right;
 			mGCSpriteData[i].Up	   = up;
 		}

@@ -30,6 +30,7 @@
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorUtils.h"
+	#include "Plugin/CommandHistoryAccess.h"
 #endif // FOXTROT_EDITOR
 	
 
@@ -248,7 +249,7 @@ namespace D3D11
 	/// @param chInst Glyph instance whose metrics or vertices are used.
 	void Animator::EditorUIUpdate()
 	{
-		Editor::UPDATE_BOOL("Is Repeated", mIsRepeated);
+		::Editor::GetCommandHistory()->UpdateBoolValue("Is Repeated", mIsRepeated);
 
 		if (GetSprite())
 			GetSprite()->UpdateUI();

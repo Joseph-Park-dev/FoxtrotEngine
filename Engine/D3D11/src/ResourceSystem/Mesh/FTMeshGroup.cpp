@@ -27,6 +27,7 @@
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorUtils.h"
+	#include "Plugin/CommandHistoryAccess.h"
 #endif // FOXTROT_EDITOR
 
 using Microsoft::WRL::ComPtr;
@@ -254,12 +255,13 @@ namespace D3D11
 #ifdef FOXTROT_EDITOR
 	void FTMeshGroup::UpdateUI()
 	{
-		Editor::UPDATE_VEC3("Scale size", mSizeScale);
+		::Editor::ICommandHistory* history = ::Editor::GetCommandHistory();
+		history->UpdateVector3Value("Scale size", mSizeScale);
 
 		bool val = true;
 		0 < mFrontDir ? val = true : val = false;
 
-		Editor::UPDATE_BOOL("Is Facing Right", val);
+		history->UpdateBoolValue("Is Facing Right", val);
 		SetRightIsFront(val);
 	}
 

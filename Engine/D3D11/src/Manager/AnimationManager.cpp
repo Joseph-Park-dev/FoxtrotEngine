@@ -20,7 +20,7 @@
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorUtils.h"
-	#include "Utility/EditorHelper.h"
+	#include "Plugin/CommandHistoryAccess.h"
 	#include "FileSystem/BufferSizes.h"
 	#include "FileSystem/DLLPath.h"
 // NULLPATH WARNING: This relative path include is problematic.
@@ -141,6 +141,7 @@ namespace D3D11
 	/// @brief Displays the controls used to define and create an animation resource.
 	void AnimationManager::CreateAnimationGUI()
 	{
+		::Editor::ICommandHistory* history = ::Editor::GetCommandHistory();
 		ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
 		if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
 		{
@@ -150,10 +151,10 @@ namespace D3D11
 
 				// Update file name of the sprite animation.
 				static Common::FTDS::String name = "Empty Value";
-				Editor::UPDATE_STR("Name", name);
+				history->UpdateStringValue("Name", name);
 
 				// Is the sprite animation to be repeated?
-				Editor::UPDATE_BOOL("Is repeated", resDef.IsRepeated);
+				history->UpdateBoolValue("Is repeated", resDef.IsRepeated);
 
 				// Update texture (sprite sheet) of the sprite animation.
 				static FTSprite* texture;
@@ -176,15 +177,15 @@ namespace D3D11
 					ImGui::Text("JSON not selected");
 
 				// Update FPS of the sprite animation.
-				Editor::UPDATE_INT("FPS", resDef.FPS);
+				history->UpdateIntValue("FPS", resDef.FPS);
 
-				Editor::UPDATE_CLAMPED_INT(
+				history->UpdateIntValue(
 					"Anim Start Index",
 					resDef.MinFrameIdx,
 					-resDef.MaxFrameIdx,
 					resDef.MaxFrameIdx);
 
-				Editor::UPDATE_CLAMPED_INT("Anim End Index", resDef.MaxFrameIdx, resDef.MinFrameIdx, resDef.MaxFrameIdx);
+				history->UpdateIntValue("Anim End Index", resDef.MaxFrameIdx, resDef.MinFrameIdx, resDef.MaxFrameIdx);
 
 				// Save sprite animation into a file.
 				if (ImGui::Button("Create"))
@@ -214,7 +215,7 @@ namespace D3D11
 				Common::FTResourceDef resDef;
 
 				static Common::FTDS::String name = "Empty Value";
-				Editor::UPDATE_STR("Name", name);
+				history->UpdateStringValue("Name", name);
 
 				static GenericData::FTJSON* json;
 				Editor::DisplayResSelection("Select Skeleton Data", GetJSONsFunc(), json);

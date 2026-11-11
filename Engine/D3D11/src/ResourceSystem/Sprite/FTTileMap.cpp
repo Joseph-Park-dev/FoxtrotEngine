@@ -28,9 +28,8 @@
 #include "Manager/ResourceManager.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "Plugin/ICommandHistory.h"
+	#include "Plugin/CommandHistoryAccess.h"
 	#include "EditorUtils.h"
-	#include "Utility/EditorHelper.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -303,10 +302,11 @@ namespace D3D11
 		int maxCountOnMapX	   = static_cast<int>(mMaxCountOnMapX);
 		int maxCountOnMapY	   = static_cast<int>(mMaxCountOnMapY);
 
-		Editor::UPDATE_INT("Tile width on screen", tileWidthOnScreen);
-		Editor::UPDATE_INT("Tile height on screen", tileHeightOnScreen);
-		Editor::UPDATE_INT("Max count on Map X", maxCountOnMapX);
-		Editor::UPDATE_INT("Max count on Map Y", maxCountOnMapY);
+		::Editor::ICommandHistory* history = ::Editor::GetCommandHistory();
+		history->UpdateIntValue("Tile width on screen", tileWidthOnScreen);
+		history->UpdateIntValue("Tile height on screen", tileHeightOnScreen);
+		history->UpdateIntValue("Max count on Map X", maxCountOnMapX);
+		history->UpdateIntValue("Max count on Map Y", maxCountOnMapY);
 
 		mTileWidthOnScreen	= static_cast<UINT>(tileWidthOnScreen);
 		mTileHeightOnScreen = static_cast<UINT>(tileHeightOnScreen);

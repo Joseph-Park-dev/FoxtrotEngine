@@ -34,6 +34,7 @@
 	#include "Manager/AnimationManager.h"
 	#include "ResourceSystem/Shader/FTVertexShader.h"
 	#include "EditorUtils.h"
+	#include "Plugin/CommandHistoryAccess.h"
 #endif
 
 namespace D3D11
@@ -250,17 +251,18 @@ namespace D3D11
 		if (GetTexture())
 			GetTexture()->UpdateUI();
 
+		::Editor::ICommandHistory* history = ::Editor::GetCommandHistory();
 		FTVector2 size = GetGCSpriteData()[0].Size;
-		Editor::UPDATE_VEC2("Size", size);
+		history->UpdateVector2Value("Size", size);
 		for (size_t i = 0; i < static_cast<size_t>(mMaxFrameIdx) - static_cast<size_t>(mMinFrameIdx) + 1; ++i)
 			GetGCSpriteData()[i].Size = size;
 
-		Editor::UPDATE_VEC3("Scale size", SizeScale());
+		history->UpdateVector3Value("Scale size", SizeScale());
 
 		bool val = true;
 		0 < GetFrontDir() ? val = true : val = false;
 
-		Editor::UPDATE_BOOL("Is Facing Right", val);
+		history->UpdateBoolValue("Is Facing Right", val);
 		SetRightIsFront(val);
 	}
 

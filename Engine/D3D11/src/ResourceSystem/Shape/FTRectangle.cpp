@@ -8,6 +8,10 @@
 #include "FileSystem/FileIOHelper.h"
 #include "ResourceSystem/Mesh/MeshConstantData.h"
 
+#ifdef FOXTROT_EDITOR
+	#include "Plugin/CommandHistoryAccess.h"
+#endif
+
 namespace D3D11
 {
 	using namespace Common;
@@ -67,7 +71,7 @@ namespace D3D11
 	void FTRectangle::UpdateUI()
 	{
 		bool isActive = GetIsActive();
-		::Editor::UPDATE_BOOL("Render Shape", isActive);
+		::Editor::GetCommandHistory()->UpdateBoolValue("Render Shape", isActive);
 		SetIsActive(isActive);
 	}
 #endif

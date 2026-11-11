@@ -12,10 +12,6 @@
 #include "Component/SpriteRenderer.h"
 #include "Component/TileMapRenderer.h"
 
-#ifdef FOXTROT_EDITOR
-	#include "Utility/EditorHelper.h"
-#endif // FOXTROT_EDITOR
-
 namespace D3D11
 {
 	/// @brief Returns the owner used by this d3 d11 component.

@@ -13,7 +13,7 @@
 #include "FTMath.h"
 
 #ifdef FOXTROT_EDITOR
-	#include "Utility/EditorHelper.h"
+	#include "Plugin/CommandHistoryAccess.h"
 #endif // FOXTROT_EDITOR
 	
 
@@ -128,7 +128,7 @@ namespace D3D11
 		/// @brief Builds the editor controls for inspecting and modifying this object's state.
 		void UpdateUI()
 		{
-			Editor::UPDATE_VEC2("Sprite Size", Size);
+			::Editor::GetCommandHistory()->UpdateVector2Value("Sprite Size", Size);
 		}
 #endif // FOXTROT_EDITOR
 	};

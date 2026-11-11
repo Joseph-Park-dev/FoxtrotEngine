@@ -461,6 +461,7 @@ namespace Core
 		mCSVs->LoadAllResourcesInAsset(assetDir, FileTypes::CSV);
 		mJSONs->LoadAllResourcesInAsset(assetDir, FileTypes::JSON);
 		mTexts->LoadAllResourcesInAsset(assetDir, FileTypes::TEXT);
+		mPremades->LoadAllResourcesInAsset(assetDir, FileTypes::PREMADE);
 	}
 
 	void ResourceManager::EditorUIUpdate()
@@ -468,6 +469,7 @@ namespace Core
 		mCSVs->DisplayLoadedResources("CSVs");
 		mJSONs->DisplayLoadedResources("JSONs");
 		mTexts->DisplayLoadedResources("Texts");
+		mPremades->DisplayLoadedResources("Premades");
 	}
 
 	void SetEditorGuiContext(void* context)

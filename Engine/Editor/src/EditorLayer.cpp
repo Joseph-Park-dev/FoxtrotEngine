@@ -699,23 +699,20 @@ namespace Editor
 					Common::FTDS::String name = mFocusedEditorElement->GetName();
 					name.Append(Common::FileTypes::PREMADE);
 
-					Common::FTDS::String* path = mGetAssetPathFunc();
-					path->Append(name);
+					Common::FTDS::String* assetPath = mGetAssetPathFunc ? mGetAssetPathFunc() : nullptr;
+					if (!assetPath)
+						return;
 
-					Common::FTResourceDef resDef{
-						name.C_Str(),
-						path->C_Str()
-					};
+					Common::FTDS::String filePath;
+					filePath.Assign(*assetPath);
+					filePath.Append(name);
 
-					std::ofstream premadeFile(resDef.Path);
-					if (premadeFile)
-					{
-						Common::FileIOHelper::BeginDataPackSave(premadeFile, resDef.FileName);
-						mFocusedEditorElement->SaveProperties(premadeFile);
-						mFocusedEditorElement->SaveComponents(premadeFile);
-						Common::FileIOHelper::EndDataPackSave(premadeFile, resDef.FileName);
-						Common::FileIOHelper::SaveBufferToFile(premadeFile);
-					}
+					using CreatePremadeFn = void* (*)(const char*, const char*, Common::IActor*);
+					CreatePremadeFn createPremade = Core::GetFunc<CreatePremadeFn>(
+						Common::DLLPath::CORE_EDITOR,
+						"CreatePremade");
+					if (createPremade)
+						createPremade(name.C_Str(), filePath.C_Str(), mFocusedEditorElement);
 					ImGui::CloseCurrentPopup();
 					mInfoType = InfoType::None;
 				};

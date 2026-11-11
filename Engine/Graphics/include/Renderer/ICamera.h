@@ -161,4 +161,7 @@ namespace Graphics
 		constexpr const char* CAM_OFFSET		  = "Offset";
 		constexpr const char* CAM_ZOOM			  = "Zoom";
 	} // namespace ChunkKey
+
+	/// @brief QueryInterface name for the camera that renders the game view.
+	constexpr const char* GAME_CAMERA_INTERFACE = "GameCamera";
 } // namespace Graphics

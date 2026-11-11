@@ -28,7 +28,6 @@
 	#include <bitset>
 	#define IMGUI_DEFINE_MATH_OPERATORS
 	#include <imgui.h>
-	#include "Utility/EditorHelper.h"
 #endif // FOXTROT_EDITOR
 
 namespace D3D11
@@ -37,6 +36,16 @@ namespace D3D11
 	using namespace Core;
 	using namespace Math;
 	using Microsoft::WRL::ComPtr;
+
+	/// @brief World units covered by one Spine texel when the camera zoom is left at its default.
+	static float PixelToWorld(Core::ICamera* camInst)
+	{
+		if (!camInst)
+			return 1.f;
+
+		const float unitsPerPixel = camInst->GetUnitsPerPixel();
+		return 0.f < unitsPerPixel ? unitsPerPixel : 1.f;
+	}
 
 	void FTSpineAnimation::Update(float deltaTime, spine::Physics physics)
 	{
@@ -65,8 +74,11 @@ namespace D3D11
 		if (scale.x < 0.f || scale.y < 0.f)
 			transform->SetLocalScale(FTVector3(Math::Abs(scale.x), Math::Abs(scale.y), scale.z));
 
-		const float facing	 = static_cast<float>(GetFrontDir() * GetDirection());
-		FTMatrix4	modelMat = FTMatrix4::CreateScale(facing, 1.f, 1.f) * transform->GetMatrixWorld();
+		// Spine vertices are in pixels. This scale maps them into world units so an
+		// unmodified camera zoom draws the skeleton at its original pixel size.
+		const float facing		 = static_cast<float>(GetFrontDir() * GetDirection());
+		const float pixelToWorld = PixelToWorld(camInst);
+		FTMatrix4	modelMat	 = FTMatrix4::CreateScale(facing * pixelToWorld, pixelToWorld, 1.f) * transform->GetMatrixWorld();
 
 		FTMatrix4 viewMat = FTMatrix4::Identity;
 		camInst->GetViewMatrix(viewMat);

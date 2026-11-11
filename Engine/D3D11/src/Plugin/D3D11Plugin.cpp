@@ -185,6 +185,8 @@ namespace D3D11
 					return static_cast<InputSystem::IInputDevice*>(mInputDevices->At(0));
 				return nullptr;
 			}
+			if (std::strcmp(name, Graphics::GAME_CAMERA_INTERFACE) == 0)
+				return static_cast<Graphics::ICamera*>(mCamera);
 
 #ifdef FOXTROT_EDITOR
 			if (std::strcmp(name, Core::IEditorResourceService::INTERFACE_NAME) == 0)

@@ -17,6 +17,8 @@
 	#include "FTJSON.h"
 	#include "FTText.h"
 	#include "FTCSV.h"
+	#include "ResourceSystem/FTPremade.h"
+	#include "FileSystem/FileIOHelper.h"
 	#include "FTDS/Static/FTString.h"
 	#include "Debugging/DebugFuncs.h"
 	#include "FileSystem/DLLPath.h"
@@ -66,18 +68,43 @@ namespace Core
 		ResourceManager::GetInstance()->EditorUIUpdate();
 	}
 
-	/// @brief Writes referenced CSV, JSON, and text resources into the chunk stream.
+	/// @brief Reports whether the next chunk line opens a data pack with the supplied key.
+	/// @param ifs Input stream positioned at the expected data. The position is restored.
+	/// @param key Data-pack key to match.
+	/// @return True when the next line is a data pack whose name contains key.
+	bool NextDataPackIs(std::ifstream& ifs, const char* key)
+	{
+		if (!key || !*key)
+			return false;
+		if (ifs.fail())
+			ifs.clear();
+
+		const std::streampos pos = ifs.tellg();
+		Common::FTDS::String line;
+		const bool			 got = Common::FileIOHelper::GetLine(ifs, line);
+		if (ifs.fail())
+			ifs.clear();
+		ifs.seekg(pos);
+		return got && line.Contains(key);
+	}
+
+	/// @brief Writes referenced CSV, JSON, text, and premade resources into the chunk stream.
 	/// @param ofs Output stream receiving the serialized data.
 	void CoreEditorResourceService::SaveReferencedResources(std::ofstream& ofs)
 	{
 		ResourceManager::GetInstance()->GetCSVs()->SaveReferencedResourcesToChunk(ofs);
 		ResourceManager::GetInstance()->GetJSONs()->SaveReferencedResourcesToChunk(ofs);
 		ResourceManager::GetInstance()->GetTexts()->SaveReferencedResourcesToChunk(ofs);
+		// Written last so the reversed chunk buffer reads this pack first.
+		ResourceManager::GetInstance()->GetPremades()->SaveReferencedResourcesToChunk(ofs);
 	}
 
 	void CoreEditorResourceService::LoadReferencedResources(std::ifstream& ifs)
 	{
 		HMODULE module = GetModuleHandleA(Common::DLLPath::CORE);
+		// Older chunks have no premade pack. Skip it when the next pack is text.
+		if (NextDataPackIs(ifs, FTPremade::GetName()))
+			ResourceManager::GetInstance()->GetPremades()->LoadReferencedResourcesFromChunk(ifs, module, nullptr);
 		ResourceManager::GetInstance()->GetTexts()->LoadReferencedResourcesFromChunk(ifs, module, nullptr);
 		ResourceManager::GetInstance()->GetJSONs()->LoadReferencedResourcesFromChunk(ifs, module, nullptr);
 		ResourceManager::GetInstance()->GetCSVs()->LoadReferencedResourcesFromChunk(ifs, module, nullptr);
@@ -139,13 +166,14 @@ namespace Core
 	}
 } // namespace Core
 
-/// @brief Registers CSV, JSON, and text constructors exported by this module.
+/// @brief Registers CSV, JSON, text, and premade constructors exported by this module.
 /// @param entries Receives one factory per core resource pack key.
 FT_EXPORT void SetResourceFactory(Common::FTDS::HashMap<ResourceFactoryEntry>& entries) noexcept
 {
 	entries.Insert(GenericData::FTCSV::GetName(), CreateRegisteredResource<GenericData::FTCSV>);
 	entries.Insert(GenericData::FTJSON::GetName(), CreateRegisteredResource<GenericData::FTJSON>);
 	entries.Insert(GenericData::FTText::GetName(), CreateRegisteredResource<GenericData::FTText>);
+	entries.Insert(Core::FTPremade::GetName(), CreateRegisteredResource<Core::FTPremade>);
 }
 #else
 	#include "Foxtrot/Core/ModuleApi.h"

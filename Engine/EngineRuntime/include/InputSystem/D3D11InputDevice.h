@@ -28,7 +28,7 @@ namespace D3D11
 		CORE_API virtual void DetectKeyboardInput();
 		/// @brief Updates mouse button and client-coordinate state from a Windows message.
 		/// @param msg Windows message containing input or window data.
-		CORE_API void		 DetectMouseInput(MSG msg);
+		CORE_API void DetectMouseInput(MSG msg);
 		/// @brief Computes mouse movement deltas for drag handling.
 		/// @param deltaX Receives horizontal mouse movement.
 		/// @param deltaY Receives vertical mouse movement.
@@ -92,7 +92,7 @@ namespace D3D11
 		CORE_API virtual int GetMousePosY() const override;
 		/// @brief Returns the mouse wheel delta used by this d3 d11 input device.
 		/// @return Current mouse wheel delta.
-		CORE_API virtual const float		   GetMouseWheelDelta() const override;
+		CORE_API virtual const float GetMouseWheelDelta() const override;
 
 		/// @brief Updates the mouse position used by subsequent operations.
 		/// @param pos Replacement mouse position.
@@ -127,9 +127,9 @@ namespace D3D11
 
 	private:
 		// Mouse related data.
-		int mMousePosX, mMousePosY;
-		float		 mMouseWheelDelta;
-		bool		 mIsDragging;
+		int	  mMousePosX, mMousePosY;
+		float mMouseWheelDelta;
+		bool  mIsDragging;
 
 		int*										   mMouseCode;
 		Common::FTDS::DynamicArray<Core::ButtonInput>* mMouseButtons;

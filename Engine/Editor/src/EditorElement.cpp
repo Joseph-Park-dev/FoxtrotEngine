@@ -14,6 +14,8 @@
 #include <imgui/backends/imgui_impl_win32.h>
 
 #include "EditorLayer.h"
+#include "EditorScene.h"
+#include "EditorSceneManager.h"
 #include "ChunkLoader.h"
 #include "CommandHistory.h"
 #include "Command.h"
@@ -516,6 +518,49 @@ namespace Editor
 			editorTransform->SetWorldRotation(worldRotation);
 		}
 		SetTransform(editorTransform);
+	}
+
+	EditorElement::~EditorElement()
+	{
+		if (!mData)
+			return;
+
+		EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene();
+		Common::FTDS::DynamicArray<Common::IActor*>* sceneActors = scene ? scene->Actors() : nullptr;
+
+		if (mData->Parent)
+		{
+			if (!sceneActors || sceneActors->Find(mData->Parent) != -1)
+				mData->Parent->RemoveChild(this);
+			mData->Parent = nullptr;
+		}
+
+		if (mData->Children)
+		{
+			for (size_t i = mData->Children->GetSize(); 0 < i; --i)
+			{
+				Common::IActor* child = mData->Children->At(i - 1);
+				if (!child)
+					continue;
+
+				const bool sceneOwnsChild = sceneActors && sceneActors->Find(child) != -1;
+				if (sceneOwnsChild)
+				{
+					child->SetParent(nullptr);
+					int pos = mData->Children->Find(child);
+					if (pos != -1)
+						mData->Children->Erase(static_cast<size_t>(pos));
+					continue;
+				}
+
+				// This actor owns the child. Clear the back-pointer before ~ActorData deletes it.
+				if (Common::ActorData* childData = child->GetData())
+					childData->Parent = nullptr;
+			}
+		}
+
+		delete mData;
+		mData = nullptr;
 	}
 
 	EditorElement* CreateEditorElementFromActor(Core::IActor* actor, int id)

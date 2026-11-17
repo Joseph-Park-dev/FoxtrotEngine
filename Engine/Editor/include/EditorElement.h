@@ -244,6 +244,9 @@ namespace Editor
 		/// @param id Actor or entry identifier.
 		EditorElement(Core::FTPremade* premade, int id);
 
+		/// @brief Releases this actor, its components, and actors owned only by it.
+		~EditorElement() override;
+
 	private:
 		Common::ActorData* mData;
 

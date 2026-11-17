@@ -255,6 +255,7 @@ namespace D3D11
 		/// /// Initialization Phase //////
 		/// ///////////////////////////////
 		virtual void Initialize() override;
+		void		 InitializeManagers(D3D11Renderer* renderer);
 		/// @brief Calls Initialize on every component registered to this plugin.
 		virtual void InitializeComponents() override;
 		/// @brief Updates the up used by subsequent operations.
@@ -344,6 +345,7 @@ namespace D3D11
 	{
 		D3D11::D3D11Renderer* renderer = DBG_NEW D3D11::D3D11Renderer(window);
 		mRenderer					   = renderer;
+		InitializeManagers(renderer);
 		return renderer;
 	}
 
@@ -441,8 +443,12 @@ namespace D3D11
 		if (!mEditorResources)
 			mEditorResources = DBG_NEW D3D11EditorResourceService;
 #endif
+	}
 
-		DebugShapes::GetInstance()->Initialize(mRenderer);
+	void D3D11Plugin::InitializeManagers(D3D11Renderer* renderer)
+	{
+		DebugShapes::GetInstance()->Initialize(renderer);
+		AnimationManager::GetInstance()->Initialize(renderer);
 	}
 
 	/// @brief Calls Initialize on every component registered to this plugin.

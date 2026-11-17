@@ -26,6 +26,8 @@
 
 #include "Manager/ResourceManager.h"
 
+#include <type_traits>
+
 #include "ResourceSystem/D3D11Resource.h"
 #include "FTDS/Static/FTString.h"
 #include "FileSystem/NullKeys.h"
@@ -299,69 +301,80 @@ namespace D3D11
 		///////////////////////////
 		///// Assembling PSOs /////
 		///////////////////////////
+		auto shaderValue = [](auto& shaders, const char* key) -> std::remove_reference_t<decltype(shaders.At(key)->Value())> {
+			auto* record = shaders.At(key);
+			if (!record)
+				return nullptr;
+			return record->Value();
+		};
+
 		PSODef psoDef;
 		{
 			psoDef.FileName = "SpritePSO";
 			psoDef.Path		= Common::ChunkKey::NullVal::NULL_OBJECT;
 
-			psoDef.VS			= VS.At("SpriteVS.hlsl")->Value();
-			psoDef.GS			= GS.At("SpriteGS.hlsl")->Value();
-			psoDef.PS			= PS.At("SpritePS.hlsl")->Value();
+			psoDef.VS			= shaderValue(VS, "SpriteVS.hlsl");
+			psoDef.GS			= shaderValue(GS, "SpriteGS.hlsl");
+			psoDef.PS			= shaderValue(PS, "SpritePS.hlsl");
 			psoDef.BS			= spriteBS;
 			psoDef.DSS			= spriteDSS;
 			psoDef.RS			= SolidRS;
 			psoDef.SS			= SamplerState;
 			psoDef.PrimTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
 
-			mPSOs->AddResource(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
+			if (psoDef.VS && psoDef.GS && psoDef.PS)
+				mPSOs->AddResource(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
 		}
 
 		{
 			psoDef.FileName = "SpriteAnimPSO";
 			psoDef.Path		= Common::ChunkKey::NullVal::NULL_OBJECT;
 
-			psoDef.VS			= VS.At("SpriteVS.hlsl")->Value();
-			psoDef.GS			= GS.At("SpriteGS.hlsl")->Value();
-			psoDef.PS			= PS.At("SpritePS.hlsl")->Value();
+			psoDef.VS			= shaderValue(VS, "SpriteVS.hlsl");
+			psoDef.GS			= shaderValue(GS, "SpriteGS.hlsl");
+			psoDef.PS			= shaderValue(PS, "SpritePS.hlsl");
 			psoDef.BS			= spriteBS;
 			psoDef.DSS			= spriteDSS;
 			psoDef.RS			= SolidRS;
 			psoDef.SS			= SamplerState;
 			psoDef.PrimTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
 
-			mPSOs->AddResource(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
+			if (psoDef.VS && psoDef.GS && psoDef.PS)
+				mPSOs->AddResource(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
 		}
 
 		{
 			psoDef.FileName = "SpineAnimPSO";
 			psoDef.Path		= Common::ChunkKey::NullVal::NULL_OBJECT;
 
-			psoDef.VS			= VS.At("TextureVSSpine.hlsl")->Value();
+			psoDef.VS			= shaderValue(VS, "TextureVSSpine.hlsl");
 			psoDef.GS			= nullptr;
-			psoDef.PS			= PS.At("Texture2DSpinePS.hlsl")->Value();
+			psoDef.PS			= shaderValue(PS, "Texture2DSpinePS.hlsl");
 			psoDef.BS			= spineBS;
 			psoDef.DSS			= spriteDSS;
 			psoDef.RS			= SolidRS;
 			psoDef.SS			= SamplerState;
 			psoDef.PrimTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-			mPSOs->AddResource(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
+			if (psoDef.VS && psoDef.PS)
+				mPSOs->AddResource(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
 		}
 
 		{
 			psoDef.FileName = "DebugShapePSO";
 			psoDef.Path		= Common::ChunkKey::NullVal::NULL_OBJECT;
 
-			psoDef.VS			= VS.At("DebugShapeVS.hlsl")->Value();
-			psoDef.GS			= GS.At("DebugShapeGS.hlsl")->Value();
-			psoDef.PS			= PS.At("DebugShapePS.hlsl")->Value();
+			psoDef.VS			= shaderValue(VS, "DebugShapeVS.hlsl");
+			psoDef.GS			= shaderValue(GS, "DebugShapeGS.hlsl");
+			psoDef.PS			= shaderValue(PS, "DebugShapePS.hlsl");
 			psoDef.BS			= nullptr;
 			psoDef.DSS			= nullptr;
 			psoDef.RS			= WireframeRS;
 			psoDef.SS			= SamplerState;
 			psoDef.PrimTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
 
-			mPSOs->AddResource(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
+			if (psoDef.VS && psoDef.GS && psoDef.PS)
+				mPSOs->AddResource(psoDef.FileName, DBG_NEW D3D11PSO(psoDef));
 		}
 	}
 

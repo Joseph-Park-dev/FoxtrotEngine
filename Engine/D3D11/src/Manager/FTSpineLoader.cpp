@@ -22,16 +22,20 @@ namespace D3D11
 	/// @param filename Filename used to read or write the resource.
 	/// @param atlas Spine atlas associated with the skeleton or texture.
 	/// @param scale Scale factor applied to the content.
-	/// @return Parses a Spine skeleton description using the associated atlas.
+	/// @return Parsed skeleton data, or nullptr when the file cannot be read.
 	SkeletonData* FTSpineLoader::ReadSkeletonJsonData(const String& filename, Atlas* atlas, float scale)
 	{
+		if (!atlas)
+			return nullptr;
+
 		SkeletonJson json(*atlas);
 		json.setScale(scale);
 		SkeletonData* skeletonData = json.readSkeletonDataFile(filename);
 		if (!skeletonData)
 		{
-			printf("%s\n", json.getError().buffer());
-			exit(0);
+			const char* error = json.getError().buffer();
+			printf("%s\n", error ? error : "Failed to read skeleton data");
+			return nullptr;
 		}
 		return skeletonData;
 	}
@@ -41,11 +45,19 @@ namespace D3D11
 	/// @param path Filesystem path of the resource or project.
 	void FTSpineLoader::load(AtlasPage& page, const String& path)
 	{
-		D3D11::FTTexture*	 texture  = nullptr;
+		if (!path.buffer() || !path.buffer()[0])
+			return;
+
 		Common::FTDS::String fileName = ExtractFileName(path.buffer());
 		fileName.ExtractFromLast("/");
+		if (fileName.IsEmpty())
+			return;
 
-		texture = D3D11::ResourceManager::GetInstance()->GetSprite(fileName)->GetTexture();
+		D3D11::FTSprite* sprite = D3D11::ResourceManager::GetInstance()->GetSprite(fileName);
+		if (!sprite)
+			return;
+
+		D3D11::FTTexture* texture = sprite->GetTexture();
 		if (!texture)
 			return;
 

@@ -58,6 +58,12 @@
     <ClCompile Include="src\ChunkLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\third_party\ImGuizmo\src\ImGuizmo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EditorGizmo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\EditorElement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -122,6 +128,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\EditorCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EditorGizmo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\EditorElement.h">

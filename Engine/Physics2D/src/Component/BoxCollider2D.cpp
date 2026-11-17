@@ -48,7 +48,7 @@ namespace Physics2D
 
 		Rigidbody2D* rb = nullptr;
 		if (GetOwner() && GetOwner()->GetData() && GetOwner()->GetData()->Components)
-			rb = GetOwner()->GetData()->GetComponent<Rigidbody2D>();
+			rb = GetOwner()->GetComponent<Rigidbody2D>();
 
 		if (rb && b2Body_IsValid(rb->GetBodyID()) && GetOwner()->GetTransform())
 		{
@@ -57,9 +57,6 @@ namespace Physics2D
 
 			b2Polygon polygon = MakePolygon();
 			GetShapeID()	  = b2CreatePolygonShape(rb->GetBodyID(), &polygonShapeDef, &polygon);
-
-			if (!mDebugRect)
-				mDebugRect = D3D11::DebugShapes::GetInstance()->AddRectangle();
 		}
 		Collider2D::Initialize();
 	}
@@ -72,7 +69,7 @@ namespace Physics2D
 	BoxCollider2D::BoxCollider2D(Common::IActor* owner)
 		: Collider2D(owner)
 		, mScale(1.f, 1.f)
-		, mDebugRect(nullptr)
+		, mDebugRect(D3D11::DebugShapes::GetInstance()->AddRectangle())
 		, mDebugGpuFailed(false)
 	{
 	}
@@ -109,7 +106,7 @@ namespace Physics2D
 
 	bool BoxCollider2D::RigidBodyExists()
 	{
-		return GetOwner()->GetData()->GetComponent<Rigidbody2D>() != nullptr;
+		return GetOwner()->GetComponent<Rigidbody2D>() != nullptr;
 	}
 
 	b2Polygon BoxCollider2D::MakePolygon()
@@ -159,7 +156,7 @@ namespace Physics2D
 
 		Rigidbody2D* rb = nullptr;
 		if (GetOwner()->GetData() && GetOwner()->GetData()->Components)
-			rb = GetOwner()->GetData()->GetComponent<Rigidbody2D>();
+			rb = GetOwner()->GetComponent<Rigidbody2D>();
 		if (rb && b2Body_IsValid(rb->GetBodyID()))
 		{
 			if (!Core::FTCore::GetInstance()->GetIsUpdating())

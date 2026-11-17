@@ -46,22 +46,30 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)Engine\EngineRuntime\include;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Graphics\include;$(SolutionDir)Engine\InputSystem\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)Engine\EngineRuntime\include;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Graphics\include;$(SolutionDir)Engine\InputSystem\include;$(SolutionDir)Engine\D3D11\include;$(SolutionDir)Engine\Physics2D\include;$(SolutionDir)third_party\box2d\include;$(SolutionDir)third_party\spine-runtimes\spine-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>MATH_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <ModuleDefinitionFile>$(ProjectDir)Module.def</ModuleDefinitionFile>
-      <AdditionalDependencies>EngineRuntime.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>EngineRuntime.lib;Physics2D.lib;Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <ProgramDatabaseFile Condition="'$(HotReloadId)' != ''">$(IntDir)Game-$(HotReloadId).pdb</ProgramDatabaseFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)Engine\Physics2D\build\$(Platform)\$(Configuration);$(SolutionDir)build\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\Move\Move.cpp" />
+    <ClCompile Include="src\Bullet\Bullet.cpp" />
+    <ClCompile Include="src\Henry\Henry.cpp" />
     <ClCompile Include="src\Spin.cpp" />
     <ClCompile Include="src\GameModule.cpp" />
     <ClCompile Include="src\Script.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Henry\Henry.h" />
+    <ClInclude Include="include\Bullet\Bullet.h" />
+    <ClInclude Include="include\HumanoidMoveState.h" />
+    <ClInclude Include="include\Move\Move.h" />
     <ClInclude Include="include\Script.h" />
     <ClInclude Include="include\Spin.h" />
   </ItemGroup>
@@ -71,6 +79,9 @@
     </ProjectReference>
     <ProjectReference Include="..\EngineRuntime\EngineRuntime.vcxproj">
       <Project>{B9E4C0BB-30E3-4D40-A0ED-46084649AE62}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Physics2D\Physics2D.vcxproj">
+      <Project>{b1ae5aad-3b5a-4022-aa80-9a6e465933fa}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

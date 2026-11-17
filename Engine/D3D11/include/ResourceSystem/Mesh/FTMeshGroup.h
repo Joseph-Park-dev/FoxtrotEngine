@@ -99,6 +99,10 @@ namespace D3D11
 		/// @brief Set as the model is initially facing the right side of the screen?
 		/// @param val If this is true, it means yes.
 		void SetRightIsFront(bool val);
+		
+		/// @brief Set the mesh direction.
+		/// @param dir Replacement direction.
+		void SetDirection(int dir);
 
 		/// @brief Returns meshes ready to be rendered.
 		/// @return Borrowed access to the meshes.
@@ -176,10 +180,6 @@ namespace D3D11
 		/// @brief Returns the mesh direction.
 		/// @return Current direction.
 		const int GetDirection() const;
-
-		/// @brief Set the mesh direction.
-		/// @param dir Replacement direction.
-		void SetDirection(int dir);
 
 	private:
 		/// @brief Initial horizontal direction the mesh is pointing toward.

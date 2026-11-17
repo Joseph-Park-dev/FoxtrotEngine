@@ -44,7 +44,7 @@ namespace D3D11
 		static inline const char* NAME = "MeshRenderer";
 		/// @brief Returns the name used by this mesh renderer.
 		/// @return Borrowed access to the name.
-		virtual const char*		  GetName() override
+		virtual const char* GetName() override
 		{
 			return "MeshRenderer";
 		}
@@ -88,25 +88,29 @@ namespace D3D11
 		///////////////////////////////////////
 		// Getters & Setters to the elements //
 		///////////////////////////////////////
+
+	public:
+		virtual void SetDirection(int dir) const;
+
 	protected:
 		/// @brief Returns the mesh group used by this mesh renderer.
 		/// @return Borrowed access to the mesh group.
-		FTMeshGroup*		   GetMeshGroup() const;
+		FTMeshGroup* GetMeshGroup() const;
 		/// @brief Returns the texture used by this mesh renderer.
 		/// @return Borrowed access to the texture.
-		FTTexture*			   GetTexture() const;
+		FTTexture* GetTexture() const;
 		/// @brief Returns the renderer used by this mesh renderer.
 		/// @return Borrowed access to the renderer.
 		Core::FoxtrotRenderer* GetRenderer() const;
 		/// @brief Returns the vs used by this mesh renderer.
 		/// @return Borrowed access to the vs.
-		FTVertexShader*		   GetVS() const;
+		FTVertexShader* GetVS() const;
 		/// @brief Returns the gs used by this mesh renderer.
 		/// @return Borrowed access to the gs.
-		FTGeometryShader*	   GetGS() const;
+		FTGeometryShader* GetGS() const;
 		/// @brief Returns the ps used by this mesh renderer.
 		/// @return Borrowed access to the ps.
-		FTPixelShader*		   GetPS() const;
+		FTPixelShader* GetPS() const;
 
 		/// @brief Returns the material used by this mesh renderer.
 		/// @return Borrowed access to the material.
@@ -194,9 +198,9 @@ namespace D3D11
 		} // namespace MeshRenderer
 	} // namespace ChunkKey
 
-	#include "Plugin/D3D11Exports.h"
-/// @brief Creates a mesh-rendering component associated with an actor.
-/// @param actor Actor participating in this operation.
-/// @return Created mesh renderer instance or resource.
-D3D11_API D3D11::MeshRenderer* CreateMeshRenderer(Common::IActor* actor);
+#include "Plugin/D3D11Exports.h"
+	/// @brief Creates a mesh-rendering component associated with an actor.
+	/// @param actor Actor participating in this operation.
+	/// @return Created mesh renderer instance or resource.
+	D3D11_API D3D11::MeshRenderer* CreateMeshRenderer(Common::IActor* actor);
 } // namespace D3D11

@@ -201,11 +201,36 @@ namespace Common
 	/// @param actor Actor participating in this operation.
 	void Common::ActorData::CopyComponentsFrom(Common::IActor* actor)
 	{
-		this->RemoveAllComponents();
+		if (!actor || !Owner || !Components)
+			return;
 
+		// Snapshot first. CloneTo appends to the destination, and a shared list would be
+		// invalidated or extended while this loop is still reading it.
+		Common::FTDS::DynamicArray<IComponent*> snapshot;
 		Common::FTDS::DynamicArray<IComponent*>* compsToCopy = actor->GetComponents();
-		for (size_t i = 0; i < compsToCopy->GetSize(); ++i)
-			compsToCopy->At(i)->CloneTo(Owner);
+		if (compsToCopy)
+		{
+			const size_t count = compsToCopy->GetSize();
+			if (0 < count)
+				snapshot.Reserve(count);
+			for (size_t i = 0; i < count; ++i)
+			{
+				IComponent* component = compsToCopy->At(i);
+				if (!component || Core::IsComponentRenderingSuspended(component))
+					continue;
+				snapshot.PushBack(component);
+			}
+		}
+
+		if (actor != Owner)
+			this->RemoveAllComponents();
+
+		for (size_t i = 0; i < snapshot.GetSize(); ++i)
+		{
+			IComponent* component = snapshot.At(i);
+			if (component)
+				component->CloneTo(Owner);
+		}
 	}
 
 	/// @brief Associates the source actor's children with this editor or runtime actor.

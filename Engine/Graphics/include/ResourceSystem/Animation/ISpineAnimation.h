@@ -13,8 +13,8 @@
 
 namespace spine
 {
-	template <typename TYPE>
-	class Vector;
+	template <typename T>
+	class Array;
 
 	class Animation;
 	class Skin;
@@ -46,10 +46,10 @@ namespace Graphics
 		float mTimeScale;
 
 		/// @brief Loaded spine animation clips.
-		spine::Vector<spine::Animation*>* mLoadedClips;
+		spine::Array<spine::Animation*>* mLoadedClips;
 
 		/// @brief Loaded spine skins.
-		spine::Vector<spine::Skin*>* mSkins;
+		spine::Array<spine::Skin*>* mSkins;
 
 		/// @brief Defines how the skins are combined.
 		unsigned char mSkinCombination;
@@ -139,7 +139,7 @@ namespace Graphics
 		/// @brief Returns the refernce to the loaded spine animation clips.
 		/// @return Borrowed access to the loaded clips.
 		/// @note Changes through the returned reference affect this object's stored state.
-		virtual spine::Vector<spine::Animation*>& LoadedClips() = 0;
+		virtual spine::Array<spine::Animation*>& LoadedClips() = 0;
 
 		/// @brief FTSpineAnimation uses SpineMesh, not Mesh!
 		/// @return No value; this overload is deleted and cannot be called.

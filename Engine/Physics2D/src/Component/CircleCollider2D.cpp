@@ -35,7 +35,7 @@ namespace Physics2D
 
 		Rigidbody2D* rb = nullptr;
 		if (GetOwner() && GetOwner()->GetData() && GetOwner()->GetData()->Components)
-			rb = GetOwner()->GetData()->GetComponent<Rigidbody2D>();
+			rb = GetOwner()->GetComponent<Rigidbody2D>();
 
 		if (rb && b2Body_IsValid(rb->GetBodyID()))
 		{

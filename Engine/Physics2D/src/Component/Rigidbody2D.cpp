@@ -46,6 +46,20 @@ namespace Physics2D
 		return mBodyID;
 	}
 
+	Math::FTVector2 Rigidbody2D::GetLinearVelocity()
+	{
+		b2Vec2 vel = b2Body_GetLinearVelocity(mBodyID);
+		return Math::FTVector2(vel.x, vel.y);
+	}
+
+	void Rigidbody2D::SetLinearVelocity(Math::FTVector2 velocity)
+	{
+		if (!b2Body_IsValid(mBodyID))
+			return;
+
+		b2Body_SetLinearVelocity(mBodyID, ToB2Vec2(velocity));
+	}
+
 	void Rigidbody2D::Initialize()
 	{
 		PrepareForSimulation();
@@ -107,11 +121,16 @@ namespace Physics2D
 	{
 		Rigidbody2D* newComp = DBG_NEW Rigidbody2D(actor);
 #ifdef FOXTROT_EDITOR
+		// Keep the authored body definition only. Creating a body here runs during editor UI,
+		// including Edit Premade, while the Box2D world may be missing or locked.
 		newComp->mBodyDefCache = mBodyDefCache;
-		if (GetPhysics2D())
-			newComp->mBodyID = b2CreateBody(GetPhysics2DWorldID(), &newComp->mBodyDefCache);
+		if (actor && actor->GetTransform())
+		{
+			newComp->mBodyDefCache.position = ToB2Vec2(actor->GetTransform()->GetWorldPosition());
+			newComp->mBodyDefCache.rotation = b2MakeRot(actor->GetTransform()->GetWorldRotation().z);
+		}
 #else
-		if (Physics2D::GetInstance())
+		if (GetPhysics2D() && b2World_IsValid(GetPhysics2DWorldID()))
 		{
 			b2BodyDef bodyDef = b2DefaultBodyDef();
 			if (actor && actor->GetTransform())
@@ -119,7 +138,7 @@ namespace Physics2D
 				bodyDef.position = ToB2Vec2(actor->GetTransform()->GetWorldPosition());
 				bodyDef.rotation = b2MakeRot(actor->GetTransform()->GetWorldRotation().z);
 			}
-			newComp->mBodyID = b2CreateBody(Physics2D::GetInstance()->GetCurrentWorldID(), &bodyDef);
+			newComp->mBodyID = b2CreateBody(GetPhysics2DWorldID(), &bodyDef);
 		}
 #endif
 		if (actor && actor->GetComponents())

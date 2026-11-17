@@ -86,20 +86,6 @@ namespace Common
 			return comp;
 		}
 
-		/// @brief Finds the first attached component compatible with the requested type.
-		/// @return Borrowed matching component, or nullptr when no compatible component exists.
-		template <class COMP>
-		COMP* GetComponent()
-		{
-			for (auto iter = Components->Begin(); iter != Components->End(); ++iter)
-			{
-				COMP* comp = dynamic_cast<COMP*>(*iter);
-				if (comp)
-					return comp;
-			}
-			return nullptr;
-		};
-
 		/// @brief Registers an actor in this actor's child collection.
 		/// @param child Child actor to attach or detach.
 		CORE_API void AddChild(Common::IActor* child);

@@ -75,4 +75,9 @@ namespace Editor
 	EditorSceneManager::~EditorSceneManager()
 	{
 	}
+
+	EDITOR_API EditorScene* Editor::GetEditorScene()
+	{
+		return EditorSceneManager::GetInstance()->GetEditorScene();
+	}
 } // namespace Editor

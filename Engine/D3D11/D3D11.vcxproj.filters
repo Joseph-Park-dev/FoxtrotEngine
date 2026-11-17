@@ -16,205 +16,268 @@
     <ClCompile Include="..\..\third_party\imgui\imgui_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Animation.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Animation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AnimationState.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\AnimationState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AnimationStateData.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\AnimationStateData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Atlas.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Atlas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AtlasAttachmentLoader.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\AtlasAttachmentLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Attachment.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Attachment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AttachmentLoader.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\AttachmentLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AttachmentTimeline.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\AttachmentTimeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Bone.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Bone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\BoneData.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\BoneData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\BoundingBoxAttachment.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\BoneLocal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\ClippingAttachment.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\BonePose.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\ColorTimeline.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\BoneTimeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\ConstraintData.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\BoundingBoxAttachment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\CurveTimeline.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ClippingAttachment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\DeformTimeline.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ColorTimeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\DrawOrderTimeline.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Constraint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Event.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ConstraintData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\EventData.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ConstraintTimeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\EventTimeline.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ConstraintTimeline1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Extension.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\CurveTimeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\IkConstraint.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\DeformTimeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\IkConstraintData.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\DrawOrder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\IkConstraintTimeline.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\DrawOrderFolderTimeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\InheritTimeline.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\DrawOrderTimeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Json.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Event.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\LinkedMesh.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\EventData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Log.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\EventTimeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\MathUtil.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Extension.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\MeshAttachment.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\IkConstraint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathAttachment.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\IkConstraintData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathConstraint.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\IkConstraintPose.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathConstraintData.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\IkConstraintTimeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathConstraintMixTimeline.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\InheritTimeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathConstraintPositionTimeline.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Interpolation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathConstraintSpacingTimeline.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Json.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PhysicsConstraint.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\LinkedMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PhysicsConstraintData.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\MathUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PhysicsConstraintTimeline.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\MeshAttachment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PointAttachment.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathAttachment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\RegionAttachment.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathConstraint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\RotateTimeline.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathConstraintData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\RTTI.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathConstraintMixTimeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\ScaleTimeline.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathConstraintPose.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Sequence.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathConstraintPositionTimeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SequenceTimeline.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathConstraintSpacingTimeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\ShearTimeline.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PhysicsConstraint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Skeleton.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PhysicsConstraintData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonBinary.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PhysicsConstraintPose.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonBounds.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PhysicsConstraintTimeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonClipping.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PointAttachment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonData.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\RegionAttachment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonJson.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\RotateTimeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonRenderer.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\RTTI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Skin.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ScaleTimeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Slot.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Sequence.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SlotData.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SequenceTimeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SpineObject.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ShearTimeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\TextureLoader.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Skeleton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Timeline.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SkeletonBinary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\TransformConstraint.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SkeletonBounds.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\TransformConstraintData.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SkeletonClipping.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\TransformConstraintTimeline.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SkeletonData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\TranslateTimeline.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SkeletonJson.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Triangulator.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SkeletonRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Updatable.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Skin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\VertexAttachment.cpp">
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Slider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SliderData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SliderMixTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SliderPose.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SliderTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Slot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SlotCurveTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SlotData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SlotPose.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SlotTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SpineObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TextureLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TextureRegion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Timeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TransformConstraint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TransformConstraintData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TransformConstraintPose.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TransformConstraintTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TranslateTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Triangulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Update.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\VertexAttachment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\CameraData.cpp">

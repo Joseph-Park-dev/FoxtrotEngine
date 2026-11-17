@@ -12,7 +12,10 @@
 #pragma once
 #include "Component/IComponent.h"
 
-#include "box2d/box2d.h"
+#include "Plugin/Physics2DExports.h"
+#include "FTMath.h"
+
+#include <box2d/box2d.h>
 
 namespace Physics2D
 {
@@ -51,6 +54,12 @@ namespace Physics2D
 
 		Common::IActor* GetOwner() override;
 		b2BodyId&		GetBodyID();
+
+		/// <summary>
+		/// Sets this body's linear velocity inside the Physics2D Box2D world.
+		/// </summary>
+		PHYSICS2D_API Math::FTVector2 GetLinearVelocity();
+		PHYSICS2D_API void			  SetLinearVelocity(Math::FTVector2 velocity);
 
 	public:
 		void Initialize() override;

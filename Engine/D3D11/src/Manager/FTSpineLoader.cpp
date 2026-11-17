@@ -25,7 +25,7 @@ namespace D3D11
 	/// @return Parses a Spine skeleton description using the associated atlas.
 	SkeletonData* FTSpineLoader::ReadSkeletonJsonData(const String& filename, Atlas* atlas, float scale)
 	{
-		SkeletonJson json(atlas);
+		SkeletonJson json(*atlas);
 		json.setScale(scale);
 		SkeletonData* skeletonData = json.readSkeletonDataFile(filename);
 		if (!skeletonData)

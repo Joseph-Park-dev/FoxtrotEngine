@@ -29,7 +29,7 @@ namespace Foxtrot
 	struct RuntimeControl;
 }
 
-#define REGISTERED_SCRIPT(TYPE) static const bool registered = Game::Script::Add<TYPE>(TYPE::NAME);
+#define REGISTERED_SCRIPT(TYPE) static const bool registered_##TYPE = Game::Script::Add<TYPE>(TYPE::NAME);
 
 namespace Game
 {

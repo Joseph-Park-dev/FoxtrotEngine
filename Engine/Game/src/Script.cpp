@@ -82,17 +82,29 @@ namespace
 	void ForActiveScripts(Func&& call)
 	{
 		Common::FTDS::DynamicArray<Game::Script*>& scripts = LiveScripts();
-		for (size_t i = 0; i < scripts.GetSize(); ++i)
+		size_t index = 0;
+		while (index < scripts.GetSize())
 		{
-			Game::Script* script = scripts[i];
+			Game::Script* script = scripts.At(index);
 			if (!script)
+			{
+				++index;
 				continue;
+			}
+
 			Common::IActor* owner = script->GetOwner();
-			if (owner && !owner->GetIsActive())
+			if (!owner || !owner->GetIsActive() || !script->GetIsActive())
+			{
+				++index;
 				continue;
-			if (!script->GetIsActive())
-				continue;
+			}
+
+			const size_t sizeBefore = scripts.GetSize();
 			call(script);
+			// The script can destroy its actor, which removes this entry.
+			if (scripts.GetSize() < sizeBefore && (index >= scripts.GetSize() || scripts.At(index) != script))
+				continue;
+			++index;
 		}
 	}
 

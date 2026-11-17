@@ -26,7 +26,7 @@ namespace D3D11
 		/// @brief Starts or selects animation playback.
 		/// @param idx Zero-based element index.
 		/// @param isRepeated Whether playback repeats after its final frame.
-		void Play(const int idx, bool isRepeated);
+		virtual void Play(const int idx, bool isRepeated);
 
 	public:
 		/// @brief Initializes the services and state required before this object's runtime lifecycle begins.

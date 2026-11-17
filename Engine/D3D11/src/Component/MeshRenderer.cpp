@@ -89,6 +89,12 @@ namespace D3D11
 		RegisterClone(actor, newComp);
 	}
 
+	void MeshRenderer::SetDirection(int dir) const
+	{
+		if (mMeshGroup)
+			mMeshGroup->SetDirection(dir);
+	}
+
 	/// @brief Returns the renderer used by this mesh renderer.
 	/// @return Borrowed access to the renderer.
 	Core::FoxtrotRenderer* MeshRenderer::GetRenderer() const { return mRenderer; }

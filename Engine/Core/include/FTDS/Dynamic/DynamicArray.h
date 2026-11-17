@@ -69,8 +69,12 @@ namespace Common
 					this->AllocateMem(this->mCapacity * 2);
 
 				size_t copiedCount = mSize - pos - 1;
-				size_t copiedSize  = sizeof(TYPE) * copiedCount;
-				memcpy_s(&this->mData[pos + 1], copiedSize, &this->mData[pos], copiedSize);
+				if (0 < copiedCount)
+				{
+					// The shift overlaps the source. memcpy_s rejects that range.
+					size_t copiedSize = sizeof(TYPE) * copiedCount;
+					memmove_s(&this->mData[pos + 1], copiedSize, &this->mData[pos], copiedSize);
+				}
 
 				this->mData[pos] = value;
 			}
@@ -93,8 +97,11 @@ namespace Common
 				{
 					--mSize;
 					size_t copiedCount = mSize - pos;
-					size_t copiedSize  = sizeof(TYPE) * copiedCount;
-					memcpy_s(&this->mData[pos], copiedSize, &this->mData[pos + 1], copiedSize);
+					if (0 < copiedCount)
+					{
+						size_t copiedSize = sizeof(TYPE) * copiedCount;
+						memmove_s(&this->mData[pos], copiedSize, &this->mData[pos + 1], copiedSize);
+					}
 					this->mData[mSize] = NULL;
 				}
 			}
@@ -189,9 +196,17 @@ namespace Common
 			/// @note Reallocation invalidates pointers, references, and iterators into the old storage.
 			virtual void AllocateMem(size_t newCap) override
 			{
+				if (newCap == 0)
+					return;
+
 				// Create an array with renewed capacity.
-				this->mData = static_cast<TYPE*>(realloc(this->mData, sizeof(TYPE) * newCap));
-				memset(&this->mData[mSize], NULL, sizeof(TYPE) * (newCap - mSize));
+				TYPE* renewed = static_cast<TYPE*>(realloc(this->mData, sizeof(TYPE) * newCap));
+				if (!renewed)
+					return;
+
+				this->mData = renewed;
+				if (mSize < newCap)
+					memset(&this->mData[mSize], 0, sizeof(TYPE) * (newCap - mSize));
 				// Set new capacity.
 				this->mCapacity = newCap;
 			}

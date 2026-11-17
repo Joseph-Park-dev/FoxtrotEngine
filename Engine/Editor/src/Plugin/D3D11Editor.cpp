@@ -586,6 +586,7 @@ namespace Editor
 		(void)io;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+		io.ConfigWindowsMoveFromTitleBarOnly = true;
 		// io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 		io.DisplaySize			   = ImVec2(float(mEditorWin->GetWidth()), float(mEditorWin->GetHeight()));
 		io.ConfigDpiScaleFonts	   = true;

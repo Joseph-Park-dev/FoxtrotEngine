@@ -12,6 +12,7 @@
 #include "ComponentRegistry.h"
 #include "EditorScene.h"
 #include "EditorSceneManager.h"
+#include "ChunkLoader.h"
 #include "Factory/IComponentFactory.h"
 #include "FTDS/Static/HashMap.h"
 #include "Manager/PluginManager.h"
@@ -146,8 +147,10 @@ namespace
 	}
 
 	/// @brief Starts script/build-game.bat without waiting, so the editor can answer its unload and reload requests.
+	/// @param projectName .vcxproj path, or a project name in the engine solution. The script defaults to Game when this is empty.
+	/// @param pluginDir Directory that receives the built Game.dll. The project file's GamePluginDir is used when this is empty.
 	/// @return True when a new build process was started. False when one is already running or the script could not be started.
-	bool LaunchBuildGameBat(bool& alreadyRunning)
+	bool LaunchBuildGameBat(bool& alreadyRunning, const char* projectName, const char* pluginDir)
 	{
 		alreadyRunning			   = false;
 		static HANDLE buildProcess = nullptr;
@@ -186,8 +189,24 @@ namespace
 		if (bat.empty())
 			return false;
 
-		std::wstring command = L"cmd.exe /c \"";
+		std::wstring command = L"cmd.exe /s /c \"";
+		command += L"\"";
 		command += bat.wstring();
+		command += L"\" Foxtrot_Editor_Debug x64";
+		if (projectName && projectName[0])
+		{
+			command += L" \"";
+			command += std::filesystem::path(projectName).wstring();
+			command += L"\"";
+		}
+		if (pluginDir && pluginDir[0])
+		{
+			if (!projectName || !projectName[0])
+				command += L" Game";
+			command += L" \"";
+			command += std::filesystem::path(pluginDir).wstring();
+			command += L"\"";
+		}
 		command += L"\"";
 
 		STARTUPINFOW startup{};
@@ -240,9 +259,37 @@ namespace Editor
 
 	void EditorLayer::RefreshGamePlugin()
 	{
+		const char* projectRoot = mGetProjPathFunc && mGetProjPathFunc() ? mGetProjPathFunc()->C_Str() : "";
+		if (!projectRoot || !projectRoot[0])
+		{
+			mPluginStatus.Assign("Open a project before rebuilding.");
+			printf("Open a project before rebuilding.\n");
+			return;
+		}
+
+		if (mVisualStudioProject.IsEmpty())
+			CacheVisualStudioProject(projectRoot);
+		if (mVisualStudioProject.IsEmpty())
+		{
+			mPluginStatus.Assign("No Visual Studio project (.vcxproj) was found in the project root.");
+			printf("No Visual Studio project (.vcxproj) was found in the project root.\n");
+			return;
+		}
+
+		std::filesystem::path pluginDir = std::filesystem::path(projectRoot) / "Plugins";
+		std::error_code		  error;
+		std::filesystem::create_directories(pluginDir, error);
+
 		bool alreadyRunning = false;
-		if (LaunchBuildGameBat(alreadyRunning))
-			mPluginStatus.Assign("Building Game.dll...");
+		if (LaunchBuildGameBat(alreadyRunning, mVisualStudioProject.C_Str(), pluginDir.string().c_str()))
+		{
+			mPluginStatus.Assign("Building ");
+			mPluginStatus.Append(mVisualStudioProject);
+			mPluginStatus.Append(" into ");
+			mPluginStatus.Append(pluginDir.string().c_str());
+			mPluginStatus.Append("...");
+			printf("%s\n", mPluginStatus.C_Str());
+		}
 		else if (alreadyRunning)
 			mPluginStatus.Assign("Game.dll build is already running.");
 		else
@@ -267,6 +314,8 @@ namespace Editor
 		const char* projectPath = mGetProjPathFunc && mGetProjPathFunc() ? mGetProjPathFunc()->C_Str() : "";
 		ImGui::TextUnformatted("Project directory");
 		ImGui::TextWrapped("%s", projectPath && *projectPath ? projectPath : "(none)");
+		ImGui::TextUnformatted("Visual Studio project");
+		ImGui::TextWrapped("%s", mVisualStudioProject.IsEmpty() ? "(none in project root)" : mVisualStudioProject.C_Str());
 		if (ImGui::Button("Reimport All"))
 			ReimportAllPlugins();
 
@@ -438,7 +487,10 @@ namespace Editor
 		else if (command == "reload")
 		{
 			ok = HotReloadPlugin("Game");
-			mPluginStatus.Assign(ok ? "Reloaded Game." : "Failed to reload Game.");
+			if (ok && ReloadCurrentChunk())
+				mPluginStatus.Assign("Reloaded Game and the current chunk.");
+			else
+				mPluginStatus.Assign(ok ? "Reloaded Game." : "Failed to reload Game.");
 		}
 
 		const std::filesystem::path pending = directory / L"game-dll.ack.tmp";

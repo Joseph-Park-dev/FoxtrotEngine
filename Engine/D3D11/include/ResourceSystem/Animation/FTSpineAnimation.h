@@ -116,7 +116,7 @@ namespace D3D11
 		/// @brief Returns the refernce to the loaded spine animation clips.
 		/// @return Borrowed access to the loaded clips.
 		/// @note Changes through the returned reference affect this object's stored state.
-		spine::Vector<spine::Animation*>& LoadedClips();
+		spine::Array<spine::Animation*>& LoadedClips();
 
 		/// @brief FTSpineAnimation uses SpineMesh, not Mesh!
 		/// @return No value; this overload is deleted and cannot be called.
@@ -145,10 +145,10 @@ namespace D3D11
 		bool mInitRightward;
 
 		/// @brief Loaded spine animation clips.
-		spine::Vector<spine::Animation*> mLoadedClips;
+		spine::Array<spine::Animation*> mLoadedClips;
 
 		/// @brief Loaded spine skins.
-		spine::Vector<spine::Skin*> mSkins;
+		spine::Array<spine::Skin*> mSkins;
 
 		/// @brief Defines how the skins are combined. One bit per skin, up to MAX_SKIN_COUNT.
 		unsigned int mSkinCombination;

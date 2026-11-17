@@ -117,7 +117,7 @@ namespace D3D11
 			context->PSSetConstantBuffers(0, 1, mSpinePSBuf.GetAddressOf());
 
 		// Index 0 is the back-most slot. Later slots are drawn on top.
-		auto& drawOrder = mSkeleton->getDrawOrder();
+		auto& drawOrder = mSkeleton->getDrawOrder().getAppliedPose();
 		for (size_t i = 0; i < drawOrder.size(); ++i)
 		{
 			spine::Slot* slot = drawOrder[i];
@@ -150,13 +150,13 @@ namespace D3D11
 
 	void FTSpineAnimation::SetAnimation(const int idx, const bool isRepeated)
 	{
-		if (!mState || idx < 0 || mLoadedClips.size() <= static_cast<size_t>(idx))
+		if (!mState || idx < 0 || mLoadedClips.size() <= static_cast<size_t>(idx) || !mLoadedClips[idx])
 			return;
 		if (mCurrAnimIdx == idx)
 			return;
 		mCurrAnimIdx = idx;
 
-		mState->setAnimation(0, mLoadedClips[idx], isRepeated);
+		mState->setAnimation(0, *mLoadedClips[idx], isRepeated);
 	}
 
 	void FTSpineAnimation::ToggleSkin(const size_t idx)
@@ -164,7 +164,7 @@ namespace D3D11
 		mSkinCombination ^= (1 << idx);
 	}
 
-	spine::Vector<spine::Animation*>& FTSpineAnimation::LoadedClips()
+	spine::Array<spine::Animation*>& FTSpineAnimation::LoadedClips()
 	{
 		return mLoadedClips;
 	}
@@ -272,9 +272,9 @@ namespace D3D11
 		mAtlas		  = new spine::Atlas(mAtlasPath->C_Str(), spineLoader);
 		mSkeletonData = spineLoader->ReadSkeletonJsonData(mJSONPath->C_Str(), mAtlas, 1.0f);
 
-		mStateData = new spine::AnimationStateData(mSkeletonData);
-		mSkeleton  = new spine::Skeleton(mSkeletonData);
-		mState	   = new spine::AnimationState(mStateData);
+		mStateData = new spine::AnimationStateData(*mSkeletonData);
+		mSkeleton  = new spine::Skeleton(*mSkeletonData);
+		mState	   = new spine::AnimationState(*mStateData);
 
 		//// Registers the clip inside of the Spine Animation.
 		mLoadedClips.addAll(mSkeletonData->getAnimations());
@@ -295,7 +295,7 @@ namespace D3D11
 		SetTimeScale(1);
 		// drawable.setUsePremultipliedAlpha(true);
 
-		mSkeleton->setToSetupPose();
+		mSkeleton->setupPose();
 		mSkeleton->setPosition(0.f, 0.f);
 		mSkeleton->updateWorldTransform(spine::Physics_None);
 
@@ -361,11 +361,7 @@ namespace D3D11
 		if (!region)
 			return nullptr;
 
-		auto* atlasRegion = static_cast<spine::AtlasRegion*>(region);
-		if (!atlasRegion->page)
-			return nullptr;
-
-		return static_cast<FTTexture*>(atlasRegion->page->texture);
+		return static_cast<FTTexture*>(region->getRendererObject());
 	}
 
 	void FTSpineAnimation::UpdateBuffers(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& context)
@@ -395,7 +391,7 @@ namespace D3D11
 				}
 			}
 
-			spine::Attachment* attachment = slot->getAttachment();
+			spine::Attachment* attachment = slot->getAppliedPose().getAttachment();
 			if (!attachment)
 				continue;
 
@@ -409,17 +405,10 @@ namespace D3D11
 				if (!mesh)
 					continue;
 
-				mesh->Texture = AtlasTexture(attm->getRegion());
-
-				//// Check if the texture is present.
-				// spine::TextureRegion* texRegion = attm->getRegion();
-				// if (!texRegion)
-				//	return;
-
-				// auto*	   atlasRegion = reinterpret_cast<spine::AtlasRegion*>(texRegion);
-				// FTTexture* texture	   = static_cast<FTTexture*>(atlasRegion->page->texture);
-				// if (!texture)
-				//	return;
+				spine::Sequence&	 sequence	   = attm->getSequence();
+				const int			 sequenceIndex = sequence.resolveIndex(slot->getAppliedPose());
+				spine::Array<float>& uvs		   = sequence.getUVs(sequenceIndex);
+				mesh->Texture					   = AtlasTexture(sequence.getRegion(sequenceIndex));
 
 				// Copies the vertex positions.
 				{
@@ -428,31 +417,28 @@ namespace D3D11
 					if (SUCCEEDED(context->Map(mesh->PositionBuf.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
 					{
 						float* ptr = (float*)mapped.pData;
-						attm->computeWorldVertices(*slot, 0, bufSize, ptr, 0, 2);
+						attm->computeWorldVertices(*mSkeleton, *slot, 0, bufSize, ptr, 0, 2);
 						context->Unmap(mesh->PositionBuf.Get(), 0);
 					}
 				}
 
 				// Copies Texture Coordinates
 				{
-					const float* uvs	  = attm->getUVs().buffer();
-					auto		 eleCount = attm->getUVs().size(); // The number of (x,y) coordinates.
-
 					D3D11_MAPPED_SUBRESOURCE mapped = {};
-					if (SUCCEEDED(context->Map(mesh->TexcoordBuf.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+					if (uvs.buffer() && SUCCEEDED(context->Map(mesh->TexcoordBuf.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
 					{
-						memcpy(mapped.pData, uvs, sizeof(float) * eleCount);
+						memcpy(mapped.pData, uvs.buffer(), sizeof(float) * uvs.size());
 						context->Unmap(mesh->TexcoordBuf.Get(), 0);
 					}
 				}
 				// Copies indices.
 				{
-					const uint16_t*			 indices	= attm->getTriangles().buffer();
-					UINT					 indexCount = static_cast<UINT>(attm->getTriangles().size());
-					D3D11_MAPPED_SUBRESOURCE mapped		= {};
-					if (mesh->IndexBuf && SUCCEEDED(context->Map(mesh->IndexBuf.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+					spine::Array<unsigned short>& triangles	 = attm->getTriangles();
+					UINT						  triCount	 = static_cast<UINT>(triangles.size());
+					D3D11_MAPPED_SUBRESOURCE	  mapped	 = {};
+					if (mesh->IndexBuf && triangles.buffer() && SUCCEEDED(context->Map(mesh->IndexBuf.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
 					{
-						memcpy(mapped.pData, indices, sizeof(uint16_t) * indexCount);
+						memcpy(mapped.pData, triangles.buffer(), sizeof(uint16_t) * triCount);
 						context->Unmap(mesh->IndexBuf.Get(), 0);
 					}
 				}
@@ -466,29 +452,30 @@ namespace D3D11
 				if (!mesh)
 					continue;
 
-				mesh->Texture = AtlasTexture(region->getRegion());
+				spine::SlotPose&	 pose			= slot->getAppliedPose();
+				spine::Sequence&	 sequence		= region->getSequence();
+				const int			 sequenceIndex	= sequence.resolveIndex(pose);
+				spine::Array<float>& uvs			= sequence.getUVs(sequenceIndex);
+				spine::Array<float>& offsets		= region->getOffsets(pose);
+				mesh->Texture						= AtlasTexture(sequence.getRegion(sequenceIndex));
 
 				// Copies the vertex positions.
 				{
-					size_t					 vtxCount = 8;
-					D3D11_MAPPED_SUBRESOURCE mapped	  = {};
-					if (SUCCEEDED(context->Map(mesh->PositionBuf.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+					D3D11_MAPPED_SUBRESOURCE mapped = {};
+					if (offsets.buffer() && SUCCEEDED(context->Map(mesh->PositionBuf.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
 					{
 						float* ptr = (float*)mapped.pData;
-						region->computeWorldVertices(*slot, ptr, 0, 2);
+						region->computeWorldVertices(*slot, offsets.buffer(), ptr, 0, 2);
 						context->Unmap(mesh->PositionBuf.Get(), 0);
 					}
 				}
 
 				// Copies Texture Coordinates
 				{
-					const float* uvs	  = region->getUVs().buffer();
-					auto		 eleCount = region->getUVs().size(); // The number of (x,y) coordinates.
-
 					D3D11_MAPPED_SUBRESOURCE mapped = {};
-					if (SUCCEEDED(context->Map(mesh->TexcoordBuf.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+					if (uvs.buffer() && SUCCEEDED(context->Map(mesh->TexcoordBuf.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
 					{
-						memcpy(mapped.pData, uvs, sizeof(float) * eleCount);
+						memcpy(mapped.pData, uvs.buffer(), sizeof(float) * uvs.size());
 						context->Unmap(mesh->TexcoordBuf.Get(), 0);
 					}
 				}
@@ -525,11 +512,11 @@ namespace D3D11
 		for (size_t i = 0; i < skinCount; ++i)
 		{
 			const unsigned int mask = 1u << static_cast<unsigned int>(i);
-			if (mSkinCombination & mask)
-				skin->addSkin(mSkins[i]);
+			if ((mSkinCombination & mask) && mSkins[i])
+				skin->addSkin(*mSkins[i]);
 		}
 		mSkeleton->setSkin(skin);
-		mSkeleton->setSlotsToSetupPose();
+		mSkeleton->setupPoseSlots();
 
 		delete prev;
 	}

@@ -1,6 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
-		<OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
+		<!-- Anchor outputs to this repo. A standalone reference has no solution, so SolutionDir is the referenced project directory. -->
+		<OutDir>$(MSBuildThisFileDirectory)build\$(Platform)\$(Configuration)\</OutDir>
 		<IntDir>$(OutDir)obj\$(MSBuildProjectName)\</IntDir>
 		<VcpkgEnabled>false</VcpkgEnabled>
 	</PropertyGroup>

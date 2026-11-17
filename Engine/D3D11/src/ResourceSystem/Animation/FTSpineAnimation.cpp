@@ -265,12 +265,20 @@ namespace D3D11
 		}
 
 		FTSpineLoader* spineLoader = AnimationManager::GetInstance()->GetSpineLoader();
+		if (!spineLoader || mAtlasPath->IsEmpty() || mJSONPath->IsEmpty())
+			return;
 
 		Core::DirectoryHelper::GetInstance()->RelativeToAbsolutePath(*mAtlasPath);
 		Core::DirectoryHelper::GetInstance()->RelativeToAbsolutePath(*mJSONPath);
 
-		mAtlas		  = new spine::Atlas(mAtlasPath->C_Str(), spineLoader);
+		mAtlas = new spine::Atlas(mAtlasPath->C_Str(), spineLoader);
+		if (!mAtlas)
+			return;
+
 		mSkeletonData = spineLoader->ReadSkeletonJsonData(mJSONPath->C_Str(), mAtlas, 1.0f);
+		// A missing or mismatched skeleton used to terminate the process from project open.
+		if (!mSkeletonData)
+			return;
 
 		mStateData = new spine::AnimationStateData(*mSkeletonData);
 		mSkeleton  = new spine::Skeleton(*mSkeletonData);

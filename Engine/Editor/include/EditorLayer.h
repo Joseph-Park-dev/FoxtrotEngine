@@ -21,6 +21,7 @@
 #include "Utility/SingletonMacro.h"
 #include "Manager/DirectoryHelper.h"
 #include "EditorElement.h"
+#include "EditorGizmo.h"
 #include "CommandHistory.h"
 #include "Plugin/IEditorResourceService.h"
 
@@ -232,8 +233,9 @@ namespace Editor
 		void*		   mDraggedEditorElement;
 
 		// Viewport related
-		bool mIsResizingViewport;
-		bool mCursorOnViewport;
+		bool		mIsResizingViewport;
+		bool		mCursorOnViewport;
+		EditorGizmo mGizmo;
 
 		// UI event types
 		InfoType	   mInfoType;
@@ -241,6 +243,8 @@ namespace Editor
 		FileMenuEvents mFileMenuEvent;
 		bool		   mPluginManagerOpen;
 		Common::FTDS::String mPluginStatus;
+		/// @brief Absolute path of the .vcxproj in the opened project root.
+		Common::FTDS::String mVisualStudioProject;
 		Common::FTDS::DynamicArray<EditorPluginModule*>* mEditorPlugins;
 
 		D3D11::ViewportRenderer* mViewport;
@@ -257,7 +261,11 @@ namespace Editor
 		/// @param editorWin Editor window receiving the UI or rendering output.
 		/// @param input Input state for the current frame.
 		/// @param renderer Renderer providing the graphics device and current render state.
-		void DisplayViewport(Graphics::IWindow* editorWin, InputSystem::IInputDevice* input, Graphics::IRenderer* renderer);
+		void DisplayViewport(
+			Graphics::IWindow*		   editorWin,
+			InputSystem::IInputDevice* input,
+			Graphics::IRenderer*	   renderer,
+			Editor::EditorCamera*	   editorCam);
 
 		// Displays current frame rate.
 		/// @brief Displays current timing and frame-rate information in the editor.
@@ -300,6 +308,9 @@ namespace Editor
 		bool UnloadPlugin(const char* moduleName);
 		/// @brief Unloads or reloads Game.dll when a build script writes a request file.
 		void PollGameDllCommand();
+		/// @brief Clears the open scene and loads the current .chunk again.
+		/// @return True when a chunk path was loaded.
+		bool ReloadCurrentChunk();
 		/// @brief Unloads plugin DLLs imported by the editor.
 		void ReleaseEditorPlugins();
 		/// @brief Appends plugin DLL paths found directly in the project directory.
@@ -393,6 +404,9 @@ namespace Editor
 		/// @brief Loads the selected editor project and its configured paths.
 		/// @param path Filesystem path of the resource or project.
 		void OpenProject(std::string& path);
+		/// @brief Caches the .vcxproj path from the project root.
+		/// @param projectRoot Absolute path of the opened project directory.
+		void CacheVisualStudioProject(const char* projectRoot);
 		/// @brief Writes the current editor document to its configured path.
 		/// @param path Filesystem path of the resource or project.
 		void Save(std::string& path);

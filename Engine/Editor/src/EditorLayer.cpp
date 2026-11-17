@@ -93,9 +93,11 @@ namespace Editor
 	{
 		PollGameDllCommand();
 
+		mGizmo.BlockWindowMove();
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
+		mGizmo.BeginFrame();
 
 		ImGui::DockSpaceOverViewport();
 		mSaveKeyPressed		 = ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey::ImGuiKey_S);
@@ -126,16 +128,17 @@ namespace Editor
 		DisplayInfoMessage();
 		DisplayErrorMessage();
 
-		DisplayViewport(editorWin, input, renderer);
+		DisplayViewport(editorWin, input, renderer, editorCam);
 		DisplayFrameRate();
 		ImGui::EndFrame();
+		mGizmo.BlockWindowMove();
 	}
 
 	/// @brief Displays the rendered scene texture and handles viewport interaction.
 	/// @param editorWin Editor window receiving the UI or rendering output.
 	/// @param input Input state for the current frame.
 	/// @param renderer Renderer providing the graphics device and current render state.
-	void EditorLayer::DisplayViewport(Core::IWindow* editorWin, Core::IInputDevice* input, Core::IRenderer* renderer)
+	void EditorLayer::DisplayViewport(Core::IWindow* editorWin, Core::IInputDevice* input, Core::IRenderer* renderer, EditorCamera* editorCam)
 	{
 		if (!ImGui::Begin("Scene"))
 		{
@@ -156,6 +159,8 @@ namespace Editor
 			}
 			ImGui::Image((ImTextureID)(intptr_t)mViewport->GetViewportSRV().Get(), size);
 			mCursorOnViewport = ImGui::IsItemHovered();
+			const ImVec2 imagePosition = ImGui::GetItemRectMin();
+			mGizmo.Manipulate(mFocusedEditorElement, editorCam, imagePosition, size, mCursorOnViewport);
 		}
 		else
 		{
@@ -916,6 +921,41 @@ namespace Editor
 		ComponentRegistry::GetInstance()->FetchFromImportedDLLs();
 	}
 
+	/// @brief Caches the .vcxproj path from the project root.
+	/// @param projectRoot Absolute path of the opened project directory.
+	void EditorLayer::CacheVisualStudioProject(const char* projectRoot)
+	{
+		mVisualStudioProject.Assign("");
+		if (!projectRoot || !projectRoot[0])
+			return;
+
+		std::error_code				error;
+		const std::filesystem::path root(projectRoot);
+		if (!std::filesystem::is_directory(root, error) || error)
+			return;
+
+		std::filesystem::path chosen;
+		try
+		{
+			for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(root))
+			{
+				if (!entry.is_regular_file())
+					continue;
+				if (_wcsicmp(entry.path().extension().c_str(), L".vcxproj") != 0)
+					continue;
+				if (chosen.empty() || entry.path().filename().wstring() < chosen.filename().wstring())
+					chosen = entry.path();
+			}
+		}
+		catch (const std::filesystem::filesystem_error&)
+		{
+			return;
+		}
+
+		if (!chosen.empty())
+			mVisualStudioProject.Assign(chosen.string().c_str());
+	}
+
 	/// @brief Loads the selected editor project and its configured paths.
 	/// @param path Filesystem path of the resource or project.
 	void EditorLayer::OpenProject(std::string& path)
@@ -926,9 +966,14 @@ namespace Editor
 			EditorShapes::GetInstance()->DeleteAll();
 			// ResourceManager::GetInstance()->DeleteAll();
 			DirectoryHelper::GetInstance()->SetProjectPath(path.c_str());
+			CacheVisualStudioProject(path.c_str());
 			RefreshGameBehaviors();
+			// Reload can free the module that owned a previously queried service.
+			RefreshAfterPluginLoad();
 
 			// CSV, JSON, and text have to be loaded before graphics resources that reference them.
+			Common::FTDS::String* assetPath = PATH_ASSET;
+			const char*			  assets	= (assetPath && assetPath->C_Str()) ? assetPath->C_Str() : nullptr;
 			Core::IEditorResourceService* coreService = nullptr;
 			if (auto* plugins = Core::GetAvailablePlugins())
 			{
@@ -941,16 +986,20 @@ namespace Editor
 					break;
 				}
 			}
-			if (coreService)
-				coreService->LoadAllResourcesInAsset(PATH_ASSET->C_Str(), mRenderer);
+			if (coreService && assets)
+				coreService->LoadAllResourcesInAsset(assets, mRenderer);
 
-			for (auto iter = mResService->Begin(); iter != mResService->End(); ++iter)
+			if (!mResService || !assets)
+				return;
+
+			const size_t serviceCount = mResService->GetSize();
+			for (size_t i = 0; i < serviceCount; ++i)
 			{
-				// HashMap iterators visit empty buckets as well as registered plugins.
-				if (!*iter || *iter == coreService)
+				Core::IEditorResourceService* service = mResService->At(i);
+				if (!service || service == coreService)
 					continue;
-				(*iter)->LoadDefaultResources(PATH_ASSET->C_Str(), mRenderer);
-				(*iter)->LoadAllResourcesInAsset(PATH_ASSET->C_Str(), mRenderer);
+				service->LoadDefaultResources(assets, mRenderer);
+				service->LoadAllResourcesInAsset(assets, mRenderer);
 			}
 		}
 		else
@@ -975,6 +1024,30 @@ namespace Editor
 		Editor::ChunkLoader::GetInstance()->SaveChunk(mGetChunkPathFunc()->C_Str());
 		mInfoType = InfoType::ChunkIsSaved;
 		mSetChunkIsSavedFunc(true);
+	}
+
+	/// @brief Clears the open scene and loads the current .chunk again.
+	/// @return True when a chunk path was loaded.
+	bool EditorLayer::ReloadCurrentChunk()
+	{
+		if (!mGetChunkPathFunc || !mGetChunkPathFunc() || mGetChunkPathFunc()->IsEmpty())
+			return false;
+
+		mFocusedEditorElement = nullptr;
+		if (FTCore::GetInstance()->GetIsUpdating())
+		{
+			Editor::ChunkLoader::GetInstance()->DeleteCopiedChunk();
+			FTCore::GetInstance()->SetIsUpdating(false);
+		}
+		D3D11::DebugShapes::GetInstance()->DeleteAll();
+		EditorShapes::GetInstance()->DeleteAll();
+		if (EditorScene* scene = EditorSceneManager::GetInstance()->GetEditorScene())
+			scene->DeleteAll();
+		Editor::ChunkLoader::GetInstance()->LoadChunk(mGetChunkPathFunc()->C_Str());
+		if (mSetChunkIsSavedFunc)
+			mSetChunkIsSavedFunc(true);
+		printf("Reloaded chunk %s\n", mGetChunkPathFunc()->C_Str());
+		return true;
 	}
 
 	/// @brief Opens the selected file or project for subsequent editing.
@@ -1062,6 +1135,7 @@ namespace Editor
 		, mFileMenuEvent(FileMenuEvents::None)
 		, mPluginManagerOpen(false)
 		, mPluginStatus()
+		, mVisualStudioProject()
 		, mEditorPlugins(DBG_NEW Common::FTDS::DynamicArray<EditorPluginModule*>(8))
 		, mViewport(nullptr)
 		, mErrorType(ErrorType::None)

@@ -8,12 +8,19 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Spin.cpp" />
+    <ClCompile Include="src\Bullet\Bullet.cpp" />
+    <ClCompile Include="src\Henry\Henry.cpp" />
+    <ClCompile Include="include\Move\Move.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Script.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Spin.h" />
+    <ClInclude Include="include\Henry\Henry.h" />
+    <ClInclude Include="include\Bullet\Bullet.h" />
+    <ClInclude Include="include\HumanoidMoveState.h" />
+    <ClInclude Include="include\Move\Move.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files" />

@@ -59,73 +59,94 @@
     <ClCompile Include="..\..\third_party\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\third_party\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\third_party\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Animation.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AnimationState.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AnimationStateData.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Atlas.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AtlasAttachmentLoader.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Attachment.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AttachmentLoader.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AttachmentTimeline.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Bone.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\BoneData.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\BoundingBoxAttachment.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\ClippingAttachment.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\ColorTimeline.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\ConstraintData.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\CurveTimeline.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\DeformTimeline.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\DrawOrderTimeline.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Event.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\EventData.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\EventTimeline.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Extension.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\IkConstraint.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\IkConstraintData.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\IkConstraintTimeline.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\InheritTimeline.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Json.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\LinkedMesh.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Log.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\MathUtil.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\MeshAttachment.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathAttachment.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathConstraint.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathConstraintData.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathConstraintMixTimeline.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathConstraintPositionTimeline.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathConstraintSpacingTimeline.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PhysicsConstraint.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PhysicsConstraintData.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PhysicsConstraintTimeline.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PointAttachment.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\RegionAttachment.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\RotateTimeline.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\RTTI.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\ScaleTimeline.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Sequence.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SequenceTimeline.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\ShearTimeline.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Skeleton.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonBinary.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonBounds.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonClipping.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonData.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonJson.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonRenderer.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Skin.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Slot.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SlotData.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SpineObject.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\TextureLoader.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Timeline.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\TransformConstraint.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\TransformConstraintData.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\TransformConstraintTimeline.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\TranslateTimeline.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Triangulator.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Updatable.cpp" />
-    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\VertexAttachment.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Animation.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\AnimationState.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\AnimationStateData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Atlas.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\AtlasAttachmentLoader.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Attachment.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\AttachmentLoader.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\AttachmentTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Bone.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\BoneData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\BoneLocal.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\BonePose.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\BoneTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\BoundingBoxAttachment.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ClippingAttachment.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ColorTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Constraint.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ConstraintData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ConstraintTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ConstraintTimeline1.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\CurveTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\DeformTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\DrawOrder.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\DrawOrderFolderTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\DrawOrderTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Event.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\EventData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\EventTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Extension.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\IkConstraint.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\IkConstraintData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\IkConstraintPose.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\IkConstraintTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\InheritTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Interpolation.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Json.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\LinkedMesh.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\MathUtil.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\MeshAttachment.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathAttachment.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathConstraint.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathConstraintData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathConstraintMixTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathConstraintPose.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathConstraintPositionTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathConstraintSpacingTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PhysicsConstraint.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PhysicsConstraintData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PhysicsConstraintPose.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PhysicsConstraintTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PointAttachment.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\RegionAttachment.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\RotateTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\RTTI.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ScaleTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Sequence.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SequenceTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ShearTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Skeleton.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SkeletonBinary.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SkeletonBounds.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SkeletonClipping.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SkeletonData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SkeletonJson.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SkeletonRenderer.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Skin.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Slider.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SliderData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SliderMixTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SliderPose.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SliderTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Slot.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SlotCurveTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SlotData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SlotPose.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SlotTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SpineObject.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TextureLoader.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TextureRegion.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Timeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TransformConstraint.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TransformConstraintData.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TransformConstraintPose.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TransformConstraintTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TranslateTimeline.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Triangulator.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Update.cpp" />
+    <ClCompile Include="..\..\third_party\spine-runtimes\spine-cpp\src\spine\VertexAttachment.cpp" />
     <ClCompile Include="src\Renderer\CameraData.cpp" />
     <ClCompile Include="src\Renderer\FTRectArea.cpp" />
     <ClCompile Include="src\Renderer\Camera.cpp" />
@@ -253,205 +274,268 @@
   <!-- Preserve the pinned upstream Spine sources. Its numeric animation-data
      conversions are intentional; C4244 stays enabled for all engine sources. -->
   <ItemGroup>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Animation.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Animation.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AnimationState.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\AnimationState.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AnimationStateData.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\AnimationStateData.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Atlas.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Atlas.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AtlasAttachmentLoader.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\AtlasAttachmentLoader.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Attachment.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Attachment.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AttachmentLoader.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\AttachmentLoader.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\AttachmentTimeline.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\AttachmentTimeline.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Bone.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Bone.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\BoneData.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\BoneData.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\BoundingBoxAttachment.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\BoneLocal.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\ClippingAttachment.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\BonePose.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\ColorTimeline.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\BoneTimeline.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\ConstraintData.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\BoundingBoxAttachment.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\CurveTimeline.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ClippingAttachment.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\DeformTimeline.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ColorTimeline.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\DrawOrderTimeline.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Constraint.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Event.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ConstraintData.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\EventData.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ConstraintTimeline.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\EventTimeline.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ConstraintTimeline1.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Extension.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\CurveTimeline.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\IkConstraint.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\DeformTimeline.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\IkConstraintData.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\DrawOrder.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\IkConstraintTimeline.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\DrawOrderFolderTimeline.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\InheritTimeline.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\DrawOrderTimeline.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Json.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Event.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\LinkedMesh.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\EventData.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Log.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\EventTimeline.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\MathUtil.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Extension.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\MeshAttachment.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\IkConstraint.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathAttachment.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\IkConstraintData.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathConstraint.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\IkConstraintPose.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathConstraintData.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\IkConstraintTimeline.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathConstraintMixTimeline.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\InheritTimeline.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathConstraintPositionTimeline.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Interpolation.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PathConstraintSpacingTimeline.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Json.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PhysicsConstraint.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\LinkedMesh.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PhysicsConstraintData.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\MathUtil.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PhysicsConstraintTimeline.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\MeshAttachment.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\PointAttachment.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathAttachment.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\RegionAttachment.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathConstraint.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\RotateTimeline.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathConstraintData.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\RTTI.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathConstraintMixTimeline.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\ScaleTimeline.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathConstraintPose.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Sequence.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathConstraintPositionTimeline.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SequenceTimeline.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PathConstraintSpacingTimeline.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\ShearTimeline.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PhysicsConstraint.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Skeleton.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PhysicsConstraintData.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonBinary.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PhysicsConstraintPose.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonBounds.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PhysicsConstraintTimeline.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonClipping.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\PointAttachment.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonData.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\RegionAttachment.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonJson.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\RotateTimeline.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SkeletonRenderer.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\RTTI.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Skin.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ScaleTimeline.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Slot.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Sequence.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SlotData.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SequenceTimeline.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\SpineObject.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\ShearTimeline.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\TextureLoader.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Skeleton.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Timeline.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SkeletonBinary.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\TransformConstraint.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SkeletonBounds.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\TransformConstraintData.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SkeletonClipping.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\TransformConstraintTimeline.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SkeletonData.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\TranslateTimeline.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SkeletonJson.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Triangulator.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SkeletonRenderer.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\Updatable.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Skin.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
-    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\spine-cpp\src\spine\VertexAttachment.cpp">
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Slider.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SliderData.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SliderMixTimeline.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SliderPose.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SliderTimeline.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Slot.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SlotCurveTimeline.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SlotData.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SlotPose.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SlotTimeline.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\SpineObject.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TextureLoader.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TextureRegion.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Timeline.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TransformConstraint.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TransformConstraintData.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TransformConstraintPose.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TransformConstraintTimeline.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\TranslateTimeline.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Triangulator.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\Update.cpp">
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Update="..\..\third_party\spine-runtimes\spine-cpp\src\spine\VertexAttachment.cpp">
       <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
   </ItemGroup>

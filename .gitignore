@@ -465,5 +465,3 @@ FodyWeavers.xsd
 
 # Centralized Visual Studio output and local migration logs
 /build/
-
-/Engine/Game/

@@ -22,7 +22,7 @@
 	</ItemDefinitionGroup>
 	<ItemDefinitionGroup Condition="'$(MSBuildProjectName)'=='EngineRuntime' Or '$(MSBuildProjectName)'=='D3D11' Or '$(MSBuildProjectName)'=='Editor' Or '$(MSBuildProjectName)'=='GenericData'">
 		<ClCompile>
-			<AdditionalIncludeDirectories>$(SolutionDir)third_party;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\json\include;$(SolutionDir)third_party\ImGuiFileDialog;$(SolutionDir)third_party\ImGuiFileDialog\stb;$(SolutionDir)third_party\spine-runtimes\spine-cpp\spine-cpp\include;$(SolutionDir)third_party\magic_enum\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+			<AdditionalIncludeDirectories>$(SolutionDir)third_party;$(SolutionDir)third_party\imgui;$(SolutionDir)third_party\json\include;$(SolutionDir)third_party\ImGuiFileDialog;$(SolutionDir)third_party\ImGuiFileDialog\stb;$(SolutionDir)third_party\spine-runtimes\spine-cpp\include;$(SolutionDir)third_party\magic_enum\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 			<ForcedIncludeFiles Condition="'$(MSBuildProjectName)'!='GenericData'">Core/InterfaceAliases.h</ForcedIncludeFiles>
 		</ClCompile>
 	</ItemDefinitionGroup>

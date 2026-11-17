@@ -1,14 +1,20 @@
 @echo off
 setlocal EnableExtensions
 
-rem Unloads Game.dll in a running FoxtrotEditor, builds the Game project, then loads Game.dll again.
-rem Usage: build-game.bat [Configuration] [Platform]
-rem Defaults: Foxtrot_Editor_Debug x64
+rem Unloads Game.dll in a running FoxtrotEditor, builds a Visual Studio project, then loads Game.dll again.
+rem Usage: build-game.bat [Configuration] [Platform] [Project] [PluginDir]
+rem Project is a .vcxproj path, or a project name inside FoxtrotEngine_DirectX.sln.
+rem Defaults: Foxtrot_Editor_Debug x64 Game
+rem PluginDir receives Game.dll after a successful link. The project file's GamePluginDir is used when it is omitted.
 
 set "CONFIG=%~1"
 set "PLATFORM=%~2"
+set "PROJECT=%~3"
+set "PLUGINDIR=%~4"
 if "%CONFIG%"=="" set "CONFIG=Foxtrot_Editor_Debug"
 if "%PLATFORM%"=="" set "PLATFORM=x64"
+if "%PROJECT%"=="" set "PROJECT=Game"
+if not "%PLUGINDIR%"=="" if "%PLUGINDIR:~-1%"=="\" set "PLUGINDIR=%PLUGINDIR:~0,-1%"
 
 pushd "%~dp0.."
 set "ROOT=%CD%"
@@ -50,22 +56,47 @@ call :RequestGameDll unload
 if errorlevel 1 exit /b 1
 
 :BuildGame
-echo Building Game ^(%CONFIG%^|%PLATFORM%^)...
-rem Link beside the editor, then copy Game.dll into the project Plugins folder.
+rem A .vcxproj path is built directly. A project name is a target in the engine solution.
+rem Names such as "-GooCat Studio- Kill Module" are files, not solution targets.
+rem Link beside the editor, then copy Game.dll into PluginDir.
 rem A unique PDB avoids LNK1201 while the debugger still has the previous PDB open.
 rem Linking straight into Plugins deletes Game.dll when that write fails.
-"%MSBUILD%" "%ROOT%\FoxtrotEngine_DirectX.sln" /t:Game /m /nologo /v:minimal /p:Configuration=%CONFIG% /p:Platform=%PLATFORM% /p:BuildProjectReferences=false /p:HotReloadId=%RANDOM%%RANDOM%
-if errorlevel 1 exit /b 1
+set "PROJECTFILE="
+if /I "%PROJECT:~-8%"==".vcxproj" (
+    set "PROJECTFILE=%PROJECT%"
+) else if not "%PLUGINDIR%"=="" if exist "%PLUGINDIR%\..\%PROJECT%.vcxproj" (
+    set "PROJECTFILE=%PLUGINDIR%\..\%PROJECT%.vcxproj"
+)
+set "BUILD_ERROR=0"
+if defined PROJECTFILE (
+    if not "%PLUGINDIR%"=="" (
+        echo Building "%PROJECTFILE%" ^(%CONFIG%^|%PLATFORM%^) into "%PLUGINDIR%"...
+        "%MSBUILD%" "%PROJECTFILE%" /m /nologo /v:minimal /p:Configuration=%CONFIG% /p:Platform=%PLATFORM% /p:BuildProjectReferences=false /p:HotReloadId=%RANDOM%%RANDOM% "/p:GamePluginDir=%PLUGINDIR%\\"
+    ) else (
+        echo Building "%PROJECTFILE%" ^(%CONFIG%^|%PLATFORM%^)...
+        "%MSBUILD%" "%PROJECTFILE%" /m /nologo /v:minimal /p:Configuration=%CONFIG% /p:Platform=%PLATFORM% /p:BuildProjectReferences=false /p:HotReloadId=%RANDOM%%RANDOM%
+    )
+) else if not "%PLUGINDIR%"=="" (
+    echo Building %PROJECT% ^(%CONFIG%^|%PLATFORM%^) into "%PLUGINDIR%"...
+    "%MSBUILD%" "%ROOT%\FoxtrotEngine_DirectX.sln" /t:"%PROJECT%" /m /nologo /v:minimal /p:Configuration=%CONFIG% /p:Platform=%PLATFORM% /p:BuildProjectReferences=false /p:HotReloadId=%RANDOM%%RANDOM% "/p:GamePluginDir=%PLUGINDIR%\\"
+) else (
+    echo Building %PROJECT% ^(%CONFIG%^|%PLATFORM%^)...
+    "%MSBUILD%" "%ROOT%\FoxtrotEngine_DirectX.sln" /t:"%PROJECT%" /m /nologo /v:minimal /p:Configuration=%CONFIG% /p:Platform=%PLATFORM% /p:BuildProjectReferences=false /p:HotReloadId=%RANDOM%%RANDOM%
+)
+if errorlevel 1 set "BUILD_ERROR=1"
 
 tasklist /FI "IMAGENAME eq FoxtrotEditor.exe" | find /I "FoxtrotEditor.exe" >nul
 if errorlevel 1 (
-    echo Built Game.dll. FoxtrotEditor.exe is not running, so it was not reloaded.
+    if not "%BUILD_ERROR%"=="0" exit /b 1
+    echo Built %PROJECT%. FoxtrotEditor.exe is not running, so Game.dll was not reloaded.
     exit /b 0
 )
 
 echo Reloading Game.dll...
 call :RequestGameDll reload
-exit /b %ERRORLEVEL%
+set "RELOAD_ERROR=%ERRORLEVEL%"
+if not "%BUILD_ERROR%"=="0" exit /b 1
+exit /b %RELOAD_ERROR%
 
 :RequestGameDll
 del /q "%ACK%" 2>nul

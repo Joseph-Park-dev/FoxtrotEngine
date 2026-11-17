@@ -36,7 +36,11 @@ namespace Common
 			virtual FTDS::FTIteratorArray<TYPE> Begin() { return FTDS::FTIteratorArray<TYPE>(mData); }
 			/// @brief Creates the sentinel iterator immediately after the traversable range.
 			/// @return Past-the-end iterator; do not dereference it.
-			virtual FTDS::FTIteratorArray<TYPE> End() { return FTDS::FTIteratorArray<TYPE>(&mData[mCapacity]); }
+			virtual FTDS::FTIteratorArray<TYPE> End()
+			{
+				// Adding the count does not load the one-past slot. Subscripting it faults when that address is unmapped.
+				return FTDS::FTIteratorArray<TYPE>(mData ? mData + mCapacity : nullptr);
+			}
 
 			// It is recommended to put null check to mPtr.
 			/// @brief Invokes the callback for each element in the array's traversable range.

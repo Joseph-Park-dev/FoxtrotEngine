@@ -326,7 +326,8 @@ namespace D3D11
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTFont::FTFONT);
 		FileIOHelper::LoadBasicString(ifs, key);
 
-		mFontImage = D3D11::ResourceManager::GetInstance()->GetSprite(key)->GetTexture();
+		FTSprite* fontSprite = D3D11::ResourceManager::GetInstance()->GetSprite(key);
+		mFontImage			 = fontSprite ? fontSprite->GetTexture() : nullptr;
 	}
 
 	/// @brief Returns the kerning used by this ftfont.

@@ -103,10 +103,15 @@ const Foxtrot::ModuleAPI* ModuleHost::Load(const wchar_t* file, const char* expe
 	}
 	catch (...)
 	{
+		// A rejected descriptor can point at another module that is still loaded.
+		// Calling its Destroy tears that module down. Only a module this load initialized is ours.
 		if (e->Initialized)
-			e->API.Shutdown(e->API.Instance);
-		if (e->API.Destroy)
-			e->API.Destroy(e->API.Instance);
+		{
+			if (e->API.Shutdown)
+				e->API.Shutdown(e->API.Instance);
+			if (e->API.Destroy)
+				e->API.Destroy(e->API.Instance);
+		}
 		FreeLibrary(e->Handle);
 		throw;
 	}
@@ -142,6 +147,7 @@ Foxtrot::Status ModuleHost::Reload(const char* expectedName, const wchar_t* file
 		return Foxtrot::Status::Failed;
 
 	const std::wstring	   file		   = (fileOverride && fileOverride[0]) ? std::wstring(fileOverride) : mEntries[index]->File;
+	const std::wstring	   previous	   = mEntries[index]->File;
 	const Foxtrot::ModuleAPI api	   = mEntries[index]->API;
 	const bool			   initialized = mEntries[index]->Initialized;
 	const HMODULE		   handle	   = mEntries[index]->Handle;
@@ -156,6 +162,24 @@ Foxtrot::Status ModuleHost::Reload(const char* expectedName, const wchar_t* file
 	FreeLibrary(handle);
 	mEntries.erase(mEntries.begin() + static_cast<std::ptrdiff_t>(index));
 
+	auto restorePrevious = [&]() {
+		if (previous == file)
+			return false;
+		try
+		{
+			Load(previous.c_str(), expectedName);
+		}
+		catch (...)
+		{
+			return false;
+		}
+		const Foxtrot::ModuleAPI* restored = Find(expectedName);
+		if (!restored || !restored->Query)
+			return false;
+		void* plugin = restored->Query(restored->Instance, "LegacyPlugin");
+		return plugin && control->Attach(expectedName, plugin) == Foxtrot::Status::Ok;
+	};
+
 	try
 	{
 		Load(file.c_str(), expectedName);
@@ -163,11 +187,13 @@ Foxtrot::Status ModuleHost::Reload(const char* expectedName, const wchar_t* file
 	catch (const std::exception& error)
 	{
 		std::fprintf(stderr, "Reload failed for %s: %s\n", expectedName, error.what());
+		restorePrevious();
 		return Foxtrot::Status::Failed;
 	}
 	catch (...)
 	{
 		std::fprintf(stderr, "Reload failed for %s\n", expectedName);
+		restorePrevious();
 		return Foxtrot::Status::Failed;
 	}
 

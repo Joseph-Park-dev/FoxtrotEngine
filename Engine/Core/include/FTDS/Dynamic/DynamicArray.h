@@ -15,7 +15,11 @@ namespace Common
 			FTDS::FTIteratorArray<TYPE> Begin() override { return FTDS::FTIteratorArray<TYPE>(this->mData); }
 			/// @brief Creates the sentinel iterator immediately after the traversable range.
 			/// @return Past-the-end iterator; do not dereference it.
-			FTDS::FTIteratorArray<TYPE> End() override { return FTDS::FTIteratorArray<TYPE>(&this->mData[mSize]); }
+			FTDS::FTIteratorArray<TYPE> End() override
+			{
+				// Adding the count does not load the one-past slot. Subscripting it faults when that address is unmapped.
+				return FTDS::FTIteratorArray<TYPE>(this->mData ? this->mData + mSize : nullptr);
+			}
 
 		public:
 			/// @brief Invokes the callback for each element in the array's traversable range.

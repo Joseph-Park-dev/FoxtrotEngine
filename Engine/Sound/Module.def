@@ -1,0 +1,6 @@
+EXPORTS
+    FtGetModuleAPI
+    CreatePlugin
+    SetComponentFactory
+    SetResourceFactory
+    Sound_SetEditorGuiContext

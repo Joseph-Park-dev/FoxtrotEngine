@@ -18,6 +18,9 @@
 #include "Renderer/Camera.h"
 #include "Actor/IActor.h"
 #include "Actor/Transform.h"
+#include "Manager/PluginManager.h"
+#include "Plugin/IPlugin.h"
+#include "Renderer/ICamera.h"
 
 #ifdef FOXTROT_EDITOR
 	#include "EditorUtils.h"
@@ -35,6 +38,71 @@ namespace D3D11
 	void SpineAnimator::Play(const int idx, bool isRepeated)
 	{
 		static_cast<FTSpineAnimation*>(GetMeshGroup())->SetAnimation(idx, isRepeated);
+	}
+
+	static Graphics::ICamera* GameCamera()
+	{
+		Common::FTDS::HashMap<Common::IPlugin*>* plugins = Core::GetAvailablePlugins();
+		if (!plugins)
+			return nullptr;
+
+		for (auto it = plugins->Begin(); it != plugins->End(); ++it)
+		{
+			if (!*it || !(*it)->Key().Equal("FoxtrotD3D11") || !(*it)->Value())
+				continue;
+
+			return static_cast<Graphics::ICamera*>(
+				(*it)->Value()->QueryInterface(Graphics::GAME_CAMERA_INTERFACE));
+		}
+		return nullptr;
+	}
+
+	bool SpineAnimator::GetBoneWorldPosition(const char* boneName, Math::FTVector3& outPosition)
+	{
+		if (!GetMeshGroup() || !GetOwner() || !GetOwner()->GetTransform())
+			return false;
+
+		return static_cast<FTSpineAnimation*>(GetMeshGroup())
+			->GetBoneWorldPosition(boneName, GetOwner()->GetTransform(), GameCamera(), outPosition);
+	}
+
+	bool SpineAnimator::GetBoneWorldRight(const char* boneName, Math::FTVector3& outDirection)
+	{
+		if (!GetMeshGroup() || !GetOwner() || !GetOwner()->GetTransform())
+			return false;
+
+		return static_cast<FTSpineAnimation*>(GetMeshGroup())
+			->GetBoneWorldRight(boneName, GetOwner()->GetTransform(), GameCamera(), outDirection);
+	}
+
+	bool SpineAnimator::AimBoneRight(const char* boneName, const Math::FTVector3& worldTarget)
+	{
+		if (!GetMeshGroup() || !GetOwner() || !GetOwner()->GetTransform())
+			return false;
+
+		return static_cast<FTSpineAnimation*>(GetMeshGroup())
+			->AimBoneRight(boneName, GetOwner()->GetTransform(), GameCamera(), worldTarget);
+	}
+
+	bool SpineAnimator::AimBoneRight(
+		const char*			   driverBone,
+		const char*			   alignedBone,
+		const Math::FTVector3& worldTarget,
+		float				   minRotation,
+		float				   maxRotation)
+	{
+		if (!GetMeshGroup() || !GetOwner() || !GetOwner()->GetTransform())
+			return false;
+
+		return static_cast<FTSpineAnimation*>(GetMeshGroup())
+			->AimBoneRight(
+				driverBone,
+				alignedBone,
+				GetOwner()->GetTransform(),
+				GameCamera(),
+				worldTarget,
+				minRotation,
+				maxRotation);
 	}
 
 	/// @brief Initializes the services and state required before this object's runtime lifecycle begins.

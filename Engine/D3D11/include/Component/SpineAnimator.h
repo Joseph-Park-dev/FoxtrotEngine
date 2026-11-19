@@ -4,6 +4,7 @@
 #include <spine/spine.h>
 
 #include "FTDS/Static/FTString.h"
+#include "FTMath.h"
 
 namespace D3D11
 {
@@ -27,6 +28,38 @@ namespace D3D11
 		/// @param idx Zero-based element index.
 		/// @param isRepeated Whether playback repeats after its final frame.
 		virtual void Play(const int idx, bool isRepeated);
+
+		/// @brief World position of a skeleton bone, in the same space used to draw the animation.
+		/// @param boneName Bone name in the loaded skeleton.
+		/// @param outPosition Receives the bone origin in world units.
+		/// @return True when the bone exists on the loaded animation.
+		virtual bool GetBoneWorldPosition(const char* boneName, Math::FTVector3& outPosition);
+
+		/// @brief Unit right axis of a skeleton bone, in the same space used to draw the animation.
+		/// @param boneName Bone name in the loaded skeleton.
+		/// @param outDirection Receives the bone's +X direction in world units.
+		/// @return True when the bone exists and its right axis has length.
+		virtual bool GetBoneWorldRight(const char* boneName, Math::FTVector3& outDirection);
+
+		/// @brief Rotates a bone so its right axis, the skeleton +X direction, points at a world position.
+		/// @param boneName Bone name in the loaded skeleton.
+		/// @param worldTarget Point in the same world space used to draw the animation.
+		/// @return True when the bone exists and the target is not on the bone.
+		virtual bool AimBoneRight(const char* boneName, const Math::FTVector3& worldTarget);
+
+		/// @brief Rotates driverBone so alignedBone's right axis points at a world position.
+		/// @param driverBone Bone whose local rotation is changed.
+		/// @param alignedBone Bone whose +X axis is aligned. Must be driverBone or a descendant.
+		/// @param worldTarget Point in the same world space used to draw the animation.
+		/// @param minRotation Lowest local rotation written to driverBone, in degrees.
+		/// @param maxRotation Highest local rotation written to driverBone, in degrees.
+		/// @return True when both bones exist, alignedBone hangs off driverBone, and the target is not on the driver pivot.
+		virtual bool AimBoneRight(
+			const char*			   driverBone,
+			const char*			   alignedBone,
+			const Math::FTVector3& worldTarget,
+			float				   minRotation,
+			float				   maxRotation);
 
 	public:
 		/// @brief Initializes the services and state required before this object's runtime lifecycle begins.

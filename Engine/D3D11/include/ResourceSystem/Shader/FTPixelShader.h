@@ -7,6 +7,7 @@
 // ----------------------------------------------------------------
 
 #pragma once
+#include "Plugin/D3D11Exports.h"
 #include "ResourceSystem/Shader/FTShader.h"
 
 #include <wrl.h>
@@ -44,7 +45,7 @@ namespace D3D11
 		/// @brief Returns compiled HLSL pixel shader object.
 		/// @return Borrowed access to the shader.
 		/// @note Changes through the returned reference affect this object's stored state.
-		Microsoft::WRL::ComPtr<ID3D11PixelShader>& GetShader();
+		D3D11_API Microsoft::WRL::ComPtr<ID3D11PixelShader>& GetShader();
 
 	public:
 		/// @brief Initializes a pixel-shader resource from its definition.

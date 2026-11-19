@@ -7,6 +7,7 @@
 // ----------------------------------------------------------------
 
 #pragma once
+#include "Plugin/D3D11Exports.h"
 #include "ResourceSystem/Mesh/IModel.h"
 #include "ResourceSystem/D3D11Resource.h"
 
@@ -68,7 +69,7 @@ namespace D3D11
 		/// @param camInst Camera supplying the view and projection for this draw.
 		/// @param pso Pipeline state object used for rendering.
 		/// @param mat Matrix or material used by this operation.
-		virtual void Render(
+		D3D11_API virtual void Render(
 			Core::IRenderer* renderer,
 			Core::Transform* transform,
 			Core::ICamera*	 camInst,
@@ -90,7 +91,7 @@ namespace D3D11
 	public:
 		/// @brief Returns the initial front horizontal direction.
 		/// @return Current front dir.
-		const int GetFrontDir() const;
+		D3D11_API const int GetFrontDir() const;
 
 		/// @brief Set scale value to be multiplied with the scale (3D transformation).
 		/// @param scale Replacement size scale.
@@ -106,7 +107,7 @@ namespace D3D11
 
 		/// @brief Returns meshes ready to be rendered.
 		/// @return Borrowed access to the meshes.
-		Common::FTDS::DynamicArray<Mesh*>* Meshes();
+		D3D11_API Common::FTDS::DynamicArray<Mesh*>* Meshes();
 		/// @brief Exposes the scale applied to the object's dimensions.
 		/// @return Borrowed access to the size scale.
 		/// @note Changes through the returned reference affect this object's stored state.
@@ -120,9 +121,9 @@ namespace D3D11
 		/// @param resDef Resource definition containing the filename and source path.
 		/// @param renderer Renderer providing the graphics device and current render state.
 		/// @param meshData CPU-side mesh vertices and indices.
-		FTMeshGroup(Common::FTResourceDef& resDef, void* renderer, FTMeshData* meshData = nullptr);
+		D3D11_API FTMeshGroup(Common::FTResourceDef& resDef, void* renderer, FTMeshData* meshData = nullptr);
 		/// @brief Releases the resources managed by this instance during destruction.
-		virtual ~FTMeshGroup() override;
+		D3D11_API virtual ~FTMeshGroup() override;
 
 	protected:
 		/// @brief Reads a file which returns the FTMeshData, and creates the meshes.
@@ -131,13 +132,13 @@ namespace D3D11
 
 		/// @brief Creates constant buffers such as Vertex Constant Buffers.
 		/// @param device Direct3D device used to create GPU resources.
-		virtual void InitializeConstantBuffers(Microsoft::WRL::ComPtr<ID3D11Device>& device);
+		D3D11_API virtual void InitializeConstantBuffers(Microsoft::WRL::ComPtr<ID3D11Device>& device);
 
 		/// @brief Create texture sampler.
 		/// @todo Consider moving this to D3D11Utils class.
 		/// @param device Direct3D device used to create GPU resources.
 		/// @return Created texture sampler instance or resource.
-		HRESULT CreateTextureSampler(Microsoft::WRL::ComPtr<ID3D11Device>& device);
+		D3D11_API HRESULT CreateTextureSampler(Microsoft::WRL::ComPtr<ID3D11Device>& device);
 
 		/// @brief Updates the constant buffers right before rendering.
 		/// @param transform Transformation of the mesh, usually of the Actor.
@@ -147,7 +148,7 @@ namespace D3D11
 		/// @todo If the engine targets for 2D games, remove the inverse transpose calculation.
 		/// @param device Direct3D device used to create GPU resources.
 		/// @param context Context associated with this operation.
-		virtual void UpdateConstantBuffers(
+		D3D11_API virtual void UpdateConstantBuffers(
 			Microsoft::WRL::ComPtr<ID3D11Device>&		 device,
 			Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,
 			Core::Transform*							 transform,
@@ -162,12 +163,12 @@ namespace D3D11
 		/// @brief Returns the sampler state used by this ftmesh group.
 		/// @return Borrowed access to the sampler state.
 		/// @note Changes through the returned reference affect this object's stored state.
-		Microsoft::WRL::ComPtr<ID3D11SamplerState>& GetSamplerState();
+		D3D11_API Microsoft::WRL::ComPtr<ID3D11SamplerState>& GetSamplerState();
 
 		/// @brief Returns vertex constant buffer.
 		/// @return Borrowed access to the vcbuf.
 		/// @note Changes through the returned reference affect this object's stored state.
-		Microsoft::WRL::ComPtr<ID3D11Buffer>& GetVCBuf();
+		D3D11_API Microsoft::WRL::ComPtr<ID3D11Buffer>& GetVCBuf();
 
 		/// @brief Returns the vcdata used by this ftmesh group.
 		/// @return Borrowed access to the vcdata.

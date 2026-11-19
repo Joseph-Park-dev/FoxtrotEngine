@@ -326,7 +326,8 @@ namespace D3D11
 		FileIOHelper::BeginDataPackLoad(ifs, ChunkKey::FTFont::FTFONT);
 		FileIOHelper::LoadBasicString(ifs, key);
 
-		FTSprite* fontSprite = D3D11::ResourceManager::GetInstance()->GetSprite(key);
+		ResourceManager* resources	= GetD3D11ResourceManager();
+		FTSprite*		 fontSprite = resources ? resources->GetSprite(key) : nullptr;
 		mFontImage			 = fontSprite ? fontSprite->GetTexture() : nullptr;
 	}
 

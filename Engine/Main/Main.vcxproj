@@ -97,6 +97,10 @@
       <Project>{C4E8A1D7-6B2F-4E9A-8D15-3F7A9C2E5B41}</Project>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
+    <ProjectReference Include="..\Sound\Sound.vcxproj">
+      <Project>{7E2A4C91-5B18-4F6D-9A03-C8D14E6F2B70}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemGroup>
   <ItemDefinitionGroup>
     <PostBuildEvent>

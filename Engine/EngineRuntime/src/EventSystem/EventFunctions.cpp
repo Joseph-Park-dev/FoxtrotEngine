@@ -17,6 +17,7 @@
 #include "Actor/Transform.h"
 #include "FTMath.h"
 #include "EventSystem/EventType.h"
+#include "Debugging/DebugMemAlloc.h"
 
 namespace Core
 {
@@ -25,62 +26,56 @@ namespace Core
 	/// @param actorGroup Actor group used for scene classification.
 	/// @param pos Position or zero-based insertion index.
 	/// @return Created instantiate instance or resource.
-	Actor* Instantiate(Actor* actor, Common::ActorGroup actorGroup, Math::FTVector3 pos)
+	Common::IActor* Instantiate(Common::IActor* actor, Common::ActorGroup actorGroup, Math::FTVector3 pos)
 	{
-		FTEvent addedEvent	= {};
-		addedEvent.incident = EVENT_TYPE::CREATE_ACTOR;
-		actor->SetActorGroup(actorGroup);
-
-		if (actor)
-		{
-			// actor->Initialize();
-			// actor->Setup();
-
-			// addedEvent.eventData.push_back(actor);
-			// addedEvent.eventData.push_back(nullptr);
-			EventManager::GetInstance()->AddEvent(addedEvent);
-			return actor;
-		}
-		else
-		{
-			printf("ERROR : Instantiate() -> Premade not loaded, %s\n", actor->GetName().C_Str());
+		if (!actor)
 			return nullptr;
-		}
+
+		actor->SetActorGroup(actorGroup);
+		if (actor->GetTransform())
+			actor->GetTransform()->SetWorldPosition(pos);
+
+		FTEvent addedEvent	 = {};
+		addedEvent.incident	 = EVENT_TYPE::CREATE_ACTOR;
+		addedEvent.eventData = actor;
+		EventManager::GetInstance()->AddEvent(addedEvent);
+		return actor;
 	}
 
 	/// @brief Creates an actor instance and schedules it for the requested scene or group.
 	/// @param premadeName Registered name of the premade resource.
 	/// @return Created instantiate instance or resource.
-	Actor* Instantiate(const char* premadeName)
+	Common::IActor* Instantiate(const char* premadeName)
 	{
-		FTEvent addedEvent		 = {};
-		addedEvent.incident		 = EVENT_TYPE::CREATE_ACTOR;
-		Core::FTPremade* premade = Core::ResourceManager::GetInstance()->GetPremade(premadeName);
-		Actor*			 origin	 = premade->GetOrigin();
-		if (origin)
-		{
-			// origin->Initialize(FTCore::GetInstance());
-			// origin->Setup();
+		if (!premadeName)
+			return nullptr;
 
-			// addedEvent.eventData.push_back(origin);
-			// addedEvent.eventData.push_back(nullptr);
-			EventManager::GetInstance()->AddEvent(addedEvent);
-			return origin;
-		}
-		else
+		Core::FTPremade* premade = Core::ResourceManager::GetInstance()->GetPremade(premadeName);
+		if (!premade || !premade->GetOrigin())
 		{
 			printf("ERROR : Instantiate() -> Premade not loaded, %s\n", premadeName);
 			return nullptr;
 		}
+
+		Core::Actor* created = DBG_NEW Actor(premade, Common::ChunkKey::ID::CLONE);
+
+		FTEvent addedEvent	 = {};
+		addedEvent.incident	 = EVENT_TYPE::CREATE_ACTOR;
+		addedEvent.eventData = created;
+		EventManager::GetInstance()->AddEvent(addedEvent);
+		return created;
 	}
 
 	/// @brief Releases the managed instance or schedules the specified actor for destruction.
 	/// @param actor Actor participating in this operation.
-	void Destroy(Actor* actor)
+	void Destroy(Common::IActor* actor)
 	{
-		FTEvent addedEvent	= {};
-		addedEvent.incident = EVENT_TYPE::DESTROY_ACTOR;
-		// addedEvent.eventData.push_back(actor);
+		if (!actor)
+			return;
+
+		FTEvent addedEvent	 = {};
+		addedEvent.incident	 = EVENT_TYPE::DESTROY_ACTOR;
+		addedEvent.eventData = actor;
 		EventManager::GetInstance()->AddEvent(addedEvent);
 	}
 } // namespace Core

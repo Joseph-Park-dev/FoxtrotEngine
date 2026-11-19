@@ -1,4 +1,5 @@
 #pragma once
+#include "Plugin/D3D11Exports.h"
 #include "Manager/ResourceManagerBase.h"
 
 #include "Utility/SingletonMacro.h"
@@ -9,7 +10,6 @@ namespace D3D11
 {
 	class FTSpriteAnimation;
 	class FTSpineAnimation;
-	class FTFont;
 	class FTMaterial;
 	class FTMeshGroup;
 	class FTVertexShader;
@@ -43,10 +43,6 @@ namespace D3D11
 		/// @param key Lookup key identifying the stored entry.
 		/// @return Borrowed access to the spine animation.
 		FTSpineAnimation* GetSpineAnimation(Common::FTDS::String& key);
-		/// @brief Returns the font used by this resource manager.
-		/// @param key Lookup key identifying the stored entry.
-		/// @return Borrowed access to the font.
-		FTFont* GetFont(Common::FTDS::String& key);
 		/// @brief Returns the material used by this resource manager.
 		/// @param key Lookup key identifying the stored entry.
 		/// @return Borrowed access to the material.
@@ -70,7 +66,7 @@ namespace D3D11
 		/// @brief Returns the sprite used by this resource manager.
 		/// @param key Lookup key identifying the stored entry.
 		/// @return Borrowed access to the sprite.
-		FTSprite* GetSprite(Common::FTDS::String& key);
+		D3D11_API FTSprite* GetSprite(Common::FTDS::String& key);
 		/// @brief Returns the tile map used by this resource manager.
 		/// @param key Lookup key identifying the stored entry.
 		/// @return Borrowed access to the tile map.
@@ -88,10 +84,6 @@ namespace D3D11
 		/// @param key Lookup key identifying the stored entry.
 		/// @return Borrowed access to the spine animation.
 		FTSpineAnimation* GetSpineAnimation(const char* key);
-		/// @brief Returns the font used by this resource manager.
-		/// @param key Lookup key identifying the stored entry.
-		/// @return Borrowed access to the font.
-		FTFont* GetFont(const char* key);
 		/// @brief Returns the material used by this resource manager.
 		/// @param key Lookup key identifying the stored entry.
 		/// @return Borrowed access to the material.
@@ -103,7 +95,7 @@ namespace D3D11
 		/// @brief Returns the vertex shader used by this resource manager.
 		/// @param key Lookup key identifying the stored entry.
 		/// @return Borrowed access to the vertex shader.
-		FTVertexShader* GetVertexShader(const char* key);
+		D3D11_API FTVertexShader* GetVertexShader(const char* key);
 		/// @brief Returns the geometry shader used by this resource manager.
 		/// @param key Lookup key identifying the stored entry.
 		/// @return Borrowed access to the geometry shader.
@@ -111,7 +103,7 @@ namespace D3D11
 		/// @brief Returns the pixel shader used by this resource manager.
 		/// @param key Lookup key identifying the stored entry.
 		/// @return Borrowed access to the pixel shader.
-		FTPixelShader* GetPixelShader(const char* key);
+		D3D11_API FTPixelShader* GetPixelShader(const char* key);
 		/// @brief Returns the sprite used by this resource manager.
 		/// @param key Lookup key identifying the stored entry.
 		/// @return Borrowed access to the sprite.
@@ -132,9 +124,6 @@ namespace D3D11
 		/// @brief Returns the spine animations used by this resource manager.
 		/// @return Borrowed access to the spine animations.
 		Common::ResourcePack<FTSpineAnimation>* GetSpineAnimations();
-		/// @brief Returns the fonts used by this resource manager.
-		/// @return Borrowed access to the fonts.
-		Common::ResourcePack<FTFont>* GetFonts();
 		/// @brief Returns the materials used by this resource manager.
 		/// @return Borrowed access to the materials.
 		Common::ResourcePack<FTMaterial>* GetMaterials();
@@ -163,7 +152,6 @@ namespace D3D11
 	private:
 		Common::ResourcePack<FTSpriteAnimation>* mSpriteAnimations;
 		Common::ResourcePack<FTSpineAnimation>*	 mSpineAnimations;
-		Common::ResourcePack<FTFont>*			 mFonts;
 		Common::ResourcePack<FTMaterial>*		 mMaterials;
 		Common::ResourcePack<FTMeshGroup>*		 mMeshGroups;
 		Common::ResourcePack<FTVertexShader>*	 mVertexShaders;
@@ -180,4 +168,8 @@ namespace D3D11
 
 #endif // DEBUG
 	};
+
+	/// @brief Returns the resource manager owned by FoxtrotD3D11.dll.
+	/// @return Borrowed manager. Call this from other modules instead of GetInstance().
+	D3D11_API ResourceManager* GetD3D11ResourceManager();
 } // namespace D3D11

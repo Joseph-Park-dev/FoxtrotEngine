@@ -385,7 +385,6 @@ namespace D3D11
 	{
 		mSpriteAnimations->LoadResourcesFromChunk(ifs, renderer);
 		mSpineAnimations->LoadResourcesFromChunk(ifs, renderer);
-		mFonts->LoadResourcesFromChunk(ifs, renderer);
 		// mMaterials->LoadResourcesFromChunk(ifs, renderer);
 		mMeshGroups->LoadResourcesFromChunk(ifs, renderer);
 		mVertexShaders->LoadResourcesFromChunk(ifs, renderer);
@@ -410,14 +409,6 @@ namespace D3D11
 	FTSpineAnimation* ResourceManager::GetSpineAnimation(Common::FTDS::String& key)
 	{
 		return mSpineAnimations->GetResource(key);
-	}
-
-	/// @brief Returns the font used by this resource manager.
-	/// @param key Lookup key identifying the stored entry.
-	/// @return Borrowed access to the font.
-	FTFont* ResourceManager::GetFont(Common::FTDS::String& key)
-	{
-		return mFonts->GetResource(key);
 	}
 
 	/// @brief Returns the material used by this resource manager.
@@ -500,14 +491,6 @@ namespace D3D11
 		return mSpineAnimations->GetResource(key);
 	}
 
-	/// @brief Returns the font used by this resource manager.
-	/// @param key Lookup key identifying the stored entry.
-	/// @return Borrowed access to the font.
-	FTFont* ResourceManager::GetFont(const char* key)
-	{
-		return mFonts->GetResource(key);
-	}
-
 	/// @brief Returns the material used by this resource manager.
 	/// @param key Lookup key identifying the stored entry.
 	/// @return Borrowed access to the material.
@@ -586,11 +569,9 @@ namespace D3D11
 		return mSpineAnimations;
 	}
 
-	/// @brief Returns the fonts used by this resource manager.
-	/// @return Borrowed access to the fonts.
-	Common::ResourcePack<FTFont>* ResourceManager::GetFonts()
+	ResourceManager* GetD3D11ResourceManager()
 	{
-		return mFonts;
+		return ResourceManager::GetInstance();
 	}
 
 	/// @brief Returns the materials used by this resource manager.
@@ -659,7 +640,6 @@ namespace D3D11
 	ResourceManager::ResourceManager()
 		: mSpriteAnimations(new Common::ResourcePack<FTSpriteAnimation>(16))
 		, mSpineAnimations(new Common::ResourcePack<FTSpineAnimation>(16))
-		, mFonts(new Common::ResourcePack<FTFont>(16))
 		, mMaterials(new Common::ResourcePack<FTMaterial>(16))
 		, mMeshGroups(new Common::ResourcePack<FTMeshGroup>(16))
 		, mVertexShaders(new Common::ResourcePack<FTVertexShader>(16))
@@ -677,7 +657,6 @@ namespace D3D11
 		delete mSpriteAnimations;
 		delete mSpineAnimations;
 		delete mTileMaps;
-		delete mFonts;
 		delete mMeshGroups;
 		delete mMaterials;
 		delete mPSOs;
@@ -698,7 +677,6 @@ namespace D3D11
 		mGeometryShaders->LoadAllResourcesInAsset(assetDir, FileTypes::GEOMETRY_SHADER, renderer);
 		mPixelShaders->LoadAllResourcesInAsset(assetDir, FileTypes::PIXEL_SHADER, renderer);
 		// mTileMaps->LoadAllResourcesInAsset(assetDir, FileTypes::TILEMAP, renderer);
-		mFonts->LoadAllResourcesInAsset(assetDir, FileTypes::FONT, renderer);
 		mSpriteAnimations->LoadAllResourcesInAsset(assetDir, FileTypes::SPRITE_ANIMATION, renderer);
 		mSpineAnimations->LoadAllResourcesInAsset(assetDir, FileTypes::SPINE_ANIMATION, renderer);
 	}
@@ -712,7 +690,6 @@ namespace D3D11
 		// mGeometryShaders->DisplayLoadedResources("Geometry Shaders");
 		mPixelShaders->DisplayLoadedResources("Pixel Shaders");
 		// mTileMaps->DisplayLoadedResources("TileMaps");
-		mFonts->DisplayLoadedResources("Fonts");
 		mSpriteAnimations->DisplayLoadedResources("Sprite Animations");
 		mSpineAnimations->DisplayLoadedResources("Spine Animations");
 	}

@@ -38,8 +38,9 @@ namespace Core
 		CORE_API void AddActor(Common::IActor* actor);
 		/// @brief Finds and deletes the actor from the scene's active or pending collection.
 		/// @param actor Actor participating in this operation.
+		/// @return True when this scene owned the actor and deleted it.
 		/// @note Invalidates references to the removed actor.
-		CORE_API void RemoveActor(Common::IActor* actor);
+		CORE_API bool RemoveActor(Common::IActor* actor);
 
 		/// @brief Searches the scene for an actor matching the supplied identifier or name.
 		/// @param id Actor or entry identifier.

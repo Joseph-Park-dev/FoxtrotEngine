@@ -37,8 +37,8 @@ namespace UI
 	public:
 		const char* GetName() override;
 
-		UI_API bool IsHovered() const;
-		UI_API bool IsPressed() const;
+		UI_API virtual bool IsHovered() const;
+		UI_API virtual bool IsPressed() const;
 
 	public:
 		void ProcessInput(InputSystem::IInputDevice* inputDevice) override;
@@ -61,8 +61,9 @@ namespace UI
 		bool				 mPressed;
 
 	private:
-		bool Contains(Graphics::ICamera* camera, InputSystem::IInputDevice* inputDevice) const;
-		void UpdateDebugShapes(Math::FTVector3 pos, Math::FTVector3 rot, Math::FTVector3 scale, Graphics::ICamera* cameraInst);
+		bool			 Contains(Graphics::ICamera* camera, InputSystem::IInputDevice* inputDevice) const;
+		Math::FTVector2	 WorldSize(Graphics::ICamera* camera) const;
+		void			 UpdateDebugShapes(Math::FTVector3 pos, Math::FTVector3 rot, Math::FTVector3 scale, Graphics::ICamera* cameraInst);
 
 #ifdef FOXTROT_EDITOR
 	public:

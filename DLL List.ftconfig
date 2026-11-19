@@ -1,9 +1,11 @@
-DLL List<4>
+DLL List<5>
 	DLL[string]
 	FoxtrotD3D11
 	DLL[string]
 	UI
 	DLL[string]
 	Physics2D
+	DLL[string]
+	Sound
 	DLL[string]
 	Game

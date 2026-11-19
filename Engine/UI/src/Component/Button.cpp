@@ -58,9 +58,35 @@ namespace UI
 			static_cast<float>(inputDevice->MOUSE_Y()));
 		Math::FTVector3 point  = camera ? camera->ScreenToWorld(cursor) : Math::FTVector3(cursor.x, cursor.y, 0.f);
 		Math::FTVector3 origin = mOwner->GetTransform()->GetWorldPosition();
-		const float		halfW  = mSize.x * 0.5f;
-		const float		halfH  = mSize.y * 0.5f;
+		const Math::FTVector2 worldSize = WorldSize(camera);
+		const float halfW = worldSize.x * 0.5f;
+		const float halfH = worldSize.y * 0.5f;
 		return point.x >= origin.x - halfW && point.x <= origin.x + halfW && point.y >= origin.y - halfH && point.y <= origin.y + halfH;
+	}
+
+	Math::FTVector2 Button::WorldSize(Graphics::ICamera* camera) const
+	{
+		// mSize is the UI rectangle in pixels. DebugShapeGS and Contains() both
+		// measure world units, and one pixel covers UnitsPerPixel at zoom 1.
+		float unitsPerPixel = 1.f;
+		if (camera)
+		{
+			const float units = camera->GetUnitsPerPixel();
+			if (0.f < units)
+				unitsPerPixel = units;
+		}
+
+		Math::FTVector2 actorScale(1.f, 1.f);
+		if (mOwner && mOwner->GetTransform())
+		{
+			const Math::FTVector3& worldScale = mOwner->GetTransform()->GetWorldScale();
+			actorScale.x					  = worldScale.x;
+			actorScale.y					  = worldScale.y;
+		}
+
+		return Math::FTVector2(
+			Math::Abs(mSize.x * actorScale.x * unitsPerPixel),
+			Math::Abs(mSize.y * actorScale.y * unitsPerPixel));
 	}
 
 	void Button::UpdateDebugShapes(Math::FTVector3 pos, Math::FTVector3 rot, Math::FTVector3 scale, Graphics::ICamera* cameraInst)
@@ -102,11 +128,12 @@ namespace UI
 			return;
 		}
 
-		// Contains() tests an axis-aligned box of mSize centered on the actor.
+		// Same axis-aligned pixel rectangle Contains() tests, centered on the actor.
 		mDebugRect->SetIsActive(true);
-		const Math::FTVector3 position = mOwner->GetTransform()->GetWorldPosition();
+		const Math::FTVector2 worldSize = WorldSize(camInst);
+		const Math::FTVector3 position	= mOwner->GetTransform()->GetWorldPosition();
 		const Math::FTVector3 rotation(0.f, 0.f, 0.f);
-		const Math::FTVector3 scale(Math::Abs(mSize.x), Math::Abs(mSize.y), 1.f);
+		const Math::FTVector3 scale(worldSize.x, worldSize.y, 1.f);
 		UpdateDebugShapes(position, rotation, scale, camInst);
 	}
 

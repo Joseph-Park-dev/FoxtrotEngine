@@ -11,11 +11,45 @@
 #include "Manager/SceneManager.h"
 #include "EventSystem/EventType.h"
 #include "Actor/Actor.h"
+#include "Actor/IActor.h"
 #include "Actor/ActorData.h"
 #include "Actor/ActorGroup.h"
 #include "Scene/Scene.h"
 #include "ResourceSystem/FTPremade.h"
 #include "FTDS/Dynamic/DynamicArray.h"
+
+#ifdef FOXTROT_EDITOR
+#include "FileSystem/DLLPath.h"
+
+#include <Windows.h>
+#endif
+
+namespace
+{
+	/// @brief Returns the editor play scene when the editor module is loaded.
+	/// The export is resolved once. ProcessEvent runs every frame, and each
+	/// destroyed actor used to take the loader lock inside GetProcAddress.
+	Core::Scene* EditorPlayScene()
+	{
+#ifdef FOXTROT_EDITOR
+		using GetEditorSceneFn = Core::Scene* (*)();
+		static GetEditorSceneFn getScene = nullptr;
+		if (!getScene)
+		{
+			HMODULE editor = GetModuleHandleA(Common::DLLPath::EDITOR);
+			if (!editor)
+				return nullptr;
+
+			getScene = reinterpret_cast<GetEditorSceneFn>(GetProcAddress(editor, "GetEditorScene"));
+			if (!getScene)
+				return nullptr;
+		}
+		return getScene();
+#else
+		return nullptr;
+#endif
+	}
+}
 
 namespace Core
 {
@@ -50,8 +84,16 @@ namespace Core
 
 			case EVENT_TYPE::DESTROY_ACTOR:
 			{
-				Actor* actorToDestroy = static_cast<Actor*>(executedEvent.eventData);
-				actorToDestroy->SetState(Common::ActorState::DEAD);
+				Common::IActor* actor = static_cast<Common::IActor*>(executedEvent.eventData);
+				if (!actor)
+					break;
+
+				// Runtime actors live on SceneManager's scene. Editor play uses a separate scene.
+				Scene* scene = SceneManager::GetInstance()->GetCurrentScene();
+				if (scene && scene->RemoveActor(actor))
+					break;
+				if (Scene* editorScene = EditorPlayScene())
+					editorScene->RemoveActor(actor);
 			}
 			break;
 			case EVENT_TYPE::SWITCH_SCENE:

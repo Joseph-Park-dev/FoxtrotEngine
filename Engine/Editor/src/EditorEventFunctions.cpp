@@ -6,6 +6,7 @@
 
 #include "Manager/ResourceManager.h"
 #include "Manager/EventManager.h"
+#include "EventSystem/EventFunctions.h"
 #include "EventSystem/EventType.h"
 
 namespace Editor
@@ -42,9 +43,6 @@ namespace Editor
 	/// @param actor Actor participating in this operation.
 	void Editor::Destroy(EditorElement* actor)
 	{
-		Core::FTEvent addedEvent = {};
-		addedEvent.incident		 = Core::EVENT_TYPE::DESTROY_ACTOR;
-		// addedEvent.eventData.push_back(actor);
-		Core::EventManager::GetInstance()->AddEvent(addedEvent);
+		Core::Destroy(actor);
 	}
 } // namespace Editor

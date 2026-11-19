@@ -312,6 +312,13 @@ namespace Editor
 			if (setContext)
 				setContext(ImGui::GetCurrentContext());
 		}
+		if (HMODULE soundModule = GetModuleHandleA("Sound.dll"))
+		{
+			using SetContextFn = void (*)(void*);
+			auto setContext	   = reinterpret_cast<SetContextFn>(GetProcAddress(soundModule, "Sound_SetEditorGuiContext"));
+			if (setContext)
+				setContext(ImGui::GetCurrentContext());
+		}
 		wndprocParams->Window	   = mEditorWin;
 		wndprocParams->Renderer	   = mRenderer;
 		wndprocParams->InputDevice = mInputDevice;
@@ -566,6 +573,13 @@ namespace Editor
 			{
 				using SetContextFn = void (*)(void*);
 				auto setContext	   = reinterpret_cast<SetContextFn>(GetProcAddress(uiModule, "UI_SetEditorGuiContext"));
+				if (setContext)
+					setContext(nullptr);
+			}
+			if (HMODULE soundModule = GetModuleHandleA("Sound.dll"))
+			{
+				using SetContextFn = void (*)(void*);
+				auto setContext	   = reinterpret_cast<SetContextFn>(GetProcAddress(soundModule, "Sound_SetEditorGuiContext"));
 				if (setContext)
 					setContext(nullptr);
 			}

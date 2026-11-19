@@ -174,9 +174,6 @@
     <ClCompile Include="src\ResourceSystem\Cubemap\FTCubemap.cpp" />
     <ClCompile Include="src\ResourceSystem\D3D11PSO.cpp" />
     <ClCompile Include="src\ResourceSystem\D3D11Resource.cpp" />
-    <ClCompile Include="src\ResourceSystem\Font\FontChar.cpp" />
-    <ClCompile Include="src\ResourceSystem\Font\FTFont.cpp" />
-    <ClCompile Include="src\ResourceSystem\FTFontMap.cpp" />
     <ClCompile Include="src\ResourceSystem\FTTexture.cpp" />
     <ClCompile Include="src\ResourceSystem\Material\FTMaterial.cpp" />
     <ClCompile Include="src\ResourceSystem\Material\SpriteAnimMat.cpp" />
@@ -227,12 +224,6 @@
     <ClInclude Include="include\ResourceSystem\Cubemap\FTCubemap.h" />
     <ClInclude Include="include\ResourceSystem\D3D11PSO.h" />
     <ClInclude Include="include\ResourceSystem\D3D11Resource.h" />
-    <ClInclude Include="include\ResourceSystem\Font\FontChar.h" />
-    <ClInclude Include="include\ResourceSystem\Font\FontKerning.h" />
-    <ClInclude Include="include\ResourceSystem\Font\FTFont.h" />
-    <ClInclude Include="include\ResourceSystem\Font\TextAttribute.h" />
-    <ClInclude Include="include\ResourceSystem\Font\TextVertex.h" />
-    <ClInclude Include="include\ResourceSystem\FTFontMap.h" />
     <ClInclude Include="include\ResourceSystem\FTTexture.h" />
     <ClInclude Include="include\ResourceSystem\Light.h" />
     <ClInclude Include="include\ResourceSystem\Material\FTMaterial.h" />

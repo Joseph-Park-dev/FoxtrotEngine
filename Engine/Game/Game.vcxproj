@@ -46,15 +46,15 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)Engine\EngineRuntime\include;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Graphics\include;$(SolutionDir)Engine\InputSystem\include;$(SolutionDir)Engine\D3D11\include;$(SolutionDir)Engine\Physics2D\include;$(SolutionDir)third_party\box2d\include;$(SolutionDir)third_party\spine-runtimes\spine-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)Engine\EngineRuntime\include;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Graphics\include;$(SolutionDir)Engine\InputSystem\include;$(SolutionDir)Engine\D3D11\include;$(SolutionDir)Engine\Physics2D\include;$(SolutionDir)Engine\Sound\include;$(SolutionDir)third_party\box2d\include;$(SolutionDir)third_party\spine-runtimes\spine-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>MATH_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <ModuleDefinitionFile>$(ProjectDir)Module.def</ModuleDefinitionFile>
-      <AdditionalDependencies>EngineRuntime.lib;Physics2D.lib;Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>EngineRuntime.lib;Physics2D.lib;Sound.lib;Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <ProgramDatabaseFile Condition="'$(HotReloadId)' != ''">$(IntDir)Game-$(HotReloadId).pdb</ProgramDatabaseFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)Engine\Physics2D\build\$(Platform)\$(Configuration);$(SolutionDir)build\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Engine\Physics2D\build\$(Platform)\$(Configuration);$(SolutionDir)Engine\Sound\build\$(Platform)\$(Configuration);$(SolutionDir)build\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -82,6 +82,9 @@
     </ProjectReference>
     <ProjectReference Include="..\Physics2D\Physics2D.vcxproj">
       <Project>{b1ae5aad-3b5a-4022-aa80-9a6e465933fa}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Sound\Sound.vcxproj">
+      <Project>{7E2A4C91-5B18-4F6D-9A03-C8D14E6F2B70}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -7,6 +7,7 @@
 // ----------------------------------------------------------------
 
 #pragma once
+#include "Plugin/D3D11Exports.h"
 #include "ResourceSystem/Shader/FTShader.h"
 
 #include <d3d11.h>
@@ -58,12 +59,12 @@ namespace D3D11
 		/// @brief Returns compiled HLSL vertex shader object.
 		/// @return Borrowed access to the shader.
 		/// @note Changes through the returned reference affect this object's stored state.
-		Microsoft::WRL::ComPtr<ID3D11VertexShader>& GetShader();
+		D3D11_API Microsoft::WRL::ComPtr<ID3D11VertexShader>& GetShader();
 
 		/// @brief Returns the current input layout.
 		/// @return Borrowed access to the input layout.
 		/// @note Changes through the returned reference affect this object's stored state.
-		Microsoft::WRL::ComPtr<ID3D11InputLayout>& GetInputLayout();
+		D3D11_API Microsoft::WRL::ComPtr<ID3D11InputLayout>& GetInputLayout();
 
 	public:
 		/// @brief Initializes a vertex shader and its input-layout metadata.

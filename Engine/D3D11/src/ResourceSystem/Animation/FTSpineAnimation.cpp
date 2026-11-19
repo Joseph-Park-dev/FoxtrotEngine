@@ -63,22 +63,9 @@ namespace D3D11
 		if (!renderer || !transform || !camInst || !mSpineVCData || !mSpineVCBuf || !mSpinePSData || !mSpinePSBuf)
 			return;
 
-		// Facing flips the skeleton on the model matrix. The actor scale stays positive.
-		float linearX = transform->GetSteering()->Linear.x;
-		if (linearX < 0)
-			SetDirection(-1);
-		else if (0 < linearX)
-			SetDirection(1);
-
-		FTVector3 scale = transform->GetLocalScale();
-		if (scale.x < 0.f || scale.y < 0.f)
-			transform->SetLocalScale(FTVector3(Math::Abs(scale.x), Math::Abs(scale.y), scale.z));
-
-		// Spine vertices are in pixels. This scale maps them into world units so an
-		// unmodified camera zoom draws the skeleton at its original pixel size.
-		const float facing		 = static_cast<float>(GetFrontDir() * GetDirection());
-		const float pixelToWorld = PixelToWorld(camInst);
-		FTMatrix4	modelMat	 = FTMatrix4::CreateScale(facing * pixelToWorld, pixelToWorld, 1.f) * transform->GetMatrixWorld();
+		// Spine vertices are in pixels. BuildModelMatrix maps them into world units
+		// and flips X with the facing direction, then places them on the actor.
+		FTMatrix4 modelMat = BuildModelMatrix(transform, camInst);
 
 		FTMatrix4 viewMat = FTMatrix4::Identity;
 		camInst->GetViewMatrix(viewMat);
@@ -146,6 +133,267 @@ namespace D3D11
 	void FTSpineAnimation::SetTimeScale(const float val)
 	{
 		mTimeScale = val;
+	}
+
+	bool FTSpineAnimation::GetBoneWorldPosition(
+		const char*		 boneName,
+		Core::Transform* transform,
+		Core::ICamera*	 camera,
+		Math::FTVector3& outPosition)
+	{
+		if (!boneName || !boneName[0] || !mSkeleton || !transform)
+			return false;
+
+		spine::Bone* bone = mSkeleton->findBone(spine::String(boneName));
+		if (!bone)
+			return false;
+
+		spine::BonePose& pose = bone->getAppliedPose();
+		const FTVector3	 local(pose.getWorldX(), pose.getWorldY(), 0.f);
+		const FTMatrix4	 model = BuildModelMatrix(transform, camera);
+		outPosition			   = FTVector3::Transform(local, model, 1.f);
+		return true;
+	}
+
+	bool FTSpineAnimation::GetBoneWorldRight(
+		const char*		 boneName,
+		Core::Transform* transform,
+		Core::ICamera*	 camera,
+		Math::FTVector3& outDirection)
+	{
+		if (!boneName || !boneName[0] || !mSkeleton || !transform || !transform->GetSteering())
+			return false;
+
+		spine::Bone* bone = mSkeleton->findBone(spine::String(boneName));
+		if (!bone)
+			return false;
+
+		// Same applied pose GetBoneWorldPosition reads. X axis is (a, c); a zero axis
+		// means the world transform was never written, and normalizing it faults.
+		spine::BonePose& pose	   = bone->getAppliedPose();
+		const float		 axisX	   = pose.getA();
+		const float		 axisY	   = pose.getC();
+		const float		 axisLenSq = axisX * axisX + axisY * axisY;
+		if (!(axisLenSq > 0.0001f))
+			return false;
+
+		const float		invAxis = 1.f / Sqrt(axisLenSq);
+		const FTVector3 local(axisX * invAxis, axisY * invAxis, 0.f);
+		const FTMatrix4 model = BuildModelMatrix(transform, camera);
+		FTVector3		world = FTVector3::Transform(local, model, 0.f);
+		world.z				  = 0.f;
+
+		const float worldLenSq = world.x * world.x + world.y * world.y;
+		if (!(worldLenSq > 0.0001f))
+			return false;
+
+		const float invWorld = 1.f / Sqrt(worldLenSq);
+		outDirection.x		 = world.x * invWorld;
+		outDirection.y		 = world.y * invWorld;
+		outDirection.z		 = 0.f;
+		return true;
+	}
+
+	namespace
+	{
+		void UpdateBoneWorld(spine::Bone* bone, spine::Skeleton& skeleton)
+		{
+			if (!bone)
+				return;
+
+			bone->getAppliedPose().updateWorldTransform(skeleton);
+			spine::Array<spine::Bone*>& children = bone->getChildren();
+			for (size_t i = 0; i < children.size(); ++i)
+				UpdateBoneWorld(children[i], skeleton);
+		}
+
+		bool BoneInheritsFrom(spine::Bone* bone, spine::Bone* ancestor)
+		{
+			while (bone)
+			{
+				if (bone == ancestor)
+					return true;
+				bone = bone->getParent();
+			}
+			return false;
+		}
+
+		float WrapDegrees(float degrees)
+		{
+			while (180.f < degrees)
+				degrees -= 360.f;
+			while (degrees < -180.f)
+				degrees += 360.f;
+			return degrees;
+		}
+
+		float ClampDegrees(float degrees, float minDegrees, float maxDegrees)
+		{
+			if (maxDegrees < minDegrees)
+			{
+				const float swap = minDegrees;
+				minDegrees		 = maxDegrees;
+				maxDegrees		 = swap;
+			}
+
+			const float center	= (minDegrees + maxDegrees) * 0.5f;
+			const float wrapped = WrapDegrees(degrees - center) + center;
+			if (wrapped < minDegrees)
+				return minDegrees;
+			if (maxDegrees < wrapped)
+				return maxDegrees;
+			return wrapped;
+		}
+
+		// Dot of the aligned bone's +X with the vector from its origin to the target
+		// after the driver is rotated so the aligned bone's world rotation is beta.
+		float AlignedAimDot(
+			float beta,
+			float rho,
+			float pivotX,
+			float pivotY,
+			float localX,
+			float localY,
+			float targetX,
+			float targetY)
+		{
+			const float arm   = beta - rho;
+			const float cosArm = Cos(arm);
+			const float sinArm = Sin(arm);
+			const float originX = pivotX + cosArm * localX - sinArm * localY;
+			const float originY = pivotY + sinArm * localX + cosArm * localY;
+			const float rightX	= Cos(beta);
+			const float rightY	= Sin(beta);
+			return rightX * (targetX - originX) + rightY * (targetY - originY);
+		}
+	}
+
+	bool FTSpineAnimation::AimBoneRight(
+		const char*			   boneName,
+		Core::Transform*	   transform,
+		Core::ICamera*		   camera,
+		const Math::FTVector3& worldTarget)
+	{
+		if (!boneName || !boneName[0] || !mSkeleton || !transform)
+			return false;
+
+		spine::Bone* bone = mSkeleton->findBone(spine::String(boneName));
+		if (!bone)
+			return false;
+
+		spine::BonePose& applied = bone->getAppliedPose();
+		const FTVector3	 local(applied.getWorldX(), applied.getWorldY(), 0.f);
+		const FTMatrix4	 model	   = BuildModelMatrix(transform, camera);
+		const FTVector3	 boneWorld = FTVector3::Transform(local, model, 1.f);
+		const FTVector3	 worldDir  = worldTarget - boneWorld;
+		if (worldDir.x * worldDir.x + worldDir.y * worldDir.y <= 0.0001f)
+			return false;
+
+		FTMatrix4 inverse = model;
+		inverse.Invert();
+		const FTVector3 skelDir	  = FTVector3::Transform(worldDir, inverse, 0.f);
+		const float		targetDeg = ToDegrees(Atan2(skelDir.y, skelDir.x));
+		const float		localRot  = applied.worldToLocalRotation(targetDeg);
+
+		bone->getPose().setRotation(localRot);
+		bone->getAppliedPose().setRotation(localRot);
+		UpdateBoneWorld(bone, *mSkeleton);
+		return true;
+	}
+
+	bool FTSpineAnimation::AimBoneRight(
+		const char*			   driverBone,
+		const char*			   alignedBone,
+		Core::Transform*	   transform,
+		Core::ICamera*		   camera,
+		const Math::FTVector3& worldTarget,
+		float				   minRotation,
+		float				   maxRotation)
+	{
+		if (!driverBone || !driverBone[0] || !alignedBone || !alignedBone[0] || !mSkeleton || !transform)
+			return false;
+
+		spine::Bone* driver = mSkeleton->findBone(spine::String(driverBone));
+		spine::Bone* aligned = mSkeleton->findBone(spine::String(alignedBone));
+		if (!driver || !aligned || !BoneInheritsFrom(aligned, driver))
+			return false;
+
+		const FTMatrix4 model = BuildModelMatrix(transform, camera);
+		FTMatrix4		inverse = model;
+		inverse.Invert();
+		const FTVector3 skelTarget = FTVector3::Transform(worldTarget, inverse, 1.f);
+
+		spine::BonePose& driverPose  = driver->getAppliedPose();
+		spine::BonePose& alignedPose = aligned->getAppliedPose();
+		const float		 pivotX		 = driverPose.getWorldX();
+		const float		 pivotY		 = driverPose.getWorldY();
+		const float		 offsetX	 = alignedPose.getWorldX() - pivotX;
+		const float		 offsetY	 = alignedPose.getWorldY() - pivotY;
+		const float		 targetX	 = skelTarget.x - pivotX;
+		const float		 targetY	 = skelTarget.y - pivotY;
+		if (targetX * targetX + targetY * targetY <= 0.0001f)
+			return false;
+
+		const float alpha  = ToRadians(driverPose.getWorldRotationX());
+		const float cosA   = Cos(alpha);
+		const float sinA   = Sin(alpha);
+		const float localX = cosA * offsetX + sinA * offsetY;
+		const float localY = -sinA * offsetX + cosA * offsetY;
+		const float rho	   = ToRadians(WrapDegrees(alignedPose.getWorldRotationX() - driverPose.getWorldRotationX()));
+		const float cosR   = Cos(rho);
+		const float sinR   = Sin(rho);
+		const float localAheadY = -sinR * localX + cosR * localY;
+
+		const float dist = Sqrt(targetX * targetX + targetY * targetY);
+		float		ratio = localAheadY / dist;
+		if (1.f < ratio)
+			ratio = 1.f;
+		else if (ratio < -1.f)
+			ratio = -1.f;
+
+		// targetY * cos(beta) - targetX * sin(beta) = localAheadY.
+		// The two solutions point opposite ways along that line. Keep the one aimed at the target.
+		const float phi	  = Atan2(targetX, targetY);
+		const float sweep = Acos(ratio);
+		const float beta0 = -phi + sweep;
+		const float beta1 = -phi - sweep;
+		const float dot0  = AlignedAimDot(beta0, rho, pivotX, pivotY, localX, localY, skelTarget.x, skelTarget.y);
+		const float dot1  = AlignedAimDot(beta1, rho, pivotX, pivotY, localX, localY, skelTarget.x, skelTarget.y);
+		const bool	useFirst = dot1 < dot0;
+		float		beta	 = useFirst ? beta0 : beta1;
+		const float aimDot	 = useFirst ? dot0 : dot1;
+		if (aimDot <= 0.f)
+			beta = Atan2(targetY, targetX);
+
+		const float localRot = ClampDegrees(
+			driverPose.worldToLocalRotation(ToDegrees(beta - rho)),
+			minRotation,
+			maxRotation);
+		driver->getPose().setRotation(localRot);
+		driver->getAppliedPose().setRotation(localRot);
+		UpdateBoneWorld(driver, *mSkeleton);
+		return true;
+	}
+
+	Math::FTMatrix4 FTSpineAnimation::BuildModelMatrix(Core::Transform* transform, Core::ICamera* camera)
+	{
+		if (!transform)
+			return FTMatrix4::Identity;
+
+		const Steering* steering = transform->GetSteering();
+		const float		linearX	 = steering ? steering->Linear.x : 0.f;
+		if (linearX < 0)
+			SetDirection(-1);
+		else if (0 < linearX)
+			SetDirection(1);
+
+		FTVector3 scale = transform->GetLocalScale();
+		if (scale.x < 0.f || scale.y < 0.f)
+			transform->SetLocalScale(FTVector3(Math::Abs(scale.x), Math::Abs(scale.y), scale.z));
+
+		const float facing		 = static_cast<float>(GetFrontDir() * GetDirection());
+		const float pixelToWorld = PixelToWorld(camera);
+		return FTMatrix4::CreateScale(facing * pixelToWorld, pixelToWorld, 1.f) * transform->GetMatrixWorld();
 	}
 
 	void FTSpineAnimation::SetAnimation(const int idx, const bool isRepeated)

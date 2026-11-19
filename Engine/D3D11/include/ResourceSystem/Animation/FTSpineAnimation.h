@@ -109,6 +109,63 @@ namespace D3D11
 		/// @param isRepeated Should the animation be looped?
 		void SetAnimation(const int idx, const bool isRepeated);
 
+		/// @brief World position of a skeleton bone, using the same model matrix as Render.
+		/// @param boneName Bone name in the loaded skeleton.
+		/// @param transform Actor transform that places the skeleton.
+		/// @param camera Camera whose units-per-pixel scale maps Spine pixels into world units.
+		/// @param outPosition Receives the bone origin in world units.
+		/// @return True when the bone exists.
+		bool GetBoneWorldPosition(
+			const char*		   boneName,
+			Core::Transform*   transform,
+			Core::ICamera*	   camera,
+			Math::FTVector3&   outPosition);
+
+		/// @brief World-space +X axis of a skeleton bone, using the same model matrix as Render.
+		/// @param boneName Bone name in the loaded skeleton.
+		/// @param transform Actor transform that places the skeleton.
+		/// @param camera Camera whose units-per-pixel scale maps Spine pixels into world units.
+		/// @param outDirection Receives the unit right direction in world units.
+		/// @return True when the bone exists and its right axis has length.
+		bool GetBoneWorldRight(
+			const char*		 boneName,
+			Core::Transform* transform,
+			Core::ICamera*	 camera,
+			Math::FTVector3& outDirection);
+
+		/// @brief Rotates a bone so its +X axis points at a world position.
+		/// @param boneName Bone name in the loaded skeleton.
+		/// @param transform Actor transform that places the skeleton.
+		/// @param camera Camera whose units-per-pixel scale maps Spine pixels into world units.
+		/// @param worldTarget Point in world units.
+		/// @return True when the bone exists and the target is not on the bone.
+		bool AimBoneRight(
+			const char*			   boneName,
+			Core::Transform*	   transform,
+			Core::ICamera*		   camera,
+			const Math::FTVector3& worldTarget);
+
+		/// @brief Rotates driverBone so alignedBone's +X axis points at a world position.
+		/// @param driverBone Bone whose local rotation is changed.
+		/// @param alignedBone Bone whose +X axis is aligned. Must be driverBone or a descendant.
+		/// @param transform Actor transform that places the skeleton.
+		/// @param camera Camera whose units-per-pixel scale maps Spine pixels into world units.
+		/// @param worldTarget Point in world units.
+		/// @param minRotation Lowest local rotation written to driverBone, in degrees.
+		/// @param maxRotation Highest local rotation written to driverBone, in degrees.
+		/// @return True when both bones exist, alignedBone hangs off driverBone, and the target is not on the driver pivot.
+		/// @note The descendant's local pose stays fixed, so the driver rotation includes that bone's offset from the pivot.
+		/// When the aligned +X ray cannot reach the target, that axis follows the direction from the driver pivot to the target.
+		/// The resulting driver local rotation is kept inside [minRotation, maxRotation].
+		bool AimBoneRight(
+			const char*			   driverBone,
+			const char*			   alignedBone,
+			Core::Transform*	   transform,
+			Core::ICamera*		   camera,
+			const Math::FTVector3& worldTarget,
+			float				   minRotation,
+			float				   maxRotation);
+
 		/// @brief Turns the skin on/off.
 		/// @param idx Skin index. This will be used to bit-shift the skin combination.
 		void ToggleSkin(const size_t idx);
@@ -216,6 +273,10 @@ namespace D3D11
 
 		/// @brief Sets the facing direction from mInitRightward before steering takes over.
 		void ApplyInitialDirection();
+
+		/// @brief Model matrix shared by skeleton rendering and bone queries.
+		/// Facing flips X. Pixel scale maps Spine pixels into world units, then the actor transform places the result.
+		Math::FTMatrix4 BuildModelMatrix(Core::Transform* transform, Core::ICamera* camera);
 
 #ifdef FOXTROT_EDITOR
 	public:

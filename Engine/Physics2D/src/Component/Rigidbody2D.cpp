@@ -82,6 +82,8 @@ namespace Physics2D
 	void Rigidbody2D::LateUpdate(float deltaTime)
 	{
 		(void)deltaTime;
+		if (!b2Body_IsValid(mBodyID))
+			PrepareForSimulation();
 		if (!GetOwner() || !GetOwner()->GetTransform() || !b2Body_IsValid(mBodyID))
 			return;
 
@@ -124,22 +126,6 @@ namespace Physics2D
 		// Keep the authored body definition only. Creating a body here runs during editor UI,
 		// including Edit Premade, while the Box2D world may be missing or locked.
 		newComp->mBodyDefCache = mBodyDefCache;
-		if (actor && actor->GetTransform())
-		{
-			newComp->mBodyDefCache.position = ToB2Vec2(actor->GetTransform()->GetWorldPosition());
-			newComp->mBodyDefCache.rotation = b2MakeRot(actor->GetTransform()->GetWorldRotation().z);
-		}
-#else
-		if (GetPhysics2D() && b2World_IsValid(GetPhysics2DWorldID()))
-		{
-			b2BodyDef bodyDef = b2DefaultBodyDef();
-			if (actor && actor->GetTransform())
-			{
-				bodyDef.position = ToB2Vec2(actor->GetTransform()->GetWorldPosition());
-				bodyDef.rotation = b2MakeRot(actor->GetTransform()->GetWorldRotation().z);
-			}
-			newComp->mBodyID = b2CreateBody(GetPhysics2DWorldID(), &bodyDef);
-		}
 #endif
 		if (actor && actor->GetComponents())
 			actor->GetComponents()->PushBack(newComp);
@@ -230,8 +216,9 @@ void Rigidbody2D::PrepareForSimulation()
 
 		if (!b2Body_IsValid(mBodyID))
 		{
+			b2BodyDef bodyDef = b2DefaultBodyDef();
 #ifdef FOXTROT_EDITOR
-			b2BodyDef bodyDef = mBodyDefCache;
+			bodyDef = mBodyDefCache;
 #endif
 			if (GetOwner() && GetOwner()->GetTransform())
 			{

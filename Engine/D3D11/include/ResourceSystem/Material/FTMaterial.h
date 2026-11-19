@@ -7,6 +7,7 @@
 // ----------------------------------------------------------------
 
 #pragma once
+#include "Plugin/D3D11Exports.h"
 #include "ResourceSystem/D3D11Resource.h"
 
 #include "FTMath.h"
@@ -41,7 +42,7 @@ namespace D3D11
 		/// @brief Gets the pixel constant buffer with material data applied.
 		/// @return Borrowed access to the pcbuf.
 		/// @note Changes through the returned reference affect this object's stored state.
-		Microsoft::WRL::ComPtr<ID3D11Buffer>& GetPCBuf();
+		D3D11_API Microsoft::WRL::ComPtr<ID3D11Buffer>& GetPCBuf();
 
 	public:
 		/// @brief Relative path is used for importing material data.

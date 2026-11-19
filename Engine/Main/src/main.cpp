@@ -183,7 +183,7 @@ namespace
 	/// @return True if the operation succeeds or the tested condition holds; otherwise false.
 	bool ModulesUnloaded()
 	{
-		for (const auto* name : { L"Core.dll", L"EngineRuntime.dll", L"FoxtrotD3D11.dll", L"Physics2D.dll", L"Game.dll", L"Editor.dll" })
+		for (const auto* name : { L"Core.dll", L"EngineRuntime.dll", L"FoxtrotD3D11.dll", L"UI.dll", L"Physics2D.dll", L"Game.dll", L"Editor.dll" })
 		{
 			if (GetModuleHandleW(name))
 			{

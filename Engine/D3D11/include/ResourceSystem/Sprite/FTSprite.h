@@ -56,7 +56,7 @@ namespace D3D11
 	public:
 		/// @brief Returns the texture used by this ftsprite.
 		/// @return Borrowed access to the texture.
-		FTTexture* GetTexture() const;
+		D3D11_API FTTexture* GetTexture() const;
 		/// @brief Returns the gcsprite data used by this ftsprite.
 		/// @return Borrowed access to the gcsprite data.
 		SpriteGCData* GetGCSpriteData() const;

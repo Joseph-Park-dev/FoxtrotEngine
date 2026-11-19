@@ -143,6 +143,7 @@ namespace Core
 	/// @brief Processes queued lifecycle and scene changes at the frame boundary.
 	void FTCore::ProcessEvent()
 	{
+		PluginManager::GetInstance()->ProcessEvent();
 		SceneManager::GetInstance()->ProcessEvent();
 		EventManager::GetInstance()->ProcessEvent();
 	}

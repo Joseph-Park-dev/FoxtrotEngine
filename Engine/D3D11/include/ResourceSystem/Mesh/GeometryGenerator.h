@@ -18,7 +18,6 @@ namespace D3D11
 	using namespace Common;
 	class Tile;
 	class FTTileMap;
-	struct TextAttribute;
 	struct FTDebugMeshData;
 
 	class GeometryGenerator
@@ -70,8 +69,6 @@ namespace D3D11
 		/// @param tile Tile instance to process.
 		/// @return Created animation frame instance or resource.
 		static FTMeshData* MakeAnimationFrame(Tile& tile);
-		// static void MakeSpriteTextGrid(std::vector<FTMeshData>& textMeshes, Tile* tileMap, size_t length, TextAttribute* attribute);
-		// static FTMeshData MakeSpriteText(Tile tile, TextAttribute* attrib, size_t col, size_t row);
 
 		// Make 3D Models
 		// static FTMeshData MakeBox();

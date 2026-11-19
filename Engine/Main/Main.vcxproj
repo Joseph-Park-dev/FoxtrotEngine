@@ -93,6 +93,10 @@
       <Project>{b1ae5aad-3b5a-4022-aa80-9a6e465933fa}</Project>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
+    <ProjectReference Include="..\UI\UI.vcxproj">
+      <Project>{C4E8A1D7-6B2F-4E9A-8D15-3F7A9C2E5B41}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemGroup>
   <ItemDefinitionGroup>
     <PostBuildEvent>

@@ -67,4 +67,6 @@ namespace Graphics
 		/// @brief Completes destruction through the object's inheritance hierarchy.
 		virtual ~IRenderer() = default;
 	};
+
+	constexpr const char* RENDERER_INTERFACE = "Renderer";
 } // namespace Graphics

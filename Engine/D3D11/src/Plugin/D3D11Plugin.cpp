@@ -119,7 +119,6 @@ namespace D3D11
 			ResourceManager* resources = ResourceManager::GetInstance();
 			resources->GetSpriteAnimations()->SaveReferencedResourcesToChunk(ofs);
 			resources->GetSpineAnimations()->SaveReferencedResourcesToChunk(ofs);
-			resources->GetFonts()->SaveReferencedResourcesToChunk(ofs);
 			resources->GetMaterials()->SaveReferencedResourcesToChunk(ofs);
 			resources->GetMeshGroups()->SaveReferencedResourcesToChunk(ofs);
 			resources->GetVertexShaders()->SaveReferencedResourcesToChunk(ofs);
@@ -143,7 +142,6 @@ namespace D3D11
 			resources->GetVertexShaders()->LoadReferencedResourcesFromChunk(ifs, module, renderer);
 			resources->GetMeshGroups()->LoadReferencedResourcesFromChunk(ifs, module, renderer);
 			resources->GetMaterials()->LoadReferencedResourcesFromChunk(ifs, module, renderer);
-			resources->GetFonts()->LoadReferencedResourcesFromChunk(ifs, module, renderer);
 			resources->GetSpineAnimations()->LoadReferencedResourcesFromChunk(ifs, module, renderer);
 			resources->GetSpriteAnimations()->LoadReferencedResourcesFromChunk(ifs, module, renderer);
 		}
@@ -187,6 +185,8 @@ namespace D3D11
 			}
 			if (std::strcmp(name, Graphics::GAME_CAMERA_INTERFACE) == 0)
 				return static_cast<Graphics::ICamera*>(mCamera);
+			if (std::strcmp(name, Graphics::RENDERER_INTERFACE) == 0)
+				return static_cast<Graphics::IRenderer*>(mRenderer);
 
 #ifdef FOXTROT_EDITOR
 			if (std::strcmp(name, Core::IEditorResourceService::INTERFACE_NAME) == 0)
@@ -307,6 +307,7 @@ namespace D3D11
 		D3D11::D3D11Renderer*								  mRenderer;
 		Common::FTDS::DynamicArray<D3D11::D3D11Window*>*	  mWindows;
 		D3D11::Camera*										  mCamera;
+		bool												  mFrameOpen = false;
 
 		Common::FTDS::DynamicArray<Common::IComponent*>* mRegisteredComps;
 #ifdef FOXTROT_EDITOR
@@ -544,13 +545,23 @@ namespace D3D11
 					continue;
 				(*iter)->Render(mRenderer, mCamera);
 			}
-			(*iter)->EndRender(mRenderer);
 		}
+		mFrameOpen = true;
 	}
 
 	/// @brief Provides an empty lifecycle or extension hook for this implementation.
 	void D3D11Plugin::ProcessEvent()
 	{
+#ifdef FOXTROT_EDITOR
+		return;
+#else
+		if (!mFrameOpen || !mWindows || !mRenderer)
+			return;
+
+		for (auto iter = mWindows->Begin(); iter != mWindows->End(); ++iter)
+			(*iter)->EndRender(mRenderer);
+		mFrameOpen = false;
+#endif
 	}
 
 	/// @brief Provides an empty lifecycle or extension hook for this implementation.
@@ -674,7 +685,6 @@ namespace D3D11
 #include "Factory/IFTResourceFactory.h"
 #include "ResourceSystem/Animation/FTSpriteAnimation.h"
 #include "ResourceSystem/Animation/FTSpineAnimation.h"
-#include "ResourceSystem/Font/FTFont.h"
 #include "ResourceSystem/Mesh/FTMeshGroup.h"
 #include "ResourceSystem/Shader/FTVertexShader.h"
 #include "ResourceSystem/Shader/FTGeometryShader.h"
@@ -735,7 +745,6 @@ FT_EXPORT void SetResourceFactory(Common::FTDS::HashMap<ResourceFactoryEntry>& e
 {
 	entries.Insert(D3D11::FTSpriteAnimation::GetName(), CreateRegisteredResource<D3D11::FTSpriteAnimation>);
 	entries.Insert(D3D11::FTSpineAnimation::GetName(), CreateRegisteredResource<D3D11::FTSpineAnimation>);
-	entries.Insert(D3D11::FTFont::GetName(), CreateRegisteredResource<D3D11::FTFont>);
 	entries.Insert(D3D11::FTMeshGroup::GetName(), CreateRegisteredResource<D3D11::FTMeshGroup>);
 	entries.Insert(D3D11::FTVertexShader::GetName(), CreateRegisteredResource<D3D11::FTVertexShader>);
 	entries.Insert(D3D11::FTGeometryShader::GetName(), CreateRegisteredResource<D3D11::FTGeometryShader>);

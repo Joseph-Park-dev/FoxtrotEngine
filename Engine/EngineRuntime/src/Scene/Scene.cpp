@@ -276,10 +276,10 @@ namespace Core
 	/// - Searches and deletes from `mActors` if present, then erases entry.
 	/// Postcondition: If found, actor memory is freed and removed from container.
 	/// @note Invalidates references to the removed actor.
-	void Scene::RemoveActor(Common::IActor* actor)
+	bool Scene::RemoveActor(Common::IActor* actor)
 	{
 		if (!actor)
-			return;
+			return false;
 
 		int pos = mPendingActors->Find(actor);
 		if (pos != -1)
@@ -287,7 +287,7 @@ namespace Core
 			NotifyActorDestroyed(actor);
 			delete mPendingActors->At(pos);
 			mPendingActors->Erase(pos);
-			return;
+			return true;
 		}
 
 		pos = mActors->Find(actor);
@@ -296,6 +296,9 @@ namespace Core
 			NotifyActorDestroyed(actor);
 			delete mActors->At(pos);
 			mActors->Erase(pos);
+			return true;
 		}
+
+		return false;
 	}
 } // namespace Core

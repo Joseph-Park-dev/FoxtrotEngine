@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Foxtrot_Editor_Debug|Win32">
+      <Configuration>Foxtrot_Editor_Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Foxtrot_Editor_Debug|x64">
+      <Configuration>Foxtrot_Editor_Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C4E8A1D7-6B2F-4E9A-8D15-3F7A9C2E5B41}</ProjectGuid>
+    <RootNamespace>UI</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup>
+    <TargetName>UI</TargetName>
+    <OutDir>$(ProjectDir)build\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)build\$(Platform)\$(Configuration)\obj\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)Engine\D3D11\include;$(SolutionDir)Engine\EngineRuntime\include;$(SolutionDir)Engine\Core\include;$(SolutionDir)Engine\Core\include\ResourceSystem;$(SolutionDir)Engine\Core\include\Debugging;$(SolutionDir)Engine\GenericData\include;$(SolutionDir)Engine\Math\include;$(SolutionDir)Engine\Graphics\include;$(SolutionDir)Engine\InputSystem\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>UI_EXPORTS;MATH_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <ModuleDefinitionFile>$(ProjectDir)Module.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)build\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Math.lib;FoxtrotD3D11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>if not exist "$(SolutionDir)build\$(Platform)\$(Configuration)\" mkdir "$(SolutionDir)build\$(Platform)\$(Configuration)\"
+copy /Y "$(TargetPath)" "$(SolutionDir)build\$(Platform)\$(Configuration)\"
+copy /Y "$(TargetDir)$(TargetName).lib" "$(SolutionDir)build\$(Platform)\$(Configuration)\"
+copy /Y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)build\$(Platform)\$(Configuration)\"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Component\Button.cpp" />
+    <ClCompile Include="src\Component\UIComponent.cpp" />
+    <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\Plugin\Module.cpp" />
+    <ClCompile Include="src\Plugin\UI.cpp" />
+    <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\ResourceSystem\Font\FontChar.cpp" />
+    <ClCompile Include="src\ResourceSystem\Font\FTFont.cpp" />
+    <ClCompile Include="src\ResourceSystem\FTFontMap.cpp" />
+    <ClCompile Include="..\..\third_party\imgui\imgui.cpp" Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'" />
+    <ClCompile Include="..\..\third_party\imgui\imgui_draw.cpp" Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'" />
+    <ClCompile Include="..\..\third_party\imgui\imgui_tables.cpp" Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'" />
+    <ClCompile Include="..\..\third_party\imgui\imgui_widgets.cpp" Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Component\Button.h" />
+    <ClInclude Include="include\Component\UIComponent.h" />
+    <ClInclude Include="include\framework.h" />
+    <ClInclude Include="include\pch.h" />
+    <ClInclude Include="include\Plugin\UI.h" />
+    <ClInclude Include="include\Plugin\UIExports.h" />
+    <ClInclude Include="include\ResourceSystem\Font\FontChar.h" />
+    <ClInclude Include="include\ResourceSystem\Font\FontKerning.h" />
+    <ClInclude Include="include\ResourceSystem\Font\FTFont.h" />
+    <ClInclude Include="include\ResourceSystem\Font\TextAttribute.h" />
+    <ClInclude Include="include\ResourceSystem\Font\TextVertex.h" />
+    <ClInclude Include="include\ResourceSystem\FTFontMap.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+    <None Include="Module.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Math\Math.vcxproj">
+      <Project>{05f1cde6-51be-4ec3-898e-d9d15811ed7f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Core.vcxproj">
+      <Project>{cce9835e-f788-4b51-930b-d7805ac1e2a0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\EngineRuntime\EngineRuntime.vcxproj">
+      <Project>{B9E4C0BB-30E3-4D40-A0ED-46084649AE62}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\D3D11\D3D11.vcxproj">
+      <Project>{95944b49-be89-43df-bd3f-03d01fa7c284}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Editor\Editor.vcxproj" Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'">
+      <Project>{30273513-c587-4640-9315-8d7cade6534a}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Foxtrot_Editor_Debug'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(SolutionDir)Engine\Editor\include</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+</Project>

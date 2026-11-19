@@ -1,0 +1,6 @@
+EXPORTS
+    FtGetModuleAPI
+    CreatePlugin
+    SetComponentFactory
+    SetResourceFactory
+    UI_SetEditorGuiContext

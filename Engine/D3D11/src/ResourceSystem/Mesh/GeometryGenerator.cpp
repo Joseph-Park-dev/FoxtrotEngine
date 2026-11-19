@@ -15,8 +15,6 @@
 #include "ResourceSystem/FTTexture.h"
 #include "ResourceSystem/Sprite/FTTileMap.h"
 #include "ResourceSystem/Sprite/Tile.h"
-#include "ResourceSystem/Font/TextAttribute.h"
-#include "ResourceSystem/Font/TextVertex.h"
 
 #include "FTDS/Static/FTString.h"
 
@@ -384,78 +382,6 @@ namespace D3D11
 		return meshData;
 	}
 } // namespace D3D11
-
-// void GeometryGenerator::MakeSpriteTextGrid(Common::FTDS::DynamicArray<FTMeshData>& textMeshes, Tile* tileMap, size_t length, TextAttribute* attribute)
-//{
-//     if (0 < attribute->MaxChars)
-//     {
-//         size_t maxRow = length / attribute->MaxChars < 1 ? 1 : length / attribute->MaxChars;
-//         for (size_t i = 0; i <= maxRow; ++i)
-//         {
-//             for (size_t j = 0; j < attribute->MaxChars; ++j)
-//             {
-//                 size_t idx = attribute->MaxChars * i + j;
-//                 FTMeshData spriteText = MakeSpriteText(tileMap[idx], attribute, j, i);
-//                 textMeshes.PushBack(spriteText);
-//             }
-//         }
-//     }
-// }
-//
-// FTMeshData GeometryGenerator::MakeSpriteText(Tile tile, TextAttribute* attrib, size_t col, size_t row)
-//{
-//     Common::FTDS::DynamicArray<FTVector3> positions;
-//     Common::FTDS::DynamicArray<FTVector3> colors;
-//     Common::FTDS::DynamicArray<FTVector3> normals;
-//     Common::FTDS::DynamicArray<FTVector2> texcoords; // 텍스춰 좌표
-//
-//     FTRectArea& rectOnScreen = tile.GetRectOnScreen();
-//
-//     const float tileWidth = rectOnScreen.GetSize().x * attrib->Scale;
-//     const float tileHeight = rectOnScreen.GetSize().y * attrib->Scale;
-//     FTVector2 tileMin = FTVector2(tileWidth * col, tileHeight * row) * FTVector2(attrib->CharSpacing, 1.f);
-//
-//     // 앞면
-//     positions.PushBack(FTVector3(tileMin.x,             -tileMin.y,              0.0f));
-//     positions.PushBack(FTVector3(tileMin.x + tileWidth, -tileMin.y,              0.0f));
-//     positions.PushBack(FTVector3(tileMin.x + tileWidth, -tileMin.y - tileHeight, 0.0f));
-//     positions.PushBack(FTVector3(tileMin.x,             -tileMin.y - tileHeight, 0.0f));
-//     colors.PushBack(FTVector3(0.0f, 0.0f, 1.0f));
-//     colors.PushBack(FTVector3(0.0f, 0.0f, 1.0f));
-//     colors.PushBack(FTVector3(0.0f, 0.0f, 1.0f));
-//     colors.PushBack(FTVector3(0.0f, 0.0f, 1.0f));
-//     normals.PushBack(FTVector3(0.0f, 0.0f, -1.0f));
-//     normals.PushBack(FTVector3(0.0f, 0.0f, -1.0f));
-//     normals.PushBack(FTVector3(0.0f, 0.0f, -1.0f));
-//     normals.PushBack(FTVector3(0.0f, 0.0f, -1.0f));
-//
-//     // Texture Coordinates (Direct3D 9)
-//     // https://learn.microsoft.com/en-us/windows/win32/direct3d9/texture-coordinates
-//     FTRectArea& rectOnMap = tile.GetRectOnMap();
-//     const FTVector2& mapMin = rectOnMap.GetMin();
-//     const float widthInMap = rectOnMap.GetSize().x;
-//     const float heightInMap = rectOnMap.GetSize().y;
-//
-//     texcoords.PushBack(FTVector2(mapMin.x, mapMin.y));
-//     texcoords.PushBack(FTVector2(mapMin.x + widthInMap, mapMin.y));
-//     texcoords.PushBack(FTVector2(mapMin.x + widthInMap, mapMin.y + heightInMap));
-//     texcoords.PushBack(FTVector2(mapMin.x, mapMin.y + heightInMap));
-//
-//     FTMeshData meshData;
-//     for (size_t i = 0; i < positions.GetSize(); i++) {
-//         Vertex v;
-//         v.position = positions[i];
-//         v.color = colors[i];
-//         v.normal = normals[i];
-//         v.texcoord = texcoords[i];
-//         meshData.Vertices.PushBack(v);
-//     }
-//     meshData.Indices = {
-//         0, 1, 2, 0, 2, 3, // 앞면
-//     };
-//
-//     return meshData;
-// }
 
 // FTMeshData GeometryGenerator::MakeBox()
 //{

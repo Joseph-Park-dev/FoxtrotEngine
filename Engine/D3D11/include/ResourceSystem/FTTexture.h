@@ -7,6 +7,7 @@
 // ----------------------------------------------------------------
 
 #pragma once
+#include "Plugin/D3D11Exports.h"
 #include "ResourceSystem/D3D11Resource.h"
 
 #include <wrl.h>
@@ -27,15 +28,15 @@ namespace D3D11
 	public:
 		/// @brief Get original pixel-width of the image. This shall not be edited after the FTTexture is created.
 		/// @return Current width.
-		const UINT GetWidth() const;
+		D3D11_API const UINT GetWidth() const;
 
 		/// @brief Get original pixel-height of the image. This shall not be edited after the FTTexture is created.
 		/// @return Current height.
-		const UINT GetHeight() const;
+		D3D11_API const UINT GetHeight() const;
 
 		/// @brief Get ShaderResourceView for the texture. This shall not be edited after the FTTexture is created.
 		/// @return Borrowed access to the srv.
-		const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetSRV() const;
+		D3D11_API const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetSRV() const;
 
 	public:
 		/// @brief Saves resource properties into a file.

@@ -8,8 +8,244 @@
 
 #include "FileSystem/FileIOHelper.h"
 
+#include <unordered_map>
+#include <vector>
+
 namespace Common
 {
+	namespace
+	{
+		struct Pack;
+
+		struct PackEntry
+		{
+			bool				   IsPack;
+			bool				   Consumed;
+			Common::FTDS::String   Key;
+			Common::FTDS::String   TypeName;
+			Common::FTDS::String   ValueLine;
+			Pack*				   Child;
+
+			PackEntry()
+				: IsPack(false)
+				, Consumed(false)
+				, Child(nullptr)
+			{
+			}
+		};
+
+		struct Pack
+		{
+			Common::FTDS::String	 Name;
+			std::vector<PackEntry>	 Entries;
+
+			~Pack()
+			{
+				for (PackEntry& entry : Entries)
+				{
+					delete entry.Child;
+					entry.Child = nullptr;
+				}
+			}
+		};
+
+		struct StreamPacks
+		{
+			std::vector<Pack*> Stack;
+			Pack*			   Root;
+
+			StreamPacks()
+				: Root(nullptr)
+			{
+			}
+
+			~StreamPacks()
+			{
+				delete Root;
+				Root = nullptr;
+				Stack.clear();
+			}
+		};
+
+		std::unordered_map<std::ifstream*, StreamPacks*>& LoadPacks()
+		{
+			static std::unordered_map<std::ifstream*, StreamPacks*> packs;
+			return packs;
+		}
+
+		StreamPacks* FindPacks(std::ifstream& ifs)
+		{
+			std::unordered_map<std::ifstream*, StreamPacks*>& packs = LoadPacks();
+			std::unordered_map<std::ifstream*, StreamPacks*>::iterator found = packs.find(&ifs);
+			if (found == packs.end())
+				return nullptr;
+			return found->second;
+		}
+
+		bool AllEntriesConsumed(const Pack* pack)
+		{
+			for (const PackEntry& entry : pack->Entries)
+			{
+				if (!entry.Consumed)
+					return false;
+			}
+			return true;
+		}
+
+		void PopFinishedPacks(std::ifstream& ifs)
+		{
+			std::unordered_map<std::ifstream*, StreamPacks*>& packs = LoadPacks();
+			std::unordered_map<std::ifstream*, StreamPacks*>::iterator found = packs.find(&ifs);
+			if (found == packs.end())
+				return;
+
+			StreamPacks* state = found->second;
+			while (!state->Stack.empty() && AllEntriesConsumed(state->Stack.back()))
+				state->Stack.pop_back();
+			if (!state->Stack.empty())
+				return;
+
+			delete state;
+			packs.erase(found);
+		}
+
+		bool IsPackHeader(const Common::FTDS::String& line)
+		{
+			const bool hasCount = line.RFind("<") != -1 && line.RFind(">") != -1;
+			const bool hasType	= line.RFind("[") != -1;
+			return hasCount && !hasType;
+		}
+
+		void ParsePackHeader(Common::FTDS::String& line, Common::FTDS::String& name, size_t& count)
+		{
+			line.ExtractUntilFirst(name, "<");
+			name.ExtractFromLast("\t");
+			Common::FTDS::String countStr;
+			line.ExtractBracketedVal(countStr, "<", ">");
+			count = static_cast<size_t>(std::stoi(countStr.C_Str()));
+		}
+
+		void ParseFieldHeader(Common::FTDS::String& line, Common::FTDS::String& key, Common::FTDS::String& typeName)
+		{
+			line.ExtractUntilLast(key, "[");
+			key.ExtractFromLast("\t");
+			line.ExtractBracketedVal(typeName, "[", "]");
+		}
+
+		Pack* ReadPackEntries(std::ifstream& ifs, const Common::FTDS::String& name, size_t count);
+
+		PackEntry ReadDirectEntry(std::ifstream& ifs)
+		{
+			PackEntry entry;
+			Common::FTDS::String line;
+			const bool got = FileIOHelper::GetLine(ifs, line);
+			assert(got);
+			if (!got)
+				return entry;
+
+			if (IsPackHeader(line))
+			{
+				Common::FTDS::String childName;
+				size_t childCount = 0;
+				ParsePackHeader(line, childName, childCount);
+				entry.IsPack = true;
+				entry.Key.Assign(childName);
+				entry.Child = ReadPackEntries(ifs, childName, childCount);
+				return entry;
+			}
+
+			ParseFieldHeader(line, entry.Key, entry.TypeName);
+			const bool gotValue = FileIOHelper::GetLine(ifs, entry.ValueLine);
+			assert(gotValue);
+			return entry;
+		}
+
+		Pack* ReadPackEntries(std::ifstream& ifs, const Common::FTDS::String& name, size_t count)
+		{
+			Pack* pack = DBG_NEW Pack();
+			pack->Name.Assign(name);
+			pack->Entries.reserve(count);
+			for (size_t index = 0; index < count; ++index)
+				pack->Entries.push_back(ReadDirectEntry(ifs));
+			return pack;
+		}
+
+		std::pair<size_t, Common::FTDS::String> OpenBufferedChild(
+			std::ifstream& ifs, StreamPacks& state, const Common::FTDS::String& key)
+		{
+			Pack* current = state.Stack.back();
+			PackEntry* found = nullptr;
+			for (PackEntry& entry : current->Entries)
+			{
+				if (entry.Consumed || !entry.IsPack)
+					continue;
+				if (entry.Key == key)
+				{
+					found = &entry;
+					break;
+				}
+			}
+
+			assert(found && found->Child);
+			if (!found || !found->Child)
+				return std::make_pair(static_cast<size_t>(0), Common::FTDS::String());
+
+			const size_t count = found->Child->Entries.size();
+			Common::FTDS::String name;
+			name.Assign(found->Child->Name);
+			found->Consumed = true;
+			state.Stack.push_back(found->Child);
+			PopFinishedPacks(ifs);
+			return std::make_pair(count, name);
+		}
+
+		struct FieldMatch
+		{
+			bool				 Found;
+			bool				 TypeOk;
+			Common::FTDS::String ValueLine;
+
+			FieldMatch()
+				: Found(false)
+				, TypeOk(false)
+			{
+			}
+		};
+
+		FieldMatch TakeField(std::ifstream& ifs, const Common::FTDS::String& key, const char* typeName)
+		{
+			FieldMatch match;
+			StreamPacks* state = FindPacks(ifs);
+			const bool open = state && !state->Stack.empty();
+			assert(open);
+			if (!open)
+				return match;
+
+			Pack* current = state->Stack.back();
+			for (PackEntry& entry : current->Entries)
+			{
+				if (entry.Consumed || entry.IsPack)
+					continue;
+				if (!(entry.Key == key))
+					continue;
+
+				match.Found	 = true;
+				match.TypeOk = entry.TypeName == typeName;
+				assert(match.TypeOk);
+				if (!match.TypeOk)
+					return match;
+
+				match.ValueLine.Assign(entry.ValueLine);
+				entry.Consumed = true;
+				PopFinishedPacks(ifs);
+				return match;
+			}
+
+			assert(match.Found);
+			return match;
+		}
+	} // namespace
+
 	std::list<Common::FTDS::String> Common::FileIOHelper::mDataBuffer	   = {};
 	std::list<int>					Common::FileIOHelper::mItemCounts	   = {};
 	std::list<Common::FTDS::String> Common::FileIOHelper::mCurrentDataPack = {};
@@ -43,11 +279,11 @@ namespace Common
 		return std::make_pair(count, name);
 	}
 
-	/// @brief Reads the opening .chunk data-pack marker and determines its key and entry count.
+	/// @brief Reads the next pack header from the stream and checks its name.
 	/// @param ifs Input stream positioned at the expected data; reading advances its position.
-	/// @param dataPackKey Key identifying the serialized data-pack section.
+	/// @param dataPackKey Pack name expected on the next header.
 	/// @return Pair containing the entry count and parsed data-pack key.
-	std::pair<size_t, Common::FTDS::String> Common::FileIOHelper::BeginDataPackLoad(std::ifstream& ifs, Common::FTDS::String dataPackKey)
+	std::pair<size_t, Common::FTDS::String> Common::FileIOHelper::BeginDataPackLoad(std::ifstream& ifs, const char* dataPackKey)
 	{
 		Common::FTDS::String loadedDataPackKey;
 		GetLine(ifs, loadedDataPackKey, '\n');
@@ -62,16 +298,57 @@ namespace Common
 		loadedDataPackKey.ExtractBracketedVal(countStr, "<", ">");
 		size_t count = std::stoi(countStr.C_Str());
 
-		if (name != dataPackKey)
+		if (!(name == dataPackKey))
 		{
 			printf("name mismatch!\n");
 		}
 
 		assert(name == dataPackKey);
 
-		// std::cout << "Parsing data pack : " << name << '\n';
-		// std::cout << name << '\n';
+		return std::make_pair(count, name);
+	}
 
+	/// @brief Reads the next pack header from the stream and checks its name.
+	/// @param ifs Input stream positioned at the expected data; reading advances its position.
+	/// @param dataPackKey Temporary pack name.
+	/// @return Pair containing the entry count and parsed data-pack key.
+	std::pair<size_t, Common::FTDS::String> Common::FileIOHelper::BeginDataPackLoad(std::ifstream& ifs, Common::FTDS::String&& dataPackKey)
+	{
+		return BeginDataPackLoad(ifs, dataPackKey.C_Str());
+	}
+
+	/// @brief Opens the named pack and buffers its direct entries for keyed reads.
+	/// @param ifs Input stream that owns the pack. Pack state is stored under this stream's address.
+	/// @param dataPackKey Pack name. Pass a String lvalue. A root call reads the next header and checks this name.
+	/// @return Pair containing the direct entry count and parsed pack name.
+	std::pair<size_t, Common::FTDS::String> Common::FileIOHelper::BeginDataPackLoad(std::ifstream& ifs, const Common::FTDS::String& dataPackKey)
+	{
+		if (StreamPacks* state = FindPacks(ifs))
+		{
+			if (!state->Stack.empty())
+				return OpenBufferedChild(ifs, *state, dataPackKey);
+		}
+
+		Common::FTDS::String line;
+		const bool got = GetLine(ifs, line);
+		assert(got);
+		Common::FTDS::String name;
+		size_t count = 0;
+		if (got)
+			ParsePackHeader(line, name, count);
+
+		if (!(name == dataPackKey))
+		{
+			printf("name mismatch!\n");
+		}
+		assert(name == dataPackKey);
+
+		Pack* pack = ReadPackEntries(ifs, name, count);
+		StreamPacks* created = DBG_NEW StreamPacks();
+		created->Root = pack;
+		created->Stack.push_back(pack);
+		LoadPacks()[&ifs] = created;
+		PopFinishedPacks(ifs);
 		return std::make_pair(count, name);
 	}
 
@@ -273,6 +550,136 @@ namespace Common
 		// Parse the actual data.
 		GetLine(ifs, line, '\n');
 		ParseVector4(line, vec4);
+	}
+
+	/// @brief Reads the first unconsumed direct int field with this key.
+	/// @param ifs Stream whose current pack is searched. A missing key asserts on that pack.
+	/// @param key Field key written by the matching Save call.
+	/// @param intVal Receives the parsed value when the key and [int] type match. Unchanged when they do not.
+	void FileIOHelper::LoadInt(std::ifstream& ifs, const Common::FTDS::String& key, int& intVal)
+	{
+		FieldMatch match = TakeField(ifs, key, "int");
+		if (!match.Found || !match.TypeOk)
+			return;
+		ParseInt(match.ValueLine, intVal);
+	}
+
+	/// @brief Reads the first unconsumed direct unsigned int field with this key.
+	/// @param ifs Stream whose current pack is searched. A missing key asserts on that pack.
+	/// @param key Field key written by the matching Save call.
+	/// @param intVal Receives the parsed value when the key and [unsigned int] type match. Unchanged when they do not.
+	void FileIOHelper::LoadUnsignedInt(std::ifstream& ifs, const Common::FTDS::String& key, unsigned int& intVal)
+	{
+		FieldMatch match = TakeField(ifs, key, "unsigned int");
+		if (!match.Found || !match.TypeOk)
+			return;
+		ParseUnsignedInt(match.ValueLine, intVal);
+	}
+
+	/// @brief Reads the first unconsumed direct size field with this key.
+	/// @param ifs Stream whose current pack is searched. A missing key asserts on that pack.
+	/// @param key Field key written by the matching Save call.
+	/// @param sizeVal Receives the parsed value when the key and [size] type match. Unchanged when they do not.
+	void FileIOHelper::LoadSize(std::ifstream& ifs, const Common::FTDS::String& key, size_t& sizeVal)
+	{
+		FieldMatch match = TakeField(ifs, key, "size");
+		if (!match.Found || !match.TypeOk)
+			return;
+		ParseSize(match.ValueLine, sizeVal);
+	}
+
+	/// @brief Reads the first unconsumed direct float field with this key.
+	/// @param ifs Stream whose current pack is searched. A missing key asserts on that pack.
+	/// @param key Field key written by the matching Save call.
+	/// @param floatVal Receives the parsed value when the key and [float] type match. Unchanged when they do not.
+	void FileIOHelper::LoadFloat(std::ifstream& ifs, const Common::FTDS::String& key, float& floatVal)
+	{
+		FieldMatch match = TakeField(ifs, key, "float");
+		if (!match.Found || !match.TypeOk)
+			return;
+		ParseFloat(match.ValueLine, floatVal);
+	}
+
+	/// @brief Reads the first unconsumed direct bool field with this key.
+	/// @param ifs Stream whose current pack is searched. A missing key asserts on that pack.
+	/// @param key Field key written by the matching Save call.
+	/// @param boolVal Receives the parsed value when the key and [bool] type match. Unchanged when they do not.
+	void FileIOHelper::LoadBool(std::ifstream& ifs, const Common::FTDS::String& key, bool& boolVal)
+	{
+		FieldMatch match = TakeField(ifs, key, "bool");
+		if (!match.Found || !match.TypeOk)
+			return;
+		ParseBool(match.ValueLine, boolVal);
+	}
+
+	/// @brief Reads the first unconsumed direct string field with this key.
+	/// @param ifs Stream whose current pack is searched. A missing key asserts on that pack.
+	/// @param key Field key written by the matching Save call.
+	/// @param strVal Receives the parsed value when the key and [string] type match. Unchanged when they do not.
+	void FileIOHelper::LoadBasicString(std::ifstream& ifs, const Common::FTDS::String& key, Common::FTDS::String& strVal)
+	{
+		FieldMatch match = TakeField(ifs, key, "string");
+		if (!match.Found || !match.TypeOk)
+			return;
+		ParseString(match.ValueLine, strVal);
+		strVal.ExtractFromLast("\t");
+	}
+
+	/// @brief Reads the first unconsumed direct vector2 field with this key.
+	/// @param ifs Stream whose current pack is searched. A missing key asserts on that pack.
+	/// @param key Field key written by the matching Save call.
+	/// @param vec2 Receives the parsed value when the key and [Vector2] type match. Unchanged when they do not.
+	void FileIOHelper::LoadVector2(std::ifstream& ifs, const Common::FTDS::String& key, Math::FTVector2& vec2)
+	{
+		FieldMatch match = TakeField(ifs, key, "Vector2");
+		if (!match.Found || !match.TypeOk)
+			return;
+		ParseVector2(match.ValueLine, vec2);
+	}
+
+	/// @brief Reads the first unconsumed direct vector3 field with this key.
+	/// @param ifs Stream whose current pack is searched. A missing key asserts on that pack.
+	/// @param key Field key written by the matching Save call.
+	/// @param vec3 Receives the parsed value when the key and [Vector3] type match. Unchanged when they do not.
+	void FileIOHelper::LoadVector3(std::ifstream& ifs, const Common::FTDS::String& key, Math::FTVector3& vec3)
+	{
+		FieldMatch match = TakeField(ifs, key, "Vector3");
+		if (!match.Found || !match.TypeOk)
+			return;
+		ParseVector3(match.ValueLine, vec3);
+	}
+
+	/// @brief Reads the first unconsumed direct vector4 field with this key.
+	/// @param ifs Stream whose current pack is searched. A missing key asserts on that pack.
+	/// @param key Field key written by the matching Save call.
+	/// @param vec4 Receives the parsed value when the key and [Vector4] type match. Unchanged when they do not.
+	void FileIOHelper::LoadVector4(std::ifstream& ifs, const Common::FTDS::String& key, Math::FTVector4& vec4)
+	{
+		FieldMatch match = TakeField(ifs, key, "Vector4");
+		if (!match.Found || !match.TypeOk)
+			return;
+		ParseVector4(match.ValueLine, vec4);
+	}
+
+	/// @brief Copies the current pack's direct child pack names in file order.
+	/// @param ifs Stream with an open buffered pack.
+	/// @param names Cleared, then filled with those names. Duplicates are kept. The packs are not consumed.
+	void FileIOHelper::CopyChildDataPackNames(std::ifstream& ifs, Common::FTDS::DynamicArray<Common::FTDS::String>& names)
+	{
+		names.Clear();
+		StreamPacks* state = FindPacks(ifs);
+		const bool open = state && !state->Stack.empty();
+		assert(open);
+		if (!open)
+			return;
+
+		Pack* current = state->Stack.back();
+		for (const PackEntry& entry : current->Entries)
+		{
+			if (!entry.IsPack)
+				continue;
+			names.PushBack(entry.Key);
+		}
 	}
 
 	/// @brief Extracts a vector3 value from a serialized text line.

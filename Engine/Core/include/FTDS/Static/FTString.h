@@ -492,6 +492,30 @@ namespace Common
 			mCapacity = newCap;
 		}
 
+		/// @brief Reallocates String slots with real constructors. realloc would leave those slots unconstructed.
+		/// @param newCap New number of backing-storage slots.
+		template <>
+		inline void Common::FTDS::DynamicArray<Common::FTDS::String>::AllocateMem(size_t newCap)
+		{
+			Common::FTDS::Array<Common::FTDS::String>::AllocateMem(newCap);
+		}
+
+		/// @brief Destroys constructed String slots before releasing their block.
+		template <>
+		inline void Common::FTDS::DynamicArray<Common::FTDS::String>::Clear()
+		{
+			if (this->mData)
+			{
+				for (size_t i = 0; i < this->mCapacity; ++i)
+					this->mData[i].~String();
+				free(this->mData);
+				this->mData	   = nullptr;
+				this->mCapacity = 0;
+			}
+			this->mSize = 0;
+			this->Reserve(1);
+		}
+
 		/// @brief Appends an element and grows the backing storage when necessary.
 		/// @param value Value to assign, insert, or process.
 		template <>

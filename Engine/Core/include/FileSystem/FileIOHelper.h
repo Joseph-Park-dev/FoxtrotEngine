@@ -30,11 +30,24 @@ namespace Common
 		/// @param ifs Input stream positioned at the expected data; reading advances its position.
 		/// @return Pair containing the entry count and parsed data-pack key.
 		FT_CORE_API static std::pair<size_t, Common::FTDS::String> BeginDataPackLoad(std::ifstream& ifs);
-		/// @brief Reads the opening .chunk data-pack marker and determines its key and entry count.
+		/// @brief Reads the next pack header from the stream and checks its name.
 		/// @param ifs Input stream positioned at the expected data; reading advances its position.
-		/// @param dataPackKey Key identifying the serialized data-pack section.
+		/// @param dataPackKey Pack name expected on the next header.
 		/// @return Pair containing the entry count and parsed data-pack key.
-		FT_CORE_API static std::pair<size_t, Common::FTDS::String> BeginDataPackLoad(std::ifstream& ifs, Common::FTDS::String dataPackKey);
+		/// @note Leaves the stream on the first entry. const char* keys, including ChunkKey constants, stay on this path.
+		FT_CORE_API static std::pair<size_t, Common::FTDS::String> BeginDataPackLoad(std::ifstream& ifs, const char* dataPackKey);
+		/// @brief Reads the next pack header from the stream and checks its name.
+		/// @param ifs Input stream positioned at the expected data; reading advances its position.
+		/// @param dataPackKey Temporary pack name.
+		/// @return Pair containing the entry count and parsed data-pack key.
+		/// @note String temporaries stay on the stream so existing GetName() calls keep today's read position.
+		FT_CORE_API static std::pair<size_t, Common::FTDS::String> BeginDataPackLoad(std::ifstream& ifs, Common::FTDS::String&& dataPackKey);
+		/// @brief Opens the named pack and buffers its direct entries for keyed reads.
+		/// @param ifs Input stream that owns the pack. Pack state is stored under this stream's address.
+		/// @param dataPackKey Pack name. Pass a String lvalue. A root call reads the next header and checks this name.
+		/// @return Pair containing the direct entry count and parsed pack name.
+		/// @note A nested header counts as one direct entry and is stored with its descendants. A nested call consumes the first unconsumed direct child pack with this name. The stream is left on the following header. The pack pops when every direct entry has been consumed.
+		FT_CORE_API static std::pair<size_t, Common::FTDS::String> BeginDataPackLoad(std::ifstream& ifs, const Common::FTDS::String& dataPackKey);
 
 		/// @brief Reads the next serialized int value and stores it in the output argument.
 		/// @param ifs Input stream positioned at the expected data; reading advances its position.
@@ -82,6 +95,57 @@ namespace Common
 		/// @param vec4 Four-dimensional vector read or written.
 		/// @note Advances the stream position and updates the destination state.
 		FT_CORE_API static void LoadVector4(std::ifstream& ifs, Math::FTVector4& vec4);
+
+		/// @brief Reads the first unconsumed direct int field with this key.
+		/// @param ifs Stream whose current pack is searched. A missing key asserts on that pack.
+		/// @param key Field key written by the matching Save call.
+		/// @param intVal Receives the parsed value when the key and [int] type match. Unchanged when they do not.
+		FT_CORE_API static void LoadInt(std::ifstream& ifs, const Common::FTDS::String& key, int& intVal);
+		/// @brief Reads the first unconsumed direct unsigned int field with this key.
+		/// @param ifs Stream whose current pack is searched. A missing key asserts on that pack.
+		/// @param key Field key written by the matching Save call.
+		/// @param intVal Receives the parsed value when the key and [unsigned int] type match. Unchanged when they do not.
+		FT_CORE_API static void LoadUnsignedInt(std::ifstream& ifs, const Common::FTDS::String& key, unsigned int& intVal);
+		/// @brief Reads the first unconsumed direct size field with this key.
+		/// @param ifs Stream whose current pack is searched. A missing key asserts on that pack.
+		/// @param key Field key written by the matching Save call.
+		/// @param sizeVal Receives the parsed value when the key and [size] type match. Unchanged when they do not.
+		FT_CORE_API static void LoadSize(std::ifstream& ifs, const Common::FTDS::String& key, size_t& sizeVal);
+		/// @brief Reads the first unconsumed direct float field with this key.
+		/// @param ifs Stream whose current pack is searched. A missing key asserts on that pack.
+		/// @param key Field key written by the matching Save call.
+		/// @param floatVal Receives the parsed value when the key and [float] type match. Unchanged when they do not.
+		FT_CORE_API static void LoadFloat(std::ifstream& ifs, const Common::FTDS::String& key, float& floatVal);
+		/// @brief Reads the first unconsumed direct bool field with this key.
+		/// @param ifs Stream whose current pack is searched. A missing key asserts on that pack.
+		/// @param key Field key written by the matching Save call.
+		/// @param boolVal Receives the parsed value when the key and [bool] type match. Unchanged when they do not.
+		FT_CORE_API static void LoadBool(std::ifstream& ifs, const Common::FTDS::String& key, bool& boolVal);
+		/// @brief Reads the first unconsumed direct string field with this key.
+		/// @param ifs Stream whose current pack is searched. A missing key asserts on that pack.
+		/// @param key Field key written by the matching Save call.
+		/// @param strVal Receives the parsed value when the key and [string] type match. Unchanged when they do not.
+		FT_CORE_API static void LoadBasicString(std::ifstream& ifs, const Common::FTDS::String& key, Common::FTDS::String& strVal);
+		/// @brief Reads the first unconsumed direct vector2 field with this key.
+		/// @param ifs Stream whose current pack is searched. A missing key asserts on that pack.
+		/// @param key Field key written by the matching Save call.
+		/// @param vec2 Receives the parsed value when the key and [Vector2] type match. Unchanged when they do not.
+		FT_CORE_API static void LoadVector2(std::ifstream& ifs, const Common::FTDS::String& key, Math::FTVector2& vec2);
+		/// @brief Reads the first unconsumed direct vector3 field with this key.
+		/// @param ifs Stream whose current pack is searched. A missing key asserts on that pack.
+		/// @param key Field key written by the matching Save call.
+		/// @param vec3 Receives the parsed value when the key and [Vector3] type match. Unchanged when they do not.
+		FT_CORE_API static void LoadVector3(std::ifstream& ifs, const Common::FTDS::String& key, Math::FTVector3& vec3);
+		/// @brief Reads the first unconsumed direct vector4 field with this key.
+		/// @param ifs Stream whose current pack is searched. A missing key asserts on that pack.
+		/// @param key Field key written by the matching Save call.
+		/// @param vec4 Receives the parsed value when the key and [Vector4] type match. Unchanged when they do not.
+		FT_CORE_API static void LoadVector4(std::ifstream& ifs, const Common::FTDS::String& key, Math::FTVector4& vec4);
+		/// @brief Copies the current pack's direct child pack names in file order.
+		/// @param ifs Stream with an open buffered pack.
+		/// @param names Cleared, then filled with those names. Duplicates are kept. The packs are not consumed.
+		/// @note Asserts when that stream has no open pack.
+		FT_CORE_API static void CopyChildDataPackNames(std::ifstream& ifs, Common::FTDS::DynamicArray<Common::FTDS::String>& names);
 
 		// template <typename RESOURCE>
 		// static  void LoadResource(std::ifstream& ifs, RESOURCE*& res, Common::FTDS::HashMap<RESOURCE*>* map)
